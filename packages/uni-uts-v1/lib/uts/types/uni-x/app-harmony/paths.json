@@ -1,0 +1,5 @@
+{
+  "@hms.*": ["ohos/api/@hms.*.d.ts"],
+  "@kit.*": ["hms/kits/@kit.*.d.ts", "ohos/kits/@kit.*.d.ts"],
+  "@ohos.*": ["ohos/api/@ohos.*.d.ts"]
+}

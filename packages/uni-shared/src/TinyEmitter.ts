@@ -3,7 +3,7 @@ interface E {
   on: (name: EventName, callback: EventCallback, ctx?: any) => this
   once: (name: EventName, callback: EventCallback, ctx?: any) => this
   emit: (name: EventName, ...args: any[]) => this
-  off: (name: EventName, callback?: EventCallback) => this
+  off: (name: EventName, callback?: EventCallback | null) => this
 }
 
 const E = function () {

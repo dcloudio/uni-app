@@ -3,13 +3,14 @@
 * (c) 2018-present Yuxi (Evan) You and Vue contributors
 * @license MIT
 **/
-import { isString, isFunction, isPromise, getGlobalThis, isArray, NOOP, extend as extend$1, EMPTY_OBJ, toHandlerKey, looseToNumber, hyphenate, camelize, isObject, isOn, hasOwn, isModelListener, capitalize, toNumber, hasChanged, remove, isSet, isMap, isPlainObject, isBuiltInDirective, invokeArrayFns, isRegExp, isGloballyAllowed, NO, def, isReservedProp, EMPTY_ARR, toRawType, makeMap, normalizeClass, stringifyStyle, normalizeStyle, isKnownSvgAttr, isBooleanAttr, isKnownHtmlAttr, includeBooleanAttr, isRenderableAttrValue, parseStringStyle } from '@vue/shared';
+import { isString, isFunction, isPromise, getGlobalThis, isArray, NOOP, extend as extend$1, EMPTY_OBJ, toHandlerKey, looseToNumber, hyphenate, camelize, isObject, isOn, hasOwn, isModelListener, capitalize, toNumber, hasChanged, remove, isSet, isMap, isPlainObject, isBuiltInDirective, invokeArrayFns, isRegExp, isGloballyAllowed, NO, def, isReservedProp, EMPTY_ARR, toRawType, makeMap, normalizeClass, stringifyStyle, normalizeStyle as normalizeStyle$1, isKnownSvgAttr, isBooleanAttr, isKnownHtmlAttr, includeBooleanAttr, isRenderableAttrValue, parseStringStyle } from '@vue/shared';
 export { camelize, capitalize, hyphenate, toDisplayString, toHandlerKey } from '@vue/shared';
 import { pauseTracking, resetTracking, isRef, toRaw, isShallow, isReactive, ReactiveEffect, getCurrentScope, ref, shallowReadonly, track, reactive, shallowReactive, trigger, isProxy, proxyRefs, markRaw, EffectScope, computed as computed$1, customRef, isReadonly } from '@vue/reactivity';
 export { EffectScope, ReactiveEffect, TrackOpTypes, TriggerOpTypes, customRef, effect, effectScope, getCurrentScope, isProxy, isReactive, isReadonly, isRef, isShallow, markRaw, onScopeDispose, proxyRefs, reactive, readonly, ref, shallowReactive, shallowReadonly, shallowRef, stop, toRaw, toRef, toRefs, toValue, triggerRef, unref } from '@vue/reactivity';
-import { isRootHook, isRootImmediateHook, ON_LOAD, normalizeClass as normalizeClass$1, normalizeStyle as normalizeStyle$1 } from '@dcloudio/uni-shared';
+import { isRootHook, isRootImmediateHook, ON_LOAD, normalizeClass as normalizeClass$1, normalizeStyle as normalizeStyle$2 } from '@dcloudio/uni-shared';
 export { normalizeClass, normalizeProps, normalizeStyle } from '@dcloudio/uni-shared';
 import PromisePolyfill from 'promise-polyfill';
+import { expand } from '@dcloudio/uni-nvue-styler/dist/uni-nvue-styler.es';
 
 const stack = [];
 function pushWarningContext(vnode) {
@@ -5147,7 +5148,7 @@ function propHasMismatch(el, key, clientValue, vnode, instance) {
     }
   } else if (key === "style") {
     actual = el.getAttribute("style");
-    expected = isString(clientValue) ? clientValue : stringifyStyle(normalizeStyle(clientValue));
+    expected = isString(clientValue) ? clientValue : stringifyStyle(normalizeStyle$1(clientValue));
     const actualMap = toStyleMap(actual);
     const expectedMap = toStyleMap(expected);
     if (vnode.dirs) {
@@ -7370,7 +7371,7 @@ function _createVNode(type, props = null, children = null, patchFlag = 0, dynami
       if (isProxy(style) && !isArray(style)) {
         style = extend$1({}, style);
       }
-      props.style = normalizeStyle$1(style);
+      props.style = normalizeStyle$2(style);
     }
   }
   const shapeFlag = isString(type) ? 1 : isSuspense(type) ? 128 : isTeleport(type) ? 64 : isObject(type) ? 4 : isFunction(type) ? 2 : 0;
@@ -7540,7 +7541,7 @@ function mergeProps(...args) {
           ret.class = normalizeClass$1([ret.class, toMerge.class]);
         }
       } else if (key === "style") {
-        ret.style = normalizeStyle$1([ret.style, toMerge.style]);
+        ret.style = normalizeStyle$2([ret.style, toMerge.style]);
       } else if (isOn(key)) {
         const existing = ret[key];
         const incoming = toMerge[key];
@@ -8774,7 +8775,7 @@ function transformAttr(el, key, value, instance) {
         const sytle = parseStringStyle(camelize(value));
         return [camelized, sytle];
       }
-      return [camelized, normalizeStyle(value)];
+      return [camelized, normalizeStyle$1(value)];
     }
   }
   return [key, value];
@@ -8852,206 +8853,47 @@ function createInvoker(initialValue, instance) {
   return invoker;
 }
 
-const backgroundColor = "backgroundColor";
-const backgroundImage = "backgroundImage";
-const transformBackground = function(prop, value) {
-  const result = /* @__PURE__ */ new Map();
-  if (/^#?\S+$/.test(value) || /^rgba?(.+)$/.test(value)) {
-    result.set(backgroundColor, value);
-    result.set(backgroundImage, "");
-  } else if (/^linear-gradient(.+)$/.test(value)) {
-    result.set(backgroundImage, value);
-    result.set(backgroundColor, "");
-  } else if (value == "") {
-    result.set(backgroundColor, "");
-    result.set(backgroundImage, "");
-  } else {
-    result.set(prop, value);
+const processDeclaration = expand({ type: "uvue" }).Declaration;
+function createDeclaration(prop, value) {
+  const newValue = value + "";
+  if (newValue.includes("!important")) {
+    return {
+      prop,
+      value: newValue.replace(/\s*!important/, ""),
+      important: true
+    };
   }
-  return result;
-};
-
-const borderWidth = "Width";
-const borderStyle = "Style";
-const borderColor = "Color";
-const transformBorder = function(prop, value) {
-  const splitResult = value.replace(/\s*,\s*/g, ",").split(/\s+/);
-  const values = [
-    /^[\d\.]+\S*|^(thin|medium|thick)$/,
-    /^(solid|dashed|dotted|none)$/,
-    /\S+/
-  ].map((item) => {
-    const index = splitResult.findIndex(
-      (str) => item.test(str)
-    );
-    return index < 0 ? null : splitResult.splice(index, 1)[0];
-  });
-  const result = /* @__PURE__ */ new Map();
-  const isEmptyStringArray = splitResult.length == 1 && splitResult[0] == "";
-  if (splitResult.length > 0 && !isEmptyStringArray) {
-    result.set(prop, value);
-    return result;
-  }
-  result.set(
-    prop + borderWidth,
-    (values[0] == null ? "medium" : values[0]).trim()
-  );
-  result.set(
-    prop + borderStyle,
-    (values[1] == null ? "none" : values[1]).trim()
-  );
-  result.set(
-    prop + borderColor,
-    (values[2] == null ? "#000000" : values[2]).trim()
-  );
-  return result;
-};
-
-const borderTop = "borderTop";
-const borderRight = "borderRight";
-const borderBottom = "borderBottom";
-const borderLeft = "borderLeft";
-const transformBorderColor = function(prop, value) {
-  let property = hyphenate(prop).split("-")[1];
-  property = capitalize(property);
-  const splitResult = value.replace(/\s*,\s*/g, ",").split(/\s+/);
-  const result = /* @__PURE__ */ new Map();
-  switch (splitResult.length) {
-    case 1:
-      result.set(prop, value);
-      return result;
-    case 2:
-      splitResult.push(splitResult[0], splitResult[1]);
-      break;
-    case 3:
-      splitResult.push(splitResult[1]);
-      break;
-  }
-  result.set(borderTop + property, splitResult[0]);
-  result.set(borderRight + property, splitResult[1]);
-  result.set(borderBottom + property, splitResult[2]);
-  result.set(borderLeft + property, splitResult[3]);
-  return result;
-};
-
-const borderTopLeftRadius = "borderTopLeftRadius";
-const borderTopRightRadius = "borderTopRightRadius";
-const borderBottomRightRadius = "borderBottomRightRadius";
-const borderBottomLeftRadius = "borderBottomLeftRadius";
-const transformBorderRadius = function(prop, value) {
-  const splitResult = value.split(/\s+/);
-  const result = /* @__PURE__ */ new Map();
-  if (value.includes("/")) {
-    result.set(prop, value);
-    return result;
-  }
-  switch (splitResult.length) {
-    case 1:
-      result.set(prop, value);
-      return result;
-    case 2:
-      splitResult.push(splitResult[0], splitResult[1]);
-      break;
-    case 3:
-      splitResult.push(splitResult[1]);
-      break;
-  }
-  result.set(borderTopLeftRadius, splitResult[0]);
-  result.set(borderTopRightRadius, splitResult[1]);
-  result.set(borderBottomRightRadius, splitResult[2]);
-  result.set(borderBottomLeftRadius, splitResult[3]);
-  return result;
-};
-
-const transformBorderStyle = transformBorderColor;
-
-const transformBorderWidth = transformBorderColor;
-
-const top = "Top";
-const right = "Right";
-const bottom = "Bottom";
-const left = "Left";
-const transformMargin = function(prop, value) {
-  const splitResult = value.split(/\s+/);
-  switch (splitResult.length) {
-    case 1:
-      splitResult.push(splitResult[0], splitResult[0], splitResult[0]);
-      break;
-    case 2:
-      splitResult.push(splitResult[0], splitResult[1]);
-      break;
-    case 3:
-      splitResult.push(splitResult[1]);
-      break;
-  }
-  const result = /* @__PURE__ */ new Map();
-  result.set(prop + top, splitResult[0]);
-  result.set(prop + right, splitResult[1]);
-  result.set(prop + bottom, splitResult[2]);
-  result.set(prop + left, splitResult[3]);
-  return result;
-};
-
-const transformPadding = transformMargin;
-
-const properties = [
-  "transitionProperty",
-  "transitionDuration",
-  "transitionTimingFunction",
-  "transitionDelay"
-];
-const transformTransition = function(prop, value) {
-  const CHUNK_REGEXP = /^(\S*)?\s*(\d*\.?\d+(?:ms|s)?)?\s*(\S*)?\s*(\d*\.?\d+(?:ms|s)?)?$/;
-  const match = CHUNK_REGEXP.exec(value);
-  const result = /* @__PURE__ */ new Map();
-  if (match == null) {
-    result.set(prop, value);
-    return result;
-  }
-  const len = match.length;
-  for (let i = 1; i < len && i <= 4; i++) {
-    const val = match[i];
-    if (match[i] != null && val.length > 0) {
-      result.set(properties[i - 1], val);
-    }
-  }
-  return result;
-};
-
-const importantRE = /\s*!important$/;
-const DeclTransforms = /* @__PURE__ */ new Map([
-  ["transition", transformTransition],
-  ["margin", transformMargin],
-  ["padding", transformPadding],
-  ["border", transformBorder],
-  ["borderTop", transformBorder],
-  ["borderRight", transformBorder],
-  ["borderBottom", transformBorder],
-  ["borderLeft", transformBorder],
-  ["borderStyle", transformBorderStyle],
-  ["borderWidth", transformBorderWidth],
-  ["borderColor", transformBorderColor],
-  ["borderRadius", transformBorderRadius],
-  ["background", transformBackground]
-]);
-function expandStyle(prop, value) {
-  if (value == null) {
-    return /* @__PURE__ */ new Map([[prop, ""]]);
-  }
-  if (!isString(value)) {
-    value = "" + value;
-  }
-  const important = importantRE.test(value);
-  const newVal = important ? value.replace(importantRE, "") : value;
-  const transform = DeclTransforms.get(prop);
-  if (transform != null) {
-    return transform(prop, newVal);
-  }
-  return /* @__PURE__ */ new Map([[prop, newVal]]);
+  return {
+    prop,
+    value: newValue,
+    important: false
+  };
 }
-
+function normalizeStyle(name, value) {
+  const decl = Object.assign(
+    {},
+    {
+      replaceWith(newProps) {
+        props = newProps;
+      }
+    },
+    createDeclaration(name, value)
+  );
+  let props = [decl];
+  processDeclaration(decl);
+  return props;
+}
+function setStyle(expandRes) {
+  const resArr = expandRes.map((item) => {
+    return [item.prop, item.value];
+  });
+  const resMap = new Map(resArr);
+  return resMap;
+}
 function parseStyleDecl(prop, value) {
-  return expandStyle(prop, value);
+  const val = normalizeStyle(prop, value);
+  const res = setStyle(val);
+  return res;
 }
 
 function isSame(a, b) {

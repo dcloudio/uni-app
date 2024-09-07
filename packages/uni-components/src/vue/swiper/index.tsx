@@ -1,27 +1,27 @@
 import {
-  Ref,
-  ref,
-  watch,
+  type ComputedRef,
+  type Ref,
+  type SetupContext,
+  type VNode,
+  computed,
+  markRaw,
   onMounted,
   onUnmounted,
   provide,
-  ComputedRef,
-  computed,
   reactive,
-  VNode,
-  markRaw,
-  SetupContext,
+  ref,
+  watch,
   watchEffect,
 } from 'vue'
 import { extend } from '@vue/shared'
 import { defineBuiltInComponent } from '../../helpers/component'
 import { UniElement } from '../../helpers/UniElement'
-import { useCustomEvent, CustomEventTrigger } from '../../helpers/useEvent'
+import { type CustomEventTrigger, useCustomEvent } from '../../helpers/useEvent'
 import { useTouchtrack } from '../../helpers/useTouchtrack'
 import { flatVNode } from '../../helpers/flatVNode'
 import { useRebuild } from '../../helpers/useRebuild'
 import { rpx2px } from '@dcloudio/uni-core'
-import { createSvgIconVNode, ICON_PATH_BACK } from '@dcloudio/uni-core'
+import { ICON_PATH_BACK, createSvgIconVNode } from '@dcloudio/uni-core'
 
 const props = {
   indicatorDots: {
@@ -363,11 +363,11 @@ function useLayout(
             : 0
       }
       animateViewport(state.current, 'autoplay', circularEnabled.value ? 1 : 0)
-      // @ts-ignore setTimeout -> NodeJS.Timeout
+      // @ts-expect-error setTimeout -> NodeJS.Timeout
       timer = setTimeout(callback, state.interval)
     }
     if (!(invalid || items.length <= state.displayMultipleItems)) {
-      // @ts-ignore setTimeout -> NodeJS.Timeout
+      // @ts-expect-error setTimeout -> NodeJS.Timeout
       timer = setTimeout(callback, state.interval)
     }
   }
@@ -753,7 +753,9 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     return () => {
       const defaultSlots = slots.default && slots.default()
       // TODO filter
-      swiperItems = flatVNode(defaultSlots)
+      if (__PLATFORM__ !== 'app') {
+        swiperItems = flatVNode(defaultSlots)
+      }
       return (
         <uni-swiper ref={rootRef}>
           <div ref={slidesWrapperRef} class="uni-swiper-wrapper">
@@ -906,7 +908,7 @@ const useSwiperNavigation = /*#__PURE__*/ (
     }
 
     if (hide) {
-      // @ts-ignore setTimeout -> NodeJS.Timeout
+      // @ts-expect-error setTimeout -> NodeJS.Timeout
       return (setHideNavigationTimer = setTimeout(() => {
         hideNavigation.value = hide
       }, 300))

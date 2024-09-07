@@ -82,17 +82,29 @@ export class FileWatcher {
       content = this.transform(fs.readFileSync(filename), filename)
     }
     if (content) {
-      fs.outputFileSync(to, content)
+      try {
+        fs.outputFileSync(to, content)
+      } catch (e) {
+        // noop
+      }
       this.onChange && this.onChange()
       return
     }
-    fs.copySync(this.from(from), to, { overwrite: true })
+    try {
+      fs.copySync(this.from(from), to, { overwrite: true })
+    } catch (e) {
+      // noop
+    }
     this.onChange && this.onChange()
   }
   remove(from: string) {
     const to = this.to(from)
     this.info('remove', from + '=>' + to)
-    fs.removeSync(to)
+    try {
+      fs.removeSync(to)
+    } catch (e) {
+      // noop
+    }
     this.onChange && this.onChange()
   }
   info(

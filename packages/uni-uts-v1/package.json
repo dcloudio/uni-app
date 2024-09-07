@@ -19,7 +19,7 @@
   "license": "Apache-2.0",
   "dependencies": {
     "@babel/code-frame": "^7.23.5",
-    "@dcloudio/uni-app-x": "^0.7.25",
+    "@dcloudio/uni-app-x": "^0.7.30",
     "@dcloudio/uts": "3.0.0-alpha-4020520240719001",
     "@rollup/pluginutils": "^5.0.5",
     "@vue/shared": "3.4.21",

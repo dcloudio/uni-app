@@ -25,6 +25,7 @@ module.exports = {
     '@dcloudio/uts-win32-ia32-msvc': '<rootDir>/packages/uts-win32-ia32-msvc',
     '@dcloudio/uts-win32-x64-msvc': '<rootDir>/packages/uts-win32-x64-msvc',
     '@dcloudio/uts-linux-x64-gnu': '<rootDir>/packages/uts-linux-x64-gnu',
+    '@dcloudio/uni-platform': "<rootDir>/packages/uni-app-plus/src/platform/index.ts",
     '^@dcloudio/(.*?)$': '<rootDir>/packages/$1/src',
   },
   rootDir: __dirname,
@@ -34,8 +35,7 @@ module.exports = {
   ],
   testPathIgnorePatterns: ['/node_modules/'],
   transform: {
-    'service\\.runtime\\.esm\\.js$': ['ts-jest', {}],
-    '^.+\\.tsx?$': ['ts-jest', {
+    '^.+\\.[jt]sx?$': ['ts-jest', {
       tsconfig: 'tsconfig.test.json'
     }]
   },

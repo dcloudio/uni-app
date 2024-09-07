@@ -1,4 +1,6 @@
 import { addLeadingSlash } from '@dcloudio/uni-shared'
+import { getPage$BasePage } from '../../framework/page/getCurrentPages'
+import type { ComponentPublicInstance } from 'vue'
 
 /**
  * 是否处于直达页面
@@ -8,7 +10,8 @@ import { addLeadingSlash } from '@dcloudio/uni-shared'
 export function isDirectPage(page: Page.PageInstance) {
   return (
     __uniConfig.realEntryPagePath &&
-    page.$page.route === __uniConfig.entryPagePath
+    getPage$BasePage(page as ComponentPublicInstance).route ===
+      __uniConfig.entryPagePath
   )
 }
 /**

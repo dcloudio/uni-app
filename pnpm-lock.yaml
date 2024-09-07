@@ -30,8 +30,11 @@ importers:
         specifier: 3.0.0-alpha-4020520240719001
         version: link:packages/uni-app
       '@dcloudio/uni-app-x':
-        specifier: ^0.7.25
-        version: 0.7.25
+        specifier: ^0.7.30
+        version: 0.7.30
+      '@dcloudio/uni-nvue-styler':
+        specifier: 3.0.0-alpha-4020620240828001
+        version: link:packages/uni-nvue-styler
       '@jest/types':
         specifier: ^29.0.3
         version: 29.6.3
@@ -588,7 +591,7 @@ importers:
         version: link:../uni-i18n
       '@dcloudio/uni-nvue-styler':
         specifier: 3.0.0-alpha-4020520240719001
-        version: link:../uni-nvue-styler
+        version: 3.0.0-alpha-4020520240719001
       '@dcloudio/uni-shared':
         specifier: 3.0.0-alpha-4020520240719001
         version: link:../uni-shared
@@ -661,7 +664,7 @@ importers:
         version: link:../uni-i18n
       '@dcloudio/uni-nvue-styler':
         specifier: 3.0.0-alpha-4020520240719001
-        version: link:../uni-nvue-styler
+        version: 3.0.0-alpha-4020520240719001
       '@dcloudio/uni-shared':
         specifier: 3.0.0-alpha-4020520240719001
         version: link:../uni-shared
@@ -1651,8 +1654,8 @@ importers:
         specifier: ^7.23.5
         version: 7.24.2
       '@dcloudio/uni-app-x':
-        specifier: ^0.7.25
-        version: 0.7.25
+        specifier: ^0.7.30
+        version: 0.7.30
       '@dcloudio/uts':
         specifier: 3.0.0-alpha-4020520240719001
         version: link:../uts
@@ -2530,8 +2533,11 @@ packages:
   '@dcloudio/types@3.4.11':
     resolution: {integrity: sha512-vRmcqV/OQF8r4QQgIz+iHuuBirw7Y+0MeN/QgeEZtcKGUqyMSGDJW4gF8jLJaEtGSZ3dBZslupRXQKZhUBGTpw==}
 
-  '@dcloudio/uni-app-x@0.7.25':
-    resolution: {integrity: sha512-TazTuDO/o0DeN4myD8HB8epDjqPR91bsuq8HkZSKsP//obI8utP8HoFoWs7cJbYUuwKfRsi3zh95aeHZXO4tSA==}
+  '@dcloudio/uni-app-x@0.7.30':
+    resolution: {integrity: sha512-QhUpdeT9UR9T0ZWb6BzCDlk5bKfWh8LfjmXObyj7+KZJkukgAOVXwm4qkMkAdUmXjLeuhkVjWLbxbuV2qLycPw==}
+
+  '@dcloudio/uni-nvue-styler@3.0.0-alpha-4020520240719001':
+    resolution: {integrity: sha512-uqUEQH5TKHgXVjwAh6r0GdTxL3saUKDhFMrJoYBhwSsfymI8uXplPSgxBQw3YQXQ6pFDOwJCl0mT3eH89xBUFg==}
 
   '@dcloudio/uni-ui@1.5.5':
     resolution: {integrity: sha512-DTr8o4lcRgu4JJclA2eT7UFVKtglK63OUtcDGysrSeZhgAJAC2gBYm/pYbv0BFxKqxfbdoAFGAFCigCVY9+NAQ==}
@@ -4108,7 +4114,7 @@ packages:
     engines: {node: '>= 0.8.0'}
 
   concat-map@0.0.1:
-    resolution: {integrity: sha1-2Klr13/Wjfd5OnMDajug1UBdR3s=}
+    resolution: {integrity: sha512-/Srv4dswyQNBfohGpz9o6Yb3Gz3SrUDqBH5rTuhGR7ahtlbYKnVxw2bCFMRljaA7EXHaXZ8wsHdodFvbkhKmqg==}
 
   concat-stream@1.6.2:
     resolution: {integrity: sha512-27HBghJxjiZtIk3Ycvn/4kbJk/1uZuJFfuPEns6LaEvpvG1f0hTea8lilrouyo9mVc2GWdcEZ8OLoGmSADlrCw==}
@@ -5733,9 +5739,6 @@ packages:
     resolution: {integrity: sha512-FP+p8RB8OWpF3YZBCrP5gtADmtXApB5AMLn+vdyA+PyxCjrCs00mjyUozssO33cwDeT3wNGdLxJ5M//YqtHAJw==}
     hasBin: true
 
-  mlly@1.6.1:
-    resolution: {integrity: sha512-vLgaHvaeunuOXHSmEbZ9izxPx3USsk8KCQ8iC+aTlp5sKRSoZvwhHh5L9VbKSaVC6sJDqbyohIS76E2VmHIPAA==}
-
   mlly@1.7.1:
     resolution: {integrity: sha512-rrVRZRELyQzrIUAVMHxP97kv+G786pHmOKzuFII8zDYahFBS7qnHh2AlYSl1GAHhaMPCz6/oHjVMcfFYgFYHgA==}
 
@@ -5983,9 +5986,6 @@ packages:
   pkg-dir@4.2.0:
     resolution: {integrity: sha512-HRDzbaKjC+AOWVXxAU/x54COGeIv9eb+6CkDSQoNTt4XyWoIJvuPsXizxu/Fr23EiekbtZwmh1IcIG/l/a10GQ==}
     engines: {node: '>=8'}
-
-  pkg-types@1.0.3:
-    resolution: {integrity: sha512-nN7pYi0AQqJnoLPC9eHFQ8AcyaixBUOwvqc5TDnIKCMEE6I0y8P7OKA7fPexsXGCGxQDl/cmrLAp26LhcwxZ4A==}
 
   pkg-types@1.1.3:
     resolution: {integrity: sha512-+JrgthZG6m3ckicaOB74TwQ+tBWsFl3qVQg7mN8ulwSOElJ7gBhKzj2VkCPnZ4NlF6kEquYU+RIYNVAvzd54UA==}
@@ -6800,12 +6800,8 @@ packages:
       '@vueuse/core':
         optional: true
 
-  unplugin@1.10.1:
-    resolution: {integrity: sha512-d6Mhq8RJeGA8UfKCu54Um4lFA0eSaRa3XxdAJg8tIdxbu1ubW0hBCZUL7yI2uGyYCRndvbK8FLHzqy2XKfeMsg==}
-    engines: {node: '>=14.0.0'}
-
-  unplugin@1.11.0:
-    resolution: {integrity: sha512-3r7VWZ/webh0SGgJScpWl2/MRCZK5d3ZYFcNaeci/GQ7Teop7zf0Nl2pUuz7G21BwPd9pcUPOC5KmJ2L3WgC5g==}
+  unplugin@1.12.0:
+    resolution: {integrity: sha512-KeczzHl2sATPQUx1gzo+EnUkmN4VmGBYRRVOZSGvGITE9rGHRDGqft6ONceP3vgXcyJ2XjX5axG5jMWUwNCYLw==}
     engines: {node: '>=14.0.0'}
 
   unquote@1.1.1:
@@ -6943,8 +6939,8 @@ packages:
     resolution: {integrity: sha512-/DyMEOrDgLKKIG0fmvtz+4dUX/3Ghozwgm6iPp8KRhvn+eQf9+Q7GWxVNMk3+uCPWfdXYC4ExGBckIXdFEfH1w==}
     engines: {node: '>=10.13.0'}
 
-  webpack-virtual-modules@0.6.1:
-    resolution: {integrity: sha512-poXpCylU7ExuvZK8z+On3kX+S8o/2dQ/SVYueKA0D4WEMXROXgY8Ez50/bQEUmvoSMMrWcrJqCHuhAbsiwg7Dg==}
+  webpack-virtual-modules@0.6.2:
+    resolution: {integrity: sha512-66/V2i5hQanC51vBQKPH4aI8NMAcBW59FVBs+rC7eGHupMyfn34q7rZIE+ETlJ+XTevqfUhVVBgSUNSW2flEUQ==}
 
   whatwg-encoding@1.0.5:
     resolution: {integrity: sha512-b5lim54JOPN9HtzvK9HFXvBma/rnfFeqsic0hSpjtDbVxR3dJKLc+KB4V6GgiGOvl7CY/KNh8rxSo9DKQrnUEw==}
@@ -7913,7 +7909,12 @@ snapshots:
 
   '@dcloudio/types@3.4.11': {}
 
-  '@dcloudio/uni-app-x@0.7.25': {}
+  '@dcloudio/uni-app-x@0.7.30': {}
+
+  '@dcloudio/uni-nvue-styler@3.0.0-alpha-4020520240719001':
+    dependencies:
+      parse-css-font: 4.0.0
+      postcss: 8.4.38
 
   '@dcloudio/uni-ui@1.5.5': {}
 
@@ -9179,7 +9180,7 @@ snapshots:
       browserslist: 4.23.0
       browserslist-to-esbuild: 2.1.1(browserslist@4.23.0)
       core-js: 3.36.1
-      magic-string: 0.30.10
+      magic-string: 0.30.9
       regenerator-runtime: 0.14.1
       systemjs: 6.14.3
       terser: 5.30.3
@@ -11712,7 +11713,7 @@ snapshots:
   jsdom@16.7.0:
     dependencies:
       abab: 2.0.6
-      acorn: 8.11.3
+      acorn: 8.12.1
       acorn-globals: 6.0.0
       cssom: 0.4.4
       cssstyle: 2.3.0
@@ -11918,8 +11919,8 @@ snapshots:
 
   local-pkg@0.5.0:
     dependencies:
-      mlly: 1.6.1
-      pkg-types: 1.0.3
+      mlly: 1.7.1
+      pkg-types: 1.1.3
 
   localstorage-polyfill@1.0.1: {}
 
@@ -12085,13 +12086,6 @@ snapshots:
   mkdirp@0.5.6:
     dependencies:
       minimist: 1.2.8
-
-  mlly@1.6.1:
-    dependencies:
-      acorn: 8.11.3
-      pathe: 1.1.2
-      pkg-types: 1.0.3
-      ufo: 1.5.3
 
   mlly@1.7.1:
     dependencies:
@@ -12307,12 +12301,6 @@ snapshots:
   pkg-dir@4.2.0:
     dependencies:
       find-up: 4.1.0
-
-  pkg-types@1.0.3:
-    dependencies:
-      jsonc-parser: 3.2.1
-      mlly: 1.6.1
-      pathe: 1.1.2
 
   pkg-types@1.1.3:
     dependencies:
@@ -13159,7 +13147,7 @@ snapshots:
       pkg-types: 1.1.3
       scule: 1.3.0
       strip-literal: 2.1.0
-      unplugin: 1.11.0
+      unplugin: 1.12.0
     transitivePeerDependencies:
       - rollup
 
@@ -13177,26 +13165,19 @@ snapshots:
       '@rollup/pluginutils': 5.1.0(rollup@4.14.2)
       fast-glob: 3.3.2
       local-pkg: 0.5.0
-      magic-string: 0.30.9
+      magic-string: 0.30.10
       minimatch: 9.0.4
       unimport: 3.9.0(rollup@4.14.2)
-      unplugin: 1.10.1
+      unplugin: 1.12.0
     transitivePeerDependencies:
       - rollup
 
-  unplugin@1.10.1:
-    dependencies:
-      acorn: 8.11.3
-      chokidar: 3.6.0
-      webpack-sources: 3.2.3
-      webpack-virtual-modules: 0.6.1
-
-  unplugin@1.11.0:
+  unplugin@1.12.0:
     dependencies:
       acorn: 8.12.1
       chokidar: 3.6.0
       webpack-sources: 3.2.3
-      webpack-virtual-modules: 0.6.1
+      webpack-virtual-modules: 0.6.2
 
   unquote@1.1.1: {}
 
@@ -13324,7 +13305,7 @@ snapshots:
 
   webpack-sources@3.2.3: {}
 
-  webpack-virtual-modules@0.6.1: {}
+  webpack-virtual-modules@0.6.2: {}
 
   whatwg-encoding@1.0.5:
     dependencies:

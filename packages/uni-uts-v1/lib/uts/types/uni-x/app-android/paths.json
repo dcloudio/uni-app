@@ -1,0 +1,5327 @@
+{
+  "android.Manifest.*": [
+    "android/Manifest/*.d.ts"
+  ],
+  "android.R.*": [
+    "android/R/*.d.ts"
+  ],
+  "android.accessibilityservice.*": [
+    "android/accessibilityservice/*.d.ts"
+  ],
+  "android.accounts.*": [
+    "android/accounts/*.d.ts"
+  ],
+  "android.adservices.*": [
+    "android/adservices/*.d.ts"
+  ],
+  "android.animation.*": [
+    "android/animation/*.d.ts"
+  ],
+  "android.annotation.*": [
+    "android/annotation/*.d.ts"
+  ],
+  "android.app.*": [
+    "android/app/*.d.ts"
+  ],
+  "android.appwidget.*": [
+    "android/appwidget/*.d.ts"
+  ],
+  "android.bluetooth.*": [
+    "android/bluetooth/*.d.ts"
+  ],
+  "android.companion.*": [
+    "android/companion/*.d.ts"
+  ],
+  "android.content.*": [
+    "android/content/*.d.ts"
+  ],
+  "android.credentials.*": [
+    "android/credentials/*.d.ts"
+  ],
+  "android.database.*": [
+    "android/database/*.d.ts"
+  ],
+  "android.devicelock.*": [
+    "android/devicelock/*.d.ts"
+  ],
+  "android.drm.*": [
+    "android/drm/*.d.ts"
+  ],
+  "android.gesture.*": [
+    "android/gesture/*.d.ts"
+  ],
+  "android.graphics.*": [
+    "android/graphics/*.d.ts"
+  ],
+  "android.hardware.*": [
+    "android/hardware/*.d.ts"
+  ],
+  "android.health.*": [
+    "android/health/*.d.ts"
+  ],
+  "android.icu.*": [
+    "android/icu/*.d.ts"
+  ],
+  "android.inputmethodservice.*": [
+    "android/inputmethodservice/*.d.ts"
+  ],
+  "android.location.*": [
+    "android/location/*.d.ts"
+  ],
+  "android.media.*": [
+    "android/media/*.d.ts"
+  ],
+  "android.mtp.*": [
+    "android/mtp/*.d.ts"
+  ],
+  "android.net.*": [
+    "android/net/*.d.ts"
+  ],
+  "android.nfc.*": [
+    "android/nfc/*.d.ts"
+  ],
+  "android.opengl.*": [
+    "android/opengl/*.d.ts"
+  ],
+  "android.os.*": [
+    "android/os/*.d.ts"
+  ],
+  "android.preference.*": [
+    "android/preference/*.d.ts"
+  ],
+  "android.print.*": [
+    "android/print/*.d.ts"
+  ],
+  "android.printservice.*": [
+    "android/printservice/*.d.ts"
+  ],
+  "android.provider.*": [
+    "android/provider/*.d.ts"
+  ],
+  "android.renderscript.*": [
+    "android/renderscript/*.d.ts"
+  ],
+  "android.sax.*": [
+    "android/sax/*.d.ts"
+  ],
+  "android.se.*": [
+    "android/se/*.d.ts"
+  ],
+  "android.security.*": [
+    "android/security/*.d.ts"
+  ],
+  "android.service.*": [
+    "android/service/*.d.ts"
+  ],
+  "android.speech.*": [
+    "android/speech/*.d.ts"
+  ],
+  "android.support.*": [
+    "android/support/*.d.ts"
+  ],
+  "android.system.*": [
+    "android/system/*.d.ts"
+  ],
+  "android.telecom.*": [
+    "android/telecom/*.d.ts"
+  ],
+  "android.telephony.*": [
+    "android/telephony/*.d.ts"
+  ],
+  "android.text.*": [
+    "android/text/*.d.ts"
+  ],
+  "android.transition.*": [
+    "android/transition/*.d.ts"
+  ],
+  "android.util.*": [
+    "android/util/*.d.ts"
+  ],
+  "android.view.*": [
+    "android/view/*.d.ts"
+  ],
+  "android.webkit.*": [
+    "android/webkit/*.d.ts"
+  ],
+  "android.widget.*": [
+    "android/widget/*.d.ts"
+  ],
+  "android.window.*": [
+    "android/window/*.d.ts"
+  ],
+  "androidx.activity.*": [
+    "androidx/activity/*.d.ts"
+  ],
+  "androidx.annotation.*": [
+    "androidx/annotation/*.d.ts"
+  ],
+  "androidx.appcompat.*": [
+    "androidx/appcompat/*.d.ts"
+  ],
+  "androidx.arch.*": [
+    "androidx/arch/*.d.ts"
+  ],
+  "androidx.collection.*": [
+    "androidx/collection/*.d.ts"
+  ],
+  "androidx.core.*": [
+    "androidx/core/*.d.ts"
+  ],
+  "androidx.fragment.*": [
+    "androidx/fragment/*.d.ts"
+  ],
+  "androidx.recyclerview.*": [
+    "androidx/recyclerview/*.d.ts"
+  ],
+  "androidx.versionedparcelable.*": [
+    "androidx/versionedparcelable/*.d.ts"
+  ],
+  "androidx.viewpager.*": [
+    "androidx/viewpager/*.d.ts"
+  ],
+  "androidx.viewpager2.*": [
+    "androidx/viewpager2/*.d.ts"
+  ],
+  "java.awt.*": [
+    "java/awt/*.d.ts"
+  ],
+  "java.beans.*": [
+    "java/beans/*.d.ts"
+  ],
+  "java.io.*": [
+    "java/io/*.d.ts"
+  ],
+  "java.lang.*": [
+    "java/lang/*.d.ts"
+  ],
+  "java.math.*": [
+    "java/math/*.d.ts"
+  ],
+  "java.net.*": [
+    "java/net/*.d.ts"
+  ],
+  "java.nio.*": [
+    "java/nio/*.d.ts"
+  ],
+  "java.security.*": [
+    "java/security/*.d.ts"
+  ],
+  "java.sql.*": [
+    "java/sql/*.d.ts"
+  ],
+  "java.text.*": [
+    "java/text/*.d.ts"
+  ],
+  "java.time.*": [
+    "java/time/*.d.ts"
+  ],
+  "java.util.*": [
+    "java/util/*.d.ts"
+  ],
+  "javax.annotation.*": [
+    "javax/annotation/*.d.ts"
+  ],
+  "javax.crypto.*": [
+    "javax/crypto/*.d.ts"
+  ],
+  "javax.microedition.*": [
+    "javax/microedition/*.d.ts"
+  ],
+  "javax.net.*": [
+    "javax/net/*.d.ts"
+  ],
+  "javax.security.*": [
+    "javax/security/*.d.ts"
+  ],
+  "javax.sql.*": [
+    "javax/sql/*.d.ts"
+  ],
+  "javax.xml.*": [
+    "javax/xml/*.d.ts"
+  ],
+  "kotlin.Array.*": [
+    "kotlin/Array/*.d.ts"
+  ],
+  "kotlin.Byte.*": [
+    "kotlin/Byte/*.d.ts"
+  ],
+  "kotlin.Char.*": [
+    "kotlin/Char/*.d.ts"
+  ],
+  "kotlin.DeepRecursiveScopeImpl.*": [
+    "kotlin/DeepRecursiveScopeImpl/*.d.ts"
+  ],
+  "kotlin.Double.*": [
+    "kotlin/Double/*.d.ts"
+  ],
+  "kotlin.Enum.*": [
+    "kotlin/Enum/*.d.ts"
+  ],
+  "kotlin.Float.*": [
+    "kotlin/Float/*.d.ts"
+  ],
+  "kotlin.Int.*": [
+    "kotlin/Int/*.d.ts"
+  ],
+  "kotlin.KotlinVersion.*": [
+    "kotlin/KotlinVersion/*.d.ts"
+  ],
+  "kotlin.LazyKt__LazyJVMKt.*": [
+    "kotlin/LazyKt__LazyJVMKt/*.d.ts"
+  ],
+  "kotlin.Long.*": [
+    "kotlin/Long/*.d.ts"
+  ],
+  "kotlin.Metadata.*": [
+    "kotlin/Metadata/*.d.ts"
+  ],
+  "kotlin.RequiresOptIn.*": [
+    "kotlin/RequiresOptIn/*.d.ts"
+  ],
+  "kotlin.Result.*": [
+    "kotlin/Result/*.d.ts"
+  ],
+  "kotlin.SafePublicationLazyImpl.*": [
+    "kotlin/SafePublicationLazyImpl/*.d.ts"
+  ],
+  "kotlin.Short.*": [
+    "kotlin/Short/*.d.ts"
+  ],
+  "kotlin.String.*": [
+    "kotlin/String/*.d.ts"
+  ],
+  "kotlin.UByte.*": [
+    "kotlin/UByte/*.d.ts"
+  ],
+  "kotlin.UByteArray.*": [
+    "kotlin/UByteArray/*.d.ts"
+  ],
+  "kotlin.UInt.*": [
+    "kotlin/UInt/*.d.ts"
+  ],
+  "kotlin.UIntArray.*": [
+    "kotlin/UIntArray/*.d.ts"
+  ],
+  "kotlin.ULong.*": [
+    "kotlin/ULong/*.d.ts"
+  ],
+  "kotlin.ULongArray.*": [
+    "kotlin/ULongArray/*.d.ts"
+  ],
+  "kotlin.UShort.*": [
+    "kotlin/UShort/*.d.ts"
+  ],
+  "kotlin.UShortArray.*": [
+    "kotlin/UShortArray/*.d.ts"
+  ],
+  "kotlin.annotation.*": [
+    "kotlin/annotation/*.d.ts"
+  ],
+  "kotlin.collections.*": [
+    "kotlin/collections/*.d.ts"
+  ],
+  "kotlin.comparisons.*": [
+    "kotlin/comparisons/*.d.ts"
+  ],
+  "kotlin.concurrent.*": [
+    "kotlin/concurrent/*.d.ts"
+  ],
+  "kotlin.contracts.*": [
+    "kotlin/contracts/*.d.ts"
+  ],
+  "kotlin.coroutines.*": [
+    "kotlin/coroutines/*.d.ts"
+  ],
+  "kotlin.enums.*": [
+    "kotlin/enums/*.d.ts"
+  ],
+  "kotlin.experimental.*": [
+    "kotlin/experimental/*.d.ts"
+  ],
+  "kotlin.internal.*": [
+    "kotlin/internal/*.d.ts"
+  ],
+  "kotlin.io.*": [
+    "kotlin/io/*.d.ts"
+  ],
+  "kotlin.jdk7.*": [
+    "kotlin/jdk7/*.d.ts"
+  ],
+  "kotlin.js.*": [
+    "kotlin/js/*.d.ts"
+  ],
+  "kotlin.jvm.*": [
+    "kotlin/jvm/*.d.ts"
+  ],
+  "kotlin.math.*": [
+    "kotlin/math/*.d.ts"
+  ],
+  "kotlin.properties.*": [
+    "kotlin/properties/*.d.ts"
+  ],
+  "kotlin.random.*": [
+    "kotlin/random/*.d.ts"
+  ],
+  "kotlin.ranges.*": [
+    "kotlin/ranges/*.d.ts"
+  ],
+  "kotlin.reflect.*": [
+    "kotlin/reflect/*.d.ts"
+  ],
+  "kotlin.sequences.*": [
+    "kotlin/sequences/*.d.ts"
+  ],
+  "kotlin.streams.*": [
+    "kotlin/streams/*.d.ts"
+  ],
+  "kotlin.system.*": [
+    "kotlin/system/*.d.ts"
+  ],
+  "kotlin.text.*": [
+    "kotlin/text/*.d.ts"
+  ],
+  "kotlin.time.*": [
+    "kotlin/time/*.d.ts"
+  ],
+  "kotlinx.coroutines.*": [
+    "kotlinx/coroutines/*.d.ts"
+  ],
+  "android.accessibilityservice.AccessibilityButtonController.*": [
+    "android/accessibilityservice/AccessibilityButtonController/*.d.ts"
+  ],
+  "android.accessibilityservice.AccessibilityService.*": [
+    "android/accessibilityservice/AccessibilityService/*.d.ts"
+  ],
+  "android.accessibilityservice.FingerprintGestureController.*": [
+    "android/accessibilityservice/FingerprintGestureController/*.d.ts"
+  ],
+  "android.accessibilityservice.GestureDescription.*": [
+    "android/accessibilityservice/GestureDescription/*.d.ts"
+  ],
+  "android.accessibilityservice.InputMethod.*": [
+    "android/accessibilityservice/InputMethod/*.d.ts"
+  ],
+  "android.accessibilityservice.MagnificationConfig.*": [
+    "android/accessibilityservice/MagnificationConfig/*.d.ts"
+  ],
+  "android.accessibilityservice.TouchInteractionController.*": [
+    "android/accessibilityservice/TouchInteractionController/*.d.ts"
+  ],
+  "android.adservices.adid.*": [
+    "android/adservices/adid/*.d.ts"
+  ],
+  "android.adservices.adselection.*": [
+    "android/adservices/adselection/*.d.ts"
+  ],
+  "android.adservices.appsetid.*": [
+    "android/adservices/appsetid/*.d.ts"
+  ],
+  "android.adservices.common.*": [
+    "android/adservices/common/*.d.ts"
+  ],
+  "android.adservices.customaudience.*": [
+    "android/adservices/customaudience/*.d.ts"
+  ],
+  "android.adservices.exceptions.*": [
+    "android/adservices/exceptions/*.d.ts"
+  ],
+  "android.adservices.measurement.*": [
+    "android/adservices/measurement/*.d.ts"
+  ],
+  "android.adservices.topics.*": [
+    "android/adservices/topics/*.d.ts"
+  ],
+  "android.animation.Animator.*": [
+    "android/animation/Animator/*.d.ts"
+  ],
+  "android.animation.AnimatorSet.*": [
+    "android/animation/AnimatorSet/*.d.ts"
+  ],
+  "android.animation.LayoutTransition.*": [
+    "android/animation/LayoutTransition/*.d.ts"
+  ],
+  "android.animation.TimeAnimator.*": [
+    "android/animation/TimeAnimator/*.d.ts"
+  ],
+  "android.animation.ValueAnimator.*": [
+    "android/animation/ValueAnimator/*.d.ts"
+  ],
+  "android.app.ActionBar.*": [
+    "android/app/ActionBar/*.d.ts"
+  ],
+  "android.app.Activity.*": [
+    "android/app/Activity/*.d.ts"
+  ],
+  "android.app.ActivityManager.*": [
+    "android/app/ActivityManager/*.d.ts"
+  ],
+  "android.app.AlarmManager.*": [
+    "android/app/AlarmManager/*.d.ts"
+  ],
+  "android.app.AlertDialog.*": [
+    "android/app/AlertDialog/*.d.ts"
+  ],
+  "android.app.AppOpsManager.*": [
+    "android/app/AppOpsManager/*.d.ts"
+  ],
+  "android.app.Application.*": [
+    "android/app/Application/*.d.ts"
+  ],
+  "android.app.ApplicationErrorReport.*": [
+    "android/app/ApplicationErrorReport/*.d.ts"
+  ],
+  "android.app.DatePickerDialog.*": [
+    "android/app/DatePickerDialog/*.d.ts"
+  ],
+  "android.app.DirectAction.*": [
+    "android/app/DirectAction/*.d.ts"
+  ],
+  "android.app.DownloadManager.*": [
+    "android/app/DownloadManager/*.d.ts"
+  ],
+  "android.app.Fragment.*": [
+    "android/app/Fragment/*.d.ts"
+  ],
+  "android.app.FragmentBreadCrumbs.*": [
+    "android/app/FragmentBreadCrumbs/*.d.ts"
+  ],
+  "android.app.FragmentManager.*": [
+    "android/app/FragmentManager/*.d.ts"
+  ],
+  "android.app.Instrumentation.*": [
+    "android/app/Instrumentation/*.d.ts"
+  ],
+  "android.app.KeyguardManager.*": [
+    "android/app/KeyguardManager/*.d.ts"
+  ],
+  "android.app.LauncherActivity.*": [
+    "android/app/LauncherActivity/*.d.ts"
+  ],
+  "android.app.LoaderManager.*": [
+    "android/app/LoaderManager/*.d.ts"
+  ],
+  "android.app.Notification.*": [
+    "android/app/Notification/*.d.ts"
+  ],
+  "android.app.NotificationManager.*": [
+    "android/app/NotificationManager/*.d.ts"
+  ],
+  "android.app.PendingIntent.*": [
+    "android/app/PendingIntent/*.d.ts"
+  ],
+  "android.app.Person.*": [
+    "android/app/Person/*.d.ts"
+  ],
+  "android.app.PictureInPictureParams.*": [
+    "android/app/PictureInPictureParams/*.d.ts"
+  ],
+  "android.app.RemoteInput.*": [
+    "android/app/RemoteInput/*.d.ts"
+  ],
+  "android.app.SearchManager.*": [
+    "android/app/SearchManager/*.d.ts"
+  ],
+  "android.app.SharedElementCallback.*": [
+    "android/app/SharedElementCallback/*.d.ts"
+  ],
+  "android.app.TimePickerDialog.*": [
+    "android/app/TimePickerDialog/*.d.ts"
+  ],
+  "android.app.UiAutomation.*": [
+    "android/app/UiAutomation/*.d.ts"
+  ],
+  "android.app.UiModeManager.*": [
+    "android/app/UiModeManager/*.d.ts"
+  ],
+  "android.app.VoiceInteractor.*": [
+    "android/app/VoiceInteractor/*.d.ts"
+  ],
+  "android.app.WallpaperManager.*": [
+    "android/app/WallpaperManager/*.d.ts"
+  ],
+  "android.app.admin.*": [
+    "android/app/admin/*.d.ts"
+  ],
+  "android.app.appsearch.*": [
+    "android/app/appsearch/*.d.ts"
+  ],
+  "android.app.assist.*": [
+    "android/app/assist/*.d.ts"
+  ],
+  "android.app.backup.*": [
+    "android/app/backup/*.d.ts"
+  ],
+  "android.app.blob.*": [
+    "android/app/blob/*.d.ts"
+  ],
+  "android.app.job.*": [
+    "android/app/job/*.d.ts"
+  ],
+  "android.app.people.*": [
+    "android/app/people/*.d.ts"
+  ],
+  "android.app.role.*": [
+    "android/app/role/*.d.ts"
+  ],
+  "android.app.sdksandbox.*": [
+    "android/app/sdksandbox/*.d.ts"
+  ],
+  "android.app.slice.*": [
+    "android/app/slice/*.d.ts"
+  ],
+  "android.app.usage.*": [
+    "android/app/usage/*.d.ts"
+  ],
+  "android.bluetooth.BluetoothAdapter.*": [
+    "android/bluetooth/BluetoothAdapter/*.d.ts"
+  ],
+  "android.bluetooth.BluetoothClass.*": [
+    "android/bluetooth/BluetoothClass/*.d.ts"
+  ],
+  "android.bluetooth.BluetoothCodecConfig.*": [
+    "android/bluetooth/BluetoothCodecConfig/*.d.ts"
+  ],
+  "android.bluetooth.BluetoothCodecStatus.*": [
+    "android/bluetooth/BluetoothCodecStatus/*.d.ts"
+  ],
+  "android.bluetooth.BluetoothHidDevice.*": [
+    "android/bluetooth/BluetoothHidDevice/*.d.ts"
+  ],
+  "android.bluetooth.BluetoothLeAudioCodecConfig.*": [
+    "android/bluetooth/BluetoothLeAudioCodecConfig/*.d.ts"
+  ],
+  "android.bluetooth.BluetoothProfile.*": [
+    "android/bluetooth/BluetoothProfile/*.d.ts"
+  ],
+  "android.bluetooth.le.*": [
+    "android/bluetooth/le/*.d.ts"
+  ],
+  "android.companion.AssociationRequest.*": [
+    "android/companion/AssociationRequest/*.d.ts"
+  ],
+  "android.companion.BluetoothDeviceFilter.*": [
+    "android/companion/BluetoothDeviceFilter/*.d.ts"
+  ],
+  "android.companion.BluetoothLeDeviceFilter.*": [
+    "android/companion/BluetoothLeDeviceFilter/*.d.ts"
+  ],
+  "android.companion.CompanionDeviceManager.*": [
+    "android/companion/CompanionDeviceManager/*.d.ts"
+  ],
+  "android.companion.WifiDeviceFilter.*": [
+    "android/companion/WifiDeviceFilter/*.d.ts"
+  ],
+  "android.companion.virtual.*": [
+    "android/companion/virtual/*.d.ts"
+  ],
+  "android.content.AsyncQueryHandler.*": [
+    "android/content/AsyncQueryHandler/*.d.ts"
+  ],
+  "android.content.AttributionSource.*": [
+    "android/content/AttributionSource/*.d.ts"
+  ],
+  "android.content.BroadcastReceiver.*": [
+    "android/content/BroadcastReceiver/*.d.ts"
+  ],
+  "android.content.ClipData.*": [
+    "android/content/ClipData/*.d.ts"
+  ],
+  "android.content.ClipboardManager.*": [
+    "android/content/ClipboardManager/*.d.ts"
+  ],
+  "android.content.ContentProvider.*": [
+    "android/content/ContentProvider/*.d.ts"
+  ],
+  "android.content.ContentProviderOperation.*": [
+    "android/content/ContentProviderOperation/*.d.ts"
+  ],
+  "android.content.ContentResolver.*": [
+    "android/content/ContentResolver/*.d.ts"
+  ],
+  "android.content.Context.*": [
+    "android/content/Context/*.d.ts"
+  ],
+  "android.content.ContextParams.*": [
+    "android/content/ContextParams/*.d.ts"
+  ],
+  "android.content.DialogInterface.*": [
+    "android/content/DialogInterface/*.d.ts"
+  ],
+  "android.content.Entity.*": [
+    "android/content/Entity/*.d.ts"
+  ],
+  "android.content.Intent.*": [
+    "android/content/Intent/*.d.ts"
+  ],
+  "android.content.IntentFilter.*": [
+    "android/content/IntentFilter/*.d.ts"
+  ],
+  "android.content.IntentSender.*": [
+    "android/content/IntentSender/*.d.ts"
+  ],
+  "android.content.Loader.*": [
+    "android/content/Loader/*.d.ts"
+  ],
+  "android.content.SharedPreferences.*": [
+    "android/content/SharedPreferences/*.d.ts"
+  ],
+  "android.content.SyncRequest.*": [
+    "android/content/SyncRequest/*.d.ts"
+  ],
+  "android.content.om.*": [
+    "android/content/om/*.d.ts"
+  ],
+  "android.content.pm.*": [
+    "android/content/pm/*.d.ts"
+  ],
+  "android.content.res.*": [
+    "android/content/res/*.d.ts"
+  ],
+  "android.credentials.CreateCredentialRequest.*": [
+    "android/credentials/CreateCredentialRequest/*.d.ts"
+  ],
+  "android.credentials.CredentialOption.*": [
+    "android/credentials/CredentialOption/*.d.ts"
+  ],
+  "android.credentials.GetCredentialRequest.*": [
+    "android/credentials/GetCredentialRequest/*.d.ts"
+  ],
+  "android.credentials.PrepareGetCredentialResponse.*": [
+    "android/credentials/PrepareGetCredentialResponse/*.d.ts"
+  ],
+  "android.database.AbstractCursor.*": [
+    "android/database/AbstractCursor/*.d.ts"
+  ],
+  "android.database.CursorJoiner.*": [
+    "android/database/CursorJoiner/*.d.ts"
+  ],
+  "android.database.DatabaseUtils.*": [
+    "android/database/DatabaseUtils/*.d.ts"
+  ],
+  "android.database.MatrixCursor.*": [
+    "android/database/MatrixCursor/*.d.ts"
+  ],
+  "android.database.sqlite.*": [
+    "android/database/sqlite/*.d.ts"
+  ],
+  "android.drm.DrmManagerClient.*": [
+    "android/drm/DrmManagerClient/*.d.ts"
+  ],
+  "android.drm.DrmStore.*": [
+    "android/drm/DrmStore/*.d.ts"
+  ],
+  "android.drm.DrmUtils.*": [
+    "android/drm/DrmUtils/*.d.ts"
+  ],
+  "android.gesture.GestureOverlayView.*": [
+    "android/gesture/GestureOverlayView/*.d.ts"
+  ],
+  "android.graphics.Bitmap.*": [
+    "android/graphics/Bitmap/*.d.ts"
+  ],
+  "android.graphics.BitmapFactory.*": [
+    "android/graphics/BitmapFactory/*.d.ts"
+  ],
+  "android.graphics.BlurMaskFilter.*": [
+    "android/graphics/BlurMaskFilter/*.d.ts"
+  ],
+  "android.graphics.Canvas.*": [
+    "android/graphics/Canvas/*.d.ts"
+  ],
+  "android.graphics.ColorSpace.*": [
+    "android/graphics/ColorSpace/*.d.ts"
+  ],
+  "android.graphics.HardwareBufferRenderer.*": [
+    "android/graphics/HardwareBufferRenderer/*.d.ts"
+  ],
+  "android.graphics.HardwareRenderer.*": [
+    "android/graphics/HardwareRenderer/*.d.ts"
+  ],
+  "android.graphics.ImageDecoder.*": [
+    "android/graphics/ImageDecoder/*.d.ts"
+  ],
+  "android.graphics.Interpolator.*": [
+    "android/graphics/Interpolator/*.d.ts"
+  ],
+  "android.graphics.Matrix.*": [
+    "android/graphics/Matrix/*.d.ts"
+  ],
+  "android.graphics.MeshSpecification.*": [
+    "android/graphics/MeshSpecification/*.d.ts"
+  ],
+  "android.graphics.Paint.*": [
+    "android/graphics/Paint/*.d.ts"
+  ],
+  "android.graphics.Path.*": [
+    "android/graphics/Path/*.d.ts"
+  ],
+  "android.graphics.PathDashPathEffect.*": [
+    "android/graphics/PathDashPathEffect/*.d.ts"
+  ],
+  "android.graphics.PathIterator.*": [
+    "android/graphics/PathIterator/*.d.ts"
+  ],
+  "android.graphics.PorterDuff.*": [
+    "android/graphics/PorterDuff/*.d.ts"
+  ],
+  "android.graphics.Region.*": [
+    "android/graphics/Region/*.d.ts"
+  ],
+  "android.graphics.Shader.*": [
+    "android/graphics/Shader/*.d.ts"
+  ],
+  "android.graphics.SurfaceTexture.*": [
+    "android/graphics/SurfaceTexture/*.d.ts"
+  ],
+  "android.graphics.Typeface.*": [
+    "android/graphics/Typeface/*.d.ts"
+  ],
+  "android.graphics.drawable.*": [
+    "android/graphics/drawable/*.d.ts"
+  ],
+  "android.graphics.fonts.*": [
+    "android/graphics/fonts/*.d.ts"
+  ],
+  "android.graphics.pdf.*": [
+    "android/graphics/pdf/*.d.ts"
+  ],
+  "android.graphics.text.*": [
+    "android/graphics/text/*.d.ts"
+  ],
+  "android.hardware.Camera.*": [
+    "android/hardware/Camera/*.d.ts"
+  ],
+  "android.hardware.ConsumerIrManager.*": [
+    "android/hardware/ConsumerIrManager/*.d.ts"
+  ],
+  "android.hardware.SensorManager.*": [
+    "android/hardware/SensorManager/*.d.ts"
+  ],
+  "android.hardware.SensorPrivacyManager.*": [
+    "android/hardware/SensorPrivacyManager/*.d.ts"
+  ],
+  "android.hardware.biometrics.*": [
+    "android/hardware/biometrics/*.d.ts"
+  ],
+  "android.hardware.camera2.*": [
+    "android/hardware/camera2/*.d.ts"
+  ],
+  "android.hardware.display.*": [
+    "android/hardware/display/*.d.ts"
+  ],
+  "android.hardware.fingerprint.*": [
+    "android/hardware/fingerprint/*.d.ts"
+  ],
+  "android.hardware.input.*": [
+    "android/hardware/input/*.d.ts"
+  ],
+  "android.hardware.lights.*": [
+    "android/hardware/lights/*.d.ts"
+  ],
+  "android.hardware.usb.*": [
+    "android/hardware/usb/*.d.ts"
+  ],
+  "android.health.connect.*": [
+    "android/health/connect/*.d.ts"
+  ],
+  "android.icu.lang.*": [
+    "android/icu/lang/*.d.ts"
+  ],
+  "android.icu.math.*": [
+    "android/icu/math/*.d.ts"
+  ],
+  "android.icu.number.*": [
+    "android/icu/number/*.d.ts"
+  ],
+  "android.icu.text.*": [
+    "android/icu/text/*.d.ts"
+  ],
+  "android.icu.util.*": [
+    "android/icu/util/*.d.ts"
+  ],
+  "android.inputmethodservice.AbstractInputMethodService.*": [
+    "android/inputmethodservice/AbstractInputMethodService/*.d.ts"
+  ],
+  "android.inputmethodservice.InputMethodService.*": [
+    "android/inputmethodservice/InputMethodService/*.d.ts"
+  ],
+  "android.inputmethodservice.Keyboard.*": [
+    "android/inputmethodservice/Keyboard/*.d.ts"
+  ],
+  "android.inputmethodservice.KeyboardView.*": [
+    "android/inputmethodservice/KeyboardView/*.d.ts"
+  ],
+  "android.location.Geocoder.*": [
+    "android/location/Geocoder/*.d.ts"
+  ],
+  "android.location.GnssAntennaInfo.*": [
+    "android/location/GnssAntennaInfo/*.d.ts"
+  ],
+  "android.location.GnssAutomaticGainControl.*": [
+    "android/location/GnssAutomaticGainControl/*.d.ts"
+  ],
+  "android.location.GnssCapabilities.*": [
+    "android/location/GnssCapabilities/*.d.ts"
+  ],
+  "android.location.GnssMeasurementRequest.*": [
+    "android/location/GnssMeasurementRequest/*.d.ts"
+  ],
+  "android.location.GnssMeasurementsEvent.*": [
+    "android/location/GnssMeasurementsEvent/*.d.ts"
+  ],
+  "android.location.GnssNavigationMessage.*": [
+    "android/location/GnssNavigationMessage/*.d.ts"
+  ],
+  "android.location.GnssStatus.*": [
+    "android/location/GnssStatus/*.d.ts"
+  ],
+  "android.location.GpsStatus.*": [
+    "android/location/GpsStatus/*.d.ts"
+  ],
+  "android.location.LocationRequest.*": [
+    "android/location/LocationRequest/*.d.ts"
+  ],
+  "android.location.altitude.*": [
+    "android/location/altitude/*.d.ts"
+  ],
+  "android.location.provider.*": [
+    "android/location/provider/*.d.ts"
+  ],
+  "android.media.ApplicationMediaCapabilities.*": [
+    "android/media/ApplicationMediaCapabilities/*.d.ts"
+  ],
+  "android.media.AudioAttributes.*": [
+    "android/media/AudioAttributes/*.d.ts"
+  ],
+  "android.media.AudioFocusRequest.*": [
+    "android/media/AudioFocusRequest/*.d.ts"
+  ],
+  "android.media.AudioFormat.*": [
+    "android/media/AudioFormat/*.d.ts"
+  ],
+  "android.media.AudioManager.*": [
+    "android/media/AudioManager/*.d.ts"
+  ],
+  "android.media.AudioMetadata.*": [
+    "android/media/AudioMetadata/*.d.ts"
+  ],
+  "android.media.AudioMixerAttributes.*": [
+    "android/media/AudioMixerAttributes/*.d.ts"
+  ],
+  "android.media.AudioPlaybackCaptureConfiguration.*": [
+    "android/media/AudioPlaybackCaptureConfiguration/*.d.ts"
+  ],
+  "android.media.AudioPresentation.*": [
+    "android/media/AudioPresentation/*.d.ts"
+  ],
+  "android.media.AudioRecord.*": [
+    "android/media/AudioRecord/*.d.ts"
+  ],
+  "android.media.AudioRouting.*": [
+    "android/media/AudioRouting/*.d.ts"
+  ],
+  "android.media.AudioTrack.*": [
+    "android/media/AudioTrack/*.d.ts"
+  ],
+  "android.media.DrmInitData.*": [
+    "android/media/DrmInitData/*.d.ts"
+  ],
+  "android.media.EncoderProfiles.*": [
+    "android/media/EncoderProfiles/*.d.ts"
+  ],
+  "android.media.FaceDetector.*": [
+    "android/media/FaceDetector/*.d.ts"
+  ],
+  "android.media.Image.*": [
+    "android/media/Image/*.d.ts"
+  ],
+  "android.media.ImageReader.*": [
+    "android/media/ImageReader/*.d.ts"
+  ],
+  "android.media.ImageWriter.*": [
+    "android/media/ImageWriter/*.d.ts"
+  ],
+  "android.media.JetPlayer.*": [
+    "android/media/JetPlayer/*.d.ts"
+  ],
+  "android.media.MediaCas.*": [
+    "android/media/MediaCas/*.d.ts"
+  ],
+  "android.media.MediaCasException.*": [
+    "android/media/MediaCasException/*.d.ts"
+  ],
+  "android.media.MediaCodec.*": [
+    "android/media/MediaCodec/*.d.ts"
+  ],
+  "android.media.MediaCodecInfo.*": [
+    "android/media/MediaCodecInfo/*.d.ts"
+  ],
+  "android.media.MediaController2.*": [
+    "android/media/MediaController2/*.d.ts"
+  ],
+  "android.media.MediaDescription.*": [
+    "android/media/MediaDescription/*.d.ts"
+  ],
+  "android.media.MediaDrm.*": [
+    "android/media/MediaDrm/*.d.ts"
+  ],
+  "android.media.MediaExtractor.*": [
+    "android/media/MediaExtractor/*.d.ts"
+  ],
+  "android.media.MediaFeature.*": [
+    "android/media/MediaFeature/*.d.ts"
+  ],
+  "android.media.MediaMetadata.*": [
+    "android/media/MediaMetadata/*.d.ts"
+  ],
+  "android.media.MediaMetadataRetriever.*": [
+    "android/media/MediaMetadataRetriever/*.d.ts"
+  ],
+  "android.media.MediaMuxer.*": [
+    "android/media/MediaMuxer/*.d.ts"
+  ],
+  "android.media.MediaParser.*": [
+    "android/media/MediaParser/*.d.ts"
+  ],
+  "android.media.MediaPlayer.*": [
+    "android/media/MediaPlayer/*.d.ts"
+  ],
+  "android.media.MediaRecorder.*": [
+    "android/media/MediaRecorder/*.d.ts"
+  ],
+  "android.media.MediaRoute2Info.*": [
+    "android/media/MediaRoute2Info/*.d.ts"
+  ],
+  "android.media.MediaRouter.*": [
+    "android/media/MediaRouter/*.d.ts"
+  ],
+  "android.media.MediaRouter2.*": [
+    "android/media/MediaRouter2/*.d.ts"
+  ],
+  "android.media.MediaScannerConnection.*": [
+    "android/media/MediaScannerConnection/*.d.ts"
+  ],
+  "android.media.MediaSession2.*": [
+    "android/media/MediaSession2/*.d.ts"
+  ],
+  "android.media.MediaSession2Service.*": [
+    "android/media/MediaSession2Service/*.d.ts"
+  ],
+  "android.media.MediaSync.*": [
+    "android/media/MediaSync/*.d.ts"
+  ],
+  "android.media.MicrophoneInfo.*": [
+    "android/media/MicrophoneInfo/*.d.ts"
+  ],
+  "android.media.RemoteControlClient.*": [
+    "android/media/RemoteControlClient/*.d.ts"
+  ],
+  "android.media.RemoteController.*": [
+    "android/media/RemoteController/*.d.ts"
+  ],
+  "android.media.RouteDiscoveryPreference.*": [
+    "android/media/RouteDiscoveryPreference/*.d.ts"
+  ],
+  "android.media.RouteListingPreference.*": [
+    "android/media/RouteListingPreference/*.d.ts"
+  ],
+  "android.media.RoutingSessionInfo.*": [
+    "android/media/RoutingSessionInfo/*.d.ts"
+  ],
+  "android.media.Session2Command.*": [
+    "android/media/Session2Command/*.d.ts"
+  ],
+  "android.media.Session2CommandGroup.*": [
+    "android/media/Session2CommandGroup/*.d.ts"
+  ],
+  "android.media.SoundPool.*": [
+    "android/media/SoundPool/*.d.ts"
+  ],
+  "android.media.Spatializer.*": [
+    "android/media/Spatializer/*.d.ts"
+  ],
+  "android.media.VolumeShaper.*": [
+    "android/media/VolumeShaper/*.d.ts"
+  ],
+  "android.media.audiofx.*": [
+    "android/media/audiofx/*.d.ts"
+  ],
+  "android.media.browse.*": [
+    "android/media/browse/*.d.ts"
+  ],
+  "android.media.effect.*": [
+    "android/media/effect/*.d.ts"
+  ],
+  "android.media.metrics.*": [
+    "android/media/metrics/*.d.ts"
+  ],
+  "android.media.midi.*": [
+    "android/media/midi/*.d.ts"
+  ],
+  "android.media.projection.*": [
+    "android/media/projection/*.d.ts"
+  ],
+  "android.media.session.*": [
+    "android/media/session/*.d.ts"
+  ],
+  "android.media.tv.*": [
+    "android/media/tv/*.d.ts"
+  ],
+  "android.mtp.MtpObjectInfo.*": [
+    "android/mtp/MtpObjectInfo/*.d.ts"
+  ],
+  "android.net.ConnectivityDiagnosticsManager.*": [
+    "android/net/ConnectivityDiagnosticsManager/*.d.ts"
+  ],
+  "android.net.ConnectivityManager.*": [
+    "android/net/ConnectivityManager/*.d.ts"
+  ],
+  "android.net.DnsResolver.*": [
+    "android/net/DnsResolver/*.d.ts"
+  ],
+  "android.net.Ikev2VpnProfile.*": [
+    "android/net/Ikev2VpnProfile/*.d.ts"
+  ],
+  "android.net.IpConfiguration.*": [
+    "android/net/IpConfiguration/*.d.ts"
+  ],
+  "android.net.IpSecManager.*": [
+    "android/net/IpSecManager/*.d.ts"
+  ],
+  "android.net.IpSecTransform.*": [
+    "android/net/IpSecTransform/*.d.ts"
+  ],
+  "android.net.LocalSocketAddress.*": [
+    "android/net/LocalSocketAddress/*.d.ts"
+  ],
+  "android.net.NetworkInfo.*": [
+    "android/net/NetworkInfo/*.d.ts"
+  ],
+  "android.net.NetworkRequest.*": [
+    "android/net/NetworkRequest/*.d.ts"
+  ],
+  "android.net.SocketKeepalive.*": [
+    "android/net/SocketKeepalive/*.d.ts"
+  ],
+  "android.net.StaticIpConfiguration.*": [
+    "android/net/StaticIpConfiguration/*.d.ts"
+  ],
+  "android.net.TelephonyNetworkSpecifier.*": [
+    "android/net/TelephonyNetworkSpecifier/*.d.ts"
+  ],
+  "android.net.Uri.*": [
+    "android/net/Uri/*.d.ts"
+  ],
+  "android.net.UrlQuerySanitizer.*": [
+    "android/net/UrlQuerySanitizer/*.d.ts"
+  ],
+  "android.net.VpnService.*": [
+    "android/net/VpnService/*.d.ts"
+  ],
+  "android.net.eap.*": [
+    "android/net/eap/*.d.ts"
+  ],
+  "android.net.http.*": [
+    "android/net/http/*.d.ts"
+  ],
+  "android.net.ipsec.*": [
+    "android/net/ipsec/*.d.ts"
+  ],
+  "android.net.nsd.*": [
+    "android/net/nsd/*.d.ts"
+  ],
+  "android.net.rtp.*": [
+    "android/net/rtp/*.d.ts"
+  ],
+  "android.net.sip.*": [
+    "android/net/sip/*.d.ts"
+  ],
+  "android.net.ssl.*": [
+    "android/net/ssl/*.d.ts"
+  ],
+  "android.net.vcn.*": [
+    "android/net/vcn/*.d.ts"
+  ],
+  "android.net.wifi.*": [
+    "android/net/wifi/*.d.ts"
+  ],
+  "android.nfc.NfcAdapter.*": [
+    "android/nfc/NfcAdapter/*.d.ts"
+  ],
+  "android.nfc.cardemulation.*": [
+    "android/nfc/cardemulation/*.d.ts"
+  ],
+  "android.nfc.tech.*": [
+    "android/nfc/tech/*.d.ts"
+  ],
+  "android.opengl.ETC1Util.*": [
+    "android/opengl/ETC1Util/*.d.ts"
+  ],
+  "android.opengl.GLES31Ext.*": [
+    "android/opengl/GLES31Ext/*.d.ts"
+  ],
+  "android.opengl.GLES32.*": [
+    "android/opengl/GLES32/*.d.ts"
+  ],
+  "android.opengl.GLSurfaceView.*": [
+    "android/opengl/GLSurfaceView/*.d.ts"
+  ],
+  "android.os.AsyncTask.*": [
+    "android/os/AsyncTask/*.d.ts"
+  ],
+  "android.os.BugreportManager.*": [
+    "android/os/BugreportManager/*.d.ts"
+  ],
+  "android.os.Build.*": [
+    "android/os/Build/*.d.ts"
+  ],
+  "android.os.CancellationSignal.*": [
+    "android/os/CancellationSignal/*.d.ts"
+  ],
+  "android.os.CombinedVibration.*": [
+    "android/os/CombinedVibration/*.d.ts"
+  ],
+  "android.os.Debug.*": [
+    "android/os/Debug/*.d.ts"
+  ],
+  "android.os.DropBoxManager.*": [
+    "android/os/DropBoxManager/*.d.ts"
+  ],
+  "android.os.FileUtils.*": [
+    "android/os/FileUtils/*.d.ts"
+  ],
+  "android.os.Handler.*": [
+    "android/os/Handler/*.d.ts"
+  ],
+  "android.os.IBinder.*": [
+    "android/os/IBinder/*.d.ts"
+  ],
+  "android.os.MessageQueue.*": [
+    "android/os/MessageQueue/*.d.ts"
+  ],
+  "android.os.ParcelFileDescriptor.*": [
+    "android/os/ParcelFileDescriptor/*.d.ts"
+  ],
+  "android.os.Parcelable.*": [
+    "android/os/Parcelable/*.d.ts"
+  ],
+  "android.os.PerformanceHintManager.*": [
+    "android/os/PerformanceHintManager/*.d.ts"
+  ],
+  "android.os.PowerManager.*": [
+    "android/os/PowerManager/*.d.ts"
+  ],
+  "android.os.RecoverySystem.*": [
+    "android/os/RecoverySystem/*.d.ts"
+  ],
+  "android.os.StrictMode.*": [
+    "android/os/StrictMode/*.d.ts"
+  ],
+  "android.os.UserManager.*": [
+    "android/os/UserManager/*.d.ts"
+  ],
+  "android.os.VibrationAttributes.*": [
+    "android/os/VibrationAttributes/*.d.ts"
+  ],
+  "android.os.VibrationEffect.*": [
+    "android/os/VibrationEffect/*.d.ts"
+  ],
+  "android.os.ext.*": [
+    "android/os/ext/*.d.ts"
+  ],
+  "android.os.health.*": [
+    "android/os/health/*.d.ts"
+  ],
+  "android.os.storage.*": [
+    "android/os/storage/*.d.ts"
+  ],
+  "android.preference.Preference.*": [
+    "android/preference/Preference/*.d.ts"
+  ],
+  "android.preference.PreferenceActivity.*": [
+    "android/preference/PreferenceActivity/*.d.ts"
+  ],
+  "android.preference.PreferenceFragment.*": [
+    "android/preference/PreferenceFragment/*.d.ts"
+  ],
+  "android.preference.PreferenceManager.*": [
+    "android/preference/PreferenceManager/*.d.ts"
+  ],
+  "android.print.PrintAttributes.*": [
+    "android/print/PrintAttributes/*.d.ts"
+  ],
+  "android.print.PrintDocumentAdapter.*": [
+    "android/print/PrintDocumentAdapter/*.d.ts"
+  ],
+  "android.print.PrintDocumentInfo.*": [
+    "android/print/PrintDocumentInfo/*.d.ts"
+  ],
+  "android.print.PrintJobInfo.*": [
+    "android/print/PrintJobInfo/*.d.ts"
+  ],
+  "android.print.PrinterCapabilitiesInfo.*": [
+    "android/print/PrinterCapabilitiesInfo/*.d.ts"
+  ],
+  "android.print.PrinterInfo.*": [
+    "android/print/PrinterInfo/*.d.ts"
+  ],
+  "android.print.pdf.*": [
+    "android/print/pdf/*.d.ts"
+  ],
+  "android.provider.BlockedNumberContract.*": [
+    "android/provider/BlockedNumberContract/*.d.ts"
+  ],
+  "android.provider.CalendarContract.*": [
+    "android/provider/CalendarContract/*.d.ts"
+  ],
+  "android.provider.CallLog.*": [
+    "android/provider/CallLog/*.d.ts"
+  ],
+  "android.provider.CloudMediaProvider.*": [
+    "android/provider/CloudMediaProvider/*.d.ts"
+  ],
+  "android.provider.CloudMediaProviderContract.*": [
+    "android/provider/CloudMediaProviderContract/*.d.ts"
+  ],
+  "android.provider.Contacts.*": [
+    "android/provider/Contacts/*.d.ts"
+  ],
+  "android.provider.ContactsContract.*": [
+    "android/provider/ContactsContract/*.d.ts"
+  ],
+  "android.provider.DocumentsContract.*": [
+    "android/provider/DocumentsContract/*.d.ts"
+  ],
+  "android.provider.FontsContract.*": [
+    "android/provider/FontsContract/*.d.ts"
+  ],
+  "android.provider.MediaStore.*": [
+    "android/provider/MediaStore/*.d.ts"
+  ],
+  "android.provider.Settings.*": [
+    "android/provider/Settings/*.d.ts"
+  ],
+  "android.provider.SimPhonebookContract.*": [
+    "android/provider/SimPhonebookContract/*.d.ts"
+  ],
+  "android.provider.SyncStateContract.*": [
+    "android/provider/SyncStateContract/*.d.ts"
+  ],
+  "android.provider.Telephony.*": [
+    "android/provider/Telephony/*.d.ts"
+  ],
+  "android.provider.UserDictionary.*": [
+    "android/provider/UserDictionary/*.d.ts"
+  ],
+  "android.provider.VoicemailContract.*": [
+    "android/provider/VoicemailContract/*.d.ts"
+  ],
+  "android.renderscript.Allocation.*": [
+    "android/renderscript/Allocation/*.d.ts"
+  ],
+  "android.renderscript.Element.*": [
+    "android/renderscript/Element/*.d.ts"
+  ],
+  "android.renderscript.RenderScript.*": [
+    "android/renderscript/RenderScript/*.d.ts"
+  ],
+  "android.renderscript.Sampler.*": [
+    "android/renderscript/Sampler/*.d.ts"
+  ],
+  "android.renderscript.Script.*": [
+    "android/renderscript/Script/*.d.ts"
+  ],
+  "android.renderscript.ScriptGroup.*": [
+    "android/renderscript/ScriptGroup/*.d.ts"
+  ],
+  "android.renderscript.Type.*": [
+    "android/renderscript/Type/*.d.ts"
+  ],
+  "android.se.omapi.*": [
+    "android/se/omapi/*.d.ts"
+  ],
+  "android.security.AppUriAuthenticationPolicy.*": [
+    "android/security/AppUriAuthenticationPolicy/*.d.ts"
+  ],
+  "android.security.ConfirmationPrompt.*": [
+    "android/security/ConfirmationPrompt/*.d.ts"
+  ],
+  "android.security.KeyPairGeneratorSpec.*": [
+    "android/security/KeyPairGeneratorSpec/*.d.ts"
+  ],
+  "android.security.KeyStoreParameter.*": [
+    "android/security/KeyStoreParameter/*.d.ts"
+  ],
+  "android.security.identity.*": [
+    "android/security/identity/*.d.ts"
+  ],
+  "android.security.keystore.*": [
+    "android/security/keystore/*.d.ts"
+  ],
+  "android.service.assist.*": [
+    "android/service/assist/*.d.ts"
+  ],
+  "android.service.autofill.*": [
+    "android/service/autofill/*.d.ts"
+  ],
+  "android.service.carrier.*": [
+    "android/service/carrier/*.d.ts"
+  ],
+  "android.service.chooser.*": [
+    "android/service/chooser/*.d.ts"
+  ],
+  "android.service.controls.*": [
+    "android/service/controls/*.d.ts"
+  ],
+  "android.service.credentials.*": [
+    "android/service/credentials/*.d.ts"
+  ],
+  "android.service.dreams.*": [
+    "android/service/dreams/*.d.ts"
+  ],
+  "android.service.media.*": [
+    "android/service/media/*.d.ts"
+  ],
+  "android.service.notification.*": [
+    "android/service/notification/*.d.ts"
+  ],
+  "android.service.quickaccesswallet.*": [
+    "android/service/quickaccesswallet/*.d.ts"
+  ],
+  "android.service.quicksettings.*": [
+    "android/service/quicksettings/*.d.ts"
+  ],
+  "android.service.restrictions.*": [
+    "android/service/restrictions/*.d.ts"
+  ],
+  "android.service.textservice.*": [
+    "android/service/textservice/*.d.ts"
+  ],
+  "android.service.voice.*": [
+    "android/service/voice/*.d.ts"
+  ],
+  "android.service.vr.*": [
+    "android/service/vr/*.d.ts"
+  ],
+  "android.service.wallpaper.*": [
+    "android/service/wallpaper/*.d.ts"
+  ],
+  "android.speech.RecognitionPart.*": [
+    "android/speech/RecognitionPart/*.d.ts"
+  ],
+  "android.speech.RecognitionService.*": [
+    "android/speech/RecognitionService/*.d.ts"
+  ],
+  "android.speech.RecognitionSupport.*": [
+    "android/speech/RecognitionSupport/*.d.ts"
+  ],
+  "android.speech.tts.*": [
+    "android/speech/tts/*.d.ts"
+  ],
+  "android.support.v4.*": [
+    "android/support/v4/*.d.ts"
+  ],
+  "android.telecom.Call.*": [
+    "android/telecom/Call/*.d.ts"
+  ],
+  "android.telecom.CallAttributes.*": [
+    "android/telecom/CallAttributes/*.d.ts"
+  ],
+  "android.telecom.CallScreeningService.*": [
+    "android/telecom/CallScreeningService/*.d.ts"
+  ],
+  "android.telecom.Connection.*": [
+    "android/telecom/Connection/*.d.ts"
+  ],
+  "android.telecom.InCallService.*": [
+    "android/telecom/InCallService/*.d.ts"
+  ],
+  "android.telecom.PhoneAccount.*": [
+    "android/telecom/PhoneAccount/*.d.ts"
+  ],
+  "android.telecom.RemoteConference.*": [
+    "android/telecom/RemoteConference/*.d.ts"
+  ],
+  "android.telecom.RemoteConnection.*": [
+    "android/telecom/RemoteConnection/*.d.ts"
+  ],
+  "android.telecom.VideoProfile.*": [
+    "android/telecom/VideoProfile/*.d.ts"
+  ],
+  "android.telephony.AccessNetworkConstants.*": [
+    "android/telephony/AccessNetworkConstants/*.d.ts"
+  ],
+  "android.telephony.AvailableNetworkInfo.*": [
+    "android/telephony/AvailableNetworkInfo/*.d.ts"
+  ],
+  "android.telephony.BarringInfo.*": [
+    "android/telephony/BarringInfo/*.d.ts"
+  ],
+  "android.telephony.CarrierConfigManager.*": [
+    "android/telephony/CarrierConfigManager/*.d.ts"
+  ],
+  "android.telephony.SignalStrengthUpdateRequest.*": [
+    "android/telephony/SignalStrengthUpdateRequest/*.d.ts"
+  ],
+  "android.telephony.SignalThresholdInfo.*": [
+    "android/telephony/SignalThresholdInfo/*.d.ts"
+  ],
+  "android.telephony.SmsManager.*": [
+    "android/telephony/SmsManager/*.d.ts"
+  ],
+  "android.telephony.SmsMessage.*": [
+    "android/telephony/SmsMessage/*.d.ts"
+  ],
+  "android.telephony.SubscriptionManager.*": [
+    "android/telephony/SubscriptionManager/*.d.ts"
+  ],
+  "android.telephony.SubscriptionPlan.*": [
+    "android/telephony/SubscriptionPlan/*.d.ts"
+  ],
+  "android.telephony.TelephonyCallback.*": [
+    "android/telephony/TelephonyCallback/*.d.ts"
+  ],
+  "android.telephony.TelephonyManager.*": [
+    "android/telephony/TelephonyManager/*.d.ts"
+  ],
+  "android.telephony.TelephonyScanManager.*": [
+    "android/telephony/TelephonyScanManager/*.d.ts"
+  ],
+  "android.telephony.VisualVoicemailService.*": [
+    "android/telephony/VisualVoicemailService/*.d.ts"
+  ],
+  "android.telephony.VisualVoicemailSmsFilterSettings.*": [
+    "android/telephony/VisualVoicemailSmsFilterSettings/*.d.ts"
+  ],
+  "android.telephony.cdma.*": [
+    "android/telephony/cdma/*.d.ts"
+  ],
+  "android.telephony.data.*": [
+    "android/telephony/data/*.d.ts"
+  ],
+  "android.telephony.emergency.*": [
+    "android/telephony/emergency/*.d.ts"
+  ],
+  "android.telephony.euicc.*": [
+    "android/telephony/euicc/*.d.ts"
+  ],
+  "android.telephony.gsm.*": [
+    "android/telephony/gsm/*.d.ts"
+  ],
+  "android.telephony.ims.*": [
+    "android/telephony/ims/*.d.ts"
+  ],
+  "android.telephony.mbms.*": [
+    "android/telephony/mbms/*.d.ts"
+  ],
+  "android.text.BidiFormatter.*": [
+    "android/text/BidiFormatter/*.d.ts"
+  ],
+  "android.text.BoringLayout.*": [
+    "android/text/BoringLayout/*.d.ts"
+  ],
+  "android.text.DynamicLayout.*": [
+    "android/text/DynamicLayout/*.d.ts"
+  ],
+  "android.text.Editable.*": [
+    "android/text/Editable/*.d.ts"
+  ],
+  "android.text.Highlights.*": [
+    "android/text/Highlights/*.d.ts"
+  ],
+  "android.text.Html.*": [
+    "android/text/Html/*.d.ts"
+  ],
+  "android.text.InputFilter.*": [
+    "android/text/InputFilter/*.d.ts"
+  ],
+  "android.text.Layout.*": [
+    "android/text/Layout/*.d.ts"
+  ],
+  "android.text.LoginFilter.*": [
+    "android/text/LoginFilter/*.d.ts"
+  ],
+  "android.text.NoCopySpan.*": [
+    "android/text/NoCopySpan/*.d.ts"
+  ],
+  "android.text.PrecomputedText.*": [
+    "android/text/PrecomputedText/*.d.ts"
+  ],
+  "android.text.SegmentFinder.*": [
+    "android/text/SegmentFinder/*.d.ts"
+  ],
+  "android.text.Spannable.*": [
+    "android/text/Spannable/*.d.ts"
+  ],
+  "android.text.StaticLayout.*": [
+    "android/text/StaticLayout/*.d.ts"
+  ],
+  "android.text.TextShaper.*": [
+    "android/text/TextShaper/*.d.ts"
+  ],
+  "android.text.TextUtils.*": [
+    "android/text/TextUtils/*.d.ts"
+  ],
+  "android.text.format.*": [
+    "android/text/format/*.d.ts"
+  ],
+  "android.text.method.*": [
+    "android/text/method/*.d.ts"
+  ],
+  "android.text.style.*": [
+    "android/text/style/*.d.ts"
+  ],
+  "android.text.util.*": [
+    "android/text/util/*.d.ts"
+  ],
+  "android.transition.Transition.*": [
+    "android/transition/Transition/*.d.ts"
+  ],
+  "android.util.EventLog.*": [
+    "android/util/EventLog/*.d.ts"
+  ],
+  "android.util.EventLogTags.*": [
+    "android/util/EventLogTags/*.d.ts"
+  ],
+  "android.util.Xml.*": [
+    "android/util/Xml/*.d.ts"
+  ],
+  "android.util.proto.*": [
+    "android/util/proto/*.d.ts"
+  ],
+  "android.view.ActionMode.*": [
+    "android/view/ActionMode/*.d.ts"
+  ],
+  "android.view.ActionProvider.*": [
+    "android/view/ActionProvider/*.d.ts"
+  ],
+  "android.view.AttachedSurfaceControl.*": [
+    "android/view/AttachedSurfaceControl/*.d.ts"
+  ],
+  "android.view.Choreographer.*": [
+    "android/view/Choreographer/*.d.ts"
+  ],
+  "android.view.ContentInfo.*": [
+    "android/view/ContentInfo/*.d.ts"
+  ],
+  "android.view.ContextMenu.*": [
+    "android/view/ContextMenu/*.d.ts"
+  ],
+  "android.view.Display.*": [
+    "android/view/Display/*.d.ts"
+  ],
+  "android.view.DisplayCutout.*": [
+    "android/view/DisplayCutout/*.d.ts"
+  ],
+  "android.view.GestureDetector.*": [
+    "android/view/GestureDetector/*.d.ts"
+  ],
+  "android.view.InputDevice.*": [
+    "android/view/InputDevice/*.d.ts"
+  ],
+  "android.view.InputQueue.*": [
+    "android/view/InputQueue/*.d.ts"
+  ],
+  "android.view.KeyCharacterMap.*": [
+    "android/view/KeyCharacterMap/*.d.ts"
+  ],
+  "android.view.KeyEvent.*": [
+    "android/view/KeyEvent/*.d.ts"
+  ],
+  "android.view.LayoutInflater.*": [
+    "android/view/LayoutInflater/*.d.ts"
+  ],
+  "android.view.MenuItem.*": [
+    "android/view/MenuItem/*.d.ts"
+  ],
+  "android.view.MotionEvent.*": [
+    "android/view/MotionEvent/*.d.ts"
+  ],
+  "android.view.PixelCopy.*": [
+    "android/view/PixelCopy/*.d.ts"
+  ],
+  "android.view.ScaleGestureDetector.*": [
+    "android/view/ScaleGestureDetector/*.d.ts"
+  ],
+  "android.view.Surface.*": [
+    "android/view/Surface/*.d.ts"
+  ],
+  "android.view.SurfaceControl.*": [
+    "android/view/SurfaceControl/*.d.ts"
+  ],
+  "android.view.SurfaceControlViewHost.*": [
+    "android/view/SurfaceControlViewHost/*.d.ts"
+  ],
+  "android.view.SurfaceHolder.*": [
+    "android/view/SurfaceHolder/*.d.ts"
+  ],
+  "android.view.TextureView.*": [
+    "android/view/TextureView/*.d.ts"
+  ],
+  "android.view.View.*": [
+    "android/view/View/*.d.ts"
+  ],
+  "android.view.ViewDebug.*": [
+    "android/view/ViewDebug/*.d.ts"
+  ],
+  "android.view.ViewGroup.*": [
+    "android/view/ViewGroup/*.d.ts"
+  ],
+  "android.view.ViewStructure.*": [
+    "android/view/ViewStructure/*.d.ts"
+  ],
+  "android.view.ViewStub.*": [
+    "android/view/ViewStub/*.d.ts"
+  ],
+  "android.view.ViewTreeObserver.*": [
+    "android/view/ViewTreeObserver/*.d.ts"
+  ],
+  "android.view.Window.*": [
+    "android/view/Window/*.d.ts"
+  ],
+  "android.view.WindowId.*": [
+    "android/view/WindowId/*.d.ts"
+  ],
+  "android.view.WindowInsets.*": [
+    "android/view/WindowInsets/*.d.ts"
+  ],
+  "android.view.WindowInsetsAnimation.*": [
+    "android/view/WindowInsetsAnimation/*.d.ts"
+  ],
+  "android.view.WindowInsetsController.*": [
+    "android/view/WindowInsetsController/*.d.ts"
+  ],
+  "android.view.WindowManager.*": [
+    "android/view/WindowManager/*.d.ts"
+  ],
+  "android.view.accessibility.*": [
+    "android/view/accessibility/*.d.ts"
+  ],
+  "android.view.animation.*": [
+    "android/view/animation/*.d.ts"
+  ],
+  "android.view.autofill.*": [
+    "android/view/autofill/*.d.ts"
+  ],
+  "android.view.contentcapture.*": [
+    "android/view/contentcapture/*.d.ts"
+  ],
+  "android.view.displayhash.*": [
+    "android/view/displayhash/*.d.ts"
+  ],
+  "android.view.inputmethod.*": [
+    "android/view/inputmethod/*.d.ts"
+  ],
+  "android.view.inspector.*": [
+    "android/view/inspector/*.d.ts"
+  ],
+  "android.view.textclassifier.*": [
+    "android/view/textclassifier/*.d.ts"
+  ],
+  "android.view.textservice.*": [
+    "android/view/textservice/*.d.ts"
+  ],
+  "android.view.translation.*": [
+    "android/view/translation/*.d.ts"
+  ],
+  "android.webkit.ConsoleMessage.*": [
+    "android/webkit/ConsoleMessage/*.d.ts"
+  ],
+  "android.webkit.GeolocationPermissions.*": [
+    "android/webkit/GeolocationPermissions/*.d.ts"
+  ],
+  "android.webkit.TracingConfig.*": [
+    "android/webkit/TracingConfig/*.d.ts"
+  ],
+  "android.webkit.WebChromeClient.*": [
+    "android/webkit/WebChromeClient/*.d.ts"
+  ],
+  "android.webkit.WebIconDatabase.*": [
+    "android/webkit/WebIconDatabase/*.d.ts"
+  ],
+  "android.webkit.WebMessagePort.*": [
+    "android/webkit/WebMessagePort/*.d.ts"
+  ],
+  "android.webkit.WebSettings.*": [
+    "android/webkit/WebSettings/*.d.ts"
+  ],
+  "android.webkit.WebStorage.*": [
+    "android/webkit/WebStorage/*.d.ts"
+  ],
+  "android.webkit.WebView.*": [
+    "android/webkit/WebView/*.d.ts"
+  ],
+  "android.widget.AbsListView.*": [
+    "android/widget/AbsListView/*.d.ts"
+  ],
+  "android.widget.AbsoluteLayout.*": [
+    "android/widget/AbsoluteLayout/*.d.ts"
+  ],
+  "android.widget.ActionMenuView.*": [
+    "android/widget/ActionMenuView/*.d.ts"
+  ],
+  "android.widget.AdapterView.*": [
+    "android/widget/AdapterView/*.d.ts"
+  ],
+  "android.widget.AutoCompleteTextView.*": [
+    "android/widget/AutoCompleteTextView/*.d.ts"
+  ],
+  "android.widget.CalendarView.*": [
+    "android/widget/CalendarView/*.d.ts"
+  ],
+  "android.widget.Chronometer.*": [
+    "android/widget/Chronometer/*.d.ts"
+  ],
+  "android.widget.CompoundButton.*": [
+    "android/widget/CompoundButton/*.d.ts"
+  ],
+  "android.widget.DatePicker.*": [
+    "android/widget/DatePicker/*.d.ts"
+  ],
+  "android.widget.ExpandableListView.*": [
+    "android/widget/ExpandableListView/*.d.ts"
+  ],
+  "android.widget.Filter.*": [
+    "android/widget/Filter/*.d.ts"
+  ],
+  "android.widget.FrameLayout.*": [
+    "android/widget/FrameLayout/*.d.ts"
+  ],
+  "android.widget.Gallery.*": [
+    "android/widget/Gallery/*.d.ts"
+  ],
+  "android.widget.GridLayout.*": [
+    "android/widget/GridLayout/*.d.ts"
+  ],
+  "android.widget.ImageView.*": [
+    "android/widget/ImageView/*.d.ts"
+  ],
+  "android.widget.LinearLayout.*": [
+    "android/widget/LinearLayout/*.d.ts"
+  ],
+  "android.widget.ListView.*": [
+    "android/widget/ListView/*.d.ts"
+  ],
+  "android.widget.Magnifier.*": [
+    "android/widget/Magnifier/*.d.ts"
+  ],
+  "android.widget.MediaController.*": [
+    "android/widget/MediaController/*.d.ts"
+  ],
+  "android.widget.MultiAutoCompleteTextView.*": [
+    "android/widget/MultiAutoCompleteTextView/*.d.ts"
+  ],
+  "android.widget.NumberPicker.*": [
+    "android/widget/NumberPicker/*.d.ts"
+  ],
+  "android.widget.PopupMenu.*": [
+    "android/widget/PopupMenu/*.d.ts"
+  ],
+  "android.widget.PopupWindow.*": [
+    "android/widget/PopupWindow/*.d.ts"
+  ],
+  "android.widget.RadioGroup.*": [
+    "android/widget/RadioGroup/*.d.ts"
+  ],
+  "android.widget.RatingBar.*": [
+    "android/widget/RatingBar/*.d.ts"
+  ],
+  "android.widget.RelativeLayout.*": [
+    "android/widget/RelativeLayout/*.d.ts"
+  ],
+  "android.widget.RemoteViews.*": [
+    "android/widget/RemoteViews/*.d.ts"
+  ],
+  "android.widget.RemoteViewsService.*": [
+    "android/widget/RemoteViewsService/*.d.ts"
+  ],
+  "android.widget.SearchView.*": [
+    "android/widget/SearchView/*.d.ts"
+  ],
+  "android.widget.SeekBar.*": [
+    "android/widget/SeekBar/*.d.ts"
+  ],
+  "android.widget.ShareActionProvider.*": [
+    "android/widget/ShareActionProvider/*.d.ts"
+  ],
+  "android.widget.SimpleAdapter.*": [
+    "android/widget/SimpleAdapter/*.d.ts"
+  ],
+  "android.widget.SimpleCursorAdapter.*": [
+    "android/widget/SimpleCursorAdapter/*.d.ts"
+  ],
+  "android.widget.SimpleCursorTreeAdapter.*": [
+    "android/widget/SimpleCursorTreeAdapter/*.d.ts"
+  ],
+  "android.widget.SlidingDrawer.*": [
+    "android/widget/SlidingDrawer/*.d.ts"
+  ],
+  "android.widget.TabHost.*": [
+    "android/widget/TabHost/*.d.ts"
+  ],
+  "android.widget.TableLayout.*": [
+    "android/widget/TableLayout/*.d.ts"
+  ],
+  "android.widget.TableRow.*": [
+    "android/widget/TableRow/*.d.ts"
+  ],
+  "android.widget.TextView.*": [
+    "android/widget/TextView/*.d.ts"
+  ],
+  "android.widget.TimePicker.*": [
+    "android/widget/TimePicker/*.d.ts"
+  ],
+  "android.widget.Toast.*": [
+    "android/widget/Toast/*.d.ts"
+  ],
+  "android.widget.Toolbar.*": [
+    "android/widget/Toolbar/*.d.ts"
+  ],
+  "android.widget.ViewSwitcher.*": [
+    "android/widget/ViewSwitcher/*.d.ts"
+  ],
+  "android.widget.ZoomButtonsController.*": [
+    "android/widget/ZoomButtonsController/*.d.ts"
+  ],
+  "android.widget.inline.*": [
+    "android/widget/inline/*.d.ts"
+  ],
+  "android.window.SplashScreen.*": [
+    "android/window/SplashScreen/*.d.ts"
+  ],
+  "androidx.activity.ComponentActivity.*": [
+    "androidx/activity/ComponentActivity/*.d.ts"
+  ],
+  "androidx.activity.OnBackPressedDispatcher.*": [
+    "androidx/activity/OnBackPressedDispatcher/*.d.ts"
+  ],
+  "androidx.activity.contextaware.*": [
+    "androidx/activity/contextaware/*.d.ts"
+  ],
+  "androidx.activity.result.*": [
+    "androidx/activity/result/*.d.ts"
+  ],
+  "androidx.annotation.experimental.*": [
+    "androidx/annotation/experimental/*.d.ts"
+  ],
+  "androidx.appcompat.app.*": [
+    "androidx/appcompat/app/*.d.ts"
+  ],
+  "androidx.appcompat.content.*": [
+    "androidx/appcompat/content/*.d.ts"
+  ],
+  "androidx.appcompat.graphics.*": [
+    "androidx/appcompat/graphics/*.d.ts"
+  ],
+  "androidx.appcompat.text.*": [
+    "androidx/appcompat/text/*.d.ts"
+  ],
+  "androidx.appcompat.view.*": [
+    "androidx/appcompat/view/*.d.ts"
+  ],
+  "androidx.appcompat.widget.*": [
+    "androidx/appcompat/widget/*.d.ts"
+  ],
+  "androidx.arch.core.*": [
+    "androidx/arch/core/*.d.ts"
+  ],
+  "androidx.collection.MapCollections.*": [
+    "androidx/collection/MapCollections/*.d.ts"
+  ],
+  "androidx.core.accessibilityservice.*": [
+    "androidx/core/accessibilityservice/*.d.ts"
+  ],
+  "androidx.core.animation.*": [
+    "androidx/core/animation/*.d.ts"
+  ],
+  "androidx.core.app.*": [
+    "androidx/core/app/*.d.ts"
+  ],
+  "androidx.core.content.*": [
+    "androidx/core/content/*.d.ts"
+  ],
+  "androidx.core.database.*": [
+    "androidx/core/database/*.d.ts"
+  ],
+  "androidx.core.graphics.*": [
+    "androidx/core/graphics/*.d.ts"
+  ],
+  "androidx.core.hardware.*": [
+    "androidx/core/hardware/*.d.ts"
+  ],
+  "androidx.core.internal.*": [
+    "androidx/core/internal/*.d.ts"
+  ],
+  "androidx.core.location.*": [
+    "androidx/core/location/*.d.ts"
+  ],
+  "androidx.core.math.*": [
+    "androidx/core/math/*.d.ts"
+  ],
+  "androidx.core.net.*": [
+    "androidx/core/net/*.d.ts"
+  ],
+  "androidx.core.os.*": [
+    "androidx/core/os/*.d.ts"
+  ],
+  "androidx.core.provider.*": [
+    "androidx/core/provider/*.d.ts"
+  ],
+  "androidx.core.telephony.*": [
+    "androidx/core/telephony/*.d.ts"
+  ],
+  "androidx.core.text.*": [
+    "androidx/core/text/*.d.ts"
+  ],
+  "androidx.core.transition.*": [
+    "androidx/core/transition/*.d.ts"
+  ],
+  "androidx.core.util.*": [
+    "androidx/core/util/*.d.ts"
+  ],
+  "androidx.core.view.*": [
+    "androidx/core/view/*.d.ts"
+  ],
+  "androidx.core.widget.*": [
+    "androidx/core/widget/*.d.ts"
+  ],
+  "androidx.fragment.app.*": [
+    "androidx/fragment/app/*.d.ts"
+  ],
+  "androidx.recyclerview.widget.*": [
+    "androidx/recyclerview/widget/*.d.ts"
+  ],
+  "androidx.versionedparcelable.VersionedParcel.*": [
+    "androidx/versionedparcelable/VersionedParcel/*.d.ts"
+  ],
+  "androidx.versionedparcelable.VersionedParcelStream.*": [
+    "androidx/versionedparcelable/VersionedParcelStream/*.d.ts"
+  ],
+  "androidx.viewpager.widget.*": [
+    "androidx/viewpager/widget/*.d.ts"
+  ],
+  "androidx.viewpager2.adapter.*": [
+    "androidx/viewpager2/adapter/*.d.ts"
+  ],
+  "androidx.viewpager2.widget.*": [
+    "androidx/viewpager2/widget/*.d.ts"
+  ],
+  "java.awt.font.*": [
+    "java/awt/font/*.d.ts"
+  ],
+  "java.io.File.*": [
+    "java/io/File/*.d.ts"
+  ],
+  "java.io.ObjectInputStream.*": [
+    "java/io/ObjectInputStream/*.d.ts"
+  ],
+  "java.io.ObjectOutputStream.*": [
+    "java/io/ObjectOutputStream/*.d.ts"
+  ],
+  "java.lang.Character.*": [
+    "java/lang/Character/*.d.ts"
+  ],
+  "java.lang.ProcessBuilder.*": [
+    "java/lang/ProcessBuilder/*.d.ts"
+  ],
+  "java.lang.StackWalker.*": [
+    "java/lang/StackWalker/*.d.ts"
+  ],
+  "java.lang.String.*": [
+    "java/lang/String/*.d.ts"
+  ],
+  "java.lang.Thread.*": [
+    "java/lang/Thread/*.d.ts"
+  ],
+  "java.lang.annotation.*": [
+    "java/lang/annotation/*.d.ts"
+  ],
+  "java.lang.invoke.*": [
+    "java/lang/invoke/*.d.ts"
+  ],
+  "java.lang.ref.*": [
+    "java/lang/ref/*.d.ts"
+  ],
+  "java.lang.reflect.*": [
+    "java/lang/reflect/*.d.ts"
+  ],
+  "java.lang.runtime.*": [
+    "java/lang/runtime/*.d.ts"
+  ],
+  "java.net.Authenticator.*": [
+    "java/net/Authenticator/*.d.ts"
+  ],
+  "java.net.Proxy.*": [
+    "java/net/Proxy/*.d.ts"
+  ],
+  "java.nio.channels.*": [
+    "java/nio/channels/*.d.ts"
+  ],
+  "java.nio.charset.*": [
+    "java/nio/charset/*.d.ts"
+  ],
+  "java.nio.file.*": [
+    "java/nio/file/*.d.ts"
+  ],
+  "java.security.KeyRep.*": [
+    "java/security/KeyRep/*.d.ts"
+  ],
+  "java.security.KeyStore.*": [
+    "java/security/KeyStore/*.d.ts"
+  ],
+  "java.security.Policy.*": [
+    "java/security/Policy/*.d.ts"
+  ],
+  "java.security.Provider.*": [
+    "java/security/Provider/*.d.ts"
+  ],
+  "java.security.acl.*": [
+    "java/security/acl/*.d.ts"
+  ],
+  "java.security.cert.*": [
+    "java/security/cert/*.d.ts"
+  ],
+  "java.security.interfaces.*": [
+    "java/security/interfaces/*.d.ts"
+  ],
+  "java.security.spec.*": [
+    "java/security/spec/*.d.ts"
+  ],
+  "java.sql.Array.*": [
+    "java/sql/Array/*.d.ts"
+  ],
+  "java.text.AttributedCharacterIterator.*": [
+    "java/text/AttributedCharacterIterator/*.d.ts"
+  ],
+  "java.text.DateFormat.*": [
+    "java/text/DateFormat/*.d.ts"
+  ],
+  "java.text.Format.*": [
+    "java/text/Format/*.d.ts"
+  ],
+  "java.text.MessageFormat.*": [
+    "java/text/MessageFormat/*.d.ts"
+  ],
+  "java.text.Normalizer.*": [
+    "java/text/Normalizer/*.d.ts"
+  ],
+  "java.text.NumberFormat.*": [
+    "java/text/NumberFormat/*.d.ts"
+  ],
+  "java.time.chrono.*": [
+    "java/time/chrono/*.d.ts"
+  ],
+  "java.time.format.*": [
+    "java/time/format/*.d.ts"
+  ],
+  "java.time.temporal.*": [
+    "java/time/temporal/*.d.ts"
+  ],
+  "java.time.zone.*": [
+    "java/time/zone/*.d.ts"
+  ],
+  "java.util.AbstractMap.*": [
+    "java/util/AbstractMap/*.d.ts"
+  ],
+  "java.util.Base64.*": [
+    "java/util/Base64/*.d.ts"
+  ],
+  "java.util.Calendar.*": [
+    "java/util/Calendar/*.d.ts"
+  ],
+  "java.util.Collection.*": [
+    "java/util/Collection/*.d.ts"
+  ],
+  "java.util.Formatter.*": [
+    "java/util/Formatter/*.d.ts"
+  ],
+  "java.util.Locale.*": [
+    "java/util/Locale/*.d.ts"
+  ],
+  "java.util.Map.*": [
+    "java/util/Map/*.d.ts"
+  ],
+  "java.util.PrimitiveIterator.*": [
+    "java/util/PrimitiveIterator/*.d.ts"
+  ],
+  "java.util.ResourceBundle.*": [
+    "java/util/ResourceBundle/*.d.ts"
+  ],
+  "java.util.Spliterator.*": [
+    "java/util/Spliterator/*.d.ts"
+  ],
+  "java.util.Spliterators.*": [
+    "java/util/Spliterators/*.d.ts"
+  ],
+  "java.util.concurrent.*": [
+    "java/util/concurrent/*.d.ts"
+  ],
+  "java.util.function.*": [
+    "java/util/function/*.d.ts"
+  ],
+  "java.util.jar.*": [
+    "java/util/jar/*.d.ts"
+  ],
+  "java.util.logging.*": [
+    "java/util/logging/*.d.ts"
+  ],
+  "java.util.prefs.*": [
+    "java/util/prefs/*.d.ts"
+  ],
+  "java.util.regex.*": [
+    "java/util/regex/*.d.ts"
+  ],
+  "java.util.stream.*": [
+    "java/util/stream/*.d.ts"
+  ],
+  "java.util.zip.*": [
+    "java/util/zip/*.d.ts"
+  ],
+  "javax.annotation.processing.*": [
+    "javax/annotation/processing/*.d.ts"
+  ],
+  "javax.crypto.interfaces.*": [
+    "javax/crypto/interfaces/*.d.ts"
+  ],
+  "javax.crypto.spec.*": [
+    "javax/crypto/spec/*.d.ts"
+  ],
+  "javax.microedition.khronos.*": [
+    "javax/microedition/khronos/*.d.ts"
+  ],
+  "javax.net.ssl.*": [
+    "javax/net/ssl/*.d.ts"
+  ],
+  "javax.security.auth.*": [
+    "javax/security/auth/*.d.ts"
+  ],
+  "javax.security.cert.*": [
+    "javax/security/cert/*.d.ts"
+  ],
+  "javax.xml.datatype.*": [
+    "javax/xml/datatype/*.d.ts"
+  ],
+  "javax.xml.namespace.*": [
+    "javax/xml/namespace/*.d.ts"
+  ],
+  "javax.xml.parsers.*": [
+    "javax/xml/parsers/*.d.ts"
+  ],
+  "javax.xml.transform.*": [
+    "javax/xml/transform/*.d.ts"
+  ],
+  "javax.xml.validation.*": [
+    "javax/xml/validation/*.d.ts"
+  ],
+  "javax.xml.xpath.*": [
+    "javax/xml/xpath/*.d.ts"
+  ],
+  "kotlin.collections.AbstractCollection.*": [
+    "kotlin/collections/AbstractCollection/*.d.ts"
+  ],
+  "kotlin.collections.AbstractIterator.*": [
+    "kotlin/collections/AbstractIterator/*.d.ts"
+  ],
+  "kotlin.collections.AbstractList.*": [
+    "kotlin/collections/AbstractList/*.d.ts"
+  ],
+  "kotlin.collections.AbstractMap.*": [
+    "kotlin/collections/AbstractMap/*.d.ts"
+  ],
+  "kotlin.collections.AbstractSet.*": [
+    "kotlin/collections/AbstractSet/*.d.ts"
+  ],
+  "kotlin.collections.ArrayDeque.*": [
+    "kotlin/collections/ArrayDeque/*.d.ts"
+  ],
+  "kotlin.collections.ArraysKt___ArraysJvmKt.*": [
+    "kotlin/collections/ArraysKt___ArraysJvmKt/*.d.ts"
+  ],
+  "kotlin.collections.ArraysKt___ArraysKt.*": [
+    "kotlin/collections/ArraysKt___ArraysKt/*.d.ts"
+  ],
+  "kotlin.collections.CollectionsKt__CollectionsKt.*": [
+    "kotlin/collections/CollectionsKt__CollectionsKt/*.d.ts"
+  ],
+  "kotlin.collections.CollectionsKt__IterablesKt.*": [
+    "kotlin/collections/CollectionsKt__IterablesKt/*.d.ts"
+  ],
+  "kotlin.collections.CollectionsKt__IteratorsJVMKt.*": [
+    "kotlin/collections/CollectionsKt__IteratorsJVMKt/*.d.ts"
+  ],
+  "kotlin.collections.CollectionsKt___CollectionsKt.*": [
+    "kotlin/collections/CollectionsKt___CollectionsKt/*.d.ts"
+  ],
+  "kotlin.collections.RingBuffer.*": [
+    "kotlin/collections/RingBuffer/*.d.ts"
+  ],
+  "kotlin.collections.builders.*": [
+    "kotlin/collections/builders/*.d.ts"
+  ],
+  "kotlin.collections.jdk8.*": [
+    "kotlin/collections/jdk8/*.d.ts"
+  ],
+  "kotlin.collections.unsigned.*": [
+    "kotlin/collections/unsigned/*.d.ts"
+  ],
+  "kotlin.comparisons.ComparisonsKt__ComparisonsKt.*": [
+    "kotlin/comparisons/ComparisonsKt__ComparisonsKt/*.d.ts"
+  ],
+  "kotlin.concurrent.ThreadsKt.*": [
+    "kotlin/concurrent/ThreadsKt/*.d.ts"
+  ],
+  "kotlin.concurrent.TimersKt.*": [
+    "kotlin/concurrent/TimersKt/*.d.ts"
+  ],
+  "kotlin.contracts.ContractBuilder.*": [
+    "kotlin/contracts/ContractBuilder/*.d.ts"
+  ],
+  "kotlin.coroutines.CombinedContext.*": [
+    "kotlin/coroutines/CombinedContext/*.d.ts"
+  ],
+  "kotlin.coroutines.ContinuationInterceptor.*": [
+    "kotlin/coroutines/ContinuationInterceptor/*.d.ts"
+  ],
+  "kotlin.coroutines.CoroutineContext.*": [
+    "kotlin/coroutines/CoroutineContext/*.d.ts"
+  ],
+  "kotlin.coroutines.SafeContinuation.*": [
+    "kotlin/coroutines/SafeContinuation/*.d.ts"
+  ],
+  "kotlin.coroutines.cancellation.*": [
+    "kotlin/coroutines/cancellation/*.d.ts"
+  ],
+  "kotlin.coroutines.intrinsics.*": [
+    "kotlin/coroutines/intrinsics/*.d.ts"
+  ],
+  "kotlin.coroutines.jvm.*": [
+    "kotlin/coroutines/jvm/*.d.ts"
+  ],
+  "kotlin.enums.EnumEntriesSerializationProxy.*": [
+    "kotlin/enums/EnumEntriesSerializationProxy/*.d.ts"
+  ],
+  "kotlin.internal.PlatformImplementations.*": [
+    "kotlin/internal/PlatformImplementations/*.d.ts"
+  ],
+  "kotlin.internal.RequireKotlin.*": [
+    "kotlin/internal/RequireKotlin/*.d.ts"
+  ],
+  "kotlin.internal.jdk7.*": [
+    "kotlin/internal/jdk7/*.d.ts"
+  ],
+  "kotlin.internal.jdk8.*": [
+    "kotlin/internal/jdk8/*.d.ts"
+  ],
+  "kotlin.io.ByteStreamsKt.*": [
+    "kotlin/io/ByteStreamsKt/*.d.ts"
+  ],
+  "kotlin.io.FileTreeWalk.*": [
+    "kotlin/io/FileTreeWalk/*.d.ts"
+  ],
+  "kotlin.io.FilesKt__FileReadWriteKt.*": [
+    "kotlin/io/FilesKt__FileReadWriteKt/*.d.ts"
+  ],
+  "kotlin.io.FilesKt__UtilsKt.*": [
+    "kotlin/io/FilesKt__UtilsKt/*.d.ts"
+  ],
+  "kotlin.io.LinesSequence.*": [
+    "kotlin/io/LinesSequence/*.d.ts"
+  ],
+  "kotlin.io.TextStreamsKt.*": [
+    "kotlin/io/TextStreamsKt/*.d.ts"
+  ],
+  "kotlin.io.path.*": [
+    "kotlin/io/path/*.d.ts"
+  ],
+  "kotlin.jvm.functions.*": [
+    "kotlin/jvm/functions/*.d.ts"
+  ],
+  "kotlin.jvm.internal.*": [
+    "kotlin/jvm/internal/*.d.ts"
+  ],
+  "kotlin.jvm.jdk8.*": [
+    "kotlin/jvm/jdk8/*.d.ts"
+  ],
+  "kotlin.jvm.optionals.*": [
+    "kotlin/jvm/optionals/*.d.ts"
+  ],
+  "kotlin.properties.Delegates.*": [
+    "kotlin/properties/Delegates/*.d.ts"
+  ],
+  "kotlin.random.FallbackThreadLocalRandom.*": [
+    "kotlin/random/FallbackThreadLocalRandom/*.d.ts"
+  ],
+  "kotlin.random.KotlinRandom.*": [
+    "kotlin/random/KotlinRandom/*.d.ts"
+  ],
+  "kotlin.random.PlatformRandom.*": [
+    "kotlin/random/PlatformRandom/*.d.ts"
+  ],
+  "kotlin.random.Random.*": [
+    "kotlin/random/Random/*.d.ts"
+  ],
+  "kotlin.random.XorWowRandom.*": [
+    "kotlin/random/XorWowRandom/*.d.ts"
+  ],
+  "kotlin.random.jdk8.*": [
+    "kotlin/random/jdk8/*.d.ts"
+  ],
+  "kotlin.ranges.CharProgression.*": [
+    "kotlin/ranges/CharProgression/*.d.ts"
+  ],
+  "kotlin.ranges.CharRange.*": [
+    "kotlin/ranges/CharRange/*.d.ts"
+  ],
+  "kotlin.ranges.ClosedFloatingPointRange.*": [
+    "kotlin/ranges/ClosedFloatingPointRange/*.d.ts"
+  ],
+  "kotlin.ranges.ClosedRange.*": [
+    "kotlin/ranges/ClosedRange/*.d.ts"
+  ],
+  "kotlin.ranges.IntProgression.*": [
+    "kotlin/ranges/IntProgression/*.d.ts"
+  ],
+  "kotlin.ranges.IntRange.*": [
+    "kotlin/ranges/IntRange/*.d.ts"
+  ],
+  "kotlin.ranges.LongProgression.*": [
+    "kotlin/ranges/LongProgression/*.d.ts"
+  ],
+  "kotlin.ranges.LongRange.*": [
+    "kotlin/ranges/LongRange/*.d.ts"
+  ],
+  "kotlin.ranges.OpenEndRange.*": [
+    "kotlin/ranges/OpenEndRange/*.d.ts"
+  ],
+  "kotlin.ranges.UIntProgression.*": [
+    "kotlin/ranges/UIntProgression/*.d.ts"
+  ],
+  "kotlin.ranges.UIntRange.*": [
+    "kotlin/ranges/UIntRange/*.d.ts"
+  ],
+  "kotlin.ranges.ULongProgression.*": [
+    "kotlin/ranges/ULongProgression/*.d.ts"
+  ],
+  "kotlin.ranges.ULongRange.*": [
+    "kotlin/ranges/ULongRange/*.d.ts"
+  ],
+  "kotlin.reflect.KCallable.*": [
+    "kotlin/reflect/KCallable/*.d.ts"
+  ],
+  "kotlin.reflect.KClass.*": [
+    "kotlin/reflect/KClass/*.d.ts"
+  ],
+  "kotlin.reflect.KFunction.*": [
+    "kotlin/reflect/KFunction/*.d.ts"
+  ],
+  "kotlin.reflect.KMutableProperty.*": [
+    "kotlin/reflect/KMutableProperty/*.d.ts"
+  ],
+  "kotlin.reflect.KMutableProperty0.*": [
+    "kotlin/reflect/KMutableProperty0/*.d.ts"
+  ],
+  "kotlin.reflect.KMutableProperty1.*": [
+    "kotlin/reflect/KMutableProperty1/*.d.ts"
+  ],
+  "kotlin.reflect.KMutableProperty2.*": [
+    "kotlin/reflect/KMutableProperty2/*.d.ts"
+  ],
+  "kotlin.reflect.KParameter.*": [
+    "kotlin/reflect/KParameter/*.d.ts"
+  ],
+  "kotlin.reflect.KProperty.*": [
+    "kotlin/reflect/KProperty/*.d.ts"
+  ],
+  "kotlin.reflect.KProperty0.*": [
+    "kotlin/reflect/KProperty0/*.d.ts"
+  ],
+  "kotlin.reflect.KProperty1.*": [
+    "kotlin/reflect/KProperty1/*.d.ts"
+  ],
+  "kotlin.reflect.KProperty2.*": [
+    "kotlin/reflect/KProperty2/*.d.ts"
+  ],
+  "kotlin.reflect.KType.*": [
+    "kotlin/reflect/KType/*.d.ts"
+  ],
+  "kotlin.reflect.KTypeProjection.*": [
+    "kotlin/reflect/KTypeProjection/*.d.ts"
+  ],
+  "kotlin.reflect.ParameterizedTypeImpl.*": [
+    "kotlin/reflect/ParameterizedTypeImpl/*.d.ts"
+  ],
+  "kotlin.reflect.WildcardTypeImpl.*": [
+    "kotlin/reflect/WildcardTypeImpl/*.d.ts"
+  ],
+  "kotlin.sequences.DropSequence.*": [
+    "kotlin/sequences/DropSequence/*.d.ts"
+  ],
+  "kotlin.sequences.DropWhileSequence.*": [
+    "kotlin/sequences/DropWhileSequence/*.d.ts"
+  ],
+  "kotlin.sequences.FilteringSequence.*": [
+    "kotlin/sequences/FilteringSequence/*.d.ts"
+  ],
+  "kotlin.sequences.FlatteningSequence.*": [
+    "kotlin/sequences/FlatteningSequence/*.d.ts"
+  ],
+  "kotlin.sequences.GeneratorSequence.*": [
+    "kotlin/sequences/GeneratorSequence/*.d.ts"
+  ],
+  "kotlin.sequences.IndexingSequence.*": [
+    "kotlin/sequences/IndexingSequence/*.d.ts"
+  ],
+  "kotlin.sequences.MergingSequence.*": [
+    "kotlin/sequences/MergingSequence/*.d.ts"
+  ],
+  "kotlin.sequences.Sequence.*": [
+    "kotlin/sequences/Sequence/*.d.ts"
+  ],
+  "kotlin.sequences.SequencesKt__SequenceBuilderKt.*": [
+    "kotlin/sequences/SequencesKt__SequenceBuilderKt/*.d.ts"
+  ],
+  "kotlin.sequences.SequencesKt__SequencesKt.*": [
+    "kotlin/sequences/SequencesKt__SequencesKt/*.d.ts"
+  ],
+  "kotlin.sequences.SequencesKt___SequencesJvmKt.*": [
+    "kotlin/sequences/SequencesKt___SequencesJvmKt/*.d.ts"
+  ],
+  "kotlin.sequences.SequencesKt___SequencesKt.*": [
+    "kotlin/sequences/SequencesKt___SequencesKt/*.d.ts"
+  ],
+  "kotlin.sequences.SubSequence.*": [
+    "kotlin/sequences/SubSequence/*.d.ts"
+  ],
+  "kotlin.sequences.TakeSequence.*": [
+    "kotlin/sequences/TakeSequence/*.d.ts"
+  ],
+  "kotlin.sequences.TakeWhileSequence.*": [
+    "kotlin/sequences/TakeWhileSequence/*.d.ts"
+  ],
+  "kotlin.sequences.TransformingIndexedSequence.*": [
+    "kotlin/sequences/TransformingIndexedSequence/*.d.ts"
+  ],
+  "kotlin.sequences.TransformingSequence.*": [
+    "kotlin/sequences/TransformingSequence/*.d.ts"
+  ],
+  "kotlin.streams.jdk8.*": [
+    "kotlin/streams/jdk8/*.d.ts"
+  ],
+  "kotlin.text.CharCategory.*": [
+    "kotlin/text/CharCategory/*.d.ts"
+  ],
+  "kotlin.text.CharDirectionality.*": [
+    "kotlin/text/CharDirectionality/*.d.ts"
+  ],
+  "kotlin.text.DelimitedRangesSequence.*": [
+    "kotlin/text/DelimitedRangesSequence/*.d.ts"
+  ],
+  "kotlin.text.MatchResult.*": [
+    "kotlin/text/MatchResult/*.d.ts"
+  ],
+  "kotlin.text.MatcherMatchResult.*": [
+    "kotlin/text/MatcherMatchResult/*.d.ts"
+  ],
+  "kotlin.text.Regex.*": [
+    "kotlin/text/Regex/*.d.ts"
+  ],
+  "kotlin.text.StringsKt__IndentKt.*": [
+    "kotlin/text/StringsKt__IndentKt/*.d.ts"
+  ],
+  "kotlin.text.StringsKt__StringsKt.*": [
+    "kotlin/text/StringsKt__StringsKt/*.d.ts"
+  ],
+  "kotlin.text.StringsKt___StringsKt.*": [
+    "kotlin/text/StringsKt___StringsKt/*.d.ts"
+  ],
+  "kotlin.text.jdk8.*": [
+    "kotlin/text/jdk8/*.d.ts"
+  ],
+  "kotlin.time.AbstractDoubleTimeSource.*": [
+    "kotlin/time/AbstractDoubleTimeSource/*.d.ts"
+  ],
+  "kotlin.time.AbstractLongTimeSource.*": [
+    "kotlin/time/AbstractLongTimeSource/*.d.ts"
+  ],
+  "kotlin.time.ComparableTimeMark.*": [
+    "kotlin/time/ComparableTimeMark/*.d.ts"
+  ],
+  "kotlin.time.Duration.*": [
+    "kotlin/time/Duration/*.d.ts"
+  ],
+  "kotlin.time.DurationUnitKt__DurationUnitJvmKt.*": [
+    "kotlin/time/DurationUnitKt__DurationUnitJvmKt/*.d.ts"
+  ],
+  "kotlin.time.DurationUnitKt__DurationUnitKt.*": [
+    "kotlin/time/DurationUnitKt__DurationUnitKt/*.d.ts"
+  ],
+  "kotlin.time.TimeMark.*": [
+    "kotlin/time/TimeMark/*.d.ts"
+  ],
+  "kotlin.time.TimeSource.*": [
+    "kotlin/time/TimeSource/*.d.ts"
+  ],
+  "kotlin.time.jdk8.*": [
+    "kotlin/time/jdk8/*.d.ts"
+  ],
+  "kotlinx.coroutines.AwaitAll.*": [
+    "kotlinx/coroutines/AwaitAll/*.d.ts"
+  ],
+  "kotlinx.coroutines.CancellableContinuation.*": [
+    "kotlinx/coroutines/CancellableContinuation/*.d.ts"
+  ],
+  "kotlinx.coroutines.ChildHandle.*": [
+    "kotlinx/coroutines/ChildHandle/*.d.ts"
+  ],
+  "kotlinx.coroutines.ChildJob.*": [
+    "kotlinx/coroutines/ChildJob/*.d.ts"
+  ],
+  "kotlinx.coroutines.CompletableDeferred.*": [
+    "kotlinx/coroutines/CompletableDeferred/*.d.ts"
+  ],
+  "kotlinx.coroutines.CompletableJob.*": [
+    "kotlinx/coroutines/CompletableJob/*.d.ts"
+  ],
+  "kotlinx.coroutines.CopyableThreadContextElement.*": [
+    "kotlinx/coroutines/CopyableThreadContextElement/*.d.ts"
+  ],
+  "kotlinx.coroutines.CoroutineDispatcher.*": [
+    "kotlinx/coroutines/CoroutineDispatcher/*.d.ts"
+  ],
+  "kotlinx.coroutines.CoroutineExceptionHandler.*": [
+    "kotlinx/coroutines/CoroutineExceptionHandler/*.d.ts"
+  ],
+  "kotlinx.coroutines.CoroutineId.*": [
+    "kotlinx/coroutines/CoroutineId/*.d.ts"
+  ],
+  "kotlinx.coroutines.CoroutineName.*": [
+    "kotlinx/coroutines/CoroutineName/*.d.ts"
+  ],
+  "kotlinx.coroutines.CoroutineStart.*": [
+    "kotlinx/coroutines/CoroutineStart/*.d.ts"
+  ],
+  "kotlinx.coroutines.Deferred.*": [
+    "kotlinx/coroutines/Deferred/*.d.ts"
+  ],
+  "kotlinx.coroutines.Delay.*": [
+    "kotlinx/coroutines/Delay/*.d.ts"
+  ],
+  "kotlinx.coroutines.EventLoopImplBase.*": [
+    "kotlinx/coroutines/EventLoopImplBase/*.d.ts"
+  ],
+  "kotlinx.coroutines.ExecutorCoroutineDispatcher.*": [
+    "kotlinx/coroutines/ExecutorCoroutineDispatcher/*.d.ts"
+  ],
+  "kotlinx.coroutines.Job.*": [
+    "kotlinx/coroutines/Job/*.d.ts"
+  ],
+  "kotlinx.coroutines.JobSupport.*": [
+    "kotlinx/coroutines/JobSupport/*.d.ts"
+  ],
+  "kotlinx.coroutines.ParentJob.*": [
+    "kotlinx/coroutines/ParentJob/*.d.ts"
+  ],
+  "kotlinx.coroutines.ThreadContextElement.*": [
+    "kotlinx/coroutines/ThreadContextElement/*.d.ts"
+  ],
+  "kotlinx.coroutines.YieldContext.*": [
+    "kotlinx/coroutines/YieldContext/*.d.ts"
+  ],
+  "kotlinx.coroutines.channels.*": [
+    "kotlinx/coroutines/channels/*.d.ts"
+  ],
+  "kotlinx.coroutines.debug.*": [
+    "kotlinx/coroutines/debug/*.d.ts"
+  ],
+  "kotlinx.coroutines.flow.*": [
+    "kotlinx/coroutines/flow/*.d.ts"
+  ],
+  "kotlinx.coroutines.internal.*": [
+    "kotlinx/coroutines/internal/*.d.ts"
+  ],
+  "kotlinx.coroutines.intrinsics.*": [
+    "kotlinx/coroutines/intrinsics/*.d.ts"
+  ],
+  "kotlinx.coroutines.scheduling.*": [
+    "kotlinx/coroutines/scheduling/*.d.ts"
+  ],
+  "kotlinx.coroutines.selects.*": [
+    "kotlinx/coroutines/selects/*.d.ts"
+  ],
+  "kotlinx.coroutines.sync.*": [
+    "kotlinx/coroutines/sync/*.d.ts"
+  ],
+  "android.accessibilityservice.AccessibilityService.MagnificationController.*": [
+    "android/accessibilityservice/AccessibilityService/MagnificationController/*.d.ts"
+  ],
+  "android.accessibilityservice.AccessibilityService.SoftKeyboardController.*": [
+    "android/accessibilityservice/AccessibilityService/SoftKeyboardController/*.d.ts"
+  ],
+  "android.adservices.adselection.AdSelectionConfig.*": [
+    "android/adservices/adselection/AdSelectionConfig/*.d.ts"
+  ],
+  "android.adservices.adselection.AdSelectionOutcome.*": [
+    "android/adservices/adselection/AdSelectionOutcome/*.d.ts"
+  ],
+  "android.adservices.common.AdData.*": [
+    "android/adservices/common/AdData/*.d.ts"
+  ],
+  "android.adservices.customaudience.AddCustomAudienceOverrideRequest.*": [
+    "android/adservices/customaudience/AddCustomAudienceOverrideRequest/*.d.ts"
+  ],
+  "android.adservices.customaudience.CustomAudience.*": [
+    "android/adservices/customaudience/CustomAudience/*.d.ts"
+  ],
+  "android.adservices.customaudience.JoinCustomAudienceRequest.*": [
+    "android/adservices/customaudience/JoinCustomAudienceRequest/*.d.ts"
+  ],
+  "android.adservices.customaudience.LeaveCustomAudienceRequest.*": [
+    "android/adservices/customaudience/LeaveCustomAudienceRequest/*.d.ts"
+  ],
+  "android.adservices.customaudience.RemoveCustomAudienceOverrideRequest.*": [
+    "android/adservices/customaudience/RemoveCustomAudienceOverrideRequest/*.d.ts"
+  ],
+  "android.adservices.customaudience.TrustedBiddingData.*": [
+    "android/adservices/customaudience/TrustedBiddingData/*.d.ts"
+  ],
+  "android.adservices.measurement.DeletionRequest.*": [
+    "android/adservices/measurement/DeletionRequest/*.d.ts"
+  ],
+  "android.adservices.measurement.WebSourceParams.*": [
+    "android/adservices/measurement/WebSourceParams/*.d.ts"
+  ],
+  "android.adservices.measurement.WebSourceRegistrationRequest.*": [
+    "android/adservices/measurement/WebSourceRegistrationRequest/*.d.ts"
+  ],
+  "android.adservices.measurement.WebTriggerParams.*": [
+    "android/adservices/measurement/WebTriggerParams/*.d.ts"
+  ],
+  "android.adservices.measurement.WebTriggerRegistrationRequest.*": [
+    "android/adservices/measurement/WebTriggerRegistrationRequest/*.d.ts"
+  ],
+  "android.adservices.topics.GetTopicsRequest.*": [
+    "android/adservices/topics/GetTopicsRequest/*.d.ts"
+  ],
+  "android.adservices.topics.GetTopicsResponse.*": [
+    "android/adservices/topics/GetTopicsResponse/*.d.ts"
+  ],
+  "android.app.ActivityManager.TaskDescription.*": [
+    "android/app/ActivityManager/TaskDescription/*.d.ts"
+  ],
+  "android.app.Notification.Action.*": [
+    "android/app/Notification/Action/*.d.ts"
+  ],
+  "android.app.Notification.BubbleMetadata.*": [
+    "android/app/Notification/BubbleMetadata/*.d.ts"
+  ],
+  "android.app.Notification.CarExtender.*": [
+    "android/app/Notification/CarExtender/*.d.ts"
+  ],
+  "android.app.Notification.MessagingStyle.*": [
+    "android/app/Notification/MessagingStyle/*.d.ts"
+  ],
+  "android.app.VoiceInteractor.PickOptionRequest.*": [
+    "android/app/VoiceInteractor/PickOptionRequest/*.d.ts"
+  ],
+  "android.app.admin.DevicePolicyManager.*": [
+    "android/app/admin/DevicePolicyManager/*.d.ts"
+  ],
+  "android.app.admin.FactoryResetProtectionPolicy.*": [
+    "android/app/admin/FactoryResetProtectionPolicy/*.d.ts"
+  ],
+  "android.app.admin.PreferentialNetworkServiceConfig.*": [
+    "android/app/admin/PreferentialNetworkServiceConfig/*.d.ts"
+  ],
+  "android.app.admin.SecurityLog.*": [
+    "android/app/admin/SecurityLog/*.d.ts"
+  ],
+  "android.app.admin.SystemUpdatePolicy.*": [
+    "android/app/admin/SystemUpdatePolicy/*.d.ts"
+  ],
+  "android.app.appsearch.AppSearchBatchResult.*": [
+    "android/app/appsearch/AppSearchBatchResult/*.d.ts"
+  ],
+  "android.app.appsearch.AppSearchManager.*": [
+    "android/app/appsearch/AppSearchManager/*.d.ts"
+  ],
+  "android.app.appsearch.AppSearchSchema.*": [
+    "android/app/appsearch/AppSearchSchema/*.d.ts"
+  ],
+  "android.app.appsearch.GenericDocument.*": [
+    "android/app/appsearch/GenericDocument/*.d.ts"
+  ],
+  "android.app.appsearch.GetByDocumentIdRequest.*": [
+    "android/app/appsearch/GetByDocumentIdRequest/*.d.ts"
+  ],
+  "android.app.appsearch.GetSchemaResponse.*": [
+    "android/app/appsearch/GetSchemaResponse/*.d.ts"
+  ],
+  "android.app.appsearch.JoinSpec.*": [
+    "android/app/appsearch/JoinSpec/*.d.ts"
+  ],
+  "android.app.appsearch.PropertyPath.*": [
+    "android/app/appsearch/PropertyPath/*.d.ts"
+  ],
+  "android.app.appsearch.PutDocumentsRequest.*": [
+    "android/app/appsearch/PutDocumentsRequest/*.d.ts"
+  ],
+  "android.app.appsearch.RemoveByDocumentIdRequest.*": [
+    "android/app/appsearch/RemoveByDocumentIdRequest/*.d.ts"
+  ],
+  "android.app.appsearch.ReportSystemUsageRequest.*": [
+    "android/app/appsearch/ReportSystemUsageRequest/*.d.ts"
+  ],
+  "android.app.appsearch.ReportUsageRequest.*": [
+    "android/app/appsearch/ReportUsageRequest/*.d.ts"
+  ],
+  "android.app.appsearch.SearchResult.*": [
+    "android/app/appsearch/SearchResult/*.d.ts"
+  ],
+  "android.app.appsearch.SearchSpec.*": [
+    "android/app/appsearch/SearchSpec/*.d.ts"
+  ],
+  "android.app.appsearch.SearchSuggestionResult.*": [
+    "android/app/appsearch/SearchSuggestionResult/*.d.ts"
+  ],
+  "android.app.appsearch.SearchSuggestionSpec.*": [
+    "android/app/appsearch/SearchSuggestionSpec/*.d.ts"
+  ],
+  "android.app.appsearch.SetSchemaRequest.*": [
+    "android/app/appsearch/SetSchemaRequest/*.d.ts"
+  ],
+  "android.app.appsearch.SetSchemaResponse.*": [
+    "android/app/appsearch/SetSchemaResponse/*.d.ts"
+  ],
+  "android.app.appsearch.StorageInfo.*": [
+    "android/app/appsearch/StorageInfo/*.d.ts"
+  ],
+  "android.app.appsearch.exceptions.*": [
+    "android/app/appsearch/exceptions/*.d.ts"
+  ],
+  "android.app.appsearch.observer.*": [
+    "android/app/appsearch/observer/*.d.ts"
+  ],
+  "android.app.appsearch.util.*": [
+    "android/app/appsearch/util/*.d.ts"
+  ],
+  "android.app.assist.AssistStructure.*": [
+    "android/app/assist/AssistStructure/*.d.ts"
+  ],
+  "android.app.blob.BlobStoreManager.*": [
+    "android/app/blob/BlobStoreManager/*.d.ts"
+  ],
+  "android.app.job.JobInfo.*": [
+    "android/app/job/JobInfo/*.d.ts"
+  ],
+  "android.app.job.JobWorkItem.*": [
+    "android/app/job/JobWorkItem/*.d.ts"
+  ],
+  "android.app.people.ConversationStatus.*": [
+    "android/app/people/ConversationStatus/*.d.ts"
+  ],
+  "android.app.sdksandbox.SdkSandboxManager.*": [
+    "android/app/sdksandbox/SdkSandboxManager/*.d.ts"
+  ],
+  "android.app.sdksandbox.sdkprovider.*": [
+    "android/app/sdksandbox/sdkprovider/*.d.ts"
+  ],
+  "android.app.slice.Slice.*": [
+    "android/app/slice/Slice/*.d.ts"
+  ],
+  "android.app.usage.NetworkStats.*": [
+    "android/app/usage/NetworkStats/*.d.ts"
+  ],
+  "android.app.usage.NetworkStatsManager.*": [
+    "android/app/usage/NetworkStatsManager/*.d.ts"
+  ],
+  "android.app.usage.UsageEvents.*": [
+    "android/app/usage/UsageEvents/*.d.ts"
+  ],
+  "android.bluetooth.BluetoothClass.Device.*": [
+    "android/bluetooth/BluetoothClass/Device/*.d.ts"
+  ],
+  "android.bluetooth.le.AdvertiseData.*": [
+    "android/bluetooth/le/AdvertiseData/*.d.ts"
+  ],
+  "android.bluetooth.le.AdvertiseSettings.*": [
+    "android/bluetooth/le/AdvertiseSettings/*.d.ts"
+  ],
+  "android.bluetooth.le.AdvertisingSetParameters.*": [
+    "android/bluetooth/le/AdvertisingSetParameters/*.d.ts"
+  ],
+  "android.bluetooth.le.PeriodicAdvertisingParameters.*": [
+    "android/bluetooth/le/PeriodicAdvertisingParameters/*.d.ts"
+  ],
+  "android.bluetooth.le.ScanFilter.*": [
+    "android/bluetooth/le/ScanFilter/*.d.ts"
+  ],
+  "android.bluetooth.le.ScanSettings.*": [
+    "android/bluetooth/le/ScanSettings/*.d.ts"
+  ],
+  "android.content.pm.ActivityInfo.*": [
+    "android/content/pm/ActivityInfo/*.d.ts"
+  ],
+  "android.content.pm.ApplicationInfo.*": [
+    "android/content/pm/ApplicationInfo/*.d.ts"
+  ],
+  "android.content.pm.Capability.*": [
+    "android/content/pm/Capability/*.d.ts"
+  ],
+  "android.content.pm.CapabilityParams.*": [
+    "android/content/pm/CapabilityParams/*.d.ts"
+  ],
+  "android.content.pm.LauncherApps.*": [
+    "android/content/pm/LauncherApps/*.d.ts"
+  ],
+  "android.content.pm.PackageInstaller.*": [
+    "android/content/pm/PackageInstaller/*.d.ts"
+  ],
+  "android.content.pm.PackageItemInfo.*": [
+    "android/content/pm/PackageItemInfo/*.d.ts"
+  ],
+  "android.content.pm.PackageManager.*": [
+    "android/content/pm/PackageManager/*.d.ts"
+  ],
+  "android.content.pm.ResolveInfo.*": [
+    "android/content/pm/ResolveInfo/*.d.ts"
+  ],
+  "android.content.pm.ShortcutInfo.*": [
+    "android/content/pm/ShortcutInfo/*.d.ts"
+  ],
+  "android.content.pm.verify.*": [
+    "android/content/pm/verify/*.d.ts"
+  ],
+  "android.content.res.AssetFileDescriptor.*": [
+    "android/content/res/AssetFileDescriptor/*.d.ts"
+  ],
+  "android.content.res.AssetManager.*": [
+    "android/content/res/AssetManager/*.d.ts"
+  ],
+  "android.content.res.Resources.*": [
+    "android/content/res/Resources/*.d.ts"
+  ],
+  "android.content.res.loader.*": [
+    "android/content/res/loader/*.d.ts"
+  ],
+  "android.database.sqlite.SQLiteDatabase.*": [
+    "android/database/sqlite/SQLiteDatabase/*.d.ts"
+  ],
+  "android.graphics.ColorSpace.Rgb.*": [
+    "android/graphics/ColorSpace/Rgb/*.d.ts"
+  ],
+  "android.graphics.drawable.Animatable2.*": [
+    "android/graphics/drawable/Animatable2/*.d.ts"
+  ],
+  "android.graphics.drawable.Drawable.*": [
+    "android/graphics/drawable/Drawable/*.d.ts"
+  ],
+  "android.graphics.drawable.DrawableContainer.*": [
+    "android/graphics/drawable/DrawableContainer/*.d.ts"
+  ],
+  "android.graphics.drawable.GradientDrawable.*": [
+    "android/graphics/drawable/GradientDrawable/*.d.ts"
+  ],
+  "android.graphics.drawable.Icon.*": [
+    "android/graphics/drawable/Icon/*.d.ts"
+  ],
+  "android.graphics.drawable.ShapeDrawable.*": [
+    "android/graphics/drawable/ShapeDrawable/*.d.ts"
+  ],
+  "android.graphics.drawable.shapes.*": [
+    "android/graphics/drawable/shapes/*.d.ts"
+  ],
+  "android.graphics.fonts.Font.*": [
+    "android/graphics/fonts/Font/*.d.ts"
+  ],
+  "android.graphics.fonts.FontFamily.*": [
+    "android/graphics/fonts/FontFamily/*.d.ts"
+  ],
+  "android.graphics.pdf.PdfDocument.*": [
+    "android/graphics/pdf/PdfDocument/*.d.ts"
+  ],
+  "android.graphics.pdf.PdfRenderer.*": [
+    "android/graphics/pdf/PdfRenderer/*.d.ts"
+  ],
+  "android.graphics.text.LineBreakConfig.*": [
+    "android/graphics/text/LineBreakConfig/*.d.ts"
+  ],
+  "android.graphics.text.LineBreaker.*": [
+    "android/graphics/text/LineBreaker/*.d.ts"
+  ],
+  "android.graphics.text.MeasuredText.*": [
+    "android/graphics/text/MeasuredText/*.d.ts"
+  ],
+  "android.hardware.biometrics.BiometricManager.*": [
+    "android/hardware/biometrics/BiometricManager/*.d.ts"
+  ],
+  "android.hardware.biometrics.BiometricPrompt.*": [
+    "android/hardware/biometrics/BiometricPrompt/*.d.ts"
+  ],
+  "android.hardware.camera2.CameraCaptureSession.*": [
+    "android/hardware/camera2/CameraCaptureSession/*.d.ts"
+  ],
+  "android.hardware.camera2.CameraCharacteristics.*": [
+    "android/hardware/camera2/CameraCharacteristics/*.d.ts"
+  ],
+  "android.hardware.camera2.CameraDevice.*": [
+    "android/hardware/camera2/CameraDevice/*.d.ts"
+  ],
+  "android.hardware.camera2.CameraExtensionSession.*": [
+    "android/hardware/camera2/CameraExtensionSession/*.d.ts"
+  ],
+  "android.hardware.camera2.CameraManager.*": [
+    "android/hardware/camera2/CameraManager/*.d.ts"
+  ],
+  "android.hardware.camera2.CameraOfflineSession.*": [
+    "android/hardware/camera2/CameraOfflineSession/*.d.ts"
+  ],
+  "android.hardware.camera2.CaptureRequest.*": [
+    "android/hardware/camera2/CaptureRequest/*.d.ts"
+  ],
+  "android.hardware.camera2.CaptureResult.*": [
+    "android/hardware/camera2/CaptureResult/*.d.ts"
+  ],
+  "android.hardware.camera2.params.*": [
+    "android/hardware/camera2/params/*.d.ts"
+  ],
+  "android.hardware.display.DisplayManager.*": [
+    "android/hardware/display/DisplayManager/*.d.ts"
+  ],
+  "android.hardware.display.VirtualDisplay.*": [
+    "android/hardware/display/VirtualDisplay/*.d.ts"
+  ],
+  "android.hardware.display.VirtualDisplayConfig.*": [
+    "android/hardware/display/VirtualDisplayConfig/*.d.ts"
+  ],
+  "android.hardware.fingerprint.FingerprintManager.*": [
+    "android/hardware/fingerprint/FingerprintManager/*.d.ts"
+  ],
+  "android.hardware.input.InputManager.*": [
+    "android/hardware/input/InputManager/*.d.ts"
+  ],
+  "android.hardware.lights.LightState.*": [
+    "android/hardware/lights/LightState/*.d.ts"
+  ],
+  "android.hardware.lights.LightsManager.*": [
+    "android/hardware/lights/LightsManager/*.d.ts"
+  ],
+  "android.hardware.lights.LightsRequest.*": [
+    "android/hardware/lights/LightsRequest/*.d.ts"
+  ],
+  "android.health.connect.AggregateRecordsRequest.*": [
+    "android/health/connect/AggregateRecordsRequest/*.d.ts"
+  ],
+  "android.health.connect.LocalTimeRangeFilter.*": [
+    "android/health/connect/LocalTimeRangeFilter/*.d.ts"
+  ],
+  "android.health.connect.ReadRecordsRequestUsingFilters.*": [
+    "android/health/connect/ReadRecordsRequestUsingFilters/*.d.ts"
+  ],
+  "android.health.connect.ReadRecordsRequestUsingIds.*": [
+    "android/health/connect/ReadRecordsRequestUsingIds/*.d.ts"
+  ],
+  "android.health.connect.TimeInstantRangeFilter.*": [
+    "android/health/connect/TimeInstantRangeFilter/*.d.ts"
+  ],
+  "android.health.connect.changelog.*": [
+    "android/health/connect/changelog/*.d.ts"
+  ],
+  "android.health.connect.datatypes.*": [
+    "android/health/connect/datatypes/*.d.ts"
+  ],
+  "android.icu.lang.UCharacter.*": [
+    "android/icu/lang/UCharacter/*.d.ts"
+  ],
+  "android.icu.lang.UCharacterEnums.*": [
+    "android/icu/lang/UCharacterEnums/*.d.ts"
+  ],
+  "android.icu.lang.UProperty.*": [
+    "android/icu/lang/UProperty/*.d.ts"
+  ],
+  "android.icu.lang.UScript.*": [
+    "android/icu/lang/UScript/*.d.ts"
+  ],
+  "android.icu.number.NumberFormatter.*": [
+    "android/icu/number/NumberFormatter/*.d.ts"
+  ],
+  "android.icu.number.NumberRangeFormatter.*": [
+    "android/icu/number/NumberRangeFormatter/*.d.ts"
+  ],
+  "android.icu.text.AlphabeticIndex.*": [
+    "android/icu/text/AlphabeticIndex/*.d.ts"
+  ],
+  "android.icu.text.CaseMap.*": [
+    "android/icu/text/CaseMap/*.d.ts"
+  ],
+  "android.icu.text.CollationKey.*": [
+    "android/icu/text/CollationKey/*.d.ts"
+  ],
+  "android.icu.text.Collator.*": [
+    "android/icu/text/Collator/*.d.ts"
+  ],
+  "android.icu.text.CompactDecimalFormat.*": [
+    "android/icu/text/CompactDecimalFormat/*.d.ts"
+  ],
+  "android.icu.text.DateFormat.*": [
+    "android/icu/text/DateFormat/*.d.ts"
+  ],
+  "android.icu.text.DateIntervalFormat.*": [
+    "android/icu/text/DateIntervalFormat/*.d.ts"
+  ],
+  "android.icu.text.DateIntervalInfo.*": [
+    "android/icu/text/DateIntervalInfo/*.d.ts"
+  ],
+  "android.icu.text.DateTimePatternGenerator.*": [
+    "android/icu/text/DateTimePatternGenerator/*.d.ts"
+  ],
+  "android.icu.text.DisplayContext.*": [
+    "android/icu/text/DisplayContext/*.d.ts"
+  ],
+  "android.icu.text.Edits.*": [
+    "android/icu/text/Edits/*.d.ts"
+  ],
+  "android.icu.text.IDNA.*": [
+    "android/icu/text/IDNA/*.d.ts"
+  ],
+  "android.icu.text.ListFormatter.*": [
+    "android/icu/text/ListFormatter/*.d.ts"
+  ],
+  "android.icu.text.LocaleDisplayNames.*": [
+    "android/icu/text/LocaleDisplayNames/*.d.ts"
+  ],
+  "android.icu.text.MeasureFormat.*": [
+    "android/icu/text/MeasureFormat/*.d.ts"
+  ],
+  "android.icu.text.MessageFormat.*": [
+    "android/icu/text/MessageFormat/*.d.ts"
+  ],
+  "android.icu.text.MessagePattern.*": [
+    "android/icu/text/MessagePattern/*.d.ts"
+  ],
+  "android.icu.text.Normalizer.*": [
+    "android/icu/text/Normalizer/*.d.ts"
+  ],
+  "android.icu.text.Normalizer2.*": [
+    "android/icu/text/Normalizer2/*.d.ts"
+  ],
+  "android.icu.text.NumberFormat.*": [
+    "android/icu/text/NumberFormat/*.d.ts"
+  ],
+  "android.icu.text.PluralRules.*": [
+    "android/icu/text/PluralRules/*.d.ts"
+  ],
+  "android.icu.text.RelativeDateTimeFormatter.*": [
+    "android/icu/text/RelativeDateTimeFormatter/*.d.ts"
+  ],
+  "android.icu.text.SearchIterator.*": [
+    "android/icu/text/SearchIterator/*.d.ts"
+  ],
+  "android.icu.text.TimeZoneFormat.*": [
+    "android/icu/text/TimeZoneFormat/*.d.ts"
+  ],
+  "android.icu.text.TimeZoneNames.*": [
+    "android/icu/text/TimeZoneNames/*.d.ts"
+  ],
+  "android.icu.text.Transliterator.*": [
+    "android/icu/text/Transliterator/*.d.ts"
+  ],
+  "android.icu.text.UnicodeSet.*": [
+    "android/icu/text/UnicodeSet/*.d.ts"
+  ],
+  "android.icu.text.UnicodeSetSpanner.*": [
+    "android/icu/text/UnicodeSetSpanner/*.d.ts"
+  ],
+  "android.icu.util.Calendar.*": [
+    "android/icu/util/Calendar/*.d.ts"
+  ],
+  "android.icu.util.Currency.*": [
+    "android/icu/util/Currency/*.d.ts"
+  ],
+  "android.icu.util.IslamicCalendar.*": [
+    "android/icu/util/IslamicCalendar/*.d.ts"
+  ],
+  "android.icu.util.LocaleData.*": [
+    "android/icu/util/LocaleData/*.d.ts"
+  ],
+  "android.icu.util.MeasureUnit.*": [
+    "android/icu/util/MeasureUnit/*.d.ts"
+  ],
+  "android.icu.util.RangeValueIterator.*": [
+    "android/icu/util/RangeValueIterator/*.d.ts"
+  ],
+  "android.icu.util.TimeZone.*": [
+    "android/icu/util/TimeZone/*.d.ts"
+  ],
+  "android.icu.util.ULocale.*": [
+    "android/icu/util/ULocale/*.d.ts"
+  ],
+  "android.icu.util.ValueIterator.*": [
+    "android/icu/util/ValueIterator/*.d.ts"
+  ],
+  "android.location.provider.ProviderProperties.*": [
+    "android/location/provider/ProviderProperties/*.d.ts"
+  ],
+  "android.media.MediaCodec.CryptoInfo.*": [
+    "android/media/MediaCodec/CryptoInfo/*.d.ts"
+  ],
+  "android.media.MediaCodecInfo.VideoCapabilities.*": [
+    "android/media/MediaCodecInfo/VideoCapabilities/*.d.ts"
+  ],
+  "android.media.RouteListingPreference.Item.*": [
+    "android/media/RouteListingPreference/Item/*.d.ts"
+  ],
+  "android.media.VolumeShaper.Configuration.*": [
+    "android/media/VolumeShaper/Configuration/*.d.ts"
+  ],
+  "android.media.audiofx.AudioEffect.*": [
+    "android/media/audiofx/AudioEffect/*.d.ts"
+  ],
+  "android.media.audiofx.BassBoost.*": [
+    "android/media/audiofx/BassBoost/*.d.ts"
+  ],
+  "android.media.audiofx.DynamicsProcessing.*": [
+    "android/media/audiofx/DynamicsProcessing/*.d.ts"
+  ],
+  "android.media.audiofx.EnvironmentalReverb.*": [
+    "android/media/audiofx/EnvironmentalReverb/*.d.ts"
+  ],
+  "android.media.audiofx.Equalizer.*": [
+    "android/media/audiofx/Equalizer/*.d.ts"
+  ],
+  "android.media.audiofx.PresetReverb.*": [
+    "android/media/audiofx/PresetReverb/*.d.ts"
+  ],
+  "android.media.audiofx.Virtualizer.*": [
+    "android/media/audiofx/Virtualizer/*.d.ts"
+  ],
+  "android.media.audiofx.Visualizer.*": [
+    "android/media/audiofx/Visualizer/*.d.ts"
+  ],
+  "android.media.browse.MediaBrowser.*": [
+    "android/media/browse/MediaBrowser/*.d.ts"
+  ],
+  "android.media.metrics.NetworkEvent.*": [
+    "android/media/metrics/NetworkEvent/*.d.ts"
+  ],
+  "android.media.metrics.PlaybackErrorEvent.*": [
+    "android/media/metrics/PlaybackErrorEvent/*.d.ts"
+  ],
+  "android.media.metrics.PlaybackMetrics.*": [
+    "android/media/metrics/PlaybackMetrics/*.d.ts"
+  ],
+  "android.media.metrics.PlaybackStateEvent.*": [
+    "android/media/metrics/PlaybackStateEvent/*.d.ts"
+  ],
+  "android.media.metrics.TrackChangeEvent.*": [
+    "android/media/metrics/TrackChangeEvent/*.d.ts"
+  ],
+  "android.media.midi.MidiDevice.*": [
+    "android/media/midi/MidiDevice/*.d.ts"
+  ],
+  "android.media.midi.MidiDeviceInfo.*": [
+    "android/media/midi/MidiDeviceInfo/*.d.ts"
+  ],
+  "android.media.midi.MidiManager.*": [
+    "android/media/midi/MidiManager/*.d.ts"
+  ],
+  "android.media.projection.MediaProjection.*": [
+    "android/media/projection/MediaProjection/*.d.ts"
+  ],
+  "android.media.session.MediaController.*": [
+    "android/media/session/MediaController/*.d.ts"
+  ],
+  "android.media.session.MediaSession.*": [
+    "android/media/session/MediaSession/*.d.ts"
+  ],
+  "android.media.session.MediaSessionManager.*": [
+    "android/media/session/MediaSessionManager/*.d.ts"
+  ],
+  "android.media.session.PlaybackState.*": [
+    "android/media/session/PlaybackState/*.d.ts"
+  ],
+  "android.media.tv.TableResponse.*": [
+    "android/media/tv/TableResponse/*.d.ts"
+  ],
+  "android.media.tv.TvContract.*": [
+    "android/media/tv/TvContract/*.d.ts"
+  ],
+  "android.media.tv.TvInputInfo.*": [
+    "android/media/tv/TvInputInfo/*.d.ts"
+  ],
+  "android.media.tv.TvInputManager.*": [
+    "android/media/tv/TvInputManager/*.d.ts"
+  ],
+  "android.media.tv.TvInputService.*": [
+    "android/media/tv/TvInputService/*.d.ts"
+  ],
+  "android.media.tv.TvRecordingClient.*": [
+    "android/media/tv/TvRecordingClient/*.d.ts"
+  ],
+  "android.media.tv.TvTrackInfo.*": [
+    "android/media/tv/TvTrackInfo/*.d.ts"
+  ],
+  "android.media.tv.TvView.*": [
+    "android/media/tv/TvView/*.d.ts"
+  ],
+  "android.media.tv.interactive.*": [
+    "android/media/tv/interactive/*.d.ts"
+  ],
+  "android.net.eap.EapAkaInfo.*": [
+    "android/net/eap/EapAkaInfo/*.d.ts"
+  ],
+  "android.net.eap.EapSessionConfig.*": [
+    "android/net/eap/EapSessionConfig/*.d.ts"
+  ],
+  "android.net.http.BidirectionalStream.*": [
+    "android/net/http/BidirectionalStream/*.d.ts"
+  ],
+  "android.net.http.ConnectionMigrationOptions.*": [
+    "android/net/http/ConnectionMigrationOptions/*.d.ts"
+  ],
+  "android.net.http.DnsOptions.*": [
+    "android/net/http/DnsOptions/*.d.ts"
+  ],
+  "android.net.http.HttpEngine.*": [
+    "android/net/http/HttpEngine/*.d.ts"
+  ],
+  "android.net.http.QuicOptions.*": [
+    "android/net/http/QuicOptions/*.d.ts"
+  ],
+  "android.net.http.SslCertificate.*": [
+    "android/net/http/SslCertificate/*.d.ts"
+  ],
+  "android.net.http.UrlRequest.*": [
+    "android/net/http/UrlRequest/*.d.ts"
+  ],
+  "android.net.ipsec.ike.*": [
+    "android/net/ipsec/ike/*.d.ts"
+  ],
+  "android.net.nsd.NsdManager.*": [
+    "android/net/nsd/NsdManager/*.d.ts"
+  ],
+  "android.net.sip.SipAudioCall.*": [
+    "android/net/sip/SipAudioCall/*.d.ts"
+  ],
+  "android.net.sip.SipProfile.*": [
+    "android/net/sip/SipProfile/*.d.ts"
+  ],
+  "android.net.sip.SipSession.*": [
+    "android/net/sip/SipSession/*.d.ts"
+  ],
+  "android.net.vcn.VcnCellUnderlyingNetworkTemplate.*": [
+    "android/net/vcn/VcnCellUnderlyingNetworkTemplate/*.d.ts"
+  ],
+  "android.net.vcn.VcnConfig.*": [
+    "android/net/vcn/VcnConfig/*.d.ts"
+  ],
+  "android.net.vcn.VcnGatewayConnectionConfig.*": [
+    "android/net/vcn/VcnGatewayConnectionConfig/*.d.ts"
+  ],
+  "android.net.vcn.VcnManager.*": [
+    "android/net/vcn/VcnManager/*.d.ts"
+  ],
+  "android.net.vcn.VcnWifiUnderlyingNetworkTemplate.*": [
+    "android/net/vcn/VcnWifiUnderlyingNetworkTemplate/*.d.ts"
+  ],
+  "android.net.wifi.ScanResult.*": [
+    "android/net/wifi/ScanResult/*.d.ts"
+  ],
+  "android.net.wifi.WifiConfiguration.*": [
+    "android/net/wifi/WifiConfiguration/*.d.ts"
+  ],
+  "android.net.wifi.WifiEnterpriseConfig.*": [
+    "android/net/wifi/WifiEnterpriseConfig/*.d.ts"
+  ],
+  "android.net.wifi.WifiInfo.*": [
+    "android/net/wifi/WifiInfo/*.d.ts"
+  ],
+  "android.net.wifi.WifiManager.*": [
+    "android/net/wifi/WifiManager/*.d.ts"
+  ],
+  "android.net.wifi.WifiNetworkSpecifier.*": [
+    "android/net/wifi/WifiNetworkSpecifier/*.d.ts"
+  ],
+  "android.net.wifi.WifiNetworkSuggestion.*": [
+    "android/net/wifi/WifiNetworkSuggestion/*.d.ts"
+  ],
+  "android.net.wifi.aware.*": [
+    "android/net/wifi/aware/*.d.ts"
+  ],
+  "android.net.wifi.hotspot2.*": [
+    "android/net/wifi/hotspot2/*.d.ts"
+  ],
+  "android.net.wifi.p2p.*": [
+    "android/net/wifi/p2p/*.d.ts"
+  ],
+  "android.net.wifi.rtt.*": [
+    "android/net/wifi/rtt/*.d.ts"
+  ],
+  "android.os.StrictMode.ThreadPolicy.*": [
+    "android/os/StrictMode/ThreadPolicy/*.d.ts"
+  ],
+  "android.os.StrictMode.VmPolicy.*": [
+    "android/os/StrictMode/VmPolicy/*.d.ts"
+  ],
+  "android.os.storage.StorageManager.*": [
+    "android/os/storage/StorageManager/*.d.ts"
+  ],
+  "android.provider.Contacts.Intents.*": [
+    "android/provider/Contacts/Intents/*.d.ts"
+  ],
+  "android.provider.Contacts.People.*": [
+    "android/provider/Contacts/People/*.d.ts"
+  ],
+  "android.provider.ContactsContract.CommonDataKinds.*": [
+    "android/provider/ContactsContract/CommonDataKinds/*.d.ts"
+  ],
+  "android.provider.ContactsContract.Contacts.*": [
+    "android/provider/ContactsContract/Contacts/*.d.ts"
+  ],
+  "android.provider.ContactsContract.Intents.*": [
+    "android/provider/ContactsContract/Intents/*.d.ts"
+  ],
+  "android.provider.ContactsContract.RawContacts.*": [
+    "android/provider/ContactsContract/RawContacts/*.d.ts"
+  ],
+  "android.provider.MediaStore.Audio.*": [
+    "android/provider/MediaStore/Audio/*.d.ts"
+  ],
+  "android.provider.MediaStore.Files.*": [
+    "android/provider/MediaStore/Files/*.d.ts"
+  ],
+  "android.provider.MediaStore.Images.*": [
+    "android/provider/MediaStore/Images/*.d.ts"
+  ],
+  "android.provider.MediaStore.Video.*": [
+    "android/provider/MediaStore/Video/*.d.ts"
+  ],
+  "android.provider.Telephony.Mms.*": [
+    "android/provider/Telephony/Mms/*.d.ts"
+  ],
+  "android.provider.Telephony.MmsSms.*": [
+    "android/provider/Telephony/MmsSms/*.d.ts"
+  ],
+  "android.provider.Telephony.Sms.*": [
+    "android/provider/Telephony/Sms/*.d.ts"
+  ],
+  "android.se.omapi.Channel.*": [
+    "android/se/omapi/Channel/*.d.ts"
+  ],
+  "android.se.omapi.SEService.*": [
+    "android/se/omapi/SEService/*.d.ts"
+  ],
+  "android.security.identity.AccessControlProfile.*": [
+    "android/security/identity/AccessControlProfile/*.d.ts"
+  ],
+  "android.security.identity.CredentialDataRequest.*": [
+    "android/security/identity/CredentialDataRequest/*.d.ts"
+  ],
+  "android.security.identity.CredentialDataResult.*": [
+    "android/security/identity/CredentialDataResult/*.d.ts"
+  ],
+  "android.security.identity.PersonalizationData.*": [
+    "android/security/identity/PersonalizationData/*.d.ts"
+  ],
+  "android.security.keystore.KeyGenParameterSpec.*": [
+    "android/security/keystore/KeyGenParameterSpec/*.d.ts"
+  ],
+  "android.security.keystore.KeyProtection.*": [
+    "android/security/keystore/KeyProtection/*.d.ts"
+  ],
+  "android.service.assist.classification.*": [
+    "android/service/assist/classification/*.d.ts"
+  ],
+  "android.service.autofill.BatchUpdates.*": [
+    "android/service/autofill/BatchUpdates/*.d.ts"
+  ],
+  "android.service.autofill.CharSequenceTransformation.*": [
+    "android/service/autofill/CharSequenceTransformation/*.d.ts"
+  ],
+  "android.service.autofill.CustomDescription.*": [
+    "android/service/autofill/CustomDescription/*.d.ts"
+  ],
+  "android.service.autofill.Dataset.*": [
+    "android/service/autofill/Dataset/*.d.ts"
+  ],
+  "android.service.autofill.Field.*": [
+    "android/service/autofill/Field/*.d.ts"
+  ],
+  "android.service.autofill.FieldClassification.*": [
+    "android/service/autofill/FieldClassification/*.d.ts"
+  ],
+  "android.service.autofill.FillEventHistory.*": [
+    "android/service/autofill/FillEventHistory/*.d.ts"
+  ],
+  "android.service.autofill.FillResponse.*": [
+    "android/service/autofill/FillResponse/*.d.ts"
+  ],
+  "android.service.autofill.ImageTransformation.*": [
+    "android/service/autofill/ImageTransformation/*.d.ts"
+  ],
+  "android.service.autofill.Presentations.*": [
+    "android/service/autofill/Presentations/*.d.ts"
+  ],
+  "android.service.autofill.SaveInfo.*": [
+    "android/service/autofill/SaveInfo/*.d.ts"
+  ],
+  "android.service.autofill.UserData.*": [
+    "android/service/autofill/UserData/*.d.ts"
+  ],
+  "android.service.autofill.VisibilitySetterAction.*": [
+    "android/service/autofill/VisibilitySetterAction/*.d.ts"
+  ],
+  "android.service.carrier.CarrierMessagingService.*": [
+    "android/service/carrier/CarrierMessagingService/*.d.ts"
+  ],
+  "android.service.chooser.ChooserAction.*": [
+    "android/service/chooser/ChooserAction/*.d.ts"
+  ],
+  "android.service.controls.Control.*": [
+    "android/service/controls/Control/*.d.ts"
+  ],
+  "android.service.controls.actions.*": [
+    "android/service/controls/actions/*.d.ts"
+  ],
+  "android.service.controls.templates.*": [
+    "android/service/controls/templates/*.d.ts"
+  ],
+  "android.service.credentials.BeginCreateCredentialResponse.*": [
+    "android/service/credentials/BeginCreateCredentialResponse/*.d.ts"
+  ],
+  "android.service.credentials.BeginGetCredentialRequest.*": [
+    "android/service/credentials/BeginGetCredentialRequest/*.d.ts"
+  ],
+  "android.service.credentials.BeginGetCredentialResponse.*": [
+    "android/service/credentials/BeginGetCredentialResponse/*.d.ts"
+  ],
+  "android.service.media.MediaBrowserService.*": [
+    "android/service/media/MediaBrowserService/*.d.ts"
+  ],
+  "android.service.notification.NotificationListenerService.*": [
+    "android/service/notification/NotificationListenerService/*.d.ts"
+  ],
+  "android.service.notification.ZenPolicy.*": [
+    "android/service/notification/ZenPolicy/*.d.ts"
+  ],
+  "android.service.quickaccesswallet.WalletCard.*": [
+    "android/service/quickaccesswallet/WalletCard/*.d.ts"
+  ],
+  "android.service.textservice.SpellCheckerService.*": [
+    "android/service/textservice/SpellCheckerService/*.d.ts"
+  ],
+  "android.service.voice.VoiceInteractionSession.*": [
+    "android/service/voice/VoiceInteractionSession/*.d.ts"
+  ],
+  "android.service.wallpaper.WallpaperService.*": [
+    "android/service/wallpaper/WallpaperService/*.d.ts"
+  ],
+  "android.speech.tts.TextToSpeech.*": [
+    "android/speech/tts/TextToSpeech/*.d.ts"
+  ],
+  "android.support.v4.app.*": [
+    "android/support/v4/app/*.d.ts"
+  ],
+  "android.support.v4.graphics.*": [
+    "android/support/v4/graphics/*.d.ts"
+  ],
+  "android.support.v4.os.*": [
+    "android/support/v4/os/*.d.ts"
+  ],
+  "android.telecom.CallScreeningService.CallResponse.*": [
+    "android/telecom/CallScreeningService/CallResponse/*.d.ts"
+  ],
+  "android.telecom.InCallService.VideoCall.*": [
+    "android/telecom/InCallService/VideoCall/*.d.ts"
+  ],
+  "android.telecom.RemoteConnection.VideoProvider.*": [
+    "android/telecom/RemoteConnection/VideoProvider/*.d.ts"
+  ],
+  "android.telephony.data.ApnSetting.*": [
+    "android/telephony/data/ApnSetting/*.d.ts"
+  ],
+  "android.telephony.data.NetworkSliceInfo.*": [
+    "android/telephony/data/NetworkSliceInfo/*.d.ts"
+  ],
+  "android.telephony.data.TrafficDescriptor.*": [
+    "android/telephony/data/TrafficDescriptor/*.d.ts"
+  ],
+  "android.telephony.euicc.DownloadableSubscription.*": [
+    "android/telephony/euicc/DownloadableSubscription/*.d.ts"
+  ],
+  "android.telephony.gsm.SmsMessage.*": [
+    "android/telephony/gsm/SmsMessage/*.d.ts"
+  ],
+  "android.telephony.ims.ImsMmTelManager.*": [
+    "android/telephony/ims/ImsMmTelManager/*.d.ts"
+  ],
+  "android.telephony.ims.ProvisioningManager.*": [
+    "android/telephony/ims/ProvisioningManager/*.d.ts"
+  ],
+  "android.telephony.ims.RegistrationManager.*": [
+    "android/telephony/ims/RegistrationManager/*.d.ts"
+  ],
+  "android.telephony.ims.feature.*": [
+    "android/telephony/ims/feature/*.d.ts"
+  ],
+  "android.telephony.ims.stub.*": [
+    "android/telephony/ims/stub/*.d.ts"
+  ],
+  "android.telephony.mbms.DownloadRequest.*": [
+    "android/telephony/mbms/DownloadRequest/*.d.ts"
+  ],
+  "android.telephony.mbms.MbmsErrors.*": [
+    "android/telephony/mbms/MbmsErrors/*.d.ts"
+  ],
+  "android.text.PrecomputedText.Params.*": [
+    "android/text/PrecomputedText/Params/*.d.ts"
+  ],
+  "android.text.method.TextKeyListener.*": [
+    "android/text/method/TextKeyListener/*.d.ts"
+  ],
+  "android.text.style.AlignmentSpan.*": [
+    "android/text/style/AlignmentSpan/*.d.ts"
+  ],
+  "android.text.style.LeadingMarginSpan.*": [
+    "android/text/style/LeadingMarginSpan/*.d.ts"
+  ],
+  "android.text.style.LineBackgroundSpan.*": [
+    "android/text/style/LineBackgroundSpan/*.d.ts"
+  ],
+  "android.text.style.LineHeightSpan.*": [
+    "android/text/style/LineHeightSpan/*.d.ts"
+  ],
+  "android.text.style.TabStopSpan.*": [
+    "android/text/style/TabStopSpan/*.d.ts"
+  ],
+  "android.text.style.TtsSpan.*": [
+    "android/text/style/TtsSpan/*.d.ts"
+  ],
+  "android.text.util.Linkify.*": [
+    "android/text/util/Linkify/*.d.ts"
+  ],
+  "android.view.PixelCopy.Request.*": [
+    "android/view/PixelCopy/Request/*.d.ts"
+  ],
+  "android.view.ViewStructure.HtmlInfo.*": [
+    "android/view/ViewStructure/HtmlInfo/*.d.ts"
+  ],
+  "android.view.accessibility.AccessibilityManager.*": [
+    "android/view/accessibility/AccessibilityManager/*.d.ts"
+  ],
+  "android.view.accessibility.AccessibilityNodeInfo.*": [
+    "android/view/accessibility/AccessibilityNodeInfo/*.d.ts"
+  ],
+  "android.view.accessibility.CaptioningManager.*": [
+    "android/view/accessibility/CaptioningManager/*.d.ts"
+  ],
+  "android.view.animation.Animation.*": [
+    "android/view/animation/Animation/*.d.ts"
+  ],
+  "android.view.animation.GridLayoutAnimationController.*": [
+    "android/view/animation/GridLayoutAnimationController/*.d.ts"
+  ],
+  "android.view.animation.LayoutAnimationController.*": [
+    "android/view/animation/LayoutAnimationController/*.d.ts"
+  ],
+  "android.view.autofill.AutofillManager.*": [
+    "android/view/autofill/AutofillManager/*.d.ts"
+  ],
+  "android.view.autofill.VirtualViewFillInfo.*": [
+    "android/view/autofill/VirtualViewFillInfo/*.d.ts"
+  ],
+  "android.view.contentcapture.ContentCaptureContext.*": [
+    "android/view/contentcapture/ContentCaptureContext/*.d.ts"
+  ],
+  "android.view.contentcapture.DataRemovalRequest.*": [
+    "android/view/contentcapture/DataRemovalRequest/*.d.ts"
+  ],
+  "android.view.inputmethod.CursorAnchorInfo.*": [
+    "android/view/inputmethod/CursorAnchorInfo/*.d.ts"
+  ],
+  "android.view.inputmethod.DeleteGesture.*": [
+    "android/view/inputmethod/DeleteGesture/*.d.ts"
+  ],
+  "android.view.inputmethod.DeleteRangeGesture.*": [
+    "android/view/inputmethod/DeleteRangeGesture/*.d.ts"
+  ],
+  "android.view.inputmethod.EditorBoundsInfo.*": [
+    "android/view/inputmethod/EditorBoundsInfo/*.d.ts"
+  ],
+  "android.view.inputmethod.InlineSuggestionsRequest.*": [
+    "android/view/inputmethod/InlineSuggestionsRequest/*.d.ts"
+  ],
+  "android.view.inputmethod.InputMethod.*": [
+    "android/view/inputmethod/InputMethod/*.d.ts"
+  ],
+  "android.view.inputmethod.InputMethodSession.*": [
+    "android/view/inputmethod/InputMethodSession/*.d.ts"
+  ],
+  "android.view.inputmethod.InputMethodSubtype.*": [
+    "android/view/inputmethod/InputMethodSubtype/*.d.ts"
+  ],
+  "android.view.inputmethod.InsertGesture.*": [
+    "android/view/inputmethod/InsertGesture/*.d.ts"
+  ],
+  "android.view.inputmethod.InsertModeGesture.*": [
+    "android/view/inputmethod/InsertModeGesture/*.d.ts"
+  ],
+  "android.view.inputmethod.JoinOrSplitGesture.*": [
+    "android/view/inputmethod/JoinOrSplitGesture/*.d.ts"
+  ],
+  "android.view.inputmethod.RemoveSpaceGesture.*": [
+    "android/view/inputmethod/RemoveSpaceGesture/*.d.ts"
+  ],
+  "android.view.inputmethod.SelectGesture.*": [
+    "android/view/inputmethod/SelectGesture/*.d.ts"
+  ],
+  "android.view.inputmethod.SelectRangeGesture.*": [
+    "android/view/inputmethod/SelectRangeGesture/*.d.ts"
+  ],
+  "android.view.inputmethod.TextAppearanceInfo.*": [
+    "android/view/inputmethod/TextAppearanceInfo/*.d.ts"
+  ],
+  "android.view.inputmethod.TextAttribute.*": [
+    "android/view/inputmethod/TextAttribute/*.d.ts"
+  ],
+  "android.view.inputmethod.TextBoundsInfo.*": [
+    "android/view/inputmethod/TextBoundsInfo/*.d.ts"
+  ],
+  "android.view.inspector.InspectionCompanion.*": [
+    "android/view/inspector/InspectionCompanion/*.d.ts"
+  ],
+  "android.view.inspector.PropertyMapper.*": [
+    "android/view/inspector/PropertyMapper/*.d.ts"
+  ],
+  "android.view.inspector.PropertyReader.*": [
+    "android/view/inspector/PropertyReader/*.d.ts"
+  ],
+  "android.view.textclassifier.ConversationAction.*": [
+    "android/view/textclassifier/ConversationAction/*.d.ts"
+  ],
+  "android.view.textclassifier.ConversationActions.*": [
+    "android/view/textclassifier/ConversationActions/*.d.ts"
+  ],
+  "android.view.textclassifier.TextClassification.*": [
+    "android/view/textclassifier/TextClassification/*.d.ts"
+  ],
+  "android.view.textclassifier.TextClassificationContext.*": [
+    "android/view/textclassifier/TextClassificationContext/*.d.ts"
+  ],
+  "android.view.textclassifier.TextClassifier.*": [
+    "android/view/textclassifier/TextClassifier/*.d.ts"
+  ],
+  "android.view.textclassifier.TextClassifierEvent.*": [
+    "android/view/textclassifier/TextClassifierEvent/*.d.ts"
+  ],
+  "android.view.textclassifier.TextLanguage.*": [
+    "android/view/textclassifier/TextLanguage/*.d.ts"
+  ],
+  "android.view.textclassifier.TextLinks.*": [
+    "android/view/textclassifier/TextLinks/*.d.ts"
+  ],
+  "android.view.textclassifier.TextSelection.*": [
+    "android/view/textclassifier/TextSelection/*.d.ts"
+  ],
+  "android.view.textservice.SpellCheckerSession.*": [
+    "android/view/textservice/SpellCheckerSession/*.d.ts"
+  ],
+  "android.view.translation.TranslationContext.*": [
+    "android/view/translation/TranslationContext/*.d.ts"
+  ],
+  "android.view.translation.TranslationRequest.*": [
+    "android/view/translation/TranslationRequest/*.d.ts"
+  ],
+  "android.view.translation.TranslationResponse.*": [
+    "android/view/translation/TranslationResponse/*.d.ts"
+  ],
+  "android.view.translation.TranslationResponseValue.*": [
+    "android/view/translation/TranslationResponseValue/*.d.ts"
+  ],
+  "android.view.translation.ViewTranslationRequest.*": [
+    "android/view/translation/ViewTranslationRequest/*.d.ts"
+  ],
+  "android.view.translation.ViewTranslationResponse.*": [
+    "android/view/translation/ViewTranslationResponse/*.d.ts"
+  ],
+  "android.widget.RemoteViews.RemoteCollectionItems.*": [
+    "android/widget/RemoteViews/RemoteCollectionItems/*.d.ts"
+  ],
+  "android.widget.inline.InlineContentView.*": [
+    "android/widget/inline/InlineContentView/*.d.ts"
+  ],
+  "android.widget.inline.InlinePresentationSpec.*": [
+    "android/widget/inline/InlinePresentationSpec/*.d.ts"
+  ],
+  "androidx.activity.result.ActivityResultRegistry.*": [
+    "androidx/activity/result/ActivityResultRegistry/*.d.ts"
+  ],
+  "androidx.activity.result.IntentSenderRequest.*": [
+    "androidx/activity/result/IntentSenderRequest/*.d.ts"
+  ],
+  "androidx.activity.result.contract.*": [
+    "androidx/activity/result/contract/*.d.ts"
+  ],
+  "androidx.annotation.experimental.Experimental.*": [
+    "androidx/annotation/experimental/Experimental/*.d.ts"
+  ],
+  "androidx.appcompat.app.ActionBar.*": [
+    "androidx/appcompat/app/ActionBar/*.d.ts"
+  ],
+  "androidx.appcompat.app.ActionBarDrawerToggle.*": [
+    "androidx/appcompat/app/ActionBarDrawerToggle/*.d.ts"
+  ],
+  "androidx.appcompat.app.ActionBarDrawerToggleHoneycomb.*": [
+    "androidx/appcompat/app/ActionBarDrawerToggleHoneycomb/*.d.ts"
+  ],
+  "androidx.appcompat.app.AlertController.*": [
+    "androidx/appcompat/app/AlertController/*.d.ts"
+  ],
+  "androidx.appcompat.app.AlertDialog.*": [
+    "androidx/appcompat/app/AlertDialog/*.d.ts"
+  ],
+  "androidx.appcompat.app.AppCompatDelegate.*": [
+    "androidx/appcompat/app/AppCompatDelegate/*.d.ts"
+  ],
+  "androidx.appcompat.app.AppCompatDelegateImpl.*": [
+    "androidx/appcompat/app/AppCompatDelegateImpl/*.d.ts"
+  ],
+  "androidx.appcompat.app.AppCompatViewInflater.*": [
+    "androidx/appcompat/app/AppCompatViewInflater/*.d.ts"
+  ],
+  "androidx.appcompat.app.ToolbarActionBar.*": [
+    "androidx/appcompat/app/ToolbarActionBar/*.d.ts"
+  ],
+  "androidx.appcompat.app.TwilightManager.*": [
+    "androidx/appcompat/app/TwilightManager/*.d.ts"
+  ],
+  "androidx.appcompat.app.WindowDecorActionBar.*": [
+    "androidx/appcompat/app/WindowDecorActionBar/*.d.ts"
+  ],
+  "androidx.appcompat.content.res.*": [
+    "androidx/appcompat/content/res/*.d.ts"
+  ],
+  "androidx.appcompat.graphics.drawable.*": [
+    "androidx/appcompat/graphics/drawable/*.d.ts"
+  ],
+  "androidx.appcompat.view.ActionMode.*": [
+    "androidx/appcompat/view/ActionMode/*.d.ts"
+  ],
+  "androidx.appcompat.view.SupportActionModeWrapper.*": [
+    "androidx/appcompat/view/SupportActionModeWrapper/*.d.ts"
+  ],
+  "androidx.appcompat.view.SupportMenuInflater.*": [
+    "androidx/appcompat/view/SupportMenuInflater/*.d.ts"
+  ],
+  "androidx.appcompat.view.menu.*": [
+    "androidx/appcompat/view/menu/*.d.ts"
+  ],
+  "androidx.appcompat.widget.AbsActionBarView.*": [
+    "androidx/appcompat/widget/AbsActionBarView/*.d.ts"
+  ],
+  "androidx.appcompat.widget.ActionBarOverlayLayout.*": [
+    "androidx/appcompat/widget/ActionBarOverlayLayout/*.d.ts"
+  ],
+  "androidx.appcompat.widget.ActionMenuPresenter.*": [
+    "androidx/appcompat/widget/ActionMenuPresenter/*.d.ts"
+  ],
+  "androidx.appcompat.widget.ActionMenuView.*": [
+    "androidx/appcompat/widget/ActionMenuView/*.d.ts"
+  ],
+  "androidx.appcompat.widget.ActivityChooserModel.*": [
+    "androidx/appcompat/widget/ActivityChooserModel/*.d.ts"
+  ],
+  "androidx.appcompat.widget.ActivityChooserView.*": [
+    "androidx/appcompat/widget/ActivityChooserView/*.d.ts"
+  ],
+  "androidx.appcompat.widget.AppCompatReceiveContentHelper.*": [
+    "androidx/appcompat/widget/AppCompatReceiveContentHelper/*.d.ts"
+  ],
+  "androidx.appcompat.widget.AppCompatSpinner.*": [
+    "androidx/appcompat/widget/AppCompatSpinner/*.d.ts"
+  ],
+  "androidx.appcompat.widget.AppCompatTextViewAutoSizeHelper.*": [
+    "androidx/appcompat/widget/AppCompatTextViewAutoSizeHelper/*.d.ts"
+  ],
+  "androidx.appcompat.widget.ContentFrameLayout.*": [
+    "androidx/appcompat/widget/ContentFrameLayout/*.d.ts"
+  ],
+  "androidx.appcompat.widget.DropDownListView.*": [
+    "androidx/appcompat/widget/DropDownListView/*.d.ts"
+  ],
+  "androidx.appcompat.widget.FitWindowsViewGroup.*": [
+    "androidx/appcompat/widget/FitWindowsViewGroup/*.d.ts"
+  ],
+  "androidx.appcompat.widget.ForwardingListener.*": [
+    "androidx/appcompat/widget/ForwardingListener/*.d.ts"
+  ],
+  "androidx.appcompat.widget.LinearLayoutCompat.*": [
+    "androidx/appcompat/widget/LinearLayoutCompat/*.d.ts"
+  ],
+  "androidx.appcompat.widget.ListPopupWindow.*": [
+    "androidx/appcompat/widget/ListPopupWindow/*.d.ts"
+  ],
+  "androidx.appcompat.widget.MenuPopupWindow.*": [
+    "androidx/appcompat/widget/MenuPopupWindow/*.d.ts"
+  ],
+  "androidx.appcompat.widget.PopupMenu.*": [
+    "androidx/appcompat/widget/PopupMenu/*.d.ts"
+  ],
+  "androidx.appcompat.widget.ResourceManagerInternal.*": [
+    "androidx/appcompat/widget/ResourceManagerInternal/*.d.ts"
+  ],
+  "androidx.appcompat.widget.ScrollingTabContainerView.*": [
+    "androidx/appcompat/widget/ScrollingTabContainerView/*.d.ts"
+  ],
+  "androidx.appcompat.widget.SearchView.*": [
+    "androidx/appcompat/widget/SearchView/*.d.ts"
+  ],
+  "androidx.appcompat.widget.ShareActionProvider.*": [
+    "androidx/appcompat/widget/ShareActionProvider/*.d.ts"
+  ],
+  "androidx.appcompat.widget.SuggestionsAdapter.*": [
+    "androidx/appcompat/widget/SuggestionsAdapter/*.d.ts"
+  ],
+  "androidx.appcompat.widget.ThemedSpinnerAdapter.*": [
+    "androidx/appcompat/widget/ThemedSpinnerAdapter/*.d.ts"
+  ],
+  "androidx.appcompat.widget.Toolbar.*": [
+    "androidx/appcompat/widget/Toolbar/*.d.ts"
+  ],
+  "androidx.appcompat.widget.ViewStubCompat.*": [
+    "androidx/appcompat/widget/ViewStubCompat/*.d.ts"
+  ],
+  "androidx.arch.core.executor.*": [
+    "androidx/arch/core/executor/*.d.ts"
+  ],
+  "androidx.arch.core.internal.*": [
+    "androidx/arch/core/internal/*.d.ts"
+  ],
+  "androidx.arch.core.util.*": [
+    "androidx/arch/core/util/*.d.ts"
+  ],
+  "androidx.core.app.ActivityCompat.*": [
+    "androidx/core/app/ActivityCompat/*.d.ts"
+  ],
+  "androidx.core.app.ActivityOptionsCompat.*": [
+    "androidx/core/app/ActivityOptionsCompat/*.d.ts"
+  ],
+  "androidx.core.app.ActivityRecreator.*": [
+    "androidx/core/app/ActivityRecreator/*.d.ts"
+  ],
+  "androidx.core.app.BundleCompat.*": [
+    "androidx/core/app/BundleCompat/*.d.ts"
+  ],
+  "androidx.core.app.ComponentActivity.*": [
+    "androidx/core/app/ComponentActivity/*.d.ts"
+  ],
+  "androidx.core.app.CoreComponentFactory.*": [
+    "androidx/core/app/CoreComponentFactory/*.d.ts"
+  ],
+  "androidx.core.app.FrameMetricsAggregator.*": [
+    "androidx/core/app/FrameMetricsAggregator/*.d.ts"
+  ],
+  "androidx.core.app.JobIntentService.*": [
+    "androidx/core/app/JobIntentService/*.d.ts"
+  ],
+  "androidx.core.app.NotificationChannelCompat.*": [
+    "androidx/core/app/NotificationChannelCompat/*.d.ts"
+  ],
+  "androidx.core.app.NotificationChannelGroupCompat.*": [
+    "androidx/core/app/NotificationChannelGroupCompat/*.d.ts"
+  ],
+  "androidx.core.app.NotificationCompat.*": [
+    "androidx/core/app/NotificationCompat/*.d.ts"
+  ],
+  "androidx.core.app.NotificationCompatSideChannelService.*": [
+    "androidx/core/app/NotificationCompatSideChannelService/*.d.ts"
+  ],
+  "androidx.core.app.NotificationManagerCompat.*": [
+    "androidx/core/app/NotificationManagerCompat/*.d.ts"
+  ],
+  "androidx.core.app.Person.*": [
+    "androidx/core/app/Person/*.d.ts"
+  ],
+  "androidx.core.app.RemoteInput.*": [
+    "androidx/core/app/RemoteInput/*.d.ts"
+  ],
+  "androidx.core.app.ServiceCompat.*": [
+    "androidx/core/app/ServiceCompat/*.d.ts"
+  ],
+  "androidx.core.app.ShareCompat.*": [
+    "androidx/core/app/ShareCompat/*.d.ts"
+  ],
+  "androidx.core.app.SharedElementCallback.*": [
+    "androidx/core/app/SharedElementCallback/*.d.ts"
+  ],
+  "androidx.core.app.TaskStackBuilder.*": [
+    "androidx/core/app/TaskStackBuilder/*.d.ts"
+  ],
+  "androidx.core.content.ContextCompat.*": [
+    "androidx/core/content/ContextCompat/*.d.ts"
+  ],
+  "androidx.core.content.FileProvider.*": [
+    "androidx/core/content/FileProvider/*.d.ts"
+  ],
+  "androidx.core.content.LocusIdCompat.*": [
+    "androidx/core/content/LocusIdCompat/*.d.ts"
+  ],
+  "androidx.core.content.PermissionChecker.*": [
+    "androidx/core/content/PermissionChecker/*.d.ts"
+  ],
+  "androidx.core.content.SharedPreferencesCompat.*": [
+    "androidx/core/content/SharedPreferencesCompat/*.d.ts"
+  ],
+  "androidx.core.content.pm.*": [
+    "androidx/core/content/pm/*.d.ts"
+  ],
+  "androidx.core.content.res.*": [
+    "androidx/core/content/res/*.d.ts"
+  ],
+  "androidx.core.database.sqlite.*": [
+    "androidx/core/database/sqlite/*.d.ts"
+  ],
+  "androidx.core.graphics.PathParser.*": [
+    "androidx/core/graphics/PathParser/*.d.ts"
+  ],
+  "androidx.core.graphics.TypefaceCompat.*": [
+    "androidx/core/graphics/TypefaceCompat/*.d.ts"
+  ],
+  "androidx.core.graphics.TypefaceCompatBaseImpl.*": [
+    "androidx/core/graphics/TypefaceCompatBaseImpl/*.d.ts"
+  ],
+  "androidx.core.graphics.drawable.*": [
+    "androidx/core/graphics/drawable/*.d.ts"
+  ],
+  "androidx.core.hardware.display.*": [
+    "androidx/core/hardware/display/*.d.ts"
+  ],
+  "androidx.core.hardware.fingerprint.*": [
+    "androidx/core/hardware/fingerprint/*.d.ts"
+  ],
+  "androidx.core.internal.view.*": [
+    "androidx/core/internal/view/*.d.ts"
+  ],
+  "androidx.core.location.GnssStatusCompat.*": [
+    "androidx/core/location/GnssStatusCompat/*.d.ts"
+  ],
+  "androidx.core.location.LocationManagerCompat.*": [
+    "androidx/core/location/LocationManagerCompat/*.d.ts"
+  ],
+  "androidx.core.net.ConnectivityManagerCompat.*": [
+    "androidx/core/net/ConnectivityManagerCompat/*.d.ts"
+  ],
+  "androidx.core.net.DatagramSocketWrapper.*": [
+    "androidx/core/net/DatagramSocketWrapper/*.d.ts"
+  ],
+  "androidx.core.os.CancellationSignal.*": [
+    "androidx/core/os/CancellationSignal/*.d.ts"
+  ],
+  "androidx.core.os.ExecutorCompat.*": [
+    "androidx/core/os/ExecutorCompat/*.d.ts"
+  ],
+  "androidx.core.os.LocaleListCompat.*": [
+    "androidx/core/os/LocaleListCompat/*.d.ts"
+  ],
+  "androidx.core.os.ParcelableCompat.*": [
+    "androidx/core/os/ParcelableCompat/*.d.ts"
+  ],
+  "androidx.core.os.ProcessCompat.*": [
+    "androidx/core/os/ProcessCompat/*.d.ts"
+  ],
+  "androidx.core.provider.FontRequestWorker.*": [
+    "androidx/core/provider/FontRequestWorker/*.d.ts"
+  ],
+  "androidx.core.provider.FontsContractCompat.*": [
+    "androidx/core/provider/FontsContractCompat/*.d.ts"
+  ],
+  "androidx.core.provider.RequestExecutor.*": [
+    "androidx/core/provider/RequestExecutor/*.d.ts"
+  ],
+  "androidx.core.provider.SelfDestructiveThread.*": [
+    "androidx/core/provider/SelfDestructiveThread/*.d.ts"
+  ],
+  "androidx.core.telephony.mbms.*": [
+    "androidx/core/telephony/mbms/*.d.ts"
+  ],
+  "androidx.core.text.BidiFormatter.*": [
+    "androidx/core/text/BidiFormatter/*.d.ts"
+  ],
+  "androidx.core.text.PrecomputedTextCompat.*": [
+    "androidx/core/text/PrecomputedTextCompat/*.d.ts"
+  ],
+  "androidx.core.text.TextDirectionHeuristicsCompat.*": [
+    "androidx/core/text/TextDirectionHeuristicsCompat/*.d.ts"
+  ],
+  "androidx.core.text.util.*": [
+    "androidx/core/text/util/*.d.ts"
+  ],
+  "androidx.core.util.Pools.*": [
+    "androidx/core/util/Pools/*.d.ts"
+  ],
+  "androidx.core.view.AccessibilityDelegateCompat.*": [
+    "androidx/core/view/AccessibilityDelegateCompat/*.d.ts"
+  ],
+  "androidx.core.view.ActionProvider.*": [
+    "androidx/core/view/ActionProvider/*.d.ts"
+  ],
+  "androidx.core.view.ContentInfoCompat.*": [
+    "androidx/core/view/ContentInfoCompat/*.d.ts"
+  ],
+  "androidx.core.view.DisplayCompat.*": [
+    "androidx/core/view/DisplayCompat/*.d.ts"
+  ],
+  "androidx.core.view.DragStartHelper.*": [
+    "androidx/core/view/DragStartHelper/*.d.ts"
+  ],
+  "androidx.core.view.GestureDetectorCompat.*": [
+    "androidx/core/view/GestureDetectorCompat/*.d.ts"
+  ],
+  "androidx.core.view.KeyEventDispatcher.*": [
+    "androidx/core/view/KeyEventDispatcher/*.d.ts"
+  ],
+  "androidx.core.view.LayoutInflaterCompat.*": [
+    "androidx/core/view/LayoutInflaterCompat/*.d.ts"
+  ],
+  "androidx.core.view.MenuItemCompat.*": [
+    "androidx/core/view/MenuItemCompat/*.d.ts"
+  ],
+  "androidx.core.view.ViewCompat.*": [
+    "androidx/core/view/ViewCompat/*.d.ts"
+  ],
+  "androidx.core.view.ViewPropertyAnimatorCompat.*": [
+    "androidx/core/view/ViewPropertyAnimatorCompat/*.d.ts"
+  ],
+  "androidx.core.view.WindowCompat.*": [
+    "androidx/core/view/WindowCompat/*.d.ts"
+  ],
+  "androidx.core.view.WindowInsetsAnimationCompat.*": [
+    "androidx/core/view/WindowInsetsAnimationCompat/*.d.ts"
+  ],
+  "androidx.core.view.WindowInsetsAnimationControllerCompat.*": [
+    "androidx/core/view/WindowInsetsAnimationControllerCompat/*.d.ts"
+  ],
+  "androidx.core.view.WindowInsetsCompat.*": [
+    "androidx/core/view/WindowInsetsCompat/*.d.ts"
+  ],
+  "androidx.core.view.WindowInsetsControllerCompat.*": [
+    "androidx/core/view/WindowInsetsControllerCompat/*.d.ts"
+  ],
+  "androidx.core.view.accessibility.*": [
+    "androidx/core/view/accessibility/*.d.ts"
+  ],
+  "androidx.core.view.animation.*": [
+    "androidx/core/view/animation/*.d.ts"
+  ],
+  "androidx.core.view.inputmethod.*": [
+    "androidx/core/view/inputmethod/*.d.ts"
+  ],
+  "androidx.core.widget.AutoScrollHelper.*": [
+    "androidx/core/widget/AutoScrollHelper/*.d.ts"
+  ],
+  "androidx.core.widget.NestedScrollView.*": [
+    "androidx/core/widget/NestedScrollView/*.d.ts"
+  ],
+  "androidx.core.widget.TextViewCompat.*": [
+    "androidx/core/widget/TextViewCompat/*.d.ts"
+  ],
+  "androidx.core.widget.TextViewOnReceiveContentListener.*": [
+    "androidx/core/widget/TextViewOnReceiveContentListener/*.d.ts"
+  ],
+  "androidx.fragment.app.DefaultSpecialEffectsController.*": [
+    "androidx/fragment/app/DefaultSpecialEffectsController/*.d.ts"
+  ],
+  "androidx.fragment.app.Fragment.*": [
+    "androidx/fragment/app/Fragment/*.d.ts"
+  ],
+  "androidx.fragment.app.FragmentActivity.*": [
+    "androidx/fragment/app/FragmentActivity/*.d.ts"
+  ],
+  "androidx.fragment.app.FragmentAnim.*": [
+    "androidx/fragment/app/FragmentAnim/*.d.ts"
+  ],
+  "androidx.fragment.app.FragmentLifecycleCallbacksDispatcher.*": [
+    "androidx/fragment/app/FragmentLifecycleCallbacksDispatcher/*.d.ts"
+  ],
+  "androidx.fragment.app.FragmentManager.*": [
+    "androidx/fragment/app/FragmentManager/*.d.ts"
+  ],
+  "androidx.fragment.app.FragmentTabHost.*": [
+    "androidx/fragment/app/FragmentTabHost/*.d.ts"
+  ],
+  "androidx.fragment.app.FragmentTransaction.*": [
+    "androidx/fragment/app/FragmentTransaction/*.d.ts"
+  ],
+  "androidx.fragment.app.FragmentTransition.*": [
+    "androidx/fragment/app/FragmentTransition/*.d.ts"
+  ],
+  "androidx.fragment.app.SpecialEffectsController.*": [
+    "androidx/fragment/app/SpecialEffectsController/*.d.ts"
+  ],
+  "androidx.recyclerview.widget.AdapterHelper.*": [
+    "androidx/recyclerview/widget/AdapterHelper/*.d.ts"
+  ],
+  "androidx.recyclerview.widget.AsyncDifferConfig.*": [
+    "androidx/recyclerview/widget/AsyncDifferConfig/*.d.ts"
+  ],
+  "androidx.recyclerview.widget.AsyncListDiffer.*": [
+    "androidx/recyclerview/widget/AsyncListDiffer/*.d.ts"
+  ],
+  "androidx.recyclerview.widget.AsyncListUtil.*": [
+    "androidx/recyclerview/widget/AsyncListUtil/*.d.ts"
+  ],
+  "androidx.recyclerview.widget.ChildHelper.*": [
+    "androidx/recyclerview/widget/ChildHelper/*.d.ts"
+  ],
+  "androidx.recyclerview.widget.ConcatAdapter.*": [
+    "androidx/recyclerview/widget/ConcatAdapter/*.d.ts"
+  ],
+  "androidx.recyclerview.widget.ConcatAdapterController.*": [
+    "androidx/recyclerview/widget/ConcatAdapterController/*.d.ts"
+  ],
+  "androidx.recyclerview.widget.CustomLinearLayoutManager.*": [
+    "androidx/recyclerview/widget/CustomLinearLayoutManager/*.d.ts"
+  ],
+  "androidx.recyclerview.widget.CustomRecyclerExtension.*": [
+    "androidx/recyclerview/widget/CustomRecyclerExtension/*.d.ts"
+  ],
+  "androidx.recyclerview.widget.DefaultItemAnimator.*": [
+    "androidx/recyclerview/widget/DefaultItemAnimator/*.d.ts"
+  ],
+  "androidx.recyclerview.widget.DiffUtil.*": [
+    "androidx/recyclerview/widget/DiffUtil/*.d.ts"
+  ],
+  "androidx.recyclerview.widget.FastScroller.*": [
+    "androidx/recyclerview/widget/FastScroller/*.d.ts"
+  ],
+  "androidx.recyclerview.widget.GapWorker.*": [
+    "androidx/recyclerview/widget/GapWorker/*.d.ts"
+  ],
+  "androidx.recyclerview.widget.GridLayoutManager.*": [
+    "androidx/recyclerview/widget/GridLayoutManager/*.d.ts"
+  ],
+  "androidx.recyclerview.widget.ItemTouchHelper.*": [
+    "androidx/recyclerview/widget/ItemTouchHelper/*.d.ts"
+  ],
+  "androidx.recyclerview.widget.LinearLayoutManager.*": [
+    "androidx/recyclerview/widget/LinearLayoutManager/*.d.ts"
+  ],
+  "androidx.recyclerview.widget.MessageThreadUtil.*": [
+    "androidx/recyclerview/widget/MessageThreadUtil/*.d.ts"
+  ],
+  "androidx.recyclerview.widget.NestedAdapterWrapper.*": [
+    "androidx/recyclerview/widget/NestedAdapterWrapper/*.d.ts"
+  ],
+  "androidx.recyclerview.widget.OpReorderer.*": [
+    "androidx/recyclerview/widget/OpReorderer/*.d.ts"
+  ],
+  "androidx.recyclerview.widget.RecyclerView.*": [
+    "androidx/recyclerview/widget/RecyclerView/*.d.ts"
+  ],
+  "androidx.recyclerview.widget.RecyclerViewAccessibilityDelegate.*": [
+    "androidx/recyclerview/widget/RecyclerViewAccessibilityDelegate/*.d.ts"
+  ],
+  "androidx.recyclerview.widget.SortedList.*": [
+    "androidx/recyclerview/widget/SortedList/*.d.ts"
+  ],
+  "androidx.recyclerview.widget.StableIdStorage.*": [
+    "androidx/recyclerview/widget/StableIdStorage/*.d.ts"
+  ],
+  "androidx.recyclerview.widget.StaggeredGridLayoutManager.*": [
+    "androidx/recyclerview/widget/StaggeredGridLayoutManager/*.d.ts"
+  ],
+  "androidx.recyclerview.widget.ThreadUtil.*": [
+    "androidx/recyclerview/widget/ThreadUtil/*.d.ts"
+  ],
+  "androidx.recyclerview.widget.TileList.*": [
+    "androidx/recyclerview/widget/TileList/*.d.ts"
+  ],
+  "androidx.recyclerview.widget.ViewBoundsCheck.*": [
+    "androidx/recyclerview/widget/ViewBoundsCheck/*.d.ts"
+  ],
+  "androidx.recyclerview.widget.ViewInfoStore.*": [
+    "androidx/recyclerview/widget/ViewInfoStore/*.d.ts"
+  ],
+  "androidx.recyclerview.widget.ViewTypeStorage.*": [
+    "androidx/recyclerview/widget/ViewTypeStorage/*.d.ts"
+  ],
+  "androidx.viewpager.widget.PagerTitleStrip.*": [
+    "androidx/viewpager/widget/PagerTitleStrip/*.d.ts"
+  ],
+  "androidx.viewpager.widget.ViewPager.*": [
+    "androidx/viewpager/widget/ViewPager/*.d.ts"
+  ],
+  "androidx.viewpager2.adapter.FragmentStateAdapter.*": [
+    "androidx/viewpager2/adapter/FragmentStateAdapter/*.d.ts"
+  ],
+  "androidx.viewpager2.widget.ScrollEventAdapter.*": [
+    "androidx/viewpager2/widget/ScrollEventAdapter/*.d.ts"
+  ],
+  "androidx.viewpager2.widget.ViewPager2.*": [
+    "androidx/viewpager2/widget/ViewPager2/*.d.ts"
+  ],
+  "java.awt.font.NumericShaper.*": [
+    "java/awt/font/NumericShaper/*.d.ts"
+  ],
+  "java.lang.ProcessBuilder.Redirect.*": [
+    "java/lang/ProcessBuilder/Redirect/*.d.ts"
+  ],
+  "java.lang.invoke.MethodHandles.*": [
+    "java/lang/invoke/MethodHandles/*.d.ts"
+  ],
+  "java.lang.invoke.TypeDescriptor.*": [
+    "java/lang/invoke/TypeDescriptor/*.d.ts"
+  ],
+  "java.lang.invoke.VarHandle.*": [
+    "java/lang/invoke/VarHandle/*.d.ts"
+  ],
+  "java.lang.ref.Cleaner.*": [
+    "java/lang/ref/Cleaner/*.d.ts"
+  ],
+  "java.lang.reflect.Array.*": [
+    "java/lang/reflect/Array/*.d.ts"
+  ],
+  "java.nio.channels.Channel.*": [
+    "java/nio/channels/Channel/*.d.ts"
+  ],
+  "java.nio.channels.FileChannel.*": [
+    "java/nio/channels/FileChannel/*.d.ts"
+  ],
+  "java.nio.channels.Pipe.*": [
+    "java/nio/channels/Pipe/*.d.ts"
+  ],
+  "java.nio.channels.spi.*": [
+    "java/nio/channels/spi/*.d.ts"
+  ],
+  "java.nio.charset.spi.*": [
+    "java/nio/charset/spi/*.d.ts"
+  ],
+  "java.nio.file.DirectoryStream.*": [
+    "java/nio/file/DirectoryStream/*.d.ts"
+  ],
+  "java.nio.file.Path.*": [
+    "java/nio/file/Path/*.d.ts"
+  ],
+  "java.nio.file.WatchEvent.*": [
+    "java/nio/file/WatchEvent/*.d.ts"
+  ],
+  "java.nio.file.attribute.*": [
+    "java/nio/file/attribute/*.d.ts"
+  ],
+  "java.nio.file.spi.*": [
+    "java/nio/file/spi/*.d.ts"
+  ],
+  "java.security.KeyStore.Entry.*": [
+    "java/security/KeyStore/Entry/*.d.ts"
+  ],
+  "java.security.cert.CertPath.*": [
+    "java/security/cert/CertPath/*.d.ts"
+  ],
+  "java.security.cert.CertPathValidatorException.*": [
+    "java/security/cert/CertPathValidatorException/*.d.ts"
+  ],
+  "java.security.cert.Certificate.*": [
+    "java/security/cert/Certificate/*.d.ts"
+  ],
+  "java.security.cert.PKIXRevocationChecker.*": [
+    "java/security/cert/PKIXRevocationChecker/*.d.ts"
+  ],
+  "java.time.zone.ZoneOffsetTransitionRule.*": [
+    "java/time/zone/ZoneOffsetTransitionRule/*.d.ts"
+  ],
+  "java.util.concurrent.CompletableFuture.*": [
+    "java/util/concurrent/CompletableFuture/*.d.ts"
+  ],
+  "java.util.concurrent.ConcurrentHashMap.*": [
+    "java/util/concurrent/ConcurrentHashMap/*.d.ts"
+  ],
+  "java.util.concurrent.Flow.*": [
+    "java/util/concurrent/Flow/*.d.ts"
+  ],
+  "java.util.concurrent.ForkJoinPool.*": [
+    "java/util/concurrent/ForkJoinPool/*.d.ts"
+  ],
+  "java.util.concurrent.ThreadPoolExecutor.*": [
+    "java/util/concurrent/ThreadPoolExecutor/*.d.ts"
+  ],
+  "java.util.concurrent.atomic.*": [
+    "java/util/concurrent/atomic/*.d.ts"
+  ],
+  "java.util.concurrent.locks.*": [
+    "java/util/concurrent/locks/*.d.ts"
+  ],
+  "java.util.jar.Attributes.*": [
+    "java/util/jar/Attributes/*.d.ts"
+  ],
+  "java.util.jar.Pack200.*": [
+    "java/util/jar/Pack200/*.d.ts"
+  ],
+  "java.util.stream.Collector.*": [
+    "java/util/stream/Collector/*.d.ts"
+  ],
+  "java.util.stream.DoubleStream.*": [
+    "java/util/stream/DoubleStream/*.d.ts"
+  ],
+  "java.util.stream.IntStream.*": [
+    "java/util/stream/IntStream/*.d.ts"
+  ],
+  "java.util.stream.LongStream.*": [
+    "java/util/stream/LongStream/*.d.ts"
+  ],
+  "java.util.stream.Stream.*": [
+    "java/util/stream/Stream/*.d.ts"
+  ],
+  "javax.crypto.spec.PSource.*": [
+    "javax/crypto/spec/PSource/*.d.ts"
+  ],
+  "javax.microedition.khronos.egl.*": [
+    "javax/microedition/khronos/egl/*.d.ts"
+  ],
+  "javax.microedition.khronos.opengles.*": [
+    "javax/microedition/khronos/opengles/*.d.ts"
+  ],
+  "javax.net.ssl.SSLEngineResult.*": [
+    "javax/net/ssl/SSLEngineResult/*.d.ts"
+  ],
+  "javax.security.auth.callback.*": [
+    "javax/security/auth/callback/*.d.ts"
+  ],
+  "javax.security.auth.login.*": [
+    "javax/security/auth/login/*.d.ts"
+  ],
+  "javax.security.auth.x500.*": [
+    "javax/security/auth/x500/*.d.ts"
+  ],
+  "javax.xml.datatype.DatatypeConstants.*": [
+    "javax/xml/datatype/DatatypeConstants/*.d.ts"
+  ],
+  "javax.xml.transform.dom.*": [
+    "javax/xml/transform/dom/*.d.ts"
+  ],
+  "javax.xml.transform.sax.*": [
+    "javax/xml/transform/sax/*.d.ts"
+  ],
+  "javax.xml.transform.stream.*": [
+    "javax/xml/transform/stream/*.d.ts"
+  ],
+  "kotlin.collections.builders.ListBuilder.*": [
+    "kotlin/collections/builders/ListBuilder/*.d.ts"
+  ],
+  "kotlin.collections.builders.MapBuilder.*": [
+    "kotlin/collections/builders/MapBuilder/*.d.ts"
+  ],
+  "kotlin.collections.builders.SerializedCollection.*": [
+    "kotlin/collections/builders/SerializedCollection/*.d.ts"
+  ],
+  "kotlin.collections.builders.SerializedMap.*": [
+    "kotlin/collections/builders/SerializedMap/*.d.ts"
+  ],
+  "kotlin.collections.unsigned.UArraysKt___UArraysJvmKt.*": [
+    "kotlin/collections/unsigned/UArraysKt___UArraysJvmKt/*.d.ts"
+  ],
+  "kotlin.collections.unsigned.UArraysKt___UArraysKt.*": [
+    "kotlin/collections/unsigned/UArraysKt___UArraysKt/*.d.ts"
+  ],
+  "kotlin.concurrent.ThreadsKt.thread.*": [
+    "kotlin/concurrent/ThreadsKt/thread/*.d.ts"
+  ],
+  "kotlin.coroutines.CombinedContext.Serialized.*": [
+    "kotlin/coroutines/CombinedContext/Serialized/*.d.ts"
+  ],
+  "kotlin.coroutines.CoroutineContext.Element.*": [
+    "kotlin/coroutines/CoroutineContext/Element/*.d.ts"
+  ],
+  "kotlin.coroutines.intrinsics.IntrinsicsKt__IntrinsicsJvmKt.*": [
+    "kotlin/coroutines/intrinsics/IntrinsicsKt__IntrinsicsJvmKt/*.d.ts"
+  ],
+  "kotlin.coroutines.jvm.internal.*": [
+    "kotlin/coroutines/jvm/internal/*.d.ts"
+  ],
+  "kotlin.internal.jdk7.JDK7PlatformImplementations.*": [
+    "kotlin/internal/jdk7/JDK7PlatformImplementations/*.d.ts"
+  ],
+  "kotlin.internal.jdk8.JDK8PlatformImplementations.*": [
+    "kotlin/internal/jdk8/JDK8PlatformImplementations/*.d.ts"
+  ],
+  "kotlin.io.FileTreeWalk.FileTreeWalkIterator.*": [
+    "kotlin/io/FileTreeWalk/FileTreeWalkIterator/*.d.ts"
+  ],
+  "kotlin.io.path.PathTreeWalk.*": [
+    "kotlin/io/path/PathTreeWalk/*.d.ts"
+  ],
+  "kotlin.io.path.PathsKt__PathRecursiveFunctionsKt.*": [
+    "kotlin/io/path/PathsKt__PathRecursiveFunctionsKt/*.d.ts"
+  ],
+  "kotlin.jvm.internal.CallableReference.*": [
+    "kotlin/jvm/internal/CallableReference/*.d.ts"
+  ],
+  "kotlin.jvm.internal.ClassReference.*": [
+    "kotlin/jvm/internal/ClassReference/*.d.ts"
+  ],
+  "kotlin.jvm.internal.Intrinsics.*": [
+    "kotlin/jvm/internal/Intrinsics/*.d.ts"
+  ],
+  "kotlin.jvm.internal.Ref.*": [
+    "kotlin/jvm/internal/Ref/*.d.ts"
+  ],
+  "kotlin.jvm.internal.TypeParameterReference.*": [
+    "kotlin/jvm/internal/TypeParameterReference/*.d.ts"
+  ],
+  "kotlin.jvm.internal.TypeReference.*": [
+    "kotlin/jvm/internal/TypeReference/*.d.ts"
+  ],
+  "kotlin.jvm.internal.markers.*": [
+    "kotlin/jvm/internal/markers/*.d.ts"
+  ],
+  "kotlin.jvm.internal.unsafe.*": [
+    "kotlin/jvm/internal/unsafe/*.d.ts"
+  ],
+  "kotlin.random.Random.Default.*": [
+    "kotlin/random/Random/Default/*.d.ts"
+  ],
+  "kotlin.text.CharDirectionality.Companion.*": [
+    "kotlin/text/CharDirectionality/Companion/*.d.ts"
+  ],
+  "kotlin.text.Regex.Serialized.*": [
+    "kotlin/text/Regex/Serialized/*.d.ts"
+  ],
+  "kotlin.time.TimeSource.Monotonic.*": [
+    "kotlin/time/TimeSource/Monotonic/*.d.ts"
+  ],
+  "kotlinx.coroutines.channels.AbstractChannel.*": [
+    "kotlinx/coroutines/channels/AbstractChannel/*.d.ts"
+  ],
+  "kotlinx.coroutines.channels.AbstractSendChannel.*": [
+    "kotlinx/coroutines/channels/AbstractSendChannel/*.d.ts"
+  ],
+  "kotlinx.coroutines.channels.ActorScope.*": [
+    "kotlinx/coroutines/channels/ActorScope/*.d.ts"
+  ],
+  "kotlinx.coroutines.channels.ArrayBroadcastChannel.*": [
+    "kotlinx/coroutines/channels/ArrayBroadcastChannel/*.d.ts"
+  ],
+  "kotlinx.coroutines.channels.ArrayChannel.*": [
+    "kotlinx/coroutines/channels/ArrayChannel/*.d.ts"
+  ],
+  "kotlinx.coroutines.channels.BroadcastChannel.*": [
+    "kotlinx/coroutines/channels/BroadcastChannel/*.d.ts"
+  ],
+  "kotlinx.coroutines.channels.Channel.*": [
+    "kotlinx/coroutines/channels/Channel/*.d.ts"
+  ],
+  "kotlinx.coroutines.channels.ChannelIterator.*": [
+    "kotlinx/coroutines/channels/ChannelIterator/*.d.ts"
+  ],
+  "kotlinx.coroutines.channels.ChannelResult.*": [
+    "kotlinx/coroutines/channels/ChannelResult/*.d.ts"
+  ],
+  "kotlinx.coroutines.channels.ChannelsKt__ChannelsKt.*": [
+    "kotlinx/coroutines/channels/ChannelsKt__ChannelsKt/*.d.ts"
+  ],
+  "kotlinx.coroutines.channels.ChannelsKt__Channels_commonKt.*": [
+    "kotlinx/coroutines/channels/ChannelsKt__Channels_commonKt/*.d.ts"
+  ],
+  "kotlinx.coroutines.channels.ChannelsKt__DeprecatedKt.*": [
+    "kotlinx/coroutines/channels/ChannelsKt__DeprecatedKt/*.d.ts"
+  ],
+  "kotlinx.coroutines.channels.ConflatedBroadcastChannel.*": [
+    "kotlinx/coroutines/channels/ConflatedBroadcastChannel/*.d.ts"
+  ],
+  "kotlinx.coroutines.channels.ProducerScope.*": [
+    "kotlinx/coroutines/channels/ProducerScope/*.d.ts"
+  ],
+  "kotlinx.coroutines.channels.ReceiveChannel.*": [
+    "kotlinx/coroutines/channels/ReceiveChannel/*.d.ts"
+  ],
+  "kotlinx.coroutines.channels.SendChannel.*": [
+    "kotlinx/coroutines/channels/SendChannel/*.d.ts"
+  ],
+  "kotlinx.coroutines.debug.AgentPremain.*": [
+    "kotlinx/coroutines/debug/AgentPremain/*.d.ts"
+  ],
+  "kotlinx.coroutines.debug.internal.*": [
+    "kotlinx/coroutines/debug/internal/*.d.ts"
+  ],
+  "kotlinx.coroutines.flow.AbstractFlow.*": [
+    "kotlinx/coroutines/flow/AbstractFlow/*.d.ts"
+  ],
+  "kotlinx.coroutines.flow.CallbackFlowBuilder.*": [
+    "kotlinx/coroutines/flow/CallbackFlowBuilder/*.d.ts"
+  ],
+  "kotlinx.coroutines.flow.CancellableFlowImpl.*": [
+    "kotlinx/coroutines/flow/CancellableFlowImpl/*.d.ts"
+  ],
+  "kotlinx.coroutines.flow.DistinctFlowImpl.*": [
+    "kotlinx/coroutines/flow/DistinctFlowImpl/*.d.ts"
+  ],
+  "kotlinx.coroutines.flow.FlowKt__BuildersKt.*": [
+    "kotlinx/coroutines/flow/FlowKt__BuildersKt/*.d.ts"
+  ],
+  "kotlinx.coroutines.flow.FlowKt__ChannelsKt.*": [
+    "kotlinx/coroutines/flow/FlowKt__ChannelsKt/*.d.ts"
+  ],
+  "kotlinx.coroutines.flow.FlowKt__CollectKt.*": [
+    "kotlinx/coroutines/flow/FlowKt__CollectKt/*.d.ts"
+  ],
+  "kotlinx.coroutines.flow.FlowKt__CollectionKt.*": [
+    "kotlinx/coroutines/flow/FlowKt__CollectionKt/*.d.ts"
+  ],
+  "kotlinx.coroutines.flow.FlowKt__CountKt.*": [
+    "kotlinx/coroutines/flow/FlowKt__CountKt/*.d.ts"
+  ],
+  "kotlinx.coroutines.flow.FlowKt__DelayKt.*": [
+    "kotlinx/coroutines/flow/FlowKt__DelayKt/*.d.ts"
+  ],
+  "kotlinx.coroutines.flow.FlowKt__DistinctKt.*": [
+    "kotlinx/coroutines/flow/FlowKt__DistinctKt/*.d.ts"
+  ],
+  "kotlinx.coroutines.flow.FlowKt__EmittersKt.*": [
+    "kotlinx/coroutines/flow/FlowKt__EmittersKt/*.d.ts"
+  ],
+  "kotlinx.coroutines.flow.FlowKt__ErrorsKt.*": [
+    "kotlinx/coroutines/flow/FlowKt__ErrorsKt/*.d.ts"
+  ],
+  "kotlinx.coroutines.flow.FlowKt__LimitKt.*": [
+    "kotlinx/coroutines/flow/FlowKt__LimitKt/*.d.ts"
+  ],
+  "kotlinx.coroutines.flow.FlowKt__MergeKt.*": [
+    "kotlinx/coroutines/flow/FlowKt__MergeKt/*.d.ts"
+  ],
+  "kotlinx.coroutines.flow.FlowKt__MigrationKt.*": [
+    "kotlinx/coroutines/flow/FlowKt__MigrationKt/*.d.ts"
+  ],
+  "kotlinx.coroutines.flow.FlowKt__ReduceKt.*": [
+    "kotlinx/coroutines/flow/FlowKt__ReduceKt/*.d.ts"
+  ],
+  "kotlinx.coroutines.flow.FlowKt__ShareKt.*": [
+    "kotlinx/coroutines/flow/FlowKt__ShareKt/*.d.ts"
+  ],
+  "kotlinx.coroutines.flow.FlowKt__TransformKt.*": [
+    "kotlinx/coroutines/flow/FlowKt__TransformKt/*.d.ts"
+  ],
+  "kotlinx.coroutines.flow.FlowKt__ZipKt.*": [
+    "kotlinx/coroutines/flow/FlowKt__ZipKt/*.d.ts"
+  ],
+  "kotlinx.coroutines.flow.SharedFlowImpl.*": [
+    "kotlinx/coroutines/flow/SharedFlowImpl/*.d.ts"
+  ],
+  "kotlinx.coroutines.flow.SharingStarted.*": [
+    "kotlinx/coroutines/flow/SharingStarted/*.d.ts"
+  ],
+  "kotlinx.coroutines.flow.StartedLazily.*": [
+    "kotlinx/coroutines/flow/StartedLazily/*.d.ts"
+  ],
+  "kotlinx.coroutines.flow.StartedWhileSubscribed.*": [
+    "kotlinx/coroutines/flow/StartedWhileSubscribed/*.d.ts"
+  ],
+  "kotlinx.coroutines.flow.StateFlowImpl.*": [
+    "kotlinx/coroutines/flow/StateFlowImpl/*.d.ts"
+  ],
+  "kotlinx.coroutines.flow.SubscribedFlowCollector.*": [
+    "kotlinx/coroutines/flow/SubscribedFlowCollector/*.d.ts"
+  ],
+  "kotlinx.coroutines.flow.SubscribedSharedFlow.*": [
+    "kotlinx/coroutines/flow/SubscribedSharedFlow/*.d.ts"
+  ],
+  "kotlinx.coroutines.flow.internal.*": [
+    "kotlinx/coroutines/flow/internal/*.d.ts"
+  ],
+  "kotlinx.coroutines.internal.ClassValueCtorCache.*": [
+    "kotlinx/coroutines/internal/ClassValueCtorCache/*.d.ts"
+  ],
+  "kotlinx.coroutines.internal.LockFreeLinkedListNode.*": [
+    "kotlinx/coroutines/internal/LockFreeLinkedListNode/*.d.ts"
+  ],
+  "kotlinx.coroutines.internal.LockFreeTaskQueueCore.*": [
+    "kotlinx/coroutines/internal/LockFreeTaskQueueCore/*.d.ts"
+  ],
+  "kotlinx.coroutines.internal.MainDispatcherFactory.*": [
+    "kotlinx/coroutines/internal/MainDispatcherFactory/*.d.ts"
+  ],
+  "kotlinx.coroutines.scheduling.CoroutineScheduler.*": [
+    "kotlinx/coroutines/scheduling/CoroutineScheduler/*.d.ts"
+  ],
+  "kotlinx.coroutines.selects.SelectBuilder.*": [
+    "kotlinx/coroutines/selects/SelectBuilder/*.d.ts"
+  ],
+  "kotlinx.coroutines.selects.SelectBuilderImpl.*": [
+    "kotlinx/coroutines/selects/SelectBuilderImpl/*.d.ts"
+  ],
+  "kotlinx.coroutines.selects.UnbiasedSelectBuilderImpl.*": [
+    "kotlinx/coroutines/selects/UnbiasedSelectBuilderImpl/*.d.ts"
+  ],
+  "kotlinx.coroutines.sync.Mutex.*": [
+    "kotlinx/coroutines/sync/Mutex/*.d.ts"
+  ],
+  "kotlinx.coroutines.sync.MutexImpl.*": [
+    "kotlinx/coroutines/sync/MutexImpl/*.d.ts"
+  ],
+  "kotlinx.coroutines.sync.SemaphoreImpl.*": [
+    "kotlinx/coroutines/sync/SemaphoreImpl/*.d.ts"
+  ],
+  "android.app.appsearch.AppSearchManager.SearchContext.*": [
+    "android/app/appsearch/AppSearchManager/SearchContext/*.d.ts"
+  ],
+  "android.app.appsearch.AppSearchSchema.BooleanPropertyConfig.*": [
+    "android/app/appsearch/AppSearchSchema/BooleanPropertyConfig/*.d.ts"
+  ],
+  "android.app.appsearch.AppSearchSchema.BytesPropertyConfig.*": [
+    "android/app/appsearch/AppSearchSchema/BytesPropertyConfig/*.d.ts"
+  ],
+  "android.app.appsearch.AppSearchSchema.DocumentPropertyConfig.*": [
+    "android/app/appsearch/AppSearchSchema/DocumentPropertyConfig/*.d.ts"
+  ],
+  "android.app.appsearch.AppSearchSchema.DoublePropertyConfig.*": [
+    "android/app/appsearch/AppSearchSchema/DoublePropertyConfig/*.d.ts"
+  ],
+  "android.app.appsearch.AppSearchSchema.LongPropertyConfig.*": [
+    "android/app/appsearch/AppSearchSchema/LongPropertyConfig/*.d.ts"
+  ],
+  "android.app.appsearch.AppSearchSchema.StringPropertyConfig.*": [
+    "android/app/appsearch/AppSearchSchema/StringPropertyConfig/*.d.ts"
+  ],
+  "android.app.appsearch.SearchResult.MatchInfo.*": [
+    "android/app/appsearch/SearchResult/MatchInfo/*.d.ts"
+  ],
+  "android.app.appsearch.observer.ObserverSpec.*": [
+    "android/app/appsearch/observer/ObserverSpec/*.d.ts"
+  ],
+  "android.content.pm.PackageInstaller.InstallConstraints.*": [
+    "android/content/pm/PackageInstaller/InstallConstraints/*.d.ts"
+  ],
+  "android.content.pm.PackageInstaller.PreapprovalDetails.*": [
+    "android/content/pm/PackageInstaller/PreapprovalDetails/*.d.ts"
+  ],
+  "android.content.pm.verify.domain.*": [
+    "android/content/pm/verify/domain/*.d.ts"
+  ],
+  "android.database.sqlite.SQLiteDatabase.OpenParams.*": [
+    "android/database/sqlite/SQLiteDatabase/OpenParams/*.d.ts"
+  ],
+  "android.graphics.pdf.PdfDocument.PageInfo.*": [
+    "android/graphics/pdf/PdfDocument/PageInfo/*.d.ts"
+  ],
+  "android.hardware.camera2.params.DeviceStateSensorOrientationMap.*": [
+    "android/hardware/camera2/params/DeviceStateSensorOrientationMap/*.d.ts"
+  ],
+  "android.hardware.camera2.params.Face.*": [
+    "android/hardware/camera2/params/Face/*.d.ts"
+  ],
+  "android.hardware.camera2.params.MandatoryStreamCombination.*": [
+    "android/hardware/camera2/params/MandatoryStreamCombination/*.d.ts"
+  ],
+  "android.health.connect.changelog.ChangeLogTokenRequest.*": [
+    "android/health/connect/changelog/ChangeLogTokenRequest/*.d.ts"
+  ],
+  "android.health.connect.changelog.ChangeLogsRequest.*": [
+    "android/health/connect/changelog/ChangeLogsRequest/*.d.ts"
+  ],
+  "android.health.connect.changelog.ChangeLogsResponse.*": [
+    "android/health/connect/changelog/ChangeLogsResponse/*.d.ts"
+  ],
+  "android.health.connect.datatypes.ActiveCaloriesBurnedRecord.*": [
+    "android/health/connect/datatypes/ActiveCaloriesBurnedRecord/*.d.ts"
+  ],
+  "android.health.connect.datatypes.BasalBodyTemperatureRecord.*": [
+    "android/health/connect/datatypes/BasalBodyTemperatureRecord/*.d.ts"
+  ],
+  "android.health.connect.datatypes.BasalMetabolicRateRecord.*": [
+    "android/health/connect/datatypes/BasalMetabolicRateRecord/*.d.ts"
+  ],
+  "android.health.connect.datatypes.BloodGlucoseRecord.*": [
+    "android/health/connect/datatypes/BloodGlucoseRecord/*.d.ts"
+  ],
+  "android.health.connect.datatypes.BloodPressureRecord.*": [
+    "android/health/connect/datatypes/BloodPressureRecord/*.d.ts"
+  ],
+  "android.health.connect.datatypes.BodyFatRecord.*": [
+    "android/health/connect/datatypes/BodyFatRecord/*.d.ts"
+  ],
+  "android.health.connect.datatypes.BodyTemperatureRecord.*": [
+    "android/health/connect/datatypes/BodyTemperatureRecord/*.d.ts"
+  ],
+  "android.health.connect.datatypes.BodyWaterMassRecord.*": [
+    "android/health/connect/datatypes/BodyWaterMassRecord/*.d.ts"
+  ],
+  "android.health.connect.datatypes.BoneMassRecord.*": [
+    "android/health/connect/datatypes/BoneMassRecord/*.d.ts"
+  ],
+  "android.health.connect.datatypes.CervicalMucusRecord.*": [
+    "android/health/connect/datatypes/CervicalMucusRecord/*.d.ts"
+  ],
+  "android.health.connect.datatypes.CyclingPedalingCadenceRecord.*": [
+    "android/health/connect/datatypes/CyclingPedalingCadenceRecord/*.d.ts"
+  ],
+  "android.health.connect.datatypes.DataOrigin.*": [
+    "android/health/connect/datatypes/DataOrigin/*.d.ts"
+  ],
+  "android.health.connect.datatypes.Device.*": [
+    "android/health/connect/datatypes/Device/*.d.ts"
+  ],
+  "android.health.connect.datatypes.DistanceRecord.*": [
+    "android/health/connect/datatypes/DistanceRecord/*.d.ts"
+  ],
+  "android.health.connect.datatypes.ElevationGainedRecord.*": [
+    "android/health/connect/datatypes/ElevationGainedRecord/*.d.ts"
+  ],
+  "android.health.connect.datatypes.ExerciseLap.*": [
+    "android/health/connect/datatypes/ExerciseLap/*.d.ts"
+  ],
+  "android.health.connect.datatypes.ExerciseRoute.*": [
+    "android/health/connect/datatypes/ExerciseRoute/*.d.ts"
+  ],
+  "android.health.connect.datatypes.ExerciseSegment.*": [
+    "android/health/connect/datatypes/ExerciseSegment/*.d.ts"
+  ],
+  "android.health.connect.datatypes.ExerciseSessionRecord.*": [
+    "android/health/connect/datatypes/ExerciseSessionRecord/*.d.ts"
+  ],
+  "android.health.connect.datatypes.FloorsClimbedRecord.*": [
+    "android/health/connect/datatypes/FloorsClimbedRecord/*.d.ts"
+  ],
+  "android.health.connect.datatypes.HeartRateRecord.*": [
+    "android/health/connect/datatypes/HeartRateRecord/*.d.ts"
+  ],
+  "android.health.connect.datatypes.HeartRateVariabilityRmssdRecord.*": [
+    "android/health/connect/datatypes/HeartRateVariabilityRmssdRecord/*.d.ts"
+  ],
+  "android.health.connect.datatypes.HeightRecord.*": [
+    "android/health/connect/datatypes/HeightRecord/*.d.ts"
+  ],
+  "android.health.connect.datatypes.HydrationRecord.*": [
+    "android/health/connect/datatypes/HydrationRecord/*.d.ts"
+  ],
+  "android.health.connect.datatypes.IntermenstrualBleedingRecord.*": [
+    "android/health/connect/datatypes/IntermenstrualBleedingRecord/*.d.ts"
+  ],
+  "android.health.connect.datatypes.LeanBodyMassRecord.*": [
+    "android/health/connect/datatypes/LeanBodyMassRecord/*.d.ts"
+  ],
+  "android.health.connect.datatypes.MenstruationFlowRecord.*": [
+    "android/health/connect/datatypes/MenstruationFlowRecord/*.d.ts"
+  ],
+  "android.health.connect.datatypes.MenstruationPeriodRecord.*": [
+    "android/health/connect/datatypes/MenstruationPeriodRecord/*.d.ts"
+  ],
+  "android.health.connect.datatypes.Metadata.*": [
+    "android/health/connect/datatypes/Metadata/*.d.ts"
+  ],
+  "android.health.connect.datatypes.NutritionRecord.*": [
+    "android/health/connect/datatypes/NutritionRecord/*.d.ts"
+  ],
+  "android.health.connect.datatypes.OvulationTestRecord.*": [
+    "android/health/connect/datatypes/OvulationTestRecord/*.d.ts"
+  ],
+  "android.health.connect.datatypes.OxygenSaturationRecord.*": [
+    "android/health/connect/datatypes/OxygenSaturationRecord/*.d.ts"
+  ],
+  "android.health.connect.datatypes.PowerRecord.*": [
+    "android/health/connect/datatypes/PowerRecord/*.d.ts"
+  ],
+  "android.health.connect.datatypes.RespiratoryRateRecord.*": [
+    "android/health/connect/datatypes/RespiratoryRateRecord/*.d.ts"
+  ],
+  "android.health.connect.datatypes.RestingHeartRateRecord.*": [
+    "android/health/connect/datatypes/RestingHeartRateRecord/*.d.ts"
+  ],
+  "android.health.connect.datatypes.SexualActivityRecord.*": [
+    "android/health/connect/datatypes/SexualActivityRecord/*.d.ts"
+  ],
+  "android.health.connect.datatypes.SleepSessionRecord.*": [
+    "android/health/connect/datatypes/SleepSessionRecord/*.d.ts"
+  ],
+  "android.health.connect.datatypes.SpeedRecord.*": [
+    "android/health/connect/datatypes/SpeedRecord/*.d.ts"
+  ],
+  "android.health.connect.datatypes.StepsCadenceRecord.*": [
+    "android/health/connect/datatypes/StepsCadenceRecord/*.d.ts"
+  ],
+  "android.health.connect.datatypes.StepsRecord.*": [
+    "android/health/connect/datatypes/StepsRecord/*.d.ts"
+  ],
+  "android.health.connect.datatypes.TotalCaloriesBurnedRecord.*": [
+    "android/health/connect/datatypes/TotalCaloriesBurnedRecord/*.d.ts"
+  ],
+  "android.health.connect.datatypes.Vo2MaxRecord.*": [
+    "android/health/connect/datatypes/Vo2MaxRecord/*.d.ts"
+  ],
+  "android.health.connect.datatypes.WeightRecord.*": [
+    "android/health/connect/datatypes/WeightRecord/*.d.ts"
+  ],
+  "android.health.connect.datatypes.WheelchairPushesRecord.*": [
+    "android/health/connect/datatypes/WheelchairPushesRecord/*.d.ts"
+  ],
+  "android.health.connect.datatypes.units.*": [
+    "android/health/connect/datatypes/units/*.d.ts"
+  ],
+  "android.icu.text.AlphabeticIndex.Bucket.*": [
+    "android/icu/text/AlphabeticIndex/Bucket/*.d.ts"
+  ],
+  "android.icu.text.MessagePattern.Part.*": [
+    "android/icu/text/MessagePattern/Part/*.d.ts"
+  ],
+  "android.media.audiofx.DynamicsProcessing.Config.*": [
+    "android/media/audiofx/DynamicsProcessing/Config/*.d.ts"
+  ],
+  "android.media.session.PlaybackState.CustomAction.*": [
+    "android/media/session/PlaybackState/CustomAction/*.d.ts"
+  ],
+  "android.media.tv.TvContract.Channels.*": [
+    "android/media/tv/TvContract/Channels/*.d.ts"
+  ],
+  "android.media.tv.TvContract.Programs.*": [
+    "android/media/tv/TvContract/Programs/*.d.ts"
+  ],
+  "android.media.tv.interactive.TvInteractiveAppManager.*": [
+    "android/media/tv/interactive/TvInteractiveAppManager/*.d.ts"
+  ],
+  "android.media.tv.interactive.TvInteractiveAppService.*": [
+    "android/media/tv/interactive/TvInteractiveAppService/*.d.ts"
+  ],
+  "android.media.tv.interactive.TvInteractiveAppView.*": [
+    "android/media/tv/interactive/TvInteractiveAppView/*.d.ts"
+  ],
+  "android.net.eap.EapSessionConfig.EapAkaOption.*": [
+    "android/net/eap/EapSessionConfig/EapAkaOption/*.d.ts"
+  ],
+  "android.net.http.DnsOptions.StaleDnsOptions.*": [
+    "android/net/http/DnsOptions/StaleDnsOptions/*.d.ts"
+  ],
+  "android.net.ipsec.ike.ChildSaProposal.*": [
+    "android/net/ipsec/ike/ChildSaProposal/*.d.ts"
+  ],
+  "android.net.ipsec.ike.ChildSessionConfiguration.*": [
+    "android/net/ipsec/ike/ChildSessionConfiguration/*.d.ts"
+  ],
+  "android.net.ipsec.ike.IkeSaProposal.*": [
+    "android/net/ipsec/ike/IkeSaProposal/*.d.ts"
+  ],
+  "android.net.ipsec.ike.IkeSessionConfiguration.*": [
+    "android/net/ipsec/ike/IkeSessionConfiguration/*.d.ts"
+  ],
+  "android.net.ipsec.ike.IkeSessionParams.*": [
+    "android/net/ipsec/ike/IkeSessionParams/*.d.ts"
+  ],
+  "android.net.ipsec.ike.TransportModeChildSessionParams.*": [
+    "android/net/ipsec/ike/TransportModeChildSessionParams/*.d.ts"
+  ],
+  "android.net.ipsec.ike.TunnelModeChildSessionParams.*": [
+    "android/net/ipsec/ike/TunnelModeChildSessionParams/*.d.ts"
+  ],
+  "android.net.ipsec.ike.exceptions.*": [
+    "android/net/ipsec/ike/exceptions/*.d.ts"
+  ],
+  "android.net.wifi.aware.AwarePairingConfig.*": [
+    "android/net/wifi/aware/AwarePairingConfig/*.d.ts"
+  ],
+  "android.net.wifi.aware.PublishConfig.*": [
+    "android/net/wifi/aware/PublishConfig/*.d.ts"
+  ],
+  "android.net.wifi.aware.SubscribeConfig.*": [
+    "android/net/wifi/aware/SubscribeConfig/*.d.ts"
+  ],
+  "android.net.wifi.aware.WifiAwareDataPathSecurityConfig.*": [
+    "android/net/wifi/aware/WifiAwareDataPathSecurityConfig/*.d.ts"
+  ],
+  "android.net.wifi.aware.WifiAwareNetworkSpecifier.*": [
+    "android/net/wifi/aware/WifiAwareNetworkSpecifier/*.d.ts"
+  ],
+  "android.net.wifi.hotspot2.omadm.*": [
+    "android/net/wifi/hotspot2/omadm/*.d.ts"
+  ],
+  "android.net.wifi.hotspot2.pps.*": [
+    "android/net/wifi/hotspot2/pps/*.d.ts"
+  ],
+  "android.net.wifi.p2p.WifiP2pConfig.*": [
+    "android/net/wifi/p2p/WifiP2pConfig/*.d.ts"
+  ],
+  "android.net.wifi.p2p.WifiP2pManager.*": [
+    "android/net/wifi/p2p/WifiP2pManager/*.d.ts"
+  ],
+  "android.net.wifi.p2p.nsd.*": [
+    "android/net/wifi/p2p/nsd/*.d.ts"
+  ],
+  "android.net.wifi.rtt.RangingRequest.*": [
+    "android/net/wifi/rtt/RangingRequest/*.d.ts"
+  ],
+  "android.net.wifi.rtt.ResponderConfig.*": [
+    "android/net/wifi/rtt/ResponderConfig/*.d.ts"
+  ],
+  "android.provider.ContactsContract.Contacts.AggregationSuggestions.*": [
+    "android/provider/ContactsContract/Contacts/AggregationSuggestions/*.d.ts"
+  ],
+  "android.provider.MediaStore.Audio.Artists.*": [
+    "android/provider/MediaStore/Audio/Artists/*.d.ts"
+  ],
+  "android.provider.MediaStore.Audio.Genres.*": [
+    "android/provider/MediaStore/Audio/Genres/*.d.ts"
+  ],
+  "android.provider.MediaStore.Audio.Playlists.*": [
+    "android/provider/MediaStore/Audio/Playlists/*.d.ts"
+  ],
+  "android.support.v4.app.INotificationSideChannel.*": [
+    "android/support/v4/app/INotificationSideChannel/*.d.ts"
+  ],
+  "android.support.v4.graphics.drawable.*": [
+    "android/support/v4/graphics/drawable/*.d.ts"
+  ],
+  "android.support.v4.os.IResultReceiver.*": [
+    "android/support/v4/os/IResultReceiver/*.d.ts"
+  ],
+  "android.support.v4.os.ResultReceiver.*": [
+    "android/support/v4/os/ResultReceiver/*.d.ts"
+  ],
+  "android.telephony.ims.feature.MmTelFeature.*": [
+    "android/telephony/ims/feature/MmTelFeature/*.d.ts"
+  ],
+  "android.view.accessibility.AccessibilityNodeInfo.CollectionItemInfo.*": [
+    "android/view/accessibility/AccessibilityNodeInfo/CollectionItemInfo/*.d.ts"
+  ],
+  "android.view.textclassifier.ConversationActions.Message.*": [
+    "android/view/textclassifier/ConversationActions/Message/*.d.ts"
+  ],
+  "android.view.textclassifier.ConversationActions.Request.*": [
+    "android/view/textclassifier/ConversationActions/Request/*.d.ts"
+  ],
+  "android.view.textclassifier.TextClassification.Request.*": [
+    "android/view/textclassifier/TextClassification/Request/*.d.ts"
+  ],
+  "android.view.textclassifier.TextClassifier.EntityConfig.*": [
+    "android/view/textclassifier/TextClassifier/EntityConfig/*.d.ts"
+  ],
+  "android.view.textclassifier.TextClassifierEvent.ConversationActionsEvent.*": [
+    "android/view/textclassifier/TextClassifierEvent/ConversationActionsEvent/*.d.ts"
+  ],
+  "android.view.textclassifier.TextClassifierEvent.LanguageDetectionEvent.*": [
+    "android/view/textclassifier/TextClassifierEvent/LanguageDetectionEvent/*.d.ts"
+  ],
+  "android.view.textclassifier.TextClassifierEvent.TextLinkifyEvent.*": [
+    "android/view/textclassifier/TextClassifierEvent/TextLinkifyEvent/*.d.ts"
+  ],
+  "android.view.textclassifier.TextClassifierEvent.TextSelectionEvent.*": [
+    "android/view/textclassifier/TextClassifierEvent/TextSelectionEvent/*.d.ts"
+  ],
+  "android.view.textclassifier.TextLanguage.Request.*": [
+    "android/view/textclassifier/TextLanguage/Request/*.d.ts"
+  ],
+  "android.view.textclassifier.TextLinks.Request.*": [
+    "android/view/textclassifier/TextLinks/Request/*.d.ts"
+  ],
+  "android.view.textclassifier.TextSelection.Request.*": [
+    "android/view/textclassifier/TextSelection/Request/*.d.ts"
+  ],
+  "android.view.textservice.SpellCheckerSession.SpellCheckerSessionParams.*": [
+    "android/view/textservice/SpellCheckerSession/SpellCheckerSessionParams/*.d.ts"
+  ],
+  "androidx.activity.result.contract.ActivityResultContract.*": [
+    "androidx/activity/result/contract/ActivityResultContract/*.d.ts"
+  ],
+  "androidx.activity.result.contract.ActivityResultContracts.*": [
+    "androidx/activity/result/contract/ActivityResultContracts/*.d.ts"
+  ],
+  "androidx.appcompat.app.AlertController.AlertParams.*": [
+    "androidx/appcompat/app/AlertController/AlertParams/*.d.ts"
+  ],
+  "androidx.appcompat.app.AppCompatDelegateImpl.PanelFeatureState.*": [
+    "androidx/appcompat/app/AppCompatDelegateImpl/PanelFeatureState/*.d.ts"
+  ],
+  "androidx.appcompat.content.res.AppCompatResources.*": [
+    "androidx/appcompat/content/res/AppCompatResources/*.d.ts"
+  ],
+  "androidx.appcompat.graphics.drawable.AnimatedStateListDrawableCompat.*": [
+    "androidx/appcompat/graphics/drawable/AnimatedStateListDrawableCompat/*.d.ts"
+  ],
+  "androidx.appcompat.graphics.drawable.DrawableContainer.*": [
+    "androidx/appcompat/graphics/drawable/DrawableContainer/*.d.ts"
+  ],
+  "androidx.appcompat.graphics.drawable.DrawerArrowDrawable.*": [
+    "androidx/appcompat/graphics/drawable/DrawerArrowDrawable/*.d.ts"
+  ],
+  "androidx.appcompat.graphics.drawable.StateListDrawable.*": [
+    "androidx/appcompat/graphics/drawable/StateListDrawable/*.d.ts"
+  ],
+  "androidx.appcompat.view.menu.ActionMenuItemView.*": [
+    "androidx/appcompat/view/menu/ActionMenuItemView/*.d.ts"
+  ],
+  "androidx.appcompat.view.menu.CascadingMenuPopup.*": [
+    "androidx/appcompat/view/menu/CascadingMenuPopup/*.d.ts"
+  ],
+  "androidx.appcompat.view.menu.ListMenuPresenter.*": [
+    "androidx/appcompat/view/menu/ListMenuPresenter/*.d.ts"
+  ],
+  "androidx.appcompat.view.menu.MenuBuilder.*": [
+    "androidx/appcompat/view/menu/MenuBuilder/*.d.ts"
+  ],
+  "androidx.appcompat.view.menu.MenuItemWrapperICS.*": [
+    "androidx/appcompat/view/menu/MenuItemWrapperICS/*.d.ts"
+  ],
+  "androidx.appcompat.view.menu.MenuPresenter.*": [
+    "androidx/appcompat/view/menu/MenuPresenter/*.d.ts"
+  ],
+  "androidx.appcompat.view.menu.MenuView.*": [
+    "androidx/appcompat/view/menu/MenuView/*.d.ts"
+  ],
+  "androidx.arch.core.internal.SafeIterableMap.*": [
+    "androidx/arch/core/internal/SafeIterableMap/*.d.ts"
+  ],
+  "androidx.core.app.JobIntentService.JobServiceEngineImpl.*": [
+    "androidx/core/app/JobIntentService/JobServiceEngineImpl/*.d.ts"
+  ],
+  "androidx.core.app.NotificationCompat.Action.*": [
+    "androidx/core/app/NotificationCompat/Action/*.d.ts"
+  ],
+  "androidx.core.app.NotificationCompat.BigPictureStyle.*": [
+    "androidx/core/app/NotificationCompat/BigPictureStyle/*.d.ts"
+  ],
+  "androidx.core.app.NotificationCompat.BubbleMetadata.*": [
+    "androidx/core/app/NotificationCompat/BubbleMetadata/*.d.ts"
+  ],
+  "androidx.core.app.NotificationCompat.CarExtender.*": [
+    "androidx/core/app/NotificationCompat/CarExtender/*.d.ts"
+  ],
+  "androidx.core.app.NotificationCompat.MessagingStyle.*": [
+    "androidx/core/app/NotificationCompat/MessagingStyle/*.d.ts"
+  ],
+  "androidx.core.app.NotificationManagerCompat.SideChannelManager.*": [
+    "androidx/core/app/NotificationManagerCompat/SideChannelManager/*.d.ts"
+  ],
+  "androidx.core.content.SharedPreferencesCompat.EditorCompat.*": [
+    "androidx/core/content/SharedPreferencesCompat/EditorCompat/*.d.ts"
+  ],
+  "androidx.core.content.pm.PackageInfoCompat.*": [
+    "androidx/core/content/pm/PackageInfoCompat/*.d.ts"
+  ],
+  "androidx.core.content.pm.PermissionInfoCompat.*": [
+    "androidx/core/content/pm/PermissionInfoCompat/*.d.ts"
+  ],
+  "androidx.core.content.pm.ShortcutInfoCompat.*": [
+    "androidx/core/content/pm/ShortcutInfoCompat/*.d.ts"
+  ],
+  "androidx.core.content.pm.ShortcutInfoCompatSaver.*": [
+    "androidx/core/content/pm/ShortcutInfoCompatSaver/*.d.ts"
+  ],
+  "androidx.core.content.pm.ShortcutManagerCompat.*": [
+    "androidx/core/content/pm/ShortcutManagerCompat/*.d.ts"
+  ],
+  "androidx.core.content.res.FontResourcesParserCompat.*": [
+    "androidx/core/content/res/FontResourcesParserCompat/*.d.ts"
+  ],
+  "androidx.core.content.res.GradientColorInflaterCompat.*": [
+    "androidx/core/content/res/GradientColorInflaterCompat/*.d.ts"
+  ],
+  "androidx.core.content.res.ResourcesCompat.*": [
+    "androidx/core/content/res/ResourcesCompat/*.d.ts"
+  ],
+  "androidx.core.graphics.drawable.IconCompat.*": [
+    "androidx/core/graphics/drawable/IconCompat/*.d.ts"
+  ],
+  "androidx.core.graphics.drawable.RoundedBitmapDrawableFactory.*": [
+    "androidx/core/graphics/drawable/RoundedBitmapDrawableFactory/*.d.ts"
+  ],
+  "androidx.core.graphics.drawable.WrappedDrawableApi14.*": [
+    "androidx/core/graphics/drawable/WrappedDrawableApi14/*.d.ts"
+  ],
+  "androidx.core.graphics.drawable.WrappedDrawableApi21.*": [
+    "androidx/core/graphics/drawable/WrappedDrawableApi21/*.d.ts"
+  ],
+  "androidx.core.hardware.fingerprint.FingerprintManagerCompat.*": [
+    "androidx/core/hardware/fingerprint/FingerprintManagerCompat/*.d.ts"
+  ],
+  "androidx.core.provider.FontsContractCompat.FontRequestCallback.*": [
+    "androidx/core/provider/FontsContractCompat/FontRequestCallback/*.d.ts"
+  ],
+  "androidx.core.provider.RequestExecutor.DefaultThreadFactory.*": [
+    "androidx/core/provider/RequestExecutor/DefaultThreadFactory/*.d.ts"
+  ],
+  "androidx.core.text.PrecomputedTextCompat.Params.*": [
+    "androidx/core/text/PrecomputedTextCompat/Params/*.d.ts"
+  ],
+  "androidx.core.text.PrecomputedTextCompat.PrecomputedTextFutureTask.*": [
+    "androidx/core/text/PrecomputedTextCompat/PrecomputedTextFutureTask/*.d.ts"
+  ],
+  "androidx.core.text.util.FindAddress.*": [
+    "androidx/core/text/util/FindAddress/*.d.ts"
+  ],
+  "androidx.core.text.util.LinkifyCompat.*": [
+    "androidx/core/text/util/LinkifyCompat/*.d.ts"
+  ],
+  "androidx.core.view.GestureDetectorCompat.GestureDetectorCompatImplBase.*": [
+    "androidx/core/view/GestureDetectorCompat/GestureDetectorCompatImplBase/*.d.ts"
+  ],
+  "androidx.core.view.WindowInsetsAnimationCompat.Callback.*": [
+    "androidx/core/view/WindowInsetsAnimationCompat/Callback/*.d.ts"
+  ],
+  "androidx.core.view.WindowInsetsAnimationCompat.Impl21.*": [
+    "androidx/core/view/WindowInsetsAnimationCompat/Impl21/*.d.ts"
+  ],
+  "androidx.core.view.WindowInsetsAnimationCompat.Impl30.*": [
+    "androidx/core/view/WindowInsetsAnimationCompat/Impl30/*.d.ts"
+  ],
+  "androidx.core.view.WindowInsetsCompat.Type.*": [
+    "androidx/core/view/WindowInsetsCompat/Type/*.d.ts"
+  ],
+  "androidx.core.view.accessibility.AccessibilityEventCompat.*": [
+    "androidx/core/view/accessibility/AccessibilityEventCompat/*.d.ts"
+  ],
+  "androidx.core.view.accessibility.AccessibilityManagerCompat.*": [
+    "androidx/core/view/accessibility/AccessibilityManagerCompat/*.d.ts"
+  ],
+  "androidx.core.view.accessibility.AccessibilityNodeInfoCompat.*": [
+    "androidx/core/view/accessibility/AccessibilityNodeInfoCompat/*.d.ts"
+  ],
+  "androidx.core.view.accessibility.AccessibilityNodeProviderCompat.*": [
+    "androidx/core/view/accessibility/AccessibilityNodeProviderCompat/*.d.ts"
+  ],
+  "androidx.core.view.accessibility.AccessibilityViewCommand.*": [
+    "androidx/core/view/accessibility/AccessibilityViewCommand/*.d.ts"
+  ],
+  "androidx.core.view.inputmethod.EditorInfoCompat.*": [
+    "androidx/core/view/inputmethod/EditorInfoCompat/*.d.ts"
+  ],
+  "androidx.core.view.inputmethod.InputConnectionCompat.*": [
+    "androidx/core/view/inputmethod/InputConnectionCompat/*.d.ts"
+  ],
+  "androidx.core.view.inputmethod.InputContentInfoCompat.*": [
+    "androidx/core/view/inputmethod/InputContentInfoCompat/*.d.ts"
+  ],
+  "androidx.fragment.app.SpecialEffectsController.Operation.*": [
+    "androidx/fragment/app/SpecialEffectsController/Operation/*.d.ts"
+  ],
+  "androidx.recyclerview.widget.ConcatAdapter.Config.*": [
+    "androidx/recyclerview/widget/ConcatAdapter/Config/*.d.ts"
+  ],
+  "androidx.recyclerview.widget.RecyclerView.Adapter.*": [
+    "androidx/recyclerview/widget/RecyclerView/Adapter/*.d.ts"
+  ],
+  "androidx.recyclerview.widget.RecyclerView.EdgeEffectFactory.*": [
+    "androidx/recyclerview/widget/RecyclerView/EdgeEffectFactory/*.d.ts"
+  ],
+  "androidx.recyclerview.widget.RecyclerView.ItemAnimator.*": [
+    "androidx/recyclerview/widget/RecyclerView/ItemAnimator/*.d.ts"
+  ],
+  "androidx.recyclerview.widget.RecyclerView.LayoutManager.*": [
+    "androidx/recyclerview/widget/RecyclerView/LayoutManager/*.d.ts"
+  ],
+  "androidx.recyclerview.widget.RecyclerView.RecycledViewPool.*": [
+    "androidx/recyclerview/widget/RecyclerView/RecycledViewPool/*.d.ts"
+  ],
+  "androidx.recyclerview.widget.RecyclerView.SmoothScroller.*": [
+    "androidx/recyclerview/widget/RecyclerView/SmoothScroller/*.d.ts"
+  ],
+  "androidx.recyclerview.widget.StableIdStorage.IsolatedStableIdStorage.*": [
+    "androidx/recyclerview/widget/StableIdStorage/IsolatedStableIdStorage/*.d.ts"
+  ],
+  "androidx.recyclerview.widget.StaggeredGridLayoutManager.LazySpanLookup.*": [
+    "androidx/recyclerview/widget/StaggeredGridLayoutManager/LazySpanLookup/*.d.ts"
+  ],
+  "androidx.recyclerview.widget.ViewTypeStorage.IsolatedViewTypeStorage.*": [
+    "androidx/recyclerview/widget/ViewTypeStorage/IsolatedViewTypeStorage/*.d.ts"
+  ],
+  "androidx.recyclerview.widget.ViewTypeStorage.SharedIdRangeViewTypeStorage.*": [
+    "androidx/recyclerview/widget/ViewTypeStorage/SharedIdRangeViewTypeStorage/*.d.ts"
+  ],
+  "java.nio.file.attribute.AclEntry.*": [
+    "java/nio/file/attribute/AclEntry/*.d.ts"
+  ],
+  "java.util.concurrent.locks.AbstractQueuedLongSynchronizer.*": [
+    "java/util/concurrent/locks/AbstractQueuedLongSynchronizer/*.d.ts"
+  ],
+  "java.util.concurrent.locks.AbstractQueuedSynchronizer.*": [
+    "java/util/concurrent/locks/AbstractQueuedSynchronizer/*.d.ts"
+  ],
+  "java.util.concurrent.locks.ReentrantReadWriteLock.*": [
+    "java/util/concurrent/locks/ReentrantReadWriteLock/*.d.ts"
+  ],
+  "kotlin.coroutines.jvm.internal.ModuleNameRetriever.*": [
+    "kotlin/coroutines/jvm/internal/ModuleNameRetriever/*.d.ts"
+  ],
+  "kotlin.jvm.internal.TypeParameterReference.Companion.*": [
+    "kotlin/jvm/internal/TypeParameterReference/Companion/*.d.ts"
+  ],
+  "kotlin.jvm.internal.TypeReference.asString.*": [
+    "kotlin/jvm/internal/TypeReference/asString/*.d.ts"
+  ],
+  "kotlin.jvm.internal.markers.KMutableMap.*": [
+    "kotlin/jvm/internal/markers/KMutableMap/*.d.ts"
+  ],
+  "kotlinx.coroutines.debug.internal.ConcurrentWeakMap.*": [
+    "kotlinx/coroutines/debug/internal/ConcurrentWeakMap/*.d.ts"
+  ],
+  "kotlinx.coroutines.debug.internal.DebugCoroutineInfoImpl.*": [
+    "kotlinx/coroutines/debug/internal/DebugCoroutineInfoImpl/*.d.ts"
+  ],
+  "kotlinx.coroutines.debug.internal.DebugProbesImpl.*": [
+    "kotlinx/coroutines/debug/internal/DebugProbesImpl/*.d.ts"
+  ],
+  "kotlinx.coroutines.flow.FlowKt__LimitKt.collectWhile.*": [
+    "kotlinx/coroutines/flow/FlowKt__LimitKt/collectWhile/*.d.ts"
+  ],
+  "kotlinx.coroutines.flow.FlowKt__LimitKt.takeWhile.*": [
+    "kotlinx/coroutines/flow/FlowKt__LimitKt/takeWhile/*.d.ts"
+  ],
+  "kotlinx.coroutines.flow.internal.ChannelFlow.*": [
+    "kotlinx/coroutines/flow/internal/ChannelFlow/*.d.ts"
+  ],
+  "kotlinx.coroutines.flow.internal.ChannelFlowMerge.*": [
+    "kotlinx/coroutines/flow/internal/ChannelFlowMerge/*.d.ts"
+  ],
+  "kotlinx.coroutines.flow.internal.ChannelFlowOperator.*": [
+    "kotlinx/coroutines/flow/internal/ChannelFlowOperator/*.d.ts"
+  ],
+  "kotlinx.coroutines.flow.internal.ChannelFlowTransformLatest.*": [
+    "kotlinx/coroutines/flow/internal/ChannelFlowTransformLatest/*.d.ts"
+  ],
+  "kotlinx.coroutines.flow.internal.ChannelLimitedFlowMerge.*": [
+    "kotlinx/coroutines/flow/internal/ChannelLimitedFlowMerge/*.d.ts"
+  ],
+  "kotlinx.coroutines.flow.internal.FusibleFlow.*": [
+    "kotlinx/coroutines/flow/internal/FusibleFlow/*.d.ts"
+  ],
+  "kotlinx.coroutines.flow.internal.SafeCollector.*": [
+    "kotlinx/coroutines/flow/internal/SafeCollector/*.d.ts"
+  ],
+  "kotlinx.coroutines.flow.internal.SafeCollector_commonKt.*": [
+    "kotlinx/coroutines/flow/internal/SafeCollector_commonKt/*.d.ts"
+  ],
+  "kotlinx.coroutines.flow.internal.UndispatchedContextCollector.*": [
+    "kotlinx/coroutines/flow/internal/UndispatchedContextCollector/*.d.ts"
+  ],
+  "kotlinx.coroutines.sync.MutexImpl.LockCont.*": [
+    "kotlinx/coroutines/sync/MutexImpl/LockCont/*.d.ts"
+  ],
+  "kotlinx.coroutines.sync.MutexImpl.LockSelect.*": [
+    "kotlinx/coroutines/sync/MutexImpl/LockSelect/*.d.ts"
+  ],
+  "kotlinx.coroutines.sync.MutexImpl.TryLockDesc.*": [
+    "kotlinx/coroutines/sync/MutexImpl/TryLockDesc/*.d.ts"
+  ],
+  "android.health.connect.datatypes.ExerciseRoute.Location.*": [
+    "android/health/connect/datatypes/ExerciseRoute/Location/*.d.ts"
+  ],
+  "android.net.wifi.hotspot2.pps.Credential.*": [
+    "android/net/wifi/hotspot2/pps/Credential/*.d.ts"
+  ],
+  "android.support.v4.app.INotificationSideChannel.Stub.*": [
+    "android/support/v4/app/INotificationSideChannel/Stub/*.d.ts"
+  ],
+  "android.support.v4.os.IResultReceiver.Stub.*": [
+    "android/support/v4/os/IResultReceiver/Stub/*.d.ts"
+  ],
+  "androidx.core.app.NotificationCompat.CarExtender.UnreadConversation.*": [
+    "androidx/core/app/NotificationCompat/CarExtender/UnreadConversation/*.d.ts"
+  ],
+  "androidx.core.content.res.ResourcesCompat.ThemeCompat.*": [
+    "androidx/core/content/res/ResourcesCompat/ThemeCompat/*.d.ts"
+  ],
+  "kotlinx.coroutines.debug.internal.ConcurrentWeakMap.Core.*": [
+    "kotlinx/coroutines/debug/internal/ConcurrentWeakMap/Core/*.d.ts"
+  ],
+  "kotlinx.coroutines.debug.internal.DebugProbesImpl.dumpCoroutinesInfoImpl.*": [
+    "kotlinx/coroutines/debug/internal/DebugProbesImpl/dumpCoroutinesInfoImpl/*.d.ts"
+  ],
+  "kotlinx.coroutines.debug.internal.DebugProbesImpl.dumpCoroutinesSynchronized.*": [
+    "kotlinx/coroutines/debug/internal/DebugProbesImpl/dumpCoroutinesSynchronized/*.d.ts"
+  ],
+  "kotlinx.coroutines.flow.internal.SafeCollector_commonKt.checkContext.*": [
+    "kotlinx/coroutines/flow/internal/SafeCollector_commonKt/checkContext/*.d.ts"
+  ]
+}

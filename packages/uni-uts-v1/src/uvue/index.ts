@@ -38,7 +38,6 @@ import {
   hbuilderFormatter,
 } from '../stacktrace/kotlin'
 import { isWindows } from '../shared'
-import { capitalize } from '@vue/shared'
 
 const DEFAULT_IMPORTS = [
   'kotlinx.coroutines.async',
@@ -106,28 +105,6 @@ export async function compileApp(entry: string, options: CompileAppOptions) {
     imports.push('io.dcloud.unicloud.*')
   }
 
-  if (extApis) {
-    // 导入固定的类型
-    Object.keys(extApis).forEach((api) => {
-      const packageName = extApis[api][0]
-      const prefix = capitalize(api)
-      if (!autoImports[packageName]) {
-        autoImports[packageName] = []
-      }
-      ;[
-        'Options',
-        'SuccessCallback',
-        'Result',
-        'FailCallback',
-        'Fail',
-        'CompleteCallback',
-        'Complete',
-      ].forEach((importName) => {
-        autoImports[packageName].push([prefix + importName])
-      })
-    })
-  }
-
   const input: UTSInputOptions = {
     root: inputDir,
     filename: entry,
@@ -175,7 +152,7 @@ export async function compileApp(entry: string, options: CompileAppOptions) {
       split,
       disableSplitManifest: options.disableSplitManifest,
       uniAppX: {
-        uvueOutDir: uvueOutDir(),
+        uvueOutDir: uvueOutDir('app-android'),
       },
       transform: {
         uniExtApiDefaultNamespace: 'io.dcloud.uniapp.extapi',
@@ -232,12 +209,14 @@ export async function compileApp(entry: string, options: CompileAppOptions) {
   return runKotlinDev(options, result as RunKotlinDevResult, hasCache)
 }
 
-export function uvueOutDir() {
-  return path.join(process.env.UNI_OUTPUT_DIR, '../.uvue')
+export function uvueOutDir(
+  platform: 'app-android' | 'app-ios' | 'app-harmony'
+) {
+  return path.join(process.env.UNI_APP_X_UVUE_DIR, platform)
 }
 
-export function tscOutDir() {
-  return path.join(process.env.UNI_OUTPUT_DIR, '../.tsc')
+export function tscOutDir(platform: 'app-android' | 'app-ios' | 'app-harmony') {
+  return path.join(process.env.UNI_APP_X_TSC_DIR, platform)
 }
 
 function kotlinSrcDir(kotlinDir: string) {

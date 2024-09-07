@@ -23,7 +23,6 @@ import PageHead from './pageHead'
 import PageBody from './pageBody'
 import { providePageMeta } from '../../setup/provide'
 import { getStateId } from '../../../helpers/dom'
-import type { UniDialogPage } from '../../setup/page'
 
 export default /*#__PURE__*/ defineSystemComponent({
   name: 'Page',
@@ -102,7 +101,7 @@ function createDialogPageVNode(dialogPages: Ref<UniDialogPage[]>) {
           openBlock(),
           createBlock(
             createVNode(
-              dialogPage.component,
+              dialogPage.$component,
               {
                 key: dialogPage.route,
                 style: {

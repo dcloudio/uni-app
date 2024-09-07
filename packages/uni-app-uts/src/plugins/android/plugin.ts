@@ -2,17 +2,14 @@ import path from 'path'
 import fs from 'fs-extra'
 import type { ResolvedConfig } from 'vite'
 import { extend, isString } from '@vue/shared'
-import type { ChangeEvent, OutputBundle, PluginContext } from 'rollup'
+import type { ChangeEvent } from 'rollup'
 import {
   type UniVitePlugin,
   buildUniExtApis,
-  createUniXCompilerOnce,
   emptyDir,
-  formatExtApiProviderName,
   getCurrentCompiledUTSPlugins,
-  getUTSComponentAutoImports,
-  getUTSEasyComAutoImports,
   getUniExtApiProviderRegisters,
+  initUTSKotlinAutoImportsOnce,
   normalizeEmitAssetFileName,
   normalizePath,
   parseManifestJsonOnce,
@@ -21,6 +18,8 @@ import {
   parseVueRequest,
   resolveMainPathOnce,
   resolveUTSCompiler,
+  tscOutDir,
+  uvueOutDir,
 } from '@dcloudio/uni-cli-shared'
 import {
   DEFAULT_APPID,
@@ -32,8 +31,6 @@ import {
   parseUTSRelativeFilename,
   transformAutoImport,
   transformUniCloudMixinDataCom,
-  tscOutDir,
-  uvueOutDir,
 } from './utils'
 import { getOutputManifestJson } from './manifestJson'
 import {
@@ -43,17 +40,16 @@ import {
   updateManifestModules,
 } from '../utils'
 
-import { genClassName } from '../..'
-
 const uniCloudSpaceList = getUniCloudSpaceList()
 
 let isFirst = true
 export function uniAppPlugin(): UniVitePlugin {
   const inputDir = process.env.UNI_INPUT_DIR
   const outputDir = process.env.UNI_OUTPUT_DIR
+  const uniModulesDir = normalizePath(path.resolve(inputDir, 'uni_modules'))
   const mainUTS = resolveMainPathOnce(inputDir)
-  const uvueOutputDir = uvueOutDir()
-  const tscOutputDir = tscOutDir()
+  const uvueOutputDir = uvueOutDir('app-android')
+  const tscOutputDir = tscOutDir('app-android')
 
   const manifestJson = parseManifestJsonOnce(inputDir)
   // 预留一个口子，方便切换测试
@@ -80,8 +76,10 @@ export function uniAppPlugin(): UniVitePlugin {
 
   let resolvedConfig: ResolvedConfig
 
-  const uniXCompiler =
-    process.env.UNI_APP_X_TSC === 'true' ? createUniXCompilerOnce() : null
+  const uniXKotlinCompiler =
+    process.env.UNI_APP_X_TSC === 'true'
+      ? resolveUTSCompiler().createUniXKotlinCompilerOnce()
+      : null
   const changedFiles: { fileName: string; event: ChangeEvent }[] = []
 
   return {
@@ -144,8 +142,8 @@ export function uniAppPlugin(): UniVitePlugin {
     async configResolved(config) {
       configResolved(config, true)
       resolvedConfig = config
-      if (uniXCompiler) {
-        await uniXCompiler.init()
+      if (uniXKotlinCompiler) {
+        await uniXKotlinCompiler.init()
       }
     },
     async transform(code, id) {
@@ -188,9 +186,17 @@ export function uniAppPlugin(): UniVitePlugin {
       // 开发者仅在 script 中引入了 easyCom 类型，但模板里边没用到，此时额外生成一个辅助的.uvue文件
       // checkUTSEasyComAutoImports(inputDir, bundle, this)
     },
-    async watchChange(fileName, change) {
-      if (uniXCompiler) {
+    watchChange(fileName, change) {
+      if (uniXKotlinCompiler) {
         // watcher && watcher.watch(3000)
+        fileName = normalizePath(fileName)
+        if (fileName.startsWith(uniModulesDir)) {
+          // 忽略uni_modules uts原生插件中的文件
+          const plugin = fileName.slice(uniModulesDir.length + 1).split('/')[0]
+          if (getCurrentCompiledUTSPlugins().has(plugin)) {
+            return
+          }
+        }
         changedFiles.push({ fileName, event: change.event })
       }
     },
@@ -198,12 +204,14 @@ export function uniAppPlugin(): UniVitePlugin {
       if (process.env.UNI_COMPILE_TARGET === 'uni_modules') {
         return
       }
-      if (uniXCompiler) {
+      if (uniXKotlinCompiler) {
         if (changedFiles.length) {
           const files = changedFiles.splice(0)
-          await uniXCompiler.invalidate(files)
+          await uniXKotlinCompiler.invalidate(files)
         } else if (isFirst) {
-          await uniXCompiler.addRootFile(path.join(tscOutputDir, 'main.uts.ts'))
+          await uniXKotlinCompiler.addRootFile(
+            path.join(tscOutputDir, 'main.uts.ts')
+          )
         }
       }
       let pageCount = 0
@@ -242,11 +250,14 @@ export function uniAppPlugin(): UniVitePlugin {
         ),
         extApiComponents: [...getExtApiComponents()],
         uvueClassNamePrefix: UVUE_CLASS_NAME_PREFIX,
-        autoImports: initAutoImports(),
-        extApiProviders: parseUniExtApiProviders(manifestJson),
+        autoImports: await initUTSKotlinAutoImportsOnce(),
+        extApiProviders: parseUniExtApiProviders(),
         uniModulesArtifacts: parseUniModulesArtifacts(),
         env: parseProcessEnv(resolvedConfig),
       })
+      if (uniXKotlinCompiler && process.env.NODE_ENV !== 'development') {
+        await uniXKotlinCompiler.close()
+      }
       if (res) {
         if (process.env.NODE_ENV === 'development') {
           const files: string[] = []
@@ -283,19 +294,6 @@ export function uniAppPlugin(): UniVitePlugin {
   }
 }
 
-function initAutoImports() {
-  const utsComponents = getUTSComponentAutoImports()
-  const autoImports: Record<string, [[string, string?]]> = {}
-  Object.keys(utsComponents).forEach((source) => {
-    if (autoImports[source]) {
-      autoImports[source].push(...utsComponents[source])
-    } else {
-      autoImports[source] = utsComponents[source]
-    }
-  })
-  return autoImports
-}
-
 function normalizeFilename(filename: string, isMain = false) {
   if (isMain) {
     return 'main.uts'
@@ -317,85 +315,14 @@ export function main(app: IApp) {
     definePageRoutes();
     defineAppConfig();
     ${automatorCode}
-    (createApp()['app'] as VueApp).mount(app);
+    (createApp()['app'] as VueApp).mount(app, ${UVUE_CLASS_NAME_PREFIX}UniApp());
 }
 `
 }
 
-// @ts-expect-error
-function _checkUTSEasyComAutoImports(
-  inputDir: string,
-  bundle: OutputBundle,
-  ctx: PluginContext
-) {
-  const res = getUTSEasyComAutoImports()
-  const uvueOutputDir = uvueOutDir()
-  Object.keys(res).forEach((fileName) => {
-    if (fileName.endsWith('.vue') || fileName.endsWith('.uvue')) {
-      if (fileName.startsWith('@/')) {
-        fileName = fileName.slice(2)
-      }
-      const relativeFileName = parseUTSRelativeFilename(fileName, inputDir)
-      if (
-        !bundle[relativeFileName] &&
-        // tsc 模式带ts后缀
-        !bundle[relativeFileName + '.ts']
-      ) {
-        const className = genClassName(relativeFileName, UVUE_CLASS_NAME_PREFIX)
-        const assetFileName = normalizeEmitAssetFileName(relativeFileName)
-        const assetSource = `function ${className}Render(): any | null { return null }
-const ${className}Styles = []`
-        if (process.env.UNI_APP_X_TSC === 'true') {
-          const fileName = path.resolve(uvueOutputDir, assetFileName)
-          if (!fs.existsSync(fileName)) {
-            fs.outputFileSync(fileName.replace(/\.ts$/, ''), assetSource)
-          }
-        } else {
-          ctx.emitFile({
-            type: 'asset',
-            fileName: assetFileName,
-            source: assetSource,
-          })
-        }
-      }
-    }
-  })
-  return res
-}
-
-function parseUniExtApiProviders(
-  manifestJson: Record<string, any>
-): [string, string, string][] {
+function parseUniExtApiProviders(): [string, string, string][] {
   const providers: [string, string, string][] = []
   const customProviders = getUniExtApiProviderRegisters()
-  const userModules = manifestJson.app?.distribute?.modules || {}
-  const userModuleNames = Object.keys(userModules)
-  if (userModuleNames.length) {
-    const systemProviders = resolveUTSCompiler().parseExtApiProviders()
-    userModuleNames.forEach((moduleName) => {
-      const systemProvider = systemProviders[moduleName]
-      if (systemProvider) {
-        const userModule = userModules[moduleName]
-        Object.keys(userModule).forEach((providerName) => {
-          if (systemProvider.providers.includes(providerName)) {
-            if (
-              !customProviders.find(
-                (customProvider) =>
-                  customProvider.service === systemProvider.service &&
-                  customProvider.name === providerName
-              )
-            ) {
-              providers.push([
-                systemProvider.service,
-                providerName,
-                formatExtApiProviderName(systemProvider.service, providerName),
-              ])
-            }
-          }
-        })
-      }
-    })
-  }
   customProviders.forEach((provider) => {
     providers.push([provider.service, provider.name, provider.class])
   })

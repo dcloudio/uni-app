@@ -114,6 +114,9 @@ const NVUE_BUILT_IN_TAGS = [
     'gcanvas',
 ];
 const UVUE_BUILT_IN_TAGS = [
+    'ad',
+    'ad-content-page',
+    'ad-draw',
     'native-view',
     'loading-indicator',
     'list-view',

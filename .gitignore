@@ -13,6 +13,8 @@ packages/uni-uts-v1/__tests__/tsc/uni-app-x/*/dist
 packages/uni-app-uts/dist
 packages/uni-cli-utils/dist
 packages/uni-preprocess/dist
+packages/uni-cli-shared/__tests__/examples/**/dist
+packages/uni-app-harmony/dist/packages
 
 .env
 .DS_Store

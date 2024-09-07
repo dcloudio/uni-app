@@ -1,4 +1,4 @@
-import { computed, ref, watch } from 'vue'
+import { type PropType, computed, watch } from 'vue'
 import { defineBuiltInComponent } from '@dcloudio/uni-components'
 
 const props = {
@@ -12,6 +12,12 @@ const props = {
       return {}
     },
   },
+  methods: {
+    type: Array as PropType<string[]>,
+    default() {
+      return []
+    },
+  },
 }
 
 let index = 0
@@ -19,12 +25,10 @@ let index = 0
 export default /*#__PURE__*/ defineBuiltInComponent({
   props,
   setup(props, { expose, attrs }) {
-    const clickRef = ref(0)
     const elId = String(index++)
     const src = computed(() => {
       const on: string[] = []
       const options = Object.assign({}, props.options, {
-        click: clickRef.value,
         on: on,
       })
       Object.keys(attrs).forEach((key) => {
@@ -38,13 +42,15 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     watch(src, (srcValue) => {
       harmonyChannel.invokeSync('onNativeEmbedLifecycleChange', [srcValue])
     })
-    function click() {
-      clickRef.value++
-    }
-    expose({
-      click,
+    const exposed = {
       elId,
+    }
+    props.methods.forEach((method) => {
+      exposed[method] = (...args: any[]) => {
+        harmonyChannel.invokeSync('invokeNativeEmbed', [elId, method, args])
+      }
     })
+    expose(exposed)
     return () => (
       <embed
         el-id={elId}

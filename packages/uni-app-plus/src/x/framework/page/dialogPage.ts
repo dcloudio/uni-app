@@ -1,43 +1,27 @@
-import {
-  type EmitterEmit,
-  type EmitterOff,
-  type EmitterOn,
-  type EmitterOnce,
-  EventBus,
-} from '@dcloudio/uni-api'
+import type { UniDialogPage } from '@dcloudio/uni-app-x/types/page'
+import { UniBasePageImpl } from '../../../service/framework/page/getCurrentPages'
 import type { ComponentPublicInstance } from 'vue'
 
-export class DialogPage {
-  route: string = ''
-  component?: any
-  $getParentPage: () => ComponentPublicInstance | null
-  $on: EmitterOn
-  $once: EmitterOnce
-  $off: EmitterOff
-  $emit: EmitterEmit
+export class UniDialogPageImpl
+  extends UniBasePageImpl
+  implements UniDialogPage
+{
+  vm: ComponentPublicInstance | null = null
+  $vm: ComponentPublicInstance | null = null
+  $component: any | null = null
   $disableEscBack: boolean = false
-  $vm?: ComponentPublicInstance
-
   constructor({
     route,
-    component,
-    $getParentPage,
+    options,
+    getParentPage,
   }: {
     route: string
-    component: any
-    $getParentPage: () => ComponentPublicInstance | null
+    options: Map<string, string | null>
+    getParentPage: () => UniPage | null
   }) {
-    this.route = route
-    this.component = component
-    this.$getParentPage = $getParentPage
-    const { $on, $once, $emit, $off } = new EventBus()
-    this.$on = $on
-    this.$once = $once
-    this.$off = $off
-    this.$emit = $emit
+    super({ route, options })
+    this.getParentPage = getParentPage
   }
 }
 
-export type UniDialogPage = DialogPage
-
-export const homeDialogPages = [] as UniDialogPage[]
+export const homeDialogPages: UniDialogPage[] = []

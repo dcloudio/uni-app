@@ -210,7 +210,7 @@ export function resolveRootIndex(module: string, options: GenProxyCodeOptions) {
     options.is_uni_modules ? 'utssdk' : '',
     `index${options.extname}`
   )
-  return fs.existsSync(filename) && filename
+  return fs.existsSync(filename) ? filename : ''
 }
 
 export function resolveRootInterface(
@@ -222,7 +222,7 @@ export function resolveRootInterface(
     options.is_uni_modules ? 'utssdk' : '',
     `interface${options.extname}`
   )
-  return fs.existsSync(filename) && filename
+  return fs.existsSync(filename) ? filename : ''
 }
 
 export function resolvePlatformIndexFilename(
@@ -244,7 +244,7 @@ export function resolvePlatformIndex(
   options: GenProxyCodeOptions
 ) {
   const filename = resolvePlatformIndexFilename(platform, module, options)
-  return fs.existsSync(filename) && filename
+  return fs.existsSync(filename) ? filename : ''
 }
 
 function exportDefaultCode(format: FORMATS) {
@@ -399,6 +399,7 @@ async function parseInterfaceTypes(
   options: GenProxyCodeOptions
 ): Promise<Types> {
   const interfaceFilename = resolveRootInterface(module, options)
+
   if (!interfaceFilename) {
     return {
       interface: {},
@@ -651,13 +652,17 @@ async function parseFile(
   options: GenProxyCodeOptions
 ): Promise<ProxyDecl[]> {
   if (filename) {
-    return parseCode(
-      fs.readFileSync(filename, 'utf8'),
-      options.namespace,
-      options.types!,
-      filename,
-      options.inputDir!
-    )
+    // 暂时不从uvue目录读取了，就读取原始文件
+    // filename = resolveUVueFileName(filename)
+    if (fs.existsSync(filename)) {
+      return parseCode(
+        fs.readFileSync(filename, 'utf8'),
+        options.namespace,
+        options.types!,
+        filename,
+        options.inputDir!
+      )
+    }
   }
   return []
 }
@@ -1402,4 +1407,54 @@ function createFunctionDeclaration(
     returnType: func.returnType,
     span: {} as Span,
   }
+}
+
+export async function parseExportIdentifiers(fileName: string) {
+  const ids: string[] = []
+  if (!fs.existsSync(fileName)) {
+    return ids
+  }
+  const { parse } = require('@dcloudio/uts')
+  let ast: Module | null = null
+  try {
+    ast = await parse(fs.readFileSync(fileName, 'utf8'), {
+      filename: fileName,
+      noColor: true,
+    })
+  } catch (e: any) {}
+  if (!ast) {
+    return ids
+  }
+  ast.body.forEach((item) => {
+    if (item.type === 'ExportDeclaration') {
+      switch (item.declaration.type) {
+        case 'FunctionDeclaration':
+          ids.push(item.declaration.identifier.value)
+          break
+        case 'ClassDeclaration':
+          ids.push(item.declaration.identifier.value)
+          break
+        case 'VariableDeclaration':
+          item.declaration.declarations.forEach((d) => {
+            if (d.id.type === 'Identifier') {
+              ids.push(d.id.value)
+            }
+          })
+          break
+        case 'TsInterfaceDeclaration':
+          ids.push(item.declaration.id.value)
+          break
+        case 'TsTypeAliasDeclaration':
+          ids.push(item.declaration.id.value)
+          break
+        case 'TsEnumDeclaration':
+          ids.push(item.declaration.id.value)
+          break
+        case 'TsModuleDeclaration':
+          ids.push(item.declaration.id.value)
+          break
+      }
+    }
+  })
+  return ids
 }

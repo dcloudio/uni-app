@@ -21,7 +21,5 @@ packages/uni-mp-quickapp-webview/lib
 packages/vite-plugin-uni/lib
 packages/uni-uts-vite/lib
 packages/uni-cli-shared/src/checkUpdate.ts
-!packages/uni-uts-v1/lib
-packages/uni-uts-v1/lib/*
-!packages/uni-uts-v1/lib/uts
+packages/uni-uts-v1/lib
 packages/uni-app-harmony/types

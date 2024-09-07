@@ -46,7 +46,11 @@ export default {
   },
 
   mounted () {
-    mediaQueryObserver = uni.createMediaQueryObserver(this)
+    let parent = this.$parent
+    while (parent.$parent) {
+        parent = parent.$parent
+    }
+    mediaQueryObserver = uni.createMediaQueryObserver(parent)
     mediaQueryObserver.observe({
       width: this.width,
       maxWidth: this.maxWidth,

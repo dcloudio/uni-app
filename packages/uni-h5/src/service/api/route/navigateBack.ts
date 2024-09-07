@@ -23,7 +23,7 @@ export const navigateBack = defineAsyncApi<API_TYPE_NAVIGATE_BACK>(
       const currentPage = getCurrentPage()
       if (currentPage) {
         // @ts-expect-error
-        const dialogPages = currentPage.$getDialogPages()
+        const dialogPages = currentPage.getDialogPages()
         const dialogPage = dialogPages[dialogPages.length - 1]
         if (dialogPage?.$vm.$options.onBackPress?.() === true) {
           canBack = false
@@ -34,7 +34,11 @@ export const navigateBack = defineAsyncApi<API_TYPE_NAVIGATE_BACK>(
       return reject(ON_BACK_PRESS)
     }
 
-    getApp().$router.go(-args!.delta!)
+    if (__X__) {
+      getApp().vm.$router.go(-args!.delta!)
+    } else {
+      getApp().$router.go(-args!.delta!)
+    }
     return resolve()
   },
   NavigateBackProtocol,

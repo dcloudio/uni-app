@@ -57,7 +57,7 @@ export interface Options {
 }
 
 export interface ResolvedOptions extends Options {
-  compiler: typeof _compiler
+  compiler?: typeof _compiler
   root: string
   sourceMap: boolean
   cssDevSourcemap?: boolean

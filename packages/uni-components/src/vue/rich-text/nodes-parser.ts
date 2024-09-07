@@ -117,7 +117,17 @@ function processClickEvent(node: Node, triggerItemClick: Function) {
   if (['a', 'img'].includes(node.name) && triggerItemClick) {
     return {
       onClick: (e: Event) => {
+        //#if !_X_
         triggerItemClick(e, { node })
+        //#endif
+        //#if _X_
+        // TODO 确认ref属性的值
+        if (node.name === 'a') {
+          triggerItemClick(e, { href: (node.attrs || {}).href })
+        } else {
+          triggerItemClick(e, { src: (node.attrs || {}).src })
+        }
+        //#endif
         e.stopPropagation()
         e.preventDefault()
         e.returnValue = false

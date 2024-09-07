@@ -1,8 +1,11 @@
 import { parse } from '../src'
 
 // for nvue
-async function objectifierRule(input: string) {
-  const { code, messages } = await parse(input, { logLevel: 'NOTE' })
+async function objectifierRule(input: string, isUVue = false) {
+  const { code, messages } = await parse(input, {
+    logLevel: 'NOTE',
+    type: 'nvue',
+  })
   return {
     json: JSON.parse(code),
     messages,

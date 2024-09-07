@@ -22,7 +22,7 @@ function queryElementTop(
 export const pageScrollTo = defineAsyncApi<API_TYPE_PAGE_SCROLL_TO>(
   API_PAGE_SCROLL_TO,
   (options, res) => {
-    const currentPage = getCurrentPage() as ComponentPublicInstance
+    const currentPage = (getCurrentPage() as unknown as UniPage).vm
 
     const scrollViewNode = currentPage?.$el
     if (scrollViewNode == null || scrollViewNode.tagName != 'SCROLL-VIEW') {

@@ -1,11 +1,7 @@
-import {
-  type UniDialogPage,
-  decrementEscBackPageNum,
-} from '../../../framework/setup/page'
-import { getPageInstanceByVm } from '../../../framework/setup/utils'
-import type { ComponentPublicInstance } from 'vue'
+import { decrementEscBackPageNum } from '../../../framework/setup/page'
 import { invokeHook } from '@dcloudio/uni-core'
 import { ON_SHOW, ON_UNLOAD } from '@dcloudio/uni-shared'
+import type { UniDialogPage } from '@dcloudio/uni-app-x/types/page'
 /**
  *
  * 文档: []()
@@ -57,7 +53,7 @@ interface CloseDialogPageOptions {
 }
 
 export const closeDialogPage = (options?: CloseDialogPageOptions) => {
-  const currentPages = getCurrentPages()
+  const currentPages = getCurrentPages() as UniPage[]
   const currentPage = currentPages[currentPages.length - 1]
   if (!currentPage) {
     triggerFailCallback(options, 'currentPage is null')
@@ -66,9 +62,9 @@ export const closeDialogPage = (options?: CloseDialogPageOptions) => {
 
   if (options?.dialogPage) {
     const dialogPage = options?.dialogPage!
-    const parentPage = dialogPage.$getParentPage?.()
+    const parentPage = dialogPage.getParentPage()
     if (parentPage && currentPages.indexOf(parentPage) !== -1) {
-      const parentDialogPages = parentPage.$getDialogPages()
+      const parentDialogPages = parentPage.getDialogPages()
       const index = parentDialogPages.indexOf(dialogPage)
       parentDialogPages.splice(index, 1)
       invokeHook(dialogPage.$vm!, ON_UNLOAD)
@@ -86,9 +82,7 @@ export const closeDialogPage = (options?: CloseDialogPageOptions) => {
       return
     }
   } else {
-    const dialogPages = getPageInstanceByVm(
-      currentPage as ComponentPublicInstance
-    )!.$dialogPages.value as UniDialogPage[]
+    const dialogPages = currentPage.getDialogPages()
     for (let i = dialogPages.length - 1; i >= 0; i--) {
       invokeHook(dialogPages[i].$vm!, ON_UNLOAD)
       if (i > 0) {

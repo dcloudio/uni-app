@@ -24,10 +24,13 @@ import {
   getUTSCompiler,
   isColorSupported,
   moveRootIndexSourceMap,
+  normalizeUTSResult,
   parseExtApiDefaultParameters,
   parseInjectModules,
   parseKotlinPackageWithPluginId,
   resolveAndroidDir,
+  resolveBundleInputFileName,
+  resolveBundleInputRoot,
   resolveConfigProvider,
   resolvePackage,
   resolveSourceMapFile,
@@ -139,7 +142,7 @@ export async function runKotlinProd(
   const inputDir = process.env.UNI_INPUT_DIR
   const outputDir = process.env.UNI_OUTPUT_DIR
   const result = await compile(filename, {
-    inputDir: isModule ? uvueOutDir() : inputDir,
+    inputDir: isModule ? uvueOutDir('app-android') : inputDir,
     outputDir,
     sourceMap: !!sourceMap,
     components,
@@ -566,12 +569,13 @@ const DEFAULT_IMPORTS = [
   'io.dcloud.uniapp.*',
 ]
 
-const DEFAULT_IMPORTS_X = [
+const DEFAULT_IMPORTS_VUE_X = [
   'io.dcloud.uniapp.framework.*',
   'io.dcloud.uniapp.vue.*',
   'io.dcloud.uniapp.vue.shared.*',
-  'io.dcloud.uniapp.runtime.*',
 ]
+
+const DEFAULT_IMPORTS_X = ['io.dcloud.uniapp.runtime.*']
 
 export async function compile(
   filename: string,
@@ -594,8 +598,11 @@ export async function compile(
   const { bundle, UTSTarget } = getUTSCompiler()
   // let time = Date.now()
   const imports = [...DEFAULT_IMPORTS]
-  if (isX && !process.env.UNI_UTS_DISABLE_X_IMPORT) {
+  if (isX) {
     imports.push(...DEFAULT_IMPORTS_X)
+    if (!process.env.UNI_UTS_DISABLE_X_IMPORT) {
+      imports.push(...DEFAULT_IMPORTS_VUE_X)
+    }
   }
   const rClass = resolveAndroidResourceClass(filename)
   if (rClass) {
@@ -619,8 +626,8 @@ export async function compile(
   const componentsCode = genComponentsCode(filename, components, isX)
   const { package: pluginPackage, id: pluginId } = parseKotlinPackage(filename)
   const input: UTSInputOptions = {
-    root: inputDir,
-    filename,
+    root: resolveBundleInputRoot('app-android', inputDir),
+    filename: resolveBundleInputFileName('app-android', filename),
     pluginId: isPlugin ? pluginId : '',
     paths: {
       vue: 'io.dcloud.uniapp.vue',
@@ -634,7 +641,12 @@ export async function compile(
       input.fileContent = componentsCode
     } else {
       input.fileContent =
-        fs.readFileSync(filename, 'utf8') + `\n` + componentsCode
+        fs.readFileSync(
+          resolveBundleInputFileName('app-android', filename),
+          'utf8'
+        ) +
+        `\n` +
+        componentsCode
     }
   } else {
     // uts文件不存在，且也无组件
@@ -683,7 +695,7 @@ export async function compile(
       package: '',
       result,
     })
-  return result
+  return normalizeUTSResult('app-android', result)
 }
 
 export function resolveKotlincArgs(
@@ -954,7 +966,7 @@ export function parseUTSModuleLibsJars(plugins: string[]) {
   return [...jars]
 }
 
-function checkDepsByPlugin(
+async function checkDepsByPlugin(
   checkType: 1 | 2,
   plugin: string,
   checkDependencies: Required<KotlinCompilerServer>['checkDependencies'],

@@ -597,26 +597,44 @@ const EmitProtocol = [
     },
 ];
 
-const emitter = new Emitter();
+class EventBus {
+    constructor() {
+        this.$emitter = new Emitter();
+    }
+    on(name, callback) {
+        this.$emitter.on(name, callback);
+    }
+    once(name, callback) {
+        this.$emitter.once(name, callback);
+    }
+    off(name, callback) {
+        if (!name) {
+            this.$emitter.e = {};
+            return;
+        }
+        this.$emitter.off(name, callback);
+    }
+    emit(name, ...args) {
+        this.$emitter.emit(name, ...args);
+    }
+}
+const eventBus = new EventBus();
 const $on = defineSyncApi(API_ON, (name, callback) => {
-    emitter.on(name, callback);
-    return () => emitter.off(name, callback);
+    eventBus.on(name, callback);
+    return () => eventBus.off(name, callback);
 }, OnProtocol);
 const $once = defineSyncApi(API_ONCE, (name, callback) => {
-    emitter.once(name, callback);
-    return () => emitter.off(name, callback);
+    eventBus.once(name, callback);
+    return () => eventBus.off(name, callback);
 }, OnceProtocol);
 const $off = defineSyncApi(API_OFF, (name, callback) => {
-    if (!name) {
-        emitter.e = {};
-        return;
-    }
+    // 类型中不再体现 name 支持 string[] 类型, 仅在 uni.$off 保留该逻辑向下兼容
     if (!isArray(name))
-        name = [name];
-    name.forEach((n) => emitter.off(n, callback));
+        name = name ? [name] : [];
+    name.forEach((n) => eventBus.off(n, callback));
 }, OffProtocol);
 const $emit = defineSyncApi(API_EMIT, (name, ...args) => {
-    emitter.emit(name, ...args);
+    eventBus.emit(name, ...args);
 }, EmitProtocol);
 
 let cid;

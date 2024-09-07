@@ -27,14 +27,16 @@ export {
   parseUniExtApi,
   parseUniExtApis,
   parseInjects,
-  parseUniModulesArtifacts,
   Define,
   DefineOptions,
   Defines,
   getUniExtApiProviderRegisters,
-  resolveEncryptUniModule,
   formatExtApiProviderName,
 } from './uni_modules'
+export {
+  parseUniModulesArtifacts,
+  resolveEncryptUniModule,
+} from './uni_modules.cloud'
 
 export { M } from './messages'
 

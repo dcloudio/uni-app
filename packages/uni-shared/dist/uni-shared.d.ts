@@ -180,7 +180,7 @@ export declare interface Emitter {
     on: (name: EventName, callback: EventCallback, ctx?: any) => this;
     once: (name: EventName, callback: EventCallback, ctx?: any) => this;
     emit: (name: EventName, ...args: any[]) => this;
-    off: (name: EventName, callback?: EventCallback) => this;
+    off: (name: EventName, callback?: EventCallback | null) => this;
 }
 
 export declare const Emitter: new () => Emitter;

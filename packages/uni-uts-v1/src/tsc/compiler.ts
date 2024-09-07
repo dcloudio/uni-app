@@ -9,15 +9,20 @@ import type {
 import { originalPositionForSync } from '../sourceMap'
 import { normalizePath } from '../shared'
 
+export type { UniXCompiler } from '../../lib/uni-x/dist/compiler'
+
 const debugTscWatcher = debug('uts:tsc:watcher')
+
+type TargetLanguage = `${UniXCompilerOptions['targetLanguage']}`
 
 export function createUniXCompiler(
   mode: UniXCompilerOptions['mode'],
-  targetLanguage: UniXCompilerOptions['targetLanguage'],
+  targetLanguage: TargetLanguage,
   options: {
     inputDir: string
     outputDir: string
     cacheDir: string
+    paths?: tsTypes.CompilerOptions['paths']
     rootFiles?: string[]
     normalizeFileName: (str: string) => string
   }
@@ -31,10 +36,13 @@ export function createUniXCompiler(
 
   const hxLanguageServiceDir = path.resolve(
     pluginPath,
-    'hbuilderx-language-services/builtin-dts'
+    'hbuilderx-language-services'
   )
 
-  const ts = require(path.resolve(utsLibDir, 'typescript')) as typeof tsTypes
+  const tsFactory = require(path.resolve(
+    utsLibDir,
+    'typescript/lib/typescript.factory.js'
+  ))
 
   const fileWatcher = new UTSFileWatcher({
     tscDir: inputDir,
@@ -63,12 +71,14 @@ export function createUniXCompiler(
 
   const compilerOptions: UniXCompilerOptions = {
     mode,
-    targetLanguage,
-    typescript: ts,
+    targetLanguage: targetLanguage as UniXCompilerOptions['targetLanguage'],
+    tsFactory,
+    paths: options.paths,
     utsLibDir,
     hxLanguageServiceDir,
     originalPositionForSync,
     watchFile,
+    incremental: true,
     ...options,
   }
   const { UniXCompiler } = require('../../lib/uni-x/dist/compiler')
@@ -104,14 +114,14 @@ class UTSFileWatcher {
     options?: tsTypes.WatchOptions
   ): tsTypes.FileWatcher {
     // 此时记录的是emit出来的.tsc目录的文件
-    const key = path
-      .relative(this._tscDir, fileName)
-      .replace(replacements, '$1')
+    const key = normalizePath(
+      path.relative(this._tscDir, fileName).replace(replacements, '$1')
+    )
 
     this._watchFiles.set(key, { fileName, callback })
     return {
       close: () => {
-        this._watchFiles.delete(fileName)
+        this._watchFiles.delete(key)
       },
     }
   }

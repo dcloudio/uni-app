@@ -41,11 +41,12 @@ export async function transformMain(
   options: ResolvedOptions,
   pluginContext?: TransformPluginContext // 该 transformMain 方法被vuejs-core使用，编译框架内置组件了，此时不会传入pluginContext
 ) {
-  if (!options.compiler) {
-    options.compiler = require('@vue/compiler-sfc')
-  }
+  const compiler = options.compiler || require('@vue/compiler-sfc')
 
-  const { descriptor, errors } = createDescriptor(filename, code, options)
+  const { descriptor, errors } = createDescriptor(filename, code, {
+    ...options,
+    compiler,
+  })
 
   const relativeFilename = descriptor.relativeFilename
   let easyComInstance = ''
@@ -60,6 +61,8 @@ export async function transformMain(
       errors.forEach((error) =>
         pluginContext.error(createRollupError('', filename, error, code))
       )
+    } else {
+      console.error(errors)
     }
     return null
   }

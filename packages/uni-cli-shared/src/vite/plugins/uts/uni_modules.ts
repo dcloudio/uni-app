@@ -1,22 +1,130 @@
 import type { Plugin } from 'vite'
-import fs from 'fs'
+import fs from 'fs-extra'
 import path from 'path'
-
 import { once } from '@dcloudio/uni-shared'
-
-import { resolveUTSAppModule, resolveUTSCompiler } from '../../../uts'
+import { dataToEsm } from '@rollup/pluginutils'
+import type { ChangeEvent } from 'rollup'
+import type { SyncUniModulesFilePreprocessor } from '@dcloudio/uni-uts-v1'
+import {
+  genUniExtApiDeclarationFileOnce,
+  initUTSKotlinAutoImportsOnce,
+  initUTSSwiftAutoImportsOnce,
+  parseKotlinPackageWithPluginId,
+  parseSwiftPackageWithPluginId,
+  resolveUTSAppModule,
+  resolveUTSCompiler,
+  tscOutDir,
+  uvueOutDir,
+} from '../../../uts'
 import { parseVueRequest } from '../../utils'
+import { getUniExtApiPlugins, parseUTSModuleDeps } from '../../../uni_modules'
 import {
   checkEncryptUniModules,
-  getUniExtApiPlugins,
-  parseUTSModuleDeps,
   resolveEncryptUniModule,
-} from '../../../uni_modules'
-import { enableSourceMap } from '../../../utils'
+} from '../../../uni_modules.cloud'
+import { enableSourceMap, normalizePath } from '../../../utils'
 import { parseManifestJsonOnce } from '../../../json'
+import { emptyDir } from '../../../fs'
+import { initScopedPreContext } from '../../../preprocess/context'
+
+/* eslint-disable no-restricted-globals */
+const { preprocess } = require('../../../../lib/preprocess')
 
 const UTSProxyRE = /\?uts-proxy$/
 const UniHelpersRE = /\?uni_helpers$/
+
+function createUniModulesSyncFilePreprocessor(
+  platform: UniApp.PLATFORM,
+  utsPlatform: 'app-android' | 'app-ios' | 'app-harmony',
+  isX: boolean
+): SyncUniModulesFilePreprocessor {
+  const { preVueContext, preUVueContext } = initScopedPreContext(
+    platform,
+    undefined,
+    utsPlatform,
+    isX
+  )
+  const preContext = isX ? preUVueContext : preVueContext
+  if (!isX) {
+    if (utsPlatform === 'app-android') {
+      preContext.APP_ANDROID = true
+    }
+    if (utsPlatform === 'app-ios') {
+      preContext.APP_IOS = true
+    }
+    if (utsPlatform === 'app-harmony') {
+      preContext.APP_HARMONY = true
+    }
+  }
+  function preJs(jsCode: string) {
+    return preprocess(jsCode, preContext, { type: 'js' })
+  }
+
+  function preHtml(htmlCode: string) {
+    return preprocess(htmlCode, preContext, { type: 'html' })
+  }
+
+  return async (content, fileName) => {
+    const extname = path.extname(fileName)
+    if (extname === '.json') {
+      return dataToEsm(JSON.parse(preJs(content)), {
+        namedExports: true,
+        preferConst: true,
+      })
+    } else if (extname === '.uts' || extname === '.ts') {
+      return preJs(content)
+    } else if (extname === '.uvue' || extname === '.vue') {
+      return preJs(preHtml(content))
+    }
+    return content
+  }
+}
+
+export function createAppAndroidUniModulesSyncFilePreprocessorOnce(
+  isX: boolean
+) {
+  return isX
+    ? createUniXAppAndroidUniModulesSyncFilePreprocessorOnce()
+    : createUniAppAndroidUniModulesSyncFilePreprocessorOnce()
+}
+
+export function createAppIosUniModulesSyncFilePreprocessorOnce(isX: boolean) {
+  return isX
+    ? createUniXAppIosUniModulesSyncFilePreprocessorOnce()
+    : createUniAppIosUniModulesSyncFilePreprocessorOnce()
+}
+
+export function createAppHarmonyUniModulesSyncFilePreprocessorOnce(
+  isX: boolean
+) {
+  return isX
+    ? createUniXAppHarmonyUniModulesSyncFilePreprocessorOnce()
+    : createUniAppHarmonyUniModulesSyncFilePreprocessorOnce()
+}
+
+const createUniAppAndroidUniModulesSyncFilePreprocessorOnce = once(() => {
+  return createUniModulesSyncFilePreprocessor('app', 'app-android', false)
+})
+
+const createUniAppIosUniModulesSyncFilePreprocessorOnce = once(() => {
+  return createUniModulesSyncFilePreprocessor('app', 'app-ios', false)
+})
+
+const createUniAppHarmonyUniModulesSyncFilePreprocessorOnce = once(() => {
+  return createUniModulesSyncFilePreprocessor('app', 'app-harmony', false)
+})
+
+const createUniXAppAndroidUniModulesSyncFilePreprocessorOnce = once(() => {
+  return createUniModulesSyncFilePreprocessor('app', 'app-android', true)
+})
+
+const createUniXAppIosUniModulesSyncFilePreprocessorOnce = once(() => {
+  return createUniModulesSyncFilePreprocessor('app', 'app-ios', true)
+})
+
+const createUniXAppHarmonyUniModulesSyncFilePreprocessorOnce = once(() => {
+  return createUniModulesSyncFilePreprocessor('app', 'app-harmony', true)
+})
 
 function isUTSProxy(id: string) {
   return UTSProxyRE.test(id)
@@ -49,15 +157,174 @@ export function getCurrentCompiledUTSPlugins() {
 }
 
 let uniExtApiCompiler = async () => {}
+
+function emptyCacheDir(platform: 'app-android' | 'app-ios' | 'app-harmony') {
+  const uvueOutputDir = uvueOutDir(platform)
+  const tscOutputDir = tscOutDir(platform)
+  function emptyUVueDir() {
+    if (fs.existsSync(uvueOutputDir)) {
+      emptyDir(uvueOutputDir)
+    }
+  }
+  emptyUVueDir()
+  function emptyTscDir() {
+    if (fs.existsSync(tscOutputDir)) {
+      emptyDir(tscOutputDir)
+    }
+  }
+  emptyTscDir()
+}
+
+const emptyKotlinCacheDirOnce = once(() => {
+  emptyCacheDir('app-android')
+})
+
+const emptySwiftCacheDirOnce = once(() => {
+  emptyCacheDir('app-ios')
+})
+
+const emptyHarmonyCacheDirOnce = once(() => {
+  emptyCacheDir('app-harmony')
+})
+
 // 该插件仅限app-android、app-ios、app-harmony
 export function uniUTSAppUniModulesPlugin(
   options: UniUTSPluginOptions = {}
 ): Plugin {
+  const isX = process.env.UNI_APP_X === 'true'
   const inputDir = process.env.UNI_INPUT_DIR
   process.env.UNI_UTS_USING_ROLLUP = 'true'
+  const uniModulesDir = normalizePath(path.resolve(inputDir, 'uni_modules'))
+
+  const {
+    createUniXKotlinCompilerOnce,
+    createUniXSwiftCompilerOnce,
+    createUniXArkTSCompilerOnce,
+    syncUniModuleFilesByCompiler,
+    resolveTscUniModuleIndexFileName,
+  } = resolveUTSCompiler()
+
+  const uniXKotlinCompiler =
+    process.env.UNI_APP_X_TSC === 'true' &&
+    (process.env.UNI_UTS_PLATFORM === 'app-android' ||
+      process.env.UNI_UTS_PLATFORM === 'app')
+      ? createUniXKotlinCompilerOnce()
+      : null
+  const uniXSwiftCompiler =
+    process.env.UNI_APP_X_TSC === 'true' &&
+    (process.env.UNI_UTS_PLATFORM === 'app-ios' ||
+      process.env.UNI_UTS_PLATFORM === 'app')
+      ? createUniXSwiftCompilerOnce()
+      : null
+  const uniXArkTSCompiler =
+    process.env.UNI_APP_X_TSC === 'true' &&
+    process.env.UNI_UTS_PLATFORM === 'app-harmony'
+      ? createUniXArkTSCompilerOnce()
+      : null
+
+  if (uniXKotlinCompiler) {
+    emptyKotlinCacheDirOnce()
+    genUniExtApiDeclarationFileOnce(tscOutDir('app-android'))
+  }
+  if (uniXSwiftCompiler) {
+    emptySwiftCacheDirOnce()
+    genUniExtApiDeclarationFileOnce(tscOutDir('app-ios'))
+  }
+  if (uniXArkTSCompiler) {
+    emptyHarmonyCacheDirOnce()
+    genUniExtApiDeclarationFileOnce(tscOutDir('app-harmony'))
+  }
+
+  const changedFiles = new Map<
+    string,
+    {
+      fileName: string
+      event: ChangeEvent
+    }[]
+  >()
 
   const compilePlugin = async (pluginDir: string) => {
-    utsPlugins.add(path.basename(pluginDir))
+    const pluginId = path.basename(pluginDir)
+
+    if (uniXKotlinCompiler) {
+      const platform = 'app-android'
+      await syncUniModuleFilesByCompiler(
+        platform,
+        uniXKotlinCompiler,
+        pluginDir,
+        createAppAndroidUniModulesSyncFilePreprocessorOnce(isX)
+      )
+    }
+
+    if (uniXSwiftCompiler) {
+      const platform = 'app-ios'
+      await syncUniModuleFilesByCompiler(
+        platform,
+        uniXSwiftCompiler,
+        pluginDir,
+        createAppIosUniModulesSyncFilePreprocessorOnce(isX)
+      )
+    }
+
+    if (uniXArkTSCompiler) {
+      const platform = 'app-harmony'
+      await syncUniModuleFilesByCompiler(
+        platform,
+        uniXArkTSCompiler,
+        pluginDir,
+        createAppHarmonyUniModulesSyncFilePreprocessorOnce(isX)
+      )
+    }
+
+    if (!utsPlugins.has(pluginId)) {
+      utsPlugins.add(pluginId)
+      if (uniXKotlinCompiler) {
+        const platform = 'app-android'
+        const indexFileName = resolveTscUniModuleIndexFileName(
+          platform,
+          pluginDir
+        )
+        if (indexFileName) {
+          await uniXKotlinCompiler.addRootFile(indexFileName)
+        }
+      }
+      if (uniXSwiftCompiler) {
+        const platform = 'app-ios'
+        const indexFileName = resolveTscUniModuleIndexFileName(
+          platform,
+          pluginDir
+        )
+        if (indexFileName) {
+          await uniXSwiftCompiler.addRootFile(indexFileName)
+        }
+      }
+      if (uniXArkTSCompiler) {
+        const platform = 'app-harmony'
+        const indexFileName = resolveTscUniModuleIndexFileName(
+          platform,
+          pluginDir
+        )
+        if (indexFileName) {
+          await uniXArkTSCompiler.addRootFile(indexFileName)
+        }
+      }
+    }
+
+    // 处理uni_modules中的文件变更
+    const files = changedFiles.get(pluginId)
+    if (files) {
+      // 仅限watch模式是会生效
+      changedFiles.delete(pluginId)
+      if (uniXKotlinCompiler) {
+        await uniXKotlinCompiler.invalidate(files)
+      }
+      if (uniXSwiftCompiler) {
+        await uniXSwiftCompiler.invalidate(files)
+      }
+      if (uniXArkTSCompiler) {
+        await uniXArkTSCompiler.invalidate(files)
+      }
+    }
 
     const pkgJson = require(path.join(pluginDir, 'package.json'))
     const isExtApi = !!pkgJson.uni_modules?.['uni-ext-api']
@@ -75,6 +342,7 @@ export function uniUTSAppUniModulesPlugin(
     }
     const compiler = resolveUTSCompiler()
     // 处理依赖的 uts 插件
+    // TODO 当本地有ext-api时，也应该自动加入deps，不然uts内部使用了该api，也会导致编译失败
     const deps = parseUTSModuleDeps(
       pkgJson.uni_modules?.dependencies || [],
       inputDir
@@ -97,6 +365,22 @@ export function uniUTSAppUniModulesPlugin(
       })
     }
 
+    function filterAutoImports(
+      autoImports: Record<string, [string, (string | undefined)?][]>,
+      source: string
+    ) {
+      if (autoImports[source]) {
+        // 移除 source
+        return Object.keys(autoImports).reduce((imports, key) => {
+          if (key !== source) {
+            imports[key] = autoImports[key]
+          }
+          return imports
+        }, {})
+      }
+      return autoImports
+    }
+
     return compiler.compile(pluginDir, {
       isX: !!options.x,
       isSingleThread: !!options.isSingleThread,
@@ -109,6 +393,22 @@ export function uniUTSAppUniModulesPlugin(
         uniExtApiProviderName: extApiProvider?.name,
         uniExtApiProviderService: extApiProvider?.service,
         uniExtApiProviderServicePlugin,
+      },
+      async kotlinAutoImports() {
+        return initUTSKotlinAutoImportsOnce().then((autoImports) => {
+          return filterAutoImports(
+            autoImports,
+            parseKotlinPackageWithPluginId(pluginId, true)
+          )
+        })
+      },
+      async swiftAutoImports() {
+        return initUTSSwiftAutoImportsOnce().then((autoImports) => {
+          return filterAutoImports(
+            autoImports,
+            parseSwiftPackageWithPluginId(pluginId, true)
+          )
+        })
       },
     })
   }
@@ -144,6 +444,17 @@ export function uniUTSAppUniModulesPlugin(
     name: 'uni:uts-uni_modules',
     apply: 'build',
     enforce: 'pre',
+    async configResolved() {
+      if (uniXKotlinCompiler) {
+        await uniXKotlinCompiler.init()
+      }
+      if (uniXSwiftCompiler) {
+        await uniXSwiftCompiler.init()
+      }
+      if (uniXArkTSCompiler) {
+        await uniXArkTSCompiler.init()
+      }
+    },
     resolveId(id, importer) {
       if (isUTSProxy(id) || isUniHelpers(id)) {
         return id
@@ -172,8 +483,37 @@ export function uniUTSAppUniModulesPlugin(
         return ''
       }
     },
-    buildEnd() {
+    async buildEnd() {
       utsModuleCaches.clear()
+      changedFiles.clear()
+      if (
+        process.env.NODE_ENV !== 'development' ||
+        process.env.UNI_COMPILE_TARGET === 'uni_modules'
+      ) {
+        if (uniXKotlinCompiler) {
+          await uniXKotlinCompiler.close()
+        }
+        if (uniXSwiftCompiler) {
+          await uniXSwiftCompiler.close()
+        }
+      }
+    },
+    watchChange(fileName, change) {
+      if (uniXKotlinCompiler || uniXSwiftCompiler || uniXArkTSCompiler) {
+        fileName = normalizePath(fileName)
+        if (fileName.startsWith(uniModulesDir)) {
+          // 仅处理uni_modules中的文件
+          const plugin = fileName.slice(uniModulesDir.length + 1).split('/')[0]
+          if (utsPlugins.has(plugin)) {
+            const changeFile = { fileName, event: change.event }
+            if (!changedFiles.has(plugin)) {
+              changedFiles.set(plugin, [changeFile])
+            } else {
+              changedFiles.get(plugin)!.push(changeFile)
+            }
+          }
+        }
+      }
     },
     async transform(_, id, opts) {
       if (opts && opts.ssr) {
@@ -182,9 +522,10 @@ export function uniUTSAppUniModulesPlugin(
       if (!isUTSProxy(id)) {
         return
       }
-      const { filename: pluginDir } = parseVueRequest(id.replace('\0', ''))
+      const { filename } = parseVueRequest(id.replace('\0', ''))
       // 当 vue 和 nvue 均引用了相同 uts 插件，解决两套编译器会编译两次 uts 插件的问题
       // 通过缓存，保证同一个 uts 插件只编译一次
+      const pluginDir = normalizePath(filename)
       if (utsModuleCaches.get(pluginDir)) {
         return utsModuleCaches.get(pluginDir)!().then((result) => {
           if (result) {

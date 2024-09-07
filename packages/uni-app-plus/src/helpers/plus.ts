@@ -1,6 +1,10 @@
 import { extend, isArray, isFunction } from '@vue/shared'
 import { addLeadingSlash, formatLog } from '@dcloudio/uni-shared'
 import { getRouteOptions } from '@dcloudio/uni-core'
+import {
+  getCurrentBasePages,
+  getPage$BasePage,
+} from '../service/framework/page/getCurrentPages'
 interface PlusResult extends Record<string, any> {
   code?: number
   message?: string
@@ -72,7 +76,7 @@ export function isTabBarPage(path = '') {
   }
   try {
     if (!path) {
-      const pages = getCurrentPages()
+      const pages = getCurrentBasePages()
       if (!pages.length) {
         return false
       }
@@ -80,7 +84,7 @@ export function isTabBarPage(path = '') {
       if (!page) {
         return false
       }
-      return page.$page.meta.isTabBar
+      return getPage$BasePage(page).meta.isTabBar
     }
     if (!/^\//.test(path)) {
       path = addLeadingSlash(path)

@@ -3,11 +3,14 @@ import { getCurrentPage, getRouteMeta, invokeHook } from '@dcloudio/uni-core'
 
 import { ANI_DURATION, ANI_SHOW } from '../../../service/constants'
 import { showWebview } from './webview'
-import type { ComponentPublicInstance } from 'vue'
 import { beforeRoute, createNormalizeUrl } from '@dcloudio/uni-api'
-import { DialogPage, homeDialogPages } from '../../framework/page/dialogPage'
+import {
+  UniDialogPageImpl,
+  homeDialogPages,
+} from '../../framework/page/dialogPage'
 import { registerDialogPage } from '../../framework/page/register'
 import { getWebviewId } from '../../../service/framework/webview/utils'
+import type { UniDialogPage } from '@dcloudio/uni-app-x/types/page'
 
 /**
  *
@@ -50,7 +53,7 @@ interface OpenDialogPageOptions {
   /**
    * 要绑定的父级页面实例
    */
-  parentPage?: ComponentPublicInstance
+  parentPage?: UniPage
   /**
    * 是否禁用按键盘 ESC 时关闭
    */
@@ -69,29 +72,24 @@ interface OpenDialogPageOptions {
   complete?: (result: OpenDialogPageComplete) => void
 }
 
-export const openDialogPage = (options: OpenDialogPageOptions) => {
+export const openDialogPage = (
+  options: OpenDialogPageOptions
+): UniDialogPage | null => {
   const { url, events, animationType } = options
   if (!options.url) {
     triggerFailCallback(options, 'url is required')
     return null
   }
-
+  const { path, query } = parseUrl(url)
   const normalizeUrl = createNormalizeUrl('navigateTo')
-  const errMsg = normalizeUrl(options.url, {})
+  const errMsg = normalizeUrl(path, {})
   if (errMsg) {
     triggerFailCallback(options, errMsg)
     return null
   }
-  const targetRoute = __uniRoutes.find((route) => {
-    return options.url.indexOf(route.meta.route) !== -1
-  })
-  if (!targetRoute) {
-    triggerFailCallback(options, `page '${options.url}' is not found`)
-    return null
-  }
 
   let parentPage = options.parentPage || null
-  const currentPages = getCurrentPages()
+  const currentPages = getCurrentPages() as UniPage[]
   if (parentPage) {
     if (currentPages.indexOf(parentPage) === -1) {
       triggerFailCallback(options, 'parentPage is not a valid page')
@@ -99,27 +97,24 @@ export const openDialogPage = (options: OpenDialogPageOptions) => {
     }
   }
   if (currentPages.length && !parentPage) {
-    parentPage = currentPages[
-      currentPages.length - 1
-    ] as ComponentPublicInstance
+    parentPage = currentPages[currentPages.length - 1]
   }
-  const dialogPage = new DialogPage({
-    route: url,
-    $getParentPage: () => parentPage,
-    component: null,
+  const dialogPage = new UniDialogPageImpl({
+    route: path,
+    options: new Map(Object.entries(query)),
+    getParentPage: () => parentPage,
   })
 
   if (!parentPage) {
     homeDialogPages.push(dialogPage)
   } else {
-    const dialogPages = parentPage.$getDialogPages()
+    const dialogPages = parentPage.getDialogPages()
     if (dialogPages.length) {
       invokeHook(dialogPages[dialogPages.length - 1].$vm!, ON_HIDE)
     }
     dialogPages.push(dialogPage)
   }
 
-  const { path, query } = parseUrl(url)
   const [aniType, aniDuration] = initAnimation(path, animationType)
 
   const noAnimation = aniType === 'none' || aniDuration === 0

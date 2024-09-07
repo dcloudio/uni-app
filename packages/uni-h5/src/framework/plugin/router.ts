@@ -6,7 +6,12 @@ import {
   createWebHashHistory,
   createWebHistory,
 } from 'vue-router'
-import { getCurrentPages, normalizeRouteKey, removePage } from '../setup/page'
+import {
+  getCurrentBasePages,
+  getPage$BasePage,
+  normalizeRouteKey,
+  removePage,
+} from '../setup/page'
 //#if _X_ && !_NODE_JS_
 import { hideActionSheet } from '../../service/api/ui/popup/showActionSheet'
 import { hideModal } from '../../service/api/ui/popup/showModal'
@@ -79,11 +84,11 @@ function createRouterOptions(): RouterOptions {
 }
 
 function removeCurrentPages(delta: number = 1) {
-  const keys = getCurrentPages()
+  const keys = getCurrentBasePages()
   const start = keys.length - 1
   const end = start - delta
   for (let i = start; i > end; i--) {
-    const page = keys[i].$page
+    const page = getPage$BasePage(keys[i])
     removePage(normalizeRouteKey(page.path, page.id), false)
   }
 }

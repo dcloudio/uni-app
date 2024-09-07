@@ -11,6 +11,11 @@ var appVite__default = /*#__PURE__*/_interopDefault(appVite);
 var path__default = /*#__PURE__*/_interopDefault(path);
 var fs__default = /*#__PURE__*/_interopDefault(fs);
 
+var StandaloneExtApis = [
+	{
+	}
+];
+
 const commondGlobals = {
     vue: 'Vue',
     '@vue/shared': 'uni.VueShared',
@@ -88,10 +93,10 @@ function uniAppHarmonyPlugin() {
         },
     };
 }
-const ProviderServiceMap = {
+// 仅存放重命名的provider service
+const SupportedProviderService = {
     oauth: {},
     payment: {
-        // alipay: 'alipay',
         weixin: 'wxpay',
     },
 };
@@ -107,7 +112,7 @@ function getRelatedProviders(inputDir) {
     }
     for (const service in sdkConfigs) {
         if (Object.prototype.hasOwnProperty.call(sdkConfigs, service)) {
-            const ProviderNameMap = ProviderServiceMap[service];
+            const ProviderNameMap = SupportedProviderService[service];
             if (!ProviderNameMap) {
                 continue;
             }
@@ -125,16 +130,29 @@ function getRelatedProviders(inputDir) {
     }
     return providers;
 }
-const builtInProviders = [
-    {
-        service: 'payment',
-        name: 'alipay',
-    },
-];
-function genAppHarmonyIndex(inputDir, utsPlugins) {
-    if (!process.env.UNI_APP_HARMONY_PROJECT_PATH) {
-        return;
+const SupportedModules = {
+    FacialRecognitionVerify: 'uni-facialRecognitionVerify',
+};
+// 获取uni_modules中的相关模块
+function getRelatedModules(inputDir) {
+    const manifest = uniCliShared.parseManifestJsonOnce(inputDir);
+    const modules = [];
+    const manifestModules = manifest?.['app-plus']?.modules;
+    if (!manifestModules) {
+        return modules;
     }
+    for (const manifestModule in manifestModules) {
+        if (Object.prototype.hasOwnProperty.call(manifestModules, manifestModule)) {
+            const moduleName = SupportedModules[manifestModule];
+            if (!moduleName) {
+                continue;
+            }
+            modules.push(moduleName);
+        }
+    }
+    return modules;
+}
+function genAppHarmonyIndex(inputDir, utsPlugins) {
     const uniModulesDir = path__default.default.resolve(inputDir, 'uni_modules');
     const importCodes = [];
     const extApiCodes = [];
@@ -146,64 +164,120 @@ function genAppHarmonyIndex(inputDir, utsPlugins) {
                 const inject = injects[key];
                 if (Array.isArray(inject) && inject.length > 1) {
                     const apiName = inject[1];
-                    importCodes.push(`import { ${inject[1]} } from './${plugin}/utssdk/app-harmony'`);
+                    importCodes.push(`import { ${inject[1]} } from '@uni_modules/${plugin}'`);
                     extApiCodes.push(`uni.${apiName} = ${apiName}`);
                 }
             });
         }
         else {
             const ident = uniCliShared.camelize(plugin);
-            importCodes.push(`import * as ${ident} from './${plugin}/utssdk/app-harmony'`);
+            importCodes.push(`import * as ${ident} from '@uni_modules/${plugin}'`);
             registerCodes.push(`uni.registerUTSPlugin('uni_modules/${plugin}', ${ident})`);
         }
     });
     const relatedProviders = getRelatedProviders(inputDir);
+    const relatedModules = getRelatedModules(inputDir);
+    const projectDeps = [];
+    relatedModules.forEach((module) => {
+        if (utsPlugins.has(module)) {
+            projectDeps.push({
+                moduleSpecifier: `@uni_modules/${module}`,
+                plugin: module,
+                source: 'local',
+            });
+        }
+        else {
+            projectDeps.push({
+                moduleSpecifier: `@uni_modules/${module}`,
+                plugin: module,
+                source: 'ohpm',
+            });
+        }
+        importCodes.push(`import '@uni_modules/${module}'`);
+    });
     const importProviderCodes = [];
     const registerProviderCodes = [];
     const providers = uniCliShared.getUniExtApiProviderRegisters();
-    const allProviders = providers
-        .map((provider) => {
+    const allProviders = providers.map((provider) => {
         return {
             service: provider.service,
             name: provider.name,
-            moduleSpecifier: `./${provider.plugin}/utssdk/app-harmony`,
+            moduleSpecifier: `@uni_modules/${provider.plugin}`,
+            plugin: provider.plugin,
+            source: 'local',
         };
-    })
-        .concat(builtInProviders.map((provider) => {
-        return {
-            service: provider.service,
-            name: provider.name,
-            moduleSpecifier: `@dcloudio/uni-app-harmony/providers/uni-${provider.service}-${provider.name}`,
-        };
-    }));
+    });
+    StandaloneExtApis.filter((item) => {
+        return item.type === 'provider';
+    }).forEach((extapi) => {
+        if (allProviders.find((item) => item.plugin === extapi.plugin)) {
+            return;
+        }
+        const [_, service, provider] = extapi.plugin.split('-');
+        allProviders.push({
+            service,
+            name: provider,
+            moduleSpecifier: `@uni_modules/${extapi.plugin}`,
+            plugin: extapi.plugin,
+            source: 'ohpm',
+        });
+    });
     relatedProviders.forEach((relatedProvider) => {
         const provider = allProviders.find((item) => item.service === relatedProvider.service &&
             item.name === relatedProvider.name);
         if (!provider) {
             return;
         }
+        projectDeps.push({
+            moduleSpecifier: provider.moduleSpecifier,
+            plugin: provider.plugin,
+            source: provider.source,
+        });
         const className = uniCliShared.formatExtApiProviderName(provider.service, provider.name);
         importProviderCodes.push(`import { ${className} } from '${provider.moduleSpecifier}'`);
         registerProviderCodes.push(`registerUniProvider('${provider.service}', '${provider.name}', new ${className}())`);
     });
     if (importProviderCodes.length) {
-        importProviderCodes.unshift(`import { registerUniProvider } from '@dcloudio/uni-app-harmony'`);
+        importProviderCodes.unshift(`import { registerUniProvider, uni } from '@dcloudio/uni-app-runtime'`);
         importCodes.push(...importProviderCodes);
         extApiCodes.push(...registerProviderCodes);
     }
-    fs__default.default.writeFileSync(path__default.default.resolve(uniCliShared.resolveUTSCompiler().resolveAppHarmonyUniModulesRootDir(process.env.UNI_APP_HARMONY_PROJECT_PATH), 'index.generated.ets'), `// This file is automatically generated by uni-app.
+    const uniModuleEntryDir = uniCliShared.resolveUTSCompiler().resolveAppHarmonyUniModulesEntryDir();
+    fs__default.default.outputFileSync(path__default.default.resolve(uniModuleEntryDir, 'index.generated.ets'), `// This file is automatically generated by uni-app.
 // Do not modify this file -- YOUR CHANGES WILL BE ERASED!
 ${importCodes.join('\n')}
 
-export function initUniModules(uni: ESObject) {
-  initUniExtApi(uni)
+export function initUniModules() {
+  initUniExtApi()
   ${registerCodes.join('\n  ')}
 }
 
-function initUniExtApi(uni: ESObject) {
+function initUniExtApi() {
   ${extApiCodes.join('\n  ')}
 }
 `);
+    const dependencies = {};
+    const modules = [];
+    projectDeps.forEach((dep) => {
+        // TODO 依赖版本绑定编译器版本
+        if (dep.source === 'local') {
+            const depPath = './uni_modules/' + dep.plugin;
+            dependencies[dep.moduleSpecifier] = depPath;
+            modules.push({
+                name: dep.moduleSpecifier
+                    .replace(/@/g, '')
+                    .replace(/\//g, '__')
+                    .replace(/-/g, '_'),
+                srcPath: depPath,
+            });
+        }
+        else {
+            dependencies[dep.moduleSpecifier] = '*';
+        }
+    });
+    // TODO 写入到用户项目的oh-package.json5、build-profile.json5内
+    fs__default.default.outputJSONSync(path__default.default.resolve(uniModuleEntryDir, 'oh-package.json5'), { dependencies }, { spaces: 2 });
+    fs__default.default.outputJSONSync(path__default.default.resolve(uniModuleEntryDir, 'build-profile.json5'), { modules }, { spaces: 2 });
 }
 
 var index = [appVite__default.default, uniAppHarmonyPlugin];

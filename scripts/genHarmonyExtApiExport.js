@@ -7,21 +7,21 @@ const BLACKLIST = [
 
 const harmonyDistDir = path.resolve(__dirname, '../packages/uni-app-harmony/dist')
 const autoImportMap = {
-  '@dcloudio/uni-app-harmony': path.resolve(harmonyDistDir, 'uni.api.ets')
+  '@dcloudio/uni-app-runtime': path.resolve(harmonyDistDir, 'uni.api.ets')
 }
 
 function initAutoImportMap() {
-  const providersDir = path.resolve(harmonyDistDir, 'providers')
-  if (!fs.existsSync(providersDir)) {
+  const ohpmPageckageDir = path.resolve(harmonyDistDir, 'packages')
+  if (!fs.existsSync(ohpmPageckageDir)) {
     return
   }
-  const providers = fs.readdirSync(providersDir)
-  providers.forEach(provider => {
-    const providerEntryFilePath = path.resolve(providersDir, provider, 'index.ets')
-    if (!fs.existsSync(providerEntryFilePath)) {
+  const packages = fs.readdirSync(ohpmPageckageDir)
+  packages.forEach(package => {
+    const packageEntryFilePath = path.resolve(ohpmPageckageDir, package, 'utssdk/app-harmony/index.ets')
+    if (!fs.existsSync(packageEntryFilePath)) {
       return
     }
-    autoImportMap[`@dcloudio/uni-app-harmony/providers/${provider}`] = providerEntryFilePath
+    autoImportMap[`@uni_modules/${package}`] = packageEntryFilePath
   })
 }
 

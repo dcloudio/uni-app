@@ -2460,6 +2460,28 @@ function defineAsyncApi(name, fn, protocol, options) {
     wrapperAsyncApi(name, fn, process.env.NODE_ENV !== "production" ? protocol : void 0, options)
   );
 }
+class EventBus {
+  constructor() {
+    this.$emitter = new uniShared.Emitter();
+  }
+  on(name, callback) {
+    this.$emitter.on(name, callback);
+  }
+  once(name, callback) {
+    this.$emitter.once(name, callback);
+  }
+  off(name, callback) {
+    if (!name) {
+      this.$emitter.e = {};
+      return;
+    }
+    this.$emitter.off(name, callback);
+  }
+  emit(name, ...args) {
+    this.$emitter.emit(name, ...args);
+  }
+}
+new EventBus();
 const API_ON_TAB_BAR_MID_BUTTON_TAP = "onTabBarMidButtonTap";
 const API_GET_LOCALE = "getLocale";
 const getLocale = /* @__PURE__ */ defineSyncApi(
@@ -3603,18 +3625,8 @@ const props$k = /* @__PURE__ */ shared.extend({}, props$l, {
     default: ""
   }
 });
-const resolveDigitDecimalPointDeleteContentBackward = (() => {
-  const iOS17BugVersions = ["17.0", "17.0.1", "17.0.2", "17.0.3", "17.1", "17.1.1", "17.1.2"];
-  {
-    const ua = navigator.userAgent;
-    let osVersion = "";
-    const osVersionFind = ua.match(/OS\s([\w_]+)\slike/);
-    if (osVersionFind) {
-      osVersion = osVersionFind[1].replace(/_/g, ".");
-    }
-    return ua.includes("iPhone OS 16") || iOS17BugVersions.includes(osVersion);
-  }
-})();
+const resolveDigitDecimalPointDeleteContentBackward = uniShared.once(() => {
+});
 function resolveDigitDecimalPoint(event, cache, state, input, resetCache) {
   if (cache.value) {
     if (event.data === ".") {
@@ -3634,7 +3646,7 @@ function resolveDigitDecimalPoint(event, cache, state, input, resetCache) {
         return false;
       }
     } else if (event.inputType === "deleteContentBackward") {
-      if (resolveDigitDecimalPointDeleteContentBackward) {
+      if (resolveDigitDecimalPointDeleteContentBackward()) {
         if (cache.value.slice(-2, -1) === ".") {
           cache.value = state.value = input.value = cache.value.slice(0, -2);
           return true;
@@ -3684,7 +3696,7 @@ const Input = /* @__PURE__ */ defineBuiltInComponent({
           type2 = "number";
           break;
         default:
-          type2 = ~INPUT_TYPES.includes(props2.type) ? props2.type : "text";
+          type2 = INPUT_TYPES.includes(props2.type) ? props2.type : "text";
           break;
       }
       return props2.password ? "password" : type2;
@@ -3738,7 +3750,8 @@ const Input = /* @__PURE__ */ defineBuiltInComponent({
         if (maxlength > 0 && input.value.length > maxlength) {
           input.value = input.value.slice(0, maxlength);
           state2.value = input.value;
-          return false;
+          const modelValue = props2.modelValue !== void 0 && props2.modelValue !== null ? props2.modelValue.toString() : "";
+          return modelValue !== input.value;
         }
       }
     });
@@ -8623,7 +8636,7 @@ function navigate({ type, url, tabBarText, events, isAutomatedTesting }, __id__)
       "当前项目为单页面工程，不能执行页面跳转api。如果需进行页面跳转， 需要在pages.json文件的pages字段中配置多个页面，然后重新运行。"
     );
   }
-  const router = getApp().$router;
+  const router = getApp().vm.$router;
   const { path, query } = uniShared.parseUrl(url);
   return new Promise((resolve, reject) => {
     const state = createPageState(type, __id__);
@@ -8747,7 +8760,7 @@ function removeRouteCache(routeKey) {
 function removePage(routeKey, removeRouteCaches = true) {
   const pageVm = currentPagesMap.get(routeKey);
   {
-    const dialogPages = pageVm.$getDialogPages();
+    const dialogPages = pageVm.getDialogPages();
     for (let i = dialogPages.length - 1; i >= 0; i--) {
       uni.closeDialogPage({ dialogPage: dialogPages[i] });
     }
@@ -8823,13 +8836,13 @@ function initPage(vm) {
       onReachBottomDistance: pageMeta.onReachBottomDistance || uniShared.ON_REACH_BOTTOM_DISTANCE,
       backgroundColorContent: pageMeta.backgroundColorContent
     });
-    vm.$getDialogPages = () => {
+    vm.getDialogPages = () => {
       var _a2;
       return ((_a2 = getPageInstanceByVm(vm)) == null ? void 0 : _a2.$dialogPages.value) || [];
     };
-    vm.$getParentPage = () => {
+    vm.getParentPage = () => {
       var _a2, _b;
-      return ((_b = (_a2 = getPageInstanceByVm(vm)) == null ? void 0 : _a2.$dialogPage) == null ? void 0 : _b.$getParentPage()) || null;
+      return ((_b = (_a2 = getPageInstanceByVm(vm)) == null ? void 0 : _a2.$dialogPage) == null ? void 0 : _b.getParentPage()) || null;
     };
     vm.$dialogPage = (_a = getPageInstanceByVm(vm)) == null ? void 0 : _a.$dialogPage;
   }
@@ -8843,7 +8856,7 @@ function initPage(vm) {
         }, 0);
         if (homeDialogPages.length) {
           homeDialogPages.forEach((dialogPage) => {
-            dialogPage.$getParentPage = () => vm;
+            dialogPage.getParentPage = () => vm;
             pageInstance.$dialogPages.value.push(dialogPage);
           });
           homeDialogPages.length = 0;
@@ -9025,8 +9038,25 @@ const AsyncErrorComponent = /* @__PURE__ */ defineSystemComponent({
   }
 });
 let appVm;
+let $uniApp;
+{
+  class UniAppImpl extends EventBus {
+    get vm() {
+      return appVm;
+    }
+    get $vm() {
+      return appVm;
+    }
+    get globalData() {
+      return (appVm == null ? void 0 : appVm.globalData) || {};
+    }
+  }
+  $uniApp = new UniAppImpl();
+}
 function getApp$1() {
-  return appVm;
+  {
+    return $uniApp;
+  }
 }
 function initApp(vm) {
   appVm = vm;
@@ -13795,7 +13825,7 @@ function createDialogPageVNode(dialogPages) {
     vue.renderList(dialogPages.value, (dialogPage) => {
       return vue.openBlock(), vue.createBlock(
         vue.createVNode(
-          dialogPage.component,
+          dialogPage.$component,
           {
             key: dialogPage.route,
             style: {

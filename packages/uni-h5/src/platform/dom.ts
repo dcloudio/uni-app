@@ -1,6 +1,7 @@
 import type { ComponentPublicInstance } from 'vue'
 import { getRealRoute } from '@dcloudio/uni-core'
 import { DATA_RE, SCHEME_RE, addLeadingSlash } from '@dcloudio/uni-shared'
+import { getCurrentBasePages, getPage$BasePage } from '../framework/setup/page'
 declare global {
   interface ImportMeta {
     env: {
@@ -64,10 +65,13 @@ export function getRealPath(filePath: string) {
       }
     }
   }
-  const pages = getCurrentPages()
+  const pages = getCurrentBasePages()
   if (pages.length) {
     return addBase(
-      getRealRoute(pages[pages.length - 1].$page.route, filePath).slice(1)
+      getRealRoute(
+        getPage$BasePage(pages[pages.length - 1]).route,
+        filePath
+      ).slice(1)
     )
   }
 

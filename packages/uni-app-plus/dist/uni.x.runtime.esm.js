@@ -1,6 +1,6 @@
 import { normalizeStyles as normalizeStyles$1, addLeadingSlash, invokeArrayFns, parseQuery, Emitter, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, ON_ERROR, ON_SHOW, ON_HIDE, removeLeadingSlash, getLen, EventChannel, once, parseUrl, ON_UNLOAD, ON_READY, ON_PAGE_SCROLL, ON_PULL_DOWN_REFRESH, ON_REACH_BOTTOM, ON_RESIZE, ON_LAUNCH, ON_BACK_PRESS } from "@dcloudio/uni-shared";
 import { extend, isString, isPlainObject, isFunction as isFunction$1, isArray, isPromise, hasOwn, remove, invokeArrayFns as invokeArrayFns$1, capitalize, toTypeString, toRawType, parseStringStyle } from "@vue/shared";
-import { createVNode, render, injectHook, getCurrentInstance, defineComponent, warn, isInSSRComponentSetup, ref, watchEffect, watch, computed, onMounted, camelize, onUnmounted, reactive, nextTick } from "vue";
+import { createVNode, render, injectHook, getCurrentInstance, defineComponent, warn, isInSSRComponentSetup, ref, watchEffect, watch, computed, onMounted, camelize, onUnmounted, reactive, provide, inject, nextTick } from "vue";
 function getCurrentPage() {
   var pages2 = getCurrentPages();
   var len = pages2.length;
@@ -619,38 +619,48 @@ var API_OFF = "$off";
 var API_EMIT = "$emit";
 class EventBus {
   constructor() {
-    var _this = this;
-    this.emitter = new Emitter();
-    this.$on = /* @__PURE__ */ defineSyncApi(API_ON, (name, callback) => {
-      this.emitter.on(name, callback);
-      return () => this.emitter.off(name, callback);
-    });
-    this.$once = /* @__PURE__ */ defineSyncApi(API_ONCE, (name, callback) => {
-      this.emitter.once(name, callback);
-      return () => this.emitter.off(name, callback);
-    });
-    this.$off = /* @__PURE__ */ defineSyncApi(API_OFF, (name, callback) => {
-      if (!name) {
-        this.emitter.e = {};
-        return;
-      }
-      if (!isArray(name))
-        name = [name];
-      name.forEach((n) => this.emitter.off(n, callback));
-    });
-    this.$emit = /* @__PURE__ */ defineSyncApi(API_EMIT, function(name) {
-      for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
-        args[_key - 1] = arguments[_key];
-      }
-      _this.emitter.emit(name, ...args);
-    });
+    this.$emitter = new Emitter();
+  }
+  on(name, callback) {
+    this.$emitter.on(name, callback);
+  }
+  once(name, callback) {
+    this.$emitter.once(name, callback);
+  }
+  off(name, callback) {
+    if (!name) {
+      this.$emitter.e = {};
+      return;
+    }
+    this.$emitter.off(name, callback);
+  }
+  emit(name) {
+    for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+      args[_key - 1] = arguments[_key];
+    }
+    this.$emitter.emit(name, ...args);
   }
 }
 var eventBus = new EventBus();
-var $on = eventBus.$on;
-var $once = eventBus.$once;
-var $off = eventBus.$off;
-var $emit = eventBus.$emit;
+var $on = /* @__PURE__ */ defineSyncApi(API_ON, (name, callback) => {
+  eventBus.on(name, callback);
+  return () => eventBus.off(name, callback);
+});
+var $once = /* @__PURE__ */ defineSyncApi(API_ONCE, (name, callback) => {
+  eventBus.once(name, callback);
+  return () => eventBus.off(name, callback);
+});
+var $off = /* @__PURE__ */ defineSyncApi(API_OFF, (name, callback) => {
+  if (!isArray(name))
+    name = name ? [name] : [];
+  name.forEach((n) => eventBus.off(n, callback));
+});
+var $emit = /* @__PURE__ */ defineSyncApi(API_EMIT, function(name) {
+  for (var _len2 = arguments.length, args = new Array(_len2 > 1 ? _len2 - 1 : 0), _key2 = 1; _key2 < _len2; _key2++) {
+    args[_key2 - 1] = arguments[_key2];
+  }
+  eventBus.emit(name, ...args);
+});
 var appHooks = {
   [ON_UNHANDLE_REJECTION]: [],
   [ON_PAGE_NOT_FOUND]: [],
@@ -1014,12 +1024,12 @@ function initScope(pageId, vm, pageInstance) {
         return vm.$nativePage.setPageStyle.bind(vm.$nativePage);
       }
     });
-    Object.defineProperty(vm, "$getDialogPages", {
+    Object.defineProperty(vm, "getDialogPages", {
       get() {
         return () => vm.$.$dialogPages;
       }
     });
-    Object.defineProperty(vm, "$getParentPage", {
+    Object.defineProperty(vm, "getParentPage", {
       get() {
         return () => null;
       }
@@ -1411,28 +1421,21 @@ function normalizeTabBarStyles(tabBar, themeConfig, themeMode) {
 function useTheme() {
   registerThemeChange(onThemeChange);
 }
-class DialogPage {
+class DialogPageImpl extends EventBus {
   constructor(_ref) {
     var {
       route,
-      component,
-      $getParentPage
+      getParentPage
     } = _ref;
+    super();
     this.route = "";
+    this.options = /* @__PURE__ */ new Map();
+    this.vm = null;
+    this.$vm = null;
+    this.$component = null;
     this.$disableEscBack = false;
     this.route = route;
-    this.component = component;
-    this.$getParentPage = $getParentPage;
-    var {
-      $on: $on2,
-      $once: $once2,
-      $emit: $emit2,
-      $off: $off2
-    } = new EventBus();
-    this.$on = $on2;
-    this.$once = $once2;
-    this.$off = $off2;
-    this.$emit = $emit2;
+    this.getParentPage = getParentPage;
   }
 }
 var homeDialogPages = [];
@@ -1514,7 +1517,7 @@ function registerPage(_ref, onCreated) {
     if (pages2.length === 1 && homeDialogPages.length) {
       var homePage = pages2[0];
       homePage.$.$dialogPages = homeDialogPages.map((dialogPage) => {
-        dialogPage.$getParentPage = () => homePage;
+        dialogPage.getParentPage = () => homePage;
         return dialogPage;
       });
       homeDialogPages.length = 0;
@@ -1571,7 +1574,7 @@ function registerDialogPage(_ref2, dialogPage, onCreated) {
   var id2 = genWebviewId();
   var routeOptions = initRouteOptions(path, openType);
   var pageStyle = /* @__PURE__ */ new Map([["navigationStyle", "custom"], ["backgroundColor", "transparent"]]);
-  var parentPage = dialogPage.$getParentPage();
+  var parentPage = dialogPage.getParentPage();
   var nativePage2 = getPageManager().createDialogPage(parentPage ? parentPage.$page.id.toString() : "", id2.toString(), url, pageStyle);
   if (onCreated) {
     onCreated(nativePage2);
@@ -1592,7 +1595,7 @@ function registerDialogPage(_ref2, dialogPage, onCreated) {
     var page = createVuePage(id2, route, query, pageInstance, {}, nativePage2);
     dialogPage.$vm = page;
     page.$dialogPage = dialogPage;
-    page.$getParentPage = dialogPage.$getParentPage;
+    page.getParentPage = () => dialogPage.getParentPage();
     nativePage2.addPageEventListener(ON_POP_GESTURE, function(e) {
       uni.navigateBack({
         from: "popGesture",
@@ -2068,7 +2071,7 @@ function initOn(app) {
       }, schemaLink);
       setEnterOptionsSync(showOptions);
       var page = getCurrentPage();
-      invokeHook(getApp(), ON_SHOW, showOptions);
+      invokeHook(getApp().vm, ON_SHOW, showOptions);
       if (page) {
         invokeHook(page, ON_SHOW);
       }
@@ -2079,7 +2082,7 @@ function initOn(app) {
   }());
   app.addEventListener(ON_HIDE, function() {
     var page = getCurrentPage();
-    invokeHook(getApp(), ON_HIDE);
+    invokeHook(getApp().vm, ON_HIDE);
     if (page) {
       invokeHook(page, ON_HIDE);
     }
@@ -2114,6 +2117,19 @@ var appCtx;
 var defaultApp = {
   globalData: {}
 };
+class UniAppImpl extends EventBus {
+  get vm() {
+    return appCtx;
+  }
+  get $vm() {
+    return appCtx;
+  }
+  get globalData() {
+    var _appCtx;
+    return ((_appCtx = appCtx) === null || _appCtx === void 0 ? void 0 : _appCtx.globalData) || {};
+  }
+}
+var $uniApp = new UniAppImpl();
 var entryPageState = {
   isReady: false,
   handledBeforeEntryPageRoutes: false
@@ -2127,16 +2143,7 @@ function initAppVm(appVm) {
   appVm.$mpType = "app";
 }
 function getApp$1() {
-  var {
-    allowDefault = false
-  } = arguments.length > 0 && arguments[0] !== void 0 ? arguments[0] : {};
-  if (appCtx) {
-    return appCtx;
-  }
-  if (allowDefault) {
-    return defaultApp;
-  }
-  console.error("[warn]: getApp() failed. Learn more: https://uniapp.dcloud.io/collocation/frame/window?id=getapp.");
+  return $uniApp;
 }
 function registerApp(appVm, nativeApp2) {
   initEntryPagePath(nativeApp2);
@@ -2298,7 +2305,7 @@ var navigateBack = /* @__PURE__ */ defineAsyncApi(API_NAVIGATE_BACK, (args, _ref
       from: args.from || "navigateBack"
     });
     if (onBackPressRes !== true) {
-      var dialogPages = page.$getDialogPages();
+      var dialogPages = page.getDialogPages();
       if (dialogPages.length > 0) {
         var dialogPage = dialogPages[dialogPages.length - 1];
         onBackPressRes = invokeHook(dialogPage.$vm, ON_BACK_PRESS, {
@@ -2338,7 +2345,7 @@ function back(delta, animationType, animationDuration) {
   var currentPage = pages2[len - 1];
   if (delta > 1) {
     pages2.slice(len - delta, len - 1).reverse().forEach((deltaPage) => {
-      var dialogPages2 = deltaPage.$getDialogPages();
+      var dialogPages2 = deltaPage.getDialogPages();
       for (var i2 = dialogPages2.length - 1; i2 >= 0; i2--) {
         var dialogPage2 = dialogPages2[i2];
         closeNativeDialogPage(dialogPage2, "none");
@@ -2364,7 +2371,7 @@ function back(delta, animationType, animationDuration) {
     });
   };
   var webview = getNativeApp().pageManager.findPageById(currentPage.$page.id + "");
-  var dialogPages = currentPage.$getDialogPages();
+  var dialogPages = currentPage.getDialogPages();
   for (var i = dialogPages.length - 1; i >= 0; i--) {
     var dialogPage = dialogPages[i];
     closeNativeDialogPage(dialogPage, "none");
@@ -2409,15 +2416,14 @@ var openDialogPage = (options) => {
   if (currentPages.length && !parentPage) {
     parentPage = currentPages[currentPages.length - 1];
   }
-  var dialogPage = new DialogPage({
+  var dialogPage = new DialogPageImpl({
     route: url,
-    $getParentPage: () => parentPage,
-    component: null
+    getParentPage: () => parentPage
   });
   if (!parentPage) {
     homeDialogPages.push(dialogPage);
   } else {
-    var dialogPages = parentPage.$getDialogPages();
+    var dialogPages = parentPage.getDialogPages();
     if (dialogPages.length) {
       invokeHook(dialogPages[dialogPages.length - 1].$vm, ON_HIDE);
     }
@@ -2490,13 +2496,13 @@ var closeDialogPage = (options) => {
   }
   if (options !== null && options !== void 0 && options.dialogPage) {
     var dialogPage = options === null || options === void 0 ? void 0 : options.dialogPage;
-    if (!(dialogPage instanceof DialogPage)) {
+    if (!(dialogPage instanceof DialogPageImpl)) {
       triggerFailCallback(options, "dialogPage is not a valid page");
       return;
     }
-    var parentPage = dialogPage.$getParentPage();
+    var parentPage = dialogPage.getParentPage();
     if (parentPage && currentPages.indexOf(parentPage) !== -1) {
-      var parentDialogPages = parentPage.$getDialogPages();
+      var parentDialogPages = parentPage.getDialogPages();
       var index2 = parentDialogPages.indexOf(dialogPage);
       parentDialogPages.splice(index2, 1);
       closeNativeDialogPage(dialogPage, (options === null || options === void 0 ? void 0 : options.animationType) || "none");
@@ -2508,7 +2514,7 @@ var closeDialogPage = (options) => {
       return;
     }
   } else {
-    var dialogPages = currentPage.$getDialogPages();
+    var dialogPages = currentPage.getDialogPages();
     for (var i = dialogPages.length - 1; i >= 0; i--) {
       closeNativeDialogPage(dialogPages[i], (options === null || options === void 0 ? void 0 : options.animationType) || "none");
       if (i > 0) {
@@ -3484,7 +3490,7 @@ var callbackId = 1;
 var proxy;
 var callbacks = {};
 function isUniElement(obj) {
-  return typeof obj.getNodeId === "function" && obj.pageId;
+  return typeof (obj === null || obj === void 0 ? void 0 : obj.getNodeId) === "function" && (obj === null || obj === void 0 ? void 0 : obj.pageId);
 }
 function isComponentPublicInstance(instance) {
   return instance && instance.$ && instance.$.proxy === instance;
@@ -5436,6 +5442,7 @@ const pickerView = /* @__PURE__ */ defineBuiltInComponent({
     }, {
       immediate: true
     });
+    provide("pickerViewProps", props);
     var pickerViewElementRef = ref();
     var instance = getCurrentInstance();
     var _pickerViewUpdateHandler = (vm, type) => {
@@ -5524,6 +5531,7 @@ const pickerViewColumn = /* @__PURE__ */ defineBuiltInComponent({
     var indicator = ref();
     var scrollViewRef = ref();
     var contentRef = ref();
+    var pickerViewProps = inject("pickerViewProps");
     var data = reactive({
       height: 0,
       indicatorHeight: 0,
@@ -5535,17 +5543,31 @@ const pickerViewColumn = /* @__PURE__ */ defineBuiltInComponent({
       contentStyle: "",
       _isMounted: false
     });
+    var formatUserStyle = (styleStr) => {
+      var formatUserStyle2 = parseStringStyle(styleStr);
+      if (isString(formatUserStyle2["background-color"]) || isString(formatUserStyle2["background"])) {
+        formatUserStyle2 = Object.assign({}, formatUserStyle2, {
+          backgroundImage: "",
+          background: formatUserStyle2["background-color"] || formatUserStyle2["background"]
+        });
+      }
+      return formatUserStyle2;
+    };
     var contentStyle = computed(() => {
       return Object.assign({}, _style_picker_column["uni-picker-view-content"][""], parseStringStyle(data.contentStyle));
     });
     var maskTopStyle = computed(() => {
-      return Object.assign({}, _style_picker_column["uni-picker-view-mask"][""], _style_picker_column["uni-picker-view-mask-top"][""], parseStringStyle(data.maskTopStyle));
+      var userStyle = formatUserStyle(pickerViewProps.maskTopStyle);
+      var style = Object.assign({}, _style_picker_column["uni-picker-view-mask"][""], _style_picker_column["uni-picker-view-mask-top"][""], parseStringStyle(data.maskTopStyle), userStyle);
+      return style;
     });
     var maskBottomStyle = computed(() => {
-      return Object.assign({}, _style_picker_column["uni-picker-view-mask"][""], _style_picker_column["uni-picker-view-mask-bottom"][""], parseStringStyle(data.maskBottomStyle));
+      var userStyle = formatUserStyle(pickerViewProps.maskBottomStyle);
+      return Object.assign({}, _style_picker_column["uni-picker-view-mask"][""], _style_picker_column["uni-picker-view-mask-bottom"][""], parseStringStyle(data.maskBottomStyle), userStyle);
     });
     var indicatorStyle = computed(() => {
-      return Object.assign({}, _style_picker_column["uni-picker-view-indicator"][""], parseStringStyle(data.indicatorStyle));
+      var val = Object.assign({}, _style_picker_column["uni-picker-view-indicator"][""], parseStringStyle(pickerViewProps.indicatorStyle), parseStringStyle(data.indicatorStyle));
+      return val;
     });
     var styleUniPickerViewColumn = computed(() => {
       return Object.assign({}, _style_picker_column["uni-picker-view-column"][""]);
@@ -5563,7 +5585,7 @@ const pickerViewColumn = /* @__PURE__ */ defineBuiltInComponent({
       var maskPosition = "".concat(data.height - padding, "px");
       data.maskTopStyle += ";bottom:".concat(maskPosition);
       data.maskBottomStyle += ";top:".concat(maskPosition);
-      data.indicatorStyle += ";top:".concat(padding, "px");
+      data.indicatorStyle = ";top:".concat(padding, "px");
       data.contentStyle = "padding-top:".concat(padding, "px;padding-bottom:").concat(padding, "px");
       nextTick(() => {
         if (data.current != 0) {
@@ -5589,13 +5611,13 @@ const pickerViewColumn = /* @__PURE__ */ defineBuiltInComponent({
       data.current = current;
       data.scrollToElementTime = Date.now();
     };
+    var uniResizeObserver = new UniResizeObserver((entries) => {
+      init2();
+    });
     var created = () => {
       var _instance$parent;
       var $parent = (instance === null || instance === void 0 || (_instance$parent = instance.parent) === null || _instance$parent === void 0 ? void 0 : _instance$parent.type.name) === "PickerView" ? instance === null || instance === void 0 ? void 0 : instance.parent : null;
       if ($parent !== null) {
-        data.indicatorStyle = $parent.props["indicatorStyle"];
-        data.maskTopStyle = $parent.props["maskTopStyle"];
-        data.maskBottomStyle = $parent.props["maskBottomStyle"];
         $dispatchParent(instance === null || instance === void 0 ? void 0 : instance.proxy, "PickerView", "_pickerViewUpdateHandler", instance === null || instance === void 0 ? void 0 : instance.proxy, "add");
         data.current = $dispatchParent(instance === null || instance === void 0 ? void 0 : instance.proxy, "PickerView", "getItemValue", instance === null || instance === void 0 ? void 0 : instance.proxy);
       }
@@ -5612,10 +5634,12 @@ const pickerViewColumn = /* @__PURE__ */ defineBuiltInComponent({
         setTimeout(() => {
           data._isMounted = true;
         }, 1e3);
+        uniResizeObserver.observe(pickerColumnRef.value);
       });
     });
     onUnmounted(() => {
       var ctx = instance === null || instance === void 0 ? void 0 : instance.proxy;
+      uniResizeObserver.disconnect();
       $dispatch(ctx, "PickerView", "_pickerViewUpdateHandler", ctx, "remove");
     });
     watch(() => data.current, (val, oldVal) => {

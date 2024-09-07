@@ -20,12 +20,12 @@ export function useCurrentPageId() {
   // 暂时仅在 h5 平台实现 $pageInstance，避免影响过大
   if (__PLATFORM__ === 'h5') {
     const { $pageInstance } = getCurrentInstance()!
-    return $pageInstance && $pageInstance.proxy!.$page.id
+    return $pageInstance && getPageProxyId($pageInstance.proxy!)
   }
   // App
   let pageId
   try {
-    pageId = getCurrentInstance()!.root.proxy!.$page.id
+    pageId = getPageProxyId(getCurrentInstance()!.root.proxy!!)
   } catch {
     const webviewId = plus.webview.currentWebview().id
     pageId = isNaN(Number(webviewId)) ? webviewId : Number(webviewId)
@@ -38,7 +38,7 @@ export function getPageIdByVm(
 ) {
   const vm = resolveComponentInstance(instance)!
   if (vm.$page) {
-    return vm.$page.id
+    return (vm.$page as Page.PageInstance['$page']).id
   }
   if (!vm.$) {
     return
@@ -46,11 +46,13 @@ export function getPageIdByVm(
   // 暂时仅在 h5 平台实现 $pageInstance，避免影响过大
   if (__PLATFORM__ === 'h5') {
     const { $pageInstance } = vm.$
-    return $pageInstance && $pageInstance.proxy!.$page.id
+    if ($pageInstance) {
+      return getPageProxyId($pageInstance.proxy!)
+    }
   }
   const rootProxy = vm.$.root.proxy
   if (rootProxy && rootProxy.$page) {
-    return rootProxy.$page.id
+    return getPageProxyId(rootProxy)
   }
 }
 
@@ -171,4 +173,8 @@ export function initPageInternalInstance(
     eventChannel,
     statusBarStyle: titleColor === '#ffffff' ? 'light' : 'dark',
   }
+}
+
+function getPageProxyId(proxy: ComponentPublicInstance) {
+  return (proxy.$page as Page.PageInstance['$page'])?.id || proxy.$basePage?.id
 }

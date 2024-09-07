@@ -2323,11 +2323,18 @@ function onResize$1(res) {
 }
 function onAppEnterForeground(enterOptions2) {
   const page = getCurrentPage();
-  invokeHook(getApp(), ON_SHOW, enterOptions2);
+  invokeHook(
+    getApp().vm,
+    ON_SHOW,
+    enterOptions2
+  );
   invokeHook(page, ON_SHOW);
 }
 function onAppEnterBackground() {
-  invokeHook(getApp(), ON_HIDE);
+  invokeHook(
+    getApp().vm,
+    ON_HIDE
+  );
   invokeHook(getCurrentPage(), ON_HIDE);
 }
 const SUBSCRIBE_LIFECYCLE_HOOKS = [ON_PAGE_SCROLL, ON_REACH_BOTTOM];
@@ -4607,50 +4614,58 @@ const EmitProtocol = [
 ];
 class EventBus {
   constructor() {
-    this.emitter = new Emitter();
-    this.$on = /* @__PURE__ */ defineSyncApi(
-      API_ON,
-      (name, callback) => {
-        this.emitter.on(name, callback);
-        return () => this.emitter.off(name, callback);
-      },
-      OnProtocol
-    );
-    this.$once = /* @__PURE__ */ defineSyncApi(
-      API_ONCE,
-      (name, callback) => {
-        this.emitter.once(name, callback);
-        return () => this.emitter.off(name, callback);
-      },
-      OnceProtocol
-    );
-    this.$off = /* @__PURE__ */ defineSyncApi(
-      API_OFF,
-      (name, callback) => {
-        if (!name) {
-          this.emitter.e = {};
-          return;
-        }
-        if (!isArray(name))
-          name = [name];
-        name.forEach((n) => this.emitter.off(n, callback));
-      },
-      OffProtocol
-    );
-    this.$emit = /* @__PURE__ */ defineSyncApi(
-      API_EMIT,
-      (name, ...args) => {
-        this.emitter.emit(name, ...args);
-      },
-      EmitProtocol
-    );
+    this.$emitter = new Emitter();
+  }
+  on(name, callback) {
+    this.$emitter.on(name, callback);
+  }
+  once(name, callback) {
+    this.$emitter.once(name, callback);
+  }
+  off(name, callback) {
+    if (!name) {
+      this.$emitter.e = {};
+      return;
+    }
+    this.$emitter.off(name, callback);
+  }
+  emit(name, ...args) {
+    this.$emitter.emit(name, ...args);
   }
 }
 const eventBus = new EventBus();
-const $on = eventBus.$on;
-const $once = eventBus.$once;
-const $off = eventBus.$off;
-const $emit = eventBus.$emit;
+const $on = /* @__PURE__ */ defineSyncApi(
+  API_ON,
+  (name, callback) => {
+    eventBus.on(name, callback);
+    return () => eventBus.off(name, callback);
+  },
+  OnProtocol
+);
+const $once = /* @__PURE__ */ defineSyncApi(
+  API_ONCE,
+  (name, callback) => {
+    eventBus.once(name, callback);
+    return () => eventBus.off(name, callback);
+  },
+  OnceProtocol
+);
+const $off = /* @__PURE__ */ defineSyncApi(
+  API_OFF,
+  (name, callback) => {
+    if (!isArray(name))
+      name = name ? [name] : [];
+    name.forEach((n) => eventBus.off(n, callback));
+  },
+  OffProtocol
+);
+const $emit = /* @__PURE__ */ defineSyncApi(
+  API_EMIT,
+  (name, ...args) => {
+    eventBus.emit(name, ...args);
+  },
+  EmitProtocol
+);
 const validator = [
   {
     name: "id",
@@ -10085,18 +10100,22 @@ const props$r = /* @__PURE__ */ extend({}, props$s, {
     default: ""
   }
 });
-const resolveDigitDecimalPointDeleteContentBackward = (() => {
-  const iOS17BugVersions = ["17.0", "17.0.1", "17.0.2", "17.0.3", "17.1", "17.1.1", "17.1.2"];
+const resolveDigitDecimalPointDeleteContentBackward = once(() => {
   {
     const ua2 = navigator.userAgent;
     let osVersion = "";
     const osVersionFind = ua2.match(/OS\s([\w_]+)\slike/);
     if (osVersionFind) {
       osVersion = osVersionFind[1].replace(/_/g, ".");
+    } else if (/Macintosh|Mac/i.test(ua2) && navigator.maxTouchPoints > 0) {
+      const versionMatched = ua2.match(/Version\/(\S*)\b/);
+      if (versionMatched) {
+        osVersion = versionMatched[1];
+      }
     }
-    return ua2.includes("iPhone OS 16") || iOS17BugVersions.includes(osVersion);
+    return !!osVersion && parseInt(osVersion) >= 16 && parseFloat(osVersion) < 17.2;
   }
-})();
+});
 function resolveDigitDecimalPoint(event, cache, state2, input, resetCache) {
   if (cache.value) {
     if (event.data === ".") {
@@ -10116,7 +10135,7 @@ function resolveDigitDecimalPoint(event, cache, state2, input, resetCache) {
         return false;
       }
     } else if (event.inputType === "deleteContentBackward") {
-      if (resolveDigitDecimalPointDeleteContentBackward) {
+      if (resolveDigitDecimalPointDeleteContentBackward()) {
         if (cache.value.slice(-2, -1) === ".") {
           cache.value = state2.value = input.value = cache.value.slice(0, -2);
           return true;
@@ -10176,7 +10195,7 @@ const Input = /* @__PURE__ */ defineBuiltInComponent({
           type2 = "number";
           break;
         default:
-          type2 = ~INPUT_TYPES.includes(props2.type) ? props2.type : "text";
+          type2 = INPUT_TYPES.includes(props2.type) ? props2.type : "text";
           break;
       }
       return props2.password ? "password" : type2;
@@ -10230,7 +10249,8 @@ const Input = /* @__PURE__ */ defineBuiltInComponent({
         if (maxlength > 0 && input.value.length > maxlength) {
           input.value = input.value.slice(0, maxlength);
           state22.value = input.value;
-          return false;
+          const modelValue = props2.modelValue !== void 0 && props2.modelValue !== null ? props2.modelValue.toString() : "";
+          return modelValue !== input.value;
         }
       }
     });
@@ -17219,7 +17239,7 @@ function navigate({ type, url, tabBarText, events, isAutomatedTesting }, __id__)
       "当前项目为单页面工程，不能执行页面跳转api。如果需进行页面跳转， 需要在pages.json文件的pages字段中配置多个页面，然后重新运行。"
     );
   }
-  const router = getApp().$router;
+  const router = getApp().vm.$router;
   const { path, query } = parseUrl(url);
   return new Promise((resolve, reject) => {
     const state2 = createPageState(type, __id__);
@@ -17355,7 +17375,7 @@ let escBackPageNum = 0;
 function handleEscKeyPress(event) {
   if (event.key === "Escape") {
     const currentPage = getCurrentPage();
-    const dialogPages = currentPage.$getDialogPages();
+    const dialogPages = currentPage.getDialogPages();
     const dialogPage = dialogPages[dialogPages.length - 1];
     if (!dialogPage.$disableEscBack) {
       uni.closeDialogPage({ dialogPage });
@@ -17374,24 +17394,24 @@ function decrementEscBackPageNum() {
     document.removeEventListener("keydown", handleEscKeyPress);
   }
 }
-class DialogPage {
+class DialogPageImpl extends EventBus {
   constructor({
     route,
-    component,
-    $getParentPage,
+    $component,
+    getParentPage,
     $disableEscBack = false
   }) {
+    super();
     this.route = "";
+    this.options = /* @__PURE__ */ new Map();
+    this.vm = null;
+    this.$vm = null;
+    this.$component = null;
     this.$disableEscBack = false;
     this.route = route;
-    this.component = component;
-    this.$getParentPage = $getParentPage;
+    this.$component = $component;
+    this.getParentPage = getParentPage;
     this.$disableEscBack = $disableEscBack;
-    const { $on: $on2, $once: $once2, $emit: $emit2, $off: $off2 } = new EventBus();
-    this.$on = $on2;
-    this.$once = $once2;
-    this.$off = $off2;
-    this.$emit = $emit2;
   }
 }
 function pruneCurrentPages() {
@@ -17428,7 +17448,7 @@ function removeRouteCache(routeKey) {
 function removePage(routeKey, removeRouteCaches = true) {
   const pageVm = currentPagesMap.get(routeKey);
   {
-    const dialogPages = pageVm.$getDialogPages();
+    const dialogPages = pageVm.getDialogPages();
     for (let i = dialogPages.length - 1; i >= 0; i--) {
       uni.closeDialogPage({ dialogPage: dialogPages[i] });
     }
@@ -17504,13 +17524,13 @@ function initPage(vm) {
       onReachBottomDistance: pageMeta.onReachBottomDistance || ON_REACH_BOTTOM_DISTANCE,
       backgroundColorContent: pageMeta.backgroundColorContent
     });
-    vm.$getDialogPages = () => {
+    vm.getDialogPages = () => {
       var _a2;
       return ((_a2 = getPageInstanceByVm(vm)) == null ? void 0 : _a2.$dialogPages.value) || [];
     };
-    vm.$getParentPage = () => {
+    vm.getParentPage = () => {
       var _a2, _b;
-      return ((_b = (_a2 = getPageInstanceByVm(vm)) == null ? void 0 : _a2.$dialogPage) == null ? void 0 : _b.$getParentPage()) || null;
+      return ((_b = (_a2 = getPageInstanceByVm(vm)) == null ? void 0 : _a2.$dialogPage) == null ? void 0 : _b.getParentPage()) || null;
     };
     vm.$dialogPage = (_a = getPageInstanceByVm(vm)) == null ? void 0 : _a.$dialogPage;
   }
@@ -17524,7 +17544,7 @@ function initPage(vm) {
         }, 0);
         if (homeDialogPages.length) {
           homeDialogPages.forEach((dialogPage) => {
-            dialogPage.$getParentPage = () => vm;
+            dialogPage.getParentPage = () => vm;
             pageInstance.$dialogPages.value.push(dialogPage);
           });
           homeDialogPages.length = 0;
@@ -17902,6 +17922,12 @@ function getBrowserInfo() {
     osname = "iOS";
     deviceType = "pad";
     osversion = isFunction(window.BigInt) ? "14.0" : "13.0";
+    if (parseInt(osversion) === 14) {
+      const versionMatched = ua.match(/Version\/(\S*)\b/);
+      if (versionMatched) {
+        osversion = versionMatched[1];
+      }
+    }
   } else if (isWindows || isMac || isLinux) {
     model = "PC";
     osname = "PC";
@@ -18699,8 +18725,25 @@ const AsyncErrorComponent = /* @__PURE__ */ defineSystemComponent({
   }
 });
 let appVm;
+let $uniApp;
+{
+  class UniAppImpl extends EventBus {
+    get vm() {
+      return appVm;
+    }
+    get $vm() {
+      return appVm;
+    }
+    get globalData() {
+      return (appVm == null ? void 0 : appVm.globalData) || {};
+    }
+  }
+  $uniApp = new UniAppImpl();
+}
 function getApp$1() {
-  return appVm;
+  {
+    return $uniApp;
+  }
 }
 function initApp(vm) {
   appVm = vm;
@@ -18798,7 +18841,7 @@ function setupPage(comp) {
         {
           const pageInstance = getPageInstanceByChild(instance2);
           if (pageInstance.attrs.type === "dialog") {
-            const parentPage = (_a = instance2.proxy) == null ? void 0 : _a.$getParentPage();
+            const parentPage = (_a = instance2.proxy) == null ? void 0 : _a.getParentPage();
             const parentPageInstance = parentPage ? getPageInstanceByVm(parentPage) : null;
             if (parentPageInstance) {
               const dialogPages = parentPageInstance.$dialogPages.value;
@@ -23770,7 +23813,7 @@ const navigateBack = /* @__PURE__ */ defineAsyncApi(
     {
       const currentPage = getCurrentPage();
       if (currentPage) {
-        const dialogPages = currentPage.$getDialogPages();
+        const dialogPages = currentPage.getDialogPages();
         const dialogPage = dialogPages[dialogPages.length - 1];
         if (((_b = dialogPage == null ? void 0 : (_a = dialogPage.$vm.$options).onBackPress) == null ? void 0 : _b.call(_a)) === true) {
           canBack = false;
@@ -23780,7 +23823,9 @@ const navigateBack = /* @__PURE__ */ defineAsyncApi(
     if (!canBack) {
       return reject(ON_BACK_PRESS);
     }
-    getApp().$router.go(-args.delta);
+    {
+      getApp().vm.$router.go(-args.delta);
+    }
     return resolve();
   },
   NavigateBackProtocol,
@@ -25309,10 +25354,10 @@ const openDialogPage = (options) => {
     triggerFailCallback$1(options, `page '${options.url}' is not found`);
     return null;
   }
-  const dialogPage = new DialogPage({
+  const dialogPage = new DialogPageImpl({
     route: options.url,
-    component: targetRoute.component,
-    $getParentPage: () => null,
+    $component: targetRoute.component,
+    getParentPage: () => null,
     $disableEscBack: options.disableEscBack
   });
   let parentPage = options.parentPage;
@@ -25329,7 +25374,7 @@ const openDialogPage = (options) => {
     if (!parentPage) {
       parentPage = currentPages[currentPages.length - 1];
     }
-    dialogPage.$getParentPage = () => parentPage;
+    dialogPage.getParentPage = () => parentPage;
     getPageInstanceByVm(
       parentPage
     ).$dialogPages.value.push(dialogPage);
@@ -25365,9 +25410,9 @@ const closeDialogPage = (options) => {
   }
   if (options == null ? void 0 : options.dialogPage) {
     const dialogPage = options == null ? void 0 : options.dialogPage;
-    const parentPage = (_a = dialogPage.$getParentPage) == null ? void 0 : _a.call(dialogPage);
+    const parentPage = (_a = dialogPage.getParentPage) == null ? void 0 : _a.call(dialogPage);
     if (parentPage && currentPages.indexOf(parentPage) !== -1) {
-      const parentDialogPages = parentPage.$getDialogPages();
+      const parentDialogPages = parentPage.getDialogPages();
       const index2 = parentDialogPages.indexOf(dialogPage);
       parentDialogPages.splice(index2, 1);
       invokeHook(dialogPage.$vm, ON_UNLOAD);
@@ -28002,7 +28047,7 @@ function createDialogPageVNode(dialogPages) {
     renderList(dialogPages.value, (dialogPage) => {
       return openBlock(), createBlock(
         createVNode(
-          dialogPage.component,
+          dialogPage.$component,
           {
             key: dialogPage.route,
             style: {

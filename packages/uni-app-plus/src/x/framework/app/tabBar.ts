@@ -74,6 +74,10 @@ function init() {
   const list = getTabList()
   const style = new Map<string, any | null>()
   style.set('navigationStyle', 'custom')
+  style.set(
+    'pageOrientation',
+    __uniConfig.globalStyle?.pageOrientation ?? 'portrait'
+  )
   const page = getPageManager().createPage('tabBar', 'tabBar', style)
   const document = page.createDocument(
     new NodeData(
@@ -200,8 +204,8 @@ function createTab(
 ): Page {
   registerPage({ url: path, path, query, openType: 'switchTab' })
   callback?.()
-  const page = getCurrentPage() as Page
-  tabBar0!.appendItem(page!.$page.id.toString())
+  const page = (getCurrentPage() as unknown as UniPage).vm
+  tabBar0!.appendItem(page!.$basePage.id.toString())
   return page
 }
 
@@ -274,7 +278,7 @@ export function switchSelect(
   if (tabBar0 === null) {
     init()
   }
-  const currentPage = getCurrentPage() as Page
+  const currentPage = (getCurrentPage() as unknown as UniPage).vm
 
   const type = currentPage == null ? 'appLaunch' : 'switchTab'
   // 执行beforeRoute
@@ -289,7 +293,7 @@ export function switchSelect(
       invokeHook(currentPage!, ON_HIDE)
     }
   }
-  tabBar0!.switchSelect(page!.$page.id.toString(), selected)
+  tabBar0!.switchSelect(page!.$basePage.id.toString(), selected)
 
   // TODO use page show status
   if (shouldShow) {

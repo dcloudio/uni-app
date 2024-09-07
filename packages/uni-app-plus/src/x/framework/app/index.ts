@@ -19,11 +19,30 @@ import type {
   NavigateToOptions,
   SwitchTabOptions,
 } from '@dcloudio/uni-app-x/types/uni'
+import type { UniApp } from '@dcloudio/uni-app-x/types/app'
+import { UniEventBus } from '../../../service/framework/page/eventBus'
 
 let appCtx: ComponentPublicInstance
 const defaultApp = {
   globalData: {},
 }
+
+class UniAppImpl extends UniEventBus implements UniApp {
+  get vm() {
+    return appCtx
+  }
+  get $vm() {
+    return appCtx
+  }
+  get globalData() {
+    return appCtx?.globalData || {}
+  }
+  getAndroidApplication() {
+    return null
+  }
+}
+
+let $uniApp = new UniAppImpl()
 
 export const entryPageState = {
   isReady: false,
@@ -68,18 +87,8 @@ function initAppVm(appVm: ComponentPublicInstance) {
   // TODO uni-app x useI18n
 }
 
-export function getApp({ allowDefault = false } = {}) {
-  if (appCtx) {
-    // 真实的 App 已初始化
-    return appCtx
-  }
-  if (allowDefault) {
-    // 返回默认实现
-    return defaultApp
-  }
-  console.error(
-    '[warn]: getApp() failed. Learn more: https://uniapp.dcloud.io/collocation/frame/window?id=getapp.'
-  )
+export function getApp() {
+  return $uniApp
 }
 
 /**

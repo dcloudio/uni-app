@@ -26,7 +26,9 @@ import {
   runByHBuilderX,
 } from './shared'
 import type { ClassMeta } from './code'
+import { uvueOutDir } from './uvue'
 
+type UTSPluginPlatform = 'app-android' | 'app-ios' | 'app-harmony'
 interface ToOptions {
   inputDir: string
   outputDir: string
@@ -844,4 +846,81 @@ export function requireUniHelpers() {
     'uni_helpers/lib/bytenode'
   ))
   return require(path.join(process.env.UNI_HBUILDERX_PLUGINS, 'uni_helpers'))
+}
+
+export function resolveBundleInputRoot(
+  platform: UTSPluginPlatform,
+  root: string
+) {
+  if (
+    process.env.UNI_APP_X_TSC === 'true' &&
+    // 云端uni_modules编译，传入的已经是真实地址
+    process.env.UNI_COMPILE_TARGET !== 'uni_modules'
+  ) {
+    return uvueOutDir(platform)
+  }
+  return root
+}
+
+export function resolveBundleInputFileName(
+  platform: UTSPluginPlatform,
+  fileName: string
+) {
+  if (
+    process.env.UNI_APP_X_TSC === 'true' &&
+    // 云端uni_modules编译，传入的已经是真实地址 uni-cli-shared/vite/cloud.ts:190
+    process.env.UNI_COMPILE_TARGET !== 'uni_modules'
+  ) {
+    const uvueDir = uvueOutDir(platform)
+    if (!fileName.startsWith(uvueDir)) {
+      return normalizePath(
+        path.resolve(
+          uvueDir,
+          path.relative(process.env.UNI_INPUT_DIR, fileName)
+        )
+      )
+    }
+  }
+  return fileName
+}
+
+export function resolveUVueFileName(
+  platform: 'app-android' | 'app-ios',
+  fileName: string
+) {
+  if (!fileName) {
+    return fileName
+  }
+  if (process.env.UNI_APP_X_TSC === 'true') {
+    const inputDir = normalizePath(process.env.UNI_INPUT_DIR)
+    fileName = normalizePath(fileName)
+    if (fileName.startsWith(inputDir)) {
+      return normalizePath(
+        path.resolve(uvueOutDir(platform), path.relative(inputDir, fileName))
+      )
+    }
+  }
+  return fileName
+}
+
+export function normalizeUTSResult(
+  platform: UTSPluginPlatform,
+  result: UTSResult
+) {
+  if (process.env.UNI_APP_X_TSC === 'true') {
+    if (result.deps && result.deps.length) {
+      const uvueDir = normalizePath(uvueOutDir(platform))
+      result.deps = result.deps.map((file) => {
+        file = normalizePath(file)
+        if (file.startsWith(uvueDir)) {
+          return path.resolve(
+            process.env.UNI_INPUT_DIR,
+            path.relative(uvueDir, file)
+          )
+        }
+        return file
+      })
+    }
+  }
+  return result
 }

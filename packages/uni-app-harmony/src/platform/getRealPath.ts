@@ -21,7 +21,7 @@ export function getRealPath(filepath: string) {
     // 鸿蒙平台特性
     return 'file:/' + normalizeLocalPath(filepath)
   }
-  // TODO 暂时使用当前 dirname
+  // TODO 暂时使用当前 dirname，service 层注入 location
   const href = location.href
   const wwwPath = href.substring(0, href.lastIndexOf('/'))
   // 绝对路径转换为本地文件系统路径

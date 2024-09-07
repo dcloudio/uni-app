@@ -11,7 +11,10 @@ import {
   getUTSCompiler,
   isColorSupported,
   moveRootIndexSourceMap,
+  normalizeUTSResult,
   parseSwiftPackageWithPluginId,
+  resolveBundleInputFileName,
+  resolveBundleInputRoot,
   resolveConfigProvider,
   resolveIOSDir,
   resolvePackage,
@@ -246,8 +249,8 @@ export async function compile(
   const componentsCode = genComponentsCode(filename, components, isX)
   const { namespace, id: pluginId } = parseSwiftPackage(filename)
   const input: UTSInputOptions = {
-    root: inputDir,
-    filename,
+    root: resolveBundleInputRoot('app-ios', inputDir),
+    filename: resolveBundleInputFileName('app-ios', filename),
     pluginId,
     paths: {},
     uniModules,
@@ -258,7 +261,12 @@ export async function compile(
       input.fileContent = componentsCode
     } else {
       input.fileContent =
-        fs.readFileSync(filename, 'utf8') + `\n` + componentsCode
+        fs.readFileSync(
+          resolveBundleInputFileName('app-ios', filename),
+          'utf8'
+        ) +
+        `\n` +
+        componentsCode
     }
   } else {
     // uts文件不存在，且也无组件
@@ -305,7 +313,7 @@ export async function compile(
       package: '',
       result,
     })
-  return result
+  return normalizeUTSResult('app-ios', result)
 }
 
 const deps = ['Info.plist', 'config.json']

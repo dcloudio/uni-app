@@ -3519,18 +3519,8 @@ const props$j = /* @__PURE__ */ shared.extend({}, props$k, {
     default: ""
   }
 });
-const resolveDigitDecimalPointDeleteContentBackward = (() => {
-  const iOS17BugVersions = ["17.0", "17.0.1", "17.0.2", "17.0.3", "17.1", "17.1.1", "17.1.2"];
-  {
-    const ua = navigator.userAgent;
-    let osVersion = "";
-    const osVersionFind = ua.match(/OS\s([\w_]+)\slike/);
-    if (osVersionFind) {
-      osVersion = osVersionFind[1].replace(/_/g, ".");
-    }
-    return ua.includes("iPhone OS 16") || iOS17BugVersions.includes(osVersion);
-  }
-})();
+const resolveDigitDecimalPointDeleteContentBackward = uniShared.once(() => {
+});
 function resolveDigitDecimalPoint(event, cache, state, input, resetCache) {
   if (cache.value) {
     if (event.data === ".") {
@@ -3550,7 +3540,7 @@ function resolveDigitDecimalPoint(event, cache, state, input, resetCache) {
         return false;
       }
     } else if (event.inputType === "deleteContentBackward") {
-      if (resolveDigitDecimalPointDeleteContentBackward) {
+      if (resolveDigitDecimalPointDeleteContentBackward()) {
         if (cache.value.slice(-2, -1) === ".") {
           cache.value = state.value = input.value = cache.value.slice(0, -2);
           return true;
@@ -3600,7 +3590,7 @@ const Input = /* @__PURE__ */ defineBuiltInComponent({
           type2 = "number";
           break;
         default:
-          type2 = ~INPUT_TYPES.includes(props2.type) ? props2.type : "text";
+          type2 = INPUT_TYPES.includes(props2.type) ? props2.type : "text";
           break;
       }
       return props2.password ? "password" : type2;
@@ -3654,7 +3644,8 @@ const Input = /* @__PURE__ */ defineBuiltInComponent({
         if (maxlength > 0 && input.value.length > maxlength) {
           input.value = input.value.slice(0, maxlength);
           state2.value = input.value;
-          return false;
+          const modelValue = props2.modelValue !== void 0 && props2.modelValue !== null ? props2.modelValue.toString() : "";
+          return modelValue !== input.value;
         }
       }
     });
@@ -8282,7 +8273,9 @@ const AsyncErrorComponent = /* @__PURE__ */ defineSystemComponent({
 });
 let appVm;
 function getApp$1() {
-  return appVm;
+  {
+    return appVm;
+  }
 }
 function initApp(vm) {
   appVm = vm;

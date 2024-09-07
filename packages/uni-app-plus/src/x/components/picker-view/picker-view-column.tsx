@@ -3,6 +3,7 @@ import {
   type StyleValue,
   computed,
   getCurrentInstance,
+  inject,
   nextTick,
   onMounted,
   onUnmounted,
@@ -11,10 +12,12 @@ import {
   watch,
 } from 'vue'
 
-import { parseStringStyle } from '@vue/shared'
+import { isString, parseStringStyle } from '@vue/shared'
 import { $dispatch, $dispatchParent } from '../../utils'
 import { _style_picker_column as _style } from './style'
 import { UniPickerViewColumnElement } from './model'
+// extractPropTypes
+// import type { } from '../picker-view/picker-view'
 
 export default /*#__PURE__*/ defineBuiltInComponent({
   name: 'PickerViewColumn',
@@ -31,6 +34,8 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     const scrollViewRef = ref<UniScrollViewElement>()
     const contentRef = ref<UniElement>()
 
+    const pickerViewProps = inject('pickerViewProps') as any
+
     // data
     const data = reactive({
       height: 0,
@@ -44,6 +49,23 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       _isMounted: false,
     })
 
+    const formatUserStyle = (styleStr: string): Record<string, any> => {
+      // 用户传递的 background-color 优先级高
+      let formatUserStyle = parseStringStyle(styleStr)
+      if (
+        isString(formatUserStyle['background-color']) ||
+        isString(formatUserStyle['background'])
+      ) {
+        formatUserStyle = Object.assign({}, formatUserStyle, {
+          backgroundImage: '',
+          background:
+            formatUserStyle['background-color'] ||
+            formatUserStyle['background'],
+        })
+      }
+      return formatUserStyle
+    }
+
     // style
     const contentStyle = computed(() => {
       return Object.assign(
@@ -54,27 +76,37 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     })
 
     const maskTopStyle = computed(() => {
-      return Object.assign(
+      const userStyle = formatUserStyle(pickerViewProps.maskTopStyle)
+
+      const style = Object.assign(
         {},
         _style['uni-picker-view-mask'][''],
         _style['uni-picker-view-mask-top'][''],
-        parseStringStyle(data.maskTopStyle)
+        parseStringStyle(data.maskTopStyle),
+        userStyle
       ) as StyleValue
+
+      return style
     })
     const maskBottomStyle = computed(() => {
+      const userStyle = formatUserStyle(pickerViewProps.maskBottomStyle)
+
       return Object.assign(
         {},
         _style['uni-picker-view-mask'][''],
         _style['uni-picker-view-mask-bottom'][''],
-        parseStringStyle(data.maskBottomStyle)
+        parseStringStyle(data.maskBottomStyle),
+        userStyle
       ) as StyleValue
     })
     const indicatorStyle = computed(() => {
-      return Object.assign(
+      const val = Object.assign(
         {},
         _style['uni-picker-view-indicator'][''],
+        parseStringStyle(pickerViewProps.indicatorStyle),
         parseStringStyle(data.indicatorStyle)
       ) as StyleValue
+      return val
     })
 
     const styleUniPickerViewColumn = computed(() => {
@@ -101,7 +133,8 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       const maskPosition = `${data.height - padding}px`
       data.maskTopStyle += `;bottom:${maskPosition}`
       data.maskBottomStyle += `;top:${maskPosition}`
-      data.indicatorStyle += `;top:${padding}px`
+      data.indicatorStyle = `;top:${padding}px`
+
       data.contentStyle = `padding-top:${padding}px;padding-bottom:${padding}px`
 
       nextTick(() => {
@@ -132,15 +165,16 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       data.scrollToElementTime = Date.now()
     }
 
+    const uniResizeObserver = new UniResizeObserver(
+      (entries: Array<UniResizeObserverEntry>) => {
+        init()
+      }
+    )
+
     const created = () => {
       const $parent =
         instance?.parent?.type.name === 'PickerView' ? instance?.parent : null
       if ($parent !== null) {
-        // $parent.props
-        data.indicatorStyle = $parent.props['indicatorStyle'] as string
-        data.maskTopStyle = $parent.props['maskTopStyle'] as string
-        data.maskBottomStyle = $parent.props['maskBottomStyle'] as string
-
         $dispatchParent(
           instance?.proxy,
           'PickerView',
@@ -173,11 +207,14 @@ export default /*#__PURE__*/ defineBuiltInComponent({
         setTimeout(() => {
           data._isMounted = true
         }, 1000)
+
+        uniResizeObserver.observe(pickerColumnRef.value!)
       })
     })
 
     onUnmounted(() => {
       const ctx = instance?.proxy
+      uniResizeObserver.disconnect()
       $dispatch(ctx, 'PickerView', '_pickerViewUpdateHandler', ctx, 'remove')
     })
 

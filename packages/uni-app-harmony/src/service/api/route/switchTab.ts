@@ -85,7 +85,10 @@ function _switchTab({
         }
       })
       removePage(currentPage)
-      if (currentPage!.$page.openType === 'redirectTo') {
+      if (
+        (currentPage!.$page as Page.PageInstance['$page']).openType ===
+        'redirectTo'
+      ) {
         closeWebview(currentPage!.$getAppWebview!(), ANI_CLOSE, ANI_DURATION)
       } else {
         closeWebview(currentPage!.$getAppWebview!(), 'auto')

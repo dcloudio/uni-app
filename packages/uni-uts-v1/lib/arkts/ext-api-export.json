@@ -1,5 +1,50 @@
 {
-  "@dcloudio/uni-app-harmony": [
+  "@dcloudio/uni-app-runtime": [
+    [
+      "UniOAuthProvider"
+    ],
+    [
+      "Login"
+    ],
+    [
+      "LoginSuccess"
+    ],
+    [
+      "LoginFail"
+    ],
+    [
+      "LoginOptions"
+    ],
+    [
+      "GetUserInfo"
+    ],
+    [
+      "UserInfo"
+    ],
+    [
+      "GetUserInfoSuccess"
+    ],
+    [
+      "GetUserInfoFail"
+    ],
+    [
+      "GetUserInfoOptions"
+    ],
+    [
+      "UniPaymentProvider"
+    ],
+    [
+      "RequestPayment"
+    ],
+    [
+      "RequestPaymentSuccess"
+    ],
+    [
+      "RequestPaymentFail"
+    ],
+    [
+      "RequestPaymentOptions"
+    ],
     [
       "SetClipboardData"
     ],
@@ -226,6 +271,24 @@
       "SaveVideoToPhotosAlbum"
     ],
     [
+      "ChooseFile"
+    ],
+    [
+      "ChooseFileSuccess"
+    ],
+    [
+      "ChooseFileOptions"
+    ],
+    [
+      "ChooseMediaSuccess"
+    ],
+    [
+      "ChooseMediaOptions"
+    ],
+    [
+      "ChooseMedia"
+    ],
+    [
       "Request"
     ],
     [
@@ -284,21 +347,6 @@
     ],
     [
       "OpenDocumentOptions"
-    ],
-    [
-      "UniPaymentProvider"
-    ],
-    [
-      "RequestPayment"
-    ],
-    [
-      "RequestPaymentSuccess"
-    ],
-    [
-      "RequestPaymentFail"
-    ],
-    [
-      "RequestPaymentOptions"
     ],
     [
       "StartPullDownRefreshOptions"
@@ -490,7 +538,20 @@
       "initUniExtApi"
     ]
   ],
-  "@dcloudio/uni-app-harmony/providers/uni-payment-alipay": [
+  "@uni_modules/uni-facialRecognitionVerify": [
+    [
+      "getFacialRecognitionMetaInfo"
+    ],
+    [
+      "startFacialRecognitionVerify"
+    ]
+  ],
+  "@uni_modules/uni-oauth-huawei": [
+    [
+      "UniOAuthHuaweiProviderImpl"
+    ]
+  ],
+  "@uni_modules/uni-payment-alipay": [
     [
       "UniPaymentAlipayProviderImpl"
     ]

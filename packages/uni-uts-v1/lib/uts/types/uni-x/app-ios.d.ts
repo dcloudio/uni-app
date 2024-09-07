@@ -1,2 +1,6 @@
-/// <reference path="hbuilder-x/index.d.ts" />
-/// <reference path="app-ios/index.d.ts" />
+import '../uts/index.d.ts'
+import './hbuilder-x/index.d.ts'
+// import './vue.d.ts'
+// import './shims/app-android.d.ts'
+import '@uni-x/app-ios.d.ts'
+// import '@dcloudio/uni-app-x/index.d.ts'

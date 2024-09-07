@@ -116,6 +116,9 @@ export const NVUE_BUILT_IN_TAGS = [
 ]
 
 export const UVUE_BUILT_IN_TAGS = [
+  'ad',
+  'ad-content-page',
+  'ad-draw',
   'native-view',
   'loading-indicator',
   'list-view',
