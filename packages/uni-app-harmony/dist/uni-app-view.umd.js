@@ -16642,23 +16642,6 @@
       }
     }
   }
-  function flatVNode(nodes) {
-    var array = [];
-    if (isArray(nodes)) {
-      nodes.forEach((vnode) => {
-        if (isVNode(vnode)) {
-          if (vnode.type === Fragment) {
-            array.push(...flatVNode(vnode.children));
-          } else {
-            array.push(vnode);
-          }
-        } else if (isArray(vnode)) {
-          array.push(...flatVNode(vnode));
-        }
-      });
-    }
-    return array;
-  }
   function useRebuild(callback) {
     var instance = getCurrentInstance();
     instance.rebuild = callback;
@@ -21314,7 +21297,6 @@
       var createNavigationTsx = () => null;
       return () => {
         var defaultSlots = slots.default && slots.default();
-        swiperItems = flatVNode(defaultSlots);
         return createVNode("uni-swiper", {
           "ref": rootRef
         }, [createVNode("div", {
@@ -22146,6 +22128,7 @@
       this.$app.unmount();
       removeElement(this.id);
       this.removeUniChildren();
+      flushPostFlushCbs();
       this.updateView();
     }
     appendChild(node) {

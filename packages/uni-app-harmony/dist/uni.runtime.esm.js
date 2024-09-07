@@ -537,7 +537,9 @@ function invokeSuccess(id, name, res) {
 }
 function invokeFail(id, name, errMsg, errRes = {}) {
     const apiErrMsg = name + ':fail' + (errMsg ? ' ' + errMsg : '');
-    delete errRes.errCode;
+    {
+        delete errRes.errCode;
+    }
     let res = extend({ errMsg: apiErrMsg }, errRes);
     return invokeCallback(id, res);
 }
@@ -8665,7 +8667,7 @@ function getPageIdByVm(instance) {
     }
     const rootProxy = vm.$.root.proxy;
     if (rootProxy && rootProxy.$page) {
-        return rootProxy.$page.id;
+        return getPageProxyId(rootProxy);
     }
 }
 function getCurrentPage() {
@@ -8736,6 +8738,9 @@ function initPageInternalInstance(openType, url, pageQuery, meta, eventChannel, 
         eventChannel,
         statusBarStyle: titleColor === '#ffffff' ? 'light' : 'dark',
     };
+}
+function getPageProxyId(proxy) {
+    return proxy.$page?.id || proxy.$basePage?.id;
 }
 
 function invokeHook(vm, name, args) {
@@ -8897,7 +8902,7 @@ function onAppEnterForeground(enterOptions) {
 }
 function onAppEnterBackground() {
     invokeHook((getApp()), ON_HIDE);
-    invokeHook(getCurrentPage(), ON_HIDE);
+    invokeHook((getCurrentPage()), ON_HIDE);
 }
 
 const SUBSCRIBE_LIFECYCLE_HOOKS = [ON_PAGE_SCROLL, ON_REACH_BOTTOM];
@@ -9020,8 +9025,100 @@ function isSystemURL(filepath) {
     return false;
 }
 
+let vueApp;
+function getVueApp() {
+    return vueApp;
+}
+function initVueApp(appVm) {
+    const internalInstance = appVm.$;
+    // 定制 App 的 $children 为 devtools 服务 false
+    Object.defineProperty(internalInstance.ctx, '$children', {
+        get() {
+            return getAllPages().map((page) => page.$vm);
+        },
+    });
+    const appContext = internalInstance.appContext;
+    vueApp = extend(appContext.app, {
+        mountPage(pageComponent, pageProps, pageContainer) {
+            const vnode = createVNode(pageComponent, pageProps);
+            // store app context on the root VNode.
+            // this will be set on the root instance on initial mount.
+            vnode.appContext = appContext;
+            vnode.__page_container__ = pageContainer;
+            render(vnode, pageContainer);
+            const publicThis = vnode.component.proxy;
+            publicThis.__page_container__ = pageContainer;
+            return publicThis;
+        },
+        unmountPage: (pageInstance) => {
+            const { __page_container__ } = pageInstance;
+            if (__page_container__) {
+                __page_container__.isUnmounted = true;
+                render(null, __page_container__);
+            }
+        },
+    });
+}
+
+function getPage$BasePage(page) {
+    return page.$page;
+}
+const pages = [];
+function addCurrentPage(page) {
+    const $page = getPage$BasePage(page);
+    if (!$page.meta.isNVue) {
+        return pages.push(page);
+    }
+    // 开发阶段热刷新需要移除旧的相同 id 的 page
+    const index = pages.findIndex((p) => getPage$BasePage(page).id === $page.id);
+    if (index > -1) {
+        pages.splice(index, 1, page);
+    }
+    else {
+        pages.push(page);
+    }
+}
+function getPageById(id) {
+    return pages.find((page) => getPage$BasePage(page).id === id);
+}
+function getAllPages() {
+    return pages;
+}
+function getCurrentPages$1() {
+    const curPages = getCurrentBasePages();
+    return curPages;
+}
+function getCurrentBasePages() {
+    const curPages = [];
+    pages.forEach((page) => {
+        if (page.$.__isTabBar) {
+            if (page.$.__isActive) {
+                curPages.push(page);
+            }
+        }
+        else {
+            curPages.push(page);
+        }
+    });
+    return curPages;
+}
+function removePage(curPage) {
+    const index = pages.findIndex((page) => page === curPage);
+    if (index === -1) {
+        return;
+    }
+    const $basePage = getPage$BasePage(curPage);
+    if (!$basePage.meta.isNVue) {
+        getVueApp().unmountPage(curPage);
+    }
+    pages.splice(index, 1);
+    if (('production' !== 'production')) {
+        console.log(formatLog('removePage', $basePage));
+    }
+}
+
 function requestComponentInfo(pageVm, reqs, callback) {
-    if (pageVm.$page.meta.isNVue) {
+    if (getPage$BasePage(pageVm).meta.isNVue) {
         requestNVueComponentInfo(pageVm, reqs, callback);
     }
     else {
@@ -9036,7 +9133,7 @@ function requestVueComponentInfo(pageVm, reqs, callback) {
             }
             return req;
         }),
-    }, pageVm.$page.id, callback);
+    }, getPage$BasePage(pageVm).id, callback);
 }
 function requestNVueComponentInfo(pageVm, reqs, callback) {
     const ids = findNVueElementIds(reqs);
@@ -9095,90 +9192,6 @@ function findComponentRectAll(dom, nvueElementInfos, index, result, callback) {
             callback(result);
         }
     });
-}
-
-let vueApp;
-function getVueApp() {
-    return vueApp;
-}
-function initVueApp(appVm) {
-    const internalInstance = appVm.$;
-    // 定制 App 的 $children 为 devtools 服务 false
-    Object.defineProperty(internalInstance.ctx, '$children', {
-        get() {
-            return getAllPages().map((page) => page.$vm);
-        },
-    });
-    const appContext = internalInstance.appContext;
-    vueApp = extend(appContext.app, {
-        mountPage(pageComponent, pageProps, pageContainer) {
-            const vnode = createVNode(pageComponent, pageProps);
-            // store app context on the root VNode.
-            // this will be set on the root instance on initial mount.
-            vnode.appContext = appContext;
-            vnode.__page_container__ = pageContainer;
-            render(vnode, pageContainer);
-            const publicThis = vnode.component.proxy;
-            publicThis.__page_container__ = pageContainer;
-            return publicThis;
-        },
-        unmountPage: (pageInstance) => {
-            const { __page_container__ } = pageInstance;
-            if (__page_container__) {
-                __page_container__.isUnmounted = true;
-                render(null, __page_container__);
-            }
-        },
-    });
-}
-
-const pages = [];
-function addCurrentPage(page) {
-    const $page = page.$page;
-    if (!$page.meta.isNVue) {
-        return pages.push(page);
-    }
-    // 开发阶段热刷新需要移除旧的相同 id 的 page
-    const index = pages.findIndex((p) => p.$page.id === page.$page.id);
-    if (index > -1) {
-        pages.splice(index, 1, page);
-    }
-    else {
-        pages.push(page);
-    }
-}
-function getPageById(id) {
-    return pages.find((page) => page.$page.id === id);
-}
-function getAllPages() {
-    return pages;
-}
-function getCurrentPages$1() {
-    const curPages = [];
-    pages.forEach((page) => {
-        if (page.$.__isTabBar) {
-            if (page.$.__isActive) {
-                curPages.push(page);
-            }
-        }
-        else {
-            curPages.push(page);
-        }
-    });
-    return curPages;
-}
-function removePage(curPage) {
-    const index = pages.findIndex((page) => page === curPage);
-    if (index === -1) {
-        return;
-    }
-    if (!curPage.$page.meta.isNVue) {
-        getVueApp().unmountPage(curPage);
-    }
-    pages.splice(index, 1);
-    if (('production' !== 'production')) {
-        console.log(formatLog('removePage', curPage.$page));
-    }
 }
 
 function getEventName$1(reqId) {
@@ -10643,7 +10656,8 @@ const createIntersectionObserver = defineSyncApi('createIntersectionObserver', (
 let reqComponentObserverId = 1;
 class ServiceMediaQueryObserver {
     constructor(component) {
-        this._pageId = component.$page && component.$page.id;
+        this._pageId =
+            component.$page && component.$page.id;
         this._component = component;
     }
     observe(options, callback) {
@@ -12274,7 +12288,8 @@ function createPreloadWebview() {
  */
 function isDirectPage(page) {
     return (__uniConfig.realEntryPagePath &&
-        page.$page.route === __uniConfig.entryPagePath);
+        getPage$BasePage(page).route ===
+            __uniConfig.entryPagePath);
 }
 /**
  * 重新启动到首页
@@ -12725,7 +12740,7 @@ function setupPage(component) {
         instance.$dialogPages = [];
         const pageVm = instance.proxy;
         initPageVm(pageVm, __pageInstance);
-        if (pageVm.$page.openType !== 'openDialogPage') {
+        if (getPage$BasePage(pageVm).openType !== 'openDialogPage') {
             addCurrentPage(initScope(__pageId, pageVm, __pageInstance));
         }
         {
@@ -13217,7 +13232,8 @@ function _switchTab({ url, path, query, }) {
                 }
             });
             removePage(currentPage);
-            if (currentPage.$page.openType === 'redirectTo') {
+            if (currentPage.$page.openType ===
+                'redirectTo') {
                 closeWebview$1(currentPage.$getAppWebview(), ANI_CLOSE, ANI_DURATION);
             }
             else {
