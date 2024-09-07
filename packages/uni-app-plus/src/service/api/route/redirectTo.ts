@@ -60,7 +60,9 @@ function _redirectTo({
   //     }
   //   }
 
-  const lastPage = getCurrentPage()
+  const lastPage = __X__
+    ? (getCurrentPage() as unknown as UniPage).vm
+    : getCurrentPage()
   lastPage && removePage(lastPage)
 
   return new Promise((resolve) => {

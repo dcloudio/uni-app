@@ -49,17 +49,17 @@ export function initOn(app: IApp) {
     // enter options
     setEnterOptionsSync(showOptions)
 
-    const page = getCurrentPage()
+    const page = (getCurrentPage() as unknown as UniPage).vm
     invokeHook(getApp().vm as ComponentPublicInstance, ON_SHOW, showOptions)
     if (page) {
-      invokeHook(page as ComponentPublicInstance, ON_SHOW)
+      invokeHook(page, ON_SHOW)
     }
   })
   app.addEventListener(ON_HIDE, function () {
-    const page = getCurrentPage()
+    const page = (getCurrentPage() as unknown as UniPage).vm
     invokeHook(getApp().vm as ComponentPublicInstance, ON_HIDE)
     if (page) {
-      invokeHook(page as ComponentPublicInstance, ON_HIDE)
+      invokeHook(page, ON_HIDE)
     }
   })
 }

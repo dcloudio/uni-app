@@ -160,8 +160,8 @@ export function registerPage(
     // })
     const pages = getCurrentPages()
     if (pages.length === 1 && homeDialogPages.length) {
-      const homePage = pages[0] as ComponentPublicInstance
-      homePage.$.$dialogPages = homeDialogPages.map((dialogPage) => {
+      const homePage = pages[0] as unknown as UniPage
+      homePage.vm.$.$dialogPages = homeDialogPages.map((dialogPage) => {
         dialogPage.getParentPage = () => homePage
         return dialogPage
       })
@@ -232,7 +232,7 @@ export function registerDialogPage(
   ])
   const parentPage = dialogPage.getParentPage()
   const nativePage = (getPageManager() as any).createDialogPage(
-    parentPage ? parentPage.$page.id.toString() : '',
+    parentPage ? parentPage.vm.$basePage.id.toString() : '',
     id.toString(),
     url,
     pageStyle
@@ -240,8 +240,7 @@ export function registerDialogPage(
   if (onCreated) {
     onCreated(nativePage)
   }
-  // @ts-expect-error
-  dialogPage.$nativePage = nativePage
+  dialogPage.vm.$nativePage = nativePage
   routeOptions.meta.id = parseInt(nativePage.pageId)
   if (__DEV__) {
     console.log(formatLog('registerPage', path, nativePage.pageId))
@@ -271,7 +270,6 @@ export function registerDialogPage(
     dialogPage.$vm = page
     // @ts-expect-error
     page.$dialogPage = dialogPage
-    page.getParentPage = () => dialogPage.getParentPage()
 
     // 由于 iOS 调用 show 时机差异，暂不使用页面 onShow 事件
     // nativePage.addPageEventListener(ON_SHOW, (_) => {

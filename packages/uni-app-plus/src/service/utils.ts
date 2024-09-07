@@ -2,7 +2,9 @@ import { getCurrentPage } from '@dcloudio/uni-core'
 import type { ComponentPublicInstance } from 'vue'
 
 export function getCurrentWebview() {
-  const page = getCurrentPage()
+  const page = __X__
+    ? (getCurrentPage() as unknown as UniPage).vm
+    : getCurrentPage()
   if (page) {
     return (page as ComponentPublicInstance).$getAppWebview!()
   }

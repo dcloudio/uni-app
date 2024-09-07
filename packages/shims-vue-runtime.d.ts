@@ -1,7 +1,6 @@
 import type { EventChannel, UniLifecycleHooks } from '@dcloudio/uni-shared'
 import { ComponentCustomProperties, ComponentInternalInstance } from 'vue'
-import type { UniPage } from '@dcloudio/uni-app-x/types/native'
-import type { UniDialogPage } from '@dcloudio/uni-app-x/types/uni'
+import type { IPage } from '@dcloudio/uni-app-x/types/native'
 
 declare module '@vue/runtime-core' {
   interface ComponentCustomOptions {
@@ -24,21 +23,18 @@ declare module '@vue/runtime-core' {
     // 目前 H5,APP 平台 getCurrentPages 中获取的 page 对象调整为 vm 对象
     $getAppWebview?: () => PlusWebviewWebviewObject
     // X iOS start
-    $nativePage?: UniPage | null
+    $nativePage?: IPage | null
     $fontFamilySet: Set<string>
     $viewToTempFilePath: (options: ViewToTempFilePathOptions) => void
     // X iOS end
     $requireNativePlugin?: (name: string) => unknown
     getOpenerEventChannel: () => EventChannel | undefined
-    $page: Page.PageInstance['$page']
+    $page: Page.PageInstance['$page'] | UniPage
+    // X web start
+    $basePage: Page.PageInstance['$page']
+    // X web end
     $mpType?: 'app' | 'page'
     $locale?: string
-    // X web start
-    $setPageStyle: (style: Record<string, any>) => void
-    $getPageStyle: () => Record<string, any>
-    getParentPage: () => ComponentPublicInstance | null
-    getDialogPages: () => UniDialogPage[]
-    // X web end
   }
 
   type LifecycleHook = Function[] | null

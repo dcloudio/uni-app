@@ -17,7 +17,12 @@ import type { ComponentPublicInstance } from 'vue'
 import { ANI_CLOSE, ANI_DURATION } from '../../constants'
 import tabBar from '../../framework/app/tabBar'
 import { registerPage } from '../../framework/page'
-import { getAllPages, removePage } from '../../framework/page/getCurrentPages'
+import {
+  getAllPages,
+  getCurrentBasePages,
+  getPage$BasePage,
+  removePage,
+} from '../../framework/page/getCurrentPages'
 import { setStatusBarStyle } from '../../statusBar'
 import { type RouteOptions, closePage, navigate } from './utils'
 import { closeWebview, showWebview } from './webview'
@@ -58,7 +63,7 @@ function _switchTab({
   query,
 }: SwitchTabOptions): Promise<undefined> {
   tabBar.switchTab(path.slice(1))
-  const pages = getCurrentPages() as ComponentPublicInstance[]
+  const pages = getCurrentBasePages() as ComponentPublicInstance[]
   const len = pages.length
   let callOnHide = false
   let callOnShow = false
@@ -80,7 +85,7 @@ function _switchTab({
       removePage(currentPage)
       // 延迟执行避免iOS应用退出
       setTimeout(() => {
-        if (currentPage!.$page.openType === 'redirectTo') {
+        if (getPage$BasePage(currentPage!).openType === 'redirectTo') {
           closeWebview(currentPage!.$getAppWebview!(), ANI_CLOSE, ANI_DURATION)
         } else {
           closeWebview(currentPage!.$getAppWebview!(), 'auto')

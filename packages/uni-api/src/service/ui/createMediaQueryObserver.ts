@@ -28,7 +28,8 @@ class ServiceMediaQueryObserver {
   private _component: ComponentPublicInstance
 
   constructor(component: ComponentPublicInstance) {
-    this._pageId = component.$page && component.$page.id
+    this._pageId =
+      component.$page && (component.$page as Page.PageInstance['$page']).id
     this._component = component
   }
 

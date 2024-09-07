@@ -1,8 +1,7 @@
 import { ON_SHOW } from '@dcloudio/uni-shared'
 import { invokeHook } from '@dcloudio/uni-core'
-import { DialogPageImpl } from '../../framework/page/dialogPage'
+import { UniDialogPageImpl } from '../../framework/page/dialogPage'
 import { closeNativeDialogPage } from './utils'
-import type { UniDialogPage } from '@dcloudio/uni-app-x/types/page'
 
 /**
  *
@@ -55,7 +54,7 @@ interface CloseDialogPageOptions {
 }
 
 export const closeDialogPage = (options?: CloseDialogPageOptions) => {
-  const currentPages = getCurrentPages()
+  const currentPages = getCurrentPages() as UniPage[]
   const currentPage = currentPages[currentPages.length - 1]
   if (!currentPage) {
     triggerFailCallback(options, 'currentPage is null')
@@ -68,7 +67,7 @@ export const closeDialogPage = (options?: CloseDialogPageOptions) => {
 
   if (options?.dialogPage) {
     const dialogPage = options?.dialogPage!
-    if (!(dialogPage instanceof DialogPageImpl)) {
+    if (!(dialogPage instanceof UniDialogPageImpl)) {
       triggerFailCallback(options, 'dialogPage is not a valid page')
       return
     }
@@ -89,7 +88,6 @@ export const closeDialogPage = (options?: CloseDialogPageOptions) => {
       return
     }
   } else {
-    // @ts-expect-error
     const dialogPages = currentPage.getDialogPages()
     for (let i = dialogPages.length - 1; i >= 0; i--) {
       closeNativeDialogPage(dialogPages[i], options?.animationType || 'none')

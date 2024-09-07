@@ -62,11 +62,10 @@ export const onThemeChange = function (themeMode: IThemeMode) {
     const pages = getAllPages()
 
     pages.forEach((page) => {
-      const routeOptions = initRouteOptions(page.$page.path, '')
+      const routeOptions = initRouteOptions(page.$basePage.path, '')
       const style = parsePageStyle(routeOptions)
 
-      // 最终结果
-      page.$setPageStyle(style)
+      ;(page.$page as UniPage).setPageStyle(new Map(Object.entries(style)))
     })
   }
 

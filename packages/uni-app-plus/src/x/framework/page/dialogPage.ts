@@ -1,25 +1,25 @@
-import { EventBus } from '@dcloudio/uni-api'
 import type { UniDialogPage } from '@dcloudio/uni-app-x/types/page'
+import { UniBasePageImpl } from '../../../service/framework/page/getCurrentPages'
 import type { ComponentPublicInstance } from 'vue'
 
-export class DialogPageImpl extends EventBus implements UniDialogPage {
-  route: string = ''
-  options: Map<string, string | null> = new Map()
-  getParentPage: () => ComponentPublicInstance | null
+export class UniDialogPageImpl
+  extends UniBasePageImpl
+  implements UniDialogPage
+{
   vm: ComponentPublicInstance | null = null
   $vm: ComponentPublicInstance | null = null
   $component: any | null = null
   $disableEscBack: boolean = false
-
   constructor({
     route,
+    options,
     getParentPage,
   }: {
     route: string
-    getParentPage: () => ComponentPublicInstance | null
+    options: Map<string, string | null>
+    getParentPage: () => UniPage | null
   }) {
-    super()
-    this.route = route
+    super({ route, options })
     this.getParentPage = getParentPage
   }
 }

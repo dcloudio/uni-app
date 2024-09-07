@@ -3,10 +3,9 @@ import { getCurrentPage, getRouteMeta, invokeHook } from '@dcloudio/uni-core'
 
 import { ANI_DURATION, ANI_SHOW } from '../../../service/constants'
 import { showWebview } from './webview'
-import type { ComponentPublicInstance } from 'vue'
 import { beforeRoute, createNormalizeUrl } from '@dcloudio/uni-api'
 import {
-  DialogPageImpl,
+  UniDialogPageImpl,
   homeDialogPages,
 } from '../../framework/page/dialogPage'
 import { registerDialogPage } from '../../framework/page/register'
@@ -54,7 +53,7 @@ interface OpenDialogPageOptions {
   /**
    * 要绑定的父级页面实例
    */
-  parentPage?: ComponentPublicInstance
+  parentPage?: UniPage
   /**
    * 是否禁用按键盘 ESC 时关闭
    */
@@ -81,23 +80,16 @@ export const openDialogPage = (
     triggerFailCallback(options, 'url is required')
     return null
   }
-
+  const { path, query } = parseUrl(url)
   const normalizeUrl = createNormalizeUrl('navigateTo')
-  const errMsg = normalizeUrl(options.url, {})
+  const errMsg = normalizeUrl(path, {})
   if (errMsg) {
     triggerFailCallback(options, errMsg)
     return null
   }
-  const targetRoute = __uniRoutes.find((route) => {
-    return options.url.indexOf(route.meta.route) !== -1
-  })
-  if (!targetRoute) {
-    triggerFailCallback(options, `page '${options.url}' is not found`)
-    return null
-  }
 
   let parentPage = options.parentPage || null
-  const currentPages = getCurrentPages()
+  const currentPages = getCurrentPages() as UniPage[]
   if (parentPage) {
     if (currentPages.indexOf(parentPage) === -1) {
       triggerFailCallback(options, 'parentPage is not a valid page')
@@ -105,12 +97,11 @@ export const openDialogPage = (
     }
   }
   if (currentPages.length && !parentPage) {
-    parentPage = currentPages[
-      currentPages.length - 1
-    ] as ComponentPublicInstance
+    parentPage = currentPages[currentPages.length - 1]
   }
-  const dialogPage = new DialogPageImpl({
-    route: url,
+  const dialogPage = new UniDialogPageImpl({
+    route: path,
+    options: new Map(Object.entries(query)),
     getParentPage: () => parentPage,
   })
 
@@ -124,7 +115,6 @@ export const openDialogPage = (
     dialogPages.push(dialogPage)
   }
 
-  const { path, query } = parseUrl(url)
   const [aniType, aniDuration] = initAnimation(path, animationType)
 
   const noAnimation = aniType === 'none' || aniDuration === 0

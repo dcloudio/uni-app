@@ -9,7 +9,11 @@ import {
 import { getCurrentPage, invokeHook } from '@dcloudio/uni-core'
 import { ON_BACK_PRESS, ON_SHOW } from '@dcloudio/uni-shared'
 import { ANI_CLOSE, ANI_DURATION } from '../../../service/constants'
-import { removePage } from '../../../service/framework/page/getCurrentPages'
+import {
+  getCurrentBasePages,
+  getPage$BasePage,
+  removePage,
+} from '../../../service/framework/page/getCurrentPages'
 import { closeWebview } from './webview'
 import type { IPage } from '@dcloudio/uni-app-x/types/native'
 import { getNativeApp } from '../../framework/app/app'
@@ -20,7 +24,7 @@ import { closeNativeDialogPage } from './utils'
 export const navigateBack = defineAsyncApi<API_TYPE_NAVIGATE_BACK>(
   API_NAVIGATE_BACK,
   (args, { resolve, reject }) => {
-    const page = getCurrentPage()
+    const page = (getCurrentPage() as unknown as UniPage).vm
     if (!page) {
       return reject(`getCurrentPages is empty`)
     }
@@ -36,7 +40,6 @@ export const navigateBack = defineAsyncApi<API_TYPE_NAVIGATE_BACK>(
         }
       )
       if (onBackPressRes !== true) {
-        // @ts-expect-error
         const dialogPages = page.getDialogPages()
         if (dialogPages.length > 0) {
           const dialogPage = dialogPages[dialogPages.length - 1]
@@ -56,7 +59,7 @@ export const navigateBack = defineAsyncApi<API_TYPE_NAVIGATE_BACK>(
     } catch (error) {
       console.warn(error)
     }
-    if (page.$page.meta.isQuit) {
+    if (getPage$BasePage(page).meta.isQuit) {
       // TODO quit()
     }
     // TODO isDirectPage
@@ -79,7 +82,7 @@ function back(
   animationType?: string,
   animationDuration?: number
 ) {
-  const pages = getCurrentPages()
+  const pages = getCurrentBasePages()
   const len = pages.length
   const currentPage = pages[len - 1]
 
@@ -89,14 +92,13 @@ function back(
       .slice(len - delta, len - 1)
       .reverse()
       .forEach((deltaPage) => {
-        // @ts-expect-error
-        const dialogPages = deltaPage.getDialogPages()
+        const dialogPages = (deltaPage.$page as UniPage).getDialogPages()
         for (let i = dialogPages.length - 1; i >= 0; i--) {
           const dialogPage = dialogPages[i]
           closeNativeDialogPage(dialogPage, 'none')
         }
         closeWebview(
-          getNativeApp().pageManager.findPageById(deltaPage.$page.id + '')!,
+          getNativeApp().pageManager.findPageById(deltaPage.$basePage.id + '')!,
           'none',
           0
         )
@@ -107,7 +109,7 @@ function back(
     if (animationType) {
       animationDuration = animationDuration || ANI_DURATION
     } else {
-      if (currentPage.$page.openType === 'redirectTo') {
+      if (currentPage.$basePage.openType === 'redirectTo') {
         // 如果是 redirectTo 跳转的，需要指定 back 动画
         animationType = ANI_CLOSE
         animationDuration = ANI_DURATION
@@ -126,10 +128,9 @@ function back(
   }
 
   const webview = getNativeApp().pageManager.findPageById(
-    currentPage.$page.id + ''
+    currentPage.$basePage.id + ''
   )!
-  // @ts-expect-error
-  const dialogPages = currentPage.getDialogPages()
+  const dialogPages = (currentPage.$page as UniPage).getDialogPages()
   for (let i = dialogPages.length - 1; i >= 0; i--) {
     const dialogPage = dialogPages[i]
     closeNativeDialogPage(dialogPage, 'none')

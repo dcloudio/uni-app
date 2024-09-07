@@ -3,7 +3,7 @@ import { normalizeStyles } from '@dcloudio/uni-shared'
 import type { parseWebviewStyle } from './framework/webview/style/index'
 import { ON_THEME_CHANGE } from '@dcloudio/uni-shared'
 import { setStatusBarStyle } from './statusBar'
-import { getAllPages } from './framework/page/getCurrentPages'
+import { getAllPages, getPage$BasePage } from './framework/page/getCurrentPages'
 
 type ThemeChangeCallBack = ({ theme }: { theme: UniApp.ThemeMode }) => void
 
@@ -31,7 +31,7 @@ export function changePagesNavigatorStyle() {
 
     const pages = getAllPages()
     pages.forEach((page) => {
-      page.$page.statusBarStyle = theme
+      getPage$BasePage(page).statusBarStyle = theme
     })
   }
 }

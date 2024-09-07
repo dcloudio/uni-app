@@ -51,7 +51,7 @@ export function _redirectTo({
   path,
   query,
 }: RedirectToOptions): Promise<undefined> {
-  const lastPage = getCurrentPage() as ComponentPublicInstance
+  const lastPage = (getCurrentPage() as unknown as UniPage).vm
   // 与 uni-app x 安卓一致，后移除页面
 
   return new Promise((resolve) => {

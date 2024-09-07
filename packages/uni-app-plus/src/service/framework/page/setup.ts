@@ -13,7 +13,11 @@ import {
   onMounted,
 } from 'vue'
 import type { VuePageComponent } from './define'
-import { addCurrentPage } from './getCurrentPages'
+import {
+  UniPageImpl,
+  addCurrentPage,
+  getPage$BasePage,
+} from './getCurrentPages'
 
 export function setupPage(component: VuePageComponent) {
   const oldSetup = component.setup
@@ -29,7 +33,16 @@ export function setupPage(component: VuePageComponent) {
     instance.$dialogPages = []
     const pageVm = instance.proxy!
     initPageVm(pageVm, __pageInstance as Page.PageInstance['$page'])
-    if (pageVm.$page.openType !== 'openDialogPage') {
+    if (__X__) {
+      const uniPage = new UniPageImpl({
+        route: pageVm.$page.route,
+        options: new Map(Object.entries(pageVm.$page.options)),
+        vm: pageVm,
+      })
+      pageVm.$basePage = pageVm.$page as Page.PageInstance['$page']
+      pageVm.$page = uniPage
+    }
+    if (getPage$BasePage(pageVm).openType !== 'openDialogPage') {
       addCurrentPage(
         initScope(
           __pageId as number,

@@ -30,7 +30,7 @@ declare global {
 export const createCanvasContextAsync = defineAsyncApi(
   'createCanvasContextAsync',
   (options: any, { resolve, reject }) => {
-    const page = getCurrentPage() as ComponentPublicInstance
+    const page = (getCurrentPage() as unknown as UniPage).vm
     if (page == null) {
       return null
     }
