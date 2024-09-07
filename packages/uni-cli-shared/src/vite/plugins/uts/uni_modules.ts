@@ -42,7 +42,7 @@ function createUniModulesSyncFilePreprocessor(
     platform,
     undefined,
     utsPlatform,
-    true
+    isX
   )
   const preContext = isX ? preUVueContext : preVueContext
   if (!isX) {
@@ -80,23 +80,51 @@ function createUniModulesSyncFilePreprocessor(
   }
 }
 
-export const createAppAndroidUniModulesSyncFilePreprocessorOnce = once(
-  (isX: boolean) => {
-    return createUniModulesSyncFilePreprocessor('app', 'app-android', isX)
-  }
-)
+export function createAppAndroidUniModulesSyncFilePreprocessorOnce(
+  isX: boolean
+) {
+  return isX
+    ? createUniXAppAndroidUniModulesSyncFilePreprocessorOnce()
+    : createUniAppAndroidUniModulesSyncFilePreprocessorOnce()
+}
 
-export const createAppIosUniModulesSyncFilePreprocessorOnce = once(
-  (isX: boolean) => {
-    return createUniModulesSyncFilePreprocessor('app', 'app-ios', isX)
-  }
-)
+export function createAppIosUniModulesSyncFilePreprocessorOnce(isX: boolean) {
+  return isX
+    ? createUniXAppIosUniModulesSyncFilePreprocessorOnce()
+    : createUniAppIosUniModulesSyncFilePreprocessorOnce()
+}
 
-export const createAppHarmonyUniModulesSyncFilePreprocessorOnce = once(
-  (isX: boolean) => {
-    return createUniModulesSyncFilePreprocessor('app', 'app-harmony', isX)
-  }
-)
+export function createAppHarmonyUniModulesSyncFilePreprocessorOnce(
+  isX: boolean
+) {
+  return isX
+    ? createUniXAppHarmonyUniModulesSyncFilePreprocessorOnce()
+    : createUniAppHarmonyUniModulesSyncFilePreprocessorOnce()
+}
+
+const createUniAppAndroidUniModulesSyncFilePreprocessorOnce = once(() => {
+  return createUniModulesSyncFilePreprocessor('app', 'app-android', false)
+})
+
+const createUniAppIosUniModulesSyncFilePreprocessorOnce = once(() => {
+  return createUniModulesSyncFilePreprocessor('app', 'app-ios', false)
+})
+
+const createUniAppHarmonyUniModulesSyncFilePreprocessorOnce = once(() => {
+  return createUniModulesSyncFilePreprocessor('app', 'app-harmony', false)
+})
+
+const createUniXAppAndroidUniModulesSyncFilePreprocessorOnce = once(() => {
+  return createUniModulesSyncFilePreprocessor('app', 'app-android', true)
+})
+
+const createUniXAppIosUniModulesSyncFilePreprocessorOnce = once(() => {
+  return createUniModulesSyncFilePreprocessor('app', 'app-ios', true)
+})
+
+const createUniXAppHarmonyUniModulesSyncFilePreprocessorOnce = once(() => {
+  return createUniModulesSyncFilePreprocessor('app', 'app-harmony', true)
+})
 
 function isUTSProxy(id: string) {
   return UTSProxyRE.test(id)
