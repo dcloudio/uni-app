@@ -1,14 +1,11 @@
 import { createNormalizeUrl } from '@dcloudio/uni-api'
 
 import {
-  DialogPageImpl,
+  UniDialogPageImpl,
   homeDialogPages,
   incrementEscBackPageNum,
 } from '../../../framework/setup/page'
-import { EventChannel } from '@dcloudio/uni-shared'
-import { getPageInstanceByVm } from '../../../framework/setup/utils'
-import type { ComponentPublicInstance } from 'vue'
-import type { UniDialogPage } from '@dcloudio/uni-app-x/types/page'
+import { EventChannel, parseUrl } from '@dcloudio/uni-shared'
 
 /**
  *
@@ -51,7 +48,7 @@ interface OpenDialogPageOptions {
   /**
    * 要绑定的父级页面实例
    */
-  parentPage?: ComponentPublicInstance
+  parentPage?: UniPage
   /**
    * 是否禁用按键盘 ESC 时关闭
    */
@@ -78,28 +75,26 @@ export const openDialogPage = (
     return null
   }
 
+  const { path, query } = parseUrl(options.url)
   const normalizeUrl = createNormalizeUrl('navigateTo')
-  const errMsg = normalizeUrl(options.url, {})
+  const errMsg = normalizeUrl(path, {})
   if (errMsg) {
     triggerFailCallback(options, errMsg)
     return null
   }
   const targetRoute = __uniRoutes.find((route) => {
-    return options.url.indexOf(route.meta.route) !== -1
+    return path.indexOf(route.meta.route) !== -1
   })
-  if (!targetRoute) {
-    triggerFailCallback(options, `page '${options.url}' is not found`)
-    return null
-  }
-  const dialogPage = new DialogPageImpl({
-    route: options.url,
+  const dialogPage = new UniDialogPageImpl({
+    route: path,
+    options: new Map(Object.entries(query)),
     $component: targetRoute!.component,
     getParentPage: () => null,
     $disableEscBack: options.disableEscBack,
   })
 
   let parentPage = options.parentPage
-  const currentPages = getCurrentPages()
+  const currentPages = getCurrentPages() as UniPage[]
   if (parentPage) {
     if (currentPages.indexOf(parentPage) === -1) {
       triggerFailCallback(options, 'parentPage is not a valid page')
@@ -110,14 +105,10 @@ export const openDialogPage = (
     homeDialogPages.push(dialogPage)
   } else {
     if (!parentPage) {
-      parentPage = currentPages[
-        currentPages.length - 1
-      ] as ComponentPublicInstance
+      parentPage = currentPages[currentPages.length - 1]
     }
-    dialogPage.getParentPage = () => parentPage as ComponentPublicInstance
-    getPageInstanceByVm(
-      parentPage as ComponentPublicInstance
-    )!.$dialogPages.value.push(dialogPage)
+    dialogPage.getParentPage = () => parentPage!
+    parentPage.getDialogPages().push(dialogPage)
   }
 
   if (!options.disableEscBack) {

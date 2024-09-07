@@ -36,6 +36,7 @@ import {
 import { LayoutComponent } from '../..'
 import { initApp } from './app'
 import {
+  getPage$BasePage,
   initPage,
   initPageScrollListener,
   onPageReady,
@@ -88,9 +89,15 @@ function setupComponent(comp: any, options: SetupComponentOptions) {
 export function setupWindow(comp: any, id: number) {
   return setupComponent(comp, {
     init: (vm) => {
-      vm.$page = {
-        id,
-      } as Page.PageInstance['$page']
+      if (__X__) {
+        vm.$basePage = {
+          id,
+        } as Page.PageInstance['$page']
+      } else {
+        vm.$page = {
+          id,
+        } as Page.PageInstance['$page']
+      }
     },
     setup(instance) {
       instance.$pageInstance = instance // window 的页面实例 $pageInstance 指向自己
@@ -122,7 +129,7 @@ export function setupPage(comp: any) {
           )
         }
       }
-      instance.proxy!.$page.options = query
+      getPage$BasePage(instance.proxy!).options = query
       instance.proxy!.options = query
       if (__NODE_JS__) {
         return query
@@ -147,9 +154,11 @@ export function setupPage(comp: any) {
         if (__X__) {
           const pageInstance = getPageInstanceByChild(instance)
           if (pageInstance.attrs.type === 'dialog') {
-            const parentPage = instance.proxy?.getParentPage()
+            const parentPage = (
+              instance.proxy?.$page as UniPage
+            ).getParentPage()
             const parentPageInstance = parentPage
-              ? getPageInstanceByVm(parentPage)
+              ? getPageInstanceByVm(parentPage.vm)
               : null
             if (parentPageInstance) {
               const dialogPages = parentPageInstance.$dialogPages.value

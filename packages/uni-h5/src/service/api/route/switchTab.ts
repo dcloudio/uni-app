@@ -10,6 +10,7 @@ import { getCurrentPageVm, invokeHook } from '@dcloudio/uni-core'
 import {
   entryPageState,
   getCurrentPagesMap,
+  getPage$BasePage,
   removePage,
   switchTabPagesBeforeEntryPages,
 } from '../../../framework/setup/page'
@@ -50,7 +51,7 @@ function isSamePage(url: string, $page: Page.PageInstance['$page']) {
 export function getTabBarPageId(url: string) {
   const pages = getCurrentPagesMap().values()
   for (const page of pages) {
-    const $page = page.$page
+    const $page = getPage$BasePage(page)
     if (isSamePage(url, $page)) {
       ;(page as ComponentPublicInstance).$.__isActive = true
       return $page.id

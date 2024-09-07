@@ -7,6 +7,8 @@ import type {
   CreateCanvasContextAsyncOptions,
   RequestAnimationFrameCallback,
 } from '@dcloudio/uni-app-x/types/uni'
+import { getCurrentBasePages } from '../../../framework/setup/page'
+import type { ComponentPublicInstance } from 'vue'
 
 class CanvasContextImpl implements CanvasContext {
   _element: UniCanvasElement
@@ -59,9 +61,9 @@ class CanvasContextImpl implements CanvasContext {
 export const createCanvasContextAsync = function (
   options: CreateCanvasContextAsyncOptions
 ) {
-  // @ts-expect-error
+  const pages = getCurrentBasePages()
   const currentPage: ComponentPublicInstance =
-    options.component ?? getCurrentPages()[getCurrentPages().length - 1]
+    options.component ?? pages[pages.length - 1]
   if (currentPage != null) {
     const element = currentPage.$el?.querySelector('#' + options.id)
     if (element != null) {

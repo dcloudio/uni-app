@@ -9,6 +9,7 @@ import {
 } from '@dcloudio/uni-core'
 import { EventBus } from '@dcloudio/uni-api'
 import type { UniApp } from '@dcloudio/uni-app-x/types/app'
+import { getCurrentBasePages } from './page'
 
 let appVm: ComponentPublicInstance
 let $uniApp: UniApp
@@ -22,6 +23,9 @@ if (__X__) {
     }
     get globalData() {
       return appVm?.globalData || {}
+    }
+    getAndroidApplication() {
+      return null
     }
   }
   $uniApp = new UniAppImpl()
@@ -41,7 +45,7 @@ export function initApp(vm: ComponentPublicInstance) {
   // 定制 App 的 $children 为 devtools 服务 __VUE_PROD_DEVTOOLS__
   Object.defineProperty((appVm.$ as any).ctx, '$children', {
     get() {
-      return getCurrentPages().map((page) => page.$vm)
+      return getCurrentBasePages().map((page) => page.$vm)
     },
   })
 
