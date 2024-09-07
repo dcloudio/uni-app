@@ -871,12 +871,15 @@ export function resolveBundleInputFileName(
     // 云端uni_modules编译，传入的已经是真实地址 uni-cli-shared/vite/cloud.ts:190
     process.env.UNI_COMPILE_TARGET !== 'uni_modules'
   ) {
-    return normalizePath(
-      path.resolve(
-        uvueOutDir(platform),
-        path.relative(process.env.UNI_INPUT_DIR, fileName)
+    const uvueDir = uvueOutDir(platform)
+    if (!fileName.startsWith(uvueDir)) {
+      return normalizePath(
+        path.resolve(
+          uvueDir,
+          path.relative(process.env.UNI_INPUT_DIR, fileName)
+        )
       )
-    )
+    }
   }
   return fileName
 }
