@@ -1,6 +1,6 @@
-import { withModifiers, createVNode, getCurrentInstance, ref, defineComponent, openBlock, createElementBlock, provide, computed, watch, onUnmounted, inject, onBeforeUnmount, mergeProps, injectHook, reactive, onActivated, onMounted, nextTick, onBeforeMount, withDirectives, vShow, shallowRef, watchEffect, isVNode, Fragment, markRaw, Comment, h, createTextVNode, createBlock, onBeforeActivate, onBeforeDeactivate, renderList, onDeactivated, createApp, isReactive, Transition, effectScope, withCtx, KeepAlive, resolveDynamicComponent, createElementVNode, normalizeStyle, renderSlot } from "vue";
+import { withModifiers, createVNode, getCurrentInstance, ref, defineComponent, openBlock, createElementBlock, provide, computed, watch, onUnmounted, inject, onBeforeUnmount, mergeProps, reactive, injectHook, nextTick, onActivated, onMounted, onBeforeMount, withDirectives, vShow, shallowRef, watchEffect, isVNode, Fragment, markRaw, Comment, h, createTextVNode, createBlock, onBeforeActivate, onBeforeDeactivate, renderList, onDeactivated, createApp, isReactive, Transition, effectScope, withCtx, KeepAlive, resolveDynamicComponent, createElementVNode, normalizeStyle, renderSlot } from "vue";
 import { isArray, isString, extend, remove, stringifyStyle, parseStringStyle, isPlainObject, isFunction, capitalize, camelize, hasOwn, isObject, toRawType, makeMap as makeMap$1, isPromise, hyphenate, invokeArrayFns as invokeArrayFns$1 } from "@vue/shared";
-import { once, UNI_STORAGE_LOCALE, I18N_JSON_DELIMITERS, Emitter, passive, initCustomDatasetOnce, resolveComponentInstance, normalizeStyles, addLeadingSlash, invokeArrayFns, removeLeadingSlash, resolveOwnerVm, resolveOwnerEl, ON_WXS_INVOKE_CALL_METHOD, normalizeTarget, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_SHOW, ON_HIDE, ON_PAGE_SCROLL, ON_REACH_BOTTOM, EventChannel, SCHEME_RE, DATA_RE, getCustomDataset, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, PRIMARY_COLOR, getLen, LINEFEED, debounce, isUniLifecycleHook, decodedQuery, ON_LOAD, UniLifecycleHooks, invokeCreateErrorHandler, invokeCreateVueAppHook, parseQuery, NAVBAR_HEIGHT, parseUrl, ON_UNLOAD, ON_REACH_BOTTOM_DISTANCE, WEB_INVOKE_APPSERVICE, ON_WEB_INVOKE_APP_SERVICE, ON_THEME_CHANGE, updateElementStyle, sortObject, OFF_THEME_CHANGE, ON_BACK_PRESS, addFont, ON_NAVIGATION_BAR_CHANGE, scrollTo, RESPONSIVE_MIN_WIDTH, onCreateVueApp, formatDateTime, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_PULL_DOWN_REFRESH } from "@dcloudio/uni-shared";
+import { once, UNI_STORAGE_LOCALE, I18N_JSON_DELIMITERS, Emitter, passive, initCustomDatasetOnce, resolveComponentInstance, normalizeStyles, addLeadingSlash, invokeArrayFns, removeLeadingSlash, resolveOwnerVm, resolveOwnerEl, ON_WXS_INVOKE_CALL_METHOD, normalizeTarget, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_SHOW, ON_HIDE, ON_PAGE_SCROLL, ON_REACH_BOTTOM, EventChannel, parseQuery, NAVBAR_HEIGHT, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, PRIMARY_COLOR, getLen, getCustomDataset, parseUrl, ON_UNLOAD, ON_REACH_BOTTOM_DISTANCE, SCHEME_RE, DATA_RE, LINEFEED, debounce, isUniLifecycleHook, decodedQuery, ON_LOAD, UniLifecycleHooks, invokeCreateErrorHandler, invokeCreateVueAppHook, WEB_INVOKE_APPSERVICE, ON_WEB_INVOKE_APP_SERVICE, ON_THEME_CHANGE, updateElementStyle, sortObject, OFF_THEME_CHANGE, ON_BACK_PRESS, addFont, ON_NAVIGATION_BAR_CHANGE, scrollTo, RESPONSIVE_MIN_WIDTH, onCreateVueApp, formatDateTime, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_PULL_DOWN_REFRESH } from "@dcloudio/uni-shared";
 import { onCreateVueApp as onCreateVueApp2 } from "@dcloudio/uni-shared";
 import { useRoute, isNavigationFailure, createRouter, createWebHistory, createWebHashHistory, useRouter, RouterView } from "vue-router";
 import { initVueI18n, isI18nStr, LOCALE_EN, LOCALE_ES, LOCALE_FR, LOCALE_ZH_HANS, LOCALE_ZH_HANT } from "@dcloudio/uni-i18n";
@@ -1064,7 +1064,7 @@ function createSvgIconVNode(path, color = "#000", size = 27) {
 function useCurrentPageId() {
   {
     const { $pageInstance } = getCurrentInstance();
-    return $pageInstance && $pageInstance.proxy.$page.id;
+    return $pageInstance && getPageProxyId($pageInstance.proxy);
   }
 }
 function getPageIdByVm(instance2) {
@@ -1077,7 +1077,13 @@ function getPageIdByVm(instance2) {
   }
   {
     const { $pageInstance } = vm.$;
-    return $pageInstance && $pageInstance.proxy.$page.id;
+    if ($pageInstance) {
+      return getPageProxyId($pageInstance.proxy);
+    }
+  }
+  const rootProxy = vm.$.root.proxy;
+  if (rootProxy && rootProxy.$page) {
+    return getPageProxyId(rootProxy);
   }
 }
 function getCurrentPage() {
@@ -1150,6 +1156,10 @@ function initPageInternalInstance(openType, url, pageQuery, meta, eventChannel, 
     eventChannel,
     statusBarStyle: titleColor === "#ffffff" ? "light" : "dark"
   };
+}
+function getPageProxyId(proxy) {
+  var _a, _b;
+  return ((_a = proxy.$page) == null ? void 0 : _a.id) || ((_b = proxy.$basePage) == null ? void 0 : _b.id);
 }
 function removeHook(vm, name, hook) {
   const hooks = vm.$[name];
@@ -1719,7 +1729,10 @@ function onAppEnterBackground() {
     getApp(),
     ON_HIDE
   );
-  invokeHook(getCurrentPage(), ON_HIDE);
+  invokeHook(
+    getCurrentPage(),
+    ON_HIDE
+  );
 }
 const SUBSCRIBE_LIFECYCLE_HOOKS = [ON_PAGE_SCROLL, ON_REACH_BOTTOM];
 function initSubscribe() {
@@ -1801,7 +1814,9 @@ function getOpenerEventChannel() {
     if (this.$route) {
       const meta = this.$route.meta;
       if (!meta.eventChannel) {
-        meta.eventChannel = new EventChannel(this.$page.id);
+        meta.eventChannel = new EventChannel(
+          this.$page.id
+        );
       }
       return meta.eventChannel;
     }
@@ -2361,253 +2376,116 @@ const index$x = /* @__PURE__ */ defineBuiltInComponent({
   }
 });
 const TEMP_PATH = "";
-function findElem(vm) {
-  return vm.$el;
+const pageMetaKey = PolySymbol(process.env.NODE_ENV !== "production" ? "UniPageMeta" : "upm");
+function usePageMeta() {
+  return inject(pageMetaKey);
 }
-function addBase(filePath) {
-  const { base: baseUrl } = __uniConfig.router;
-  if (addLeadingSlash(filePath).indexOf(baseUrl) === 0) {
-    return addLeadingSlash(filePath);
-  }
-  return baseUrl + filePath;
+function providePageMeta(id2) {
+  const pageMeta = initPageMeta(id2);
+  provide(pageMetaKey, pageMeta);
+  return pageMeta;
 }
-function getRealPath(filePath) {
-  const { base, assets } = __uniConfig.router;
-  if (base === "./") {
-    if (filePath.indexOf("./") === 0 && (filePath.includes("/static/") || filePath.indexOf("./" + (assets || "assets") + "/") === 0)) {
-      filePath = filePath.slice(1);
-    }
+function usePageRoute() {
+  if (__UNI_FEATURE_PAGES__) {
+    return useRoute();
   }
-  if (filePath.indexOf("/") === 0) {
-    if (filePath.indexOf("//") === 0) {
-      filePath = "https:" + filePath;
-    } else {
-      return addBase(filePath.slice(1));
-    }
-  }
-  if (SCHEME_RE.test(filePath) || DATA_RE.test(filePath) || filePath.indexOf("blob:") === 0) {
-    return filePath;
-  }
-  const pages = getCurrentPages();
-  if (pages.length) {
-    return addBase(
-      getRealRoute(pages[pages.length - 1].$page.route, filePath).slice(1)
+  const url = location.href;
+  const searchPos = url.indexOf("?");
+  const hashPos = url.indexOf("#", searchPos > -1 ? searchPos : 0);
+  let query = {};
+  if (searchPos > -1) {
+    query = parseQuery(
+      url.slice(searchPos + 1, hashPos > -1 ? hashPos : url.length)
     );
   }
-  return filePath;
-}
-const ua = navigator.userAgent;
-const isAndroid = /* @__PURE__ */ /android/i.test(ua);
-const isIOS$1 = /* @__PURE__ */ /iphone|ipad|ipod/i.test(ua);
-const isWindows = /* @__PURE__ */ ua.match(/Windows NT ([\d|\d.\d]*)/i);
-const isMac = /* @__PURE__ */ /Macintosh|Mac/i.test(ua);
-const isLinux = /* @__PURE__ */ /Linux|X11/i.test(ua);
-const isIPadOS = isMac && navigator.maxTouchPoints > 0;
-function getScreenFix() {
-  return /^Apple/.test(navigator.vendor) && typeof window.orientation === "number";
-}
-function isLandscape(screenFix) {
-  return screenFix && Math.abs(window.orientation) === 90;
-}
-function getScreenWidth(screenFix, landscape) {
-  return screenFix ? Math[landscape ? "max" : "min"](screen.width, screen.height) : screen.width;
-}
-function getScreenHeight(screenFix, landscape) {
-  return screenFix ? Math[landscape ? "min" : "max"](screen.height, screen.width) : screen.height;
-}
-function getWindowWidth(screenWidth) {
-  return Math.min(
-    window.innerWidth,
-    document.documentElement.clientWidth,
-    screenWidth
-  ) || screenWidth;
-}
-function getBaseSystemInfo() {
-  const screenFix = getScreenFix();
-  const windowWidth = getWindowWidth(
-    getScreenWidth(screenFix, isLandscape(screenFix))
-  );
+  const { meta } = __uniRoutes[0];
+  const path = addLeadingSlash(meta.route);
   return {
-    platform: isIOS$1 ? "ios" : "other",
-    pixelRatio: window.devicePixelRatio,
-    windowWidth
+    meta,
+    query,
+    path,
+    matched: [{ path }]
   };
 }
-function operateVideoPlayer(videoId, pageId, type, data) {
-  UniServiceJSBridge.invokeViewMethod(
-    "video." + videoId,
-    {
-      videoId,
-      type,
-      data
-    },
-    pageId
-  );
-}
-function operateMap(id2, pageId, type, data, operateMapCallback2) {
-  UniServiceJSBridge.invokeViewMethod(
-    "map." + id2,
-    {
-      type,
-      data
-    },
-    pageId,
-    operateMapCallback2
-  );
-}
-function getRootInfo(fields2) {
-  const info = {};
-  if (fields2.id) {
-    info.id = "";
-  }
-  if (fields2.dataset) {
-    info.dataset = {};
-  }
-  if (fields2.rect) {
-    info.left = 0;
-    info.right = 0;
-    info.top = 0;
-    info.bottom = 0;
-  }
-  if (fields2.size) {
-    info.width = document.documentElement.clientWidth;
-    info.height = document.documentElement.clientHeight;
-  }
-  if (fields2.scrollOffset) {
-    const documentElement2 = document.documentElement;
-    const body = document.body;
-    info.scrollLeft = documentElement2.scrollLeft || body.scrollLeft || 0;
-    info.scrollTop = documentElement2.scrollTop || body.scrollTop || 0;
-    info.scrollHeight = documentElement2.scrollHeight || body.scrollHeight || 0;
-    info.scrollWidth = documentElement2.scrollWidth || body.scrollWidth || 0;
-  }
-  return info;
-}
-function getNodeInfo(el, fields2) {
-  const info = {};
-  const { top, topWindowHeight } = getWindowOffset();
-  if (fields2.node) {
-    const tagName = el.tagName.split("-")[1];
-    if (tagName) {
-      info.node = el.querySelector(tagName);
-    }
-  }
-  if (fields2.id) {
-    info.id = el.id;
-  }
-  if (fields2.dataset) {
-    info.dataset = getCustomDataset(el);
-  }
-  if (fields2.rect || fields2.size) {
-    const rect = el.getBoundingClientRect();
-    if (fields2.rect) {
-      info.left = rect.left;
-      info.right = rect.right;
-      info.top = rect.top - top - topWindowHeight;
-      info.bottom = rect.bottom - top - topWindowHeight;
-    }
-    if (fields2.size) {
-      info.width = rect.width;
-      info.height = rect.height;
-    }
-  }
-  if (isArray(fields2.properties)) {
-    fields2.properties.forEach((prop) => {
-      prop = prop.replace(/-([a-z])/g, function(e2, t2) {
-        return t2.toUpperCase();
-      });
-    });
-  }
-  if (fields2.scrollOffset) {
-    if (el.tagName === "UNI-SCROLL-VIEW") {
-      const scroll = el.children[0].children[0];
-      info.scrollLeft = scroll.scrollLeft;
-      info.scrollTop = scroll.scrollTop;
-      info.scrollHeight = scroll.scrollHeight;
-      info.scrollWidth = scroll.scrollWidth;
-    } else {
-      info.scrollLeft = 0;
-      info.scrollTop = 0;
-      info.scrollHeight = 0;
-      info.scrollWidth = 0;
-    }
-  }
-  if (isArray(fields2.computedStyle)) {
-    const sytle = getComputedStyle(el);
-    fields2.computedStyle.forEach((name) => {
-      info[name] = sytle[name];
-    });
-  }
-  if (fields2.context) {
-    info.contextInfo = getContextInfo(el);
-  }
-  return info;
-}
-function findElm(component, pageVm) {
-  if (!component) {
-    return pageVm.$el;
-  }
-  return component.$el;
-}
-function matches(element, selectors) {
-  const matches2 = element.matches || element.matchesSelector || element.mozMatchesSelector || element.msMatchesSelector || element.oMatchesSelector || element.webkitMatchesSelector || function(selectors2) {
-    const matches3 = this.parentElement.querySelectorAll(
-      selectors2
+function initPageMeta(id2) {
+  if (__UNI_FEATURE_PAGES__) {
+    return reactive(
+      normalizePageMeta(
+        JSON.parse(
+          JSON.stringify(
+            initRouteMeta(
+              useRoute().meta,
+              id2
+            )
+          )
+        )
+      )
     );
-    let i = matches3.length;
-    while (--i >= 0 && matches3.item(i) !== this) {
-    }
-    return i > -1;
-  };
-  return matches2.call(element, selectors);
+  }
+  return reactive(
+    normalizePageMeta(
+      JSON.parse(JSON.stringify(initRouteMeta(__uniRoutes[0].meta, id2)))
+    )
+  );
 }
-function getNodesInfo(pageVm, component, selector, single, fields2) {
-  const selfElement = findElm(component, pageVm);
-  const parentElement = selfElement.parentElement;
-  if (!parentElement) {
-    return single ? null : [];
+function normalizePageMeta(pageMeta) {
+  if (__UNI_FEATURE_PULL_DOWN_REFRESH__) {
+    const { enablePullDownRefresh, navigationBar } = pageMeta;
+    if (enablePullDownRefresh) {
+      const pullToRefresh = normalizePullToRefreshRpx(
+        extend(
+          {
+            support: true,
+            color: "#2BD009",
+            style: "circle",
+            height: 70,
+            range: 150,
+            offset: 0
+          },
+          pageMeta.pullToRefresh
+        )
+      );
+      const { type, style } = navigationBar;
+      if (style !== "custom" && type !== "transparent") {
+        pullToRefresh.offset += NAVBAR_HEIGHT + safeAreaInsets$1.top;
+      }
+      pageMeta.pullToRefresh = pullToRefresh;
+    }
   }
-  const { nodeType } = selfElement;
-  const maybeFragment = nodeType === 3 || nodeType === 8;
-  if (single) {
-    const node = maybeFragment ? parentElement.querySelector(selector) : matches(selfElement, selector) ? selfElement : selfElement.querySelector(selector);
-    if (node) {
-      return getNodeInfo(node, fields2);
-    }
-    return null;
-  } else {
-    let infos = [];
-    const nodeList = (maybeFragment ? parentElement : selfElement).querySelectorAll(selector);
-    if (nodeList && nodeList.length) {
-      [].forEach.call(nodeList, (node) => {
-        infos.push(getNodeInfo(node, fields2));
-      });
-    }
-    if (!maybeFragment && matches(selfElement, selector)) {
-      infos.unshift(getNodeInfo(selfElement, fields2));
-    }
-    return infos;
+  if (__UNI_FEATURE_NAVIGATIONBAR__) {
+    const { navigationBar } = pageMeta;
+    const { titleSize, titleColor, backgroundColor } = navigationBar;
+    navigationBar.titleText = navigationBar.titleText || "";
+    navigationBar.type = navigationBar.type || "default";
+    navigationBar.titleSize = titleSize || "16px";
+    navigationBar.titleColor = titleColor || "#000000";
+    navigationBar.backgroundColor = backgroundColor || "#F8F8F8";
+    __UNI_FEATURE_I18N_LOCALE__ && initNavigationBarI18n(navigationBar);
   }
+  if (__UNI_FEATURE_PAGES__ && history.state) {
+    const type = history.state.__type__;
+    if ((type === "redirectTo" || type === "reLaunch") && getCurrentPages().length === 0) {
+      pageMeta.isEntry = true;
+      pageMeta.isQuit = true;
+    }
+  }
+  return pageMeta;
 }
-function requestComponentInfo(page, reqs, callback) {
-  const result = [];
-  reqs.forEach(({ component, selector, single, fields: fields2 }) => {
-    if (component === null) {
-      result.push(getRootInfo(fields2));
-    } else {
-      result.push(getNodesInfo(page, component, selector, single, fields2));
-    }
-  });
-  callback(result);
+function checkMinWidth(minWidth) {
+  const screen2 = window.screen;
+  const documentElement = document.documentElement;
+  const sizes = [
+    window.outerWidth,
+    window.outerHeight,
+    screen2.width,
+    screen2.height,
+    documentElement.clientWidth,
+    documentElement.clientHeight
+  ];
+  return Math.max.apply(null, sizes) > minWidth;
 }
-function setCurrentPageMeta(_page, { pageStyle, rootFontSize }) {
-  if (pageStyle) {
-    const pageElm = document.querySelector("uni-page-body") || document.body;
-    pageElm.setAttribute("style", pageStyle);
-  }
-  if (rootFontSize && document.documentElement.style.fontSize !== rootFontSize) {
-    document.documentElement.style.fontSize = rootFontSize;
-  }
+function getStateId() {
+  return history.state && history.state.__id__ || 1;
 }
 var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 var lookup = /* @__PURE__ */ function() {
@@ -3079,7 +2957,9 @@ function invokeSuccess(id2, name, res) {
 }
 function invokeFail(id2, name, errMsg, errRes = {}) {
   const apiErrMsg = name + ":fail" + (errMsg ? " " + errMsg : "");
-  delete errRes.errCode;
+  {
+    delete errRes.errCode;
+  }
   let res = extend({ errMsg: apiErrMsg }, errRes);
   return invokeCallback(id2, res);
 }
@@ -3251,7 +3131,7 @@ const Upx2pxProtocol = [
 ];
 const EPS = 1e-4;
 const BASE_DEVICE_WIDTH = 750;
-let isIOS = false;
+let isIOS$1 = false;
 let deviceWidth = 0;
 let deviceDPR = 0;
 let maxWidth = 960;
@@ -3261,7 +3141,7 @@ function checkDeviceWidth() {
   const { platform, pixelRatio: pixelRatio2, windowWidth } = getBaseSystemInfo();
   deviceWidth = windowWidth;
   deviceDPR = pixelRatio2;
-  isIOS = platform === "ios";
+  isIOS$1 = platform === "ios";
 }
 function checkValue(value, defaultValue) {
   const newValue = Number(value);
@@ -3296,7 +3176,7 @@ const upx2px = /* @__PURE__ */ defineSyncApi(
     }
     result = Math.floor(result + EPS);
     if (result === 0) {
-      if (deviceDPR === 1 || !isIOS) {
+      if (deviceDPR === 1 || !isIOS$1) {
         result = 1;
       } else {
         result = 0.5;
@@ -6972,6 +6852,731 @@ function requestComponentObserver($el, options, callback) {
   }
   return intersectionObserver;
 }
+function removeNonTabBarPages() {
+  const curTabBarPageVm = getCurrentPageVm();
+  if (!curTabBarPageVm) {
+    return;
+  }
+  const pagesMap = getCurrentPagesMap();
+  const keys = pagesMap.keys();
+  for (const routeKey of keys) {
+    const page = pagesMap.get(routeKey);
+    if (!page.$.__isTabBar) {
+      removePage(routeKey);
+    } else {
+      page.$.__isActive = false;
+    }
+  }
+  if (curTabBarPageVm.$.__isTabBar) {
+    curTabBarPageVm.$.__isVisible = false;
+    invokeHook(curTabBarPageVm, ON_HIDE);
+  }
+}
+function isSamePage(url, $page) {
+  return url === $page.fullPath || url === "/" && $page.meta.isEntry;
+}
+function getTabBarPageId(url) {
+  const pages = getCurrentPagesMap().values();
+  for (const page of pages) {
+    const $page = getPage$BasePage(page);
+    if (isSamePage(url, $page)) {
+      page.$.__isActive = true;
+      return $page.id;
+    }
+  }
+}
+const switchTab = /* @__PURE__ */ defineAsyncApi(
+  API_SWITCH_TAB,
+  // @ts-expect-error
+  ({ url, tabBarText, isAutomatedTesting }, { resolve, reject }) => {
+    if (!entryPageState.handledBeforeEntryPageRoutes) {
+      switchTabPagesBeforeEntryPages.push({
+        args: { type: API_SWITCH_TAB, url, tabBarText, isAutomatedTesting },
+        resolve,
+        reject
+      });
+      return;
+    }
+    return removeNonTabBarPages(), navigate(
+      { type: API_SWITCH_TAB, url, tabBarText, isAutomatedTesting },
+      getTabBarPageId(url)
+    ).then(resolve).catch(reject);
+  },
+  SwitchTabProtocol,
+  SwitchTabOptions
+);
+function removeLastPage() {
+  const page = getCurrentPage();
+  if (!page) {
+    return;
+  }
+  const $page = getPage$BasePage(page);
+  removePage(normalizeRouteKey($page.path, $page.id));
+}
+const redirectTo = /* @__PURE__ */ defineAsyncApi(
+  API_REDIRECT_TO,
+  // @ts-expect-error
+  ({ url, isAutomatedTesting }, { resolve, reject }) => {
+    if (!entryPageState.handledBeforeEntryPageRoutes) {
+      redirectToPagesBeforeEntryPages.push({
+        args: { type: API_REDIRECT_TO, url, isAutomatedTesting },
+        resolve,
+        reject
+      });
+      return;
+    }
+    return (
+      // TODO exists 属性未实现
+      removeLastPage(), navigate({ type: API_REDIRECT_TO, url, isAutomatedTesting }).then(resolve).catch(reject)
+    );
+  },
+  RedirectToProtocol,
+  RedirectToOptions
+);
+function removeAllPages() {
+  const keys = getCurrentPagesMap().keys();
+  for (const routeKey of keys) {
+    removePage(routeKey);
+  }
+}
+const reLaunch = /* @__PURE__ */ defineAsyncApi(
+  API_RE_LAUNCH,
+  // @ts-expect-error
+  ({ url, isAutomatedTesting }, { resolve, reject }) => {
+    if (!entryPageState.handledBeforeEntryPageRoutes) {
+      reLaunchPagesBeforeEntryPages.push({
+        args: { type: API_RE_LAUNCH, url, isAutomatedTesting },
+        resolve,
+        reject
+      });
+      return;
+    }
+    return removeAllPages(), navigate({ type: API_RE_LAUNCH, url, isAutomatedTesting }).then(resolve).catch(reject);
+  },
+  ReLaunchProtocol,
+  ReLaunchOptions
+);
+function navigate({ type, url, tabBarText, events, isAutomatedTesting }, __id__) {
+  if (process.env.NODE_ENV !== "production" && !__UNI_FEATURE_PAGES__) {
+    console.warn(
+      "当前项目为单页面工程，不能执行页面跳转api。如果需进行页面跳转， 需要在pages.json文件的pages字段中配置多个页面，然后重新运行。"
+    );
+  }
+  const router = getApp().$router;
+  const { path, query } = parseUrl(url);
+  return new Promise((resolve, reject) => {
+    const state2 = createPageState(type, __id__);
+    router[type === "navigateTo" ? "push" : "replace"]({
+      path,
+      query,
+      state: state2,
+      force: true
+    }).then((failure) => {
+      if (isNavigationFailure(failure)) {
+        return reject(failure.message);
+      }
+      if (type === "switchTab") {
+        router.currentRoute.value.meta.tabBarText = tabBarText;
+      }
+      if (type === "navigateTo") {
+        const meta = router.currentRoute.value.meta;
+        if (!meta.eventChannel) {
+          meta.eventChannel = new EventChannel(state2.__id__, events);
+        } else if (events) {
+          Object.keys(events).forEach((eventName) => {
+            meta.eventChannel._addListener(
+              eventName,
+              "on",
+              events[eventName]
+            );
+          });
+          meta.eventChannel._clearCache();
+        }
+        return isAutomatedTesting ? resolve({
+          __id__: state2.__id__
+        }) : resolve({
+          eventChannel: meta.eventChannel
+        });
+      }
+      return isAutomatedTesting ? resolve({ __id__: state2.__id__ }) : resolve();
+    });
+  });
+}
+function handleBeforeEntryPageRoutes() {
+  if (entryPageState.handledBeforeEntryPageRoutes) {
+    return;
+  }
+  entryPageState.handledBeforeEntryPageRoutes = true;
+  const navigateToPages = [...navigateToPagesBeforeEntryPages];
+  navigateToPagesBeforeEntryPages.length = 0;
+  navigateToPages.forEach(
+    ({ args, resolve, reject }) => (
+      // @ts-expect-error
+      navigate(args).then(resolve).catch(reject)
+    )
+  );
+  const switchTabPages = [...switchTabPagesBeforeEntryPages];
+  switchTabPagesBeforeEntryPages.length = 0;
+  switchTabPages.forEach(
+    ({ args, resolve, reject }) => (removeNonTabBarPages(), navigate(args, getTabBarPageId(args.url)).then(resolve).catch(reject))
+  );
+  const redirectToPages = [...redirectToPagesBeforeEntryPages];
+  redirectToPagesBeforeEntryPages.length = 0;
+  redirectToPages.forEach(
+    ({ args, resolve, reject }) => (removeLastPage(), navigate(args).then(resolve).catch(reject))
+  );
+  const reLaunchPages = [...reLaunchPagesBeforeEntryPages];
+  reLaunchPagesBeforeEntryPages.length = 0;
+  reLaunchPages.forEach(
+    ({ args, resolve, reject }) => (removeAllPages(), navigate(args).then(resolve).catch(reject))
+  );
+}
+let tabBar;
+function useTabBar() {
+  if (!tabBar) {
+    tabBar = __uniConfig.tabBar && reactive(initTabBarI18n(__uniConfig.tabBar));
+  }
+  return tabBar;
+}
+function cssSupports(css) {
+  const supports = window.CSS && window.CSS.supports;
+  return supports && (supports(css) || supports.apply(window.CSS, css.split(":")));
+}
+const cssVar = /* @__PURE__ */ cssSupports("--a:0");
+const cssEnv = /* @__PURE__ */ cssSupports("top:env(a)");
+const cssConstant = /* @__PURE__ */ cssSupports("top:constant(a)");
+const cssBackdropFilter = /* @__PURE__ */ cssSupports("backdrop-filter:blur(10px)");
+const SCHEMA_CSS = {
+  "css.var": cssVar,
+  "css.env": cssEnv,
+  "css.constant": cssConstant,
+  "css.backdrop-filter": cssBackdropFilter
+};
+const canIUse = /* @__PURE__ */ defineSyncApi(
+  API_CAN_I_USE,
+  (schema) => {
+    if (hasOwn(SCHEMA_CSS, schema)) {
+      return SCHEMA_CSS[schema];
+    }
+    return true;
+  },
+  CanIUseProtocol
+);
+const envMethod = /* @__PURE__ */ (() => cssEnv ? "env" : cssConstant ? "constant" : "")();
+function updateCurPageCssVar(pageMeta) {
+  let windowTopValue = 0;
+  let windowBottomValue = 0;
+  if (__UNI_FEATURE_NAVIGATIONBAR__ && pageMeta.navigationBar.style !== "custom" && ["default", "float"].indexOf(pageMeta.navigationBar.type) > -1) {
+    windowTopValue = NAVBAR_HEIGHT;
+  }
+  if (__UNI_FEATURE_TABBAR__ && pageMeta.isTabBar) {
+    const tabBar2 = useTabBar();
+    tabBar2.shown && (windowBottomValue = parseInt(tabBar2.height));
+  }
+  updatePageCssVar({
+    "--window-top": normalizeWindowTop(windowTopValue),
+    "--window-bottom": normalizeWindowBottom(windowBottomValue)
+  });
+}
+function normalizeWindowTop(windowTop) {
+  return envMethod ? `calc(${windowTop}px + ${envMethod}(safe-area-inset-top))` : `${windowTop}px`;
+}
+function normalizeWindowBottom(windowBottom) {
+  return envMethod ? `calc(${windowBottom}px + ${envMethod}(safe-area-inset-bottom))` : `${windowBottom}px`;
+}
+const launchOptions = /* @__PURE__ */ createLaunchOptions();
+const enterOptions = /* @__PURE__ */ createLaunchOptions();
+function getEnterOptions() {
+  return extend({}, enterOptions);
+}
+function getLaunchOptions() {
+  return extend({}, launchOptions);
+}
+function initLaunchOptions({
+  path,
+  query
+}) {
+  extend(launchOptions, {
+    path,
+    query
+  });
+  extend(enterOptions, launchOptions);
+  return extend({}, launchOptions);
+}
+const SEP = "$$";
+const currentPagesMap = /* @__PURE__ */ new Map();
+function getPage$BasePage(page) {
+  return page.$page;
+}
+const entryPageState = {
+  handledBeforeEntryPageRoutes: false
+};
+const navigateToPagesBeforeEntryPages = [];
+const switchTabPagesBeforeEntryPages = [];
+const redirectToPagesBeforeEntryPages = [];
+const reLaunchPagesBeforeEntryPages = [];
+function pruneCurrentPages() {
+  currentPagesMap.forEach((page, id2) => {
+    if (page.$.isUnmounted) {
+      currentPagesMap.delete(id2);
+    }
+  });
+}
+function getCurrentPagesMap() {
+  return currentPagesMap;
+}
+function getCurrentPages$1() {
+  const curPages = getCurrentBasePages();
+  return curPages;
+}
+function getCurrentBasePages() {
+  const curPages = [];
+  const pages = currentPagesMap.values();
+  for (const page of pages) {
+    if (page.$.__isTabBar) {
+      if (page.$.__isActive) {
+        curPages.push(page);
+      }
+    } else {
+      curPages.push(page);
+    }
+  }
+  return curPages;
+}
+function removeRouteCache(routeKey) {
+  const vnode = pageCacheMap.get(routeKey);
+  if (vnode) {
+    pageCacheMap.delete(routeKey);
+    routeCache.pruneCacheEntry(vnode);
+  }
+}
+function removePage(routeKey, removeRouteCaches = true) {
+  const pageVm = currentPagesMap.get(routeKey);
+  pageVm.$.__isUnload = true;
+  invokeHook(pageVm, ON_UNLOAD);
+  currentPagesMap.delete(routeKey);
+  removeRouteCaches && removeRouteCache(routeKey);
+}
+let id = /* @__PURE__ */ getStateId();
+function createPageState(type, __id__) {
+  return {
+    __id__: __id__ || ++id,
+    __type__: type
+  };
+}
+function initPublicPage(route) {
+  const meta = usePageMeta();
+  if (!__UNI_FEATURE_PAGES__) {
+    return initPageInternalInstance("navigateTo", __uniRoutes[0].path, {}, meta);
+  }
+  let fullPath = route.fullPath;
+  if (route.meta.isEntry && fullPath.indexOf(route.meta.route) === -1) {
+    fullPath = "/" + route.meta.route + fullPath.replace("/", "");
+  }
+  return initPageInternalInstance("navigateTo", fullPath, {}, meta);
+}
+function initPage(vm) {
+  const route = vm.$route;
+  const page = initPublicPage(route);
+  initPageVm(vm, page);
+  currentPagesMap.set(normalizeRouteKey(page.path, page.id), vm);
+  if (currentPagesMap.size === 1) {
+    setTimeout(() => {
+      handleBeforeEntryPageRoutes();
+    }, 0);
+  }
+}
+function normalizeRouteKey(path, id2) {
+  return path + SEP + id2;
+}
+function useKeepAliveRoute() {
+  const route = useRoute();
+  const routeKey = computed(
+    () => normalizeRouteKey("/" + route.meta.route, getStateId())
+  );
+  const isTabBar = computed(() => route.meta.isTabBar);
+  return {
+    routeKey,
+    isTabBar,
+    routeCache
+  };
+}
+const pageCacheMap = /* @__PURE__ */ new Map();
+const routeCache = {
+  get(key) {
+    return pageCacheMap.get(key);
+  },
+  set(key, value) {
+    pruneRouteCache(key);
+    pageCacheMap.set(key, value);
+  },
+  delete(key) {
+    const vnode = pageCacheMap.get(key);
+    if (!vnode) {
+      return;
+    }
+    pageCacheMap.delete(key);
+  },
+  forEach(fn) {
+    pageCacheMap.forEach(fn);
+  }
+};
+function isTabBarVNode(vnode) {
+  return vnode.props.type === "tabBar";
+}
+function pruneRouteCache(key) {
+  const pageId = parseInt(key.split(SEP)[1]);
+  if (!pageId) {
+    return;
+  }
+  routeCache.forEach((vnode, key2) => {
+    const cPageId = parseInt(key2.split(SEP)[1]);
+    if (cPageId && cPageId > pageId) {
+      if (__UNI_FEATURE_TABBAR__ && isTabBarVNode(vnode)) {
+        return;
+      }
+      routeCache.delete(key2);
+      routeCache.pruneCacheEntry(vnode);
+      nextTick(() => pruneCurrentPages());
+    }
+  });
+}
+function updateCurPageAttrs(pageMeta) {
+  {
+    const nvueDirKey = "nvue-dir-" + __uniConfig.nvue["flex-direction"];
+    if (pageMeta.isNVue) {
+      document.body.setAttribute("nvue", "");
+      document.body.setAttribute(nvueDirKey, "");
+    } else {
+      document.body.removeAttribute("nvue");
+      document.body.removeAttribute(nvueDirKey);
+    }
+  }
+}
+function onPageShow(instance2, pageMeta) {
+  updateBodyScopeId(instance2);
+  updateCurPageCssVar(pageMeta);
+  updateCurPageAttrs(pageMeta);
+  initPageScrollListener(instance2, pageMeta);
+}
+function onPageReady(instance2) {
+  const scopeId = getScopeId(instance2);
+  scopeId && updateCurPageBodyScopeId(scopeId);
+}
+function updateCurPageBodyScopeId(scopeId) {
+  const pageBodyEl = document.querySelector("uni-page-body");
+  if (pageBodyEl) {
+    pageBodyEl.setAttribute(scopeId, "");
+  } else if (process.env.NODE_ENV !== "production") {
+    console.warn("uni-page-body not found");
+  }
+}
+function getScopeId(instance2) {
+  return instance2.type.__scopeId;
+}
+let curScopeId;
+function updateBodyScopeId(instance2) {
+  const scopeId = getScopeId(instance2);
+  const { body } = document;
+  curScopeId && body.removeAttribute(curScopeId);
+  scopeId && body.setAttribute(scopeId, "");
+  curScopeId = scopeId;
+}
+let curScrollListener;
+function initPageScrollListener(instance2, pageMeta) {
+  document.removeEventListener("touchmove", disableScrollListener);
+  if (curScrollListener) {
+    document.removeEventListener("scroll", curScrollListener);
+  }
+  if (pageMeta.disableScroll) {
+    return document.addEventListener("touchmove", disableScrollListener);
+  }
+  const { onPageScroll, onReachBottom } = instance2;
+  const navigationBarTransparent = pageMeta.navigationBar.type === "transparent";
+  if (!(onPageScroll == null ? void 0 : onPageScroll.length) && !(onReachBottom == null ? void 0 : onReachBottom.length) && !navigationBarTransparent) {
+    return;
+  }
+  const opts = {};
+  const pageId = getPage$BasePage(instance2.proxy).id;
+  if (onPageScroll || navigationBarTransparent) {
+    opts.onPageScroll = createOnPageScroll(
+      pageId,
+      onPageScroll,
+      navigationBarTransparent
+    );
+  }
+  if (onReachBottom == null ? void 0 : onReachBottom.length) {
+    opts.onReachBottomDistance = pageMeta.onReachBottomDistance || ON_REACH_BOTTOM_DISTANCE;
+    opts.onReachBottom = () => UniViewJSBridge.publishHandler(ON_REACH_BOTTOM, {}, pageId);
+  }
+  curScrollListener = createScrollListener(opts);
+  requestAnimationFrame(
+    () => document.addEventListener("scroll", curScrollListener)
+  );
+}
+function createOnPageScroll(pageId, onPageScroll, navigationBarTransparent) {
+  return (scrollTop) => {
+    if (onPageScroll) {
+      UniViewJSBridge.publishHandler(ON_PAGE_SCROLL, { scrollTop }, pageId);
+    }
+    if (navigationBarTransparent) {
+      UniViewJSBridge.emit(pageId + "." + ON_PAGE_SCROLL, {
+        scrollTop
+      });
+    }
+  };
+}
+function findElem(vm) {
+  return vm.$el;
+}
+function addBase(filePath) {
+  const { base: baseUrl } = __uniConfig.router;
+  if (addLeadingSlash(filePath).indexOf(baseUrl) === 0) {
+    return addLeadingSlash(filePath);
+  }
+  return baseUrl + filePath;
+}
+function getRealPath(filePath) {
+  const { base, assets } = __uniConfig.router;
+  if (base === "./") {
+    if (filePath.indexOf("./") === 0 && (filePath.includes("/static/") || filePath.indexOf("./" + (assets || "assets") + "/") === 0)) {
+      filePath = filePath.slice(1);
+    }
+  }
+  if (filePath.indexOf("/") === 0) {
+    if (filePath.indexOf("//") === 0) {
+      filePath = "https:" + filePath;
+    } else {
+      return addBase(filePath.slice(1));
+    }
+  }
+  if (SCHEME_RE.test(filePath) || DATA_RE.test(filePath) || filePath.indexOf("blob:") === 0) {
+    return filePath;
+  }
+  const pages = getCurrentBasePages();
+  if (pages.length) {
+    return addBase(
+      getRealRoute(
+        getPage$BasePage(pages[pages.length - 1]).route,
+        filePath
+      ).slice(1)
+    );
+  }
+  return filePath;
+}
+const ua = navigator.userAgent;
+const isAndroid = /* @__PURE__ */ /android/i.test(ua);
+const isIOS = /* @__PURE__ */ /iphone|ipad|ipod/i.test(ua);
+const isWindows = /* @__PURE__ */ ua.match(/Windows NT ([\d|\d.\d]*)/i);
+const isMac = /* @__PURE__ */ /Macintosh|Mac/i.test(ua);
+const isLinux = /* @__PURE__ */ /Linux|X11/i.test(ua);
+const isIPadOS = isMac && navigator.maxTouchPoints > 0;
+function getScreenFix() {
+  return /^Apple/.test(navigator.vendor) && typeof window.orientation === "number";
+}
+function isLandscape(screenFix) {
+  return screenFix && Math.abs(window.orientation) === 90;
+}
+function getScreenWidth(screenFix, landscape) {
+  return screenFix ? Math[landscape ? "max" : "min"](screen.width, screen.height) : screen.width;
+}
+function getScreenHeight(screenFix, landscape) {
+  return screenFix ? Math[landscape ? "min" : "max"](screen.height, screen.width) : screen.height;
+}
+function getWindowWidth(screenWidth) {
+  return Math.min(
+    window.innerWidth,
+    document.documentElement.clientWidth,
+    screenWidth
+  ) || screenWidth;
+}
+function getBaseSystemInfo() {
+  const screenFix = getScreenFix();
+  const windowWidth = getWindowWidth(
+    getScreenWidth(screenFix, isLandscape(screenFix))
+  );
+  return {
+    platform: isIOS ? "ios" : "other",
+    pixelRatio: window.devicePixelRatio,
+    windowWidth
+  };
+}
+function operateVideoPlayer(videoId, pageId, type, data) {
+  UniServiceJSBridge.invokeViewMethod(
+    "video." + videoId,
+    {
+      videoId,
+      type,
+      data
+    },
+    pageId
+  );
+}
+function operateMap(id2, pageId, type, data, operateMapCallback2) {
+  UniServiceJSBridge.invokeViewMethod(
+    "map." + id2,
+    {
+      type,
+      data
+    },
+    pageId,
+    operateMapCallback2
+  );
+}
+function getRootInfo(fields2) {
+  const info = {};
+  if (fields2.id) {
+    info.id = "";
+  }
+  if (fields2.dataset) {
+    info.dataset = {};
+  }
+  if (fields2.rect) {
+    info.left = 0;
+    info.right = 0;
+    info.top = 0;
+    info.bottom = 0;
+  }
+  if (fields2.size) {
+    info.width = document.documentElement.clientWidth;
+    info.height = document.documentElement.clientHeight;
+  }
+  if (fields2.scrollOffset) {
+    const documentElement = document.documentElement;
+    const body = document.body;
+    info.scrollLeft = documentElement.scrollLeft || body.scrollLeft || 0;
+    info.scrollTop = documentElement.scrollTop || body.scrollTop || 0;
+    info.scrollHeight = documentElement.scrollHeight || body.scrollHeight || 0;
+    info.scrollWidth = documentElement.scrollWidth || body.scrollWidth || 0;
+  }
+  return info;
+}
+function getNodeInfo(el, fields2) {
+  const info = {};
+  const { top, topWindowHeight } = getWindowOffset();
+  if (fields2.node) {
+    const tagName = el.tagName.split("-")[1];
+    if (tagName) {
+      info.node = el.querySelector(tagName);
+    }
+  }
+  if (fields2.id) {
+    info.id = el.id;
+  }
+  if (fields2.dataset) {
+    info.dataset = getCustomDataset(el);
+  }
+  if (fields2.rect || fields2.size) {
+    const rect = el.getBoundingClientRect();
+    if (fields2.rect) {
+      info.left = rect.left;
+      info.right = rect.right;
+      info.top = rect.top - top - topWindowHeight;
+      info.bottom = rect.bottom - top - topWindowHeight;
+    }
+    if (fields2.size) {
+      info.width = rect.width;
+      info.height = rect.height;
+    }
+  }
+  if (isArray(fields2.properties)) {
+    fields2.properties.forEach((prop) => {
+      prop = prop.replace(/-([a-z])/g, function(e2, t2) {
+        return t2.toUpperCase();
+      });
+    });
+  }
+  if (fields2.scrollOffset) {
+    if (el.tagName === "UNI-SCROLL-VIEW") {
+      const scroll = el.children[0].children[0];
+      info.scrollLeft = scroll.scrollLeft;
+      info.scrollTop = scroll.scrollTop;
+      info.scrollHeight = scroll.scrollHeight;
+      info.scrollWidth = scroll.scrollWidth;
+    } else {
+      info.scrollLeft = 0;
+      info.scrollTop = 0;
+      info.scrollHeight = 0;
+      info.scrollWidth = 0;
+    }
+  }
+  if (isArray(fields2.computedStyle)) {
+    const sytle = getComputedStyle(el);
+    fields2.computedStyle.forEach((name) => {
+      info[name] = sytle[name];
+    });
+  }
+  if (fields2.context) {
+    info.contextInfo = getContextInfo(el);
+  }
+  return info;
+}
+function findElm(component, pageVm) {
+  if (!component) {
+    return pageVm.$el;
+  }
+  return component.$el;
+}
+function matches(element, selectors) {
+  const matches2 = element.matches || element.matchesSelector || element.mozMatchesSelector || element.msMatchesSelector || element.oMatchesSelector || element.webkitMatchesSelector || function(selectors2) {
+    const matches3 = this.parentElement.querySelectorAll(
+      selectors2
+    );
+    let i = matches3.length;
+    while (--i >= 0 && matches3.item(i) !== this) {
+    }
+    return i > -1;
+  };
+  return matches2.call(element, selectors);
+}
+function getNodesInfo(pageVm, component, selector, single, fields2) {
+  const selfElement = findElm(component, pageVm);
+  const parentElement = selfElement.parentElement;
+  if (!parentElement) {
+    return single ? null : [];
+  }
+  const { nodeType } = selfElement;
+  const maybeFragment = nodeType === 3 || nodeType === 8;
+  if (single) {
+    const node = maybeFragment ? parentElement.querySelector(selector) : matches(selfElement, selector) ? selfElement : selfElement.querySelector(selector);
+    if (node) {
+      return getNodeInfo(node, fields2);
+    }
+    return null;
+  } else {
+    let infos = [];
+    const nodeList = (maybeFragment ? parentElement : selfElement).querySelectorAll(selector);
+    if (nodeList && nodeList.length) {
+      [].forEach.call(nodeList, (node) => {
+        infos.push(getNodeInfo(node, fields2));
+      });
+    }
+    if (!maybeFragment && matches(selfElement, selector)) {
+      infos.unshift(getNodeInfo(selfElement, fields2));
+    }
+    return infos;
+  }
+}
+function requestComponentInfo(page, reqs, callback) {
+  const result = [];
+  reqs.forEach(({ component, selector, single, fields: fields2 }) => {
+    if (component === null) {
+      result.push(getRootInfo(fields2));
+    } else {
+      result.push(getNodesInfo(page, component, selector, single, fields2));
+    }
+  });
+  callback(result);
+}
+function setCurrentPageMeta(_page, { pageStyle, rootFontSize }) {
+  if (pageStyle) {
+    const pageElm = document.querySelector("uni-page-body") || document.body;
+    pageElm.setAttribute("style", pageStyle);
+  }
+  if (rootFontSize && document.documentElement.style.fontSize !== rootFontSize) {
+    document.documentElement.style.fontSize = rootFontSize;
+  }
+}
 function addIntersectionObserver({ reqId, component, options, callback }, _pageId) {
   const $el = findElem(component);
   ($el.__io || ($el.__io = {}))[reqId] = requestComponentObserver(
@@ -7125,25 +7730,6 @@ function revokeObjectURL(url) {
   const URL = window.URL || window.webkitURL;
   URL.revokeObjectURL(url);
   delete files[url];
-}
-const launchOptions = /* @__PURE__ */ createLaunchOptions();
-const enterOptions = /* @__PURE__ */ createLaunchOptions();
-function getEnterOptions() {
-  return extend({}, enterOptions);
-}
-function getLaunchOptions() {
-  return extend({}, launchOptions);
-}
-function initLaunchOptions({
-  path,
-  query
-}) {
-  extend(launchOptions, {
-    path,
-    query
-  });
-  extend(enterOptions, launchOptions);
-  return extend({}, launchOptions);
 }
 const inflateRaw = (...args) => {
 };
@@ -14737,7 +15323,9 @@ const Swiper = /* @__PURE__ */ defineBuiltInComponent({
     }
     return () => {
       const defaultSlots = slots.default && slots.default();
-      swiperItems = flatVNode(defaultSlots);
+      {
+        swiperItems = flatVNode(defaultSlots);
+      }
       return createVNode("uni-swiper", {
         "ref": rootRef
       }, [createVNode("div", {
@@ -15411,7 +15999,6 @@ function injectLifecycleHook(name, hook, publicThis, instance2) {
   }
 }
 function initHooks(options, instance2, publicThis) {
-  var _b;
   const mpType = options.mpType || publicThis.$mpType;
   if (!mpType || mpType === "component") {
     return;
@@ -15438,8 +16025,9 @@ function initHooks(options, instance2, publicThis) {
         ;
       invokeHook(publicThis, ON_LOAD, query);
       delete instance2.attrs.__pageQuery;
+      const $basePage = false ? publicThis.$basePage : publicThis.$page;
       if (true) {
-        if (((_b = publicThis.$page) == null ? void 0 : _b.openType) !== "preloadPage") {
+        if (($basePage == null ? void 0 : $basePage.openType) !== "preloadPage") {
           invokeHook(publicThis, ON_SHOW);
         }
       }
@@ -15576,565 +16164,6 @@ function initApp$1(app) {
     invokeCreateVueAppHook(app);
   }
 }
-const pageMetaKey = PolySymbol(process.env.NODE_ENV !== "production" ? "UniPageMeta" : "upm");
-function usePageMeta() {
-  return inject(pageMetaKey);
-}
-function providePageMeta(id2) {
-  const pageMeta = initPageMeta(id2);
-  provide(pageMetaKey, pageMeta);
-  return pageMeta;
-}
-function usePageRoute() {
-  if (__UNI_FEATURE_PAGES__) {
-    return useRoute();
-  }
-  const url = location.href;
-  const searchPos = url.indexOf("?");
-  const hashPos = url.indexOf("#", searchPos > -1 ? searchPos : 0);
-  let query = {};
-  if (searchPos > -1) {
-    query = parseQuery(
-      url.slice(searchPos + 1, hashPos > -1 ? hashPos : url.length)
-    );
-  }
-  const { meta } = __uniRoutes[0];
-  const path = addLeadingSlash(meta.route);
-  return {
-    meta,
-    query,
-    path,
-    matched: [{ path }]
-  };
-}
-function initPageMeta(id2) {
-  if (__UNI_FEATURE_PAGES__) {
-    return reactive(
-      normalizePageMeta(
-        JSON.parse(
-          JSON.stringify(
-            initRouteMeta(
-              useRoute().meta,
-              id2
-            )
-          )
-        )
-      )
-    );
-  }
-  return reactive(
-    normalizePageMeta(
-      JSON.parse(JSON.stringify(initRouteMeta(__uniRoutes[0].meta, id2)))
-    )
-  );
-}
-function normalizePageMeta(pageMeta) {
-  if (__UNI_FEATURE_PULL_DOWN_REFRESH__) {
-    const { enablePullDownRefresh, navigationBar } = pageMeta;
-    if (enablePullDownRefresh) {
-      const pullToRefresh = normalizePullToRefreshRpx(
-        extend(
-          {
-            support: true,
-            color: "#2BD009",
-            style: "circle",
-            height: 70,
-            range: 150,
-            offset: 0
-          },
-          pageMeta.pullToRefresh
-        )
-      );
-      const { type, style } = navigationBar;
-      if (style !== "custom" && type !== "transparent") {
-        pullToRefresh.offset += NAVBAR_HEIGHT + safeAreaInsets$1.top;
-      }
-      pageMeta.pullToRefresh = pullToRefresh;
-    }
-  }
-  if (__UNI_FEATURE_NAVIGATIONBAR__) {
-    const { navigationBar } = pageMeta;
-    const { titleSize, titleColor, backgroundColor } = navigationBar;
-    navigationBar.titleText = navigationBar.titleText || "";
-    navigationBar.type = navigationBar.type || "default";
-    navigationBar.titleSize = titleSize || "16px";
-    navigationBar.titleColor = titleColor || "#000000";
-    navigationBar.backgroundColor = backgroundColor || "#F8F8F8";
-    __UNI_FEATURE_I18N_LOCALE__ && initNavigationBarI18n(navigationBar);
-  }
-  if (__UNI_FEATURE_PAGES__ && history.state) {
-    const type = history.state.__type__;
-    if ((type === "redirectTo" || type === "reLaunch") && getCurrentPages().length === 0) {
-      pageMeta.isEntry = true;
-      pageMeta.isQuit = true;
-    }
-  }
-  return pageMeta;
-}
-const screen$1 = window.screen;
-const documentElement = document.documentElement;
-function checkMinWidth(minWidth) {
-  const sizes = [
-    window.outerWidth,
-    window.outerHeight,
-    screen$1.width,
-    screen$1.height,
-    documentElement.clientWidth,
-    documentElement.clientHeight
-  ];
-  return Math.max.apply(null, sizes) > minWidth;
-}
-function getStateId() {
-  return history.state && history.state.__id__ || 1;
-}
-function removeNonTabBarPages() {
-  const curTabBarPageVm = getCurrentPageVm();
-  if (!curTabBarPageVm) {
-    return;
-  }
-  const pagesMap = getCurrentPagesMap();
-  const keys = pagesMap.keys();
-  for (const routeKey of keys) {
-    const page = pagesMap.get(routeKey);
-    if (!page.$.__isTabBar) {
-      removePage(routeKey);
-    } else {
-      page.$.__isActive = false;
-    }
-  }
-  if (curTabBarPageVm.$.__isTabBar) {
-    curTabBarPageVm.$.__isVisible = false;
-    invokeHook(curTabBarPageVm, ON_HIDE);
-  }
-}
-function isSamePage(url, $page) {
-  return url === $page.fullPath || url === "/" && $page.meta.isEntry;
-}
-function getTabBarPageId(url) {
-  const pages = getCurrentPagesMap().values();
-  for (const page of pages) {
-    const $page = page.$page;
-    if (isSamePage(url, $page)) {
-      page.$.__isActive = true;
-      return $page.id;
-    }
-  }
-}
-const switchTab = /* @__PURE__ */ defineAsyncApi(
-  API_SWITCH_TAB,
-  // @ts-expect-error
-  ({ url, tabBarText, isAutomatedTesting }, { resolve, reject }) => {
-    if (!entryPageState.handledBeforeEntryPageRoutes) {
-      switchTabPagesBeforeEntryPages.push({
-        args: { type: API_SWITCH_TAB, url, tabBarText, isAutomatedTesting },
-        resolve,
-        reject
-      });
-      return;
-    }
-    return removeNonTabBarPages(), navigate(
-      { type: API_SWITCH_TAB, url, tabBarText, isAutomatedTesting },
-      getTabBarPageId(url)
-    ).then(resolve).catch(reject);
-  },
-  SwitchTabProtocol,
-  SwitchTabOptions
-);
-function removeLastPage() {
-  const page = getCurrentPage();
-  if (!page) {
-    return;
-  }
-  const $page = page.$page;
-  removePage(normalizeRouteKey($page.path, $page.id));
-}
-const redirectTo = /* @__PURE__ */ defineAsyncApi(
-  API_REDIRECT_TO,
-  // @ts-expect-error
-  ({ url, isAutomatedTesting }, { resolve, reject }) => {
-    if (!entryPageState.handledBeforeEntryPageRoutes) {
-      redirectToPagesBeforeEntryPages.push({
-        args: { type: API_REDIRECT_TO, url, isAutomatedTesting },
-        resolve,
-        reject
-      });
-      return;
-    }
-    return (
-      // TODO exists 属性未实现
-      removeLastPage(), navigate({ type: API_REDIRECT_TO, url, isAutomatedTesting }).then(resolve).catch(reject)
-    );
-  },
-  RedirectToProtocol,
-  RedirectToOptions
-);
-function removeAllPages() {
-  const keys = getCurrentPagesMap().keys();
-  for (const routeKey of keys) {
-    removePage(routeKey);
-  }
-}
-const reLaunch = /* @__PURE__ */ defineAsyncApi(
-  API_RE_LAUNCH,
-  // @ts-expect-error
-  ({ url, isAutomatedTesting }, { resolve, reject }) => {
-    if (!entryPageState.handledBeforeEntryPageRoutes) {
-      reLaunchPagesBeforeEntryPages.push({
-        args: { type: API_RE_LAUNCH, url, isAutomatedTesting },
-        resolve,
-        reject
-      });
-      return;
-    }
-    return removeAllPages(), navigate({ type: API_RE_LAUNCH, url, isAutomatedTesting }).then(resolve).catch(reject);
-  },
-  ReLaunchProtocol,
-  ReLaunchOptions
-);
-function navigate({ type, url, tabBarText, events, isAutomatedTesting }, __id__) {
-  if (process.env.NODE_ENV !== "production" && !__UNI_FEATURE_PAGES__) {
-    console.warn(
-      "当前项目为单页面工程，不能执行页面跳转api。如果需进行页面跳转， 需要在pages.json文件的pages字段中配置多个页面，然后重新运行。"
-    );
-  }
-  const router = getApp().$router;
-  const { path, query } = parseUrl(url);
-  return new Promise((resolve, reject) => {
-    const state2 = createPageState(type, __id__);
-    router[type === "navigateTo" ? "push" : "replace"]({
-      path,
-      query,
-      state: state2,
-      force: true
-    }).then((failure) => {
-      if (isNavigationFailure(failure)) {
-        return reject(failure.message);
-      }
-      if (type === "switchTab") {
-        router.currentRoute.value.meta.tabBarText = tabBarText;
-      }
-      if (type === "navigateTo") {
-        const meta = router.currentRoute.value.meta;
-        if (!meta.eventChannel) {
-          meta.eventChannel = new EventChannel(state2.__id__, events);
-        } else if (events) {
-          Object.keys(events).forEach((eventName) => {
-            meta.eventChannel._addListener(
-              eventName,
-              "on",
-              events[eventName]
-            );
-          });
-          meta.eventChannel._clearCache();
-        }
-        return isAutomatedTesting ? resolve({
-          __id__: state2.__id__
-        }) : resolve({
-          eventChannel: meta.eventChannel
-        });
-      }
-      return isAutomatedTesting ? resolve({ __id__: state2.__id__ }) : resolve();
-    });
-  });
-}
-function handleBeforeEntryPageRoutes() {
-  if (entryPageState.handledBeforeEntryPageRoutes) {
-    return;
-  }
-  entryPageState.handledBeforeEntryPageRoutes = true;
-  const navigateToPages = [...navigateToPagesBeforeEntryPages];
-  navigateToPagesBeforeEntryPages.length = 0;
-  navigateToPages.forEach(
-    ({ args, resolve, reject }) => (
-      // @ts-expect-error
-      navigate(args).then(resolve).catch(reject)
-    )
-  );
-  const switchTabPages = [...switchTabPagesBeforeEntryPages];
-  switchTabPagesBeforeEntryPages.length = 0;
-  switchTabPages.forEach(
-    ({ args, resolve, reject }) => (removeNonTabBarPages(), navigate(args, getTabBarPageId(args.url)).then(resolve).catch(reject))
-  );
-  const redirectToPages = [...redirectToPagesBeforeEntryPages];
-  redirectToPagesBeforeEntryPages.length = 0;
-  redirectToPages.forEach(
-    ({ args, resolve, reject }) => (removeLastPage(), navigate(args).then(resolve).catch(reject))
-  );
-  const reLaunchPages = [...reLaunchPagesBeforeEntryPages];
-  reLaunchPagesBeforeEntryPages.length = 0;
-  reLaunchPages.forEach(
-    ({ args, resolve, reject }) => (removeAllPages(), navigate(args).then(resolve).catch(reject))
-  );
-}
-let tabBar;
-function useTabBar() {
-  if (!tabBar) {
-    tabBar = __uniConfig.tabBar && reactive(initTabBarI18n(__uniConfig.tabBar));
-  }
-  return tabBar;
-}
-const supports = window.CSS && window.CSS.supports;
-function cssSupports(css) {
-  return supports && (supports(css) || supports.apply(window.CSS, css.split(":")));
-}
-const cssVar = /* @__PURE__ */ cssSupports("--a:0");
-const cssEnv = /* @__PURE__ */ cssSupports("top:env(a)");
-const cssConstant = /* @__PURE__ */ cssSupports("top:constant(a)");
-const cssBackdropFilter = /* @__PURE__ */ cssSupports("backdrop-filter:blur(10px)");
-const SCHEMA_CSS = {
-  "css.var": cssVar,
-  "css.env": cssEnv,
-  "css.constant": cssConstant,
-  "css.backdrop-filter": cssBackdropFilter
-};
-const canIUse = /* @__PURE__ */ defineSyncApi(
-  API_CAN_I_USE,
-  (schema) => {
-    if (hasOwn(SCHEMA_CSS, schema)) {
-      return SCHEMA_CSS[schema];
-    }
-    return true;
-  },
-  CanIUseProtocol
-);
-const envMethod = /* @__PURE__ */ (() => cssEnv ? "env" : cssConstant ? "constant" : "")();
-function updateCurPageCssVar(pageMeta) {
-  let windowTopValue = 0;
-  let windowBottomValue = 0;
-  if (__UNI_FEATURE_NAVIGATIONBAR__ && pageMeta.navigationBar.style !== "custom" && ["default", "float"].indexOf(pageMeta.navigationBar.type) > -1) {
-    windowTopValue = NAVBAR_HEIGHT;
-  }
-  if (__UNI_FEATURE_TABBAR__ && pageMeta.isTabBar) {
-    const tabBar2 = useTabBar();
-    tabBar2.shown && (windowBottomValue = parseInt(tabBar2.height));
-  }
-  updatePageCssVar({
-    "--window-top": normalizeWindowTop(windowTopValue),
-    "--window-bottom": normalizeWindowBottom(windowBottomValue)
-  });
-}
-function normalizeWindowTop(windowTop) {
-  return envMethod ? `calc(${windowTop}px + ${envMethod}(safe-area-inset-top))` : `${windowTop}px`;
-}
-function normalizeWindowBottom(windowBottom) {
-  return envMethod ? `calc(${windowBottom}px + ${envMethod}(safe-area-inset-bottom))` : `${windowBottom}px`;
-}
-const SEP = "$$";
-const currentPagesMap = /* @__PURE__ */ new Map();
-const entryPageState = {
-  handledBeforeEntryPageRoutes: false
-};
-const navigateToPagesBeforeEntryPages = [];
-const switchTabPagesBeforeEntryPages = [];
-const redirectToPagesBeforeEntryPages = [];
-const reLaunchPagesBeforeEntryPages = [];
-function pruneCurrentPages() {
-  currentPagesMap.forEach((page, id2) => {
-    if (page.$.isUnmounted) {
-      currentPagesMap.delete(id2);
-    }
-  });
-}
-function getCurrentPagesMap() {
-  return currentPagesMap;
-}
-function getCurrentPages$1() {
-  const curPages = [];
-  const pages = currentPagesMap.values();
-  for (const page of pages) {
-    if (page.$.__isTabBar) {
-      if (page.$.__isActive) {
-        curPages.push(page);
-      }
-    } else {
-      curPages.push(page);
-    }
-  }
-  return curPages;
-}
-function removeRouteCache(routeKey) {
-  const vnode = pageCacheMap.get(routeKey);
-  if (vnode) {
-    pageCacheMap.delete(routeKey);
-    routeCache.pruneCacheEntry(vnode);
-  }
-}
-function removePage(routeKey, removeRouteCaches = true) {
-  const pageVm = currentPagesMap.get(routeKey);
-  pageVm.$.__isUnload = true;
-  invokeHook(pageVm, ON_UNLOAD);
-  currentPagesMap.delete(routeKey);
-  removeRouteCaches && removeRouteCache(routeKey);
-}
-let id = /* @__PURE__ */ getStateId();
-function createPageState(type, __id__) {
-  return {
-    __id__: __id__ || ++id,
-    __type__: type
-  };
-}
-function initPublicPage(route) {
-  const meta = usePageMeta();
-  if (!__UNI_FEATURE_PAGES__) {
-    return initPageInternalInstance("navigateTo", __uniRoutes[0].path, {}, meta);
-  }
-  let fullPath = route.fullPath;
-  if (route.meta.isEntry && fullPath.indexOf(route.meta.route) === -1) {
-    fullPath = "/" + route.meta.route + fullPath.replace("/", "");
-  }
-  return initPageInternalInstance("navigateTo", fullPath, {}, meta);
-}
-function initPage(vm) {
-  const route = vm.$route;
-  const page = initPublicPage(route);
-  initPageVm(vm, page);
-  currentPagesMap.set(normalizeRouteKey(page.path, page.id), vm);
-  if (currentPagesMap.size === 1) {
-    setTimeout(() => {
-      handleBeforeEntryPageRoutes();
-    }, 0);
-  }
-}
-function normalizeRouteKey(path, id2) {
-  return path + SEP + id2;
-}
-function useKeepAliveRoute() {
-  const route = useRoute();
-  const routeKey = computed(
-    () => normalizeRouteKey("/" + route.meta.route, getStateId())
-  );
-  const isTabBar = computed(() => route.meta.isTabBar);
-  return {
-    routeKey,
-    isTabBar,
-    routeCache
-  };
-}
-const pageCacheMap = /* @__PURE__ */ new Map();
-const routeCache = {
-  get(key) {
-    return pageCacheMap.get(key);
-  },
-  set(key, value) {
-    pruneRouteCache(key);
-    pageCacheMap.set(key, value);
-  },
-  delete(key) {
-    const vnode = pageCacheMap.get(key);
-    if (!vnode) {
-      return;
-    }
-    pageCacheMap.delete(key);
-  },
-  forEach(fn) {
-    pageCacheMap.forEach(fn);
-  }
-};
-function isTabBarVNode(vnode) {
-  return vnode.props.type === "tabBar";
-}
-function pruneRouteCache(key) {
-  const pageId = parseInt(key.split(SEP)[1]);
-  if (!pageId) {
-    return;
-  }
-  routeCache.forEach((vnode, key2) => {
-    const cPageId = parseInt(key2.split(SEP)[1]);
-    if (cPageId && cPageId > pageId) {
-      if (__UNI_FEATURE_TABBAR__ && isTabBarVNode(vnode)) {
-        return;
-      }
-      routeCache.delete(key2);
-      routeCache.pruneCacheEntry(vnode);
-      nextTick(() => pruneCurrentPages());
-    }
-  });
-}
-function updateCurPageAttrs(pageMeta) {
-  {
-    const nvueDirKey = "nvue-dir-" + __uniConfig.nvue["flex-direction"];
-    if (pageMeta.isNVue) {
-      document.body.setAttribute("nvue", "");
-      document.body.setAttribute(nvueDirKey, "");
-    } else {
-      document.body.removeAttribute("nvue");
-      document.body.removeAttribute(nvueDirKey);
-    }
-  }
-}
-function onPageShow(instance2, pageMeta) {
-  updateBodyScopeId(instance2);
-  updateCurPageCssVar(pageMeta);
-  updateCurPageAttrs(pageMeta);
-  initPageScrollListener(instance2, pageMeta);
-}
-function onPageReady(instance2) {
-  const scopeId = getScopeId(instance2);
-  scopeId && updateCurPageBodyScopeId(scopeId);
-}
-function updateCurPageBodyScopeId(scopeId) {
-  const pageBodyEl = document.querySelector("uni-page-body");
-  if (pageBodyEl) {
-    pageBodyEl.setAttribute(scopeId, "");
-  } else if (process.env.NODE_ENV !== "production") {
-    console.warn("uni-page-body not found");
-  }
-}
-function getScopeId(instance2) {
-  return instance2.type.__scopeId;
-}
-let curScopeId;
-function updateBodyScopeId(instance2) {
-  const scopeId = getScopeId(instance2);
-  const { body } = document;
-  curScopeId && body.removeAttribute(curScopeId);
-  scopeId && body.setAttribute(scopeId, "");
-  curScopeId = scopeId;
-}
-let curScrollListener;
-function initPageScrollListener(instance2, pageMeta) {
-  document.removeEventListener("touchmove", disableScrollListener);
-  if (curScrollListener) {
-    document.removeEventListener("scroll", curScrollListener);
-  }
-  if (pageMeta.disableScroll) {
-    return document.addEventListener("touchmove", disableScrollListener);
-  }
-  const { onPageScroll, onReachBottom } = instance2;
-  const navigationBarTransparent = pageMeta.navigationBar.type === "transparent";
-  if (!(onPageScroll == null ? void 0 : onPageScroll.length) && !(onReachBottom == null ? void 0 : onReachBottom.length) && !navigationBarTransparent) {
-    return;
-  }
-  const opts = {};
-  const pageId = instance2.proxy.$page.id;
-  if (onPageScroll || navigationBarTransparent) {
-    opts.onPageScroll = createOnPageScroll(
-      pageId,
-      onPageScroll,
-      navigationBarTransparent
-    );
-  }
-  if (onReachBottom == null ? void 0 : onReachBottom.length) {
-    opts.onReachBottomDistance = pageMeta.onReachBottomDistance || ON_REACH_BOTTOM_DISTANCE;
-    opts.onReachBottom = () => UniViewJSBridge.publishHandler(ON_REACH_BOTTOM, {}, pageId);
-  }
-  curScrollListener = createScrollListener(opts);
-  requestAnimationFrame(
-    () => document.addEventListener("scroll", curScrollListener)
-  );
-}
-function createOnPageScroll(pageId, onPageScroll, navigationBarTransparent) {
-  return (scrollTop) => {
-    if (onPageScroll) {
-      UniViewJSBridge.publishHandler(ON_PAGE_SCROLL, { scrollTop }, pageId);
-    }
-    if (navigationBarTransparent) {
-      UniViewJSBridge.emit(pageId + "." + ON_PAGE_SCROLL, {
-        scrollTop
-      });
-    }
-  };
-}
 function initRouter(app) {
   const router = createRouter(createRouterOptions());
   router.beforeEach((to, from) => {
@@ -16182,11 +16211,11 @@ function createRouterOptions() {
   };
 }
 function removeCurrentPages(delta = 1) {
-  const keys = getCurrentPages$1();
+  const keys = getCurrentBasePages();
   const start = keys.length - 1;
   const end = start - delta;
   for (let i = start; i > end; i--) {
-    const page = keys[i].$page;
+    const page = getPage$BasePage(keys[i]);
     removePage(normalizeRouteKey(page.path, page.id), false);
   }
 }
@@ -16274,7 +16303,7 @@ function initApp(vm) {
   appVm = vm;
   Object.defineProperty(appVm.$.ctx, "$children", {
     get() {
-      return getCurrentPages().map((page) => page.$vm);
+      return getCurrentBasePages().map((page) => page.$vm);
     }
   });
   const app = appVm.$.appContext.app;
@@ -16314,9 +16343,11 @@ function setupComponent(comp, options) {
 function setupWindow(comp, id2) {
   return setupComponent(comp, {
     init: (vm) => {
-      vm.$page = {
-        id: id2
-      };
+      {
+        vm.$page = {
+          id: id2
+        };
+      }
     },
     setup(instance2) {
       instance2.$pageInstance = instance2;
@@ -16336,7 +16367,7 @@ function setupPage(comp) {
       const route = usePageRoute();
       const query = decodedQuery(route.query);
       instance2.attrs.__pageQuery = query;
-      instance2.proxy.$page.options = query;
+      getPage$BasePage(instance2.proxy).options = query;
       instance2.proxy.options = query;
       const pageMeta = usePageMeta();
       instance2.onReachBottom = reactive([]);
@@ -18845,7 +18876,7 @@ function getBrowserInfo() {
   let model = "";
   let deviceType = "phone";
   const language = navigator.language;
-  if (isIOS$1) {
+  if (isIOS) {
     osname = "iOS";
     const osversionFind = ua.match(/OS\s([\w_]+)\slike/);
     if (osversionFind) {
@@ -22603,9 +22634,9 @@ function setProperties(item, props2, propsData) {
 function setTabBar(type, args, resolve, reject) {
   var _a;
   let isTabBar = false;
-  const pages = getCurrentPages();
+  const pages = getCurrentBasePages();
   if (pages.length) {
-    if (pages[pages.length - 1].$page.meta.isTabBar) {
+    if (getPage$BasePage(pages[pages.length - 1]).meta.isTabBar) {
       isTabBar = true;
     }
   }
@@ -23109,11 +23140,11 @@ function useMaxWidth(layoutState, rootRef) {
   const route = usePageRoute();
   function checkMaxWidth2() {
     const windowWidth = document.body.clientWidth;
-    const pages = getCurrentPages();
+    const pages = getCurrentBasePages();
     let meta = {};
     if (pages.length > 0) {
       const curPage = pages[pages.length - 1];
-      meta = curPage.$page.meta;
+      meta = getPage$BasePage(curPage).meta;
     } else {
       const routeOptions = getRouteOptions(route.path, true);
       if (routeOptions) {

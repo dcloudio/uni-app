@@ -22,7 +22,11 @@ import {
   checkEncryptUniModules,
   resolveEncryptUniModule,
 } from '../../../uni_modules.cloud'
-import { enableSourceMap, normalizePath } from '../../../utils'
+import {
+  enableSourceMap,
+  isNormalCompileTarget,
+  normalizePath,
+} from '../../../utils'
 import { parseManifestJsonOnce } from '../../../json'
 import { emptyDir } from '../../../fs'
 import { initScopedPreContext } from '../../../preprocess/context'
@@ -486,10 +490,7 @@ export function uniUTSAppUniModulesPlugin(
     async buildEnd() {
       utsModuleCaches.clear()
       changedFiles.clear()
-      if (
-        process.env.NODE_ENV !== 'development' ||
-        process.env.UNI_COMPILE_TARGET === 'uni_modules'
-      ) {
+      if (process.env.NODE_ENV !== 'development' || !isNormalCompileTarget()) {
         if (uniXKotlinCompiler) {
           await uniXKotlinCompiler.close()
         }
@@ -589,7 +590,7 @@ export function uniDecryptUniModulesPlugin(): Plugin {
     name: 'uni:uni_modules-d',
     enforce: 'pre',
     async configResolved() {
-      if (isX && process.env.UNI_COMPILE_TARGET !== 'uni_modules') {
+      if (isX && isNormalCompileTarget()) {
         const manifest = parseManifestJsonOnce(inputDir)
         await checkEncryptUniModules(inputDir, {
           mode:
@@ -611,11 +612,7 @@ export function uniDecryptUniModulesPlugin(): Plugin {
       if (isUTSProxy(id) || isUniHelpers(id)) {
         return id
       }
-      if (
-        isX &&
-        process.env.UNI_COMPILE_TARGET !== 'uni_modules' &&
-        !id.endsWith('.css')
-      ) {
+      if (isX && isNormalCompileTarget() && !id.endsWith('.css')) {
         const resolvedId = resolveEncryptUniModule(
           id,
           process.env.UNI_UTS_PLATFORM,

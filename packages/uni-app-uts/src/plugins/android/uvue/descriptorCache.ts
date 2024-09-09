@@ -1,6 +1,10 @@
 import fs from 'fs'
 import { createHash } from 'crypto'
-import { preUVueHtml, preUVueJs } from '@dcloudio/uni-cli-shared'
+import {
+  enableSourceMap,
+  preUVueHtml,
+  preUVueJs,
+} from '@dcloudio/uni-cli-shared'
 import type * as _compiler from '@vue/compiler-sfc'
 import type { CompilerError, SFCDescriptor } from '@vue/compiler-sfc'
 import { parseUTSRelativeFilename } from '../utils'
@@ -18,10 +22,7 @@ export interface ResolvedOptions {
 export function getResolvedOptions(): ResolvedOptions {
   return {
     root: process.env.UNI_INPUT_DIR,
-    sourceMap:
-      (process.env.UNI_APP_SOURCEMAP === 'true' ||
-        process.env.NODE_ENV === 'development') &&
-      process.env.UNI_COMPILE_TARGET !== 'uni_modules',
+    sourceMap: enableSourceMap(),
     // eslint-disable-next-line no-restricted-globals
     compiler: require('@vue/compiler-sfc'),
     targetLanguage: process.env.UNI_UTS_TARGET_LANGUAGE as 'kotlin',

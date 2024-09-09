@@ -35,7 +35,7 @@ var index = () => [
             name: 'uni:stat',
             enforce: 'pre',
             config(config, env) {
-                if (process.env.UNI_COMPILE_TARGET === 'uni_modules') {
+                if (!uniCliShared.isNormalCompileTarget()) {
                     // 不需要统计
                     return;
                 }

@@ -7,9 +7,11 @@ import {
   type UniVitePlugin,
   buildUniExtApis,
   emptyDir,
+  enableSourceMap,
   getCurrentCompiledUTSPlugins,
   getUniExtApiProviderRegisters,
   initUTSKotlinAutoImportsOnce,
+  isNormalCompileTarget,
   normalizeEmitAssetFileName,
   normalizePath,
   parseManifestJsonOnce,
@@ -180,7 +182,7 @@ export function uniAppPlugin(): UniVitePlugin {
       return code
     },
     generateBundle(_, bundle) {
-      if (process.env.UNI_COMPILE_TARGET === 'uni_modules') {
+      if (!isNormalCompileTarget()) {
         return
       }
       // 开发者仅在 script 中引入了 easyCom 类型，但模板里边没用到，此时额外生成一个辅助的.uvue文件
@@ -201,7 +203,7 @@ export function uniAppPlugin(): UniVitePlugin {
       }
     },
     async writeBundle() {
-      if (process.env.UNI_COMPILE_TARGET === 'uni_modules') {
+      if (!isNormalCompileTarget()) {
         return
       }
       if (uniXKotlinCompiler) {
@@ -240,10 +242,7 @@ export function uniAppPlugin(): UniVitePlugin {
         outputDir: outputDir,
         package:
           'uni.' + (manifestJson.appid || DEFAULT_APPID).replace(/_/g, ''),
-        sourceMap:
-          process.env.NODE_ENV === 'development' &&
-          process.env.UNI_COMPILE_TARGET !== 'ext-api' &&
-          process.env.UNI_COMPILE_TARGET !== 'uni_modules',
+        sourceMap: enableSourceMap(),
         uni_modules: [...getCurrentCompiledUTSPlugins()],
         extApis: parseUniExtApiNamespacesOnce(
           process.env.UNI_UTS_PLATFORM,

@@ -24,6 +24,7 @@ export function createBasicUtsOptions(
     noCache:
       // modules 模式不使用缓存
       process.env.UNI_COMPILE_TARGET === 'uni_modules' ||
+      process.env.UNI_COMPILE_TARGET === 'ext-api' ||
       process.env.NODE_ENV === 'production' ||
       isWeb,
     tsconfigOverride: {

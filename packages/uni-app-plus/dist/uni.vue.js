@@ -50,7 +50,6 @@ function injectLifecycleHook(name, hook, publicThis, instance) {
     }
 }
 function initHooks(options, instance, publicThis) {
-    var _a, _b;
     const mpType = options.mpType || publicThis.$mpType;
     if (!mpType || mpType === 'component') {
         // 仅 App,Page 类型支持在 options 中配置 on 生命周期，组件可以使用组合式 API 定义页面生命周期
@@ -78,8 +77,11 @@ function initHooks(options, instance, publicThis) {
             invokeHook(publicThis, ON_LOAD, query);
             delete instance.attrs.__pageQuery;
             // iOS-X 的非 Tab 页面与 uni-app 一致固定触发 onShow
-            if (!('app' === 'app' && false && ((_a = publicThis.$page) === null || _a === void 0 ? void 0 : _a.meta.isTabBar))) {
-                if (((_b = publicThis.$page) === null || _b === void 0 ? void 0 : _b.openType) !== 'preloadPage') {
+            const $basePage = false
+                ? publicThis.$basePage
+                : publicThis.$page;
+            if (!('app' === 'app' && false && ($basePage === null || $basePage === void 0 ? void 0 : $basePage.meta.isTabBar))) {
+                if (($basePage === null || $basePage === void 0 ? void 0 : $basePage.openType) !== 'preloadPage') {
                     invokeHook(publicThis, ON_SHOW);
                 }
             }

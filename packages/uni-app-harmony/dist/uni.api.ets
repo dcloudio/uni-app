@@ -736,7 +736,7 @@ export class GetWindowInfoResult extends UTSObject {
     safeArea!: SafeArea;
     safeAreaInsets!: SafeAreaInsets;
     screenTop!: number;
-    cutoutArea: Array<CutoutRect> | null = null;
+    cutoutArea!: Array<CutoutRect>;
 }
 interface ISystemInfoAppVersion {
     name: string;
@@ -3838,37 +3838,17 @@ export function initUniExtApi() {
         return backgroundAudioManager;
     }) as GetBackgroundAudioManager;
     const API_GET_DEVICE_INFO = 'getDeviceInfo';
-    const parseDeviceType = (deviceType: string): 'phone' | 'pad' | 'tv' | 'watch' | 'pc' | 'unknown' | 'car' | 'vr' | 'appliance' =>{
-        switch(deviceType){
-            case 'phone':
-                return 'phone';
-            case 'wearable':
-                return 'watch';
-            case 'tablet':
-                return 'pad';
-            case '2in1':
-                return 'pc';
-            case 'tv':
-                return 'tv';
-            case 'car':
-                return 'car';
-            case 'smartVision':
-                return 'vr';
-            default:
-                return 'unknown';
-        }
-    };
     const getDeviceInfo: GetDeviceInfo = defineSyncApi<GetDeviceInfoResult>(API_GET_DEVICE_INFO, (): GetDeviceInfoResult =>{
         return {
-            deviceBrand: deviceInfo.brand.toLowerCase(),
+            deviceBrand: deviceInfo.brand,
             deviceId: getDeviceId(),
             deviceModel: deviceInfo.productModel,
             deviceOrientation: 'portrait',
             devicePixelRatio: vp2px(1),
-            deviceType: parseDeviceType(deviceInfo.deviceType),
+            deviceType: deviceInfo.deviceType === 'tablet' ? 'pad' : deviceInfo.deviceType,
             osLanguage: I18n1.System.getSystemLanguage(),
             osTheme: UTSHarmony4.getOsTheme() as string,
-            osVersion: deviceInfo.majorVersion + '.' + deviceInfo.seniorVersion + '.' + deviceInfo.featureVersion + '.' + deviceInfo.buildVersion,
+            osVersion: deviceInfo.buildVersion + '',
             osName: 'harmonyos',
             platform: 'harmonyos',
             romName: deviceInfo.distributionOSName,
@@ -4366,12 +4346,10 @@ export function initUniExtApi() {
     const API_GET_SYSTEM_INFO = 'getSystemInfo';
     const API_GET_SYSTEM_INFO_SYNC = 'getSystemInfoSync';
     const API_GET_WINDOW_INFO = 'getWindowInfo';
-    const parseDeviceType1 = (deviceType: string): 'phone' | 'pad' | 'tv' | 'watch' | 'pc' | 'unknown' | 'car' | 'vr' | 'appliance' =>{
+    const parseDeviceType = (deviceType: string): 'phone' | 'pad' | 'tv' | 'watch' | 'pc' | 'undefined' | 'car' | 'vr' | 'appliance' =>{
         switch(deviceType){
             case 'phone':
                 return 'phone';
-            case 'wearable':
-                return 'watch';
             case 'tablet':
                 return 'pad';
             case '2in1':
@@ -4380,10 +4358,10 @@ export function initUniExtApi() {
                 return 'tv';
             case 'car':
                 return 'car';
-            case 'smartVision':
-                return 'vr';
+            case 'wearable':
+                return 'watch';
             default:
-                return 'unknown';
+                return 'undefined';
         }
     };
     const getWindowInfo: GetWindowInfo = defineSyncApi<GetWindowInfoResult>(API_GET_WINDOW_INFO, (): GetWindowInfoResult =>{
@@ -4419,15 +4397,15 @@ export function initUniExtApi() {
             uniRuntimeVersion: uniRuntimeVersion,
             uniRuntimeVersionCode: parseFloat(uniRuntimeVersion),
             uniPlatform: 'app',
-            deviceBrand: deviceInfo1.brand.toLowerCase(),
+            deviceBrand: deviceInfo1.brand,
             deviceId: getDeviceId1(),
             deviceModel: deviceInfo1.productModel,
             deviceOrientation: 'portrait',
             devicePixelRatio: vp2px(1),
-            deviceType: parseDeviceType1(deviceInfo1.deviceType),
+            deviceType: parseDeviceType(deviceInfo1.deviceType),
             osLanguage: I18n2.System.getSystemLanguage(),
             osTheme: UTSHarmony7.getOsTheme() as string,
-            osVersion: deviceInfo1.majorVersion + '.' + deviceInfo1.seniorVersion + '.' + deviceInfo1.featureVersion + '.' + deviceInfo1.buildVersion,
+            osVersion: deviceInfo1.buildVersion + '',
             osName: 'harmonyos',
             romName: deviceInfo1.distributionOSName,
             romVersion: deviceInfo1.distributionOSVersion,
@@ -4961,18 +4939,6 @@ export function initUniExtApi() {
             {
                 type: 'number'
             }
-        ],
-        [
-            'compressedWidth',
-            {
-                type: 'number'
-            }
-        ],
-        [
-            'compressedHeight',
-            {
-                type: 'number'
-            }
         ]
     ]);
     const API_CHOOSE_FILE = 'chooseFile';
@@ -5305,7 +5271,7 @@ export function initUniExtApi() {
         } else {
             const lastWindow = getCurrentWindow() as window.Window;
             const UIContextPromptAction = await lastWindow.getUIContext().getPromptAction();
-            UIContextPromptAction.showActionMenu({
+            const index = (await UIContextPromptAction.showActionMenu({
                 buttons: [
                     {
                         text: '拍照',
@@ -5316,18 +5282,12 @@ export function initUniExtApi() {
                         color: '#000000'
                     }
                 ]
-            } as promptAction1.ActionMenuOptions, (err, ref)=>{
-                let index = ref.index;
-                if (err) {
-                    res.reject('cancel');
-                } else {
-                    if (index === 0) {
-                        _takePhoto(options, res);
-                    } else if (index === 1) {
-                        _chooseImage(options, res);
-                    }
-                }
-            });
+            } as promptAction1.ActionMenuOptions)).index;
+            if (index === 0) {
+                _takePhoto(options, res);
+            } else if (index === 1) {
+                _chooseImage(options, res);
+            }
         }
     }, ChooseImageApiProtocol, ChooseImageApiOptions) as ChooseImage;
     const _chooseVideo = (options: ChooseVideoOptions, res: ApiExecutor<ChooseVideoSuccess>)=>{
@@ -5381,7 +5341,7 @@ export function initUniExtApi() {
         } else {
             const lastWindow = getCurrentWindow1() as window1.Window;
             const UIContextPromptAction = await lastWindow.getUIContext().getPromptAction();
-            UIContextPromptAction.showActionMenu({
+            const index = (await UIContextPromptAction.showActionMenu({
                 buttons: [
                     {
                         text: '拍摄',
@@ -5392,18 +5352,12 @@ export function initUniExtApi() {
                         color: '#000000'
                     }
                 ]
-            } as promptAction2.ActionMenuOptions, (err, ref)=>{
-                let index = ref.index;
-                if (err) {
-                    res.reject('cancel');
-                } else {
-                    if (index === 0) {
-                        _takeVideo(options, res);
-                    } else if (index === 1) {
-                        _chooseVideo(options, res);
-                    }
-                }
-            });
+            } as promptAction2.ActionMenuOptions)).index;
+            if (index === 0) {
+                _takeVideo(options, res);
+            } else if (index === 1) {
+                _chooseVideo(options, res);
+            }
         }
     }, ChooseVideoApiProtocol, ChooseVideoApiOptions) as ChooseVideo;
     const getImageInfo: GetImageInfo = defineAsyncApi<GetImageInfoOptions, GetImageInfoSuccess>(API_GET_IMAGE_INFO, async (options: GetImageInfoOptions, res: ApiExecutor<GetImageInfoSuccess>)=>{
@@ -5570,10 +5524,7 @@ export function initUniExtApi() {
         const imageName = getFileName(args.src);
         const imageExt = imageName.split('.').slice(-1)[0];
         const imagePacker: image1.ImagePacker = image1.createImagePacker();
-        const file2 = fileIo4.openSync(args.src, fileIo4.OpenMode.READ_ONLY);
-        if (!file2) {
-            throw new Error('open file failed');
-        }
+        const file2 = fileIo4.openSync(args.src, fileIo4.OpenMode.READ_WRITE);
         const imageSource: image1.ImageSource = image1.createImageSource(file2.fd);
         if (imageSource == null) {
             throw new Error('create image source failed');
@@ -5595,11 +5546,11 @@ export function initUniExtApi() {
         if ([
             'jpg',
             'jpe',
-            'jpeg',
-            'png'
+            'jpeg'
         ].includes(imageExt)) {
             format = 'image/jpeg';
         }
+        if (imageExt === 'png') format = 'image/png';
         if (imageExt === 'webp') format = 'image/webp';
         if (!format.length) {
             throw new Error('error image format');
@@ -5891,7 +5842,7 @@ export function initUniExtApi() {
         } else {
             const lastWindow = getCurrentWindow2() as window2.Window;
             const UIContextPromptAction = await lastWindow.getUIContext().getPromptAction();
-            UIContextPromptAction.showActionMenu({
+            const index = (await UIContextPromptAction.showActionMenu({
                 buttons: [
                     {
                         text: '拍摄',
@@ -5902,18 +5853,12 @@ export function initUniExtApi() {
                         color: '#000000'
                     }
                 ]
-            } as promptAction3.ActionMenuOptions, (err, ref)=>{
-                let index = ref.index;
-                if (err) {
-                    executor.reject('cancel');
-                } else {
-                    if (index === 0) {
-                        _takeCamera(args, executor);
-                    } else if (index === 1) {
-                        __chooseMedia(args, executor);
-                    }
-                }
-            });
+            } as promptAction3.ActionMenuOptions)).index;
+            if (index === 0) {
+                _takeCamera(args, executor);
+            } else if (index === 1) {
+                __chooseMedia(args, executor);
+            }
         }
     }, ChooseMediaApiProtocol, ChooseMediaApiOptions) as ChooseMedia;
     const API_REQUEST = 'request';

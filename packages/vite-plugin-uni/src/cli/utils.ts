@@ -11,6 +11,7 @@ import {
   initModulePaths,
   initPreContext,
   isInHBuilderX,
+  isNormalCompileTarget,
   output,
   parseManifestJsonOnce,
   parseScripts,
@@ -93,7 +94,7 @@ export function initEnv(
     if ((options as BuildOptions).watch) {
       process.env.NODE_ENV = 'development'
     } else {
-      if (process.env.UNI_COMPILE_TARGET === 'uni_modules') {
+      if (!isNormalCompileTarget()) {
         if (!process.env.NODE_ENV) {
           process.env.NODE_ENV = 'production'
         }
@@ -217,14 +218,17 @@ export function initEnv(
 
   // 默认开启 tsc
   process.env.UNI_APP_X_TSC = 'true'
-  const manifestJson = parseManifestJsonOnce(process.env.UNI_INPUT_DIR)
-  // 留个开关
-  if (
-    manifestJson['app']?.['utsCompilerVersion'] === 'v1' ||
-    manifestJson['app-plus']?.['utsCompilerVersion'] === 'v1'
-  ) {
-    process.env.UNI_APP_X_TSC = 'false'
-  }
+  try {
+    // 部分模式下缺少manifest.json，比如内部编译ext-api时
+    const manifestJson = parseManifestJsonOnce(process.env.UNI_INPUT_DIR)
+    // 留个开关
+    if (
+      manifestJson['app']?.['utsCompilerVersion'] === 'v1' ||
+      manifestJson['app-plus']?.['utsCompilerVersion'] === 'v1'
+    ) {
+      process.env.UNI_APP_X_TSC = 'false'
+    }
+  } catch (e) {}
 
   if (!process.env.UNI_APP_X_TSC_DIR) {
     process.env.UNI_APP_X_TSC_DIR = path.resolve(

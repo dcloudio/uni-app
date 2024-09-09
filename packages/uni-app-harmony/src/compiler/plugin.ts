@@ -7,6 +7,7 @@ import {
   formatExtApiProviderName,
   getCurrentCompiledUTSPlugins,
   getUniExtApiProviderRegisters,
+  isNormalCompileTarget,
   parseManifestJsonOnce,
   parseUniExtApi,
   resolveUTSCompiler,
@@ -100,7 +101,7 @@ export function uniAppHarmonyPlugin(): UniVitePlugin {
       }
     },
     async writeBundle() {
-      if (process.env.UNI_COMPILE_TARGET === 'uni_modules') {
+      if (!isNormalCompileTarget()) {
         return
       }
       // x 上暂时编译所有uni ext api，不管代码里是否调用了

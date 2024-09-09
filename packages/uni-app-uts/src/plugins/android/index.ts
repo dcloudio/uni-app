@@ -1,4 +1,5 @@
 import {
+  isNormalCompileTarget,
   parseUniExtApiNamespacesOnce,
   uniDecryptUniModulesPlugin,
   uniEncryptUniModulesPlugin,
@@ -19,9 +20,8 @@ export function init() {
   return [
     uniDecryptUniModulesPlugin(),
     uniPrePlugin(),
-    ...(process.env.UNI_COMPILE_TARGET === 'uni_modules'
-      ? []
-      : [
+    ...(isNormalCompileTarget()
+      ? [
           uniUTSAppUniModulesPlugin({
             x: true,
             isSingleThread: process.env.UNI_APP_X_SINGLE_THREAD !== 'false',
@@ -30,7 +30,8 @@ export function init() {
               process.env.UNI_UTS_TARGET_LANGUAGE
             ),
           }),
-        ]),
+        ]
+      : []),
     uniAppPlugin(),
     ...(process.env.UNI_COMPILE_TARGET === 'ext-api'
       ? [uniUniModulesExtApiPlugin()]

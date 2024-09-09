@@ -173,12 +173,16 @@ function PolySymbol(name) {
 function useCurrentPageId() {
   let pageId;
   try {
-    pageId = getCurrentInstance().root.proxy.$page.id;
+    pageId = getPageProxyId(getCurrentInstance().root.proxy);
   } catch {
     const webviewId = plus.webview.currentWebview().id;
     pageId = isNaN(Number(webviewId)) ? webviewId : Number(webviewId);
   }
   return pageId;
+}
+function getPageProxyId(proxy) {
+  var _a, _b;
+  return ((_a = proxy.$page) == null ? void 0 : _a.id) || ((_b = proxy.$basePage) == null ? void 0 : _b.id);
 }
 let plus_;
 let weex_;
