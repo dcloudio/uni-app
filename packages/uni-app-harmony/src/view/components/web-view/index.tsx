@@ -3,7 +3,7 @@ import {
   useContextInfo,
   useSubscribe,
 } from '@dcloudio/uni-components'
-import { capitalize, extend, isFunction } from '@vue/shared'
+import { extend, isFunction } from '@vue/shared'
 import { getCurrentPageId } from '@dcloudio/uni-core'
 import { type Ref, onBeforeUnmount, onMounted, ref } from 'vue'
 import { getRealPath } from '../../../platform/getRealPath'
@@ -30,20 +30,12 @@ function useMethods(embedRef: Ref<InstanceType<typeof Embed> | null>) {
       data: any,
       resolve: (res: any) => void
     ) {
-      // @ts-expect-error
-      const elId = embedRef.value!.elId
-      const pageId = getCurrentPageId() + ''
-      UniViewJSBridge.invokeServiceMethod(
-        'webview' + capitalize(methodName),
-        {
-          pageId,
-          elId,
-          data,
-        },
-        (res) => {
-          resolve(res)
-        }
-      )
+      const embed = embedRef.value!
+      if (methodName === 'evalJs') {
+        return resolve(embed['runJavaScript']((data || {}).jsCode || ''))
+      } else {
+        resolve(embed[methodName]())
+      }
     }
   }
   function _handleSubscribe(
@@ -125,6 +117,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
             updateTitle: props.updateTitle,
             webviewStyles: props.webviewStyles,
           }}
+          methods={['runJavaScript', 'back', 'forward', 'reload', 'stop']}
           style="width:100%;height:100%"
         />
       </uni-web-view>
