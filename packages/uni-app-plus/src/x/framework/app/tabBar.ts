@@ -36,13 +36,10 @@ function getBorderStyle(borderStyle: string): string {
 export function fixBorderStyle(tabBarConfig: Map<string, any>) {
   let borderStyle = tabBarConfig.get('borderStyle')
   let borderColor = tabBarConfig.get('borderColor')
-  const isBorderStyleFilled = isString(borderStyle)
   const isBorderColorFilled = isString(borderColor)
 
   // 如果设置 borderStyle 做格式化
-  if (isBorderStyleFilled) {
-    borderStyle = getBorderStyle(borderStyle as string)
-  }
+  borderStyle = getBorderStyle(borderStyle as string)
 
   // 同时存在 borderColor>borderStyle，前者没有颜色限制，也不做格式化
   if (isBorderColorFilled) {
