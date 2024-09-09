@@ -278,7 +278,7 @@ export function switchSelect(
   if (tabBar0 === null) {
     init()
   }
-  const currentPage = (getCurrentPage() as unknown as UniPage).vm
+  const currentPage = (getCurrentPage() as unknown as UniPage)?.vm
 
   const type = currentPage == null ? 'appLaunch' : 'switchTab'
   // 执行beforeRoute
