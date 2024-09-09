@@ -1,5 +1,6 @@
 import { type PropType, computed, watch } from 'vue'
 import { defineBuiltInComponent } from '@dcloudio/uni-components'
+import { invokeHarmonyChannel } from '../../plus'
 
 const props = {
   tag: {
@@ -40,14 +41,14 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     })
     const srcValue = src.value
     watch(src, (srcValue) => {
-      harmonyChannel.invokeSync('onNativeEmbedLifecycleChange', [srcValue])
+      invokeHarmonyChannel('onNativeEmbedLifecycleChange', [srcValue])
     })
     const exposed = {
       elId,
     }
     props.methods.forEach((method) => {
       exposed[method] = (...args: any[]) => {
-        harmonyChannel.invokeSync('invokeNativeEmbed', [elId, method, args])
+        invokeHarmonyChannel('invokeNativeEmbed', [elId, method, args])
       }
     })
     expose(exposed)
