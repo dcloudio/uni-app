@@ -78,7 +78,7 @@ export function createUniXCompiler(
     hxLanguageServiceDir,
     originalPositionForSync,
     watchFile,
-    incremental: true,
+    incremental: mode === 'development',
     ...options,
   }
   const { UniXCompiler } = require('../../lib/uni-x/dist/compiler')

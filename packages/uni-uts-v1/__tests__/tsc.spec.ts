@@ -50,8 +50,9 @@ describe('uni_modules', () => {
 })
 
 function initEnv(platform: 'app-android' | 'app-ios') {
-  const oldEnv = process.env
+  const oldEnv = JSON.parse(JSON.stringify(process.env))
 
+  process.env.NODE_ENV = 'production'
   process.env.UNI_INPUT_DIR = inputDir
   process.env.UNI_OUTPUT_DIR = path.resolve(distDir, 'build', platform)
   process.env.UNI_UTS_PLATFORM = platform

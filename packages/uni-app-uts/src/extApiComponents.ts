@@ -4,13 +4,17 @@ import {
   genUTSClassName,
   initPreContext,
   normalizePath,
-  preUVueHtml,
-  preUVueJs,
 } from '@dcloudio/uni-cli-shared'
 import { parse } from '@dcloudio/uni-nvue-styler'
 
 import { transformMain as transformAndroid } from './plugins/android/uvue/sfc/main'
 
+/**
+ * 需要需要确保 vue 文件是处理过条件编译的
+ * @param platform
+ * @param vueFileName
+ * @returns
+ */
 export async function transformExtApiVueFile(
   platform: 'app-android' | 'app-ios', // | 'app-harmony',
   vueFileName: string
@@ -22,7 +26,7 @@ export async function transformExtApiVueFile(
     platform,
     true
   )
-  const code = preUVueJs(preUVueHtml(readFileSync(vueFileName, 'utf8')))
+  const code = readFileSync(vueFileName, 'utf8')
 
   if (platform === 'app-android') {
     return transformAppAndroidExtApiComponent(vueFileName, code)
@@ -66,7 +70,9 @@ async function transformAppAndroidExtApiComponent(
 async function transformAppIosExtApiComponent(
   vueFileName: string,
   code: string
-) {}
+) {
+  // TODO 编译vue为一个独立的js文件
+}
 
 async function parseAppAndroidVueStyle(
   name: string,

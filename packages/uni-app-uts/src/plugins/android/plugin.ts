@@ -242,6 +242,7 @@ export function uniAppPlugin(): UniVitePlugin {
           'uni.' + (manifestJson.appid || DEFAULT_APPID).replace(/_/g, ''),
         sourceMap:
           process.env.NODE_ENV === 'development' &&
+          process.env.UNI_COMPILE_TARGET !== 'ext-api' &&
           process.env.UNI_COMPILE_TARGET !== 'uni_modules',
         uni_modules: [...getCurrentCompiledUTSPlugins()],
         extApis: parseUniExtApiNamespacesOnce(
