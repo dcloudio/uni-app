@@ -213,10 +213,10 @@ async function build (target) {
     })
   }
   if (hasArkTSBundler) {
-    if (process.env.UNI_APP_EXT_API_DIR) {
+    if (process.env.UNI_APP_EXT_API_DIR && process.env.UNI_APP_EXT_API_INTERNAL_DIR) {
       await buildArkTS(target, parse(fs.readFileSync(path.resolve(pkgDir, 'build.ets.json'), 'utf8')))
     } else {
-      console.error(`Please set UNI_APP_EXT_API_DIR in .env file`)
+      console.error(`Please set UNI_APP_EXT_API_DIR and UNI_APP_EXT_API_INTERNAL_DIR in .env file`)
     }
   }
   if (hasRollupBundler) {
