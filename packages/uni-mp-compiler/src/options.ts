@@ -111,6 +111,7 @@ export interface TemplateCodegenOptions
   filename: string
   isBuiltInComponent: Required<TransformOptions>['isBuiltInComponent']
   isMiniProgramComponent(name: string): MiniProgramComponentsType | undefined
+  checkPropName?: MiniProgramCompilerOptions['checkPropName']
 }
 
 export type CompilerOptions = ParserOptions & TransformOptions & CodegenOptions
