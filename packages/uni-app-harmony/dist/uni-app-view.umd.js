@@ -22379,6 +22379,31 @@
       super(id2, "uni-icon", Icon, parentNodeId, refNodeId, nodeJson);
     }
   }
+  function invokeHarmonyChannel(method, args) {
+    return harmonyChannel.invokeSync(method, args ? args.map((arg) => JSON.stringify(arg)) : void 0);
+  }
+  const plus$1 = {
+    webview: {
+      currentWebview() {
+        return extend({
+          getStyle: () => {
+            return extend({}, invokeHarmonyChannel("getStyle"));
+          },
+          setSoftinputTemporary(options) {
+            invokeHarmonyChannel("setSoftinputTemporary", [options]);
+          }
+        }, invokeHarmonyChannel("currentWebview"));
+      },
+      postMessageToUniNView(data, id2) {
+        invokeHarmonyChannel("postMessageToUniNView", [data, id2]);
+      }
+    },
+    io: {
+      convertLocalFileSystemURL(filepath) {
+        return invokeHarmonyChannel("convertLocalFileSystemURL", [filepath]);
+      }
+    }
+  };
   var props$c = {
     tag: {
       type: String,
@@ -22420,7 +22445,7 @@
       });
       var srcValue = src.value;
       watch(src, (srcValue2) => {
-        harmonyChannel.invokeSync("onNativeEmbedLifecycleChange", [srcValue2]);
+        invokeHarmonyChannel("onNativeEmbedLifecycleChange", [srcValue2]);
       });
       var exposed = {
         elId
@@ -22430,7 +22455,7 @@
           for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
             args[_key] = arguments[_key];
           }
-          harmonyChannel.invokeSync("invokeNativeEmbed", [elId, method, args]);
+          invokeHarmonyChannel("invokeNativeEmbed", [elId, method, args]);
         };
       });
       expose(exposed);
@@ -26546,28 +26571,6 @@
       setCurrentPageMeta(null, args);
     });
   }
-  const plus$1 = {
-    webview: {
-      currentWebview() {
-        return extend({
-          getStyle: () => {
-            return extend({}, harmonyChannel.invokeSync("getStyle"));
-          },
-          setSoftinputTemporary(options) {
-            harmonyChannel.invokeSync("setSoftinputTemporary", [options]);
-          }
-        }, harmonyChannel.invokeSync("currentWebview"));
-      },
-      postMessageToUniNView(data, id2) {
-        harmonyChannel.invokeSync("postMessageToUniNView", [data, id2]);
-      }
-    },
-    io: {
-      convertLocalFileSystemURL(filepath) {
-        return harmonyChannel.invokeSync("convertLocalFileSystemURL", [filepath]);
-      }
-    }
-  };
   window.plus = plus$1;
   window.uni = uni$1;
   window.UniViewJSBridge = UniViewJSBridge$1;

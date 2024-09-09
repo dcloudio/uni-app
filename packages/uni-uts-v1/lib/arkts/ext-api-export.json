@@ -1,6 +1,51 @@
 {
   "@dcloudio/uni-app-runtime": [
     [
+      "UniOAuthProvider"
+    ],
+    [
+      "Login"
+    ],
+    [
+      "LoginSuccess"
+    ],
+    [
+      "LoginFail"
+    ],
+    [
+      "LoginOptions"
+    ],
+    [
+      "GetUserInfo"
+    ],
+    [
+      "UserInfo"
+    ],
+    [
+      "GetUserInfoSuccess"
+    ],
+    [
+      "GetUserInfoFail"
+    ],
+    [
+      "GetUserInfoOptions"
+    ],
+    [
+      "UniPaymentProvider"
+    ],
+    [
+      "RequestPayment"
+    ],
+    [
+      "RequestPaymentSuccess"
+    ],
+    [
+      "RequestPaymentFail"
+    ],
+    [
+      "RequestPaymentOptions"
+    ],
+    [
       "SetClipboardData"
     ],
     [
@@ -286,36 +331,6 @@
       "DownloadTask"
     ],
     [
-      "UniOAuthProvider"
-    ],
-    [
-      "Login"
-    ],
-    [
-      "LoginSuccess"
-    ],
-    [
-      "LoginFail"
-    ],
-    [
-      "LoginOptions"
-    ],
-    [
-      "GetUserInfo"
-    ],
-    [
-      "UserInfo"
-    ],
-    [
-      "GetUserInfoSuccess"
-    ],
-    [
-      "GetUserInfoFail"
-    ],
-    [
-      "GetUserInfoOptions"
-    ],
-    [
       "OpenAppAuthorizeSetting"
     ],
     [
@@ -332,21 +347,6 @@
     ],
     [
       "OpenDocumentOptions"
-    ],
-    [
-      "UniPaymentProvider"
-    ],
-    [
-      "RequestPayment"
-    ],
-    [
-      "RequestPaymentSuccess"
-    ],
-    [
-      "RequestPaymentFail"
-    ],
-    [
-      "RequestPaymentOptions"
     ],
     [
       "StartPullDownRefreshOptions"
@@ -536,6 +536,14 @@
     ],
     [
       "initUniExtApi"
+    ]
+  ],
+  "@uni_modules/uni-facialRecognitionVerify": [
+    [
+      "getFacialRecognitionMetaInfo"
+    ],
+    [
+      "startFacialRecognitionVerify"
     ]
   ],
   "@uni_modules/uni-oauth-huawei": [

@@ -43,7 +43,7 @@ import { UTSHarmony as UTSHarmony8 } from "@dcloudio/uni-mp-sdk";
 import { UTSHarmony as UTSHarmony9 } from "@dcloudio/uni-mp-sdk";
 import { UTSHarmony } from "@dcloudio/uni-mp-sdk";
 import { UTSObject, UTSJSONObject } from "@dcloudio/uts-harmony";
-import { UniError, IUniError, UniProvider, string, AsyncApiSuccessResult, AsyncApiResult, ApiOptions, ProtocolOptions, defineAsyncApi, ApiExecutor, ApiError, defineSyncApi, getUniProviders, defineTaskApi, getUniProvider } from "@dcloudio/uni-app-harmony";
+import { UniProvider, IUniError, UniError, string, AsyncApiSuccessResult, AsyncApiResult, ProtocolOptions, defineAsyncApi, ApiExecutor, getUniProvider, ApiError, ApiOptions, defineSyncApi, getUniProviders, defineTaskApi } from "@dcloudio/uni-app-harmony";
 import Want1 from '@ohos.app.ability.Want';
 import { abilityAccessCtrl } from '@kit.AbilityKit';
 import { access } from '@kit.ConnectivityKit';
@@ -137,6 +137,162 @@ import { wifiManager } from '@kit.ConnectivityKit';
 import { window as window1 } from '@kit.ArkUI';
 import { window as window2 } from '@kit.ArkUI';
 import { window } from '@kit.ArkUI';
+export interface UniOAuthProvider extends UniProvider {
+    login(options: LoginOptions): void;
+    getUserInfo(options: GetUserInfoOptions): void;
+}
+export type Login = (options: LoginOptions) => void;
+class AppleLoginAppleInfo extends UTSObject {
+    authorizationCode: string | null = null;
+    fullName: Object | null = null;
+    identityToken: string | null = null;
+    realUserStatus: number | null = null;
+    user: string | null = null;
+}
+export class LoginSuccess extends UTSObject {
+    errMsg!: string;
+    authResult!: Object;
+    code!: string;
+    anonymousCode: string | null = null;
+    authCode: string | null = null;
+    authErrorScope: Object | null = null;
+    authSucessScope: (string[]) | null = null;
+    appleInfo: AppleLoginAppleInfo | null = null;
+}
+type LoginSuccessCallback = (result: LoginSuccess) => void;
+export type LoginFail = IUniError;
+type LoginFailCallback = (result: LoginFail) => void;
+type LoginComplete = Object;
+type LoginCompleteCallback = (result: LoginComplete) => void;
+export class LoginOptions extends UTSObject {
+    provider: 'weixin' | 'qq' | 'sinaweibo' | 'xiaomi' | 'apple' | 'univerify' | 'huawei' | null = null;
+    scopes: Object | null = null;
+    timeout: number | null = null;
+    univerifyStyle: UniverifyStyle | null = null;
+    onlyAuthorize: boolean | null = null;
+    success: LoginSuccessCallback | null = null;
+    fail: LoginFailCallback | null = null;
+    complete: LoginCompleteCallback | null = null;
+}
+class UniverifyIconStyles extends UTSObject {
+    path!: string;
+    width: string | null = null;
+    height: string | null = null;
+}
+class UniverifyPhoneNumStyles extends UTSObject {
+    color: string | null = null;
+    fontSize: string | null = null;
+}
+class UniverifySloganStyles extends UTSObject {
+    color: string | null = null;
+    fontSize: string | null = null;
+}
+class UniverifyAuthButtonStyles extends UTSObject {
+    normalColor: string | null = null;
+    highlightColor: string | null = null;
+    disabledColor: string | null = null;
+    width: string | null = null;
+    height: string | null = null;
+    textColor: string | null = null;
+    title: string | null = null;
+    borderRadius: string | null = null;
+}
+class UniverifyOtherButtonStyles extends UTSObject {
+    visible: boolean | null = null;
+    normalColor: string | null = null;
+    highlightColor: string | null = null;
+    width: string | null = null;
+    height: string | null = null;
+    textColor: string | null = null;
+    title: string | null = null;
+    borderWidth: string | null = null;
+    borderColor: string | null = null;
+    borderRadius: string | null = null;
+}
+class UniverifyPrivacyItemStyles extends UTSObject {
+    url!: string;
+    title!: string;
+}
+class UniverifyPrivacyTermsStyles extends UTSObject {
+    defaultCheckBoxState: boolean | null = null;
+    textColor: string | null = null;
+    termsColor: string | null = null;
+    prefix: string | null = null;
+    suffix: string | null = null;
+    fontSize: string | null = null;
+    privacyItems: (UniverifyPrivacyItemStyles[]) | null = null;
+}
+class UniVerifyButtonListItem extends UTSObject {
+    provider!: string;
+    iconPath!: string;
+}
+class UniVerifyButtonsStyles extends UTSObject {
+    iconWidth: string | null = null;
+    list!: UniVerifyButtonListItem[];
+}
+class UniverifyStyle extends UTSObject {
+    fullScreen: boolean | null = null;
+    backgroundColor: string | null = null;
+    backgroundImage: string | null = null;
+    icon: UniverifyIconStyles | null = null;
+    phoneNum: UniverifyPhoneNumStyles | null = null;
+    slogan: UniverifySloganStyles | null = null;
+    authButton: UniverifyAuthButtonStyles | null = null;
+    otherLoginButton: UniverifyOtherButtonStyles | null = null;
+    privacyTerms: UniverifyPrivacyTermsStyles | null = null;
+    buttons: UniVerifyButtonsStyles | null = null;
+}
+export type GetUserInfo = (options: GetUserInfoOptions) => void;
+export class UserInfo extends UTSObject {
+    nickName!: string;
+    openId: string | null = null;
+    avatarUrl!: string;
+}
+export class GetUserInfoSuccess extends UTSObject {
+    userInfo!: UserInfo;
+    rawData: string | null = null;
+    signature: string | null = null;
+    encryptedData: string | null = null;
+    iv: string | null = null;
+    errMsg!: string;
+}
+type GetUserInfoSuccessCallback = (result: GetUserInfoSuccess) => void;
+export type GetUserInfoFail = IUniError;
+type GetUserInfoFailCallback = (result: GetUserInfoFail) => void;
+type GetUserInfoComplete = Object;
+type GetUserInfoCompleteCallback = (result: GetUserInfoComplete) => void;
+export class GetUserInfoOptions extends UTSObject {
+    provider: 'weixin' | 'qq' | 'sinaweibo' | 'xiaomi' | 'apple' | 'huawei' | null = null;
+    withCredentials: boolean | null = null;
+    lang: string | null = null;
+    timeout: number | null = null;
+    success: GetUserInfoSuccessCallback | null = null;
+    fail: GetUserInfoFailCallback | null = null;
+    complete: GetUserInfoCompleteCallback | null = null;
+}
+export interface UniPaymentProvider extends UniProvider {
+    requestPayment(options: RequestPaymentOptions): void;
+}
+type RequestPaymentErrorCode = 700600 | 701100 | 701110 | 700601 | 700602 | 700603 | 700000 | 700604 | 700605 | 700800 | 700801;
+export type RequestPayment = (options: RequestPaymentOptions) => void;
+export class RequestPaymentSuccess extends UTSObject {
+    data: object | null = null;
+}
+type RequestPaymentSuccessCallback = (result: RequestPaymentSuccess) => void;
+export type RequestPaymentFail = IRequestPaymentFail;
+type RequestPaymentFailCallback = (result: RequestPaymentFail) => void;
+type RequestPaymentComplete = Object;
+interface IRequestPaymentFail extends IUniError {
+    errCode: RequestPaymentErrorCode;
+}
+type RequestPaymentCompleteCallback = (result: RequestPaymentComplete) => void;
+export class RequestPaymentOptions extends UTSObject {
+    provider!: string;
+    orderInfo!: string;
+    success: RequestPaymentSuccessCallback | null = null;
+    fail: RequestPaymentFailCallback | null = null;
+    complete: RequestPaymentCompleteCallback | null = null;
+}
 type AddPhoneContact = (options: AddPhoneContactOptions) => void;
 class AddPhoneContactSuccess extends UTSObject {
 }
@@ -736,7 +892,7 @@ export class GetWindowInfoResult extends UTSObject {
     safeArea!: SafeArea;
     safeAreaInsets!: SafeAreaInsets;
     screenTop!: number;
-    cutoutArea!: Array<CutoutRect>;
+    cutoutArea: Array<CutoutRect> | null = null;
 }
 interface ISystemInfoAppVersion {
     name: string;
@@ -1230,139 +1386,6 @@ interface IDownloadTask {
     onProgressUpdate: Function;
     offProgressUpdate: Function;
 }
-export interface UniOAuthProvider extends UniProvider {
-    login(options: LoginOptions): void;
-    getUserInfo(options: GetUserInfoOptions): void;
-}
-export type Login = (options: LoginOptions) => void;
-class AppleLoginAppleInfo extends UTSObject {
-    authorizationCode: string | null = null;
-    fullName: Object | null = null;
-    identityToken: string | null = null;
-    realUserStatus: number | null = null;
-    user: string | null = null;
-}
-export class LoginSuccess extends UTSObject {
-    errMsg!: string;
-    authResult!: Object;
-    code!: string;
-    anonymousCode: string | null = null;
-    authCode: string | null = null;
-    authErrorScope: Object | null = null;
-    authSucessScope: (string[]) | null = null;
-    appleInfo: AppleLoginAppleInfo | null = null;
-}
-type LoginSuccessCallback = (result: LoginSuccess) => void;
-export type LoginFail = IUniError;
-type LoginFailCallback = (result: LoginFail) => void;
-type LoginComplete = Object;
-type LoginCompleteCallback = (result: LoginComplete) => void;
-export class LoginOptions extends UTSObject {
-    provider: 'weixin' | 'qq' | 'sinaweibo' | 'xiaomi' | 'apple' | 'univerify' | 'huawei' | null = null;
-    scopes: Object | null = null;
-    timeout: number | null = null;
-    univerifyStyle: UniverifyStyle | null = null;
-    onlyAuthorize: boolean | null = null;
-    success: LoginSuccessCallback | null = null;
-    fail: LoginFailCallback | null = null;
-    complete: LoginCompleteCallback | null = null;
-}
-class UniverifyIconStyles extends UTSObject {
-    path!: string;
-    width: string | null = null;
-    height: string | null = null;
-}
-class UniverifyPhoneNumStyles extends UTSObject {
-    color: string | null = null;
-    fontSize: string | null = null;
-}
-class UniverifySloganStyles extends UTSObject {
-    color: string | null = null;
-    fontSize: string | null = null;
-}
-class UniverifyAuthButtonStyles extends UTSObject {
-    normalColor: string | null = null;
-    highlightColor: string | null = null;
-    disabledColor: string | null = null;
-    width: string | null = null;
-    height: string | null = null;
-    textColor: string | null = null;
-    title: string | null = null;
-    borderRadius: string | null = null;
-}
-class UniverifyOtherButtonStyles extends UTSObject {
-    visible: boolean | null = null;
-    normalColor: string | null = null;
-    highlightColor: string | null = null;
-    width: string | null = null;
-    height: string | null = null;
-    textColor: string | null = null;
-    title: string | null = null;
-    borderWidth: string | null = null;
-    borderColor: string | null = null;
-    borderRadius: string | null = null;
-}
-class UniverifyPrivacyItemStyles extends UTSObject {
-    url!: string;
-    title!: string;
-}
-class UniverifyPrivacyTermsStyles extends UTSObject {
-    defaultCheckBoxState: boolean | null = null;
-    textColor: string | null = null;
-    termsColor: string | null = null;
-    prefix: string | null = null;
-    suffix: string | null = null;
-    fontSize: string | null = null;
-    privacyItems: (UniverifyPrivacyItemStyles[]) | null = null;
-}
-class UniVerifyButtonListItem extends UTSObject {
-    provider!: string;
-    iconPath!: string;
-}
-class UniVerifyButtonsStyles extends UTSObject {
-    iconWidth: string | null = null;
-    list!: UniVerifyButtonListItem[];
-}
-class UniverifyStyle extends UTSObject {
-    fullScreen: boolean | null = null;
-    backgroundColor: string | null = null;
-    backgroundImage: string | null = null;
-    icon: UniverifyIconStyles | null = null;
-    phoneNum: UniverifyPhoneNumStyles | null = null;
-    slogan: UniverifySloganStyles | null = null;
-    authButton: UniverifyAuthButtonStyles | null = null;
-    otherLoginButton: UniverifyOtherButtonStyles | null = null;
-    privacyTerms: UniverifyPrivacyTermsStyles | null = null;
-    buttons: UniVerifyButtonsStyles | null = null;
-}
-export type GetUserInfo = (options: GetUserInfoOptions) => void;
-export class UserInfo extends UTSObject {
-    nickName!: string;
-    openId: string | null = null;
-    avatarUrl!: string;
-}
-export class GetUserInfoSuccess extends UTSObject {
-    userInfo!: UserInfo;
-    rawData: string | null = null;
-    signature: string | null = null;
-    encryptedData: string | null = null;
-    iv: string | null = null;
-    errMsg!: string;
-}
-type GetUserInfoSuccessCallback = (result: GetUserInfoSuccess) => void;
-export type GetUserInfoFail = IUniError;
-type GetUserInfoFailCallback = (result: GetUserInfoFail) => void;
-type GetUserInfoComplete = Object;
-type GetUserInfoCompleteCallback = (result: GetUserInfoComplete) => void;
-export class GetUserInfoOptions extends UTSObject {
-    provider: 'weixin' | 'qq' | 'sinaweibo' | 'xiaomi' | 'apple' | 'huawei' | null = null;
-    withCredentials: boolean | null = null;
-    lang: string | null = null;
-    timeout: number | null = null;
-    success: GetUserInfoSuccessCallback | null = null;
-    fail: GetUserInfoFailCallback | null = null;
-    complete: GetUserInfoCompleteCallback | null = null;
-}
 export type OpenAppAuthorizeSetting = (options: OpenAppAuthorizeSettingOptions) => void;
 export class OpenAppAuthorizeSettingSuccess extends UTSObject {
     errMsg!: string;
@@ -1397,29 +1420,6 @@ export class OpenDocumentOptions extends UTSObject {
     complete: OpenDocumentCompleteCallback | null = null;
 }
 type OpenDocument = (options?: OpenDocumentOptions | null) => void;
-export interface UniPaymentProvider extends UniProvider {
-    requestPayment(options: RequestPaymentOptions): void;
-}
-type RequestPaymentErrorCode = 700600 | 701100 | 701110 | 700601 | 700602 | 700603 | 700000 | 700604 | 700605 | 700800 | 700801;
-export type RequestPayment = (options: RequestPaymentOptions) => void;
-export class RequestPaymentSuccess extends UTSObject {
-    data: object | null = null;
-}
-type RequestPaymentSuccessCallback = (result: RequestPaymentSuccess) => void;
-export type RequestPaymentFail = IRequestPaymentFail;
-type RequestPaymentFailCallback = (result: RequestPaymentFail) => void;
-type RequestPaymentComplete = Object;
-interface IRequestPaymentFail extends IUniError {
-    errCode: RequestPaymentErrorCode;
-}
-type RequestPaymentCompleteCallback = (result: RequestPaymentComplete) => void;
-export class RequestPaymentOptions extends UTSObject {
-    provider!: string;
-    orderInfo!: string;
-    success: RequestPaymentSuccessCallback | null = null;
-    fail: RequestPaymentFailCallback | null = null;
-    complete: RequestPaymentCompleteCallback | null = null;
-}
 type PromptErrorCode = 1 | 1001;
 interface IPromptError extends IUniError {
     errCode: PromptErrorCode;
@@ -1531,7 +1531,7 @@ type StopPullDownRefresh = () => void;
 export type Rpx2px = (number: number) => number;
 export class ScanCodeSuccess extends UTSObject {
     result!: string;
-    scanType!: ScanCodeSupportedTypes;
+    scanType!: string;
 }
 export class ScanCodeFail extends UTSObject {
 }
@@ -1547,6 +1547,9 @@ export class ScanCodeOptions extends UTSObject {
     complete: ScanCodeCompleteCallback | null = null;
 }
 type ScanCode = (options?: ScanCodeOptions | null) => void;
+type UniScanOptionsTypes = 'barCode' | 'qrCode' | 'datamatrix' | 'pdf417';
+type UniScanResultTypes = "QR_CODE" | "AZTEC" | "CODABAR" | "CODE_39" | "CODE_93" | "CODE_128" | "DATA_MATRIX" | "EAN_8" | "EAN_13" | "ITF" | "MAXICODE" | "PDF_417" | "RSS_14" | "RSS_EXPANDED" | "UPC_A" | "UPC_E" | "UPC_EAN_EXTENSION" | "WX_CODE" | "CODE_25";
+type HarmonyScanResultTypes = scanCore.ScanType.AZTEC_CODE | scanCore.ScanType.CODABAR_CODE | scanCore.ScanType.CODE128_CODE | scanCore.ScanType.CODE39_CODE | scanCore.ScanType.CODE93_CODE | scanCore.ScanType.DATAMATRIX_CODE | scanCore.ScanType.EAN13_CODE | scanCore.ScanType.EAN8_CODE | scanCore.ScanType.ITF14_CODE | scanCore.ScanType.MULTIFUNCTIONAL_CODE | scanCore.ScanType.PDF417_CODE | scanCore.ScanType.QR_CODE | scanCore.ScanType.UPC_A_CODE | scanCore.ScanType.UPC_E_CODE;
 export class ShareWithSystemSuccess extends UTSObject {
 }
 export class ShareWithSystemFail extends UTSObject {
@@ -1873,6 +1876,9 @@ interface IUniWebsocketEmitter {
     emit: (eventName: string, ...args: (Object | undefined | null)[]) => void;
 }
 interface UniExtApi {
+    login: Login;
+    getUserInfo: GetUserInfo;
+    requestPayment: RequestPayment;
     addPhoneContact: AddPhoneContact;
     startSoterAuthentication: StartSoterAuthentication;
     checkIsSupportSoterAuthentication: CheckIsSupportSoterAuthentication;
@@ -1920,11 +1926,8 @@ interface UniExtApi {
     request: Request<Object>;
     uploadFile: UploadFile;
     downloadFile: DownloadFile;
-    login: Login;
-    getUserInfo: GetUserInfo;
     openAppAuthorizeSetting: OpenAppAuthorizeSetting;
     openDocument: OpenDocument;
-    requestPayment: RequestPayment;
     showToast: ShowToast;
     hideToast: HideToast;
     showLoading: ShowLoading;
@@ -1963,6 +1966,142 @@ interface UniExtApi {
     onSocketError: OnSocketError;
 }
 export function initUniExtApi() {
+    const API_LOGIN = 'login';
+    const LoginApiProtocol = new Map<string, ProtocolOptions>([
+        [
+            'provider',
+            {
+                type: 'string'
+            }
+        ],
+        [
+            'timeout',
+            {
+                type: 'number'
+            }
+        ]
+    ]);
+    const API_GET_USER_INFO = 'getUserInfo';
+    const GetUserInfoApiProtocol = new Map<string, ProtocolOptions>([
+        [
+            'provider',
+            {
+                type: 'string'
+            }
+        ],
+        [
+            'timeout',
+            {
+                type: 'number'
+            }
+        ]
+    ]);
+    const SERVICE = 'oauth';
+    const PROVIDER = 'huawei';
+    const login: Login = defineAsyncApi<LoginOptions, LoginSuccess>(API_LOGIN, (args: LoginOptions, executor: ApiExecutor<LoginSuccess>)=>{
+        const provider = getUniProvider<UniOAuthProvider>(SERVICE, args.provider ?? PROVIDER);
+        if (!provider) {
+            executor.reject('Provider not found.');
+            return;
+        }
+        provider.login({
+            success (res) {
+                executor.resolve(res);
+            },
+            fail (err) {
+                executor.reject(err.errMsg);
+            }
+        } as LoginOptions);
+    }, LoginApiProtocol) as Login;
+    const getUserInfo: GetUserInfo = defineAsyncApi<GetUserInfoOptions, GetUserInfoSuccess>(API_GET_USER_INFO, (args: GetUserInfoOptions, executor: ApiExecutor<GetUserInfoSuccess>)=>{
+        const provider = getUniProvider<UniOAuthProvider>(SERVICE, args.provider ?? PROVIDER);
+        if (!provider) {
+            executor.reject('Provider not found.');
+            return;
+        }
+        provider.getUserInfo({
+            success (res) {
+                executor.resolve(res);
+            },
+            fail (err) {
+                executor.reject(err.errMsg);
+            }
+        } as GetUserInfoOptions);
+    }, GetUserInfoApiProtocol) as GetUserInfo;
+    const RequestPaymentUniErrors: Map<RequestPaymentErrorCode, string> = new Map([
+        [
+            700600,
+            'The payment result is unknown (it may have been successfully paid). Please check the payment status of the order in the merchant order list.'
+        ],
+        [
+            701100,
+            'Order payment failure.'
+        ],
+        [
+            701110,
+            'Repeat the request.'
+        ],
+        [
+            700601,
+            'The user canceled midway.'
+        ],
+        [
+            700602,
+            'Network connection error.'
+        ],
+        [
+            700603,
+            'Payment result unknown (may have been successfully paid), please check the payment status of the order in the merchant order list.'
+        ],
+        [
+            700607,
+            'Payment not completed.'
+        ],
+        [
+            700608,
+            'Parameter error.'
+        ],
+        [
+            700000,
+            'Other payment errors.'
+        ],
+        [
+            700604,
+            'Wechat is not installed.'
+        ],
+        [
+            700605,
+            'Failed to get provider.'
+        ],
+        [
+            700800,
+            'URL Scheme is not configured.'
+        ],
+        [
+            700801,
+            'Universal Link is not configured.'
+        ]
+    ]);
+    const API_REQUEST_PAYMENT = 'requestPayment';
+    const requestPayment: RequestPayment = defineAsyncApi<RequestPaymentOptions, RequestPaymentSuccess>(API_REQUEST_PAYMENT, (options: RequestPaymentOptions, exec: ApiExecutor<RequestPaymentSuccess>): void =>{
+        const provider = getUniProvider<UniPaymentProvider>('payment', options.provider);
+        if (!provider) {
+            exec.reject('Provider not found.');
+            return;
+        }
+        provider.requestPayment({
+            orderInfo: options.orderInfo,
+            success: (result: RequestPaymentSuccess)=>{
+                exec.resolve(result);
+            },
+            fail: (error: RequestPaymentFail)=>{
+                const errMsg = RequestPaymentUniErrors.get(error.errCode) ?? "";
+                exec.reject(errMsg, {
+                    errCode: error.errCode
+                } as ApiError);
+            }
+        } as RequestPaymentOptions);
+    }) as RequestPayment;
     const API_ADD_PHONE_CONTACT = 'addPhoneContact';
     const AddPhoneContactApiOptions: ApiOptions<AddPhoneContactOptions> = {
         formatArgs: new Map<string, ((firstName: string) => string | undefined)>([
@@ -3838,17 +3977,37 @@ export function initUniExtApi() {
         return backgroundAudioManager;
     }) as GetBackgroundAudioManager;
     const API_GET_DEVICE_INFO = 'getDeviceInfo';
+    const parseDeviceType = (deviceType: string): 'phone' | 'pad' | 'tv' | 'watch' | 'pc' | 'unknown' | 'car' | 'vr' | 'appliance' =>{
+        switch(deviceType){
+            case 'phone':
+                return 'phone';
+            case 'wearable':
+                return 'watch';
+            case 'tablet':
+                return 'pad';
+            case '2in1':
+                return 'pc';
+            case 'tv':
+                return 'tv';
+            case 'car':
+                return 'car';
+            case 'smartVision':
+                return 'vr';
+            default:
+                return 'unknown';
+        }
+    };
     const getDeviceInfo: GetDeviceInfo = defineSyncApi<GetDeviceInfoResult>(API_GET_DEVICE_INFO, (): GetDeviceInfoResult =>{
         return {
-            deviceBrand: deviceInfo.brand,
+            deviceBrand: deviceInfo.brand.toLowerCase(),
             deviceId: getDeviceId(),
             deviceModel: deviceInfo.productModel,
             deviceOrientation: 'portrait',
             devicePixelRatio: vp2px(1),
-            deviceType: deviceInfo.deviceType === 'tablet' ? 'pad' : deviceInfo.deviceType,
+            deviceType: parseDeviceType(deviceInfo.deviceType),
             osLanguage: I18n1.System.getSystemLanguage(),
             osTheme: UTSHarmony4.getOsTheme() as string,
-            osVersion: deviceInfo.buildVersion + '',
+            osVersion: deviceInfo.majorVersion + '.' + deviceInfo.seniorVersion + '.' + deviceInfo.featureVersion + '.' + deviceInfo.buildVersion,
             osName: 'harmonyos',
             platform: 'harmonyos',
             romName: deviceInfo.distributionOSName,
@@ -4346,10 +4505,12 @@ export function initUniExtApi() {
     const API_GET_SYSTEM_INFO = 'getSystemInfo';
     const API_GET_SYSTEM_INFO_SYNC = 'getSystemInfoSync';
     const API_GET_WINDOW_INFO = 'getWindowInfo';
-    const parseDeviceType = (deviceType: string): 'phone' | 'pad' | 'tv' | 'watch' | 'pc' | 'undefined' | 'car' | 'vr' | 'appliance' =>{
+    const parseDeviceType1 = (deviceType: string): 'phone' | 'pad' | 'tv' | 'watch' | 'pc' | 'unknown' | 'car' | 'vr' | 'appliance' =>{
         switch(deviceType){
             case 'phone':
                 return 'phone';
+            case 'wearable':
+                return 'watch';
             case 'tablet':
                 return 'pad';
             case '2in1':
@@ -4358,10 +4519,10 @@ export function initUniExtApi() {
                 return 'tv';
             case 'car':
                 return 'car';
-            case 'wearable':
-                return 'watch';
+            case 'smartVision':
+                return 'vr';
             default:
-                return 'undefined';
+                return 'unknown';
         }
     };
     const getWindowInfo: GetWindowInfo = defineSyncApi<GetWindowInfoResult>(API_GET_WINDOW_INFO, (): GetWindowInfoResult =>{
@@ -4397,15 +4558,15 @@ export function initUniExtApi() {
             uniRuntimeVersion: uniRuntimeVersion,
             uniRuntimeVersionCode: parseFloat(uniRuntimeVersion),
             uniPlatform: 'app',
-            deviceBrand: deviceInfo1.brand,
+            deviceBrand: deviceInfo1.brand.toLowerCase(),
             deviceId: getDeviceId1(),
             deviceModel: deviceInfo1.productModel,
             deviceOrientation: 'portrait',
             devicePixelRatio: vp2px(1),
-            deviceType: parseDeviceType(deviceInfo1.deviceType),
+            deviceType: parseDeviceType1(deviceInfo1.deviceType),
             osLanguage: I18n2.System.getSystemLanguage(),
             osTheme: UTSHarmony7.getOsTheme() as string,
-            osVersion: deviceInfo1.buildVersion + '',
+            osVersion: deviceInfo1.majorVersion + '.' + deviceInfo1.seniorVersion + '.' + deviceInfo1.featureVersion + '.' + deviceInfo1.buildVersion,
             osName: 'harmonyos',
             romName: deviceInfo1.distributionOSName,
             romVersion: deviceInfo1.distributionOSVersion,
@@ -4939,6 +5100,18 @@ export function initUniExtApi() {
             {
                 type: 'number'
             }
+        ],
+        [
+            'compressedWidth',
+            {
+                type: 'number'
+            }
+        ],
+        [
+            'compressedHeight',
+            {
+                type: 'number'
+            }
         ]
     ]);
     const API_CHOOSE_FILE = 'chooseFile';
@@ -5271,7 +5444,7 @@ export function initUniExtApi() {
         } else {
             const lastWindow = getCurrentWindow() as window.Window;
             const UIContextPromptAction = await lastWindow.getUIContext().getPromptAction();
-            const index = (await UIContextPromptAction.showActionMenu({
+            UIContextPromptAction.showActionMenu({
                 buttons: [
                     {
                         text: '拍照',
@@ -5282,12 +5455,18 @@ export function initUniExtApi() {
                         color: '#000000'
                     }
                 ]
-            } as promptAction1.ActionMenuOptions)).index;
-            if (index === 0) {
-                _takePhoto(options, res);
-            } else if (index === 1) {
-                _chooseImage(options, res);
-            }
+            } as promptAction1.ActionMenuOptions, (err, ref)=>{
+                let index = ref.index;
+                if (err) {
+                    res.reject('cancel');
+                } else {
+                    if (index === 0) {
+                        _takePhoto(options, res);
+                    } else if (index === 1) {
+                        _chooseImage(options, res);
+                    }
+                }
+            });
         }
     }, ChooseImageApiProtocol, ChooseImageApiOptions) as ChooseImage;
     const _chooseVideo = (options: ChooseVideoOptions, res: ApiExecutor<ChooseVideoSuccess>)=>{
@@ -5341,7 +5520,7 @@ export function initUniExtApi() {
         } else {
             const lastWindow = getCurrentWindow1() as window1.Window;
             const UIContextPromptAction = await lastWindow.getUIContext().getPromptAction();
-            const index = (await UIContextPromptAction.showActionMenu({
+            UIContextPromptAction.showActionMenu({
                 buttons: [
                     {
                         text: '拍摄',
@@ -5352,12 +5531,18 @@ export function initUniExtApi() {
                         color: '#000000'
                     }
                 ]
-            } as promptAction2.ActionMenuOptions)).index;
-            if (index === 0) {
-                _takeVideo(options, res);
-            } else if (index === 1) {
-                _chooseVideo(options, res);
-            }
+            } as promptAction2.ActionMenuOptions, (err, ref)=>{
+                let index = ref.index;
+                if (err) {
+                    res.reject('cancel');
+                } else {
+                    if (index === 0) {
+                        _takeVideo(options, res);
+                    } else if (index === 1) {
+                        _chooseVideo(options, res);
+                    }
+                }
+            });
         }
     }, ChooseVideoApiProtocol, ChooseVideoApiOptions) as ChooseVideo;
     const getImageInfo: GetImageInfo = defineAsyncApi<GetImageInfoOptions, GetImageInfoSuccess>(API_GET_IMAGE_INFO, async (options: GetImageInfoOptions, res: ApiExecutor<GetImageInfoSuccess>)=>{
@@ -5524,7 +5709,10 @@ export function initUniExtApi() {
         const imageName = getFileName(args.src);
         const imageExt = imageName.split('.').slice(-1)[0];
         const imagePacker: image1.ImagePacker = image1.createImagePacker();
-        const file2 = fileIo4.openSync(args.src, fileIo4.OpenMode.READ_WRITE);
+        const file2 = fileIo4.openSync(args.src, fileIo4.OpenMode.READ_ONLY);
+        if (!file2) {
+            throw new Error('open file failed');
+        }
         const imageSource: image1.ImageSource = image1.createImageSource(file2.fd);
         if (imageSource == null) {
             throw new Error('create image source failed');
@@ -5546,11 +5734,11 @@ export function initUniExtApi() {
         if ([
             'jpg',
             'jpe',
-            'jpeg'
+            'jpeg',
+            'png'
         ].includes(imageExt)) {
             format = 'image/jpeg';
         }
-        if (imageExt === 'png') format = 'image/png';
         if (imageExt === 'webp') format = 'image/webp';
         if (!format.length) {
             throw new Error('error image format');
@@ -5842,7 +6030,7 @@ export function initUniExtApi() {
         } else {
             const lastWindow = getCurrentWindow2() as window2.Window;
             const UIContextPromptAction = await lastWindow.getUIContext().getPromptAction();
-            const index = (await UIContextPromptAction.showActionMenu({
+            UIContextPromptAction.showActionMenu({
                 buttons: [
                     {
                         text: '拍摄',
@@ -5853,12 +6041,18 @@ export function initUniExtApi() {
                         color: '#000000'
                     }
                 ]
-            } as promptAction3.ActionMenuOptions)).index;
-            if (index === 0) {
-                _takeCamera(args, executor);
-            } else if (index === 1) {
-                __chooseMedia(args, executor);
-            }
+            } as promptAction3.ActionMenuOptions, (err, ref)=>{
+                let index = ref.index;
+                if (err) {
+                    executor.reject('cancel');
+                } else {
+                    if (index === 0) {
+                        _takeCamera(args, executor);
+                    } else if (index === 1) {
+                        __chooseMedia(args, executor);
+                    }
+                }
+            });
         }
     }, ChooseMediaApiProtocol, ChooseMediaApiOptions) as ChooseMedia;
     const API_REQUEST = 'request';
@@ -7108,68 +7302,6 @@ export function initUniExtApi() {
         });
         return new DownloadTask1(downloadTask);
     }, DownloadFileApiProtocol, DownloadFileApiOptions) as DownloadFile;
-    const API_LOGIN = 'login';
-    const LoginApiProtocol = new Map<string, ProtocolOptions>([
-        [
-            'provider',
-            {
-                type: 'string'
-            }
-        ],
-        [
-            'timeout',
-            {
-                type: 'number'
-            }
-        ]
-    ]);
-    const API_GET_USER_INFO = 'getUserInfo';
-    const GetUserInfoApiProtocol = new Map<string, ProtocolOptions>([
-        [
-            'provider',
-            {
-                type: 'string'
-            }
-        ],
-        [
-            'timeout',
-            {
-                type: 'number'
-            }
-        ]
-    ]);
-    const SERVICE = 'oauth';
-    const PROVIDER = 'huawei';
-    const login: Login = defineAsyncApi<LoginOptions, LoginSuccess>(API_LOGIN, (args: LoginOptions, executor: ApiExecutor<LoginSuccess>)=>{
-        const provider = getUniProvider<UniOAuthProvider>(SERVICE, args.provider ?? PROVIDER);
-        if (!provider) {
-            executor.reject('Provider not found.');
-            return;
-        }
-        provider.login({
-            success (res) {
-                executor.resolve(res);
-            },
-            fail (err) {
-                executor.reject(err.errMsg);
-            }
-        } as LoginOptions);
-    }, LoginApiProtocol) as Login;
-    const getUserInfo: GetUserInfo = defineAsyncApi<GetUserInfoOptions, GetUserInfoSuccess>(API_GET_USER_INFO, (args: GetUserInfoOptions, executor: ApiExecutor<GetUserInfoSuccess>)=>{
-        const provider = getUniProvider<UniOAuthProvider>(SERVICE, args.provider ?? PROVIDER);
-        if (!provider) {
-            executor.reject('Provider not found.');
-            return;
-        }
-        provider.getUserInfo({
-            success (res) {
-                executor.resolve(res);
-            },
-            fail (err) {
-                executor.reject(err.errMsg);
-            }
-        } as GetUserInfoOptions);
-    }, GetUserInfoApiProtocol) as GetUserInfo;
     const API_OPEN_APP_AUTHORIZE_SETTING = 'openAppAuthorizeSetting';
     const openAppAuthorizeSetting: OpenAppAuthorizeSetting = defineAsyncApi<OpenAppAuthorizeSettingOptions, OpenAppAuthorizeSettingSuccess>(API_OPEN_APP_AUTHORIZE_SETTING, (options: OpenAppAuthorizeSettingOptions, exec: ApiExecutor<OpenAppAuthorizeSettingSuccess>)=>{
         const want: Want = {
@@ -7232,72 +7364,6 @@ export function initUniExtApi() {
             exec.reject(err.message);
         });
     }) as OpenDocument;
-    const RequestPaymentUniErrors: Map<RequestPaymentErrorCode, string> = new Map([
-        [
-            700600,
-            'The payment result is unknown (it may have been successfully paid). Please check the payment status of the order in the merchant order list.'
-        ],
-        [
-            701100,
-            'Order payment failure.'
-        ],
-        [
-            701110,
-            'Repeat the request.'
-        ],
-        [
-            700601,
-            'The user canceled midway.'
-        ],
-        [
-            700602,
-            'Network connection error.'
-        ],
-        [
-            700603,
-            'Payment result unknown (may have been successfully paid), please check the payment status of the order in the merchant order list.'
-        ],
-        [
-            700000,
-            'Other payment errors.'
-        ],
-        [
-            700604,
-            'Wechat is not installed.'
-        ],
-        [
-            700605,
-            'Failed to get provider.'
-        ],
-        [
-            700800,
-            'URL Scheme is not configured.'
-        ],
-        [
-            700801,
-            'Universal Link is not configured.'
-        ]
-    ]);
-    const API_REQUEST_PAYMENT = 'requestPayment';
-    const requestPayment: RequestPayment = defineAsyncApi<RequestPaymentOptions, RequestPaymentSuccess>(API_REQUEST_PAYMENT, (options: RequestPaymentOptions, exec: ApiExecutor<RequestPaymentSuccess>): void =>{
-        const provider = getUniProvider<UniPaymentProvider>('payment', options.provider);
-        if (!provider) {
-            exec.reject('Provider not found.');
-            return;
-        }
-        provider.requestPayment({
-            orderInfo: options.orderInfo,
-            success: (result: RequestPaymentSuccess)=>{
-                exec.resolve(result);
-            },
-            fail: (error: RequestPaymentFail)=>{
-                const errMsg = RequestPaymentUniErrors.get(error.errCode) ?? "";
-                exec.reject(errMsg, {
-                    errCode: error.errCode
-                } as ApiError);
-            }
-        } as RequestPaymentOptions);
-    }) as RequestPayment;
     const API_SHOW_TOAST = 'showToast';
     const ShowToastProtocol = new Map<string, ProtocolOptions>([
         [
@@ -7622,54 +7688,106 @@ export function initUniExtApi() {
         return number < 0 ? -result : result;
     }) as Rpx2px;
     const API_SCAN_CODE = 'scanCode';
-    let supportedScanTypesMap: Map<ScanCodeSupportedTypes, scanCore.ScanType>;
-    const initScanTypesMapOnce = ()=>{
-        if (supportedScanTypesMap) {
-            return;
-        }
-        supportedScanTypesMap = new Map<ScanCodeSupportedTypes, scanCore.ScanType>([
+    const HarmonyScanTypeMap = new Map<UniScanOptionsTypes, scanCore.ScanType[]>([
+        [
+            'barCode',
             [
-                'barCode',
-                scanCore.ScanType.CODABAR_CODE
-            ],
+                scanCore.ScanType.ONE_D_CODE
+            ]
+        ],
+        [
+            'qrCode',
             [
-                'qrCode',
-                scanCore.ScanType.QR_CODE
-            ],
+                scanCore.ScanType.TWO_D_CODE
+            ]
+        ],
+        [
+            'datamatrix',
             [
-                'datamatrix',
                 scanCore.ScanType.DATAMATRIX_CODE
-            ],
+            ]
+        ],
+        [
+            'pdf417',
             [
-                'pdf417',
                 scanCore.ScanType.PDF417_CODE
             ]
-        ]);
-    };
-    const getUniScanType = (scanType: scanCore.ScanType): ScanCodeSupportedTypes =>{
-        for (const ref of supportedScanTypesMap.entries()){
-            let key = ref[0], value = ref[1];
-            if (value === scanType) {
-                return key;
-            }
-        }
-        return 'qrCode';
-    };
+        ]
+    ]);
+    const UniScanTypeMap = new Map<HarmonyScanResultTypes, UniScanResultTypes>([
+        [
+            scanCore.ScanType.AZTEC_CODE,
+            'AZTEC'
+        ],
+        [
+            scanCore.ScanType.CODABAR_CODE,
+            'CODABAR'
+        ],
+        [
+            scanCore.ScanType.CODE128_CODE,
+            'CODE_128'
+        ],
+        [
+            scanCore.ScanType.CODE39_CODE,
+            'CODE_39'
+        ],
+        [
+            scanCore.ScanType.CODE93_CODE,
+            'CODE_93'
+        ],
+        [
+            scanCore.ScanType.DATAMATRIX_CODE,
+            'DATA_MATRIX'
+        ],
+        [
+            scanCore.ScanType.EAN13_CODE,
+            'EAN_13'
+        ],
+        [
+            scanCore.ScanType.EAN8_CODE,
+            'EAN_8'
+        ],
+        [
+            scanCore.ScanType.ITF14_CODE,
+            'ITF'
+        ],
+        [
+            scanCore.ScanType.PDF417_CODE,
+            'PDF_417'
+        ],
+        [
+            scanCore.ScanType.QR_CODE,
+            'QR_CODE'
+        ],
+        [
+            scanCore.ScanType.UPC_A_CODE,
+            'UPC_A'
+        ],
+        [
+            scanCore.ScanType.UPC_E_CODE,
+            'UPC_E'
+        ]
+    ]);
     const scanCode: ScanCode = defineAsyncApi<ScanCodeOptions, ScanCodeSuccess>(API_SCAN_CODE, (options: ScanCodeOptions, exec: ApiExecutor<ScanCodeSuccess>)=>{
         if (!canIUse('SystemCapability.Multimedia.Scan.ScanBarcode')) {
             exec.reject('not support');
             return;
         }
-        initScanTypesMapOnce();
-        let scanTypes: scanCore.ScanType[] = [
-            scanCore.ScanType.ALL
-        ];
+        let scanTypes: scanCore.ScanType[] = [];
         if (options.scanType && Array.isArray(options.scanType) && options.scanType.length > 0) {
-            scanTypes = options.scanType.filter((type)=>{
-                return supportedScanTypesMap.has(type);
-            }).map((type)=>{
-                return supportedScanTypesMap.get(type)!;
-            });
+            for(let i = 0; i < options.scanType.length; i++){
+                const uniScanType = options.scanType[i];
+                const harmonyScanTypes = HarmonyScanTypeMap.get(uniScanType);
+                if (!harmonyScanTypes) {
+                    continue;
+                }
+                scanTypes = scanTypes.concat(harmonyScanTypes);
+            }
+        }
+        if (scanTypes.length === 0) {
+            scanTypes = [
+                scanCore.ScanType.ALL
+            ];
         }
         const scanOptions: scanBarcode.ScanOptions = {
             scanTypes,
@@ -7683,7 +7801,7 @@ export function initUniExtApi() {
             }
             exec.resolve({
                 result: data.originalValue,
-                scanType: getUniScanType(data.scanType)
+                scanType: UniScanTypeMap.get(data.scanType as HarmonyScanResultTypes) || ''
             } as ScanCodeSuccess);
         });
     }) as ScanCode;
@@ -8303,6 +8421,9 @@ export function initUniExtApi() {
         }
     }) as CloseSocket;
     return {
+        login,
+        getUserInfo,
+        requestPayment,
         addPhoneContact,
         startSoterAuthentication,
         checkIsSupportSoterAuthentication,
@@ -8350,11 +8471,8 @@ export function initUniExtApi() {
         request,
         uploadFile,
         downloadFile,
-        login,
-        getUserInfo,
         openAppAuthorizeSetting,
         openDocument,
-        requestPayment,
         showToast,
         hideToast,
         showLoading,
