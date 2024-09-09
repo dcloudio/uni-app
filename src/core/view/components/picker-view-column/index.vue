@@ -59,7 +59,10 @@ export default {
       return this.$parent.height
     },
     maskSize () {
-      return (this.height - this.indicatorHeight) / 2
+      // fix 父组件resize触发时间可能晚于子当前组件的resize, 导致计算时的this.height为0
+      // 需要直接获取父组件dom高度
+      const height = this.height || this.$parent.$el.offsetHeight
+      return (height - this.indicatorHeight) / 2
     }
   },
   watch: {
