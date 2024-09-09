@@ -33,6 +33,7 @@
     },
     "replacements": {
       "__GLOBAL__": "tt",
+      "__X__": "false",
       "__PLATFORM__": "\"mp-toutiao\"",
       "__PLATFORM_TITLE__": "字节跳动小程序"
     },

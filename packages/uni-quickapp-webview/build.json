@@ -34,6 +34,7 @@
     },
     "replacements": {
       "__GLOBAL__": "qa",
+      "__X__": "false",
       "__PLATFORM__": "\"quickapp-webview\"",
       "__PLATFORM_TITLE__": "快应用(Webview)版"
     },
