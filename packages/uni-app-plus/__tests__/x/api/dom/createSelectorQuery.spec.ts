@@ -4,7 +4,11 @@ import { createSelectorQuery } from '../../../../src/x/api/dom/createSelectorQue
 
 jest.mock('@dcloudio/uni-core', () => {
   return {
-    getCurrentPage: jest.fn(),
+    getCurrentPage: jest.fn(() => {
+      return {
+        vm: null,
+      }
+    }),
   }
 })
 

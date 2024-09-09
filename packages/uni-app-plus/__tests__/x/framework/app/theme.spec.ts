@@ -1,5 +1,20 @@
 const setPageStyle = jest.fn()
+
 jest.mock('../../../../src/service/framework/page/getCurrentPages', () => ({
+  UniBasePageImpl: class {
+    route: string = ''
+    options: Map<string, string | null> = new Map()
+    constructor() {
+      this.route = ''
+      this.options = new Map()
+    }
+    getParentPage() {
+      return null
+    }
+    getDialogPages() {
+      return []
+    }
+  },
   getAllPages: jest.fn(() => {
     return [
       {
