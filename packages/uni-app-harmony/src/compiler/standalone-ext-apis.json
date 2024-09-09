@@ -1,13 +1,5 @@
 [
   {
-    "type": "extapi",
-    "plugin": "uni-facialRecognitionVerify",
-    "apis": [
-      "startFacialRecognitionVerify",
-      "getFacialRecognitionMetaInfo"
-    ]
-  },
-  {
     "type": "provider",
     "plugin": "uni-oauth-huawei",
     "provider": "huawei",

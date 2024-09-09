@@ -13,6 +13,16 @@ var fs__default = /*#__PURE__*/_interopDefault(fs);
 
 var StandaloneExtApis = [
 	{
+		type: "provider",
+		plugin: "uni-oauth-huawei",
+		provider: "huawei",
+		service: "oauth"
+	},
+	{
+		type: "provider",
+		plugin: "uni-payment-alipay",
+		provider: "alipay",
+		service: "payment"
 	}
 ];
 
