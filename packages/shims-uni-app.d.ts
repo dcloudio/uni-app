@@ -251,6 +251,9 @@ declare namespace UniNamespace {
     leftWindow?: boolean
     rightWindow?: boolean
     eventChannel?: any
+    // page-meta的属性
+    pageStyle?:any, 
+    rootFontSize?:string
     // 目前 app-harmony 专用
     isNVueStyle?: boolean
   }

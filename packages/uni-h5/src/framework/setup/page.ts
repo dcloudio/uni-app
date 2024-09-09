@@ -33,8 +33,11 @@ import {
 import { updateCurPageCssVar } from '../../helpers/cssVar'
 import { getStateId } from '../../helpers/dom'
 import { getPageInstanceByVm } from './utils'
+
 import { EventBus } from '@dcloudio/uni-api'
+
 import type { UniBasePage } from '@dcloudio/uni-app-x/types/page'
+import { setCurrentPageMeta } from '../../service/api/ui/setPageMeta'
 
 const SEP = '$$'
 
@@ -477,6 +480,20 @@ function updateCurPageAttrs(pageMeta: UniApp.PageRouteMeta) {
     }
   }
 }
+// 触发页面page-meta.vue的设置
+function updatePageMeta(pageMeta: UniApp.PageRouteMeta) {
+  setCurrentPageMeta(null, {
+    pageStyle: pageMeta.pageStyle,
+    rootFontSize: pageMeta.rootFontSize,
+  })
+}
+// 页面mounted和activeated时触发
+export function onPageActivated(
+  instance: ComponentInternalInstance,
+  pageMeta: UniApp.PageRouteMeta
+) {
+  updatePageMeta(pageMeta)
+}
 
 export function onPageShow(
   instance: ComponentInternalInstance,
@@ -486,6 +503,9 @@ export function onPageShow(
   updateCurPageCssVar(pageMeta)
   updateCurPageAttrs(pageMeta)
   initPageScrollListener(instance, pageMeta)
+  nextTick(() => {
+    onPageActivated(instance, pageMeta)
+  })
 }
 
 export function onPageReady(instance: ComponentInternalInstance) {
