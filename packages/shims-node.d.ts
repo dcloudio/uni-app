@@ -75,6 +75,7 @@ declare namespace NodeJS {
     UNI_APP_HARMONY_PROJECT_PATH?: string
 
     UNI_COMPILE_EXT_API_INPUT?: string
+    UNI_APP_NEXT_WORKSPACE?: string
   }
 }
 

@@ -1,4 +1,5 @@
 import type { Plugin } from 'vite'
+import { isUTSProxy } from '../uts'
 
 export function uniUniModulesExtApiPlugin(): Plugin {
   return {
@@ -20,6 +21,16 @@ export function uniUniModulesExtApiPlugin(): Plugin {
           },
         },
       }
+    },
+    load(id) {
+      if (isUTSProxy(id)) {
+        return ''
+      }
+    },
+    generateBundle(_, bundle) {
+      Object.keys(bundle).forEach((fileName) => {
+        console.log('fileName', fileName)
+      })
     },
   }
 }

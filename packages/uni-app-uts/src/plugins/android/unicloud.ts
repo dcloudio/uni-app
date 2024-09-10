@@ -11,12 +11,17 @@ import { ENTRY_FILENAME, getUniCloudSpaceList } from './utils'
 const uniCloudSpaceList = getUniCloudSpaceList()
 
 export function uniCloudPlugin(): Plugin {
-  addUTSEasyComAutoImports(
-    normalizePath(
-      path.resolve(resolveComponentsLibPath(), 'unicloud-db', 'index.uts')
-    ),
-    ['mixinDatacom', 'uniCloudMixinDatacom']
-  )
+  if (
+    process.env.UNI_COMPILE_TARGET !== 'ext-api' &&
+    process.env.UNI_APP_NEXT_WORKSPACE
+  ) {
+    addUTSEasyComAutoImports(
+      normalizePath(
+        path.resolve(resolveComponentsLibPath(), 'unicloud-db', 'index.uts')
+      ),
+      ['mixinDatacom', 'uniCloudMixinDatacom']
+    )
+  }
   return {
     name: 'uni:app-unicloud',
     apply: 'build',

@@ -18,7 +18,7 @@ import { uniCloudPlugin } from './unicloud'
 
 export function init() {
   return [
-    uniDecryptUniModulesPlugin(),
+    ...(isNormalCompileTarget() ? [uniDecryptUniModulesPlugin()] : []),
     uniPrePlugin(),
     ...(isNormalCompileTarget()
       ? [

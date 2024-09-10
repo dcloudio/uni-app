@@ -145,3 +145,9 @@ export function resolveComponentsLibPath() {
   }
   return componentsLibPath
 }
+
+export function resolveComponentsLibDirs() {
+  return process.env.UNI_COMPILE_TARGET === 'ext-api'
+    ? []
+    : [resolveComponentsLibPath()]
+}

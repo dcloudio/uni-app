@@ -138,6 +138,15 @@ function resolveUTSFile(
 
 export function resolveUTSCompiler(): typeof UTSCompiler {
   let compilerPath: string = ''
+  if (
+    process.env.UNI_COMPILE_TARGET === 'ext-api' &&
+    process.env.UNI_APP_NEXT_WORKSPACE
+  ) {
+    return require(path.resolve(
+      process.env.UNI_APP_NEXT_WORKSPACE,
+      'packages/uni-uts-v1'
+    ))
+  }
   if (isInHBuilderX()) {
     try {
       compilerPath = require.resolve(
@@ -564,4 +573,15 @@ export function uvueOutDir(
 
 export function tscOutDir(platform: 'app-android' | 'app-ios' | 'app-harmony') {
   return path.join(process.env.UNI_APP_X_TSC_DIR, platform)
+}
+
+const UTSProxyRE = /\?uts-proxy$/
+const UniHelpersRE = /\?uni_helpers$/
+
+export function isUTSProxy(id: string) {
+  return UTSProxyRE.test(id)
+}
+
+export function isUniHelpers(id: string) {
+  return UniHelpersRE.test(id)
 }

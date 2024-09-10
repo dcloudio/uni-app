@@ -9,6 +9,8 @@ import {
   genUniExtApiDeclarationFileOnce,
   initUTSKotlinAutoImportsOnce,
   initUTSSwiftAutoImportsOnce,
+  isUTSProxy,
+  isUniHelpers,
   parseKotlinPackageWithPluginId,
   parseSwiftPackageWithPluginId,
   resolveUTSAppModule,
@@ -33,9 +35,6 @@ import { initScopedPreContext } from '../../../preprocess/context'
 
 /* eslint-disable no-restricted-globals */
 const { preprocess } = require('../../../../lib/preprocess')
-
-const UTSProxyRE = /\?uts-proxy$/
-const UniHelpersRE = /\?uni_helpers$/
 
 function createUniModulesSyncFilePreprocessor(
   platform: UniApp.PLATFORM,
@@ -129,14 +128,6 @@ const createUniXAppIosUniModulesSyncFilePreprocessorOnce = once(() => {
 const createUniXAppHarmonyUniModulesSyncFilePreprocessorOnce = once(() => {
   return createUniModulesSyncFilePreprocessor('app', 'app-harmony', true)
 })
-
-function isUTSProxy(id: string) {
-  return UTSProxyRE.test(id)
-}
-
-function isUniHelpers(id: string) {
-  return UniHelpersRE.test(id)
-}
 
 const utsModuleCaches = new Map<
   string,

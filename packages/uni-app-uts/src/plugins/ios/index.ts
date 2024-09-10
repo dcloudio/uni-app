@@ -1,6 +1,7 @@
 import * as path from 'path'
 import {
   UNI_EASYCOM_EXCLUDE,
+  isNormalCompileTarget,
   parseUniExtApiNamespacesOnce,
   resolveUTSCompiler,
   uniDecryptUniModulesPlugin,
@@ -22,7 +23,7 @@ import * as uniCliShared from '@dcloudio/uni-cli-shared'
 
 export function init() {
   return [
-    uniDecryptUniModulesPlugin(),
+    ...(isNormalCompileTarget() ? [uniDecryptUniModulesPlugin()] : []),
     uniHBuilderXConsolePlugin('uni.__log__'),
     uniUTSAppUniModulesPlugin({
       x: true,
