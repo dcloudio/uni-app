@@ -129,7 +129,7 @@ function initProxyFunction(type, async, { moduleName, moduleType, package: pkg, 
             }
         }
         else {
-            console.error(`${pkg}${cls}.${methodName} ${name} is not found`);
+            console.error(`uts插件[${moduleName}] ${pkg}${cls}.${methodName.replace('ByJs', '')} ${name}回调函数已释放，不能再次执行，参考文档：https://doc.dcloud.net.cn/uni-app-x/plugin/uts-plugin.html#keepalive`);
         }
     };
     const baseArgs = instanceId

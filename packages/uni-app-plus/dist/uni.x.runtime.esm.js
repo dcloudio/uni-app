@@ -3732,7 +3732,7 @@ function initProxyFunction(type, async, _ref, instanceId, proxy2) {
         delete callbacks[id2];
       }
     } else {
-      console.error("".concat(pkg).concat(cls, ".").concat(methodName, " ").concat(name, " is not found"));
+      console.error("uts插件[".concat(moduleName, "] ").concat(pkg).concat(cls, ".").concat(methodName.replace("ByJs", ""), " ").concat(name, "回调函数已释放，不能再次执行，参考文档：https://doc.dcloud.net.cn/uni-app-x/plugin/uts-plugin.html#keepalive"));
     }
   };
   var baseArgs = instanceId ? {
