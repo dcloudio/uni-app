@@ -380,25 +380,14 @@ function invokeSuccess(id, name, res) {
     const result = {
         errMsg: name + ':ok',
     };
-    if (__X__) {
-        result.errSubject = name;
-    }
     return invokeCallback(id, extend((res || {}), result));
 }
 function invokeFail(id, name, errMsg, errRes = {}) {
     const apiErrMsg = name + ':fail' + (errMsg ? ' ' + errMsg : '');
-    if (!__X__) {
+    {
         delete errRes.errCode;
     }
     let res = extend({ errMsg: apiErrMsg }, errRes);
-    if (__X__) {
-        if (typeof UniError !== 'undefined') {
-            res =
-                typeof errRes.errCode !== 'undefined'
-                    ? new UniError(name, errRes.errCode, apiErrMsg)
-                    : new UniError(apiErrMsg, errRes);
-        }
-    }
     return invokeCallback(id, res);
 }
 function beforeInvokeApi(name, args, protocol, options) {

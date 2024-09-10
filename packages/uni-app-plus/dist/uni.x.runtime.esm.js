@@ -9,9 +9,10 @@ function getCurrentPage() {
   }
 }
 function getCurrentPageMeta() {
-  var page = getCurrentPage();
-  if (page) {
-    return page.$page.meta;
+  var _getCurrentPage;
+  var $page = (_getCurrentPage = getCurrentPage()) === null || _getCurrentPage === void 0 || (_getCurrentPage = _getCurrentPage.vm) === null || _getCurrentPage === void 0 ? void 0 : _getCurrentPage.$basePage;
+  if ($page) {
+    return $page.meta;
   }
 }
 function getCurrentPageVm() {
@@ -1240,11 +1241,8 @@ function getBorderStyle(borderStyle) {
 function fixBorderStyle(tabBarConfig) {
   var borderStyle = tabBarConfig.get("borderStyle");
   var borderColor = tabBarConfig.get("borderColor");
-  var isBorderStyleFilled = isString(borderStyle);
   var isBorderColorFilled = isString(borderColor);
-  if (isBorderStyleFilled) {
-    borderStyle = getBorderStyle(borderStyle);
-  }
+  borderStyle = getBorderStyle(borderStyle);
   if (isBorderColorFilled) {
     borderStyle = borderColor;
   }
@@ -1390,6 +1388,7 @@ function getTabPage(path) {
   return new TabPageInfo(page, isFirst);
 }
 function switchSelect(selected, path) {
+  var _getCurrentPage;
   var query = arguments.length > 2 && arguments[2] !== void 0 ? arguments[2] : {};
   var rebuild = arguments.length > 3 && arguments[3] !== void 0 ? arguments[3] : false;
   var callback = arguments.length > 4 ? arguments[4] : void 0;
@@ -1397,7 +1396,7 @@ function switchSelect(selected, path) {
   if (tabBar0 === null) {
     init();
   }
-  var currentPage = getCurrentPage().vm;
+  var currentPage = (_getCurrentPage = getCurrentPage()) === null || _getCurrentPage === void 0 ? void 0 : _getCurrentPage.vm;
   var type = currentPage == null ? "appLaunch" : "switchTab";
   invokeBeforeRouteHooks(type);
   var pageInfo = getTabPage(getRealPath(path, true), query, rebuild, callback);
@@ -3601,7 +3600,7 @@ var callbackId = 1;
 var proxy;
 var callbacks = {};
 function isUniElement(obj) {
-  return typeof (obj === null || obj === void 0 ? void 0 : obj.getNodeId) === "function" && (obj === null || obj === void 0 ? void 0 : obj.pageId);
+  return obj && typeof obj.getNodeId === "function" && obj.pageId;
 }
 function isComponentPublicInstance(instance) {
   return instance && instance.$ && instance.$.proxy === instance;
@@ -3712,11 +3711,14 @@ function initProxyFunction(type, async, _ref, instanceId, proxy2) {
     name: methodName,
     method,
     companion,
+    keepAlive,
     params: methodParams,
     return: returnOptions,
     errMsg
   } = _ref;
-  var keepAlive = methodName.indexOf("on") === 0 && methodParams.length === 1 && methodParams[0].type === "UTSCallback";
+  if (!keepAlive) {
+    keepAlive = methodName.indexOf("on") === 0 && methodParams.length === 1 && methodParams[0].type === "UTSCallback";
+  }
   var invokeCallback2 = (_ref2) => {
     var {
       id: id2,
@@ -3860,6 +3862,7 @@ function initUTSProxyClass(options) {
         }
         this.__instanceId = initProxyFunction("constructor", false, extend({
           name: "constructor",
+          keepAlive: false,
           params: constructorParams
         }, baseOptions), 0).apply(null, params);
       } else if (typeof instanceId === "number") {
@@ -3879,11 +3882,13 @@ function initUTSProxyClass(options) {
             if (hasOwn(methods, name)) {
               var {
                 async,
+                keepAlive,
                 params: params2,
                 return: returnOptions
               } = methods[name];
               target[name] = initUTSInstanceMethod(!!async, extend({
                 name,
+                keepAlive,
                 params: params2,
                 return: returnOptions
               }, baseOptions), instance.__instanceId, proxy2);
@@ -3910,6 +3915,7 @@ function initUTSProxyClass(options) {
               if (param) {
                 target[setter] = initProxyFunction("setter", false, extend({
                   name,
+                  keepAlive: false,
                   params: [param]
                 }, baseOptions), instance.__instanceId, proxy2);
               }
@@ -3932,12 +3938,14 @@ function initUTSProxyClass(options) {
         if (!staticMethodCache[name]) {
           var {
             async,
+            keepAlive,
             params,
             return: returnOptions
           } = staticMethods[name];
           staticMethodCache[name] = initUTSStaticMethod(!!async, extend({
             name,
             companion: true,
+            keepAlive,
             params,
             return: returnOptions
           }, baseOptions));
@@ -3961,6 +3969,7 @@ function initUTSProxyClass(options) {
           if (param) {
             staticPropSetterCache[setter] = initProxyFunction("setter", false, extend({
               name,
+              keepAlive: false,
               params: [param]
             }, baseOptions), 0);
           }

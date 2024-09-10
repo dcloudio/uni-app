@@ -973,10 +973,10 @@ function initLifetimes(lifetimesOptions) {
 }
 
 const mocks = ['nodeId', 'componentName', '_componentId', 'uniquePrefix'];
-function isPage(mpInstance) {
-    return !!mpInstance.methods.onLoad;
-}
 
+function isPage(mpInstance) {
+    return !!(mpInstance._methods || mpInstance.methods).onLoad;
+}
 function initRelation(mpInstance) {
     // triggerEvent 后，接收事件时机特别晚，已经到了 ready 之后
     const nodeId = mpInstance.nodeId + '';

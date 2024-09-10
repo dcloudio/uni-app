@@ -1454,9 +1454,10 @@ function getCurrentPage() {
     }
 }
 function getCurrentPageMeta() {
-    const page = getCurrentPage();
-    if (page) {
-        return page.$page.meta;
+    var _c;
+    const $page = (_c = getCurrentPage()) === null || _c === void 0 ? void 0 : _c.$page;
+    if ($page) {
+        return $page.meta;
     }
 }
 function getCurrentPageId() {
@@ -1806,7 +1807,8 @@ function initOn() {
     on(ON_APP_ENTER_BACKGROUND, onAppEnterBackground);
 }
 function onResize(res) {
-    invokeHook(getCurrentPage(), ON_RESIZE, res);
+    const page = getCurrentPage();
+    invokeHook(page, ON_RESIZE, res);
     UniServiceJSBridge.invokeOnCallback('onWindowResize', res); // API
 }
 function onAppEnterForeground(enterOptions) {
@@ -17438,7 +17440,7 @@ let callbackId = 1;
 let proxy;
 const callbacks = {};
 function isUniElement(obj) {
-    return typeof (obj === null || obj === void 0 ? void 0 : obj.getNodeId) === 'function' && (obj === null || obj === void 0 ? void 0 : obj.pageId);
+    return obj && typeof obj.getNodeId === 'function' && obj.pageId;
 }
 function isComponentPublicInstance(instance) {
     return instance && instance.$ && instance.$.proxy === instance;
@@ -17545,10 +17547,13 @@ function invokePropGetter(args) {
     }
     return resolveSyncResult(args, getProxy().invokeSync(args, () => { }));
 }
-function initProxyFunction(type, async, { moduleName, moduleType, package: pkg, class: cls, name: methodName, method, companion, params: methodParams, return: returnOptions, errMsg, }, instanceId, proxy) {
-    const keepAlive = methodName.indexOf('on') === 0 &&
-        methodParams.length === 1 &&
-        methodParams[0].type === 'UTSCallback';
+function initProxyFunction(type, async, { moduleName, moduleType, package: pkg, class: cls, name: methodName, method, companion, keepAlive, params: methodParams, return: returnOptions, errMsg, }, instanceId, proxy) {
+    if (!keepAlive) {
+        keepAlive =
+            methodName.indexOf('on') === 0 &&
+                methodParams.length === 1 &&
+                methodParams[0].type === 'UTSCallback';
+    }
     // const throws = async
     const invokeCallback = ({ id, name, params }) => {
         const callback = callbacks[id];
@@ -17686,7 +17691,11 @@ function initUTSProxyClass(options) {
             // 初始化实例 ID
             if (!isProxyInterface) {
                 // 初始化未指定时，每次都要创建instanceId
-                this.__instanceId = initProxyFunction('constructor', false, extend({ name: 'constructor', params: constructorParams }, baseOptions), 0).apply(null, params);
+                this.__instanceId = initProxyFunction('constructor', false, extend({
+                    name: 'constructor',
+                    keepAlive: false,
+                    params: constructorParams,
+                }, baseOptions), 0).apply(null, params);
             }
             else if (typeof instanceId === 'number') {
                 this.__instanceId = instanceId;
@@ -17705,9 +17714,10 @@ function initUTSProxyClass(options) {
                         //实例方法
                         name = parseClassMethodName(name, methods);
                         if (hasOwn$1(methods, name)) {
-                            const { async, params, return: returnOptions } = methods[name];
+                            const { async, keepAlive, params, return: returnOptions, } = methods[name];
                             target[name] = initUTSInstanceMethod(!!async, extend({
                                 name,
+                                keepAlive,
                                 params,
                                 return: returnOptions,
                             }, baseOptions), instance.__instanceId, proxy);
@@ -17736,6 +17746,7 @@ function initUTSProxyClass(options) {
                             if (param) {
                                 target[setter] = initProxyFunction('setter', false, extend({
                                     name: name,
+                                    keepAlive: false,
                                     params: [param],
                                 }, baseOptions), instance.__instanceId, proxy);
                             }
@@ -17756,11 +17767,12 @@ function initUTSProxyClass(options) {
             name = parseClassMethodName(name, staticMethods);
             if (hasOwn$1(staticMethods, name)) {
                 if (!staticMethodCache[name]) {
-                    const { async, params, return: returnOptions } = staticMethods[name];
+                    const { async, keepAlive, params, return: returnOptions, } = staticMethods[name];
                     // 静态方法
                     staticMethodCache[name] = initUTSStaticMethod(!!async, extend({
                         name,
                         companion: true,
+                        keepAlive,
                         params,
                         return: returnOptions,
                     }, baseOptions));
@@ -17785,6 +17797,7 @@ function initUTSProxyClass(options) {
                     if (param) {
                         staticPropSetterCache[setter] = initProxyFunction('setter', false, extend({
                             name: name,
+                            keepAlive: false,
                             params: [param],
                         }, baseOptions), 0);
                     }

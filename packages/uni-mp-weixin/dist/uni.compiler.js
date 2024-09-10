@@ -151,6 +151,8 @@ const customElements = [
     // 'span', //  todo: 临时移除 span 的支持，后续判断 skyline 环境进行区分 ask 190418
     'sticky-header',
     'sticky-section',
+    'store-product',
+    'store-home',
 ];
 const compilerOptions = {
     nodeTransforms: [uniCliShared.transformRef, uniCliShared.transformComponentLink, transformAd],

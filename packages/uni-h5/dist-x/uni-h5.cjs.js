@@ -968,9 +968,10 @@ function getCurrentPage() {
   }
 }
 function getCurrentPageMeta() {
-  const page = getCurrentPage();
-  if (page) {
-    return page.$page.meta;
+  var _a, _b;
+  const $page = (_b = (_a = getCurrentPage()) == null ? void 0 : _a.vm) == null ? void 0 : _b.$basePage;
+  if ($page) {
+    return $page.meta;
   }
 }
 function getCurrentPageId() {
@@ -2981,9 +2982,9 @@ function initPage(vm) {
   {
     vm.$basePage = vm.$page;
     const uniPage = new UniPageImpl({
-      route: route.path,
+      route: (route == null ? void 0 : route.path) || "",
       options: new Map(
-        Object.entries(route.query)
+        Object.entries((route == null ? void 0 : route.query) || {})
       ),
       vm
     });

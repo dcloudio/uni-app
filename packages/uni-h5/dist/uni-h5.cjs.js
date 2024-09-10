@@ -362,9 +362,10 @@ function getCurrentPage() {
   }
 }
 function getCurrentPageMeta() {
-  const page = getCurrentPage();
-  if (page) {
-    return page.$page.meta;
+  var _c;
+  const $page = (_c = getCurrentPage()) == null ? void 0 : _c.$page;
+  if ($page) {
+    return $page.meta;
   }
 }
 function getCurrentPageId() {

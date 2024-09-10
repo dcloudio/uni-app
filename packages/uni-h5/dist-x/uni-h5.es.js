@@ -1336,7 +1336,9 @@ function useRem() {
   function updateRem() {
     let width = getWindowWidth$1();
     width = width <= maxWidth2 ? width : baseWidth2;
-    document.documentElement.style.fontSize = width / 23.4375 + "px";
+    if (!document.documentElement.hasAttribute("root-font-size")) {
+      document.documentElement.style.fontSize = width / 23.4375 + "px";
+    }
   }
   updateRem();
   document.addEventListener("DOMContentLoaded", updateRem);
@@ -1706,9 +1708,10 @@ function getCurrentPage() {
   }
 }
 function getCurrentPageMeta() {
-  const page = getCurrentPage();
-  if (page) {
-    return page.$page.meta;
+  var _a, _b;
+  const $page = (_b = (_a = getCurrentPage()) == null ? void 0 : _a.vm) == null ? void 0 : _b.$basePage;
+  if ($page) {
+    return $page.meta;
   }
 }
 function getCurrentPageId() {
@@ -2328,7 +2331,8 @@ function initOn() {
   on2(ON_APP_ENTER_BACKGROUND, onAppEnterBackground);
 }
 function onResize$1(res) {
-  invokeHook(getCurrentPage(), ON_RESIZE, res);
+  const page = getCurrentPage().vm;
+  invokeHook(page, ON_RESIZE, res);
   UniServiceJSBridge.invokeOnCallback("onWindowResize", res);
 }
 function onAppEnterForeground(enterOptions2) {
@@ -8190,6 +8194,46 @@ function getPageInstanceByChild(child) {
   }
   return pageInstance;
 }
+function setCurrentPageMeta(page, options) {
+  const { pageStyle, rootFontSize } = options;
+  if (page) {
+    if (hasOwn(options, "pageStyle")) {
+      getPage$BasePage(page).meta.pageStyle = pageStyle;
+    }
+    if (hasOwn(options, "rootFontSize")) {
+      getPage$BasePage(page).meta.rootFontSize = rootFontSize;
+    }
+  }
+  if (hasOwn(options, "pageStyle")) {
+    setPageStyle(pageStyle);
+  }
+  if (hasOwn(options, "rootFontSize")) {
+    setRootFontSize(rootFontSize);
+  }
+}
+const setPageStyle = (pageStyle) => {
+  const pageElm = document.querySelector("uni-page-body") || document.body;
+  if (pageElm === document.body) {
+    console.warn("uni-page-body 获取失败");
+  }
+  if (pageStyle) {
+    pageElm.setAttribute("style", pageStyle);
+  } else {
+    pageElm.removeAttribute("style");
+  }
+};
+const setRootFontSize = (rootFontSize) => {
+  if (document.documentElement.style.fontSize === rootFontSize) {
+    return;
+  }
+  if (rootFontSize) {
+    document.documentElement.style.fontSize = rootFontSize;
+    document.documentElement.setAttribute("root-font-size", "true");
+  } else {
+    document.documentElement.style.removeProperty("font-size");
+    document.documentElement.removeAttribute("root-font-size");
+  }
+};
 const SEP = "$$";
 const currentPagesMap = /* @__PURE__ */ new Map();
 const homeDialogPages = [];
@@ -8375,9 +8419,9 @@ function initPage(vm) {
   {
     vm.$basePage = vm.$page;
     const uniPage = new UniPageImpl({
-      route: route.path,
+      route: (route == null ? void 0 : route.path) || "",
       options: new Map(
-        Object.entries(route.query)
+        Object.entries((route == null ? void 0 : route.query) || {})
       ),
       vm
     });
@@ -8510,11 +8554,23 @@ function updateCurPageAttrs(pageMeta) {
     document.body.setAttribute(uvueDirKey, "");
   }
 }
+function updatePageMeta(pageMeta) {
+  setCurrentPageMeta(null, {
+    pageStyle: pageMeta.pageStyle,
+    rootFontSize: pageMeta.rootFontSize
+  });
+}
+function onPageActivated(instance2, pageMeta) {
+  updatePageMeta(pageMeta);
+}
 function onPageShow(instance2, pageMeta) {
   updateBodyScopeId(instance2);
   updateCurPageCssVar(pageMeta);
   updateCurPageAttrs();
   initPageScrollListener(instance2, pageMeta);
+  nextTick(() => {
+    onPageActivated(instance2, pageMeta);
+  });
 }
 function onPageReady(instance2) {
   const scopeId = getScopeId(instance2);
@@ -8976,15 +9032,6 @@ function requestComponentInfo(page, reqs, callback) {
     }
   });
   callback(result);
-}
-function setCurrentPageMeta(_page, { pageStyle, rootFontSize }) {
-  if (pageStyle) {
-    const pageElm = document.querySelector("uni-page-body") || document.body;
-    pageElm.setAttribute("style", pageStyle);
-  }
-  if (rootFontSize && document.documentElement.style.fontSize !== rootFontSize) {
-    document.documentElement.style.fontSize = rootFontSize;
-  }
 }
 function addIntersectionObserver({ reqId, component, options, callback }, _pageId) {
   const $el = findElem(component);
@@ -18923,7 +18970,8 @@ function setupPage(comp) {
       watch(
         [instance2.onReachBottom, instance2.onPageScroll],
         () => {
-          if (instance2.proxy === getCurrentPage()) {
+          const currentPage = getCurrentPage().vm;
+          if (instance2.proxy === currentPage) {
             initPageScrollListener(instance2, pageMeta);
           }
         },
@@ -23964,6 +24012,22 @@ const preloadPage = /* @__PURE__ */ defineAsyncApi(
   },
   PreloadPageProtocol
 );
+if (process.env.NODE_ENV !== "production") {
+  document.addEventListener("DOMContentLoaded", () => {
+    __uniRoutes.reduce((prev, route) => {
+      return prev.then(() => {
+        return new Promise((resolve) => {
+          preloadPage({
+            url: route.alias || route.path,
+            complete() {
+              resolve();
+            }
+          });
+        });
+      });
+    }, Promise.resolve());
+  });
+}
 const props$4 = {
   title: {
     type: String,

@@ -1775,37 +1775,20 @@ function createDecl(prop, value, important, raws, source) {
 }
 var backgroundColor = 'backgroundColor';
 var backgroundImage = 'backgroundImage';
-function createTransformBackground(options) {
-  return decl => {
-    var {
-      value,
-      important,
-      raws,
-      source
-    } = decl;
-    // nvue 平台维持原有逻辑不变
-    var isUvuePlatform = options.type === 'uvue';
-    if (isUvuePlatform) {
-      if (/^#?\S+$/.test(value) || /^rgba?(.+)$/.test(value)) {
-        return [createDecl(backgroundImage, 'none', important, raws, source), createDecl(backgroundColor, value, important, raws, source)];
-      } else if (/^linear-gradient(.+)$/.test(value)) {
-        return [createDecl(backgroundImage, value, important, raws, source), createDecl(backgroundColor, 'transparent', important, raws, source)];
-      } else if (value == '') {
-        return [createDecl(backgroundImage, 'none', important, raws, source), createDecl(backgroundColor, 'transparent', important, raws, source)];
-      }
-      return [decl];
-    } else {
-      if (/^#?\S+$/.test(value) || /^rgba?(.+)$/.test(value)) {
-        return [createDecl(backgroundColor, value, important, raws, source)];
-      } else if (/^linear-gradient(.+)$/.test(value)) {
-        return [createDecl(backgroundImage, value, important, raws, source)];
-      } else if (value == '') {
-        return [decl];
-      }
-      return [decl];
-    }
-  };
-}
+var transformBackground = decl => {
+  var {
+    value,
+    important,
+    raws,
+    source
+  } = decl;
+  if (/^#?\S+$/.test(value) || /^rgba?(.+)$/.test(value)) {
+    return [createDecl(backgroundColor, value, important, raws, source)];
+  } else if (/^linear-gradient(.+)$/.test(value)) {
+    return [createDecl(backgroundImage, value, important, raws, source)];
+  }
+  return [decl];
+};
 var borderWidth = 'Width';
 var borderStyle = 'Style';
 var borderColor = 'Color';
@@ -1823,16 +1806,8 @@ function createTransformBorder(options) {
       var index = splitResult.findIndex(str => item.test(str));
       return index < 0 ? null : splitResult.splice(index, 1)[0];
     });
-    var isUvuePlatform = options.type === 'uvue';
-    if (isUvuePlatform) {
-      if (splitResult.length > 0 && value !== '') {
-        return [decl];
-      }
-    } else {
-      // nvue 维持不变
-      if (splitResult.length > 0) {
-        return [decl];
-      }
+    if (splitResult.length) {
+      return [decl];
     }
     return [createDecl(prop + borderWidth, (result[0] || (options.type === 'uvue' ? 'medium' : '0')).trim(), important, raws, source), createDecl(prop + borderStyle, (result[1] || (options.type === 'uvue' ? 'none' : 'solid')).trim(), important, raws, source), createDecl(prop + borderColor, (result[2] || '#000000').trim(), important, raws, source)];
   };
@@ -1979,7 +1954,7 @@ function getDeclTransforms(options) {
   var styleMap = _objectSpread({
     transition: transformTransition,
     border: transformBorder,
-    background: createTransformBackground(options),
+    background: transformBackground,
     borderTop: transformBorder,
     borderRight: transformBorder,
     borderBottom: transformBorder,
@@ -2005,7 +1980,7 @@ var DeclTransforms;
 var expanded = Symbol('expanded');
 function expand(options) {
   var plugin = {
-    postcssPlugin: "".concat(options.type || 'nvue', ":expand"),
+    postcssPlugin: 'nvue:expand',
     Declaration(decl) {
       if (decl[expanded]) {
         return;
