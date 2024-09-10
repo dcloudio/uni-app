@@ -12,8 +12,10 @@ const uniCloudSpaceList = getUniCloudSpaceList()
 
 export function uniCloudPlugin(): Plugin {
   if (
-    process.env.UNI_COMPILE_TARGET !== 'ext-api' &&
-    process.env.UNI_APP_NEXT_WORKSPACE
+    !(
+      process.env.UNI_COMPILE_TARGET === 'ext-api' &&
+      process.env.UNI_APP_NEXT_WORKSPACE
+    )
   ) {
     addUTSEasyComAutoImports(
       normalizePath(
