@@ -60,6 +60,7 @@ export default {
     },
     maskSize () {
       // fix 父组件resize触发时间可能晚于子当前组件的resize, 导致计算时的this.height为0
+      // 此时计算maskSize 为负数，导致this.update方法执行错误
       // 需要直接获取父组件dom高度
       const height = this.height || this.$parent.$el.offsetHeight
       return (height - this.indicatorHeight) / 2
