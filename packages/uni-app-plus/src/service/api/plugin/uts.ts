@@ -110,6 +110,10 @@ interface ProxyFunctionOptions extends ModuleOptions {
    */
   companion?: boolean
   /**
+   * 回调是否持久保留
+   */
+  keepAlive: boolean
+  /**
    * 方法参数列表
    */
   params: Parameter[]
@@ -133,6 +137,7 @@ interface ProxyInterfaceOptions extends ModuleOptions {
   methods: {
     [name: string]: {
       async?: boolean
+      keepAlive: boolean
       params: Parameter[]
       return?: ProxyFunctionReturnOptions
     }
@@ -156,6 +161,7 @@ interface ProxyClassOptions extends ModuleOptions {
   methods: {
     [name: string]: {
       async?: boolean
+      keepAlive: boolean
       params: Parameter[]
       return?: ProxyFunctionReturnOptions
     }
@@ -163,6 +169,7 @@ interface ProxyClassOptions extends ModuleOptions {
   staticMethods: {
     [name: string]: {
       async?: boolean
+      keepAlive: boolean
       params: Parameter[]
       return?: ProxyFunctionReturnOptions
     }
@@ -389,6 +396,7 @@ function initProxyFunction(
     name: methodName,
     method,
     companion,
+    keepAlive,
     params: methodParams,
     return: returnOptions,
     errMsg,
@@ -396,10 +404,12 @@ function initProxyFunction(
   instanceId: number,
   proxy?: unknown
 ) {
-  const keepAlive =
-    methodName.indexOf('on') === 0 &&
-    methodParams.length === 1 &&
-    methodParams[0].type === 'UTSCallback'
+  if (!keepAlive) {
+    keepAlive =
+      methodName.indexOf('on') === 0 &&
+      methodParams.length === 1 &&
+      methodParams[0].type === 'UTSCallback'
+  }
   const invokeCallback = ({ id, name, params }: InvokeCallbackParamsRes) => {
     const callback = callbacks[id!]
     if (callback) {
@@ -571,7 +581,11 @@ export function initUTSProxyClass(
           'constructor',
           false,
           extend(
-            { name: 'constructor', params: constructorParams },
+            {
+              name: 'constructor',
+              keepAlive: false,
+              params: constructorParams,
+            },
             baseOptions
           ),
           0
@@ -593,12 +607,18 @@ export function initUTSProxyClass(
             //实例方法
             name = parseClassMethodName(name, methods)
             if (hasOwn(methods, name)) {
-              const { async, params, return: returnOptions } = methods[name]
+              const {
+                async,
+                keepAlive,
+                params,
+                return: returnOptions,
+              } = methods[name]
               target[name] = initUTSInstanceMethod(
                 !!async,
                 extend(
                   {
                     name,
+                    keepAlive,
                     params,
                     return: returnOptions,
                   },
@@ -634,6 +654,7 @@ export function initUTSProxyClass(
                   extend(
                     {
                       name: name as string,
+                      keepAlive: false,
                       params: [param],
                     },
                     baseOptions
@@ -659,7 +680,12 @@ export function initUTSProxyClass(
       name = parseClassMethodName(name, staticMethods)
       if (hasOwn(staticMethods, name)) {
         if (!staticMethodCache[name as string]) {
-          const { async, params, return: returnOptions } = staticMethods[name]
+          const {
+            async,
+            keepAlive,
+            params,
+            return: returnOptions,
+          } = staticMethods[name]
           // 静态方法
           staticMethodCache[name] = initUTSStaticMethod(
             !!async,
@@ -667,6 +693,7 @@ export function initUTSProxyClass(
               {
                 name,
                 companion: true,
+                keepAlive,
                 params,
                 return: returnOptions,
               },
@@ -703,6 +730,7 @@ export function initUTSProxyClass(
               extend(
                 {
                   name: name as string,
+                  keepAlive: false,
                   params: [param],
                 },
                 baseOptions
