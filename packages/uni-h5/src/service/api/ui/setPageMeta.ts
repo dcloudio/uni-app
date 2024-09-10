@@ -1,7 +1,7 @@
 import type { ComponentPublicInstance } from 'vue'
 import type { SetPageMetaOptions } from '@dcloudio/uni-api'
 import { hasOwn } from '@vue/shared'
-import { getPage$BasePage } from 'packages/uni-h5/src/framework/setup/page'
+import { getPage$BasePage } from '../../../framework/setup/page'
 
 export function setCurrentPageMeta(
   page: ComponentPublicInstance | null,
