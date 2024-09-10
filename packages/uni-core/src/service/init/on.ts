@@ -18,7 +18,10 @@ export function initOn() {
 }
 
 function onResize(res: UniApp.WindowResizeResult) {
-  invokeHook(getCurrentPage() as ComponentPublicInstance, ON_RESIZE, res)
+  const page = __X__
+    ? (getCurrentPage() as unknown as UniPage).vm
+    : getCurrentPage()
+  invokeHook(page as ComponentPublicInstance, ON_RESIZE, res)
   UniServiceJSBridge.invokeOnCallback('onWindowResize', res) // API
 }
 

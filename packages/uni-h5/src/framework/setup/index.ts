@@ -141,7 +141,10 @@ export function setupPage(comp: any) {
       watch(
         [instance.onReachBottom, instance.onPageScroll],
         () => {
-          if (instance.proxy === getCurrentPage()) {
+          const currentPage = __X__
+            ? (getCurrentPage() as unknown as UniPage).vm
+            : getCurrentPage()
+          if (instance.proxy === currentPage) {
             initPageScrollListener(instance, pageMeta)
           }
         },

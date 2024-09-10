@@ -79,9 +79,11 @@ export function getCurrentPage() {
 }
 
 export function getCurrentPageMeta() {
-  const page = getCurrentPage()
-  if (page) {
-    return page.$page.meta
+  const $page = __X__
+    ? (getCurrentPage() as unknown as UniPage)?.vm?.$basePage
+    : getCurrentPage()?.$page
+  if ($page) {
+    return $page.meta
   }
 }
 

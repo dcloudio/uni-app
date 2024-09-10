@@ -298,9 +298,9 @@ export function initPage(vm: ComponentPublicInstance) {
   if (__X__) {
     vm.$basePage = vm.$page as Page.PageInstance['$page']
     const uniPage = new UniPageImpl({
-      route: route.path,
+      route: route?.path || '',
       options: new Map(
-        Object.entries(route.query as Record<string, any | null>)
+        Object.entries((route?.query as Record<string, any | null>) || {})
       ),
       vm,
     })
