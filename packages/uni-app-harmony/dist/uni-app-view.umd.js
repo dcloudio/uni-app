@@ -1684,7 +1684,9 @@
     function updateRem() {
       var width = getWindowWidth();
       width = width <= maxWidth2 ? width : baseWidth2;
-      document.documentElement.style.fontSize = width / 23.4375 + "px";
+      if (!document.documentElement.hasAttribute("root-font-size")) {
+        document.documentElement.style.fontSize = width / 23.4375 + "px";
+      }
     }
     updateRem();
     document.addEventListener("DOMContentLoaded", updateRem);
@@ -22431,10 +22433,22 @@
         attrs: attrs2
       } = _ref;
       var elId = String(index$1++);
+      var elRef = ref(null);
+      var visibility = ref(0);
+      var intersectionObserver = new IntersectionObserver((entries2) => {
+        visibility.value = entries2[0].intersectionRatio > 0 ? 0 : 2;
+      });
+      onMounted(() => {
+        intersectionObserver.observe(elRef.value);
+      });
+      onBeforeUnmount(() => {
+        intersectionObserver.disconnect();
+      });
       var src = computed(() => {
         var on = [];
         var options = Object.assign({}, props2.options, {
-          on
+          on,
+          visibility: visibility.value
         });
         Object.keys(attrs2).forEach((key2) => {
           if (/^on[A-Z]/.test(key2)) {
@@ -22460,6 +22474,7 @@
       });
       expose(exposed);
       return () => createVNode("embed", mergeProps({
+        "ref": elRef,
         "el-id": elId,
         "type": "native/".concat(props2.tag),
         "src": srcValue
@@ -22472,15 +22487,12 @@
     var _loop = function(i3) {
       var methodName = MethodList[i3];
       methods[methodName] = function(data, resolve) {
-        var elId = embedRef.value.elId;
-        var pageId = getCurrentPageId() + "";
-        UniViewJSBridge.invokeServiceMethod("webview" + capitalize(methodName), {
-          pageId,
-          elId,
-          data
-        }, (res) => {
-          resolve(res);
-        });
+        var embed = embedRef.value;
+        if (methodName === "evalJs") {
+          return resolve(embed["runJavaScript"]((data || {}).jsCode || ""));
+        } else {
+          resolve(embed[methodName]());
+        }
       };
     };
     for (var i2 = 0; i2 < MethodList.length; i2++) {
@@ -22547,6 +22559,7 @@
           updateTitle: props2.updateTitle,
           webviewStyles: props2.webviewStyles
         },
+        "methods": ["runJavaScript", "back", "forward", "reload", "stop"],
         "style": "width:100%;height:100%"
       }, null, 8, ["options"])], 10, ["id"]);
     }
@@ -26268,6 +26281,38 @@
   function onWebviewReady$1() {
     UniViewJSBridge.publishHandler(ON_WEBVIEW_READY);
   }
+  function setCurrentPageMeta(page, options) {
+    var {
+      pageStyle,
+      rootFontSize
+    } = options;
+    if (hasOwn$1(options, "pageStyle")) {
+      setPageStyle(pageStyle);
+    }
+    if (hasOwn$1(options, "rootFontSize")) {
+      setRootFontSize(rootFontSize);
+    }
+  }
+  var setPageStyle = (pageStyle) => {
+    var pageElm = document.querySelector("uni-page-body") || document.body;
+    if (pageStyle) {
+      pageElm.setAttribute("style", pageStyle);
+    } else {
+      pageElm.removeAttribute("style");
+    }
+  };
+  var setRootFontSize = (rootFontSize) => {
+    if (document.documentElement.style.fontSize === rootFontSize) {
+      return;
+    }
+    if (rootFontSize) {
+      document.documentElement.style.fontSize = rootFontSize;
+      document.documentElement.setAttribute("root-font-size", "true");
+    } else {
+      document.documentElement.style.removeProperty("font-size");
+      document.documentElement.removeAttribute("root-font-size");
+    }
+  };
   function findElem(vm) {
     {
       return window.__$__(vm).$;
@@ -26428,19 +26473,6 @@
       }
     });
     callback(result);
-  }
-  function setCurrentPageMeta(_page, _ref) {
-    var {
-      pageStyle,
-      rootFontSize
-    } = _ref;
-    if (pageStyle) {
-      var pageElm = document.querySelector("uni-page-body") || document.body;
-      pageElm.setAttribute("style", pageStyle);
-    }
-    if (rootFontSize && document.documentElement.style.fontSize !== rootFontSize) {
-      document.documentElement.style.fontSize = rootFontSize;
-    }
   }
   function addIntersectionObserver(_ref, _pageId) {
     var {
