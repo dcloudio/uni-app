@@ -33,13 +33,16 @@ export const preloadPage = defineAsyncApi<API_TYPE_PRELOAD_PAGE>(
 
 if (__X__ && __DEV__) {
   document.addEventListener('DOMContentLoaded', () => {
-    __uniRoutes.reduce((prev: Promise<void>, route) => {
+    console.log('Preload pages in uni-app-x development mode.')
+    __uniRoutes.reduce((prev, route) => {
       return prev.then(() => {
-        return new Promise<void>((resolve) => {
+        return new Promise((resolve) => {
           preloadPage({
             url: route.alias || route.path,
             complete() {
-              resolve()
+              setTimeout(() => {
+                resolve()
+              }, 200)
             },
           })
         })
