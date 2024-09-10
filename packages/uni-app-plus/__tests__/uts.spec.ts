@@ -44,6 +44,7 @@ describe('uts-module', () => {
       package: 'uts.modules.MemoryPlugin',
       class: 'TestKt',
       name: 'onMemory',
+      keepAlive: true,
       params: [{ name: 'callback', type: 'UTSCallback' }],
     })
     onMemory((res: any) => {
@@ -56,6 +57,7 @@ describe('uts-module', () => {
         package: 'uts.modules.TestPlugin',
         class: 'TestKt',
         name: 'preparePermission',
+        keepAlive: false,
         params: [
           { name: 'options', type: 'PermissionOptions' },
           { name: 'callback', type: 'UTSCallback' },
@@ -104,6 +106,7 @@ describe('uts-module', () => {
       },
       methods: {
         preparePermission: {
+          keepAlive: false,
           params: [
             { name: 'options', type: 'PermissionOptions' },
             { name: 'callback', type: 'UTSCallback' },
@@ -113,6 +116,7 @@ describe('uts-module', () => {
       staticMethods: {
         staticPreparePermission: {
           async: true,
+          keepAlive: false,
           params: [{ name: 'num', type: 'number' }],
         },
       },

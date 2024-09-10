@@ -18,6 +18,7 @@ import type {
   Expression,
   FunctionDeclaration,
   FunctionExpression,
+  HasDecorator,
   Identifier,
   Module,
   Param,
@@ -334,7 +335,7 @@ function genModuleCode(
             decl.async
           }, { moduleName, moduleType, errMsg, main: true, package: pkg, class: cls, name: '${
             decl.method
-          }ByJs', params: ${JSON.stringify(
+          }ByJs', keepAlive: ${decl.keepAlive}, params: ${JSON.stringify(
             decl.params
           )}, return: ${JSON.stringify(returnOptions)}})`
         )
@@ -344,7 +345,7 @@ function genModuleCode(
             decl.async
           }, { moduleName, moduleType, errMsg, main: true, package: pkg, class: cls, name: '${
             decl.method
-          }ByJs', params: ${JSON.stringify(
+          }ByJs', keepAlive: ${decl.keepAlive}, params: ${JSON.stringify(
             decl.params
           )}, return: ${JSON.stringify(returnOptions)}})`
         )
@@ -712,6 +713,7 @@ interface ProxyInterface {
 interface ProxyFunctionDeclaration {
   type: 'FunctionDeclaration'
   method: string
+  keepAlive: boolean
   async: boolean
   params: Parameter[]
   isDefault: boolean
@@ -721,14 +723,28 @@ interface ProxyFunctionDeclaration {
     options: string
   }
 }
+interface ProxyFunctionReturnOptions {
+  type: 'interface'
+  options: string
+}
 
+interface ProxyClassMethod {
+  async?: boolean
+  keepAlive: boolean
+  params: Parameter[]
+  return?: ProxyFunctionReturnOptions
+}
 interface ProxyClass {
   type: 'Class'
   cls: string
   options: {
     constructor: { params: Parameter[] }
-    methods: Record<string, any>
-    staticMethods: Record<string, any>
+    methods: {
+      [name: string]: ProxyClassMethod
+    }
+    staticMethods: {
+      [name: string]: ProxyClassMethod
+    }
     props: string[]
     staticProps: string[]
     setters: Record<string, Parameter>
@@ -845,12 +861,14 @@ function genProxyFunction(
   params: Parameter[],
   ret: string = '',
   isDefault: boolean = false,
-  isVar: boolean = false
+  isVar: boolean = false,
+  keepAlive: boolean = false
 ): ProxyFunctionDeclaration {
   return {
     type: 'FunctionDeclaration',
     method,
     async,
+    keepAlive,
     params,
     return: ret ? { type: 'interface', options: ret } : undefined,
     isDefault,
@@ -860,15 +878,7 @@ function genProxyFunction(
 
 function genProxyClass(
   cls: string,
-  options: {
-    constructor: { params: Parameter[] }
-    methods: Record<string, any>
-    staticMethods: Record<string, any>
-    props: string[]
-    staticProps: string[]
-    setters: Record<string, Parameter>
-    staticSetters: Record<string, Parameter>
-  },
+  options: ProxyClass['options'],
   isDefault = false,
   isVar = false,
   isHook = false
@@ -1059,8 +1069,25 @@ function genFunctionDeclaration(
       ? parseReturnInterface(types, decl.returnType.typeAnnotation)
       : '',
     isDefault,
-    isVar
+    isVar,
+    parseKeepAlive(decl)
   )
+}
+
+function parseKeepAlive(decl: HasDecorator) {
+  if (!decl.decorators || !decl.decorators.length) {
+    return false
+  }
+  return decl.decorators.some((decorator) => {
+    if (
+      decorator.expression.type === 'MemberExpression' &&
+      decorator.expression.property.type === 'Identifier' &&
+      decorator.expression.property.value === 'keepAlive'
+    ) {
+      return true
+    }
+    return false
+  })
 }
 
 function parseInterfaceBody(
@@ -1098,7 +1125,7 @@ function genInterfaceDeclaration(
   elements.forEach((item) => {
     if (item.type === 'TsMethodSignature') {
       if (item.key.type === 'Identifier') {
-        let returnOptions = {}
+        let returnOptions: ProxyFunctionReturnOptions | undefined
         if (item.typeAnn) {
           let returnInterface = parseReturnInterface(
             types,
@@ -1113,8 +1140,9 @@ function genInterfaceDeclaration(
         }
 
         const name = item.key.value
-        const value = {
+        const value: ProxyClassMethod = {
           async: isReturnPromise(item.typeAnn),
+          keepAlive: false,
           params: resolveFunctionParams(
             types,
             tsParamsToParams(item.params),
@@ -1212,7 +1240,7 @@ function genClassDeclaration(
             }
           }
         } else {
-          let returnOptions = {}
+          let returnOptions: ProxyFunctionReturnOptions | undefined
           if (item.function.returnType) {
             let returnInterface = parseReturnInterface(
               types,
@@ -1227,15 +1255,16 @@ function genClassDeclaration(
           }
 
           const name = item.key.value
-          const value = {
+          const value: ProxyClassMethod = {
             async:
               item.function.async || isReturnPromise(item.function.returnType),
+            keepAlive: parseKeepAlive(item.function),
             params: resolveFunctionParams(
               types,
               item.function.params,
               resolveTypeReferenceName
             ),
-            returnOptions,
+            return: returnOptions,
           }
           if (item.isStatic) {
             staticMethods[name + 'ByJs'] = value
