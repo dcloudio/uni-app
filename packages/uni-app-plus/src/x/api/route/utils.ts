@@ -69,7 +69,7 @@ export function closeNativeDialogPage(
   callback?: () => void
 ) {
   const webview = getNativeApp().pageManager.findPageById(
-    dialogPage.$vm!.$page.id + ''
+    dialogPage.$vm!.$basePage.id + ''
   )!
   closeWebview(webview, animationType, 0, callback)
 }

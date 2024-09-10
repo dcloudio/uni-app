@@ -240,7 +240,6 @@ export function registerDialogPage(
   if (onCreated) {
     onCreated(nativePage)
   }
-  dialogPage.vm.$nativePage = nativePage
   routeOptions.meta.id = parseInt(nativePage.pageId)
   if (__DEV__) {
     console.log(formatLog('registerPage', path, nativePage.pageId))
@@ -267,9 +266,11 @@ export function registerDialogPage(
       {},
       nativePage
     ) as ComponentPublicInstance
+    dialogPage.vm = page
     dialogPage.$vm = page
-    // @ts-expect-error
-    page.$dialogPage = dialogPage
+    dialogPage.vm.$nativePage = nativePage
+    dialogPage.$vm.$nativePage = nativePage
+    page.$page = dialogPage
 
     // 由于 iOS 调用 show 时机差异，暂不使用页面 onShow 事件
     // nativePage.addPageEventListener(ON_SHOW, (_) => {

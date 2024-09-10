@@ -29,7 +29,7 @@ declare module '@vue/runtime-core' {
     // X iOS end
     $requireNativePlugin?: (name: string) => unknown
     getOpenerEventChannel: () => EventChannel | undefined
-    $page: Page.PageInstance['$page'] | UniPage
+    $page: Page.PageInstance['$page'] | UniPage | UniDialogPage
     // X web start
     $basePage: Page.PageInstance['$page']
     // X web end
