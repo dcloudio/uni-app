@@ -10,7 +10,7 @@ import {
   type ComponentPublicInstance,
   getCurrentInstance,
 } from 'vue'
-import { rpx2px } from './util'
+import { get$pageByPage, rpx2px } from './util'
 
 export function useCurrentPageId() {
   if (__APP_VIEW__) {
@@ -38,7 +38,7 @@ export function getPageIdByVm(
 ) {
   const vm = resolveComponentInstance(instance)!
   if (vm.$page) {
-    return (vm.$page as Page.PageInstance['$page']).id
+    return getPageProxyId(vm)
   }
   if (!vm.$) {
     return
@@ -57,7 +57,7 @@ export function getPageIdByVm(
 }
 
 function getPageById(id: number) {
-  return getCurrentPages().find((page) => page.$page.id === id)
+  return getCurrentPages().find((page) => get$pageByPage(page).id === id)
 }
 
 export function getPageVmById(id: number) {
@@ -103,7 +103,9 @@ export function getCurrentPageId() {
 }
 
 export function getCurrentPageVm() {
-  const page = getCurrentPage()
+  const page = __X__
+    ? (getCurrentPage() as unknown as UniPage)?.vm
+    : getCurrentPage()
   if (page) {
     return (page as any).$vm as ComponentPublicInstance
   }
