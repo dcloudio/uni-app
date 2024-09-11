@@ -311,19 +311,23 @@ export function initUTSComponents(
 function resolveUTSComponentDirs(inputDir: string) {
   const utssdkDir = path.resolve(inputDir, 'utssdk')
   const uniModulesDir = path.resolve(inputDir, 'uni_modules')
-  return glob
-    .sync('*', {
-      cwd: utssdkDir,
-      absolute: true,
-      onlyDirectories: true,
-    })
-    .concat(
-      glob.sync('*/utssdk', {
-        cwd: uniModulesDir,
-        absolute: true,
-        onlyDirectories: true,
-      })
-    )
+  return (
+    fs.existsSync(utssdkDir)
+      ? glob.sync('*', {
+          cwd: utssdkDir,
+          absolute: true,
+          onlyDirectories: true,
+        })
+      : []
+  ).concat(
+    fs.existsSync(uniModulesDir)
+      ? glob.sync('*/utssdk', {
+          cwd: uniModulesDir,
+          absolute: true,
+          onlyDirectories: true,
+        })
+      : []
+  )
 }
 
 const nameRE = /name\s*:\s*['|"](.*)['|"]/
