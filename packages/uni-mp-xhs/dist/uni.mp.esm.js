@@ -215,19 +215,16 @@ function parseApp(instance, parseAppOptions) {
         const methods = vueOptions.methods;
         methods && extend(appOptions, methods);
     }
-    if (parseAppOptions) {
-        parseAppOptions.parse(appOptions);
-    }
     return appOptions;
 }
 function initCreateApp(parseAppOptions) {
     return function createApp(vm) {
-        return App(parseApp(vm, parseAppOptions));
+        return App(parseApp(vm));
     };
 }
 function initCreateSubpackageApp(parseAppOptions) {
     return function createApp(vm) {
-        const appOptions = parseApp(vm, parseAppOptions);
+        const appOptions = parseApp(vm);
         const app = isFunction(getApp) &&
             getApp({
                 allowDefault: true,
@@ -849,7 +846,7 @@ function createVueComponent(mpType, mpInstance, vueOptions, parent) {
         mpType,
         mpInstance,
         slots: mpInstance.props.uS || {}, // vueSlots
-        parentComponent: parent && parent.$,
+        parentComponent: parent,
         onBeforeSetup(instance, options) {
             initRefs(instance, mpInstance);
             initMocks(instance, mpInstance, mocks$1);

@@ -138,6 +138,7 @@ export function uniEncryptUniModulesPlugin(): Plugin {
             type: 'asset',
             fileName: pkg,
             name: pkg,
+            originalFileName: null,
             needsCodeReference: false,
             source: genUniModulesPackageJson(
               uniModuleId,

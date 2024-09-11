@@ -1707,14 +1707,14 @@ function useMovableViewState(props2, trigger, rootRef, setTouchMovableViewContex
     if (!props2.scale) {
       return false;
     }
-    _updateScale(_scale, true);
+    _updateScale(_scale);
   }
   function _setScaleValue(scale) {
     if (!props2.scale) {
       return false;
     }
     scale = _adjustScale(scale);
-    _updateScale(scale, true);
+    _updateScale(scale);
     return scale;
   }
   function __handleTouchStart() {
@@ -1901,12 +1901,8 @@ function useMovableViewState(props2, trigger, rootRef, setTouchMovableViewContex
       const limitXY = _getLimitXY(_translateX, _translateY);
       const x = limitXY.x;
       const y = limitXY.y;
-      if (animat) {
+      {
         _animationTo(x, y, scale, "", true, true);
-      } else {
-        _requestAnimationFrame(function() {
-          _setTransform(x, y, scale, "", true, true);
-        });
       }
     }
   }

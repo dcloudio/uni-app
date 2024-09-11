@@ -223,19 +223,16 @@ function parseApp(instance, parseAppOptions) {
         const methods = vueOptions.methods;
         methods && extend(appOptions, methods);
     }
-    if (parseAppOptions) {
-        parseAppOptions.parse(appOptions);
-    }
     return appOptions;
 }
 function initCreateApp(parseAppOptions) {
     return function createApp(vm) {
-        return App(parseApp(vm, parseAppOptions));
+        return App(parseApp(vm));
     };
 }
 function initCreateSubpackageApp(parseAppOptions) {
     return function createApp(vm) {
-        const appOptions = parseApp(vm, parseAppOptions);
+        const appOptions = parseApp(vm);
         const app = isFunction(getApp) &&
             getApp({
                 allowDefault: true,
@@ -769,7 +766,7 @@ function initCreatePage(parseOptions) {
 
 function initCreatePluginApp(parseAppOptions) {
     return function createApp(vm) {
-        initAppLifecycle(parseApp(vm, parseAppOptions), vm);
+        initAppLifecycle(parseApp(vm), vm);
         if (process.env.UNI_MP_PLUGIN) {
             wx.$vm = vm;
         }

@@ -1220,7 +1220,7 @@ function normalizeViewMethodName(pageId, name) {
 function subscribeViewMethod(pageId, wrapper) {
   UniViewJSBridge.subscribe(
     normalizeViewMethodName(pageId, INVOKE_VIEW_API),
-    wrapper ? wrapper(onInvokeViewMethod) : onInvokeViewMethod
+    onInvokeViewMethod
   );
 }
 function unsubscribeViewMethod(pageId) {
@@ -7750,14 +7750,14 @@ const initIntersectionObserverPolyfill = function() {
   }
   function addEvent(node, event, fn, opt_useCapture) {
     if (typeof node.addEventListener == "function") {
-      node.addEventListener(event, fn, opt_useCapture || false);
+      node.addEventListener(event, fn, opt_useCapture);
     } else if (typeof node.attachEvent == "function") {
       node.attachEvent("on" + event, fn);
     }
   }
   function removeEvent(node, event, fn, opt_useCapture) {
     if (typeof node.removeEventListener == "function") {
-      node.removeEventListener(event, fn, opt_useCapture || false);
+      node.removeEventListener(event, fn, opt_useCapture);
     } else if (typeof node.detatchEvent == "function") {
       node.detatchEvent("on" + event, fn);
     }
@@ -17671,7 +17671,7 @@ function useContextInfo(_id) {
   const instance2 = getCurrentInstance();
   const vm = instance2.proxy;
   const type = vm.$options.name.toLowerCase();
-  const id2 = _id || vm.id || `context${index$e++}`;
+  const id2 = vm.id || `context${index$e++}`;
   onMounted(() => {
     const el = vm.$el;
     el.__uniContextInfo = {

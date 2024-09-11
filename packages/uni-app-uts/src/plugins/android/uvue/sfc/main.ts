@@ -385,7 +385,7 @@ function createTryResolve(
           startPos.column = startPos.column + 1
           endPos.column = endPos.column + 1
           throw createResolveError(
-            consumer.sourceContentFor(startPos.source),
+            consumer.sourceContentFor(startPos.source) ?? '',
             createResolveErrorMsg(source, importer),
             startPos as unknown as Position,
             endPos as unknown as Position

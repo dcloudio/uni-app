@@ -2060,9 +2060,6 @@ function urlToFile(url, local) {
   if (/^data:[a-z-]+\/[a-z-]+;base64,/.test(url)) {
     return Promise.resolve(base64ToFile(url));
   }
-  if (local) {
-    return Promise.reject(new Error("not find"));
-  }
   return new Promise((resolve, reject) => {
     const xhr = new XMLHttpRequest();
     xhr.open("GET", url, true);
@@ -3539,10 +3536,9 @@ function getValueString(value, type, maxlength) {
     value = "";
   }
   const valueStr = value === null || value === void 0 ? "" : String(value);
-  if (maxlength == void 0) {
+  {
     return valueStr;
   }
-  return valueStr.slice(0, maxlength);
 }
 const INPUT_MODES = [
   "none",
@@ -4898,9 +4894,6 @@ function useMovableViewTransform(rootRef, props2, _scaleOffset, _scale, maxX, ma
     };
   }
   function FAandSFACancel() {
-    if (_FA) {
-      _FA.cancel();
-    }
     if (_SFA) {
       _SFA.cancel();
     }
@@ -5805,7 +5798,7 @@ function useProvideRadioGroup(props2, trigger) {
     },
     radioChange($event, field) {
       const index2 = fields2.indexOf(field);
-      _resetRadioGroupValue(index2, true);
+      _resetRadioGroupValue(index2);
       trigger("change", $event, {
         value: getFieldsValue()
       });
@@ -5836,17 +5829,8 @@ function useProvideRadioGroup(props2, trigger) {
       if (index2 === key) {
         return;
       }
-      if (change) {
+      {
         setFieldChecked(fields2[index2], false);
-      } else {
-        fields2.forEach((v2, i) => {
-          if (index2 >= i) {
-            return;
-          }
-          if (fields2[i].value.radioChecked) {
-            setFieldChecked(fields2[index2], false);
-          }
-        });
       }
     });
   }

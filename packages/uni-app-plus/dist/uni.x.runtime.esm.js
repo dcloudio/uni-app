@@ -2093,14 +2093,13 @@ function _switchTab(_ref2) {
 }
 var isLaunchWebviewReady = false;
 function subscribeWebviewReady(_data, pageId) {
-  var isLaunchWebview = pageId === "1";
-  if (isLaunchWebview && isLaunchWebviewReady) {
+  if (isLaunchWebviewReady) {
     return;
   }
-  if (isLaunchWebview) {
+  {
     isLaunchWebviewReady = true;
   }
-  isLaunchWebview && onLaunchWebviewReady();
+  onLaunchWebviewReady();
 }
 function onLaunchWebviewReady() {
   var entryPagePath = addLeadingSlash(__uniConfig.entryPagePath);
@@ -2121,32 +2120,26 @@ function onLaunchWebviewReady() {
   return $navigateTo(args, handler);
 }
 function initSubscribeHandlers() {
-  subscribeWebviewReady({}, "1");
+  subscribeWebviewReady();
 }
-function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) {
+function asyncGeneratorStep(n, t, e, r, o, a, c) {
   try {
-    var info = gen[key](arg);
-    var value = info.value;
-  } catch (error) {
-    reject(error);
-    return;
+    var i = n[a](c), u = i.value;
+  } catch (n2) {
+    return void e(n2);
   }
-  if (info.done) {
-    resolve(value);
-  } else {
-    Promise.resolve(value).then(_next, _throw);
-  }
+  i.done ? t(u) : Promise.resolve(u).then(r, o);
 }
-function _asyncToGenerator(fn) {
+function _asyncToGenerator(n) {
   return function() {
-    var self = this, args = arguments;
-    return new Promise(function(resolve, reject) {
-      var gen = fn.apply(self, args);
-      function _next(value) {
-        asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value);
+    var t = this, e = arguments;
+    return new Promise(function(r, o) {
+      var a = n.apply(t, e);
+      function _next(n2) {
+        asyncGeneratorStep(a, r, o, _next, _throw, "next", n2);
       }
-      function _throw(err) {
-        asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err);
+      function _throw(n2) {
+        asyncGeneratorStep(a, r, o, _next, _throw, "throw", n2);
       }
       _next(void 0);
     });

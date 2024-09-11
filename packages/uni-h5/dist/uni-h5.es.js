@@ -608,7 +608,7 @@ function normalizeViewMethodName(pageId, name) {
 function subscribeViewMethod(pageId, wrapper2) {
   UniViewJSBridge.subscribe(
     normalizeViewMethodName(pageId, INVOKE_VIEW_API),
-    wrapper2 ? wrapper2(onInvokeViewMethod) : onInvokeViewMethod
+    onInvokeViewMethod
   );
 }
 function unsubscribeViewMethod(pageId) {
@@ -6679,14 +6679,14 @@ const initIntersectionObserverPolyfill = function() {
   }
   function addEvent(node, event, fn, opt_useCapture) {
     if (typeof node.addEventListener == "function") {
-      node.addEventListener(event, fn, opt_useCapture || false);
+      node.addEventListener(event, fn, opt_useCapture);
     } else if (typeof node.attachEvent == "function") {
       node.attachEvent("on" + event, fn);
     }
   }
   function removeEvent(node, event, fn, opt_useCapture) {
     if (typeof node.removeEventListener == "function") {
-      node.removeEventListener(event, fn, opt_useCapture || false);
+      node.removeEventListener(event, fn, opt_useCapture);
     } else if (typeof node.detatchEvent == "function") {
       node.detatchEvent("on" + event, fn);
     }
@@ -10067,10 +10067,9 @@ function getValueString(value, type, maxlength) {
     value = "";
   }
   const valueStr = value === null || value === void 0 ? "" : String(value);
-  if (maxlength == void 0) {
+  {
     return valueStr;
   }
-  return valueStr.slice(0, maxlength);
 }
 const INPUT_MODES = [
   "none",

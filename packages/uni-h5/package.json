@@ -54,7 +54,7 @@
     "estree-walker": "^2.0.2",
     "fast-glob": "^3.2.11",
     "fs-extra": "^10.0.0",
-    "unplugin-auto-import": "^0.16.7",
+    "unplugin-auto-import": "^0.18.2",
     "vue": "3.4.21"
   }
 }

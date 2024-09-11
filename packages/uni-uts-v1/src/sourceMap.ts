@@ -234,7 +234,7 @@ export function originalPositionForSync(
     hasOwn(res, 'column')
   ) {
     return Object.assign(res, {
-      sourceContent: consumer.sourceContentFor(res.source, true),
+      sourceContent: consumer.sourceContentFor(res.source, true) ?? '',
     })
   }
   if (res.source && generatedPosition.inputDir) {
