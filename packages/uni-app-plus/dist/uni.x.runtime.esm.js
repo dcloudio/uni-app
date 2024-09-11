@@ -1692,7 +1692,6 @@ function registerDialogPage(_ref2, dialogPage, onCreated) {
   if (onCreated) {
     onCreated(nativePage2);
   }
-  dialogPage.vm.$nativePage = nativePage2;
   routeOptions.meta.id = parseInt(nativePage2.pageId);
   var route = path.slice(1);
   var pageInstance = initPageInternalInstance(
@@ -1706,8 +1705,11 @@ function registerDialogPage(_ref2, dialogPage, onCreated) {
   );
   function fn() {
     var page = createVuePage(id2, route, query, pageInstance, {}, nativePage2);
+    dialogPage.vm = page;
     dialogPage.$vm = page;
-    page.$dialogPage = dialogPage;
+    dialogPage.vm.$nativePage = nativePage2;
+    dialogPage.$vm.$nativePage = nativePage2;
+    page.$page = dialogPage;
     nativePage2.addPageEventListener(ON_POP_GESTURE, function(e) {
       uni.navigateBack({
         from: "popGesture",
@@ -2034,7 +2036,7 @@ function handleBeforeEntryPageRoutes() {
   });
 }
 function closeNativeDialogPage(dialogPage, animationType, callback) {
-  var webview = getNativeApp().pageManager.findPageById(dialogPage.$vm.$page.id + "");
+  var webview = getNativeApp().pageManager.findPageById(dialogPage.$vm.$basePage.id + "");
   closeWebview(webview, animationType, 0, callback);
 }
 var $switchTab = (args, _ref) => {

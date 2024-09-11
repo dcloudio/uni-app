@@ -8412,63 +8412,68 @@ function initPublicPage(route) {
   return initPageInternalInstance("navigateTo", fullPath, {}, meta);
 }
 function initPage(vm) {
-  var _a;
+  var _a, _b;
   const route = vm.$route;
   const page = initPublicPage(route);
   initPageVm(vm, page);
   {
     vm.$basePage = vm.$page;
-    const uniPage = new UniPageImpl({
-      route: (route == null ? void 0 : route.path) || "",
-      options: new Map(
-        Object.entries((route == null ? void 0 : route.query) || {})
-      ),
-      vm
-    });
-    vm.$page = uniPage;
-    const pageMeta = page.meta;
-    uniPage.setPageStyle = (style) => {
-      for (const key in style) {
-        switch (key) {
-          case "navigationBarBackgroundColor":
-            pageMeta.navigationBar.backgroundColor = style[key];
-            break;
-          case "navigationBarTextStyle":
-            const textStyle = style[key];
-            if (textStyle == null) {
-              continue;
-            }
-            pageMeta.navigationBar.titleColor = ["black", "white"].includes(
-              textStyle
-            ) ? normalizeTitleColor(textStyle || "") : textStyle;
-            break;
-          case "navigationBarTitleText":
-            pageMeta.navigationBar.titleText = style[key];
-            break;
-          case "titleImage":
-            pageMeta.navigationBar.titleImage = style[key];
-            break;
-          case "navigationStyle":
-            pageMeta.navigationBar.style = style[key];
-            break;
-          default:
-            pageMeta[key] = style[key];
-            break;
+    const pageInstance = getPageInstanceByVm(vm);
+    if ((pageInstance == null ? void 0 : pageInstance.attrs.type) !== "dialog") {
+      const uniPage = new UniPageImpl({
+        route: (route == null ? void 0 : route.path) || "",
+        options: new Map(
+          Object.entries((route == null ? void 0 : route.query) || {})
+        ),
+        vm
+      });
+      vm.$page = uniPage;
+      const pageMeta = page.meta;
+      uniPage.setPageStyle = (style) => {
+        for (const key in style) {
+          switch (key) {
+            case "navigationBarBackgroundColor":
+              pageMeta.navigationBar.backgroundColor = style[key];
+              break;
+            case "navigationBarTextStyle":
+              const textStyle = style[key];
+              if (textStyle == null) {
+                continue;
+              }
+              pageMeta.navigationBar.titleColor = ["black", "white"].includes(
+                textStyle
+              ) ? normalizeTitleColor(textStyle || "") : textStyle;
+              break;
+            case "navigationBarTitleText":
+              pageMeta.navigationBar.titleText = style[key];
+              break;
+            case "titleImage":
+              pageMeta.navigationBar.titleImage = style[key];
+              break;
+            case "navigationStyle":
+              pageMeta.navigationBar.style = style[key];
+              break;
+            default:
+              pageMeta[key] = style[key];
+              break;
+          }
         }
-      }
-    };
-    uniPage.getPageStyle = () => new UTSJSONObject({
-      navigationBarBackgroundColor: pageMeta.navigationBar.backgroundColor,
-      navigationBarTextStyle: pageMeta.navigationBar.titleColor,
-      navigationBarTitleText: pageMeta.navigationBar.titleText,
-      titleImage: pageMeta.navigationBar.titleImage || "",
-      navigationStyle: pageMeta.navigationBar.style || "default",
-      disableScroll: pageMeta.disableScroll || false,
-      enablePullDownRefresh: pageMeta.enablePullDownRefresh || false,
-      onReachBottomDistance: pageMeta.onReachBottomDistance || ON_REACH_BOTTOM_DISTANCE,
-      backgroundColorContent: pageMeta.backgroundColorContent
-    });
-    vm.$dialogPage = (_a = getPageInstanceByVm(vm)) == null ? void 0 : _a.$dialogPage;
+      };
+      uniPage.getPageStyle = () => new UTSJSONObject({
+        navigationBarBackgroundColor: pageMeta.navigationBar.backgroundColor,
+        navigationBarTextStyle: pageMeta.navigationBar.titleColor,
+        navigationBarTitleText: pageMeta.navigationBar.titleText,
+        titleImage: pageMeta.navigationBar.titleImage || "",
+        navigationStyle: pageMeta.navigationBar.style || "default",
+        disableScroll: pageMeta.disableScroll || false,
+        enablePullDownRefresh: pageMeta.enablePullDownRefresh || false,
+        onReachBottomDistance: pageMeta.onReachBottomDistance || ON_REACH_BOTTOM_DISTANCE,
+        backgroundColorContent: pageMeta.backgroundColorContent
+      });
+      vm.$dialogPage = (_a = getPageInstanceByVm(vm)) == null ? void 0 : _a.$dialogPage;
+    } else {
+      vm.$page = (_b = getPageInstanceByVm(vm)) == null ? void 0 : _b.$dialogPage;
+    }
   }
   {
     const pageInstance = getPageInstanceByVm(vm);
