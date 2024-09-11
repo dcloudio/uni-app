@@ -56,6 +56,8 @@ export const enum FORMATS {
 
 export interface ClassMeta {
   typeParams?: boolean
+  interfaces: string[]
+  keepAliveMethods: string[]
 }
 
 // 不应该用 class，应该用lit，调整起来影响较多，暂不调整
@@ -134,6 +136,9 @@ export async function genProxyCode(
   }
   options.meta!.components = [...components]
   const decls = await parseModuleDecls(module, options)
+
+  normalizeInterfaceKeepAlive(decls, options.types)
+
   return `
 const { registerUTSInterface, initUTSProxyClass, initUTSProxyFunction, initUTSPackageName, initUTSIndexClassName, initUTSClassName } = uni
 const name = '${name}'
@@ -158,6 +163,30 @@ ${genComponentsCode(
 
 ${genModuleCode(decls, format, options.pluginRelativeDir!, options.meta!)}
 `
+}
+
+// 查找实现该interface的class中是否有keepAlive方法，有则标记为keepAlive
+function normalizeInterfaceKeepAlive(decls: ProxyDecl[], types: Types) {
+  const classTypes = types.class
+  if (!classTypes) {
+    return
+  }
+  const classNames = Object.keys(classTypes)
+  decls.forEach((decl) => {
+    if (decl.type === 'InterfaceDeclaration') {
+      classNames.find((n) => {
+        const classMeta = classTypes[n]
+        if (classMeta.interfaces && classMeta.interfaces.includes(decl.cls)) {
+          classMeta.keepAliveMethods.forEach((method) => {
+            const jsMethod = method + 'ByJs'
+            if (decl.options.methods[jsMethod]) {
+              decl.options.methods[jsMethod].keepAlive = true
+            }
+          })
+        }
+      })
+    }
+  })
 }
 
 function parseMetaTypes(types: Types) {
@@ -459,7 +488,10 @@ function parseAstTypes(ast: Module | null, isInterface: boolean) {
             decl: node.declaration,
           }
         } else if (node.declaration.type === 'ClassDeclaration') {
-          classTypes[node.declaration.identifier.value] = {}
+          classTypes[node.declaration.identifier.value] = {
+            interfaces: parseImplements(node.declaration),
+            keepAliveMethods: parseKeepAliveMethods(node.declaration),
+          }
         }
       } else if (node.type === 'TsTypeAliasDeclaration') {
         if (!isInterface || exportNamed.includes(node.id.value)) {
@@ -471,7 +503,10 @@ function parseAstTypes(ast: Module | null, isInterface: boolean) {
           decl: node,
         }
       } else if (node.type === 'ClassDeclaration') {
-        classTypes[node.identifier.value] = {}
+        classTypes[node.identifier.value] = {
+          interfaces: parseImplements(node),
+          keepAliveMethods: parseKeepAliveMethods(node),
+        }
       }
     })
   }
@@ -481,6 +516,30 @@ function parseAstTypes(ast: Module | null, isInterface: boolean) {
     fn: fnTypes,
     alias: aliasTypes,
   }
+}
+
+function parseImplements(node: ClassDeclaration | ClassExpression): string[] {
+  const interfaces: string[] = []
+  node.implements.forEach((implement) => {
+    if (implement.expression.type === 'Identifier') {
+      interfaces.push(implement.expression.value)
+    }
+  })
+  return interfaces
+}
+
+function parseKeepAliveMethods(
+  node: ClassDeclaration | ClassExpression
+): string[] {
+  const keepAliveMethods: string[] = []
+  node.body.forEach((method) => {
+    if (method.type === 'ClassMethod' && method.key.type === 'Identifier') {
+      if (parseKeepAlive(method.function)) {
+        keepAliveMethods.push(method.key.value)
+      }
+    }
+  })
+  return keepAliveMethods
 }
 
 function parseTypes(
@@ -505,6 +564,8 @@ function parseTypes(
     case 'TsUnionType':
       classTypes[decl.id.value] = {
         typeParams: !!decl.typeParams,
+        interfaces: [],
+        keepAliveMethods: [],
       }
       break
     default:
@@ -699,7 +760,9 @@ interface ProxyInterface {
   type: 'InterfaceDeclaration'
   cls: string
   options: {
-    methods: Record<string, any>
+    methods: {
+      [name: string]: ProxyClassMethod
+    }
     props: string[]
     setters: Record<string, Parameter>
   }
@@ -748,6 +811,7 @@ interface ProxyClass {
   isDefault: boolean
   isVar: boolean
   isHook: boolean
+  interfaces: string[]
 }
 
 function mergeAstTypes(to: Types, from: Types) {
@@ -876,9 +940,10 @@ function genProxyClass(
   options: ProxyClass['options'],
   isDefault = false,
   isVar = false,
-  isHook = false
+  isHook = false,
+  interfaces: string[] = []
 ): ProxyClass {
-  return { type: 'Class', cls, options, isDefault, isVar, isHook }
+  return { type: 'Class', cls, options, isDefault, isVar, isHook, interfaces }
 }
 
 interface Parameter {
@@ -1209,6 +1274,7 @@ function genClassDeclaration(
       implement.expression.type === 'Identifier' &&
       isHookClass(implement.expression.value)
   )
+  const interfaces = parseImplements(decl)
   decl.body.forEach((item) => {
     if (item.type === 'Constructor') {
       constructor.params = resolveFunctionParams(
@@ -1304,7 +1370,8 @@ function genClassDeclaration(
     },
     isDefault,
     false,
-    isHook
+    isHook,
+    interfaces
   )
 }
 

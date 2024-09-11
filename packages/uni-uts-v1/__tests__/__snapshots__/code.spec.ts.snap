@@ -143,6 +143,8 @@ exports[`code genProxyCode 3`] = `
   "alias": {},
   "class": {
     "User1": {
+      "interfaces": [],
+      "keepAliveMethods": [],
       "typeParams": false,
     },
   },
@@ -377,8 +379,10 @@ const cls = /*#__PURE__*/ initUTSIndexClassName(name, is_uni_modules)
 
 
 
+registerUTSInterface('ITestKeepAliveOptions',Object.assign({ moduleName, moduleType, errMsg, package: pkg, class: initUTSClassName(name, 'ITestKeepAliveByJsProxy', is_uni_modules) }, {"methods":{"test1ByJs":{"async":false,"keepAlive":false,"params":[{"name":"callback","type":"UTSCallback"}]},"test2ByJs":{"async":false,"keepAlive":true,"params":[{"name":"callback","type":"UTSCallback"}]}},"props":[],"setters":{}} ))
 export const test1 = /*#__PURE__*/ initUTSProxyFunction(false, { moduleName, moduleType, errMsg, main: true, package: pkg, class: cls, name: 'test1ByJs', keepAlive: false, params: [{"name":"callback","type":"UTSCallback"}], return: ""})
 export const test2 = /*#__PURE__*/ initUTSProxyFunction(false, { moduleName, moduleType, errMsg, main: true, package: pkg, class: cls, name: 'test2ByJs', keepAlive: true, params: [{"name":"callback","type":"UTSCallback"}], return: ""})
 export const Test = /*#__PURE__*/ initUTSProxyClass(Object.assign({ moduleName, moduleType, errMsg, package: pkg, class: initUTSClassName(name, 'TestByJs', is_uni_modules) }, {"constructor":{"params":[]},"methods":{"test1ByJs":{"async":false,"keepAlive":false,"params":[{"name":"callback","type":"UTSCallback"}]},"test2ByJs":{"async":false,"keepAlive":true,"params":[{"name":"callback","type":"UTSCallback"}]}},"staticMethods":{"test3ByJs":{"async":false,"keepAlive":false,"params":[{"name":"callback","type":"UTSCallback"}]},"test4ByJs":{"async":false,"keepAlive":true,"params":[{"name":"callback","type":"UTSCallback"}]}},"props":[],"staticProps":[],"setters":{},"staticSetters":{}} ))
+export const createTest2 = /*#__PURE__*/ initUTSProxyFunction(false, { moduleName, moduleType, errMsg, main: true, package: pkg, class: cls, name: 'createTest2ByJs', keepAlive: false, params: [], return: {"type":"interface","options":"ITestKeepAliveOptions"}})
 "
 `;
