@@ -186,7 +186,9 @@ export function registerPage(
     })
 
     nativePage.addPageEventListener(ON_PAGE_SCROLL, (arg) => {
-      invokeHook(page, ON_PAGE_SCROLL, arg)
+      invokeHook(page, ON_PAGE_SCROLL, {
+        scrollTop: (arg as unknown as OnPageScrollOptions).scrollTop,
+      })
     })
 
     nativePage.addPageEventListener(ON_PULL_DOWN_REFRESH, (_) => {
@@ -197,8 +199,17 @@ export function registerPage(
       invokeHook(page, ON_REACH_BOTTOM)
     })
 
-    nativePage.addPageEventListener(ON_RESIZE, (arg: PageEvent) => {
-      invokeHook(page, ON_RESIZE, arg)
+    nativePage.addPageEventListener(ON_RESIZE, (arg: any) => {
+      const args: OnResizeOptions = {
+        deviceOrientation: arg.deviceOrientation,
+        size: {
+          windowWidth: arg.size.windowWidth,
+          windowHeight: arg.size.windowHeight,
+          screenWidth: arg.size.screenWidth,
+          screenHeight: arg.size.screenHeight,
+        },
+      }
+      invokeHook(page, ON_RESIZE, args)
     })
     nativePage.startRender()
   }
