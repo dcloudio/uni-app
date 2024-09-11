@@ -113,7 +113,7 @@ function createDialogPageVNode(dialogPages: Ref<UniDialogPage[]>) {
                   left: 0,
                 },
                 type: 'dialog',
-                route: dialogPage.route,
+                route: buildUrl(dialogPage.route, dialogPage.options),
               },
               null
             )
@@ -122,4 +122,12 @@ function createDialogPageVNode(dialogPages: Ref<UniDialogPage[]>) {
       })
     )
   )
+}
+
+function buildUrl(path: string, query: Map<string, string | null>): string {
+  const queryString = Array.from(query.entries())
+    .map(([key, value]) => `${key}=${value}`)
+    .join('&')
+
+  return queryString ? `${path}?${queryString}` : path
 }
