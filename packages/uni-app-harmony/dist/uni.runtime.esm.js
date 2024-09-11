@@ -8678,9 +8678,9 @@ function getCurrentPage() {
     }
 }
 function getCurrentPageMeta() {
-    const page = getCurrentPage();
-    if (page) {
-        return page.$page.meta;
+    const $page = getCurrentPage()?.$page;
+    if ($page) {
+        return $page.meta;
     }
 }
 function getCurrentPageId() {
@@ -8892,7 +8892,8 @@ function initOn() {
     on(ON_APP_ENTER_BACKGROUND, onAppEnterBackground);
 }
 function onResize(res) {
-    invokeHook(getCurrentPage(), ON_RESIZE, res);
+    const page = getCurrentPage();
+    invokeHook(page, ON_RESIZE, res);
     UniServiceJSBridge.invokeOnCallback('onWindowResize', res); // API
 }
 function onAppEnterForeground(enterOptions) {
