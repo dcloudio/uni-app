@@ -215,7 +215,8 @@ function resolveUniModuleGlobs() {
     // test-uts/common/**/*
     `common/**/*${extname}`,
     `utssdk/**/*${extname}`,
-    `components/**/*`,
+    // 不copy components目录了，不单独编译，启用vite走完整流程编译
+    // `components/**/*`,
   ]
   return globs
 }

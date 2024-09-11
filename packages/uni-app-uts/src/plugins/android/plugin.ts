@@ -14,6 +14,7 @@ import {
   isNormalCompileTarget,
   normalizeEmitAssetFileName,
   normalizePath,
+  parseKotlinPackageWithPluginId,
   parseManifestJsonOnce,
   parseUniExtApiNamespacesOnce,
   parseUniModulesArtifacts,
@@ -203,8 +204,40 @@ export function uniAppPlugin(): UniVitePlugin {
       }
     },
     async writeBundle() {
+      const { compileApp } = resolveUTSCompiler()
       if (!isNormalCompileTarget()) {
-        return
+        if (process.env.UNI_COMPILE_TARGET === 'ext-api') {
+          if (uniXKotlinCompiler) {
+            await uniXKotlinCompiler.addRootFile(
+              path.join(tscOutputDir, 'main.uts.ts')
+            )
+            await uniXKotlinCompiler.close()
+            const res = await compileApp(path.join(uvueOutputDir, 'main.uts'), {
+              pageCount: 0,
+              split: false,
+              disableSplitManifest: process.env.NODE_ENV !== 'development',
+              inputDir: uvueOutputDir,
+              outputDir: outputDir,
+              outFilename: 'components.kt',
+              package: parseKotlinPackageWithPluginId(
+                process.env.UNI_COMPILE_EXT_API_PLUGIN_ID!,
+                true
+              ),
+              sourceMap: false,
+              uni_modules: [process.env.UNI_COMPILE_EXT_API_PLUGIN_ID!],
+              extApiComponents: [],
+              uvueClassNamePrefix: UVUE_CLASS_NAME_PREFIX,
+              transform: {
+                uvueClassNamePrefix: 'Uni',
+                uvueClassNameOnlyBasename: true,
+              },
+            })
+            if (res?.error) {
+              throw res.error
+            }
+          }
+          return
+        }
       }
       if (uniXKotlinCompiler) {
         if (changedFiles.length) {
@@ -232,7 +265,6 @@ export function uniAppPlugin(): UniVitePlugin {
       } else {
         process.env.UNI_APP_X_UNICLOUD_OBJECT = 'false'
       }
-      const { compileApp } = resolveUTSCompiler()
       const res = await compileApp(path.join(uvueOutputDir, 'main.uts'), {
         pageCount,
         uniCloudObjectInfo,
@@ -302,6 +334,9 @@ function normalizeFilename(filename: string, isMain = false) {
 }
 
 function normalizeCode(code: string, isMain = false) {
+  if (!isNormalCompileTarget()) {
+    return code
+  }
   if (!isMain) {
     return code
   }

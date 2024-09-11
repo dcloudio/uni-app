@@ -4,6 +4,7 @@ import fs from 'fs-extra'
 import type {
   UTSBundleOptions,
   UTSInputOptions,
+  UTSOutputOptions,
   UTSResult,
 } from '@dcloudio/uts'
 
@@ -64,6 +65,7 @@ type UniCloudObjectInfo = {
 export interface CompileAppOptions {
   inputDir: string
   outputDir: string
+  outFilename?: string
   package: string
   sourceMap: boolean
   uni_modules: string[]
@@ -84,6 +86,7 @@ export interface CompileAppOptions {
     declaration: string
   }[]
   env?: Record<string, unknown>
+  transform?: UTSOutputOptions['transform']
 }
 
 export async function compileApp(entry: string, options: CompileAppOptions) {
@@ -139,7 +142,7 @@ export async function compileApp(entry: string, options: CompileAppOptions) {
       outDir: isProd
         ? kotlinSrcDir(path.resolve(outputDir, '.uniappx/android/'))
         : kotlinSrcDir(kotlinDir(outputDir)),
-      outFilename: 'index.kt', // 强制 main.kt => index.kt 因为云端，真机运行识别的都是 index.kt
+      outFilename: options.outFilename || 'index.kt', // 强制 main.kt => index.kt 因为云端，真机运行识别的都是 index.kt
       package: pkg,
       sourceMap:
         sourceMap !== false
@@ -164,6 +167,7 @@ export async function compileApp(entry: string, options: CompileAppOptions) {
         uniCloudObjectInfo: options.uniCloudObjectInfo,
         autoImports,
         uniModulesArtifacts: options.uniModulesArtifacts,
+        ...options.transform,
       },
     },
   }

@@ -20,7 +20,7 @@ export interface ResolvedOptions {
 }
 
 export function getResolvedOptions(): ResolvedOptions {
-  return {
+  const options: ResolvedOptions = {
     root: process.env.UNI_INPUT_DIR,
     sourceMap: enableSourceMap(),
     // eslint-disable-next-line no-restricted-globals
@@ -28,6 +28,10 @@ export function getResolvedOptions(): ResolvedOptions {
     targetLanguage: process.env.UNI_UTS_TARGET_LANGUAGE as 'kotlin',
     genDefaultAs: scriptIdentifier,
   }
+  if (process.env.UNI_COMPILE_TARGET === 'ext-api') {
+    options.classNamePrefix = 'Uni'
+  }
+  return options
 }
 
 // compiler-sfc should be exported so it can be re-used

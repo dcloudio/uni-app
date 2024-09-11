@@ -67,7 +67,11 @@ export async function transformMain(
     return null
   }
 
-  const className = genUTSClassName(relativeFilename, options.classNamePrefix)
+  const className =
+    process.env.UNI_COMPILE_TARGET === 'ext-api'
+      ? // components/map/map.vue => UniMapRender
+        genUTSClassName(path.basename(filename), options.classNamePrefix)
+      : genUTSClassName(relativeFilename, options.classNamePrefix)
 
   // script
   const scriptOptions = {
