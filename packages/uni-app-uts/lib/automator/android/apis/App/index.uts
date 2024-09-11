@@ -1,36 +1,34 @@
-// @ts-ignore
+// @ts-expect-error
 import type { Callback } from '../../index.uts'
-// @ts-ignore
+// @ts-expect-error
 import { parsePage } from '../util.uts'
-// @ts-ignore
+// @ts-expect-error
 import { send } from '../../index.uts'
 import {
+  type FirstSocketTaskEmitterParams,
   connectSocket,
-  FirstSocketTaskEmitterParams,
   firstSocketTaskEmitter,
-  // @ts-ignore
+  // @ts-expect-error
 } from './Socket.uts'
 
 export const getPageStack = (callback: Callback): void => {
   callback(
     {
-      // @ts-ignore
-      pageStack: getCurrentPages().map((page: Page): UTSJSONObject => {
-        return parsePage(page)
+      // @ts-expect-error
+      pageStack: getCurrentPages().map((page: UniPage): UTSJSONObject => {
+        return parsePage(page.vm!)
       }),
     },
     null
   )
 }
 export type GetCurrentPageParams = {
-  // @ts-ignore
+  // @ts-expect-error
   callback: (result: UTSJSONObject | null, error: any | null) => void
 }
-// @ts-ignore
 function _getCurrentPage(): Page | null {
-  // @ts-ignore
-  const pages = getCurrentPages()
-  return pages.length > 0 ? pages[pages.length - 1] : null
+  const pages = getCurrentPages() as UniPage[]
+  return pages.length > 0 ? pages[pages.length - 1].vm! : null
 }
 
 export const getCurrentPage = (params: GetCurrentPageParams): void => {
@@ -62,11 +60,11 @@ export const callUniMethod = (
   }
   switch (method) {
     case 'navigateTo':
-      // @ts-ignore
+      // @ts-expect-error
       const _arg = new UTSJSONObject(args[0])
-      // @ts-ignore
       uni.navigateTo({
         url: _arg['url'] as string,
+        // @ts-expect-error
         animationType:
           _arg['animationType'] != null
             ? (_arg['animationType'] as string)
@@ -84,9 +82,8 @@ export const callUniMethod = (
       break
 
     case 'redirectTo':
-      // @ts-ignore
       uni.redirectTo({
-        // @ts-ignore
+        // @ts-expect-error
         url: new UTSJSONObject(args[0])['url'] as string,
         success,
         fail(error) {
@@ -97,9 +94,8 @@ export const callUniMethod = (
       break
 
     case 'reLaunch':
-      // @ts-ignore
       uni.reLaunch({
-        // @ts-ignore
+        // @ts-expect-error
         url: new UTSJSONObject(args[0])['url'] as string,
         success,
         fail(error) {
@@ -110,10 +106,10 @@ export const callUniMethod = (
       break
 
     case 'navigateBack':
-      // @ts-ignore
+      // @ts-expect-error
       const _arg = new UTSJSONObject(args[0])
-      // @ts-ignore
       uni.navigateBack({
+        // @ts-expect-error
         animationType:
           _arg['animationType'] != null
             ? (_arg['animationType'] as string)
@@ -130,9 +126,8 @@ export const callUniMethod = (
       })
       break
     case 'switchTab':
-      // @ts-ignore
       uni.switchTab({
-        // @ts-ignore
+        // @ts-expect-error
         url: new UTSJSONObject(args[0])['url'] as string,
         success,
         fail(error) {
@@ -142,9 +137,8 @@ export const callUniMethod = (
       })
       break
     case 'getStorage':
-      // @ts-ignore
       uni.getStorage({
-        // @ts-ignore
+        // @ts-expect-error
         key: new UTSJSONObject(args[0])['key'] as string,
         success,
         fail(error) {
@@ -154,9 +148,8 @@ export const callUniMethod = (
       })
       break
     case 'setStorage':
-      // @ts-ignore
+      // @ts-expect-error
       const _arg = new UTSJSONObject(args[0])
-      // @ts-ignore
       uni.setStorage({
         key: _arg['key'] as string,
         data: _arg['data']!,
@@ -168,15 +161,12 @@ export const callUniMethod = (
       })
       break
     case 'getStorageSync':
-      // @ts-ignore
       callback({ result: uni.getStorageSync(args[0] as string) }, null)
       break
     case 'setStorageSync':
-      // @ts-ignore
       callback({ result: uni.setStorageSync(args[0] as string, args[1]) }, null)
       break
     case 'getStorageInfo':
-      // @ts-ignore
       uni.getStorageInfo({
         success,
         fail(error) {
@@ -186,13 +176,11 @@ export const callUniMethod = (
       })
       break
     case 'getStorageInfoSync':
-      // @ts-ignore
       callback({ result: uni.getStorageInfoSync() }, null)
       break
     case 'removeStorage':
-      // @ts-ignore
       uni.removeStorage({
-        // @ts-ignore
+        // @ts-expect-error
         key: new UTSJSONObject(args[0])['key'] as string,
         success,
         fail(error) {
@@ -202,11 +190,10 @@ export const callUniMethod = (
       })
       break
     case 'removeStorageSync':
-      // @ts-ignore
       callback({ result: uni.removeStorageSync(args[0] as string) }, null)
       break
     case 'clearStorage':
-      // @ts-ignore
+      // @ts-expect-error
       uni.clearStorage({
         success,
         fail(error) {
@@ -216,16 +203,16 @@ export const callUniMethod = (
       })
       break
     case 'clearStorageSync':
-      // @ts-ignore
       callback({ result: uni.clearStorageSync() }, null)
       break
     case 'showToast':
-      // @ts-ignore
+      // @ts-expect-error
       const _arg = new UTSJSONObject(args[0])
-      // @ts-ignore
       uni.showToast({
         title: _arg['title'] as string,
+        // @ts-expect-error
         icon: _arg['icon'] != null ? (_arg['icon'] as string) : 'success',
+        // @ts-expect-error
         image:
           _arg['image'] != null && _arg['image'] != ''
             ? (_arg['image'] as string)
@@ -233,6 +220,7 @@ export const callUniMethod = (
         mask: _arg['mask'] != null ? (_arg['mask'] as boolean) : false,
         duration:
           _arg['duration'] != null ? (_arg['duration'] as number) : 1500,
+        // @ts-expect-error
         position:
           _arg['position'] != null ? (_arg['position'] as string) : null,
         success,
@@ -243,13 +231,11 @@ export const callUniMethod = (
       })
       break
     case 'hideToast':
-      // @ts-ignore
       uni.hideToast()
       break
     case 'showLoading':
-      // @ts-ignore
+      // @ts-expect-error
       const _arg = new UTSJSONObject(args[0])
-      // @ts-ignore
       uni.showLoading({
         title: _arg['title'] as string,
         mask: _arg['mask'] != null ? (_arg['mask'] as boolean) : false,
@@ -261,30 +247,35 @@ export const callUniMethod = (
       })
       break
     case 'hideLoading':
-      // @ts-ignore
       uni.hideLoading()
       break
     case 'showModal':
-      // @ts-ignore
+      // @ts-expect-error
       const _arg = new UTSJSONObject(args[0])
-      // @ts-ignore
       uni.showModal({
+        // @ts-expect-error
         title: _arg['title'] != null ? (_arg['title'] as string) : null,
+        // @ts-expect-error
         content: _arg['content'] != null ? (_arg['content'] as string) : null,
         showCancel:
           _arg['showCancel'] != null ? (_arg['showCancel'] as boolean) : true,
+        // @ts-expect-error
         cancelText:
           _arg['cancelText'] != null ? (_arg['cancelText'] as string) : null,
+        // @ts-expect-error
         cancelColor:
           _arg['cancelColor'] != null ? (_arg['cancelColor'] as string) : null,
+        // @ts-expect-error
         confirmText:
           _arg['confirmText'] != null ? (_arg['confirmText'] as string) : null,
+        // @ts-expect-error
         confirmColor:
           _arg['confirmColor'] != null
             ? (_arg['confirmColor'] as string)
             : null,
         editable:
           _arg['editable'] != null ? (_arg['editable'] as boolean) : false,
+        // @ts-expect-error
         placeholderText:
           _arg['placeholderText'] != null
             ? (_arg['placeholderText'] as string)
@@ -297,13 +288,14 @@ export const callUniMethod = (
       })
       break
     case 'showActionSheet':
-      // @ts-ignore
+      // @ts-expect-error
       const _arg = new UTSJSONObject(args[0])
-      // @ts-ignore
       uni.showActionSheet({
+        // @ts-expect-error
         title: _arg['title'] != null ? (_arg['title'] as string) : null,
         // @ts-expect-error
         itemList: JSON.parse<string[]>(JSON.stringify(_arg['itemList']))!,
+        // @ts-expect-error
         itemColor:
           _arg['itemColor'] != null ? (_arg['itemColor'] as string) : null,
         success,
@@ -314,7 +306,7 @@ export const callUniMethod = (
       })
       break
     case 'connectSocket':
-      // @ts-ignore
+      // @ts-expect-error
       const _arg = new UTSJSONObject(args[0])
       connectSocket(_arg['id'] as string, _arg['url'] as string, callback)
       break
@@ -346,14 +338,14 @@ export const callUniMethod = (
       firstSocketTaskEmitter(
         {
           method: 'send',
-          // @ts-ignore
+          // @ts-expect-error
           data: new UTSJSONObject(args[0])['data'],
         } as FirstSocketTaskEmitterParams,
         callback
       )
       break
     case 'closeSocket':
-      // @ts-ignore
+      // @ts-expect-error
       const _arg = new UTSJSONObject(args[0])
       firstSocketTaskEmitter(
         {
@@ -365,7 +357,6 @@ export const callUniMethod = (
       )
       break
     case 'getSystemInfo':
-      // @ts-ignore
       uni.getSystemInfo({
         success,
         fail(error) {
@@ -375,27 +366,21 @@ export const callUniMethod = (
       })
       break
     case 'getSystemInfoSync':
-      // @ts-ignore
       callback({ result: uni.getSystemInfoSync() }, null)
       break
     case 'getDeviceInfo':
-      // @ts-ignore
       callback({ result: uni.getDeviceInfo() }, null)
       break
     case 'getSystemSetting':
-      // @ts-ignore
       callback({ result: uni.getSystemSetting() }, null)
       break
     case 'getAppBaseInfo':
-      // @ts-ignore
       callback({ result: uni.getAppBaseInfo() }, null)
       break
     case 'getAppAuthorizeSetting':
-      // @ts-ignore
       callback({ result: uni.getAppAuthorizeSetting() }, null)
       break
     case 'openAppAuthorizeSetting':
-      // @ts-ignore
       uni.openAppAuthorizeSetting({
         success,
         fail(error) {
@@ -405,9 +390,8 @@ export const callUniMethod = (
       })
       break
     case 'pageScrollTo':
-      // @ts-ignore
+      // @ts-expect-error
       const _arg = new UTSJSONObject(args[0])
-      // @ts-ignore
       uni.pageScrollTo({
         scrollTop: _arg['scrollTop'] as number,
         duration: _arg['duration'] as number,
@@ -437,6 +421,7 @@ export const captureScreenshot = (
 ): void => {
   const currentPage = _getCurrentPage()
   if (currentPage != null) {
+    // @ts-expect-error
     currentPage.$viewToTempFilePath({
       id: params.id,
       offsetX: params.offsetX !== null ? params.offsetX : '0',
@@ -444,8 +429,8 @@ export const captureScreenshot = (
       wholeContent: params.fullPage == true,
       path: params.path,
       success: (res) => {
-        // @ts-ignore
         const fileManager = uni.getFileSystemManager()
+        // @ts-expect-error
         fileManager.readFile({
           encoding: 'base64',
           filePath: res.tempFilePath,
@@ -462,7 +447,6 @@ export const captureScreenshot = (
           fail(error) {
             callback(null, error)
           },
-          // @ts-ignore
         } as ReadFileOptions)
       },
       fail: (error) => {
