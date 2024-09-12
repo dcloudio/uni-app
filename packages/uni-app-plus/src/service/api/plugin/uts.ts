@@ -10,7 +10,8 @@ declare const uni: any
 declare const plus: any
 let callbackId = 1
 let proxy: any
-const callbacks: Record<string, Function> = {}
+
+const keepAliveCallbacks: Record<string, Function> = {}
 
 function isUniElement(obj: any) {
   return typeof obj.getNodeId === 'function' && obj.pageId
@@ -33,13 +34,23 @@ function toRaw(observed?: unknown): unknown {
   return raw ? toRaw(raw) : observed
 }
 
-export function normalizeArg(arg: unknown) {
+export function normalizeArg(
+  arg: unknown,
+  callbacks: Record<string, Function>,
+  keepAlive: boolean
+) {
   arg = toRaw(arg)
   if (typeof arg === 'function') {
-    // 查找该函数是否已缓存
-    const oldId = Object.keys(callbacks).find((id) => callbacks[id] === arg)
-    const id = oldId ? parseInt(oldId) : callbackId++
-    callbacks[id] = arg
+    let id: number
+    if (keepAlive) {
+      // 仅keepAlive时，需要查找缓存，非keepAlive时，直接创建，避免函数被复用时，回调函数被误删
+      const oldId = Object.keys(callbacks).find((id) => callbacks[id] === arg)
+      id = oldId ? parseInt(oldId) : callbackId++
+      callbacks[id] = arg
+    } else {
+      id = callbackId++
+      callbacks[id] = arg
+    }
     return id
   } else if (isPlainObject(arg)) {
     const el = parseElement(arg)
@@ -54,7 +65,11 @@ export function normalizeArg(arg: unknown) {
       return { pageId, nodeId }
     } else {
       Object.keys(arg).forEach((name) => {
-        ;(arg as any)[name] = normalizeArg((arg as any)[name])
+        ;(arg as any)[name] = normalizeArg(
+          (arg as any)[name],
+          callbacks,
+          keepAlive
+        )
       })
     }
   }
@@ -410,22 +425,6 @@ function initProxyFunction(
       methodParams.length === 1 &&
       methodParams[0].type === 'UTSCallback'
   }
-  const invokeCallback = ({ id, name, params }: InvokeCallbackParamsRes) => {
-    const callback = callbacks[id!]
-    if (callback) {
-      callback(...params)
-      if (!keepAlive) {
-        delete callbacks[id]
-      }
-    } else {
-      console.error(
-        `uts插件[${moduleName}] ${pkg}${cls}.${methodName.replace(
-          'ByJs',
-          ''
-        )} ${name}回调函数已释放，不能再次执行，参考文档：https://doc.dcloud.net.cn/uni-app-x/plugin/uts-plugin.html#keepalive`
-      )
-    }
-  }
   const baseArgs: InvokeArgs = instanceId
     ? {
         moduleName,
@@ -451,8 +450,27 @@ function initProxyFunction(
     if (errMsg) {
       throw new Error(errMsg)
     }
+    // TODO 隐患：部分callback可能不会被删除，比如传入了success、fail、complete，但是仅触发了success、complete，那么fail就不会被删除
+    // 需要有个机制来知道整个函数已经结束了，需要清理所有相关callbacks
+    const callbacks = keepAlive ? keepAliveCallbacks : {}
+    const invokeCallback = ({ id, name, params }: InvokeCallbackParamsRes) => {
+      const callback = callbacks[id!]
+      if (callback) {
+        callback(...params)
+        if (!keepAlive) {
+          delete callbacks[id]
+        }
+      } else {
+        console.error(
+          `uts插件[${moduleName}] ${pkg}${cls}.${methodName.replace(
+            'ByJs',
+            ''
+          )} ${name}回调函数已释放，不能再次执行，参考文档：https://doc.dcloud.net.cn/uni-app-x/plugin/uts-plugin.html#keepalive`
+        )
+      }
+    }
     const invokeArgs = extend({}, baseArgs, {
-      params: args.map((arg) => normalizeArg(arg)),
+      params: args.map((arg) => normalizeArg(arg, callbacks, keepAlive)),
     })
     if (async) {
       return new Promise((resolve, reject) => {

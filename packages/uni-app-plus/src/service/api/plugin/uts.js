@@ -3,7 +3,7 @@ import { isPlainObject, hasOwn, extend, capitalize, isString } from 'uni-shared'
 // 生成的 uts.js 需要同步到 vue2 src/platforms/app-plus/service/api/plugin
 let callbackId = 1;
 let proxy;
-const callbacks = {};
+const keepAliveCallbacks = {};
 function isUniElement(obj) {
     return typeof obj.getNodeId === 'function' && obj.pageId;
 }
@@ -22,13 +22,20 @@ function toRaw(observed) {
     const raw = observed && observed.__v_raw;
     return raw ? toRaw(raw) : observed;
 }
-function normalizeArg(arg) {
+function normalizeArg(arg, callbacks, keepAlive) {
     arg = toRaw(arg);
     if (typeof arg === 'function') {
-        // 查找该函数是否已缓存
-        const oldId = Object.keys(callbacks).find((id) => callbacks[id] === arg);
-        const id = oldId ? parseInt(oldId) : callbackId++;
-        callbacks[id] = arg;
+        let id;
+        if (keepAlive) {
+            // 仅keepAlive时，需要查找缓存，非keepAlive时，直接创建，避免函数被复用时，回调函数被误删
+            const oldId = Object.keys(callbacks).find((id) => callbacks[id] === arg);
+            id = oldId ? parseInt(oldId) : callbackId++;
+            callbacks[id] = arg;
+        }
+        else {
+            id = callbackId++;
+            callbacks[id] = arg;
+        }
         return id;
     }
     else if (isPlainObject(arg)) {
@@ -45,7 +52,7 @@ function normalizeArg(arg) {
         }
         else {
             Object.keys(arg).forEach((name) => {
-                arg[name] = normalizeArg(arg[name]);
+                arg[name] = normalizeArg(arg[name], callbacks, keepAlive);
             });
         }
     }
@@ -111,22 +118,13 @@ function invokePropGetter(args) {
     }
     return resolveSyncResult(args, getProxy().invokeSync(args, () => { }));
 }
-function initProxyFunction(type, async, { moduleName, moduleType, package: pkg, class: cls, name: methodName, method, companion, params: methodParams, return: returnOptions, errMsg, }, instanceId, proxy) {
-    const keepAlive = methodName.indexOf('on') === 0 &&
-        methodParams.length === 1 &&
-        methodParams[0].type === 'UTSCallback';
-    const invokeCallback = ({ id, name, params }) => {
-        const callback = callbacks[id];
-        if (callback) {
-            callback(...params);
-            if (!keepAlive) {
-                delete callbacks[id];
-            }
-        }
-        else {
-            console.error(`${pkg}${cls}.${methodName} ${name} is not found`);
-        }
-    };
+function initProxyFunction(type, async, { moduleName, moduleType, package: pkg, class: cls, name: methodName, method, companion, keepAlive, params: methodParams, return: returnOptions, errMsg, }, instanceId, proxy) {
+    if (!keepAlive) {
+        keepAlive =
+            methodName.indexOf('on') === 0 &&
+                methodParams.length === 1 &&
+                methodParams[0].type === 'UTSCallback';
+    }
     const baseArgs = instanceId
         ? {
             moduleName,
@@ -152,8 +150,23 @@ function initProxyFunction(type, async, { moduleName, moduleType, package: pkg, 
         if (errMsg) {
             throw new Error(errMsg);
         }
+        // TODO 隐患：部分callback可能不会被删除，比如传入了success、fail、complete，但是仅触发了success、complete，那么fail就不会被删除
+        // 需要有个机制来知道整个函数已经结束了，需要清理所有相关callbacks
+        const callbacks = keepAlive ? keepAliveCallbacks : {};
+        const invokeCallback = ({ id, name, params }) => {
+            const callback = callbacks[id];
+            if (callback) {
+                callback(...params);
+                if (!keepAlive) {
+                    delete callbacks[id];
+                }
+            }
+            else {
+                console.error(`uts插件[${moduleName}] ${pkg}${cls}.${methodName.replace('ByJs', '')} ${name}回调函数已释放，不能再次执行，参考文档：https://doc.dcloud.net.cn/uni-app-x/plugin/uts-plugin.html#keepalive`);
+            }
+        };
         const invokeArgs = extend({}, baseArgs, {
-            params: args.map((arg) => normalizeArg(arg)),
+            params: args.map((arg) => normalizeArg(arg, callbacks, keepAlive)),
         });
         if (async) {
             return new Promise((resolve, reject) => {
@@ -249,7 +262,11 @@ function initUTSProxyClass(options) {
             // 初始化实例 ID
             if (!isProxyInterface) {
                 // 初始化未指定时，每次都要创建instanceId
-                this.__instanceId = initProxyFunction('constructor', false, extend({ name: 'constructor', params: constructorParams }, baseOptions), 0).apply(null, params);
+                this.__instanceId = initProxyFunction('constructor', false, extend({
+                    name: 'constructor',
+                    keepAlive: false,
+                    params: constructorParams,
+                }, baseOptions), 0).apply(null, params);
             }
             else if (typeof instanceId === 'number') {
                 this.__instanceId = instanceId;
@@ -268,9 +285,10 @@ function initUTSProxyClass(options) {
                         //实例方法
                         name = parseClassMethodName(name, methods);
                         if (hasOwn(methods, name)) {
-                            const { async, params, return: returnOptions } = methods[name];
+                            const { async, keepAlive, params, return: returnOptions, } = methods[name];
                             target[name] = initUTSInstanceMethod(!!async, extend({
                                 name,
+                                keepAlive,
                                 params,
                                 return: returnOptions,
                             }, baseOptions), instance.__instanceId, proxy);
@@ -298,6 +316,7 @@ function initUTSProxyClass(options) {
                             if (param) {
                                 target[setter] = initProxyFunction('setter', false, extend({
                                     name: name,
+                                    keepAlive: false,
                                     params: [param],
                                 }, baseOptions), instance.__instanceId, proxy);
                             }
@@ -318,11 +337,12 @@ function initUTSProxyClass(options) {
             name = parseClassMethodName(name, staticMethods);
             if (hasOwn(staticMethods, name)) {
                 if (!staticMethodCache[name]) {
-                    const { async, params, return: returnOptions } = staticMethods[name];
+                    const { async, keepAlive, params, return: returnOptions, } = staticMethods[name];
                     // 静态方法
                     staticMethodCache[name] = initUTSStaticMethod(!!async, extend({
                         name,
                         companion: true,
+                        keepAlive,
                         params,
                         return: returnOptions,
                     }, baseOptions));
@@ -347,6 +367,7 @@ function initUTSProxyClass(options) {
                     if (param) {
                         staticPropSetterCache[setter] = initProxyFunction('setter', false, extend({
                             name: name,
+                            keepAlive: false,
                             params: [param],
                         }, baseOptions), 0);
                     }
