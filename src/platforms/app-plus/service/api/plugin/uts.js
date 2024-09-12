@@ -3,7 +3,7 @@ import { isPlainObject, hasOwn, extend, capitalize, isString } from 'uni-shared'
 // 生成的 uts.js 需要同步到 vue2 src/platforms/app-plus/service/api/plugin
 let callbackId = 1;
 let proxy;
-const callbacks = {};
+const keepAliveCallbacks = {};
 function isUniElement(obj) {
     return obj && typeof obj.getNodeId === 'function' && obj.pageId;
 }
@@ -22,17 +22,23 @@ function toRaw(observed) {
     const raw = observed && observed.__v_raw;
     return raw ? toRaw(raw) : observed;
 }
-function normalizeArg(arg) {
+function normalizeArg(arg, callbacks, keepAlive) {
     arg = toRaw(arg);
     if (typeof arg === 'function') {
-        // 查找该函数是否已缓存
-        const oldId = Object.keys(callbacks).find((id) => callbacks[id] === arg);
-        const id = oldId ? parseInt(oldId) : callbackId++;
-        callbacks[id] = arg;
+        let id;
+        if (keepAlive) {
+            // 仅keepAlive时，需要查找缓存，非keepAlive时，直接创建，避免函数被复用时，回调函数被误删
+            const oldId = Object.keys(callbacks).find((id) => callbacks[id] === arg);
+            id = oldId ? parseInt(oldId) : callbackId++;
+            callbacks[id] = arg;
+        }
+        else {
+            id = callbackId++;
+            callbacks[id] = arg;
+        }
         return id;
     }
     else if (isPlainObject(arg) || isUniElement(arg)) {
-        // 判断值是否为元素
         const el = parseElement(arg);
         if (el) {
             let nodeId = '';
@@ -45,9 +51,18 @@ function normalizeArg(arg) {
             return { pageId, nodeId };
         }
         else {
+            // 必须复制，否则会污染原始对象，比如：
+            // const obj = {
+            //   a: 1,
+            //   b: () => {}
+            // }
+            // const newObj = normalizeArg(obj, {}, false)
+            // newObj.a = 2 // 这会污染原始对象 obj
+            const newArg = {};
             Object.keys(arg).forEach((name) => {
-                arg[name] = normalizeArg(arg[name]);
+                newArg[name] = normalizeArg(arg[name], callbacks, keepAlive);
             });
+            return newArg;
         }
     }
     return arg;
@@ -119,19 +134,6 @@ function initProxyFunction(type, async, { moduleName, moduleType, package: pkg, 
                 methodParams.length === 1 &&
                 methodParams[0].type === 'UTSCallback';
     }
-    // const throws = async
-    const invokeCallback = ({ id, name, params }) => {
-        const callback = callbacks[id];
-        if (callback) {
-            callback(...params);
-            if (!keepAlive) {
-                delete callbacks[id];
-            }
-        }
-        else {
-            console.error(`uts插件[${moduleName}] ${pkg}${cls}.${methodName.replace('ByJs', '')} ${name}回调函数已释放，不能再次执行，参考文档：https://doc.dcloud.net.cn/uni-app-x/plugin/uts-plugin.html#keepalive`);
-        }
-    };
     const baseArgs = instanceId
         ? {
             moduleName,
@@ -141,7 +143,6 @@ function initProxyFunction(type, async, { moduleName, moduleType, package: pkg, 
             name: methodName,
             method: methodParams,
             keepAlive,
-            // throws,
         }
         : {
             moduleName,
@@ -153,14 +154,28 @@ function initProxyFunction(type, async, { moduleName, moduleType, package: pkg, 
             companion,
             method: methodParams,
             keepAlive,
-            // throws,
         };
     return (...args) => {
         if (errMsg) {
             throw new Error(errMsg);
         }
+        // TODO 隐患：部分callback可能不会被删除，比如传入了success、fail、complete，但是仅触发了success、complete，那么fail就不会被删除
+        // 需要有个机制来知道整个函数已经结束了，需要清理所有相关callbacks
+        const callbacks = keepAlive ? keepAliveCallbacks : {};
+        const invokeCallback = ({ id, name, params }) => {
+            const callback = callbacks[id];
+            if (callback) {
+                callback(...params);
+                if (!keepAlive) {
+                    delete callbacks[id];
+                }
+            }
+            else {
+                console.error(`uts插件[${moduleName}] ${pkg}${cls}.${methodName.replace('ByJs', '')} ${name}回调函数已释放，不能再次执行，参考文档：https://doc.dcloud.net.cn/uni-app-x/plugin/uts-plugin.html#keepalive`);
+            }
+        };
         const invokeArgs = extend({}, baseArgs, {
-            params: args.map((arg) => normalizeArg(arg)),
+            params: args.map((arg) => normalizeArg(arg, callbacks, keepAlive)),
         });
         if (async) {
             return new Promise((resolve, reject) => {
@@ -295,7 +310,6 @@ function initUTSProxyClass(options) {
                                 id: instance.__instanceId,
                                 type: 'getter',
                                 keepAlive: false,
-                                // throws: false,
                                 name: name,
                                 errMsg,
                             });
