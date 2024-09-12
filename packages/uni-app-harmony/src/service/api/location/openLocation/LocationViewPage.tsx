@@ -17,7 +17,11 @@ const LocationViewPage = {
     this.longitude = e.longitude
     this.loaded = true
   },
-  methods: {},
+  methods: {
+    onClose(e) {
+      uni.navigateBack()
+    },
+  },
   render: function (_ctx, _cache, $props, $setup, $data, $options) {
     return $data.loaded
       ? (openBlock(),
@@ -28,6 +32,10 @@ const LocationViewPage = {
             style: { width: '100%', height: '100%' },
             latitude: $data.latitude,
             longitude: $data.longitude,
+            onClose:
+              _cache[0] ||
+              (_cache[0] = (...args) =>
+                $options.onClose && $options.onClose(...args)),
           },
           null,
           40,
