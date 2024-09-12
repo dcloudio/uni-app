@@ -139,13 +139,6 @@ export function initEnv(
   process.env.UNI_PLATFORM = options.platform as UniApp.PLATFORM
 
   if (process.env.UNI_PLATFORM === 'app-harmony') {
-    if (!process.env.UNI_APP_HARMONY_PROJECT_PATH) {
-      const manifestJson = parseManifestJsonOnce(process.env.UNI_INPUT_DIR)
-      const projectPath = manifestJson['app-harmony']?.projectPath
-      if (projectPath) {
-        process.env.UNI_APP_HARMONY_PROJECT_PATH = path.resolve(projectPath)
-      }
-    }
     if (process.env.UNI_APP_HARMONY_PROJECT_PATH) {
       // 先通过原始outputDir设置，因为下边会修改原始的outputDir到鸿蒙项目里，而这些临时目录不应该影响到鸿蒙项目
       process.env.UNI_APP_X_TSC_DIR = path.resolve(
