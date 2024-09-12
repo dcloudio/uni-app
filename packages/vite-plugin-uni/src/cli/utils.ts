@@ -138,13 +138,6 @@ export function initEnv(
   process.env.UNI_PLATFORM = options.platform as UniApp.PLATFORM
 
   if (process.env.UNI_PLATFORM === 'app-harmony') {
-    if (!process.env.UNI_APP_HARMONY_PROJECT_PATH) {
-      const manifestJson = parseManifestJsonOnce(process.env.UNI_INPUT_DIR)
-      const projectPath = manifestJson['app-harmony']?.projectPath
-      if (projectPath) {
-        process.env.UNI_APP_HARMONY_PROJECT_PATH = path.resolve(projectPath)
-      }
-    }
     if (process.env.UNI_APP_HARMONY_PROJECT_PATH) {
       // 指定了鸿蒙项目根目录
       process.env.UNI_OUTPUT_DIR = path.resolve(
