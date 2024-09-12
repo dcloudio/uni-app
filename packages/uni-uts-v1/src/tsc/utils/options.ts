@@ -55,7 +55,11 @@ export function createBasicUtsOptions(
     options.typescript = require('../../../lib/typescript')
   }
 
-  if (isInHBuilderXBool || isUTSCloudCompilerBool) {
+  if (
+    process.env.UNI_COMPILE_TARGET === 'ext-api' &&
+    process.env.UNI_APP_NEXT_WORKSPACE
+  ) {
+  } else if (isInHBuilderXBool || isUTSCloudCompilerBool) {
     const pluginPath = isInHBuilderXBool
       ? process.env.UNI_HBUILDERX_PLUGINS
       : path.resolve(process.cwd(), '../')
