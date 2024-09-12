@@ -64,13 +64,18 @@ export function normalizeArg(
       }
       return { pageId, nodeId }
     } else {
+      // 必须复制，否则会污染原始对象，比如：
+      // const obj = {
+      //   a: 1,
+      //   b: () => {}
+      // }
+      // const newObj = normalizeArg(obj, {}, false)
+      // newObj.a = 2 // 这会污染原始对象 obj
+      const newArg = {}
       Object.keys(arg as object).forEach((name) => {
-        ;(arg as any)[name] = normalizeArg(
-          (arg as any)[name],
-          callbacks,
-          keepAlive
-        )
+        newArg[name] = normalizeArg((arg as any)[name], callbacks, keepAlive)
       })
+      return newArg
     }
   }
   return arg
