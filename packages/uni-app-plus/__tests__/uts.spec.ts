@@ -6,28 +6,36 @@ import {
 
 describe('uts-module', () => {
   test('normalize args', () => {
-    expect(normalizeArg(1)).toBe(1)
-    expect(normalizeArg('hello')).toBe('hello')
-    expect(normalizeArg(true)).toBe(true)
-    expect(normalizeArg({ callback: () => {} })).toEqual({
+    expect(normalizeArg(1, {}, false)).toBe(1)
+    expect(normalizeArg('hello', {}, false)).toBe('hello')
+    expect(normalizeArg(true, {}, false)).toBe(true)
+    expect(normalizeArg({ callback: () => {} }, {}, false)).toEqual({
       callback: 1,
     })
     expect(
-      normalizeArg({ success: () => {}, fail: () => {}, complete: () => {} })
+      normalizeArg(
+        { success: () => {}, fail: () => {}, complete: () => {} },
+        {},
+        false
+      )
     ).toEqual({
       success: 2,
       fail: 3,
       complete: 4,
     })
     expect(
-      normalizeArg({
-        user: {
-          name: 'test',
-          age: 10,
-          callback() {},
+      normalizeArg(
+        {
+          user: {
+            name: 'test',
+            age: 10,
+            callback() {},
+          },
+          success() {},
         },
-        success() {},
-      })
+        {},
+        false
+      )
     ).toEqual({
       user: {
         name: 'test',
