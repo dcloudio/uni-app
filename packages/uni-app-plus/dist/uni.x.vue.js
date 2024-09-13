@@ -2,6 +2,11 @@ import { invokeArrayFns, isUniLifecycleHook, decodedQuery, ON_LOAD, ON_SHOW, LIN
 import { isString, isArray, isFunction } from '@vue/shared';
 import { injectHook } from 'vue';
 
+function get$pageByPage(page) {
+    return page.vm.$basePage
+        ;
+}
+
 function getCurrentPage() {
     const pages = getCurrentPages();
     const len = pages.length;
@@ -10,7 +15,9 @@ function getCurrentPage() {
     }
 }
 function getCurrentPageVm() {
-    const page = getCurrentPage();
+    var _a;
+    const page = (_a = getCurrentPage()) === null || _a === void 0 ? void 0 : _a.vm
+        ;
     if (page) {
         return page.$vm;
     }
@@ -23,7 +30,7 @@ function invokeHook(vm, name, args) {
         vm = getCurrentPageVm();
     }
     else if (typeof vm === 'number') {
-        const page = getCurrentPages().find((page) => page.$page.id === vm);
+        const page = getCurrentPages().find((page) => get$pageByPage(page).id === vm);
         if (page) {
             vm = page.$vm;
         }

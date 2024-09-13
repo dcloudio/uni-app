@@ -1432,11 +1432,14 @@ function rpx2pxWithReplace(str) {
         return uni.upx2px(parseFloat(b)) + 'px';
     });
 }
+function get$pageByPage(page) {
+    return page.$page;
+}
 
 function getPageIdByVm(instance) {
     const vm = resolveComponentInstance(instance);
     if (vm.$page) {
-        return vm.$page.id;
+        return getPageProxyId(vm);
     }
     if (!vm.$) {
         return;
@@ -1540,7 +1543,7 @@ function invokeHook(vm, name, args) {
         vm = getCurrentPageVm();
     }
     else if (typeof vm === 'number') {
-        const page = getCurrentPages().find((page) => page.$page.id === vm);
+        const page = getCurrentPages().find((page) => get$pageByPage(page).id === vm);
         if (page) {
             vm = page.$vm;
         }
@@ -1568,7 +1571,7 @@ function normalizeRoute(toRoute) {
     let fromRoute = '';
     const pages = getCurrentPages();
     if (pages.length) {
-        fromRoute = pages[pages.length - 1].$page.route;
+        fromRoute = get$pageByPage(pages[pages.length - 1]).route;
     }
     return getRealRoute(fromRoute, toRoute);
 }
@@ -1637,17 +1640,17 @@ function getPageId() {
 }
 let channel;
 let globalEvent$1;
-const callbacks$3 = {};
+const callbacks$2 = {};
 function onPlusMessage$1(res) {
     const message = res.data && res.data.__message;
     if (!message || !message.__page) {
         return;
     }
     const pageId = message.__page;
-    const callback = callbacks$3[pageId];
+    const callback = callbacks$2[pageId];
     callback && callback(message);
     if (!message.keep) {
-        delete callbacks$3[pageId];
+        delete callbacks$2[pageId];
     }
 }
 function addEventListener(pageId, callback) {
@@ -1666,7 +1669,7 @@ function addEventListener(pageId, callback) {
         // @ts-expect-error
         window.__plusMessage = onPlusMessage$1;
     }
-    callbacks$3[pageId] = callback;
+    callbacks$2[pageId] = callback;
 }
 class Page {
     constructor(webview) {
@@ -14674,7 +14677,7 @@ const Recorder = {
         }
     },
 };
-const callbacks$2 = {
+const callbacks$1 = {
     pause: null,
     resume: null,
     start: null,
@@ -14685,29 +14688,29 @@ function onRecorderStateChange(res) {
     const state = res.state;
     delete res.state;
     delete res.errMsg;
-    if (state && isFunction(callbacks$2[state])) {
-        callbacks$2[state](res);
+    if (state && isFunction(callbacks$1[state])) {
+        callbacks$1[state](res);
     }
 }
 class RecorderManager {
     constructor() { }
     onError(callback) {
-        callbacks$2.error = callback;
+        callbacks$1.error = callback;
     }
     onFrameRecorded(callback) { }
     onInterruptionBegin(callback) { }
     onInterruptionEnd(callback) { }
     onPause(callback) {
-        callbacks$2.pause = callback;
+        callbacks$1.pause = callback;
     }
     onResume(callback) {
-        callbacks$2.resume = callback;
+        callbacks$1.resume = callback;
     }
     onStart(callback) {
-        callbacks$2.start = callback;
+        callbacks$1.start = callback;
     }
     onStop(callback) {
-        callbacks$2.stop = callback;
+        callbacks$1.stop = callback;
     }
     pause() {
         Recorder.pause();
@@ -15830,7 +15833,7 @@ const eventNames = [
     'error',
     'waiting',
 ];
-const callbacks$1 = {
+const callbacks = {
     canplay: [],
     play: [],
     pause: [],
@@ -16019,7 +16022,7 @@ function operateBackgroundAudio({ operationType, src, startTime, currentTime, })
     });
 }
 function onBackgroundAudioStateChange({ state, errMsg, errCode, dataUrl, }) {
-    callbacks$1[state].forEach((callback) => {
+    callbacks[state].forEach((callback) => {
         if (isFunction(callback)) {
             callback(state === 'error'
                 ? {
@@ -16034,7 +16037,7 @@ const onInitBackgroundAudioManager = /*#__PURE__*/ once(() => {
     eventNames.forEach((item) => {
         BackgroundAudioManager.prototype[`on${capitalize(item)}`] =
             function (callback) {
-                callbacks$1[item].push(callback);
+                callbacks[item].push(callback);
             };
     });
 });
@@ -17438,7 +17441,7 @@ function normalizeLog(type, filename, args) {
 // 生成的 uts.js 需要同步到 vue2 src/platforms/app-plus/service/api/plugin
 let callbackId = 1;
 let proxy;
-const callbacks = {};
+const keepAliveCallbacks = {};
 function isUniElement(obj) {
     return obj && typeof obj.getNodeId === 'function' && obj.pageId;
 }
@@ -17457,17 +17460,23 @@ function toRaw(observed) {
     const raw = observed && observed.__v_raw;
     return raw ? toRaw(raw) : observed;
 }
-function normalizeArg(arg) {
+function normalizeArg(arg, callbacks, keepAlive) {
     arg = toRaw(arg);
     if (typeof arg === 'function') {
-        // 查找该函数是否已缓存
-        const oldId = Object.keys(callbacks).find((id) => callbacks[id] === arg);
-        const id = oldId ? parseInt(oldId) : callbackId++;
-        callbacks[id] = arg;
+        let id;
+        if (keepAlive) {
+            // 仅keepAlive时，需要查找缓存，非keepAlive时，直接创建，避免函数被复用时，回调函数被误删
+            const oldId = Object.keys(callbacks).find((id) => callbacks[id] === arg);
+            id = oldId ? parseInt(oldId) : callbackId++;
+            callbacks[id] = arg;
+        }
+        else {
+            id = callbackId++;
+            callbacks[id] = arg;
+        }
         return id;
     }
     else if (isPlainObject(arg) || isUniElement(arg)) {
-        // 判断值是否为元素
         const el = parseElement(arg);
         if (el) {
             let nodeId = '';
@@ -17480,9 +17489,18 @@ function normalizeArg(arg) {
             return { pageId, nodeId };
         }
         else {
+            // 必须复制，否则会污染原始对象，比如：
+            // const obj = {
+            //   a: 1,
+            //   b: () => {}
+            // }
+            // const newObj = normalizeArg(obj, {}, false)
+            // newObj.a = 2 // 这会污染原始对象 obj
+            const newArg = {};
             Object.keys(arg).forEach((name) => {
-                arg[name] = normalizeArg(arg[name]);
+                newArg[name] = normalizeArg(arg[name], callbacks, keepAlive);
             });
+            return newArg;
         }
     }
     return arg;
@@ -17554,19 +17572,6 @@ function initProxyFunction(type, async, { moduleName, moduleType, package: pkg, 
                 methodParams.length === 1 &&
                 methodParams[0].type === 'UTSCallback';
     }
-    // const throws = async
-    const invokeCallback = ({ id, name, params }) => {
-        const callback = callbacks[id];
-        if (callback) {
-            callback(...params);
-            if (!keepAlive) {
-                delete callbacks[id];
-            }
-        }
-        else {
-            console.error(`uts插件[${moduleName}] ${pkg}${cls}.${methodName.replace('ByJs', '')} ${name}回调函数已释放，不能再次执行，参考文档：https://doc.dcloud.net.cn/uni-app-x/plugin/uts-plugin.html#keepalive`);
-        }
-    };
     const baseArgs = instanceId
         ? {
             moduleName,
@@ -17576,7 +17581,6 @@ function initProxyFunction(type, async, { moduleName, moduleType, package: pkg, 
             name: methodName,
             method: methodParams,
             keepAlive,
-            // throws,
         }
         : {
             moduleName,
@@ -17588,14 +17592,28 @@ function initProxyFunction(type, async, { moduleName, moduleType, package: pkg, 
             companion,
             method: methodParams,
             keepAlive,
-            // throws,
         };
     return (...args) => {
         if (errMsg) {
             throw new Error(errMsg);
         }
+        // TODO 隐患：部分callback可能不会被删除，比如传入了success、fail、complete，但是仅触发了success、complete，那么fail就不会被删除
+        // 需要有个机制来知道整个函数已经结束了，需要清理所有相关callbacks
+        const callbacks = keepAlive ? keepAliveCallbacks : {};
+        const invokeCallback = ({ id, name, params }) => {
+            const callback = callbacks[id];
+            if (callback) {
+                callback(...params);
+                if (!keepAlive) {
+                    delete callbacks[id];
+                }
+            }
+            else {
+                console.error(`uts插件[${moduleName}] ${pkg}${cls}.${methodName.replace('ByJs', '')} ${name}回调函数已释放，不能再次执行，参考文档：https://doc.dcloud.net.cn/uni-app-x/plugin/uts-plugin.html#keepalive`);
+            }
+        };
         const invokeArgs = extend({}, baseArgs, {
-            params: args.map((arg) => normalizeArg(arg)),
+            params: args.map((arg) => normalizeArg(arg, callbacks, keepAlive)),
         });
         if (async) {
             return new Promise((resolve, reject) => {
@@ -17730,7 +17748,6 @@ function initUTSProxyClass(options) {
                                 id: instance.__instanceId,
                                 type: 'getter',
                                 keepAlive: false,
-                                // throws: false,
                                 name: name,
                                 errMsg,
                             });

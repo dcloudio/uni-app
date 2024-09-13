@@ -1,6 +1,9 @@
 import { normalizeStyles as normalizeStyles$1, addLeadingSlash, invokeArrayFns, Emitter, parseQuery, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, ON_ERROR, ON_SHOW, ON_HIDE, removeLeadingSlash, getLen, EventChannel, once, parseUrl, ON_UNLOAD, ON_READY, ON_PAGE_SCROLL, ON_PULL_DOWN_REFRESH, ON_REACH_BOTTOM, ON_RESIZE, ON_LAUNCH, ON_BACK_PRESS } from "@dcloudio/uni-shared";
 import { extend, isString, isPlainObject, isFunction as isFunction$1, isArray, isPromise, hasOwn, remove, invokeArrayFns as invokeArrayFns$1, capitalize, toTypeString, toRawType, parseStringStyle } from "@vue/shared";
 import { createVNode, render, injectHook, getCurrentInstance, defineComponent, warn, isInSSRComponentSetup, ref, watchEffect, watch, computed, onMounted, camelize, onUnmounted, reactive, provide, inject, nextTick } from "vue";
+function get$pageByPage(page) {
+  return page.vm.$basePage;
+}
 function getCurrentPage() {
   var pages2 = getCurrentPages();
   var len = pages2.length;
@@ -16,7 +19,8 @@ function getCurrentPageMeta() {
   }
 }
 function getCurrentPageVm() {
-  var page = getCurrentPage();
+  var _getCurrentPage3;
+  var page = (_getCurrentPage3 = getCurrentPage()) === null || _getCurrentPage3 === void 0 ? void 0 : _getCurrentPage3.vm;
   if (page) {
     return page.$vm;
   }
@@ -63,7 +67,7 @@ function invokeHook(vm, name, args) {
     name = vm;
     vm = getCurrentPageVm();
   } else if (typeof vm === "number") {
-    var page = getCurrentPages().find((page2) => page2.$page.id === vm);
+    var page = getCurrentPages().find((page2) => get$pageByPage(page2).id === vm);
     if (page) {
       vm = page.$vm;
     } else {
@@ -88,7 +92,7 @@ function normalizeRoute(toRoute) {
   var fromRoute = "";
   var pages2 = getCurrentPages();
   if (pages2.length) {
-    fromRoute = pages2[pages2.length - 1].$page.route;
+    fromRoute = get$pageByPage(pages2[pages2.length - 1]).route;
   }
   return getRealRoute(fromRoute, toRoute);
 }
@@ -1653,7 +1657,9 @@ function registerPage(_ref, onCreated) {
       invokeHook(page, ON_READY);
     });
     nativePage2.addPageEventListener(ON_PAGE_SCROLL, (arg) => {
-      invokeHook(page, ON_PAGE_SCROLL, arg);
+      invokeHook(page, ON_PAGE_SCROLL, {
+        scrollTop: arg.scrollTop
+      });
     });
     nativePage2.addPageEventListener(ON_PULL_DOWN_REFRESH, (_) => {
       invokeHook(page, ON_PULL_DOWN_REFRESH);
@@ -1661,8 +1667,17 @@ function registerPage(_ref, onCreated) {
     nativePage2.addPageEventListener(ON_REACH_BOTTOM, (_) => {
       invokeHook(page, ON_REACH_BOTTOM);
     });
-    nativePage2.addPageEventListener(ON_RESIZE, (_) => {
-      invokeHook(page, ON_RESIZE);
+    nativePage2.addPageEventListener(ON_RESIZE, (arg) => {
+      var args = {
+        deviceOrientation: arg.deviceOrientation,
+        size: {
+          windowWidth: arg.size.windowWidth,
+          windowHeight: arg.size.windowHeight,
+          screenWidth: arg.size.screenWidth,
+          screenHeight: arg.size.screenHeight
+        }
+      };
+      invokeHook(page, ON_RESIZE, args);
     });
     nativePage2.startRender();
   }
@@ -1736,8 +1751,8 @@ function registerDialogPage(_ref2, dialogPage, onCreated) {
     nativePage2.addPageEventListener(ON_REACH_BOTTOM, (_) => {
       invokeHook(page, ON_REACH_BOTTOM);
     });
-    nativePage2.addPageEventListener(ON_RESIZE, (_) => {
-      invokeHook(page, ON_RESIZE);
+    nativePage2.addPageEventListener(ON_RESIZE, (arg) => {
+      invokeHook(page, ON_RESIZE, arg);
     });
     nativePage2.startRender();
   }
@@ -3593,7 +3608,7 @@ var getPerformance = function() {
 };
 var callbackId = 1;
 var proxy;
-var callbacks = {};
+var keepAliveCallbacks = {};
 function isUniElement(obj) {
   return obj && typeof obj.getNodeId === "function" && obj.pageId;
 }
@@ -3611,12 +3626,18 @@ function toRaw(observed) {
   var raw = observed && observed.__v_raw;
   return raw ? toRaw(raw) : observed;
 }
-function normalizeArg(arg) {
+function normalizeArg(arg, callbacks, keepAlive) {
   arg = toRaw(arg);
   if (typeof arg === "function") {
-    var oldId = Object.keys(callbacks).find((id22) => callbacks[id22] === arg);
-    var id2 = oldId ? parseInt(oldId) : callbackId++;
-    callbacks[id2] = arg;
+    var id2;
+    if (keepAlive) {
+      var oldId = Object.keys(callbacks).find((id22) => callbacks[id22] === arg);
+      id2 = oldId ? parseInt(oldId) : callbackId++;
+      callbacks[id2] = arg;
+    } else {
+      id2 = callbackId++;
+      callbacks[id2] = arg;
+    }
     return id2;
   } else if (isPlainObject(arg) || isUniElement(arg)) {
     var el = parseElement(arg);
@@ -3632,9 +3653,11 @@ function normalizeArg(arg) {
         nodeId
       };
     } else {
+      var newArg = {};
       Object.keys(arg).forEach((name) => {
-        arg[name] = normalizeArg(arg[name]);
+        newArg[name] = normalizeArg(arg[name], callbacks, keepAlive);
       });
+      return newArg;
     }
   }
   return arg;
@@ -3714,22 +3737,6 @@ function initProxyFunction(type, async, _ref, instanceId, proxy2) {
   if (!keepAlive) {
     keepAlive = methodName.indexOf("on") === 0 && methodParams.length === 1 && methodParams[0].type === "UTSCallback";
   }
-  var invokeCallback2 = (_ref2) => {
-    var {
-      id: id2,
-      name,
-      params
-    } = _ref2;
-    var callback = callbacks[id2];
-    if (callback) {
-      callback(...params);
-      if (!keepAlive) {
-        delete callbacks[id2];
-      }
-    } else {
-      console.error("uts插件[".concat(moduleName, "] ").concat(pkg).concat(cls, ".").concat(methodName.replace("ByJs", ""), " ").concat(name, "回调函数已释放，不能再次执行，参考文档：https://doc.dcloud.net.cn/uni-app-x/plugin/uts-plugin.html#keepalive"));
-    }
-  };
   var baseArgs = instanceId ? {
     moduleName,
     moduleType,
@@ -3738,7 +3745,6 @@ function initProxyFunction(type, async, _ref, instanceId, proxy2) {
     name: methodName,
     method: methodParams,
     keepAlive
-    // throws,
   } : {
     moduleName,
     moduleType,
@@ -3749,17 +3755,33 @@ function initProxyFunction(type, async, _ref, instanceId, proxy2) {
     companion,
     method: methodParams,
     keepAlive
-    // throws,
   };
   return function() {
     if (errMsg) {
       throw new Error(errMsg);
     }
+    var callbacks = keepAlive ? keepAliveCallbacks : {};
+    var invokeCallback2 = (_ref2) => {
+      var {
+        id: id2,
+        name,
+        params
+      } = _ref2;
+      var callback = callbacks[id2];
+      if (callback) {
+        callback(...params);
+        if (!keepAlive) {
+          delete callbacks[id2];
+        }
+      } else {
+        console.error("uts插件[".concat(moduleName, "] ").concat(pkg).concat(cls, ".").concat(methodName.replace("ByJs", ""), " ").concat(name, "回调函数已释放，不能再次执行，参考文档：https://doc.dcloud.net.cn/uni-app-x/plugin/uts-plugin.html#keepalive"));
+      }
+    };
     for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
       args[_key] = arguments[_key];
     }
     var invokeArgs = extend({}, baseArgs, {
-      params: args.map((arg) => normalizeArg(arg))
+      params: args.map((arg) => normalizeArg(arg, callbacks, keepAlive))
     });
     if (async) {
       return new Promise((resolve, reject) => {
@@ -3894,7 +3916,6 @@ function initUTSProxyClass(options) {
                 id: instance.__instanceId,
                 type: "getter",
                 keepAlive: false,
-                // throws: false,
                 name,
                 errMsg
               });

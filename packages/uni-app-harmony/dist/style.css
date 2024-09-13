@@ -2624,6 +2624,27 @@ uni-map[hidden] {
   width: 60px;
   height: 60px;
   border-radius: 60px;
+}
+
+.uni-system-open-location .nav-view {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.uni-system-open-location .nav-view-top-placeholder {
+  width: 100%;
+  height: var(--status-bar-height);
+  background-color: white;
+}
+
+.uni-system-open-location .nav-view-frame {
+  width: 100%;
+  flex: 1;
 }uni-cover-image {
   display: block;
   line-height: 1.2;

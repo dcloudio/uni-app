@@ -209,8 +209,9 @@ function parseApp(instance, parseAppOptions) {
         onLaunch(options) {
             this.$vm = instance; // 飞书小程序可能会把 AppOptions 序列化，导致 $vm 对象部分属性丢失
             const ctx = internalInstance.ctx;
-            if (this.$vm && ctx.$scope) {
+            if (this.$vm && ctx.$scope && ctx.$callHook) {
                 // 已经初始化过了，主要是为了百度，百度 onShow 在 onLaunch 之前
+                // $scope值在微信小程序混合分包情况下存在，额外用$callHook兼容判断处理
                 return;
             }
             initBaseInstance(internalInstance, {

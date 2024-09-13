@@ -83,7 +83,7 @@ function decode$1(base64) {
 **/
 function makeMap(str, expectsLowerCase) {
   const set = new Set(str.split(","));
-  return expectsLowerCase ? (val) => set.has(val.toLowerCase()) : (val) => set.has(val);
+  return (val) => set.has(val);
 }
 const extend = Object.assign;
 const remove = (arr, el) => {
@@ -1355,7 +1355,7 @@ function copy_block(s, buf, len, header)
 {
   bi_windup(s);        /* align on byte boundary */
 
-  if (header) {
+  {
     put_short(s, len);
     put_short(s, ~len);
   }
@@ -1853,7 +1853,7 @@ function _tr_stored_block(s, buf, stored_len, last)
 //int last;         /* one if this is the last block for a file */
 {
   send_bits(s, (STORED_BLOCK << 1) + (last ? 1 : 0), 3);    /* send block type */
-  copy_block(s, buf, stored_len, true); /* with header */
+  copy_block(s, buf, stored_len); /* with header */
 }
 
 
@@ -8656,11 +8656,14 @@ function rpx2pxWithReplace(str) {
         return uni.upx2px(parseFloat(b)) + 'px';
     });
 }
+function get$pageByPage(page) {
+    return page.$page;
+}
 
 function getPageIdByVm(instance) {
     const vm = resolveComponentInstance(instance);
     if (vm.$page) {
-        return vm.$page.id;
+        return getPageProxyId(vm);
     }
     if (!vm.$) {
         return;
@@ -8750,7 +8753,7 @@ function invokeHook(vm, name, args) {
         vm = getCurrentPageVm();
     }
     else if (typeof vm === 'number') {
-        const page = getCurrentPages().find((page) => page.$page.id === vm);
+        const page = getCurrentPages().find((page) => get$pageByPage(page).id === vm);
         if (page) {
             vm = page.$vm;
         }
@@ -8778,7 +8781,7 @@ function normalizeRoute(toRoute) {
     let fromRoute = '';
     const pages = getCurrentPages();
     if (pages.length) {
-        fromRoute = pages[pages.length - 1].$page.route;
+        fromRoute = get$pageByPage(pages[pages.length - 1]).route;
     }
     return getRealRoute(fromRoute, toRoute);
 }
@@ -9265,6 +9268,25 @@ function initLaunchOptions({ path, query, referrerInfo, }) {
     });
     extend(enterOptions, launchOptions);
     return enterOptions;
+}
+function parseRedirectInfo() {
+    const weexPlus = weex.requireModule('plus');
+    if (weexPlus.getRedirectInfo) {
+        const { path, query, extraData, userAction, fromAppid } = weexPlus.getRedirectInfo() || {};
+        const referrerInfo = {
+            appId: fromAppid,
+            extraData: {},
+        };
+        if (extraData) {
+            referrerInfo.extraData = extraData;
+        }
+        return {
+            path: path || '',
+            query: query ? '?' + query : '',
+            referrerInfo,
+            userAction,
+        };
+    }
 }
 
 const TEMP_PATH = ''; // TODO 需要从applicationContext获取
@@ -12256,7 +12278,7 @@ function initDebugRefresh(isTab, path, query) {
     };
 }
 
-const downgrade = 'HarmonyOS' === 'Android' ;
+const downgrade = 'HarmonyOS' === 'Android';
 const ANI_SHOW = 'pop-in';
 const ANI_DURATION = 300;
 const ANI_CLOSE = downgrade ? 'slide-out-right' : 'pop-out';
@@ -12957,6 +12979,54 @@ function initPageOptions({ meta }) {
     };
 }
 
+let isInitEntryPage = false;
+function initEntry() {
+    if (isInitEntryPage) {
+        return;
+    }
+    isInitEntryPage = true;
+    let entryPagePath;
+    let entryPageQuery;
+    const weexPlus = weex.requireModule('plus');
+    if (weexPlus.getRedirectInfo) {
+        const { path, query, referrerInfo } = parseRedirectInfo();
+        if (path) {
+            entryPagePath = path;
+            entryPageQuery = query;
+        }
+        __uniConfig.referrerInfo = referrerInfo;
+    }
+    else {
+        const argsJsonStr = plus.runtime.arguments;
+        if (!argsJsonStr) {
+            return;
+        }
+        try {
+            const args = JSON.parse(argsJsonStr);
+            entryPagePath = args.path || args.pathName;
+            entryPageQuery = args.query ? '?' + args.query : '';
+        }
+        catch (e) { }
+    }
+    if (!entryPagePath || entryPagePath === __uniConfig.entryPagePath) {
+        if (entryPageQuery) {
+            __uniConfig.entryPageQuery = entryPageQuery;
+        }
+        return;
+    }
+    const entryRoute = addLeadingSlash(entryPagePath);
+    const routeOptions = getRouteOptions(entryRoute);
+    if (!routeOptions) {
+        return;
+    }
+    if (!routeOptions.meta.isTabBar) {
+        __uniConfig.realEntryPagePath =
+            __uniConfig.realEntryPagePath || __uniConfig.entryPagePath;
+    }
+    __uniConfig.entryPagePath = entryPagePath;
+    __uniConfig.entryPageQuery = entryPageQuery;
+}
+
 function initAnimation(path, animationType, animationDuration) {
     const { globalStyle } = __uniConfig;
     const meta = getRouteMeta(path);
@@ -13393,6 +13463,7 @@ const LocationViewPage = {
             latitude: 0,
             longitude: 0,
             loaded: false,
+            showNav: false,
         };
     },
     onLoad(e) {
@@ -13400,7 +13471,20 @@ const LocationViewPage = {
         this.longitude = e.longitude;
         this.loaded = true;
     },
-    methods: {},
+    onBackPress() {
+        if (this.showNav) {
+            this.showNav = false;
+            return true;
+        }
+    },
+    methods: {
+        onClose(e) {
+            uni.navigateBack();
+        },
+        onNavChange(event) {
+            this.showNav = event.detail.showNav;
+        },
+    },
     render: function (_ctx, _cache, $props, $setup, $data, $options) {
         return $data.loaded
             ? (openBlock(),
@@ -13409,7 +13493,12 @@ const LocationViewPage = {
                     style: { width: '100%', height: '100%' },
                     latitude: $data.latitude,
                     longitude: $data.longitude,
-                }, null, 40, ['latitude', 'longitude']))
+                    showNav: $data.showNav,
+                    onClose: _cache[0] ||
+                        (_cache[0] = (...args) => $options.onClose && $options.onClose(...args)),
+                    onNavChange: _cache[1] ||
+                        (_cache[1] = (...args) => $options.onNavChange && $options.onNavChange(...args)),
+                }, null, 40, ['latitude', 'longitude', 'showNav']))
             : createCommentVNode('v-if', true);
     },
 };
@@ -13980,6 +14069,7 @@ function registerApp(appVm) {
     extend(appCtx, defaultApp); // 拷贝默认实现
     defineGlobalData(appCtx, defaultApp.globalData);
     initService();
+    initEntry();
     initTabBar();
     initGlobalEvent();
     initSubscribeHandlers();
