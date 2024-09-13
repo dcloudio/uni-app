@@ -223,7 +223,7 @@ export function tscOutDir(platform: 'app-android' | 'app-ios' | 'app-harmony') {
   return path.join(process.env.UNI_APP_X_TSC_DIR, platform)
 }
 
-function kotlinSrcDir(kotlinDir: string) {
+export function kotlinSrcDir(kotlinDir: string) {
   return path.resolve(kotlinDir, 'src')
 }
 

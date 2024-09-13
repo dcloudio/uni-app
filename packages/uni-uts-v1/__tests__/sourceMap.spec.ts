@@ -3,6 +3,7 @@ import {
   generatedPositionFor,
   originalPositionFor,
   resolveUTSPluginSourceMapFile,
+  resolveUniAppXSourceMapFile,
 } from '../src'
 
 const inputDir = resolve(__dirname, '../../playground/uts')
@@ -10,6 +11,11 @@ const outputDir = resolve(
   __dirname,
   '../../playground/uts/unpackage/dist/dev/app-plus'
 )
+const uniAppXCacheDir = resolve(
+  __dirname,
+  '../../playground/uts/unpackage/cache'
+)
+
 const utssdkPluginDir = 'utssdk/test-uts'
 
 const uniModulesPluginDir = 'uni_modules/test-uniplugin'
@@ -200,5 +206,40 @@ describe('uts:sourceMap', () => {
     expect(line).toBe(19)
     expect(column).toBe(2)
     expect(source).toContain('index.uts')
+  })
+
+  test('resolveUniAppXSourceMapFile with uvue file', () => {
+    process.env.UNI_APP_X_CACHE_DIR = resolve(uniAppXCacheDir, '.app-android')
+    const sourceMapFile = resolveUniAppXSourceMapFile(
+      'kotlin',
+      resolve(inputDir, 'pages/index/index.uvue'),
+      inputDir,
+      outputDir
+    )
+    expect(sourceMapFile).toBeDefined()
+  })
+
+  test('resolveUniAppXSourceMapFile with main.uts', () => {
+    process.env.UNI_APP_X_CACHE_DIR = resolve(uniAppXCacheDir, '.app-android')
+    const sourceMapFile = resolveUniAppXSourceMapFile(
+      'kotlin',
+      resolve(inputDir, 'main.uts'),
+      inputDir,
+      outputDir
+    )
+    expect(sourceMapFile).toBeDefined()
+    process.env.UNI_APP_X_CACHE_DIR = ''
+  })
+
+  test('resolveUniAppXSourceMapFile with index.kt', () => {
+    process.env.UNI_APP_X_CACHE_DIR = resolve(uniAppXCacheDir, '.app-android')
+    const sourceMapFile = resolveUniAppXSourceMapFile(
+      'kotlin',
+      resolve(process.env.UNI_APP_X_CACHE_DIR, 'src/index.kt'),
+      inputDir,
+      outputDir
+    )
+    expect(sourceMapFile).toBeDefined()
+    process.env.UNI_APP_X_CACHE_DIR = ''
   })
 })

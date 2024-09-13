@@ -1,6 +1,6 @@
 import { hasOwn } from '@vue/shared'
 import { existsSync, readFileSync, statSync } from 'fs'
-import { basename, dirname, join, relative } from 'path'
+import { basename, dirname, extname, join, relative, resolve } from 'path'
 import {
   type BasicSourceMapConsumer,
   type IndexedSourceMapConsumer,
@@ -13,6 +13,9 @@ import {
   type MappedPosition,
   SourceMapConsumer as SourceMapConsumerSync,
 } from 'source-map-js'
+import { kotlinDir } from './kotlin'
+import { resolveUniAppXSourceMapPath } from './utils'
+import { kotlinSrcDir } from './uvue'
 
 const EXTNAME = {
   kotlin: '.kt',
@@ -22,6 +25,60 @@ const EXTNAME = {
 const PLATFORM_DIR = {
   kotlin: 'app-android',
   swift: 'app-ios',
+}
+
+export function resolveUniAppXSourceMapFile(
+  target: 'kotlin', // | 'swift',
+  filename: string,
+  inputDir: string,
+  outputDir: string
+) {
+  if (!process.env.UNI_APP_X_CACHE_DIR) {
+    throw 'UNI_APP_X_CACHE_DIR is not set'
+  }
+  if (target !== 'kotlin') {
+    throw `only support kotlin, but got ${target}`
+  }
+  inputDir = normalizePath(inputDir)
+  outputDir = normalizePath(outputDir)
+  filename = normalizePath(filename)
+  const kotlinRootOutDir = kotlinDir(outputDir)
+  const kotlinSrcOutDir = kotlinSrcDir(kotlinRootOutDir)
+  // 如果是源文件，比如uvue,vue,uts等，则需要转换为kt文件路径
+  const isSrcFile = filename.startsWith(inputDir)
+  if (isSrcFile) {
+    const fileExtname = extname(filename)
+    filename = normalizePath(
+      resolve(
+        kotlinSrcOutDir,
+        relative(filename, inputDir).replace(fileExtname, EXTNAME[target])
+      )
+    )
+  }
+  // 文件是 kt 或 swift
+  if (extname(filename) === EXTNAME[target]) {
+    const relativeFileName = relative(kotlinSrcOutDir, filename)
+    return resolveSourceMapFile(
+      relativeFileName,
+      resolveUniAppXSourceMapPath(kotlinDir(outputDir))
+    )
+  }
+  if (isSrcFile) {
+    return resolveSourceMapFile(
+      'index.kt',
+      resolveUniAppXSourceMapPath(kotlinDir(outputDir))
+    )
+  }
+
+  function resolveSourceMapFile(
+    relativeFileName: string,
+    sourceMapDir: string
+  ) {
+    const sourceMapFile = resolve(sourceMapDir, relativeFileName + '.map')
+    if (existsSync(sourceMapFile)) {
+      return sourceMapFile
+    }
+  }
 }
 
 export function resolveUTSPluginSourceMapFile(
