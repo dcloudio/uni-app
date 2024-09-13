@@ -3165,7 +3165,7 @@ var getPerformance = function() {
 };
 var callbackId = 1;
 var proxy;
-var callbacks = {};
+var keepAliveCallbacks = {};
 function isUniElement(obj) {
   return typeof obj.getNodeId === "function" && obj.pageId;
 }
@@ -3183,12 +3183,18 @@ function toRaw(observed) {
   var raw = observed && observed.__v_raw;
   return raw ? toRaw(raw) : observed;
 }
-function normalizeArg(arg) {
+function normalizeArg(arg, callbacks, keepAlive) {
   arg = toRaw(arg);
   if (typeof arg === "function") {
-    var oldId = Object.keys(callbacks).find((id22) => callbacks[id22] === arg);
-    var id2 = oldId ? parseInt(oldId) : callbackId++;
-    callbacks[id2] = arg;
+    var id2;
+    if (keepAlive) {
+      var oldId = Object.keys(callbacks).find((id22) => callbacks[id22] === arg);
+      id2 = oldId ? parseInt(oldId) : callbackId++;
+      callbacks[id2] = arg;
+    } else {
+      id2 = callbackId++;
+      callbacks[id2] = arg;
+    }
     return id2;
   } else if (isPlainObject(arg)) {
     var el = parseElement(arg);
@@ -3204,9 +3210,11 @@ function normalizeArg(arg) {
         nodeId
       };
     } else {
+      var newArg = {};
       Object.keys(arg).forEach((name) => {
-        arg[name] = normalizeArg(arg[name]);
+        newArg[name] = normalizeArg(arg[name], callbacks, keepAlive);
       });
+      return newArg;
     }
   }
   return arg;
@@ -3288,27 +3296,14 @@ function initProxyFunction(type, async, _ref, instanceId, proxy2) {
     name: methodName,
     method,
     companion,
+    keepAlive,
     params: methodParams,
     return: returnOptions,
     errMsg
   } = _ref;
-  var keepAlive = methodName.indexOf("on") === 0 && methodParams.length === 1 && methodParams[0].type === "UTSCallback";
-  var invokeCallback2 = (_ref2) => {
-    var {
-      id: id2,
-      name,
-      params
-    } = _ref2;
-    var callback = callbacks[id2];
-    if (callback) {
-      callback(...params);
-      if (!keepAlive) {
-        delete callbacks[id2];
-      }
-    } else {
-      console.error("".concat(pkg).concat(cls, ".").concat(methodName, " ").concat(name, " is not found"));
-    }
-  };
+  if (!keepAlive) {
+    keepAlive = methodName.indexOf("on") === 0 && methodParams.length === 1 && methodParams[0].type === "UTSCallback";
+  }
   var baseArgs = instanceId ? {
     moduleName,
     moduleType,
@@ -3332,11 +3327,28 @@ function initProxyFunction(type, async, _ref, instanceId, proxy2) {
     if (errMsg) {
       throw new Error(errMsg);
     }
+    var callbacks = keepAlive ? keepAliveCallbacks : {};
+    var invokeCallback2 = (_ref2) => {
+      var {
+        id: id2,
+        name,
+        params
+      } = _ref2;
+      var callback = callbacks[id2];
+      if (callback) {
+        callback(...params);
+        if (!keepAlive) {
+          delete callbacks[id2];
+        }
+      } else {
+        console.error("uts插件[".concat(moduleName, "] ").concat(pkg).concat(cls, ".").concat(methodName.replace("ByJs", ""), " ").concat(name, "回调函数已释放，不能再次执行，参考文档：https://doc.dcloud.net.cn/uni-app-x/plugin/uts-plugin.html#keepalive"));
+      }
+    };
     for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
       args[_key] = arguments[_key];
     }
     var invokeArgs = extend({}, baseArgs, {
-      params: args.map((arg) => normalizeArg(arg))
+      params: args.map((arg) => normalizeArg(arg, callbacks, keepAlive))
     });
     if (async) {
       return new Promise((resolve, reject) => {
@@ -3434,6 +3446,7 @@ function initUTSProxyClass(options) {
         }
         this.__instanceId = initProxyFunction("constructor", false, extend({
           name: "constructor",
+          keepAlive: false,
           params: constructorParams
         }, baseOptions), 0).apply(null, params);
       } else if (typeof instanceId === "number") {
@@ -3453,11 +3466,13 @@ function initUTSProxyClass(options) {
             if (hasOwn(methods, name)) {
               var {
                 async,
+                keepAlive,
                 params: params2,
                 return: returnOptions
               } = methods[name];
               target[name] = initUTSInstanceMethod(!!async, extend({
                 name,
+                keepAlive,
                 params: params2,
                 return: returnOptions
               }, baseOptions), instance.__instanceId, proxy2);
@@ -3483,6 +3498,7 @@ function initUTSProxyClass(options) {
               if (param) {
                 target[setter] = initProxyFunction("setter", false, extend({
                   name,
+                  keepAlive: false,
                   params: [param]
                 }, baseOptions), instance.__instanceId, proxy2);
               }
@@ -3505,12 +3521,14 @@ function initUTSProxyClass(options) {
         if (!staticMethodCache[name]) {
           var {
             async,
+            keepAlive,
             params,
             return: returnOptions
           } = staticMethods[name];
           staticMethodCache[name] = initUTSStaticMethod(!!async, extend({
             name,
             companion: true,
+            keepAlive,
             params,
             return: returnOptions
           }, baseOptions));
@@ -3534,6 +3552,7 @@ function initUTSProxyClass(options) {
           if (param) {
             staticPropSetterCache[setter] = initProxyFunction("setter", false, extend({
               name,
+              keepAlive: false,
               params: [param]
             }, baseOptions), 0);
           }
