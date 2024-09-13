@@ -10,6 +10,7 @@ const LocationViewPage = {
       latitude: 0,
       longitude: 0,
       loaded: false,
+      showNav: false,
     }
   },
   onLoad(e) {
@@ -17,9 +18,18 @@ const LocationViewPage = {
     this.longitude = e.longitude
     this.loaded = true
   },
+  onBackPress() {
+    if (this.showNav) {
+      this.showNav = false
+      return true
+    }
+  },
   methods: {
     onClose(e) {
       uni.navigateBack()
+    },
+    onNavChange(event) {
+      this.showNav = event.detail.showNav
     },
   },
   render: function (_ctx, _cache, $props, $setup, $data, $options) {
@@ -32,14 +42,19 @@ const LocationViewPage = {
             style: { width: '100%', height: '100%' },
             latitude: $data.latitude,
             longitude: $data.longitude,
+            showNav: $data.showNav,
             onClose:
               _cache[0] ||
               (_cache[0] = (...args) =>
                 $options.onClose && $options.onClose(...args)),
+            onNavChange:
+              _cache[1] ||
+              (_cache[1] = (...args) =>
+                $options.onNavChange && $options.onNavChange(...args)),
           },
           null,
           40,
-          ['latitude', 'longitude']
+          ['latitude', 'longitude', 'showNav']
         ))
       : createCommentVNode('v-if', true)
   },

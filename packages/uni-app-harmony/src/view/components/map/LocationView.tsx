@@ -38,6 +38,10 @@ const props = {
     type: String,
     default: '',
   },
+  showNav: {
+    type: Boolean,
+    default: false,
+  },
 }
 
 export type Props = ExtractPropTypes<typeof props>
@@ -86,7 +90,7 @@ function useState(props: Props) {
 export default /*#__PURE__*/ defineSystemComponent({
   name: 'LocationView',
   props,
-  emits: ['close'],
+  emits: ['close', 'navChange'],
   setup(props, { emit }) {
     const rootRef = ref<HTMLElement | null>(null)
     const trigger = useCustomEvent<EmitEvent<typeof emit>>(rootRef, emit)
@@ -108,6 +112,7 @@ export default /*#__PURE__*/ defineSystemComponent({
       }
     }
 
+    const navUrl = ref('')
     async function nav() {
       const mapInfo = await getMapInfo()
       let url = ''
@@ -137,12 +142,23 @@ export default /*#__PURE__*/ defineSystemComponent({
           props.latitude
         },${encodeURIComponent(props.name || '目的地')}`
       }
-      window.open(url)
+      navUrl.value = url
+      navChange(true)
+    }
+
+    function navChange(showNav: boolean) {
+      const event = new CustomEvent<any>('navChange', {} as any)
+      trigger('navChange', event, { showNav })
     }
 
     function back(e) {
       const event = new CustomEvent<any>('close', {} as any)
       trigger('close', event, event.detail)
+    }
+
+    function backNav() {
+      navChange(false)
+      navUrl.value = ''
     }
 
     function setCenter({ latitude, longitude }: Point) {
@@ -177,6 +193,17 @@ export default /*#__PURE__*/ defineSystemComponent({
           </div>
           <div class="nav-btn-back" onClick={back}>
             {createSvgIconVNode(ICON_PATH_BACK, '#ffffff', 26)}
+          </div>
+          <div class="nav-view" v-show={props.showNav}>
+            <div class="nav-view-top-placeholder"></div>
+            <iframe
+              class="nav-view-frame"
+              src={navUrl.value}
+              frameborder="0"
+            ></iframe>
+            <div class="nav-btn-back" onClick={backNav}>
+              {createSvgIconVNode(ICON_PATH_BACK, '#ffffff', 26)}
+            </div>
           </div>
         </div>
       )
