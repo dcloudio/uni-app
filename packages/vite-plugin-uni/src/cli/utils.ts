@@ -12,7 +12,6 @@ import {
   initPreContext,
   isInHBuilderX,
   output,
-  parseManifestJsonOnce,
   parseScripts,
 } from '@dcloudio/uni-cli-shared'
 
