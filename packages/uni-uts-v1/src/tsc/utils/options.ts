@@ -14,6 +14,7 @@ export interface UTS2JavaScriptBaseOptions {
 
 function createTsConfigPaths(
   pluginPath: string,
+  cliVitePath: string,
   virtualModulesMap: Record<string, string> | string[]
 ): Record<string, string[]> {
   const virtualPaths: Record<string, string[]> = {}
@@ -35,18 +36,10 @@ function createTsConfigPaths(
       path.resolve(__dirname, '../../../lib/tsconfig/types/dcloudio__uni-app'),
     ],
     '@vue/runtime-core': [
-      path.resolve(
-        pluginPath,
-        'uniapp-cli-vite/node_modules/@vue/runtime-core'
-      ),
+      path.resolve(cliVitePath, 'node_modules/@vue/runtime-core'),
     ],
-    vue: [
-      path.resolve(
-        pluginPath,
-        'uniapp-cli-vite/node_modules/@vue/runtime-core'
-      ),
-    ],
-    vuex: [path.resolve(pluginPath, 'uniapp-cli-vite/node_modules/vuex')],
+    vue: [path.resolve(cliVitePath, 'node_modules/@vue/runtime-core')],
+    vuex: [path.resolve(cliVitePath, 'node_modules/vuex')],
     ...virtualPaths,
   }
 }
@@ -57,6 +50,9 @@ export function createBasicUtsOptions(
   const isWeb = process.env.UNI_UTS_PLATFORM === 'web'
   const isInHBuilderXBool = isInHBuilderX()
   const isUTSCloudCompilerBool = isUTSCloudCompiler()
+  const isBuildExtApi =
+    process.env.UNI_COMPILE_TARGET === 'ext-api' &&
+    process.env.UNI_APP_NEXT_WORKSPACE
   const options: UTS2JavaScriptBaseOptions = {
     cwd: inputDir,
     check: isWeb,
@@ -81,7 +77,7 @@ export function createBasicUtsOptions(
   options.tsconfigOverride.compilerOptions.sourceMap =
     process.env.NODE_ENV === 'development'
   if (!options.tsconfig) {
-    if (isInHBuilderXBool || isUTSCloudCompilerBool) {
+    if (isInHBuilderXBool || isUTSCloudCompilerBool || isBuildExtApi) {
       options.tsconfig = path.resolve(
         __dirname,
         '../../../lib/tsconfig/tsconfig.json'
@@ -94,14 +90,15 @@ export function createBasicUtsOptions(
     options.typescript = require('../../../lib/typescript')
   }
 
-  if (
-    process.env.UNI_COMPILE_TARGET === 'ext-api' &&
-    process.env.UNI_APP_NEXT_WORKSPACE
-  ) {
-    const pluginPath = path.resolve(process.env.UNI_APP_NEXT_WORKSPACE, '../')
+  if (isBuildExtApi) {
+    const pluginPath = path.resolve(process.env.UNI_APP_NEXT_WORKSPACE!, '../')
+    const cliVitePath = path.resolve(
+      pluginPath,
+      'uniapp-cli-vite/macosx/uniapp-cli-vite'
+    )
     const virtualModules = {
       'uniapp-cli-vite/node_modules/vite/client':
-        'uniapp-cli-vite/node_modules/vite/client',
+        'uniapp-cli-vite/macosx/uniapp-cli-vite/node_modules/vite/client.d.ts',
       'hbuilderx-language-services/builtin-dts/uts-types/common/index.d.ts':
         'syntaxdoc/uts/common/index.d.ts',
       'hbuilderx-language-services/builtin-dts/common/HBuilderX.d.ts':
@@ -110,13 +107,14 @@ export function createBasicUtsOptions(
         'syntaxdoc/uni-app-x/types/index.d.ts',
     }
     extend(options.tsconfigOverride.compilerOptions, {
-      paths: createTsConfigPaths(pluginPath, virtualModules),
+      paths: createTsConfigPaths(pluginPath, cliVitePath, virtualModules),
       typeRoots: [path.resolve(__dirname, '../../../lib/tsconfig/types')],
     })
   } else if (isInHBuilderXBool || isUTSCloudCompilerBool) {
     const pluginPath = isInHBuilderXBool
       ? process.env.UNI_HBUILDERX_PLUGINS
       : path.resolve(process.cwd(), '../')
+    const cliVitePath = path.resolve(pluginPath, 'uniapp-cli-vite')
     const virtualModules = [
       'uniapp-cli-vite/node_modules/vite/client',
       'hbuilderx-language-services/builtin-dts/uts-types/common/index.d.ts',
@@ -124,7 +122,7 @@ export function createBasicUtsOptions(
       'hbuilderx-language-services/builtin-dts/uniappx/node_modules/@dcloudio/uni-app-x/types/index.d.ts',
     ]
     extend(options.tsconfigOverride.compilerOptions, {
-      paths: createTsConfigPaths(pluginPath, virtualModules),
+      paths: createTsConfigPaths(pluginPath, cliVitePath, virtualModules),
       typeRoots: [path.resolve(__dirname, '../../../lib/tsconfig/types')],
     })
   } else {

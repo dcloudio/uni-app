@@ -198,9 +198,11 @@ export function initEnv(
     process.env.UNI_APP_X_CACHE_DIR ||
     path.resolve(process.env.UNI_OUTPUT_DIR, '../cache/.' + baseOutDir)
 
-  process.env.HX_DEPENDENCIES_DIR =
-    process.env.HX_DEPENDENCIES_DIR ||
-    path.resolve(process.env.UNI_OUTPUT_DIR, '../hx/' + baseOutDir)
+  if (isNormalCompileTarget()) {
+    process.env.HX_DEPENDENCIES_DIR =
+      process.env.HX_DEPENDENCIES_DIR ||
+      path.resolve(process.env.UNI_OUTPUT_DIR, '../hx/' + baseOutDir)
+  }
 
   process.env.UNI_MODULES_ENCRYPT_CACHE_DIR = path.resolve(
     process.env.UNI_APP_X_CACHE_DIR,

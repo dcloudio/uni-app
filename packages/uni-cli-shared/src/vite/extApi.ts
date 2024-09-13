@@ -10,9 +10,6 @@ export function uniUniModulesExtApiPlugin(): Plugin {
       return {
         build: {
           lib: {
-            // 必须使用 lib 模式
-            name: 'components',
-            fileName: 'output',
             entry: resolveMainPathOnce(process.env.UNI_INPUT_DIR),
             formats: ['es'],
           },
