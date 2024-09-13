@@ -26,7 +26,7 @@ function createTsConfigPaths(
     })
   } else {
     Object.keys(virtualModulesMap).forEach((module) => {
-      virtualPaths[module] = [
+      virtualPaths['@dcloudio/virtual-modules/' + module] = [
         path.resolve(pluginPath, virtualModulesMap[module]),
       ]
     })
@@ -97,8 +97,10 @@ export function createBasicUtsOptions(
       'uniapp-cli-vite/macosx/uniapp-cli-vite'
     )
     const virtualModules = {
-      'uniapp-cli-vite/node_modules/vite/client':
-        'uniapp-cli-vite/macosx/uniapp-cli-vite/node_modules/vite/client.d.ts',
+      'uniapp-cli-vite/node_modules/vite/client': path.resolve(
+        cliVitePath,
+        'node_modules/vite/client.d.ts'
+      ),
       'hbuilderx-language-services/builtin-dts/uts-types/common/index.d.ts':
         'syntaxdoc/uts/common/index.d.ts',
       'hbuilderx-language-services/builtin-dts/common/HBuilderX.d.ts':
