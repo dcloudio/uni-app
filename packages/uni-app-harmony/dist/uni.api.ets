@@ -101,8 +101,7 @@ import { getOSRuntime as getOSRuntime1, waitForCurrentNativePage as waitForCurre
 import { getOSRuntime } from "@dcloudio/uni-mp-sdk";
 import { getRealPath as getRealPath1 } from "@dcloudio/uni-mp-sdk";
 import { getRealPath as getRealPath2, waitForCurrentNativePage as waitForCurrentNativePage1 } from "@dcloudio/uni-mp-sdk";
-import { getRealPath as getRealPath3 } from "@dcloudio/uni-mp-sdk";
-import { getRealPath as getRealPath4, Emitter as Emitter3, getCurrentMP as getCurrentMP1 } from "@dcloudio/uni-mp-sdk";
+import { getRealPath as getRealPath3, Emitter as Emitter3, getCurrentMP as getCurrentMP1 } from "@dcloudio/uni-mp-sdk";
 import { getResourceStr, getAbilityContext as getAbilityContext2 } from "@dcloudio/uni-mp-sdk";
 import { getTabBar } from "@dcloudio/uni-mp-sdk";
 import harmonyUrl from '@ohos.url';
@@ -1348,9 +1347,13 @@ export interface DownloadTask {
     abort(): void;
     onProgressUpdate(callback: DownloadFileProgressUpdateCallback): void;
 }
-interface UniNetworkMP {
+interface IUniNetworkMPUserAgent {
+    fullUserAgent: string;
+}
+interface IUniNetworkMP {
     on: Function;
     off: Function;
+    userAgent: IUniNetworkMPUserAgent;
 }
 interface IUniRequestEmitter {
     on: (eventName: string, callback: Function) => void;
@@ -6246,7 +6249,7 @@ export function initUniExtApi() {
             'filePath',
             {
                 type: 'string',
-                required: true
+                required: false
             }
         ],
         [
@@ -6286,15 +6289,6 @@ export function initUniExtApi() {
                     if (url == null) {
                         throw new Error('url is required');
                     }
-                }
-            ],
-            [
-                'filePath',
-                (filePath: string, params: UploadFileOptions)=>{
-                    if (filePath == null) {
-                        throw new Error('filePath is required');
-                    }
-                    params.filePath = getRealPath3(filePath);
                 }
             ],
             [
@@ -6399,7 +6393,11 @@ export function initUniExtApi() {
             }).join('&');
         }
         const httpRequest = http.createHttp();
-        const mp = getCurrentMP() as UniNetworkMP;
+        const mp = getCurrentMP() as IUniNetworkMP;
+        const userAgent = mp.userAgent.fullUserAgent;
+        if (userAgent && headers && !headers!['User-Agent'] && !headers!['user-agent']) {
+            headers!['User-Agent'] = userAgent;
+        }
         const emitter = new Emitter2() as IUniRequestEmitter;
         const requestTask: IRequestTask = {
             abort () {
@@ -6511,7 +6509,7 @@ export function initUniExtApi() {
         }
     }
     const readFile = (filePath: string): ArrayBuffer =>{
-        const readFilePath = getRealPath4(filePath) as string;
+        const readFilePath = getRealPath3(filePath) as string;
         const file = fs4.openSync(readFilePath, fs4.OpenMode.READ_ONLY);
         const stat = fs4.statSync(file.fd);
         const data = new ArrayBuffer(stat.size);
@@ -6578,7 +6576,11 @@ export function initUniExtApi() {
             } as IUploadTask);
         }
         const httpRequest = http1.createHttp();
-        const mp = getCurrentMP1() as UniNetworkMP;
+        const mp = getCurrentMP1() as IUniNetworkMP;
+        const userAgent = mp.userAgent.fullUserAgent;
+        if (userAgent && !headers['User-Agent'] && !headers['user-agent']) {
+            headers['User-Agent'] = userAgent;
+        }
         const emitter = new Emitter3() as IUniUploadFileEmitter;
         const uploadTask: IUploadTask = {
             abort () {
@@ -6706,7 +6708,11 @@ export function initUniExtApi() {
             header!['Cookie'] = getCookieSync(url);
         }
         const httpRequest = http2.createHttp();
-        const mp = getCurrentMP2() as UniNetworkMP;
+        const mp = getCurrentMP2()! as IUniNetworkMP;
+        const userAgent = mp.userAgent.fullUserAgent;
+        if (userAgent && !header!['User-Agent'] && !header!['user-agent']) {
+            header!['User-Agent'] = userAgent;
+        }
         const emitter = new Emitter4() as IUniDownloadFileEmitter;
         const downloadTask: IDownloadTask = {
             abort () {
