@@ -87,7 +87,7 @@ export function uniAppHarmonyPlugin(): UniVitePlugin {
       }
     },
     async generateBundle(_, bundle) {
-      genAppHarmonyIndex(
+      genAppHarmonyUniModules(
         process.env.UNI_INPUT_DIR,
         getCurrentCompiledUTSPlugins()
       )
@@ -113,7 +113,7 @@ export function uniAppHarmonyPlugin(): UniVitePlugin {
 /**
  * extapi分为如下几种
  * 1. 内部extapi，编译到uni.api.ets内
- * 2. 内部provider，编译到uni.api.ets内
+ * 2. 内部provider，编译到uni.api.ets内。目前不存在这种场景，所有provider都是单独的ohpm包
  * 3. 内部extapi，发布到ohpm
  * 4. 内部provider，发布到ohpm
  * 5. 用户自定义extapi
@@ -188,7 +188,7 @@ function getRelatedModules(inputDir: string): string[] {
   return modules
 }
 
-function genAppHarmonyIndex(inputDir: string, utsPlugins: Set<string>) {
+function genAppHarmonyUniModules(inputDir: string, utsPlugins: Set<string>) {
   const uniModulesDir = path.resolve(inputDir, 'uni_modules')
   const importCodes: string[] = []
   const extApiCodes: string[] = []
