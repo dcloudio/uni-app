@@ -305,7 +305,7 @@ export function resolveAppHarmonyUniModulesRootDir() {
   if (process.env.UNI_APP_HARMONY_PROJECT_PATH) {
     return path.resolve(process.env.UNI_APP_HARMONY_PROJECT_PATH, 'uni_modules')
   }
-  return path.resolve(process.env.UNI_OUTPUT_DIR, 'uni_modules_packages')
+  return path.resolve(process.env.UNI_OUTPUT_DIR, 'uni_modules')
 }
 
 export function resolveAppHarmonyUniModuleDir(pluginId: string) {
@@ -319,5 +319,5 @@ export function resolveAppHarmonyUniModulesEntryDir() {
       'entry/src/main/ets/uni_modules'
     )
   }
-  return path.resolve(process.env.UNI_OUTPUT_DIR, 'uni_modules_packages')
+  return path.resolve(process.env.UNI_OUTPUT_DIR, 'uni_modules')
 }
