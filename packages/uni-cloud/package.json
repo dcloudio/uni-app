@@ -1,6 +1,6 @@
 {
   "name": "@dcloudio/uni-cloud",
-  "version": "3.0.0-alpha-4020820240914001",
+  "version": "3.0.0-alpha-4020820240914002",
   "description": "@dcloudio/uni-cloud",
   "main": "dist/uni-cloud.cjs.js",
   "module": "dist/uni-cloud.es.js",
@@ -20,9 +20,9 @@
   },
   "gitHead": "33e807d66e1fe47e2ee08ad9c59247e37b8884da",
   "dependencies": {
-    "@dcloudio/uni-cli-shared": "3.0.0-alpha-4020820240914001",
-    "@dcloudio/uni-i18n": "3.0.0-alpha-4020820240914001",
-    "@dcloudio/uni-shared": "3.0.0-alpha-4020820240914001",
+    "@dcloudio/uni-cli-shared": "3.0.0-alpha-4020820240914002",
+    "@dcloudio/uni-i18n": "3.0.0-alpha-4020820240914002",
+    "@dcloudio/uni-shared": "3.0.0-alpha-4020820240914002",
     "@vue/shared": "3.4.21",
     "fast-glob": "^3.2.11"
   }
