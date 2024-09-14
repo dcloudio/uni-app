@@ -93,6 +93,8 @@ function parsePackageDeps(
       result[key] = packageRelativePath.startsWith('.')
         ? packageRelativePath
         : './' + packageRelativePath
+    } else {
+      result[key] = value
     }
   }
   return result
