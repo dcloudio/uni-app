@@ -192,22 +192,10 @@ export function isUniXElement(name: string) {
   return /^I?Uni.*Element(?:Impl)?$/.test(name)
 }
 
-let isAudioWarned = false
 function isBuiltInWebComponent(tag: string) {
-  // 这里需要排除 audio
-  const isKeepAudioBuiltIn = process.env.KEEP_WEB_AUDIO_BUILT_IN === 'true'
-
-  if (!isKeepAudioBuiltIn && tag === 'audio') {
-    if (!isAudioWarned) {
-      console.warn(
-        'HBuilderX 4.28 版本起，Web 平台 Audio 组件从内置组件调整为普通组件，请参考 https://uniapp.dcloud.net.cn/component/audio.html'
-      )
-      isAudioWarned = true
-    }
-
+  if (tag === 'audio') {
     return false
   }
-
   return isBuiltInComponent(tag)
 }
 

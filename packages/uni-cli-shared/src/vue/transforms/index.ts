@@ -24,17 +24,14 @@ export {
   defaultMatch as matchTransformModel,
 } from './vModel'
 
-// 这里需要排除 audio
-const isKeepAudioBuiltIn = process.env.KEEP_WEB_AUDIO_BUILT_IN === 'true'
-const _BUILT_IN_TAG_NAMES = isKeepAudioBuiltIn
-  ? BUILT_IN_TAG_NAMES
-  : BUILT_IN_TAG_NAMES.filter((tag) => tag !== 'audio')
-
 export const transformH5BuiltInComponents = createTransformTag(
-  _BUILT_IN_TAG_NAMES.reduce<Record<string, string>>(
-    (tags, tag) => ((tags[tag] = COMPONENT_PREFIX + tag), tags),
-    {}
-  )
+  BUILT_IN_TAG_NAMES.reduce<Record<string, string>>((tags, tag) => {
+    if (tag === 'audio') {
+      return tags
+    }
+    tags[tag] = COMPONENT_PREFIX + tag
+    return tags
+  }, {})
 )
 
 export const transformMatchMedia = createTransformTag({
