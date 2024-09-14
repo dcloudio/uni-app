@@ -59,6 +59,10 @@ export function uniAppPlugin(): UniVitePlugin {
   const split = manifestJson['uni-app-x']?.split
   // 开始编译时，清空输出目录
   function emptyOutDir() {
+    // ext-api 编译时，需要同时编译多个平台，并保留多个平台的输出目录
+    if (process.env.UNI_COMPILE_TARGET === 'ext-api') {
+      return
+    }
     if (fs.existsSync(outputDir)) {
       emptyDir(outputDir)
     }

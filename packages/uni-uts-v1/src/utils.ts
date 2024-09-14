@@ -119,6 +119,33 @@ export function resolvePackage(filename: string) {
   }
 }
 
+const GARBAGE_REGEX = /(?:Thumbs\.db|\.DS_Store)$/i
+const isGarbageFile = (file: string) => GARBAGE_REGEX.test(file)
+
+// 删除所有空子目录，需要考虑到.DS_Store等文件
+function removeAllEmptySubDir(dir: string) {
+  if (!fs.existsSync(dir)) {
+    return
+  }
+
+  try {
+    const files = fs.readdirSync(dir)
+    for (const file of files) {
+      const filePath = path.join(dir, file)
+      const stat = fs.statSync(filePath)
+
+      if (stat.isDirectory()) {
+        removeAllEmptySubDir(filePath)
+
+        const subFiles = fs.readdirSync(filePath)
+        if (subFiles.length === 0 || subFiles.every(isGarbageFile)) {
+          fs.rmSync(filePath, { recursive: true, force: true })
+        }
+      }
+    }
+  } catch {}
+}
+
 export function copyPlatformFiles(
   utsInputDir: string,
   utsOutputDir: string,
@@ -240,6 +267,7 @@ export function genUTSPlatformResource(
       }
     })
   }
+  removeAllEmptySubDir(utsOutputDir)
 }
 
 export function moveRootIndexSourceMap(
