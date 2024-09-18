@@ -21,7 +21,7 @@ function initAutoImportMap() {
     if (!fs.existsSync(packageEntryFilePath)) {
       return
     }
-    autoImportMap[`@uni_modules/${package}`] = packageEntryFilePath
+    autoImportMap[`@uni_modules/${package.toLowerCase()}`] = packageEntryFilePath
   })
 }
 

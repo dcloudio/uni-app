@@ -164,7 +164,7 @@ export async function compileArkTSExtApi(
     'utssdk/app-harmony/config.json'
   )
 
-  const harmonyPackageName = '@uni_modules/' + pluginId
+  const harmonyPackageName = '@uni_modules/' + pluginId.toLowerCase()
   const harmonyModuleName = harmonyPackageName
     .replace(/@/g, '')
     .replace(/\//g, '__')
