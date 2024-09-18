@@ -84,12 +84,12 @@ export * from './view/components'
 
 export * from './view/bridge'
 
-//#if _NEW_X_
+//#if _X_
 export * from './x/service/api'
 export * from './x/service/api/uni'
 //#endif
 
-//#if !_NEW_X_
+//#if !_X_
 export * from './service/api'
 // @ts-expect-error
 export * from './service/api/uni'
