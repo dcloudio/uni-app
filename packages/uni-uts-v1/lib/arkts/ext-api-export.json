@@ -538,7 +538,7 @@
       "initUniExtApi"
     ]
   ],
-  "@uni_modules/uni-facialRecognitionVerify": [
+  "@uni_modules/uni-facialrecognitionverify": [
     [
       "getFacialRecognitionMetaInfo"
     ],

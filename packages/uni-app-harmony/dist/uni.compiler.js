@@ -177,19 +177,20 @@ function genAppHarmonyUniModules(inputDir, utsPlugins) {
     const registerCodes = [];
     utsPlugins.forEach((plugin) => {
         const injects = uniCliShared.parseUniExtApi(path__default.default.resolve(uniModulesDir, plugin), plugin, true, 'app-harmony', 'arkts');
+        const hamonyPackageName = `@uni_modules/${plugin.toLowerCase()}`;
         if (injects) {
             Object.keys(injects).forEach((key) => {
                 const inject = injects[key];
                 if (Array.isArray(inject) && inject.length > 1) {
                     const apiName = inject[1];
-                    importCodes.push(`import { ${inject[1]} } from '@uni_modules/${plugin}'`);
+                    importCodes.push(`import { ${inject[1]} } from '${hamonyPackageName}'`);
                     extApiCodes.push(`uni.${apiName} = ${apiName}`);
                 }
             });
         }
         else {
             const ident = uniCliShared.camelize(plugin);
-            importCodes.push(`import * as ${ident} from '@uni_modules/${plugin}'`);
+            importCodes.push(`import * as ${ident} from '${hamonyPackageName}'`);
             registerCodes.push(`uni.registerUTSPlugin('uni_modules/${plugin}', ${ident})`);
         }
     });
@@ -197,21 +198,22 @@ function genAppHarmonyUniModules(inputDir, utsPlugins) {
     const relatedModules = getRelatedModules(inputDir);
     const projectDeps = [];
     relatedModules.forEach((module) => {
+        const harmonyModuleName = `@uni_modules/${module.toLowerCase()}`;
         if (utsPlugins.has(module)) {
             projectDeps.push({
-                moduleSpecifier: `@uni_modules/${module}`,
+                moduleSpecifier: harmonyModuleName,
                 plugin: module,
                 source: 'local',
             });
         }
         else {
             projectDeps.push({
-                moduleSpecifier: `@uni_modules/${module}`,
+                moduleSpecifier: harmonyModuleName,
                 plugin: module,
                 source: 'ohpm',
             });
         }
-        importCodes.push(`import '@uni_modules/${module}'`);
+        importCodes.push(`import '${harmonyModuleName}'`);
     });
     const importProviderCodes = [];
     const registerProviderCodes = [];
@@ -220,7 +222,7 @@ function genAppHarmonyUniModules(inputDir, utsPlugins) {
         return {
             service: provider.service,
             name: provider.name,
-            moduleSpecifier: `@uni_modules/${provider.plugin}`,
+            moduleSpecifier: `@uni_modules/${provider.plugin.toLowerCase()}`,
             plugin: provider.plugin,
             source: 'local',
         };
@@ -235,7 +237,7 @@ function genAppHarmonyUniModules(inputDir, utsPlugins) {
         allProviders.push({
             service,
             name: provider,
-            moduleSpecifier: `@uni_modules/${extapi.plugin}`,
+            moduleSpecifier: `@uni_modules/${extapi.plugin.toLowerCase()}`,
             plugin: extapi.plugin,
             source: 'ohpm',
         });
