@@ -1,3 +1,12 @@
+//#if !_NODE_JS_ && _X_
+declare global {
+  interface Window {
+    UniResizeObserver: typeof ResizeObserver
+  }
+}
+window.UniResizeObserver = window.ResizeObserver
+//#endif
+
 //#if _NODE_JS_
 // 目前这几个接口主要是 uniCloud 使用了
 // 目前采用 polyfill 解决 xhr 和 storage
@@ -118,4 +127,10 @@ export {
   // 内部使用
   invokePushCallback,
 } from '@dcloudio/uni-api'
+//#endif
+
+//#if !_NODE_JS_ && _X_
+export * from './context/createCanvasContextAsync'
+export * from './ui/openDialogPage'
+export * from './ui/closeDialogPage'
 //#endif
