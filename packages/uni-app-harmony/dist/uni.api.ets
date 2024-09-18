@@ -37,7 +37,7 @@ import { UTSHarmony as UTSHarmony10 } from "@dcloudio/uni-mp-sdk";
 import { UTSHarmony as UTSHarmony2 } from "@dcloudio/uni-mp-sdk";
 import { UTSHarmony as UTSHarmony3 } from "@dcloudio/uni-mp-sdk";
 import { UTSHarmony as UTSHarmony4, getDeviceId } from "@dcloudio/uni-mp-sdk";
-import { UTSHarmony as UTSHarmony5, Emitter as Emitter1, waitForCurrentNativePage } from "@dcloudio/uni-mp-sdk";
+import { UTSHarmony as UTSHarmony5, Emitter as Emitter1, onNativePageReady } from "@dcloudio/uni-mp-sdk";
 import { UTSHarmony as UTSHarmony6 } from "@dcloudio/uni-mp-sdk";
 import { UTSHarmony as UTSHarmony7, getWindowInfo as internalGetWindowInfo, getDeviceId as getDeviceId1 } from "@dcloudio/uni-mp-sdk";
 import { UTSHarmony as UTSHarmony8 } from "@dcloudio/uni-mp-sdk";
@@ -97,10 +97,10 @@ import { getEnv as getEnv1 } from "@dcloudio/uni-mp-sdk";
 import { getEnv as getEnv2 } from "@dcloudio/uni-mp-sdk";
 import { getEnv as getEnv3, Emitter as Emitter4, getCurrentMP as getCurrentMP2 } from "@dcloudio/uni-mp-sdk";
 import { getEnv, getRealPath } from "@dcloudio/uni-mp-sdk";
-import { getOSRuntime as getOSRuntime1, waitForCurrentNativePage as waitForCurrentNativePage2 } from "@dcloudio/uni-mp-sdk";
+import { getOSRuntime as getOSRuntime1, onNativePageReady as onNativePageReady2 } from "@dcloudio/uni-mp-sdk";
 import { getOSRuntime } from "@dcloudio/uni-mp-sdk";
 import { getRealPath as getRealPath1 } from "@dcloudio/uni-mp-sdk";
-import { getRealPath as getRealPath2, waitForCurrentNativePage as waitForCurrentNativePage1 } from "@dcloudio/uni-mp-sdk";
+import { getRealPath as getRealPath2, onNativePageReady as onNativePageReady1 } from "@dcloudio/uni-mp-sdk";
 import { getRealPath as getRealPath3, Emitter as Emitter3, getCurrentMP as getCurrentMP1 } from "@dcloudio/uni-mp-sdk";
 import { getResourceStr, getAbilityContext as getAbilityContext2 } from "@dcloudio/uni-mp-sdk";
 import { getTabBar } from "@dcloudio/uni-mp-sdk";
@@ -817,12 +817,6 @@ export class SafeAreaInsets extends UTSObject {
     top!: number;
     bottom!: number;
 }
-class CutoutRect extends UTSObject {
-    left!: number;
-    right!: number;
-    top!: number;
-    bottom!: number;
-}
 export class GetSystemInfoResult extends UTSObject {
     SDKVersion!: string;
     appId!: string;
@@ -894,7 +888,6 @@ export class GetWindowInfoResult extends UTSObject {
     safeArea!: SafeArea;
     safeAreaInsets!: SafeAreaInsets;
     screenTop!: number;
-    cutoutArea: Array<CutoutRect> | null = null;
 }
 interface ISystemInfoAppVersion {
     name: string;
@@ -4165,7 +4158,7 @@ export function initUniExtApi() {
         }
     }
     new Network();
-    waitForCurrentNativePage().then(()=>{
+    onNativePageReady().then(()=>{
         Network.ohoSubscribe();
     });
     const getNetworkType: GetNetworkType = defineAsyncApi<GetNetworkTypeOptions, GetNetworkTypeSuccess>(API_GET_NETWORK_TYPE, (options: GetNetworkTypeOptions, res: ApiExecutor<GetNetworkTypeSuccess>)=>{
@@ -5594,7 +5587,7 @@ export function initUniExtApi() {
     }, GetVideoInfoApiProtocol, GetVideoInfoApiOptions) as GetVideoInfo;
     const previewImage: PreviewImage = defineAsyncApi<PreviewImageOptions, PreviewImageSuccess>(API_PREVIEW_IMAGE, (options: PreviewImageOptions, exec: ApiExecutor<PreviewImageSuccess>)=>{
         const currentUrl = typeof options.current === 'number' ? options.urls[options.current ?? 0] : options.current as string;
-        waitForCurrentNativePage1().then((nativePage: Object)=>{
+        onNativePageReady1().then((nativePage: Object)=>{
             getOSRuntime().previewImage({
                 urls: options.urls.map((url)=>getRealPath2(url) as string),
                 current: getRealPath2(currentUrl || ''),
@@ -5607,7 +5600,7 @@ export function initUniExtApi() {
         });
     }, PreviewImageApiProtocol, PreviewImageApiOptions) as PreviewImage;
     const closePreviewImage: ClosePreviewImage = defineAsyncApi<ClosePreviewImageOptions, ClosePreviewImageSuccess>(API_CLOSE_PREVIEW_IMAGE, (options: ClosePreviewImageOptions, exec: ApiExecutor<ClosePreviewImageSuccess>)=>{
-        waitForCurrentNativePage1().then((nativePage: Object)=>{
+        onNativePageReady1().then((nativePage: Object)=>{
             getOSRuntime().closePreviewImage();
             exec.resolve({
                 errMsg: ''
@@ -7147,7 +7140,7 @@ export function initUniExtApi() {
         });
     }, ShowActionSheetProtocol, ShowActionSheetApiOptions) as ShowActionSheet;
     const showLoading: ShowLoading = defineAsyncApi<ShowLoadingOptions, ShowLoadingSuccess>(API_SHOW_LOADING, async (options: ShowLoadingOptions, exec: ApiExecutor<ShowLoadingSuccess>)=>{
-        waitForCurrentNativePage2().then((nativePage: Object)=>{
+        onNativePageReady2().then((nativePage: Object)=>{
             getOSRuntime1().showLoading({
                 title: options.title || '',
                 mask: options.mask == null ? false : options.mask
@@ -7156,7 +7149,7 @@ export function initUniExtApi() {
         });
     }, ShowLoadingProtocol, ShowLoadingApiOptions) as ShowLoading;
     const hideLoading: HideLoading = defineSyncApi<void>(API_HIDE_LOADING, ()=>{
-        waitForCurrentNativePage2().then((nativePage: Object)=>{
+        onNativePageReady2().then((nativePage: Object)=>{
             getOSRuntime1().hideLoading();
         });
     }) as HideLoading;

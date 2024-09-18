@@ -92,7 +92,7 @@ function uniAppHarmonyPlugin() {
             };
         },
         async generateBundle(_, bundle) {
-            genAppHarmonyIndex(process.env.UNI_INPUT_DIR, uniCliShared.getCurrentCompiledUTSPlugins());
+            genAppHarmonyUniModules(process.env.UNI_INPUT_DIR, uniCliShared.getCurrentCompiledUTSPlugins());
             for (const key in bundle) {
                 const serviceBundle = bundle[key];
                 if (serviceBundle.code) {
@@ -170,7 +170,7 @@ function getRelatedModules(inputDir) {
     }
     return modules;
 }
-function genAppHarmonyIndex(inputDir, utsPlugins) {
+function genAppHarmonyUniModules(inputDir, utsPlugins) {
     const uniModulesDir = path__default.default.resolve(inputDir, 'uni_modules');
     const importCodes = [];
     const extApiCodes = [];
