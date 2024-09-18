@@ -63,6 +63,7 @@ export function getArkTSAutoImports(): AutoImportOptions {
         ['IUTSObject'],
         ['UTSObject'],
         ['UTSJSONObject'],
+        ['SourceError'],
       ],
     },
     require('../lib/arkts/ext-api-export.json')
