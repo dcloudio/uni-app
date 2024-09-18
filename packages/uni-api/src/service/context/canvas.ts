@@ -577,9 +577,9 @@ export class CanvasContext implements UniApp.CanvasContext {
         if (typeof callback === 'function') {
           const webview = plus.webview.getLaunchWebview()
           // @ts-expect-error evalJSASync 后新增，和 plus 签名不匹配，暂时忽略 ts 报错
-          if (webview && typeof webview.evalJSASync === 'function') {
+          if (webview && typeof webview.evalJSAsync === 'function') {
             ;(
-              (webview as any).evalJSASync(
+              (webview as any).evalJSAsync(
                 `(function measureText(text, font) {
   const canvas = document.createElement('canvas')
   const c2d = canvas.getContext('2d')
