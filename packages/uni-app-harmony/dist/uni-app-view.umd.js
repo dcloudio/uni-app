@@ -23501,13 +23501,18 @@
       function onChange2(event) {
         trigger2("change", event, event.detail);
       }
+      if (props2.mode === mode.MULTISELECTOR) {
+        watch(() => props2.range, (range) => {
+          embedRef.value.updateRange(range);
+        });
+      }
       return () => createVNode("uni-picker", {
         "ref": rootRef
       }, [createVNode(Embed, {
         "ref": embedRef,
         "tag": "picker",
         "options": props2,
-        "methods": ["show"],
+        "methods": ["show", "updateRange"],
         "onChange": onChange2,
         "onColumnchange": onColumnchange,
         "onCancel": onCancel
