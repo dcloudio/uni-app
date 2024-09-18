@@ -13,6 +13,7 @@ import { sync } from 'fast-glob'
 interface ArkTSCompilerOptions {
   isX?: boolean
   isExtApi?: boolean
+  isOhpmPackage?: boolean
   transform?: {
     uniExtApiProviderName?: string
     uniExtApiProviderService?: string
@@ -105,7 +106,7 @@ export async function compileArkTSExtApi(
   rootDir: string,
   pluginDir: string,
   outputDir: string,
-  { isExtApi, transform }: ArkTSCompilerOptions
+  { isExtApi, isOhpmPackage = false, transform }: ArkTSCompilerOptions
 ): Promise<CompileResult | void> {
   const filename = resolveAppHarmonyIndexFile(pluginDir)
   if (!filename) {
@@ -116,7 +117,15 @@ export async function compileArkTSExtApi(
   const pluginId = path.basename(pluginDir)
   const outputUniModuleDir = outputDir
 
-  const autoImportExternals = getArkTSAutoImports()
+  let autoImportExternals = getArkTSAutoImports()
+
+  if (isOhpmPackage) {
+    // 只保留uni-app-runtime
+    autoImportExternals = {
+      '@dcloudio/uni-app-runtime':
+        autoImportExternals['@dcloudio/uni-app-runtime'],
+    }
+  }
 
   const buildOptions: UTSBundleOptions = {
     hbxVersion: process.env.HX_Version || process.env.UNI_COMPILER_VERSION,

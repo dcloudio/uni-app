@@ -353,6 +353,7 @@ async function buildArkTS (target, buildJson) {
       output,
       {
         isExtApi: true,
+        isOhpmPackage: true,
         transform: {}
       }
     )
