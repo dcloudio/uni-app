@@ -12,6 +12,11 @@
     "types/shims-ext-api.d.ts",
     "temp/uni-ext-api/**/*.ts",
     "../global.d.ts",
-    "../uni-api/src/type.ts"
+    "../uni-api/src/type.ts",
+    "../shims-node.d.ts",
+    "../shims-uni-app.d.ts",
+    "../shims-vue-runtime.d.ts",
+    "../shims-vue.d.ts",
+    "../uni-app-x.d.ts"
   ]
 }

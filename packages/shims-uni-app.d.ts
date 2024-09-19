@@ -544,3 +544,7 @@ declare namespace UniNamespace {
 }
 
 import UniApp = UniNamespace
+
+interface FontFaceDescriptors {
+  variant?: string
+}
