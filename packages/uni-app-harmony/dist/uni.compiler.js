@@ -18,19 +18,22 @@ var StandaloneExtApis = [
 		apis: [
 			"startFacialRecognitionVerify",
 			"getFacialRecognitionMetaInfo"
-		]
+		],
+		version: "1.0.0"
 	},
 	{
 		type: "provider",
 		plugin: "uni-oauth-huawei",
 		provider: "huawei",
-		service: "oauth"
+		service: "oauth",
+		version: "1.0.0"
 	},
 	{
 		type: "provider",
 		plugin: "uni-payment-alipay",
 		provider: "alipay",
-		service: "payment"
+		service: "payment",
+		version: "1.0.0"
 	}
 ];
 
@@ -207,11 +210,15 @@ function genAppHarmonyUniModules(inputDir, utsPlugins) {
             });
         }
         else {
-            projectDeps.push({
-                moduleSpecifier: harmonyModuleName,
-                plugin: module,
-                source: 'ohpm',
-            });
+            const matchedStandaloneExtApi = StandaloneExtApis.find((item) => item.plugin === module);
+            if (matchedStandaloneExtApi) {
+                projectDeps.push({
+                    moduleSpecifier: harmonyModuleName,
+                    plugin: module,
+                    source: 'ohpm',
+                    version: matchedStandaloneExtApi.version,
+                });
+            }
         }
         importCodes.push(`import '${harmonyModuleName}'`);
     });
@@ -225,6 +232,7 @@ function genAppHarmonyUniModules(inputDir, utsPlugins) {
             moduleSpecifier: `@uni_modules/${provider.plugin.toLowerCase()}`,
             plugin: provider.plugin,
             source: 'local',
+            version: undefined,
         };
     });
     StandaloneExtApis.filter((item) => {
@@ -240,6 +248,7 @@ function genAppHarmonyUniModules(inputDir, utsPlugins) {
             moduleSpecifier: `@uni_modules/${extapi.plugin.toLowerCase()}`,
             plugin: extapi.plugin,
             source: 'ohpm',
+            version: extapi.version,
         });
     });
     relatedProviders.forEach((relatedProvider) => {
