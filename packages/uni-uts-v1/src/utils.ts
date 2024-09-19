@@ -195,11 +195,13 @@ export function genUTSPlatformResource(
 
   const extname: string[] =
     options.extname === '.kt' ? ['.kt', '.java'] : [options.extname]
+  const configJsonFile = normalizePath(path.resolve(utsInputDir, 'config.json'))
   // 拷贝所有非uts,vue文件及目录
   if (fs.existsSync(utsInputDir)) {
     fs.copySync(utsInputDir, utsOutputDir, {
       filter(src) {
-        if (src.endsWith('config.json')) {
+        // ignore config.json
+        if (normalizePath(src) === configJsonFile) {
           return false
         }
         if (extname.includes(path.extname(src))) {
