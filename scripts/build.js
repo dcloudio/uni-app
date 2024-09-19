@@ -357,12 +357,19 @@ async function buildArkTS (target, buildJson) {
         transform: {}
       }
     )
+    let version = '1.0.0'
+    const packageJsonPath = path.resolve(input, 'package.json')
+    if (fs.existsSync(packageJsonPath)) {
+      const packageJson = fs.readJSONSync(packageJsonPath)
+      version = packageJson.version || '1.0.0'
+    }
     standaloneExtApis.push({
       type,
       plugin,
       apis,
       provider,
-      service
+      service,
+      version,
     })
   }
   fs.outputJSON(

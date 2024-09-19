@@ -229,6 +229,7 @@ function genAppHarmonyUniModules(inputDir: string, utsPlugins: Set<string>) {
     moduleSpecifier: string
     plugin: string
     source: 'local' | 'ohpm'
+    version?: string
   }[] = []
 
   relatedModules.forEach((module) => {
@@ -240,11 +241,17 @@ function genAppHarmonyUniModules(inputDir: string, utsPlugins: Set<string>) {
         source: 'local',
       })
     } else {
-      projectDeps.push({
-        moduleSpecifier: harmonyModuleName,
-        plugin: module,
-        source: 'ohpm',
-      })
+      const matchedStandaloneExtApi = StandaloneExtApis.find(
+        (item) => item.plugin === module
+      )
+      if (matchedStandaloneExtApi) {
+        projectDeps.push({
+          moduleSpecifier: harmonyModuleName,
+          plugin: module,
+          source: 'ohpm',
+          version: matchedStandaloneExtApi.version,
+        })
+      }
     }
     importCodes.push(`import '${harmonyModuleName}'`)
   })
@@ -259,6 +266,7 @@ function genAppHarmonyUniModules(inputDir: string, utsPlugins: Set<string>) {
       moduleSpecifier: `@uni_modules/${provider.plugin.toLowerCase()}`,
       plugin: provider.plugin,
       source: 'local',
+      version: undefined as undefined | string,
     }
   })
 
@@ -275,6 +283,7 @@ function genAppHarmonyUniModules(inputDir: string, utsPlugins: Set<string>) {
       moduleSpecifier: `@uni_modules/${extapi.plugin.toLowerCase()}`,
       plugin: extapi.plugin,
       source: 'ohpm',
+      version: extapi.version,
     })
   })
 

@@ -182,15 +182,28 @@ export async function compileArkTSExtApi(
   }
 
   // generate oh-package.json5
+  let version = '1.0.0'
+  const packageJsonPath = path.resolve(pluginDir, 'package.json')
+  if (fs.existsSync(packageJsonPath)) {
+    const packageJson = fs.readJSONSync(packageJsonPath)
+    version = packageJson.version || '1.0.0'
+  }
   const ohPackageJson: Record<string, any> = {
     name: harmonyPackageName,
-    version: '1.0.0',
+    version,
     description: '',
     main: 'utssdk/app-harmony/index.ets',
     author: '',
     license: '',
     dependencies: {},
   }
+
+  if (isOhpmPackage) {
+    ohPackageJson.description = 'uni-app runtime package'
+    ohPackageJson.author = 'DCloud'
+    ohPackageJson.license = 'Apache-2.0'
+  }
+
   if (fs.existsSync(configFilePath)) {
     const config = fs.readJSONSync(configFilePath)
     ohPackageJson.dependencies = parsePackageDeps(config.dependencies)
