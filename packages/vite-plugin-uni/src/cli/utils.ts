@@ -49,14 +49,13 @@ export type PLATFORM =
   | 'quickapp-webview-union'
 
 function resolveConfigFile() {
-  const viteConfigJs = path.resolve(process.env.UNI_INPUT_DIR, 'vite.config.js')
-  const viteConfigTs = path.resolve(process.env.UNI_INPUT_DIR, 'vite.config.ts')
-
-  if (fs.existsSync(viteConfigTs)) {
-    return viteConfigTs
-  }
-  if (fs.existsSync(viteConfigJs)) {
-    return viteConfigJs
+  const extname = ['.js', '.ts', '.mjs', '.mts'].find((ext) => {
+    return fs.existsSync(
+      path.resolve(process.env.UNI_INPUT_DIR, 'vite.config' + ext)
+    )
+  })
+  if (extname) {
+    return path.resolve(process.env.UNI_INPUT_DIR, 'vite.config' + extname)
   }
   return path.resolve(process.env.UNI_CLI_CONTEXT, 'vite.config.js')
 }
