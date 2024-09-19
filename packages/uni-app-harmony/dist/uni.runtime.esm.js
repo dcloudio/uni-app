@@ -9257,6 +9257,13 @@ function getLaunchOptions() {
 function getEnterOptions() {
     return extend({}, enterOptions);
 }
+function initEnterOptions({ path, query, referrerInfo, }) {
+    extend(enterOptions, {
+        path,
+        query: query ? parseQuery(query) : {},
+        referrerInfo: referrerInfo || {},
+    });
+}
 function initLaunchOptions({ path, query, referrerInfo, }) {
     extend(launchOptions, {
         path,
@@ -13991,7 +13998,10 @@ function initGlobalEvent() {
         emit(ON_APP_ENTER_BACKGROUND);
     });
     plusGlobalEvent.addEventListener('resume', () => {
-        // TODO options
+        const info = parseRedirectInfo();
+        if (info && info.userAction) {
+            initEnterOptions(info);
+        }
         emit(ON_APP_ENTER_FOREGROUND, {});
     });
     plusGlobalEvent.addEventListener('KeyboardHeightChange', function (event) {
