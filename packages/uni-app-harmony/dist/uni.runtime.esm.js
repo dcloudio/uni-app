@@ -13104,8 +13104,9 @@ const navigateBack = defineAsyncApi(API_NAVIGATE_BACK, (args, { resolve, reject 
     if (!page) {
         return reject(`getCurrentPages is empty`);
     }
+    const from = args.from || 'navigateBack';
     if (invokeHook(page, ON_BACK_PRESS, {
-        from: args.from || 'navigateBack',
+        from,
     })) {
         return resolve();
     }
@@ -13123,7 +13124,7 @@ const navigateBack = defineAsyncApi(API_NAVIGATE_BACK, (args, { resolve, reject 
     }
     else {
         const { delta, animationType, animationDuration } = args;
-        back(delta, animationType, animationDuration);
+        back(delta, animationType, animationDuration, from);
     }
     return resolve();
 }, NavigateBackProtocol, NavigateBackOptions);
@@ -13141,7 +13142,7 @@ function quit() {
         plus.runtime.quit();
     }
 }
-function back(delta, animationType, animationDuration) {
+function back(delta, animationType, animationDuration, from) {
     const pages = getCurrentPages();
     const len = pages.length;
     const currentPage = pages[len - 1];
@@ -13175,7 +13176,7 @@ function back(delta, animationType, animationDuration) {
         invokeHook(ON_SHOW);
     };
     const webview = plus.webview.getWebviewById(currentPage.$page.id + '');
-    if (!currentPage.__uniapp_webview) {
+    if (!currentPage.__uniapp_webview || from === 'navigateBack') {
         return backPage(webview);
     }
     backWebview(webview, () => {
