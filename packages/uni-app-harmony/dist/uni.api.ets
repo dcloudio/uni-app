@@ -24,6 +24,7 @@ import { BusinessError as BusinessError7 } from '@kit.BasicServicesKit';
 import { BusinessError as BusinessError8 } from '@kit.BasicServicesKit';
 import { BusinessError as BusinessError9 } from '@ohos.base';
 import { BusinessError } from '@kit.BasicServicesKit';
+import { CompressorResponseCode, CompressorResponse, VideoCompressor, CompressQuality } from '@ohos/videocompressor';
 import { Emitter as Emitter5, getCurrentMP as getCurrentMP4 } from "@dcloudio/uni-mp-sdk";
 import { Emitter } from "@dcloudio/uni-mp-sdk";
 import Hash from '@ohos.file.hash';
@@ -80,13 +81,14 @@ import fs4 from '@ohos.file.fs';
 import fs5 from '@ohos.file.fs';
 import { geoLocationManager } from '@kit.LocationKit';
 import { getAbilityContext as getAbilityContext1 } from "@dcloudio/uni-mp-sdk";
+import { getAbilityContext as getAbilityContext10, getCurrentMP as getCurrentMP3 } from "@dcloudio/uni-mp-sdk";
 import { getAbilityContext as getAbilityContext3 } from "@dcloudio/uni-mp-sdk";
 import { getAbilityContext as getAbilityContext4, getCurrentWindow as getCurrentWindow2 } from "@dcloudio/uni-mp-sdk";
 import { getAbilityContext as getAbilityContext5 } from "@dcloudio/uni-mp-sdk";
 import { getAbilityContext as getAbilityContext6 } from "@dcloudio/uni-mp-sdk";
 import { getAbilityContext as getAbilityContext7 } from "@dcloudio/uni-mp-sdk";
 import { getAbilityContext as getAbilityContext8 } from "@dcloudio/uni-mp-sdk";
-import { getAbilityContext as getAbilityContext9, getCurrentMP as getCurrentMP3 } from "@dcloudio/uni-mp-sdk";
+import { getAbilityContext as getAbilityContext9 } from "@dcloudio/uni-mp-sdk";
 import { getAbilityContext } from "@dcloudio/uni-mp-sdk";
 import { getCurrentWindow as getCurrentWindow1 } from "@dcloudio/uni-mp-sdk";
 import { getCurrentWindow as getCurrentWindow3 } from "@dcloudio/uni-mp-sdk";
@@ -963,6 +965,25 @@ export class SaveVideoToPhotosAlbumOptions extends UTSObject {
     complete: (SaveVideoToPhotosAlbumCompleteCallback) | null = null;
 }
 export type SaveVideoToPhotosAlbum = (options: SaveVideoToPhotosAlbumOptions) => void;
+export class CompressVideoSuccess extends UTSObject {
+    tempFilePath!: string;
+    size!: number;
+}
+type CompressVideoFail = IMediaError;
+type CompressVideoSuccessCallback = (callback: CompressVideoSuccess) => void;
+type CompressVideoFailCallback = (callback: CompressVideoFail) => void;
+type CompressVideoCompleteCallback = ChooseImageCompleteCallback;
+export class CompressVideoOptions extends UTSObject {
+    src!: string.VideoURIString;
+    quality: string | null = null;
+    bitrate: number | null = null;
+    fps: number | null = null;
+    resolution: number | null = null;
+    success: (CompressVideoSuccessCallback) | null = null;
+    fail: (CompressVideoFailCallback) | null = null;
+    complete: (CompressVideoCompleteCallback) | null = null;
+}
+export type CompressVideo = (options: CompressVideoOptions) => void;
 export type ChooseFile = (options: ChooseFileOptions) => void;
 export class ChooseFileSuccess extends UTSObject {
     tempFilePaths!: string[];
@@ -1917,6 +1938,7 @@ interface UniExtApi {
     chooseVideo: ChooseVideo;
     saveVideoToPhotosAlbum: SaveVideoToPhotosAlbum;
     getVideoInfo: GetVideoInfo;
+    compressVideo: CompressVideo;
     chooseFile: ChooseFile;
     chooseMedia: ChooseMedia;
     request: Request<Object>;
@@ -5162,6 +5184,50 @@ export function initUniExtApi() {
             ]
         ])
     };
+    const API_COMPRESS_VIDEO = 'compressVideo';
+    const CompressVideoApiOptions: ApiOptions<CompressVideoOptions> = {
+        formatArgs: new Map<string, Function>([
+            [
+                'src',
+                (src: string, params: CompressVideoOptions)=>{
+                    if (src) params.src = getRealPath1(src);
+                }
+            ]
+        ])
+    };
+    const CompressVideoApiProtocol = new Map<string, ProtocolOptions>([
+        [
+            'src',
+            {
+                type: 'string',
+                required: true
+            }
+        ],
+        [
+            'quality',
+            {
+                type: 'string'
+            }
+        ],
+        [
+            'bitrate',
+            {
+                type: 'number'
+            }
+        ],
+        [
+            'fps',
+            {
+                type: 'number'
+            }
+        ],
+        [
+            'resolution',
+            {
+                type: 'number'
+            }
+        ]
+    ]);
     const MediaUniErrors: Map<number, string> = new Map([
         [
             1101001,
@@ -5749,10 +5815,14 @@ export function initUniExtApi() {
                 }
                 documentPicker.select(documentSelectOptions).then((documentSelectResult: Array<string>)=>{
                     let tempFiles = documentSelectResult.map((url): IFile =>getFile(url));
-                    executor.resolve({
-                        tempFilePaths: documentSelectResult,
-                        tempFiles
-                    } as ChooseFileSuccess);
+                    if (tempFiles.length !== 0) {
+                        executor.resolve({
+                            tempFilePaths: documentSelectResult,
+                            tempFiles
+                        } as ChooseFileSuccess);
+                    } else {
+                        executor.reject('cancel');
+                    }
                 }).catch((err: BusinessError8)=>{
                     executor.reject(err.message, {
                         errCode: err.code
@@ -5918,6 +5988,34 @@ export function initUniExtApi() {
             });
         }
     }, ChooseMediaApiProtocol, ChooseMediaApiOptions) as ChooseMedia;
+    const getQuality = (quality: string | null = null)=>{
+        switch(quality){
+            case "low":
+                return CompressQuality.COMPRESS_QUALITY_LOW;
+            case 'medium':
+                return CompressQuality.COMPRESS_QUALITY_MEDIUM;
+        }
+        return CompressQuality.COMPRESS_QUALITY_HIGH;
+    };
+    const compressVideo: CompressVideo = defineAsyncApi<CompressVideoOptions, CompressVideoSuccess>(API_COMPRESS_VIDEO, async (args: CompressVideoOptions, executor: ApiExecutor<CompressVideoSuccess>)=>{
+        let videoCompressor = new VideoCompressor();
+        videoCompressor.compressVideo(getAbilityContext5()!, args.src, getQuality(args.quality!)).then((data: CompressorResponse): void =>{
+            if (data.code == CompressorResponseCode.SUCCESS) {
+                _getVideoInfo(data.outputPath).then((res)=>{
+                    executor.resolve({
+                        tempFilePath: data.outputPath,
+                        size: res.size
+                    } as CompressVideoSuccess);
+                });
+            } else {
+                executor.reject(data.message, {
+                    errCode: data.code
+                } as ApiError);
+            }
+        }).catch((err: Error)=>{
+            executor.reject(err.message);
+        });
+    }, CompressVideoApiProtocol, CompressVideoApiOptions) as CompressVideo;
     const API_REQUEST = 'request';
     const RequestApiProtocol = new Map<string, ProtocolOptions>([
         [
@@ -6738,7 +6836,7 @@ export function initUniExtApi() {
                 pushParams: bundleManager2.getBundleInfoForSelfSync(bundleManager2.BundleFlag.GET_BUNDLE_INFO_DEFAULT).name
             }
         } as Want;
-        const context = getAbilityContext5() as common1.UIAbilityContext;
+        const context = getAbilityContext6() as common1.UIAbilityContext;
         context.startAbility(want).then(()=>{
             exec.resolve({
                 errMsg: ''
@@ -6783,7 +6881,7 @@ export function initUniExtApi() {
             uri: uri,
             type: fileContentType as string
         };
-        const abilityContext = getAbilityContext6() as common2.UIAbilityContext;
+        const abilityContext = getAbilityContext7() as common2.UIAbilityContext;
         abilityContext.startAbility(want).then(()=>{
             exec.resolve({} as OpenDocumentSuccess);
         }, (err: Error)=>{
@@ -7294,7 +7392,7 @@ export function initUniExtApi() {
             enableMultiMode: true,
             enableAlbum: !options.onlyFromCamera
         };
-        scanBarcode.startScanForResult(getAbilityContext7()!, scanOptions, (err, data)=>{
+        scanBarcode.startScanForResult(getAbilityContext8()!, scanOptions, (err, data)=>{
             if (err) {
                 exec.reject(err.message);
                 return;
@@ -7338,7 +7436,7 @@ export function initUniExtApi() {
             shareData.addRecord(shareRecords[index]);
         }
         const shareController: systemShare.ShareController = new systemShare.ShareController(shareData);
-        shareController.show(getAbilityContext8() as common3.UIAbilityContext, {} as systemShare.ShareControllerOptions);
+        shareController.show(getAbilityContext9() as common3.UIAbilityContext, {} as systemShare.ShareControllerOptions);
         const onDismiss = ()=>{
             shareController.off('dismiss', onDismiss);
             exec.resolve({} as ShareWithSystemSuccess);
@@ -7374,7 +7472,7 @@ export function initUniExtApi() {
         if (stores.has(appId)) {
             return stores.get(appId)!;
         }
-        const store = dataPreferences.getPreferencesSync(getAbilityContext9() as common4.UIAbilityContext, {
+        const store = dataPreferences.getPreferencesSync(getAbilityContext10() as common4.UIAbilityContext, {
             name: `storage.${appId}`
         } as dataPreferences.Options);
         stores.set(appId, store);
@@ -7963,6 +8061,7 @@ export function initUniExtApi() {
         chooseVideo,
         saveVideoToPhotosAlbum,
         getVideoInfo,
+        compressVideo,
         chooseFile,
         chooseMedia,
         request,
