@@ -13,6 +13,15 @@ var fs__default = /*#__PURE__*/_interopDefault(fs);
 
 var StandaloneExtApis = [
 	{
+		type: "extapi",
+		plugin: "uni-facialRecognitionVerify",
+		apis: [
+			"startFacialRecognitionVerify",
+			"getFacialRecognitionMetaInfo"
+		],
+		version: "1.0.0"
+	},
+	{
 		type: "provider",
 		plugin: "uni-oauth-huawei",
 		provider: "huawei",
