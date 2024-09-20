@@ -341,7 +341,14 @@ function normalizeFilename(filename: string, isMain = false) {
   return parseUTSRelativeFilename(filename, process.env.UNI_INPUT_DIR)
 }
 
+function commentUnoCssImport(code) {
+  // 使用正则表达式匹配 'import 'virtual:uno.css'' 语句
+  const regex = /^import\s+['"]virtual:uno\.css['"];?/gm
+  return code.replace(regex, '// $&')
+}
+
 function normalizeCode(code: string, isMain = false) {
+  code = commentUnoCssImport(code)
   if (!isNormalCompileTarget()) {
     return code
   }

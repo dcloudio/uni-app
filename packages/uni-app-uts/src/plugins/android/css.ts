@@ -120,6 +120,9 @@ export function uniAppCssPlugin(): Plugin {
       if (!cssLangRE.test(filename) || commonjsProxyRE.test(filename)) {
         return
       }
+      if (filename.endsWith('__uno.css')) {
+        return
+      }
       if (source.includes('#endif')) {
         source = preUVueCss(source)
       }
