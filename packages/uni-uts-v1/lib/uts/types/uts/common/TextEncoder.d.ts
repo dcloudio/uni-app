@@ -4,9 +4,7 @@
  */
 interface TextEncoder {
   /**
-   * Returns "utf-8".
-   *
-   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/TextEncoder/encoding)
+   * 返回 "utf-8".
    * @uniPlatform {
    *    "app": {
    *        "android": {
@@ -38,7 +36,6 @@ interface TextEncoder {
   readonly encoding : string;
   /**
    * TextEncoder.encode() 方法接受一个字符串作为输入，返回一个对参数中给定的文本的编码后的 Uint8Array，编码的方法通过 TextEncoder 对象指定。
-   * [MDN Reference](https://developer.mozilla.org/docs/Web/API/TextEncoder/encode)
    * @param input 一个包含了将要编码的文本。
    * @returns 一个 Uint8Array 对象。
    * @uniPlatform {
@@ -71,3 +68,6 @@ interface TextEncoder {
    */
   encode(input ?: string) : Uint8Array;
 }
+declare var TextEncoder: {
+    new(): TextEncoder;
+};
