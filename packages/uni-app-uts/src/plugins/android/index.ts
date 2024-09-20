@@ -9,7 +9,7 @@ import {
 } from '@dcloudio/uni-cli-shared'
 import { uniPrePlugin } from './pre'
 import { uniAppPlugin } from './plugin'
-import { uniAppCssPlugin } from './css'
+import { uniAppCssPlugin, uniAppCssPrePlugin } from './css'
 import { uniAppMainPlugin } from './mainUTS'
 import { uniAppManifestPlugin } from './manifestJson'
 import { uniAppPagesPlugin } from './pagesJson'
@@ -18,6 +18,7 @@ import { uniCloudPlugin } from './unicloud'
 
 export function init() {
   return [
+    uniAppCssPrePlugin(),
     ...(isNormalCompileTarget() ? [uniDecryptUniModulesPlugin()] : []),
     uniPrePlugin(),
     ...(isNormalCompileTarget()

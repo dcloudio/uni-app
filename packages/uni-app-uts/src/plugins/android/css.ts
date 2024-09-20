@@ -15,6 +15,7 @@ import {
   parseAssets,
   parseVueRequest,
   preUVueCss,
+  removePlugins,
 } from '@dcloudio/uni-cli-shared'
 import { parse } from '@dcloudio/uni-nvue-styler'
 
@@ -25,18 +26,20 @@ import {
 } from './uvue/descriptorCache'
 import { isVue } from './utils'
 
-export function uniAppCssPlugin(): Plugin {
-  let resolvedConfig: ResolvedConfig
-  const name = 'uni:app-uvue-css'
+export function uniAppCssPrePlugin(): Plugin {
+  const name = 'uni:app-uvue-css-pre'
   const descriptorOptions: ResolvedOptions = {
     ...getResolvedOptions(),
     sourceMap: false,
   }
   return {
     name,
+    // 需要提前，因为unocss会在configResolved读取vite:css-post插件
+    // 所以需要在它之前做替换
+    enforce: 'pre',
     apply: 'build',
     configResolved(config) {
-      resolvedConfig = config
+      removePlugins(['vite:css', 'vite:css-post'], config)
       const uvueCssPostPlugin = cssPostPlugin(config, {
         isJsCode: true,
         platform: process.env.UNI_PLATFORM,
@@ -52,7 +55,7 @@ export function uniAppCssPlugin(): Plugin {
           }
         },
         async chunkCssCode(filename, cssCode) {
-          cssCode = parseAssets(resolvedConfig, cssCode)
+          cssCode = parseAssets(config, cssCode)
           const { code, messages } = await parse(cssCode, {
             filename,
             logLevel: 'ERROR',
@@ -72,7 +75,7 @@ export function uniAppCssPlugin(): Plugin {
                 }).replace(/\t/g, ' ')}`
               }
               msg += `\n${formatAtFilename(filename)}`
-              resolvedConfig.logger.error(colors.red(msg))
+              config.logger.error(colors.red(msg))
             }
           })
           return `export const ${genUTSClassName(
@@ -95,6 +98,17 @@ export function uniAppCssPlugin(): Plugin {
       const plugins = config.plugins as Plugin[]
       const index = plugins.findIndex((p) => p.name === 'uni:app-uvue')
       plugins.splice(index, 0, uvueCssPostPlugin)
+    },
+  }
+}
+
+export function uniAppCssPlugin(): Plugin {
+  let resolvedConfig: ResolvedConfig
+  return {
+    name: 'uni:app-uvue-css',
+    apply: 'build',
+    configResolved(config) {
+      resolvedConfig = config
     },
     async transform(source, filename) {
       if (!cssLangRE.test(filename) || commonjsProxyRE.test(filename)) {
