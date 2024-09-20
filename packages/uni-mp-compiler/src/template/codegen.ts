@@ -490,16 +490,22 @@ function genOn(
   const arg = (prop.arg as SimpleExpressionNode).content
   const exp = prop.exp as SimpleExpressionNode
   const modifiers = prop.modifiers
-  const name = (event?.format || formatMiniProgramEvent)(arg, {
+  let names = (event?.format || formatMiniProgramEvent)(arg, {
     isCatch: modifiers.includes('stop') || modifiers.includes('prevent'),
     isCapture: modifiers.includes('capture'),
     isComponent: isUserComponent(node, { isBuiltInComponent }),
   })
-  if (exp.isStatic) {
-    push(` ${name}="${exp.content}"`)
-  } else {
-    push(` ${name}="{{${exp.content}}}"`)
+
+  if (!(names instanceof Array)) {
+    names = [names]
   }
+  names.forEach((name) => {
+    if (exp.isStatic) {
+      push(` ${name}="${exp.content}"`)
+    } else {
+      push(` ${name}="{{${exp.content}}}"`)
+    }
+  })
 }
 
 function genDirectiveNode(

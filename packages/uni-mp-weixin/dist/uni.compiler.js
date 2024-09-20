@@ -168,6 +168,16 @@ const miniProgram = {
     },
     event: {
         key: true,
+        format: function (eventName, { isCatch, isCapture, isComponent }) {
+            const events = [
+                uniCliShared.formatMiniProgramEvent(eventName, { isCatch, isCapture, isComponent })
+            ];
+            // 自定义组件上面的click事件，在微信小程序中需要额外绑定 bindtab事件
+            if (eventName === 'click' && isComponent) {
+                events.push(uniCliShared.formatMiniProgramEvent('tap', { isCatch, isCapture, isComponent: false }));
+            }
+            return events;
+        }
     },
     directive: 'wx:',
     lazyElement: {

@@ -11,7 +11,7 @@ describe('mp-weixin: transform v-on', () => {
     )
     assert(
       `<custom v-on:click="onClick"/>`,
-      `<custom bindclick="{{a}}" u-i="2a9ec0b0-0" bind:__l="__l"/>`,
+      `<custom bindclick="{{a}}" bindtap="{{a}}" u-i="2a9ec0b0-0" bind:__l="__l"/>`,
       `(_ctx, _cache) => {
   return { a: _o(_ctx.onClick) }
 }`

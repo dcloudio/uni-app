@@ -5,6 +5,7 @@ import {
   type MiniProgramCompilerOptions,
   copyMiniProgramPluginJson,
   copyMiniProgramThemeJson,
+  formatMiniProgramEvent,
   transformComponentLink,
   transformRef,
 } from '@dcloudio/uni-cli-shared'
@@ -68,6 +69,22 @@ export const miniProgram: MiniProgramCompilerOptions = {
   },
   event: {
     key: true,
+    format: function (eventName, { isCatch, isCapture, isComponent }) {
+      const events = [
+        formatMiniProgramEvent(eventName, { isCatch, isCapture, isComponent }),
+      ]
+      // 自定义组件上面的click事件，在微信小程序中需要额外绑定 bindtab事件
+      if (eventName === 'click' && isComponent) {
+        events.push(
+          formatMiniProgramEvent('tap', {
+            isCatch,
+            isCapture,
+            isComponent: false,
+          })
+        )
+      }
+      return events
+    },
   },
   directive: 'wx:',
   lazyElement: {

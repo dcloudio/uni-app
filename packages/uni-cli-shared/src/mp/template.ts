@@ -42,7 +42,7 @@ export interface MiniProgramCompilerOptions {
     format?(
       name: string,
       opts: { isCatch?: boolean; isCapture?: boolean; isComponent?: boolean }
-    ): string
+    ): string | string[]
   }
   class: {
     /**
