@@ -16,6 +16,7 @@ import {
   parseVueRequest,
   preUVueCss,
   removePlugins,
+  resolveMainPathOnce,
 } from '@dcloudio/uni-cli-shared'
 import { parse } from '@dcloudio/uni-nvue-styler'
 
@@ -32,6 +33,7 @@ export function uniAppCssPrePlugin(): Plugin {
     ...getResolvedOptions(),
     sourceMap: false,
   }
+  const mainPath = resolveMainPathOnce(process.env.UNI_INPUT_DIR)
   return {
     name,
     // 需要提前，因为unocss会在configResolved读取vite:css-post插件
@@ -46,6 +48,10 @@ export function uniAppCssPrePlugin(): Plugin {
         includeComponentCss: false,
         chunkCssFilename(id: string) {
           const { filename } = parseVueRequest(id)
+          if (filename === mainPath) {
+            // 合并到App
+            return `App.uvue.style.uts`
+          }
           if (isVue(filename)) {
             return normalizeNodeModules(
               (path.isAbsolute(filename)
