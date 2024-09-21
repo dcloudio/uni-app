@@ -289,19 +289,6 @@
       }
     }
   },
-  "uni-map-tencent": {
-    "uni": {
-      "createMapContext": {
-        "name": "createMapContext",
-        "app": {
-          "js": false,
-          "kotlin": true,
-          "swift": false,
-          "arkts": false
-        }
-      }
-    }
-  },
   "uni-media": {
     "uni": {
       "chooseImage": {
