@@ -1,51 +1,6 @@
 {
   "@dcloudio/uni-app-runtime": [
     [
-      "UniOAuthProvider"
-    ],
-    [
-      "Login"
-    ],
-    [
-      "LoginSuccess"
-    ],
-    [
-      "LoginFail"
-    ],
-    [
-      "LoginOptions"
-    ],
-    [
-      "GetUserInfo"
-    ],
-    [
-      "UserInfo"
-    ],
-    [
-      "GetUserInfoSuccess"
-    ],
-    [
-      "GetUserInfoFail"
-    ],
-    [
-      "GetUserInfoOptions"
-    ],
-    [
-      "UniPaymentProvider"
-    ],
-    [
-      "RequestPayment"
-    ],
-    [
-      "RequestPaymentSuccess"
-    ],
-    [
-      "RequestPaymentFail"
-    ],
-    [
-      "RequestPaymentOptions"
-    ],
-    [
       "SetClipboardData"
     ],
     [
@@ -340,6 +295,45 @@
       "DownloadTask"
     ],
     [
+      "ConfigMTLS"
+    ],
+    [
+      "ConfigMTLSSuccess"
+    ],
+    [
+      "ConfigMTLSOptions"
+    ],
+    [
+      "UniOAuthProvider"
+    ],
+    [
+      "Login"
+    ],
+    [
+      "LoginSuccess"
+    ],
+    [
+      "LoginFail"
+    ],
+    [
+      "LoginOptions"
+    ],
+    [
+      "GetUserInfo"
+    ],
+    [
+      "UserInfo"
+    ],
+    [
+      "GetUserInfoSuccess"
+    ],
+    [
+      "GetUserInfoFail"
+    ],
+    [
+      "GetUserInfoOptions"
+    ],
+    [
       "OpenAppAuthorizeSetting"
     ],
     [
@@ -356,6 +350,21 @@
     ],
     [
       "OpenDocumentOptions"
+    ],
+    [
+      "UniPaymentProvider"
+    ],
+    [
+      "RequestPayment"
+    ],
+    [
+      "RequestPaymentSuccess"
+    ],
+    [
+      "RequestPaymentFail"
+    ],
+    [
+      "RequestPaymentOptions"
     ],
     [
       "StartPullDownRefreshOptions"

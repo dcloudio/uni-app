@@ -8,13 +8,13 @@ import photoAccessHelper from '@ohos.file.photoAccessHelper';
 import inputMethod from '@ohos.inputMethod';
 import image from '@ohos.multimedia.image';
 import connection from '@ohos.net.connection';
-import http from '@ohos.net.http';
 import webSocket from '@ohos.net.webSocket';
 import call from '@ohos.telephony.call';
 import radio from '@ohos.telephony.radio';
 import webview from '@ohos.web.webview';
 import { BusinessError as BusinessError1 } from '@kit.BasicServicesKit';
 import { BusinessError as BusinessError10 } from '@ohos.base';
+import { BusinessError as BusinessError11 } from '@ohos.base';
 import { BusinessError as BusinessError2 } from '@ohos.base';
 import { BusinessError as BusinessError3 } from '@kit.BasicServicesKit';
 import { BusinessError as BusinessError4 } from '@kit.BasicServicesKit';
@@ -45,7 +45,7 @@ import { UTSHarmony as UTSHarmony8 } from "@dcloudio/uni-mp-sdk";
 import { UTSHarmony as UTSHarmony9 } from "@dcloudio/uni-mp-sdk";
 import { UTSHarmony } from "@dcloudio/uni-mp-sdk";
 import { UTSObject, UTSJSONObject } from "@dcloudio/uts-harmony";
-import { UniProvider, IUniError, UniError, string, AsyncApiSuccessResult, AsyncApiResult, ProtocolOptions, defineAsyncApi, ApiExecutor, getUniProvider, ApiError, ApiOptions, defineSyncApi, getUniProviders, defineTaskApi } from "@dcloudio/uni-app-harmony";
+import { UniError, IUniError, UniProvider, string, AsyncApiSuccessResult, AsyncApiResult, ApiOptions, ProtocolOptions, defineAsyncApi, ApiExecutor, ApiError, defineSyncApi, getUniProviders, defineTaskApi, getUniProvider } from "@dcloudio/uni-app-harmony";
 import Want1 from '@ohos.app.ability.Want';
 import { abilityAccessCtrl } from '@kit.AbilityKit';
 import { access } from '@kit.ConnectivityKit';
@@ -103,14 +103,17 @@ import { getOSRuntime as getOSRuntime1, onNativePageReady as onNativePageReady2 
 import { getOSRuntime } from "@dcloudio/uni-mp-sdk";
 import { getRealPath as getRealPath1 } from "@dcloudio/uni-mp-sdk";
 import { getRealPath as getRealPath2, onNativePageReady as onNativePageReady1 } from "@dcloudio/uni-mp-sdk";
-import { getRealPath as getRealPath3, Emitter as Emitter3, getCurrentMP as getCurrentMP1 } from "@dcloudio/uni-mp-sdk";
+import { getRealPath as getRealPath3 } from "@dcloudio/uni-mp-sdk";
+import { getRealPath as getRealPath4, Emitter as Emitter3, getCurrentMP as getCurrentMP1 } from "@dcloudio/uni-mp-sdk";
 import { getResourceStr, getAbilityContext as getAbilityContext2 } from "@dcloudio/uni-mp-sdk";
 import { getTabBar } from "@dcloudio/uni-mp-sdk";
 import harmonyUrl from '@ohos.url';
 import harmonyUrl1 from '@ohos.url';
 import harmonyWindow from '@ohos.window';
+import { http } from '@kit.NetworkKit';
 import http1 from '@ohos.net.http';
 import http2 from '@ohos.net.http';
+import http3 from '@ohos.net.http';
 import { image as image1 } from '@kit.ImageKit';
 import { isPlainObject, Emitter as Emitter2, getCurrentMP } from "@dcloudio/uni-mp-sdk";
 import { media as media1 } from '@kit.MediaKit';
@@ -140,162 +143,6 @@ import { wifiManager } from '@kit.ConnectivityKit';
 import { window as window1 } from '@kit.ArkUI';
 import { window as window2 } from '@kit.ArkUI';
 import { window } from '@kit.ArkUI';
-export interface UniOAuthProvider extends UniProvider {
-    login(options: LoginOptions): void;
-    getUserInfo(options: GetUserInfoOptions): void;
-}
-export type Login = (options: LoginOptions) => void;
-class AppleLoginAppleInfo extends UTSObject {
-    authorizationCode: string | null = null;
-    fullName: Object | null = null;
-    identityToken: string | null = null;
-    realUserStatus: number | null = null;
-    user: string | null = null;
-}
-export class LoginSuccess extends UTSObject {
-    errMsg!: string;
-    authResult!: Object;
-    code!: string;
-    anonymousCode: string | null = null;
-    authCode: string | null = null;
-    authErrorScope: Object | null = null;
-    authSucessScope: (string[]) | null = null;
-    appleInfo: AppleLoginAppleInfo | null = null;
-}
-type LoginSuccessCallback = (result: LoginSuccess) => void;
-export type LoginFail = IUniError;
-type LoginFailCallback = (result: LoginFail) => void;
-type LoginComplete = Object;
-type LoginCompleteCallback = (result: LoginComplete) => void;
-export class LoginOptions extends UTSObject {
-    provider: 'weixin' | 'qq' | 'sinaweibo' | 'xiaomi' | 'apple' | 'univerify' | 'huawei' | null = null;
-    scopes: Object | null = null;
-    timeout: number | null = null;
-    univerifyStyle: UniverifyStyle | null = null;
-    onlyAuthorize: boolean | null = null;
-    success: LoginSuccessCallback | null = null;
-    fail: LoginFailCallback | null = null;
-    complete: LoginCompleteCallback | null = null;
-}
-class UniverifyIconStyles extends UTSObject {
-    path!: string;
-    width: string | null = null;
-    height: string | null = null;
-}
-class UniverifyPhoneNumStyles extends UTSObject {
-    color: string | null = null;
-    fontSize: string | null = null;
-}
-class UniverifySloganStyles extends UTSObject {
-    color: string | null = null;
-    fontSize: string | null = null;
-}
-class UniverifyAuthButtonStyles extends UTSObject {
-    normalColor: string | null = null;
-    highlightColor: string | null = null;
-    disabledColor: string | null = null;
-    width: string | null = null;
-    height: string | null = null;
-    textColor: string | null = null;
-    title: string | null = null;
-    borderRadius: string | null = null;
-}
-class UniverifyOtherButtonStyles extends UTSObject {
-    visible: boolean | null = null;
-    normalColor: string | null = null;
-    highlightColor: string | null = null;
-    width: string | null = null;
-    height: string | null = null;
-    textColor: string | null = null;
-    title: string | null = null;
-    borderWidth: string | null = null;
-    borderColor: string | null = null;
-    borderRadius: string | null = null;
-}
-class UniverifyPrivacyItemStyles extends UTSObject {
-    url!: string;
-    title!: string;
-}
-class UniverifyPrivacyTermsStyles extends UTSObject {
-    defaultCheckBoxState: boolean | null = null;
-    textColor: string | null = null;
-    termsColor: string | null = null;
-    prefix: string | null = null;
-    suffix: string | null = null;
-    fontSize: string | null = null;
-    privacyItems: (UniverifyPrivacyItemStyles[]) | null = null;
-}
-class UniVerifyButtonListItem extends UTSObject {
-    provider!: string;
-    iconPath!: string;
-}
-class UniVerifyButtonsStyles extends UTSObject {
-    iconWidth: string | null = null;
-    list!: UniVerifyButtonListItem[];
-}
-class UniverifyStyle extends UTSObject {
-    fullScreen: boolean | null = null;
-    backgroundColor: string | null = null;
-    backgroundImage: string | null = null;
-    icon: UniverifyIconStyles | null = null;
-    phoneNum: UniverifyPhoneNumStyles | null = null;
-    slogan: UniverifySloganStyles | null = null;
-    authButton: UniverifyAuthButtonStyles | null = null;
-    otherLoginButton: UniverifyOtherButtonStyles | null = null;
-    privacyTerms: UniverifyPrivacyTermsStyles | null = null;
-    buttons: UniVerifyButtonsStyles | null = null;
-}
-export type GetUserInfo = (options: GetUserInfoOptions) => void;
-export class UserInfo extends UTSObject {
-    nickName!: string;
-    openId: string | null = null;
-    avatarUrl!: string;
-}
-export class GetUserInfoSuccess extends UTSObject {
-    userInfo!: UserInfo;
-    rawData: string | null = null;
-    signature: string | null = null;
-    encryptedData: string | null = null;
-    iv: string | null = null;
-    errMsg!: string;
-}
-type GetUserInfoSuccessCallback = (result: GetUserInfoSuccess) => void;
-export type GetUserInfoFail = IUniError;
-type GetUserInfoFailCallback = (result: GetUserInfoFail) => void;
-type GetUserInfoComplete = Object;
-type GetUserInfoCompleteCallback = (result: GetUserInfoComplete) => void;
-export class GetUserInfoOptions extends UTSObject {
-    provider: 'weixin' | 'qq' | 'sinaweibo' | 'xiaomi' | 'apple' | 'huawei' | null = null;
-    withCredentials: boolean | null = null;
-    lang: string | null = null;
-    timeout: number | null = null;
-    success: GetUserInfoSuccessCallback | null = null;
-    fail: GetUserInfoFailCallback | null = null;
-    complete: GetUserInfoCompleteCallback | null = null;
-}
-export interface UniPaymentProvider extends UniProvider {
-    requestPayment(options: RequestPaymentOptions): void;
-}
-type RequestPaymentErrorCode = 700600 | 701100 | 701110 | 700601 | 700602 | 700603 | 700000 | 700604 | 700605 | 700607 | 700608 | 700800 | 700801;
-export type RequestPayment = (options: RequestPaymentOptions) => void;
-export class RequestPaymentSuccess extends UTSObject {
-    data: object | null = null;
-}
-type RequestPaymentSuccessCallback = (result: RequestPaymentSuccess) => void;
-export type RequestPaymentFail = IRequestPaymentFail;
-type RequestPaymentFailCallback = (result: RequestPaymentFail) => void;
-type RequestPaymentComplete = Object;
-interface IRequestPaymentFail extends IUniError {
-    errCode: RequestPaymentErrorCode;
-}
-type RequestPaymentCompleteCallback = (result: RequestPaymentComplete) => void;
-export class RequestPaymentOptions extends UTSObject {
-    provider!: string;
-    orderInfo!: string;
-    success: RequestPaymentSuccessCallback | null = null;
-    fail: RequestPaymentFailCallback | null = null;
-    complete: RequestPaymentCompleteCallback | null = null;
-}
 type AddPhoneContact = (options: AddPhoneContactOptions) => void;
 class AddPhoneContactSuccess extends UTSObject {
 }
@@ -1361,6 +1208,30 @@ export interface DownloadTask {
     abort(): void;
     onProgressUpdate(callback: DownloadFileProgressUpdateCallback): void;
 }
+export type ConfigMTLS = (options: ConfigMTLSOptions) => void;
+class Certificate extends UTSObject {
+    host!: string;
+    client: string | null = null;
+    clientPassword: string | null = null;
+    keyPath: string | null = null;
+    server: (string[]) | null = null;
+}
+export class ConfigMTLSSuccess extends UTSObject {
+    code!: number;
+}
+type ConfigMTLSSuccessCallback = (result: ConfigMTLSSuccess) => void;
+class ConfigMTLSFail extends UTSObject {
+    code!: number;
+}
+type ConfigMTLSFailCallback = (result: ConfigMTLSFail) => void;
+type ConfigMTLSComplete = Object;
+type ConfigMTLSCompleteCallback = (result: ConfigMTLSComplete) => void;
+export class ConfigMTLSOptions extends UTSObject {
+    certificates!: Certificate[];
+    success: ConfigMTLSSuccessCallback | null = null;
+    fail: ConfigMTLSFailCallback | null = null;
+    complete: ConfigMTLSCompleteCallback | null = null;
+}
 interface IUniNetworkMPUserAgent {
     fullUserAgent: string;
 }
@@ -1406,6 +1277,139 @@ interface IDownloadTask {
     onProgressUpdate: Function;
     offProgressUpdate: Function;
 }
+export interface UniOAuthProvider extends UniProvider {
+    login(options: LoginOptions): void;
+    getUserInfo(options: GetUserInfoOptions): void;
+}
+export type Login = (options: LoginOptions) => void;
+class AppleLoginAppleInfo extends UTSObject {
+    authorizationCode: string | null = null;
+    fullName: Object | null = null;
+    identityToken: string | null = null;
+    realUserStatus: number | null = null;
+    user: string | null = null;
+}
+export class LoginSuccess extends UTSObject {
+    errMsg!: string;
+    authResult!: Object;
+    code!: string;
+    anonymousCode: string | null = null;
+    authCode: string | null = null;
+    authErrorScope: Object | null = null;
+    authSucessScope: (string[]) | null = null;
+    appleInfo: AppleLoginAppleInfo | null = null;
+}
+type LoginSuccessCallback = (result: LoginSuccess) => void;
+export type LoginFail = IUniError;
+type LoginFailCallback = (result: LoginFail) => void;
+type LoginComplete = Object;
+type LoginCompleteCallback = (result: LoginComplete) => void;
+export class LoginOptions extends UTSObject {
+    provider: 'weixin' | 'qq' | 'sinaweibo' | 'xiaomi' | 'apple' | 'univerify' | 'huawei' | null = null;
+    scopes: Object | null = null;
+    timeout: number | null = null;
+    univerifyStyle: UniverifyStyle | null = null;
+    onlyAuthorize: boolean | null = null;
+    success: LoginSuccessCallback | null = null;
+    fail: LoginFailCallback | null = null;
+    complete: LoginCompleteCallback | null = null;
+}
+class UniverifyIconStyles extends UTSObject {
+    path!: string;
+    width: string | null = null;
+    height: string | null = null;
+}
+class UniverifyPhoneNumStyles extends UTSObject {
+    color: string | null = null;
+    fontSize: string | null = null;
+}
+class UniverifySloganStyles extends UTSObject {
+    color: string | null = null;
+    fontSize: string | null = null;
+}
+class UniverifyAuthButtonStyles extends UTSObject {
+    normalColor: string | null = null;
+    highlightColor: string | null = null;
+    disabledColor: string | null = null;
+    width: string | null = null;
+    height: string | null = null;
+    textColor: string | null = null;
+    title: string | null = null;
+    borderRadius: string | null = null;
+}
+class UniverifyOtherButtonStyles extends UTSObject {
+    visible: boolean | null = null;
+    normalColor: string | null = null;
+    highlightColor: string | null = null;
+    width: string | null = null;
+    height: string | null = null;
+    textColor: string | null = null;
+    title: string | null = null;
+    borderWidth: string | null = null;
+    borderColor: string | null = null;
+    borderRadius: string | null = null;
+}
+class UniverifyPrivacyItemStyles extends UTSObject {
+    url!: string;
+    title!: string;
+}
+class UniverifyPrivacyTermsStyles extends UTSObject {
+    defaultCheckBoxState: boolean | null = null;
+    textColor: string | null = null;
+    termsColor: string | null = null;
+    prefix: string | null = null;
+    suffix: string | null = null;
+    fontSize: string | null = null;
+    privacyItems: (UniverifyPrivacyItemStyles[]) | null = null;
+}
+class UniVerifyButtonListItem extends UTSObject {
+    provider!: string;
+    iconPath!: string;
+}
+class UniVerifyButtonsStyles extends UTSObject {
+    iconWidth: string | null = null;
+    list!: UniVerifyButtonListItem[];
+}
+class UniverifyStyle extends UTSObject {
+    fullScreen: boolean | null = null;
+    backgroundColor: string | null = null;
+    backgroundImage: string | null = null;
+    icon: UniverifyIconStyles | null = null;
+    phoneNum: UniverifyPhoneNumStyles | null = null;
+    slogan: UniverifySloganStyles | null = null;
+    authButton: UniverifyAuthButtonStyles | null = null;
+    otherLoginButton: UniverifyOtherButtonStyles | null = null;
+    privacyTerms: UniverifyPrivacyTermsStyles | null = null;
+    buttons: UniVerifyButtonsStyles | null = null;
+}
+export type GetUserInfo = (options: GetUserInfoOptions) => void;
+export class UserInfo extends UTSObject {
+    nickName!: string;
+    openId: string | null = null;
+    avatarUrl!: string;
+}
+export class GetUserInfoSuccess extends UTSObject {
+    userInfo!: UserInfo;
+    rawData: string | null = null;
+    signature: string | null = null;
+    encryptedData: string | null = null;
+    iv: string | null = null;
+    errMsg!: string;
+}
+type GetUserInfoSuccessCallback = (result: GetUserInfoSuccess) => void;
+export type GetUserInfoFail = IUniError;
+type GetUserInfoFailCallback = (result: GetUserInfoFail) => void;
+type GetUserInfoComplete = Object;
+type GetUserInfoCompleteCallback = (result: GetUserInfoComplete) => void;
+export class GetUserInfoOptions extends UTSObject {
+    provider: 'weixin' | 'qq' | 'sinaweibo' | 'xiaomi' | 'apple' | 'huawei' | null = null;
+    withCredentials: boolean | null = null;
+    lang: string | null = null;
+    timeout: number | null = null;
+    success: GetUserInfoSuccessCallback | null = null;
+    fail: GetUserInfoFailCallback | null = null;
+    complete: GetUserInfoCompleteCallback | null = null;
+}
 export type OpenAppAuthorizeSetting = (options: OpenAppAuthorizeSettingOptions) => void;
 export class OpenAppAuthorizeSettingSuccess extends UTSObject {
     errMsg!: string;
@@ -1440,6 +1444,29 @@ export class OpenDocumentOptions extends UTSObject {
     complete: OpenDocumentCompleteCallback | null = null;
 }
 type OpenDocument = (options?: OpenDocumentOptions | null) => void;
+export interface UniPaymentProvider extends UniProvider {
+    requestPayment(options: RequestPaymentOptions): void;
+}
+type RequestPaymentErrorCode = 700600 | 701100 | 701110 | 700601 | 700602 | 700603 | 700000 | 700604 | 700605 | 700607 | 700608 | 700800 | 700801;
+export type RequestPayment = (options: RequestPaymentOptions) => void;
+export class RequestPaymentSuccess extends UTSObject {
+    data: object | null = null;
+}
+type RequestPaymentSuccessCallback = (result: RequestPaymentSuccess) => void;
+export type RequestPaymentFail = IRequestPaymentFail;
+type RequestPaymentFailCallback = (result: RequestPaymentFail) => void;
+type RequestPaymentComplete = Object;
+interface IRequestPaymentFail extends IUniError {
+    errCode: RequestPaymentErrorCode;
+}
+type RequestPaymentCompleteCallback = (result: RequestPaymentComplete) => void;
+export class RequestPaymentOptions extends UTSObject {
+    provider!: string;
+    orderInfo!: string;
+    success: RequestPaymentSuccessCallback | null = null;
+    fail: RequestPaymentFailCallback | null = null;
+    complete: RequestPaymentCompleteCallback | null = null;
+}
 type PromptErrorCode = 1 | 1001;
 interface IPromptError extends IUniError {
     errCode: PromptErrorCode;
@@ -1896,9 +1923,6 @@ interface IUniWebsocketEmitter {
     emit: (eventName: string, ...args: (Object | undefined | null)[]) => void;
 }
 interface UniExtApi {
-    login: Login;
-    getUserInfo: GetUserInfo;
-    requestPayment: RequestPayment;
     addPhoneContact: AddPhoneContact;
     startSoterAuthentication: StartSoterAuthentication;
     checkIsSupportSoterAuthentication: CheckIsSupportSoterAuthentication;
@@ -1947,8 +1971,12 @@ interface UniExtApi {
     request: Request<Object>;
     uploadFile: UploadFile;
     downloadFile: DownloadFile;
+    configMTLS: ConfigMTLS;
+    login: Login;
+    getUserInfo: GetUserInfo;
     openAppAuthorizeSetting: OpenAppAuthorizeSetting;
     openDocument: OpenDocument;
+    requestPayment: RequestPayment;
     showToast: ShowToast;
     hideToast: HideToast;
     showLoading: ShowLoading;
@@ -1987,142 +2015,6 @@ interface UniExtApi {
     onSocketError: OnSocketError;
 }
 export function initUniExtApi() {
-    const API_LOGIN = 'login';
-    const LoginApiProtocol = new Map<string, ProtocolOptions>([
-        [
-            'provider',
-            {
-                type: 'string'
-            }
-        ],
-        [
-            'timeout',
-            {
-                type: 'number'
-            }
-        ]
-    ]);
-    const API_GET_USER_INFO = 'getUserInfo';
-    const GetUserInfoApiProtocol = new Map<string, ProtocolOptions>([
-        [
-            'provider',
-            {
-                type: 'string'
-            }
-        ],
-        [
-            'timeout',
-            {
-                type: 'number'
-            }
-        ]
-    ]);
-    const SERVICE = 'oauth';
-    const PROVIDER = 'huawei';
-    const login: Login = defineAsyncApi<LoginOptions, LoginSuccess>(API_LOGIN, (args: LoginOptions, executor: ApiExecutor<LoginSuccess>)=>{
-        const provider = getUniProvider<UniOAuthProvider>(SERVICE, args.provider ?? PROVIDER);
-        if (!provider) {
-            executor.reject('Provider not found.');
-            return;
-        }
-        provider.login({
-            success (res) {
-                executor.resolve(res);
-            },
-            fail (err) {
-                executor.reject(err.errMsg);
-            }
-        } as LoginOptions);
-    }, LoginApiProtocol) as Login;
-    const getUserInfo: GetUserInfo = defineAsyncApi<GetUserInfoOptions, GetUserInfoSuccess>(API_GET_USER_INFO, (args: GetUserInfoOptions, executor: ApiExecutor<GetUserInfoSuccess>)=>{
-        const provider = getUniProvider<UniOAuthProvider>(SERVICE, args.provider ?? PROVIDER);
-        if (!provider) {
-            executor.reject('Provider not found.');
-            return;
-        }
-        provider.getUserInfo({
-            success (res) {
-                executor.resolve(res);
-            },
-            fail (err) {
-                executor.reject(err.errMsg);
-            }
-        } as GetUserInfoOptions);
-    }, GetUserInfoApiProtocol) as GetUserInfo;
-    const RequestPaymentUniErrors: Map<RequestPaymentErrorCode, string> = new Map([
-        [
-            700600,
-            'The payment result is unknown (it may have been successfully paid). Please check the payment status of the order in the merchant order list.'
-        ],
-        [
-            701100,
-            'Order payment failure.'
-        ],
-        [
-            701110,
-            'Repeat the request.'
-        ],
-        [
-            700601,
-            'The user canceled midway.'
-        ],
-        [
-            700602,
-            'Network connection error.'
-        ],
-        [
-            700603,
-            'Payment result unknown (may have been successfully paid), please check the payment status of the order in the merchant order list.'
-        ],
-        [
-            700607,
-            'Payment not completed.'
-        ],
-        [
-            700608,
-            'Parameter error.'
-        ],
-        [
-            700000,
-            'Other payment errors.'
-        ],
-        [
-            700604,
-            'Wechat is not installed.'
-        ],
-        [
-            700605,
-            'Failed to get provider.'
-        ],
-        [
-            700800,
-            'URL Scheme is not configured.'
-        ],
-        [
-            700801,
-            'Universal Link is not configured.'
-        ]
-    ]);
-    const API_REQUEST_PAYMENT = 'requestPayment';
-    const requestPayment: RequestPayment = defineAsyncApi<RequestPaymentOptions, RequestPaymentSuccess>(API_REQUEST_PAYMENT, (options: RequestPaymentOptions, exec: ApiExecutor<RequestPaymentSuccess>): void =>{
-        const provider = getUniProvider<UniPaymentProvider>('payment', options.provider);
-        if (!provider) {
-            exec.reject('Provider not found.');
-            return;
-        }
-        provider.requestPayment({
-            orderInfo: options.orderInfo,
-            success: (result: RequestPaymentSuccess)=>{
-                exec.resolve(result);
-            },
-            fail: (error: RequestPaymentFail)=>{
-                const errMsg = RequestPaymentUniErrors.get(error.errCode) ?? "";
-                exec.reject(errMsg, {
-                    errCode: error.errCode
-                } as ApiError);
-            }
-        } as RequestPaymentOptions);
-    }) as RequestPayment;
     const API_ADD_PHONE_CONTACT = 'addPhoneContact';
     const AddPhoneContactApiOptions: ApiOptions<AddPhoneContactOptions> = {
         formatArgs: new Map<string, ((firstName: string) => string | undefined)>([
@@ -6392,6 +6284,29 @@ export function initUniExtApi() {
             ]
         ])
     };
+    const API_CONFIG_MTLS = 'configMTLS';
+    const ConfigMTLSApiProtocol = new Map<string, ProtocolOptions>([
+        [
+            'certificates',
+            {
+                type: 'array',
+                required: true
+            }
+        ]
+    ]);
+    const ConfigMTLSApiOptions: ApiOptions<ConfigMTLSOptions> = {
+        formatArgs: new Map<string, Function>([
+            [
+                'certificates',
+                (certificates: (Certificate[]) | null = null)=>{
+                    if (!certificates || certificates.some((item)=>typeof item.host !== 'string')) {
+                        return '参数 certificates 配置错误，请确认后重试';
+                    }
+                    return undefined;
+                }
+            ]
+        ])
+    };
     const needsEncoding = (str: string)=>{
         const decoded = decodeURIComponent(str);
         if (decoded !== str) {
@@ -6409,6 +6324,32 @@ export function initUniExtApi() {
             }
         });
         return urlObj.toString();
+    };
+    const certificates: Certificate[] = [];
+    const getCertType = (certPath: string): http.CertType =>{
+        const certExt = certPath.split('.').pop();
+        switch(certExt){
+            case 'p12':
+                return http.CertType.P12;
+            case 'pem':
+                return http.CertType.PEM;
+            default:
+                return http.CertType.PEM;
+        }
+    };
+    const getClientCertificate = (url: string): http.ClientCert | undefined =>{
+        if (certificates.length === 0) return undefined;
+        const urlObj = harmonyUrl.URL.parseURL(url);
+        const cert = certificates.find((certificate)=>certificate.host === urlObj.host);
+        if (cert) {
+            return {
+                certType: getCertType(cert.client!),
+                certPath: getRealPath3(cert.client!),
+                keyPath: cert.keyPath ?? '',
+                keyPassword: cert.clientPassword
+            } as http.ClientCert;
+        }
+        return undefined;
     };
     const getCookieSync = (url: string): string =>{
         return webview.WebCookieManager.fetchCookieSync(url);
@@ -6503,7 +6444,7 @@ export function initUniExtApi() {
                 return (encodeURIComponent(key) + '=' + encodeURIComponent(dataRecord[key] as number | string | boolean));
             }).join('&');
         }
-        const httpRequest = http.createHttp();
+        const httpRequest = http1.createHttp();
         const mp = getCurrentMP() as IUniNetworkMP;
         const userAgent = mp.userAgent.fullUserAgent;
         if (userAgent && headers && !headers!['User-Agent'] && !headers!['user-agent']) {
@@ -6542,11 +6483,12 @@ export function initUniExtApi() {
         });
         httpRequest.requestInStream(parseUrl(url), {
             header: headers,
-            method: (method || 'GET').toUpperCase() as http.RequestMethod,
+            method: (method || 'GET').toUpperCase() as http1.RequestMethod,
             extraData: data || undefined,
             connectTimeout: timeout ? timeout : undefined,
-            readTimeout: timeout ? timeout : undefined
-        } as http.HttpRequestOptions, (err, statusCode)=>{
+            readTimeout: timeout ? timeout : undefined,
+            clientCert: getClientCertificate(url)
+        } as http1.HttpRequestOptions, (err, statusCode)=>{
             if (err) {
                 exec.reject(err.message);
             } else {
@@ -6620,7 +6562,7 @@ export function initUniExtApi() {
         }
     }
     const readFile = (filePath: string): ArrayBuffer =>{
-        const readFilePath = getRealPath3(filePath) as string;
+        const readFilePath = getRealPath4(filePath) as string;
         const file = fs4.openSync(readFilePath, fs4.OpenMode.READ_ONLY);
         const stat = fs4.statSync(file.fd);
         const data = new ArrayBuffer(stat.size);
@@ -6644,7 +6586,7 @@ export function initUniExtApi() {
             }
         }
         headers['Content-Type'] = 'multipart/form-data';
-        const multiFormDataList = [] as Array<http1.MultiFormData>;
+        const multiFormDataList = [] as Array<http2.MultiFormData>;
         if (formData) {
             const formDataRecord = formData as Object as Record<string, Object>;
             const formDataKeys = Object.keys(formDataRecord);
@@ -6654,7 +6596,7 @@ export function initUniExtApi() {
                     name,
                     contentType: 'text/plain',
                     data: String(formDataRecord[name])
-                } as http1.MultiFormData);
+                } as http2.MultiFormData);
             }
         }
         try {
@@ -6666,7 +6608,7 @@ export function initUniExtApi() {
                         contentType: lookupContentTypeWithUri(uri) || 'application/octet-stream',
                         remoteFileName: uri.split('/').pop() || 'no-name',
                         data: readFile(uri!)
-                    } as http1.MultiFormData);
+                    } as http2.MultiFormData);
                 }
             } else if (filePath) {
                 multiFormDataList.push({
@@ -6674,7 +6616,7 @@ export function initUniExtApi() {
                     contentType: lookupContentTypeWithUri(filePath!) || 'application/octet-stream',
                     remoteFileName: filePath.split('/').pop() || 'no-name',
                     data: readFile(filePath!)
-                } as http1.MultiFormData);
+                } as http2.MultiFormData);
             }
         } catch (error) {
             exec.reject((error as Error).message);
@@ -6686,7 +6628,7 @@ export function initUniExtApi() {
                 offProgressUpdate: (callback: Function)=>{}
             } as IUploadTask);
         }
-        const httpRequest = http1.createHttp();
+        const httpRequest = http2.createHttp();
         const mp = getCurrentMP1() as IUniNetworkMP;
         const userAgent = mp.userAgent.fullUserAgent;
         if (userAgent && !headers['User-Agent'] && !headers['user-agent']) {
@@ -6735,12 +6677,13 @@ export function initUniExtApi() {
         });
         httpRequest.request(parseUrl(url), {
             header: headers,
-            method: http1.RequestMethod.POST,
+            method: http2.RequestMethod.POST,
             connectTimeout: timeout ? timeout : undefined,
             readTimeout: timeout ? timeout : undefined,
             multiFormDataList,
-            expectDataType: http1.HttpDataType.STRING
-        } as http1.HttpRequestOptions, (err, res)=>{
+            expectDataType: http2.HttpDataType.STRING,
+            clientCert: getClientCertificate(url)
+        } as http2.HttpRequestOptions, (err, res)=>{
             if (err) {
                 exec.reject(err.message);
             } else {
@@ -6818,7 +6761,7 @@ export function initUniExtApi() {
         if (!header!['Cookie'] && !header!['cookie']) {
             header!['Cookie'] = getCookieSync(url);
         }
-        const httpRequest = http2.createHttp();
+        const httpRequest = http3.createHttp();
         const mp = getCurrentMP2()! as IUniNetworkMP;
         const userAgent = mp.userAgent.fullUserAgent;
         if (userAgent && !header!['User-Agent'] && !header!['user-agent']) {
@@ -6892,10 +6835,11 @@ export function initUniExtApi() {
         });
         httpRequest.requestInStream(parseUrl(url), {
             header: header ? header : {} as ESObject,
-            method: http2.RequestMethod.GET,
+            method: http3.RequestMethod.GET,
             connectTimeout: timeout ? timeout : undefined,
-            readTimeout: timeout ? timeout : undefined
-        } as http2.HttpRequestOptions, (err, statusCode)=>{
+            readTimeout: timeout ? timeout : undefined,
+            clientCert: getClientCertificate(url)
+        } as http3.HttpRequestOptions, (err, statusCode)=>{
             let finishPromise: Promise<void> = Promise.resolve();
             if (err) {
                 exec.reject(err.message);
@@ -6920,6 +6864,83 @@ export function initUniExtApi() {
         });
         return new DownloadTask1(downloadTask);
     }, DownloadFileApiProtocol, DownloadFileApiOptions) as DownloadFile;
+    const configMTLS: ConfigMTLS = defineAsyncApi<ConfigMTLSOptions, ConfigMTLSSuccess>(API_CONFIG_MTLS, (args: ConfigMTLSOptions, executor: ApiExecutor<ConfigMTLSSuccess>)=>{
+        try {
+            args.certificates.forEach((certificate)=>{
+                const certHosts = certificates.map((cert)=>cert.host);
+                const certHostIndex = certHosts.indexOf(certificate.host);
+                if (certHostIndex > -1) {
+                    certificates.splice(certHostIndex, 1);
+                }
+                certificates.push(certificate);
+            });
+            executor.resolve();
+        } catch (error) {
+            executor.reject((error as BusinessError10).message);
+        }
+    }, ConfigMTLSApiProtocol, ConfigMTLSApiOptions) as ConfigMTLS;
+    const API_LOGIN = 'login';
+    const LoginApiProtocol = new Map<string, ProtocolOptions>([
+        [
+            'provider',
+            {
+                type: 'string'
+            }
+        ],
+        [
+            'timeout',
+            {
+                type: 'number'
+            }
+        ]
+    ]);
+    const API_GET_USER_INFO = 'getUserInfo';
+    const GetUserInfoApiProtocol = new Map<string, ProtocolOptions>([
+        [
+            'provider',
+            {
+                type: 'string'
+            }
+        ],
+        [
+            'timeout',
+            {
+                type: 'number'
+            }
+        ]
+    ]);
+    const SERVICE = 'oauth';
+    const PROVIDER = 'huawei';
+    const login: Login = defineAsyncApi<LoginOptions, LoginSuccess>(API_LOGIN, (args: LoginOptions, executor: ApiExecutor<LoginSuccess>)=>{
+        const provider = getUniProvider<UniOAuthProvider>(SERVICE, args.provider ?? PROVIDER);
+        if (!provider) {
+            executor.reject('Provider not found.');
+            return;
+        }
+        provider.login({
+            success (res) {
+                executor.resolve(res);
+            },
+            fail (err) {
+                executor.reject(err.errMsg);
+            }
+        } as LoginOptions);
+    }, LoginApiProtocol) as Login;
+    const getUserInfo: GetUserInfo = defineAsyncApi<GetUserInfoOptions, GetUserInfoSuccess>(API_GET_USER_INFO, (args: GetUserInfoOptions, executor: ApiExecutor<GetUserInfoSuccess>)=>{
+        const provider = getUniProvider<UniOAuthProvider>(SERVICE, args.provider ?? PROVIDER);
+        if (!provider) {
+            executor.reject('Provider not found.');
+            return;
+        }
+        provider.getUserInfo({
+            success (res) {
+                executor.resolve(res);
+            },
+            fail (err) {
+                executor.reject(err.errMsg);
+            }
+        } as GetUserInfoOptions);
+    }, GetUserInfoApiProtocol) as GetUserInfo;
     const API_OPEN_APP_AUTHORIZE_SETTING = 'openAppAuthorizeSetting';
     const openAppAuthorizeSetting: OpenAppAuthorizeSetting = defineAsyncApi<OpenAppAuthorizeSettingOptions, OpenAppAuthorizeSettingSuccess>(API_OPEN_APP_AUTHORIZE_SETTING, (options: OpenAppAuthorizeSettingOptions, exec: ApiExecutor<OpenAppAuthorizeSettingSuccess>)=>{
         const want: Want = {
@@ -6982,6 +7003,80 @@ export function initUniExtApi() {
             exec.reject(err.message);
         });
     }) as OpenDocument;
+    const RequestPaymentUniErrors: Map<RequestPaymentErrorCode, string> = new Map([
+        [
+            700600,
+            'The payment result is unknown (it may have been successfully paid). Please check the payment status of the order in the merchant order list.'
+        ],
+        [
+            701100,
+            'Order payment failure.'
+        ],
+        [
+            701110,
+            'Repeat the request.'
+        ],
+        [
+            700601,
+            'The user canceled midway.'
+        ],
+        [
+            700602,
+            'Network connection error.'
+        ],
+        [
+            700603,
+            'Payment result unknown (may have been successfully paid), please check the payment status of the order in the merchant order list.'
+        ],
+        [
+            700607,
+            'Payment not completed.'
+        ],
+        [
+            700608,
+            'Parameter error.'
+        ],
+        [
+            700000,
+            'Other payment errors.'
+        ],
+        [
+            700604,
+            'Wechat is not installed.'
+        ],
+        [
+            700605,
+            'Failed to get provider.'
+        ],
+        [
+            700800,
+            'URL Scheme is not configured.'
+        ],
+        [
+            700801,
+            'Universal Link is not configured.'
+        ]
+    ]);
+    const API_REQUEST_PAYMENT = 'requestPayment';
+    const requestPayment: RequestPayment = defineAsyncApi<RequestPaymentOptions, RequestPaymentSuccess>(API_REQUEST_PAYMENT, (options: RequestPaymentOptions, exec: ApiExecutor<RequestPaymentSuccess>): void =>{
+        const provider = getUniProvider<UniPaymentProvider>('payment', options.provider);
+        if (!provider) {
+            exec.reject('Provider not found.');
+            return;
+        }
+        provider.requestPayment({
+            orderInfo: options.orderInfo,
+            success: (result: RequestPaymentSuccess)=>{
+                exec.resolve(result);
+            },
+            fail: (error: RequestPaymentFail)=>{
+                const errMsg = RequestPaymentUniErrors.get(error.errCode) ?? "";
+                exec.reject(errMsg, {
+                    errCode: error.errCode
+                } as ApiError);
+            }
+        } as RequestPaymentOptions);
+    }) as RequestPayment;
     const API_SHOW_TOAST = 'showToast';
     const ShowToastProtocol = new Map<string, ProtocolOptions>([
         [
@@ -7168,7 +7263,7 @@ export function initUniExtApi() {
             window.getUIContext().getPromptAction().showToast(showToastOptions);
             res.resolve({} as ShowToastSuccess);
         } catch (error) {
-            let message = (error as BusinessError10).message;
+            let message = (error as BusinessError11).message;
             res.reject(message);
         }
     }, ShowToastProtocol, ShowToastApiOptions) as ShowToast;
@@ -8039,9 +8134,6 @@ export function initUniExtApi() {
         }
     }) as CloseSocket;
     return {
-        login,
-        getUserInfo,
-        requestPayment,
         addPhoneContact,
         startSoterAuthentication,
         checkIsSupportSoterAuthentication,
@@ -8090,8 +8182,12 @@ export function initUniExtApi() {
         request,
         uploadFile,
         downloadFile,
+        configMTLS,
+        login,
+        getUserInfo,
         openAppAuthorizeSetting,
         openDocument,
+        requestPayment,
         showToast,
         hideToast,
         showLoading,
