@@ -292,6 +292,12 @@ export function switchSelect(
   }
   tabBar0!.switchSelect(page!.$basePage.id.toString(), selected)
 
+  const pageStyle = (page.$page as UniPage).getPageStyle()
+
+  // 客户端处理 global
+  const pageOrientation = pageStyle['pageOrientation']
+  getPageManager().findPageById('tabBar')!.setPageStyle({ pageOrientation })
+
   // TODO use page show status
   if (shouldShow) {
     // resetNavigatorLock()
