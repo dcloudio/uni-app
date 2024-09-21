@@ -5,9 +5,15 @@ const {
 } = require('@dcloudio/uni-cli-shared')
 
 const subPkgsInfo = Object.values(process.UNI_SUBPACKAGES)
-const normalFilter = ({ independent }) => !independent
-const independentFilter = ({ independent }) => independent
-const map2Root = ({ root }) => root + '/'
+const normalFilter = ({
+  independent
+}) => !independent
+const independentFilter = ({
+  independent
+}) => independent
+const map2Root = ({
+  root
+}) => root + '/'
 const normalSubPackageRoots = subPkgsInfo.filter(normalFilter).map(map2Root)
 const independentSubpackageRoots = subPkgsInfo.filter(independentFilter).map(map2Root)
 
@@ -77,7 +83,7 @@ module.exports = function getSplitChunks () {
   if (!process.env.UNI_OPT_SUBPACKAGES) {
     return {
       chunks (chunk) { // 防止 node_modules 内 vue 组件被 split
-        return chunk.name.indexOf('node-modules') !== 0
+        return (chunk.name || '').indexOf('node-modules') !== 0
       },
       cacheGroups: {
         default: false,
@@ -89,8 +95,8 @@ module.exports = function getSplitChunks () {
             }
             if (module.resource && (
               module.resource.indexOf('.vue') !== -1 ||
-              module.resource.indexOf('.nvue') !== -1 ||
-              normalizePath(module.resource).indexOf(mainPath) === 0 // main.js
+                module.resource.indexOf('.nvue') !== -1 ||
+                normalizePath(module.resource).indexOf(mainPath) === 0 // main.js
             )) {
               return false
             }
