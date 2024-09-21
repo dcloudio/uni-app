@@ -21,10 +21,10 @@ type EventStopHandler = () => void
 export class EventBus {
   private $emitter = new Emitter()
   on(name: string, callback: Function) {
-    this.$emitter.on(name, callback)
+    return this.$emitter.on(name, callback)
   }
   once(name: string, callback: Function) {
-    this.$emitter.once(name, callback)
+    return this.$emitter.once(name, callback)
   }
   off(name?: string, callback?: Function | null) {
     if (!name) {
@@ -41,18 +41,22 @@ export class EventBus {
 const eventBus = new EventBus()
 export const $on = defineSyncApi<API_TYPE_ON>(
   API_ON,
-  (name, callback): EventStopHandler => {
-    eventBus.on(name, callback)
-
+  (name, callback): EventStopHandler | number => {
+    const id = eventBus.on(name, callback)
+    if (__X__) {
+      return id
+    }
     return () => eventBus.off(name, callback)
   },
   OnProtocol
 )
 export const $once = defineSyncApi<API_TYPE_ONCE>(
   API_ONCE,
-  (name, callback): EventStopHandler => {
-    eventBus.once(name, callback)
-
+  (name, callback): EventStopHandler | number => {
+    const id = eventBus.once(name, callback)
+    if (__X__) {
+      return id
+    }
     return () => eventBus.off(name, callback)
   },
   OnceProtocol

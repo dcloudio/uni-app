@@ -27,7 +27,7 @@ export const OffProtocol: ProtocolOptions<String | Function | Array<String>>[] =
     },
     {
       name: 'callback',
-      type: Function,
+      type: Function || Number,
     },
   ]
 

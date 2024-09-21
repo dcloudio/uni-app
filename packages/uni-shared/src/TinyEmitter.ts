@@ -1,7 +1,8 @@
 interface E {
   e: Record<string, unknown>
-  on: (name: EventName, callback: EventCallback, ctx?: any) => this
-  once: (name: EventName, callback: EventCallback, ctx?: any) => this
+  _id: number
+  on: (name: EventName, callback: EventCallback, ctx?: any) => number
+  once: (name: EventName, callback: EventCallback, ctx?: any) => number
   emit: (name: EventName, ...args: any[]) => this
   off: (name: EventName, callback?: EventCallback | null) => this
 }
@@ -14,16 +15,19 @@ const E = function () {
 // export type EventName = string | number | symbol
 export type EventName = string
 export type EventCallback = Function
+export type EventId = number
 
 E.prototype = {
+  _id: 1,
   on: function (name: EventName, callback: EventCallback, ctx?: any) {
     var e = this.e || (this.e = {})
     ;(e[name] || (e[name] = [])).push({
       fn: callback,
       ctx: ctx,
+      _id: this._id,
     })
 
-    return this
+    return this._id++
   },
 
   once: function (name: EventName, callback: EventCallback, ctx?: any) {
@@ -50,14 +54,18 @@ E.prototype = {
     return this
   },
 
-  off: function (name: EventName, callback?: EventCallback) {
+  off: function (name: EventName, event?: EventCallback | EventId) {
     var e = this.e || (this.e = {})
     var evts = e[name]
     var liveEvents = []
 
-    if (evts && callback) {
+    if (evts && event) {
       for (var i = evts.length - 1; i >= 0; i--) {
-        if (evts[i].fn === callback || evts[i].fn._ === callback) {
+        if (
+          evts[i].fn === event ||
+          evts[i].fn._ === event ||
+          evts[i]._id === event
+        ) {
           evts.splice(i, 1)
           break
         }
