@@ -284,7 +284,7 @@ function useBase(
 
 function useValueSync(
   props: Props,
-  state: { value: string; maxlength: number },
+  state: { value: string; maxlength: number; composing: boolean },
   emit: SetupContext['emit'],
   trigger: CustomEventTrigger
 ) {
@@ -297,8 +297,13 @@ function useValueSync(
       state.value = getValueString(val, props.type, state.maxlength)
     }, 100)
   } else {
+    const isIos = __PLATFORM__ === 'app' && plus.os.name === 'iOS'
     valueChangeFn = debounce(
       (val: any) => {
+        // iOS在composing时更新input的value时会失去焦点
+        if (isIos && state.composing) {
+          return
+        }
         state.value = getValueString(val, props.type)
       },
       100,
