@@ -34,8 +34,6 @@ import { updateCurPageCssVar } from '../../helpers/cssVar'
 import { getStateId } from '../../helpers/dom'
 import { getPageInstanceByVm } from './utils'
 
-import { EventBus } from '@dcloudio/uni-api'
-
 import type { UniBasePage } from '@dcloudio/uni-app-x/types/page'
 import { setCurrentPageMeta } from '../../service/api/ui/setPageMeta'
 
@@ -44,21 +42,14 @@ const SEP = '$$'
 const currentPagesMap = new Map<string, ComponentPublicInstance>()
 export const homeDialogPages: UniDialogPage[] = []
 
-export class UniBasePageImpl extends EventBus implements UniBasePage {
+export class UniBasePageImpl implements UniBasePage {
   route: string
-  options: Map<string, string | null>
+  options: UTSJSONObject
   getParentPage: () => UniPage | null = () => null
   getDialogPages(): UniDialogPage[] {
     return []
   }
-  constructor({
-    route,
-    options,
-  }: {
-    route: string
-    options: Map<string, string | null>
-  }) {
-    super()
+  constructor({ route, options }: { route: string; options: UTSJSONObject }) {
     this.route = route
     this.options = options
   }
@@ -103,7 +94,7 @@ export class UniPageImpl extends UniBasePageImpl implements UniPage {
     vm,
   }: {
     route: string
-    options: Map<string, string | null>
+    options: UTSJSONObject
     vm: ComponentPublicInstance
   }) {
     super({ route, options })
@@ -135,7 +126,7 @@ export class UniDialogPageImpl
     $disableEscBack = false,
   }: {
     route: string
-    options: Map<string, string | null>
+    options: UTSJSONObject
     $component: any
     getParentPage: () => UniPage | null
     $disableEscBack?: boolean
@@ -301,9 +292,7 @@ export function initPage(vm: ComponentPublicInstance) {
     if (pageInstance?.attrs.type !== 'dialog') {
       const uniPage = new UniPageImpl({
         route: route?.path || '',
-        options: new Map(
-          Object.entries((route?.query as Record<string, any | null>) || {})
-        ),
+        options: route?.query || {},
         vm,
       })
       vm.$page = uniPage
