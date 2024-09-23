@@ -193,6 +193,14 @@ function genAppHarmonyUniModules(inputDir: string, utsPlugins: Set<string>) {
   const importCodes: string[] = []
   const extApiCodes: string[] = []
   const registerCodes: string[] = []
+
+  const projectDeps: {
+    moduleSpecifier: string
+    plugin: string
+    source: 'local' | 'ohpm'
+    version?: string
+  }[] = []
+
   utsPlugins.forEach((plugin) => {
     const injects = parseUniExtApi(
       path.resolve(uniModulesDir, plugin),
@@ -220,17 +228,15 @@ function genAppHarmonyUniModules(inputDir: string, utsPlugins: Set<string>) {
         `uni.registerUTSPlugin('uni_modules/${plugin}', ${ident})`
       )
     }
+    projectDeps.push({
+      moduleSpecifier: hamonyPackageName,
+      plugin,
+      source: 'local',
+    })
   })
 
   const relatedProviders = getRelatedProviders(inputDir)
   const relatedModules = getRelatedModules(inputDir)
-
-  const projectDeps: {
-    moduleSpecifier: string
-    plugin: string
-    source: 'local' | 'ohpm'
-    version?: string
-  }[] = []
 
   relatedModules.forEach((module) => {
     const harmonyModuleName = `@uni_modules/${module.toLowerCase()}`
@@ -300,6 +306,7 @@ function genAppHarmonyUniModules(inputDir: string, utsPlugins: Set<string>) {
       moduleSpecifier: provider.moduleSpecifier,
       plugin: provider.plugin,
       source: provider.source as 'local' | 'ohpm',
+      version: provider.version,
     })
     const className = formatExtApiProviderName(provider.service, provider.name)
     importProviderCodes.push(
@@ -339,7 +346,6 @@ function initUniExtApi() {
   const dependencies: Record<string, string> = {}
   const modules: { name: string; srcPath: string }[] = []
   projectDeps.forEach((dep) => {
-    // TODO 依赖版本绑定编译器版本
     if (dep.source === 'local') {
       const depPath = './uni_modules/' + dep.plugin
       dependencies[dep.moduleSpecifier] = depPath
@@ -351,7 +357,9 @@ function initUniExtApi() {
         srcPath: depPath,
       })
     } else {
-      dependencies[dep.moduleSpecifier] = '*'
+      if (!dependencies[dep.moduleSpecifier]) {
+        dependencies[dep.moduleSpecifier] = dep.version!
+      }
     }
   })
   // TODO 写入到用户项目的oh-package.json5、build-profile.json5内
