@@ -6,7 +6,7 @@ var __publicField = (obj, key, value) => {
 };
 import { withModifiers, createVNode, getCurrentInstance, ref, defineComponent, openBlock, createElementBlock, onMounted, provide, computed, watch, onUnmounted, inject, onBeforeUnmount, mergeProps, reactive, injectHook, nextTick, onActivated, onBeforeMount, withDirectives, vShow, shallowRef, watchEffect, isVNode, Fragment, markRaw, Comment, h, createTextVNode, isReactive, Transition, createApp, createBlock, onBeforeActivate, onBeforeDeactivate, renderList, effectScope, withCtx, KeepAlive, resolveDynamicComponent, createElementVNode, normalizeStyle, renderSlot } from "vue";
 import { isArray, isString, extend, remove, stringifyStyle, parseStringStyle, isPlainObject as isPlainObject$1, isFunction, capitalize, camelize, hasOwn, isObject, toRawType, makeMap as makeMap$1, isPromise, hyphenate, invokeArrayFns as invokeArrayFns$1 } from "@vue/shared";
-import { once, UNI_STORAGE_LOCALE, I18N_JSON_DELIMITERS, Emitter, passive, initCustomDatasetOnce, resolveComponentInstance, normalizeStyles, addLeadingSlash, invokeArrayFns, removeLeadingSlash, resolveOwnerVm, resolveOwnerEl, ON_WXS_INVOKE_CALL_METHOD, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_SHOW, ON_HIDE, ON_PAGE_SCROLL, ON_REACH_BOTTOM, EventChannel, parseQuery, NAVBAR_HEIGHT, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, getLen, getCustomDataset, parseUrl, ON_UNLOAD, normalizeTitleColor, ON_REACH_BOTTOM_DISTANCE, SCHEME_RE, DATA_RE, LINEFEED, PRIMARY_COLOR, debounce, isUniLifecycleHook, decodedQuery, ON_LOAD, UniLifecycleHooks, invokeCreateErrorHandler, invokeCreateVueAppHook, ON_THEME_CHANGE, WEB_INVOKE_APPSERVICE, ON_WEB_INVOKE_APP_SERVICE, sortObject, OFF_THEME_CHANGE, updateElementStyle, ON_BACK_PRESS, addFont, ON_NAVIGATION_BAR_CHANGE, scrollTo, RESPONSIVE_MIN_WIDTH, formatDateTime, onCreateVueApp, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_PULL_DOWN_REFRESH } from "@dcloudio/uni-shared";
+import { once, UNI_STORAGE_LOCALE, I18N_JSON_DELIMITERS, Emitter, passive, initCustomDatasetOnce, resolveComponentInstance, normalizeStyles, addLeadingSlash, invokeArrayFns, removeLeadingSlash, resolveOwnerVm, resolveOwnerEl, ON_WXS_INVOKE_CALL_METHOD, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_SHOW, ON_HIDE, ON_PAGE_SCROLL, ON_REACH_BOTTOM, EventChannel, parseQuery, NAVBAR_HEIGHT, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, getLen, getCustomDataset, parseUrl, ON_UNLOAD, normalizeTitleColor, ON_REACH_BOTTOM_DISTANCE, SCHEME_RE, DATA_RE, LINEFEED, PRIMARY_COLOR, debounce, isUniLifecycleHook, decodedQuery, ON_LOAD, UniLifecycleHooks, invokeCreateErrorHandler, invokeCreateVueAppHook, ON_THEME_CHANGE, WEB_INVOKE_APPSERVICE, ON_WEB_INVOKE_APP_SERVICE, sortObject, OFF_THEME_CHANGE, updateElementStyle, ON_BACK_PRESS, addFont, ON_NAVIGATION_BAR_CHANGE, scrollTo, RESPONSIVE_MIN_WIDTH, formatDateTime, onCreateVueApp, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_PULL_DOWN_REFRESH, stringifyQuery as stringifyQuery$1 } from "@dcloudio/uni-shared";
 import { onCreateVueApp as onCreateVueApp2 } from "@dcloudio/uni-shared";
 import { useRoute, isNavigationFailure, createRouter, createWebHistory, createWebHashHistory, useRouter, RouterView } from "vue-router";
 import { initVueI18n, isI18nStr, LOCALE_EN, LOCALE_ES, LOCALE_FR, LOCALE_ZH_HANS, LOCALE_ZH_HANT } from "@dcloudio/uni-i18n";
@@ -229,12 +229,32 @@ class UTSType {
   }
 }
 const OriginalJSON = JSON;
+function createUTSJSONObject(obj) {
+  const result = new UTSJSONObject({});
+  for (const key in obj) {
+    const value = obj[key];
+    if (isPlainObject(value)) {
+      result[key] = createUTSJSONObject(value);
+    } else if (getType$1(value) === "array") {
+      result[key] = value.map((item) => {
+        if (isPlainObject(item)) {
+          return createUTSJSONObject(item);
+        } else {
+          return item;
+        }
+      });
+    } else {
+      result[key] = value;
+    }
+  }
+  return result;
+}
 function parseObjectOrArray(object, utsType) {
   const objectType = getType$1(object);
   if (object === null || objectType !== "object" && objectType !== "array") {
     return object;
   }
-  if (utsType || utsType === UTSJSONObject) {
+  if (utsType && utsType !== UTSJSONObject) {
     try {
       return new utsType(object, void 0, true);
     } catch (error) {
@@ -247,7 +267,7 @@ function parseObjectOrArray(object, utsType) {
       return parseObjectOrArray(value);
     });
   } else if (objectType === "object") {
-    return new UTSJSONObject(object);
+    return createUTSJSONObject(object);
   }
   return object;
 }
@@ -410,21 +430,6 @@ function initUTSJSONObjectProperties(obj) {
   }
   Object.defineProperties(obj, propertyDescriptorMap);
 }
-function setUTSJSONObjectValue(obj, key, value) {
-  if (isPlainObject(value)) {
-    obj[key] = new UTSJSONObject$1(value);
-  } else if (getType$1(value) === "array") {
-    obj[key] = value.map((item) => {
-      if (isPlainObject(item)) {
-        return new UTSJSONObject$1(item);
-      } else {
-        return item;
-      }
-    });
-  } else {
-    obj[key] = value;
-  }
-}
 let UTSJSONObject$1 = class UTSJSONObject2 {
   static keys(obj) {
     return Object.keys(obj);
@@ -441,13 +446,12 @@ let UTSJSONObject$1 = class UTSJSONObject2 {
   constructor(content = {}) {
     if (content instanceof Map) {
       content.forEach((value, key) => {
-        setUTSJSONObjectValue(this, key, value);
+        this[key] = value;
       });
     } else {
       for (const key in content) {
         if (Object.prototype.hasOwnProperty.call(content, key)) {
-          const value = content[key];
-          setUTSJSONObjectValue(this, key, value);
+          this[key] = content[key];
         }
       }
     }
@@ -4370,7 +4374,7 @@ const OffProtocol = [
   },
   {
     name: "callback",
-    type: Function
+    type: [Function, Number]
   }
 ];
 const API_EMIT = "$emit";
@@ -4386,10 +4390,10 @@ class EventBus {
     this.$emitter = new Emitter();
   }
   on(name, callback) {
-    this.$emitter.on(name, callback);
+    return this.$emitter.on(name, callback);
   }
   once(name, callback) {
-    this.$emitter.once(name, callback);
+    return this.$emitter.once(name, callback);
   }
   off(name, callback) {
     if (!name) {
@@ -4406,16 +4410,20 @@ const eventBus = new EventBus();
 const $on = /* @__PURE__ */ defineSyncApi(
   API_ON,
   (name, callback) => {
-    eventBus.on(name, callback);
-    return () => eventBus.off(name, callback);
+    const id2 = eventBus.on(name, callback);
+    {
+      return id2;
+    }
   },
   OnProtocol
 );
 const $once = /* @__PURE__ */ defineSyncApi(
   API_ONCE,
   (name, callback) => {
-    eventBus.once(name, callback);
-    return () => eventBus.off(name, callback);
+    const id2 = eventBus.once(name, callback);
+    {
+      return id2;
+    }
   },
   OnceProtocol
 );
@@ -8249,12 +8257,8 @@ const setRootFontSize = (rootFontSize) => {
 const SEP = "$$";
 const currentPagesMap = /* @__PURE__ */ new Map();
 const homeDialogPages = [];
-class UniBasePageImpl extends EventBus {
-  constructor({
-    route,
-    options
-  }) {
-    super();
+class UniBasePageImpl {
+  constructor({ route, options }) {
     this.getParentPage = () => null;
     this.route = route;
     this.options = options;
@@ -8434,9 +8438,7 @@ function initPage(vm) {
     if ((pageInstance == null ? void 0 : pageInstance.attrs.type) !== "dialog") {
       const uniPage = new UniPageImpl({
         route: (route == null ? void 0 : route.path) || "",
-        options: new Map(
-          Object.entries((route == null ? void 0 : route.query) || {})
-        ),
+        options: (route == null ? void 0 : route.query) || {},
         vm
       });
       vm.$page = uniPage;
@@ -18882,7 +18884,7 @@ const AsyncErrorComponent = /* @__PURE__ */ defineSystemComponent({
 let appVm;
 let $uniApp;
 {
-  class UniAppImpl extends EventBus {
+  class UniAppImpl {
     get vm() {
       return appVm;
     }
@@ -25534,7 +25536,7 @@ const openDialogPage = (options) => {
   });
   const dialogPage = new UniDialogPageImpl({
     route: path,
-    options: new Map(Object.entries(query)),
+    options: query,
     $component: targetRoute.component,
     getParentPage: () => null,
     $disableEscBack: options.disableEscBack
@@ -28234,17 +28236,15 @@ function createDialogPageVNode(dialogPages) {
               left: 0
             },
             type: "dialog",
-            route: buildUrl(dialogPage.route, dialogPage.options)
+            route: `${dialogPage.route}${stringifyQuery$1(
+              dialogPage.options
+            )}`
           },
           null
         )
       );
     })
   );
-}
-function buildUrl(path, query) {
-  const queryString = Array.from(query.entries()).map(([key, value]) => `${key}=${value}`).join("&");
-  return queryString ? `${path}?${queryString}` : path;
 }
 export {
   $emit,

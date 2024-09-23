@@ -224,12 +224,32 @@ class UTSType {
   }
 }
 const OriginalJSON = JSON;
+function createUTSJSONObject(obj) {
+  const result = new UTSJSONObject({});
+  for (const key in obj) {
+    const value = obj[key];
+    if (isPlainObject(value)) {
+      result[key] = createUTSJSONObject(value);
+    } else if (getType$1(value) === "array") {
+      result[key] = value.map((item) => {
+        if (isPlainObject(item)) {
+          return createUTSJSONObject(item);
+        } else {
+          return item;
+        }
+      });
+    } else {
+      result[key] = value;
+    }
+  }
+  return result;
+}
 function parseObjectOrArray(object, utsType) {
   const objectType = getType$1(object);
   if (object === null || objectType !== "object" && objectType !== "array") {
     return object;
   }
-  if (utsType || utsType === UTSJSONObject) {
+  if (utsType && utsType !== UTSJSONObject) {
     try {
       return new utsType(object, void 0, true);
     } catch (error) {
@@ -242,7 +262,7 @@ function parseObjectOrArray(object, utsType) {
       return parseObjectOrArray(value);
     });
   } else if (objectType === "object") {
-    return new UTSJSONObject(object);
+    return createUTSJSONObject(object);
   }
   return object;
 }
@@ -405,21 +425,6 @@ function initUTSJSONObjectProperties(obj) {
   }
   Object.defineProperties(obj, propertyDescriptorMap);
 }
-function setUTSJSONObjectValue(obj, key, value) {
-  if (isPlainObject(value)) {
-    obj[key] = new UTSJSONObject$1(value);
-  } else if (getType$1(value) === "array") {
-    obj[key] = value.map((item) => {
-      if (isPlainObject(item)) {
-        return new UTSJSONObject$1(item);
-      } else {
-        return item;
-      }
-    });
-  } else {
-    obj[key] = value;
-  }
-}
 let UTSJSONObject$1 = class UTSJSONObject2 {
   static keys(obj) {
     return Object.keys(obj);
@@ -436,13 +441,12 @@ let UTSJSONObject$1 = class UTSJSONObject2 {
   constructor(content = {}) {
     if (content instanceof Map) {
       content.forEach((value, key) => {
-        setUTSJSONObjectValue(this, key, value);
+        this[key] = value;
       });
     } else {
       for (const key in content) {
         if (Object.prototype.hasOwnProperty.call(content, key)) {
-          const value = content[key];
-          setUTSJSONObjectValue(this, key, value);
+          this[key] = content[key];
         }
       }
     }
@@ -2534,28 +2538,6 @@ function defineAsyncApi(name, fn, protocol, options) {
     wrapperAsyncApi(name, fn, process.env.NODE_ENV !== "production" ? protocol : void 0, options)
   );
 }
-class EventBus {
-  constructor() {
-    this.$emitter = new uniShared.Emitter();
-  }
-  on(name, callback) {
-    this.$emitter.on(name, callback);
-  }
-  once(name, callback) {
-    this.$emitter.once(name, callback);
-  }
-  off(name, callback) {
-    if (!name) {
-      this.$emitter.e = {};
-      return;
-    }
-    this.$emitter.off(name, callback);
-  }
-  emit(name, ...args) {
-    this.$emitter.emit(name, ...args);
-  }
-}
-new EventBus();
 const API_ON_TAB_BAR_MID_BUTTON_TAP = "onTabBarMidButtonTap";
 const API_GET_LOCALE = "getLocale";
 const getLocale = /* @__PURE__ */ defineSyncApi(
@@ -2852,12 +2834,8 @@ function getPageInstanceByChild(child) {
 const SEP = "$$";
 const currentPagesMap = /* @__PURE__ */ new Map();
 const homeDialogPages = [];
-class UniBasePageImpl extends EventBus {
-  constructor({
-    route,
-    options
-  }) {
-    super();
+class UniBasePageImpl {
+  constructor({ route, options }) {
     this.getParentPage = () => null;
     this.route = route;
     this.options = options;
@@ -2996,9 +2974,7 @@ function initPage(vm) {
     if ((pageInstance == null ? void 0 : pageInstance.attrs.type) !== "dialog") {
       const uniPage = new UniPageImpl({
         route: (route == null ? void 0 : route.path) || "",
-        options: new Map(
-          Object.entries((route == null ? void 0 : route.query) || {})
-        ),
+        options: (route == null ? void 0 : route.query) || {},
         vm
       });
       vm.$page = uniPage;
@@ -9127,7 +9103,7 @@ const AsyncErrorComponent = /* @__PURE__ */ defineSystemComponent({
 let appVm;
 let $uniApp;
 {
-  class UniAppImpl extends EventBus {
+  class UniAppImpl {
     get vm() {
       return appVm;
     }
@@ -13929,17 +13905,15 @@ function createDialogPageVNode(dialogPages) {
               left: 0
             },
             type: "dialog",
-            route: buildUrl(dialogPage.route, dialogPage.options)
+            route: `${dialogPage.route}${uniShared.stringifyQuery(
+              dialogPage.options
+            )}`
           },
           null
         )
       );
     })
   );
-}
-function buildUrl(path, query) {
-  const queryString = Array.from(query.entries()).map(([key, value]) => `${key}=${value}`).join("&");
-  return queryString ? `${path}?${queryString}` : path;
 }
 exports.Ad = index$6;
 exports.AdContentPage = index$5;

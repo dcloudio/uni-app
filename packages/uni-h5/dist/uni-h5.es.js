@@ -3293,7 +3293,7 @@ const OffProtocol = [
   },
   {
     name: "callback",
-    type: Function
+    type: [Function, Number]
   }
 ];
 const API_EMIT = "$emit";
@@ -3309,10 +3309,10 @@ class EventBus {
     this.$emitter = new Emitter();
   }
   on(name, callback) {
-    this.$emitter.on(name, callback);
+    return this.$emitter.on(name, callback);
   }
   once(name, callback) {
-    this.$emitter.once(name, callback);
+    return this.$emitter.once(name, callback);
   }
   off(name, callback) {
     if (!name) {
