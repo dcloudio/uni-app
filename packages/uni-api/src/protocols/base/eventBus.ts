@@ -19,17 +19,18 @@ export const OnceProtocol = OnProtocol
 
 export const API_OFF = '$off'
 export type API_TYPE_OFF = typeof uni.$off
-export const OffProtocol: ProtocolOptions<String | Function | Array<String>>[] =
-  [
-    {
-      name: 'event',
-      type: [String, Array],
-    },
-    {
-      name: 'callback',
-      type: Function || Number,
-    },
-  ]
+export const OffProtocol: ProtocolOptions<
+  String | Function | Number | Array<String>
+>[] = [
+  {
+    name: 'event',
+    type: [String, Array],
+  },
+  {
+    name: 'callback',
+    type: [Function, Number],
+  },
+]
 
 export const API_EMIT = '$emit'
 export type API_TYPE_EMIT = typeof uni.$emit
