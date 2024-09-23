@@ -43,7 +43,6 @@ import { UTSHarmony as UTSHarmony6 } from "@dcloudio/uni-mp-sdk";
 import { UTSHarmony as UTSHarmony7, getWindowInfo as internalGetWindowInfo, getDeviceId as getDeviceId1 } from "@dcloudio/uni-mp-sdk";
 import { UTSHarmony as UTSHarmony8 } from "@dcloudio/uni-mp-sdk";
 import { UTSHarmony as UTSHarmony9 } from "@dcloudio/uni-mp-sdk";
-import { UTSHarmony } from "@dcloudio/uni-mp-sdk";
 import { UTSObject, UTSJSONObject } from "@dcloudio/uts-harmony";
 import { UniError, IUniError, UniProvider, string, AsyncApiSuccessResult, AsyncApiResult, ApiOptions, ProtocolOptions, defineAsyncApi, ApiExecutor, ApiError, defineSyncApi, getUniProviders, defineTaskApi, getUniProvider } from "@dcloudio/uni-app-harmony";
 import Want1 from '@ohos.app.ability.Want';
@@ -81,15 +80,16 @@ import fs4 from '@ohos.file.fs';
 import fs5 from '@ohos.file.fs';
 import { geoLocationManager } from '@kit.LocationKit';
 import { getAbilityContext as getAbilityContext1 } from "@dcloudio/uni-mp-sdk";
-import { getAbilityContext as getAbilityContext10, getCurrentMP as getCurrentMP3 } from "@dcloudio/uni-mp-sdk";
-import { getAbilityContext as getAbilityContext3 } from "@dcloudio/uni-mp-sdk";
-import { getAbilityContext as getAbilityContext4, getCurrentWindow as getCurrentWindow2 } from "@dcloudio/uni-mp-sdk";
-import { getAbilityContext as getAbilityContext5 } from "@dcloudio/uni-mp-sdk";
+import { getAbilityContext as getAbilityContext10 } from "@dcloudio/uni-mp-sdk";
+import { getAbilityContext as getAbilityContext11, getCurrentMP as getCurrentMP3 } from "@dcloudio/uni-mp-sdk";
+import { getAbilityContext as getAbilityContext2 } from "@dcloudio/uni-mp-sdk";
+import { getAbilityContext as getAbilityContext4 } from "@dcloudio/uni-mp-sdk";
+import { getAbilityContext as getAbilityContext5, getCurrentWindow as getCurrentWindow2 } from "@dcloudio/uni-mp-sdk";
 import { getAbilityContext as getAbilityContext6 } from "@dcloudio/uni-mp-sdk";
 import { getAbilityContext as getAbilityContext7 } from "@dcloudio/uni-mp-sdk";
 import { getAbilityContext as getAbilityContext8 } from "@dcloudio/uni-mp-sdk";
 import { getAbilityContext as getAbilityContext9 } from "@dcloudio/uni-mp-sdk";
-import { getAbilityContext } from "@dcloudio/uni-mp-sdk";
+import { getAbilityContext, UTSHarmony } from "@dcloudio/uni-mp-sdk";
 import { getCurrentWindow as getCurrentWindow1 } from "@dcloudio/uni-mp-sdk";
 import { getCurrentWindow as getCurrentWindow3 } from "@dcloudio/uni-mp-sdk";
 import { getCurrentWindow as getCurrentWindow4 } from "@dcloudio/uni-mp-sdk";
@@ -105,7 +105,7 @@ import { getRealPath as getRealPath1 } from "@dcloudio/uni-mp-sdk";
 import { getRealPath as getRealPath2, onNativePageReady as onNativePageReady1 } from "@dcloudio/uni-mp-sdk";
 import { getRealPath as getRealPath3 } from "@dcloudio/uni-mp-sdk";
 import { getRealPath as getRealPath4, Emitter as Emitter3, getCurrentMP as getCurrentMP1 } from "@dcloudio/uni-mp-sdk";
-import { getResourceStr, getAbilityContext as getAbilityContext2 } from "@dcloudio/uni-mp-sdk";
+import { getResourceStr, getAbilityContext as getAbilityContext3 } from "@dcloudio/uni-mp-sdk";
 import { getTabBar } from "@dcloudio/uni-mp-sdk";
 import harmonyUrl from '@ohos.url';
 import harmonyUrl1 from '@ohos.url';
@@ -328,11 +328,10 @@ interface InnerAudioContext {
     offSeeked(callback: (result: Object) => void): void;
 }
 type $OnCallback = Function;
-type $On = (eventName: string, callback: $OnCallback) => void;
+type $On = (eventName: string, callback: $OnCallback) => number;
 type $OnceCallback = Function;
-type $Once = (eventName: string, callback: $OnceCallback) => void;
-type $OffCallback = Function;
-type $Off = (eventName: string, callback?: $OffCallback | null) => void;
+type $Once = (eventName: string, callback: $OnceCallback) => number;
+type $Off = (eventName: string, callback?: Object | null) => void;
 type $Emit = (eventName: string, args: Object | null) => void;
 interface IUniEventEmitter {
     on: (eventName: string, callback: Function) => void;
@@ -2232,89 +2231,123 @@ export function initUniExtApi() {
                 const photoFilePath = args.photoFilePath, _args_nickName = args.nickName, nickName = _args_nickName == null ? '' : _args_nickName, _args_lastName = args.lastName, lastName = _args_lastName == null ? '' : _args_lastName, _args_middleName = args.middleName, middleName = _args_middleName == null ? '' : _args_middleName, _args_firstName = args.firstName, firstName = _args_firstName == null ? '' : _args_firstName, _args_remark = args.remark, remark = _args_remark == null ? '' : _args_remark, _args_mobilePhoneNumber = args.mobilePhoneNumber, mobilePhoneNumber = _args_mobilePhoneNumber == null ? '' : _args_mobilePhoneNumber, _args_addressCountry = args.addressCountry, addressCountry = _args_addressCountry == null ? '' : _args_addressCountry, _args_addressState = args.addressState, addressState = _args_addressState == null ? '' : _args_addressState, _args_addressCity = args.addressCity, addressCity = _args_addressCity == null ? '' : _args_addressCity, _args_addressStreet = args.addressStreet, addressStreet = _args_addressStreet == null ? '' : _args_addressStreet, _args_addressPostalCode = args.addressPostalCode, addressPostalCode = _args_addressPostalCode == null ? '' : _args_addressPostalCode, _args_organization = args.organization, organization = _args_organization == null ? '' : _args_organization, _args_url = args.url, url = _args_url == null ? '' : _args_url, _args_workPhoneNumber = args.workPhoneNumber, workPhoneNumber = _args_workPhoneNumber == null ? '' : _args_workPhoneNumber, _args_workFaxNumber = args.workFaxNumber, workFaxNumber = _args_workFaxNumber == null ? '' : _args_workFaxNumber, _args_hostNumber = args.hostNumber, hostNumber = _args_hostNumber == null ? '' : _args_hostNumber, _args_email = args.email, email = _args_email == null ? '' : _args_email, _args_title = args.title, title = _args_title == null ? '' : _args_title, _args_workAddressCountry = args.workAddressCountry, workAddressCountry = _args_workAddressCountry == null ? '' : _args_workAddressCountry, _args_workAddressState = args.workAddressState, workAddressState = _args_workAddressState == null ? '' : _args_workAddressState, _args_workAddressCity = args.workAddressCity, workAddressCity = _args_workAddressCity == null ? '' : _args_workAddressCity, _args_workAddressStreet = args.workAddressStreet, workAddressStreet = _args_workAddressStreet == null ? '' : _args_workAddressStreet, workAddressPostalCode = args.workAddressPostalCode, _args_homeFaxNumber = args.homeFaxNumber, homeFaxNumber = _args_homeFaxNumber == null ? '' : _args_homeFaxNumber, _args_homePhoneNumber = args.homePhoneNumber, homePhoneNumber = _args_homePhoneNumber == null ? '' : _args_homePhoneNumber, _args_homeAddressCountry = args.homeAddressCountry, homeAddressCountry = _args_homeAddressCountry == null ? '' : _args_homeAddressCountry, _args_homeAddressState = args.homeAddressState, homeAddressState = _args_homeAddressState == null ? '' : _args_homeAddressState, _args_homeAddressCity = args.homeAddressCity, homeAddressCity = _args_homeAddressCity == null ? '' : _args_homeAddressCity, _args_homeAddressStreet = args.homeAddressStreet, homeAddressStreet = _args_homeAddressStreet == null ? '' : _args_homeAddressStreet, _args_homeAddressPostalCode = args.homeAddressPostalCode, homeAddressPostalCode = _args_homeAddressPostalCode == null ? '' : _args_homeAddressPostalCode;
                 const contactInfo: contact.Contact = {
                     name: {
-                        familyName: lastName!,
-                        middleName: middleName!,
                         givenName: firstName!,
                         fullName: lastName! + middleName! + firstName!
-                    },
-                    nickName: {
+                    }
+                };
+                if (nickName) {
+                    contactInfo.nickName = {
                         nickName: nickName!
-                    },
-                    emails: [
+                    } as contact.NickName;
+                }
+                if (lastName) {
+                    contactInfo.name!.familyName = lastName;
+                }
+                if (middleName) {
+                    contactInfo.name!.middleName = middleName;
+                }
+                if (email) {
+                    contactInfo.emails = [
                         {
                             email: email!,
                             displayName: '邮箱'
-                        }
-                    ],
-                    phoneNumbers: [
+                        } as contact.Email
+                    ];
+                }
+                if (photoFilePath) {
+                    contactInfo.portrait = {
+                        uri: photoFilePath
+                    } as contact.Portrait;
+                }
+                if (url) {
+                    contactInfo.websites = [
                         {
-                            phoneNumber: homePhoneNumber!,
-                            labelId: contact.PhoneNumber.NUM_HOME
-                        },
-                        {
-                            phoneNumber: mobilePhoneNumber!,
-                            labelId: contact.PhoneNumber.NUM_MOBILE
-                        },
-                        {
-                            phoneNumber: homeFaxNumber!,
-                            labelId: contact.PhoneNumber.NUM_FAX_HOME
-                        },
-                        {
-                            phoneNumber: workFaxNumber!,
-                            labelId: contact.PhoneNumber.NUM_FAX_WORK
-                        },
-                        {
-                            phoneNumber: workPhoneNumber!,
-                            labelId: contact.PhoneNumber.NUM_WORK
-                        },
-                        {
-                            phoneNumber: hostNumber!,
-                            labelId: contact.PhoneNumber.NUM_COMPANY_MAIN
-                        }
-                    ],
-                    portrait: {
-                        uri: photoFilePath!
-                    },
-                    postalAddresses: [
-                        {
-                            city: homeAddressCity!,
-                            country: homeAddressCountry!,
-                            postcode: homeAddressPostalCode!,
-                            street: homeAddressStreet!,
-                            postalAddress: homeAddressCountry! + homeAddressState! + homeAddressCity + homeAddressStreet,
-                            labelId: contact.PostalAddress.ADDR_HOME
-                        },
-                        {
-                            city: workAddressCity!,
-                            country: workAddressCountry!,
-                            postcode: workAddressPostalCode!,
-                            street: workAddressStreet!,
-                            postalAddress: workAddressCountry! + workAddressState! + workAddressCity + workAddressStreet,
-                            labelId: contact.PostalAddress.ADDR_WORK
-                        },
-                        {
-                            city: addressCity!,
-                            country: addressCountry!,
-                            postcode: addressPostalCode!,
-                            street: addressStreet!,
-                            postalAddress: addressCountry! + addressState! + addressCity + addressStreet,
-                            labelId: contact.PostalAddress.CUSTOM_LABEL
-                        }
-                    ],
-                    websites: [
-                        {
-                            website: url!
-                        }
-                    ],
-                    note: {
-                        noteContent: remark!
-                    },
-                    organization: {
-                        name: organization!,
+                            website: url
+                        } as contact.Website
+                    ];
+                }
+                if (remark) {
+                    contactInfo.note = {
+                        noteContent: remark
+                    } as contact.Note;
+                }
+                if (organization) {
+                    contactInfo.organization = {
+                        name: organization,
                         title: title!
-                    }
-                };
-                contact.addContact(getContext(), contactInfo).then((contactId)=>{
+                    } as contact.Organization;
+                }
+                const phoneNumbers: contact.PhoneNumber[] = [];
+                if (homePhoneNumber) {
+                    phoneNumbers.push({
+                        phoneNumber: homePhoneNumber!,
+                        labelId: contact.PhoneNumber.NUM_HOME
+                    } as contact.PhoneNumber);
+                }
+                if (mobilePhoneNumber) {
+                    phoneNumbers.push({
+                        phoneNumber: mobilePhoneNumber!,
+                        labelId: contact.PhoneNumber.NUM_MOBILE
+                    } as contact.PhoneNumber);
+                }
+                if (homeFaxNumber) {
+                    phoneNumbers.push({
+                        phoneNumber: homeFaxNumber!,
+                        labelId: contact.PhoneNumber.NUM_FAX_HOME
+                    } as contact.PhoneNumber);
+                }
+                if (workFaxNumber) {
+                    phoneNumbers.push({
+                        phoneNumber: workFaxNumber!,
+                        labelId: contact.PhoneNumber.NUM_FAX_WORK
+                    } as contact.PhoneNumber);
+                }
+                if (workPhoneNumber) {
+                    phoneNumbers.push({
+                        phoneNumber: workPhoneNumber!,
+                        labelId: contact.PhoneNumber.NUM_WORK
+                    } as contact.PhoneNumber);
+                }
+                if (hostNumber) {
+                    phoneNumbers.push({
+                        phoneNumber: hostNumber!,
+                        labelId: contact.PhoneNumber.NUM_COMPANY_MAIN
+                    } as contact.PhoneNumber);
+                }
+                if (phoneNumbers.length) contactInfo.phoneNumbers = phoneNumbers;
+                const postalAddresses: contact.PostalAddress[] = [];
+                if (homeAddressCity || homeAddressCountry || homeAddressPostalCode || homeAddressStreet) {
+                    postalAddresses.push({
+                        city: homeAddressCity!,
+                        country: homeAddressCountry!,
+                        postcode: homeAddressPostalCode!,
+                        street: homeAddressStreet!,
+                        postalAddress: `${homeAddressCountry!}${homeAddressState!}${homeAddressCity!}${homeAddressStreet!}`,
+                        labelId: contact.PostalAddress.ADDR_HOME
+                    } as contact.PostalAddress);
+                }
+                if (workAddressCity || workAddressCountry || workAddressPostalCode || workAddressStreet) {
+                    postalAddresses.push({
+                        city: workAddressCity!,
+                        country: workAddressCountry!,
+                        postcode: workAddressPostalCode!,
+                        street: workAddressStreet!,
+                        postalAddress: `${workAddressCountry!}${workAddressState!}${workAddressCity!}${workAddressStreet!}`,
+                        labelId: contact.PostalAddress.ADDR_WORK
+                    } as contact.PostalAddress);
+                }
+                if (addressCity || addressCountry || addressPostalCode || addressStreet) {
+                    postalAddresses.push({
+                        city: addressCity!,
+                        country: addressCountry!,
+                        postcode: addressPostalCode!,
+                        street: addressStreet!,
+                        postalAddress: `${addressCountry!}${addressState!}${addressCity!}${addressStreet!}`,
+                        labelId: contact.PostalAddress.CUSTOM_LABEL
+                    } as contact.PostalAddress);
+                }
+                if (postalAddresses.length) contactInfo.postalAddresses = postalAddresses;
+                contact.addContact(getAbilityContext()!, contactInfo).then((contactId)=>{
                     executor.resolve(contactId);
                 }).catch((err: BusinessError)=>{
                     executor.reject(err.message);
@@ -3097,11 +3130,11 @@ export function initUniExtApi() {
     const API_$_OFF = '$off';
     const API_$_EMIT = '$emit';
     const emitter: IUniEventEmitter = new Emitter() as IUniEventEmitter;
-    const $on: $On = defineSyncApi<void>(API_$_ON, (eventName: string, callback: Function)=>{
-        emitter.on(eventName, callback);
+    const $on: $On = defineSyncApi<number>(API_$_ON, (eventName: string, callback: Function)=>{
+        return emitter.on(eventName, callback);
     }) as $On;
-    const $once: $Once = defineSyncApi<void>(API_$_ONCE, (eventName: string, callback: Function)=>{
-        emitter.once(eventName, callback);
+    const $once: $Once = defineSyncApi<number>(API_$_ONCE, (eventName: string, callback: Function)=>{
+        return emitter.once(eventName, callback);
     }) as $Once;
     const $off: $Off = defineSyncApi<void>(API_$_OFF, (eventName: string, callback: Function)=>{
         emitter.off(eventName, callback);
@@ -3548,7 +3581,7 @@ export function initUniExtApi() {
     const audioPlayerCallback = new AudioPlayerCallback1();
     let AV_SESSION: avSession.AVSession | null = null;
     const createAVSession = ()=>{
-        avSession.createAVSession(getAbilityContext()!, 'player', 'audio').then((data)=>{
+        avSession.createAVSession(getAbilityContext1()!, 'player', 'audio').then((data)=>{
             AV_SESSION = data;
         });
     };
@@ -3560,7 +3593,7 @@ export function initUniExtApi() {
         AV_SESSION = null;
     };
     const startBackgroundTask = ()=>{
-        const abilityInfo: TempAbilityInfo = getAbilityContext()!.abilityInfo;
+        const abilityInfo: TempAbilityInfo = getAbilityContext1()!.abilityInfo;
         const wantAgentInfo: wantAgent.WantAgentInfo = {
             wants: [
                 {
@@ -3575,7 +3608,7 @@ export function initUniExtApi() {
             ]
         };
         wantAgent.getWantAgent(wantAgentInfo).then((wantAgentObj)=>{
-            return backgroundTaskManager.startBackgroundRunning(getAbilityContext()!, backgroundTaskManager.BackgroundMode.AUDIO_PLAYBACK, wantAgentObj);
+            return backgroundTaskManager.startBackgroundRunning(getAbilityContext1()!, backgroundTaskManager.BackgroundMode.AUDIO_PLAYBACK, wantAgentObj);
         }).then(()=>{
             console.debug('[getBackgroundAudioManager]  start bg operation succeeded');
         }).catch((err: BusinessError2)=>{
@@ -3583,7 +3616,7 @@ export function initUniExtApi() {
         });
     };
     const stopBackgroundTask = ()=>{
-        backgroundTaskManager.stopBackgroundRunning(getAbilityContext()!).then(()=>{
+        backgroundTaskManager.stopBackgroundRunning(getAbilityContext1()!).then(()=>{
             console.debug('[getBackgroundAudioManager]  stop operation succeeded');
         }).catch((err: BusinessError2)=>{
             audioPlayerCallback.error(new AudioPlayerError1(err.message, err.code));
@@ -5312,7 +5345,7 @@ export function initUniExtApi() {
         let pickerProfile: cameraPicker.PickerProfile = {
             cameraPosition: getHMCameraPosition(cameraType)
         };
-        const res = await cameraPicker.pick(getAbilityContext1()!, [
+        const res = await cameraPicker.pick(getAbilityContext2()!, [
             cameraPicker.PickerMediaType.PHOTO
         ], pickerProfile);
         const file = fs2.openSync(res.resultUri, fs2.OpenMode.READ_ONLY);
@@ -5331,7 +5364,7 @@ export function initUniExtApi() {
             cameraPosition: getHMCameraPosition(args?.cameraType ?? 'back'),
             videoDuration: args?.videoDuration
         };
-        const res = await cameraPicker.pick(getAbilityContext1()!, [
+        const res = await cameraPicker.pick(getAbilityContext2()!, [
             cameraPicker.PickerMediaType.VIDEO
         ], pickerProfile);
         return _getVideoInfo(res.resultUri).then((getVideInfoRes)=>{
@@ -5566,7 +5599,7 @@ export function initUniExtApi() {
         });
     }) as ClosePreviewImage;
     const saveResource = async (src: Resource, dest: string)=>{
-        const context = getAbilityContext2() as common.UIAbilityContext;
+        const context = getAbilityContext3() as common.UIAbilityContext;
         const resourceManager = context.resourceManager;
         const srcPath: string = src.params?.[0] as string;
         const destFile = fs3.openSync(dest, fs3.OpenMode.WRITE_ONLY);
@@ -5583,7 +5616,7 @@ export function initUniExtApi() {
     };
     const saveMediaToAlbum = async (fromUri: string, type: 'image' | 'video'): Promise<string | ISaveMediaError> =>{
         const realPath = getResourceStr(fromUri) as string | Resource;
-        const context = getAbilityContext2() as common.UIAbilityContext;
+        const context = getAbilityContext3() as common.UIAbilityContext;
         let fileName = Date.now() + (type === 'image' ? '.png' : '.mp4');
         const isResource = typeof realPath !== 'string';
         if (isResource) {
@@ -5831,7 +5864,7 @@ export function initUniExtApi() {
         } else {
             try {
                 let documentSelectOptions = new picker.DocumentSelectOptions();
-                let documentPicker = new picker.DocumentViewPicker(getAbilityContext3()!);
+                let documentPicker = new picker.DocumentViewPicker(getAbilityContext4()!);
                 documentSelectOptions.selectMode = picker.DocumentSelectMode.FILE;
                 if (args.count) documentSelectOptions.maxSelectNumber = args.count;
                 if (args.extension) documentSelectOptions.fileSuffixFilters = args.extension;
@@ -5885,7 +5918,7 @@ export function initUniExtApi() {
                 videoDuration: args?.maxDuration ?? 10
             };
             const mediaTypes = getCameraPickerMediaTypes((args.mediaType ?? []) as UNI_MEDIA_TYPE[]);
-            const res = await cameraPicker1.pick(getAbilityContext4()!, mediaTypes, pickerProfile);
+            const res = await cameraPicker1.pick(getAbilityContext5()!, mediaTypes, pickerProfile);
             executor.resolve({
                 type: 'mix',
                 tempFiles: [
@@ -6027,7 +6060,7 @@ export function initUniExtApi() {
     };
     const compressVideo: CompressVideo = defineAsyncApi<CompressVideoOptions, CompressVideoSuccess>(API_COMPRESS_VIDEO, async (args: CompressVideoOptions, executor: ApiExecutor<CompressVideoSuccess>)=>{
         let videoCompressor = new VideoCompressor();
-        videoCompressor.compressVideo(getAbilityContext5()!, args.src, getQuality(args.quality!)).then((data: CompressorResponse): void =>{
+        videoCompressor.compressVideo(getAbilityContext6()!, args.src, getQuality(args.quality!)).then((data: CompressorResponse): void =>{
             if (data.code == CompressorResponseCode.SUCCESS) {
                 _getVideoInfo(data.outputPath).then((res)=>{
                     executor.resolve({
@@ -6951,7 +6984,7 @@ export function initUniExtApi() {
                 pushParams: bundleManager2.getBundleInfoForSelfSync(bundleManager2.BundleFlag.GET_BUNDLE_INFO_DEFAULT).name
             }
         } as Want;
-        const context = getAbilityContext6() as common1.UIAbilityContext;
+        const context = getAbilityContext7() as common1.UIAbilityContext;
         context.startAbility(want).then(()=>{
             exec.resolve({
                 errMsg: ''
@@ -6996,7 +7029,7 @@ export function initUniExtApi() {
             uri: uri,
             type: fileContentType as string
         };
-        const abilityContext = getAbilityContext7() as common2.UIAbilityContext;
+        const abilityContext = getAbilityContext8() as common2.UIAbilityContext;
         abilityContext.startAbility(want).then(()=>{
             exec.resolve({} as OpenDocumentSuccess);
         }, (err: Error)=>{
@@ -7507,7 +7540,7 @@ export function initUniExtApi() {
             enableMultiMode: true,
             enableAlbum: !options.onlyFromCamera
         };
-        scanBarcode.startScanForResult(getAbilityContext8()!, scanOptions, (err, data)=>{
+        scanBarcode.startScanForResult(getAbilityContext9()!, scanOptions, (err, data)=>{
             if (err) {
                 exec.reject(err.message);
                 return;
@@ -7551,7 +7584,7 @@ export function initUniExtApi() {
             shareData.addRecord(shareRecords[index]);
         }
         const shareController: systemShare.ShareController = new systemShare.ShareController(shareData);
-        shareController.show(getAbilityContext9() as common3.UIAbilityContext, {} as systemShare.ShareControllerOptions);
+        shareController.show(getAbilityContext10() as common3.UIAbilityContext, {} as systemShare.ShareControllerOptions);
         const onDismiss = ()=>{
             shareController.off('dismiss', onDismiss);
             exec.resolve({} as ShareWithSystemSuccess);
@@ -7587,7 +7620,7 @@ export function initUniExtApi() {
         if (stores.has(appId)) {
             return stores.get(appId)!;
         }
-        const store = dataPreferences.getPreferencesSync(getAbilityContext10() as common4.UIAbilityContext, {
+        const store = dataPreferences.getPreferencesSync(getAbilityContext11() as common4.UIAbilityContext, {
             name: `storage.${appId}`
         } as dataPreferences.Options);
         stores.set(appId, store);

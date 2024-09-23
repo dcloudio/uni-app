@@ -7992,13 +7992,15 @@ const E = function () {
     // (via https://github.com/lipsmack from https://github.com/scottcorgan/tiny-emitter/issues/3)
 };
 E.prototype = {
+    _id: 1,
     on: function (name, callback, ctx) {
         var e = this.e || (this.e = {});
         (e[name] || (e[name] = [])).push({
             fn: callback,
             ctx: ctx,
+            _id: this._id,
         });
-        return this;
+        return this._id++;
     },
     once: function (name, callback, ctx) {
         var self = this;
@@ -8019,13 +8021,15 @@ E.prototype = {
         }
         return this;
     },
-    off: function (name, callback) {
+    off: function (name, event) {
         var e = this.e || (this.e = {});
         var evts = e[name];
         var liveEvents = [];
-        if (evts && callback) {
+        if (evts && event) {
             for (var i = evts.length - 1; i >= 0; i--) {
-                if (evts[i].fn === callback || evts[i].fn._ === callback) {
+                if (evts[i].fn === event ||
+                    evts[i].fn._ === event ||
+                    evts[i]._id === event) {
                     evts.splice(i, 1);
                     break;
                 }
