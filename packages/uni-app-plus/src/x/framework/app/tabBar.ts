@@ -294,9 +294,11 @@ export function switchSelect(
 
   const pageStyle = (page.$page as UniPage).getPageStyle()
 
-  // 客户端处理 global
-  const pageOrientation = pageStyle['pageOrientation']
-  getPageManager().findPageById('tabBar')!.setPageStyle({ pageOrientation })
+  const pageOrientation =
+    pageStyle['pageOrientation'] ?? __uniConfig.globalStyle?.pageOrientation
+  if (pageOrientation) {
+    getPageManager().findPageById('tabBar')!.setPageStyle({ pageOrientation })
+  }
 
   // TODO use page show status
   if (shouldShow) {
