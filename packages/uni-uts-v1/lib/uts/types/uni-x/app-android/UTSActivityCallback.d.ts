@@ -256,27 +256,6 @@ declare class UniActivityCallback implements IUniActivityCallback {
    * }
    */
   onChildTitleChanged(params : UniActivityParams, childActivity : Activity, title : string) : void;
-  /**
-   * 对应原生 Activity [onBackPressed](https://developer.android.com/reference/android/app/Activity#onBackPressed()) 函数，注意第一个参数为自定义参数 UniActivityParams。
-   * 当用户尝试回退当前页面时调用，可用于自定义回退行为或拦截回退事件。
-   * @param {UniActivityParams} params 统一返回参数,包括页面路由地址与方法返回值
-   * @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/utsandroid.html#registerActivityCallback
-   * @uniPlatform {
-   *    "app": {
-   *        "android": {
-   *           "osVer": "5.0",
-   *  		     "uniVer": "x",
-   * 			     "unixVer": "4.18"
-   *        },
-   *        "ios": {
-   *           "osVer": "x",
-   *  		     "uniVer": "x",
-   * 			     "unixVer": "x"
-   *        }
-   *    }
-   * }
-   */
-  onBackPressed(params : UniActivityParams) : void;
 
   /**
    * 对应原生 Activity [onContextMenuClosed](https://developer.android.com/reference/android/app/Activity#onContextMenuClosed(android.view.Menu)) 函数，注意第一个参数为自定义参数 UniActivityParams。
@@ -616,28 +595,6 @@ declare class UniActivityCallback implements IUniActivityCallback {
    * }
    */
   onPreChildTitleChanged(params : UniActivityParams, childActivity : Activity, title : String) : void;
-
-  /**
-   * 对应原生 Activity [onBackPressed](https://developer.android.com/reference/android/app/Activity#onBackPressed()) 函数，
-   * 在super方法之前调用
-   * @param {UniActivityParams} params 统一返回参数，包括页面路由地址与方法返回值。
-   * @tutorial [注册活动回调](https://doc.dcloud.net.cn/uni-app-x/uts/utsandroid.html#registerActivityCallback) - 了解更多详细信息关于如何注册 Activity 的回调方法。
-   * @uniPlatform {
-   *    "app": {
-   *        "android": {
-   *           "osVer": "5.0",
-   *  		     "uniVer": "x",
-   * 			     "unixVer": "4.18"
-   *        },
-   *        "ios": {
-   *           "osVer": "x",
-   *  		     "uniVer": "x",
-   * 			     "unixVer": "x"
-   *        }
-   *    }
-   * }
-   */
-  onPreBackPressed(params : UniActivityParams) : void;
 
   /**
    * 对应原生 Activity [onContextMenuClosed](https://developer.android.com/reference/android/app/Activity#onContextMenuClosed(android.view.Menu)) 函数，
