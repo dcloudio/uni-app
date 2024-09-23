@@ -57,12 +57,30 @@ export function initData (Vue) {
       this._$vd.flush()
     }
   }
-
+  Vue.prototype._$updateScopeSlot = function () {
+    if (!this._$vd) {
+      return
+    }
+    if (this._$needUpdateScopeSlot) {
+      this._$needUpdateScopeSlot = false
+      const diffData = {}
+      diff(this._$newData, this._$data, diffData)
+      if (Object.keys(diffData).length) {
+        this._$setData(UPDATED_DATA, diffData)
+        this._$data = JSON.parse(JSON.stringify(this._$newData))
+      }
+    }
+  }
   Vue.prototype._$updated = function updated () {
     if (!this._$vd) {
       return
     }
-
+    let parent = this.$parent
+    // 组件的slot 更新，需要通知更新先辈组件的数据
+    while (parent) {
+      parent._$updateScopeSlot()
+      parent = parent.$parent
+    }
     diff(this._$newData, this._$data, this._$vdUpdatedData)
     this._$data = JSON.parse(JSON.stringify(this._$newData))
     // setTimeout 一下再 nextTick（ 直接 nextTick 的话，会紧接着该 updated 做 flush，导致父组件 updated 数据被丢弃）
@@ -138,6 +156,7 @@ function parseExternalClasses (clazz, vm) {
 }
 
 function setData (id, name, value) {
+  this._$needUpdateScopeSlot = true
   switch (name) {
     case B_CLASS:
       value = parseExternalClasses(this._$stringifyClass(value), this)
@@ -161,7 +180,6 @@ function setData (id, name, value) {
       }
     }
   }
-
   return ((this._$newData[id] || (this._$newData[id] = {}))[name] = value)
 }
 

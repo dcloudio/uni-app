@@ -4441,7 +4441,6 @@ function genComment (comment) {
 function genSlot (el, state) {
   var slotName = el.slotName || '"default"';
   var children = genChildren(el, state);
-  var res = "_t(" + slotName + (children ? ("," + children) : '');
   var attrs = el.attrs || el.dynamicAttrs
     ? genProps((el.attrs || []).concat(el.dynamicAttrs || []).map(function (attr) { return ({
         // slot props are camelized
@@ -4451,16 +4450,15 @@ function genSlot (el, state) {
       }); }))
     : null;
   var bind$$1 = el.attrsMap['v-bind'];
-  if ((attrs || bind$$1) && !children) {
-    res += ",null";
+  const args = []
+  args.push(slotName)
+  args.push(children || 'null')
+  args.push(attrs || 'null')
+  args.push(bind$$1 || 'null')
+  if (state.isInScopedSlot) {
+  	args.push('_svm')
   }
-  if (attrs) {
-    res += "," + attrs;
-  }
-  if (bind$$1) {
-    res += (attrs ? '' : ',null') + "," + bind$$1;
-  }
-  return res + ')'
+  return "_t(" + args.join(',') + ')'
 }
 
 // componentName is el.component, take it as argument to shun flow's pessimistic refinement
