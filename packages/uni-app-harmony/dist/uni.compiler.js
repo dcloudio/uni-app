@@ -178,6 +178,7 @@ function genAppHarmonyUniModules(inputDir, utsPlugins) {
     const importCodes = [];
     const extApiCodes = [];
     const registerCodes = [];
+    const projectDeps = [];
     utsPlugins.forEach((plugin) => {
         const injects = uniCliShared.parseUniExtApi(path__default.default.resolve(uniModulesDir, plugin), plugin, true, 'app-harmony', 'arkts');
         const hamonyPackageName = `@uni_modules/${plugin.toLowerCase()}`;
@@ -196,10 +197,14 @@ function genAppHarmonyUniModules(inputDir, utsPlugins) {
             importCodes.push(`import * as ${ident} from '${hamonyPackageName}'`);
             registerCodes.push(`uni.registerUTSPlugin('uni_modules/${plugin}', ${ident})`);
         }
+        projectDeps.push({
+            moduleSpecifier: hamonyPackageName,
+            plugin,
+            source: 'local',
+        });
     });
     const relatedProviders = getRelatedProviders(inputDir);
     const relatedModules = getRelatedModules(inputDir);
-    const projectDeps = [];
     relatedModules.forEach((module) => {
         const harmonyModuleName = `@uni_modules/${module.toLowerCase()}`;
         if (utsPlugins.has(module)) {
@@ -261,6 +266,7 @@ function genAppHarmonyUniModules(inputDir, utsPlugins) {
             moduleSpecifier: provider.moduleSpecifier,
             plugin: provider.plugin,
             source: provider.source,
+            version: provider.version,
         });
         const className = uniCliShared.formatExtApiProviderName(provider.service, provider.name);
         importProviderCodes.push(`import { ${className} } from '${provider.moduleSpecifier}'`);
@@ -288,7 +294,6 @@ function initUniExtApi() {
     const dependencies = {};
     const modules = [];
     projectDeps.forEach((dep) => {
-        // TODO 依赖版本绑定编译器版本
         if (dep.source === 'local') {
             const depPath = './uni_modules/' + dep.plugin;
             dependencies[dep.moduleSpecifier] = depPath;
@@ -301,7 +306,9 @@ function initUniExtApi() {
             });
         }
         else {
-            dependencies[dep.moduleSpecifier] = '*';
+            if (!dependencies[dep.moduleSpecifier]) {
+                dependencies[dep.moduleSpecifier] = dep.version;
+            }
         }
     });
     // TODO 写入到用户项目的oh-package.json5、build-profile.json5内
