@@ -87,7 +87,7 @@ export const openDialogPage = (
   })
   const dialogPage = new UniDialogPageImpl({
     route: path,
-    options: new Map(Object.entries(query)),
+    options: query,
     $component: targetRoute!.component,
     getParentPage: () => null,
     $disableEscBack: options.disableEscBack,

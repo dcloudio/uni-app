@@ -23,6 +23,7 @@ import PageHead from './pageHead'
 import PageBody from './pageBody'
 import { providePageMeta } from '../../setup/provide'
 import { getStateId } from '../../../helpers/dom'
+import { stringifyQuery } from '@dcloudio/uni-shared'
 
 export default /*#__PURE__*/ defineSystemComponent({
   name: 'Page',
@@ -113,7 +114,9 @@ function createDialogPageVNode(dialogPages: Ref<UniDialogPage[]>) {
                   left: 0,
                 },
                 type: 'dialog',
-                route: buildUrl(dialogPage.route, dialogPage.options),
+                route: `${dialogPage.route}${stringifyQuery(
+                  dialogPage.options
+                )}`,
               },
               null
             )
@@ -122,12 +125,4 @@ function createDialogPageVNode(dialogPages: Ref<UniDialogPage[]>) {
       })
     )
   )
-}
-
-function buildUrl(path: string, query: Map<string, string | null>): string {
-  const queryString = Array.from(query.entries())
-    .map(([key, value]) => `${key}=${value}`)
-    .join('&')
-
-  return queryString ? `${path}?${queryString}` : path
 }
