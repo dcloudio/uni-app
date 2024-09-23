@@ -20,14 +20,13 @@ import type {
   SwitchTabOptions,
 } from '@dcloudio/uni-app-x/types/uni'
 import type { UniApp } from '@dcloudio/uni-app-x/types/app'
-import { UniEventBus } from '../../../service/framework/page/eventBus'
 
 let appCtx: ComponentPublicInstance
 const defaultApp = {
   globalData: {},
 }
 
-class UniAppImpl extends UniEventBus implements UniApp {
+class UniAppImpl implements UniApp {
   get vm() {
     return appCtx
   }
