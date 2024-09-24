@@ -167,6 +167,9 @@ export async function compileApp(entry: string, options: CompileAppOptions) {
         uniCloudObjectInfo: options.uniCloudObjectInfo,
         autoImports,
         uniModulesArtifacts: options.uniModulesArtifacts,
+        enableUtsNumber: fs.existsSync(
+          path.resolve(process.env.UNI_INPUT_DIR, 'UTSNUMBER')
+        ),
         ...options.transform,
       },
     },

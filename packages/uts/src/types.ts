@@ -69,6 +69,7 @@ export type UTSOutputOptions = {
     uvueOutDir: string
   }
   transform?: {
+    enableUtsNumber?: boolean
     paramDefaultValue?: boolean
     constructorInvocation?: boolean
     uniExtApiDefaultNamespace?: string

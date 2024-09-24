@@ -678,6 +678,9 @@ export async function compile(
         uniExtApiDefaultNamespace: 'io.dcloud.uniapp.extapi',
         uniExtApiNamespaces: extApis,
         uniExtApiDefaultParameters: parseExtApiDefaultParameters(),
+        enableUtsNumber: fs.existsSync(
+          path.resolve(process.env.UNI_INPUT_DIR, 'UTSNUMBER')
+        ),
         ...transform,
       },
     },
