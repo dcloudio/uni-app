@@ -84,9 +84,17 @@ export function uniAppCssPrePlugin(): Plugin {
               config.logger.error(colors.red(msg))
             }
           })
-          return `export const ${genUTSClassName(
-            filename.replace('.style.uts', '')
-          )}Styles = ${code}`
+          const fileName = filename.replace('.style.uts', '')
+          const className =
+            process.env.UNI_COMPILE_TARGET === 'ext-api'
+              ? // components/map/map.vue => UniMap
+                genUTSClassName(
+                  path.basename(fileName),
+                  descriptorOptions.classNamePrefix
+                )
+              : genUTSClassName(fileName, descriptorOptions.classNamePrefix)
+
+          return `export const ${className}Styles = ${code}`
         },
       })
       // 增加 css plugins
