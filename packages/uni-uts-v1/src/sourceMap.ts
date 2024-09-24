@@ -31,8 +31,12 @@ export function resolveUniAppXSourceMapFile(
   target: 'kotlin', // | 'swift',
   filename: string,
   inputDir: string,
-  outputDir: string
+  outputDir: string,
+  cacheDir?: string
 ) {
+  if (cacheDir) {
+    process.env.UNI_APP_X_CACHE_DIR = cacheDir
+  }
   if (!process.env.UNI_APP_X_CACHE_DIR) {
     throw 'UNI_APP_X_CACHE_DIR is not set'
   }
