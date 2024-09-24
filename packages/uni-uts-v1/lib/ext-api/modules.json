@@ -36,6 +36,50 @@
       }
     }
   },
+  "uni-crash": {
+    "uni": {
+      "__onAppCrash": {
+        "name": "__onAppCrash",
+        "app": {
+          "js": false,
+          "kotlin": false,
+          "swift": true
+        }
+      },
+      "__offAppCrash": {
+        "name": "__offAppCrash",
+        "app": {
+          "js": false,
+          "kotlin": false,
+          "swift": true
+        }
+      },
+      "__getAppCrashInfo": {
+        "name": "__getAppCrashInfo",
+        "app": {
+          "js": false,
+          "kotlin": false,
+          "swift": true
+        }
+      },
+      "__deleteAppCrashInfo": {
+        "name": "__deleteAppCrashInfo",
+        "app": {
+          "js": false,
+          "kotlin": false,
+          "swift": true
+        }
+      },
+      "__creatAppCrash": {
+        "name": "__creatAppCrash",
+        "app": {
+          "js": false,
+          "kotlin": false,
+          "swift": true
+        }
+      }
+    }
+  },
   "uni-createRequestPermissionListener": {
     "uni": {
       "createRequestPermissionListener": {
