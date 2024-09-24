@@ -36,9 +36,10 @@ export function setupPage(component: VuePageComponent) {
     if (__X__) {
       const uniPage = new UniPageImpl({
         route: pageVm.$page.route,
-        options: new Map(Object.entries(pageVm.$page.options)),
+        options: pageVm.$page.options,
         vm: pageVm,
       })
+
       pageVm.$basePage = pageVm.$page as Page.PageInstance['$page']
       pageVm.$page = uniPage
     }

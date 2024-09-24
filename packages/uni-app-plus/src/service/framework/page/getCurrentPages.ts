@@ -3,23 +3,15 @@ import { formatLog } from '@dcloudio/uni-shared'
 import type { ComponentPublicInstance } from 'vue'
 import { getVueApp } from '../app/vueApp'
 import type { UniBasePage } from '@dcloudio/uni-app-x/types/page'
-import { UniEventBus } from './eventBus'
 
-export class UniBasePageImpl extends UniEventBus implements UniBasePage {
+export class UniBasePageImpl implements UniBasePage {
   route: string
-  options: Map<string, string | null>
+  options: UTSJSONObject
   getParentPage: () => UniPage | null = () => null
   getDialogPages(): UniDialogPage[] {
     return []
   }
-  constructor({
-    route,
-    options,
-  }: {
-    route: string
-    options: Map<string, string | null>
-  }) {
-    super()
+  constructor({ route, options }: { route: string; options: UTSJSONObject }) {
     this.route = route
     this.options = options
   }
@@ -64,7 +56,7 @@ export class UniPageImpl extends UniBasePageImpl implements UniPage {
     vm,
   }: {
     route: string
-    options: Map<string, string | null>
+    options: UTSJSONObject
     vm: ComponentPublicInstance
   }) {
     super({ route, options })
