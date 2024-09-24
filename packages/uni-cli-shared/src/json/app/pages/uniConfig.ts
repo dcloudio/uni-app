@@ -75,6 +75,8 @@ export function normalizeAppUniConfig(
     locales: initLocales(path.join(process.env.UNI_INPUT_DIR, 'locale')),
     darkmode: platformConfig.darkmode || false,
     themeConfig: normalizeThemeConfigOnce(platformConfig),
+    // @ts-expect-error
+    qqMapKey: platformConfig?.distribute?.sdkConfigs?.maps?.qqmap?.key,
   }
   // TODO 待支持分包
   return JSON.stringify(config)

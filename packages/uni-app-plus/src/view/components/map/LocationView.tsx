@@ -9,9 +9,7 @@ import {
   ICON_PATH_LOCTAION,
   ICON_PATH_ORIGIN,
   ICON_PATH_TARGET,
-  MapType,
   type Point,
-  getMapInfo,
 } from '../../../helpers/location'
 import Map from './index'
 import { getLocation } from './utils'
@@ -112,53 +110,13 @@ export default /*#__PURE__*/ defineSystemComponent({
       }
     }
 
-    const navUrl = ref('')
-    async function nav() {
-      const mapInfo = await getMapInfo()
-      let url = ''
-      if (mapInfo.type === MapType.GOOGLE) {
-        const origin: string = state.location.latitude
-          ? `&origin=${state.location.latitude}%2C${state.location.longitude}`
-          : ''
-        url = `https://www.google.com/maps/dir/?api=1${origin}&destination=${props.latitude}%2C${props.longitude}`
-      } else if (mapInfo.type === MapType.QQ) {
-        const fromcoord: string = state.location.latitude
-          ? `&fromcoord=${state.location.latitude}%2C${
-              state.location.longitude
-            }&from=${encodeURIComponent('我的位置')}`
-          : ''
-        url = `https://apis.map.qq.com/uri/v1/routeplan?type=drive${fromcoord}&tocoord=${
-          props.latitude
-        }%2C${props.longitude}&to=${encodeURIComponent(
-          props.name || '目的地'
-        )}&ref=${mapInfo.key}`
-      } else if (mapInfo.type === MapType.AMAP) {
-        const from = state.location.latitude
-          ? `from=${state.location.longitude},${
-              state.location.latitude
-            },${encodeURIComponent('我的位置')}&`
-          : ''
-        url = `https://uri.amap.com/navigation?${from}to=${props.longitude},${
-          props.latitude
-        },${encodeURIComponent(props.name || '目的地')}`
-      }
-      navUrl.value = url
-      navChange(true)
-    }
-
-    function navChange(showNav: boolean) {
-      const event = new CustomEvent<any>('navChange', {} as any)
-      trigger('navChange', event, { showNav })
+    function nav() {
+      trigger('navClick', new CustomEvent<any>('navClick', {} as any))
     }
 
     function back(e) {
       const event = new CustomEvent<any>('close', {} as any)
       trigger('close', event, event.detail)
-    }
-
-    function backNav() {
-      navChange(false)
-      navUrl.value = ''
     }
 
     function setCenter({ latitude, longitude }: Point) {
@@ -193,18 +151,6 @@ export default /*#__PURE__*/ defineSystemComponent({
           </div>
           <div class="nav-btn-back" onClick={back}>
             {createSvgIconVNode(ICON_PATH_BACK, '#ffffff', 26)}
-          </div>
-          <div class="nav-view" v-show={props.showNav}>
-            <div class="nav-view-top-placeholder"></div>
-            <iframe
-              class="nav-view-frame"
-              src={navUrl.value}
-              frameborder="0"
-              allow="geolocation"
-            ></iframe>
-            <div class="nav-btn-back" onClick={backNav}>
-              {createSvgIconVNode(ICON_PATH_BACK, '#ffffff', 26)}
-            </div>
           </div>
         </div>
       )

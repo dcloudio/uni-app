@@ -118,13 +118,15 @@ function genViewHtml(bundle: OutputBundle) {
     process.env.UNI_INPUT_DIR,
     process.env.UNI_PLATFORM
   )
-  const { darkmode = false } = getPlatformManifestJsonOnce()
+  const platformConfig = getPlatformManifestJsonOnce()
+  const { darkmode = false } = platformConfig
   const __uniConfig = {
     globalStyle: {
       rpxCalcMaxDeviceWidth: (globalStyle as any).rpxCalcMaxDeviceWidth,
       rpxCalcBaseDeviceWidth: (globalStyle as any).rpxCalcBaseDeviceWidth,
     },
     darkmode,
+    qqMapKey: platformConfig?.distribute?.sdkConfigs?.maps?.qqmap?.key,
   }
   const wxsCode = bundle[APP_WXS_JS]
     ? `<script src="${APP_WXS_JS}"></script>`

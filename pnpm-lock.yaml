@@ -541,6 +541,9 @@ importers:
         specifier: ^6.0.6
         version: 6.1.2
     devDependencies:
+      '@amap/amap-jsapi-types':
+        specifier: ^0.0.8
+        version: 0.0.8
       '@dcloudio/uni-cli-shared':
         specifier: 3.0.0-alpha-4020820240914002
         version: link:../uni-cli-shared
@@ -556,6 +559,9 @@ importers:
       '@dcloudio/uni-shared':
         specifier: 3.0.0-alpha-4020820240914002
         version: link:../uni-shared
+      '@types/google.maps':
+        specifier: ^3.45.6
+        version: 3.58.0
       '@types/pako':
         specifier: 1.0.2
         version: 1.0.2

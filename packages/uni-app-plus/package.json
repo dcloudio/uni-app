@@ -44,6 +44,8 @@
     "@dcloudio/uni-i18n": "3.0.0-alpha-4020820240914002",
     "@dcloudio/uni-shared": "3.0.0-alpha-4020820240914002",
     "@types/pako": "1.0.2",
+    "@types/google.maps": "^3.45.6",
+    "@amap/amap-jsapi-types": "^0.0.8",
     "@vue/compiler-sfc": "3.4.21",
     "autoprefixer": "^10.4.19",
     "pako": "^1.0.11",

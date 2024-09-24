@@ -1,10 +1,11 @@
 import type { UniNodeJSON } from '@dcloudio/uni-shared'
+import LocationView from '../../../components/map/LocationView'
 import '../../../../../style/map.css'
-import Map from '../../../components/map/index'
+import '../../../../../style/api/location-view.css'
 
 import { UniComponent } from './UniComponent'
 
-export class UniMap extends UniComponent {
+export class UniLocationView extends UniComponent {
   constructor(
     id: number,
     parentNodeId: number,
@@ -13,12 +14,11 @@ export class UniMap extends UniComponent {
   ) {
     super(
       id,
-      'uni-map',
-      Map,
+      'uni-location-view',
+      LocationView,
       parentNodeId,
       refNodeId,
-      nodeJson,
-      __uniConfig.qqMapKey ? undefined : '.uni-map-slot'
+      nodeJson
     )
   }
 }

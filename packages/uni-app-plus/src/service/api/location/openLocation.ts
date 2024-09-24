@@ -8,10 +8,34 @@ import {
 } from '@dcloudio/uni-api'
 import { showPage } from '@dcloudio/uni-core'
 import { extend } from '@vue/shared'
+import {
+  ROUTE_LOCATION_VIEW_PAGE,
+  initLocationViewPageOnce,
+} from './LocationViewPage'
 
 export const openLocation = defineAsyncApi<API_TYPE_OPEN_LOCATION>(
   API_OPEN_LOCATION,
   (data, { resolve, reject }) => {
+    if (__uniConfig.qqMapKey) {
+      initLocationViewPageOnce()
+      const { latitude = '', longitude = '' } = data || {}
+      uni.navigateTo({
+        url:
+          '/' +
+          ROUTE_LOCATION_VIEW_PAGE +
+          '?latitude=' +
+          latitude +
+          '&longitude=' +
+          longitude,
+        success: (res) => {
+          resolve()
+        },
+        fail: (err) => {
+          reject(err.errMsg || 'cancel')
+        },
+      })
+      return
+    }
     showPage({
       url: '__uniappopenlocation',
       data: extend({}, data, {
