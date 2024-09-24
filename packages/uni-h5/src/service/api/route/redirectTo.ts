@@ -17,7 +17,7 @@ import { navigate } from './utils'
 
 export function removeLastPage() {
   const page = __X__
-    ? (getCurrentPage() as unknown as UniPage).vm
+    ? (getCurrentPage() as unknown as UniPage)?.vm
     : getCurrentPage()
   if (!page) {
     return

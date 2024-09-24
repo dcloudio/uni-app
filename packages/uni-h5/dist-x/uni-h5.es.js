@@ -8001,7 +8001,8 @@ const switchTab = /* @__PURE__ */ defineAsyncApi(
   SwitchTabOptions
 );
 function removeLastPage() {
-  const page = getCurrentPage().vm;
+  var _a;
+  const page = (_a = getCurrentPage()) == null ? void 0 : _a.vm;
   if (!page) {
     return;
   }
