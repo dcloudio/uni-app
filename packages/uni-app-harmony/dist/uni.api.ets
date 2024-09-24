@@ -6543,7 +6543,7 @@ export function initUniExtApi() {
                     }
                 }
                 const headers = latestHeaders as Record<string, string | string[]>;
-                const oldCookies = (headers['Set-Cookie'] || headers['set-cookie'] || []) as string[];
+                const oldCookies = headers ? (headers['Set-Cookie'] || headers['set-cookie'] || []) as string[] : [] as string[];
                 const cookies = latestHeaders ? cookiesParse(latestHeaders as Record<string, string>) : [];
                 let newCookies = oldCookies.join(',');
                 if (newCookies) {
