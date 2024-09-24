@@ -261,9 +261,9 @@ export function uniAppPlugin(): UniVitePlugin {
       if (isFirst) {
         isFirst = false
         // 自动化测试时，不显示页面数量进度条
-        if (!process.env.UNI_AUTOMATOR_WS_ENDPOINT) {
-          pageCount = parseInt(process.env.UNI_APP_X_PAGE_COUNT) || 0
-        }
+        // if (!process.env.UNI_AUTOMATOR_WS_ENDPOINT) {
+        pageCount = parseInt(process.env.UNI_APP_X_PAGE_COUNT) || 0
+        // }
       }
       // x 上暂时编译所有uni ext api，不管代码里是否调用了
       await buildUniExtApis()
