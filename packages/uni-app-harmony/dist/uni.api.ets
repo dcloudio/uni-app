@@ -1049,6 +1049,7 @@ interface _ChooseMediaOptions {
     mimeType: photoAccessHelper.PhotoViewMIMETypes.VIDEO_TYPE | photoAccessHelper.PhotoViewMIMETypes.IMAGE_TYPE | photoAccessHelper.PhotoViewMIMETypes.IMAGE_VIDEO_TYPE;
     count?: number;
     sourceType?: ('album' | 'camera')[];
+    isOriginalSupported?: boolean;
 }
 interface chooseMediaSuccessCallbackResult {
     tempFiles: MediaFile[];
@@ -4730,6 +4731,7 @@ export function initUniExtApi() {
         const mimeType = options.mimeType;
         photoSelectOptions.MIMEType = mimeType;
         photoSelectOptions.maxSelectNumber = options.count || 9;
+        photoSelectOptions.isOriginalSupported = options.isOriginalSupported;
         photoSelectOptions.isPhotoTakingSupported = !(options.sourceType && !options.sourceType.includes('camera'));
         const photoPicker = new photoAccessHelper.PhotoViewPicker();
         const photoSelectResult = await photoPicker.select(photoSelectOptions);
@@ -5386,6 +5388,7 @@ export function initUniExtApi() {
             sourceType: [
                 "album"
             ],
+            isOriginalSupported: options.sizeType?.includes('original') !== false,
             count: options.count!
         } as _ChooseMediaOptions).then((chooseMediaRes)=>{
             const tempFiles = chooseMediaRes.tempFiles;
@@ -5464,7 +5467,8 @@ export function initUniExtApi() {
             mimeType: photoAccessHelper2.PhotoViewMIMETypes.VIDEO_TYPE,
             sourceType: [
                 "album"
-            ]
+            ],
+            isOriginalSupported: options.compressed === false
         } as _ChooseMediaOptions).then((chooseMediaRes)=>{
             const file = chooseMediaRes.tempFiles[0];
             if (!file) {
@@ -5940,7 +5944,8 @@ export function initUniExtApi() {
             sourceType: [
                 "album"
             ],
-            count: args.count!
+            count: args.count!,
+            isOriginalSupported: args.sizeType?.includes('original') !== false
         } as _ChooseMediaOptions).then((res)=>{
             executor.resolve({
                 type: 'mix',
