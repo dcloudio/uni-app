@@ -21,15 +21,18 @@ import type { CliOptions } from '.'
 import { initNVueEnv } from './nvue'
 import { initUVueEnv } from './uvue'
 
+// uni -p
 export const PLATFORMS = [
   'app',
   'h5',
   'mp-alipay',
   'mp-baidu',
-  'mp-qq',
+  'mp-kuaishou',
   'mp-lark',
+  'mp-qq',
   'mp-toutiao',
   'mp-weixin',
+  'mp-xhs',
   'quickapp-webview',
   'quickapp-webview-huawei',
   'quickapp-webview-union',
@@ -44,6 +47,7 @@ export type PLATFORM =
   | 'mp-qq'
   | 'mp-toutiao'
   | 'mp-weixin'
+  | 'mp-xhs'
   | 'quickapp-webview'
   | 'quickapp-webview-huawei'
   | 'quickapp-webview-union'

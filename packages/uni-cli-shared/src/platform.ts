@@ -15,6 +15,7 @@ const BUILT_IN_PLATFORMS = [
   'mp-qq',
   'mp-toutiao',
   'mp-weixin',
+  'mp-xhs',
   'quickapp-webview',
   'quickapp-webview-huawei',
   'quickapp-webview-union',
