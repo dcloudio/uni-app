@@ -12,7 +12,8 @@ export function withSourcemap(config: ResolvedConfig) {
       if (!!config.build.sourcemap) {
         process.env.UNI_APP_SOURCEMAP = 'true'
       } else {
-        process.env.UNI_APP_SOURCEMAP = 'false'
+        // vite 的 build 模式默认是false，而非web端的dev也是用build模式，所以不能这样判断
+        // process.env.UNI_APP_SOURCEMAP = 'false'
       }
     }
   }
