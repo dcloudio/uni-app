@@ -55,7 +55,8 @@ const platform = PLATFORMS[process.env.UNI_PLATFORM]
 let input = 'src/core/runtime/index.js'
 const output = {
   file: `packages/uni-${process.env.UNI_PLATFORM}/dist/index.js`,
-  format: 'es'
+  format: 'es',
+  sourcemap: process.env.ENABLE_SOURCEMAP === 'true' ? 'inline' : false
 }
 
 if (process.env.UNI_MP) {
@@ -68,31 +69,43 @@ module.exports = {
   output,
   plugins: [
     alias({
-      entries: [{
-        find: '@dcloudio',
-        replacement: path.resolve(__dirname, '../packages')
-      }, {
-        find: 'uni-core',
-        replacement: path.resolve(__dirname, '../src/core')
-      }, {
-        find: 'uni-api-protocol',
-        replacement: path.resolve(__dirname, '../src/core/helpers/protocol')
-      }, {
-        find: 'uni-shared/query',
-        replacement: path.resolve(__dirname, '../src/shared/query.js')
-      }, {
-        find: 'uni-shared',
-        replacement: path.resolve(__dirname, '../src/shared/util.js')
-      }, {
-        find: 'uni-platform',
-        replacement: path.resolve(__dirname, '../src/platforms/' + process.env.UNI_PLATFORM)
-      }, {
-        find: 'uni-wrapper',
-        replacement: path.resolve(__dirname, '../src/core/runtime/wrapper')
-      }, {
-        find: 'uni-helpers',
-        replacement: path.resolve(__dirname, '../src/core/helpers')
-      }]
+      entries: [
+        {
+          find: '@dcloudio',
+          replacement: path.resolve(__dirname, '../packages')
+        },
+        {
+          find: 'uni-core',
+          replacement: path.resolve(__dirname, '../src/core')
+        },
+        {
+          find: 'uni-api-protocol',
+          replacement: path.resolve(__dirname, '../src/core/helpers/protocol')
+        },
+        {
+          find: 'uni-shared/query',
+          replacement: path.resolve(__dirname, '../src/shared/query.js')
+        },
+        {
+          find: 'uni-shared',
+          replacement: path.resolve(__dirname, '../src/shared/util.js')
+        },
+        {
+          find: 'uni-platform',
+          replacement: path.resolve(
+            __dirname,
+            '../src/platforms/' + process.env.UNI_PLATFORM
+          )
+        },
+        {
+          find: 'uni-wrapper',
+          replacement: path.resolve(__dirname, '../src/core/runtime/wrapper')
+        },
+        {
+          find: 'uni-helpers',
+          replacement: path.resolve(__dirname, '../src/core/helpers')
+        }
+      ]
     }),
     json(),
     replace({

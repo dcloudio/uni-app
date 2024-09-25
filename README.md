@@ -23,7 +23,7 @@
 开发一次，编译到14个平台。依次扫描14个二维码，亲自体验最全面的跨平台效果！
 
 <div align="center">
-  <img src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-a90b5f95-90ba-4d30-a6a7-cd4d057327db/cf5727bc-fbe6-4d7e-bd92-e0d16e6f53b0.jpg"/>
+  <img src="https://web-ext-storage.dcloud.net.cn/doc/uni-support-platform-qrcode.jpg"/>
 </div>
 
 *注： 某些平台不能提交简单demo，补充了一些其他功能。*
@@ -84,7 +84,7 @@
 
 ## 更多资料
 
-- 评测：[跨端开发框架深度横评之2020版](https://juejin.im/post/5e8e8d5a6fb9a03c6d3d9f42)
+- 评测：[App跨平台框架VS原生开发深度评测之2023版](https://juejin.cn/post/7317091780826497075)
 - 评测：[深入测试一周，主流多端框架大比武](https://mp.weixin.qq.com/s/jIDEHfuMnED6HTfNgjsW4w)
 - [uni-app在App端和flutter、react native的比较](https://ask.dcloud.net.cn/article/36083)
 

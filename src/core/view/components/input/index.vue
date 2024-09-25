@@ -134,6 +134,7 @@ export default {
       let type = ''
       switch (this.type) {
         case 'text':
+          type = 'text'
           this.confirmType === 'search' && (type = 'search')
           break
         case 'idcard':
@@ -193,7 +194,7 @@ export default {
       vm: this
     })
     // fix: 给 input 的 value 赋值后，再输入小数点时 cachedValue 没有值导致值清空
-    if (this.inputType === 'number' && typeof this.value !== 'undefined') {
+    if (this.inputType === 'number' && typeof this.value !== 'undefined' && this.value !== null) {
       this.cachedValue = this.value.toString()
     }
   },
@@ -253,7 +254,7 @@ export default {
             return false
           }
         } else if ($event.inputType === 'deleteContentBackward') {
-        // ios 16 无法删除小数
+          // ios 16 无法删除小数
           if (
             (
               __PLATFORM__ === 'app-plus' &&

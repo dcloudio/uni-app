@@ -73,12 +73,20 @@ describe('codegen', () => {
       '<p v-if="show">hello</p>',
       `with(this){return (_$s(0,'i',show))?_c('p'):_e()}`
     )
+    assertCodegen(
+      '<p v-if="show"><custom/></p>',
+      `with(this){return (_$s(0,'i',show))?_c('p',{attrs:{"_i":0}},[_c('custom',{attrs:{"_i":1}})],1):_e()}`
+    )
   })
 
   it('generate v-else directive', () => {
     assertCodegen(
       '<div><p v-if="show">hello</p><p v-else>world</p></div>',
       `with(this){return _c('div',[(_$s(1,'i',show))?_c('p'):_c('p')])}`
+    )
+    assertCodegen(
+      '<div><p v-if="show"><custom/></p><p v-else><custom/></p></div>',
+      `with(this){return _c('div',[(_$s(1,'i',show))?_c('p',{attrs:{"_i":1}},[_c('custom',{attrs:{"_i":2}})],1):_c('p',{attrs:{"_i":3}},[_c('custom',{attrs:{"_i":4}})],1)])}`
     )
   })
 
@@ -87,6 +95,10 @@ describe('codegen', () => {
       '<div><p v-if="show">hello</p><p v-else-if="hide">world</p></div>',
       `with(this){return _c('div',[(_$s(1,'i',show))?_c('p'):(_$s(2,'e',hide))?_c('p'):_e()])}`
     )
+    assertCodegen(
+      '<div><p v-if="show"><custom/></p><p v-else-if="hide"><custom/></p></div>',
+      `with(this){return _c('div',[(_$s(1,'i',show))?_c('p',{attrs:{"_i":1}},[_c('custom',{attrs:{"_i":2}})],1):(_$s(3,'e',hide))?_c('p',{attrs:{"_i":3}},[_c('custom',{attrs:{"_i":4}})],1):_e()])}`
+    )
   })
 
   it('generate v-else-if with v-else directive', () => {
@@ -94,12 +106,20 @@ describe('codegen', () => {
       '<div><p v-if="show">hello</p><p v-else-if="hide">world</p><p v-else>bye</p></div>',
       `with(this){return _c('div',[(_$s(1,'i',show))?_c('p'):(_$s(2,'e',hide))?_c('p'):_c('p')])}`
     )
+    assertCodegen(
+      '<div><p v-if="show"><custom/></p><p v-else-if="hide"><custom/></p><p v-else><custom/></p></div>',
+      `with(this){return _c('div',[(_$s(1,'i',show))?_c('p',{attrs:{"_i":1}},[_c('custom',{attrs:{"_i":2}})],1):(_$s(3,'e',hide))?_c('p',{attrs:{"_i":3}},[_c('custom',{attrs:{"_i":4}})],1):_c('p',{attrs:{"_i":5}},[_c('custom',{attrs:{"_i":6}})],1)])}`
+    )
   })
 
   it('generate multi v-else-if with v-else directive', () => {
     assertCodegen(
       '<div><p v-if="show">hello</p><p v-else-if="hide">world</p><p v-else-if="3">elseif</p><p v-else>bye</p></div>',
       `with(this){return _c('div',[(_$s(1,'i',show))?_c('p'):(_$s(2,'e',hide))?_c('p'):(3)?_c('p'):_c('p')])}`
+    )
+    assertCodegen(
+      '<div><p v-if="show"><custom/></p><p v-else-if="hide"><custom/></p><p v-else-if="3"><custom/></p><p v-else><custom/></p></div>',
+      `with(this){return _c('div',[(_$s(1,'i',show))?_c('p',{attrs:{"_i":1}},[_c('custom',{attrs:{"_i":2}})],1):(_$s(3,'e',hide))?_c('p',{attrs:{"_i":3}},[_c('custom',{attrs:{"_i":4}})],1):(3)?_c('p',{attrs:{"_i":5}},[_c('custom',{attrs:{"_i":6}})],1):_c('p',{attrs:{"_i":7}},[_c('custom',{attrs:{"_i":8}})],1)])}`
     )
   })
 
@@ -631,7 +651,7 @@ describe('codegen', () => {
   it('generate static trees inside v-for', () => {
     assertCodegen(
       `<div><div v-for="i in 10"><p><span></span></p></div></div>`,
-      `with(this){return _c('div',_l((10),function(i,$10,$20,$30){return _c('div',[_c('p',[_c('span')])])}),0)}`
+      `with(this){return _c('div',_l((10),function(i,$10,$20,$30){return _c('div',{attrs:{"_i":("1-"+$30)}},[_c('p',[_c('span')])])}),0)}`
       // [`with(this){return _c('p',[_c('span')])}`]
     )
   })
@@ -701,7 +721,7 @@ describe('codegen', () => {
     assertCodegen(
       '<p v-if="show">hello world</p>',
       `with(this){return (_$s(0,'i',show))?_c('p'):_e()}`, {
-        // isReservedTag
+      // isReservedTag
       }
     )
   })

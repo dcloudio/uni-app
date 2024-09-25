@@ -4,6 +4,9 @@
     <!-- #ifdef MP-WEIXIN -->
     <uniad-plugin class="uniad-plugin" :adpid="adpid" :unit-id="unitId" @load="_onmpload" @close="_onmpclose" @error="_onmperror"></uniad-plugin>
     <!-- #endif -->
+    <!-- #ifdef MP-ALIPAY -->
+    <uniad-plugin class="uniad-plugin" :adpid="adpid" @create="_handleAdRef" @load="_onmpload" @close="_onmpclose" @error="_onmperror"></uniad-plugin>
+    <!-- #endif -->
     <!-- #ifdef H5 -->
     <div ref="container" />
     <!-- #endif -->
@@ -12,13 +15,16 @@
 
 <script>
   // #ifdef APP
-  import adMixin from "./ad.mixin.js"
+  import adMixin from "./ad.mixin.app.js"
   // #endif
   // #ifdef H5
   import adMixin from "./ad-interstitial.web.js"
   // #endif
   // #ifdef MP-WEIXIN
-  import adMixin from "./ad.mixin.mp.js"
+  import adMixin from "./ad.mixin.mp-weixin.js"
+  // #endif
+  // #ifdef MP-ALIPAY
+  import adMixin from "./ad.mixin.mp-alipay.js"
   // #endif
 
   export default {

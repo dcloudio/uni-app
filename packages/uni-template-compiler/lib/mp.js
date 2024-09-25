@@ -145,6 +145,11 @@ const tags = {
     'aweme-live-book',
     'aweme-user-card',
     'rtc-room'
+  ],
+  'mp-kuaishou': [
+    'follow-service',
+    'payment-list',
+    'playlet'
   ]
 }
 

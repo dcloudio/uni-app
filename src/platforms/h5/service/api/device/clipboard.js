@@ -20,6 +20,7 @@ export function setClipboardData ({
   const pasteText = document.getElementById('#clipboard')
   pasteText && pasteText.remove()
   const textarea = document.createElement('textarea')
+  textarea.setAttribute('inputmode', 'none')
   textarea.id = '#clipboard'
   textarea.style.position = 'fixed'
   textarea.style.top = '-9999px'

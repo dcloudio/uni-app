@@ -426,8 +426,11 @@ export default {
       }
     },
     // 服务器回调透传参数，仅在创建广告实例时可传递参数，如果发生变化需要重新创建广告实例
-    urlCallback () {
-      this._removeInstance()
+    urlCallback: {
+      deep: true,
+      handler () {
+        this._removeInstance()
+      }
     }
   },
   created () {

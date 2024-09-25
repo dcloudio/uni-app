@@ -3,29 +3,46 @@ import { isPlainObject, hasOwn, extend, capitalize, isString } from 'uni-shared'
 // 生成的 uts.js 需要同步到 vue2 src/platforms/app-plus/service/api/plugin
 let callbackId = 1;
 let proxy;
-const callbacks = {};
+const keepAliveCallbacks = {};
+function isUniElement(obj) {
+    return typeof obj.getNodeId === 'function' && obj.pageId;
+}
 function isComponentPublicInstance(instance) {
     return instance && instance.$ && instance.$.proxy === instance;
+}
+function parseElement(obj) {
+    if (isUniElement(obj)) {
+        return obj;
+    }
+    else if (isComponentPublicInstance(obj)) {
+        return obj.$el;
+    }
 }
 function toRaw(observed) {
     const raw = observed && observed.__v_raw;
     return raw ? toRaw(raw) : observed;
 }
-function normalizeArg(arg) {
+function normalizeArg(arg, callbacks, keepAlive) {
     arg = toRaw(arg);
     if (typeof arg === 'function') {
-        // 查找该函数是否已缓存
-        const oldId = Object.keys(callbacks).find((id) => callbacks[id] === arg);
-        const id = oldId ? parseInt(oldId) : callbackId++;
-        callbacks[id] = arg;
+        let id;
+        if (keepAlive) {
+            // 仅keepAlive时，需要查找缓存，非keepAlive时，直接创建，避免函数被复用时，回调函数被误删
+            const oldId = Object.keys(callbacks).find((id) => callbacks[id] === arg);
+            id = oldId ? parseInt(oldId) : callbackId++;
+            callbacks[id] = arg;
+        }
+        else {
+            id = callbackId++;
+            callbacks[id] = arg;
+        }
         return id;
     }
     else if (isPlainObject(arg)) {
-        if (isComponentPublicInstance(arg)) {
+        const el = parseElement(arg);
+        if (el) {
             let nodeId = '';
             let pageId = '';
-            // @ts-expect-error
-            const el = arg.$el;
             // 非 x 可能不存在 getNodeId 方法？
             if (el && el.getNodeId) {
                 pageId = el.pageId;
@@ -34,15 +51,24 @@ function normalizeArg(arg) {
             return { pageId, nodeId };
         }
         else {
+            // 必须复制，否则会污染原始对象，比如：
+            // const obj = {
+            //   a: 1,
+            //   b: () => {}
+            // }
+            // const newObj = normalizeArg(obj, {}, false)
+            // newObj.a = 2 // 这会污染原始对象 obj
+            const newArg = {};
             Object.keys(arg).forEach((name) => {
-                arg[name] = normalizeArg(arg[name]);
+                newArg[name] = normalizeArg(arg[name], callbacks, keepAlive);
             });
+            return newArg;
         }
     }
     return arg;
 }
 function initUTSInstanceMethod(async, opts, instanceId, proxy) {
-    return initProxyFunction(async, opts, instanceId, proxy);
+    return initProxyFunction('method', async, opts, instanceId, proxy);
 }
 function getProxy() {
     if (!proxy) {
@@ -101,42 +127,55 @@ function invokePropGetter(args) {
     }
     return resolveSyncResult(args, getProxy().invokeSync(args, () => { }));
 }
-function initProxyFunction(async, { moduleName, moduleType, package: pkg, class: cls, name: propOrMethod, method, companion, params: methodParams, return: returnOptions, errMsg, }, instanceId, proxy) {
-    const invokeCallback = ({ id, name, params, keepAlive, }) => {
-        const callback = callbacks[id];
-        if (callback) {
-            callback(...params);
-            if (!keepAlive) {
-                delete callbacks[id];
-            }
-        }
-        else {
-            console.error(`${pkg}${cls}.${propOrMethod} ${name} is not found`);
-        }
-    };
+function initProxyFunction(type, async, { moduleName, moduleType, package: pkg, class: cls, name: methodName, method, companion, keepAlive, params: methodParams, return: returnOptions, errMsg, }, instanceId, proxy) {
+    if (!keepAlive) {
+        keepAlive =
+            methodName.indexOf('on') === 0 &&
+                methodParams.length === 1 &&
+                methodParams[0].type === 'UTSCallback';
+    }
     const baseArgs = instanceId
         ? {
             moduleName,
             moduleType,
             id: instanceId,
-            name: propOrMethod,
+            type,
+            name: methodName,
             method: methodParams,
+            keepAlive,
         }
         : {
             moduleName,
             moduleType,
             package: pkg,
             class: cls,
-            name: method || propOrMethod,
+            name: method || methodName,
+            type,
             companion,
             method: methodParams,
+            keepAlive,
         };
     return (...args) => {
         if (errMsg) {
             throw new Error(errMsg);
         }
+        // TODO 隐患：部分callback可能不会被删除，比如传入了success、fail、complete，但是仅触发了success、complete，那么fail就不会被删除
+        // 需要有个机制来知道整个函数已经结束了，需要清理所有相关callbacks
+        const callbacks = keepAlive ? keepAliveCallbacks : {};
+        const invokeCallback = ({ id, name, params }) => {
+            const callback = callbacks[id];
+            if (callback) {
+                callback(...params);
+                if (!keepAlive) {
+                    delete callbacks[id];
+                }
+            }
+            else {
+                console.error(`uts插件[${moduleName}] ${pkg}${cls}.${methodName.replace('ByJs', '')} ${name}回调函数已释放，不能再次执行，参考文档：https://doc.dcloud.net.cn/uni-app-x/plugin/uts-plugin.html#keepalive`);
+            }
+        };
         const invokeArgs = extend({}, baseArgs, {
-            params: args.map((arg) => normalizeArg(arg)),
+            params: args.map((arg) => normalizeArg(arg, callbacks, keepAlive)),
         });
         if (async) {
             return new Promise((resolve, reject) => {
@@ -173,7 +212,7 @@ function initUTSStaticMethod(async, opts) {
             opts.method = 's_' + opts.name;
         }
     }
-    return initProxyFunction(async, opts, 0);
+    return initProxyFunction('method', async, opts, 0);
 }
 const initUTSProxyFunction = initUTSStaticMethod;
 function parseClassMethodName(name, methods) {
@@ -188,8 +227,11 @@ function isUndefined(value) {
 function isProxyInterfaceOptions(options) {
     return !isUndefined(options.instanceId);
 }
+function parseClassPropertySetter(name) {
+    return '__$set' + capitalize(name);
+}
 function initUTSProxyClass(options) {
-    const { moduleName, moduleType, package: pkg, class: cls, methods, props, errMsg, } = options;
+    const { moduleName, moduleType, package: pkg, class: cls, methods, props, setters, errMsg, } = options;
     const baseOptions = {
         moduleName,
         moduleType,
@@ -201,6 +243,7 @@ function initUTSProxyClass(options) {
     let constructorParams = [];
     let staticMethods = {};
     let staticProps = [];
+    let staticSetters = {};
     let isProxyInterface = false;
     if (isProxyInterfaceOptions(options)) {
         isProxyInterface = true;
@@ -210,6 +253,7 @@ function initUTSProxyClass(options) {
         constructorParams = options.constructor.params;
         staticMethods = options.staticMethods;
         staticProps = options.staticProps;
+        staticSetters = options.staticSetters;
     }
     // iOS 需要为 ByJs 的 class 构造函数（如果包含JSONObject或UTSCallback类型）补充最后一个参数
     if (isUTSiOS()) {
@@ -227,7 +271,11 @@ function initUTSProxyClass(options) {
             // 初始化实例 ID
             if (!isProxyInterface) {
                 // 初始化未指定时，每次都要创建instanceId
-                this.__instanceId = initProxyFunction(false, extend({ name: 'constructor', params: constructorParams }, baseOptions), 0).apply(null, params);
+                this.__instanceId = initProxyFunction('constructor', false, extend({
+                    name: 'constructor',
+                    keepAlive: false,
+                    params: constructorParams,
+                }, baseOptions), 0).apply(null, params);
             }
             else if (typeof instanceId === 'number') {
                 this.__instanceId = instanceId;
@@ -246,9 +294,10 @@ function initUTSProxyClass(options) {
                         //实例方法
                         name = parseClassMethodName(name, methods);
                         if (hasOwn(methods, name)) {
-                            const { async, params, return: returnOptions } = methods[name];
+                            const { async, keepAlive, params, return: returnOptions, } = methods[name];
                             target[name] = initUTSInstanceMethod(!!async, extend({
                                 name,
+                                keepAlive,
                                 params,
                                 return: returnOptions,
                             }, baseOptions), instance.__instanceId, proxy);
@@ -259,6 +308,8 @@ function initUTSProxyClass(options) {
                                 moduleName,
                                 moduleType,
                                 id: instance.__instanceId,
+                                type: 'getter',
+                                keepAlive: false,
                                 name: name,
                                 errMsg,
                             });
@@ -266,27 +317,74 @@ function initUTSProxyClass(options) {
                     }
                     return target[name];
                 },
+                set(_, name, newValue) {
+                    if (props.includes(name)) {
+                        const setter = parseClassPropertySetter(name);
+                        if (!target[setter]) {
+                            const param = setters[name];
+                            if (param) {
+                                target[setter] = initProxyFunction('setter', false, extend({
+                                    name: name,
+                                    keepAlive: false,
+                                    params: [param],
+                                }, baseOptions), instance.__instanceId, proxy);
+                            }
+                        }
+                        target[parseClassPropertySetter(name)](newValue);
+                        return true;
+                    }
+                    return false;
+                },
             });
             return proxy;
         }
     };
+    const staticPropSetterCache = {};
     const staticMethodCache = {};
     return new Proxy(ProxyClass, {
         get(target, name, receiver) {
             name = parseClassMethodName(name, staticMethods);
             if (hasOwn(staticMethods, name)) {
                 if (!staticMethodCache[name]) {
-                    const { async, params, return: returnOptions } = staticMethods[name];
+                    const { async, keepAlive, params, return: returnOptions, } = staticMethods[name];
                     // 静态方法
-                    staticMethodCache[name] = initUTSStaticMethod(!!async, extend({ name, companion: true, params, return: returnOptions }, baseOptions));
+                    staticMethodCache[name] = initUTSStaticMethod(!!async, extend({
+                        name,
+                        companion: true,
+                        keepAlive,
+                        params,
+                        return: returnOptions,
+                    }, baseOptions));
                 }
                 return staticMethodCache[name];
             }
             if (staticProps.includes(name)) {
-                // 静态属性
-                return invokePropGetter(extend({ name: name, companion: true }, baseOptions));
+                return invokePropGetter(extend({
+                    name: name,
+                    companion: true,
+                    type: 'getter',
+                }, baseOptions));
             }
             return Reflect.get(target, name, receiver);
+        },
+        set(_, name, newValue) {
+            if (staticProps.includes(name)) {
+                // 静态属性
+                const setter = parseClassPropertySetter(name);
+                if (!staticPropSetterCache[setter]) {
+                    const param = staticSetters[name];
+                    if (param) {
+                        staticPropSetterCache[setter] = initProxyFunction('setter', false, extend({
+                            name: name,
+                            keepAlive: false,
+                            params: [param],
+                        }, baseOptions), 0);
+                    }
+                }
+                staticPropSetterCache[parseClassPropertySetter(name)](newValue);
+                return true;
+            }
+            return false;
         },
     });
 }

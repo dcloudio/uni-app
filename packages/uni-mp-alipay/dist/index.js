@@ -928,8 +928,17 @@ function normalizePlatform (result) {
   result.platform = platform;
 }
 
+function reviseScreenSize (result) {
+  // 支付宝: 10.2.0+ 修正屏幕宽度和高度 https://opendocs.alipay.com/mini/api/gawhvz
+  if (result.screen) {
+    result.screenWidth = result.screen.width;
+    result.screenHeight = result.screen.height;
+  }
+}
+
 var getSystemInfo = {
   returnValue: function (result) {
+    reviseScreenSize(result);
     addUuid(result);
     addSafeAreaInsets(result);
     normalizePlatform(result);
