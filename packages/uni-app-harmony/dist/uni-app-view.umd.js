@@ -25896,7 +25896,8 @@
         }, null), createVNode("iframe", {
           "class": "nav-view-frame",
           "src": navUrl.value,
-          "frameborder": "0"
+          "frameborder": "0",
+          "allow": "geolocation"
         }, null, 8, ["src"]), createVNode("div", {
           "class": "nav-btn-back",
           "onClick": backNav

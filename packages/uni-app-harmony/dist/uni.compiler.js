@@ -207,13 +207,7 @@ function genAppHarmonyUniModules(inputDir, utsPlugins) {
     const relatedModules = getRelatedModules(inputDir);
     relatedModules.forEach((module) => {
         const harmonyModuleName = `@uni_modules/${module.toLowerCase()}`;
-        if (utsPlugins.has(module)) {
-            projectDeps.push({
-                moduleSpecifier: harmonyModuleName,
-                plugin: module,
-                source: 'local',
-            });
-        }
+        if (utsPlugins.has(module)) ;
         else {
             const matchedStandaloneExtApi = StandaloneExtApis.find((item) => item.plugin === module);
             if (matchedStandaloneExtApi) {
@@ -223,9 +217,12 @@ function genAppHarmonyUniModules(inputDir, utsPlugins) {
                     source: 'ohpm',
                     version: matchedStandaloneExtApi.version,
                 });
+                matchedStandaloneExtApi.apis?.forEach((apiName) => {
+                    importCodes.push(`import { ${apiName} } '${harmonyModuleName}'`);
+                    extApiCodes.push(`uni.${apiName} = ${apiName}`);
+                });
             }
         }
-        importCodes.push(`import '${harmonyModuleName}'`);
     });
     const importProviderCodes = [];
     const registerProviderCodes = [];
