@@ -140,11 +140,19 @@ function getRelatedProviders(inputDir) {
             const relatedProviders = sdkConfigs[service];
             for (const name in relatedProviders) {
                 if (Object.prototype.hasOwnProperty.call(relatedProviders, name)) {
-                    const providerName = ProviderNameMap[name];
-                    providers.push({
-                        service,
-                        name: providerName || name,
-                    });
+                    const providerConf = relatedProviders[name];
+                    if (!providerConf) {
+                        continue;
+                    }
+                    if (!providerConf.__platform__ ||
+                        (Array.isArray(providerConf.__platform__) &&
+                            providerConf.__platform__.includes('harmonyos'))) {
+                        const providerName = ProviderNameMap[name];
+                        providers.push({
+                            service,
+                            name: providerName || name,
+                        });
+                    }
                 }
             }
         }
