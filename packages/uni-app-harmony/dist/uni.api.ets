@@ -1,87 +1,1865 @@
-import { IUTSObject, UTSObject, UTSJSONObject } from '@dcloudio/uts-harmony'
-import { IUniError, UniError, string, ComponentPublicInstance, ComponentInternalInstance, defineAsyncApi, defineSyncApi, defineTaskApi, defineOnApi, defineOffApi, getUniProvider, getUniProviders, AsyncApiSuccessResult, AsyncApiResult, ApiExecutor, ProtocolOptions, ApiOptions, ApiError, UniProvider } from '@dcloudio/uni-app-harmony'
-
 import abilityAccessCtrl from '@ohos.abilityAccessCtrl';
 import Want from '@ohos.app.ability.Want';
 import common from '@ohos.app.ability.common';
+import wantConstant from '@ohos.app.ability.wantConstant';
+import buffer from '@ohos.buffer';
 import bundleManager from '@ohos.bundle.bundleManager';
 import deviceInfo from '@ohos.deviceInfo';
 import fs from '@ohos.file.fs';
 import photoAccessHelper from '@ohos.file.photoAccessHelper';
 import picker from '@ohos.file.picker';
+import inputMethod from '@ohos.inputMethod';
 import image from '@ohos.multimedia.image';
 import media from '@ohos.multimedia.media';
+import connection from '@ohos.net.connection';
 import http from '@ohos.net.http';
 import webSocket from '@ohos.net.webSocket';
 import promptAction from '@ohos.promptAction';
-import { BusinessError as BusinessError1 } from '@ohos.base';
-import { BusinessError } from '@ohos.base';
+import call from '@ohos.telephony.call';
+import radio from '@ohos.telephony.radio';
+import { BusinessError as BusinessError1 } from '@kit.BasicServicesKit';
+import { BusinessError as BusinessError2 } from '@kit.BasicServicesKit';
+import { BusinessError as BusinessError3 } from '@ohos.base';
+import { BusinessError } from '@kit.BasicServicesKit';
+import { Emitter as Emitter4 } from "@dcloudio/uni-app-harmony-framework";
+import { Emitter } from "@dcloudio/uni-app-harmony-framework";
+import Hash from '@ohos.file.hash';
 import I18n from '@ohos.i18n';
 import I18n1 from '@ohos.i18n';
 import I18n2 from '@ohos.i18n';
+import { ListFileOptions } from '@ohos.file.fs';
 import { ReadOptions } from '@ohos.file.fs';
-import { UTSHarmony as UTSHarmony1, getDeviceId } from "@dcloudio/uni-app-harmony-framework";
-import { UTSHarmony as UTSHarmony2, getWindowInfo as internalGetWindowInfo, getDeviceId as getDeviceId1 } from "@dcloudio/uni-app-harmony-framework";
-import { UTSHarmony as UTSHarmony3 } from "@dcloudio/uni-app-harmony-framework";
+import { UTSHarmony as UTSHarmony1 } from "@dcloudio/uni-app-harmony-framework";
+import { UTSHarmony as UTSHarmony2 } from "@dcloudio/uni-app-harmony-framework";
+import { UTSHarmony as UTSHarmony3, getDeviceId } from "@dcloudio/uni-app-harmony-framework";
+import { UTSHarmony as UTSHarmony5, getWindowInfo as internalGetWindowInfo, getDeviceId as getDeviceId1 } from "@dcloudio/uni-app-harmony-framework";
+import { UTSHarmony as UTSHarmony6 } from "@dcloudio/uni-app-harmony-framework";
+import { UTSHarmony as UTSHarmony7 } from "@dcloudio/uni-app-harmony-framework";
 import { UTSHarmony } from "@dcloudio/uni-app-harmony-framework";
-import { UniServiceJSBridge, getCurrentPageVm as getCurrentPageVm2, getPageIdByVm as getPageIdByVm2 } from "@dcloudio/uni-app-harmony-framework";
+import { UTSObject, UTSJSONObject } from "@dcloudio/uts-harmony";
+import { UniError, ComponentPublicInstance, IUniError, UniProvider, string, AsyncApiSuccessResult, AsyncApiResult, ApiOptions, ProtocolOptions, defineAsyncApi, ApiExecutor, defineSyncApi, defineOnApi, defineOffApi, getUniProviders, ApiError, defineTaskApi, getUniProvider } from "@dcloudio/uni-app-harmony";
+import { UniServiceJSBridge as UniServiceJSBridge1, getCurrentPageVm as getCurrentPageVm1, getPageIdByVm as getPageIdByVm1 } from "@dcloudio/uni-app-harmony-framework";
+import { UniServiceJSBridge, UTSHarmony as UTSHarmony4 } from "@dcloudio/uni-app-harmony-framework";
+import Want1 from '@ohos.app.ability.Want';
+import buffer1 from '@ohos.buffer';
 import bundleManager1 from '@ohos.bundle.bundleManager';
 import { clipboard } from "@dcloudio/uni-app-harmony-framework";
+import common1 from '@ohos.app.ability.common';
+import common2 from '@ohos.app.ability.common';
+import common3 from '@ohos.app.ability.common';
+import { contact } from '@kit.ContactsKit';
 import dataPreferences from '@ohos.data.preferences';
-import { device } from "@dcloudio/uni-app-harmony-framework";
 import deviceInfo1 from '@ohos.deviceInfo';
+import fileUri from '@ohos.file.fileuri';
 import fs1 from '@ohos.file.fs';
 import fs2 from '@ohos.file.fs';
 import fs3 from '@ohos.file.fs';
-import { getCurrentPage as getCurrentPage1, navigator } from "@dcloudio/uni-app-harmony-framework";
-import { getCurrentPageVm as getCurrentPageVm1, getPageIdByVm as getPageIdByVm1, isFunction as isFunction1, requestComponentInfo, resolveComponentInstance as resolveComponentInstance1 } from "@dcloudio/uni-app-harmony-framework";
-import { getEnv, Emitter as Emitter2 } from "@dcloudio/uni-app-harmony-framework";
-import { getOSRuntime, getCurrentPage } from "@dcloudio/uni-app-harmony-framework";
+import fs4 from '@ohos.file.fs';
+import { getAbilityContext as getAbilityContext1 } from "@dcloudio/uni-app-harmony-framework";
+import { getAbilityContext as getAbilityContext2 } from "@dcloudio/uni-app-harmony-framework";
+import { getAbilityContext as getAbilityContext3 } from "@dcloudio/uni-app-harmony-framework";
+import { getAbilityContext as getAbilityContext4 } from "@dcloudio/uni-app-harmony-framework";
+import { getCurrentPage, navigator } from "@dcloudio/uni-app-harmony-framework";
+import { getEnv as getEnv1, Emitter as Emitter3 } from "@dcloudio/uni-app-harmony-framework";
+import { getEnv, getRealPath } from "@dcloudio/uni-app-harmony-framework";
+import { getOSRuntime as getOSRuntime1, waitForCurrentNativePage as waitForCurrentNativePage1 } from "@dcloudio/uni-app-harmony-framework";
+import { getOSRuntime } from "@dcloudio/uni-app-harmony-framework";
 import { getRealPath as getRealPath1 } from "@dcloudio/uni-app-harmony-framework";
-import { getRealPath as getRealPath2 } from "@dcloudio/uni-app-harmony-framework";
-import { getRealPath as getRealPath3, Emitter as Emitter1 } from "@dcloudio/uni-app-harmony-framework";
-import { getRealPath } from "@dcloudio/uni-app-harmony-framework";
-import { getResourceStr } from "@dcloudio/uni-app-harmony-framework";
+import { getRealPath as getRealPath2, waitForCurrentNativePage } from "@dcloudio/uni-app-harmony-framework";
+import { getRealPath as getRealPath3 } from "@dcloudio/uni-app-harmony-framework";
+import { getRealPath as getRealPath4, Emitter as Emitter2 } from "@dcloudio/uni-app-harmony-framework";
+import { getResourceStr, getAbilityContext } from "@dcloudio/uni-app-harmony-framework";
+import { getTabBar } from "@dcloudio/uni-app-harmony-framework";
+import harmonyUrl from '@ohos.url';
 import harmonyWindow from '@ohos.window';
 import http1 from '@ohos.net.http';
 import http2 from '@ohos.net.http';
-import { isPlainObject, Emitter } from "@dcloudio/uni-app-harmony-framework";
+import { isPlainObject, Emitter as Emitter1 } from "@dcloudio/uni-app-harmony-framework";
 import picker1 from '@ohos.file.picker';
 import picker2 from '@ohos.file.picker';
 import picker3 from '@ohos.file.picker';
 import promptAction1 from '@ohos.promptAction';
 import { resolveComponentInstance, isFunction, getCurrentPageVm, getPageIdByVm, addIntersectionObserver, removeIntersectionObserver } from "@dcloudio/uni-app-harmony-framework";
+import { scanCore, scanBarcode } from '@kit.ScanKit';
+import { startPullDownRefresh as internalStartPullDownRefresh, stopPullDownRefresh as internalStopPullDownRefresh } from "@dcloudio/uni-app-harmony-framework";
+type AddPhoneContact = (options: AddPhoneContactOptions) => void;
+class AddPhoneContactSuccess extends UTSObject {
+}
+class UniError1 extends UTSObject {
+    errSubject!: string;
+    errCode!: number;
+    errMsg!: string;
+    data: object | null = null;
+    cause: Object | null = null;
+}
+type AddPhoneContactSuccessCallback = (result: AddPhoneContactSuccess) => void;
+type AddPhoneContactFail = UniError1;
+type AddPhoneContactFailCallback = (result: AddPhoneContactFail) => void;
+type AddPhoneContactComplete = Object;
+type AddPhoneContactCompleteCallback = (result: AddPhoneContactComplete) => void;
+class AddPhoneContactOptions extends UTSObject {
+    photoFilePath: string | null = null;
+    nickName: string | null = null;
+    lastName: string | null = null;
+    middleName: string | null = null;
+    firstName: string | null = null;
+    remark: string | null = null;
+    mobilePhoneNumber: string | null = null;
+    weChatNumber: string | null = null;
+    addressCountry: string | null = null;
+    addressState: string | null = null;
+    addressCity: string | null = null;
+    addressStreet: string | null = null;
+    addressPostalCode: string | null = null;
+    organization: string | null = null;
+    title: string | null = null;
+    workFaxNumber: string | null = null;
+    workPhoneNumber: string | null = null;
+    hostNumber: string | null = null;
+    email: string | null = null;
+    url: string | null = null;
+    workAddressCountry: string | null = null;
+    workAddressState: string | null = null;
+    workAddressCity: string | null = null;
+    workAddressStreet: string | null = null;
+    workAddressPostalCode: string | null = null;
+    homeFaxNumber: string | null = null;
+    homePhoneNumber: string | null = null;
+    homeAddressCountry: string | null = null;
+    homeAddressState: string | null = null;
+    homeAddressCity: string | null = null;
+    homeAddressStreet: string | null = null;
+    homeAddressPostalCode: string | null = null;
+    success: AddPhoneContactSuccessCallback | null = null;
+    fail: AddPhoneContactFailCallback | null = null;
+    complete: AddPhoneContactCompleteCallback | null = null;
+}
+type ArrayBufferToBase64 = (arrayBuffer: ArrayBuffer) => string;
+type Base64ToArrayBuffer = (base64: string) => ArrayBuffer;
+export type SetClipboardData = (options: SetClipboardDataOptions) => void;
+export class SetClipboardDataSuccess extends UTSObject {
+}
+type SetClipboardDataSuccessCallback = (result: SetClipboardDataSuccess) => void;
+type SetClipboardDataFail = UniError;
+type SetClipboardDataFailCallback = (result: SetClipboardDataFail) => void;
+type SetClipboardDataComplete = Object;
+type SetClipboardDataCompleteCallback = (result: SetClipboardDataComplete) => void;
+export class SetClipboardDataOptions extends UTSObject {
+    data!: string;
+    showToast: boolean | null = null;
+    success: SetClipboardDataSuccessCallback | null = null;
+    fail: SetClipboardDataFailCallback | null = null;
+    complete: SetClipboardDataCompleteCallback | null = null;
+}
+export type GetClipboardData = (options: GetClipboardDataOptions) => void;
+export class GetClipboardDataSuccess extends UTSObject {
+    data!: string;
+}
+type GetClipboardDataSuccessCallback = (result: GetClipboardDataSuccess) => void;
+type GetClipboardDataFail = UniError;
+type GetClipboardDataFailCallback = (result: GetClipboardDataFail) => void;
+type GetClipboardDataComplete = Object;
+type GetClipboardDataCompleteCallback = (result: GetClipboardDataComplete) => void;
+export class GetClipboardDataOptions extends UTSObject {
+    success: GetClipboardDataSuccessCallback | null = null;
+    fail: GetClipboardDataFailCallback | null = null;
+    complete: GetClipboardDataCompleteCallback | null = null;
+}
+interface ClipboardModuleGetStringOptions {
+    result: string;
+    data: string;
+}
+export type CreateIntersectionObserver = (component: Object, options: CreateIntersectionObserverOptions) => IntersectionObserver;
+export interface CreateIntersectionObserverOptions {
+    thresholds?: (Object[]) | null;
+    initialRatio?: number | null;
+    observeAll?: boolean | null;
+}
+class ObserveNodeRect extends UTSObject {
+    left!: number;
+    right!: number;
+    top!: number;
+    bottom!: number;
+}
+class ObserveResult extends UTSObject {
+    intersectionRatio!: number;
+    intersectionRect!: Object;
+    boundingClientRect!: ObserveNodeRect;
+    relativeRect!: ObserveNodeRect;
+    time!: number;
+}
+export type ObserveCallback = (result: ObserveResult) => void;
+export interface IntersectionObserver {
+    relativeTo(selector: string, margins?: Object): IntersectionObserver;
+    relativeToViewport(margins?: Object): IntersectionObserver;
+    observe(targetSelector: string, callback: ObserveCallback): void;
+    disconnect(): void;
+}
+interface AddIntersectionObserverArgs {
+    reqId: number;
+    component: ComponentPublicInstance;
+    options: ServiceIntersectionObserverOptions;
+    callback: ObserveCallback;
+}
+interface RemoveIntersectionObserverArgs {
+    reqId: number;
+    component: ComponentPublicInstance;
+}
+interface RequestComponentObserverOptions {
+    selector?: string;
+    rootMargin?: string;
+    relativeToSelector?: string;
+}
+interface ServiceIntersectionObserverOptions extends CreateIntersectionObserverOptions, RequestComponentObserverOptions {
+}
+interface Margins {
+    bottom?: number;
+    left?: number;
+    right?: number;
+    top?: number;
+}
+type $OnCallback = Function;
+type $On = (eventName: string, callback: $OnCallback) => void;
+type $OnceCallback = Function;
+type $Once = (eventName: string, callback: $OnceCallback) => void;
+type $OffCallback = Function;
+type $Off = (eventName: string, callback?: $OffCallback | null) => void;
+type $Emit = (eventName: string, args: Object | null) => void;
+interface IUniEventEmitter {
+    on: (eventName: string, callback: Function) => void;
+    once: (eventName: string, callback: Function) => void;
+    off: (eventName: string, callback: Function) => void;
+    emit: (eventName: string, ...args: (Object | undefined | null)[]) => void;
+}
+class ExitSuccess extends UTSObject {
+    errMsg!: string;
+}
+type ExitErrorCode = 12001 | 12002;
+interface IExitError extends IUniError {
+    errCode: ExitErrorCode;
+}
+type ExitFail = IExitError;
+type ExitSuccessCallback = (res: ExitSuccess) => void;
+type ExitFailCallback = (res: ExitFail) => void;
+type ExitCompleteCallback = (res: Object) => void;
+class ExitOptions extends UTSObject {
+    success: ExitSuccessCallback | null = null;
+    fail: ExitFailCallback | null = null;
+    complete: ExitCompleteCallback | null = null;
+}
+type Exit = (options?: ExitOptions | null) => void;
+export class SaveFileSuccess extends UTSObject {
+    savedFilePath!: string;
+}
+type SaveFileSuccessCallback = (res: SaveFileSuccess) => void;
+export class SaveFileFail extends UTSObject {
+}
+type SaveFileFailCallback = (res: SaveFileFail) => void;
+type SaveFileCompleteCallback = (res: Object) => void;
+export class SaveFileOptions extends UTSObject {
+    tempFilePath!: string;
+    success: SaveFileSuccessCallback | null = null;
+    fail: SaveFileFailCallback | null = null;
+    complete: SaveFileCompleteCallback | null = null;
+}
+export class GetFileInfoSuccess extends UTSObject {
+    digest!: string;
+    size!: number;
+}
+type GetFileInfoSuccessCallback = (res: GetFileInfoSuccess) => void;
+export class GetFileInfoFail extends UTSObject {
+}
+type GetFileInfoFailCallback = (res: GetFileInfoFail) => void;
+type GetFileInfoCompleteCallback = (res: Object) => void;
+export class GetFileInfoOptions extends UTSObject {
+    filePath!: string;
+    digestAlgorithm: string | null = null;
+    success: GetFileInfoSuccessCallback | null = null;
+    fail: GetFileInfoFailCallback | null = null;
+    complete: GetFileInfoCompleteCallback | null = null;
+}
+export class GetSavedFileInfoSuccess extends UTSObject {
+    size!: number;
+    createTime!: number;
+}
+type GetSavedFileInfoSuccessCallback = (res: GetSavedFileInfoSuccess) => void;
+export class GetSavedFileInfoFail extends UTSObject {
+}
+type GetSavedFileInfoFailCallback = (res: GetSavedFileInfoFail) => void;
+type GetSavedFileInfoCompleteCallback = (res: Object) => void;
+export class GetSavedFileInfoOptions extends UTSObject {
+    filePath!: string;
+    success: GetSavedFileInfoSuccessCallback | null = null;
+    fail: GetSavedFileInfoFailCallback | null = null;
+    complete: GetSavedFileInfoCompleteCallback | null = null;
+}
+export class RemoveSavedFileSuccess extends UTSObject {
+}
+type RemoveSavedFileSuccessCallback = (res: RemoveSavedFileSuccess) => void;
+export class RemoveSavedFileFail extends UTSObject {
+}
+type RemoveSavedFileFailCallback = (res: RemoveSavedFileFail) => void;
+type RemoveSavedFileCompleteCallback = (res: Object) => void;
+export class RemoveSavedFileOptions extends UTSObject {
+    filePath!: string;
+    success: RemoveSavedFileSuccessCallback | null = null;
+    fail: RemoveSavedFileFailCallback | null = null;
+    complete: RemoveSavedFileCompleteCallback | null = null;
+}
+export class SavedFileListItem extends UTSObject {
+    filePath!: string;
+    size!: number;
+    createTime!: number;
+}
+export class GetSavedFileListSuccess extends UTSObject {
+    fileList!: SavedFileListItem[];
+}
+type GetSavedFileListSuccessCallback = (res: GetSavedFileListSuccess) => void;
+export class GetSavedFileListFail extends UTSObject {
+}
+type GetSavedFileListFailCallback = (res: GetSavedFileListFail) => void;
+type GetSavedFileListCompleteCallback = (res: Object) => void;
+export class GetSavedFileListOptions extends UTSObject {
+    success: GetSavedFileListSuccessCallback | null = null;
+    fail: GetSavedFileListFailCallback | null = null;
+    complete: GetSavedFileListCompleteCallback | null = null;
+}
+export type SaveFile = (options?: SaveFileOptions | null) => void;
+export type GetFileInfo = (options?: GetFileInfoOptions | null) => void;
+export type GetSavedFileInfo = (options?: GetSavedFileInfoOptions | null) => void;
+export type RemoveSavedFile = (options?: RemoveSavedFileOptions | null) => void;
+export type GetSavedFileList = (options?: GetSavedFileListOptions | null) => void;
+class GetAppBaseInfoOptions extends UTSObject {
+    filter!: Array<string>;
+}
+export class GetAppBaseInfoResult extends UTSObject {
+    appId: string | null = null;
+    appName: string | null = null;
+    appVersion: string | null = null;
+    appVersionCode: string | null = null;
+    appLanguage: string | null = null;
+    language: string | null = null;
+    version: string | null = null;
+    appWgtVersion: string | null = null;
+    hostLanguage: string | null = null;
+    hostVersion: string | null = null;
+    hostName: string | null = null;
+    hostPackageName: string | null = null;
+    hostSDKVersion: string | null = null;
+    hostTheme: string | null = null;
+    isUniAppX: boolean | null = null;
+    uniCompileVersion: string | null = null;
+    uniCompilerVersion: string | null = null;
+    uniPlatform: 'app' | 'web' | 'mp-weixin' | 'mp-alipay' | 'mp-baidu' | 'mp-toutiao' | 'mp-lark' | 'mp-qq' | 'mp-kuaishou' | 'mp-jd' | 'mp-360' | 'quickapp-webview' | 'quickapp-webview-union' | 'quickapp-webview-huawei' | null = null;
+    uniRuntimeVersion: string | null = null;
+    uniCompileVersionCode: number | null = null;
+    uniCompilerVersionCode: number | null = null;
+    uniRuntimeVersionCode: number | null = null;
+    packageName: string | null = null;
+    bundleId: string | null = null;
+    signature: string | null = null;
+    appTheme: 'light' | 'dark' | 'auto' | null = null;
+}
+export type GetAppBaseInfo = (options?: GetAppBaseInfoOptions | null) => GetAppBaseInfoResult;
+interface IAppBaseInfoAppVersion {
+    name: string;
+    code: string;
+}
+class GetDeviceInfoOptions extends UTSObject {
+    filter!: Array<string>;
+}
+export class GetDeviceInfoResult extends UTSObject {
+    brand: string | null = null;
+    deviceBrand: string | null = null;
+    deviceId: string | null = null;
+    model: string | null = null;
+    deviceModel: string | null = null;
+    deviceType: 'phone' | 'pad' | 'tv' | 'watch' | 'pc' | 'undefined' | 'car' | 'vr' | 'appliance' | null = null;
+    deviceOrientation: string | null = null;
+    devicePixelRatio: number | null = null;
+    system: string | null = null;
+    platform: 'ios' | 'android' | 'harmonyos' | 'mac' | 'windows' | 'linux' | null = null;
+    isRoot: boolean | null = null;
+    isSimulator: boolean | null = null;
+    isUSBDebugging: boolean | null = null;
+    osName: 'ios' | 'android' | 'harmonyos' | 'macos' | 'windows' | 'linux' | null = null;
+    osVersion: string | null = null;
+    osLanguage: string | null = null;
+    osTheme: 'light' | 'dark' | null = null;
+    osAndroidAPILevel: number | null = null;
+    romName: string | null = null;
+    romVersion: string | null = null;
+}
+export type GetDeviceInfo = (options?: GetDeviceInfoOptions | null) => GetDeviceInfoResult;
+type GetNetworkType = (options: GetNetworkTypeOptions) => void;
+class GetNetworkTypeSuccess extends UTSObject {
+    networkType!: string;
+}
+type GetNetworkTypeSuccessCallback = (result: GetNetworkTypeSuccess) => void;
+type GetNetworkTypeFail = UniError;
+type GetNetworkTypeFailCallback = (result: GetNetworkTypeFail) => void;
+type GetNetworkTypeComplete = Object;
+type GetNetworkTypeCompleteCallback = (result: GetNetworkTypeComplete) => void;
+class GetNetworkTypeOptions extends UTSObject {
+    success: GetNetworkTypeSuccessCallback | null = null;
+    fail: GetNetworkTypeFailCallback | null = null;
+    complete: GetNetworkTypeCompleteCallback | null = null;
+}
+class OnNetworkStatusChangeCallbackResult extends UTSObject {
+    isConnected!: boolean;
+    networkType!: string;
+}
+type OnNetworkStatusChangeCallback = (result: OnNetworkStatusChangeCallbackResult) => void;
+type OnNetworkStatusChange = (callback: OnNetworkStatusChangeCallback) => void;
+type OffNetworkStatusChange = (callback: (result: Object) => void) => void;
+export class GetProviderSuccess extends UTSObject {
+    service!: 'payment' | 'location';
+    provider!: string[];
+    providers!: UniProvider[];
+    errMsg!: string;
+}
+type GetProviderSuccessCallback = (result: GetProviderSuccess) => void;
+type GetProviderFail = UniError;
+type GetProviderFailCallback = (result: GetProviderFail) => void;
+type GetProviderComplete = Object;
+type GetProviderCompleteCallback = (result: GetProviderComplete) => void;
+export class GetProviderOptions extends UTSObject {
+    service!: 'payment' | 'location';
+    success: GetProviderSuccessCallback | null = null;
+    fail: GetProviderFailCallback | null = null;
+    complete: GetProviderCompleteCallback | null = null;
+}
+export type GetProvider = (options: GetProviderOptions) => void;
+export type GetProviderIds = (options: GetProviderIdsOptions) => string[] | null;
+export type GetProviderObject = (options: GetProviderObjectOptions) => UniProvider | null;
+export class GetProviderIdsOptions extends UTSObject {
+    service!: 'payment' | 'location';
+}
+export class GetProviderObjectOptions extends UTSObject {
+    service!: 'payment' | 'location';
+    provider!: string;
+}
+export type GetSystemInfo = (options: GetSystemInfoOptions) => void;
+export type GetSystemInfoSync = () => GetSystemInfoResult;
+export type GetWindowInfo = () => GetWindowInfoResult;
+export class SafeArea extends UTSObject {
+    left!: number;
+    right!: number;
+    top!: number;
+    bottom!: number;
+    width!: number;
+    height!: number;
+}
+export class SafeAreaInsets extends UTSObject {
+    left!: number;
+    right!: number;
+    top!: number;
+    bottom!: number;
+}
+export class GetSystemInfoResult extends UTSObject {
+    SDKVersion!: string;
+    appId!: string;
+    appLanguage!: string;
+    appName!: string;
+    appVersion!: string;
+    appVersionCode!: string;
+    appWgtVersion: string | null = null;
+    brand!: string;
+    browserName!: string;
+    browserVersion!: string;
+    deviceId!: string;
+    deviceBrand!: string;
+    deviceModel!: string;
+    deviceType!: 'phone' | 'pad' | 'tv' | 'watch' | 'pc' | 'undefined' | 'car' | 'vr' | 'appliance';
+    devicePixelRatio!: number;
+    deviceOrientation!: 'portrait' | 'landscape';
+    language!: string;
+    model: string | null = null;
+    osName!: 'ios' | 'android' | 'harmonyos' | 'macos' | 'windows' | 'linux';
+    osVersion!: string;
+    osLanguage!: string;
+    osTheme: 'light' | 'dark' | null = null;
+    pixelRatio!: number;
+    platform!: 'ios' | 'android' | 'harmonyos' | 'mac' | 'windows' | 'linux';
+    screenWidth!: number;
+    screenHeight!: number;
+    statusBarHeight!: number;
+    system!: string;
+    safeArea!: SafeArea;
+    safeAreaInsets!: SafeAreaInsets;
+    ua!: string;
+    uniCompileVersion!: string;
+    uniCompilerVersion!: string;
+    uniPlatform!: 'app' | 'web' | 'mp-weixin' | 'mp-alipay' | 'mp-baidu' | 'mp-toutiao' | 'mp-lark' | 'mp-qq' | 'mp-kuaishou' | 'mp-jd' | 'mp-360' | 'quickapp-webview' | 'quickapp-webview-union' | 'quickapp-webview-huawei';
+    uniRuntimeVersion!: string;
+    uniCompileVersionCode!: number;
+    uniCompilerVersionCode!: number;
+    uniRuntimeVersionCode!: number;
+    version!: string;
+    romName!: string;
+    romVersion!: string;
+    windowWidth!: number;
+    windowHeight!: number;
+    windowTop!: number;
+    windowBottom!: number;
+    osAndroidAPILevel: number | null = null;
+    appTheme: 'light' | 'dark' | 'auto' | null = null;
+}
+type GetSystemInfoSuccessCallback = (result: GetSystemInfoResult) => void;
+type GetSystemInfoFail = UniError;
+type GetSystemInfoFailCallback = (result: GetSystemInfoFail) => void;
+type GetSystemInfoComplete = Object;
+type GetSystemInfoCompleteCallback = (result: GetSystemInfoComplete) => void;
+export class GetSystemInfoOptions extends UTSObject {
+    success: GetSystemInfoSuccessCallback | null = null;
+    fail: GetSystemInfoFailCallback | null = null;
+    complete: GetSystemInfoCompleteCallback | null = null;
+}
+export class GetWindowInfoResult extends UTSObject {
+    pixelRatio!: number;
+    screenWidth!: number;
+    screenHeight!: number;
+    windowWidth!: number;
+    windowHeight!: number;
+    statusBarHeight!: number;
+    windowTop!: number;
+    windowBottom!: number;
+    safeArea!: SafeArea;
+    safeAreaInsets!: SafeAreaInsets;
+    screenTop!: number;
+}
+interface ISystemInfoAppVersion {
+    name: string;
+    code: string;
+}
+export class HideKeyboardSuccess extends UTSObject {
+}
+export class HideKeyboardFail extends UTSObject {
+}
+type HideKeyboardSuccessCallback = (res: HideKeyboardSuccess) => void;
+type HideKeyboardFailCallback = (res: HideKeyboardFail) => void;
+type HideKeyboardCompleteCallback = (res: Object) => void;
+export class HideKeyboardOptions extends UTSObject {
+    success: HideKeyboardSuccessCallback | null = null;
+    fail: HideKeyboardFailCallback | null = null;
+    complete: HideKeyboardCompleteCallback | null = null;
+}
+type HideKeyboard = (options?: HideKeyboardOptions | null) => void;
+export type MakePhoneCall = (options: MakePhoneCallOptions) => void;
+export class MakePhoneCallSuccess extends UTSObject {
+}
+type MakePhoneCallSuccessCallback = (result: MakePhoneCallSuccess) => void;
+type MakePhoneCallFail = UniError;
+type MakePhoneCallFailCallback = (result: MakePhoneCallFail) => void;
+type MakePhoneCallComplete = Object;
+type MakePhoneCallCompleteCallback = (result: MakePhoneCallComplete) => void;
+export class MakePhoneCallOptions extends UTSObject {
+    phoneNumber!: string;
+    success: MakePhoneCallSuccessCallback | null = null;
+    fail: MakePhoneCallFailCallback | null = null;
+    complete: MakePhoneCallCompleteCallback | null = null;
+}
+type MediaOrientation = 'up' | 'down' | 'left' | 'right' | 'up-mirrored' | 'down-mirrored' | 'left-mirrored' | 'right-mirrored';
+type MediaErrorCode = 1101001 | 1101002 | 1101003 | 1101004 | 1101005 | 1101006 | 1101007 | 1101008 | 1101009 | 1101010;
+interface IMediaError extends IUniError {
+    errCode: MediaErrorCode;
+}
+export class ChooseImageSuccess extends UTSObject {
+    errSubject!: string;
+    errMsg!: string;
+    tempFilePaths!: Array<string>;
+    tempFiles!: Object;
+}
+type ChooseImageFail = IMediaError;
+type ChooseImageSuccessCallback = (callback: ChooseImageSuccess) => void;
+type ChooseImageFailCallback = (callback: ChooseImageFail) => void;
+type ChooseImageCompleteCallback = (callback: Object) => void;
+class ChooseImageCropOptions extends UTSObject {
+    width!: number;
+    height!: number;
+    quality: (number) | null = null;
+    resize: (boolean) | null = null;
+}
+export class ChooseImageOptions extends UTSObject {
+    count: (number) | null = null;
+    sizeType: (string[]) | null = null;
+    sourceType: (string[]) | null = null;
+    extension: (string[]) | null = null;
+    crop: (ChooseImageCropOptions) | null = null;
+    success: (ChooseImageSuccessCallback) | null = null;
+    fail: (ChooseImageFailCallback) | null = null;
+    complete: (ChooseImageCompleteCallback) | null = null;
+}
+export type ChooseImage = (options: ChooseImageOptions) => void;
+export class PreviewImageSuccess extends UTSObject {
+    errSubject!: string;
+    errMsg!: string;
+}
+class LongPressActionsSuccessData extends UTSObject {
+    tapIndex!: number;
+    index!: number;
+}
+class LongPressActionsOptions extends UTSObject {
+    itemList!: string[];
+    itemColor: string | null = null;
+    success: ((result: LongPressActionsSuccessData) => void) | null = null;
+    fail: ((result: Object) => void) | null = null;
+    complete: ((result: Object) => void) | null = null;
+}
+type PreviewImageFail = IMediaError;
+type PreviewImageSuccessCallback = (callback: PreviewImageSuccess) => void;
+type PreviewImageFailCallback = (callback: PreviewImageFail) => void;
+type PreviewImageCompleteCallback = ChooseImageCompleteCallback;
+export class PreviewImageOptions extends UTSObject {
+    current: Object | null = null;
+    urls!: Array<string.ImageURIString>;
+    showmenu: boolean | null = null;
+    indicator: string | null = null;
+    loop: boolean | null = null;
+    longPressActions: LongPressActionsOptions | null = null;
+    success: (PreviewImageSuccessCallback) | null = null;
+    fail: (PreviewImageFailCallback) | null = null;
+    complete: (PreviewImageCompleteCallback) | null = null;
+}
+export type PreviewImage = (options: PreviewImageOptions) => void;
+export type ClosePreviewImage = (options: ClosePreviewImageOptions) => void;
+export class ClosePreviewImageSuccess extends UTSObject {
+    errMsg!: string;
+}
+type ClosePreviewImageFail = IMediaError;
+type ClosePreviewImageSuccessCallback = (callback: ClosePreviewImageSuccess) => void;
+type ClosePreviewImageFailCallback = (callback: ClosePreviewImageFail) => void;
+type ClosePreviewImageCompleteCallback = ChooseImageCompleteCallback;
+export class ClosePreviewImageOptions extends UTSObject {
+    success: (ClosePreviewImageSuccessCallback) | null = null;
+    fail: (ClosePreviewImageFailCallback) | null = null;
+    complete: (ClosePreviewImageCompleteCallback) | null = null;
+}
+export type GetImageInfo = (options: GetImageInfoOptions) => void;
+export class GetImageInfoSuccess extends UTSObject {
+    width!: number;
+    height!: number;
+    path!: string;
+    orientation: MediaOrientation | null = null;
+    type: string | null = null;
+}
+type GetImageInfoFail = IMediaError;
+type GetImageInfoSuccessCallback = (callback: GetImageInfoSuccess) => void;
+type GetImageInfoFailCallback = (callback: GetImageInfoFail) => void;
+type GetImageInfoCompleteCallback = ChooseImageCompleteCallback;
+export class GetImageInfoOptions extends UTSObject {
+    src!: string.ImageURIString;
+    success: (GetImageInfoSuccessCallback) | null = null;
+    fail: (GetImageInfoFailCallback) | null = null;
+    complete: (GetImageInfoCompleteCallback) | null = null;
+}
+export type SaveImageToPhotosAlbum = (options: SaveImageToPhotosAlbumOptions) => void;
+export class SaveImageToPhotosAlbumSuccess extends UTSObject {
+    path!: string;
+}
+type SaveImageToPhotosAlbumFail = IMediaError;
+type SaveImageToPhotosAlbumSuccessCallback = (callback: SaveImageToPhotosAlbumSuccess) => void;
+type SaveImageToPhotosAlbumFailCallback = (callback: SaveImageToPhotosAlbumFail) => void;
+type SaveImageToPhotosAlbumCompleteCallback = ChooseImageCompleteCallback;
+export class SaveImageToPhotosAlbumOptions extends UTSObject {
+    filePath!: string.ImageURIString;
+    success: (SaveImageToPhotosAlbumSuccessCallback) | null = null;
+    fail: (SaveImageToPhotosAlbumFailCallback) | null = null;
+    complete: (SaveImageToPhotosAlbumCompleteCallback) | null = null;
+}
+export class ChooseVideoSuccess extends UTSObject {
+    tempFilePath!: string;
+    duration!: number;
+    size!: number;
+    height!: number;
+    width!: number;
+}
+type ChooseVideoFail = IMediaError;
+type ChooseVideoSuccessCallback = (callback: ChooseVideoSuccess) => void;
+type ChooseVideoFailCallback = (callback: ChooseVideoFail) => void;
+type ChooseVideoCompleteCallback = ChooseImageCompleteCallback;
+export class ChooseVideoOptions extends UTSObject {
+    sourceType: (string[]) | null = null;
+    compressed: boolean | null = true;
+    maxDuration: number | null = null;
+    camera: string | null = null;
+    extension: (string[]) | null = null;
+    success: (ChooseVideoSuccessCallback) | null = null;
+    fail: (ChooseVideoFailCallback) | null = null;
+    complete: (ChooseVideoCompleteCallback) | null = null;
+}
+export type ChooseVideo = (options: ChooseVideoOptions) => void;
+export class GetVideoInfoSuccess extends UTSObject {
+    orientation: MediaOrientation | null = null;
+    type: string | null = null;
+    duration!: number;
+    size!: number;
+    height!: number;
+    width!: number;
+    fps: number | null = null;
+    bitrate: number | null = null;
+}
+type GetVideoInfoFail = IMediaError;
+type GetVideoInfoSuccessCallback = (callback: GetVideoInfoSuccess) => void;
+type GetVideoInfoFailCallback = (callback: GetVideoInfoFail) => void;
+type GetVideoInfoCompleteCallback = ChooseImageCompleteCallback;
+export class GetVideoInfoOptions extends UTSObject {
+    src!: string.VideoURIString;
+    success: (GetVideoInfoSuccessCallback) | null = null;
+    fail: (GetVideoInfoFailCallback) | null = null;
+    complete: (GetVideoInfoCompleteCallback) | null = null;
+}
+export type GetVideoInfo = (options: GetVideoInfoOptions) => void;
+export class SaveVideoToPhotosAlbumSuccess extends UTSObject {
+}
+type SaveVideoToPhotosAlbumFail = IMediaError;
+type SaveVideoToPhotosAlbumSuccessCallback = (callback: SaveVideoToPhotosAlbumSuccess) => void;
+type SaveVideoToPhotosAlbumFailCallback = (callback: SaveVideoToPhotosAlbumFail) => void;
+type SaveVideoToPhotosAlbumCompleteCallback = ChooseImageCompleteCallback;
+export class SaveVideoToPhotosAlbumOptions extends UTSObject {
+    filePath!: string.VideoURIString;
+    success: (SaveVideoToPhotosAlbumSuccessCallback) | null = null;
+    fail: (SaveVideoToPhotosAlbumFailCallback) | null = null;
+    complete: (SaveVideoToPhotosAlbumCompleteCallback) | null = null;
+}
+export type SaveVideoToPhotosAlbum = (options: SaveVideoToPhotosAlbumOptions) => void;
+interface MediaFile {
+    fileType: 'video' | 'image';
+    tempFilePath: string;
+    size: number;
+    width?: number;
+    height?: number;
+    duration?: number;
+    thumbTempFilePath?: string;
+}
+interface ChooseMediaOptions {
+    mimeType: picker.PhotoViewMIMETypes.VIDEO_TYPE | picker.PhotoViewMIMETypes.IMAGE_TYPE;
+    count?: number;
+}
+interface chooseMediaSuccessCallbackResult {
+    tempFiles: MediaFile[];
+}
+interface TempFileItem {
+    path: string;
+    size: number;
+}
+interface IPreviewImageOptions {
+    urls: string[];
+    current: string;
+    showmenu: boolean;
+}
+type SetNavigationBarColorErrorCode = 4;
+interface SetNavigationBarColorFail extends IUniError {
+    errCode: SetNavigationBarColorErrorCode;
+}
+export class SetNavigationBarColorOptions extends UTSObject {
+    frontColor!: '#ffffff' | '#000000';
+    backgroundColor!: string.ColorString;
+    success: SetNavigationBarColorSuccessCallback | null = null;
+    fail: SetNavigationBarColorFailCallback | null = null;
+    complete: SetNavigationBarColorCompleteCallback | null = null;
+}
+export type SetNavigationBarColorSuccess = AsyncApiSuccessResult;
+type SetNavigationBarColorSuccessCallback = (result: SetNavigationBarColorSuccess) => void;
+type SetNavigationBarColorFailCallback = (error: SetNavigationBarColorFail) => void;
+type SetNavigationBarColorComplete = AsyncApiResult;
+type SetNavigationBarColorCompleteCallback = (res: SetNavigationBarColorComplete) => void;
+export type SetNavigationBarColor = (options: SetNavigationBarColorOptions) => void;
+type SetNavigationBarTitleErrorCode = 4;
+interface SetNavigationBarTitleFail extends IUniError {
+    errCode: SetNavigationBarTitleErrorCode;
+}
+export class SetNavigationBarTitleOptions extends UTSObject {
+    title!: string;
+    success: SetNavigationBarTitleSuccessCallback | null = null;
+    fail: SetNavigationBarTitleFailCallback | null = null;
+    complete: SetNavigationBarTitleCompleteCallback | null = null;
+}
+export type SetNavigationBarTitleSuccess = AsyncApiSuccessResult;
+type SetNavigationBarTitleSuccessCallback = (result: SetNavigationBarTitleSuccess) => void;
+type SetNavigationBarTitleFailCallback = (error: SetNavigationBarTitleFail) => void;
+type SetNavigationBarTitleComplete = AsyncApiResult;
+type SetNavigationBarTitleCompleteCallback = (res: SetNavigationBarTitleComplete) => void;
+export type SetNavigationBarTitle = (options: SetNavigationBarTitleOptions) => void;
+export type ShowNavigationBarLoadingSuccess = AsyncApiSuccessResult;
+type ShowNavigationBarLoadingSuccessCallback = (result: ShowNavigationBarLoadingSuccess) => void;
+interface ShowNavigationBarLoadingFail extends IUniError {
+}
+type ShowNavigationBarLoadingFailCallback = (error: ShowNavigationBarLoadingFail) => void;
+export class ShowNavigationBarLoadingOptions extends UTSObject {
+    success: ShowNavigationBarLoadingSuccessCallback | null = null;
+    fail: ShowNavigationBarLoadingFailCallback | null = null;
+    complete: (() => void) | null = null;
+}
+export type ShowNavigationBarLoading = (options?: ShowNavigationBarLoadingOptions | null) => void;
+export type HideNavigationBarLoadingSuccess = AsyncApiSuccessResult;
+type HideNavigationBarLoadingSuccessCallback = (result: HideNavigationBarLoadingSuccess) => void;
+interface HideNavigationBarLoadingFail extends IUniError {
+}
+type HideNavigationBarLoadingFailCallback = (error: HideNavigationBarLoadingFail) => void;
+export class HideNavigationBarLoadingOptions extends UTSObject {
+    success: HideNavigationBarLoadingSuccessCallback | null = null;
+    fail: HideNavigationBarLoadingFailCallback | null = null;
+    complete: (() => void) | null = null;
+}
+export type HideNavigationBarLoading = (options?: HideNavigationBarLoadingOptions | null) => void;
+interface TitleNView {
+    titleText: string;
+    autoBackButton?: boolean;
+    loading?: boolean;
+}
+interface BackButton {
+    color?: string;
+}
+interface PlusWebviewWebviewTitleNViewStyles {
+    backgroundColor?: string;
+    titleColor?: string;
+    titleNView?: TitleNView;
+    backButton?: BackButton;
+}
+interface Webview {
+    getStyle: () => PlusWebviewWebviewTitleNViewStyles | null;
+    setStyle: (style: PlusWebviewWebviewTitleNViewStyles) => void;
+}
+interface $page {
+    statusBarStyle: 'dark' | 'light';
+}
+interface Page {
+    $getAppWebview: () => Webview | null;
+    $page: $page;
+}
+export type Request<T = Object> = (param: RequestOptions<T>) => RequestTask;
+export class RequestOptions<T = Object> extends UTSObject {
+    url!: string;
+    data: Object | null = null;
+    header: UTSJSONObject | null = null;
+    method: RequestMethod | null = null;
+    timeout: number | null = null;
+    dataType: string | null = null;
+    responseType: string | null = null;
+    sslVerify: boolean | null = null;
+    withCredentials: boolean | null = null;
+    firstIpv4: boolean | null = null;
+    success: RequestSuccessCallback<T> | null = null;
+    fail: RequestFailCallback | null = null;
+    complete: RequestCompleteCallback | null = null;
+}
+export class RequestSuccess<T = Object> extends UTSObject {
+    data: T | null = null;
+    statusCode!: number;
+    header!: Object;
+    cookies!: Array<string>;
+}
+type RequestMethod = "GET" | "POST" | "PUT" | "PATCH" | "DELETE" | "HEAD" | "OPTIONS";
+type RequestErrorCode = 5 | 1000 | 100001 | 100002 | 600003 | 600008 | 600009 | 602001;
+interface RequestFail extends IUniError {
+    errCode: RequestErrorCode;
+}
+type RequestSuccessCallback<T> = (option: RequestSuccess<T>) => void;
+type RequestFailCallback = (option: RequestFail) => void;
+type RequestCompleteCallback = (option: Object) => void;
+export interface RequestTask {
+    abort(): void;
+}
+export type UploadFile = (options: UploadFileOptions) => UploadTask;
+class UploadFileOptionFiles extends UTSObject {
+    name: string | null = null;
+    uri!: string;
+    file: Object | null = null;
+}
+export class UploadFileSuccess extends UTSObject {
+    data!: string;
+    statusCode!: number;
+}
+type UploadFileSuccessCallback = (result: UploadFileSuccess) => void;
+interface UploadFileFail extends IUniError {
+    errCode: RequestErrorCode;
+}
+type UploadFileFailCallback = (result: UploadFileFail) => void;
+type UploadFileCompleteCallback = (result: Object) => void;
+export class UploadFileOptions extends UTSObject {
+    url!: string;
+    filePath: string | null = null;
+    name: string | null = null;
+    files: (UploadFileOptionFiles[]) | null = null;
+    header: UTSJSONObject | null = null;
+    formData: UTSJSONObject | null = null;
+    timeout: number | null = null;
+    success: UploadFileSuccessCallback | null = null;
+    fail: UploadFileFailCallback | null = null;
+    complete: UploadFileCompleteCallback | null = null;
+}
+export class OnProgressUpdateResult extends UTSObject {
+    progress!: number;
+    totalBytesSent!: number;
+    totalBytesExpectedToSend!: number;
+}
+type UploadFileProgressUpdateCallback = (result: OnProgressUpdateResult) => void;
+export interface UploadTask {
+    abort(): void;
+    onProgressUpdate(callback: UploadFileProgressUpdateCallback): void;
+}
+export type DownloadFile = (options: DownloadFileOptions) => DownloadTask;
+export class DownloadFileSuccess extends UTSObject {
+    tempFilePath!: string;
+    statusCode!: number;
+}
+type DownloadFileSuccessCallback = (result: DownloadFileSuccess) => void;
+interface DownloadFileFail extends IUniError {
+    errCode: RequestErrorCode;
+}
+type DownloadFileFailCallback = (result: DownloadFileFail) => void;
+type DownloadFileComplete = Object;
+type DownloadFileCompleteCallback = (result: DownloadFileComplete) => void;
+export class DownloadFileOptions extends UTSObject {
+    url!: string;
+    header: UTSJSONObject | null = null;
+    filePath: string | null = null;
+    timeout: number | null = null;
+    success: DownloadFileSuccessCallback | null = null;
+    fail: DownloadFileFailCallback | null = null;
+    complete: DownloadFileCompleteCallback | null = null;
+}
+export class OnProgressDownloadResult extends UTSObject {
+    progress!: number;
+    totalBytesWritten!: number;
+    totalBytesExpectedToWrite!: number;
+}
+type DownloadFileProgressUpdateCallback = (result: OnProgressDownloadResult) => void;
+export interface DownloadTask {
+    abort(): void;
+    onProgressUpdate(callback: DownloadFileProgressUpdateCallback): void;
+}
+interface IRequestTask {
+    abort: Function;
+    onHeadersReceived: Function;
+    offHeadersReceived: Function;
+}
+interface IUploadTask {
+    abort: Function;
+    onHeadersReceived: Function;
+    offHeadersReceived: Function;
+    onProgressUpdate: Function;
+    offProgressUpdate: Function;
+}
+interface IDownloadTask {
+    abort: Function;
+    onHeadersReceived: Function;
+    offHeadersReceived: Function;
+    onProgressUpdate: Function;
+    offProgressUpdate: Function;
+}
+export type OpenAppAuthorizeSetting = (options: OpenAppAuthorizeSettingOptions) => void;
+export class OpenAppAuthorizeSettingSuccess extends UTSObject {
+    errMsg!: string;
+}
+type OpenAppAuthorizeSettingSuccessCallback = (result: OpenAppAuthorizeSettingSuccess) => void;
+class OpenAppAuthorizeSettingFail extends UTSObject {
+    errMsg!: string;
+}
+type OpenAppAuthorizeSettingFailCallback = (result: OpenAppAuthorizeSettingFail) => void;
+class OpenAppAuthorizeSettingComplete extends UTSObject {
+    errMsg!: string;
+}
+type OpenAppAuthorizeSettingCompleteCallback = (result: OpenAppAuthorizeSettingComplete) => void;
+export class OpenAppAuthorizeSettingOptions extends UTSObject {
+    success: OpenAppAuthorizeSettingSuccessCallback | null = null;
+    fail: OpenAppAuthorizeSettingFailCallback | null = null;
+    complete: OpenAppAuthorizeSettingCompleteCallback | null = null;
+}
+export class OpenDocumentSuccess extends UTSObject {
+}
+export class OpenDocumentFail extends UTSObject {
+}
+type OpenDocumentSuccessCallback = (res: OpenDocumentSuccess) => void;
+type OpenDocumentFailCallback = (res: OpenDocumentFail) => void;
+type OpenDocumentCompleteCallback = (res: Object) => void;
+type OpenDocumentSupportedTypes = 'doc' | 'xls' | 'ppt' | 'pdf' | 'docx' | 'xlsx' | 'pptx';
+export class OpenDocumentOptions extends UTSObject {
+    filePath!: string;
+    fileType: OpenDocumentSupportedTypes | null = null;
+    success: OpenDocumentSuccessCallback | null = null;
+    fail: OpenDocumentFailCallback | null = null;
+    complete: OpenDocumentCompleteCallback | null = null;
+}
+type OpenDocument = (options?: OpenDocumentOptions | null) => void;
+type PageScrollToErrorCode = 4;
+interface PageScrollToFail extends IUniError {
+    errCode: PageScrollToErrorCode;
+}
+export type PageScrollToSuccess = AsyncApiSuccessResult;
+type PageScrollToSuccessCallback = (result: PageScrollToSuccess) => void;
+type PageScrollToFailCallback = (result: PageScrollToFail) => void;
+type PageScrollToComplete = AsyncApiResult;
+type PageScrollToCompleteCallback = (result: PageScrollToComplete) => void;
+export class PageScrollToOptions extends UTSObject {
+    scrollTop: number | null = null;
+    selector: string | null = null;
+    offsetTop: number | null = null;
+    duration: number | null = null;
+    success: PageScrollToSuccessCallback | null = null;
+    fail: PageScrollToFailCallback | null = null;
+    complete: PageScrollToCompleteCallback | null = null;
+}
+export type PageScrollTo = (options: PageScrollToOptions) => Promise<PageScrollToSuccess> | null;
+export interface UniPaymentProvider extends UniProvider {
+    requestPayment(options: RequestPaymentOptions): void;
+}
+type RequestPaymentErrorCode = 700600 | 701100 | 701110 | 700601 | 700602 | 700603 | 700000 | 700604 | 700605 | 700800 | 700801 | 700718;
+export type RequestPayment = (options: RequestPaymentOptions) => void;
+export class RequestPaymentSuccess extends UTSObject {
+    data: object | null = null;
+}
+type RequestPaymentSuccessCallback = (result: RequestPaymentSuccess) => void;
+export type RequestPaymentFail = IRequestPaymentFail;
+type RequestPaymentFailCallback = (result: RequestPaymentFail) => void;
+type RequestPaymentComplete = Object;
+interface IRequestPaymentFail extends IUniError {
+    errCode: RequestPaymentErrorCode;
+}
+type RequestPaymentCompleteCallback = (result: RequestPaymentComplete) => void;
+export class RequestPaymentOptions extends UTSObject {
+    provider!: string;
+    orderInfo!: string;
+    success: RequestPaymentSuccessCallback | null = null;
+    fail: RequestPaymentFailCallback | null = null;
+    complete: RequestPaymentCompleteCallback | null = null;
+}
+type PromptErrorCode = 1 | 1001;
+interface IPromptError extends IUniError {
+    errCode: PromptErrorCode;
+}
+class ShowToastSuccess extends UTSObject {
+}
+type ShowToastFail = IPromptError;
+type ShowToastSuccessCallback = (res: ShowToastSuccess) => void;
+type ShowToastFailCallback = (res: ShowToastFail) => void;
+type ShowToastCompleteCallback = (res: Object) => void;
+class ShowToastOptions extends UTSObject {
+    title!: string;
+    icon: "success" | "error" | "fail" | "exception" | "loading" | "none" | null = null;
+    image: string.ImageURIString | null = null;
+    mask: boolean | null = null;
+    duration: number | null = null;
+    position: "top" | "center" | "bottom" | null = null;
+    success: ShowToastSuccessCallback | null = null;
+    fail: ShowToastFailCallback | null = null;
+    complete: ShowToastCompleteCallback | null = null;
+}
+type ShowToast = (options: ShowToastOptions) => void;
+type HideToast = () => void;
+class ShowLoadingSuccess extends UTSObject {
+}
+type ShowLoadingFail = IPromptError;
+type ShowLoadingSuccessCallback = (res: ShowLoadingSuccess) => void;
+type ShowLoadingFailCallback = (res: ShowLoadingFail) => void;
+type ShowLoadingCompleteCallback = (res: Object) => void;
+class ShowLoadingOptions extends UTSObject {
+    title!: string;
+    mask: boolean | null = null;
+    success: ShowLoadingSuccessCallback | null = null;
+    fail: ShowLoadingFailCallback | null = null;
+    complete: ShowLoadingCompleteCallback | null = null;
+}
+type ShowLoading = (options: ShowLoadingOptions) => void;
+type HideLoading = () => void;
+class ShowModalSuccess extends UTSObject {
+    confirm!: boolean;
+    cancel!: boolean;
+    content: string | null = null;
+}
+type ShowModalFail = IPromptError;
+type ShowModalSuccessCallback = (res: ShowModalSuccess) => void;
+type ShowModalFailCallback = (res: ShowModalFail) => void;
+type ShowModalCompleteCallback = (res: Object) => void;
+class ShowModalOptions extends UTSObject {
+    title: string | null = null;
+    content: string | null = null;
+    showCancel: boolean | null = true;
+    cancelText: string | null = null;
+    cancelColor: string.ColorString | null = null;
+    confirmText: string | null = null;
+    confirmColor: string.ColorString | null = null;
+    editable: boolean | null = false;
+    placeholderText: string | null = null;
+    success: ShowModalSuccessCallback | null = null;
+    fail: ShowModalFailCallback | null = null;
+    complete: ShowModalCompleteCallback | null = null;
+}
+type ShowModal = (options: ShowModalOptions) => void;
+class ShowActionSheetSuccess extends UTSObject {
+    tapIndex: number | null = null;
+}
+class Popover extends UTSObject {
+    top!: number;
+    left!: number;
+    width!: number;
+    height!: number;
+}
+type ShowActionSheetFail = IPromptError;
+type ShowActionSheetSuccessCallback = (res: ShowActionSheetSuccess) => void;
+type ShowActionSheetFailCallback = (res: ShowActionSheetFail) => void;
+type ShowActionSheetCompleteCallback = (res: Object) => void;
+class ShowActionSheetOptions extends UTSObject {
+    title: string | null = null;
+    alertText: string | null = null;
+    itemList!: string[];
+    itemColor: string.ColorString | null = null;
+    popover: Popover | null = null;
+    success: ShowActionSheetSuccessCallback | null = null;
+    fail: ShowActionSheetFailCallback | null = null;
+    complete: ShowActionSheetCompleteCallback | null = null;
+}
+type ShowActionSheet = (options: ShowActionSheetOptions) => void;
+interface IShowLoadingOptions {
+    title: string;
+    mask: boolean;
+}
+type PullDownRefreshErrorCode = 4;
+interface StartPullDownRefreshFail extends IUniError {
+    errCode: PullDownRefreshErrorCode;
+}
+export class StartPullDownRefreshOptions extends UTSObject {
+    success: StartPullDownRefreshSuccessCallback | null = null;
+    fail: StartPullDownRefreshFailCallback | null = null;
+    complete: StartPullDownRefreshCompleteCallback | null = null;
+}
+export type StartPullDownRefreshSuccess = AsyncApiSuccessResult;
+type StartPullDownRefreshSuccessCallback = (result: StartPullDownRefreshSuccess) => void;
+type StartPullDownRefreshFailCallback = (result: StartPullDownRefreshFail) => void;
+type StartPullDownRefreshComplete = AsyncApiResult;
+type StartPullDownRefreshCompleteCallback = (result: StartPullDownRefreshComplete) => void;
+type StartPullDownRefresh = (options: StartPullDownRefreshOptions) => void;
+type StopPullDownRefresh = () => void;
 export type Rpx2px = (number: number) => number;
+export class ScanCodeSuccess extends UTSObject {
+    result!: string;
+    scanType!: ScanCodeSupportedTypes;
+}
+export class ScanCodeFail extends UTSObject {
+}
+type ScanCodeSuccessCallback = (res: ScanCodeSuccess) => void;
+type ScanCodeFailCallback = (res: ScanCodeFail) => void;
+type ScanCodeCompleteCallback = (res: Object) => void;
+type ScanCodeSupportedTypes = 'barCode' | 'qrCode' | 'datamatrix' | 'pdf417';
+export class ScanCodeOptions extends UTSObject {
+    onlyFromCamera: boolean | null = null;
+    scanType: ScanCodeSupportedTypes[] | null = null;
+    success: ScanCodeSuccessCallback | null = null;
+    fail: ScanCodeFailCallback | null = null;
+    complete: ScanCodeCompleteCallback | null = null;
+}
+type ScanCode = (options?: ScanCodeOptions | null) => void;
+export class SetStorageSuccess extends UTSObject {
+}
+type SetStorageSuccessCallback = (res: SetStorageSuccess) => void;
+type SetStorageFailCallback = (res: UniError) => void;
+type SetStorageCompleteCallback = (res: Object) => void;
+export class SetStorageOptions extends UTSObject {
+    key!: string;
+    data!: Object;
+    success: SetStorageSuccessCallback | null = null;
+    fail: SetStorageFailCallback | null = null;
+    complete: SetStorageCompleteCallback | null = null;
+}
+export type SetStorage = (options: SetStorageOptions) => void;
+export type SetStorageSync = (key: string, data: Object) => void;
+export class GetStorageSuccess extends UTSObject {
+    data: Object | null = null;
+}
+type GetStorageSuccessCallback = (res: GetStorageSuccess) => void;
+type GetStorageFailCallback = (res: UniError) => void;
+type GetStorageCompleteCallback = (res: Object) => void;
+export class GetStorageOptions extends UTSObject {
+    key!: string;
+    success: GetStorageSuccessCallback | null = null;
+    fail: GetStorageFailCallback | null = null;
+    complete: GetStorageCompleteCallback | null = null;
+}
+export type GetStorage = (options: GetStorageOptions) => void;
+export type GetStorageSync = (key: string) => Object | null;
+export class GetStorageInfoSuccess extends UTSObject {
+    keys!: Array<string>;
+    currentSize!: number;
+    limitSize!: number;
+}
+type GetStorageInfoSuccessCallback = (res: GetStorageInfoSuccess) => void;
+type GetStorageInfoFailCallback = (res: UniError) => void;
+type GetStorageInfoCompleteCallback = (res: Object) => void;
+export class GetStorageInfoOptions extends UTSObject {
+    success: GetStorageInfoSuccessCallback | null = null;
+    fail: GetStorageInfoFailCallback | null = null;
+    complete: GetStorageInfoCompleteCallback | null = null;
+}
+export type GetStorageInfo = (options: GetStorageInfoOptions) => void;
+export type GetStorageInfoSync = () => GetStorageInfoSuccess;
+export class RemoveStorageSuccess extends UTSObject {
+}
+type RemoveStorageSuccessCallback = (res: RemoveStorageSuccess) => void;
+type RemoveStorageFailCallback = (res: UniError) => void;
+type RemoveStorageCompleteCallback = (res: Object) => void;
+export class RemoveStorageOptions extends UTSObject {
+    key!: string;
+    success: RemoveStorageSuccessCallback | null = null;
+    fail: RemoveStorageFailCallback | null = null;
+    complete: RemoveStorageCompleteCallback | null = null;
+}
+export type RemoveStorage = (options: RemoveStorageOptions) => void;
+export type RemoveStorageSync = (key: string) => void;
+export class ClearStorageSuccess extends UTSObject {
+}
+type ClearStorageSuccessCallback = (res: ClearStorageSuccess) => void;
+type ClearStorageFailCallback = (res: UniError) => void;
+type ClearStorageCompleteCallback = (res: Object) => void;
+export class ClearStorageOptions extends UTSObject {
+    success: ClearStorageSuccessCallback | null = null;
+    fail: ClearStorageFailCallback | null = null;
+    complete: ClearStorageCompleteCallback | null = null;
+}
+export type ClearStorage = (option?: ClearStorageOptions | null) => void;
+export type ClearStorageSync = () => void;
+export type SetTabBarBadgeSuccess = AsyncApiSuccessResult;
+type SetTabBarBadgeSuccessCallback = (result: SetTabBarBadgeSuccess) => void;
+type SetTabBarErrorCode = 100 | 200;
+interface SetTabBarFail extends IUniError {
+    errCode: SetTabBarErrorCode;
+}
+type SetTabBarBadgeFail = SetTabBarFail;
+type SetTabBarBadgeFailCallback = (result: SetTabBarBadgeFail) => void;
+type SetTabBarBadgeComplete = AsyncApiResult;
+type SetTabBarBadgeCompleteCallback = (result: SetTabBarBadgeComplete) => void;
+export class SetTabBarBadgeOptions extends UTSObject {
+    index!: number;
+    text!: string;
+    success: SetTabBarBadgeSuccessCallback | null = null;
+    fail: SetTabBarBadgeFailCallback | null = null;
+    complete: SetTabBarBadgeCompleteCallback | null = null;
+}
+export type RemoveTabBarBadgeSuccess = AsyncApiSuccessResult;
+type RemoveTabBarBadgeSuccessCallback = (result: RemoveTabBarBadgeSuccess) => void;
+type RemoveTabBarBadgeFail = SetTabBarFail;
+type RemoveTabBarBadgeFailCallback = (result: RemoveTabBarBadgeFail) => void;
+type RemoveTabBarBadgeComplete = AsyncApiResult;
+type RemoveTabBarBadgeCompleteCallback = (result: RemoveTabBarBadgeComplete) => void;
+export class RemoveTabBarBadgeOptions extends UTSObject {
+    index!: number;
+    success: RemoveTabBarBadgeSuccessCallback | null = null;
+    fail: RemoveTabBarBadgeFailCallback | null = null;
+    complete: RemoveTabBarBadgeCompleteCallback | null = null;
+}
+export type SetTabBarItemSuccess = AsyncApiSuccessResult;
+type SetTabBarItemSuccessCallback = (result: SetTabBarItemSuccess) => void;
+type SetTabBarItemFail = SetTabBarFail;
+type SetTabBarItemFailCallback = (result: SetTabBarItemFail) => void;
+type SetTabBarItemComplete = AsyncApiResult;
+type SetTabBarItemCompleteCallback = (result: SetTabBarItemComplete) => void;
+class SetTabBarItemIconFontOptions extends UTSObject {
+    text!: string;
+    selectedText!: string;
+    fontSize: string | null = null;
+    color: string | null = null;
+    selectedColor: string | null = null;
+}
+export class SetTabBarItemOptions extends UTSObject {
+    index!: number;
+    text: string | null = null;
+    iconPath: string | null = null;
+    selectedIconPath: string | null = null;
+    pagePath: string | null = null;
+    iconfont: SetTabBarItemIconFontOptions | null = null;
+    visible: boolean | null = null;
+    success: SetTabBarItemSuccessCallback | null = null;
+    fail: SetTabBarItemFailCallback | null = null;
+    complete: SetTabBarItemCompleteCallback | null = null;
+}
+class MidButtonIconFont extends UTSObject {
+    text: string | null = null;
+    selectedText: string | null = null;
+    fontSize: string | null = null;
+    color: string | null = null;
+    selectedColor: string | null = null;
+}
+class MidButtonOptions extends UTSObject {
+    width: string | null = null;
+    height: string | null = null;
+    text: string | null = null;
+    iconPath: string | null = null;
+    iconWidth: string | null = null;
+    backgroundImage: string | null = null;
+    iconfont: MidButtonIconFont | null = null;
+}
+export type SetTabBarStyleSuccess = AsyncApiSuccessResult;
+type SetTabBarStyleSuccessCallback = (result: SetTabBarStyleSuccess) => void;
+type SetTabBarStyleFail = SetTabBarFail;
+type SetTabBarStyleFailCallback = (result: SetTabBarStyleFail) => void;
+type SetTabBarStyleComplete = AsyncApiResult;
+type SetTabBarStyleCompleteCallback = (result: SetTabBarStyleComplete) => void;
+export class SetTabBarStyleOptions extends UTSObject {
+    color: string | string.ColorString | null = null;
+    selectedColor: string | string.ColorString | null = null;
+    backgroundColor: string | string.ColorString | null = null;
+    backgroundImage: string | null = null;
+    backgroundRepeat: 'repeat' | 'repeat-x' | 'repeat-y' | 'no-repeat' | null = null;
+    borderColor: string | string.ColorString | null = null;
+    borderStyle: 'black' | 'white' | null = null;
+    midButton: MidButtonOptions | null = null;
+    success: SetTabBarStyleSuccessCallback | null = null;
+    fail: SetTabBarStyleFailCallback | null = null;
+    complete: SetTabBarStyleCompleteCallback | null = null;
+}
+export type HideTabBarSuccess = AsyncApiSuccessResult;
+type HideTabBarSuccessCallback = (result: HideTabBarSuccess) => void;
+type HideTabBarFail = SetTabBarFail;
+type HideTabBarFailCallback = (result: HideTabBarFail) => void;
+type HideTabBarComplete = AsyncApiResult;
+type HideTabBarCompleteCallback = (result: HideTabBarComplete) => void;
+export class HideTabBarOptions extends UTSObject {
+    animation: boolean | null = null;
+    success: HideTabBarSuccessCallback | null = null;
+    fail: HideTabBarFailCallback | null = null;
+    complete: HideTabBarCompleteCallback | null = null;
+}
+export type ShowTabBarSuccess = AsyncApiSuccessResult;
+type ShowTabBarSuccessCallback = (result: ShowTabBarSuccess) => void;
+type ShowTabBarFail = SetTabBarFail;
+type ShowTabBarFailCallback = (result: ShowTabBarFail) => void;
+type ShowTabBarComplete = AsyncApiResult;
+type ShowTabBarCompleteCallback = (result: ShowTabBarComplete) => void;
+export class ShowTabBarOptions extends UTSObject {
+    animation: boolean | null = null;
+    success: ShowTabBarSuccessCallback | null = null;
+    fail: ShowTabBarFailCallback | null = null;
+    complete: ShowTabBarCompleteCallback | null = null;
+}
+export type ShowTabBarRedDotSuccess = AsyncApiSuccessResult;
+type ShowTabBarRedDotSuccessCallback = (result: ShowTabBarRedDotSuccess) => void;
+type ShowTabBarRedDotFail = SetTabBarFail;
+type ShowTabBarRedDotFailCallback = (result: ShowTabBarRedDotFail) => void;
+type ShowTabBarRedDotComplete = AsyncApiResult;
+type ShowTabBarRedDotCompleteCallback = (result: ShowTabBarRedDotComplete) => void;
+export class ShowTabBarRedDotOptions extends UTSObject {
+    index!: number;
+    success: ShowTabBarRedDotSuccessCallback | null = null;
+    fail: ShowTabBarRedDotFailCallback | null = null;
+    complete: ShowTabBarRedDotCompleteCallback | null = null;
+}
+export type HideTabBarRedDotSuccess = AsyncApiSuccessResult;
+type HideTabBarRedDotSuccessCallback = (result: HideTabBarRedDotSuccess) => void;
+type HideTabBarRedDotFail = SetTabBarFail;
+type HideTabBarRedDotFailCallback = (result: HideTabBarRedDotFail) => void;
+type HideTabBarRedDotComplete = AsyncApiResult;
+type HideTabBarRedDotCompleteCallback = (result: HideTabBarRedDotComplete) => void;
+export class HideTabBarRedDotOptions extends UTSObject {
+    index!: number;
+    success: HideTabBarRedDotSuccessCallback | null = null;
+    fail: HideTabBarRedDotFailCallback | null = null;
+    complete: HideTabBarRedDotCompleteCallback | null = null;
+}
+export type SetTabBarBadge = (options: SetTabBarBadgeOptions) => void;
+export type RemoveTabBarBadge = (options: RemoveTabBarBadgeOptions) => void;
+export type SetTabBarItem = (options: SetTabBarItemOptions) => void;
+export type SetTabBarStyle = (options: SetTabBarStyleOptions) => void;
+export type ShowTabBar = (options?: ShowTabBarOptions | null) => void;
+export type HideTabBar = (options?: HideTabBarOptions | null) => void;
+export type ShowTabBarRedDot = (options: ShowTabBarRedDotOptions) => void;
+export type HideTabBarRedDot = (options: HideTabBarRedDotOptions) => void;
+export type ConnectSocket = (options: ConnectSocketOptions) => SocketTask;
+export class ConnectSocketSuccess extends UTSObject {
+    errMsg!: string;
+}
+type ConnectSocketSuccessCallback = (result: ConnectSocketSuccess) => void;
+type ConnectSocketErrorCode = 600009;
+interface ConnectSocketFail extends IUniError {
+    errCode: ConnectSocketErrorCode;
+}
+type ConnectSocketFailCallback = (result: ConnectSocketFail) => void;
+type ConnectSocketComplete = Object;
+type ConnectSocketCompleteCallback = (result: ConnectSocketComplete) => void;
+export class ConnectSocketOptions extends UTSObject {
+    url!: string;
+    header: UTSJSONObject | null = null;
+    protocols: (string[]) | null = null;
+    success: ConnectSocketSuccessCallback | null = null;
+    fail: ConnectSocketFailCallback | null = null;
+    complete: ConnectSocketCompleteCallback | null = null;
+}
+class GeneralCallbackResult extends UTSObject {
+    errMsg!: string;
+}
+type SendSocketMessageErrorCode = 10001 | 10002 | 602001;
+interface SendSocketMessageFail extends IUniError {
+    errCode: SendSocketMessageErrorCode;
+}
+export class SendSocketMessageOptions extends UTSObject {
+    data!: Object;
+    success: ((result: GeneralCallbackResult) => void) | null = null;
+    fail: ((result: SendSocketMessageFail) => void) | null = null;
+    complete: ((result: Object) => void) | null = null;
+}
+export class CloseSocketOptions extends UTSObject {
+    code: number | null = null;
+    reason: string | null = null;
+    success: ((result: GeneralCallbackResult) => void) | null = null;
+    fail: ((result: GeneralCallbackResult) => void) | null = null;
+    complete: ((result: GeneralCallbackResult) => void) | null = null;
+}
+class OnSocketOpenCallbackResult extends UTSObject {
+    header!: Object;
+}
+export class OnSocketMessageCallbackResult extends UTSObject {
+    data!: Object;
+}
+export interface SocketTask {
+    send(options: SendSocketMessageOptions): void;
+    close(options: CloseSocketOptions): void;
+    onOpen(callback: (result: OnSocketOpenCallbackResult) => void): void;
+    onClose(callback: (result: Object) => void): void;
+    onError(callback: (result: GeneralCallbackResult) => void): void;
+    onMessage(callback: (result: OnSocketMessageCallbackResult) => void): void;
+}
+type OnSocketOpenCallback = (result: OnSocketOpenCallbackResult) => void;
+type OnSocketOpen = (options: OnSocketOpenCallback) => void;
+export class OnSocketErrorCallbackResult extends UTSObject {
+    errMsg!: string;
+}
+type OnSocketErrorCallback = (result: OnSocketErrorCallbackResult) => void;
+type OnSocketError = (callback: OnSocketErrorCallback) => void;
+type SendSocketMessage = (options: SendSocketMessageOptions) => void;
+type OnSocketMessageCallback = (result: OnSocketMessageCallbackResult) => void;
+type OnSocketMessage = (callback: OnSocketMessageCallback) => void;
+type CloseSocket = (options: CloseSocketOptions) => void;
+class OnSocketCloseCallbackResult extends UTSObject {
+    code!: number;
+    reason!: string;
+}
+type OnSocketCloseCallback = (result: OnSocketCloseCallbackResult) => void;
+type OnSocketClose = (callback: OnSocketCloseCallback) => void;
+interface IUniWebsocketEmitter {
+    on: Function;
+    off: Function;
+    emit: Function;
+}
+interface UniExtApi {
+    addPhoneContact: AddPhoneContact;
+    arrayBufferToBase64: ArrayBufferToBase64;
+    base64ToArrayBuffer: Base64ToArrayBuffer;
+    getClipboardData: GetClipboardData;
+    setClipboardData: SetClipboardData;
+    createIntersectionObserver: CreateIntersectionObserver;
+    $on: $On;
+    $once: $Once;
+    $off: $Off;
+    $emit: $Emit;
+    exit: Exit;
+    saveFile: SaveFile;
+    getSavedFileList: GetSavedFileList;
+    getSavedFileInfo: GetSavedFileInfo;
+    removeSavedFile: RemoveSavedFile;
+    getFileInfo: GetFileInfo;
+    getAppBaseInfo: GetAppBaseInfo;
+    getDeviceInfo: GetDeviceInfo;
+    getNetworkType: GetNetworkType;
+    onNetworkStatusChange: OnNetworkStatusChange;
+    offNetworkStatusChange: OffNetworkStatusChange;
+    getProvider: GetProvider;
+    getProviderIds: GetProviderIds;
+    getProviderObject: GetProviderObject;
+    getSystemInfo: GetSystemInfo;
+    getSystemInfoSync: GetSystemInfoSync;
+    getWindowInfo: GetWindowInfo;
+    hideKeyboard: HideKeyboard;
+    makePhoneCall: MakePhoneCall;
+    chooseImage: ChooseImage;
+    previewImage: PreviewImage;
+    closePreviewImage: ClosePreviewImage;
+    getImageInfo: GetImageInfo;
+    saveImageToPhotosAlbum: SaveImageToPhotosAlbum;
+    chooseVideo: ChooseVideo;
+    saveVideoToPhotosAlbum: SaveVideoToPhotosAlbum;
+    getVideoInfo: GetVideoInfo;
+    setNavigationBarColor: SetNavigationBarColor;
+    setNavigationBarTitle: SetNavigationBarTitle;
+    showNavigationBarLoading: ShowNavigationBarLoading;
+    hideNavigationBarLoading: HideNavigationBarLoading;
+    request: Request<Object>;
+    uploadFile: UploadFile;
+    downloadFile: DownloadFile;
+    openAppAuthorizeSetting: OpenAppAuthorizeSetting;
+    openDocument: OpenDocument;
+    pageScrollTo: PageScrollTo;
+    requestPayment: RequestPayment;
+    showToast: ShowToast;
+    hideToast: HideToast;
+    showLoading: ShowLoading;
+    hideLoading: HideLoading;
+    showModal: ShowModal;
+    showActionSheet: ShowActionSheet;
+    startPullDownRefresh: StartPullDownRefresh;
+    stopPullDownRefresh: StopPullDownRefresh;
+    rpx2px: Rpx2px;
+    scanCode: ScanCode;
+    setStorage: SetStorage;
+    setStorageSync: SetStorageSync;
+    getStorage: GetStorage;
+    getStorageSync: GetStorageSync;
+    getStorageInfo: GetStorageInfo;
+    getStorageInfoSync: GetStorageInfoSync;
+    removeStorage: RemoveStorage;
+    removeStorageSync: RemoveStorageSync;
+    clearStorage: ClearStorage;
+    clearStorageSync: ClearStorageSync;
+    showTabBarRedDot: ShowTabBarRedDot;
+    hideTabBarRedDot: HideTabBarRedDot;
+    setTabBarBadge: SetTabBarBadge;
+    removeTabBarBadge: RemoveTabBarBadge;
+    setTabBarItem: SetTabBarItem;
+    setTabBarStyle: SetTabBarStyle;
+    showTabBar: ShowTabBar;
+    hideTabBar: HideTabBar;
+    connectSocket: ConnectSocket;
+    sendSocketMessage: SendSocketMessage;
+    closeSocket: CloseSocket;
+    onSocketOpen: OnSocketOpen;
+    onSocketMessage: OnSocketMessage;
+    onSocketClose: OnSocketClose;
+    onSocketError: OnSocketError;
+}
 export function initUniExtApi(APP_ID: string) {
-    type SetClipboardData = (options: SetClipboardDataOptions) => void;
-    class SetClipboardDataSuccess extends UTSObject {
-    }
-    type SetClipboardDataSuccessCallback = (result: SetClipboardDataSuccess) => void;
-    type SetClipboardDataFail = UniError;
-    type SetClipboardDataFailCallback = (result: SetClipboardDataFail) => void;
-    type SetClipboardDataComplete = Object;
-    type SetClipboardDataCompleteCallback = (result: SetClipboardDataComplete) => void;
-    class SetClipboardDataOptions extends UTSObject {
-        data!: string;
-        showToast: boolean | null = null;
-        success: SetClipboardDataSuccessCallback | null = null;
-        fail: SetClipboardDataFailCallback | null = null;
-        complete: SetClipboardDataCompleteCallback | null = null;
-    }
-    type GetClipboardData = (options: GetClipboardDataOptions) => void;
-    class GetClipboardDataSuccess extends UTSObject {
-        data!: string;
-    }
-    type GetClipboardDataSuccessCallback = (result: GetClipboardDataSuccess) => void;
-    type GetClipboardDataFail = UniError;
-    type GetClipboardDataFailCallback = (result: GetClipboardDataFail) => void;
-    type GetClipboardDataComplete = Object;
-    type GetClipboardDataCompleteCallback = (result: GetClipboardDataComplete) => void;
-    class GetClipboardDataOptions extends UTSObject {
-        success: GetClipboardDataSuccessCallback | null = null;
-        fail: GetClipboardDataFailCallback | null = null;
-        complete: GetClipboardDataCompleteCallback | null = null;
-    }
+    const API_ADD_PHONE_CONTACT = 'addPhoneContact';
+    const AddPhoneContactApiOptions: ApiOptions<AddPhoneContactOptions> = {
+        formatArgs: new Map<string, ((firstName: string) => string | undefined)>([
+            [
+                'firstName',
+                (firstName: string)=>{
+                    if (!firstName) {
+                        return 'addPhoneContact:fail parameter error: parameter.firstName should not be empty;';
+                    }
+                    return undefined;
+                }
+            ]
+        ])
+    };
+    const AddPhoneContactApiProtocol = new Map<string, ProtocolOptions>([
+        [
+            'firstName',
+            {
+                type: 'string',
+                required: true
+            }
+        ],
+        [
+            'photoFilePath',
+            {
+                type: 'string'
+            }
+        ],
+        [
+            'nickName',
+            {
+                type: 'string'
+            }
+        ],
+        [
+            'lastName',
+            {
+                type: 'string'
+            }
+        ],
+        [
+            'middleName',
+            {
+                type: 'string'
+            }
+        ],
+        [
+            'remark',
+            {
+                type: 'string'
+            }
+        ],
+        [
+            'mobilePhoneNumber',
+            {
+                type: 'string'
+            }
+        ],
+        [
+            'weChatNumber',
+            {
+                type: 'string'
+            }
+        ],
+        [
+            'addressCountry',
+            {
+                type: 'string'
+            }
+        ],
+        [
+            'addressState',
+            {
+                type: 'string'
+            }
+        ],
+        [
+            'addressCity',
+            {
+                type: 'string'
+            }
+        ],
+        [
+            'addressStreet',
+            {
+                type: 'string'
+            }
+        ],
+        [
+            'addressPostalCode',
+            {
+                type: 'string'
+            }
+        ],
+        [
+            'organization',
+            {
+                type: 'string'
+            }
+        ],
+        [
+            'title',
+            {
+                type: 'string'
+            }
+        ],
+        [
+            'workFaxNumber',
+            {
+                type: 'string'
+            }
+        ],
+        [
+            'workPhoneNumber',
+            {
+                type: 'string'
+            }
+        ],
+        [
+            'hostNumber',
+            {
+                type: 'string'
+            }
+        ],
+        [
+            'email',
+            {
+                type: 'string'
+            }
+        ],
+        [
+            'url',
+            {
+                type: 'string'
+            }
+        ],
+        [
+            'workAddressCountry',
+            {
+                type: 'string'
+            }
+        ],
+        [
+            'workAddressState',
+            {
+                type: 'string'
+            }
+        ],
+        [
+            'workAddressCity',
+            {
+                type: 'string'
+            }
+        ],
+        [
+            'workAddressStreet',
+            {
+                type: 'string'
+            }
+        ],
+        [
+            'workAddressPostalCode',
+            {
+                type: 'string'
+            }
+        ],
+        [
+            'homeFaxNumber',
+            {
+                type: 'string'
+            }
+        ],
+        [
+            'homePhoneNumber',
+            {
+                type: 'string'
+            }
+        ],
+        [
+            'homeAddressCountry',
+            {
+                type: 'string'
+            }
+        ],
+        [
+            'homeAddressState',
+            {
+                type: 'string'
+            }
+        ],
+        [
+            'homeAddressCity',
+            {
+                type: 'string'
+            }
+        ],
+        [
+            'homeAddressStreet',
+            {
+                type: 'string'
+            }
+        ],
+        [
+            'homeAddressPostalCode',
+            {
+                type: 'string'
+            }
+        ]
+    ]);
+    const addPhoneContact: AddPhoneContact = defineAsyncApi<AddPhoneContactOptions, AddPhoneContactSuccess>(API_ADD_PHONE_CONTACT, (args: AddPhoneContactOptions, executor: ApiExecutor<AddPhoneContactSuccess>)=>{
+        UTSHarmony.requestSystemPermission([
+            'ohos.permission.WRITE_CONTACTS'
+        ], (allRight: boolean)=>{
+            if (allRight) {
+                const photoFilePath = args.photoFilePath, _args_nickName = args.nickName, nickName = _args_nickName == null ? '' : _args_nickName, _args_lastName = args.lastName, lastName = _args_lastName == null ? '' : _args_lastName, _args_middleName = args.middleName, middleName = _args_middleName == null ? '' : _args_middleName, _args_firstName = args.firstName, firstName = _args_firstName == null ? '' : _args_firstName, _args_remark = args.remark, remark = _args_remark == null ? '' : _args_remark, _args_mobilePhoneNumber = args.mobilePhoneNumber, mobilePhoneNumber = _args_mobilePhoneNumber == null ? '' : _args_mobilePhoneNumber, _args_addressCountry = args.addressCountry, addressCountry = _args_addressCountry == null ? '' : _args_addressCountry, _args_addressState = args.addressState, addressState = _args_addressState == null ? '' : _args_addressState, _args_addressCity = args.addressCity, addressCity = _args_addressCity == null ? '' : _args_addressCity, _args_addressStreet = args.addressStreet, addressStreet = _args_addressStreet == null ? '' : _args_addressStreet, _args_addressPostalCode = args.addressPostalCode, addressPostalCode = _args_addressPostalCode == null ? '' : _args_addressPostalCode, _args_organization = args.organization, organization = _args_organization == null ? '' : _args_organization, _args_url = args.url, url = _args_url == null ? '' : _args_url, _args_workPhoneNumber = args.workPhoneNumber, workPhoneNumber = _args_workPhoneNumber == null ? '' : _args_workPhoneNumber, _args_workFaxNumber = args.workFaxNumber, workFaxNumber = _args_workFaxNumber == null ? '' : _args_workFaxNumber, _args_hostNumber = args.hostNumber, hostNumber = _args_hostNumber == null ? '' : _args_hostNumber, _args_email = args.email, email = _args_email == null ? '' : _args_email, _args_title = args.title, title = _args_title == null ? '' : _args_title, _args_workAddressCountry = args.workAddressCountry, workAddressCountry = _args_workAddressCountry == null ? '' : _args_workAddressCountry, _args_workAddressState = args.workAddressState, workAddressState = _args_workAddressState == null ? '' : _args_workAddressState, _args_workAddressCity = args.workAddressCity, workAddressCity = _args_workAddressCity == null ? '' : _args_workAddressCity, _args_workAddressStreet = args.workAddressStreet, workAddressStreet = _args_workAddressStreet == null ? '' : _args_workAddressStreet, workAddressPostalCode = args.workAddressPostalCode, _args_homeFaxNumber = args.homeFaxNumber, homeFaxNumber = _args_homeFaxNumber == null ? '' : _args_homeFaxNumber, _args_homePhoneNumber = args.homePhoneNumber, homePhoneNumber = _args_homePhoneNumber == null ? '' : _args_homePhoneNumber, _args_homeAddressCountry = args.homeAddressCountry, homeAddressCountry = _args_homeAddressCountry == null ? '' : _args_homeAddressCountry, _args_homeAddressState = args.homeAddressState, homeAddressState = _args_homeAddressState == null ? '' : _args_homeAddressState, _args_homeAddressCity = args.homeAddressCity, homeAddressCity = _args_homeAddressCity == null ? '' : _args_homeAddressCity, _args_homeAddressStreet = args.homeAddressStreet, homeAddressStreet = _args_homeAddressStreet == null ? '' : _args_homeAddressStreet, _args_homeAddressPostalCode = args.homeAddressPostalCode, homeAddressPostalCode = _args_homeAddressPostalCode == null ? '' : _args_homeAddressPostalCode;
+                const contactInfo: contact.Contact = {
+                    name: {
+                        familyName: lastName!,
+                        middleName: middleName!,
+                        givenName: firstName!,
+                        fullName: lastName! + middleName! + firstName!
+                    },
+                    nickName: {
+                        nickName: nickName!
+                    },
+                    emails: [
+                        {
+                            email: email!,
+                            displayName: '邮箱'
+                        }
+                    ],
+                    phoneNumbers: [
+                        {
+                            phoneNumber: homePhoneNumber!,
+                            labelId: contact.PhoneNumber.NUM_HOME
+                        },
+                        {
+                            phoneNumber: mobilePhoneNumber!,
+                            labelId: contact.PhoneNumber.NUM_MOBILE
+                        },
+                        {
+                            phoneNumber: homeFaxNumber!,
+                            labelId: contact.PhoneNumber.NUM_FAX_HOME
+                        },
+                        {
+                            phoneNumber: workFaxNumber!,
+                            labelId: contact.PhoneNumber.NUM_FAX_WORK
+                        },
+                        {
+                            phoneNumber: workPhoneNumber!,
+                            labelId: contact.PhoneNumber.NUM_WORK
+                        },
+                        {
+                            phoneNumber: hostNumber!,
+                            labelId: contact.PhoneNumber.NUM_COMPANY_MAIN
+                        }
+                    ],
+                    portrait: {
+                        uri: photoFilePath!
+                    },
+                    postalAddresses: [
+                        {
+                            city: homeAddressCity!,
+                            country: homeAddressCountry!,
+                            postcode: homeAddressPostalCode!,
+                            street: homeAddressStreet!,
+                            postalAddress: homeAddressCountry! + homeAddressState! + homeAddressCity + homeAddressStreet,
+                            labelId: contact.PostalAddress.ADDR_HOME
+                        },
+                        {
+                            city: workAddressCity!,
+                            country: workAddressCountry!,
+                            postcode: workAddressPostalCode!,
+                            street: workAddressStreet!,
+                            postalAddress: workAddressCountry! + workAddressState! + workAddressCity + workAddressStreet,
+                            labelId: contact.PostalAddress.ADDR_WORK
+                        },
+                        {
+                            city: addressCity!,
+                            country: addressCountry!,
+                            postcode: addressPostalCode!,
+                            street: addressStreet!,
+                            postalAddress: addressCountry! + addressState! + addressCity + addressStreet,
+                            labelId: contact.PostalAddress.CUSTOM_LABEL
+                        }
+                    ],
+                    websites: [
+                        {
+                            website: url!
+                        }
+                    ],
+                    note: {
+                        noteContent: remark!
+                    },
+                    organization: {
+                        name: organization!,
+                        title: title!
+                    }
+                };
+                contact.addContact(getContext(), contactInfo).then((contactId)=>{
+                    executor.resolve(contactId);
+                }).catch((err: BusinessError)=>{
+                    executor.reject(err.message);
+                });
+            } else {
+                executor.reject('Permission denied');
+            }
+        }, ()=>executor.reject('Permission denied'));
+    }, AddPhoneContactApiProtocol, AddPhoneContactApiOptions) as AddPhoneContact;
+    const API_ARRAY_BUFFER_TO_BASE64 = 'arrayBufferToBase64';
+    const ArrayBufferToBase64Protocol = new Map<string, ProtocolOptions>([
+        [
+            'arrayBuffer',
+            {
+                type: 'arrayBuffer',
+                required: true
+            }
+        ]
+    ]);
+    const arrayBufferToBase64: ArrayBufferToBase64 = defineSyncApi<string>(API_ARRAY_BUFFER_TO_BASE64, (arrayBuffer: ArrayBuffer): string =>{
+        return buffer.from(arrayBuffer).toString('base64');
+    }, ArrayBufferToBase64Protocol) as ArrayBufferToBase64;
+    const API_BASE64_TO_ARRAY_BUFFER = 'base64ToArrayBuffer';
+    const Base64ToArrayBufferProtocol = new Map<string, ProtocolOptions>([
+        [
+            'base64',
+            {
+                type: 'string',
+                required: true
+            }
+        ]
+    ]);
+    const base64ToArrayBuffer: Base64ToArrayBuffer = defineSyncApi<ArrayBuffer>(API_BASE64_TO_ARRAY_BUFFER, (base64: string): ArrayBuffer =>{
+        return buffer1.from(base64, 'base64').buffer;
+    }, Base64ToArrayBufferProtocol) as Base64ToArrayBuffer;
     const API_GET_CLIPBOARD_DATA = 'getClipboardData';
     const API_SET_CLIPBOARD_DATA = 'setClipboardData';
     const SetClipboardDataApiOptions: ApiOptions<SetClipboardDataOptions> = {
@@ -107,10 +1885,6 @@ export function initUniExtApi(APP_ID: string) {
             }
         ]
     ]);
-    interface ClipboardModuleGetStringOptions {
-        result: string;
-        data: string;
-    }
     const getClipboardData: GetClipboardData = defineAsyncApi<GetClipboardDataOptions, GetClipboardDataSuccess>(API_GET_CLIPBOARD_DATA, (_: GetClipboardDataOptions, res: ApiExecutor<GetClipboardDataSuccess>)=>{
         clipboard.getString((ret: ClipboardModuleGetStringOptions)=>{
             if (ret.result === 'success') {
@@ -126,55 +1900,6 @@ export function initUniExtApi(APP_ID: string) {
         clipboard.setString(options.data);
         res.resolve();
     }, SetClipboardDataProtocol, SetClipboardDataApiOptions) as SetClipboardData;
-    type CreateIntersectionObserver = (component: Object, options: CreateIntersectionObserverOptions) => IntersectionObserver;
-    interface CreateIntersectionObserverOptions {
-        thresholds?: (Object[]) | null;
-        initialRatio?: number | null;
-        observeAll?: boolean | null;
-    }
-    class ObserveNodeRect extends UTSObject {
-        left!: number;
-        right!: number;
-        top!: number;
-        bottom!: number;
-    }
-    class ObserveResult extends UTSObject {
-        intersectionRatio!: number;
-        intersectionRect!: Object;
-        boundingClientRect!: ObserveNodeRect;
-        relativeRect!: ObserveNodeRect;
-        time!: number;
-    }
-    type ObserveCallback = (result: ObserveResult) => void;
-    interface IntersectionObserver {
-        relativeTo(selector: string, margins?: Object): IntersectionObserver;
-        relativeToViewport(margins?: Object): IntersectionObserver;
-        observe(targetSelector: string, callback: ObserveCallback): void;
-        disconnect(): void;
-    }
-    interface AddIntersectionObserverArgs {
-        reqId: number;
-        component: ComponentPublicInstance;
-        options: ServiceIntersectionObserverOptions;
-        callback: ObserveCallback;
-    }
-    interface RemoveIntersectionObserverArgs {
-        reqId: number;
-        component: ComponentPublicInstance;
-    }
-    interface RequestComponentObserverOptions {
-        selector?: string;
-        rootMargin?: string;
-        relativeToSelector?: string;
-    }
-    interface ServiceIntersectionObserverOptions extends CreateIntersectionObserverOptions, RequestComponentObserverOptions {
-    }
-    interface Margins {
-        bottom?: number;
-        left?: number;
-        right?: number;
-        top?: number;
-    }
     const defaultOptions = {
         thresholds: [
             0
@@ -248,174 +1973,175 @@ export function initUniExtApi(APP_ID: string) {
         }
         return new ServiceIntersectionObserver(getCurrentPageVm()!, _options as CreateIntersectionObserverOptions);
     }) as CreateIntersectionObserver;
-    type CreateSelectorQuery = () => SelectorQuery;
-    type SelectorQueryNodeInfoCallback = (result: Object) => void;
-    class NodeField extends UTSObject {
-        id: boolean | null = null;
-        dataset: boolean | null = null;
-        rect: boolean | null = null;
-        size: boolean | null = null;
-        scrollOffset: boolean | null = null;
-        properties: string[] | null = null;
-        computedStyle: string[] | null = null;
-        context: boolean | null = null;
-        node: boolean | null = null;
-    }
-    interface NodesRef {
-        boundingClientRect(callback: SelectorQueryNodeInfoCallback | null): SelectorQuery;
-        boundingClientRect(): SelectorQuery;
-        scrollOffset(callback: SelectorQueryNodeInfoCallback): SelectorQuery;
-        fields(fields: NodeField, callback: SelectorQueryNodeInfoCallback): SelectorQuery;
-        context(callback: SelectorQueryNodeInfoCallback): SelectorQuery;
-        node(callback: (result: Object) => void): SelectorQuery;
-    }
-    interface SelectorQuery {
-        in(component: Object | null): SelectorQuery;
-        select(selector: string): NodesRef;
-        selectAll(selector: string): NodesRef;
-        selectViewport(): NodesRef;
-        exec(callback: (result: Array<Object>) => void | null): NodesRef | null;
-        exec(): NodesRef | null;
-    }
-    interface SelectorQueryRequest {
-        component: ComponentPublicInstance | undefined | null;
-        selector: string;
-        single: boolean;
-        fields: NodeField;
-    }
-    class NodesRefImpl implements NodesRef {
-        private _selectorQuery: SelectorQueryImpl;
-        private _component: ComponentPublicInstance | null | undefined;
-        private _selector: string;
-        private _single: boolean;
-        constructor(selectorQuery: SelectorQueryImpl, component: ComponentPublicInstance | null | undefined, selector: string, single: boolean){
-            this._selectorQuery = selectorQuery;
-            this._component = component;
-            this._selector = selector;
-            this._single = single;
+    const API_$_ON = '$on';
+    const API_$_ONCE = '$once';
+    const API_$_OFF = '$off';
+    const API_$_EMIT = '$emit';
+    const emitter: IUniEventEmitter = new Emitter() as IUniEventEmitter;
+    const $on: $On = defineSyncApi<void>(API_$_ON, (eventName: string, callback: Function)=>{
+        emitter.on(eventName, callback);
+    }) as $On;
+    const $once: $Once = defineSyncApi<void>(API_$_ONCE, (eventName: string, callback: Function)=>{
+        emitter.once(eventName, callback);
+    }) as $Once;
+    const $off: $Off = defineSyncApi<void>(API_$_OFF, (eventName: string, callback: Function)=>{
+        emitter.off(eventName, callback);
+    }) as $Off;
+    const $emit: $Emit = defineSyncApi<void>(API_$_EMIT, (eventName: string, ...args: (Object | undefined | null)[])=>{
+        emitter.emit(eventName, ...args);
+    }) as $Emit;
+    const API_EXIT = 'exit';
+    const exit: Exit = defineSyncApi<void>(API_EXIT, ()=>{
+        UTSHarmony1.exit();
+    }) as Exit;
+    const API_SAVE_FILE = 'saveFile';
+    const API_GET_FILE_INFO = 'getFileInfo';
+    const API_GET_SAVED_FILE_INFO = 'getSavedFileInfo';
+    const API_GET_SAVED_FILE_LIST = 'getSavedFileList';
+    const API_REMOVE_SAVED_FILE = 'removeSavedFile';
+    const getSavedDir = (appId: string)=>{
+        return getEnv().USER_DATA_PATH + '/' + appId + '/saved';
+    };
+    let savedIndex: [string, number] = [
+        '0',
+        0
+    ];
+    const getSavedFileName = (filePath: string)=>{
+        const ext = filePath.split('/').pop()?.split('.').slice(1).join('.');
+        let fileName = Date.now() + '';
+        if (savedIndex[0] === fileName) {
+            savedIndex[1]++;
+            if (savedIndex[1] > 0) {
+                fileName += '-' + savedIndex[1];
+            }
+        } else {
+            savedIndex[0] = fileName;
+            savedIndex[1] = 0;
         }
-        boundingClientRect(callback: SelectorQueryNodeInfoCallback | null = null): SelectorQuery {
-            this._selectorQuery._push(this._selector, this._component, this._single, {
-                id: true,
-                dataset: true,
-                rect: true,
-                size: true
-            } as NodeField, callback);
-            return this._selectorQuery;
+        if (ext) {
+            fileName += '.' + ext;
         }
-        fields(fields: NodeField, callback: SelectorQueryNodeInfoCallback): SelectorQuery {
-            this._selectorQuery._push(this._selector, this._component, this._single, fields, callback);
-            return this._selectorQuery;
+        return fileName;
+    };
+    const getFsPath = (filePath: string)=>{
+        filePath = getRealPath(filePath) as string;
+        if (!/^file:/.test(filePath)) {
+            return filePath;
         }
-        scrollOffset(callback: SelectorQueryNodeInfoCallback): SelectorQuery {
-            this._selectorQuery._push(this._selector, this._component, this._single, {
-                id: true,
-                dataset: true,
-                scrollOffset: true
-            } as NodeField, callback);
-            return this._selectorQuery;
+        const rawPath = filePath.replace(/^file:\/\//, '');
+        if (rawPath[0] === '/') {
+            return rawPath;
         }
-        context(callback: SelectorQueryNodeInfoCallback): SelectorQuery {
-            this._selectorQuery._push(this._selector, this._component, this._single, {
-                context: true
-            } as NodeField, callback);
-            return this._selectorQuery;
+        return filePath;
+    };
+    const saveFile: SaveFile = defineAsyncApi<SaveFileOptions, SaveFileSuccess>(API_SAVE_FILE, (options: SaveFileOptions, exec: ApiExecutor<SaveFileSuccess>)=>{
+        const tempFilePath = getRealPath(options.tempFilePath) as string;
+        const savedPath = getSavedDir(APP_ID);
+        if (!fs.accessSync(savedPath)) {
+            fs.mkdirSync(savedPath, true);
         }
-        node(callback: (result: Object) => void): SelectorQuery {
-            this._selectorQuery._push(this._selector, this._component, this._single, {
-                node: true
-            } as NodeField, callback);
-            return this._selectorQuery;
+        let srcFile: fs.File;
+        try {
+            srcFile = fs.openSync(tempFilePath, fs.OpenMode.READ_ONLY);
+        } catch (error) {
+            exec.reject((error as Error).message);
+            return;
         }
-    }
-    class SelectorQueryImpl implements SelectorQuery {
-        private _page: ComponentPublicInstance;
-        private _queue: Array<SelectorQueryRequest>;
-        private _component?: ComponentPublicInstance = undefined;
-        private _queueCb: Array<SelectorQueryNodeInfoCallback>;
-        private _nodesRef?: NodesRef;
-        constructor(page: ComponentPublicInstance){
-            this._page = page;
-            this._queue = [];
-            this._queueCb = [];
+        const savedFilePath = savedPath + '/' + getSavedFileName(tempFilePath);
+        fs.copyFile(srcFile.fd, savedFilePath, (err)=>{
+            fs.closeSync(srcFile);
+            if (err) {
+                exec.reject(err.message);
+            } else {
+                exec.resolve({
+                    savedFilePath: 'file://' + savedFilePath
+                } as SaveFileSuccess);
+            }
+        });
+    }) as SaveFile;
+    const getSavedFileList: GetSavedFileList = defineAsyncApi<GetSavedFileListOptions, GetSavedFileListSuccess>(API_GET_SAVED_FILE_LIST, (options: GetSavedFileListOptions, exec: ApiExecutor<GetSavedFileListSuccess>)=>{
+        const savedPath = getSavedDir(APP_ID);
+        if (!fs.accessSync(savedPath)) {
+            exec.resolve({
+                fileList: []
+            } as GetSavedFileListSuccess);
         }
-        exec(callback: ((result: Array<Object>) => void | null) | null = null): NodesRef | null {
-            requestComponentInfo(this._page, this._queue, (res: Array<Object>)=>{
-                const queueCbs = this._queueCb;
-                res.forEach((result: Object, index: number)=>{
-                    const queueCb = queueCbs[index];
-                    if (isFunction1(queueCb)) {
-                        queueCb(result);
-                    }
-                });
-                if (isFunction1(callback)) {
-                    callback!(res);
-                }
-            });
-            return this._nodesRef as NodesRef;
+        fs.listFile(savedPath, {} as ListFileOptions, (err, fileList)=>{
+            if (err) {
+                exec.reject(err.message);
+            } else {
+                exec.resolve({
+                    fileList: fileList.map((filePath: string)=>{
+                        const fullPath = savedPath + '/' + filePath;
+                        const stat = fs.statSync(fullPath);
+                        if (!stat.isFile()) {
+                            return null;
+                        }
+                        return {
+                            filePath: 'file://' + fullPath,
+                            size: stat.size,
+                            createTime: stat.ctime
+                        } as SavedFileListItem;
+                    }).filter((item)=>!!item)
+                } as GetSavedFileListSuccess);
+            }
+        });
+    }) as GetSavedFileList;
+    const getSavedFileInfo: GetSavedFileInfo = defineAsyncApi<GetSavedFileInfoOptions, GetSavedFileInfoSuccess>(API_GET_SAVED_FILE_INFO, (options: GetSavedFileInfoOptions, exec: ApiExecutor<GetSavedFileInfoSuccess>)=>{
+        const savedFilePath = getFsPath(options.filePath);
+        if (!fs.accessSync(savedFilePath)) {
+            exec.reject('file not exist');
+            return;
         }
-        in(component: ComponentPublicInstance | ComponentInternalInstance | null = null): SelectorQuery {
-            this._component = resolveComponentInstance1(component);
-            return this;
+        const stat = fs.statSync(savedFilePath);
+        if (!stat.isFile()) {
+            exec.reject('file not exist');
         }
-        select(selector: string): NodesRef {
-            return this._nodesRef = new NodesRefImpl(this, this._component, selector, true) as NodesRef;
+        exec.resolve({
+            size: stat.size,
+            createTime: stat.ctime
+        } as GetSavedFileInfoSuccess);
+    }) as GetSavedFileInfo;
+    const removeSavedFile: RemoveSavedFile = defineAsyncApi<RemoveSavedFileOptions, RemoveSavedFileSuccess>(API_REMOVE_SAVED_FILE, (options: RemoveSavedFileOptions, exec: ApiExecutor<RemoveSavedFileSuccess>)=>{
+        const savedFilePath = getFsPath(options.filePath);
+        if (!fs.accessSync(savedFilePath)) {
+            exec.reject('file not exist');
+            return;
         }
-        selectAll(selector: string): NodesRef {
-            return this._nodesRef = new NodesRefImpl(this, this._component, selector, false) as NodesRef;
+        fs.unlink(savedFilePath, (err)=>{
+            if (err) {
+                exec.reject(err.message);
+            } else {
+                exec.resolve();
+            }
+        });
+    }) as RemoveSavedFile;
+    const SupportedHashAlgorithm = [
+        'md5',
+        'sha1'
+    ];
+    const getFileInfo: GetFileInfo = defineAsyncApi<GetFileInfoOptions, GetFileInfoSuccess>(API_GET_FILE_INFO, (options: GetFileInfoOptions, exec: ApiExecutor<GetFileInfoSuccess>)=>{
+        const filePath = getFsPath(options.filePath);
+        const digestAlgorithm = options.digestAlgorithm && SupportedHashAlgorithm.includes(options.digestAlgorithm) ? options.digestAlgorithm : 'md5';
+        if (!fs.accessSync(filePath)) {
+            exec.reject('file not exist');
+            return;
         }
-        selectViewport(): NodesRef {
-            return this._nodesRef = new NodesRefImpl(this, null, '', true) as NodesRef;
+        const stat = fs.statSync(filePath);
+        if (!stat.isFile()) {
+            exec.reject('file not exist');
         }
-        _push(selector: string, component: ComponentPublicInstance | undefined | null, single: boolean, fields: NodeField, callback: SelectorQueryNodeInfoCallback | null = null) {
-            this._queue.push({
-                component,
-                selector,
-                single,
-                fields
-            } as SelectorQueryRequest);
-            callback && this._queueCb.push(callback);
-        }
-    }
-    const createSelectorQuery = defineSyncApi<SelectorQuery>('createSelectorQuery', (context: ComponentInternalInstance | ComponentPublicInstance | null = null)=>{
-        context = resolveComponentInstance1(context);
-        if (context && !getPageIdByVm1(context)) {
-            context = null;
-        }
-        return new SelectorQueryImpl(context || getCurrentPageVm1()!) as SelectorQuery;
-    }) as CreateSelectorQuery;
-    class GetAppBaseInfoOptions extends UTSObject {
-        filter!: Array<string>;
-    }
-    class GetAppBaseInfoResult extends UTSObject {
-        appId: string | null = null;
-        appName: string | null = null;
-        appVersion: string | null = null;
-        appVersionCode: string | null = null;
-        appLanguage: string | null = null;
-        language: string | null = null;
-        version: string | null = null;
-        appWgtVersion: string | null = null;
-        hostLanguage: string | null = null;
-        hostVersion: string | null = null;
-        hostName: string | null = null;
-        hostPackageName: string | null = null;
-        hostSDKVersion: string | null = null;
-        hostTheme: string | null = null;
-        isUniAppX: boolean | null = null;
-        uniCompileVersion: string | null = null;
-        uniCompilerVersion: string | null = null;
-        uniPlatform: 'app' | 'web' | 'mp-weixin' | 'mp-alipay' | 'mp-baidu' | 'mp-toutiao' | 'mp-lark' | 'mp-qq' | 'mp-kuaishou' | 'mp-jd' | 'mp-360' | 'quickapp-webview' | 'quickapp-webview-union' | 'quickapp-webview-huawei' | null = null;
-        uniRuntimeVersion: string | null = null;
-        uniCompileVersionCode: number | null = null;
-        uniCompilerVersionCode: number | null = null;
-        uniRuntimeVersionCode: number | null = null;
-        packageName: string | null = null;
-        bundleId: string | null = null;
-        signature: string | null = null;
-        appTheme: 'light' | 'dark' | 'auto' | null = null;
-    }
-    type GetAppBaseInfo = (options?: GetAppBaseInfoOptions | null) => GetAppBaseInfoResult;
+        Hash.hash(filePath, digestAlgorithm, (err, hash)=>{
+            if (err) {
+                exec.reject(err.message);
+            } else {
+                exec.resolve({
+                    size: stat.size,
+                    digest: hash
+                } as GetFileInfoSuccess);
+            }
+        });
+    }) as GetFileInfo;
     const API_GET_APP_BASE_INFO = 'getAppBaseInfo';
     const getBundleInfoOnce = ()=>{
         let bundleInfo: bundleManager.BundleInfo | null = null;
@@ -428,25 +2154,21 @@ export function initUniExtApi(APP_ID: string) {
         };
     };
     const getBundleInfo = getBundleInfoOnce();
-    interface IAppBaseInfoAppVersion {
-        name: string;
-        code: string;
-    }
     const getAppBaseInfo: GetAppBaseInfo = defineSyncApi<GetAppBaseInfoResult>(API_GET_APP_BASE_INFO, (): GetAppBaseInfoResult =>{
-        const appVersion: IAppBaseInfoAppVersion = UTSHarmony.getAppVersion();
+        const appVersion: IAppBaseInfoAppVersion = UTSHarmony2.getAppVersion();
         const appLanguage = I18n.System.getAppPreferredLanguage();
-        const uniCompilerVersion: string = UTSHarmony.getUniCompilerVersion();
-        const uniRuntimeVersion: string = UTSHarmony.getUniRuntimeVersion();
+        const uniCompilerVersion: string = UTSHarmony2.getUniCompilerVersion();
+        const uniRuntimeVersion: string = UTSHarmony2.getUniRuntimeVersion();
         return {
-            appId: UTSHarmony.getAppId() as string,
+            appId: UTSHarmony2.getAppId() as string,
             appLanguage,
-            appName: UTSHarmony.getAppName() as string,
-            appTheme: UTSHarmony.getAppTheme() as string,
+            appName: UTSHarmony2.getAppName() as string,
+            appTheme: UTSHarmony2.getAppTheme() as string,
             appVersion: appVersion.name,
             appVersionCode: appVersion.code,
             appWgtVersion: appVersion.name,
             hostLanguage: I18n.System.getSystemLanguage(),
-            isUniAppX: UTSHarmony.isUniAppX() as boolean,
+            isUniAppX: UTSHarmony2.isUniAppX() as boolean,
             packageName: getBundleInfo().name,
             uniCompilerVersion: uniCompilerVersion,
             uniCompilerVersionCode: parseFloat(uniCompilerVersion),
@@ -455,32 +2177,6 @@ export function initUniExtApi(APP_ID: string) {
             uniPlatform: 'app'
         } as GetAppBaseInfoResult;
     }) as GetAppBaseInfo;
-    class GetDeviceInfoOptions extends UTSObject {
-        filter!: Array<string>;
-    }
-    class GetDeviceInfoResult extends UTSObject {
-        brand: string | null = null;
-        deviceBrand: string | null = null;
-        deviceId: string | null = null;
-        model: string | null = null;
-        deviceModel: string | null = null;
-        deviceType: 'phone' | 'pad' | 'tv' | 'watch' | 'pc' | 'undefined' | 'car' | 'vr' | 'appliance' | null = null;
-        deviceOrientation: string | null = null;
-        devicePixelRatio: number | null = null;
-        system: string | null = null;
-        platform: 'ios' | 'android' | 'harmonyos' | 'mac' | 'windows' | 'linux' | null = null;
-        isRoot: boolean | null = null;
-        isSimulator: boolean | null = null;
-        isUSBDebugging: boolean | null = null;
-        osName: 'ios' | 'android' | 'harmonyos' | 'macos' | 'windows' | 'linux' | null = null;
-        osVersion: string | null = null;
-        osLanguage: string | null = null;
-        osTheme: 'light' | 'dark' | null = null;
-        osAndroidAPILevel: number | null = null;
-        romName: string | null = null;
-        romVersion: string | null = null;
-    }
-    type GetDeviceInfo = (options?: GetDeviceInfoOptions | null) => GetDeviceInfoResult;
     const API_GET_DEVICE_INFO = 'getDeviceInfo';
     const getDeviceInfo: GetDeviceInfo = defineSyncApi<GetDeviceInfoResult>(API_GET_DEVICE_INFO, (): GetDeviceInfoResult =>{
         return {
@@ -491,7 +2187,7 @@ export function initUniExtApi(APP_ID: string) {
             devicePixelRatio: vp2px(1),
             deviceType: deviceInfo.deviceType === 'tablet' ? 'pad' : deviceInfo.deviceType,
             osLanguage: I18n1.System.getSystemLanguage(),
-            osTheme: UTSHarmony1.getOsTheme() as string,
+            osTheme: UTSHarmony3.getOsTheme() as string,
             osVersion: deviceInfo.buildVersion + '',
             osName: 'harmonyos',
             platform: 'harmonyos',
@@ -500,24 +2196,175 @@ export function initUniExtApi(APP_ID: string) {
             system: deviceInfo.osFullName
         } as GetDeviceInfoResult;
     }) as GetDeviceInfo;
-    class GetProviderSuccess extends UTSObject {
-        service!: 'payment';
-        provider!: string[];
-        providers!: UniProvider[];
-        errMsg!: string;
+    const API_GET_NETWORK_TYPE = 'getNetworkType';
+    const API_ON_NETWORK_STATUS_CHANGE = 'onNetworkStatusChange';
+    const API_OFF_NETWORK_STATUS_CHANGE = 'offNetworkStatusChange';
+    const PERMISSIONS = [
+        'ohos.permission.GET_NETWORK_INFO'
+    ];
+    enum NetworkinfoType {
+        UNKNOW = 0,
+        NONE = 1,
+        ETHERNET = 2,
+        WIFI = 3,
+        "2G" = 4,
+        "3G" = 5,
+        "4G" = 6,
+        "5G" = 7
     }
-    type GetProviderSuccessCallback = (result: GetProviderSuccess) => void;
-    type GetProviderFail = UniError;
-    type GetProviderFailCallback = (result: GetProviderFail) => void;
-    type GetProviderComplete = Object;
-    type GetProviderCompleteCallback = (result: GetProviderComplete) => void;
-    class GetProviderOptions extends UTSObject {
-        service!: 'payment';
-        success: GetProviderSuccessCallback | null = null;
-        fail: GetProviderFailCallback | null = null;
-        complete: GetProviderCompleteCallback | null = null;
+    const signalType = (resultObj: radio.NetworkType)=>{
+        switch(resultObj){
+            case radio.NetworkType.NETWORK_TYPE_GSM:
+            case radio.NetworkType.NETWORK_TYPE_CDMA:
+                return NetworkinfoType['2G'];
+            case radio.NetworkType.NETWORK_TYPE_WCDMA:
+            case radio.NetworkType.NETWORK_TYPE_TDSCDMA:
+                return NetworkinfoType['3G'];
+            case radio.NetworkType.NETWORK_TYPE_LTE:
+                return NetworkinfoType['4G'];
+            case radio.NetworkType.NETWORK_TYPE_NR:
+                return NetworkinfoType['5G'];
+            case radio.NetworkType.NETWORK_TYPE_UNKNOWN:
+                return NetworkinfoType.UNKNOW;
+            default:
+                return NetworkinfoType.NONE;
+        }
+    };
+    const networkGetType = ()=>{
+        return new Promise<number>((resolve, reject)=>{
+            UTSHarmony4.requestSystemPermission(PERMISSIONS, (allRight: boolean)=>{
+                if (allRight) {
+                    try {
+                        radio.getPrimarySlotId().then((slotId: number)=>radio.getSignalInformationSync(slotId)).then((signalInformation: Array<radio.SignalInformation>)=>{
+                            const data = signalInformation[0];
+                            if (data && data.signalType) {
+                                resolve(signalType(data.signalType));
+                            } else {
+                                resolve(NetworkinfoType.NONE);
+                            }
+                        });
+                    } catch (error) {
+                        reject(error as BusinessError1);
+                    }
+                } else {
+                    reject('permission denied');
+                }
+            }, ()=>reject('permission denied'));
+        });
+    };
+    class GlobalContext {
+        netList: connection.NetHandle[] = [];
+        netHandle: connection.NetHandle | null = null;
+        private constructor(){}
+        private static instance: GlobalContext;
+        public static getContext(): GlobalContext {
+            if (!GlobalContext.instance) {
+                GlobalContext.instance = new GlobalContext();
+            }
+            return GlobalContext.instance;
+        }
     }
-    type GetProvider = (options: GetProviderOptions) => void;
+    const getCurrentType = ()=>{
+        return new Promise<number>((resolve, reject)=>{
+            UTSHarmony4.requestSystemPermission(PERMISSIONS, (allRight: boolean)=>{
+                if (allRight) {
+                    try {
+                        connection.getDefaultNet().then((data: connection.NetHandle)=>{
+                            if (data) {
+                                GlobalContext.getContext().netHandle = data;
+                                connection.getNetCapabilities(GlobalContext.getContext().netHandle!).then((data: connection.NetCapabilities)=>{
+                                    const bearerTypes: Set<number> = new Set(data.bearerTypes);
+                                    const bearerTypesNum = Array.from(bearerTypes.values());
+                                    for (const item of bearerTypesNum){
+                                        if (item == connection.NetBearType.BEARER_CELLULAR) {
+                                            networkGetType().then(resolve).catch(reject);
+                                        } else if (item == connection.NetBearType.BEARER_WIFI) {
+                                            resolve(NetworkinfoType.WIFI);
+                                        } else if (item == connection.NetBearType.BEARER_ETHERNET) {
+                                            resolve(NetworkinfoType.ETHERNET);
+                                        } else {
+                                            resolve(NetworkinfoType.UNKNOW);
+                                        }
+                                    }
+                                }).catch((err: BusinessError1)=>{
+                                    reject(err);
+                                });
+                            }
+                        });
+                    } catch (error) {
+                        reject(error);
+                    }
+                } else {
+                    reject('permission denied');
+                }
+            });
+        });
+    };
+    class Network {
+        static netConnection: connection.NetConnection | null = null;
+        constructor(){
+            Network.netConnection = connection.createNetConnection();
+        }
+        static ohoSubscribe() {
+            if (!Network.netConnection) {
+                Network.netConnection = connection.createNetConnection();
+            }
+            UTSHarmony4.requestSystemPermission(PERMISSIONS, (allRight: boolean)=>{
+                if (allRight && Network.netConnection) {
+                    Network.netConnection.register((err: BusinessError1)=>{});
+                    Network.netConnection.on('netCapabilitiesChange', (capability: connection.NetCapabilityInfo)=>{
+                        const NetBearType = capability?.netCap?.bearerTypes[0];
+                        let networkType = '';
+                        switch(NetBearType){
+                            case connection.NetBearType.BEARER_CELLULAR:
+                                getCurrentType().then((type: number)=>{
+                                    invokeOnNetworkStatusChange(NetworkinfoType[type]);
+                                }).catch(()=>{
+                                    invokeOnNetworkStatusChange(NetworkinfoType[1]);
+                                });
+                                return;
+                            case connection.NetBearType.BEARER_WIFI:
+                                networkType = NetworkinfoType[3];
+                                break;
+                            case connection.NetBearType.BEARER_ETHERNET:
+                                networkType = NetworkinfoType[2];
+                                break;
+                            default:
+                                networkType = NetworkinfoType[1];
+                        }
+                        invokeOnNetworkStatusChange(networkType);
+                    });
+                    Network.netConnection.on('netLost', (netLost: connection.NetHandle)=>{
+                        invokeOnNetworkStatusChange(NetworkinfoType[1]);
+                    });
+                }
+            });
+        }
+    }
+    new Network();
+    UTSHarmony4.appLifeCycle.once('onCreate', ()=>{
+        Network.ohoSubscribe();
+    });
+    const getNetworkType: GetNetworkType = defineAsyncApi<GetNetworkTypeOptions, GetNetworkTypeSuccess>(API_GET_NETWORK_TYPE, (options: GetNetworkTypeOptions, res: ApiExecutor<GetNetworkTypeSuccess>)=>{
+        getCurrentType().then((type: number)=>{
+            res.resolve({
+                networkType: NetworkinfoType[type].toLocaleLowerCase()
+            } as GetNetworkTypeSuccess);
+        }).catch((err: BusinessError1)=>{
+            res.reject(err.message);
+        });
+    }) as GetNetworkType;
+    const invokeOnNetworkStatusChange = (networkType: string)=>{
+        UniServiceJSBridge.invokeOnCallback(API_ON_NETWORK_STATUS_CHANGE, {
+            isConnected: networkType !== NetworkinfoType[1],
+            networkType: networkType.toLocaleLowerCase()
+        } as OnNetworkStatusChangeCallbackResult);
+    };
+    const onNetworkStatusChange: OnNetworkStatusChange = defineOnApi<OnNetworkStatusChangeCallbackResult>(API_ON_NETWORK_STATUS_CHANGE, ()=>{}) as OnNetworkStatusChange;
+    const offNetworkStatusChange: OffNetworkStatusChange = defineOffApi<OffNetworkStatusChange>(API_OFF_NETWORK_STATUS_CHANGE, ()=>{}) as OffNetworkStatusChange;
+    const API_GET_PROVIDER = 'getProvider';
+    const API_GET_PROVIDER_IDS = 'getProviderIds';
+    const API_GET_PROVIDER_OBJECT = 'getProviderObject';
     const SupportedProviderServiceList = [
         'oauth',
         'share',
@@ -525,114 +2372,42 @@ export function initUniExtApi(APP_ID: string) {
         'push',
         'location'
     ];
-    const getProvider: GetProvider = (options: GetProviderOptions): void =>{
+    const getProvider: GetProvider = defineAsyncApi<GetProviderOptions, GetProviderSuccess>(API_GET_PROVIDER, (options: GetProviderOptions, exec: ApiExecutor<GetProviderSuccess>): void =>{
         if (!SupportedProviderServiceList.includes(options.service)) {
-            const uniError = new UniError('uni-getProvider', -1, 'Parameter service invalid.');
-            options.fail?.(uniError);
-            options.complete?.(uniError);
+            exec.reject('Parameter service invalid.');
+            return;
+        }
+        const providers = getUniProviders(options.service);
+        const result = {
+            service: options.service,
+            provider: providers.map((provider): string =>{
+                return provider.id;
+            }),
+            providers,
+            errMsg: 'GetProvider:ok'
+        } as GetProviderSuccess;
+        exec.resolve(result);
+    }) as GetProvider;
+    const getProviderIds: GetProviderIds = defineSyncApi<string[]>(API_GET_PROVIDER_IDS, (options: GetProviderIdsOptions): string[] | null =>{
+        if (!SupportedProviderServiceList.includes(options.service)) {
+            return null;
         } else {
             const providers = getUniProviders(options.service);
-            const result = {
-                service: options.service,
-                provider: providers.map((provider): string =>{
-                    return provider.id;
-                }),
-                providers,
-                errMsg: 'GetProvider:ok'
-            } as GetProviderSuccess;
-            options.success?.(result);
-            options.complete?.(result);
+            return providers.map((provider): string =>{
+                return provider.id;
+            });
         }
-    };
-    type GetSystemInfo = (options: GetSystemInfoOptions) => void;
-    type GetSystemInfoSync = () => GetSystemInfoResult;
-    type GetWindowInfo = () => GetWindowInfoResult;
-    class SafeArea extends UTSObject {
-        left!: number;
-        right!: number;
-        top!: number;
-        bottom!: number;
-        width!: number;
-        height!: number;
-    }
-    class SafeAreaInsets extends UTSObject {
-        left!: number;
-        right!: number;
-        top!: number;
-        bottom!: number;
-    }
-    class GetSystemInfoResult extends UTSObject {
-        SDKVersion!: string;
-        appId!: string;
-        appLanguage!: string;
-        appName!: string;
-        appVersion!: string;
-        appVersionCode!: string;
-        appWgtVersion: string | null = null;
-        brand!: string;
-        browserName!: string;
-        browserVersion!: string;
-        deviceId!: string;
-        deviceBrand!: string;
-        deviceModel!: string;
-        deviceType!: 'phone' | 'pad' | 'tv' | 'watch' | 'pc' | 'undefined' | 'car' | 'vr' | 'appliance';
-        devicePixelRatio!: number;
-        deviceOrientation!: 'portrait' | 'landscape';
-        language!: string;
-        model: string | null = null;
-        osName!: 'ios' | 'android' | 'harmonyos' | 'macos' | 'windows' | 'linux';
-        osVersion!: string;
-        osLanguage!: string;
-        osTheme: 'light' | 'dark' | null = null;
-        pixelRatio!: number;
-        platform!: 'ios' | 'android' | 'harmonyos' | 'mac' | 'windows' | 'linux';
-        screenWidth!: number;
-        screenHeight!: number;
-        statusBarHeight!: number;
-        system!: string;
-        safeArea!: SafeArea;
-        safeAreaInsets!: SafeAreaInsets;
-        ua!: string;
-        uniCompileVersion!: string;
-        uniCompilerVersion!: string;
-        uniPlatform!: 'app' | 'web' | 'mp-weixin' | 'mp-alipay' | 'mp-baidu' | 'mp-toutiao' | 'mp-lark' | 'mp-qq' | 'mp-kuaishou' | 'mp-jd' | 'mp-360' | 'quickapp-webview' | 'quickapp-webview-union' | 'quickapp-webview-huawei';
-        uniRuntimeVersion!: string;
-        uniCompileVersionCode!: number;
-        uniCompilerVersionCode!: number;
-        uniRuntimeVersionCode!: number;
-        version!: string;
-        romName!: string;
-        romVersion!: string;
-        windowWidth!: number;
-        windowHeight!: number;
-        windowTop!: number;
-        windowBottom!: number;
-        osAndroidAPILevel: number | null = null;
-        appTheme: 'light' | 'dark' | 'auto' | null = null;
-    }
-    type GetSystemInfoSuccessCallback = (result: GetSystemInfoResult) => void;
-    type GetSystemInfoFail = UniError;
-    type GetSystemInfoFailCallback = (result: GetSystemInfoFail) => void;
-    type GetSystemInfoComplete = Object;
-    type GetSystemInfoCompleteCallback = (result: GetSystemInfoComplete) => void;
-    class GetSystemInfoOptions extends UTSObject {
-        success: GetSystemInfoSuccessCallback | null = null;
-        fail: GetSystemInfoFailCallback | null = null;
-        complete: GetSystemInfoCompleteCallback | null = null;
-    }
-    class GetWindowInfoResult extends UTSObject {
-        pixelRatio!: number;
-        screenWidth!: number;
-        screenHeight!: number;
-        windowWidth!: number;
-        windowHeight!: number;
-        statusBarHeight!: number;
-        windowTop!: number;
-        windowBottom!: number;
-        safeArea!: SafeArea;
-        safeAreaInsets!: SafeAreaInsets;
-        screenTop!: number;
-    }
+    }) as GetProviderIds;
+    const getProviderObject: GetProviderObject = defineSyncApi<UniProvider>(API_GET_PROVIDER_OBJECT, (options: GetProviderObjectOptions): UniProvider | null =>{
+        if (!SupportedProviderServiceList.includes(options.service)) {
+            return null;
+        } else {
+            const providers = getUniProviders(options.service);
+            return providers.find((provider)=>{
+                return provider.id === options.provider;
+            }) || null;
+        }
+    }) as GetProviderObject;
     const API_GET_SYSTEM_INFO = 'getSystemInfo';
     const API_GET_SYSTEM_INFO_SYNC = 'getSystemInfoSync';
     const API_GET_WINDOW_INFO = 'getWindowInfo';
@@ -657,16 +2432,12 @@ export function initUniExtApi(APP_ID: string) {
     const getWindowInfo: GetWindowInfo = defineSyncApi<GetWindowInfoResult>(API_GET_WINDOW_INFO, (): GetWindowInfoResult =>{
         return internalGetWindowInfo() as GetWindowInfoResult;
     }) as GetWindowInfo;
-    interface ISystemInfoAppVersion {
-        name: string;
-        code: string;
-    }
     const internalGetSystemInfo = (): GetSystemInfoResult =>{
-        const appVersion: ISystemInfoAppVersion = UTSHarmony2.getAppVersion();
+        const appVersion: ISystemInfoAppVersion = UTSHarmony5.getAppVersion();
         const appLanguage = I18n2.System.getAppPreferredLanguage();
-        const uniCompilerVersion: string = UTSHarmony2.getUniCompilerVersion();
+        const uniCompilerVersion: string = UTSHarmony5.getUniCompilerVersion();
         const uniCompilerVersionCode: number = parseFloat(uniCompilerVersion);
-        const uniRuntimeVersion: string = UTSHarmony2.getUniRuntimeVersion();
+        const uniRuntimeVersion: string = UTSHarmony5.getUniRuntimeVersion();
         const windowInfo = internalGetWindowInfo() as GetWindowInfoResult;
         const pixelRatio = windowInfo.pixelRatio;
         const safeArea = windowInfo.safeArea;
@@ -679,10 +2450,10 @@ export function initUniExtApi(APP_ID: string) {
         const windowTop = windowInfo.windowTop;
         const windowWidth = windowInfo.windowWidth;
         return {
-            appId: UTSHarmony2.getAppId() as string,
+            appId: UTSHarmony5.getAppId() as string,
             appLanguage,
-            appName: UTSHarmony2.getAppName() as string,
-            appTheme: UTSHarmony2.getAppTheme() as string,
+            appName: UTSHarmony5.getAppName() as string,
+            appTheme: UTSHarmony5.getAppTheme() as string,
             appVersion: appVersion.name,
             appVersionCode: appVersion.code,
             appWgtVersion: appVersion.name,
@@ -698,7 +2469,7 @@ export function initUniExtApi(APP_ID: string) {
             devicePixelRatio: vp2px(1),
             deviceType: parseDeviceType(deviceInfo1.deviceType),
             osLanguage: I18n2.System.getSystemLanguage(),
-            osTheme: UTSHarmony2.getOsTheme() as string,
+            osTheme: UTSHarmony5.getOsTheme() as string,
             osVersion: deviceInfo1.buildVersion + '',
             osName: 'harmonyos',
             romName: deviceInfo1.distributionOSName,
@@ -737,20 +2508,14 @@ export function initUniExtApi(APP_ID: string) {
             exec.reject((error as Error).message);
         }
     }) as GetSystemInfo;
-    type MakePhoneCall = (options: MakePhoneCallOptions) => void;
-    class MakePhoneCallSuccess extends UTSObject {
-    }
-    type MakePhoneCallSuccessCallback = (result: MakePhoneCallSuccess) => void;
-    type MakePhoneCallFail = UniError;
-    type MakePhoneCallFailCallback = (result: MakePhoneCallFail) => void;
-    type MakePhoneCallComplete = Object;
-    type MakePhoneCallCompleteCallback = (result: MakePhoneCallComplete) => void;
-    class MakePhoneCallOptions extends UTSObject {
-        phoneNumber!: string;
-        success: MakePhoneCallSuccessCallback | null = null;
-        fail: MakePhoneCallFailCallback | null = null;
-        complete: MakePhoneCallCompleteCallback | null = null;
-    }
+    const API_HIDE_KEYBOARD = 'hideKeyboard';
+    const hideKeyboard: HideKeyboard = defineAsyncApi<HideKeyboardOptions, HideKeyboardSuccess>(API_HIDE_KEYBOARD, (options: HideKeyboardOptions, exec: ApiExecutor<HideKeyboardSuccess>)=>{
+        inputMethod.getController().hideTextInput().then(()=>{
+            exec.resolve();
+        }, (err: Error)=>{
+            exec.reject(err.message);
+        });
+    }) as HideKeyboard;
     const API_MAKE_PHONE_CALL = 'makePhoneCall';
     const MakePhoneCallProtocol = new Map<string, ProtocolOptions>([
         [
@@ -767,207 +2532,48 @@ export function initUniExtApi(APP_ID: string) {
         }
         return false;
     };
+    const dial = (number: string, confirm = true)=>{
+        if (!confirm && typeof call.dial === 'function') {
+            return new Promise<void>((resolve, reject)=>{
+                UTSHarmony6.requestSystemPermission([
+                    'ohos.permission.PLACE_CALL'
+                ], (allRight: boolean)=>{
+                    if (allRight) {
+                        call.dial(number).then(()=>{
+                            resolve();
+                        }).catch(reject);
+                    } else {
+                        reject('permission denied');
+                    }
+                }, ()=>{
+                    reject('permission denied');
+                });
+            });
+        } else {
+            return call.makeCall(number);
+        }
+    };
     const makePhoneCall: MakePhoneCall = defineAsyncApi<MakePhoneCallOptions, MakePhoneCallSuccess>(API_MAKE_PHONE_CALL, (options: MakePhoneCallOptions, res: ApiExecutor<MakePhoneCallSuccess>)=>{
-        const dialRes = device.dial(options.phoneNumber) as Object as Promise<void>;
+        const dialRes = dial(options.phoneNumber) as Object as Promise<void>;
         if (isPromise(dialRes)) {
-            dialRes.then(res.resolve).catch((err: BusinessError<void>)=>{
+            dialRes.then(res.resolve).catch((err: BusinessError2<void>)=>{
                 res.reject(err.message);
             });
         } else {
             res.resolve();
         }
     }, MakePhoneCallProtocol) as MakePhoneCall;
-    type MediaOrientation = 'up' | 'down' | 'left' | 'right' | 'up-mirrored' | 'down-mirrored' | 'left-mirrored' | 'right-mirrored';
-    type MediaErrorCode = 1101001 | 1101002 | 1101003 | 1101004 | 1101005 | 1101006 | 1101007 | 1101008 | 1101009 | 1101010;
-    interface IMediaError extends IUniError {
-        errCode: MediaErrorCode;
-    }
-    class ChooseImageSuccess extends UTSObject {
-        errSubject!: string;
-        errMsg!: string;
-        tempFilePaths!: Array<string>;
-        tempFiles!: Object;
-    }
-    type ChooseImageFail = IMediaError;
-    type ChooseImageSuccessCallback = (callback: ChooseImageSuccess) => void;
-    type ChooseImageFailCallback = (callback: ChooseImageFail) => void;
-    type ChooseImageCompleteCallback = (callback: Object) => void;
-    class ChooseImageCropOptions extends UTSObject {
-        width!: number;
-        height!: number;
-        quality: (number) | null = null;
-        resize: (boolean) | null = null;
-    }
-    class ChooseImageOptions extends UTSObject {
-        count: (number) | null = null;
-        sizeType: (string[]) | null = null;
-        sourceType: (string[]) | null = null;
-        extension: (string[]) | null = null;
-        crop: (ChooseImageCropOptions) | null = null;
-        success: (ChooseImageSuccessCallback) | null = null;
-        fail: (ChooseImageFailCallback) | null = null;
-        complete: (ChooseImageCompleteCallback) | null = null;
-    }
-    type ChooseImage = (options: ChooseImageOptions) => void;
-    class PreviewImageSuccess extends UTSObject {
-        errSubject!: string;
-        errMsg!: string;
-    }
-    class LongPressActionsSuccessData extends UTSObject {
-        tapIndex!: number;
-        index!: number;
-    }
-    class LongPressActionsOptions extends UTSObject {
-        itemList!: string[];
-        itemColor: string | null = null;
-        success: ((result: LongPressActionsSuccessData) => void) | null = null;
-        fail: ((result: Object) => void) | null = null;
-        complete: ((result: Object) => void) | null = null;
-    }
-    type PreviewImageFail = IMediaError;
-    type PreviewImageSuccessCallback = (callback: PreviewImageSuccess) => void;
-    type PreviewImageFailCallback = (callback: PreviewImageFail) => void;
-    type PreviewImageCompleteCallback = ChooseImageCompleteCallback;
-    class PreviewImageOptions extends UTSObject {
-        current: Object | null = null;
-        urls!: Array<string.ImageURIString>;
-        showmenu: boolean | null = null;
-        indicator: string | null = null;
-        loop: boolean | null = null;
-        longPressActions: LongPressActionsOptions | null = null;
-        success: (PreviewImageSuccessCallback) | null = null;
-        fail: (PreviewImageFailCallback) | null = null;
-        complete: (PreviewImageCompleteCallback) | null = null;
-    }
-    type PreviewImage = (options: PreviewImageOptions) => void;
-    type ClosePreviewImage = (options: ClosePreviewImageOptions) => void;
-    class ClosePreviewImageSuccess extends UTSObject {
-        errMsg!: string;
-    }
-    type ClosePreviewImageFail = IMediaError;
-    type ClosePreviewImageSuccessCallback = (callback: ClosePreviewImageSuccess) => void;
-    type ClosePreviewImageFailCallback = (callback: ClosePreviewImageFail) => void;
-    type ClosePreviewImageCompleteCallback = ChooseImageCompleteCallback;
-    class ClosePreviewImageOptions extends UTSObject {
-        success: (ClosePreviewImageSuccessCallback) | null = null;
-        fail: (ClosePreviewImageFailCallback) | null = null;
-        complete: (ClosePreviewImageCompleteCallback) | null = null;
-    }
-    type GetImageInfo = (options: GetImageInfoOptions) => void;
-    class GetImageInfoSuccess extends UTSObject {
-        width!: number;
-        height!: number;
-        path!: string;
-        orientation: MediaOrientation | null = null;
-        type: string | null = null;
-    }
-    type GetImageInfoFail = IMediaError;
-    type GetImageInfoSuccessCallback = (callback: GetImageInfoSuccess) => void;
-    type GetImageInfoFailCallback = (callback: GetImageInfoFail) => void;
-    type GetImageInfoCompleteCallback = ChooseImageCompleteCallback;
-    class GetImageInfoOptions extends UTSObject {
-        src!: string.ImageURIString;
-        success: (GetImageInfoSuccessCallback) | null = null;
-        fail: (GetImageInfoFailCallback) | null = null;
-        complete: (GetImageInfoCompleteCallback) | null = null;
-    }
-    type SaveImageToPhotosAlbum = (options: SaveImageToPhotosAlbumOptions) => void;
-    class SaveImageToPhotosAlbumSuccess extends UTSObject {
-        path!: string;
-    }
-    type SaveImageToPhotosAlbumFail = IMediaError;
-    type SaveImageToPhotosAlbumSuccessCallback = (callback: SaveImageToPhotosAlbumSuccess) => void;
-    type SaveImageToPhotosAlbumFailCallback = (callback: SaveImageToPhotosAlbumFail) => void;
-    type SaveImageToPhotosAlbumCompleteCallback = ChooseImageCompleteCallback;
-    class SaveImageToPhotosAlbumOptions extends UTSObject {
-        filePath!: string.ImageURIString;
-        success: (SaveImageToPhotosAlbumSuccessCallback) | null = null;
-        fail: (SaveImageToPhotosAlbumFailCallback) | null = null;
-        complete: (SaveImageToPhotosAlbumCompleteCallback) | null = null;
-    }
-    class ChooseVideoSuccess extends UTSObject {
-        tempFilePath!: string;
-        duration!: number;
-        size!: number;
-        height!: number;
-        width!: number;
-    }
-    type ChooseVideoFail = IMediaError;
-    type ChooseVideoSuccessCallback = (callback: ChooseVideoSuccess) => void;
-    type ChooseVideoFailCallback = (callback: ChooseVideoFail) => void;
-    type ChooseVideoCompleteCallback = ChooseImageCompleteCallback;
-    class ChooseVideoOptions extends UTSObject {
-        sourceType: (string[]) | null = null;
-        compressed: boolean | null = true;
-        maxDuration: number | null = null;
-        camera: string | null = null;
-        extension: (string[]) | null = null;
-        success: (ChooseVideoSuccessCallback) | null = null;
-        fail: (ChooseVideoFailCallback) | null = null;
-        complete: (ChooseVideoCompleteCallback) | null = null;
-    }
-    type ChooseVideo = (options: ChooseVideoOptions) => void;
-    class GetVideoInfoSuccess extends UTSObject {
-        orientation: MediaOrientation | null = null;
-        type: string | null = null;
-        duration!: number;
-        size!: number;
-        height!: number;
-        width!: number;
-        fps: number | null = null;
-        bitrate: number | null = null;
-    }
-    type GetVideoInfoFail = IMediaError;
-    type GetVideoInfoSuccessCallback = (callback: GetVideoInfoSuccess) => void;
-    type GetVideoInfoFailCallback = (callback: GetVideoInfoFail) => void;
-    type GetVideoInfoCompleteCallback = ChooseImageCompleteCallback;
-    class GetVideoInfoOptions extends UTSObject {
-        src!: string.VideoURIString;
-        success: (GetVideoInfoSuccessCallback) | null = null;
-        fail: (GetVideoInfoFailCallback) | null = null;
-        complete: (GetVideoInfoCompleteCallback) | null = null;
-    }
-    type GetVideoInfo = (options: GetVideoInfoOptions) => void;
-    class SaveVideoToPhotosAlbumSuccess extends UTSObject {
-    }
-    type SaveVideoToPhotosAlbumFail = IMediaError;
-    type SaveVideoToPhotosAlbumSuccessCallback = (callback: SaveVideoToPhotosAlbumSuccess) => void;
-    type SaveVideoToPhotosAlbumFailCallback = (callback: SaveVideoToPhotosAlbumFail) => void;
-    type SaveVideoToPhotosAlbumCompleteCallback = ChooseImageCompleteCallback;
-    class SaveVideoToPhotosAlbumOptions extends UTSObject {
-        filePath!: string.VideoURIString;
-        success: (SaveVideoToPhotosAlbumSuccessCallback) | null = null;
-        fail: (SaveVideoToPhotosAlbumFailCallback) | null = null;
-        complete: (SaveVideoToPhotosAlbumCompleteCallback) | null = null;
-    }
-    type SaveVideoToPhotosAlbum = (options: SaveVideoToPhotosAlbumOptions) => void;
-    interface MediaFile {
-        fileType: 'video' | 'image';
-        tempFilePath: string;
-        size: number;
-        width?: number;
-        height?: number;
-        duration?: number;
-        thumbTempFilePath?: string;
-    }
-    interface ChooseMediaOptions {
-        mimeType: picker.PhotoViewMIMETypes.VIDEO_TYPE | picker.PhotoViewMIMETypes.IMAGE_TYPE;
-        count?: number;
-    }
-    interface chooseMediaSuccessCallbackResult {
-        tempFiles: MediaFile[];
-    }
     const _getVideoInfo = async (uri: string): Promise<GetVideoInfoSuccess> =>{
-        const file = await fs.open(uri, fs.OpenMode.READ_ONLY);
+        const file = await fs1.open(uri, fs1.OpenMode.READ_ONLY);
         const avMetadataExtractor = await media.createAVMetadataExtractor();
         let metadata: media.AVMetadata | null = null;
         let size: number = 0;
         try {
-            size = (await fs.stat(file.fd)).size;
+            size = (await fs1.stat(file.fd)).size;
             avMetadataExtractor.dataSrc = {
                 fileSize: size,
                 callback: (buffer: ArrayBuffer, length: number, pos: number | null = null)=>{
-                    return fs.readSync(file.fd, buffer, {
+                    return fs1.readSync(file.fd, buffer, {
                         offset: pos,
                         length
                     } as ReadOptions);
@@ -978,7 +2584,7 @@ export function initUniExtApi(APP_ID: string) {
             throw error as Error;
         } finally{
             await avMetadataExtractor.release();
-            await fs.close(file);
+            await fs1.close(file);
         }
         const videoOrientationArr = [
             'up',
@@ -996,7 +2602,7 @@ export function initUniExtApi(APP_ID: string) {
         } as GetVideoInfoSuccess;
     };
     const _getImageInfo = async (uri: string): Promise<GetImageInfoSuccess> =>{
-        const file = await fs.open(uri, fs.OpenMode.READ_ONLY);
+        const file = await fs1.open(uri, fs1.OpenMode.READ_ONLY);
         const imageSource = image.createImageSource(file.fd);
         const imageInfo = await imageSource.getImageInfo();
         const orientation = await imageSource.getImageProperty(image.PropertyKey.ORIENTATION);
@@ -1058,9 +2664,9 @@ export function initUniExtApi(APP_ID: string) {
         if (mimeType !== picker.PhotoViewMIMETypes.VIDEO_TYPE) {
             return {
                 tempFiles: uris.map((uri)=>{
-                    const file = fs.openSync(uri, fs.OpenMode.READ_ONLY);
-                    const stat = fs.statSync(file.fd);
-                    fs.closeSync(file);
+                    const file = fs1.openSync(uri, fs1.OpenMode.READ_ONLY);
+                    const stat = fs1.statSync(file.fd);
+                    fs1.closeSync(file);
                     return {
                         fileType: 'image',
                         tempFilePath: uri,
@@ -1101,7 +2707,7 @@ export function initUniExtApi(APP_ID: string) {
             [
                 'src',
                 (src: string, params: GetImageInfoOptions)=>{
-                    params.src = getRealPath(src);
+                    params.src = getRealPath1(src);
                 }
             ]
         ])
@@ -1196,7 +2802,7 @@ export function initUniExtApi(APP_ID: string) {
             [
                 'src',
                 (src: string, params: GetVideoInfoOptions)=>{
-                    params.src = getRealPath(src);
+                    params.src = getRealPath1(src);
                 }
             ]
         ])
@@ -1310,7 +2916,7 @@ export function initUniExtApi(APP_ID: string) {
             [
                 'urls',
                 (urls: string[], params: PreviewImageOptions)=>{
-                    params.urls = urls.map((url)=>getRealPath(url) as string);
+                    params.urls = urls.map((url)=>getRealPath1(url) as string);
                 }
             ]
         ])
@@ -1378,10 +2984,6 @@ export function initUniExtApi(APP_ID: string) {
             "unexpect error:"
         ]
     ]);
-    interface TempFileItem {
-        path: string;
-        size: number;
-    }
     const chooseImage: ChooseImage = defineAsyncApi<ChooseImageOptions, ChooseImageSuccess>(API_CHOOSE_IMAGE, (options: ChooseImageOptions, res: ApiExecutor<ChooseImageSuccess>)=>{
         _chooseMedia({
             mimeType: picker1.PhotoViewMIMETypes.IMAGE_TYPE,
@@ -1391,8 +2993,7 @@ export function initUniExtApi(APP_ID: string) {
             if (tempFiles.length === 0) {
                 const errMsg = MediaUniErrors.get(1101001) as string;
                 res.reject(errMsg, {
-                    errCode: 1101001,
-                    errMsg
+                    errCode: 1101001
                 } as ApiError);
                 return;
             }
@@ -1419,8 +3020,7 @@ export function initUniExtApi(APP_ID: string) {
             if (!file) {
                 const errMsg = MediaUniErrors.get(1101001) as string;
                 res.reject(errMsg, {
-                    errCode: 1101001,
-                    errMsg
+                    errCode: 1101001
                 } as ApiError);
                 return;
             }
@@ -1456,34 +3056,29 @@ export function initUniExtApi(APP_ID: string) {
             res.reject(err.message);
         });
     }, GetVideoInfoApiProtocol, GetVideoInfoApiOptions) as GetVideoInfo;
-    interface IPreviewImageOptions {
-        urls: string[];
-        current: string;
-        showmenu: boolean;
-    }
     const previewImage: PreviewImage = defineAsyncApi<PreviewImageOptions, PreviewImageSuccess>(API_PREVIEW_IMAGE, (options: PreviewImageOptions, exec: ApiExecutor<PreviewImageSuccess>)=>{
-        interface Page {
-            $getAppWebview: Function;
-        }
-        const currentPage = getCurrentPage() as Page;
-        getOSRuntime().previewImage({
-            urls: options.urls.map((url)=>getRealPath1(url) as string),
-            current: options.current || '',
-            showmenu: options.showmenu === false ? false : true
-        } as IPreviewImageOptions, currentPage.$getAppWebview().page as Object);
-        exec.resolve({
-            errSubject: 'uni-previewImage',
-            errMsg: ''
-        } as PreviewImageSuccess);
+        waitForCurrentNativePage().then((nativePage: Object)=>{
+            getOSRuntime().previewImage({
+                urls: options.urls.map((url)=>getRealPath2(url) as string),
+                current: options.current || '',
+                showmenu: options.showmenu === false ? false : true
+            } as IPreviewImageOptions, nativePage);
+            exec.resolve({
+                errSubject: 'uni-previewImage',
+                errMsg: ''
+            } as PreviewImageSuccess);
+        });
     }, PreviewImageApiProtocol, PreviewImageApiOptions) as PreviewImage;
     const closePreviewImage: ClosePreviewImage = defineAsyncApi<ClosePreviewImageOptions, ClosePreviewImageSuccess>(API_CLOSE_PREVIEW_IMAGE, (options: ClosePreviewImageOptions, exec: ApiExecutor<ClosePreviewImageSuccess>)=>{
-        getOSRuntime().closePreviewImage();
-        exec.resolve({
-            errMsg: ''
-        } as ClosePreviewImageSuccess);
+        waitForCurrentNativePage().then((nativePage: Object)=>{
+            getOSRuntime().closePreviewImage();
+            exec.resolve({
+                errMsg: ''
+            } as ClosePreviewImageSuccess);
+        });
     }) as ClosePreviewImage;
     const requestPermission = async (): Promise<boolean> =>{
-        const context = getContext();
+        const context = getAbilityContext() as common.UIAbilityContext;
         const atManager: abilityAccessCtrl.AtManager = abilityAccessCtrl.createAtManager();
         const permissionRequestResult = await atManager.requestPermissionsFromUser(context, [
             'ohos.permission.WRITE_IMAGEVIDEO'
@@ -1492,24 +3087,24 @@ export function initUniExtApi(APP_ID: string) {
         return isGranted;
     };
     const saveResource = async (src: Resource, dest: string)=>{
-        const context = getContext();
+        const context = getAbilityContext() as common.UIAbilityContext;
         const resourceManager = context.resourceManager;
         const srcPath: string = src.params?.[0] as string;
-        const destFile = fs1.openSync(dest, fs1.OpenMode.WRITE_ONLY);
+        const destFile = fs2.openSync(dest, fs2.OpenMode.WRITE_ONLY);
         const content = await resourceManager.getRawFileContent(srcPath);
-        await fs1.write(destFile.fd, content.buffer);
-        await fs1.close(destFile);
+        await fs2.write(destFile.fd, content.buffer);
+        await fs2.close(destFile);
     };
     const saveUri = async (src: string, dest: string)=>{
-        const srcFile = fs1.openSync(src, fs1.OpenMode.READ_ONLY);
-        const destFile = fs1.openSync(dest, fs1.OpenMode.WRITE_ONLY);
-        await fs1.copyFile(srcFile.fd, destFile.fd);
-        await fs1.close(srcFile);
-        await fs1.close(destFile);
+        const srcFile = fs2.openSync(src, fs2.OpenMode.READ_ONLY);
+        const destFile = fs2.openSync(dest, fs2.OpenMode.WRITE_ONLY);
+        await fs2.copyFile(srcFile.fd, destFile.fd);
+        await fs2.close(srcFile);
+        await fs2.close(destFile);
     };
     const saveMediaToAlbum = async (fromUri: string, type: 'image' | 'video'): Promise<string> =>{
         const realPath = getResourceStr(fromUri) as string | Resource;
-        const context = getContext();
+        const context = getAbilityContext() as common.UIAbilityContext;
         let fileName = Date.now() + (type === 'image' ? '.png' : '.mp4');
         const isResource = typeof realPath !== 'string';
         if (isResource) {
@@ -1541,8 +3136,7 @@ export function initUniExtApi(APP_ID: string) {
             if (!isGranted) {
                 const errMsg = MediaUniErrors.get(1101005);
                 res.reject(errMsg, {
-                    errCode: 1101005,
-                    errMsg
+                    errCode: 1101005
                 } as ApiError);
                 return;
             }
@@ -1560,8 +3154,7 @@ export function initUniExtApi(APP_ID: string) {
             if (!isGranted) {
                 const errMsg = MediaUniErrors.get(1101005);
                 res.reject(errMsg, {
-                    errCode: 1101005,
-                    errMsg
+                    errCode: 1101005
                 } as ApiError);
                 return;
             }
@@ -1572,39 +3165,6 @@ export function initUniExtApi(APP_ID: string) {
             });
         });
     }, SaveVideoToPhotosAlbumApiProtocol) as SaveVideoToPhotosAlbum;
-    type SetNavigationBarColorErrorCode = 4;
-    interface SetNavigationBarColorFail extends IUniError {
-        errCode: SetNavigationBarColorErrorCode;
-    }
-    class SetNavigationBarColorOptions extends UTSObject {
-        frontColor!: '#ffffff' | '#000000';
-        backgroundColor!: string.ColorString;
-        success: SetNavigationBarColorSuccessCallback | null = null;
-        fail: SetNavigationBarColorFailCallback | null = null;
-        complete: SetNavigationBarColorCompleteCallback | null = null;
-    }
-    type SetNavigationBarColorSuccess = AsyncApiSuccessResult;
-    type SetNavigationBarColorSuccessCallback = (result: SetNavigationBarColorSuccess) => void;
-    type SetNavigationBarColorFailCallback = (error: SetNavigationBarColorFail) => void;
-    type SetNavigationBarColorComplete = AsyncApiResult;
-    type SetNavigationBarColorCompleteCallback = (res: SetNavigationBarColorComplete) => void;
-    type SetNavigationBarColor = (options: SetNavigationBarColorOptions) => void;
-    type SetNavigationBarTitleErrorCode = 4;
-    interface SetNavigationBarTitleFail extends IUniError {
-        errCode: SetNavigationBarTitleErrorCode;
-    }
-    class SetNavigationBarTitleOptions extends UTSObject {
-        title!: string;
-        success: SetNavigationBarTitleSuccessCallback | null = null;
-        fail: SetNavigationBarTitleFailCallback | null = null;
-        complete: SetNavigationBarTitleCompleteCallback | null = null;
-    }
-    type SetNavigationBarTitleSuccess = AsyncApiSuccessResult;
-    type SetNavigationBarTitleSuccessCallback = (result: SetNavigationBarTitleSuccess) => void;
-    type SetNavigationBarTitleFailCallback = (error: SetNavigationBarTitleFail) => void;
-    type SetNavigationBarTitleComplete = AsyncApiResult;
-    type SetNavigationBarTitleCompleteCallback = (res: SetNavigationBarTitleComplete) => void;
-    type SetNavigationBarTitle = (options: SetNavigationBarTitleOptions) => void;
     const FRONT_COLORS = [
         '#ffffff',
         '#000000'
@@ -1642,70 +3202,46 @@ export function initUniExtApi(APP_ID: string) {
             }
         ]
     ]);
-    interface TitleNView {
-        titleText: string;
-        autoBackButton?: boolean;
-    }
-    interface BackButton {
-        color?: string;
-    }
-    interface PlusWebviewWebviewTitleNViewStyles {
-        backgroundColor?: string;
-        titleColor?: string;
-        titleNView?: TitleNView;
-        backButton?: BackButton;
-    }
-    interface Webview {
-        getStyle: () => PlusWebviewWebviewTitleNViewStyles | null;
-        setStyle: (style: PlusWebviewWebviewTitleNViewStyles) => void;
-    }
-    interface $page {
-        statusBarStyle: 'dark' | 'light';
-    }
-    interface Page {
-        $getAppWebview: () => Webview | null;
-        $page: $page;
-    }
     const getWebview = (page: Page): Webview | null =>{
         const webview = page.$getAppWebview();
         return webview;
     };
-    const setNavigationBarColor: SetNavigationBarColor = defineAsyncApi<SetNavigationBarColorOptions, SetNavigationBarColorSuccess>(API_SET_NAVIGATION_BAR_COLOR, (options: SetNavigationBarColorOptions, res: ApiExecutor<SetNavigationBarColorSuccess>)=>{
-        const page = getCurrentPage1() as Page;
+    const setNavigationBarColor: SetNavigationBarColor = defineAsyncApi<SetNavigationBarColorOptions, SetNavigationBarColorSuccess>(API_SET_NAVIGATION_BAR_COLOR, (args: SetNavigationBarColorOptions, executor: ApiExecutor<SetNavigationBarColorSuccess>)=>{
+        const page = getCurrentPage() as Page;
         if (!page) {
-            return res.reject(`getCurrentPages is empty`);
+            return executor.reject(`getCurrentPages is empty`);
         }
         const webview = getWebview(page);
         if (webview) {
             const styles: PlusWebviewWebviewTitleNViewStyles = {};
-            if (options.frontColor) {
-                styles.titleColor = options.frontColor;
+            if (args.frontColor) {
+                styles.titleColor = args.frontColor;
             }
-            if (options.backgroundColor) {
-                styles.backgroundColor = options.backgroundColor;
+            if (args.backgroundColor) {
+                styles.backgroundColor = args.backgroundColor;
             }
-            const statusBarStyle = options.frontColor === '#000000' ? 'dark' : 'light';
+            const statusBarStyle = args.frontColor === '#000000' ? 'dark' : 'light';
             navigator.setStatusBarStyle(statusBarStyle);
             page.$page.statusBarStyle = statusBarStyle;
             const style = webview.getStyle();
             if (style && style.titleNView) {
                 if (style.titleNView.autoBackButton) {
                     styles.backButton = styles.backButton || {};
-                    styles.backButton.color = options.frontColor;
+                    styles.backButton.color = args.frontColor;
                 }
                 webview.setStyle({
                     titleNView: styles as TitleNView
                 } as PlusWebviewWebviewTitleNViewStyles);
             }
-            res.resolve();
+            executor.resolve();
         } else {
-            res.reject();
+            executor.reject();
         }
     }, SetNavigationBarColorProtocol) as SetNavigationBarColor;
-    const setNavigationBarTitle: SetNavigationBarTitle = defineAsyncApi<SetNavigationBarTitleOptions, SetNavigationBarTitleSuccess>(API_SET_NAVIGATION_BAR_TITLE, (options: SetNavigationBarTitleOptions, res: ApiExecutor<SetNavigationBarTitleSuccess>)=>{
-        const page = getCurrentPage1() as Page;
+    const setNavigationBarTitle: SetNavigationBarTitle = defineAsyncApi<SetNavigationBarTitleOptions, SetNavigationBarTitleSuccess>(API_SET_NAVIGATION_BAR_TITLE, (args: SetNavigationBarTitleOptions, executor: ApiExecutor<SetNavigationBarTitleSuccess>)=>{
+        const page = getCurrentPage() as Page;
         if (!page) {
-            return res.reject(`getCurrentPages is empty`);
+            return executor.reject(`getCurrentPages is empty`);
         }
         const webview = getWebview(page);
         if (webview) {
@@ -1713,117 +3249,55 @@ export function initUniExtApi(APP_ID: string) {
             if (style && style.titleNView) {
                 webview.setStyle({
                     titleNView: {
-                        titleText: options.title
+                        titleText: args.title
                     } as TitleNView
                 } as PlusWebviewWebviewTitleNViewStyles);
             }
-            res.resolve();
+            executor.resolve();
         } else {
-            res.reject();
+            executor.reject();
         }
     }, SetNavigationBarTitleProtocol) as SetNavigationBarTitle;
-    type Request<T> = (param: RequestOptions<T>) => RequestTask;
-    class RequestOptions<T> extends UTSObject {
-        url!: string;
-        data: Object | null = null;
-        header: UTSJSONObject | null = null;
-        method: RequestMethod | null = null;
-        timeout: number | null = null;
-        dataType: string | null = null;
-        responseType: string | null = null;
-        sslVerify: boolean | null = null;
-        withCredentials: boolean | null = null;
-        firstIpv4: boolean | null = null;
-        success: RequestSuccessCallback<T> | null = null;
-        fail: RequestFailCallback | null = null;
-        complete: RequestCompleteCallback | null = null;
-    }
-    class RequestSuccess<T> extends UTSObject {
-        data: T | null = null;
-        statusCode!: number;
-        header!: Object;
-        cookies!: Array<string>;
-    }
-    type RequestMethod = "GET" | "POST" | "PUT" | "PATCH" | "DELETE" | "HEAD" | "OPTIONS";
-    type RequestErrorCode = 5 | 1000 | 100001 | 100002 | 600003 | 600009 | 602001;
-    interface RequestFail extends IUniError {
-        errCode: RequestErrorCode;
-    }
-    type RequestSuccessCallback<T> = (option: RequestSuccess<T>) => void;
-    type RequestFailCallback = (option: RequestFail) => void;
-    type RequestCompleteCallback = (option: Object) => void;
-    interface RequestTask {
-        abort(): void;
-    }
-    type UploadFile = (options: UploadFileOptions) => UploadTask;
-    class UploadFileOptionFiles extends UTSObject {
-        name: string | null = null;
-        uri!: string;
-        file: Object | null = null;
-    }
-    class UploadFileSuccess extends UTSObject {
-        data!: string;
-        statusCode!: number;
-    }
-    type UploadFileSuccessCallback = (result: UploadFileSuccess) => void;
-    interface UploadFileFail extends IUniError {
-        errCode: RequestErrorCode;
-    }
-    type UploadFileFailCallback = (result: UploadFileFail) => void;
-    type UploadFileCompleteCallback = (result: Object) => void;
-    class UploadFileOptions extends UTSObject {
-        url!: string;
-        filePath: string | null = null;
-        name: string | null = null;
-        files: (UploadFileOptionFiles[]) | null = null;
-        header: UTSJSONObject | null = null;
-        formData: UTSJSONObject | null = null;
-        timeout: number | null = null;
-        success: UploadFileSuccessCallback | null = null;
-        fail: UploadFileFailCallback | null = null;
-        complete: UploadFileCompleteCallback | null = null;
-    }
-    class OnProgressUpdateResult extends UTSObject {
-        progress!: number;
-        totalBytesSent!: number;
-        totalBytesExpectedToSend!: number;
-    }
-    type UploadFileProgressUpdateCallback = (result: OnProgressUpdateResult) => void;
-    interface UploadTask {
-        abort(): void;
-        onProgressUpdate(callback: UploadFileProgressUpdateCallback): void;
-    }
-    type DownloadFile = (options: DownloadFileOptions) => DownloadTask;
-    class DownloadFileSuccess extends UTSObject {
-        tempFilePath!: string;
-        statusCode!: number;
-    }
-    type DownloadFileSuccessCallback = (result: DownloadFileSuccess) => void;
-    interface DownloadFileFail extends IUniError {
-        errCode: RequestErrorCode;
-    }
-    type DownloadFileFailCallback = (result: DownloadFileFail) => void;
-    type DownloadFileComplete = Object;
-    type DownloadFileCompleteCallback = (result: DownloadFileComplete) => void;
-    class DownloadFileOptions extends UTSObject {
-        url!: string;
-        header: UTSJSONObject | null = null;
-        filePath: string | null = null;
-        timeout: number | null = null;
-        success: DownloadFileSuccessCallback | null = null;
-        fail: DownloadFileFailCallback | null = null;
-        complete: DownloadFileCompleteCallback | null = null;
-    }
-    class OnProgressDownloadResult extends UTSObject {
-        progress!: number;
-        totalBytesWritten!: number;
-        totalBytesExpectedToWrite!: number;
-    }
-    type DownloadFileProgressUpdateCallback = (result: OnProgressDownloadResult) => void;
-    interface DownloadTask {
-        abort(): void;
-        onProgressUpdate(callback: DownloadFileProgressUpdateCallback): void;
-    }
+    const showNavigationBarLoading: ShowNavigationBarLoading = defineAsyncApi<ShowNavigationBarLoadingOptions, ShowNavigationBarLoadingSuccess>(API_SET_NAVIGATION_BAR_TITLE, (args: ShowNavigationBarLoadingOptions, executor: ApiExecutor<ShowNavigationBarLoadingSuccess>)=>{
+        const page = getCurrentPage() as Page;
+        if (!page) {
+            return executor.reject(`getCurrentPages is empty`);
+        }
+        const webview = getWebview(page);
+        if (webview) {
+            const style = webview.getStyle();
+            if (style && style.titleNView) {
+                webview.setStyle({
+                    titleNView: {
+                        loading: true
+                    } as TitleNView
+                } as PlusWebviewWebviewTitleNViewStyles);
+            }
+            executor.resolve();
+        } else {
+            executor.reject();
+        }
+    }) as ShowNavigationBarLoading;
+    const hideNavigationBarLoading: HideNavigationBarLoading = defineAsyncApi<HideNavigationBarLoadingOptions, HideNavigationBarLoadingSuccess>(API_SET_NAVIGATION_BAR_TITLE, (args: HideNavigationBarLoadingOptions, executor: ApiExecutor<HideNavigationBarLoadingSuccess>)=>{
+        const page = getCurrentPage() as Page;
+        if (!page) {
+            return executor.reject(`getCurrentPages is empty`);
+        }
+        const webview = getWebview(page);
+        if (webview) {
+            const style = webview.getStyle();
+            if (style && style.titleNView) {
+                webview.setStyle({
+                    titleNView: {
+                        loading: false
+                    } as TitleNView
+                } as PlusWebviewWebviewTitleNViewStyles);
+            }
+            executor.resolve();
+        } else {
+            executor.reject();
+        }
+    }) as HideNavigationBarLoading;
     const API_REQUEST = 'request';
     const RequestApiProtocol = new Map<string, ProtocolOptions>([
         [
@@ -1904,14 +3378,6 @@ export function initUniExtApi(APP_ID: string) {
                 (url: string, params: RequestOptions<Object>)=>{
                     if (url == null) {
                         throw new Error('url is required');
-                    }
-                }
-            ],
-            [
-                'data',
-                (data: object, params: RequestOptions<Object>)=>{
-                    if (data == null) {
-                        params.data = '';
                     }
                 }
             ],
@@ -2068,7 +3534,7 @@ export function initUniExtApi(APP_ID: string) {
                     if (filePath == null) {
                         throw new Error('filePath is required');
                     }
-                    params.filePath = getRealPath2(filePath);
+                    params.filePath = getRealPath3(filePath);
                 }
             ],
             [
@@ -2080,6 +3546,24 @@ export function initUniExtApi(APP_ID: string) {
                 }
             ]
         ])
+    };
+    const needsEncoding = (str: string)=>{
+        const decoded = decodeURIComponent(str);
+        if (decoded !== str) {
+            if (encodeURIComponent(decoded) === str) {
+                return false;
+            }
+        }
+        return encodeURIComponent(decoded) !== decoded;
+    };
+    const parseUrl = (url: string)=>{
+        const urlObj = harmonyUrl.URL.parseURL(url);
+        urlObj.params.forEach((value, key)=>{
+            if (needsEncoding(value)) {
+                urlObj.params.set(key, value);
+            }
+        });
+        return urlObj.toString();
     };
     const cookiesParse = (header: Record<string, string>)=>{
         let cookiesArr: string[] = [];
@@ -2094,11 +3578,6 @@ export function initUniExtApi(APP_ID: string) {
         cookiesArr = cookiesArr.join(';').split(',');
         return cookiesArr;
     };
-    interface IRequestTask {
-        abort: Function;
-        onHeadersReceived: Function;
-        offHeadersReceived: Function;
-    }
     class RequestTask1 implements RequestTask {
         private _requestTask: IRequestTask;
         constructor(requestTask: IRequestTask){
@@ -2130,13 +3609,15 @@ export function initUniExtApi(APP_ID: string) {
             }
         }
         if (!contentType && method === 'POST') {
-            headers['Content-Type'] = 'application/x-www-form-urlencoded; charset=UTF-8';
+            headers['Content-Type'] = 'application/json';
+            contentType = 'application/json';
         }
         if (method === 'GET' && data && isPlainObject(data)) {
             const dataRecord = data as Record<string, Object>;
-            url += '?' + Object.keys(dataRecord).map((key)=>{
+            const query = Object.keys(dataRecord).map((key)=>{
                 return (encodeURIComponent(key) + '=' + encodeURIComponent(dataRecord[key] as string | number | boolean));
             }).join('&');
+            url += query ? (url.indexOf('?') > -1 ? '&' : '?') + query : '';
             data = null;
         } else if (method !== 'GET' && contentType && contentType.indexOf('application/json') === 0 && isPlainObject(data)) {
             data = JSON.stringify(data);
@@ -2155,7 +3636,7 @@ export function initUniExtApi(APP_ID: string) {
             expectDataType = http.HttpDataType.STRING;
         }
         const httpRequest = http.createHttp();
-        const emitter = new Emitter();
+        const emitter = new Emitter1();
         const requestTask: IRequestTask = {
             abort () {
                 httpRequest.destroy();
@@ -2168,10 +3649,10 @@ export function initUniExtApi(APP_ID: string) {
             }
         };
         httpRequest.on('headersReceive', (header: Object)=>{});
-        httpRequest.request(url, {
+        httpRequest.request(parseUrl(url), {
             header: headers,
             method: (method || 'GET').toUpperCase() as http.RequestMethod,
-            extraData: data,
+            extraData: data || undefined,
             expectDataType,
             connectTimeout: timeout ? timeout : undefined,
             readTimeout: timeout ? timeout : undefined
@@ -2684,13 +4165,6 @@ export function initUniExtApi(APP_ID: string) {
     const lookupContentType = (ext: string): string | undefined =>{
         return extToContentType[ext.trim().toLowerCase()];
     };
-    interface IUploadTask {
-        abort: Function;
-        onHeadersReceived: Function;
-        offHeadersReceived: Function;
-        onProgressUpdate: Function;
-        offProgressUpdate: Function;
-    }
     class UploadTask1 implements UploadTask {
         private _uploadTask: IUploadTask;
         constructor(uploadTask: IUploadTask){
@@ -2713,12 +4187,12 @@ export function initUniExtApi(APP_ID: string) {
         }
     }
     const readFile = (filePath: string): ArrayBuffer =>{
-        const readFilePath = getRealPath3(filePath) as string;
-        const file = fs2.openSync(readFilePath, fs2.OpenMode.READ_ONLY);
-        const stat = fs2.statSync(file.fd);
+        const readFilePath = getRealPath4(filePath) as string;
+        const file = fs3.openSync(readFilePath, fs3.OpenMode.READ_ONLY);
+        const stat = fs3.statSync(file.fd);
         const data = new ArrayBuffer(stat.size);
-        fs2.readSync(file.fd, data);
-        fs2.closeSync(file.fd);
+        fs3.readSync(file.fd, data);
+        fs3.closeSync(file.fd);
         return data;
     };
     const uploadFile = defineTaskApi<UploadFileOptions, UploadFileSuccess, UploadTask>(API_UPLOAD_FILE, (args: UploadFileOptions, exec: ApiExecutor<UploadFileSuccess>)=>{
@@ -2753,6 +4227,7 @@ export function initUniExtApi(APP_ID: string) {
                     multiFormDataList.push({
                         name: name || 'file',
                         contentType: lookupContentTypeWithUri(uri) || 'application/octet-stream',
+                        remoteFileName: uri.split('/').pop() || 'no-name',
                         data: readFile(uri!)
                     } as http1.MultiFormData);
                 }
@@ -2760,6 +4235,7 @@ export function initUniExtApi(APP_ID: string) {
                 multiFormDataList.push({
                     name: name || 'file',
                     contentType: lookupContentTypeWithUri(filePath!) || 'application/octet-stream',
+                    remoteFileName: filePath.split('/').pop() || 'no-name',
                     data: readFile(filePath!)
                 } as http1.MultiFormData);
             }
@@ -2774,7 +4250,7 @@ export function initUniExtApi(APP_ID: string) {
             } as IUploadTask);
         }
         const httpRequest = http1.createHttp();
-        const emitter = new Emitter1();
+        const emitter = new Emitter2();
         const uploadTask: IUploadTask = {
             abort () {
                 httpRequest.destroy();
@@ -2801,7 +4277,7 @@ export function initUniExtApi(APP_ID: string) {
                 totalBytesExpectedToSend: totalSize
             } as OnProgressUpdateResult);
         });
-        httpRequest.request(url, {
+        httpRequest.request(parseUrl(url), {
             header: headers,
             method: http1.RequestMethod.POST,
             connectTimeout: timeout ? timeout : undefined,
@@ -2823,13 +4299,6 @@ export function initUniExtApi(APP_ID: string) {
         });
         return new UploadTask1(uploadTask);
     }, UploadFileApiProtocol, UploadFileApiOptions) as UploadFile;
-    interface IDownloadTask {
-        abort: Function;
-        onHeadersReceived: Function;
-        offHeadersReceived: Function;
-        onProgressUpdate: Function;
-        offProgressUpdate: Function;
-    }
     const getPossibleExt = (contentType: string, contentDisposition: string, url: string): string =>{
         const contentDispositionFileNameMatches = contentDisposition.match(/filename="(.*)"/);
         const contentDispositionFileName = contentDispositionFileNameMatches ? contentDispositionFileNameMatches[1] : '';
@@ -2866,9 +4335,9 @@ export function initUniExtApi(APP_ID: string) {
         }
     }
     const downloadFile = defineTaskApi<DownloadFileOptions, DownloadFileSuccess, DownloadTask>(API_DOWNLOAD_FILE, (args: DownloadFileOptions, exec: ApiExecutor<DownloadFileSuccess>)=>{
-        let url = args.url, timeout = args.timeout, header = args.header;
+        const url = args.url, timeout = args.timeout, header = args.header, filePath = args.filePath;
         const httpRequest = http2.createHttp();
-        const emitter = new Emitter2();
+        const emitter = new Emitter3();
         const downloadTask: IDownloadTask = {
             abort () {
                 httpRequest.destroy();
@@ -2901,12 +4370,12 @@ export function initUniExtApi(APP_ID: string) {
                 totalBytesExpectedToWrite: totalSize
             } as OnProgressDownloadResult);
         });
-        const TEMP_PATH = getEnv().TEMP_PATH as string;
-        const downloadPath = TEMP_PATH + '/download';
-        if (!fs3.accessSync(downloadPath)) {
-            fs3.mkdirSync(downloadPath);
+        const TEMP_PATH = getEnv1().TEMP_PATH as string;
+        const downloadPath = TEMP_PATH + '/' + APP_ID + '/download';
+        if (!fs4.accessSync(downloadPath)) {
+            fs4.mkdirSync(downloadPath, true);
         }
-        let stream: fs3.Stream;
+        let stream: fs4.Stream;
         let tempFilePath = '';
         let writePromise = Promise.resolve(0);
         const queueWrite = async (data: ArrayBuffer): Promise<number> =>{
@@ -2917,12 +4386,14 @@ export function initUniExtApi(APP_ID: string) {
             return writePromise;
         };
         httpRequest.on('dataReceive', (data)=>{
-            const ext = getPossibleExt(responseContentType, responseContentDisposition, url);
-            tempFilePath = downloadPath + '/' + Date.now() + (ext ? '.' + ext : '');
-            stream = fs3.createStreamSync(tempFilePath, 'w+');
+            if (!stream) {
+                const ext = getPossibleExt(responseContentType, responseContentDisposition, url);
+                tempFilePath = filePath ? filePath.replace(/^file:\/\//, '') : downloadPath + '/' + Date.now() + (ext ? '.' + ext : '');
+                stream = fs4.createStreamSync(tempFilePath, 'w+');
+            }
             queueWrite(data);
         });
-        httpRequest.requestInStream(url, {
+        httpRequest.requestInStream(parseUrl(url), {
             header: header ? header : {} as ESObject,
             method: http2.RequestMethod.GET,
             connectTimeout: timeout ? timeout : undefined,
@@ -2946,24 +4417,6 @@ export function initUniExtApi(APP_ID: string) {
         });
         return new DownloadTask1(downloadTask);
     }, DownloadFileApiProtocol, DownloadFileApiOptions) as DownloadFile;
-    type OpenAppAuthorizeSetting = (options: OpenAppAuthorizeSettingOptions) => void;
-    class OpenAppAuthorizeSettingSuccess extends UTSObject {
-        errMsg!: string;
-    }
-    type OpenAppAuthorizeSettingSuccessCallback = (result: OpenAppAuthorizeSettingSuccess) => void;
-    class OpenAppAuthorizeSettingFail extends UTSObject {
-        errMsg!: string;
-    }
-    type OpenAppAuthorizeSettingFailCallback = (result: OpenAppAuthorizeSettingFail) => void;
-    class OpenAppAuthorizeSettingComplete extends UTSObject {
-        errMsg!: string;
-    }
-    type OpenAppAuthorizeSettingCompleteCallback = (result: OpenAppAuthorizeSettingComplete) => void;
-    class OpenAppAuthorizeSettingOptions extends UTSObject {
-        success: OpenAppAuthorizeSettingSuccessCallback | null = null;
-        fail: OpenAppAuthorizeSettingFailCallback | null = null;
-        complete: OpenAppAuthorizeSettingCompleteCallback | null = null;
-    }
     const API_OPEN_APP_AUTHORIZE_SETTING = 'openAppAuthorizeSetting';
     const openAppAuthorizeSetting: OpenAppAuthorizeSetting = defineAsyncApi<OpenAppAuthorizeSettingOptions, OpenAppAuthorizeSettingSuccess>(API_OPEN_APP_AUTHORIZE_SETTING, (options: OpenAppAuthorizeSettingOptions, exec: ApiExecutor<OpenAppAuthorizeSettingSuccess>)=>{
         const want: Want = {
@@ -2974,7 +4427,7 @@ export function initUniExtApi(APP_ID: string) {
                 pushParams: bundleManager1.getBundleInfoForSelfSync(bundleManager1.BundleFlag.GET_BUNDLE_INFO_DEFAULT).name
             }
         } as Want;
-        const context = getContext() as common.UIAbilityContext;
+        const context = getAbilityContext1() as common1.UIAbilityContext;
         context.startAbility(want).then(()=>{
             exec.resolve({
                 errMsg: ''
@@ -2983,25 +4436,49 @@ export function initUniExtApi(APP_ID: string) {
             exec.reject(err.message);
         });
     }) as OpenAppAuthorizeSetting;
-    type PageScrollToErrorCode = 4;
-    interface PageScrollToFail extends IUniError {
-        errCode: PageScrollToErrorCode;
-    }
-    type PageScrollToSuccess = AsyncApiSuccessResult;
-    type PageScrollToSuccessCallback = (result: PageScrollToSuccess) => void;
-    type PageScrollToFailCallback = (result: PageScrollToFail) => void;
-    type PageScrollToComplete = AsyncApiResult;
-    type PageScrollToCompleteCallback = (result: PageScrollToComplete) => void;
-    class PageScrollToOptions extends UTSObject {
-        scrollTop: number | null = null;
-        selector: string | null = null;
-        offsetTop: number | null = null;
-        duration: number | null = null;
-        success: PageScrollToSuccessCallback | null = null;
-        fail: PageScrollToFailCallback | null = null;
-        complete: PageScrollToCompleteCallback | null = null;
-    }
-    type PageScrollTo = (options: PageScrollToOptions) => Promise<PageScrollToSuccess> | null;
+    const API_OPEN_DOCUMENT = 'openDocument';
+    const getContentType = (filePath: string, fileType: string | null = null): string | void =>{
+        const suffix = fileType || filePath.split('.').pop();
+        if (!suffix) {
+            return;
+        }
+        switch(suffix){
+            case 'doc':
+            case 'docx':
+                return 'application/msword';
+            case 'xls':
+            case 'xlsx':
+                return 'application/vnd.ms-excel';
+            case 'ppt':
+            case 'pptx':
+                return 'application/vnd.ms-powerpoint';
+            case 'pdf':
+                return 'application/pdf';
+            default:
+                return;
+        }
+    };
+    const openDocument: OpenDocument = defineAsyncApi<OpenDocumentOptions, OpenDocumentSuccess>(API_OPEN_DOCUMENT, (options: OpenDocumentOptions, exec: ApiExecutor<OpenDocumentSuccess>)=>{
+        const filePath = options.filePath;
+        const uri = fileUri.getUriFromPath(filePath.replace(/^file:\/\//, ''));
+        const fileContentType = getContentType(filePath, options.fileType);
+        if (!fileContentType) {
+            exec.reject('file type not supported');
+            return;
+        }
+        const want: Want1 = {
+            flags: wantConstant.Flags.FLAG_AUTH_WRITE_URI_PERMISSION | wantConstant.Flags.FLAG_AUTH_READ_URI_PERMISSION | wantConstant.Flags.FLAG_AUTH_PERSISTABLE_URI_PERMISSION,
+            action: 'ohos.want.action.sendData',
+            uri: uri,
+            type: fileContentType as string
+        };
+        const abilityContext = getAbilityContext2() as common2.UIAbilityContext;
+        abilityContext.startAbility(want).then(()=>{
+            exec.resolve({} as OpenDocumentSuccess);
+        }, (err: Error)=>{
+            exec.reject(err.message);
+        });
+    }) as OpenDocument;
     const API_PAGE_SCROLL_TO = 'pageScrollTo';
     const PageScrollToProtocol = new Map<string, ProtocolOptions>([
         [
@@ -3032,95 +4509,71 @@ export function initUniExtApi(APP_ID: string) {
         ])
     };
     const pageScrollTo: PageScrollTo = defineAsyncApi<PageScrollToOptions, PageScrollToSuccess>(API_PAGE_SCROLL_TO, (options: PageScrollToOptions, res: ApiExecutor<PageScrollToSuccess>)=>{
-        const pageId = getPageIdByVm2(getCurrentPageVm2()!)! as number;
-        UniServiceJSBridge.invokeViewMethod(API_PAGE_SCROLL_TO, options, pageId, res.resolve);
+        const pageId = getPageIdByVm1(getCurrentPageVm1()!)! as number;
+        UniServiceJSBridge1.invokeViewMethod(API_PAGE_SCROLL_TO, options, pageId, res.resolve);
     }, PageScrollToProtocol, PageScrollToApiOptions) as PageScrollTo;
-    type PromptErrorCode = 1 | 1001;
-    interface IPromptError extends IUniError {
-        errCode: PromptErrorCode;
-    }
-    class ShowToastSuccess extends UTSObject {
-    }
-    type ShowToastFail = IPromptError;
-    type ShowToastSuccessCallback = (res: ShowToastSuccess) => void;
-    type ShowToastFailCallback = (res: ShowToastFail) => void;
-    type ShowToastCompleteCallback = (res: Object) => void;
-    class ShowToastOptions extends UTSObject {
-        title!: string;
-        icon: "success" | "error" | "fail" | "exception" | "loading" | "none" | null = null;
-        image: string.ImageURIString | null = null;
-        mask: boolean | null = null;
-        duration: number | null = null;
-        position: "top" | "center" | "bottom" | null = null;
-        success: ShowToastSuccessCallback | null = null;
-        fail: ShowToastFailCallback | null = null;
-        complete: ShowToastCompleteCallback | null = null;
-    }
-    type ShowToast = (options: ShowToastOptions) => void;
-    type HideToast = () => void;
-    class ShowLoadingSuccess extends UTSObject {
-    }
-    type ShowLoadingFail = IPromptError;
-    type ShowLoadingSuccessCallback = (res: ShowLoadingSuccess) => void;
-    type ShowLoadingFailCallback = (res: ShowLoadingFail) => void;
-    type ShowLoadingCompleteCallback = (res: Object) => void;
-    class ShowLoadingOptions extends UTSObject {
-        title!: string;
-        mask: boolean | null = null;
-        success: ShowLoadingSuccessCallback | null = null;
-        fail: ShowLoadingFailCallback | null = null;
-        complete: ShowLoadingCompleteCallback | null = null;
-    }
-    type ShowLoading = (options: ShowLoadingOptions) => void;
-    type HideLoading = () => void;
-    class ShowModalSuccess extends UTSObject {
-        confirm!: boolean;
-        cancel!: boolean;
-        content: string | null = null;
-    }
-    type ShowModalFail = IPromptError;
-    type ShowModalSuccessCallback = (res: ShowModalSuccess) => void;
-    type ShowModalFailCallback = (res: ShowModalFail) => void;
-    type ShowModalCompleteCallback = (res: Object) => void;
-    class ShowModalOptions extends UTSObject {
-        title: string | null = null;
-        content: string | null = null;
-        showCancel: boolean | null = true;
-        cancelText: string | null = null;
-        cancelColor: string.ColorString | null = null;
-        confirmText: string | null = null;
-        confirmColor: string.ColorString | null = null;
-        editable: boolean | null = false;
-        placeholderText: string | null = null;
-        success: ShowModalSuccessCallback | null = null;
-        fail: ShowModalFailCallback | null = null;
-        complete: ShowModalCompleteCallback | null = null;
-    }
-    type ShowModal = (options: ShowModalOptions) => void;
-    class ShowActionSheetSuccess extends UTSObject {
-        tapIndex: number | null = null;
-    }
-    class Popover extends UTSObject {
-        top!: number;
-        left!: number;
-        width!: number;
-        height!: number;
-    }
-    type ShowActionSheetFail = IPromptError;
-    type ShowActionSheetSuccessCallback = (res: ShowActionSheetSuccess) => void;
-    type ShowActionSheetFailCallback = (res: ShowActionSheetFail) => void;
-    type ShowActionSheetCompleteCallback = (res: Object) => void;
-    class ShowActionSheetOptions extends UTSObject {
-        title: string | null = null;
-        alertText: string | null = null;
-        itemList!: string[];
-        itemColor: string.ColorString | null = null;
-        popover: Popover | null = null;
-        success: ShowActionSheetSuccessCallback | null = null;
-        fail: ShowActionSheetFailCallback | null = null;
-        complete: ShowActionSheetCompleteCallback | null = null;
-    }
-    type ShowActionSheet = (options: ShowActionSheetOptions) => void;
+    const RequestPaymentUniErrors: Map<RequestPaymentErrorCode, string> = new Map([
+        [
+            700600,
+            'The payment result is unknown (it may have been successfully paid). Please check the payment status of the order in the merchant order list.'
+        ],
+        [
+            701100,
+            'Order payment failure.'
+        ],
+        [
+            701110,
+            'Repeat the request.'
+        ],
+        [
+            700601,
+            'The user canceled midway.'
+        ],
+        [
+            700602,
+            'Network connection error.'
+        ],
+        [
+            700603,
+            'Payment result unknown (may have been successfully paid), please check the payment status of the order in the merchant order list.'
+        ],
+        [
+            700000,
+            'Other payment errors.'
+        ],
+        [
+            700604,
+            'Wechat is not installed.'
+        ],
+        [
+            700605,
+            'Failed to get provider.'
+        ],
+        [
+            700718,
+            'URL Scheme is not configured.'
+        ]
+    ]);
+    const API_REQUEST_PAYMENT = 'requestPayment';
+    const requestPayment: RequestPayment = defineAsyncApi<RequestPaymentOptions, RequestPaymentSuccess>(API_REQUEST_PAYMENT, (options: RequestPaymentOptions, exec: ApiExecutor<RequestPaymentSuccess>): void =>{
+        const provider = getUniProvider<UniPaymentProvider>('payment', options.provider);
+        if (!provider) {
+            exec.reject('Provider not found.');
+            return;
+        }
+        provider.requestPayment({
+            orderInfo: options.orderInfo,
+            success: (result: RequestPaymentSuccess)=>{
+                exec.resolve(result);
+            },
+            fail: (error: RequestPaymentFail)=>{
+                const errMsg = RequestPaymentUniErrors.get(error.errCode) ?? "";
+                exec.reject(errMsg, {
+                    errCode: error.errCode
+                } as ApiError);
+            }
+        } as RequestPaymentOptions);
+    }) as RequestPayment;
     const API_SHOW_TOAST = 'showToast';
     const ShowToastProtocol = new Map<string, ProtocolOptions>([
         [
@@ -3294,7 +4747,7 @@ export function initUniExtApi(APP_ID: string) {
             } as promptAction.ShowToastOptions);
             res.resolve({} as ShowToastSuccess);
         } catch (error) {
-            let message = (error as BusinessError1).message;
+            let message = (error as BusinessError3).message;
             res.reject(message);
         }
     }, ShowToastProtocol, ShowToastApiOptions) as ShowToast;
@@ -3381,16 +4834,33 @@ export function initUniExtApi(APP_ID: string) {
             res.reject(e.message);
         });
     }, ShowActionSheetProtocol, ShowActionSheetApiOptions) as ShowActionSheet;
-    const showLoading: ShowLoading = defineAsyncApi<ShowLoadingOptions, ShowLoadingSuccess>(API_SHOW_LOADING, async (options: ShowLoadingOptions, res: ApiExecutor<ShowLoadingSuccess>)=>{
-        res.reject('showLoading is not supported on HarmonyOS');
-    }, ShowLoadingProtocol, ShowLoadingApiOptions) as ShowLoading;
-    const hideLoading: HideLoading = ()=>defineAsyncApi(API_HIDE_LOADING, (options: Object, res: ApiExecutor<Object>)=>{
-            res.reject('hideLoading is not supported on HarmonyOS');
+    const showLoading: ShowLoading = defineAsyncApi<ShowLoadingOptions, ShowLoadingSuccess>(API_SHOW_LOADING, async (options: ShowLoadingOptions, exec: ApiExecutor<ShowLoadingSuccess>)=>{
+        waitForCurrentNativePage1().then((nativePage: Object)=>{
+            getOSRuntime1().showLoading({
+                title: options.title || '',
+                mask: options.mask == null ? false : options.mask
+            } as IShowLoadingOptions, nativePage);
+            exec.resolve({} as ShowLoadingSuccess);
         });
+    }, ShowLoadingProtocol, ShowLoadingApiOptions) as ShowLoading;
+    const hideLoading: HideLoading = defineSyncApi<void>(API_HIDE_LOADING, ()=>{
+        waitForCurrentNativePage1().then((nativePage: Object)=>{
+            getOSRuntime1().hideLoading();
+        });
+    }) as HideLoading;
+    const API_START_PULL_DOWN_REFRESH = 'startPullDownRefresh';
+    const API_STOP_PULL_DOWN_REFRESH = 'stopPullDownRefresh';
+    const startPullDownRefresh = defineAsyncApi<StartPullDownRefreshOptions, StartPullDownRefreshSuccess>(API_START_PULL_DOWN_REFRESH, (_, res)=>{
+        internalStartPullDownRefresh();
+        res.resolve();
+    }) as StartPullDownRefresh;
+    const stopPullDownRefresh = defineSyncApi<void>(API_STOP_PULL_DOWN_REFRESH, ()=>{
+        internalStopPullDownRefresh();
+    }) as StopPullDownRefresh;
     const API_RPX2PX = 'rpx2px';
     const EPS = 1e-4;
     const rpx2px: Rpx2px = defineSyncApi<number>(API_RPX2PX, (number: number): number =>{
-        const windowStage: harmonyWindow.WindowStage = UTSHarmony3.getWindowStage();
+        const windowStage: harmonyWindow.WindowStage = UTSHarmony7.getWindowStage();
         let windowWidthInVp: number = 384;
         let windowWidthInPx: number = 1344;
         if (windowStage) {
@@ -3412,74 +4882,72 @@ export function initUniExtApi(APP_ID: string) {
         }
         return number < 0 ? -result : result;
     }) as Rpx2px;
-    class SetStorageSuccess extends UTSObject {
-    }
-    type SetStorageSuccessCallback = (res: SetStorageSuccess) => void;
-    type SetStorageFailCallback = (res: UniError) => void;
-    type SetStorageCompleteCallback = (res: Object) => void;
-    class SetStorageOptions extends UTSObject {
-        key!: string;
-        data!: Object;
-        success: SetStorageSuccessCallback | null = null;
-        fail: SetStorageFailCallback | null = null;
-        complete: SetStorageCompleteCallback | null = null;
-    }
-    type SetStorage = (options: SetStorageOptions) => void;
-    type SetStorageSync = (key: string, data: Object) => void;
-    class GetStorageSuccess extends UTSObject {
-        data: Object | null = null;
-    }
-    type GetStorageSuccessCallback = (res: GetStorageSuccess) => void;
-    type GetStorageFailCallback = (res: UniError) => void;
-    type GetStorageCompleteCallback = (res: Object) => void;
-    class GetStorageOptions extends UTSObject {
-        key!: string;
-        success: GetStorageSuccessCallback | null = null;
-        fail: GetStorageFailCallback | null = null;
-        complete: GetStorageCompleteCallback | null = null;
-    }
-    type GetStorage = (options: GetStorageOptions) => void;
-    type GetStorageSync = (key: string) => Object | null;
-    class GetStorageInfoSuccess extends UTSObject {
-        keys!: Array<string>;
-        currentSize!: number;
-        limitSize!: number;
-    }
-    type GetStorageInfoSuccessCallback = (res: GetStorageInfoSuccess) => void;
-    type GetStorageInfoFailCallback = (res: UniError) => void;
-    type GetStorageInfoCompleteCallback = (res: Object) => void;
-    class GetStorageInfoOptions extends UTSObject {
-        success: GetStorageInfoSuccessCallback | null = null;
-        fail: GetStorageInfoFailCallback | null = null;
-        complete: GetStorageInfoCompleteCallback | null = null;
-    }
-    type GetStorageInfo = (options: GetStorageInfoOptions) => void;
-    type GetStorageInfoSync = () => GetStorageInfoSuccess;
-    class RemoveStorageSuccess extends UTSObject {
-    }
-    type RemoveStorageSuccessCallback = (res: RemoveStorageSuccess) => void;
-    type RemoveStorageFailCallback = (res: UniError) => void;
-    type RemoveStorageCompleteCallback = (res: Object) => void;
-    class RemoveStorageOptions extends UTSObject {
-        key!: string;
-        success: RemoveStorageSuccessCallback | null = null;
-        fail: RemoveStorageFailCallback | null = null;
-        complete: RemoveStorageCompleteCallback | null = null;
-    }
-    type RemoveStorage = (options: RemoveStorageOptions) => void;
-    type RemoveStorageSync = (key: string) => void;
-    class ClearStorageSuccess extends UTSObject {
-    }
-    type ClearStorageSuccessCallback = (res: ClearStorageSuccess) => void;
-    type ClearStorageFailCallback = (res: UniError) => void;
-    type ClearStorageCompleteCallback = (res: Object) => void;
-    class ClearStorageOptions extends UTSObject {
-        success: ClearStorageSuccessCallback | null = null;
-        fail: ClearStorageFailCallback | null = null;
-        complete: ClearStorageCompleteCallback | null = null;
-    }
-    type ClearStorage = (option?: ClearStorageOptions | null) => void;
-    type ClearStorageSync = () => void;
+    const API_SCAN_CODE = 'scanCode';
+    let supportedScanTypesMap: Map<ScanCodeSupportedTypes, scanCore.ScanType>;
+    const initScanTypesMapOnce = ()=>{
+        if (supportedScanTypesMap) {
+            return;
+        }
+        supportedScanTypesMap = new Map<ScanCodeSupportedTypes, scanCore.ScanType>([
+            [
+                'barCode',
+                scanCore.ScanType.CODABAR_CODE
+            ],
+            [
+                'qrCode',
+                scanCore.ScanType.QR_CODE
+            ],
+            [
+                'datamatrix',
+                scanCore.ScanType.DATAMATRIX_CODE
+            ],
+            [
+                'pdf417',
+                scanCore.ScanType.PDF417_CODE
+            ]
+        ]);
+    };
+    const getUniScanType = (scanType: scanCore.ScanType): ScanCodeSupportedTypes =>{
+        for (const ref of supportedScanTypesMap.entries()){
+            let key = ref[0], value = ref[1];
+            if (value === scanType) {
+                return key;
+            }
+        }
+        return 'qrCode';
+    };
+    const scanCode: ScanCode = defineAsyncApi<ScanCodeOptions, ScanCodeSuccess>(API_SCAN_CODE, (options: ScanCodeOptions, exec: ApiExecutor<ScanCodeSuccess>)=>{
+        if (!canIUse('SystemCapability.Multimedia.Scan.ScanBarcode')) {
+            exec.reject('not support');
+            return;
+        }
+        initScanTypesMapOnce();
+        let scanTypes: scanCore.ScanType[] = [
+            scanCore.ScanType.ALL
+        ];
+        if (options.scanType && Array.isArray(options.scanType) && options.scanType.length > 0) {
+            scanTypes = options.scanType.filter((type)=>{
+                return supportedScanTypesMap.has(type);
+            }).map((type)=>{
+                return supportedScanTypesMap.get(type)!;
+            });
+        }
+        const scanOptions: scanBarcode.ScanOptions = {
+            scanTypes,
+            enableMultiMode: true,
+            enableAlbum: !options.onlyFromCamera
+        };
+        scanBarcode.startScanForResult(getAbilityContext3()!, scanOptions, (err, data)=>{
+            if (err) {
+                exec.reject(err.message);
+                return;
+            }
+            exec.resolve({
+                result: data.originalValue,
+                scanType: getUniScanType(data.scanType)
+            } as ScanCodeSuccess);
+        });
+    }) as ScanCode;
     const API_GET_STORAGE = 'getStorage';
     const API_GET_STORAGE_SYNC = 'getStorageSync';
     const API_SET_STORAGE = 'setStorage';
@@ -3508,7 +4976,7 @@ export function initUniExtApi(APP_ID: string) {
         if (store) {
             return store;
         }
-        store = dataPreferences.getPreferencesSync(getContext(), {
+        store = dataPreferences.getPreferencesSync(getAbilityContext4() as common3.UIAbilityContext, {
             name: `storage.${APP_ID}`
         } as dataPreferences.Options);
         return store;
@@ -3542,12 +5010,16 @@ export function initUniExtApi(APP_ID: string) {
         createStore().flush();
     }) as SetStorageSync;
     const setStorage = defineAsyncApi<SetStorageOptions, SetStorageSuccess>(API_SET_STORAGE, (args: SetStorageOptions, exec: ApiExecutor<SetStorageSuccess>)=>{
-        createStore().put(args.key, stringifyStorageValue(args.data)).then(()=>{
-            createStore().flush();
-            exec.resolve({} as ESObject);
-        }, (error: Error)=>{
-            exec.reject(error.message);
-        });
+        try {
+            createStore().put(args.key, stringifyStorageValue(args.data)).then(()=>{
+                createStore().flush();
+                exec.resolve({} as ESObject);
+            }, (error: Error)=>{
+                exec.reject(error.message);
+            });
+        } catch (error) {
+            exec.reject((error as Error).message);
+        }
     }) as SetStorage;
     const removeStorageSync = defineSyncApi<void>(API_REMOVE_STORAGE_SYNC, (key: string)=>{
         createStore().deleteSync(key);
@@ -3590,63 +5062,238 @@ export function initUniExtApi(APP_ID: string) {
             } as GetStorageInfoSuccess);
         });
     }) as GetStorageInfo;
-    type ConnectSocket = (options: ConnectSocketOptions) => SocketTask;
-    class ConnectSocketSuccess extends UTSObject {
-        errMsg!: string;
-    }
-    type ConnectSocketSuccessCallback = (result: ConnectSocketSuccess) => void;
-    type ConnectSocketErrorCode = 600009;
-    interface ConnectSocketFail extends IUniError {
-        errCode: ConnectSocketErrorCode;
-    }
-    type ConnectSocketFailCallback = (result: ConnectSocketFail) => void;
-    type ConnectSocketComplete = Object;
-    type ConnectSocketCompleteCallback = (result: ConnectSocketComplete) => void;
-    class ConnectSocketOptions extends UTSObject {
-        url!: string;
-        header: UTSJSONObject | null = null;
-        protocols: (string[]) | null = null;
-        success: ConnectSocketSuccessCallback | null = null;
-        fail: ConnectSocketFailCallback | null = null;
-        complete: ConnectSocketCompleteCallback | null = null;
-    }
-    class GeneralCallbackResult extends UTSObject {
-        errMsg!: string;
-    }
-    type SendSocketMessageErrorCode = 10001 | 10002 | 602001;
-    interface SendSocketMessageFail extends IUniError {
-        errCode: SendSocketMessageErrorCode;
-    }
-    class SendSocketMessageOptions extends UTSObject {
-        data!: Object;
-        success: ((result: GeneralCallbackResult) => void) | null = null;
-        fail: ((result: SendSocketMessageFail) => void) | null = null;
-        complete: ((result: Object) => void) | null = null;
-    }
-    class CloseSocketOptions extends UTSObject {
-        code: number | null = null;
-        reason: string | null = null;
-        success: ((result: GeneralCallbackResult) => void) | null = null;
-        fail: ((result: GeneralCallbackResult) => void) | null = null;
-        complete: ((result: GeneralCallbackResult) => void) | null = null;
-    }
-    class OnSocketOpenCallbackResult extends UTSObject {
-        header!: Object;
-    }
-    class OnSocketMessageCallbackResult extends UTSObject {
-        data!: Object;
-    }
-    interface SocketTask {
-        send(options: SendSocketMessageOptions): void;
-        close(options: CloseSocketOptions): void;
-        onOpen(callback: (result: OnSocketOpenCallbackResult) => void): void;
-        onClose(callback: (result: Object) => void): void;
-        onError(callback: (result: GeneralCallbackResult) => void): void;
-        onMessage(callback: (result: OnSocketMessageCallbackResult) => void): void;
-    }
-    class OnSocketErrorCallbackResult extends UTSObject {
-        errMsg!: string;
-    }
+    const API_SHOW_TAB_BAR_RED_DOT = 'showTabBarRedDot';
+    const API_HIDE_TAB_BAR_RED_DOT = 'hideTabBarRedDot';
+    const API_SET_TAB_BAR_BADGE = 'setTabBarBadge';
+    const API_REMOVE_TAB_BAR_BADGE = 'removeTabBarBadge';
+    const API_SET_TAB_BAR_ITEM = 'setTabBarItem';
+    const API_SET_TAB_BAR_STYLE = 'setTabBarStyle';
+    const API_SHOW_TAB_BAR = 'showTabBar';
+    const API_HIDE_TAB_BAR = 'hideTabBar';
+    const ShowTabBarRedDotApiProtocol = new Map<string, ProtocolOptions>([
+        [
+            'index',
+            {
+                type: 'number',
+                required: true
+            }
+        ]
+    ]);
+    const HideTabBarRedDotApiProtocol = new Map<string, ProtocolOptions>([
+        [
+            'index',
+            {
+                type: 'number',
+                required: true
+            }
+        ]
+    ]);
+    const SetTabBarBadgeApiProtocol = new Map<string, ProtocolOptions>([
+        [
+            'index',
+            {
+                type: 'number',
+                required: true
+            }
+        ],
+        [
+            'text',
+            {
+                type: 'string',
+                required: true
+            }
+        ]
+    ]);
+    const RemoveTabBarBadgeApiProtocol = new Map<string, ProtocolOptions>([
+        [
+            'index',
+            {
+                type: 'number',
+                required: true
+            }
+        ]
+    ]);
+    const SetTabBarItemApiProtocol = new Map<string, ProtocolOptions>([
+        [
+            'index',
+            {
+                type: 'number',
+                required: true
+            }
+        ],
+        [
+            'text',
+            {
+                type: 'string',
+                required: false
+            }
+        ],
+        [
+            'iconPath',
+            {
+                type: 'string',
+                required: false
+            }
+        ],
+        [
+            'selectedIconPath',
+            {
+                type: 'string',
+                required: false
+            }
+        ],
+        [
+            'pagePath',
+            {
+                type: 'string',
+                required: false
+            }
+        ],
+        [
+            'visible',
+            {
+                type: 'boolean',
+                required: false
+            }
+        ],
+        [
+            'iconfont',
+            {
+                type: 'object',
+                required: false
+            }
+        ],
+        [
+            'visible',
+            {
+                type: 'boolean',
+                required: false
+            }
+        ]
+    ]);
+    const SetTabBarStyleApiProtocol = new Map<string, ProtocolOptions>([
+        [
+            'color',
+            {
+                type: 'string',
+                required: false
+            }
+        ],
+        [
+            'selectedColor',
+            {
+                type: 'string',
+                required: false
+            }
+        ],
+        [
+            'backgroundColor',
+            {
+                type: 'string',
+                required: false
+            }
+        ],
+        [
+            'backgroundImage',
+            {
+                type: 'string',
+                required: false
+            }
+        ],
+        [
+            'backgroundRepeat',
+            {
+                type: 'string',
+                required: false
+            }
+        ],
+        [
+            'borderStyle',
+            {
+                type: 'string',
+                required: false
+            }
+        ],
+        [
+            'borderColor',
+            {
+                type: 'string',
+                required: false
+            }
+        ]
+    ]);
+    const setTabBarBadge = defineAsyncApi<SetTabBarBadgeOptions, SetTabBarBadgeSuccess>(API_SET_TAB_BAR_BADGE, (options: SetTabBarBadgeOptions, exec: ApiExecutor<SetTabBarBadgeSuccess>)=>{
+        const tabBar = getTabBar();
+        if (tabBar === null) {
+            exec.reject('tabBar is not exist');
+            return;
+        }
+        tabBar!.setTabBarBadge(options);
+        exec.resolve();
+    }, SetTabBarBadgeApiProtocol);
+    const removeTabBarBadge = defineAsyncApi<RemoveTabBarBadgeOptions, RemoveTabBarBadgeSuccess>(API_REMOVE_TAB_BAR_BADGE, (options: RemoveTabBarBadgeOptions, exec: ApiExecutor<RemoveTabBarBadgeSuccess>)=>{
+        const tabBar = getTabBar();
+        if (tabBar == null) {
+            exec.reject('tabBar is not exist');
+            return;
+        }
+        tabBar!.removeTabBarBadge(options);
+        exec.resolve();
+    }, RemoveTabBarBadgeApiProtocol);
+    const setTabBarItem = defineAsyncApi<SetTabBarItemOptions, SetTabBarItemSuccess>(API_SET_TAB_BAR_ITEM, (options: SetTabBarItemOptions, res: ApiExecutor<SetTabBarItemSuccess>)=>{
+        const tabBar = getTabBar();
+        if (tabBar == null) {
+            res.reject('tabBar is not exist');
+            return;
+        }
+        tabBar!.setTabBarItem(options);
+        res.resolve();
+    }, SetTabBarItemApiProtocol);
+    const setTabBarStyle = defineAsyncApi<SetTabBarStyleOptions, SetTabBarStyleSuccess>(API_SET_TAB_BAR_STYLE, (options: SetTabBarStyleOptions, exec: ApiExecutor<SetTabBarStyleSuccess>)=>{
+        const tabBar = getTabBar();
+        if (tabBar == null) {
+            exec.reject('tabBar is not exist');
+            return;
+        }
+        tabBar!.setTabBarStyle(options);
+        exec.resolve();
+    }, SetTabBarStyleApiProtocol);
+    const hideTabBar = defineAsyncApi<HideTabBarOptions, HideTabBarSuccess>(API_HIDE_TAB_BAR, (options: HideTabBarOptions | null, exec: ApiExecutor<HideTabBarSuccess>)=>{
+        const tabBar = getTabBar();
+        if (tabBar == null) {
+            exec.reject('tabBar is not exist');
+            return;
+        }
+        tabBar!.hideTabBar();
+        exec.resolve();
+    });
+    const showTabBar = defineAsyncApi<ShowTabBarOptions, ShowTabBarSuccess>(API_SHOW_TAB_BAR, (options: ShowTabBarOptions, exec: ApiExecutor<ShowTabBarSuccess>)=>{
+        const tabBar = getTabBar();
+        if (tabBar == null) {
+            exec.reject('tabBar is not exist');
+            return;
+        }
+        tabBar!.showTabBar();
+        exec.resolve();
+    });
+    const showTabBarRedDot = defineAsyncApi<ShowTabBarRedDotOptions, ShowTabBarRedDotSuccess>(API_SHOW_TAB_BAR_RED_DOT, (options: ShowTabBarRedDotOptions, exec: ApiExecutor<ShowTabBarRedDotSuccess>)=>{
+        const tabBar = getTabBar();
+        if (tabBar == null) {
+            exec.reject('tabBar is not exist');
+            return;
+        }
+        tabBar!.showTabBarRedDot(options);
+        exec.resolve();
+    }, ShowTabBarRedDotApiProtocol);
+    const hideTabBarRedDot = defineAsyncApi<HideTabBarRedDotOptions, HideTabBarRedDotSuccess>(API_HIDE_TAB_BAR_RED_DOT, (options: HideTabBarRedDotOptions, exec: ApiExecutor<HideTabBarRedDotSuccess>)=>{
+        const tabBar = getTabBar();
+        if (tabBar == null) {
+            exec.reject('tabBar is not exist');
+            return;
+        }
+        tabBar!.hideTabBarRedDot(options);
+        exec.resolve();
+    }, HideTabBarRedDotApiProtocol);
     const API_CONNECT_SOCKET = 'connectSocket';
     const ConnectSocketApiProtocol = new Map<string, ProtocolOptions>([
         [
@@ -3683,6 +5330,8 @@ export function initUniExtApi(APP_ID: string) {
             ]
         ])
     };
+    const API_SEND_SOCKET_MESSAGE = 'sendSocketMessage';
+    const API_CLOSE_SOCKET = 'closeSocket';
     const tryExec = (fn: Function | null | undefined, ...args: Object[])=>{
         if (!fn) {
             return;
@@ -3693,10 +5342,50 @@ export function initUniExtApi(APP_ID: string) {
             console.error(error);
         }
     };
+    const GlobalWebsocketEvent: IUniWebsocketEmitter = new Emitter4() as IUniWebsocketEmitter;
     class SocketTask1 implements SocketTask {
         private _ws: webSocket.WebSocket;
+        private _emitter: IUniWebsocketEmitter = new Emitter4();
         constructor(ws: webSocket.WebSocket){
             this._ws = ws;
+            this._ws.on('message', (_, data)=>{
+                const message = {
+                    data
+                } as OnSocketMessageCallbackResult;
+                this._emitter.emit('message', message);
+                if (this === socketTasks[0]) {
+                    GlobalWebsocketEvent.emit('message', message);
+                }
+            });
+            this._ws.on('open', (_, data)=>{
+                this._emitter.emit('open', data);
+                if (this === socketTasks[0]) {
+                    GlobalWebsocketEvent.emit('open', data);
+                }
+            });
+            this._ws.on('error', (error)=>{
+                const message = {
+                    errMsg: error.message
+                } as OnSocketErrorCallbackResult;
+                this._emitter.emit('error', message);
+                if (this === socketTasks[0]) {
+                    GlobalWebsocketEvent.emit('error', message);
+                }
+                const index = socketTasks.indexOf(this);
+                if (index >= 0) {
+                    socketTasks.splice(index, 1);
+                }
+            });
+            this._ws.on('close', (_, data)=>{
+                this._emitter.emit('close', data);
+                if (this === socketTasks[0]) {
+                    GlobalWebsocketEvent.emit('close', data);
+                }
+                const index = socketTasks.indexOf(this);
+                if (index >= 0) {
+                    socketTasks.splice(index, 1);
+                }
+            });
         }
         send(options: SendSocketMessageOptions) {
             this._ws.send(options.data as string | ArrayBuffer).then((success: boolean)=>{
@@ -3715,10 +5404,6 @@ export function initUniExtApi(APP_ID: string) {
                 reason: typeof options?.reason === 'string' ? options.reason : ''
             } as webSocket.WebSocketCloseOptions).then((success: boolean)=>{
                 if (success) {
-                    this._ws.off('open');
-                    this._ws.off('message');
-                    this._ws.off('close');
-                    this._ws.off('error');
                     tryExec(options?.success, {} as GeneralCallbackResult);
                 } else {
                     tryExec(options?.fail, new UniError('close socket failed'));
@@ -3728,94 +5413,103 @@ export function initUniExtApi(APP_ID: string) {
             });
         }
         onMessage(callback: Function) {
-            this._ws.on('message', (_, data)=>{
-                callback({
-                    data
-                } as OnSocketMessageCallbackResult);
-            });
+            this._emitter.on('message', callback);
         }
         onOpen(callback: Function) {
-            this._ws.on('open', (_, data)=>{
-                callback(data);
-            });
+            this._emitter.on('open', callback);
         }
         onError(callback: Function) {
-            this._ws.on('error', (error)=>{
-                callback({
-                    errMsg: error.message
-                } as OnSocketErrorCallbackResult);
-            });
+            this._emitter.on('error', callback);
         }
         onClose(callback: Function) {
-            this._ws.on('close', (_, data)=>{
-                callback(data);
-            });
+            this._emitter.on('close', callback);
         }
     }
+    const socketTasks: SocketTask1[] = [];
     const connectSocket = defineTaskApi<ConnectSocketOptions, ConnectSocketSuccess, SocketTask>(API_CONNECT_SOCKET, (args: ConnectSocketOptions, exec: ApiExecutor<ConnectSocketSuccess>)=>{
         const ws = webSocket.createWebSocket();
         ws.connect(args.url, {
-            header: args.header ? args.header as Object : undefined
+            header: args.header ? args.header as Object : undefined,
+            protocol: args.protocols ? Array.isArray(args.protocols) ? args.protocols.join(',') : args.protocols : undefined
         } as webSocket.WebSocketRequestOptions);
-        return new SocketTask1(ws);
+        const task = new SocketTask1(ws);
+        socketTasks.push(task);
+        return task;
     }, ConnectSocketApiProtocol, ConnectSocketApiOptions) as ConnectSocket;
-    interface UniExtApi {
-        getClipboardData: GetClipboardData;
-        setClipboardData: SetClipboardData;
-        createIntersectionObserver: CreateIntersectionObserver;
-        createSelectorQuery: CreateSelectorQuery;
-        getAppBaseInfo: GetAppBaseInfo;
-        getDeviceInfo: GetDeviceInfo;
-        getProvider: GetProvider;
-        getSystemInfo: GetSystemInfo;
-        getSystemInfoSync: GetSystemInfoSync;
-        getWindowInfo: GetWindowInfo;
-        makePhoneCall: MakePhoneCall;
-        chooseImage: ChooseImage;
-        previewImage: PreviewImage;
-        closePreviewImage: ClosePreviewImage;
-        getImageInfo: GetImageInfo;
-        saveImageToPhotosAlbum: SaveImageToPhotosAlbum;
-        chooseVideo: ChooseVideo;
-        saveVideoToPhotosAlbum: SaveVideoToPhotosAlbum;
-        getVideoInfo: GetVideoInfo;
-        setNavigationBarColor: SetNavigationBarColor;
-        setNavigationBarTitle: SetNavigationBarTitle;
-        request: Request<Object>;
-        uploadFile: UploadFile;
-        downloadFile: DownloadFile;
-        openAppAuthorizeSetting: OpenAppAuthorizeSetting;
-        pageScrollTo: PageScrollTo;
-        showToast: ShowToast;
-        hideToast: HideToast;
-        showLoading: ShowLoading;
-        hideLoading: HideLoading;
-        showModal: ShowModal;
-        showActionSheet: ShowActionSheet;
-        rpx2px: Rpx2px;
-        setStorage: SetStorage;
-        setStorageSync: SetStorageSync;
-        getStorage: GetStorage;
-        getStorageSync: GetStorageSync;
-        getStorageInfo: GetStorageInfo;
-        getStorageInfoSync: GetStorageInfoSync;
-        removeStorage: RemoveStorage;
-        removeStorageSync: RemoveStorageSync;
-        clearStorage: ClearStorage;
-        clearStorageSync: ClearStorageSync;
-        connectSocket: ConnectSocket;
-    }
+    const onSocketMessage: OnSocketMessage = (callback: Function)=>{
+        GlobalWebsocketEvent.on('message', callback);
+    };
+    const onSocketOpen: OnSocketOpen = (callback: Function)=>{
+        GlobalWebsocketEvent.on('open', callback);
+    };
+    const onSocketError: OnSocketError = (callback: Function)=>{
+        GlobalWebsocketEvent.on('error', callback);
+    };
+    const onSocketClose: OnSocketClose = (callback: Function)=>{
+        GlobalWebsocketEvent.on('close', callback);
+    };
+    const sendSocketMessage = defineAsyncApi<SendSocketMessageOptions, GeneralCallbackResult>(API_SEND_SOCKET_MESSAGE, (args: SendSocketMessageOptions, exec: ApiExecutor<GeneralCallbackResult>)=>{
+        const task = socketTasks[0];
+        if (task) {
+            task.send({
+                data: args.data,
+                success (res) {
+                    exec.resolve(res);
+                },
+                fail (err) {
+                    exec.reject('sendSocketMessage:fail');
+                }
+            } as SendSocketMessageOptions);
+        } else {
+            exec.reject('WebSocket is not connected');
+        }
+    }) as SendSocketMessage;
+    const closeSocket = defineAsyncApi<CloseSocketOptions, GeneralCallbackResult>(API_CLOSE_SOCKET, (args: CloseSocketOptions, exec: ApiExecutor<GeneralCallbackResult>)=>{
+        const task = socketTasks[0];
+        if (task) {
+            task.close({
+                code: args.code,
+                reason: args.reason,
+                success (res) {
+                    exec.resolve(res);
+                },
+                fail (err) {
+                    exec.reject('closeSocket:fail');
+                }
+            } as CloseSocketOptions);
+        } else {
+            exec.reject('WebSocket is not connected');
+        }
+    }) as CloseSocket;
     return {
+        addPhoneContact,
+        arrayBufferToBase64,
+        base64ToArrayBuffer,
         getClipboardData,
         setClipboardData,
         createIntersectionObserver,
-        createSelectorQuery,
+        $on,
+        $once,
+        $off,
+        $emit,
+        exit,
+        saveFile,
+        getSavedFileList,
+        getSavedFileInfo,
+        removeSavedFile,
+        getFileInfo,
         getAppBaseInfo,
         getDeviceInfo,
+        getNetworkType,
+        onNetworkStatusChange,
+        offNetworkStatusChange,
         getProvider,
+        getProviderIds,
+        getProviderObject,
         getSystemInfo,
         getSystemInfoSync,
         getWindowInfo,
+        hideKeyboard,
         makePhoneCall,
         chooseImage,
         previewImage,
@@ -3827,18 +5521,25 @@ export function initUniExtApi(APP_ID: string) {
         getVideoInfo,
         setNavigationBarColor,
         setNavigationBarTitle,
+        showNavigationBarLoading,
+        hideNavigationBarLoading,
         request,
         uploadFile,
         downloadFile,
         openAppAuthorizeSetting,
+        openDocument,
         pageScrollTo,
+        requestPayment,
         showToast,
         hideToast,
         showLoading,
         hideLoading,
         showModal,
         showActionSheet,
+        startPullDownRefresh,
+        stopPullDownRefresh,
         rpx2px,
+        scanCode,
         setStorage,
         setStorageSync,
         getStorage,
@@ -3849,6 +5550,20 @@ export function initUniExtApi(APP_ID: string) {
         removeStorageSync,
         clearStorage,
         clearStorageSync,
-        connectSocket
+        showTabBarRedDot,
+        hideTabBarRedDot,
+        setTabBarBadge,
+        removeTabBarBadge,
+        setTabBarItem,
+        setTabBarStyle,
+        showTabBar,
+        hideTabBar,
+        connectSocket,
+        sendSocketMessage,
+        closeSocket,
+        onSocketOpen,
+        onSocketMessage,
+        onSocketClose,
+        onSocketError
     } as UniExtApi;
 }

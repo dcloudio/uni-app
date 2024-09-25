@@ -27,6 +27,15 @@ import { ResourceStr } from 'GlobalResource';
  * @crossplatform
  * @since 11
  */
+/**
+ * Enum for ChipSize
+ *
+ * @enum { string }
+ * @syscap SystemCapability.ArkUI.ArkUI.Full
+ * @crossplatform
+ * @atomicservice
+ * @since 12
+ */
 export declare enum ChipSize {
     /**
      * Normal type.
@@ -35,6 +44,14 @@ export declare enum ChipSize {
      * @crossplatform
      * @since 11
      */
+    /**
+    * Normal type.
+    *
+    * @syscap SystemCapability.ArkUI.ArkUI.Full
+    * @crossplatform
+    * @atomicservice
+    * @since 12
+    */
     NORMAL = "NORMAL",
     /**
      * Small type.
@@ -43,6 +60,14 @@ export declare enum ChipSize {
      * @crossplatform
      * @since 11
      */
+    /**
+    * Small type.
+    *
+    * @syscap SystemCapability.ArkUI.ArkUI.Full
+    * @crossplatform
+    * @atomicservice
+    * @since 12
+    */
     SMALL = "SMALL"
 }
 /**
@@ -53,6 +78,15 @@ export declare enum ChipSize {
  * @crossplatform
  * @since 11
  */
+/**
+* Defines the icon common option.
+*
+* @interface IconCommonOptions
+* @syscap SystemCapability.ArkUI.ArkUI.Full
+* @crossplatform
+* @atomicservice
+* @since 12
+*/
 export interface IconCommonOptions {
     /**
      * Image resource.
@@ -62,6 +96,15 @@ export interface IconCommonOptions {
      * @crossplatform
      * @since 11
      */
+    /**
+    * Image resource.
+    *
+    * @type { ResourceStr }
+    * @syscap SystemCapability.ArkUI.ArkUI.Full
+    * @crossplatform
+    * @atomicservice
+    * @since 12
+    */
     src: ResourceStr;
     /**
      * Image size option.
@@ -71,6 +114,15 @@ export interface IconCommonOptions {
      * @crossplatform
      * @since 11
      */
+    /**
+    * Image size option.
+    *
+    * @type { ?SizeOptions }
+    * @syscap SystemCapability.ArkUI.ArkUI.Full
+    * @crossplatform
+    * @atomicservice
+    * @since 12
+    */
     size?: SizeOptions;
     /**
      * Image filled color.
@@ -80,7 +132,25 @@ export interface IconCommonOptions {
      * @crossplatform
      * @since 11
      */
+    /**
+    * Image filled color.
+    *
+    * @type { ?ResourceColor }
+    * @syscap SystemCapability.ArkUI.ArkUI.Full
+    * @crossplatform
+    * @atomicservice
+    * @since 12
+    */
     fillColor?: ResourceColor;
+    /**
+     * Image filled color when chip is activated.
+     *
+     * @type { ?ResourceColor }
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @since 12
+     */
+    activatedFillColor?: ResourceColor;
 }
 /**
  * Defines the suffix icon option.
@@ -91,6 +161,16 @@ export interface IconCommonOptions {
  * @crossplatform
  * @since 11
  */
+/**
+* Defines the suffix icon option.
+*
+* @interface SuffixIconOptions
+* @extends IconCommonOptions
+* @syscap SystemCapability.ArkUI.ArkUI.Full
+* @crossplatform
+* @atomicservice
+* @since 12
+*/
 export interface SuffixIconOptions extends IconCommonOptions {
     /**
      * Called when the suffix icon is clicked.
@@ -100,6 +180,15 @@ export interface SuffixIconOptions extends IconCommonOptions {
      * @crossplatform
      * @since 11
      */
+    /**
+    * Called when the suffix icon is clicked.
+    *
+    * @type { ?function }
+    * @syscap SystemCapability.ArkUI.ArkUI.Full
+    * @crossplatform
+    * @atomicservice
+    * @since 12
+    */
     action?: () => void;
 }
 /**
@@ -111,6 +200,16 @@ export interface SuffixIconOptions extends IconCommonOptions {
  * @crossplatform
  * @since 11
  */
+/**
+* Defines the prefix icon option.
+*
+* @interface PrefixIconOptions
+* @extends IconCommonOptions
+* @syscap SystemCapability.ArkUI.ArkUI.Full
+* @crossplatform
+* @atomicservice
+* @since 12
+*/
 export interface PrefixIconOptions extends IconCommonOptions {
 }
 /**
@@ -121,6 +220,15 @@ export interface PrefixIconOptions extends IconCommonOptions {
  * @crossplatform
  * @since 11
  */
+/**
+* Defines label margin.
+*
+* @interface LabelMarginOptions
+* @syscap SystemCapability.ArkUI.ArkUI.Full
+* @crossplatform
+* @atomicservice
+* @since 12
+*/
 export interface LabelMarginOptions {
     /**
      * Left label margin length.
@@ -130,6 +238,15 @@ export interface LabelMarginOptions {
      * @crossplatform
      * @since 11
      */
+    /**
+    * Left label margin length.
+    *
+    * @type { ?Dimension }
+    * @syscap SystemCapability.ArkUI.ArkUI.Full
+    * @crossplatform
+    * @atomicservice
+    * @since 12
+    */
     left?: Dimension;
     /**
      * Right label margin length.
@@ -139,6 +256,15 @@ export interface LabelMarginOptions {
      * @crossplatform
      * @since 11
      */
+    /**
+    * Right label margin length.
+    *
+    * @type { ?Dimension }
+    * @syscap SystemCapability.ArkUI.ArkUI.Full
+    * @crossplatform
+    * @atomicservice
+    * @since 12
+    */
     right?: Dimension;
 }
 /**
@@ -149,6 +275,15 @@ export interface LabelMarginOptions {
  * @crossplatform
  * @since 11
  */
+/**
+* Defines label option.
+*
+* @interface LabelOptions
+* @syscap SystemCapability.ArkUI.ArkUI.Full
+* @crossplatform
+* @atomicservice
+* @since 12
+*/
 export interface LabelOptions {
     /**
      * Text content.
@@ -158,6 +293,15 @@ export interface LabelOptions {
      * @crossplatform
      * @since 11
      */
+    /**
+    * Text content.
+    *
+    * @type { string }
+    * @syscap SystemCapability.ArkUI.ArkUI.Full
+    * @crossplatform
+    * @atomicservice
+    * @since 12
+    */
     text: string;
     /**
      * Text font size.
@@ -167,6 +311,15 @@ export interface LabelOptions {
      * @crossplatform
      * @since 11
      */
+    /**
+    * Text font size.
+    *
+    * @type { ?Dimension }
+    * @syscap SystemCapability.ArkUI.ArkUI.Full
+    * @crossplatform
+    * @atomicservice
+    * @since 12
+    */
     fontSize?: Dimension;
     /**
      * Text font color.
@@ -176,7 +329,25 @@ export interface LabelOptions {
      * @crossplatform
      * @since 11
      */
+    /**
+    * Text font color.
+    *
+    * @type { ?ResourceColor }
+    * @syscap SystemCapability.ArkUI.ArkUI.Full
+    * @crossplatform
+    * @atomicservice
+    * @since 12
+    */
     fontColor?: ResourceColor;
+    /**
+     * Text font color when chip is activated.
+     *
+     * @type { ?ResourceColor }
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @since 12
+     */
+    activatedFontColor?: ResourceColor;
     /**
      * Text font family.
      *
@@ -185,6 +356,15 @@ export interface LabelOptions {
      * @crossplatform
      * @since 11
      */
+    /**
+    * Text font family.
+    *
+    * @type { ?string }
+    * @syscap SystemCapability.ArkUI.ArkUI.Full
+    * @crossplatform
+    * @atomicservice
+    * @since 12
+    */
     fontFamily?: string;
     /**
      * Label margin.
@@ -194,6 +374,15 @@ export interface LabelOptions {
      * @crossplatform
      * @since 11
      */
+    /**
+    * Label margin.
+    *
+    * @type { ?LabelMarginOptions }
+    * @syscap SystemCapability.ArkUI.ArkUI.Full
+    * @crossplatform
+    * @atomicservice
+    * @since 12
+    */
     labelMargin?: LabelMarginOptions;
 }
 /**
@@ -204,6 +393,15 @@ export interface LabelOptions {
  * @crossplatform
  * @since 11
  */
+/**
+* Defines chip options.
+*
+* @interface ChipOptions
+* @syscap SystemCapability.ArkUI.ArkUI.Full
+* @crossplatform
+* @atomicservice
+* @since 12
+*/
 export interface ChipOptions {
     /**
      * Chip prefix icon.
@@ -213,6 +411,15 @@ export interface ChipOptions {
      * @crossplatform
      * @since 11
      */
+    /**
+    * Chip prefix icon.
+    *
+    * @type { ?PrefixIconOptions }
+    * @syscap SystemCapability.ArkUI.ArkUI.Full
+    * @crossplatform
+    * @atomicservice
+    * @since 12
+    */
     prefixIcon?: PrefixIconOptions;
     /**
      * Chip label.
@@ -222,6 +429,15 @@ export interface ChipOptions {
      * @crossplatform
      * @since 11
      */
+    /**
+    * Chip label.
+    *
+    * @type { LabelOptions }
+    * @syscap SystemCapability.ArkUI.ArkUI.Full
+    * @crossplatform
+    * @atomicservice
+    * @since 12
+    */
     label: LabelOptions;
     /**
      * Chip suffix icon.
@@ -231,6 +447,15 @@ export interface ChipOptions {
      * @crossplatform
      * @since 11
      */
+    /**
+    * Chip suffix icon.
+    *
+    * @type { ?SuffixIconOptions }
+    * @syscap SystemCapability.ArkUI.ArkUI.Full
+    * @crossplatform
+    * @atomicservice
+    * @since 12
+    */
     suffixIcon?: SuffixIconOptions;
     /**
      * Show close icon.
@@ -240,6 +465,15 @@ export interface ChipOptions {
      * @crossplatform
      * @since 11
      */
+    /**
+    * Show close icon.
+    *
+    * @type { ?boolean }
+    * @syscap SystemCapability.ArkUI.ArkUI.Full
+    * @crossplatform
+    * @atomicservice
+    * @since 12
+    */
     allowClose?: boolean;
     /**
      * Enable chip.
@@ -249,7 +483,25 @@ export interface ChipOptions {
      * @crossplatform
      * @since 11
      */
+    /**
+    * Enable chip.
+    *
+    * @type { ?boolean }
+    * @syscap SystemCapability.ArkUI.ArkUI.Full
+    * @crossplatform
+    * @atomicservice
+    * @since 12
+    */
     enabled?: boolean;
+    /**
+     * Set whether chip is active or not.
+     *
+     * @type { ?boolean }
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @since 12
+     */
+    activated?: boolean;
     /**
      * Chip background color.
      *
@@ -258,7 +510,25 @@ export interface ChipOptions {
      * @crossplatform
      * @since 11
      */
+    /**
+    * Chip background color.
+    *
+    * @type { ?ResourceColor }
+    * @syscap SystemCapability.ArkUI.ArkUI.Full
+    * @crossplatform
+    * @atomicservice
+    * @since 12
+    */
     backgroundColor?: ResourceColor;
+    /**
+     * Chip background color when chip is activated.
+     *
+     * @type { ?ResourceColor }
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @since 12
+     */
+    activatedBackgroundColor?: ResourceColor;
     /**
      * Chip radius.
      *
@@ -267,6 +537,15 @@ export interface ChipOptions {
      * @crossplatform
      * @since 11
      */
+    /**
+    * Chip radius.
+    *
+    * @type { ?Dimension }
+    * @syscap SystemCapability.ArkUI.ArkUI.Full
+    * @crossplatform
+    * @atomicservice
+    * @since 12
+    */
     borderRadius?: Dimension;
     /**
      * Chip size.
@@ -276,6 +555,15 @@ export interface ChipOptions {
      * @crossplatform
      * @since 11
      */
+    /**
+    * Chip size.
+    *
+    * @type { ?ChipSize | SizeOptions }
+    * @syscap SystemCapability.ArkUI.ArkUI.Full
+    * @crossplatform
+    * @atomicservice
+    * @since 12
+    */
     size?: ChipSize | SizeOptions;
     /**
      * On close action.
@@ -285,7 +573,25 @@ export interface ChipOptions {
      * @crossplatform
      * @since 11
      */
+    /**
+    * On close action.
+    *
+    * @type { ?function }
+    * @syscap SystemCapability.ArkUI.ArkUI.Full
+    * @crossplatform
+    * @atomicservice
+    * @since 12
+    */
     onClose?: () => void;
+    /**
+     * On clicked action.
+     *
+     * @type { ?Callback<void> }
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @since 12
+     */
+    onClicked?: Callback<void>;
 }
 /**
  * Build function of Chip.
@@ -295,5 +601,14 @@ export interface ChipOptions {
  * @crossplatform
  * @since 11
  */
+/**
+* Build function of Chip.
+*
+* @param { ChipOptions } options - chip option.
+* @syscap SystemCapability.ArkUI.ArkUI.Full
+* @crossplatform
+* @atomicservice
+* @since 12
+*/
 @Builder
 export declare function Chip(options: ChipOptions): void;

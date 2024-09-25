@@ -11,6 +11,20 @@
       }
     }
   },
+  "uni-canvas": {
+    "uni": {
+      "createCanvasContextAsync": {
+        "name": "createCanvasContextAsync",
+        "app": {
+          "js": false,
+          "x-js": false,
+          "kotlin": true,
+          "swift": false,
+          "arkts": false
+        }
+      }
+    }
+  },
   "uni-createRequestPermissionListener": {
     "uni": {
       "createRequestPermissionListener": {
@@ -30,7 +44,7 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": false
+          "swift": true
         }
       }
     }
@@ -42,7 +56,8 @@
         "app": {
           "js": true,
           "kotlin": true,
-          "swift": false
+          "swift": false,
+          "arkts": true
         }
       }
     }
@@ -113,16 +128,47 @@
       }
     }
   },
-  "uni-getLocation-system": {
+  "uni-getElementById": {
+    "uni": {
+      "getElementById": {
+        "name": "getElementById",
+        "app": {
+          "js": false,
+          "x-js": false,
+          "kotlin": false,
+          "swift": true,
+          "arkts": false
+        }
+      }
+    }
+  },
+  "uni-getLocation": {
+    "provider": {
+      "service": "location"
+    },
     "uni": {
       "getLocation": {
         "name": "getLocation",
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": false
+          "swift": true
         }
       }
+    }
+  },
+  "uni-getLocation-system": {
+    "provider": {
+      "service": "location",
+      "name": "system",
+      "servicePlugin": "uni-getLocation"
+    }
+  },
+  "uni-getLocation-tencent": {
+    "provider": {
+      "service": "location",
+      "name": "tencent",
+      "servicePlugin": "uni-getLocation"
     }
   },
   "uni-getNetworkType": {
@@ -132,7 +178,26 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": true
+          "swift": true,
+          "arkts": true
+        }
+      },
+      "onNetworkStatusChange": {
+        "name": "onNetworkStatusChange",
+        "app": {
+          "js": false,
+          "kotlin": false,
+          "swift": false,
+          "arkts": true
+        }
+      },
+      "offNetworkStatusChange": {
+        "name": "offNetworkStatusChange",
+        "app": {
+          "js": false,
+          "kotlin": false,
+          "swift": false,
+          "arkts": true
         }
       }
     }
@@ -144,7 +209,17 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": false
+          "swift": true,
+          "arkts": true
+        }
+      },
+      "getProviderSync": {
+        "name": "getProviderSync",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true,
+          "arkts": true
         }
       }
     }
@@ -208,7 +283,8 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": true
+          "swift": true,
+          "arkts": true
         }
       },
       "previewImage": {
@@ -216,7 +292,8 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": true
+          "swift": true,
+          "arkts": true
         }
       },
       "closePreviewImage": {
@@ -224,7 +301,8 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": true
+          "swift": true,
+          "arkts": true
         }
       },
       "getImageInfo": {
@@ -232,7 +310,8 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": false
+          "swift": true,
+          "arkts": true
         }
       },
       "saveImageToPhotosAlbum": {
@@ -240,7 +319,8 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": true
+          "swift": true,
+          "arkts": true
         }
       },
       "compressImage": {
@@ -248,7 +328,8 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": false
+          "swift": true,
+          "arkts": false
         }
       },
       "chooseVideo": {
@@ -256,7 +337,8 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": true
+          "swift": true,
+          "arkts": true
         }
       },
       "saveVideoToPhotosAlbum": {
@@ -264,7 +346,8 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": true
+          "swift": true,
+          "arkts": true
         }
       },
       "getVideoInfo": {
@@ -272,7 +355,8 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": false
+          "swift": true,
+          "arkts": true
         }
       },
       "compressVideo": {
@@ -280,7 +364,8 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": false
+          "swift": true,
+          "arkts": false
         }
       }
     }
@@ -292,7 +377,8 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": true
+          "swift": true,
+          "arkts": true
         }
       },
       "uploadFile": {
@@ -300,7 +386,8 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": true
+          "swift": true,
+          "arkts": true
         }
       },
       "downloadFile": {
@@ -308,7 +395,8 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": true
+          "swift": true,
+          "arkts": true
         }
       }
     }
@@ -335,7 +423,8 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": true
+          "swift": true,
+          "arkts": true
         }
       }
     }
@@ -359,7 +448,8 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": true
+          "swift": true,
+          "arkts": true
         }
       },
       "hideToast": {
@@ -438,8 +528,24 @@
           "swift": false
         }
       },
+      "getPushChannelManager": {
+        "name": "getPushChannelManager",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": false
+        }
+      },
       "createPushMessage": {
         "name": "createPushMessage",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true
+        }
+      },
+      "setAppBadgeNumber": {
+        "name": "setAppBadgeNumber",
         "app": {
           "js": false,
           "kotlin": true,
@@ -455,7 +561,8 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": true
+          "swift": true,
+          "arkts": true
         }
       }
     }
@@ -467,7 +574,8 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": true
+          "swift": true,
+          "arkts": true
         }
       },
       "setStorageSync": {
@@ -475,7 +583,8 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": true
+          "swift": true,
+          "arkts": true
         }
       },
       "getStorage": {
@@ -483,7 +592,8 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": true
+          "swift": true,
+          "arkts": true
         }
       },
       "getStorageSync": {
@@ -491,7 +601,8 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": true
+          "swift": true,
+          "arkts": true
         }
       },
       "getStorageInfo": {
@@ -499,7 +610,8 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": true
+          "swift": true,
+          "arkts": true
         }
       },
       "getStorageInfoSync": {
@@ -507,7 +619,8 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": true
+          "swift": true,
+          "arkts": true
         }
       },
       "removeStorage": {
@@ -515,7 +628,8 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": true
+          "swift": true,
+          "arkts": true
         }
       },
       "removeStorageSync": {
@@ -523,7 +637,8 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": true
+          "swift": true,
+          "arkts": true
         }
       },
       "clearStorage": {
@@ -531,7 +646,8 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": true
+          "swift": true,
+          "arkts": true
         }
       },
       "clearStorageSync": {
@@ -539,7 +655,8 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": true
+          "swift": true,
+          "arkts": true
         }
       }
     }
@@ -595,7 +712,7 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": false
+          "swift": true
         }
       }
     }
@@ -615,6 +732,26 @@
       "video"
     ]
   },
+  "uni-virtualPayment": {
+    "uni": {
+      "requestVirtualPayment": {
+        "name": "requestVirtualPayment",
+        "app": {
+          "js": false,
+          "kotlin": false,
+          "swift": true
+        }
+      },
+      "getVirtualPaymentManager": {
+        "name": "getVirtualPaymentManager",
+        "app": {
+          "js": false,
+          "kotlin": false,
+          "swift": true
+        }
+      }
+    }
+  },
   "uni-websocket": {
     "uni": {
       "connectSocket": {
@@ -622,7 +759,8 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": false
+          "swift": true,
+          "arkts": true
         }
       },
       "sendSocketMessage": {
@@ -630,7 +768,8 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": false
+          "swift": true,
+          "arkts": true
         }
       },
       "closeSocket": {
@@ -638,7 +777,8 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": false
+          "swift": true,
+          "arkts": true
         }
       },
       "onSocketOpen": {
@@ -646,7 +786,8 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": false
+          "swift": true,
+          "arkts": true
         }
       },
       "onSocketMessage": {
@@ -654,7 +795,8 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": false
+          "swift": true,
+          "arkts": true
         }
       },
       "onSocketClose": {
@@ -662,7 +804,8 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": false
+          "swift": true,
+          "arkts": true
         }
       },
       "onSocketError": {
@@ -670,7 +813,8 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": false
+          "swift": true,
+          "arkts": true
         }
       }
     }

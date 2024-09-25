@@ -212,7 +212,7 @@ function useTabBarStyle(tabBar: UniApp.TabBarOptions) {
       }
     }
     return {
-      backgroundColor: BORDER_COLORS[borderStyle!] || borderStyle,
+      backgroundColor: BORDER_COLORS[borderStyle!] || BORDER_COLORS['black'],
     }
   })
   const placeholderStyle = computed(() => {

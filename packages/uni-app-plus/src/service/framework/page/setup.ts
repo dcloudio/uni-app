@@ -75,13 +75,11 @@ export function initScope(
     })
     Object.defineProperty(vm, '$getPageStyle', {
       get() {
-        // @ts-expect-error TODO fix types by hdx
         return vm.$nativePage!.getPageStyle.bind(vm.$nativePage!)
       },
     })
     Object.defineProperty(vm, '$setPageStyle', {
       get() {
-        // @ts-expect-error TODO fix types by hdx
         return vm.$nativePage!.setPageStyle.bind(vm.$nativePage!)
       },
     })

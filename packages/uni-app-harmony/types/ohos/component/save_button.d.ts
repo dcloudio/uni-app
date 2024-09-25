@@ -13,6 +13,10 @@
  * limitations under the License.
  */
 /**
+ * @file
+ * @kit ArkUI
+ */
+/**
  * Enumerates the icon styles.
  *
  * @enum { number }
@@ -184,7 +188,15 @@ declare enum SaveDescription {
      * @atomicservice
      * @since 11
      */
-    CONTINUE_TO_RECEIVE = 7
+    CONTINUE_TO_RECEIVE = 7,
+    /**
+     * Save to gallery
+     *
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @atomicservice
+     * @since 12
+     */
+    SAVE_TO_GALLERY = 8
 }
 /**
  * Declares the interface for setting the save button options.

@@ -80,7 +80,7 @@ declare namespace FaultLogger {
      * Query the result of the current application FaultLog in callback Mode.
      * @param { FaultType } faultType - Fault type to query
      * @param { AsyncCallback<Array<FaultLogInfo>> } callback - Faultlog information data callback function
-     * @throws { BusinessError } 401 - The parameter check failed
+     * @throws { BusinessError } 401 - The parameter check failed, Parameter type error
      * @throws { BusinessError } 801 - The specified SystemCapability name was not found
      * @throws { BusinessError } 10600001 - The service is not started or is faulty
      * @syscap SystemCapability.HiviewDFX.Hiview.FaultLogger
@@ -91,7 +91,7 @@ declare namespace FaultLogger {
      * Query the result of the current application FaultLog in return promise mode.
      * @param { FaultType } faultType - Fault type to query
      * @returns { Promise<Array<FaultLogInfo>> } return faultlog information data by promise
-     * @throws { BusinessError } 401 - The parameter check failed
+     * @throws { BusinessError } 401 - The parameter check failed, Parameter type error
      * @throws { BusinessError } 801 - The specified SystemCapability name was not found
      * @throws { BusinessError } 10600001 - The service is not started or is faulty
      * @syscap SystemCapability.HiviewDFX.Hiview.FaultLogger

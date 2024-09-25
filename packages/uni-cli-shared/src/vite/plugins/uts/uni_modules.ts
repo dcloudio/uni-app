@@ -89,6 +89,11 @@ export function uniUTSAppUniModulesPlugin(
       return compiler.compileArkTS(pluginDir, {
         isX: !!options.x,
         isExtApi,
+        transform: {
+          uniExtApiProviderName: extApiProvider?.name,
+          uniExtApiProviderService: extApiProvider?.service,
+          uniExtApiProviderServicePlugin,
+        },
       })
     }
 
@@ -114,9 +119,18 @@ export function uniUTSAppUniModulesPlugin(
       (provider) => !utsPlugins.has(provider.plugin)
     )
     for (const plugin of plugins) {
-      const result = await compilePlugin(
-        path.resolve(inputDir, 'uni_modules', plugin.plugin)
-      )
+      const pluginDir = path.resolve(inputDir, 'uni_modules', plugin.plugin)
+      // 如果是 app-js 环境
+      if (process.env.UNI_APP_X_UVUE_SCRIPT_ENGINE === 'js') {
+        if (
+          fs.existsSync(
+            path.resolve(pluginDir, 'utssdk', 'app-js', 'index.uts')
+          )
+        ) {
+          continue
+        }
+      }
+      const result = await compilePlugin(pluginDir)
       if (result) {
         // 时机不对，不能addWatch
         // result.deps.forEach((dep) => {

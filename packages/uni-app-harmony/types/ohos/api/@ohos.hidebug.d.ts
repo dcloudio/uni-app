@@ -50,6 +50,7 @@ declare namespace hidebug {
     function getNativeHeapFreeSize(): bigint;
     /**
      * Get the virtual set size memory of the application process
+     *
      * @returns { bigint } Returns application process virtual set size memory information.
      * @syscap SystemCapability.HiviewDFX.HiProfiler.HiDebug
      * @since 11
@@ -128,7 +129,7 @@ declare namespace hidebug {
      * The generated file is in the files folder under the application directory.
      *
      * @param { string } filename - Indicates the user-defined file name,  excluding the file suffix.
-     * @throws {BusinessError} 401 - the parameter check failed
+     * @throws {BusinessError} 401 - the parameter check failed, Parameter type error
      * @syscap SystemCapability.HiviewDFX.HiProfiler.HiDebug
      * @since 9
      */
@@ -147,7 +148,7 @@ declare namespace hidebug {
      * The generated file is in the files folder under the application directory.
      *
      * @param { string } filename - Indicates the user-defined file name, excluding the file suffix.
-     * @throws {BusinessError} 401 - the parameter check failed
+     * @throws {BusinessError} 401 - the parameter check failed, Parameter type error
      * @syscap SystemCapability.HiviewDFX.HiProfiler.HiDebug
      * @since 9
      */
@@ -160,11 +161,590 @@ declare namespace hidebug {
      * @param { number } serviceid - Indicates the id of the service ability.
      * @param { number } fd - The file descriptor.
      * @param { Array<string> } args - The args list of the system ability dump interface.
-     * @throws {BusinessError} 401 - the parameter check failed
+     * @throws {BusinessError} 401 - the parameter check failed, Possible causes:
+     *                               1.the parameter type error
+     *                               2.the args parameter is not string array
      * @throws {BusinessError} 11400101 - the service id is invalid
      * @syscap SystemCapability.HiviewDFX.HiProfiler.HiDebug
      * @since 9
      */
     function getServiceDump(serviceid: number, fd: number, args: Array<string>): void;
+    /**
+     * Obtains the cpu usage of system.
+     *
+     * @returns { number } Returns the cpu usage of system.
+     * @throws { BusinessError } 11400104 - The status of the system cpu usage is abnormal
+     * @syscap SystemCapability.HiviewDFX.HiProfiler.HiDebug
+     * @since 12
+     */
+    function getSystemCpuUsage(): number;
+    /**
+     * Application CPU usage of thread.
+     *
+     * @interface ThreadCpuUsage
+     * @syscap SystemCapability.HiviewDFX.HiProfiler.HiDebug
+     * @since 12
+     */
+    interface ThreadCpuUsage {
+        /**
+         * Thread id
+         *
+         * @type { number }
+         * @syscap SystemCapability.HiviewDFX.HiProfiler.HiDebug
+         * @since 12
+         */
+        threadId: number;
+        /**
+         * Cpu usage of thread
+         *
+         * @type { number }
+         * @syscap SystemCapability.HiviewDFX.HiProfiler.HiDebug
+         * @since 12
+         */
+        cpuUsage: number;
+    }
+    /**
+     * Get the CPU usage of all threads in the application.
+     *
+     * @returns { ThreadCpuUsage[] } Returns the CPU usage of all threads in the application.
+     * @syscap SystemCapability.HiviewDFX.HiProfiler.HiDebug
+     * @since 12
+     */
+    function getAppThreadCpuUsage(): ThreadCpuUsage[];
+    /**
+     * System memory information
+     *
+     * @interface SystemMemInfo
+     * @syscap SystemCapability.HiviewDFX.HiProfiler.HiDebug
+     * @since 12
+     */
+    interface SystemMemInfo {
+        /**
+         * Total system memory size, in kilobyte
+         *
+         * @type { bigint }
+         * @syscap SystemCapability.HiviewDFX.HiProfiler.HiDebug
+         * @since 12
+         */
+        totalMem: bigint;
+        /**
+         * System free memory size, in kilobyte
+         *
+         * @type { bigint }
+         * @syscap SystemCapability.HiviewDFX.HiProfiler.HiDebug
+         * @since 12
+         */
+        freeMem: bigint;
+        /**
+         * System available memory size, in kilobyte
+         *
+         * @type { bigint }
+         * @syscap SystemCapability.HiviewDFX.HiProfiler.HiDebug
+         * @since 12
+         */
+        availableMem: bigint;
+    }
+    /**
+     * Obtains the system memory size.
+     *
+     * @returns { SystemMemInfo } Returns system memory size.
+     * @syscap SystemCapability.HiviewDFX.HiProfiler.HiDebug
+     * @since 12
+     */
+    function getSystemMemInfo(): SystemMemInfo;
+    /**
+     * Application process native memory information.
+     *
+     * @interface NativeMemInfo
+     * @syscap SystemCapability.HiviewDFX.HiProfiler.HiDebug
+     * @since 12
+     */
+    interface NativeMemInfo {
+        /**
+         * Process proportional set size memory, in kilobyte
+         *
+         * @type { bigint }
+         * @syscap SystemCapability.HiviewDFX.HiProfiler.HiDebug
+         * @since 12
+         */
+        pss: bigint;
+        /**
+         * Virtual set size memory, in kilobyte
+         *
+         * @type { bigint }
+         * @syscap SystemCapability.HiviewDFX.HiProfiler.HiDebug
+         * @since 12
+         */
+        vss: bigint;
+        /**
+         * Resident set size, in kilobyte
+         *
+         * @type { bigint }
+         * @syscap SystemCapability.HiviewDFX.HiProfiler.HiDebug
+         * @since 12
+         */
+        rss: bigint;
+        /**
+         * The size of the shared dirty memory, in kilobyte
+         *
+         * @type { bigint }
+         * @syscap SystemCapability.HiviewDFX.HiProfiler.HiDebug
+         * @since 12
+         */
+        sharedDirty: bigint;
+        /**
+         * The size of the private dirty memory, in kilobyte
+         *
+         * @type { bigint }
+         * @syscap SystemCapability.HiviewDFX.HiProfiler.HiDebug
+         * @since 12
+         */
+        privateDirty: bigint;
+        /**
+         * The size of the shared clean memory, in kilobyte
+         *
+         * @type { bigint }
+         * @syscap SystemCapability.HiviewDFX.HiProfiler.HiDebug
+         * @since 12
+         */
+        sharedClean: bigint;
+        /**
+         * The size of the private clean memory, in kilobyte
+         *
+         * @type { bigint }
+         * @syscap SystemCapability.HiviewDFX.HiProfiler.HiDebug
+         * @since 12
+         */
+        privateClean: bigint;
+    }
+    /**
+     * Obtains the memory information of application process.
+     *
+     * @returns { NativeMemInfo } Returns the native memory of a process.
+     * @syscap SystemCapability.HiviewDFX.HiProfiler.HiDebug
+     * @since 12
+     */
+    function getAppNativeMemInfo(): NativeMemInfo;
+    /**
+     * Application process memory limit
+     *
+     * @interface MemoryLimit
+     * @syscap SystemCapability.HiviewDFX.HiProfiler.HiDebug
+     * @since 12
+     */
+    interface MemoryLimit {
+        /**
+         * The limit of the application process's resident set, in kilobyte
+         *
+         * @type { bigint }
+         * @syscap SystemCapability.HiviewDFX.HiProfiler.HiDebug
+         * @since 12
+         */
+        rssLimit: bigint;
+        /**
+         * The limit of the application process's virtual memory, in kilobyte
+         *
+         * @type { bigint }
+         * @syscap SystemCapability.HiviewDFX.HiProfiler.HiDebug
+         * @since 12
+         */
+        vssLimit: bigint;
+        /**
+         * The limit of the js vm heap size of current virtual machine, in kilobyte
+         *
+         * @type { bigint }
+         * @syscap SystemCapability.HiviewDFX.HiProfiler.HiDebug
+         * @since 12
+         */
+        vmHeapLimit: bigint;
+    }
+    /**
+     * Obtains the memory limit of application process.
+     *
+     * @returns { MemoryLimit } Returns memory limit of application.
+     * @syscap SystemCapability.HiviewDFX.HiProfiler.HiDebug
+     * @since 12
+     */
+    function getAppMemoryLimit(): MemoryLimit;
+    /**
+     * The memory information of application virtual machine.
+     *
+     * @interface VMMemoryInfo
+     * @syscap SystemCapability.HiviewDFX.HiProfiler.HiDebug
+     * @since 12
+     */
+    interface VMMemoryInfo {
+        /**
+         * Total size of current virtual machine Heap, in kilobyte
+         *
+         * @type { bigint }
+         * @syscap SystemCapability.HiviewDFX.HiProfiler.HiDebug
+         * @since 12
+         */
+        totalHeap: bigint;
+        /**
+         * Used size of current virtual machine Heap, in kilobyte
+         *
+         * @type { bigint }
+         * @syscap SystemCapability.HiviewDFX.HiProfiler.HiDebug
+         * @since 12
+         */
+        heapUsed: bigint;
+        /**
+         * All array object size of current virtual machine, in kilobyte
+         *
+         * @type { bigint }
+         * @syscap SystemCapability.HiviewDFX.HiProfiler.HiDebug
+         * @since 12
+         */
+        allArraySize: bigint;
+    }
+    /**
+     * Obtains the memory information of application virtual machine.
+     *
+     * @returns { VMMemoryInfo } Returns memory information of application virtual machine.
+     * @syscap SystemCapability.HiviewDFX.HiProfiler.HiDebug
+     * @since 12
+     */
+    function getAppVMMemoryInfo(): VMMemoryInfo;
+    /**
+     * Enum for trace flag
+     *
+     * @enum { number }
+     * @syscap SystemCapability.HiviewDFX.HiProfiler.HiDebug
+     * @since 12
+     */
+    enum TraceFlag {
+        /**
+         * Only capture main thread trace
+         *
+         * @syscap SystemCapability.HiviewDFX.HiProfiler.HiDebug
+         * @since 12
+         */
+        MAIN_THREAD = 1,
+        /**
+         * Capture all thread trace
+         *
+         * @syscap SystemCapability.HiviewDFX.HiProfiler.HiDebug
+         * @since 12
+         */
+        ALL_THREADS = 2
+    }
+    /**
+     * Provide trace tags
+     *
+     * @namespace tags
+     * @syscap SystemCapability.HiviewDFX.HiProfiler.HiDebug
+     * @since 12
+     */
+    namespace tags {
+        /**
+         * Ability Manager tag.
+         *
+         * @constant
+         * @syscap SystemCapability.HiviewDFX.HiProfiler.HiDebug
+         * @since 12
+         */
+        const ABILITY_MANAGER: number;
+        /**
+         * ARKUI development framework tag.
+         *
+         * @constant
+         * @syscap SystemCapability.HiviewDFX.HiProfiler.HiDebug
+         * @since 12
+         */
+        const ARKUI: number;
+        /**
+         * ARK tag.
+         *
+         * @constant
+         * @syscap SystemCapability.HiviewDFX.HiProfiler.HiDebug
+         * @since 12
+         */
+        const ARK: number;
+        /**
+         * Bluetooth tag.
+         *
+         * @constant
+         * @syscap SystemCapability.HiviewDFX.HiProfiler.HiDebug
+         * @since 12
+         */
+        const BLUETOOTH: number;
+        /**
+         * Common library subsystem tag.
+         *
+         * @constant
+         * @syscap SystemCapability.HiviewDFX.HiProfiler.HiDebug
+         * @since 12
+         */
+        const COMMON_LIBRARY: number;
+        /**
+         * Distributed hardware device manager tag.
+         *
+         * @constant
+         * @syscap SystemCapability.HiviewDFX.HiProfiler.HiDebug
+         * @since 12
+         */
+        const DISTRIBUTED_HARDWARE_DEVICE_MANAGER: number;
+        /**
+         * Distributed audio tag.
+         *
+         * @constant
+         * @syscap SystemCapability.HiviewDFX.HiProfiler.HiDebug
+         * @since 12
+         */
+        const DISTRIBUTED_AUDIO: number;
+        /**
+         * Distributed camera tag.
+         *
+         * @constant
+         * @syscap SystemCapability.HiviewDFX.HiProfiler.HiDebug
+         * @since 12
+         */
+        const DISTRIBUTED_CAMERA: number;
+        /**
+         * Distributed data manager module tag.
+         *
+         * @constant
+         * @syscap SystemCapability.HiviewDFX.HiProfiler.HiDebug
+         * @since 12
+         */
+        const DISTRIBUTED_DATA: number;
+        /**
+         * Distributed hardware framework tag.
+         *
+         * @constant
+         * @syscap SystemCapability.HiviewDFX.HiProfiler.HiDebug
+         * @since 12
+         */
+        const DISTRIBUTED_HARDWARE_FRAMEWORK: number;
+        /**
+         * Distributed input tag.
+         *
+         * @constant
+         * @syscap SystemCapability.HiviewDFX.HiProfiler.HiDebug
+         * @since 12
+         */
+        const DISTRIBUTED_INPUT: number;
+        /**
+         * Distributed screen tag.
+         *
+         * @constant
+         * @syscap SystemCapability.HiviewDFX.HiProfiler.HiDebug
+         * @since 12
+         */
+        const DISTRIBUTED_SCREEN: number;
+        /**
+         * Distributed scheduler tag.
+         *
+         * @constant
+         * @syscap SystemCapability.HiviewDFX.HiProfiler.HiDebug
+         * @since 12
+         */
+        const DISTRIBUTED_SCHEDULER: number;
+        /**
+         * FFRT tasks.
+         *
+         * @constant
+         * @syscap SystemCapability.HiviewDFX.HiProfiler.HiDebug
+         * @since 12
+         */
+        const FFRT: number;
+        /**
+         * File management tag.
+         *
+         * @constant
+         * @syscap SystemCapability.HiviewDFX.HiProfiler.HiDebug
+         * @since 12
+         */
+        const FILE_MANAGEMENT: number;
+        /**
+         * Global resource manager tag.
+         *
+         * @constant
+         * @syscap SystemCapability.HiviewDFX.HiProfiler.HiDebug
+         * @since 12
+         */
+        const GLOBAL_RESOURCE_MANAGER: number;
+        /**
+         * Graphics module tag.
+         *
+         * @constant
+         * @syscap SystemCapability.HiviewDFX.HiProfiler.HiDebug
+         * @since 12
+         */
+        const GRAPHICS: number;
+        /**
+         * HDF subsystem tag.
+         *
+         * @constant
+         * @syscap SystemCapability.HiviewDFX.HiProfiler.HiDebug
+         * @since 12
+         */
+        const HDF: number;
+        /**
+         * MISC module tag.
+         *
+         * @constant
+         * @syscap SystemCapability.HiviewDFX.HiProfiler.HiDebug
+         * @since 12
+         */
+        const MISC: number;
+        /**
+         * Multimodal input module tag.
+         *
+         * @constant
+         * @syscap SystemCapability.HiviewDFX.HiProfiler.HiDebug
+         * @since 12
+         */
+        const MULTIMODAL_INPUT: number;
+        /**
+         * Net tag.
+         *
+         * @constant
+         * @syscap SystemCapability.HiviewDFX.HiProfiler.HiDebug
+         * @since 12
+         */
+        const NET: number;
+        /**
+         * Notification module tag.
+         *
+         * @constant
+         * @syscap SystemCapability.HiviewDFX.HiProfiler.HiDebug
+         * @since 12
+         */
+        const NOTIFICATION: number;
+        /**
+         * NWeb tag.
+         *
+         * @constant
+         * @syscap SystemCapability.HiviewDFX.HiProfiler.HiDebug
+         * @since 12
+         */
+        const NWEB: number;
+        /**
+         * OHOS generic tag.
+         *
+         * @constant
+         * @syscap SystemCapability.HiviewDFX.HiProfiler.HiDebug
+         * @since 12
+         */
+        const OHOS: number;
+        /**
+         * Power manager tag.
+         *
+         * @constant
+         * @syscap SystemCapability.HiviewDFX.HiProfiler.HiDebug
+         * @since 12
+         */
+        const POWER_MANAGER: number;
+        /**
+         * RPC tag.
+         *
+         * @constant
+         * @syscap SystemCapability.HiviewDFX.HiProfiler.HiDebug
+         * @since 12
+         */
+        const RPC: number;
+        /**
+         * SA tag.
+         *
+         * @constant
+         * @syscap SystemCapability.HiviewDFX.HiProfiler.HiDebug
+         * @since 12
+         */
+        const SAMGR: number;
+        /**
+         * Window manager tag.
+         *
+         * @constant
+         * @syscap SystemCapability.HiviewDFX.HiProfiler.HiDebug
+         * @since 12
+         */
+        const WINDOW_MANAGER: number;
+        /**
+         * Audio module tag.
+         *
+         * @constant
+         * @syscap SystemCapability.HiviewDFX.HiProfiler.HiDebug
+         * @since 12
+         */
+        const AUDIO: number;
+        /**
+         * Camera module tag.
+         *
+         * @constant
+         * @syscap SystemCapability.HiviewDFX.HiProfiler.HiDebug
+         * @since 12
+         */
+        const CAMERA: number;
+        /**
+         * Image module tag.
+         *
+         * @constant
+         * @syscap SystemCapability.HiviewDFX.HiProfiler.HiDebug
+         * @since 12
+         */
+        const IMAGE: number;
+        /**
+         * Media module tag.
+         *
+         * @constant
+         * @syscap SystemCapability.HiviewDFX.HiProfiler.HiDebug
+         * @since 12
+         */
+        const MEDIA: number;
+    }
+    /**
+     * Start capture application trace.
+     *
+     * @param { number[] } tags - Tag of trace.
+     * @param { TraceFlag } flag - Trace flag.
+     * @param { number } limitSize - Max size of trace file, in bytes, the max is 500MB.
+     * @returns { string } Returns absolute path of the trace file.
+     * @throws { BusinessError } 401 - Invalid argument, Possible causes:
+     *                           1.The limit parameter is too small
+     *                           2.The parameter is not within the enumeration type
+     *                           3.The parameter type error or parameter order error
+     * @throws { BusinessError } 11400102 - Have already capture trace
+     * @throws { BusinessError } 11400103 - Without write permission on the file
+     * @throws { BusinessError } 11400104 - The status of the trace is abnormal
+     * @syscap SystemCapability.HiviewDFX.HiProfiler.HiDebug
+     * @since 12
+     */
+    function startAppTraceCapture(tags: number[], flag: TraceFlag, limitSize: number): string;
+    /**
+     * Stop capture application trace.
+     *
+     * @throws { BusinessError } 11400104 - The status of the trace is abnormal
+     * @throws { BusinessError } 11400105 - No capture trace running
+     * @syscap SystemCapability.HiviewDFX.HiProfiler.HiDebug
+     * @since 12
+     */
+    function stopAppTraceCapture(): void;
+    /**
+     * Set the resource limitation of application.Please note that this function is only valid
+     * when the developer options switch of setting is turned on.
+     *
+     * @param { string } type - resource type. It could be pss_memory、js_heap、fd、or thread.
+     * @param { number } value - For different resource type, values could have different meaning:
+     *                           1.For pss_memory, it means the baseline PSS memory size for the application,
+     *                             system memory control will be triggered if exceed the value too much.
+     *                           2.For js_heap, it means the percentage of the used JS heap memory to the maximum limit exceed
+     *                            which heap dump will be triggered if enableDebugLog set as true, it can be set between 85 and 95.
+     *                           3.For fd, it means the maximum fd number can be opened.
+     *                           4.For thread, it means the maximum thread number can be created.
+     * @param { boolean } enableDebugLog - Whether to enable external debug log. Default is false, pls make sure set
+     *                                      it as true only in gray release because collecting debug log will cost too much cpu or memory.
+     * @throws { BusinessError } 401 - Invalid argument, Possible causes:
+     *                           1.The limit parameter is too small
+     *                           2.The parameter is not in the specified type
+     *                           3.The parameter type error or parameter order error
+     * @throws { BusinessError } 11400104 - Set limit failed due to remote exception
+     * @syscap SystemCapability.HiviewDFX.HiProfiler.HiDebug
+     * @atomicservice
+     * @since 12
+     */
+    function setAppResourceLimit(type: string, value: number, enableDebugLog: boolean): void;
 }
 export default hidebug;

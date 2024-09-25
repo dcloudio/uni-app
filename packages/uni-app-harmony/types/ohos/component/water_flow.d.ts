@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022-2023 Huawei Device Co., Ltd.
+ * Copyright (c) 2022-2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -12,6 +12,157 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+/**
+ * @file
+ * @kit ArkUI
+ */
+/**
+ * function that returns item main size by index.
+ *
+ * @typedef { function } GetItemMainSizeByIndex
+ * @param { number } index - the index of FlowItem
+ * @returns { number } main size of the FlowItem at index
+ * @syscap SystemCapability.ArkUI.ArkUI.Full
+ * @crossplatform
+ * @since 12
+ */
+declare type GetItemMainSizeByIndex = (index: number) => number;
+/**
+ * Defines the water flow section options.
+ *
+ * @syscap SystemCapability.ArkUI.ArkUI.Full
+ * @crossplatform
+ * @since 12
+*/
+declare class SectionOptions {
+    /**
+     * The number of FlowItems in this section.
+     *
+     * @type { number } itemsCount - the number of FlowItems in this section
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @since 12
+     */
+    itemsCount: number;
+    /**
+     * The columns of this section in vertical layout, or rows in horizontal layout.
+     *
+     * @type { ?number } crossCount - cross count of this section
+     * @default 1 one column in vertical layout, or one row in horizontal layout
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @since 12
+     */
+    crossCount?: number;
+    /**
+     * Asks the developer for the main size in vp of the flow item with the specified index.
+     * The water flow layout uses the size measured after the flow item is created if not set.
+     *
+     * @type { ?GetItemMainSizeByIndex } onGetItemMainSizeByIndex - function that returns item main size by index
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @since 12
+     */
+    onGetItemMainSizeByIndex?: GetItemMainSizeByIndex;
+    /**
+     * Set the spacing between columns of this section.
+     *
+     * @type { ?Dimension } columnsGap - column gap of this section
+     * same with columnsGap of WaterFlow if not set
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @since 12
+     */
+    columnsGap?: Dimension;
+    /**
+     * Set the spacing between rows of this section.
+     *
+     * @type { ?Dimension } rowsGap - row gap of this section
+     * same with rowsGap of WaterFlow if not set
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @since 12
+     */
+    rowsGap?: Dimension;
+    /**
+     * Outer margin of this section.
+     *
+     * @type { ?(Margin | Dimension) } margin - outer margin of this section
+     * @default {top: 0, right: 0, bottom: 0, left: 0}
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @since 12
+     */
+    margin?: Margin | Dimension;
+}
+/**
+ * Indicates the sections of WaterFlow.
+ *
+ * @syscap SystemCapability.ArkUI.ArkUI.Full
+ * @crossplatform
+ * @since 12
+ */
+declare class WaterFlowSections {
+    /**
+     * Creates an instance of WaterFlowSections.
+     *
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @since 12
+     */
+    constructor();
+    /**
+     * Changes sections in the WaterFlow by removing or replacing existing elements and/or adding new elements in place.
+     *
+     * @param { number } start - Zero-based index at which to start changing the sections.
+     * @param { number } [deleteCount] - Indicating the number of sections in the WaterFlow to remove from start.
+     * @param { Array<SectionOptions> } [sections] - The new sections to add to the WaterFlow, beginning from start.
+     * @returns { boolean } Whether the splice was successful.
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @since 12
+     */
+    splice(start: number, deleteCount?: number, sections?: Array<SectionOptions>): boolean;
+    /**
+     * Pushes a new section to the end of WaterFlow.
+     *
+     * @param { SectionOptions } section - new section options.
+     * @returns { boolean } Whether the push was successful.
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @since 12
+     */
+    push(section: SectionOptions): boolean;
+    /**
+     * Updates section at specified section index.
+     *
+     * @param { number } sectionIndex - index of section to be updated.
+     * @param { SectionOptions } section - new section options.
+     * @returns { boolean } Whether the update was successful.
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @since 12
+     */
+    update(sectionIndex: number, section: SectionOptions): boolean;
+    /**
+     * Obtains all the section options in the WaterFlow.
+     *
+     * @returns { Array<SectionOptions> } Returns all the section options in the WaterFlow.
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @since 12
+     */
+    values(): Array<SectionOptions>;
+    /**
+     * Obtains the section counts in the WaterFlow.
+     *
+     * @returns { number } Returns section counts in the WaterFlow.
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @since 12
+     */
+    length(): number;
+}
 /**
  * Defines the water flow options.
  *
@@ -87,6 +238,15 @@ declare interface WaterFlowOptions {
      * @since 11
      */
     scroller?: Scroller;
+    /**
+     * Describes the sections with different cross count that compose the water flow.
+     *
+     * @type { ?WaterFlowSections } sections - sections with different cross count
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @since 12
+     */
+    sections?: WaterFlowSections;
 }
 /**
  * Defines the water flow interface.
@@ -397,6 +557,15 @@ declare class WaterFlowAttribute extends ScrollableCommonMethod<WaterFlowAttribu
      * @syscap SystemCapability.ArkUI.ArkUI.Full
      * @crossplatform
      * @since 11
+     */
+    /**
+     * Called to set number of flow items to be preloaded (cached) in LazyForEach.
+     * @param { number } value - number of flow items to be preloaded (cached).
+     * @returns { WaterFlowAttribute } the attribute of the water flow.
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @atomicservice
+     * @since 12
      */
     cachedCount(value: number): WaterFlowAttribute;
     /**

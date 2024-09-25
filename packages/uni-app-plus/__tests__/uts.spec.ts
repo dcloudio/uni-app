@@ -6,28 +6,36 @@ import {
 
 describe('uts-module', () => {
   test('normalize args', () => {
-    expect(normalizeArg(1)).toBe(1)
-    expect(normalizeArg('hello')).toBe('hello')
-    expect(normalizeArg(true)).toBe(true)
-    expect(normalizeArg({ callback: () => {} })).toEqual({
+    expect(normalizeArg(1, {}, false)).toBe(1)
+    expect(normalizeArg('hello', {}, false)).toBe('hello')
+    expect(normalizeArg(true, {}, false)).toBe(true)
+    expect(normalizeArg({ callback: () => {} }, {}, false)).toEqual({
       callback: 1,
     })
     expect(
-      normalizeArg({ success: () => {}, fail: () => {}, complete: () => {} })
+      normalizeArg(
+        { success: () => {}, fail: () => {}, complete: () => {} },
+        {},
+        false
+      )
     ).toEqual({
       success: 2,
       fail: 3,
       complete: 4,
     })
     expect(
-      normalizeArg({
-        user: {
-          name: 'test',
-          age: 10,
-          callback() {},
+      normalizeArg(
+        {
+          user: {
+            name: 'test',
+            age: 10,
+            callback() {},
+          },
+          success() {},
         },
-        success() {},
-      })
+        {},
+        false
+      )
     ).toEqual({
       user: {
         name: 'test',
@@ -38,6 +46,18 @@ describe('uts-module', () => {
     })
   })
   test(`initProxyFunction`, () => {
+    const onMemory = initUTSProxyFunction(false, {
+      moduleName: '内存监控',
+      moduleType: 'built-in',
+      package: 'uts.modules.MemoryPlugin',
+      class: 'TestKt',
+      name: 'onMemory',
+      keepAlive: true,
+      params: [{ name: 'callback', type: 'UTSCallback' }],
+    })
+    onMemory((res: any) => {
+      console.log('onMemory callback', res)
+    })
     ;[true, false].forEach((async) => {
       const preparePermission = initUTSProxyFunction(async, {
         moduleName: '权限管理',
@@ -45,6 +65,7 @@ describe('uts-module', () => {
         package: 'uts.modules.TestPlugin',
         class: 'TestKt',
         name: 'preparePermission',
+        keepAlive: false,
         params: [
           { name: 'options', type: 'PermissionOptions' },
           { name: 'callback', type: 'UTSCallback' },
@@ -76,6 +97,7 @@ describe('uts-module', () => {
       const errMsg = 'xx插件编译失败，无法使用'
       expect(
         initUTSProxyFunction(async, {
+          name: 'unknown',
           errMsg,
         } as any)
       ).toThrowError(errMsg)
@@ -92,6 +114,7 @@ describe('uts-module', () => {
       },
       methods: {
         preparePermission: {
+          keepAlive: false,
           params: [
             { name: 'options', type: 'PermissionOptions' },
             { name: 'callback', type: 'UTSCallback' },
@@ -101,6 +124,7 @@ describe('uts-module', () => {
       staticMethods: {
         staticPreparePermission: {
           async: true,
+          keepAlive: false,
           params: [{ name: 'num', type: 'number' }],
         },
       },

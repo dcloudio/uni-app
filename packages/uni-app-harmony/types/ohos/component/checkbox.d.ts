@@ -13,6 +13,10 @@
  * limitations under the License.
  */
 /**
+ * @file
+ * @kit ArkUI
+ */
+/**
  * Defines the options of Checkbox.
  *
  * @interface CheckboxOptions
@@ -117,6 +121,52 @@ declare interface CheckboxOptions {
      * @form
      */
     group?: string;
+    /**
+     * Custom builder function.
+     *
+     * @type { ?CustomBuilder }
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @since 12
+     */
+    indicatorBuilder?: CustomBuilder;
+}
+/**
+ * CheckBoxConfiguration used by content modifier.
+ *
+ * @interface CheckBoxConfiguration
+ * @syscap SystemCapability.ArkUI.ArkUI.Full
+ * @crossplatform
+ * @since 12
+ */
+declare interface CheckBoxConfiguration extends CommonConfiguration<CheckBoxConfiguration> {
+    /**
+     * Current name of checkbox.
+     *
+     * @type { string }
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @since 12
+     */
+    name: string;
+    /**
+     * Indicates whether the checkbox is selected.
+     *
+     * @type { boolean }
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @since 12
+     */
+    selected: boolean;
+    /**
+     * Trigger checkbox select change.
+     *
+     * @type { Callback<boolean> }
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @since 12
+     */
+    triggerChange: Callback<boolean>;
 }
 /**
  * Provides an interface for the Checkbox component.
@@ -320,6 +370,17 @@ declare class CheckboxAttribute extends CommonMethod<CheckboxAttribute> {
      * @since 11
      * @form
      */
+    /**
+    * setting the shape of checkbox.
+    *
+    * @param { CheckBoxShape } value - The configuration of checkbox shape.
+    * @returns { CheckboxAttribute }
+    * @syscap SystemCapability.ArkUI.ArkUI.Full
+    * @crossplatform
+    * @atomicservice
+    * @since 12
+    * @form
+    */
     shape(value: CheckBoxShape): CheckboxAttribute;
     /**
      * Set the display border color of unselected checkbox.
@@ -400,6 +461,16 @@ declare class CheckboxAttribute extends CommonMethod<CheckboxAttribute> {
      * @form
      */
     onChange(callback: (value: boolean) => void): CheckboxAttribute;
+    /**
+     * Set the content modifier of checkbox.
+     *
+     * @param { ContentModifier<CheckBoxConfiguration> } modifier - The content modifier of checkbox.
+     * @returns { CheckboxAttribute }
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @since 12
+     */
+    contentModifier(modifier: ContentModifier<CheckBoxConfiguration>): CheckboxAttribute;
 }
 /**
  * Defines Checkbox Component.

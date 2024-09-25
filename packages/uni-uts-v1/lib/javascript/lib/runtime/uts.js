@@ -457,26 +457,48 @@ function initUTSJSONObjectProperties(obj) {
     }
     Object.defineProperties(obj, propertyDescriptorMap);
 }
+function setUTSJSONObjectValue(obj, key, value) {
+    if (isPlainObject(value)) {
+        obj[key] = new UTSJSONObject$1(value);
+    }
+    else if (getType(value) === 'array') {
+        obj[key] = value.map((item) => {
+            if (isPlainObject(item)) {
+                return new UTSJSONObject$1(item);
+            }
+            else {
+                return item;
+            }
+        });
+    }
+    else {
+        obj[key] = value;
+    }
+}
 let UTSJSONObject$1 = class UTSJSONObject {
+    static keys(obj) {
+        return Object.keys(obj);
+    }
+    static assign(target, ...sources) {
+        for (let i = 0; i < sources.length; i++) {
+            const source = sources[i];
+            for (let key in source) {
+                target[key] = source[key];
+            }
+        }
+        return target;
+    }
     constructor(content = {}) {
-        for (const key in content) {
-            if (Object.prototype.hasOwnProperty.call(content, key)) {
-                const value = content[key];
-                if (isPlainObject(value)) {
-                    this[key] = new UTSJSONObject(value);
-                }
-                else if (getType(value) === 'array') {
-                    this[key] = value.map((item) => {
-                        if (isPlainObject(item)) {
-                            return new UTSJSONObject(item);
-                        }
-                        else {
-                            return item;
-                        }
-                    });
-                }
-                else {
-                    this[key] = value;
+        if (content instanceof Map) {
+            content.forEach((value, key) => {
+                setUTSJSONObjectValue(this, key, value);
+            });
+        }
+        else {
+            for (const key in content) {
+                if (Object.prototype.hasOwnProperty.call(content, key)) {
+                    const value = content[key];
+                    setUTSJSONObjectValue(this, key, value);
                 }
             }
         }
@@ -634,7 +656,6 @@ let UTSJSONObject$1 = class UTSJSONObject {
 
 // @ts-nocheck
 function getGlobal() {
-    // cross-platform
     if (typeof globalThis !== 'undefined') {
         return globalThis;
     }
@@ -650,7 +671,15 @@ function getGlobal() {
     if (typeof global !== 'undefined') {
         return global;
     }
-    throw new Error('unable to locate global object');
+    function g() {
+        return this;
+    }
+    if (typeof g() !== 'undefined') {
+        return g();
+    }
+    return (function () {
+        return new Function('return this')();
+    })();
 }
 const realGlobal = getGlobal();
 realGlobal.UTSJSONObject = UTSJSONObject$1;

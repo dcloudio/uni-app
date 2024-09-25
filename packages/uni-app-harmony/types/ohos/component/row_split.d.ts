@@ -13,6 +13,10 @@
  * limitations under the License.
  */
 /**
+ * @file
+ * @kit ArkUI
+ */
+/**
  * Provides interfaces for layout in the vertical direction.
  *
  * @interface RowSplitInterface

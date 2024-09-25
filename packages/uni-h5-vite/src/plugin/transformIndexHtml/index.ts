@@ -1,12 +1,16 @@
 import type { Plugin } from 'vite'
 
-import { parseManifestJsonOnce } from '@dcloudio/uni-cli-shared'
+import {
+  getPlatformManifestJson,
+  parseManifestJsonOnce,
+} from '@dcloudio/uni-cli-shared'
 
 export function createTransformIndexHtml(): Plugin['transformIndexHtml'] {
   let warned = false
   return async function (html) {
     const manifestJson = parseManifestJsonOnce(process.env.UNI_INPUT_DIR)
-    const title = manifestJson.h5?.title || manifestJson.name || ''
+    const webManifest = getPlatformManifestJson(manifestJson, 'h5')
+    const title = webManifest?.title || manifestJson.name || ''
     const isX = process.env.UNI_APP_X === 'true'
     if (isX) {
       // 兼容旧版本模板

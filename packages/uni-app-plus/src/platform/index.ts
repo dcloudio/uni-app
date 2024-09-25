@@ -17,7 +17,8 @@ export {
 
 export { saveImage } from './saveImage'
 export { getSameOriginUrl } from '../helpers/file'
-export { TEMP_PATH } from '../service/api/constants'
+import { TEMP_PATH } from '../service/api/constants'
+export { TEMP_PATH }
 
 export {
   getEnterOptions,
@@ -25,3 +26,14 @@ export {
 } from '../service/framework/app/utils'
 
 export { inflateRaw, deflateRaw } from 'pako'
+
+interface Env {
+  USER_DATA_PATH: string
+  TEMP_PATH: string
+  CACHE_PATH: string
+}
+export const getEnv: (() => Env) | undefined = () => ({
+  TEMP_PATH,
+  CACHE_PATH: '',
+  USER_DATA_PATH: '',
+})

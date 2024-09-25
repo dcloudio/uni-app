@@ -12,8 +12,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+/**
+ * @file
+ * @kit AbilityKit
+ */
 import { ApplicationInfo } from './ApplicationInfo';
-import { HapModuleInfo } from './HapModuleInfo';
+import { HapModuleInfo, RouterItem } from './HapModuleInfo';
 import bundleManager from './../@ohos.bundle.bundleManager';
 /**
  * Obtains configuration information about a bundle
@@ -239,6 +243,16 @@ export interface BundleInfo {
      * @since 11
      */
     readonly updateTime: number;
+    /**
+     * Indicates the router information of the application
+     *
+     * @type { Array<RouterItem> }
+     * @readonly
+     * @syscap SystemCapability.BundleManager.BundleFramework.Core
+     * @atomicservice
+     * @since 12
+     */
+    readonly routerMap: Array<RouterItem>;
 }
 /**
  * Indicates the required permissions details defined in configuration file

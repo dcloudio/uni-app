@@ -84,7 +84,10 @@ declare class HashSet<T> {
      * @param { T } value - value value need to determine whether to include the element
      * @returns { boolean } the boolean type
      * @throws { BusinessError } 10200011 - The has method cannot be bound.
-     * @throws { BusinessError } 401 - The type of parameters are invalid.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes:
+     * 1.Mandatory parameters are left unspecified;
+     * 2.Incorrect parameter types;
+     * 3.Parameter verification failed.
      * @syscap SystemCapability.Utils.Lang
      * @since 8
      */
@@ -94,7 +97,10 @@ declare class HashSet<T> {
      * @param { T } value - value value need to determine whether to include the element
      * @returns { boolean } the boolean type
      * @throws { BusinessError } 10200011 - The has method cannot be bound.
-     * @throws { BusinessError } 401 - The type of parameters are invalid.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes:
+     * 1.Mandatory parameters are left unspecified;
+     * 2.Incorrect parameter types;
+     * 3.Parameter verification failed.
      * @syscap SystemCapability.Utils.Lang
      * @crossplatform
      * @since 10
@@ -106,7 +112,10 @@ declare class HashSet<T> {
      * @param { T } value - value value Added element
      * @returns { boolean } the boolean type(Is there contain this element)
      * @throws { BusinessError } 10200011 - The add method cannot be bound.
-     * @throws { BusinessError } 401 - The type of parameters are invalid.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes:
+     * 1.Mandatory parameters are left unspecified;
+     * 2.Incorrect parameter types;
+     * 3.Parameter verification failed.
      * @syscap SystemCapability.Utils.Lang
      * @since 8
      */
@@ -116,7 +125,10 @@ declare class HashSet<T> {
      * @param { T } value - value value Added element
      * @returns { boolean } the boolean type(Is there contain this element)
      * @throws { BusinessError } 10200011 - The add method cannot be bound.
-     * @throws { BusinessError } 401 - The type of parameters are invalid.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes:
+     * 1.Mandatory parameters are left unspecified;
+     * 2.Incorrect parameter types;
+     * 3.Parameter verification failed.
      * @syscap SystemCapability.Utils.Lang
      * @crossplatform
      * @since 10
@@ -128,7 +140,10 @@ declare class HashSet<T> {
      * @param { T } value - value value Target to be deleted
      * @returns { boolean } the boolean type(Is there contain this element)
      * @throws { BusinessError } 10200011 - The remove method cannot be bound.
-     * @throws { BusinessError } 401 - The type of parameters are invalid.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes:
+     * 1.Mandatory parameters are left unspecified;
+     * 2.Incorrect parameter types;
+     * 3.Parameter verification failed.
      * @syscap SystemCapability.Utils.Lang
      * @since 8
      */
@@ -138,7 +153,10 @@ declare class HashSet<T> {
      * @param { T } value - value value Target to be deleted
      * @returns { boolean } the boolean type(Is there contain this element)
      * @throws { BusinessError } 10200011 - The remove method cannot be bound.
-     * @throws { BusinessError } 401 - The type of parameters are invalid.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes:
+     * 1.Mandatory parameters are left unspecified;
+     * 2.Incorrect parameter types;
+     * 3.Parameter verification failed.
      * @syscap SystemCapability.Utils.Lang
      * @crossplatform
      * @since 10
@@ -170,7 +188,9 @@ declare class HashSet<T> {
      * thisArg (Optional) The value to be used as this value for when callbackFn is called.
      * If thisArg is omitted, undefined is used as the this value.
      * @throws { BusinessError } 10200011 - The forEach method cannot be bound.
-     * @throws { BusinessError } 401 - The type of parameters are invalid.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes:
+     * 1.Mandatory parameters are left unspecified;
+     * 2.Incorrect parameter types.
      * @syscap SystemCapability.Utils.Lang
      * @since 8
      */
@@ -184,7 +204,9 @@ declare class HashSet<T> {
      * thisArg (Optional) The value to be used as this value for when callbackFn is called.
      * If thisArg is omitted, undefined is used as the this value.
      * @throws { BusinessError } 10200011 - The forEach method cannot be bound.
-     * @throws { BusinessError } 401 - The type of parameters are invalid.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes:
+     * 1.Mandatory parameters are left unspecified;
+     * 2.Incorrect parameter types.
      * @syscap SystemCapability.Utils.Lang
      * @crossplatform
      * @since 10

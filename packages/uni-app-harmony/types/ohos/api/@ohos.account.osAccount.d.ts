@@ -66,7 +66,8 @@ declare namespace osAccount {
          * Checks whether the function of supporting multiple OS accounts is enabled.
          *
          * @param { AsyncCallback<boolean> } callback - Returns {@code true} if this function is enabled; returns {@code false} otherwise.
-         * @throws { BusinessError } 401 - The parameter check failed.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
+         * <br> 2. Incorrect parameter types.
          * @throws { BusinessError } 12300001 - System service exception.
          * @syscap SystemCapability.Account.OsAccount
          * @since 9
@@ -76,7 +77,6 @@ declare namespace osAccount {
          * Checks whether the function of supporting multiple OS accounts is enabled.
          *
          * @returns { Promise<boolean> } Returns {@code true} if this function is enabled; returns {@code false} otherwise.
-         * @throws { BusinessError } 401 - The parameter check failed.
          * @throws { BusinessError } 12300001 - System service exception.
          * @syscap SystemCapability.Account.OsAccount
          * @since 9
@@ -113,7 +113,8 @@ declare namespace osAccount {
          * @param { number } localId - Indicates the local ID of the OS account.
          * @param { AsyncCallback<boolean> } callback - Indicates the callback for checking whether the OS account is activated.
          * @throws { BusinessError } 201 - Permission denied.
-         * @throws { BusinessError } 401 - The parameter check failed.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
+         * <br> 2. Incorrect parameter types.
          * @throws { BusinessError } 12300001 - System service exception.
          * @throws { BusinessError } 12300002 - Invalid localId.
          * @throws { BusinessError } 12300003 - Account not found.
@@ -129,7 +130,8 @@ declare namespace osAccount {
          * @param { number } localId - Indicates the local ID of the OS account.
          * @returns { Promise<boolean> } - Returns {@code true} if the OS account is activated; returns {@code false} otherwise.
          * @throws { BusinessError } 201 - Permission denied.
-         * @throws { BusinessError } 401 - The parameter check failed.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
+         * <br> 2. Incorrect parameter types.
          * @throws { BusinessError } 12300001 - System service exception.
          * @throws { BusinessError } 12300002 - Invalid localId.
          * @throws { BusinessError } 12300003 - Account not found.
@@ -144,20 +146,16 @@ declare namespace osAccount {
          * @permission ohos.permission.MANAGE_LOCAL_ACCOUNTS
          * @param { number } localId - Indicates the local ID of the OS account.
          * @param { string } constraint - Indicates the constraint to check. The value can be:
-         *        <ul>
-         *        <li>{@code constraint.wifi.set} - Indicates the constraint on configuring the Wi-Fi access point.
-         *        </li>
-         *        <li>{@code constraint.sms.use} - Indicates the constraint on sending and receiving short messages.
-         *        </li>
-         *        <li>{@code constraint.calls.outgoing} - Indicates the constraint on making calls.</li>
-         *        <li>{@code constraint.unknown.sources.install} - Indicates the constraint on installing applications
-         *        from unknown sources.</li>
-         *        </ul>
+         * <br> {@code constraint.wifi.set} - Indicates the constraint on configuring the Wi-Fi access point.
+         * <br> {@code constraint.sms.use} - Indicates the constraint on sending and receiving short messages.
+         * <br> {@code constraint.calls.outgoing} - Indicates the constraint on making calls.
+         * <br> {@code constraint.unknown.sources.install} - Indicates the constraint on installing applications
+         * <br> from unknown sources.
          * @param { AsyncCallback<boolean> } callback - Indicates the callback for checking whether the constraint is enabled for the specified OS account.
          * @syscap SystemCapability.Account.OsAccount
          * @since 7
          * @deprecated since 9
-         * @useinstead osAccount.AccountManager#checkConstraintEnabled
+         * @useinstead osAccount.AccountManager#checkOsAccountConstraintEnabled
          */
         isOsAccountConstraintEnable(localId: number, constraint: string, callback: AsyncCallback<boolean>): void;
         /**
@@ -166,21 +164,17 @@ declare namespace osAccount {
          * @permission ohos.permission.MANAGE_LOCAL_ACCOUNTS
          * @param { number } localId - Indicates the local ID of the OS account.
          * @param { string } constraint - Indicates the constraint to check. The value can be:
-         *        <ul>
-         *        <li>{@code constraint.wifi.set} - Indicates the constraint on configuring the Wi-Fi access point.
-         *        </li>
-         *        <li>{@code constraint.sms.use} - Indicates the constraint on sending and receiving short messages.
-         *        </li>
-         *        <li>{@code constraint.calls.outgoing} - Indicates the constraint on making calls.</li>
-         *        <li>{@code constraint.unknown.sources.install} - Indicates the constraint on installing applications
-         *        from unknown sources.</li>
-         *        </ul>
+         * <br> {@code constraint.wifi.set} - Indicates the constraint on configuring the Wi-Fi access point.
+         * <br> {@code constraint.sms.use} - Indicates the constraint on sending and receiving short messages.
+         * <br> {@code constraint.calls.outgoing} - Indicates the constraint on making calls.
+         * <br> {@code constraint.unknown.sources.install} - Indicates the constraint on installing applications
+         * <br> from unknown sources.
          * @returns { Promise<boolean> } Returns {@code true} if the constraint has been enabled for the OS account;
          *         returns {@code false} otherwise.
          * @syscap SystemCapability.Account.OsAccount
          * @since 7
          * @deprecated since 9
-         * @useinstead osAccount.AccountManager#checkConstraintEnabled
+         * @useinstead osAccount.AccountManager#checkOsAccountConstraintEnabled
          */
         isOsAccountConstraintEnable(localId: number, constraint: string): Promise<boolean>;
         /**
@@ -189,18 +183,15 @@ declare namespace osAccount {
          * @permission ohos.permission.MANAGE_LOCAL_ACCOUNTS or ohos.permission.INTERACT_ACROSS_LOCAL_ACCOUNTS
          * @param { number } localId - Indicates the local ID of the OS account.
          * @param { string } constraint - Indicates the constraint to check. For example: the value can be:
-         *        <ul>
-         *        <li>{@code constraint.wifi.set} - Indicates the constraint on configuring the Wi-Fi access point.
-         *        </li>
-         *        <li>{@code constraint.sms.use} - Indicates the constraint on sending and receiving short messages.
-         *        </li>
-         *        <li>{@code constraint.calls.outgoing} - Indicates the constraint on making calls.</li>
-         *        <li>{@code constraint.unknown.sources.install} - Indicates the constraint on installing applications
-         *        from unknown sources.</li>
-         *        </ul>
+         * <br> {@code constraint.wifi.set} - Indicates the constraint on configuring the Wi-Fi access point.
+         * <br> {@code constraint.sms.use} - Indicates the constraint on sending and receiving short messages.
+         * <br> {@code constraint.calls.outgoing} - Indicates the constraint on making calls.
+         * <br> {@code constraint.unknown.sources.install} - Indicates the constraint on installing applications
+         * <br> from unknown sources.
          * @param { AsyncCallback<boolean> } callback - Indicates the callback for checking whether the constraint is enabled for the specified OS account.
          * @throws { BusinessError } 201 - Permission denied.
-         * @throws { BusinessError } 401 - The parameter check failed.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
+         * <br> 2. Incorrect parameter types.
          * @throws { BusinessError } 12300001 - System service exception.
          * @throws { BusinessError } 12300002 - Invalid localId or constraint.
          * @throws { BusinessError } 12300003 - Account not found.
@@ -215,18 +206,15 @@ declare namespace osAccount {
          * @permission ohos.permission.MANAGE_LOCAL_ACCOUNTS or ohos.permission.INTERACT_ACROSS_LOCAL_ACCOUNTS
          * @param { number } localId - Indicates the local ID of the OS account.
          * @param { string } constraint - Indicates the constraint to check. For example: the value can be:
-         *        <ul>
-         *        <li>{@code constraint.wifi.set} - Indicates the constraint on configuring the Wi-Fi access point.
-         *        </li>
-         *        <li>{@code constraint.sms.use} - Indicates the constraint on sending and receiving short messages.
-         *        </li>
-         *        <li>{@code constraint.calls.outgoing} - Indicates the constraint on making calls.</li>
-         *        <li>{@code constraint.unknown.sources.install} - Indicates the constraint on installing applications
-         *        from unknown sources.</li>
-         *        </ul>
+         * <br> {@code constraint.wifi.set} - Indicates the constraint on configuring the Wi-Fi access point.
+         * <br> {@code constraint.sms.use} - Indicates the constraint on sending and receiving short messages.
+         * <br> {@code constraint.calls.outgoing} - Indicates the constraint on making calls.
+         * <br> {@code constraint.unknown.sources.install} - Indicates the constraint on installing applications
+         * <br> from unknown sources.
          * @returns { Promise<boolean> } Returns whether the given constraint is enabled for the specified OS account.
          * @throws { BusinessError } 201 - Permission denied.
-         * @throws { BusinessError } 401 - The parameter check failed.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
+         * <br> 2. Incorrect parameter types.
          * @throws { BusinessError } 12300001 - System service exception.
          * @throws { BusinessError } 12300002 - Invalid localId or constraint.
          * @throws { BusinessError } 12300003 - Account not found.
@@ -239,17 +227,14 @@ declare namespace osAccount {
          * Checks whether the given constraint is enabled for the current OS account.
          *
          * @param { string } constraint - Indicates the constraint to check. For example: the value can be:
-         *        <ul>
-         *        <li>{@code constraint.wifi.set} - Indicates the constraint on configuring the Wi-Fi access point.
-         *        </li>
-         *        <li>{@code constraint.sms.use} - Indicates the constraint on sending and receiving short messages.
-         *        </li>
-         *        <li>{@code constraint.calls.outgoing} - Indicates the constraint on making calls.</li>
-         *        <li>{@code constraint.unknown.sources.install} - Indicates the constraint on installing applications
-         *        from unknown sources.</li>
-         *        </ul>
+         * <br> {@code constraint.wifi.set} - Indicates the constraint on configuring the Wi-Fi access point.
+         * <br> {@code constraint.sms.use} - Indicates the constraint on sending and receiving short messages.
+         * <br> {@code constraint.calls.outgoing} - Indicates the constraint on making calls.
+         * <br> {@code constraint.unknown.sources.install} - Indicates the constraint on installing applications
+         * <br> from unknown sources.
          * @returns { Promise<boolean> } Returns whether the given constraint is enabled for the current OS account.
-         * @throws { BusinessError } 401 - The parameter check failed.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
+         * <br> 2. Incorrect parameter types.
          * @throws { BusinessError } 12300001 - System service exception.
          * @syscap SystemCapability.Account.OsAccount
          * @since 11
@@ -279,7 +264,8 @@ declare namespace osAccount {
          * Checks whether current OS account is testable.
          *
          * @param { AsyncCallback<boolean> } callback - Returns {@code true} if this account is testable; returns {@code false} otherwise.
-         * @throws { BusinessError } 401 - The parameter check failed.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
+         * <br> 2. Incorrect parameter types.
          * @throws { BusinessError } 12300001 - System service exception.
          * @syscap SystemCapability.Account.OsAccount
          * @since 9
@@ -289,7 +275,6 @@ declare namespace osAccount {
          * Checks whether current OS account is testable.
          *
          * @returns { Promise<boolean> } Returns {@code true} if this account is testable; returns {@code false} otherwise.
-         * @throws { BusinessError } 401 - The parameter check failed.
          * @throws { BusinessError } 12300001 - System service exception.
          * @syscap SystemCapability.Account.OsAccount
          * @since 9
@@ -362,7 +347,8 @@ declare namespace osAccount {
          * @param { number } localId - Indicates the local ID of the OS account.
          * @param { AsyncCallback<boolean> } callback - Indicates the callback for checking whether the specified OS account is verified.
          * @throws { BusinessError } 201 - Permission denied.
-         * @throws { BusinessError } 401 - The parameter check failed.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
+         * <br> 2. Incorrect parameter types.
          * @throws { BusinessError } 12300001 - System service exception.
          * @throws { BusinessError } 12300002 - Invalid localId.
          * @throws { BusinessError } 12300003 - Account not found.
@@ -378,7 +364,8 @@ declare namespace osAccount {
          * @param { number } localId - Indicates the local ID of the OS account.
          * @returns { Promise<boolean> } Returns whether the specified OS account is verified.
          * @throws { BusinessError } 201 - Permission denied.
-         * @throws { BusinessError } 401 - The parameter check failed.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
+         * <br> 2. Incorrect parameter types.
          * @throws { BusinessError } 12300001 - System service exception.
          * @throws { BusinessError } 12300002 - Invalid localId.
          * @throws { BusinessError } 12300003 - Account not found.
@@ -396,6 +383,15 @@ declare namespace osAccount {
          * @since 11
          */
         isOsAccountUnlocked(): Promise<boolean>;
+        /**
+         * Gets the name of the OS account to which the caller belongs.
+         *
+         * @returns { Promise<string> } The promise returned by the function.
+         * @throws { BusinessError } 12300001 - System service exception.
+         * @syscap SystemCapability.Account.OsAccount
+         * @since 12
+         */
+        getOsAccountName(): Promise<string>;
         /**
          * Obtains the number of all OS accounts created on a device.
          *
@@ -424,7 +420,8 @@ declare namespace osAccount {
          * @permission ohos.permission.MANAGE_LOCAL_ACCOUNTS
          * @param { AsyncCallback<number> } callback - Returns the number of created OS accounts.
          * @throws { BusinessError } 201 - Permission denied.
-         * @throws { BusinessError } 401 - The parameter check failed.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
+         * <br> 2. Incorrect parameter types.
          * @throws { BusinessError } 12300001 - System service exception.
          * @syscap SystemCapability.Account.OsAccount
          * @since 9
@@ -436,7 +433,6 @@ declare namespace osAccount {
          * @permission ohos.permission.MANAGE_LOCAL_ACCOUNTS
          * @returns { Promise<number> } Returns the number of created OS accounts.
          * @throws { BusinessError } 201 - Permission denied.
-         * @throws { BusinessError } 401 - The parameter check failed.
          * @throws { BusinessError } 12300001 - System service exception.
          * @syscap SystemCapability.Account.OsAccount
          * @since 9
@@ -466,7 +462,8 @@ declare namespace osAccount {
          * Gets the local ID of the current OS account.
          *
          * @param { AsyncCallback<number> } callback - Indicates the callback for getting the local ID of the current OS account.
-         * @throws { BusinessError } 401 - The parameter check failed.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
+         * <br> 2. Incorrect parameter types.
          * @throws { BusinessError } 12300001 - System service exception.
          * @syscap SystemCapability.Account.OsAccount
          * @since 9
@@ -476,7 +473,6 @@ declare namespace osAccount {
          * Get the local ID of the current OS account.
          *
          * @returns { Promise<number> } Returns the local ID of the current account.
-         * @throws { BusinessError } 401 - The parameter check failed.
          * @throws { BusinessError } 12300001 - System service exception.
          * @syscap SystemCapability.Account.OsAccount
          * @since 9
@@ -509,7 +505,8 @@ declare namespace osAccount {
          *
          * @param { number } uid - Indicates the process UID.
          * @param { AsyncCallback<number> } callback - Indicates the callback for getting the local ID of the OS account associated with the specified UID.
-         * @throws { BusinessError } 401 - The parameter check failed.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
+         * <br> 2. Incorrect parameter types.
          * @throws { BusinessError } 12300001 - System service exception.
          * @throws { BusinessError } 12300002 - Invalid uid.
          * @syscap SystemCapability.Account.OsAccount
@@ -521,7 +518,8 @@ declare namespace osAccount {
          *
          * @param { number } uid - Indicates the process UID.
          * @returns { Promise<number> } - Returns the local ID of the OS account associated with the specified UID.
-         * @throws { BusinessError } 401 - The parameter check failed.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
+         * <br> 2. Incorrect parameter types.
          * @throws { BusinessError } 12300001 - System service exception.
          * @throws { BusinessError } 12300002 - Invalid uid.
          * @syscap SystemCapability.Account.OsAccount
@@ -533,7 +531,8 @@ declare namespace osAccount {
          *
          * @param { number } uid - Indicates the process UID.
          * @returns { number } Returns the local ID of the OS account associated with the specified UID.
-         * @throws { BusinessError } 401 - The parameter check failed.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
+         * <br> 2. Incorrect parameter types.
          * @throws { BusinessError } 12300002 - Invalid uid.
          * @syscap SystemCapability.Account.OsAccount
          * @since 10
@@ -571,7 +570,8 @@ declare namespace osAccount {
          * @param { AsyncCallback<number> } callback - Indicates the callback for
          *   getting the local ID of the OS account associated with the specified domain account.
          * @throws { BusinessError } 201 - Permission denied.
-         * @throws { BusinessError } 401 - The parameter check failed.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
+         * <br> 2. Incorrect parameter types.
          * @throws { BusinessError } 12300001 - System service exception.
          * @throws { BusinessError } 12300002 - Invalid domainInfo.
          * @syscap SystemCapability.Account.OsAccount
@@ -585,7 +585,8 @@ declare namespace osAccount {
          * @param { DomainAccountInfo } domainInfo - Indicates the domain account info.
          * @returns { Promise<number> } Returns the local ID of the OS account associated with the specified domain account.
          * @throws { BusinessError } 201 - Permission denied.
-         * @throws { BusinessError } 401 - The parameter check failed.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
+         * <br> 2. Incorrect parameter types.
          * @throws { BusinessError } 12300001 - System service exception.
          * @throws { BusinessError } 12300002 - Invalid domainInfo.
          * @syscap SystemCapability.Account.OsAccount
@@ -623,7 +624,8 @@ declare namespace osAccount {
          * @param { number } localId - Indicates the local ID of the OS account.
          * @param { AsyncCallback<Array<string>> } callback - Returns a list of constraints.
          * @throws { BusinessError } 201 - Permission denied.
-         * @throws { BusinessError } 401 - The parameter check failed.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
+         * <br> 2. Incorrect parameter types.
          * @throws { BusinessError } 12300001 - System service exception.
          * @throws { BusinessError } 12300002 - Invalid localId.
          * @throws { BusinessError } 12300003 - Account not found.
@@ -639,7 +641,8 @@ declare namespace osAccount {
          * @param { number } localId - Indicates the local ID of the OS account.
          * @returns { Promise<Array<string>> } Returns a list of constraints.
          * @throws { BusinessError } 201 - Permission denied.
-         * @throws { BusinessError } 401 - The parameter check failed.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
+         * <br> 2. Incorrect parameter types.
          * @throws { BusinessError } 12300001 - System service exception.
          * @throws { BusinessError } 12300002 - Invalid localId.
          * @throws { BusinessError } 12300003 - Account not found.
@@ -672,7 +675,8 @@ declare namespace osAccount {
          * Gets the local IDs of all activated OS accounts.
          *
          * @param { AsyncCallback<Array<number>> } callback - Indicates the callback for getting the local IDs of all activated OS accounts.
-         * @throws { BusinessError } 401 - The parameter check failed.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
+         * <br> 2. Incorrect parameter types.
          * @throws { BusinessError } 12300001 - System service exception.
          * @syscap SystemCapability.Account.OsAccount
          * @since 9
@@ -682,7 +686,6 @@ declare namespace osAccount {
          * Gets the local IDs of all activated OS accounts.
          *
          * @returns { Promise<Array<number>> } Returns all activated accounts.
-         * @throws { BusinessError } 401 - The parameter check failed.
          * @throws { BusinessError } 12300001 - System service exception.
          * @syscap SystemCapability.Account.OsAccount
          * @since 9
@@ -716,7 +719,8 @@ declare namespace osAccount {
          * @permission ohos.permission.MANAGE_LOCAL_ACCOUNTS
          * @param { AsyncCallback<OsAccountInfo> } callback - Returns information about the current OS account; returns {@code null} if the query fails.
          * @throws { BusinessError } 201 - Permission denied.
-         * @throws { BusinessError } 401 - The parameter check failed.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
+         * <br> 2. Incorrect parameter types.
          * @throws { BusinessError } 12300001 - System service exception.
          * @syscap SystemCapability.Account.OsAccount
          * @since 9
@@ -728,7 +732,8 @@ declare namespace osAccount {
          * @permission ohos.permission.MANAGE_LOCAL_ACCOUNTS or ohos.permission.GET_LOCAL_ACCOUNTS
          * @param { AsyncCallback<OsAccountInfo> } callback - Returns information about the current OS account; returns {@code null} if the query fails.
          * @throws { BusinessError } 201 - Permission denied.
-         * @throws { BusinessError } 401 - The parameter check failed.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
+         * <br> 2. Incorrect parameter types.
          * @throws { BusinessError } 12300001 - System service exception.
          * @syscap SystemCapability.Account.OsAccount
          * @since 10
@@ -741,7 +746,6 @@ declare namespace osAccount {
          * @permission ohos.permission.MANAGE_LOCAL_ACCOUNTS
          * @returns { Promise<OsAccountInfo> } Returns information about the current OS account; returns {@code null} if the query fails.
          * @throws { BusinessError } 201 - Permission denied.
-         * @throws { BusinessError } 401 - The parameter check failed.
          * @throws { BusinessError } 12300001 - System service exception.
          * @syscap SystemCapability.Account.OsAccount
          * @since 9
@@ -753,7 +757,6 @@ declare namespace osAccount {
          * @permission ohos.permission.MANAGE_LOCAL_ACCOUNTS or ohos.permission.GET_LOCAL_ACCOUNTS
          * @returns { Promise<OsAccountInfo> } Returns information about the current OS account; returns {@code null} if the query fails.
          * @throws { BusinessError } 201 - Permission denied.
-         * @throws { BusinessError } 401 - The parameter check failed.
          * @throws { BusinessError } 12300001 - System service exception.
          * @syscap SystemCapability.Account.OsAccount
          * @since 10
@@ -787,7 +790,8 @@ declare namespace osAccount {
          *
          * @param { AsyncCallback<OsAccountType> } callback - Returns the OS account type. The value can be {@link OsAccountType#ADMIN},
          *         {@link OsAccountType#NORMAL}, and {@link OsAccountType#GUEST}.
-         * @throws { BusinessError } 401 - The parameter check failed.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
+         * <br> 2. Incorrect parameter types.
          * @throws { BusinessError } 12300001 - System service exception.
          * @syscap SystemCapability.Account.OsAccount
          * @since 9
@@ -798,7 +802,6 @@ declare namespace osAccount {
          *
          * @returns { Promise<OsAccountType> } Returns the OS account type. The value can be {@link OsAccountType#ADMIN},
          *         {@link OsAccountType#NORMAL}, and {@link OsAccountType#GUEST}.
-         * @throws { BusinessError } 401 - The parameter check failed.
          * @throws { BusinessError } 12300001 - System service exception.
          * @syscap SystemCapability.Account.OsAccount
          * @since 9
@@ -850,7 +853,8 @@ declare namespace osAccount {
          * @permission ohos.permission.DISTRIBUTED_DATASYNC or ohos.permission.MANAGE_LOCAL_ACCOUNTS
          * @param { AsyncCallback<string> } callback - Returns the DVID if obtained; returns an empty string if no OHOS account has logged in.
          * @throws { BusinessError } 201 - Permission denied.
-         * @throws { BusinessError } 401 - The parameter check failed.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
+         * <br> 2. Incorrect parameter types.
          * @throws { BusinessError } 12300001 - System service exception.
          * @syscap SystemCapability.Account.OsAccount
          * @since 9
@@ -868,7 +872,6 @@ declare namespace osAccount {
          * @permission ohos.permission.DISTRIBUTED_DATASYNC or ohos.permission.MANAGE_LOCAL_ACCOUNTS
          * @returns { Promise<string> } Returns the DVID if obtained; returns an empty string if no OHOS account has logged in.
          * @throws { BusinessError } 201 - Permission denied.
-         * @throws { BusinessError } 401 - The parameter check failed.
          * @throws { BusinessError } 12300001 - System service exception.
          * @syscap SystemCapability.Account.OsAccount
          * @since 9
@@ -901,7 +904,8 @@ declare namespace osAccount {
          *
          * @param { number } serialNumber - Indicates serial number.
          * @param { AsyncCallback<number> } callback - Indicates the callback for getting the local ID of the OS account associated with the serial number.
-         * @throws { BusinessError } 401 - The parameter check failed.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
+         * <br> 2. Incorrect parameter types.
          * @throws { BusinessError } 12300001 - System service exception.
          * @throws { BusinessError } 12300002 - Invalid serialNumber.
          * @throws { BusinessError } 12300003 - The account indicated by serialNumber dose not exist.
@@ -914,7 +918,8 @@ declare namespace osAccount {
          *
          * @param { number } serialNumber - Indicates serial number.
          * @returns { Promise<number> } Returns the local ID of the OS account associated with the serial number.
-         * @throws { BusinessError } 401 - The parameter check failed.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
+         * <br> 2. Incorrect parameter types.
          * @throws { BusinessError } 12300001 - System service exception.
          * @throws { BusinessError } 12300002 - Invalid serialNumber.
          * @throws { BusinessError } 12300003 - The account indicated by serialNumber dose not exist.
@@ -949,7 +954,8 @@ declare namespace osAccount {
          *
          * @param { number } localId - Indicates the local ID of the OS account.
          * @param { AsyncCallback<number> } callback - Indicates the callback for getting the serial number for the specified os account local id.
-         * @throws { BusinessError } 401 - The parameter check failed.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
+         * <br> 2. Incorrect parameter types.
          * @throws { BusinessError } 12300001 - System service exception.
          * @throws { BusinessError } 12300002 - Invalid localId.
          * @throws { BusinessError } 12300003 - Account not found.
@@ -962,7 +968,8 @@ declare namespace osAccount {
          *
          * @param { number } localId - Indicates the local ID of the OS account.
          * @returns { Promise<number> } Returns the serial number according to local ID.
-         * @throws { BusinessError } 401 - The parameter check failed.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
+         * <br> 2. Incorrect parameter types.
          * @throws { BusinessError } 12300001 - System service exception.
          * @throws { BusinessError } 12300002 - Invalid localId.
          * @throws { BusinessError } 12300003 - Account not found.

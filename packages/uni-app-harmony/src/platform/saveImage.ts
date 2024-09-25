@@ -1,7 +1,17 @@
 export function saveImage(
   dataURL: string,
   dirname: string,
-  callback: (error: any, tempFilePath?: string) => void
+  callback: (error: { message: string } | null, tempFilePath?: string) => void
 ) {
-  throw new Error('TODO: Implement')
+  UniViewJSBridge.invokeServiceMethod(
+    'base64ToTempFilePath',
+    { dataURL, dirname },
+    (res) => {
+      if (res.message) {
+        callback(res)
+      } else if (res.tempFilePath) {
+        callback(null, res.tempFilePath)
+      }
+    }
+  )
 }

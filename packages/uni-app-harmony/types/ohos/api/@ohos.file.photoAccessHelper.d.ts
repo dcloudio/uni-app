@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 /**
- * @file
+ * @file Helper functions to access image and video assets
  * @kit MediaLibraryKit
  */
 import type { AsyncCallback, Callback } from './@ohos.base';
@@ -104,10 +104,52 @@ declare namespace photoAccessHelper {
         VIDEO
     }
     /**
+     * Enumeration of different categories of photos
+     *
+     * @enum { number } PhotoSubtype
+     * @syscap SystemCapability.FileManagement.PhotoAccessHelper.Core
+     * @systemapi
+     * @since 10
+     */
+    /**
+     * Enumeration of different categories of photos
+     *
+     * @enum { number } PhotoSubtype
+     * @syscap SystemCapability.FileManagement.PhotoAccessHelper.Core
+     * @atomicservice
+     * @since 12
+     */
+    enum PhotoSubtype {
+        /**
+         * Default Photo Type
+         *
+         * @syscap SystemCapability.FileManagement.PhotoAccessHelper.Core
+         * @systemapi
+         * @since 10
+         */
+        /**
+         * Default Photo Type
+         *
+         * @syscap SystemCapability.FileManagement.PhotoAccessHelper.Core
+         * @atomicservice
+         * @since 12
+         */
+        DEFAULT = 0,
+        /**
+         * Moving Photo Type
+         *
+         * @syscap SystemCapability.FileManagement.PhotoAccessHelper.Core
+         * @atomicservice
+         * @since 12
+         */
+        MOVING_PHOTO = 3
+    }
+    /**
      * Enumeration of different recommendation type
      *
      * @enum { number } RecommendationType
      * @syscap SystemCapability.FileManagement.PhotoAccessHelper.Core
+     * @atomicservice
      * @since 11
      */
     enum RecommendationType {
@@ -150,7 +192,39 @@ declare namespace photoAccessHelper {
          * @atomicservice
          * @since 11
          */
-        PROFILE_PICTURE = 5
+        PROFILE_PICTURE = 5,
+        /**
+         * PASSPORT indicates that passport photos can be recommended
+         *
+         * @syscap SystemCapability.FileManagement.PhotoAccessHelper.Core
+         * @atomicservice
+         * @since 12
+         */
+        PASSPORT = 6,
+        /**
+         * BANK_CARD indicates that bank card photos can be recommended
+         *
+         * @syscap SystemCapability.FileManagement.PhotoAccessHelper.Core
+         * @atomicservice
+         * @since 12
+         */
+        BANK_CARD = 7,
+        /**
+         * DRIVER_LICENSE indicates that driver license photos can be recommended
+         *
+         * @syscap SystemCapability.FileManagement.PhotoAccessHelper.Core
+         * @atomicservice
+         * @since 12
+         */
+        DRIVER_LICENSE = 8,
+        /**
+         * DRIVING_LICENSE indicates that driving license photos can be recommended
+         *
+         * @syscap SystemCapability.FileManagement.PhotoAccessHelper.Core
+         * @atomicservice
+         * @since 12
+         */
+        DRIVING_LICENSE = 9
     }
     /**
      * Enumeration of delivery mode.
@@ -214,7 +288,15 @@ declare namespace photoAccessHelper {
          * @syscap SystemCapability.FileManagement.PhotoAccessHelper.Core
          * @since 11
          */
-        onDataPrepared(data: T): void;
+        /**
+         * Indicates required media asset data is prepared
+         *
+         * @param { T } data - the returned data of media asset
+         * @param { Map<string, string> } [map] - additional information for the data
+         * @syscap SystemCapability.FileManagement.PhotoAccessHelper.Core
+         * @since 12
+         */
+        onDataPrepared(data: T, map?: Map<string, string>): void;
     }
     /**
      * Media asset manager
@@ -257,6 +339,70 @@ declare namespace photoAccessHelper {
          * @since 11
          */
         static requestImageData(context: Context, asset: PhotoAsset, requestOptions: RequestOptions, dataHandler: MediaAssetDataHandler<ArrayBuffer>): Promise<string>;
+        /**
+         * Request moving photo
+         *
+         * @permission ohos.permission.READ_IMAGEVIDEO
+         * @param { Context } context - Hap context information
+         * @param { PhotoAsset } asset - the photo asset requested
+         * @param { RequestOptions } requestOptions - the request options
+         * @param { MediaAssetDataHandler<MovingPhoto> } dataHandler - data handler used to obtain moving photo when data is prepared
+         * @returns { Promise<string> } Returns request id
+         * @throws { BusinessError } 201 - Permission denied
+         * @throws { BusinessError } 401 - if parameter is invalid
+         * @throws { BusinessError } 14000011 - System inner fail
+         * @static
+         * @syscap SystemCapability.FileManagement.PhotoAccessHelper.Core
+         * @since 12
+         */
+        static requestMovingPhoto(context: Context, asset: PhotoAsset, requestOptions: RequestOptions, dataHandler: MediaAssetDataHandler<MovingPhoto>): Promise<string>;
+        /**
+         * Cancel request
+         *
+         * @permission ohos.permission.READ_IMAGEVIDEO
+         * @param { Context } context - Hap context information
+         * @param { string } requestId - the request id to be canceled
+         * @returns { Promise<void> } Returns void
+         * @throws { BusinessError } 201 - Permission denied
+         * @throws { BusinessError } 401 - if parameter is invalid
+         * @throws { BusinessError } 14000011 - System inner fail
+         * @static
+         * @syscap SystemCapability.FileManagement.PhotoAccessHelper.Core
+         * @since 12
+         */
+        static cancelRequest(context: Context, requestId: string): Promise<void>;
+        /**
+         * Request video file
+         *
+         * @permission ohos.permission.READ_IMAGEVIDEO
+         * @param { Context } context - Hap context information
+         * @param { PhotoAsset } asset - the photo asset requested
+         * @param { RequestOptions } requestOptions - the request options
+         * @param { string } fileUri - the destination file uri to save the video data
+         * @param { MediaAssetDataHandler<boolean> } dataHandler - data handler used to notify the client that data has been written to the application sandbox
+         * @returns { Promise<string> } Returns request id
+         * @throws { BusinessError } 201 - Permission denied
+         * @throws { BusinessError } 401 - if parameter is invalid
+         * @throws { BusinessError } 14000011 - System inner fail
+         * @static
+         * @syscap SystemCapability.FileManagement.PhotoAccessHelper.Core
+         * @since 12
+         */
+        static requestVideoFile(context: Context, asset: PhotoAsset, requestOptions: RequestOptions, fileUri: string, dataHandler: MediaAssetDataHandler<boolean>): Promise<string>;
+        /**
+         * Load moving photo
+         *
+         * @param { Context } context - Hap context information
+         * @param { string } imageFileUri - image file uri of the moving photo to be loaded
+         * @param { string } videoFileUri - video file uri of the moving photo to be loaded
+         * @returns { Promise<MovingPhoto> } Returns moving photo
+         * @throws { BusinessError } 401 - Invalid parameter
+         * @throws { BusinessError } 14000011 - Internal system error
+         * @static
+         * @syscap SystemCapability.FileManagement.PhotoAccessHelper.Core
+         * @since 12
+         */
+        static loadMovingPhoto(context: Context, imageFileUri: string, videoFileUri: string): Promise<MovingPhoto>;
     }
     /**
      * Indicates the type of photo asset member.
@@ -271,6 +417,14 @@ declare namespace photoAccessHelper {
      * @interface PhotoAsset
      * @syscap SystemCapability.FileManagement.PhotoAccessHelper.Core
      * @since 10
+     */
+    /**
+     * Defines the photo asset
+     *
+     * @interface PhotoAsset
+     * @syscap SystemCapability.FileManagement.PhotoAccessHelper.Core
+     * @atomicservice
+     * @since 11
      */
     interface PhotoAsset {
         /**
@@ -572,7 +726,28 @@ declare namespace photoAccessHelper {
          * @syscap SystemCapability.FileManagement.PhotoAccessHelper.Core
          * @since 10
          */
-        TITLE = 'title'
+        TITLE = 'title',
+        /**
+         * Creation time of the asset in milliseconds, read only
+         *
+         * @syscap SystemCapability.FileManagement.PhotoAccessHelper.Core
+         * @since 12
+         */
+        DATE_ADDED_MS = 'date_added_ms',
+        /**
+         * Modified time of the asset in milliseconds, read only
+         *
+         * @syscap SystemCapability.FileManagement.PhotoAccessHelper.Core
+         * @since 12
+         */
+        DATE_MODIFIED_MS = 'date_modified_ms',
+        /**
+         * Photo subtype of the asset, read only
+         *
+         * @syscap SystemCapability.FileManagement.PhotoAccessHelper.Core
+         * @since 12
+         */
+        PHOTO_SUBTYPE = 'subtype'
     }
     /**
      * Enumeration of photo album members.
@@ -654,6 +829,15 @@ declare namespace photoAccessHelper {
          * @since 11
          */
         title?: string;
+        /**
+         * Specify subtype of the asset to create
+         *
+         * @type { ?PhotoSubtype }
+         * @syscap SystemCapability.FileManagement.PhotoAccessHelper.Core
+         * @atomicservice
+         * @since 12
+         */
+        subtype?: PhotoSubtype;
     }
     /**
      * The fetch result of assets or albums
@@ -1523,22 +1707,24 @@ declare namespace photoAccessHelper {
          * @atomicservice
          * @since 11
          */
-        IMAGE_VIDEO_TYPE = '*/*'
+        IMAGE_VIDEO_TYPE = '*/*',
+        /**
+         * MOVING_PHOTO_IMAGE_TYPE indicates that the selected media resources are moving photos.
+         *
+         * @syscap SystemCapability.FileManagement.PhotoAccessHelper.Core
+         * @atomicservice
+         * @since 12
+         */
+        MOVING_PHOTO_IMAGE_TYPE = 'image/movingPhoto'
     }
     /**
-     * PhotoSelectOptions Object
-     *
-     * @syscap SystemCapability.FileManagement.PhotoAccessHelper.Core
-     * @since 10
-     */
-    /**
-     * PhotoSelectOptions Object
+     * Class BaseSelectOptions, which is extracted from class PhotoSelectOptions
      *
      * @syscap SystemCapability.FileManagement.PhotoAccessHelper.Core
      * @atomicservice
-     * @since 11
+     * @since 12
      */
-    class PhotoSelectOptions {
+    class BaseSelectOptions {
         /**
          * The Type of the file in the picker window.
          *
@@ -1553,6 +1739,15 @@ declare namespace photoAccessHelper {
          * @syscap SystemCapability.FileManagement.PhotoAccessHelper.Core
          * @atomicservice
          * @since 11
+         */
+        /**
+         * The Type of the file in the picker window.
+         * Move from class PhotoSelectOptions to it's base class BaseSelectOptions
+         *
+         * @type { ?PhotoViewMIMETypes }
+         * @syscap SystemCapability.FileManagement.PhotoAccessHelper.Core
+         * @atomicservice
+         * @since 12
          */
         MIMEType?: PhotoViewMIMETypes;
         /**
@@ -1570,6 +1765,15 @@ declare namespace photoAccessHelper {
          * @atomicservice
          * @since 11
          */
+        /**
+         * Maximum number of images for a single selection.
+         * Move from class PhotoSelectOptions to it's base class BaseSelectOptions
+         *
+         * @type { ?number }
+         * @syscap SystemCapability.FileManagement.PhotoAccessHelper.Core
+         * @atomicservice
+         * @since 12
+         */
         maxSelectNumber?: number;
         /**
          * Support search.
@@ -1578,6 +1782,15 @@ declare namespace photoAccessHelper {
          * @syscap SystemCapability.FileManagement.PhotoAccessHelper.Core
          * @atomicservice
          * @since 11
+         */
+        /**
+         * Support search.
+         * Move from class PhotoSelectOptions to it's base class BaseSelectOptions
+         *
+         * @type { ?boolean }
+         * @syscap SystemCapability.FileManagement.PhotoAccessHelper.Core
+         * @atomicservice
+         * @since 12
          */
         isSearchSupported?: boolean;
         /**
@@ -1588,16 +1801,16 @@ declare namespace photoAccessHelper {
          * @atomicservice
          * @since 11
          */
-        isPhotoTakingSupported?: boolean;
         /**
-         * Support editing photos.
+         * Support taking photos.
+         * Move from class PhotoSelectOptions to it's base class BaseSelectOptions
          *
          * @type { ?boolean }
          * @syscap SystemCapability.FileManagement.PhotoAccessHelper.Core
          * @atomicservice
-         * @since 11
+         * @since 12
          */
-        isEditSupported?: boolean;
+        isPhotoTakingSupported?: boolean;
         /**
         * The recommendation options when use recommendation photo function.
         *
@@ -1606,6 +1819,15 @@ declare namespace photoAccessHelper {
         * @atomicservice
         * @since 11
         */
+        /**
+         * The recommendation options when use recommendation photo function.
+         * Move from class PhotoSelectOptions to it's base class BaseSelectOptions
+         *
+         * @type { ?RecommendationOptions }
+         * @syscap SystemCapability.FileManagement.PhotoAccessHelper.Core
+         * @atomicservice
+         * @since 12
+         */
         recommendationOptions?: RecommendationOptions;
         /**
          * The uri for the preselected files.
@@ -1615,7 +1837,48 @@ declare namespace photoAccessHelper {
          * @atomicservice
          * @since 11
          */
+        /**
+         * The uri for the preselected files.
+         * Move from class PhotoSelectOptions to it's base class BaseSelectOptions
+         *
+         * @type { ?Array<string> }
+         * @syscap SystemCapability.FileManagement.PhotoAccessHelper.Core
+         * @atomicservice
+         * @since 12
+         */
         preselectedUris?: Array<string>;
+    }
+    /**
+     * PhotoSelectOptions Object
+     *
+     * @syscap SystemCapability.FileManagement.PhotoAccessHelper.Core
+     * @since 10
+     */
+    /**
+     * PhotoSelectOptions Object
+     *
+     * @syscap SystemCapability.FileManagement.PhotoAccessHelper.Core
+     * @atomicservice
+     * @since 11
+     */
+    /**
+     * PhotoSelectOptions extends base class BaseSelectOptions
+     *
+     * @extends BaseSelectOptions
+     * @syscap SystemCapability.FileManagement.PhotoAccessHelper.Core
+     * @atomicservice
+     * @since 12
+     */
+    class PhotoSelectOptions extends BaseSelectOptions {
+        /**
+         * Support editing photos.
+         *
+         * @type { ?boolean }
+         * @syscap SystemCapability.FileManagement.PhotoAccessHelper.Core
+         * @atomicservice
+         * @since 11
+         */
+        isEditSupported?: boolean;
     }
     /**
      * Options for recommend photos
@@ -1634,6 +1897,34 @@ declare namespace photoAccessHelper {
          * @since 11
          */
         recommendationType?: RecommendationType;
+        /**
+         * The textContextInfo to recommend images.
+         *
+         * @type { ?TextContextInfo }
+         * @syscap SystemCapability.FileManagement.PhotoAccessHelper.Core
+         * @atomicservice
+         * @since 12
+         */
+        textContextInfo?: TextContextInfo;
+    }
+    /**
+     * Defines the text context info.
+     *
+     * @interface TextContextInfo
+     * @syscap SystemCapability.FileManagement.PhotoAccessHelper.Core
+     * @atomicservice
+     * @since 12
+     */
+    interface TextContextInfo {
+        /**
+         * The Simplified Chinese(UTF-8) text within 250 to recommend images.
+         *
+         * @type { ?string }
+         * @syscap SystemCapability.FileManagement.PhotoAccessHelper.Core
+         * @atomicservice
+         * @since 12
+         */
+        text?: string;
     }
     /**
      * PhotoSelectResult Object
@@ -1951,6 +2242,15 @@ declare namespace photoAccessHelper {
          * @since 11
          */
         addResource(type: ResourceType, data: ArrayBuffer): void;
+        /**
+         * Save the photo asset captured by camera.
+         *
+         * @throws { BusinessError } 14000011 - System inner fail
+         * @throws { BusinessError } 14000016 - Operation Not Support
+         * @syscap SystemCapability.FileManagement.PhotoAccessHelper.Core
+         * @since 12
+         */
+        saveCameraPhoto(): void;
     }
     /**
      * Defines the class of media album change request.
@@ -2012,6 +2312,66 @@ declare namespace photoAccessHelper {
          * @since 11
          */
         removeAssets(assets: Array<PhotoAsset>): void;
+    }
+    /**
+     * Defines the moving photo.
+     *
+     * @interface MovingPhoto
+     * @syscap SystemCapability.FileManagement.PhotoAccessHelper.Core
+     * @since 12
+     */
+    interface MovingPhoto {
+        /**
+         * Request the image and video content of the moving photo and write to destination uri.
+         *
+         * @permission ohos.permission.READ_IMAGEVIDEO
+         * @param { string } imageFileUri - Destination uri of the image content to be written
+         * @param { string } videoFileUri - Destination uri of the video content to be written
+         * @returns { Promise<void> } Returns void
+         * @throws { BusinessError } 201 - Permission denied
+         * @throws { BusinessError } 401 - if parameter is invalid
+         * @throws { BusinessError } 14000011 - System inner fail
+         * @syscap SystemCapability.FileManagement.PhotoAccessHelper.Core
+         * @since 12
+         */
+        requestContent(imageFileUri: string, videoFileUri: string): Promise<void>;
+        /**
+         * Request content of the moving photo for the given resource type and write to destination uri.
+         *
+         * @permission ohos.permission.READ_IMAGEVIDEO
+         * @param { ResourceType } resourceType - The resource type of the content to request
+         * @param { string } fileUri - Destination uri of the content to be written
+         * @returns { Promise<void> } Returns void
+         * @throws { BusinessError } 201 - Permission denied
+         * @throws { BusinessError } 401 - if parameter is invalid
+         * @throws { BusinessError } 14000011 - System inner fail
+         * @syscap SystemCapability.FileManagement.PhotoAccessHelper.Core
+         * @since 12
+         */
+        requestContent(resourceType: ResourceType, fileUri: string): Promise<void>;
+        /**
+         * Request content of the moving photo for the given resource type and return the array buffer.
+         *
+         * @permission ohos.permission.READ_IMAGEVIDEO
+         * @param { ResourceType } resourceType - The resource type of the content to request
+         * @returns { Promise<ArrayBuffer> } Returns array buffer of the content
+         * @throws { BusinessError } 201 - Permission denied
+         * @throws { BusinessError } 401 - if parameter is invalid
+         * @throws { BusinessError } 14000011 - System inner fail
+         * @syscap SystemCapability.FileManagement.PhotoAccessHelper.Core
+         * @since 12
+         */
+        requestContent(resourceType: ResourceType): Promise<ArrayBuffer>;
+        /**
+         * Get uri of the moving photo.
+         *
+         * @returns { string } Returns uri of the moving photo
+         * @throws { BusinessError } 401 - if parameter is invalid
+         * @throws { BusinessError } 14000011 - System inner fail
+         * @syscap SystemCapability.FileManagement.PhotoAccessHelper.Core
+         * @since 12
+         */
+        getUri(): string;
     }
 }
 export default photoAccessHelper;

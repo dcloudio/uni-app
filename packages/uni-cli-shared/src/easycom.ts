@@ -157,22 +157,13 @@ function initEasycom({
         if (path.isAbsolute(source) && source.startsWith(rootDir)) {
           source = '@/' + normalizePath(path.relative(rootDir, source))
         }
-        let imported = ''
         // 加密插件easycom类型导入
         if (source.includes('?uts-proxy')) {
           const moduleId = path.basename(source.split('?uts-proxy')[0])
           source = `uts.sdk.modules.${camelize(moduleId)}`
-          imported = genUTSComponentPublicInstanceImported(
-            rootDir,
-            `@/uni_modules/${moduleId}/components/${tagName}/${tagName}`
-          )
-        } else {
-          imported = genUTSComponentPublicInstanceImported(rootDir, source)
         }
-        addUTSEasyComAutoImports(source, [
-          imported,
-          genUTSComponentPublicInstanceIdent(tagName),
-        ])
+        const ident = genUTSComponentPublicInstanceIdent(tagName)
+        addUTSEasyComAutoImports(source, [ident, ident])
       })
     }
     extend(easycomsObj, autoEasyComObj)

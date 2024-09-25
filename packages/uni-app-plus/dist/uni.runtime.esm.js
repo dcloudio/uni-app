@@ -1711,17 +1711,17 @@ function getPageId() {
 }
 let channel;
 let globalEvent$1;
-const callbacks$3 = {};
+const callbacks$2 = {};
 function onPlusMessage$1(res) {
     const message = res.data && res.data.__message;
     if (!message || !message.__page) {
         return;
     }
     const pageId = message.__page;
-    const callback = callbacks$3[pageId];
+    const callback = callbacks$2[pageId];
     callback && callback(message);
     if (!message.keep) {
-        delete callbacks$3[pageId];
+        delete callbacks$2[pageId];
     }
 }
 function addEventListener(pageId, callback) {
@@ -1740,7 +1740,7 @@ function addEventListener(pageId, callback) {
         // @ts-expect-error
         window.__plusMessage = onPlusMessage$1;
     }
-    callbacks$3[pageId] = callback;
+    callbacks$2[pageId] = callback;
 }
 class Page {
     constructor(webview) {
@@ -2418,7 +2418,7 @@ function initLaunchOptions({ path, query, referrerInfo, }) {
         launcher: plus.runtime.launcher,
     });
     extend(enterOptions, launchOptions);
-    return extend({}, launchOptions);
+    return enterOptions;
 }
 function parseRedirectInfo() {
     const weexPlus = weex.requireModule('plus');
@@ -9931,6 +9931,11 @@ class TextMetrics {
         this.width = width;
     }
 }
+//#endregion
+const getTempPath = () => {
+    let _TEMP_PATH = TEMP_PATH;
+    return _TEMP_PATH;
+};
 class CanvasContext {
     constructor(id, pageId) {
         this.id = id;
@@ -10609,7 +10614,7 @@ const canvasToTempFilePath = defineAsyncApi(API_CANVAS_TO_TEMP_FILE_PATH, ({ x =
         reject();
         return;
     }
-    const dirname = `${TEMP_PATH}/canvas`;
+    let dirname = `${getTempPath()}/canvas`;
     operateCanvas(canvasId, pageId, 'toTempFilePath', {
         x,
         y,
@@ -14634,7 +14639,7 @@ const Recorder = {
         }
     },
 };
-const callbacks$2 = {
+const callbacks$1 = {
     pause: null,
     resume: null,
     start: null,
@@ -14645,29 +14650,29 @@ function onRecorderStateChange(res) {
     const state = res.state;
     delete res.state;
     delete res.errMsg;
-    if (state && isFunction(callbacks$2[state])) {
-        callbacks$2[state](res);
+    if (state && isFunction(callbacks$1[state])) {
+        callbacks$1[state](res);
     }
 }
 class RecorderManager {
     constructor() { }
     onError(callback) {
-        callbacks$2.error = callback;
+        callbacks$1.error = callback;
     }
     onFrameRecorded(callback) { }
     onInterruptionBegin(callback) { }
     onInterruptionEnd(callback) { }
     onPause(callback) {
-        callbacks$2.pause = callback;
+        callbacks$1.pause = callback;
     }
     onResume(callback) {
-        callbacks$2.resume = callback;
+        callbacks$1.resume = callback;
     }
     onStart(callback) {
-        callbacks$2.start = callback;
+        callbacks$1.start = callback;
     }
     onStop(callback) {
-        callbacks$2.stop = callback;
+        callbacks$1.stop = callback;
     }
     pause() {
         Recorder.pause();
@@ -15790,7 +15795,7 @@ const eventNames = [
     'error',
     'waiting',
 ];
-const callbacks$1 = {
+const callbacks = {
     canplay: [],
     play: [],
     pause: [],
@@ -15979,7 +15984,7 @@ function operateBackgroundAudio({ operationType, src, startTime, currentTime, })
     });
 }
 function onBackgroundAudioStateChange({ state, errMsg, errCode, dataUrl, }) {
-    callbacks$1[state].forEach((callback) => {
+    callbacks[state].forEach((callback) => {
         if (isFunction(callback)) {
             callback(state === 'error'
                 ? {
@@ -15994,7 +15999,7 @@ const onInitBackgroundAudioManager = /*#__PURE__*/ once(() => {
     eventNames.forEach((item) => {
         BackgroundAudioManager.prototype[`on${capitalize(item)}`] =
             function (callback) {
-                callbacks$1[item].push(callback);
+                callbacks[item].push(callback);
             };
     });
 });
@@ -16608,7 +16613,7 @@ const stopPullDownRefresh = defineAsyncApi(API_STOP_PULL_DOWN_REFRESH, (_args, {
 const loadFontFace = defineAsyncApi(API_LOAD_FONT_FACE, (options, { resolve, reject }) => {
     const pageId = getPageIdByVm(getCurrentPageVm());
     UniServiceJSBridge.invokeViewMethod(API_LOAD_FONT_FACE, options, pageId, (err) => {
-        if (err) {
+        if (typeof err === 'string') {
             reject(err);
         }
         else {
@@ -17398,29 +17403,46 @@ function normalizeLog(type, filename, args) {
 // 生成的 uts.js 需要同步到 vue2 src/platforms/app-plus/service/api/plugin
 let callbackId = 1;
 let proxy;
-const callbacks = {};
+const keepAliveCallbacks = {};
+function isUniElement(obj) {
+    return typeof obj.getNodeId === 'function' && obj.pageId;
+}
 function isComponentPublicInstance(instance) {
     return instance && instance.$ && instance.$.proxy === instance;
+}
+function parseElement(obj) {
+    if (isUniElement(obj)) {
+        return obj;
+    }
+    else if (isComponentPublicInstance(obj)) {
+        return obj.$el;
+    }
 }
 function toRaw(observed) {
     const raw = observed && observed.__v_raw;
     return raw ? toRaw(raw) : observed;
 }
-function normalizeArg(arg) {
+function normalizeArg(arg, callbacks, keepAlive) {
     arg = toRaw(arg);
     if (typeof arg === 'function') {
-        // 查找该函数是否已缓存
-        const oldId = Object.keys(callbacks).find((id) => callbacks[id] === arg);
-        const id = oldId ? parseInt(oldId) : callbackId++;
-        callbacks[id] = arg;
+        let id;
+        if (keepAlive) {
+            // 仅keepAlive时，需要查找缓存，非keepAlive时，直接创建，避免函数被复用时，回调函数被误删
+            const oldId = Object.keys(callbacks).find((id) => callbacks[id] === arg);
+            id = oldId ? parseInt(oldId) : callbackId++;
+            callbacks[id] = arg;
+        }
+        else {
+            id = callbackId++;
+            callbacks[id] = arg;
+        }
         return id;
     }
     else if (isPlainObject(arg)) {
-        if (isComponentPublicInstance(arg)) {
+        const el = parseElement(arg);
+        if (el) {
             let nodeId = '';
             let pageId = '';
-            // @ts-expect-error
-            const el = arg.$el;
             // 非 x 可能不存在 getNodeId 方法？
             if (el && el.getNodeId) {
                 pageId = el.pageId;
@@ -17429,9 +17451,18 @@ function normalizeArg(arg) {
             return { pageId, nodeId };
         }
         else {
+            // 必须复制，否则会污染原始对象，比如：
+            // const obj = {
+            //   a: 1,
+            //   b: () => {}
+            // }
+            // const newObj = normalizeArg(obj, {}, false)
+            // newObj.a = 2 // 这会污染原始对象 obj
+            const newArg = {};
             Object.keys(arg).forEach((name) => {
-                arg[name] = normalizeArg(arg[name]);
+                newArg[name] = normalizeArg(arg[name], callbacks, keepAlive);
             });
+            return newArg;
         }
     }
     return arg;
@@ -17496,19 +17527,13 @@ function invokePropGetter(args) {
     }
     return resolveSyncResult(args, getProxy().invokeSync(args, () => { }));
 }
-function initProxyFunction(type, async, { moduleName, moduleType, package: pkg, class: cls, name: methodName, method, companion, params: methodParams, return: returnOptions, errMsg, }, instanceId, proxy) {
-    const invokeCallback = ({ id, name, params, keepAlive, }) => {
-        const callback = callbacks[id];
-        if (callback) {
-            callback(...params);
-            if (!keepAlive) {
-                delete callbacks[id];
-            }
-        }
-        else {
-            console.error(`${pkg}${cls}.${methodName} ${name} is not found`);
-        }
-    };
+function initProxyFunction(type, async, { moduleName, moduleType, package: pkg, class: cls, name: methodName, method, companion, keepAlive, params: methodParams, return: returnOptions, errMsg, }, instanceId, proxy) {
+    if (!keepAlive) {
+        keepAlive =
+            methodName.indexOf('on') === 0 &&
+                methodParams.length === 1 &&
+                methodParams[0].type === 'UTSCallback';
+    }
     const baseArgs = instanceId
         ? {
             moduleName,
@@ -17517,6 +17542,7 @@ function initProxyFunction(type, async, { moduleName, moduleType, package: pkg, 
             type,
             name: methodName,
             method: methodParams,
+            keepAlive,
         }
         : {
             moduleName,
@@ -17527,13 +17553,29 @@ function initProxyFunction(type, async, { moduleName, moduleType, package: pkg, 
             type,
             companion,
             method: methodParams,
+            keepAlive,
         };
     return (...args) => {
         if (errMsg) {
             throw new Error(errMsg);
         }
+        // TODO 隐患：部分callback可能不会被删除，比如传入了success、fail、complete，但是仅触发了success、complete，那么fail就不会被删除
+        // 需要有个机制来知道整个函数已经结束了，需要清理所有相关callbacks
+        const callbacks = keepAlive ? keepAliveCallbacks : {};
+        const invokeCallback = ({ id, name, params }) => {
+            const callback = callbacks[id];
+            if (callback) {
+                callback(...params);
+                if (!keepAlive) {
+                    delete callbacks[id];
+                }
+            }
+            else {
+                console.error(`uts插件[${moduleName}] ${pkg}${cls}.${methodName.replace('ByJs', '')} ${name}回调函数已释放，不能再次执行，参考文档：https://doc.dcloud.net.cn/uni-app-x/plugin/uts-plugin.html#keepalive`);
+            }
+        };
         const invokeArgs = extend({}, baseArgs, {
-            params: args.map((arg) => normalizeArg(arg)),
+            params: args.map((arg) => normalizeArg(arg, callbacks, keepAlive)),
         });
         if (async) {
             return new Promise((resolve, reject) => {
@@ -17629,7 +17671,11 @@ function initUTSProxyClass(options) {
             // 初始化实例 ID
             if (!isProxyInterface) {
                 // 初始化未指定时，每次都要创建instanceId
-                this.__instanceId = initProxyFunction('constructor', false, extend({ name: 'constructor', params: constructorParams }, baseOptions), 0).apply(null, params);
+                this.__instanceId = initProxyFunction('constructor', false, extend({
+                    name: 'constructor',
+                    keepAlive: false,
+                    params: constructorParams,
+                }, baseOptions), 0).apply(null, params);
             }
             else if (typeof instanceId === 'number') {
                 this.__instanceId = instanceId;
@@ -17648,9 +17694,10 @@ function initUTSProxyClass(options) {
                         //实例方法
                         name = parseClassMethodName(name, methods);
                         if (hasOwn$1(methods, name)) {
-                            const { async, params, return: returnOptions } = methods[name];
+                            const { async, keepAlive, params, return: returnOptions, } = methods[name];
                             target[name] = initUTSInstanceMethod(!!async, extend({
                                 name,
+                                keepAlive,
                                 params,
                                 return: returnOptions,
                             }, baseOptions), instance.__instanceId, proxy);
@@ -17662,6 +17709,7 @@ function initUTSProxyClass(options) {
                                 moduleType,
                                 id: instance.__instanceId,
                                 type: 'getter',
+                                keepAlive: false,
                                 name: name,
                                 errMsg,
                             });
@@ -17677,6 +17725,7 @@ function initUTSProxyClass(options) {
                             if (param) {
                                 target[setter] = initProxyFunction('setter', false, extend({
                                     name: name,
+                                    keepAlive: false,
                                     params: [param],
                                 }, baseOptions), instance.__instanceId, proxy);
                             }
@@ -17697,11 +17746,12 @@ function initUTSProxyClass(options) {
             name = parseClassMethodName(name, staticMethods);
             if (hasOwn$1(staticMethods, name)) {
                 if (!staticMethodCache[name]) {
-                    const { async, params, return: returnOptions } = staticMethods[name];
+                    const { async, keepAlive, params, return: returnOptions, } = staticMethods[name];
                     // 静态方法
                     staticMethodCache[name] = initUTSStaticMethod(!!async, extend({
                         name,
                         companion: true,
+                        keepAlive,
                         params,
                         return: returnOptions,
                     }, baseOptions));
@@ -17726,6 +17776,7 @@ function initUTSProxyClass(options) {
                     if (param) {
                         staticPropSetterCache[setter] = initProxyFunction('setter', false, extend({
                             name: name,
+                            keepAlive: false,
                             params: [param],
                         }, baseOptions), 0);
                     }

@@ -66,7 +66,7 @@ open class UniAppConfig : AppConfig {
     constructor(){}
 }
 fun definePageRoutes() {
-    __uniRoutes.push(PageRoute(path = "pages/index/index", component = GenPagesIndexIndexClass, meta = PageMeta(isQuit = true), style = utsMapOf()));
+    __uniRoutes.push(UniPageRoute(path = "pages/index/index", component = GenPagesIndexIndexClass, meta = UniPageMeta(isQuit = true), style = utsMapOf()));
 }
 val __uniTabBar: Map<String, Any?>? = null;
 val __uniLaunchPage: Map<String, Any?> = utsMapOf("url" to "pages/index/index", "style" to utsMapOf<String, Any?>());

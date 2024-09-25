@@ -28180,7 +28180,7 @@ function tryFile(fileName, onlyRecordFailures, state) {
 }
 function tryFileLookup(fileName, onlyRecordFailures, state) {
   var _a, _b, _c;
-  if ((_a = globalThis.__utsHacker__) == null ? void 0 : _a.tryFileLookup) {
+  if (state && !state.isConfigLookup && ((_a = globalThis.__utsHacker__) == null ? void 0 : _a.tryFileLookup)) {
     const result = (_b = globalThis.__utsHacker__) == null ? void 0 : _b.tryFileLookup(fileName);
     if (result) {
       return result;

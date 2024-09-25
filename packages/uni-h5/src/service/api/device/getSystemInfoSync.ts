@@ -12,7 +12,7 @@ let _initBrowserInfo = true
 
 function initBrowserInfo() {
   if (__NODE_JS__) {
-    //TODO 临时搞一下配合 uniCloud 测试
+    //TODO 配合 uniCloud 测试
     return (browserInfo = {} as BrowserInfo)
   }
   if (!_initBrowserInfo) return

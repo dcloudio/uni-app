@@ -13,6 +13,10 @@
  * limitations under the License.
  */
 /**
+ * @file
+ * @kit LocalizationKit
+ */
+/**
  * Contains resource descriptor information.
  *
  * @interface Resource

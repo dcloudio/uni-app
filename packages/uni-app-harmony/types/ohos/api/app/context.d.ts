@@ -12,6 +12,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+/**
+ * @file
+ * @kit AbilityKit
+ */
 import { AsyncCallback } from '../@ohos.base';
 import { ApplicationInfo } from '../bundle/applicationInfo';
 import { ProcessInfo } from './processInfo';

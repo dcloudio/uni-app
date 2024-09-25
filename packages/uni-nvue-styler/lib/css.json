@@ -2895,7 +2895,7 @@
       "restrictions": [
         "gradient"
       ],
-      "syntax": "<bg-image>#",
+      "syntax": "none | <bg-image>#",
       "values": [
         {
           "name": "linear-gradient",
@@ -2910,6 +2910,27 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
+        },
+        {
+          "name": "none",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "4.27"
+              },
+              "ios": {
+                "osVer": "12.0",
+                "uniVer": "√",
+                "unixVer": "4.27"
               }
             },
             "web": {

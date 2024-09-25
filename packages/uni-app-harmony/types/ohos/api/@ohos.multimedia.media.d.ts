@@ -79,6 +79,14 @@ declare namespace media {
      * @syscap SystemCapability.Multimedia.Media.AVRecorder
      * @since 9
      */
+    /**
+     * Creates an AVRecorder instance.
+     * @returns { Promise<AVRecorder> } A Promise instance used to return AVRecorder instance if the operation is successful; returns null otherwise.
+     * @throws { BusinessError } 5400101 - No memory. Return by promise.
+     * @syscap SystemCapability.Multimedia.Media.AVRecorder
+     * @atomicservice
+     * @since 12
+     */
     function createAVRecorder(): Promise<AVRecorder>;
     /**
      * Creates an AudioPlayer instance.
@@ -98,6 +106,18 @@ declare namespace media {
      * @useinstead ohos.multimedia.media/media#createAVRecorder
      */
     function createAudioRecorder(): AudioRecorder;
+    /**
+     * Create MediaSource from url.
+     * @param { string } url : The location for the media source.
+     * @param { Record<string, string> } headers : Headers attached to network request while player request data.
+     * @returns { MediaSource } MediaSource instance if the operation is successful; returns null otherwise.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
+     * <br>2. Incorrect parameter types. 3.Parameter verification failed.
+     * @throws { BusinessError } 5400101 - No memory.
+     * @syscap SystemCapability.Multimedia.Media.Core
+     * @since 12
+     */
+    function createMediaSourceWithUrl(url: string, headers?: Record<string, string>): MediaSource;
     /**
      * Creates an VideoPlayer instance.
      * @param { AsyncCallback<VideoPlayer> } callback - used to return AudioPlayer instance if the operation is successful; returns null otherwise.
@@ -138,6 +158,15 @@ declare namespace media {
      * @since 10
      */
     function createSoundPool(maxStreams: number, audioRenderInfo: audio.AudioRendererInfo): Promise<SoundPool>;
+    /**
+     * Creates an AVScreenCaptureRecorder instance.
+     * @returns { Promise<AVScreenCaptureRecorder> } A Promise instance used to return AVScreenCaptureRecorder instance if the operation is successful;
+     * returns null otherwise.
+     * @throws { BusinessError } 5400101 - No memory. Return by promise.
+     * @syscap SystemCapability.Multimedia.Media.AVScreenCapture
+     * @since 12
+     */
+    function createAVScreenCaptureRecorder(): Promise<AVScreenCaptureRecorder>;
     /**
      * Manages and plays sound. Before calling an SoundPool method, you must use createSoundPool()
      * to create an SoundPool instance.
@@ -212,6 +241,24 @@ declare namespace media {
      * @since 11
      */
     function createAVMetadataExtractor(callback: AsyncCallback<AVMetadataExtractor>): void;
+    /**
+     * Creates an AVImageGenerator instance.
+     * @returns { Promise<AVImageGenerator> } A Promise instance used to return AVImageGenerator instance
+     * if the operation is successful; returns null otherwise.
+     * @throws { BusinessError } 5400101 - No memory. Returned by promise.
+     * @syscap SystemCapability.Multimedia.Media.AVImageGenerator
+     * @since 12
+     */
+    function createAVImageGenerator(): Promise<AVImageGenerator>;
+    /**
+     * Creates an AVImageGenerator instance.
+     * @param { AsyncCallback<AVImageGenerator> } callback - Callback used to return AVImageGenerator instance
+     * if the operation is successful; returns null otherwise.
+     * @throws { BusinessError } 5400101 - No memory. Returned by callback.
+     * @syscap SystemCapability.Multimedia.Media.AVImageGenerator
+     * @since 12
+     */
+    function createAVImageGenerator(callback: AsyncCallback<AVImageGenerator>): void;
     /**
      * Fetch media meta data or audio art picture from source. Before calling an AVMetadataExtractor method,
      * you must use createAVMetadataExtractor() to create an AVMetadataExtractor instance.
@@ -302,6 +349,13 @@ declare namespace media {
          * @syscap SystemCapability.Multimedia.Media.AVMetadataExtractor
          * @since 11
          */
+        /**
+         * The metadata to retrieve the information about the album title
+         * of the media source. This field is readonly in current version.
+         * @type { ?string }
+         * @syscap SystemCapability.Multimedia.Media.AVMetadataExtractor
+         * @since 12
+         */
         album?: string;
         /**
          * The metadata to retrieve the information about the performer or
@@ -309,6 +363,13 @@ declare namespace media {
          * @type { ?string }
          * @syscap SystemCapability.Multimedia.Media.AVMetadataExtractor
          * @since 11
+         */
+        /**
+         * The metadata to retrieve the information about the performer or
+         * artist associated with the media source. This field is readonly in current version.
+         * @type { ?string }
+         * @syscap SystemCapability.Multimedia.Media.AVMetadataExtractor
+         * @since 12
          */
         albumArtist?: string;
         /**
@@ -318,6 +379,13 @@ declare namespace media {
          * @syscap SystemCapability.Multimedia.Media.AVMetadataExtractor
          * @since 11
          */
+        /**
+         * The metadata to retrieve the information about the artist of
+         * the media source. This field is readonly in current version.
+         * @type { ?string }
+         * @syscap SystemCapability.Multimedia.Media.AVMetadataExtractor
+         * @since 12
+         */
         artist?: string;
         /**
          * The metadata to retrieve the information about the author of
@@ -325,6 +393,13 @@ declare namespace media {
          * @type { ?string }
          * @syscap SystemCapability.Multimedia.Media.AVMetadataExtractor
          * @since 11
+         */
+        /**
+         * The metadata to retrieve the information about the author of
+         * the media source. This field is readonly in current version.
+         * @type { ?string }
+         * @syscap SystemCapability.Multimedia.Media.AVMetadataExtractor
+         * @since 12
          */
         author?: string;
         /**
@@ -334,6 +409,13 @@ declare namespace media {
          * @syscap SystemCapability.Multimedia.Media.AVMetadataExtractor
          * @since 11
          */
+        /**
+         * The metadata to retrieve the information about the created time of
+         * the media source. This field is readonly in current version.
+         * @type { ?string }
+         * @syscap SystemCapability.Multimedia.Media.AVMetadataExtractor
+         * @since 12
+         */
         dateTime?: string;
         /**
          * The metadata to retrieve the information about the created or modified time
@@ -341,6 +423,13 @@ declare namespace media {
          * @type { ?string }
          * @syscap SystemCapability.Multimedia.Media.AVMetadataExtractor
          * @since 11
+         */
+        /**
+         * The metadata to retrieve the information about the created or modified time
+         * with the specific date format of the media source. This field is readonly in current version.
+         * @type { ?string }
+         * @syscap SystemCapability.Multimedia.Media.AVMetadataExtractor
+         * @since 12
          */
         dateTimeFormat?: string;
         /**
@@ -350,12 +439,25 @@ declare namespace media {
          * @syscap SystemCapability.Multimedia.Media.AVMetadataExtractor
          * @since 11
          */
+        /**
+         * The metadata to retrieve the information about the composer of
+         * the media source. This field is readonly in current version.
+         * @type { ?string }
+         * @syscap SystemCapability.Multimedia.Media.AVMetadataExtractor
+         * @since 12
+         */
         composer?: string;
         /**
          * The metadata to retrieve the playback duration of the media source.
          * @type { ?string }
          * @syscap SystemCapability.Multimedia.Media.AVMetadataExtractor
          * @since 11
+         */
+        /**
+         * The metadata to retrieve the playback duration of the media source. This field is readonly in current version.
+         * @type { ?string }
+         * @syscap SystemCapability.Multimedia.Media.AVMetadataExtractor
+         * @since 12
          */
         duration?: string;
         /**
@@ -372,12 +474,24 @@ declare namespace media {
          * @syscap SystemCapability.Multimedia.Media.AVMetadataExtractor
          * @since 11
          */
+        /**
+         * If this value exists the media contains audio content. This field is readonly in current version.
+         * @type { ?string }
+         * @syscap SystemCapability.Multimedia.Media.AVMetadataExtractor
+         * @since 12
+         */
         hasAudio?: string;
         /**
          * If this value exists the media contains video content.
          * @type { ?string }
          * @syscap SystemCapability.Multimedia.Media.AVMetadataExtractor
          * @since 11
+         */
+        /**
+         * If this value exists the media contains video content. This field is readonly in current version.
+         * @type { ?string }
+         * @syscap SystemCapability.Multimedia.Media.AVMetadataExtractor
+         * @since 12
          */
         hasVideo?: string;
         /**
@@ -387,6 +501,13 @@ declare namespace media {
          * @syscap SystemCapability.Multimedia.Media.AVMetadataExtractor
          * @since 11
          */
+        /**
+         * The metadata to retrieve the mime type of the media source. Some
+         * example mime types include: "video/mp4", "audio/mp4", "audio/amr-wb". This field is readonly in current version.
+         * @type { ?string }
+         * @syscap SystemCapability.Multimedia.Media.AVMetadataExtractor
+         * @since 12
+         */
         mimeType?: string;
         /**
          * The metadata to retrieve the number of tracks, such as audio, video,
@@ -395,12 +516,25 @@ declare namespace media {
          * @syscap SystemCapability.Multimedia.Media.AVMetadataExtractor
          * @since 11
          */
+        /**
+         * The metadata to retrieve the number of tracks, such as audio, video,
+         * text, in the media source, such as a mp4 or 3gpp file. This field is readonly in current version.
+         * @type { ?string }
+         * @syscap SystemCapability.Multimedia.Media.AVMetadataExtractor
+         * @since 12
+         */
         trackCount?: string;
         /**
          * It is the audio sample rate, if available.
          * @type { ?string }
          * @syscap SystemCapability.Multimedia.Media.AVMetadataExtractor
          * @since 11
+         */
+        /**
+         * It is the audio sample rate, if available. This field is readonly in current version.
+         * @type { ?string }
+         * @syscap SystemCapability.Multimedia.Media.AVMetadataExtractor
+         * @since 12
          */
         sampleRate?: string;
         /**
@@ -409,6 +543,12 @@ declare namespace media {
          * @syscap SystemCapability.Multimedia.Media.AVMetadataExtractor
          * @since 11
          */
+        /**
+         * The metadata to retrieve the media source title. This field is readonly in current version.
+         * @type { ?string }
+         * @syscap SystemCapability.Multimedia.Media.AVMetadataExtractor
+         * @since 12
+         */
         title?: string;
         /**
          * If the media contains video, this key retrieves its height.
@@ -416,12 +556,24 @@ declare namespace media {
          * @syscap SystemCapability.Multimedia.Media.AVMetadataExtractor
          * @since 11
          */
+        /**
+         * If the media contains video, this key retrieves its height. This field is readonly in current version.
+         * @type { ?string }
+         * @syscap SystemCapability.Multimedia.Media.AVMetadataExtractor
+         * @since 12
+         */
         videoHeight?: string;
         /**
          * If the media contains video, this key retrieves its width.
          * @type { ?string }
          * @syscap SystemCapability.Multimedia.Media.AVMetadataExtractor
          * @since 11
+         */
+        /**
+         * If the media contains video, this key retrieves its width. This field is readonly in current version.
+         * @type { ?string }
+         * @syscap SystemCapability.Multimedia.Media.AVMetadataExtractor
+         * @since 12
          */
         videoWidth?: string;
         /**
@@ -432,6 +584,164 @@ declare namespace media {
          * @since 11
          */
         videoOrientation?: string;
+        /**
+        * This value exists if the video is HDR video.
+        * @type { ?HdrType }
+        * @readonly
+        * @syscap SystemCapability.Multimedia.Media.AVMetadataExtractor
+        * @since 12
+        */
+        hdrType?: HdrType;
+        /**
+         * The geographical location info of the video.
+         * @type { ?Location }
+         * @syscap SystemCapability.Multimedia.Media.AVMetadataExtractor
+         * @since 12
+         */
+        location?: Location;
+        /**
+         * Custom parameter key-value map read from moov.meta.list.
+         * @type { ?Record<string, string> }
+         * @syscap SystemCapability.Multimedia.Media.AVMetadataExtractor
+         * @since 12
+         */
+        customInfo?: Record<string, string>;
+    }
+    /**
+     * Enumerates options about the HDR Type of the video.
+     * @enum { number }
+     * @syscap SystemCapability.Multimedia.Media.Core
+     * @since 12
+     */
+    enum HdrType {
+        /**
+         * This option is used to mark none HDR type.
+         * @syscap SystemCapability.Multimedia.Media.Core
+         * @since 12
+         */
+        AV_HDR_TYPE_NONE = 0,
+        /**
+         * This option is used to mark HDR Vivid type.
+         * @syscap SystemCapability.Multimedia.Media.Core
+         * @since 12
+         */
+        AV_HDR_TYPE_VIVID = 1
+    }
+    /**
+     * Generate an image from a video resource with the specific time. Before calling an AVImageGenerator method,
+     * you must use createAVImageGenerator() to create an AVImageGenerator instance.
+     * @typedef AVImageGenerator
+     * @syscap SystemCapability.Multimedia.Media.AVImageGenerator
+     * @since 12
+     */
+    interface AVImageGenerator {
+        /**
+         * Media file descriptor.
+         * @type { ?AVFileDescriptor }
+         * @syscap SystemCapability.Multimedia.Media.AVImageGenerator
+         * @since 12
+         */
+        fdSrc?: AVFileDescriptor;
+        /**
+         * It will fetch a picture at @timeUs from the given video resource.
+         * @param { number } timeUs - The time expected to fetch picture from the video resource.
+         * The unit is microsecond(us).
+         * @param { AVImageQueryOptions } options - The time options about the relationship
+         * between the given timeUs and a key frame, see @AVImageQueryOptions .
+         * @param { PixelMapParams } param - The output pixel map format params, see @PixelMapParams .
+         * @param { AsyncCallback<image.PixelMap> } callback - A callback instance used
+         * to return when fetchFrameByTime completed.
+         * @throws { BusinessError } 5400102 - Operation not allowed. Returned by callback.
+         * @throws { BusinessError } 5400106 - Unsupported format. Returned by callback.
+         * @syscap SystemCapability.Multimedia.Media.AVImageGenerator
+         * @since 12
+         */
+        fetchFrameByTime(timeUs: number, options: AVImageQueryOptions, param: PixelMapParams, callback: AsyncCallback<image.PixelMap>): void;
+        /**
+         * It will decode the given video resource. Then fetch a picture
+         * at @timeUs according the given @options and @param .
+         * @param { number } timeUs - The time expected to fetch picture from the video resource.
+         * The unit is microsecond(us).
+         * @param { AVImageQueryOptions } options - The time options about the relationship
+         * between the given timeUs and a key frame, see @AVImageQueryOptions .
+         * @param { PixelMapParams } param - The output pixel map format params, see @PixelMapParams .
+         * @returns { Promise<image.PixelMap> } A Promise instance used to return the pixel map
+         * when fetchFrameByTime completed.
+         * @throws { BusinessError } 5400102 - Operation not allowed. Returned by promise.
+         * @throws { BusinessError } 5400106 - Unsupported format. Returned by promise.
+         * @syscap SystemCapability.Multimedia.Media.AVImageGenerator
+         * @since 12
+         */
+        fetchFrameByTime(timeUs: number, options: AVImageQueryOptions, param: PixelMapParams): Promise<image.PixelMap>;
+        /**
+         * Release resources used for AVImageGenerator.
+         * @param { AsyncCallback<void> } callback - A callback instance used to return when release completed.
+         * @throws { BusinessError } 5400102 - Operation not allowed. Returned by callback.
+         * @syscap SystemCapability.Multimedia.Media.AVImageGenerator
+         * @since 12
+         */
+        release(callback: AsyncCallback<void>): void;
+        /**
+         * Release resources used for AVImageGenerator.
+         * @returns { Promise<void> } A Promise instance used to return when release completed.
+         * @throws { BusinessError } 5400102 - Operation not allowed. Returned by promise.
+         * @syscap SystemCapability.Multimedia.Media.AVImageGenerator
+         * @since 12
+         */
+        release(): Promise<void>;
+    }
+    /**
+     * Enumerates options about the relationship between the given timeUs and a key frame.
+     * @enum { number }
+     * @syscap SystemCapability.Multimedia.Media.AVImageGenerator
+     * @since 12
+     */
+    enum AVImageQueryOptions {
+        /**
+         * This option is used to fetch a key frame from the given media
+         * resource that is located right after or at the given time.
+         * @syscap SystemCapability.Multimedia.Media.AVImageGenerator
+         * @since 12
+         */
+        AV_IMAGE_QUERY_NEXT_SYNC,
+        /**
+         * This option is used to fetch a key frame from the given media
+         * resource that is located right before or at the given time.
+         * @syscap SystemCapability.Multimedia.Media.AVImageGenerator
+         * @since 12
+         */
+        AV_IMAGE_QUERY_PREVIOUS_SYNC,
+        /**
+         * This option is used to fetch a key frame from the given media
+         * resource that is located closest to or at the given time.
+         * @syscap SystemCapability.Multimedia.Media.AVImageGenerator
+         * @since 12
+         */
+        AV_IMAGE_QUERY_CLOSEST_SYNC
+    }
+    /**
+     * Expected pixel map format for the fetched image from video resource.
+     * @typedef PixelMapParams
+     * @syscap SystemCapability.Multimedia.Media.AVImageGenerator
+     * @since 12
+     */
+    interface PixelMapParams {
+        /**
+         * Expected pixelmap's width, -1 means to keep consistent with the
+         * original dimensions of the given video resource.
+         * @type { ?number }
+         * @syscap SystemCapability.Multimedia.Media.AVImageGenerator
+         * @since 12
+         */
+        width?: number;
+        /**
+         * Expected pixelmap's width, -1 means to keep consistent with the
+         * original dimensions of the given video resource.
+         * @type { ?number }
+         * @syscap SystemCapability.Multimedia.Media.AVImageGenerator
+         * @since 12
+         */
+        height?: number;
     }
     /**
       * Enumerates ErrorCode types, return in BusinessError::code.
@@ -827,6 +1137,13 @@ declare namespace media {
          * @syscap SystemCapability.Multimedia.Media.AVPlayer
          * @since 9
          */
+        /**
+         * Sets the volume.
+         * @param { number } volume - Relative volume. The value ranges from 0.00 to 1.00. The value 1 indicates the maximum volume (100%).
+         * @syscap SystemCapability.Multimedia.Media.AVPlayer
+         * @atomicservice
+         * @since 12
+         */
         setVolume(volume: number): void;
         /**
          * Get all track infos in MediaDescription, should be called after data loaded callback.
@@ -860,6 +1177,19 @@ declare namespace media {
          * @since 11
          */
         getTrackDescription(): Promise<Array<MediaDescription>>;
+        /**
+         * Set MediaSource to AVPlayer, this interface is exclusive with fd/url/dataSrc assign.
+         * @param { MediaSource } src : MediaSource instance to be set to the avplayer instance.
+         * @param { PlaybackStrategy } strategy : Play strategy of the media source.
+         * @returns { Promise<void> } A Promise instance used to return when setMediaSource completed.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
+         * <br>2. Incorrect parameter types. 3.Parameter verification failed.
+         * @throws { BusinessError } 5400102 - Operation not allowed. Return by promise.
+         * @syscap SystemCapability.Multimedia.Media.AVPlayer
+         * @atomicservice
+         * @since 12
+         */
+        setMediaSource(src: MediaSource, strategy?: PlaybackStrategy): Promise<void>;
         /**
          * Media URI. Mainstream media formats are supported.
          * Network:http://xxx
@@ -903,6 +1233,12 @@ declare namespace media {
          * @syscap SystemCapability.Multimedia.Media.AVPlayer
          * @since 9
          */
+        /**
+         * Whether to loop media playback.
+         * @syscap SystemCapability.Multimedia.Media.AVPlayer
+         * @atomicservice
+         * @since 12
+         */
         loop: boolean;
         /**
          * Describes audio interrupt mode, refer to {@link #audio.InterruptMode}. If it is not
@@ -910,6 +1246,14 @@ declare namespace media {
          * first time in order for the interrupt mode to become effective thereafter.
          * @syscap SystemCapability.Multimedia.Media.AVPlayer
          * @since 9
+         */
+        /**
+         * Describes audio interrupt mode, refer to {@link #audio.InterruptMode}. If it is not
+         * set, the default mode will be used. Set it before calling the {@link #play()} in the
+         * first time in order for the interrupt mode to become effective thereafter.
+         * @syscap SystemCapability.Multimedia.Media.AVPlayer
+         * @atomicservice
+         * @since 12
          */
         audioInterruptMode?: audio.InterruptMode;
         /**
@@ -919,17 +1263,37 @@ declare namespace media {
          * @syscap SystemCapability.Multimedia.Media.AVPlayer
          * @since 10
          */
+        /**
+         * Describes audio renderer info, refer to {@link #audio.AudioRendererInfo}. Set it before
+         * calling the {@link #prepare()} in the first time in order for the audio renderer info to
+         * become effective thereafter.
+         * @syscap SystemCapability.Multimedia.Media.AVPlayer
+         * @atomicservice
+         * @since 12
+         */
         audioRendererInfo?: audio.AudioRendererInfo;
         /**
          * Obtains the current audio effect mode, refer to {@link #audio.AudioEffectMode}.
          * @syscap SystemCapability.Multimedia.Media.AVPlayer
          * @since 10
          */
+        /**
+         * Obtains the current audio effect mode, refer to {@link #audio.AudioEffectMode}.
+         * @syscap SystemCapability.Multimedia.Media.AVPlayer
+         * @atomicservice
+         * @since 12
+         */
         audioEffectMode?: audio.AudioEffectMode;
         /**
          * Current playback position.
          * @syscap SystemCapability.Multimedia.Media.AVPlayer
          * @since 9
+         */
+        /**
+         * Current playback position.
+         * @syscap SystemCapability.Multimedia.Media.AVPlayer
+         * @atomicservice
+         * @since 12
          */
         readonly currentTime: number;
         /**
@@ -949,6 +1313,12 @@ declare namespace media {
          * @syscap SystemCapability.Multimedia.Media.AVPlayer
          * @since 9
          */
+        /**
+         * Playback state.
+         * @syscap SystemCapability.Multimedia.Media.AVPlayer
+         * @atomicservice
+         * @since 12
+         */
         readonly state: AVPlayerState;
         /**
          * Video player will use this id get a surface instance.
@@ -967,11 +1337,23 @@ declare namespace media {
          * @syscap SystemCapability.Multimedia.Media.AVPlayer
          * @since 9
          */
+        /**
+         * Video width, valid after prepared.
+         * @syscap SystemCapability.Multimedia.Media.AVPlayer
+         * @atomicservice
+         * @since 12
+         */
         readonly width: number;
         /**
          * Video height, valid after prepared.
          * @syscap SystemCapability.Multimedia.Media.AVPlayer
          * @since 9
+         */
+        /**
+         * Video height, valid after prepared.
+         * @syscap SystemCapability.Multimedia.Media.AVPlayer
+         * @atomicservice
+         * @since 12
          */
         readonly height: number;
         /**
@@ -980,12 +1362,26 @@ declare namespace media {
          * @syscap SystemCapability.Multimedia.Media.AVPlayer
          * @since 9
          */
+        /**
+         * Video scale type. By default, the {@link #VIDEO_SCALE_TYPE_FIT} will be used, for more
+         * information, refer to {@link #VideoScaleType} .
+         * @syscap SystemCapability.Multimedia.Media.AVPlayer
+         * @atomicservice
+         * @since 12
+         */
         videoScaleType?: VideoScaleType;
         /**
          * Set payback speed.
          * @param { PlaybackSpeed } speed - playback speed, see @PlaybackSpeed .
          * @syscap SystemCapability.Multimedia.Media.AVPlayer
          * @since 9
+         */
+        /**
+         * Set payback speed.
+         * @param { PlaybackSpeed } speed - playback speed, see @PlaybackSpeed .
+         * @syscap SystemCapability.Multimedia.Media.AVPlayer
+         * @atomicservice
+         * @since 12
          */
         setSpeed(speed: PlaybackSpeed): void;
         /**
@@ -998,14 +1394,36 @@ declare namespace media {
          * @syscap SystemCapability.Multimedia.Media.AVPlayer
          * @since 9
          */
+        /**
+         * select a specified bitrate to playback, only valid for HLS protocol network stream. By default, the
+         * player will select the appropriate bitrate according to the network connection speed. The
+         * available bitrate list reported by {@link #on('availableBitrates')}. Set it to select
+         * a specified bitrate. If the specified bitrate is not in the list of available bitrate, the player
+         * will select the minimal and closest one from the available bitrate list.
+         * @param { number } bitrate - the playback bitrate must be expressed in bits per second.
+         * @syscap SystemCapability.Multimedia.Media.AVPlayer
+         * @atomicservice
+         * @since 12
+         */
         setBitrate(bitrate: number): void;
         /**
          * Set decryption session to codec module.
          * @param { drm.MediaKeySession } mediaKeySession - Handle of MediaKeySession to decrypt encrypted media.
          * @param { boolean } secureVideoPath - Secure video path required or not.
-         * @throws { BusinessError } 401 - The parameter check failed.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
+         * <br>2. Incorrect parameter types. 3.Parameter verification failed.
          * @syscap SystemCapability.Multimedia.Media.AVPlayer
          * @since 11
+         */
+        /**
+         * Set decryption session to codec module.
+         * @param { drm.MediaKeySession } mediaKeySession - Handle of MediaKeySession to decrypt encrypted media.
+         * @param { boolean } secureVideoPath - Secure video path required or not.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
+         * <br>2. Incorrect parameter types. 3.Parameter verification failed.
+         * @syscap SystemCapability.Multimedia.Media.AVPlayer
+         * @atomicservice
+         * @since 12
          */
         setDecryptionConfig(mediaKeySession: drm.MediaKeySession, secureVideoPath: boolean): void;
         /**
@@ -1013,6 +1431,13 @@ declare namespace media {
          * @returns { Array<drm.MediaKeySystemInfo> } MediaKeySystemInfo with PSSH.
          * @syscap SystemCapability.Multimedia.Media.AVPlayer
          * @since 11
+         */
+        /**
+         * Get media key system info from media source.
+         * @returns { Array<drm.MediaKeySystemInfo> } MediaKeySystemInfo with PSSH.
+         * @syscap SystemCapability.Multimedia.Media.AVPlayer
+         * @atomicservice
+         * @since 12
          */
         getMediaKeySystemInfos(): Array<drm.MediaKeySystemInfo>;
         /**
@@ -1022,6 +1447,14 @@ declare namespace media {
          * @syscap SystemCapability.Multimedia.Media.AVPlayer
          * @since 11
          */
+        /**
+         * Register listens for mediaKeySystemInfoUpdate events.
+         * @param { 'mediaKeySystemInfoUpdate' } type - Type of the event to listen for.
+         * @param { function } callback - Callback used to listen for the mediaKeySystemInfoUpdate event.
+         * @syscap SystemCapability.Multimedia.Media.AVPlayer
+         * @atomicservice
+         * @since 12
+         */
         on(type: 'mediaKeySystemInfoUpdate', callback: (mediaKeySystemInfo: Array<drm.MediaKeySystemInfo>) => void): void;
         /**
          * Unregister listens for mediaKeySystemInfoUpdate events.
@@ -1029,6 +1462,14 @@ declare namespace media {
          * @param { function } callback - Callback for event.
          * @syscap SystemCapability.Multimedia.Media.AVPlayer
          * @since 11
+         */
+        /**
+         * Unregister listens for mediaKeySystemInfoUpdate events.
+         * @param { 'mediaKeySystemInfoUpdate' } type - Type of the event to listen for.
+         * @param { function } callback - Callback for event.
+         * @syscap SystemCapability.Multimedia.Media.AVPlayer
+         * @atomicservice
+         * @since 12
          */
         off(type: 'mediaKeySystemInfoUpdate', callback?: (mediaKeySystemInfo: Array<drm.MediaKeySystemInfo>) => void): void;
         /**
@@ -1068,6 +1509,14 @@ declare namespace media {
          * @syscap SystemCapability.Multimedia.Media.AVPlayer
          * @since 9
          */
+        /**
+         * Register listens for media playback volumeChange event.
+         * @param { 'volumeChange' } type - Type of the playback event to listen for.
+         * @param { Callback<number> } callback - Callback used to listen for the playback volume event.
+         * @syscap SystemCapability.Multimedia.Media.AVPlayer
+         * @atomicservice
+         * @since 12
+         */
         on(type: 'volumeChange', callback: Callback<number>): void;
         /**
          * Unregister listens for media playback volumeChange event.
@@ -1082,6 +1531,14 @@ declare namespace media {
          * @param { Callback<void> } callback - Callback used to listen for the playback end of stream.
          * @syscap SystemCapability.Multimedia.Media.AVPlayer
          * @since 9
+         */
+        /**
+         * Register listens for media playback endOfStream event.
+         * @param { 'endOfStream' } type - Type of the playback event to listen for.
+         * @param { Callback<void> } callback - Callback used to listen for the playback end of stream.
+         * @syscap SystemCapability.Multimedia.Media.AVPlayer
+         * @atomicservice
+         * @since 12
          */
         on(type: 'endOfStream', callback: Callback<void>): void;
         /**
@@ -1128,6 +1585,14 @@ declare namespace media {
          * @syscap SystemCapability.Multimedia.Media.AVPlayer
          * @since 9
          */
+        /**
+         * Register listens for media playback speedDone event.
+         * @param { 'speedDone' } type - Type of the playback event to listen for.
+         * @param { Callback<number> } callback - Callback used to listen for the playback speedDone event.
+         * @syscap SystemCapability.Multimedia.Media.AVPlayer
+         * @atomicservice
+         * @since 12
+         */
         on(type: 'speedDone', callback: Callback<number>): void;
         /**
          * Unregister listens for media playback speedDone event.
@@ -1142,6 +1607,14 @@ declare namespace media {
          * @param { Callback<number> } callback - Callback used to listen for the playback setBitrateDone event.
          * @syscap SystemCapability.Multimedia.Media.AVPlayer
          * @since 9
+         */
+        /**
+         * Register listens for media playback setBitrateDone event.
+         * @param { 'bitrateDone' } type - Type of the playback event to listen for.
+         * @param { Callback<number> } callback - Callback used to listen for the playback setBitrateDone event.
+         * @syscap SystemCapability.Multimedia.Media.AVPlayer
+         * @atomicservice
+         * @since 12
          */
         on(type: 'bitrateDone', callback: Callback<number>): void;
         /**
@@ -1188,6 +1661,14 @@ declare namespace media {
          * @syscap SystemCapability.Multimedia.Media.AVPlayer
          * @since 9
          */
+        /**
+         * Register listens for media playback durationUpdate event.
+         * @param { 'durationUpdate' } type - Type of the playback event to listen for.
+         * @param { Callback<number> } callback - Callback used to listen for the playback durationUpdate event.
+         * @syscap SystemCapability.Multimedia.Media.AVPlayer
+         * @atomicservice
+         * @since 12
+         */
         on(type: 'durationUpdate', callback: Callback<number>): void;
         /**
          * Unregister listens for media playback durationUpdate event.
@@ -1203,6 +1684,15 @@ declare namespace media {
            * return BufferingInfoType and the value.
          * @syscap SystemCapability.Multimedia.Media.AVPlayer
          * @since 9
+         */
+        /**
+         * Register listens for video playback buffering events.
+         * @param { 'bufferingUpdate' } type - Type of the playback buffering update event to listen for.
+         * @param { function } callback - Callback used to listen for the buffering update event,
+           * return BufferingInfoType and the value.
+         * @syscap SystemCapability.Multimedia.Media.AVPlayer
+         * @atomicservice
+         * @since 12
          */
         on(type: 'bufferingUpdate', callback: (infoType: BufferingInfoType, value: number) => void): void;
         /**
@@ -1220,6 +1710,14 @@ declare namespace media {
          * @syscap SystemCapability.Multimedia.Media.AVPlayer
          * @since 9
          */
+        /**
+         * Register listens for start render video frame events.
+         * @param { 'startRenderFrame' } type - Type of the playback event to listen for.
+         * @param { Callback<void> } callback - Callback used to listen for the playback event return .
+         * @syscap SystemCapability.Multimedia.Media.AVPlayer
+         * @atomicservice
+         * @since 12
+         */
         on(type: 'startRenderFrame', callback: Callback<void>): void;
         /**
          * Unregister listens for start render video frame events.
@@ -1234,6 +1732,14 @@ declare namespace media {
          * @param { function } callback - Callback used to listen for the playback event return video size.
          * @syscap SystemCapability.Multimedia.Media.AVPlayer
          * @since 9
+         */
+        /**
+         * Register listens for video size change event.
+         * @param { 'videoSizeChange' } type - Type of the playback event to listen for.
+         * @param { function } callback - Callback used to listen for the playback event return video size.
+         * @syscap SystemCapability.Multimedia.Media.AVPlayer
+         * @atomicservice
+         * @since 12
          */
         on(type: 'videoSizeChange', callback: (width: number, height: number) => void): void;
         /**
@@ -1250,6 +1756,14 @@ declare namespace media {
          * @syscap SystemCapability.Multimedia.Media.AVPlayer
          * @since 9
          */
+        /**
+         * Register listens for audio interrupt event, refer to {@link #audio.InterruptEvent}
+         * @param { 'audioInterrupt' } type - Type of the playback event to listen for.
+         * @param { function } callback - Callback used to listen for the playback event return audio interrupt info.
+         * @syscap SystemCapability.Multimedia.Media.AVPlayer
+         * @atomicservice
+         * @since 12
+         */
         on(type: 'audioInterrupt', callback: (info: audio.InterruptEvent) => void): void;
         /**
          * Unregister listens for audio interrupt event, refer to {@link #audio.InterruptEvent}
@@ -1265,6 +1779,15 @@ declare namespace media {
          * @param { function } callback - Callback used to listen for the playback event return available bitrate list.
          * @syscap SystemCapability.Multimedia.Media.AVPlayer
          * @since 9
+         */
+        /**
+         * Register listens for available bitrate list collect completed events for HLS protocol stream playback.
+         * This event will be reported after the {@link #prepare} called.
+         * @param { 'availableBitrates' } type - Type of the playback event to listen for.
+         * @param { function } callback - Callback used to listen for the playback event return available bitrate list.
+         * @syscap SystemCapability.Multimedia.Media.AVPlayer
+         * @atomicservice
+         * @since 12
          */
         on(type: 'availableBitrates', callback: (bitrates: Array<number>) => void): void;
         /**
@@ -1296,7 +1819,8 @@ declare namespace media {
          * @param { 'error' } type - Type of the playback error event to listen for.
          * @param { ErrorCallback } callback - Callback used to listen for the playback error event.
          * @throws { BusinessError } 201 - Permission denied.
-         * @throws { BusinessError } 401 - The parameter check failed.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
+         * <br>2. Incorrect parameter types. 3.Parameter verification failed.
          * @throws { BusinessError } 801 - Capability not supported.
          * @throws { BusinessError } 5400101 - No memory.
          * @throws { BusinessError } 5400102 - Operation not allowed.
@@ -1328,18 +1852,41 @@ declare namespace media {
          * The event is triggered when output device change for this stream.
          * @param { 'audioOutputDeviceChangeWithInfo' } type - Type of the event to listen for.
          * @param { Callback<audio.AudioStreamDeviceChangeInfo> } callback - Callback used to listen device change event.
-         * @throws { BusinessError } 401 - The parameter check failed.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
+         * <br>2. Incorrect parameter types. 3.Parameter verification failed.
          * @syscap SystemCapability.Multimedia.Media.AVPlayer
          * @since 11
+         */
+        /**
+         * Subscribes output device change event callback.
+         * The event is triggered when output device change for this stream.
+         * @param { 'audioOutputDeviceChangeWithInfo' } type - Type of the event to listen for.
+         * @param { Callback<audio.AudioStreamDeviceChangeInfo> } callback - Callback used to listen device change event.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
+         * <br>2. Incorrect parameter types. 3.Parameter verification failed.
+         * @syscap SystemCapability.Multimedia.Media.AVPlayer
+         * @atomicservice
+         * @since 12
          */
         on(type: 'audioOutputDeviceChangeWithInfo', callback: Callback<audio.AudioStreamDeviceChangeInfo>): void;
         /**
          * Unsubscribes output device change event callback.
          * @param { 'audioOutputDeviceChangeWithInfo' } type - Type of the event to listen for.
          * @param { Callback<audio.AudioStreamDeviceChangeInfo> } callback - Callback used to listen device change event.
-         * @throws { BusinessError } 401 - The parameter check failed.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
+         * <br>2. Incorrect parameter types. 3.Parameter verification failed.
          * @syscap SystemCapability.Multimedia.Media.AVPlayer
          * @since 11
+         */
+        /**
+         * Unsubscribes output device change event callback.
+         * @param { 'audioOutputDeviceChangeWithInfo' } type - Type of the event to listen for.
+         * @param { Callback<audio.AudioStreamDeviceChangeInfo> } callback - Callback used to listen device change event.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
+         * <br>2. Incorrect parameter types. 3.Parameter verification failed.
+         * @syscap SystemCapability.Multimedia.Media.AVPlayer
+         * @atomicservice
+         * @since 12
          */
         off(type: 'audioOutputDeviceChangeWithInfo', callback?: Callback<audio.AudioStreamDeviceChangeInfo>): void;
     }
@@ -1441,11 +1988,25 @@ declare namespace media {
      * @syscap SystemCapability.Multimedia.Media.Core
      * @since 8
      */
+    /**
+     * Enumerates buffering info type, for network playback.
+     *
+     * @enum { number }
+     * @syscap SystemCapability.Multimedia.Media.Core
+     * @atomicservice
+     * @since 12
+     */
     enum BufferingInfoType {
         /**
          * begin to buffering
          * @syscap SystemCapability.Multimedia.Media.Core
          * @since 8
+         */
+        /**
+         * begin to buffering
+         * @syscap SystemCapability.Multimedia.Media.Core
+         * @atomicservice
+         * @since 12
          */
         BUFFERING_START = 1,
         /**
@@ -1453,11 +2014,23 @@ declare namespace media {
          * @syscap SystemCapability.Multimedia.Media.Core
          * @since 8
          */
+        /**
+         * end to buffering
+         * @syscap SystemCapability.Multimedia.Media.Core
+         * @atomicservice
+         * @since 12
+         */
         BUFFERING_END = 2,
         /**
          * buffering percent
          * @syscap SystemCapability.Multimedia.Media.Core
          * @since 8
+         */
+        /**
+         * buffering percent
+         * @syscap SystemCapability.Multimedia.Media.Core
+         * @atomicservice
+         * @since 12
          */
         BUFFERING_PERCENT = 3,
         /**
@@ -1465,7 +2038,85 @@ declare namespace media {
          * @syscap SystemCapability.Multimedia.Media.Core
          * @since 8
          */
+        /**
+         * cached duration in milliseconds
+         * @syscap SystemCapability.Multimedia.Media.Core
+         * @atomicservice
+         * @since 12
+         */
         CACHED_DURATION = 4
+    }
+    /**
+     * Media source descriptor. User can set media data information
+  
+     * @typedef MediaSource
+     * @syscap SystemCapability.Multimedia.Media.Core
+     * @atomicservice
+     * @since 12
+     */
+    interface MediaSource {
+        /**
+         * Set Media Mime Type to help player handle extended Media source.
+         * @param { AVMimeTypes } mimeType - for MediaSource define. see @ AVMimeTypes.
+         * @syscap SystemCapability.Multimedia.Media.Core
+         * @atomicservice
+         * @since 12
+         */
+        setMimeType(mimeType: AVMimeTypes): void;
+    }
+    /**
+     * Enumerates Media Mime types, used for MediaSource define;
+     * @enum { string }
+     * @syscap SystemCapability.Multimedia.Media.Core
+     * @atomicservice
+     * @since 12
+     */
+    enum AVMimeTypes {
+        /**
+         * Indicate current file is index file for hls Media.
+         * @syscap SystemCapability.Multimedia.Media.Core
+         * @atomicservice
+         * @since 12
+         */
+        APPLICATION_M3U8 = 'application/m3u8'
+    }
+    /**
+     * Provides preferred playback settings for player.
+     *
+     * @typedef PlaybackStrategy
+     * @syscap SystemCapability.Multimedia.Media.Core
+     * @atomicservice
+     * @since 12
+     */
+    interface PlaybackStrategy {
+        /**
+         * Choose a stream with width close to it.
+         * @syscap SystemCapability.Multimedia.Media.Core
+         * @atomicservice
+         * @since 12
+         */
+        preferredWidth?: number;
+        /**
+         * Choose a stream with height close to it.
+         * @syscap SystemCapability.Multimedia.Media.Core
+         * @atomicservice
+         * @since 12
+         */
+        preferredHeight?: number;
+        /**
+         * Choose a preferred buffer duration.
+         * @syscap SystemCapability.Multimedia.Media.Core
+         * @atomicservice
+         * @since 12
+         */
+        preferredBufferDuration?: number;
+        /**
+         * If true, the player should choose HDR stream if exist.
+         * @syscap SystemCapability.Multimedia.Media.Core
+         * @atomicservice
+         * @since 12
+         */
+        preferredHdr?: boolean;
     }
     /**
      * Media file descriptor. The caller needs to ensure that the fd is valid and
@@ -1795,6 +2446,12 @@ declare namespace media {
     * @syscap SystemCapability.Multimedia.Media.AVRecorder
     * @since 9
     */
+    /**
+    * Describes media recorder states.
+    * @syscap SystemCapability.Multimedia.Media.AVRecorder
+    * @atomicservice
+    * @since 12
+    */
     type AVRecorderState = 'idle' | 'prepared' | 'started' | 'paused' | 'stopped' | 'released' | 'error';
     /**
      * Manages and record audio/video. Before calling an AVRecorder method, you must use createAVRecorder()
@@ -1804,6 +2461,15 @@ declare namespace media {
      * @syscap SystemCapability.Multimedia.Media.AVRecorder
      * @since 9
      */
+    /**
+     * Manages and record audio/video. Before calling an AVRecorder method, you must use createAVRecorder()
+     * to create an AVRecorder instance.
+     *
+     * @typedef AVRecorder
+     * @syscap SystemCapability.Multimedia.Media.AVRecorder
+     * @atomicservice
+     * @since 12
+     */
     interface AVRecorder {
         /**
          * Prepares for recording.
@@ -1811,7 +2477,8 @@ declare namespace media {
          * @param { AVRecorderConfig } config - Recording parameters.
          * @param { AsyncCallback<void> } callback - A callback instance used to return when prepare completed.
          * @throws { BusinessError } 201 - Permission denied. Return by callback.
-         * @throws { BusinessError } 401 - The parameter check failed. Return by callback.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
+         * <br>2. Incorrect parameter types. 3.Parameter verification failed.
          * @throws { BusinessError } 5400102 - Operate not permit. Return by callback.
          * @throws { BusinessError } 5400105 - Service died. Return by callback.
          * @syscap SystemCapability.Multimedia.Media.AVRecorder
@@ -1829,6 +2496,20 @@ declare namespace media {
          * @throws { BusinessError } 5400105 - Service died. Return by promise.
          * @syscap SystemCapability.Multimedia.Media.AVRecorder
          * @since 9
+         */
+        /**
+         * Prepares for recording.
+         * @permission ohos.permission.MICROPHONE
+         * @param { AVRecorderConfig } config - Recording parameters.
+         * @returns { Promise<void> } A Promise instance used to return when prepare completed.
+         * @throws { BusinessError } 201 - Permission denied. Return by promise.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
+         * <br>2. Incorrect parameter types. 3.Parameter verification failed.
+         * @throws { BusinessError } 5400102 - Operate not permit. Return by promise.
+         * @throws { BusinessError } 5400105 - Service died. Return by promise.
+         * @syscap SystemCapability.Multimedia.Media.AVRecorder
+         * @atomicservice
+         * @since 12
          */
         prepare(config: AVRecorderConfig): Promise<void>;
         /**
@@ -1872,6 +2553,19 @@ declare namespace media {
          */
         getInputSurface(): Promise<string>;
         /**
+         * Update the video orientation before recorder start.
+         * @param { number } rotation: Rotation angle, should be [0, 90, 180, 270].
+         * @returns { Promise<void> } A Promise instance used to return when the function is finished.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
+         * <br>2. Incorrect parameter types. 3.Parameter verification failed.
+         * @throws { BusinessError } 5400102 - Operation not allowed. Return by promise.
+         * @throws { BusinessError } 5400103 - IO error. Return by promise.
+         * @throws { BusinessError } 5400105 - Service died. Return by promise.
+         * @syscap SystemCapability.Multimedia.Media.AVRecorder
+         * @since 12
+         */
+        updateRotation(rotation: number): Promise<void>;
+        /**
          * Start AVRecorder, it will to started state.
          * @param { AsyncCallback<void> } callback - A callback instance used to return when start completed.
          * @throws { BusinessError } 5400102 - Operate not permit. Return by callback.
@@ -1889,6 +2583,16 @@ declare namespace media {
          * @throws { BusinessError } 5400105 - Service died. Return by promise.
          * @syscap SystemCapability.Multimedia.Media.AVRecorder
          * @since 9
+         */
+        /**
+         * Start AVRecorder, it will to started state.
+         * @returns { Promise<void> } A Promise instance used to return when start completed.
+         * @throws { BusinessError } 5400102 - Operate not permit. Return by promise.
+         * @throws { BusinessError } 5400103 - IO error. Return by promise.
+         * @throws { BusinessError } 5400105 - Service died. Return by promise.
+         * @syscap SystemCapability.Multimedia.Media.AVRecorder
+         * @atomicservice
+         * @since 12
          */
         start(): Promise<void>;
         /**
@@ -1910,6 +2614,16 @@ declare namespace media {
          * @syscap SystemCapability.Multimedia.Media.AVRecorder
          * @since 9
          */
+        /**
+         * Start AVRecorder, it will to paused state.
+         * @returns { Promise<void> } A Promise instance used to return when pause completed.
+         * @throws { BusinessError } 5400102 - Operate not permit. Return by promise.
+         * @throws { BusinessError } 5400103 - IO error. Return by promise.
+         * @throws { BusinessError } 5400105 - Service died. Return by promise.
+         * @syscap SystemCapability.Multimedia.Media.AVRecorder
+         * @atomicservice
+         * @since 12
+         */
         pause(): Promise<void>;
         /**
          * Resume AVRecorder, it will to started state.
@@ -1930,6 +2644,16 @@ declare namespace media {
          * @syscap SystemCapability.Multimedia.Media.AVRecorder
          * @since 9
          */
+        /**
+         * Resume AVRecorder, it will to started state.
+         * @returns { Promise<void> } A Promise instance used to return when resume completed.
+         * @throws { BusinessError } 5400102 - Operate not permit. Return by promise.
+         * @throws { BusinessError } 5400103 - IO error. Return by promise.
+         * @throws { BusinessError } 5400105 - Service died. Return by promise.
+         * @syscap SystemCapability.Multimedia.Media.AVRecorder
+         * @atomicservice
+         * @since 12
+         */
         resume(): Promise<void>;
         /**
          * Stop AVRecorder, it will to stopped state.
@@ -1949,6 +2673,16 @@ declare namespace media {
          * @throws { BusinessError } 5400105 - Service died. Return by promise.
          * @syscap SystemCapability.Multimedia.Media.AVRecorder
          * @since 9
+         */
+        /**
+         * Stop AVRecorder, it will to stopped state.
+         * @returns { Promise<void> } A Promise instance used to return when stop completed.
+         * @throws { BusinessError } 5400102 - Operate not permit. Return by promise.
+         * @throws { BusinessError } 5400103 - IO error. Return by promise.
+         * @throws { BusinessError } 5400105 - Service died. Return by promise.
+         * @syscap SystemCapability.Multimedia.Media.AVRecorder
+         * @atomicservice
+         * @since 12
          */
         stop(): Promise<void>;
         /**
@@ -1983,6 +2717,14 @@ declare namespace media {
          * @throws { BusinessError } 5400105 - Service died. Return by callback.
          * @syscap SystemCapability.Multimedia.Media.AVRecorder
          * @since 9
+         */
+        /**
+         * Releases resources used for AVRecorder, it will to released state.
+         * @returns { Promise<void> } A Promise instance used to return when release completed.
+         * @throws { BusinessError } 5400105 - Service died. Return by callback.
+         * @syscap SystemCapability.Multimedia.Media.AVRecorder
+         * @atomicservice
+         * @since 12
          */
         release(): Promise<void>;
         /**
@@ -2046,12 +2788,19 @@ declare namespace media {
          * @syscap SystemCapability.Multimedia.Media.AVRecorder
          * @since 9
          */
+        /**
+         * Recorder state.
+         * @syscap SystemCapability.Multimedia.Media.AVRecorder
+         * @atomicservice
+         * @since 12
+         */
         readonly state: AVRecorderState;
         /**
          * Listens for recording audioCapturerChange events.
          * @param { 'audioCapturerChange' } type - Type of the audioCapturerChange event to listen for.
          * @param { Callback<audio.AudioCapturerChangeInfo> } callback - Callback used to listen device change event.
-         * @throws { BusinessError } 401 - The parameter check failed.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
+         * <br>2. Incorrect parameter types. 3.Parameter verification failed.
          * @syscap SystemCapability.Multimedia.Media.AVRecorder
          * @since 11
          */
@@ -2064,6 +2813,16 @@ declare namespace media {
          * @throws { BusinessError } 5400105 - Service died. Return by callback.
          * @syscap SystemCapability.Multimedia.Media.AVRecorder
          * @since 9
+         */
+        /**
+         * Listens for recording stateChange events.
+         * @param { 'stateChange' } type - Type of the recording event to listen for.
+         * @param { function } callback - Callback used to listen for the recorder stateChange event.
+         * @throws { BusinessError } 5400103 - IO error. Return by callback.
+         * @throws { BusinessError } 5400105 - Service died. Return by callback.
+         * @syscap SystemCapability.Multimedia.Media.AVRecorder
+         * @atomicservice
+         * @since 12
          */
         on(type: 'stateChange', callback: (state: AVRecorderState, reason: StateChangeReason) => void): void;
         /**
@@ -2099,6 +2858,25 @@ declare namespace media {
          * @syscap SystemCapability.Multimedia.Media.AVRecorder
          * @since 11
          */
+        /**
+         * Listens for recording error events.
+         * @param { 'error' } type - Type of the recording error event to listen for.
+         * @param { ErrorCallback } callback - Callback used to listen for the recorder error event.
+         * @throws { BusinessError } 201 - Permission denied.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
+         * <br>2. Incorrect parameter types. 3.Parameter verification failed.
+         * @throws { BusinessError } 801 - Capability not supported.
+         * @throws { BusinessError } 5400101 - No memory.
+         * @throws { BusinessError } 5400102 - Operation not allowed.
+         * @throws { BusinessError } 5400103 - I/O error.
+         * @throws { BusinessError } 5400104 - Time out.
+         * @throws { BusinessError } 5400105 - Service died.
+         * @throws { BusinessError } 5400106 - Unsupport format.
+         * @throws { BusinessError } 5400107 - Audio interrupted.
+         * @syscap SystemCapability.Multimedia.Media.AVRecorder
+         * @atomicservice
+         * @since 12
+         */
         on(type: 'error', callback: ErrorCallback): void;
         /**
          * Cancel Listens for recording stateChange events.
@@ -2106,12 +2884,26 @@ declare namespace media {
          * @syscap SystemCapability.Multimedia.Media.AVRecorder
          * @since 9
          */
+        /**
+         * Cancel Listens for recording stateChange events.
+         * @param { 'stateChange' } type - Type of the recording stateChange event to listen for.
+         * @syscap SystemCapability.Multimedia.Media.AVRecorder
+         * @atomicservice
+         * @since 12
+         */
         off(type: 'stateChange'): void;
         /**
          * Cancel Listens for recording error events.
          * @param { 'error' } type - Type of the recording error event to listen for.
          * @syscap SystemCapability.Multimedia.Media.AVRecorder
          * @since 9
+         */
+        /**
+         * Cancel Listens for recording error events.
+         * @param { 'error' } type - Type of the recording error event to listen for.
+         * @syscap SystemCapability.Multimedia.Media.AVRecorder
+         * @atomicservice
+         * @since 12
          */
         off(type: 'error'): void;
         /**
@@ -2423,11 +3215,25 @@ declare namespace media {
      * @syscap SystemCapability.Multimedia.Media.VideoPlayer
      * @since 8
      */
+    /**
+     * Enumerates playback speed.
+     *
+     * @enum { number }
+     * @syscap SystemCapability.Multimedia.Media.VideoPlayer
+     * @atomicservice
+     * @since 12
+     */
     enum PlaybackSpeed {
         /**
          * playback at 0.75x normal speed
          * @syscap SystemCapability.Multimedia.Media.VideoPlayer
          * @since 8
+         */
+        /**
+         * playback at 0.75x normal speed
+         * @syscap SystemCapability.Multimedia.Media.VideoPlayer
+         * @atomicservice
+         * @since 12
          */
         SPEED_FORWARD_0_75_X = 0,
         /**
@@ -2435,11 +3241,23 @@ declare namespace media {
          * @syscap SystemCapability.Multimedia.Media.VideoPlayer
          * @since 8
          */
+        /**
+         * playback at normal speed
+         * @syscap SystemCapability.Multimedia.Media.VideoPlayer
+         * @atomicservice
+         * @since 12
+         */
         SPEED_FORWARD_1_00_X = 1,
         /**
          * playback at 1.25x normal speed
          * @syscap SystemCapability.Multimedia.Media.VideoPlayer
          * @since 8
+         */
+        /**
+         * playback at 1.25x normal speed
+         * @syscap SystemCapability.Multimedia.Media.VideoPlayer
+         * @atomicservice
+         * @since 12
          */
         SPEED_FORWARD_1_25_X = 2,
         /**
@@ -2447,13 +3265,49 @@ declare namespace media {
          * @syscap SystemCapability.Multimedia.Media.VideoPlayer
          * @since 8
          */
+        /**
+         * playback at 1.75x normal speed
+         * @syscap SystemCapability.Multimedia.Media.VideoPlayer
+         * @atomicservice
+         * @since 12
+         */
         SPEED_FORWARD_1_75_X = 3,
         /**
          * playback at 2.0x normal speed
          * @syscap SystemCapability.Multimedia.Media.VideoPlayer
          * @since 8
          */
-        SPEED_FORWARD_2_00_X = 4
+        /**
+         * playback at 2.0x normal speed
+         * @syscap SystemCapability.Multimedia.Media.VideoPlayer
+         * @atomicservice
+         * @since 12
+         */
+        SPEED_FORWARD_2_00_X = 4,
+        /**
+         * playback at 0.5x normal speed
+         * @syscap SystemCapability.Multimedia.Media.VideoPlayer
+         * @since 12
+         */
+        /**
+         * playback at 0.5x normal speed
+         * @syscap SystemCapability.Multimedia.Media.VideoPlayer
+         * @atomicservice
+         * @since 12
+         */
+        SPEED_FORWARD_0_50_X = 5,
+        /**
+         * playback at 1.5x normal speed
+         * @syscap SystemCapability.Multimedia.Media.VideoPlayer
+         * @since 12
+         */
+        /**
+         * playback at 1.5x normal speed
+         * @syscap SystemCapability.Multimedia.Media.VideoPlayer
+         * @atomicservice
+         * @since 12
+         */
+        SPEED_FORWARD_1_50_X = 6
     }
     /**
      * Manages and plays video. Before calling an video method, you must use createVideoPlayer() to create an VideoPlayer
@@ -2841,6 +3695,14 @@ declare namespace media {
      * @syscap SystemCapability.Multimedia.Media.VideoPlayer
      * @since 9
      */
+    /**
+     * Enumerates video scale type.
+     *
+     * @enum { number }
+     * @syscap SystemCapability.Multimedia.Media.VideoPlayer
+     * @atomicservice
+     * @since 12
+     */
     enum VideoScaleType {
         /**
          * The content is stretched to the fit the display surface rendering area. When
@@ -2848,6 +3710,14 @@ declare namespace media {
          * of the content is not maintained. This is the default scale type.
          * @syscap SystemCapability.Multimedia.Media.VideoPlayer
          * @since 9
+         */
+        /**
+         * The content is stretched to the fit the display surface rendering area. When
+         * the aspect ratio of the content is not same as the display surface, the aspect
+         * of the content is not maintained. This is the default scale type.
+         * @syscap SystemCapability.Multimedia.Media.VideoPlayer
+         * @atomicservice
+         * @since 12
          */
         VIDEO_SCALE_TYPE_FIT = 0,
         /**
@@ -2857,6 +3727,14 @@ declare namespace media {
          * @syscap SystemCapability.Multimedia.Media.VideoPlayer
          * @since 9
          */
+        /**
+         * The content is stretched to the fit the display surface rendering area. When
+         * the aspect ratio of the content is not the same as the display surface, content's
+         * aspect ratio is maintained and the content is cropped to fit the display surface.
+         * @syscap SystemCapability.Multimedia.Media.VideoPlayer
+         * @atomicservice
+         * @since 12
+         */
         VIDEO_SCALE_TYPE_FIT_CROP = 1
     }
     /**
@@ -2865,6 +3743,14 @@ declare namespace media {
      * @enum { number }
      * @syscap SystemCapability.Multimedia.Media.Core
      * @since 8
+     */
+    /**
+     * Enumerates container format type(The abbreviation for 'container format type' is CFT).
+     *
+     * @enum { number }
+     * @syscap SystemCapability.Multimedia.Media.Core
+     * @atomicservice
+     * @since 12
      */
     enum ContainerFormatType {
         /**
@@ -2877,6 +3763,12 @@ declare namespace media {
          * A audio container format type m4a.
          * @syscap SystemCapability.Multimedia.Media.Core
          * @since 8
+         */
+        /**
+         * A audio container format type m4a.
+         * @syscap SystemCapability.Multimedia.Media.Core
+         * @atomicservice
+         * @since 12
          */
         CFT_MPEG_4A = 'm4a'
     }
@@ -3056,14 +3948,29 @@ declare namespace media {
          * @atomicservice
          * @since 11
          */
-        MD_KEY_AUD_SAMPLE_RATE = 'sample_rate'
+        MD_KEY_AUD_SAMPLE_RATE = 'sample_rate',
+        /**
+         * key for audio bit depth, value type is number
+         * @syscap SystemCapability.Multimedia.Media.Core
+         * @atomicservice
+         * @since 12
+         */
+        MD_KEY_AUD_SAMPLE_DEPTH = 'sample_depth'
     }
     /**
      * Enumerates audio source type for recorder.
      *
      * @enum { number }
      * @syscap SystemCapability.Multimedia.Media.AVRecorder
-      * @since 9
+     * @since 9
+     */
+    /**
+     * Enumerates audio source type for recorder.
+     *
+     * @enum { number }
+     * @syscap SystemCapability.Multimedia.Media.AVRecorder
+     * @atomicservice
+     * @since 12
      */
     enum AudioSourceType {
         /**
@@ -3076,6 +3983,12 @@ declare namespace media {
          * Source type mic.
          * @syscap SystemCapability.Multimedia.Media.AVRecorder
          * @since 9
+         */
+        /**
+         * Source type mic.
+         * @syscap SystemCapability.Multimedia.Media.AVRecorder
+         * @atomicservice
+         * @since 12
          */
         AUDIO_SOURCE_TYPE_MIC = 1
     }
@@ -3195,11 +4108,25 @@ declare namespace media {
      * @syscap SystemCapability.Multimedia.Media.AVRecorder
      * @since 9
      */
+    /**
+     * Provides the media recorder profile definitions.
+     *
+     * @typedef AVRecorderProfile
+     * @syscap SystemCapability.Multimedia.Media.AVRecorder
+     * @atomicservice
+     * @since 12
+     */
     interface AVRecorderProfile {
         /**
          * Indicates the audio bitrate.
          * @syscap SystemCapability.Multimedia.Media.AVRecorder
          * @since 9
+         */
+        /**
+         * Indicates the audio bitrate.
+         * @syscap SystemCapability.Multimedia.Media.AVRecorder
+         * @atomicservice
+         * @since 12
          */
         audioBitrate?: number;
         /**
@@ -3207,11 +4134,23 @@ declare namespace media {
          * @syscap SystemCapability.Multimedia.Media.AVRecorder
          * @since 9
          */
+        /**
+         * Indicates the number of audio channels.
+         * @syscap SystemCapability.Multimedia.Media.AVRecorder
+         * @atomicservice
+         * @since 12
+         */
         audioChannels?: number;
         /**
          * Indicates the audio encoding format.
          * @syscap SystemCapability.Multimedia.Media.AVRecorder
          * @since 9
+         */
+        /**
+         * Indicates the audio encoding format.
+         * @syscap SystemCapability.Multimedia.Media.AVRecorder
+         * @atomicservice
+         * @since 12
          */
         audioCodec?: CodecMimeType;
         /**
@@ -3219,11 +4158,23 @@ declare namespace media {
          * @syscap SystemCapability.Multimedia.Media.AVRecorder
          * @since 9
          */
+        /**
+         * Indicates the audio sampling rate.
+         * @syscap SystemCapability.Multimedia.Media.AVRecorder
+         * @atomicservice
+         * @since 12
+         */
         audioSampleRate?: number;
         /**
          * Indicates the output file format.
          * @syscap SystemCapability.Multimedia.Media.AVRecorder
          * @since 9
+         */
+        /**
+         * Indicates the output file format.
+         * @syscap SystemCapability.Multimedia.Media.AVRecorder
+         * @atomicservice
+         * @since 12
          */
         fileFormat: ContainerFormatType;
         /**
@@ -3263,6 +4214,13 @@ declare namespace media {
          * @since 11
          */
         isHdr?: boolean;
+        /**
+         * Whether to encode the video in temporal scale mode.
+         * @type { ?boolean }
+         * @syscap SystemCapability.Multimedia.Media.AVRecorder
+         * @since 12
+         */
+        enableTemporalScale?: boolean;
     }
     /**
      * Provides the media recorder configuration definitions.
@@ -3271,11 +4229,25 @@ declare namespace media {
      * @syscap SystemCapability.Multimedia.Media.AVRecorder
      * @since 9
      */
+    /**
+     * Provides the media recorder configuration definitions.
+     *
+     * @typedef AVRecorderConfig
+     * @syscap SystemCapability.Multimedia.Media.AVRecorder
+     * @atomicservice
+     * @since 12
+     */
     interface AVRecorderConfig {
         /**
          * Audio source type, details see @AudioSourceType .
          * @syscap SystemCapability.Multimedia.Media.AVRecorder
          * @since 9
+         */
+        /**
+         * Audio source type, details see @AudioSourceType .
+         * @syscap SystemCapability.Multimedia.Media.AVRecorder
+         * @atomicservice
+         * @since 12
          */
         audioSourceType?: AudioSourceType;
         /**
@@ -3289,6 +4261,12 @@ declare namespace media {
          * @syscap SystemCapability.Multimedia.Media.AVRecorder
          * @since 9
          */
+        /**
+         * Video recorder profile, details see @AVRecorderProfile .
+         * @syscap SystemCapability.Multimedia.Media.AVRecorder
+         * @atomicservice
+         * @since 12
+         */
         profile: AVRecorderProfile;
         /**
          * File output uri, support a kind of uri now.
@@ -3296,20 +4274,38 @@ declare namespace media {
          * @syscap SystemCapability.Multimedia.Media.AVRecorder
          * @since 9
          */
+        /**
+         * File output uri, support a kind of uri now.
+         * format like: "fd://" + "context".
+         * @syscap SystemCapability.Multimedia.Media.AVRecorder
+         * @atomicservice
+         * @since 12
+         */
         url: string;
         /**
          * Sets the video rotation angle in output file, and for the file to playback, mp4 support
          * the range of rotation angle should be {0, 90, 180, 270}, default is 0.
          * @syscap SystemCapability.Multimedia.Media.AVRecorder
          * @since 9
+         * @deprecated since 12
+         * @useinstead ohos.multimedia.media/media.AVMetadata#videoOrientation
          */
         rotation?: number;
         /**
          * Geographical location information.
          * @syscap SystemCapability.Multimedia.Media.AVRecorder
          * @since 9
+         * @deprecated since 12
+         * @useinstead ohos.multimedia.media/media.AVMetadata#location
          */
         location?: Location;
+        /**
+         * Set global metadata info. Details see @AVMetadata
+         * @type { ?AVMetadata }
+         * @syscap SystemCapability.Multimedia.Media.AVRecorder
+         * @since 12
+         */
+        metadata?: AVMetadata;
     }
     /**
      * Provides the container definition for media description key-value pairs.
@@ -3379,7 +4375,14 @@ declare namespace media {
          * @atomicservice
          * @since 11
          */
-        SEEK_PREV_SYNC = 1
+        SEEK_PREV_SYNC = 1,
+        /**
+         * Seek to the closest frame of the given timestamp.
+         * @syscap SystemCapability.Multimedia.Media.Core
+         * @atomicservice
+         * @since 12
+         */
+        SEEK_CLOSEST = 2
     }
     /**
      * Enumerates Codec MIME types.
@@ -3387,6 +4390,14 @@ declare namespace media {
      * @enum { string }
      * @syscap SystemCapability.Multimedia.Media.Core
      * @since 8
+     */
+    /**
+     * Enumerates Codec MIME types.
+     *
+     * @enum { string }
+     * @syscap SystemCapability.Multimedia.Media.Core
+     * @atomicservice
+     * @since 12
      */
     enum CodecMimeType {
         /**
@@ -3424,6 +4435,12 @@ declare namespace media {
          * @syscap SystemCapability.Multimedia.Media.Core
          * @since 8
          */
+        /**
+         * AAC codec MIME type.
+         * @syscap SystemCapability.Multimedia.Media.Core
+         * @atomicservice
+         * @since 12
+         */
         AUDIO_AAC = 'audio/mp4a-latm',
         /**
          * vorbis codec MIME type.
@@ -3443,6 +4460,246 @@ declare namespace media {
          * @since 11
          */
         VIDEO_HEVC = 'video/hevc'
+    }
+    /**
+     *  Enumerates AVScreenCaptureRecord preset types.
+     *
+     * @enum { number }
+     * @syscap SystemCapability.Multimedia.Media.AVScreenCapture
+     * @since 12
+     */
+    enum AVScreenCaptureRecordPreset {
+        /**
+         * Screen record normal type, h264/aac mp4
+         * @syscap SystemCapability.Multimedia.Media.AVScreenCapture
+         * @since 12
+         */
+        SCREEN_RECORD_PRESET_H264_AAC_MP4 = 0,
+        /**
+         * Screen record high efficient type, h265/aac mp4
+         * @syscap SystemCapability.Multimedia.Media.AVScreenCapture
+         * @since 12
+         */
+        SCREEN_RECORD_PRESET_H265_AAC_MP4 = 1
+    }
+    /**
+     *  Enumerates AVScreenCapture callback state type.
+     *
+     * @enum { number }
+     * @syscap SystemCapability.Multimedia.Media.AVScreenCapture
+     * @since 12
+     */
+    enum AVScreenCaptureStateCode {
+        /**
+         * Screen capture started
+         * @syscap SystemCapability.Multimedia.Media.AVScreenCapture
+         * @since 12
+         */
+        SCREENCAPTURE_STATE_STARTED = 0,
+        /**
+         * Screen capture canceled
+         * @syscap SystemCapability.Multimedia.Media.AVScreenCapture
+         * @since 12
+         */
+        SCREENCAPTURE_STATE_CANCELED = 1,
+        /**
+         * Screen capture stopped by user
+         * @syscap SystemCapability.Multimedia.Media.AVScreenCapture
+         * @since 12
+         */
+        SCREENCAPTURE_STATE_STOPPED_BY_USER = 2,
+        /**
+         * Screen capture stopped by interrupt
+         * @syscap SystemCapability.Multimedia.Media.AVScreenCapture
+         * @since 12
+         */
+        SCREENCAPTURE_STATE_INTERRUPTED_BY_OTHER = 3,
+        /**
+         * Screen capture stopped by phone call
+         * @syscap SystemCapability.Multimedia.Media.AVScreenCapture
+         * @since 12
+         */
+        SCREENCAPTURE_STATE_STOPPED_BY_CALL = 4,
+        /**
+         * Screen capture microphone not available
+         * @syscap SystemCapability.Multimedia.Media.AVScreenCapture
+         * @since 12
+         */
+        SCREENCAPTURE_STATE_MIC_UNAVAILABLE = 5,
+        /**
+         * Screen capture microphone is muted by user
+         * @syscap SystemCapability.Multimedia.Media.AVScreenCapture
+         * @since 12
+         */
+        SCREENCAPTURE_STATE_MIC_MUTED_BY_USER = 6,
+        /**
+         * Screen capture microphone is unmuted by user
+         * @syscap SystemCapability.Multimedia.Media.AVScreenCapture
+         * @since 12
+         */
+        SCREENCAPTURE_STATE_MIC_UNMUTED_BY_USER = 7,
+        /**
+         * Screen capture enter private scene
+         * @syscap SystemCapability.Multimedia.Media.AVScreenCapture
+         * @since 12
+         */
+        SCREENCAPTURE_STATE_ENTER_PRIVATE_SCENE = 8,
+        /**
+         * Screen capture exit private scene
+         * @syscap SystemCapability.Multimedia.Media.AVScreenCapture
+         * @since 12
+         */
+        SCREENCAPTURE_STATE_EXIT_PRIVATE_SCENE = 9
+    }
+    /**
+     * Provides the media AVScreenCaptureRecord config definition.
+     *
+     * @typedef AVScreenCaptureRecordConfig
+     * @syscap SystemCapability.Multimedia.Media.AVScreenCapture
+     * @since 12
+     */
+    interface AVScreenCaptureRecordConfig {
+        /**
+         * Indicates record file descriptor.
+         * @syscap SystemCapability.Multimedia.Media.AVScreenCapture
+         * @since 12
+         */
+        fd: number;
+        /**
+         * Indicates video frame width.
+         * @syscap SystemCapability.Multimedia.Media.AVScreenCapture
+         * @since 12
+         */
+        frameWidth?: number;
+        /**
+         * Indicates video frame height.
+         * @syscap SystemCapability.Multimedia.Media.AVScreenCapture
+         * @since 12
+         */
+        frameHeight?: number;
+        /**
+         * Indicates video bitrate.
+         * @syscap SystemCapability.Multimedia.Media.AVScreenCapture
+         * @since 12
+         */
+        videoBitrate?: number;
+        /**
+         * Indicates audio sample rate.
+         * @syscap SystemCapability.Multimedia.Media.AVScreenCapture
+         * @since 12
+         */
+        audioSampleRate?: number;
+        /**
+         * Indicates audio channel count.
+         * @syscap SystemCapability.Multimedia.Media.AVScreenCapture
+         * @since 12
+         */
+        audioChannelCount?: number;
+        /**
+         * Indicates audio bitrate.
+         * @syscap SystemCapability.Multimedia.Media.AVScreenCapture
+         * @since 12
+         */
+        audioBitrate?: number;
+        /**
+         * Indicates AVScreenCaptureRecordPreset, details see @AVScreenCaptureRecordPreset
+         * @syscap SystemCapability.Multimedia.Media.AVScreenCapture
+         * @since 12
+         */
+        preset?: AVScreenCaptureRecordPreset;
+    }
+    /**
+     * Provides screen capture record. Before calling an AVScreenCaptureRecorder method, you must use createAVScreenCaptureRecorder()
+     * to create an AVScreenCaptureRecorder instance.
+     *
+     * @typedef AVScreenCaptureRecorder
+     * @syscap SystemCapability.Multimedia.Media.AVScreenCapture
+     * @since 12
+     */
+    interface AVScreenCaptureRecorder {
+        /**
+         * Init AVScreenCaptureRecorder.
+         * @param { AVScreenCaptureRecordConfig } config - AVScreenCaptureRecorder config.
+         * @returns { Promise<void> } A Promise instance used to return when init completed.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
+         * <br>2. Incorrect parameter types. 3.Parameter verification failed.
+         * @throws { BusinessError } 5400103 - IO error. Return by promise.
+         * @throws { BusinessError } 5400105 - Service died. Return by promise.
+         * @syscap SystemCapability.Multimedia.Media.AVScreenCapture
+         * @since 12
+         */
+        init(config: AVScreenCaptureRecordConfig): Promise<void>;
+        /**
+         * Start screen capture recording.
+         * @returns { Promise<void> } A Promise instance used to return when startRecording completed.
+         * @throws { BusinessError } 5400103 - IO error. Return by promise.
+         * @throws { BusinessError } 5400105 - Service died. Return by promise.
+         * @syscap SystemCapability.Multimedia.Media.AVScreenCapture
+         * @since 12
+         */
+        startRecording(): Promise<void>;
+        /**
+         * Stop screen capture recording.
+         * @returns { Promise<void> } A Promise instance used to return when stopRecording completed.
+         * @throws { BusinessError } 5400103 - IO error. Return by promise.
+         * @throws { BusinessError } 5400105 - Service died. Return by promise.
+         * @syscap SystemCapability.Multimedia.Media.AVScreenCapture
+         * @since 12
+         */
+        stopRecording(): Promise<void>;
+        /**
+         * Set microphone enable or disable.
+         * @param { boolean } enable - Set microphone enable or disable during recording.
+         * @returns { Promise<void> } A Promise instance used to return when setMicEnabled completed.
+         * @throws { BusinessError } 5400103 - IO error. Return by promise.
+         * @throws { BusinessError } 5400105 - Service died. Return by promise.
+         * @syscap SystemCapability.Multimedia.Media.AVScreenCapture
+         * @since 12
+         */
+        setMicEnabled(enable: boolean): Promise<void>;
+        /**
+         * Release screen capture recording.
+         * @returns { Promise<void> } A Promise instance used to return when release completed.
+         * @throws { BusinessError } 5400103 - IO error. Return by promise.
+         * @throws { BusinessError } 5400105 - Service died. Return by promise.
+         * @syscap SystemCapability.Multimedia.Media.AVScreenCapture
+         * @since 12
+         */
+        release(): Promise<void>;
+        /**
+         * Listens for AVScreenCaptureRecord info callback.
+         * @param { 'stateChange' } type - Type of the AVScreenCaptureRecord event to listen for.
+         * @param { Callback<AVScreenCaptureStateCode> } callback - Callback used to listen for the AVScreenCaptureRecord info return.
+         * @syscap SystemCapability.Multimedia.Media.AVScreenCapture
+         * @since 12
+         */
+        on(type: 'stateChange', callback: Callback<AVScreenCaptureStateCode>): void;
+        /**
+         * Listens for AVScreenCaptureRecord info callback.
+         * @param { 'error' } type - Type of the AVScreenCaptureRecord event to listen for.
+         * @param { ErrorCallback } callback - Callback used to listen for the AVScreenCaptureRecord error return.
+         * @throws { BusinessError } 5400103 - IO error. Return by ErrorCallback.
+         * @throws { BusinessError } 5400105 - Service died. Return by ErrorCallback.
+         * @syscap SystemCapability.Multimedia.Media.AVScreenCapture
+         * @since 12
+         */
+        on(type: 'error', callback: ErrorCallback): void;
+        /**
+         * Unregister listens for AVScreenCaptureRecord info callback.
+         * @param { 'stateChange' } type - Type of the AVScreenCaptureRecord event to listen for.
+         * @param { Callback<AVScreenCaptureStateCode> } callback - Callback used to listen for the AVScreenCaptureRecord info return.
+         * @syscap SystemCapability.Multimedia.Media.AVScreenCapture
+         * @since 12
+         */
+        off(type: 'stateChange', callback?: Callback<AVScreenCaptureStateCode>): void;
+        /**
+         * Unregister listens for AVScreenCaptureRecord error callback.
+         * @param { 'error' } type - Type of the AVScreenCaptureRecord event to listen for.
+         * @param { ErrorCallback } callback - Callback used to listen for the AVScreenCaptureRecord error return.
+         * @syscap SystemCapability.Multimedia.Media.AVScreenCapture
+         * @since 12
+         */
+        off(type: 'error', callback?: ErrorCallback): void;
     }
 }
 export default media;

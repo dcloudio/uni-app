@@ -10,10 +10,23 @@ declare const uni: any
 declare const plus: any
 let callbackId = 1
 let proxy: any
-const callbacks: Record<string, Function> = {}
+
+const keepAliveCallbacks: Record<string, Function> = {}
+
+function isUniElement(obj: any) {
+  return typeof obj.getNodeId === 'function' && obj.pageId
+}
 
 function isComponentPublicInstance(instance: any) {
   return instance && instance.$ && instance.$.proxy === instance
+}
+
+function parseElement(obj: any) {
+  if (isUniElement(obj)) {
+    return obj
+  } else if (isComponentPublicInstance(obj)) {
+    return obj.$el
+  }
 }
 
 function toRaw(observed?: unknown): unknown {
@@ -21,20 +34,29 @@ function toRaw(observed?: unknown): unknown {
   return raw ? toRaw(raw) : observed
 }
 
-export function normalizeArg(arg: unknown) {
+export function normalizeArg(
+  arg: unknown,
+  callbacks: Record<string, Function>,
+  keepAlive: boolean
+) {
   arg = toRaw(arg)
   if (typeof arg === 'function') {
-    // 查找该函数是否已缓存
-    const oldId = Object.keys(callbacks).find((id) => callbacks[id] === arg)
-    const id = oldId ? parseInt(oldId) : callbackId++
-    callbacks[id] = arg
+    let id: number
+    if (keepAlive) {
+      // 仅keepAlive时，需要查找缓存，非keepAlive时，直接创建，避免函数被复用时，回调函数被误删
+      const oldId = Object.keys(callbacks).find((id) => callbacks[id] === arg)
+      id = oldId ? parseInt(oldId) : callbackId++
+      callbacks[id] = arg
+    } else {
+      id = callbackId++
+      callbacks[id] = arg
+    }
     return id
   } else if (isPlainObject(arg)) {
-    if (isComponentPublicInstance(arg)) {
+    const el = parseElement(arg)
+    if (el) {
       let nodeId = ''
       let pageId = ''
-      // @ts-expect-error
-      const el = arg.$el
       // 非 x 可能不存在 getNodeId 方法？
       if (el && el.getNodeId) {
         pageId = el.pageId
@@ -42,9 +64,18 @@ export function normalizeArg(arg: unknown) {
       }
       return { pageId, nodeId }
     } else {
+      // 必须复制，否则会污染原始对象，比如：
+      // const obj = {
+      //   a: 1,
+      //   b: () => {}
+      // }
+      // const newObj = normalizeArg(obj, {}, false)
+      // newObj.a = 2 // 这会污染原始对象 obj
+      const newArg = {}
       Object.keys(arg).forEach((name) => {
-        ;(arg as any)[name] = normalizeArg((arg as any)[name])
+        newArg[name] = normalizeArg((arg as any)[name], callbacks, keepAlive)
       })
+      return newArg
     }
   }
   return arg
@@ -99,6 +130,10 @@ interface ProxyFunctionOptions extends ModuleOptions {
    */
   companion?: boolean
   /**
+   * 回调是否持久保留
+   */
+  keepAlive: boolean
+  /**
    * 方法参数列表
    */
   params: Parameter[]
@@ -122,6 +157,7 @@ interface ProxyInterfaceOptions extends ModuleOptions {
   methods: {
     [name: string]: {
       async?: boolean
+      keepAlive: boolean
       params: Parameter[]
       return?: ProxyFunctionReturnOptions
     }
@@ -145,6 +181,7 @@ interface ProxyClassOptions extends ModuleOptions {
   methods: {
     [name: string]: {
       async?: boolean
+      keepAlive: boolean
       params: Parameter[]
       return?: ProxyFunctionReturnOptions
     }
@@ -152,6 +189,7 @@ interface ProxyClassOptions extends ModuleOptions {
   staticMethods: {
     [name: string]: {
       async?: boolean
+      keepAlive: boolean
       params: Parameter[]
       return?: ProxyFunctionReturnOptions
     }
@@ -174,6 +212,10 @@ interface InvokeInstanceArgs extends ModuleOptions {
    * 属性|方法
    */
   type: InvokeType
+  /**
+   * 回调是否持久保留
+   */
+  keepAlive: boolean
   /**
    * 执行方法时的真实参数列表
    */
@@ -204,6 +246,10 @@ interface InvokeStaticArgs extends ModuleOptions {
    * 属性|方法
    */
   type: InvokeType
+  /**
+   * 回调是否持久保留
+   */
+  keepAlive: boolean
   /**
    * 执行方法时的真实参数列表
    */
@@ -237,7 +283,6 @@ interface InvokeCallbackParamsRes {
   id: number
   name: string
   params: unknown[]
-  keepAlive?: boolean
 }
 interface InvokeSyncRes {
   type: 'return'
@@ -371,6 +416,7 @@ function initProxyFunction(
     name: methodName,
     method,
     companion,
+    keepAlive,
     params: methodParams,
     return: returnOptions,
     errMsg,
@@ -378,21 +424,11 @@ function initProxyFunction(
   instanceId: number,
   proxy?: unknown
 ) {
-  const invokeCallback = ({
-    id,
-    name,
-    params,
-    keepAlive,
-  }: InvokeCallbackParamsRes) => {
-    const callback = callbacks[id!]
-    if (callback) {
-      callback(...params)
-      if (!keepAlive) {
-        delete callbacks[id]
-      }
-    } else {
-      console.error(`${pkg}${cls}.${methodName} ${name} is not found`)
-    }
+  if (!keepAlive) {
+    keepAlive =
+      methodName.indexOf('on') === 0 &&
+      methodParams.length === 1 &&
+      methodParams[0].type === 'UTSCallback'
   }
   const baseArgs: InvokeArgs = instanceId
     ? {
@@ -402,6 +438,7 @@ function initProxyFunction(
         type,
         name: methodName,
         method: methodParams,
+        keepAlive,
       }
     : {
         moduleName,
@@ -412,13 +449,33 @@ function initProxyFunction(
         type,
         companion,
         method: methodParams,
+        keepAlive,
       }
   return (...args: unknown[]) => {
     if (errMsg) {
       throw new Error(errMsg)
     }
+    // TODO 隐患：部分callback可能不会被删除，比如传入了success、fail、complete，但是仅触发了success、complete，那么fail就不会被删除
+    // 需要有个机制来知道整个函数已经结束了，需要清理所有相关callbacks
+    const callbacks = keepAlive ? keepAliveCallbacks : {}
+    const invokeCallback = ({ id, name, params }: InvokeCallbackParamsRes) => {
+      const callback = callbacks[id!]
+      if (callback) {
+        callback(...params)
+        if (!keepAlive) {
+          delete callbacks[id]
+        }
+      } else {
+        console.error(
+          `uts插件[${moduleName}] ${pkg}${cls}.${methodName.replace(
+            'ByJs',
+            ''
+          )} ${name}回调函数已释放，不能再次执行，参考文档：https://doc.dcloud.net.cn/uni-app-x/plugin/uts-plugin.html#keepalive`
+        )
+      }
+    }
     const invokeArgs = extend({}, baseArgs, {
-      params: args.map((arg) => normalizeArg(arg)),
+      params: args.map((arg) => normalizeArg(arg, callbacks, keepAlive)),
     })
     if (async) {
       return new Promise((resolve, reject) => {
@@ -552,7 +609,11 @@ export function initUTSProxyClass(
           'constructor',
           false,
           extend(
-            { name: 'constructor', params: constructorParams },
+            {
+              name: 'constructor',
+              keepAlive: false,
+              params: constructorParams,
+            },
             baseOptions
           ),
           0
@@ -574,12 +635,18 @@ export function initUTSProxyClass(
             //实例方法
             name = parseClassMethodName(name, methods)
             if (hasOwn(methods, name)) {
-              const { async, params, return: returnOptions } = methods[name]
+              const {
+                async,
+                keepAlive,
+                params,
+                return: returnOptions,
+              } = methods[name]
               target[name] = initUTSInstanceMethod(
                 !!async,
                 extend(
                   {
                     name,
+                    keepAlive,
                     params,
                     return: returnOptions,
                   },
@@ -595,6 +662,7 @@ export function initUTSProxyClass(
                 moduleType,
                 id: instance.__instanceId,
                 type: 'getter',
+                keepAlive: false,
                 name: name as string,
                 errMsg,
               })
@@ -614,6 +682,7 @@ export function initUTSProxyClass(
                   extend(
                     {
                       name: name as string,
+                      keepAlive: false,
                       params: [param],
                     },
                     baseOptions
@@ -639,7 +708,12 @@ export function initUTSProxyClass(
       name = parseClassMethodName(name, staticMethods)
       if (hasOwn(staticMethods, name)) {
         if (!staticMethodCache[name as string]) {
-          const { async, params, return: returnOptions } = staticMethods[name]
+          const {
+            async,
+            keepAlive,
+            params,
+            return: returnOptions,
+          } = staticMethods[name]
           // 静态方法
           staticMethodCache[name] = initUTSStaticMethod(
             !!async,
@@ -647,6 +721,7 @@ export function initUTSProxyClass(
               {
                 name,
                 companion: true,
+                keepAlive,
                 params,
                 return: returnOptions,
               },
@@ -683,6 +758,7 @@ export function initUTSProxyClass(
               extend(
                 {
                   name: name as string,
+                  keepAlive: false,
                   params: [param],
                 },
                 baseOptions

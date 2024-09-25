@@ -1,17 +1,17 @@
 {
   "private": true,
   "name": "@dcloudio/size-check",
-  "version": "3.0.0-4020420240722003",
+  "version": "3.0.0-alpha-4020820240920001",
   "dependencies": {
-    "@dcloudio/uni-app": "3.0.0-4020420240722003",
-    "@dcloudio/uni-h5": "3.0.0-4020420240722003",
+    "@dcloudio/uni-app": "3.0.0-alpha-4020820240920001",
+    "@dcloudio/uni-h5": "3.0.0-alpha-4020820240920001",
     "vue": "3.4.21",
     "vue-i18n": "9.1.9",
     "vuex": "^4.1.0"
   },
   "devDependencies": {
-    "@dcloudio/uni-cli-shared": "3.0.0-4020420240722003",
-    "@dcloudio/uni-components": "3.0.0-4020420240722003",
-    "@dcloudio/vite-plugin-uni": "3.0.0-4020420240722003"
+    "@dcloudio/uni-cli-shared": "3.0.0-alpha-4020820240920001",
+    "@dcloudio/uni-components": "3.0.0-alpha-4020820240920001",
+    "@dcloudio/vite-plugin-uni": "3.0.0-alpha-4020820240920001"
   }
 }

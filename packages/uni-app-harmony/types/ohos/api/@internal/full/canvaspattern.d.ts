@@ -13,6 +13,10 @@
  * limitations under the License.
  */
 /**
+ * @file
+ * @kit ArkUI
+ */
+/**
  * Describes an opaque object of a template, which is created using the createPattern() method.
  *
  * @interface CanvasPattern

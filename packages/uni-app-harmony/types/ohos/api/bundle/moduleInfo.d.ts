@@ -13,6 +13,10 @@
  * limitations under the License.
  */
 /**
+ * @file
+ * @kit AbilityKit
+ */
+/**
  * Stores module information about an application.
  *
  * @typedef ModuleInfo

@@ -1,4 +1,4 @@
-import type { ComponentPublicInstance } from 'vue'
+import type { ComponentPublicInstance, VNode } from 'vue'
 import { isArray } from '@vue/shared'
 import { getCustomDataset } from '@dcloudio/uni-shared'
 import { getWindowOffset } from '@dcloudio/uni-core'
@@ -47,7 +47,7 @@ function getNodeInfo(
   const { top, topWindowHeight } = getWindowOffset()
   if (fields.node) {
     // TODO
-    const tagName = el.tagName.split('-')[1]
+    const tagName = el.tagName.replace('uni-', '')
     if (tagName) {
       info.node = el.querySelector(tagName)
     }
@@ -149,6 +149,157 @@ function matches(element: HTMLElement, selectors: string) {
   return matches.call(element, selectors)
 }
 
+class QuerySelectorHelper {
+  _element: UniElement
+  _commentStartVNode: VNode | undefined
+
+  constructor(element: UniElement, vnode: VNode | undefined) {
+    this._element = element
+    this._commentStartVNode = vnode
+  }
+
+  static queryElement(
+    element: UniElement,
+    selector: string,
+    all: boolean,
+    vnode: VNode | undefined
+  ): any | null {
+    return new QuerySelectorHelper(element, vnode).query(selector, all)
+  }
+
+  query(selector: string, all: boolean): any | null {
+    const isFragment =
+      // @ts-expect-error
+      this._element.nodeType === 3 || this._element.nodeType === 8
+    if (isFragment) {
+      return this.queryFragment(this._element, selector, all)
+    } else {
+      return all
+        ? this.querySelectorAll(this._element, selector)
+        : this.querySelector(this._element, selector)
+    }
+  }
+
+  queryFragment(el: UniElement, selector: string, all: boolean): any | null {
+    let current = el.nextSibling
+    if (current == null) {
+      return null
+    }
+
+    let depth = 65535
+    if (all) {
+      const result1: Array<any> = []
+      while (depth > 0) {
+        depth--
+        // @ts-expect-error
+        if (current.nodeName && current.nodeName == '#comment') {
+          // @ts-expect-error
+          current = current.nextSibling
+          continue
+        }
+        const queryResult = this.querySelectorAll(current!, selector)
+        if (queryResult != null) {
+          result1.push(...queryResult)
+        }
+        // @ts-expect-error
+        current = current.nextSibling
+        if (current == null || this._commentStartVNode!.anchor == current) {
+          break
+        }
+      }
+      return result1
+    } else {
+      let result2: any | null = null
+      while (depth > 0) {
+        depth--
+        // @ts-expect-error
+        if (current.nodeName && current.nodeName == '#comment') {
+          // @ts-expect-error
+          current = current.nextSibling
+          continue
+        }
+        result2 = this.querySelector(current!, selector)
+        // @ts-expect-error
+        current = current.nextSibling
+        if (
+          result2 != null ||
+          current == null ||
+          this._commentStartVNode!.anchor == current
+        ) {
+          break
+        }
+      }
+      return result2
+    }
+  }
+
+  querySelector(
+    element: UniElement,
+    selector: string
+  ): SelectorQueryNodeInfo | null {
+    let element2 = this.querySelf(element, selector)
+    if (element2 == null) {
+      element2 = element.querySelector(selector)
+    }
+    if (element2 != null) {
+      return this.getNodeInfo(element2)
+    }
+    return null
+  }
+
+  querySelectorAll(
+    element: UniElement,
+    selector: string
+  ): Array<SelectorQueryNodeInfo> | null {
+    const nodesInfoArray: Array<SelectorQueryNodeInfo> = []
+    const element2 = this.querySelf(element, selector)
+    if (element2 != null) {
+      nodesInfoArray.push(this.getNodeInfo(element))
+    }
+    const findNodes = element.querySelectorAll(selector)
+    findNodes?.forEach((el: UniElement) => {
+      nodesInfoArray.push(this.getNodeInfo(el))
+    })
+    return nodesInfoArray
+  }
+
+  querySelf(element: UniElement | null, selector: string): UniElement | null {
+    if (element == null || selector.length < 2) {
+      return null
+    }
+
+    const selectorType = selector.charAt(0)
+    const selectorName = selector.slice(1)
+    // @ts-expect-error
+    if (selectorType == '.' && element.classList.contains(selectorName)) {
+      return element
+    }
+    if (selectorType == '#' && element.getAttribute('id') == selectorName) {
+      return element
+    }
+    if (selector.toUpperCase() == element.nodeName.toUpperCase()) {
+      return element
+    }
+
+    return null
+  }
+
+  getNodeInfo(element: UniElement): SelectorQueryNodeInfo {
+    const rect = element.getBoundingClientRect()
+    const nodeInfo = {
+      id: element.getAttribute('id')?.toString(),
+      dataset: null,
+      left: rect.left,
+      top: rect.top,
+      right: rect.right,
+      bottom: rect.bottom,
+      width: rect.width,
+      height: rect.height,
+    } as SelectorQueryNodeInfo
+    return nodeInfo
+  }
+}
+
 function getNodesInfo(
   pageVm: ComponentPublicInstance,
   component: ComponentPublicInstance | undefined | null,
@@ -165,6 +316,16 @@ function getNodesInfo(
   const { nodeType } = selfElement
   // ssr 时，可能为8
   const maybeFragment = nodeType === 3 || nodeType === 8
+  //#if _X_ && !_NODE_JS_
+  if (maybeFragment)
+    return QuerySelectorHelper.queryElement(
+      selfElement as unknown as UniElement,
+      selector,
+      !single,
+      component?.$.subTree
+    )
+  //#endif
+
   if (single) {
     const node = maybeFragment
       ? (parentElement.querySelector(selector) as HTMLElement)

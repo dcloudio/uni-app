@@ -322,7 +322,10 @@ export interface AnimatorResult {
     /**
      * Reset the options for current animator.
      * @param { AnimatorOptions } options - Options.
-     * @throws { BusinessError } 401 - if the type of the parameter 1 is not object.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes:
+     * <br> 1. Mandatory parameters are left unspecified.
+     * <br> 2. Incorrect parameters types.
+     * <br> 3. Parameter verification failed.
      * @throws { BusinessError } 100001 - if no page is found for pageId or fail to get object property list.
      * @syscap SystemCapability.ArkUI.ArkUI.Full
      * @since 9
@@ -330,7 +333,10 @@ export interface AnimatorResult {
     /**
      * Reset the options for current animator.
      * @param { AnimatorOptions } options - Options.
-     * @throws { BusinessError } 401 - if the type of the parameter 1 is not object.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes:
+     * <br> 1. Mandatory parameters are left unspecified.
+     * <br> 2. Incorrect parameters types.
+     * <br> 3. Parameter verification failed.
      * @throws { BusinessError } 100001 - if no page is found for pageId or fail to get object property list.
      * @syscap SystemCapability.ArkUI.ArkUI.Full
      * @crossplatform
@@ -339,7 +345,10 @@ export interface AnimatorResult {
     /**
      * Reset the options for current animator.
      * @param { AnimatorOptions } options - Options.
-     * @throws { BusinessError } 401 - if the type of the parameter 1 is not object.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes:
+     * <br> 1. Mandatory parameters are left unspecified.
+     * <br> 2. Incorrect parameters types.
+     * <br> 3. Parameter verification failed.
      * @throws { BusinessError } 100001 - if no page is found for pageId or fail to get object property list.
      * @syscap SystemCapability.ArkUI.ArkUI.Full
      * @crossplatform
@@ -436,6 +445,7 @@ export interface AnimatorResult {
      */
     /**
      * Plays the animation in reverse direction.
+     * Invalid when using interpolating-spring curve.
      * @syscap SystemCapability.ArkUI.ArkUI.Full
      * @crossplatform
      * @atomicservice
@@ -459,9 +469,18 @@ export interface AnimatorResult {
      * @crossplatform
      * @atomicservice
      * @since 11
+     * @deprecated since 12
+     * @useinstead ohos.animator.onFrame
      */
     onframe: (progress: number) => void;
     /**
+     * Trigger when vSync callback.
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @since 12
+     */
+    onFrame: (progress: number) => void;
+    /**
      * The animation is finished.
      * @syscap SystemCapability.ArkUI.ArkUI.Full
      * @since 6
@@ -478,9 +497,18 @@ export interface AnimatorResult {
      * @crossplatform
      * @atomicservice
      * @since 11
+     * @deprecated since 12
+     * @useinstead ohos.animator.onFinish
      */
     onfinish: () => void;
     /**
+     * The animation is finished.
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @since 12
+     */
+    onFinish: () => void;
+    /**
      * The animation is canceled.
      * @syscap SystemCapability.ArkUI.ArkUI.Full
      * @since 6
@@ -497,9 +525,18 @@ export interface AnimatorResult {
      * @crossplatform
      * @atomicservice
      * @since 11
+     * @deprecated since 12
+     * @useinstead ohos.animator.onCancel
      */
     oncancel: () => void;
     /**
+     * The animation is canceled.
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @since 12
+     */
+    onCancel: () => void;
+    /**
      * The animation is repeated.
      * @syscap SystemCapability.ArkUI.ArkUI.Full
      * @since 6
@@ -516,8 +553,24 @@ export interface AnimatorResult {
      * @crossplatform
      * @atomicservice
      * @since 11
+     * @deprecated since 12
+     * @useinstead ohos.animator.onRepeat
      */
     onrepeat: () => void;
+    /**
+     * The animation is repeated.
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @since 12
+     */
+    onRepeat: () => void;
+    /**
+     * The expected frame rate of dynamical of rate range.
+     * @param { ExpectedFrameRateRange } rateRange - Indicates ExpectedFrameRateRange.
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @since 12
+     */
+    setExpectedFrameRateRange(rateRange: ExpectedFrameRateRange): void;
 }
 /**
  * Defines the Animator class.
@@ -552,7 +605,10 @@ export default class Animator {
      * Create an animator object for custom animation.
      * @param { AnimatorOptions } options - Options.
      * @returns { AnimatorResult } animator result
-     * @throws { BusinessError } 401 - if parameter error.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes:
+     * <br> 1. Mandatory parameters are left unspecified.
+     * <br> 2. Incorrect parameters types.
+     * <br> 3. Parameter verification failed.
      * @syscap SystemCapability.ArkUI.ArkUI.Full
      * @since 9
      */
@@ -560,7 +616,10 @@ export default class Animator {
      * Create an animator object for custom animation.
      * @param { AnimatorOptions } options - Options.
      * @returns { AnimatorResult } animator result
-     * @throws { BusinessError } 401 - if parameter error.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes:
+     * <br> 1. Mandatory parameters are left unspecified.
+     * <br> 2. Incorrect parameters types.
+     * <br> 3. Parameter verification failed.
      * @syscap SystemCapability.ArkUI.ArkUI.Full
      * @crossplatform
      * @since 10
@@ -569,7 +628,10 @@ export default class Animator {
      * Create an animator object for custom animation.
      * @param { AnimatorOptions } options - Options.
      * @returns { AnimatorResult } animator result
-     * @throws { BusinessError } 401 - if parameter error.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes:
+     * <br> 1. Mandatory parameters are left unspecified.
+     * <br> 2. Incorrect parameters types.
+     * <br> 3. Parameter verification failed.
      * @syscap SystemCapability.ArkUI.ArkUI.Full
      * @crossplatform
      * @atomicservice

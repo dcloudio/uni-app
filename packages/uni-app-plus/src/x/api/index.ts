@@ -21,6 +21,7 @@ export { setNavigationBarTitle } from './navigationBar/setNavigationBarTitle'
 // dom
 export { getElementById } from './dom/getElementById'
 export { createSelectorQuery } from './dom/createSelectorQuery'
+export { createCanvasContextAsync } from './dom/createCanvasContextAsync'
 
 // ui
 export { pageScrollTo } from './ui/pageScrollTo'
@@ -31,7 +32,10 @@ export { stopPullDownRefresh } from './ui/stopPullDownRefresh'
 export { $emit, $off, $on, $once } from './base/event-bus'
 export { removeInterceptor, addInterceptor } from './base/interceptor'
 export { getLaunchOptionsSync } from './base/getLaunchOptionsSync'
+export { getEnterOptionsSync } from './base/getEnterOptionsSync'
 export { env } from './base/env'
+
+export * from './performance'
 
 export {
   initUTSProxyClass,

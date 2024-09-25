@@ -68,7 +68,9 @@ declare class PlainArray<T> {
      * @param { number } key - key key Added the key of key-value
      * @param { T } value - value value Added the value of key-value
      * @throws { BusinessError } 10200011 - The add method cannot be bound.
-     * @throws { BusinessError } 401 - The type of parameters are invalid.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes:
+     * 1.Mandatory parameters are left unspecified;
+     * 2.Incorrect parameter types.
      * @syscap SystemCapability.Utils.Lang
      * @since 8
      */
@@ -78,7 +80,9 @@ declare class PlainArray<T> {
      * @param { number } key - key key Added the key of key-value
      * @param { T } value - value value Added the value of key-value
      * @throws { BusinessError } 10200011 - The add method cannot be bound.
-     * @throws { BusinessError } 401 - The type of parameters are invalid.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes:
+     * 1.Mandatory parameters are left unspecified;
+     * 2.Incorrect parameter types.
      * @syscap SystemCapability.Utils.Lang
      * @crossplatform
      * @since 10
@@ -124,7 +128,9 @@ declare class PlainArray<T> {
      * @param { number } key - key key need to determine whether to include the key
      * @returns { boolean } the boolean type
      * @throws { BusinessError } 10200011 - The has method cannot be bound.
-     * @throws { BusinessError } 401 - The type of parameters are invalid.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes:
+     * 1.Mandatory parameters are left unspecified;
+     * 2.Incorrect parameter types.
      * @syscap SystemCapability.Utils.Lang
      * @since 8
      */
@@ -134,7 +140,9 @@ declare class PlainArray<T> {
      * @param { number } key - key key need to determine whether to include the key
      * @returns { boolean } the boolean type
      * @throws { BusinessError } 10200011 - The has method cannot be bound.
-     * @throws { BusinessError } 401 - The type of parameters are invalid.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes:
+     * 1.Mandatory parameters are left unspecified;
+     * 2.Incorrect parameter types.
      * @syscap SystemCapability.Utils.Lang
      * @crossplatform
      * @since 10
@@ -146,7 +154,9 @@ declare class PlainArray<T> {
      * @param { number } key - key key Looking for goals
      * @returns { T } the value of key-value pairs
      * @throws { BusinessError } 10200011 - The get method cannot be bound.
-     * @throws { BusinessError } 401 - The type of parameters are invalid.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes:
+     * 1.Mandatory parameters are left unspecified;
+     * 2.Incorrect parameter types.
      * @syscap SystemCapability.Utils.Lang
      * @since 8
      */
@@ -156,7 +166,9 @@ declare class PlainArray<T> {
      * @param { number } key - key key Looking for goals
      * @returns { T } the value of key-value pairs
      * @throws { BusinessError } 10200011 - The get method cannot be bound.
-     * @throws { BusinessError } 401 - The type of parameters are invalid.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes:
+     * 1.Mandatory parameters are left unspecified;
+     * 2.Incorrect parameter types.
      * @syscap SystemCapability.Utils.Lang
      * @crossplatform
      * @since 10
@@ -168,7 +180,9 @@ declare class PlainArray<T> {
      * @param { number } key - key key Looking for goals
      * @returns { number } Subscript corresponding to target
      * @throws { BusinessError } 10200011 - The getIndexOfKey method cannot be bound.
-     * @throws { BusinessError } 401 - The type of parameters are invalid.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes:
+     * 1.Mandatory parameters are left unspecified;
+     * 2.Incorrect parameter types.
      * @syscap SystemCapability.Utils.Lang
      * @since 8
      */
@@ -178,7 +192,9 @@ declare class PlainArray<T> {
      * @param { number } key - key key Looking for goals
      * @returns { number } Subscript corresponding to target
      * @throws { BusinessError } 10200011 - The getIndexOfKey method cannot be bound.
-     * @throws { BusinessError } 401 - The type of parameters are invalid.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes:
+     * 1.Mandatory parameters are left unspecified;
+     * 2.Incorrect parameter types.
      * @syscap SystemCapability.Utils.Lang
      * @crossplatform
      * @since 10
@@ -228,7 +244,9 @@ declare class PlainArray<T> {
      * @param { number } index - index index Target subscript for search
      * @returns { number } the key of key-value pairs
      * @throws { BusinessError } 10200011 - The getKeyAt method cannot be bound.
-     * @throws { BusinessError } 401 - The type of parameters are invalid.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes:
+     * 1.Mandatory parameters are left unspecified;
+     * 2.Incorrect parameter types.
      * @syscap SystemCapability.Utils.Lang
      * @since 8
      */
@@ -238,7 +256,9 @@ declare class PlainArray<T> {
      * @param { number } index - index index Target subscript for search
      * @returns { number } the key of key-value pairs
      * @throws { BusinessError } 10200011 - The getKeyAt method cannot be bound.
-     * @throws { BusinessError } 401 - The type of parameters are invalid.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes:
+     * 1.Mandatory parameters are left unspecified;
+     * 2.Incorrect parameter types.
      * @syscap SystemCapability.Utils.Lang
      * @crossplatform
      * @since 10
@@ -250,7 +270,9 @@ declare class PlainArray<T> {
      * @param { number } key - key key Target to be deleted
      * @returns { T } Target mapped value
      * @throws { BusinessError } 10200011 - The remove method cannot be bound.
-     * @throws { BusinessError } 401 - The type of parameters are invalid.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes:
+     * 1.Mandatory parameters are left unspecified;
+     * 2.Incorrect parameter types.
      * @syscap SystemCapability.Utils.Lang
      * @since 8
      */
@@ -260,7 +282,9 @@ declare class PlainArray<T> {
      * @param { number } key - key key Target to be deleted
      * @returns { T } Target mapped value
      * @throws { BusinessError } 10200011 - The remove method cannot be bound.
-     * @throws { BusinessError } 401 - The type of parameters are invalid.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes:
+     * 1.Mandatory parameters are left unspecified;
+     * 2.Incorrect parameter types.
      * @syscap SystemCapability.Utils.Lang
      * @crossplatform
      * @since 10
@@ -272,7 +296,9 @@ declare class PlainArray<T> {
      * @param { number } index - index index Target subscript for search
      * @returns { T } the T type
      * @throws { BusinessError } 10200011 - The removeAt method cannot be bound.
-     * @throws { BusinessError } 401 - The type of parameters are invalid.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes:
+     * 1.Mandatory parameters are left unspecified;
+     * 2.Incorrect parameter types.
      * @syscap SystemCapability.Utils.Lang
      * @since 8
      */
@@ -282,7 +308,9 @@ declare class PlainArray<T> {
      * @param { number } index - index index Target subscript for search
      * @returns { T } the T type
      * @throws { BusinessError } 10200011 - The removeAt method cannot be bound.
-     * @throws { BusinessError } 401 - The type of parameters are invalid.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes:
+     * 1.Mandatory parameters are left unspecified;
+     * 2.Incorrect parameter types.
      * @syscap SystemCapability.Utils.Lang
      * @crossplatform
      * @since 10
@@ -296,7 +324,9 @@ declare class PlainArray<T> {
      * @returns { number } Actual deleted quantity
      * @throws { BusinessError } 10200011 - The removeRangeFrom method cannot be bound.
      * @throws { BusinessError } 10200001 - The value of index is out of range.
-     * @throws { BusinessError } 401 - The type of parameters are invalid.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes:
+     * 1.Mandatory parameters are left unspecified;
+     * 2.Incorrect parameter types.
      * @syscap SystemCapability.Utils.Lang
      * @since 8
      */
@@ -308,7 +338,9 @@ declare class PlainArray<T> {
      * @returns { number } Actual deleted quantity
      * @throws { BusinessError } 10200011 - The removeRangeFrom method cannot be bound.
      * @throws { BusinessError } 10200001 - The value of index is out of range.
-     * @throws { BusinessError } 401 - The type of parameters are invalid.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes:
+     * 1.Mandatory parameters are left unspecified;
+     * 2.Incorrect parameter types.
      * @syscap SystemCapability.Utils.Lang
      * @crossplatform
      * @since 10
@@ -321,7 +353,9 @@ declare class PlainArray<T> {
      * @param { T } value - value value Updated the target mapped value
      * @throws { BusinessError } 10200011 - The setValueAt method cannot be bound.
      * @throws { BusinessError } 10200001 - The value of index is out of range.
-     * @throws { BusinessError } 401 - The type of parameters are invalid.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes:
+     * 1.Mandatory parameters are left unspecified;
+     * 2.Incorrect parameter types.
      * @syscap SystemCapability.Utils.Lang
      * @since 8
      */
@@ -332,7 +366,9 @@ declare class PlainArray<T> {
      * @param { T } value - value value Updated the target mapped value
      * @throws { BusinessError } 10200011 - The setValueAt method cannot be bound.
      * @throws { BusinessError } 10200001 - The value of index is out of range.
-     * @throws { BusinessError } 401 - The type of parameters are invalid.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes:
+     * 1.Mandatory parameters are left unspecified;
+     * 2.Incorrect parameter types.
      * @syscap SystemCapability.Utils.Lang
      * @crossplatform
      * @since 10
@@ -363,7 +399,9 @@ declare class PlainArray<T> {
      * @returns { T } the value of key-value pairs
      * @throws { BusinessError } 10200011 - The getValueAt method cannot be bound.
      * @throws { BusinessError } 10200001 - The value of index is out of range.
-     * @throws { BusinessError } 401 - The type of parameters are invalid.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes:
+     * 1.Mandatory parameters are left unspecified;
+     * 2.Incorrect parameter types.
      * @syscap SystemCapability.Utils.Lang
      * @since 8
      */
@@ -374,7 +412,9 @@ declare class PlainArray<T> {
      * @returns { T } the value of key-value pairs
      * @throws { BusinessError } 10200011 - The getValueAt method cannot be bound.
      * @throws { BusinessError } 10200001 - The value of index is out of range.
-     * @throws { BusinessError } 401 - The type of parameters are invalid.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes:
+     * 1.Mandatory parameters are left unspecified;
+     * 2.Incorrect parameter types.
      * @syscap SystemCapability.Utils.Lang
      * @crossplatform
      * @since 10
@@ -390,7 +430,9 @@ declare class PlainArray<T> {
      * thisArg (Optional) The value to be used as this value for when callbackFn is called.
      * If thisArg is omitted, undefined is used as the this value.
      * @throws { BusinessError } 10200011 - The forEach method cannot be bound.
-     * @throws { BusinessError } 401 - The type of parameters are invalid.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes:
+     * 1.Mandatory parameters are left unspecified;
+     * 2.Incorrect parameter types.
      * @syscap SystemCapability.Utils.Lang
      * @since 8
      */
@@ -404,7 +446,9 @@ declare class PlainArray<T> {
      * thisArg (Optional) The value to be used as this value for when callbackFn is called.
      * If thisArg is omitted, undefined is used as the this value.
      * @throws { BusinessError } 10200011 - The forEach method cannot be bound.
-     * @throws { BusinessError } 401 - The type of parameters are invalid.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes:
+     * 1.Mandatory parameters are left unspecified;
+     * 2.Incorrect parameter types.
      * @syscap SystemCapability.Utils.Lang
      * @crossplatform
      * @since 10

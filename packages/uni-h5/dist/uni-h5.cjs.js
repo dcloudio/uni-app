@@ -261,9 +261,9 @@ const INVOKE_SERVICE_API = "invokeServiceApi";
 let invokeServiceMethodId = 1;
 const invokeServiceMethod = (name, args, callback) => {
   const { subscribe, publishHandler } = UniViewJSBridge;
-  const id = callback ? invokeServiceMethodId++ : 0;
-  callback && subscribe(INVOKE_SERVICE_API + "." + id, callback, true);
-  publishHandler(INVOKE_SERVICE_API, { id, name, args });
+  const id2 = callback ? invokeServiceMethodId++ : 0;
+  callback && subscribe(INVOKE_SERVICE_API + "." + id2, callback, true);
+  publishHandler(INVOKE_SERVICE_API, { id: id2, name, args });
 };
 const viewMethods = /* @__PURE__ */ Object.create(null);
 function normalizeViewMethodName(pageId, name) {
@@ -384,9 +384,9 @@ const PAGE_META_KEYS = ["navigationBar", "pullToRefresh"];
 function initGlobalStyle() {
   return JSON.parse(JSON.stringify(__uniConfig.globalStyle || {}));
 }
-function initRouteMeta(pageMeta, id) {
+function initRouteMeta(pageMeta, id2) {
   const globalStyle = initGlobalStyle();
-  const res = shared.extend({ id }, globalStyle, pageMeta);
+  const res = shared.extend({ id: id2 }, globalStyle, pageMeta);
   PAGE_META_KEYS.forEach((name) => {
     res[name] = shared.extend({}, globalStyle[name], pageMeta[name]);
   });
@@ -407,14 +407,14 @@ function normalizePullToRefreshRpx(pullToRefresh) {
   return pullToRefresh;
 }
 function initPageInternalInstance(openType, url, pageQuery, meta, eventChannel, themeMode) {
-  const { id, route } = meta;
+  const { id: id2, route } = meta;
   const titleColor = uniShared.normalizeStyles(
     meta.navigationBar,
     __uniConfig.themeConfig,
     themeMode
   ).titleColor;
   return {
-    id,
+    id: id2,
     path: uniShared.addLeadingSlash(route),
     route,
     fullPath: url,
@@ -519,16 +519,16 @@ function publishViewMethodName(pageId) {
 }
 const invokeViewMethod = (name, args, pageId, callback) => {
   const { subscribe, publishHandler } = UniServiceJSBridge;
-  const id = callback ? invokeViewMethodId++ : 0;
-  callback && subscribe(INVOKE_VIEW_API + "." + id, callback, true);
-  publishHandler(publishViewMethodName(pageId), { id, name, args }, pageId);
+  const id2 = callback ? invokeViewMethodId++ : 0;
+  callback && subscribe(INVOKE_VIEW_API + "." + id2, callback, true);
+  publishHandler(publishViewMethodName(pageId), { id: id2, name, args }, pageId);
 };
 const invokeViewMethodKeepAlive = (name, args, callback, pageId) => {
   const { subscribe, unsubscribe, publishHandler } = UniServiceJSBridge;
-  const id = invokeViewMethodId++;
-  const subscribeName = INVOKE_VIEW_API + "." + id;
+  const id2 = invokeViewMethodId++;
+  const subscribeName = INVOKE_VIEW_API + "." + id2;
   subscribe(subscribeName, callback);
-  publishHandler(publishViewMethodName(pageId), { id, name, args }, pageId);
+  publishHandler(publishViewMethodName(pageId), { id: id2, name, args }, pageId);
   return () => {
     unsubscribe(subscribeName);
   };
@@ -1228,20 +1228,20 @@ function tryCatch(fn) {
 }
 let invokeCallbackId = 1;
 const invokeCallbacks = {};
-function addInvokeCallback(id, name, callback, keepAlive = false) {
-  invokeCallbacks[id] = {
+function addInvokeCallback(id2, name, callback, keepAlive = false) {
+  invokeCallbacks[id2] = {
     name,
     keepAlive,
     callback
   };
-  return id;
+  return id2;
 }
-function invokeCallback(id, res, extras) {
-  if (typeof id === "number") {
-    const opts = invokeCallbacks[id];
+function invokeCallback(id2, res, extras) {
+  if (typeof id2 === "number") {
+    const opts = invokeCallbacks[id2];
     if (opts) {
       if (!opts.keepAlive) {
-        delete invokeCallbacks[id];
+        delete invokeCallbacks[id2];
       }
       return opts.callback(res, extras);
     }
@@ -1448,17 +1448,17 @@ function formatApiArgs(args, options) {
     }
   }
 }
-function invokeSuccess(id, name, res) {
+function invokeSuccess(id2, name, res) {
   const result = {
     errMsg: name + ":ok"
   };
-  return invokeCallback(id, shared.extend(res || {}, result));
+  return invokeCallback(id2, shared.extend(res || {}, result));
 }
-function invokeFail(id, name, errMsg, errRes = {}) {
+function invokeFail(id2, name, errMsg, errRes = {}) {
   const apiErrMsg = name + ":fail" + (errMsg ? " " + errMsg : "");
   delete errRes.errCode;
   let res = shared.extend({ errMsg: apiErrMsg }, errRes);
-  return invokeCallback(id, res);
+  return invokeCallback(id2, res);
 }
 function beforeInvokeApi(name, args, protocol, options) {
   if (process.env.NODE_ENV !== "production") {
@@ -1487,14 +1487,14 @@ function parseErrMsg(errMsg) {
 }
 function wrapperTaskApi(name, fn, protocol, options) {
   return (args) => {
-    const id = createAsyncApiCallback(name, args, options);
+    const id2 = createAsyncApiCallback(name, args, options);
     const errMsg = beforeInvokeApi(name, [args], protocol, options);
     if (errMsg) {
-      return invokeFail(id, name, errMsg);
+      return invokeFail(id2, name, errMsg);
     }
     return fn(args, {
-      resolve: (res) => invokeSuccess(id, name, res),
-      reject: (errMsg2, errRes) => invokeFail(id, name, parseErrMsg(errMsg2), errRes)
+      resolve: (res) => invokeSuccess(id2, name, res),
+      reject: (errMsg2, errRes) => invokeFail(id2, name, parseErrMsg(errMsg2), errRes)
     });
   };
 }
@@ -2080,9 +2080,9 @@ function useMethods(props2, canvasRef, actionsWaiting) {
             if (image) {
               c2d.drawImage.apply(
                 c2d,
-                // @ts-ignore
+                // @ts-expect-error
                 [image].concat(
-                  // @ts-ignore
+                  // @ts-expect-error
                   [...otherData.slice(4, 8)],
                   [...otherData.slice(0, 4)]
                 )
@@ -2189,6 +2189,9 @@ function useMethods(props2, canvasRef, actionsWaiting) {
         destWidth = Math.round(width * _pixelRatio.value);
         destHeight = Math.round(height * _pixelRatio.value);
       } else if (!destWidth) {
+        if (!destHeight) {
+          destHeight = Math.round(height * _pixelRatio.value);
+        }
         destWidth = Math.round(width / height * destHeight);
       } else if (!destHeight) {
         destHeight = Math.round(height / width * destWidth);
@@ -2290,7 +2293,7 @@ function useMethods(props2, canvasRef, actionsWaiting) {
       type: fileType,
       quality
     });
-    if (!res.data || !res.data.length) {
+    if (res.errMsg) {
       resolve({
         errMsg: res.errMsg.replace("canvasPutImageData", "toTempFilePath")
       });
@@ -2972,7 +2975,9 @@ function useImageLoader(state, props2, rootRef, fixSize, trigger) {
         height
       } = img;
       setState(width, height, src);
-      fixSize();
+      vue.nextTick(() => {
+        fixSize();
+      });
       img.draggable = props2.draggable;
       if (draggableImg) {
         draggableImg.remove();
@@ -3545,12 +3550,12 @@ function resolveDigitDecimalPoint(event, cache, state, input, resetCache) {
 function useCache(props2, type) {
   if (type.value === "number") {
     const value = typeof props2.modelValue === "undefined" ? props2.value : props2.modelValue;
-    const cache = vue.ref(typeof value !== "undefined" ? value.toLocaleString() : "");
+    const cache = vue.ref(typeof value !== "undefined" && value !== null ? value.toLocaleString() : "");
     vue.watch(() => props2.modelValue, (value2) => {
-      cache.value = typeof value2 !== "undefined" ? value2.toLocaleString() : "";
+      cache.value = typeof value2 !== "undefined" && value2 !== null ? value2.toLocaleString() : "";
     });
     vue.watch(() => props2.value, (value2) => {
-      cache.value = typeof value2 !== "undefined" ? value2.toLocaleString() : "";
+      cache.value = typeof value2 !== "undefined" && value2 !== null ? value2.toLocaleString() : "";
     });
     return cache;
   } else {
@@ -3571,6 +3576,7 @@ const Input = /* @__PURE__ */ defineBuiltInComponent({
       let type2 = "";
       switch (props2.type) {
         case "text":
+          type2 = "text";
           if (props2.confirmType === "search") {
             type2 = "search";
           }
@@ -6305,6 +6311,10 @@ function useScrollViewLoader(props2, state, scrollTopNumber, scrollLeftNumber, t
         state.refresherHeight = props2.refresherThreshold;
         if (!beforeRefreshing) {
           beforeRefreshing = true;
+          trigger("refresherpulling", {}, {
+            deltaY: state.refresherHeight,
+            dy: state.refresherHeight
+          });
           trigger("refresherrefresh", {}, {
             dy: touchEnd.y - touchStart.y
           });
@@ -7613,8 +7623,8 @@ function useContextInfo(_id) {
   const instance = vue.getCurrentInstance();
   const vm = instance.proxy;
   const type = vm.$options.name.toLowerCase();
-  const id = _id || vm.id || `context${index$e++}`;
-  return `${type}.${id}`;
+  const id2 = _id || vm.id || `context${index$e++}`;
+  return `${type}.${id2}`;
 }
 function injectLifecycleHook(name, hook, publicThis, instance) {
   if (shared.isFunction(hook)) {
@@ -7642,7 +7652,9 @@ function initHooks(options, instance, publicThis) {
   if (mpType === "page") {
     instance.__isVisible = true;
     try {
-      const query = instance.attrs.__pageQuery;
+      let query = instance.attrs.__pageQuery;
+      if (false)
+        ;
       if (false)
         ;
       invokeHook(publicThis, uniShared.ON_LOAD, query);
@@ -7789,8 +7801,8 @@ const pageMetaKey = PolySymbol(process.env.NODE_ENV !== "production" ? "UniPageM
 function usePageMeta() {
   return vue.inject(pageMetaKey);
 }
-function providePageMeta(id) {
-  const pageMeta = initPageMeta(id);
+function providePageMeta(id2) {
+  const pageMeta = initPageMeta(id2);
   vue.provide(pageMetaKey, pageMeta);
   return pageMeta;
 }
@@ -7816,7 +7828,7 @@ function usePageRoute() {
     matched: [{ path }]
   };
 }
-function initPageMeta(id) {
+function initPageMeta(id2) {
   if (__UNI_FEATURE_PAGES__) {
     return vue.reactive(
       normalizePageMeta(
@@ -7824,7 +7836,7 @@ function initPageMeta(id) {
           JSON.stringify(
             initRouteMeta(
               vueRouter.useRoute().meta,
-              id
+              id2
             )
           )
         )
@@ -7833,7 +7845,7 @@ function initPageMeta(id) {
   }
   return vue.reactive(
     normalizePageMeta(
-      JSON.parse(JSON.stringify(initRouteMeta(__uniRoutes[0].meta, id)))
+      JSON.parse(JSON.stringify(initRouteMeta(__uniRoutes[0].meta, id2)))
     )
   );
 }
@@ -7878,6 +7890,123 @@ function getStateId() {
     return 1;
   }
 }
+function removeNonTabBarPages() {
+  const curTabBarPageVm = getCurrentPageVm();
+  if (!curTabBarPageVm) {
+    return;
+  }
+  const pagesMap = getCurrentPagesMap();
+  const keys = pagesMap.keys();
+  for (const routeKey of keys) {
+    const page = pagesMap.get(routeKey);
+    if (!page.$.__isTabBar) {
+      removePage(routeKey);
+    } else {
+      page.$.__isActive = false;
+    }
+  }
+  if (curTabBarPageVm.$.__isTabBar) {
+    curTabBarPageVm.$.__isVisible = false;
+    invokeHook(curTabBarPageVm, uniShared.ON_HIDE);
+  }
+}
+function isSamePage(url, $page) {
+  return url === $page.fullPath || url === "/" && $page.meta.isEntry;
+}
+function getTabBarPageId(url) {
+  const pages = getCurrentPagesMap().values();
+  for (const page of pages) {
+    const $page = page.$page;
+    if (isSamePage(url, $page)) {
+      page.$.__isActive = true;
+      return $page.id;
+    }
+  }
+}
+function removeLastPage() {
+  const page = getCurrentPage();
+  if (!page) {
+    return;
+  }
+  const $page = page.$page;
+  removePage(normalizeRouteKey($page.path, $page.id));
+}
+function removeAllPages() {
+  const keys = getCurrentPagesMap().keys();
+  for (const routeKey of keys) {
+    removePage(routeKey);
+  }
+}
+function navigate({ type, url, tabBarText, events, isAutomatedTesting }, __id__) {
+  const router = getApp().$router;
+  const { path, query } = uniShared.parseUrl(url);
+  return new Promise((resolve, reject) => {
+    const state = createPageState(type, __id__);
+    router[type === "navigateTo" ? "push" : "replace"]({
+      path,
+      query,
+      state,
+      force: true
+    }).then((failure) => {
+      if (vueRouter.isNavigationFailure(failure)) {
+        return reject(failure.message);
+      }
+      if (type === "switchTab") {
+        router.currentRoute.value.meta.tabBarText = tabBarText;
+      }
+      if (type === "navigateTo") {
+        const meta = router.currentRoute.value.meta;
+        if (!meta.eventChannel) {
+          meta.eventChannel = new uniShared.EventChannel(state.__id__, events);
+        } else if (events) {
+          Object.keys(events).forEach((eventName) => {
+            meta.eventChannel._addListener(
+              eventName,
+              "on",
+              events[eventName]
+            );
+          });
+          meta.eventChannel._clearCache();
+        }
+        return isAutomatedTesting ? resolve({
+          __id__: state.__id__
+        }) : resolve({
+          eventChannel: meta.eventChannel
+        });
+      }
+      return isAutomatedTesting ? resolve({ __id__: state.__id__ }) : resolve();
+    });
+  });
+}
+function handleBeforeEntryPageRoutes() {
+  if (entryPageState.handledBeforeEntryPageRoutes) {
+    return;
+  }
+  entryPageState.handledBeforeEntryPageRoutes = true;
+  const navigateToPages = [...navigateToPagesBeforeEntryPages];
+  navigateToPagesBeforeEntryPages.length = 0;
+  navigateToPages.forEach(
+    ({ args, resolve, reject }) => (
+      // @ts-expect-error
+      navigate(args).then(resolve).catch(reject)
+    )
+  );
+  const switchTabPages = [...switchTabPagesBeforeEntryPages];
+  switchTabPagesBeforeEntryPages.length = 0;
+  switchTabPages.forEach(
+    ({ args, resolve, reject }) => (removeNonTabBarPages(), navigate(args, getTabBarPageId(args.url)).then(resolve).catch(reject))
+  );
+  const redirectToPages = [...redirectToPagesBeforeEntryPages];
+  redirectToPagesBeforeEntryPages.length = 0;
+  redirectToPages.forEach(
+    ({ args, resolve, reject }) => (removeLastPage(), navigate(args).then(resolve).catch(reject))
+  );
+  const reLaunchPages = [...reLaunchPagesBeforeEntryPages];
+  reLaunchPagesBeforeEntryPages.length = 0;
+  reLaunchPages.forEach(
+    ({ args, resolve, reject }) => (removeAllPages(), navigate(args).then(resolve).catch(reject))
+  );
+}
 let tabBar;
 function useTabBar() {
   if (!tabBar) {
@@ -7891,12 +8020,22 @@ function normalizeWindowBottom(windowBottom) {
 }
 const SEP = "$$";
 const currentPagesMap = /* @__PURE__ */ new Map();
+const entryPageState = {
+  handledBeforeEntryPageRoutes: false
+};
+const navigateToPagesBeforeEntryPages = [];
+const switchTabPagesBeforeEntryPages = [];
+const redirectToPagesBeforeEntryPages = [];
+const reLaunchPagesBeforeEntryPages = [];
 function pruneCurrentPages() {
   currentPagesMap.forEach((page, id2) => {
     if (page.$.isUnmounted) {
       currentPagesMap.delete(id2);
     }
   });
+}
+function getCurrentPagesMap() {
+  return currentPagesMap;
 }
 function getCurrentPages$1() {
   const curPages = [];
@@ -7911,6 +8050,27 @@ function getCurrentPages$1() {
     }
   }
   return curPages;
+}
+function removeRouteCache(routeKey) {
+  const vnode = pageCacheMap.get(routeKey);
+  if (vnode) {
+    pageCacheMap.delete(routeKey);
+    routeCache.pruneCacheEntry(vnode);
+  }
+}
+function removePage(routeKey, removeRouteCaches = true) {
+  const pageVm = currentPagesMap.get(routeKey);
+  pageVm.$.__isUnload = true;
+  invokeHook(pageVm, uniShared.ON_UNLOAD);
+  currentPagesMap.delete(routeKey);
+  removeRouteCaches && removeRouteCache(routeKey);
+}
+let id = /* @__PURE__ */ getStateId();
+function createPageState(type, __id__) {
+  return {
+    __id__: __id__ || ++id,
+    __type__: type
+  };
 }
 function initPublicPage(route) {
   const meta = usePageMeta();
@@ -7928,6 +8088,11 @@ function initPage(vm) {
   const page = initPublicPage(route);
   initPageVm(vm, page);
   currentPagesMap.set(normalizeRouteKey(page.path, page.id), vm);
+  if (currentPagesMap.size === 1) {
+    setTimeout(() => {
+      handleBeforeEntryPageRoutes();
+    }, 0);
+  }
 }
 function normalizeRouteKey(path, id2) {
   return path + SEP + id2;
@@ -7995,12 +8160,12 @@ function initRouter(app) {
   app.use(router);
 }
 let positionStore = /* @__PURE__ */ Object.create(null);
-function getTabBarScrollPosition(id) {
-  return positionStore[id];
+function getTabBarScrollPosition(id2) {
+  return positionStore[id2];
 }
-function saveTabBarScrollPosition(id) {
+function saveTabBarScrollPosition(id2) {
   if (typeof window !== "undefined") {
-    positionStore[id] = {
+    positionStore[id2] = {
       left: window.pageXOffset,
       top: window.pageYOffset
     };
@@ -8141,11 +8306,11 @@ function setupComponent(comp, options) {
   }
   return wrapperComponentSetup(comp, options);
 }
-function setupWindow(comp, id) {
+function setupWindow(comp, id2) {
   return setupComponent(comp, {
     init: (vm) => {
       vm.$page = {
-        id
+        id: id2
       };
     },
     setup(instance) {
@@ -9137,8 +9302,8 @@ const props$7 = {
     default: ""
   }
 };
-function useMarkerLabelStyle(id) {
-  const className = "uni-map-marker-label-" + id;
+function useMarkerLabelStyle(id2) {
+  const className = "uni-map-marker-label-" + id2;
   const styleEl = document.createElement("style");
   styleEl.id = className;
   document.head.appendChild(styleEl);
@@ -9160,9 +9325,9 @@ const MapMarker = /* @__PURE__ */ defineSystemComponent({
   name: "MapMarker",
   props: props$7,
   setup(props2) {
-    const id = String(!isNaN(Number(props2.id)) ? props2.id : "");
+    const id2 = String(!isNaN(Number(props2.id)) ? props2.id : "");
     const onMapReady = vue.inject("onMapReady");
-    const updateMarkerLabelStyle = useMarkerLabelStyle(id);
+    const updateMarkerLabelStyle = useMarkerLabelStyle(id2);
     let marker;
     function removeMarkerCallout(callout) {
       if (getIsAMap()) {
@@ -9324,7 +9489,7 @@ const MapMarker = /* @__PURE__ */ defineSystemComponent({
               callout.setOption(calloutStyle);
             } else {
               if (getIsAMap()) {
-                const callback = (id2) => {
+                const callback = () => {
                   if (id2 !== "") {
                     trigger("callouttap", {}, {
                       markerId: Number(id2)
@@ -9335,9 +9500,9 @@ const MapMarker = /* @__PURE__ */ defineSystemComponent({
               } else {
                 callout = marker.callout = new maps.Callout(calloutStyle);
                 callout.div.onclick = function($event) {
-                  if (id !== "") {
+                  if (id2 !== "") {
                     trigger("callouttap", $event, {
-                      markerId: Number(id)
+                      markerId: Number(id2)
                     });
                   }
                   $event.stopPropagation();
@@ -9399,9 +9564,9 @@ const MapMarker = /* @__PURE__ */ defineSystemComponent({
                 }
               }
             }
-            if (id) {
+            if (id2) {
               trigger("markertap", {}, {
-                markerId: Number(id),
+                markerId: Number(id2),
                 latitude: props3.latitude,
                 longitude: props3.longitude
               });
@@ -9412,11 +9577,11 @@ const MapMarker = /* @__PURE__ */ defineSystemComponent({
       addMarker(props2);
       vue.watch(props2, updateMarker);
     });
-    if (id) {
+    if (id2) {
       const addMapChidlContext = vue.inject("addMapChidlContext");
       vue.inject("removeMapChidlContext");
       const context = {
-        id,
+        id: id2,
         translate(data) {
           onMapReady((map, maps, trigger) => {
             const destination = data.destination;
@@ -10137,7 +10302,7 @@ function useMap(props2, rootRef, emit2) {
     }
   }
   try {
-    const id = useContextInfo();
+    const id2 = useContextInfo();
     useSubscribe((type, data = {}) => {
       switch (type) {
         case "getCenterLocation":
@@ -10225,7 +10390,7 @@ function useMap(props2, rootRef, emit2) {
           });
           break;
       }
-    }, id, true);
+    }, id2, true);
   } catch (error) {
   }
   vue.provide("onMapReady", onMapReady);
@@ -11827,7 +11992,7 @@ function useTabBarStyle(tabBar2) {
       };
     }
     return {
-      backgroundColor: BORDER_COLORS[borderStyle2] || borderStyle2
+      backgroundColor: BORDER_COLORS[borderStyle2] || BORDER_COLORS["black"]
     };
   });
   const placeholderStyle = vue.computed(() => {
@@ -12325,7 +12490,7 @@ function usePageHeadTransparentBackgroundColor(backgroundColor) {
   return `rgba(${r},${g2},${b},0)`;
 }
 function usePageHeadTransparent(headRef, {
-  id,
+  id: id2,
   navigationBar: { titleColor, coverage, backgroundColor }
 }) {
   vue.computed(() => hexToRgba(backgroundColor));
@@ -12553,7 +12718,7 @@ function usePageHead(navigationBar) {
   };
 }
 function usePageHeadButtons({
-  id,
+  id: id2,
   navigationBar
 }) {
   const left = [];
@@ -12577,7 +12742,7 @@ function usePageHeadButtons({
         }
         btn.fontFamily = fontFamily;
       }
-      const pageHeadBtn = usePageHeadButton(id, index2, btn, isTransparent);
+      const pageHeadBtn = usePageHeadButton(id2, index2, btn, isTransparent);
       if (btn.float === "left") {
         left.push(pageHeadBtn);
       } else {
@@ -12631,7 +12796,7 @@ function usePageHeadButton(pageId, index2, btn, isTransparent) {
   });
 }
 function usePageHeadSearchInput({
-  id,
+  id: id2,
   navigationBar: {
     searchInput
   }
@@ -12644,7 +12809,7 @@ function usePageHeadSearchInput({
   } = searchInput;
   if (disabled) {
     const onClick = () => {
-      invokeHook(id, uniShared.ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED);
+      invokeHook(id2, uniShared.ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED);
     };
     return {
       focus,
@@ -12655,24 +12820,24 @@ function usePageHeadSearchInput({
   }
   const onFocus = () => {
     focus.value = true;
-    invokeHook(id, uniShared.ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, {
+    invokeHook(id2, uniShared.ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, {
       focus: true
     });
   };
   const onBlur = () => {
     focus.value = false;
-    invokeHook(id, uniShared.ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, {
+    invokeHook(id2, uniShared.ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, {
       focus: false
     });
   };
   const onInput = (evt) => {
     text.value = evt.detail.value;
-    invokeHook(id, uniShared.ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, {
+    invokeHook(id2, uniShared.ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, {
       text: text.value
     });
   };
   const onConfirm = (evt) => {
-    invokeHook(id, uniShared.ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, {
+    invokeHook(id2, uniShared.ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, {
       text: text.value
     });
   };

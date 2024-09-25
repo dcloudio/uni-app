@@ -24,13 +24,45 @@ import {
   normalizeTitleColor,
 } from '@dcloudio/uni-shared'
 import { usePageMeta } from './provide'
-import type { NavigateType } from '../../service/api/route/utils'
+import {
+  type NavigateOptions,
+  type NavigateType,
+  handleBeforeEntryPageRoutes,
+} from '../../service/api/route/utils'
 import { updateCurPageCssVar } from '../../helpers/cssVar'
 import { getStateId } from '../../helpers/dom'
 
 const SEP = '$$'
 
 const currentPagesMap = new Map<string, ComponentPublicInstance>()
+
+export const entryPageState = {
+  handledBeforeEntryPageRoutes: false,
+}
+type NavigateToPage = {
+  args: NavigateOptions
+  resolve: (res: void | AsyncApiRes<UniNamespace.NavigateToOptions>) => void
+  reject: (errMsg?: string, errRes?: any) => void
+}
+type SwitchTabPage = {
+  args: NavigateOptions
+  resolve: (res: void | AsyncApiRes<UniNamespace.SwitchTabOptions>) => void
+  reject: (errMsg?: string, errRes?: any) => void
+}
+type RedirectToPage = {
+  args: NavigateOptions
+  resolve: (res: void | AsyncApiRes<UniNamespace.RedirectToOptions>) => void
+  reject: (errMsg?: string, errRes?: any) => void
+}
+type ReLaunchPage = {
+  args: NavigateOptions
+  resolve: (res: void | AsyncApiRes<UniNamespace.ReLaunchOptions>) => void
+  reject: (errMsg?: string, errRes?: any) => void
+}
+export const navigateToPagesBeforeEntryPages: NavigateToPage[] = []
+export const switchTabPagesBeforeEntryPages: SwitchTabPage[] = []
+export const redirectToPagesBeforeEntryPages: RedirectToPage[] = []
+export const reLaunchPagesBeforeEntryPages: ReLaunchPage[] = []
 
 function pruneCurrentPages() {
   currentPagesMap.forEach((page, id) => {
@@ -163,6 +195,12 @@ export function initPage(vm: ComponentPublicInstance) {
       })
   }
   currentPagesMap.set(normalizeRouteKey(page.path, page.id), vm)
+  if (currentPagesMap.size === 1) {
+    // 通过异步保证首页生命周期触发
+    setTimeout(() => {
+      handleBeforeEntryPageRoutes()
+    }, 0)
+  }
 }
 
 export function normalizeRouteKey(path: string, id: number) {
@@ -295,8 +333,8 @@ function updateBodyScopeId(instance: ComponentInternalInstance) {
 }
 
 let curScrollListener: (evt: Event) => any
-// TODO 当动态渲染的组件内监听onPageScroll时
-function initPageScrollListener(
+
+export function initPageScrollListener(
   instance: ComponentInternalInstance,
   pageMeta: UniApp.PageRouteMeta
 ) {
@@ -310,7 +348,11 @@ function initPageScrollListener(
 
   const { onPageScroll, onReachBottom } = instance
   const navigationBarTransparent = pageMeta.navigationBar.type === 'transparent'
-  if (!onPageScroll && !onReachBottom && !navigationBarTransparent) {
+  if (
+    !onPageScroll?.length &&
+    !onReachBottom?.length &&
+    !navigationBarTransparent
+  ) {
     return
   }
   const opts: CreateScrollListenerOptions = {}
@@ -322,7 +364,7 @@ function initPageScrollListener(
       navigationBarTransparent
     )
   }
-  if (onReachBottom) {
+  if (onReachBottom?.length) {
     opts.onReachBottomDistance =
       pageMeta.onReachBottomDistance || ON_REACH_BOTTOM_DISTANCE
     opts.onReachBottom = () =>

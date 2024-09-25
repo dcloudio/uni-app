@@ -13,6 +13,10 @@
  * limitations under the License.
  */
 /**
+ * @file
+ * @kit ArkUI
+ */
+/**
  * Counter component, which provides corresponding increment or decrement counting operations.
  *
  * @interface CounterInterface

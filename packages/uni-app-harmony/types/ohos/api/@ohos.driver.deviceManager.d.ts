@@ -128,7 +128,7 @@ declare namespace deviceManager {
      */
     function unbindDevice(deviceId: number): Promise<number>;
     /**
-     * Enumerates bus type of device.
+     * Enumerates the bus types.
      *
      * @enum { number }
      * @syscap SystemCapability.Driver.ExternalDevice

@@ -1,24 +1,28 @@
-import { ref, computed, ExtractPropTypes, Ref, onMounted } from 'vue'
+import { type ExtractPropTypes, type Ref, computed, onMounted, ref } from 'vue'
 import { extend, hasOwn, isFunction } from '@vue/shared'
-import type { Actions, OperateCanvasType } from '@dcloudio/uni-api'
+import type {
+  Actions,
+  OperateCanvasType,
+  ToTempFilePathOptions,
+} from '@dcloudio/uni-api'
 import {
+  defineBuiltInComponent,
   useAttrs,
   useContextInfo,
   useSubscribe,
   withWebEvent,
-  defineBuiltInComponent,
 } from '@dcloudio/uni-components'
 import { onEventPrevent } from '@dcloudio/uni-core'
 import {
-  saveImage,
-  getSameOriginUrl,
-  getRealPath,
-  inflateRaw,
   deflateRaw,
+  getRealPath,
+  getSameOriginUrl,
+  inflateRaw,
+  saveImage,
 } from '@dcloudio/uni-platform'
 import ResizeSensor from '../resize-sensor'
-import { useNativeEvent, NativeEventTrigger } from '../../helpers/useEvent'
-import { pixelRatio, wrapper, initHidpi } from '../../helpers/hidpi'
+import { type NativeEventTrigger, useNativeEvent } from '../../helpers/useEvent'
+import { initHidpi, pixelRatio, wrapper } from '../../helpers/hidpi'
 import { UniElement } from '../../helpers/UniElement'
 import { once } from '@dcloudio/uni-shared'
 
@@ -356,7 +360,7 @@ function useMethods(
         })
         ;(c2d as any)[method]()
       } else if (method === 'fillText') {
-        // @ts-ignore
+        // @ts-expect-error
         c2d.fillText.apply(c2d, data)
       } else if (method === 'drawImage') {
         let drawImage = (function () {
@@ -373,9 +377,9 @@ function useMethods(
                 if (image) {
                   c2d.drawImage.apply(
                     c2d,
-                    // @ts-ignore
+                    // @ts-expect-error
                     [image].concat(
-                      // @ts-ignore
+                      // @ts-expect-error
                       [...otherData.slice(4, 8)],
                       [...otherData.slice(0, 4)]
                     )
@@ -392,12 +396,10 @@ function useMethods(
       } else {
         if (method === 'clip') {
           data.forEach(function (data_) {
-            // @ts-ignore
             c2d[data_.method].apply(c2d, data_.data)
           })
           c2d.clip()
         } else {
-          // @ts-ignore
           c2d[method].apply(c2d, data)
         }
       }
@@ -429,10 +431,10 @@ function useMethods(
        * 加载图像
        */
       function loadImage() {
-        // @ts-ignore
+        // @ts-expect-error
         const image = (_images[src] = new Image())
         image.onload = function () {
-          // @ts-ignore
+          // @ts-expect-error
           image.ready = true
         }
 
@@ -487,6 +489,18 @@ function useMethods(
       return false
     }
   }
+  interface GetImageDataOptions extends ToTempFilePathOptions {
+    dataType: string
+    hidpi: boolean
+    type: ToTempFilePathOptions['fileType']
+  }
+  interface GetImageDataResult {
+    data: string | number[]
+    compressed: boolean
+    width: number
+    height: number
+    errMsg?: undefined
+  }
   function getImageData(
     {
       x = 0,
@@ -499,18 +513,7 @@ function useMethods(
       dataType,
       quality = 1,
       type = 'png',
-    }: {
-      x: number
-      y: number
-      width: number
-      height: number
-      destWidth: number
-      destHeight: number
-      hidpi: boolean
-      dataType: string
-      quality: number
-      type: string
-    },
+    }: GetImageDataOptions,
     resolve?: (res: any) => void
   ) {
     const canvas = canvasRef.value!
@@ -524,6 +527,9 @@ function useMethods(
         destWidth = Math.round(width * _pixelRatio.value)
         destHeight = Math.round(height * _pixelRatio.value)
       } else if (!destWidth) {
+        if (!destHeight) {
+          destHeight = Math.round(height * _pixelRatio.value)
+        }
         destWidth = Math.round((width / height) * destHeight)
       } else if (!destHeight) {
         destHeight = Math.round((height / width) * destWidth)
@@ -554,7 +560,7 @@ function useMethods(
       destHeight,
       false
     )
-    let result
+    let result: GetImageDataResult | { errMsg: string }
     try {
       let compressed
       if (dataType === 'base64') {
@@ -640,17 +646,7 @@ function useMethods(
       fileType,
       quality,
       dirname,
-    }: {
-      x: number
-      y: number
-      width: number
-      height: number
-      destWidth: number
-      destHeight: number
-      fileType: string
-      quality: number
-      dirname: string
-    },
+    }: ToTempFilePathOptions,
     resolve: (res: any) => void
   ) {
     const res = getImageData({
@@ -664,20 +660,24 @@ function useMethods(
       dataType: 'base64',
       type: fileType,
       quality,
-    })!
-    if (!res.data || !res.data.length) {
+    } as GetImageDataOptions)!
+    if (res.errMsg) {
       resolve({
-        errMsg: res!.errMsg!.replace('canvasPutImageData', 'toTempFilePath'),
+        errMsg: res.errMsg.replace('canvasPutImageData', 'toTempFilePath'),
       })
       return
     }
-    saveImage(res.data as string, dirname, (error, tempFilePath) => {
-      let errMsg = `toTempFilePath:${error ? 'fail' : 'ok'}`
-      if (error) {
-        errMsg += ` ${error.message}`
+    saveImage(
+      (res as GetImageDataResult).data as string,
+      dirname,
+      (error, tempFilePath) => {
+        let errMsg = `toTempFilePath:${error ? 'fail' : 'ok'}`
+        if (error) {
+          errMsg += ` ${error.message}`
+        }
+        resolve({ errMsg, tempFilePath })
       }
-      resolve({ errMsg, tempFilePath })
-    })
+    )
   }
 
   const methods = {

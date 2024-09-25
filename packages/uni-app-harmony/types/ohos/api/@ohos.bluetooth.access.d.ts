@@ -44,6 +44,18 @@ declare namespace access {
      * @syscap SystemCapability.Communication.Bluetooth.Core
      * @since 10
      */
+    /**
+     * Enables Bluetooth on a device.
+     *
+     * @permission ohos.permission.ACCESS_BLUETOOTH
+     * @throws { BusinessError } 201 - Permission denied.
+     * @throws { BusinessError } 801 - Capability not supported.
+     * @throws { BusinessError } 2900001 - Service stopped.
+     * @throws { BusinessError } 2900099 - Operation failed.
+     * @syscap SystemCapability.Communication.Bluetooth.Core
+     * @atomicservice
+     * @since 12
+     */
     function enableBluetooth(): void;
     /**
      * Disables Bluetooth on a device.
@@ -55,6 +67,18 @@ declare namespace access {
      * @throws { BusinessError } 2900099 - Operation failed.
      * @syscap SystemCapability.Communication.Bluetooth.Core
      * @since 10
+     */
+    /**
+     * Disables Bluetooth on a device.
+     *
+     * @permission ohos.permission.ACCESS_BLUETOOTH
+     * @throws { BusinessError } 201 - Permission denied.
+     * @throws { BusinessError } 801 - Capability not supported.
+     * @throws { BusinessError } 2900001 - Service stopped.
+     * @throws { BusinessError } 2900099 - Operation failed.
+     * @syscap SystemCapability.Communication.Bluetooth.Core
+     * @atomicservice
+     * @since 12
      */
     function disableBluetooth(): void;
     /**
@@ -90,11 +114,27 @@ declare namespace access {
      * @param { 'stateChange' } type - Type of the Bluetooth state changes event to listen for.
      * @param { Callback<BluetoothState> } callback - Callback used to listen for the Bluetooth state event.
      * @throws { BusinessError } 201 - Permission denied.
-     * @throws { BusinessError } 401 - Invalid parameter.
+     * @throws { BusinessError } 401 - Invalid parameter. Possible causes: 1. Mandatory parameters are left unspecified.
+     * <br>2. Incorrect parameter types. 3. Parameter verification failed.
      * @throws { BusinessError } 801 - Capability not supported.
      * @throws { BusinessError } 2900099 - Operation failed.
      * @syscap SystemCapability.Communication.Bluetooth.Core
      * @since 10
+     */
+    /**
+     * Subscribe the event reported when the Bluetooth state changes.
+     *
+     * @permission ohos.permission.ACCESS_BLUETOOTH
+     * @param { 'stateChange' } type - Type of the Bluetooth state changes event to listen for.
+     * @param { Callback<BluetoothState> } callback - Callback used to listen for the Bluetooth state event.
+     * @throws { BusinessError } 201 - Permission denied.
+     * @throws { BusinessError } 401 - Invalid parameter. Possible causes: 1. Mandatory parameters are left unspecified.
+     * <br>2. Incorrect parameter types. 3. Parameter verification failed.
+     * @throws { BusinessError } 801 - Capability not supported.
+     * @throws { BusinessError } 2900099 - Operation failed.
+     * @syscap SystemCapability.Communication.Bluetooth.Core
+     * @atomicservice
+     * @since 12
      */
     function on(type: 'stateChange', callback: Callback<BluetoothState>): void;
     /**
@@ -104,11 +144,27 @@ declare namespace access {
      * @param { 'stateChange' } type - Type of the Bluetooth state changes event to listen for.
      * @param { Callback<BluetoothState> } callback - Callback used to listen for the Bluetooth state event.
      * @throws { BusinessError } 201 - Permission denied.
-     * @throws { BusinessError } 401 - Invalid parameter.
+     * @throws { BusinessError } 401 - Invalid parameter. Possible causes: 1. Mandatory parameters are left unspecified.
+     * <br>2. Incorrect parameter types. 3. Parameter verification failed.
      * @throws { BusinessError } 801 - Capability not supported.
      * @throws { BusinessError } 2900099 - Operation failed.
      * @syscap SystemCapability.Communication.Bluetooth.Core
      * @since 10
+     */
+    /**
+     * Unsubscribe the event reported when the Bluetooth state changes.
+     *
+     * @permission ohos.permission.ACCESS_BLUETOOTH
+     * @param { 'stateChange' } type - Type of the Bluetooth state changes event to listen for.
+     * @param { Callback<BluetoothState> } callback - Callback used to listen for the Bluetooth state event.
+     * @throws { BusinessError } 201 - Permission denied.
+     * @throws { BusinessError } 401 - Invalid parameter. Possible causes: 1. Mandatory parameters are left unspecified.
+     * <br>2. Incorrect parameter types. 3. Parameter verification failed.
+     * @throws { BusinessError } 801 - Capability not supported.
+     * @throws { BusinessError } 2900099 - Operation failed.
+     * @syscap SystemCapability.Communication.Bluetooth.Core
+     * @atomicservice
+     * @since 12
      */
     function off(type: 'stateChange', callback?: Callback<BluetoothState>): void;
     /**

@@ -12,6 +12,8 @@ import {
   onBeforeUnmount,
   onMounted,
   openBlock,
+  reactive,
+  watch,
 } from 'vue'
 import {
   ON_APP_ENTER_BACKGROUND,
@@ -25,13 +27,19 @@ import {
 } from '@dcloudio/uni-shared'
 import { injectAppHooks } from '@dcloudio/uni-api'
 import {
+  getCurrentPage,
   invokeHook,
   subscribeViewMethod,
   unsubscribeViewMethod,
 } from '@dcloudio/uni-core'
 import { LayoutComponent } from '../..'
 import { initApp } from './app'
-import { initPage, onPageReady, onPageShow } from './page'
+import {
+  initPage,
+  initPageScrollListener,
+  onPageReady,
+  onPageShow,
+} from './page'
 import { usePageMeta, usePageRoute } from './provide'
 import { getEnterOptions, initLaunchOptions } from './utils'
 import type { RouteLocationNormalizedLoaded } from 'vue-router'
@@ -106,6 +114,18 @@ export function setupPage(comp: any) {
         return query
       }
       const pageMeta = usePageMeta()
+      // 动态监听子组件 onReachBottom, onPageScroll的hook，从而初始化pageScroll逻辑
+      instance.onReachBottom = reactive([])
+      instance.onPageScroll = reactive([])
+      watch(
+        [instance.onReachBottom, instance.onPageScroll],
+        () => {
+          if (instance.proxy === getCurrentPage()) {
+            initPageScrollListener(instance, pageMeta)
+          }
+        },
+        { once: true }
+      )
       onBeforeMount(() => {
         onPageShow(instance, pageMeta)
       })

@@ -89,7 +89,8 @@ declare namespace vibrator {
      * @param { VibrateAttribute } attribute - Indicate vibrate attribute, {@code VibrateAttribute}.
      * @param { AsyncCallback<void> } callback - The callback of startVibration.
      * @throws { BusinessError } 201 - Permission denied.
-     * @throws { BusinessError } 401 - Parameter error.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified;
+     * <br> 2. Incorrect parameter types; 3. Parameter verification failed.
      * @throws { BusinessError } 801 - Capability not supported.
      * @throws { BusinessError } 14600101 - Device operation failed.
      * @syscap SystemCapability.Sensors.MiscDevice
@@ -103,7 +104,8 @@ declare namespace vibrator {
      * @param { VibrateAttribute } attribute - Indicate vibrate attribute, {@code VibrateAttribute}
      * @param { AsyncCallback<void> } callback - The callback of startVibration
      * @throws { BusinessError } 201 - Permission denied
-     * @throws { BusinessError } 401 - Parameter error
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified;
+     * <br> 2. Incorrect parameter types; 3. Parameter verification failed.
      * @throws { BusinessError } 801 - Capability not supported
      * @throws { BusinessError } 14600101 - Device operation failed
      * @syscap SystemCapability.Sensors.MiscDevice
@@ -119,7 +121,8 @@ declare namespace vibrator {
      * @param { VibrateAttribute } attribute - Indicate vibrate attribute, {@code VibrateAttribute}.
      * @returns { Promise<void> } Promise used to return the result.
      * @throws { BusinessError } 201 - Permission denied.
-     * @throws { BusinessError } 401 - Parameter error.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified;
+     * <br> 2. Incorrect parameter types; 3. Parameter verification failed.
      * @throws { BusinessError } 801 - Capability not supported.
      * @throws { BusinessError } 14600101 - Device operation failed.
      * @syscap SystemCapability.Sensors.MiscDevice
@@ -133,7 +136,8 @@ declare namespace vibrator {
      * @param { VibrateAttribute } attribute - Indicate vibrate attribute, {@code VibrateAttribute}.
      * @returns { Promise<void> } Promise used to return the result.
      * @throws { BusinessError } 201 - Permission denied.
-     * @throws { BusinessError } 401 - Parameter error.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified;
+     * <br> 2. Incorrect parameter types; 3. Parameter verification failed.
      * @throws { BusinessError } 801 - Capability not supported.
      * @throws { BusinessError } 14600101 - Device operation failed.
      * @syscap SystemCapability.Sensors.MiscDevice
@@ -148,7 +152,8 @@ declare namespace vibrator {
      * @param { VibratorStopMode } stopMode - Indicate the stop mode in which the motor vibrates, {@code VibratorStopMode}.
      * @returns { Promise<void> } Promise used to return the result.
      * @throws { BusinessError } 201 - Permission denied.
-     * @throws { BusinessError } 401 - Parameter error.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified;
+     * <br> 2. Incorrect parameter types; 3. Parameter verification failed.
      * @syscap SystemCapability.Sensors.MiscDevice
      * @since 9
      */
@@ -160,7 +165,8 @@ declare namespace vibrator {
      * @param { VibratorStopMode } stopMode - Indicate the stop mode in which the motor vibrates, {@code VibratorStopMode}.
      * @param { AsyncCallback<void> } callback - The callback of stopVibration.
      * @throws { BusinessError } 201 - Permission denied.
-     * @throws { BusinessError } 401 - Parameter error.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified;
+     * <br> 2. Incorrect parameter types; 3. Parameter verification failed.
      * @syscap SystemCapability.Sensors.MiscDevice
      * @since 9
      */
@@ -206,12 +212,24 @@ declare namespace vibrator {
      */
     function stopVibration(): Promise<void>;
     /**
+     * Stop any type of vibration.
+     *
+     * @permission ohos.permission.VIBRATE
+     * @throws { BusinessError } 201 - Permission denied.
+     * @throws { BusinessError } 14600101 - Device operation failed.
+     * @syscap SystemCapability.Sensors.MiscDevice
+     * @atomicservice
+     * @since 12
+     */
+    function stopVibrationSync(): void;
+    /**
      * Whether the preset vibration effect is supported.
      *
      * @param { string } effectId Indicate the specified effect of the preset, {@code EffectId}.
      * @param { AsyncCallback<boolean> } callback The callback of isSupportEffect.
      * @throws { BusinessError } 201 - Permission denied.
-     * @throws { BusinessError } 401 - Parameter error.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified;
+     * <br> 2. Incorrect parameter types; 3. Parameter verification failed.
      * @syscap SystemCapability.Sensors.MiscDevice
      * @since 10
      */
@@ -222,11 +240,24 @@ declare namespace vibrator {
      * @param { string } effectId Indicate the specified effect of the preset, {@code EffectId}.
      * @returns { Promise<boolean> } Promise used to return the result.
      * @throws { BusinessError } 201 - Permission denied.
-     * @throws { BusinessError } 401 - Parameter error.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified;
+     * <br> 2. Incorrect parameter types; 3. Parameter verification failed.
      * @syscap SystemCapability.Sensors.MiscDevice
      * @since 10
      */
     function isSupportEffect(effectId: string): Promise<boolean>;
+    /**
+     * Whether the preset vibration effect is supported.
+     *
+     * @param { string } effectId Indicate the specified effect of the preset, {@code EffectId}.
+     * @returns { boolean } Returns whether the effect is supported.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified;
+     * <br> 2. Incorrect parameter types; 3. Parameter verification failed.
+     * @throws { BusinessError } 14600101 - Device operation failed.
+     * @syscap SystemCapability.Sensors.MiscDevice
+     * @since 12
+     */
+    function isSupportEffectSync(effectId: string): boolean;
     /**
      * Stop the motor from vibrating.
      *
@@ -252,6 +283,15 @@ declare namespace vibrator {
      */
     function stop(stopMode: VibratorStopMode, callback?: AsyncCallback<void>): void;
     /**
+     * Whether the high-definition haptic is supported.
+     *
+     * @returns { boolean } Returns whether the high-definition haptic is supported.
+     * @throws { BusinessError } 14600101 - Device operation failed.
+     * @syscap SystemCapability.Sensors.MiscDevice
+     * @since 12
+     */
+    function isHdHapticSupported(): boolean;
+    /**
      * Preset vibration effect string.
      *
      * @enum { string }
@@ -266,6 +306,36 @@ declare namespace vibrator {
          * @since 8
          */
         EFFECT_CLOCK_TIMER = 'haptic.clock.timer'
+    }
+    /**
+     * Simple and universal vibration effects.
+     *
+     * @enum { string }
+     * @syscap SystemCapability.Sensors.MiscDevice
+     * @since 12
+     */
+    enum HapticFeedback {
+        /**
+         * Describes the soft vibration effect of the vibrator.
+         *
+         * @syscap SystemCapability.Sensors.MiscDevice
+         * @since 12
+         */
+        EFFECT_SOFT = 'haptic.effect.soft',
+        /**
+         * Describes the hard vibration effect of the vibrator.
+         *
+         * @syscap SystemCapability.Sensors.MiscDevice
+         * @since 12
+         */
+        EFFECT_HARD = 'haptic.effect.hard',
+        /**
+         * Describes the sharp vibration effect of the vibrator.
+         *
+         * @syscap SystemCapability.Sensors.MiscDevice
+         * @since 12
+         */
+        EFFECT_SHARP = 'haptic.effect.sharp'
     }
     /**
      * Vibrator vibration stop mode.
@@ -293,12 +363,16 @@ declare namespace vibrator {
     /**
      * The use of vibration.
      *
+     * @typedef {'unknown' | 'alarm' | 'ring' | 'notification' | 'communication' |
+     * 'touch' | 'media' | 'physicalFeedback' | 'simulateReality'}
      * @syscap SystemCapability.Sensors.MiscDevice
      * @since 9
      */
     /**
      * The use of vibration.
      *
+     * @typedef {'unknown' | 'alarm' | 'ring' | 'notification' | 'communication' |
+     * 'touch' | 'media' | 'physicalFeedback' | 'simulateReality'}
      * @syscap SystemCapability.Sensors.MiscDevice
      * @atomicservice
      * @since 11
@@ -352,20 +426,21 @@ declare namespace vibrator {
     /**
      * Describes the effect of vibration.
      *
-     * @type { VibrateTime | VibratePreset }
+     * @typedef { VibrateTime | VibratePreset }
      * @syscap SystemCapability.Sensors.MiscDevice
      * @since 9
      */
     /**
      * Describes the effect of vibration.
      *
-     * @type { VibrateTime | VibratePreset | VibrateFromFile }
+     * @typedef { VibrateTime | VibratePreset | VibrateFromFile }
      * @syscap SystemCapability.Sensors.MiscDevice
      * @since 10
      */
     /**
      * Describes the effect of vibration.
      *
+     * @typedef { VibrateTime | VibratePreset | VibrateFromFile }
      * @syscap SystemCapability.Sensors.MiscDevice
      * @atomicservice
      * @since 11
@@ -444,7 +519,22 @@ declare namespace vibrator {
          * @syscap SystemCapability.Sensors.MiscDevice
          * @since 9
          */
-        count: number;
+        /**
+         * The number of vibration repetitions.
+         *
+         * @type { ?number }
+         * @syscap SystemCapability.Sensors.MiscDevice
+         * @since 12
+         */
+        count?: number;
+        /**
+         * The intensity of vibration effect.
+         *
+         * @type { ?number }
+         * @syscap SystemCapability.Sensors.MiscDevice
+         * @since 12
+         */
+        intensity?: number;
     }
     /**
      * Custom vibration, vibrate the effect from a haptic file.

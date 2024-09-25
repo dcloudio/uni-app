@@ -28,7 +28,12 @@ import { ON_ERROR, once } from '@dcloudio/uni-shared'
 
 import { getCurrentPageVm, getPageIdByVm } from '@dcloudio/uni-core'
 
-import { TEMP_PATH, deflateRaw, inflateRaw } from '@dcloudio/uni-platform'
+import {
+  TEMP_PATH,
+  deflateRaw,
+  getEnv,
+  inflateRaw,
+} from '@dcloudio/uni-platform'
 
 //#endregion
 
@@ -334,6 +339,14 @@ class TextMetrics {
 }
 //#endregion
 
+const getTempPath = () => {
+  let _TEMP_PATH = TEMP_PATH
+  if (__PLATFORM__ === 'app' && !__PLUS__) {
+    typeof getEnv !== 'undefined' && (_TEMP_PATH = getEnv().TEMP_PATH)
+  }
+  return _TEMP_PATH
+}
+
 const defaultState = {
   lineDash: [0, 0],
   shadowOffsetX: 0,
@@ -347,6 +360,17 @@ const defaultState = {
   fontFamily: 'sans-serif',
 }
 
+export type ToTempFilePathOptions = Pick<
+  Parameters<API_TYPE_CANVAS_TO_TEMP_FILE_PATH>[0],
+  | 'x'
+  | 'y'
+  | 'width'
+  | 'height'
+  | 'destHeight'
+  | 'destWidth'
+  | 'fileType'
+  | 'quality'
+> & { dirname: string }
 type ActionsItemType = string | number | boolean | undefined | Array<number>
 type ActionsItemData = Array<ActionsItemType>
 type ActionsItem = {
@@ -1252,7 +1276,7 @@ export const canvasToTempFilePath =
         reject()
         return
       }
-      const dirname = `${TEMP_PATH}/canvas`
+      let dirname: string = `${getTempPath()}/canvas`
       operateCanvas(
         canvasId,
         pageId,
@@ -1267,7 +1291,7 @@ export const canvasToTempFilePath =
           fileType,
           quality,
           dirname,
-        },
+        } as ToTempFilePathOptions,
         (res: UniApp.CanvasToTempFilePathRes & { errMsg?: string }) => {
           if (res.errMsg && res.errMsg.indexOf('fail') !== -1) {
             reject('', res)

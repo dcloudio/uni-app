@@ -9478,7 +9478,9 @@ function transformAttr(el, key, value, instance) {
     }
     if (opts["style"].indexOf(camelized) > -1) {
       if (isString(value)) {
-        return [camelized, parseStringStyle(value)];
+        var _style = camelize(value);
+        var sytle2 = parseStringStyle(_style);
+        return [camelized, sytle2];
       }
       return [camelized, normalizeStyle$1(value)];
     }

@@ -21,7 +21,7 @@ describe('defineOptions()', () => {
       </script>
     `)
     assertCode(content)
-    expect(content).toMatch(`export default {`)
+    expect(content).toMatch(`export default defineComponent({`)
     // should remove defineOptions import and call
     expect(content).not.toMatch('defineOptions')
   })

@@ -12,6 +12,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+/**
+ * @file
+ * @kit MediaKit
+ */
 import type { ErrorCallback, AsyncCallback, Callback } from '../@ohos.base';
 import type audio from '../@ohos.multimedia.audio';
 /**
@@ -123,7 +127,8 @@ export interface SoundPool {
      * @param {number} soundID Returned by the load()
      * @param {PlayParameters} params Player parameters
      * @param {AsyncCallback<number>} callback Callback used to return a non-zero streamID if successful, zero if it fails.
-     * @throws { BusinessError } 401 - The parameter check failed. Return by callback.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Mandatory parameters are left unspecified.
+     * <br>2.Incorrect parameter types. 3.Parameter verification failed. Return by callback.
      * @throws { BusinessError } 5400102 - Operation not allowed. Return by callback.
      * @throws { BusinessError } 5400105 - Service died. Return by callback.
      * @syscap SystemCapability.Multimedia.Media.SoundPool
@@ -135,7 +140,8 @@ export interface SoundPool {
      *
      * @param {number} soundID Returned by the load()
      * @param {AsyncCallback<number>} callback Callback used to return a non-zero streamID if successful, zero if it fails.
-     * @throws { BusinessError } 401 - The parameter check failed. Return by callback.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Mandatory parameters are left unspecified.
+     * <br>2.Incorrect parameter types. 3.Parameter verification failed. Return by callback.
      * @throws { BusinessError } 5400102 - Operation not allowed. Return by callback.
      * @throws { BusinessError } 5400105 - Service died. Return by callback.
      * @syscap SystemCapability.Multimedia.Media.SoundPool
@@ -148,7 +154,8 @@ export interface SoundPool {
      * @param {number} soundID Returned by the load()
      * @param {PlayParameters} [params] Player parameters
      * @returns {Promise<number>} Promise used to return a non-zero streamID if successful, zero if it fails.
-     * @throws { BusinessError } 401 - The parameter check failed. Return by promise.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Mandatory parameters are left unspecified.
+     * <br>2.Incorrect parameter types. 3.Parameter verification failed. Return by promise.
      * @throws { BusinessError } 5400102 - Operation not allowed. Return by promise.
      * @throws { BusinessError } 5400105 - Service died. Return by promise.
      * @syscap SystemCapability.Multimedia.Media.SoundPool
@@ -160,7 +167,8 @@ export interface SoundPool {
      *
      * @param {number} streamID Returned by the play()
      * @param {AsyncCallback<void>} callback Callback used to return the result.
-     * @throws { BusinessError } 401 - The parameter check failed. Return by callback.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Mandatory parameters are left unspecified.
+     * <br>2.Incorrect parameter types. 3.Parameter verification failed. Return by callback.
      * @throws { BusinessError } 5400102 - Operation not allowed. Return by callback.
      * @throws { BusinessError } 5400105 - Service died. Return by callback.
      * @syscap SystemCapability.Multimedia.Media.SoundPool
@@ -172,7 +180,8 @@ export interface SoundPool {
      *
      * @param {number} streamID Returned by the play()
      * @returns {Promise<void>} Promise used to return the result.
-     * @throws { BusinessError } 401 - The parameter check failed. Return by promise.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Mandatory parameters are left unspecified.
+     * <br>2.Incorrect parameter types. 3.Parameter verification failed. Return by promise.
      * @throws { BusinessError } 5400102 - Operation not allowed. Return by promise.
      * @throws { BusinessError } 5400105 - Service died. Return by promise.
      * @syscap SystemCapability.Multimedia.Media.SoundPool
@@ -185,7 +194,8 @@ export interface SoundPool {
      * @param {number} streamID Returned by the play()
      * @param {number} loop Loop mode (0 = no loop, -1 = loop forever)
      * @param {AsyncCallback<void>} callback Callback used to return the result.
-     * @throws { BusinessError } 401 - The parameter check failed. Return by callback.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Mandatory parameters are left unspecified.
+     * <br>2.Incorrect parameter types. 3.Parameter verification failed. Return by callback.
      * @throws { BusinessError } 5400102 - Operation not allowed. Return by callback.
      * @throws { BusinessError } 5400105 - Service died. Return by callback.
      * @syscap SystemCapability.Multimedia.Media.SoundPool
@@ -198,7 +208,8 @@ export interface SoundPool {
      * @param {number} streamID Returned by the play()
      * @param {number} loop Loop mode (0 = no loop, -1 = loop forever)
      * @returns {Promise<void>} Promise used to return the result.
-     * @throws { BusinessError } 401 - The parameter check failed. Return by promise.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Mandatory parameters are left unspecified.
+     * <br>2.Incorrect parameter types. 3.Parameter verification failed. Return by promise.
      * @throws { BusinessError } 5400102 - Operation not allowed. Return by promise.
      * @throws { BusinessError } 5400105 - Service died. Return by promise.
      * @syscap SystemCapability.Multimedia.Media.SoundPool
@@ -211,7 +222,8 @@ export interface SoundPool {
      * @param {number} streamID Returned by the play()
      * @param {number} priority Stream priority (0 = lowest priority)
      * @param {AsyncCallback<void>} callback Callback used to return the result.
-     * @throws { BusinessError } 401 - The parameter check failed. Return by callback.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Mandatory parameters are left unspecified.
+     * <br>2.Incorrect parameter types. 3.Parameter verification failed. Return by callback.
      * @throws { BusinessError } 5400102 - Operation not allowed. Return by callback.
      * @throws { BusinessError } 5400105 - Service died. Return by callback.
      * @syscap SystemCapability.Multimedia.Media.SoundPool
@@ -224,7 +236,8 @@ export interface SoundPool {
      * @param {number} streamID Returned by the play()
      * @param {number} priority Stream priority (0 = lowest priority)
      * @returns {Promise<void>} Promise used to return the result.
-     * @throws { BusinessError } 401 - The parameter check failed. Return by promise.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Mandatory parameters are left unspecified.
+     * <br>2.Incorrect parameter types. 3.Parameter verification failed. Return by promise.
      * @throws { BusinessError } 5400102 - Operation not allowed. Return by promise.
      * @throws { BusinessError } 5400105 - Service died. Return by promise.
      * @syscap SystemCapability.Multimedia.Media.SoundPool
@@ -237,7 +250,8 @@ export interface SoundPool {
      * @param {number} streamID Returned by the play()
      * @param {audio.AudioRendererRate} rate Playback rate
      * @param {AsyncCallback<void>} callback Callback used to return the result.
-     * @throws { BusinessError } 401 - The parameter check failed. Return by callback.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Mandatory parameters are left unspecified.
+     * <br>2.Incorrect parameter types. 3.Parameter verification failed. Return by callback.
      * @throws { BusinessError } 5400102 - Operation not allowed. Return by callback.
      * @throws { BusinessError } 5400105 - Service died. Return by callback.
      * @syscap SystemCapability.Multimedia.Media.SoundPool
@@ -250,7 +264,8 @@ export interface SoundPool {
      * @param {number} streamID Returned by the play()
      * @param {audio.AudioRendererRate} rate Playback rate
      * @returns {Promise<void>} Promise used to return the result.
-     * @throws { BusinessError } 401 - The parameter check failed. Return by promise.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Mandatory parameters are left unspecified.
+     * <br>2.Incorrect parameter types. 3.Parameter verification failed. Return by promise.
      * @throws { BusinessError } 5400102 - Operation not allowed. Return by promise.
      * @throws { BusinessError } 5400105 - Service died. Return by promise.
      * @syscap SystemCapability.Multimedia.Media.SoundPool
@@ -264,7 +279,8 @@ export interface SoundPool {
      * @param {number} leftVolume Volume value(range = 0.0 to 1.0),current leftVolume = rightVolume
      * @param {number} rightVolume Volume value(range = 0.0 to 1.0),current leftVolume = rightVolume
      * @param {AsyncCallback<void>} callback Callback used to return the result.
-     * @throws { BusinessError } 401 - The parameter check failed. Return by callback.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Mandatory parameters are left unspecified.
+     * <br>2.Incorrect parameter types. 3.Parameter verification failed. Return by callback.
      * @throws { BusinessError } 5400102 - Operation not allowed. Return by callback.
      * @throws { BusinessError } 5400105 - Service died. Return by callback.
      * @syscap SystemCapability.Multimedia.Media.SoundPool
@@ -278,7 +294,8 @@ export interface SoundPool {
      * @param {number} leftVolume Volume value(range = 0.0 to 1.0),current leftVolume = rightVolume
      * @param {number} rightVolume Volume value(range = 0.0 to 1.0),current leftVolume = rightVolume
      * @returns {Promise<void>} Promise used to return the result.
-     * @throws { BusinessError } 401 - The parameter check failed. Return by promise.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Mandatory parameters are left unspecified.
+     * <br>2.Incorrect parameter types. 3.Parameter verification failed. Return by promise.
      * @throws { BusinessError } 5400102 - Operation not allowed. Return by promise.
      * @throws { BusinessError } 5400105 - Service died. Return by promise.
      * @syscap SystemCapability.Multimedia.Media.SoundPool

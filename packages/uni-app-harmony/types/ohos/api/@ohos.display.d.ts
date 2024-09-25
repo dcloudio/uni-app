@@ -135,9 +135,21 @@ declare namespace display {
      *
      * @param { 'add' | 'remove' | 'change' } type the event of display change
      * @param { Callback<number> } callback the display id of changed
-     * @throws { BusinessError } 401 - Parameter error.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
+     * <br>2. Incorrect parameter types.
      * @syscap SystemCapability.WindowManager.WindowManager.Core
      * @since 7
+     */
+    /**
+     * Register the callback for display changes.
+     *
+     * @param { 'add' | 'remove' | 'change' } type the event of display change
+     * @param { Callback<number> } callback the display id of changed
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
+     * <br>2. Incorrect parameter types.
+     * @syscap SystemCapability.WindowManager.WindowManager.Core
+     * @atomicservice
+     * @since 12
      */
     function on(type: 'add' | 'remove' | 'change', callback: Callback<number>): void;
     /**
@@ -145,16 +157,27 @@ declare namespace display {
      *
      * @param { 'add' | 'remove' | 'change' } type the event of display change event
      * @param { Callback<number> } callback the display id of changed
-     * @throws { BusinessError } 401 - Parameter error.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
+     * <br>2. Incorrect parameter types.
      * @syscap SystemCapability.WindowManager.WindowManager.Core
      * @since 7
+     */
+    /**
+     * Unregister the callback for display changes.
+     *
+     * @param { 'add' | 'remove' | 'change' } type the event of display change event
+     * @param { Callback<number> } callback the display id of changed
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
+     * <br>2. Incorrect parameter types.
+     * @syscap SystemCapability.WindowManager.WindowManager.Core
+     * @atomicservice
+     * @since 12
      */
     function off(type: 'add' | 'remove' | 'change', callback?: Callback<number>): void;
     /**
      * Check whether the device is foldable.
      *
      * @returns { boolean } true means the device is foldable.
-     * @throws { BusinessError } 801 - Capability not supported on this device.
      * @throws { BusinessError } 1400003 - This display manager service works abnormally.
      * @syscap SystemCapability.Window.SessionManager
      * @since 10
@@ -164,7 +187,6 @@ declare namespace display {
      * Get the current fold status of the foldable device.
      *
      * @returns { FoldStatus } fold status of device.
-     * @throws { BusinessError } 801 - Capability not supported on this device.
      * @throws { BusinessError } 1400003 - This display manager service works abnormally.
      * @syscap SystemCapability.Window.SessionManager
      * @since 10
@@ -175,11 +197,23 @@ declare namespace display {
      *
      * @param { 'foldStatusChange' } type the event of fold status changes
      * @param { Callback<FoldStatus> } callback Callback used to return the current fold status of device
-     * @throws { BusinessError } 401 - Parameter error.
-     * @throws { BusinessError } 801 - Capability not supported on this device.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
+     * <br>2. Incorrect parameter types.
      * @throws { BusinessError } 1400003 - This display manager service works abnormally.
      * @syscap SystemCapability.Window.SessionManager
      * @since 10
+     */
+    /**
+     * Register the callback for fold status changes.
+     *
+     * @param { 'foldStatusChange' } type the event of fold status changes
+     * @param { Callback<FoldStatus> } callback Callback used to return the current fold status of device
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
+     * <br>2. Incorrect parameter types.
+     * @throws { BusinessError } 1400003 - This display manager service works abnormally.
+     * @syscap SystemCapability.Window.SessionManager
+     * @atomicservice
+     * @since 12
      */
     function on(type: 'foldStatusChange', callback: Callback<FoldStatus>): void;
     /**
@@ -187,18 +221,90 @@ declare namespace display {
      *
      * @param { 'foldStatusChange' } type the event of fold status changes
      * @param { Callback<FoldStatus> } callback Callback used to return the current fold status of device
-     * @throws { BusinessError } 401 - Parameter error.
-     * @throws { BusinessError } 801 - Capability not supported on this device.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
+     * <br>2. Incorrect parameter types.
      * @throws { BusinessError } 1400003 - This display manager service works abnormally.
      * @syscap SystemCapability.Window.SessionManager
      * @since 10
      */
+    /**
+     * Unregister the callback for fold status changes.
+     *
+     * @param { 'foldStatusChange' } type the event of fold status changes
+     * @param { Callback<FoldStatus> } callback Callback used to return the current fold status of device
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
+     * <br>2. Incorrect parameter types.
+     * @throws { BusinessError } 1400003 - This display manager service works abnormally.
+     * @syscap SystemCapability.Window.SessionManager
+     * @atomicservice
+     * @since 12
+     */
     function off(type: 'foldStatusChange', callback?: Callback<FoldStatus>): void;
+    /**
+     * Register the callback for fold angle changes.
+     *
+     * @param { 'foldAngleChange' } type the event of fold angle changes.
+     * @param { Callback<Array<number>> } callback Callback used to return the current fold angle of device.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
+     * <br>2. Incorrect parameter types.
+     * @throws { BusinessError } 1400003 - This display manager service works abnormally.
+     * @syscap SystemCapability.Window.SessionManager
+     * @atomicservice
+     * @since 12
+     */
+    function on(type: 'foldAngleChange', callback: Callback<Array<number>>): void;
+    /**
+     * Unregister the callback for fold angle changes.
+     *
+     * @param { 'foldAngleChange' } type the event of fold angle changes.
+     * @param { Callback<Array<number>> } callback Callback used to return the current fold angle of device.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
+     * <br>2. Incorrect parameter types.
+     * @throws { BusinessError } 1400003 - This display manager service works abnormally.
+     * @syscap SystemCapability.Window.SessionManager
+     * @atomicservice
+     * @since 12
+     */
+    function off(type: 'foldAngleChange', callback?: Callback<Array<number>>): void;
+    /**
+     * Register the callback for device capture status changes.
+     *
+     * @param { 'captureStatusChange' } type the event of capture status changes.
+     * @param { Callback<boolean> } callback Callback used to return the device capture status.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
+     * <br>2. Incorrect parameter types.
+     * @throws { BusinessError } 1400003 - This display manager service works abnormally.
+     * @syscap SystemCapability.Window.SessionManager
+     * @atomicservice
+     * @since 12
+     */
+    function on(type: 'captureStatusChange', callback: Callback<boolean>): void;
+    /**
+     * Unregister the callback for device capture status changes.
+     *
+     * @param { 'captureStatusChange' } type the event of capture status changes.
+     * @param { Callback<boolean> } callback Callback used to return the device capture status.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
+     * <br>2. Incorrect parameter types.
+     * @throws { BusinessError } 1400003 - This display manager service works abnormally.
+     * @syscap SystemCapability.Window.SessionManager
+     * @atomicservice
+     * @since 12
+     */
+    function off(type: 'captureStatusChange', callback?: Callback<boolean>): void;
+    /**
+     * Check whether the device is captured.
+     *
+     * @returns { boolean } true means the device is captured.
+     * @throws { BusinessError } 1400003 - This display manager service works abnormally.
+     * @syscap SystemCapability.Window.SessionManager
+     * @since 12
+     */
+    function isCaptured(): boolean;
     /**
      * Get the display mode of the foldable device.
      *
      * @returns { FoldDisplayMode } display mode of the foldable device.
-     * @throws { BusinessError } 801 - Capability not supported on this device.
      * @throws { BusinessError } 1400003 - This display manager service works abnormally.
      * @syscap SystemCapability.Window.SessionManager
      * @since 10
@@ -209,11 +315,23 @@ declare namespace display {
      *
      * @param { 'foldDisplayModeChange' } type the event of fold display mode changes
      * @param { Callback<FoldDisplayMode> } callback Callback used to return the current fold display mode
-     * @throws { BusinessError } 401 - Parameter error.
-     * @throws { BusinessError } 801 - Capability not supported on this device.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
+     * <br>2. Incorrect parameter types.
      * @throws { BusinessError } 1400003 - This display manager service works abnormally.
      * @syscap SystemCapability.Window.SessionManager
      * @since 10
+     */
+    /**
+     * Register the callback for fold display mode changes.
+     *
+     * @param { 'foldDisplayModeChange' } type the event of fold display mode changes
+     * @param { Callback<FoldDisplayMode> } callback Callback used to return the current fold display mode
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
+     * <br>2. Incorrect parameter types.
+     * @throws { BusinessError } 1400003 - This display manager service works abnormally.
+     * @syscap SystemCapability.Window.SessionManager
+     * @atomicservice
+     * @since 12
      */
     function on(type: 'foldDisplayModeChange', callback: Callback<FoldDisplayMode>): void;
     /**
@@ -221,18 +339,29 @@ declare namespace display {
      *
      * @param { 'foldDisplayModeChange' } type the event of fold display mode changes
      * @param { Callback<FoldDisplayMode> } callback Callback used to return the current fold display mode
-     * @throws { BusinessError } 401 - Parameter error.
-     * @throws { BusinessError } 801 - Capability not supported on this device.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
+     * <br>2. Incorrect parameter types.
      * @throws { BusinessError } 1400003 - This display manager service works abnormally.
      * @syscap SystemCapability.Window.SessionManager
      * @since 10
+     */
+    /**
+     * Unregister the callback for fold display mode changes.
+     *
+     * @param { 'foldDisplayModeChange' } type the event of fold display mode changes
+     * @param { Callback<FoldDisplayMode> } callback Callback used to return the current fold display mode
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
+     * <br>2. Incorrect parameter types.
+     * @throws { BusinessError } 1400003 - This display manager service works abnormally.
+     * @syscap SystemCapability.Window.SessionManager
+     * @atomicservice
+     * @since 12
      */
     function off(type: 'foldDisplayModeChange', callback?: Callback<FoldDisplayMode>): void;
     /**
      * Get the fold crease region in the current display mode.
      *
      * @returns { FoldCreaseRegion } fold crease region in the current display mode.
-     * @throws { BusinessError } 801 - Capability not supported on this device.
      * @throws { BusinessError } 1400003 - This display manager service works abnormally.
      * @syscap SystemCapability.Window.SessionManager
      * @since 10
@@ -245,12 +374,27 @@ declare namespace display {
      * @syscap SystemCapability.Window.SessionManager
      * @since 10
      */
+    /**
+     * Enumerates the fold status.
+     *
+     * @enum { number }
+     * @syscap SystemCapability.Window.SessionManager
+     * @atomicservice
+     * @since 12
+     */
     enum FoldStatus {
         /**
          * Fold Status Unknown.
          *
          * @syscap SystemCapability.Window.SessionManager
          * @since 10
+         */
+        /**
+         * Fold Status Unknown.
+         *
+         * @syscap SystemCapability.Window.SessionManager
+         * @atomicservice
+         * @since 12
          */
         FOLD_STATUS_UNKNOWN = 0,
         /**
@@ -259,6 +403,13 @@ declare namespace display {
          * @syscap SystemCapability.Window.SessionManager
          * @since 10
          */
+        /**
+         * Fold Status Expanded.
+         *
+         * @syscap SystemCapability.Window.SessionManager
+         * @atomicservice
+         * @since 12
+         */
         FOLD_STATUS_EXPANDED,
         /**
          * Fold Status Folded.
@@ -266,12 +417,26 @@ declare namespace display {
          * @syscap SystemCapability.Window.SessionManager
          * @since 10
          */
+        /**
+         * Fold Status Folded.
+         *
+         * @syscap SystemCapability.Window.SessionManager
+         * @atomicservice
+         * @since 12
+         */
         FOLD_STATUS_FOLDED,
         /**
          * Fold Status Half Folded.
          *
          * @syscap SystemCapability.Window.SessionManager
          * @since 10
+         */
+        /**
+         * Fold Status Half Folded.
+         *
+         * @syscap SystemCapability.Window.SessionManager
+         * @atomicservice
+         * @since 12
          */
         FOLD_STATUS_HALF_FOLDED
     }
@@ -282,12 +447,27 @@ declare namespace display {
      * @syscap SystemCapability.Window.SessionManager
      * @since 10
      */
+    /**
+     * Enumerates the fold display mode.
+     *
+     * @enum { number }
+     * @syscap SystemCapability.Window.SessionManager
+     * @atomicservice
+     * @since 12
+     */
     enum FoldDisplayMode {
         /**
          * Unknown Display.
          *
          * @syscap SystemCapability.Window.SessionManager
          * @since 10
+         */
+        /**
+         * Unknown Display.
+         *
+         * @syscap SystemCapability.Window.SessionManager
+         * @atomicservice
+         * @since 12
          */
         FOLD_DISPLAY_MODE_UNKNOWN = 0,
         /**
@@ -296,12 +476,26 @@ declare namespace display {
          * @syscap SystemCapability.Window.SessionManager
          * @since 10
          */
+        /**
+         * Full Display.
+         *
+         * @syscap SystemCapability.Window.SessionManager
+         * @atomicservice
+         * @since 12
+         */
         FOLD_DISPLAY_MODE_FULL,
         /**
          * Main Display.
          *
          * @syscap SystemCapability.Window.SessionManager
          * @since 10
+         */
+        /**
+         * Main Display.
+         *
+         * @syscap SystemCapability.Window.SessionManager
+         * @atomicservice
+         * @since 12
          */
         FOLD_DISPLAY_MODE_MAIN,
         /**
@@ -310,12 +504,26 @@ declare namespace display {
          * @syscap SystemCapability.Window.SessionManager
          * @since 10
          */
+        /**
+         * Sub Display.
+         *
+         * @syscap SystemCapability.Window.SessionManager
+         * @atomicservice
+         * @since 12
+         */
         FOLD_DISPLAY_MODE_SUB,
         /**
          * Coordination Display.
          *
          * @syscap SystemCapability.Window.SessionManager
          * @since 10
+         */
+        /**
+         * Coordination Display.
+         *
+         * @syscap SystemCapability.Window.SessionManager
+         * @atomicservice
+         * @since 12
          */
         FOLD_DISPLAY_MODE_COORDINATION
     }

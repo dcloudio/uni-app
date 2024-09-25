@@ -14,9 +14,9 @@
  */
 
 /**
- * @file
- * @kit Asset Store Kit
- */
+ * @file
+ * @kit Asset Store Kit
+ */
 
 import asset from '@ohos.security.asset';
 

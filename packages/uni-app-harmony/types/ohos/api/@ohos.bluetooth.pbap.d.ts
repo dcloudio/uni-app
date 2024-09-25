@@ -29,6 +29,7 @@ declare namespace pbap {
     /**
      * Base interface of profile.
      *
+     * @typedef { baseProfile.BaseProfile } BaseProfile
      * @syscap SystemCapability.Communication.Bluetooth.Core
      * @since 11
      */
@@ -37,7 +38,8 @@ declare namespace pbap {
      * create the instance of PBAP server profile.
      *
      * @returns { PbapServerProfile } Returns the instance of pan profile.
-     * @throws { BusinessError } 401 - Invalid parameter.
+     * @throws { BusinessError } 401 - Invalid parameter. Possible causes: 1. Mandatory parameters are left unspecified.
+     * <br>2. Incorrect parameter types. 3. Parameter verification failed.
      * @throws { BusinessError } 801 - Capability not supported.
      * @syscap SystemCapability.Communication.Bluetooth.Core
      * @since 11

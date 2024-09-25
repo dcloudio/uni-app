@@ -25,6 +25,14 @@ import type image from './@ohos.multimedia.image';
  * @syscap SystemCapability.MultimodalInput.Input.Pointer
  * @since 9
  */
+/**
+ * Declares interfaces related to mouse pointer attributes.
+ *
+ * @namespace pointer
+ * @syscap SystemCapability.MultimodalInput.Input.Pointer
+ * @atomicservice
+ * @since 12
+ */
 declare namespace pointer {
     /**
      * Pointer style.
@@ -32,6 +40,14 @@ declare namespace pointer {
      * @enum { number }
      * @syscap SystemCapability.MultimodalInput.Input.Pointer
      * @since 9
+     */
+    /**
+     * Pointer style.
+     *
+     * @enum { number }
+     * @syscap SystemCapability.MultimodalInput.Input.Pointer
+     * @atomicservice
+     * @since 12
      */
     enum PointerStyle {
         /**
@@ -334,12 +350,26 @@ declare namespace pointer {
          * @syscap SystemCapability.MultimodalInput.Input.Pointer
          * @since 10
          */
+        /**
+         * Loading state with dynamic cursor
+         *
+         * @syscap SystemCapability.MultimodalInput.Input.Pointer
+         * @atomicservice
+         * @since 12
+         */
         LOADING,
         /**
          * Running state with dynamic cursor
          *
          * @syscap SystemCapability.MultimodalInput.Input.Pointer
          * @since 10
+         */
+        /**
+         * Running state with dynamic cursor
+         *
+         * @syscap SystemCapability.MultimodalInput.Input.Pointer
+         * @atomicservice
+         * @since 12
          */
         RUNNING
     }
@@ -402,7 +432,8 @@ declare namespace pointer {
      * @param { number } windowId - Window ID.
      * @param { PointerStyle } pointerStyle - Pointer style.
      * @param { AsyncCallback<void> } callback - Callback used to return the result.
-     * @throws { BusinessError } 401 - Parameter error.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified;
+     * <br>2. Incorrect parameter types; 3. Parameter verification failed.
      * @syscap SystemCapability.MultimodalInput.Input.Pointer
      * @since 9
      */
@@ -413,7 +444,8 @@ declare namespace pointer {
      * @param { number } windowId - Window ID.
      * @param { PointerStyle } pointerStyle - Pointer style.
      * @returns { Promise<void> } Returns the result through a promise.
-     * @throws { BusinessError } 401 - Parameter error.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified;
+     * <br>2. Incorrect parameter types; 3. Parameter verification failed.
      * @syscap SystemCapability.MultimodalInput.Input.Pointer
      * @since 9
      */
@@ -423,7 +455,8 @@ declare namespace pointer {
      *
      * @param { number } windowId - Window ID.
      * @param { PointerStyle } pointerStyle - Pointer style.
-     * @throws { BusinessError } 401 - Parameter error.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified;
+     * <br>2. Incorrect parameter types; 3. Parameter verification failed.
      * @syscap SystemCapability.MultimodalInput.Input.Pointer
      * @since 10
      */
@@ -433,7 +466,8 @@ declare namespace pointer {
      *
      * @param { number } windowId - Window ID.
      * @param { AsyncCallback<PointerStyle> } callback - Callback used to return the result.
-     * @throws { BusinessError } 401 - Parameter error.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified;
+     * <br>2. Incorrect parameter types; 3. Parameter verification failed.
      * @syscap SystemCapability.MultimodalInput.Input.Pointer
      * @since 9
      */
@@ -443,7 +477,8 @@ declare namespace pointer {
      *
      * @param { number } windowId - Window ID.
      * @returns { Promise<PointerStyle> } Returns the result through a promise.
-     * @throws { BusinessError } 401 - Parameter error.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified;
+     * <br>2. Incorrect parameter types; 3. Parameter verification failed.
      * @syscap SystemCapability.MultimodalInput.Input.Pointer
      * @since 9
      */
@@ -453,7 +488,8 @@ declare namespace pointer {
      *
      * @param { number } windowId - Window ID.
      * @returns { PointerStyle } Returns the pointerStyle.
-     * @throws { BusinessError } 401 - Parameter error.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified;
+     * <br>2. Incorrect parameter types; 3. Parameter verification failed.
      * @syscap SystemCapability.MultimodalInput.Input.Pointer
      * @since 10
      */
@@ -464,7 +500,8 @@ declare namespace pointer {
      * @param { boolean } visible Whether the pointer icon is visible. The value true indicates that the pointer
      * icon is visible, and the value false indicates the opposite.
      * @param { AsyncCallback<void> } callback - Callback for the input device event.
-     * @throws { BusinessError } 401 - Parameter error.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified;
+     * <br>2. Incorrect parameter types; 3. Parameter verification failed.
      * @syscap SystemCapability.MultimodalInput.Input.Pointer
      * @since 9
      */
@@ -475,7 +512,8 @@ declare namespace pointer {
      * @param { boolean } visible Whether the pointer icon is visible. The value true indicates that the pointer
      * icon is visible, and the value false indicates the opposite.
      * @returns { Promise<void> } Returns the result through a promise.
-     * @throws { BusinessError } 401 - Parameter error.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified;
+     * <br>2. Incorrect parameter types; 3. Parameter verification failed.
      * @syscap SystemCapability.MultimodalInput.Input.Pointer
      * @since 9
      */
@@ -485,7 +523,8 @@ declare namespace pointer {
      *
      * @param { boolean } visible Whether the pointer icon is visible. The value true indicates that the pointer
      * icon is visible, and the value false indicates the opposite.
-     * @throws { BusinessError } 401 - Parameter error.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified;
+     * <br>2. Incorrect parameter types; 3. Parameter verification failed.
      * @syscap SystemCapability.MultimodalInput.Input.Pointer
      * @since 10
      */
@@ -495,7 +534,8 @@ declare namespace pointer {
      *
      * @param { AsyncCallback<boolean> } callback - Returns <b>true</b> if the pointer icon is visible,
      * returns <b>false</b> otherwise.
-     * @throws { BusinessError } 401 - Parameter error.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified;
+     * <br>2. Incorrect parameter types; 3. Parameter verification failed.
      * @syscap SystemCapability.MultimodalInput.Input.Pointer
      * @since 9
      */
@@ -524,7 +564,8 @@ declare namespace pointer {
      * @param { number } focusX - focus x.
      * @param { number } focusY - focus y.
      * @returns { Promise<void> } Returns the result through a promise.
-     * @throws { BusinessError } 401 - Parameter error.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified;
+     * <br>2. Incorrect parameter types; 3. Parameter verification failed.
      * @syscap SystemCapability.MultimodalInput.Input.Pointer
      * @since 11
      */
@@ -536,7 +577,8 @@ declare namespace pointer {
      * @param { image.PixelMap } pixelMap - the cursor of pixelMap.
      * @param { number } focusX - focus x.
      * @param { number } focusY - focus y.
-     * @throws { BusinessError } 401 - Parameter error.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified;
+     * <br>2. Incorrect parameter types; 3. Parameter verification failed.
      * @syscap SystemCapability.MultimodalInput.Input.Pointer
      * @since 11
      */

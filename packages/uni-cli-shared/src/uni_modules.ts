@@ -57,7 +57,7 @@ export function formatExtApiProviderName(service: string, name: string) {
   }
   return `Uni${capitalize(camelize(service))}${capitalize(
     camelize(name)
-  )}Provider`
+  )}ProviderImpl`
 }
 
 export function getUniExtApiProviderRegisters() {
@@ -406,12 +406,16 @@ export function genEncryptEasyComModuleIndex(
     const id = capitalize(camelize(component))
 
     ids.push(id)
+    let instance = ''
     if (platform === 'app-android') {
+      instance = genUTSComponentPublicInstanceIdent(component)
       // 类型
-      ids.push(genUTSComponentPublicInstanceIdent(component))
+      ids.push(instance)
     }
     imports.push(
-      `import ${id} from './components/${component}/${component}${components[component]}'`
+      `import ${id}${
+        instance ? `, { ${instance} }` : ''
+      } from './components/${component}/${component}${components[component]}'`
     )
   })
   return `
@@ -580,6 +584,7 @@ interface EncryptPackageJson {
   id: string
   version: string
   uni_modules: {
+    dependencies: string[]
     artifacts: {
       env: {
         compilerVersion: string
@@ -702,7 +707,7 @@ export function resolveEncryptUniModule(
   platform: typeof process.env.UNI_UTS_PLATFORM,
   isX: boolean = true
 ) {
-  const parts = id.split('/')
+  const parts = id.split('?', 2)[0].split('/')
   const index = findLastIndex(parts, (part) => part === 'uni_modules')
   if (index !== -1) {
     const uniModuleId = parts[index + 1]

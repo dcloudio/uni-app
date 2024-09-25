@@ -1,0 +1,4 @@
+export interface ITestKeepAlive {
+  test1(callback: (msg: string) => void): void
+  test2(callback: (msg: string) => void): void
+}

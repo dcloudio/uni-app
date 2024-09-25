@@ -20,6 +20,7 @@ import {
   resolveSourceMapPath,
   rewriteExistsSyncHasRootFile,
   rewriteScssReadFileSync,
+  uniJsonPlugin,
   uniUTSExtApiReplace,
   uniViteInjectPlugin,
 } from '@dcloudio/uni-cli-shared'
@@ -117,6 +118,7 @@ export default function uniPlugin(
       )
     )
   }
+  plugins.unshift(uniJsonPlugin())
   return plugins
 }
 

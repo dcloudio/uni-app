@@ -44,6 +44,8 @@ const BUILT_IN_TAG_NAMES = [
     'video',
     'view',
     'web-view',
+    'location-picker',
+    'location-view',
 ];
 const BUILT_IN_TAGS = BUILT_IN_TAG_NAMES.map((tag) => 'uni-' + tag);
 const TAGS = [
@@ -110,6 +112,7 @@ const NVUE_BUILT_IN_TAGS = [
     'gcanvas',
 ];
 const UVUE_BUILT_IN_TAGS = [
+    'object',
     'loading-indicator',
     'list-view',
     'list-item',
@@ -1579,7 +1582,7 @@ function resolveStringStyleItem(modeStyle, styleItem, key) {
 function normalizeStyles(pageStyle, themeConfig = {}, mode = 'light') {
     const modeStyle = themeConfig[mode];
     const styles = {};
-    if (typeof modeStyle === 'undefined')
+    if (typeof modeStyle === 'undefined' || !pageStyle)
         return pageStyle;
     Object.keys(pageStyle).forEach((key) => {
         const styleItem = pageStyle[key]; // Object Array String

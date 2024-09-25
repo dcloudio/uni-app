@@ -29,7 +29,8 @@ export const parseRpx2UnitOnce = once(
       platform === 'h5' || platform === 'app' || platform === 'app-harmony'
         ? defaultRpx2Unit
         : defaultMiniProgramRpx2Unit
-    const platformOptions = parseManifestJsonOnce(inputDir)[platform]
+    const manifestJson = parseManifestJsonOnce(inputDir)
+    let platformOptions = getPlatformManifestJson(manifestJson, platform)
     if (platformOptions && platformOptions.rpx) {
       return extend({}, rpx2unit, platformOptions)
     }
@@ -65,13 +66,11 @@ export function normalizeNetworkTimeout(
 
 export function getUniStatistics(inputDir: string, platform: UniApp.PLATFORM) {
   const manifest = parseManifestJsonOnce(inputDir)
-  if (platform === 'app') {
-    platform = 'app-plus'
-  }
+  let platformManifest = getPlatformManifestJson(manifest, platform)
   return extend(
     {},
     manifest.uniStatistics,
-    manifest[platform] && manifest[platform].uniStatistics
+    platformManifest && platformManifest.uniStatistics
   )
 }
 
@@ -91,13 +90,13 @@ export function isEnableUniPushV1(inputDir: string, platform: UniApp.PLATFORM) {
 
 export function isEnableUniPushV2(inputDir: string, platform: UniApp.PLATFORM) {
   const manifest = parseManifestJsonOnce(inputDir)
+  const platformManifest = getPlatformManifestJson(manifest, platform)
   if (platform === 'app') {
     return (
-      manifest['app-plus']?.distribute?.sdkConfigs?.push?.unipush?.version ==
-      '2'
+      platformManifest?.distribute?.sdkConfigs?.push?.unipush?.version == '2'
     )
   }
-  return manifest[platform]?.unipush?.enable === true
+  return platformManifest?.unipush?.enable === true
 }
 
 export function isEnableSecureNetwork(
@@ -105,10 +104,11 @@ export function isEnableSecureNetwork(
   platform: UniApp.PLATFORM
 ) {
   const manifest = parseManifestJsonOnce(inputDir)
+  const platformManifest = getPlatformManifestJson(manifest, platform)
   if (platform === 'app') {
-    return !!manifest['app-plus']?.modules?.SecureNetwork
+    return !!platformManifest?.modules?.SecureNetwork
   }
-  return manifest[platform]?.secureNetwork?.enable === true
+  return platformManifest?.secureNetwork?.enable === true
 }
 
 export function hasPushModule(inputDir: string) {
@@ -128,7 +128,7 @@ export function getRouterOptions(manifestJson: Record<string, any>): {
   mode?: 'history' | 'hash'
   base?: string
 } {
-  return extend({}, manifestJson.h5?.router)
+  return extend({}, getPlatformManifestJson(manifestJson, 'h5')?.router)
 }
 
 export function isEnableTreeShaking(manifestJson: Record<string, any>) {
@@ -136,19 +136,36 @@ export function isEnableTreeShaking(manifestJson: Record<string, any>) {
   if (process.env.UNI_AUTOMATOR_WS_ENDPOINT) {
     return false
   }
-  return manifestJson.h5?.optimization?.treeShaking?.enable !== false
+  const platformManifest = getPlatformManifestJson(manifestJson, 'h5')
+  return platformManifest?.optimization?.treeShaking?.enable !== false
 }
 
 export function getDevServerOptions(manifestJson: Record<string, any>) {
-  return extend({}, manifestJson.h5?.devServer)
+  const platformManifest = getPlatformManifestJson(manifestJson, 'h5')
+  return extend({}, platformManifest?.devServer)
+}
+
+export function getPlatformManifestJson(
+  manifestJson: any,
+  platform?: UniApp.PLATFORM
+) {
+  if (!platform) {
+    platform = process.env.UNI_PLATFORM
+  }
+  if (platform === 'app') {
+    return manifestJson['app-plus'] || manifestJson['plus'] || {}
+  }
+  if (platform === 'h5') {
+    return manifestJson.web || manifestJson.h5 || {}
+  }
+  return manifestJson[platform] || {}
 }
 
 export function getPlatformManifestJsonOnce() {
-  const platform =
-    process.env.UNI_PLATFORM === 'app' ? 'app-plus' : process.env.UNI_PLATFORM
-  return !process.env.UNI_INPUT_DIR
+  const manifestJson = !process.env.UNI_INPUT_DIR
     ? {}
-    : parseManifestJsonOnce(process.env.UNI_INPUT_DIR)[platform] || {}
+    : parseManifestJsonOnce(process.env.UNI_INPUT_DIR)
+  return getPlatformManifestJson(manifestJson)
 }
 
 const themeValues = ['dark', 'light', 'auto']

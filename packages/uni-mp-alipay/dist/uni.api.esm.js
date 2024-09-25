@@ -1262,7 +1262,15 @@ function handleNetworkInfo(fromRes, toRes) {
             break;
     }
 }
+function reviseScreenSize(fromRes, toRes) {
+    // 支付宝: 10.2.0+ 修正屏幕宽度和高度 https://opendocs.alipay.com/mini/api/gawhvz
+    if (fromRes.screen) {
+        toRes.screenWidth = fromRes.screen.width;
+        toRes.screenHeight = fromRes.screen.height;
+    }
+}
 function handleSystemInfo(fromRes, toRes) {
+    reviseScreenSize(fromRes, toRes);
     addSafeAreaInsets(fromRes, toRes);
     useDeviceId({
         getStorageSync: getStorageSync,

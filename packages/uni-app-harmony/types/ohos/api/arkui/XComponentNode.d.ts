@@ -12,6 +12,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+/**
+ * @file
+ * @kit ArkUI
+ */
 import { UIContext } from '../@ohos.arkui.UIContext';
 import { NodeRenderType, RenderOptions } from './BuilderNode';
 import { FrameNode } from './FrameNode';

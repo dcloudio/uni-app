@@ -8,6 +8,10 @@ import type { ComponentPublicInstance } from 'vue'
 import { ON_HIDE, ON_SHOW } from '@dcloudio/uni-shared'
 import { registerPage } from '../page'
 import { getAppThemeFallbackOS, normalizeTabBarStyles } from '../theme'
+import {
+  invokeAfterRouteHooks,
+  invokeBeforeRouteHooks,
+} from '../../api/route/performance'
 
 // 存储 callback
 export let onTabBarMidButtonTapCallback: Function[] = []
@@ -25,7 +29,7 @@ const BORDER_COLORS = new Map<string, string>([
 
 function getBorderStyle(borderStyle: string): string {
   const value = BORDER_COLORS.get(borderStyle)
-  return value ?? borderStyle
+  return value || (BORDER_COLORS.get('black') as string)
 }
 
 // keep borderStyle aliways black/white
@@ -69,6 +73,10 @@ function init() {
   const list = getTabList()
   const style = new Map<string, any | null>()
   style.set('navigationStyle', 'custom')
+  style.set(
+    'pageOrientation',
+    __uniConfig.globalStyle?.pageOrientation ?? 'portrait'
+  )
   const page = getPageManager().createPage('tabBar', 'tabBar', style)
   const document = page.createDocument(
     new NodeData(
@@ -271,9 +279,10 @@ export function switchSelect(
   }
   const currentPage = getCurrentPage() as Page
 
-  // const type = currentPage == null ? 'appLaunch' : 'switchTab'
+  const type = currentPage == null ? 'appLaunch' : 'switchTab'
   // 执行beforeRoute
   // invokeArrayFns(beforeRouteHooks, type)
+  invokeBeforeRouteHooks(type)
 
   const pageInfo = getTabPage(getRealPath(path, true), query, rebuild, callback)
   const page = pageInfo.page
@@ -294,4 +303,5 @@ export function switchSelect(
 
   // 执行afterRoute
   // invokeArrayFns(afterRouteHooks, type)
+  invokeAfterRouteHooks(type)
 }

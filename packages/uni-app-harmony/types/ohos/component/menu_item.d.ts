@@ -13,6 +13,10 @@
  * limitations under the License.
  */
 /**
+ * @file
+ * @kit ArkUI
+ */
+/**
  * Defines the option of MenuItem.
  *
  * @interface MenuItemOptions

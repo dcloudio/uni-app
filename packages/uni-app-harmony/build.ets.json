@@ -15,6 +15,34 @@
       "@dcloudio/uni-runtime": "@dcloudio/uni-app-harmony-framework"
     },
     "externals": ["@dcloudio/uni-app-harmony-framework"],
+    "autoImports": {
+      "@dcloudio/uts-harmony": [
+        ["IUTSObject"],
+        ["UTSObject"],
+        ["UTSJSONObject"]
+      ],
+      "@dcloudio/uni-app-harmony": [
+        ["defineAsyncApi"],
+        ["defineSyncApi"],
+        ["defineTaskApi"],
+        ["defineOnApi"],
+        ["defineOffApi"],
+        ["getUniProvider"],
+        ["getUniProviders"],
+        ["string"],
+        ["AsyncApiSuccessResult"],
+        ["AsyncApiResult"],
+        ["ApiExecutor"],
+        ["ComponentInternalInstance"],
+        ["ComponentPublicInstance"],
+        ["IUniError"],
+        ["ProtocolOptions"],
+        ["ApiOptions"],
+        ["ApiError"],
+        ["UniError"],
+        ["UniProvider"]
+      ]
+    },
     "replacements": {
       "__PLATFORM__": "'app-harmony'",
       "__DEV__": "false",
@@ -22,12 +50,12 @@
       "__APP_VIEW__": "false",
       "__NODE_JS__": "false"
     },
-    "banner": "import { IUTSObject, UTSObject, UTSJSONObject } from '@dcloudio/uts-harmony'\nimport { IUniError, UniError, string, ComponentPublicInstance, ComponentInternalInstance, defineAsyncApi, defineSyncApi, defineTaskApi, defineOnApi, defineOffApi, getUniProvider, getUniProviders, AsyncApiSuccessResult, AsyncApiResult, ApiExecutor, ProtocolOptions, ApiOptions, ApiError, UniProvider } from '@dcloudio/uni-app-harmony'\n",
     "wrapper": {
       "name": "initUniExtApi",
       "args": [["APP_ID", "string"]]
     }
-  }, {
+  },
+  {
     "input": {
       "../uni-runtime/src/helpers/api/index.ts": "uni-api-shared.ets"
     },
@@ -35,6 +63,13 @@
       "@dcloudio/uni-runtime": "@dcloudio/uni-app-harmony-framework"
     },
     "externals": ["@dcloudio/uni-app-harmony-framework"],
+    "autoImports": {
+      "@dcloudio/uts-harmony": [
+        ["IUTSObject"],
+        ["UTSObject"],
+        ["UTSJSONObject"]
+      ]
+    },
     "replacements": {
       "__PLATFORM__": "'app-harmony'",
       "__DEV__": "false",

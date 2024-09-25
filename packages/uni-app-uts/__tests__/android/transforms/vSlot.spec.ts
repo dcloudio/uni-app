@@ -8,25 +8,28 @@ import {
   type ForNode,
   NodeTypes,
   type ObjectExpression,
-  RENDER_LIST,
   type RenderSlotCall,
   type SimpleExpressionNode,
   type SlotsExpression,
   type VNodeCall,
-  generate,
   baseParse as parse,
+} from '@vue/compiler-core'
+
+import { assert, createObjectMatcher, genFlagText } from '../testUtils'
+import { generate } from '../../../src/plugins/android/uvue/compiler/codegen'
+import { RENDER_LIST } from '../../../src/plugins/android/uvue/compiler/runtimeHelpers'
+import { transform } from '../../../src/plugins/android/uvue/compiler/transform'
+import { transformIf } from '../../../src/plugins/android/uvue/compiler/transforms/vIf'
+import { transformFor } from '../../../src/plugins/android/uvue/compiler/transforms/vFor'
+import {
   trackSlotScopes,
   trackVForSlotScopes,
-  transform,
-  transformElement,
-} from '@vue/compiler-core'
-import { transformOn } from '../../../src/plugins/android/uvue/compiler/transforms/vOn'
-import { transformBind } from '../../../src/plugins/android/uvue/compiler/transforms/vBind'
+} from '../../../src/plugins/android/uvue/compiler/transforms/vSlot'
 import { transformExpression } from '../../../src/plugins/android/uvue/compiler/transforms/transformExpression'
+import { transformOn } from '../../../src/plugins/android/uvue/compiler/transforms/vOn'
 import { transformSlotOutlet } from '../../../src/plugins/android/uvue/compiler/transforms/transformSlotOutlet'
-import { assert, createObjectMatcher, genFlagText } from '../testUtils'
-import { transformFor } from '../../../src/plugins/android/uvue/compiler/transforms/vFor'
-import { transformIf } from '../../../src/plugins/android/uvue/compiler/transforms/vIf'
+import { transformBind } from '../../../src/plugins/android/uvue/compiler/transforms/vBind'
+import { transformElement } from '../../../src/plugins/android/uvue/compiler/transforms/transformElement'
 
 function parseWithSlots(template: string, options: CompilerOptions = {}) {
   const ast = parse(template, {
@@ -50,9 +53,10 @@ function parseWithSlots(template: string, options: CompilerOptions = {}) {
         on: transformOn,
         bind: transformBind,
       },
-      ...options,
+      ...(options as any),
     })
   )
+
   return {
     root: ast,
     slots:
@@ -92,8 +96,7 @@ describe('compiler: slot', () => {
   test('component with slot', () => {
     assert(
       `<view><slot data="data"></slot></view>`,
-      `
-function PagesIndexIndexRender(): any | null {
+      `function PagesIndexIndexRender(): any | null {
 const _ctx = this
 const _cache = this.$.renderCache
   return createElementVNode("view", null, [
@@ -109,8 +112,7 @@ const _cache = this.$.renderCache
   test('template component with slot', () => {
     assert(
       `<view><Foo @click="test">test</Foo></view>`,
-      `
-function PagesIndexIndexRender(): any | null {
+      `function PagesIndexIndexRender(): any | null {
 const _ctx = this
 const _cache = this.$.renderCache
 const _component_Foo = resolveComponent("Foo")
@@ -143,8 +145,7 @@ const _component_Foo = resolveComponent("Foo")
   test('scoped slots', () => {
     assert(
       `<view><Foo><template v-slot="props"><text>msg: {{props.msg}}</text></template></Foo></view>`,
-      `
-function PagesIndexIndexRender(): any | null {
+      `function PagesIndexIndexRender(): any | null {
 const _ctx = this
 const _cache = this.$.renderCache
 const _component_Foo = resolveComponent("Foo")
@@ -169,8 +170,7 @@ const _component_Foo = resolveComponent("Foo")
     assert(
       // props:UTSJSONObject
       `<view><Foo><template v-slot="props"><text>msg: {{props.msg}}</text></template></Foo></view>`,
-      `
-function PagesIndexIndexRender(): any | null {
+      `function PagesIndexIndexRender(): any | null {
 const _ctx = this
 const _cache = this.$.renderCache
 const _component_Foo = resolveComponent("Foo")
@@ -193,8 +193,7 @@ const _component_Foo = resolveComponent("Foo")
   test('scoped slots shorthand', () => {
     assert(
       `<view><Foo><template #default="props"><text>msg: {{props.msg}}</text></template></Foo></view>`,
-      `
-function PagesIndexIndexRender(): any | null {
+      `function PagesIndexIndexRender(): any | null {
 const _ctx = this
 const _cache = this.$.renderCache
 const _component_Foo = resolveComponent("Foo")
@@ -324,6 +323,7 @@ describe('compiler: transform component slots', () => {
       `<Comp v-slot="{ foo }">{{ foo }}{{ bar }}</Comp>`,
       { prefixIdentifiers: true }
     )
+
     expect(slots).toMatchObject(
       createSlotMatcher({
         default: {
@@ -785,7 +785,7 @@ describe('compiler: transform component slots', () => {
                 key: `0`,
               }),
               alternate: {
-                content: `undefined`,
+                content: `null`,
                 isStatic: false,
               },
             },
@@ -834,7 +834,7 @@ describe('compiler: transform component slots', () => {
                 key: `0`,
               }),
               alternate: {
-                content: `undefined`,
+                content: `null`,
                 isStatic: false,
               },
             },
@@ -935,7 +935,12 @@ describe('compiler: transform component slots', () => {
                 { content: `_ctx.list` },
                 {
                   type: NodeTypes.JS_FUNCTION_EXPRESSION,
-                  params: [{ content: `name` }],
+                  params: [
+                    { content: `name` },
+                    { content: `__key` },
+                    { content: `__item` },
+                    { content: `_cached` },
+                  ],
                   returns: createObjectMatcher({
                     name: `[name]`,
                     fn: {
@@ -1166,7 +1171,7 @@ describe('compiler: transform component slots', () => {
       const source = `
       <Comp>
         <template #header> Header </template>
-        <p/>
+        <view/>
       </Comp>
       `
       const { root } = parseWithSlots(source, {

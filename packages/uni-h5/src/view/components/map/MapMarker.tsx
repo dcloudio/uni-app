@@ -363,7 +363,7 @@ export default /*#__PURE__*/ defineSystemComponent({
               callout.setOption(calloutStyle)
             } else {
               if (getIsAMap()) {
-                const callback = (id: number | string) => {
+                const callback = () => {
                   if (id !== '') {
                     trigger('callouttap', {} as Event, {
                       markerId: Number(id),

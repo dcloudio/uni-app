@@ -10,8 +10,19 @@ import type {
 } from '@babel/types'
 import path from 'path'
 import { TS_NODE_TYPES } from '@vue/compiler-dom'
+import type { SFCScriptCompileOptions } from '../compileScript'
 
 export const UNKNOWN_TYPE = 'Unknown'
+
+export function resolveDefineCode(
+  componentType: SFCScriptCompileOptions['componentType']
+) {
+  return componentType === 'app'
+    ? `defineApp`
+    : componentType === 'page'
+    ? `defineComponent` //`definePage`
+    : `defineComponent`
+}
 
 export function resolveObjectKey(node: Node, computed: boolean) {
   switch (node.type) {

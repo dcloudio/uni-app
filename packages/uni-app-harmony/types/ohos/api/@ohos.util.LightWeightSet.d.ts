@@ -86,7 +86,9 @@ declare class LightWeightSet<T> {
      * @param { LightWeightSet<T> } set - set set the Set object to provide the added element
      * @returns { boolean } the boolean type(Is there any new data added successfully)
      * @throws { BusinessError } 10200011 - The addAll method cannot be bound.
-     * @throws { BusinessError } 401 - The type of parameters are invalid.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes:
+     * 1.Mandatory parameters are left unspecified;
+     * 2.Incorrect parameter types.
      * @syscap SystemCapability.Utils.Lang
      * @since 8
      */
@@ -96,7 +98,9 @@ declare class LightWeightSet<T> {
      * @param { LightWeightSet<T> } set - set set the Set object to provide the added element
      * @returns { boolean } the boolean type(Is there any new data added successfully)
      * @throws { BusinessError } 10200011 - The addAll method cannot be bound.
-     * @throws { BusinessError } 401 - The type of parameters are invalid.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes:
+     * 1.Mandatory parameters are left unspecified;
+     * 2.Incorrect parameter types.
      * @syscap SystemCapability.Utils.Lang
      * @crossplatform
      * @since 10
@@ -108,7 +112,9 @@ declare class LightWeightSet<T> {
      * @param { LightWeightSet<T> } set - set set the Set object to compare
      * @returns { boolean } the boolean type
      * @throws { BusinessError } 10200011 - The hasAll method cannot be bound.
-     * @throws { BusinessError } 401 - The type of parameters are invalid.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes:
+     * 1.Mandatory parameters are left unspecified;
+     * 2.Incorrect parameter types.
      * @syscap SystemCapability.Utils.Lang
      * @since 8
      */
@@ -118,7 +124,9 @@ declare class LightWeightSet<T> {
      * @param { LightWeightSet<T> } set - set set the Set object to compare
      * @returns { boolean } the boolean type
      * @throws { BusinessError } 10200011 - The hasAll method cannot be bound.
-     * @throws { BusinessError } 401 - The type of parameters are invalid.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes:
+     * 1.Mandatory parameters are left unspecified;
+     * 2.Incorrect parameter types.
      * @syscap SystemCapability.Utils.Lang
      * @crossplatform
      * @since 10
@@ -170,7 +178,10 @@ declare class LightWeightSet<T> {
      *
      * @param { number } minimumCapacity Minimum capacity to be reserved
      * @throws { BusinessError } 10200011 - The increaseCapacityTo method cannot be bound.
-     * @throws { BusinessError } 401 - The type of parameters are invalid.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes:
+     * 1.Mandatory parameters are left unspecified;
+     * 2.Incorrect parameter types;
+     * 3.Parameter verification failed.
      * @throws { BusinessError } 10200001 - The value of minimumCapacity is out of range.
      * @syscap SystemCapability.Utils.Lang
      * @since 8
@@ -181,7 +192,10 @@ declare class LightWeightSet<T> {
      *
      * @param { number } minimumCapacity Minimum capacity to be reserved
      * @throws { BusinessError } 10200011 - The increaseCapacityTo method cannot be bound.
-     * @throws { BusinessError } 401 - The type of parameters are invalid.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes:
+     * 1.Mandatory parameters are left unspecified;
+     * 2.Incorrect parameter types;
+     * 3.Parameter verification failed.
      * @throws { BusinessError } 10200001 - The value of minimumCapacity is out of range.
      * @syscap SystemCapability.Utils.Lang
      * @crossplatform
@@ -234,7 +248,9 @@ declare class LightWeightSet<T> {
      * @param { number } index - index index Target subscript for search
      * @returns { boolean } the boolean type(Is there a delete value)
      * @throws { BusinessError } 10200011 - The removeAt method cannot be bound.
-     * @throws { BusinessError } 401 - The type of parameters are invalid.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes:
+     * 1.Mandatory parameters are left unspecified;
+     * 2.Incorrect parameter types.
      * @syscap SystemCapability.Utils.Lang
      * @since 8
      */
@@ -244,7 +260,9 @@ declare class LightWeightSet<T> {
      * @param { number } index - index index Target subscript for search
      * @returns { boolean } the boolean type(Is there a delete value)
      * @throws { BusinessError } 10200011 - The removeAt method cannot be bound.
-     * @throws { BusinessError } 401 - The type of parameters are invalid.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes:
+     * 1.Mandatory parameters are left unspecified;
+     * 2.Incorrect parameter types.
      * @syscap SystemCapability.Utils.Lang
      * @crossplatform
      * @since 10
@@ -279,7 +297,9 @@ declare class LightWeightSet<T> {
      * thisArg (Optional) The value to be used as this value for when callbackFn is called.
      * If thisArg is omitted, undefined is used as the this value.
      * @throws { BusinessError } 10200011 - The forEach method cannot be bound.
-     * @throws { BusinessError } 401 - The type of parameters are invalid.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes:
+     * 1.Mandatory parameters are left unspecified;
+     * 2.Incorrect parameter types.
      * @syscap SystemCapability.Utils.Lang
      * @since 8
      */
@@ -294,7 +314,9 @@ declare class LightWeightSet<T> {
      * thisArg (Optional) The value to be used as this value for when callbackFn is called.
      * If thisArg is omitted, undefined is used as the this value.
      * @throws { BusinessError } 10200011 - The forEach method cannot be bound.
-     * @throws { BusinessError } 401 - The type of parameters are invalid.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes:
+     * 1.Mandatory parameters are left unspecified;
+     * 2.Incorrect parameter types.
      * @syscap SystemCapability.Utils.Lang
      * @crossplatform
      * @since 10
@@ -358,7 +380,9 @@ declare class LightWeightSet<T> {
      * @param { number } index - index index Target subscript for search
      * @returns { T } the value of key-value pairs
      * @throws { BusinessError } 10200011 - The getValueAt method cannot be bound.
-     * @throws { BusinessError } 401 - The type of parameters are invalid.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes:
+     * 1.Mandatory parameters are left unspecified;
+     * 2.Incorrect parameter types.
      * @syscap SystemCapability.Utils.Lang
      * @since 8
      */
@@ -368,7 +392,9 @@ declare class LightWeightSet<T> {
      * @param { number } index - index index Target subscript for search
      * @returns { T } the value of key-value pairs
      * @throws { BusinessError } 10200011 - The getValueAt method cannot be bound.
-     * @throws { BusinessError } 401 - The type of parameters are invalid.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes:
+     * 1.Mandatory parameters are left unspecified;
+     * 2.Incorrect parameter types.
      * @syscap SystemCapability.Utils.Lang
      * @crossplatform
      * @since 10

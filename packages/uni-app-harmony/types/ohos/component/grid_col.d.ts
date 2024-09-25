@@ -13,6 +13,10 @@
  * limitations under the License.
  */
 /**
+ * @file
+ * @kit ArkUI
+ */
+/**
  * Defines the option in number unit of grid-container child component.
  *
  * @interface GridColColumnOption

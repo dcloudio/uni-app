@@ -18,4 +18,5 @@
  */
 import audio from '@ohos.multimedia.audio';
 import audioHaptic from '@ohos.multimedia.audioHaptic';
-export { audio, audioHaptic };
+import { AVVolumePanel, AVVolumePanelParameter } from '@ohos.multimedia.avVolumePanel';
+export { audio, audioHaptic, AVVolumePanel, AVVolumePanelParameter };

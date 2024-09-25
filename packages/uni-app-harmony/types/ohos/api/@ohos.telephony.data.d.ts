@@ -105,7 +105,8 @@ declare namespace data {
      * @param { AsyncCallback<boolean> } callback - Indicates the callback for checking whether cellular data services
      * are enabled. Returns {@code true} if cellular data services are enabled; returns {@code false} otherwise.
      * @throws { BusinessError } 201 - Permission denied.
-     * @throws { BusinessError } 401 - Parameter error.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
+     *     2. Incorrect parameter types.
      * @throws { BusinessError } 8300001 - Invalid parameter value.
      * @throws { BusinessError } 8300002 - Operation failed. Cannot connect to service.
      * @throws { BusinessError } 8300003 - System internal error.
@@ -138,7 +139,8 @@ declare namespace data {
      * for cellular data services. Returns {@code true} if roaming is enabled for cellular data services;
      * returns {@code false} otherwise.
      * @throws { BusinessError } 201 - Permission denied.
-     * @throws { BusinessError } 401 - Parameter error.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
+     *     2. Incorrect parameter types.
      * @throws { BusinessError } 8300001 - Invalid parameter value.
      * @throws { BusinessError } 8300002 - Operation failed. Cannot connect to service.
      * @throws { BusinessError } 8300003 - System internal error.
@@ -156,7 +158,8 @@ declare namespace data {
      * @returns { Promise<boolean> } Returns {@code true} if roaming is enabled for cellular data services.
      * Returns {@code false} otherwise.
      * @throws { BusinessError } 201 - Permission denied.
-     * @throws { BusinessError } 401 - Parameter error.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
+     *     2. Incorrect parameter types.
      * @throws { BusinessError } 8300001 - Invalid parameter value.
      * @throws { BusinessError } 8300002 - Operation failed. Cannot connect to service.
      * @throws { BusinessError } 8300003 - System internal error.

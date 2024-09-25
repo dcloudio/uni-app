@@ -1,5 +1,5 @@
 import { defineBuiltInComponent } from '@dcloudio/uni-components'
-import { navigatorProps, UniNavigatorElement } from './model'
+import { UniNavigatorElement, navigatorProps } from './model'
 import { camelize, getCurrentInstance, onMounted, ref } from 'vue'
 
 export default /*#__PURE__*/ defineBuiltInComponent({

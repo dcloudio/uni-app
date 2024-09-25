@@ -181,4 +181,14 @@ export default class AbilityStage {
      * @since 11
      */
     onMemoryLevel(level: AbilityConstant.MemoryLevel): void;
+    /**
+     * Called back when an ability stage is Destroyed.
+     * Will not call the onDestroy function when killing a process or crashing abnormally.
+     *
+     * @syscap SystemCapability.Ability.AbilityRuntime.Core
+     * @StageModelOnly
+     * @atomicservice
+     * @since 12
+     */
+    onDestroy(): void;
 }

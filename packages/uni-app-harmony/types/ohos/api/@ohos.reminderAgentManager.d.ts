@@ -159,6 +159,50 @@ declare namespace reminderAgentManager {
      */
     function removeNotificationSlot(slotType: notification.SlotType): Promise<void>;
     /**
+     * add exclude date for calendar reminder request.
+     *
+     * @param { number } reminderId reminder id
+     * @param { Date } date date time
+     * @returns { Promise<void> } The promise returned by the function.
+     * @throws { BusinessError } 201 - Permission denied
+     * @throws { BusinessError } 401 - If the input parameter is not valid parameter.
+     * @throws { BusinessError } 1700003 - The reminder does not exist.
+     * @syscap SystemCapability.Notification.ReminderAgent
+     * @since 12
+     */
+    function addExcludeDate(reminderId: number, date: Date): Promise<void>;
+    /**
+     * delete exclude date for calendar reminder request.
+     *
+     * @param { number } reminderId reminder id
+     * @returns { Promise<void> } The promise returned by the function.
+     * @throws { BusinessError } 201 - Permission denied
+     * @throws { BusinessError } 1700003 - The reminder does not exist.
+     * @syscap SystemCapability.Notification.ReminderAgent
+     * @since 12
+     */
+    function deleteExcludeDates(reminderId: number): Promise<void>;
+    /**
+     * get exclude dates
+     *
+     * @param { number } reminderId reminder id
+     * @returns { Promise<Array<Date>> } The promise returned by the function.
+     * @throws { BusinessError } 201 - Permission denied
+     * @throws { BusinessError } 1700003 - The reminder does not exist.
+     * @syscap SystemCapability.Notification.ReminderAgent
+     * @since 12
+     */
+    function getExcludeDates(reminderId: number): Promise<Array<Date>>;
+    /**
+     * Obtains all the valid reminders of current application, include reminderId.
+     *
+     * @returns { Promise<Array<ReminderInfo>> } The promise returned by the function.
+     * @throws { BusinessError } 201 - Permission denied.
+     * @syscap SystemCapability.Notification.ReminderAgent
+     * @since 12
+     */
+    function getAllValidReminders(): Promise<Array<ReminderInfo>>;
+    /**
      * Declares action button type.
      *
      * @enum { number }
@@ -267,6 +311,20 @@ declare namespace reminderAgentManager {
          * @since 9
          */
         abilityName: string;
+        /**
+         * The Uniform Resource Identifier (URI) that will be redirected to.
+         *
+         * @syscap SystemCapability.Notification.ReminderAgent
+         * @since 12
+         */
+        uri?: string;
+        /**
+         * The description of the WantParams object in an Want
+         *
+         * @syscap SystemCapability.Notification.ReminderAgent
+         * @since 12
+         */
+        parameters?: Record<string, Object>;
     }
     /**
      * Max screen want agent information.
@@ -479,6 +537,13 @@ declare namespace reminderAgentManager {
          * @since 11
          */
         daysOfWeek?: Array<number>;
+        /**
+         * calendar end date time
+         *
+         * @syscap SystemCapability.Notification.ReminderAgent
+         * @since 12
+         */
+        endDateTime?: LocalDateTime;
     }
     /**
      * Alarm reminder information.
@@ -526,6 +591,17 @@ declare namespace reminderAgentManager {
          * @since 9
          */
         triggerTimeInSeconds: number;
+    }
+    /**
+     * Reminder information, include reminderId.
+     *
+     * @interface ReminderInfo
+     * @syscap SystemCapability.Notification.ReminderAgent
+     * @since 12
+     */
+    interface ReminderInfo {
+        reminderId: number;
+        reminderReq: ReminderRequest;
     }
     /**
      * Used for ReminderRequestCalendar when set the time.

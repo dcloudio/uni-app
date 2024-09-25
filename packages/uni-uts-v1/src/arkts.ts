@@ -1,21 +1,73 @@
 import path from 'path'
 import fs from 'fs-extra'
 import type { UTSBundleOptions } from '@dcloudio/uts'
-import { getUTSCompiler } from './utils'
+import { formatUniProviderName, getUTSCompiler } from './utils'
 import type { CompileResult } from '.'
 
 interface ArkTSCompilerOptions {
   isX?: boolean
   isExtApi?: boolean
+  transform?: {
+    uniExtApiProviderName?: string
+    uniExtApiProviderService?: string
+    uniExtApiProviderServicePlugin?: string
+  }
+}
+
+type AutoImportOptions = Record<string, [string, (string | undefined)?][]>
+
+export function mergeArkTSAutoImports(
+  base: AutoImportOptions,
+  ext: AutoImportOptions
+): AutoImportOptions {
+  const keys = new Set([...Object.keys(base), ...Object.keys(ext)])
+  const result: AutoImportOptions = {}
+  for (const key of keys) {
+    const baseImports = base[key] || []
+    const extImports = ext[key] || []
+    result[key] = [...baseImports, ...extImports]
+  }
+  return result
+}
+
+export function getArkTSAutoImports(): AutoImportOptions {
+  return mergeArkTSAutoImports(
+    {
+      '@dcloudio/uts-harmony': [
+        ['IUTSObject'],
+        ['UTSObject'],
+        ['UTSJSONObject'],
+      ],
+      '@dcloudio/uni-app-harmony': [
+        ['defineAsyncApi'],
+        ['defineSyncApi'],
+        ['defineTaskApi'],
+        ['defineOnApi'],
+        ['defineOffApi'],
+        ['getUniProvider'],
+        ['getUniProviders'],
+        ['string'],
+        ['AsyncApiSuccessResult'],
+        ['AsyncApiResult'],
+        ['ApiExecutor'],
+        ['ComponentInternalInstance'],
+        ['ComponentPublicInstance'],
+        ['IUniError'],
+        ['ProtocolOptions'],
+        ['ApiOptions'],
+        ['ApiError'],
+        ['UniError'],
+        ['UniProvider'],
+      ],
+      '@dcloudio/uni-app-harmony-framework': [['uni']],
+    },
+    require('../lib/arkts/ext-api-export.json')
+  )
 }
 export async function compileArkTS(
   pluginDir: string,
-  { isExtApi }: ArkTSCompilerOptions
+  { isExtApi, transform }: ArkTSCompilerOptions
 ): Promise<CompileResult | void> {
-  if (!process.env.UNI_APP_HARMONY_PROJECT_PATH) {
-    console.error('manifest.json -> app-harmony -> projectPath is required')
-    process.exit(0)
-  }
   const filename = resolveAppHarmonyIndexFile(pluginDir)
   if (!filename) {
     return
@@ -24,44 +76,15 @@ export async function compileArkTS(
   const { bundle, UTSTarget } = getUTSCompiler()
   const pluginId = path.basename(pluginDir)
   const inputDir = process.env.UNI_INPUT_DIR
-  const projectPath = process.env.UNI_APP_HARMONY_PROJECT_PATH
-  const outputUniModuleDir = resolveAppHarmonyUniModuleDir(
-    projectPath,
-    pluginId
-  )
-  const utsGlobals = ['IUTSObject', 'UTSObject', 'UTSJSONObject']
-  const uniAppGlobals = [
-    'IUniError',
-    'UniError',
-    'string',
-    'ComponentPublicInstance',
-    'ComponentInternalInstance',
-  ]
-  const banners: string[] = [
-    `import { ${utsGlobals.join(', ')} } from '@dcloudio/uts-harmony'`,
-    `import { ${uniAppGlobals.join(', ')} } from '@dcloudio/uni-app-harmony'`,
-  ]
-  if (isExtApi) {
-    const globals = [
-      'defineAsyncApi',
-      'defineSyncApi',
-      'defineTaskApi',
-      'defineOnApi',
-      'defineOffApi',
-      'getUniProvider',
-      'getUniProviders',
-      'AsyncApiSuccessResult',
-      'AsyncApiResult',
-      'ApiExecutor',
-      'ProtocolOptions',
-      'ApiOptions',
-      'ApiError',
-      'UniProvider',
-    ]
-    banners.push(
-      `import { ${globals.join(', ')} } from '@dcloudio/uni-app-harmony'`
-    )
+  const outputUniModuleDir = resolveAppHarmonyUniModuleDir(pluginId)
+
+  const autoImportExternals = getArkTSAutoImports()
+  if (transform && transform.uniExtApiProviderService) {
+    autoImportExternals['@dcloudio/uni-app-harmony'].push([
+      formatUniProviderName(transform.uniExtApiProviderService),
+    ])
   }
+
   const buildOptions: UTSBundleOptions = {
     hbxVersion: process.env.HX_Version || process.env.UNI_COMPILER_VERSION,
     input: {
@@ -70,7 +93,6 @@ export async function compileArkTS(
       paths: {
         '@dcloudio/uni-runtime': '@dcloudio/uni-app-harmony-framework',
       },
-      externals: ['@dcloudio/uni-app-harmony-framework'],
       parseOptions: {
         tsx: true,
         noEarlyErrors: true,
@@ -87,12 +109,12 @@ export async function compileArkTS(
       extname: '.ets',
       logFilename: false,
       isPlugin: true,
-      transform: {},
+      transform: {
+        autoImportExternals,
+      },
       treeshake: {
         noSideEffects: true,
       },
-      banner: banners.join('\n'),
-      // footer:''
     },
   }
   const result = await bundle(UTSTarget.ARKTS, buildOptions)
@@ -130,10 +152,26 @@ function resolveAppHarmonyIndexFile(pluginDir: string) {
   }
 }
 
-export function resolveAppHarmonyUniModulesRootDir(projectPath: string) {
-  return path.resolve(projectPath, 'entry/src/main/ets/uni_modules')
+export function resolveAppHarmonyUniModulesRootDir() {
+  if (process.env.UNI_APP_HARMONY_PROJECT_PATH) {
+    return path.resolve(
+      process.env.UNI_APP_HARMONY_PROJECT_PATH,
+      'entry/src/main/ets/uni_modules'
+    )
+  }
+  return path.resolve(process.env.UNI_OUTPUT_DIR, 'uni_modules')
 }
 
-function resolveAppHarmonyUniModuleDir(projectPath: string, pluginId: string) {
-  return path.resolve(resolveAppHarmonyUniModulesRootDir(projectPath), pluginId)
+function resolveAppHarmonyUniModuleDir(pluginId: string) {
+  return path.resolve(resolveAppHarmonyUniModulesRootDir(), pluginId)
+}
+
+export function resolveAppHarmonyUniModulesEntryDir() {
+  if (process.env.UNI_APP_HARMONY_PROJECT_PATH) {
+    return path.resolve(
+      process.env.UNI_APP_HARMONY_PROJECT_PATH,
+      'entry/src/main/ets/uni_modules'
+    )
+  }
+  return path.resolve(process.env.UNI_OUTPUT_DIR, 'uni_modules')
 }

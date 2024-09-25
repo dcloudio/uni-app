@@ -1,0 +1,24 @@
+{
+  "extends": "./tsconfig.vue.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "lib": ["ESNext"],
+    "noImplicitAny": false,
+    "useDefineForClassFields": false,
+    "paths": {
+      "@/*": ["./*"]
+    }
+  },
+  "include": [
+    "env.d.ts",
+    "shim-uni.d.ts",
+    "shim-dom.d.ts",
+    "global.d.ts",
+    "**/*.uts",
+    "**/*.ts",
+    "**/*.d.ts",
+    "**/*.tsx",
+    "**/*.vue",
+    "**/*.uvue"
+  ]
+}

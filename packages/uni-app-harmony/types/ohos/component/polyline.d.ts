@@ -13,6 +13,10 @@
  * limitations under the License.
  */
 /**
+ * @file
+ * @kit ArkUI
+ */
+/**
  * Provides an interface for drawing polylines.
  *
  * @interface PolylineInterface

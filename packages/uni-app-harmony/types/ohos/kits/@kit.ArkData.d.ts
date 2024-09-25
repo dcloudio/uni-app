@@ -18,6 +18,7 @@
  * @kit ArkData
  */
 
+import cloudData from '@ohos.data.cloudData';
 import cloudExtension from '@ohos.data.cloudExtension';
 import commonType from '@ohos.data.commonType';
 import dataSharePredicates from '@ohos.data.dataSharePredicates';
@@ -27,5 +28,7 @@ import preferences from '@ohos.data.preferences';
 import relationalStore from '@ohos.data.relationalStore';
 import unifiedDataChannel from '@ohos.data.unifiedDataChannel';
 import uniformTypeDescriptor from '@ohos.data.uniformTypeDescriptor';
+import uniformDataStruct from '@ohos.data.uniformDataStruct';
 import { ValueType, ValuesBucket } from '@ohos.data.ValuesBucket';
-export { ValueType, ValuesBucket, cloudExtension, commonType, dataSharePredicates, distributedDataObject, distributedKVStore, preferences, relationalStore, unifiedDataChannel, uniformTypeDescriptor };
+import sendablePreferences from '@ohos.data.sendablePreferences';
+export { ValueType, ValuesBucket, cloudData, cloudExtension, commonType, dataSharePredicates, distributedDataObject, distributedKVStore, preferences, relationalStore, unifiedDataChannel, uniformTypeDescriptor, uniformDataStruct, sendablePreferences };

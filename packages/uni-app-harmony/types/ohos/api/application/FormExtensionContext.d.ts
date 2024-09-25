@@ -12,6 +12,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+/**
+ * @file
+ * @kit FormKit
+ */
 
 import ExtensionContext from './ExtensionContext';
 /**
@@ -20,7 +24,7 @@ import ExtensionContext from './ExtensionContext';
  *
  * @extends ExtensionContext
  * @syscap SystemCapability.Ability.Form
- * @StageModelOnly
+ * @stagemodelonly
  * @since 9
  */
 /**
@@ -29,7 +33,7 @@ import ExtensionContext from './ExtensionContext';
  *
  * @extends ExtensionContext
  * @syscap SystemCapability.Ability.Form
- * @StageModelOnly
+ * @stagemodelonly
  * @atomicservice
  * @since 11
  */

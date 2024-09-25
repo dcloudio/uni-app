@@ -1,6 +1,12 @@
 import path from 'path'
+import fs from 'fs'
 import { extend } from '@vue/shared'
-import type { ComponentJson, PageWindowOptions, UsingComponents } from './types'
+import type {
+  ComponentJson,
+  MiniProgramComponentsType,
+  PageWindowOptions,
+  UsingComponents,
+} from './types'
 import {
   normalizeMiniProgramFilename,
   normalizeNodeModules,
@@ -145,7 +151,7 @@ export function isMiniProgramUsingComponent(
 }
 
 interface MiniProgramComponents {
-  [name: string]: 'plugin' | 'component' | 'dynamicLib' | 'ext'
+  [name: string]: MiniProgramComponentsType
 }
 
 export function findMiniProgramUsingComponents({
@@ -207,6 +213,13 @@ function findMiniProgramUsingComponent(
       } else if (path.includes('ext://')) {
         // mp-toutiao
         res[name] = 'ext'
+      } else if (
+        componentsDir &&
+        path.includes(componentsDir + '/') &&
+        findUsingComponentsJson(path, componentsDir).renderer === 'xr-frame'
+      ) {
+        // mp-weixin & x-frame
+        res[name] = 'xr-frame'
       } else if (componentsDir && path.includes(componentsDir + '/')) {
         res[name] = 'component'
       }
@@ -214,4 +227,33 @@ function findMiniProgramUsingComponent(
     },
     {}
   )
+}
+
+export function findUsingComponentsJson(
+  pathInpages: string,
+  componentsDir: string
+): Record<any, any> {
+  // 兼容test case
+  if (!process.env.UNI_INPUT_DIR) return {}
+
+  let [, dir] = pathInpages.split(componentsDir)
+  if (dir === '') {
+    console.warn(`${pathInpages} 路径里没有找到对应的 ${componentsDir} 目录`)
+    return {}
+  }
+  dir = '.' + dir
+  const fulldir = path.resolve(process.env.UNI_INPUT_DIR, componentsDir, dir)
+  let filename = path.parse(pathInpages).name + '.json'
+
+  let jsonPath = path.resolve(fulldir, filename)
+  if (fs.existsSync(jsonPath)) {
+    return require(jsonPath) as Record<any, any>
+  }
+  jsonPath = path.resolve(fulldir, 'index.json')
+  if (fs.existsSync(jsonPath)) {
+    return require(jsonPath) as Record<any, any>
+  }
+
+  console.warn(`${pathInpages} 路径下没有找到对应的json文件`)
+  return {}
 }

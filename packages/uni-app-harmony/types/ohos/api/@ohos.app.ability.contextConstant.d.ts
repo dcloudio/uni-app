@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022-2023 Huawei Device Co., Ltd.
+ * Copyright (c) 2022-2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -105,6 +105,61 @@ declare namespace contextConstant {
          * @since 11
          */
         EL4 = 3
+    }
+    /**
+     * Process mode
+     *
+     * @enum { number }
+     * @syscap SystemCapability.Ability.AbilityRuntime.Core
+     * @stagemodelonly
+     * @since 12
+     */
+    export enum ProcessMode {
+        /**
+         * Indicates the ability started in a new process, and the process lifecycle follows the parent process.
+         * When using this mode, the target ability needs to have the same bundle name as the caller.
+         *
+         * @syscap SystemCapability.Ability.AbilityRuntime.Core
+         * @stagemodelonly
+         * @since 12
+         */
+        NEW_PROCESS_ATTACH_TO_PARENT = 1,
+        /**
+         * Indicates the ability started in a new process.
+         * When using this mode, the caller needs to add item to status bar first,
+         * and the target ability needs to have the same bundle name as the caller.
+         *
+         * @syscap SystemCapability.Ability.AbilityRuntime.Core
+         * @stagemodelonly
+         * @since 12
+         */
+        NEW_PROCESS_ATTACH_TO_STATUS_BAR_ITEM = 2
+    }
+    /**
+     * Startup visibility
+     *
+     * @enum { number }
+     * @syscap SystemCapability.Ability.AbilityRuntime.Core
+     * @stagemodelonly
+     * @since 12
+     */
+    export enum StartupVisibility {
+        /**
+         * Indicates that the ability will hide after process startup.
+         *
+         * @syscap SystemCapability.Ability.AbilityRuntime.Core
+         * @stagemodelonly
+         * @since 12
+         */
+        STARTUP_HIDE = 0,
+        /**
+         * Indicates that the ability will show after process startup.
+         *
+         * @syscap SystemCapability.Ability.AbilityRuntime.Core
+         * @stagemodelonly
+         * @since 12
+         */
+        STARTUP_SHOW = 1
     }
 }
 export default contextConstant;

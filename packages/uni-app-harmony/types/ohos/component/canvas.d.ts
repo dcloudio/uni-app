@@ -13,6 +13,18 @@
  * limitations under the License.
  */
 /**
+ * @file
+ * @kit ArkUI
+ */
+/**
+ * Import the drawing canvas type object for Canvas.
+ *
+ * @syscap SystemCapability.ArkUI.ArkUI.Full
+ * @crossplatform
+ * @since 12
+ */
+declare type DrawingCanvas = import('../api/@ohos.graphics.drawing').default.Canvas;
+/**
  * Filling style algorithm, which determines whether a point is within or outside the path. The following
  *    two configurations are supported:
  * "evenodd": odd and even round rule
@@ -1021,6 +1033,16 @@ declare class Path2D extends CanvasPath {
      */
     constructor();
     /**
+     * Create an empty path object.
+     *
+     * @param { LengthMetricsUnit } [unit] - the unit mode
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @form
+     * @since 12
+     */
+    constructor(unit: LengthMetricsUnit);
+    /**
      * Create a copy of a path object
      *
      * @param { Path2D } path - Path object to be copied
@@ -1056,6 +1078,17 @@ declare class Path2D extends CanvasPath {
      */
     constructor(path: Path2D);
     /**
+     * Create a copy of a path object
+     *
+     * @param { Path2D } path - Path object to be copied
+     * @param { LengthMetricsUnit } [unit] - the unit mode
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @form
+     * @since 12
+     */
+    constructor(path: Path2D, unit: LengthMetricsUnit);
+    /**
      * Create a new path according to the description.
      *
      * @param { string } d - Indicates the path string that compiles with the SVG path description specifications.
@@ -1090,6 +1123,17 @@ declare class Path2D extends CanvasPath {
      * @form
      */
     constructor(d: string);
+    /**
+     * Create a new path according to the description.
+     *
+     * @param { string } description - Indicates the path string that compiles with the SVG path description specifications.
+     * @param { LengthMetricsUnit } [unit] - the unit mode
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @form
+     * @since 12
+     */
+    constructor(description: string, unit: LengthMetricsUnit);
 }
 /**
  * Describes an opaque object of a template, which is created using the createPattern() method.
@@ -1865,6 +1909,17 @@ declare class ImageBitmap {
      */
     constructor(src: string);
     /**
+     * Create an ImageBitmap object based on the transferred image path.
+     *
+     * @param { string } src - Path of the image object.
+     * @param { LengthMetricsUnit } [unit] - the unit mode
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @form
+     * @since 12
+     */
+    constructor(src: string, unit: LengthMetricsUnit);
+    /**
      * Transfer a PixelMap object to construct an ImageBitmap object.
      *
      * @param { PixelMap } data - PixelMap object
@@ -1889,6 +1944,16 @@ declare class ImageBitmap {
      * @since 11
      */
     constructor(data: PixelMap);
+    /**
+     * Transfer a PixelMap object to construct an ImageBitmap object.
+     *
+     * @param { PixelMap } data - PixelMap object
+     * @param { LengthMetricsUnit } [unit] - the unit mode
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @since 12
+     */
+    constructor(data: PixelMap, unit: LengthMetricsUnit);
 }
 /**
  * Image data object
@@ -2069,6 +2134,19 @@ declare class ImageData {
      * @form
      */
     constructor(width: number, height: number, data?: Uint8ClampedArray);
+    /**
+     * Create an ImageData object based on the input parameters.
+     *
+     * @param { number } width - Width of the image.
+     * @param { number } height - Height of the image.
+     * @param { Uint8ClampedArray } data - Data of the image. If this parameter is not specified, the default value is a black rectangular image.
+     * @param { LengthMetricsUnit } [unit] - the unit mode
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @form
+     * @since 12
+     */
+    constructor(width: number, height: number, data?: Uint8ClampedArray, unit?: LengthMetricsUnit);
 }
 /**
  * This object allows you to set properties when creating a rendering context
@@ -4766,6 +4844,30 @@ declare class CanvasRenderer extends CanvasPath {
      * @form
      */
     transferFromImageBitmap(bitmap: ImageBitmap): void;
+    /**
+     * Allocate a layer for subsequent drawing.
+     *
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @since 12
+     */
+    saveLayer(): void;
+    /**
+     * Remove changes to transform and clip since saveLayer was last called and draw the layer on canvas.
+     *
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @since 12
+     */
+    restoreLayer(): void;
+    /**
+     * Clear the backing buffer, drawing state stack, any defined paths, and styles.
+     *
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @since 12
+     */
+    reset(): void;
 }
 /**
  * Draw context object for the Canvas component.
@@ -4920,6 +5022,23 @@ declare class CanvasRenderingContext2D extends CanvasRenderer {
      */
     toDataURL(type?: string, quality?: any): string;
     /**
+     * Start image analyzer.
+     *
+     * @param { ImageAnalyzerConfig } config - Image analyzer config.
+     * @returns { Promise<void> } The promise returned by the function.
+     * @throws { BusinessError } 110001 - Image analysis feature is not supported.
+     * @throws { BusinessError } 110002 - Image analysis is currently being executed.
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @since 12
+     */
+    startImageAnalyzer(config: ImageAnalyzerConfig): Promise<void>;
+    /**
+     * Stop image analyzer.
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @since 12
+     */
+    stopImageAnalyzer(): void;
+    /**
      * Constructor of the canvas drawing context object, which is used to create a drawing context object.
      *
      * @param { RenderingContextSettings } settings - Drawing attribute. For details, see {@link RenderingContextSettings}.
@@ -4954,6 +5073,17 @@ declare class CanvasRenderingContext2D extends CanvasRenderer {
      * @form
      */
     constructor(settings?: RenderingContextSettings);
+    /**
+     * Constructor of the canvas drawing context object, which is used to create a drawing context object.
+     *
+     * @param { RenderingContextSettings } settings - Drawing attribute. For details, see {@link RenderingContextSettings}.
+     * @param { LengthMetricsUnit } [unit] - the unit mode
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @form
+     * @since 12
+     */
+    constructor(settings?: RenderingContextSettings, unit?: LengthMetricsUnit);
 }
 /**
  * Draw context object for the OffscreenCanvas component.
@@ -5115,6 +5245,19 @@ declare class OffscreenCanvasRenderingContext2D extends CanvasRenderer {
      * @form
      */
     constructor(width: number, height: number, settings?: RenderingContextSettings);
+    /**
+     * Constructor of the canvas drawing context object, which is used to create a drawing context object.
+     *
+     * @param { number } width - the width of the OffscreenCanvas
+     * @param { number } height - the height of the OffscreenCanvas
+     * @param { RenderingContextSettings } settings - Drawing attribute. For details, see {@link RenderingContextSettings}.
+     * @param { LengthMetricsUnit } [unit] - the unit mode
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @form
+     * @since 12
+     */
+    constructor(width: number, height: number, settings?: RenderingContextSettings, unit?: LengthMetricsUnit);
 }
 /**
  * Draw an object off the screen. The drawing content is not directly displayed on the screen.
@@ -5318,6 +5461,91 @@ declare class OffscreenCanvas {
      * @form
      */
     constructor(width: number, height: number);
+    /**
+     * Constructor of the off-screen canvas, which is used to create an off-screen canvas object.
+     *
+     * @param { number } width - Width of the off-screen canvas.
+     * @param { number } height - Height of the off-screen canvas.
+     * @param { LengthMetricsUnit } [unit] - the unit mode
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @form
+     * @since 12
+     */
+    constructor(width: number, height: number, unit: LengthMetricsUnit);
+}
+/**
+ * Size info.
+ *
+ * @interface Size
+ * @syscap SystemCapability.ArkUI.ArkUI.Full
+ * @crossplatform
+ * @since 12
+ */
+declare interface Size {
+    /**
+     * Defines the width property.
+     *
+     * @type { number }
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @since 12
+     */
+    width: number;
+    /**
+     * Defines the height property.
+     *
+     * @type { number }
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @since 12
+     */
+    height: number;
+}
+/**
+ * Defines DrawingRenderingContext.
+ *
+ * @syscap SystemCapability.ArkUI.ArkUI.Full
+ * @crossplatform
+ * @since 12
+ */
+declare class DrawingRenderingContext {
+    /**
+     * Get size of the DrawingRenderingContext.
+     *
+     * @returns { Size } The size of the DrawingRenderingContext.
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @since 12
+     */
+    get size(): Size;
+    /**
+     * Get canvas of the DrawingRenderingContext.
+     *
+     * @returns { DrawingCanvas } The canvas of the DrawingRenderingContext.
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @since 12
+     */
+    get canvas(): DrawingCanvas;
+    /**
+     * Invalidate the component, which will cause a re-render of the component.
+     *
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @since 12
+     */
+    invalidate(): void;
+    /**
+     * Create DrawingRenderingContext with setting LengthMetricsUnit.
+     *
+     * @param { LengthMetricsUnit } [unit] - the unit mode
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @form
+     * @since 12
+     */
+    constructor(unit?: LengthMetricsUnit);
 }
 /**
  *TextTimer component, which provides the text timer capability.
@@ -5392,7 +5620,18 @@ interface CanvasInterface {
      * @since 11
      * @form
      */
-    (context?: CanvasRenderingContext2D): CanvasAttribute;
+    /**
+     * Construct a canvas component.
+     *
+     * @param { CanvasRenderingContext2D | DrawingRenderingContext } context - Canvas context object.
+     * @returns { CanvasAttribute }
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @atomicservice
+     * @since 12
+     * @form
+     */
+    (context?: CanvasRenderingContext2D | DrawingRenderingContext): CanvasAttribute;
 }
 /**
  * Provides attribute for Canvas.
@@ -5468,6 +5707,15 @@ declare class CanvasAttribute extends CommonMethod<CanvasAttribute> {
      * @form
      */
     onReady(event: () => void): CanvasAttribute;
+    /**
+     * Enable image analyzer for Canvas.
+     *
+     * @param { boolean } enable
+     * @returns { CanvasAttribute }
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @since 12
+     */
+    enableAnalyzer(enable: boolean): CanvasAttribute;
 }
 /**
  * Defines Canvas Component.

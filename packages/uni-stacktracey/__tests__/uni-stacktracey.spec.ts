@@ -35,7 +35,7 @@ describe('uni-stacktracey', () => {
       }),
     }).then((res: string) => {
       expect(res).toEqual(`Error: Sentry Error
-at   src/pages/index/index.vue:44
+at   src/pages/index/index.vue:44:0
 at   src/pages/index/index.vue?be58:12:17
 at   node_modules/@sentry/browser/esm/helpers.js:74:22
 at   node_modules/@dcloudio/vue-cli-plugin-uni/packages/h5-vue/dist/vue.runtime.esm.js:1864:25

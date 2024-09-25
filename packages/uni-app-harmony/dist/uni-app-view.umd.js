@@ -8,25 +8,25 @@
   var _wks = { exports: {} };
   var _shared = { exports: {} };
   var _core = { exports: {} };
-  var core$2 = _core.exports = {
+  var core$3 = _core.exports = {
     version: "2.6.12"
   };
   if (typeof __e == "number")
-    __e = core$2;
+    __e = core$3;
   var _coreExports = _core.exports;
   var _global = { exports: {} };
-  var global$4 = _global.exports = typeof window != "undefined" && window.Math == Math ? window : typeof self != "undefined" && self.Math == Math ? self : Function("return this")();
+  var global$5 = _global.exports = typeof window != "undefined" && window.Math == Math ? window : typeof self != "undefined" && self.Math == Math ? self : Function("return this")();
   if (typeof __g == "number")
-    __g = global$4;
+    __g = global$5;
   var _globalExports = _global.exports;
-  var core$1 = _coreExports;
-  var global$3 = _globalExports;
+  var core$2 = _coreExports;
+  var global$4 = _globalExports;
   var SHARED = "__core-js_shared__";
-  var store$1 = global$3[SHARED] || (global$3[SHARED] = {});
+  var store$1 = global$4[SHARED] || (global$4[SHARED] = {});
   (_shared.exports = function(key2, value) {
     return store$1[key2] || (store$1[key2] = value !== void 0 ? value : {});
   })("versions", []).push({
-    version: core$1.version,
+    version: core$2.version,
     mode: "global",
     copyright: "© 2020 Denis Pushkarev (zloirock.ru)"
   });
@@ -49,9 +49,9 @@
   var _isObject = function(it) {
     return typeof it === "object" ? it !== null : typeof it === "function";
   };
-  var isObject$3 = _isObject;
+  var isObject$4 = _isObject;
   var _anObject = function(it) {
-    if (!isObject$3(it))
+    if (!isObject$4(it))
       throw TypeError(it + " is not an object!");
     return it;
   };
@@ -90,27 +90,27 @@
       }
     }).a != 7;
   });
-  var isObject$2 = _isObject;
+  var isObject$3 = _isObject;
   var _toPrimitive$1 = function(it, S) {
-    if (!isObject$2(it))
+    if (!isObject$3(it))
       return it;
     var fn, val;
-    if (S && typeof (fn = it.toString) == "function" && !isObject$2(val = fn.call(it)))
+    if (S && typeof (fn = it.toString) == "function" && !isObject$3(val = fn.call(it)))
       return val;
-    if (typeof (fn = it.valueOf) == "function" && !isObject$2(val = fn.call(it)))
+    if (typeof (fn = it.valueOf) == "function" && !isObject$3(val = fn.call(it)))
       return val;
-    if (!S && typeof (fn = it.toString) == "function" && !isObject$2(val = fn.call(it)))
+    if (!S && typeof (fn = it.toString) == "function" && !isObject$3(val = fn.call(it)))
       return val;
     throw TypeError("Can't convert object to primitive value");
   };
-  var anObject$2 = _anObject;
+  var anObject$4 = _anObject;
   var IE8_DOM_DEFINE = _ie8DomDefine;
   var toPrimitive = _toPrimitive$1;
   var dP$2 = Object.defineProperty;
   _objectDp.f = _descriptors ? Object.defineProperty : function defineProperty(O, P, Attributes) {
-    anObject$2(O);
+    anObject$4(O);
     P = toPrimitive(P, true);
-    anObject$2(Attributes);
+    anObject$4(Attributes);
     if (IE8_DOM_DEFINE)
       try {
         return dP$2(O, P, Attributes);
@@ -176,7 +176,7 @@
     return hasOwnProperty$3.call(it, key2);
   };
   var _functionToString = _sharedExports("native-function-to-string", Function.toString);
-  var global$2 = _globalExports;
+  var global$3 = _globalExports;
   var hide$3 = _hide;
   var has$4 = _has;
   var SRC = _uid("src");
@@ -194,7 +194,7 @@
       return;
     if (isFunction2)
       has$4(val, SRC) || hide$3(val, SRC, O[key2] ? "" + O[key2] : TPL.join(String(key2)));
-    if (O === global$2) {
+    if (O === global$3) {
       O[key2] = val;
     } else if (!safe) {
       delete O[key2];
@@ -213,9 +213,9 @@
       throw TypeError(it + " is not a function!");
     return it;
   };
-  var aFunction$1 = _aFunction;
+  var aFunction$3 = _aFunction;
   var _ctx = function(fn, that, length) {
-    aFunction$1(fn);
+    aFunction$3(fn);
     if (that === void 0)
       return fn;
     switch (length) {
@@ -236,20 +236,20 @@
       return fn.apply(that, arguments);
     };
   };
-  var global$1 = _globalExports;
-  var core = _coreExports;
+  var global$2 = _globalExports;
+  var core$1 = _coreExports;
   var hide$2 = _hide;
   var redefine$2 = _redefineExports;
   var ctx = _ctx;
   var PROTOTYPE$1 = "prototype";
-  var $export$3 = function(type, name, source) {
-    var IS_FORCED = type & $export$3.F;
-    var IS_GLOBAL = type & $export$3.G;
-    var IS_STATIC = type & $export$3.S;
-    var IS_PROTO = type & $export$3.P;
-    var IS_BIND = type & $export$3.B;
-    var target = IS_GLOBAL ? global$1 : IS_STATIC ? global$1[name] || (global$1[name] = {}) : (global$1[name] || {})[PROTOTYPE$1];
-    var exports = IS_GLOBAL ? core : core[name] || (core[name] = {});
+  var $export$4 = function(type, name, source) {
+    var IS_FORCED = type & $export$4.F;
+    var IS_GLOBAL = type & $export$4.G;
+    var IS_STATIC = type & $export$4.S;
+    var IS_PROTO = type & $export$4.P;
+    var IS_BIND = type & $export$4.B;
+    var target = IS_GLOBAL ? global$2 : IS_STATIC ? global$2[name] || (global$2[name] = {}) : (global$2[name] || {})[PROTOTYPE$1];
+    var exports = IS_GLOBAL ? core$1 : core$1[name] || (core$1[name] = {});
     var expProto = exports[PROTOTYPE$1] || (exports[PROTOTYPE$1] = {});
     var key2, own, out2, exp;
     if (IS_GLOBAL)
@@ -257,25 +257,25 @@
     for (key2 in source) {
       own = !IS_FORCED && target && target[key2] !== void 0;
       out2 = (own ? target : source)[key2];
-      exp = IS_BIND && own ? ctx(out2, global$1) : IS_PROTO && typeof out2 == "function" ? ctx(Function.call, out2) : out2;
+      exp = IS_BIND && own ? ctx(out2, global$2) : IS_PROTO && typeof out2 == "function" ? ctx(Function.call, out2) : out2;
       if (target)
-        redefine$2(target, key2, out2, type & $export$3.U);
+        redefine$2(target, key2, out2, type & $export$4.U);
       if (exports[key2] != out2)
         hide$2(exports, key2, exp);
       if (IS_PROTO && expProto[key2] != out2)
         expProto[key2] = out2;
     }
   };
-  global$1.core = core;
-  $export$3.F = 1;
-  $export$3.G = 2;
-  $export$3.S = 4;
-  $export$3.P = 8;
-  $export$3.B = 16;
-  $export$3.W = 32;
-  $export$3.U = 64;
-  $export$3.R = 128;
-  var _export = $export$3;
+  global$2.core = core$1;
+  $export$4.F = 1;
+  $export$4.G = 2;
+  $export$4.S = 4;
+  $export$4.P = 8;
+  $export$4.B = 16;
+  $export$4.W = 32;
+  $export$4.U = 64;
+  $export$4.R = 128;
+  var _export = $export$4;
   var ceil = Math.ceil;
   var floor = Math.floor;
   var _toInteger = function(it) {
@@ -350,10 +350,10 @@
     return $keys(O, enumBugKeys$1);
   };
   var dP = _objectDp;
-  var anObject$1 = _anObject;
+  var anObject$3 = _anObject;
   var getKeys$2 = _objectKeys;
   var _objectDps = _descriptors ? Object.defineProperties : function defineProperties(O, Properties) {
-    anObject$1(O);
+    anObject$3(O);
     var keys = getKeys$2(Properties);
     var length = keys.length;
     var i2 = 0;
@@ -373,7 +373,7 @@
     _html = document2 && document2.documentElement;
     return _html;
   }
-  var anObject = _anObject;
+  var anObject$2 = _anObject;
   var dPs = _objectDps;
   var enumBugKeys = _enumBugKeys;
   var IE_PROTO$1 = _sharedKey("IE_PROTO");
@@ -402,7 +402,7 @@
   var _objectCreate = Object.create || function create2(O, Properties) {
     var result;
     if (O !== null) {
-      Empty[PROTOTYPE] = anObject(O);
+      Empty[PROTOTYPE] = anObject$2(O);
       result = new Empty();
       Empty[PROTOTYPE] = null;
       result[IE_PROTO$1] = O;
@@ -450,7 +450,7 @@
     }
     return O instanceof Object ? ObjectProto : null;
   };
-  var $export$2 = _export;
+  var $export$3 = _export;
   var redefine$1 = _redefineExports;
   var hide$1 = _hide;
   var Iterators$2 = _iterators;
@@ -524,7 +524,7 @@
             redefine$1(proto2, key2, methods[key2]);
         }
       else
-        $export$2($export$2.P + $export$2.F * (BUGGY || VALUES_BUG), NAME2, methods);
+        $export$3($export$3.P + $export$3.F * (BUGGY || VALUES_BUG), NAME2, methods);
     }
     return methods;
   };
@@ -557,7 +557,7 @@
   var $iterators = es6_array_iterator;
   var getKeys$1 = _objectKeys;
   var redefine = _redefineExports;
-  var global = _globalExports;
+  var global$1 = _globalExports;
   var hide = _hide;
   var Iterators = _iterators;
   var wks = _wksExports;
@@ -603,7 +603,7 @@
   for (var collections = getKeys$1(DOMIterables), i = 0; i < collections.length; i++) {
     var NAME$1 = collections[i];
     var explicit = DOMIterables[NAME$1];
-    var Collection = global[NAME$1];
+    var Collection = global$1[NAME$1];
     var proto = Collection && Collection.prototype;
     var key;
     if (proto) {
@@ -652,9 +652,9 @@
   var isFunction = (val) => typeof val === "function";
   var isString = (val) => typeof val === "string";
   var isSymbol = (val) => typeof val === "symbol";
-  var isObject$1 = (val) => val !== null && typeof val === "object";
+  var isObject$2 = (val) => val !== null && typeof val === "object";
   var isPromise = (val) => {
-    return (isObject$1(val) || isFunction(val)) && isFunction(val.then) && isFunction(val.catch);
+    return (isObject$2(val) || isFunction(val)) && isFunction(val.then) && isFunction(val.catch);
   };
   var objectToString = Object.prototype.toString;
   var toTypeString = (value) => objectToString.call(value);
@@ -721,7 +721,7 @@
         }
       }
       return res;
-    } else if (isString(value) || isObject$1(value)) {
+    } else if (isString(value) || isObject$2(value)) {
       return value;
     }
   }
@@ -763,7 +763,7 @@
           res += normalized + " ";
         }
       }
-    } else if (isObject$1(value)) {
+    } else if (isObject$2(value)) {
       for (var name in value) {
         if (value[name]) {
           res += name + " ";
@@ -792,20 +792,20 @@
     };
     return _strictMethod;
   }
-  var $export$1 = _export;
-  var aFunction = _aFunction;
+  var $export$2 = _export;
+  var aFunction$2 = _aFunction;
   var toObject = _toObject;
   var fails = _fails;
   var $sort = [].sort;
   var test = [1, 2, 3];
-  $export$1($export$1.P + $export$1.F * (fails(function() {
+  $export$2($export$2.P + $export$2.F * (fails(function() {
     test.sort(void 0);
   }) || !fails(function() {
     test.sort(null);
   }) || !require_strictMethod()($sort)), "Array", {
     // 22.1.3.25 Array.prototype.sort(comparefn)
     sort: function sort(comparefn) {
-      return comparefn === void 0 ? $sort.call(toObject(this)) : $sort.call(toObject(this), aFunction(comparefn));
+      return comparefn === void 0 ? $sort.call(toObject(this)) : $sort.call(toObject(this), aFunction$2(comparefn));
     }
   });
   var LINEFEED = "\n";
@@ -858,6 +858,26 @@
       }
       return res;
     };
+  }
+  function callOptions(options, data) {
+    options = options || {};
+    if (isString(data)) {
+      data = {
+        errMsg: data
+      };
+    }
+    if (/:ok$/.test(data.errMsg)) {
+      if (isFunction(options.success)) {
+        options.success(data);
+      }
+    } else {
+      if (isFunction(options.fail)) {
+        options.fail(data);
+      }
+    }
+    if (isFunction(options.complete)) {
+      options.complete(data);
+    }
   }
   function getValueByDataPath(obj, path) {
     if (!isString(path)) {
@@ -1142,7 +1162,7 @@
     }
   };
   var E$1 = E;
-  var isObject = (val) => val !== null && typeof val === "object";
+  var isObject$1 = (val) => val !== null && typeof val === "object";
   var defaultDelimiters = ["{", "}"];
   class BaseFormatter {
     constructor() {
@@ -1167,17 +1187,17 @@
     var [startDelimiter, endDelimiter] = _ref;
     var tokens = [];
     var position = 0;
-    var text = "";
+    var text2 = "";
     while (position < format.length) {
       var char = format[position++];
       if (char === startDelimiter) {
-        if (text) {
+        if (text2) {
           tokens.push({
             type: "text",
-            value: text
+            value: text2
           });
         }
-        text = "";
+        text2 = "";
         var sub = "";
         char = format[position++];
         while (char !== void 0 && char !== endDelimiter) {
@@ -1191,20 +1211,20 @@
           type
         });
       } else {
-        text += char;
+        text2 += char;
       }
     }
-    text && tokens.push({
+    text2 && tokens.push({
       type: "text",
-      value: text
+      value: text2
     });
     return tokens;
   }
   function compile$1(tokens, values) {
     var compiled = [];
     var index2 = 0;
-    var mode = Array.isArray(values) ? "list" : isObject(values) ? "named" : "unknown";
-    if (mode === "unknown") {
+    var mode2 = Array.isArray(values) ? "list" : isObject$1(values) ? "named" : "unknown";
+    if (mode2 === "unknown") {
       return compiled;
     }
     while (index2 < tokens.length) {
@@ -1217,7 +1237,7 @@
           compiled.push(values[parseInt(token.value, 10)]);
           break;
         case "named":
-          if (mode === "named") {
+          if (mode2 === "named") {
             compiled.push(values[token.value]);
           }
           break;
@@ -1485,6 +1505,25 @@
     }
     {
       useI18n().add(LOCALE_ZH_HANT, normalizeMessages(name, keys, ["彈幕", "音量"]), false);
+    }
+  });
+  var initI18nChooseLocationMsgsOnce = /* @__PURE__ */ once(() => {
+    var name = "uni.chooseLocation.";
+    var keys = ["search", "cancel"];
+    {
+      useI18n().add(LOCALE_EN, normalizeMessages(name, keys, ["Find Place", "Cancel"]), false);
+    }
+    {
+      useI18n().add(LOCALE_ES, normalizeMessages(name, keys, ["Encontrar", "Cancelar"]), false);
+    }
+    {
+      useI18n().add(LOCALE_FR, normalizeMessages(name, keys, ["Trouve", "Annuler"]), false);
+    }
+    {
+      useI18n().add(LOCALE_ZH_HANS, normalizeMessages(name, keys, ["搜索地点", "取消"]), false);
+    }
+    {
+      useI18n().add(LOCALE_ZH_HANT, normalizeMessages(name, keys, ["搜索地點", "取消"]), false);
     }
   });
   function initBridge(subscribeNamespace) {
@@ -2044,7 +2083,7 @@
       if (isRef(res)) {
         return targetIsArray && isIntegerKey(key2) ? res : res.value;
       }
-      if (isObject$1(res)) {
+      if (isObject$2(res)) {
         return isReadonly2 ? readonly(res) : reactive(res);
       }
       return res;
@@ -2399,7 +2438,7 @@
     return createReactiveObject(target, true, readonlyHandlers, readonlyCollectionHandlers, readonlyMap);
   }
   function createReactiveObject(target, isReadonly2, baseHandlers, collectionHandlers, proxyMap) {
-    if (!isObject$1(target)) {
+    if (!isObject$2(target)) {
       return target;
     }
     if (target["__v_raw"] && !(isReadonly2 && target["__v_isReactive"])) {
@@ -2442,8 +2481,8 @@
     }
     return value;
   }
-  var toReactive = (value) => isObject$1(value) ? reactive(value) : value;
-  var toReadonly = (value) => isObject$1(value) ? readonly(value) : value;
+  var toReactive = (value) => isObject$2(value) ? reactive(value) : value;
+  var toReadonly = (value) => isObject$2(value) ? readonly(value) : value;
   class ComputedRefImpl {
     constructor(getter, _setter, isReadonly2, isSSR) {
       this.getter = getter;
@@ -2913,7 +2952,7 @@
       }
     }
     if (!raw && !hasExtends) {
-      if (isObject$1(comp)) {
+      if (isObject$2(comp)) {
         cache2.set(comp, null);
       }
       return null;
@@ -2923,7 +2962,7 @@
     } else {
       extend(normalized, raw);
     }
-    if (isObject$1(comp)) {
+    if (isObject$2(comp)) {
       cache2.set(comp, normalized);
     }
     return normalized;
@@ -3356,7 +3395,7 @@
   function traverse(value, depth) {
     var currentDepth = arguments.length > 2 && arguments[2] !== void 0 ? arguments[2] : 0;
     var seen = arguments.length > 3 ? arguments[3] : void 0;
-    if (!isObject$1(value) || value["__v_skip"]) {
+    if (!isObject$2(value) || value["__v_skip"]) {
       return value;
     }
     if (depth && depth > 0) {
@@ -3551,7 +3590,7 @@
       for (var _i2 = 0; _i2 < source; _i2++) {
         ret[_i2] = renderItem(_i2 + 1, _i2, void 0, cached && cached[_i2]);
       }
-    } else if (isObject$1(source)) {
+    } else if (isObject$2(source)) {
       if (source[Symbol.iterator]) {
         ret = Array.from(source, (item, i3) => renderItem(item, i3, void 0, cached && cached[i3]));
       } else {
@@ -3785,7 +3824,7 @@
     if (dataOptions) {
       (function() {
         var data = dataOptions.call(publicThis, publicThis);
-        if (!isObject$1(data))
+        if (!isObject$2(data))
           ;
         else {
           instance.data = reactive(data);
@@ -3827,11 +3866,11 @@
     if (created) {
       callHook$1(created, instance, "c");
     }
-    function registerLifecycleHook(register, hook) {
+    function registerLifecycleHook(register2, hook) {
       if (isArray(hook)) {
-        hook.forEach((_hook) => register(_hook.bind(publicThis)));
+        hook.forEach((_hook) => register2(_hook.bind(publicThis)));
       } else if (hook) {
-        register(hook.bind(publicThis));
+        register2(hook.bind(publicThis));
       }
     }
     registerLifecycleHook(onBeforeMount, beforeMount);
@@ -3877,7 +3916,7 @@
     var _loop5 = function(key3) {
       var opt = injectOptions[key3];
       var injected = void 0;
-      if (isObject$1(opt)) {
+      if (isObject$2(opt)) {
         if ("default" in opt) {
           injected = inject(opt.from || key3, opt.default, true);
         } else {
@@ -3913,7 +3952,7 @@
       }
     } else if (isFunction(raw)) {
       watch(getter, raw.bind(publicThis));
-    } else if (isObject$1(raw)) {
+    } else if (isObject$2(raw)) {
       if (isArray(raw)) {
         raw.forEach((r) => createWatcher(r, ctx2, publicThis, key2));
       } else {
@@ -3953,7 +3992,7 @@
       }
       mergeOptions(resolved, base, optionMergeStrategies);
     }
-    if (isObject$1(base)) {
+    if (isObject$2(base)) {
       cache2.set(base, resolved);
     }
     return resolved;
@@ -4090,7 +4129,7 @@
       if (!isFunction(rootComponent)) {
         rootComponent = extend({}, rootComponent);
       }
-      if (rootProps != null && !isObject$1(rootProps)) {
+      if (rootProps != null && !isObject$2(rootProps)) {
         rootProps = null;
       }
       var context = createAppContext();
@@ -4418,7 +4457,7 @@
       }
     }
     if (!raw && !hasExtends) {
-      if (isObject$1(comp)) {
+      if (isObject$2(comp)) {
         cache2.set(comp, EMPTY_ARR);
       }
       return EMPTY_ARR;
@@ -4457,7 +4496,7 @@
       }
     }
     var res = [normalized, needCastKeys];
-    if (isObject$1(comp)) {
+    if (isObject$2(comp)) {
       cache2.set(comp, res);
     }
     return res;
@@ -5861,14 +5900,14 @@
       if (klass && !isString(klass)) {
         props2.class = normalizeClass(klass);
       }
-      if (isObject$1(style)) {
+      if (isObject$2(style)) {
         if (isProxy(style) && !isArray(style)) {
           style = extend({}, style);
         }
         props2.style = normalizeStyle(style);
       }
     }
-    var shapeFlag = isString(type) ? 1 : isSuspense(type) ? 128 : isTeleport(type) ? 64 : isObject$1(type) ? 4 : isFunction(type) ? 2 : 0;
+    var shapeFlag = isString(type) ? 1 : isSuspense(type) ? 128 : isTeleport(type) ? 64 : isObject$2(type) ? 4 : isFunction(type) ? 2 : 0;
     return createBaseVNode(type, props2, children, patchFlag, dynamicProps, shapeFlag, isBlockNode, true);
   }
   function guardReactiveProps(props2) {
@@ -5930,9 +5969,9 @@
     return cloned;
   }
   function createTextVNode() {
-    var text = arguments.length > 0 && arguments[0] !== void 0 ? arguments[0] : " ";
+    var text2 = arguments.length > 0 && arguments[0] !== void 0 ? arguments[0] : " ";
     var flag = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : 0;
-    return createVNode(Text, null, text, flag);
+    return createVNode(Text, null, text2, flag);
   }
   function normalizeVNode(child) {
     if (child == null || typeof child === "boolean") {
@@ -6215,7 +6254,7 @@
       } else {
         instance.render = setupResult;
       }
-    } else if (isObject$1(setupResult)) {
+    } else if (isObject$2(setupResult)) {
       instance.setupState = proxyRefs(setupResult);
     } else
       ;
@@ -6332,7 +6371,7 @@
   function h(type, propsOrChildren, children) {
     var l = arguments.length;
     if (l === 2) {
-      if (isObject$1(propsOrChildren) && !isArray(propsOrChildren)) {
+      if (isObject$2(propsOrChildren) && !isArray(propsOrChildren)) {
         if (isVNode(propsOrChildren)) {
           return createVNode(type, null, [propsOrChildren]);
         }
@@ -6373,13 +6412,13 @@
       }
       return el;
     },
-    createText: (text) => doc.createTextNode(text),
-    createComment: (text) => doc.createComment(text),
-    setText: (node, text) => {
-      node.nodeValue = text;
+    createText: (text2) => doc.createTextNode(text2),
+    createComment: (text2) => doc.createComment(text2),
+    setText: (node, text2) => {
+      node.nodeValue = text2;
     },
-    setElementText: (el, text) => {
-      el.textContent = text;
+    setElementText: (el, text2) => {
+      el.textContent = text2;
     },
     parentNode: (node) => node.parentNode,
     nextSibling: (node) => node.nextSibling,
@@ -7078,6 +7117,9 @@
   var ICON_PATH_SUCCESS = "M15.808 0.16q-4.224 0-7.872 2.176-3.552 2.112-5.632 5.728-2.144 3.744-2.144 8.128 0 4.192 2.144 7.872 2.112 3.52 5.632 5.632 3.68 2.144 7.872 2.144 4.384 0 8.128-2.144 3.616-2.080 5.728-5.632 2.176-3.648 2.176-7.872 0-4.384-2.176-8.128-2.112-3.616-5.728-5.728-3.744-2.176-8.128-2.176zM24.832 11.328l-11.264 11.104q-0.032 0.032-0.112 0.032t-0.112-0.032l-5.216-5.376q-0.096-0.128 0-0.288l0.704-0.96q0.032-0.064 0.112-0.064t0.112 0.032l4.256 3.264q0.064 0.032 0.144 0.032t0.112-0.032l10.336-8.608q0.064-0.064 0.144-0.064t0.112 0.064l0.672 0.672q0.128 0.128 0 0.224z";
   var ICON_PATH_WAITING = "M15.84 0.096q-4.224 0-7.872 2.176-3.552 2.112-5.632 5.728-2.144 3.744-2.144 8.128 0 4.192 2.144 7.872 2.112 3.52 5.632 5.632 3.68 2.144 7.872 2.144 4.384 0 8.128-2.144 3.616-2.080 5.728-5.632 2.176-3.648 2.176-7.872 0-4.384-2.176-8.128-2.112-3.616-5.728-5.728-3.744-2.176-8.128-2.176zM23.008 21.92l-0.512 0.896q-0.096 0.128-0.224 0.064l-8-3.808q-0.096-0.064-0.16-0.128-0.128-0.096-0.128-0.288l0.512-12.096q0-0.064 0.048-0.112t0.112-0.048h1.376q0.064 0 0.112 0.048t0.048 0.112l0.448 10.848 6.304 4.256q0.064 0.064 0.080 0.128t-0.016 0.128z";
   var ICON_PATH_WARN = "M15.808 0.16q-4.224 0-7.872 2.176-3.552 2.112-5.632 5.728-2.144 3.744-2.144 8.128 0 4.192 2.144 7.872 2.112 3.52 5.632 5.632 3.68 2.144 7.872 2.144 4.384 0 8.128-2.144 3.616-2.080 5.728-5.632 2.176-3.648 2.176-7.872 0-4.384-2.176-8.128-2.112-3.616-5.728-5.728-3.744-2.176-8.128-2.176zM15.136 8.672h1.728q0.128 0 0.224 0.096t0.096 0.256l-0.384 10.24q0 0.064-0.048 0.112t-0.112 0.048h-1.248q-0.096 0-0.144-0.048t-0.048-0.112l-0.384-10.24q0-0.16 0.096-0.256t0.224-0.096zM16 23.328q-0.48 0-0.832-0.352t-0.352-0.848 0.352-0.848 0.832-0.352 0.832 0.352 0.352 0.848-0.352 0.848-0.832 0.352z";
+  var ICON_PATH_BACK = "M21.781 7.844l-9.063 8.594 9.063 8.594q0.25 0.25 0.25 0.609t-0.25 0.578q-0.25 0.25-0.578 0.25t-0.578-0.25l-9.625-9.125q-0.156-0.125-0.203-0.297t-0.047-0.359q0-0.156 0.047-0.328t0.203-0.297l9.625-9.125q0.25-0.25 0.578-0.25t0.578 0.25q0.25 0.219 0.25 0.578t-0.25 0.578z";
+  var ICON_PATH_CLOSE = "M17.25 16.156l7.375-7.313q0.281-0.281 0.281-0.641t-0.281-0.641q-0.25-0.25-0.625-0.25t-0.625 0.25l-7.375 7.344-7.313-7.344q-0.25-0.25-0.625-0.25t-0.625 0.25q-0.281 0.25-0.281 0.625t0.281 0.625l7.313 7.344-7.375 7.344q-0.281 0.25-0.281 0.625t0.281 0.625q0.125 0.125 0.281 0.188t0.344 0.063q0.156 0 0.328-0.063t0.297-0.188l7.375-7.344 7.375 7.406q0.125 0.156 0.297 0.219t0.328 0.063q0.188 0 0.344-0.078t0.281-0.203q0.281-0.25 0.281-0.609t-0.281-0.641l-7.375-7.406z";
+  var ICON_PATH_CONFIRM = "M31.562 4.9966666659375q0.435 0.399 0.435 0.87 0.036 0.58-0.399 0.98l-18.61 19.917q-0.145 0.145-0.327 0.217-0.073 0.037-0.145 0.11-0.254 0.035-0.472 0.035-0.29 0-0.544-0.036l-0.145-0.072q-0.109-0.073-0.217-0.182l-0.11-0.072L0.363 16.2786666659375q-0.327-0.399-0.363-0.907 0-0.544 0.363-1.016 0.435-0.326 0.961-0.362 0.527-0.036 0.962 0.362l9.722 9.542L29.712 5.0326666659375q0.399-0.363 0.943-0.363 0.544-0.036 0.907 0.327z";
   function createSvgIconVNode(path) {
     var color = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : "#000";
     var size2 = arguments.length > 2 && arguments[2] !== void 0 ? arguments[2] : 27;
@@ -9655,14 +9697,14 @@
       this._dict_set = true;
     }
   }
-  Deflate.prototype.push = function(data, mode) {
+  Deflate.prototype.push = function(data, mode2) {
     var strm = this.strm;
     var chunkSize = this.options.chunkSize;
     var status, _mode;
     if (this.ended) {
       return false;
     }
-    _mode = mode === ~~mode ? mode : mode === true ? Z_FINISH$1 : Z_NO_FLUSH;
+    _mode = mode2 === ~~mode2 ? mode2 : mode2 === true ? Z_FINISH$1 : Z_NO_FLUSH;
     if (typeof data === "string") {
       strm.input = strings$1.string2buf(data);
     } else if (toString$1.call(data) === "[object ArrayBuffer]") {
@@ -11601,7 +11643,7 @@
       }
     }
   }
-  Inflate.prototype.push = function(data, mode) {
+  Inflate.prototype.push = function(data, mode2) {
     var strm = this.strm;
     var chunkSize = this.options.chunkSize;
     var dictionary = this.options.dictionary;
@@ -11611,7 +11653,7 @@
     if (this.ended) {
       return false;
     }
-    _mode = mode === ~~mode ? mode : mode === true ? c.Z_FINISH : c.Z_NO_FLUSH;
+    _mode = mode2 === ~~mode2 ? mode2 : mode2 === true ? c.Z_FINISH : c.Z_NO_FLUSH;
     if (typeof data === "string") {
       strm.input = strings.binstring2buf(data);
     } else if (toString.call(data) === "[object ArrayBuffer]") {
@@ -11717,7 +11759,16 @@
   assign(pako, deflate, inflate, constants);
   var pako_1 = pako;
   function saveImage(dataURL, dirname, callback) {
-    throw new Error("TODO: Implement");
+    UniViewJSBridge.invokeServiceMethod("base64ToTempFilePath", {
+      dataURL,
+      dirname
+    }, (res) => {
+      if (res.message) {
+        callback(res);
+      } else if (res.tempFilePath) {
+        callback(null, res.tempFilePath);
+      }
+    });
   }
   function getSameOriginUrl(url) {
     var a2 = document.createElement("a");
@@ -11727,17 +11778,17 @@
     }
     return Promise.resolve(url);
   }
-  function getRealPath$1(filepath) {
+  function getRealPath(filepath) {
     if (filepath.indexOf("//") === 0) {
       return "https:" + filepath;
     }
     if (SCHEME_RE.test(filepath) || DATA_RE.test(filepath)) {
       return filepath;
     }
-    if (isSystemURL$1(filepath)) {
-      return "file:/" + normalizeLocalPath$1(filepath);
+    if (isSystemURL(filepath)) {
+      return "file:/" + normalizeLocalPath(filepath);
     }
-    var wwwPath = normalizeLocalPath$1("_www").replace(/.+?\/apps\//, "resource://rawfile/apps/");
+    var wwwPath = normalizeLocalPath("_www").replace(/.+?\/apps\//, "resource://rawfile/apps/");
     if (filepath.indexOf("/") === 0) {
       if (filepath.startsWith("/data/storage/")) {
         return "file://" + filepath;
@@ -11756,46 +11807,8 @@
     }
     return filepath;
   }
-  var normalizeLocalPath$1 = cacheStringFunction((filepath) => {
-    return plus.io.convertLocalFileSystemURL(filepath).replace(/\/$/, "");
-  });
-  function isSystemURL$1(filepath) {
-    if (filepath.indexOf("_www") === 0 || filepath.indexOf("_doc") === 0 || filepath.indexOf("_documents") === 0 || filepath.indexOf("_downloads") === 0) {
-      return true;
-    }
-    return false;
-  }
-  function getRealPath(filepath) {
-    if (filepath.indexOf("//") === 0) {
-      return "https:" + filepath;
-    }
-    if (SCHEME_RE.test(filepath) || DATA_RE.test(filepath)) {
-      return filepath;
-    }
-    if (isSystemURL(filepath)) {
-      return "file://" + normalizeLocalPath(filepath);
-    }
-    var wwwPath = "file://" + normalizeLocalPath("_www");
-    if (filepath.indexOf("/") === 0) {
-      if (filepath.startsWith("/storage/") || filepath.startsWith("/sdcard/") || filepath.includes("/Containers/Data/Application/")) {
-        return "file://" + filepath;
-      }
-      return wwwPath + filepath;
-    }
-    if (filepath.indexOf("../") === 0 || filepath.indexOf("./") === 0) {
-      if (typeof __id__ === "string") {
-        return wwwPath + getRealRoute(addLeadingSlash(__id__), filepath);
-      } else {
-        var page = getCurrentPage();
-        if (page) {
-          return wwwPath + getRealRoute(addLeadingSlash(page.route), filepath);
-        }
-      }
-    }
-    return filepath;
-  }
   var normalizeLocalPath = cacheStringFunction((filepath) => {
-    return plus.io.convertLocalFileSystemURL(filepath).replace(/^\/?apps\//, "/android_asset/apps/").replace(/\/$/, "");
+    return plus.io.convertLocalFileSystemURL(filepath).replace(/\/$/, "");
   });
   function isSystemURL(filepath) {
     if (filepath.indexOf("_www") === 0 || filepath.indexOf("_doc") === 0 || filepath.indexOf("_documents") === 0 || filepath.indexOf("_downloads") === 0) {
@@ -11884,9 +11897,9 @@
       return result;
     };
   };
-  var $export = _export;
+  var $export$1 = _export;
   var $values = _objectToArray(false);
-  $export($export.S, "Object", {
+  $export$1($export$1.S, "Object", {
     values: function values(it) {
       return $values(it);
     }
@@ -12775,8 +12788,8 @@
         this.$.textContent = nodeJson.t;
       }
     }
-    setText(text) {
-      this.$.textContent = text;
+    setText(text2) {
+      this.$.textContent = text2;
       this.updateView();
     }
     insert(parentNodeId, refNodeId, nodeJson) {
@@ -13157,7 +13170,7 @@
   }
   function converPx(value) {
     if (/^-?\d+[ur]px$/i.test(value)) {
-      return value.replace(/(^-?\d+)[ur]px$/i, (text, num) => {
+      return value.replace(/(^-?\d+)[ur]px$/i, (text2, num) => {
         return "".concat(uni.upx2px(parseFloat(num)), "px");
       });
     } else if (/^-?[\d\.]+$/.test(value)) {
@@ -13166,8 +13179,8 @@
     return value || "";
   }
   function converType(type) {
-    return type.replace(/[A-Z]/g, (text) => {
-      return "-".concat(text.toLowerCase());
+    return type.replace(/[A-Z]/g, (text2) => {
+      return "-".concat(text2.toLowerCase());
     }).replace("webkit", "-webkit");
   }
   function getStyle(action) {
@@ -13394,17 +13407,17 @@
     }
   });
   function provideForm(trigger2) {
-    var fields = [];
+    var fields2 = [];
     provide(uniFormKey, {
       addField(field) {
-        fields.push(field);
+        fields2.push(field);
       },
       removeField(field) {
-        fields.splice(fields.indexOf(field), 1);
+        fields2.splice(fields2.indexOf(field), 1);
       },
       submit(evt) {
         trigger2("submit", evt, {
-          value: fields.reduce((res, field) => {
+          value: fields2.reduce((res, field) => {
             if (field.submit) {
               var [name, value] = field.submit();
               name && (res[name] = value);
@@ -13414,11 +13427,11 @@
         });
       },
       reset(evt) {
-        fields.forEach((field) => field.reset && field.reset());
+        fields2.forEach((field) => field.reset && field.reset());
         trigger2("reset", evt);
       }
     });
-    return fields;
+    return fields2;
   }
   var labelProps = {
     for: {
@@ -13802,12 +13815,12 @@
           if (args[3] && typeof args[3] === "number") {
             args[3] *= pixelRatio;
           }
-          var font = this.font;
-          this.font = font.replace(/(\d+\.?\d*)(px|em|rem|pt)/g, function(w, m, u) {
+          var font2 = this.font;
+          this.font = font2.replace(/(\d+\.?\d*)(px|em|rem|pt)/g, function(w, m, u) {
             return m * pixelRatio + u;
           });
           _super.apply(this, args);
-          this.font = font;
+          this.font = font2;
         };
       }(proto2.fillText);
       proto2.strokeText = /* @__PURE__ */ function(_super) {
@@ -13821,12 +13834,12 @@
           if (args[3] && typeof args[3] === "number") {
             args[3] *= pixelRatio;
           }
-          var font = this.font;
-          this.font = font.replace(/(\d+\.?\d*)(px|em|rem|pt)/g, function(w, m, u) {
+          var font2 = this.font;
+          this.font = font2.replace(/(\d+\.?\d*)(px|em|rem|pt)/g, function(w, m, u) {
             return m * pixelRatio + u;
           });
           _super.apply(this, args);
-          this.font = font;
+          this.font = font2;
         };
       }(proto2.strokeText);
       proto2.drawImage = /* @__PURE__ */ function(_super) {
@@ -13845,7 +13858,7 @@
     return initHidpi();
   });
   function $getRealPath(src) {
-    return src ? getRealPath$1(src) : src;
+    return src ? getRealPath(src) : src;
   }
   function resolveColor(color) {
     color = color.slice(0);
@@ -13869,7 +13882,7 @@
     tempCanvas.height = height;
     return tempCanvas;
   }
-  var props$h = {
+  var props$s = {
     canvasId: {
       type: String,
       default: ""
@@ -13889,7 +13902,7 @@
     compatConfig: {
       MODE: 3
     },
-    props: props$h,
+    props: props$s,
     computed: {
       id() {
         return this.canvasId;
@@ -13919,7 +13932,7 @@
       var {
         _handleSubscribe,
         _resize
-      } = useMethods(props2, canvas, actionsWaiting);
+      } = useMethods$1(props2, canvas, actionsWaiting);
       useSubscribe(_handleSubscribe, useContextInfo(props2.canvasId), true);
       onMounted(() => {
         _resize();
@@ -13983,7 +13996,7 @@
       _listeners
     };
   }
-  function useMethods(props2, canvasRef, actionsWaiting) {
+  function useMethods$1(props2, canvasRef, actionsWaiting) {
     var _actionsDefer = [];
     var _images = {};
     var _pixelRatio = computed(() => props2.hidpi ? pixelRatio : 1);
@@ -14058,9 +14071,9 @@
               });
               color = _LinearGradient;
             } else if (actionType === "pattern") {
-              var loaded = checkImageLoaded(data[1], actions.slice(index3 + 1), resolve, function(image) {
-                if (image) {
-                  c2d[method1] = c2d.createPattern(image, data[2]);
+              var loaded = checkImageLoaded(data[1], actions.slice(index3 + 1), resolve, function(image2) {
+                if (image2) {
+                  c2d[method1] = c2d.createPattern(image2, data[2]);
                 }
               });
               if (!loaded) {
@@ -14077,8 +14090,8 @@
               c2d[shadowArray[method_]] = shadowArray[method_] === "shadowColor" ? resolveColor(color_) : color_;
             });
           } else if (method1 === "fontSize") {
-            var font = c2d.__font__ || c2d.font;
-            c2d.__font__ = c2d.font = font.replace(/\d+\.?\d*px/, actionType + "px");
+            var font2 = c2d.__font__ || c2d.font;
+            c2d.__font__ = c2d.font = font2.replace(/\d+\.?\d*px/, actionType + "px");
           } else if (method1 === "lineDash") {
             c2d.setLineDash(actionType);
             c2d.lineDashOffset = data[1] || 0;
@@ -14107,13 +14120,13 @@
             var url = dataArray[0];
             var otherData = dataArray.slice(1);
             _images = _images || {};
-            if (!checkImageLoaded(url, actions.slice(index3 + 1), resolve, function(image) {
-              if (image) {
+            if (!checkImageLoaded(url, actions.slice(index3 + 1), resolve, function(image2) {
+              if (image2) {
                 c2d.drawImage.apply(
                   c2d,
-                  // @ts-ignore
-                  [image].concat(
-                    // @ts-ignore
+                  // @ts-expect-error
+                  [image2].concat(
+                    // @ts-expect-error
                     [...otherData.slice(4, 8)],
                     [...otherData.slice(0, 4)]
                   )
@@ -14167,36 +14180,36 @@
           loadImage();
         }
         function loadImage() {
-          var image = _images[src] = new Image();
-          image.onload = function() {
-            image.ready = true;
+          var image2 = _images[src] = new Image();
+          image2.onload = function() {
+            image2.ready = true;
           };
           if (navigator.vendor === "Google Inc.") {
             if (src.indexOf("file://") === 0) {
-              image.crossOrigin = "anonymous";
+              image2.crossOrigin = "anonymous";
             }
-            image.src = src;
+            image2.src = src;
             return;
           }
           getSameOriginUrl(src).then((src2) => {
-            image.src = src2;
+            image2.src = src2;
           }).catch(() => {
-            image.src = src;
+            image2.src = src;
           });
         }
       });
     }
     function checkImageLoaded(src, actions, resolve, fn) {
-      var image = _images[src];
-      if (image.ready) {
-        fn(image);
+      var image2 = _images[src];
+      if (image2.ready) {
+        fn(image2);
         return true;
       } else {
         _actionsDefer.unshift([actions, true]);
         actionsWaiting.value = true;
-        image.onload = function() {
-          image.ready = true;
-          fn(image);
+        image2.onload = function() {
+          image2.ready = true;
+          fn(image2);
           actionsWaiting.value = false;
           var actions2 = _actionsDefer.slice(0);
           _actionsDefer = [];
@@ -14235,6 +14248,9 @@
           destWidth = Math.round(width * _pixelRatio.value);
           destHeight = Math.round(height * _pixelRatio.value);
         } else if (!destWidth) {
+          if (!destHeight) {
+            destHeight = Math.round(height * _pixelRatio.value);
+          }
           destWidth = Math.round(width / height * destHeight);
         } else if (!destHeight) {
           destHeight = Math.round(height / width * destWidth);
@@ -14340,13 +14356,22 @@
         type: fileType,
         quality
       });
-      if (!res.data || !res.data.length) {
+      if (res.errMsg) {
         resolve({
           errMsg: res.errMsg.replace("canvasPutImageData", "toTempFilePath")
         });
         return;
       }
-      saveImage(res.data);
+      saveImage(res.data, dirname, (error, tempFilePath) => {
+        var errMsg = "toTempFilePath:".concat(error ? "fail" : "ok");
+        if (error) {
+          errMsg += " ".concat(error.message);
+        }
+        resolve({
+          errMsg,
+          tempFilePath
+        });
+      });
     }
     var methods = {
       actionsChanged,
@@ -14366,7 +14391,7 @@
     });
   }
   var uniCheckGroupKey = PolySymbol("ucg");
-  var props$g = {
+  var props$r = {
     name: {
       type: String,
       default: ""
@@ -14374,7 +14399,7 @@
   };
   const CheckboxGroup = /* @__PURE__ */ defineBuiltInComponent({
     name: "CheckboxGroup",
-    props: props$g,
+    props: props$r,
     emits: ["change"],
     setup(props2, _ref) {
       var {
@@ -14392,8 +14417,8 @@
     }
   });
   function useProvideCheckGroup(props2, trigger2) {
-    var fields = [];
-    var getFieldsValue = () => fields.reduce((res, field) => {
+    var fields2 = [];
+    var getFieldsValue = () => fields2.reduce((res, field) => {
       if (field.value.checkboxChecked) {
         res.push(field.value.value);
       }
@@ -14401,10 +14426,10 @@
     }, new Array());
     provide(uniCheckGroupKey, {
       addField(field) {
-        fields.push(field);
+        fields2.push(field);
       },
       removeField(field) {
-        fields.splice(fields.indexOf(field), 1);
+        fields2.splice(fields2.indexOf(field), 1);
       },
       checkboxChange($event) {
         trigger2("change", $event, {
@@ -14427,7 +14452,7 @@
     }
     return getFieldsValue;
   }
-  var props$f = {
+  var props$q = {
     checked: {
       type: [Boolean, String],
       default: false
@@ -14476,7 +14501,7 @@
   };
   const Checkbox = /* @__PURE__ */ defineBuiltInComponent({
     name: "Checkbox",
-    props: props$f,
+    props: props$q,
     setup(props2, _ref) {
       var {
         slots
@@ -14661,7 +14686,7 @@
       });
     }
   }
-  var props$e = {
+  var props$p = {
     cursorSpacing: {
       type: [Number, String],
       default: 0
@@ -14815,17 +14840,17 @@
         }
         if (chars) {
           index2 = html.indexOf("<");
-          var text = index2 < 0 ? html : html.substring(0, index2);
+          var text2 = index2 < 0 ? html : html.substring(0, index2);
           html = index2 < 0 ? "" : html.substring(index2);
           if (handler.chars) {
-            handler.chars(text);
+            handler.chars(text2);
           }
         }
       } else {
-        html = html.replace(new RegExp("([\\s\\S]*?)</" + stack2.last() + "[^>]*>"), function(all, text2) {
-          text2 = text2.replace(/<!--([\s\S]*?)-->|<!\[CDATA\[([\s\S]*?)]]>/g, "$1$2");
+        html = html.replace(new RegExp("([\\s\\S]*?)</" + stack2.last() + "[^>]*>"), function(all, text3) {
+          text3 = text3.replace(/<!--([\s\S]*?)-->|<!\[CDATA\[([\s\S]*?)]]>/g, "$1$2");
           if (handler.chars) {
-            handler.chars(text2);
+            handler.chars(text3);
           }
           return "";
         });
@@ -14895,6 +14920,662 @@
     }
     return obj;
   }
+  var scripts = {};
+  function loadScript(globalName, src, callback) {
+    var globalObject = isString(globalName) ? window[globalName] : globalName;
+    if (globalObject) {
+      callback();
+      return;
+    }
+    var callbacks2 = scripts[src];
+    if (!callbacks2) {
+      callbacks2 = scripts[src] = [];
+      var script = document.createElement("script");
+      script.src = src;
+      document.body.appendChild(script);
+      script.onload = function() {
+        callbacks2.forEach((callback2) => callback2());
+        delete scripts[src];
+      };
+    }
+    callbacks2.push(callback);
+  }
+  function divider(Quill) {
+    var BlockEmbed = Quill.import("blots/block/embed");
+    class Divider extends BlockEmbed {
+    }
+    Divider.blotName = "divider";
+    Divider.tagName = "HR";
+    return {
+      "formats/divider": Divider
+    };
+  }
+  function ins(Quill) {
+    var Inline = Quill.import("blots/inline");
+    class Ins extends Inline {
+    }
+    Ins.blotName = "ins";
+    Ins.tagName = "INS";
+    return {
+      "formats/ins": Ins
+    };
+  }
+  function align(Quill) {
+    var {
+      Scope,
+      Attributor
+    } = Quill.import("parchment");
+    var config = {
+      scope: Scope.BLOCK,
+      whitelist: ["left", "right", "center", "justify"]
+    };
+    var AlignStyle = new Attributor.Style("align", "text-align", config);
+    return {
+      "formats/align": AlignStyle
+    };
+  }
+  function direction(Quill) {
+    var {
+      Scope,
+      Attributor
+    } = Quill.import("parchment");
+    var config = {
+      scope: Scope.BLOCK,
+      whitelist: ["rtl"]
+    };
+    var DirectionStyle = new Attributor.Style("direction", "direction", config);
+    return {
+      "formats/direction": DirectionStyle
+    };
+  }
+  function list(Quill) {
+    var Parchment = Quill.import("parchment");
+    var Container = Quill.import("blots/container");
+    var ListItem = Quill.import("formats/list/item");
+    class List extends Container {
+      static create(value) {
+        var tagName = value === "ordered" ? "OL" : "UL";
+        var node = super.create(tagName);
+        if (value === "checked" || value === "unchecked") {
+          node.setAttribute("data-checked", value === "checked");
+        }
+        return node;
+      }
+      static formats(domNode) {
+        if (domNode.tagName === "OL")
+          return "ordered";
+        if (domNode.tagName === "UL") {
+          if (domNode.hasAttribute("data-checked")) {
+            return domNode.getAttribute("data-checked") === "true" ? "checked" : "unchecked";
+          } else {
+            return "bullet";
+          }
+        }
+        return void 0;
+      }
+      constructor(domNode) {
+        super(domNode);
+        var listEventHandler = (e2) => {
+          if (e2.target.parentNode !== domNode)
+            return;
+          var format = this.statics.formats(domNode);
+          var blot = Parchment.find(e2.target);
+          if (format === "checked") {
+            blot.format("list", "unchecked");
+          } else if (format === "unchecked") {
+            blot.format("list", "checked");
+          }
+        };
+        domNode.addEventListener("click", listEventHandler);
+      }
+      format(name, value) {
+        if (this.children.length > 0) {
+          this.children.tail.format(name, value);
+        }
+      }
+      formats() {
+        return {
+          [this.statics.blotName]: this.statics.formats(this.domNode)
+        };
+      }
+      insertBefore(blot, ref2) {
+        if (blot instanceof ListItem) {
+          super.insertBefore(blot, ref2);
+        } else {
+          var index2 = ref2 == null ? this.length() : ref2.offset(this);
+          var after = this.split(index2);
+          after.parent.insertBefore(blot, after);
+        }
+      }
+      optimize(context) {
+        super.optimize(context);
+        var next = this.next;
+        if (next != null && next.prev === this && next.statics.blotName === this.statics.blotName && next.domNode.tagName === this.domNode.tagName && next.domNode.getAttribute("data-checked") === this.domNode.getAttribute("data-checked")) {
+          next.moveChildren(this);
+          next.remove();
+        }
+      }
+      replace(target) {
+        if (target.statics.blotName !== this.statics.blotName) {
+          var item = Parchment.create(this.statics.defaultChild);
+          target.moveChildren(item);
+          this.appendChild(item);
+        }
+        super.replace(target);
+      }
+    }
+    List.blotName = "list";
+    List.scope = Parchment.Scope.BLOCK_BLOT;
+    List.tagName = ["OL", "UL"];
+    List.defaultChild = "list-item";
+    List.allowedChildren = [ListItem];
+    return {
+      "formats/list": List
+    };
+  }
+  function background(Quill) {
+    var {
+      Scope
+    } = Quill.import("parchment");
+    var BackgroundStyle = Quill.import("formats/background");
+    var BackgroundColorStyle = new BackgroundStyle.constructor("backgroundColor", "background-color", {
+      scope: Scope.INLINE
+    });
+    return {
+      "formats/backgroundColor": BackgroundColorStyle
+    };
+  }
+  function box(Quill) {
+    var {
+      Scope,
+      Attributor
+    } = Quill.import("parchment");
+    var config = {
+      scope: Scope.BLOCK
+    };
+    var margin = ["margin", "marginTop", "marginBottom", "marginLeft", "marginRight"];
+    var padding = ["padding", "paddingTop", "paddingBottom", "paddingLeft", "paddingRight"];
+    var result = {};
+    margin.concat(padding).forEach((name) => {
+      result["formats/".concat(name)] = new Attributor.Style(name, hyphenate(name), config);
+    });
+    return result;
+  }
+  function font(Quill) {
+    var {
+      Scope,
+      Attributor
+    } = Quill.import("parchment");
+    var config = {
+      scope: Scope.INLINE
+    };
+    var font2 = ["font", "fontSize", "fontStyle", "fontVariant", "fontWeight", "fontFamily"];
+    var result = {};
+    font2.forEach((name) => {
+      result["formats/".concat(name)] = new Attributor.Style(name, hyphenate(name), config);
+    });
+    return result;
+  }
+  function text(Quill) {
+    var {
+      Scope,
+      Attributor
+    } = Quill.import("parchment");
+    var text2 = [{
+      name: "lineHeight",
+      scope: Scope.BLOCK
+    }, {
+      name: "letterSpacing",
+      scope: Scope.INLINE
+    }, {
+      name: "textDecoration",
+      scope: Scope.INLINE
+    }, {
+      name: "textIndent",
+      scope: Scope.BLOCK
+    }];
+    var result = {};
+    text2.forEach((_ref) => {
+      var {
+        name,
+        scope
+      } = _ref;
+      result["formats/".concat(name)] = new Attributor.Style(name, hyphenate(name), {
+        scope
+      });
+    });
+    return result;
+  }
+  function image(Quill) {
+    var Image2 = Quill.import("formats/image");
+    var ATTRIBUTES = ["alt", "height", "width", "data-custom", "class", "data-local"];
+    Image2.sanitize = (url) => url ? getRealPath(url) : url;
+    Image2.formats = function formats(domNode) {
+      return ATTRIBUTES.reduce(function(formats2, attribute) {
+        if (domNode.hasAttribute(attribute)) {
+          formats2[attribute] = domNode.getAttribute(attribute);
+        }
+        return formats2;
+      }, {});
+    };
+    var format = Image2.prototype.format;
+    Image2.prototype.format = function(name, value) {
+      if (ATTRIBUTES.indexOf(name) > -1) {
+        if (value) {
+          this.domNode.setAttribute(name, value);
+        } else {
+          this.domNode.removeAttribute(name);
+        }
+      } else {
+        format.call(this, name, value);
+      }
+    };
+  }
+  function link(Quill) {
+    var Link = Quill.import("formats/link");
+    Link.sanitize = (url) => {
+      var anchor = document.createElement("a");
+      anchor.href = url;
+      var protocol = anchor.href.slice(0, anchor.href.indexOf(":"));
+      return Link.PROTOCOL_WHITELIST.concat("file").indexOf(protocol) > -1 ? url : Link.SANITIZED_URL;
+    };
+  }
+  function register(Quill) {
+    var formats = {
+      divider,
+      ins,
+      align,
+      direction,
+      list,
+      background,
+      box,
+      font,
+      text,
+      image,
+      link
+    };
+    var options = {};
+    Object.values(formats).forEach((value) => extend(options, value(Quill)));
+    Quill.register(options, true);
+  }
+  function useQuill(props2, rootRef, trigger2) {
+    var quillReady;
+    var skipMatcher;
+    var quill;
+    watch(() => props2.readOnly, (value) => {
+      if (quillReady) {
+        quill.enable(!value);
+        if (!value) {
+          quill.blur();
+        }
+      }
+    });
+    watch(() => props2.placeholder, (value) => {
+      if (quillReady) {
+        setPlaceHolder(value);
+      }
+    });
+    function html2delta(html) {
+      var tags = ["span", "strong", "b", "ins", "em", "i", "u", "a", "del", "s", "sub", "sup", "img", "div", "p", "h1", "h2", "h3", "h4", "h5", "h6", "hr", "ol", "ul", "li", "br"];
+      var content = "";
+      var disable;
+      HTMLParser(html, {
+        start: function(tag, attrs2, unary) {
+          if (!tags.includes(tag)) {
+            disable = !unary;
+            return;
+          }
+          disable = false;
+          var arrts = attrs2.map((_ref) => {
+            var {
+              name,
+              value
+            } = _ref;
+            return "".concat(name, '="').concat(value, '"');
+          }).join(" ");
+          var start = "<".concat(tag, " ").concat(arrts, " ").concat(unary ? "/" : "", ">");
+          content += start;
+        },
+        end: function(tag) {
+          if (!disable) {
+            content += "</".concat(tag, ">");
+          }
+        },
+        chars: function(text2) {
+          if (!disable) {
+            content += text2;
+          }
+        }
+      });
+      skipMatcher = true;
+      var delta = quill.clipboard.convert(content);
+      skipMatcher = false;
+      return delta;
+    }
+    function getContents() {
+      var html = quill.root.innerHTML;
+      var text2 = quill.getText();
+      var delta = quill.getContents();
+      return {
+        html,
+        text: text2,
+        delta
+      };
+    }
+    function setPlaceHolder(placeholder) {
+      var placeHolderAttrName = "data-placeholder";
+      var QuillRoot = quill.root;
+      QuillRoot.getAttribute(placeHolderAttrName) !== placeholder && QuillRoot.setAttribute(placeHolderAttrName, placeholder);
+    }
+    var oldStatus = {};
+    function updateStatus(range) {
+      var status = range ? quill.getFormat(range) : {};
+      var keys = Object.keys(status);
+      if (keys.length !== Object.keys(oldStatus).length || keys.find((key2) => status[key2] !== oldStatus[key2])) {
+        oldStatus = status;
+        trigger2("statuschange", {}, status);
+      }
+    }
+    function textChangeHandler() {
+      trigger2("input", {}, getContents());
+    }
+    function initQuill(imageResizeModules) {
+      var Quill = window.Quill;
+      register(Quill);
+      var options = {
+        toolbar: false,
+        readOnly: props2.readOnly,
+        placeholder: props2.placeholder
+      };
+      if (imageResizeModules.length) {
+        Quill.register("modules/ImageResize", window.ImageResize.default);
+        options.modules = {
+          ImageResize: {
+            modules: imageResizeModules
+          }
+        };
+      }
+      var rootEl = rootRef.value;
+      quill = new Quill(rootEl, options);
+      var $el = quill.root;
+      var events = ["focus", "blur", "input"];
+      events.forEach((name) => {
+        $el.addEventListener(name, ($event) => {
+          var contents = getContents();
+          if (name === "input") {
+            if (getBaseSystemInfo().platform === "ios") {
+              var regExpContent = (contents.html.match(/<span [\s\S]*>([\s\S]*)<\/span>/) || [])[1];
+              var placeholder = regExpContent && regExpContent.replace(/\s/g, "") ? "" : props2.placeholder;
+              setPlaceHolder(placeholder);
+            }
+            $event.stopPropagation();
+          } else {
+            trigger2(name, $event, contents);
+          }
+        });
+      });
+      quill.on("text-change", textChangeHandler);
+      quill.on("selection-change", updateStatus);
+      quill.on("scroll-optimize", () => {
+        var range = quill.selection.getRange()[0];
+        updateStatus(range);
+      });
+      quill.clipboard.addMatcher(Node.ELEMENT_NODE, (node, delta) => {
+        if (skipMatcher) {
+          return delta;
+        }
+        if (delta.ops) {
+          delta.ops = delta.ops.filter((_ref2) => {
+            var {
+              insert
+            } = _ref2;
+            return isString(insert);
+          }).map((_ref3) => {
+            var {
+              insert
+            } = _ref3;
+            return {
+              insert
+            };
+          });
+        }
+        return delta;
+      });
+      quillReady = true;
+      trigger2("ready", {}, {});
+    }
+    var id2 = useContextInfo();
+    useSubscribe((type, data, resolve) => {
+      var {
+        options,
+        callbackId
+      } = data;
+      var res;
+      var range;
+      var errMsg;
+      if (quillReady) {
+        var Quill = window.Quill;
+        switch (type) {
+          case "format":
+            {
+              var {
+                name = "",
+                value = false
+              } = options;
+              range = quill.getSelection(true);
+              var format = quill.getFormat(range)[name] || false;
+              if (["bold", "italic", "underline", "strike", "ins"].includes(name)) {
+                value = !format;
+              } else if (name === "direction") {
+                value = value === "rtl" && format ? false : value;
+                var align2 = quill.getFormat(range).align;
+                if (value === "rtl" && !align2) {
+                  quill.format("align", "right", "user");
+                } else if (!value && align2 === "right") {
+                  quill.format("align", false, "user");
+                }
+              } else if (name === "indent") {
+                var rtl = quill.getFormat(range).direction === "rtl";
+                value = value === "+1";
+                if (rtl) {
+                  value = !value;
+                }
+                value = value ? "+1" : "-1";
+              } else {
+                if (name === "list") {
+                  value = value === "check" ? "unchecked" : value;
+                  format = format === "checked" ? "unchecked" : format;
+                }
+                value = format && format !== (value || false) || !format && value ? value : !format;
+              }
+              quill.format(name, value, "user");
+            }
+            break;
+          case "insertDivider":
+            range = quill.getSelection(true);
+            quill.insertText(range.index, LINEFEED, "user");
+            quill.insertEmbed(range.index + 1, "divider", true, "user");
+            quill.setSelection(range.index + 2, 0, "silent");
+            break;
+          case "insertImage":
+            {
+              range = quill.getSelection(true);
+              var {
+                src = "",
+                alt = "",
+                width = "",
+                height = "",
+                extClass = "",
+                data: data2 = {}
+              } = options;
+              var path = getRealPath(src);
+              quill.insertEmbed(range.index, "image", path, "silent");
+              var local = /^(file|blob):/.test(path) ? path : false;
+              quill.formatText(range.index, 1, "data-local", local, "silent");
+              quill.formatText(range.index, 1, "alt", alt, "silent");
+              quill.formatText(range.index, 1, "width", width, "silent");
+              quill.formatText(range.index, 1, "height", height, "silent");
+              quill.formatText(range.index, 1, "class", extClass, "silent");
+              quill.formatText(range.index, 1, "data-custom", Object.keys(data2).map((key2) => "".concat(key2, "=").concat(data2[key2])).join("&"), "silent");
+              quill.setSelection(range.index + 1, 0, "silent");
+              quill.scrollIntoView();
+              setTimeout(() => {
+                textChangeHandler();
+              }, 1e3);
+            }
+            break;
+          case "insertText":
+            {
+              range = quill.getSelection(true);
+              var {
+                text: text2 = ""
+              } = options;
+              quill.insertText(range.index, text2, "user");
+              quill.setSelection(range.index + text2.length, 0, "silent");
+            }
+            break;
+          case "setContents":
+            {
+              var {
+                delta,
+                html
+              } = options;
+              if (typeof delta === "object") {
+                quill.setContents(delta, "silent");
+              } else if (isString(html)) {
+                quill.setContents(html2delta(html), "silent");
+              } else {
+                errMsg = "contents is missing";
+              }
+            }
+            break;
+          case "getContents":
+            res = getContents();
+            break;
+          case "clear":
+            quill.setText("");
+            break;
+          case "removeFormat":
+            {
+              range = quill.getSelection(true);
+              var parchment = Quill.import("parchment");
+              if (range.length) {
+                quill.removeFormat(range.index, range.length, "user");
+              } else {
+                Object.keys(quill.getFormat(range)).forEach((key2) => {
+                  if (parchment.query(key2, parchment.Scope.INLINE)) {
+                    quill.format(key2, false);
+                  }
+                });
+              }
+            }
+            break;
+          case "undo":
+            quill.history.undo();
+            break;
+          case "redo":
+            quill.history.redo();
+            break;
+          case "blur":
+            quill.blur();
+            break;
+          case "getSelectionText":
+            range = quill.selection.savedRange;
+            res = {
+              text: ""
+            };
+            if (range && range.length !== 0) {
+              res.text = quill.getText(range.index, range.length);
+            }
+            break;
+          case "scrollIntoView":
+            quill.scrollIntoView();
+            break;
+        }
+        updateStatus(range);
+      } else {
+        errMsg = "not ready";
+      }
+      if (callbackId) {
+        resolve({
+          callbackId,
+          data: extend({}, res, {
+            errMsg: "".concat(type, ":").concat(errMsg ? "fail " + errMsg : "ok")
+          })
+        });
+      }
+    }, id2, true);
+    onMounted(() => {
+      var imageResizeModules = [];
+      if (props2.showImgSize) {
+        imageResizeModules.push("DisplaySize");
+      }
+      if (props2.showImgToolbar) {
+        imageResizeModules.push("Toolbar");
+      }
+      if (props2.showImgResize) {
+        imageResizeModules.push("Resize");
+      }
+      var quillSrc = "./__uniappquill.js";
+      loadScript(window.Quill, quillSrc, () => {
+        if (imageResizeModules.length) {
+          var imageResizeSrc = "./__uniappquillimageresize.js";
+          loadScript(window.ImageResize, imageResizeSrc, () => {
+            initQuill(imageResizeModules);
+          });
+        } else {
+          initQuill(imageResizeModules);
+        }
+      });
+    });
+  }
+  var props$o = /* @__PURE__ */ extend({}, props$p, {
+    id: {
+      type: String,
+      default: ""
+    },
+    readOnly: {
+      type: [Boolean, String],
+      default: false
+    },
+    placeholder: {
+      type: String,
+      default: ""
+    },
+    showImgSize: {
+      type: [Boolean, String],
+      default: false
+    },
+    showImgToolbar: {
+      type: [Boolean, String],
+      default: false
+    },
+    showImgResize: {
+      type: [Boolean, String],
+      default: false
+    }
+  });
+  const Editor = /* @__PURE__ */ defineBuiltInComponent({
+    name: "Editor",
+    props: props$o,
+    emit: ["ready", "focus", "blur", "input", "statuschange", ...emit$1],
+    setup(props2, _ref) {
+      var {
+        emit: emit2
+      } = _ref;
+      var rootRef = ref(null);
+      var trigger2 = useCustomEvent(rootRef, emit2);
+      useQuill(props2, rootRef, trigger2);
+      useKeyboard(props2, rootRef, trigger2);
+      return () => {
+        return createVNode("uni-editor", {
+          "ref": rootRef,
+          "id": props2.id,
+          "class": "ql-container"
+        }, null, 8, ["id"]);
+      };
+    }
+  });
   var INFO_COLOR = "#10aeff";
   var WARN_COLOR = "#f76260";
   var GREY_COLOR = "#b2b2b2";
@@ -14967,7 +15648,7 @@
       };
     }
   });
-  var props$d = {
+  var props$n = {
     src: {
       type: String,
       default: ""
@@ -15006,7 +15687,7 @@
   };
   const Image$1 = /* @__PURE__ */ defineBuiltInComponent({
     name: "Image",
-    props: props$d,
+    props: props$n,
     setup(props2, _ref) {
       var {
         emit: emit2
@@ -15046,7 +15727,7 @@
     });
     var state = reactive({
       rootEl: rootRef,
-      src: computed(() => props2.src ? getRealPath$1(props2.src) : ""),
+      src: computed(() => props2.src ? getRealPath(props2.src) : ""),
       origWidth: 0,
       origHeight: 0,
       origStyle: {
@@ -15058,9 +15739,8 @@
     });
     onMounted(() => {
       var rootEl = rootRef.value;
-      var style = rootEl.style;
-      state.origWidth = Number(style.width) || 0;
-      state.origHeight = Number(style.height) || 0;
+      state.origWidth = rootEl.clientWidth || 0;
+      state.origHeight = rootEl.clientHeight || 0;
     });
     return state;
   }
@@ -15088,7 +15768,9 @@
           height
         } = img;
         setState(width, height, src);
-        fixSize();
+        nextTick(() => {
+          fixSize();
+        });
         img.draggable = props2.draggable;
         if (draggableImg) {
           draggableImg.remove();
@@ -15137,9 +15819,9 @@
   function useImageSize(rootRef, props2, state) {
     var fixSize = () => {
       var {
-        mode
+        mode: mode2
       } = props2;
-      var names = FIX_MODES[mode];
+      var names = FIX_MODES[mode2];
       if (!names) {
         return;
       }
@@ -15338,7 +16020,7 @@
     return valueStr.slice(0, maxlength);
   }
   var INPUT_MODES = ["none", "text", "decimal", "numeric", "tel", "search", "email", "url"];
-  var props$c = /* @__PURE__ */ extend({}, {
+  var props$m = /* @__PURE__ */ extend({}, {
     name: {
       type: String,
       default: ""
@@ -15425,7 +16107,7 @@
       type: String,
       default: ""
     }
-  }, props$e);
+  }, props$p);
   var emit = ["input", "focus", "blur", "update:value", "update:modelValue", "update:focus", "compositionstart", "compositionupdate", "compositionend", ...emit$1];
   function useBase(props2, rootRef, emit2) {
     var fieldRef = ref(null);
@@ -15665,7 +16347,7 @@
       trigger: trigger2
     };
   }
-  var props$b = /* @__PURE__ */ extend({}, props$c, {
+  var props$l = /* @__PURE__ */ extend({}, props$m, {
     placeholderClass: {
       type: String,
       default: "input-placeholder"
@@ -15700,12 +16382,12 @@
   function useCache(props2, type) {
     if (type.value === "number") {
       var value = typeof props2.modelValue === "undefined" ? props2.value : props2.modelValue;
-      var cache2 = ref(typeof value !== "undefined" ? value.toLocaleString() : "");
+      var cache2 = ref(typeof value !== "undefined" && value !== null ? value.toLocaleString() : "");
       watch(() => props2.modelValue, (value2) => {
-        cache2.value = typeof value2 !== "undefined" ? value2.toLocaleString() : "";
+        cache2.value = typeof value2 !== "undefined" && value2 !== null ? value2.toLocaleString() : "";
       });
       watch(() => props2.value, (value2) => {
-        cache2.value = typeof value2 !== "undefined" ? value2.toLocaleString() : "";
+        cache2.value = typeof value2 !== "undefined" && value2 !== null ? value2.toLocaleString() : "";
       });
       return cache2;
     } else {
@@ -15714,7 +16396,7 @@
   }
   const Input = /* @__PURE__ */ defineBuiltInComponent({
     name: "Input",
-    props: props$b,
+    props: props$l,
     emits: ["confirm", ...emit],
     setup(props2, _ref) {
       var {
@@ -15727,6 +16409,7 @@
         var type2 = "";
         switch (props2.type) {
           case "text":
+            type2 = "text";
             if (props2.confirmType === "search") {
               type2 = "search";
             }
@@ -17521,7 +18204,7 @@
       default: ""
     }
   };
-  function useState$1(props2) {
+  function useState$3(props2) {
     var value = reactive([...props2.value]);
     var state = reactive({
       value,
@@ -17551,7 +18234,7 @@
       var rootRef = ref(null);
       var wrapperRef = ref(null);
       var trigger2 = useCustomEvent(rootRef, emit2);
-      var state = useState$1(props2);
+      var state = useState$3(props2);
       var resizeSensorRef = ref(null);
       var onMountedCallback = () => {
         var resizeSensor = resizeSensorRef.value;
@@ -18639,7 +19322,7 @@
     }
   }
   var uniRadioGroupKey = PolySymbol("ucg");
-  var props$a = {
+  var props$k = {
     name: {
       type: String,
       default: ""
@@ -18647,7 +19330,7 @@
   };
   const RadioGroup = /* @__PURE__ */ defineBuiltInComponent({
     name: "RadioGroup",
-    props: props$a,
+    props: props$k,
     // emits: ['change'],
     setup(props2, _ref) {
       var {
@@ -18665,23 +19348,23 @@
     }
   });
   function useProvideRadioGroup(props2, trigger2) {
-    var fields = [];
+    var fields2 = [];
     onMounted(() => {
-      _resetRadioGroupValue(fields.length - 1);
+      _resetRadioGroupValue(fields2.length - 1);
     });
     var getFieldsValue = () => {
       var _fields$find;
-      return (_fields$find = fields.find((field) => field.value.radioChecked)) === null || _fields$find === void 0 ? void 0 : _fields$find.value.value;
+      return (_fields$find = fields2.find((field) => field.value.radioChecked)) === null || _fields$find === void 0 ? void 0 : _fields$find.value.value;
     };
     provide(uniRadioGroupKey, {
       addField(field) {
-        fields.push(field);
+        fields2.push(field);
       },
       removeField(field) {
-        fields.splice(fields.indexOf(field), 1);
+        fields2.splice(fields2.indexOf(field), 1);
       },
       radioChange($event, field) {
-        var index2 = fields.indexOf(field);
+        var index2 = fields2.indexOf(field);
         _resetRadioGroupValue(index2, true);
         trigger2("change", $event, {
           value: getFieldsValue()
@@ -18712,27 +19395,27 @@
       };
     }
     function _resetRadioGroupValue(key2, change) {
-      fields.forEach((value, index2) => {
+      fields2.forEach((value, index2) => {
         if (index2 === key2) {
           return;
         }
         if (change) {
-          setFieldChecked(fields[index2], false);
+          setFieldChecked(fields2[index2], false);
         } else {
-          fields.forEach((v2, i2) => {
+          fields2.forEach((v2, i2) => {
             if (index2 >= i2) {
               return;
             }
-            if (fields[i2].value.radioChecked) {
-              setFieldChecked(fields[index2], false);
+            if (fields2[i2].value.radioChecked) {
+              setFieldChecked(fields2[index2], false);
             }
           });
         }
       });
     }
-    return fields;
+    return fields2;
   }
-  var props$9 = {
+  var props$j = {
     checked: {
       type: [Boolean, String],
       default: false
@@ -18776,7 +19459,7 @@
   };
   const Radio = /* @__PURE__ */ defineBuiltInComponent({
     name: "Radio",
-    props: props$9,
+    props: props$j,
     setup(props2, _ref) {
       var {
         slots
@@ -19013,7 +19696,7 @@
       if (hasOwn$1(attrs2, key2)) {
         var value = attrs2[key2];
         if (tagName === "img" && key2 === "src")
-          attrs2[key2] = getRealPath$1(value);
+          attrs2[key2] = getRealPath(value);
       }
     }
   }
@@ -19102,10 +19785,10 @@
           parent.children.push(node);
         }
       },
-      chars: function(text) {
+      chars: function(text2) {
         var node = {
           type: "text",
-          text
+          text: text2
         };
         if (stacks.length === 0) {
           results.children.push(node);
@@ -19117,10 +19800,10 @@
           parent.children.push(node);
         }
       },
-      comment: function(text) {
+      comment: function(text2) {
         var node = {
           node: "comment",
-          text
+          text: text2
         };
         var parent = stacks[0];
         if (parent) {
@@ -19133,7 +19816,7 @@
     });
     return results.children;
   }
-  var props$8 = {
+  var props$i = {
     nodes: {
       type: [Array, String],
       default: function() {
@@ -19146,7 +19829,7 @@
     compatConfig: {
       MODE: 3
     },
-    props: props$8,
+    props: props$i,
     emits: ["click", "touchstart", "touchmove", "touchcancel", "touchend", "longpress", "itemclick"],
     setup(props2, _ref) {
       var {
@@ -19282,7 +19965,7 @@
     }
   });
   var passiveOptions = /* @__PURE__ */ passive(true);
-  var props$7 = {
+  var props$h = {
     direction: {
       type: [String],
       default: "vertical"
@@ -19353,7 +20036,7 @@
     compatConfig: {
       MODE: 3
     },
-    props: props$7,
+    props: props$h,
     emits: ["scroll", "scrolltoupper", "scrolltolower", "refresherrefresh", "refresherrestore", "refresherpulling", "refresherabort", "update:refresherTriggered"],
     setup(props2, _ref) {
       var {
@@ -19472,30 +20155,30 @@
       var val = Number(props2.lowerThreshold);
       return isNaN(val) ? 50 : val;
     });
-    function scrollTo2(scrollToValue, direction) {
+    function scrollTo2(scrollToValue, direction2) {
       var container = main.value;
       var transformValue = 0;
       var transform = "";
-      scrollToValue < 0 ? scrollToValue = 0 : direction === "x" && scrollToValue > container.scrollWidth - container.offsetWidth ? scrollToValue = container.scrollWidth - container.offsetWidth : direction === "y" && scrollToValue > container.scrollHeight - container.offsetHeight && (scrollToValue = container.scrollHeight - container.offsetHeight);
-      direction === "x" ? transformValue = container.scrollLeft - scrollToValue : direction === "y" && (transformValue = container.scrollTop - scrollToValue);
+      scrollToValue < 0 ? scrollToValue = 0 : direction2 === "x" && scrollToValue > container.scrollWidth - container.offsetWidth ? scrollToValue = container.scrollWidth - container.offsetWidth : direction2 === "y" && scrollToValue > container.scrollHeight - container.offsetHeight && (scrollToValue = container.scrollHeight - container.offsetHeight);
+      direction2 === "x" ? transformValue = container.scrollLeft - scrollToValue : direction2 === "y" && (transformValue = container.scrollTop - scrollToValue);
       if (transformValue === 0)
         return;
       var _content = content.value;
       _content.style.transition = "transform .3s ease-out";
       _content.style.webkitTransition = "-webkit-transform .3s ease-out";
-      if (direction === "x") {
+      if (direction2 === "x") {
         transform = "translateX(" + transformValue + "px) translateZ(0)";
       } else {
-        direction === "y" && (transform = "translateY(" + transformValue + "px) translateZ(0)");
+        direction2 === "y" && (transform = "translateY(" + transformValue + "px) translateZ(0)");
       }
       _content.removeEventListener("transitionend", __transitionEnd);
       _content.removeEventListener("webkitTransitionEnd", __transitionEnd);
-      __transitionEnd = () => _transitionEnd(scrollToValue, direction);
+      __transitionEnd = () => _transitionEnd(scrollToValue, direction2);
       _content.addEventListener("transitionend", __transitionEnd);
       _content.addEventListener("webkitTransitionEnd", __transitionEnd);
-      if (direction === "x") {
+      if (direction2 === "x") {
         container.style.overflowX = "hidden";
-      } else if (direction === "y") {
+      } else if (direction2 === "y") {
         container.style.overflowY = "hidden";
       }
       _content.style.transform = transform;
@@ -19597,16 +20280,16 @@
         }
       }
     }
-    function _transitionEnd(val, direction) {
+    function _transitionEnd(val, direction2) {
       content.value.style.transition = "";
       content.value.style.webkitTransition = "";
       content.value.style.transform = "";
       content.value.style.webkitTransform = "";
       var _main = main.value;
-      if (direction === "x") {
+      if (direction2 === "x") {
         _main.style.overflowX = realScrollX.value ? "auto" : "hidden";
         _main.scrollLeft = val;
-      } else if (direction === "y") {
+      } else if (direction2 === "y") {
         _main.style.overflowY = realScrollY.value ? "auto" : "hidden";
         _main.scrollTop = val;
       }
@@ -19621,6 +20304,10 @@
           state.refresherHeight = props2.refresherThreshold;
           if (!beforeRefreshing) {
             beforeRefreshing = true;
+            trigger2("refresherpulling", {}, {
+              deltaY: state.refresherHeight,
+              dy: state.refresherHeight
+            });
             trigger2("refresherrefresh", {}, {
               dy: touchEnd.y - touchStart.y
             });
@@ -19800,7 +20487,7 @@
       _scrollLeftChanged
     };
   }
-  var props$6 = {
+  var props$g = {
     name: {
       type: String,
       default: ""
@@ -19856,7 +20543,7 @@
   };
   const Slider = /* @__PURE__ */ defineBuiltInComponent({
     name: "Slider",
-    props: props$6,
+    props: props$g,
     emits: ["changing", "change"],
     setup(props2, _ref) {
       var {
@@ -20028,7 +20715,7 @@
       return Number(s1.replace(".", "")) * Number(s2.replace(".", "")) / Math.pow(10, m);
     }
   };
-  var props$5 = {
+  var props$f = {
     indicatorDots: {
       type: [Boolean, String],
       default: false
@@ -20102,7 +20789,7 @@
       default: "rgba(53, 53, 53, 0.6)"
     }
   };
-  function useState(props2) {
+  function useState$2(props2) {
     var interval = computed(() => {
       var interval2 = Number(props2.interval);
       return isNaN(interval2) ? 5e3 : interval2;
@@ -20529,7 +21216,7 @@
   }
   const Swiper = /* @__PURE__ */ defineBuiltInComponent({
     name: "Swiper",
-    props: props$5,
+    props: props$f,
     emits: ["change", "transition", "animationfinish", "update:current", "update:currentItemId"],
     setup(props2, _ref) {
       var {
@@ -20540,7 +21227,7 @@
       var trigger2 = useCustomEvent(rootRef, emit2);
       var slidesWrapperRef = ref(null);
       var slideFrameRef = ref(null);
-      var state = useState(props2);
+      var state = useState$2(props2);
       var slidesStyle = computed(() => {
         var style = {};
         if (props2.nextMargin || props2.previousMargin) {
@@ -20640,7 +21327,7 @@
       };
     }
   });
-  var props$4 = {
+  var props$e = {
     itemId: {
       type: String,
       default: ""
@@ -20648,7 +21335,7 @@
   };
   const SwiperItem = /* @__PURE__ */ defineBuiltInComponent({
     name: "SwiperItem",
-    props: props$4,
+    props: props$e,
     setup(props2, _ref) {
       var {
         slots
@@ -20698,7 +21385,7 @@
       };
     }
   });
-  var props$3 = {
+  var props$d = {
     name: {
       type: String,
       default: ""
@@ -20726,7 +21413,7 @@
   };
   const Switch = /* @__PURE__ */ defineBuiltInComponent({
     name: "Switch",
-    props: props$3,
+    props: props$d,
     emits: ["change"],
     setup(props2, _ref) {
       var {
@@ -20815,14 +21502,14 @@
     emsp: " ",
     nbsp: " "
   };
-  function normalizeText(text, _ref) {
+  function normalizeText(text2, _ref) {
     var {
       space,
       decode
     } = _ref;
     var result = "";
     var isEscape = false;
-    for (var char of text) {
+    for (var char of text2) {
       if (space && SPACE_UNICODE[space] && char === " ") {
         char = SPACE_UNICODE[space];
       }
@@ -20848,8 +21535,8 @@
     }
     return result.replace(/&nbsp;/g, SPACE_UNICODE.nbsp).replace(/&ensp;/g, SPACE_UNICODE.ensp).replace(/&emsp;/g, SPACE_UNICODE.emsp).replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&amp;/g, "&").replace(/&quot;/g, '"').replace(/&apos;/g, "'");
   }
-  function parseText(text, options) {
-    return normalizeText(text, options).split(LINEFEED);
+  function parseText(text2, options) {
+    return normalizeText(text2, options).split(LINEFEED);
   }
   function ownKeys(e2, r) {
     var t2 = Object.keys(e2);
@@ -20888,6 +21575,35 @@
     var i2 = _toPrimitive(t2, "string");
     return "symbol" == typeof i2 ? i2 : i2 + "";
   }
+  function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key2, arg) {
+    try {
+      var info = gen[key2](arg);
+      var value = info.value;
+    } catch (error) {
+      reject(error);
+      return;
+    }
+    if (info.done) {
+      resolve(value);
+    } else {
+      Promise.resolve(value).then(_next, _throw);
+    }
+  }
+  function _asyncToGenerator(fn) {
+    return function() {
+      var self2 = this, args = arguments;
+      return new Promise(function(resolve, reject) {
+        var gen = fn.apply(self2, args);
+        function _next(value) {
+          asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value);
+        }
+        function _throw(err2) {
+          asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err2);
+        }
+        _next(void 0);
+      });
+    };
+  }
   function _defineProperty(obj, key2, value) {
     key2 = _toPropertyKey(key2);
     if (key2 in obj) {
@@ -20902,7 +21618,7 @@
     }
     return obj;
   }
-  var props$2 = /* @__PURE__ */ extend({}, props$c, {
+  var props$c = /* @__PURE__ */ extend({}, props$m, {
     placeholderClass: {
       type: String,
       default: "input-placeholder"
@@ -20927,7 +21643,7 @@
   }
   const Textarea = /* @__PURE__ */ defineBuiltInComponent({
     name: "Textarea",
-    props: props$2,
+    props: props$c,
     emits: ["confirm", "linechange", ...emit],
     setup(props2, _ref) {
       var {
@@ -21110,13 +21826,13 @@
       removeSubscribe(name || normalizeEvent(vm), pageId);
     });
   }
-  var index = 0;
+  var index$2 = 0;
   function useContextInfo(_id) {
     var page = useCurrentPageId();
     var instance = getCurrentInstance();
     var vm = instance.proxy;
     var type = vm.$options.name.toLowerCase();
-    var id2 = _id || vm.id || "context".concat(index++);
+    var id2 = _id || vm.id || "context".concat(index$2++);
     onMounted(() => {
       var el = vm.$el;
       el.__uniContextInfo = {
@@ -21144,8 +21860,8 @@
         this.update();
       }
     }
-    setText(text) {
-      this._text = text;
+    setText(text2) {
+      this._text = text2;
       this.update();
       this.updateView();
     }
@@ -21359,8 +22075,8 @@
         this.addWxsEvents(nodeJson.w);
       }
     }
-    setText(text) {
-      (this.$holder || this.$).textContent = text;
+    setText(text2) {
+      (this.$holder || this.$).textContent = text2;
       this.updateView();
     }
     addWxsEvent(name, wxsEvent, flag) {
@@ -21438,9 +22154,9 @@
       }
       return this._rebuild;
     }
-    setText(text) {
+    setText(text2) {
       queuePostActionJob(this.getRebuildFn(), JOB_PRIORITY_REBUILD);
-      return super.setText(text);
+      return super.setText(text2);
     }
     appendChild(node) {
       queuePostActionJob(this.getRebuildFn(), JOB_PRIORITY_REBUILD);
@@ -21475,7 +22191,7 @@
     }
     return null;
   }
-  function setHolderText(holder, clazz, text) {
+  function setHolderText(holder, clazz, text2) {
     holder.childNodes.forEach((childNode) => {
       if (childNode instanceof Element) {
         if (childNode.className.indexOf(clazz) === -1) {
@@ -21485,7 +22201,7 @@
         holder.removeChild(childNode);
       }
     });
-    holder.appendChild(document.createTextNode(text));
+    holder.appendChild(document.createTextNode(text2));
   }
   var vModelNames = ["value", "modelValue"];
   function initVModel(props2) {
@@ -21518,8 +22234,8 @@
       this._text = nodeJson.t || "";
       super.init(nodeJson);
     }
-    setText(text) {
-      this._text = text;
+    setText(text2) {
+      this._text = text2;
       this.update();
       this.updateView();
     }
@@ -21567,16 +22283,16 @@
     constructor(id2, parentNodeId, refNodeId, nodeJson) {
       super(id2, "uni-checkbox", Checkbox, parentNodeId, refNodeId, nodeJson, ".uni-checkbox-wrapper");
     }
-    setText(text) {
-      setHolderText(this.$holder, "uni-checkbox-input", text);
+    setText(text2) {
+      setHolderText(this.$holder, "uni-checkbox-input", text2);
     }
   }
   class UniRadio extends UniComponent {
     constructor(id2, parentNodeId, refNodeId, nodeJson) {
       super(id2, "uni-radio", Radio, parentNodeId, refNodeId, nodeJson, ".uni-radio-wrapper");
     }
-    setText(text) {
-      setHolderText(this.$holder, "uni-radio-input", text);
+    setText(text2) {
+      setHolderText(this.$holder, "uni-radio-input", text2);
     }
   }
   class UniRadioGroup extends UniComponent {
@@ -21617,6 +22333,11 @@
       super(id2, "uni-form", Form, parentNodeId, refNodeId, nodeJson, "span");
     }
   }
+  class UniEditor extends UniComponent {
+    constructor(id2, parentNodeId, refNodeId, nodeJson) {
+      super(id2, "uni-editor", Editor, parentNodeId, refNodeId, nodeJson);
+    }
+  }
   class UniPickerView extends UniContainerComponent {
     constructor(id2, parentNodeId, refNodeId, nodeJson) {
       super(id2, "uni-picker-view", PickerView, parentNodeId, refNodeId, nodeJson, ".uni-picker-view-wrapper");
@@ -21631,8 +22352,8 @@
     constructor(id2, parentNodeId, refNodeId, nodeJson) {
       super(id2, "uni-scroll-view", ScrollView, parentNodeId, refNodeId, nodeJson, ".uni-scroll-view-content");
     }
-    setText(text) {
-      setHolderText(this.$holder, "uni-scroll-view-refresher", text);
+    setText(text2) {
+      setHolderText(this.$holder, "uni-scroll-view-refresher", text2);
     }
   }
   class UniSwiper extends UniContainerComponent {
@@ -21660,7 +22381,92 @@
       super(id2, "uni-icon", Icon, parentNodeId, refNodeId, nodeJson);
     }
   }
-  var props$1 = {
+  var props$b = {
+    tag: {
+      type: String,
+      default: ""
+    },
+    options: {
+      type: Object,
+      default() {
+        return {};
+      }
+    }
+  };
+  var index$1 = 0;
+  const Embed = /* @__PURE__ */ defineBuiltInComponent({
+    props: props$b,
+    setup(props2, _ref) {
+      var {
+        expose,
+        attrs: attrs2
+      } = _ref;
+      var clickRef = ref(0);
+      var elId = String(index$1++);
+      var src = computed(() => {
+        var on = [];
+        var options = Object.assign({}, props2.options, {
+          click: clickRef.value,
+          on
+        });
+        Object.keys(attrs2).forEach((key2) => {
+          if (/^on[A-Z]/.test(key2)) {
+            on.push(key2.slice(2).toLowerCase());
+          }
+        });
+        return "".concat(elId, "#").concat(encodeURIComponent(JSON.stringify(options)));
+      });
+      var srcValue = src.value;
+      watch(src, (srcValue2) => {
+        harmonyChannel.invokeSync("onNativeEmbedLifecycleChange", [srcValue2]);
+      });
+      function click() {
+        clickRef.value++;
+      }
+      expose({
+        click,
+        elId
+      });
+      return () => createVNode("embed", mergeProps({
+        "el-id": elId,
+        "type": "native/".concat(props2.tag),
+        "src": srcValue
+      }, attrs2), null, 16, ["el-id", "src"]);
+    }
+  });
+  function useMethods(embedRef) {
+    var MethodList = ["evalJs", "back", "forward", "reload", "stop"];
+    var methods = {};
+    var _loop = function(i3) {
+      var methodName = MethodList[i3];
+      methods[methodName] = function(data, resolve) {
+        var elId = embedRef.value.elId;
+        UniViewJSBridge.invokeServiceMethod("webview" + capitalize(methodName), {
+          elId,
+          data
+        }, (res) => {
+          resolve(res);
+        });
+      };
+    };
+    for (var i2 = 0; i2 < MethodList.length; i2++) {
+      _loop(i2);
+    }
+    function _handleSubscribe(type, data, resolve) {
+      var method = methods[type];
+      if (type.indexOf("_") !== 0 && isFunction(method)) {
+        method(data, resolve);
+      }
+    }
+    return extend(methods, {
+      _handleSubscribe
+    });
+  }
+  var props$a = {
+    id: {
+      type: String,
+      default: ""
+    },
     src: {
       type: String,
       default: ""
@@ -21678,14 +22484,25 @@
   };
   const WebView = /* @__PURE__ */ defineBuiltInComponent({
     name: "WebView",
-    props: props$1,
+    props: props$a,
     setup(props2) {
-      return () => createVNode("uni-web-view", null, [createVNode("embed", {
-        "id": "webview",
-        "type": "native/webview",
-        "src": getRealPath$1(props2.src),
+      var embedRef = ref(null);
+      var {
+        _handleSubscribe
+      } = useMethods(embedRef);
+      useSubscribe(_handleSubscribe, useContextInfo(props2.id), true);
+      return () => createVNode("uni-web-view", {
+        "id": props2.id
+      }, [createVNode(Embed, {
+        "ref": embedRef,
+        "tag": "webview",
+        "options": {
+          src: getRealPath(props2.src),
+          updateTitle: props2.updateTitle,
+          webviewStyles: props2.webviewStyles
+        },
         "style": "width:100%;height:100%"
-      }, null, 8, ["src"])]);
+      }, null, 8, ["options"])], 8, ["id"]);
     }
   });
   class UniWebView extends UniComponent {
@@ -21895,7 +22712,7 @@
   }
   function useVideo(props2, attrs2, trigger2) {
     var videoRef = ref(null);
-    var src = computed(() => getRealPath$1(props2.src));
+    var src = computed(() => getRealPath(props2.src));
     var muted = computed(() => props2.muted === "true" || props2.muted === true);
     var state = reactive({
       start: false,
@@ -22260,7 +23077,7 @@
       }
     }, id2, true);
   }
-  var props = {
+  var props$9 = {
     id: {
       type: String,
       default: ""
@@ -22346,7 +23163,7 @@
   };
   const Video = /* @__PURE__ */ defineBuiltInComponent({
     name: "Video",
-    props,
+    props: props$9,
     emits: ["fullscreenchange", "progress", "loadedmetadata", "waiting", "error", "play", "pause", "ended", "timeupdate"],
     setup(props2, _ref2) {
       var {
@@ -22566,6 +23383,2492 @@
       super(id2, "uni-video", Video, parentNodeId, refNodeId, nodeJson);
     }
   }
+  var mode = {
+    SELECTOR: "selector",
+    MULTISELECTOR: "multiSelector",
+    TIME: "time",
+    DATE: "date"
+    // 暂不支持城市选择
+    // REGION: 'region'
+  };
+  var fields = {
+    YEAR: "year",
+    MONTH: "month",
+    DAY: "day"
+  };
+  function getDefaultStartValue(props2) {
+    if (props2.mode === mode.TIME) {
+      return "00:00";
+    }
+    if (props2.mode === mode.DATE) {
+      var year = (/* @__PURE__ */ new Date()).getFullYear() - 100;
+      switch (props2.fields) {
+        case fields.YEAR:
+          return year;
+        case fields.MONTH:
+          return year + "-01";
+        default:
+          return year + "-01-01";
+      }
+    }
+    return "";
+  }
+  function getDefaultEndValue(props2) {
+    if (props2.mode === mode.TIME) {
+      return "23:59";
+    }
+    if (props2.mode === mode.DATE) {
+      var year = (/* @__PURE__ */ new Date()).getFullYear() + 100;
+      switch (props2.fields) {
+        case fields.YEAR:
+          return year;
+        case fields.MONTH:
+          return year + "-12";
+        default:
+          return year + "-12-31";
+      }
+    }
+    return "";
+  }
+  var props$8 = {
+    name: {
+      type: String,
+      default: ""
+    },
+    range: {
+      type: Array,
+      default() {
+        return [];
+      }
+    },
+    rangeKey: {
+      type: String,
+      default: ""
+    },
+    value: {
+      type: [Number, String, Array],
+      default: 0
+    },
+    mode: {
+      type: String,
+      default: mode.SELECTOR,
+      validator(val) {
+        return Object.values(mode).indexOf(val) >= 0;
+      }
+    },
+    fields: {
+      type: String,
+      default: ""
+    },
+    start: {
+      type: String,
+      default: getDefaultStartValue
+    },
+    end: {
+      type: String,
+      default: getDefaultEndValue
+    },
+    disabled: {
+      type: [Boolean, String],
+      default: false
+    }
+  };
+  const Picker = /* @__PURE__ */ defineBuiltInComponent({
+    name: "Picker",
+    props: props$8,
+    emits: ["change", "cancel", "columnchange"],
+    setup(props2, _ref) {
+      var {
+        emit: emit2
+      } = _ref;
+      var rootRef = ref(null);
+      var embedRef = ref(null);
+      var trigger2 = useCustomEvent(rootRef, emit2);
+      function onClick() {
+        embedRef.value.click();
+      }
+      function onCancel(event) {
+        trigger2("cancel", event, event.detail);
+      }
+      function onColumnchange(event) {
+        trigger2("columnchange", event, event.detail);
+      }
+      function onChange2(event) {
+        trigger2("change", event, event.detail);
+      }
+      return () => createVNode("uni-picker", {
+        "ref": rootRef
+      }, [createVNode(Embed, {
+        "ref": embedRef,
+        "tag": "picker",
+        "options": props2,
+        "onChange": onChange2,
+        "onColumnchange": onColumnchange,
+        "onCancel": onCancel
+      }, null, 8, ["options", "onChange", "onColumnchange", "onCancel"]), createVNode("div", {
+        "onClick": onClick,
+        "class": "uni-picker-slot"
+      }, null, 8, ["onClick"])], 512);
+    }
+  });
+  class UniPicker extends UniComponent {
+    constructor(id2, parentNodeId, refNodeId, nodeJson) {
+      super(id2, "uni-picker", Picker, parentNodeId, refNodeId, nodeJson, ".uni-picker-slot");
+    }
+  }
+  var index = 0;
+  function getJSONP(url, options, success, error) {
+    var js = document.createElement("script");
+    var callbackKey = options.callback || "callback";
+    var callbackName = "__uni_jsonp_callback_" + index++;
+    var timeout = options.timeout || 3e4;
+    var timing;
+    function end() {
+      clearTimeout(timing);
+      delete window[callbackName];
+      js.remove();
+    }
+    window[callbackName] = (res) => {
+      if (isFunction(success)) {
+        success(res);
+      }
+      end();
+    };
+    js.onerror = () => {
+      if (isFunction(error)) {
+        error();
+      }
+      end();
+    };
+    timing = setTimeout(function() {
+      if (isFunction(error)) {
+        error();
+      }
+      end();
+    }, timeout);
+    js.src = url + (url.indexOf("?") >= 0 ? "&" : "?") + callbackKey + "=" + callbackName;
+    document.body.appendChild(js);
+  }
+  function createCallout(maps2) {
+    function onAdd() {
+      var div = this.div;
+      var panes = this.getPanes();
+      panes.floatPane.appendChild(div);
+    }
+    function onRemove() {
+      var parentNode = this.div.parentNode;
+      if (parentNode) {
+        parentNode.removeChild(this.div);
+      }
+    }
+    function createAMapText() {
+      var option = this.option;
+      this.Text = new maps2.Text({
+        text: option.content,
+        anchor: "bottom-center",
+        // 设置文本标记锚点
+        offset: new maps2.Pixel(0, option.offsetY - 16),
+        style: {
+          padding: (option.padding || 8) + "px",
+          "line-height": (option.fontSize || 14) + "px",
+          "border-radius": (option.borderRadius || 0) + "px",
+          "border-color": "".concat(option.bgColor || "#fff", " transparent transparent"),
+          "background-color": option.bgColor || "#fff",
+          "box-shadow": "0 2px 6px 0 rgba(114, 124, 245, .5)",
+          "text-align": "center",
+          "font-size": (option.fontSize || 14) + "px",
+          color: option.color || "#000"
+        },
+        position: option.position
+      });
+      var event = maps2.event || maps2.Event;
+      event.addListener(this.Text, "click", () => {
+        this.callback();
+      });
+      this.Text.setMap(option.map);
+    }
+    function createBMapText() {
+    }
+    function removeAMapText() {
+      if (this.Text) {
+        this.option.map.remove(this.Text);
+      }
+    }
+    function removeBMapText() {
+      if (this.Text) {
+        this.option.map.remove(this.Text);
+      }
+    }
+    class Callout {
+      constructor() {
+        var option = arguments.length > 0 && arguments[0] !== void 0 ? arguments[0] : {};
+        var callback = arguments.length > 1 ? arguments[1] : void 0;
+        this.createAMapText = createAMapText;
+        this.removeAMapText = removeAMapText;
+        this.createBMapText = createBMapText;
+        this.removeBMapText = removeBMapText;
+        this.onAdd = onAdd;
+        this.construct = onAdd;
+        this.onRemove = onRemove;
+        this.destroy = onRemove;
+        this.option = option || {};
+        var visible = this.visible = this.alwaysVisible = option.display === "ALWAYS";
+        if (getIsAMap()) {
+          this.callback = callback;
+          if (this.visible) {
+            this.createAMapText();
+          }
+        } else if (getIsBMap()) {
+          if (this.visible) {
+            this.createBMapText();
+          }
+        } else {
+          var map = option.map;
+          this.position = option.position;
+          this.index = 1;
+          var div = this.div = document.createElement("div");
+          var divStyle = div.style;
+          divStyle.position = "absolute";
+          divStyle.whiteSpace = "nowrap";
+          divStyle.transform = "translateX(-50%) translateY(-100%)";
+          divStyle.zIndex = "1";
+          divStyle.boxShadow = option.boxShadow || "none";
+          divStyle.display = visible ? "block" : "none";
+          var triangle = this.triangle = document.createElement("div");
+          triangle.setAttribute("style", "position: absolute;white-space: nowrap;border-width: 4px;border-style: solid;border-color: #fff transparent transparent;border-image: initial;font-size: 12px;padding: 0px;background-color: transparent;width: 0px;height: 0px;transform: translate(-50%, 100%);left: 50%;bottom: 0;");
+          this.setStyle(option);
+          div.appendChild(triangle);
+          if (map) {
+            this.setMap(map);
+          }
+        }
+      }
+      set onclick(callback) {
+        this.div.onclick = callback;
+      }
+      get onclick() {
+        return this.div.onclick;
+      }
+      setOption(option) {
+        this.option = option;
+        if (option.display === "ALWAYS") {
+          this.alwaysVisible = this.visible = true;
+        } else {
+          this.alwaysVisible = false;
+        }
+        if (getIsAMap()) {
+          if (this.visible) {
+            this.createAMapText();
+          }
+        } else if (getIsBMap()) {
+          if (this.visible) {
+            this.createBMapText();
+          }
+        } else {
+          this.setPosition(option.position);
+          this.setStyle(option);
+        }
+      }
+      setStyle(option) {
+        var div = this.div;
+        var divStyle = div.style;
+        div.innerText = option.content || "";
+        divStyle.lineHeight = (option.fontSize || 14) + "px";
+        divStyle.fontSize = (option.fontSize || 14) + "px";
+        divStyle.padding = (option.padding || 8) + "px";
+        divStyle.color = option.color || "#000";
+        divStyle.borderRadius = (option.borderRadius || 0) + "px";
+        divStyle.backgroundColor = option.bgColor || "#fff";
+        divStyle.marginTop = "-" + ((option.top || 0) + 5) + "px";
+        this.triangle.style.borderColor = "".concat(option.bgColor || "#fff", " transparent transparent");
+      }
+      setPosition(position) {
+        this.position = position;
+        this.draw();
+      }
+      draw() {
+        var overlayProjection = this.getProjection();
+        if (!this.position || !this.div || !overlayProjection) {
+          return;
+        }
+        var pixel = overlayProjection.fromLatLngToDivPixel(this.position);
+        var divStyle = this.div.style;
+        divStyle.left = pixel.x + "px";
+        divStyle.top = pixel.y + "px";
+      }
+      changed() {
+        var divStyle = this.div.style;
+        divStyle.display = this.visible ? "block" : "none";
+      }
+    }
+    if (!getIsAMap() && !getIsBMap()) {
+      var overlay = new (maps2.OverlayView || maps2.Overlay)();
+      Callout.prototype.setMap = overlay.setMap;
+      Callout.prototype.getMap = overlay.getMap;
+      Callout.prototype.getPanes = overlay.getPanes;
+      Callout.prototype.getProjection = overlay.getProjection;
+      Callout.prototype.map_changed = overlay.map_changed;
+      Callout.prototype.set = overlay.set;
+      Callout.prototype.get = overlay.get;
+      Callout.prototype.setOptions = overlay.setValues;
+      Callout.prototype.bindTo = overlay.bindTo;
+      Callout.prototype.bindsTo = overlay.bindsTo;
+      Callout.prototype.notify = overlay.notify;
+      Callout.prototype.setValues = overlay.setValues;
+      Callout.prototype.unbind = overlay.unbind;
+      Callout.prototype.unbindAll = overlay.unbindAll;
+      Callout.prototype.addListener = overlay.addListener;
+    }
+    return Callout;
+  }
+  var __async$1 = (__this, __arguments, generator) => {
+    return new Promise((resolve, reject) => {
+      var fulfilled = (value) => {
+        try {
+          step2(generator.next(value));
+        } catch (e2) {
+          reject(e2);
+        }
+      };
+      var rejected = (value) => {
+        try {
+          step2(generator.throw(value));
+        } catch (e2) {
+          reject(e2);
+        }
+      };
+      var step2 = (x) => x.done ? resolve(x.value) : Promise.resolve(x.value).then(fulfilled, rejected);
+      step2((generator = generator.apply(__this, __arguments)).next());
+    });
+  };
+  var maps;
+  var callbacksMap = {};
+  var GOOGLE_MAP_CALLBACKNAME = "__map_callback__";
+  function loadMaps(libraries, callback) {
+    return __async$1(this, null, function* () {
+      var mapInfo2 = yield getMapInfo();
+      if (!mapInfo2.key) {
+        console.error("Map key not configured.");
+        return;
+      }
+      var callbacks2 = callbacksMap[mapInfo2.type] = callbacksMap[mapInfo2.type] || [];
+      if (maps) {
+        callback(maps);
+      } else if (window[mapInfo2.type] && window[mapInfo2.type].maps) {
+        maps = getIsAMap() || getIsBMap() ? window[mapInfo2.type] : window[mapInfo2.type].maps;
+        maps.Callout = maps.Callout || createCallout(maps);
+        callback(maps);
+      } else if (callbacks2.length) {
+        callbacks2.push(callback);
+      } else {
+        callbacks2.push(callback);
+        var globalExt = window;
+        var callbackName = GOOGLE_MAP_CALLBACKNAME + mapInfo2.type;
+        globalExt[callbackName] = function() {
+          delete globalExt[callbackName];
+          maps = getIsAMap() || getIsBMap() ? window[mapInfo2.type] : window[mapInfo2.type].maps;
+          maps.Callout = createCallout(maps);
+          callbacks2.forEach((callback2) => callback2(maps));
+          callbacks2.length = 0;
+        };
+        if (getIsAMap()) {
+          handleAMapSecurityPolicy(mapInfo2);
+        }
+        var script = document.createElement("script");
+        var src = getScriptBaseUrl(mapInfo2.type);
+        if (mapInfo2.type === MapType.QQ) {
+          libraries.push("geometry");
+        }
+        if (libraries.length) {
+          src += "libraries=".concat(libraries.join("%2C"), "&");
+        }
+        if (mapInfo2.type === MapType.BMAP) {
+          script.src = "".concat(src, "ak=").concat(mapInfo2.key, "&callback=").concat(callbackName);
+        } else {
+          script.src = "".concat(src, "key=").concat(mapInfo2.key, "&callback=").concat(callbackName);
+        }
+        script.onerror = function() {
+          console.error("Map load failed.");
+        };
+        document.body.appendChild(script);
+      }
+    });
+  }
+  var getScriptBaseUrl = (mapType) => {
+    var urlMap = {
+      qq: "https://map.qq.com/api/js?v=2.exp&",
+      google: "https://maps.googleapis.com/maps/api/js?",
+      AMap: "https://webapi.amap.com/maps?v=2.0&",
+      BMapGL: "https://api.map.baidu.com/api?type=webgl&v=1.0&"
+    };
+    return urlMap[mapType];
+  };
+  function handleAMapSecurityPolicy(mapInfo2) {
+    window._AMapSecurityConfig = {
+      securityJsCode: mapInfo2.securityJsCode || "",
+      serviceHost: mapInfo2.serviceHost || ""
+    };
+  }
+  var __async = (__this, __arguments, generator) => {
+    return new Promise((resolve, reject) => {
+      var fulfilled = (value) => {
+        try {
+          step2(generator.next(value));
+        } catch (e2) {
+          reject(e2);
+        }
+      };
+      var rejected = (value) => {
+        try {
+          step2(generator.throw(value));
+        } catch (e2) {
+          reject(e2);
+        }
+      };
+      var step2 = (x) => x.done ? resolve(x.value) : Promise.resolve(x.value).then(fulfilled, rejected);
+      step2((generator = generator.apply(__this, __arguments)).next());
+    });
+  };
+  var ICON_PATH_LOCTAION = "M13.3334375 16 q0.033125 1.1334375 0.783125 1.8834375 q0.75 0.75 1.8834375 0.75 q1.1334375 0 1.8834375 -0.75 q0.75 -0.75 0.75 -1.8834375 q0 -1.1334375 -0.75 -1.8834375 q-0.75 -0.75 -1.8834375 -0.75 q-1.1334375 0 -1.8834375 0.75 q-0.75 0.75 -0.783125 1.8834375 ZM30.9334375 14.9334375 l-1.1334375 0 q-0.5 -5.2 -4.0165625 -8.716875 q-3.516875 -3.5165625 -8.716875 -4.0165625 l0 -1.1334375 q0 -0.4665625 -0.3 -0.7665625 q-0.3 -0.3 -0.7665625 -0.3 q-0.4665625 0 -0.7665625 0.3 q-0.3 0.3 -0.3 0.7665625 l0 1.1334375 q-5.2 0.5 -8.716875 4.0165625 q-3.5165625 3.516875 -4.0165625 8.716875 l-1.1334375 0 q-0.4665625 0 -0.7665625 0.3 q-0.3 0.3 -0.3 0.7665625 q0 0.4665625 0.3 0.7665625 q0.3 0.3 0.7665625 0.3 l1.1334375 0 q0.5 5.2 4.0165625 8.716875 q3.516875 3.5165625 8.716875 4.0165625 l0 1.1334375 q0 0.4665625 0.3 0.7665625 q0.3 0.3 0.7665625 0.3 q0.4665625 0 0.7665625 -0.3 q0.3 -0.3 0.3 -0.7665625 l0 -1.1334375 q5.2 -0.5 8.716875 -4.0165625 q3.5165625 -3.516875 4.0165625 -8.716875 l1.1334375 0 q0.4665625 0 0.7665625 -0.3 q0.3 -0.3 0.3 -0.7665625 q0 -0.4665625 -0.3 -0.7665625 q-0.3 -0.3 -0.7665625 -0.3 ZM17.0665625 27.6665625 l0 -2.0665625 q0 -0.4665625 -0.3 -0.7665625 q-0.3 -0.3 -0.7665625 -0.3 q-0.4665625 0 -0.7665625 0.3 q-0.3 0.3 -0.3 0.7665625 l0 2.0665625 q-4.3 -0.4665625 -7.216875 -3.383125 q-2.916875 -2.916875 -3.3834375 -7.216875 l2.0665625 0 q0.4665625 0 0.7665625 -0.3 q0.3 -0.3 0.3 -0.7665625 q0 -0.4665625 -0.3 -0.7665625 q-0.3 -0.3 -0.7665625 -0.3 l-2.0665625 0 q0.4665625 -4.3 3.3834375 -7.216875 q2.9165625 -2.916875 7.216875 -3.3834375 l0 2.0665625 q0 0.4665625 0.3 0.7665625 q0.3 0.3 0.7665625 0.3 q0.4665625 0 0.7665625 -0.3 q0.3 -0.3 0.3 -0.7665625 l0 -2.0665625 q4.3 0.4665625 7.216875 3.3834375 q2.9165625 2.9165625 3.383125 7.216875 l-2.0665625 0 q-0.4665625 0 -0.7665625 0.3 q-0.3 0.3 -0.3 0.7665625 q0 0.4665625 0.3 0.7665625 q0.3 0.3 0.7665625 0.3 l2.0665625 0 q-0.4665625 4.3 -3.383125 7.216875 q-2.916875 2.9165625 -7.216875 3.383125 Z";
+  var ICON_PATH_ORIGIN = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIQAAACECAMAAABmmnOVAAAC01BMVEUAAAAAef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef96quGStdqStdpbnujMzMzCyM7Gyc7Ky83MzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMwAef8GfP0yjfNWnOp0qOKKsdyYt9mju9aZt9mMstx1qeJYnekyjvIIfP0qivVmouaWttnMzMyat9lppOUujPQKffxhoOfNzc3Y2Njh4eHp6enu7u7y8vL19fXv7+/i4uLZ2dnOzs6auNgOf/sKff15quHR0dHx8fH9/f3////j4+N6quFdn+iywdPb29vw8PD+/v7c3NyywtLa2tr29vbS0tLd3d38/Pzf39/o6Ojc7f+q0v+HwP9rsf9dqv9Hnv9Vpv/q6urj8P+Vx/9Am/8Pgf8Iff/z8/OAvP95uf/n5+c5l//V6f+52v+y1//7+/vt7e0rkP/09PTQ0NDq9P8Whf+cy//W1tbe3t7A3v/m5ubs7OxOov/r6+vk5OQiaPjKAAAAknRSTlMACBZ9oB71/jiqywJBZATT6hBukRXv+zDCAVrkDIf4JbQsTb7eVeJLbwfa8Rh4G/OlPS/6/kxQ9/xdmZudoJxNVhng7B6wtWdzAtQOipcF1329wS44doK/BAkyP1pvgZOsrbnGXArAg34G2IsD1eMRe7bi7k5YnqFT9V0csyPedQyYD3p/Fje+hDpskq/MwpRBC6yKp2MAAAQdSURBVHja7Zn1exMxGIAPHbrhDsPdneHuNtzd3d3dIbjLh93o2o4i7TpgG1Jk0g0mMNwd/gTa5rq129reHnK5e/bk/TFNk/dJ7r5894XjGAwGg8GgTZasCpDIll1+hxw5vXLJLpEboTx5ZXbIhyzkl9fB28cqUaCgrBKFkI3CcjoUKYolihWXUSI7EihRUjaHXF52CVRKLoe8eZIdUOkyMknkRw6UlcehYAFHiXK+skgURk6Ul8OhQjFnCVRRBolKqRxQ5SzUHaqgNGSj7VCmalqJnDkoS5RF6ZCbroNvufQkUD6qEuXTdUA+3hQdqiEXVKfnUKOmK4latalJ1EEuoZZ6162HJ9x/4OChw0eOHj12/MTJU6dxG7XUu751tjNnz4ET5y9ctLZTSr0beKFLl89bpuUDrqgC1RqNWqsKuqqzNFw7e51S6u3tc+OmZUJ9kCHY6ECwOkRvab51iUrqXej2HYDQsHBjWgx3Ae7dppB6N2wEcF9jdMGDUIDGTaR2aNoM9FqjG7QmaN5CWgc/gIePjG559BigpZQOrYB/4jBfRGRUtDkmJjY6KjLCofkpD62lc2gDfMpWPIuLdwyV8XEpHgaddBZ+wBuSFcwJqSN2ovmZ/dfnOvCTxqGtwzq8SEjv4EhISn48eWgnhUP7DvDSvgzxrs6vV6+FLiro2EkCic4QKkzwJsH1KYreCp0eQhfyDl1B/w4P/xa5JVJ4U03QjbRD9x7wXlgH5IE3wmMBHXoSlugFAcI6f/AkkSi8q6HQm6xDn77wEQ8djTwSj3tqAMguRTe4ikeOQyJ4YV+KfkQl+oNW5GbY4gWOWgbwJ+kwAD6Fi90MK2ZsrIeBBCUGwRXbqJ+/iJMQliIEBhOU6AJhtlG/IpHE2bqrYQg5h6HA4yQiRqwEfkGCdTCMmMRw+IbPDCQaHCsCYAQxiZHw3TbmD/ESOHgHwShiEqPhp/gggYkSztIxxCRawy/bmEniJaJtfwiEscQkxkFgRqJESqQwwHhiEuMBp3Vm8RK/cZoHEzKXhCK2QxEPpiJe0YlKCFaKCNv/cYBNUsBRPlkJSc0U+dM7E9H0ThGJbgZT/iR7yj+VqMS06Qr4+OFm2JdCxIa8lugzkJs5K6MfxAaYPUcBpYG5khZJEkUUSb7DPCnKRfPBXj6M8FwuegoLpCgXcQszVjhbJFUJUee2hBhLoYTIcYtB57KY+opSMdVqwatSlZVj05aV//CwJLMX2DluaUcwhXm4ali2XOoLjxUrPV26zFtF4f5p0Gp310+z13BUWNvbehEXona6iAtX/zVZmtfN4WixfsNky4S6gCCVVq3RPLdfSfpv3MRRZfPoLc6Xs/5bt3EyMGzE9h07/Xft2t15z6i9+zgGg8FgMBgMBoPBYDAYDAYj8/APG67Rie8pUDsAAAAASUVORK5CYII=";
+  var ICON_PATH_TARGET = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGAAAACcCAMAAAC3Fl5oAAAB3VBMVEVMaXH/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/EhL/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/Dw//AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/GRn/NTX/Dw//Fhb/AAD/AAD/AAD/GRn/GRn/Y2P/AAD/AAD/ExP/Ghr/AAD/AAD/MzP/GRn/AAD/Hh7/AAD/RUX/AAD/AAD/AAD/AAD/AAD/AAD/Dg7/AAD/HR3/Dw//FRX/SUn/AAD/////kJD/DQ3/Zmb/+/v/wMD/mJj/6en/vb3/1NT//Pz/ODj/+fn/3Nz/nJz/j4//9/f/7e3/9vb/7Oz/2Nj/x8f/Ozv/+Pj/3d3/nZ3/2dn//f3/6Oj/2tr/v7//09P/vr7/mZn/l5cdSvP3AAAAe3RSTlMAAhLiZgTb/vztB/JMRhlp6lQW86g8mQ4KFPs3UCH5U8huwlesWtTYGI7RsdVeJGfTW5rxnutLsvXWF8vQNdo6qQbuz7D4hgVIx2xtw8GC1TtZaIw0i84P98tU0/fsj7PKaAgiZZxeVfo8Z52eg1P0nESrENnjXVPUgw/uuSmDAAADsUlEQVR42u3aZ3cTRxgF4GtbYleSLdnGcsENG2ODjbExEHrvhAQCIb1Bem+QdkeuuFMNBBJIfmuOckzZI8/srHYmH3Lm+QNXK632LTvQ03Tu/IWeU/tTGTKT2n+q58L5c00wpXJd47DHEt5w47pKxLbhdLdPKb/7dBYxVLxw1GcI/2h1BcpzKNFHLX2JQ4gumaiitqpEEhEdOMJI9h5AFC3feYzI+7IF2tpSLEOqDXpObPRYFm/jCWho/4Ble7MdoT7fzhhq9yHEz28wltU1UPrJZ0wd66HwicfYvEFIfePTAP8tSLTupBHvtGJFH9bSkNrNWEHzERrT34xSH9Ogr1CijkbVAUH1KRqVqkdQAw07iIAaGlcTqI+/0LjeJJ5J0IIEnkpXMdzs4sTtW9dnZq7fuj2xOMtwVWk88RHDjBYejYvnjD8qjOpfQsUqhvj7oSjxcJIhVj3pyKqpNjYvVjQ/RrXq5YABKi3MCYm5BSrtWO5v11DlmlC4RpU1WRS9SJU7QukOVbpQ9JLu549+Dd0AUOlTbkGEuk85vxLAK5QbuytC3R2j3HoAjZSbFxrmKTcCoJdSk0LLJKV6gSaPMqNTQsvUKGW8JrxKqUWhaZFSeWyh1LTQNE2pHF6mzOy40DQ+S5mLimJcENoKlOnBWsr8KbRNUGYt5LXgd6HtD3lNQIoyN4S2G5RJIUOZm0LbTcqsBqVmhLYZSlkPsP4VWf+Rrd+m1v9o9h8Vv5p42C1R5qL1x7WRglOgVN52yfwNOBu76P+lLPoYidu23KPciIHGa07ZeIW1jvcNtI7q5vexCPGYCmf+m/Y9a3sAwQ5bI9T7ukPgPcn9GToEao+xk1OixJT+GIsvNAbx6eAgPq0xiF+KtkpYKhRXCQ8eFFcJhSWGu3rZ8jJkCM8kz9K4TUnrC6mAgzTsB9tLwQ2W15qfosQ2GrQNpZr7aczbzVjBZsvLcaC1g0bsbIVEnU8DOr6H1KDH2LwtUBi0/JII6Dxm9zUXkH+XMWzfh1Dte1i2Pe3QkC77Zel7aehpO8wyHG6Dtt0NjKxhN6I4uSli/TqJiJJDUQ4NDCURXTrXRy1XcumyD24M+AzhD1RXIIZsl/LoyZmurJHDM7s8lvB2FQ/PmPJ6PseAXP5HGMYAAC7ABbgAF+ACXIALcAEuwAW4ABfgAlyAC3ABLsAFuID/d8Cx4NEt8/byOf0wLnis8zjMq9/Kp7bWw4JOj8u8TlhRl+G/Mp2wpOX48GffvvZ1CyL4B53LAS6zb08EAAAAAElFTkSuQmCC";
+  var MapType = /* @__PURE__ */ ((MapType2) => {
+    MapType2["QQ"] = "qq";
+    MapType2["GOOGLE"] = "google";
+    MapType2["AMAP"] = "AMap";
+    MapType2["BMAP"] = "BMapGL";
+    MapType2["UNKNOWN"] = "";
+    return MapType2;
+  })(MapType || {});
+  var mapInfo = null;
+  function parseMapInfo(mapConfig) {
+    if (mapConfig.bMapKey) {
+      return {
+        type: "BMapGL",
+        key: mapConfig.bMapKey
+      };
+    }
+    if (mapConfig.qqMapKey) {
+      return {
+        type: "qq",
+        key: mapConfig.qqMapKey
+      };
+    }
+    if (mapConfig.googleMapKey) {
+      return {
+        type: "google",
+        key: mapConfig.googleMapKey
+      };
+    }
+    if (mapConfig.aMapKey) {
+      return {
+        type: "AMap",
+        key: mapConfig.aMapKey,
+        securityJsCode: mapConfig.aMapSecurityJsCode,
+        serviceHost: mapConfig.aMapServiceHost
+      };
+    }
+    return {
+      type: "",
+      key: ""
+    };
+  }
+  function getMapInfo() {
+    return __async(this, null, function* () {
+      if (mapInfo) {
+        return mapInfo;
+      }
+      return new Promise((resolve) => {
+        UniViewJSBridge.invokeServiceMethod("getMapConfig", {}, (res) => {
+          mapInfo = parseMapInfo(res);
+          resolve(mapInfo);
+        });
+      });
+    });
+  }
+  var IS_AMAP = false;
+  var hasGetIsAMap = false;
+  var getIsAMap = () => {
+    if (hasGetIsAMap) {
+      return IS_AMAP;
+    } else {
+      hasGetIsAMap = true;
+      return IS_AMAP = (mapInfo == null ? void 0 : mapInfo.type) === "AMap";
+    }
+  };
+  var getIsBMap = () => {
+    return (mapInfo == null ? void 0 : mapInfo.type) === "BMapGL";
+  };
+  var props$7 = {
+    id: {
+      type: [Number, String],
+      default: ""
+    },
+    latitude: {
+      type: [Number, String],
+      require: true
+    },
+    longitude: {
+      type: [Number, String],
+      require: true
+    },
+    title: {
+      type: String,
+      default: ""
+    },
+    iconPath: {
+      type: String,
+      require: true
+    },
+    rotate: {
+      type: [Number, String],
+      default: 0
+    },
+    alpha: {
+      type: [Number, String],
+      default: 1
+    },
+    width: {
+      type: [Number, String],
+      default: ""
+    },
+    height: {
+      type: [Number, String],
+      default: ""
+    },
+    callout: {
+      type: Object,
+      default: null
+    },
+    label: {
+      type: Object,
+      default: null
+    },
+    anchor: {
+      type: Object,
+      default: null
+    },
+    clusterId: {
+      type: [Number, String],
+      default: ""
+    },
+    customCallout: {
+      type: Object,
+      default: null
+    },
+    ariaLabel: {
+      type: String,
+      default: ""
+    }
+  };
+  function useMarkerLabelStyle(id2) {
+    var className = "uni-map-marker-label-" + id2;
+    var styleEl = document.createElement("style");
+    styleEl.id = className;
+    document.head.appendChild(styleEl);
+    onUnmounted(() => {
+      styleEl.remove();
+    });
+    return function updateMarkerLabelStyle(style) {
+      var newStyle = Object.assign({}, style, {
+        position: "absolute",
+        top: "70px",
+        borderStyle: "solid"
+      });
+      var div = document.createElement("div");
+      Object.keys(newStyle).forEach((key2) => {
+        div.style[key2] = newStyle[key2] || "";
+      });
+      styleEl.innerText = ".".concat(className, "{").concat(div.getAttribute("style"), "}");
+      return className;
+    };
+  }
+  const MapMarker = /* @__PURE__ */ defineSystemComponent({
+    name: "MapMarker",
+    props: props$7,
+    setup(props2) {
+      var id2 = String(!isNaN(Number(props2.id)) ? props2.id : "");
+      var onMapReady = inject("onMapReady");
+      var updateMarkerLabelStyle = useMarkerLabelStyle(id2);
+      var marker;
+      function removeMarker() {
+        if (marker) {
+          if (marker.label && "setMap" in marker.label) {
+            marker.label.setMap(null);
+          }
+          if (marker.callout) {
+            removeMarkerCallout(marker.callout);
+          }
+          marker.setMap(null);
+        }
+      }
+      function removeMarkerCallout(callout) {
+        if (getIsAMap()) {
+          callout.removeAMapText();
+        } else {
+          callout.setMap(null);
+        }
+      }
+      onMapReady((map, maps2, trigger2) => {
+        function updateMarker(option) {
+          var title = option.title;
+          var position;
+          if (getIsAMap()) {
+            position = new maps2.LngLat(option.longitude, option.latitude);
+          } else if (getIsBMap()) {
+            position = new maps2.Point(option.longitude, option.latitude);
+          } else {
+            position = new maps2.LatLng(option.latitude, option.longitude);
+          }
+          var img = new Image();
+          var imgHeight = 0;
+          img.onload = /* @__PURE__ */ _asyncToGenerator(function* () {
+            var anchor = option.anchor || {};
+            var icon;
+            var w;
+            var h2;
+            var top;
+            var x = typeof anchor.x === "number" ? anchor.x : 0.5;
+            var y = typeof anchor.y === "number" ? anchor.y : 1;
+            if (option.iconPath && (option.width || option.height)) {
+              w = option.width || img.width / img.height * option.height;
+              h2 = option.height || img.height / img.width * option.width;
+            } else {
+              w = img.width / 2;
+              h2 = img.height / 2;
+            }
+            imgHeight = h2;
+            top = h2 - (h2 - y * h2);
+            if ("MarkerImage" in maps2) {
+              icon = new maps2.MarkerImage(img.src, null, null, new maps2.Point(x * w, y * h2), new maps2.Size(w, h2));
+            } else if ("Icon" in maps2) {
+              icon = new maps2.Icon({
+                image: img.src,
+                size: new maps2.Size(w, h2),
+                imageSize: new maps2.Size(w, h2),
+                imageOffset: new maps2.Pixel(x * w, y * h2)
+              });
+            } else {
+              icon = {
+                url: img.src,
+                anchor: new maps2.Point(x, y),
+                size: new maps2.Size(w, h2)
+              };
+            }
+            if (getIsBMap()) {
+              marker = new maps2.Marker(new maps2.Point(position.lng, position.lat));
+              map.addOverlay(marker);
+            } else {
+              marker.setPosition(position);
+              marker.setIcon(icon);
+            }
+            if ("setRotation" in marker) {
+              marker.setRotation(option.rotate || 0);
+            }
+            var labelOpt = option.label || {};
+            if ("label" in marker) {
+              marker.label.setMap(null);
+              delete marker.label;
+            }
+            var label;
+            if (labelOpt.content) {
+              var labelStyle = {
+                borderColor: labelOpt.borderColor,
+                borderWidth: (Number(labelOpt.borderWidth) || 0) + "px",
+                padding: (Number(labelOpt.padding) || 0) + "px",
+                borderRadius: (Number(labelOpt.borderRadius) || 0) + "px",
+                backgroundColor: labelOpt.bgColor,
+                color: labelOpt.color,
+                fontSize: (labelOpt.fontSize || 14) + "px",
+                lineHeight: (labelOpt.fontSize || 14) + "px",
+                marginLeft: (Number(labelOpt.anchorX || labelOpt.x) || 0) + "px",
+                marginTop: (Number(labelOpt.anchorY || labelOpt.y) || 0) + "px"
+              };
+              if ("Label" in maps2) {
+                label = new maps2.Label({
+                  position,
+                  map,
+                  clickable: false,
+                  content: labelOpt.content,
+                  style: labelStyle
+                });
+                marker.label = label;
+              } else if ("setLabel" in marker) {
+                if (getIsAMap()) {
+                  var content = '<div style="\n                  margin-left:'.concat(labelStyle.marginLeft, ";\n                  margin-top:").concat(labelStyle.marginTop, ";\n                  padding:").concat(labelStyle.padding, ";\n                  background-color:").concat(labelStyle.backgroundColor, ";\n                  border-radius:").concat(labelStyle.borderRadius, ";\n                  line-height:").concat(labelStyle.lineHeight, ";\n                  color:").concat(labelStyle.color, ";\n                  font-size:").concat(labelStyle.fontSize, ';\n\n                  ">\n                  ').concat(labelOpt.content, "\n                <div>");
+                  marker.setLabel({
+                    content,
+                    direction: "bottom-right"
+                  });
+                } else {
+                  var className = updateMarkerLabelStyle(labelStyle);
+                  marker.setLabel({
+                    text: labelOpt.content,
+                    color: labelStyle.color,
+                    fontSize: labelStyle.fontSize,
+                    className
+                  });
+                }
+              }
+            }
+            var calloutOpt = option.callout || {};
+            var callout = marker.callout;
+            var calloutStyle;
+            if (calloutOpt.content || title) {
+              if (getIsAMap() && calloutOpt.content) {
+                calloutOpt.content = calloutOpt.content.replaceAll("\n", "<br/>");
+              }
+              var boxShadow = "0px 0px 3px 1px rgba(0,0,0,0.5)";
+              var offsetY = -imgHeight / 2;
+              if (option.width || option.height) {
+                offsetY += 14 - imgHeight / 2;
+              }
+              calloutStyle = calloutOpt.content ? {
+                position,
+                map,
+                top,
+                // handle AMap callout offset
+                offsetY,
+                content: calloutOpt.content,
+                color: calloutOpt.color,
+                fontSize: calloutOpt.fontSize,
+                borderRadius: calloutOpt.borderRadius,
+                bgColor: calloutOpt.bgColor,
+                padding: calloutOpt.padding,
+                boxShadow: calloutOpt.boxShadow || boxShadow,
+                display: calloutOpt.display
+              } : {
+                position,
+                map,
+                top,
+                // handle AMap callout offset
+                offsetY,
+                content: title,
+                boxShadow
+              };
+              if (callout) {
+                callout.setOption(calloutStyle);
+              } else {
+                if (getIsAMap()) {
+                  var callback = (id3) => {
+                    if (id3 !== "") {
+                      trigger2("callouttap", {}, {
+                        markerId: Number(id3)
+                      });
+                    }
+                  };
+                  callout = marker.callout = new maps2.Callout(calloutStyle, callback);
+                } else {
+                  callout = marker.callout = new maps2.Callout(calloutStyle);
+                  callout.div.onclick = function($event) {
+                    if (id2 !== "") {
+                      trigger2("callouttap", $event, {
+                        markerId: Number(id2)
+                      });
+                    }
+                    $event.stopPropagation();
+                    $event.preventDefault();
+                  };
+                  var mapInfo2 = yield getMapInfo();
+                  if (mapInfo2.type === MapType.GOOGLE) {
+                    callout.div.ontouchstart = function($event) {
+                      $event.stopPropagation();
+                    };
+                    callout.div.onpointerdown = function($event) {
+                      $event.stopPropagation();
+                    };
+                  }
+                }
+              }
+            } else {
+              if (callout) {
+                removeMarkerCallout(callout);
+                delete marker.callout;
+              }
+            }
+          });
+          if (option.iconPath) {
+            img.src = getRealPath(option.iconPath);
+          } else {
+            console.error("Marker.iconPath is required.");
+          }
+        }
+        function addMarker(props3) {
+          if (!getIsBMap()) {
+            marker = new maps2.Marker({
+              map,
+              flat: true,
+              autoRotation: false
+            });
+          }
+          updateMarker(props3);
+          var MapsEvent = maps2.event || maps2.Event;
+          if (getIsBMap())
+            ;
+          else {
+            MapsEvent.addListener(marker, "click", () => {
+              var callout = marker.callout;
+              if (callout && !callout.alwaysVisible) {
+                if (getIsAMap()) {
+                  callout.visible = !callout.visible;
+                  if (callout.visible) {
+                    marker.callout.createAMapText();
+                  } else {
+                    marker.callout.removeAMapText();
+                  }
+                } else {
+                  callout.set("visible", !callout.visible);
+                  if (callout.visible) {
+                    var div = callout.div;
+                    var parent = div.parentNode;
+                    parent.removeChild(div);
+                    parent.appendChild(div);
+                  }
+                }
+              }
+              if (id2) {
+                trigger2("markertap", {}, {
+                  markerId: Number(id2),
+                  latitude: props3.latitude,
+                  longitude: props3.longitude
+                });
+              }
+            });
+          }
+        }
+        addMarker(props2);
+        watch(props2, updateMarker);
+      });
+      if (id2) {
+        var addMapChidlContext = inject("addMapChidlContext");
+        var removeMapChidlContext = inject("removeMapChidlContext");
+        var context = {
+          id: id2,
+          translate(data) {
+            onMapReady((map, maps2, trigger2) => {
+              var destination = data.destination;
+              var duration = data.duration;
+              var autoRotate = !!data.autoRotate;
+              var rotate = Number(data.rotate) || 0;
+              var rotation = 0;
+              if ("getRotation" in marker) {
+                rotation = marker.getRotation();
+              }
+              var a2 = marker.getPosition();
+              var b = new maps2.LatLng(destination.latitude, destination.longitude);
+              var distance2 = maps2.geometry.spherical.computeDistanceBetween(a2, b) / 1e3;
+              var time = (typeof duration === "number" ? duration : 1e3) / (1e3 * 60 * 60);
+              var speed = distance2 / time;
+              var MapsEvent = maps2.event || maps2.Event;
+              var movingEvent = MapsEvent.addListener(marker, "moving", (e2) => {
+                var latLng = e2.latLng;
+                var label = marker.label;
+                if (label) {
+                  label.setPosition(latLng);
+                }
+                var callout = marker.callout;
+                if (callout) {
+                  callout.setPosition(latLng);
+                }
+              });
+              var event = MapsEvent.addListener(marker, "moveend", () => {
+                event.remove();
+                movingEvent.remove();
+                marker.lastPosition = a2;
+                marker.setPosition(b);
+                var label = marker.label;
+                if (label) {
+                  label.setPosition(b);
+                }
+                var callout = marker.callout;
+                if (callout) {
+                  callout.setPosition(b);
+                }
+                var cb = data.animationEnd;
+                if (isFunction(cb)) {
+                  cb();
+                }
+              });
+              var lastRtate = 0;
+              if (autoRotate) {
+                if (marker.lastPosition) {
+                  lastRtate = maps2.geometry.spherical.computeHeading(marker.lastPosition, a2);
+                }
+                rotate = maps2.geometry.spherical.computeHeading(a2, b) - lastRtate;
+              }
+              if ("setRotation" in marker) {
+                marker.setRotation(rotation + rotate);
+              }
+              if ("moveTo" in marker) {
+                marker.moveTo(b, speed);
+              } else {
+                marker.setPosition(b);
+                MapsEvent.trigger(marker, "moveend", {});
+              }
+            });
+          }
+        };
+        addMapChidlContext(context);
+        onUnmounted(() => removeMapChidlContext(context));
+      }
+      onUnmounted(removeMarker);
+      return () => {
+        return null;
+      };
+    }
+  });
+  function hexToRgba(hex) {
+    if (!hex) {
+      return {
+        r: 0,
+        g: 0,
+        b: 0,
+        a: 0
+      };
+    }
+    var tmpHex = hex.slice(1);
+    var tmpHexLen = tmpHex.length;
+    if (![3, 4, 6, 8].includes(tmpHexLen)) {
+      return {
+        r: 0,
+        g: 0,
+        b: 0,
+        a: 0
+      };
+    }
+    if (tmpHexLen === 3 || tmpHexLen === 4) {
+      tmpHex = tmpHex.replace(/(\w{1})/g, "$1$1");
+    }
+    var [sr, sg, sb, sa] = tmpHex.match(/(\w{2})/g);
+    var r = parseInt(sr, 16), g2 = parseInt(sg, 16), b = parseInt(sb, 16);
+    if (!sa) {
+      return {
+        r,
+        g: g2,
+        b,
+        a: 1
+      };
+    }
+    return {
+      r,
+      g: g2,
+      b,
+      a: ("0x100".concat(sa) - 65536) / 255
+    };
+  }
+  var props$6 = {
+    points: {
+      type: Array,
+      require: true
+    },
+    color: {
+      type: String,
+      default: "#000000"
+    },
+    width: {
+      type: [Number, String],
+      default: ""
+    },
+    dottedLine: {
+      type: [Boolean, String],
+      default: false
+    },
+    arrowLine: {
+      type: [Boolean, String],
+      default: false
+    },
+    arrowIconPath: {
+      type: String,
+      default: ""
+    },
+    borderColor: {
+      type: String,
+      default: "#000000"
+    },
+    borderWidth: {
+      type: [Number, String],
+      default: ""
+    },
+    colorList: {
+      type: Array,
+      default() {
+        return [];
+      }
+    },
+    level: {
+      type: String,
+      default: ""
+    }
+  };
+  const MapPolyline = /* @__PURE__ */ defineSystemComponent({
+    name: "MapPolyline",
+    props: props$6,
+    setup(props2) {
+      var onMapReady = inject("onMapReady");
+      var polyline;
+      var polylineBorder;
+      function removePolyline() {
+        if (polyline) {
+          polyline.setMap(null);
+        }
+        if (polylineBorder) {
+          polylineBorder.setMap(null);
+        }
+      }
+      onMapReady((map, maps2) => {
+        function updatePolyline(option) {
+          removePolyline();
+          addPolyline(option);
+        }
+        function addPolyline(option) {
+          var path = [];
+          option.points.forEach((point) => {
+            var pointPosition;
+            if (getIsAMap()) {
+              pointPosition = [point.longitude, point.latitude];
+            } else if (getIsBMap()) {
+              pointPosition = new maps2.Point(point.longitude, point.latitude);
+            } else {
+              pointPosition = new maps2.LatLng(point.latitude, point.longitude);
+            }
+            path.push(pointPosition);
+          });
+          var strokeWeight = Number(option.width) || 1;
+          var {
+            r: sr,
+            g: sg,
+            b: sb,
+            a: sa
+          } = hexToRgba(option.color);
+          var {
+            r: br,
+            g: bg,
+            b: bb,
+            a: ba
+          } = hexToRgba(option.borderColor);
+          var polylineOptions = {
+            map,
+            clickable: false,
+            path,
+            strokeWeight,
+            strokeColor: option.color || void 0,
+            strokeDashStyle: option.dottedLine ? "dash" : "solid"
+          };
+          var borderWidth = Number(option.borderWidth) || 0;
+          var polylineBorderOptions = {
+            map,
+            clickable: false,
+            path,
+            strokeWeight: strokeWeight + borderWidth * 2,
+            strokeColor: option.borderColor || void 0,
+            strokeDashStyle: option.dottedLine ? "dash" : "solid"
+          };
+          if ("Color" in maps2) {
+            polylineOptions.strokeColor = new maps2.Color(sr, sg, sb, sa);
+            polylineBorderOptions.strokeColor = new maps2.Color(br, bg, bb, ba);
+          } else {
+            polylineOptions.strokeColor = "rgb(".concat(sr, ", ").concat(sg, ", ").concat(sb, ")");
+            polylineOptions.strokeOpacity = sa;
+            polylineBorderOptions.strokeColor = "rgb(".concat(br, ", ").concat(bg, ", ").concat(bb, ")");
+            polylineBorderOptions.strokeOpacity = ba;
+          }
+          if (borderWidth) {
+            polylineBorder = new maps2.Polyline(polylineBorderOptions);
+          }
+          if (getIsBMap()) {
+            polyline = new maps2.Polyline(polylineOptions.path, polylineOptions);
+            map.addOverlay(polyline);
+          } else {
+            polyline = new maps2.Polyline(polylineOptions);
+          }
+        }
+        addPolyline(props2);
+        watch(props2, updatePolyline);
+      });
+      onUnmounted(removePolyline);
+      return () => {
+        return null;
+      };
+    }
+  });
+  var props$5 = {
+    latitude: {
+      type: [Number, String],
+      require: true
+    },
+    longitude: {
+      type: [Number, String],
+      require: true
+    },
+    color: {
+      type: String,
+      default: "#000000"
+    },
+    fillColor: {
+      type: String,
+      default: "#00000000"
+    },
+    radius: {
+      type: [Number, String],
+      require: true
+    },
+    strokeWidth: {
+      type: [Number, String],
+      default: ""
+    },
+    level: {
+      type: String,
+      default: ""
+    }
+  };
+  const MapCircle = /* @__PURE__ */ defineSystemComponent({
+    name: "MapCircle",
+    props: props$5,
+    setup(props2) {
+      var onMapReady = inject("onMapReady");
+      var circle;
+      function removeCircle() {
+        if (circle) {
+          circle.setMap(null);
+        }
+      }
+      onMapReady((map, maps2) => {
+        function updateCircle(option) {
+          removeCircle();
+          addCircle(option);
+        }
+        function addCircle(option) {
+          var center = getIsAMap() || getIsBMap() ? [option.longitude, option.latitude] : new maps2.LatLng(option.latitude, option.longitude);
+          var circleOptions = {
+            map,
+            center,
+            clickable: false,
+            radius: option.radius,
+            strokeWeight: Number(option.strokeWidth) || 1,
+            strokeDashStyle: "solid"
+          };
+          if (getIsBMap()) {
+            circleOptions.strokeColor = option.color;
+            circleOptions.fillColor = option.fillColor || "#000";
+            circleOptions.fillOpacity = 1;
+          } else {
+            var {
+              r: fr,
+              g: fg,
+              b: fb,
+              a: fa
+            } = hexToRgba(option.fillColor);
+            var {
+              r: sr,
+              g: sg,
+              b: sb,
+              a: sa
+            } = hexToRgba(option.color);
+            if ("Color" in maps2) {
+              circleOptions.fillColor = new maps2.Color(fr, fg, fb, fa);
+              circleOptions.strokeColor = new maps2.Color(sr, sg, sb, sa);
+            } else {
+              circleOptions.fillColor = "rgb(".concat(fr, ", ").concat(fg, ", ").concat(fb, ")");
+              circleOptions.fillOpacity = fa;
+              circleOptions.strokeColor = "rgb(".concat(sr, ", ").concat(sg, ", ").concat(sb, ")");
+              circleOptions.strokeOpacity = sa;
+            }
+          }
+          if (getIsBMap()) {
+            var pt = new maps2.Point(
+              // @ts-expect-error
+              circleOptions.center[0],
+              // @ts-expect-error
+              circleOptions.center[1]
+            );
+            circle = new maps2.Circle(pt, circleOptions.radius, circleOptions);
+            map.addOverlay(circle);
+          } else {
+            circle = new maps2.Circle(circleOptions);
+            if (getIsAMap()) {
+              map.add(circle);
+            }
+          }
+        }
+        addCircle(props2);
+        watch(props2, updateCircle);
+      });
+      onUnmounted(removeCircle);
+      return () => {
+        return null;
+      };
+    }
+  });
+  var props$4 = {
+    id: {
+      type: [Number, String],
+      default: ""
+    },
+    position: {
+      type: Object,
+      required: true
+    },
+    iconPath: {
+      type: String,
+      required: true
+    },
+    clickable: {
+      type: [Boolean, String],
+      default: ""
+    },
+    trigger: {
+      type: Function,
+      required: true
+    }
+  };
+  const MapControl = /* @__PURE__ */ defineSystemComponent({
+    name: "MapControl",
+    props: props$4,
+    setup(props2) {
+      var imgPath = computed(() => getRealPath(props2.iconPath));
+      var positionStyle = computed(() => {
+        var positionStyle2 = "top:".concat(props2.position.top || 0, "px;left:").concat(props2.position.left || 0, "px;");
+        if (props2.position.width) {
+          positionStyle2 += "width:".concat(props2.position.width, "px;");
+        }
+        if (props2.position.height) {
+          positionStyle2 += "height:".concat(props2.position.height, "px;");
+        }
+        return positionStyle2;
+      });
+      var handleClick = ($event) => {
+        if (props2.clickable) {
+          props2.trigger("controltap", $event, {
+            controlId: props2.id
+          });
+        }
+      };
+      return () => {
+        return createVNode("div", {
+          "class": "uni-map-control"
+        }, [createVNode("img", {
+          "src": imgPath.value,
+          "style": positionStyle.value,
+          "class": "uni-map-control-icon",
+          "onClick": handleClick
+        }, null, 12, ["src", "onClick"])]);
+      };
+    }
+  });
+  var anObject$1 = _anObject;
+  var aFunction$1 = _aFunction;
+  var SPECIES = _wksExports("species");
+  var _speciesConstructor = function(O, D) {
+    var C = anObject$1(O).constructor;
+    var S;
+    return C === void 0 || (S = anObject$1(C)[SPECIES]) == void 0 ? D : aFunction$1(S);
+  };
+  var _newPromiseCapability = {};
+  var aFunction = _aFunction;
+  function PromiseCapability(C) {
+    var resolve, reject;
+    this.promise = new C(function($$resolve, $$reject) {
+      if (resolve !== void 0 || reject !== void 0)
+        throw TypeError("Bad Promise constructor");
+      resolve = $$resolve;
+      reject = $$reject;
+    });
+    this.resolve = aFunction(resolve);
+    this.reject = aFunction(reject);
+  }
+  _newPromiseCapability.f = function(C) {
+    return new PromiseCapability(C);
+  };
+  var anObject = _anObject;
+  var isObject = _isObject;
+  var newPromiseCapability = _newPromiseCapability;
+  var _promiseResolve = function(C, x) {
+    anObject(C);
+    if (isObject(x) && x.constructor === C)
+      return x;
+    var promiseCapability = newPromiseCapability.f(C);
+    var resolve = promiseCapability.resolve;
+    resolve(x);
+    return promiseCapability.promise;
+  };
+  var $export = _export;
+  var core = _coreExports;
+  var global = _globalExports;
+  var speciesConstructor = _speciesConstructor;
+  var promiseResolve = _promiseResolve;
+  $export($export.P + $export.R, "Promise", {
+    "finally": function(onFinally) {
+      var C = speciesConstructor(this, core.Promise || global.Promise);
+      var isFunction2 = typeof onFinally == "function";
+      return this.then(isFunction2 ? function(x) {
+        return promiseResolve(C, onFinally()).then(function() {
+          return x;
+        });
+      } : onFinally, isFunction2 ? function(e2) {
+        return promiseResolve(C, onFinally()).then(function() {
+          throw e2;
+        });
+      } : onFinally);
+    }
+  });
+  function getLocation() {
+    var args = arguments.length > 0 && arguments[0] !== void 0 ? arguments[0] : {};
+    return new Promise((resolve, reject) => {
+      UniViewJSBridge.invokeServiceMethod("getLocation", args, (res) => {
+        if (res.latitude && res.longitude) {
+          resolve(res);
+        } else {
+          reject(res && res.errMsg || "getLocation:fail");
+        }
+      });
+    });
+  }
+  var CONTEXT_ID = "MAP_LOCATION";
+  const MapLocation = /* @__PURE__ */ defineSystemComponent({
+    name: "MapLocation",
+    setup() {
+      var state = reactive({
+        latitude: 0,
+        longitude: 0,
+        rotate: 0
+      });
+      {
+        var updateLocation = function() {
+          getLocation({
+            type: "gcj02",
+            isHighAccuracy: true
+          }).then((res) => {
+            state.latitude = res.latitude;
+            state.longitude = res.longitude;
+          }).finally(() => {
+            timer = setTimeout(updateLocation, 3e4);
+          });
+        }, removeLocation = function() {
+          if (timer) {
+            clearTimeout(timer);
+          }
+        };
+        var onMapReady = inject("onMapReady");
+        var timer;
+        onMapReady(updateLocation);
+        onUnmounted(removeLocation);
+        var addMapChidlContext = inject("addMapChidlContext");
+        var removeMapChidlContext = inject("removeMapChidlContext");
+        var context = {
+          id: CONTEXT_ID,
+          state
+        };
+        addMapChidlContext(context);
+        onUnmounted(() => removeMapChidlContext(context));
+      }
+      return () => {
+        return state.latitude ? createVNode(MapMarker, mergeProps({
+          "anchor": {
+            x: 0.5,
+            y: 0.5
+          },
+          "width": "44",
+          "height": "44",
+          "iconPath": ICON_PATH_ORIGIN
+        }, state), null, 16, ["iconPath"]) : null;
+      };
+    }
+  });
+  const props$3 = {
+    // 边框虚线，腾讯地图支持，google 高德 地图不支持，默认值为[0, 0] 为实线，非 [0, 0] 为虚线，H5 端无法像微信小程序一样控制虚线的间隔像素大小
+    dashArray: {
+      type: Array,
+      default: () => [0, 0]
+    },
+    // 经纬度数组，[{latitude: 0, longitude: 0}]
+    points: {
+      type: Array,
+      required: true
+    },
+    // 描边的宽度
+    strokeWidth: {
+      type: Number,
+      default: 1
+    },
+    // 描边的颜色，十六进制
+    strokeColor: {
+      type: String,
+      default: "#000000"
+    },
+    // 填充颜色，十六进制
+    fillColor: {
+      type: String,
+      default: "#00000000"
+    },
+    // 设置多边形 Z 轴数值
+    zIndex: {
+      type: Number,
+      default: 0
+    }
+  };
+  const MapPolygon = /* @__PURE__ */ defineSystemComponent({
+    name: "MapPolygon",
+    props: props$3,
+    setup(props2) {
+      var polygonIns;
+      var onMapReady = inject("onMapReady");
+      onMapReady((map, maps2, trigger2) => {
+        function drawPolygon() {
+          var {
+            points,
+            strokeWidth,
+            strokeColor,
+            dashArray,
+            fillColor,
+            zIndex
+          } = props2;
+          var path = points.map((item) => {
+            var {
+              latitude,
+              longitude
+            } = item;
+            if (getIsAMap()) {
+              return [longitude, latitude];
+            } else if (getIsBMap()) {
+              return new maps2.Point(longitude, latitude);
+            } else {
+              return new maps2.LatLng(latitude, longitude);
+            }
+          });
+          var {
+            r: fcR,
+            g: fcG,
+            b: fcB,
+            a: fcA
+          } = hexToRgba(fillColor);
+          var {
+            r: scR,
+            g: scG,
+            b: scB,
+            a: scA
+          } = hexToRgba(strokeColor);
+          var polygonOptions = {
+            //多边形是否可点击。
+            clickable: true,
+            //鼠标在多边形内的光标样式。
+            cursor: "crosshair",
+            //多边形是否可编辑。
+            editable: false,
+            // 地图实例，即要显示多边形的地图
+            // @ts-expect-error
+            map,
+            // 区域填充色
+            fillColor: "",
+            //多边形的路径，以经纬度坐标数组构成。
+            path,
+            // 区域边框
+            strokeColor: "",
+            //多边形的边框样式。实线是solid，虚线是dash。
+            strokeDashStyle: dashArray.some((item) => item > 0) ? "dash" : "solid",
+            //多边形的边框线宽。
+            strokeWeight: strokeWidth,
+            //多边形是否可见。
+            visible: true,
+            //多边形的zIndex值。
+            zIndex
+          };
+          if (maps2.Color) {
+            polygonOptions.fillColor = new maps2.Color(fcR, fcG, fcB, fcA);
+            polygonOptions.strokeColor = new maps2.Color(scR, scG, scB, scA);
+          } else {
+            polygonOptions.fillColor = "rgb(".concat(fcR, ", ").concat(fcG, ", ").concat(fcB, ")");
+            polygonOptions.fillOpacity = fcA;
+            polygonOptions.strokeColor = "rgb(".concat(scR, ", ").concat(scG, ", ").concat(scB, ")");
+            polygonOptions.strokeOpacity = scA;
+          }
+          if (polygonIns) {
+            polygonIns.setOptions(polygonOptions);
+            return;
+          }
+          if (getIsBMap()) {
+            polygonIns = new maps2.Polygon(polygonOptions.path, polygonOptions);
+            map.addOverlay(polygonIns);
+          } else {
+            polygonIns = new maps2.Polygon(polygonOptions);
+          }
+        }
+        drawPolygon();
+        watch(props2, drawPolygon);
+      });
+      onUnmounted(() => {
+        polygonIns.setMap(null);
+      });
+      return () => null;
+    }
+  });
+  var props$2 = {
+    id: {
+      type: String,
+      default: ""
+    },
+    latitude: {
+      type: [String, Number],
+      default: 0
+    },
+    longitude: {
+      type: [String, Number],
+      default: 0
+    },
+    scale: {
+      type: [String, Number],
+      default: 16
+    },
+    markers: {
+      type: Array,
+      default() {
+        return [];
+      }
+    },
+    includePoints: {
+      type: Array,
+      default() {
+        return [];
+      }
+    },
+    polyline: {
+      type: Array,
+      default() {
+        return [];
+      }
+    },
+    circles: {
+      type: Array,
+      default() {
+        return [];
+      }
+    },
+    controls: {
+      type: Array,
+      default() {
+        return [];
+      }
+    },
+    showLocation: {
+      type: [Boolean, String],
+      default: false
+    },
+    libraries: {
+      type: Array,
+      default() {
+        return [];
+      }
+    },
+    polygons: {
+      type: Array,
+      default: () => []
+    }
+  };
+  function getPoints(points) {
+    var newPoints = [];
+    if (isArray(points)) {
+      points.forEach((point) => {
+        if (point && point.latitude && point.longitude) {
+          newPoints.push({
+            latitude: point.latitude,
+            longitude: point.longitude
+          });
+        }
+      });
+    }
+    return newPoints;
+  }
+  function getAMapPosition(maps2, latitude, longitude) {
+    return new maps2.LngLat(longitude, latitude);
+  }
+  function getBMapPosition(maps2, latitude, longitude) {
+    return new maps2.Point(longitude, latitude);
+  }
+  function getGoogleOrQQMapPosition(maps2, latitude, longitude) {
+    return new maps2.LatLng(latitude, longitude);
+  }
+  function getMapPosition(maps2, latitude, longitude) {
+    if (getIsBMap()) {
+      return getBMapPosition(maps2, latitude, longitude);
+    } else if (getIsAMap()) {
+      return getAMapPosition(maps2, latitude, longitude);
+    } else {
+      return getGoogleOrQQMapPosition(maps2, latitude, longitude);
+    }
+  }
+  function getLat(latLng) {
+    if ("getLat" in latLng) {
+      return latLng.getLat();
+    } else {
+      if (getIsBMap()) {
+        return latLng.lat;
+      }
+      return latLng.lat();
+    }
+  }
+  function getLng(latLng) {
+    if ("getLng" in latLng) {
+      return latLng.getLng();
+    } else {
+      if (getIsBMap()) {
+        return latLng.lng;
+      }
+      return latLng.lng();
+    }
+  }
+  function useMap(props2, rootRef, emit2) {
+    var trigger2 = useCustomEvent(rootRef, emit2);
+    var mapRef = ref(null);
+    var maps2;
+    var map;
+    var state = reactive({
+      latitude: Number(props2.latitude),
+      longitude: Number(props2.longitude),
+      includePoints: getPoints(props2.includePoints)
+    });
+    var onMapReadyCallbacks = [];
+    var isMapReady;
+    function onMapReady(callback) {
+      if (isMapReady) {
+        callback(map, maps2, trigger2);
+      } else {
+        onMapReadyCallbacks.push(callback);
+      }
+    }
+    function emitMapReady() {
+      isMapReady = true;
+      onMapReadyCallbacks.forEach((callback) => callback(map, maps2, trigger2));
+      onMapReadyCallbacks.length = 0;
+    }
+    var isBoundsReady;
+    var onBoundsReadyCallbacks = [];
+    function onBoundsReady(callback) {
+      if (isBoundsReady) {
+        callback();
+      } else {
+        onMapReadyCallbacks.push(callback);
+      }
+    }
+    var contexts = {};
+    function addMapChidlContext(context) {
+      contexts[context.id] = context;
+    }
+    function removeMapChidlContext(context) {
+      delete contexts[context.id];
+    }
+    watch([() => props2.latitude, () => props2.longitude], (_ref) => {
+      var [latitudeVlaue, longitudeVlaue] = _ref;
+      var latitude = Number(latitudeVlaue);
+      var longitude = Number(longitudeVlaue);
+      if (latitude !== state.latitude || longitude !== state.longitude) {
+        state.latitude = latitude;
+        state.longitude = longitude;
+        if (map) {
+          var centerPosition = getMapPosition(maps2, state.latitude, state.longitude);
+          map.setCenter(centerPosition);
+        }
+      }
+    });
+    watch(() => props2.includePoints, (points) => {
+      state.includePoints = getPoints(points);
+      if (isBoundsReady) {
+        updateBounds();
+      }
+    }, {
+      deep: true
+    });
+    function emitBoundsReady() {
+      isBoundsReady = true;
+      onBoundsReadyCallbacks.forEach((callback) => callback());
+      onBoundsReadyCallbacks.length = 0;
+    }
+    function getMapInfo2() {
+      var center = map.getCenter();
+      return {
+        scale: map.getZoom(),
+        centerLocation: {
+          latitude: getLat(center),
+          longitude: getLng(center)
+        }
+      };
+    }
+    function updateCenter() {
+      var centerPosition = getMapPosition(maps2, state.latitude, state.longitude);
+      map.setCenter(centerPosition);
+    }
+    function updateBounds() {
+      if (getIsAMap()) {
+        var points = [];
+        state.includePoints.forEach((point) => {
+          points.push([point.longitude, point.latitude]);
+        });
+        var bounds = new maps2.Bounds(...points);
+        map.setBounds(bounds);
+      } else if (getIsBMap())
+        ;
+      else {
+        var _bounds = new maps2.LatLngBounds();
+        state.includePoints.forEach((_ref2) => {
+          var {
+            latitude,
+            longitude
+          } = _ref2;
+          var latLng = new maps2.LatLng(latitude, longitude);
+          _bounds.extend(latLng);
+        });
+        map.fitBounds(_bounds);
+      }
+    }
+    function initMap() {
+      var mapEl = mapRef.value;
+      var center = getMapPosition(maps2, state.latitude, state.longitude);
+      var event = maps2.event || maps2.Event;
+      var map2 = new maps2.Map(mapEl, {
+        center,
+        zoom: Number(props2.scale),
+        // scrollwheel: false,
+        disableDoubleClickZoom: true,
+        mapTypeControl: false,
+        zoomControl: false,
+        scaleControl: false,
+        panControl: false,
+        fullscreenControl: false,
+        streetViewControl: false,
+        keyboardShortcuts: false,
+        minZoom: 5,
+        maxZoom: 18,
+        draggable: true
+      });
+      if (getIsBMap()) {
+        map2.centerAndZoom(center, Number(props2.scale));
+        map2.enableScrollWheelZoom();
+        map2._printLog && map2._printLog("uniapp");
+      }
+      watch(() => props2.scale, (scale) => {
+        map2.setZoom(Number(scale) || 16);
+      });
+      onBoundsReady(() => {
+        if (state.includePoints.length) {
+          updateBounds();
+          updateCenter();
+        }
+      });
+      if (getIsBMap()) {
+        map2.addEventListener("click", () => {
+          trigger2("tap", {}, {});
+          trigger2("click", {}, {});
+        });
+        map2.addEventListener("dragstart", () => {
+          trigger2("regionchange", {}, {
+            type: "begin",
+            causedBy: "gesture"
+          });
+        });
+        map2.addEventListener("dragend", () => {
+          trigger2("regionchange", {}, extend({
+            type: "end",
+            causedBy: "drag"
+          }, getMapInfo2()));
+        });
+      } else {
+        var boundsChangedEvent = event.addListener(map2, "bounds_changed", () => {
+          boundsChangedEvent.remove();
+          emitBoundsReady();
+        });
+        event.addListener(map2, "click", () => {
+          trigger2("tap", {}, {});
+          trigger2("click", {}, {});
+        });
+        event.addListener(map2, "dragstart", () => {
+          trigger2("regionchange", {}, {
+            type: "begin",
+            causedBy: "gesture"
+          });
+        });
+        event.addListener(map2, "dragend", () => {
+          trigger2("regionchange", {}, extend({
+            type: "end",
+            causedBy: "drag"
+          }, getMapInfo2()));
+        });
+        var zoomChangedCallback = () => {
+          emit2("update:scale", map2.getZoom());
+          trigger2("regionchange", {}, extend({
+            type: "end",
+            causedBy: "scale"
+          }, getMapInfo2()));
+        };
+        event.addListener(map2, "zoom_changed", zoomChangedCallback);
+        event.addListener(map2, "zoomend", zoomChangedCallback);
+        event.addListener(map2, "center_changed", () => {
+          var center2 = map2.getCenter();
+          var latitude = getLat(center2);
+          var longitude = getLng(center2);
+          emit2("update:latitude", latitude);
+          emit2("update:longitude", longitude);
+        });
+      }
+      return map2;
+    }
+    try {
+      var id2 = useContextInfo();
+      useSubscribe(function(type) {
+        var data = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : {};
+        switch (type) {
+          case "getCenterLocation":
+            onMapReady(() => {
+              var center = map.getCenter();
+              callOptions(data, {
+                latitude: getLat(center),
+                longitude: getLng(center),
+                errMsg: "".concat(type, ":ok")
+              });
+            });
+            break;
+          case "moveToLocation":
+            {
+              var latitude = Number(data.latitude);
+              var longitude = Number(data.longitude);
+              if (!latitude || !longitude) {
+                var context = contexts[CONTEXT_ID];
+                if (context) {
+                  latitude = context.state.latitude;
+                  longitude = context.state.longitude;
+                }
+              }
+              if (latitude && longitude) {
+                state.latitude = latitude;
+                state.longitude = longitude;
+                if (map) {
+                  var centerPosition = getMapPosition(maps2, latitude, longitude);
+                  map.setCenter(centerPosition);
+                }
+                onMapReady(() => {
+                  callOptions(data, "".concat(type, ":ok"));
+                });
+              } else {
+                callOptions(data, "".concat(type, ":fail"));
+              }
+            }
+            break;
+          case "translateMarker":
+            onMapReady(() => {
+              var context2 = contexts[data.markerId];
+              if (context2) {
+                try {
+                  context2.translate(data);
+                } catch (error) {
+                  callOptions(data, "".concat(type, ":fail ").concat(error.message));
+                }
+                callOptions(data, "".concat(type, ":ok"));
+              } else {
+                callOptions(data, "".concat(type, ":fail not found"));
+              }
+            });
+            break;
+          case "includePoints":
+            state.includePoints = getPoints(data.includePoints);
+            if (isBoundsReady || getIsAMap()) {
+              updateBounds();
+            }
+            onBoundsReady(() => {
+              callOptions(data, "".concat(type, ":ok"));
+            });
+            break;
+          case "getRegion":
+            onBoundsReady(() => {
+              var latLngBounds = map.getBounds();
+              var southwest = latLngBounds.getSouthWest();
+              var northeast = latLngBounds.getNorthEast();
+              callOptions(data, {
+                southwest: {
+                  latitude: getLat(southwest),
+                  longitude: getLng(southwest)
+                },
+                northeast: {
+                  latitude: getLat(northeast),
+                  longitude: getLng(northeast)
+                },
+                errMsg: "".concat(type, ":ok")
+              });
+            });
+            break;
+          case "getScale":
+            onMapReady(() => {
+              callOptions(data, {
+                scale: map.getZoom(),
+                errMsg: "".concat(type, ":ok")
+              });
+            });
+            break;
+        }
+      }, id2, true);
+    } catch (error) {
+    }
+    onMounted(() => {
+      loadMaps(props2.libraries, (result) => {
+        maps2 = result;
+        map = initMap();
+        emitMapReady();
+        trigger2("updated", {}, {});
+      });
+    });
+    provide("onMapReady", onMapReady);
+    provide("addMapChidlContext", addMapChidlContext);
+    provide("removeMapChidlContext", removeMapChidlContext);
+    return {
+      state,
+      mapRef,
+      trigger: trigger2
+    };
+  }
+  const Map$1 = /* @__PURE__ */ defineBuiltInComponent({
+    name: "Map",
+    props: props$2,
+    emits: ["markertap", "labeltap", "callouttap", "controltap", "regionchange", "tap", "click", "updated", "update:scale", "update:latitude", "update:longitude"],
+    setup(props2, _ref3) {
+      var {
+        emit: emit2,
+        slots
+      } = _ref3;
+      var rootRef = ref(null);
+      var {
+        mapRef,
+        trigger: trigger2
+      } = useMap(props2, rootRef, emit2);
+      return () => {
+        return createVNode("uni-map", {
+          "ref": rootRef,
+          "id": props2.id
+        }, [createVNode("div", {
+          "ref": mapRef,
+          "style": "width: 100%; height: 100%; position: relative; overflow: hidden"
+        }, null, 512), props2.markers.map((item) => createVNode(MapMarker, mergeProps({
+          "key": item.id
+        }, item), null, 16)), props2.polyline.map((item) => createVNode(MapPolyline, item, null, 16)), props2.circles.map((item) => createVNode(MapCircle, item, null, 16)), props2.controls.map((item) => createVNode(MapControl, mergeProps(item, {
+          "trigger": trigger2
+        }), null, 16, ["trigger"])), props2.showLocation && createVNode(MapLocation, null, null), props2.polygons.map((item) => createVNode(MapPolygon, item, null, 16)), createVNode("div", {
+          "style": "position: absolute;top: 0;width: 100%;height: 100%;overflow: hidden;pointer-events: none;"
+        }, [slots.default && slots.default()])], 8, ["id"]);
+      };
+    }
+  });
+  class UniMap extends UniComponent {
+    constructor(id2, parentNodeId, refNodeId, nodeJson) {
+      super(id2, "uni-map", Map$1, parentNodeId, refNodeId, nodeJson, ".uni-map-slot");
+    }
+  }
+  function _isSlot(s) {
+    return typeof s === "function" || Object.prototype.toString.call(s) === "[object Object]" && !isVNode(s);
+  }
+  var props$1 = {
+    latitude: {
+      type: Number
+    },
+    longitude: {
+      type: Number
+    },
+    keyword: {
+      type: String,
+      default: ""
+    }
+  };
+  function distance(distance2) {
+    if (distance2 > 100) {
+      return "".concat(distance2 > 1e3 ? (distance2 / 1e3).toFixed(1) + "k" : distance2.toFixed(0), "m | ");
+    } else if (distance2 > 0) {
+      return "<100m | ";
+    } else {
+      return "";
+    }
+  }
+  function useState$1(props2) {
+    var state = reactive({
+      latitude: 0,
+      longitude: 0,
+      keyword: "",
+      searching: false
+    });
+    if (props2.keyword) {
+      state.keyword = props2.keyword;
+      state.searching = true;
+    }
+    function updatePosition() {
+      if (props2.latitude && props2.longitude) {
+        state.latitude = props2.latitude;
+        state.longitude = props2.longitude;
+      }
+    }
+    watch([() => props2.latitude, () => props2.longitude], updatePosition);
+    updatePosition();
+    return state;
+  }
+  function useList(state) {
+    var list2 = reactive([]);
+    var selectedIndexRef = ref(-1);
+    var selectedRef = computed(() => list2[selectedIndexRef.value]);
+    var listState = reactive({
+      loading: true,
+      // google map default
+      pageSize: 20,
+      pageIndex: 1,
+      hasNextPage: true,
+      nextPage: null,
+      selectedIndex: selectedIndexRef,
+      selected: selectedRef
+    });
+    var boundaryRef = computed(() => "nearby(".concat(state.latitude, ",").concat(state.longitude, ",1000,1)"));
+    function pushData(array) {
+      array.forEach((item) => {
+        list2.push({
+          name: item.title || item.name,
+          address: item.address,
+          distance: item._distance || item.distance,
+          latitude: item.location.lat,
+          longitude: item.location.lng
+        });
+      });
+    }
+    function getList() {
+      return _getList.apply(this, arguments);
+    }
+    function _getList() {
+      _getList = _asyncToGenerator(function* () {
+        listState.loading = true;
+        var mapInfo2 = yield getMapInfo();
+        if (mapInfo2.type === MapType.GOOGLE) {
+          if (listState.pageIndex > 1 && listState.nextPage) {
+            listState.nextPage();
+            return;
+          }
+          var service = new google.maps.places.PlacesService(document.createElement("div"));
+          service[state.keyword ? "textSearch" : "nearbySearch"]({
+            location: {
+              lat: state.latitude,
+              lng: state.longitude
+            },
+            query: state.keyword,
+            radius: 5e3
+          }, (results, state2, page) => {
+            listState.loading = false;
+            if (results && results.length) {
+              results.forEach((item) => {
+                list2.push({
+                  name: item.name || "",
+                  address: item.vicinity || item.formatted_address || "",
+                  distance: 0,
+                  latitude: item.geometry.location.lat(),
+                  longitude: item.geometry.location.lng()
+                });
+              });
+            }
+            if (page) {
+              if (!page.hasNextPage) {
+                listState.hasNextPage = false;
+              } else {
+                listState.nextPage = () => {
+                  page.nextPage();
+                };
+              }
+            }
+          });
+        } else if (mapInfo2.type === MapType.QQ) {
+          var url = state.keyword ? "https://apis.map.qq.com/ws/place/v1/search?output=jsonp&key=".concat(mapInfo2.key, "&boundary=").concat(boundaryRef.value, "&keyword=").concat(state.keyword, "&page_size=").concat(listState.pageSize, "&page_index=").concat(listState.pageIndex) : "https://apis.map.qq.com/ws/geocoder/v1/?output=jsonp&key=".concat(mapInfo2.key, "&location=").concat(state.latitude, ",").concat(state.longitude, "&get_poi=1&poi_options=page_size=").concat(listState.pageSize, ";page_index=").concat(listState.pageIndex);
+          getJSONP(url, {
+            callback: "callback"
+          }, (res) => {
+            listState.loading = false;
+            if (state.keyword && "data" in res && res.data.length) {
+              pushData(res.data);
+            } else if ("result" in res) {
+              var result = res.result;
+              if (result.pois) {
+                pushData(result.pois);
+              }
+            }
+            if (list2.length === listState.pageSize * listState.pageIndex) {
+              listState.hasNextPage = false;
+            }
+          }, () => {
+            listState.loading = false;
+          });
+        } else if (mapInfo2.type === MapType.AMAP) {
+          window.AMap.plugin("AMap.PlaceSearch", function() {
+            var placeSearch = new window.AMap.PlaceSearch({
+              city: "全国",
+              pageSize: 10,
+              pageIndex: listState.pageIndex
+            });
+            var keyword = state.keyword || "";
+            var radius = state.keyword ? 5e4 : 5e3;
+            placeSearch.searchNearBy(keyword, [state.longitude, state.latitude], radius, function(status, result) {
+              if (status === "error") {
+                console.error(result);
+              } else if (status === "no_data") {
+                listState.hasNextPage = false;
+              } else {
+                pushData(result.poiList.pois);
+              }
+            });
+            listState.loading = false;
+          });
+        }
+      });
+      return _getList.apply(this, arguments);
+    }
+    function loadMore() {
+      if (!listState.loading && listState.hasNextPage) {
+        listState.pageIndex++;
+        getList();
+      }
+    }
+    function reset() {
+      listState.selectedIndex = -1;
+      listState.pageIndex = 1;
+      listState.hasNextPage = true;
+      listState.nextPage = null;
+      list2.splice(0, list2.length);
+    }
+    return {
+      listState,
+      list: list2,
+      loadMore,
+      reset,
+      getList
+    };
+  }
+  const LocationPicker = /* @__PURE__ */ defineSystemComponent({
+    name: "LoctaionPicker",
+    props: props$1,
+    emits: ["close"],
+    setup(props2, _ref) {
+      var {
+        emit: emit2
+      } = _ref;
+      var rootRef = ref(null);
+      var trigger2 = useCustomEvent(rootRef, emit2);
+      initI18nChooseLocationMsgsOnce();
+      var {
+        t: t2
+      } = useI18n();
+      var state = useState$1(props2);
+      var {
+        list: list2,
+        listState,
+        loadMore,
+        reset,
+        getList
+      } = useList(state);
+      var search = debounce(() => {
+        reset();
+        if (state.keyword) {
+          getList();
+        }
+      }, 1e3, {
+        setTimeout,
+        clearTimeout
+      });
+      watch(() => state.searching, (val) => {
+        reset();
+        if (!val) {
+          getList();
+        }
+      });
+      function onInput(event) {
+        state.keyword = event.detail.value;
+        search();
+      }
+      function onChoose(e2) {
+        var event = new CustomEvent("close", {
+          detail: extend({}, listState.selected)
+        });
+        trigger2("close", event, event.detail);
+      }
+      function onBack(e2) {
+        var event = new CustomEvent("close", {
+          detail: {}
+        });
+        trigger2("close", event, event.detail);
+      }
+      function onRegionChange(event) {
+        var centerLocation = event.detail.centerLocation;
+        if (centerLocation) {
+          move(centerLocation);
+        }
+      }
+      function moveToLocation() {
+        getLocation({
+          type: "gcj02",
+          isHighAccuracy: true
+        }).then((_ref2) => {
+          var {
+            latitude,
+            longitude
+          } = _ref2;
+          move({
+            latitude,
+            longitude
+          });
+        });
+      }
+      function move(_ref3) {
+        var {
+          latitude,
+          longitude
+        } = _ref3;
+        state.latitude = latitude;
+        state.longitude = longitude;
+        reset();
+        getList();
+      }
+      if (!state.latitude || !state.longitude) {
+        moveToLocation();
+      }
+      return () => {
+        var content = list2.map((item, index2) => {
+          return createVNode("div", {
+            "key": index2,
+            "class": {
+              "list-item": true,
+              selected: listState.selectedIndex === index2
+            },
+            "onClick": () => {
+              listState.selectedIndex = index2;
+              state.latitude = item.latitude;
+              state.longitude = item.longitude;
+            }
+          }, [createSvgIconVNode(ICON_PATH_CONFIRM, "#007aff", 24), createVNode("div", {
+            "class": "list-item-title"
+          }, [item.name]), createVNode("div", {
+            "class": "list-item-detail"
+          }, [distance(item.distance), item.address])], 10, ["onClick"]);
+        });
+        if (listState.loading) {
+          content.unshift(createVNode("div", {
+            "class": "list-loading"
+          }, [createVNode("i", {
+            "class": "uni-loading"
+          }, null)]));
+        }
+        return createVNode("div", {
+          "class": "uni-system-choose-location",
+          "ref": rootRef
+        }, [createVNode(Map$1, {
+          "latitude": state.latitude,
+          "longitude": state.longitude,
+          "class": "map",
+          "show-location": true,
+          "libraries": ["places"],
+          "onUpdated": getList,
+          "onRegionchange": onRegionChange
+        }, {
+          default: () => [createVNode("div", {
+            "class": "map-location",
+            "style": 'background-image: url("'.concat(ICON_PATH_TARGET, '")')
+          }, null), createVNode("div", {
+            "class": "map-move",
+            "onClick": moveToLocation
+          }, [createSvgIconVNode(ICON_PATH_LOCTAION, "#000000", 24)], 8, ["onClick"])],
+          _: 1
+        }, 8, ["latitude", "longitude", "show-location", "onUpdated", "onRegionchange"]), createVNode("div", {
+          "class": "nav"
+        }, [createVNode("div", {
+          "class": "nav-btn back",
+          "onClick": onBack
+        }, [createSvgIconVNode(ICON_PATH_CLOSE, "#ffffff", 26)], 8, ["onClick"]), createVNode("div", {
+          "class": {
+            "nav-btn": true,
+            confirm: true,
+            disable: !listState.selected
+          },
+          "onClick": onChoose
+        }, [createSvgIconVNode(ICON_PATH_CONFIRM, "#ffffff", 26)], 10, ["onClick"])]), createVNode("div", {
+          "class": "menu"
+        }, [createVNode("div", {
+          "class": "search"
+        }, [createVNode(Input, {
+          "value": state.keyword,
+          "class": "search-input",
+          "placeholder": t2("uni.chooseLocation.search"),
+          "onFocus": () => state.searching = true,
+          "onInput": onInput
+        }, null, 8, ["value", "placeholder", "onFocus", "onInput"]), state.searching && createVNode("div", {
+          "class": "search-btn",
+          "onClick": () => {
+            state.searching = false;
+            state.keyword = "";
+          }
+        }, [t2("uni.chooseLocation.cancel")], 8, ["onClick"])]), createVNode(ScrollView, {
+          "scroll-y": true,
+          "class": "list",
+          "onScrolltolower": loadMore
+        }, _isSlot(content) ? content : {
+          default: () => [content],
+          _: 2
+        }, 8, ["scroll-y", "onScrolltolower"])])], 512);
+      };
+    }
+  });
+  class UniLocationPicker extends UniComponent {
+    constructor(id2, parentNodeId, refNodeId, nodeJson) {
+      super(id2, "uni-location-picker", LocationPicker, parentNodeId, refNodeId, nodeJson);
+    }
+  }
+  var ICON_PATH_NAV = "M28 17c-6.49396875 0-12.13721875 2.57040625-15 6.34840625V5.4105l6.29859375 6.29859375c0.387875 0.387875 1.02259375 0.387875 1.4105 0 0.387875-0.387875 0.387875-1.02259375 0-1.4105L12.77853125 2.36803125a0.9978125 0.9978125 0 0 0-0.0694375-0.077125c-0.1944375-0.1944375-0.45090625-0.291375-0.70721875-0.290875l-0.00184375-0.0000625-0.00184375 0.0000625c-0.2563125-0.0005-0.51278125 0.09640625-0.70721875 0.290875a0.9978125 0.9978125 0 0 0-0.0694375 0.077125l-7.930625 7.9305625c-0.387875 0.387875-0.387875 1.02259375 0 1.4105 0.387875 0.387875 1.02259375 0.387875 1.4105 0L11 5.4105V29c0 0.55 0.45 1 1 1s1-0.45 1-1c0-5.52284375 6.71571875-10 15-10 0.55228125 0 1-0.44771875 1-1 0-0.55228125-0.44771875-1-1-1z";
+  var props = {
+    latitude: {
+      type: Number
+    },
+    longitude: {
+      type: Number
+    },
+    scale: {
+      type: Number,
+      default: 18
+    },
+    name: {
+      type: String,
+      default: ""
+    },
+    address: {
+      type: String,
+      default: ""
+    }
+  };
+  function useState(props2) {
+    var state = reactive({
+      center: {
+        latitude: 0,
+        longitude: 0
+      },
+      marker: {
+        id: 1,
+        latitude: 0,
+        longitude: 0,
+        iconPath: ICON_PATH_TARGET,
+        width: 32,
+        height: 52
+      },
+      location: {
+        id: 2,
+        latitude: 0,
+        longitude: 0,
+        iconPath: ICON_PATH_ORIGIN,
+        width: 44,
+        height: 44
+      }
+    });
+    function updatePosition() {
+      if (props2.latitude && props2.longitude) {
+        state.center.latitude = props2.latitude;
+        state.center.longitude = props2.longitude;
+        state.marker.latitude = props2.latitude;
+        state.marker.longitude = props2.longitude;
+      }
+    }
+    watch([() => props2.latitude, () => props2.longitude], updatePosition);
+    updatePosition();
+    return state;
+  }
+  const LocationView = /* @__PURE__ */ defineSystemComponent({
+    name: "LocationView",
+    props,
+    emits: ["close"],
+    setup(props2, _ref) {
+      var {
+        emit: emit2
+      } = _ref;
+      var rootRef = ref(null);
+      var trigger2 = useCustomEvent(rootRef, emit2);
+      var state = useState(props2);
+      getLocation({
+        type: "gcj02",
+        isHighAccuracy: true
+      }).then((_ref2) => {
+        var {
+          latitude,
+          longitude
+        } = _ref2;
+        state.location.latitude = latitude;
+        state.location.longitude = longitude;
+      });
+      function onRegionChange(event) {
+        var centerLocation = event.detail.centerLocation;
+        if (centerLocation) {
+          state.center.latitude = centerLocation.latitude;
+          state.center.longitude = centerLocation.longitude;
+        }
+      }
+      function nav() {
+        return _nav.apply(this, arguments);
+      }
+      function _nav() {
+        _nav = _asyncToGenerator(function* () {
+          var mapInfo2 = yield getMapInfo();
+          var url = "";
+          if (mapInfo2.type === MapType.GOOGLE) {
+            var origin = state.location.latitude ? "&origin=".concat(state.location.latitude, "%2C").concat(state.location.longitude) : "";
+            url = "https://www.google.com/maps/dir/?api=1".concat(origin, "&destination=").concat(props2.latitude, "%2C").concat(props2.longitude);
+          } else if (mapInfo2.type === MapType.QQ) {
+            var fromcoord = state.location.latitude ? "&fromcoord=".concat(state.location.latitude, "%2C").concat(state.location.longitude, "&from=").concat(encodeURIComponent("我的位置")) : "";
+            url = "https://apis.map.qq.com/uri/v1/routeplan?type=drive".concat(fromcoord, "&tocoord=").concat(props2.latitude, "%2C").concat(props2.longitude, "&to=").concat(encodeURIComponent(props2.name || "目的地"), "&ref=").concat(mapInfo2.key);
+          } else if (mapInfo2.type === MapType.AMAP) {
+            var from = state.location.latitude ? "from=".concat(state.location.longitude, ",").concat(state.location.latitude, ",").concat(encodeURIComponent("我的位置"), "&") : "";
+            url = "https://uri.amap.com/navigation?".concat(from, "to=").concat(props2.longitude, ",").concat(props2.latitude, ",").concat(encodeURIComponent(props2.name || "目的地"));
+          }
+          window.open(url);
+        });
+        return _nav.apply(this, arguments);
+      }
+      function back(e2) {
+        var event = new CustomEvent("close", {});
+        trigger2("close", event, event.detail);
+      }
+      function setCenter(_ref3) {
+        var {
+          latitude,
+          longitude
+        } = _ref3;
+        state.center.latitude = latitude;
+        state.center.longitude = longitude;
+      }
+      return () => {
+        return createVNode("div", {
+          "class": "uni-system-open-location",
+          "ref": rootRef
+        }, [createVNode(Map$1, {
+          "latitude": state.center.latitude,
+          "longitude": state.center.longitude,
+          "class": "map",
+          "markers": [state.marker, state.location],
+          "onRegionchange": onRegionChange
+        }, {
+          default: () => [createVNode("div", {
+            "class": "map-move",
+            "onClick": () => setCenter(state.location)
+          }, [createSvgIconVNode(ICON_PATH_LOCTAION, "#000000", 24)], 8, ["onClick"])]
+        }, 8, ["latitude", "longitude", "markers", "onRegionchange"]), createVNode("div", {
+          "class": "info"
+        }, [createVNode("div", {
+          "class": "name",
+          "onClick": () => setCenter(state.marker)
+        }, [props2.name], 8, ["onClick"]), createVNode("div", {
+          "class": "address",
+          "onClick": () => setCenter(state.marker)
+        }, [props2.address], 8, ["onClick"]), createVNode("div", {
+          "class": "nav",
+          "onClick": nav
+        }, [createSvgIconVNode(ICON_PATH_NAV, "#ffffff", 26)], 8, ["onClick"])]), createVNode("div", {
+          "class": "nav-btn-back",
+          "onClick": back
+        }, [createSvgIconVNode(ICON_PATH_BACK, "#ffffff", 26)], 8, ["onClick"])], 512);
+      };
+    }
+  });
+  class UniLocationView extends UniComponent {
+    constructor(id2, parentNodeId, refNodeId, nodeJson) {
+      super(id2, "uni-location-view", LocationView, parentNodeId, refNodeId, nodeJson);
+    }
+  }
   var BuiltInComponents = {
     "#text": UniTextNode,
     "#comment": UniComment,
@@ -22586,7 +25889,7 @@
     INPUT: UniInput,
     TEXTAREA: UniTextarea,
     FORM: UniForm,
-    // EDITOR: UniEditor,
+    EDITOR: UniEditor,
     "PICKER-VIEW": UniPickerView,
     "PICKER-VIEW-COLUMN": UniPickerViewColumn,
     "SCROLL-VIEW": UniScrollView,
@@ -22597,7 +25900,11 @@
     ICON: UniIcon,
     "WEB-VIEW": UniWebView,
     CANVAS: UniCanvas,
-    VIDEO: UniVideo
+    VIDEO: UniVideo,
+    PICKER: UniPicker,
+    MAP: UniMap,
+    "LOCATION-PICKER": UniLocationPicker,
+    "LOCATION-VIEW": UniLocationView
   };
   function createElement(id2, tag, parentNodeId, refNodeId) {
     var nodeJson = arguments.length > 4 && arguments[4] !== void 0 ? arguments[4] : {};
@@ -22810,25 +26117,25 @@
       return window.__$__(vm).$;
     }
   }
-  function getRootInfo(fields) {
+  function getRootInfo(fields2) {
     var info = {};
-    if (fields.id) {
+    if (fields2.id) {
       info.id = "";
     }
-    if (fields.dataset) {
+    if (fields2.dataset) {
       info.dataset = {};
     }
-    if (fields.rect) {
+    if (fields2.rect) {
       info.left = 0;
       info.right = 0;
       info.top = 0;
       info.bottom = 0;
     }
-    if (fields.size) {
+    if (fields2.size) {
       info.width = document.documentElement.clientWidth;
       info.height = document.documentElement.clientHeight;
     }
-    if (fields.scrollOffset) {
+    if (fields2.scrollOffset) {
       var documentElement = document.documentElement;
       var body = document.body;
       info.scrollLeft = documentElement.scrollLeft || body.scrollLeft || 0;
@@ -22838,45 +26145,45 @@
     }
     return info;
   }
-  function getNodeInfo(el, fields) {
+  function getNodeInfo(el, fields2) {
     var info = {};
     var {
       top,
       topWindowHeight
     } = getWindowOffset();
-    if (fields.node) {
-      var tagName = el.tagName.split("-")[1];
+    if (fields2.node) {
+      var tagName = el.tagName.replace("uni-", "");
       if (tagName) {
         info.node = el.querySelector(tagName);
       }
     }
-    if (fields.id) {
+    if (fields2.id) {
       info.id = el.id;
     }
-    if (fields.dataset) {
+    if (fields2.dataset) {
       info.dataset = getCustomDataset(el);
     }
-    if (fields.rect || fields.size) {
+    if (fields2.rect || fields2.size) {
       var rect = el.getBoundingClientRect();
-      if (fields.rect) {
+      if (fields2.rect) {
         info.left = rect.left;
         info.right = rect.right;
         info.top = rect.top - top - topWindowHeight;
         info.bottom = rect.bottom - top - topWindowHeight;
       }
-      if (fields.size) {
+      if (fields2.size) {
         info.width = rect.width;
         info.height = rect.height;
       }
     }
-    if (isArray(fields.properties)) {
-      fields.properties.forEach((prop) => {
+    if (isArray(fields2.properties)) {
+      fields2.properties.forEach((prop) => {
         prop = prop.replace(/-([a-z])/g, function(e2, t2) {
           return t2.toUpperCase();
         });
       });
     }
-    if (fields.scrollOffset) {
+    if (fields2.scrollOffset) {
       if (el.tagName === "UNI-SCROLL-VIEW") {
         var scroll = el.children[0].children[0];
         info.scrollLeft = scroll.scrollLeft;
@@ -22890,13 +26197,13 @@
         info.scrollWidth = 0;
       }
     }
-    if (isArray(fields.computedStyle)) {
+    if (isArray(fields2.computedStyle)) {
       var sytle = getComputedStyle(el);
-      fields.computedStyle.forEach((name) => {
+      fields2.computedStyle.forEach((name) => {
         info[name] = sytle[name];
       });
     }
-    if (fields.context) {
+    if (fields2.context) {
       info.contextInfo = getContextInfo(el);
     }
     return info;
@@ -22919,7 +26226,7 @@
     };
     return matches2.call(element, selectors);
   }
-  function getNodesInfo(pageVm2, component, selector, single, fields) {
+  function getNodesInfo(pageVm2, component, selector, single, fields2) {
     var selfElement = findElm(component, pageVm2);
     var parentElement = selfElement.parentElement;
     if (!parentElement) {
@@ -22932,7 +26239,7 @@
     if (single) {
       var node = maybeFragment ? parentElement.querySelector(selector) : matches(selfElement, selector) ? selfElement : selfElement.querySelector(selector);
       if (node) {
-        return getNodeInfo(node, fields);
+        return getNodeInfo(node, fields2);
       }
       return null;
     } else {
@@ -22940,11 +26247,11 @@
       var nodeList = (maybeFragment ? parentElement : selfElement).querySelectorAll(selector);
       if (nodeList && nodeList.length) {
         [].forEach.call(nodeList, (node2) => {
-          infos.push(getNodeInfo(node2, fields));
+          infos.push(getNodeInfo(node2, fields2));
         });
       }
       if (!maybeFragment && matches(selfElement, selector)) {
-        infos.unshift(getNodeInfo(selfElement, fields));
+        infos.unshift(getNodeInfo(selfElement, fields2));
       }
       return infos;
     }
@@ -22956,12 +26263,12 @@
         component,
         selector,
         single,
-        fields
+        fields: fields2
       } = _ref;
       if (component === null) {
-        result.push(getRootInfo(fields));
+        result.push(getRootInfo(fields2));
       } else {
-        result.push(getNodesInfo(page, component, selector, single, fields));
+        result.push(getNodesInfo(page, component, selector, single, fields2));
       }
     });
     callback(result);
@@ -23051,6 +26358,13 @@
       source,
       desc
     } = _ref;
+    if (source.startsWith('url("') || source.startsWith("url('")) {
+      source = "url('".concat(getRealPath(source.substring(5, source.length - 2)), "')");
+    } else if (source.startsWith("url(")) {
+      source = "url('".concat(getRealPath(source.substring(4, source.length - 1)), "')");
+    } else {
+      source = getRealPath(source);
+    }
     addFont(family, source, desc).then(() => {
       publish();
     }).catch((err2) => {
@@ -23107,6 +26421,9 @@
         return extend({
           getStyle: () => {
             return extend({}, harmonyChannel.invokeSync("getStyle"));
+          },
+          setSoftinputTemporary(options) {
+            harmonyChannel.invokeSync("setSoftinputTemporary", [options]);
           }
         }, harmonyChannel.invokeSync("currentWebview"));
       },

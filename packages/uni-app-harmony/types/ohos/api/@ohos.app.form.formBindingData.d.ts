@@ -38,7 +38,8 @@ declare namespace formBindingData {
      *
      * @param { Object | string } [obj] - Indicates the FormBindingData instance data.
      * @returns { FormBindingData } Returns the FormBindingData.
-     * @throws { BusinessError } 401 - If the input parameter is not valid parameter.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes:
+     *     1.Mandatory parameters are left unspecified; 2.Incorrect parameter types; 3.Parameter verification failed.
      * @syscap SystemCapability.Ability.Form
      * @since 9
      */
@@ -47,7 +48,8 @@ declare namespace formBindingData {
      *
      * @param { Object | string } [obj] - Indicates the FormBindingData instance data.
      * @returns { FormBindingData } Returns the FormBindingData.
-     * @throws { BusinessError } 401 - If the input parameter is not valid parameter.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes:
+     *     1.Mandatory parameters are left unspecified; 2.Incorrect parameter types; 3.Parameter verification failed.
      * @syscap SystemCapability.Ability.Form
      * @atomicservice
      * @since 11

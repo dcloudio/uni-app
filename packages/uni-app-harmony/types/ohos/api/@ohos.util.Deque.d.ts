@@ -201,7 +201,9 @@ declare class Deque<T> {
      * @param { Object } [thisArg] - thisArg
      * thisArg (Optional) The value to be used as this value for when callbackFn is called.
      * If thisArg is omitted, undefined is used as the this value.
-     * @throws { BusinessError } 401 - The type of parameters are invalid.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes:
+     * 1.Mandatory parameters are left unspecified;
+     * 2.Incorrect parameter types.
      * @throws { BusinessError } 10200011 - The forEach method cannot be bound.
      * @syscap SystemCapability.Utils.Lang
      * @since 8
@@ -215,7 +217,9 @@ declare class Deque<T> {
      * @param { Object } [thisArg] - thisArg
      * thisArg (Optional) The value to be used as this value for when callbackFn is called.
      * If thisArg is omitted, undefined is used as the this value.
-     * @throws { BusinessError } 401 - The type of parameters are invalid.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes:
+     * 1.Mandatory parameters are left unspecified;
+     * 2.Incorrect parameter types.
      * @throws { BusinessError } 10200011 - The forEach method cannot be bound.
      * @syscap SystemCapability.Utils.Lang
      * @crossplatform

@@ -13,6 +13,10 @@
  * limitations under the License.
  */
 /**
+ * @file
+ * @kit AbilityKit
+ */
+/**
  * Obtains configuration information about a overlay hap module.
  *
  * @typedef OverlayModuleInfo
