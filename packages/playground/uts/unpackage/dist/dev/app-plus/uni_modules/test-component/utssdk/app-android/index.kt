@@ -1,5 +1,5 @@
 @file:Suppress("UNCHECKED_CAST", "USELESS_CAST", "INAPPLICABLE_JVM_NAME", "UNUSED_ANONYMOUS_PARAMETER")
-package uts.modules.modules.testComponent;
+package uts.sdk.modules.testComponent;
 import android.animation.Animator;
 import android.text.TextUtils;
 import android.view.View;

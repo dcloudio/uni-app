@@ -1,5 +1,5 @@
 @file:Suppress("UNCHECKED_CAST", "USELESS_CAST", "INAPPLICABLE_JVM_NAME", "UNUSED_ANONYMOUS_PARAMETER")
-package uts.modules.modules.testUniPlugin;
+package uts.sdk.modules.testUniPlugin;
 import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;

@@ -1,6 +1,6 @@
-import { hasOwn } from '@vue/shared'
-import { existsSync, readFileSync, statSync } from 'fs'
+import { existsSync, readFileSync, readdirSync, statSync } from 'fs'
 import { basename, dirname, extname, join, relative, resolve } from 'path'
+import { hasOwn } from '@vue/shared'
 import {
   type BasicSourceMapConsumer,
   type IndexedSourceMapConsumer,
@@ -14,8 +14,16 @@ import {
   SourceMapConsumer as SourceMapConsumerSync,
 } from 'source-map-js'
 import { kotlinDir } from './kotlin'
-import { resolveUniAppXSourceMapPath } from './utils'
+import {
+  parseKotlinPackageWithPluginId,
+  resolveUniAppXSourceMapPath,
+} from './utils'
 import { kotlinSrcDir } from './uvue'
+import { once } from './shared'
+import {
+  parseFilenameByClassName,
+  updateUTSKotlinSourceMapManifestCache,
+} from './stacktrace/kotlin'
 
 const EXTNAME = {
   kotlin: '.kt',
@@ -27,27 +35,90 @@ const PLATFORM_DIR = {
   swift: 'app-ios',
 }
 
-export function resolveUniAppXSourceMapFile(
+const uniModulesUTSPackagePrefix = 'uts.sdk.modules.'
+
+const initUniModulesUTSKotlinSourceMapFiles = once(
+  (inputDir: string, outputDir: string) => {
+    const target = 'kotlin'
+    const sourceMapFiles = new Map<string, string>()
+    const uniModulesDir = resolve(inputDir, 'uni_modules')
+    if (existsSync(uniModulesDir)) {
+      readdirSync(uniModulesDir).forEach((dir) => {
+        if (existsSync(join(uniModulesDir, dir, 'utssdk'))) {
+          sourceMapFiles.set(
+            parseKotlinPackageWithPluginId(dir, true),
+            join(
+              outputDir,
+              '../.sourcemap/app',
+              'uni_modules',
+              dir,
+              'utssdk',
+              PLATFORM_DIR[target],
+              `index${EXTNAME[target]}.map`
+            )
+          )
+        }
+      })
+    }
+    return sourceMapFiles
+  }
+)
+
+export function resolveUTSSourceMapFile(
   target: 'kotlin', // | 'swift',
   filename: string,
   inputDir: string,
   outputDir: string,
   cacheDir?: string
 ) {
+  if (target !== 'kotlin') {
+    throw `only support kotlin, but got ${target}`
+  }
+
+  inputDir = normalizePath(inputDir)
+  outputDir = normalizePath(outputDir)
+  const kotlinRootOutDir = kotlinDir(outputDir)
+  const kotlinSrcOutDir = kotlinSrcDir(kotlinRootOutDir)
+
+  if (target === 'kotlin') {
+    // uts插件
+    if (filename.startsWith(uniModulesUTSPackagePrefix)) {
+      for (const [key, value] of initUniModulesUTSKotlinSourceMapFiles(
+        inputDir,
+        outputDir
+      )) {
+        if (filename.startsWith(key)) {
+          return value
+        }
+      }
+      throw `${filename} sourcemap not found`
+      // uni-app x 主项目
+    } else if (filename.startsWith('uni.')) {
+      updateUTSKotlinSourceMapManifestCache(
+        cacheDir || process.env.UNI_APP_X_CACHE_DIR
+      )
+      filename = resolve(
+        kotlinSrcOutDir,
+        parseFilenameByClassName(
+          filename.replace(filename.split('.', 2).join('.') + '.', '')
+        )
+      )
+    }
+  }
+
   if (cacheDir) {
     process.env.UNI_APP_X_CACHE_DIR = cacheDir
   }
   if (!process.env.UNI_APP_X_CACHE_DIR) {
     throw 'UNI_APP_X_CACHE_DIR is not set'
   }
-  if (target !== 'kotlin') {
-    throw `only support kotlin, but got ${target}`
-  }
-  inputDir = normalizePath(inputDir)
-  outputDir = normalizePath(outputDir)
   filename = normalizePath(filename)
-  const kotlinRootOutDir = kotlinDir(outputDir)
-  const kotlinSrcOutDir = kotlinSrcDir(kotlinRootOutDir)
+
+  if (filename.includes('/utssdk/')) {
+    // 大概率是插件
+    return resolveUTSPluginSourceMapFile(target, filename, inputDir, outputDir)
+  }
+
   // 如果是源文件，比如uvue,vue,uts等，则需要转换为kt文件路径
   const isSrcFile = filename.startsWith(inputDir)
   if (isSrcFile) {
@@ -71,11 +142,15 @@ export function resolveUniAppXSourceMapFile(
     }
   }
   if (isSrcFile) {
-    return resolveSourceMapFile(
+    const sourceMapFile = resolveSourceMapFile(
       'index.kt',
       resolveUniAppXSourceMapPath(kotlinDir(outputDir))
     )
+    if (sourceMapFile) {
+      return sourceMapFile
+    }
   }
+  throw `${filename} sourcemap not found`
 
   function resolveSourceMapFile(
     relativeFileName: string,
@@ -201,14 +276,14 @@ function resolveSource(
  * @param originalPosition
  * @returns
  */
-export function generatedPositionFor({
+export async function generatedPositionFor({
   sourceMapFile,
   filename,
   line,
   column,
   outputDir,
 }: PositionFor & { outputDir?: string }): Promise<
-  NullablePosition & { source: string | null }
+  NullablePosition & { source: string | null; relativeSource: string | null }
 > {
   return resolveSourceMapConsumer(sourceMapFile).then((consumer) => {
     const res = consumer.generatedPositionFor({
@@ -221,14 +296,30 @@ export function generatedPositionFor({
       bias: column === 0 ? BIAS.LEAST_UPPER_BOUND : BIAS.GREATEST_LOWER_BOUND,
     })
     let source: string | null = null
+    let relativeSource: string | null = null
     if (outputDir) {
       // 根据 sourceMapFile 和 outputDir，计算出生成后的文件路径
-      source = join(
-        outputDir,
-        relative(join(outputDir, '../.sourcemap/app'), sourceMapFile)
-      ).replace('.map', '')
+      const normalizedSourceMapFile = normalizePath(sourceMapFile)
+      const sourceMapRootDirs = [
+        normalizePath(join(outputDir, '../.sourcemap/app')),
+      ]
+      const kotlinOutDir = kotlinDir(outputDir)
+      if (kotlinOutDir) {
+        sourceMapRootDirs.push(
+          normalizePath(resolveUniAppXSourceMapPath(kotlinOutDir))
+        )
+      }
+      for (const sourceMapRootDir of sourceMapRootDirs) {
+        if (normalizedSourceMapFile.startsWith(sourceMapRootDir)) {
+          relativeSource = normalizePath(
+            relative(sourceMapRootDir, sourceMapFile).replace('.map', '')
+          )
+          source = join(outputDir, relativeSource)
+          break
+        }
+      }
     }
-    return Object.assign(res, { source })
+    return Object.assign(res, { source, relativeSource })
   })
 }
 
