@@ -259,7 +259,7 @@ function genAppHarmonyUniModules(inputDir: string, utsPlugins: Set<string>) {
           version: matchedStandaloneExtApi.version,
         })
         matchedStandaloneExtApi.apis?.forEach((apiName) => {
-          importCodes.push(`import { ${apiName} } '${harmonyModuleName}'`)
+          importCodes.push(`import { ${apiName} } from '${harmonyModuleName}'`)
           extApiCodes.push(`uni.${apiName} = ${apiName}`)
         })
       }
