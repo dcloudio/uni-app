@@ -10,7 +10,7 @@ export function getJSONP(
   success: Function,
   error: Function
 ) {
-  var js = document.createElement('script')
+  var js = document.createElement('script') as HTMLScriptElement
   var callbackKey = options.callback || 'callback'
   var callbackName = '__uni_jsonp_callback_' + index++
   var timeout = options.timeout || 30000

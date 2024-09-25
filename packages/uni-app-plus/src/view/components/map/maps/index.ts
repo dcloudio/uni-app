@@ -79,7 +79,7 @@ export async function loadMaps(
       handleAMapSecurityPolicy(mapInfo)
     }
 
-    const script = document.createElement('script')
+    const script = document.createElement('script') as HTMLScriptElement
     let src = getScriptBaseUrl(mapInfo.type)
 
     if (mapInfo.type === MapType.QQ) {

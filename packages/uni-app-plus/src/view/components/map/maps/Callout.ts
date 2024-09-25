@@ -126,7 +126,7 @@ export function createCallout(maps: QQMaps | GoogleMaps | AMap.NameSpace) {
         const map = option.map
         this.position = option.position
         this.index = 1
-        const div = (this.div = document.createElement('div'))
+        const div = (this.div = document.createElement('div') as HTMLDivElement)
         const divStyle = div.style
         divStyle.position = 'absolute'
         divStyle.whiteSpace = 'nowrap'
@@ -134,7 +134,9 @@ export function createCallout(maps: QQMaps | GoogleMaps | AMap.NameSpace) {
         divStyle.zIndex = '1'
         divStyle.boxShadow = option.boxShadow || 'none'
         divStyle.display = visible ? 'block' : 'none'
-        const triangle = (this.triangle = document.createElement('div'))
+        const triangle = (this.triangle = document.createElement(
+          'div'
+        ) as HTMLDivElement)
         triangle.setAttribute(
           'style',
           'position: absolute;white-space: nowrap;border-width: 4px;border-style: solid;border-color: #fff transparent transparent;border-image: initial;font-size: 12px;padding: 0px;background-color: transparent;width: 0px;height: 0px;transform: translate(-50%, 100%);left: 50%;bottom: 0;'
