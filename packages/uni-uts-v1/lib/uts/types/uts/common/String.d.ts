@@ -272,9 +272,9 @@ interface String {
    *            "unixVer": "3.9"
    *        },
    *        "ios": {
-   *           "osVer": "x",
-   *           "uniVer": "x",
-   *            "unixVer": "x"
+   *           "osVer": "12.0",
+   *           "uniVer": "√",
+   *            "unixVer": "4.11"
    *        }
    *    },
    *    "web": {

@@ -1,4 +1,4 @@
-import { normalizeStyles as normalizeStyles$1, addLeadingSlash, invokeArrayFns, Emitter, parseQuery, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, ON_ERROR, ON_SHOW, ON_HIDE, removeLeadingSlash, getLen, EventChannel, once, parseUrl, ON_UNLOAD, ON_READY, ON_PAGE_SCROLL, ON_PULL_DOWN_REFRESH, ON_REACH_BOTTOM, ON_RESIZE, ON_LAUNCH, ON_BACK_PRESS } from "@dcloudio/uni-shared";
+import { normalizeStyles as normalizeStyles$1, addLeadingSlash, invokeArrayFns, parseQuery, Emitter, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, ON_ERROR, ON_SHOW, ON_HIDE, removeLeadingSlash, getLen, EventChannel, once, parseUrl, ON_UNLOAD, ON_READY, ON_PAGE_SCROLL, ON_PULL_DOWN_REFRESH, ON_REACH_BOTTOM, ON_RESIZE, ON_LAUNCH, ON_BACK_PRESS } from "@dcloudio/uni-shared";
 import { extend, isString, isPlainObject, isFunction as isFunction$1, isArray, isPromise, hasOwn, remove, invokeArrayFns as invokeArrayFns$1, capitalize, toTypeString, toRawType, parseStringStyle } from "@vue/shared";
 import { createVNode, render, injectHook, getCurrentInstance, defineComponent, warn, isInSSRComponentSetup, ref, watchEffect, watch, computed, onMounted, camelize, onUnmounted, reactive, provide, inject, nextTick } from "vue";
 function get$pageByPage(page) {
@@ -504,37 +504,12 @@ function initVueApp(appVm) {
     }
   });
 }
-class UniEventBus {
-  constructor() {
-    this.$emitter = new Emitter();
-  }
-  on(name, callback) {
-    this.$emitter.on(name, callback);
-  }
-  once(name, callback) {
-    this.$emitter.once(name, callback);
-  }
-  off(name, callback) {
-    if (!name) {
-      this.$emitter.e = {};
-      return;
-    }
-    this.$emitter.off(name, callback);
-  }
-  emit(name) {
-    for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
-      args[_key - 1] = arguments[_key];
-    }
-    this.$emitter.emit(name, ...args);
-  }
-}
-class UniBasePageImpl extends UniEventBus {
+class UniBasePageImpl {
   constructor(_ref) {
     var {
       route,
       options
     } = _ref;
-    super();
     this.getParentPage = () => null;
     this.route = route;
     this.options = options;
@@ -729,10 +704,10 @@ class EventBus {
     this.$emitter = new Emitter();
   }
   on(name, callback) {
-    this.$emitter.on(name, callback);
+    return this.$emitter.on(name, callback);
   }
   once(name, callback) {
-    this.$emitter.once(name, callback);
+    return this.$emitter.once(name, callback);
   }
   off(name, callback) {
     if (!name) {
@@ -750,12 +725,16 @@ class EventBus {
 }
 var eventBus = new EventBus();
 var $on = /* @__PURE__ */ defineSyncApi(API_ON, (name, callback) => {
-  eventBus.on(name, callback);
-  return () => eventBus.off(name, callback);
+  var id2 = eventBus.on(name, callback);
+  {
+    return id2;
+  }
 });
 var $once = /* @__PURE__ */ defineSyncApi(API_ONCE, (name, callback) => {
-  eventBus.once(name, callback);
-  return () => eventBus.off(name, callback);
+  var id2 = eventBus.once(name, callback);
+  {
+    return id2;
+  }
 });
 var $off = /* @__PURE__ */ defineSyncApi(API_OFF, (name, callback) => {
   if (!isArray(name))
@@ -1108,7 +1087,7 @@ function setupPage(component) {
     {
       var uniPage = new UniPageImpl({
         route: pageVm.$page.route,
-        options: new Map(Object.entries(pageVm.$page.options)),
+        options: pageVm.$page.options,
         vm: pageVm
       });
       pageVm.$basePage = pageVm.$page;
@@ -1392,7 +1371,7 @@ function getTabPage(path) {
   return new TabPageInfo(page, isFirst);
 }
 function switchSelect(selected, path) {
-  var _getCurrentPage;
+  var _getCurrentPage, _pageStyle$pageOrient, _uniConfig$globalSty3;
   var query = arguments.length > 2 && arguments[2] !== void 0 ? arguments[2] : {};
   var rebuild = arguments.length > 3 && arguments[3] !== void 0 ? arguments[3] : false;
   var callback = arguments.length > 4 ? arguments[4] : void 0;
@@ -1412,6 +1391,13 @@ function switchSelect(selected, path) {
     }
   }
   tabBar0.switchSelect(page.$basePage.id.toString(), selected);
+  var pageStyle = page.$page.getPageStyle();
+  var pageOrientation = (_pageStyle$pageOrient = pageStyle["pageOrientation"]) !== null && _pageStyle$pageOrient !== void 0 ? _pageStyle$pageOrient : (_uniConfig$globalSty3 = __uniConfig.globalStyle) === null || _uniConfig$globalSty3 === void 0 ? void 0 : _uniConfig$globalSty3.pageOrientation;
+  if (pageOrientation) {
+    getPageManager().findPageById("tabBar").setPageStyle({
+      pageOrientation
+    });
+  }
   if (shouldShow) {
     invokeHook(page, ON_SHOW);
   }
@@ -2239,7 +2225,7 @@ var appCtx;
 var defaultApp = {
   globalData: {}
 };
-class UniAppImpl extends UniEventBus {
+class UniAppImpl {
   get vm() {
     return appCtx;
   }

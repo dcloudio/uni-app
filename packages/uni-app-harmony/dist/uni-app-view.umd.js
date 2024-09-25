@@ -1117,13 +1117,15 @@
   var E = function() {
   };
   E.prototype = {
+    _id: 1,
     on: function(name, callback, ctx2) {
       var e2 = this.e || (this.e = {});
       (e2[name] || (e2[name] = [])).push({
         fn: callback,
-        ctx: ctx2
+        ctx: ctx2,
+        _id: this._id
       });
-      return this;
+      return this._id++;
     },
     once: function(name, callback, ctx2) {
       var self2 = this;
@@ -1144,13 +1146,13 @@
       }
       return this;
     },
-    off: function(name, callback) {
+    off: function(name, event) {
       var e2 = this.e || (this.e = {});
       var evts = e2[name];
       var liveEvents = [];
-      if (evts && callback) {
+      if (evts && event) {
         for (var i2 = evts.length - 1; i2 >= 0; i2--) {
-          if (evts[i2].fn === callback || evts[i2].fn._ === callback) {
+          if (evts[i2].fn === event || evts[i2].fn._ === event || evts[i2]._id === event) {
             evts.splice(i2, 1);
             break;
           }

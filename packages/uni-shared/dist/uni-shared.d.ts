@@ -177,8 +177,9 @@ export declare function dynamicSlotName(name: string): string;
 
 export declare interface Emitter {
     e: Record<string, unknown>;
-    on: (name: EventName, callback: EventCallback, ctx?: any) => this;
-    once: (name: EventName, callback: EventCallback, ctx?: any) => this;
+    _id: number;
+    on: (name: EventName, callback: EventCallback, ctx?: any) => number;
+    once: (name: EventName, callback: EventCallback, ctx?: any) => number;
     emit: (name: EventName, ...args: any[]) => this;
     off: (name: EventName, callback?: EventCallback | null) => this;
 }
