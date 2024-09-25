@@ -1,6 +1,6 @@
 {
   "name": "@dcloudio/uni-mp-baidu",
-  "version": "3.0.0-alpha-4020820240920001",
+  "version": "3.0.0-4020820240925001",
   "description": "uni-app mp-baidu",
   "main": "dist/index.js",
   "files": [
@@ -26,12 +26,12 @@
   },
   "gitHead": "33e807d66e1fe47e2ee08ad9c59247e37b8884da",
   "dependencies": {
-    "@dcloudio/uni-cli-shared": "3.0.0-alpha-4020820240920001",
-    "@dcloudio/uni-mp-compiler": "3.0.0-alpha-4020820240920001",
-    "@dcloudio/uni-mp-vite": "3.0.0-alpha-4020820240920001",
-    "@dcloudio/uni-mp-vue": "3.0.0-alpha-4020820240920001",
-    "@dcloudio/uni-mp-weixin": "3.0.0-alpha-4020820240920001",
-    "@dcloudio/uni-shared": "3.0.0-alpha-4020820240920001",
+    "@dcloudio/uni-cli-shared": "3.0.0-4020820240925001",
+    "@dcloudio/uni-mp-compiler": "3.0.0-4020820240925001",
+    "@dcloudio/uni-mp-vite": "3.0.0-4020820240925001",
+    "@dcloudio/uni-mp-vue": "3.0.0-4020820240925001",
+    "@dcloudio/uni-mp-weixin": "3.0.0-4020820240925001",
+    "@dcloudio/uni-shared": "3.0.0-4020820240925001",
     "@vue/compiler-core": "3.4.21",
     "@vue/shared": "3.4.21",
     "jimp": "^0.10.1",
