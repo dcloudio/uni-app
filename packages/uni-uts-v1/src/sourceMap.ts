@@ -55,17 +55,20 @@ export function resolveUniAppXSourceMapFile(
     filename = normalizePath(
       resolve(
         kotlinSrcOutDir,
-        relative(filename, inputDir).replace(fileExtname, EXTNAME[target])
+        relative(inputDir, filename).replace(fileExtname, EXTNAME[target])
       )
     )
   }
   // 文件是 kt 或 swift
   if (extname(filename) === EXTNAME[target]) {
     const relativeFileName = relative(kotlinSrcOutDir, filename)
-    return resolveSourceMapFile(
+    const sourceMapFile = resolveSourceMapFile(
       relativeFileName,
       resolveUniAppXSourceMapPath(kotlinDir(outputDir))
     )
+    if (sourceMapFile) {
+      return sourceMapFile
+    }
   }
   if (isSrcFile) {
     return resolveSourceMapFile(
