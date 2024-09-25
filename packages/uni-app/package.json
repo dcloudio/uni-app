@@ -1,6 +1,6 @@
 {
   "name": "@dcloudio/uni-app",
-  "version": "2.0.2-4020820240925001",
+  "version": "2.0.2-4020820240925002",
   "description": "uni-app composition-api",
   "main": "dist/index.js",
   "repository": {
@@ -17,7 +17,7 @@
   },
   "author": "fxy060608",
   "license": "Apache-2.0",
-  "gitHead": "9e2d0f8e244724fcd64880316c57d837d1778cf8",
+  "gitHead": "2a0b978771b34a0acea888d70421fd664a8729d9",
   "devDependencies": {
     "@dcloudio/types": "^3.0.15",
     "typescript": "^4.8.3"
