@@ -14151,7 +14151,7 @@
             image2.ready = true;
           };
           if (navigator.vendor === "Google Inc.") {
-            if (src.indexOf("file://") === 0) {
+            if (src.indexOf("file://") === 0 && false) {
               image2.crossOrigin = "anonymous";
             }
             image2.src = src;
