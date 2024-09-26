@@ -74,7 +74,12 @@ export function resolveUTSSourceMapFile(
   if (target !== 'kotlin') {
     throw `only support kotlin, but got ${target}`
   }
-
+  if (cacheDir) {
+    process.env.UNI_APP_X_CACHE_DIR = cacheDir
+  }
+  if (!process.env.UNI_APP_X_CACHE_DIR) {
+    throw 'UNI_APP_X_CACHE_DIR is not set'
+  }
   inputDir = normalizePath(inputDir)
   outputDir = normalizePath(outputDir)
   const kotlinRootOutDir = kotlinDir(outputDir)
@@ -94,9 +99,7 @@ export function resolveUTSSourceMapFile(
       throw `${filename} sourcemap not found`
       // uni-app x 主项目
     } else if (filename.startsWith('uni.')) {
-      updateUTSKotlinSourceMapManifestCache(
-        cacheDir || process.env.UNI_APP_X_CACHE_DIR
-      )
+      updateUTSKotlinSourceMapManifestCache(process.env.UNI_APP_X_CACHE_DIR)
       filename = resolve(
         kotlinSrcOutDir,
         parseFilenameByClassName(
@@ -106,12 +109,6 @@ export function resolveUTSSourceMapFile(
     }
   }
 
-  if (cacheDir) {
-    process.env.UNI_APP_X_CACHE_DIR = cacheDir
-  }
-  if (!process.env.UNI_APP_X_CACHE_DIR) {
-    throw 'UNI_APP_X_CACHE_DIR is not set'
-  }
   filename = normalizePath(filename)
 
   if (filename.includes('/utssdk/')) {
