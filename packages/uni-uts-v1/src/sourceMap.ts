@@ -116,10 +116,14 @@ export function resolveUTSSourceMapFile(
     return resolveUTSPluginSourceMapFile(target, filename, inputDir, outputDir)
   }
 
+  const fileExtname = extname(filename)
+
   // 如果是源文件，比如uvue,vue,uts等，则需要转换为kt文件路径
-  const isSrcFile = filename.startsWith(inputDir)
+  const isSrcFile =
+    fileExtname !== EXTNAME[target] &&
+    filename.startsWith(inputDir) &&
+    !filename.startsWith(outputDir)
   if (isSrcFile) {
-    const fileExtname = extname(filename)
     filename = normalizePath(
       resolve(
         kotlinSrcOutDir,
@@ -127,6 +131,7 @@ export function resolveUTSSourceMapFile(
       )
     )
   }
+
   // 文件是 kt 或 swift
   if (extname(filename) === EXTNAME[target]) {
     const relativeFileName = relative(kotlinSrcOutDir, filename)

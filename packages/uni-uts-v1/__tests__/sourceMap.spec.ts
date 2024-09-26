@@ -5,6 +5,7 @@ import {
   resolveUTSPluginSourceMapFile,
   resolveUTSSourceMapFile,
 } from '../src'
+import { normalizePath } from '../src/shared'
 
 const inputDir = resolve(__dirname, '../../playground/uts')
 const outputDir = resolve(
@@ -28,7 +29,11 @@ describe('uts:sourceMap', () => {
       inputDir,
       outputDir
     )
-    expect(sourceMapFile).toBeDefined()
+    expect(
+      normalizePath(sourceMapFile).endsWith(
+        'uni_modules/test-uniplugin/utssdk/app-android/index.kt.map'
+      )
+    ).toBe(true)
     expect(
       resolveUTSPluginSourceMapFile(
         'kotlin',
@@ -58,7 +63,11 @@ describe('uts:sourceMap', () => {
       inputDir,
       outputDir
     )
-    expect(sourceMapFile).toBeDefined()
+    expect(
+      normalizePath(sourceMapFile).endsWith(
+        'uni_modules/test-uniplugin/utssdk/app-ios/index.swift.map'
+      )
+    ).toBe(true)
   })
 
   test('resolveUTSPluginSourceMapFile with utssdk uts=>kotlin', () => {
@@ -68,7 +77,11 @@ describe('uts:sourceMap', () => {
       inputDir,
       outputDir
     )
-    expect(sourceMapFile).toBeDefined()
+    expect(
+      normalizePath(sourceMapFile).endsWith(
+        'utssdk/test-uts/app-android/index.kt.map'
+      )
+    ).toBe(true)
   })
   test('resolveUTSPluginSourceMapFile with utssdk uts=>swift', () => {
     const sourceMapFile = resolveUTSPluginSourceMapFile(
@@ -77,7 +90,11 @@ describe('uts:sourceMap', () => {
       inputDir,
       outputDir
     )
-    expect(sourceMapFile).toBeDefined()
+    expect(
+      normalizePath(sourceMapFile).endsWith(
+        'utssdk/test-uts/app-ios/index.swift.map'
+      )
+    ).toBe(true)
   })
 
   test('resolveUTSPluginSourceMapFile with uni_modules kt', () => {
@@ -87,7 +104,11 @@ describe('uts:sourceMap', () => {
       inputDir,
       outputDir
     )
-    expect(sourceMapFile).toBeDefined()
+    expect(
+      normalizePath(sourceMapFile).endsWith(
+        'uni_modules/test-uniplugin/utssdk/app-android/index.kt.map'
+      )
+    ).toBe(true)
   })
   test('resolveUTSPluginSourceMapFile with uni_modules swift', () => {
     const sourceMapFile = resolveUTSPluginSourceMapFile(
@@ -96,14 +117,22 @@ describe('uts:sourceMap', () => {
       inputDir,
       outputDir
     )
-    expect(sourceMapFile).toBeDefined()
+    expect(
+      normalizePath(sourceMapFile).endsWith(
+        'uni_modules/test-uniplugin/utssdk/app-ios/index.swift.map'
+      )
+    ).toBe(true)
     const sourceMapFile2 = resolveUTSPluginSourceMapFile(
       'swift',
       resolve(outputDir, uniModulesPluginDir, 'utssdk/app-ios/src/index.swift'),
       inputDir,
       outputDir
     )
-    expect(sourceMapFile2).toBeDefined()
+    expect(
+      normalizePath(sourceMapFile2).endsWith(
+        'uni_modules/test-uniplugin/utssdk/app-ios/index.swift.map'
+      )
+    ).toBe(true)
   })
   test('resolveUTSPluginSourceMapFile with utssdk kt', () => {
     const sourceMapFile = resolveUTSPluginSourceMapFile(
@@ -112,7 +141,11 @@ describe('uts:sourceMap', () => {
       inputDir,
       outputDir
     )
-    expect(sourceMapFile).toBeDefined()
+    expect(
+      normalizePath(sourceMapFile).endsWith(
+        'utssdk/test-uts/app-android/index.kt.map'
+      )
+    ).toBe(true)
   })
   test('resolveUTSPluginSourceMapFile with utssdk swift', () => {
     const sourceMapFile = resolveUTSPluginSourceMapFile(
@@ -121,7 +154,11 @@ describe('uts:sourceMap', () => {
       inputDir,
       outputDir
     )
-    expect(sourceMapFile).toBeDefined()
+    expect(
+      normalizePath(sourceMapFile).endsWith(
+        'utssdk/test-uts/app-ios/index.swift.map'
+      )
+    ).toBe(true)
   })
   test('generatedPositionFor', async () => {
     const filename = resolve(
@@ -217,7 +254,9 @@ describe('uts:sourceMap', () => {
       inputDir,
       outputDir
     )
-    expect(sourceMapFile).toBeDefined()
+    expect(
+      normalizePath(sourceMapFile).endsWith('pages/index/index.kt.map')
+    ).toBe(true)
   })
 
   test('resolveUTSSourceMapFile with main.uts', () => {
@@ -228,7 +267,9 @@ describe('uts:sourceMap', () => {
       inputDir,
       outputDir
     )
-    expect(sourceMapFile).toBeDefined()
+    expect(
+      normalizePath(sourceMapFile).endsWith('/sourcemap/index.kt.map')
+    ).toBe(true)
     process.env.UNI_APP_X_CACHE_DIR = ''
   })
 
@@ -240,7 +281,9 @@ describe('uts:sourceMap', () => {
       inputDir,
       outputDir
     )
-    expect(sourceMapFile).toBeDefined()
+    expect(
+      normalizePath(sourceMapFile).endsWith('/sourcemap/index.kt.map')
+    ).toBe(true)
     process.env.UNI_APP_X_CACHE_DIR = ''
   })
 
@@ -252,7 +295,9 @@ describe('uts:sourceMap', () => {
       inputDir,
       outputDir
     )
-    expect(sourceMapFile).toBeDefined()
+    expect(
+      normalizePath(sourceMapFile).endsWith('pages/index/index.kt.map')
+    ).toBe(true)
   })
   test('resolveUTSSourceMapFile with plugin className', () => {
     process.env.UNI_APP_X_CACHE_DIR = resolve(uniAppXCacheDir, '.app-android')
@@ -262,7 +307,11 @@ describe('uts:sourceMap', () => {
       inputDir,
       outputDir
     )
-    expect(sourceMapFile).toBeDefined()
+    expect(
+      normalizePath(sourceMapFile).endsWith(
+        'uni_modules/test-uniplugin/utssdk/app-android/index.kt.map'
+      )
+    ).toBe(true)
   })
   test('resolveUTSSourceMapFile with plugin filename', async () => {
     const filename = resolve(
