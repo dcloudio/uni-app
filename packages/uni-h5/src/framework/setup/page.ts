@@ -292,7 +292,7 @@ export function initPage(vm: ComponentPublicInstance) {
     if (pageInstance?.attrs.type !== 'dialog') {
       const uniPage = new UniPageImpl({
         route: route?.path || '',
-        options: route?.query || {},
+        options: new UTSJSONObject(route?.query || {}),
         vm,
       })
       vm.$page = uniPage
