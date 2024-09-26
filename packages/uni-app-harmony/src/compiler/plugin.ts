@@ -331,12 +331,12 @@ function genAppHarmonyUniModules(inputDir: string, utsPlugins: Set<string>) {
     )
   })
   if (importProviderCodes.length) {
-    importProviderCodes.unshift(
-      `import { registerUniProvider, uni } from '@dcloudio/uni-app-runtime'`
-    )
     importCodes.push(...importProviderCodes)
     extApiCodes.push(...registerProviderCodes)
   }
+  importCodes.unshift(
+    `import { registerUniProvider, uni } from '@dcloudio/uni-app-runtime'`
+  )
 
   const uniModuleEntryDir =
     resolveUTSCompiler().resolveAppHarmonyUniModulesEntryDir()
