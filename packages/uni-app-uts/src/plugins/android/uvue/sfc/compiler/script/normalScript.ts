@@ -1,6 +1,9 @@
 import MagicString from 'magic-string'
 import type { BindingMetadata, SFCDescriptor } from '@vue/compiler-sfc'
-import { addUniModulesExtApiComponents } from '@dcloudio/uni-cli-shared'
+import {
+  addUTSEasyComAutoImports,
+  addUniModulesExtApiComponents,
+} from '@dcloudio/uni-cli-shared'
 import { analyzeScriptBindings } from './analyzeScriptBindings'
 import type { ScriptCompileContext } from './context'
 import { hasConsole, rewriteConsole } from './rewriteConsole'
@@ -123,7 +126,13 @@ export function processTemplate(
       bindingMetadata,
     }
   )
-  const { code, preamble, elements, map } = genTemplateCode(sfc, options)
+  const { code, preamble, elements, map, easyComponentAutoImports } =
+    genTemplateCode(sfc, options)
+  if (easyComponentAutoImports) {
+    Object.keys(easyComponentAutoImports).forEach((source) => {
+      addUTSEasyComAutoImports(source, easyComponentAutoImports[source])
+    })
+  }
 
   if (process.env.NODE_ENV === 'production') {
     const components = elements.filter((element) => {

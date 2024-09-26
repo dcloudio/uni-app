@@ -386,11 +386,7 @@ export function genAutoImportsCode(imports: Import[]) {
   return codes.join('\n')
 }
 
-let detectImports: (
-  code: string,
-  id: string,
-  ignore: string[]
-) => Promise<{ matchedImports: Import[] }>
+let detectImports: DetectImports
 
 export function transformUniCloudMixinDataCom(code: string) {
   // 将 uniCloud.mixinDatacom 替换为 uniCloudMixinDatacom
@@ -412,19 +408,40 @@ export function detectAutoImports(
   }
   if (!detectImports) {
     detectImports = initAutoImport().detectImports
+  } else {
+    const autoImports = getUTSEasyComAutoImports()
+    const sources = Object.keys(autoImports)
+    if (detectImports.key !== sources.sort().join(',')) {
+      detectImports = initAutoImport().detectImports
+    }
   }
 
   return detectImports(code, id, ignore)
 }
 
-function initAutoImport() {
+type DetectImports = {
+  key: string
+  (code: string, id: string, ignore: string[]): Promise<{
+    matchedImports: Import[]
+  }>
+}
+
+function initAutoImport(): {
+  detectImports: DetectImports
+} {
   const autoImports = getUTSEasyComAutoImports()
   const sources = Object.keys(autoImports)
   if (!sources.length) {
+    const detectImports = async (
+      _code: string,
+      _id: string,
+      _ignore: string[] = []
+    ) => {
+      return { matchedImports: [] }
+    }
+    detectImports.key = 'default'
     return {
-      async detectImports(_code: string, _id: string, _ignore: string[] = []) {
-        return { matchedImports: [] }
-      },
+      detectImports,
     }
   }
 
@@ -438,26 +455,28 @@ function initAutoImport() {
       })
     })
   })
-  const { detectImports } = createUnimport({
+  const { detectImports: uniDetectImports } = createUnimport({
     imports,
   })
+  const detectImports = async function (
+    code: string,
+    id: string,
+    ignore: string[] = []
+  ) {
+    // const start = Date.now()
+    const result = await uniDetectImports(code)
+    // console.log('detectImports[' + id + ']耗时:' + (Date.now() - start))
+    return {
+      matchedImports: result.matchedImports.filter((item) => {
+        if (item.as && item.name !== item.as) {
+          return !ignore.includes(item.as)
+        }
+        return !ignore.includes(item.name)
+      }),
+    }
+  }
+  detectImports.key = sources.sort().join(',')
   return {
-    detectImports: async function (
-      code: string,
-      id: string,
-      ignore: string[] = []
-    ) {
-      // const start = Date.now()
-      const result = await detectImports(code)
-      // console.log('detectImports[' + id + ']耗时:' + (Date.now() - start))
-      return {
-        matchedImports: result.matchedImports.filter((item) => {
-          if (item.as && item.name !== item.as) {
-            return !ignore.includes(item.as)
-          }
-          return !ignore.includes(item.name)
-        }),
-      }
-    },
+    detectImports,
   }
 }
