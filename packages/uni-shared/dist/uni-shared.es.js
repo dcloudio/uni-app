@@ -210,6 +210,8 @@ const NVUE_CUSTOM_COMPONENTS = [
     'picker-view',
     'picker-view-column',
 ];
+// 主要是指前端实现的组件列表
+const UVUE_CUSTOM_COMPONENTS = [...NVUE_CUSTOM_COMPONENTS, 'map'];
 function isAppUVueNativeTag(tag) {
     // 前端实现的内置组件都会注册一个根组件
     if (tag.startsWith('uni-') && tag.endsWith('-element')) {
@@ -218,7 +220,7 @@ function isAppUVueNativeTag(tag) {
     if (UVUE_BUILT_IN_TAGS.includes(tag)) {
         return true;
     }
-    if (NVUE_CUSTOM_COMPONENTS.includes(tag)) {
+    if (UVUE_CUSTOM_COMPONENTS.includes(tag)) {
         return false;
     }
     if (isBuiltInComponent(tag)) {
