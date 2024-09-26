@@ -1,4 +1,5 @@
 /// <reference types="@dcloudio/uni-app-x/types/native-global" />
+/// <reference types="@dcloudio/uni-app-x/types/page" />
 // @ts-expect-error
 import type { IUniNativeDocument } from 'io.dcloud.uniapp.dom'
 
@@ -11,7 +12,7 @@ function getPagePath(page: Page): string {
 }
 // @ts-expect-error
 function getPageQuery(page: Page): UTSJSONObject {
-  return map2Object(page.options as Map<string, any | null>)
+  return page.options
 }
 function getPageById(id: string): Page | null {
   const pages = getCurrentPages() as UniPage[]
@@ -35,10 +36,10 @@ export function pageGetData(
   // @ts-expect-error
   if (vm.$.exposed.size > 0) {
     // @ts-expect-error
-    return map2Object(vm.$.exposed)
+    return new UTSJSONObject(vm.$.exposed)
   }
   // @ts-expect-error
-  return map2Object(vm.$data)
+  return new UTSJSONObject(vm.$data)
 }
 export function pageSetData(vm: Page, data: Map<string, any | null>): void {
   data.forEach((value: any | null, key: string) => {
@@ -277,9 +278,11 @@ export function componentGetData(
 ): UTSJSONObject {
   // TODO: path 目前无法处理类型问题，暂由服务端处理
   if (vm.$.exposed.size > 0) {
-    return map2Object(vm.$.exposed)
+    // @ts-expect-error
+    return new UTSJSONObject(vm.$.exposed)
   }
-  return map2Object(vm.$data)
+  // @ts-expect-error
+  return new UTSJSONObject(vm.$data)
 }
 export function componentSetData(
   // @ts-expect-error
@@ -310,16 +313,6 @@ export function toCamelCase(str: string): string {
     wordList[i] = word.at(0)!.toUpperCase() + word.substring(1)
   }
   return wordList.join('')
-}
-
-// 不处理用户自定义数据的类型，因为可能存在指定类型，无法处理
-// @ts-expect-error
-function map2Object(data: Map<string, any | null>): UTSJSONObject {
-  const result = {}
-  data.forEach((value: any | null, key: string) => {
-    result[key] = value
-  })
-  return result
 }
 
 export function removeUniPrefix(selector: string): string {
