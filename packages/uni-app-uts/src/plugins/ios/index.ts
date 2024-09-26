@@ -25,18 +25,15 @@ export function init() {
   return [
     ...(isNormalCompileTarget() ? [uniDecryptUniModulesPlugin()] : []),
     uniHBuilderXConsolePlugin('uni.__log__'),
-    ...(isNormalCompileTarget()
-      ? [
-          uniUTSAppUniModulesPlugin({
-            x: true,
-            isSingleThread: process.env.UNI_APP_X_SINGLE_THREAD !== 'false',
-            extApis: parseUniExtApiNamespacesOnce(
-              process.env.UNI_UTS_PLATFORM,
-              process.env.UNI_UTS_TARGET_LANGUAGE
-            ),
-          }),
-        ]
-      : []),
+    // 非 isNormalCompileTarget 时（ext-api模式），仍需要编译 uni_modules 获取 js code
+    uniUTSAppUniModulesPlugin({
+      x: true,
+      isSingleThread: process.env.UNI_APP_X_SINGLE_THREAD !== 'false',
+      extApis: parseUniExtApiNamespacesOnce(
+        process.env.UNI_UTS_PLATFORM,
+        process.env.UNI_UTS_TARGET_LANGUAGE
+      ),
+    }),
     uniEasycomPlugin({ exclude: UNI_EASYCOM_EXCLUDE }),
     uniAppIOSPlugin(),
     ...(process.env.UNI_COMPILE_TARGET === 'ext-api'

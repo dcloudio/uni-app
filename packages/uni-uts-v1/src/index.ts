@@ -238,8 +238,11 @@ export async function compile(
 
   let errMsg = ''
   if (process.env.NODE_ENV !== 'development' || isCompileUniModules) {
-    // uts 插件 wgt 模式，本地资源模式不需要编译
-    if (process.env.UNI_APP_PRODUCTION_TYPE === 'WGT') {
+    // uts 插件 wgt 模式，本地资源模式不需要编译、ext-api模式也不需要编译（已经有前置编译过了）
+    if (
+      process.env.UNI_APP_PRODUCTION_TYPE === 'WGT' ||
+      process.env.UNI_COMPILE_TARGET === 'ext-api'
+    ) {
       return createResult(outputPluginDir, errMsg, code, deps, [], [], meta)
     }
     // 生产模式 支持同时生成 android 和 ios 的 uts 插件
