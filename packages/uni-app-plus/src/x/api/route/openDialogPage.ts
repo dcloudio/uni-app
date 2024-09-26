@@ -4,10 +4,7 @@ import { getCurrentPage, getRouteMeta, invokeHook } from '@dcloudio/uni-core'
 import { ANI_DURATION, ANI_SHOW } from '../../../service/constants'
 import { showWebview } from './webview'
 import { beforeRoute, createNormalizeUrl } from '@dcloudio/uni-api'
-import {
-  UniDialogPageImpl,
-  homeDialogPages,
-} from '../../framework/page/dialogPage'
+import { homeDialogPages } from '../../framework/page/dialogPage'
 import { registerDialogPage } from '../../framework/page/register'
 import { getWebviewId } from '../../../service/framework/webview/utils'
 import type { UniDialogPage } from '@dcloudio/uni-app-x/types/page'
@@ -99,11 +96,13 @@ export const openDialogPage = (
   if (currentPages.length && !parentPage) {
     parentPage = currentPages[currentPages.length - 1]
   }
-  const dialogPage = new UniDialogPageImpl({
-    route: path,
-    options: new Map(Object.entries(query)),
-    getParentPage: () => parentPage,
-  })
+
+  const dialogPage = new UniDialogPageImpl()
+  dialogPage.route = path
+  dialogPage.options = query
+  dialogPage.getParentPage = () => parentPage
+  dialogPage.$component = null
+  dialogPage.$disableEscBack = false
 
   if (!parentPage) {
     homeDialogPages.push(dialogPage)
@@ -131,6 +130,9 @@ export const openDialogPage = (
     // 有动画时延迟创建 vm
     noAnimation ? 0 : 1
   )
+  // @ts-expect-error
+  dialogPage.nativePageId = page.pageId
+
   if (noAnimation) {
     callback(page)
   }

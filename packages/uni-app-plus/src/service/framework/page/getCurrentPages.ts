@@ -17,54 +17,6 @@ export class UniBasePageImpl implements UniBasePage {
   }
 }
 
-export class UniPageImpl extends UniBasePageImpl implements UniPage {
-  vm: ComponentPublicInstance
-  $vm: ComponentPublicInstance
-  getPageStyle(): UTSJSONObject {
-    return this.vm.$nativePage!.getPageStyle.call(this.vm.$nativePage!)
-  }
-  setPageStyle(style: UTSJSONObject): void {
-    this.vm.$nativePage!.setPageStyle.call(this.vm.$nativePage!, style)
-  }
-  getElementById(id: string.IDString | string): UniElement | null {
-    const currentPage = getCurrentPage() as unknown as UniPage
-    if (currentPage !== this) {
-      return null
-    }
-    const bodyNode = this.vm.$el?.parentNode
-    if (bodyNode == null) {
-      console.warn('bodyNode is null')
-      return null
-    }
-    return bodyNode.querySelector(`#${id}`)
-  }
-  getParentPage = (): UniPage | null => {
-    return null
-  }
-  getDialogPages(): UniDialogPage[] {
-    return this.vm.$.$dialogPages
-  }
-  getAndroidView() {
-    return null
-  }
-  getHTMLElement() {
-    return null
-  }
-  constructor({
-    route,
-    options,
-    vm,
-  }: {
-    route: string
-    options: UTSJSONObject
-    vm: ComponentPublicInstance
-  }) {
-    super({ route, options })
-    this.vm = vm
-    this.$vm = vm
-  }
-}
-
 export function getPage$BasePage(
   page: ComponentPublicInstance
 ): Page.PageInstance['$page'] {
@@ -138,7 +90,11 @@ export function removePage(
   if (!$basePage.meta.isNVue) {
     getVueApp().unmountPage(curPage as ComponentPublicInstance)
   }
-  pages.splice(index, 1)
+  const removePages = pages.splice(index, 1)
+  if (__X__) {
+    // @ts-expect-error
+    removePages[0].$page = null
+  }
   if (__DEV__) {
     console.log(formatLog('removePage', $basePage))
   }

@@ -40,7 +40,7 @@ export const navigateBack = defineAsyncApi<API_TYPE_NAVIGATE_BACK>(
         }
       )
       if (onBackPressRes !== true) {
-        const dialogPages = page.getDialogPages()
+        const dialogPages = page.$page.getDialogPages()
         if (dialogPages.length > 0) {
           const dialogPage = dialogPages[dialogPages.length - 1]
           onBackPressRes = invokeHook(dialogPage.$vm, ON_BACK_PRESS, {

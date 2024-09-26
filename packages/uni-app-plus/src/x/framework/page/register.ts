@@ -243,7 +243,8 @@ export function registerDialogPage(
   ])
   const parentPage = dialogPage.getParentPage()
   const nativePage = (getPageManager() as any).createDialogPage(
-    parentPage ? parentPage.vm.$basePage.id.toString() : '',
+    // @ts-expect-error
+    parentPage ? parentPage.nativePageId : '',
     id.toString(),
     url,
     pageStyle

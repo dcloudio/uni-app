@@ -1,4 +1,4 @@
-import { initPageVm, invokeHook } from '@dcloudio/uni-core'
+import { getCurrentPage, initPageVm, invokeHook } from '@dcloudio/uni-core'
 import {
   EventChannel,
   ON_READY,
@@ -13,11 +13,7 @@ import {
   onMounted,
 } from 'vue'
 import type { VuePageComponent } from './define'
-import {
-  UniPageImpl,
-  addCurrentPage,
-  getPage$BasePage,
-} from './getCurrentPages'
+import { addCurrentPage, getPage$BasePage } from './getCurrentPages'
 
 export function setupPage(component: VuePageComponent) {
   const oldSetup = component.setup
@@ -34,11 +30,41 @@ export function setupPage(component: VuePageComponent) {
     const pageVm = instance.proxy!
     initPageVm(pageVm, __pageInstance as Page.PageInstance['$page'])
     if (__X__) {
-      const uniPage = new UniPageImpl({
-        route: pageVm.$page.route,
-        options: pageVm.$page.options,
-        vm: pageVm,
-      })
+      const uniPage = new UniPageImpl()
+      uniPage.route = pageVm.$page.route
+      uniPage.options = pageVm.$page.options
+      uniPage.vm = pageVm
+      uniPage.$vm = pageVm
+      uniPage.getElementById = (
+        id: string.IDString | string
+      ): UniElement | null => {
+        const currentPage = getCurrentPage() as unknown as UniPage
+        if (currentPage !== uniPage) {
+          return null
+        }
+        const bodyNode = pageVm.$el?.parentNode
+        if (bodyNode == null) {
+          console.warn('bodyNode is null')
+          return null
+        }
+        return bodyNode.querySelector(`#${id}`)
+      }
+      uniPage.getParentPage = () => {
+        const parentPage = uniPage.getParentPageByJS()
+        return parentPage || null
+      }
+
+      uniPage.getPageStyle = (): UTSJSONObject => {
+        const pageStyle = uniPage.getPageStyleByJS()
+        return new UTSJSONObject(pageStyle)
+      }
+
+      uniPage.setPageStyle = (styles: UTSJSONObject) => {
+        uniPage.setPageStyleByJS(styles)
+      }
+
+      uniPage.getAndroidView = () => null
+      uniPage.getHTMLElement = () => null
 
       pageVm.$basePage = pageVm.$page as Page.PageInstance['$page']
       pageVm.$page = uniPage

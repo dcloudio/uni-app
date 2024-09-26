@@ -1,6 +1,5 @@
 import { ON_SHOW } from '@dcloudio/uni-shared'
 import { invokeHook } from '@dcloudio/uni-core'
-import { UniDialogPageImpl } from '../../framework/page/dialogPage'
 import { closeNativeDialogPage } from './utils'
 
 /**
@@ -94,6 +93,8 @@ export const closeDialogPage = (options?: CloseDialogPageOptions) => {
       if (i > 0) {
         invokeHook(dialogPages[i - 1].$vm!, ON_SHOW)
       }
+      // @ts-expect-error
+      dialogPages[i] = null
     }
     dialogPages.length = 0
   }
