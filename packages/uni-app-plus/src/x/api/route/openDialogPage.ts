@@ -99,7 +99,7 @@ export const openDialogPage = (
 
   const dialogPage = new UniDialogPageImpl()
   dialogPage.route = path
-  dialogPage.options = query
+  dialogPage.options = new UTSJSONObject(query)
   dialogPage.getParentPage = () => parentPage
   dialogPage.$component = null
   dialogPage.$disableEscBack = false

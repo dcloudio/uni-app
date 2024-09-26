@@ -32,7 +32,7 @@ export function setupPage(component: VuePageComponent) {
     if (__X__) {
       const uniPage = new UniPageImpl()
       uniPage.route = pageVm.$page.route
-      uniPage.options = pageVm.$page.options
+      uniPage.options = new UTSJSONObject(pageVm.$page.options)
       uniPage.vm = pageVm
       uniPage.$vm = pageVm
       uniPage.getElementById = (
