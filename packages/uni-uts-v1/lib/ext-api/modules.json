@@ -42,7 +42,7 @@
         "name": "__onAppCrash",
         "app": {
           "js": false,
-          "kotlin": false,
+          "kotlin": true,
           "swift": true
         }
       },
@@ -50,7 +50,7 @@
         "name": "__offAppCrash",
         "app": {
           "js": false,
-          "kotlin": false,
+          "kotlin": true,
           "swift": true
         }
       },
@@ -58,7 +58,7 @@
         "name": "__getAppCrashInfo",
         "app": {
           "js": false,
-          "kotlin": false,
+          "kotlin": true,
           "swift": true
         }
       },
@@ -66,7 +66,7 @@
         "name": "__deleteAppCrashInfo",
         "app": {
           "js": false,
-          "kotlin": false,
+          "kotlin": true,
           "swift": true
         }
       },
@@ -74,7 +74,7 @@
         "name": "__creatAppCrash",
         "app": {
           "js": false,
-          "kotlin": false,
+          "kotlin": true,
           "swift": true
         }
       }
@@ -634,7 +634,8 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": true
+          "swift": true,
+          "arkts": true
         }
       },
       "onPushMessage": {
@@ -642,7 +643,8 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": true
+          "swift": true,
+          "arkts": true
         }
       },
       "offPushMessage": {
@@ -650,7 +652,8 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": true
+          "swift": true,
+          "arkts": true
         }
       },
       "getChannelManager": {
@@ -674,7 +677,8 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": true
+          "swift": true,
+          "arkts": true
         }
       },
       "setAppBadgeNumber": {
