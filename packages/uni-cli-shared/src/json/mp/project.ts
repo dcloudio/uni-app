@@ -43,6 +43,7 @@ export function parseMiniProgramProjectJson(
   const manifestJson = parseJson(jsonStr)
   if (manifestJson) {
     projectJson.projectname = manifestJson.name
+    // 用户的平台配置
     const platformConfig = manifestJson[platform]
     if (platformConfig) {
       projectKeys.forEach((name) => {
@@ -61,6 +62,18 @@ export function parseMiniProgramProjectJson(
           }
         }
       })
+
+      // 读取 template 中的配置，读取并使用用户配置
+      Object.keys(template).forEach((name) => {
+        console.log('tempatel key:', name)
+        if (
+          !isMiniProgramProjectJsonKey(name) &&
+          hasOwn(platformConfig, name)
+        ) {
+          ;(projectJson as Record<string, any>)[name] = platformConfig[name]
+        }
+      })
+
       // 使用了微信小程序手势系统，自动开启 ES6=>ES5
       platform === 'mp-weixin' &&
         weixinSkyline(platformConfig) &&
