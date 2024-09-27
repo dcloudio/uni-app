@@ -13079,7 +13079,7 @@ function _navigateTo({ url, path, query, events, aniType, aniDuration, }) {
     return new Promise((resolve) => {
         showWebview(registerPage({ url, path, query, openType: 'navigateTo', eventChannel }), aniType, aniDuration, () => {
             resolve({ eventChannel });
-        });
+        }, 0);
         setStatusBarStyle();
     });
 }
