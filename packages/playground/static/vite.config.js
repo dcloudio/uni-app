@@ -31,7 +31,7 @@ export default defineConfig({
       if (process.env.NODE_ENV !== 'production') {
         setTimeout(() => {
           process.exit(0)
-        }, 1000)
+        }, 1500)
       }
     }
   }],
