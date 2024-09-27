@@ -22,6 +22,20 @@ var StandaloneExtApis = [
 		version: "1.0.0"
 	},
 	{
+		type: "extapi",
+		plugin: "uni-push",
+		apis: [
+			"getPushClientId",
+			"onPushMessage",
+			"offPushMessage",
+			"getChannelManager",
+			"getPushChannelManager",
+			"createPushMessage",
+			"setAppBadgeNumber"
+		],
+		version: "1.0.0"
+	},
+	{
 		type: "provider",
 		plugin: "uni-oauth-huawei",
 		provider: "huawei",
@@ -161,6 +175,7 @@ function getRelatedProviders(inputDir) {
 }
 const SupportedModules = {
     FacialRecognitionVerify: 'uni-facialRecognitionVerify',
+    Push: 'uni-push',
 };
 // 获取uni_modules中的相关模块
 function getRelatedModules(inputDir) {

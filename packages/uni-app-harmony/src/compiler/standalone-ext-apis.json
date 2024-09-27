@@ -9,6 +9,20 @@
     "version": "1.0.0"
   },
   {
+    "type": "extapi",
+    "plugin": "uni-push",
+    "apis": [
+      "getPushClientId",
+      "onPushMessage",
+      "offPushMessage",
+      "getChannelManager",
+      "getPushChannelManager",
+      "createPushMessage",
+      "setAppBadgeNumber"
+    ],
+    "version": "1.0.0"
+  },
+  {
     "type": "provider",
     "plugin": "uni-oauth-huawei",
     "provider": "huawei",

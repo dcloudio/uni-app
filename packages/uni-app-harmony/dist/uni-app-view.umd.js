@@ -25344,7 +25344,6 @@
       } = useMap(props2, rootRef, emit2);
       return () => {
         return createVNode("uni-map", {
-          "class": "web",
           "ref": rootRef,
           "id": props2.id
         }, [createVNode("div", {

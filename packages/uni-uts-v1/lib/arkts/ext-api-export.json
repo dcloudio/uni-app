@@ -576,5 +576,22 @@
     [
       "UniPaymentAlipayProviderImpl"
     ]
+  ],
+  "@uni_modules/uni-push": [
+    [
+      "OnPushMessageCallbackResult"
+    ],
+    [
+      "uniPush"
+    ],
+    [
+      "onPushMessage"
+    ],
+    [
+      "getPushClientId"
+    ],
+    [
+      "initUniPush"
+    ]
   ]
 }
