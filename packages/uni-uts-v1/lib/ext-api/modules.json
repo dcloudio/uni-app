@@ -104,6 +104,74 @@
       }
     }
   },
+  "uni-dialogPage": {
+    "uni": {
+      "openDialogPage": {
+        "name": "openDialogPage",
+        "app": {
+          "js": false,
+          "x-js": false,
+          "kotlin": false,
+          "swift": true,
+          "arkts": false
+        }
+      },
+      "closeDialogPage": {
+        "name": "closeDialogPage",
+        "app": {
+          "js": false,
+          "x-js": false,
+          "kotlin": false,
+          "swift": true,
+          "arkts": false
+        }
+      }
+    }
+  },
+  "uni-event": {
+    "uni": {
+      "$on": {
+        "name": "$on",
+        "app": {
+          "js": false,
+          "x-js": false,
+          "kotlin": false,
+          "swift": true,
+          "arkts": true
+        }
+      },
+      "$once": {
+        "name": "$once",
+        "app": {
+          "js": false,
+          "x-js": false,
+          "kotlin": false,
+          "swift": true,
+          "arkts": true
+        }
+      },
+      "$off": {
+        "name": "$off",
+        "app": {
+          "js": false,
+          "x-js": false,
+          "kotlin": false,
+          "swift": true,
+          "arkts": true
+        }
+      },
+      "$emit": {
+        "name": "$emit",
+        "app": {
+          "js": false,
+          "x-js": false,
+          "kotlin": false,
+          "swift": true,
+          "arkts": true
+        }
+      }
+    }
+  },
   "uni-exit": {
     "uni": {
       "exit": {
