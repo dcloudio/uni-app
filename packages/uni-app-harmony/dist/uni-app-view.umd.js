@@ -859,26 +859,6 @@
       return res;
     };
   }
-  function callOptions(options, data) {
-    options = options || {};
-    if (isString(data)) {
-      data = {
-        errMsg: data
-      };
-    }
-    if (/:ok$/.test(data.errMsg)) {
-      if (isFunction(options.success)) {
-        options.success(data);
-      }
-    } else {
-      if (isFunction(options.fail)) {
-        options.fail(data);
-      }
-    }
-    if (isFunction(options.complete)) {
-      options.complete(data);
-    }
-  }
   function getValueByDataPath(obj, path) {
     if (!isString(path)) {
       return;
@@ -25226,11 +25206,12 @@
       var id2 = useContextInfo();
       useSubscribe(function(type) {
         var data = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : {};
+        var resolve = arguments.length > 2 ? arguments[2] : void 0;
         switch (type) {
           case "getCenterLocation":
             onMapReady(() => {
               var center = map.getCenter();
-              callOptions(data, {
+              resolve({
                 latitude: getLat(center),
                 longitude: getLng(center),
                 errMsg: "".concat(type, ":ok")
@@ -25256,10 +25237,14 @@
                   map.setCenter(centerPosition);
                 }
                 onMapReady(() => {
-                  callOptions(data, "".concat(type, ":ok"));
+                  resolve({
+                    errMsg: "".concat(type, ":ok")
+                  });
                 });
               } else {
-                callOptions(data, "".concat(type, ":fail"));
+                resolve({
+                  errMsg: "".concat(type, ":fail")
+                });
               }
             }
             break;
@@ -25270,11 +25255,18 @@
                 try {
                   context2.translate(data);
                 } catch (error) {
-                  callOptions(data, "".concat(type, ":fail ").concat(error.message));
+                  resolve({
+                    errMsg: "".concat(type, ":fail ").concat(error.message)
+                  });
+                  return;
                 }
-                callOptions(data, "".concat(type, ":ok"));
+                resolve({
+                  errMsg: "".concat(type, ":ok")
+                });
               } else {
-                callOptions(data, "".concat(type, ":fail not found"));
+                resolve({
+                  errMsg: "".concat(type, ":fail not found")
+                });
               }
             });
             break;
@@ -25284,7 +25276,9 @@
               updateBounds();
             }
             onBoundsReady(() => {
-              callOptions(data, "".concat(type, ":ok"));
+              resolve({
+                errMsg: "".concat(type, ":ok")
+              });
             });
             break;
           case "getRegion":
@@ -25292,7 +25286,7 @@
               var latLngBounds = map.getBounds();
               var southwest = latLngBounds.getSouthWest();
               var northeast = latLngBounds.getNorthEast();
-              callOptions(data, {
+              resolve({
                 southwest: {
                   latitude: getLat(southwest),
                   longitude: getLng(southwest)
@@ -25307,7 +25301,7 @@
             break;
           case "getScale":
             onMapReady(() => {
-              callOptions(data, {
+              resolve({
                 scale: map.getZoom(),
                 errMsg: "".concat(type, ":ok")
               });
@@ -25350,6 +25344,7 @@
       } = useMap(props2, rootRef, emit2);
       return () => {
         return createVNode("uni-map", {
+          "class": "web",
           "ref": rootRef,
           "id": props2.id
         }, [createVNode("div", {

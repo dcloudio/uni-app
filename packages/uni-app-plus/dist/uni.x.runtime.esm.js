@@ -504,66 +504,6 @@ function initVueApp(appVm) {
     }
   });
 }
-class UniBasePageImpl {
-  constructor(_ref) {
-    var {
-      route,
-      options
-    } = _ref;
-    this.getParentPage = () => null;
-    this.route = route;
-    this.options = options;
-  }
-  getDialogPages() {
-    return [];
-  }
-}
-class UniPageImpl extends UniBasePageImpl {
-  constructor(_ref2) {
-    var {
-      route,
-      options,
-      vm
-    } = _ref2;
-    super({
-      route,
-      options
-    });
-    this.getParentPage = () => {
-      return null;
-    };
-    this.vm = vm;
-    this.$vm = vm;
-  }
-  getPageStyle() {
-    return this.vm.$nativePage.getPageStyle.call(this.vm.$nativePage);
-  }
-  setPageStyle(style) {
-    this.vm.$nativePage.setPageStyle.call(this.vm.$nativePage, style);
-  }
-  getElementById(id2) {
-    var _this$vm$$el;
-    var currentPage = getCurrentPage();
-    if (currentPage !== this) {
-      return null;
-    }
-    var bodyNode = (_this$vm$$el = this.vm.$el) === null || _this$vm$$el === void 0 ? void 0 : _this$vm$$el.parentNode;
-    if (bodyNode == null) {
-      console.warn("bodyNode is null");
-      return null;
-    }
-    return bodyNode.querySelector("#".concat(id2));
-  }
-  getDialogPages() {
-    return this.vm.$.$dialogPages;
-  }
-  getAndroidView() {
-    return null;
-  }
-  getHTMLElement() {
-    return null;
-  }
-}
 function getPage$BasePage(page) {
   return page.$basePage;
 }
@@ -611,7 +551,10 @@ function removePage(curPage) {
   if (!$basePage.meta.isNVue) {
     getVueApp().unmountPage(curPage);
   }
-  pages.splice(index2, 1);
+  var removePages2 = pages.splice(index2, 1);
+  {
+    removePages2[0].$page = null;
+  }
 }
 function backbuttonListener() {
   uni.navigateBack({
@@ -1085,11 +1028,37 @@ function setupPage(component) {
     var pageVm = instance.proxy;
     initPageVm(pageVm, __pageInstance);
     {
-      var uniPage = new UniPageImpl({
-        route: pageVm.$page.route,
-        options: pageVm.$page.options,
-        vm: pageVm
-      });
+      var uniPage = new UniPageImpl();
+      uniPage.route = pageVm.$page.route;
+      uniPage.options = new UTSJSONObject(pageVm.$page.options);
+      uniPage.vm = pageVm;
+      uniPage.$vm = pageVm;
+      uniPage.getElementById = (id2) => {
+        var _pageVm$$el;
+        var currentPage = getCurrentPage();
+        if (currentPage !== uniPage) {
+          return null;
+        }
+        var bodyNode = (_pageVm$$el = pageVm.$el) === null || _pageVm$$el === void 0 ? void 0 : _pageVm$$el.parentNode;
+        if (bodyNode == null) {
+          console.warn("bodyNode is null");
+          return null;
+        }
+        return bodyNode.querySelector("#".concat(id2));
+      };
+      uniPage.getParentPage = () => {
+        var parentPage = uniPage.getParentPageByJS();
+        return parentPage || null;
+      };
+      uniPage.getPageStyle = () => {
+        var pageStyle = uniPage.getPageStyleByJS();
+        return new UTSJSONObject(pageStyle);
+      };
+      uniPage.setPageStyle = (styles2) => {
+        uniPage.setPageStyleByJS(styles2);
+      };
+      uniPage.getAndroidView = () => null;
+      uniPage.getHTMLElement = () => null;
       pageVm.$basePage = pageVm.$page;
       pageVm.$page = uniPage;
     }
@@ -1523,24 +1492,6 @@ function normalizeTabBarStyles(tabBar, themeConfig, themeMode) {
 function useTheme() {
   registerThemeChange(onThemeChange);
 }
-class UniDialogPageImpl extends UniBasePageImpl {
-  constructor(_ref) {
-    var {
-      route,
-      options,
-      getParentPage
-    } = _ref;
-    super({
-      route,
-      options
-    });
-    this.vm = null;
-    this.$vm = null;
-    this.$component = null;
-    this.$disableEscBack = false;
-    this.getParentPage = getParentPage;
-  }
-}
 var homeDialogPages = [];
 function parsePageStyle(route) {
   var style = /* @__PURE__ */ new Map();
@@ -1689,7 +1640,13 @@ function registerDialogPage(_ref2, dialogPage, onCreated) {
   var routeOptions = initRouteOptions(path, openType);
   var pageStyle = /* @__PURE__ */ new Map([["navigationStyle", "custom"], ["backgroundColor", "transparent"]]);
   var parentPage = dialogPage.getParentPage();
-  var nativePage2 = getPageManager().createDialogPage(parentPage ? parentPage.vm.$basePage.id.toString() : "", id2.toString(), url, pageStyle);
+  var nativePage2 = getPageManager().createDialogPage(
+    // @ts-expect-error
+    parentPage ? parentPage.nativePageId : "",
+    id2.toString(),
+    url,
+    pageStyle
+  );
   if (onCreated) {
     onCreated(nativePage2);
   }
@@ -2209,6 +2166,9 @@ function initComponentInstance(app) {
       }
       var pageId = instance.root.attrs.__pageId;
       vm.$nativePage = getNativeApp().pageManager.findPageById(pageId + "");
+      if (vm.$page) {
+        vm.$page.nativePageId = vm.$nativePage.pageId;
+      }
     },
     beforeMount() {
       var _vm$$options$styles;
@@ -2417,7 +2377,7 @@ var navigateBack = /* @__PURE__ */ defineAsyncApi(API_NAVIGATE_BACK, (args, _ref
       from: args.from || "navigateBack"
     });
     if (onBackPressRes !== true) {
-      var dialogPages = page.getDialogPages();
+      var dialogPages = page.$page.getDialogPages();
       if (dialogPages.length > 0) {
         var dialogPage = dialogPages[dialogPages.length - 1];
         onBackPressRes = invokeHook(dialogPage.$vm, ON_BACK_PRESS, {
@@ -2525,11 +2485,12 @@ var openDialogPage = (options) => {
   if (currentPages.length && !parentPage) {
     parentPage = currentPages[currentPages.length - 1];
   }
-  var dialogPage = new UniDialogPageImpl({
-    route: path,
-    options: new Map(Object.entries(query)),
-    getParentPage: () => parentPage
-  });
+  var dialogPage = new UniDialogPageImpl();
+  dialogPage.route = path;
+  dialogPage.options = new UTSJSONObject(query);
+  dialogPage.getParentPage = () => parentPage;
+  dialogPage.$component = null;
+  dialogPage.$disableEscBack = false;
   if (!parentPage) {
     homeDialogPages.push(dialogPage);
   } else {
@@ -2558,6 +2519,7 @@ var openDialogPage = (options) => {
     // 有动画时延迟创建 vm
     noAnimation ? 0 : 1
   );
+  dialogPage.nativePageId = page.pageId;
   if (noAnimation) {
     callback(page);
   }
@@ -2626,6 +2588,7 @@ var closeDialogPage = (options) => {
       if (i > 0) {
         invokeHook(dialogPages[i - 1].$vm, ON_SHOW);
       }
+      dialogPages[i] = null;
     }
     dialogPages.length = 0;
   }

@@ -80,7 +80,7 @@ function initHooks(options, instance, publicThis) {
             let query = instance.attrs.__pageQuery;
             // onLoad 的 query 进行 decode
             if (true) {
-                query = decodedQuery(query);
+                query = new UTSJSONObject(decodedQuery(query));
             }
             if ('app' === 'app' && true) {
                 // TODO 统一处理 Web
