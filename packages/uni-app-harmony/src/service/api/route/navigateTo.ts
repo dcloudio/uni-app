@@ -76,7 +76,8 @@ function _navigateTo({
       aniDuration,
       () => {
         resolve({ eventChannel })
-      }
+      },
+      0
     )
     setStatusBarStyle()
   })
