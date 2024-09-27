@@ -50,6 +50,7 @@ export function uniCopyPlugin({
       }
       return p !== platform
     })
+    // 在最后增加 / 是为了避免误判以 platform 开头的目录，比如 app-test
     .map((p) => '/' + PUBLIC_DIR + '/' + p + '/')
 
   const targets: UniViteCopyPluginTarget[] = [
@@ -60,7 +61,10 @@ export function uniCopyPlugin({
         ignored(path: string) {
           const normalizedPath = normalizePath(path)
           if (
-            ignorePlatformStaticDirs.find((dir) => normalizedPath.includes(dir))
+            ignorePlatformStaticDirs.find((dir) =>
+              // dir都是以 / 结尾，所以这里也要以 / 结尾
+              (normalizedPath + '/').includes(dir)
+            )
           ) {
             return fs.statSync(normalizedPath).isDirectory()
           }
