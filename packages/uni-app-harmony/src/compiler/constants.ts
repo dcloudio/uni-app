@@ -27,4 +27,8 @@ export const StandaloneExtApi: IStandaloneExtApi[] = [
     name: 'uni-facialRecognitionVerify',
     type: 'extapi',
   },
+  {
+    name: 'uni-push',
+    type: 'extapi',
+  },
 ]

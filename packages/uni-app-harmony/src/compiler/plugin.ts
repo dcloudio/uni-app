@@ -176,6 +176,7 @@ function getRelatedProviders(inputDir: string): IRelatedProvider[] {
 
 const SupportedModules = {
   FacialRecognitionVerify: 'uni-facialRecognitionVerify',
+  Push: 'uni-push',
 }
 
 // 获取uni_modules中的相关模块
