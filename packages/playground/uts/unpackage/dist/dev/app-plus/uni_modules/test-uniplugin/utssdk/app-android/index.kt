@@ -41,7 +41,7 @@ open class User : IUser {
                 console.log("timeout");
             }
             , 1000);
-            uts.modules.modules.testUniPlugin.login(name, pwd);
+            uts.sdk.modules.testUniPlugin.login(name, pwd);
             run {
                 var i: Number = 0;
                 while(i < 10){

@@ -45,7 +45,7 @@ async function testKotlin() {
     },
     output: {
       outDir,
-      package: 'uts.modules.modules.testUniPlugin',
+      package: 'uts.sdk.modules.testUniPlugin',
       imports: kotlinImports,
       sourceMap,
       extname: 'kt',
@@ -103,7 +103,7 @@ async function testKotlinComponent() {
     },
     output: {
       outDir,
-      package: 'uts.modules.modules.testComponent',
+      package: 'uts.sdk.modules.testComponent',
       imports: kotlinImports,
       sourceMap,
       extname: 'kt',

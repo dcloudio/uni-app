@@ -11,8 +11,8 @@ interface TextEncoder {
    *            "osVer": "5.0",
    *            "uniVer": "√",
    *            "uniUtsPlugin": "√",
-   *            "unixVer": "4.28",
-   *            "unixUtsPlugin": "4.28"
+   *            "unixVer": "4.31",
+   *            "unixUtsPlugin": "4.31"
    *        },
    *        "ios": {
    *            "osVer": "12.0",
@@ -44,8 +44,8 @@ interface TextEncoder {
    *            "osVer": "5.0",
    *            "uniVer": "√",
    *            "uniUtsPlugin": "√",
-   *            "unixVer": "4.28",
-   *            "unixUtsPlugin": "4.28"
+   *            "unixVer": "4.31",
+   *            "unixUtsPlugin": "4.31"
    *        },
    *        "ios": {
    *            "osVer": "12.0",

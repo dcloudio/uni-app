@@ -112,4 +112,3 @@ declare class UniDialogPageImpl implements UniPage {
   $component: any | null
   $disableEscBack: boolean
 }
-

@@ -8439,7 +8439,7 @@ function initPage(vm) {
     if ((pageInstance == null ? void 0 : pageInstance.attrs.type) !== "dialog") {
       const uniPage = new UniPageImpl({
         route: (route == null ? void 0 : route.path) || "",
-        options: (route == null ? void 0 : route.query) || {},
+        options: new UTSJSONObject((route == null ? void 0 : route.query) || {}),
         vm
       });
       vm.$page = uniPage;
@@ -17727,7 +17727,7 @@ function initHooks(options, instance2, publicThis) {
     try {
       let query = instance2.attrs.__pageQuery;
       if (true) {
-        query = decodedQuery(query);
+        query = new UTSJSONObject(decodedQuery(query));
       }
       if (false)
         ;
@@ -25537,7 +25537,7 @@ const openDialogPage = (options) => {
   });
   const dialogPage = new UniDialogPageImpl({
     route: path,
-    options: query,
+    options: new UTSJSONObject(query),
     $component: targetRoute.component,
     getParentPage: () => null,
     $disableEscBack: options.disableEscBack

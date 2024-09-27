@@ -2975,7 +2975,7 @@ function initPage(vm) {
     if ((pageInstance == null ? void 0 : pageInstance.attrs.type) !== "dialog") {
       const uniPage = new UniPageImpl({
         route: (route == null ? void 0 : route.path) || "",
-        options: (route == null ? void 0 : route.query) || {},
+        options: new UTSJSONObject((route == null ? void 0 : route.query) || {}),
         vm
       });
       vm.$page = uniPage;
@@ -8842,7 +8842,7 @@ function initHooks(options, instance, publicThis) {
     try {
       let query = instance.attrs.__pageQuery;
       if (true) {
-        query = uniShared.decodedQuery(query);
+        query = new UTSJSONObject(uniShared.decodedQuery(query));
       }
       if (false)
         ;

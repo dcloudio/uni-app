@@ -8,8 +8,8 @@ interface TextDecoder {
    *            "osVer": "5.0",
    *            "uniVer": "√",
    *            "uniUtsPlugin": "√",
-   *            "unixVer": "4.28",
-   *            "unixUtsPlugin": "4.28"
+   *            "unixVer": "4.31",
+   *            "unixUtsPlugin": "4.31"
    *        },
    *        "ios": {
    *            "osVer": "12.0",
@@ -41,8 +41,8 @@ interface TextDecoder {
    *            "osVer": "5.0",
    *            "uniVer": "√",
    *            "uniUtsPlugin": "√",
-   *            "unixVer": "4.28",
-   *            "unixUtsPlugin": "4.28"
+   *            "unixVer": "4.31",
+   *            "unixUtsPlugin": "4.31"
    *        },
    *        "ios": {
    *            "osVer": "12.0",
@@ -74,8 +74,8 @@ interface TextDecoder {
    *            "osVer": "5.0",
    *            "uniVer": "√",
    *            "uniUtsPlugin": "√",
-   *            "unixVer": "4.28",
-   *            "unixUtsPlugin": "4.28"
+   *            "unixVer": "4.31",
+   *            "unixUtsPlugin": "4.31"
    *        },
    *        "ios": {
    *            "osVer": "12.0",
@@ -107,8 +107,8 @@ interface TextDecoder {
    *            "osVer": "5.0",
    *            "uniVer": "√",
    *            "uniUtsPlugin": "√",
-   *            "unixVer": "4.28",
-   *            "unixUtsPlugin": "4.28"
+   *            "unixVer": "4.31",
+   *            "unixUtsPlugin": "4.31"
    *        },
    *        "ios": {
    *            "osVer": "12.0",
@@ -143,8 +143,8 @@ declare var TextDecoder : {
    *            "osVer": "5.0",
    *            "uniVer": "√",
    *            "uniUtsPlugin": "√",
-   *            "unixVer": "4.28",
-   *            "unixUtsPlugin": "4.28"
+   *            "unixVer": "4.31",
+   *            "unixUtsPlugin": "4.31"
    *        },
    *        "ios": {
    *            "osVer": "12.0",

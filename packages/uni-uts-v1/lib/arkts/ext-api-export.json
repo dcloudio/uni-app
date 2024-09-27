@@ -1,6 +1,9 @@
 {
   "@dcloudio/uni-app-runtime": [
     [
+      "OnPushMessageCallbackResult"
+    ],
+    [
       "SetClipboardData"
     ],
     [

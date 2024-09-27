@@ -1,3 +1,7 @@
+interface IJsonStringify {
+    toJSON():any
+}
+
 interface JSON {
 
   /**
@@ -235,3 +239,4 @@ interface JSON {
  * An intrinsic object that provides functions to convert JavaScript values to and from the JavaScript Object Notation (JSON) format.
  */
 declare var JSON : JSON;
+
