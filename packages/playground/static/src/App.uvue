@@ -1,0 +1,9 @@
+<script lang="ts">
+	export default {
+		onLaunch() {
+			// console.log(1 as string);
+			// console.log('App onLaunch')
+		}
+	}
+</script>
+

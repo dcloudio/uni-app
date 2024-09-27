@@ -1,12 +1,8 @@
 import App from './App.uvue'
 
 import { createSSRApp } from 'vue'
-// const a : Test1ComponentPublicInstance | null = null
-
-
 
 export function createApp() {
-    // console.log(a)
     const app = createSSRApp(App)
     return {
         app
