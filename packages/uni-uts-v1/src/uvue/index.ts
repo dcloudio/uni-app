@@ -29,6 +29,7 @@ import { parseUTSSyntaxError } from '../stacktrace'
 import {
   getCompilerServer,
   getUTSCompiler,
+  isEnableUTSNumber,
   parseExtApiDefaultParameters,
   parseInjectModules,
   resolveUniAppXSourceMapPath,
@@ -167,10 +168,7 @@ export async function compileApp(entry: string, options: CompileAppOptions) {
         uniCloudObjectInfo: options.uniCloudObjectInfo,
         autoImports,
         uniModulesArtifacts: options.uniModulesArtifacts,
-        enableUtsNumber: !!(
-          process.env.UNI_INPUT_DIR &&
-          fs.existsSync(path.resolve(process.env.UNI_INPUT_DIR, 'UTSNUMBER'))
-        ),
+        enableUtsNumber: isEnableUTSNumber(),
         ...options.transform,
       },
     },

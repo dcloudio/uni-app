@@ -959,3 +959,14 @@ export function isNormalCompileTarget() {
   // 目前有特殊编译目标 uni_modules 和 ext-api
   return !process.env.UNI_COMPILE_TARGET
 }
+
+let enableUtsNumber: boolean
+export function isEnableUTSNumber() {
+  if (enableUtsNumber === undefined) {
+    enableUtsNumber = !!(
+      process.env.UNI_INPUT_DIR &&
+      fs.existsSync(path.resolve(process.env.UNI_INPUT_DIR, 'UTSNUMBER'))
+    )
+  }
+  return enableUtsNumber
+}

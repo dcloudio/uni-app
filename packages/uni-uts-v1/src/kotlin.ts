@@ -23,6 +23,7 @@ import {
   getCompilerServer,
   getUTSCompiler,
   isColorSupported,
+  isEnableUTSNumber,
   moveRootIndexSourceMap,
   normalizeUTSResult,
   parseExtApiDefaultParameters,
@@ -678,10 +679,7 @@ export async function compile(
         uniExtApiDefaultNamespace: 'io.dcloud.uniapp.extapi',
         uniExtApiNamespaces: extApis,
         uniExtApiDefaultParameters: parseExtApiDefaultParameters(),
-        enableUtsNumber: !!(
-          process.env.UNI_INPUT_DIR &&
-          fs.existsSync(path.resolve(process.env.UNI_INPUT_DIR, 'UTSNUMBER'))
-        ),
+        enableUtsNumber: isEnableUTSNumber(),
         ...transform,
       },
     },
