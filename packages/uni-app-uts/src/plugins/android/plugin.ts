@@ -244,8 +244,8 @@ export function uniAppPlugin(): UniVitePlugin {
               throw res.error
             }
           }
-          return
         }
+        return
       }
       if (uniXKotlinCompiler) {
         if (changedFiles.length) {
