@@ -136,7 +136,7 @@ function resolveUTSFile(
   }
 }
 
-export function resolveUTSCompiler(): typeof UTSCompiler {
+export function resolveUTSCompiler(throwError = false): typeof UTSCompiler {
   let compilerPath: string = ''
   if (
     process.env.UNI_COMPILE_TARGET === 'ext-api' &&
@@ -160,6 +160,9 @@ export function resolveUTSCompiler(): typeof UTSCompiler {
         paths: [process.env.UNI_CLI_CONTEXT || process.cwd()],
       })
     } catch (e) {
+      if (throwError) {
+        throw `Error: Cannot find module '@dcloudio/uni-uts-v1'`
+      }
       let utsCompilerVersion = ''
       try {
         utsCompilerVersion = require('../package.json').version

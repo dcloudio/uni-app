@@ -32,6 +32,7 @@ import {
 import { parseManifestJsonOnce } from '../../../json'
 import { emptyDir } from '../../../fs'
 import { initScopedPreContext } from '../../../preprocess/context'
+import { isInHBuilderX } from '../../../hbx'
 
 /* eslint-disable no-restricted-globals */
 const { preprocess } = require('../../../../lib/preprocess')
@@ -190,6 +191,19 @@ export function uniUTSAppUniModulesPlugin(
   const inputDir = process.env.UNI_INPUT_DIR
   process.env.UNI_UTS_USING_ROLLUP = 'true'
   const uniModulesDir = normalizePath(path.resolve(inputDir, 'uni_modules'))
+
+  // 非 x 项目，非 HBuilderX
+  if (!isX && !isInHBuilderX()) {
+    try {
+      resolveUTSCompiler(true)
+    } catch (e) {
+      return {
+        name: 'uni:uts-uni_modules-placeholder',
+        apply: 'build',
+        enforce: 'pre',
+      }
+    }
+  }
 
   const {
     createUniXKotlinCompilerOnce,
