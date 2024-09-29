@@ -228,6 +228,7 @@ const LocationViewPage = {
             latitude: $data.latitude,
             longitude: $data.longitude,
             showNav: $data.showNav,
+            name: $data.name,
             onClose:
               _cache[0] ||
               (_cache[0] = (...args) =>
