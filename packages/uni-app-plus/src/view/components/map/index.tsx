@@ -1,6 +1,6 @@
 import { defineBuiltInComponent } from '@dcloudio/uni-components'
-import DefaultMap from './map'
-import QQMap from './map-web'
+import MapDefault from './map'
+import MapWeb from './map-web'
 
 const props = {
   id: {
@@ -55,8 +55,8 @@ export default /*#__PURE__*/ defineBuiltInComponent({
   name: 'Map',
   props,
   components: {
-    DefaultMap,
-    QQMap,
+    MapDefault,
+    MapWeb,
   },
   emits: ['click', 'regionchange', 'controltap', 'markertap', 'callouttap'],
   setup(props, { emit }) {
@@ -79,7 +79,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     return () => {
       if (__uniConfig.qqMapKey) {
         return (
-          <QQMap
+          <MapWeb
             id={props.id}
             latitude={props.latitude}
             longitude={props.longitude}
@@ -94,11 +94,11 @@ export default /*#__PURE__*/ defineBuiltInComponent({
             onControltap={onControltap}
             onMarkertap={onMarkertap}
             onCallouttap={onCallouttap}
-          ></QQMap>
+          ></MapWeb>
         )
       } else {
         return (
-          <DefaultMap
+          <MapDefault
             id={props.id}
             latitude={props.latitude}
             longitude={props.longitude}
@@ -113,7 +113,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
             onControltap={onControltap}
             onMarkertap={onMarkertap}
             onCallouttap={onCallouttap}
-          ></DefaultMap>
+          ></MapDefault>
         )
       }
     }

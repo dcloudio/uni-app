@@ -11,7 +11,6 @@ import {
 } from 'vue'
 import {
   type CustomEventTrigger,
-  UniElement,
   defineBuiltInComponent,
   useContextInfo,
   useCustomEvent,
@@ -580,9 +579,8 @@ function useMap(
   }
 }
 
-export class UniMapElement extends UniElement {}
 export default /*#__PURE__*/ defineBuiltInComponent({
-  name: 'Map',
+  name: 'MapWeb',
   props,
   emits: [
     'markertap',
@@ -597,12 +595,6 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     'update:latitude',
     'update:longitude',
   ],
-  //#if _X_ && !_NODE_JS_
-  rootElement: {
-    name: 'uni-map',
-    class: UniMapElement,
-  },
-  //#endif
   setup(props, { emit, slots }) {
     const rootRef: Ref<HTMLElement | null> = ref(null)
     const { mapRef, trigger } = useMap(
@@ -610,12 +602,6 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       rootRef,
       emit as SetupContext['emit']
     )
-    //#if _X_ && !_NODE_JS_
-    onMounted(() => {
-      const rootElement = rootRef.value as UniMapElement
-      rootElement.attachVmProps(props)
-    })
-    //#endif
     return () => {
       return (
         <uni-map class="web" ref={rootRef} id={props.id}>
