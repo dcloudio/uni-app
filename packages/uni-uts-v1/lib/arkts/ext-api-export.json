@@ -582,13 +582,16 @@
       "uniPush"
     ],
     [
-      "onPushMessage"
-    ],
-    [
       "getPushClientId"
     ],
     [
-      "initUniPush"
+      "onPushMessage"
+    ],
+    [
+      "offPushMessage"
+    ],
+    [
+      "createPushMessage"
     ]
   ]
 }
