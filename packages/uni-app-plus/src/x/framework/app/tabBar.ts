@@ -29,6 +29,12 @@ const BORDER_COLORS = new Map<string, string>([
 
 function getBorderStyle(borderStyle: string): string {
   const value = BORDER_COLORS.get(borderStyle)
+
+  if (!value) {
+    console.warn(
+      '4.23 版本起，在 pages.json 设置 tabbar borderStyle 仅支持 white 和 black，推荐使用 borderColor 自定义颜色。'
+    )
+  }
   return value || (BORDER_COLORS.get('black') as string)
 }
 
