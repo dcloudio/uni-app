@@ -58,9 +58,15 @@ export function setupPage(component: VuePageComponent) {
         const pageStyle = uniPage.getPageStyleByJS()
         return new UTSJSONObject(pageStyle)
       }
+      uniPage.$getPageStyle = (): UTSJSONObject => {
+        return uniPage.getPageStyle()
+      }
 
       uniPage.setPageStyle = (styles: UTSJSONObject) => {
         uniPage.setPageStyleByJS(styles)
+      }
+      uniPage.$setPageStyle = (styles: UTSJSONObject) => {
+        uniPage.setPageStyle(styles)
       }
 
       uniPage.getAndroidView = () => null
