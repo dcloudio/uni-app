@@ -93,8 +93,10 @@ declare class UniPageImpl implements UniPage {
   getParentPageByJS: () => UniPage | null
   getDialogPages(): UniDialogPage[]
   getPageStyle(): UTSJSONObject
+  $getPageStyle(): UTSJSONObject
   getPageStyleByJS(): UTSJSONObject
   setPageStyle(style: UTSJSONObject): void
+  $setPageStyle(style: UTSJSONObject): void
   setPageStyleByJS(style: UTSJSONObject): void
   getElementById(id: string.IDString | string): UniElement | null
   getAndroidView(): null

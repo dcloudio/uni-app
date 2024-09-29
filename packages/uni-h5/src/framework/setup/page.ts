@@ -61,7 +61,13 @@ export class UniPageImpl extends UniBasePageImpl implements UniPage {
   getPageStyle(): UTSJSONObject {
     return new UTSJSONObject({})
   }
+  $getPageStyle(): UTSJSONObject {
+    return this.getPageStyle()
+  }
   setPageStyle(style: UTSJSONObject): void {}
+  $setPageStyle(style: UTSJSONObject): void {
+    this.setPageStyle(style)
+  }
   getElementById(id: string.IDString | string): UniElement | null {
     const currentPage = getCurrentPage() as unknown as UniPage
     if (currentPage !== this) {
