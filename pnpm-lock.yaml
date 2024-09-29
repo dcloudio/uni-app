@@ -458,6 +458,70 @@ importers:
         specifier: ^5.2.8
         version: 5.2.8(@types/node@18.19.50)(terser@5.32.0)
 
+  packages/playground/uni-stat:
+    dependencies:
+      '@dcloudio/uni-app':
+        specifier: ../../uni-app
+        version: link:../../uni-app
+      '@dcloudio/uni-app-plus':
+        specifier: ../../uni-app-plus
+        version: link:../../uni-app-plus
+      '@dcloudio/uni-components':
+        specifier: ../../uni-components
+        version: link:../../uni-components
+      '@dcloudio/uni-h5':
+        specifier: ../../uni-h5
+        version: link:../../uni-h5
+      '@dcloudio/uni-mp-alipay':
+        specifier: ../../uni-mp-alipay
+        version: link:../../uni-mp-alipay
+      '@dcloudio/uni-mp-baidu':
+        specifier: ../../uni-mp-baidu
+        version: link:../../uni-mp-baidu
+      '@dcloudio/uni-mp-kuaishou':
+        specifier: ../../uni-mp-kuaishou
+        version: link:../../uni-mp-kuaishou
+      '@dcloudio/uni-mp-lark':
+        specifier: ../../uni-mp-lark
+        version: link:../../uni-mp-lark
+      '@dcloudio/uni-mp-qq':
+        specifier: ../../uni-mp-qq
+        version: link:../../uni-mp-qq
+      '@dcloudio/uni-mp-toutiao':
+        specifier: ../../uni-mp-toutiao
+        version: link:../../uni-mp-toutiao
+      '@dcloudio/uni-mp-weixin':
+        specifier: ../../uni-mp-weixin
+        version: link:../../uni-mp-weixin
+      '@dcloudio/uni-quickapp-webview':
+        specifier: ../../uni-quickapp-webview
+        version: link:../../uni-quickapp-webview
+      vue:
+        specifier: 3.4.21
+        version: 3.4.21(typescript@5.4.2)
+      vue-router:
+        specifier: ^4.3.0
+        version: 4.4.4(vue@3.4.21(typescript@5.4.2))
+      vuex:
+        specifier: ^4.1.0
+        version: 4.1.0(vue@3.4.21(typescript@5.4.2))
+      web3:
+        specifier: 0.20.7
+        version: 0.20.7
+    devDependencies:
+      '@dcloudio/uni-cli-shared':
+        specifier: ../../uni-cli-shared
+        version: link:../../uni-cli-shared
+      '@dcloudio/uni-uts-v1':
+        specifier: ../../uni-uts-v1
+        version: link:../../uni-uts-v1
+      '@dcloudio/vite-plugin-uni':
+        specifier: ../../vite-plugin-uni
+        version: link:../../vite-plugin-uni
+      vite:
+        specifier: ^5.2.8
+        version: 5.2.8(@types/node@18.19.50)(terser@5.32.0)
+
   packages/playground/uni_modules:
     dependencies:
       '@dcloudio/uni-app':

@@ -10,4 +10,5 @@ export {
   checkPagesJson,
   parseUniXFlexDirection,
   parseUniXSplashScreen,
+  parseUniXUniStatistics,
 } from './uni-x'
