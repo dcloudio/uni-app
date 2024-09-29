@@ -18,7 +18,7 @@ export const openLocation = defineAsyncApi<API_TYPE_OPEN_LOCATION>(
   (data, { resolve, reject }) => {
     if (__uniConfig.qqMapKey) {
       initLocationViewPageOnce()
-      const { latitude = '', longitude = '' } = data || {}
+      const { latitude = '', longitude = '', name = '' } = data || {}
       uni.navigateTo({
         url:
           '/' +
@@ -26,7 +26,9 @@ export const openLocation = defineAsyncApi<API_TYPE_OPEN_LOCATION>(
           '?latitude=' +
           latitude +
           '&longitude=' +
-          longitude,
+          longitude +
+          '&name=' +
+          name,
         success: (res) => {
           resolve()
         },

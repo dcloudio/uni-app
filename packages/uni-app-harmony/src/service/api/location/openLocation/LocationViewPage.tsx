@@ -9,6 +9,7 @@ const LocationViewPage = {
     return {
       latitude: 0,
       longitude: 0,
+      name: '',
       loaded: false,
       showNav: false,
     }
@@ -16,6 +17,7 @@ const LocationViewPage = {
   onLoad(e) {
     this.latitude = e.latitude
     this.longitude = e.longitude
+    this.name = e.name
     this.loaded = true
   },
   onBackPress() {
@@ -43,6 +45,7 @@ const LocationViewPage = {
             latitude: $data.latitude,
             longitude: $data.longitude,
             showNav: $data.showNav,
+            name: $data.name,
             onClose:
               _cache[0] ||
               (_cache[0] = (...args) =>
