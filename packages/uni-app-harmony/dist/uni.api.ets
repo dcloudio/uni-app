@@ -9,22 +9,20 @@ import inputMethod from '@ohos.inputMethod';
 import image from '@ohos.multimedia.image';
 import connection from '@ohos.net.connection';
 import webSocket from '@ohos.net.webSocket';
-import notificationManager from '@ohos.notificationManager';
 import call from '@ohos.telephony.call';
 import radio from '@ohos.telephony.radio';
 import webview from '@ohos.web.webview';
 import { BusinessError as BusinessError1 } from '@kit.BasicServicesKit';
 import { BusinessError as BusinessError10 } from '@ohos.base';
 import { BusinessError as BusinessError11 } from '@ohos.base';
-import { BusinessError as BusinessError12 } from '@ohos.base';
-import { BusinessError as BusinessError2 } from '@kit.BasicServicesKit';
-import { BusinessError as BusinessError3 } from '@ohos.base';
+import { BusinessError as BusinessError2 } from '@ohos.base';
+import { BusinessError as BusinessError3 } from '@kit.BasicServicesKit';
 import { BusinessError as BusinessError4 } from '@kit.BasicServicesKit';
 import { BusinessError as BusinessError5 } from '@kit.BasicServicesKit';
 import { BusinessError as BusinessError6 } from '@kit.BasicServicesKit';
 import { BusinessError as BusinessError7 } from '@kit.BasicServicesKit';
 import { BusinessError as BusinessError8 } from '@kit.BasicServicesKit';
-import { BusinessError as BusinessError9 } from '@kit.BasicServicesKit';
+import { BusinessError as BusinessError9 } from '@ohos.base';
 import { BusinessError } from '@kit.BasicServicesKit';
 import { CompressorResponseCode, CompressorResponse, VideoCompressor, CompressQuality } from '@ohos/videocompressor';
 import { Emitter as Emitter5, getCurrentMP as getCurrentMP4 } from "@dcloudio/uni-mp-sdk";
@@ -34,7 +32,6 @@ import I18n from '@ohos.i18n';
 import I18n1 from '@ohos.i18n';
 import I18n2 from '@ohos.i18n';
 import { ListFileOptions } from '@ohos.file.fs';
-import PushManager, { GTInitializeParams, GTPushCallback, GTCmdMessage, GTTransmitMessage, GTNotificationMessage } from '@getui/push';
 import { ReadOptions } from '@ohos.file.fs';
 import { UTSHarmony as UTSHarmony1 } from "@dcloudio/uni-mp-sdk";
 import { UTSHarmony as UTSHarmony10 } from "@dcloudio/uni-mp-sdk";
@@ -49,7 +46,6 @@ import { UTSHarmony as UTSHarmony9 } from "@dcloudio/uni-mp-sdk";
 import { UTSObject, UTSJSONObject } from "@dcloudio/uts-harmony";
 import { UniError, IUniError, UniProvider, string, AsyncApiSuccessResult, AsyncApiResult, ApiOptions, ProtocolOptions, defineAsyncApi, ApiExecutor, ApiError, defineSyncApi, getUniProviders, defineTaskApi, getUniProvider } from "@dcloudio/uni-app-harmony";
 import Want1 from '@ohos.app.ability.Want';
-import { WantAgent } from '@kit.AbilityKit';
 import { abilityAccessCtrl } from '@kit.AbilityKit';
 import { access } from '@kit.ConnectivityKit';
 import { audio as audio1 } from '@kit.AudioKit';
@@ -67,7 +63,6 @@ import common1 from '@ohos.app.ability.common';
 import common2 from '@ohos.app.ability.common';
 import common3 from '@ohos.app.ability.common';
 import common4 from '@ohos.app.ability.common';
-import common5 from '@ohos.app.ability.common';
 import { contact } from '@kit.ContactsKit';
 import dataPreferences from '@ohos.data.preferences';
 import deviceInfo1 from '@ohos.deviceInfo';
@@ -125,7 +120,7 @@ import { media as media1 } from '@kit.MediaKit';
 import { media } from '@kit.MediaKit';
 import media2 from '@ohos.multimedia.media';
 import media3 from '@ohos.multimedia.media';
-import { notificationManager as notificationManager1 } from '@kit.NotificationKit';
+import { notificationManager } from '@kit.NotificationKit';
 import photoAccessHelper1 from '@ohos.file.photoAccessHelper';
 import photoAccessHelper2 from '@ohos.file.photoAccessHelper';
 import photoAccessHelper3 from '@ohos.file.photoAccessHelper';
@@ -143,75 +138,11 @@ import { systemShare } from '@kit.ShareKit';
 import { uni } from "@dcloudio/uni-mp-sdk";
 import { uniformTypeDescriptor } from '@kit.ArkData';
 import { userAuth } from '@kit.UserAuthenticationKit';
-import { wantAgent as wantAgent1 } from '@kit.AbilityKit';
 import { wantAgent } from '@kit.AbilityKit';
 import { wifiManager } from '@kit.ConnectivityKit';
 import { window as window1 } from '@kit.ArkUI';
 import { window as window2 } from '@kit.ArkUI';
 import { window } from '@kit.ArkUI';
-type GetPushClientId = (options: GetPushClientIdOptions) => void;
-class GetPushClientIdSuccess extends UTSObject {
-    cid!: string;
-    errMsg!: string;
-}
-type GetPushClientIdSuccessCallback = (result: GetPushClientIdSuccess) => void;
-type GetPushClientIdFail = UniError;
-type GetPushClientIdFailCallback = (result: GetPushClientIdFail) => void;
-type GetPushClientIdComplete = Object;
-type GetPushClientIdCompleteCallback = (result: GetPushClientIdComplete) => void;
-class GetPushClientIdOptions extends UTSObject {
-    success: GetPushClientIdSuccessCallback | null = null;
-    fail: GetPushClientIdFailCallback | null = null;
-    complete: GetPushClientIdCompleteCallback | null = null;
-}
-type OnPushMessageType = "click" | "receive";
-export class OnPushMessageCallbackResult extends UTSObject {
-    type!: OnPushMessageType;
-    data!: UTSJSONObject;
-}
-type OnPushMessageCallback = (result: OnPushMessageCallbackResult) => void;
-type OnPushMessage = (callback: OnPushMessageCallback) => void;
-type OffPushMessage = (callback: OnPushMessageCallback) => void;
-type GetChannelManager = () => ChannelManager;
-class SetPushChannelOptions extends UTSObject {
-    soundName: string | null = null;
-    channelId!: string;
-    channelDesc!: string;
-    enableLights: boolean | null = null;
-    enableVibration: boolean | null = null;
-    importance: number | null = null;
-    lockscreenVisibility: number | null = null;
-}
-interface ChannelManager {
-    setPushChannel(options: SetPushChannelOptions): void;
-    getAllChannels(): Array<string>;
-}
-type CreatePushMessage = (options: CreatePushMessageOptions) => void;
-class CreatePushMessageSuccess extends UTSObject {
-}
-type CreatePushMessageSuccessCallback = (result: CreatePushMessageSuccess) => void;
-type CreatePushMessageFail = UniError;
-type CreatePushMessageFailCallback = (result: CreatePushMessageFail) => void;
-type CreatePushMessageComplete = Object;
-type CreatePushMessageCompleteCallback = (result: CreatePushMessageComplete) => void;
-class CreatePushMessageOptions extends UTSObject {
-    cover: boolean | null = null;
-    delay: number | null = null;
-    icon: string | null = null;
-    sound: string | null = null;
-    title: string | null = null;
-    content!: string;
-    payload: Object | null = null;
-    when: number | null = null;
-    channelId: string | null = null;
-    category: string | null = null;
-    success: CreatePushMessageSuccessCallback | null = null;
-    fail: CreatePushMessageFailCallback | null = null;
-    complete: CreatePushMessageCompleteCallback | null = null;
-}
-class initGetuiOptions extends UTSObject {
-    appId!: string;
-}
 type AddPhoneContact = (options: AddPhoneContactOptions) => void;
 class AddPhoneContactSuccess extends UTSObject {
 }
@@ -1992,13 +1923,6 @@ interface IUniWebsocketEmitter {
     emit: (eventName: string, ...args: (Object | undefined | null)[]) => void;
 }
 interface UniExtApi {
-    getPushClientId: GetPushClientId;
-    onPushMessage: OnPushMessage;
-    offPushMessage: OffPushMessage;
-    getChannelManager: GetChannelManager;
-    getPushChannelManager: GetPushChannelManager;
-    createPushMessage: CreatePushMessage;
-    setAppBadgeNumber: SetAppBadgeNumber;
     addPhoneContact: AddPhoneContact;
     startSoterAuthentication: StartSoterAuthentication;
     checkIsSupportSoterAuthentication: CheckIsSupportSoterAuthentication;
@@ -2091,209 +2015,6 @@ interface UniExtApi {
     onSocketError: OnSocketError;
 }
 export function initUniExtApi() {
-    class UniPush {
-        constructor(){}
-        pushClientId: string = '';
-        emitOnPushMessageCallback(param: OnPushMessageCallbackResult) {
-            console.error('emitOnPushMessageCallback', JSON.stringify(param));
-            try {
-                param.data.payload = JSON.parse(param.data.payload as string);
-            } catch (e) {}
-            if (param.data.payload['unipush_version'] == '2.0') {
-                param.data.title = param.data.payload['title'];
-                param.data.content = param.data.payload['content'];
-                param.data.payload = param.data.payload['payload'];
-                try {
-                    param.data.payload = JSON.parse(param.data.payload as string);
-                } catch (e) {
-                    console.error('JSON.parse payload 002', JSON.stringify(e));
-                }
-            }
-            uniPush.pushMessageCallbackList.forEach((cb)=>{
-                cb(param);
-            });
-        }
-        pushMessageCallbackList: OnPushMessageCallback[] = [];
-        onPushMessage(options: OnPushMessageCallback) {
-            this.pushMessageCallbackList.push(options);
-        }
-        init(options: initGetuiOptions) {
-            notificationManager.requestEnableNotification().then(()=>{}).catch((err: BusinessError)=>{
-                console.error("requestEnableNotification error = " + err);
-            });
-            if (this.pushClientId) {
-                return;
-            }
-            const initializeParams: GTInitializeParams = {
-                context: getContext() as common.UIAbilityContext,
-                onSuccess: (cid: string)=>{
-                    this.pushClientId = cid;
-                },
-                onFailed: (error: string)=>{
-                    console.error("EntryAbility个推SDK初始化失败，error = " + error);
-                }
-            };
-            const pushCallback: GTPushCallback = {
-                onReceiveClientId: (clientId: string)=>{
-                    console.error('EntryAbility clientId = ' + clientId);
-                    this.pushClientId = clientId;
-                },
-                onReceiveDeviceToken: (token: string)=>{
-                    console.error('######### 接收厂商token EntryAbility token = ' + token);
-                },
-                onReceiveOnlineState: (onLine: boolean)=>{
-                    console.error('EntryAbility onLine = ' + onLine);
-                },
-                onReceiveCommandResult: (result: GTCmdMessage)=>{
-                    console.error('EntryAbility cmd = ' + JSON.stringify(result));
-                },
-                onReceiveMessageData: (message: GTTransmitMessage)=>{
-                    console.error('onReceiveMessageData 111' + JSON.stringify(message));
-                    try {
-                        message.payload = JSON.parse(message.payload);
-                    } catch (e) {}
-                    this.emitOnPushMessageCallback({
-                        type: 'receive',
-                        data: {
-                            title: "",
-                            content: "",
-                            payload: message.payload
-                        }
-                    } as OnPushMessageCallbackResult);
-                    const taskid = message.taskId;
-                    const messageid = message.messageId;
-                    const result = PushManager.sendFeedbackMessage(taskid, messageid, 60001);
-                    console.info('onReceiveMessageData sendFeedbackMessage result = ' + result);
-                },
-                onNotificationMessageArrived: (message: GTNotificationMessage)=>{
-                    console.error('onNotificationMessageArrived' + JSON.stringify(message));
-                },
-                onNotificationMessageClicked: (message: GTNotificationMessage)=>{
-                    console.error('onNotificationMessageClicked' + JSON.stringify(message));
-                    this.emitOnPushMessageCallback({
-                        type: 'click',
-                        data: {
-                            title: message?.title || "",
-                            content: message?.content || "",
-                            payload: JSON.parse(message.payload as string)
-                        }
-                    } as OnPushMessageCallbackResult);
-                    const taskid = message.taskId;
-                    const messageid = message.messageId;
-                    const result = PushManager.sendFeedbackMessage(taskid, messageid, 60002);
-                    console.info('onReceiveMessageData sendFeedbackMessage result = ' + result);
-                }
-            };
-            PushManager.initialize(initializeParams);
-            PushManager.setPushCallback(pushCallback);
-        }
-        getPushClientId(options: GetPushClientIdOptions) {
-            const clientId = PushManager.getClientId();
-            const pushClientIdResult: GetPushClientIdSuccess = {
-                errMsg: "getPushClientId:ok",
-                cid: clientId
-            };
-            try {
-                options.success && options.success(pushClientIdResult);
-                options.complete && options.complete(pushClientIdResult);
-            } catch (e) {
-                console.error(e);
-            }
-        }
-        getPushWantAgent(parameters: Record<string, Object>, callback: (data: WantAgent) => void) {
-            const wantAgentInfo: wantAgent.WantAgentInfo = {
-                wants: [
-                    {
-                        bundleName: "io.dcloud.hellouniapp.h",
-                        action: 'uni.onClick.notification',
-                        abilityName: 'EntryAbility',
-                        parameters
-                    }
-                ],
-                actionType: wantAgent.OperationType.START_ABILITY,
-                requestCode: 0,
-                actionFlags: [
-                    wantAgent.WantAgentFlags.CONSTANT_FLAG
-                ]
-            };
-            wantAgent.getWantAgent(wantAgentInfo, (err: BusinessError, data: WantAgent)=>{
-                if (err) {
-                    console.error(`getWantAgent failed, code: ${JSON.stringify(err.code)}, message: ${JSON.stringify(err.message)}`);
-                } else {
-                    console.info('getWantAgent Callback success');
-                    callback(data);
-                }
-            });
-        }
-        createPushMessage(options: CreatePushMessageOptions) {
-            if (!options.title) {
-                throw new UniError('createPushMessage:fail title必传');
-            }
-            const notificationRequest: notificationManager.NotificationRequest = {
-                content: {
-                    notificationContentType: notificationManager.ContentType.NOTIFICATION_CONTENT_BASIC_TEXT,
-                    normal: {
-                        title: options.title,
-                        text: options.content
-                    }
-                },
-                extraInfo: {
-                    "text": "创建通知时传的"
-                },
-                deliveryTime: new Date(options.when || Date.now() + 1000).getTime(),
-                tapDismissed: true
-            };
-            if (options.category) {
-                const slotType: notificationManager.SlotType = notificationManager.SlotType[options.category];
-                notificationRequest.notificationSlotType = slotType;
-            }
-            const publishCallback = (err: BusinessError): void =>{
-                if (err) {
-                    const failResult: CreatePushMessageFail = {
-                        errMsg: "createPushMessage:fail",
-                        errCode: err.code,
-                        errSubject: "Some subject",
-                        data: null,
-                        cause: "Some cause"
-                    };
-                    try {
-                        options.fail && options.fail(failResult);
-                    } catch (e) {
-                        console.error(e);
-                    }
-                } else {
-                    const successResult: CreatePushMessageSuccess = {
-                        errMsg: "createPushMessage:ok"
-                    };
-                    try {
-                        options.success && options.success(successResult);
-                    } catch (e) {
-                        console.error(e);
-                    }
-                }
-                const completeResult: CreatePushMessageComplete = {
-                    errMsg: "createPushMessage:complete"
-                };
-                try {
-                    options.complete && options.complete(completeResult);
-                } catch (e) {
-                    console.error(e);
-                }
-            };
-            const payload: Record<string, Object> = {
-                "title": options.title,
-                "content": options.content,
-                "payload": options.payload || ""
-            };
-            this.getPushWantAgent(payload, (wantAgent: WantAgent)=>{
-                notificationRequest.wantAgent = wantAgent;
-                notificationManager.publish(notificationRequest, publishCallback);
-            });
-        }
-    }
-    const uniPush = new UniPush();
-    const onPushMessage = uniPush.onPushMessage;
-    const getPushClientId = uniPush.getPushClientId;
     const API_ADD_PHONE_CONTACT = 'addPhoneContact';
     const AddPhoneContactApiOptions: ApiOptions<AddPhoneContactOptions> = {
         formatArgs: new Map<string, ((firstName: string) => string | undefined)>([
@@ -2629,7 +2350,7 @@ export function initUniExtApi() {
                 if (postalAddresses.length) contactInfo.postalAddresses = postalAddresses;
                 contact.addContact(getAbilityContext()!, contactInfo).then((contactId)=>{
                     executor.resolve(contactId);
-                }).catch((err: BusinessError1)=>{
+                }).catch((err: BusinessError)=>{
                     executor.reject(err.message);
                 });
             } else {
@@ -2823,7 +2544,7 @@ export function initUniExtApi() {
             }
             auth.start();
         } catch (error) {
-            const code = (error as BusinessError2).code;
+            const code = (error as BusinessError1).code;
             executor.reject(getErrorMessage(code), {
                 errCode: getUniErrMsg(code)
             } as ApiError);
@@ -2860,7 +2581,7 @@ export function initUniExtApi() {
                         errMsg: ''
                     } as CheckIsSupportSoterAuthenticationSuccess);
                 } catch (error) {
-                    const code = (error as BusinessError2).code;
+                    const code = (error as BusinessError1).code;
                     executor.reject(getErrorMessage(code), {
                         errCode: getUniErrMsg(code)
                     } as ApiError);
@@ -2898,7 +2619,7 @@ export function initUniExtApi() {
                         errMsg: ''
                     } as CheckIsSoterEnrolledInDeviceSuccess);
                 } catch (error) {
-                    const code = (error as BusinessError2).code;
+                    const code = (error as BusinessError1).code;
                     executor.reject(getErrorMessage(code), {
                         errCode: getUniErrMsg(code)
                     } as ApiError);
@@ -3653,7 +3374,7 @@ export function initUniExtApi() {
         }
         getNotificationAuthorizeSetting() {
             try {
-                const isNotificationEnabled = notificationManager1.isNotificationEnabledSync();
+                const isNotificationEnabled = notificationManager.isNotificationEnabledSync();
                 if (isNotificationEnabled) {
                     this.appAuthorizeSetting.notificationAuthorized = DENIED;
                 }
@@ -3874,31 +3595,31 @@ export function initUniExtApi() {
     };
     const startBackgroundTask = ()=>{
         const abilityInfo: TempAbilityInfo = getAbilityContext1()!.abilityInfo;
-        const wantAgentInfo: wantAgent1.WantAgentInfo = {
+        const wantAgentInfo: wantAgent.WantAgentInfo = {
             wants: [
                 {
                     bundleName: abilityInfo.bundleName,
                     abilityName: abilityInfo.name
                 }
             ],
-            operationType: wantAgent1.OperationType.START_ABILITY,
+            operationType: wantAgent.OperationType.START_ABILITY,
             requestCode: 0,
             wantAgentFlags: [
-                wantAgent1.WantAgentFlags.UPDATE_PRESENT_FLAG
+                wantAgent.WantAgentFlags.UPDATE_PRESENT_FLAG
             ]
         };
-        wantAgent1.getWantAgent(wantAgentInfo).then((wantAgentObj)=>{
+        wantAgent.getWantAgent(wantAgentInfo).then((wantAgentObj)=>{
             return backgroundTaskManager.startBackgroundRunning(getAbilityContext1()!, backgroundTaskManager.BackgroundMode.AUDIO_PLAYBACK, wantAgentObj);
         }).then(()=>{
             console.debug('[getBackgroundAudioManager]  start bg operation succeeded');
-        }).catch((err: BusinessError3)=>{
+        }).catch((err: BusinessError2)=>{
             audioPlayerCallback.error(new AudioPlayerError1(err.message, err.code));
         });
     };
     const stopBackgroundTask = ()=>{
         backgroundTaskManager.stopBackgroundRunning(getAbilityContext1()!).then(()=>{
             console.debug('[getBackgroundAudioManager]  stop operation succeeded');
-        }).catch((err: BusinessError3)=>{
+        }).catch((err: BusinessError2)=>{
             audioPlayerCallback.error(new AudioPlayerError1(err.message, err.code));
         });
     };
@@ -4019,7 +3740,7 @@ export function initUniExtApi() {
                     const fd = getFdFromUriOrSandBoxPath1(value);
                     path = `fd://${fd}`;
                 } catch (err) {
-                    audioPlayerCallback.error(new AudioPlayerError1((err as BusinessError3).message, (err as BusinessError3).code));
+                    audioPlayerCallback.error(new AudioPlayerError1((err as BusinessError2).message, (err as BusinessError2).code));
                 }
             }
             if (BackgroundAudioManagerImpl.audioPlayer.src && path !== BackgroundAudioManagerImpl.audioPlayer.src) {
@@ -4287,7 +4008,7 @@ export function initUniExtApi() {
                             }
                         });
                     } catch (error) {
-                        reject(error as BusinessError4);
+                        reject(error as BusinessError3);
                     }
                 } else {
                     reject('permission denied');
@@ -4329,7 +4050,7 @@ export function initUniExtApi() {
                                             resolve(NetworkinfoType.UNKNOW);
                                         }
                                     }
-                                }).catch((err: BusinessError4)=>{
+                                }).catch((err: BusinessError3)=>{
                                     reject(err);
                                 });
                             }
@@ -4354,7 +4075,7 @@ export function initUniExtApi() {
             }
             UTSHarmony5.requestSystemPermission(PERMISSIONS1, (allRight: boolean)=>{
                 if (allRight && Network.netConnection) {
-                    Network.netConnection.register((err: BusinessError4)=>{});
+                    Network.netConnection.register((err: BusinessError3)=>{});
                     Network.netConnection.on('netCapabilitiesChange', (capability: connection.NetCapabilityInfo)=>{
                         const NetBearType = capability?.netCap?.bearerTypes[0];
                         let networkType = '';
@@ -4393,7 +4114,7 @@ export function initUniExtApi() {
             res.resolve({
                 networkType: NetworkinfoType[type].toLocaleLowerCase()
             } as GetNetworkTypeSuccess);
-        }).catch((err: BusinessError4)=>{
+        }).catch((err: BusinessError3)=>{
             res.reject(err.message);
         });
     }) as GetNetworkType;
@@ -4568,7 +4289,7 @@ export function initUniExtApi() {
                             break;
                     }
                 });
-                this.avRecorder.on('error', (err: BusinessError5)=>{
+                this.avRecorder.on('error', (err: BusinessError4)=>{
                     onRecorderStateChange('error', {
                         errMsg: `${err.message} ${err.code}`
                     } as StateChangeRes);
@@ -4843,7 +4564,7 @@ export function initUniExtApi() {
         try {
             if (access.getState() === access.BluetoothState.STATE_ON) res.bluetoothEnabled = true;
         } catch (err) {
-            res.bluetoothError = (err as BusinessError6).message;
+            res.bluetoothError = (err as BusinessError5).message;
         }
         try {
             res.locationEnabled = geoLocationManager.isLocationEnabled();
@@ -4851,7 +4572,7 @@ export function initUniExtApi() {
         try {
             res.wifiEnabled = wifiManager.isWifiActive();
         } catch (err) {
-            res.wifiError = (err as BusinessError6).message;
+            res.wifiError = (err as BusinessError5).message;
         }
         return res;
     }) as GetSystemSetting;
@@ -4903,7 +4624,7 @@ export function initUniExtApi() {
     const makePhoneCall: MakePhoneCall = defineAsyncApi<MakePhoneCallOptions, MakePhoneCallSuccess>(API_MAKE_PHONE_CALL, (options: MakePhoneCallOptions, res: ApiExecutor<MakePhoneCallSuccess>)=>{
         const dialRes = dial(options.phoneNumber) as Object as Promise<void>;
         if (isPromise(dialRes)) {
-            dialRes.then(res.resolve).catch((err: BusinessError7<void>)=>{
+            dialRes.then(res.resolve).catch((err: BusinessError6<void>)=>{
                 res.reject(err.message);
             });
         } else {
@@ -5882,7 +5603,7 @@ export function initUniExtApi() {
         });
     }) as ClosePreviewImage;
     const saveResource = async (src: Resource, dest: string)=>{
-        const context = getAbilityContext3() as common1.UIAbilityContext;
+        const context = getAbilityContext3() as common.UIAbilityContext;
         const resourceManager = context.resourceManager;
         const srcPath: string = src.params?.[0] as string;
         const destFile = fs3.openSync(dest, fs3.OpenMode.WRITE_ONLY);
@@ -5899,7 +5620,7 @@ export function initUniExtApi() {
     };
     const saveMediaToAlbum = async (fromUri: string, type: 'image' | 'video'): Promise<string | ISaveMediaError> =>{
         const realPath = getResourceStr(fromUri) as string | Resource;
-        const context = getAbilityContext3() as common1.UIAbilityContext;
+        const context = getAbilityContext3() as common.UIAbilityContext;
         let fileName = Date.now() + (type === 'image' ? '.png' : '.mp4');
         const isResource = typeof realPath !== 'string';
         if (isResource) {
@@ -6045,7 +5766,7 @@ export function initUniExtApi() {
                 } as CompressImageSuccess);
             });
         } catch (error) {
-            executor.reject((error as BusinessError8).message);
+            executor.reject((error as BusinessError7).message);
         }
     }, CompressImageApiProtocol, CompressImageApiOptions) as CompressImage;
     const IMAGES: string[] = [
@@ -6167,13 +5888,13 @@ export function initUniExtApi() {
                     } else {
                         executor.reject('cancel');
                     }
-                }).catch((err: BusinessError9)=>{
+                }).catch((err: BusinessError8)=>{
                     executor.reject(err.message, {
                         errCode: err.code
                     } as ApiError);
                 });
             } catch (error) {
-                let err: BusinessError9 = error as BusinessError9;
+                let err: BusinessError8 = error as BusinessError8;
                 executor.reject(err.message, {
                     errCode: err.code
                 } as ApiError);
@@ -6212,7 +5933,7 @@ export function initUniExtApi() {
                 ]
             } as ChooseMediaSuccess);
         } catch (error) {
-            const err = error as BusinessError10;
+            const err = error as BusinessError9;
             executor.reject(err.message, {
                 errCode: err.code
             } as ApiError);
@@ -6822,7 +6543,7 @@ export function initUniExtApi() {
                     }
                 }
                 const headers = latestHeaders as Record<string, string | string[]>;
-                const oldCookies = (headers['Set-Cookie'] || headers['set-cookie'] || []) as string[];
+                const oldCookies = headers ? (headers['Set-Cookie'] || headers['set-cookie'] || []) as string[] : [] as string[];
                 const cookies = latestHeaders ? cookiesParse(latestHeaders as Record<string, string>) : [];
                 let newCookies = oldCookies.join(',');
                 if (newCookies) {
@@ -7193,7 +6914,7 @@ export function initUniExtApi() {
             });
             executor.resolve();
         } catch (error) {
-            executor.reject((error as BusinessError11).message);
+            executor.reject((error as BusinessError10).message);
         }
     }, ConfigMTLSApiProtocol, ConfigMTLSApiOptions) as ConfigMTLS;
     const API_LOGIN = 'login';
@@ -7268,7 +6989,7 @@ export function initUniExtApi() {
                 pushParams: bundleManager2.getBundleInfoForSelfSync(bundleManager2.BundleFlag.GET_BUNDLE_INFO_DEFAULT).name
             }
         } as Want;
-        const context = getAbilityContext7() as common2.UIAbilityContext;
+        const context = getAbilityContext7() as common1.UIAbilityContext;
         context.startAbility(want).then(()=>{
             exec.resolve({
                 errMsg: ''
@@ -7313,7 +7034,7 @@ export function initUniExtApi() {
             uri: uri,
             type: fileContentType as string
         };
-        const abilityContext = getAbilityContext8() as common3.UIAbilityContext;
+        const abilityContext = getAbilityContext8() as common2.UIAbilityContext;
         abilityContext.startAbility(want).then(()=>{
             exec.resolve({} as OpenDocumentSuccess);
         }, (err: Error)=>{
@@ -7580,7 +7301,7 @@ export function initUniExtApi() {
             window.getUIContext().getPromptAction().showToast(showToastOptions);
             res.resolve({} as ShowToastSuccess);
         } catch (error) {
-            let message = (error as BusinessError12).message;
+            let message = (error as BusinessError11).message;
             res.reject(message);
         }
     }, ShowToastProtocol, ShowToastApiOptions) as ShowToast;
@@ -7868,7 +7589,7 @@ export function initUniExtApi() {
             shareData.addRecord(shareRecords[index]);
         }
         const shareController: systemShare.ShareController = new systemShare.ShareController(shareData);
-        shareController.show(getAbilityContext10() as common4.UIAbilityContext, {} as systemShare.ShareControllerOptions);
+        shareController.show(getAbilityContext10() as common3.UIAbilityContext, {} as systemShare.ShareControllerOptions);
         const onDismiss = ()=>{
             shareController.off('dismiss', onDismiss);
             exec.resolve({} as ShareWithSystemSuccess);
@@ -7904,7 +7625,7 @@ export function initUniExtApi() {
         if (stores.has(appId)) {
             return stores.get(appId)!;
         }
-        const store = dataPreferences.getPreferencesSync(getAbilityContext11() as common5.UIAbilityContext, {
+        const store = dataPreferences.getPreferencesSync(getAbilityContext11() as common4.UIAbilityContext, {
             name: `storage.${appId}`
         } as dataPreferences.Options);
         stores.set(appId, store);
@@ -8451,13 +8172,6 @@ export function initUniExtApi() {
         }
     }) as CloseSocket;
     return {
-        getPushClientId,
-        onPushMessage,
-        offPushMessage,
-        getChannelManager,
-        getPushChannelManager,
-        createPushMessage,
-        setAppBadgeNumber,
         addPhoneContact,
         startSoterAuthentication,
         checkIsSupportSoterAuthentication,
