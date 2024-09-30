@@ -31,8 +31,16 @@ export function setupPage(component: VuePageComponent) {
     initPageVm(pageVm, __pageInstance as Page.PageInstance['$page'])
     if (__X__) {
       const uniPage = new UniPageImpl()
-      uniPage.route = pageVm.$page.route
-      uniPage.options = new UTSJSONObject(pageVm.$page.options)
+      pageVm.$basePage = pageVm.$page as Page.PageInstance['$page']
+      pageVm.$page = uniPage
+      uniPage.route = pageVm.$basePage.route
+      // @ts-expect-error
+      uniPage.optionsByJS = pageVm.$basePage.options
+      Object.defineProperty(uniPage, 'options', {
+        get: function () {
+          return new UTSJSONObject(pageVm.$basePage.options)
+        },
+      })
       uniPage.vm = pageVm
       uniPage.$vm = pageVm
       uniPage.getElementById = (
@@ -71,9 +79,6 @@ export function setupPage(component: VuePageComponent) {
 
       uniPage.getAndroidView = () => null
       uniPage.getHTMLElement = () => null
-
-      pageVm.$basePage = pageVm.$page as Page.PageInstance['$page']
-      pageVm.$page = uniPage
     }
     if (getPage$BasePage(pageVm).openType !== 'openDialogPage') {
       addCurrentPage(
