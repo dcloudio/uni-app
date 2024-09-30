@@ -1,6 +1,6 @@
 {
   "name": "@dcloudio/uni-stacktracey",
-  "version": "2.0.2-4020820240925002",
+  "version": "2.0.2-alpha-4020920240929001",
   "description": "@dcloudio/uni-stacktracey",
   "main": "dist/uni-stacktracey.cjs.js",
   "module": "dist/uni-stacktracey.es.js",
@@ -18,7 +18,7 @@
   "bugs": {
     "url": "https://github.com/dcloudio/uni-app/issues"
   },
-  "gitHead": "2a0b978771b34a0acea888d70421fd664a8729d9",
+  "gitHead": "33e807d66e1fe47e2ee08ad9c59247e37b8884da",
   "devDependencies": {
     "@dcloudio/types": "^2.6.12"
   }
