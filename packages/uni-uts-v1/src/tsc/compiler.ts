@@ -8,6 +8,7 @@ import type {
 } from '../../lib/uni-x/dist/compiler'
 import { originalPositionForSync } from '../sourceMap'
 import { normalizePath } from '../shared'
+import { isEnableUTSNumber } from '../utils'
 
 export type { UniXCompiler } from '../../lib/uni-x/dist/compiler'
 
@@ -79,6 +80,9 @@ export function createUniXCompiler(
     originalPositionForSync,
     watchFile,
     incremental: mode === 'development',
+    transformOptions: {
+      enableUTSNumber: isEnableUTSNumber(),
+    },
     ...options,
   }
   const { UniXCompiler } = require('../../lib/uni-x/dist/compiler')

@@ -25,7 +25,10 @@ declare function initTargetHacker(_targetLanguage: TargetLanguage): {
     isTypeRelatedTo: typeof isTypeRelatedTo;
     useTypeAndInterfaceAsValue: boolean;
 };
-declare function initTargetTransformers(targetLanguage: TargetLanguage): _uts_transforms_base.UTSTransformerFactoryCreator[];
+interface CreateTransformerOptions {
+    enableUTSNumber?: boolean;
+}
+declare function initTargetTransformers(targetLanguage: TargetLanguage, options?: CreateTransformerOptions): _uts_transforms_base.UTSTransformerFactoryCreator[];
 
 interface TransformOptions {
     transformArguments?: {
@@ -60,6 +63,7 @@ type UniXCompilerOptions = {
         sourceContent?: string;
     };
     watchFile?(path: string, callback: tsTypes__default.FileWatcherCallback, pollingInterval?: number, options?: tsTypes__default.WatchOptions): tsTypes__default.FileWatcher;
+    transformOptions?: CreateTransformerOptions;
 };
 declare class UniXCompiler implements IUTSCompiler {
     private _options;
