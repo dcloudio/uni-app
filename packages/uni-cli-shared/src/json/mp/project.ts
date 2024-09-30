@@ -46,7 +46,7 @@ export function parseMiniProgramProjectJson(
     // 用户的平台配置
     const platformConfig = manifestJson[platform]
     if (platformConfig) {
-      projectKeys.forEach((name) => {
+      const setProjectJson = (name: string) => {
         if (hasOwn(platformConfig, name)) {
           if (
             isPlainObject(platformConfig[name]) &&
@@ -61,16 +61,17 @@ export function parseMiniProgramProjectJson(
             ;(projectJson as Record<string, any>)[name] = platformConfig[name]
           }
         }
+      }
+
+      // common mp config
+      projectKeys.forEach((name) => {
+        setProjectJson(name)
       })
 
       // 读取 template 中的配置，读取并使用用户配置
       Object.keys(template).forEach((name) => {
-        console.log('tempatel key:', name)
-        if (
-          !isMiniProgramProjectJsonKey(name) &&
-          hasOwn(platformConfig, name)
-        ) {
-          ;(projectJson as Record<string, any>)[name] = platformConfig[name]
+        if (!isMiniProgramProjectJsonKey(name)) {
+          setProjectJson(name)
         }
       })
 
@@ -88,6 +89,8 @@ export function parseMiniProgramProjectJson(
     }
     projectJson.condition.miniprogram = miniprogram
   }
+
+  // appid
   if (!projectJson.appid) {
     projectJson.appid = 'touristappid'
   }
