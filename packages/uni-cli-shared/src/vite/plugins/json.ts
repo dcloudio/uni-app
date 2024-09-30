@@ -9,6 +9,10 @@ export function uniJsonPlugin(): Plugin {
     name: 'uni:json',
     enforce: 'pre',
     transform(code, id) {
+      // 如果已经被其他插件处理过了，就不再处理，比如 commonjs 插件，ICAPRegistrar.json?commonjs-external
+      if (id.startsWith('\0')) {
+        return
+      }
       if (path.extname(parseVueRequest(id).filename) !== '.json') {
         return
       }
