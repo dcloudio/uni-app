@@ -1,6 +1,6 @@
 {
   "private": true,
-  "version": "3.0.0-alpha-4020920240929001",
+  "version": "3.0.0-4020920240930001",
   "workspaces": [
     "packages/*"
   ],
@@ -45,8 +45,8 @@
     "@babel/parser": "^7.23.9",
     "@babel/preset-env": "^7.20.2",
     "@dcloudio/types": "3.4.11",
-    "@dcloudio/uni-api": "3.0.0-alpha-4020920240929001",
-    "@dcloudio/uni-app": "3.0.0-alpha-4020920240929001",
+    "@dcloudio/uni-api": "3.0.0-4020920240930001",
+    "@dcloudio/uni-app": "3.0.0-4020920240930001",
     "@dcloudio/uni-app-x": "^0.7.22",
     "@jest/types": "^29.0.3",
     "@microsoft/api-extractor": "^7.34.5",
