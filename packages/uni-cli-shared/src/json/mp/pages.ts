@@ -6,7 +6,7 @@ import { filterPlatformPages, validatePages } from '../pages'
 import type { AppJson, NetworkTimeout, PageWindowOptions } from './types'
 import { parseTabBar, parseWindowOptions } from './utils'
 import { normalizePath } from '../../utils'
-import { isMiniProgramProjectJsonKey } from './project'
+import { isMiniProgramProjectJsonKey, projectKeys } from './project'
 import { getPlatformManifestJsonOnce } from '../manifest'
 import { hasThemeJson, initTheme } from '../theme'
 
@@ -44,19 +44,17 @@ export function mergeMiniProgramAppJson(
   platformJson: Record<string, any> = {},
   source: Record<string, any> = {}
 ) {
-  function isTemplateKey(name: string) {
-    return Object.keys(source).includes(name)
-  }
+  Object.keys(source).forEach((key) => {
+    if (!projectKeys.includes(key)) {
+      projectKeys.push(key)
+    }
+  })
 
   Object.keys(platformJson).forEach((name) => {
     if (
       !isMiniProgramProjectJsonKey(name) &&
       !NON_APP_JSON_KEYS.includes(name)
     ) {
-      // 联动 json/mp/project.ts 排除 template 的 key
-      if (isTemplateKey(name)) {
-        return
-      }
       appJson[name] = platformJson[name]
     }
   })

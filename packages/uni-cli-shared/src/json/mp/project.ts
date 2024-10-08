@@ -14,7 +14,7 @@ interface ProjectConfig {
   }
 }
 
-const projectKeys = [
+export const projectKeys = [
   'appid',
   'setting',
   'miniprogramRoot',
@@ -63,16 +63,16 @@ export function parseMiniProgramProjectJson(
         }
       }
 
+      // 读取 template 中的配置
+      Object.keys(template).forEach((name) => {
+        if (!projectKeys.includes(name)) {
+          projectKeys.push(name)
+        }
+      })
+
       // common mp config
       projectKeys.forEach((name) => {
         setProjectJson(name)
-      })
-
-      // 读取 template 中的配置，读取并使用用户配置
-      Object.keys(template).forEach((name) => {
-        if (!isMiniProgramProjectJsonKey(name)) {
-          setProjectJson(name)
-        }
       })
 
       // 使用了微信小程序手势系统，自动开启 ES6=>ES5
