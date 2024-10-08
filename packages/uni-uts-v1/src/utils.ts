@@ -498,9 +498,10 @@ export function genConfigJson(
   outputDir: string,
   provider?: { name: string; service: string; class: string }
 ) {
-  if (!Object.keys(components).length && !hookClass && !provider) {
-    return
-  }
+  // 不过滤了，只要有，就copy
+  // if (!Object.keys(components).length && !hookClass && !provider) {
+  //   return
+  // }
   const pluginId = basename(pluginRelativeDir)
   const utsInputDir = resolve(
     inputDir,
