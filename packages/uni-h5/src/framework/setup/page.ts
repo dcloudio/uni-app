@@ -135,12 +135,12 @@ export class UniDialogPageImpl
     options: UTSJSONObject
     $component: any
     getParentPage: () => UniPage | null
-    $disableEscBack?: boolean
+    $disableEscBack?: boolean | null
   }) {
     super({ route, options })
     this.$component = $component
     this.getParentPage = getParentPage
-    this.$disableEscBack = $disableEscBack
+    this.$disableEscBack = !!$disableEscBack
   }
 }
 
