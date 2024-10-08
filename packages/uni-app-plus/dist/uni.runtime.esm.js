@@ -17105,6 +17105,7 @@ const LocationViewPage = {
                     latitude: $data.latitude,
                     longitude: $data.longitude,
                     showNav: $data.showNav,
+                    name: $data.name,
                     onClose: _cache[0] ||
                         (_cache[0] = (...args) => $options.onClose && $options.onClose(...args)),
                     onNavClick: _cache[1] ||
@@ -17131,14 +17132,16 @@ const initLocationViewPageOnce = once(() => {
 const openLocation = defineAsyncApi(API_OPEN_LOCATION, (data, { resolve, reject }) => {
     if (__uniConfig.qqMapKey) {
         initLocationViewPageOnce();
-        const { latitude = '', longitude = '' } = data || {};
+        const { latitude = '', longitude = '', name = '' } = data || {};
         uni.navigateTo({
             url: '/' +
                 ROUTE_LOCATION_VIEW_PAGE +
                 '?latitude=' +
                 latitude +
                 '&longitude=' +
-                longitude,
+                longitude +
+                '&name=' +
+                name,
             success: (res) => {
                 resolve();
             },

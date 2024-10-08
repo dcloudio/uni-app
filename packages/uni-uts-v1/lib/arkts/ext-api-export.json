@@ -579,9 +579,6 @@
       "OnPushMessageCallbackResult"
     ],
     [
-      "uniPush"
-    ],
-    [
       "getPushClientId"
     ],
     [
@@ -592,6 +589,9 @@
     ],
     [
       "createPushMessage"
+    ],
+    [
+      "setAppBadgeNumber"
     ]
   ]
 }
