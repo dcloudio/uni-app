@@ -41,13 +41,22 @@ const NON_APP_JSON_KEYS = [
 
 export function mergeMiniProgramAppJson(
   appJson: Record<string, any>,
-  platformJson: Record<string, any> = {}
+  platformJson: Record<string, any> = {},
+  source: Record<string, any> = {}
 ) {
+  function isTemplateKey(name: string) {
+    return Object.keys(source).includes(name)
+  }
+
   Object.keys(platformJson).forEach((name) => {
     if (
       !isMiniProgramProjectJsonKey(name) &&
       !NON_APP_JSON_KEYS.includes(name)
     ) {
+      // 联动 json/mp/project.ts 排除 template 的 key
+      if (isTemplateKey(name)) {
+        return
+      }
       appJson[name] = platformJson[name]
     }
   })

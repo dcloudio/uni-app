@@ -3,8 +3,11 @@
  * 分别放入 project.config.json 或者 app.json
  */
 
-import { parseMiniProgramProjectJson } from '../src/json/mp/project'
 import { recursive } from 'merge'
+import {
+  mergeMiniProgramAppJson,
+  parseMiniProgramProjectJson,
+} from '../src/index'
 
 // xhs 的默认配置
 import mpXhsConfig from '../../uni-mp-xhs/src/compiler/project.config.json'
@@ -29,12 +32,14 @@ const userManifestJSON: any = {
       urlCheck: false,
     },
     usingComponents: true,
+    mockFeature: 'enable',
   },
   'mp-alipay': {
     usingComponents: true,
     enableAppxNg: false,
     component2: false,
     enableNodeModuleBabelTransform: false,
+    mockFeature: 'enable',
   },
   'mp-baidu': {
     usingComponents: true,
@@ -43,6 +48,7 @@ const userManifestJSON: any = {
       autoAudits: true,
       urlCheck: true,
     },
+    mockFeature: 'enable',
   },
   'mp-toutiao': {
     usingComponents: true,
@@ -151,6 +157,8 @@ describe('parseMiniProgramProjectJson', () => {
       libVersion: (userManifestJSON[platfrom] as any)?.libVersion || '',
       condition: mpXhsConfig.condition,
     })
+
+    expect(projectJson.hasOwnProperty('mockFeature')).toBe(false)
   })
 
   it('测试自定义 manifest.json - alipay', () => {
@@ -178,6 +186,7 @@ describe('parseMiniProgramProjectJson', () => {
         mpAlipayConfig.enableNodeModuleBabelTransform,
       projectname: userManifestJSON.name,
     })
+    expect(projectJson.hasOwnProperty('mockFeature')).toBe(false)
   })
 
   it('测试自定义 manifest.json - baidu', () => {
@@ -214,5 +223,49 @@ describe('parseMiniProgramProjectJson', () => {
         urlCheck: true,
       },
     })
+    expect(projectJson.hasOwnProperty('mockFeature')).toBe(false)
+  })
+})
+
+describe('mergeMiniProgramAppJson', () => {
+  it('测试 xhs', () => {
+    const platform = 'mp-xhs'
+
+    let appJson: any = {}
+
+    mergeMiniProgramAppJson(appJson, userManifestJSON[platform], mpXhsConfig)
+
+    expect(appJson.hasOwnProperty('_usePrivacyCheck_')).toBe(true)
+  })
+  it('测试 weixin', () => {
+    const platform = 'mp-weixin'
+
+    let appJson: any = {}
+
+    mergeMiniProgramAppJson(appJson, userManifestJSON[platform], mpWeixinConfig)
+    expect(appJson.hasOwnProperty('mockFeature')).toBe(true)
+    expect(appJson.mockFeature).toBe('enable')
+  })
+
+  it('测试 alipay', () => {
+    const platform = 'mp-alipay'
+
+    let appJson: any = {}
+
+    mergeMiniProgramAppJson(appJson, userManifestJSON[platform], mpAlipayConfig)
+
+    expect(appJson.hasOwnProperty('mockFeature')).toBe(true)
+    expect(appJson.mockFeature).toBe('enable')
+  })
+
+  it('测试 baidu', () => {
+    const platform = 'mp-baidu'
+
+    let appJson: any = {}
+
+    mergeMiniProgramAppJson(appJson, userManifestJSON[platform], mpBaiduConfig)
+
+    expect(appJson.hasOwnProperty('mockFeature')).toBe(true)
+    expect(appJson.mockFeature).toBe('enable')
   })
 })
