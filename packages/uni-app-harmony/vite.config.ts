@@ -238,6 +238,7 @@ function initArkTSExtApi() {
   // 遍历所有 ext-api，查找已实现 app-harmony 的 ext-api
   const extApiDir = path.resolve(process.env.UNI_APP_EXT_API_DIR)
   const extApiTempDir = resolveExtApiTempDir('uni-app-harmony')
+  fs.emptyDirSync(extApiTempDir)
   const extApiStore = getExtApiPaths([internalExtApiDir, extApiDir])
 
   const importExtApis: string[] = []
