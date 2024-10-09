@@ -11050,6 +11050,9 @@ const createAnimation = defineSyncApi(API_CREATE_ANIMATION, (option) => {
 }, CreateAnimationProtocol, CreateAnimationOptions);
 
 const API_ON_TAB_BAR_MID_BUTTON_TAP = 'onTabBarMidButtonTap';
+const onTabBarMidButtonTap = defineOnApi(API_ON_TAB_BAR_MID_BUTTON_TAP, () => {
+    // noop
+});
 
 const API_ON_WINDOW_RESIZE = 'onWindowResize';
 
@@ -13721,6 +13724,7 @@ var uni$1 = {
   onLocaleChange: onLocaleChange,
   onLocationChange: onLocationChange,
   onLocationChangeError: onLocationChangeError,
+  onTabBarMidButtonTap: onTabBarMidButtonTap,
   onWindowResize: onWindowResize,
   openLocation: openLocation,
   pageScrollTo: pageScrollTo,

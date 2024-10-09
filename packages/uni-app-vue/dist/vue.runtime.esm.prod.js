@@ -5658,10 +5658,12 @@ function getExposeProxy(instance) {
           return target[key];
         } else if (key in publicPropertiesMap) {
           return publicPropertiesMap[key](instance);
+        } else if (key === "$scope") {
+          return instance.ctx.$scope;
         }
       },
       has(target, key) {
-        return key in target || key in publicPropertiesMap;
+        return key in target || key in publicPropertiesMap || key === "$scope";
       }
     }));
   }

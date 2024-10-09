@@ -1029,8 +1029,15 @@ function setupPage(component) {
     initPageVm(pageVm, __pageInstance);
     {
       var uniPage = new UniPageImpl();
-      uniPage.route = pageVm.$page.route;
-      uniPage.options = new UTSJSONObject(pageVm.$page.options);
+      pageVm.$basePage = pageVm.$page;
+      pageVm.$page = uniPage;
+      uniPage.route = pageVm.$basePage.route;
+      uniPage.optionsByJS = pageVm.$basePage.options;
+      Object.defineProperty(uniPage, "options", {
+        get: function() {
+          return new UTSJSONObject(pageVm.$basePage.options);
+        }
+      });
       uniPage.vm = pageVm;
       uniPage.$vm = pageVm;
       uniPage.getElementById = (id2) => {
@@ -1054,13 +1061,17 @@ function setupPage(component) {
         var pageStyle = uniPage.getPageStyleByJS();
         return new UTSJSONObject(pageStyle);
       };
+      uniPage.$getPageStyle = () => {
+        return uniPage.getPageStyle();
+      };
       uniPage.setPageStyle = (styles2) => {
         uniPage.setPageStyleByJS(styles2);
       };
+      uniPage.$setPageStyle = (styles2) => {
+        uniPage.setPageStyle(styles2);
+      };
       uniPage.getAndroidView = () => null;
       uniPage.getHTMLElement = () => null;
-      pageVm.$basePage = pageVm.$page;
-      pageVm.$page = uniPage;
     }
     if (getPage$BasePage(pageVm).openType !== "openDialogPage") {
       addCurrentPage(initScope(__pageId, pageVm, __pageInstance));
@@ -1188,6 +1199,9 @@ var tabs = /* @__PURE__ */ new Map();
 var BORDER_COLORS = /* @__PURE__ */ new Map([["white", "rgba(255, 255, 255, 0.33)"], ["black", "rgba(0, 0, 0, 0.33)"]]);
 function getBorderStyle(borderStyle) {
   var value = BORDER_COLORS.get(borderStyle);
+  if (!value) {
+    console.warn("4.23 版本起，在 pages.json 设置 tabbar borderStyle、在 uni.setTabBarStyle 设置 borderStyle 时仅支持 white/black，推荐使用 borderColor 自定义颜色。");
+  }
   return value || BORDER_COLORS.get("black");
 }
 function fixBorderStyle(tabBarConfig) {

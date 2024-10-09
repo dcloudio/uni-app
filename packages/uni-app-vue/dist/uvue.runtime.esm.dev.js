@@ -1373,6 +1373,7 @@ var ON_TAB_ITEM_TAP = 'onTabItemTap';
 var ON_REACH_BOTTOM = 'onReachBottom';
 var ON_PULL_DOWN_REFRESH = 'onPullDownRefresh';
 var ON_SHARE_TIMELINE = 'onShareTimeline';
+var ON_SHARE_CHAT = 'onShareChat'; // xhs-share
 var ON_ADD_TO_FAVORITES = 'onAddToFavorites';
 var ON_SHARE_APP_MESSAGE = 'onShareAppMessage';
 // navigationBar
@@ -1440,7 +1441,7 @@ function normalizeProps(props) {
   }
   return props;
 }
-var PAGE_HOOKS = [ON_INIT, ON_LOAD, ON_SHOW, ON_HIDE, ON_UNLOAD, ON_BACK_PRESS, ON_PAGE_SCROLL, ON_TAB_ITEM_TAP, ON_REACH_BOTTOM, ON_PULL_DOWN_REFRESH, ON_SHARE_TIMELINE, ON_SHARE_APP_MESSAGE, ON_ADD_TO_FAVORITES, ON_SAVE_EXIT_STATE, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED];
+var PAGE_HOOKS = [ON_INIT, ON_LOAD, ON_SHOW, ON_HIDE, ON_UNLOAD, ON_BACK_PRESS, ON_PAGE_SCROLL, ON_TAB_ITEM_TAP, ON_REACH_BOTTOM, ON_PULL_DOWN_REFRESH, ON_SHARE_TIMELINE, ON_SHARE_APP_MESSAGE, ON_SHARE_CHAT, ON_ADD_TO_FAVORITES, ON_SAVE_EXIT_STATE, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED];
 function isRootImmediateHook(name) {
   var PAGE_SYNC_HOOKS = [ON_LOAD, ON_SHOW];
   return PAGE_SYNC_HOOKS.indexOf(name) > -1;
@@ -1775,37 +1776,20 @@ function createDecl(prop, value, important, raws, source) {
 }
 var backgroundColor = 'backgroundColor';
 var backgroundImage = 'backgroundImage';
-function createTransformBackground(options) {
-  return decl => {
-    var {
-      value,
-      important,
-      raws,
-      source
-    } = decl;
-    // nvue 平台维持原有逻辑不变
-    var isUvuePlatform = options.type === 'uvue';
-    if (isUvuePlatform) {
-      if (/^#?\S+$/.test(value) || /^rgba?(.+)$/.test(value)) {
-        return [createDecl(backgroundImage, 'none', important, raws, source), createDecl(backgroundColor, value, important, raws, source)];
-      } else if (/^linear-gradient(.+)$/.test(value)) {
-        return [createDecl(backgroundImage, value, important, raws, source), createDecl(backgroundColor, 'transparent', important, raws, source)];
-      } else if (value == '') {
-        return [createDecl(backgroundImage, 'none', important, raws, source), createDecl(backgroundColor, 'transparent', important, raws, source)];
-      }
-      return [decl];
-    } else {
-      if (/^#?\S+$/.test(value) || /^rgba?(.+)$/.test(value)) {
-        return [createDecl(backgroundColor, value, important, raws, source)];
-      } else if (/^linear-gradient(.+)$/.test(value)) {
-        return [createDecl(backgroundImage, value, important, raws, source)];
-      } else if (value == '') {
-        return [decl];
-      }
-      return [decl];
-    }
-  };
-}
+var transformBackground = decl => {
+  var {
+    value,
+    important,
+    raws,
+    source
+  } = decl;
+  if (/^#?\S+$/.test(value) || /^rgba?(.+)$/.test(value)) {
+    return [createDecl(backgroundColor, value, important, raws, source)];
+  } else if (/^linear-gradient(.+)$/.test(value)) {
+    return [createDecl(backgroundImage, value, important, raws, source)];
+  }
+  return [decl];
+};
 var borderWidth = 'Width';
 var borderStyle = 'Style';
 var borderColor = 'Color';
@@ -1823,16 +1807,8 @@ function createTransformBorder(options) {
       var index = splitResult.findIndex(str => item.test(str));
       return index < 0 ? null : splitResult.splice(index, 1)[0];
     });
-    var isUvuePlatform = options.type === 'uvue';
-    if (isUvuePlatform) {
-      if (splitResult.length > 0 && value !== '') {
-        return [decl];
-      }
-    } else {
-      // nvue 维持不变
-      if (splitResult.length > 0) {
-        return [decl];
-      }
+    if (splitResult.length) {
+      return [decl];
     }
     return [createDecl(prop + borderWidth, (result[0] || (options.type === 'uvue' ? 'medium' : '0')).trim(), important, raws, source), createDecl(prop + borderStyle, (result[1] || (options.type === 'uvue' ? 'none' : 'solid')).trim(), important, raws, source), createDecl(prop + borderColor, (result[2] || '#000000').trim(), important, raws, source)];
   };
@@ -1979,7 +1955,7 @@ function getDeclTransforms(options) {
   var styleMap = _objectSpread({
     transition: transformTransition,
     border: transformBorder,
-    background: createTransformBackground(options),
+    background: transformBackground,
     borderTop: transformBorder,
     borderRight: transformBorder,
     borderBottom: transformBorder,
@@ -2005,7 +1981,7 @@ var DeclTransforms;
 var expanded = Symbol('expanded');
 function expand(options) {
   var plugin = {
-    postcssPlugin: "".concat(options.type || 'nvue', ":expand"),
+    postcssPlugin: 'nvue:expand',
     Declaration(decl) {
       if (decl[expanded]) {
         return;

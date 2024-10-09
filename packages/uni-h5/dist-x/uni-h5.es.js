@@ -229,32 +229,12 @@ class UTSType {
   }
 }
 const OriginalJSON = JSON;
-function createUTSJSONObject(obj) {
-  const result = new UTSJSONObject({});
-  for (const key in obj) {
-    const value = obj[key];
-    if (isPlainObject(value)) {
-      result[key] = createUTSJSONObject(value);
-    } else if (getType$1(value) === "array") {
-      result[key] = value.map((item) => {
-        if (isPlainObject(item)) {
-          return createUTSJSONObject(item);
-        } else {
-          return item;
-        }
-      });
-    } else {
-      result[key] = value;
-    }
-  }
-  return result;
-}
 function parseObjectOrArray(object, utsType) {
   const objectType = getType$1(object);
   if (object === null || objectType !== "object" && objectType !== "array") {
     return object;
   }
-  if (utsType && utsType !== UTSJSONObject) {
+  if (utsType || utsType === UTSJSONObject) {
     try {
       return new utsType(object, void 0, true);
     } catch (error) {
@@ -267,7 +247,7 @@ function parseObjectOrArray(object, utsType) {
       return parseObjectOrArray(value);
     });
   } else if (objectType === "object") {
-    return createUTSJSONObject(object);
+    return new UTSJSONObject(object);
   }
   return object;
 }
@@ -430,6 +410,21 @@ function initUTSJSONObjectProperties(obj) {
   }
   Object.defineProperties(obj, propertyDescriptorMap);
 }
+function setUTSJSONObjectValue(obj, key, value) {
+  if (isPlainObject(value)) {
+    obj[key] = new UTSJSONObject$1(value);
+  } else if (getType$1(value) === "array") {
+    obj[key] = value.map((item) => {
+      if (isPlainObject(item)) {
+        return new UTSJSONObject$1(item);
+      } else {
+        return item;
+      }
+    });
+  } else {
+    obj[key] = value;
+  }
+}
 let UTSJSONObject$1 = class UTSJSONObject2 {
   static keys(obj) {
     return Object.keys(obj);
@@ -446,12 +441,13 @@ let UTSJSONObject$1 = class UTSJSONObject2 {
   constructor(content = {}) {
     if (content instanceof Map) {
       content.forEach((value, key) => {
-        this[key] = value;
+        setUTSJSONObjectValue(this, key, value);
       });
     } else {
       for (const key in content) {
         if (Object.prototype.hasOwnProperty.call(content, key)) {
-          this[key] = content[key];
+          const value = content[key];
+          setUTSJSONObjectValue(this, key, value);
         }
       }
     }
@@ -8284,7 +8280,13 @@ class UniPageImpl extends UniBasePageImpl {
   getPageStyle() {
     return new UTSJSONObject({});
   }
+  $getPageStyle() {
+    return this.getPageStyle();
+  }
   setPageStyle(style) {
+  }
+  $setPageStyle(style) {
+    this.setPageStyle(style);
   }
   getElementById(id2) {
     const currentPage = getCurrentPage();
@@ -8327,7 +8329,7 @@ class UniDialogPageImpl extends UniBasePageImpl {
     this.$disableEscBack = false;
     this.$component = $component;
     this.getParentPage = getParentPage;
-    this.$disableEscBack = $disableEscBack;
+    this.$disableEscBack = !!$disableEscBack;
   }
 }
 const entryPageState = {
