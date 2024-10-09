@@ -6,7 +6,6 @@ import deviceInfo from '@ohos.deviceInfo';
 import fs from '@ohos.file.fs';
 import photoAccessHelper from '@ohos.file.photoAccessHelper';
 import inputMethod from '@ohos.inputMethod';
-import image from '@ohos.multimedia.image';
 import connection from '@ohos.net.connection';
 import webSocket from '@ohos.net.webSocket';
 import call from '@ohos.telephony.call';
@@ -114,7 +113,8 @@ import { http } from '@kit.NetworkKit';
 import http1 from '@ohos.net.http';
 import http2 from '@ohos.net.http';
 import http3 from '@ohos.net.http';
-import { image as image1 } from '@kit.ImageKit';
+import { image } from '@kit.ImageKit';
+import image1 from '@ohos.multimedia.image';
 import { isPlainObject, Emitter as Emitter2, getCurrentMP } from "@dcloudio/uni-mp-sdk";
 import { media as media1 } from '@kit.MediaKit';
 import { media } from '@kit.MediaKit';
@@ -1036,6 +1036,10 @@ export class ChooseMediaOptions extends UTSObject {
     complete: (ChooseMediaCompleteCallback) | null = null;
 }
 export type ChooseMedia = (options: ChooseMediaOptions) => void;
+interface _CompressImageSuccess {
+    size: number;
+    tempFilePath: string;
+}
 interface MediaFile {
     fileType: 'video' | 'image';
     tempFilePath: string;
@@ -1094,10 +1098,6 @@ interface IPreviewImageOptions {
 interface ISaveMediaError {
     code: number;
     message: string;
-}
-interface _CompressImageSuccess {
-    size: number;
-    tempFilePath: string;
 }
 interface IFile {
     path: string;
@@ -3207,7 +3207,7 @@ export function initUniExtApi() {
                 exec.reject(err.message);
             } else {
                 exec.resolve({
-                    savedFilePath: 'file://' + savedFilePath
+                    savedFilePath
                 } as SaveFileSuccess);
             }
         });
@@ -3231,7 +3231,7 @@ export function initUniExtApi() {
                             return null;
                         }
                         return {
-                            filePath: 'file://' + fullPath,
+                            filePath: fullPath,
                             size: stat.size,
                             createTime: stat.ctime
                         } as SavedFileListItem;
@@ -4631,142 +4631,6 @@ export function initUniExtApi() {
             res.resolve();
         }
     }, MakePhoneCallProtocol) as MakePhoneCall;
-    const _getVideoInfo = async (uri: string): Promise<GetVideoInfoSuccess> =>{
-        const file = await fs1.open(uri, fs1.OpenMode.READ_ONLY);
-        const avMetadataExtractor = await media3.createAVMetadataExtractor();
-        let metadata: media3.AVMetadata | null = null;
-        let size: number = 0;
-        try {
-            size = (await fs1.stat(file.fd)).size;
-            avMetadataExtractor.dataSrc = {
-                fileSize: size,
-                callback: (buffer: ArrayBuffer, length: number, pos: number | null = null)=>{
-                    return fs1.readSync(file.fd, buffer, {
-                        offset: pos,
-                        length
-                    } as ReadOptions);
-                }
-            };
-            metadata = await avMetadataExtractor.fetchMetadata();
-        } catch (error) {
-            throw error as Error;
-        } finally{
-            await avMetadataExtractor.release();
-            await fs1.close(file);
-        }
-        const videoOrientationArr = [
-            'up',
-            'right',
-            'down',
-            'left'
-        ] as MediaOrientation[];
-        return {
-            size: size,
-            duration: metadata.duration ? Number(metadata.duration) / 1000 : undefined,
-            width: metadata.videoWidth ? Number(metadata.videoWidth) : undefined,
-            height: metadata.videoHeight ? Number(metadata.videoHeight) : undefined,
-            type: metadata.mimeType,
-            orientation: metadata.videoOrientation ? videoOrientationArr[Number(metadata.videoOrientation) / 90] : undefined
-        } as GetVideoInfoSuccess;
-    };
-    const _getImageInfo = async (uri: string): Promise<GetImageInfoSuccess> =>{
-        const file = await fs1.open(uri, fs1.OpenMode.READ_ONLY);
-        const imageSource = image.createImageSource(file.fd);
-        const imageInfo = await imageSource.getImageInfo();
-        let orientation: string = '';
-        try {
-            orientation = await imageSource.getImageProperty(image.PropertyKey.ORIENTATION);
-        } catch (error) {}
-        await imageSource.release();
-        await fs1.close(file.fd);
-        let orientationNum = 0;
-        if (typeof orientation === 'string') {
-            const matched = orientation.match(/^Unknown value (\d)$/);
-            if (matched && matched[1]) {
-                orientationNum = Number(matched[1]);
-            } else if (/^\d$/.test(orientation)) {
-                orientationNum = Number(orientation);
-            }
-        } else if (typeof orientation === 'number') {
-            orientationNum = orientation;
-        }
-        let orientationStr: MediaOrientation = 'up';
-        switch(orientationNum){
-            case 2:
-                orientationStr = 'up-mirrored';
-                break;
-            case 3:
-                orientationStr = 'down';
-                break;
-            case 4:
-                orientationStr = 'down-mirrored';
-                break;
-            case 5:
-                orientationStr = 'left-mirrored';
-                break;
-            case 6:
-                orientationStr = 'right';
-                break;
-            case 7:
-                orientationStr = 'right-mirrored';
-                break;
-            case 8:
-                orientationStr = 'left';
-                break;
-            case 0:
-            case 1:
-            default:
-                orientationStr = 'up';
-                break;
-        }
-        return {
-            path: uri,
-            width: imageInfo.size.width,
-            height: imageInfo.size.height,
-            orientation: orientationStr
-        } as GetImageInfoSuccess;
-    };
-    const _chooseMedia = async (options: _ChooseMediaOptions): Promise<chooseMediaSuccessCallbackResult> =>{
-        const photoSelectOptions = new photoAccessHelper.PhotoSelectOptions();
-        const mimeType = options.mimeType;
-        photoSelectOptions.MIMEType = mimeType;
-        photoSelectOptions.maxSelectNumber = options.count || 9;
-        photoSelectOptions.isOriginalSupported = options.isOriginalSupported;
-        photoSelectOptions.isPhotoTakingSupported = !(options.sourceType && !options.sourceType.includes('camera'));
-        const photoPicker = new photoAccessHelper.PhotoViewPicker();
-        const photoSelectResult = await photoPicker.select(photoSelectOptions);
-        const uris = photoSelectResult.photoUris;
-        if (mimeType !== photoAccessHelper.PhotoViewMIMETypes.VIDEO_TYPE) {
-            return {
-                tempFiles: uris.map((uri)=>{
-                    const file = fs1.openSync(uri, fs1.OpenMode.READ_ONLY);
-                    const stat = fs1.statSync(file.fd);
-                    fs1.closeSync(file);
-                    return {
-                        fileType: 'image',
-                        tempFilePath: uri,
-                        size: stat.size
-                    } as MediaFile;
-                })
-            };
-        }
-        const tempFiles: MediaFile[] = [];
-        for(let i = 0; i < uris.length; i++){
-            const uri = uris[i];
-            const videoInfo = await _getVideoInfo(uri);
-            tempFiles.push({
-                fileType: 'video',
-                tempFilePath: uri,
-                size: videoInfo.size,
-                duration: videoInfo.duration,
-                width: videoInfo.width,
-                height: videoInfo.height
-            } as MediaFile);
-        }
-        return {
-            tempFiles
-        } as chooseMediaSuccessCallbackResult;
-    };
     const API_GET_IMAGE_INFO = 'getImageInfo';
     const GetImageInfoApiProtocol = new Map<string, ProtocolOptions>([
         [
@@ -5291,6 +5155,227 @@ export function initUniExtApi() {
             }
         ]
     ]);
+    const getFileName = (path: string)=>{
+        const array = path.split('/');
+        return array[array.length - 1];
+    };
+    let id: number = 0;
+    const _compressImage = (args: CompressImageOptions)=>{
+        const imageName = getFileName(args.src);
+        const imageExt = imageName.split('.').slice(-1)[0];
+        const imagePacker: image.ImagePacker = image.createImagePacker();
+        const file2 = fileIo4.openSync(args.src, fileIo4.OpenMode.READ_ONLY);
+        if (!file2) {
+            throw new Error('open file failed');
+        }
+        const imageSource: image.ImageSource = image.createImageSource(file2.fd);
+        if (imageSource == null) {
+            throw new Error('create image source failed');
+        }
+        let decodingOptions: image.DecodingOptions = {
+            editable: true
+        };
+        if (args.rotate != null) {
+            decodingOptions.rotate = args.rotate;
+        }
+        if (args.compressedHeight != null || args.compressedWidth != null) {
+            decodingOptions.desiredSize = {
+                height: (args.compressedHeight ?? args.compressedWidth)!,
+                width: (args.compressedWidth ?? args.compressedHeight)!
+            };
+        }
+        const pixelMap = imageSource.createPixelMapSync(decodingOptions);
+        let format: string = '';
+        if ([
+            'jpg',
+            'jpe',
+            'jpeg',
+            'png'
+        ].includes(imageExt)) {
+            format = 'image/jpeg';
+        }
+        if (imageExt === 'webp') format = 'image/webp';
+        if (!format.length) {
+            throw new Error('error image format');
+        }
+        const packOptions: image.PackingOption = {
+            format,
+            quality: args.quality ?? 80
+        };
+        const tempFileName = `${Date.now()}_${id++}_${imageName}`;
+        const tempDirPath = `${getEnv2().TEMP_PATH}/compress`;
+        if (!fileIo4.accessSync(tempDirPath)) {
+            fileIo4.mkdirSync(tempDirPath, true);
+        }
+        const tempFilePath: string = `${tempDirPath}/${tempFileName}`;
+        const file = fileIo4.openSync(tempFilePath, fileIo4.OpenMode.CREATE | fileIo4.OpenMode.READ_WRITE);
+        return imagePacker.packToFile(pixelMap, file.fd, packOptions).then((_)=>{
+            const size = fileIo4.statSync(file.fd).size;
+            fileIo4.closeSync(file.fd);
+            pixelMap.release();
+            return {
+                size,
+                tempFilePath
+            } as _CompressImageSuccess;
+        });
+    };
+    const compressImage: CompressImage = defineAsyncApi<CompressImageOptions, CompressImageSuccess>(API_CHOOSE_IMAGE, (args: CompressImageOptions, executor: ApiExecutor<CompressImageSuccess>)=>{
+        try {
+            _compressImage(args).then((res)=>{
+                executor.resolve({
+                    tempFilePath: res.tempFilePath
+                } as CompressImageSuccess);
+            });
+        } catch (error) {
+            executor.reject((error as BusinessError7).message);
+        }
+    }, CompressImageApiProtocol, CompressImageApiOptions) as CompressImage;
+    const _getVideoInfo = async (uri: string): Promise<GetVideoInfoSuccess> =>{
+        const file = await fs1.open(uri, fs1.OpenMode.READ_ONLY);
+        const avMetadataExtractor = await media3.createAVMetadataExtractor();
+        let metadata: media3.AVMetadata | null = null;
+        let size: number = 0;
+        try {
+            size = (await fs1.stat(file.fd)).size;
+            avMetadataExtractor.dataSrc = {
+                fileSize: size,
+                callback: (buffer: ArrayBuffer, length: number, pos: number | null = null)=>{
+                    return fs1.readSync(file.fd, buffer, {
+                        offset: pos,
+                        length
+                    } as ReadOptions);
+                }
+            };
+            metadata = await avMetadataExtractor.fetchMetadata();
+        } catch (error) {
+            throw error as Error;
+        } finally{
+            await avMetadataExtractor.release();
+            await fs1.close(file);
+        }
+        const videoOrientationArr = [
+            'up',
+            'right',
+            'down',
+            'left'
+        ] as MediaOrientation[];
+        return {
+            size: size,
+            duration: metadata.duration ? Number(metadata.duration) / 1000 : undefined,
+            width: metadata.videoWidth ? Number(metadata.videoWidth) : undefined,
+            height: metadata.videoHeight ? Number(metadata.videoHeight) : undefined,
+            type: metadata.mimeType,
+            orientation: metadata.videoOrientation ? videoOrientationArr[Number(metadata.videoOrientation) / 90] : undefined
+        } as GetVideoInfoSuccess;
+    };
+    const _getImageInfo = async (uri: string): Promise<GetImageInfoSuccess> =>{
+        const file = await fs1.open(uri, fs1.OpenMode.READ_ONLY);
+        const imageSource = image1.createImageSource(file.fd);
+        const imageInfo = await imageSource.getImageInfo();
+        let orientation: string = '';
+        try {
+            orientation = await imageSource.getImageProperty(image1.PropertyKey.ORIENTATION);
+        } catch (error) {}
+        await imageSource.release();
+        await fs1.close(file.fd);
+        let orientationNum = 0;
+        if (typeof orientation === 'string') {
+            const matched = orientation.match(/^Unknown value (\d)$/);
+            if (matched && matched[1]) {
+                orientationNum = Number(matched[1]);
+            } else if (/^\d$/.test(orientation)) {
+                orientationNum = Number(orientation);
+            }
+        } else if (typeof orientation === 'number') {
+            orientationNum = orientation;
+        }
+        let orientationStr: MediaOrientation = 'up';
+        switch(orientationNum){
+            case 2:
+                orientationStr = 'up-mirrored';
+                break;
+            case 3:
+                orientationStr = 'down';
+                break;
+            case 4:
+                orientationStr = 'down-mirrored';
+                break;
+            case 5:
+                orientationStr = 'left-mirrored';
+                break;
+            case 6:
+                orientationStr = 'right';
+                break;
+            case 7:
+                orientationStr = 'right-mirrored';
+                break;
+            case 8:
+                orientationStr = 'left';
+                break;
+            case 0:
+            case 1:
+            default:
+                orientationStr = 'up';
+                break;
+        }
+        return {
+            path: uri,
+            width: imageInfo.size.width,
+            height: imageInfo.size.height,
+            orientation: orientationStr
+        } as GetImageInfoSuccess;
+    };
+    const _chooseMedia = async (options: _ChooseMediaOptions): Promise<chooseMediaSuccessCallbackResult> =>{
+        const photoSelectOptions = new photoAccessHelper.PhotoSelectOptions();
+        const mimeType = options.mimeType;
+        photoSelectOptions.MIMEType = mimeType;
+        photoSelectOptions.maxSelectNumber = options.count || 9;
+        photoSelectOptions.isOriginalSupported = options.isOriginalSupported;
+        photoSelectOptions.isPhotoTakingSupported = !(options.sourceType && !options.sourceType.includes('camera'));
+        const photoPicker = new photoAccessHelper.PhotoViewPicker();
+        const photoSelectResult = await photoPicker.select(photoSelectOptions);
+        const uris = photoSelectResult.photoUris;
+        if (mimeType !== photoAccessHelper.PhotoViewMIMETypes.VIDEO_TYPE) {
+            let realUris: string[] = uris;
+            if (!photoSelectResult.isOriginalPhoto) {
+                const compressResult = await Promise.all(uris.map((uri): Promise<CompressImageSuccess> =>{
+                    return _compressImage({
+                        src: uri,
+                        quality: 80
+                    } as CompressImageOptions);
+                }));
+                realUris = compressResult.map((result)=>result.tempFilePath);
+            }
+            return {
+                tempFiles: realUris.map((uri)=>{
+                    const file = fs1.openSync(uri, fs1.OpenMode.READ_ONLY);
+                    const stat = fs1.statSync(file.fd);
+                    fs1.closeSync(file);
+                    return {
+                        fileType: 'image',
+                        tempFilePath: uri,
+                        size: stat.size
+                    } as MediaFile;
+                })
+            };
+        }
+        const tempFiles: MediaFile[] = [];
+        for(let i = 0; i < uris.length; i++){
+            const uri = uris[i];
+            const videoInfo = await _getVideoInfo(uri);
+            tempFiles.push({
+                fileType: 'video',
+                tempFilePath: uri,
+                size: videoInfo.size,
+                duration: videoInfo.duration,
+                width: videoInfo.width,
+                height: videoInfo.height
+            } as MediaFile);
+        }
+        return {
+            tempFiles
+        } as chooseMediaSuccessCallbackResult;
+    };
     const MediaUniErrors: Map<number, string> = new Map([
         [
             1101001,
@@ -5694,81 +5779,6 @@ export function initUniExtApi() {
             res.reject(err.message);
         });
     }, SaveVideoToPhotosAlbumApiProtocol) as SaveVideoToPhotosAlbum;
-    const getFileName = (path: string)=>{
-        const array = path.split('/');
-        return array[array.length - 1];
-    };
-    let id: number = 0;
-    const _compressImage = (args: CompressImageOptions)=>{
-        const imageName = getFileName(args.src);
-        const imageExt = imageName.split('.').slice(-1)[0];
-        const imagePacker: image1.ImagePacker = image1.createImagePacker();
-        const file2 = fileIo4.openSync(args.src, fileIo4.OpenMode.READ_ONLY);
-        if (!file2) {
-            throw new Error('open file failed');
-        }
-        const imageSource: image1.ImageSource = image1.createImageSource(file2.fd);
-        if (imageSource == null) {
-            throw new Error('create image source failed');
-        }
-        let decodingOptions: image1.DecodingOptions = {
-            editable: true
-        };
-        if (args.rotate != null) {
-            decodingOptions.rotate = args.rotate;
-        }
-        if (args.compressedHeight != null || args.compressedWidth != null) {
-            decodingOptions.desiredSize = {
-                height: (args.compressedHeight ?? args.compressedWidth)!,
-                width: (args.compressedWidth ?? args.compressedHeight)!
-            };
-        }
-        const pixelMap = imageSource.createPixelMapSync(decodingOptions);
-        let format: string = '';
-        if ([
-            'jpg',
-            'jpe',
-            'jpeg',
-            'png'
-        ].includes(imageExt)) {
-            format = 'image/jpeg';
-        }
-        if (imageExt === 'webp') format = 'image/webp';
-        if (!format.length) {
-            throw new Error('error image format');
-        }
-        const packOptions: image1.PackingOption = {
-            format,
-            quality: args.quality ?? 80
-        };
-        const tempFileName = `${Date.now()}_${id++}_${imageName}`;
-        const tempDirPath = `${getEnv2().TEMP_PATH}/compress`;
-        if (!fileIo4.accessSync(tempDirPath)) {
-            fileIo4.mkdirSync(tempDirPath, true);
-        }
-        const tempFilePath: string = `${tempDirPath}/${tempFileName}`;
-        const file = fileIo4.openSync(tempFilePath, fileIo4.OpenMode.CREATE | fileIo4.OpenMode.READ_WRITE);
-        return imagePacker.packToFile(pixelMap, file.fd, packOptions).then((_)=>{
-            const size = fileIo4.statSync(file.fd).size;
-            fileIo4.closeSync(file.fd);
-            pixelMap.release();
-            return {
-                size,
-                tempFilePath
-            } as _CompressImageSuccess;
-        });
-    };
-    const compressImage: CompressImage = defineAsyncApi<CompressImageOptions, CompressImageSuccess>(API_CHOOSE_IMAGE, (args: CompressImageOptions, executor: ApiExecutor<CompressImageSuccess>)=>{
-        try {
-            _compressImage(args).then((res)=>{
-                executor.resolve({
-                    tempFilePath: res.tempFilePath
-                } as CompressImageSuccess);
-            });
-        } catch (error) {
-            executor.reject((error as BusinessError7).message);
-        }
-    }, CompressImageApiProtocol, CompressImageApiOptions) as CompressImage;
     const IMAGES: string[] = [
         "jpg",
         "jpe",
@@ -6886,7 +6896,7 @@ export function initUniExtApi() {
                     await stream.flush();
                     await stream.close();
                     exec.resolve({
-                        tempFilePath: 'file://' + tempFilePath,
+                        tempFilePath,
                         statusCode
                     } as DownloadFileSuccess);
                 }).catch((err: Error)=>{
