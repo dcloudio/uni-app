@@ -5,7 +5,7 @@ let callbackId = 1;
 let proxy;
 const keepAliveCallbacks = {};
 function isUniElement(obj) {
-    return typeof obj.getNodeId === 'function' && obj.pageId;
+    return obj && typeof obj.getNodeId === 'function' && obj.pageId;
 }
 function isComponentPublicInstance(instance) {
     return instance && instance.$ && instance.$.proxy === instance;
@@ -38,7 +38,7 @@ function normalizeArg(arg, callbacks, keepAlive) {
         }
         return id;
     }
-    else if (isPlainObject(arg)) {
+    else if (isPlainObject(arg) || isUniElement(arg)) {
         const el = parseElement(arg);
         if (el) {
             let nodeId = '';

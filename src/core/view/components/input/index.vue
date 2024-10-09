@@ -58,11 +58,37 @@
 import {
   field
 } from 'uni-mixins'
-import { kebabCase } from 'uni-shared'
+import { kebabCase, once } from 'uni-shared'
 const INPUT_TYPES = ['text', 'number', 'idcard', 'digit', 'password', 'tel']
 const NUMBER_TYPES = ['number', 'digit']
 const AUTOCOMPLETES = ['off', 'one-time-code']
 const INPUT_MODES = ['none', 'text', 'decimal', 'numeric', 'tel', 'search', 'email', 'url']
+
+const resolveDigitDecimalPointDeleteContentBackward = once(() => {
+  if (__PLATFORM__ === 'app-plus') {
+    const osVersion = plus.os.version
+    return (
+      plus.os.name === 'iOS' &&
+      !!osVersion &&
+      (parseInt(osVersion) >= 16 && parseFloat(osVersion) < 17.2)
+    )
+  }
+
+  if (__PLATFORM__ === 'h5') {
+    const ua = navigator.userAgent
+    let osVersion = ''
+    const osVersionFind = ua.match(/OS\s([\w_]+)\slike/)
+    if (osVersionFind) {
+      osVersion = osVersionFind[1].replace(/_/g, '.')
+    } else if (/Macintosh|Mac/i.test(ua) && navigator.maxTouchPoints > 0) {
+      const versionMatched = ua.match(/Version\/(\S*)\b/)
+      if (versionMatched) {
+        osVersion = versionMatched[1]
+      }
+    }
+    return !!osVersion && (parseInt(osVersion) >= 16 && parseFloat(osVersion) < 17.2)
+  }
+})
 export default {
   name: 'Input',
   mixins: [field],
@@ -254,19 +280,8 @@ export default {
             return false
           }
         } else if ($event.inputType === 'deleteContentBackward') {
-          // ios 16 无法删除小数
-          if (
-            (
-              __PLATFORM__ === 'app-plus' &&
-              plus.os.name === 'iOS' &&
-              plus.os.version &&
-              parseInt(plus.os.version) === 16
-            ) ||
-            (
-              __PLATFORM__ === 'h5' &&
-              navigator.userAgent.includes('iPhone OS 16')
-            )
-          ) {
+          // ios 无法删除小数
+          if (resolveDigitDecimalPointDeleteContentBackward()) {
             if (this.cachedValue.slice(-2, -1) === '.') {
               this.cachedValue = this.valueSync = $event.target.value = this.cachedValue.slice(0, -2)
               this.$triggerInput($event, {
@@ -291,12 +306,14 @@ export default {
         if (maxlength > 0 && $event.target.value.length > maxlength) {
           // 输入前字符长度超出范围，则不触发input，且将值还原
           // 否则截取一定长度且触发input
-          if (this.cachedValue.length === maxlength) {
-            this.valueSync = this.cachedValue
+          $event.target.value = $event.target.value.slice(0, maxlength)
+          this.valueSync = $event.target.value
+          // 粘贴时过长的字符时，需判断和之前的value是否一致，一致则不更新input
+          const preValue = (this.value !== null && this.value !== undefined)
+            ? this.value.toString()
+            : ''
+          if (preValue === $event.target.value) {
             outOfMaxlength = true
-          } else {
-            $event.target.value = $event.target.value.slice(0, maxlength)
-            this.valueSync = $event.target.value
           }
         }
 

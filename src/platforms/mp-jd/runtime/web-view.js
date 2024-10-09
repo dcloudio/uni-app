@@ -1,8 +1,6 @@
 const isJD = window.jd &&
   window.jd.miniProgram &&
-  /micromessenger/i.test(navigator.userAgent) &&
-  /miniProgram/i.test(navigator.userAgent)
-
+  /jdmp/i.test(navigator.userAgent)
 export function initWebviewApi (readyCallback) {
   if (!isJD) {
     return

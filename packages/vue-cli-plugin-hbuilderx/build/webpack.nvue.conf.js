@@ -236,6 +236,11 @@ if (process.env.UNI_USING_V3_NATIVE) {
 }
 
 if (process.env.UNI_USING_NATIVE || process.env.UNI_USING_V3_NATIVE) {
+  const {
+    WebpackUTSPlugin
+  } = require('@dcloudio/uni-cli-shared/lib/uts/uts-webpack-plugin.js')
+  plugins.push(new WebpackUTSPlugin())
+
   plugins.push(new WebpackUniMPPlugin())
   const assetsDir = 'static'
   const hybridDir = 'hybrid/html'

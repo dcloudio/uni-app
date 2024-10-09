@@ -191,6 +191,10 @@ export const promiseInterceptor = {
     }
     return new Promise((resolve, reject) => {
       res.then(res => {
+        if (!res) {
+          resolve(res)
+          return
+        }
         if (res[0]) {
           reject(res[0])
         } else {

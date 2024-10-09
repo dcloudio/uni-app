@@ -112,6 +112,12 @@ export function getBrowserInfo () {
     model = 'iPad'
     osname = 'iOS'
     osversion = typeof window.BigInt === 'function' ? '14.0' : '13.0'
+    if (parseInt(osversion) === 14) {
+      const versionMatched = ua.match(/Version\/(\S*)\b/)
+      if (versionMatched) {
+        osversion = versionMatched[1]
+      }
+    }
     deviceType = 'pad'
   } else if (isWindows || isMac || isLinux) {
     model = 'PC'
