@@ -1,3 +1,4 @@
+/// <reference path="./global/index.d.ts" />
 /// <reference path="./Array.d.ts" />
 /// <reference path="./UTSActivityCallback.d.ts" />
 /// <reference path="./UTSAndroid.d.ts" />

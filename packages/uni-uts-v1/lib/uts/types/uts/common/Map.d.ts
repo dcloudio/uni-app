@@ -52,6 +52,8 @@ interface Map<K, V> {
    * 按照插入顺序依次对 Map 中每个键/值对执行一次给定的函数。
    * @param callbackfn Map 中每个元素所要执行的函数。它具有如下的参数：
    * value: 每个迭代的值。
+   * key: 每个迭代的键。
+   * map: 正在迭代的 Map。
    * @param thisArg 在 callbackfn 执行中使用的 this 的值。
    * @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/map.html#forEach
    * @uniPlatform {
@@ -73,7 +75,10 @@ interface Map<K, V> {
    *    }
    * }
    */
-  forEach(callbackfn: (value: V) => void, thisArg?: any): void
+  forEach(
+    callbackfn: (value: V, key: K, map: Map<K, V>) => void,
+    thisArg?: any
+  ): void
   /**
    * 按照插入顺序依次对 Map 中每个键/值对执行一次给定的函数。
    * @param callbackfn Map 中每个元素所要执行的函数。它具有如下的参数：
@@ -105,8 +110,6 @@ interface Map<K, V> {
    * 按照插入顺序依次对 Map 中每个键/值对执行一次给定的函数。
    * @param callbackfn Map 中每个元素所要执行的函数。它具有如下的参数：
    * value: 每个迭代的值。
-   * key: 每个迭代的键。
-   * map: 正在迭代的 Map。
    * @param thisArg 在 callbackfn 执行中使用的 this 的值。
    * @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/map.html#forEach
    * @uniPlatform {
@@ -128,10 +131,7 @@ interface Map<K, V> {
    *    }
    * }
    */
-  forEach(
-    callbackfn: (value: V, key: K, map: Map<K, V>) => void,
-    thisArg?: any
-  ): void
+  forEach(callbackfn: (value: V) => void, thisArg?: any): void
   /**
    * 从 Map 对象返回指定的元素。如果与所提供的键相关联的值是一个对象，那么你将获得该对象的引用，对该对象所做的任何更改都会有效地在 Map 对象中修改它。
    * @param key 从 Map 对象返回的元素的键。

@@ -76,7 +76,7 @@ interface Set<T> {
   delete(value: T): boolean
   /**
    * 对 Set 对象中的每个值按插入顺序执行一次提供的函数。
-   * @param callbackfn 为集合中每个元素执行的回调函数，该函数接收一个参数：value。
+   * @param callbackfn 为集合中每个元素执行的回调函数，该函数接收三个参数：value、key: Set 中正在处理的当前元素。因为 Set 中没有键，所以 value 会被共同传递给这两个参数。set: 调用 forEach() 的 Set 对象。
    * @param thisArg 值在执行 callbackFn 时作为 this 使用。
    * @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/Set.html#forEach
    * @uniPlatform {
@@ -98,7 +98,10 @@ interface Set<T> {
    *    }
    * }
    */
-  forEach(callbackfn: (value: T) => void, thisArg?: any): void
+  forEach(
+    callbackfn: (value: T, value2: T, set: Set<T>) => void,
+    thisArg?: any
+  ): void
   /**
    * 对 Set 对象中的每个值按插入顺序执行一次提供的函数。
    * @param callbackfn 为集合中每个元素执行的回调函数，该函数接收两个参数：value、key。
@@ -126,7 +129,7 @@ interface Set<T> {
   forEach(callbackfn: (value: T, value2: T) => void, thisArg?: any): void
   /**
    * 对 Set 对象中的每个值按插入顺序执行一次提供的函数。
-   * @param callbackfn 为集合中每个元素执行的回调函数，该函数接收三个参数：value、key: Set 中正在处理的当前元素。因为 Set 中没有键，所以 value 会被共同传递给这两个参数。set: 调用 forEach() 的 Set 对象。
+   * @param callbackfn 为集合中每个元素执行的回调函数，该函数接收一个参数：value。
    * @param thisArg 值在执行 callbackFn 时作为 this 使用。
    * @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/Set.html#forEach
    * @uniPlatform {
@@ -148,11 +151,7 @@ interface Set<T> {
    *    }
    * }
    */
-  forEach(
-    callbackfn: (value: T, value2: T, set: Set<T>) => void,
-    thisArg?: any
-  ): void
-
+  forEach(callbackfn: (value: T) => void, thisArg?: any): void
   /**
    * 返回一个布尔值来指示对应的值是否存在于 Set 对象中。
    * @param value 要测试是否存在于 Set 对象中的值。
