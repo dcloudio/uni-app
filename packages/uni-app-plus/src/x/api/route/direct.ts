@@ -7,7 +7,7 @@ import { parseUrl } from '@dcloudio/uni-shared'
 export function isDirectPage(page: ComponentPublicInstance): boolean {
   return (
     !!__uniConfig.realEntryPagePath &&
-    getRealPath(page.$page.route, true) ===
+    getRealPath(page.$basePage.route, true) ===
       getRealPath(parseUrl(__uniConfig.entryPagePath!).path, true)
   )
 }

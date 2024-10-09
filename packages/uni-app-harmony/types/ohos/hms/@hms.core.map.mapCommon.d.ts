@@ -7,6 +7,7 @@
  * @kit MapKit
  */
 import type image from '@ohos.multimedia.image';
+import type { Callback } from '@ohos.base';
 /**
  * This module provides common object definitions for maps.
  *
@@ -20,6 +21,7 @@ declare namespace mapCommon {
     /**
      * The information to initialize the map.
      *
+     * @typedef MapOptions
      * @syscap SystemCapability.Map.Core
      * @stagemodelonly
      * @atomicservice
@@ -253,6 +255,7 @@ declare namespace mapCommon {
     /**
      * Provide the longitude and latitude of the map.
      *
+     * @typedef LatLng
      * @syscap SystemCapability.Map.Core
      * @stagemodelonly
      * @atomicservice
@@ -283,6 +286,7 @@ declare namespace mapCommon {
     /**
      * Provide the attributes of the map camera, include position, zoom level, tilt angle, and orientation.
      *
+     * @typedef CameraPosition
      * @syscap SystemCapability.Map.Core
      * @stagemodelonly
      * @atomicservice
@@ -336,6 +340,7 @@ declare namespace mapCommon {
     /**
      * Provide the rectangular region defined by a pair of latitudes and longitudes.
      *
+     * @typedef LatLngBounds
      * @syscap SystemCapability.Map.Core
      * @stagemodelonly
      * @atomicservice
@@ -366,6 +371,7 @@ declare namespace mapCommon {
     /**
      * The border style used to describe a circle, polygon or polyline.
      *
+     * @typedef PatternItem
      * @syscap SystemCapability.Map.Core
      * @stagemodelonly
      * @atomicservice
@@ -473,6 +479,7 @@ declare namespace mapCommon {
     /**
      * Used to customize the my location style
      *
+     * @typedef MyLocationStyle
      * @syscap SystemCapability.Map.Core
      * @stagemodelonly
      * @atomicservice
@@ -513,7 +520,7 @@ declare namespace mapCommon {
         /**
          * The my location icon which is the file URI format.
          *
-         * @type { ?string | image.PixelMap | Resource}
+         * @type { ?(string | image.PixelMap | Resource) }
          * @syscap SystemCapability.Map.Core
          * @stagemodelonly
          * @atomicservice
@@ -521,7 +528,7 @@ declare namespace mapCommon {
          */
         icon?: string | image.PixelMap | Resource;
         /**
-         * The fill color of the precision circle.The color value is ARGB format。
+         * The fill color of the precision circle.The color value is ARGB format.
          *
          * @type { ?number }
          * @default 0x8F7570FF
@@ -546,6 +553,7 @@ declare namespace mapCommon {
     /**
      * Indicates the POI object on the map.
      *
+     * @typedef Poi
      * @syscap SystemCapability.Map.Core
      * @stagemodelonly
      * @atomicservice
@@ -633,6 +641,7 @@ declare namespace mapCommon {
     /**
      * This interface defines the overlay basic information.
      *
+     * @typedef BaseOverlayOptions
      * @syscap SystemCapability.Map.Core
      * @stagemodelonly
      * @atomicservice
@@ -667,6 +676,7 @@ declare namespace mapCommon {
     /**
      * Provides the attributes of marker
      *
+     * @typedef MarkerOptions
      * @syscap SystemCapability.Map.Core
      * @stagemodelonly
      * @atomicservice
@@ -708,7 +718,7 @@ declare namespace mapCommon {
         /**
          * Indicates the icon of the marker which is the file URI format.
          *
-         * @type { ?string | image.PixelMap | Resource }
+         * @type { ?(string | image.PixelMap | Resource) }
          * @syscap SystemCapability.Map.Core
          * @stagemodelonly
          * @atomicservice
@@ -846,6 +856,7 @@ declare namespace mapCommon {
     /**
      * Provide the attributes of map circle
      *
+     * @typedef MapCircleOptions
      * @syscap SystemCapability.Map.Core
      * @stagemodelonly
      * @atomicservice
@@ -879,7 +890,7 @@ declare namespace mapCommon {
          * Return whether the circle is clickable.
          * Abnormal values are handled according to the default values.
          *
-         * @returns { ?boolean } Return whether the circle is clickable.
+         * @type { ?boolean }
          * @default false
          * @syscap SystemCapability.Map.Core
          * @stagemodelonly
@@ -888,7 +899,7 @@ declare namespace mapCommon {
          */
         clickable?: boolean;
         /**
-         * The fill color of the circle.The color value is ARGB format。
+         * The fill color of the circle.The color value is ARGB format.
          * Abnormal values are handled according to the default values.
          *
          * @type { ?number }
@@ -900,7 +911,7 @@ declare namespace mapCommon {
          */
         fillColor?: number;
         /**
-         * The stroke color of the circle.The color value is ARGB format。
+         * The stroke color of the circle.The color value is ARGB format.
          * Abnormal values are handled according to the default values.
          *
          * @type { ?number }
@@ -916,7 +927,6 @@ declare namespace mapCommon {
          * Abnormal values are handled according to the default values.
          *
          * @type { ?Array<PatternItem> }
-         * @default []
          * @syscap SystemCapability.Map.Core
          * @stagemodelonly
          * @atomicservice
@@ -939,6 +949,7 @@ declare namespace mapCommon {
     /**
      * Provides the attributes of map polygon
      *
+     * @typedef MapPolygonOptions
      * @syscap SystemCapability.Map.Core
      * @stagemodelonly
      * @atomicservice
@@ -960,8 +971,7 @@ declare namespace mapCommon {
          * The set of hollow holes in the polygon
          * Abnormal values are handled according to the default values.
          *
-         * @type { Array<Array<LatLng>> }
-         * @default []
+         * @type { ?Array<Array<LatLng>> }
          * @syscap SystemCapability.Map.Core
          * @stagemodelonly
          * @atomicservice
@@ -981,7 +991,7 @@ declare namespace mapCommon {
          */
         clickable?: boolean;
         /**
-         * The fill color of the polygon.The color value is ARGB format。
+         * The fill color of the polygon.The color value is ARGB format.
          * Abnormal values are handled according to the default values.
          *
          * @type { ?number }
@@ -1005,7 +1015,7 @@ declare namespace mapCommon {
          */
         geodesic?: boolean;
         /**
-         * The stroke color of the polygon.The color value is ARGB format。
+         * The stroke color of the polygon.The color value is ARGB format.
          * Abnormal values are handled according to the default values.
          *
          * @type { ?number }
@@ -1033,7 +1043,6 @@ declare namespace mapCommon {
          * Abnormal values are handled according to the default values.
          *
          * @type { ?Array<PatternItem> }
-         * @default []
          * @syscap SystemCapability.Map.Core
          * @stagemodelonly
          * @atomicservice
@@ -1056,6 +1065,7 @@ declare namespace mapCommon {
     /**
      * Provides the attributes of map polyline
      *
+     * @typedef MapPolylineOptions
      * @syscap SystemCapability.Map.Core
      * @stagemodelonly
      * @atomicservice
@@ -1086,7 +1096,7 @@ declare namespace mapCommon {
          */
         clickable?: boolean;
         /**
-         * The color of the polyline.The color value is ARGB format。
+         * The color of the polyline.The color value is ARGB format.
          * Abnormal values are handled according to the default values.
          *
          * @type { ?number }
@@ -1098,11 +1108,10 @@ declare namespace mapCommon {
          */
         color?: number;
         /**
-         * The multiple colors of the polyline.The color value is ARGB format。
+         * The multiple colors of the polyline.The color value is ARGB format.
          * Abnormal values are handled according to the default values.
          *
          * @type { ?Array<number> }
-         * @default []
          * @syscap SystemCapability.Map.Core
          * @stagemodelonly
          * @atomicservice
@@ -1162,7 +1171,6 @@ declare namespace mapCommon {
          * Abnormal values are handled according to the default values.
          *
          * @type { ?Array<PatternItem> }
-         * @default []
          * @syscap SystemCapability.Map.Core
          * @stagemodelonly
          * @atomicservice
@@ -1196,7 +1204,7 @@ declare namespace mapCommon {
         /**
          * Indicates the custom texture.Recommended that texture has no background color (use transparent color)
          *
-         * @type { ?ResourceStr | image.PixelMap }
+         * @type { ?(ResourceStr | image.PixelMap) }
          * @syscap SystemCapability.Map.Core
          * @stagemodelonly
          * @atomicservice
@@ -1207,6 +1215,7 @@ declare namespace mapCommon {
     /**
      * This interface defines the priority overlay basic information.
      *
+     * @typedef BasePriorityOverlayParams
      * @syscap SystemCapability.Map.Core
      * @stagemodelonly
      * @atomicservice
@@ -1287,6 +1296,7 @@ declare namespace mapCommon {
     /**
      * Provides the attributes of point annotation.
      *
+     * @typedef PointAnnotationParams
      * @syscap SystemCapability.Map.Core
      * @stagemodelonly
      * @atomicservice
@@ -1320,7 +1330,7 @@ declare namespace mapCommon {
          * Indicates the conflict handling rules if the point annotation name is the same as the map poi name.
          * Abnormal values are handled according to the default values.
          *
-         * @type { ?boolean }
+         * @type { ?CollisionRule }
          * @default CollisionRule.NAME
          * @syscap SystemCapability.Map.Core
          * @stagemodelonly
@@ -1350,7 +1360,7 @@ declare namespace mapCommon {
         /**
          * Indicates the icon of the point annotation. If not set, system will use the default icon.
          *
-         * @type { ?string | image.PixelMap | Resource }
+         * @type { ?(string | image.PixelMap | Resource) }
          * @syscap SystemCapability.Map.Core
          * @stagemodelonly
          * @atomicservice
@@ -1369,10 +1379,22 @@ declare namespace mapCommon {
          * @since 4.1.0(11)
          */
         showIcon?: boolean;
+        /**
+         * Position of the text relative to the icon.
+         *
+         * @type { ?TextPosition }
+         * @default TextPosition.DEFAULT
+         * @syscap SystemCapability.Map.Core
+         * @stagemodelonly
+         * @atomicservice
+         * @since 5.0.0(12)
+         */
+        textPosition?: TextPosition;
     }
     /**
      * Provides the text of point annotation title.
      *
+     * @typedef Text
      * @syscap SystemCapability.Map.Core
      * @stagemodelonly
      * @atomicservice
@@ -1390,7 +1412,7 @@ declare namespace mapCommon {
          */
         content: string;
         /**
-         * Indicates the title color.The color value is ARGB format。
+         * Indicates the title color.The color value is ARGB format.
          *
          * @type { ?number }
          * @default 0xFF000000
@@ -1412,7 +1434,7 @@ declare namespace mapCommon {
          */
         fontSize?: number;
         /**
-         * Indicates the name stroke color.The color value is ARGB format。
+         * Indicates the name stroke color.The color value is ARGB format.
          *
          * @type { ?number }
          * @default 0xFFFFFFFF
@@ -1449,6 +1471,7 @@ declare namespace mapCommon {
     /**
      * Provides the attributes of bubble for displaying congestion and speed measurement information.
      *
+     * @typedef BubbleParams
      * @syscap SystemCapability.Map.Core
      * @stagemodelonly
      * @atomicservice
@@ -1491,6 +1514,7 @@ declare namespace mapCommon {
     /**
      * Set the boundary padding for the map to define the visible area of the map.
      *
+     * @typedef Padding
      * @syscap SystemCapability.Map.Core
      * @stagemodelonly
      * @atomicservice
@@ -1551,6 +1575,7 @@ declare namespace mapCommon {
      * The polygon is an irregular quadrilateral. If the map is not slanted, the visible area is rectangular.
      * If the map is slanted, the visible area is trapezoidal.
      *
+     * @typedef VisibleRegion
      * @syscap SystemCapability.Map.Core
      * @stagemodelonly
      * @atomicservice
@@ -1611,6 +1636,7 @@ declare namespace mapCommon {
     /**
      * A point on a two-dimensional map projection.
      *
+     * @typedef MapPoint
      * @syscap SystemCapability.Map.Core
      * @stagemodelonly
      * @atomicservice
@@ -1641,6 +1667,7 @@ declare namespace mapCommon {
     /**
      * The custom style options.
      *
+     * @typedef CustomMapStyleOptions
      * @syscap SystemCapability.Map.Core
      * @stagemodelonly
      * @atomicservice
@@ -1692,6 +1719,7 @@ declare namespace mapCommon {
     /**
      * The cluster overlay parameters.
      *
+     * @typedef ClusterOverlayParams
      * @syscap SystemCapability.Map.Core
      * @stagemodelonly
      * @atomicservice
@@ -1733,6 +1761,7 @@ declare namespace mapCommon {
     /**
      * The image overlay parameters.
      *
+     * @typedef ImageOverlayParams
      * @syscap SystemCapability.Map.Core
      * @stagemodelonly
      * @atomicservice
@@ -1764,7 +1793,7 @@ declare namespace mapCommon {
         /**
          * Indicates the icon width, and the unit is meter.This parameter is valid only when position is set.
          *
-         * @type { ?boolean }
+         * @type { ?number }
          * @syscap SystemCapability.Map.Core
          * @stagemodelonly
          * @atomicservice
@@ -1774,7 +1803,7 @@ declare namespace mapCommon {
         /**
          * Indicates the icon height, and the unit is meter.This parameter is valid only when position and width are set.
          *
-         * @type { ?boolean }
+         * @type { ?number }
          * @syscap SystemCapability.Map.Core
          * @stagemodelonly
          * @atomicservice
@@ -1847,6 +1876,240 @@ declare namespace mapCommon {
          * @since 5.0.0(12)
          */
         transparency?: number;
+    }
+    /**
+     * The building overlay parameters.
+     *
+     * @typedef BuildingOverlayParams
+     * @syscap SystemCapability.Map.Core
+     * @stagemodelonly
+     * @atomicservice
+     * @since 5.0.0(12)
+     */
+    interface BuildingOverlayParams {
+        /**
+         * The geometry coordinates of the base of the building.
+         *
+         * @type { Array<LatLng> }
+         * @syscap SystemCapability.Map.Core
+         * @stagemodelonly
+         * @atomicservice
+         * @since 5.0.0(12)
+         */
+        points: Array<LatLng>;
+        /**
+         * Height of the building above the ground, and the unit is meter.
+         *
+         * @type { number }
+         * @syscap SystemCapability.Map.Core
+         * @stagemodelonly
+         * @atomicservice
+         * @since 5.0.0(12)
+         */
+        totalHeight: number;
+        /**
+         * Height from the bottom of the selected floor to the ground, and the unit is meter.
+         *
+         * @type { number }
+         * @syscap SystemCapability.Map.Core
+         * @stagemodelonly
+         * @atomicservice
+         * @since 5.0.0(12)
+         */
+        floorBottomHeight: number;
+        /**
+         * Color of the top of the building, and the color value is ARGB format.
+         *
+         * @type { ?number }
+         * @default 0xffff0000
+         * @syscap SystemCapability.Map.Core
+         * @stagemodelonly
+         * @atomicservice
+         * @since 5.0.0(12)
+         */
+        topFaceColor?: number;
+        /**
+         * Color of the side of the building, and the color value is ARGB format.
+         *
+         * @type { ?number }
+         * @default 0xffff0000
+         * @syscap SystemCapability.Map.Core
+         * @stagemodelonly
+         * @atomicservice
+         * @since 5.0.0(12)
+         */
+        sideFaceColor?: number;
+        /**
+         * Top color of selected floor, and the color value is ARGB format.
+         *
+         * @type { ?number }
+         * @default 0xffff0000
+         * @syscap SystemCapability.Map.Core
+         * @stagemodelonly
+         * @atomicservice
+         * @since 5.0.0(12)
+         */
+        floorColor?: number;
+        /**
+         * Zoom at which the building starts to be displayed.
+         *
+         * @type { ?number }
+         * @default 15
+         * @syscap SystemCapability.Map.Core
+         * @stagemodelonly
+         * @atomicservice
+         * @since 5.0.0(12)
+         */
+        showLevel?: number;
+        /**
+         * Animation duration of the tower, and the unit is ms.
+         *
+         * @type { ?number }
+         * @default 0
+         * @syscap SystemCapability.Map.Core
+         * @stagemodelonly
+         * @atomicservice
+         * @since 5.0.0(12)
+         */
+        animationDuration?: number;
+        /**
+         * The side texture of the building.
+         *
+         * @type { ?BuildingTexture }
+         * @syscap SystemCapability.Map.Core
+         * @stagemodelonly
+         * @atomicservice
+         * @since 5.0.0(12)
+         */
+        sideTexture?: BuildingTexture;
+        /**
+         * Texture of the selected floor.
+         *
+         * @type { ?BuildingTexture }
+         * @syscap SystemCapability.Map.Core
+         * @stagemodelonly
+         * @atomicservice
+         * @since 5.0.0(12)
+         */
+        floorTexture?: BuildingTexture;
+    }
+    /**
+     * The building texture.
+     *
+     * @typedef BuildingTexture
+     * @syscap SystemCapability.Map.Core
+     * @stagemodelonly
+     * @atomicservice
+     * @since 5.0.0(12)
+     */
+    interface BuildingTexture {
+        /**
+         * Texture picture.
+         *
+         * @type { ResourceStr | image.PixelMap }
+         * @syscap SystemCapability.Map.Core
+         * @stagemodelonly
+         * @atomicservice
+         * @since 5.0.0(12)
+         */
+        image: ResourceStr | image.PixelMap;
+        /**
+         * Texture width, and the unit is meter.
+         *
+         * @type { ?number }
+         * @default 3
+         * @syscap SystemCapability.Map.Core
+         * @stagemodelonly
+         * @atomicservice
+         * @since 5.0.0(12)
+         */
+        width?: number;
+        /**
+         * Texture height, and the unit is meter.
+         *
+         * @type { ?number }
+         * @default 3
+         * @syscap SystemCapability.Map.Core
+         * @stagemodelonly
+         * @atomicservice
+         * @since 5.0.0(12)
+         */
+        height?: number;
+    }
+    /**
+     * The trace overlay parameters.
+     *
+     * @typedef TraceOverlayParams
+     * @syscap SystemCapability.Map.Core
+     * @stagemodelonly
+     * @atomicservice
+     * @since 5.0.0(12)
+     */
+    interface TraceOverlayParams {
+        /**
+         * The trace points.
+         *
+         * @type { Array<LatLng> }
+         * @syscap SystemCapability.Map.Core
+         * @stagemodelonly
+         * @atomicservice
+         * @since 5.0.0(12)
+         */
+        points: Array<LatLng>;
+        /**
+         * The trace width.
+         *
+         * @type { ?number }
+         * @default 10
+         * @syscap SystemCapability.Map.Core
+         * @stagemodelonly
+         * @atomicservice
+         * @since 5.0.0(12)
+         */
+        width?: number;
+        /**
+         * The trace color.The color value is ARGB format.
+         *
+         * @type { ?number }
+         * @default 0xaaff0000
+         * @syscap SystemCapability.Map.Core
+         * @stagemodelonly
+         * @atomicservice
+         * @since 5.0.0(12)
+         */
+        color?: number;
+        /**
+         * Sets whether the map and the trace moves together.
+         *
+         * @type { ?boolean }
+         * @default false
+         * @syscap SystemCapability.Map.Core
+         * @stagemodelonly
+         * @atomicservice
+         * @since 5.0.0(12)
+         */
+        isMapMoving?: boolean;
+        /**
+         * The trace animation duration, in ms.The minimum value is 100.
+         *
+         * @type { ?number }
+         * @default 5000
+         * @syscap SystemCapability.Map.Core
+         * @stagemodelonly
+         * @atomicservice
+         * @since 5.0.0(12)
+         */
+        animationDuration?: number;
+        /**
+         * Current position of the listening trace.Return the index of the points.
+         *
+         * @type { ?Callback<number> }
+         * @syscap SystemCapability.Map.Core
+         * @stagemodelonly
+         * @atomicservice
+         * @since 5.0.0(12)
+         */
+        animationCallback?: Callback<number>;
     }
     /**
      * A border style type used to describe a circle, polygon, or polyline.
@@ -2104,6 +2367,62 @@ declare namespace mapCommon {
          * @since 5.0.0(12)
          */
         AUTO = 2
+    }
+    /**
+     * Position of the text relative to the icon.
+     *
+     * @enum { number }
+     * @syscap SystemCapability.Map.Core
+     * @stagemodelonly
+     * @atomicservice
+     * @since 5.0.0(12)
+     */
+    enum TextPosition {
+        /**
+         * default mode.
+         *
+         * @syscap SystemCapability.Map.Core
+         * @stagemodelonly
+         * @atomicservice
+         * @since 5.0.0(12)
+         */
+        DEFAULT = 0,
+        /**
+         * Text appears above the icon.
+         *
+         * @syscap SystemCapability.Map.Core
+         * @stagemodelonly
+         * @atomicservice
+         * @since 5.0.0(12)
+         */
+        TOP = 1,
+        /**
+         * Text appears below the icon.
+         *
+         * @syscap SystemCapability.Map.Core
+         * @stagemodelonly
+         * @atomicservice
+         * @since 5.0.0(12)
+         */
+        BOTTOM = 2,
+        /**
+         * Text appears to the left of the icon.
+         *
+         * @syscap SystemCapability.Map.Core
+         * @stagemodelonly
+         * @atomicservice
+         * @since 5.0.0(12)
+         */
+        LEFT = 3,
+        /**
+         * Text appears to the right of the icon.
+         *
+         * @syscap SystemCapability.Map.Core
+         * @stagemodelonly
+         * @atomicservice
+         * @since 5.0.0(12)
+         */
+        RIGHT = 4
     }
 }
 export default mapCommon;

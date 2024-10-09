@@ -398,6 +398,6 @@ function requestComponentInfo(
  */
 export const createSelectorQuery: CreateSelectorQuery =
   function (): SelectorQuery {
-    const instance = getCurrentPage() as ComponentPublicInstance
+    const instance = (getCurrentPage() as unknown as UniPage).vm
     return new SelectorQueryImpl(instance)
   }

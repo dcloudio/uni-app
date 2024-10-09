@@ -7,9 +7,8 @@ import {
   defineSyncApi,
 } from '@dcloudio/uni-api'
 
-const supports = window.CSS && window.CSS.supports
-
 function cssSupports(css: string) {
+  const supports = window.CSS && window.CSS.supports
   return (
     supports &&
     (supports(css) || supports.apply(window.CSS, css.split(':') as any))

@@ -2,6 +2,7 @@ import path from 'path'
 import type { Alias, ResolverFunction, UserConfig } from 'vite'
 import {
   extensions,
+  isNormalCompileTarget,
   isWindows,
   normalizePath,
   requireResolve,
@@ -56,7 +57,7 @@ export function createResolve(
   _config: UserConfig
 ): UserConfig['resolve'] {
   const alias: Alias[] = []
-  if (process.env.UNI_COMPILE_TARGET !== 'uni_modules') {
+  if (isNormalCompileTarget()) {
     // 加密组件内部使用的 vue export helper，需要重新映射回来
     alias.push({
       find: 'plugin-vue:export-helper',

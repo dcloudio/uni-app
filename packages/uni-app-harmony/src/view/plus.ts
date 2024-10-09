@@ -1,28 +1,36 @@
 /// <reference path="./harmonyChannel.d.ts" />
 import { extend } from '@vue/shared'
 
+// javaScriptProxy能处理的最大层级为10级，使用序列化避免层级超限
+export function invokeHarmonyChannel(method: string, args?: any[]) {
+  return harmonyChannel.invokeSync(
+    method,
+    args ? args.map((arg) => JSON.stringify(arg)) : undefined
+  )
+}
+
 export default {
   webview: {
     currentWebview() {
       return extend(
         {
           getStyle: () => {
-            return extend({}, harmonyChannel.invokeSync('getStyle'))
+            return extend({}, invokeHarmonyChannel('getStyle'))
           },
           setSoftinputTemporary(options: any) {
-            harmonyChannel.invokeSync('setSoftinputTemporary', [options])
+            invokeHarmonyChannel('setSoftinputTemporary', [options])
           },
         },
-        harmonyChannel.invokeSync('currentWebview')
+        invokeHarmonyChannel('currentWebview')
       )
     },
     postMessageToUniNView(data: any, id: string) {
-      harmonyChannel.invokeSync('postMessageToUniNView', [data, id])
+      invokeHarmonyChannel('postMessageToUniNView', [data, id])
     },
   },
   io: {
     convertLocalFileSystemURL(filepath: string) {
-      return harmonyChannel.invokeSync('convertLocalFileSystemURL', [filepath])
+      return invokeHarmonyChannel('convertLocalFileSystemURL', [filepath])
     },
   },
 }

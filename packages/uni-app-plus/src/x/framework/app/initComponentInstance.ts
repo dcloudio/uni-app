@@ -12,6 +12,10 @@ export function initComponentInstance(app: App) {
       }
       const pageId = instance.root.attrs.__pageId
       vm.$nativePage = getNativeApp().pageManager.findPageById(pageId + '')
+      if (vm.$page) {
+        // @ts-expect-error
+        vm.$page.nativePageId = vm.$nativePage.pageId
+      }
     },
     beforeMount(this: ComponentPublicInstance) {
       const vm = this

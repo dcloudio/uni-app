@@ -36,6 +36,7 @@ declare namespace cloudDatabase {
     class DatabaseZone {
         /**
          * Query the data that conform the conditions from the Cloud DB zone.
+         * @permission ohos.permission.INTERNET
          * @param { DatabaseQuery<T> } condition - Query condition
          * @return { Promise<T[]> } Query result.
          * @throws { BusinessError } 201 - No Internet permission.
@@ -46,7 +47,6 @@ declare namespace cloudDatabase {
          * @throws { BusinessError } 1008230009 - Client internal error.
          * @throws { BusinessError } 1008231001 - Server error.
          * @syscap SystemCapability.DeviceCloudGateway.CloudFoundation
-         * @permission ohos.permission.INTERNET
          * @stagemodelonly
          * @atomicservice
          * @since 5.0.0(12)
@@ -54,6 +54,7 @@ declare namespace cloudDatabase {
         query<T extends DatabaseObject>(condition: DatabaseQuery<T>): Promise<T[]>;
         /**
          * Query the data that conform the conditions from the Cloud DB zone.
+         * @permission ohos.permission.INTERNET
          * @param { DatabaseQuery<T> } condition - Query condition
          * @param { AsyncCallback<T[]> } callback - Query result.
          * @throws { BusinessError } 201 - No Internet permission.
@@ -64,7 +65,6 @@ declare namespace cloudDatabase {
          * @throws { BusinessError } 1008230009 - Client internal error.
          * @throws { BusinessError } 1008231001 - Server error.
          * @syscap SystemCapability.DeviceCloudGateway.CloudFoundation
-         * @permission ohos.permission.INTERNET
          * @stagemodelonly
          * @atomicservice
          * @since 5.0.0(12)
@@ -72,6 +72,7 @@ declare namespace cloudDatabase {
         query<T extends DatabaseObject>(condition: DatabaseQuery<T>, callback: AsyncCallback<T[]>): void;
         /**
          * Query the data that conform the conditions from the Cloud DB zone and perform arithmetic calculations on the specified fields.
+         * @permission ohos.permission.INTERNET
          * @param { DatabaseQuery<T> } condition - Query condition
          * @param { string } fieldName - Specifies the name of the field to be calculated in the query object.
          * @param { QueryCalculate } calculate - calculate type.
@@ -84,7 +85,6 @@ declare namespace cloudDatabase {
          * @throws { BusinessError } 1008230009 - Client internal error.
          * @throws { BusinessError } 1008231001 - Server error.
          * @syscap SystemCapability.DeviceCloudGateway.CloudFoundation
-         * @permission ohos.permission.INTERNET
          * @stagemodelonly
          * @atomicservice
          * @since 5.0.0(12)
@@ -92,6 +92,7 @@ declare namespace cloudDatabase {
         calculateQuery<T extends DatabaseObject>(condition: DatabaseQuery<T>, fieldName: string, calculate: QueryCalculate): Promise<number>;
         /**
          * Query the data that conform the conditions from the Cloud DB zone and perform arithmetic calculations on the specified fields.
+         * @permission ohos.permission.INTERNET
          * @param { DatabaseQuery<T> } condition - Query condition
          * @param { string } fieldName - Specifies the name of the field to be calculated in the query object.
          * @param { QueryCalculate } calculate - calculate type.
@@ -104,7 +105,6 @@ declare namespace cloudDatabase {
          * @throws { BusinessError } 1008230009 - Client internal error.
          * @throws { BusinessError } 1008231001 - Server error.
          * @syscap SystemCapability.DeviceCloudGateway.CloudFoundation
-         * @permission ohos.permission.INTERNET
          * @stagemodelonly
          * @atomicservice
          * @since 5.0.0(12)
@@ -114,6 +114,7 @@ declare namespace cloudDatabase {
          * Upsert one or more objects to Cloud DB zone.
          * If an object with the same primary key already exists in the storage area, the existing object is updated.
          * If it does not exist, one or more new objects are written.
+         * @permission ohos.permission.INTERNET
          * @param { T[] | T } objectList - One or more objects to be Upserted.
          * @return { Promise<number> } Obtains the operation result and returns the number of records that are successfully upsert.
          * @throws { BusinessError } 201 - No Internet permission.
@@ -124,7 +125,6 @@ declare namespace cloudDatabase {
          * @throws { BusinessError } 1008230009 - Client internal error.
          * @throws { BusinessError } 1008231001 - Server error.
          * @syscap SystemCapability.DeviceCloudGateway.CloudFoundation
-         * @permission ohos.permission.INTERNET
          * @stagemodelonly
          * @atomicservice
          * @since 5.0.0(12)
@@ -134,6 +134,7 @@ declare namespace cloudDatabase {
          * Upsert one or more objects to Cloud DB zone.
          * If an object with the same primary key already exists in the storage area, the existing object is updated.
          * If it does not exist, one or more new objects are written.
+         * @permission ohos.permission.INTERNET
          * @param { T[] | T } objectList - One or more objects to be Upserted.
          * @param { AsyncCallback<number> } Obtains the operation result and returns the number of records that are successfully upsert.
          * @throws { BusinessError } 201 - No Internet permission.
@@ -144,7 +145,6 @@ declare namespace cloudDatabase {
          * @throws { BusinessError } 1008230009 - Client internal error.
          * @throws { BusinessError } 1008231001 - Server error.
          * @syscap SystemCapability.DeviceCloudGateway.CloudFoundation
-         * @permission ohos.permission.INTERNET
          * @stagemodelonly
          * @atomicservice
          * @since 5.0.0(12)
@@ -152,6 +152,7 @@ declare namespace cloudDatabase {
         upsert<T extends DatabaseObject>(objectList: T[] | T, callback: AsyncCallback<number>): void;
         /**
          * Delete one or more objects to Cloud DB zone.
+         * @permission ohos.permission.INTERNET
          * @param { T[] | T } objectList - One or more objects to be deleted.
          * @return { Promise<number> } the operation result and returns the number of records that are successfully deleted.
          * @throws { BusinessError } 201 - No Internet permission.
@@ -162,7 +163,6 @@ declare namespace cloudDatabase {
          * @throws { BusinessError } 1008230009 - Client internal error.
          * @throws { BusinessError } 1008231001 - Server error.
          * @syscap SystemCapability.DeviceCloudGateway.CloudFoundation
-         * @permission ohos.permission.INTERNET
          * @stagemodelonly
          * @atomicservice
          * @since 5.0.0(12)
@@ -170,8 +170,9 @@ declare namespace cloudDatabase {
         delete<T extends DatabaseObject>(objectList: T[] | T): Promise<number>;
         /**
          * Delete one or more objects to Cloud DB zone.
+         * @permission ohos.permission.INTERNET
          * @param { T[] | T } objectList -  One or more objects to be deleted.
-         * @return { Promise<number> } the operation result and returns the number of records that are successfully deleted.
+         * @param { AsyncCallback<number> } Obtains the operation result and returns the number of records that are successfully deleted.
          * @throws { BusinessError } 201 - No Internet permission.
          * @throws { BusinessError } 401 - Parameter error.
          * @throws { BusinessError } 1008230001 - Network connection error.
@@ -180,7 +181,6 @@ declare namespace cloudDatabase {
          * @throws { BusinessError } 1008230009 - Client internal error.
          * @throws { BusinessError } 1008231001 - Server error.
          * @syscap SystemCapability.DeviceCloudGateway.CloudFoundation
-         * @permission ohos.permission.INTERNET
          * @stagemodelonly
          * @atomicservice
          * @since 5.0.0(12)
@@ -207,6 +207,7 @@ declare namespace cloudDatabase {
     }
     /**
      * Data types supported by Cloud DB columns.
+     * @typedef {string | number | boolean | Uint8Array | Date}
      * @syscap SystemCapability.DeviceCloudGateway.CloudFoundation
      * @stagemodelonly
      * @atomicservice
@@ -224,7 +225,6 @@ declare namespace cloudDatabase {
     enum QueryCalculate {
         /**
          * Calculate the average.
-         * @enum { number }
          * @syscap SystemCapability.DeviceCloudGateway.CloudFoundation
          * @stagemodelonly
          * @atomicservice
@@ -233,7 +233,6 @@ declare namespace cloudDatabase {
         AVERAGE = 0,
         /**
          * Calculate the sum.
-         * @enum { number }
          * @syscap SystemCapability.DeviceCloudGateway.CloudFoundation
          * @stagemodelonly
          * @atomicservice
@@ -242,7 +241,6 @@ declare namespace cloudDatabase {
         SUM = 1,
         /**
          * Calculate the maximum value.
-         * @enum { number }
          * @syscap SystemCapability.DeviceCloudGateway.CloudFoundation
          * @stagemodelonly
          * @atomicservice
@@ -251,7 +249,6 @@ declare namespace cloudDatabase {
         MAXIMUM = 2,
         /**
          * Calculate the minimum value.
-         * @enum { number }
          * @syscap SystemCapability.DeviceCloudGateway.CloudFoundation
          * @stagemodelonly
          * @atomicservice
@@ -260,7 +257,6 @@ declare namespace cloudDatabase {
         MINIMUM = 3,
         /**
          * Calculate the total number of records.
-         * @enum { number }
          * @syscap SystemCapability.DeviceCloudGateway.CloudFoundation
          * @stagemodelonly
          * @atomicservice
@@ -279,7 +275,7 @@ declare namespace cloudDatabase {
     class DatabaseQuery<T extends DatabaseObject> {
         /**
          * Set the information about the entity type to be queried.
-         * @param { function } entityClass - Concrete type constructor.
+         * @param { new () => T } entityClass - Concrete type constructor.
          * @return { DatabaseQuery } The DatabaseQuery object that contains this condition.
          * @syscap SystemCapability.DeviceCloudGateway.CloudFoundation
          * @stagemodelonly
@@ -452,7 +448,7 @@ declare namespace cloudDatabase {
          * If offset is not set, the first count objects are obtained by default.
          * If the number of objects in the query result set is less than the value of count, all objects are returned.
          * @param { number } count - Limit the number of data records that can be obtained.
-         * @param { ?number } offset - Specifies the start position of the data record.
+         * @param { number } [offset] - Specifies the start position of the data record.
          * @return { DatabaseQuery } The DatabaseQuery object that contains this condition.
          * @syscap SystemCapability.DeviceCloudGateway.CloudFoundation
          * @stagemodelonly

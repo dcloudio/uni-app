@@ -29,27 +29,31 @@ const BORDER_COLORS = new Map<string, string>([
 
 function getBorderStyle(borderStyle: string): string {
   const value = BORDER_COLORS.get(borderStyle)
+
+  if (!value) {
+    console.warn(
+      '4.23 版本起，在 pages.json 设置 tabbar borderStyle、在 uni.setTabBarStyle 设置 borderStyle 时仅支持 white/black，推荐使用 borderColor 自定义颜色。'
+    )
+  }
   return value || (BORDER_COLORS.get('black') as string)
 }
 
 // keep borderStyle aliways black/white
 export function fixBorderStyle(tabBarConfig: Map<string, any>) {
   let borderStyle = tabBarConfig.get('borderStyle')
-  if (!isString(borderStyle)) {
-    borderStyle = 'black'
-  }
+  let borderColor = tabBarConfig.get('borderColor')
+  const isBorderColorFilled = isString(borderColor)
 
-  let borderColor = getBorderStyle(borderStyle as string)
+  // 如果设置 borderStyle 做格式化
+  borderStyle = getBorderStyle(borderStyle as string)
+
   // 同时存在 borderColor>borderStyle，前者没有颜色限制，也不做格式化
-  if (
-    tabBarConfig.has('borderColor') &&
-    isString(tabBarConfig.get('borderColor'))
-  ) {
-    borderColor = tabBarConfig.get('borderColor')
-    tabBarConfig.delete('borderColor')
+  if (isBorderColorFilled) {
+    borderStyle = borderColor
   }
 
-  tabBarConfig.set('borderStyle', borderColor)
+  tabBarConfig.set('borderStyle', borderStyle)
+  tabBarConfig.delete('borderColor')
 }
 
 function getTabList() {
@@ -203,8 +207,8 @@ function createTab(
 ): Page {
   registerPage({ url: path, path, query, openType: 'switchTab' })
   callback?.()
-  const page = getCurrentPage() as Page
-  tabBar0!.appendItem(page!.$page.id.toString())
+  const page = (getCurrentPage() as unknown as UniPage).vm
+  tabBar0!.appendItem(page!.$basePage.id.toString())
   return page
 }
 
@@ -277,7 +281,7 @@ export function switchSelect(
   if (tabBar0 === null) {
     init()
   }
-  const currentPage = getCurrentPage() as Page
+  const currentPage = (getCurrentPage() as unknown as UniPage)?.vm
 
   const type = currentPage == null ? 'appLaunch' : 'switchTab'
   // 执行beforeRoute
@@ -292,7 +296,15 @@ export function switchSelect(
       invokeHook(currentPage!, ON_HIDE)
     }
   }
-  tabBar0!.switchSelect(page!.$page.id.toString(), selected)
+  tabBar0!.switchSelect(page!.$basePage.id.toString(), selected)
+
+  const pageStyle = (page.$page as UniPage).getPageStyle()
+
+  const pageOrientation =
+    pageStyle['pageOrientation'] ?? __uniConfig.globalStyle?.pageOrientation
+  if (pageOrientation) {
+    getPageManager().findPageById('tabBar')!.setPageStyle({ pageOrientation })
+  }
 
   // TODO use page show status
   if (shouldShow) {

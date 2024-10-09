@@ -47,6 +47,7 @@ export interface TemplateCodegenContext {
   isBuiltInComponent: TransformContext['isBuiltInComponent']
   isMiniProgramComponent: TransformContext['isMiniProgramComponent']
   push(code: string): void
+  checkPropName: TemplateCodegenOptions['checkPropName']
 }
 
 export function generate(
@@ -61,6 +62,7 @@ export function generate(
     lazyElement,
     isBuiltInComponent,
     isMiniProgramComponent,
+    checkPropName,
     component,
   }: TemplateCodegenOptions
 ) {
@@ -74,6 +76,7 @@ export function generate(
     component,
     isBuiltInComponent,
     isMiniProgramComponent,
+    checkPropName,
     push(code) {
       context.code += code
     },
@@ -449,6 +452,12 @@ export function genElementProps(
 ) {
   node.props.forEach((prop) => {
     if (prop.type === NodeTypes.ATTRIBUTE) {
+      if (
+        context.checkPropName &&
+        !context.checkPropName(prop.name, prop, node)
+      ) {
+        return
+      }
       const { value } = prop
       if (value) {
         checkVirtualHostProps(prop.name, virtualHost).forEach((name) => {
@@ -459,6 +468,12 @@ export function genElementProps(
       }
     } else {
       const { name } = prop
+      if (
+        context.checkPropName &&
+        !context.checkPropName(prop.name, prop, node)
+      ) {
+        return
+      }
       if (name === 'on') {
         genOn(prop, node, context)
       } else {

@@ -449,7 +449,7 @@ flexBasis: fill;
     })
     expect(messages[0]).toEqual(
       expect.objectContaining({
-        text: 'ERROR: property value `url("test.png")` is not supported for `background-image` (supported values are: `linear-gradient`)',
+        text: 'ERROR: property value `url("test.png")` is not supported for `background-image` (supported values are: `linear-gradient`|`none`)',
       })
     )
   })
@@ -862,6 +862,7 @@ flexBasis: fill;
       foo: {
         '': {
           backgroundColor: '#ff0000',
+          backgroundImage: 'none',
           abc: 123,
           def: '456px',
           ghi: '789pt',

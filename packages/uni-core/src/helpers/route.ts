@@ -1,4 +1,5 @@
 import { addLeadingSlash, removeLeadingSlash } from '@dcloudio/uni-shared'
+import { get$pageByPage } from './util'
 
 export function normalizeRoute(toRoute: string) {
   if (toRoute.indexOf('/') === 0) {
@@ -7,7 +8,7 @@ export function normalizeRoute(toRoute: string) {
   let fromRoute = ''
   const pages = getCurrentPages()
   if (pages.length) {
-    fromRoute = (pages[pages.length - 1] as any).$page.route
+    fromRoute = get$pageByPage(pages[pages.length - 1]).route
   }
   return getRealRoute(fromRoute, toRoute)
 }

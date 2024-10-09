@@ -114,7 +114,10 @@ const NVUE_BUILT_IN_TAGS = [
     'gcanvas',
 ];
 const UVUE_BUILT_IN_TAGS = [
-    'object',
+    'ad',
+    'ad-content-page',
+    'ad-draw',
+    'native-view',
     'loading-indicator',
     'list-view',
     'list-item',
@@ -209,6 +212,8 @@ const NVUE_CUSTOM_COMPONENTS = [
     'picker-view',
     'picker-view-column',
 ];
+// 主要是指前端实现的组件列表
+const UVUE_CUSTOM_COMPONENTS = [...NVUE_CUSTOM_COMPONENTS, 'map'];
 function isAppUVueNativeTag(tag) {
     // 前端实现的内置组件都会注册一个根组件
     if (tag.startsWith('uni-') && tag.endsWith('-element')) {
@@ -217,7 +222,7 @@ function isAppUVueNativeTag(tag) {
     if (UVUE_BUILT_IN_TAGS.includes(tag)) {
         return true;
     }
-    if (NVUE_CUSTOM_COMPONENTS.includes(tag)) {
+    if (UVUE_CUSTOM_COMPONENTS.includes(tag)) {
         return false;
     }
     if (isBuiltInComponent(tag)) {
@@ -328,6 +333,7 @@ const ON_TAB_ITEM_TAP = 'onTabItemTap';
 const ON_REACH_BOTTOM = 'onReachBottom';
 const ON_PULL_DOWN_REFRESH = 'onPullDownRefresh';
 const ON_SHARE_TIMELINE = 'onShareTimeline';
+const ON_SHARE_CHAT = 'onShareChat'; // xhs-share
 const ON_ADD_TO_FAVORITES = 'onAddToFavorites';
 const ON_SHARE_APP_MESSAGE = 'onShareAppMessage';
 // navigationBar
@@ -1408,6 +1414,7 @@ const PAGE_HOOKS = [
     ON_PULL_DOWN_REFRESH,
     ON_SHARE_TIMELINE,
     ON_SHARE_APP_MESSAGE,
+    ON_SHARE_CHAT,
     ON_ADD_TO_FAVORITES,
     ON_SAVE_EXIT_STATE,
     ON_NAVIGATION_BAR_BUTTON_TAP,
@@ -1446,6 +1453,7 @@ const UniLifecycleHooks = [
     ON_SHARE_TIMELINE,
     ON_ADD_TO_FAVORITES,
     ON_SHARE_APP_MESSAGE,
+    ON_SHARE_CHAT,
     ON_SAVE_EXIT_STATE,
     ON_NAVIGATION_BAR_BUTTON_TAP,
     ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED,
@@ -1503,13 +1511,15 @@ const E = function () {
     // (via https://github.com/lipsmack from https://github.com/scottcorgan/tiny-emitter/issues/3)
 };
 E.prototype = {
+    _id: 1,
     on: function (name, callback, ctx) {
         var e = this.e || (this.e = {});
         (e[name] || (e[name] = [])).push({
             fn: callback,
             ctx: ctx,
+            _id: this._id,
         });
-        return this;
+        return this._id++;
     },
     once: function (name, callback, ctx) {
         var self = this;
@@ -1530,13 +1540,15 @@ E.prototype = {
         }
         return this;
     },
-    off: function (name, callback) {
+    off: function (name, event) {
         var e = this.e || (this.e = {});
         var evts = e[name];
         var liveEvents = [];
-        if (evts && callback) {
+        if (evts && event) {
             for (var i = evts.length - 1; i >= 0; i--) {
-                if (evts[i].fn === callback || evts[i].fn._ === callback) {
+                if (evts[i].fn === event ||
+                    evts[i].fn._ === event ||
+                    evts[i]._id === event) {
                     evts.splice(i, 1);
                     break;
                 }
@@ -1679,6 +1691,7 @@ exports.ON_READY = ON_READY;
 exports.ON_RESIZE = ON_RESIZE;
 exports.ON_SAVE_EXIT_STATE = ON_SAVE_EXIT_STATE;
 exports.ON_SHARE_APP_MESSAGE = ON_SHARE_APP_MESSAGE;
+exports.ON_SHARE_CHAT = ON_SHARE_CHAT;
 exports.ON_SHARE_TIMELINE = ON_SHARE_TIMELINE;
 exports.ON_SHOW = ON_SHOW;
 exports.ON_TAB_ITEM_TAP = ON_TAB_ITEM_TAP;

@@ -1,5 +1,6 @@
 import { getCurrentPage } from '@dcloudio/uni-core'
 import { formatLog } from '@dcloudio/uni-shared'
+import { getPage$BasePage } from './framework/page/getCurrentPages'
 
 type SetStatusBarStyle = typeof plus.navigator.setStatusBarStyle
 export type StatusBarStyle = Parameters<SetStatusBarStyle>[0]
@@ -23,11 +24,13 @@ plus.navigator.setStatusBarStyle = newSetStatusBarStyle
 
 export function setStatusBarStyle(statusBarStyle?: StatusBarStyle) {
   if (!statusBarStyle) {
-    const page = getCurrentPage()
+    const page = __X__
+      ? (getCurrentPage() as unknown as UniPage).vm
+      : getCurrentPage()
     if (!page) {
       return
     }
-    statusBarStyle = page.$page.statusBarStyle as StatusBarStyle
+    statusBarStyle = getPage$BasePage(page).statusBarStyle as StatusBarStyle
     if (!statusBarStyle || statusBarStyle === lastStatusBarStyle) {
       return
     }

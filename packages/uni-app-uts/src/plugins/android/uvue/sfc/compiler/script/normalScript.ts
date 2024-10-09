@@ -3,6 +3,7 @@ import type { BindingMetadata, SFCDescriptor } from '@vue/compiler-sfc'
 import {
   addUTSEasyComAutoImports,
   addUniModulesExtApiComponents,
+  enableSourceMap,
 } from '@dcloudio/uni-cli-shared'
 import { analyzeScriptBindings } from './analyzeScriptBindings'
 import type { ScriptCompileContext } from './context'
@@ -120,9 +121,7 @@ export function processTemplate(
       inline: !!sfc.scriptSetup,
       className,
       rootDir,
-      sourceMap:
-        process.env.NODE_ENV === 'development' &&
-        process.env.UNI_COMPILE_TARGET !== 'uni_modules',
+      sourceMap: enableSourceMap(),
       bindingMetadata,
     }
   )

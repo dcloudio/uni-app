@@ -10,6 +10,7 @@ import {
   uniEasycomPlugin,
   uniEncryptUniModulesPlugin,
   uniHBuilderXConsolePlugin,
+  uniUniModulesExtApiPlugin,
   uniViteInjectPlugin,
 } from '@dcloudio/uni-cli-shared'
 import { uniTemplatePlugin } from '../plugins/template'
@@ -43,7 +44,14 @@ export function initVuePlugins() {
     uniEasycomPlugin({ exclude: UNI_EASYCOM_EXCLUDE }),
     uniHBuilderXConsolePlugin(),
   ]
-  if (process.env.UNI_COMPILE_TARGET === 'uni_modules') {
+  if (process.env.UNI_COMPILE_TARGET === 'ext-api') {
+    plugins.push(
+      uniViteInjectPlugin('uni:app-inject', initAppProvide()),
+      uniRenderjsPlugin(),
+      uniAppVuePlugin(),
+      uniUniModulesExtApiPlugin()
+    )
+  } else if (process.env.UNI_COMPILE_TARGET === 'uni_modules') {
     plugins.push(
       uniViteInjectPlugin('uni:app-inject', initAppProvide()),
       uniRenderjsPlugin(),

@@ -14,7 +14,7 @@ let proxy: any
 const keepAliveCallbacks: Record<string, Function> = {}
 
 function isUniElement(obj: any) {
-  return typeof obj.getNodeId === 'function' && obj.pageId
+  return obj && typeof obj.getNodeId === 'function' && obj.pageId
 }
 
 function isComponentPublicInstance(instance: any) {
@@ -52,7 +52,7 @@ export function normalizeArg(
       callbacks[id] = arg
     }
     return id
-  } else if (isPlainObject(arg)) {
+  } else if (isPlainObject(arg) || isUniElement(arg)) {
     const el = parseElement(arg)
     if (el) {
       let nodeId = ''
@@ -72,7 +72,7 @@ export function normalizeArg(
       // const newObj = normalizeArg(obj, {}, false)
       // newObj.a = 2 // 这会污染原始对象 obj
       const newArg = {}
-      Object.keys(arg).forEach((name) => {
+      Object.keys(arg as object).forEach((name) => {
         newArg[name] = normalizeArg((arg as any)[name], callbacks, keepAlive)
       })
       return newArg
@@ -307,24 +307,24 @@ function getProxy(): {
           return nativeChannel.invokeSync('APP-SERVICE', args, callback)
         },
         invokeAsync(args: InvokeArgs, callback: InvokeAsyncCallback) {
-          if (
-            // 硬编码
-            args.moduleName === 'uni-ad' &&
-            ['showByJs', 'loadByJs'].includes(args.name)
-          ) {
-            // @ts-expect-error
-            const res: InvokeSyncRes = nativeChannel.invokeSync(
-              'APP-SERVICE',
-              args,
-              callback
-            )
-            callback(
-              extend(res, {
-                params: [res.params],
-              })
-            )
-            return res
-          }
+          // if (
+          //   // 硬编码
+          //   args.moduleName === 'uni-ad' &&
+          //   ['showByJs', 'loadByJs'].includes(args.name)
+          // ) {
+          //   // @ts-expect-error
+          //   const res: InvokeSyncRes = nativeChannel.invokeSync(
+          //     'APP-SERVICE',
+          //     args,
+          //     callback
+          //   )
+          //   callback(
+          //     extend(res, {
+          //       params: [res.params],
+          //     })
+          //   )
+          //   return res
+          // }
           // @ts-expect-error
           return nativeChannel.invokeAsync('APP-SERVICE', args, callback)
         },

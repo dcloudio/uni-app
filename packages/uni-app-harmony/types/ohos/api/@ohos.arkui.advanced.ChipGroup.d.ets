@@ -16,10 +16,8 @@
  * @file
  * @kit ArkUI
  */
-
-/// <reference path="../component/units.d.ts" />
-import { ResourceStr } from 'GlobalResource';
-import { ChipSize } from '@ohos.arkui.advanced.Chip';
+import { ChipSize, ChipSymbolGlyphOptions } from '@ohos.arkui.advanced.Chip';
+import { SymbolGlyphModifier } from './@ohos.arkui.modifier';
 /**
  * Defines icon options.
  *
@@ -86,6 +84,15 @@ export interface ChipGroupItemOptions {
      */
     prefixIcon?: IconOptions;
     /**
+     * Prefix symbol.
+     *
+     * @type { ?ChipSymbolGlyphOptions }
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @since 12
+     */
+    prefixSymbol?: ChipSymbolGlyphOptions;
+    /**
      * Chip label.
      *
      * @type { LabelOptions }
@@ -103,6 +110,15 @@ export interface ChipGroupItemOptions {
      * @since 12
      */
     suffixIcon?: IconOptions;
+    /**
+     * suffix symbol.
+     *
+     * @type { ?ChipSymbolGlyphOptions }
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @since 12
+     */
+    suffixSymbol?: ChipSymbolGlyphOptions;
     /**
      * Allow close.
      *
@@ -215,7 +231,7 @@ export interface ChipGroupSpaceOptions {
  */
 export interface IconItemOptions {
     /**
-     * IconItemOptions.
+     * IconOptions.
      *
      * @type { IconOptions }
      * @syscap SystemCapability.ArkUI.ArkUI.Full
@@ -234,6 +250,34 @@ export interface IconItemOptions {
     action: Callback<void>;
 }
 /**
+ * Defines ChipGroupPaddingOptions.
+ *
+ * @interface ChipGroupPaddingOptions
+ * @syscap SystemCapability.ArkUI.ArkUI.Full
+ * @crossplatform
+ * @since 12
+ */
+export interface ChipGroupPaddingOptions {
+    /**
+     * Top of chip group padding.
+     *
+     * @type { Length }
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @since 12
+     */
+    top: Length;
+    /**
+     * Bottom of chip group padding.
+     *
+     * @type { Length }
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @since 12
+     */
+    bottom: Length;
+}
+/**
  * Defines IconGroupSuffix.
  *
  * @interface IconGroupSuffix
@@ -246,13 +290,14 @@ export declare struct IconGroupSuffix {
     /**
      * Suffix item.
      *
-     * @type { Array<IconItemOptions> }
+     * @type { Array<IconItemOptions | SymbolGlyphModifier> }
      * @syscap SystemCapability.ArkUI.ArkUI.Full
      * @crossplatform
      * @since 12
      */
+    @Require
     @Prop
-    items: Array<IconItemOptions>;
+    items: Array<IconItemOptions | SymbolGlyphModifier>;
 }
 /**
  * Defines chipGroup.
@@ -272,6 +317,7 @@ export declare struct ChipGroup {
      * @crossplatform
      * @since 12
      */
+    @Require
     @Prop
     items: ChipGroupItemOptions[];
     /**
@@ -314,6 +360,16 @@ export declare struct ChipGroup {
      */
     @Prop
     chipGroupSpace?: ChipGroupSpaceOptions;
+    /**
+    * Chip group padding (only support top and bottom).
+    *
+    * @type { ?ChipGroupPaddingOptions }
+    * @syscap SystemCapability.ArkUI.ArkUI.Full
+    * @crossplatform
+    * @since 12
+    */
+    @Prop
+    chipGroupPadding?: ChipGroupPaddingOptions;
     /**
      * Chip group callback. when chip status is changed, this onChange is called.
      *

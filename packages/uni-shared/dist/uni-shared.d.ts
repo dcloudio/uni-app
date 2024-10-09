@@ -177,10 +177,11 @@ export declare function dynamicSlotName(name: string): string;
 
 export declare interface Emitter {
     e: Record<string, unknown>;
-    on: (name: EventName, callback: EventCallback, ctx?: any) => this;
-    once: (name: EventName, callback: EventCallback, ctx?: any) => this;
+    _id: number;
+    on: (name: EventName, callback: EventCallback, ctx?: any) => number;
+    once: (name: EventName, callback: EventCallback, ctx?: any) => number;
     emit: (name: EventName, ...args: any[]) => this;
-    off: (name: EventName, callback?: EventCallback) => this;
+    off: (name: EventName, callback?: EventCallback | null) => this;
 }
 
 export declare const Emitter: new () => Emitter;
@@ -509,6 +510,8 @@ export declare const ON_SAVE_EXIT_STATE = "onSaveExitState";
 
 export declare const ON_SHARE_APP_MESSAGE = "onShareAppMessage";
 
+export declare const ON_SHARE_CHAT = "onShareChat";
+
 export declare const ON_SHARE_TIMELINE = "onShareTimeline";
 
 export declare const ON_SHOW = "onShow";
@@ -779,7 +782,7 @@ export declare class UniInputElement extends UniElement {
     set value(val: string | number);
 }
 
-export declare const UniLifecycleHooks: readonly ["onShow", "onHide", "onLaunch", "onError", "onThemeChange", "onPageNotFound", "onUnhandledRejection", "onExit", "onInit", "onLoad", "onReady", "onUnload", "onResize", "onBackPress", "onPageScroll", "onTabItemTap", "onReachBottom", "onPullDownRefresh", "onShareTimeline", "onAddToFavorites", "onShareAppMessage", "onSaveExitState", "onNavigationBarButtonTap", "onNavigationBarSearchInputClicked", "onNavigationBarSearchInputChanged", "onNavigationBarSearchInputConfirmed", "onNavigationBarSearchInputFocusChanged"];
+export declare const UniLifecycleHooks: readonly ["onShow", "onHide", "onLaunch", "onError", "onThemeChange", "onPageNotFound", "onUnhandledRejection", "onExit", "onInit", "onLoad", "onReady", "onUnload", "onResize", "onBackPress", "onPageScroll", "onTabItemTap", "onReachBottom", "onPullDownRefresh", "onShareTimeline", "onAddToFavorites", "onShareAppMessage", "onShareChat", "onSaveExitState", "onNavigationBarButtonTap", "onNavigationBarSearchInputClicked", "onNavigationBarSearchInputChanged", "onNavigationBarSearchInputConfirmed", "onNavigationBarSearchInputFocusChanged"];
 
 export declare class UniNode extends UniEventTarget {
     nodeId?: number;

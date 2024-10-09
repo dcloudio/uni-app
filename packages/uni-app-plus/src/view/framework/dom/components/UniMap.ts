@@ -1,6 +1,6 @@
 import type { UniNodeJSON } from '@dcloudio/uni-shared'
 import '../../../../../style/map.css'
-import Map from '../../../components/map'
+import Map from '../../../components/map/index'
 
 import { UniComponent } from './UniComponent'
 
@@ -18,7 +18,7 @@ export class UniMap extends UniComponent {
       parentNodeId,
       refNodeId,
       nodeJson,
-      '.uni-map-slot'
+      __uniConfig.qqMapKey ? undefined : '.uni-map-slot'
     )
   }
 }

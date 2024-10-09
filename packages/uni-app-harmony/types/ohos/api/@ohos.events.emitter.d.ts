@@ -32,6 +32,15 @@ import { Callback } from './@ohos.base';
  * @atomicservice
  * @since 11
  */
+/**
+ * Provides methods for sending and processing in-process events.
+ *
+ * @namespace emitter
+ * @syscap SystemCapability.Notification.Emitter
+ * @crossplatform
+ * @atomicservice
+ * @since 12
+ */
 declare namespace emitter {
     /**
      * Subscribe to a certain event in persistent manner and receives the event callback.
@@ -209,6 +218,15 @@ declare namespace emitter {
      * @atomicservice
      * @since 11
      */
+    /**
+     * Describes data passed in the event.
+     *
+     * @typedef EventData
+     * @syscap SystemCapability.Notification.Emitter
+     * @crossplatform
+     * @atomicservice
+     * @since 12
+     */
     export interface EventData {
         /**
          * Data carried by the event.
@@ -243,6 +261,15 @@ declare namespace emitter {
      * @syscap SystemCapability.Notification.Emitter
      * @atomicservice
      * @since 11
+     */
+    /**
+     * Describes an intra-process event.
+     *
+     * @typedef InnerEvent
+     * @syscap SystemCapability.Notification.Emitter
+     * @crossplatform
+     * @atomicservice
+     * @since 12
      */
     export interface InnerEvent {
         /**
@@ -292,6 +319,15 @@ declare namespace emitter {
      * @syscap SystemCapability.Notification.Emitter
      * @atomicservice
      * @since 11
+     */
+    /**
+     * Indicates the emit priority of the event.
+     *
+     * @enum { number }
+     * @syscap SystemCapability.Notification.Emitter
+     * @crossplatform
+     * @atomicservice
+     * @since 12
      */
     export enum EventPriority {
         /**
@@ -363,6 +399,7 @@ declare namespace emitter {
      *
      * @typedef Options
      * @syscap SystemCapability.Notification.Emitter
+     * @crossplatform
      * @atomicservice
      * @since 12
      */

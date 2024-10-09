@@ -7,7 +7,6 @@ import type {
   LoadFontFaceErrCode,
   LoadFontFaceOptions,
 } from '@dcloudio/uni-app-x/types/uni'
-import type { ComponentPublicInstance } from 'vue'
 import { getCurrentPage } from '@dcloudio/uni-core'
 import { getNativeApp } from '../../framework/app/app'
 
@@ -93,7 +92,7 @@ export const loadFontFace = defineAsyncApi(
         app.loadFontFace(fontInfo)
       }
     } else {
-      const page = getCurrentPage() as unknown as ComponentPublicInstance
+      const page = (getCurrentPage() as unknown as UniPage).vm
 
       if (!page) {
         res.reject('page is not ready', 99)

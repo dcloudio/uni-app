@@ -8,8 +8,11 @@ import {
 } from '@dcloudio/uni-mp-toutiao'
 import { ON_READY } from '@dcloudio/uni-shared'
 
-export { mocks, isPage } from '@dcloudio/uni-mp-baidu'
+export { mocks } from '@dcloudio/uni-mp-baidu'
 
+export function isPage(mpInstance: MPComponentInstance) {
+  return !!((mpInstance._methods || mpInstance.methods) as any).onLoad
+}
 export {
   parseComponent as parse,
   initComponentLifetimes as initLifetimes,

@@ -138,6 +138,10 @@ uni-app uni-web-view {
   border-width: medium;
 }
 
+uni-app uni-rich-text {
+  line-height: 1.5;
+}
+
 uni-app uni-text {
   display: inline;
 }
@@ -368,4 +372,8 @@ body .uni-modal__btn_primary {
     font-size: 14px;
     color: #747474;
   }
+}
+
+:is(.uni-video-slots *) {
+  pointer-events: auto;
 }

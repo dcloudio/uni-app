@@ -1,4 +1,5 @@
 import { extend, hyphenate } from '@vue/shared'
+import { once } from '@dcloudio/uni-shared'
 import {
   type ComputedRef,
   type ExtractPropTypes,
@@ -29,6 +30,37 @@ const props = /*#__PURE__*/ extend({}, fieldProps, {
   },
 })
 
+const resolveDigitDecimalPointDeleteContentBackward = once(() => {
+  //#if !_NODE_JS_
+  if (__PLATFORM__ === 'app') {
+    const osVersion = plus.os.version
+    return (
+      plus.os.name === 'iOS' &&
+      !!osVersion &&
+      parseInt(osVersion) >= 16 &&
+      parseFloat(osVersion) < 17.2
+    )
+  }
+
+  if (__PLATFORM__ === 'h5') {
+    const ua = navigator.userAgent
+    let osVersion = ''
+    const osVersionFind = ua.match(/OS\s([\w_]+)\slike/)
+    if (osVersionFind) {
+      osVersion = osVersionFind[1].replace(/_/g, '.')
+    } else if (/Macintosh|Mac/i.test(ua) && navigator.maxTouchPoints > 0) {
+      const versionMatched = ua.match(/Version\/(\S*)\b/)
+      if (versionMatched) {
+        osVersion = versionMatched[1]
+      }
+    }
+    return (
+      !!osVersion && parseInt(osVersion) >= 16 && parseFloat(osVersion) < 17.2
+    )
+  }
+  //#endif
+})
+
 function resolveDigitDecimalPoint(
   event: InputEvent,
   cache: Ref<string>,
@@ -56,14 +88,8 @@ function resolveDigitDecimalPoint(
         return false
       }
     } else if ((event as InputEvent).inputType === 'deleteContentBackward') {
-      // ios 16 无法删除小数
-      if (
-        (__PLATFORM__ === 'app' &&
-          plus.os.name === 'iOS' &&
-          plus.os.version &&
-          parseInt(plus.os.version) === 16) ||
-        (__PLATFORM__ === 'h5' && navigator.userAgent.includes('iPhone OS 16'))
-      ) {
+      // ios 无法删除小数
+      if (resolveDigitDecimalPointDeleteContentBackward()) {
         if (cache.value.slice(-2, -1) === '.') {
           cache.value = state.value = input.value = cache.value.slice(0, -2)
           return true
@@ -144,7 +170,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
           type = 'number'
           break
         default:
-          type = ~INPUT_TYPES.includes(props.type) ? props.type : 'text'
+          type = INPUT_TYPES.includes(props.type) ? props.type : 'text'
           break
       }
       return props.password ? 'password' : type
@@ -225,7 +251,12 @@ export default /*#__PURE__*/ defineBuiltInComponent({
             input.value = input.value.slice(0, maxlength)
             state.value = input.value
             // 字符长度超出范围不触发 input 事件
-            return false
+            // 当用户ctrl + v粘贴过长字符时，截断后的input.value 和原来的输入框值不相等时，需要触发input事件
+            const modelValue =
+              props.modelValue !== undefined && props.modelValue !== null
+                ? props.modelValue.toString()
+                : ''
+            return modelValue !== input.value
           }
         }
       })

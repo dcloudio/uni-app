@@ -27,6 +27,7 @@ import { type RouteOptions, closePage, navigate } from './utils'
 import { showWebview } from '@dcloudio/uni-app-plus/service/api/route/webview'
 import { registerPage } from '../../framework/page'
 import tabBar from '../../framework/app/tabBar'
+import { setStatusBarStyle } from '../../../helpers/statusBar'
 
 export const $switchTab: DefineAsyncApiFn<API_TYPE_SWITCH_TAB> = (
   args,
@@ -84,7 +85,10 @@ function _switchTab({
         }
       })
       removePage(currentPage)
-      if (currentPage!.$page.openType === 'redirectTo') {
+      if (
+        (currentPage!.$page as Page.PageInstance['$page']).openType ===
+        'redirectTo'
+      ) {
         closeWebview(currentPage!.$getAppWebview!(), ANI_CLOSE, ANI_DURATION)
       } else {
         closeWebview(currentPage!.$getAppWebview!(), 'auto')
@@ -125,7 +129,7 @@ function _switchTab({
       if (callOnShow && !(webview as any).__preload__) {
         invokeHook(tabBarPage, ON_SHOW)
       }
-      // TODO setStatusBarStyle()
+      setStatusBarStyle()
       resolve(undefined)
     } else {
       showWebview(
@@ -138,7 +142,7 @@ function _switchTab({
         'none',
         0,
         () => {
-          // TODO setStatusBarStyle()
+          setStatusBarStyle()
           resolve(undefined)
         },
         70

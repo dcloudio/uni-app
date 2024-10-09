@@ -5,7 +5,7 @@
  * @file This module is used for remote communication.
  * @kit RemoteCommunicationKit
  */
-
+import type BusinessError from '@ohos.base';
 import type url from '@ohos.url';
 import type cert from '@ohos.security.cert';
 import type fs from '@ohos.file.fs';

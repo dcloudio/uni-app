@@ -215,10 +215,13 @@ export function createResolveErrorMsg(source: string, importer: string) {
 }
 
 export function enableSourceMap() {
-  return (
-    process.env.NODE_ENV === 'development' &&
-    process.env.UNI_COMPILE_TARGET !== 'uni_modules'
-  )
+  if (process.env.UNI_APP_SOURCEMAP === 'true') {
+    return true
+  }
+  if (process.env.UNI_APP_SOURCEMAP === 'false') {
+    return false
+  }
+  return process.env.NODE_ENV === 'development' && isNormalCompileTarget()
 }
 
 export function requireUniHelpers() {
@@ -265,4 +268,9 @@ export function createShadowImageUrl(cdn: number, type: string = 'grey') {
   return `https://cdn${
     (cdn || 0) + (process.env.UNI_APP_X === 'true' ? 1000 : 0) || ''
   }.dcloud.net.cn/${identStr}img/shadow-${type}.png`
+}
+
+export function isNormalCompileTarget() {
+  // 目前有特殊编译目标 uni_modules 和 ext-api
+  return !process.env.UNI_COMPILE_TARGET
 }

@@ -59,17 +59,23 @@ declare namespace NodeJS {
 
     UNI_APP_X_PAGE_COUNT: string
     UNI_APP_X_TSC?: string
+    UNI_APP_X_TSC_DIR: string
+    UNI_APP_X_TSC_CACHE_DIR: string
+    UNI_APP_X_UVUE_DIR: string
     UNI_APP_X_SINGLE_THREAD?: string
     UNI_APP_X_SETUP?: string
     UNI_APP_X_UVUE_SCRIPT_ENGINE?: 'native' | 'js'
 
-    UNI_COMPILE_TARGET?: 'uni_modules'
+    UNI_COMPILE_TARGET?: 'uni_modules' | 'ext-api'
     UNI_COMPILE_CLOUD_DIR?: string
     UNI_MODULES_ENCRYPT_CACHE_DIR?: string
 
     UNI_APP_PACK_TYPE?: 'release' | 'debug'
 
     UNI_APP_HARMONY_PROJECT_PATH?: string
+
+    UNI_COMPILE_EXT_API_INPUT?: string
+    UNI_APP_NEXT_WORKSPACE?: string
   }
 }
 

@@ -1,0 +1,9 @@
+{
+  "name": "@vue/reactivity",
+  "version": "3.4.21",
+  "description": "@vue/reactivity",
+  "types": "dist/reactivity.d.ts",
+  "dependencies": {
+    "@vue/shared": "3.4.21"
+  }
+}

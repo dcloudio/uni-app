@@ -15,4 +15,4 @@ export default {
   UniServiceJSBridge,
 }
 export { UniServiceJSBridge } from './bridge'
-export { getEnv } from '../platform/env.js'
+export { getEnv } from '../platform/env'

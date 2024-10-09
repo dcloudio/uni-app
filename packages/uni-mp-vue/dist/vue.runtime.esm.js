@@ -3863,9 +3863,6 @@ function flushPreFlushCbs(instance, seen, i = isFlushing ? flushIndex + 1 : 0) {
   for (; i < queue.length; i++) {
     const cb = queue[i];
     if (cb && cb.pre) {
-      if (instance && cb.id !== instance.uid) {
-        continue;
-      }
       if (!!(process.env.NODE_ENV !== "production") && checkRecursiveUpdates(seen, cb)) {
         continue;
       }
@@ -7445,6 +7442,17 @@ function unmountComponent(instance) {
   const { bum, scope, update, um } = instance;
   if (bum) {
     invokeArrayFns(bum);
+  }
+  if (__VUE_OPTIONS_API__) {
+    const parentInstance = instance.parent;
+    if (parentInstance) {
+      const $children = parentInstance.ctx.$children;
+      const target = getExposeProxy(instance) || instance.proxy;
+      const index = $children.indexOf(target);
+      if (index > -1) {
+        $children.splice(index, 1);
+      }
+    }
   }
   scope.stop();
   if (update) {

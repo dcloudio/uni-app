@@ -7,7 +7,7 @@ import {
   output,
   parseManifestJsonOnce,
   resetOutput,
-  resolveComponentsLibPath,
+  resolveComponentsLibDirs,
 } from '@dcloudio/uni-cli-shared'
 import type { RollupWatcher } from 'rollup'
 
@@ -25,8 +25,7 @@ export function initUVueEnv() {
   // 没有手动指定时，才需要动态读取 manifest.json
   if (process.env.UNI_APP_X !== 'true') {
     const manifestJson = parseManifestJsonOnce(process.env.UNI_INPUT_DIR)
-    const isNVueEnabled = hasOwn(manifestJson, 'uni-app-x')
-    if (!isNVueEnabled) {
+    if (!hasOwn(manifestJson, 'uni-app-x')) {
       return
     }
     process.env.UNI_APP_X = 'true'
@@ -98,7 +97,7 @@ export async function runUVueAndroidDev(options: CliOptions & ServerOptions) {
 export async function runUVueAndroidBuild(options: CliOptions & BuildOptions) {
   try {
     initEasycomsOnce(process.env.UNI_INPUT_DIR, {
-      dirs: [resolveComponentsLibPath()],
+      dirs: resolveComponentsLibDirs(),
       platform: process.env.UNI_PLATFORM,
       isX: true,
     })

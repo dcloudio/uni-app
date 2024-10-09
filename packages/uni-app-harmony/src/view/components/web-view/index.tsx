@@ -3,10 +3,15 @@ import {
   useContextInfo,
   useSubscribe,
 } from '@dcloudio/uni-components'
-import { capitalize, extend, isFunction } from '@vue/shared'
-import { type Ref, ref } from 'vue'
+import { extend, isFunction } from '@vue/shared'
+import { getCurrentPageId } from '@dcloudio/uni-core'
+import { type Ref, onBeforeUnmount, onMounted, ref } from 'vue'
 import { getRealPath } from '../../../platform/getRealPath'
 import Embed from '../embed'
+import {
+  WEBVIEW_INSERTED,
+  WEBVIEW_REMOVED,
+} from '@dcloudio/uni-app-plus/constants'
 
 export type OperateWebViewType =
   | 'evalJs'
@@ -25,18 +30,12 @@ function useMethods(embedRef: Ref<InstanceType<typeof Embed> | null>) {
       data: any,
       resolve: (res: any) => void
     ) {
-      // @ts-expect-error
-      const elId = embedRef.value!.elId
-      UniViewJSBridge.invokeServiceMethod(
-        'webview' + capitalize(methodName),
-        {
-          elId,
-          data,
-        },
-        (res) => {
-          resolve(res)
-        }
-      )
+      const embed = embedRef.value!
+      if (methodName === 'evalJs') {
+        return resolve(embed['runJavaScript']((data || {}).jsCode || ''))
+      } else {
+        resolve(embed[methodName]())
+      }
     }
   }
   function _handleSubscribe(
@@ -68,6 +67,10 @@ const props = {
     type: Boolean,
     default: true,
   },
+  fullscreen: {
+    type: Boolean,
+    default: true,
+  },
   webviewStyles: {
     type: Object,
     default() {
@@ -81,6 +84,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
   props,
   setup(props) {
     const embedRef = ref<InstanceType<typeof Embed> | null>(null)
+    const pageId = getCurrentPageId()
     const { _handleSubscribe } = useMethods(embedRef)
     useSubscribe(
       _handleSubscribe as (
@@ -91,8 +95,20 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       useContextInfo(props.id),
       true
     )
+
+    onMounted(() => {
+      UniViewJSBridge.publishHandler(WEBVIEW_INSERTED, {}, pageId)
+    })
+
+    onBeforeUnmount(() => {
+      UniViewJSBridge.publishHandler(WEBVIEW_REMOVED, {}, pageId)
+    })
+
     return () => (
-      <uni-web-view id={props.id}>
+      <uni-web-view
+        id={props.id}
+        class={props.fullscreen ? 'uni-webview--fullscreen' : ''}
+      >
         <Embed
           ref={embedRef}
           tag="webview"
@@ -101,6 +117,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
             updateTitle: props.updateTitle,
             webviewStyles: props.webviewStyles,
           }}
+          methods={['runJavaScript', 'back', 'forward', 'reload', 'stop']}
           style="width:100%;height:100%"
         />
       </uni-web-view>

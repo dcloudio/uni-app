@@ -171,7 +171,15 @@ declare namespace wantConstant {
          * @atomicservice
          * @since 12
          */
-        PARAMS_STREAM = 'ability.params.stream'
+        PARAMS_STREAM = 'ability.params.stream',
+        /**
+         * Indicates the param of app clone index.
+         *
+         * @syscap SystemCapability.Ability.AbilityBase
+         * @atomicservice
+         * @since 12
+         */
+        APP_CLONE_INDEX_KEY = 'ohos.extra.param.key.appCloneIndex'
     }
     /**
      * Used to indicate how Want is handled.

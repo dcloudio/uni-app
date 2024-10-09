@@ -16,6 +16,7 @@ import {
   initAutoImportOptions,
   initModuleAlias,
   isInHBuilderX,
+  isNormalCompileTarget,
   parseUniExtApisOnce,
   resolveSourceMapPath,
   rewriteExistsSyncHasRootFile,
@@ -219,7 +220,7 @@ function createPlugins(options: VitePluginUniResolvedOptions) {
       addCopyPlugin = true
     }
   }
-  if (process.env.UNI_COMPILE_TARGET === 'uni_modules') {
+  if (!isNormalCompileTarget()) {
     addCopyPlugin = false
   }
   if (addCopyPlugin) {
@@ -290,7 +291,7 @@ function createUVueAndroidPlugins(options: VitePluginUniResolvedOptions) {
     process.env.NODE_ENV = process.env.UNI_NODE_ENV
   }
 
-  if (process.env.UNI_COMPILE_TARGET !== 'uni_modules') {
+  if (isNormalCompileTarget()) {
     plugins.push(
       uniCopyPlugin({
         outputDir: process.env.UNI_OUTPUT_DIR,

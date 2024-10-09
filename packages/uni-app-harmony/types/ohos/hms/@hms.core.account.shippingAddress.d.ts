@@ -186,6 +186,9 @@ declare namespace shippingAddress {
      * @param { common.Context } context - Context of an ability.
      * @returns { Promise<AddressInfo> } Promise returned by the function.
      * @throws { BusinessError } 401 - Parameter error.
+     * Possible causes:
+     *   1. Incorrect parameter types.
+     *   2. Parameter verification failed.
      * @throws { BusinessError } 1008100001 - Internal error.
      * @throws { BusinessError } 1008100002 - The network is unavailable.
      * @throws { BusinessError } 1008100003 - The user has not signed in with HUAWEI ID.

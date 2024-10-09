@@ -847,6 +847,23 @@ declare namespace userAuth {
      * @syscap SystemCapability.UserIAM.UserAuth.Core
      * @since 9
      */
+    /**
+     * Check whether the authentication capability is available.
+     *
+     * @permission ohos.permission.ACCESS_BIOMETRIC
+     * @param { UserAuthType } authType - Credential type for authentication.
+     * @param { AuthTrustLevel } authTrustLevel - Trust level of authentication result.
+     * @throws { BusinessError } 201 - Permission verification failed.
+     * @throws { BusinessError } 401 - Incorrect parameters. Possible causes:
+     * <br>1. Mandatory parameters are left unspecified.
+     * @throws { BusinessError } 12500002 - General operation error.
+     * @throws { BusinessError } 12500005 - The authentication type is not supported.
+     * @throws { BusinessError } 12500006 - The authentication trust level is not supported.
+     * @throws { BusinessError } 12500010 - The type of credential has not been enrolled.
+     * @throws { BusinessError } 12500013 - Operation failed because of PIN expired.
+     * @syscap SystemCapability.UserIAM.UserAuth.Core
+     * @since 12
+     */
     function getAvailableStatus(authType: UserAuthType, authTrustLevel: AuthTrustLevel): void;
     /**
      * Enrolled state.
@@ -1124,7 +1141,7 @@ declare namespace userAuth {
          * @permission ohos.permission.ACCESS_BIOMETRIC
          * @throws { BusinessError } 201 - Permission verification failed.
          * @throws { BusinessError } 401 - Incorrect parameters. Possible causes:
-         * <br>2. Incorrect parameter types.
+         * <br>1. Incorrect parameter types.
          * @throws { BusinessError } 12500001 - Authentication failed.
          * @throws { BusinessError } 12500002 - General operation error.
          * @throws { BusinessError } 12500003 - Authentication canceled.
@@ -1138,6 +1155,27 @@ declare namespace userAuth {
          * @syscap SystemCapability.UserIAM.UserAuth.Core
          * @since 10
          */
+        /**
+         * Start this authentication, an instance can only perform authentication once.
+         *
+         * @permission ohos.permission.ACCESS_BIOMETRIC
+         * @throws { BusinessError } 201 - Permission verification failed.
+         * @throws { BusinessError } 401 - Incorrect parameters. Possible causes:
+         * <br>1. Incorrect parameter types.
+         * @throws { BusinessError } 12500001 - Authentication failed.
+         * @throws { BusinessError } 12500002 - General operation error.
+         * @throws { BusinessError } 12500003 - Authentication canceled.
+         * @throws { BusinessError } 12500004 - Authentication timeout.
+         * @throws { BusinessError } 12500005 - The authentication type is not supported.
+         * @throws { BusinessError } 12500006 - The authentication trust level is not supported.
+         * @throws { BusinessError } 12500007 - Authentication service is busy.
+         * @throws { BusinessError } 12500009 - Authentication is locked out.
+         * @throws { BusinessError } 12500010 - The type of credential has not been enrolled.
+         * @throws { BusinessError } 12500011 - Switched to the custom authentication process.
+         * @throws { BusinessError } 12500013 - Operation failed because of PIN expired.
+         * @syscap SystemCapability.UserIAM.UserAuth.Core
+         * @since 12
+         */
         start(): void;
         /**
          * Cancel this authentication.
@@ -1145,7 +1183,7 @@ declare namespace userAuth {
          * @permission ohos.permission.ACCESS_BIOMETRIC
          * @throws { BusinessError } 201 - Permission verification failed.
          * @throws { BusinessError } 401 - Incorrect parameters. Possible causes:
-         * <br>2. Incorrect parameter types.
+         * <br>1. Incorrect parameter types.
          * @throws { BusinessError } 12500002 - General operation error.
          * @syscap SystemCapability.UserIAM.UserAuth.Core
          * @since 10
@@ -1253,7 +1291,14 @@ declare namespace userAuth {
          * @syscap SystemCapability.UserIAM.UserAuth.Core
          * @since 10
          */
-        CANCELED_FROM_WIDGET = 12500011
+        CANCELED_FROM_WIDGET = 12500011,
+        /**
+         * Indicates that current operation failed because of PIN expired.
+         *
+         * @syscap SystemCapability.UserIAM.UserAuth.Core
+         * @since 12
+         */
+        PIN_EXPIRED = 12500013
     }
 }
 export default userAuth;

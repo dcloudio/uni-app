@@ -743,7 +743,7 @@ function genFunctionExpression(
       if (params) {
         // { data } :Qux
         const paramsStr = stringifyExpression(params)
-        let code = ': Map<string, any | null>): any[] => '
+        let code = ': Record<string, any | null>): any[] => '
         if (paramsStr.includes(':')) {
           const ast = parseExpression(`(${paramsStr})=>{}`, {
             plugins: context.expressionPlugins,

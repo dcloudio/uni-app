@@ -1,21 +1,21 @@
 import {
-  ref,
-  withCtx,
-  computed,
-  ComputedRef,
+  type ComponentPublicInstance,
+  type ComputedRef,
   KeepAlive,
-  openBlock,
+  type Ref,
+  type SetupContext,
+  computed,
   createBlock,
   createVNode,
-  SetupContext,
-  resolveDynamicComponent,
-  defineComponent,
-  reactive,
-  onMounted,
-  ComponentPublicInstance,
-  Ref,
-  watch,
+  type defineComponent,
   nextTick,
+  onMounted,
+  openBlock,
+  reactive,
+  ref,
+  resolveDynamicComponent,
+  watch,
+  withCtx,
 } from 'vue'
 
 import { RouterView } from 'vue-router'
@@ -23,11 +23,15 @@ import { RouterView } from 'vue-router'
 import { defineSystemComponent } from '@dcloudio/uni-components'
 import { getRouteOptions, updateCssVar } from '@dcloudio/uni-core'
 import { useTabBar } from '../../setup/state'
-import { useKeepAliveRoute } from '../../setup/page'
 import {
-  resolveOwnerEl,
-  RESPONSIVE_MIN_WIDTH,
+  getCurrentBasePages,
+  getPage$BasePage,
+  useKeepAliveRoute,
+} from '../../setup/page'
+import {
   ON_NAVIGATION_BAR_CHANGE,
+  RESPONSIVE_MIN_WIDTH,
+  resolveOwnerEl,
 } from '@dcloudio/uni-shared'
 import { checkMinWidth } from '../../../helpers/dom'
 import { hasOwn } from '@vue/shared'
@@ -153,11 +157,11 @@ function useMaxWidth(
   function checkMaxWidth() {
     const windowWidth = document.body.clientWidth
 
-    const pages = getCurrentPages()
+    const pages = getCurrentBasePages()
     let meta = {} as UniApp.PageRouteMeta
     if (pages.length > 0) {
       const curPage = pages[pages.length - 1]
-      meta = curPage.$page.meta
+      meta = getPage$BasePage(curPage).meta
     } else {
       const routeOptions = getRouteOptions(route.path, true)
       if (routeOptions) {

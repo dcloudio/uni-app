@@ -4,6 +4,7 @@ import fs from 'fs-extra'
 import type {
   UTSBundleOptions,
   UTSInputOptions,
+  UTSOutputOptions,
   UTSResult,
 } from '@dcloudio/uts'
 
@@ -28,6 +29,7 @@ import { parseUTSSyntaxError } from '../stacktrace'
 import {
   getCompilerServer,
   getUTSCompiler,
+  isEnableUTSNumber,
   parseExtApiDefaultParameters,
   parseInjectModules,
   resolveUniAppXSourceMapPath,
@@ -38,7 +40,6 @@ import {
   hbuilderFormatter,
 } from '../stacktrace/kotlin'
 import { isWindows } from '../shared'
-import { capitalize } from '@vue/shared'
 
 const DEFAULT_IMPORTS = [
   'kotlinx.coroutines.async',
@@ -65,6 +66,7 @@ type UniCloudObjectInfo = {
 export interface CompileAppOptions {
   inputDir: string
   outputDir: string
+  outFilename?: string
   package: string
   sourceMap: boolean
   uni_modules: string[]
@@ -85,6 +87,7 @@ export interface CompileAppOptions {
     declaration: string
   }[]
   env?: Record<string, unknown>
+  transform?: UTSOutputOptions['transform']
 }
 
 export async function compileApp(entry: string, options: CompileAppOptions) {
@@ -104,28 +107,6 @@ export async function compileApp(entry: string, options: CompileAppOptions) {
 
   if (shouldAutoImportUniCloud()) {
     imports.push('io.dcloud.unicloud.*')
-  }
-
-  if (extApis) {
-    // 导入固定的类型
-    Object.keys(extApis).forEach((api) => {
-      const packageName = extApis[api][0]
-      const prefix = capitalize(api)
-      if (!autoImports[packageName]) {
-        autoImports[packageName] = []
-      }
-      ;[
-        'Options',
-        'SuccessCallback',
-        'Result',
-        'FailCallback',
-        'Fail',
-        'CompleteCallback',
-        'Complete',
-      ].forEach((importName) => {
-        autoImports[packageName].push([prefix + importName])
-      })
-    })
   }
 
   const input: UTSInputOptions = {
@@ -162,7 +143,7 @@ export async function compileApp(entry: string, options: CompileAppOptions) {
       outDir: isProd
         ? kotlinSrcDir(path.resolve(outputDir, '.uniappx/android/'))
         : kotlinSrcDir(kotlinDir(outputDir)),
-      outFilename: 'index.kt', // 强制 main.kt => index.kt 因为云端，真机运行识别的都是 index.kt
+      outFilename: options.outFilename || 'index.kt', // 强制 main.kt => index.kt 因为云端，真机运行识别的都是 index.kt
       package: pkg,
       sourceMap:
         sourceMap !== false
@@ -175,7 +156,7 @@ export async function compileApp(entry: string, options: CompileAppOptions) {
       split,
       disableSplitManifest: options.disableSplitManifest,
       uniAppX: {
-        uvueOutDir: uvueOutDir(),
+        uvueOutDir: uvueOutDir('app-android'),
       },
       transform: {
         uniExtApiDefaultNamespace: 'io.dcloud.uniapp.extapi',
@@ -187,6 +168,8 @@ export async function compileApp(entry: string, options: CompileAppOptions) {
         uniCloudObjectInfo: options.uniCloudObjectInfo,
         autoImports,
         uniModulesArtifacts: options.uniModulesArtifacts,
+        enableUtsNumber: isEnableUTSNumber(),
+        ...options.transform,
       },
     },
   }
@@ -232,15 +215,17 @@ export async function compileApp(entry: string, options: CompileAppOptions) {
   return runKotlinDev(options, result as RunKotlinDevResult, hasCache)
 }
 
-export function uvueOutDir() {
-  return path.join(process.env.UNI_OUTPUT_DIR, '../.uvue')
+export function uvueOutDir(
+  platform: 'app-android' | 'app-ios' | 'app-harmony'
+) {
+  return path.join(process.env.UNI_APP_X_UVUE_DIR, platform)
 }
 
-export function tscOutDir() {
-  return path.join(process.env.UNI_OUTPUT_DIR, '../.tsc')
+export function tscOutDir(platform: 'app-android' | 'app-ios' | 'app-harmony') {
+  return path.join(process.env.UNI_APP_X_TSC_DIR, platform)
 }
 
-function kotlinSrcDir(kotlinDir: string) {
+export function kotlinSrcDir(kotlinDir: string) {
   return path.resolve(kotlinDir, 'src')
 }
 

@@ -1,0 +1,20 @@
+{
+  "version": "1",
+  "env": {
+    "compiler_version": "4.29.2024092505-dev"
+  },
+  "files": {
+    "index.kt": {
+      "md5": "72d071d87f4efa882fa48acf572b79b8a1888dda",
+      "class": ""
+    },
+    "components/test/test.kt": {
+      "md5": "f089a3ce914c6e231bde9b58d140223642784586",
+      "class": "GenComponentsTestTest"
+    },
+    "pages/index/index.kt": {
+      "class": "GenPagesIndexIndex",
+      "md5": "19d4cb05fde4c9402b2a8e6ba655d94eff8174f6"
+    }
+  }
+}

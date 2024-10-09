@@ -160,6 +160,7 @@ declare namespace textToSpeech {
          * Indicates the callback for Synthesis, and the audio data is returned through parameter of audio.
          * Note that when you need to receive a synthesized audio stream, the onData method needs to be called.
          *
+         * @type { ?function }
          * @param { string } requestId - The request ID of speech.
          * @param { ArrayBuffer } audio - The audio data of Synthesis.
          * @param { SynthesisResponse } response - The parameters of Synthesis.
@@ -188,14 +189,14 @@ declare namespace textToSpeech {
     export interface CreateEngineParams {
         /**
          * Indicates language info of the speech.
-         *
+         * @type {string}
          * @syscap SystemCapability.AI.TextToSpeech
          * @since 4.1.0(11)
          */
         language: string;
         /**
          * Indicates person info of the speech.
-         *
+         * @type {number}
          * @syscap SystemCapability.AI.TextToSpeech
          * @since 4.1.0(11)
          */
@@ -203,14 +204,14 @@ declare namespace textToSpeech {
         /**
          * Indicates module type of the speech.
          * The value 0 indicates online, value 1 indicates offline.
-         *
+         * @type {number}
          * @syscap SystemCapability.AI.TextToSpeech
          * @since 4.1.0(11)
          */
         online: number;
         /**
          * Indicates entity info of the speech.
-         *
+         * @type {?Record<string, Object>}
          * @syscap SystemCapability.AI.TextToSpeech
          * @since 4.1.0(11)
          */
@@ -227,14 +228,14 @@ declare namespace textToSpeech {
         /**
          * Indicates request ID of the speech.
          * Note that the request ID must be unique.
-         *
+         * @type {string}
          * @syscap SystemCapability.AI.TextToSpeech
          * @since 4.1.0(11)
          */
         requestId: string;
         /**
          * Indicates entity info of the speech.
-         *
+         * @type {?Record<string, Object>}
          * @syscap SystemCapability.AI.TextToSpeech
          * @since 4.1.0(11)
          */
@@ -251,7 +252,7 @@ declare namespace textToSpeech {
         /**
          * Indicates request ID of the speech.
          * Note that the request ID must be unique.
-         *
+         * @type {string}
          * @syscap SystemCapability.AI.TextToSpeech
          * @since 4.1.0(11)
          */
@@ -259,14 +260,14 @@ declare namespace textToSpeech {
         /**
          * Indicates module type of the speech.
          * The value 0 indicates online, value 1 indicates offline.
-         *
+         * @type {number}
          * @syscap SystemCapability.AI.TextToSpeech
          * @since 4.1.0(11)
          */
         online: number;
         /**
          * Indicates entity info of the speech.
-         *
+         * @type {?Record<string, Object>}
          * @syscap SystemCapability.AI.TextToSpeech
          * @since 4.1.0(11)
          */
@@ -282,35 +283,35 @@ declare namespace textToSpeech {
     export interface VoiceInfo {
         /**
          * Indicates language info of the speech.
-         *
+         * @type {string}
          * @syscap SystemCapability.AI.TextToSpeech
          * @since 4.1.0(11)
          */
         language: string;
         /**
          * Indicates person info of the speech.
-         *
+         * @type {number}
          * @syscap SystemCapability.AI.TextToSpeech
          * @since 4.1.0(11)
          */
         person: number;
         /**
          * Indicates style info of the voice.
-         *
+         * @type {string}
          * @syscap SystemCapability.AI.TextToSpeech
          * @since 4.1.0(11)
          */
         style: string;
         /**
          * Indicates gender info of the voice.
-         *
+         * @type {string}
          * @syscap SystemCapability.AI.TextToSpeech
          * @since 4.1.0(11)
          */
         gender: string;
         /**
          * Indicates description of the voice.
-         *
+         * @type {string}
          * @syscap SystemCapability.AI.TextToSpeech
          * @since 4.1.0(11)
          */
@@ -326,35 +327,35 @@ declare namespace textToSpeech {
     export interface StartResponse {
         /**
          * Indicates audio type of the speech.
-         *
+         * @type {string}
          * @syscap SystemCapability.AI.TextToSpeech
          * @since 4.1.0(11)
          */
         audioType: string;
         /**
          * Indicates sample rate of the speech.
-         *
+         * @type {number}
          * @syscap SystemCapability.AI.TextToSpeech
          * @since 4.1.0(11)
          */
         sampleRate: number;
         /**
          * Indicates sample bit of the speech.
-         *
+         * @type {number}
          * @syscap SystemCapability.AI.TextToSpeech
          * @since 4.1.0(11)
          */
         sampleBit: number;
         /**
          * Indicates audio channel of the speech.
-         *
+         * @type {number}
          * @syscap SystemCapability.AI.TextToSpeech
          * @since 4.1.0(11)
          */
         audioChannel: number;
         /**
          * Indicates compress rate of the speech.
-         *
+         * @type {number}
          * @syscap SystemCapability.AI.TextToSpeech
          * @since 4.1.0(11)
          */
@@ -372,14 +373,14 @@ declare namespace textToSpeech {
          * The type of stopping speech.
          * The value 0 indicates that synthesis and speech are stopped at the same time.
          * The value 1 indicates that only the speech is stopped.
-         *
+         * @type {number}
          * @syscap SystemCapability.AI.TextToSpeech
          * @since 4.1.0(11)
          */
         type: number;
         /**
          * Indicates message of stopping.
-         *
+         * @type {string}
          * @syscap SystemCapability.AI.TextToSpeech
          * @since 4.1.0(11)
          */
@@ -396,14 +397,14 @@ declare namespace textToSpeech {
         /**
          * Indicates the end of synthesis or speech.
          * The value 0 indicates the completion of synthesis, the value 1 indicates the completion of speech.
-         *
+         * @type {number}
          * @syscap SystemCapability.AI.TextToSpeech
          * @since 4.1.0(11)
          */
         type: number;
         /**
          * Indicates message of completing.
-         *
+         * @type {string}
          * @syscap SystemCapability.AI.TextToSpeech
          * @since 4.1.0(11)
          */
@@ -420,14 +421,14 @@ declare namespace textToSpeech {
         /**
          * Indicates the sequence of the audio data.
          * The value starts from 1 and increases by 1 each time.
-         *
+         * @type {number}
          * @syscap SystemCapability.AI.TextToSpeech
          * @since 4.1.0(11)
          */
         sequence: number;
         /**
          * Indicates type of the audio data.
-         *
+         * @type {string}
          * @syscap SystemCapability.AI.TextToSpeech
          * @since 4.1.0(11)
          */

@@ -40,5 +40,8 @@ export {
   createMediaQueryObserver,
   getLaunchOptionsSync,
   getEnterOptionsSync,
+  base64ToArrayBuffer,
+  arrayBufferToBase64,
+  onTabBarMidButtonTap,
 } from '@dcloudio/uni-api'
-export { requireUTSPlugin, registerUTSPlugin } from './plugin/uts'
+export { pageScrollTo } from '@dcloudio/uni-app-plus/service/api'

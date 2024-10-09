@@ -351,29 +351,9 @@ function promisify$1(name, fn) {
 }
 
 function formatApiArgs(args, options) {
-    const params = args[0];
-    if (!options ||
-        !options.formatArgs ||
-        (!isPlainObject(options.formatArgs) && isPlainObject(params))) {
+    args[0];
+    {
         return;
-    }
-    const formatArgs = options.formatArgs;
-    const keys = Object.keys(formatArgs);
-    for (let i = 0; i < keys.length; i++) {
-        const name = keys[i];
-        const formatterOrDefaultValue = formatArgs[name];
-        if (isFunction(formatterOrDefaultValue)) {
-            const errMsg = formatterOrDefaultValue(args[0][name], params);
-            if (isString(errMsg)) {
-                return errMsg;
-            }
-        }
-        else {
-            // defaultValue
-            if (!hasOwn(params, name)) {
-                params[name] = formatterOrDefaultValue;
-            }
-        }
     }
 }
 function invokeSuccess(id, name, res) {
@@ -384,7 +364,9 @@ function invokeSuccess(id, name, res) {
 }
 function invokeFail(id, name, errMsg, errRes = {}) {
     const apiErrMsg = name + ':fail' + (errMsg ? ' ' + errMsg : '');
-    delete errRes.errCode;
+    {
+        delete errRes.errCode;
+    }
     let res = extend({ errMsg: apiErrMsg }, errRes);
     return invokeCallback(id, res);
 }
@@ -392,13 +374,7 @@ function beforeInvokeApi(name, args, protocol, options) {
     if ((process.env.NODE_ENV !== 'production')) {
         validateProtocols(name, args, protocol);
     }
-    if (options && options.beforeInvoke) {
-        const errMsg = options.beforeInvoke(args);
-        if (isString(errMsg)) {
-            return errMsg;
-        }
-    }
-    const errMsg = formatApiArgs(args, options);
+    const errMsg = formatApiArgs(args);
     if (errMsg) {
         return errMsg;
     }
@@ -416,7 +392,7 @@ function parseErrMsg(errMsg) {
 function wrapperTaskApi(name, fn, protocol, options) {
     return (args) => {
         const id = createAsyncApiCallback(name, args, options);
-        const errMsg = beforeInvokeApi(name, [args], protocol, options);
+        const errMsg = beforeInvokeApi(name, [args], protocol);
         if (errMsg) {
             return invokeFail(id, name, errMsg);
         }
@@ -428,7 +404,7 @@ function wrapperTaskApi(name, fn, protocol, options) {
 }
 function wrapperSyncApi(name, fn, protocol, options) {
     return (...args) => {
-        const errMsg = beforeInvokeApi(name, args, protocol, options);
+        const errMsg = beforeInvokeApi(name, args, protocol);
         if (errMsg) {
             throw new Error(errMsg);
         }
@@ -439,7 +415,7 @@ function wrapperAsyncApi(name, fn, protocol, options) {
     return wrapperTaskApi(name, fn, protocol, options);
 }
 function defineSyncApi(name, fn, protocol, options) {
-    return wrapperSyncApi(name, fn, (process.env.NODE_ENV !== 'production') ? protocol : undefined, options);
+    return wrapperSyncApi(name, fn, (process.env.NODE_ENV !== 'production') ? protocol : undefined);
 }
 function defineAsyncApi(name, fn, protocol, options) {
     return promisify$1(name, wrapperAsyncApi(name, fn, (process.env.NODE_ENV !== 'production') ? protocol : undefined, options));
@@ -585,7 +561,7 @@ const OffProtocol = [
     },
     {
         name: 'callback',
-        type: Function,
+        type: [Function, Number],
     },
 ];
 const API_EMIT = '$emit';
@@ -597,26 +573,44 @@ const EmitProtocol = [
     },
 ];
 
-const emitter = new Emitter();
+class EventBus {
+    constructor() {
+        this.$emitter = new Emitter();
+    }
+    on(name, callback) {
+        return this.$emitter.on(name, callback);
+    }
+    once(name, callback) {
+        return this.$emitter.once(name, callback);
+    }
+    off(name, callback) {
+        if (!name) {
+            this.$emitter.e = {};
+            return;
+        }
+        this.$emitter.off(name, callback);
+    }
+    emit(name, ...args) {
+        this.$emitter.emit(name, ...args);
+    }
+}
+const eventBus = new EventBus();
 const $on = defineSyncApi(API_ON, (name, callback) => {
-    emitter.on(name, callback);
-    return () => emitter.off(name, callback);
+    eventBus.on(name, callback);
+    return () => eventBus.off(name, callback);
 }, OnProtocol);
 const $once = defineSyncApi(API_ONCE, (name, callback) => {
-    emitter.once(name, callback);
-    return () => emitter.off(name, callback);
+    eventBus.once(name, callback);
+    return () => eventBus.off(name, callback);
 }, OnceProtocol);
 const $off = defineSyncApi(API_OFF, (name, callback) => {
-    if (!name) {
-        emitter.e = {};
-        return;
-    }
+    // 类型中不再体现 name 支持 string[] 类型, 仅在 uni.$off 保留该逻辑向下兼容
     if (!isArray(name))
-        name = [name];
-    name.forEach((n) => emitter.off(n, callback));
+        name = name ? [name] : [];
+    name.forEach((n) => eventBus.off(n, callback));
 }, OffProtocol);
 const $emit = defineSyncApi(API_EMIT, (name, ...args) => {
-    emitter.emit(name, ...args);
+    eventBus.emit(name, ...args);
 }, EmitProtocol);
 
 let cid;

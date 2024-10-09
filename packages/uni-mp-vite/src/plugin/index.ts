@@ -88,6 +88,7 @@ export interface UniMiniProgramPluginOptions {
       generate: Parameters<typeof findMiniProgramTemplateFiles>[0]
     }
     compilerOptions?: CompilerOptions
+    checkPropName?: MiniProgramCompilerOptions['checkPropName']
   }
   style: {
     extname: string
@@ -124,6 +125,7 @@ export function uniMiniProgramPlugin(
         component: template.component,
         emitFile,
         slot: template.slot,
+        checkPropName: template.checkPropName,
       },
       compilerOptions: template.compilerOptions,
     }),

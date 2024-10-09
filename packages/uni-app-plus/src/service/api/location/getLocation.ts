@@ -5,6 +5,7 @@ import {
   GetLocationProtocol,
   defineAsyncApi,
 } from '@dcloudio/uni-api'
+import { registerServiceMethod } from '@dcloudio/uni-core'
 
 import { gcj02towgs84, wgs84togcj02 } from '../../../helpers/location'
 
@@ -75,3 +76,40 @@ export const getLocation = defineAsyncApi<API_TYPE_GET_LOCATION>(
   GetLocationProtocol,
   GetLocationOptions
 )
+
+interface IGetLocationOptions {
+  type?: 'wgs84' | 'gcj02'
+  altitude?: boolean
+  highAccuracyExpireTime?: number
+  isHighAccuracy?: boolean
+}
+
+export function subscribeGetLocation() {
+  registerServiceMethod(
+    API_GET_LOCATION,
+    (args: IGetLocationOptions, resolve) => {
+      getLocation({
+        type: args.type,
+        altitude: args.altitude,
+        highAccuracyExpireTime: args.highAccuracyExpireTime,
+        isHighAccuracy: args.isHighAccuracy,
+        success(res) {
+          resolve({
+            latitude: res.latitude,
+            longitude: res.longitude,
+            speed: res.speed,
+            accuracy: res.accuracy,
+            altitude: res.altitude,
+            verticalAccuracy: res.verticalAccuracy,
+            horizontalAccuracy: res.horizontalAccuracy,
+          })
+        },
+        fail(err) {
+          resolve({
+            errMsg: err.errMsg || 'getLocation:fail',
+          })
+        },
+      })
+    }
+  )
+}

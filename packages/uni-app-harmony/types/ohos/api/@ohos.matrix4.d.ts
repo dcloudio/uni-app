@@ -872,6 +872,39 @@ declare namespace matrix4 {
      * @atomicservice
      * @since 11
      */
+    /**
+     * Constructor of Matrix, which can create a fourth-order matrix based on the input parameters. The matrix is column-first.
+     *
+     * @param { [number,number,number,number,number,number,number,number,number,number,number,number,number,number,number,number] } options
+     * options indicates a fourth-order matrix
+     * The default value：
+     * [1, 0, 0, 0,
+     * 0, 1, 0, 0,
+     * 0, 0, 1, 0,
+     * 0, 0, 0, 1]
+     * Fourth-order matrix notes:
+     * m00 { number } -The x-axis scale value, the identity matrix defaults to 1.
+     * m01 { number } -The second value, the rotation and skew of the xyz axis affects this value.
+     * m02 { number } -The third value, the rotation of the xyz axis affects this value.
+     * m03 { number } -The fourth value, the perspective projection affects this value.
+     * m10 { number } -The fifth value, the rotation and skew of the xyz axis affects this value.
+     * m11 { number } -The y-axis scales the value, and the identity matrix defaults to 1.
+     * m12 { number } -The 7th value, the rotation of the xyz axis affects this value.
+     * m13 { number } -The 8th value, the perspective projection affects this value.
+     * m20 { number } -The 9th value, the rotation of the xyz axis affects this value.
+     * m21 { number } -The 10th value, xyz axis rotation affects this value.
+     * m22 { number } -The z-axis scale value, the identity matrix defaults to 1.
+     * m23 { number } -The 12th value, the perspective projection affects this value.
+     * m30 { number } -The x-axis translation value in px, the identity matrix defaults to 0.
+     * m31 { number } -Y-axis translation value, in px, the identity matrix defaults to 0.
+     * m32 { number } -The z-axis translation value in px, the identity matrix defaults to 0.
+     * m33 { number } -It takes effect in homogeneous coordinates to produce a perspective projection effect.
+     * @returns { Matrix4Transit } Return to Matrix4Transit
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @atomicservice
+     * @since 12
+     */
     function init(options: [
         number,
         number,

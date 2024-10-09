@@ -6,25 +6,45 @@ import {
   buildUniExtApis,
   createEncryptCssUrlReplacer,
   emptyDir,
+  enableSourceMap,
   injectCssPlugin,
   injectCssPostPlugin,
   normalizePath,
   resolveMainPathOnce,
+  tscOutDir,
+  uvueOutDir,
 } from '@dcloudio/uni-cli-shared'
 import { configResolved, createUniOptions } from '../utils'
 import { uniAppCssPlugin } from './css'
-import { enableSourceMap } from '@dcloudio/uni-cli-shared'
 
 export function uniAppIOSPlugin(): UniVitePlugin {
   const inputDir = process.env.UNI_INPUT_DIR
   const outputDir = process.env.UNI_OUTPUT_DIR
+  const uvueOutputDir = uvueOutDir('app-ios')
+  const tscOutputDir = tscOutDir('app-ios')
   // 开始编译时，清空输出目录
   function emptyOutDir() {
+    // ext-api 编译时，需要同时编译多个平台，并保留多个平台的输出目录
+    if (process.env.UNI_COMPILE_TARGET === 'ext-api') {
+      return
+    }
     if (fs.existsSync(outputDir)) {
       emptyDir(outputDir)
     }
   }
   emptyOutDir()
+  function emptyUVueDir() {
+    if (fs.existsSync(uvueOutputDir)) {
+      emptyDir(uvueOutputDir)
+    }
+  }
+  emptyUVueDir()
+  function emptyTscDir() {
+    if (fs.existsSync(tscOutputDir)) {
+      emptyDir(tscOutputDir)
+    }
+  }
+  emptyTscDir()
   return {
     name: 'uni:app-uts',
     apply: 'build',

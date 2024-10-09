@@ -1,13 +1,15 @@
 import { getCurrentPage } from '@dcloudio/uni-core'
 import type { ComponentPublicInstance } from 'vue'
-import type { UniPage } from '@dcloudio/uni-app-x/types/native'
+import type { IPage } from '@dcloudio/uni-app-x/types/native'
 
-interface UniPageFix extends UniPage {
+interface UniPageFix extends IPage {
   applyStatusBarStyle(): void
 }
 
 export function setStatusBarStyle() {
-  const page = getCurrentPage() as ComponentPublicInstance
+  const page = __X__
+    ? ((getCurrentPage() as unknown as UniPage).vm as ComponentPublicInstance)
+    : (getCurrentPage() as ComponentPublicInstance)
   if (page) {
     const nativePage = page.$nativePage as UniPageFix
     nativePage.applyStatusBarStyle()

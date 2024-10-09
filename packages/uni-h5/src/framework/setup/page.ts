@@ -12,6 +12,7 @@ import {
   type CreateScrollListenerOptions,
   createScrollListener,
   disableScrollListener,
+  getCurrentPage,
   initPageInternalInstance,
   initPageVm,
   invokeHook,
@@ -31,10 +32,117 @@ import {
 } from '../../service/api/route/utils'
 import { updateCurPageCssVar } from '../../helpers/cssVar'
 import { getStateId } from '../../helpers/dom'
+import { getPageInstanceByVm } from './utils'
+
+import type { UniBasePage } from '@dcloudio/uni-app-x/types/page'
+import { setCurrentPageMeta } from '../../service/api/ui/setPageMeta'
 
 const SEP = '$$'
 
 const currentPagesMap = new Map<string, ComponentPublicInstance>()
+export const homeDialogPages: UniDialogPage[] = []
+
+export class UniBasePageImpl implements UniBasePage {
+  route: string
+  options: UTSJSONObject
+  getParentPage: () => UniPage | null = () => null
+  getDialogPages(): UniDialogPage[] {
+    return []
+  }
+  constructor({ route, options }: { route: string; options: UTSJSONObject }) {
+    this.route = route
+    this.options = options
+  }
+}
+
+export class UniPageImpl extends UniBasePageImpl implements UniPage {
+  vm: ComponentPublicInstance
+  $vm: ComponentPublicInstance
+  getPageStyle(): UTSJSONObject {
+    return new UTSJSONObject({})
+  }
+  $getPageStyle(): UTSJSONObject {
+    return this.getPageStyle()
+  }
+  setPageStyle(style: UTSJSONObject): void {}
+  $setPageStyle(style: UTSJSONObject): void {
+    this.setPageStyle(style)
+  }
+  getElementById(id: string.IDString | string): UniElement | null {
+    const currentPage = getCurrentPage() as unknown as UniPage
+    if (currentPage !== this) {
+      return null
+    }
+    const uniPageBody = document.querySelector('uni-page-body')
+    return uniPageBody
+      ? (uniPageBody.querySelector(`#${id}`) as unknown as UniElement)
+      : null
+  }
+  getParentPage = (): UniPage | null => {
+    return null
+  }
+  getDialogPages(): UniDialogPage[] {
+    return getPageInstanceByVm(this.vm)?.$dialogPages.value || []
+  }
+  getAndroidView() {
+    return null
+  }
+  getHTMLElement() {
+    const currentPage = getCurrentPage() as unknown as UniPage
+    if (currentPage !== this) {
+      return null
+    }
+    return document.querySelector('uni-page-body') as unknown as UniElement
+  }
+  constructor({
+    route,
+    options,
+    vm,
+  }: {
+    route: string
+    options: UTSJSONObject
+    vm: ComponentPublicInstance
+  }) {
+    super({ route, options })
+    this.vm = vm
+    this.$vm = vm
+  }
+}
+
+export function getPage$BasePage(
+  page: ComponentPublicInstance
+): Page.PageInstance['$page'] {
+  return __X__ ? page.$basePage : (page.$page as Page.PageInstance['$page'])
+}
+
+export class UniDialogPageImpl
+  extends UniBasePageImpl
+  implements UniDialogPage
+{
+  vm: ComponentPublicInstance | null = null
+  $vm: ComponentPublicInstance | null = null
+  $component: any | null = null
+  $disableEscBack: boolean = false
+
+  constructor({
+    route,
+    options,
+    $component,
+    getParentPage,
+    $disableEscBack = false,
+  }: {
+    route: string
+    options: UTSJSONObject
+    $component: any
+    getParentPage: () => UniPage | null
+    $disableEscBack?: boolean | null
+  }) {
+    super({ route, options })
+    this.$component = $component
+    this.getParentPage = getParentPage
+    this.$disableEscBack = !!$disableEscBack
+  }
+}
 
 export const entryPageState = {
   handledBeforeEntryPageRoutes: false,
@@ -63,6 +171,31 @@ export const navigateToPagesBeforeEntryPages: NavigateToPage[] = []
 export const switchTabPagesBeforeEntryPages: SwitchTabPage[] = []
 export const redirectToPagesBeforeEntryPages: RedirectToPage[] = []
 export const reLaunchPagesBeforeEntryPages: ReLaunchPage[] = []
+let escBackPageNum = 0
+function handleEscKeyPress(event) {
+  if (event.key === 'Escape') {
+    const currentPage = getCurrentPage()
+    // @ts-expect-error
+    const dialogPages = currentPage.getDialogPages()
+    const dialogPage = dialogPages[dialogPages.length - 1]
+    if (!dialogPage.$disableEscBack) {
+      // @ts-expect-error
+      uni.closeDialogPage({ dialogPage })
+    }
+  }
+}
+export function incrementEscBackPageNum() {
+  escBackPageNum++
+  if (escBackPageNum === 1) {
+    document.addEventListener('keydown', handleEscKeyPress)
+  }
+}
+export function decrementEscBackPageNum() {
+  escBackPageNum--
+  if (escBackPageNum === 0) {
+    document.removeEventListener('keydown', handleEscKeyPress)
+  }
+}
 
 function pruneCurrentPages() {
   currentPagesMap.forEach((page, id) => {
@@ -77,6 +210,14 @@ export function getCurrentPagesMap() {
 }
 
 export function getCurrentPages() {
+  const curPages = getCurrentBasePages()
+  if (__X__) {
+    return curPages.map((page) => page.$page)
+  }
+  return curPages
+}
+
+export function getCurrentBasePages() {
   const curPages: ComponentPublicInstance[] = []
   const pages = currentPagesMap.values()
   for (const page of pages) {
@@ -101,6 +242,13 @@ function removeRouteCache(routeKey: string) {
 
 export function removePage(routeKey: string, removeRouteCaches = true) {
   const pageVm = currentPagesMap.get(routeKey) as ComponentPublicInstance
+  if (__X__) {
+    const dialogPages = (pageVm.$page as UniPage).getDialogPages()
+    for (let i = dialogPages.length - 1; i >= 0; i--) {
+      // @ts-expect-error
+      uni.closeDialogPage({ dialogPage: dialogPages[i] })
+    }
+  }
   pageVm.$.__isUnload = true
   invokeHook(pageVm, ON_UNLOAD)
   currentPagesMap.delete(routeKey)
@@ -145,54 +293,92 @@ export function initPage(vm: ComponentPublicInstance) {
   const page = initPublicPage(route)
   initPageVm(vm, page)
   if (__X__) {
-    const pageMeta = page.meta
-    vm.$setPageStyle = (style: PageStyle) => {
-      // TODO uni-cli-shared内处理样式的逻辑移至uni-shared内并复用
-      for (const key in style) {
-        switch (key) {
-          case 'navigationBarBackgroundColor':
-            pageMeta.navigationBar.backgroundColor = style[key]
-            break
-          case 'navigationBarTextStyle':
-            const textStyle = style[key]
-            if (textStyle == null) {
-              continue
-            }
-            // TODO titleColor属性类型定义问题
-            pageMeta.navigationBar.titleColor = ['black', 'white'].includes(
-              textStyle
-            )
-              ? normalizeTitleColor(textStyle || '')
-              : (textStyle as any)
-            break
-          case 'navigationBarTitleText':
-            pageMeta.navigationBar.titleText = style[key]
-            break
-          case 'titleImage':
-            pageMeta.navigationBar.titleImage = style[key]
-            break
-          case 'navigationStyle':
-            pageMeta.navigationBar.style = style[key]
-            break
-          default:
-            pageMeta[key] = style[key]
-            break
+    vm.$basePage = vm.$page as Page.PageInstance['$page']
+    const pageInstance = getPageInstanceByVm(vm)
+    if (pageInstance?.attrs.type !== 'dialog') {
+      const uniPage = new UniPageImpl({
+        route: route?.path || '',
+        options: new UTSJSONObject(route?.query || {}),
+        vm,
+      })
+      vm.$page = uniPage
+
+      const pageMeta = page.meta
+      uniPage.setPageStyle = (style: PageStyle) => {
+        // TODO uni-cli-shared内处理样式的逻辑移至uni-shared内并复用
+        for (const key in style) {
+          switch (key) {
+            case 'navigationBarBackgroundColor':
+              pageMeta.navigationBar.backgroundColor = style[key]
+              break
+            case 'navigationBarTextStyle':
+              const textStyle = style[key]
+              if (textStyle == null) {
+                continue
+              }
+              // TODO titleColor属性类型定义问题
+              pageMeta.navigationBar.titleColor = ['black', 'white'].includes(
+                textStyle
+              )
+                ? normalizeTitleColor(textStyle || '')
+                : (textStyle as any)
+              break
+            case 'navigationBarTitleText':
+              pageMeta.navigationBar.titleText = style[key]
+              break
+            case 'titleImage':
+              pageMeta.navigationBar.titleImage = style[key]
+              break
+            case 'navigationStyle':
+              pageMeta.navigationBar.style = style[key]
+              break
+            default:
+              pageMeta[key] = style[key]
+              break
+          }
         }
       }
+      uniPage.getPageStyle = () =>
+        new UTSJSONObject({
+          navigationBarBackgroundColor: pageMeta.navigationBar.backgroundColor,
+          navigationBarTextStyle: pageMeta.navigationBar.titleColor,
+          navigationBarTitleText: pageMeta.navigationBar.titleText,
+          titleImage: pageMeta.navigationBar.titleImage || '',
+          navigationStyle: pageMeta.navigationBar.style || 'default',
+          disableScroll: pageMeta.disableScroll || false,
+          enablePullDownRefresh: pageMeta.enablePullDownRefresh || false,
+          onReachBottomDistance:
+            pageMeta.onReachBottomDistance || ON_REACH_BOTTOM_DISTANCE,
+          backgroundColorContent: pageMeta.backgroundColorContent,
+        })
+      // @ts-expect-error
+      vm.$dialogPage = getPageInstanceByVm(vm)?.$dialogPage
+    } else {
+      vm.$page = getPageInstanceByVm(vm)?.$dialogPage!
     }
-    vm.$getPageStyle = () =>
-      new UTSJSONObject({
-        navigationBarBackgroundColor: pageMeta.navigationBar.backgroundColor,
-        navigationBarTextStyle: pageMeta.navigationBar.titleColor,
-        navigationBarTitleText: pageMeta.navigationBar.titleText,
-        titleImage: pageMeta.navigationBar.titleImage || '',
-        navigationStyle: pageMeta.navigationBar.style || 'default',
-        disableScroll: pageMeta.disableScroll || false,
-        enablePullDownRefresh: pageMeta.enablePullDownRefresh || false,
-        onReachBottomDistance:
-          pageMeta.onReachBottomDistance || ON_REACH_BOTTOM_DISTANCE,
-        backgroundColorContent: pageMeta.backgroundColorContent,
-      })
+  }
+
+  if (__X__) {
+    const pageInstance = getPageInstanceByVm(vm)
+    if (pageInstance?.attrs.type !== 'dialog') {
+      currentPagesMap.set(normalizeRouteKey(page.path, page.id), vm)
+      if (currentPagesMap.size === 1) {
+        // 通过异步保证首页生命周期触发
+        setTimeout(() => {
+          handleBeforeEntryPageRoutes()
+        }, 0)
+        if (homeDialogPages.length) {
+          homeDialogPages.forEach((dialogPage) => {
+            dialogPage.getParentPage = () => vm.$page as UniPage
+            pageInstance!.$dialogPages.value.push(dialogPage)
+          })
+          homeDialogPages.length = 0
+        }
+      }
+    } else {
+      pageInstance.$dialogPage!.$vm = vm
+    }
+    return
   }
   currentPagesMap.set(normalizeRouteKey(page.path, page.id), vm)
   if (currentPagesMap.size === 1) {
@@ -294,6 +480,20 @@ function updateCurPageAttrs(pageMeta: UniApp.PageRouteMeta) {
     }
   }
 }
+// 触发页面page-meta.vue的设置
+function updatePageMeta(pageMeta: UniApp.PageRouteMeta) {
+  setCurrentPageMeta(null, {
+    pageStyle: pageMeta.pageStyle,
+    rootFontSize: pageMeta.rootFontSize,
+  })
+}
+// 页面mounted和activeated时触发
+export function onPageActivated(
+  instance: ComponentInternalInstance,
+  pageMeta: UniApp.PageRouteMeta
+) {
+  updatePageMeta(pageMeta)
+}
 
 export function onPageShow(
   instance: ComponentInternalInstance,
@@ -303,6 +503,9 @@ export function onPageShow(
   updateCurPageCssVar(pageMeta)
   updateCurPageAttrs(pageMeta)
   initPageScrollListener(instance, pageMeta)
+  nextTick(() => {
+    onPageActivated(instance, pageMeta)
+  })
 }
 
 export function onPageReady(instance: ComponentInternalInstance) {
@@ -356,7 +559,7 @@ export function initPageScrollListener(
     return
   }
   const opts: CreateScrollListenerOptions = {}
-  const pageId = instance.proxy!.$page.id
+  const pageId = getPage$BasePage(instance.proxy!).id
   if (onPageScroll || navigationBarTransparent) {
     opts.onPageScroll = createOnPageScroll(
       pageId,

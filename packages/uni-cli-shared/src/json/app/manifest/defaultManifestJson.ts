@@ -23,7 +23,7 @@ const defaultManifestJson = `{
     "permissions": {},
     "plus": {
         "useragent": {
-            "value": "uni-app appservice",
+            "value": "",
             "concatenate": true
         },
         "splashscreen": {

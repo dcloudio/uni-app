@@ -21,7 +21,12 @@ import { createWebview, initWebview } from '../webview'
 import { createVuePage } from './define'
 import { getStatusbarHeight } from '../../../helpers/statusBar'
 import tabBar from '../app/tabBar'
-import { addCurrentPage, getAllPages } from './getCurrentPages'
+import {
+  addCurrentPage,
+  getAllPages,
+  getCurrentBasePages,
+  getPage$BasePage,
+} from './getCurrentPages'
 import { getBaseSystemInfo } from '../../api/base/getBaseSystemInfo'
 import { type PreloadWebviewObject, preloadWebviews } from './preLoad'
 import { navigateFinish } from '../../api/route/utils'
@@ -56,7 +61,7 @@ export function registerPage({
     const _webview = webview as PreloadWebviewObject
     if (_webview.__page__) {
       // 该预载页面已处于显示状态,不再使用该预加载页面,直接新开
-      if (getCurrentPages().find((page) => page === _webview.__page__)) {
+      if (getCurrentBasePages().find((page) => page === _webview.__page__)) {
         if (__DEV__) {
           console.log(
             formatLog(
@@ -68,7 +73,7 @@ export function registerPage({
         webview = undefined
       } else {
         if (eventChannel) {
-          _webview.__page__.$page.eventChannel = eventChannel
+          getPage$BasePage(_webview.__page__).eventChannel = eventChannel
         }
         if (openType === 'launch') {
           // 热更 preloadPage

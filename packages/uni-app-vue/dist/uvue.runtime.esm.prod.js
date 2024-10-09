@@ -1,3 +1,8 @@
+function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r && (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
+function _objectSpread(e) { for (var r = 1; r < arguments.length; r++) { var t = null != arguments[r] ? arguments[r] : {}; r % 2 ? ownKeys(Object(t), !0).forEach(function (r) { _defineProperty(e, r, t[r]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys(Object(t)).forEach(function (r) { Object.defineProperty(e, r, Object.getOwnPropertyDescriptor(t, r)); }); } return e; }
+function _defineProperty(e, r, t) { return (r = _toPropertyKey(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: !0, configurable: !0, writable: !0 }) : e[r] = t, e; }
+function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == typeof i ? i : i + ""; }
+function _toPrimitive(t, r) { if ("object" != typeof t || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != typeof i) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
 /**
 * @vue/shared v3.4.21
 * (c) 2018-present Yuxi (Evan) You and Vue contributors
@@ -5,7 +10,7 @@
 **/
 function makeMap(str, expectsLowerCase) {
   var set = new Set(str.split(","));
-  return expectsLowerCase ? val => set.has(val.toLowerCase()) : val => set.has(val);
+  return val => set.has(val);
 }
 var EMPTY_OBJ = {};
 var EMPTY_ARR = [];
@@ -92,12 +97,12 @@ var getGlobalThis = () => {
 };
 var GLOBALS_ALLOWED = "Infinity,undefined,NaN,isFinite,isNaN,parseFloat,parseInt,decodeURI,decodeURIComponent,encodeURI,encodeURIComponent,Math,Number,Date,Array,Object,Boolean,String,RegExp,Map,Set,JSON,Intl,BigInt,console,Error";
 var isGloballyAllowed = /* @__PURE__ */makeMap(GLOBALS_ALLOWED);
-function normalizeStyle$1(value) {
+function normalizeStyle$2(value) {
   if (isArray$1(value)) {
     var res = {};
     for (var i = 0; i < value.length; i++) {
       var item = value[i];
-      var normalized = isString(item) ? parseStringStyle(item) : normalizeStyle$1(item);
+      var normalized = isString(item) ? parseStringStyle(item) : normalizeStyle$2(item);
       if (normalized) {
         for (var key in normalized) {
           res[key] = normalized[key];
@@ -537,7 +542,7 @@ function getDepFromReactive(object, key) {
   return (_a = targetMap.get(object)) == null ? void 0 : _a.get(key);
 }
 var isNonTrackableKeys = /* @__PURE__ */makeMap("__proto__,__v_isRef,__isVue");
-var builtInSymbols = new Set( /* @__PURE__ */Object.getOwnPropertyNames(Symbol).filter(key => key !== "arguments" && key !== "caller").map(key => Symbol[key]).filter(isSymbol));
+var builtInSymbols = new Set(/* @__PURE__ */Object.getOwnPropertyNames(Symbol).filter(key => key !== "arguments" && key !== "caller").map(key => Symbol[key]).filter(isSymbol));
 var arrayInstrumentations = /* @__PURE__ */createArrayInstrumentations();
 function createArrayInstrumentations() {
   var instrumentations = {};
@@ -1259,6 +1264,7 @@ var ON_TAB_ITEM_TAP = 'onTabItemTap';
 var ON_REACH_BOTTOM = 'onReachBottom';
 var ON_PULL_DOWN_REFRESH = 'onPullDownRefresh';
 var ON_SHARE_TIMELINE = 'onShareTimeline';
+var ON_SHARE_CHAT = 'onShareChat'; // xhs-share
 var ON_ADD_TO_FAVORITES = 'onAddToFavorites';
 var ON_SHARE_APP_MESSAGE = 'onShareAppMessage';
 // navigationBar
@@ -1267,20 +1273,20 @@ var ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED = 'onNavigationBarSearchInputClicked'
 var ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED = 'onNavigationBarSearchInputChanged';
 var ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED = 'onNavigationBarSearchInputConfirmed';
 var ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED = 'onNavigationBarSearchInputFocusChanged';
-function normalizeStyle(value) {
+function normalizeStyle$1(value) {
   if (value instanceof Map) {
     var styleObject = {};
     value.forEach((value, key) => {
       styleObject[key] = value;
     });
-    return normalizeStyle$1(styleObject);
+    return normalizeStyle$2(styleObject);
   } else if (isString(value)) {
     return parseStringStyle(value);
   } else if (isArray$1(value)) {
     var res = {};
     for (var i = 0; i < value.length; i++) {
       var item = value[i];
-      var normalized = isString(item) ? parseStringStyle(item) : normalizeStyle(item);
+      var normalized = isString(item) ? parseStringStyle(item) : normalizeStyle$1(item);
       if (normalized) {
         for (var key in normalized) {
           res[key] = normalized[key];
@@ -1289,7 +1295,7 @@ function normalizeStyle(value) {
     }
     return res;
   } else {
-    return normalizeStyle$1(value);
+    return normalizeStyle$2(value);
   }
 }
 function normalizeClass(value) {
@@ -1322,11 +1328,11 @@ function normalizeProps(props) {
     props.class = normalizeClass(klass);
   }
   if (style) {
-    props.style = normalizeStyle(style);
+    props.style = normalizeStyle$1(style);
   }
   return props;
 }
-var PAGE_HOOKS = [ON_INIT, ON_LOAD, ON_SHOW, ON_HIDE, ON_UNLOAD, ON_BACK_PRESS, ON_PAGE_SCROLL, ON_TAB_ITEM_TAP, ON_REACH_BOTTOM, ON_PULL_DOWN_REFRESH, ON_SHARE_TIMELINE, ON_SHARE_APP_MESSAGE, ON_ADD_TO_FAVORITES, ON_SAVE_EXIT_STATE, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED];
+var PAGE_HOOKS = [ON_INIT, ON_LOAD, ON_SHOW, ON_HIDE, ON_UNLOAD, ON_BACK_PRESS, ON_PAGE_SCROLL, ON_TAB_ITEM_TAP, ON_REACH_BOTTOM, ON_PULL_DOWN_REFRESH, ON_SHARE_TIMELINE, ON_SHARE_APP_MESSAGE, ON_SHARE_CHAT, ON_ADD_TO_FAVORITES, ON_SAVE_EXIT_STATE, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED];
 function isRootImmediateHook(name) {
   var PAGE_SYNC_HOOKS = [ON_LOAD, ON_SHOW];
   return PAGE_SYNC_HOOKS.indexOf(name) > -1;
@@ -1646,6 +1652,247 @@ Promise$1._unhandledRejectionFn = function _unhandledRejectionFn(err) {
 };
 var lib = Promise$1;
 var PromisePolyfill = /*@__PURE__*/getDefaultExportFromCjs(lib);
+function createDecl(prop, value, important, raws, source) {
+  var decl = {
+    type: 'decl',
+    prop,
+    value: value.toString(),
+    raws,
+    source
+  };
+  if (important) {
+    decl.important = true;
+  }
+  return decl;
+}
+var backgroundColor = 'backgroundColor';
+var backgroundImage = 'backgroundImage';
+var transformBackground = decl => {
+  var {
+    value,
+    important,
+    raws,
+    source
+  } = decl;
+  if (/^#?\S+$/.test(value) || /^rgba?(.+)$/.test(value)) {
+    return [createDecl(backgroundColor, value, important, raws, source)];
+  } else if (/^linear-gradient(.+)$/.test(value)) {
+    return [createDecl(backgroundImage, value, important, raws, source)];
+  }
+  return [decl];
+};
+var borderWidth = 'Width';
+var borderStyle = 'Style';
+var borderColor = 'Color';
+function createTransformBorder(options) {
+  return decl => {
+    var {
+      prop,
+      value,
+      important,
+      raws,
+      source
+    } = decl;
+    var splitResult = value.replace(/\s*,\s*/g, ',').split(/\s+/);
+    var result = [/^[\d\.]+\S*|^(thin|medium|thick)$/, /^(solid|dashed|dotted|none)$/, /\S+/].map(item => {
+      var index = splitResult.findIndex(str => item.test(str));
+      return index < 0 ? null : splitResult.splice(index, 1)[0];
+    });
+    if (splitResult.length) {
+      return [decl];
+    }
+    return [createDecl(prop + borderWidth, (result[0] || (options.type === 'uvue' ? 'medium' : '0')).trim(), important, raws, source), createDecl(prop + borderStyle, (result[1] || (options.type === 'uvue' ? 'none' : 'solid')).trim(), important, raws, source), createDecl(prop + borderColor, (result[2] || '#000000').trim(), important, raws, source)];
+  };
+}
+var borderTop = 'borderTop';
+var borderRight = 'borderRight';
+var borderBottom = 'borderBottom';
+var borderLeft = 'borderLeft';
+var transformBorderColor = decl => {
+  var {
+    prop,
+    value,
+    important,
+    raws,
+    source
+  } = decl;
+  var property = hyphenate(prop).split('-')[1];
+  {
+    property = capitalize(property);
+  }
+  var splitResult = value.replace(/\s*,\s*/g, ',').split(/\s+/);
+  switch (splitResult.length) {
+    case 1:
+      return [decl];
+    case 2:
+      splitResult.push(splitResult[0], splitResult[1]);
+      break;
+    case 3:
+      splitResult.push(splitResult[1]);
+      break;
+  }
+  return [createDecl(borderTop + property, splitResult[0], important, raws, source), createDecl(borderRight + property, splitResult[1], important, raws, source), createDecl(borderBottom + property, splitResult[2], important, raws, source), createDecl(borderLeft + property, splitResult[3], important, raws, source)];
+};
+var borderTopLeftRadius = 'borderTopLeftRadius';
+var borderTopRightRadius = 'borderTopRightRadius';
+var borderBottomRightRadius = 'borderBottomRightRadius';
+var borderBottomLeftRadius = 'borderBottomLeftRadius';
+var transformBorderRadius = decl => {
+  var {
+    value,
+    important,
+    raws,
+    source
+  } = decl;
+  var splitResult = value.split(/\s+/);
+  if (value.includes('/')) {
+    return [decl];
+  }
+  switch (splitResult.length) {
+    case 1:
+      return [decl];
+    case 2:
+      splitResult.push(splitResult[0], splitResult[1]);
+      break;
+    case 3:
+      splitResult.push(splitResult[1]);
+      break;
+  }
+  return [createDecl(borderTopLeftRadius, splitResult[0], important, raws, source), createDecl(borderTopRightRadius, splitResult[1], important, raws, source), createDecl(borderBottomRightRadius, splitResult[2], important, raws, source), createDecl(borderBottomLeftRadius, splitResult[3], important, raws, source)];
+};
+var transformBorderStyle = transformBorderColor;
+var transformBorderWidth = transformBorderColor;
+var flexDirection = 'flexDirection';
+var flexWrap = 'flexWrap';
+var transformFlexFlow = decl => {
+  var {
+    value,
+    important,
+    raws,
+    source
+  } = decl;
+  var splitResult = value.split(/\s+/);
+  var result = [/^(column|column-reverse|row|row-reverse)$/, /^(nowrap|wrap|wrap-reverse)$/].map(item => {
+    var index = splitResult.findIndex(str => item.test(str));
+    return index < 0 ? null : splitResult.splice(index, 1)[0];
+  });
+  if (splitResult.length) {
+    return [decl];
+  }
+  return [createDecl(flexDirection, result[0] || 'column', important, raws, source), createDecl(flexWrap, result[1] || 'nowrap', important, raws, source)];
+};
+var top = 'Top';
+var right = 'Right';
+var bottom = 'Bottom';
+var left = 'Left';
+var createTransformBox = type => {
+  return decl => {
+    var {
+      value,
+      important,
+      raws,
+      source
+    } = decl;
+    var splitResult = value.split(/\s+/);
+    switch (splitResult.length) {
+      case 1:
+        splitResult.push(splitResult[0], splitResult[0], splitResult[0]);
+        break;
+      case 2:
+        splitResult.push(splitResult[0], splitResult[1]);
+        break;
+      case 3:
+        splitResult.push(splitResult[1]);
+        break;
+    }
+    return [createDecl(type + top, splitResult[0], important, raws, source), createDecl(type + right, splitResult[1], important, raws, source), createDecl(type + bottom, splitResult[2], important, raws, source), createDecl(type + left, splitResult[3], important, raws, source)];
+  };
+};
+var transformMargin = createTransformBox('margin');
+var transformPadding = createTransformBox('padding');
+var transitionProperty = 'transitionProperty';
+var transitionDuration = 'transitionDuration';
+var transitionTimingFunction = 'transitionTimingFunction';
+var transitionDelay = 'transitionDelay';
+var transformTransition = decl => {
+  var {
+    value,
+    important,
+    raws,
+    source
+  } = decl;
+  var result = [];
+  var match;
+  // 针对 cubic-bezier 特殊处理
+  // eg: cubic-bezier(0.42, 0, 1.0, 3) // (0.2,-2,0.8,2)
+  if (decl.value.includes('cubic-bezier')) {
+    var CHUNK_REGEXP = /^(\S*)?\s*(\d*\.?\d+(?:ms|s)?)?\s*((\S*)|cubic-bezier\(.*\))?\s*(\d*\.?\d+(?:ms|s)?)?$/;
+    match = value.match(CHUNK_REGEXP);
+  } else {
+    var _CHUNK_REGEXP = /^(\S*)?\s*(\d*\.?\d+(?:ms|s)?)?\s*(\S*)?\s*(\d*\.?\d+(?:ms|s)?)?$/;
+    match = value.match(_CHUNK_REGEXP);
+  }
+  if (!match) {
+    return result;
+  }
+  match[1] && result.push(createDecl(transitionProperty, match[1], important, raws, source));
+  match[2] && result.push(createDecl(transitionDuration, match[2], important, raws, source));
+  match[3] && result.push(createDecl(transitionTimingFunction, match[3], important, raws, source));
+  match[4] && result.push(createDecl(transitionDelay, match[4], important, raws, source));
+  return result;
+};
+function getDeclTransforms(options) {
+  var transformBorder = createTransformBorder(options);
+  var styleMap = _objectSpread({
+    transition: transformTransition,
+    border: transformBorder,
+    background: transformBackground,
+    borderTop: transformBorder,
+    borderRight: transformBorder,
+    borderBottom: transformBorder,
+    borderLeft: transformBorder,
+    borderStyle: transformBorderStyle,
+    borderWidth: transformBorderWidth,
+    borderColor: transformBorderColor,
+    borderRadius: transformBorderRadius,
+    // uvue已经支持这些简写属性，不需要展开
+    // margin,padding继续展开，确保样式的优先级
+    margin: transformMargin,
+    padding: transformPadding
+  }, options.type !== 'uvue' ? {
+    flexFlow: transformFlexFlow
+  } : {});
+  var result = {};
+  {
+    result = styleMap;
+  }
+  return result;
+}
+var DeclTransforms;
+var expanded = Symbol('expanded');
+function expand(options) {
+  var plugin = {
+    postcssPlugin: 'nvue:expand',
+    Declaration(decl) {
+      if (decl[expanded]) {
+        return;
+      }
+      if (!DeclTransforms) {
+        DeclTransforms = getDeclTransforms(options);
+      }
+      var transform = DeclTransforms[decl.prop];
+      if (transform) {
+        var res = transform(decl);
+        var _isSame = res.length === 1 && res[0] === decl;
+        if (!_isSame) {
+          decl.replaceWith(res);
+        }
+      }
+      decl[expanded] = true;
+    }
+  };
+  return plugin;
+}
 
 /**
 * @dcloudio/uni-app-nvue v3.4.21
@@ -1879,7 +2126,7 @@ var flushIndex = 0;
 var pendingPostFlushCbs = [];
 var activePostFlushCbs = null;
 var postFlushIndex = 0;
-var isIOS = ("nativeApp" in getGlobalThis());
+var isIOS = "nativeApp" in getGlobalThis();
 var resolvedPromise = /* @__PURE__ */(isIOS ? PromisePolyfill : Promise).resolve();
 var currentFlushPromise = null;
 function nextTick(fn) {
@@ -3941,7 +4188,7 @@ var publicPropertiesMap =
 // Move PURE marker to new line to workaround compiler discarding it
 // due to type annotation
 /* @__PURE__ */
-extend$1( /* @__PURE__ */Object.create(null), {
+extend$1(/* @__PURE__ */Object.create(null), {
   $: i => i,
   $el: i => i.vnode.el,
   $data: i => i.data,
@@ -4505,14 +4752,14 @@ function mergeAsArray(to, from) {
   return to ? [...new Set([].concat(to, from))] : from;
 }
 function mergeObjectOptions(to, from) {
-  return to ? extend$1( /* @__PURE__ */Object.create(null), to, from) : from;
+  return to ? extend$1(/* @__PURE__ */Object.create(null), to, from) : from;
 }
 function mergeEmitsOrPropsOptions(to, from) {
   if (to) {
     if (isArray$1(to) && isArray$1(from)) {
       return [... /* @__PURE__ */new Set([...to, ...from])];
     }
-    return extend$1( /* @__PURE__ */Object.create(null), normalizePropsOrEmits(to), normalizePropsOrEmits(from != null ? from : {}));
+    return extend$1(/* @__PURE__ */Object.create(null), normalizePropsOrEmits(to), normalizePropsOrEmits(from != null ? from : {}));
   } else {
     return from;
   }
@@ -4520,7 +4767,7 @@ function mergeEmitsOrPropsOptions(to, from) {
 function mergeWatchOptions(to, from) {
   if (!to) return from;
   if (!from) return to;
-  var merged = extend$1( /* @__PURE__ */Object.create(null), to);
+  var merged = extend$1(/* @__PURE__ */Object.create(null), to);
   for (var key in from) {
     merged[key] = mergeAsArray(to[key], from[key]);
   }
@@ -6876,7 +7123,7 @@ function _createVNode(type) {
       if (isProxy(style) && !isArray$1(style)) {
         style = extend$1({}, style);
       }
-      props.style = normalizeStyle(style);
+      props.style = normalizeStyle$1(style);
     }
   }
   var shapeFlag = isString(type) ? 1 : isSuspense(type) ? 128 : isTeleport(type) ? 64 : isObject(type) ? 4 : isFunction(type) ? 2 : 0;
@@ -7031,7 +7278,7 @@ function mergeProps() {
           ret.class = normalizeClass([ret.class, toMerge.class]);
         }
       } else if (key === "style") {
-        ret.style = normalizeStyle([ret.style, toMerge.style]);
+        ret.style = normalizeStyle$1([ret.style, toMerge.style]);
       } else if (isOn(key)) {
         var existing = ret[key];
         var incoming = toMerge[key];
@@ -7722,7 +7969,7 @@ function extend(a, b) {
   return a;
 }
 function toStyle(el, classStyle, classStyleWeights) {
-  var res = extend( /* @__PURE__ */new Map(), classStyle);
+  var res = extend(/* @__PURE__ */new Map(), classStyle);
   var style = getExtraStyle(el);
   if (style != null) {
     style.forEach((value, key) => {
@@ -7928,11 +8175,10 @@ function transformAttr(el, key, value, instance) {
     }
     if (opts["style"].indexOf(camelized) > -1) {
       if (isString(value)) {
-        var _style = camelize(value);
-        var sytle2 = parseStringStyle(_style);
-        return [camelized, sytle2];
+        var sytle = parseStringStyle(camelize(value));
+        return [camelized, sytle];
       }
-      return [camelized, normalizeStyle$1(value)];
+      return [camelized, normalizeStyle$2(value)];
     }
   }
   return [key, value];
@@ -8004,156 +8250,45 @@ function createInvoker(initialValue, instance) {
   invoker.modifiers = [...modifiers];
   return invoker;
 }
-var backgroundColor = "backgroundColor";
-var backgroundImage = "backgroundImage";
-var transformBackground = function (prop, value) {
-  var result = /* @__PURE__ */new Map();
-  if (/^#?\S+$/.test(value) || /^rgba?(.+)$/.test(value)) {
-    result.set(backgroundColor, value);
-  } else if (/^linear-gradient(.+)$/.test(value)) {
-    result.set(backgroundImage, value);
-  } else {
-    result.set(prop, value);
+var processDeclaration = expand({
+  type: "uvue"
+}).Declaration;
+function createDeclaration(prop, value) {
+  var newValue = value + "";
+  if (newValue.includes("!important")) {
+    return {
+      prop,
+      value: newValue.replace(/\s*!important/, ""),
+      important: true
+    };
   }
-  return result;
-};
-var borderWidth = "Width";
-var borderStyle = "Style";
-var borderColor = "Color";
-var transformBorder = function (prop, value) {
-  var splitResult = value.replace(/\s*,\s*/g, ",").split(/\s+/);
-  var values = [/^[\d\.]+\S*|^(thin|medium|thick)$/, /^(solid|dashed|dotted|none)$/, /\S+/].map(item => {
-    var index = splitResult.findIndex(str => item.test(str));
-    return index < 0 ? null : splitResult.splice(index, 1)[0];
-  });
-  var result = /* @__PURE__ */new Map();
-  if (splitResult.length != 0) {
-    result.set(prop, value);
-    return result;
-  }
-  result.set(prop + borderWidth, (values[0] == null ? "medium" : values[0]).trim());
-  result.set(prop + borderStyle, (values[1] == null ? "none" : values[1]).trim());
-  result.set(prop + borderColor, (values[2] == null ? "#000000" : values[2]).trim());
-  return result;
-};
-var borderTop = "borderTop";
-var borderRight = "borderRight";
-var borderBottom = "borderBottom";
-var borderLeft = "borderLeft";
-var transformBorderColor = function (prop, value) {
-  var property = hyphenate(prop).split("-")[1];
-  property = capitalize(property);
-  var splitResult = value.replace(/\s*,\s*/g, ",").split(/\s+/);
-  var result = /* @__PURE__ */new Map();
-  switch (splitResult.length) {
-    case 1:
-      result.set(prop, value);
-      return result;
-    case 2:
-      splitResult.push(splitResult[0], splitResult[1]);
-      break;
-    case 3:
-      splitResult.push(splitResult[1]);
-      break;
-  }
-  result.set(borderTop + property, splitResult[0]);
-  result.set(borderRight + property, splitResult[1]);
-  result.set(borderBottom + property, splitResult[2]);
-  result.set(borderLeft + property, splitResult[3]);
-  return result;
-};
-var borderTopLeftRadius = "borderTopLeftRadius";
-var borderTopRightRadius = "borderTopRightRadius";
-var borderBottomRightRadius = "borderBottomRightRadius";
-var borderBottomLeftRadius = "borderBottomLeftRadius";
-var transformBorderRadius = function (prop, value) {
-  var splitResult = value.split(/\s+/);
-  var result = /* @__PURE__ */new Map();
-  if (value.includes("/")) {
-    result.set(prop, value);
-    return result;
-  }
-  switch (splitResult.length) {
-    case 1:
-      result.set(prop, value);
-      return result;
-    case 2:
-      splitResult.push(splitResult[0], splitResult[1]);
-      break;
-    case 3:
-      splitResult.push(splitResult[1]);
-      break;
-  }
-  result.set(borderTopLeftRadius, splitResult[0]);
-  result.set(borderTopRightRadius, splitResult[1]);
-  result.set(borderBottomRightRadius, splitResult[2]);
-  result.set(borderBottomLeftRadius, splitResult[3]);
-  return result;
-};
-var transformBorderStyle = transformBorderColor;
-var transformBorderWidth = transformBorderColor;
-var top = "Top";
-var right = "Right";
-var bottom = "Bottom";
-var left = "Left";
-var transformMargin = function (prop, value) {
-  var splitResult = value.split(/\s+/);
-  switch (splitResult.length) {
-    case 1:
-      splitResult.push(splitResult[0], splitResult[0], splitResult[0]);
-      break;
-    case 2:
-      splitResult.push(splitResult[0], splitResult[1]);
-      break;
-    case 3:
-      splitResult.push(splitResult[1]);
-      break;
-  }
-  var result = /* @__PURE__ */new Map();
-  result.set(prop + top, splitResult[0]);
-  result.set(prop + right, splitResult[1]);
-  result.set(prop + bottom, splitResult[2]);
-  result.set(prop + left, splitResult[3]);
-  return result;
-};
-var transformPadding = transformMargin;
-var properties = ["transitionProperty", "transitionDuration", "transitionTimingFunction", "transitionDelay"];
-var transformTransition = function (prop, value) {
-  var CHUNK_REGEXP = /^(\S*)?\s*(\d*\.?\d+(?:ms|s)?)?\s*(\S*)?\s*(\d*\.?\d+(?:ms|s)?)?$/;
-  var match = CHUNK_REGEXP.exec(value);
-  var result = /* @__PURE__ */new Map();
-  if (match == null) {
-    result.set(prop, value);
-    return result;
-  }
-  var len = match.length;
-  for (var i = 1; i < len && i <= 4; i++) {
-    var val = match[i];
-    if (match[i] != null && val.length > 0) {
-      result.set(properties[i - 1], val);
+  return {
+    prop,
+    value: newValue,
+    important: false
+  };
+}
+function normalizeStyle(name, value) {
+  var decl = Object.assign({}, {
+    replaceWith(newProps) {
+      props = newProps;
     }
-  }
-  return result;
-};
-var importantRE = /\s*!important$/;
-var DeclTransforms = /* @__PURE__ */new Map([["transition", transformTransition], ["margin", transformMargin], ["padding", transformPadding], ["border", transformBorder], ["borderTop", transformBorder], ["borderRight", transformBorder], ["borderBottom", transformBorder], ["borderLeft", transformBorder], ["borderStyle", transformBorderStyle], ["borderWidth", transformBorderWidth], ["borderColor", transformBorderColor], ["borderRadius", transformBorderRadius], ["background", transformBackground]]);
-function expandStyle(prop, value) {
-  if (value == null) {
-    return /* @__PURE__ */new Map([[prop, ""]]);
-  }
-  if (!isString(value)) {
-    value = "" + value;
-  }
-  var important = importantRE.test(value);
-  var newVal = important ? value.replace(importantRE, "") : value;
-  var transform = DeclTransforms.get(prop);
-  if (transform != null) {
-    return transform(prop, newVal);
-  }
-  return /* @__PURE__ */new Map([[prop, newVal]]);
+  }, createDeclaration(name, value));
+  var props = [decl];
+  processDeclaration(decl);
+  return props;
+}
+function setStyle(expandRes) {
+  var resArr = expandRes.map(item => {
+    return [item.prop, item.value];
+  });
+  var resMap = new Map(resArr);
+  return resMap;
 }
 function parseStyleDecl(prop, value) {
-  return expandStyle(prop, value);
+  var val = normalizeStyle(prop, value);
+  var res = setStyle(val);
+  return res;
 }
 function isSame(a, b) {
   return isString(a) && isString(b) || typeof a === "number" && typeof b === "number" ? a == b : a === b;
@@ -8415,4 +8550,4 @@ var createApp = function () {
   };
   return app;
 };
-export { BaseTransition, BaseTransitionPropsValidators, Comment, DeprecationTypes, EffectScope, ErrorCodes, ErrorTypeStrings, Fragment, KeepAlive, ReactiveEffect, Static, Suspense, Teleport, Text, TrackOpTypes, TriggerOpTypes, assertNumber, callWithAsyncErrorHandling, callWithErrorHandling, camelize, capitalize, cloneVNode, compatUtils, computed, createApp, createBlock, createCommentVNode, createElementBlock, createBaseVNode as createElementVNode, createHydrationRenderer, createPropsRestProxy, createRenderer, createSlots, createStaticVNode, createTextVNode, createVNode, customRef, defineAsyncComponent, defineComponent, defineEmits, defineExpose, defineModel, defineOptions, defineProps, defineSlots, devtools, effect, effectScope, getCurrentInstance, getCurrentScope, getTransitionRawChildren, guardReactiveProps, h, handleError, hasInjectionContext, hyphenate, initCustomFormatter, inject, injectHook, isInSSRComponentSetup, isMemoSame, isProxy, isReactive, isReadonly, isRef, isRuntimeOnly, isShallow, isVNode, markRaw, mergeDefaults, mergeModels, mergeProps, nextTick, normalizeClass, normalizeProps, normalizeStyle, onActivated, onBeforeMount, onBeforeUnmount, onBeforeUpdate, onDeactivated, onErrorCaptured, onMounted, onRenderTracked, onRenderTriggered, onScopeDispose, onServerPrefetch, onUnmounted, onUpdated, openBlock, parseClassList, parseClassStyles, popScopeId, provide, proxyRefs, pushScopeId, queuePostFlushCb, reactive, readonly, ref, registerRuntimeCompiler, render, renderList, renderSlot, resolveComponent, resolveDirective, resolveDynamicComponent, resolveFilter, resolveTransitionHooks, setBlockTracking, setDevtoolsHook, setTransitionHooks, shallowReactive, shallowReadonly, shallowRef, ssrContextKey, ssrUtils, stop, toDisplayString, toHandlerKey, toHandlers, toRaw, toRef, toRefs, toValue, transformVNodeArgs, triggerRef, unref, useAttrs, useCssModule, useCssStyles, useCssVars, useModel, useSSRContext, useSlots, useTransitionState, vModelDynamic, vModelText, vShow, version, warn, watch, watchEffect, watchPostEffect, watchSyncEffect, withAsyncContext, withCtx, withDefaults, withDirectives, withKeys, withMemo, withModifiers, withScopeId };
+export { BaseTransition, BaseTransitionPropsValidators, Comment, DeprecationTypes, EffectScope, ErrorCodes, ErrorTypeStrings, Fragment, KeepAlive, ReactiveEffect, Static, Suspense, Teleport, Text, TrackOpTypes, TriggerOpTypes, assertNumber, callWithAsyncErrorHandling, callWithErrorHandling, camelize, capitalize, cloneVNode, compatUtils, computed, createApp, createBlock, createCommentVNode, createElementBlock, createBaseVNode as createElementVNode, createHydrationRenderer, createPropsRestProxy, createRenderer, createSlots, createStaticVNode, createTextVNode, createVNode, customRef, defineAsyncComponent, defineComponent, defineEmits, defineExpose, defineModel, defineOptions, defineProps, defineSlots, devtools, effect, effectScope, getCurrentInstance, getCurrentScope, getTransitionRawChildren, guardReactiveProps, h, handleError, hasInjectionContext, hyphenate, initCustomFormatter, inject, injectHook, isInSSRComponentSetup, isMemoSame, isProxy, isReactive, isReadonly, isRef, isRuntimeOnly, isShallow, isVNode, markRaw, mergeDefaults, mergeModels, mergeProps, nextTick, normalizeClass, normalizeProps, normalizeStyle$1 as normalizeStyle, onActivated, onBeforeMount, onBeforeUnmount, onBeforeUpdate, onDeactivated, onErrorCaptured, onMounted, onRenderTracked, onRenderTriggered, onScopeDispose, onServerPrefetch, onUnmounted, onUpdated, openBlock, parseClassList, parseClassStyles, popScopeId, provide, proxyRefs, pushScopeId, queuePostFlushCb, reactive, readonly, ref, registerRuntimeCompiler, render, renderList, renderSlot, resolveComponent, resolveDirective, resolveDynamicComponent, resolveFilter, resolveTransitionHooks, setBlockTracking, setDevtoolsHook, setTransitionHooks, shallowReactive, shallowReadonly, shallowRef, ssrContextKey, ssrUtils, stop, toDisplayString, toHandlerKey, toHandlers, toRaw, toRef, toRefs, toValue, transformVNodeArgs, triggerRef, unref, useAttrs, useCssModule, useCssStyles, useCssVars, useModel, useSSRContext, useSlots, useTransitionState, vModelDynamic, vModelText, vShow, version, warn, watch, watchEffect, watchPostEffect, watchSyncEffect, withAsyncContext, withCtx, withDefaults, withDirectives, withKeys, withMemo, withModifiers, withScopeId };

@@ -154,6 +154,7 @@ declare namespace insightIntent {
         /**
          * Indicates the name of the intent.
          *
+         * @type { string }
          * @syscap SystemCapability.AI.InsightIntent
          * @since 4.0.0(10)
          */
@@ -161,6 +162,7 @@ declare namespace insightIntent {
         /**
          * Indicates the version of the intent.
          *
+         * @type { string }
          * @syscap SystemCapability.AI.InsightIntent
          * @since 4.0.0(10)
          */
@@ -168,6 +170,7 @@ declare namespace insightIntent {
         /**
          * Indicates the identifier of the intent.
          *
+         * @type { string }
          * @syscap SystemCapability.AI.InsightIntent
          * @since 4.0.0(10)
          */
@@ -211,8 +214,29 @@ declare namespace insightIntent {
      * @since 5.0.0(12)
      */
     interface IntentEntityInfo {
+        /**
+         * Indicates the unique identifier of the intent entity, which is customized by the developer.
+         *
+         * @type { string }
+         * @syscap SystemCapability.AI.InsightIntent
+         * @since 5.0.0(12)
+         */
         entityId: string;
+        /**
+         * Indicates the name of the intent entity.
+         *
+         * @type { string }
+         * @syscap SystemCapability.AI.InsightIntent
+         * @since 5.0.0(12)
+         */
         entityName: string;
+        /**
+         * Indicates other field values of the intent entity.
+         *
+         * @type { object }
+         * @syscap SystemCapability.AI.InsightIntent
+         * @since 5.0.0(12)
+         */
         [key: string]: Object;
     }
     /**
@@ -223,6 +247,13 @@ declare namespace insightIntent {
      * @since 5.0.0(12)
      */
     interface IntentActionInfo {
+        /**
+         * Indicates the field values of the intent action.
+         *
+         * @type { object }
+         * @syscap SystemCapability.AI.InsightIntent
+         * @since 5.0.0(12)
+         */
         [key: string]: Object;
     }
 }

@@ -20,7 +20,7 @@ import { normalizeAppXUniConfig } from './uniConfig'
 import { offsetToLineColumn } from '../../vite/plugins/vitejs/utils'
 import { preUVueJson } from '../../preprocess'
 
-export { parseUniXFlexDirection, parseUniXSplashScreen } from './manifest'
+export * from './manifest'
 interface CheckPagesJsonError extends CompilerError {
   offsetStart: number
   offsetEnd: number

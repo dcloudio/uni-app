@@ -2,6 +2,11 @@ import { invokeArrayFns, isUniLifecycleHook, decodedQuery, ON_LOAD, ON_SHOW, LIN
 import { isString, isArray, isFunction } from '@vue/shared';
 import { injectHook } from 'vue';
 
+function get$pageByPage(page) {
+    return page.vm.$basePage
+        ;
+}
+
 function getCurrentPage() {
     const pages = getCurrentPages();
     const len = pages.length;
@@ -10,7 +15,9 @@ function getCurrentPage() {
     }
 }
 function getCurrentPageVm() {
-    const page = getCurrentPage();
+    var _a;
+    const page = (_a = getCurrentPage()) === null || _a === void 0 ? void 0 : _a.vm
+        ;
     if (page) {
         return page.$vm;
     }
@@ -23,7 +30,7 @@ function invokeHook(vm, name, args) {
         vm = getCurrentPageVm();
     }
     else if (typeof vm === 'number') {
-        const page = getCurrentPages().find((page) => page.$page.id === vm);
+        const page = getCurrentPages().find((page) => get$pageByPage(page).id === vm);
         if (page) {
             vm = page.$vm;
         }
@@ -50,7 +57,6 @@ function injectLifecycleHook(name, hook, publicThis, instance) {
     }
 }
 function initHooks(options, instance, publicThis) {
-    var _a, _b;
     const mpType = options.mpType || publicThis.$mpType;
     if (!mpType || mpType === 'component') {
         // 仅 App,Page 类型支持在 options 中配置 on 生命周期，组件可以使用组合式 API 定义页面生命周期
@@ -74,7 +80,7 @@ function initHooks(options, instance, publicThis) {
             let query = instance.attrs.__pageQuery;
             // onLoad 的 query 进行 decode
             if (true) {
-                query = decodedQuery(query);
+                query = new UTSJSONObject(decodedQuery(query));
             }
             if ('app' === 'app' && true) {
                 // TODO 统一处理 Web
@@ -83,8 +89,11 @@ function initHooks(options, instance, publicThis) {
             invokeHook(publicThis, ON_LOAD, query);
             delete instance.attrs.__pageQuery;
             // iOS-X 的非 Tab 页面与 uni-app 一致固定触发 onShow
-            if (!('app' === 'app' && true && ((_a = publicThis.$page) === null || _a === void 0 ? void 0 : _a.meta.isTabBar))) {
-                if (((_b = publicThis.$page) === null || _b === void 0 ? void 0 : _b.openType) !== 'preloadPage') {
+            const $basePage = true
+                ? publicThis.$basePage
+                : publicThis.$page;
+            if (!('app' === 'app' && true && ($basePage === null || $basePage === void 0 ? void 0 : $basePage.meta.isTabBar))) {
+                if (($basePage === null || $basePage === void 0 ? void 0 : $basePage.openType) !== 'preloadPage') {
                     invokeHook(publicThis, ON_SHOW);
                 }
             }

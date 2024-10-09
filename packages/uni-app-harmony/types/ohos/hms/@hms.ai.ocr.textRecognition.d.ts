@@ -27,6 +27,7 @@ declare namespace textRecognition {
         /**
          * The direction default value is true, that is, the default image is upright, and the direction
          * does not need to be considered.
+         * @type {?boolean}
          * @default true
          * @syscap SystemCapability.AI.OCR.TextRecognition
          * @since 4.0.0(10)
@@ -42,6 +43,7 @@ declare namespace textRecognition {
     export interface VisionInfo {
         /**
          * Image information to be identified.
+         * @type {image.PixelMap}
          * @syscap SystemCapability.AI.OCR.TextRecognition
          * @since 4.0.0(10)
          */
@@ -56,12 +58,14 @@ declare namespace textRecognition {
     export interface PixelPoint {
         /**
          * Horizontal coordinates of pixel point.
+         * @type {number}
          * @syscap SystemCapability.AI.OCR.TextRecognition
          * @since 4.0.0(10)
          */
         readonly x: number;
         /**
          * The vertical coordinate of the pixel point
+         * @type {number}
          * @syscap SystemCapability.AI.OCR.TextRecognition
          * @since 4.0.0(10)
          */
@@ -76,12 +80,14 @@ declare namespace textRecognition {
     export interface TextWord {
         /**
          * The content of the word
+         * @type {string}
          * @syscap SystemCapability.AI.OCR.TextRecognition
          * @since 4.0.0(10)
          */
         readonly value: string;
         /**
          * Indicates the outline corner point of a word of text
+         * @type {Array<PixelPoint>}
          * @syscap SystemCapability.AI.OCR.TextRecognition
          * @since 4.0.0(10)
          */
@@ -96,18 +102,21 @@ declare namespace textRecognition {
     export interface TextLine {
         /**
          * Indicates the line content
+         * @type {string}
          * @syscap SystemCapability.AI.OCR.TextRecognition
          * @since 4.0.0(10)
          */
         readonly value: string;
         /**
          * Indicates the outline corner point of a line of text
+         * @type {Array<PixelPoint>}
          * @syscap SystemCapability.AI.OCR.TextRecognition
          * @since 4.0.0(10)
          */
         readonly cornerPoints: Array<PixelPoint>;
         /**
          * Word information within a line of text.
+         * @type {Array<TextWord>}
          * @syscap SystemCapability.AI.OCR.TextRecognition
          * @since 4.0.0(10)
          */
@@ -122,12 +131,14 @@ declare namespace textRecognition {
     export interface TextBlock {
         /**
          * Indicates the block content
+         * @type {string}
          * @syscap SystemCapability.AI.OCR.TextRecognition
          * @since 4.0.0(10)
          */
         readonly value: string;
         /**
          * Indicates the line contents
+         * @type {Array<TextLine>}
          * @syscap SystemCapability.AI.OCR.TextRecognition
          * @since 4.0.0(10)
          */
@@ -142,12 +153,14 @@ declare namespace textRecognition {
     export interface TextRecognitionResult {
         /**
          * Indicates the blocks content.
+         * @type {string}
          * @syscap SystemCapability.AI.OCR.TextRecognition
          * @since 4.0.0(10)
          */
         readonly value: string;
         /**
          * A lit of details for a block.
+         * @type {Array<TextBlock>}
          * @syscap SystemCapability.AI.OCR.TextRecognition
          * @since 4.0.0(10)
          */

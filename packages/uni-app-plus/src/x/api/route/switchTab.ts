@@ -23,6 +23,7 @@ import {
   entryPageState,
   switchTabPagesBeforeEntryPages,
 } from '../../framework/app'
+import { getCurrentBasePages } from '../../../service/framework/page/getCurrentPages'
 
 export const $switchTab: DefineAsyncApiFn<API_TYPE_SWITCH_TAB> = (
   args,
@@ -64,7 +65,7 @@ function _switchTab({ url, path, query }: SwitchTabOptions) {
   if (selected == -1) {
     return Promise.reject(`tab ${path} not found`)
   }
-  const pages = getCurrentPages()
+  const pages = getCurrentBasePages()
   switchSelect(selected, path, query)
   for (let index = pages.length - 1; index >= 0; index--) {
     const page = pages[index] as ComponentPublicInstance

@@ -1,6 +1,9 @@
 import type { ComponentPublicInstance } from 'vue'
 import { findElmById, invokeVmMethod, invokeVmMethodWithoutArgs } from '../util'
-import { getPageById } from '../../framework/page/getCurrentPages'
+import {
+  getPage$BasePage,
+  getPageById,
+} from '../../framework/page/getCurrentPages'
 
 type Methords = Record<string, (ctx: any, args: any) => void>
 
@@ -69,7 +72,7 @@ export function operateMap(
   operateMapCallback?: (res: any) => void
 ) {
   const page = getPageById(pageId)
-  if (page?.$page.meta.isNVue) {
+  if (page && getPage$BasePage(page).meta.isNVue) {
     const pageVm = (page as any).$vm as ComponentPublicInstance
     return METHODS[type as keyof typeof METHODS](
       findElmById(id, pageVm),

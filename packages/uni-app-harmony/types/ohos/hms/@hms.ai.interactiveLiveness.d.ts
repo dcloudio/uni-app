@@ -7,6 +7,7 @@
  * @bundle com.huawei.hmsapp.hiai.hsp/interactivelivenessHsp/Index 5.0.0(12)
  * */
 import type image from '@ohos.multimedia.image';
+import type { AsyncCallback } from '@ohos.base';
 /**
  * This module provides motion liveness detection and silent liveness detection applications.
  * The application module is developed through the system-level hsp.
@@ -20,13 +21,14 @@ declare namespace interactiveLiveness {
     /**
      * Action Type Enumeration.
      *
+     * @enum {string}
      * @syscap SystemCapability.AI.Component.LivenessDetect
      * @atomicservice
      * @since 5.0.0(12)
      * */
     enum DetectionMode {
         /**
-         * indicates that the action is alive.
+         * Indicates that the action is alive.
          *
          * @syscap SystemCapability.AI.Component.LivenessDetect
          * @atomicservice
@@ -34,7 +36,7 @@ declare namespace interactiveLiveness {
          * */
         INTERACTIVE_MODE = 'INTERACTIVE_MODE',
         /**
-         * denotes silent living body.
+         * Denotes silent living body.
          *
          * @syscap SystemCapability.AI.Component.LivenessDetect
          * @atomicservice
@@ -45,6 +47,7 @@ declare namespace interactiveLiveness {
     /**
      * Action Count Enumeration.
      *
+     * @enum {number}
      * @syscap SystemCapability.AI.Component.LivenessDetect
      * @atomicservice
      * @since 5.0.0(12)
@@ -90,13 +93,14 @@ declare namespace interactiveLiveness {
     /**
      * Route jump mode.
      *
+     * @enum {string}
      * @syscap SystemCapability.AI.Component.LivenessDetect
      * @atomicservice
      * @since 5.0.0(12)
      * */
     enum RouteRedirectionMode {
         /**
-         * back Jump mode.
+         * Back Jump mode.
          * Use router.back to jump back after the collection is complete.
          *
          * @syscap SystemCapability.AI.Component.LivenessDetect
@@ -115,8 +119,7 @@ declare namespace interactiveLiveness {
         REPLACE_MODE = 'replace'
     }
     /**
-     * External Configuration Interfaces.
-     * It's all optional.
+     * Liveness detection configuration item.
      *
      * @syscap SystemCapability.AI.Component.LivenessDetect
      * @atomicservice
@@ -124,7 +127,7 @@ declare namespace interactiveLiveness {
      * */
     class InteractiveLivenessConfig {
         /**
-         * Silent Living Default Action Living.
+         * Action Type Enumeration.
          *
          * @type { DetectionMode }
          * @syscap SystemCapability.AI.Component.LivenessDetect
@@ -135,7 +138,7 @@ declare namespace interactiveLiveness {
         /**
          * The number of customized actions ranges from 1 to 4, and three actions are randomly selected by default.
          *
-         * @type { ActionsNumber }
+         * @type { ?ActionsNumber }
          * @syscap SystemCapability.AI.Component.LivenessDetect
          * @atomicservice
          * @since 5.0.0(12)
@@ -144,7 +147,7 @@ declare namespace interactiveLiveness {
         /**
          * Failure page routing provides failure page by default.
          *
-         * @type { string }
+         * @type { ?string }
          * @syscap SystemCapability.AI.Component.LivenessDetect
          * @atomicservice
          * @since 5.0.0(12)
@@ -153,7 +156,7 @@ declare namespace interactiveLiveness {
         /**
          * Success page routing provides a success page by default.
          *
-         * @type { string }
+         * @type { ?string }
          * @syscap SystemCapability.AI.Component.LivenessDetect
          * @atomicservice
          * @since 5.0.0(12)
@@ -162,18 +165,38 @@ declare namespace interactiveLiveness {
         /**
          * Route redirection mode.
          *
-         * @type { RouteRedirectionMode }
+         * @type { ?RouteRedirectionMode }
          * @syscap SystemCapability.AI.Component.LivenessDetect
          * @atomicservice
          * @since 5.0.0(12)
          */
         routeMode?: RouteRedirectionMode;
+        /**
+         * Challenge used for signature.
+         *
+         * @type { ?string }
+         * @syscap SystemCapability.AI.Component.LivenessDetect
+         * @atomicservice
+         * @since 5.0.0(12)
+         * */
+        challenge?: string;
+        /**
+         * Voice broadcast switch.
+         * The value true indicates that voice broadcast is enabled,
+         * and the value false indicates that voice broadcast is disabled. By default, voice broadcast is enabled.
+         *
+         * @type { ?boolean }
+         * @syscap SystemCapability.AI.Component.LivenessDetect
+         * @atomicservice
+         * @since 5.0.0(12)
+         * */
+        speechSwitch?: boolean;
     }
     /**
-     * The router.push redirection mode is used to access the HSP.
+     * Entry to the face liveness detection page.
      *
-     * @permission ohos.permission.ohos.permission.CAMERA
-     * @param { config } external configuration.
+     * @permission ohos.permission.CAMERA
+     * @param { InteractiveLivenessConfig } config detection configuration item.
      * @returns { Promise<boolean> } Result of entering the liveness detection control.
      * @throws { BusinessError } 1008301002 Route switching failed.
      * @syscap SystemCapability.AI.Component.LivenessDetect
@@ -182,15 +205,36 @@ declare namespace interactiveLiveness {
      * */
     function startLivenessDetection(config: InteractiveLivenessConfig): Promise<boolean>;
     /**
+     * Entry to the face liveness detection page.
+     *
+     * @permission ohos.permission.CAMERA
+     * @param { InteractiveLivenessConfig } config detection configuration item.
+     * @param { AsyncCallback<InteractiveLivenessResult | undefined> } Callback of the detection result.
+     * @returns { Promise<boolean> } Result of entering the liveness detection control.
+     * @throws { BusinessError } 201 Permission denied.
+     * @throws { BusinessError } 401 - Parameter error.
+     * @throws { BusinessError } 1008301002 Route switching failed.
+     * @throws { BusinessError } 1008302000 Detection algorithm initialization.
+     * @throws { BusinessError } 1008302001 Detection timeout.
+     * @throws { BusinessError } 1008302002 Action mutual exclusion error.
+     * @throws { BusinessError } 1008302003 Continuity Check Failure.
+     * @throws { BusinessError } 1008302004 The test is not complete.
+     * @syscap SystemCapability.AI.Component.LivenessDetect
+     * @atomicservice
+     * @since 5.0.0(12)
+     * */
+    function startLivenessDetection(config: InteractiveLivenessConfig, callback: AsyncCallback<InteractiveLivenessResult | undefined>): Promise<boolean>;
+    /**
      * Type of returned liveness detection.
      *
+     * @enum {number}
      * @syscap SystemCapability.AI.Component.LivenessDetect
      * @atomicservice
      * @since 5.0.0(12)
      * */
     enum LivenessType {
         /**
-         * Interactive liveness successfu1 result.
+         * Interactive liveness successfull result.
          *
          * @syscap SystemCapability.AI.Component.LivenessDetect
          * @atomicservice
@@ -198,7 +242,7 @@ declare namespace interactiveLiveness {
          * */
         INTERACTIVE_LIVENESS = 0,
         /**
-         * Silent liveness successfu1 result.
+         * Silent liveness successfull result.
          *
          * @syscap SystemCapability.AI.Component.LivenessDetect
          * @atomicservice
@@ -232,17 +276,35 @@ declare namespace interactiveLiveness {
          * */
         livenessType: LivenessType;
         /**
-         * Result image returned when the test result is successful.
+         * Result image returned when the test result is successfull.
          *
-         * @type { image.PixelMap }
+         * @type { ?image.PixelMap }
          * @syscap SystemCapability.AI.Component.LivenessDetect
          * @atomicservice
          * @since 5.0.0(12)
          * */
         mPixelMap?: image.PixelMap;
+        /**
+         * Secure image buffer.
+         *
+         * @type { ?ArrayBuffer }
+         * @syscap SystemCapability.AI.Component.LivenessDetect
+         * @atomicservice
+         * @since 5.0.0(12)
+         * */
+        securedImageBuffer?: ArrayBuffer;
+        /**
+         * certificate chain.
+         *
+         * @type { ?Array<string> }
+         * @syscap SystemCapability.AI.Component.LivenessDetect
+         * @atomicservice
+         * @since 5.0.0(12)
+         * */
+        certificate?: Array<string>;
     }
     /**
-     * The result code and PixelMap image are obtained after the detection is successful.
+     * Obtains the face and liveness detection result.
      *
      * @returns { Promise<InteractiveLivenessResult> } The results of the liveness test.
      * @throws { BusinessError } 1008302000 Detection algorithm initialization.

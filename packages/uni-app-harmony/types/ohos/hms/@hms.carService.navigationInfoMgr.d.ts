@@ -21,6 +21,7 @@ declare namespace navigationInfoMgr {
     function getNavigationController(): NavigationController;
     /**
      * The map application uses this interface to inject navigation information into the system and register for system navigation event listening.
+     * @typedef NavigationController
      * @syscap SystemCapability.CarService.NavigationInfo
      * @since 4.1.0(11)
      */
@@ -56,6 +57,7 @@ declare namespace navigationInfoMgr {
     }
     /**
      * System navigation event listener.
+     * @typedef SystemNavigationListener
      * @syscap SystemCapability.CarService.NavigationInfo
      * @since 4.1.0(11)
      */
@@ -63,46 +65,46 @@ declare namespace navigationInfoMgr {
         /**
          * Listening to system query events.
          * @param { QueryType } query - Query Command.
-         * @param { { [key: string]: object } } args - Additional parameters of query command.
+         * @param { Record<string, Object> } args - Additional parameters of query command.
          * @returns { Promise<ResultData> } - The promise returned by the function.
          * @syscap SystemCapability.CarService.NavigationInfo
          * @since 4.1.0(11)
          */
-        onQueryNavigationInfo(query: QueryType, args: {
-            [key: string]: object;
-        }): Promise<ResultData>;
+        onQueryNavigationInfo(query: QueryType, args: Record<string, Object>): Promise<ResultData>;
         /**
          * Listening to system command events.
          * @param { CommandType } command - Commands that need to be executed by the map application for system services.
-         * @param { { [key: string]: object } } args - Additional parameters of commands.
+         * @param { Record<string, Object> } args - Additional parameters of commands.
          * @returns { Promise<ResultData> } - The promise returned by the function.
          * @syscap SystemCapability.CarService.NavigationInfo
          * @since 4.1.0(11)
          */
-        onReceiveNavigationCmd(command: CommandType, args: {
-            [key: string]: object;
-        }): Promise<ResultData>;
+        onReceiveNavigationCmd(command: CommandType, args: Record<string, Object>): Promise<ResultData>;
     }
     /**
      * Navigation query or command result data.
+     * @typedef ResultData
      * @syscap SystemCapability.CarService.NavigationInfo
      * @since 4.1.0(11)
      */
     interface ResultData {
         /**
          * Result data code.
+         * @type { number }
          * @syscap SystemCapability.CarService.NavigationInfo
          * @since 4.1.0(11)
          */
         code: number;
         /**
          * Result data message.
+         * @type { string }
          * @syscap SystemCapability.CarService.NavigationInfo
          * @since 4.1.0(11)
          */
         message: string;
         /**
          * Result additional Data.
+         * @type { object }
          * @syscap SystemCapability.CarService.NavigationInfo
          * @since 4.1.0(11)
          */
@@ -112,54 +114,63 @@ declare namespace navigationInfoMgr {
     }
     /**
      * Navigation status.
+     * @typedef NavigationStatus
      * @syscap SystemCapability.CarService.NavigationInfo
      * @since 4.1.0(11)
      */
     interface NavigationStatus {
         /**
          * Map status.
+         * @type { MapStatus }
          * @syscap SystemCapability.CarService.NavigationInfo
          * @since 4.1.0(11)
          */
         status: MapStatus;
         /**
          * Navigation type.
+         * @type { NaviType }
          * @syscap SystemCapability.CarService.NavigationInfo
          * @since 4.1.0(11)
          */
         naviType: NaviType;
         /**
          * When status is MapStatus.NAVIGATION, this field indicates the destination address. When status is MapStatus.POI, this field indicates POI information.
+         * @type { Location }
          * @syscap SystemCapability.CarService.NavigationInfo
          * @since 4.1.0(11)
          */
         destLocation: Location;
         /**
          * Pass point.
+         * @type { Location[] }
          * @syscap SystemCapability.CarService.NavigationInfo
          * @since 4.1.0(11)
          */
         passPoint: Location[];
         /**
          * Route index.
+         * @type { number }
          * @syscap SystemCapability.CarService.NavigationInfo
          * @since 4.1.0(11)
          */
         routeIndex: number;
         /**
          * Route preference.
+         * @type { RoutePreference[] }
          * @syscap SystemCapability.CarService.NavigationInfo
          * @since 4.1.0(11)
          */
         routePreference: RoutePreference[];
         /**
          * Map theme color.
+         * @type { ThemeType }
          * @syscap SystemCapability.CarService.NavigationInfo
          * @since 4.1.0(11)
          */
         theme: ThemeType;
         /**
          * Custom data.
+         * @type { String }
          * @syscap SystemCapability.CarService.NavigationInfo
          * @since 4.1.0(11)
          */
@@ -167,102 +178,119 @@ declare namespace navigationInfoMgr {
     }
     /**
      * Navigation metadata.
+     * @typedef NavigationMetadata
      * @syscap SystemCapability.CarService.NavigationInfo
      * @since 4.1.0(11)
      */
     interface NavigationMetadata {
         /**
          * Navigation TBT turn mode.
+         * @type { number }
          * @syscap SystemCapability.CarService.NavigationInfo
          * @since 4.1.0(11)
          */
         naviTurnMode: number;
         /**
          * Remaining distance of the next action, that is, the guide distance.
+         * @type { number }
          * @syscap SystemCapability.CarService.NavigationInfo
          * @since 4.1.0(11)
          */
         segmentLeftDis: number;
         /**
          * Current road name.
+         * @type { string }
          * @syscap SystemCapability.CarService.NavigationInfo
          * @since 4.1.0(11)
          */
         currentRoadName: string;
         /**
          * Next road name.
+         * @type { string }
          * @syscap SystemCapability.CarService.NavigationInfo
          * @since 4.1.0(11)
          */
         nextRoadName: string;
         /**
          * Intersection view.
+         * @type { string }
          * @syscap SystemCapability.CarService.NavigationInfo
          * @since 4.1.0(11)
          */
         intersectionView: string;
         /**
          * Width of Intersection view. Unit: pixel.
+         * @type { number }
          * @syscap SystemCapability.CarService.NavigationInfo
          * @since 4.1.0(11)
          */
         viewWidth: number;
         /**
          * Height of Intersection view. Unit: pixel.
+         * @type { number }
          * @syscap SystemCapability.CarService.NavigationInfo
          * @since 4.1.0(11)
          */
         viewHeight: number;
         /**
          * Lane lines, in order from the far left to the last side. Each element corresponds to a direction.
+         * @type { string }
          * @syscap SystemCapability.CarService.NavigationInfo
          * @since 4.1.0(11)
          */
         trafficLane: string;
         /**
          * Electronic eye speed limit valid flag.
+         * @type { boolean }
          * @syscap SystemCapability.CarService.NavigationInfo
          * @since 4.1.0(11)
          */
         cameraSpeedLimitValid: boolean;
         /**
          * Electronic eye speed limit value.
+         * @type { number }
          * @syscap SystemCapability.CarService.NavigationInfo
          * @since 4.1.0(11)
          */
         cameraSpeedLimit: number;
         /**
          * Navigation speed limit valid flag.
+         * @type { boolean }
          * @syscap SystemCapability.CarService.NavigationInfo
          * @since 4.1.0(11)
          */
         naviSpeedLimitValid: boolean;
         /**
          * Navigation speed limit value.
+         * @type { number }
          * @syscap SystemCapability.CarService.NavigationInfo
          * @since 4.1.0(11)
          */
         naviSpeedLimit: number;
         /**
-         * Current vehicle speed. Unit��m/s.
+         * Current vehicle speed. Unit: m/s.
+         * @type { number }
          * @syscap SystemCapability.CarService.NavigationInfo
          * @since 4.1.0(11)
          */
         currentSpeed: number;
         /**
          * Navigation direction angle, relative to due north.
+         * @type { number }
          * @syscap SystemCapability.CarService.NavigationInfo
          * @since 4.1.0(11)
          */
         naviBearing: number;
         /**
-         * Remaining distance of the whole journey.Unit��m
+         * Remaining distance of the whole journey.Unit: m
+         * @type { number }
          * @syscap SystemCapability.CarService.NavigationInfo
          * @since 4.1.0(11)
          */
         totalLeftDis: number;
         /**
-         * Remaining time of the journey. Unit��min.
+         * Remaining time of the journey. Unit: min.
+         * @type { number }
          * @syscap SystemCapability.CarService.NavigationInfo
          * @since 4.1.0(11)
          */
@@ -270,6 +298,7 @@ declare namespace navigationInfoMgr {
     }
     /**
      * Map status.
+     * @enum { number }
      * @syscap SystemCapability.CarService.NavigationInfo
      * @since 4.1.0(11)
      */
@@ -313,6 +342,7 @@ declare namespace navigationInfoMgr {
     }
     /**
      * Navigation type.
+     * @enum { number }
      * @syscap SystemCapability.CarService.NavigationInfo
      * @since 4.1.0(11)
      */
@@ -344,6 +374,7 @@ declare namespace navigationInfoMgr {
     }
     /**
      * Location coordinate coding type.
+     * @enum { number }
      * @syscap SystemCapability.CarService.NavigationInfo
      * @since 4.1.0(11)
      */
@@ -363,36 +394,42 @@ declare namespace navigationInfoMgr {
     }
     /**
      * Location information.
+     * @typedef Location
      * @syscap SystemCapability.CarService.NavigationInfo
      * @since 4.1.0(11)
      */
     interface Location {
         /**
          * Address Name.
+         * @type { string }
          * @syscap SystemCapability.CarService.NavigationInfo
          * @since 4.1.0(11)
          */
         name: string;
         /**
          * Location coordinate coding type.
+         * @type { LocationCoordType }
          * @syscap SystemCapability.CarService.NavigationInfo
          * @since 4.1.0(11)
          */
         coordType: LocationCoordType;
         /**
          * Longitude.
+         * @type { number }
          * @syscap SystemCapability.CarService.NavigationInfo
          * @since 4.1.0(11)
          */
         longitude: number;
         /**
          * Latitude.
+         * @type { number }
          * @syscap SystemCapability.CarService.NavigationInfo
          * @since 4.1.0(11)
          */
         latitude: number;
         /**
          * Altitude. Default value: 0. Unit: m.
+         * @type { number }
          * @syscap SystemCapability.CarService.NavigationInfo
          * @since 4.1.0(11)
          */
@@ -400,6 +437,7 @@ declare namespace navigationInfoMgr {
     }
     /**
      * Map theme type.
+     * @enum { number }
      * @syscap SystemCapability.CarService.NavigationInfo
      * @since 4.1.0(11)
      */
@@ -419,6 +457,7 @@ declare namespace navigationInfoMgr {
     }
     /**
      * Route preference type
+     * @enum { number }
      * @syscap SystemCapability.CarService.NavigationInfo
      * @since 4.1.0(11)
      */
@@ -468,6 +507,7 @@ declare namespace navigationInfoMgr {
     }
     /**
      * Query command type.
+     * @enum { string }
      * @syscap SystemCapability.CarService.NavigationInfo
      * @since 4.1.0(11)
      */
@@ -487,6 +527,7 @@ declare namespace navigationInfoMgr {
     }
     /**
      * Command type.
+     * @enum { string }
      * @syscap SystemCapability.CarService.NavigationInfo
      * @since 4.1.0(11)
      */

@@ -47,5 +47,17 @@
       "@dcloudio/uni-cli-shared",
       "fs-extra"
     ]
+  },
+  {
+    "input": {
+      "src/api/index.ts": "dist/uni.api.js"
+    },
+    "output": {
+      "format": "esm"
+    },
+    "external": ["@vue/shared"],
+    "replacements": {
+      "__X__": "true"
+    }
   }
 ]

@@ -19,6 +19,7 @@ import type { AsyncCallback } from '@ohos.base';
 declare namespace cloudFunction {
     /**
      * call the corresponding implementation of the cloud.
+     * @permission ohos.permission.INTERNET
      * @param { FunctionParams } parameters - Parameters related to the function.
      * @return { Promise<FunctionResult> } Result returned by the function.
      * @throws { BusinessError } 201 - No Internet permission.
@@ -26,7 +27,6 @@ declare namespace cloudFunction {
      * @throws { BusinessError } 1008210001 - Network connection error.
      * @throws { BusinessError } 1008210009 - Client internal error.
      * @throws { BusinessError } 1008211001 - Server error.
-     * @permission ohos.permission.INTERNET
      * @syscap SystemCapability.DeviceCloudGateway.CloudFoundation
      * @stagemodelonly
      * @atomicservice
@@ -35,6 +35,7 @@ declare namespace cloudFunction {
     function call(parameters: FunctionParams): Promise<FunctionResult>;
     /**
      * call the corresponding implementation of the cloud.
+     * @permission ohos.permission.INTERNET
      * @param { FunctionParams } parameters - Parameters related to the function.
      * @param { AsyncCallback<FunctionResult> } callback - Result returned by the function.
      * @throws { BusinessError } 201 - No Internet permission.
@@ -42,7 +43,6 @@ declare namespace cloudFunction {
      * @throws { BusinessError } 1008210001 - Network connection error.
      * @throws { BusinessError } 1008210009 - Client internal error.
      * @throws { BusinessError } 1008211001 - Server error.
-     * @permission ohos.permission.INTERNET
      * @syscap SystemCapability.DeviceCloudGateway.CloudFoundation
      * @stagemodelonly
      * @atomicservice
@@ -116,7 +116,6 @@ declare namespace cloudFunction {
     enum LoadMode {
         /**
         * Common Mode.
-        * @enum { number }
         * @syscap SystemCapability.DeviceCloudGateway.CloudFoundation
         * @stagemodelonly
         * @atomicservice
@@ -125,7 +124,6 @@ declare namespace cloudFunction {
         NORMAL = 0,
         /**
          * Preload Mode.
-         * @enum { number }
          * @syscap SystemCapability.DeviceCloudGateway.CloudFoundation
          * @stagemodelonly
          * @atomicservice

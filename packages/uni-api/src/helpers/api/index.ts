@@ -55,9 +55,9 @@ function invokeSuccess(id: number, name: string, res: unknown) {
     errMsg: name + ':ok',
   }
 
-  //#if _X_
-  result.errSubject = name
-  //#endif
+  if (__X__) {
+    result.errSubject = name
+  }
 
   return invokeCallback(id, extend((res || {}) as Object, result))
 }
@@ -70,20 +70,20 @@ function invokeFail(
 ) {
   const apiErrMsg = name + ':fail' + (errMsg ? ' ' + errMsg : '')
 
-  //#if !_X_
-  delete errRes.errCode
-  //#endif
+  if (!__X__) {
+    delete errRes.errCode
+  }
 
   let res = extend({ errMsg: apiErrMsg }, errRes)
 
-  //#if _X_
-  if (typeof UniError !== 'undefined') {
-    res =
-      typeof errRes.errCode !== 'undefined'
-        ? new UniError(name, errRes.errCode, apiErrMsg)
-        : new UniError(apiErrMsg, errRes)
+  if (__X__) {
+    if (typeof UniError !== 'undefined') {
+      res =
+        typeof errRes.errCode !== 'undefined'
+          ? new UniError(name, errRes.errCode, apiErrMsg)
+          : new UniError(apiErrMsg, errRes)
+    }
   }
-  //#endif
 
   return invokeCallback(id, res)
 }

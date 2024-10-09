@@ -173,12 +173,16 @@ function PolySymbol(name) {
 function useCurrentPageId() {
   let pageId;
   try {
-    pageId = getCurrentInstance().root.proxy.$page.id;
+    pageId = getPageProxyId(getCurrentInstance().root.proxy);
   } catch {
     const webviewId = plus.webview.currentWebview().id;
     pageId = isNaN(Number(webviewId)) ? webviewId : Number(webviewId);
   }
   return pageId;
+}
+function getPageProxyId(proxy) {
+  var _a, _b;
+  return ((_a = proxy.$page) == null ? void 0 : _a.id) || ((_b = proxy.$basePage) == null ? void 0 : _b.id);
 }
 let plus_;
 let weex_;
@@ -1703,14 +1707,14 @@ function useMovableViewState(props2, trigger, rootRef, setTouchMovableViewContex
     if (!props2.scale) {
       return false;
     }
-    _updateScale(_scale, true);
+    _updateScale(_scale);
   }
   function _setScaleValue(scale) {
     if (!props2.scale) {
       return false;
     }
     scale = _adjustScale(scale);
-    _updateScale(scale, true);
+    _updateScale(scale);
     return scale;
   }
   function __handleTouchStart() {
@@ -1897,12 +1901,8 @@ function useMovableViewState(props2, trigger, rootRef, setTouchMovableViewContex
       const limitXY = _getLimitXY(_translateX, _translateY);
       const x = limitXY.x;
       const y = limitXY.y;
-      if (animat) {
+      {
         _animationTo(x, y, scale, "", true, true);
-      } else {
-        _requestAnimationFrame(function() {
-          _setTransform(x, y, scale, "", true, true);
-        });
       }
     }
   }

@@ -15,7 +15,11 @@ import { useI18n } from '@dcloudio/uni-core'
 import { ON_BACK_PRESS, ON_SHOW } from '@dcloudio/uni-shared'
 
 import { ANI_CLOSE, ANI_DURATION } from '../../constants'
-import { removePage } from '../../framework/page/getCurrentPages'
+import {
+  getCurrentBasePages,
+  getPage$BasePage,
+  removePage,
+} from '../../framework/page/getCurrentPages'
 import { setStatusBarStyle } from '../../statusBar'
 import { backWebview, closeWebview } from './webview'
 import { isDirectPage, reLaunchEntryPage } from './direct'
@@ -23,7 +27,9 @@ import { isDirectPage, reLaunchEntryPage } from './direct'
 export const navigateBack = defineAsyncApi<API_TYPE_NAVIGATE_BACK>(
   API_NAVIGATE_BACK,
   (args, { resolve, reject }) => {
-    const page = getCurrentPage()
+    const page = __X__
+      ? (getCurrentPage() as unknown as UniPage).vm
+      : getCurrentPage()
     if (!page) {
       return reject(`getCurrentPages is empty`)
     }
@@ -36,7 +42,7 @@ export const navigateBack = defineAsyncApi<API_TYPE_NAVIGATE_BACK>(
     }
     uni.hideToast()
     uni.hideLoading()
-    if (page.$page.meta.isQuit) {
+    if (getPage$BasePage(page).meta.isQuit) {
       quit()
     } else if (isDirectPage(page)) {
       reLaunchEntryPage()
@@ -69,7 +75,7 @@ function back(
   animationType?: string,
   animationDuration?: number
 ) {
-  const pages = getCurrentPages()
+  const pages = getCurrentBasePages()
   const len = pages.length
   const currentPage = pages[len - 1]
 
@@ -80,7 +86,7 @@ function back(
       .reverse()
       .forEach((deltaPage) => {
         closeWebview(
-          plus.webview.getWebviewById(deltaPage.$page.id + ''),
+          plus.webview.getWebviewById(`${getPage$BasePage(deltaPage).id}`),
           'none',
           0
         )
@@ -91,7 +97,7 @@ function back(
     if (animationType) {
       closeWebview(webview, animationType, animationDuration || ANI_DURATION)
     } else {
-      if (currentPage.$page.openType === 'redirectTo') {
+      if (getPage$BasePage(currentPage).openType === 'redirectTo') {
         // 如果是 redirectTo 跳转的，需要指定 back 动画
         closeWebview(webview, ANI_CLOSE, ANI_DURATION)
       } else {
@@ -106,7 +112,9 @@ function back(
     invokeHook(ON_SHOW)
   }
 
-  const webview = plus.webview.getWebviewById(currentPage.$page.id + '')
+  const webview = plus.webview.getWebviewById(
+    `${getPage$BasePage(currentPage).id}`
+  )
   if (!(currentPage as any).__uniapp_webview) {
     return backPage(webview)
   }

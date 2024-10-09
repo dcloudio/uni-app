@@ -16,6 +16,8 @@
 /**
  * @file
  * @kit DataLossPreventionKit
+ * @deprecated since 12
+ * @useinstead DataProtectionKit
  */
 
 import dlpPermission from '@ohos.dlpPermission';

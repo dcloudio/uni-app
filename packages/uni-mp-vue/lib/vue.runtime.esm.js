@@ -5084,6 +5084,17 @@ function unmountComponent(instance) {
   if (bum) {
     invokeArrayFns(bum);
   }
+  if (__VUE_OPTIONS_API__) {
+    const parentInstance = instance.parent;
+    if (parentInstance) {
+      const $children = parentInstance.ctx.$children;
+      const target = getExposeProxy(instance) || instance.proxy;
+      const index = $children.indexOf(target);
+      if (index > -1) {
+        $children.splice(index, 1);
+      }
+    }
+  }
   scope.stop();
   if (update) {
     update.active = false;

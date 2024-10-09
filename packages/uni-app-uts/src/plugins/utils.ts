@@ -11,11 +11,12 @@ import {
   normalizeNodeModules,
   normalizePath,
   parseUTSComponent,
+  removePlugins,
   transformTapToClick,
   transformUTSComponent,
 } from '@dcloudio/uni-cli-shared'
 import { compileI18nJsonStr } from '@dcloudio/uni-i18n'
-import type { Plugin, ResolvedConfig } from 'vite'
+import type { ResolvedConfig } from 'vite'
 import { ElementTypes, NodeTypes } from '@vue/compiler-core'
 
 export function createUniOptions(
@@ -127,19 +128,7 @@ const REMOVED_PLUGINS = [
 ]
 
 export function configResolved(config: ResolvedConfig, isAndroidX = false) {
-  const plugins = config.plugins as Plugin[]
-  const len = plugins.length
-  const removedPlugins = REMOVED_PLUGINS.slice(0)
-  if (isAndroidX) {
-    removedPlugins.push('vite:css')
-    removedPlugins.push('vite:css-post')
-  }
-  for (let i = len - 1; i >= 0; i--) {
-    const plugin = plugins[i]
-    if (removedPlugins.includes(plugin.name)) {
-      plugins.splice(i, 1)
-    }
-  }
+  removePlugins(REMOVED_PLUGINS.slice(0), config)
   // console.log(plugins.map((p) => p.name))
   // 强制不inline
   config.build.assetsInlineLimit = 0

@@ -1,0 +1,233 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`static playground uni-app build:app 1`] = `
+[
+  "pages/sub/static/app-plus/test.json",
+  "pages/sub/static/app/test.json",
+  "pages/sub/static/application/test.json",
+  "static/app-plus/test.json",
+  "static/app/test.json",
+  "static/application/test.json",
+  "uni_modules/test-static/static/app-plus/test.json",
+  "uni_modules/test-static/static/app/test.json",
+  "uni_modules/test-static/static/application/test.json",
+]
+`;
+
+exports[`static playground uni-app build:h5 1`] = `
+[
+  "pages/sub/static/application/test.json",
+  "pages/sub/static/h5/test.json",
+  "pages/sub/static/web/test.json",
+  "static/application/test.json",
+  "static/h5/test.json",
+  "static/web/test.json",
+  "uni_modules/test-static/static/application/test.json",
+  "uni_modules/test-static/static/h5/test.json",
+  "uni_modules/test-static/static/web/test.json",
+]
+`;
+
+exports[`static playground uni-app build:mp-alipay 1`] = `
+[
+  "pages/sub/static/application/test.json",
+  "pages/sub/test/test.json",
+  "static/application/test.json",
+  "uni_modules/test-static/static/application/test.json",
+]
+`;
+
+exports[`static playground uni-app build:mp-baidu 1`] = `
+[
+  "pages/sub/static/application/test.json",
+  "pages/sub/test/test.json",
+  "static/application/test.json",
+  "uni_modules/test-static/static/application/test.json",
+]
+`;
+
+exports[`static playground uni-app build:mp-kuaishou 1`] = `
+[
+  "pages/sub/static/application/test.json",
+  "pages/sub/test/test.json",
+  "static/application/test.json",
+  "uni_modules/test-static/static/application/test.json",
+]
+`;
+
+exports[`static playground uni-app build:mp-lark 1`] = `
+[
+  "pages/sub/static/application/test.json",
+  "pages/sub/test/test.json",
+  "static/application/test.json",
+  "uni_modules/test-static/static/application/test.json",
+]
+`;
+
+exports[`static playground uni-app build:mp-qq 1`] = `
+[
+  "pages/sub/static/application/test.json",
+  "pages/sub/test/test.json",
+  "static/application/test.json",
+  "uni_modules/test-static/static/application/test.json",
+]
+`;
+
+exports[`static playground uni-app build:mp-toutiao 1`] = `
+[
+  "pages/sub/static/application/test.json",
+  "pages/sub/test/test.json",
+  "static/application/test.json",
+  "uni_modules/test-static/static/application/test.json",
+]
+`;
+
+exports[`static playground uni-app build:mp-weixin 1`] = `
+[
+  "pages/sub/static/application/test.json",
+  "pages/sub/static/mp-weixin/test.json",
+  "pages/sub/test/test.json",
+  "static/application/test.json",
+  "static/mp-weixin/test.json",
+  "uni_modules/test-static/static/application/test.json",
+  "uni_modules/test-static/static/mp-weixin/test.json",
+]
+`;
+
+exports[`static playground uni-app dev:app 1`] = `
+[
+  "pages/sub/static/app-plus/test.json",
+  "pages/sub/static/app/test.json",
+  "pages/sub/static/application/test.json",
+  "static/app-plus/test.json",
+  "static/app/test.json",
+  "static/application/test.json",
+  "uni_modules/test-static/static/app-plus/test.json",
+  "uni_modules/test-static/static/app/test.json",
+  "uni_modules/test-static/static/application/test.json",
+]
+`;
+
+exports[`static playground uni-app dev:mp-alipay 1`] = `
+[
+  "pages/sub/static/application/test.json",
+  "pages/sub/test/test.json",
+  "static/application/test.json",
+  "uni_modules/test-static/static/application/test.json",
+]
+`;
+
+exports[`static playground uni-app dev:mp-baidu 1`] = `
+[
+  "pages/sub/static/application/test.json",
+  "pages/sub/test/test.json",
+  "static/application/test.json",
+  "uni_modules/test-static/static/application/test.json",
+]
+`;
+
+exports[`static playground uni-app dev:mp-kuaishou 1`] = `
+[
+  "pages/sub/static/application/test.json",
+  "pages/sub/test/test.json",
+  "static/application/test.json",
+  "uni_modules/test-static/static/application/test.json",
+]
+`;
+
+exports[`static playground uni-app dev:mp-lark 1`] = `
+[
+  "pages/sub/static/application/test.json",
+  "pages/sub/test/test.json",
+  "static/application/test.json",
+  "uni_modules/test-static/static/application/test.json",
+]
+`;
+
+exports[`static playground uni-app dev:mp-qq 1`] = `
+[
+  "pages/sub/static/application/test.json",
+  "pages/sub/test/test.json",
+  "static/application/test.json",
+  "uni_modules/test-static/static/application/test.json",
+]
+`;
+
+exports[`static playground uni-app dev:mp-toutiao 1`] = `
+[
+  "pages/sub/static/application/test.json",
+  "pages/sub/test/test.json",
+  "static/application/test.json",
+  "uni_modules/test-static/static/application/test.json",
+]
+`;
+
+exports[`static playground uni-app dev:mp-weixin 1`] = `
+[
+  "pages/sub/static/application/test.json",
+  "pages/sub/static/mp-weixin/test.json",
+  "pages/sub/test/test.json",
+  "static/application/test.json",
+  "static/mp-weixin/test.json",
+  "uni_modules/test-static/static/application/test.json",
+  "uni_modules/test-static/static/mp-weixin/test.json",
+]
+`;
+
+exports[`static playground uni-app-x build:app-android 1`] = `
+[
+  "pages/sub/static/app/test.json",
+  "pages/sub/static/application/test.json",
+  "static/app/test.json",
+  "static/application/test.json",
+  "uni_modules/test-static/static/app/test.json",
+  "uni_modules/test-static/static/application/test.json",
+]
+`;
+
+exports[`static playground uni-app-x build:app-ios 1`] = `
+[
+  "pages/sub/static/app/test.json",
+  "pages/sub/static/application/test.json",
+  "static/app/test.json",
+  "static/application/test.json",
+  "uni_modules/test-static/static/app/test.json",
+  "uni_modules/test-static/static/application/test.json",
+]
+`;
+
+exports[`static playground uni-app-x build:h5 1`] = `
+[
+  "pages/sub/static/application/test.json",
+  "pages/sub/static/h5/test.json",
+  "pages/sub/static/web/test.json",
+  "static/application/test.json",
+  "static/h5/test.json",
+  "static/web/test.json",
+  "uni_modules/test-static/static/application/test.json",
+  "uni_modules/test-static/static/h5/test.json",
+  "uni_modules/test-static/static/web/test.json",
+]
+`;
+
+exports[`static playground uni-app-x dev:app-android 1`] = `
+[
+  "pages/sub/static/app/test.json",
+  "pages/sub/static/application/test.json",
+  "static/app/test.json",
+  "static/application/test.json",
+  "uni_modules/test-static/static/app/test.json",
+  "uni_modules/test-static/static/application/test.json",
+]
+`;
+
+exports[`static playground uni-app-x dev:app-ios 1`] = `
+[
+  "pages/sub/static/app/test.json",
+  "pages/sub/static/application/test.json",
+  "static/app/test.json",
+  "static/application/test.json",
+  "uni_modules/test-static/static/app/test.json",
+  "uni_modules/test-static/static/application/test.json",
+]
+`;

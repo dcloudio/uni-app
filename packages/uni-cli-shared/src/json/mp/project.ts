@@ -14,7 +14,7 @@ interface ProjectConfig {
   }
 }
 
-const projectKeys = [
+export const projectKeys = [
   'appid',
   'setting',
   'miniprogramRoot',
@@ -43,9 +43,10 @@ export function parseMiniProgramProjectJson(
   const manifestJson = parseJson(jsonStr)
   if (manifestJson) {
     projectJson.projectname = manifestJson.name
+    // 用户的平台配置
     const platformConfig = manifestJson[platform]
     if (platformConfig) {
-      projectKeys.forEach((name) => {
+      const setProjectJson = (name: string) => {
         if (hasOwn(platformConfig, name)) {
           if (
             isPlainObject(platformConfig[name]) &&
@@ -60,7 +61,20 @@ export function parseMiniProgramProjectJson(
             ;(projectJson as Record<string, any>)[name] = platformConfig[name]
           }
         }
+      }
+
+      // 读取 template 中的配置
+      Object.keys(template).forEach((name) => {
+        if (!projectKeys.includes(name)) {
+          projectKeys.push(name)
+        }
       })
+
+      // common mp config
+      projectKeys.forEach((name) => {
+        setProjectJson(name)
+      })
+
       // 使用了微信小程序手势系统，自动开启 ES6=>ES5
       platform === 'mp-weixin' &&
         weixinSkyline(platformConfig) &&
@@ -75,6 +89,8 @@ export function parseMiniProgramProjectJson(
     }
     projectJson.condition.miniprogram = miniprogram
   }
+
+  // appid
   if (!projectJson.appid) {
     projectJson.appid = 'touristappid'
   }

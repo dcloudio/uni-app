@@ -5,6 +5,7 @@ import {
   M,
   defineUniMainJsPlugin,
   getUniStatistics,
+  isNormalCompileTarget,
   isSsr,
   parseManifestJsonOnce,
   parsePagesJson,
@@ -34,7 +35,7 @@ export default () => [
       name: 'uni:stat',
       enforce: 'pre',
       config(config: UserConfig, env: ConfigEnv) {
-        if (process.env.UNI_COMPILE_TARGET === 'uni_modules') {
+        if (!isNormalCompileTarget()) {
           // 不需要统计
           return
         }

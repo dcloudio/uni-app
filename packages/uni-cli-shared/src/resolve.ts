@@ -99,8 +99,15 @@ export function getBuiltInPaths() {
   return paths
 }
 
-export function resolveBuiltIn(path: string) {
-  return require.resolve(path, { paths: getBuiltInPaths() })
+export function resolveBuiltIn(module: string) {
+  if (
+    process.env.UNI_COMPILE_TARGET === 'ext-api' &&
+    process.env.UNI_APP_NEXT_WORKSPACE &&
+    module.startsWith('@dcloudio/')
+  ) {
+    return path.resolve(process.env.UNI_APP_NEXT_WORKSPACE, 'packages', module)
+  }
+  return require.resolve(module, { paths: getBuiltInPaths() })
 }
 
 export function resolveVueI18nRuntime() {
@@ -144,4 +151,10 @@ export function resolveComponentsLibPath() {
     }
   }
   return componentsLibPath
+}
+
+export function resolveComponentsLibDirs() {
+  return process.env.UNI_COMPILE_TARGET === 'ext-api'
+    ? []
+    : [resolveComponentsLibPath()]
 }

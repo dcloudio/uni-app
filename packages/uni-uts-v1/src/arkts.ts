@@ -1,12 +1,19 @@
 import path from 'path'
 import fs from 'fs-extra'
 import type { UTSBundleOptions } from '@dcloudio/uts'
-import { formatUniProviderName, getUTSCompiler } from './utils'
+import {
+  getUTSCompiler,
+  normalizeUTSResult,
+  resolveBundleInputFileName,
+  resolveBundleInputRoot,
+} from './utils'
 import type { CompileResult } from '.'
+import { sync } from 'fast-glob'
 
 interface ArkTSCompilerOptions {
   isX?: boolean
   isExtApi?: boolean
+  isOhpmPackage?: boolean
   transform?: {
     uniExtApiProviderName?: string
     uniExtApiProviderService?: string
@@ -33,12 +40,7 @@ export function mergeArkTSAutoImports(
 export function getArkTSAutoImports(): AutoImportOptions {
   return mergeArkTSAutoImports(
     {
-      '@dcloudio/uts-harmony': [
-        ['IUTSObject'],
-        ['UTSObject'],
-        ['UTSJSONObject'],
-      ],
-      '@dcloudio/uni-app-harmony': [
+      '@dcloudio/uni-app-runtime': [
         ['defineAsyncApi'],
         ['defineSyncApi'],
         ['defineTaskApi'],
@@ -58,15 +60,53 @@ export function getArkTSAutoImports(): AutoImportOptions {
         ['ApiError'],
         ['UniError'],
         ['UniProvider'],
+        ['uni'],
+        ['IUTSObject'],
+        ['UTSObject'],
+        ['UTSJSONObject'],
+        ['SourceError'],
       ],
-      '@dcloudio/uni-app-harmony-framework': [['uni']],
     },
     require('../lib/arkts/ext-api-export.json')
   )
 }
-export async function compileArkTS(
+
+/**
+ * 将config.json内的依赖相对路径转为oh-package.json5的依赖相对路径
+ */
+function parsePackageDeps(
+  deps?: Record<string, string>
+): Record<string, string> | undefined {
+  if (!deps) {
+    return
+  }
+  const base = '/'
+  const result: Record<string, string> = {}
+  for (const key in deps) {
+    const value = deps[key]
+    if (value.startsWith('file:.') || value.startsWith('.')) {
+      const configRelativePath = value.replace(/^file:/, '')
+      const packageRelativePath = path
+        .relative(
+          base,
+          path.resolve(base, 'utssdk/app-harmony', configRelativePath)
+        )
+        .replace(/\\/g, '/')
+      result[key] = packageRelativePath.startsWith('.')
+        ? packageRelativePath
+        : './' + packageRelativePath
+    } else {
+      result[key] = value
+    }
+  }
+  return result
+}
+
+export async function compileArkTSExtApi(
+  rootDir: string,
   pluginDir: string,
-  { isExtApi, transform }: ArkTSCompilerOptions
+  outputDir: string,
+  { isExtApi, isOhpmPackage = false, transform }: ArkTSCompilerOptions
 ): Promise<CompileResult | void> {
   const filename = resolveAppHarmonyIndexFile(pluginDir)
   if (!filename) {
@@ -75,23 +115,25 @@ export async function compileArkTS(
 
   const { bundle, UTSTarget } = getUTSCompiler()
   const pluginId = path.basename(pluginDir)
-  const inputDir = process.env.UNI_INPUT_DIR
-  const outputUniModuleDir = resolveAppHarmonyUniModuleDir(pluginId)
+  const outputUniModuleDir = outputDir
 
-  const autoImportExternals = getArkTSAutoImports()
-  if (transform && transform.uniExtApiProviderService) {
-    autoImportExternals['@dcloudio/uni-app-harmony'].push([
-      formatUniProviderName(transform.uniExtApiProviderService),
-    ])
+  let autoImportExternals = getArkTSAutoImports()
+
+  if (isOhpmPackage) {
+    // 只保留uni-app-runtime
+    autoImportExternals = {
+      '@dcloudio/uni-app-runtime':
+        autoImportExternals['@dcloudio/uni-app-runtime'],
+    }
   }
 
   const buildOptions: UTSBundleOptions = {
     hbxVersion: process.env.HX_Version || process.env.UNI_COMPILER_VERSION,
     input: {
-      root: inputDir,
-      filename,
+      root: rootDir,
+      filename: resolveBundleInputFileName('app-harmony', filename),
       paths: {
-        '@dcloudio/uni-runtime': '@dcloudio/uni-app-harmony-framework',
+        '@dcloudio/uni-runtime': '@dcloudio/uni-app-runtime',
       },
       parseOptions: {
         tsx: true,
@@ -117,7 +159,125 @@ export async function compileArkTS(
       },
     },
   }
+  const configFilePath = path.resolve(
+    pluginDir,
+    'utssdk/app-harmony/config.json'
+  )
+
+  const harmonyPackageName = '@uni_modules/' + pluginId.toLowerCase()
+  const harmonyModuleName = harmonyPackageName
+    .replace(/@/g, '')
+    .replace(/\//g, '__')
+    .replace(/-/g, '_')
+
+  // 拷贝所有ets、har文件
+  const etsFiles = sync('**/*.{ets,har}', {
+    cwd: pluginDir,
+  })
+  for (const etsFile of etsFiles) {
+    fs.copySync(
+      path.resolve(pluginDir, etsFile),
+      path.resolve(outputUniModuleDir, etsFile)
+    )
+  }
+
+  // generate oh-package.json5
+  let version = '1.0.0'
+  const packageJsonPath = path.resolve(pluginDir, 'package.json')
+  if (fs.existsSync(packageJsonPath)) {
+    const packageJson = fs.readJSONSync(packageJsonPath)
+    version = packageJson.version || '1.0.0'
+  }
+  const ohPackageJson: Record<string, any> = {
+    name: harmonyPackageName,
+    version,
+    description: '',
+    main: 'utssdk/app-harmony/index.ets',
+    author: '',
+    license: '',
+    dependencies: {},
+  }
+
+  if (isOhpmPackage) {
+    ohPackageJson.description = 'uni-app runtime package'
+    ohPackageJson.author = 'DCloud'
+    ohPackageJson.license = 'Apache-2.0'
+  }
+
+  if (fs.existsSync(configFilePath)) {
+    const config = fs.readJSONSync(configFilePath)
+    ohPackageJson.dependencies = parsePackageDeps(config.dependencies)
+    ohPackageJson.dynamicDependencies = parsePackageDeps(
+      config.dynamicDependencies
+    )
+    ohPackageJson.devDependencies = parsePackageDeps(config.devDependencies)
+    ohPackageJson.overrides = parsePackageDeps(config.overrides)
+  }
+  fs.outputJSONSync(
+    path.resolve(outputUniModuleDir, 'oh-package.json5'),
+    ohPackageJson,
+    {
+      spaces: 2,
+    }
+  )
+
+  // copy resources
+  const resourcesDir = path.resolve(pluginDir, 'utssdk/app-harmony/resources')
+  if (fs.existsSync(resourcesDir)) {
+    fs.copySync(
+      resourcesDir,
+      path.resolve(outputUniModuleDir, 'src/main/resources')
+    )
+  }
+
+  // TODO 以下文件用户可定制
+
+  // src/main/module.json5
+  fs.outputJSONSync(
+    path.resolve(outputUniModuleDir, 'src/main/module.json5'),
+    {
+      module: {
+        name: harmonyModuleName,
+        type: 'har',
+        deviceTypes: ['default', 'tablet', '2in1'],
+      },
+    },
+    {
+      spaces: 2,
+    }
+  )
+
+  // build-profile.json5
+  fs.outputJSONSync(
+    path.resolve(outputUniModuleDir, 'build-profile.json5'),
+    {
+      apiType: 'stageMode',
+      buildOption: {},
+      buildOptionSet: [],
+      targets: [
+        {
+          name: 'default',
+        },
+      ],
+    },
+    {
+      spaces: 2,
+    }
+  )
+
+  // hvigorfile.ts
+  fs.outputFileSync(
+    path.resolve(outputUniModuleDir, 'hvigorfile.ts'),
+    `import { harTasks } from '@ohos/hvigor-ohos-plugin';
+
+export default {
+    system: harTasks,  /* Built-in plugin of Hvigor. It cannot be modified. */
+    plugins:[]         /* Custom plugin to extend the functionality of Hvigor. */
+}`
+  )
+
   const result = await bundle(UTSTarget.ARKTS, buildOptions)
+  normalizeUTSResult('app-harmony', result)
   const deps: string[] = [filename]
   if (process.env.NODE_ENV === 'development') {
     if (result.deps) {
@@ -132,6 +292,20 @@ export async function compileArkTS(
     inject_apis: [],
     scoped_slots: [],
   }
+}
+
+export async function compileArkTS(
+  pluginDir: string,
+  { isExtApi, transform }: ArkTSCompilerOptions
+): Promise<CompileResult | void> {
+  const inputDir = process.env.UNI_INPUT_DIR
+  const pluginId = path.basename(pluginDir)
+  return compileArkTSExtApi(
+    resolveBundleInputRoot('app-harmony', inputDir),
+    pluginDir,
+    resolveAppHarmonyUniModuleDir(pluginId),
+    { isExtApi, transform }
+  )
 }
 
 function requireUTSPluginCode(pluginId: string, isExtApi: boolean) {
@@ -154,15 +328,12 @@ function resolveAppHarmonyIndexFile(pluginDir: string) {
 
 export function resolveAppHarmonyUniModulesRootDir() {
   if (process.env.UNI_APP_HARMONY_PROJECT_PATH) {
-    return path.resolve(
-      process.env.UNI_APP_HARMONY_PROJECT_PATH,
-      'entry/src/main/ets/uni_modules'
-    )
+    return path.resolve(process.env.UNI_APP_HARMONY_PROJECT_PATH, 'uni_modules')
   }
   return path.resolve(process.env.UNI_OUTPUT_DIR, 'uni_modules')
 }
 
-function resolveAppHarmonyUniModuleDir(pluginId: string) {
+export function resolveAppHarmonyUniModuleDir(pluginId: string) {
   return path.resolve(resolveAppHarmonyUniModulesRootDir(), pluginId)
 }
 

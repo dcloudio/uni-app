@@ -15,13 +15,13 @@ import type {
 
 import type {
   CanvasContext,
-  UniRequestAnimationFrameCallback,
+  RequestAnimationFrameCallback,
 } from '@dcloudio/uni-app-x/types/uni'
 
 declare global {
   // requestAnimationFrame
   function requestAnimationFrame(
-    callback: UniRequestAnimationFrameCallback
+    callback: RequestAnimationFrameCallback
   ): number
   function cancelAnimationFrame(taskId: number): void
   const __uniappx__: any
@@ -30,7 +30,7 @@ declare global {
 export const createCanvasContextAsync = defineAsyncApi(
   'createCanvasContextAsync',
   (options: any, { resolve, reject }) => {
-    const page = getCurrentPage() as ComponentPublicInstance
+    const page = (getCurrentPage() as unknown as UniPage).vm
     if (page == null) {
       return null
     }
@@ -70,7 +70,7 @@ export const createCanvasContextAsync = defineAsyncApi(
     }
 
     function requestAnimationFrameFun(
-      callback: UniRequestAnimationFrameCallback
+      callback: RequestAnimationFrameCallback
     ): number {
       return requestAnimationFrame(callback)
     }

@@ -26,7 +26,9 @@ import {
   runByHBuilderX,
 } from './shared'
 import type { ClassMeta } from './code'
+import { uvueOutDir } from './uvue'
 
+type UTSPluginPlatform = 'app-android' | 'app-ios' | 'app-harmony'
 interface ToOptions {
   inputDir: string
   outputDir: string
@@ -117,6 +119,33 @@ export function resolvePackage(filename: string) {
   }
 }
 
+const GARBAGE_REGEX = /(?:Thumbs\.db|\.DS_Store)$/i
+const isGarbageFile = (file: string) => GARBAGE_REGEX.test(file)
+
+// 删除所有空子目录，需要考虑到.DS_Store等文件
+function removeAllEmptySubDir(dir: string) {
+  if (!fs.existsSync(dir)) {
+    return
+  }
+
+  try {
+    const files = fs.readdirSync(dir)
+    for (const file of files) {
+      const filePath = path.join(dir, file)
+      const stat = fs.statSync(filePath)
+
+      if (stat.isDirectory()) {
+        removeAllEmptySubDir(filePath)
+
+        const subFiles = fs.readdirSync(filePath)
+        if (subFiles.length === 0 || subFiles.every(isGarbageFile)) {
+          fs.rmSync(filePath, { recursive: true, force: true })
+        }
+      }
+    }
+  } catch {}
+}
+
 export function copyPlatformFiles(
   utsInputDir: string,
   utsOutputDir: string,
@@ -166,11 +195,13 @@ export function genUTSPlatformResource(
 
   const extname: string[] =
     options.extname === '.kt' ? ['.kt', '.java'] : [options.extname]
+  const configJsonFile = normalizePath(path.resolve(utsInputDir, 'config.json'))
   // 拷贝所有非uts,vue文件及目录
   if (fs.existsSync(utsInputDir)) {
     fs.copySync(utsInputDir, utsOutputDir, {
       filter(src) {
-        if (src.endsWith('config.json')) {
+        // ignore config.json
+        if (normalizePath(src) === configJsonFile) {
           return false
         }
         if (extname.includes(path.extname(src))) {
@@ -238,6 +269,7 @@ export function genUTSPlatformResource(
       }
     })
   }
+  removeAllEmptySubDir(utsOutputDir)
 }
 
 export function moveRootIndexSourceMap(
@@ -466,9 +498,10 @@ export function genConfigJson(
   outputDir: string,
   provider?: { name: string; service: string; class: string }
 ) {
-  if (!Object.keys(components).length && !hookClass && !provider) {
-    return
-  }
+  // 不过滤了，只要有，就copy
+  // if (!Object.keys(components).length && !hookClass && !provider) {
+  //   return
+  // }
   const pluginId = basename(pluginRelativeDir)
   const utsInputDir = resolve(
     inputDir,
@@ -844,4 +877,97 @@ export function requireUniHelpers() {
     'uni_helpers/lib/bytenode'
   ))
   return require(path.join(process.env.UNI_HBUILDERX_PLUGINS, 'uni_helpers'))
+}
+
+export function resolveBundleInputRoot(
+  platform: UTSPluginPlatform,
+  root: string
+) {
+  if (
+    process.env.UNI_APP_X_TSC === 'true' &&
+    // 云端uni_modules编译，传入的已经是真实地址
+    isNormalCompileTarget()
+  ) {
+    return uvueOutDir(platform)
+  }
+  return root
+}
+
+export function resolveBundleInputFileName(
+  platform: UTSPluginPlatform,
+  fileName: string
+) {
+  if (
+    process.env.UNI_APP_X_TSC === 'true' &&
+    // 云端uni_modules编译，传入的已经是真实地址 uni-cli-shared/vite/cloud.ts:190
+    isNormalCompileTarget()
+  ) {
+    const uvueDir = uvueOutDir(platform)
+    if (!fileName.startsWith(uvueDir)) {
+      return normalizePath(
+        path.resolve(
+          uvueDir,
+          path.relative(process.env.UNI_INPUT_DIR, fileName)
+        )
+      )
+    }
+  }
+  return fileName
+}
+
+export function resolveUVueFileName(
+  platform: 'app-android' | 'app-ios',
+  fileName: string
+) {
+  if (!fileName) {
+    return fileName
+  }
+  if (process.env.UNI_APP_X_TSC === 'true') {
+    const inputDir = normalizePath(process.env.UNI_INPUT_DIR)
+    fileName = normalizePath(fileName)
+    if (fileName.startsWith(inputDir)) {
+      return normalizePath(
+        path.resolve(uvueOutDir(platform), path.relative(inputDir, fileName))
+      )
+    }
+  }
+  return fileName
+}
+
+export function normalizeUTSResult(
+  platform: UTSPluginPlatform,
+  result: UTSResult
+) {
+  if (process.env.UNI_APP_X_TSC === 'true') {
+    if (result.deps && result.deps.length) {
+      const uvueDir = normalizePath(uvueOutDir(platform))
+      result.deps = result.deps.map((file) => {
+        file = normalizePath(file)
+        if (file.startsWith(uvueDir)) {
+          return path.resolve(
+            process.env.UNI_INPUT_DIR,
+            path.relative(uvueDir, file)
+          )
+        }
+        return file
+      })
+    }
+  }
+  return result
+}
+
+export function isNormalCompileTarget() {
+  // 目前有特殊编译目标 uni_modules 和 ext-api
+  return !process.env.UNI_COMPILE_TARGET
+}
+
+let enableUtsNumber: boolean
+export function isEnableUTSNumber() {
+  if (enableUtsNumber === undefined) {
+    enableUtsNumber = !!(
+      process.env.UNI_INPUT_DIR &&
+      fs.existsSync(path.resolve(process.env.UNI_INPUT_DIR, 'UTSNUMBER'))
+    )
+  }
+  return enableUtsNumber
 }

@@ -12,7 +12,7 @@ export function getRealPath(path: string, fix: boolean = false): string {
   if (fix && path.indexOf('.') !== 0) {
     return '/' + path
   }
-  const currentPage = getCurrentPage()
+  const currentPage = (getCurrentPage() as unknown as UniPage).vm
   const currentPath = !currentPage ? '/' : parseUrl(currentPage!.route!).path
   const currentPathArray = currentPath.split('/')
   const pathArray = path.split('/')

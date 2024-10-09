@@ -1,6 +1,9 @@
 import { normalizeStyles as normalizeStyles$1, addLeadingSlash, invokeArrayFns, parseQuery, Emitter, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, ON_ERROR, ON_SHOW, ON_HIDE, removeLeadingSlash, getLen, EventChannel, once, parseUrl, ON_UNLOAD, ON_READY, ON_PAGE_SCROLL, ON_PULL_DOWN_REFRESH, ON_REACH_BOTTOM, ON_RESIZE, ON_LAUNCH, ON_BACK_PRESS } from "@dcloudio/uni-shared";
 import { extend, isString, isPlainObject, isFunction as isFunction$1, isArray, isPromise, hasOwn, remove, invokeArrayFns as invokeArrayFns$1, capitalize, toTypeString, toRawType, parseStringStyle } from "@vue/shared";
-import { createVNode, render, injectHook, getCurrentInstance, defineComponent, warn, isInSSRComponentSetup, ref, watchEffect, watch, computed, onMounted, camelize, onUnmounted, reactive, nextTick } from "vue";
+import { createVNode, render, injectHook, getCurrentInstance, defineComponent, warn, isInSSRComponentSetup, ref, watchEffect, watch, computed, onMounted, camelize, onUnmounted, reactive, provide, inject, nextTick } from "vue";
+function get$pageByPage(page) {
+  return page.vm.$basePage;
+}
 function getCurrentPage() {
   var pages2 = getCurrentPages();
   var len = pages2.length;
@@ -9,13 +12,15 @@ function getCurrentPage() {
   }
 }
 function getCurrentPageMeta() {
-  var page = getCurrentPage();
-  if (page) {
-    return page.$page.meta;
+  var _getCurrentPage;
+  var $page = (_getCurrentPage = getCurrentPage()) === null || _getCurrentPage === void 0 || (_getCurrentPage = _getCurrentPage.vm) === null || _getCurrentPage === void 0 ? void 0 : _getCurrentPage.$basePage;
+  if ($page) {
+    return $page.meta;
   }
 }
 function getCurrentPageVm() {
-  var page = getCurrentPage();
+  var _getCurrentPage3;
+  var page = (_getCurrentPage3 = getCurrentPage()) === null || _getCurrentPage3 === void 0 ? void 0 : _getCurrentPage3.vm;
   if (page) {
     return page.$vm;
   }
@@ -62,7 +67,7 @@ function invokeHook(vm, name, args) {
     name = vm;
     vm = getCurrentPageVm();
   } else if (typeof vm === "number") {
-    var page = getCurrentPages().find((page2) => page2.$page.id === vm);
+    var page = getCurrentPages().find((page2) => get$pageByPage(page2).id === vm);
     if (page) {
       vm = page.$vm;
     } else {
@@ -87,7 +92,7 @@ function normalizeRoute(toRoute) {
   var fromRoute = "";
   var pages2 = getCurrentPages();
   if (pages2.length) {
-    fromRoute = pages2[pages2.length - 1].$page.route;
+    fromRoute = get$pageByPage(pages2[pages2.length - 1]).route;
   }
   return getRealRoute(fromRoute, toRoute);
 }
@@ -392,15 +397,22 @@ function invokeSuccess(id2, name, res) {
   var result = {
     errMsg: name + ":ok"
   };
+  {
+    result.errSubject = name;
+  }
   return invokeCallback(id2, extend(res || {}, result));
 }
 function invokeFail(id2, name, errMsg) {
   var errRes = arguments.length > 3 && arguments[3] !== void 0 ? arguments[3] : {};
   var apiErrMsg = name + ":fail" + (errMsg ? " " + errMsg : "");
-  delete errRes.errCode;
   var res = extend({
     errMsg: apiErrMsg
   }, errRes);
+  {
+    if (typeof UniError !== "undefined") {
+      res = typeof errRes.errCode !== "undefined" ? new UniError(name, errRes.errCode, apiErrMsg) : new UniError(apiErrMsg, errRes);
+    }
+  }
   return invokeCallback(id2, res);
 }
 function beforeInvokeApi(name, args, protocol, options) {
@@ -492,13 +504,16 @@ function initVueApp(appVm) {
     }
   });
 }
+function getPage$BasePage(page) {
+  return page.$basePage;
+}
 var pages = [];
 function addCurrentPage(page) {
-  var $page = page.$page;
+  var $page = getPage$BasePage(page);
   if (!$page.meta.isNVue) {
     return pages.push(page);
   }
-  var index2 = pages.findIndex((p) => p.$page.id === page.$page.id);
+  var index2 = pages.findIndex((p) => getPage$BasePage(page).id === $page.id);
   if (index2 > -1) {
     pages.splice(index2, 1, page);
   } else {
@@ -509,6 +524,12 @@ function getAllPages() {
   return pages;
 }
 function getCurrentPages$1() {
+  var curPages = getCurrentBasePages();
+  {
+    return curPages.map((page) => page.$page);
+  }
+}
+function getCurrentBasePages() {
   var curPages = [];
   pages.forEach((page) => {
     if (page.$.__isTabBar) {
@@ -526,10 +547,14 @@ function removePage(curPage) {
   if (index2 === -1) {
     return;
   }
-  if (!curPage.$page.meta.isNVue) {
+  var $basePage = getPage$BasePage(curPage);
+  if (!$basePage.meta.isNVue) {
     getVueApp().unmountPage(curPage);
   }
-  pages.splice(index2, 1);
+  var removePages2 = pages.splice(index2, 1);
+  {
+    removePages2[0].$page = null;
+  }
 }
 function backbuttonListener() {
   uni.navigateBack({
@@ -617,29 +642,53 @@ var API_ON = "$on";
 var API_ONCE = "$once";
 var API_OFF = "$off";
 var API_EMIT = "$emit";
-var emitter = new Emitter();
+class EventBus {
+  constructor() {
+    this.$emitter = new Emitter();
+  }
+  on(name, callback) {
+    return this.$emitter.on(name, callback);
+  }
+  once(name, callback) {
+    return this.$emitter.once(name, callback);
+  }
+  off(name, callback) {
+    if (!name) {
+      this.$emitter.e = {};
+      return;
+    }
+    this.$emitter.off(name, callback);
+  }
+  emit(name) {
+    for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+      args[_key - 1] = arguments[_key];
+    }
+    this.$emitter.emit(name, ...args);
+  }
+}
+var eventBus = new EventBus();
 var $on = /* @__PURE__ */ defineSyncApi(API_ON, (name, callback) => {
-  emitter.on(name, callback);
-  return () => emitter.off(name, callback);
+  var id2 = eventBus.on(name, callback);
+  {
+    return id2;
+  }
 });
 var $once = /* @__PURE__ */ defineSyncApi(API_ONCE, (name, callback) => {
-  emitter.once(name, callback);
-  return () => emitter.off(name, callback);
+  var id2 = eventBus.once(name, callback);
+  {
+    return id2;
+  }
 });
 var $off = /* @__PURE__ */ defineSyncApi(API_OFF, (name, callback) => {
-  if (!name) {
-    emitter.e = {};
-    return;
-  }
   if (!isArray(name))
-    name = [name];
-  name.forEach((n) => emitter.off(n, callback));
+    name = name ? [name] : [];
+  name.forEach((n) => eventBus.off(n, callback));
 });
 var $emit = /* @__PURE__ */ defineSyncApi(API_EMIT, function(name) {
-  for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
-    args[_key - 1] = arguments[_key];
+  for (var _len2 = arguments.length, args = new Array(_len2 > 1 ? _len2 - 1 : 0), _key2 = 1; _key2 < _len2; _key2++) {
+    args[_key2 - 1] = arguments[_key2];
   }
-  emitter.emit(name, ...args);
+  eventBus.emit(name, ...args);
 });
 var appHooks = {
   [ON_UNHANDLE_REJECTION]: [],
@@ -965,21 +1014,70 @@ function initRouteOptions(path, openType) {
 function setupPage(component) {
   var oldSetup = component.setup;
   component.inheritAttrs = false;
-  component.setup = (_, ctx) => {
+  component.setup = (props, ctx) => {
     var {
       attrs: {
         __pageId,
         __pagePath,
-        __pageQuery,
+        /*__pageQuery,*/
         __pageInstance
       }
     } = ctx;
     var instance = getCurrentInstance();
+    instance.$dialogPages = [];
     var pageVm = instance.proxy;
     initPageVm(pageVm, __pageInstance);
-    addCurrentPage(initScope(__pageId, pageVm, __pageInstance));
+    {
+      var uniPage = new UniPageImpl();
+      pageVm.$basePage = pageVm.$page;
+      pageVm.$page = uniPage;
+      uniPage.route = pageVm.$basePage.route;
+      uniPage.optionsByJS = pageVm.$basePage.options;
+      Object.defineProperty(uniPage, "options", {
+        get: function() {
+          return new UTSJSONObject(pageVm.$basePage.options);
+        }
+      });
+      uniPage.vm = pageVm;
+      uniPage.$vm = pageVm;
+      uniPage.getElementById = (id2) => {
+        var _pageVm$$el;
+        var currentPage = getCurrentPage();
+        if (currentPage !== uniPage) {
+          return null;
+        }
+        var bodyNode = (_pageVm$$el = pageVm.$el) === null || _pageVm$$el === void 0 ? void 0 : _pageVm$$el.parentNode;
+        if (bodyNode == null) {
+          console.warn("bodyNode is null");
+          return null;
+        }
+        return bodyNode.querySelector("#".concat(id2));
+      };
+      uniPage.getParentPage = () => {
+        var parentPage = uniPage.getParentPageByJS();
+        return parentPage || null;
+      };
+      uniPage.getPageStyle = () => {
+        var pageStyle = uniPage.getPageStyleByJS();
+        return new UTSJSONObject(pageStyle);
+      };
+      uniPage.$getPageStyle = () => {
+        return uniPage.getPageStyle();
+      };
+      uniPage.setPageStyle = (styles2) => {
+        uniPage.setPageStyleByJS(styles2);
+      };
+      uniPage.$setPageStyle = (styles2) => {
+        uniPage.setPageStyle(styles2);
+      };
+      uniPage.getAndroidView = () => null;
+      uniPage.getHTMLElement = () => null;
+    }
+    if (getPage$BasePage(pageVm).openType !== "openDialogPage") {
+      addCurrentPage(initScope(__pageId, pageVm, __pageInstance));
+    }
     if (oldSetup) {
-      return oldSetup(__pageQuery, ctx);
+      return oldSetup(props, ctx);
     }
   };
   return component;
@@ -999,6 +1097,16 @@ function initScope(pageId, vm, pageInstance) {
     Object.defineProperty(vm, "$setPageStyle", {
       get() {
         return vm.$nativePage.setPageStyle.bind(vm.$nativePage);
+      }
+    });
+    Object.defineProperty(vm, "getDialogPages", {
+      get() {
+        return () => vm.$.$dialogPages;
+      }
+    });
+    Object.defineProperty(vm, "getParentPage", {
+      get() {
+        return () => null;
       }
     });
   }
@@ -1048,7 +1156,7 @@ function getRealPath(path) {
   if (fix && path.indexOf(".") !== 0) {
     return "/" + path;
   }
-  var currentPage = getCurrentPage();
+  var currentPage = getCurrentPage().vm;
   var currentPath = !currentPage ? "/" : parseUrl(currentPage.route).path;
   var currentPathArray = currentPath.split("/");
   var pathArray = path.split("/");
@@ -1091,19 +1199,21 @@ var tabs = /* @__PURE__ */ new Map();
 var BORDER_COLORS = /* @__PURE__ */ new Map([["white", "rgba(255, 255, 255, 0.33)"], ["black", "rgba(0, 0, 0, 0.33)"]]);
 function getBorderStyle(borderStyle) {
   var value = BORDER_COLORS.get(borderStyle);
+  if (!value) {
+    console.warn("4.23 版本起，在 pages.json 设置 tabbar borderStyle、在 uni.setTabBarStyle 设置 borderStyle 时仅支持 white/black，推荐使用 borderColor 自定义颜色。");
+  }
   return value || BORDER_COLORS.get("black");
 }
 function fixBorderStyle(tabBarConfig) {
   var borderStyle = tabBarConfig.get("borderStyle");
-  if (!isString(borderStyle)) {
-    borderStyle = "black";
+  var borderColor = tabBarConfig.get("borderColor");
+  var isBorderColorFilled = isString(borderColor);
+  borderStyle = getBorderStyle(borderStyle);
+  if (isBorderColorFilled) {
+    borderStyle = borderColor;
   }
-  var borderColor = getBorderStyle(borderStyle);
-  if (tabBarConfig.has("borderColor") && isString(tabBarConfig.get("borderColor"))) {
-    borderColor = tabBarConfig.get("borderColor");
-    tabBarConfig.delete("borderColor");
-  }
-  tabBarConfig.set("borderStyle", borderColor);
+  tabBarConfig.set("borderStyle", borderStyle);
+  tabBarConfig.delete("borderColor");
 }
 function getTabList() {
   var tabConfig = __uniConfig.tabBar ? /* @__PURE__ */ new Map() : null;
@@ -1197,8 +1307,8 @@ function createTab(path, query, callback) {
     openType: "switchTab"
   });
   callback === null || callback === void 0 || callback();
-  var page = getCurrentPage();
-  tabBar0.appendItem(page.$page.id.toString());
+  var page = getCurrentPage().vm;
+  tabBar0.appendItem(page.$basePage.id.toString());
   return page;
 }
 function findTabPage(path) {
@@ -1244,6 +1354,7 @@ function getTabPage(path) {
   return new TabPageInfo(page, isFirst);
 }
 function switchSelect(selected, path) {
+  var _getCurrentPage, _pageStyle$pageOrient, _uniConfig$globalSty3;
   var query = arguments.length > 2 && arguments[2] !== void 0 ? arguments[2] : {};
   var rebuild = arguments.length > 3 && arguments[3] !== void 0 ? arguments[3] : false;
   var callback = arguments.length > 4 ? arguments[4] : void 0;
@@ -1251,7 +1362,7 @@ function switchSelect(selected, path) {
   if (tabBar0 === null) {
     init();
   }
-  var currentPage = getCurrentPage();
+  var currentPage = (_getCurrentPage = getCurrentPage()) === null || _getCurrentPage === void 0 ? void 0 : _getCurrentPage.vm;
   var type = currentPage == null ? "appLaunch" : "switchTab";
   invokeBeforeRouteHooks(type);
   var pageInfo = getTabPage(getRealPath(path, true), query, rebuild, callback);
@@ -1262,7 +1373,14 @@ function switchSelect(selected, path) {
       invokeHook(currentPage, ON_HIDE);
     }
   }
-  tabBar0.switchSelect(page.$page.id.toString(), selected);
+  tabBar0.switchSelect(page.$basePage.id.toString(), selected);
+  var pageStyle = page.$page.getPageStyle();
+  var pageOrientation = (_pageStyle$pageOrient = pageStyle["pageOrientation"]) !== null && _pageStyle$pageOrient !== void 0 ? _pageStyle$pageOrient : (_uniConfig$globalSty3 = __uniConfig.globalStyle) === null || _uniConfig$globalSty3 === void 0 ? void 0 : _uniConfig$globalSty3.pageOrientation;
+  if (pageOrientation) {
+    getPageManager().findPageById("tabBar").setPageStyle({
+      pageOrientation
+    });
+  }
   if (shouldShow) {
     invokeHook(page, ON_SHOW);
   }
@@ -1308,9 +1426,9 @@ var onThemeChange = function(themeMode) {
   var handlePage = () => {
     var pages2 = getAllPages();
     pages2.forEach((page) => {
-      var routeOptions = initRouteOptions(page.$page.path, "");
+      var routeOptions = initRouteOptions(page.$basePage.path, "");
       var style = parsePageStyle(routeOptions);
-      page.$setPageStyle(style);
+      page.$page.setPageStyle(new Map(Object.entries(style)));
     });
   };
   handlePage();
@@ -1388,6 +1506,7 @@ function normalizeTabBarStyles(tabBar, themeConfig, themeMode) {
 function useTheme() {
   registerThemeChange(onThemeChange);
 }
+var homeDialogPages = [];
 function parsePageStyle(route) {
   var style = /* @__PURE__ */ new Map();
   var routeMeta = route.meta;
@@ -1462,6 +1581,107 @@ function registerPage(_ref, onCreated) {
   );
   function fn() {
     var page = createVuePage(id2, route, query, pageInstance, {}, nativePage2);
+    var pages2 = getCurrentPages();
+    if (pages2.length === 1 && homeDialogPages.length) {
+      var homePage = pages2[0];
+      homePage.vm.$.$dialogPages = homeDialogPages.map((dialogPage) => {
+        dialogPage.getParentPage = () => homePage;
+        return dialogPage;
+      });
+      homeDialogPages.length = 0;
+    }
+    nativePage2.addPageEventListener(ON_POP_GESTURE, function(e) {
+      uni.navigateBack({
+        from: "popGesture",
+        fail(e2) {
+          if (e2.errMsg.endsWith("cancel")) {
+            nativePage2.show();
+          }
+        }
+      });
+    });
+    nativePage2.addPageEventListener(ON_UNLOAD, (_) => {
+      invokeHook(page, ON_UNLOAD);
+    });
+    nativePage2.addPageEventListener(ON_READY, (_) => {
+      invokePageReadyHooks(page);
+      invokeHook(page, ON_READY);
+    });
+    nativePage2.addPageEventListener(ON_PAGE_SCROLL, (arg) => {
+      invokeHook(page, ON_PAGE_SCROLL, {
+        scrollTop: arg.scrollTop
+      });
+    });
+    nativePage2.addPageEventListener(ON_PULL_DOWN_REFRESH, (_) => {
+      invokeHook(page, ON_PULL_DOWN_REFRESH);
+    });
+    nativePage2.addPageEventListener(ON_REACH_BOTTOM, (_) => {
+      invokeHook(page, ON_REACH_BOTTOM);
+    });
+    nativePage2.addPageEventListener(ON_RESIZE, (arg) => {
+      var args = {
+        deviceOrientation: arg.deviceOrientation,
+        size: {
+          windowWidth: arg.size.windowWidth,
+          windowHeight: arg.size.windowHeight,
+          screenWidth: arg.size.screenWidth,
+          screenHeight: arg.size.screenHeight
+        }
+      };
+      invokeHook(page, ON_RESIZE, args);
+    });
+    nativePage2.startRender();
+  }
+  if (delay) {
+    setTimeout(fn, delay);
+  } else {
+    fn();
+  }
+  return nativePage2;
+}
+function registerDialogPage(_ref2, dialogPage, onCreated) {
+  var {
+    url,
+    path,
+    query,
+    openType,
+    webview,
+    nvuePageVm,
+    eventChannel
+  } = _ref2;
+  var delay = arguments.length > 3 && arguments[3] !== void 0 ? arguments[3] : 0;
+  var id2 = genWebviewId();
+  var routeOptions = initRouteOptions(path, openType);
+  var pageStyle = /* @__PURE__ */ new Map([["navigationStyle", "custom"], ["backgroundColor", "transparent"]]);
+  var parentPage = dialogPage.getParentPage();
+  var nativePage2 = getPageManager().createDialogPage(
+    // @ts-expect-error
+    parentPage ? parentPage.nativePageId : "",
+    id2.toString(),
+    url,
+    pageStyle
+  );
+  if (onCreated) {
+    onCreated(nativePage2);
+  }
+  routeOptions.meta.id = parseInt(nativePage2.pageId);
+  var route = path.slice(1);
+  var pageInstance = initPageInternalInstance(
+    openType,
+    url,
+    query,
+    routeOptions.meta,
+    eventChannel,
+    // TODO ThemeMode
+    "light"
+  );
+  function fn() {
+    var page = createVuePage(id2, route, query, pageInstance, {}, nativePage2);
+    dialogPage.vm = page;
+    dialogPage.$vm = page;
+    dialogPage.vm.$nativePage = nativePage2;
+    dialogPage.$vm.$nativePage = nativePage2;
+    page.$page = dialogPage;
     nativePage2.addPageEventListener(ON_POP_GESTURE, function(e) {
       uni.navigateBack({
         from: "popGesture",
@@ -1488,8 +1708,8 @@ function registerPage(_ref, onCreated) {
     nativePage2.addPageEventListener(ON_REACH_BOTTOM, (_) => {
       invokeHook(page, ON_REACH_BOTTOM);
     });
-    nativePage2.addPageEventListener(ON_RESIZE, (_) => {
-      invokeHook(page, ON_RESIZE);
+    nativePage2.addPageEventListener(ON_RESIZE, (arg) => {
+      invokeHook(page, ON_RESIZE, arg);
     });
     nativePage2.startRender();
   }
@@ -1516,7 +1736,7 @@ function createVuePage(__pageId, __pagePath, __pageQuery, __pageInstance, pageOp
   return mountPage(component);
 }
 function setStatusBarStyle() {
-  var page = getCurrentPage();
+  var page = getCurrentPage().vm;
   if (page) {
     var nativePage2 = page.$nativePage;
     nativePage2.applyStatusBarStyle();
@@ -1650,7 +1870,7 @@ function _redirectTo(_ref3) {
     path,
     query
   } = _ref3;
-  var lastPage = getCurrentPage();
+  var lastPage = getCurrentPage().vm;
   return new Promise((resolve) => {
     invokeAfterRouteHooks(API_REDIRECT_TO);
     showWebview(registerPage({
@@ -1787,6 +2007,10 @@ function handleBeforeEntryPageRoutes() {
     return $reLaunch(args, handler);
   });
 }
+function closeNativeDialogPage(dialogPage, animationType, callback) {
+  var webview = getNativeApp().pageManager.findPageById(dialogPage.$vm.$basePage.id + "");
+  closeWebview(webview, animationType, 0, callback);
+}
 var $switchTab = (args, _ref) => {
   var {
     resolve,
@@ -1828,7 +2052,7 @@ function _switchTab(_ref2) {
   if (selected == -1) {
     return Promise.reject("tab ".concat(path, " not found"));
   }
-  var pages2 = getCurrentPages();
+  var pages2 = getCurrentBasePages();
   switchSelect(selected, path, query);
   for (var index2 = pages2.length - 1; index2 >= 0; index2--) {
     var page = pages2[index2];
@@ -1841,14 +2065,13 @@ function _switchTab(_ref2) {
 }
 var isLaunchWebviewReady = false;
 function subscribeWebviewReady(_data, pageId) {
-  var isLaunchWebview = pageId === "1";
-  if (isLaunchWebview && isLaunchWebviewReady) {
+  if (isLaunchWebviewReady) {
     return;
   }
-  if (isLaunchWebview) {
+  {
     isLaunchWebviewReady = true;
   }
-  isLaunchWebview && onLaunchWebviewReady();
+  onLaunchWebviewReady();
 }
 function onLaunchWebviewReady() {
   var entryPagePath = addLeadingSlash(__uniConfig.entryPagePath);
@@ -1869,32 +2092,26 @@ function onLaunchWebviewReady() {
   return $navigateTo(args, handler);
 }
 function initSubscribeHandlers() {
-  subscribeWebviewReady({}, "1");
+  subscribeWebviewReady();
 }
-function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) {
+function asyncGeneratorStep(n, t, e, r, o, a, c) {
   try {
-    var info = gen[key](arg);
-    var value = info.value;
-  } catch (error) {
-    reject(error);
-    return;
+    var i = n[a](c), u = i.value;
+  } catch (n2) {
+    return void e(n2);
   }
-  if (info.done) {
-    resolve(value);
-  } else {
-    Promise.resolve(value).then(_next, _throw);
-  }
+  i.done ? t(u) : Promise.resolve(u).then(r, o);
 }
-function _asyncToGenerator(fn) {
+function _asyncToGenerator(n) {
   return function() {
-    var self = this, args = arguments;
-    return new Promise(function(resolve, reject) {
-      var gen = fn.apply(self, args);
-      function _next(value) {
-        asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value);
+    var t = this, e = arguments;
+    return new Promise(function(r, o) {
+      var a = n.apply(t, e);
+      function _next(n2) {
+        asyncGeneratorStep(a, r, o, _next, _throw, "next", n2);
       }
-      function _throw(err) {
-        asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err);
+      function _throw(n2) {
+        asyncGeneratorStep(a, r, o, _next, _throw, "throw", n2);
       }
       _next(void 0);
     });
@@ -1932,8 +2149,8 @@ function initOn(app) {
         path: __uniConfig.entryPagePath
       }, schemaLink);
       setEnterOptionsSync(showOptions);
-      var page = getCurrentPage();
-      invokeHook(getApp(), ON_SHOW, showOptions);
+      var page = getCurrentPage().vm;
+      invokeHook(getApp().vm, ON_SHOW, showOptions);
       if (page) {
         invokeHook(page, ON_SHOW);
       }
@@ -1943,8 +2160,8 @@ function initOn(app) {
     };
   }());
   app.addEventListener(ON_HIDE, function() {
-    var page = getCurrentPage();
-    invokeHook(getApp(), ON_HIDE);
+    var page = getCurrentPage().vm;
+    invokeHook(getApp().vm, ON_HIDE);
     if (page) {
       invokeHook(page, ON_HIDE);
     }
@@ -1963,6 +2180,9 @@ function initComponentInstance(app) {
       }
       var pageId = instance.root.attrs.__pageId;
       vm.$nativePage = getNativeApp().pageManager.findPageById(pageId + "");
+      if (vm.$page) {
+        vm.$page.nativePageId = vm.$nativePage.pageId;
+      }
     },
     beforeMount() {
       var _vm$$options$styles;
@@ -1979,6 +2199,22 @@ var appCtx;
 var defaultApp = {
   globalData: {}
 };
+class UniAppImpl {
+  get vm() {
+    return appCtx;
+  }
+  get $vm() {
+    return appCtx;
+  }
+  get globalData() {
+    var _appCtx;
+    return ((_appCtx = appCtx) === null || _appCtx === void 0 ? void 0 : _appCtx.globalData) || {};
+  }
+  getAndroidApplication() {
+    return null;
+  }
+}
+var $uniApp = new UniAppImpl();
 var entryPageState = {
   isReady: false,
   handledBeforeEntryPageRoutes: false
@@ -1992,16 +2228,7 @@ function initAppVm(appVm) {
   appVm.$mpType = "app";
 }
 function getApp$1() {
-  var {
-    allowDefault = false
-  } = arguments.length > 0 && arguments[0] !== void 0 ? arguments[0] : {};
-  if (appCtx) {
-    return appCtx;
-  }
-  if (allowDefault) {
-    return defaultApp;
-  }
-  console.error("[warn]: getApp() failed. Learn more: https://uniapp.dcloud.io/collocation/frame/window?id=getapp.");
+  return $uniApp;
 }
 function registerApp(appVm, nativeApp2) {
   initEntryPagePath(nativeApp2);
@@ -2060,7 +2287,7 @@ var $navigateTo = (args, _ref) => {
     path,
     query
   } = parseUrl(url);
-  var [aniType, aniDuration] = initAnimation(path, animationType, animationDuration);
+  var [aniType, aniDuration] = initAnimation$1(path, animationType, animationDuration);
   updateEntryPageIsReady(path);
   if (!entryPageState.isReady) {
     navigateToPagesBeforeEntryPages.push({
@@ -2084,6 +2311,7 @@ var $navigateTo = (args, _ref) => {
 };
 var navigateTo = /* @__PURE__ */ defineAsyncApi(API_NAVIGATE_TO, $navigateTo, NavigateToProtocol, NavigateToOptions);
 function _navigateTo(_ref2) {
+  var _getCurrentPage;
   var {
     url,
     path,
@@ -2092,7 +2320,7 @@ function _navigateTo(_ref2) {
     aniType,
     aniDuration
   } = _ref2;
-  var currentPage = getCurrentPage();
+  var currentPage = (_getCurrentPage = getCurrentPage()) === null || _getCurrentPage === void 0 ? void 0 : _getCurrentPage.vm;
   var currentRouteType = currentPage == null ? "appLaunch" : API_NAVIGATE_TO;
   invokeBeforeRouteHooks(currentRouteType);
   invokeHook(ON_HIDE);
@@ -2125,7 +2353,7 @@ function _navigateTo(_ref2) {
     }
   });
 }
-function initAnimation(path, animationType, animationDuration) {
+function initAnimation$1(path, animationType, animationDuration) {
   if (!getCurrentPage()) {
     return ["none", 0];
   }
@@ -2136,7 +2364,7 @@ function initAnimation(path, animationType, animationDuration) {
   return [animationType || meta.animationType || globalStyle.animationType || ANI_SHOW, animationDuration || meta.animationDuration || globalStyle.animationDuration || ANI_DURATION];
 }
 function isDirectPage(page) {
-  return !!__uniConfig.realEntryPagePath && getRealPath(page.$page.route, true) === getRealPath(parseUrl(__uniConfig.entryPagePath).path, true);
+  return !!__uniConfig.realEntryPagePath && getRealPath(page.$basePage.route, true) === getRealPath(parseUrl(__uniConfig.entryPagePath).path, true);
 }
 function reLaunchEntryPage() {
   var _uniConfig$entryPage;
@@ -2151,17 +2379,29 @@ var navigateBack = /* @__PURE__ */ defineAsyncApi(API_NAVIGATE_BACK, (args, _ref
     resolve,
     reject
   } = _ref;
-  var page = getCurrentPage();
+  var page = getCurrentPage().vm;
   if (!page) {
     return reject("getCurrentPages is empty");
   }
   if (
     // popGesture 时不触发 onBackPress 事件，避免引发半屏弹窗这种冲突情况
-    args.from !== "popGesture" && invokeHook(page, ON_BACK_PRESS, {
-      from: args.from || "navigateBack"
-    })
+    args.from !== "popGesture"
   ) {
-    return reject("cancel");
+    var onBackPressRes = invokeHook(page, ON_BACK_PRESS, {
+      from: args.from || "navigateBack"
+    });
+    if (onBackPressRes !== true) {
+      var dialogPages = page.$page.getDialogPages();
+      if (dialogPages.length > 0) {
+        var dialogPage = dialogPages[dialogPages.length - 1];
+        onBackPressRes = invokeHook(dialogPage.$vm, ON_BACK_PRESS, {
+          from: args.from || "navigateBack"
+        });
+      }
+    }
+    if (onBackPressRes === true) {
+      return reject("cancel");
+    }
   }
   try {
     uni.hideToast();
@@ -2169,7 +2409,7 @@ var navigateBack = /* @__PURE__ */ defineAsyncApi(API_NAVIGATE_BACK, (args, _ref
   } catch (error) {
     console.warn(error);
   }
-  if (page.$page.meta.isQuit)
+  if (getPage$BasePage(page).meta.isQuit)
     ;
   else {
     if (isDirectPage(page)) {
@@ -2186,19 +2426,24 @@ var navigateBack = /* @__PURE__ */ defineAsyncApi(API_NAVIGATE_BACK, (args, _ref
   return resolve();
 }, NavigateBackProtocol, NavigateBackOptions);
 function back(delta, animationType, animationDuration) {
-  var pages2 = getCurrentPages();
+  var pages2 = getCurrentBasePages();
   var len = pages2.length;
   var currentPage = pages2[len - 1];
   if (delta > 1) {
     pages2.slice(len - delta, len - 1).reverse().forEach((deltaPage) => {
-      closeWebview(getNativeApp().pageManager.findPageById(deltaPage.$page.id + ""), "none", 0);
+      var dialogPages2 = deltaPage.$page.getDialogPages();
+      for (var i2 = dialogPages2.length - 1; i2 >= 0; i2--) {
+        var dialogPage2 = dialogPages2[i2];
+        closeNativeDialogPage(dialogPage2, "none");
+      }
+      closeWebview(getNativeApp().pageManager.findPageById(deltaPage.$basePage.id + ""), "none", 0);
     });
   }
   var backPage = function(webview2) {
     if (animationType) {
       animationDuration = animationDuration || ANI_DURATION;
     } else {
-      if (currentPage.$page.openType === "redirectTo") {
+      if (currentPage.$basePage.openType === "redirectTo") {
         animationType = ANI_CLOSE;
         animationDuration = ANI_DURATION;
       } else {
@@ -2211,8 +2456,167 @@ function back(delta, animationType, animationDuration) {
       setStatusBarStyle();
     });
   };
-  var webview = getNativeApp().pageManager.findPageById(currentPage.$page.id + "");
+  var webview = getNativeApp().pageManager.findPageById(currentPage.$basePage.id + "");
+  var dialogPages = currentPage.$page.getDialogPages();
+  for (var i = dialogPages.length - 1; i >= 0; i--) {
+    var dialogPage = dialogPages[i];
+    closeNativeDialogPage(dialogPage, "none");
+    if (i > 0) {
+      invokeHook(dialogPages[i - 1].$vm, ON_SHOW);
+    }
+  }
   backPage(webview);
+}
+var openDialogPage = (options) => {
+  var _options$success, _options$complete;
+  var {
+    url,
+    events,
+    animationType
+  } = options;
+  if (!options.url) {
+    triggerFailCallback$1(options, "url is required");
+    return null;
+  }
+  var {
+    path,
+    query
+  } = parseUrl(url);
+  var normalizeUrl = createNormalizeUrl("navigateTo");
+  var errMsg = normalizeUrl(path, {});
+  if (errMsg) {
+    triggerFailCallback$1(options, errMsg);
+    return null;
+  }
+  var parentPage = options.parentPage || null;
+  var currentPages = getCurrentPages();
+  if (parentPage) {
+    if (currentPages.indexOf(parentPage) === -1) {
+      triggerFailCallback$1(options, "parentPage is not a valid page");
+      return null;
+    }
+  }
+  if (currentPages.length && !parentPage) {
+    parentPage = currentPages[currentPages.length - 1];
+  }
+  var dialogPage = new UniDialogPageImpl();
+  dialogPage.route = path;
+  dialogPage.options = new UTSJSONObject(query);
+  dialogPage.getParentPage = () => parentPage;
+  dialogPage.$component = null;
+  dialogPage.$disableEscBack = false;
+  if (!parentPage) {
+    homeDialogPages.push(dialogPage);
+  } else {
+    var dialogPages = parentPage.getDialogPages();
+    if (dialogPages.length) {
+      invokeHook(dialogPages[dialogPages.length - 1].$vm, ON_HIDE);
+    }
+    dialogPages.push(dialogPage);
+  }
+  var [aniType, aniDuration] = initAnimation(path, animationType);
+  var noAnimation = aniType === "none" || aniDuration === 0;
+  function callback(page2) {
+    showWebview(page2, aniType, aniDuration, () => {
+      beforeRoute();
+    });
+  }
+  var page = registerDialogPage(
+    {
+      url,
+      path,
+      query,
+      openType: "openDialogPage"
+    },
+    dialogPage,
+    noAnimation ? void 0 : callback,
+    // 有动画时延迟创建 vm
+    noAnimation ? 0 : 1
+  );
+  dialogPage.nativePageId = page.pageId;
+  if (noAnimation) {
+    callback(page);
+  }
+  var successOptions = {
+    errMsg: "openDialogPage: ok",
+    eventChannel: new EventChannel(getWebviewId() + 1, events)
+  };
+  (_options$success = options.success) === null || _options$success === void 0 || _options$success.call(options, successOptions);
+  (_options$complete = options.complete) === null || _options$complete === void 0 || _options$complete.call(options, successOptions);
+  return dialogPage;
+};
+function triggerFailCallback$1(options, errMsg) {
+  var _options$fail, _options$complete2;
+  var failOptions = new UniError("uni-openDialogPage", 4, "openDialogPage: fail, ".concat(errMsg));
+  (_options$fail = options.fail) === null || _options$fail === void 0 || _options$fail.call(options, failOptions);
+  (_options$complete2 = options.complete) === null || _options$complete2 === void 0 || _options$complete2.call(options, failOptions);
+}
+function initAnimation(path, animationType) {
+  if (!getCurrentPage()) {
+    return ["none", 0];
+  }
+  var {
+    globalStyle
+  } = __uniConfig;
+  var meta = getRouteMeta(path);
+  var _animationType = animationType || meta.animationType || globalStyle.animationType || ANI_SHOW;
+  if (_animationType == "pop-in") {
+    _animationType = "none";
+  }
+  return [_animationType, meta.animationDuration || globalStyle.animationDuration || ANI_DURATION];
+}
+var closeDialogPage = (options) => {
+  var _options$success, _options$complete;
+  var currentPages = getCurrentPages();
+  var currentPage = currentPages[currentPages.length - 1];
+  if (!currentPage) {
+    triggerFailCallback(options, "currentPage is null");
+    return;
+  }
+  if ((options === null || options === void 0 ? void 0 : options.animationType) === "pop-out") {
+    options.animationType = "none";
+  }
+  if (options !== null && options !== void 0 && options.dialogPage) {
+    var dialogPage = options === null || options === void 0 ? void 0 : options.dialogPage;
+    if (!(dialogPage instanceof UniDialogPageImpl)) {
+      triggerFailCallback(options, "dialogPage is not a valid page");
+      return;
+    }
+    var parentPage = dialogPage.getParentPage();
+    if (parentPage && currentPages.indexOf(parentPage) !== -1) {
+      var parentDialogPages = parentPage.getDialogPages();
+      var index2 = parentDialogPages.indexOf(dialogPage);
+      parentDialogPages.splice(index2, 1);
+      closeNativeDialogPage(dialogPage, (options === null || options === void 0 ? void 0 : options.animationType) || "none");
+      if (index2 > 0 && index2 === parentDialogPages.length) {
+        invokeHook(parentDialogPages[parentDialogPages.length - 1].$vm, ON_SHOW);
+      }
+    } else {
+      triggerFailCallback(options, "dialogPage is not a valid page");
+      return;
+    }
+  } else {
+    var dialogPages = currentPage.getDialogPages();
+    for (var i = dialogPages.length - 1; i >= 0; i--) {
+      closeNativeDialogPage(dialogPages[i], (options === null || options === void 0 ? void 0 : options.animationType) || "none");
+      if (i > 0) {
+        invokeHook(dialogPages[i - 1].$vm, ON_SHOW);
+      }
+      dialogPages[i] = null;
+    }
+    dialogPages.length = 0;
+  }
+  var successOptions = {
+    errMsg: "closeDialogPage: ok"
+  };
+  options === null || options === void 0 || (_options$success = options.success) === null || _options$success === void 0 || _options$success.call(options, successOptions);
+  options === null || options === void 0 || (_options$complete = options.complete) === null || _options$complete === void 0 || _options$complete.call(options, successOptions);
+};
+function triggerFailCallback(options, errMsg) {
+  var _options$fail, _options$complete2;
+  var failOptions = new UniError("uni-openDialogPage", 4, "openDialogPage: fail, ".concat(errMsg));
+  options === null || options === void 0 || (_options$fail = options.fail) === null || _options$fail === void 0 || _options$fail.call(options, failOptions);
+  options === null || options === void 0 || (_options$complete2 = options.complete) === null || _options$complete2 === void 0 || _options$complete2.call(options, failOptions);
 }
 var setTabBarBadge = /* @__PURE__ */ defineAsyncApi(API_SET_TAB_BAR_BADGE, (_ref, _ref2) => {
   var {
@@ -2375,7 +2779,7 @@ var setNavigationBarColor = /* @__PURE__ */ defineAsyncApi(API_SET_NAVIGATION_BA
   if (!page) {
     return reject("getCurrentPages is empty");
   }
-  var appPage = page.$nativePage;
+  var appPage = page.vm.$nativePage;
   appPage.updateStyle(/* @__PURE__ */ new Map([["navigationBarTextStyle", frontColor == "#000000" ? "black" : "white"], ["navigationBarBackgroundColor", backgroundColor]]));
   resolve();
 }, SetNavigationBarColorProtocol, SetNavigationBarColorOptions);
@@ -2384,7 +2788,7 @@ var setNavigationBarTitle = /* @__PURE__ */ defineAsyncApi(API_SET_NAVIGATION_BA
     resolve,
     reject
   } = _ref;
-  var page = getCurrentPage();
+  var page = getCurrentPage().vm;
   if (page == null) {
     reject("page is not ready");
     return;
@@ -2395,7 +2799,7 @@ var setNavigationBarTitle = /* @__PURE__ */ defineAsyncApi(API_SET_NAVIGATION_BA
 });
 var getElementById = /* @__PURE__ */ defineSyncApi("getElementById", (id2) => {
   var _page$$el;
-  var page = getCurrentPage();
+  var page = getCurrentPage().vm;
   if (page == null) {
     return null;
   }
@@ -2654,7 +3058,7 @@ function requestComponentInfo(vueComponent, queue2, callback) {
   callback(result);
 }
 var createSelectorQuery = function() {
-  var instance = getCurrentPage();
+  var instance = getCurrentPage().vm;
   return new SelectorQueryImpl(instance);
 };
 var createCanvasContextAsync = /* @__PURE__ */ defineAsyncApi("createCanvasContextAsync", (options, _ref) => {
@@ -2663,7 +3067,7 @@ var createCanvasContextAsync = /* @__PURE__ */ defineAsyncApi("createCanvasConte
     resolve,
     reject
   } = _ref;
-  var page = getCurrentPage();
+  var page = getCurrentPage().vm;
   if (page == null) {
     return null;
   }
@@ -2719,7 +3123,7 @@ function queryElementTop(component, selector) {
   return null;
 }
 var pageScrollTo = /* @__PURE__ */ defineAsyncApi(API_PAGE_SCROLL_TO, (options, res) => {
-  var currentPage = getCurrentPage();
+  var currentPage = getCurrentPage().vm;
   var scrollViewNode = currentPage === null || currentPage === void 0 ? void 0 : currentPage.$el;
   if (scrollViewNode == null || scrollViewNode.tagName != "SCROLL-VIEW") {
     res.reject("selector invalid");
@@ -2786,7 +3190,7 @@ var loadFontFace = /* @__PURE__ */ defineAsyncApi(API_LOAD_FONT_FACE, (options, 
       app.loadFontFace(fontInfo);
     }
   } else {
-    var page = getCurrentPage();
+    var page = getCurrentPage().vm;
     if (!page) {
       res.reject("page is not ready", 99);
       return;
@@ -2802,7 +3206,7 @@ var loadFontFace = /* @__PURE__ */ defineAsyncApi(API_LOAD_FONT_FACE, (options, 
   }
 });
 var startPullDownRefresh = /* @__PURE__ */ defineAsyncApi(API_START_PULL_DOWN_REFRESH, (_options, res) => {
-  var page = getCurrentPage();
+  var page = getCurrentPage().vm;
   if (page === null) {
     res.reject("page is not ready");
     return;
@@ -2813,7 +3217,7 @@ var startPullDownRefresh = /* @__PURE__ */ defineAsyncApi(API_START_PULL_DOWN_RE
   });
 });
 var stopPullDownRefresh = /* @__PURE__ */ defineAsyncApi(API_STOP_PULL_DOWN_REFRESH, (_args, res) => {
-  var page = getCurrentPage();
+  var page = getCurrentPage().vm;
   if (page === null) {
     res.reject("page is not ready");
     return;
@@ -2863,13 +3267,13 @@ class PerformanceEntryStatus {
     return this._entryData;
   }
   executeBefore() {
-    var page = getCurrentPage();
+    var page = getCurrentPage().vm;
     if (page != null) {
       this._entryData.referrerPath = page.route;
     }
   }
   executeAfter() {
-    var page = getCurrentPage();
+    var page = getCurrentPage().vm;
     if (page != null) {
       this._entryData.pageId = parseInt(page.$nativePage.pageId);
       this._entryData.path = page.route;
@@ -2878,7 +3282,7 @@ class PerformanceEntryStatus {
   executeReady() {
   }
   getCurrentInnerPage() {
-    var currentPage = getCurrentPage();
+    var currentPage = getCurrentPage().vm;
     if (currentPage == null) {
       return null;
     }
@@ -3169,7 +3573,7 @@ var callbackId = 1;
 var proxy;
 var keepAliveCallbacks = {};
 function isUniElement(obj) {
-  return typeof obj.getNodeId === "function" && obj.pageId;
+  return obj && typeof obj.getNodeId === "function" && obj.pageId;
 }
 function isComponentPublicInstance(instance) {
   return instance && instance.$ && instance.$.proxy === instance;
@@ -3198,7 +3602,7 @@ function normalizeArg(arg, callbacks, keepAlive) {
       callbacks[id2] = arg;
     }
     return id2;
-  } else if (isPlainObject(arg)) {
+  } else if (isPlainObject(arg) || isUniElement(arg)) {
     var el = parseElement(arg);
     if (el) {
       var nodeId = "";
@@ -3232,16 +3636,6 @@ function getProxy() {
           return nativeChannel.invokeSync("APP-SERVICE", args, callback);
         },
         invokeAsync(args, callback) {
-          if (
-            // 硬编码
-            args.moduleName === "uni-ad" && ["showByJs", "loadByJs"].includes(args.name)
-          ) {
-            var res = nativeChannel.invokeSync("APP-SERVICE", args, callback);
-            callback(extend(res, {
-              params: [res.params]
-            }));
-            return res;
-          }
           return nativeChannel.invokeAsync("APP-SERVICE", args, callback);
         }
       };
@@ -3661,6 +4055,7 @@ const uni$1 = /* @__PURE__ */ Object.defineProperty({
   $once,
   __log__,
   addInterceptor,
+  closeDialogPage,
   createCanvasContextAsync,
   createSelectorQuery,
   env,
@@ -3679,6 +4074,7 @@ const uni$1 = /* @__PURE__ */ Object.defineProperty({
   navigateBack,
   navigateTo,
   onTabBarMidButtonTap,
+  openDialogPage,
   pageScrollTo,
   reLaunch,
   redirectTo,
@@ -5145,6 +5541,7 @@ const pickerView = /* @__PURE__ */ defineBuiltInComponent({
     }, {
       immediate: true
     });
+    provide("pickerViewProps", props);
     var pickerViewElementRef = ref();
     var instance = getCurrentInstance();
     var _pickerViewUpdateHandler = (vm, type) => {
@@ -5233,6 +5630,7 @@ const pickerViewColumn = /* @__PURE__ */ defineBuiltInComponent({
     var indicator = ref();
     var scrollViewRef = ref();
     var contentRef = ref();
+    var pickerViewProps = inject("pickerViewProps");
     var data = reactive({
       height: 0,
       indicatorHeight: 0,
@@ -5244,17 +5642,31 @@ const pickerViewColumn = /* @__PURE__ */ defineBuiltInComponent({
       contentStyle: "",
       _isMounted: false
     });
+    var formatUserStyle = (styleStr) => {
+      var formatUserStyle2 = parseStringStyle(styleStr);
+      if (isString(formatUserStyle2["background-color"]) || isString(formatUserStyle2["background"])) {
+        formatUserStyle2 = Object.assign({}, formatUserStyle2, {
+          backgroundImage: "",
+          background: formatUserStyle2["background-color"] || formatUserStyle2["background"]
+        });
+      }
+      return formatUserStyle2;
+    };
     var contentStyle = computed(() => {
       return Object.assign({}, _style_picker_column["uni-picker-view-content"][""], parseStringStyle(data.contentStyle));
     });
     var maskTopStyle = computed(() => {
-      return Object.assign({}, _style_picker_column["uni-picker-view-mask"][""], _style_picker_column["uni-picker-view-mask-top"][""], parseStringStyle(data.maskTopStyle));
+      var userStyle = formatUserStyle(pickerViewProps.maskTopStyle);
+      var style = Object.assign({}, _style_picker_column["uni-picker-view-mask"][""], _style_picker_column["uni-picker-view-mask-top"][""], parseStringStyle(data.maskTopStyle), userStyle);
+      return style;
     });
     var maskBottomStyle = computed(() => {
-      return Object.assign({}, _style_picker_column["uni-picker-view-mask"][""], _style_picker_column["uni-picker-view-mask-bottom"][""], parseStringStyle(data.maskBottomStyle));
+      var userStyle = formatUserStyle(pickerViewProps.maskBottomStyle);
+      return Object.assign({}, _style_picker_column["uni-picker-view-mask"][""], _style_picker_column["uni-picker-view-mask-bottom"][""], parseStringStyle(data.maskBottomStyle), userStyle);
     });
     var indicatorStyle = computed(() => {
-      return Object.assign({}, _style_picker_column["uni-picker-view-indicator"][""], parseStringStyle(data.indicatorStyle));
+      var val = Object.assign({}, _style_picker_column["uni-picker-view-indicator"][""], parseStringStyle(pickerViewProps.indicatorStyle), parseStringStyle(data.indicatorStyle));
+      return val;
     });
     var styleUniPickerViewColumn = computed(() => {
       return Object.assign({}, _style_picker_column["uni-picker-view-column"][""]);
@@ -5272,7 +5684,7 @@ const pickerViewColumn = /* @__PURE__ */ defineBuiltInComponent({
       var maskPosition = "".concat(data.height - padding, "px");
       data.maskTopStyle += ";bottom:".concat(maskPosition);
       data.maskBottomStyle += ";top:".concat(maskPosition);
-      data.indicatorStyle += ";top:".concat(padding, "px");
+      data.indicatorStyle = ";top:".concat(padding, "px");
       data.contentStyle = "padding-top:".concat(padding, "px;padding-bottom:").concat(padding, "px");
       nextTick(() => {
         if (data.current != 0) {
@@ -5298,13 +5710,13 @@ const pickerViewColumn = /* @__PURE__ */ defineBuiltInComponent({
       data.current = current;
       data.scrollToElementTime = Date.now();
     };
+    var uniResizeObserver = new UniResizeObserver((entries) => {
+      init2();
+    });
     var created = () => {
       var _instance$parent;
       var $parent = (instance === null || instance === void 0 || (_instance$parent = instance.parent) === null || _instance$parent === void 0 ? void 0 : _instance$parent.type.name) === "PickerView" ? instance === null || instance === void 0 ? void 0 : instance.parent : null;
       if ($parent !== null) {
-        data.indicatorStyle = $parent.props["indicatorStyle"];
-        data.maskTopStyle = $parent.props["maskTopStyle"];
-        data.maskBottomStyle = $parent.props["maskBottomStyle"];
         $dispatchParent(instance === null || instance === void 0 ? void 0 : instance.proxy, "PickerView", "_pickerViewUpdateHandler", instance === null || instance === void 0 ? void 0 : instance.proxy, "add");
         data.current = $dispatchParent(instance === null || instance === void 0 ? void 0 : instance.proxy, "PickerView", "getItemValue", instance === null || instance === void 0 ? void 0 : instance.proxy);
       }
@@ -5321,10 +5733,12 @@ const pickerViewColumn = /* @__PURE__ */ defineBuiltInComponent({
         setTimeout(() => {
           data._isMounted = true;
         }, 1e3);
+        uniResizeObserver.observe(pickerColumnRef.value);
       });
     });
     onUnmounted(() => {
       var ctx = instance === null || instance === void 0 ? void 0 : instance.proxy;
+      uniResizeObserver.disconnect();
       $dispatch(ctx, "PickerView", "_pickerViewUpdateHandler", ctx, "remove");
     });
     watch(() => data.current, (val, oldVal) => {

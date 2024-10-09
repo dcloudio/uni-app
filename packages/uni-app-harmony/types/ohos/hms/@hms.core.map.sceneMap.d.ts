@@ -22,15 +22,14 @@ declare namespace sceneMap {
     /**
      * Bring up the map location detail page.
      *
+     * @param {common.UIAbilityContext} context - The context of an ability.
      * @param {LocationQueryOptions} options - Indicates the options for bring up the map location detail page.
-     * @param {UIAbilityContext} context - The context of an ability.
      * @returns {Promise<void>}
      * @throws { BusinessError } 401 - Invalid input parameter.
      * @throws { BusinessError } 1002600001 - System internal error.
      * @throws { BusinessError } 1002600002 - Failed to connect to the Map service.
      * @throws { BusinessError } 1002600003 - App authentication failed.
      * @throws { BusinessError } 1002600004 - The Map permission is not enabled.
-     * @throws { BusinessError } 1002600012 - The country code is not supported.
      * @syscap SystemCapability.Map.Core
      * @stagemodelonly
      * @atomicservice
@@ -40,8 +39,8 @@ declare namespace sceneMap {
     /**
      * Bring up the map choose location page. User can query locations and choose any one.
      *
+     * @param {common.UIAbilityContext} context - The context of an ability.
      * @param {LocationChoosingOptions} options - Indicates the options for bring up the map choose location page.
-     * @param {UIAbilityContext} context - The context of an ability.
      * @returns {Promise<LocationChoosingResult>} Return the choose location result.
      * @throws { BusinessError } 401 - Invalid input parameter.
      * @throws { BusinessError } 1002600001 - System internal error.
@@ -65,6 +64,7 @@ declare namespace sceneMap {
      * @throws { BusinessError } 1002600002 - Failed to connect to the Map service.
      * @throws { BusinessError } 1002600003 - App authentication failed.
      * @throws { BusinessError } 1002600004 - The Map permission is not enabled.
+     * @throws { BusinessError } 1002600012 - The country code is not supported.
      * @syscap SystemCapability.Map.Core
      * @stagemodelonly
      * @atomicservice
@@ -74,6 +74,7 @@ declare namespace sceneMap {
     /**
      * Provides the options for bring up the map location detail page.
      *
+     * @typedef LocationQueryOptions
      * @syscap SystemCapability.Map.Core
      * @stagemodelonly
      * @atomicservice
@@ -146,6 +147,7 @@ declare namespace sceneMap {
     /**
      * Provides the options for bring up the map choose location page.
      *
+     * @typedef LocationChoosingOptions
      * @syscap SystemCapability.Map.Core
      * @stagemodelonly
      * @atomicservice
@@ -222,6 +224,7 @@ declare namespace sceneMap {
     /**
      * Provides the result of the map choose location page.
      *
+     * @typedef LocationChoosingResult
      * @syscap SystemCapability.Map.Core
      * @stagemodelonly
      * @atomicservice
@@ -302,6 +305,7 @@ declare namespace sceneMap {
     /**
      * Provide input options for the administrative division selection request.
      *
+     * @typedef DistrictSelectOptions
      * @syscap SystemCapability.Map.Core
      * @stagemodelonly
      * @atomicservice
@@ -333,6 +337,7 @@ declare namespace sceneMap {
     /**
      * Provide the result for the administrative division selection request.
      *
+     * @typedef DistrictSelectResult
      * @syscap SystemCapability.Map.Core
      * @stagemodelonly
      * @atomicservice
@@ -353,6 +358,7 @@ declare namespace sceneMap {
     /**
      * Provide the administrative division info.
      *
+     * @typedef District
      * @syscap SystemCapability.Map.Core
      * @stagemodelonly
      * @atomicservice
