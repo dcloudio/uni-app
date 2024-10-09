@@ -6,7 +6,7 @@ import * as _uts_transforms_base from '@uts/transforms_base';
 
 declare function isTypeRelatedTo(ts: typeof tsTypes, typeChecker: tsTypes.TypeChecker, source: tsTypes.Type, target: tsTypes.Type): true | undefined;
 
-declare function isRelatedTo(ts: typeof tsTypes, checker: tsTypes.TypeChecker, source: tsTypes.Type, target: tsTypes.Type): true | undefined;
+declare function isRelatedTo(ts: typeof tsTypes__default, checker: tsTypes__default.TypeChecker, source: tsTypes__default.Type, target: tsTypes__default.Type): true | undefined;
 
 declare function filterReferencedByPaths(referencedFilePath: tsTypes__default.Path, keys: Set<tsTypes__default.Path> | undefined): void;
 
