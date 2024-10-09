@@ -50,6 +50,7 @@ declare module '@vue/runtime-core' {
     // mp
     $updateScopedSlots: () => void
     $scopedSlotsData?: { path: string; index: number; data: Data }[]
+    $currentSlotComponentInstance?: ComponentInternalInstance
     // h5 | app
     $wxsModules?: string[]
     // 暂定 h5
