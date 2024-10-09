@@ -104,14 +104,14 @@
       "null"
     ]
   },
-  "uni-map-tencent": {
-    "createMapContext": [
+  "uni-video": {
+    "createVideoContext": [
       null,
       "null"
     ]
   },
-  "uni-video": {
-    "createVideoContext": [
+  "uni-createMapContext": {
+    "createMapContext": [
       null,
       "null"
     ]
