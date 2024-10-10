@@ -77,7 +77,7 @@ class PerformanceEntryStatus {
   }
 
   executeBefore() {
-    const page = (getCurrentPage() as unknown as UniPage).vm
+    const page = (getCurrentPage() as unknown as UniPage)?.vm
     if (page != null) {
       this._entryData.referrerPath = page.route!
     }
