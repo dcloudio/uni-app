@@ -46,13 +46,19 @@ function getShadowCdn () {
 }
 
 let appid
+let platformAppId
 
-function createIdent () {
+function createIdent (platform) {
   if (process.env.UNI_INPUT_DIR) {
     if (typeof appid === 'undefined') {
-      appid = getManifestJson().appid || ''
+      const manifestJson = getManifestJson()
+      appid = manifestJson.appid || ''
+      platformAppId = manifestJson[platform]?.appid
     }
-    const id = appid.replace('__UNI__', '')
+    let id = appid.replace('__UNI__', '')
+    if (platformAppId) {
+      id += '%%' + platformAppId
+    }
     if (id) {
       return Buffer.from(Buffer.from(id).toString('base64')).toString('hex')
     }
@@ -63,7 +69,7 @@ function createIdent () {
 function createShadowImageUrl (cdn, type = 'grey') {
   let identStr = ''
   if (process.env.UNI_PLATFORM !== 'h5' && process.env.UNI_PLATFORM !== 'web') {
-    const ident = createIdent()
+    const ident = createIdent(process.env.UNI_PLATFORM)
     identStr = ident ? `${ident}/` : ''
   }
   return `https://cdn${cdn || ''}.dcloud.net.cn/${identStr}img/shadow-${type}.png`
