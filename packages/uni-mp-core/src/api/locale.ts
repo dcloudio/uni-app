@@ -1,13 +1,16 @@
 import { LOCALE_EN, normalizeLocale } from '@dcloudio/uni-i18n'
 import { isFunction } from '@vue/shared'
-
+import { getBaseSystemInfo } from '@dcloudio/uni-platform'
 export const getLocale: typeof uni.getLocale = () => {
   // 优先使用 $locale
   const app = isFunction(getApp) && getApp({ allowDefault: true })
   if (app && app.$vm) {
     return app.$vm.$locale
   }
-  return normalizeLocale(__GLOBAL__.getSystemInfoSync().language) || LOCALE_EN
+  return (
+    normalizeLocale((getBaseSystemInfo as any)('language').language) ||
+    LOCALE_EN
+  )
 }
 
 export const setLocale: typeof uni.setLocale = (locale) => {
