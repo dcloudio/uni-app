@@ -43,6 +43,57 @@ export const transformIdentifier: NodeTransform = (node, context) => {
           !isSymbol(firstChild) &&
           firstChild.type === NodeTypes.SIMPLE_EXPRESSION &&
           context.filters.includes(firstChild.content)
+
+        if (isFilter) {
+          const contentStr = content.children
+            .map((child) => {
+              if (typeof child === 'string') {
+                return child
+              } else if (isSymbol(child)) {
+                throw new Error('Symbol not supported')
+              } else if (
+                'type' in child &&
+                child.type === NodeTypes.SIMPLE_EXPRESSION
+              ) {
+                return child.content
+              } else {
+                throw new Error('not supported argument')
+              }
+            })
+            .join('')
+          const lhs = contentStr.substring(0, contentStr.indexOf('('))
+          let isLiteral = false
+          for (let i = lhs.length + 1; i < contentStr.length; i++) {
+            if (contentStr[i] === ' ') {
+              continue
+            }
+            if (contentStr[i] === '{' || contentStr[i] === '[') {
+              isLiteral = true
+              break
+            }
+            break
+          }
+
+          const paramStr = contentStr.substring(
+            contentStr.indexOf('(') + 1,
+            contentStr.indexOf(')')
+          )
+          const rewriteParams = isLiteral
+            ? [rewriteExpression(createCompoundExpression([paramStr]), context)]
+            : paramStr
+                .split(',')
+                .filter((p) => p.trim().length != 0)
+                .map((param) => {
+                  return rewriteExpression(
+                    createCompoundExpression([param]),
+                    context
+                  )
+                })
+          node.content = rewriteExpression(
+            createCompoundExpression([lhs, '(', ...rewriteParams, ')']),
+            context
+          )
+        }
       }
       if (!isFilter) {
         node.content = rewriteExpression(
