@@ -172,10 +172,10 @@ declare global {
   class UTSSourceMapPosition<
     name = string,
     fileName = string,
-    line = number,
-    column = number
+    line = Int,
+    column = Int
   > {
-    constructor(name: name, fileName: fileName, line: line, column: column)
+    constructor(name: name, fileName: fileName, line: Int, column: Int)
   }
   namespace uts {
     namespace sdk {

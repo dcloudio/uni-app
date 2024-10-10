@@ -964,10 +964,14 @@ export function isNormalCompileTarget() {
 let enableUtsNumber: boolean
 export function isEnableUTSNumber() {
   if (enableUtsNumber === undefined) {
-    enableUtsNumber = !!(
-      process.env.UNI_INPUT_DIR &&
-      fs.existsSync(path.resolve(process.env.UNI_INPUT_DIR, 'UTSNUMBER'))
-    )
+    if (process.env.UNI_APP_X_ENABLE_UTS_NUMBER === 'true') {
+      enableUtsNumber = true
+    } else {
+      enableUtsNumber = !!(
+        process.env.UNI_INPUT_DIR &&
+        fs.existsSync(path.resolve(process.env.UNI_INPUT_DIR, 'UTSNUMBER'))
+      )
+    }
   }
   return enableUtsNumber
 }
