@@ -248,10 +248,14 @@ export function normalizeEmitAssetFileName(fileName: string) {
   return fileName
 }
 
-function createIdent() {
+function createIdent(platform: UniApp.PLATFORM) {
   if (process.env.UNI_INPUT_DIR) {
     const manifestJson = parseManifestJsonOnce(process.env.UNI_INPUT_DIR)
-    const id = (manifestJson.appid || '').replace('__UNI__', '')
+    let id = (manifestJson.appid || '').replace('__UNI__', '')
+    const platformAppId = manifestJson[platform]?.appid
+    if (platformAppId) {
+      id += '%%' + platformAppId
+    }
     if (id) {
       return Buffer.from(Buffer.from(id).toString('base64')).toString('hex')
     }
@@ -262,7 +266,7 @@ function createIdent() {
 export function createShadowImageUrl(cdn: number, type: string = 'grey') {
   let identStr = ''
   if (process.env.UNI_PLATFORM !== 'h5' && process.env.UNI_PLATFORM !== 'web') {
-    const ident = createIdent()
+    const ident = createIdent(process.env.UNI_PLATFORM)
     identStr = ident ? `${ident}/` : ''
   }
   return `https://cdn${
