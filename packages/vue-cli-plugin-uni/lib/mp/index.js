@@ -27,7 +27,7 @@ function createUniMPPlugin () {
   return new WebpackUniMPPlugin()
 }
 
-const createWxMpIndependentPlugins = require('@dcloudio/uni-mp-weixin/lib/createIndependentPlugin')
+const createWxMpPlugins = require('@dcloudio/uni-mp-weixin/lib/index')
 
 const UniTips = require('./tips')
 
@@ -192,7 +192,7 @@ module.exports = {
       new WebpackUniAppPlugin(),
       createUniMPPlugin(),
       new webpack.ProvidePlugin(getProvides()),
-      ...createWxMpIndependentPlugins()
+      ...createWxMpPlugins()
     ]
 
     if ((process.env.UNI_SUBPACKGE || process.env.UNI_MP_PLUGIN) && process.env.UNI_SUBPACKGE !== 'main') {
