@@ -13124,9 +13124,10 @@ const navigateBack = defineAsyncApi(API_NAVIGATE_BACK, (args, { resolve, reject 
     })) {
         return resolve();
     }
-    if (uni.hideToast) {
-        uni.hideToast();
-    }
+    // TODO 鸿蒙不支持hideToast方法
+    // if (uni.hideToast) {
+    //   uni.hideToast()
+    // }
     if (uni.hideLoading) {
         uni.hideLoading();
     }
