@@ -33,9 +33,27 @@ import { parseManifestJsonOnce } from '../../../json'
 import { emptyDir } from '../../../fs'
 import { initScopedPreContext } from '../../../preprocess/context'
 import { isInHBuilderX } from '../../../hbx'
+import { rewriteConsoleExpr } from '../../../logs/console'
 
 /* eslint-disable no-restricted-globals */
 const { preprocess } = require('../../../../lib/preprocess')
+
+function rewriteUniModulesConsoleExpr(fileName: string, content: string) {
+  // 仅开发模式补充console.log的at信息
+  if (process.env.NODE_ENV !== 'development') {
+    return content
+  }
+  if (content.includes('console.')) {
+    return rewriteConsoleExpr(
+      '',
+      '',
+      normalizePath(path.relative(process.env.UNI_INPUT_DIR, fileName)),
+      content,
+      false
+    ).code
+  }
+  return content
+}
 
 function createUniModulesSyncFilePreprocessor(
   platform: UniApp.PLATFORM,
@@ -76,9 +94,9 @@ function createUniModulesSyncFilePreprocessor(
         preferConst: true,
       })
     } else if (extname === '.uts' || extname === '.ts') {
-      return preJs(content)
+      return rewriteUniModulesConsoleExpr(fileName, preJs(content))
     } else if (extname === '.uvue' || extname === '.vue') {
-      return preJs(preHtml(content))
+      return rewriteUniModulesConsoleExpr(fileName, preJs(preHtml(content)))
     }
     return content
   }
