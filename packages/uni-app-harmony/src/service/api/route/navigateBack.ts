@@ -41,9 +41,10 @@ export const navigateBack = defineAsyncApi<API_TYPE_NAVIGATE_BACK>(
     ) {
       return resolve()
     }
-    if (uni.hideToast) {
-      uni.hideToast()
-    }
+    // TODO 鸿蒙不支持hideToast方法
+    // if (uni.hideToast) {
+    //   uni.hideToast()
+    // }
     if (uni.hideLoading) {
       uni.hideLoading()
     }
