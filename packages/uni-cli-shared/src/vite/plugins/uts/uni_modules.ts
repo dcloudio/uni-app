@@ -45,7 +45,7 @@ function rewriteUniModulesConsoleExpr(fileName: string, content: string) {
   }
   if (content.includes('console.')) {
     return rewriteConsoleExpr(
-      '',
+      '__f__',
       '',
       normalizePath(path.relative(process.env.UNI_INPUT_DIR, fileName)),
       content,

@@ -15,20 +15,12 @@ export function rewriteConsoleExpr(
   const s = new MagicString(code)
   let match: RegExpExecArray | null
   while ((match = re.exec(code))) {
-    const [str, expr, type] = match
-    if (method) {
-      s.overwrite(
-        match.index,
-        match.index + expr.length + 1,
-        method + `('${type}','at ${filename}:${locate(match.index).line + 1}',`
-      )
-    } else {
-      // 如果没有指定method，则在console.log等方法最后增加at参数
-      s.appendRight(
-        match.index + str.length - 1,
-        `, " at ${filename}:${locate(match.index).line + 1}"`
-      )
-    }
+    const [, expr, type] = match
+    s.overwrite(
+      match.index,
+      match.index + expr.length + 1,
+      method + `('${type}','at ${filename}:${locate(match.index).line + 1}',`
+    )
   }
   if (s.hasChanged()) {
     return {
