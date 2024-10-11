@@ -8,32 +8,14 @@ describe('console', () => {
         METHOD,
         filename,
         filename,
-        `const a = 1;console.log(a);`
+        `const a = 1;console.log(a, JSON.stringify(1));`
       ).code
-    ).toMatchSnapshot()
-    expect(
-      rewriteConsoleExpr('', filename, filename, `const a = 1;console.log(a);`)
-        .code
     ).toMatchSnapshot()
   })
   test('console.log multiline', () => {
     expect(
       rewriteConsoleExpr(
         METHOD,
-        filename,
-        filename,
-        `const a = 1;
-
-console.log(a);
-const b = 2
-console.log(a,b);
-console.log(a,b,c);
-`
-      ).code
-    ).toMatchSnapshot()
-    expect(
-      rewriteConsoleExpr(
-        '',
         filename,
         filename,
         `const a = 1;

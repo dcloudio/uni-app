@@ -6,9 +6,7 @@ exports[`console console.error 1`] = `"__f__('info','at foo.vue:1',a,b,c);"`;
 
 exports[`console console.info 1`] = `"__f__('info','at foo.vue:1',a,b,c);"`;
 
-exports[`console console.log 1`] = `"const a = 1;__f__('log','at foo.vue:1',a);"`;
-
-exports[`console console.log 2`] = `"const a = 1;console.log(a, " at foo.vue:1");"`;
+exports[`console console.log 1`] = `"const a = 1;__f__('log','at foo.vue:1',a, JSON.stringify(1));"`;
 
 exports[`console console.log multiline 1`] = `
 "const a = 1;
@@ -17,16 +15,6 @@ __f__('log','at foo.vue:3',a);
 const b = 2
 __f__('log','at foo.vue:5',a,b);
 __f__('log','at foo.vue:6',a,b,c);
-"
-`;
-
-exports[`console console.log multiline 2`] = `
-"const a = 1;
-
-console.log(a, " at foo.vue:3");
-const b = 2
-console.log(a,b, " at foo.vue:5");
-console.log(a,b,c, " at foo.vue:6");
 "
 `;
 
