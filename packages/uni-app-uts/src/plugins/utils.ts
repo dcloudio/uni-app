@@ -1,5 +1,8 @@
 import path from 'node:path'
-import { isAppIOSUVueNativeTag } from '@dcloudio/uni-shared'
+import {
+  isAppIOSUVueNativeTag,
+  isAppUVueBuiltInEasyComponent,
+} from '@dcloudio/uni-shared'
 import {
   MANIFEST_JSON_UTS,
   PAGES_JSON_UTS,
@@ -77,7 +80,9 @@ export function createUniOptions(
                 // 收集可能的 extApiComponents
                 if (
                   node.type === NodeTypes.ELEMENT &&
-                  node.tagType === ElementTypes.ELEMENT
+                  (node.tagType === ElementTypes.ELEMENT ||
+                    (node.tagType === ElementTypes.COMPONENT &&
+                      isAppUVueBuiltInEasyComponent(node.tag)))
                 ) {
                   if (!parseUTSComponent(node.tag, 'swift')) {
                     addExtApiComponents([node.tag])
