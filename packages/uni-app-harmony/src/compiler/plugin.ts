@@ -141,7 +141,7 @@ const SupportedProviderService = {
 function getRelatedProviders(inputDir: string): IRelatedProvider[] {
   const manifest = parseManifestJsonOnce(inputDir)
   const providers: IRelatedProvider[] = []
-  const manifestModules = manifest?.['app-harmony']?.modules
+  const manifestModules = manifest?.['app-harmony']?.distribute?.modules
   if (!manifestModules) {
     return providers
   }
@@ -185,7 +185,7 @@ const SupportedModules = {
 function getRelatedModules(inputDir: string): string[] {
   const manifest = parseManifestJsonOnce(inputDir)
   const modules: string[] = []
-  const manifestModules = manifest?.['app-harmony']?.modules
+  const manifestModules = manifest?.['app-harmony']?.distribute?.modules
   if (!manifestModules) {
     return modules
   }
