@@ -40,7 +40,7 @@ function getProvides (isAppService) {
       Behavior: [runtimePath, 'Behavior'],
       getDate: [wxsPath, 'getDate'],
       getRegExp: [wxsPath, 'getRegExp'],
-      uniCloud: [uniCloudPath, 'default'],
+      uniCloud: [uniCloudPath, 'uniCloud'],
       crypto: [cryptoPath, 'default'],
       'window.crypto': [cryptoPath, 'default'],
       'global.crypto': [cryptoPath, 'default']

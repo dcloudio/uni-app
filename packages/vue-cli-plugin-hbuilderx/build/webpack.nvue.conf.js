@@ -50,7 +50,7 @@ const uniPath = process.env.UNI_USING_V8
 const uniCloudPath = require.resolve('@dcloudio/vue-cli-plugin-uni/packages/uni-cloud/dist/index.js')
 
 const provide = {
-  uniCloud: [uniCloudPath, 'default']
+  uniCloud: [uniCloudPath, 'uniCloud']
 }
 
 if (

@@ -36,7 +36,7 @@ function getProvides () {
   const uniCloudPath = path.resolve(__dirname, '../../packages/uni-cloud/dist/index.js')
   const provides = {
     uni: [uniPath, 'default'],
-    uniCloud: [uniCloudPath, 'default']
+    uniCloud: [uniCloudPath, 'uniCloud']
   }
 
   if (process.env.UNI_USING_VUE3) {
