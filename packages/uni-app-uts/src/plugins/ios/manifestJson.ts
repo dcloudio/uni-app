@@ -76,14 +76,17 @@ export function uniAppManifestPlugin(): Plugin {
             })
           }
         })
-        if (uniExtApis.size) {
+        const extApiComponents = getExtApiComponents()
+        if (uniExtApis.size || extApiComponents.size) {
           const modules = resolveUTSCompiler().parseInjectModules(
             [...uniExtApis],
             {},
-            [...getExtApiComponents()]
+            [...extApiComponents]
           )
-          // 执行了摇树逻辑，就需要设置 modules 节点
-          updateManifestModules(manifest, modules)
+          if (modules.length) {
+            // 执行了摇树逻辑，就需要设置 modules 节点
+            updateManifestModules(manifest, modules)
+          }
         }
       }
 

@@ -212,8 +212,16 @@ const NVUE_CUSTOM_COMPONENTS = [
     'picker-view',
     'picker-view-column',
 ];
+// 内置的easycom组件
+const UVUE_BUILT_IN_EASY_COMPONENTS = ['map'];
+function isAppUVueBuiltInEasyComponent(tag) {
+    return UVUE_BUILT_IN_EASY_COMPONENTS.includes(tag);
+}
 // 主要是指前端实现的组件列表
-const UVUE_CUSTOM_COMPONENTS = [...NVUE_CUSTOM_COMPONENTS, 'map'];
+const UVUE_CUSTOM_COMPONENTS = [
+    ...NVUE_CUSTOM_COMPONENTS,
+    ...UVUE_BUILT_IN_EASY_COMPONENTS,
+];
 function isAppUVueNativeTag(tag) {
     // 前端实现的内置组件都会注册一个根组件
     if (tag.startsWith('uni-') && tag.endsWith('-element')) {
@@ -1762,6 +1770,7 @@ exports.invokeCreateVueAppHook = invokeCreateVueAppHook;
 exports.isAppIOSUVueNativeTag = isAppIOSUVueNativeTag;
 exports.isAppNVueNativeTag = isAppNVueNativeTag;
 exports.isAppNativeTag = isAppNativeTag;
+exports.isAppUVueBuiltInEasyComponent = isAppUVueBuiltInEasyComponent;
 exports.isAppUVueNativeTag = isAppUVueNativeTag;
 exports.isBuiltInComponent = isBuiltInComponent;
 exports.isComponentInternalInstance = isComponentInternalInstance;

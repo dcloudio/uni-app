@@ -808,7 +808,11 @@ export type Define =
 export function normalizeExtApiModules(json: Record<string, any>) {
   const res: Record<string, string> = {}
   Object.keys(json).forEach((module) => {
-    const options = json[module] as { uni?: Define; components?: string[] }
+    const options = json[module] as {
+      uni?: Define
+      components?: string[]
+      easycom: string[]
+    }
     if (isPlainObject(options)) {
       if (options.uni) {
         const uniApis = options.uni
@@ -826,6 +830,11 @@ export function normalizeExtApiModules(json: Record<string, any>) {
       }
       if (isArray(options.components)) {
         options.components.forEach((component) => {
+          res['component.' + component] = module
+        })
+      }
+      if (isArray(options.easycom)) {
+        options.easycom.forEach((component) => {
           res['component.' + component] = module
         })
       }
