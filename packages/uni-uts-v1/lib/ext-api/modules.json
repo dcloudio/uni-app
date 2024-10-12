@@ -413,7 +413,9 @@
         }
       }
     },
-    "easycom":["map"]
+    "easycom": [
+      "map"
+    ]
   },
   "uni-media": {
     "uni": {
