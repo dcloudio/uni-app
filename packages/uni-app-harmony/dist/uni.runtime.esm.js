@@ -11098,6 +11098,20 @@ const setLocale = defineSyncApi(API_SET_LOCALE, (locale) => {
     return false;
 });
 
+const API_SET_BACKGROUND_COLOR = 'setBackgroundColor';
+const SetBackgroundColorProtocol = {
+    backgroundColor: {
+        type: String
+    },
+};
+const API_SET_BACKGROUND_TEXT_STYLE = 'setBackgroundTextStyle';
+const SetBackgroundTextStyleProtocol = {
+    textStyle: {
+        type: String,
+        required: true
+    },
+};
+
 const API_GET_SELECTED_TEXT_RANGE = 'getSelectedTextRange';
 
 const getSelectedTextRange = defineAsyncApi(API_GET_SELECTED_TEXT_RANGE, (_, { resolve, reject }) => {
@@ -11998,6 +12012,48 @@ const setNavigationBarColor = defineAsyncApi(API_SET_NAVIGATION_BAR_COLOR, ({ __
         reject();
     }
 }, SetNavigationBarColorProtocol, SetNavigationBarColorOptions);
+
+const setBackgroundColor = defineAsyncApi(API_SET_BACKGROUND_COLOR, ({ __page__, backgroundColor }, { resolve, reject }) => {
+    if (isString(backgroundColor)) {
+        const webview = getWebview(__page__);
+        if (webview) {
+            const style = webview.getStyle();
+            if (style && style.titleNView) {
+                webview.setStyle({
+                    background: backgroundColor
+                });
+            }
+            resolve();
+        }
+        else {
+            reject();
+        }
+    }
+    else {
+        reject('options backgroundColor must be a string');
+    }
+}, SetBackgroundColorProtocol);
+const setBackgroundTextStyle = defineAsyncApi(API_SET_BACKGROUND_TEXT_STYLE, ({ __page__, textStyle }, { resolve, reject }) => {
+    if (isString(textStyle)) {
+        const webview = getWebview(__page__);
+        if (webview) {
+            const style = webview.getStyle();
+            if (style && style.titleNView) {
+                webview.setStyle({
+                    // @ts-expect-error
+                    backgroundTextStyle: textStyle
+                });
+            }
+            resolve();
+        }
+        else {
+            reject();
+        }
+    }
+    else {
+        reject('options textStyle must be a string');
+    }
+}, SetBackgroundTextStyleProtocol);
 
 function onKeyboardHeightChangeCallback(res) {
     UniServiceJSBridge.invokeOnCallback(ON_KEYBOARD_HEIGHT_CHANGE, res);
@@ -13733,6 +13789,8 @@ var uni$1 = {
   redirectTo: redirectTo,
   removeInterceptor: removeInterceptor,
   removeTabBarBadge: removeTabBarBadge,
+  setBackgroundColor: setBackgroundColor,
+  setBackgroundTextStyle: setBackgroundTextStyle,
   setLocale: setLocale,
   setNavigationBarColor: setNavigationBarColor,
   setNavigationBarTitle: setNavigationBarTitle,
