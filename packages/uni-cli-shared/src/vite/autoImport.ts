@@ -86,7 +86,7 @@ const uniH5Preset = {
   ],
 }
 const cloudPreset = {
-  '@dcloudio/uni-cloud': [['default', 'uniCloud'], 'UniCloudError'],
+  '@dcloudio/uni-cloud': ['uniCloud', 'UniCloudError'],
 }
 
 const vuePreset = {
