@@ -1,4 +1,4 @@
-interface IJsonStringify {
+interface IJSONStringify {
     toJSON():any
 }
 

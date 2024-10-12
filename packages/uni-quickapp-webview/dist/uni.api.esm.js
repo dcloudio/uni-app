@@ -1,9 +1,9 @@
 import { isArray, hasOwn, isString, isPlainObject, isObject, capitalize, toRawType, makeMap, isFunction, isPromise, extend, remove } from '@vue/shared';
 import { normalizeLocale, LOCALE_EN } from '@dcloudio/uni-i18n';
-import { Emitter, sortObject, onCreateVueApp, invokeCreateVueAppHook } from '@dcloudio/uni-shared';
+import { Emitter, onCreateVueApp, invokeCreateVueAppHook } from '@dcloudio/uni-shared';
 
 function getBaseSystemInfo() {
-    return wx.getSystemInfoSync();
+    return qa.getSystemInfoSync();
 }
 
 function validateProtocolFail(name, msg) {
@@ -781,7 +781,7 @@ function initWrapper(protocols) {
                     }
                     if (!keyOption) {
                         // 不支持的参数
-                        console.warn(`微信小程序 ${methodName} 暂不支持 ${key}`);
+                        console.warn(`快应用(Webview)版 ${methodName} 暂不支持 ${key}`);
                     }
                     else if (isString(keyOption)) {
                         // 重写参数 key
@@ -826,7 +826,7 @@ function initWrapper(protocols) {
         if (!protocol) {
             // 暂不支持的 api
             return function () {
-                console.error(`微信小程序 暂不支持${methodName}`);
+                console.error(`快应用(Webview)版 暂不支持${methodName}`);
             };
         }
         return function (arg1, arg2) {
@@ -840,7 +840,7 @@ function initWrapper(protocols) {
             if (typeof arg2 !== 'undefined') {
                 args.push(arg2);
             }
-            const returnValue = wx[options.name || methodName].apply(wx, args);
+            const returnValue = qa[options.name || methodName].apply(qa, args);
             if (isSyncApi(methodName)) {
                 // 同步 api
                 return processReturnValue(methodName, returnValue, options.returnValue, isContextApi(methodName));
@@ -856,7 +856,7 @@ const getLocale = () => {
     if (app && app.$vm) {
         return app.$vm.$locale;
     }
-    return normalizeLocale(wx.getSystemInfoSync().language) || LOCALE_EN;
+    return normalizeLocale(qa.getSystemInfoSync().language) || LOCALE_EN;
 };
 const setLocale = (locale) => {
     const app = isFunction(getApp) && getApp();
@@ -883,12 +883,12 @@ if (typeof global !== 'undefined') {
 
 const UUID_KEY = '__DC_STAT_UUID';
 let deviceId;
-function useDeviceId(global = wx) {
+function useDeviceId(global = qa) {
     return function addDeviceId(_, toRes) {
         deviceId = deviceId || global.getStorageSync(UUID_KEY);
         if (!deviceId) {
             deviceId = Date.now() + '' + Math.floor(Math.random() * 1e7);
-            wx.setStorage({
+            qa.setStorage({
                 key: UUID_KEY,
                 data: deviceId,
             });
@@ -909,7 +909,7 @@ function addSafeAreaInsets(fromRes, toRes) {
 }
 function populateParameters(fromRes, toRes) {
     const { brand = '', model = '', system = '', language = '', theme, version, platform, fontSizeSetting, SDKVersion, pixelRatio, deviceOrientation, } = fromRes;
-    // const isQuickApp = "mp-weixin".indexOf('quickapp-webview') !== -1
+    // const isQuickApp = "quickapp-webview".indexOf('quickapp-webview') !== -1
     // osName osVersion
     let osName = '';
     let osVersion = '';
@@ -1000,16 +1000,8 @@ function getAppLanguage(defaultLanguage) {
     return getLocale ? getLocale() : defaultLanguage;
 }
 function getHostName(fromRes) {
-    const _platform = 'WeChat' ;
+    const _platform = "quickapp-webview".split('-')[1];
     let _hostName = fromRes.hostName || _platform; // mp-jd
-    {
-        if (fromRes.environment) {
-            _hostName = fromRes.environment;
-        }
-        else if (fromRes.host && fromRes.host.env) {
-            _hostName = fromRes.host.env;
-        }
-    }
     return _hostName;
 }
 
@@ -1059,67 +1051,38 @@ const previewImage = {
     },
 };
 
-const showActionSheet = {
-    args(fromArgs, toArgs) {
-        toArgs.alertText = fromArgs.title;
-    },
-};
-
-const getDeviceInfo = {
-    returnValue: (fromRes, toRes) => {
-        const { brand, model } = fromRes;
-        let deviceType = getGetDeviceType(fromRes, model);
-        let deviceBrand = getDeviceBrand(brand);
-        useDeviceId()(fromRes, toRes);
-        toRes = sortObject(extend(toRes, {
-            deviceType,
-            deviceBrand,
-            deviceModel: model,
-        }));
-    },
-};
-
-const getAppBaseInfo = {
-    returnValue: (fromRes, toRes) => {
-        const { version, language, SDKVersion, theme } = fromRes;
-        let _hostName = getHostName(fromRes);
-        let hostLanguage = language.replace(/_/g, '-');
-        toRes = sortObject(extend(toRes, {
-            hostVersion: version,
-            hostLanguage,
-            hostName: _hostName,
-            hostSDKVersion: SDKVersion,
-            hostTheme: theme,
-            appId: process.env.UNI_APP_ID,
-            appName: process.env.UNI_APP_NAME,
-            appVersion: process.env.UNI_APP_VERSION_NAME,
-            appVersionCode: process.env.UNI_APP_VERSION_CODE,
-            appLanguage: getAppLanguage(hostLanguage),
-        }));
-    },
-};
-
-const getWindowInfo = {
-    returnValue: (fromRes, toRes) => {
-        addSafeAreaInsets(fromRes, toRes);
-        toRes = sortObject(extend(toRes, {
-            windowTop: 0,
-            windowBottom: 0,
-        }));
-    },
-};
-
-const getAppAuthorizeSetting = {
-    returnValue: function (fromRes, toRes) {
-        const { locationReducedAccuracy } = fromRes;
-        toRes.locationAccuracy = 'unsupported';
-        if (locationReducedAccuracy === true) {
-            toRes.locationAccuracy = 'reduced';
-        }
-        else if (locationReducedAccuracy === false) {
-            toRes.locationAccuracy = 'full';
-        }
-    },
+const eventChannels = {};
+let id = 0;
+function initEventChannel(events, cache = true) {
+    id++;
+    const eventChannel = new qa.EventChannel(id, events);
+    if (cache) {
+        eventChannels[id] = eventChannel;
+    }
+    return eventChannel;
+}
+function getEventChannel(id) {
+    const eventChannel = eventChannels[id];
+    delete eventChannels[id];
+    return eventChannel;
+}
+const navigateTo$1 = () => {
+    let eventChannel;
+    return {
+        args(fromArgs) {
+            eventChannel = initEventChannel(fromArgs.events);
+            if (fromArgs.url) {
+                fromArgs.url =
+                    fromArgs.url +
+                        (fromArgs.url.indexOf('?') === -1 ? '?' : '&') +
+                        '__id__=' +
+                        eventChannel.id;
+            }
+        },
+        returnValue(fromRes) {
+            fromRes.eventChannel = eventChannel;
+        },
+    };
 };
 
 const baseApis = {
@@ -1141,7 +1104,7 @@ const baseApis = {
     offPushMessage,
     invokePushCallback,
 };
-function initUni(api, protocols, platform = wx) {
+function initUni(api, protocols, platform = qa) {
     const wrapper = initWrapper(protocols);
     const UniProxyHandlers = {
         get(target, key) {
@@ -1159,6 +1122,10 @@ function initUni(api, protocols, platform = wx) {
             return promisify(key, wrapper(key, platform[key]));
         },
     };
+    // 处理 api mp 打包后为不同js，getEventChannel 无法共享问题
+    {
+        platform.getEventChannel = getEventChannel;
+    }
     return new Proxy({}, UniProxyHandlers);
 }
 
@@ -1183,121 +1150,36 @@ function initGetProvider(providers) {
     };
 }
 
-const objectKeys = [
-    'qy',
-    'env',
-    'error',
-    'version',
-    'lanDebug',
-    'cloud',
-    'serviceMarket',
-    'router',
-    'worklet',
-    '__webpack_require_UNI_MP_PLUGIN__',
-];
-const singlePageDisableKey = ['lanDebug', 'router', 'worklet'];
-const launchOption = wx.getLaunchOptionsSync
-    ? wx.getLaunchOptionsSync()
-    : null;
-function isWxKey(key) {
-    if (launchOption &&
-        launchOption.scene === 1154 &&
-        singlePageDisableKey.includes(key)) {
-        return false;
-    }
-    return objectKeys.indexOf(key) > -1 || typeof wx[key] === 'function';
+const providers = {
+    oauth: [],
+    share: [],
+    payment: [],
+    push: [],
+};
+if (qa.canIUse('getAccountProvider')) {
+    providers.oauth.push(qa.getAccountProvider());
 }
-function initWx() {
-    const newWx = {};
-    for (const key in wx) {
-        if (isWxKey(key)) {
-            // TODO wrapper function
-            newWx[key] = wx[key];
-        }
-    }
-    if (typeof globalThis !== 'undefined' &&
-        typeof requireMiniProgram === 'undefined') {
-        globalThis.wx = newWx;
-    }
-    return newWx;
+if (qa.canIUse('getVendorPaymentProvider')) {
+    providers.payment.push(qa.getVendorPaymentProvider());
 }
-
-const mocks = ['__route__', '__wxExparserNodeId__', '__wxWebviewId__'];
-
-const getProvider = initGetProvider({
-    oauth: ['weixin'],
-    share: ['weixin'],
-    payment: ['wxpay'],
-    push: ['weixin'],
-});
-function initComponentMocks(component) {
-    const res = Object.create(null);
-    mocks.forEach((name) => {
-        res[name] = component[name];
-    });
-    return res;
-}
-/**
- * 微信小程序内部会 Object.keys(vm)，导致告警
- * Avoid app logic that relies on enumerating keys on a component instance. The keys will be empty in production mode to avoid performance overhead.
- * @returns
- */
-function createSelectorQuery() {
-    const query = wx$2.createSelectorQuery();
-    const oldIn = query.in;
-    query.in = function newIn(component) {
-        return oldIn.call(this, initComponentMocks(component));
-    };
-    return query;
-}
-const wx$2 = initWx();
-let baseInfo = wx$2.getAppBaseInfo && wx$2.getAppBaseInfo();
-if (!baseInfo) {
-    baseInfo = wx$2.getSystemInfoSync();
-}
-const host = baseInfo ? baseInfo.host : null;
-const shareVideoMessage = host && host.env === 'SAAASDK'
-    ? wx$2.miniapp.shareVideoMessage
-    : wx$2.shareVideoMessage;
+const getProvider = initGetProvider(providers);
 
 var shims = /*#__PURE__*/Object.freeze({
   __proto__: null,
-  createSelectorQuery: createSelectorQuery,
-  getProvider: getProvider,
-  shareVideoMessage: shareVideoMessage
+  getProvider: getProvider
 });
 
-const compressImage = {
-    args(fromArgs, toArgs) {
-        // https://developers.weixin.qq.com/community/develop/doc/000c08940c865011298e0a43256800?highLine=compressHeight
-        // @ts-expect-error
-        if (fromArgs.compressedHeight && !toArgs.compressHeight) {
-            // @ts-expect-error
-            toArgs.compressHeight = fromArgs.compressedHeight;
-        }
-        // @ts-expect-error
-        if (fromArgs.compressedWidth && !toArgs.compressWidth) {
-            // @ts-expect-error
-            toArgs.compressWidth = fromArgs.compressedWidth;
-        }
-    },
-};
+const navigateTo = navigateTo$1();
 
 var protocols = /*#__PURE__*/Object.freeze({
   __proto__: null,
-  compressImage: compressImage,
-  getAppAuthorizeSetting: getAppAuthorizeSetting,
-  getAppBaseInfo: getAppBaseInfo,
-  getDeviceInfo: getDeviceInfo,
   getSystemInfo: getSystemInfo,
   getSystemInfoSync: getSystemInfoSync,
-  getWindowInfo: getWindowInfo,
+  navigateTo: navigateTo,
   previewImage: previewImage,
-  redirectTo: redirectTo,
-  showActionSheet: showActionSheet
+  redirectTo: redirectTo
 });
 
-const wx$1 = initWx();
-var index = initUni(shims, protocols, wx$1);
+var index = initUni(shims, protocols);
 
-export { index as default, wx$1 as wx };
+export { index as default };

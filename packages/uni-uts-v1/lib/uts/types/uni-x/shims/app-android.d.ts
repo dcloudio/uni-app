@@ -1,6 +1,18 @@
 /// <reference path="../../uts/index.d.ts" />
 /// <reference path="../vue.d.ts" />
 declare global {
+  interface Byte{}
+  interface UByte{}
+  interface Short{}
+  interface UShort{}
+  interface Int{}
+  interface UInt{}
+  interface Long{}
+  interface ULong{}
+  interface Float{}
+  interface Double{}
+}
+declare global {
   const CSS_VAR_WINDOW_TOP: number
   const CSS_VAR_WINDOW_BOTTOM: number
   const CSS_VAR_STATUS_BAR_HEIGHT: number

@@ -2501,7 +2501,7 @@ var openDialogPage = (options) => {
   }
   var dialogPage = new UniDialogPageImpl();
   dialogPage.route = path;
-  dialogPage.options = new UTSJSONObject(query);
+  dialogPage.optionsByJS = query;
   dialogPage.getParentPage = () => parentPage;
   dialogPage.$component = null;
   dialogPage.$disableEscBack = false;
@@ -2514,7 +2514,7 @@ var openDialogPage = (options) => {
     }
     dialogPages.push(dialogPage);
   }
-  var [aniType, aniDuration] = initAnimation(path, animationType);
+  var [aniType, aniDuration] = initAnimation(path, animationType || "");
   var noAnimation = aniType === "none" || aniDuration === 0;
   function callback(page2) {
     showWebview(page2, aniType, aniDuration, () => {
@@ -3267,7 +3267,8 @@ class PerformanceEntryStatus {
     return this._entryData;
   }
   executeBefore() {
-    var page = getCurrentPage().vm;
+    var _getCurrentPage;
+    var page = (_getCurrentPage = getCurrentPage()) === null || _getCurrentPage === void 0 ? void 0 : _getCurrentPage.vm;
     if (page != null) {
       this._entryData.referrerPath = page.route;
     }

@@ -1,6 +1,6 @@
-import { SLOT_DEFAULT_NAME, invokeArrayFns, MINI_PROGRAM_PAGE_RUNTIME_HOOKS, ON_LOAD, ON_SHOW, ON_HIDE, ON_UNLOAD, ON_RESIZE, ON_TAB_ITEM_TAP, ON_REACH_BOTTOM, ON_PULL_DOWN_REFRESH, ON_ADD_TO_FAVORITES, isUniLifecycleHook, ON_READY, once, ON_LAUNCH, ON_ERROR, ON_THEME_CHANGE, ON_PAGE_NOT_FOUND, ON_UNHANDLE_REJECTION, addLeadingSlash, stringifyQuery, customizeEvent } from '@dcloudio/uni-shared';
-import { isArray, hasOwn, isFunction, extend, isPlainObject, isObject } from '@vue/shared';
-import { ref, findComponentPropsData, toRaw, updateProps, hasQueueJob, invalidateJob, devtoolsComponentAdded, getExposeProxy, pruneComponentPropsCache } from 'vue';
+import { SLOT_DEFAULT_NAME, EventChannel, invokeArrayFns, MINI_PROGRAM_PAGE_RUNTIME_HOOKS, ON_LOAD, ON_SHOW, ON_HIDE, ON_UNLOAD, ON_RESIZE, ON_TAB_ITEM_TAP, ON_REACH_BOTTOM, ON_PULL_DOWN_REFRESH, ON_ADD_TO_FAVORITES, isUniLifecycleHook, ON_READY, once, ON_LAUNCH, ON_ERROR, ON_THEME_CHANGE, ON_PAGE_NOT_FOUND, ON_UNHANDLE_REJECTION, addLeadingSlash, stringifyQuery, customizeEvent } from '@dcloudio/uni-shared';
+import { isArray, isFunction, hasOwn, extend, isPlainObject, isObject } from '@vue/shared';
+import { ref, nextTick, findComponentPropsData, toRaw, updateProps, hasQueueJob, invalidateJob, devtoolsComponentAdded, getExposeProxy, isRef, pruneComponentPropsCache } from 'vue';
 import { normalizeLocale, LOCALE_EN } from '@dcloudio/uni-i18n';
 
 const MP_METHODS = [
@@ -26,7 +26,7 @@ function initBaseInstance(instance, options) {
     // mp
     ctx.mpType = options.mpType; // @deprecated
     ctx.$mpType = options.mpType;
-    ctx.$mpPlatform = "mp-weixin";
+    ctx.$mpPlatform = "quickapp-webview";
     ctx.$scope = options.mpInstance;
     // TODO @deprecated
     ctx.$mp = {};
@@ -44,10 +44,10 @@ function initBaseInstance(instance, options) {
         }
     }
     ctx.getOpenerEventChannel = function () {
-        // 微信小程序使用自身getOpenerEventChannel
-        {
-            return options.mpInstance.getOpenerEventChannel();
+        if (!this.__eventChannel__) {
+            this.__eventChannel__ = new EventChannel();
         }
+        return this.__eventChannel__;
     };
     ctx.$hasHook = hasHook;
     ctx.$callHook = callHook;
@@ -86,6 +86,15 @@ function callHook(name, args) {
         callHook.call(this, 'bm'); // beforeMount
         this.$.isMounted = true;
         name = 'm';
+    }
+    {
+        if (name === 'onLoad' &&
+            args &&
+            args.__id__ &&
+            isFunction(qa.getEventChannel)) {
+            this.__eventChannel__ = qa.getEventChannel(args.__id__);
+            delete args.__id__;
+        }
     }
     const hooks = this.$[name];
     return hooks && invokeArrayFns(hooks, args);
@@ -256,7 +265,7 @@ function initCreateSubpackageApp(parseAppOptions) {
         });
         initAppLifecycle(appOptions, vm);
         if (process.env.UNI_SUBPACKAGE) {
-            (wx.$subpackages || (wx.$subpackages = {}))[process.env.UNI_SUBPACKAGE] = {
+            (qa.$subpackages || (qa.$subpackages = {}))[process.env.UNI_SUBPACKAGE] = {
                 $vm: vm,
             };
         }
@@ -264,22 +273,22 @@ function initCreateSubpackageApp(parseAppOptions) {
 }
 function initAppLifecycle(appOptions, vm) {
     if (isFunction(appOptions.onLaunch)) {
-        const args = wx.getLaunchOptionsSync && wx.getLaunchOptionsSync();
+        const args = qa.getLaunchOptionsSync && qa.getLaunchOptionsSync();
         appOptions.onLaunch(args);
     }
-    if (isFunction(appOptions.onShow) && wx.onAppShow) {
-        wx.onAppShow((args) => {
+    if (isFunction(appOptions.onShow) && qa.onAppShow) {
+        qa.onAppShow((args) => {
             vm.$callHook('onShow', args);
         });
     }
-    if (isFunction(appOptions.onHide) && wx.onAppHide) {
-        wx.onAppHide((args) => {
+    if (isFunction(appOptions.onHide) && qa.onAppHide) {
+        qa.onAppHide((args) => {
             vm.$callHook('onHide', args);
         });
     }
 }
 function initLocale(appVm) {
-    const locale = ref(normalizeLocale(wx.getSystemInfoSync().language) || LOCALE_EN);
+    const locale = ref(normalizeLocale(qa.getSystemInfoSync().language) || LOCALE_EN);
     Object.defineProperty(appVm, '$locale', {
         get() {
             return locale.value;
@@ -311,19 +320,6 @@ function initExtraOptions(miniProgramComponentOptions, vueOptions) {
             miniProgramComponentOptions[name] = vueOptions[name];
         }
     });
-}
-const WORKLET_RE = /_(.*)_worklet_factory_/;
-function initWorkletMethods(mpMethods, vueMethods) {
-    if (vueMethods) {
-        Object.keys(vueMethods).forEach((name) => {
-            const matches = name.match(WORKLET_RE);
-            if (matches) {
-                const workletName = matches[1];
-                mpMethods[name] = vueMethods[name];
-                mpMethods[workletName] = vueMethods[workletName];
-            }
-        });
-    }
 }
 function initWxsCallMethods(methods, wxsCallMethods) {
     if (!isArray(wxsCallMethods)) {
@@ -362,23 +358,15 @@ function initRefs(instance, mpInstance) {
         },
     });
 }
-function findVmByVueId(instance, vuePid) {
-    // 标准 vue3 中 没有 $children，定制了内核
-    const $children = instance.$children;
-    // 优先查找直属(反向查找:https://github.com/dcloudio/uni-app/issues/1200)
-    for (let i = $children.length - 1; i >= 0; i--) {
-        const childVm = $children[i];
-        if (childVm.$scope._$vueId === vuePid) {
-            return childVm;
-        }
-    }
-    // 反向递归查找
-    let parentVm;
-    for (let i = $children.length - 1; i >= 0; i--) {
-        parentVm = findVmByVueId($children[i], vuePid);
-        if (parentVm) {
-            return parentVm;
-        }
+function nextSetDataTick(mpInstance, fn) {
+    // 随便设置一个字段来触发回调（部分平台必须有字段才可以，比如头条）
+    mpInstance.setData({ r1: 1 }, () => fn());
+}
+function initSetRef(mpInstance) {
+    if (!mpInstance._$setRef) {
+        mpInstance._$setRef = (fn) => {
+            nextTick(() => nextSetDataTick(mpInstance, fn));
+        };
     }
 }
 
@@ -427,7 +415,7 @@ function initDefaultProps(options, isBehavior = false) {
     }
     if (options.behaviors) {
         // wx://form-field
-        if (options.behaviors.includes('wx' + '://form-field')) {
+        if (options.behaviors.includes('qa' + '://form-field')) {
             if (!options.properties || !options.properties.name) {
                 properties.name = {
                     type: null,
@@ -446,18 +434,6 @@ function initDefaultProps(options, isBehavior = false) {
 }
 function initVirtualHostProps(options) {
     const properties = {};
-    {
-        if ((options && options.virtualHost)) {
-            properties.virtualHostStyle = {
-                type: null,
-                value: '',
-            };
-            properties.virtualHostClass = {
-                type: null,
-                value: '',
-            };
-        }
-    }
     return properties;
 }
 /**
@@ -573,10 +549,7 @@ function initPropsObserver(componentOptions) {
         }
     };
     {
-        if (!componentOptions.observers) {
-            componentOptions.observers = {};
-        }
-        componentOptions.observers.uP = observe;
+        componentOptions.properties.uP.observer = observe;
     }
 }
 function updateMiniProgramComponentProperties(up, mpInstance) {
@@ -622,7 +595,7 @@ function initBehaviors(vueOptions) {
     if (isArray(vueBehaviors)) {
         vueBehaviors.forEach((behavior) => {
             // 这里的 global 应该是个变量
-            behaviors.push(behavior.replace('uni://', 'wx' + '://'));
+            behaviors.push(behavior.replace('uni://', 'qa' + '://'));
             if (behavior === 'uni://form-field') {
                 if (isArray(vueProps)) {
                     vueProps.push('name');
@@ -694,9 +667,6 @@ function parseComponent(vueOptions, { parse, mocks, isPage, initRelation, handle
     initPropsObserver(mpComponentOptions);
     initExtraOptions(mpComponentOptions, vueOptions);
     initWxsCallMethods(mpComponentOptions.methods, vueOptions.wxsCallMethods);
-    {
-        initWorkletMethods(mpComponentOptions.methods, vueOptions.methods);
-    }
     if (parse) {
         parse(mpComponentOptions, { handleLink });
     }
@@ -711,10 +681,10 @@ let $createComponentFn;
 let $destroyComponentFn;
 function getAppVm() {
     if (process.env.UNI_MP_PLUGIN) {
-        return wx.$vm;
+        return qa.$vm;
     }
     if (process.env.UNI_SUBPACKAGE) {
-        return wx.$subpackages[process.env.UNI_SUBPACKAGE].$vm;
+        return qa.$subpackages[process.env.UNI_SUBPACKAGE].$vm;
     }
     return getApp().$vm;
 }
@@ -765,15 +735,6 @@ function initCreatePage(parseOptions) {
     };
 }
 
-function initCreatePluginApp(parseAppOptions) {
-    return function createApp(vm) {
-        initAppLifecycle(parseApp(vm), vm);
-        if (process.env.UNI_MP_PLUGIN) {
-            wx.$vm = vm;
-        }
-    };
-}
-
 const MPPage = Page;
 const MPComponent = Component;
 function initTriggerEvent(mpInstance) {
@@ -818,102 +779,286 @@ Component = function (options) {
     return MPComponent(options);
 };
 
-// @ts-expect-error
-function initLifetimes({ mocks, isPage, initRelation, vueOptions, }) {
-    return {
-        attached() {
-            let properties = this.properties;
-            initVueIds(properties.uI, this);
-            const relationOptions = {
-                vuePid: this._$vuePid,
-            };
-            // 处理父子关系
-            initRelation(this, relationOptions);
-            // 初始化 vue 实例
-            const mpInstance = this;
-            const isMiniProgramPage = isPage(mpInstance);
-            let propsData = properties;
-            this.$vm = $createComponent({
-                type: vueOptions,
-                props: findPropsData(propsData, isMiniProgramPage),
-            }, {
-                mpType: isMiniProgramPage ? 'page' : 'component',
-                mpInstance,
-                slots: properties.uS || {}, // vueSlots
-                parentComponent: relationOptions.parent && relationOptions.parent.$,
-                onBeforeSetup(instance, options) {
-                    initRefs(instance, mpInstance);
-                    initMocks(instance, mpInstance, mocks);
-                    initComponentInstance(instance, options);
-                },
-            });
-            if (!isMiniProgramPage) {
-                initFormField(this.$vm);
+function provide(instance, key, value) {
+    if (!instance) {
+        if ((process.env.NODE_ENV !== 'production')) {
+            console.warn(`provide() can only be used inside setup().`);
+        }
+    }
+    else {
+        let provides = instance.provides;
+        // by default an instance inherits its parent's provides object
+        // but when it needs to provide values of its own, it creates its
+        // own provides object using parent provides object as prototype.
+        // this way in `inject` we can simply look up injections from direct
+        // parent and let the prototype chain do the work.
+        const parentProvides = instance.parent && instance.parent.provides;
+        if (parentProvides === provides) {
+            provides = instance.provides = Object.create(parentProvides);
+        }
+        // TS doesn't allow symbol as index type
+        provides[key] = value;
+    }
+}
+function initProvide(instance) {
+    const provideOptions = instance.$options.provide;
+    if (!provideOptions) {
+        return;
+    }
+    const provides = isFunction(provideOptions)
+        ? provideOptions.call(instance)
+        : provideOptions;
+    const internalInstance = instance.$;
+    for (const key in provides) {
+        provide(internalInstance, key, provides[key]);
+    }
+}
+function inject(instance, key, defaultValue, treatDefaultAsFactory = false) {
+    if (instance) {
+        // #2400
+        // to support `app.use` plugins,
+        // fallback to appContext's `provides` if the intance is at root
+        const provides = instance.parent == null
+            ? instance.vnode.appContext && instance.vnode.appContext.provides
+            : instance.parent.provides;
+        if (provides && key in provides) {
+            // TS doesn't allow symbol as index type
+            return provides[key];
+        }
+        else if (arguments.length > 1) {
+            return treatDefaultAsFactory && isFunction(defaultValue)
+                ? defaultValue()
+                : defaultValue;
+        }
+        else if ((process.env.NODE_ENV !== 'production')) {
+            console.warn(`injection "${String(key)}" not found.`);
+        }
+    }
+    else if ((process.env.NODE_ENV !== 'production')) {
+        console.warn(`inject() can only be used inside setup() or functional components.`);
+    }
+}
+function initInjections(instance) {
+    const injectOptions = instance.$options.inject;
+    if (!injectOptions) {
+        return;
+    }
+    const internalInstance = instance.$;
+    const ctx = internalInstance.ctx;
+    if (isArray(injectOptions)) {
+        for (let i = 0; i < injectOptions.length; i++) {
+            const key = injectOptions[i];
+            ctx[key] = inject(internalInstance, key);
+        }
+    }
+    else {
+        for (const key in injectOptions) {
+            const opt = injectOptions[key];
+            let injected;
+            if (isObject(opt)) {
+                if ('default' in opt) {
+                    injected = inject(internalInstance, opt.from || key, opt.default, true /* treat default function as factory */);
+                }
+                else {
+                    injected = inject(internalInstance, opt.from || key);
+                }
             }
-        },
+            else {
+                injected = inject(internalInstance, opt);
+            }
+            if (isRef(injected)) {
+                Object.defineProperty(ctx, key, {
+                    enumerable: true,
+                    configurable: true,
+                    get: () => injected.value,
+                    set: (v) => (injected.value = v),
+                });
+            }
+            else {
+                ctx[key] = injected;
+            }
+        }
+    }
+}
+
+// @ts-expect-error
+function initLifetimes$1({ mocks, isPage, initRelation, vueOptions, }) {
+    function attached() {
+        initSetRef(this);
+        const properties = this.properties;
+        initVueIds(properties.uI, this);
+        const relationOptions = {
+            vuePid: this._$vuePid,
+        };
+        // 初始化 vue 实例
+        const mpInstance = this;
+        const mpType = isPage(mpInstance) ? 'page' : 'component';
+        if (mpType === 'page' && !mpInstance.route && mpInstance.__route__) {
+            mpInstance.route = mpInstance.__route__;
+        }
+        const props = findPropsData(properties, mpType === 'page');
+        this.$vm = $createComponent({
+            type: vueOptions,
+            props,
+        }, {
+            mpType,
+            mpInstance,
+            slots: properties.uS || {}, // vueSlots
+            parentComponent: relationOptions.parent && relationOptions.parent.$,
+            onBeforeSetup(instance, options) {
+                initRefs(instance, mpInstance);
+                initMocks(instance, mpInstance, mocks);
+                initComponentInstance(instance, options);
+            },
+        });
+        if (mpType === 'component') {
+            initFormField(this.$vm);
+        }
+        if (mpType === 'page') {
+            if (__VUE_OPTIONS_API__) {
+                initInjections(this.$vm);
+                initProvide(this.$vm);
+            }
+        }
+        // 处理父子关系
+        initRelation(this, relationOptions);
+    }
+    function detached() {
+        if (this.$vm) {
+            pruneComponentPropsCache(this.$vm.$.uid);
+            $destroyComponent(this.$vm);
+        }
+    }
+    {
+        return { attached, detached };
+    }
+}
+
+const instances = Object.create(null);
+function parse(componentOptions, { handleLink }) {
+    componentOptions.methods.__l = handleLink;
+}
+
+function initLifetimes(lifetimesOptions) {
+    return extend(initLifetimes$1(lifetimesOptions), {
         ready() {
-            // 当组件 props 默认值为 true，初始化时传入 false 会导致 created,ready 触发, 但 attached 不触发
-            // https://developers.weixin.qq.com/community/develop/doc/00066ae2844cc0f8eb883e2a557800
-            if (this.$vm) {
-                {
+            if (this.$vm && lifetimesOptions.isPage(this)) {
+                if (this.pageinstance) {
+                    this.__webviewId__ = this.pageinstance.__pageId__;
+                }
+                this.$vm.$callCreatedHook();
+                nextSetDataTick(this, () => {
                     this.$vm.$callHook('mounted');
                     this.$vm.$callHook(ON_READY);
-                }
+                });
+            }
+            else {
+                this.is && console.warn(this.is + ' is not ready');
             }
         },
         detached() {
-            if (this.$vm) {
-                pruneComponentPropsCache(this.$vm.$.uid);
-                $destroyComponent(this.$vm);
-            }
+            this.$vm && $destroyComponent(this.$vm);
+            // 清理
+            const webviewId = this.__webviewId__;
+            webviewId &&
+                Object.keys(instances).forEach((key) => {
+                    if (key.indexOf(webviewId + '_') === 0) {
+                        delete instances[key];
+                    }
+                });
         },
-    };
+    });
 }
 
-const mocks = ['__route__', '__wxExparserNodeId__', '__wxWebviewId__'];
+const mocks = ['nodeId', 'componentName', '_componentId', 'uniquePrefix'];
+
 function isPage(mpInstance) {
-    return !!mpInstance.route;
+    return !!(mpInstance._methods || mpInstance.methods).onLoad;
 }
-function initRelation(mpInstance, detail) {
-    mpInstance.triggerEvent('__l', detail);
+function initRelation(mpInstance) {
+    // triggerEvent 后，接收事件时机特别晚，已经到了 ready 之后
+    const nodeId = mpInstance.nodeId + '';
+    const webviewId = mpInstance.pageinstance.__pageId__ + '';
+    instances[webviewId + '_' + nodeId] = mpInstance.$vm;
+    mpInstance.triggerEvent('__l', {
+        nodeId,
+        webviewId,
+    });
 }
-function handleLink(event) {
-    // detail 是微信,value 是百度(dipatch)
-    const detail = (event.detail ||
-        event.value);
-    const vuePid = detail.vuePid;
-    let parentVm;
-    if (vuePid) {
-        parentVm = findVmByVueId(this.$vm, vuePid);
+function handleLink({ detail: { nodeId, webviewId }, }) {
+    const vm = instances[webviewId + '_' + nodeId];
+    if (!vm) {
+        return;
     }
+    let parentVm = instances[webviewId + '_' + vm.$scope.ownerId];
     if (!parentVm) {
         parentVm = this.$vm;
     }
-    detail.parent = parentVm;
+    vm.$.parent = parentVm.$;
+    const createdVm = function () {
+        if (__VUE_OPTIONS_API__) {
+            parentVm.$children.push(vm);
+            const parent = parentVm.$;
+            vm.$.provides = parent
+                ? parent.provides
+                : Object.create(parent.appContext.provides);
+            initInjections(vm);
+            initProvide(vm);
+        }
+        vm.$callCreatedHook();
+    };
+    const mountedVm = function () {
+        // 处理当前 vm 子
+        if (vm._$childVues) {
+            vm._$childVues.forEach(([createdVm]) => createdVm());
+            vm._$childVues.forEach(([, mountedVm]) => mountedVm());
+            delete vm._$childVues;
+        }
+        vm.$callHook('mounted');
+        vm.$callHook(ON_READY);
+    };
+    // 当 parentVm 已经 mounted 时，直接触发，否则延迟
+    if (!parentVm || parentVm.$.isMounted) {
+        createdVm();
+        mountedVm();
+    }
+    else {
+        (parentVm._$childVues || (parentVm._$childVues = [])).push([
+            createdVm,
+            mountedVm,
+        ]);
+    }
 }
 
-var parseOptions = /*#__PURE__*/Object.freeze({
+var parseComponentOptions = /*#__PURE__*/Object.freeze({
+  __proto__: null,
+  handleLink: handleLink,
+  initLifetimes: initLifetimes$1,
+  initRelation: initRelation,
+  isPage: isPage,
+  mocks: mocks,
+  parse: parse
+});
+
+var parsePageOptions = /*#__PURE__*/Object.freeze({
   __proto__: null,
   handleLink: handleLink,
   initLifetimes: initLifetimes,
   initRelation: initRelation,
   isPage: isPage,
-  mocks: mocks
+  mocks: mocks,
+  parse: parse
 });
 
 const createApp = initCreateApp();
-const createPage = initCreatePage(parseOptions);
-const createComponent = initCreateComponent(parseOptions);
-const createPluginApp = initCreatePluginApp();
+const createPage = initCreatePage(parsePageOptions);
+const createComponent = initCreateComponent(parseComponentOptions);
 const createSubpackageApp = initCreateSubpackageApp();
-{
-    wx.createApp = global.createApp = createApp;
-    wx.createPage = createPage;
-    wx.createComponent = createComponent;
-    wx.createPluginApp = global.createPluginApp =
-        createPluginApp;
-    wx.createSubpackageApp = global.createSubpackageApp =
-        createSubpackageApp;
-}
+qa.EventChannel = EventChannel;
+qa.createApp = global.createApp = createApp;
+qa.createPage = createPage;
+qa.createComponent = createComponent;
+qa.createSubpackageApp = global.createSubpackageApp =
+    createSubpackageApp;
 
-export { createApp, createComponent, createPage, createPluginApp, createSubpackageApp };
+export { createApp, createComponent, createPage, createSubpackageApp };
