@@ -130,8 +130,10 @@ function uniAppHarmonyPlugin() {
 }
 // 仅存放重命名的provider service
 const SupportedProviderService = {
-    oauth: {},
-    payment: {
+    'uni-oauth': {
+        huawei: 'huawei',
+    },
+    'uni-payment': {
         weixin: 'wxpay',
     },
 };
@@ -141,17 +143,17 @@ const SupportedProviderService = {
 function getRelatedProviders(inputDir) {
     const manifest = uniCliShared.parseManifestJsonOnce(inputDir);
     const providers = [];
-    const sdkConfigs = manifest?.['app-plus']?.distribute?.sdkConfigs;
-    if (!sdkConfigs) {
+    const manifestModules = manifest?.['app-harmony']?.distribute?.modules;
+    if (!manifestModules) {
         return providers;
     }
-    for (const service in sdkConfigs) {
-        if (Object.prototype.hasOwnProperty.call(sdkConfigs, service)) {
-            const ProviderNameMap = SupportedProviderService[service];
+    for (const uniModule in manifestModules) {
+        if (Object.prototype.hasOwnProperty.call(manifestModules, uniModule)) {
+            const ProviderNameMap = SupportedProviderService[uniModule];
             if (!ProviderNameMap) {
                 continue;
             }
-            const relatedProviders = sdkConfigs[service];
+            const relatedProviders = manifestModules[uniModule];
             for (const name in relatedProviders) {
                 if (Object.prototype.hasOwnProperty.call(relatedProviders, name)) {
                     const providerConf = relatedProviders[name];
@@ -163,7 +165,7 @@ function getRelatedProviders(inputDir) {
                             providerConf.__platform__.includes('harmonyos'))) {
                         const providerName = ProviderNameMap[name];
                         providers.push({
-                            service,
+                            service: uniModule.replace(/^uni-/, ''),
                             name: providerName || name,
                         });
                     }
@@ -174,14 +176,14 @@ function getRelatedProviders(inputDir) {
     return providers;
 }
 const SupportedModules = {
-    FacialRecognitionVerify: 'uni-facialRecognitionVerify',
-    Push: 'uni-push',
+    'uni-facialRecognitionVerify': 'uni-facialRecognitionVerify',
+    'uni-push': 'uni-push',
 };
 // 获取uni_modules中的相关模块
 function getRelatedModules(inputDir) {
     const manifest = uniCliShared.parseManifestJsonOnce(inputDir);
     const modules = [];
-    const manifestModules = manifest?.['app-plus']?.modules;
+    const manifestModules = manifest?.['app-harmony']?.distribute?.modules;
     if (!manifestModules) {
         return modules;
     }
