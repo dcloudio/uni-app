@@ -7,6 +7,7 @@ import {
 } from '../../../framework/setup/page'
 import { EventChannel, parseUrl } from '@dcloudio/uni-shared'
 import type { OpenDialogPageOptions } from '@dcloudio/uni-app-x/types/uni'
+import type { UniDialogPage } from '@dcloudio/uni-app-x/types/page'
 
 export const openDialogPage = (
   options: OpenDialogPageOptions

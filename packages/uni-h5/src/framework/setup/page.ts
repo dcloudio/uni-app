@@ -34,7 +34,11 @@ import { updateCurPageCssVar } from '../../helpers/cssVar'
 import { getStateId } from '../../helpers/dom'
 import { getPageInstanceByVm } from './utils'
 
-import type { UniBasePage } from '@dcloudio/uni-app-x/types/page'
+import type {
+  UniDialogPage,
+  UniNormalPage,
+  UniPage,
+} from '@dcloudio/uni-app-x/types/page'
 import { setCurrentPageMeta } from '../../service/api/ui/setPageMeta'
 
 const SEP = '$$'
@@ -42,22 +46,11 @@ const SEP = '$$'
 const currentPagesMap = new Map<string, ComponentPublicInstance>()
 export const homeDialogPages: UniDialogPage[] = []
 
-export class UniBasePageImpl implements UniBasePage {
+class UniPageImpl implements UniPage {
   route: string
   options: UTSJSONObject
-  getParentPage: () => UniPage | null = () => null
-  getDialogPages(): UniDialogPage[] {
-    return []
-  }
-  constructor({ route, options }: { route: string; options: UTSJSONObject }) {
-    this.route = route
-    this.options = options
-  }
-}
-
-export class UniPageImpl extends UniBasePageImpl implements UniPage {
-  vm: ComponentPublicInstance
-  $vm: ComponentPublicInstance
+  vm: ComponentPublicInstance | null
+  $vm: ComponentPublicInstance | null
   getPageStyle(): UTSJSONObject {
     return new UTSJSONObject({})
   }
@@ -78,12 +71,6 @@ export class UniPageImpl extends UniBasePageImpl implements UniPage {
       ? (uniPageBody.querySelector(`#${id}`) as unknown as UniElement)
       : null
   }
-  getParentPage = (): UniPage | null => {
-    return null
-  }
-  getDialogPages(): UniDialogPage[] {
-    return getPageInstanceByVm(this.vm)?.$dialogPages.value || []
-  }
   getAndroidView() {
     return null
   }
@@ -94,6 +81,30 @@ export class UniPageImpl extends UniBasePageImpl implements UniPage {
     }
     return document.querySelector('uni-page-body') as unknown as UniElement
   }
+  getParentPage: () => UniPage | null = () => null
+  getDialogPages(): UniDialogPage[] {
+    return []
+  }
+  constructor({
+    route,
+    options,
+    vm,
+  }: {
+    route: string
+    options: UTSJSONObject
+    vm: ComponentPublicInstance | null
+  }) {
+    this.route = route
+    this.options = options
+    this.vm = vm
+    this.$vm = vm
+  }
+}
+
+class UniNormalPageImpl extends UniPageImpl implements UniNormalPage {
+  getDialogPages(): UniDialogPage[] {
+    return this.vm ? getPageInstanceByVm(this.vm)?.$dialogPages.value : []
+  }
   constructor({
     route,
     options,
@@ -103,9 +114,7 @@ export class UniPageImpl extends UniBasePageImpl implements UniPage {
     options: UTSJSONObject
     vm: ComponentPublicInstance
   }) {
-    super({ route, options })
-    this.vm = vm
-    this.$vm = vm
+    super({ route, options, vm })
   }
 }
 
@@ -115,15 +124,9 @@ export function getPage$BasePage(
   return __X__ ? page.$basePage : (page.$page as Page.PageInstance['$page'])
 }
 
-export class UniDialogPageImpl
-  extends UniBasePageImpl
-  implements UniDialogPage
-{
-  vm: ComponentPublicInstance | null = null
-  $vm: ComponentPublicInstance | null = null
+export class UniDialogPageImpl extends UniPageImpl implements UniDialogPage {
   $component: any | null = null
   $disableEscBack: boolean = false
-
   constructor({
     route,
     options,
@@ -137,7 +140,7 @@ export class UniDialogPageImpl
     getParentPage: () => UniPage | null
     $disableEscBack?: boolean | null
   }) {
-    super({ route, options })
+    super({ route, options, vm: null })
     this.$component = $component
     this.getParentPage = getParentPage
     this.$disableEscBack = !!$disableEscBack
@@ -296,7 +299,7 @@ export function initPage(vm: ComponentPublicInstance) {
     vm.$basePage = vm.$page as Page.PageInstance['$page']
     const pageInstance = getPageInstanceByVm(vm)
     if (pageInstance?.attrs.type !== 'dialog') {
-      const uniPage = new UniPageImpl({
+      const uniPage = new UniNormalPageImpl({
         route: route?.path || '',
         options: new UTSJSONObject(route?.query || {}),
         vm,
