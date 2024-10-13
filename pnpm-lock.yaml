@@ -30,8 +30,8 @@ importers:
         specifier: 3.0.0-alpha-4030120240925001
         version: link:packages/uni-app
       '@dcloudio/uni-app-x':
-        specifier: ^0.7.32
-        version: 0.7.32
+        specifier: ^0.7.33
+        version: 0.7.33
       '@dcloudio/uni-nvue-styler':
         specifier: 3.0.0-alpha-4030120240925001
         version: link:packages/uni-nvue-styler
@@ -1910,8 +1910,8 @@ importers:
         specifier: ^7.23.5
         version: 7.24.7
       '@dcloudio/uni-app-x':
-        specifier: ^0.7.32
-        version: 0.7.32
+        specifier: ^0.7.33
+        version: 0.7.33
       '@dcloudio/uts':
         specifier: 3.0.0-alpha-4030120240925001
         version: link:../uts
@@ -2777,8 +2777,8 @@ packages:
   '@dcloudio/types@3.4.11':
     resolution: {integrity: sha512-vRmcqV/OQF8r4QQgIz+iHuuBirw7Y+0MeN/QgeEZtcKGUqyMSGDJW4gF8jLJaEtGSZ3dBZslupRXQKZhUBGTpw==}
 
-  '@dcloudio/uni-app-x@0.7.32':
-    resolution: {integrity: sha512-jxIvkKtB9MfV1BoI3VZ6ltwgM3Cj9KfrOBaD0lO5sJ76YCoKJczwBVIkvlqULlH5HzVtwXWvYfTzrnOqivixcg==}
+  '@dcloudio/uni-app-x@0.7.33':
+    resolution: {integrity: sha512-M5rFggMW+qstYDEs8cBsx5UtCn9LqSoBY2Aq9jyMak3R6s3w9e88jcBuLeSpMg6XAHlEreyQLk+kNXuXhofZhA==}
 
   '@dcloudio/uni-ui@1.5.6':
     resolution: {integrity: sha512-jmb98PasFvZkrIDXGh94GbdWg2/jyhgs1HUG+bU8eyL7Ltias/5XBz4q8w9RXyWUfqepJRqapPA2IIQpLCuTIg==}
@@ -4113,8 +4113,8 @@ packages:
   bcrypt-pbkdf@1.0.2:
     resolution: {integrity: sha512-qeFIXtP4MSoi6NLqO12WfqARWWuCKi2Rn/9hJLEmtB5yTNr9DqFWkJRCf2qShWzPeAMRnOgCrq0sg/KLv5ES9w==}
 
-  bignumber.js@https://codeload.github.com/frozeman/bignumber.js-nolookahead/tar.gz/57692b3ecfc98bbdd6b3a516cb2353652ea49934:
-    resolution: {tarball: https://codeload.github.com/frozeman/bignumber.js-nolookahead/tar.gz/57692b3ecfc98bbdd6b3a516cb2353652ea49934}
+  bignumber.js@git+https://git@github.com:frozeman/bignumber.js-nolookahead.git#57692b3ecfc98bbdd6b3a516cb2353652ea49934:
+    resolution: {commit: 57692b3ecfc98bbdd6b3a516cb2353652ea49934, repo: git@github.com:frozeman/bignumber.js-nolookahead.git, type: git}
     version: 2.0.7
 
   binary-extensions@2.3.0:
@@ -8282,7 +8282,7 @@ snapshots:
 
   '@dcloudio/types@3.4.11': {}
 
-  '@dcloudio/uni-app-x@0.7.32': {}
+  '@dcloudio/uni-app-x@0.7.33': {}
 
   '@dcloudio/uni-ui@1.5.6': {}
 
@@ -9998,7 +9998,7 @@ snapshots:
     dependencies:
       tweetnacl: 0.14.5
 
-  bignumber.js@https://codeload.github.com/frozeman/bignumber.js-nolookahead/tar.gz/57692b3ecfc98bbdd6b3a516cb2353652ea49934: {}
+  bignumber.js@git+https://git@github.com:frozeman/bignumber.js-nolookahead.git#57692b3ecfc98bbdd6b3a516cb2353652ea49934: {}
 
   binary-extensions@2.3.0: {}
 
@@ -13785,7 +13785,7 @@ snapshots:
 
   web3@0.20.7:
     dependencies:
-      bignumber.js: https://codeload.github.com/frozeman/bignumber.js-nolookahead/tar.gz/57692b3ecfc98bbdd6b3a516cb2353652ea49934
+      bignumber.js: git+https://git@github.com:frozeman/bignumber.js-nolookahead.git#57692b3ecfc98bbdd6b3a516cb2353652ea49934
       crypto-js: 3.3.0
       utf8: 2.1.2
       xhr2-cookies: 1.1.0
