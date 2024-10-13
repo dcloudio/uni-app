@@ -2,20 +2,7 @@ import { getCurrentPage } from '@dcloudio/uni-core'
 import { formatLog } from '@dcloudio/uni-shared'
 import type { ComponentPublicInstance } from 'vue'
 import { getVueApp } from '../app/vueApp'
-import type { UniBasePage } from '@dcloudio/uni-app-x/types/page'
 
-export class UniBasePageImpl implements UniBasePage {
-  route: string
-  options: UTSJSONObject
-  getParentPage: () => UniPage | null = () => null
-  getDialogPages(): UniDialogPage[] {
-    return []
-  }
-  constructor({ route, options }: { route: string; options: UTSJSONObject }) {
-    this.route = route
-    this.options = options
-  }
-}
 
 export function getPage$BasePage(
   page: ComponentPublicInstance
@@ -92,7 +79,6 @@ export function removePage(
   }
   const removePages = pages.splice(index, 1)
   if (__X__) {
-    // @ts-expect-error
     removePages[0].$page = null
   }
   if (__DEV__) {

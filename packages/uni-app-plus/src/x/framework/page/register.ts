@@ -27,6 +27,7 @@ import { ON_POP_GESTURE } from '../../constants'
 import { getAppThemeFallbackOS, normalizePageStyles } from '../theme'
 import { invokePageReadyHooks } from '../../api/route/performance'
 import { homeDialogPages } from './dialogPage'
+import type { UniDialogPage } from '@dcloudio/uni-app-x/types/page'
 
 type PageNodeOptions = {}
 

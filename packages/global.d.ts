@@ -111,6 +111,15 @@ declare class UniDialogPageImpl implements UniPage {
   getParentPage: () => UniPage | null
   getParentPageByJS: () => UniPage | null
   getDialogPages(): UniDialogPage[]
+  getPageStyle(): UTSJSONObject
+  $getPageStyle(): UTSJSONObject
+  getPageStyleByJS(): UTSJSONObject
+  setPageStyle(style: UTSJSONObject): void
+  $setPageStyle(style: UTSJSONObject): void
+  setPageStyleByJS(style: UTSJSONObject): void
+  getElementById(id: string.IDString | string): UniElement | null
+  getAndroidView(): null
+  getHTMLElement(): null
   $component: any | null
   $disableEscBack: boolean
 }
