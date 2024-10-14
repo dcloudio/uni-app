@@ -46,12 +46,47 @@ export const startLocationUpdate =
           },
           {
             coordsType: options?.type,
+            enableHighAccuracy: true,
           }
         )
       setTimeout(resolve, 100)
     },
     StartLocationUpdateProtocol,
     StartLocationUpdateOptions
+  )
+
+export const startLocationUpdateBackground =
+  defineAsyncApi<API_TYPE_START_LOCATION_UPDATE>(
+    'startLocationUpdateBackground',
+    (options, { resolve, reject }) => {
+      watchId =
+        watchId ||
+        plus.geolocation.watchPosition(
+          (res) => {
+            started = true
+            UniServiceJSBridge.invokeOnCallback(
+              API_ON_LOCATION_CHANGE,
+              res.coords
+            )
+          },
+          (error) => {
+            if (!started) {
+              reject(error.message)
+              started = true
+            }
+            UniServiceJSBridge.invokeOnCallback(API_ON_LOCATION_CHANGE_ERROR, {
+              errMsg: `onLocationChange:fail ${error.message}`,
+            })
+          },
+          {
+            coordsType: options?.type,
+            enableHighAccuracy: true,
+            // @ts-expect-error 增加background参数
+            background: true,
+          }
+        )
+      setTimeout(resolve, 100)
+    }
   )
 
 export const stopLocationUpdate = defineAsyncApi<API_TYPE_STOP_LOCATION_UPDATE>(
