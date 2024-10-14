@@ -74,6 +74,7 @@ declare module 'vue' {
    * vue internal
    */ 
   export declare function mergeDefaults(raw : ComponentPropsOptions, defaults : Record<string, any>) : ComponentObjectPropsOptions;
+  export declare function mergeModels(a: string[], b: string[]): string[]
   export declare function mergeModels(a : ComponentPropsOptions | EmitsOptions, b : ComponentPropsOptions | EmitsOptions) : string[] | ObjectEmitsOptions | ComponentObjectPropsOptions<Data>;
   export declare function createPropsRestProxy(props : any, excludedKeys : string[]) : Record<string, any>;
   export declare function withAsyncContext(getAwaitable : () => any) : any[];
