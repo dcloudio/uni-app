@@ -14,7 +14,7 @@ export function initComponentInstance(app: App) {
       vm.$nativePage = getNativeApp().pageManager.findPageById(pageId + '')
       if (vm.$page) {
         // @ts-expect-error
-        vm.$page.nativePageId = vm.$nativePage.pageId
+        vm.$page.__nativePageId = vm.$nativePage.pageId
       }
     },
     beforeMount(this: ComponentPublicInstance) {

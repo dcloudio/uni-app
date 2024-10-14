@@ -72,7 +72,7 @@ export const openDialogPage = (
     noAnimation ? 0 : 1
   )
   // @ts-expect-error
-  dialogPage.nativePageId = page.pageId
+  dialogPage.__nativePageId = page.pageId
 
   if (noAnimation) {
     callback(page)
