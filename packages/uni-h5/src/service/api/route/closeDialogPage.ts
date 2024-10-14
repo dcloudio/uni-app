@@ -40,7 +40,7 @@ export const closeDialogPage = (options?: CloseDialogPageOptions) => {
       if (i > 0) {
         invokeHook(dialogPages[i - 1].$vm!, ON_SHOW)
       }
-      if (!dialogPages[i].$disableEscBack) {
+      if ((!dialogPages[i] as unknown as UniDialogPage).$disableEscBack) {
         decrementEscBackPageNum()
       }
     }

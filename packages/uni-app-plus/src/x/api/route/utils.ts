@@ -16,7 +16,6 @@ import { $reLaunch } from './reLaunch'
 import { getCurrentPage } from '@dcloudio/uni-core'
 import { addLeadingSlash } from '@dcloudio/uni-shared'
 import { getNativeApp } from '../../framework/app/app'
-import type { UniDialogPage } from '@dcloudio/uni-app-x/types/page'
 
 export function closePage(
   page: ComponentPublicInstance,
@@ -64,7 +63,7 @@ export function handleBeforeEntryPageRoutes() {
 }
 
 export function closeNativeDialogPage(
-  dialogPage: UniDialogPage,
+  dialogPage: UniPage,
   animationType: string,
   callback?: () => void
 ) {

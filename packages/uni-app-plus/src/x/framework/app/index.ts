@@ -19,13 +19,12 @@ import type {
   NavigateToOptions,
   SwitchTabOptions,
 } from '@dcloudio/uni-app-x/types/uni'
-import type { UniApp } from '@dcloudio/uni-app-x/types/app'
 
 let appCtx: ComponentPublicInstance
 const defaultApp = {
   globalData: {},
 }
-
+// @ts-expect-error
 class UniAppImpl implements UniApp {
   get vm() {
     return appCtx

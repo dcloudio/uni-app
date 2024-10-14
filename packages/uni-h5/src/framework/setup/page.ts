@@ -40,6 +40,7 @@ import type {
   UniPage,
 } from '@dcloudio/uni-app-x/types/page'
 import { setCurrentPageMeta } from '../../service/api/ui/setPageMeta'
+import { closeDialogPage } from '../../service/api'
 
 const SEP = '$$'
 
@@ -82,7 +83,7 @@ class UniPageImpl implements UniPage {
     return document.querySelector('uni-page-body') as unknown as UniElement
   }
   getParentPage: () => UniPage | null = () => null
-  getDialogPages(): UniDialogPage[] {
+  getDialogPages(): UniPage[] {
     return []
   }
   constructor({
@@ -102,7 +103,7 @@ class UniPageImpl implements UniPage {
 }
 
 class UniNormalPageImpl extends UniPageImpl implements UniNormalPage {
-  getDialogPages(): UniDialogPage[] {
+  getDialogPages(): UniPage[] {
     return this.vm ? getPageInstanceByVm(this.vm)?.$dialogPages.value : []
   }
   constructor({
@@ -182,8 +183,7 @@ function handleEscKeyPress(event) {
     const dialogPages = currentPage.getDialogPages()
     const dialogPage = dialogPages[dialogPages.length - 1]
     if (!dialogPage.$disableEscBack) {
-      // @ts-expect-error
-      uni.closeDialogPage({ dialogPage })
+      closeDialogPage({ dialogPage })
     }
   }
 }
@@ -248,8 +248,7 @@ export function removePage(routeKey: string, removeRouteCaches = true) {
   if (__X__) {
     const dialogPages = (pageVm.$page as UniPage).getDialogPages()
     for (let i = dialogPages.length - 1; i >= 0; i--) {
-      // @ts-expect-error
-      uni.closeDialogPage({ dialogPage: dialogPages[i] })
+      closeDialogPage({ dialogPage: dialogPages[i] })
     }
   }
   pageVm.$.__isUnload = true
