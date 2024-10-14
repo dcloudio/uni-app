@@ -40,8 +40,9 @@ import type {
   UniPage,
 } from '@dcloudio/uni-app-x/types/page'
 import { setCurrentPageMeta } from '../../service/api/ui/setPageMeta'
+//#if _X_ && !_NODE_JS_
 import { closeDialogPage } from '../../service/api'
-
+//#endif
 const SEP = '$$'
 
 const currentPagesMap = new Map<string, ComponentPublicInstance>()
@@ -177,13 +178,15 @@ export const redirectToPagesBeforeEntryPages: RedirectToPage[] = []
 export const reLaunchPagesBeforeEntryPages: ReLaunchPage[] = []
 let escBackPageNum = 0
 function handleEscKeyPress(event) {
-  if (event.key === 'Escape') {
-    const currentPage = getCurrentPage()
-    // @ts-expect-error
-    const dialogPages = currentPage.getDialogPages()
-    const dialogPage = dialogPages[dialogPages.length - 1]
-    if (!dialogPage.$disableEscBack) {
-      closeDialogPage({ dialogPage })
+  if (__X__ && !__NODE_JS__) {
+    if (event.key === 'Escape') {
+      const currentPage = getCurrentPage()
+      // @ts-expect-error
+      const dialogPages = currentPage.getDialogPages()
+      const dialogPage = dialogPages[dialogPages.length - 1]
+      if (!dialogPage.$disableEscBack) {
+        closeDialogPage({ dialogPage })
+      }
     }
   }
 }
