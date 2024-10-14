@@ -12,6 +12,7 @@ export { openLocation } from './location/openLocation/index'
 export { getLocation } from './location/getLocation'
 export {
   startLocationUpdate,
+  startLocationUpdateBackground,
   stopLocationUpdate,
   onLocationChange,
   offLocationChange,
