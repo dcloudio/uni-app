@@ -34,6 +34,7 @@ export {
   createVideoContext,
   getSelectedTextRange,
   onWindowResize,
+  offWindowResize,
   createAnimation,
   createSelectorQuery,
   createIntersectionObserver,
