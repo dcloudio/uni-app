@@ -1,4 +1,3 @@
-import path from 'path'
 import type { CompilerOptions } from '@dcloudio/uni-mp-compiler'
 import {
   COMPONENT_CUSTOM_HIDDEN,
@@ -8,7 +7,10 @@ import {
   transformComponentLink,
   transformRef,
 } from '@dcloudio/uni-cli-shared'
-import type { UniMiniProgramPluginOptions } from '@dcloudio/uni-mp-vite'
+import {
+  type UniMiniProgramPluginOptions,
+  resolveMiniProgramRuntime,
+} from '@dcloudio/uni-mp-vite'
 import { transformAd } from './transforms/transformAd'
 
 import source from './project.config.json'
@@ -103,15 +105,16 @@ export const miniProgram: MiniProgramCompilerOptions = {
   },
 }
 const projectConfigFilename = 'project.config.json'
+
 export const options: UniMiniProgramPluginOptions = {
   cdn: 1,
   vite: {
     inject: {
-      uni: [path.resolve(__dirname, 'uni.api.esm.js'), 'default'],
-      wx: [path.resolve(__dirname, 'uni.api.esm.js'), 'wx'],
+      uni: [resolveMiniProgramRuntime(__dirname, 'uni.api.esm.js'), 'default'],
+      wx: [resolveMiniProgramRuntime(__dirname, 'uni.api.esm.js'), 'wx'],
     },
     alias: {
-      'uni-mp-runtime': path.resolve(__dirname, 'uni.mp.esm.js'),
+      'uni-mp-runtime': resolveMiniProgramRuntime(__dirname, 'uni.mp.esm.js'),
     },
     copyOptions: {
       assets: [COMPONENTS_DIR],

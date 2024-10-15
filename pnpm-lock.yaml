@@ -1721,6 +1721,9 @@ importers:
       '@dcloudio/uni-shared':
         specifier: 3.0.0-alpha-4030120240925001
         version: link:../uni-shared
+      '@vue/compiler-dom':
+        specifier: 3.4.21
+        version: 3.4.21
       '@vue/compiler-sfc':
         specifier: 3.4.21
         version: 3.4.21
@@ -4113,8 +4116,8 @@ packages:
   bcrypt-pbkdf@1.0.2:
     resolution: {integrity: sha512-qeFIXtP4MSoi6NLqO12WfqARWWuCKi2Rn/9hJLEmtB5yTNr9DqFWkJRCf2qShWzPeAMRnOgCrq0sg/KLv5ES9w==}
 
-  bignumber.js@https://codeload.github.com/frozeman/bignumber.js-nolookahead/tar.gz/57692b3ecfc98bbdd6b3a516cb2353652ea49934:
-    resolution: {tarball: https://codeload.github.com/frozeman/bignumber.js-nolookahead/tar.gz/57692b3ecfc98bbdd6b3a516cb2353652ea49934}
+  bignumber.js@git+https://git@github.com:frozeman/bignumber.js-nolookahead.git#57692b3ecfc98bbdd6b3a516cb2353652ea49934:
+    resolution: {commit: 57692b3ecfc98bbdd6b3a516cb2353652ea49934, repo: git@github.com:frozeman/bignumber.js-nolookahead.git, type: git}
     version: 2.0.7
 
   binary-extensions@2.3.0:
@@ -9998,7 +10001,7 @@ snapshots:
     dependencies:
       tweetnacl: 0.14.5
 
-  bignumber.js@https://codeload.github.com/frozeman/bignumber.js-nolookahead/tar.gz/57692b3ecfc98bbdd6b3a516cb2353652ea49934: {}
+  bignumber.js@git+https://git@github.com:frozeman/bignumber.js-nolookahead.git#57692b3ecfc98bbdd6b3a516cb2353652ea49934: {}
 
   binary-extensions@2.3.0: {}
 
@@ -13785,7 +13788,7 @@ snapshots:
 
   web3@0.20.7:
     dependencies:
-      bignumber.js: https://codeload.github.com/frozeman/bignumber.js-nolookahead/tar.gz/57692b3ecfc98bbdd6b3a516cb2353652ea49934
+      bignumber.js: git+https://git@github.com:frozeman/bignumber.js-nolookahead.git#57692b3ecfc98bbdd6b3a516cb2353652ea49934
       crypto-js: 3.3.0
       utf8: 2.1.2
       xhr2-cookies: 1.1.0

@@ -1,3 +1,5 @@
+import fs from 'fs-extra'
+import path from 'path'
 import type { AliasOptions, ResolvedConfig } from 'vite'
 import {
   type AppJson,
@@ -9,6 +11,7 @@ import {
   initPostcssPlugin,
   parseManifestJsonOnce,
   parseRpx2UnitOnce,
+  parseUniXFlexDirection,
   resolveBuiltIn,
   resolveVueI18nRuntime,
 } from '@dcloudio/uni-cli-shared'
@@ -104,7 +107,7 @@ export function uniMiniProgramPlugin(
     style,
   } = options
 
-  let nvueCssEmitted = false
+  let resetCssEmitted = false
 
   let resolvedConfig: ResolvedConfig
 
@@ -189,19 +192,42 @@ export function uniMiniProgramPlugin(
           source: templateFiles[filename],
         })
       })
-      if (!nvueCssEmitted) {
-        const nvueCssPaths = getNVueCssPaths(resolvedConfig)
-        if (nvueCssPaths && nvueCssPaths.length) {
-          nvueCssEmitted = true
+      if (!resetCssEmitted) {
+        if (process.env.UNI_APP_X === 'true') {
+          resetCssEmitted = true
           this.emitFile({
             type: 'asset',
-            fileName: 'nvue' + style.extname,
-            source: genNVueCssCode(
+            fileName: 'uvue' + style.extname,
+            source: genUVueCssCode(
               parseManifestJsonOnce(process.env.UNI_INPUT_DIR)
             ),
           })
+        } else {
+          const nvueCssPaths = getNVueCssPaths(resolvedConfig)
+          if (nvueCssPaths && nvueCssPaths.length) {
+            resetCssEmitted = true
+            this.emitFile({
+              type: 'asset',
+              fileName: 'nvue' + style.extname,
+              source: genNVueCssCode(
+                parseManifestJsonOnce(process.env.UNI_INPUT_DIR)
+              ),
+            })
+          }
         }
       }
     },
   }
+}
+
+export function genUVueCssCode(manifestJson: Record<string, any>) {
+  let cssCode = fs.readFileSync(
+    path.resolve(__dirname, '../../lib/uvue.css'),
+    'utf8'
+  )
+  const flexDirection = parseUniXFlexDirection(manifestJson)
+  if (flexDirection !== 'column') {
+    cssCode = cssCode.replace('column', flexDirection)
+  }
+  return cssCode
 }

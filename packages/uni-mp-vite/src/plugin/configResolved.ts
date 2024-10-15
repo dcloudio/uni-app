@@ -94,6 +94,10 @@ export function createConfigResolved({
         chunkCssCode(filename, cssCode) {
           cssCode = transformScopedCss(cssCode)
           if (filename === 'app' + cssExtname) {
+            const resetCssCode =
+              process.env.UNI_APP_X === 'true'
+                ? `@import "./uvue${extname}";\n`
+                : ''
             const componentCustomHiddenCss =
               (component &&
                 component.vShow &&
@@ -101,16 +105,19 @@ export function createConfigResolved({
               ''
             if (config.isProduction) {
               return (
+                resetCssCode +
                 cssCode +
                 genShadowCss(cdn || 0) +
                 cssVars +
                 componentCustomHiddenCss
               )
             } else {
-              return cssCode + cssVars + componentCustomHiddenCss
+              return resetCssCode + cssCode + cssVars + componentCustomHiddenCss
             }
           }
-
+          if (process.env.UNI_APP_X === 'true') {
+            return cssCode
+          }
           const nvueCssPaths = getNVueCssPaths(config)
           if (!nvueCssPaths || !nvueCssPaths.length) {
             return cssCode

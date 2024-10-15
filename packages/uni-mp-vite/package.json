@@ -5,7 +5,8 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [
-    "dist"
+    "dist",
+    "lib"
   ],
   "repository": {
     "type": "git",
@@ -22,6 +23,7 @@
     "@dcloudio/uni-mp-compiler": "3.0.0-alpha-4030120240925001",
     "@dcloudio/uni-mp-vue": "3.0.0-alpha-4030120240925001",
     "@dcloudio/uni-shared": "3.0.0-alpha-4030120240925001",
+    "@vue/compiler-dom": "3.4.21",
     "@vue/compiler-sfc": "3.4.21",
     "@vue/shared": "3.4.21",
     "debug": "^4.3.3"

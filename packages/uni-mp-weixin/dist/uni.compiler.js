@@ -2,13 +2,11 @@
 
 var uniCliShared = require('@dcloudio/uni-cli-shared');
 var initMiniProgramPlugin = require('@dcloudio/uni-mp-vite');
-var path = require('path');
 var compilerCore = require('@vue/compiler-core');
 
 function _interopDefault (e) { return e && e.__esModule ? e : { default: e }; }
 
 var initMiniProgramPlugin__default = /*#__PURE__*/_interopDefault(initMiniProgramPlugin);
-var path__default = /*#__PURE__*/_interopDefault(path);
 
 function getDefaultExportFromCjs (x) {
 	return x && x.__esModule && Object.prototype.hasOwnProperty.call(x, 'default') ? x['default'] : x;
@@ -206,11 +204,11 @@ const options = {
     cdn: 1,
     vite: {
         inject: {
-            uni: [path__default.default.resolve(__dirname, 'uni.api.esm.js'), 'default'],
-            wx: [path__default.default.resolve(__dirname, 'uni.api.esm.js'), 'wx'],
+            uni: [initMiniProgramPlugin.resolveMiniProgramRuntime(__dirname, 'uni.api.esm.js'), 'default'],
+            wx: [initMiniProgramPlugin.resolveMiniProgramRuntime(__dirname, 'uni.api.esm.js'), 'wx'],
         },
         alias: {
-            'uni-mp-runtime': path__default.default.resolve(__dirname, 'uni.mp.esm.js'),
+            'uni-mp-runtime': initMiniProgramPlugin.resolveMiniProgramRuntime(__dirname, 'uni.mp.esm.js'),
         },
         copyOptions: {
             assets: [COMPONENTS_DIR],

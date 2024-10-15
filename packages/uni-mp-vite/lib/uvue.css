@@ -1,0 +1,34 @@
+label,
+scroll-view,
+swiper-item,
+view {
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  flex-grow: 0;
+  flex-basis: auto;
+  align-items: stretch;
+  align-content: flex-start;
+}
+
+image,
+input,
+scroll-view,
+swiper,
+swiper-item,
+text,
+textarea,
+video,
+view {
+  position: relative;
+  border: 0 solid #000;
+  box-sizing: border-box;
+}
+
+swiper-item {
+  position: absolute;
+}
+
+button {
+  margin: 0;
+}
