@@ -76,7 +76,7 @@ export function normalizeAppUniConfig(
     darkmode: platformConfig.darkmode || false,
     themeConfig: normalizeThemeConfigOnce(platformConfig),
     // @ts-expect-error
-    qqMapKey: platformConfig?.distribute?.sdkConfigs?.maps?.qqmap?.key,
+    qqMapKey: platformConfig?.distribute?.sdkConfigs?.maps?.tencent?.key,
   }
   // TODO 待支持分包
   return JSON.stringify(config)
