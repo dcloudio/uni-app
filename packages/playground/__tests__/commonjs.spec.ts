@@ -42,7 +42,7 @@ describe('commonjs playground', () => {
           expect(
             fs
               .readFileSync(path.resolve(outDir, expectFile), 'utf-8')
-              .includes('CONNECTION TIMEOUT: timeout of')
+              .includes('const name = "test";')
           ).toBe(true)
         }
       })

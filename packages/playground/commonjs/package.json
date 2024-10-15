@@ -51,10 +51,10 @@
     "@dcloudio/uni-mp-toutiao": "../../uni-mp-toutiao",
     "@dcloudio/uni-mp-weixin": "../../uni-mp-weixin",
     "@dcloudio/uni-quickapp-webview": "../../uni-quickapp-webview",
+    "test-data": "./test-data",
     "vue": "3.4.21",
     "vue-router": "^4.3.0",
-    "vuex": "^4.1.0",
-    "web3": "0.20.7"
+    "vuex": "^4.1.0"
   },
   "devDependencies": {
     "@dcloudio/uni-cli-shared": "../../uni-cli-shared",
