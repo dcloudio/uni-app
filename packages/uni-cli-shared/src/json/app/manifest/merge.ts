@@ -7,9 +7,7 @@ export function initRecursiveMerge(
   const platformConfig: Record<string, any> = {
     plus: userManifestJson['app-plus'],
   }
-  if (process.env.UNI_PLATFORM === 'app-harmony') {
-    platformConfig['app-harmony'] = userManifestJson['app-harmony']
-  }
+  platformConfig['app-harmony'] = userManifestJson['app-harmony']
   return recursive(
     true,
     manifestJson,

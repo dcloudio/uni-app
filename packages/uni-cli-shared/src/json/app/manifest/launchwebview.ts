@@ -25,6 +25,17 @@ export function initLaunchwebview(
     }
   }
 
+  if (manifestJson['app-harmony'].useragent.concatenate) {
+    if (manifestJson['app-harmony'].useragent.value) {
+      manifestJson['app-harmony'].useragent.value = [
+        'uni-app',
+        manifestJson['app-harmony'].useragent.value,
+      ].join(' ')
+    } else {
+      manifestJson['app-harmony'].useragent.value = 'uni-app'
+    }
+  }
+
   extend(manifestJson.plus.launchwebview, {
     id: '1',
     kernel: 'WKWebview',

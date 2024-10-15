@@ -34,5 +34,11 @@ const defaultManifestJson = `{
         },
         "popGesture": "close",
         "launchwebview": {}
+    },
+    "app-harmony": {
+        "useragent": {
+            "value": "",
+            "concatenate": true
+        }
     }
-  }`
+}`
