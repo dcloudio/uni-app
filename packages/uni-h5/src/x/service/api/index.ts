@@ -131,8 +131,8 @@ export {
 
 //#if !_NODE_JS_
 export * from '../../../service/api/context/createCanvasContextAsync'
-export * from '../../../service/api/route/openDialogPage'
-export * from '../../../service/api/route/closeDialogPage'
+export * from './route/openDialogPage'
+export * from './route/closeDialogPage'
 //#endif
 
 // export * from '@dcloudio/uni-ext-api/uni-getLaunchOptionsSync'

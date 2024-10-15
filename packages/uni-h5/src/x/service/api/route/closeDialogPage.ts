@@ -42,7 +42,7 @@ export const closeDialogPage = (options?: CloseDialogPageOptions) => {
       }
       if ((!dialogPages[i] as unknown as UniDialogPage).$disableEscBack) {
         decrementEscBackPageNum()
-      } 
+      }
     }
     dialogPages.length = 0
   }
