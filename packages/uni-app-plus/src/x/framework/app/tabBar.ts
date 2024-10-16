@@ -77,10 +77,7 @@ function init() {
   const list = getTabList()
   const style = new Map<string, any | null>()
   style.set('navigationStyle', 'custom')
-  style.set(
-    'pageOrientation',
-    __uniConfig.globalStyle?.pageOrientation ?? 'portrait'
-  )
+
   const page = getPageManager().createPage('tabBar', 'tabBar', style)
   const document = page.createDocument(
     new NodeData(
