@@ -76,7 +76,7 @@ async function resolveExtApi(target: Target, source: string) {
     extApiTempDir,
     name,
     'utssdk',
-    'app-android',
+    'web',
     'index.uts.ts'
   )
   return fs.existsSync(filename)
