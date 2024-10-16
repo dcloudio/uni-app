@@ -1956,11 +1956,13 @@ function initPage(vm) {
   const route = vm.$route;
   const page = initPublicPage(route);
   initPageVm(vm, page);
-  currentPagesMap.set(normalizeRouteKey(page.path, page.id), vm);
-  if (currentPagesMap.size === 1) {
-    setTimeout(() => {
-      handleBeforeEntryPageRoutes();
-    }, 0);
+  {
+    currentPagesMap.set(normalizeRouteKey(page.path, page.id), vm);
+    if (currentPagesMap.size === 1) {
+      setTimeout(() => {
+        handleBeforeEntryPageRoutes();
+      }, 0);
+    }
   }
 }
 function normalizeRouteKey(path, id2) {

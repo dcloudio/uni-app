@@ -2832,29 +2832,16 @@ function getPageInstanceByChild(child) {
   }
   return pageInstance;
 }
-const SEP = "$$";
-const currentPagesMap = /* @__PURE__ */ new Map();
 const homeDialogPages = [];
-class UniBasePageImpl {
-  constructor({ route, options }) {
-    this.getParentPage = () => null;
-    this.route = route;
-    this.options = options;
-  }
-  getDialogPages() {
-    return [];
-  }
-}
-class UniPageImpl extends UniBasePageImpl {
+class UniPageImpl {
   constructor({
     route,
     options,
     vm
   }) {
-    super({ route, options });
-    this.getParentPage = () => {
-      return null;
-    };
+    this.getParentPage = () => null;
+    this.route = route;
+    this.options = options;
     this.vm = vm;
     this.$vm = vm;
   }
@@ -2877,10 +2864,6 @@ class UniPageImpl extends UniBasePageImpl {
     const uniPageBody = document.querySelector("uni-page-body");
     return uniPageBody ? uniPageBody.querySelector(`#${id2}`) : null;
   }
-  getDialogPages() {
-    var _a;
-    return ((_a = getPageInstanceByVm(this.vm)) == null ? void 0 : _a.$dialogPages.value) || [];
-  }
   getAndroidView() {
     return null;
   }
@@ -2891,7 +2874,98 @@ class UniPageImpl extends UniBasePageImpl {
     }
     return document.querySelector("uni-page-body");
   }
+  getDialogPages() {
+    return [];
+  }
 }
+class UniNormalPageImpl extends UniPageImpl {
+  getDialogPages() {
+    var _a;
+    return this.vm ? (_a = getPageInstanceByVm(this.vm)) == null ? void 0 : _a.$dialogPages.value : [];
+  }
+  constructor({
+    route,
+    options,
+    vm
+  }) {
+    super({ route, options, vm });
+  }
+}
+function initXPage(vm, route, page) {
+  var _a, _b;
+  initPageVm(vm, page);
+  vm.$basePage = vm.$page;
+  const pageInstance = getPageInstanceByVm(vm);
+  if ((pageInstance == null ? void 0 : pageInstance.attrs.type) !== "dialog") {
+    const uniPage = new UniNormalPageImpl({
+      route: (route == null ? void 0 : route.path) || "",
+      options: new UTSJSONObject((route == null ? void 0 : route.query) || {}),
+      vm
+    });
+    vm.$page = uniPage;
+    const pageMeta = page.meta;
+    uniPage.setPageStyle = (style) => {
+      for (const key in style) {
+        switch (key) {
+          case "navigationBarBackgroundColor":
+            pageMeta.navigationBar.backgroundColor = style[key];
+            break;
+          case "navigationBarTextStyle":
+            const textStyle = style[key];
+            if (textStyle == null) {
+              continue;
+            }
+            pageMeta.navigationBar.titleColor = ["black", "white"].includes(
+              textStyle
+            ) ? uniShared.normalizeTitleColor(textStyle || "") : textStyle;
+            break;
+          case "navigationBarTitleText":
+            pageMeta.navigationBar.titleText = style[key];
+            break;
+          case "titleImage":
+            pageMeta.navigationBar.titleImage = style[key];
+            break;
+          case "navigationStyle":
+            pageMeta.navigationBar.style = style[key];
+            break;
+          default:
+            pageMeta[key] = style[key];
+            break;
+        }
+      }
+    };
+    uniPage.getPageStyle = () => new UTSJSONObject({
+      navigationBarBackgroundColor: pageMeta.navigationBar.backgroundColor,
+      navigationBarTextStyle: pageMeta.navigationBar.titleColor,
+      navigationBarTitleText: pageMeta.navigationBar.titleText,
+      titleImage: pageMeta.navigationBar.titleImage || "",
+      navigationStyle: pageMeta.navigationBar.style || "default",
+      disableScroll: pageMeta.disableScroll || false,
+      enablePullDownRefresh: pageMeta.enablePullDownRefresh || false,
+      onReachBottomDistance: pageMeta.onReachBottomDistance || uniShared.ON_REACH_BOTTOM_DISTANCE,
+      backgroundColorContent: pageMeta.backgroundColorContent
+    });
+    vm.$dialogPage = (_a = getPageInstanceByVm(vm)) == null ? void 0 : _a.$dialogPage;
+    currentPagesMap.set(normalizeRouteKey(page.path, page.id), vm);
+    if (currentPagesMap.size === 1) {
+      setTimeout(() => {
+        handleBeforeEntryPageRoutes();
+      }, 0);
+      if (homeDialogPages.length) {
+        homeDialogPages.forEach((dialogPage) => {
+          dialogPage.getParentPage = () => vm.$page;
+          pageInstance.$dialogPages.value.push(dialogPage);
+        });
+        homeDialogPages.length = 0;
+      }
+    }
+  } else {
+    vm.$page = (_b = getPageInstanceByVm(vm)) == null ? void 0 : _b.$dialogPage;
+    pageInstance.$dialogPage.$vm = vm;
+  }
+}
+const SEP = "$$";
+const currentPagesMap = /* @__PURE__ */ new Map();
 function getPage$BasePage(page) {
   return page.$basePage;
 }
@@ -2941,12 +3015,6 @@ function removeRouteCache(routeKey) {
 }
 function removePage(routeKey, removeRouteCaches = true) {
   const pageVm = currentPagesMap.get(routeKey);
-  {
-    const dialogPages = pageVm.$page.getDialogPages();
-    for (let i = dialogPages.length - 1; i >= 0; i--) {
-      uni.closeDialogPage({ dialogPage: dialogPages[i] });
-    }
-  }
   pageVm.$.__isUnload = true;
   invokeHook(pageVm, uniShared.ON_UNLOAD);
   currentPagesMap.delete(routeKey);
@@ -2971,87 +3039,11 @@ function initPublicPage(route) {
   return initPageInternalInstance("navigateTo", fullPath, {}, meta);
 }
 function initPage(vm) {
-  var _a, _b;
   const route = vm.$route;
   const page = initPublicPage(route);
   initPageVm(vm, page);
   {
-    vm.$basePage = vm.$page;
-    const pageInstance = getPageInstanceByVm(vm);
-    if ((pageInstance == null ? void 0 : pageInstance.attrs.type) !== "dialog") {
-      const uniPage = new UniPageImpl({
-        route: (route == null ? void 0 : route.path) || "",
-        options: new UTSJSONObject((route == null ? void 0 : route.query) || {}),
-        vm
-      });
-      vm.$page = uniPage;
-      const pageMeta = page.meta;
-      uniPage.setPageStyle = (style) => {
-        for (const key in style) {
-          switch (key) {
-            case "navigationBarBackgroundColor":
-              pageMeta.navigationBar.backgroundColor = style[key];
-              break;
-            case "navigationBarTextStyle":
-              const textStyle = style[key];
-              if (textStyle == null) {
-                continue;
-              }
-              pageMeta.navigationBar.titleColor = ["black", "white"].includes(
-                textStyle
-              ) ? uniShared.normalizeTitleColor(textStyle || "") : textStyle;
-              break;
-            case "navigationBarTitleText":
-              pageMeta.navigationBar.titleText = style[key];
-              break;
-            case "titleImage":
-              pageMeta.navigationBar.titleImage = style[key];
-              break;
-            case "navigationStyle":
-              pageMeta.navigationBar.style = style[key];
-              break;
-            default:
-              pageMeta[key] = style[key];
-              break;
-          }
-        }
-      };
-      uniPage.getPageStyle = () => new UTSJSONObject({
-        navigationBarBackgroundColor: pageMeta.navigationBar.backgroundColor,
-        navigationBarTextStyle: pageMeta.navigationBar.titleColor,
-        navigationBarTitleText: pageMeta.navigationBar.titleText,
-        titleImage: pageMeta.navigationBar.titleImage || "",
-        navigationStyle: pageMeta.navigationBar.style || "default",
-        disableScroll: pageMeta.disableScroll || false,
-        enablePullDownRefresh: pageMeta.enablePullDownRefresh || false,
-        onReachBottomDistance: pageMeta.onReachBottomDistance || uniShared.ON_REACH_BOTTOM_DISTANCE,
-        backgroundColorContent: pageMeta.backgroundColorContent
-      });
-      vm.$dialogPage = (_a = getPageInstanceByVm(vm)) == null ? void 0 : _a.$dialogPage;
-    } else {
-      vm.$page = (_b = getPageInstanceByVm(vm)) == null ? void 0 : _b.$dialogPage;
-    }
-  }
-  {
-    const pageInstance = getPageInstanceByVm(vm);
-    if ((pageInstance == null ? void 0 : pageInstance.attrs.type) !== "dialog") {
-      currentPagesMap.set(normalizeRouteKey(page.path, page.id), vm);
-      if (currentPagesMap.size === 1) {
-        setTimeout(() => {
-          handleBeforeEntryPageRoutes();
-        }, 0);
-        if (homeDialogPages.length) {
-          homeDialogPages.forEach((dialogPage) => {
-            dialogPage.getParentPage = () => vm.$page;
-            pageInstance.$dialogPages.value.push(dialogPage);
-          });
-          homeDialogPages.length = 0;
-        }
-      }
-    } else {
-      pageInstance.$dialogPage.$vm = vm;
-    }
-    return;
+    initXPage(vm, route, page);
   }
 }
 function normalizeRouteKey(path, id2) {

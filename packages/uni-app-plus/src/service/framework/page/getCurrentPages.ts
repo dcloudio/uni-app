@@ -3,7 +3,6 @@ import { formatLog } from '@dcloudio/uni-shared'
 import type { ComponentPublicInstance } from 'vue'
 import { getVueApp } from '../app/vueApp'
 
-
 export function getPage$BasePage(
   page: ComponentPublicInstance
 ): Page.PageInstance['$page'] {

@@ -1199,7 +1199,7 @@ var tabs = /* @__PURE__ */ new Map();
 var BORDER_COLORS = /* @__PURE__ */ new Map([["white", "rgba(255, 255, 255, 0.33)"], ["black", "rgba(0, 0, 0, 0.33)"]]);
 function getBorderStyle(borderStyle) {
   var value = BORDER_COLORS.get(borderStyle);
-  if (!value) {
+  if (borderStyle && !value) {
     console.warn("4.23 版本起，在 pages.json 设置 tabbar borderStyle、在 uni.setTabBarStyle 设置 borderStyle 时仅支持 white/black，推荐使用 borderColor 自定义颜色。");
   }
   return value || BORDER_COLORS.get("black");
@@ -1656,7 +1656,7 @@ function registerDialogPage(_ref2, dialogPage, onCreated) {
   var parentPage = dialogPage.getParentPage();
   var nativePage2 = getPageManager().createDialogPage(
     // @ts-expect-error
-    parentPage ? parentPage.nativePageId : "",
+    parentPage ? parentPage.__nativePageId : "",
     id2.toString(),
     url,
     pageStyle
@@ -2181,7 +2181,7 @@ function initComponentInstance(app) {
       var pageId = instance.root.attrs.__pageId;
       vm.$nativePage = getNativeApp().pageManager.findPageById(pageId + "");
       if (vm.$page) {
-        vm.$page.nativePageId = vm.$nativePage.pageId;
+        vm.$page.__nativePageId = vm.$nativePage.pageId;
       }
     },
     beforeMount() {
@@ -2533,7 +2533,7 @@ var openDialogPage = (options) => {
     // 有动画时延迟创建 vm
     noAnimation ? 0 : 1
   );
-  dialogPage.nativePageId = page.pageId;
+  dialogPage.__nativePageId = page.pageId;
   if (noAnimation) {
     callback(page);
   }
