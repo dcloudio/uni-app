@@ -24,7 +24,7 @@ const FORMAT = process.env.FORMAT as 'es' | 'cjs'
 
 const isX = process.env.UNI_APP_X === 'true'
 // 暂不启用
-const isNewX = isX && !!process.env.UNI_APP_EXT_API_DIR && false
+const isNewX = isX && !!process.env.UNI_APP_EXT_API_DIR
 
 const rollupPlugins = [
   replace({

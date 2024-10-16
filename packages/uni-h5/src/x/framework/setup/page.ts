@@ -1,4 +1,4 @@
-import type { ComponentPublicInstance } from 'vue'
+import { type ComponentPublicInstance, markRaw } from 'vue'
 import { getCurrentPage, initPageVm } from '@dcloudio/uni-core'
 import {
   ON_REACH_BOTTOM_DISTANCE,
@@ -124,7 +124,7 @@ export class UniDialogPageImpl extends UniPageImpl implements UniDialogPage {
     $disableEscBack?: boolean | null
   }) {
     super({ route, options, vm: null })
-    this.$component = $component
+    this.$component = markRaw($component)
     this.getParentPage = getParentPage
     this.$disableEscBack = !!$disableEscBack
   }

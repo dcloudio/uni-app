@@ -61,9 +61,17 @@ export function clearExtApiTempDir(target: Target) {
   fs.emptyDirSync(resolveExtApiTempDir(target))
 }
 
-async function resolveExtApi(target: Target, name: string) {
+async function resolveExtApi(target: Target, source: string) {
+  let name = source
+  if (source.includes('/')) {
+    name = source.split('/')[0]
+  }
   const extApiTempDir = resolveExtApiTempDir(target)
   await checkExtApiDir(target, name)
+  // 指向了内部文件
+  if (name !== source) {
+    return path.resolve(extApiTempDir, source)
+  }
   const filename = path.resolve(
     extApiTempDir,
     name,

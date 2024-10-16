@@ -2,7 +2,8 @@ import { addLeadingSlash, removeLeadingSlash } from '@dcloudio/uni-shared'
 import { get$pageByPage } from './util'
 
 export function normalizeRoute(toRoute: string) {
-  if (toRoute.indexOf('/') === 0) {
+  // 支持 uni:showActionSheet 这种内置页面形式
+  if (toRoute.indexOf('/') === 0 || toRoute.indexOf('uni:') === 0) {
     return toRoute
   }
   let fromRoute = ''
