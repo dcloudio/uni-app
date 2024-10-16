@@ -8,6 +8,7 @@ import babel from '@rollup/plugin-babel'
 import { cssTarget } from '@dcloudio/uni-cli-shared'
 import { isAppIOSUVueNativeTag } from '@dcloudio/uni-shared'
 import autoprefixer from 'autoprefixer'
+import { uts2ts } from '../../scripts/ext-api'
 
 function resolve(file: string) {
   return path.resolve(__dirname, file)
@@ -109,6 +110,7 @@ export default defineConfig({
     },
   },
   plugins: [
+    uts2ts({ target: 'uni-app-plus', platform: 'app-ios' }),
     vue({
       template: {
         compilerOptions: {

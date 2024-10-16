@@ -86,7 +86,7 @@ function invokeHook(vm, name, args) {
   return hooks && invokeArrayFns(hooks, args);
 }
 function normalizeRoute(toRoute) {
-  if (toRoute.indexOf("/") === 0) {
+  if (toRoute.indexOf("/") === 0 || toRoute.indexOf("uni:") === 0) {
     return toRoute;
   }
   var fromRoute = "";

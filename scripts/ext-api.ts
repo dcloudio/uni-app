@@ -4,13 +4,18 @@ import { type Plugin } from 'vite'
 import execa from 'execa'
 import { sync } from 'fast-glob'
 
-type Target = 'uni-h5' | 'uni-app-harmony'
+type Target = 'uni-h5' | 'uni-app-plus'
 
 function resolve(file: string) {
   return path.resolve(__dirname, file)
 }
 
-export function uts2ts(): Plugin {
+interface Options {
+  target: Target
+  platform: 'web' | 'app-ios'
+}
+
+export function uts2ts({ target, platform }: Options): Plugin {
   return {
     name: 'uts2ts',
     config() {
@@ -35,7 +40,7 @@ export function uts2ts(): Plugin {
               find: /^@dcloudio\/uni-ext-api\/(.*)/,
               replacement: '$1',
               customResolver(source) {
-                return resolveExtApi('uni-h5', source)
+                return resolveExtApi(target, platform, source)
               },
             },
           ],
@@ -43,11 +48,11 @@ export function uts2ts(): Plugin {
       }
     },
     buildStart() {
-      clearExtApiTempDir('uni-h5')
+      clearExtApiTempDir(target)
     },
     buildEnd(error) {
       if (!error) {
-        clearExtApiTempDir('uni-h5')
+        clearExtApiTempDir(target)
       }
     },
   }
@@ -61,7 +66,11 @@ export function clearExtApiTempDir(target: Target) {
   fs.emptyDirSync(resolveExtApiTempDir(target))
 }
 
-async function resolveExtApi(target: Target, source: string) {
+async function resolveExtApi(
+  target: Target,
+  platform: Options['platform'],
+  source: string
+) {
   let name = source
   if (source.includes('/')) {
     name = source.split('/')[0]
@@ -76,7 +85,7 @@ async function resolveExtApi(target: Target, source: string) {
     extApiTempDir,
     name,
     'utssdk',
-    'web',
+    platform,
     'index.uts.ts'
   )
   return fs.existsSync(filename)

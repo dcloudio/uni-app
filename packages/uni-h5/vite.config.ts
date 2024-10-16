@@ -113,7 +113,9 @@ export default defineConfig({
     ],
   },
   plugins: [
-    ...(isNewX ? [uniExtApi(), uts2ts()] : []),
+    ...(isNewX
+      ? [uniExtApi(), uts2ts({ target: 'uni-h5', platform: 'web' })]
+      : []),
     vue({
       template: {
         compilerOptions: {

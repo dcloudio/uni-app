@@ -1,0 +1,11 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "declaration": true,
+    "paths": {
+      "@dcloudio/*": ["packages/*/src"],
+      "@dcloudio/uni-platform": ["packages/uni-h5/src/platform/index.ts"]
+    }
+  }
+}
