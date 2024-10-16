@@ -8779,7 +8779,8 @@ function invokeHook(vm, name, args) {
 }
 
 function normalizeRoute(toRoute) {
-    if (toRoute.indexOf('/') === 0) {
+    // 支持 uni:showActionSheet 这种内置页面形式
+    if (toRoute.indexOf('/') === 0 || toRoute.indexOf('uni:') === 0) {
         return toRoute;
     }
     let fromRoute = '';

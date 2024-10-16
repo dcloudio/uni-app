@@ -7315,9 +7315,7 @@ export function initUniExtApi() {
             res.reject(message);
         }
     }, ShowToastProtocol, ShowToastApiOptions) as ShowToast;
-    const hideToast: HideToast = defineAsyncApi(API_HIDE_TOAST, (_, res: ApiExecutor<Object>)=>{
-        res.reject('hideToast is not supported on HarmonyOS');
-    }) as HideToast;
+    const hideToast: HideToast = defineAsyncApi(API_HIDE_TOAST, (_, res: ApiExecutor<Object>)=>{}) as HideToast;
     const showModal: ShowModal = defineAsyncApi<ShowModalOptions, ShowModalSuccess>(API_SHOW_MODAL, async (args: ShowModalOptions, res: ApiExecutor<ShowModalSuccess>)=>{
         const modalRes = await new Promise<ShowModalSuccess>((resolve, reject)=>{
             const confirmButton: AlertDialogButtonOptions = {
