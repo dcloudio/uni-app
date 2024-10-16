@@ -11,7 +11,12 @@ import vueJsx from '@vitejs/plugin-vue-jsx'
 import AutoImport from 'unplugin-auto-import/vite'
 import type { OutputChunk } from 'rollup'
 
-import { normalizePath, stripOptions } from '@dcloudio/uni-cli-shared'
+import {
+  initPreContext,
+  normalizePath,
+  stripOptions,
+  uniPrePlugin,
+} from '@dcloudio/uni-cli-shared'
 import { isH5CustomElement } from '@dcloudio/uni-shared'
 import { genApiJson } from './api'
 import { uts2ts } from '../../scripts/ext-api'
@@ -26,6 +31,9 @@ const isX = process.env.UNI_APP_X === 'true'
 // 暂不启用
 const isNewX = isX && !!process.env.UNI_APP_EXT_API_DIR
 
+if (isNewX) {
+  initPreContext('web', {}, 'web', true)
+}
 const rollupPlugins = [
   replace({
     values: {
@@ -114,7 +122,12 @@ export default defineConfig({
   },
   plugins: [
     ...(isNewX
-      ? [uniExtApi(), uts2ts({ target: 'uni-h5', platform: 'web' })]
+      ? [
+          // 仅给vue增加条件编译
+          uniPrePlugin({} as any, { include: ['**/*.vue'] }),
+          uniExtApi(),
+          uts2ts({ target: 'uni-h5', platform: 'web' }),
+        ]
       : []),
     vue({
       customElement: isX,

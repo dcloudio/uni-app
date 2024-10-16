@@ -7,10 +7,10 @@ import {
   COMMON_EXCLUDE,
   isNormalCompileTarget,
   requireUniHelpers,
+  uniPrePlugin,
 } from '@dcloudio/uni-cli-shared'
 
 import type { VitePluginUniResolvedOptions } from '../..'
-import { uniPrePlugin } from './pre'
 import { uniJsonPlugin } from './json'
 import { uniPreCssPlugin } from './preCss'
 
