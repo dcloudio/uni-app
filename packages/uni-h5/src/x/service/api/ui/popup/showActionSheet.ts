@@ -1,4 +1,6 @@
+import { isArray } from '@vue/shared'
 import { once } from '@dcloudio/uni-shared'
+import { updateStyle } from '@dcloudio/uni-core'
 
 // @ts-expect-error
 import { showActionSheet as showActionSheetOrig } from '@dcloudio/uni-ext-api/uni-showActionSheet'
@@ -8,7 +10,16 @@ import showActionSheetPage from '@dcloudio/uni-ext-api/uni-showActionSheet/pages
 import { renderPage } from '../utils'
 import { setupPage } from '../../../../../framework/setup'
 
-const registerShowActionSheetPage = once(() => {
+const registerShowActionSheetPageOnce = once(() => {
+  if (
+    isArray(showActionSheetPage.styles) &&
+    showActionSheetPage.styles.length > 0
+  ) {
+    // 插入dom style
+    showActionSheetPage.styles.forEach((style: string, index: number) => {
+      updateStyle(`uni-showActionSheet-style-${index}`, style)
+    })
+  }
   setupPage(showActionSheetPage)
   __uniRoutes.push({
     path: 'uni:showActionSheet',
@@ -29,6 +40,6 @@ const registerShowActionSheetPage = once(() => {
 })
 
 export const showActionSheet = (options: unknown) => {
-  registerShowActionSheetPage()
+  registerShowActionSheetPageOnce()
   return showActionSheetOrig(options)
 }

@@ -117,6 +117,7 @@ export default defineConfig({
       ? [uniExtApi(), uts2ts({ target: 'uni-h5', platform: 'web' })]
       : []),
     vue({
+      customElement: isX,
       template: {
         compilerOptions: {
           isCustomElement: realIsH5CustomElement,
