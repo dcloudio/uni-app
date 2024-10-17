@@ -51,6 +51,9 @@ import {
 } from './utils'
 import type { RouteLocationNormalizedLoaded } from 'vue-router'
 import { useRouter } from 'vue-router'
+//#if _X_
+import { isDialogPageInstance } from '../../x/framework/helpers/utils'
+//#endif
 
 interface SetupComponentOptions {
   clone?: boolean
@@ -123,7 +126,7 @@ export function setupPage(comp: any) {
       instance.attrs.__pageQuery = query
       if (__X__) {
         const pageInstance = getPageInstanceByChild(instance)
-        if (pageInstance.attrs.type === 'dialog') {
+        if (isDialogPageInstance(pageInstance)) {
           instance.attrs.__pageQuery = decodedQuery(
             parseQuery((pageInstance.attrs.route as string).split('?')[1] || '')
           )

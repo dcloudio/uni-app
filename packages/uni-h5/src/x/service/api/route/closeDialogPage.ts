@@ -3,6 +3,7 @@ import { invokeHook } from '@dcloudio/uni-core'
 import { ON_SHOW, ON_UNLOAD } from '@dcloudio/uni-shared'
 import type { CloseDialogPageOptions } from '@dcloudio/uni-app-x/types/uni'
 import type { UniDialogPage } from '@dcloudio/uni-app-x/types/page'
+import { getPageInstanceByVm } from '../../../../framework/setup/utils'
 
 export const closeDialogPage = (options?: CloseDialogPageOptions) => {
   const currentPages = getCurrentPages() as UniPage[]
@@ -15,23 +16,30 @@ export const closeDialogPage = (options?: CloseDialogPageOptions) => {
   if (options?.dialogPage) {
     const dialogPage = options?.dialogPage! as UniDialogPage
     const parentPage = dialogPage.getParentPage()
-    if (parentPage && currentPages.indexOf(parentPage) !== -1) {
-      const parentDialogPages = parentPage.getDialogPages()
-      const index = parentDialogPages.indexOf(dialogPage)
-      parentDialogPages.splice(index, 1)
-      invokeHook(dialogPage.$vm!, ON_UNLOAD)
-      if (index > 0 && index === parentDialogPages.length) {
-        invokeHook(
-          parentDialogPages[parentDialogPages.length - 1].$vm!,
-          ON_SHOW
-        )
-      }
-      if (!dialogPage.$disableEscBack) {
-        decrementEscBackPageNum()
+    if (!dialogPage.route.startsWith('uni:')) {
+      if (parentPage && currentPages.indexOf(parentPage) !== -1) {
+        const parentDialogPages = parentPage.getDialogPages()
+        const index = parentDialogPages.indexOf(dialogPage)
+        parentDialogPages.splice(index, 1)
+        invokeHook(dialogPage.$vm!, ON_UNLOAD)
+        if (index > 0 && index === parentDialogPages.length) {
+          invokeHook(
+            parentDialogPages[parentDialogPages.length - 1].$vm!,
+            ON_SHOW
+          )
+        }
+        if (!dialogPage.$disableEscBack) {
+          decrementEscBackPageNum()
+        }
+      } else {
+        triggerFailCallback(options, 'dialogPage is not a valid page')
+        return
       }
     } else {
-      triggerFailCallback(options, 'dialogPage is not a valid page')
-      return
+      const parentSystemDialogPages = getPageInstanceByVm(parentPage!.vm)
+        ?.$systemDialogPages.value
+      const index = parentSystemDialogPages.indexOf(dialogPage)
+      parentSystemDialogPages.splice(index, 1)
     }
   } else {
     const dialogPages = currentPage.getDialogPages()

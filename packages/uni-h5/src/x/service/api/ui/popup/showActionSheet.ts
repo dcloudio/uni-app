@@ -3,9 +3,9 @@ import { once } from '@dcloudio/uni-shared'
 import { updateStyle } from '@dcloudio/uni-core'
 
 // @ts-expect-error
-import { showActionSheet as showActionSheetOrig } from '@dcloudio/uni-ext-api/uni-showActionSheet'
+import { showActionSheet2 as showActionSheetOrig } from '@dcloudio/uni-ext-api/uni-actionSheet'
 
-import showActionSheetPage from '@dcloudio/uni-ext-api/uni-showActionSheet/pages/showActionSheet/showActionSheet.vue'
+import showActionSheetPage from '@dcloudio/uni-ext-api/uni-actionSheet/pages/actionSheet/actionSheet.vue'
 
 import { renderPage } from '../utils'
 import { setupPage } from '../../../../../framework/setup'
@@ -20,26 +20,27 @@ const registerShowActionSheetPageOnce = once(() => {
       updateStyle(`uni-showActionSheet-style-${index}`, style)
     })
   }
-  setupPage(showActionSheetPage)
+  const __uniPage = setupPage(showActionSheetPage)
   __uniRoutes.push({
-    path: 'uni:showActionSheet',
+    path: 'uni:actionSheet',
     component: {
+      mpType: 'page',
       setup() {
         const app = getApp()
         const query = (app && app.$route && app.$route.query) || {}
-        return () => renderPage(showActionSheetPage, query)
+        return () => renderPage(__uniPage, query)
       },
     },
     meta: {
       isQuit: false,
       isEntry: false,
       navigationBar: {},
-      route: 'uni:showActionSheet',
+      route: 'uni:actionSheet',
     },
   })
 })
 
-export const showActionSheet = (options: unknown) => {
+export const showActionSheet2 = (options: unknown) => {
   registerShowActionSheetPageOnce()
   return showActionSheetOrig(options)
 }

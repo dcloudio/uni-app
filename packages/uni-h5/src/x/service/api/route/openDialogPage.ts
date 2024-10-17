@@ -3,11 +3,13 @@ import { createNormalizeUrl } from '@dcloudio/uni-api'
 import {
   UniDialogPageImpl,
   homeDialogPages,
+  homeSystemDialogPages,
   incrementEscBackPageNum,
 } from '../../../framework/setup/page'
 import { EventChannel, parseUrl } from '@dcloudio/uni-shared'
 import type { OpenDialogPageOptions } from '@dcloudio/uni-app-x/types/uni'
 import type { UniDialogPage } from '@dcloudio/uni-app-x/types/page'
+import { getPageInstanceByVm } from '../../../../framework/setup/utils'
 
 export const openDialogPage = (
   options: OpenDialogPageOptions
@@ -43,18 +45,33 @@ export const openDialogPage = (
       return null
     }
   }
-  if (!currentPages.length) {
-    homeDialogPages.push(dialogPage)
-  } else {
-    if (!parentPage) {
-      parentPage = currentPages[currentPages.length - 1]
+  const isSystemDialog = options.url.startsWith('uni:')
+  if (!isSystemDialog) {
+    if (!currentPages.length) {
+      homeDialogPages.push(dialogPage)
+    } else {
+      if (!parentPage) {
+        parentPage = currentPages[currentPages.length - 1]
+      }
+      dialogPage.getParentPage = () => parentPage!
+      parentPage.getDialogPages().push(dialogPage)
     }
-    dialogPage.getParentPage = () => parentPage!
-    parentPage.getDialogPages().push(dialogPage)
-  }
 
-  if (!options.disableEscBack) {
-    incrementEscBackPageNum()
+    if (!options.disableEscBack) {
+      incrementEscBackPageNum()
+    }
+  } else {
+    if (!currentPages.length) {
+      homeSystemDialogPages.push(dialogPage)
+    } else {
+      if (!parentPage) {
+        parentPage = currentPages[currentPages.length - 1]
+      }
+      dialogPage.getParentPage = () => parentPage!
+      getPageInstanceByVm(parentPage!.vm)?.$systemDialogPages.value.push(
+        dialogPage
+      )
+    }
   }
 
   const successOptions = {

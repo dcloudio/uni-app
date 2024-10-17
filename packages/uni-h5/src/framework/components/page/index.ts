@@ -24,7 +24,16 @@ import PageBody from './pageBody'
 import { providePageMeta } from '../../setup/provide'
 import { getStateId } from '../../../helpers/dom'
 import { stringifyQuery } from '@dcloudio/uni-shared'
+//#if _X_
 import type { UniDialogPage } from '@dcloudio/uni-app-x/types/page'
+import {
+  DIALOG_TAG,
+  SYSTEM_DIALOG_TAG,
+  isDialogPageInstance,
+  isNormalDialogPageInstance,
+  isSystemDialogPageInstance,
+} from '../../../x/framework/helpers/utils'
+//#endif
 
 export default /*#__PURE__*/ defineSystemComponent({
   name: 'Page',
@@ -34,10 +43,11 @@ export default /*#__PURE__*/ defineSystemComponent({
     const pageStyle = {} as Record<string, any>
     useDocumentTitle(pageMeta)
     const currentInstance = getCurrentInstance()
-    currentInstance!.$dialogPages = ref<UniDialogPage[]>([])
     if (__X__) {
+      currentInstance!.$dialogPages = ref<UniDialogPage[]>([])
+      currentInstance!.$systemDialogPages = ref<UniDialogPage[]>([])
       useBackgroundColorContent(pageMeta)
-      if (ctx.attrs.type === 'dialog') {
+      if (isDialogPageInstance(ctx as unknown as ComponentInternalInstance)) {
         navigationBar.style = 'custom'
         pageMeta.route = ctx.attrs.route as string
         const parentInstance = inject(
@@ -45,9 +55,25 @@ export default /*#__PURE__*/ defineSystemComponent({
         ) as ComponentInternalInstance
         if (currentInstance && parentInstance) {
           currentInstance.$parentInstance = parentInstance
-          const parentDialogPages = parentInstance.$dialogPages.value
-          currentInstance.$dialogPage =
-            parentDialogPages[parentDialogPages.length - 1]
+          if (
+            isNormalDialogPageInstance(
+              ctx as unknown as ComponentInternalInstance
+            )
+          ) {
+            const parentDialogPages = parentInstance.$dialogPages.value
+            currentInstance.$dialogPage =
+              parentDialogPages[parentDialogPages.length - 1]
+          }
+          if (
+            isSystemDialogPageInstance(
+              ctx as unknown as ComponentInternalInstance
+            )
+          ) {
+            const parentSystemDialogPages =
+              parentInstance.$systemDialogPages.value
+            currentInstance.$dialogPage =
+              parentSystemDialogPages[parentSystemDialogPages.length - 1]
+          }
         }
       } else {
         provide('parentInstance', currentInstance)
@@ -65,13 +91,27 @@ export default /*#__PURE__*/ defineSystemComponent({
               createVNode(PageHead),
               createPageBodyVNode(ctx),
               __X__
-                ? createDialogPageVNode(currentInstance!.$dialogPages)
+                ? (createDialogPageVNode(
+                    currentInstance!.$dialogPages,
+                    DIALOG_TAG
+                  ),
+                  createDialogPageVNode(
+                    currentInstance!.$systemDialogPages,
+                    SYSTEM_DIALOG_TAG
+                  ))
                 : null,
             ]
           : [
               createPageBodyVNode(ctx),
               __X__
-                ? createDialogPageVNode(currentInstance!.$dialogPages)
+                ? (createDialogPageVNode(
+                    currentInstance!.$dialogPages,
+                    DIALOG_TAG
+                  ),
+                  createDialogPageVNode(
+                    currentInstance!.$systemDialogPages,
+                    SYSTEM_DIALOG_TAG
+                  ))
                 : null,
             ]
       )
@@ -92,7 +132,10 @@ function createPageBodyVNode(ctx: SetupContext) {
   )
 }
 
-function createDialogPageVNode(dialogPages: Ref<UniDialogPage[]>) {
+function createDialogPageVNode(
+  dialogPages: Ref<UniDialogPage[]>,
+  type: string
+) {
   return (
     openBlock(true),
     createElementBlock(
@@ -114,7 +157,7 @@ function createDialogPageVNode(dialogPages: Ref<UniDialogPage[]>) {
                   bottom: 0,
                   left: 0,
                 },
-                type: 'dialog',
+                type,
                 route: `${dialogPage.route}${stringifyQuery(
                   dialogPage.options
                 )}`,

@@ -5,12 +5,12 @@ import type { IPage } from '@dcloudio/uni-app-x/types/native'
 declare module '@vue/runtime-core' {
   interface ComponentCustomOptions {
     rootElement?:
-      | {
-          name: string
-          class: CustomElementConstructor
-          options?: ElementDefinitionOptions
-        }
-      | 0
+    | {
+      name: string
+      class: CustomElementConstructor
+      options?: ElementDefinitionOptions
+    }
+    | 0
   }
 
   interface ComponentCustomProperties {
@@ -56,10 +56,10 @@ declare module '@vue/runtime-core' {
     $pageInstance: ComponentInternalInstance
     // x
     $waitNativeRender: (fn: () => void) => void
-    $dialogPages: Ref<UniDialogPage[]>
     $pageVm: ComponentPublicInstance | null
     $parentInstance?: ComponentInternalInstance
     $dialogPages?: Ref<UniDialogPage[]>
+    $systemDialogPages?: Ref<UniDialogPage[]>
     $dialogPage?: UniDialogPage
   }
 

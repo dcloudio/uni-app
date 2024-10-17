@@ -20,6 +20,7 @@ import {
   normalizeRouteKey,
 } from '../../../framework/setup/page'
 import type { RouteLocationNormalizedLoadedGeneric } from 'vue-router'
+import { isDialogPageInstance } from '../helpers/utils'
 
 let escBackPageNum = 0
 type PageStyle = {
@@ -34,6 +35,7 @@ type PageStyle = {
 }
 
 export const homeDialogPages: UniDialogPage[] = []
+export const homeSystemDialogPages: UniDialogPage[] = []
 
 class UniPageImpl implements UniPage {
   route: string
@@ -137,8 +139,8 @@ export function initXPage(
 ) {
   initPageVm(vm, page)
   vm.$basePage = vm.$page as Page.PageInstance['$page']
-  const pageInstance = getPageInstanceByVm(vm)
-  if (pageInstance?.attrs.type !== 'dialog') {
+  const pageInstance = getPageInstanceByVm(vm)!
+  if (!isDialogPageInstance(pageInstance)) {
     const uniPage = new UniNormalPageImpl({
       route: route?.path || '',
       options: new UTSJSONObject(route?.query || {}),
@@ -210,6 +212,13 @@ export function initXPage(
         })
         homeDialogPages.length = 0
       }
+      if (homeSystemDialogPages.length) {
+        homeSystemDialogPages.forEach((dialogPage) => {
+          dialogPage.getParentPage = () => vm.$page as UniPage
+          pageInstance!.$systemDialogPages.value.push(dialogPage)
+        })
+        homeSystemDialogPages.length = 0
+      }
     }
   } else {
     vm.$page = getPageInstanceByVm(vm)?.$dialogPage!
@@ -222,10 +231,10 @@ function handleEscKeyPress(event) {
     return
   }
   if (event.key === 'Escape') {
-    const currentPage = getCurrentPage()
-    // @ts-expect-error
+    const currentPage = getCurrentPage() as unknown as UniPage
     const dialogPages = currentPage.getDialogPages()
     const dialogPage = dialogPages[dialogPages.length - 1]
+    // @ts-expect-error
     if (!dialogPage.$disableEscBack) {
       closeDialogPage({ dialogPage })
     }

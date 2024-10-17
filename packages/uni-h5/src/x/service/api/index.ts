@@ -66,7 +66,6 @@ export * from '../../../service/api/route/preloadPage'
 
 export * from '../../../service/api/ui/popup/showModal'
 export * from '../../../service/api/ui/popup/showToast'
-export * from '../../../service/api/ui/popup/showActionSheet'
 export * from '../../../service/api/ui/loadFontFace'
 export * from '../../../service/api/ui/navigationBar'
 export * from '../../../service/api/ui/pageScrollTo'
@@ -133,6 +132,7 @@ export {
 export * from '../../../service/api/context/createCanvasContextAsync'
 export * from './route/openDialogPage'
 export * from './route/closeDialogPage'
+export * from './ui/popup/showActionSheet'
 //#endif
 
 // export * from '@dcloudio/uni-ext-api/uni-getLaunchOptionsSync'
