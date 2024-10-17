@@ -231,21 +231,32 @@ export async function compileArkTSExtApi(
   }
 
   // TODO 以下文件用户可定制
-
   // src/main/module.json5
-  fs.outputJSONSync(
-    path.resolve(outputUniModuleDir, 'src/main/module.json5'),
-    {
-      module: {
-        name: harmonyModuleName,
-        type: 'har',
-        deviceTypes: ['default', 'tablet', '2in1'],
-      },
-    },
-    {
-      spaces: 2,
-    }
+  const moduleJson5Path = path.resolve(
+    pluginDir,
+    'utssdk/app-harmony/module.json5'
   )
+  if (fs.existsSync(moduleJson5Path)) {
+    // copy module.json5
+    fs.copySync(
+      moduleJson5Path,
+      path.resolve(outputUniModuleDir, 'src/main/module.json5')
+    )
+  } else {
+    fs.outputJSONSync(
+      path.resolve(outputUniModuleDir, 'src/main/module.json5'),
+      {
+        module: {
+          name: harmonyModuleName,
+          type: 'har',
+          deviceTypes: ['default', 'tablet', '2in1'],
+        },
+      },
+      {
+        spaces: 2,
+      }
+    )
+  }
 
   // build-profile.json5
   fs.outputJSONSync(
