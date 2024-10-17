@@ -25,10 +25,13 @@ export {
 } from './vModel'
 
 export const transformH5BuiltInComponents = createTransformTag(
-  BUILT_IN_TAG_NAMES.reduce<Record<string, string>>(
-    (tags, tag) => ((tags[tag] = COMPONENT_PREFIX + tag), tags),
-    {}
-  )
+  BUILT_IN_TAG_NAMES.reduce<Record<string, string>>((tags, tag) => {
+    if (tag === 'audio') {
+      return tags
+    }
+    tags[tag] = COMPONENT_PREFIX + tag
+    return tags
+  }, {})
 )
 
 export const transformMatchMedia = createTransformTag({
