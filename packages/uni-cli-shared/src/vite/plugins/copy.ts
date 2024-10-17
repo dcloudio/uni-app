@@ -69,7 +69,7 @@ export function uniViteCopyPlugin({
         ).then(() => resolve())
       })
     },
-    buildEnd() {
+    closeBundle() {
       isFirstBuild = false
     },
   }
