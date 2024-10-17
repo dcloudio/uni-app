@@ -22,6 +22,10 @@ export function closePage(
   animationType: string,
   animationDuration?: number
 ) {
+  const dialogPages = page.$page.getDialogPages()
+  for (let i = dialogPages.length - 1; i >= 0; i--) {
+    closeNativeDialogPage(dialogPages[i])
+  }
   closeWebview(page.$nativePage!, animationType, animationDuration)
   removePage(page)
   removeTabBarPage(page)
@@ -64,11 +68,11 @@ export function handleBeforeEntryPageRoutes() {
 
 export function closeNativeDialogPage(
   dialogPage: UniPage,
-  animationType: string,
+  animationType?: string,
   callback?: () => void
 ) {
   const webview = getNativeApp().pageManager.findPageById(
     dialogPage.$vm!.$basePage.id + ''
   )!
-  closeWebview(webview, animationType, 0, callback)
+  closeWebview(webview, animationType || 'none', 0, callback)
 }

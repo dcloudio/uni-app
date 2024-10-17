@@ -95,7 +95,7 @@ function back(
         const dialogPages = (deltaPage.$page as UniPage).getDialogPages()
         for (let i = dialogPages.length - 1; i >= 0; i--) {
           const dialogPage = dialogPages[i]
-          closeNativeDialogPage(dialogPage, 'none')
+          closeNativeDialogPage(dialogPage)
         }
         closeWebview(
           getNativeApp().pageManager.findPageById(deltaPage.$basePage.id + '')!,
@@ -133,7 +133,7 @@ function back(
   const dialogPages = (currentPage.$page as UniPage).getDialogPages()
   for (let i = dialogPages.length - 1; i >= 0; i--) {
     const dialogPage = dialogPages[i]
-    closeNativeDialogPage(dialogPage, 'none')
+    closeNativeDialogPage(dialogPage)
     if (i > 0) {
       invokeHook(dialogPages[i - 1].$vm!, ON_SHOW)
     }
