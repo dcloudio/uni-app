@@ -16,13 +16,14 @@ export function uniViteCopyPlugin({
 }: UniViteCopyPluginOptions): Plugin {
   let resolvedConfig: ResolvedConfig
   let initialized = false
+  let isFirstBuild = true
   return {
     name: 'uni:copy',
     apply: 'build',
     configResolved(config) {
       resolvedConfig = config
     },
-    writeBundle() {
+    async generateBundle() {
       if (initialized) {
         return
       }
@@ -37,6 +38,9 @@ export function uniViteCopyPlugin({
         ? undefined
         : debounce(
             () => {
+              if (isFirstBuild) {
+                return
+              }
               resetOutput('log')
               output('log', M['dev.watching.end'])
             },
@@ -64,6 +68,9 @@ export function uniViteCopyPlugin({
           })
         ).then(() => resolve())
       })
+    },
+    buildEnd() {
+      isFirstBuild = false
     },
   }
 }
