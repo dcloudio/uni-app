@@ -5131,6 +5131,9 @@ function useMovableViewTransform(rootRef, props2, _scaleOffset, _scale, maxX, ma
     };
   }
   function FAandSFACancel() {
+    if (_FA) {
+      _FA.cancel();
+    }
     if (_SFA) {
       _SFA.cancel();
     }
@@ -6035,7 +6038,7 @@ function useProvideRadioGroup(props2, trigger) {
     },
     radioChange($event, field) {
       const index2 = fields2.indexOf(field);
-      _resetRadioGroupValue(index2);
+      _resetRadioGroupValue(index2, true);
       trigger("change", $event, {
         value: getFieldsValue()
       });
@@ -6066,8 +6069,17 @@ function useProvideRadioGroup(props2, trigger) {
       if (index2 === key) {
         return;
       }
-      {
+      if (change) {
         setFieldChecked(fields2[index2], false);
+      } else {
+        fields2.forEach((v2, i) => {
+          if (index2 >= i) {
+            return;
+          }
+          if (fields2[i].value.radioChecked) {
+            setFieldChecked(fields2[index2], false);
+          }
+        });
       }
     });
   }
@@ -8810,7 +8822,7 @@ function useContextInfo(_id) {
   const instance = vue.getCurrentInstance();
   const vm = instance.proxy;
   const type = vm.$options.name.toLowerCase();
-  const id2 = vm.id || `context${index$d++}`;
+  const id2 = _id || vm.id || `context${index$d++}`;
   return `${type}.${id2}`;
 }
 function injectLifecycleHook(name, hook, publicThis, instance) {
