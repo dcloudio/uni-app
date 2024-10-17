@@ -23,7 +23,7 @@ export function uniViteCopyPlugin({
     configResolved(config) {
       resolvedConfig = config
     },
-    async generateBundle() {
+    async writeBundle() {
       if (initialized) {
         return
       }
