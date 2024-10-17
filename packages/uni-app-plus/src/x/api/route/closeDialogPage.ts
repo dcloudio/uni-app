@@ -21,21 +21,28 @@ export const closeDialogPage = (options?: CloseDialogPageOptions) => {
       triggerFailCallback(options, 'dialogPage is not a valid page')
       return
     }
-    const parentPage = dialogPage.getParentPage!()
-    if (parentPage && currentPages.indexOf(parentPage) !== -1) {
-      const parentDialogPages = parentPage.getDialogPages()
-      const index = parentDialogPages.indexOf(dialogPage)
-      parentDialogPages.splice(index, 1)
-      closeNativeDialogPage(dialogPage, options?.animationType || 'none')
-      if (index > 0 && index === parentDialogPages.length) {
-        invokeHook(
-          parentDialogPages[parentDialogPages.length - 1].$vm!,
-          ON_SHOW
-        )
+    const parentPage = dialogPage.getParentPage()
+    if (!dialogPage.route.startsWith('uni:')) {
+      if (parentPage && currentPages.indexOf(parentPage) !== -1) {
+        const parentDialogPages = parentPage.getDialogPages()
+        const index = parentDialogPages.indexOf(dialogPage)
+        parentDialogPages.splice(index, 1)
+        closeNativeDialogPage(dialogPage, options?.animationType || 'none')
+        if (index > 0 && index === parentDialogPages.length) {
+          invokeHook(
+            parentDialogPages[parentDialogPages.length - 1].$vm!,
+            ON_SHOW
+          )
+        }
+      } else {
+        triggerFailCallback(options, 'dialogPage is not a valid page')
+        return
       }
     } else {
-      triggerFailCallback(options, 'dialogPage is not a valid page')
-      return
+      const systemDialogPages = parentPage!.vm.$systemDialogPages
+      const index = systemDialogPages.indexOf(dialogPage)
+      systemDialogPages.splice(index, 1)
+      closeNativeDialogPage(dialogPage, 'none')
     }
   } else {
     const dialogPages = currentPage.getDialogPages()

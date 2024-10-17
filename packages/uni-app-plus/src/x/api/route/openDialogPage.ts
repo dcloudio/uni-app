@@ -4,7 +4,10 @@ import { getCurrentPage, getRouteMeta, invokeHook } from '@dcloudio/uni-core'
 import { ANI_DURATION, ANI_SHOW } from '../../../service/constants'
 import { showWebview } from './webview'
 import { beforeRoute, createNormalizeUrl } from '@dcloudio/uni-api'
-import { homeDialogPages } from '../../framework/page/dialogPage'
+import {
+  homeDialogPages,
+  homeSystemDialogPages,
+} from '../../framework/page/dialogPage'
 import { registerDialogPage } from '../../framework/page/register'
 import { getWebviewId } from '../../../service/framework/webview/utils'
 import type { UniDialogPage } from '@dcloudio/uni-app-x/types/page'
@@ -45,18 +48,29 @@ export const openDialogPage = (
   dialogPage.getParentPage = () => parentPage
   dialogPage.$component = null
   dialogPage.$disableEscBack = false
-
-  if (!parentPage) {
-    homeDialogPages.push(dialogPage)
-  } else {
-    const dialogPages = parentPage.getDialogPages()
-    if (dialogPages.length) {
-      invokeHook(dialogPages[dialogPages.length - 1].$vm!, ON_HIDE)
+  const isSystemDialog = options.url.startsWith('uni:')
+  if (!isSystemDialog) {
+    if (!parentPage) {
+      homeDialogPages.push(dialogPage)
+    } else {
+      const dialogPages = parentPage.getDialogPages()
+      if (dialogPages.length) {
+        invokeHook(dialogPages[dialogPages.length - 1].$vm!, ON_HIDE)
+      }
+      dialogPages.push(dialogPage)
     }
-    dialogPages.push(dialogPage)
+  } else {
+    if (!parentPage) {
+      homeSystemDialogPages.push(dialogPage)
+    } else {
+      if (!parentPage.vm.$systemDialogPages) {
+        parentPage.vm.$systemDialogPages = []
+      }
+      parentPage.vm.$systemDialogPages.push(dialogPage)
+    }
   }
-
-  const [aniType, aniDuration] = initAnimation(path, animationType || '')
+  // @ts-expect-error
+  const [aniType, aniDuration] = initAnimation(path, animationType)
 
   const noAnimation = aniType === 'none' || aniDuration === 0
   function callback(page: IPage) {

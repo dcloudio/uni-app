@@ -26,7 +26,7 @@ import { getPageManager } from '../app/app'
 import { ON_POP_GESTURE } from '../../constants'
 import { getAppThemeFallbackOS, normalizePageStyles } from '../theme'
 import { invokePageReadyHooks } from '../../api/route/performance'
-import { homeDialogPages } from './dialogPage'
+import { homeDialogPages, homeSystemDialogPages } from './dialogPage'
 import type { UniDialogPage } from '@dcloudio/uni-app-x/types/page'
 
 type PageNodeOptions = {}
@@ -160,13 +160,25 @@ export function registerPage(
     //   invokeHook(page, ON_SHOW)
     // })
     const pages = getCurrentPages()
-    if (pages.length === 1 && homeDialogPages.length) {
-      const homePage = pages[0] as unknown as UniPage
-      homePage.vm.$.$dialogPages = homeDialogPages.map((dialogPage) => {
-        dialogPage.getParentPage = () => homePage
-        return dialogPage
-      })
-      homeDialogPages.length = 0
+    if (pages.length === 1) {
+      if (homeDialogPages.length) {
+        const homePage = pages[0] as unknown as UniPage
+        homePage.vm.$.$dialogPages = homeDialogPages.map((dialogPage) => {
+          dialogPage.getParentPage = () => homePage
+          return dialogPage
+        })
+        homeDialogPages.length = 0
+      }
+      if (homeSystemDialogPages.length) {
+        const homePage = pages[0] as unknown as UniPage
+        homePage.vm.$systemDialogPages = homeSystemDialogPages.map(
+          (dialogPage) => {
+            dialogPage.getParentPage = () => homePage
+            return dialogPage
+          }
+        )
+        homeDialogPages.length = 0
+      }
     }
     nativePage.addPageEventListener(ON_POP_GESTURE, function (e) {
       uni.navigateBack({
@@ -259,7 +271,7 @@ export function registerDialogPage(
   }
   // TODO initWebview
   // initWebview(webview, path, query, routeOptions.meta)
-  const route = path.slice(1)
+  const route = path.startsWith('uni:') ? path : path.slice(1)
   // ;(webview as any).__uniapp_route = route
   const pageInstance = initPageInternalInstance(
     openType,

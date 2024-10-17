@@ -30,6 +30,7 @@ export { pageScrollTo } from './ui/pageScrollTo'
 export { loadFontFace } from './ui/loadFontFace'
 export { startPullDownRefresh } from './ui/startPullDownRefresh'
 export { stopPullDownRefresh } from './ui/stopPullDownRefresh'
+export { showActionSheet2 } from './ui/popup/showActionSheet'
 // base
 export { $emit, $off, $on, $once } from './base/event-bus'
 export { removeInterceptor, addInterceptor } from './base/interceptor'
