@@ -66,7 +66,10 @@ export function uts2ts({ target, platform }: Options): Plugin {
   }
 }
 
-export function resolveExtApiTempDir(_target: string) {
+export function resolveExtApiTempDir(target: string) {
+  if (target === 'uni-app-harmony') {
+    return path.resolve(__dirname, '../packages', target, 'temp', 'uni-ext-api')
+  }
   return path.resolve(__dirname, '..', 'uni-ext-api', 'uni_modules')
 }
 
