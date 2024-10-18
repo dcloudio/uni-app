@@ -1,5 +1,5 @@
 import { extend } from '@vue/shared'
-import { onMounted, ref } from 'vue'
+import { onMounted, ref, renderSlot } from 'vue'
 import { defineBuiltInComponent } from '../../helpers/component'
 import { UniElement } from '../../helpers/UniElement'
 import { hoverProps, useHover } from '../../helpers/useHover'
@@ -33,13 +33,11 @@ export default /*#__PURE__*/ defineBuiltInComponent({
             ref={rootRef}
             {...binding}
           >
-            {slots.default && slots.default()}
+            {renderSlot(slots, 'default')}
           </uni-view>
         )
       }
-      return (
-        <uni-view ref={rootRef}>{slots.default && slots.default()}</uni-view>
-      )
+      return <uni-view ref={rootRef}>{renderSlot(slots, 'default')}</uni-view>
     }
   },
 })
