@@ -412,7 +412,10 @@
           "arkts": false
         }
       }
-    }
+    },
+    "easycom": [
+      "map"
+    ]
   },
   "uni-media": {
     "uni": {
