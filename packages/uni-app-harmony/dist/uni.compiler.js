@@ -36,23 +36,6 @@ var StandaloneExtApis = [
 		version: "1.0.0"
 	},
 	{
-		type: "extapi",
-		plugin: "uni-addPhoneContact",
-		apis: [
-			"addPhoneContact"
-		],
-		version: "1.0.0"
-	},
-	{
-		type: "extapi",
-		plugin: "uni-clipboard",
-		apis: [
-			"getClipboardData",
-			"setClipboardData"
-		],
-		version: "1.0.0"
-	},
-	{
 		type: "provider",
 		plugin: "uni-oauth-huawei",
 		provider: "huawei",

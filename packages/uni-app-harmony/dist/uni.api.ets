@@ -11,15 +11,16 @@ import webSocket from '@ohos.net.webSocket';
 import call from '@ohos.telephony.call';
 import radio from '@ohos.telephony.radio';
 import webview from '@ohos.web.webview';
-import { BusinessError as BusinessError1 } from '@ohos.base';
+import { BusinessError as BusinessError1 } from '@kit.BasicServicesKit';
 import { BusinessError as BusinessError10 } from '@ohos.base';
-import { BusinessError as BusinessError2 } from '@kit.BasicServicesKit';
+import { BusinessError as BusinessError11 } from '@ohos.base';
+import { BusinessError as BusinessError2 } from '@ohos.base';
 import { BusinessError as BusinessError3 } from '@kit.BasicServicesKit';
 import { BusinessError as BusinessError4 } from '@kit.BasicServicesKit';
 import { BusinessError as BusinessError5 } from '@kit.BasicServicesKit';
 import { BusinessError as BusinessError6 } from '@kit.BasicServicesKit';
 import { BusinessError as BusinessError7 } from '@kit.BasicServicesKit';
-import { BusinessError as BusinessError8 } from '@ohos.base';
+import { BusinessError as BusinessError8 } from '@kit.BasicServicesKit';
 import { BusinessError as BusinessError9 } from '@ohos.base';
 import { BusinessError } from '@kit.BasicServicesKit';
 import { CompressorResponseCode, CompressorResponse, VideoCompressor, CompressQuality } from '@ohos/videocompressor';
@@ -29,20 +30,20 @@ import Hash from '@ohos.file.hash';
 import I18n from '@ohos.i18n';
 import I18n1 from '@ohos.i18n';
 import I18n2 from '@ohos.i18n';
-import { IUniError, UniError, UniProvider, string, AsyncApiSuccessResult, AsyncApiResult, ApiOptions, ProtocolOptions, defineAsyncApi, ApiExecutor, ApiError, defineSyncApi, getUniProviders, defineTaskApi, getUniProvider } from "@dcloudio/uni-app-harmony";
 import { ListFileOptions } from '@ohos.file.fs';
 import { ReadOptions } from '@ohos.file.fs';
 import { UTSHarmony as UTSHarmony1 } from "@dcloudio/uni-mp-sdk";
+import { UTSHarmony as UTSHarmony10 } from "@dcloudio/uni-mp-sdk";
 import { UTSHarmony as UTSHarmony2 } from "@dcloudio/uni-mp-sdk";
-import { UTSHarmony as UTSHarmony3, getDeviceId } from "@dcloudio/uni-mp-sdk";
-import { UTSHarmony as UTSHarmony4, Emitter as Emitter1, onNativePageReady } from "@dcloudio/uni-mp-sdk";
-import { UTSHarmony as UTSHarmony5 } from "@dcloudio/uni-mp-sdk";
-import { UTSHarmony as UTSHarmony6, getWindowInfo as internalGetWindowInfo, getDeviceId as getDeviceId1 } from "@dcloudio/uni-mp-sdk";
-import { UTSHarmony as UTSHarmony7 } from "@dcloudio/uni-mp-sdk";
+import { UTSHarmony as UTSHarmony3 } from "@dcloudio/uni-mp-sdk";
+import { UTSHarmony as UTSHarmony4, getDeviceId } from "@dcloudio/uni-mp-sdk";
+import { UTSHarmony as UTSHarmony5, Emitter as Emitter1, onNativePageReady } from "@dcloudio/uni-mp-sdk";
+import { UTSHarmony as UTSHarmony6 } from "@dcloudio/uni-mp-sdk";
+import { UTSHarmony as UTSHarmony7, getWindowInfo as internalGetWindowInfo, getDeviceId as getDeviceId1 } from "@dcloudio/uni-mp-sdk";
 import { UTSHarmony as UTSHarmony8 } from "@dcloudio/uni-mp-sdk";
 import { UTSHarmony as UTSHarmony9 } from "@dcloudio/uni-mp-sdk";
-import { UTSHarmony } from "@dcloudio/uni-mp-sdk";
 import { UTSObject, UTSJSONObject } from "@dcloudio/uts-harmony";
+import { UniError, IUniError, UniProvider, string, AsyncApiSuccessResult, AsyncApiResult, ApiOptions, ProtocolOptions, defineAsyncApi, ApiExecutor, ApiError, defineSyncApi, getUniProviders, defineTaskApi, getUniProvider } from "@dcloudio/uni-app-harmony";
 import Want1 from '@ohos.app.ability.Want';
 import { abilityAccessCtrl } from '@kit.AbilityKit';
 import { access } from '@kit.ConnectivityKit';
@@ -56,10 +57,12 @@ import bundleManager2 from '@ohos.bundle.bundleManager';
 import { camera } from '@kit.CameraKit';
 import { cameraPicker as cameraPicker1 } from '@kit.CameraKit';
 import { cameraPicker } from '@kit.CameraKit';
+import { clipboard } from "@dcloudio/uni-mp-sdk";
 import common1 from '@ohos.app.ability.common';
 import common2 from '@ohos.app.ability.common';
 import common3 from '@ohos.app.ability.common';
 import common4 from '@ohos.app.ability.common';
+import { contact } from '@kit.ContactsKit';
 import dataPreferences from '@ohos.data.preferences';
 import deviceInfo1 from '@ohos.deviceInfo';
 import { display } from '@kit.ArkUI';
@@ -76,15 +79,16 @@ import fs4 from '@ohos.file.fs';
 import fs5 from '@ohos.file.fs';
 import { geoLocationManager } from '@kit.LocationKit';
 import { getAbilityContext as getAbilityContext1 } from "@dcloudio/uni-mp-sdk";
-import { getAbilityContext as getAbilityContext10, getCurrentMP as getCurrentMP3 } from "@dcloudio/uni-mp-sdk";
-import { getAbilityContext as getAbilityContext3 } from "@dcloudio/uni-mp-sdk";
-import { getAbilityContext as getAbilityContext4, getCurrentWindow as getCurrentWindow2 } from "@dcloudio/uni-mp-sdk";
-import { getAbilityContext as getAbilityContext5 } from "@dcloudio/uni-mp-sdk";
+import { getAbilityContext as getAbilityContext10 } from "@dcloudio/uni-mp-sdk";
+import { getAbilityContext as getAbilityContext11, getCurrentMP as getCurrentMP3 } from "@dcloudio/uni-mp-sdk";
+import { getAbilityContext as getAbilityContext2 } from "@dcloudio/uni-mp-sdk";
+import { getAbilityContext as getAbilityContext4 } from "@dcloudio/uni-mp-sdk";
+import { getAbilityContext as getAbilityContext5, getCurrentWindow as getCurrentWindow2 } from "@dcloudio/uni-mp-sdk";
 import { getAbilityContext as getAbilityContext6 } from "@dcloudio/uni-mp-sdk";
 import { getAbilityContext as getAbilityContext7 } from "@dcloudio/uni-mp-sdk";
 import { getAbilityContext as getAbilityContext8 } from "@dcloudio/uni-mp-sdk";
 import { getAbilityContext as getAbilityContext9 } from "@dcloudio/uni-mp-sdk";
-import { getAbilityContext } from "@dcloudio/uni-mp-sdk";
+import { getAbilityContext, UTSHarmony } from "@dcloudio/uni-mp-sdk";
 import { getCurrentWindow as getCurrentWindow1 } from "@dcloudio/uni-mp-sdk";
 import { getCurrentWindow as getCurrentWindow3 } from "@dcloudio/uni-mp-sdk";
 import { getCurrentWindow as getCurrentWindow4 } from "@dcloudio/uni-mp-sdk";
@@ -100,7 +104,7 @@ import { getRealPath as getRealPath1 } from "@dcloudio/uni-mp-sdk";
 import { getRealPath as getRealPath2, onNativePageReady as onNativePageReady1 } from "@dcloudio/uni-mp-sdk";
 import { getRealPath as getRealPath3 } from "@dcloudio/uni-mp-sdk";
 import { getRealPath as getRealPath4, Emitter as Emitter3, getCurrentMP as getCurrentMP1 } from "@dcloudio/uni-mp-sdk";
-import { getResourceStr, getAbilityContext as getAbilityContext2 } from "@dcloudio/uni-mp-sdk";
+import { getResourceStr, getAbilityContext as getAbilityContext3 } from "@dcloudio/uni-mp-sdk";
 import { getTabBar } from "@dcloudio/uni-mp-sdk";
 import harmonyUrl from '@ohos.url';
 import harmonyUrl1 from '@ohos.url';
@@ -139,6 +143,58 @@ import { wifiManager } from '@kit.ConnectivityKit';
 import { window as window1 } from '@kit.ArkUI';
 import { window as window2 } from '@kit.ArkUI';
 import { window } from '@kit.ArkUI';
+type AddPhoneContact = (options: AddPhoneContactOptions) => void;
+class AddPhoneContactSuccess extends UTSObject {
+}
+class UniError1 extends UTSObject {
+    errSubject!: string;
+    errCode!: number;
+    errMsg!: string;
+    data: object | null = null;
+    cause: Object | null = null;
+}
+type AddPhoneContactSuccessCallback = (result: AddPhoneContactSuccess) => void;
+type AddPhoneContactFail = UniError1;
+type AddPhoneContactFailCallback = (result: AddPhoneContactFail) => void;
+type AddPhoneContactComplete = Object;
+type AddPhoneContactCompleteCallback = (result: AddPhoneContactComplete) => void;
+class AddPhoneContactOptions extends UTSObject {
+    photoFilePath: string | null = null;
+    nickName: string | null = null;
+    lastName: string | null = null;
+    middleName: string | null = null;
+    firstName: string | null = null;
+    remark: string | null = null;
+    mobilePhoneNumber: string | null = null;
+    weChatNumber: string | null = null;
+    addressCountry: string | null = null;
+    addressState: string | null = null;
+    addressCity: string | null = null;
+    addressStreet: string | null = null;
+    addressPostalCode: string | null = null;
+    organization: string | null = null;
+    title: string | null = null;
+    workFaxNumber: string | null = null;
+    workPhoneNumber: string | null = null;
+    hostNumber: string | null = null;
+    email: string | null = null;
+    url: string | null = null;
+    workAddressCountry: string | null = null;
+    workAddressState: string | null = null;
+    workAddressCity: string | null = null;
+    workAddressStreet: string | null = null;
+    workAddressPostalCode: string | null = null;
+    homeFaxNumber: string | null = null;
+    homePhoneNumber: string | null = null;
+    homeAddressCountry: string | null = null;
+    homeAddressState: string | null = null;
+    homeAddressCity: string | null = null;
+    homeAddressStreet: string | null = null;
+    homeAddressPostalCode: string | null = null;
+    success: AddPhoneContactSuccessCallback | null = null;
+    fail: AddPhoneContactFailCallback | null = null;
+    complete: AddPhoneContactCompleteCallback | null = null;
+}
 type StartSoterAuthentication = (options: StartSoterAuthenticationOptions) => void;
 type SoterAuthMode = 'fingerPrint' | 'facial' | 'speech';
 class StartSoterAuthenticationSuccess extends UTSObject {
@@ -149,8 +205,8 @@ class StartSoterAuthenticationSuccess extends UTSObject {
     errMsg!: string;
 }
 type StartSoterAuthenticationSuccessCallback = (result: StartSoterAuthenticationSuccess) => void;
-type StartSoterAuthenticationFail = UniError1;
-class UniError1 extends UTSObject {
+type StartSoterAuthenticationFail = UniError2;
+class UniError2 extends UTSObject {
     errSubject!: string;
     errCode!: number;
     errMsg!: string;
@@ -174,7 +230,7 @@ class CheckIsSupportSoterAuthenticationSuccess extends UTSObject {
     errMsg!: string;
 }
 type CheckIsSupportSoterAuthenticationSuccessCallback = (result: CheckIsSupportSoterAuthenticationSuccess) => void;
-type CheckIsSupportSoterAuthenticationFail = UniError1;
+type CheckIsSupportSoterAuthenticationFail = UniError2;
 type CheckIsSupportSoterAuthenticationFailCallback = (result: CheckIsSupportSoterAuthenticationFail) => void;
 type CheckIsSupportSoterAuthenticationComplete = Object;
 type CheckIsSupportSoterAuthenticationCompleteCallback = (result: CheckIsSupportSoterAuthenticationComplete) => void;
@@ -189,7 +245,7 @@ class CheckIsSoterEnrolledInDeviceSuccess extends UTSObject {
     errMsg!: string;
 }
 type CheckIsSoterEnrolledInDeviceSuccessCallback = (result: CheckIsSoterEnrolledInDeviceSuccess) => void;
-type CheckIsSoterEnrolledInDeviceFail = UniError1;
+type CheckIsSoterEnrolledInDeviceFail = UniError2;
 type CheckIsSoterEnrolledInDeviceFailCallback = (result: CheckIsSoterEnrolledInDeviceFail) => void;
 type CheckIsSoterEnrolledInDeviceComplete = Object;
 type CheckIsSoterEnrolledInDeviceCompleteCallback = (result: CheckIsSoterEnrolledInDeviceComplete) => void;
@@ -198,6 +254,39 @@ class CheckIsSoterEnrolledInDeviceOptions extends UTSObject {
     success: CheckIsSoterEnrolledInDeviceSuccessCallback | null = null;
     fail: CheckIsSoterEnrolledInDeviceFailCallback | null = null;
     complete: CheckIsSoterEnrolledInDeviceCompleteCallback | null = null;
+}
+export type SetClipboardData = (options: SetClipboardDataOptions) => void;
+export class SetClipboardDataSuccess extends UTSObject {
+}
+type SetClipboardDataSuccessCallback = (result: SetClipboardDataSuccess) => void;
+type SetClipboardDataFail = UniError;
+type SetClipboardDataFailCallback = (result: SetClipboardDataFail) => void;
+type SetClipboardDataComplete = Object;
+type SetClipboardDataCompleteCallback = (result: SetClipboardDataComplete) => void;
+export class SetClipboardDataOptions extends UTSObject {
+    data!: string;
+    showToast: boolean | null = null;
+    success: SetClipboardDataSuccessCallback | null = null;
+    fail: SetClipboardDataFailCallback | null = null;
+    complete: SetClipboardDataCompleteCallback | null = null;
+}
+export type GetClipboardData = (options: GetClipboardDataOptions) => void;
+export class GetClipboardDataSuccess extends UTSObject {
+    data!: string;
+}
+type GetClipboardDataSuccessCallback = (result: GetClipboardDataSuccess) => void;
+type GetClipboardDataFail = UniError;
+type GetClipboardDataFailCallback = (result: GetClipboardDataFail) => void;
+type GetClipboardDataComplete = Object;
+type GetClipboardDataCompleteCallback = (result: GetClipboardDataComplete) => void;
+export class GetClipboardDataOptions extends UTSObject {
+    success: GetClipboardDataSuccessCallback | null = null;
+    fail: GetClipboardDataFailCallback | null = null;
+    complete: GetClipboardDataCompleteCallback | null = null;
+}
+interface ClipboardModuleGetStringOptions {
+    result: string;
+    data: string;
 }
 type CreateInnerAudioContext = () => InnerAudioContext;
 interface InnerAudioContext {
@@ -1834,9 +1923,12 @@ interface IUniWebsocketEmitter {
     emit: (eventName: string, ...args: (Object | undefined | null)[]) => void;
 }
 interface UniExtApi {
+    addPhoneContact: AddPhoneContact;
     startSoterAuthentication: StartSoterAuthentication;
     checkIsSupportSoterAuthentication: CheckIsSupportSoterAuthentication;
     checkIsSoterEnrolledInDevice: CheckIsSoterEnrolledInDevice;
+    getClipboardData: GetClipboardData;
+    setClipboardData: SetClipboardData;
     createInnerAudioContext: CreateInnerAudioContext;
     $on: $On;
     $once: $Once;
@@ -1923,6 +2015,349 @@ interface UniExtApi {
     onSocketError: OnSocketError;
 }
 export function initUniExtApi() {
+    const API_ADD_PHONE_CONTACT = 'addPhoneContact';
+    const AddPhoneContactApiOptions: ApiOptions<AddPhoneContactOptions> = {
+        formatArgs: new Map<string, ((firstName: string) => string | undefined)>([
+            [
+                'firstName',
+                (firstName: string)=>{
+                    if (!firstName) {
+                        return 'addPhoneContact:fail parameter error: parameter.firstName should not be empty;';
+                    }
+                    return undefined;
+                }
+            ]
+        ])
+    };
+    const AddPhoneContactApiProtocol = new Map<string, ProtocolOptions>([
+        [
+            'firstName',
+            {
+                type: 'string',
+                required: true
+            }
+        ],
+        [
+            'photoFilePath',
+            {
+                type: 'string'
+            }
+        ],
+        [
+            'nickName',
+            {
+                type: 'string'
+            }
+        ],
+        [
+            'lastName',
+            {
+                type: 'string'
+            }
+        ],
+        [
+            'middleName',
+            {
+                type: 'string'
+            }
+        ],
+        [
+            'remark',
+            {
+                type: 'string'
+            }
+        ],
+        [
+            'mobilePhoneNumber',
+            {
+                type: 'string'
+            }
+        ],
+        [
+            'weChatNumber',
+            {
+                type: 'string'
+            }
+        ],
+        [
+            'addressCountry',
+            {
+                type: 'string'
+            }
+        ],
+        [
+            'addressState',
+            {
+                type: 'string'
+            }
+        ],
+        [
+            'addressCity',
+            {
+                type: 'string'
+            }
+        ],
+        [
+            'addressStreet',
+            {
+                type: 'string'
+            }
+        ],
+        [
+            'addressPostalCode',
+            {
+                type: 'string'
+            }
+        ],
+        [
+            'organization',
+            {
+                type: 'string'
+            }
+        ],
+        [
+            'title',
+            {
+                type: 'string'
+            }
+        ],
+        [
+            'workFaxNumber',
+            {
+                type: 'string'
+            }
+        ],
+        [
+            'workPhoneNumber',
+            {
+                type: 'string'
+            }
+        ],
+        [
+            'hostNumber',
+            {
+                type: 'string'
+            }
+        ],
+        [
+            'email',
+            {
+                type: 'string'
+            }
+        ],
+        [
+            'url',
+            {
+                type: 'string'
+            }
+        ],
+        [
+            'workAddressCountry',
+            {
+                type: 'string'
+            }
+        ],
+        [
+            'workAddressState',
+            {
+                type: 'string'
+            }
+        ],
+        [
+            'workAddressCity',
+            {
+                type: 'string'
+            }
+        ],
+        [
+            'workAddressStreet',
+            {
+                type: 'string'
+            }
+        ],
+        [
+            'workAddressPostalCode',
+            {
+                type: 'string'
+            }
+        ],
+        [
+            'homeFaxNumber',
+            {
+                type: 'string'
+            }
+        ],
+        [
+            'homePhoneNumber',
+            {
+                type: 'string'
+            }
+        ],
+        [
+            'homeAddressCountry',
+            {
+                type: 'string'
+            }
+        ],
+        [
+            'homeAddressState',
+            {
+                type: 'string'
+            }
+        ],
+        [
+            'homeAddressCity',
+            {
+                type: 'string'
+            }
+        ],
+        [
+            'homeAddressStreet',
+            {
+                type: 'string'
+            }
+        ],
+        [
+            'homeAddressPostalCode',
+            {
+                type: 'string'
+            }
+        ]
+    ]);
+    const addPhoneContact: AddPhoneContact = defineAsyncApi<AddPhoneContactOptions, AddPhoneContactSuccess>(API_ADD_PHONE_CONTACT, (args: AddPhoneContactOptions, executor: ApiExecutor<AddPhoneContactSuccess>)=>{
+        UTSHarmony.requestSystemPermission([
+            'ohos.permission.WRITE_CONTACTS'
+        ], (allRight: boolean)=>{
+            if (allRight) {
+                const photoFilePath = args.photoFilePath, _args_nickName = args.nickName, nickName = _args_nickName == null ? '' : _args_nickName, _args_lastName = args.lastName, lastName = _args_lastName == null ? '' : _args_lastName, _args_middleName = args.middleName, middleName = _args_middleName == null ? '' : _args_middleName, _args_firstName = args.firstName, firstName = _args_firstName == null ? '' : _args_firstName, _args_remark = args.remark, remark = _args_remark == null ? '' : _args_remark, _args_mobilePhoneNumber = args.mobilePhoneNumber, mobilePhoneNumber = _args_mobilePhoneNumber == null ? '' : _args_mobilePhoneNumber, _args_addressCountry = args.addressCountry, addressCountry = _args_addressCountry == null ? '' : _args_addressCountry, _args_addressState = args.addressState, addressState = _args_addressState == null ? '' : _args_addressState, _args_addressCity = args.addressCity, addressCity = _args_addressCity == null ? '' : _args_addressCity, _args_addressStreet = args.addressStreet, addressStreet = _args_addressStreet == null ? '' : _args_addressStreet, _args_addressPostalCode = args.addressPostalCode, addressPostalCode = _args_addressPostalCode == null ? '' : _args_addressPostalCode, _args_organization = args.organization, organization = _args_organization == null ? '' : _args_organization, _args_url = args.url, url = _args_url == null ? '' : _args_url, _args_workPhoneNumber = args.workPhoneNumber, workPhoneNumber = _args_workPhoneNumber == null ? '' : _args_workPhoneNumber, _args_workFaxNumber = args.workFaxNumber, workFaxNumber = _args_workFaxNumber == null ? '' : _args_workFaxNumber, _args_hostNumber = args.hostNumber, hostNumber = _args_hostNumber == null ? '' : _args_hostNumber, _args_email = args.email, email = _args_email == null ? '' : _args_email, _args_title = args.title, title = _args_title == null ? '' : _args_title, _args_workAddressCountry = args.workAddressCountry, workAddressCountry = _args_workAddressCountry == null ? '' : _args_workAddressCountry, _args_workAddressState = args.workAddressState, workAddressState = _args_workAddressState == null ? '' : _args_workAddressState, _args_workAddressCity = args.workAddressCity, workAddressCity = _args_workAddressCity == null ? '' : _args_workAddressCity, _args_workAddressStreet = args.workAddressStreet, workAddressStreet = _args_workAddressStreet == null ? '' : _args_workAddressStreet, workAddressPostalCode = args.workAddressPostalCode, _args_homeFaxNumber = args.homeFaxNumber, homeFaxNumber = _args_homeFaxNumber == null ? '' : _args_homeFaxNumber, _args_homePhoneNumber = args.homePhoneNumber, homePhoneNumber = _args_homePhoneNumber == null ? '' : _args_homePhoneNumber, _args_homeAddressCountry = args.homeAddressCountry, homeAddressCountry = _args_homeAddressCountry == null ? '' : _args_homeAddressCountry, _args_homeAddressState = args.homeAddressState, homeAddressState = _args_homeAddressState == null ? '' : _args_homeAddressState, _args_homeAddressCity = args.homeAddressCity, homeAddressCity = _args_homeAddressCity == null ? '' : _args_homeAddressCity, _args_homeAddressStreet = args.homeAddressStreet, homeAddressStreet = _args_homeAddressStreet == null ? '' : _args_homeAddressStreet, _args_homeAddressPostalCode = args.homeAddressPostalCode, homeAddressPostalCode = _args_homeAddressPostalCode == null ? '' : _args_homeAddressPostalCode;
+                const contactInfo: contact.Contact = {
+                    name: {
+                        givenName: firstName!,
+                        fullName: lastName! + middleName! + firstName!
+                    }
+                };
+                if (nickName) {
+                    contactInfo.nickName = {
+                        nickName: nickName!
+                    } as contact.NickName;
+                }
+                if (lastName) {
+                    contactInfo.name!.familyName = lastName;
+                }
+                if (middleName) {
+                    contactInfo.name!.middleName = middleName;
+                }
+                if (email) {
+                    contactInfo.emails = [
+                        {
+                            email: email!,
+                            displayName: '邮箱'
+                        } as contact.Email
+                    ];
+                }
+                if (photoFilePath) {
+                    contactInfo.portrait = {
+                        uri: photoFilePath
+                    } as contact.Portrait;
+                }
+                if (url) {
+                    contactInfo.websites = [
+                        {
+                            website: url
+                        } as contact.Website
+                    ];
+                }
+                if (remark) {
+                    contactInfo.note = {
+                        noteContent: remark
+                    } as contact.Note;
+                }
+                if (organization) {
+                    contactInfo.organization = {
+                        name: organization,
+                        title: title!
+                    } as contact.Organization;
+                }
+                const phoneNumbers: contact.PhoneNumber[] = [];
+                if (homePhoneNumber) {
+                    phoneNumbers.push({
+                        phoneNumber: homePhoneNumber!,
+                        labelId: contact.PhoneNumber.NUM_HOME
+                    } as contact.PhoneNumber);
+                }
+                if (mobilePhoneNumber) {
+                    phoneNumbers.push({
+                        phoneNumber: mobilePhoneNumber!,
+                        labelId: contact.PhoneNumber.NUM_MOBILE
+                    } as contact.PhoneNumber);
+                }
+                if (homeFaxNumber) {
+                    phoneNumbers.push({
+                        phoneNumber: homeFaxNumber!,
+                        labelId: contact.PhoneNumber.NUM_FAX_HOME
+                    } as contact.PhoneNumber);
+                }
+                if (workFaxNumber) {
+                    phoneNumbers.push({
+                        phoneNumber: workFaxNumber!,
+                        labelId: contact.PhoneNumber.NUM_FAX_WORK
+                    } as contact.PhoneNumber);
+                }
+                if (workPhoneNumber) {
+                    phoneNumbers.push({
+                        phoneNumber: workPhoneNumber!,
+                        labelId: contact.PhoneNumber.NUM_WORK
+                    } as contact.PhoneNumber);
+                }
+                if (hostNumber) {
+                    phoneNumbers.push({
+                        phoneNumber: hostNumber!,
+                        labelId: contact.PhoneNumber.NUM_COMPANY_MAIN
+                    } as contact.PhoneNumber);
+                }
+                if (phoneNumbers.length) contactInfo.phoneNumbers = phoneNumbers;
+                const postalAddresses: contact.PostalAddress[] = [];
+                if (homeAddressCity || homeAddressCountry || homeAddressPostalCode || homeAddressStreet) {
+                    postalAddresses.push({
+                        city: homeAddressCity!,
+                        country: homeAddressCountry!,
+                        postcode: homeAddressPostalCode!,
+                        street: homeAddressStreet!,
+                        postalAddress: `${homeAddressCountry!}${homeAddressState!}${homeAddressCity!}${homeAddressStreet!}`,
+                        labelId: contact.PostalAddress.ADDR_HOME
+                    } as contact.PostalAddress);
+                }
+                if (workAddressCity || workAddressCountry || workAddressPostalCode || workAddressStreet) {
+                    postalAddresses.push({
+                        city: workAddressCity!,
+                        country: workAddressCountry!,
+                        postcode: workAddressPostalCode!,
+                        street: workAddressStreet!,
+                        postalAddress: `${workAddressCountry!}${workAddressState!}${workAddressCity!}${workAddressStreet!}`,
+                        labelId: contact.PostalAddress.ADDR_WORK
+                    } as contact.PostalAddress);
+                }
+                if (addressCity || addressCountry || addressPostalCode || addressStreet) {
+                    postalAddresses.push({
+                        city: addressCity!,
+                        country: addressCountry!,
+                        postcode: addressPostalCode!,
+                        street: addressStreet!,
+                        postalAddress: `${addressCountry!}${addressState!}${addressCity!}${addressStreet!}`,
+                        labelId: contact.PostalAddress.CUSTOM_LABEL
+                    } as contact.PostalAddress);
+                }
+                if (postalAddresses.length) contactInfo.postalAddresses = postalAddresses;
+                contact.addContact(getAbilityContext()!, contactInfo).then((contactId)=>{
+                    executor.resolve(contactId);
+                }).catch((err: BusinessError)=>{
+                    executor.reject(err.message);
+                });
+            } else {
+                executor.reject('Permission denied');
+            }
+        }, ()=>executor.reject('Permission denied'));
+    }, AddPhoneContactApiProtocol, AddPhoneContactApiOptions) as AddPhoneContact;
     const API_START_SOTER_AUTHENTICATION = 'startSoterAuthentication';
     const StartSoterAuthenticationApiOptions: ApiOptions<StartSoterAuthenticationOptions> = {
         formatArgs: new Map<string, ((value: string) => string | undefined)>([
@@ -2109,7 +2544,7 @@ export function initUniExtApi() {
             }
             auth.start();
         } catch (error) {
-            const code = (error as BusinessError).code;
+            const code = (error as BusinessError1).code;
             executor.reject(getErrorMessage(code), {
                 errCode: getUniErrMsg(code)
             } as ApiError);
@@ -2135,7 +2570,7 @@ export function initUniExtApi() {
         'ohos.permission.ACCESS_BIOMETRIC'
     ];
     const checkIsSupportSoterAuthentication: CheckIsSupportSoterAuthentication = defineAsyncApi<CheckIsSupportSoterAuthenticationOptions, CheckIsSupportSoterAuthenticationSuccess>(API_CHECK_IS_SUPPORT_SOTER_AUTHENTICATION, (args: CheckIsSupportSoterAuthenticationOptions, executor: ApiExecutor<CheckIsSupportSoterAuthenticationSuccess>)=>{
-        UTSHarmony.requestSystemPermission(PERMISSIONS, (allRight: boolean)=>{
+        UTSHarmony1.requestSystemPermission(PERMISSIONS, (allRight: boolean)=>{
             if (allRight) {
                 try {
                     const supportMode: SoterAuthMode[] = [];
@@ -2146,7 +2581,7 @@ export function initUniExtApi() {
                         errMsg: ''
                     } as CheckIsSupportSoterAuthenticationSuccess);
                 } catch (error) {
-                    const code = (error as BusinessError).code;
+                    const code = (error as BusinessError1).code;
                     executor.reject(getErrorMessage(code), {
                         errCode: getUniErrMsg(code)
                     } as ApiError);
@@ -2175,7 +2610,7 @@ export function initUniExtApi() {
         return false;
     };
     const checkIsSoterEnrolledInDevice: CheckIsSoterEnrolledInDevice = defineAsyncApi<CheckIsSoterEnrolledInDeviceOptions, CheckIsSoterEnrolledInDeviceSuccess>(API_CHECK_IS_SOTER_ENROLLED_IN_DEVICE, (args: CheckIsSoterEnrolledInDeviceOptions, executor: ApiExecutor<CheckIsSoterEnrolledInDeviceSuccess>)=>{
-        UTSHarmony.requestSystemPermission(PERMISSIONS, (allRight: boolean)=>{
+        UTSHarmony1.requestSystemPermission(PERMISSIONS, (allRight: boolean)=>{
             if (allRight) {
                 try {
                     const isEnrolled = harmonyCheckIsSoterEnrolledInDevice(args.checkAuthMode);
@@ -2184,7 +2619,7 @@ export function initUniExtApi() {
                         errMsg: ''
                     } as CheckIsSoterEnrolledInDeviceSuccess);
                 } catch (error) {
-                    const code = (error as BusinessError).code;
+                    const code = (error as BusinessError1).code;
                     executor.reject(getErrorMessage(code), {
                         errCode: getUniErrMsg(code)
                     } as ApiError);
@@ -2196,6 +2631,46 @@ export function initUniExtApi() {
             executor.reject(getErrorMessage(201));
         });
     }, CheckIsSoterEnrolledInDeviceProtocols, CheckIsSoterEnrolledInDeviceApiOptions) as CheckIsSoterEnrolledInDevice;
+    const API_GET_CLIPBOARD_DATA = 'getClipboardData';
+    const API_SET_CLIPBOARD_DATA = 'setClipboardData';
+    const SetClipboardDataApiOptions: ApiOptions<SetClipboardDataOptions> = {
+        formatArgs: new Map<string, boolean>([
+            [
+                'showToast',
+                true
+            ]
+        ])
+    };
+    const SetClipboardDataProtocol = new Map<string, ProtocolOptions>([
+        [
+            'data',
+            {
+                type: 'string',
+                required: true
+            }
+        ],
+        [
+            'showToast',
+            {
+                type: 'boolean'
+            }
+        ]
+    ]);
+    const getClipboardData: GetClipboardData = defineAsyncApi<GetClipboardDataOptions, GetClipboardDataSuccess>(API_GET_CLIPBOARD_DATA, (_: GetClipboardDataOptions, res: ApiExecutor<GetClipboardDataSuccess>)=>{
+        clipboard.getString((ret: ClipboardModuleGetStringOptions)=>{
+            if (ret.result === 'success') {
+                res.resolve({
+                    data: ret.data
+                } as GetClipboardDataSuccess);
+            } else {
+                res.reject('getClipboardData:fail');
+            }
+        });
+    }) as GetClipboardData;
+    const setClipboardData: SetClipboardData = defineAsyncApi<SetClipboardDataOptions, SetClipboardDataSuccess>(API_SET_CLIPBOARD_DATA, (options: SetClipboardDataOptions, res: ApiExecutor<SetClipboardDataSuccess>)=>{
+        clipboard.setString(options.data);
+        res.resolve();
+    }, SetClipboardDataProtocol, SetClipboardDataApiOptions) as SetClipboardData;
     const API_CREATE_INNER_AUDIO_CONTEXT = 'createInnerAudioContext';
     const isFileUri = (path: string)=>{
         return path && typeof path === 'string' && (path.startsWith('file://') || path.startsWith('datashare://'));
@@ -2670,7 +3145,7 @@ export function initUniExtApi() {
     }) as $Emit;
     const API_EXIT = 'exit';
     const exit: Exit = defineSyncApi<void>(API_EXIT, ()=>{
-        UTSHarmony1.exit();
+        UTSHarmony2.exit();
     }) as Exit;
     const API_SAVE_FILE = 'saveFile';
     const API_GET_FILE_INFO = 'getFileInfo';
@@ -2938,20 +3413,20 @@ export function initUniExtApi() {
     };
     const getBundleInfo = getBundleInfoOnce();
     const getAppBaseInfo: GetAppBaseInfo = defineSyncApi<GetAppBaseInfoResult>(API_GET_APP_BASE_INFO, (): GetAppBaseInfoResult =>{
-        const appVersion: IAppBaseInfoAppVersion = UTSHarmony2.getAppVersion();
+        const appVersion: IAppBaseInfoAppVersion = UTSHarmony3.getAppVersion();
         const appLanguage = I18n.System.getAppPreferredLanguage();
-        const uniCompilerVersion: string = UTSHarmony2.getUniCompilerVersion();
-        const uniRuntimeVersion: string = UTSHarmony2.getUniRuntimeVersion();
+        const uniCompilerVersion: string = UTSHarmony3.getUniCompilerVersion();
+        const uniRuntimeVersion: string = UTSHarmony3.getUniRuntimeVersion();
         return {
-            appId: UTSHarmony2.getAppId() as string,
+            appId: UTSHarmony3.getAppId() as string,
             appLanguage,
-            appName: UTSHarmony2.getAppName() as string,
-            appTheme: UTSHarmony2.getAppTheme() as string,
+            appName: UTSHarmony3.getAppName() as string,
+            appTheme: UTSHarmony3.getAppTheme() as string,
             appVersion: appVersion.name,
             appVersionCode: appVersion.code,
             appWgtVersion: appVersion.name,
             hostLanguage: I18n.System.getSystemLanguage(),
-            isUniAppX: UTSHarmony2.isUniAppX() as boolean,
+            isUniAppX: UTSHarmony3.isUniAppX() as boolean,
             packageName: getBundleInfo().name,
             uniCompilerVersion: uniCompilerVersion,
             uniCompilerVersionCode: parseFloat(uniCompilerVersion),
@@ -3107,7 +3582,7 @@ export function initUniExtApi() {
     const audioPlayerCallback = new AudioPlayerCallback1();
     let AV_SESSION: avSession.AVSession | null = null;
     const createAVSession = ()=>{
-        avSession.createAVSession(getAbilityContext()!, 'player', 'audio').then((data)=>{
+        avSession.createAVSession(getAbilityContext1()!, 'player', 'audio').then((data)=>{
             AV_SESSION = data;
         });
     };
@@ -3119,7 +3594,7 @@ export function initUniExtApi() {
         AV_SESSION = null;
     };
     const startBackgroundTask = ()=>{
-        const abilityInfo: TempAbilityInfo = getAbilityContext()!.abilityInfo;
+        const abilityInfo: TempAbilityInfo = getAbilityContext1()!.abilityInfo;
         const wantAgentInfo: wantAgent.WantAgentInfo = {
             wants: [
                 {
@@ -3134,17 +3609,17 @@ export function initUniExtApi() {
             ]
         };
         wantAgent.getWantAgent(wantAgentInfo).then((wantAgentObj)=>{
-            return backgroundTaskManager.startBackgroundRunning(getAbilityContext()!, backgroundTaskManager.BackgroundMode.AUDIO_PLAYBACK, wantAgentObj);
+            return backgroundTaskManager.startBackgroundRunning(getAbilityContext1()!, backgroundTaskManager.BackgroundMode.AUDIO_PLAYBACK, wantAgentObj);
         }).then(()=>{
             console.debug('[getBackgroundAudioManager]  start bg operation succeeded');
-        }).catch((err: BusinessError1)=>{
+        }).catch((err: BusinessError2)=>{
             audioPlayerCallback.error(new AudioPlayerError1(err.message, err.code));
         });
     };
     const stopBackgroundTask = ()=>{
-        backgroundTaskManager.stopBackgroundRunning(getAbilityContext()!).then(()=>{
+        backgroundTaskManager.stopBackgroundRunning(getAbilityContext1()!).then(()=>{
             console.debug('[getBackgroundAudioManager]  stop operation succeeded');
-        }).catch((err: BusinessError1)=>{
+        }).catch((err: BusinessError2)=>{
             audioPlayerCallback.error(new AudioPlayerError1(err.message, err.code));
         });
     };
@@ -3265,7 +3740,7 @@ export function initUniExtApi() {
                     const fd = getFdFromUriOrSandBoxPath1(value);
                     path = `fd://${fd}`;
                 } catch (err) {
-                    audioPlayerCallback.error(new AudioPlayerError1((err as BusinessError1).message, (err as BusinessError1).code));
+                    audioPlayerCallback.error(new AudioPlayerError1((err as BusinessError2).message, (err as BusinessError2).code));
                 }
             }
             if (BackgroundAudioManagerImpl.audioPlayer.src && path !== BackgroundAudioManagerImpl.audioPlayer.src) {
@@ -3478,7 +3953,7 @@ export function initUniExtApi() {
             devicePixelRatio: vp2px(1),
             deviceType: parseDeviceType(deviceInfo.deviceType),
             osLanguage: I18n1.System.getSystemLanguage(),
-            osTheme: UTSHarmony3.getOsTheme() as string,
+            osTheme: UTSHarmony4.getOsTheme() as string,
             osVersion: deviceInfo.majorVersion + '.' + deviceInfo.seniorVersion + '.' + deviceInfo.featureVersion + '.' + deviceInfo.buildVersion,
             osName: 'harmonyos',
             platform: 'harmonyos',
@@ -3521,7 +3996,7 @@ export function initUniExtApi() {
     };
     const networkGetType = ()=>{
         return new Promise<number>((resolve, reject)=>{
-            UTSHarmony4.requestSystemPermission(PERMISSIONS1, (allRight: boolean)=>{
+            UTSHarmony5.requestSystemPermission(PERMISSIONS1, (allRight: boolean)=>{
                 if (allRight) {
                     try {
                         radio.getPrimarySlotId().then((slotId: number)=>radio.getSignalInformationSync(slotId)).then((signalInformation: Array<radio.SignalInformation>)=>{
@@ -3533,7 +4008,7 @@ export function initUniExtApi() {
                             }
                         });
                     } catch (error) {
-                        reject(error as BusinessError2);
+                        reject(error as BusinessError3);
                     }
                 } else {
                     reject('permission denied');
@@ -3555,7 +4030,7 @@ export function initUniExtApi() {
     }
     const getCurrentType = ()=>{
         return new Promise<number>((resolve, reject)=>{
-            UTSHarmony4.requestSystemPermission(PERMISSIONS1, (allRight: boolean)=>{
+            UTSHarmony5.requestSystemPermission(PERMISSIONS1, (allRight: boolean)=>{
                 if (allRight) {
                     try {
                         connection.getDefaultNet().then((data: connection.NetHandle)=>{
@@ -3575,7 +4050,7 @@ export function initUniExtApi() {
                                             resolve(NetworkinfoType.UNKNOW);
                                         }
                                     }
-                                }).catch((err: BusinessError2)=>{
+                                }).catch((err: BusinessError3)=>{
                                     reject(err);
                                 });
                             }
@@ -3598,9 +4073,9 @@ export function initUniExtApi() {
             if (!Network.netConnection) {
                 Network.netConnection = connection.createNetConnection();
             }
-            UTSHarmony4.requestSystemPermission(PERMISSIONS1, (allRight: boolean)=>{
+            UTSHarmony5.requestSystemPermission(PERMISSIONS1, (allRight: boolean)=>{
                 if (allRight && Network.netConnection) {
-                    Network.netConnection.register((err: BusinessError2)=>{});
+                    Network.netConnection.register((err: BusinessError3)=>{});
                     Network.netConnection.on('netCapabilitiesChange', (capability: connection.NetCapabilityInfo)=>{
                         const NetBearType = capability?.netCap?.bearerTypes[0];
                         let networkType = '';
@@ -3639,7 +4114,7 @@ export function initUniExtApi() {
             res.resolve({
                 networkType: NetworkinfoType[type].toLocaleLowerCase()
             } as GetNetworkTypeSuccess);
-        }).catch((err: BusinessError2)=>{
+        }).catch((err: BusinessError3)=>{
             res.reject(err.message);
         });
     }) as GetNetworkType;
@@ -3814,7 +4289,7 @@ export function initUniExtApi() {
                             break;
                     }
                 });
-                this.avRecorder.on('error', (err: BusinessError3)=>{
+                this.avRecorder.on('error', (err: BusinessError4)=>{
                     onRecorderStateChange('error', {
                         errMsg: `${err.message} ${err.code}`
                     } as StateChangeRes);
@@ -3848,7 +4323,7 @@ export function initUniExtApi() {
                 profile: audioProfile,
                 url: 'fd://' + file.fd
             };
-            UTSHarmony5.requestSystemPermission([
+            UTSHarmony6.requestSystemPermission([
                 'ohos.permission.MICROPHONE'
             ], async (allRight: boolean)=>{
                 if (allRight) {
@@ -4001,11 +4476,11 @@ export function initUniExtApi() {
         return internalGetWindowInfo() as GetWindowInfoResult;
     }) as GetWindowInfo;
     const internalGetSystemInfo = (): GetSystemInfoResult =>{
-        const appVersion: ISystemInfoAppVersion = UTSHarmony6.getAppVersion();
+        const appVersion: ISystemInfoAppVersion = UTSHarmony7.getAppVersion();
         const appLanguage = I18n2.System.getAppPreferredLanguage();
-        const uniCompilerVersion: string = UTSHarmony6.getUniCompilerVersion();
+        const uniCompilerVersion: string = UTSHarmony7.getUniCompilerVersion();
         const uniCompilerVersionCode: number = parseFloat(uniCompilerVersion);
-        const uniRuntimeVersion: string = UTSHarmony6.getUniRuntimeVersion();
+        const uniRuntimeVersion: string = UTSHarmony7.getUniRuntimeVersion();
         const windowInfo = internalGetWindowInfo() as GetWindowInfoResult;
         const pixelRatio = windowInfo.pixelRatio;
         const safeArea = windowInfo.safeArea;
@@ -4018,10 +4493,10 @@ export function initUniExtApi() {
         const windowTop = windowInfo.windowTop;
         const windowWidth = windowInfo.windowWidth;
         return {
-            appId: UTSHarmony6.getAppId() as string,
+            appId: UTSHarmony7.getAppId() as string,
             appLanguage,
-            appName: UTSHarmony6.getAppName() as string,
-            appTheme: UTSHarmony6.getAppTheme() as string,
+            appName: UTSHarmony7.getAppName() as string,
+            appTheme: UTSHarmony7.getAppTheme() as string,
             appVersion: appVersion.name,
             appVersionCode: appVersion.code,
             appWgtVersion: appVersion.name,
@@ -4037,7 +4512,7 @@ export function initUniExtApi() {
             devicePixelRatio: vp2px(1),
             deviceType: parseDeviceType1(deviceInfo1.deviceType),
             osLanguage: I18n2.System.getSystemLanguage(),
-            osTheme: UTSHarmony6.getOsTheme() as string,
+            osTheme: UTSHarmony7.getOsTheme() as string,
             osVersion: deviceInfo1.majorVersion + '.' + deviceInfo1.seniorVersion + '.' + deviceInfo1.featureVersion + '.' + deviceInfo1.buildVersion,
             osName: 'harmonyos',
             romName: deviceInfo1.distributionOSName,
@@ -4089,7 +4564,7 @@ export function initUniExtApi() {
         try {
             if (access.getState() === access.BluetoothState.STATE_ON) res.bluetoothEnabled = true;
         } catch (err) {
-            res.bluetoothError = (err as BusinessError4).message;
+            res.bluetoothError = (err as BusinessError5).message;
         }
         try {
             res.locationEnabled = geoLocationManager.isLocationEnabled();
@@ -4097,7 +4572,7 @@ export function initUniExtApi() {
         try {
             res.wifiEnabled = wifiManager.isWifiActive();
         } catch (err) {
-            res.wifiError = (err as BusinessError4).message;
+            res.wifiError = (err as BusinessError5).message;
         }
         return res;
     }) as GetSystemSetting;
@@ -4128,7 +4603,7 @@ export function initUniExtApi() {
     const dial = (number: string, confirm = true)=>{
         if (!confirm && typeof call.dial === 'function') {
             return new Promise<void>((resolve, reject)=>{
-                UTSHarmony7.requestSystemPermission([
+                UTSHarmony8.requestSystemPermission([
                     'ohos.permission.PLACE_CALL'
                 ], (allRight: boolean)=>{
                     if (allRight) {
@@ -4149,7 +4624,7 @@ export function initUniExtApi() {
     const makePhoneCall: MakePhoneCall = defineAsyncApi<MakePhoneCallOptions, MakePhoneCallSuccess>(API_MAKE_PHONE_CALL, (options: MakePhoneCallOptions, res: ApiExecutor<MakePhoneCallSuccess>)=>{
         const dialRes = dial(options.phoneNumber) as Object as Promise<void>;
         if (isPromise(dialRes)) {
-            dialRes.then(res.resolve).catch((err: BusinessError5<void>)=>{
+            dialRes.then(res.resolve).catch((err: BusinessError6<void>)=>{
                 res.reject(err.message);
             });
         } else {
@@ -4752,7 +5227,7 @@ export function initUniExtApi() {
                 } as CompressImageSuccess);
             });
         } catch (error) {
-            executor.reject((error as BusinessError6).message);
+            executor.reject((error as BusinessError7).message);
         }
     }, CompressImageApiProtocol, CompressImageApiOptions) as CompressImage;
     const _getVideoInfo = async (uri: string): Promise<GetVideoInfoSuccess> =>{
@@ -4957,7 +5432,7 @@ export function initUniExtApi() {
         let pickerProfile: cameraPicker.PickerProfile = {
             cameraPosition: getHMCameraPosition(cameraType)
         };
-        const res = await cameraPicker.pick(getAbilityContext1()!, [
+        const res = await cameraPicker.pick(getAbilityContext2()!, [
             cameraPicker.PickerMediaType.PHOTO
         ], pickerProfile);
         const file = fs2.openSync(res.resultUri, fs2.OpenMode.READ_ONLY);
@@ -4976,7 +5451,7 @@ export function initUniExtApi() {
             cameraPosition: getHMCameraPosition(args?.cameraType ?? 'back'),
             videoDuration: args?.videoDuration
         };
-        const res = await cameraPicker.pick(getAbilityContext1()!, [
+        const res = await cameraPicker.pick(getAbilityContext2()!, [
             cameraPicker.PickerMediaType.VIDEO
         ], pickerProfile);
         return _getVideoInfo(res.resultUri).then((getVideInfoRes)=>{
@@ -5213,7 +5688,7 @@ export function initUniExtApi() {
         });
     }) as ClosePreviewImage;
     const saveResource = async (src: Resource, dest: string)=>{
-        const context = getAbilityContext2() as common.UIAbilityContext;
+        const context = getAbilityContext3() as common.UIAbilityContext;
         const resourceManager = context.resourceManager;
         const srcPath: string = src.params?.[0] as string;
         const destFile = fs3.openSync(dest, fs3.OpenMode.WRITE_ONLY);
@@ -5230,7 +5705,7 @@ export function initUniExtApi() {
     };
     const saveMediaToAlbum = async (fromUri: string, type: 'image' | 'video'): Promise<string | ISaveMediaError> =>{
         const realPath = getResourceStr(fromUri) as string | Resource;
-        const context = getAbilityContext2() as common.UIAbilityContext;
+        const context = getAbilityContext3() as common.UIAbilityContext;
         let fileName = Date.now() + (type === 'image' ? '.png' : '.mp4');
         const isResource = typeof realPath !== 'string';
         if (isResource) {
@@ -5403,7 +5878,7 @@ export function initUniExtApi() {
         } else {
             try {
                 let documentSelectOptions = new picker.DocumentSelectOptions();
-                let documentPicker = new picker.DocumentViewPicker(getAbilityContext3()!);
+                let documentPicker = new picker.DocumentViewPicker(getAbilityContext4()!);
                 documentSelectOptions.selectMode = picker.DocumentSelectMode.FILE;
                 if (args.count) documentSelectOptions.maxSelectNumber = args.count;
                 if (args.extension) documentSelectOptions.fileSuffixFilters = args.extension;
@@ -5423,13 +5898,13 @@ export function initUniExtApi() {
                     } else {
                         executor.reject('cancel');
                     }
-                }).catch((err: BusinessError7)=>{
+                }).catch((err: BusinessError8)=>{
                     executor.reject(err.message, {
                         errCode: err.code
                     } as ApiError);
                 });
             } catch (error) {
-                let err: BusinessError7 = error as BusinessError7;
+                let err: BusinessError8 = error as BusinessError8;
                 executor.reject(err.message, {
                     errCode: err.code
                 } as ApiError);
@@ -5457,7 +5932,7 @@ export function initUniExtApi() {
                 videoDuration: args?.maxDuration ?? 10
             };
             const mediaTypes = getCameraPickerMediaTypes((args.mediaType ?? []) as UNI_MEDIA_TYPE[]);
-            const res = await cameraPicker1.pick(getAbilityContext4()!, mediaTypes, pickerProfile);
+            const res = await cameraPicker1.pick(getAbilityContext5()!, mediaTypes, pickerProfile);
             executor.resolve({
                 type: 'mix',
                 tempFiles: [
@@ -5468,7 +5943,7 @@ export function initUniExtApi() {
                 ]
             } as ChooseMediaSuccess);
         } catch (error) {
-            const err = error as BusinessError8;
+            const err = error as BusinessError9;
             executor.reject(err.message, {
                 errCode: err.code
             } as ApiError);
@@ -5600,7 +6075,7 @@ export function initUniExtApi() {
     };
     const compressVideo: CompressVideo = defineAsyncApi<CompressVideoOptions, CompressVideoSuccess>(API_COMPRESS_VIDEO, async (args: CompressVideoOptions, executor: ApiExecutor<CompressVideoSuccess>)=>{
         let videoCompressor = new VideoCompressor();
-        videoCompressor.compressVideo(getAbilityContext5()!, args.src, getQuality(args.quality!)).then((data: CompressorResponse): void =>{
+        videoCompressor.compressVideo(getAbilityContext6()!, args.src, getQuality(args.quality!)).then((data: CompressorResponse): void =>{
             if (data.code == CompressorResponseCode.SUCCESS) {
                 _getVideoInfo(data.outputPath).then((res)=>{
                     executor.resolve({
@@ -6103,7 +6578,7 @@ export function initUniExtApi() {
     }, RequestApiProtocol, RequestApiOptions) as Request<Object>;
     const lookupExt = (contentType: string): string | undefined =>{
         const rawContentType = contentType.split(';')[0].trim().toLowerCase();
-        return (UTSHarmony8.getExtensionFromMimeType(rawContentType) as string | null) || undefined;
+        return (UTSHarmony9.getExtensionFromMimeType(rawContentType) as string | null) || undefined;
     };
     const lookupContentTypeWithUri = (uri: string): string | undefined =>{
         const uriArr = uri.split('.');
@@ -6111,7 +6586,7 @@ export function initUniExtApi() {
             return undefined;
         }
         const ext = uriArr.pop() as string;
-        return (UTSHarmony8.getMimeTypeFromExtension(ext) as string | null) || undefined;
+        return (UTSHarmony9.getMimeTypeFromExtension(ext) as string | null) || undefined;
     };
     class UploadTask1 implements UploadTask {
         private _uploadTask: IUploadTask;
@@ -6449,7 +6924,7 @@ export function initUniExtApi() {
             });
             executor.resolve();
         } catch (error) {
-            executor.reject((error as BusinessError9).message);
+            executor.reject((error as BusinessError10).message);
         }
     }, ConfigMTLSApiProtocol, ConfigMTLSApiOptions) as ConfigMTLS;
     const API_LOGIN = 'login';
@@ -6524,7 +6999,7 @@ export function initUniExtApi() {
                 pushParams: bundleManager2.getBundleInfoForSelfSync(bundleManager2.BundleFlag.GET_BUNDLE_INFO_DEFAULT).name
             }
         } as Want;
-        const context = getAbilityContext6() as common1.UIAbilityContext;
+        const context = getAbilityContext7() as common1.UIAbilityContext;
         context.startAbility(want).then(()=>{
             exec.resolve({
                 errMsg: ''
@@ -6569,7 +7044,7 @@ export function initUniExtApi() {
             uri: uri,
             type: fileContentType as string
         };
-        const abilityContext = getAbilityContext7() as common2.UIAbilityContext;
+        const abilityContext = getAbilityContext8() as common2.UIAbilityContext;
         abilityContext.startAbility(want).then(()=>{
             exec.resolve({} as OpenDocumentSuccess);
         }, (err: Error)=>{
@@ -6836,7 +7311,7 @@ export function initUniExtApi() {
             window.getUIContext().getPromptAction().showToast(showToastOptions);
             res.resolve({} as ShowToastSuccess);
         } catch (error) {
-            let message = (error as BusinessError10).message;
+            let message = (error as BusinessError11).message;
             res.reject(message);
         }
     }, ShowToastProtocol, ShowToastApiOptions) as ShowToast;
@@ -6949,7 +7424,7 @@ export function initUniExtApi() {
     const API_RPX2PX = 'rpx2px';
     const EPS = 1e-4;
     const rpx2px: Rpx2px = defineSyncApi<number>(API_RPX2PX, (number: number): number =>{
-        const windowStage: harmonyWindow.WindowStage = UTSHarmony9.getWindowStage();
+        const windowStage: harmonyWindow.WindowStage = UTSHarmony10.getWindowStage();
         let windowWidthInVp: number = 384;
         let windowWidthInPx: number = 1344;
         if (windowStage) {
@@ -7078,7 +7553,7 @@ export function initUniExtApi() {
             enableMultiMode: true,
             enableAlbum: !options.onlyFromCamera
         };
-        scanBarcode.startScanForResult(getAbilityContext8()!, scanOptions, (err, data)=>{
+        scanBarcode.startScanForResult(getAbilityContext9()!, scanOptions, (err, data)=>{
             if (err) {
                 exec.reject(err.message);
                 return;
@@ -7122,7 +7597,7 @@ export function initUniExtApi() {
             shareData.addRecord(shareRecords[index]);
         }
         const shareController: systemShare.ShareController = new systemShare.ShareController(shareData);
-        shareController.show(getAbilityContext9() as common3.UIAbilityContext, {} as systemShare.ShareControllerOptions);
+        shareController.show(getAbilityContext10() as common3.UIAbilityContext, {} as systemShare.ShareControllerOptions);
         const onDismiss = ()=>{
             shareController.off('dismiss', onDismiss);
             exec.resolve({} as ShareWithSystemSuccess);
@@ -7158,7 +7633,7 @@ export function initUniExtApi() {
         if (stores.has(appId)) {
             return stores.get(appId)!;
         }
-        const store = dataPreferences.getPreferencesSync(getAbilityContext10() as common4.UIAbilityContext, {
+        const store = dataPreferences.getPreferencesSync(getAbilityContext11() as common4.UIAbilityContext, {
             name: `storage.${appId}`
         } as dataPreferences.Options);
         stores.set(appId, store);
@@ -7705,9 +8180,12 @@ export function initUniExtApi() {
         }
     }) as CloseSocket;
     return {
+        addPhoneContact,
         startSoterAuthentication,
         checkIsSupportSoterAuthentication,
         checkIsSoterEnrolledInDevice,
+        getClipboardData,
+        setClipboardData,
         createInnerAudioContext,
         $on,
         $once,
