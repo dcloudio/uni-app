@@ -17122,7 +17122,9 @@ const openDialogPage = (options) => {
         dialogPage
       );
       if (isSystemActionSheetDialogPage(dialogPage)) {
-        closePreActionSheet((_b = getPageInstanceByVm(parentPage.vm)) == null ? void 0 : _b.$systemDialogPages.value);
+        closePreActionSheet(
+          (_b = getPageInstanceByVm(parentPage.vm)) == null ? void 0 : _b.$systemDialogPages.value
+        );
       }
     }
   }
