@@ -4,11 +4,11 @@ var __publicField = (obj, key, value) => {
   __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
   return value;
 };
-import { withModifiers, createVNode, getCurrentInstance, ref, defineComponent, openBlock, createElementBlock, onMounted, provide, computed, watch, onUnmounted, inject, onBeforeUnmount, mergeProps, reactive, injectHook, nextTick, createApp, createBlock, watchEffect, isVNode, withDirectives, vShow, renderList, isReactive, Transition, effectScope, Fragment, onActivated, withCtx, KeepAlive, resolveDynamicComponent, markRaw, onBeforeMount, shallowRef, Comment, h, createTextVNode, onBeforeActivate, onBeforeDeactivate, createElementVNode, normalizeStyle, renderSlot } from "vue";
-import { isArray, isString, extend, remove, stringifyStyle, parseStringStyle, isPlainObject as isPlainObject$1, isFunction, capitalize, camelize, hasOwn, isObject, toRawType, makeMap as makeMap$1, isPromise, hyphenate, invokeArrayFns as invokeArrayFns$1 } from "@vue/shared";
-import { once, UNI_STORAGE_LOCALE, I18N_JSON_DELIMITERS, Emitter, passive, initCustomDatasetOnce, resolveComponentInstance, normalizeStyles, addLeadingSlash, invokeArrayFns, removeLeadingSlash, resolveOwnerVm, resolveOwnerEl, ON_WXS_INVOKE_CALL_METHOD, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_SHOW, ON_HIDE, ON_PAGE_SCROLL, ON_REACH_BOTTOM, EventChannel, parseQuery, NAVBAR_HEIGHT, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, getLen, getCustomDataset, parseUrl, sortObject, ON_THEME_CHANGE, OFF_THEME_CHANGE, updateElementStyle, LINEFEED, ON_WEB_INVOKE_APP_SERVICE, debounce, ON_BACK_PRESS, addFont, ON_NAVIGATION_BAR_CHANGE, scrollTo, RESPONSIVE_MIN_WIDTH, formatDateTime, normalizeTitleColor, ON_REACH_BOTTOM_DISTANCE, ON_UNLOAD, onCreateVueApp, SCHEME_RE, DATA_RE, PRIMARY_COLOR, isUniLifecycleHook, decodedQuery, ON_LOAD, UniLifecycleHooks, invokeCreateErrorHandler, invokeCreateVueAppHook, WEB_INVOKE_APPSERVICE, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_PULL_DOWN_REFRESH, stringifyQuery as stringifyQuery$1 } from "@dcloudio/uni-shared";
+import { withModifiers, createVNode, getCurrentInstance, ref, defineComponent, openBlock, createElementBlock, onMounted, provide, computed, watch, onUnmounted, inject, onBeforeUnmount, mergeProps, reactive, injectHook, nextTick, createApp, createBlock, watchEffect, isVNode, withDirectives, vShow, renderList, isReactive, Transition, effectScope, onActivated, withCtx, KeepAlive, resolveDynamicComponent, markRaw, createElementVNode, normalizeClass, normalizeStyle, toDisplayString, createCommentVNode, Fragment, onBeforeMount, renderSlot, onBeforeActivate, onBeforeDeactivate, shallowRef, Comment, h, createTextVNode } from "vue";
+import { isArray, isString, extend, remove, stringifyStyle, parseStringStyle, isPlainObject as isPlainObject$1, isFunction, capitalize, camelize, hasOwn, isObject, toRawType, makeMap as makeMap$1, isPromise, invokeArrayFns as invokeArrayFns$1, hyphenate } from "@vue/shared";
+import { once, UNI_STORAGE_LOCALE, I18N_JSON_DELIMITERS, Emitter, passive, initCustomDatasetOnce, resolveComponentInstance, normalizeStyles, addLeadingSlash, invokeArrayFns, removeLeadingSlash, resolveOwnerVm, resolveOwnerEl, ON_WXS_INVOKE_CALL_METHOD, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_SHOW, ON_HIDE, ON_PAGE_SCROLL, ON_REACH_BOTTOM, EventChannel, parseQuery, NAVBAR_HEIGHT, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, getLen, getCustomDataset, parseUrl, sortObject, ON_THEME_CHANGE, OFF_THEME_CHANGE, updateElementStyle, LINEFEED, ON_WEB_INVOKE_APP_SERVICE, debounce, ON_BACK_PRESS, addFont, ON_NAVIGATION_BAR_CHANGE, scrollTo, RESPONSIVE_MIN_WIDTH, formatDateTime, normalizeTitleColor, ON_REACH_BOTTOM_DISTANCE, ON_UNLOAD, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_PULL_DOWN_REFRESH, stringifyQuery as stringifyQuery$1, decodedQuery, WEB_INVOKE_APPSERVICE, onCreateVueApp, SCHEME_RE, DATA_RE, PRIMARY_COLOR, isUniLifecycleHook, ON_LOAD, UniLifecycleHooks, invokeCreateErrorHandler, invokeCreateVueAppHook } from "@dcloudio/uni-shared";
 import { onCreateVueApp as onCreateVueApp2 } from "@dcloudio/uni-shared";
-import { useRoute, isNavigationFailure, RouterView, createRouter, createWebHistory, createWebHashHistory, useRouter } from "vue-router";
+import { useRoute, isNavigationFailure, RouterView, useRouter, createRouter, createWebHistory, createWebHashHistory } from "vue-router";
 import { initVueI18n, isI18nStr, LOCALE_EN, LOCALE_ES, LOCALE_FR, LOCALE_ZH_HANS, LOCALE_ZH_HANT } from "@dcloudio/uni-i18n";
 function arrayPop(array) {
   if (array.length === 0) {
@@ -746,33 +746,6 @@ const initI18nAsyncMsgsOnce = /* @__PURE__ */ once(() => {
     useI18n().add(
       LOCALE_ZH_HANT,
       normalizeMessages(name, keys, ["連接服務器超時，點擊屏幕重試"]),
-      false
-    );
-  }
-});
-const initI18nShowActionSheetMsgsOnce = /* @__PURE__ */ once(() => {
-  const name = "uni.showActionSheet.";
-  const keys = ["cancel"];
-  if (__UNI_FEATURE_I18N_EN__) {
-    useI18n().add(LOCALE_EN, normalizeMessages(name, keys, ["Cancel"]), false);
-  }
-  if (__UNI_FEATURE_I18N_ES__) {
-    useI18n().add(LOCALE_ES, normalizeMessages(name, keys, ["Cancelar"]), false);
-  }
-  if (__UNI_FEATURE_I18N_FR__) {
-    useI18n().add(LOCALE_FR, normalizeMessages(name, keys, ["Annuler"]), false);
-  }
-  if (__UNI_FEATURE_I18N_ZH_HANS__) {
-    useI18n().add(
-      LOCALE_ZH_HANS,
-      normalizeMessages(name, keys, ["取消"]),
-      false
-    );
-  }
-  if (__UNI_FEATURE_I18N_ZH_HANT__) {
-    useI18n().add(
-      LOCALE_ZH_HANT,
-      normalizeMessages(name, keys, ["取消"]),
       false
     );
   }
@@ -2812,7 +2785,7 @@ class UniElement extends HTMLElement {
 const uniFormKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniForm" : "uf");
 class UniFormElement extends UniElement {
 }
-const index$y = /* @__PURE__ */ defineBuiltInComponent({
+const index$x = /* @__PURE__ */ defineBuiltInComponent({
   name: "Form",
   emits: ["submit", "reset"],
   rootElement: {
@@ -2882,7 +2855,7 @@ function useProvideLabel() {
 }
 class UniLabelElement extends UniElement {
 }
-const index$x = /* @__PURE__ */ defineBuiltInComponent({
+const index$w = /* @__PURE__ */ defineBuiltInComponent({
   name: "Label",
   props: labelProps,
   rootElement: {
@@ -3025,7 +2998,7 @@ const buttonProps = {
 };
 class UniButtonElement extends UniElement {
 }
-const index$w = /* @__PURE__ */ defineBuiltInComponent({
+const index$v = /* @__PURE__ */ defineBuiltInComponent({
   name: "Button",
   props: buttonProps,
   rootElement: {
@@ -3090,7 +3063,7 @@ const index$w = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const props$y = {
+const props$x = {
   disableScroll: {
     type: [Boolean, String],
     default: false
@@ -3126,7 +3099,7 @@ const indexX$4 = /* @__PURE__ */ defineBuiltInComponent({
   compatConfig: {
     MODE: 3
   },
-  props: props$y,
+  props: props$x,
   rootElement: {
     name: "uni-canvas",
     class: UniCanvasElement
@@ -3149,7 +3122,7 @@ const indexX$4 = /* @__PURE__ */ defineBuiltInComponent({
   }
 });
 const uniCheckGroupKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniCheckGroup" : "ucg");
-const props$x = {
+const props$w = {
   name: {
     type: String,
     default: ""
@@ -3157,9 +3130,9 @@ const props$x = {
 };
 class UniCheckboxGroupElement extends UniElement {
 }
-const index$v = /* @__PURE__ */ defineBuiltInComponent({
+const index$u = /* @__PURE__ */ defineBuiltInComponent({
   name: "CheckboxGroup",
-  props: props$x,
+  props: props$w,
   emits: ["change"],
   rootElement: {
     name: "uni-checkbox-group",
@@ -3219,7 +3192,7 @@ function useProvideCheckGroup(props2, trigger) {
   }
   return getFieldsValue;
 }
-const props$w = {
+const props$v = {
   checked: {
     type: [Boolean, String],
     default: false
@@ -3268,9 +3241,9 @@ const props$w = {
 };
 class UniCheckboxElement extends UniElement {
 }
-const index$u = /* @__PURE__ */ defineBuiltInComponent({
+const index$t = /* @__PURE__ */ defineBuiltInComponent({
   name: "Checkbox",
-  props: props$w,
+  props: props$v,
   rootElement: {
     name: "uni-checkbox",
     class: UniCheckboxElement
@@ -3411,7 +3384,7 @@ function useCheckboxInject(checkboxChecked, checkboxValue, reset) {
 let resetTimer;
 function iosHideKeyboard() {
 }
-const props$v = {
+const props$u = {
   cursorSpacing: {
     type: [Number, String],
     default: 0
@@ -5797,13 +5770,13 @@ const createMediaQueryObserver = /* @__PURE__ */ defineSyncApi("createMediaQuery
   }
   return new ServiceMediaQueryObserver(getCurrentPageVm());
 });
-let index$t = 0;
+let index$s = 0;
 let optionsCache = {};
 function operateEditor(componentId, pageId, type, options) {
   const data = { options };
   const needCallOptions = options && ("success" in options || "fail" in options || "complete" in options);
   if (needCallOptions) {
-    const callbackId = String(index$t++);
+    const callbackId = String(index$s++);
     data.callbackId = callbackId;
     optionsCache[callbackId] = options;
   }
@@ -7135,21 +7108,6 @@ const PageScrollToProtocol = {
 const PageScrollToOptions = {
   formatArgs: {
     duration: 300
-  }
-};
-const API_SHOW_ACTION_SHEET = "showActionSheet";
-const ShowActionSheetProtocol = {
-  itemList: {
-    type: Array,
-    required: true
-  },
-  title: String,
-  itemColor: String,
-  popover: Object
-};
-const ShowActionSheetOptions = {
-  formatArgs: {
-    itemColor: "#000"
   }
 };
 const API_SHOW_LOADING = "showLoading";
@@ -9691,13 +9649,13 @@ function usePopup(props2, {
   });
   return visible;
 }
-let index$s = 0;
+let index$r = 0;
 let overflow = "";
 function preventScroll(prevent) {
-  let before = index$s;
-  index$s += prevent ? 1 : -1;
-  index$s = Math.max(0, index$s);
-  if (index$s > 0) {
+  let before = index$r;
+  index$r += prevent ? 1 : -1;
+  index$r = Math.max(0, index$r);
+  if (index$r > 0) {
     if (before === 0) {
       overflow = document.body.style.overflow;
       document.body.style.overflow = "hidden";
@@ -9711,7 +9669,7 @@ function usePreventScroll() {
   onMounted(() => preventScroll(true));
   onUnmounted(() => preventScroll(false));
 }
-const props$u = {
+const props$t = {
   src: {
     type: String,
     default: ""
@@ -9719,7 +9677,7 @@ const props$u = {
 };
 const ImageView = /* @__PURE__ */ defineSystemComponent({
   name: "ImageView",
-  props: props$u,
+  props: props$t,
   setup(props2) {
     const state2 = reactive({
       direction: "none"
@@ -9809,7 +9767,7 @@ const ImageView = /* @__PURE__ */ defineSystemComponent({
 function _isSlot$2(s) {
   return typeof s === "function" || Object.prototype.toString.call(s) === "[object Object]" && !isVNode(s);
 }
-const props$t = {
+const props$s = {
   urls: {
     type: Array,
     default() {
@@ -9828,7 +9786,7 @@ function getIndex(props2) {
 }
 const ImagePreview = /* @__PURE__ */ defineSystemComponent({
   name: "ImagePreview",
-  props: props$t,
+  props: props$s,
   emits: ["close"],
   setup(props2, {
     emit: emit2
@@ -10596,11 +10554,11 @@ const onSocketOpen = /* @__PURE__ */ on("open");
 const onSocketError = /* @__PURE__ */ on("error");
 const onSocketMessage = /* @__PURE__ */ on("message");
 const onSocketClose = /* @__PURE__ */ on("close");
-let index$r = 0;
+let index$q = 0;
 function getJSONP(url, options, success, error) {
   var js = document.createElement("script");
   var callbackKey = options.callback || "callback";
-  var callbackName = "__uni_jsonp_callback_" + index$r++;
+  var callbackName = "__uni_jsonp_callback_" + index$q++;
   var timeout = options.timeout || 3e4;
   var timing;
   function end() {
@@ -11672,7 +11630,7 @@ function useContext(play, pause, stop, seek, sendDanmu, playbackRate, requestFul
     }
   }, id2, true);
 }
-const props$s = {
+const props$r = {
   id: {
     type: String,
     default: ""
@@ -11758,9 +11716,9 @@ const props$s = {
 };
 class UniVideoElement extends UniElement {
 }
-const index$q = /* @__PURE__ */ defineBuiltInComponent({
+const index$p = /* @__PURE__ */ defineBuiltInComponent({
   name: "Video",
-  props: props$s,
+  props: props$r,
   emits: ["fullscreenchange", "progress", "loadedmetadata", "waiting", "error", "play", "pause", "ended", "timeupdate"],
   rootElement: {
     name: "uni-video",
@@ -12000,7 +11958,7 @@ const onWebInvokeAppService = ({ name, arg }) => {
   }
 };
 const Invoke = /* @__PURE__ */ once(() => UniServiceJSBridge.on(ON_WEB_INVOKE_APP_SERVICE, onWebInvokeAppService));
-const props$r = {
+const props$q = {
   src: {
     type: String,
     default: ""
@@ -12011,7 +11969,7 @@ class UniWebViewElement extends UniElement {
 const indexX$3 = /* @__PURE__ */ defineBuiltInComponent({
   inheritAttrs: false,
   name: "WebView",
-  props: props$r,
+  props: props$q,
   rootElement: {
     name: "uni-web-view",
     class: UniWebViewElement
@@ -12060,7 +12018,7 @@ const indexX$3 = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const props$q = {
+const props$p = {
   id: {
     type: [Number, String],
     default: ""
@@ -12146,7 +12104,7 @@ function useMarkerLabelStyle(id2) {
 }
 const MapMarker = /* @__PURE__ */ defineSystemComponent({
   name: "MapMarker",
-  props: props$q,
+  props: props$p,
   setup(props2) {
     const id2 = String(!isNaN(Number(props2.id)) ? props2.id : "");
     const onMapReady = inject("onMapReady");
@@ -12523,7 +12481,7 @@ function hexToRgba(hex) {
     a: (`0x100${sa}` - 65536) / 255
   };
 }
-const props$p = {
+const props$o = {
   points: {
     type: Array,
     require: true
@@ -12569,7 +12527,7 @@ const props$p = {
 };
 const MapPolyline = /* @__PURE__ */ defineSystemComponent({
   name: "MapPolyline",
-  props: props$p,
+  props: props$o,
   setup(props2) {
     const onMapReady = inject("onMapReady");
     let polyline;
@@ -12658,7 +12616,7 @@ const MapPolyline = /* @__PURE__ */ defineSystemComponent({
     };
   }
 });
-const props$o = {
+const props$n = {
   latitude: {
     type: [Number, String],
     require: true
@@ -12690,7 +12648,7 @@ const props$o = {
 };
 const MapCircle = /* @__PURE__ */ defineSystemComponent({
   name: "MapCircle",
-  props: props$o,
+  props: props$n,
   setup(props2) {
     const onMapReady = inject("onMapReady");
     let circle;
@@ -12766,7 +12724,7 @@ const MapCircle = /* @__PURE__ */ defineSystemComponent({
     };
   }
 });
-const props$n = {
+const props$m = {
   id: {
     type: [Number, String],
     default: ""
@@ -12790,7 +12748,7 @@ const props$n = {
 };
 const MapControl = /* @__PURE__ */ defineSystemComponent({
   name: "MapControl",
-  props: props$n,
+  props: props$m,
   setup(props2) {
     const imgPath = computed(() => getRealPath(props2.iconPath));
     const positionStyle = computed(() => {
@@ -12825,7 +12783,7 @@ const MapControl = /* @__PURE__ */ defineSystemComponent({
 function _isSlot$1(s) {
   return typeof s === "function" || Object.prototype.toString.call(s) === "[object Object]" && !isVNode(s);
 }
-const props$m = {
+const props$l = {
   latitude: {
     type: Number
   },
@@ -12992,7 +12950,7 @@ function useList(state2) {
 }
 const LoctaionPicker = /* @__PURE__ */ defineSystemComponent({
   name: "LoctaionPicker",
-  props: props$m,
+  props: props$l,
   emits: ["close"],
   setup(props2, {
     emit: emit2
@@ -13373,7 +13331,7 @@ const ModalTheme = {
   }
 };
 const setCancelColor = (theme, cancelColor) => cancelColor.value = ModalTheme[theme].cancelColor;
-const props$l = {
+const props$k = {
   title: {
     type: String,
     default: ""
@@ -13415,7 +13373,7 @@ const props$l = {
   }
 };
 const modal = /* @__PURE__ */ defineComponent({
-  props: props$l,
+  props: props$k,
   setup(props2, {
     emit: emit2
   }) {
@@ -13429,7 +13387,7 @@ const modal = /* @__PURE__ */ defineComponent({
         !props2.editable && confirm();
       }
     });
-    const cancelColor = useOnThemeChange$1(props2);
+    const cancelColor = useOnThemeChange(props2);
     return () => {
       const {
         title,
@@ -13485,7 +13443,7 @@ const modal = /* @__PURE__ */ defineComponent({
     };
   }
 });
-function useOnThemeChange$1(props2) {
+function useOnThemeChange(props2) {
   const cancelColor = ref(props2.cancelColor);
   const _onThemeChange = ({
     theme
@@ -13509,7 +13467,7 @@ function useOnThemeChange$1(props2) {
   return cancelColor;
 }
 let showModalState;
-const onHidePopupOnce$1 = /* @__PURE__ */ once(() => {
+const onHidePopupOnce = /* @__PURE__ */ once(() => {
   UniServiceJSBridge.on("onHidePopup", () => showModalState.visible = false);
 });
 let currentShowModalResolve;
@@ -13530,7 +13488,7 @@ const hideModal = () => {
 const showModal = /* @__PURE__ */ defineAsyncApi(
   API_SHOW_MODAL,
   (args, { resolve }) => {
-    onHidePopupOnce$1();
+    onHidePopupOnce();
     currentShowModalResolve = resolve;
     if (!showModalState) {
       showModalState = reactive(args);
@@ -13548,7 +13506,7 @@ const showModal = /* @__PURE__ */ defineAsyncApi(
   ShowModalProtocol,
   ShowModalOptions
 );
-const props$k = {
+const props$j = {
   title: {
     type: String,
     default: ""
@@ -13583,7 +13541,7 @@ const ICONCOLOR = {
 const getIconColor = (theme) => ICONCOLOR[theme];
 const Toast = /* @__PURE__ */ defineComponent({
   name: "Toast",
-  props: props$k,
+  props: props$j,
   setup(props2) {
     initI18nShowToastMsgsOnce();
     initI18nShowLoadingMsgsOnce();
@@ -13835,299 +13793,6 @@ function usePopupStyle(props2) {
     popupStyle
   };
 }
-const ACTION_SHEET_THEME = {
-  light: {
-    listItemColor: "#000000",
-    cancelItemColor: "#000000"
-  },
-  dark: {
-    listItemColor: "rgba(255, 255, 255, 0.8)",
-    cancelItemColor: "rgba(255, 255, 255)"
-  }
-};
-function setActionSheetTheme(theme, actionSheetTheme) {
-  const ActionSheetThemeKey = ["listItemColor", "cancelItemColor"];
-  ActionSheetThemeKey.forEach((key) => {
-    actionSheetTheme[key] = ACTION_SHEET_THEME[theme][key];
-  });
-}
-const props$j = {
-  title: {
-    type: String,
-    default: ""
-  },
-  itemList: {
-    type: Array,
-    default() {
-      return [];
-    }
-  },
-  itemColor: {
-    type: String,
-    default: "#000000"
-  },
-  popover: {
-    type: Object,
-    default: null
-  },
-  visible: {
-    type: Boolean,
-    default: false
-  }
-};
-const actionSheet = /* @__PURE__ */ defineComponent({
-  name: "ActionSheet",
-  props: props$j,
-  emits: ["close"],
-  setup(props2, {
-    emit: emit2
-  }) {
-    initI18nShowActionSheetMsgsOnce();
-    const HEIGHT = ref(336);
-    const contentHeight = ref(0);
-    const titleHeight = ref(0);
-    const deltaY = ref(0);
-    const scrollTop = ref(0);
-    const content = ref(null);
-    const main = ref(null);
-    const {
-      t: t2
-    } = useI18n();
-    const {
-      _close
-    } = useActionSheetLoader(props2, emit2);
-    const {
-      popupStyle
-    } = usePopupStyle(props2);
-    let scroller;
-    onMounted(() => {
-      const {
-        scroller: _scroller,
-        handleTouchStart,
-        handleTouchMove,
-        handleTouchEnd
-      } = useScroller(content.value, {
-        enableY: true,
-        friction: new Friction(1e-4),
-        spring: new Spring(2, 90, 20),
-        onScroll: (e2) => {
-          scrollTop.value = e2.target.scrollTop;
-        }
-      });
-      scroller = _scroller;
-      useTouchtrack(content.value, (e2) => {
-        if (_scroller) {
-          switch (e2.detail.state) {
-            case "start":
-              handleTouchStart(e2);
-              break;
-            case "move":
-              handleTouchMove(e2);
-              break;
-            case "end":
-            case "cancel":
-              handleTouchEnd(e2);
-          }
-        }
-      }, true);
-    });
-    function _handleWheel($event) {
-      const _deltaY = deltaY.value + $event.deltaY;
-      if (Math.abs(_deltaY) > 10) {
-        scrollTop.value += _deltaY / 3;
-        scrollTop.value = scrollTop.value >= contentHeight.value ? contentHeight.value : scrollTop.value <= 0 ? 0 : scrollTop.value;
-        scroller.scrollTo(scrollTop.value);
-      } else {
-        deltaY.value = _deltaY;
-      }
-      $event.preventDefault();
-    }
-    watch(() => props2.visible, () => {
-      nextTick(() => {
-        if (props2.title) {
-          titleHeight.value = document.querySelector(".uni-actionsheet__title").offsetHeight;
-        }
-        scroller.update();
-        if (content.value)
-          contentHeight.value = content.value.clientHeight - HEIGHT.value;
-        document.querySelectorAll(".uni-actionsheet__cell").forEach((item) => {
-          initClick(item);
-        });
-      });
-    });
-    const actionSheetTheme = useOnThemeChange(props2);
-    return () => {
-      return createVNode("uni-actionsheet", {
-        "onTouchmove": onEventPrevent
-      }, [createVNode(Transition, {
-        "name": "uni-fade"
-      }, {
-        default: () => [withDirectives(createVNode("div", {
-          "class": "uni-mask uni-actionsheet__mask",
-          "onClick": () => _close(-1)
-        }, null, 8, ["onClick"]), [[vShow, props2.visible]])]
-      }), createVNode("div", {
-        "class": ["uni-actionsheet", {
-          "uni-actionsheet_toggle": props2.visible
-        }],
-        "style": popupStyle.value.content
-      }, [createVNode("div", {
-        "ref": main,
-        "class": "uni-actionsheet__menu",
-        "onWheel": _handleWheel
-      }, [props2.title ? createVNode(Fragment, null, [createVNode("div", {
-        "class": "uni-actionsheet__cell",
-        "style": {
-          height: `${titleHeight.value}px`
-        }
-      }, null), createVNode("div", {
-        "class": "uni-actionsheet__title"
-      }, [props2.title])]) : "", createVNode("div", {
-        "style": {
-          maxHeight: `${HEIGHT.value}px`,
-          overflow: "hidden"
-        }
-      }, [createVNode("div", {
-        "ref": content
-      }, [props2.itemList.map((itemTitle, index2) => createVNode("div", {
-        "key": index2,
-        "style": {
-          color: actionSheetTheme.listItemColor
-        },
-        "class": "uni-actionsheet__cell",
-        "onClick": () => _close(index2)
-      }, [itemTitle], 12, ["onClick"]))], 512)])], 40, ["onWheel"]), createVNode("div", {
-        "class": "uni-actionsheet__action"
-      }, [createVNode("div", {
-        "style": {
-          color: actionSheetTheme.cancelItemColor
-        },
-        "class": "uni-actionsheet__cell",
-        "onClick": () => _close(-1)
-      }, [t2("uni.showActionSheet.cancel")], 12, ["onClick"])]), createVNode("div", {
-        "style": popupStyle.value.triangle
-      }, null, 4)], 6)], 40, ["onTouchmove"]);
-    };
-  }
-});
-function useActionSheetLoader(props2, emit2) {
-  function _close(tapIndex) {
-    emit2("close", tapIndex);
-  }
-  const {
-    key,
-    disable
-  } = useKeyboard();
-  watch(() => props2.visible, (value) => disable.value = !value);
-  watchEffect(() => {
-    const {
-      value
-    } = key;
-    if (value === "esc") {
-      _close && _close(-1);
-    }
-  });
-  return {
-    _close
-  };
-}
-function initClick(dom) {
-  const MAX_MOVE = 20;
-  let x = 0;
-  let y = 0;
-  dom.addEventListener("touchstart", (event) => {
-    const info = event.changedTouches[0];
-    x = info.clientX;
-    y = info.clientY;
-  });
-  dom.addEventListener("touchend", (event) => {
-    const info = event.changedTouches[0];
-    if (Math.abs(info.clientX - x) < MAX_MOVE && Math.abs(info.clientY - y) < MAX_MOVE) {
-      const target = event.target;
-      const currentTarget = event.currentTarget;
-      const customEvent = new CustomEvent("click", {
-        bubbles: true,
-        cancelable: true,
-        target,
-        currentTarget
-      });
-      ["screenX", "screenY", "clientX", "clientY", "pageX", "pageY"].forEach((key) => {
-        customEvent[key] = info[key];
-      });
-      event.target.dispatchEvent(customEvent);
-    }
-  });
-}
-function useOnThemeChange(props2) {
-  const actionSheetTheme = reactive({
-    listItemColor: "#000",
-    cancelItemColor: "#000"
-  });
-  const _onThemeChange = ({
-    theme
-  }) => {
-    setActionSheetTheme(theme, actionSheetTheme);
-  };
-  watchEffect(() => {
-    if (props2.visible) {
-      actionSheetTheme.listItemColor = actionSheetTheme.cancelItemColor = props2.itemColor;
-      if (props2.itemColor === "#000") {
-        _onThemeChange({
-          theme: getTheme()
-        });
-        onThemeChange$1(_onThemeChange);
-      }
-    } else {
-      offThemeChange(_onThemeChange);
-    }
-  });
-  return actionSheetTheme;
-}
-let resolveAction;
-let rejectAction;
-let showActionSheetState;
-const onHidePopupOnce = /* @__PURE__ */ once(() => {
-  UniServiceJSBridge.on(
-    "onHidePopup",
-    () => showActionSheetState.visible = false
-  );
-});
-function onActionSheetClose(tapIndex) {
-  if (tapIndex === -1) {
-    rejectAction && rejectAction("cancel");
-  } else {
-    resolveAction && resolveAction({ tapIndex });
-  }
-}
-const hideActionSheet = () => {
-  if (showActionSheetState) {
-    showActionSheetState.visible = false;
-  }
-};
-const showActionSheet = /* @__PURE__ */ defineAsyncApi(
-  API_SHOW_ACTION_SHEET,
-  (args, { resolve, reject }) => {
-    onHidePopupOnce();
-    resolveAction = resolve;
-    rejectAction = reject;
-    if (!showActionSheetState) {
-      showActionSheetState = reactive(args);
-      nextTick(
-        () => (createRootApp(
-          actionSheet,
-          showActionSheetState,
-          onActionSheetClose
-        ).mount(ensureRoot("u-s-a-s")), //下一帧执行，确保首次显示时有动画效果
-        nextTick(() => showActionSheetState.visible = true))
-      );
-    } else {
-      extend(showActionSheetState, args);
-      showActionSheetState.visible = true;
-    }
-  },
-  ShowActionSheetProtocol,
-  ShowActionSheetOptions
-);
 const loadFontFace = /* @__PURE__ */ defineAsyncApi(
   API_LOAD_FONT_FACE,
   ({ family, source, desc }, { resolve, reject }) => {
@@ -16110,7 +15775,7 @@ const props$g = {
 };
 class UniCoverViewElement extends UniElement {
 }
-const index$p = /* @__PURE__ */ defineBuiltInComponent({
+const index$o = /* @__PURE__ */ defineBuiltInComponent({
   name: "CoverView",
   compatConfig: {
     MODE: 3
@@ -16163,7 +15828,7 @@ const index$p = /* @__PURE__ */ defineBuiltInComponent({
 });
 class UniCoverImageElement extends UniElement {
 }
-const index$o = /* @__PURE__ */ defineBuiltInComponent({
+const index$n = /* @__PURE__ */ defineBuiltInComponent({
   name: "CoverImage",
   compatConfig: {
     MODE: 3
@@ -16348,7 +16013,7 @@ const props$f = {
 };
 class UniPickerElement extends UniElement {
 }
-const index$n = /* @__PURE__ */ defineBuiltInComponent({
+const index$m = /* @__PURE__ */ defineBuiltInComponent({
   name: "Picker",
   compatConfig: {
     MODE: 3
@@ -16997,12 +16662,12 @@ function usePickerForm(_resetFormData, _getFormData) {
     });
   }
 }
-const index$m = /* @__PURE__ */ defineUnsupportedComponent("ad");
-const index$l = /* @__PURE__ */ defineUnsupportedComponent("ad-content-page");
-const index$k = /* @__PURE__ */ defineUnsupportedComponent("ad-draw");
-const index$j = /* @__PURE__ */ defineUnsupportedComponent("camera");
-const index$i = /* @__PURE__ */ defineUnsupportedComponent("live-player");
-const index$h = /* @__PURE__ */ defineUnsupportedComponent("live-pusher");
+const index$l = /* @__PURE__ */ defineUnsupportedComponent("ad");
+const index$k = /* @__PURE__ */ defineUnsupportedComponent("ad-content-page");
+const index$j = /* @__PURE__ */ defineUnsupportedComponent("ad-draw");
+const index$i = /* @__PURE__ */ defineUnsupportedComponent("camera");
+const index$h = /* @__PURE__ */ defineUnsupportedComponent("live-player");
+const index$g = /* @__PURE__ */ defineUnsupportedComponent("live-pusher");
 const ICON_PATH_NAV = "M28 17c-6.49396875 0-12.13721875 2.57040625-15 6.34840625V5.4105l6.29859375 6.29859375c0.387875 0.387875 1.02259375 0.387875 1.4105 0 0.387875-0.387875 0.387875-1.02259375 0-1.4105L12.77853125 2.36803125a0.9978125 0.9978125 0 0 0-0.0694375-0.077125c-0.1944375-0.1944375-0.45090625-0.291375-0.70721875-0.290875l-0.00184375-0.0000625-0.00184375 0.0000625c-0.2563125-0.0005-0.51278125 0.09640625-0.70721875 0.290875a0.9978125 0.9978125 0 0 0-0.0694375 0.077125l-7.930625 7.9305625c-0.387875 0.387875-0.387875 1.02259375 0 1.4105 0.387875 0.387875 1.02259375 0.387875 1.4105 0L11 5.4105V29c0 0.55 0.45 1 1 1s1-0.45 1-1c0-5.52284375 6.71571875-10 15-10 0.55228125 0 1-0.44771875 1-1 0-0.55228125-0.44771875-1-1-1z";
 const props$e = {
   latitude: {
@@ -17200,8 +16865,20 @@ function getPageInstanceByChild(child) {
   }
   return pageInstance;
 }
+const DIALOG_TAG = "dialog";
+const SYSTEM_DIALOG_TAG = "systemDialog";
+function isDialogPageInstance(vm) {
+  return isNormalDialogPageInstance(vm) || isSystemDialogPageInstance(vm);
+}
+function isNormalDialogPageInstance(vm) {
+  return vm.attrs.type === DIALOG_TAG;
+}
+function isSystemDialogPageInstance(vm) {
+  return vm.attrs.type === SYSTEM_DIALOG_TAG;
+}
 let escBackPageNum = 0;
 const homeDialogPages = [];
+const homeSystemDialogPages = [];
 class UniPageImpl {
   constructor({
     route,
@@ -17281,7 +16958,7 @@ function initXPage(vm, route, page) {
   initPageVm(vm, page);
   vm.$basePage = vm.$page;
   const pageInstance = getPageInstanceByVm(vm);
-  if ((pageInstance == null ? void 0 : pageInstance.attrs.type) !== "dialog") {
+  if (!isDialogPageInstance(pageInstance)) {
     const uniPage = new UniNormalPageImpl({
       route: (route == null ? void 0 : route.path) || "",
       options: new UTSJSONObject((route == null ? void 0 : route.query) || {}),
@@ -17343,6 +17020,13 @@ function initXPage(vm, route, page) {
         });
         homeDialogPages.length = 0;
       }
+      if (homeSystemDialogPages.length) {
+        homeSystemDialogPages.forEach((dialogPage) => {
+          dialogPage.getParentPage = () => vm.$page;
+          pageInstance.$systemDialogPages.value.push(dialogPage);
+        });
+        homeSystemDialogPages.length = 0;
+      }
     }
   } else {
     vm.$page = (_b = getPageInstanceByVm(vm)) == null ? void 0 : _b.$dialogPage;
@@ -17372,7 +17056,7 @@ function decrementEscBackPageNum() {
   }
 }
 const openDialogPage = (options) => {
-  var _a, _b;
+  var _a, _b, _c;
   if (!options.url) {
     triggerFailCallback$1(options, "url is required");
     return null;
@@ -17402,24 +17086,39 @@ const openDialogPage = (options) => {
       return null;
     }
   }
-  if (!currentPages.length) {
-    homeDialogPages.push(dialogPage);
-  } else {
-    if (!parentPage) {
-      parentPage = currentPages[currentPages.length - 1];
+  const isSystemDialog = options.url.startsWith("uni:");
+  if (!isSystemDialog) {
+    if (!currentPages.length) {
+      homeDialogPages.push(dialogPage);
+    } else {
+      if (!parentPage) {
+        parentPage = currentPages[currentPages.length - 1];
+      }
+      dialogPage.getParentPage = () => parentPage;
+      parentPage.getDialogPages().push(dialogPage);
     }
-    dialogPage.getParentPage = () => parentPage;
-    parentPage.getDialogPages().push(dialogPage);
-  }
-  if (!options.disableEscBack) {
-    incrementEscBackPageNum();
+    if (!options.disableEscBack) {
+      incrementEscBackPageNum();
+    }
+  } else {
+    if (!currentPages.length) {
+      homeSystemDialogPages.push(dialogPage);
+    } else {
+      if (!parentPage) {
+        parentPage = currentPages[currentPages.length - 1];
+      }
+      dialogPage.getParentPage = () => parentPage;
+      (_a = getPageInstanceByVm(parentPage.vm)) == null ? void 0 : _a.$systemDialogPages.value.push(
+        dialogPage
+      );
+    }
   }
   const successOptions = {
     errMsg: "openDialogPage: ok",
     eventChannel: new EventChannel(0, options.events)
   };
-  (_a = options.success) == null ? void 0 : _a.call(options, successOptions);
-  (_b = options.complete) == null ? void 0 : _b.call(options, successOptions);
+  (_b = options.success) == null ? void 0 : _b.call(options, successOptions);
+  (_c = options.complete) == null ? void 0 : _c.call(options, successOptions);
   return dialogPage;
 };
 function triggerFailCallback$1(options, errMsg) {
@@ -17433,7 +17132,7 @@ function triggerFailCallback$1(options, errMsg) {
   (_b = options.complete) == null ? void 0 : _b.call(options, failOptions);
 }
 const closeDialogPage = (options) => {
-  var _a, _b;
+  var _a, _b, _c;
   const currentPages = getCurrentPages();
   const currentPage = currentPages[currentPages.length - 1];
   if (!currentPage) {
@@ -17443,23 +17142,29 @@ const closeDialogPage = (options) => {
   if (options == null ? void 0 : options.dialogPage) {
     const dialogPage = options == null ? void 0 : options.dialogPage;
     const parentPage = dialogPage.getParentPage();
-    if (parentPage && currentPages.indexOf(parentPage) !== -1) {
-      const parentDialogPages = parentPage.getDialogPages();
-      const index2 = parentDialogPages.indexOf(dialogPage);
-      parentDialogPages.splice(index2, 1);
-      invokeHook(dialogPage.$vm, ON_UNLOAD);
-      if (index2 > 0 && index2 === parentDialogPages.length) {
-        invokeHook(
-          parentDialogPages[parentDialogPages.length - 1].$vm,
-          ON_SHOW
-        );
-      }
-      if (!dialogPage.$disableEscBack) {
-        decrementEscBackPageNum();
+    if (!dialogPage.route.startsWith("uni:")) {
+      if (parentPage && currentPages.indexOf(parentPage) !== -1) {
+        const parentDialogPages = parentPage.getDialogPages();
+        const index2 = parentDialogPages.indexOf(dialogPage);
+        parentDialogPages.splice(index2, 1);
+        invokeHook(dialogPage.$vm, ON_UNLOAD);
+        if (index2 > 0 && index2 === parentDialogPages.length) {
+          invokeHook(
+            parentDialogPages[parentDialogPages.length - 1].$vm,
+            ON_SHOW
+          );
+        }
+        if (!dialogPage.$disableEscBack) {
+          decrementEscBackPageNum();
+        }
+      } else {
+        triggerFailCallback(options, "dialogPage is not a valid page");
+        return;
       }
     } else {
-      triggerFailCallback(options, "dialogPage is not a valid page");
-      return;
+      const parentSystemDialogPages = (_a = getPageInstanceByVm(parentPage.vm)) == null ? void 0 : _a.$systemDialogPages.value;
+      const index2 = parentSystemDialogPages.indexOf(dialogPage);
+      parentSystemDialogPages.splice(index2, 1);
     }
   } else {
     const dialogPages = currentPage.getDialogPages();
@@ -17475,8 +17180,8 @@ const closeDialogPage = (options) => {
     dialogPages.length = 0;
   }
   const successOptions = { errMsg: "closeDialogPage: ok" };
-  (_a = options == null ? void 0 : options.success) == null ? void 0 : _a.call(options, successOptions);
-  (_b = options == null ? void 0 : options.complete) == null ? void 0 : _b.call(options, successOptions);
+  (_b = options == null ? void 0 : options.success) == null ? void 0 : _b.call(options, successOptions);
+  (_c = options == null ? void 0 : options.complete) == null ? void 0 : _c.call(options, successOptions);
 };
 function triggerFailCallback(options, errMsg) {
   var _a, _b;
@@ -17488,6 +17193,1454 @@ function triggerFailCallback(options, errMsg) {
   (_a = options == null ? void 0 : options.fail) == null ? void 0 : _a.call(options, failOptions);
   (_b = options == null ? void 0 : options.complete) == null ? void 0 : _b.call(options, failOptions);
 }
+const showActionSheet2$1 = function(options) {
+  const uuid = Date.now() + "" + Math.floor(Math.random() * 1e7);
+  const baseEventName = `_action_sheet_${uuid}`;
+  const readyEventName = `${baseEventName}_ready`;
+  const optionsEventName = `${baseEventName}_options`;
+  const successEventName = `${baseEventName}_success`;
+  const failEventName = `${baseEventName}_fail`;
+  uni.$on(readyEventName, () => {
+    uni.$emit(optionsEventName, options);
+  });
+  uni.$on(successEventName, (index2) => {
+    var _a;
+    (_a = options.success) == null ? void 0 : _a.call(options, { errMsg: "showActionSheet:ok", tapIndex: index2 });
+  });
+  uni.$on(failEventName, () => {
+    var _a;
+    (_a = options.fail) == null ? void 0 : _a.call(options, { errMsg: `showActionSheet:failed cancel` });
+  });
+  uni.openDialogPage({
+    url: `uni:actionSheet?readyEventName=${readyEventName}&optionsEventName=${optionsEventName}&successEventName=${successEventName}&failEventName=${failEventName}`,
+    fail(err) {
+      var _a;
+      (_a = options.fail) == null ? void 0 : _a.call(options, { errMsg: `showActionSheet:failed ${err.errMsg}` });
+      uni.$off(readyEventName, null);
+    }
+  });
+};
+const _sfc_main$1 = {
+  data() {
+    return {
+      show: false,
+      i18nCancelText: {
+        en: "Cancel",
+        es: "Cancelar",
+        fr: "Annuler",
+        "zh-Hans": "取消",
+        "zh-Hant": "取消"
+      },
+      readyEventName: "",
+      optionsEventName: "",
+      successEventName: "",
+      failEventName: "",
+      title: "",
+      itemList: [],
+      optionCancelText: "",
+      optionTitleColor: null,
+      optionItemColor: null,
+      optionCancelColor: null,
+      optionCellBackgroundColor: null,
+      successCallback: null,
+      failCallback: null,
+      completeCallback: null,
+      language: "zh-Hans",
+      theme: "light"
+    };
+  },
+  onLoad(options) {
+    this.readyEventName = options["readyEventName"];
+    this.optionsEventName = options["optionsEventName"];
+    this.successEventName = options["successEventName"];
+    this.failEventName = options["failEventName"];
+    uni.$on(this.optionsEventName, (data) => {
+      this.itemList = data["itemList"];
+      if (data["title"] !== null) {
+        this.title = data["title"];
+      }
+      if (data["cancelText"] !== null) {
+        this.optionCancelText = data["cancelText"];
+      }
+      if (data["titleColor"] !== null) {
+        this.optionTitleColor = data["titleColor"];
+      }
+      if (data["itemColor"] !== null) {
+        this.optionItemColor = data["itemColor"];
+      }
+      if (data["cancelColor"] !== null) {
+        this.optionCancelColor = data["cancelColor"];
+      }
+      if (data["backgroundColor"] !== null) {
+        this.optionCellBackgroundColor = data["backgroundColor"];
+      }
+      if (data["success"] !== null) {
+        this.successCallback = data["success"];
+      }
+      if (data["fail"] !== null) {
+        this.failCallback = data["fail"];
+      }
+      if (data["complete"] !== null) {
+        this.completeCallback = data["complete"];
+      }
+    });
+    uni.$emit(this.readyEventName, {});
+    const systemInfo = uni.getSystemInfoSync();
+    const osLanguage = systemInfo.osLanguage;
+    const appLanguage = systemInfo.appLanguage;
+    if (appLanguage != null) {
+      this.language = appLanguage;
+    } else if (osLanguage != null) {
+      this.language = osLanguage;
+    }
+    const osTheme = systemInfo.osTheme;
+    const appTheme = systemInfo.appTheme;
+    const hostTheme = systemInfo.hostTheme;
+    if (hostTheme != null) {
+      this.theme = hostTheme;
+    } else if (appTheme != null) {
+      this.theme = appTheme;
+    } else if (osTheme != null) {
+      this.theme = osTheme;
+    }
+    const locale = uni.getLocale();
+    this.language = locale;
+    uni.onLocaleChange((res) => {
+      this.language = res.locale;
+    });
+    uni.onThemeChange((res) => {
+      this.theme = res.theme;
+    });
+  },
+  computed: {
+    cancelText() {
+      if (this.optionCancelText != null) {
+        return this.optionCancelText;
+      }
+      if (this.language.startsWith("en")) {
+        return this.i18nCancelText["en"];
+      }
+      if (this.language.startsWith("es")) {
+        return this.i18nCancelText["es"];
+      }
+      if (this.language.startsWith("fr")) {
+        return this.i18nCancelText["fr"];
+      }
+      if (this.language.startsWith("zh-Hans")) {
+        return this.i18nCancelText["zh-Hans"];
+      }
+      if (this.language.startsWith("zh-Hant")) {
+        return this.i18nCancelText["zh-Hant"];
+      }
+      return "取消";
+    },
+    titleColor() {
+      if (this.optionTitleColor != null) {
+        return this.optionTitleColor;
+      }
+      return this.theme == "dark" ? "#999999" : "#666666";
+    },
+    itemColor() {
+      if (this.optionItemColor != null) {
+        return this.optionItemColor;
+      }
+      return this.theme == "dark" ? "#ffffff" : "#000000";
+    },
+    cancelColor() {
+      if (this.optionCancelColor != null) {
+        return this.optionCancelColor;
+      }
+      return this.theme == "dark" ? "#ffffff" : "#000000";
+    },
+    cellBackgroundColor() {
+      if (this.optionCellBackgroundColor != null) {
+        return this.optionCellBackgroundColor;
+      }
+      return this.theme == "dark" ? "#2C2C2B" : "#ffffff";
+    },
+    containerBackgroundColor() {
+      return this.theme == "dark" ? "#1D1E1E" : "#f7f7f7";
+    },
+    cellBorderColor() {
+      return this.theme == "dark" ? "#2F3131" : "#e5e5e5";
+    }
+  },
+  onReady() {
+    setTimeout(() => {
+      this.show = true;
+    }, 10);
+  },
+  onUnload() {
+    uni.$off(this.optionsEventName, null);
+    uni.$off(this.readyEventName, null);
+    uni.$off(this.successEventName, null);
+    uni.$off(this.failEventName, null);
+  },
+  methods: {
+    closeActionSheet() {
+      this.show = false;
+      setTimeout(() => {
+        uni.closeDialogPage({ dialogPage: this.$page });
+      }, 300);
+    },
+    handleMenuItemClick(tapIndex) {
+      this.closeActionSheet();
+      uni.$emit(this.successEventName, tapIndex);
+    },
+    handleCancel() {
+      this.closeActionSheet();
+      uni.$emit(this.failEventName, {});
+    }
+  }
+};
+const _style_0 = "\n.uni-actionsheet_dialog__mask {\n    position: fixed;\n    z-index: 999;\n    top: 0;\n    right: 0;\n    left: 0;\n    bottom: 0;\n    opacity: 0;\n    background-color: rgba(0, 0, 0, 0.6);\n    transition: opacity 0.3s;\n}\n.uni-actionsheet_dialog__mask__show {\n    opacity: 1;\n}\n.uni-actionsheet_dialog__container {\n    position: fixed;\n    width: 100%;\n    overflow: hidden;\n    left: 0;\n    bottom: 0;\n    z-index: 999;\n    backface-visibility: hidden;\n    transform: translate(0, 100%);\n\n\n\n\n    visibility: hidden;\n    transition: transform 0.3s, visibility 0.3s;\n\n    border-top-left-radius: 12px;\n    border-top-right-radius: 12px;\n}\n.uni-actionsheet_dialog__container.uni-actionsheet_dialog__show {\n\n    visibility: visible;\n\n    transform: translate(0, 0);\n}\n.uni-actionsheet_dialog__menu{display: block;}\n.uni-actionsheet_dialog__title,\n  .uni-actionsheet_dialog__cell,\n  .uni-actionsheet_dialog__action {\n    display: block;\n    padding: 16px;\n    cursor: pointer;\n    text-align: center;\n}\n.uni-actionsheet_dialog__title,\n  .uni-actionsheet_dialog__cell,\n  .uni-actionsheet_dialog__action,\n\n  .uni-actionsheet_dialog__title__text,\n  .uni-actionsheet_dialog__cell__text,\n  .uni-actionsheet_dialog__action__text {\n    line-height: 1.4;\n    text-align: center;\n    white-space: nowrap;\n    overflow: hidden;\n    text-overflow: ellipsis;\n}\n.uni-actionsheet_dialog__cell {\n    border-top-width: 1px;\n    border-top-style: solid;\n}\n.uni-actionsheet_dialog__action {\n    margin-top: 8px;\n}\n@media screen and (min-width: 500px) and (min-height: 500px) {\n.uni-actionsheet_dialog__mask {\n      background: none;\n}\n.uni-actionsheet_dialog__container {\n      width: 300px;\n      position: fixed;\n      left: 50%;\n      right: auto;\n      top: 50%;\n      bottom: auto;\n      z-index: 999;\n      opacity: 0;\n      visibility: hidden;\n      backface-visibility: hidden;\n      border-radius: 5px;\n      transform: translate(-50%, -50%);\n      transition: opacity 0.3s, visibility 0.3s;\n      box-shadow: 0 0 20px 5px rgba(0, 0, 0, 0.3);\n}\n.uni-actionsheet_dialog__show {\n      visibility: visible;\n      opacity: 1;\n      transform: translate(-50%, -50%) !important;\n}\n.uni-actionsheet_dialog__action {\n      display: none;\n}\n.uni-actionsheet_dialog__title {\n      font-size: 15px;\n}\n.uni-actionsheet_dialog__title,\n    .uni-actionsheet_dialog__cell,\n    .uni-actionsheet_dialog__action {\n      padding: 16px;\n}\n}\n";
+const _export_sfc = (sfc, props2) => {
+  const target = sfc.__vccOpts || sfc;
+  for (const [key, val] of props2) {
+    target[key] = val;
+  }
+  return target;
+};
+const _hoisted_1$1 = ["onClick"];
+function _sfc_render$1(_ctx, _cache, $props, $setup, $data, $options) {
+  return openBlock(), createElementBlock("view", null, [
+    createElementVNode("view", {
+      class: normalizeClass(["uni-actionsheet_dialog__mask", { "uni-actionsheet_dialog__mask__show": $data.show }]),
+      onClick: _cache[0] || (_cache[0] = (...args) => $options.handleCancel && $options.handleCancel(...args))
+    }, null, 2),
+    createElementVNode("view", {
+      class: normalizeClass(["uni-actionsheet_dialog__container", { "uni-actionsheet_dialog__show": $data.show }]),
+      style: normalizeStyle({ backgroundColor: $options.containerBackgroundColor })
+    }, [
+      $data.title ? (openBlock(), createElementBlock("view", {
+        key: 0,
+        style: normalizeStyle({ backgroundColor: $options.cellBackgroundColor }),
+        class: "uni-actionsheet_dialog__title"
+      }, [
+        createElementVNode("text", {
+          style: normalizeStyle({
+            color: $options.titleColor
+          }),
+          class: "uni-actionsheet_dialog__title__text"
+        }, toDisplayString($data.title), 5)
+      ], 4)) : createCommentVNode("", true),
+      createElementVNode("view", {
+        class: "uni-actionsheet_dialog__menu",
+        style: normalizeStyle({ backgroundColor: $options.cellBackgroundColor })
+      }, [
+        (openBlock(true), createElementBlock(Fragment, null, renderList($data.itemList, (item, index2) => {
+          return openBlock(), createElementBlock("view", {
+            class: "uni-actionsheet_dialog__cell",
+            style: normalizeStyle({ borderTopColor: $options.cellBorderColor }),
+            key: index2,
+            onClick: ($event) => $options.handleMenuItemClick(index2)
+          }, [
+            createElementVNode("text", {
+              style: normalizeStyle({ color: $options.itemColor }),
+              class: "uni-actionsheet_dialog__cell__text"
+            }, toDisplayString(item), 5)
+          ], 12, _hoisted_1$1);
+        }), 128))
+      ], 4),
+      createElementVNode("view", {
+        style: normalizeStyle({ backgroundColor: $options.cellBackgroundColor }),
+        class: "uni-actionsheet_dialog__action",
+        onClick: _cache[1] || (_cache[1] = (...args) => $options.handleCancel && $options.handleCancel(...args))
+      }, [
+        createElementVNode("text", {
+          style: normalizeStyle({
+            color: $options.cancelColor
+          }),
+          class: "uni-actionsheet_dialog__action__text"
+        }, toDisplayString($options.cancelText), 5)
+      ], 4)
+    ], 6)
+  ]);
+}
+const showActionSheetPage = /* @__PURE__ */ _export_sfc(_sfc_main$1, [["render", _sfc_render$1], ["styles", [_style_0]]]);
+function updateBackgroundColorContent(backgroundColorContent) {
+  if (backgroundColorContent) {
+    document.body.style.setProperty(
+      "--background-color-content",
+      backgroundColorContent
+    );
+  } else {
+    document.body.style.removeProperty("--background-color-content");
+  }
+}
+function useBackgroundColorContent(pageMeta) {
+  function update() {
+    if (pageMeta.backgroundColorContent) {
+      updateBackgroundColorContent(
+        parseTheme({ backgroundColorContent: pageMeta.backgroundColorContent }).backgroundColorContent
+      );
+    }
+  }
+  onThemeChange$1(update);
+  watchEffect(update);
+  onActivated(update);
+}
+function usePageHeadTransparentBackgroundColor(backgroundColor) {
+  const { r, g: g2, b } = hexToRgba(backgroundColor);
+  return `rgba(${r},${g2},${b},0)`;
+}
+function usePageHeadTransparent(headRef, {
+  id: id2,
+  navigationBar: { titleColor, coverage, backgroundColor }
+}) {
+  let A = 0;
+  const rgb = computed(() => hexToRgba(backgroundColor));
+  const offset = parseInt(coverage);
+  let titleElem;
+  let transparentElemStyle;
+  const iconElemsPaths = [];
+  const borderRadiusElemsStyles = [];
+  const oldColors = [];
+  onMounted(() => {
+    const $el = headRef.value;
+    transparentElemStyle = $el.style;
+    titleElem = $el.querySelector(".uni-page-head__title");
+    const borderRadiusElems = $el.querySelectorAll(
+      ".uni-page-head-btn"
+    );
+    const iconSvgElems = $el.querySelectorAll(
+      "svg path"
+    );
+    for (let i = 0; i < iconSvgElems.length; i++) {
+      iconElemsPaths.push(iconSvgElems[i]);
+    }
+    for (let i = 0; i < borderRadiusElems.length; i++) {
+      const borderRadiusElem = borderRadiusElems[i];
+      oldColors.push(getComputedStyle(borderRadiusElem).backgroundColor);
+      borderRadiusElemsStyles.push(borderRadiusElem.style);
+    }
+  });
+  useOn(id2 + ".onPageScroll", ({ scrollTop }) => {
+    const alpha = Math.min(scrollTop / offset, 1);
+    if (alpha === 1 && A === 1) {
+      return;
+    }
+    if (alpha > 0.5 && A <= 0.5) {
+      iconElemsPaths.forEach(function(iconElemPath) {
+        iconElemPath.setAttribute("fill", titleColor);
+      });
+    } else if (alpha <= 0.5 && A > 0.5) {
+      iconElemsPaths.forEach(function(iconElemPath) {
+        iconElemPath.setAttribute("fill", "#fff");
+      });
+    }
+    A = alpha;
+    if (titleElem) {
+      titleElem.style.opacity = alpha;
+    }
+    const bg = rgb.value;
+    transparentElemStyle.backgroundColor = `rgba(${bg.r},${bg.g},${bg.b},${alpha})`;
+    borderRadiusElemsStyles.forEach(function(borderRadiusElemStyle, index2) {
+      const oldColor = oldColors[index2];
+      const rgba = oldColor.match(/[\d+\.]+/g);
+      rgba[3] = (1 - alpha) * (rgba.length === 4 ? rgba[3] : 1);
+      borderRadiusElemStyle.backgroundColor = `rgba(${rgba})`;
+    });
+  });
+}
+const ICON_PATHS = {
+  none: "",
+  forward: "M11 7.844q-0.25-0.219-0.25-0.578t0.25-0.578q0.219-0.25 0.563-0.25t0.563 0.25l9.656 9.125q0.125 0.125 0.188 0.297t0.063 0.328q0 0.188-0.063 0.359t-0.188 0.297l-9.656 9.125q-0.219 0.25-0.563 0.25t-0.563-0.25q-0.25-0.219-0.25-0.578t0.25-0.609l9.063-8.594-9.063-8.594z",
+  back: ICON_PATH_BACK,
+  select: ICON_PATH_BACK,
+  share: "M26.563 24.844q0 0.125-0.109 0.234t-0.234 0.109h-17.938q-0.125 0-0.219-0.109t-0.094-0.234v-13.25q0-0.156 0.094-0.25t0.219-0.094h5.5v-1.531h-6q-0.531 0-0.906 0.391t-0.375 0.922v14.375q0 0.531 0.375 0.922t0.906 0.391h18.969q0.531 0 0.891-0.391t0.359-0.953v-5.156h-1.438v4.625zM29.813 10.969l-5.125-5.375-1.031 1.094 3.438 3.594-3.719 0.031q-2.313 0.188-4.344 1.125t-3.578 2.422-2.5 3.453-1.109 4.188l-0.031 0.25h1.469v-0.219q0.156-1.875 1-3.594t2.25-3.063 3.234-2.125 3.828-0.906l0.188-0.031 3.313-0.031-3.438 3.625 1.031 1.063 5.125-5.375-0.031-0.063 0.031-0.063z",
+  favorite: "M27.594 13.375q-0.063-0.188-0.219-0.313t-0.344-0.156l-7.094-0.969-3.219-6.406q-0.094-0.188-0.25-0.281t-0.375-0.094q-0.188 0-0.344 0.094t-0.25 0.281l-3.125 6.438-7.094 1.094q-0.188 0.031-0.344 0.156t-0.219 0.313q-0.031 0.188 0.016 0.375t0.172 0.313l5.156 4.969-1.156 7.063q-0.031 0.188 0.047 0.375t0.234 0.313q0.094 0.063 0.188 0.094t0.219 0.031q0.063 0 0.141-0.031t0.172-0.063l6.313-3.375 6.375 3.313q0.063 0.031 0.141 0.047t0.172 0.016q0.188 0 0.344-0.094t0.25-0.281q0.063-0.094 0.078-0.234t-0.016-0.234q0-0.031 0-0.063l-1.25-6.938 5.094-5.031q0.156-0.156 0.203-0.344t-0.016-0.375zM11.469 19.063q0.031-0.188-0.016-0.344t-0.172-0.281l-4.406-4.25 6.063-0.906q0.156-0.031 0.297-0.125t0.203-0.25l2.688-5.531 2.75 5.5q0.063 0.156 0.203 0.25t0.297 0.125l6.094 0.844-4.375 4.281q-0.125 0.125-0.172 0.297t-0.016 0.328l1.063 6.031-5.438-2.813q-0.156-0.094-0.328-0.078t-0.297 0.078l-5.438 2.875 1-6.031z",
+  home: "M23.719 16.5q-0.313 0-0.531 0.219t-0.219 0.5v7.063q0 0.219-0.172 0.391t-0.391 0.172h-12.344q-0.25 0-0.422-0.172t-0.172-0.391v-7.063q0-0.281-0.219-0.5t-0.531-0.219q-0.281 0-0.516 0.219t-0.234 0.5v7.063q0.031 0.844 0.625 1.453t1.438 0.609h12.375q0.844 0 1.453-0.609t0.609-1.453v-7.063q0-0.125-0.063-0.266t-0.156-0.234q-0.094-0.125-0.234-0.172t-0.297-0.047zM26.5 14.875l-8.813-8.813q-0.313-0.313-0.688-0.453t-0.781-0.141-0.781 0.141-0.656 0.422l-8.813 8.844q-0.188 0.219-0.188 0.516t0.219 0.484q0.094 0.125 0.234 0.172t0.297 0.047q0.125 0 0.25-0.047t0.25-0.141l8.781-8.781q0.156-0.156 0.406-0.156t0.406 0.156l8.813 8.781q0.219 0.188 0.516 0.188t0.516-0.219q0.188-0.188 0.203-0.484t-0.172-0.516z",
+  menu: "M8.938 18.313q0.875 0 1.484-0.609t0.609-1.453-0.609-1.453-1.484-0.609q-0.844 0-1.453 0.609t-0.609 1.453 0.609 1.453 1.453 0.609zM16.188 18.313q0.875 0 1.484-0.609t0.609-1.453-0.609-1.453-1.484-0.609q-0.844 0-1.453 0.609t-0.609 1.453 0.609 1.453 1.453 0.609zM23.469 18.313q0.844 0 1.453-0.609t0.609-1.453-0.609-1.453-1.453-0.609q-0.875 0-1.484 0.609t-0.609 1.453 0.609 1.453 1.484 0.609z",
+  close: ICON_PATH_CLOSE
+};
+const PageHead = /* @__PURE__ */ defineSystemComponent({
+  name: "PageHead",
+  setup() {
+    const headRef = ref(null);
+    const pageMeta = usePageMeta();
+    const navigationBar = useTheme(pageMeta.navigationBar, () => {
+      const _navigationBar = parseTheme(pageMeta.navigationBar);
+      navigationBar.backgroundColor = _navigationBar.backgroundColor;
+      navigationBar.titleColor = _navigationBar.titleColor;
+    });
+    const {
+      clazz: clazz2,
+      style
+    } = usePageHead(navigationBar);
+    const buttons = __UNI_FEATURE_NAVIGATIONBAR_BUTTONS__ && usePageHeadButtons(pageMeta);
+    const searchInput = __UNI_FEATURE_NAVIGATIONBAR_SEARCHINPUT__ && navigationBar.searchInput && usePageHeadSearchInput(pageMeta);
+    __UNI_FEATURE_NAVIGATIONBAR_TRANSPARENT__ && navigationBar.type === "transparent" && usePageHeadTransparent(headRef, pageMeta);
+    return () => {
+      const backButtonTsx = __UNI_FEATURE_PAGES__ ? createBackButtonTsx(navigationBar, pageMeta.isQuit) : null;
+      const leftButtonsTsx = __UNI_FEATURE_NAVIGATIONBAR_BUTTONS__ ? createButtonsTsx(buttons.left) : [];
+      const rightButtonsTsx = __UNI_FEATURE_NAVIGATIONBAR_BUTTONS__ ? createButtonsTsx(buttons.right) : [];
+      const type = navigationBar.type || "default";
+      const placeholderTsx = type !== "transparent" && type !== "float" && createVNode("div", {
+        "class": {
+          "uni-placeholder": true,
+          "uni-placeholder-titlePenetrate": navigationBar.titlePenetrate
+        }
+      }, null, 2);
+      return createVNode("uni-page-head", {
+        "uni-page-head-type": type
+      }, [createVNode("div", {
+        "ref": headRef,
+        "class": clazz2.value,
+        "style": style.value
+      }, [createVNode("div", {
+        "class": "uni-page-head-hd"
+      }, [backButtonTsx, ...leftButtonsTsx]), createPageHeadBdTsx(navigationBar, searchInput), createVNode("div", {
+        "class": "uni-page-head-ft"
+      }, [...rightButtonsTsx])], 6), placeholderTsx], 8, ["uni-page-head-type"]);
+    };
+  }
+});
+function createBackButtonTsx(navigationBar, isQuit) {
+  if (!isQuit) {
+    return createVNode("div", {
+      "class": "uni-page-head-btn",
+      "onClick": onPageHeadBackButton
+    }, [createSvgIconVNode(ICON_PATH_BACK, navigationBar.type === "transparent" ? "#fff" : navigationBar.titleColor, 26)], 8, ["onClick"]);
+  }
+}
+function createButtonsTsx(btns) {
+  return btns.map(({
+    onClick,
+    btnClass,
+    btnStyle,
+    btnText,
+    btnIconPath,
+    badgeText,
+    iconStyle,
+    btnSelect
+  }, index2) => {
+    return createVNode("div", {
+      "key": index2,
+      "class": btnClass,
+      "style": btnStyle,
+      "onClick": onClick,
+      "badge-text": badgeText
+    }, [btnIconPath ? createSvgIconVNode(btnIconPath, iconStyle.color, iconStyle.fontSize) : btnSelect ? createVNode("span", {
+      "style": iconStyle
+    }, [createVNode("i", {
+      "class": "uni-btn-icon",
+      "innerHTML": btnText
+    }, null, 8, ["innerHTML"]), createSvgIconVNode(ICON_PATHS["select"], "#000", 14)], 4) : createVNode("i", {
+      "class": "uni-btn-icon",
+      "style": iconStyle,
+      "innerHTML": btnText
+    }, null, 12, ["innerHTML"])], 14, ["onClick", "badge-text"]);
+  });
+}
+function createPageHeadBdTsx(navigationBar, searchInput) {
+  if (!__UNI_FEATURE_NAVIGATIONBAR_SEARCHINPUT__ || !navigationBar.searchInput) {
+    return createPageHeadTitleTextTsx(navigationBar);
+  }
+  return createPageHeadSearchInputTsx(navigationBar, searchInput);
+}
+function createPageHeadTitleTextTsx({
+  type,
+  loading,
+  titleSize,
+  titleText,
+  titleImage
+}) {
+  return createVNode("div", {
+    "class": "uni-page-head-bd"
+  }, [createVNode("div", {
+    "style": {
+      fontSize: titleSize,
+      opacity: type === "transparent" ? 0 : 1
+    },
+    "class": "uni-page-head__title"
+  }, [loading ? createVNode("i", {
+    "class": "uni-loading"
+  }, null) : titleImage ? createVNode("img", {
+    "src": titleImage,
+    "class": "uni-page-head__title_image"
+  }, null, 8, ["src"]) : titleText], 4)]);
+}
+function createPageHeadSearchInputTsx(navigationBar, {
+  text: text2,
+  focus,
+  composing,
+  onBlur,
+  onFocus,
+  onInput,
+  onConfirm,
+  onClick
+}) {
+  const {
+    color,
+    align: align2,
+    autoFocus,
+    disabled,
+    borderRadius,
+    backgroundColor,
+    placeholder,
+    placeholderColor
+  } = navigationBar.searchInput;
+  const searchStyle = {
+    borderRadius,
+    backgroundColor
+  };
+  const placeholderClass = ["uni-page-head-search-placeholder", `uni-page-head-search-placeholder-${focus.value || text2.value ? "left" : align2}`];
+  return createVNode("div", {
+    "class": "uni-page-head-search",
+    "style": searchStyle
+  }, [createVNode("div", {
+    "style": {
+      color: placeholderColor
+    },
+    "class": placeholderClass
+  }, [createVNode("div", {
+    "class": "uni-page-head-search-icon"
+  }, [createSvgIconVNode(ICON_PATH_SEARCH, placeholderColor, 20)]), text2.value || composing.value ? "" : placeholder], 6), disabled ? createVNode(Input, {
+    "disabled": true,
+    "style": {
+      color
+    },
+    "placeholder-style": "color: " + placeholderColor,
+    "class": "uni-page-head-search-input",
+    "confirm-type": "search",
+    "onClick": onClick
+  }, null, 8, ["style", "placeholder-style", "onClick"]) : createVNode(Input, {
+    "focus": autoFocus,
+    "style": {
+      color
+    },
+    "placeholder-style": "color: " + placeholderColor,
+    "class": "uni-page-head-search-input",
+    "confirm-type": "search",
+    "onFocus": onFocus,
+    "onBlur": onBlur,
+    "onInput": onInput,
+    "onConfirm": onConfirm
+  }, null, 8, ["focus", "style", "placeholder-style", "onFocus", "onBlur", "onInput", "onConfirm"])], 4);
+}
+function onPageHeadBackButton() {
+  if (getCurrentPages().length === 1) {
+    uni.reLaunch({
+      url: "/"
+    });
+  } else {
+    uni.navigateBack({
+      from: "backbutton",
+      success() {
+      }
+      // 传入空方法，避免返回Promise，因为onBackPress可能导致fail
+    });
+  }
+}
+function usePageHead(navigationBar) {
+  const clazz2 = computed(() => {
+    const {
+      type,
+      titlePenetrate,
+      shadowColorType
+    } = navigationBar;
+    const clazz3 = {
+      "uni-page-head": true,
+      "uni-page-head-transparent": type === "transparent",
+      "uni-page-head-titlePenetrate": titlePenetrate === "YES",
+      "uni-page-head-shadow": !!shadowColorType
+    };
+    if (shadowColorType) {
+      clazz3[`uni-page-head-shadow-${shadowColorType}`] = true;
+    }
+    return clazz3;
+  });
+  const style = computed(() => {
+    const backgroundColor = __UNI_FEATURE_NAVIGATIONBAR_TRANSPARENT__ && navigationBar.type === "transparent" ? usePageHeadTransparentBackgroundColor(navigationBar.backgroundColor) : navigationBar.backgroundColor;
+    return {
+      backgroundColor,
+      color: navigationBar.titleColor,
+      transitionDuration: navigationBar.duration,
+      transitionTimingFunction: navigationBar.timingFunc
+    };
+  });
+  return {
+    clazz: clazz2,
+    style
+  };
+}
+function usePageHeadButtons({
+  id: id2,
+  navigationBar
+}) {
+  const left = [];
+  const right = [];
+  const {
+    buttons
+  } = navigationBar;
+  if (isArray(buttons)) {
+    const {
+      type
+    } = navigationBar;
+    const isTransparent = type === "transparent";
+    const fonts = /* @__PURE__ */ Object.create(null);
+    buttons.forEach((btn, index2) => {
+      if (btn.fontSrc && !btn.fontFamily) {
+        const fontSrc = getRealPath(btn.fontSrc);
+        let fontFamily = fonts[fontSrc];
+        if (!fontFamily) {
+          fontFamily = `font${Date.now()}`;
+          fonts[fontSrc] = fontFamily;
+          onBeforeMount(() => updateStyle("uni-btn-" + fontFamily, `@font-face{font-family: "${fontFamily}";src: url("${fontSrc}") format("truetype")}`));
+        }
+        btn.fontFamily = fontFamily;
+      }
+      const pageHeadBtn = usePageHeadButton(id2, index2, btn, isTransparent);
+      if (btn.float === "left") {
+        left.push(pageHeadBtn);
+      } else {
+        right.push(pageHeadBtn);
+      }
+    });
+  }
+  return {
+    left,
+    right
+  };
+}
+function usePageHeadButton(pageId, index2, btn, isTransparent) {
+  const iconStyle = {
+    color: btn.color,
+    fontSize: btn.fontSize,
+    fontWeight: btn.fontWeight
+  };
+  if (btn.fontFamily) {
+    iconStyle.fontFamily = btn.fontFamily;
+  }
+  return new Proxy({
+    btnClass: {
+      // 类似这样的大量重复的字符串，会在gzip时压缩大小，无需在代码层考虑优化相同字符串
+      "uni-page-head-btn": true,
+      "uni-page-head-btn-red-dot": !!(btn.redDot || btn.badgeText),
+      "uni-page-head-btn-select": !!btn.select
+    },
+    btnStyle: {
+      backgroundColor: isTransparent ? btn.background : "transparent",
+      width: btn.width
+    },
+    btnText: "",
+    btnIconPath: ICON_PATHS[btn.type],
+    badgeText: btn.badgeText,
+    iconStyle,
+    onClick() {
+      invokeHook(pageId, ON_NAVIGATION_BAR_BUTTON_TAP, extend({
+        index: index2
+      }, btn));
+    },
+    btnSelect: btn.select
+  }, {
+    get(target, key, receiver) {
+      if (["btnText"].includes(key)) {
+        return btn.fontSrc && btn.fontFamily ? btn.text.replace("\\u", "&#x") : btn.text;
+      } else {
+        return Reflect.get(target, key, receiver);
+      }
+    }
+  });
+}
+function usePageHeadSearchInput({
+  id: id2,
+  navigationBar: {
+    searchInput
+  }
+}) {
+  const focus = ref(false);
+  const text2 = ref("");
+  const composing = ref(false);
+  const {
+    disabled
+  } = searchInput;
+  if (disabled) {
+    const onClick = () => {
+      invokeHook(id2, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED);
+    };
+    return {
+      focus,
+      text: text2,
+      composing,
+      onClick
+    };
+  }
+  const onFocus = () => {
+    focus.value = true;
+    invokeHook(id2, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, {
+      focus: true
+    });
+  };
+  const onBlur = () => {
+    focus.value = false;
+    invokeHook(id2, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, {
+      focus: false
+    });
+  };
+  const onInput = (evt) => {
+    text2.value = evt.detail.value;
+    invokeHook(id2, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, {
+      text: text2.value
+    });
+  };
+  const onConfirm = (evt) => {
+    invokeHook(id2, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, {
+      text: text2.value
+    });
+  };
+  return {
+    focus,
+    text: text2,
+    composing,
+    onFocus,
+    onBlur,
+    onInput,
+    onConfirm
+  };
+}
+const _sfc_main = {
+  name: "PageRefresh",
+  setup() {
+    const { pullToRefresh } = usePageMeta();
+    return {
+      offset: pullToRefresh.offset,
+      color: pullToRefresh.color
+    };
+  }
+};
+const _hoisted_1 = { class: "uni-page-refresh-inner" };
+const _hoisted_2 = ["fill"];
+const _hoisted_3 = /* @__PURE__ */ createElementVNode("path", { d: "M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z" }, null, -1);
+const _hoisted_4 = /* @__PURE__ */ createElementVNode("path", {
+  d: "M0 0h24v24H0z",
+  fill: "none"
+}, null, -1);
+const _hoisted_5 = [
+  _hoisted_3,
+  _hoisted_4
+];
+const _hoisted_6 = {
+  class: "uni-page-refresh__spinner",
+  width: "24",
+  height: "24",
+  viewBox: "25 25 50 50"
+};
+const _hoisted_7 = ["stroke"];
+function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
+  return openBlock(), createElementBlock("uni-page-refresh", null, [
+    createElementVNode("div", {
+      style: normalizeStyle({ "margin-top": $setup.offset + "px" }),
+      class: "uni-page-refresh"
+    }, [
+      createElementVNode("div", _hoisted_1, [
+        (openBlock(), createElementBlock("svg", {
+          fill: $setup.color,
+          class: "uni-page-refresh__icon",
+          width: "24",
+          height: "24",
+          viewBox: "0 0 24 24"
+        }, _hoisted_5, 8, _hoisted_2)),
+        (openBlock(), createElementBlock("svg", _hoisted_6, [
+          createElementVNode("circle", {
+            stroke: $setup.color,
+            class: "uni-page-refresh__path",
+            cx: "50",
+            cy: "50",
+            r: "20",
+            fill: "none",
+            "stroke-width": "4",
+            "stroke-miterlimit": "10"
+          }, null, 8, _hoisted_7)
+        ]))
+      ])
+    ], 4)
+  ]);
+}
+const PageRefresh = /* @__PURE__ */ _export_sfc(_sfc_main, [["render", _sfc_render]]);
+function processDeltaY(ev, identifier, startY) {
+  const touch = Array.prototype.slice.call(ev.changedTouches).filter((touch2) => touch2.identifier === identifier)[0];
+  if (!touch) {
+    return false;
+  }
+  ev.deltaY = touch.pageY - startY;
+  return true;
+}
+const PULLING = "pulling";
+const REACHED = "reached";
+const ABORTING = "aborting";
+const REFRESHING = "refreshing";
+const RESTORING = "restoring";
+function usePageRefresh(refreshRef) {
+  const pageMeta = usePageMeta();
+  const { id: id2, pullToRefresh } = pageMeta;
+  const { range, height } = pullToRefresh;
+  let refreshContainerElem;
+  let refreshControllerElem;
+  let refreshControllerElemStyle;
+  let refreshInnerElemStyle;
+  useSubscribe(
+    () => {
+      if (!pageMeta.enablePullDownRefresh) {
+        return;
+      }
+      if (!state2) {
+        state2 = REFRESHING;
+        addClass();
+        setTimeout(() => {
+          refreshing();
+        }, 50);
+      }
+    },
+    API_START_PULL_DOWN_REFRESH,
+    false,
+    id2
+  );
+  useSubscribe(
+    () => {
+      if (!pageMeta.enablePullDownRefresh) {
+        return;
+      }
+      if (state2 === REFRESHING) {
+        removeClass();
+        state2 = RESTORING;
+        addClass();
+        restoring(() => {
+          removeClass();
+          state2 = distance2 = offset = null;
+        });
+      }
+    },
+    API_STOP_PULL_DOWN_REFRESH,
+    false,
+    id2
+  );
+  function initElement() {
+    refreshContainerElem = refreshRef.value.$el;
+    refreshControllerElem = refreshContainerElem.querySelector(".uni-page-refresh");
+    refreshControllerElemStyle = refreshControllerElem.style;
+    refreshInnerElemStyle = refreshControllerElem.querySelector(
+      ".uni-page-refresh-inner"
+    ).style;
+  }
+  onMounted(() => {
+    initElement();
+  });
+  {
+    watch(
+      () => pageMeta.enablePullDownRefresh,
+      (enablePullDownRefresh) => {
+        if (enablePullDownRefresh) {
+          nextTick(() => {
+            initElement();
+          });
+        }
+      }
+    );
+  }
+  let touchId;
+  let startY;
+  let canRefresh;
+  let state2;
+  let distance2 = null;
+  let offset = null;
+  function toggleClass(type) {
+    if (!state2) {
+      return;
+    }
+    if (refreshContainerElem) {
+      refreshContainerElem.classList[type]("uni-page-refresh--" + state2);
+    }
+  }
+  function addClass() {
+    toggleClass("add");
+  }
+  function removeClass() {
+    toggleClass("remove");
+  }
+  function pulling(deltaY) {
+    if (!refreshControllerElem) {
+      return;
+    }
+    let rotate = deltaY / range;
+    if (rotate > 1) {
+      rotate = 1;
+    } else {
+      rotate = rotate * rotate * rotate;
+    }
+    const y = Math.round(deltaY / (range / height)) || 0;
+    refreshInnerElemStyle.transform = "rotate(" + 360 * rotate + "deg)";
+    refreshControllerElemStyle.clip = "rect(" + (45 - y) + "px,45px,45px,-5px)";
+    refreshControllerElemStyle.transform = "translate3d(-50%, " + y + "px, 0)";
+  }
+  const onTouchstartPassive = withWebEvent((ev) => {
+    if (!pageMeta.enablePullDownRefresh) {
+      return;
+    }
+    const touch = ev.changedTouches[0];
+    touchId = touch.identifier;
+    startY = touch.pageY;
+    if ([ABORTING, REFRESHING, RESTORING].indexOf(state2) >= 0) {
+      canRefresh = false;
+    } else {
+      canRefresh = true;
+    }
+  });
+  const onTouchmove = withWebEvent((ev) => {
+    if (!pageMeta.enablePullDownRefresh) {
+      return;
+    }
+    if (!canRefresh) {
+      return;
+    }
+    if (!processDeltaY(ev, touchId, startY)) {
+      return;
+    }
+    let { deltaY } = ev;
+    if ((document.documentElement.scrollTop || document.body.scrollTop) !== 0) {
+      touchId = null;
+      return;
+    }
+    if (deltaY < 0 && !state2) {
+      return;
+    }
+    if (ev.cancelable) {
+      ev.preventDefault();
+    }
+    if (distance2 === null) {
+      offset = deltaY;
+      state2 = PULLING;
+      addClass();
+    }
+    deltaY = deltaY - offset;
+    if (deltaY < 0) {
+      deltaY = 0;
+    }
+    distance2 = deltaY;
+    const isReached = deltaY >= range && state2 !== REACHED;
+    const isPulling = deltaY < range && state2 !== PULLING;
+    if (isReached || isPulling) {
+      removeClass();
+      state2 = state2 === REACHED ? PULLING : REACHED;
+      addClass();
+    }
+    pulling(deltaY);
+  });
+  const onTouchend = withWebEvent((ev) => {
+    if (!pageMeta.enablePullDownRefresh) {
+      return;
+    }
+    if (!processDeltaY(ev, touchId, startY)) {
+      return;
+    }
+    if (state2 === null) {
+      return;
+    }
+    if (state2 === PULLING) {
+      removeClass();
+      state2 = ABORTING;
+      addClass();
+      aborting(() => {
+        removeClass();
+        state2 = distance2 = offset = null;
+      });
+    } else if (state2 === REACHED) {
+      removeClass();
+      state2 = REFRESHING;
+      addClass();
+      refreshing();
+    }
+  });
+  function aborting(callback) {
+    if (!refreshControllerElem) {
+      return;
+    }
+    if (refreshControllerElemStyle.transform) {
+      refreshControllerElemStyle.transition = "-webkit-transform 0.3s";
+      refreshControllerElemStyle.transform = "translate3d(-50%, 0, 0)";
+      const abortTransitionEnd = function() {
+        timeout && clearTimeout(timeout);
+        refreshControllerElem.removeEventListener(
+          "webkitTransitionEnd",
+          abortTransitionEnd
+        );
+        refreshControllerElemStyle.transition = "";
+        callback();
+      };
+      refreshControllerElem.addEventListener(
+        "webkitTransitionEnd",
+        abortTransitionEnd
+      );
+      const timeout = setTimeout(abortTransitionEnd, 350);
+    } else {
+      callback();
+    }
+  }
+  function refreshing() {
+    if (!refreshControllerElem) {
+      return;
+    }
+    refreshControllerElemStyle.transition = "-webkit-transform 0.2s";
+    refreshControllerElemStyle.transform = "translate3d(-50%, " + height + "px, 0)";
+    invokeHook(id2, ON_PULL_DOWN_REFRESH);
+  }
+  function restoring(callback) {
+    if (!refreshControllerElem) {
+      return;
+    }
+    refreshControllerElemStyle.transition = "-webkit-transform 0.3s";
+    refreshControllerElemStyle.transform += " scale(0.01)";
+    const restoreTransitionEnd = function() {
+      timeout && clearTimeout(timeout);
+      refreshControllerElem.removeEventListener(
+        "webkitTransitionEnd",
+        restoreTransitionEnd
+      );
+      refreshControllerElemStyle.transition = "";
+      refreshControllerElemStyle.transform = "translate3d(-50%, 0, 0)";
+      callback();
+    };
+    refreshControllerElem.addEventListener(
+      "webkitTransitionEnd",
+      restoreTransitionEnd
+    );
+    const timeout = setTimeout(restoreTransitionEnd, 350);
+  }
+  return {
+    onTouchstartPassive,
+    onTouchmove,
+    onTouchend,
+    onTouchcancel: onTouchend
+  };
+}
+const PageBody = /* @__PURE__ */ defineSystemComponent({
+  name: "PageBody",
+  setup(props2, ctx) {
+    const pageMeta = __UNI_FEATURE_PULL_DOWN_REFRESH__ && usePageMeta();
+    const refreshRef = __UNI_FEATURE_PULL_DOWN_REFRESH__ && ref(null);
+    const _pageRefresh = __UNI_FEATURE_PULL_DOWN_REFRESH__ && (pageMeta.enablePullDownRefresh || true) ? usePageRefresh(refreshRef) : null;
+    const pageRefresh = ref(null);
+    watch(() => {
+      return pageMeta.enablePullDownRefresh;
+    }, () => {
+      pageRefresh.value = pageMeta.enablePullDownRefresh ? _pageRefresh : null;
+    }, {
+      immediate: true
+    });
+    return () => {
+      const pageRefreshTsx = __UNI_FEATURE_PULL_DOWN_REFRESH__ && createPageRefreshTsx(refreshRef);
+      return createVNode(Fragment, null, [pageRefreshTsx, createVNode("uni-page-wrapper", pageRefresh.value, [createVNode("uni-page-body", null, [renderSlot(ctx.slots, "default")])], 16)]);
+    };
+  }
+});
+function createPageRefreshTsx(refreshRef, pageMeta) {
+  return createVNode(PageRefresh, {
+    "ref": refreshRef
+  }, null, 512);
+}
+const PageComponent = /* @__PURE__ */ defineSystemComponent({
+  name: "Page",
+  setup(_props, ctx) {
+    const pageMeta = providePageMeta(getStateId());
+    const navigationBar = pageMeta.navigationBar;
+    const pageStyle = {};
+    useDocumentTitle(pageMeta);
+    const currentInstance = getCurrentInstance();
+    {
+      currentInstance.$dialogPages = ref([]);
+      currentInstance.$systemDialogPages = ref([]);
+      useBackgroundColorContent(pageMeta);
+      if (isDialogPageInstance(ctx)) {
+        navigationBar.style = "custom";
+        pageMeta.route = ctx.attrs.route;
+        const parentInstance = inject(
+          "parentInstance"
+        );
+        if (currentInstance && parentInstance) {
+          currentInstance.$parentInstance = parentInstance;
+          if (isNormalDialogPageInstance(
+            ctx
+          )) {
+            const parentDialogPages = parentInstance.$dialogPages.value;
+            currentInstance.$dialogPage = parentDialogPages[parentDialogPages.length - 1];
+          }
+          if (isSystemDialogPageInstance(
+            ctx
+          )) {
+            const parentSystemDialogPages = parentInstance.$systemDialogPages.value;
+            currentInstance.$dialogPage = parentSystemDialogPages[parentSystemDialogPages.length - 1];
+          }
+        }
+      } else {
+        provide("parentInstance", currentInstance);
+      }
+    }
+    return () => createVNode(
+      "uni-page",
+      {
+        "data-page": pageMeta.route,
+        style: pageStyle
+      },
+      __UNI_FEATURE_NAVIGATIONBAR__ && navigationBar.style !== "custom" ? [
+        createVNode(PageHead),
+        createPageBodyVNode(ctx),
+        (createDialogPageVNode(
+          currentInstance.$dialogPages,
+          DIALOG_TAG
+        ), createDialogPageVNode(
+          currentInstance.$systemDialogPages,
+          SYSTEM_DIALOG_TAG
+        ))
+      ] : [
+        createPageBodyVNode(ctx),
+        (createDialogPageVNode(
+          currentInstance.$dialogPages,
+          DIALOG_TAG
+        ), createDialogPageVNode(
+          currentInstance.$systemDialogPages,
+          SYSTEM_DIALOG_TAG
+        ))
+      ]
+    );
+  }
+});
+function createPageBodyVNode(ctx) {
+  return openBlock(), createBlock(
+    PageBody,
+    { key: 0 },
+    {
+      default: withCtx(() => [renderSlot(ctx.slots, "page")]),
+      _: 3
+    }
+  );
+}
+function createDialogPageVNode(dialogPages, type) {
+  return openBlock(true), createElementBlock(
+    Fragment,
+    null,
+    renderList(dialogPages.value, (dialogPage) => {
+      return openBlock(), createBlock(
+        createVNode(
+          dialogPage.$component,
+          {
+            key: dialogPage.route,
+            style: {
+              position: "fixed",
+              "z-index": 999,
+              top: 0,
+              right: 0,
+              bottom: 0,
+              left: 0
+            },
+            type,
+            route: `${dialogPage.route}${stringifyQuery$1(
+              dialogPage.options
+            )}`
+          },
+          null
+        )
+      );
+    })
+  );
+}
+function renderPage(component, props2) {
+  return openBlock(), createBlock(PageComponent, null, {
+    page: withCtx(() => [
+      createVNode(
+        component,
+        extend({}, props2, { ref: "page" }),
+        null,
+        512
+        /* NEED_PATCH */
+      )
+    ]),
+    _: 1
+  });
+}
+function wrapperComponentSetup(comp, { clone, init: init2, setup, before }) {
+  if (clone) {
+    comp = extend({}, comp);
+  }
+  before && before(comp);
+  const oldSetup = comp.setup;
+  comp.setup = (props2, ctx) => {
+    const instance2 = getCurrentInstance();
+    init2(instance2.proxy);
+    setup(instance2);
+    if (oldSetup) {
+      return oldSetup(props2, ctx);
+    }
+  };
+  return comp;
+}
+function setupComponent(comp, options) {
+  if (comp && (comp.__esModule || comp[Symbol.toStringTag] === "Module")) {
+    return wrapperComponentSetup(comp.default, options);
+  }
+  return wrapperComponentSetup(comp, options);
+}
+function setupWindow(comp, id2) {
+  return setupComponent(comp, {
+    init: (vm) => {
+      {
+        vm.$basePage = {
+          id: id2
+        };
+      }
+    },
+    setup(instance2) {
+      instance2.$pageInstance = instance2;
+    }
+  });
+}
+function setupPage(comp) {
+  if (process.env.NODE_ENV !== "production") {
+    comp.__mpType = "page";
+  }
+  return setupComponent(comp, {
+    clone: true,
+    // 页面组件可能会被其他地方手动引用，比如 windows 等，需要 clone 一份新的作为页面组件
+    init: initPage,
+    setup(instance2) {
+      instance2.$pageInstance = instance2;
+      const route = usePageRoute();
+      const query = decodedQuery(route.query);
+      instance2.attrs.__pageQuery = query;
+      {
+        const pageInstance = getPageInstanceByChild(instance2);
+        if (isDialogPageInstance(pageInstance)) {
+          instance2.attrs.__pageQuery = decodedQuery(
+            parseQuery(pageInstance.attrs.route.split("?")[1] || "")
+          );
+        }
+      }
+      getPage$BasePage(instance2.proxy).options = query;
+      instance2.proxy.options = query;
+      const pageMeta = usePageMeta();
+      instance2.onReachBottom = reactive([]);
+      instance2.onPageScroll = reactive([]);
+      watch(
+        [instance2.onReachBottom, instance2.onPageScroll],
+        () => {
+          const currentPage = getCurrentPage().vm;
+          if (instance2.proxy === currentPage) {
+            initPageScrollListener(instance2, pageMeta);
+          }
+        },
+        { once: true }
+      );
+      onBeforeMount(() => {
+        onPageShow(instance2, pageMeta);
+      });
+      onMounted(() => {
+        var _a;
+        {
+          const pageInstance = getPageInstanceByChild(instance2);
+          if (pageInstance.attrs.type === "dialog") {
+            const parentPage = ((_a = instance2.proxy) == null ? void 0 : _a.$page).getParentPage();
+            const parentPageInstance = parentPage ? getPageInstanceByVm(parentPage.vm) : null;
+            if (parentPageInstance) {
+              const dialogPages = parentPageInstance.$dialogPages.value;
+              if (dialogPages.length > 1) {
+                const preDialogPage = dialogPages[dialogPages.length - 2];
+                const { onHide } = preDialogPage.$vm.$;
+                onHide && invokeArrayFns$1(onHide);
+              }
+            }
+          }
+        }
+        onPageReady(instance2);
+        const { onReady } = instance2;
+        onReady && invokeArrayFns$1(onReady);
+        invokeOnTabItemTap(route);
+      });
+      onBeforeActivate(() => {
+        if (!instance2.__isVisible) {
+          onPageShow(instance2, pageMeta);
+          instance2.__isVisible = true;
+          const { onShow } = instance2;
+          onShow && invokeArrayFns$1(onShow);
+          nextTick(() => {
+            invokeOnTabItemTap(route);
+          });
+        }
+      });
+      onBeforeDeactivate(() => {
+        if (instance2.__isVisible && !instance2.__isUnload) {
+          instance2.__isVisible = false;
+          {
+            const pageInstance = getPageInstanceByChild(instance2);
+            if (pageInstance.attrs.type !== "dialog") {
+              const { onHide } = instance2;
+              onHide && invokeArrayFns$1(onHide);
+            }
+          }
+        }
+      });
+      subscribeViewMethod(pageMeta.id);
+      onBeforeUnmount(() => {
+        unsubscribeViewMethod(pageMeta.id);
+      });
+      return query;
+    }
+  });
+}
+function setupApp(comp) {
+  if (process.env.NODE_ENV !== "production") {
+    comp.__mpType = "app";
+  }
+  return setupComponent(comp, {
+    init: initApp$1,
+    setup(instance2) {
+      const route = usePageRoute();
+      const onLaunch = () => {
+        injectAppHooks(instance2);
+        const { onLaunch: onLaunch2, onShow, onPageNotFound: onPageNotFound2, onError: onError2 } = instance2;
+        const path = route.path.slice(1);
+        const launchOptions2 = initLaunchOptions({
+          path: path || __uniRoutes[0].meta.route,
+          query: decodedQuery(route.query)
+        });
+        onLaunch2 && invokeArrayFns$1(onLaunch2, launchOptions2);
+        onShow && invokeArrayFns$1(onShow, launchOptions2);
+        if (__UNI_FEATURE_PAGES__) {
+          if (!route.matched.length) {
+            const pageNotFoundOptions = {
+              notFound: true,
+              openType: "appLaunch",
+              path: route.path,
+              query: {},
+              scene: 1001
+            };
+            onPageNotFound2 && invokeArrayFns$1(onPageNotFound2, pageNotFoundOptions);
+          }
+        }
+        if (onError2) {
+          instance2.appContext.config.errorHandler = (err) => {
+            invokeArrayFns$1(onError2, err);
+          };
+        }
+      };
+      if (__UNI_FEATURE_PAGES__) {
+        useRouter().isReady().then(onLaunch);
+      } else {
+        onBeforeMount(onLaunch);
+      }
+      onMounted(() => {
+        window.addEventListener(
+          "resize",
+          debounce(onResize, 50, { setTimeout, clearTimeout })
+        );
+        window.addEventListener("message", onMessage);
+        document.addEventListener("visibilitychange", onVisibilityChange);
+        onThemeChange();
+      });
+      return route.query;
+    },
+    before(comp2) {
+      comp2.mpType = "app";
+      const { setup } = comp2;
+      const render = () => {
+        return openBlock(), createBlock(LayoutComponent);
+      };
+      comp2.setup = (props2, ctx) => {
+        const res = setup && setup(props2, ctx);
+        return isFunction(res) ? render : res;
+      };
+      comp2.render = render;
+    }
+  });
+}
+function onResize() {
+  const { windowWidth, windowHeight, screenWidth, screenHeight } = uni.getSystemInfoSync();
+  const landscape = Math.abs(Number(window.orientation)) === 90;
+  const deviceOrientation = landscape ? "landscape" : "portrait";
+  UniServiceJSBridge.emit(ON_RESIZE, {
+    deviceOrientation,
+    size: {
+      windowWidth,
+      windowHeight,
+      screenWidth,
+      screenHeight
+    }
+  });
+}
+function onMessage(evt) {
+  if (isPlainObject$1(evt.data) && evt.data.type === WEB_INVOKE_APPSERVICE) {
+    UniServiceJSBridge.emit(
+      ON_WEB_INVOKE_APP_SERVICE,
+      evt.data.data,
+      evt.data.pageId
+    );
+  }
+}
+function onVisibilityChange() {
+  const { emit: emit2 } = UniServiceJSBridge;
+  if (document.visibilityState === "visible") {
+    emit2(ON_APP_ENTER_FOREGROUND, getEnterOptions());
+  } else {
+    emit2(ON_APP_ENTER_BACKGROUND);
+  }
+}
+function onThemeChange() {
+  let mediaQueryList = null;
+  try {
+    mediaQueryList = window.matchMedia("(prefers-color-scheme: dark)");
+  } catch (error) {
+  }
+  if (mediaQueryList) {
+    let callback = (e2) => {
+      UniServiceJSBridge.emit(ON_THEME_CHANGE, {
+        theme: e2.matches ? "dark" : "light"
+      });
+    };
+    if (mediaQueryList.addEventListener) {
+      mediaQueryList.addEventListener("change", callback);
+    } else {
+      mediaQueryList.addListener(callback);
+    }
+  }
+}
+function invokeOnTabItemTap(route) {
+  const { tabBarText, tabBarIndex, route: pagePath } = route.meta;
+  if (tabBarText) {
+    invokeHook("onTabItemTap", {
+      index: tabBarIndex,
+      text: tabBarText,
+      pagePath
+    });
+  }
+}
+const registerShowActionSheetPageOnce = once(() => {
+  if (isArray(showActionSheetPage.styles) && showActionSheetPage.styles.length > 0) {
+    showActionSheetPage.styles.forEach((style, index2) => {
+      updateStyle(`uni-showActionSheet-style-${index2}`, style);
+    });
+  }
+  const __uniPage = setupPage(showActionSheetPage);
+  __uniRoutes.push({
+    path: "uni:actionSheet",
+    component: {
+      mpType: "page",
+      setup() {
+        const app = getApp();
+        const query = app && app.$route && app.$route.query || {};
+        return () => renderPage(__uniPage, query);
+      }
+    },
+    meta: {
+      isQuit: false,
+      isEntry: false,
+      navigationBar: {},
+      route: "uni:actionSheet"
+    }
+  });
+});
+const showActionSheet2 = (options) => {
+  registerShowActionSheetPageOnce();
+  return showActionSheet2$1(options);
+};
 window.UniResizeObserver = window.ResizeObserver;
 const api = /* @__PURE__ */ Object.defineProperty({
   __proto__: null,
@@ -17559,7 +18712,6 @@ const api = /* @__PURE__ */ Object.defineProperty({
   getTopWindowStyle,
   getVideoInfo,
   getWindowInfo,
-  hideActionSheet,
   hideKeyboard,
   hideLeftWindow,
   hideLoading,
@@ -17651,7 +18803,7 @@ const api = /* @__PURE__ */ Object.defineProperty({
   setTabBarItem,
   setTabBarStyle,
   setTopWindowStyle,
-  showActionSheet,
+  showActionSheet2,
   showLeftWindow,
   showLoading,
   showModal,
@@ -17727,12 +18879,15 @@ function removeRouteCache(routeKey) {
   }
 }
 function removePage(routeKey, removeRouteCaches = true) {
+  var _a;
   const pageVm = currentPagesMap.get(routeKey);
   {
     const dialogPages = pageVm.$page.getDialogPages();
     for (let i = dialogPages.length - 1; i >= 0; i--) {
       closeDialogPage({ dialogPage: dialogPages[i] });
     }
+    const systemDialogPages = (_a = getPageInstanceByVm(pageVm)) == null ? void 0 : _a.$systemDialogPages.value;
+    systemDialogPages.length = 0;
   }
   pageVm.$.__isUnload = true;
   invokeHook(pageVm, ON_UNLOAD);
@@ -19125,7 +20280,7 @@ function useQuill(props2, rootRef, trigger) {
     });
   });
 }
-const props$d = /* @__PURE__ */ extend({}, props$v, {
+const props$d = /* @__PURE__ */ extend({}, props$u, {
   id: {
     type: String,
     default: ""
@@ -19153,7 +20308,7 @@ const props$d = /* @__PURE__ */ extend({}, props$v, {
 });
 class UniEditorElement extends UniElement {
 }
-const index$g = /* @__PURE__ */ defineBuiltInComponent({
+const index$f = /* @__PURE__ */ defineBuiltInComponent({
   name: "Editor",
   props: props$d,
   emit: ["ready", "focus", "blur", "input", "statuschange", ...emit$1],
@@ -19225,7 +20380,7 @@ const ICONS = {
 };
 class UniIconElement extends UniElement {
 }
-const index$f = /* @__PURE__ */ defineBuiltInComponent({
+const index$e = /* @__PURE__ */ defineBuiltInComponent({
   name: "Icon",
   props: {
     type: {
@@ -19370,7 +20525,7 @@ const IMAGE_MODES = {
 };
 class UniImageElement extends UniElement {
 }
-const index$e = /* @__PURE__ */ defineBuiltInComponent({
+const index$d = /* @__PURE__ */ defineBuiltInComponent({
   name: "Image",
   props: props$c,
   rootElement: {
@@ -19825,7 +20980,7 @@ const props$b = /* @__PURE__ */ extend(
       default: ""
     }
   },
-  props$v
+  props$u
 );
 const emit = [
   "input",
@@ -21912,7 +23067,7 @@ function createNavigatorOnClick(props2) {
 }
 class UniNavigatorElement extends UniElement {
 }
-const index$d = /* @__PURE__ */ defineBuiltInComponent({
+const index$c = /* @__PURE__ */ defineBuiltInComponent({
   name: "Navigator",
   inheritAttrs: false,
   compatConfig: {
@@ -23079,7 +24234,7 @@ const progressProps = {
 };
 class UniProgressElement extends UniElement {
 }
-const index$c = /* @__PURE__ */ defineBuiltInComponent({
+const index$b = /* @__PURE__ */ defineBuiltInComponent({
   name: "Progress",
   props: progressProps,
   rootElement: {
@@ -23195,7 +24350,7 @@ const props$9 = {
 };
 class UniRadioGroupElement extends UniElement {
 }
-const index$b = /* @__PURE__ */ defineBuiltInComponent({
+const index$a = /* @__PURE__ */ defineBuiltInComponent({
   name: "RadioGroup",
   props: props$9,
   // emits: ['change'],
@@ -23741,7 +24896,7 @@ const props$7 = {
 };
 class UniRichTextElement extends UniElement {
 }
-const index$a = /* @__PURE__ */ defineBuiltInComponent({
+const index$9 = /* @__PURE__ */ defineBuiltInComponent({
   name: "RichText",
   compatConfig: {
     MODE: 3
@@ -25716,7 +26871,7 @@ function parseText(text2, options) {
 }
 class UniTextElement extends UniElement {
 }
-const index$9 = /* @__PURE__ */ defineBuiltInComponent({
+const index$8 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Text",
   rootElement: {
     name: "uni-text",
@@ -25808,7 +26963,7 @@ class UniTextareaElement extends UniElement {
     (_a = this.querySelector("textarea")) == null ? void 0 : _a.focus(options);
   }
 }
-const index$8 = /* @__PURE__ */ defineBuiltInComponent({
+const index$7 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Textarea",
   props: props$1,
   emits: ["confirm", "linechange", ...emit],
@@ -25981,7 +27136,7 @@ const index$8 = /* @__PURE__ */ defineBuiltInComponent({
 });
 class UniViewElement extends UniElement {
 }
-const index$7 = /* @__PURE__ */ defineBuiltInComponent({
+const index$6 = /* @__PURE__ */ defineBuiltInComponent({
   name: "View",
   props: /* @__PURE__ */ extend({}, hoverProps),
   rootElement: {
@@ -26006,11 +27161,11 @@ const index$7 = /* @__PURE__ */ defineBuiltInComponent({
         return createVNode("uni-view", mergeProps({
           "class": hovering.value ? hoverClass : "",
           "ref": rootRef
-        }, binding), [slots.default && slots.default()], 16);
+        }, binding), [renderSlot(slots, "default")], 16);
       }
       return createVNode("uni-view", {
         "ref": rootRef
-      }, [slots.default && slots.default()], 512);
+      }, [renderSlot(slots, "default")], 512);
     };
   }
 });
@@ -26111,7 +27266,7 @@ const props = {
 };
 class UniListViewElement extends UniElement {
 }
-const index$6 = /* @__PURE__ */ defineBuiltInComponent({
+const index$5 = /* @__PURE__ */ defineBuiltInComponent({
   name: "ListView",
   props,
   emits: [
@@ -26606,7 +27761,7 @@ function getSize(isVertical, el) {
 }
 class UniListItemElement extends UniElement {
 }
-const index$5 = /* @__PURE__ */ defineBuiltInComponent({
+const index$4 = /* @__PURE__ */ defineBuiltInComponent({
   name: "ListItem",
   props: {},
   rootElement: {
@@ -26660,7 +27815,7 @@ const index$5 = /* @__PURE__ */ defineBuiltInComponent({
 });
 class UniStickySectionElement extends UniElement {
 }
-const index$4 = /* @__PURE__ */ defineBuiltInComponent({
+const index$3 = /* @__PURE__ */ defineBuiltInComponent({
   name: "StickySection",
   props: {
     padding: {
@@ -26715,7 +27870,7 @@ const index$4 = /* @__PURE__ */ defineBuiltInComponent({
 });
 class UniStickyHeaderElement extends UniElement {
 }
-const index$3 = /* @__PURE__ */ defineBuiltInComponent({
+const index$2 = /* @__PURE__ */ defineBuiltInComponent({
   name: "StickyHeader",
   props: {
     padding: {
@@ -26817,13 +27972,13 @@ function useOn(name, callback) {
   onMounted(() => UniViewJSBridge.on(name, callback));
   onBeforeUnmount(() => UniViewJSBridge.off(name));
 }
-let index$2 = 0;
+let index$1 = 0;
 function useContextInfo(_id) {
   const page = useCurrentPageId();
   const instance2 = getCurrentInstance();
   const vm = instance2.proxy;
   const type = vm.$options.name.toLowerCase();
-  const id2 = vm.id || `context${index$2++}`;
+  const id2 = vm.id || `context${index$1++}`;
   onMounted(() => {
     const el = vm.$el;
     el.__uniContextInfo = {
@@ -27012,7 +28167,6 @@ function initApp(app) {
 function initRouter(app) {
   const router = createRouter(createRouterOptions());
   router.beforeEach((to, from) => {
-    hideActionSheet();
     hideModal();
     uni.hideToast();
     uni.hideLoading();
@@ -27083,7 +28237,7 @@ function initHistory() {
   });
   return history2;
 }
-const index$1 = {
+const index = {
   install(app) {
     initApp(app);
     initViewPlugin(app);
@@ -27114,260 +28268,6 @@ function warnHandler(msg, instance2, trace) {
   }
   console.warn(...warnArgs);
 }
-function wrapperComponentSetup(comp, { clone, init: init2, setup, before }) {
-  if (clone) {
-    comp = extend({}, comp);
-  }
-  before && before(comp);
-  const oldSetup = comp.setup;
-  comp.setup = (props2, ctx) => {
-    const instance2 = getCurrentInstance();
-    init2(instance2.proxy);
-    setup(instance2);
-    if (oldSetup) {
-      return oldSetup(props2, ctx);
-    }
-  };
-  return comp;
-}
-function setupComponent(comp, options) {
-  if (comp && (comp.__esModule || comp[Symbol.toStringTag] === "Module")) {
-    return wrapperComponentSetup(comp.default, options);
-  }
-  return wrapperComponentSetup(comp, options);
-}
-function setupWindow(comp, id2) {
-  return setupComponent(comp, {
-    init: (vm) => {
-      {
-        vm.$basePage = {
-          id: id2
-        };
-      }
-    },
-    setup(instance2) {
-      instance2.$pageInstance = instance2;
-    }
-  });
-}
-function setupPage(comp) {
-  if (process.env.NODE_ENV !== "production") {
-    comp.__mpType = "page";
-  }
-  return setupComponent(comp, {
-    clone: true,
-    // 页面组件可能会被其他地方手动引用，比如 windows 等，需要 clone 一份新的作为页面组件
-    init: initPage,
-    setup(instance2) {
-      instance2.$pageInstance = instance2;
-      const route = usePageRoute();
-      const query = decodedQuery(route.query);
-      instance2.attrs.__pageQuery = query;
-      {
-        const pageInstance = getPageInstanceByChild(instance2);
-        if (pageInstance.attrs.type === "dialog") {
-          instance2.attrs.__pageQuery = decodedQuery(
-            parseQuery(pageInstance.attrs.route.split("?")[1] || "")
-          );
-        }
-      }
-      getPage$BasePage(instance2.proxy).options = query;
-      instance2.proxy.options = query;
-      const pageMeta = usePageMeta();
-      instance2.onReachBottom = reactive([]);
-      instance2.onPageScroll = reactive([]);
-      watch(
-        [instance2.onReachBottom, instance2.onPageScroll],
-        () => {
-          const currentPage = getCurrentPage().vm;
-          if (instance2.proxy === currentPage) {
-            initPageScrollListener(instance2, pageMeta);
-          }
-        },
-        { once: true }
-      );
-      onBeforeMount(() => {
-        onPageShow(instance2, pageMeta);
-      });
-      onMounted(() => {
-        var _a;
-        {
-          const pageInstance = getPageInstanceByChild(instance2);
-          if (pageInstance.attrs.type === "dialog") {
-            const parentPage = ((_a = instance2.proxy) == null ? void 0 : _a.$page).getParentPage();
-            const parentPageInstance = parentPage ? getPageInstanceByVm(parentPage.vm) : null;
-            if (parentPageInstance) {
-              const dialogPages = parentPageInstance.$dialogPages.value;
-              if (dialogPages.length > 1) {
-                const preDialogPage = dialogPages[dialogPages.length - 2];
-                const { onHide } = preDialogPage.$vm.$;
-                onHide && invokeArrayFns$1(onHide);
-              }
-            }
-          }
-        }
-        onPageReady(instance2);
-        const { onReady } = instance2;
-        onReady && invokeArrayFns$1(onReady);
-        invokeOnTabItemTap(route);
-      });
-      onBeforeActivate(() => {
-        if (!instance2.__isVisible) {
-          onPageShow(instance2, pageMeta);
-          instance2.__isVisible = true;
-          const { onShow } = instance2;
-          onShow && invokeArrayFns$1(onShow);
-          nextTick(() => {
-            invokeOnTabItemTap(route);
-          });
-        }
-      });
-      onBeforeDeactivate(() => {
-        if (instance2.__isVisible && !instance2.__isUnload) {
-          instance2.__isVisible = false;
-          {
-            const pageInstance = getPageInstanceByChild(instance2);
-            if (pageInstance.attrs.type !== "dialog") {
-              const { onHide } = instance2;
-              onHide && invokeArrayFns$1(onHide);
-            }
-          }
-        }
-      });
-      subscribeViewMethod(pageMeta.id);
-      onBeforeUnmount(() => {
-        unsubscribeViewMethod(pageMeta.id);
-      });
-      return query;
-    }
-  });
-}
-function setupApp(comp) {
-  if (process.env.NODE_ENV !== "production") {
-    comp.__mpType = "app";
-  }
-  return setupComponent(comp, {
-    init: initApp$1,
-    setup(instance2) {
-      const route = usePageRoute();
-      const onLaunch = () => {
-        injectAppHooks(instance2);
-        const { onLaunch: onLaunch2, onShow, onPageNotFound: onPageNotFound2, onError: onError2 } = instance2;
-        const path = route.path.slice(1);
-        const launchOptions2 = initLaunchOptions({
-          path: path || __uniRoutes[0].meta.route,
-          query: decodedQuery(route.query)
-        });
-        onLaunch2 && invokeArrayFns$1(onLaunch2, launchOptions2);
-        onShow && invokeArrayFns$1(onShow, launchOptions2);
-        if (__UNI_FEATURE_PAGES__) {
-          if (!route.matched.length) {
-            const pageNotFoundOptions = {
-              notFound: true,
-              openType: "appLaunch",
-              path: route.path,
-              query: {},
-              scene: 1001
-            };
-            onPageNotFound2 && invokeArrayFns$1(onPageNotFound2, pageNotFoundOptions);
-          }
-        }
-        if (onError2) {
-          instance2.appContext.config.errorHandler = (err) => {
-            invokeArrayFns$1(onError2, err);
-          };
-        }
-      };
-      if (__UNI_FEATURE_PAGES__) {
-        useRouter().isReady().then(onLaunch);
-      } else {
-        onBeforeMount(onLaunch);
-      }
-      onMounted(() => {
-        window.addEventListener(
-          "resize",
-          debounce(onResize, 50, { setTimeout, clearTimeout })
-        );
-        window.addEventListener("message", onMessage);
-        document.addEventListener("visibilitychange", onVisibilityChange);
-        onThemeChange();
-      });
-      return route.query;
-    },
-    before(comp2) {
-      comp2.mpType = "app";
-      const { setup } = comp2;
-      const render = () => {
-        return openBlock(), createBlock(LayoutComponent);
-      };
-      comp2.setup = (props2, ctx) => {
-        const res = setup && setup(props2, ctx);
-        return isFunction(res) ? render : res;
-      };
-      comp2.render = render;
-    }
-  });
-}
-function onResize() {
-  const { windowWidth, windowHeight, screenWidth, screenHeight } = uni.getSystemInfoSync();
-  const landscape = Math.abs(Number(window.orientation)) === 90;
-  const deviceOrientation = landscape ? "landscape" : "portrait";
-  UniServiceJSBridge.emit(ON_RESIZE, {
-    deviceOrientation,
-    size: {
-      windowWidth,
-      windowHeight,
-      screenWidth,
-      screenHeight
-    }
-  });
-}
-function onMessage(evt) {
-  if (isPlainObject$1(evt.data) && evt.data.type === WEB_INVOKE_APPSERVICE) {
-    UniServiceJSBridge.emit(
-      ON_WEB_INVOKE_APP_SERVICE,
-      evt.data.data,
-      evt.data.pageId
-    );
-  }
-}
-function onVisibilityChange() {
-  const { emit: emit2 } = UniServiceJSBridge;
-  if (document.visibilityState === "visible") {
-    emit2(ON_APP_ENTER_FOREGROUND, getEnterOptions());
-  } else {
-    emit2(ON_APP_ENTER_BACKGROUND);
-  }
-}
-function onThemeChange() {
-  let mediaQueryList = null;
-  try {
-    mediaQueryList = window.matchMedia("(prefers-color-scheme: dark)");
-  } catch (error) {
-  }
-  if (mediaQueryList) {
-    let callback = (e2) => {
-      UniServiceJSBridge.emit(ON_THEME_CHANGE, {
-        theme: e2.matches ? "dark" : "light"
-      });
-    };
-    if (mediaQueryList.addEventListener) {
-      mediaQueryList.addEventListener("change", callback);
-    } else {
-      mediaQueryList.addListener(callback);
-    }
-  }
-}
-function invokeOnTabItemTap(route) {
-  const { tabBarText, tabBarIndex, route: pagePath } = route.meta;
-  if (tabBarText) {
-    invokeHook("onTabItemTap", {
-      index: tabBarIndex,
-      text: tabBarText,
-      pagePath
-    });
-  }
-}
 const UniViewJSBridge$1 = /* @__PURE__ */ extend(ViewJSBridge, {
   publishHandler(event, args, pageId) {
     UniServiceJSBridge.subscribeHandler(event, args, pageId);
@@ -27379,926 +28279,56 @@ const UniServiceJSBridge$1 = /* @__PURE__ */ extend(ServiceJSBridge, {
     UniViewJSBridge.subscribeHandler(event, args, pageId);
   }
 });
-function updateBackgroundColorContent(backgroundColorContent) {
-  if (backgroundColorContent) {
-    document.body.style.setProperty(
-      "--background-color-content",
-      backgroundColorContent
-    );
-  } else {
-    document.body.style.removeProperty("--background-color-content");
-  }
-}
-function useBackgroundColorContent(pageMeta) {
-  function update() {
-    if (pageMeta.backgroundColorContent) {
-      updateBackgroundColorContent(
-        parseTheme({ backgroundColorContent: pageMeta.backgroundColorContent }).backgroundColorContent
-      );
-    }
-  }
-  onThemeChange$1(update);
-  watchEffect(update);
-  onActivated(update);
-}
-function usePageHeadTransparentBackgroundColor(backgroundColor) {
-  const { r, g: g2, b } = hexToRgba(backgroundColor);
-  return `rgba(${r},${g2},${b},0)`;
-}
-function usePageHeadTransparent(headRef, {
-  id: id2,
-  navigationBar: { titleColor, coverage, backgroundColor }
-}) {
-  let A = 0;
-  const rgb = computed(() => hexToRgba(backgroundColor));
-  const offset = parseInt(coverage);
-  let titleElem;
-  let transparentElemStyle;
-  const iconElemsPaths = [];
-  const borderRadiusElemsStyles = [];
-  const oldColors = [];
-  onMounted(() => {
-    const $el = headRef.value;
-    transparentElemStyle = $el.style;
-    titleElem = $el.querySelector(".uni-page-head__title");
-    const borderRadiusElems = $el.querySelectorAll(
-      ".uni-page-head-btn"
-    );
-    const iconSvgElems = $el.querySelectorAll(
-      "svg path"
-    );
-    for (let i = 0; i < iconSvgElems.length; i++) {
-      iconElemsPaths.push(iconSvgElems[i]);
-    }
-    for (let i = 0; i < borderRadiusElems.length; i++) {
-      const borderRadiusElem = borderRadiusElems[i];
-      oldColors.push(getComputedStyle(borderRadiusElem).backgroundColor);
-      borderRadiusElemsStyles.push(borderRadiusElem.style);
-    }
-  });
-  useOn(id2 + ".onPageScroll", ({ scrollTop }) => {
-    const alpha = Math.min(scrollTop / offset, 1);
-    if (alpha === 1 && A === 1) {
-      return;
-    }
-    if (alpha > 0.5 && A <= 0.5) {
-      iconElemsPaths.forEach(function(iconElemPath) {
-        iconElemPath.setAttribute("fill", titleColor);
-      });
-    } else if (alpha <= 0.5 && A > 0.5) {
-      iconElemsPaths.forEach(function(iconElemPath) {
-        iconElemPath.setAttribute("fill", "#fff");
-      });
-    }
-    A = alpha;
-    if (titleElem) {
-      titleElem.style.opacity = alpha;
-    }
-    const bg = rgb.value;
-    transparentElemStyle.backgroundColor = `rgba(${bg.r},${bg.g},${bg.b},${alpha})`;
-    borderRadiusElemsStyles.forEach(function(borderRadiusElemStyle, index2) {
-      const oldColor = oldColors[index2];
-      const rgba = oldColor.match(/[\d+\.]+/g);
-      rgba[3] = (1 - alpha) * (rgba.length === 4 ? rgba[3] : 1);
-      borderRadiusElemStyle.backgroundColor = `rgba(${rgba})`;
-    });
-  });
-}
-const ICON_PATHS = {
-  none: "",
-  forward: "M11 7.844q-0.25-0.219-0.25-0.578t0.25-0.578q0.219-0.25 0.563-0.25t0.563 0.25l9.656 9.125q0.125 0.125 0.188 0.297t0.063 0.328q0 0.188-0.063 0.359t-0.188 0.297l-9.656 9.125q-0.219 0.25-0.563 0.25t-0.563-0.25q-0.25-0.219-0.25-0.578t0.25-0.609l9.063-8.594-9.063-8.594z",
-  back: ICON_PATH_BACK,
-  select: ICON_PATH_BACK,
-  share: "M26.563 24.844q0 0.125-0.109 0.234t-0.234 0.109h-17.938q-0.125 0-0.219-0.109t-0.094-0.234v-13.25q0-0.156 0.094-0.25t0.219-0.094h5.5v-1.531h-6q-0.531 0-0.906 0.391t-0.375 0.922v14.375q0 0.531 0.375 0.922t0.906 0.391h18.969q0.531 0 0.891-0.391t0.359-0.953v-5.156h-1.438v4.625zM29.813 10.969l-5.125-5.375-1.031 1.094 3.438 3.594-3.719 0.031q-2.313 0.188-4.344 1.125t-3.578 2.422-2.5 3.453-1.109 4.188l-0.031 0.25h1.469v-0.219q0.156-1.875 1-3.594t2.25-3.063 3.234-2.125 3.828-0.906l0.188-0.031 3.313-0.031-3.438 3.625 1.031 1.063 5.125-5.375-0.031-0.063 0.031-0.063z",
-  favorite: "M27.594 13.375q-0.063-0.188-0.219-0.313t-0.344-0.156l-7.094-0.969-3.219-6.406q-0.094-0.188-0.25-0.281t-0.375-0.094q-0.188 0-0.344 0.094t-0.25 0.281l-3.125 6.438-7.094 1.094q-0.188 0.031-0.344 0.156t-0.219 0.313q-0.031 0.188 0.016 0.375t0.172 0.313l5.156 4.969-1.156 7.063q-0.031 0.188 0.047 0.375t0.234 0.313q0.094 0.063 0.188 0.094t0.219 0.031q0.063 0 0.141-0.031t0.172-0.063l6.313-3.375 6.375 3.313q0.063 0.031 0.141 0.047t0.172 0.016q0.188 0 0.344-0.094t0.25-0.281q0.063-0.094 0.078-0.234t-0.016-0.234q0-0.031 0-0.063l-1.25-6.938 5.094-5.031q0.156-0.156 0.203-0.344t-0.016-0.375zM11.469 19.063q0.031-0.188-0.016-0.344t-0.172-0.281l-4.406-4.25 6.063-0.906q0.156-0.031 0.297-0.125t0.203-0.25l2.688-5.531 2.75 5.5q0.063 0.156 0.203 0.25t0.297 0.125l6.094 0.844-4.375 4.281q-0.125 0.125-0.172 0.297t-0.016 0.328l1.063 6.031-5.438-2.813q-0.156-0.094-0.328-0.078t-0.297 0.078l-5.438 2.875 1-6.031z",
-  home: "M23.719 16.5q-0.313 0-0.531 0.219t-0.219 0.5v7.063q0 0.219-0.172 0.391t-0.391 0.172h-12.344q-0.25 0-0.422-0.172t-0.172-0.391v-7.063q0-0.281-0.219-0.5t-0.531-0.219q-0.281 0-0.516 0.219t-0.234 0.5v7.063q0.031 0.844 0.625 1.453t1.438 0.609h12.375q0.844 0 1.453-0.609t0.609-1.453v-7.063q0-0.125-0.063-0.266t-0.156-0.234q-0.094-0.125-0.234-0.172t-0.297-0.047zM26.5 14.875l-8.813-8.813q-0.313-0.313-0.688-0.453t-0.781-0.141-0.781 0.141-0.656 0.422l-8.813 8.844q-0.188 0.219-0.188 0.516t0.219 0.484q0.094 0.125 0.234 0.172t0.297 0.047q0.125 0 0.25-0.047t0.25-0.141l8.781-8.781q0.156-0.156 0.406-0.156t0.406 0.156l8.813 8.781q0.219 0.188 0.516 0.188t0.516-0.219q0.188-0.188 0.203-0.484t-0.172-0.516z",
-  menu: "M8.938 18.313q0.875 0 1.484-0.609t0.609-1.453-0.609-1.453-1.484-0.609q-0.844 0-1.453 0.609t-0.609 1.453 0.609 1.453 1.453 0.609zM16.188 18.313q0.875 0 1.484-0.609t0.609-1.453-0.609-1.453-1.484-0.609q-0.844 0-1.453 0.609t-0.609 1.453 0.609 1.453 1.453 0.609zM23.469 18.313q0.844 0 1.453-0.609t0.609-1.453-0.609-1.453-1.453-0.609q-0.875 0-1.484 0.609t-0.609 1.453 0.609 1.453 1.484 0.609z",
-  close: ICON_PATH_CLOSE
-};
-const PageHead = /* @__PURE__ */ defineSystemComponent({
-  name: "PageHead",
-  setup() {
-    const headRef = ref(null);
-    const pageMeta = usePageMeta();
-    const navigationBar = useTheme(pageMeta.navigationBar, () => {
-      const _navigationBar = parseTheme(pageMeta.navigationBar);
-      navigationBar.backgroundColor = _navigationBar.backgroundColor;
-      navigationBar.titleColor = _navigationBar.titleColor;
-    });
-    const {
-      clazz: clazz2,
-      style
-    } = usePageHead(navigationBar);
-    const buttons = __UNI_FEATURE_NAVIGATIONBAR_BUTTONS__ && usePageHeadButtons(pageMeta);
-    const searchInput = __UNI_FEATURE_NAVIGATIONBAR_SEARCHINPUT__ && navigationBar.searchInput && usePageHeadSearchInput(pageMeta);
-    __UNI_FEATURE_NAVIGATIONBAR_TRANSPARENT__ && navigationBar.type === "transparent" && usePageHeadTransparent(headRef, pageMeta);
-    return () => {
-      const backButtonTsx = __UNI_FEATURE_PAGES__ ? createBackButtonTsx(navigationBar, pageMeta.isQuit) : null;
-      const leftButtonsTsx = __UNI_FEATURE_NAVIGATIONBAR_BUTTONS__ ? createButtonsTsx(buttons.left) : [];
-      const rightButtonsTsx = __UNI_FEATURE_NAVIGATIONBAR_BUTTONS__ ? createButtonsTsx(buttons.right) : [];
-      const type = navigationBar.type || "default";
-      const placeholderTsx = type !== "transparent" && type !== "float" && createVNode("div", {
-        "class": {
-          "uni-placeholder": true,
-          "uni-placeholder-titlePenetrate": navigationBar.titlePenetrate
-        }
-      }, null, 2);
-      return createVNode("uni-page-head", {
-        "uni-page-head-type": type
-      }, [createVNode("div", {
-        "ref": headRef,
-        "class": clazz2.value,
-        "style": style.value
-      }, [createVNode("div", {
-        "class": "uni-page-head-hd"
-      }, [backButtonTsx, ...leftButtonsTsx]), createPageHeadBdTsx(navigationBar, searchInput), createVNode("div", {
-        "class": "uni-page-head-ft"
-      }, [...rightButtonsTsx])], 6), placeholderTsx], 8, ["uni-page-head-type"]);
-    };
-  }
-});
-function createBackButtonTsx(navigationBar, isQuit) {
-  if (!isQuit) {
-    return createVNode("div", {
-      "class": "uni-page-head-btn",
-      "onClick": onPageHeadBackButton
-    }, [createSvgIconVNode(ICON_PATH_BACK, navigationBar.type === "transparent" ? "#fff" : navigationBar.titleColor, 26)], 8, ["onClick"]);
-  }
-}
-function createButtonsTsx(btns) {
-  return btns.map(({
-    onClick,
-    btnClass,
-    btnStyle,
-    btnText,
-    btnIconPath,
-    badgeText,
-    iconStyle,
-    btnSelect
-  }, index2) => {
-    return createVNode("div", {
-      "key": index2,
-      "class": btnClass,
-      "style": btnStyle,
-      "onClick": onClick,
-      "badge-text": badgeText
-    }, [btnIconPath ? createSvgIconVNode(btnIconPath, iconStyle.color, iconStyle.fontSize) : btnSelect ? createVNode("span", {
-      "style": iconStyle
-    }, [createVNode("i", {
-      "class": "uni-btn-icon",
-      "innerHTML": btnText
-    }, null, 8, ["innerHTML"]), createSvgIconVNode(ICON_PATHS["select"], "#000", 14)], 4) : createVNode("i", {
-      "class": "uni-btn-icon",
-      "style": iconStyle,
-      "innerHTML": btnText
-    }, null, 12, ["innerHTML"])], 14, ["onClick", "badge-text"]);
-  });
-}
-function createPageHeadBdTsx(navigationBar, searchInput) {
-  if (!__UNI_FEATURE_NAVIGATIONBAR_SEARCHINPUT__ || !navigationBar.searchInput) {
-    return createPageHeadTitleTextTsx(navigationBar);
-  }
-  return createPageHeadSearchInputTsx(navigationBar, searchInput);
-}
-function createPageHeadTitleTextTsx({
-  type,
-  loading,
-  titleSize,
-  titleText,
-  titleImage
-}) {
-  return createVNode("div", {
-    "class": "uni-page-head-bd"
-  }, [createVNode("div", {
-    "style": {
-      fontSize: titleSize,
-      opacity: type === "transparent" ? 0 : 1
-    },
-    "class": "uni-page-head__title"
-  }, [loading ? createVNode("i", {
-    "class": "uni-loading"
-  }, null) : titleImage ? createVNode("img", {
-    "src": titleImage,
-    "class": "uni-page-head__title_image"
-  }, null, 8, ["src"]) : titleText], 4)]);
-}
-function createPageHeadSearchInputTsx(navigationBar, {
-  text: text2,
-  focus,
-  composing,
-  onBlur,
-  onFocus,
-  onInput,
-  onConfirm,
-  onClick
-}) {
-  const {
-    color,
-    align: align2,
-    autoFocus,
-    disabled,
-    borderRadius,
-    backgroundColor,
-    placeholder,
-    placeholderColor
-  } = navigationBar.searchInput;
-  const searchStyle = {
-    borderRadius,
-    backgroundColor
-  };
-  const placeholderClass = ["uni-page-head-search-placeholder", `uni-page-head-search-placeholder-${focus.value || text2.value ? "left" : align2}`];
-  return createVNode("div", {
-    "class": "uni-page-head-search",
-    "style": searchStyle
-  }, [createVNode("div", {
-    "style": {
-      color: placeholderColor
-    },
-    "class": placeholderClass
-  }, [createVNode("div", {
-    "class": "uni-page-head-search-icon"
-  }, [createSvgIconVNode(ICON_PATH_SEARCH, placeholderColor, 20)]), text2.value || composing.value ? "" : placeholder], 6), disabled ? createVNode(Input, {
-    "disabled": true,
-    "style": {
-      color
-    },
-    "placeholder-style": "color: " + placeholderColor,
-    "class": "uni-page-head-search-input",
-    "confirm-type": "search",
-    "onClick": onClick
-  }, null, 8, ["style", "placeholder-style", "onClick"]) : createVNode(Input, {
-    "focus": autoFocus,
-    "style": {
-      color
-    },
-    "placeholder-style": "color: " + placeholderColor,
-    "class": "uni-page-head-search-input",
-    "confirm-type": "search",
-    "onFocus": onFocus,
-    "onBlur": onBlur,
-    "onInput": onInput,
-    "onConfirm": onConfirm
-  }, null, 8, ["focus", "style", "placeholder-style", "onFocus", "onBlur", "onInput", "onConfirm"])], 4);
-}
-function onPageHeadBackButton() {
-  if (getCurrentPages().length === 1) {
-    uni.reLaunch({
-      url: "/"
-    });
-  } else {
-    uni.navigateBack({
-      from: "backbutton",
-      success() {
-      }
-      // 传入空方法，避免返回Promise，因为onBackPress可能导致fail
-    });
-  }
-}
-function usePageHead(navigationBar) {
-  const clazz2 = computed(() => {
-    const {
-      type,
-      titlePenetrate,
-      shadowColorType
-    } = navigationBar;
-    const clazz3 = {
-      "uni-page-head": true,
-      "uni-page-head-transparent": type === "transparent",
-      "uni-page-head-titlePenetrate": titlePenetrate === "YES",
-      "uni-page-head-shadow": !!shadowColorType
-    };
-    if (shadowColorType) {
-      clazz3[`uni-page-head-shadow-${shadowColorType}`] = true;
-    }
-    return clazz3;
-  });
-  const style = computed(() => {
-    const backgroundColor = __UNI_FEATURE_NAVIGATIONBAR_TRANSPARENT__ && navigationBar.type === "transparent" ? usePageHeadTransparentBackgroundColor(navigationBar.backgroundColor) : navigationBar.backgroundColor;
-    return {
-      backgroundColor,
-      color: navigationBar.titleColor,
-      transitionDuration: navigationBar.duration,
-      transitionTimingFunction: navigationBar.timingFunc
-    };
-  });
-  return {
-    clazz: clazz2,
-    style
-  };
-}
-function usePageHeadButtons({
-  id: id2,
-  navigationBar
-}) {
-  const left = [];
-  const right = [];
-  const {
-    buttons
-  } = navigationBar;
-  if (isArray(buttons)) {
-    const {
-      type
-    } = navigationBar;
-    const isTransparent = type === "transparent";
-    const fonts = /* @__PURE__ */ Object.create(null);
-    buttons.forEach((btn, index2) => {
-      if (btn.fontSrc && !btn.fontFamily) {
-        const fontSrc = getRealPath(btn.fontSrc);
-        let fontFamily = fonts[fontSrc];
-        if (!fontFamily) {
-          fontFamily = `font${Date.now()}`;
-          fonts[fontSrc] = fontFamily;
-          onBeforeMount(() => updateStyle("uni-btn-" + fontFamily, `@font-face{font-family: "${fontFamily}";src: url("${fontSrc}") format("truetype")}`));
-        }
-        btn.fontFamily = fontFamily;
-      }
-      const pageHeadBtn = usePageHeadButton(id2, index2, btn, isTransparent);
-      if (btn.float === "left") {
-        left.push(pageHeadBtn);
-      } else {
-        right.push(pageHeadBtn);
-      }
-    });
-  }
-  return {
-    left,
-    right
-  };
-}
-function usePageHeadButton(pageId, index2, btn, isTransparent) {
-  const iconStyle = {
-    color: btn.color,
-    fontSize: btn.fontSize,
-    fontWeight: btn.fontWeight
-  };
-  if (btn.fontFamily) {
-    iconStyle.fontFamily = btn.fontFamily;
-  }
-  return new Proxy({
-    btnClass: {
-      // 类似这样的大量重复的字符串，会在gzip时压缩大小，无需在代码层考虑优化相同字符串
-      "uni-page-head-btn": true,
-      "uni-page-head-btn-red-dot": !!(btn.redDot || btn.badgeText),
-      "uni-page-head-btn-select": !!btn.select
-    },
-    btnStyle: {
-      backgroundColor: isTransparent ? btn.background : "transparent",
-      width: btn.width
-    },
-    btnText: "",
-    btnIconPath: ICON_PATHS[btn.type],
-    badgeText: btn.badgeText,
-    iconStyle,
-    onClick() {
-      invokeHook(pageId, ON_NAVIGATION_BAR_BUTTON_TAP, extend({
-        index: index2
-      }, btn));
-    },
-    btnSelect: btn.select
-  }, {
-    get(target, key, receiver) {
-      if (["btnText"].includes(key)) {
-        return btn.fontSrc && btn.fontFamily ? btn.text.replace("\\u", "&#x") : btn.text;
-      } else {
-        return Reflect.get(target, key, receiver);
-      }
-    }
-  });
-}
-function usePageHeadSearchInput({
-  id: id2,
-  navigationBar: {
-    searchInput
-  }
-}) {
-  const focus = ref(false);
-  const text2 = ref("");
-  const composing = ref(false);
-  const {
-    disabled
-  } = searchInput;
-  if (disabled) {
-    const onClick = () => {
-      invokeHook(id2, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED);
-    };
-    return {
-      focus,
-      text: text2,
-      composing,
-      onClick
-    };
-  }
-  const onFocus = () => {
-    focus.value = true;
-    invokeHook(id2, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, {
-      focus: true
-    });
-  };
-  const onBlur = () => {
-    focus.value = false;
-    invokeHook(id2, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, {
-      focus: false
-    });
-  };
-  const onInput = (evt) => {
-    text2.value = evt.detail.value;
-    invokeHook(id2, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, {
-      text: text2.value
-    });
-  };
-  const onConfirm = (evt) => {
-    invokeHook(id2, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, {
-      text: text2.value
-    });
-  };
-  return {
-    focus,
-    text: text2,
-    composing,
-    onFocus,
-    onBlur,
-    onInput,
-    onConfirm
-  };
-}
-const _sfc_main = {
-  name: "PageRefresh",
-  setup() {
-    const { pullToRefresh } = usePageMeta();
-    return {
-      offset: pullToRefresh.offset,
-      color: pullToRefresh.color
-    };
-  }
-};
-const _export_sfc = (sfc, props2) => {
-  const target = sfc.__vccOpts || sfc;
-  for (const [key, val] of props2) {
-    target[key] = val;
-  }
-  return target;
-};
-const _hoisted_1 = { class: "uni-page-refresh-inner" };
-const _hoisted_2 = ["fill"];
-const _hoisted_3 = /* @__PURE__ */ createElementVNode("path", { d: "M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z" }, null, -1);
-const _hoisted_4 = /* @__PURE__ */ createElementVNode("path", {
-  d: "M0 0h24v24H0z",
-  fill: "none"
-}, null, -1);
-const _hoisted_5 = [
-  _hoisted_3,
-  _hoisted_4
-];
-const _hoisted_6 = {
-  class: "uni-page-refresh__spinner",
-  width: "24",
-  height: "24",
-  viewBox: "25 25 50 50"
-};
-const _hoisted_7 = ["stroke"];
-function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
-  return openBlock(), createElementBlock("uni-page-refresh", null, [
-    createElementVNode("div", {
-      style: normalizeStyle({ "margin-top": $setup.offset + "px" }),
-      class: "uni-page-refresh"
-    }, [
-      createElementVNode("div", _hoisted_1, [
-        (openBlock(), createElementBlock("svg", {
-          fill: $setup.color,
-          class: "uni-page-refresh__icon",
-          width: "24",
-          height: "24",
-          viewBox: "0 0 24 24"
-        }, _hoisted_5, 8, _hoisted_2)),
-        (openBlock(), createElementBlock("svg", _hoisted_6, [
-          createElementVNode("circle", {
-            stroke: $setup.color,
-            class: "uni-page-refresh__path",
-            cx: "50",
-            cy: "50",
-            r: "20",
-            fill: "none",
-            "stroke-width": "4",
-            "stroke-miterlimit": "10"
-          }, null, 8, _hoisted_7)
-        ]))
-      ])
-    ], 4)
-  ]);
-}
-const PageRefresh = /* @__PURE__ */ _export_sfc(_sfc_main, [["render", _sfc_render]]);
-function processDeltaY(ev, identifier, startY) {
-  const touch = Array.prototype.slice.call(ev.changedTouches).filter((touch2) => touch2.identifier === identifier)[0];
-  if (!touch) {
-    return false;
-  }
-  ev.deltaY = touch.pageY - startY;
-  return true;
-}
-const PULLING = "pulling";
-const REACHED = "reached";
-const ABORTING = "aborting";
-const REFRESHING = "refreshing";
-const RESTORING = "restoring";
-function usePageRefresh(refreshRef) {
-  const pageMeta = usePageMeta();
-  const { id: id2, pullToRefresh } = pageMeta;
-  const { range, height } = pullToRefresh;
-  let refreshContainerElem;
-  let refreshControllerElem;
-  let refreshControllerElemStyle;
-  let refreshInnerElemStyle;
-  useSubscribe(
-    () => {
-      if (!pageMeta.enablePullDownRefresh) {
-        return;
-      }
-      if (!state2) {
-        state2 = REFRESHING;
-        addClass();
-        setTimeout(() => {
-          refreshing();
-        }, 50);
-      }
-    },
-    API_START_PULL_DOWN_REFRESH,
-    false,
-    id2
-  );
-  useSubscribe(
-    () => {
-      if (!pageMeta.enablePullDownRefresh) {
-        return;
-      }
-      if (state2 === REFRESHING) {
-        removeClass();
-        state2 = RESTORING;
-        addClass();
-        restoring(() => {
-          removeClass();
-          state2 = distance2 = offset = null;
-        });
-      }
-    },
-    API_STOP_PULL_DOWN_REFRESH,
-    false,
-    id2
-  );
-  function initElement() {
-    refreshContainerElem = refreshRef.value.$el;
-    refreshControllerElem = refreshContainerElem.querySelector(".uni-page-refresh");
-    refreshControllerElemStyle = refreshControllerElem.style;
-    refreshInnerElemStyle = refreshControllerElem.querySelector(
-      ".uni-page-refresh-inner"
-    ).style;
-  }
-  onMounted(() => {
-    initElement();
-  });
-  {
-    watch(
-      () => pageMeta.enablePullDownRefresh,
-      (enablePullDownRefresh) => {
-        if (enablePullDownRefresh) {
-          nextTick(() => {
-            initElement();
-          });
-        }
-      }
-    );
-  }
-  let touchId;
-  let startY;
-  let canRefresh;
-  let state2;
-  let distance2 = null;
-  let offset = null;
-  function toggleClass(type) {
-    if (!state2) {
-      return;
-    }
-    if (refreshContainerElem) {
-      refreshContainerElem.classList[type]("uni-page-refresh--" + state2);
-    }
-  }
-  function addClass() {
-    toggleClass("add");
-  }
-  function removeClass() {
-    toggleClass("remove");
-  }
-  function pulling(deltaY) {
-    if (!refreshControllerElem) {
-      return;
-    }
-    let rotate = deltaY / range;
-    if (rotate > 1) {
-      rotate = 1;
-    } else {
-      rotate = rotate * rotate * rotate;
-    }
-    const y = Math.round(deltaY / (range / height)) || 0;
-    refreshInnerElemStyle.transform = "rotate(" + 360 * rotate + "deg)";
-    refreshControllerElemStyle.clip = "rect(" + (45 - y) + "px,45px,45px,-5px)";
-    refreshControllerElemStyle.transform = "translate3d(-50%, " + y + "px, 0)";
-  }
-  const onTouchstartPassive = withWebEvent((ev) => {
-    if (!pageMeta.enablePullDownRefresh) {
-      return;
-    }
-    const touch = ev.changedTouches[0];
-    touchId = touch.identifier;
-    startY = touch.pageY;
-    if ([ABORTING, REFRESHING, RESTORING].indexOf(state2) >= 0) {
-      canRefresh = false;
-    } else {
-      canRefresh = true;
-    }
-  });
-  const onTouchmove = withWebEvent((ev) => {
-    if (!pageMeta.enablePullDownRefresh) {
-      return;
-    }
-    if (!canRefresh) {
-      return;
-    }
-    if (!processDeltaY(ev, touchId, startY)) {
-      return;
-    }
-    let { deltaY } = ev;
-    if ((document.documentElement.scrollTop || document.body.scrollTop) !== 0) {
-      touchId = null;
-      return;
-    }
-    if (deltaY < 0 && !state2) {
-      return;
-    }
-    if (ev.cancelable) {
-      ev.preventDefault();
-    }
-    if (distance2 === null) {
-      offset = deltaY;
-      state2 = PULLING;
-      addClass();
-    }
-    deltaY = deltaY - offset;
-    if (deltaY < 0) {
-      deltaY = 0;
-    }
-    distance2 = deltaY;
-    const isReached = deltaY >= range && state2 !== REACHED;
-    const isPulling = deltaY < range && state2 !== PULLING;
-    if (isReached || isPulling) {
-      removeClass();
-      state2 = state2 === REACHED ? PULLING : REACHED;
-      addClass();
-    }
-    pulling(deltaY);
-  });
-  const onTouchend = withWebEvent((ev) => {
-    if (!pageMeta.enablePullDownRefresh) {
-      return;
-    }
-    if (!processDeltaY(ev, touchId, startY)) {
-      return;
-    }
-    if (state2 === null) {
-      return;
-    }
-    if (state2 === PULLING) {
-      removeClass();
-      state2 = ABORTING;
-      addClass();
-      aborting(() => {
-        removeClass();
-        state2 = distance2 = offset = null;
-      });
-    } else if (state2 === REACHED) {
-      removeClass();
-      state2 = REFRESHING;
-      addClass();
-      refreshing();
-    }
-  });
-  function aborting(callback) {
-    if (!refreshControllerElem) {
-      return;
-    }
-    if (refreshControllerElemStyle.transform) {
-      refreshControllerElemStyle.transition = "-webkit-transform 0.3s";
-      refreshControllerElemStyle.transform = "translate3d(-50%, 0, 0)";
-      const abortTransitionEnd = function() {
-        timeout && clearTimeout(timeout);
-        refreshControllerElem.removeEventListener(
-          "webkitTransitionEnd",
-          abortTransitionEnd
-        );
-        refreshControllerElemStyle.transition = "";
-        callback();
-      };
-      refreshControllerElem.addEventListener(
-        "webkitTransitionEnd",
-        abortTransitionEnd
-      );
-      const timeout = setTimeout(abortTransitionEnd, 350);
-    } else {
-      callback();
-    }
-  }
-  function refreshing() {
-    if (!refreshControllerElem) {
-      return;
-    }
-    refreshControllerElemStyle.transition = "-webkit-transform 0.2s";
-    refreshControllerElemStyle.transform = "translate3d(-50%, " + height + "px, 0)";
-    invokeHook(id2, ON_PULL_DOWN_REFRESH);
-  }
-  function restoring(callback) {
-    if (!refreshControllerElem) {
-      return;
-    }
-    refreshControllerElemStyle.transition = "-webkit-transform 0.3s";
-    refreshControllerElemStyle.transform += " scale(0.01)";
-    const restoreTransitionEnd = function() {
-      timeout && clearTimeout(timeout);
-      refreshControllerElem.removeEventListener(
-        "webkitTransitionEnd",
-        restoreTransitionEnd
-      );
-      refreshControllerElemStyle.transition = "";
-      refreshControllerElemStyle.transform = "translate3d(-50%, 0, 0)";
-      callback();
-    };
-    refreshControllerElem.addEventListener(
-      "webkitTransitionEnd",
-      restoreTransitionEnd
-    );
-    const timeout = setTimeout(restoreTransitionEnd, 350);
-  }
-  return {
-    onTouchstartPassive,
-    onTouchmove,
-    onTouchend,
-    onTouchcancel: onTouchend
-  };
-}
-const PageBody = /* @__PURE__ */ defineSystemComponent({
-  name: "PageBody",
-  setup(props2, ctx) {
-    const pageMeta = __UNI_FEATURE_PULL_DOWN_REFRESH__ && usePageMeta();
-    const refreshRef = __UNI_FEATURE_PULL_DOWN_REFRESH__ && ref(null);
-    const _pageRefresh = __UNI_FEATURE_PULL_DOWN_REFRESH__ && (pageMeta.enablePullDownRefresh || true) ? usePageRefresh(refreshRef) : null;
-    const pageRefresh = ref(null);
-    watch(() => {
-      return pageMeta.enablePullDownRefresh;
-    }, () => {
-      pageRefresh.value = pageMeta.enablePullDownRefresh ? _pageRefresh : null;
-    }, {
-      immediate: true
-    });
-    return () => {
-      const pageRefreshTsx = __UNI_FEATURE_PULL_DOWN_REFRESH__ && createPageRefreshTsx(refreshRef);
-      return createVNode(Fragment, null, [pageRefreshTsx, createVNode("uni-page-wrapper", pageRefresh.value, [createVNode("uni-page-body", null, [renderSlot(ctx.slots, "default")])], 16)]);
-    };
-  }
-});
-function createPageRefreshTsx(refreshRef, pageMeta) {
-  return createVNode(PageRefresh, {
-    "ref": refreshRef
-  }, null, 512);
-}
-const index = /* @__PURE__ */ defineSystemComponent({
-  name: "Page",
-  setup(_props, ctx) {
-    const pageMeta = providePageMeta(getStateId());
-    const navigationBar = pageMeta.navigationBar;
-    const pageStyle = {};
-    useDocumentTitle(pageMeta);
-    const currentInstance = getCurrentInstance();
-    currentInstance.$dialogPages = ref([]);
-    {
-      useBackgroundColorContent(pageMeta);
-      if (ctx.attrs.type === "dialog") {
-        navigationBar.style = "custom";
-        pageMeta.route = ctx.attrs.route;
-        const parentInstance = inject(
-          "parentInstance"
-        );
-        if (currentInstance && parentInstance) {
-          currentInstance.$parentInstance = parentInstance;
-          const parentDialogPages = parentInstance.$dialogPages.value;
-          currentInstance.$dialogPage = parentDialogPages[parentDialogPages.length - 1];
-        }
-      } else {
-        provide("parentInstance", currentInstance);
-      }
-    }
-    return () => createVNode(
-      "uni-page",
-      {
-        "data-page": pageMeta.route,
-        style: pageStyle
-      },
-      __UNI_FEATURE_NAVIGATIONBAR__ && navigationBar.style !== "custom" ? [
-        createVNode(PageHead),
-        createPageBodyVNode(ctx),
-        createDialogPageVNode(currentInstance.$dialogPages)
-      ] : [
-        createPageBodyVNode(ctx),
-        createDialogPageVNode(currentInstance.$dialogPages)
-      ]
-    );
-  }
-});
-function createPageBodyVNode(ctx) {
-  return openBlock(), createBlock(
-    PageBody,
-    { key: 0 },
-    {
-      default: withCtx(() => [renderSlot(ctx.slots, "page")]),
-      _: 3
-    }
-  );
-}
-function createDialogPageVNode(dialogPages) {
-  return openBlock(true), createElementBlock(
-    Fragment,
-    null,
-    renderList(dialogPages.value, (dialogPage) => {
-      return openBlock(), createBlock(
-        createVNode(
-          dialogPage.$component,
-          {
-            key: dialogPage.route,
-            style: {
-              position: "fixed",
-              "z-index": 999,
-              top: 0,
-              right: 0,
-              bottom: 0,
-              left: 0
-            },
-            type: "dialog",
-            route: `${dialogPage.route}${stringifyQuery$1(
-              dialogPage.options
-            )}`
-          },
-          null
-        )
-      );
-    })
-  );
-}
 export {
   $emit,
   $off,
   $on,
   $once,
-  index$m as Ad,
-  index$l as AdContentPage,
-  index$k as AdDraw,
+  index$l as Ad,
+  index$k as AdContentPage,
+  index$j as AdDraw,
   AsyncErrorComponent,
   AsyncLoadingComponent,
-  index$w as Button,
-  index$j as Camera,
+  index$v as Button,
+  index$i as Camera,
   indexX$4 as Canvas,
-  index$u as Checkbox,
-  index$v as CheckboxGroup,
-  index$o as CoverImage,
-  index$p as CoverView,
-  index$g as Editor,
-  index$y as Form,
-  index$f as Icon,
-  index$e as Image,
+  index$t as Checkbox,
+  index$u as CheckboxGroup,
+  index$n as CoverImage,
+  index$o as CoverView,
+  index$f as Editor,
+  index$x as Form,
+  index$e as Icon,
+  index$d as Image,
   Input,
-  index$x as Label,
+  index$w as Label,
   LayoutComponent,
-  index$5 as ListItem,
-  index$6 as ListView,
-  index$i as LivePlayer,
-  index$h as LivePusher,
+  index$4 as ListItem,
+  index$5 as ListView,
+  index$h as LivePlayer,
+  index$g as LivePusher,
   Map$1 as Map,
   MovableArea,
   MovableView,
-  index$d as Navigator,
-  index as PageComponent,
-  index$n as Picker,
+  index$c as Navigator,
+  PageComponent,
+  index$m as Picker,
   PickerView,
   PickerViewColumn,
-  index$c as Progress,
+  index$b as Progress,
   indexX$2 as Radio,
-  index$b as RadioGroup,
+  index$a as RadioGroup,
   ResizeSensor,
-  index$a as RichText,
+  index$9 as RichText,
   ScrollView,
   indexX$1 as Slider,
-  index$3 as StickyHeader,
-  index$4 as StickySection,
+  index$2 as StickyHeader,
+  index$3 as StickySection,
   Swiper,
   SwiperItem,
   indexX as Switch,
-  index$9 as Text,
-  index$8 as Textarea,
+  index$8 as Text,
+  index$7 as Textarea,
   UniButtonElement,
   UniCanvasElement,
   UniCheckboxElement,
@@ -28340,8 +28370,8 @@ export {
   UniViewElement,
   UniViewJSBridge$1 as UniViewJSBridge,
   UniWebViewElement,
-  index$q as Video,
-  index$7 as View,
+  index$p as Video,
+  index$6 as View,
   indexX$3 as WebView,
   addInterceptor,
   addPhoneContact,
@@ -28410,7 +28440,6 @@ export {
   getTopWindowStyle,
   getVideoInfo,
   getWindowInfo,
-  hideActionSheet,
   hideKeyboard,
   hideLeftWindow,
   hideLoading,
@@ -28468,7 +28497,7 @@ export {
   openDocument,
   openLocation,
   pageScrollTo,
-  index$1 as plugin,
+  index as plugin,
   preloadPage,
   previewImage,
   reLaunch,
@@ -28506,7 +28535,7 @@ export {
   setupApp,
   setupPage,
   setupWindow,
-  showActionSheet,
+  showActionSheet2,
   showLeftWindow,
   showLoading,
   showModal,

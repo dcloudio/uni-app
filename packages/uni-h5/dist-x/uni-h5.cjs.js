@@ -2832,7 +2832,19 @@ function getPageInstanceByChild(child) {
   }
   return pageInstance;
 }
+const DIALOG_TAG = "dialog";
+const SYSTEM_DIALOG_TAG = "systemDialog";
+function isDialogPageInstance(vm) {
+  return isNormalDialogPageInstance(vm) || isSystemDialogPageInstance(vm);
+}
+function isNormalDialogPageInstance(vm) {
+  return vm.attrs.type === DIALOG_TAG;
+}
+function isSystemDialogPageInstance(vm) {
+  return vm.attrs.type === SYSTEM_DIALOG_TAG;
+}
 const homeDialogPages = [];
+const homeSystemDialogPages = [];
 class UniPageImpl {
   constructor({
     route,
@@ -2896,7 +2908,7 @@ function initXPage(vm, route, page) {
   initPageVm(vm, page);
   vm.$basePage = vm.$page;
   const pageInstance = getPageInstanceByVm(vm);
-  if ((pageInstance == null ? void 0 : pageInstance.attrs.type) !== "dialog") {
+  if (!isDialogPageInstance(pageInstance)) {
     const uniPage = new UniNormalPageImpl({
       route: (route == null ? void 0 : route.path) || "",
       options: new UTSJSONObject((route == null ? void 0 : route.query) || {}),
@@ -2957,6 +2969,13 @@ function initXPage(vm, route, page) {
           pageInstance.$dialogPages.value.push(dialogPage);
         });
         homeDialogPages.length = 0;
+      }
+      if (homeSystemDialogPages.length) {
+        homeSystemDialogPages.forEach((dialogPage) => {
+          dialogPage.getParentPage = () => vm.$page;
+          pageInstance.$systemDialogPages.value.push(dialogPage);
+        });
+        homeSystemDialogPages.length = 0;
       }
     }
   } else {
@@ -5131,9 +5150,6 @@ function useMovableViewTransform(rootRef, props2, _scaleOffset, _scale, maxX, ma
     };
   }
   function FAandSFACancel() {
-    if (_FA) {
-      _FA.cancel();
-    }
     if (_SFA) {
       _SFA.cancel();
     }
@@ -6038,7 +6054,7 @@ function useProvideRadioGroup(props2, trigger) {
     },
     radioChange($event, field) {
       const index2 = fields2.indexOf(field);
-      _resetRadioGroupValue(index2, true);
+      _resetRadioGroupValue(index2);
       trigger("change", $event, {
         value: getFieldsValue()
       });
@@ -6069,17 +6085,8 @@ function useProvideRadioGroup(props2, trigger) {
       if (index2 === key) {
         return;
       }
-      if (change) {
+      {
         setFieldChecked(fields2[index2], false);
-      } else {
-        fields2.forEach((v2, i) => {
-          if (index2 >= i) {
-            return;
-          }
-          if (fields2[i].value.radioChecked) {
-            setFieldChecked(fields2[index2], false);
-          }
-        });
       }
     });
   }
@@ -8265,11 +8272,11 @@ const index$i = /* @__PURE__ */ defineBuiltInComponent({
         return vue.createVNode("uni-view", vue.mergeProps({
           "class": hovering.value ? hoverClass : "",
           "ref": rootRef
-        }, binding), [slots.default && slots.default()], 16);
+        }, binding), [vue.renderSlot(slots, "default")], 16);
       }
       return vue.createVNode("uni-view", {
         "ref": rootRef
-      }, [slots.default && slots.default()], 512);
+      }, [vue.renderSlot(slots, "default")], 512);
     };
   }
 });
@@ -8822,7 +8829,7 @@ function useContextInfo(_id) {
   const instance = vue.getCurrentInstance();
   const vm = instance.proxy;
   const type = vm.$options.name.toLowerCase();
-  const id2 = _id || vm.id || `context${index$d++}`;
+  const id2 = vm.id || `context${index$d++}`;
   return `${type}.${id2}`;
 }
 function injectLifecycleHook(name, hook, publicThis, instance) {
@@ -9203,7 +9210,7 @@ function setupPage(comp) {
       instance.attrs.__pageQuery = query;
       {
         const pageInstance = getPageInstanceByChild(instance);
-        if (pageInstance.attrs.type === "dialog") {
+        if (isDialogPageInstance(pageInstance)) {
           instance.attrs.__pageQuery = uniShared.decodedQuery(
             uniShared.parseQuery(pageInstance.attrs.route.split("?")[1] || "")
           );
@@ -13852,10 +13859,11 @@ const index = /* @__PURE__ */ defineSystemComponent({
     const pageStyle = {};
     useDocumentTitle(pageMeta);
     const currentInstance = vue.getCurrentInstance();
-    currentInstance.$dialogPages = vue.ref([]);
     {
+      currentInstance.$dialogPages = vue.ref([]);
+      currentInstance.$systemDialogPages = vue.ref([]);
       useBackgroundColorContent(pageMeta);
-      if (ctx.attrs.type === "dialog") {
+      if (isDialogPageInstance(ctx)) {
         navigationBar.style = "custom";
         pageMeta.route = ctx.attrs.route;
         const parentInstance = vue.inject(
@@ -13863,8 +13871,18 @@ const index = /* @__PURE__ */ defineSystemComponent({
         );
         if (currentInstance && parentInstance) {
           currentInstance.$parentInstance = parentInstance;
-          const parentDialogPages = parentInstance.$dialogPages.value;
-          currentInstance.$dialogPage = parentDialogPages[parentDialogPages.length - 1];
+          if (isNormalDialogPageInstance(
+            ctx
+          )) {
+            const parentDialogPages = parentInstance.$dialogPages.value;
+            currentInstance.$dialogPage = parentDialogPages[parentDialogPages.length - 1];
+          }
+          if (isSystemDialogPageInstance(
+            ctx
+          )) {
+            const parentSystemDialogPages = parentInstance.$systemDialogPages.value;
+            currentInstance.$dialogPage = parentSystemDialogPages[parentSystemDialogPages.length - 1];
+          }
         }
       } else {
         vue.provide("parentInstance", currentInstance);
@@ -13879,10 +13897,22 @@ const index = /* @__PURE__ */ defineSystemComponent({
       __UNI_FEATURE_NAVIGATIONBAR__ && navigationBar.style !== "custom" ? [
         vue.createVNode(PageHead),
         createPageBodyVNode(ctx),
-        createDialogPageVNode(currentInstance.$dialogPages)
+        (createDialogPageVNode(
+          currentInstance.$dialogPages,
+          DIALOG_TAG
+        ), createDialogPageVNode(
+          currentInstance.$systemDialogPages,
+          SYSTEM_DIALOG_TAG
+        ))
       ] : [
         createPageBodyVNode(ctx),
-        createDialogPageVNode(currentInstance.$dialogPages)
+        (createDialogPageVNode(
+          currentInstance.$dialogPages,
+          DIALOG_TAG
+        ), createDialogPageVNode(
+          currentInstance.$systemDialogPages,
+          SYSTEM_DIALOG_TAG
+        ))
       ]
     );
   }
@@ -13897,7 +13927,7 @@ function createPageBodyVNode(ctx) {
     }
   );
 }
-function createDialogPageVNode(dialogPages) {
+function createDialogPageVNode(dialogPages, type) {
   return vue.openBlock(true), vue.createElementBlock(
     vue.Fragment,
     null,
@@ -13915,7 +13945,7 @@ function createDialogPageVNode(dialogPages) {
               bottom: 0,
               left: 0
             },
-            type: "dialog",
+            type,
             route: `${dialogPage.route}${uniShared.stringifyQuery(
               dialogPage.options
             )}`

@@ -1,6 +1,6 @@
 import { normalizeStyles as normalizeStyles$1, addLeadingSlash, invokeArrayFns, parseQuery, Emitter, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, ON_ERROR, ON_SHOW, ON_HIDE, removeLeadingSlash, getLen, EventChannel, once, parseUrl, ON_UNLOAD, ON_READY, ON_PAGE_SCROLL, ON_PULL_DOWN_REFRESH, ON_REACH_BOTTOM, ON_RESIZE, ON_LAUNCH, ON_BACK_PRESS } from "@dcloudio/uni-shared";
 import { extend, isString, isPlainObject, isFunction as isFunction$1, isArray, isPromise, hasOwn, remove, invokeArrayFns as invokeArrayFns$1, capitalize, toTypeString, toRawType, parseStringStyle } from "@vue/shared";
-import { createVNode, render, injectHook, getCurrentInstance, defineComponent, warn, isInSSRComponentSetup, ref, watchEffect, watch, computed, onMounted, camelize, onUnmounted, reactive, provide, inject, nextTick } from "vue";
+import { createVNode, render, injectHook, getCurrentInstance, openBlock, createElementBlock, createElementVNode, normalizeClass, normalizeStyle, toDisplayString, createCommentVNode, Fragment, renderList, defineComponent, warn, isInSSRComponentSetup, ref, watchEffect, watch, computed, onMounted, camelize, onUnmounted, reactive, provide, inject, nextTick } from "vue";
 function get$pageByPage(page) {
   return page.vm.$basePage;
 }
@@ -1099,16 +1099,6 @@ function initScope(pageId, vm, pageInstance) {
         return vm.$nativePage.setPageStyle.bind(vm.$nativePage);
       }
     });
-    Object.defineProperty(vm, "getDialogPages", {
-      get() {
-        return () => vm.$.$dialogPages;
-      }
-    });
-    Object.defineProperty(vm, "getParentPage", {
-      get() {
-        return () => null;
-      }
-    });
   }
   vm.getOpenerEventChannel = () => {
     if (!pageInstance.eventChannel) {
@@ -1229,11 +1219,9 @@ function getTabList() {
   return list;
 }
 function init() {
-  var _uniConfig$globalSty, _uniConfig$globalSty2;
   var list = getTabList();
   var style = /* @__PURE__ */ new Map();
   style.set("navigationStyle", "custom");
-  style.set("pageOrientation", (_uniConfig$globalSty = (_uniConfig$globalSty2 = __uniConfig.globalStyle) === null || _uniConfig$globalSty2 === void 0 ? void 0 : _uniConfig$globalSty2.pageOrientation) !== null && _uniConfig$globalSty !== void 0 ? _uniConfig$globalSty : "portrait");
   var page = getPageManager().createPage("tabBar", "tabBar", style);
   var document = page.createDocument(new NodeData("root", "view", /* @__PURE__ */ new Map(), /* @__PURE__ */ new Map([["flex", "1"]])));
   var tabParent = document.createElement(new NodeData("tabs", "tabs", /* @__PURE__ */ new Map(), /* @__PURE__ */ new Map([["overflow", "hidden"], ["flex", "1"]])));
@@ -1354,7 +1342,7 @@ function getTabPage(path) {
   return new TabPageInfo(page, isFirst);
 }
 function switchSelect(selected, path) {
-  var _getCurrentPage, _pageStyle$pageOrient, _uniConfig$globalSty3;
+  var _getCurrentPage;
   var query = arguments.length > 2 && arguments[2] !== void 0 ? arguments[2] : {};
   var rebuild = arguments.length > 3 && arguments[3] !== void 0 ? arguments[3] : false;
   var callback = arguments.length > 4 ? arguments[4] : void 0;
@@ -1374,13 +1362,6 @@ function switchSelect(selected, path) {
     }
   }
   tabBar0.switchSelect(page.$basePage.id.toString(), selected);
-  var pageStyle = page.$page.getPageStyle();
-  var pageOrientation = (_pageStyle$pageOrient = pageStyle["pageOrientation"]) !== null && _pageStyle$pageOrient !== void 0 ? _pageStyle$pageOrient : (_uniConfig$globalSty3 = __uniConfig.globalStyle) === null || _uniConfig$globalSty3 === void 0 ? void 0 : _uniConfig$globalSty3.pageOrientation;
-  if (pageOrientation) {
-    getPageManager().findPageById("tabBar").setPageStyle({
-      pageOrientation
-    });
-  }
   if (shouldShow) {
     invokeHook(page, ON_SHOW);
   }
@@ -1507,6 +1488,7 @@ function useTheme() {
   registerThemeChange(onThemeChange);
 }
 var homeDialogPages = [];
+var homeSystemDialogPages = [];
 function parsePageStyle(route) {
   var style = /* @__PURE__ */ new Map();
   var routeMeta = route.meta;
@@ -1582,13 +1564,23 @@ function registerPage(_ref, onCreated) {
   function fn() {
     var page = createVuePage(id2, route, query, pageInstance, {}, nativePage2);
     var pages2 = getCurrentPages();
-    if (pages2.length === 1 && homeDialogPages.length) {
-      var homePage = pages2[0];
-      homePage.vm.$.$dialogPages = homeDialogPages.map((dialogPage) => {
-        dialogPage.getParentPage = () => homePage;
-        return dialogPage;
-      });
-      homeDialogPages.length = 0;
+    if (pages2.length === 1) {
+      if (homeDialogPages.length) {
+        var homePage = pages2[0];
+        homePage.vm.$.$dialogPages = homeDialogPages.map((dialogPage) => {
+          dialogPage.getParentPage = () => homePage;
+          return dialogPage;
+        });
+        homeDialogPages.length = 0;
+      }
+      if (homeSystemDialogPages.length) {
+        var _homePage = pages2[0];
+        _homePage.vm.$systemDialogPages = homeSystemDialogPages.map((dialogPage) => {
+          dialogPage.getParentPage = () => _homePage;
+          return dialogPage;
+        });
+        homeDialogPages.length = 0;
+      }
     }
     nativePage2.addPageEventListener(ON_POP_GESTURE, function(e) {
       uni.navigateBack({
@@ -1665,7 +1657,7 @@ function registerDialogPage(_ref2, dialogPage, onCreated) {
     onCreated(nativePage2);
   }
   routeOptions.meta.id = parseInt(nativePage2.pageId);
-  var route = path.slice(1);
+  var route = path.startsWith("uni:") ? path : path.slice(1);
   var pageInstance = initPageInternalInstance(
     openType,
     url,
@@ -1956,6 +1948,10 @@ function _reLaunch(_ref3) {
 }
 var reLaunch = /* @__PURE__ */ defineAsyncApi(API_RE_LAUNCH, $reLaunch, ReLaunchProtocol, ReLaunchOptions);
 function closePage(page, animationType, animationDuration) {
+  var dialogPages = page.$page.getDialogPages();
+  for (var i = dialogPages.length - 1; i >= 0; i--) {
+    closeNativeDialogPage(dialogPages[i]);
+  }
   closeWebview(page.$nativePage, animationType, animationDuration);
   removePage(page);
   removeTabBarPage(page);
@@ -2009,7 +2005,7 @@ function handleBeforeEntryPageRoutes() {
 }
 function closeNativeDialogPage(dialogPage, animationType, callback) {
   var webview = getNativeApp().pageManager.findPageById(dialogPage.$vm.$basePage.id + "");
-  closeWebview(webview, animationType, 0, callback);
+  closeWebview(webview, animationType || "none", 0, callback);
 }
 var $switchTab = (args, _ref) => {
   var {
@@ -2434,7 +2430,7 @@ function back(delta, animationType, animationDuration) {
       var dialogPages2 = deltaPage.$page.getDialogPages();
       for (var i2 = dialogPages2.length - 1; i2 >= 0; i2--) {
         var dialogPage2 = dialogPages2[i2];
-        closeNativeDialogPage(dialogPage2, "none");
+        closeNativeDialogPage(dialogPage2);
       }
       closeWebview(getNativeApp().pageManager.findPageById(deltaPage.$basePage.id + ""), "none", 0);
     });
@@ -2460,7 +2456,7 @@ function back(delta, animationType, animationDuration) {
   var dialogPages = currentPage.$page.getDialogPages();
   for (var i = dialogPages.length - 1; i >= 0; i--) {
     var dialogPage = dialogPages[i];
-    closeNativeDialogPage(dialogPage, "none");
+    closeNativeDialogPage(dialogPage);
     if (i > 0) {
       invokeHook(dialogPages[i - 1].$vm, ON_SHOW);
     }
@@ -2505,16 +2501,28 @@ var openDialogPage = (options) => {
   dialogPage.getParentPage = () => parentPage;
   dialogPage.$component = null;
   dialogPage.$disableEscBack = false;
-  if (!parentPage) {
-    homeDialogPages.push(dialogPage);
-  } else {
-    var dialogPages = parentPage.getDialogPages();
-    if (dialogPages.length) {
-      invokeHook(dialogPages[dialogPages.length - 1].$vm, ON_HIDE);
+  var isSystemDialog = options.url.startsWith("uni:");
+  if (!isSystemDialog) {
+    if (!parentPage) {
+      homeDialogPages.push(dialogPage);
+    } else {
+      var dialogPages = parentPage.getDialogPages();
+      if (dialogPages.length) {
+        invokeHook(dialogPages[dialogPages.length - 1].$vm, ON_HIDE);
+      }
+      dialogPages.push(dialogPage);
     }
-    dialogPages.push(dialogPage);
+  } else {
+    if (!parentPage) {
+      homeSystemDialogPages.push(dialogPage);
+    } else {
+      if (!parentPage.vm.$systemDialogPages) {
+        parentPage.vm.$systemDialogPages = [];
+      }
+      parentPage.vm.$systemDialogPages.push(dialogPage);
+    }
   }
-  var [aniType, aniDuration] = initAnimation(path, animationType || "");
+  var [aniType, aniDuration] = initAnimation(path, animationType);
   var noAnimation = aniType === "none" || aniDuration === 0;
   function callback(page2) {
     showWebview(page2, aniType, aniDuration, () => {
@@ -2583,17 +2591,24 @@ var closeDialogPage = (options) => {
       return;
     }
     var parentPage = dialogPage.getParentPage();
-    if (parentPage && currentPages.indexOf(parentPage) !== -1) {
-      var parentDialogPages = parentPage.getDialogPages();
-      var index2 = parentDialogPages.indexOf(dialogPage);
-      parentDialogPages.splice(index2, 1);
-      closeNativeDialogPage(dialogPage, (options === null || options === void 0 ? void 0 : options.animationType) || "none");
-      if (index2 > 0 && index2 === parentDialogPages.length) {
-        invokeHook(parentDialogPages[parentDialogPages.length - 1].$vm, ON_SHOW);
+    if (!dialogPage.route.startsWith("uni:")) {
+      if (parentPage && currentPages.indexOf(parentPage) !== -1) {
+        var parentDialogPages = parentPage.getDialogPages();
+        var index2 = parentDialogPages.indexOf(dialogPage);
+        parentDialogPages.splice(index2, 1);
+        closeNativeDialogPage(dialogPage, (options === null || options === void 0 ? void 0 : options.animationType) || "none");
+        if (index2 > 0 && index2 === parentDialogPages.length) {
+          invokeHook(parentDialogPages[parentDialogPages.length - 1].$vm, ON_SHOW);
+        }
+      } else {
+        triggerFailCallback(options, "dialogPage is not a valid page");
+        return;
       }
     } else {
-      triggerFailCallback(options, "dialogPage is not a valid page");
-      return;
+      var systemDialogPages = parentPage.vm.$systemDialogPages;
+      var _index = systemDialogPages.indexOf(dialogPage);
+      systemDialogPages.splice(_index, 1);
+      closeNativeDialogPage(dialogPage, "none");
     }
   } else {
     var dialogPages = currentPage.getDialogPages();
@@ -3225,6 +3240,474 @@ var stopPullDownRefresh = /* @__PURE__ */ defineAsyncApi(API_STOP_PULL_DOWN_REFR
   page.$nativePage.stopPullDownRefresh();
   res.resolve();
 });
+const _sfc_main = {
+  data() {
+    return {
+      show: false,
+      i18nCancelText: {
+        en: "Cancel",
+        es: "Cancelar",
+        fr: "Annuler",
+        "zh-Hans": "取消",
+        "zh-Hant": "取消"
+      },
+      readyEventName: "",
+      optionsEventName: "",
+      successEventName: "",
+      failEventName: "",
+      title: "",
+      itemList: [],
+      optionCancelText: "",
+      optionTitleColor: null,
+      optionItemColor: null,
+      optionCancelColor: null,
+      optionCellBackgroundColor: null,
+      successCallback: null,
+      failCallback: null,
+      completeCallback: null,
+      language: "zh-Hans",
+      theme: "light"
+    };
+  },
+  onLoad(options) {
+    this.readyEventName = options["readyEventName"];
+    this.optionsEventName = options["optionsEventName"];
+    this.successEventName = options["successEventName"];
+    this.failEventName = options["failEventName"];
+    uni.$on(this.optionsEventName, (data) => {
+      this.itemList = data["itemList"];
+      if (data["title"] !== null) {
+        this.title = data["title"];
+      }
+      if (data["cancelText"] !== null) {
+        this.optionCancelText = data["cancelText"];
+      }
+      if (data["titleColor"] !== null) {
+        this.optionTitleColor = data["titleColor"];
+      }
+      if (data["itemColor"] !== null) {
+        this.optionItemColor = data["itemColor"];
+      }
+      if (data["cancelColor"] !== null) {
+        this.optionCancelColor = data["cancelColor"];
+      }
+      if (data["backgroundColor"] !== null) {
+        this.optionCellBackgroundColor = data["backgroundColor"];
+      }
+      if (data["success"] !== null) {
+        this.successCallback = data["success"];
+      }
+      if (data["fail"] !== null) {
+        this.failCallback = data["fail"];
+      }
+      if (data["complete"] !== null) {
+        this.completeCallback = data["complete"];
+      }
+    });
+    uni.$emit(this.readyEventName, {});
+    var systemInfo = uni.getSystemInfoSync();
+    var osLanguage = systemInfo.osLanguage;
+    var appLanguage = systemInfo.appLanguage;
+    if (appLanguage != null) {
+      this.language = appLanguage;
+    } else if (osLanguage != null) {
+      this.language = osLanguage;
+    }
+    var osTheme = systemInfo.osTheme;
+    var appTheme = systemInfo.appTheme;
+    var hostTheme = systemInfo.hostTheme;
+    if (hostTheme != null) {
+      this.theme = hostTheme;
+    } else if (appTheme != null) {
+      this.theme = appTheme;
+    } else if (osTheme != null) {
+      this.theme = osTheme;
+    }
+    uni.onAppThemeChange((res) => {
+      this.theme = res.appTheme;
+    });
+    uni.onOsThemeChange((res) => {
+      this.theme = res.osTheme;
+    });
+  },
+  computed: {
+    cancelText() {
+      if (this.optionCancelText != null) {
+        return this.optionCancelText;
+      }
+      if (this.language.startsWith("en")) {
+        return this.i18nCancelText["en"];
+      }
+      if (this.language.startsWith("es")) {
+        return this.i18nCancelText["es"];
+      }
+      if (this.language.startsWith("fr")) {
+        return this.i18nCancelText["fr"];
+      }
+      if (this.language.startsWith("zh-Hans")) {
+        return this.i18nCancelText["zh-Hans"];
+      }
+      if (this.language.startsWith("zh-Hant")) {
+        return this.i18nCancelText["zh-Hant"];
+      }
+      return "取消";
+    },
+    titleColor() {
+      if (this.optionTitleColor != null) {
+        return this.optionTitleColor;
+      }
+      return this.theme == "dark" ? "#999999" : "#666666";
+    },
+    itemColor() {
+      if (this.optionItemColor != null) {
+        return this.optionItemColor;
+      }
+      return this.theme == "dark" ? "#ffffff" : "#000000";
+    },
+    cancelColor() {
+      if (this.optionCancelColor != null) {
+        return this.optionCancelColor;
+      }
+      return this.theme == "dark" ? "#ffffff" : "#000000";
+    },
+    cellBackgroundColor() {
+      if (this.optionCellBackgroundColor != null) {
+        return this.optionCellBackgroundColor;
+      }
+      return this.theme == "dark" ? "#2C2C2B" : "#ffffff";
+    },
+    containerBackgroundColor() {
+      return this.theme == "dark" ? "#1D1E1E" : "#f7f7f7";
+    },
+    cellBorderColor() {
+      return this.theme == "dark" ? "#2F3131" : "#e5e5e5";
+    }
+  },
+  onReady() {
+    setTimeout(() => {
+      this.show = true;
+    }, 10);
+  },
+  onUnload() {
+    uni.$off(this.optionsEventName, null);
+    uni.$off(this.readyEventName, null);
+    uni.$off(this.successEventName, null);
+    uni.$off(this.failEventName, null);
+  },
+  methods: {
+    closeActionSheet() {
+      this.show = false;
+      setTimeout(() => {
+        uni.closeDialogPage({
+          dialogPage: this.$page
+        });
+      }, 300);
+    },
+    handleMenuItemClick(tapIndex) {
+      this.closeActionSheet();
+      uni.$emit(this.successEventName, tapIndex);
+    },
+    handleCancel() {
+      this.closeActionSheet();
+      uni.$emit(this.failEventName, {});
+    }
+  }
+};
+const _style_0 = {
+  "uni-actionsheet_dialog__mask": {
+    "": {
+      "position": "fixed",
+      "zIndex": "999",
+      "top": "0",
+      "right": "0",
+      "left": "0",
+      "bottom": "0",
+      "opacity": "0",
+      "backgroundColor": "rgba(0, 0, 0, 0.6)",
+      "transitionProperty": "opacity",
+      "transitionDuration": "0.3s"
+    }
+  },
+  "uni-actionsheet_dialog__mask__show": {
+    "": {
+      "opacity": "1"
+    }
+  },
+  "uni-actionsheet_dialog__container": {
+    "": {
+      "position": "fixed",
+      "width": "100%",
+      "overflow": "hidden",
+      "left": "0",
+      "bottom": "0",
+      "zIndex": "999",
+      "WebkitBackfaceVisibility": "hidden",
+      "backfaceVisibility": "hidden",
+      "transform": "translate(0, 100%)",
+      "transitionProperty": "transform",
+      "transitionDuration": "0.3s",
+      "borderTopLeftRadius": "12px",
+      "borderTopRightRadius": "12px"
+    },
+    ".uni-actionsheet_dialog__show": {
+      "transform": "translate(0, 0)"
+    }
+  },
+  "uni-actionsheet_dialog__menu": {
+    "": {
+      "display": "block"
+    }
+  },
+  "uni-actionsheet_dialog__title": {
+    "": {
+      "display": "block",
+      "paddingTop": "16px",
+      "paddingRight": "16px",
+      "paddingBottom": "16px",
+      "paddingLeft": "16px",
+      "cursor": "pointer",
+      "textAlign": "center"
+    }
+  },
+  "uni-actionsheet_dialog__cell": {
+    "": {
+      "display": "block",
+      "paddingTop": "16px",
+      "paddingRight": "16px",
+      "paddingBottom": "16px",
+      "paddingLeft": "16px",
+      "cursor": "pointer",
+      "textAlign": "center",
+      "borderTopWidth": "1px",
+      "borderTopStyle": "solid"
+    }
+  },
+  "uni-actionsheet_dialog__action": {
+    "": {
+      "display": "block",
+      "paddingTop": "16px",
+      "paddingRight": "16px",
+      "paddingBottom": "16px",
+      "paddingLeft": "16px",
+      "cursor": "pointer",
+      "textAlign": "center",
+      "marginTop": "8px"
+    }
+  },
+  "uni-actionsheet_dialog__title__text": {
+    "": {
+      "lineHeight": "1.4",
+      "textAlign": "center",
+      "whiteSpace": "nowrap",
+      "overflow": "hidden",
+      "textOverflow": "ellipsis"
+    }
+  },
+  "uni-actionsheet_dialog__cell__text": {
+    "": {
+      "lineHeight": "1.4",
+      "textAlign": "center",
+      "whiteSpace": "nowrap",
+      "overflow": "hidden",
+      "textOverflow": "ellipsis"
+    }
+  },
+  "uni-actionsheet_dialog__action__text": {
+    "": {
+      "lineHeight": "1.4",
+      "textAlign": "center",
+      "whiteSpace": "nowrap",
+      "overflow": "hidden",
+      "textOverflow": "ellipsis"
+    }
+  },
+  "@FONT-FACE": [{
+    "uni-actionsheet_dialog__mask": {
+      "": {
+        "backgroundImage": "none",
+        "backgroundColor": "none"
+      }
+    },
+    "uni-actionsheet_dialog__container": {
+      "": {
+        "width": "300px",
+        "position": "fixed",
+        "left": "50%",
+        "right": "auto",
+        "top": "50%",
+        "bottom": "auto",
+        "zIndex": "999",
+        "opacity": "0",
+        "visibility": "hidden",
+        "WebkitBackfaceVisibility": "hidden",
+        "backfaceVisibility": "hidden",
+        "borderRadius": "5px",
+        "transform": "translate(-50%, -50%)",
+        "boxShadow": "0 0 20px 5px rgba(0, 0, 0, 0.3)"
+      }
+    },
+    "uni-actionsheet_dialog__show": {
+      "": {
+        "visibility": "visible",
+        "opacity": "1",
+        "!transform": "translate(-50%, -50%)"
+      }
+    },
+    "uni-actionsheet_dialog__action": {
+      "": {
+        "display": "none",
+        "paddingTop": "16px",
+        "paddingRight": "16px",
+        "paddingBottom": "16px",
+        "paddingLeft": "16px"
+      }
+    },
+    "uni-actionsheet_dialog__title": {
+      "": {
+        "fontSize": "15px",
+        "paddingTop": "16px",
+        "paddingRight": "16px",
+        "paddingBottom": "16px",
+        "paddingLeft": "16px"
+      }
+    },
+    "uni-actionsheet_dialog__cell": {
+      "": {
+        "paddingTop": "16px",
+        "paddingRight": "16px",
+        "paddingBottom": "16px",
+        "paddingLeft": "16px"
+      }
+    }
+  }],
+  "@TRANSITION": {
+    "uni-actionsheet_dialog__mask": {
+      "property": "opacity",
+      "duration": "0.3s"
+    },
+    "uni-actionsheet_dialog__container": {
+      "property": "transform",
+      "duration": "0.3s"
+    }
+  }
+};
+const _export_sfc = (sfc, props) => {
+  const target = sfc.__vccOpts || sfc;
+  for (const [key, val] of props) {
+    target[key] = val;
+  }
+  return target;
+};
+var _hoisted_1 = ["onClick"];
+function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
+  return openBlock(), createElementBlock("view", null, [createElementVNode("view", {
+    class: normalizeClass(["uni-actionsheet_dialog__mask", {
+      "uni-actionsheet_dialog__mask__show": $data.show
+    }]),
+    onClick: _cache[0] || (_cache[0] = function() {
+      return $options.handleCancel && $options.handleCancel(...arguments);
+    })
+  }, null, 2), createElementVNode("view", {
+    class: normalizeClass(["uni-actionsheet_dialog__container", {
+      "uni-actionsheet_dialog__show": $data.show
+    }]),
+    style: normalizeStyle({
+      backgroundColor: $options.containerBackgroundColor
+    })
+  }, [$data.title ? (openBlock(), createElementBlock("view", {
+    key: 0,
+    style: normalizeStyle({
+      backgroundColor: $options.cellBackgroundColor
+    }),
+    class: "uni-actionsheet_dialog__title"
+  }, [createElementVNode("text", {
+    style: normalizeStyle({
+      color: $options.titleColor
+    }),
+    class: "uni-actionsheet_dialog__title__text"
+  }, toDisplayString($data.title), 5)], 4)) : createCommentVNode("", true), createElementVNode("view", {
+    class: "uni-actionsheet_dialog__menu",
+    style: normalizeStyle({
+      backgroundColor: $options.cellBackgroundColor
+    })
+  }, [(openBlock(true), createElementBlock(Fragment, null, renderList($data.itemList, (item, index2) => {
+    return openBlock(), createElementBlock("view", {
+      class: "uni-actionsheet_dialog__cell",
+      style: normalizeStyle({
+        borderTopColor: $options.cellBorderColor
+      }),
+      key: index2,
+      onClick: ($event) => $options.handleMenuItemClick(index2)
+    }, [createElementVNode("text", {
+      style: normalizeStyle({
+        color: $options.itemColor
+      }),
+      class: "uni-actionsheet_dialog__cell__text"
+    }, toDisplayString(item), 5)], 12, _hoisted_1);
+  }), 128))], 4), createElementVNode("view", {
+    style: normalizeStyle({
+      backgroundColor: $options.cellBackgroundColor
+    }),
+    class: "uni-actionsheet_dialog__action",
+    onClick: _cache[1] || (_cache[1] = function() {
+      return $options.handleCancel && $options.handleCancel(...arguments);
+    })
+  }, [createElementVNode("text", {
+    style: normalizeStyle({
+      color: $options.cancelColor
+    }),
+    class: "uni-actionsheet_dialog__action__text"
+  }, toDisplayString($options.cancelText), 5)], 4)], 6)]);
+}
+const showActionSheetPage = /* @__PURE__ */ _export_sfc(_sfc_main, [["render", _sfc_render], ["styles", [_style_0]]]);
+var registerShowActionSheetPage = once(() => {
+  var route = "uni:actionSheet";
+  __uniRoutes.push({
+    path: route,
+    meta: {
+      isQuit: false,
+      isEntry: false,
+      route,
+      navigationBar: {}
+    }
+  });
+  definePage(route, showActionSheetPage);
+});
+var showActionSheet2 = (options) => {
+  registerShowActionSheetPage();
+  var uuid = Date.now() + "" + Math.floor(Math.random() * 1e7);
+  var baseEventName = "_action_sheet_".concat(uuid);
+  var readyEventName = "".concat(baseEventName, "_ready");
+  var optionsEventName = "".concat(baseEventName, "_options");
+  var successEventName = "".concat(baseEventName, "_success");
+  var failEventName = "".concat(baseEventName, "_fail");
+  uni.$on(readyEventName, () => {
+    uni.$emit(optionsEventName, options);
+  });
+  uni.$on(successEventName, (index2) => {
+    var _options$success;
+    (_options$success = options.success) === null || _options$success === void 0 || _options$success.call(options, {
+      errMsg: "showActionSheet:ok",
+      tapIndex: index2
+    });
+  });
+  uni.$on(failEventName, () => {
+    var _options$fail;
+    (_options$fail = options.fail) === null || _options$fail === void 0 || _options$fail.call(options, {
+      errMsg: "showActionSheet:failed cancel"
+    });
+  });
+  uni.openDialogPage({
+    url: "uni:actionSheet?readyEventName=".concat(readyEventName, "&optionsEventName=").concat(optionsEventName, "&successEventName=").concat(successEventName, "&failEventName=").concat(failEventName),
+    fail: function(err) {
+      var _options$fail2;
+      (_options$fail2 = options.fail) === null || _options$fail2 === void 0 || _options$fail2.call(options, {
+        errMsg: "showActionSheet:failed, ".concat(err.errMsg)
+      });
+      uni.$off(readyEventName);
+    }
+  });
+};
 var env = {
   USER_DATA_PATH: "unifile://usr/",
   CACHE_PATH: "unifile://cache/",
@@ -4089,6 +4572,7 @@ const uni$1 = /* @__PURE__ */ Object.defineProperty({
   setTabBarBadge,
   setTabBarItem,
   setTabBarStyle,
+  showActionSheet2,
   showTabBar,
   showTabBarRedDot,
   startPullDownRefresh,

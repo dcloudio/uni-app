@@ -128,15 +128,16 @@ interface Uni {
   openDialogPage: (options: {
     url: string
     animationType?:
-    'auto' |
-    'none' |
-    'slide-in-right' |
-    'slide-in-left' |
-    'slide-in-top' |
-    'slide-in-bottom' |
-    'fade-in' |
-    'zoom-out' |
-    'zoom-fade-out' | null
+      | 'auto'
+      | 'none'
+      | 'slide-in-right'
+      | 'slide-in-left'
+      | 'slide-in-top'
+      | 'slide-in-bottom'
+      | 'fade-in'
+      | 'zoom-out'
+      | 'zoom-fade-out'
+      | null
     animationDuration?: number | null
     disableEscBack?: boolean | null
     parentPage?: UniPage | null
