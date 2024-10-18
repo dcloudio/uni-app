@@ -35,7 +35,7 @@ async function tencentMapPlaceSearch(options: ITencentMapPlaceSearchOptions) {
     const res = await obj.chooseLocation({
       action: 'search',
       data: {
-        keyword: '酒店',
+        keyword,
         location: {
           lat: latitude,
           lng: longitude,
