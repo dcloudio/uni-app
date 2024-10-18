@@ -16,6 +16,7 @@ import { subscribeAd } from './ad'
 import { subscribeNavigator } from './navigator'
 import { subscribeWebviewReady } from './webviewReady'
 import { subscribeGetLocation } from '../../../api/location/getLocation'
+import { subscribeMapPlaceSearch } from '../../../api/location/LoctaionPickerPage'
 import { onWebviewInserted, onWebviewRemoved } from './webviewLifecycle'
 import {
   type WebInvokeAppService,
@@ -59,5 +60,6 @@ export function initSubscribeHandlers() {
       publishHandler(ON_WEBVIEW_READY, {}, 1)
     }
     subscribeGetLocation()
+    subscribeMapPlaceSearch()
   }
 }
