@@ -87,6 +87,8 @@ export * from './view/bridge'
 //#if _X_
 export * from './x/service/api'
 export * from './x/service/api/uni'
+export { getPageInstanceByVm } from './framework/setup/utils'
+export { isSystemActionSheetDialogPage } from './x/framework/helpers/utils'
 //#endif
 
 //#if !_X_

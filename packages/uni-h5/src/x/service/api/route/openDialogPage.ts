@@ -10,6 +10,10 @@ import { EventChannel, parseUrl } from '@dcloudio/uni-shared'
 import type { OpenDialogPageOptions } from '@dcloudio/uni-app-x/types/uni'
 import type { UniDialogPage } from '@dcloudio/uni-app-x/types/page'
 import { getPageInstanceByVm } from '../../../../framework/setup/utils'
+import {
+  isSystemActionSheetDialogPage,
+  isSystemDialogPage,
+} from '../../../framework/helpers/utils'
 
 export const openDialogPage = (
   options: OpenDialogPageOptions
@@ -45,8 +49,7 @@ export const openDialogPage = (
       return null
     }
   }
-  const isSystemDialog = options.url.startsWith('uni:')
-  if (!isSystemDialog) {
+  if (!isSystemDialogPage(dialogPage)) {
     if (!currentPages.length) {
       homeDialogPages.push(dialogPage)
     } else {
@@ -63,6 +66,9 @@ export const openDialogPage = (
   } else {
     if (!currentPages.length) {
       homeSystemDialogPages.push(dialogPage)
+      if (isSystemActionSheetDialogPage(dialogPage)) {
+        closePreActionSheet(homeSystemDialogPages)
+      }
     } else {
       if (!parentPage) {
         parentPage = currentPages[currentPages.length - 1]
@@ -71,6 +77,11 @@ export const openDialogPage = (
       getPageInstanceByVm(parentPage!.vm)?.$systemDialogPages.value.push(
         dialogPage
       )
+      if (isSystemActionSheetDialogPage(dialogPage)) {
+        closePreActionSheet(
+          getPageInstanceByVm(parentPage!.vm)?.$systemDialogPages.value
+        )
+      }
     }
   }
 
@@ -93,4 +104,13 @@ function triggerFailCallback(options: OpenDialogPageOptions, errMsg: string) {
   // @ts-expect-error
   options.fail?.(failOptions)
   options.complete?.(failOptions)
+}
+
+function closePreActionSheet(dialogPages: UniDialogPage[]) {
+  const actionSheets = dialogPages.filter((page): boolean =>
+    isSystemActionSheetDialogPage(page)
+  )
+  if (actionSheets.length > 1) {
+    dialogPages.splice(dialogPages.indexOf(actionSheets[0]), 1)
+  }
 }

@@ -2834,14 +2834,18 @@ function getPageInstanceByChild(child) {
 }
 const DIALOG_TAG = "dialog";
 const SYSTEM_DIALOG_TAG = "systemDialog";
+const SYSTEM_DIALOG_ACTION_SHEET_PAGE_PATH = "uni:actionSheet";
 function isDialogPageInstance(vm) {
   return isNormalDialogPageInstance(vm) || isSystemDialogPageInstance(vm);
 }
 function isNormalDialogPageInstance(vm) {
-  return vm.attrs.type === DIALOG_TAG;
+  return vm.attrs["data-type"] === DIALOG_TAG;
 }
 function isSystemDialogPageInstance(vm) {
-  return vm.attrs.type === SYSTEM_DIALOG_TAG;
+  return vm.attrs["data-type"] === SYSTEM_DIALOG_TAG;
+}
+function isSystemActionSheetDialogPage(page) {
+  return page.route.startsWith(SYSTEM_DIALOG_ACTION_SHEET_PAGE_PATH);
 }
 const homeDialogPages = [];
 const homeSystemDialogPages = [];
@@ -13932,11 +13936,14 @@ function createDialogPageVNode(dialogPages, type) {
     vue.Fragment,
     null,
     vue.renderList(dialogPages.value, (dialogPage) => {
+      const fullUrl = `${dialogPage.route}${uniShared.stringifyQuery(
+        dialogPage.options
+      )}`;
       return vue.openBlock(), vue.createBlock(
         vue.createVNode(
           dialogPage.$component,
           {
-            key: dialogPage.route,
+            key: fullUrl,
             style: {
               position: "fixed",
               "z-index": 999,
@@ -13945,10 +13952,8 @@ function createDialogPageVNode(dialogPages, type) {
               bottom: 0,
               left: 0
             },
-            type,
-            route: `${dialogPage.route}${uniShared.stringifyQuery(
-              dialogPage.options
-            )}`
+            "data-type": type,
+            route: fullUrl
           },
           null
         )
@@ -14012,12 +14017,14 @@ exports.getApp = getApp$1;
 exports.getAppBaseInfo = getAppBaseInfo;
 exports.getCurrentPages = getCurrentPages$1;
 exports.getDeviceInfo = getDeviceInfo;
+exports.getPageInstanceByVm = getPageInstanceByVm;
 exports.getRealPath = getRealPath;
 exports.getStorage = getStorage;
 exports.getStorageInfo = getStorageInfo;
 exports.getStorageInfoSync = getStorageInfoSync;
 exports.getStorageSync = getStorageSync;
 exports.getSystemInfoSync = getSystemInfoSync;
+exports.isSystemActionSheetDialogPage = isSystemActionSheetDialogPage;
 exports.plugin = index$c;
 exports.removeStorage = removeStorage;
 exports.removeStorageSync = removeStorageSync;

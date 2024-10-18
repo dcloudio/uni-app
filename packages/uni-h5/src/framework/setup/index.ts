@@ -52,7 +52,10 @@ import {
 import type { RouteLocationNormalizedLoaded } from 'vue-router'
 import { useRouter } from 'vue-router'
 //#if _X_
-import { isDialogPageInstance } from '../../x/framework/helpers/utils'
+import {
+  DIALOG_TAG,
+  isDialogPageInstance,
+} from '../../x/framework/helpers/utils'
 //#endif
 
 interface SetupComponentOptions {
@@ -159,7 +162,7 @@ export function setupPage(comp: any) {
       onMounted(() => {
         if (__X__) {
           const pageInstance = getPageInstanceByChild(instance)
-          if (pageInstance.attrs.type === 'dialog') {
+          if (pageInstance.attrs['data-type'] === DIALOG_TAG) {
             const parentPage = (
               instance.proxy?.$page as UniPage
             ).getParentPage()
@@ -197,7 +200,7 @@ export function setupPage(comp: any) {
           instance.__isVisible = false
           if (__X__) {
             const pageInstance = getPageInstanceByChild(instance)
-            if (pageInstance.attrs.type !== 'dialog') {
+            if (pageInstance.attrs['data-type'] !== DIALOG_TAG) {
               const { onHide } = instance
               onHide && invokeArrayFns(onHide)
             }

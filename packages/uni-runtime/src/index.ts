@@ -29,4 +29,8 @@ export {
   getCurrentPageVm,
   getPageIdByVm,
 } from '@dcloudio/uni-core'
+export {
+  getPageInstanceByVm,
+  isSystemActionSheetDialogPage,
+} from '@dcloudio/uni-h5'
 export const __uniConfig = globalThis.__uniConfig

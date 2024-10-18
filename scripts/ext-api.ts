@@ -1,6 +1,6 @@
 import fs from 'fs-extra'
 import path from 'path'
-import { type Plugin } from 'vite'
+import type { Plugin } from 'vite'
 import execa from 'execa'
 import { sync } from 'fast-glob'
 
@@ -42,7 +42,11 @@ export function uts2ts({ target, platform }: Options): Plugin {
           alias: [
             {
               find: '@dcloudio/uni-runtime',
-              replacement: resolve('../uni-runtime/src/index.ts'),
+              replacement: resolve('../packages/uni-runtime/src/index.ts'),
+            },
+            {
+              find: '@dcloudio/uni-h5',
+              replacement: resolve('../packages/uni-h5/src/index.ts'),
             },
             {
               find: /^@dcloudio\/uni-ext-api\/(.*)/,

@@ -120,6 +120,7 @@ export type ShowActionSheet2Options = {
  * }
  */
 export type ShowActionSheet2 = (options: ShowActionSheet2Options) => void;
+export type HideActionSheet = () => void;
 
 export interface Uni {
   /**
@@ -162,6 +163,39 @@ export interface Uni {
    * }
    */
   showActionSheet2(options: ShowActionSheet2Options): void;
+
+  /**
+   * @description 关闭操作菜单
+   * @example
+   * ```typescript
+   *	uni.hideActionSheet();
+   * ```
+   * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/hide-action-sheet.html
+   * @uniPlatform {
+   *    "app": {
+   *        "android": {
+   *            "osVer": "5.0",
+   *            "uniVer": "√",
+   *            "unixVer": "4.32"
+   *        },
+   *        "ios": {
+   *            "osVer": "12.0",
+   *            "uniVer": "√",
+   *            "unixVer": "4.32"
+   *        },
+   *    "harmony": {
+   *      "osVer": "3.0",
+   *      "uniVer": "4.23",
+   *      "unixVer": "x"
+   *    }
+   *    },
+   *    "web": {
+   *        "uniVer": "√",
+   *        "unixVer": "4.32"
+   *    }
+   * }
+   */
+  hideActionSheet(): void;
 }
 
 // @ts-expect-error

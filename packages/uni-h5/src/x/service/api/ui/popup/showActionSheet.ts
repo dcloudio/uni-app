@@ -9,6 +9,7 @@ import showActionSheetPage from '@dcloudio/uni-ext-api/uni-actionSheet/pages/act
 
 import { renderPage } from '../utils'
 import { setupPage } from '../../../../../framework/setup'
+import { SYSTEM_DIALOG_ACTION_SHEET_PAGE_PATH } from '../../../../framework/helpers/utils'
 
 const registerShowActionSheetPageOnce = once(() => {
   if (
@@ -22,7 +23,7 @@ const registerShowActionSheetPageOnce = once(() => {
   }
   const __uniPage = setupPage(showActionSheetPage)
   __uniRoutes.push({
-    path: 'uni:actionSheet',
+    path: SYSTEM_DIALOG_ACTION_SHEET_PAGE_PATH,
     component: {
       mpType: 'page',
       setup() {
@@ -35,7 +36,7 @@ const registerShowActionSheetPageOnce = once(() => {
       isQuit: false,
       isEntry: false,
       navigationBar: {},
-      route: 'uni:actionSheet',
+      route: SYSTEM_DIALOG_ACTION_SHEET_PAGE_PATH,
     },
   })
 })

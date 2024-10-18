@@ -16867,14 +16867,22 @@ function getPageInstanceByChild(child) {
 }
 const DIALOG_TAG = "dialog";
 const SYSTEM_DIALOG_TAG = "systemDialog";
+const SYSTEM_DIALOG_PAGE_PATH_STARTER = "uni:";
+const SYSTEM_DIALOG_ACTION_SHEET_PAGE_PATH = "uni:actionSheet";
 function isDialogPageInstance(vm) {
   return isNormalDialogPageInstance(vm) || isSystemDialogPageInstance(vm);
 }
 function isNormalDialogPageInstance(vm) {
-  return vm.attrs.type === DIALOG_TAG;
+  return vm.attrs["data-type"] === DIALOG_TAG;
 }
 function isSystemDialogPageInstance(vm) {
-  return vm.attrs.type === SYSTEM_DIALOG_TAG;
+  return vm.attrs["data-type"] === SYSTEM_DIALOG_TAG;
+}
+function isSystemDialogPage(page) {
+  return page.route.startsWith(SYSTEM_DIALOG_PAGE_PATH_STARTER);
+}
+function isSystemActionSheetDialogPage(page) {
+  return page.route.startsWith(SYSTEM_DIALOG_ACTION_SHEET_PAGE_PATH);
 }
 let escBackPageNum = 0;
 const homeDialogPages = [];
@@ -17056,7 +17064,7 @@ function decrementEscBackPageNum() {
   }
 }
 const openDialogPage = (options) => {
-  var _a, _b, _c;
+  var _a, _b, _c, _d;
   if (!options.url) {
     triggerFailCallback$1(options, "url is required");
     return null;
@@ -17086,8 +17094,7 @@ const openDialogPage = (options) => {
       return null;
     }
   }
-  const isSystemDialog = options.url.startsWith("uni:");
-  if (!isSystemDialog) {
+  if (!isSystemDialogPage(dialogPage)) {
     if (!currentPages.length) {
       homeDialogPages.push(dialogPage);
     } else {
@@ -17103,6 +17110,9 @@ const openDialogPage = (options) => {
   } else {
     if (!currentPages.length) {
       homeSystemDialogPages.push(dialogPage);
+      if (isSystemActionSheetDialogPage(dialogPage)) {
+        closePreActionSheet(homeSystemDialogPages);
+      }
     } else {
       if (!parentPage) {
         parentPage = currentPages[currentPages.length - 1];
@@ -17111,14 +17121,17 @@ const openDialogPage = (options) => {
       (_a = getPageInstanceByVm(parentPage.vm)) == null ? void 0 : _a.$systemDialogPages.value.push(
         dialogPage
       );
+      if (isSystemActionSheetDialogPage(dialogPage)) {
+        closePreActionSheet((_b = getPageInstanceByVm(parentPage.vm)) == null ? void 0 : _b.$systemDialogPages.value);
+      }
     }
   }
   const successOptions = {
     errMsg: "openDialogPage: ok",
     eventChannel: new EventChannel(0, options.events)
   };
-  (_b = options.success) == null ? void 0 : _b.call(options, successOptions);
-  (_c = options.complete) == null ? void 0 : _c.call(options, successOptions);
+  (_c = options.success) == null ? void 0 : _c.call(options, successOptions);
+  (_d = options.complete) == null ? void 0 : _d.call(options, successOptions);
   return dialogPage;
 };
 function triggerFailCallback$1(options, errMsg) {
@@ -17131,6 +17144,14 @@ function triggerFailCallback$1(options, errMsg) {
   (_a = options.fail) == null ? void 0 : _a.call(options, failOptions);
   (_b = options.complete) == null ? void 0 : _b.call(options, failOptions);
 }
+function closePreActionSheet(dialogPages) {
+  const actionSheets = dialogPages.filter(
+    (page) => isSystemActionSheetDialogPage(page)
+  );
+  if (actionSheets.length > 1) {
+    dialogPages.splice(dialogPages.indexOf(actionSheets[0]), 1);
+  }
+}
 const closeDialogPage = (options) => {
   var _a, _b, _c;
   const currentPages = getCurrentPages();
@@ -17142,7 +17163,7 @@ const closeDialogPage = (options) => {
   if (options == null ? void 0 : options.dialogPage) {
     const dialogPage = options == null ? void 0 : options.dialogPage;
     const parentPage = dialogPage.getParentPage();
-    if (!dialogPage.route.startsWith("uni:")) {
+    if (!isSystemDialogPage(dialogPage)) {
       if (parentPage && currentPages.indexOf(parentPage) !== -1) {
         const parentDialogPages = parentPage.getDialogPages();
         const index2 = parentDialogPages.indexOf(dialogPage);
@@ -17165,6 +17186,7 @@ const closeDialogPage = (options) => {
       const parentSystemDialogPages = (_a = getPageInstanceByVm(parentPage.vm)) == null ? void 0 : _a.$systemDialogPages.value;
       const index2 = parentSystemDialogPages.indexOf(dialogPage);
       parentSystemDialogPages.splice(index2, 1);
+      return;
     }
   } else {
     const dialogPages = currentPage.getDialogPages();
@@ -17219,6 +17241,19 @@ const showActionSheet2$1 = function(options) {
       uni.$off(readyEventName, null);
     }
   });
+};
+const hideActionSheet2$1 = () => {
+  var _a;
+  const page = getCurrentPage();
+  if (!page)
+    return;
+  const systemDialogPages = (_a = getPageInstanceByVm(page.vm)) == null ? void 0 : _a.$systemDialogPages.value;
+  for (let i = 0; i < systemDialogPages.length; i++) {
+    if (isSystemActionSheetDialogPage(systemDialogPages[i])) {
+      systemDialogPages.splice(i, 1);
+      return;
+    }
+  }
 };
 const _sfc_main$1 = {
   data() {
@@ -18320,11 +18355,14 @@ function createDialogPageVNode(dialogPages, type) {
     Fragment,
     null,
     renderList(dialogPages.value, (dialogPage) => {
+      const fullUrl = `${dialogPage.route}${stringifyQuery$1(
+        dialogPage.options
+      )}`;
       return openBlock(), createBlock(
         createVNode(
           dialogPage.$component,
           {
-            key: dialogPage.route,
+            key: fullUrl,
             style: {
               position: "fixed",
               "z-index": 999,
@@ -18333,10 +18371,8 @@ function createDialogPageVNode(dialogPages, type) {
               bottom: 0,
               left: 0
             },
-            type,
-            route: `${dialogPage.route}${stringifyQuery$1(
-              dialogPage.options
-            )}`
+            "data-type": type,
+            route: fullUrl
           },
           null
         )
@@ -18437,7 +18473,7 @@ function setupPage(comp) {
         var _a;
         {
           const pageInstance = getPageInstanceByChild(instance2);
-          if (pageInstance.attrs.type === "dialog") {
+          if (pageInstance.attrs["data-type"] === DIALOG_TAG) {
             const parentPage = ((_a = instance2.proxy) == null ? void 0 : _a.$page).getParentPage();
             const parentPageInstance = parentPage ? getPageInstanceByVm(parentPage.vm) : null;
             if (parentPageInstance) {
@@ -18471,7 +18507,7 @@ function setupPage(comp) {
           instance2.__isVisible = false;
           {
             const pageInstance = getPageInstanceByChild(instance2);
-            if (pageInstance.attrs.type !== "dialog") {
+            if (pageInstance.attrs["data-type"] !== DIALOG_TAG) {
               const { onHide } = instance2;
               onHide && invokeArrayFns$1(onHide);
             }
@@ -18620,7 +18656,7 @@ const registerShowActionSheetPageOnce = once(() => {
   }
   const __uniPage = setupPage(showActionSheetPage);
   __uniRoutes.push({
-    path: "uni:actionSheet",
+    path: SYSTEM_DIALOG_ACTION_SHEET_PAGE_PATH,
     component: {
       mpType: "page",
       setup() {
@@ -18633,13 +18669,16 @@ const registerShowActionSheetPageOnce = once(() => {
       isQuit: false,
       isEntry: false,
       navigationBar: {},
-      route: "uni:actionSheet"
+      route: SYSTEM_DIALOG_ACTION_SHEET_PAGE_PATH
     }
   });
 });
 const showActionSheet2 = (options) => {
   registerShowActionSheetPageOnce();
   return showActionSheet2$1(options);
+};
+const hideActionSheet2 = () => {
+  hideActionSheet2$1();
 };
 window.UniResizeObserver = window.ResizeObserver;
 const api = /* @__PURE__ */ Object.defineProperty({
@@ -18712,6 +18751,7 @@ const api = /* @__PURE__ */ Object.defineProperty({
   getTopWindowStyle,
   getVideoInfo,
   getWindowInfo,
+  hideActionSheet2,
   hideKeyboard,
   hideLeftWindow,
   hideLoading,
@@ -28421,6 +28461,7 @@ export {
   getLocale,
   getLocation,
   getNetworkType,
+  getPageInstanceByVm,
   getProvider,
   getPushClientId,
   getRealPath,
@@ -28440,6 +28481,7 @@ export {
   getTopWindowStyle,
   getVideoInfo,
   getWindowInfo,
+  hideActionSheet2,
   hideKeyboard,
   hideLeftWindow,
   hideLoading,
@@ -28452,6 +28494,7 @@ export {
   hideTopWindow,
   interceptors,
   invokePushCallback,
+  isSystemActionSheetDialogPage,
   loadFontFace,
   login,
   makePhoneCall,
