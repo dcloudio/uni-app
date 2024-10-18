@@ -1,24 +1,6 @@
 {
   "@dcloudio/uni-app-runtime": [
     [
-      "SetClipboardData"
-    ],
-    [
-      "SetClipboardDataSuccess"
-    ],
-    [
-      "SetClipboardDataOptions"
-    ],
-    [
-      "GetClipboardData"
-    ],
-    [
-      "GetClipboardDataSuccess"
-    ],
-    [
-      "GetClipboardDataOptions"
-    ],
-    [
       "SaveFileSuccess"
     ],
     [
@@ -556,6 +538,37 @@
       "initUniExtApi"
     ]
   ],
+  "@uni_modules/uni-addphonecontact": [
+    [
+      "addPhoneContact"
+    ]
+  ],
+  "@uni_modules/uni-clipboard": [
+    [
+      "SetClipboardData"
+    ],
+    [
+      "GetClipboardData"
+    ],
+    [
+      "SetClipboardDataOptions"
+    ],
+    [
+      "SetClipboardDataSuccess"
+    ],
+    [
+      "GetClipboardDataOptions"
+    ],
+    [
+      "GetClipboardDataSuccess"
+    ],
+    [
+      "getClipboardData"
+    ],
+    [
+      "setClipboardData"
+    ]
+  ],
   "@uni_modules/uni-facialrecognitionverify": [
     [
       "getFacialRecognitionMetaInfo"
@@ -575,6 +588,9 @@
     ]
   ],
   "@uni_modules/uni-push": [
+    [
+      "OnPushMessageCallbackResult"
+    ],
     [
       "getPushClientId"
     ],

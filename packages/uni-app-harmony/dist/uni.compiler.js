@@ -19,7 +19,7 @@ var StandaloneExtApis = [
 			"startFacialRecognitionVerify",
 			"getFacialRecognitionMetaInfo"
 		],
-		version: "1.0.1"
+		version: "1.0.0"
 	},
 	{
 		type: "extapi",
@@ -28,8 +28,27 @@ var StandaloneExtApis = [
 			"getPushClientId",
 			"onPushMessage",
 			"offPushMessage",
+			"getChannelManager",
+			"getPushChannelManager",
 			"createPushMessage",
 			"setAppBadgeNumber"
+		],
+		version: "1.0.0"
+	},
+	{
+		type: "extapi",
+		plugin: "uni-addPhoneContact",
+		apis: [
+			"addPhoneContact"
+		],
+		version: "1.0.0"
+	},
+	{
+		type: "extapi",
+		plugin: "uni-clipboard",
+		apis: [
+			"getClipboardData",
+			"setClipboardData"
 		],
 		version: "1.0.0"
 	},
