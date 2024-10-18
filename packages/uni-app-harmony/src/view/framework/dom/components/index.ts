@@ -36,6 +36,7 @@ import { UniLocationView } from './UniLocationView'
 import { UniCoverImage } from './UniCoverImage'
 import { UniCoverView } from './UniCoverView'
 import { UniLivePlayer } from './UniLivePlayer'
+import { UniAd } from './UniAd'
 
 export const BuiltInComponents = {
   '#text': UniTextNode,
@@ -70,6 +71,7 @@ export const BuiltInComponents = {
   CANVAS: UniCanvas,
   VIDEO: UniVideo,
   PICKER: UniPicker,
+  AD: UniAd,
   MAP: UniMap,
   'LOCATION-PICKER': UniLocationPicker,
   'LOCATION-VIEW': UniLocationView,
