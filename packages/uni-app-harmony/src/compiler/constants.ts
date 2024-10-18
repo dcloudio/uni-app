@@ -31,12 +31,4 @@ export const StandaloneExtApi: IStandaloneExtApi[] = [
     name: 'uni-push',
     type: 'extapi',
   },
-  {
-    name: 'uni-clipboard',
-    type: 'extapi',
-  },
-  {
-    name: 'uni-addPhoneContact',
-    type: 'extapi',
-  },
 ]
