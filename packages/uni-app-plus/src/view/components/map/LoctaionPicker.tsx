@@ -24,8 +24,7 @@ import {
   getMapInfo,
 } from '../../../helpers/location'
 import Map from './index'
-import { getJSONP } from '../../../helpers/getJSONP'
-import { getLocation } from './utils'
+import { getLocation, mapPlaceSearch } from './utils'
 
 const props = {
   latitude: {
@@ -104,9 +103,6 @@ function useList(state: State) {
     selectedIndex: selectedIndexRef,
     selected: selectedRef,
   })
-  const boundaryRef = computed(
-    () => `nearby(${state.latitude},${state.longitude},1000,1)`
-  )
   function pushData(array: any[]) {
     array.forEach((item) => {
       list.push({
@@ -163,33 +159,20 @@ function useList(state: State) {
         }
       )
     } else if (mapInfo.type === MapType.QQ) {
-      const url = state.keyword
-        ? `https://apis.map.qq.com/ws/place/v1/search?output=jsonp&key=${mapInfo.key}&boundary=${boundaryRef.value}&keyword=${state.keyword}&page_size=${listState.pageSize}&page_index=${listState.pageIndex}`
-        : `https://apis.map.qq.com/ws/geocoder/v1/?output=jsonp&key=${mapInfo.key}&location=${state.latitude},${state.longitude}&get_poi=1&poi_options=page_size=${listState.pageSize};page_index=${listState.pageIndex}`
-      // TODO 列表加载失败提示
-      getJSONP(
-        url,
-        {
-          callback: 'callback',
-        },
-        (res: any) => {
+      mapPlaceSearch({
+        keyword: state.keyword,
+        latitude: state.latitude,
+        longitude: state.longitude,
+        pageIndex: listState.pageIndex,
+        pageSize: listState.pageSize,
+      })
+        .then((pois) => {
+          pushData(pois as any[])
           listState.loading = false
-          if (state.keyword && 'data' in res && res.data.length) {
-            pushData(res.data)
-          } else if ('result' in res) {
-            const result = res.result
-            if (result.pois) {
-              pushData(result.pois)
-            }
-          }
-          if (list.length === listState.pageSize * listState.pageIndex) {
-            listState.hasNextPage = false
-          }
-        },
-        () => {
+        })
+        .catch((err) => {
           listState.loading = false
-        }
-      )
+        })
     } else if (mapInfo.type === MapType.AMAP) {
       window.AMap.plugin('AMap.PlaceSearch', function () {
         const placeSearch = new (window.AMap as any).PlaceSearch({

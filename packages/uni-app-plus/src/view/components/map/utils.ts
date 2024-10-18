@@ -14,3 +14,15 @@ export function getLocation(args = {}): Promise<Location> {
     })
   })
 }
+
+export function mapPlaceSearch(args = {}) {
+  return new Promise((resolve, reject) => {
+    UniViewJSBridge.invokeServiceMethod('mapPlaceSearch', args, (result) => {
+      if (result && result.errMsg) {
+        reject(result)
+      } else {
+        resolve(result)
+      }
+    })
+  })
+}
