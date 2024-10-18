@@ -8,20 +8,22 @@ import photoAccessHelper from '@ohos.file.photoAccessHelper';
 import inputMethod from '@ohos.inputMethod';
 import connection from '@ohos.net.connection';
 import webSocket from '@ohos.net.webSocket';
+import pasteboard from '@ohos.pasteboard';
 import call from '@ohos.telephony.call';
 import radio from '@ohos.telephony.radio';
 import webview from '@ohos.web.webview';
 import { BusinessError as BusinessError1 } from '@kit.BasicServicesKit';
 import { BusinessError as BusinessError10 } from '@ohos.base';
 import { BusinessError as BusinessError11 } from '@ohos.base';
+import { BusinessError as BusinessError12 } from '@ohos.base';
 import { BusinessError as BusinessError2 } from '@ohos.base';
-import { BusinessError as BusinessError3 } from '@kit.BasicServicesKit';
+import { BusinessError as BusinessError3 } from '@ohos.base';
 import { BusinessError as BusinessError4 } from '@kit.BasicServicesKit';
 import { BusinessError as BusinessError5 } from '@kit.BasicServicesKit';
 import { BusinessError as BusinessError6 } from '@kit.BasicServicesKit';
 import { BusinessError as BusinessError7 } from '@kit.BasicServicesKit';
 import { BusinessError as BusinessError8 } from '@kit.BasicServicesKit';
-import { BusinessError as BusinessError9 } from '@ohos.base';
+import { BusinessError as BusinessError9 } from '@kit.BasicServicesKit';
 import { BusinessError } from '@kit.BasicServicesKit';
 import { CompressorResponseCode, CompressorResponse, VideoCompressor, CompressQuality } from '@ohos/videocompressor';
 import { Emitter as Emitter5, getCurrentMP as getCurrentMP4 } from "@dcloudio/uni-mp-sdk";
@@ -34,13 +36,14 @@ import { ListFileOptions } from '@ohos.file.fs';
 import { ReadOptions } from '@ohos.file.fs';
 import { UTSHarmony as UTSHarmony1 } from "@dcloudio/uni-mp-sdk";
 import { UTSHarmony as UTSHarmony10 } from "@dcloudio/uni-mp-sdk";
+import { UTSHarmony as UTSHarmony11 } from "@dcloudio/uni-mp-sdk";
 import { UTSHarmony as UTSHarmony2 } from "@dcloudio/uni-mp-sdk";
 import { UTSHarmony as UTSHarmony3 } from "@dcloudio/uni-mp-sdk";
-import { UTSHarmony as UTSHarmony4, getDeviceId } from "@dcloudio/uni-mp-sdk";
-import { UTSHarmony as UTSHarmony5, Emitter as Emitter1, onNativePageReady } from "@dcloudio/uni-mp-sdk";
-import { UTSHarmony as UTSHarmony6 } from "@dcloudio/uni-mp-sdk";
-import { UTSHarmony as UTSHarmony7, getWindowInfo as internalGetWindowInfo, getDeviceId as getDeviceId1 } from "@dcloudio/uni-mp-sdk";
-import { UTSHarmony as UTSHarmony8 } from "@dcloudio/uni-mp-sdk";
+import { UTSHarmony as UTSHarmony4 } from "@dcloudio/uni-mp-sdk";
+import { UTSHarmony as UTSHarmony5, getDeviceId } from "@dcloudio/uni-mp-sdk";
+import { UTSHarmony as UTSHarmony6, Emitter as Emitter1, onNativePageReady } from "@dcloudio/uni-mp-sdk";
+import { UTSHarmony as UTSHarmony7 } from "@dcloudio/uni-mp-sdk";
+import { UTSHarmony as UTSHarmony8, getWindowInfo as internalGetWindowInfo, getDeviceId as getDeviceId1 } from "@dcloudio/uni-mp-sdk";
 import { UTSHarmony as UTSHarmony9 } from "@dcloudio/uni-mp-sdk";
 import { UTSObject, UTSJSONObject } from "@dcloudio/uts-harmony";
 import { UniError, IUniError, UniProvider, string, AsyncApiSuccessResult, AsyncApiResult, ApiOptions, ProtocolOptions, defineAsyncApi, ApiExecutor, ApiError, defineSyncApi, getUniProviders, defineTaskApi, getUniProvider } from "@dcloudio/uni-app-harmony";
@@ -57,7 +60,6 @@ import bundleManager2 from '@ohos.bundle.bundleManager';
 import { camera } from '@kit.CameraKit';
 import { cameraPicker as cameraPicker1 } from '@kit.CameraKit';
 import { cameraPicker } from '@kit.CameraKit';
-import { clipboard } from "@dcloudio/uni-mp-sdk";
 import common1 from '@ohos.app.ability.common';
 import common2 from '@ohos.app.ability.common';
 import common3 from '@ohos.app.ability.common';
@@ -146,15 +148,8 @@ import { window } from '@kit.ArkUI';
 type AddPhoneContact = (options: AddPhoneContactOptions) => void;
 class AddPhoneContactSuccess extends UTSObject {
 }
-class UniError1 extends UTSObject {
-    errSubject!: string;
-    errCode!: number;
-    errMsg!: string;
-    data: object | null = null;
-    cause: Object | null = null;
-}
 type AddPhoneContactSuccessCallback = (result: AddPhoneContactSuccess) => void;
-type AddPhoneContactFail = UniError1;
+type AddPhoneContactFail = UniError;
 type AddPhoneContactFailCallback = (result: AddPhoneContactFail) => void;
 type AddPhoneContactComplete = Object;
 type AddPhoneContactCompleteCallback = (result: AddPhoneContactComplete) => void;
@@ -205,8 +200,8 @@ class StartSoterAuthenticationSuccess extends UTSObject {
     errMsg!: string;
 }
 type StartSoterAuthenticationSuccessCallback = (result: StartSoterAuthenticationSuccess) => void;
-type StartSoterAuthenticationFail = UniError2;
-class UniError2 extends UTSObject {
+type StartSoterAuthenticationFail = UniError1;
+class UniError1 extends UTSObject {
     errSubject!: string;
     errCode!: number;
     errMsg!: string;
@@ -230,7 +225,7 @@ class CheckIsSupportSoterAuthenticationSuccess extends UTSObject {
     errMsg!: string;
 }
 type CheckIsSupportSoterAuthenticationSuccessCallback = (result: CheckIsSupportSoterAuthenticationSuccess) => void;
-type CheckIsSupportSoterAuthenticationFail = UniError2;
+type CheckIsSupportSoterAuthenticationFail = UniError1;
 type CheckIsSupportSoterAuthenticationFailCallback = (result: CheckIsSupportSoterAuthenticationFail) => void;
 type CheckIsSupportSoterAuthenticationComplete = Object;
 type CheckIsSupportSoterAuthenticationCompleteCallback = (result: CheckIsSupportSoterAuthenticationComplete) => void;
@@ -245,7 +240,7 @@ class CheckIsSoterEnrolledInDeviceSuccess extends UTSObject {
     errMsg!: string;
 }
 type CheckIsSoterEnrolledInDeviceSuccessCallback = (result: CheckIsSoterEnrolledInDeviceSuccess) => void;
-type CheckIsSoterEnrolledInDeviceFail = UniError2;
+type CheckIsSoterEnrolledInDeviceFail = UniError1;
 type CheckIsSoterEnrolledInDeviceFailCallback = (result: CheckIsSoterEnrolledInDeviceFail) => void;
 type CheckIsSoterEnrolledInDeviceComplete = Object;
 type CheckIsSoterEnrolledInDeviceCompleteCallback = (result: CheckIsSoterEnrolledInDeviceComplete) => void;
@@ -284,6 +279,11 @@ export class GetClipboardDataOptions extends UTSObject {
     fail: GetClipboardDataFailCallback | null = null;
     complete: GetClipboardDataCompleteCallback | null = null;
 }
+class ClipboardCallbackOptions extends UTSObject {
+    data!: string;
+    result!: 'success' | 'fail';
+}
+type ClipboardCallback = (res: ClipboardCallbackOptions) => void;
 interface ClipboardModuleGetStringOptions {
     result: string;
     data: string;
@@ -2656,8 +2656,56 @@ export function initUniExtApi() {
             }
         ]
     ]);
+    const getString = (callback: ClipboardCallback)=>{
+        const systemPasteboard: pasteboard.SystemPasteboard = pasteboard.getSystemPasteboard();
+        UTSHarmony2.requestSystemPermission([
+            'ohos.permission.READ_PASTEBOARD'
+        ], (allRight: boolean)=>{
+            if (allRight) {
+                const pasteData = systemPasteboard.getDataSync();
+                try {
+                    const text: string = pasteData.getPrimaryText();
+                    callback({
+                        data: text,
+                        result: 'success'
+                    } as ClipboardCallbackOptions);
+                } catch (err) {
+                    callback({
+                        data: (err as BusinessError2<void>).message,
+                        result: 'fail'
+                    } as ClipboardCallbackOptions);
+                }
+            } else {
+                callback({
+                    data: 'Permission denied',
+                    result: 'fail'
+                } as ClipboardCallbackOptions);
+            }
+        }, ()=>{
+            callback({
+                data: 'Permission denied',
+                result: 'fail'
+            } as ClipboardCallbackOptions);
+        });
+    };
+    const setString = (data: string)=>{
+        const pasteData: pasteboard.PasteData = pasteboard.createData(pasteboard.MIMETYPE_TEXT_PLAIN, data);
+        const systemPasteboard: pasteboard.SystemPasteboard = pasteboard.getSystemPasteboard();
+        try {
+            systemPasteboard.setDataSync(pasteData);
+            return {
+                data,
+                result: 'success'
+            } as ClipboardCallbackOptions;
+        } catch (err) {
+            return {
+                data: (err as BusinessError2<void>).message,
+                result: 'fail'
+            } as ClipboardCallbackOptions;
+        }
+    };
     const getClipboardData: GetClipboardData = defineAsyncApi<GetClipboardDataOptions, GetClipboardDataSuccess>(API_GET_CLIPBOARD_DATA, (_: GetClipboardDataOptions, res: ApiExecutor<GetClipboardDataSuccess>)=>{
-        clipboard.getString((ret: ClipboardModuleGetStringOptions)=>{
+        getString((ret: ClipboardModuleGetStringOptions)=>{
             if (ret.result === 'success') {
                 res.resolve({
                     data: ret.data
@@ -2668,7 +2716,7 @@ export function initUniExtApi() {
         });
     }) as GetClipboardData;
     const setClipboardData: SetClipboardData = defineAsyncApi<SetClipboardDataOptions, SetClipboardDataSuccess>(API_SET_CLIPBOARD_DATA, (options: SetClipboardDataOptions, res: ApiExecutor<SetClipboardDataSuccess>)=>{
-        clipboard.setString(options.data);
+        setString(options.data);
         res.resolve();
     }, SetClipboardDataProtocol, SetClipboardDataApiOptions) as SetClipboardData;
     const API_CREATE_INNER_AUDIO_CONTEXT = 'createInnerAudioContext';
@@ -3145,7 +3193,7 @@ export function initUniExtApi() {
     }) as $Emit;
     const API_EXIT = 'exit';
     const exit: Exit = defineSyncApi<void>(API_EXIT, ()=>{
-        UTSHarmony2.exit();
+        UTSHarmony3.exit();
     }) as Exit;
     const API_SAVE_FILE = 'saveFile';
     const API_GET_FILE_INFO = 'getFileInfo';
@@ -3413,20 +3461,20 @@ export function initUniExtApi() {
     };
     const getBundleInfo = getBundleInfoOnce();
     const getAppBaseInfo: GetAppBaseInfo = defineSyncApi<GetAppBaseInfoResult>(API_GET_APP_BASE_INFO, (): GetAppBaseInfoResult =>{
-        const appVersion: IAppBaseInfoAppVersion = UTSHarmony3.getAppVersion();
+        const appVersion: IAppBaseInfoAppVersion = UTSHarmony4.getAppVersion();
         const appLanguage = I18n.System.getAppPreferredLanguage();
-        const uniCompilerVersion: string = UTSHarmony3.getUniCompilerVersion();
-        const uniRuntimeVersion: string = UTSHarmony3.getUniRuntimeVersion();
+        const uniCompilerVersion: string = UTSHarmony4.getUniCompilerVersion();
+        const uniRuntimeVersion: string = UTSHarmony4.getUniRuntimeVersion();
         return {
-            appId: UTSHarmony3.getAppId() as string,
+            appId: UTSHarmony4.getAppId() as string,
             appLanguage,
-            appName: UTSHarmony3.getAppName() as string,
-            appTheme: UTSHarmony3.getAppTheme() as string,
+            appName: UTSHarmony4.getAppName() as string,
+            appTheme: UTSHarmony4.getAppTheme() as string,
             appVersion: appVersion.name,
             appVersionCode: appVersion.code,
             appWgtVersion: appVersion.name,
             hostLanguage: I18n.System.getSystemLanguage(),
-            isUniAppX: UTSHarmony3.isUniAppX() as boolean,
+            isUniAppX: UTSHarmony4.isUniAppX() as boolean,
             packageName: getBundleInfo().name,
             uniCompilerVersion: uniCompilerVersion,
             uniCompilerVersionCode: parseFloat(uniCompilerVersion),
@@ -3612,14 +3660,14 @@ export function initUniExtApi() {
             return backgroundTaskManager.startBackgroundRunning(getAbilityContext1()!, backgroundTaskManager.BackgroundMode.AUDIO_PLAYBACK, wantAgentObj);
         }).then(()=>{
             console.debug('[getBackgroundAudioManager]  start bg operation succeeded');
-        }).catch((err: BusinessError2)=>{
+        }).catch((err: BusinessError3)=>{
             audioPlayerCallback.error(new AudioPlayerError1(err.message, err.code));
         });
     };
     const stopBackgroundTask = ()=>{
         backgroundTaskManager.stopBackgroundRunning(getAbilityContext1()!).then(()=>{
             console.debug('[getBackgroundAudioManager]  stop operation succeeded');
-        }).catch((err: BusinessError2)=>{
+        }).catch((err: BusinessError3)=>{
             audioPlayerCallback.error(new AudioPlayerError1(err.message, err.code));
         });
     };
@@ -3740,7 +3788,7 @@ export function initUniExtApi() {
                     const fd = getFdFromUriOrSandBoxPath1(value);
                     path = `fd://${fd}`;
                 } catch (err) {
-                    audioPlayerCallback.error(new AudioPlayerError1((err as BusinessError2).message, (err as BusinessError2).code));
+                    audioPlayerCallback.error(new AudioPlayerError1((err as BusinessError3).message, (err as BusinessError3).code));
                 }
             }
             if (BackgroundAudioManagerImpl.audioPlayer.src && path !== BackgroundAudioManagerImpl.audioPlayer.src) {
@@ -3953,7 +4001,7 @@ export function initUniExtApi() {
             devicePixelRatio: vp2px(1),
             deviceType: parseDeviceType(deviceInfo.deviceType),
             osLanguage: I18n1.System.getSystemLanguage(),
-            osTheme: UTSHarmony4.getOsTheme() as string,
+            osTheme: UTSHarmony5.getOsTheme() as string,
             osVersion: deviceInfo.majorVersion + '.' + deviceInfo.seniorVersion + '.' + deviceInfo.featureVersion + '.' + deviceInfo.buildVersion,
             osName: 'harmonyos',
             platform: 'harmonyos',
@@ -3996,7 +4044,7 @@ export function initUniExtApi() {
     };
     const networkGetType = ()=>{
         return new Promise<number>((resolve, reject)=>{
-            UTSHarmony5.requestSystemPermission(PERMISSIONS1, (allRight: boolean)=>{
+            UTSHarmony6.requestSystemPermission(PERMISSIONS1, (allRight: boolean)=>{
                 if (allRight) {
                     try {
                         radio.getPrimarySlotId().then((slotId: number)=>radio.getSignalInformationSync(slotId)).then((signalInformation: Array<radio.SignalInformation>)=>{
@@ -4008,7 +4056,7 @@ export function initUniExtApi() {
                             }
                         });
                     } catch (error) {
-                        reject(error as BusinessError3);
+                        reject(error as BusinessError4);
                     }
                 } else {
                     reject('permission denied');
@@ -4030,7 +4078,7 @@ export function initUniExtApi() {
     }
     const getCurrentType = ()=>{
         return new Promise<number>((resolve, reject)=>{
-            UTSHarmony5.requestSystemPermission(PERMISSIONS1, (allRight: boolean)=>{
+            UTSHarmony6.requestSystemPermission(PERMISSIONS1, (allRight: boolean)=>{
                 if (allRight) {
                     try {
                         connection.getDefaultNet().then((data: connection.NetHandle)=>{
@@ -4050,7 +4098,7 @@ export function initUniExtApi() {
                                             resolve(NetworkinfoType.UNKNOW);
                                         }
                                     }
-                                }).catch((err: BusinessError3)=>{
+                                }).catch((err: BusinessError4)=>{
                                     reject(err);
                                 });
                             }
@@ -4073,9 +4121,9 @@ export function initUniExtApi() {
             if (!Network.netConnection) {
                 Network.netConnection = connection.createNetConnection();
             }
-            UTSHarmony5.requestSystemPermission(PERMISSIONS1, (allRight: boolean)=>{
+            UTSHarmony6.requestSystemPermission(PERMISSIONS1, (allRight: boolean)=>{
                 if (allRight && Network.netConnection) {
-                    Network.netConnection.register((err: BusinessError3)=>{});
+                    Network.netConnection.register((err: BusinessError4)=>{});
                     Network.netConnection.on('netCapabilitiesChange', (capability: connection.NetCapabilityInfo)=>{
                         const NetBearType = capability?.netCap?.bearerTypes[0];
                         let networkType = '';
@@ -4114,7 +4162,7 @@ export function initUniExtApi() {
             res.resolve({
                 networkType: NetworkinfoType[type].toLocaleLowerCase()
             } as GetNetworkTypeSuccess);
-        }).catch((err: BusinessError3)=>{
+        }).catch((err: BusinessError4)=>{
             res.reject(err.message);
         });
     }) as GetNetworkType;
@@ -4126,10 +4174,18 @@ export function initUniExtApi() {
     };
     const UniGetNetworkTypeEventEmitter = new Emitter1() as IUniGetNetworkTypeEventEmitter;
     const onNetworkStatusChange: OnNetworkStatusChange = (callback: Function)=>{
-        UniGetNetworkTypeEventEmitter.on('networkStatusChange', callback);
+        UTSHarmony6.requestSystemPermission(PERMISSIONS1, (allRight: boolean)=>{
+            if (allRight) {
+                UniGetNetworkTypeEventEmitter.on('networkStatusChange', callback);
+            }
+        });
     };
     const offNetworkStatusChange: OffNetworkStatusChange = (callback: Function)=>{
-        UniGetNetworkTypeEventEmitter.off('networkStatusChange', callback);
+        UTSHarmony6.requestSystemPermission(PERMISSIONS1, (allRight: boolean)=>{
+            if (allRight) {
+                UniGetNetworkTypeEventEmitter.off('networkStatusChange', callback);
+            }
+        });
     };
     const API_GET_PROVIDER = 'getProvider';
     const API_GET_PROVIDER_SYNC = 'getProviderSync';
@@ -4289,7 +4345,7 @@ export function initUniExtApi() {
                             break;
                     }
                 });
-                this.avRecorder.on('error', (err: BusinessError4)=>{
+                this.avRecorder.on('error', (err: BusinessError5)=>{
                     onRecorderStateChange('error', {
                         errMsg: `${err.message} ${err.code}`
                     } as StateChangeRes);
@@ -4323,7 +4379,7 @@ export function initUniExtApi() {
                 profile: audioProfile,
                 url: 'fd://' + file.fd
             };
-            UTSHarmony6.requestSystemPermission([
+            UTSHarmony7.requestSystemPermission([
                 'ohos.permission.MICROPHONE'
             ], async (allRight: boolean)=>{
                 if (allRight) {
@@ -4476,11 +4532,11 @@ export function initUniExtApi() {
         return internalGetWindowInfo() as GetWindowInfoResult;
     }) as GetWindowInfo;
     const internalGetSystemInfo = (): GetSystemInfoResult =>{
-        const appVersion: ISystemInfoAppVersion = UTSHarmony7.getAppVersion();
+        const appVersion: ISystemInfoAppVersion = UTSHarmony8.getAppVersion();
         const appLanguage = I18n2.System.getAppPreferredLanguage();
-        const uniCompilerVersion: string = UTSHarmony7.getUniCompilerVersion();
+        const uniCompilerVersion: string = UTSHarmony8.getUniCompilerVersion();
         const uniCompilerVersionCode: number = parseFloat(uniCompilerVersion);
-        const uniRuntimeVersion: string = UTSHarmony7.getUniRuntimeVersion();
+        const uniRuntimeVersion: string = UTSHarmony8.getUniRuntimeVersion();
         const windowInfo = internalGetWindowInfo() as GetWindowInfoResult;
         const pixelRatio = windowInfo.pixelRatio;
         const safeArea = windowInfo.safeArea;
@@ -4493,10 +4549,10 @@ export function initUniExtApi() {
         const windowTop = windowInfo.windowTop;
         const windowWidth = windowInfo.windowWidth;
         return {
-            appId: UTSHarmony7.getAppId() as string,
+            appId: UTSHarmony8.getAppId() as string,
             appLanguage,
-            appName: UTSHarmony7.getAppName() as string,
-            appTheme: UTSHarmony7.getAppTheme() as string,
+            appName: UTSHarmony8.getAppName() as string,
+            appTheme: UTSHarmony8.getAppTheme() as string,
             appVersion: appVersion.name,
             appVersionCode: appVersion.code,
             appWgtVersion: appVersion.name,
@@ -4512,7 +4568,7 @@ export function initUniExtApi() {
             devicePixelRatio: vp2px(1),
             deviceType: parseDeviceType1(deviceInfo1.deviceType),
             osLanguage: I18n2.System.getSystemLanguage(),
-            osTheme: UTSHarmony7.getOsTheme() as string,
+            osTheme: UTSHarmony8.getOsTheme() as string,
             osVersion: deviceInfo1.majorVersion + '.' + deviceInfo1.seniorVersion + '.' + deviceInfo1.featureVersion + '.' + deviceInfo1.buildVersion,
             osName: 'harmonyos',
             romName: deviceInfo1.distributionOSName,
@@ -4564,7 +4620,7 @@ export function initUniExtApi() {
         try {
             if (access.getState() === access.BluetoothState.STATE_ON) res.bluetoothEnabled = true;
         } catch (err) {
-            res.bluetoothError = (err as BusinessError5).message;
+            res.bluetoothError = (err as BusinessError6).message;
         }
         try {
             res.locationEnabled = geoLocationManager.isLocationEnabled();
@@ -4572,7 +4628,7 @@ export function initUniExtApi() {
         try {
             res.wifiEnabled = wifiManager.isWifiActive();
         } catch (err) {
-            res.wifiError = (err as BusinessError5).message;
+            res.wifiError = (err as BusinessError6).message;
         }
         return res;
     }) as GetSystemSetting;
@@ -4603,7 +4659,7 @@ export function initUniExtApi() {
     const dial = (number: string, confirm = true)=>{
         if (!confirm && typeof call.dial === 'function') {
             return new Promise<void>((resolve, reject)=>{
-                UTSHarmony8.requestSystemPermission([
+                UTSHarmony9.requestSystemPermission([
                     'ohos.permission.PLACE_CALL'
                 ], (allRight: boolean)=>{
                     if (allRight) {
@@ -4624,7 +4680,7 @@ export function initUniExtApi() {
     const makePhoneCall: MakePhoneCall = defineAsyncApi<MakePhoneCallOptions, MakePhoneCallSuccess>(API_MAKE_PHONE_CALL, (options: MakePhoneCallOptions, res: ApiExecutor<MakePhoneCallSuccess>)=>{
         const dialRes = dial(options.phoneNumber) as Object as Promise<void>;
         if (isPromise(dialRes)) {
-            dialRes.then(res.resolve).catch((err: BusinessError6<void>)=>{
+            dialRes.then(res.resolve).catch((err: BusinessError7<void>)=>{
                 res.reject(err.message);
             });
         } else {
@@ -5227,7 +5283,7 @@ export function initUniExtApi() {
                 } as CompressImageSuccess);
             });
         } catch (error) {
-            executor.reject((error as BusinessError7).message);
+            executor.reject((error as BusinessError8).message);
         }
     }, CompressImageApiProtocol, CompressImageApiOptions) as CompressImage;
     const _getVideoInfo = async (uri: string): Promise<GetVideoInfoSuccess> =>{
@@ -5898,13 +5954,13 @@ export function initUniExtApi() {
                     } else {
                         executor.reject('cancel');
                     }
-                }).catch((err: BusinessError8)=>{
+                }).catch((err: BusinessError9)=>{
                     executor.reject(err.message, {
                         errCode: err.code
                     } as ApiError);
                 });
             } catch (error) {
-                let err: BusinessError8 = error as BusinessError8;
+                let err: BusinessError9 = error as BusinessError9;
                 executor.reject(err.message, {
                     errCode: err.code
                 } as ApiError);
@@ -5943,7 +5999,7 @@ export function initUniExtApi() {
                 ]
             } as ChooseMediaSuccess);
         } catch (error) {
-            const err = error as BusinessError9;
+            const err = error as BusinessError10;
             executor.reject(err.message, {
                 errCode: err.code
             } as ApiError);
@@ -6578,7 +6634,7 @@ export function initUniExtApi() {
     }, RequestApiProtocol, RequestApiOptions) as Request<Object>;
     const lookupExt = (contentType: string): string | undefined =>{
         const rawContentType = contentType.split(';')[0].trim().toLowerCase();
-        return (UTSHarmony9.getExtensionFromMimeType(rawContentType) as string | null) || undefined;
+        return (UTSHarmony10.getExtensionFromMimeType(rawContentType) as string | null) || undefined;
     };
     const lookupContentTypeWithUri = (uri: string): string | undefined =>{
         const uriArr = uri.split('.');
@@ -6586,7 +6642,7 @@ export function initUniExtApi() {
             return undefined;
         }
         const ext = uriArr.pop() as string;
-        return (UTSHarmony9.getMimeTypeFromExtension(ext) as string | null) || undefined;
+        return (UTSHarmony10.getMimeTypeFromExtension(ext) as string | null) || undefined;
     };
     class UploadTask1 implements UploadTask {
         private _uploadTask: IUploadTask;
@@ -6924,7 +6980,7 @@ export function initUniExtApi() {
             });
             executor.resolve();
         } catch (error) {
-            executor.reject((error as BusinessError10).message);
+            executor.reject((error as BusinessError11).message);
         }
     }, ConfigMTLSApiProtocol, ConfigMTLSApiOptions) as ConfigMTLS;
     const API_LOGIN = 'login';
@@ -7311,7 +7367,7 @@ export function initUniExtApi() {
             window.getUIContext().getPromptAction().showToast(showToastOptions);
             res.resolve({} as ShowToastSuccess);
         } catch (error) {
-            let message = (error as BusinessError11).message;
+            let message = (error as BusinessError12).message;
             res.reject(message);
         }
     }, ShowToastProtocol, ShowToastApiOptions) as ShowToast;
@@ -7424,7 +7480,7 @@ export function initUniExtApi() {
     const API_RPX2PX = 'rpx2px';
     const EPS = 1e-4;
     const rpx2px: Rpx2px = defineSyncApi<number>(API_RPX2PX, (number: number): number =>{
-        const windowStage: harmonyWindow.WindowStage = UTSHarmony10.getWindowStage();
+        const windowStage: harmonyWindow.WindowStage = UTSHarmony11.getWindowStage();
         let windowWidthInVp: number = 384;
         let windowWidthInPx: number = 1344;
         if (windowStage) {
