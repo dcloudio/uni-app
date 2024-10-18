@@ -258,6 +258,9 @@ export default /*#__PURE__*/ defineSystemComponent({
     }
 
     function onChoose(e) {
+      if (!listState.selected) {
+        return
+      }
       const event = new CustomEvent<any>('close', {
         detail: extend({}, listState.selected),
       })
