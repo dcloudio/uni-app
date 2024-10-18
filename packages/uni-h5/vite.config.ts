@@ -28,8 +28,8 @@ function resolve(file: string) {
 const FORMAT = process.env.FORMAT as 'es' | 'cjs'
 
 const isX = process.env.UNI_APP_X === 'true'
-// 暂不启用
-const isNewX = isX && !!process.env.UNI_APP_EXT_API_DIR
+// 直接启用
+const isNewX = isX //  && !!process.env.UNI_APP_EXT_API_DIR
 
 if (isNewX) {
   initPreContext('web', {}, 'web', true)

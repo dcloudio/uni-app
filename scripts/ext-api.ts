@@ -15,6 +15,14 @@ interface Options {
   platform: 'web' | 'app-ios'
 }
 
+if (!process.env.UNI_APP_EXT_API_DIR) {
+  const extApiDir = path.resolve(__dirname, '..', '..', 'uni-app', 'api')
+  if (fs.existsSync(extApiDir)) {
+    process.env.UNI_APP_EXT_API_DIR = extApiDir
+    console.log('UNI_APP_EXT_API_DIR', extApiDir)
+  }
+}
+
 export function uts2ts({ target, platform }: Options): Plugin {
   return {
     name: 'uts2ts',
