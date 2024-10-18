@@ -48,18 +48,18 @@ export function uts2ts({ target, platform }: Options): Plugin {
       }
     },
     buildStart() {
-      clearExtApiTempDir(target)
+      // clearExtApiTempDir(target)
     },
     buildEnd(error) {
       if (!error) {
-        clearExtApiTempDir(target)
+        // clearExtApiTempDir(target)
       }
     },
   }
 }
 
-export function resolveExtApiTempDir(target: string) {
-  return path.resolve(__dirname, '../packages', target, 'temp', 'uni-ext-api')
+export function resolveExtApiTempDir(_target: string) {
+  return path.resolve(__dirname, '..', 'uni-ext-api', 'uni_modules')
 }
 
 export function clearExtApiTempDir(target: Target) {
@@ -93,20 +93,28 @@ async function resolveExtApi(
     : path.resolve(extApiTempDir, name, 'utssdk', 'index.uts.ts')
 }
 
-async function checkExtApiDir(target: Target, name: string) {
-  const extApiTempDir = resolveExtApiTempDir(target)
+const extApiChecked = new Set<string>()
 
-  if (fs.existsSync(path.resolve(extApiTempDir, name))) {
+async function checkExtApiDir(target: Target, name: string) {
+  if (!process.env.UNI_APP_EXT_API_DIR) {
     return
   }
+  const extApiTempDir = resolveExtApiTempDir(target)
+  if (extApiChecked.has(name)) {
+    return
+  }
+  extApiChecked.add(name)
+  const currentExtApiDir = path.resolve(extApiTempDir, name)
+  if (fs.existsSync(currentExtApiDir)) {
+    fs.emptyDirSync(currentExtApiDir)
+  }
   const extApiDir = path.resolve(process.env.UNI_APP_EXT_API_DIR!)
-
   // 拷贝到临时目录
-  fs.copySync(path.resolve(extApiDir, name), path.resolve(extApiTempDir, name))
+  fs.copySync(path.resolve(extApiDir, name), currentExtApiDir)
   // 重命名后缀
   sync('**/*.uts', {
     absolute: true,
-    cwd: path.resolve(extApiTempDir, name),
+    cwd: currentExtApiDir,
   }).forEach((file) => {
     fs.renameSync(file, file + '.ts')
   })
