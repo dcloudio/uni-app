@@ -12,6 +12,11 @@ import { registerDialogPage } from '../../framework/page/register'
 import { getWebviewId } from '../../../service/framework/webview/utils'
 import type { UniDialogPage } from '@dcloudio/uni-app-x/types/page'
 import type { OpenDialogPageOptions } from '@dcloudio/uni-app-x/types/uni'
+import {
+  closeNativeDialogPage,
+  isSystemActionSheetDialogPage,
+  isSystemDialogPage,
+} from './utils'
 
 export const openDialogPage = (
   options: OpenDialogPageOptions
@@ -48,8 +53,8 @@ export const openDialogPage = (
   dialogPage.getParentPage = () => parentPage
   dialogPage.$component = null
   dialogPage.$disableEscBack = false
-  const isSystemDialog = options.url.startsWith('uni:')
-  if (!isSystemDialog) {
+  const systemDialog = isSystemDialogPage(dialogPage)
+  if (!systemDialog) {
     if (!parentPage) {
       homeDialogPages.push(dialogPage)
     } else {
@@ -62,11 +67,17 @@ export const openDialogPage = (
   } else {
     if (!parentPage) {
       homeSystemDialogPages.push(dialogPage)
+      if (isSystemActionSheetDialogPage(dialogPage)) {
+        closePreActionSheet(homeSystemDialogPages)
+      }
     } else {
       if (!parentPage.vm.$systemDialogPages) {
         parentPage.vm.$systemDialogPages = []
       }
       parentPage.vm.$systemDialogPages.push(dialogPage)
+      if (isSystemActionSheetDialogPage(dialogPage)) {
+        closePreActionSheet(parentPage.vm.$systemDialogPages)
+      }
     }
   }
   // @ts-expect-error
@@ -88,6 +99,10 @@ export const openDialogPage = (
   )
   // @ts-expect-error
   dialogPage.__nativePageId = page.pageId
+  if (systemDialog) {
+    // @ts-expect-error
+    dialogPage.__nativeType = 'systemDialog'
+  }
 
   if (noAnimation) {
     callback(page)
@@ -130,4 +145,14 @@ function initAnimation(path: string, animationType?: string) {
     _animationType,
     meta.animationDuration || globalStyle.animationDuration || ANI_DURATION,
   ] as const
+}
+
+function closePreActionSheet(dialogPages: UniDialogPage[]) {
+  const actionSheets = dialogPages.filter((page): boolean =>
+    isSystemActionSheetDialogPage(page)
+  )
+  if (actionSheets.length > 1) {
+    closeNativeDialogPage(actionSheets[0])
+    dialogPages.splice(dialogPages.indexOf(actionSheets[0]), 1)
+  }
 }

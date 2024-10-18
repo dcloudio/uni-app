@@ -1,4 +1,4 @@
-import { normalizeStyles as normalizeStyles$1, addLeadingSlash, invokeArrayFns, parseQuery, Emitter, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, ON_ERROR, ON_SHOW, ON_HIDE, removeLeadingSlash, getLen, EventChannel, once, parseUrl, ON_UNLOAD, ON_READY, ON_PAGE_SCROLL, ON_PULL_DOWN_REFRESH, ON_REACH_BOTTOM, ON_RESIZE, ON_LAUNCH, ON_BACK_PRESS } from "@dcloudio/uni-shared";
+import { normalizeStyles as normalizeStyles$1, addLeadingSlash, invokeArrayFns, parseQuery, Emitter, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, ON_ERROR, ON_SHOW, ON_HIDE, removeLeadingSlash, getLen, EventChannel, once, parseUrl, ON_LAUNCH, ON_UNLOAD, ON_READY, ON_PAGE_SCROLL, ON_PULL_DOWN_REFRESH, ON_REACH_BOTTOM, ON_RESIZE, ON_BACK_PRESS } from "@dcloudio/uni-shared";
 import { extend, isString, isPlainObject, isFunction as isFunction$1, isArray, isPromise, hasOwn, remove, invokeArrayFns as invokeArrayFns$1, capitalize, toTypeString, toRawType, parseStringStyle } from "@vue/shared";
 import { createVNode, render, injectHook, getCurrentInstance, openBlock, createElementBlock, createElementVNode, normalizeClass, normalizeStyle, toDisplayString, createCommentVNode, Fragment, renderList, defineComponent, warn, isInSSRComponentSetup, ref, watchEffect, watch, computed, onMounted, camelize, onUnmounted, reactive, provide, inject, nextTick } from "vue";
 function get$pageByPage(page) {
@@ -1489,251 +1489,6 @@ function useTheme() {
 }
 var homeDialogPages = [];
 var homeSystemDialogPages = [];
-function parsePageStyle(route) {
-  var style = /* @__PURE__ */ new Map();
-  var routeMeta = route.meta;
-  var routeKeys = [
-    "id",
-    "route",
-    "i18n",
-    "isQuit",
-    "isEntry",
-    "isTabBar",
-    "tabBarIndex",
-    "tabBarText",
-    "windowTop",
-    "topWindow",
-    "leftWindow",
-    "rightWindow",
-    "eventChannel",
-    // 忽略 initRouteMeta产生的 navigationBar 对象
-    "navigationBar"
-  ];
-  var navKeys = ["navigationBarTitleText", "navigationBarBackgroundColor", "navigationBarTextStyle", "navigationStyle"];
-  normalizePageStyles(routeMeta, __uniConfig.themeConfig, getAppThemeFallbackOS());
-  Object.keys(routeMeta).forEach((key) => {
-    if (!routeKeys.includes(key) && !navKeys.includes(key)) {
-      style.set(key, routeMeta[key]);
-    }
-  });
-  var navigationBar = {};
-  navKeys.forEach((key) => {
-    if (key in routeMeta) {
-      navigationBar[key] = routeMeta[key];
-    }
-  });
-  if (Object.keys(navigationBar).length > 0) {
-    if (navigationBar.navigationBarTextStyle !== "custom" && !routeMeta.isQuit && routeMeta.route !== __uniConfig.realEntryPagePath) {
-      style.set("navigationBarAutoBackButton", true);
-    }
-    Object.keys(navigationBar).forEach((key) => {
-      style.set(key, navigationBar[key]);
-    });
-  }
-  return style;
-}
-function registerPage(_ref, onCreated) {
-  var {
-    url,
-    path,
-    query,
-    openType,
-    webview,
-    nvuePageVm,
-    eventChannel
-  } = _ref;
-  var delay = arguments.length > 2 && arguments[2] !== void 0 ? arguments[2] : 0;
-  var id2 = genWebviewId();
-  var routeOptions = initRouteOptions(path, openType);
-  var pageStyle = parsePageStyle(routeOptions);
-  var nativePage2 = getPageManager().createPage(url, id2.toString(), pageStyle);
-  if (onCreated) {
-    onCreated(nativePage2);
-  }
-  routeOptions.meta.id = parseInt(nativePage2.pageId);
-  var route = path.slice(1);
-  var pageInstance = initPageInternalInstance(
-    openType,
-    url,
-    query,
-    routeOptions.meta,
-    eventChannel,
-    // TODO ThemeMode
-    "light"
-  );
-  function fn() {
-    var page = createVuePage(id2, route, query, pageInstance, {}, nativePage2);
-    var pages2 = getCurrentPages();
-    if (pages2.length === 1) {
-      if (homeDialogPages.length) {
-        var homePage = pages2[0];
-        homePage.vm.$.$dialogPages = homeDialogPages.map((dialogPage) => {
-          dialogPage.getParentPage = () => homePage;
-          return dialogPage;
-        });
-        homeDialogPages.length = 0;
-      }
-      if (homeSystemDialogPages.length) {
-        var _homePage = pages2[0];
-        _homePage.vm.$systemDialogPages = homeSystemDialogPages.map((dialogPage) => {
-          dialogPage.getParentPage = () => _homePage;
-          return dialogPage;
-        });
-        homeDialogPages.length = 0;
-      }
-    }
-    nativePage2.addPageEventListener(ON_POP_GESTURE, function(e) {
-      uni.navigateBack({
-        from: "popGesture",
-        fail(e2) {
-          if (e2.errMsg.endsWith("cancel")) {
-            nativePage2.show();
-          }
-        }
-      });
-    });
-    nativePage2.addPageEventListener(ON_UNLOAD, (_) => {
-      invokeHook(page, ON_UNLOAD);
-    });
-    nativePage2.addPageEventListener(ON_READY, (_) => {
-      invokePageReadyHooks(page);
-      invokeHook(page, ON_READY);
-    });
-    nativePage2.addPageEventListener(ON_PAGE_SCROLL, (arg) => {
-      invokeHook(page, ON_PAGE_SCROLL, {
-        scrollTop: arg.scrollTop
-      });
-    });
-    nativePage2.addPageEventListener(ON_PULL_DOWN_REFRESH, (_) => {
-      invokeHook(page, ON_PULL_DOWN_REFRESH);
-    });
-    nativePage2.addPageEventListener(ON_REACH_BOTTOM, (_) => {
-      invokeHook(page, ON_REACH_BOTTOM);
-    });
-    nativePage2.addPageEventListener(ON_RESIZE, (arg) => {
-      var args = {
-        deviceOrientation: arg.deviceOrientation,
-        size: {
-          windowWidth: arg.size.windowWidth,
-          windowHeight: arg.size.windowHeight,
-          screenWidth: arg.size.screenWidth,
-          screenHeight: arg.size.screenHeight
-        }
-      };
-      invokeHook(page, ON_RESIZE, args);
-    });
-    nativePage2.startRender();
-  }
-  if (delay) {
-    setTimeout(fn, delay);
-  } else {
-    fn();
-  }
-  return nativePage2;
-}
-function registerDialogPage(_ref2, dialogPage, onCreated) {
-  var {
-    url,
-    path,
-    query,
-    openType,
-    webview,
-    nvuePageVm,
-    eventChannel
-  } = _ref2;
-  var delay = arguments.length > 3 && arguments[3] !== void 0 ? arguments[3] : 0;
-  var id2 = genWebviewId();
-  var routeOptions = initRouteOptions(path, openType);
-  var pageStyle = /* @__PURE__ */ new Map([["navigationStyle", "custom"], ["backgroundColor", "transparent"]]);
-  var parentPage = dialogPage.getParentPage();
-  var nativePage2 = getPageManager().createDialogPage(
-    // @ts-expect-error
-    parentPage ? parentPage.__nativePageId : "",
-    id2.toString(),
-    url,
-    pageStyle
-  );
-  if (onCreated) {
-    onCreated(nativePage2);
-  }
-  routeOptions.meta.id = parseInt(nativePage2.pageId);
-  var route = path.startsWith("uni:") ? path : path.slice(1);
-  var pageInstance = initPageInternalInstance(
-    openType,
-    url,
-    query,
-    routeOptions.meta,
-    eventChannel,
-    // TODO ThemeMode
-    "light"
-  );
-  function fn() {
-    var page = createVuePage(id2, route, query, pageInstance, {}, nativePage2);
-    dialogPage.vm = page;
-    dialogPage.$vm = page;
-    dialogPage.vm.$nativePage = nativePage2;
-    dialogPage.$vm.$nativePage = nativePage2;
-    page.$page = dialogPage;
-    nativePage2.addPageEventListener(ON_POP_GESTURE, function(e) {
-      uni.navigateBack({
-        from: "popGesture",
-        fail(e2) {
-          if (e2.errMsg.endsWith("cancel")) {
-            nativePage2.show();
-          }
-        }
-      });
-    });
-    nativePage2.addPageEventListener(ON_UNLOAD, (_) => {
-      invokeHook(page, ON_UNLOAD);
-    });
-    nativePage2.addPageEventListener(ON_READY, (_) => {
-      invokePageReadyHooks(page);
-      invokeHook(page, ON_READY);
-    });
-    nativePage2.addPageEventListener(ON_PAGE_SCROLL, (arg) => {
-      invokeHook(page, ON_PAGE_SCROLL, arg);
-    });
-    nativePage2.addPageEventListener(ON_PULL_DOWN_REFRESH, (_) => {
-      invokeHook(page, ON_PULL_DOWN_REFRESH);
-    });
-    nativePage2.addPageEventListener(ON_REACH_BOTTOM, (_) => {
-      invokeHook(page, ON_REACH_BOTTOM);
-    });
-    nativePage2.addPageEventListener(ON_RESIZE, (arg) => {
-      invokeHook(page, ON_RESIZE, arg);
-    });
-    nativePage2.startRender();
-  }
-  if (delay) {
-    setTimeout(fn, delay);
-  } else {
-    fn();
-  }
-  return nativePage2;
-}
-function createVuePage(__pageId, __pagePath, __pageQuery, __pageInstance, pageOptions, nativePage2) {
-  var pageNode = nativePage2.document.body;
-  var app = getVueApp();
-  var component = pagesMap.get(__pagePath)();
-  var mountPage = (component2) => app.mountPage(component2, {
-    __pageId,
-    __pagePath,
-    __pageQuery,
-    __pageInstance
-  }, pageNode);
-  if (isPromise(component)) {
-    return component.then((component2) => mountPage(component2));
-  }
-  return mountPage(component);
-}
-function setStatusBarStyle() {
-  var page = getCurrentPage().vm;
-  if (page) {
-    var nativePage2 = page.$nativePage;
-    nativePage2.applyStatusBarStyle();
-  }
-}
 function initGlobalEvent(app) {
   app.addKeyEventListener(ON_BACK_BUTTON, () => {
     backbuttonListener();
@@ -1823,189 +1578,6 @@ function initAppLaunch(appVm) {
     loadFontFaceByStyles(appStyle, true);
   }
   useTheme();
-}
-var redirectTo = /* @__PURE__ */ defineAsyncApi(API_REDIRECT_TO, (_ref, _ref2) => {
-  var {
-    url
-  } = _ref;
-  var {
-    resolve,
-    reject
-  } = _ref2;
-  var {
-    path,
-    query
-  } = parseUrl(url);
-  if (!entryPageState.isReady) {
-    redirectToPagesBeforeEntryPages.push({
-      args: {
-        url,
-        path,
-        query
-      },
-      handler: {
-        resolve,
-        reject
-      }
-    });
-    return;
-  }
-  _redirectTo({
-    url,
-    path,
-    query
-  }).then(resolve).catch(reject);
-}, RedirectToProtocol, RedirectToOptions);
-function _redirectTo(_ref3) {
-  var {
-    url,
-    path,
-    query
-  } = _ref3;
-  var lastPage = getCurrentPage().vm;
-  return new Promise((resolve) => {
-    invokeAfterRouteHooks(API_REDIRECT_TO);
-    showWebview(registerPage({
-      url,
-      path,
-      query,
-      openType: isTabPage(lastPage) || getAllPages().length === 1 ? "reLaunch" : "redirectTo"
-    }), "none", 0, () => {
-      if (lastPage) {
-        removePages(lastPage);
-      }
-      resolve(void 0);
-      setStatusBarStyle();
-    });
-    invokeBeforeRouteHooks(API_REDIRECT_TO);
-  });
-}
-function removePages(currentPage) {
-  if (isTabPage(currentPage)) {
-    var pages2 = getAllPages().slice(0, -1);
-    pages2.forEach((page) => {
-      closePage(page, "none");
-    });
-  } else {
-    closePage(currentPage, "none");
-  }
-}
-var $reLaunch = (_ref, _ref2) => {
-  var {
-    url
-  } = _ref;
-  var {
-    resolve,
-    reject
-  } = _ref2;
-  var {
-    path,
-    query
-  } = parseUrl(url);
-  if (!entryPageState.isReady) {
-    reLaunchPagesBeforeEntryPages.push({
-      args: {
-        url
-      },
-      handler: {
-        resolve,
-        reject
-      }
-    });
-    return;
-  }
-  _reLaunch({
-    url,
-    path,
-    query
-  }).then(resolve).catch(reject);
-};
-function _reLaunch(_ref3) {
-  var {
-    url,
-    path,
-    query
-  } = _ref3;
-  return new Promise((resolve) => {
-    var pages2 = getAllPages().slice(0);
-    var selected = getTabIndex(path);
-    function callback() {
-      pages2.forEach((page) => closePage(page, "none"));
-      resolve(void 0);
-      setStatusBarStyle();
-    }
-    if (selected === -1) {
-      showWebview(registerPage({
-        url,
-        path,
-        query,
-        openType: "reLaunch"
-      }), "none", 0, callback);
-    } else {
-      switchSelect(selected, path, query, true, callback);
-    }
-  });
-}
-var reLaunch = /* @__PURE__ */ defineAsyncApi(API_RE_LAUNCH, $reLaunch, ReLaunchProtocol, ReLaunchOptions);
-function closePage(page, animationType, animationDuration) {
-  var dialogPages = page.$page.getDialogPages();
-  for (var i = dialogPages.length - 1; i >= 0; i--) {
-    closeNativeDialogPage(dialogPages[i]);
-  }
-  closeWebview(page.$nativePage, animationType, animationDuration);
-  removePage(page);
-  removeTabBarPage(page);
-}
-function updateEntryPageIsReady(path) {
-  if (!getCurrentPage() && path === addLeadingSlash(__uniConfig.entryPagePath)) {
-    entryPageState.isReady = true;
-  }
-}
-function handleBeforeEntryPageRoutes() {
-  if (entryPageState.handledBeforeEntryPageRoutes) {
-    return;
-  }
-  entryPageState.handledBeforeEntryPageRoutes = true;
-  var navigateToPages = [...navigateToPagesBeforeEntryPages];
-  navigateToPagesBeforeEntryPages.length = 0;
-  navigateToPages.forEach((_ref) => {
-    var {
-      args,
-      handler
-    } = _ref;
-    return $navigateTo(args, handler);
-  });
-  var switchTabPages = [...switchTabPagesBeforeEntryPages];
-  switchTabPagesBeforeEntryPages.length = 0;
-  switchTabPages.forEach((_ref2) => {
-    var {
-      args,
-      handler
-    } = _ref2;
-    return $switchTab(args, handler);
-  });
-  var redirectToPages = [...redirectToPagesBeforeEntryPages];
-  redirectToPagesBeforeEntryPages.length = 0;
-  redirectToPages.forEach((_ref3) => {
-    var {
-      args,
-      handler
-    } = _ref3;
-    return _redirectTo(args).then(handler.resolve).catch(handler.reject);
-  });
-  var reLaunchPages = [...reLaunchPagesBeforeEntryPages];
-  reLaunchPagesBeforeEntryPages.length = 0;
-  reLaunchPages.forEach((_ref4) => {
-    var {
-      args,
-      handler
-    } = _ref4;
-    return $reLaunch(args, handler);
-  });
-}
-function closeNativeDialogPage(dialogPage, animationType, callback) {
-  var webview = getNativeApp().pageManager.findPageById(dialogPage.$vm.$basePage.id + "");
-  closeWebview(webview, animationType || "none", 0, callback);
 }
 var $switchTab = (args, _ref) => {
   var {
@@ -2268,6 +1840,450 @@ function initEntryPagePath(app) {
     }
   }
 }
+function setStatusBarStyle() {
+  var page = getCurrentPage().vm;
+  if (page) {
+    var nativePage2 = page.$nativePage;
+    nativePage2.applyStatusBarStyle();
+  }
+}
+var redirectTo = /* @__PURE__ */ defineAsyncApi(API_REDIRECT_TO, (_ref, _ref2) => {
+  var {
+    url
+  } = _ref;
+  var {
+    resolve,
+    reject
+  } = _ref2;
+  var {
+    path,
+    query
+  } = parseUrl(url);
+  if (!entryPageState.isReady) {
+    redirectToPagesBeforeEntryPages.push({
+      args: {
+        url,
+        path,
+        query
+      },
+      handler: {
+        resolve,
+        reject
+      }
+    });
+    return;
+  }
+  _redirectTo({
+    url,
+    path,
+    query
+  }).then(resolve).catch(reject);
+}, RedirectToProtocol, RedirectToOptions);
+function _redirectTo(_ref3) {
+  var {
+    url,
+    path,
+    query
+  } = _ref3;
+  var lastPage = getCurrentPage().vm;
+  return new Promise((resolve) => {
+    invokeAfterRouteHooks(API_REDIRECT_TO);
+    showWebview(registerPage({
+      url,
+      path,
+      query,
+      openType: isTabPage(lastPage) || getAllPages().length === 1 ? "reLaunch" : "redirectTo"
+    }), "none", 0, () => {
+      if (lastPage) {
+        removePages(lastPage);
+      }
+      resolve(void 0);
+      setStatusBarStyle();
+    });
+    invokeBeforeRouteHooks(API_REDIRECT_TO);
+  });
+}
+function removePages(currentPage) {
+  if (isTabPage(currentPage)) {
+    var pages2 = getAllPages().slice(0, -1);
+    pages2.forEach((page) => {
+      closePage(page, "none");
+    });
+  } else {
+    closePage(currentPage, "none");
+  }
+}
+var $reLaunch = (_ref, _ref2) => {
+  var {
+    url
+  } = _ref;
+  var {
+    resolve,
+    reject
+  } = _ref2;
+  var {
+    path,
+    query
+  } = parseUrl(url);
+  if (!entryPageState.isReady) {
+    reLaunchPagesBeforeEntryPages.push({
+      args: {
+        url
+      },
+      handler: {
+        resolve,
+        reject
+      }
+    });
+    return;
+  }
+  _reLaunch({
+    url,
+    path,
+    query
+  }).then(resolve).catch(reject);
+};
+function _reLaunch(_ref3) {
+  var {
+    url,
+    path,
+    query
+  } = _ref3;
+  return new Promise((resolve) => {
+    var pages2 = getAllPages().slice(0);
+    var selected = getTabIndex(path);
+    function callback() {
+      pages2.forEach((page) => closePage(page, "none"));
+      resolve(void 0);
+      setStatusBarStyle();
+    }
+    if (selected === -1) {
+      showWebview(registerPage({
+        url,
+        path,
+        query,
+        openType: "reLaunch"
+      }), "none", 0, callback);
+    } else {
+      switchSelect(selected, path, query, true, callback);
+    }
+  });
+}
+var reLaunch = /* @__PURE__ */ defineAsyncApi(API_RE_LAUNCH, $reLaunch, ReLaunchProtocol, ReLaunchOptions);
+var SYSTEM_DIALOG_PAGE_PATH_STARTER = "uni:";
+var SYSTEM_DIALOG_ACTION_SHEET_PAGE_PATH = "uni:actionSheet";
+function closePage(page, animationType, animationDuration) {
+  var dialogPages = page.$page.getDialogPages();
+  for (var i = dialogPages.length - 1; i >= 0; i--) {
+    closeNativeDialogPage(dialogPages[i]);
+  }
+  var systemDialogPages = page.$systemDialogPages || [];
+  for (var _i = 0; _i < systemDialogPages.length; _i++) {
+    closeNativeDialogPage(systemDialogPages[_i]);
+  }
+  page.$systemDialogPages = [];
+  for (var _i2 = dialogPages.length - 1; _i2 >= 0; _i2--) {
+    closeNativeDialogPage(dialogPages[_i2]);
+  }
+  closeWebview(page.$nativePage, animationType, animationDuration);
+  removePage(page);
+  removeTabBarPage(page);
+}
+function updateEntryPageIsReady(path) {
+  if (!getCurrentPage() && path === addLeadingSlash(__uniConfig.entryPagePath)) {
+    entryPageState.isReady = true;
+  }
+}
+function handleBeforeEntryPageRoutes() {
+  if (entryPageState.handledBeforeEntryPageRoutes) {
+    return;
+  }
+  entryPageState.handledBeforeEntryPageRoutes = true;
+  var navigateToPages = [...navigateToPagesBeforeEntryPages];
+  navigateToPagesBeforeEntryPages.length = 0;
+  navigateToPages.forEach((_ref) => {
+    var {
+      args,
+      handler
+    } = _ref;
+    return $navigateTo(args, handler);
+  });
+  var switchTabPages = [...switchTabPagesBeforeEntryPages];
+  switchTabPagesBeforeEntryPages.length = 0;
+  switchTabPages.forEach((_ref2) => {
+    var {
+      args,
+      handler
+    } = _ref2;
+    return $switchTab(args, handler);
+  });
+  var redirectToPages = [...redirectToPagesBeforeEntryPages];
+  redirectToPagesBeforeEntryPages.length = 0;
+  redirectToPages.forEach((_ref3) => {
+    var {
+      args,
+      handler
+    } = _ref3;
+    return _redirectTo(args).then(handler.resolve).catch(handler.reject);
+  });
+  var reLaunchPages = [...reLaunchPagesBeforeEntryPages];
+  reLaunchPagesBeforeEntryPages.length = 0;
+  reLaunchPages.forEach((_ref4) => {
+    var {
+      args,
+      handler
+    } = _ref4;
+    return $reLaunch(args, handler);
+  });
+}
+function closeNativeDialogPage(dialogPage, animationType, callback) {
+  var webview = getNativeApp().pageManager.findPageById(dialogPage.$vm.$basePage.id + "");
+  closeWebview(webview, animationType || "none", 0, callback);
+}
+function isSystemDialogPage(page) {
+  return page.route.startsWith(SYSTEM_DIALOG_PAGE_PATH_STARTER);
+}
+function isSystemActionSheetDialogPage(page) {
+  return page.route.startsWith(SYSTEM_DIALOG_ACTION_SHEET_PAGE_PATH);
+}
+function parsePageStyle(route) {
+  var style = /* @__PURE__ */ new Map();
+  var routeMeta = route.meta;
+  var routeKeys = [
+    "id",
+    "route",
+    "i18n",
+    "isQuit",
+    "isEntry",
+    "isTabBar",
+    "tabBarIndex",
+    "tabBarText",
+    "windowTop",
+    "topWindow",
+    "leftWindow",
+    "rightWindow",
+    "eventChannel",
+    // 忽略 initRouteMeta产生的 navigationBar 对象
+    "navigationBar"
+  ];
+  var navKeys = ["navigationBarTitleText", "navigationBarBackgroundColor", "navigationBarTextStyle", "navigationStyle"];
+  normalizePageStyles(routeMeta, __uniConfig.themeConfig, getAppThemeFallbackOS());
+  Object.keys(routeMeta).forEach((key) => {
+    if (!routeKeys.includes(key) && !navKeys.includes(key)) {
+      style.set(key, routeMeta[key]);
+    }
+  });
+  var navigationBar = {};
+  navKeys.forEach((key) => {
+    if (key in routeMeta) {
+      navigationBar[key] = routeMeta[key];
+    }
+  });
+  if (Object.keys(navigationBar).length > 0) {
+    if (navigationBar.navigationBarTextStyle !== "custom" && !routeMeta.isQuit && routeMeta.route !== __uniConfig.realEntryPagePath) {
+      style.set("navigationBarAutoBackButton", true);
+    }
+    Object.keys(navigationBar).forEach((key) => {
+      style.set(key, navigationBar[key]);
+    });
+  }
+  return style;
+}
+function registerPage(_ref, onCreated) {
+  var {
+    url,
+    path,
+    query,
+    openType,
+    webview,
+    nvuePageVm,
+    eventChannel
+  } = _ref;
+  var delay = arguments.length > 2 && arguments[2] !== void 0 ? arguments[2] : 0;
+  var id2 = genWebviewId();
+  var routeOptions = initRouteOptions(path, openType);
+  var pageStyle = parsePageStyle(routeOptions);
+  var nativePage2 = getPageManager().createPage(url, id2.toString(), pageStyle);
+  if (onCreated) {
+    onCreated(nativePage2);
+  }
+  routeOptions.meta.id = parseInt(nativePage2.pageId);
+  var route = path.slice(1);
+  var pageInstance = initPageInternalInstance(
+    openType,
+    url,
+    query,
+    routeOptions.meta,
+    eventChannel,
+    // TODO ThemeMode
+    "light"
+  );
+  function fn() {
+    var page = createVuePage(id2, route, query, pageInstance, {}, nativePage2);
+    var pages2 = getCurrentPages();
+    if (pages2.length === 1) {
+      if (homeDialogPages.length) {
+        var homePage = pages2[0];
+        homePage.vm.$.$dialogPages = homeDialogPages.map((dialogPage) => {
+          dialogPage.getParentPage = () => homePage;
+          return dialogPage;
+        });
+        homeDialogPages.length = 0;
+      }
+      if (homeSystemDialogPages.length) {
+        var _homePage = pages2[0];
+        _homePage.vm.$systemDialogPages = homeSystemDialogPages.map((dialogPage) => {
+          dialogPage.getParentPage = () => _homePage;
+          return dialogPage;
+        });
+        homeDialogPages.length = 0;
+      }
+    }
+    nativePage2.addPageEventListener(ON_POP_GESTURE, function(e) {
+      uni.navigateBack({
+        from: "popGesture",
+        fail(e2) {
+          if (e2.errMsg.endsWith("cancel")) {
+            nativePage2.show();
+          }
+        }
+      });
+    });
+    nativePage2.addPageEventListener(ON_UNLOAD, (_) => {
+      invokeHook(page, ON_UNLOAD);
+    });
+    nativePage2.addPageEventListener(ON_READY, (_) => {
+      invokePageReadyHooks(page);
+      invokeHook(page, ON_READY);
+    });
+    nativePage2.addPageEventListener(ON_PAGE_SCROLL, (arg) => {
+      invokeHook(page, ON_PAGE_SCROLL, {
+        scrollTop: arg.scrollTop
+      });
+    });
+    nativePage2.addPageEventListener(ON_PULL_DOWN_REFRESH, (_) => {
+      invokeHook(page, ON_PULL_DOWN_REFRESH);
+    });
+    nativePage2.addPageEventListener(ON_REACH_BOTTOM, (_) => {
+      invokeHook(page, ON_REACH_BOTTOM);
+    });
+    nativePage2.addPageEventListener(ON_RESIZE, (arg) => {
+      var args = {
+        deviceOrientation: arg.deviceOrientation,
+        size: {
+          windowWidth: arg.size.windowWidth,
+          windowHeight: arg.size.windowHeight,
+          screenWidth: arg.size.screenWidth,
+          screenHeight: arg.size.screenHeight
+        }
+      };
+      invokeHook(page, ON_RESIZE, args);
+    });
+    nativePage2.startRender();
+  }
+  if (delay) {
+    setTimeout(fn, delay);
+  } else {
+    fn();
+  }
+  return nativePage2;
+}
+function registerDialogPage(_ref2, dialogPage, onCreated) {
+  var {
+    url,
+    path,
+    query,
+    openType,
+    webview,
+    nvuePageVm,
+    eventChannel
+  } = _ref2;
+  var delay = arguments.length > 3 && arguments[3] !== void 0 ? arguments[3] : 0;
+  var id2 = genWebviewId();
+  var routeOptions = initRouteOptions(path, openType);
+  var pageStyle = /* @__PURE__ */ new Map([["navigationStyle", "custom"], ["backgroundColor", "transparent"]]);
+  var parentPage = dialogPage.getParentPage();
+  var nativePage2 = getPageManager().createDialogPage(
+    // @ts-expect-error
+    parentPage ? parentPage.__nativePageId : "",
+    id2.toString(),
+    url,
+    pageStyle
+  );
+  if (onCreated) {
+    onCreated(nativePage2);
+  }
+  routeOptions.meta.id = parseInt(nativePage2.pageId);
+  var route = path.startsWith(SYSTEM_DIALOG_PAGE_PATH_STARTER) ? path : path.slice(1);
+  var pageInstance = initPageInternalInstance(
+    openType,
+    url,
+    query,
+    routeOptions.meta,
+    eventChannel,
+    // TODO ThemeMode
+    "light"
+  );
+  function fn() {
+    var page = createVuePage(id2, route, query, pageInstance, {}, nativePage2);
+    dialogPage.vm = page;
+    dialogPage.$vm = page;
+    dialogPage.vm.$nativePage = nativePage2;
+    dialogPage.$vm.$nativePage = nativePage2;
+    page.$page = dialogPage;
+    nativePage2.addPageEventListener(ON_POP_GESTURE, function(e) {
+      uni.navigateBack({
+        from: "popGesture",
+        fail(e2) {
+          if (e2.errMsg.endsWith("cancel")) {
+            nativePage2.show();
+          }
+        }
+      });
+    });
+    nativePage2.addPageEventListener(ON_UNLOAD, (_) => {
+      invokeHook(page, ON_UNLOAD);
+    });
+    nativePage2.addPageEventListener(ON_READY, (_) => {
+      invokePageReadyHooks(page);
+      invokeHook(page, ON_READY);
+    });
+    nativePage2.addPageEventListener(ON_PAGE_SCROLL, (arg) => {
+      invokeHook(page, ON_PAGE_SCROLL, arg);
+    });
+    nativePage2.addPageEventListener(ON_PULL_DOWN_REFRESH, (_) => {
+      invokeHook(page, ON_PULL_DOWN_REFRESH);
+    });
+    nativePage2.addPageEventListener(ON_REACH_BOTTOM, (_) => {
+      invokeHook(page, ON_REACH_BOTTOM);
+    });
+    nativePage2.addPageEventListener(ON_RESIZE, (arg) => {
+      invokeHook(page, ON_RESIZE, arg);
+    });
+    nativePage2.startRender();
+  }
+  if (delay) {
+    setTimeout(fn, delay);
+  } else {
+    fn();
+  }
+  return nativePage2;
+}
+function createVuePage(__pageId, __pagePath, __pageQuery, __pageInstance, pageOptions, nativePage2) {
+  var pageNode = nativePage2.document.body;
+  var app = getVueApp();
+  var component = pagesMap.get(__pagePath)();
+  var mountPage = (component2) => app.mountPage(component2, {
+    __pageId,
+    __pagePath,
+    __pageQuery,
+    __pageInstance
+  }, pageNode);
+  if (isPromise(component)) {
+    return component.then((component2) => mountPage(component2));
+  }
+  return mountPage(component);
+}
 var $navigateTo = (args, _ref) => {
   var {
     resolve,
@@ -2461,6 +2477,11 @@ function back(delta, animationType, animationDuration) {
       invokeHook(dialogPages[i - 1].$vm, ON_SHOW);
     }
   }
+  var systemDialogPages = currentPage.$systemDialogPages || [];
+  for (var _i = 0; _i < systemDialogPages.length; _i++) {
+    closeNativeDialogPage(systemDialogPages[_i]);
+  }
+  currentPage.$systemDialogPages = [];
   backPage(webview);
 }
 var openDialogPage = (options) => {
@@ -2501,8 +2522,8 @@ var openDialogPage = (options) => {
   dialogPage.getParentPage = () => parentPage;
   dialogPage.$component = null;
   dialogPage.$disableEscBack = false;
-  var isSystemDialog = options.url.startsWith("uni:");
-  if (!isSystemDialog) {
+  var systemDialog = isSystemDialogPage(dialogPage);
+  if (!systemDialog) {
     if (!parentPage) {
       homeDialogPages.push(dialogPage);
     } else {
@@ -2515,11 +2536,17 @@ var openDialogPage = (options) => {
   } else {
     if (!parentPage) {
       homeSystemDialogPages.push(dialogPage);
+      if (isSystemActionSheetDialogPage(dialogPage)) {
+        closePreActionSheet(homeSystemDialogPages);
+      }
     } else {
       if (!parentPage.vm.$systemDialogPages) {
         parentPage.vm.$systemDialogPages = [];
       }
       parentPage.vm.$systemDialogPages.push(dialogPage);
+      if (isSystemActionSheetDialogPage(dialogPage)) {
+        closePreActionSheet(parentPage.vm.$systemDialogPages);
+      }
     }
   }
   var [aniType, aniDuration] = initAnimation(path, animationType);
@@ -2542,6 +2569,9 @@ var openDialogPage = (options) => {
     noAnimation ? 0 : 1
   );
   dialogPage.__nativePageId = page.pageId;
+  if (systemDialog) {
+    dialogPage.__nativeType = "systemDialog";
+  }
   if (noAnimation) {
     callback(page);
   }
@@ -2573,6 +2603,13 @@ function initAnimation(path, animationType) {
   }
   return [_animationType, meta.animationDuration || globalStyle.animationDuration || ANI_DURATION];
 }
+function closePreActionSheet(dialogPages) {
+  var actionSheets = dialogPages.filter((page) => isSystemActionSheetDialogPage(page));
+  if (actionSheets.length > 1) {
+    closeNativeDialogPage(actionSheets[0]);
+    dialogPages.splice(dialogPages.indexOf(actionSheets[0]), 1);
+  }
+}
 var closeDialogPage = (options) => {
   var _options$success, _options$complete;
   var currentPages = getCurrentPages();
@@ -2591,7 +2628,7 @@ var closeDialogPage = (options) => {
       return;
     }
     var parentPage = dialogPage.getParentPage();
-    if (!dialogPage.route.startsWith("uni:")) {
+    if (!isSystemDialogPage(dialogPage)) {
       if (parentPage && currentPages.indexOf(parentPage) !== -1) {
         var parentDialogPages = parentPage.getDialogPages();
         var index2 = parentDialogPages.indexOf(dialogPage);
@@ -2608,7 +2645,8 @@ var closeDialogPage = (options) => {
       var systemDialogPages = parentPage.vm.$systemDialogPages;
       var _index = systemDialogPages.indexOf(dialogPage);
       systemDialogPages.splice(_index, 1);
-      closeNativeDialogPage(dialogPage, "none");
+      closeNativeDialogPage(dialogPage);
+      return;
     }
   } else {
     var dialogPages = currentPage.getDialogPages();
@@ -3661,7 +3699,7 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
 }
 const showActionSheetPage = /* @__PURE__ */ _export_sfc(_sfc_main, [["render", _sfc_render], ["styles", [_style_0]]]);
 var registerShowActionSheetPage = once(() => {
-  var route = "uni:actionSheet";
+  var route = SYSTEM_DIALOG_ACTION_SHEET_PAGE_PATH;
   __uniRoutes.push({
     path: route,
     meta: {
@@ -3707,6 +3745,13 @@ var showActionSheet2 = (options) => {
       uni.$off(readyEventName);
     }
   });
+};
+var hideActionSheet2 = () => {
+  var page = getCurrentPage();
+  page.vm.$systemDialogPages.forEach((page2) => {
+    closeNativeDialogPage(page2);
+  });
+  page.vm.$systemDialogPages = [];
 };
 var env = {
   USER_DATA_PATH: "unifile://usr/",
@@ -4547,6 +4592,7 @@ const uni$1 = /* @__PURE__ */ Object.defineProperty({
   getEnterOptionsSync,
   getLaunchOptionsSync,
   getPerformance,
+  hideActionSheet2,
   hideTabBar,
   hideTabBarRedDot,
   initUTSClassName,

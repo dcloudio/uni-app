@@ -16824,7 +16824,7 @@ function tencentMapPlaceSearch(options) {
             const res = yield obj.chooseLocation({
                 action: 'search',
                 data: {
-                    keyword: '酒店',
+                    keyword,
                     location: {
                         lat: latitude,
                         lng: longitude,

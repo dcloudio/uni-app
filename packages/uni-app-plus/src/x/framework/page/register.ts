@@ -28,6 +28,7 @@ import { getAppThemeFallbackOS, normalizePageStyles } from '../theme'
 import { invokePageReadyHooks } from '../../api/route/performance'
 import { homeDialogPages, homeSystemDialogPages } from './dialogPage'
 import type { UniDialogPage } from '@dcloudio/uni-app-x/types/page'
+import { SYSTEM_DIALOG_PAGE_PATH_STARTER } from '../../api/route/utils'
 
 type PageNodeOptions = {}
 
@@ -271,7 +272,9 @@ export function registerDialogPage(
   }
   // TODO initWebview
   // initWebview(webview, path, query, routeOptions.meta)
-  const route = path.startsWith('uni:') ? path : path.slice(1)
+  const route = path.startsWith(SYSTEM_DIALOG_PAGE_PATH_STARTER)
+    ? path
+    : path.slice(1)
   // ;(webview as any).__uniapp_route = route
   const pageInstance = initPageInternalInstance(
     openType,

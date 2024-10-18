@@ -1,6 +1,6 @@
 import { ON_SHOW } from '@dcloudio/uni-shared'
 import { invokeHook } from '@dcloudio/uni-core'
-import { closeNativeDialogPage } from './utils'
+import { closeNativeDialogPage, isSystemDialogPage } from './utils'
 import type { CloseDialogPageOptions } from '@dcloudio/uni-app-x/types/uni'
 
 export const closeDialogPage = (options?: CloseDialogPageOptions) => {
@@ -22,7 +22,7 @@ export const closeDialogPage = (options?: CloseDialogPageOptions) => {
       return
     }
     const parentPage = dialogPage.getParentPage()
-    if (!dialogPage.route.startsWith('uni:')) {
+    if (!isSystemDialogPage(dialogPage)) {
       if (parentPage && currentPages.indexOf(parentPage) !== -1) {
         const parentDialogPages = parentPage.getDialogPages()
         const index = parentDialogPages.indexOf(dialogPage)
@@ -42,7 +42,8 @@ export const closeDialogPage = (options?: CloseDialogPageOptions) => {
       const systemDialogPages = parentPage!.vm.$systemDialogPages
       const index = systemDialogPages.indexOf(dialogPage)
       systemDialogPages.splice(index, 1)
-      closeNativeDialogPage(dialogPage, 'none')
+      closeNativeDialogPage(dialogPage)
+      return
     }
   } else {
     const dialogPages = currentPage.getDialogPages()
