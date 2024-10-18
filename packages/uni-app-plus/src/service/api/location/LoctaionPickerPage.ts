@@ -90,6 +90,7 @@ const LocationPickerPage: ThisType<any> = {
       keyword: '',
       latitude: 0,
       longitude: 0,
+      useSecureNetwork: false,
       loaded: false,
       channel: void 0,
       closed: false,
@@ -99,6 +100,7 @@ const LocationPickerPage: ThisType<any> = {
     this.latitude = e.latitude
     this.longitude = e.longitude
     this.keyword = e.keyword
+    this.useSecureNetwork = e.useSecureNetwork === true
     this.loaded = true
     this.channel = this.getOpenerEventChannel()
   },
@@ -126,6 +128,7 @@ const LocationPickerPage: ThisType<any> = {
             latitude: $data.latitude,
             longitude: $data.longitude,
             keyword: $data.keyword,
+            useSecureNetwork: $data.useSecureNetwork,
             onClose:
               _cache[0] ||
               (_cache[0] = (...args) =>

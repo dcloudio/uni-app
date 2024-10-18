@@ -37,6 +37,10 @@ const props = {
     type: String,
     default: '',
   },
+  useSecureNetwork: {
+    type: Boolean,
+    default: false,
+  },
 }
 
 export type Props = ExtractPropTypes<typeof props>
@@ -58,6 +62,7 @@ interface State {
   longitude: number
   keyword: string
   searching: boolean
+  useSecureNetwork: boolean
 }
 function useState(props: Props) {
   const state: State = reactive({
@@ -65,6 +70,7 @@ function useState(props: Props) {
     longitude: 0,
     keyword: '',
     searching: false,
+    useSecureNetwork: props.useSecureNetwork,
   })
   if (props.keyword) {
     state.keyword = props.keyword
@@ -165,6 +171,7 @@ function useList(state: State) {
         longitude: state.longitude,
         pageIndex: listState.pageIndex,
         pageSize: listState.pageSize,
+        secure: state.useSecureNetwork,
       })
         .then((pois) => {
           pushData(pois as any[])

@@ -18,7 +18,13 @@ export const chooseLocation = defineAsyncApi<API_TYPE_CHOOSE_LOCATION>(
   (options, { resolve, reject }) => {
     if (__uniConfig.qqMapKey) {
       initLocationPickerPageOnce()
-      const { keyword = '', latitude = '', longitude = '' } = options || {}
+      const {
+        keyword = '',
+        latitude = '',
+        longitude = '',
+        // @ts-expect-error TODO 新增useSecureNetwork参数，类型定义更新后移除此行
+        useSecureNetwork = false,
+      } = options || {}
       uni.navigateTo({
         url:
           '/' +
@@ -28,7 +34,9 @@ export const chooseLocation = defineAsyncApi<API_TYPE_CHOOSE_LOCATION>(
           '&latitude=' +
           latitude +
           '&longitude=' +
-          longitude,
+          longitude +
+          '&useSecureNetwork=' +
+          useSecureNetwork,
         events: {
           close: (res) => {
             if (res && res.latitude) {
