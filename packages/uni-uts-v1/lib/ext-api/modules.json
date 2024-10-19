@@ -1,16 +1,4 @@
 {
-  "uni-actionSheet": {
-    "uni": {
-      "showActionSheet2": {
-        "name": "showActionSheet2",
-        "app": {
-          "js": false,
-          "kotlin": true,
-          "swift": true
-        }
-      }
-    }
-  },
   "uni-ad": {
     "uni": {
       "createRewardedVideoAd": {
