@@ -22,7 +22,6 @@ export const chooseLocation = defineAsyncApi<API_TYPE_CHOOSE_LOCATION>(
         keyword = '',
         latitude = '',
         longitude = '',
-        // @ts-expect-error TODO 新增useSecureNetwork参数，类型定义更新后移除此行
         useSecureNetwork = false,
       } = options || {}
       uni.navigateTo({

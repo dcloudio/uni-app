@@ -3,6 +3,10 @@ declare namespace HBuilderX {
   type PageURIString = string
   type ColorString = string
 }
+declare namespace string {
+  type PageURIString = string
+  type ColorString = string
+}
 declare namespace Page {
   interface PageInstance {
     $page: {
@@ -118,14 +122,14 @@ declare namespace UniNamespace {
 
   interface PageNavigationBarButton {
     type:
-      | 'none'
-      | 'forward'
-      | 'back'
-      | 'share'
-      | 'favorite'
-      | 'home'
-      | 'menu'
-      | 'close'
+    | 'none'
+    | 'forward'
+    | 'back'
+    | 'share'
+    | 'favorite'
+    | 'home'
+    | 'menu'
+    | 'close'
     color: string
     background?: string
     badgeText?: string
@@ -374,7 +378,7 @@ declare namespace UniNamespace {
     shown: boolean
   }
 
-  interface ComponentDescriptor {}
+  interface ComponentDescriptor { }
 
   type OnApiLike = (callback: (result: unknown) => void) => void
   type CallbackFunction = (...args: any[]) => void
