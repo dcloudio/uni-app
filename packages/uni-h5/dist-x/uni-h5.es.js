@@ -17096,8 +17096,7 @@ const openDialogPage = (options) => {
     }
   }
   const successOptions = {
-    errMsg: "openDialogPage: ok",
-    eventChannel: new EventChannel(0, options.events)
+    errMsg: "openDialogPage:ok"
   };
   (_c = options.success) == null ? void 0 : _c.call(options, successOptions);
   (_d = options.complete) == null ? void 0 : _d.call(options, successOptions);
@@ -17241,7 +17240,7 @@ const _sfc_main$1 = {
       optionsEventName: "",
       successEventName: "",
       failEventName: "",
-      title: "",
+      title: null,
       itemList: [],
       optionCancelText: "",
       optionTitleColor: null,
@@ -17383,6 +17382,13 @@ const _sfc_main$1 = {
     uni.$off(this.failEventName, null);
   },
   methods: {
+    getCellStyle(index2) {
+      const style = { borderTop: `1px solid ${this.cellBorderColor}` };
+      if (index2 == 0) {
+        return this.title != null ? style : {};
+      }
+      return style;
+    },
     closeActionSheet() {
       this.show = false;
       setTimeout(() => {
@@ -17399,7 +17405,7 @@ const _sfc_main$1 = {
     }
   }
 };
-const _style_0 = "\n.uni-actionsheet_dialog__mask {\n    position: fixed;\n    z-index: 999;\n    top: 0;\n    right: 0;\n    left: 0;\n    bottom: 0;\n    opacity: 0;\n    background-color: rgba(0, 0, 0, 0.6);\n    transition: opacity 0.3s;\n}\n.uni-actionsheet_dialog__mask__show {\n    opacity: 1;\n}\n.uni-actionsheet_dialog__container {\n    position: fixed;\n    width: 100%;\n    overflow: hidden;\n    left: 0;\n    bottom: 0;\n    z-index: 999;\n    backface-visibility: hidden;\n    transform: translate(0, 100%);\n\n\n\n\n    visibility: hidden;\n    transition: transform 0.3s, visibility 0.3s;\n\n    border-top-left-radius: 12px;\n    border-top-right-radius: 12px;\n}\n.uni-actionsheet_dialog__container.uni-actionsheet_dialog__show {\n\n    visibility: visible;\n\n    transform: translate(0, 0);\n}\n.uni-actionsheet_dialog__menu{display: block;}\n.uni-actionsheet_dialog__title,\n  .uni-actionsheet_dialog__cell,\n  .uni-actionsheet_dialog__action {\n    display: block;\n    padding: 16px;\n    cursor: pointer;\n    text-align: center;\n}\n.uni-actionsheet_dialog__title,\n  .uni-actionsheet_dialog__cell,\n  .uni-actionsheet_dialog__action,\n\n  .uni-actionsheet_dialog__title__text,\n  .uni-actionsheet_dialog__cell__text,\n  .uni-actionsheet_dialog__action__text {\n    line-height: 1.4;\n    text-align: center;\n    white-space: nowrap;\n    overflow: hidden;\n    text-overflow: ellipsis;\n}\n.uni-actionsheet_dialog__cell {\n    border-top-width: 1px;\n    border-top-style: solid;\n}\n.uni-actionsheet_dialog__action {\n    margin-top: 8px;\n}\n@media screen and (min-width: 500px) and (min-height: 500px) {\n.uni-actionsheet_dialog__mask {\n      background: none;\n}\n.uni-actionsheet_dialog__container {\n      width: 300px;\n      position: fixed;\n      left: 50%;\n      right: auto;\n      top: 50%;\n      bottom: auto;\n      z-index: 999;\n      opacity: 0;\n      visibility: hidden;\n      backface-visibility: hidden;\n      border-radius: 5px;\n      transform: translate(-50%, -50%);\n      transition: opacity 0.3s, visibility 0.3s;\n      box-shadow: 0 0 20px 5px rgba(0, 0, 0, 0.3);\n}\n.uni-actionsheet_dialog__show {\n      visibility: visible;\n      opacity: 1;\n      transform: translate(-50%, -50%) !important;\n}\n.uni-actionsheet_dialog__action {\n      display: none;\n}\n.uni-actionsheet_dialog__title {\n      font-size: 15px;\n}\n.uni-actionsheet_dialog__title,\n    .uni-actionsheet_dialog__cell,\n    .uni-actionsheet_dialog__action {\n      padding: 16px;\n}\n}\n";
+const _style_0 = "\n.uni-actionsheet_dialog__mask {\n    position: fixed;\n    z-index: 999;\n    top: 0;\n    right: 0;\n    left: 0;\n    bottom: 0;\n    opacity: 0;\n    background-color: rgba(0, 0, 0, 0.6);\n    transition: opacity 0.1s;\n}\n.uni-actionsheet_dialog__mask__show {\n    opacity: 1;\n}\n.uni-actionsheet_dialog__container {\n    position: fixed;\n    width: 100%;\n    overflow: hidden;\n    left: 0;\n    bottom: 0;\n    z-index: 999;\n    backface-visibility: hidden;\n    transform: translate(0, 100%);\n\n\n\n\n    visibility: hidden;\n    transition: transform 0.3s, visibility 0.3s;\n\n    border-top-left-radius: 12px;\n    border-top-right-radius: 12px;\n}\n.uni-actionsheet_dialog__container.uni-actionsheet_dialog__show {\n\n    visibility: visible;\n\n    transform: translate(0, 0);\n}\n.uni-actionsheet_dialog__menu{display: block;}\n.uni-actionsheet_dialog__title,\n  .uni-actionsheet_dialog__cell,\n  .uni-actionsheet_dialog__action {\n    display: block;\n    padding: 16px;\n    cursor: pointer;\n    text-align: center;\n}\n.uni-actionsheet_dialog__title,\n  .uni-actionsheet_dialog__cell,\n  .uni-actionsheet_dialog__action,\n\n  .uni-actionsheet_dialog__title__text,\n  .uni-actionsheet_dialog__cell__text,\n  .uni-actionsheet_dialog__action__text {\n    line-height: 1.4;\n    text-align: center;\n    white-space: nowrap;\n    overflow: hidden;\n    text-overflow: ellipsis;\n}\n.uni-actionsheet_dialog__action {\n    margin-top: 8px;\n}\n@media screen and (min-width: 500px) and (min-height: 500px) {\n.uni-actionsheet_dialog__mask {\n      background: none;\n}\n.uni-actionsheet_dialog__container {\n      width: 300px;\n      position: fixed;\n      left: 50%;\n      right: auto;\n      top: 50%;\n      bottom: auto;\n      z-index: 999;\n      opacity: 0;\n      visibility: hidden;\n      backface-visibility: hidden;\n      border-radius: 5px;\n      transform: translate(-50%, -50%);\n      transition: opacity 0.3s, visibility 0.3s;\n      box-shadow: 0 0 20px 5px rgba(0, 0, 0, 0.3);\n}\n.uni-actionsheet_dialog__show {\n      visibility: visible;\n      opacity: 1;\n      transform: translate(-50%, -50%) !important;\n}\n.uni-actionsheet_dialog__action {\n      display: none;\n}\n.uni-actionsheet_dialog__title {\n      font-size: 15px;\n}\n.uni-actionsheet_dialog__title,\n    .uni-actionsheet_dialog__cell,\n    .uni-actionsheet_dialog__action {\n      padding: 16px;\n}\n}\n";
 const _export_sfc = (sfc, props2) => {
   const target = sfc.__vccOpts || sfc;
   for (const [key, val] of props2) {
@@ -17437,8 +17443,8 @@ function _sfc_render$1(_ctx, _cache, $props, $setup, $data, $options) {
         (openBlock(true), createElementBlock(Fragment, null, renderList($data.itemList, (item, index2) => {
           return openBlock(), createElementBlock("view", {
             class: "uni-actionsheet_dialog__cell",
-            style: normalizeStyle({ borderTopColor: $options.cellBorderColor }),
             key: index2,
+            style: normalizeStyle($options.getCellStyle(index2)),
             onClick: ($event) => $options.handleMenuItemClick(index2)
           }, [
             createElementVNode("text", {

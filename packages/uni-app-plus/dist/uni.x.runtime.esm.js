@@ -2480,7 +2480,6 @@ var openDialogPage = (options) => {
   var _options$success, _options$complete;
   var {
     url,
-    events,
     animationType
   } = options;
   if (!options.url) {
@@ -2568,8 +2567,7 @@ var openDialogPage = (options) => {
     callback(page);
   }
   var successOptions = {
-    errMsg: "openDialogPage: ok",
-    eventChannel: new EventChannel(getWebviewId() + 1, events)
+    errMsg: "openDialogPage: ok"
   };
   (_options$success = options.success) === null || _options$success === void 0 || _options$success.call(options, successOptions);
   (_options$complete = options.complete) === null || _options$complete === void 0 || _options$complete.call(options, successOptions);
@@ -3287,7 +3285,7 @@ const _sfc_main = {
       optionsEventName: "",
       successEventName: "",
       failEventName: "",
-      title: "",
+      title: null,
       itemList: [],
       optionCancelText: "",
       optionTitleColor: null,
@@ -3427,6 +3425,15 @@ const _sfc_main = {
     uni.$off(this.failEventName, null);
   },
   methods: {
+    getCellStyle(index2) {
+      var style = {
+        borderTop: "1px solid ".concat(this.cellBorderColor)
+      };
+      if (index2 == 0) {
+        return this.title != null ? style : {};
+      }
+      return style;
+    },
     closeActionSheet() {
       this.show = false;
       setTimeout(() => {
@@ -3457,7 +3464,7 @@ const _style_0 = {
       "opacity": 0,
       "backgroundColor": "rgba(0,0,0,0.6)",
       "transitionProperty": "opacity",
-      "transitionDuration": "0.3s"
+      "transitionDuration": "0.1s"
     }
   },
   "uni-actionsheet_dialog__mask__show": {
@@ -3502,9 +3509,7 @@ const _style_0 = {
       "paddingBottom": 16,
       "paddingLeft": 16,
       "cursor": "pointer",
-      "textAlign": "center",
-      "borderTopWidth": 1,
-      "borderTopStyle": "solid"
+      "textAlign": "center"
     }
   },
   "uni-actionsheet_dialog__action": {
@@ -3606,7 +3611,7 @@ const _style_0 = {
   "@TRANSITION": {
     "uni-actionsheet_dialog__mask": {
       "property": "opacity",
-      "duration": "0.3s"
+      "duration": "0.1s"
     },
     "uni-actionsheet_dialog__container": {
       "property": "transform",
@@ -3656,10 +3661,8 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   }, [(openBlock(true), createElementBlock(Fragment, null, renderList($data.itemList, (item, index2) => {
     return openBlock(), createElementBlock("view", {
       class: "uni-actionsheet_dialog__cell",
-      style: normalizeStyle({
-        borderTopColor: $options.cellBorderColor
-      }),
       key: index2,
+      style: normalizeStyle($options.getCellStyle(index2)),
       onClick: ($event) => $options.handleMenuItemClick(index2)
     }, [createElementVNode("text", {
       style: normalizeStyle({
