@@ -9,8 +9,7 @@
 				}" class="uni-actionsheet_dialog__title__text">{{ title }}</text>
       </view>
       <view class="uni-actionsheet_dialog__menu" :style="{backgroundColor: cellBackgroundColor}">
-        <view class="uni-actionsheet_dialog__cell" v-for="(item, index) in itemList" :key="index"
-          :style="getCellStyle(index)"
+        <view class="uni-actionsheet_dialog__cell" :style="{borderTopColor: cellBorderColor}" v-for="(item, index) in itemList" :key="index"
           @click="handleMenuItemClick(index)">
           <text :style="{color: itemColor}"
             class="uni-actionsheet_dialog__cell__text">{{ item }}</text>
@@ -41,7 +40,7 @@
         optionsEventName: '',
         successEventName: '',
         failEventName: '',
-        title: null as string | null,
+        title: '',
         itemList: [] as string[],
         optionCancelText: '',
         optionTitleColor: null as string | null,
@@ -200,14 +199,7 @@
       // @ts-expect-error
       uni.$off(this.failEventName, null)
     },
-  methods: {
-      getCellStyle(index: number): UTSJSONObject {
-        const style = {borderTop: `1px solid ${this.cellBorderColor}`}
-        if (index == 0) {
-          return this.title != null ? style : {}
-        }
-        return style
-      },
+    methods: {
       closeActionSheet() {
         this.show = false
         setTimeout(() => {
@@ -237,7 +229,7 @@
     bottom: 0;
     opacity: 0;
     background-color: rgba(0, 0, 0, 0.6);
-    transition: opacity 0.1s;
+    transition: opacity 0.3s;
   }
 
   .uni-actionsheet_dialog__mask__show {
@@ -296,6 +288,12 @@
     overflow: hidden;
     text-overflow: ellipsis;
   }
+
+  .uni-actionsheet_dialog__cell {
+    border-top-width: 1px;
+    border-top-style: solid;
+  }
+
 
   .uni-actionsheet_dialog__action {
     margin-top: 8px;

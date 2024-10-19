@@ -60,6 +60,7 @@ function transformAd(node, context) {
     }
     if (AD_COMPONENTS.indexOf(node.tag) > -1) {
         appJsonUniadFlag = true;
+        process.env.HAS_WXAD = '1';
         uniadAppJson(uniCliShared.findJsonFile('app'));
     }
 }

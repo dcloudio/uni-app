@@ -122,14 +122,14 @@ declare namespace UniNamespace {
 
   interface PageNavigationBarButton {
     type:
-    | 'none'
-    | 'forward'
-    | 'back'
-    | 'share'
-    | 'favorite'
-    | 'home'
-    | 'menu'
-    | 'close'
+      | 'none'
+      | 'forward'
+      | 'back'
+      | 'share'
+      | 'favorite'
+      | 'home'
+      | 'menu'
+      | 'close'
     color: string
     background?: string
     badgeText?: string
@@ -378,7 +378,7 @@ declare namespace UniNamespace {
     shown: boolean
   }
 
-  interface ComponentDescriptor { }
+  interface ComponentDescriptor {}
 
   type OnApiLike = (callback: (result: unknown) => void) => void
   type CallbackFunction = (...args: any[]) => void
