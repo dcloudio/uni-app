@@ -32,18 +32,6 @@
 		"npmurl": ""
 	},
 	"uni_modules": {
-		"uni-ext-api": {
-			"uni": {
-				"showActionSheet2": {
-					"name": "showActionSheet2",
-					"app": {
-						"js": false,
-						"kotlin": true,
-						"swift": true
-					}
-				}
-			}
-		},
 		"dependencies": [
 			"uni-framework",
 			"uni-event",

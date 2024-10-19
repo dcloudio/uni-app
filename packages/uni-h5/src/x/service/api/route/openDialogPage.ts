@@ -111,6 +111,8 @@ function closePreActionSheet(dialogPages: UniDialogPage[]) {
     isSystemActionSheetDialogPage(page)
   )
   if (actionSheets.length > 1) {
-    dialogPages.splice(dialogPages.indexOf(actionSheets[0]), 1)
+    setTimeout(() => {
+      dialogPages.splice(dialogPages.indexOf(actionSheets[0]), 1)
+    }, 100)
   }
 }
