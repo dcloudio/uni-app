@@ -2598,8 +2598,10 @@ function initAnimation(path, animationType) {
 function closePreActionSheet(dialogPages) {
   var actionSheets = dialogPages.filter((page) => isSystemActionSheetDialogPage(page));
   if (actionSheets.length > 1) {
-    closeNativeDialogPage(actionSheets[0]);
-    dialogPages.splice(dialogPages.indexOf(actionSheets[0]), 1);
+    setTimeout(() => {
+      closeNativeDialogPage(actionSheets[0]);
+      dialogPages.splice(dialogPages.indexOf(actionSheets[0]), 1);
+    }, 150);
   }
 }
 var closeDialogPage = (options) => {
@@ -3285,7 +3287,7 @@ const _sfc_main = {
       optionsEventName: "",
       successEventName: "",
       failEventName: "",
-      title: "",
+      title: null,
       itemList: [],
       optionCancelText: "",
       optionTitleColor: null,
@@ -3425,6 +3427,15 @@ const _sfc_main = {
     uni.$off(this.failEventName, null);
   },
   methods: {
+    getCellStyle(index2) {
+      var style = {
+        borderTop: "1px solid ".concat(this.cellBorderColor)
+      };
+      if (index2 == 0) {
+        return this.title != null ? style : {};
+      }
+      return style;
+    },
     closeActionSheet() {
       this.show = false;
       setTimeout(() => {
@@ -3447,20 +3458,20 @@ const _style_0 = {
   "uni-actionsheet_dialog__mask": {
     "": {
       "position": "fixed",
-      "zIndex": "999",
-      "top": "0",
-      "right": "0",
-      "left": "0",
-      "bottom": "0",
-      "opacity": "0",
-      "backgroundColor": "rgba(0, 0, 0, 0.6)",
+      "zIndex": 999,
+      "top": 0,
+      "right": 0,
+      "left": 0,
+      "bottom": 0,
+      "opacity": 0,
+      "backgroundColor": "rgba(0,0,0,0.6)",
       "transitionProperty": "opacity",
-      "transitionDuration": "0.3s"
+      "transitionDuration": "0.1s"
     }
   },
   "uni-actionsheet_dialog__mask__show": {
     "": {
-      "opacity": "1"
+      "opacity": 1
     }
   },
   "uni-actionsheet_dialog__container": {
@@ -3468,65 +3479,55 @@ const _style_0 = {
       "position": "fixed",
       "width": "100%",
       "overflow": "hidden",
-      "left": "0",
-      "bottom": "0",
-      "zIndex": "999",
+      "left": 0,
+      "bottom": 0,
+      "zIndex": 999,
       "WebkitBackfaceVisibility": "hidden",
       "backfaceVisibility": "hidden",
       "transform": "translate(0, 100%)",
       "transitionProperty": "transform",
       "transitionDuration": "0.3s",
-      "borderTopLeftRadius": "12px",
-      "borderTopRightRadius": "12px"
+      "borderTopLeftRadius": 12,
+      "borderTopRightRadius": 12
     },
     ".uni-actionsheet_dialog__show": {
       "transform": "translate(0, 0)"
     }
   },
-  "uni-actionsheet_dialog__menu": {
-    "": {
-      "display": "block"
-    }
-  },
   "uni-actionsheet_dialog__title": {
     "": {
-      "display": "block",
-      "paddingTop": "16px",
-      "paddingRight": "16px",
-      "paddingBottom": "16px",
-      "paddingLeft": "16px",
+      "paddingTop": 16,
+      "paddingRight": 16,
+      "paddingBottom": 16,
+      "paddingLeft": 16,
       "cursor": "pointer",
       "textAlign": "center"
     }
   },
   "uni-actionsheet_dialog__cell": {
     "": {
-      "display": "block",
-      "paddingTop": "16px",
-      "paddingRight": "16px",
-      "paddingBottom": "16px",
-      "paddingLeft": "16px",
+      "paddingTop": 16,
+      "paddingRight": 16,
+      "paddingBottom": 16,
+      "paddingLeft": 16,
       "cursor": "pointer",
-      "textAlign": "center",
-      "borderTopWidth": "1px",
-      "borderTopStyle": "solid"
+      "textAlign": "center"
     }
   },
   "uni-actionsheet_dialog__action": {
     "": {
-      "display": "block",
-      "paddingTop": "16px",
-      "paddingRight": "16px",
-      "paddingBottom": "16px",
-      "paddingLeft": "16px",
+      "paddingTop": 16,
+      "paddingRight": 16,
+      "paddingBottom": 16,
+      "paddingLeft": 16,
       "cursor": "pointer",
       "textAlign": "center",
-      "marginTop": "8px"
+      "marginTop": 8
     }
   },
   "uni-actionsheet_dialog__title__text": {
     "": {
-      "lineHeight": "1.4",
+      "lineHeight": 1.4,
       "textAlign": "center",
       "whiteSpace": "nowrap",
       "overflow": "hidden",
@@ -3535,7 +3536,7 @@ const _style_0 = {
   },
   "uni-actionsheet_dialog__cell__text": {
     "": {
-      "lineHeight": "1.4",
+      "lineHeight": 1.4,
       "textAlign": "center",
       "whiteSpace": "nowrap",
       "overflow": "hidden",
@@ -3544,7 +3545,7 @@ const _style_0 = {
   },
   "uni-actionsheet_dialog__action__text": {
     "": {
-      "lineHeight": "1.4",
+      "lineHeight": 1.4,
       "textAlign": "center",
       "whiteSpace": "nowrap",
       "overflow": "hidden",
@@ -3554,24 +3555,23 @@ const _style_0 = {
   "@FONT-FACE": [{
     "uni-actionsheet_dialog__mask": {
       "": {
-        "backgroundImage": "none",
-        "backgroundColor": "none"
+        "backgroundImage": "none"
       }
     },
     "uni-actionsheet_dialog__container": {
       "": {
-        "width": "300px",
+        "width": 300,
         "position": "fixed",
         "left": "50%",
         "right": "auto",
         "top": "50%",
         "bottom": "auto",
-        "zIndex": "999",
-        "opacity": "0",
+        "zIndex": 999,
+        "opacity": 0,
         "visibility": "hidden",
         "WebkitBackfaceVisibility": "hidden",
         "backfaceVisibility": "hidden",
-        "borderRadius": "5px",
+        "borderRadius": 5,
         "transform": "translate(-50%, -50%)",
         "boxShadow": "0 0 20px 5px rgba(0, 0, 0, 0.3)"
       }
@@ -3579,41 +3579,41 @@ const _style_0 = {
     "uni-actionsheet_dialog__show": {
       "": {
         "visibility": "visible",
-        "opacity": "1",
+        "opacity": 1,
         "!transform": "translate(-50%, -50%)"
       }
     },
     "uni-actionsheet_dialog__action": {
       "": {
         "display": "none",
-        "paddingTop": "16px",
-        "paddingRight": "16px",
-        "paddingBottom": "16px",
-        "paddingLeft": "16px"
+        "paddingTop": 16,
+        "paddingRight": 16,
+        "paddingBottom": 16,
+        "paddingLeft": 16
       }
     },
     "uni-actionsheet_dialog__title": {
       "": {
-        "fontSize": "15px",
-        "paddingTop": "16px",
-        "paddingRight": "16px",
-        "paddingBottom": "16px",
-        "paddingLeft": "16px"
+        "fontSize": 15,
+        "paddingTop": 16,
+        "paddingRight": 16,
+        "paddingBottom": 16,
+        "paddingLeft": 16
       }
     },
     "uni-actionsheet_dialog__cell": {
       "": {
-        "paddingTop": "16px",
-        "paddingRight": "16px",
-        "paddingBottom": "16px",
-        "paddingLeft": "16px"
+        "paddingTop": 16,
+        "paddingRight": 16,
+        "paddingBottom": 16,
+        "paddingLeft": 16
       }
     }
   }],
   "@TRANSITION": {
     "uni-actionsheet_dialog__mask": {
       "property": "opacity",
-      "duration": "0.3s"
+      "duration": "0.1s"
     },
     "uni-actionsheet_dialog__container": {
       "property": "transform",
@@ -3663,10 +3663,8 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   }, [(openBlock(true), createElementBlock(Fragment, null, renderList($data.itemList, (item, index2) => {
     return openBlock(), createElementBlock("view", {
       class: "uni-actionsheet_dialog__cell",
-      style: normalizeStyle({
-        borderTopColor: $options.cellBorderColor
-      }),
       key: index2,
+      style: normalizeStyle($options.getCellStyle(index2)),
       onClick: ($event) => $options.handleMenuItemClick(index2)
     }, [createElementVNode("text", {
       style: normalizeStyle({

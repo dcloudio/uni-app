@@ -16876,6 +16876,7 @@ const LocationPickerPage = {
             keyword: '',
             latitude: 0,
             longitude: 0,
+            useSecureNetwork: false,
             loaded: false,
             channel: void 0,
             closed: false,
@@ -16885,6 +16886,7 @@ const LocationPickerPage = {
         this.latitude = e.latitude;
         this.longitude = e.longitude;
         this.keyword = e.keyword;
+        this.useSecureNetwork = e.useSecureNetwork === true;
         this.loaded = true;
         this.channel = this.getOpenerEventChannel();
     },
@@ -16910,6 +16912,7 @@ const LocationPickerPage = {
                     latitude: $data.latitude,
                     longitude: $data.longitude,
                     keyword: $data.keyword,
+                    useSecureNetwork: $data.useSecureNetwork,
                     onClose: _cache[0] ||
                         (_cache[0] = (...args) => $options.onClose && $options.onClose(...args)),
                 }, null, 40, ['latitude', 'longitude', 'keyword']))
@@ -16934,7 +16937,7 @@ const initLocationPickerPageOnce = once(() => {
 const chooseLocation = defineAsyncApi(API_CHOOSE_LOCATION, (options, { resolve, reject }) => {
     if (__uniConfig.qqMapKey) {
         initLocationPickerPageOnce();
-        const { keyword = '', latitude = '', longitude = '' } = options || {};
+        const { keyword = '', latitude = '', longitude = '', useSecureNetwork = false, } = options || {};
         uni.navigateTo({
             url: '/' +
                 ROUTE_LOCATION_PICKER_PAGE +
@@ -16943,7 +16946,9 @@ const chooseLocation = defineAsyncApi(API_CHOOSE_LOCATION, (options, { resolve, 
                 '&latitude=' +
                 latitude +
                 '&longitude=' +
-                longitude,
+                longitude +
+                '&useSecureNetwork=' +
+                useSecureNetwork,
             events: {
                 close: (res) => {
                     if (res && res.latitude) {
