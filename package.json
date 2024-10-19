@@ -96,7 +96,7 @@
     "picocolors": "^1.0.0",
     "prettier": "^2.7.1",
     "promise-polyfill": "^8.3.0",
-    "rollup": "^4.13.0",
+    "rollup": "^4.21.2",
     "rollup-plugin-jscc": "^2.0.0",
     "rollup-plugin-node-builtins": "^2.1.2",
     "rollup-plugin-node-globals": "^1.4.0",

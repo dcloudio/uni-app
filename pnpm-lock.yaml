@@ -165,7 +165,7 @@ importers:
         specifier: ^8.3.0
         version: 8.3.0
       rollup:
-        specifier: ^4.13.0
+        specifier: ^4.21.2
         version: 4.21.2
       rollup-plugin-jscc:
         specifier: ^2.0.0
