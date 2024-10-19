@@ -26,6 +26,7 @@ import { BusinessError as BusinessError8 } from '@kit.BasicServicesKit';
 import { BusinessError as BusinessError9 } from '@kit.BasicServicesKit';
 import { BusinessError } from '@kit.BasicServicesKit';
 import { CompressorResponseCode, CompressorResponse, VideoCompressor, CompressQuality } from '@ohos/videocompressor';
+import { Emitter as Emitter1, onNativePageReady } from "@dcloudio/uni-mp-sdk";
 import { Emitter as Emitter5, getCurrentMP as getCurrentMP4 } from "@dcloudio/uni-mp-sdk";
 import { Emitter } from "@dcloudio/uni-mp-sdk";
 import Hash from '@ohos.file.hash';
@@ -34,17 +35,7 @@ import I18n1 from '@ohos.i18n';
 import I18n2 from '@ohos.i18n';
 import { ListFileOptions } from '@ohos.file.fs';
 import { ReadOptions } from '@ohos.file.fs';
-import { UTSHarmony as UTSHarmony1 } from "@dcloudio/uni-mp-sdk";
-import { UTSHarmony as UTSHarmony10 } from "@dcloudio/uni-mp-sdk";
-import { UTSHarmony as UTSHarmony11 } from "@dcloudio/uni-mp-sdk";
-import { UTSHarmony as UTSHarmony2 } from "@dcloudio/uni-mp-sdk";
-import { UTSHarmony as UTSHarmony3 } from "@dcloudio/uni-mp-sdk";
-import { UTSHarmony as UTSHarmony4 } from "@dcloudio/uni-mp-sdk";
-import { UTSHarmony as UTSHarmony5, getDeviceId } from "@dcloudio/uni-mp-sdk";
-import { UTSHarmony as UTSHarmony6, Emitter as Emitter1, onNativePageReady } from "@dcloudio/uni-mp-sdk";
-import { UTSHarmony as UTSHarmony7 } from "@dcloudio/uni-mp-sdk";
-import { UTSHarmony as UTSHarmony8, getWindowInfo as internalGetWindowInfo, getDeviceId as getDeviceId1 } from "@dcloudio/uni-mp-sdk";
-import { UTSHarmony as UTSHarmony9 } from "@dcloudio/uni-mp-sdk";
+import { UTSHarmony } from "@dcloudio/uni-mp-sdk";
 import { UTSObject, UTSJSONObject } from "@dcloudio/uts-harmony";
 import { UniError, IUniError, UniProvider, string, AsyncApiSuccessResult, AsyncApiResult, ApiOptions, ProtocolOptions, defineAsyncApi, ApiExecutor, ApiError, defineSyncApi, getUniProviders, defineTaskApi, getUniProvider } from "@dcloudio/uni-app-harmony";
 import Want1 from '@ohos.app.ability.Want';
@@ -80,22 +71,8 @@ import fs3 from '@ohos.file.fs';
 import fs4 from '@ohos.file.fs';
 import fs5 from '@ohos.file.fs';
 import { geoLocationManager } from '@kit.LocationKit';
-import { getAbilityContext as getAbilityContext1 } from "@dcloudio/uni-mp-sdk";
-import { getAbilityContext as getAbilityContext10 } from "@dcloudio/uni-mp-sdk";
-import { getAbilityContext as getAbilityContext11, getCurrentMP as getCurrentMP3 } from "@dcloudio/uni-mp-sdk";
-import { getAbilityContext as getAbilityContext2 } from "@dcloudio/uni-mp-sdk";
-import { getAbilityContext as getAbilityContext4 } from "@dcloudio/uni-mp-sdk";
-import { getAbilityContext as getAbilityContext5, getCurrentWindow as getCurrentWindow2 } from "@dcloudio/uni-mp-sdk";
-import { getAbilityContext as getAbilityContext6 } from "@dcloudio/uni-mp-sdk";
-import { getAbilityContext as getAbilityContext7 } from "@dcloudio/uni-mp-sdk";
-import { getAbilityContext as getAbilityContext8 } from "@dcloudio/uni-mp-sdk";
-import { getAbilityContext as getAbilityContext9 } from "@dcloudio/uni-mp-sdk";
-import { getAbilityContext, UTSHarmony } from "@dcloudio/uni-mp-sdk";
-import { getCurrentWindow as getCurrentWindow1 } from "@dcloudio/uni-mp-sdk";
-import { getCurrentWindow as getCurrentWindow3 } from "@dcloudio/uni-mp-sdk";
-import { getCurrentWindow as getCurrentWindow4 } from "@dcloudio/uni-mp-sdk";
-import { getCurrentWindow as getCurrentWindow5 } from "@dcloudio/uni-mp-sdk";
-import { getCurrentWindow } from "@dcloudio/uni-mp-sdk";
+import { getCurrentMP as getCurrentMP3 } from "@dcloudio/uni-mp-sdk";
+import { getDeviceId } from "@dcloudio/uni-mp-sdk";
 import { getEnv as getEnv1 } from "@dcloudio/uni-mp-sdk";
 import { getEnv as getEnv2 } from "@dcloudio/uni-mp-sdk";
 import { getEnv as getEnv3, Emitter as Emitter4, getCurrentMP as getCurrentMP2 } from "@dcloudio/uni-mp-sdk";
@@ -106,8 +83,9 @@ import { getRealPath as getRealPath1 } from "@dcloudio/uni-mp-sdk";
 import { getRealPath as getRealPath2, onNativePageReady as onNativePageReady1 } from "@dcloudio/uni-mp-sdk";
 import { getRealPath as getRealPath3 } from "@dcloudio/uni-mp-sdk";
 import { getRealPath as getRealPath4, Emitter as Emitter3, getCurrentMP as getCurrentMP1 } from "@dcloudio/uni-mp-sdk";
-import { getResourceStr, getAbilityContext as getAbilityContext3 } from "@dcloudio/uni-mp-sdk";
+import { getResourceStr } from "@dcloudio/uni-mp-sdk";
 import { getTabBar } from "@dcloudio/uni-mp-sdk";
+import { getWindowInfo as internalGetWindowInfo, getDeviceId as getDeviceId1 } from "@dcloudio/uni-mp-sdk";
 import harmonyUrl from '@ohos.url';
 import harmonyUrl1 from '@ohos.url';
 import harmonyWindow from '@ohos.window';
@@ -2348,7 +2326,7 @@ export function initUniExtApi() {
                     } as contact.PostalAddress);
                 }
                 if (postalAddresses.length) contactInfo.postalAddresses = postalAddresses;
-                contact.addContact(getAbilityContext()!, contactInfo).then((contactId)=>{
+                contact.addContact(UTSHarmony.getUIAbilityContext()!, contactInfo).then((contactId)=>{
                     executor.resolve(contactId);
                 }).catch((err: BusinessError)=>{
                     executor.reject(err.message);
@@ -2570,7 +2548,7 @@ export function initUniExtApi() {
         'ohos.permission.ACCESS_BIOMETRIC'
     ];
     const checkIsSupportSoterAuthentication: CheckIsSupportSoterAuthentication = defineAsyncApi<CheckIsSupportSoterAuthenticationOptions, CheckIsSupportSoterAuthenticationSuccess>(API_CHECK_IS_SUPPORT_SOTER_AUTHENTICATION, (args: CheckIsSupportSoterAuthenticationOptions, executor: ApiExecutor<CheckIsSupportSoterAuthenticationSuccess>)=>{
-        UTSHarmony1.requestSystemPermission(PERMISSIONS, (allRight: boolean)=>{
+        UTSHarmony.requestSystemPermission(PERMISSIONS, (allRight: boolean)=>{
             if (allRight) {
                 try {
                     const supportMode: SoterAuthMode[] = [];
@@ -2610,7 +2588,7 @@ export function initUniExtApi() {
         return false;
     };
     const checkIsSoterEnrolledInDevice: CheckIsSoterEnrolledInDevice = defineAsyncApi<CheckIsSoterEnrolledInDeviceOptions, CheckIsSoterEnrolledInDeviceSuccess>(API_CHECK_IS_SOTER_ENROLLED_IN_DEVICE, (args: CheckIsSoterEnrolledInDeviceOptions, executor: ApiExecutor<CheckIsSoterEnrolledInDeviceSuccess>)=>{
-        UTSHarmony1.requestSystemPermission(PERMISSIONS, (allRight: boolean)=>{
+        UTSHarmony.requestSystemPermission(PERMISSIONS, (allRight: boolean)=>{
             if (allRight) {
                 try {
                     const isEnrolled = harmonyCheckIsSoterEnrolledInDevice(args.checkAuthMode);
@@ -2658,7 +2636,7 @@ export function initUniExtApi() {
     ]);
     const getString = (callback: ClipboardCallback)=>{
         const systemPasteboard: pasteboard.SystemPasteboard = pasteboard.getSystemPasteboard();
-        UTSHarmony2.requestSystemPermission([
+        UTSHarmony.requestSystemPermission([
             'ohos.permission.READ_PASTEBOARD'
         ], (allRight: boolean)=>{
             if (allRight) {
@@ -3193,7 +3171,7 @@ export function initUniExtApi() {
     }) as $Emit;
     const API_EXIT = 'exit';
     const exit: Exit = defineSyncApi<void>(API_EXIT, ()=>{
-        UTSHarmony3.exit();
+        UTSHarmony.exit();
     }) as Exit;
     const API_SAVE_FILE = 'saveFile';
     const API_GET_FILE_INFO = 'getFileInfo';
@@ -3461,20 +3439,20 @@ export function initUniExtApi() {
     };
     const getBundleInfo = getBundleInfoOnce();
     const getAppBaseInfo: GetAppBaseInfo = defineSyncApi<GetAppBaseInfoResult>(API_GET_APP_BASE_INFO, (): GetAppBaseInfoResult =>{
-        const appVersion: IAppBaseInfoAppVersion = UTSHarmony4.getAppVersion();
+        const appVersion: IAppBaseInfoAppVersion = UTSHarmony.getAppVersion();
         const appLanguage = I18n.System.getAppPreferredLanguage();
-        const uniCompilerVersion: string = UTSHarmony4.getUniCompilerVersion();
-        const uniRuntimeVersion: string = UTSHarmony4.getUniRuntimeVersion();
+        const uniCompilerVersion: string = UTSHarmony.getUniCompilerVersion() as string;
+        const uniRuntimeVersion: string = UTSHarmony.getUniRuntimeVersion();
         return {
-            appId: UTSHarmony4.getAppId() as string,
+            appId: UTSHarmony.getAppId() as string,
             appLanguage,
-            appName: UTSHarmony4.getAppName() as string,
-            appTheme: UTSHarmony4.getAppTheme() as string,
+            appName: UTSHarmony.getAppName() as string,
+            appTheme: UTSHarmony.getAppTheme() as string,
             appVersion: appVersion.name,
             appVersionCode: appVersion.code,
             appWgtVersion: appVersion.name,
             hostLanguage: I18n.System.getSystemLanguage(),
-            isUniAppX: UTSHarmony4.isUniAppX() as boolean,
+            isUniAppX: UTSHarmony.isUniAppX() as boolean,
             packageName: getBundleInfo().name,
             uniCompilerVersion: uniCompilerVersion,
             uniCompilerVersionCode: parseFloat(uniCompilerVersion),
@@ -3630,7 +3608,7 @@ export function initUniExtApi() {
     const audioPlayerCallback = new AudioPlayerCallback1();
     let AV_SESSION: avSession.AVSession | null = null;
     const createAVSession = ()=>{
-        avSession.createAVSession(getAbilityContext1()!, 'player', 'audio').then((data)=>{
+        avSession.createAVSession(UTSHarmony.getUIAbilityContext()!, 'player', 'audio').then((data)=>{
             AV_SESSION = data;
         });
     };
@@ -3642,7 +3620,7 @@ export function initUniExtApi() {
         AV_SESSION = null;
     };
     const startBackgroundTask = ()=>{
-        const abilityInfo: TempAbilityInfo = getAbilityContext1()!.abilityInfo;
+        const abilityInfo: TempAbilityInfo = UTSHarmony.getUIAbilityContext()!.abilityInfo;
         const wantAgentInfo: wantAgent.WantAgentInfo = {
             wants: [
                 {
@@ -3657,7 +3635,7 @@ export function initUniExtApi() {
             ]
         };
         wantAgent.getWantAgent(wantAgentInfo).then((wantAgentObj)=>{
-            return backgroundTaskManager.startBackgroundRunning(getAbilityContext1()!, backgroundTaskManager.BackgroundMode.AUDIO_PLAYBACK, wantAgentObj);
+            return backgroundTaskManager.startBackgroundRunning(UTSHarmony.getUIAbilityContext()!, backgroundTaskManager.BackgroundMode.AUDIO_PLAYBACK, wantAgentObj);
         }).then(()=>{
             console.debug('[getBackgroundAudioManager]  start bg operation succeeded');
         }).catch((err: BusinessError3)=>{
@@ -3665,7 +3643,7 @@ export function initUniExtApi() {
         });
     };
     const stopBackgroundTask = ()=>{
-        backgroundTaskManager.stopBackgroundRunning(getAbilityContext1()!).then(()=>{
+        backgroundTaskManager.stopBackgroundRunning(UTSHarmony.getUIAbilityContext()!).then(()=>{
             console.debug('[getBackgroundAudioManager]  stop operation succeeded');
         }).catch((err: BusinessError3)=>{
             audioPlayerCallback.error(new AudioPlayerError1(err.message, err.code));
@@ -4001,7 +3979,7 @@ export function initUniExtApi() {
             devicePixelRatio: vp2px(1),
             deviceType: parseDeviceType(deviceInfo.deviceType),
             osLanguage: I18n1.System.getSystemLanguage(),
-            osTheme: UTSHarmony5.getOsTheme() as string,
+            osTheme: UTSHarmony.getOsTheme() as string,
             osVersion: deviceInfo.majorVersion + '.' + deviceInfo.seniorVersion + '.' + deviceInfo.featureVersion + '.' + deviceInfo.buildVersion,
             osName: 'harmonyos',
             platform: 'harmonyos',
@@ -4044,7 +4022,7 @@ export function initUniExtApi() {
     };
     const networkGetType = ()=>{
         return new Promise<number>((resolve, reject)=>{
-            UTSHarmony6.requestSystemPermission(PERMISSIONS1, (allRight: boolean)=>{
+            UTSHarmony.requestSystemPermission(PERMISSIONS1, (allRight: boolean)=>{
                 if (allRight) {
                     try {
                         radio.getPrimarySlotId().then((slotId: number)=>radio.getSignalInformationSync(slotId)).then((signalInformation: Array<radio.SignalInformation>)=>{
@@ -4078,7 +4056,7 @@ export function initUniExtApi() {
     }
     const getCurrentType = ()=>{
         return new Promise<number>((resolve, reject)=>{
-            UTSHarmony6.requestSystemPermission(PERMISSIONS1, (allRight: boolean)=>{
+            UTSHarmony.requestSystemPermission(PERMISSIONS1, (allRight: boolean)=>{
                 if (allRight) {
                     try {
                         connection.getDefaultNet().then((data: connection.NetHandle)=>{
@@ -4121,7 +4099,7 @@ export function initUniExtApi() {
             if (!Network.netConnection) {
                 Network.netConnection = connection.createNetConnection();
             }
-            UTSHarmony6.requestSystemPermission(PERMISSIONS1, (allRight: boolean)=>{
+            UTSHarmony.requestSystemPermission(PERMISSIONS1, (allRight: boolean)=>{
                 if (allRight && Network.netConnection) {
                     Network.netConnection.register((err: BusinessError4)=>{});
                     Network.netConnection.on('netCapabilitiesChange', (capability: connection.NetCapabilityInfo)=>{
@@ -4174,14 +4152,14 @@ export function initUniExtApi() {
     };
     const UniGetNetworkTypeEventEmitter = new Emitter1() as IUniGetNetworkTypeEventEmitter;
     const onNetworkStatusChange: OnNetworkStatusChange = (callback: Function)=>{
-        UTSHarmony6.requestSystemPermission(PERMISSIONS1, (allRight: boolean)=>{
+        UTSHarmony.requestSystemPermission(PERMISSIONS1, (allRight: boolean)=>{
             if (allRight) {
                 UniGetNetworkTypeEventEmitter.on('networkStatusChange', callback);
             }
         });
     };
     const offNetworkStatusChange: OffNetworkStatusChange = (callback: Function)=>{
-        UTSHarmony6.requestSystemPermission(PERMISSIONS1, (allRight: boolean)=>{
+        UTSHarmony.requestSystemPermission(PERMISSIONS1, (allRight: boolean)=>{
             if (allRight) {
                 UniGetNetworkTypeEventEmitter.off('networkStatusChange', callback);
             }
@@ -4379,7 +4357,7 @@ export function initUniExtApi() {
                 profile: audioProfile,
                 url: 'fd://' + file.fd
             };
-            UTSHarmony7.requestSystemPermission([
+            UTSHarmony.requestSystemPermission([
                 'ohos.permission.MICROPHONE'
             ], async (allRight: boolean)=>{
                 if (allRight) {
@@ -4532,11 +4510,11 @@ export function initUniExtApi() {
         return internalGetWindowInfo() as GetWindowInfoResult;
     }) as GetWindowInfo;
     const internalGetSystemInfo = (): GetSystemInfoResult =>{
-        const appVersion: ISystemInfoAppVersion = UTSHarmony8.getAppVersion();
+        const appVersion: ISystemInfoAppVersion = UTSHarmony.getAppVersion();
         const appLanguage = I18n2.System.getAppPreferredLanguage();
-        const uniCompilerVersion: string = UTSHarmony8.getUniCompilerVersion();
+        const uniCompilerVersion: string = UTSHarmony.getUniCompilerVersion() as string;
         const uniCompilerVersionCode: number = parseFloat(uniCompilerVersion);
-        const uniRuntimeVersion: string = UTSHarmony8.getUniRuntimeVersion();
+        const uniRuntimeVersion: string = UTSHarmony.getUniRuntimeVersion();
         const windowInfo = internalGetWindowInfo() as GetWindowInfoResult;
         const pixelRatio = windowInfo.pixelRatio;
         const safeArea = windowInfo.safeArea;
@@ -4549,10 +4527,10 @@ export function initUniExtApi() {
         const windowTop = windowInfo.windowTop;
         const windowWidth = windowInfo.windowWidth;
         return {
-            appId: UTSHarmony8.getAppId() as string,
+            appId: UTSHarmony.getAppId() as string,
             appLanguage,
-            appName: UTSHarmony8.getAppName() as string,
-            appTheme: UTSHarmony8.getAppTheme() as string,
+            appName: UTSHarmony.getAppName() as string,
+            appTheme: UTSHarmony.getAppTheme() as string,
             appVersion: appVersion.name,
             appVersionCode: appVersion.code,
             appWgtVersion: appVersion.name,
@@ -4568,7 +4546,7 @@ export function initUniExtApi() {
             devicePixelRatio: vp2px(1),
             deviceType: parseDeviceType1(deviceInfo1.deviceType),
             osLanguage: I18n2.System.getSystemLanguage(),
-            osTheme: UTSHarmony8.getOsTheme() as string,
+            osTheme: UTSHarmony.getOsTheme() as string,
             osVersion: deviceInfo1.majorVersion + '.' + deviceInfo1.seniorVersion + '.' + deviceInfo1.featureVersion + '.' + deviceInfo1.buildVersion,
             osName: 'harmonyos',
             romName: deviceInfo1.distributionOSName,
@@ -4659,7 +4637,7 @@ export function initUniExtApi() {
     const dial = (number: string, confirm = true)=>{
         if (!confirm && typeof call.dial === 'function') {
             return new Promise<void>((resolve, reject)=>{
-                UTSHarmony9.requestSystemPermission([
+                UTSHarmony.requestSystemPermission([
                     'ohos.permission.PLACE_CALL'
                 ], (allRight: boolean)=>{
                     if (allRight) {
@@ -5488,7 +5466,7 @@ export function initUniExtApi() {
         let pickerProfile: cameraPicker.PickerProfile = {
             cameraPosition: getHMCameraPosition(cameraType)
         };
-        const res = await cameraPicker.pick(getAbilityContext2()!, [
+        const res = await cameraPicker.pick(UTSHarmony.getUIAbilityContext()!, [
             cameraPicker.PickerMediaType.PHOTO
         ], pickerProfile);
         const file = fs2.openSync(res.resultUri, fs2.OpenMode.READ_ONLY);
@@ -5507,7 +5485,7 @@ export function initUniExtApi() {
             cameraPosition: getHMCameraPosition(args?.cameraType ?? 'back'),
             videoDuration: args?.videoDuration
         };
-        const res = await cameraPicker.pick(getAbilityContext2()!, [
+        const res = await cameraPicker.pick(UTSHarmony.getUIAbilityContext()!, [
             cameraPicker.PickerMediaType.VIDEO
         ], pickerProfile);
         return _getVideoInfo(res.resultUri).then((getVideInfoRes)=>{
@@ -5576,7 +5554,7 @@ export function initUniExtApi() {
         } else if (options.sourceType?.length === 1 && options.sourceType[0] === 'album') {
             _chooseImage(options, res);
         } else {
-            const lastWindow = getCurrentWindow() as window.Window;
+            const lastWindow = UTSHarmony.getCurrentWindow() as window.Window;
             const UIContextPromptAction = await lastWindow.getUIContext().getPromptAction();
             UIContextPromptAction.showActionMenu({
                 buttons: [
@@ -5653,7 +5631,7 @@ export function initUniExtApi() {
         } else if (options.sourceType?.length === 1 && options.sourceType[0] === 'album') {
             _chooseVideo(options, res);
         } else {
-            const lastWindow = getCurrentWindow1() as window1.Window;
+            const lastWindow = UTSHarmony.getCurrentWindow() as window1.Window;
             const UIContextPromptAction = await lastWindow.getUIContext().getPromptAction();
             UIContextPromptAction.showActionMenu({
                 buttons: [
@@ -5744,7 +5722,7 @@ export function initUniExtApi() {
         });
     }) as ClosePreviewImage;
     const saveResource = async (src: Resource, dest: string)=>{
-        const context = getAbilityContext3() as common.UIAbilityContext;
+        const context = UTSHarmony.getUIAbilityContext() as common.UIAbilityContext;
         const resourceManager = context.resourceManager;
         const srcPath: string = src.params?.[0] as string;
         const destFile = fs3.openSync(dest, fs3.OpenMode.WRITE_ONLY);
@@ -5761,7 +5739,7 @@ export function initUniExtApi() {
     };
     const saveMediaToAlbum = async (fromUri: string, type: 'image' | 'video'): Promise<string | ISaveMediaError> =>{
         const realPath = getResourceStr(fromUri) as string | Resource;
-        const context = getAbilityContext3() as common.UIAbilityContext;
+        const context = UTSHarmony.getUIAbilityContext() as common.UIAbilityContext;
         let fileName = Date.now() + (type === 'image' ? '.png' : '.mp4');
         const isResource = typeof realPath !== 'string';
         if (isResource) {
@@ -5934,7 +5912,7 @@ export function initUniExtApi() {
         } else {
             try {
                 let documentSelectOptions = new picker.DocumentSelectOptions();
-                let documentPicker = new picker.DocumentViewPicker(getAbilityContext4()!);
+                let documentPicker = new picker.DocumentViewPicker(UTSHarmony.getUIAbilityContext()!);
                 documentSelectOptions.selectMode = picker.DocumentSelectMode.FILE;
                 if (args.count) documentSelectOptions.maxSelectNumber = args.count;
                 if (args.extension) documentSelectOptions.fileSuffixFilters = args.extension;
@@ -5988,7 +5966,7 @@ export function initUniExtApi() {
                 videoDuration: args?.maxDuration ?? 10
             };
             const mediaTypes = getCameraPickerMediaTypes((args.mediaType ?? []) as UNI_MEDIA_TYPE[]);
-            const res = await cameraPicker1.pick(getAbilityContext5()!, mediaTypes, pickerProfile);
+            const res = await cameraPicker1.pick(UTSHarmony.getUIAbilityContext()!, mediaTypes, pickerProfile);
             executor.resolve({
                 type: 'mix',
                 tempFiles: [
@@ -6093,7 +6071,7 @@ export function initUniExtApi() {
         if (args.sourceType?.length === 1 && args.sourceType[0] === 'camera') {
             _takeCamera(args, executor);
         } else {
-            const lastWindow = getCurrentWindow2() as window2.Window;
+            const lastWindow = UTSHarmony.getCurrentWindow() as window2.Window;
             const UIContextPromptAction = await lastWindow.getUIContext().getPromptAction();
             UIContextPromptAction.showActionMenu({
                 buttons: [
@@ -6131,7 +6109,7 @@ export function initUniExtApi() {
     };
     const compressVideo: CompressVideo = defineAsyncApi<CompressVideoOptions, CompressVideoSuccess>(API_COMPRESS_VIDEO, async (args: CompressVideoOptions, executor: ApiExecutor<CompressVideoSuccess>)=>{
         let videoCompressor = new VideoCompressor();
-        videoCompressor.compressVideo(getAbilityContext6()!, args.src, getQuality(args.quality!)).then((data: CompressorResponse): void =>{
+        videoCompressor.compressVideo(UTSHarmony.getUIAbilityContext()!, args.src, getQuality(args.quality!)).then((data: CompressorResponse): void =>{
             if (data.code == CompressorResponseCode.SUCCESS) {
                 _getVideoInfo(data.outputPath).then((res)=>{
                     executor.resolve({
@@ -6634,7 +6612,7 @@ export function initUniExtApi() {
     }, RequestApiProtocol, RequestApiOptions) as Request<Object>;
     const lookupExt = (contentType: string): string | undefined =>{
         const rawContentType = contentType.split(';')[0].trim().toLowerCase();
-        return (UTSHarmony10.getExtensionFromMimeType(rawContentType) as string | null) || undefined;
+        return (UTSHarmony.getExtensionFromMimeType(rawContentType) as string | null) || undefined;
     };
     const lookupContentTypeWithUri = (uri: string): string | undefined =>{
         const uriArr = uri.split('.');
@@ -6642,7 +6620,7 @@ export function initUniExtApi() {
             return undefined;
         }
         const ext = uriArr.pop() as string;
-        return (UTSHarmony10.getMimeTypeFromExtension(ext) as string | null) || undefined;
+        return (UTSHarmony.getMimeTypeFromExtension(ext) as string | null) || undefined;
     };
     class UploadTask1 implements UploadTask {
         private _uploadTask: IUploadTask;
@@ -7055,7 +7033,7 @@ export function initUniExtApi() {
                 pushParams: bundleManager2.getBundleInfoForSelfSync(bundleManager2.BundleFlag.GET_BUNDLE_INFO_DEFAULT).name
             }
         } as Want;
-        const context = getAbilityContext7() as common1.UIAbilityContext;
+        const context = UTSHarmony.getUIAbilityContext() as common1.UIAbilityContext;
         context.startAbility(want).then(()=>{
             exec.resolve({
                 errMsg: ''
@@ -7100,7 +7078,7 @@ export function initUniExtApi() {
             uri: uri,
             type: fileContentType as string
         };
-        const abilityContext = getAbilityContext8() as common2.UIAbilityContext;
+        const abilityContext = UTSHarmony.getUIAbilityContext() as common2.UIAbilityContext;
         abilityContext.startAbility(want).then(()=>{
             exec.resolve({} as OpenDocumentSuccess);
         }, (err: Error)=>{
@@ -7363,7 +7341,7 @@ export function initUniExtApi() {
                         break;
                 }
             }
-            const window = getCurrentWindow3() as window.Window;
+            const window = UTSHarmony.getCurrentWindow() as window.Window;
             window.getUIContext().getPromptAction().showToast(showToastOptions);
             res.resolve({} as ShowToastSuccess);
         } catch (error) {
@@ -7397,7 +7375,7 @@ export function initUniExtApi() {
                 buttons.push(cancelButton);
             }
             buttons.push(confirmButton);
-            const window = getCurrentWindow4() as window.Window;
+            const window = UTSHarmony.getCurrentWindow() as window.Window;
             window.getUIContext().showAlertDialog({
                 title: args.title ?? '',
                 message: args.content ?? '',
@@ -7438,7 +7416,7 @@ export function initUniExtApi() {
                 color: options.itemColor!
             } as promptAction5.Button);
         });
-        const window = getCurrentWindow5() as window.Window;
+        const window = UTSHarmony.getCurrentWindow() as window.Window;
         window.getUIContext().getPromptAction().showActionMenu({
             title: options.title,
             buttons: actionMenuButtons
@@ -7480,7 +7458,7 @@ export function initUniExtApi() {
     const API_RPX2PX = 'rpx2px';
     const EPS = 1e-4;
     const rpx2px: Rpx2px = defineSyncApi<number>(API_RPX2PX, (number: number): number =>{
-        const windowStage: harmonyWindow.WindowStage = UTSHarmony11.getWindowStage();
+        const windowStage: harmonyWindow.WindowStage = UTSHarmony.getWindowStage() as harmonyWindow.WindowStage;
         let windowWidthInVp: number = 384;
         let windowWidthInPx: number = 1344;
         if (windowStage) {
@@ -7609,7 +7587,7 @@ export function initUniExtApi() {
             enableMultiMode: true,
             enableAlbum: !options.onlyFromCamera
         };
-        scanBarcode.startScanForResult(getAbilityContext9()!, scanOptions, (err, data)=>{
+        scanBarcode.startScanForResult(UTSHarmony.getUIAbilityContext()!, scanOptions, (err, data)=>{
             if (err) {
                 exec.reject(err.message);
                 return;
@@ -7653,7 +7631,7 @@ export function initUniExtApi() {
             shareData.addRecord(shareRecords[index]);
         }
         const shareController: systemShare.ShareController = new systemShare.ShareController(shareData);
-        shareController.show(getAbilityContext10() as common3.UIAbilityContext, {} as systemShare.ShareControllerOptions);
+        shareController.show(UTSHarmony.getUIAbilityContext() as common3.UIAbilityContext, {} as systemShare.ShareControllerOptions);
         const onDismiss = ()=>{
             shareController.off('dismiss', onDismiss);
             exec.resolve({} as ShareWithSystemSuccess);
@@ -7689,7 +7667,7 @@ export function initUniExtApi() {
         if (stores.has(appId)) {
             return stores.get(appId)!;
         }
-        const store = dataPreferences.getPreferencesSync(getAbilityContext11() as common4.UIAbilityContext, {
+        const store = dataPreferences.getPreferencesSync(UTSHarmony.getUIAbilityContext() as common4.UIAbilityContext, {
             name: `storage.${appId}`
         } as dataPreferences.Options);
         stores.set(appId, store);

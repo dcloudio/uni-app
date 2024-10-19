@@ -12043,7 +12043,6 @@ const setBackgroundTextStyle = defineAsyncApi(API_SET_BACKGROUND_TEXT_STYLE, ({ 
         const webview = getWebview(__page__);
         if (webview) {
             webview.setStyle({
-                // @ts-expect-error
                 backgroundTextStyle: textStyle,
             });
             resolve();

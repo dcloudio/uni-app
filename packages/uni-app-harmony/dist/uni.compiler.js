@@ -28,8 +28,6 @@ var StandaloneExtApis = [
 			"getPushClientId",
 			"onPushMessage",
 			"offPushMessage",
-			"getChannelManager",
-			"getPushChannelManager",
 			"createPushMessage",
 			"setAppBadgeNumber"
 		],
