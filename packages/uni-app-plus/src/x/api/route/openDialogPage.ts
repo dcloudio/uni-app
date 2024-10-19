@@ -1,5 +1,4 @@
 import {
-  EventChannel,
   ON_HIDE,
   isSystemActionSheetDialogPage,
   isSystemDialogPage,
@@ -15,7 +14,6 @@ import {
   homeSystemDialogPages,
 } from '../../framework/page/dialogPage'
 import { registerDialogPage } from '../../framework/page/register'
-import { getWebviewId } from '../../../service/framework/webview/utils'
 import type { UniDialogPage } from '@dcloudio/uni-app-x/types/page'
 import type { OpenDialogPageOptions } from '@dcloudio/uni-app-x/types/uni'
 import { closeNativeDialogPage } from './utils'
@@ -23,7 +21,7 @@ import { closeNativeDialogPage } from './utils'
 export const openDialogPage = (
   options: OpenDialogPageOptions
 ): UniDialogPage | null => {
-  const { url, events, animationType } = options
+  const { url, animationType } = options
   if (!options.url) {
     triggerFailCallback(options, 'url is required')
     return null
@@ -111,8 +109,7 @@ export const openDialogPage = (
   }
 
   const successOptions = {
-    errMsg: 'openDialogPage: ok',
-    eventChannel: new EventChannel(getWebviewId() + 1, events),
+    errMsg: 'openDialogPage:ok',
   }
   options.success?.(successOptions)
   options.complete?.(successOptions)

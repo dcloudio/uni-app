@@ -7,7 +7,6 @@ import {
   incrementEscBackPageNum,
 } from '../../../framework/setup/page'
 import {
-  EventChannel,
   isSystemActionSheetDialogPage,
   isSystemDialogPage,
   parseUrl,
@@ -86,8 +85,7 @@ export const openDialogPage = (
   }
 
   const successOptions = {
-    errMsg: 'openDialogPage: ok',
-    eventChannel: new EventChannel(0, options.events),
+    errMsg: 'openDialogPage:ok',
   }
   options.success?.(successOptions)
   options.complete?.(successOptions)
