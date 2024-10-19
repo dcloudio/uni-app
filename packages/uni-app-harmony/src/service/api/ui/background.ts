@@ -54,7 +54,6 @@ export const setBackgroundTextStyle =
         const webview = getWebview(__page__)
         if (webview) {
           webview.setStyle({
-            // @ts-expect-error
             backgroundTextStyle: textStyle,
           })
           resolve()

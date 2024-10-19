@@ -48,7 +48,7 @@
     "@babel/core": "^7.23.3",
     "@babel/parser": "^7.23.9",
     "@babel/preset-env": "^7.20.2",
-    "@dcloudio/types": "3.4.11",
+    "@dcloudio/types": "3.4.14",
     "@dcloudio/uni-api": "3.0.0-alpha-4030120240925001",
     "@dcloudio/uni-app": "3.0.0-alpha-4030120240925001",
     "@dcloudio/uni-app-x": "^0.7.35",
