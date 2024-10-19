@@ -2816,25 +2816,8 @@ const envMethod = /* @__PURE__ */ (() => "env")();
 function normalizeWindowBottom(windowBottom) {
   return envMethod ? `calc(${windowBottom}px + ${envMethod}(safe-area-inset-bottom))` : `${windowBottom}px`;
 }
-function getPageInstanceByVm(vm) {
-  var _a;
-  let pageInstance = vm.$.parent;
-  while (pageInstance && ((_a = pageInstance.type) == null ? void 0 : _a.name) !== "Page") {
-    pageInstance = pageInstance.parent;
-  }
-  return pageInstance;
-}
-function getPageInstanceByChild(child) {
-  var _a;
-  let pageInstance = child;
-  while (((_a = pageInstance.type) == null ? void 0 : _a.name) !== "Page") {
-    pageInstance = pageInstance.parent;
-  }
-  return pageInstance;
-}
 const DIALOG_TAG = "dialog";
 const SYSTEM_DIALOG_TAG = "systemDialog";
-const SYSTEM_DIALOG_ACTION_SHEET_PAGE_PATH = "uni:actionSheet";
 function isDialogPageInstance(vm) {
   return isNormalDialogPageInstance(vm) || isSystemDialogPageInstance(vm);
 }
@@ -2843,9 +2826,6 @@ function isNormalDialogPageInstance(vm) {
 }
 function isSystemDialogPageInstance(vm) {
   return vm.attrs["data-type"] === SYSTEM_DIALOG_TAG;
-}
-function isSystemActionSheetDialogPage(page) {
-  return page.route.startsWith(SYSTEM_DIALOG_ACTION_SHEET_PAGE_PATH);
 }
 const homeDialogPages = [];
 const homeSystemDialogPages = [];
@@ -2896,8 +2876,8 @@ class UniPageImpl {
 }
 class UniNormalPageImpl extends UniPageImpl {
   getDialogPages() {
-    var _a;
-    return this.vm ? (_a = getPageInstanceByVm(this.vm)) == null ? void 0 : _a.$dialogPages.value : [];
+    var _a, _b;
+    return ((_b = (_a = this.vm) == null ? void 0 : _a.$pageLayoutInstance) == null ? void 0 : _b.$dialogPages.value) || [];
   }
   constructor({
     route,
@@ -2910,8 +2890,18 @@ class UniNormalPageImpl extends UniPageImpl {
 function initXPage(vm, route, page) {
   var _a, _b;
   initPageVm(vm, page);
+  Object.defineProperty(vm, "$pageLayoutInstance", {
+    get() {
+      var _a2;
+      let res = this.$.parent;
+      while (((_a2 = res == null ? void 0 : res.type) == null ? void 0 : _a2.name) !== "Page") {
+        res = res.parent;
+      }
+      return res;
+    }
+  });
   vm.$basePage = vm.$page;
-  const pageInstance = getPageInstanceByVm(vm);
+  const pageInstance = vm.$pageLayoutInstance;
   if (!isDialogPageInstance(pageInstance)) {
     const uniPage = new UniNormalPageImpl({
       route: (route == null ? void 0 : route.path) || "",
@@ -2961,7 +2951,7 @@ function initXPage(vm, route, page) {
       onReachBottomDistance: pageMeta.onReachBottomDistance || uniShared.ON_REACH_BOTTOM_DISTANCE,
       backgroundColorContent: pageMeta.backgroundColorContent
     });
-    vm.$dialogPage = (_a = getPageInstanceByVm(vm)) == null ? void 0 : _a.$dialogPage;
+    vm.$dialogPage = (_a = vm.$pageLayoutInstance) == null ? void 0 : _a.$dialogPage;
     currentPagesMap.set(normalizeRouteKey(page.path, page.id), vm);
     if (currentPagesMap.size === 1) {
       setTimeout(() => {
@@ -2983,7 +2973,7 @@ function initXPage(vm, route, page) {
       }
     }
   } else {
-    vm.$page = (_b = getPageInstanceByVm(vm)) == null ? void 0 : _b.$dialogPage;
+    vm.$page = (_b = vm.$pageLayoutInstance) == null ? void 0 : _b.$dialogPage;
     pageInstance.$dialogPage.$vm = vm;
   }
 }
@@ -3165,6 +3155,14 @@ function getRealPath(filePath) {
     );
   }
   return filePath;
+}
+function getPageInstanceByChild(child) {
+  var _a;
+  let pageInstance = child;
+  while (((_a = pageInstance.type) == null ? void 0 : _a.name) !== "Page") {
+    pageInstance = pageInstance.parent;
+  }
+  return pageInstance;
 }
 var startTag = /^<([-A-Za-z0-9_]+)((?:\s+[a-zA-Z_:][-a-zA-Z0-9_:.]*(?:\s*=\s*(?:(?:"[^"]*")|(?:'[^']*')|[^>\s]+))?)*)\s*(\/?)>/;
 var endTag = /^<\/([-A-Za-z0-9_]+)[^>]*>/;
@@ -14017,14 +14015,12 @@ exports.getApp = getApp$1;
 exports.getAppBaseInfo = getAppBaseInfo;
 exports.getCurrentPages = getCurrentPages$1;
 exports.getDeviceInfo = getDeviceInfo;
-exports.getPageInstanceByVm = getPageInstanceByVm;
 exports.getRealPath = getRealPath;
 exports.getStorage = getStorage;
 exports.getStorageInfo = getStorageInfo;
 exports.getStorageInfoSync = getStorageInfoSync;
 exports.getStorageSync = getStorageSync;
 exports.getSystemInfoSync = getSystemInfoSync;
-exports.isSystemActionSheetDialogPage = isSystemActionSheetDialogPage;
 exports.plugin = index$c;
 exports.removeStorage = removeStorage;
 exports.removeStorageSync = removeStorageSync;

@@ -6,14 +6,14 @@ import {
   homeSystemDialogPages,
   incrementEscBackPageNum,
 } from '../../../framework/setup/page'
-import { EventChannel, parseUrl } from '@dcloudio/uni-shared'
-import type { OpenDialogPageOptions } from '@dcloudio/uni-app-x/types/uni'
-import type { UniDialogPage } from '@dcloudio/uni-app-x/types/page'
-import { getPageInstanceByVm } from '../../../../framework/setup/utils'
 import {
+  EventChannel,
   isSystemActionSheetDialogPage,
   isSystemDialogPage,
-} from '../../../framework/helpers/utils'
+  parseUrl,
+} from '@dcloudio/uni-shared'
+import type { OpenDialogPageOptions } from '@dcloudio/uni-app-x/types/uni'
+import type { UniDialogPage } from '@dcloudio/uni-app-x/types/page'
 
 export const openDialogPage = (
   options: OpenDialogPageOptions
@@ -74,12 +74,12 @@ export const openDialogPage = (
         parentPage = currentPages[currentPages.length - 1]
       }
       dialogPage.getParentPage = () => parentPage!
-      getPageInstanceByVm(parentPage!.vm)?.$systemDialogPages.value.push(
+      parentPage!.vm.$pageLayoutInstance?.$systemDialogPages.value.push(
         dialogPage
       )
       if (isSystemActionSheetDialogPage(dialogPage)) {
         closePreActionSheet(
-          getPageInstanceByVm(parentPage!.vm)?.$systemDialogPages.value
+          parentPage!.vm.$pageLayoutInstance?.$systemDialogPages.value
         )
       }
     }

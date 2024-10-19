@@ -6,7 +6,7 @@ var __publicField = (obj, key, value) => {
 };
 import { withModifiers, createVNode, getCurrentInstance, ref, defineComponent, openBlock, createElementBlock, onMounted, provide, computed, watch, onUnmounted, inject, onBeforeUnmount, mergeProps, reactive, injectHook, nextTick, createApp, createBlock, watchEffect, isVNode, withDirectives, vShow, renderList, isReactive, Transition, effectScope, onActivated, withCtx, KeepAlive, resolveDynamicComponent, markRaw, createElementVNode, normalizeClass, normalizeStyle, toDisplayString, createCommentVNode, Fragment, onBeforeMount, renderSlot, onBeforeActivate, onBeforeDeactivate, shallowRef, Comment, h, createTextVNode } from "vue";
 import { isArray, isString, extend, remove, stringifyStyle, parseStringStyle, isPlainObject as isPlainObject$1, isFunction, capitalize, camelize, hasOwn, isObject, toRawType, makeMap as makeMap$1, isPromise, invokeArrayFns as invokeArrayFns$1, hyphenate } from "@vue/shared";
-import { once, UNI_STORAGE_LOCALE, I18N_JSON_DELIMITERS, Emitter, passive, initCustomDatasetOnce, resolveComponentInstance, normalizeStyles, addLeadingSlash, invokeArrayFns, removeLeadingSlash, resolveOwnerVm, resolveOwnerEl, ON_WXS_INVOKE_CALL_METHOD, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_SHOW, ON_HIDE, ON_PAGE_SCROLL, ON_REACH_BOTTOM, EventChannel, parseQuery, NAVBAR_HEIGHT, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, getLen, getCustomDataset, parseUrl, sortObject, ON_THEME_CHANGE, OFF_THEME_CHANGE, updateElementStyle, LINEFEED, ON_WEB_INVOKE_APP_SERVICE, debounce, ON_BACK_PRESS, addFont, ON_NAVIGATION_BAR_CHANGE, scrollTo, RESPONSIVE_MIN_WIDTH, formatDateTime, normalizeTitleColor, ON_REACH_BOTTOM_DISTANCE, ON_UNLOAD, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_PULL_DOWN_REFRESH, stringifyQuery as stringifyQuery$1, decodedQuery, WEB_INVOKE_APPSERVICE, onCreateVueApp, SCHEME_RE, DATA_RE, PRIMARY_COLOR, isUniLifecycleHook, ON_LOAD, UniLifecycleHooks, invokeCreateErrorHandler, invokeCreateVueAppHook } from "@dcloudio/uni-shared";
+import { once, UNI_STORAGE_LOCALE, I18N_JSON_DELIMITERS, Emitter, passive, initCustomDatasetOnce, resolveComponentInstance, normalizeStyles, addLeadingSlash, invokeArrayFns, removeLeadingSlash, resolveOwnerVm, resolveOwnerEl, ON_WXS_INVOKE_CALL_METHOD, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_SHOW, ON_HIDE, ON_PAGE_SCROLL, ON_REACH_BOTTOM, EventChannel, parseQuery, NAVBAR_HEIGHT, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, getLen, getCustomDataset, parseUrl, sortObject, ON_THEME_CHANGE, OFF_THEME_CHANGE, updateElementStyle, LINEFEED, ON_WEB_INVOKE_APP_SERVICE, debounce, ON_BACK_PRESS, addFont, ON_NAVIGATION_BAR_CHANGE, scrollTo, RESPONSIVE_MIN_WIDTH, formatDateTime, normalizeTitleColor, ON_REACH_BOTTOM_DISTANCE, isSystemDialogPage, isSystemActionSheetDialogPage, ON_UNLOAD, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_PULL_DOWN_REFRESH, stringifyQuery as stringifyQuery$1, decodedQuery, WEB_INVOKE_APPSERVICE, SYSTEM_DIALOG_ACTION_SHEET_PAGE_PATH, onCreateVueApp, SCHEME_RE, DATA_RE, PRIMARY_COLOR, isUniLifecycleHook, ON_LOAD, UniLifecycleHooks, invokeCreateErrorHandler, invokeCreateVueAppHook } from "@dcloudio/uni-shared";
 import { onCreateVueApp as onCreateVueApp2 } from "@dcloudio/uni-shared";
 import { useRoute, isNavigationFailure, RouterView, useRouter, createRouter, createWebHistory, createWebHashHistory } from "vue-router";
 import { initVueI18n, isI18nStr, LOCALE_EN, LOCALE_ES, LOCALE_FR, LOCALE_ZH_HANS, LOCALE_ZH_HANT } from "@dcloudio/uni-i18n";
@@ -16830,45 +16830,8 @@ const openLocation = /* @__PURE__ */ defineAsyncApi(
   OpenLocationProtocol,
   OpenLocationOptions
 );
-const launchOptions = /* @__PURE__ */ createLaunchOptions();
-const enterOptions = /* @__PURE__ */ createLaunchOptions();
-function getEnterOptions() {
-  return extend({}, enterOptions);
-}
-function getLaunchOptions() {
-  return extend({}, launchOptions);
-}
-function initLaunchOptions({
-  path,
-  query
-}) {
-  extend(launchOptions, {
-    path,
-    query
-  });
-  extend(enterOptions, launchOptions);
-  return extend({}, launchOptions);
-}
-function getPageInstanceByVm(vm) {
-  var _a;
-  let pageInstance = vm.$.parent;
-  while (pageInstance && ((_a = pageInstance.type) == null ? void 0 : _a.name) !== "Page") {
-    pageInstance = pageInstance.parent;
-  }
-  return pageInstance;
-}
-function getPageInstanceByChild(child) {
-  var _a;
-  let pageInstance = child;
-  while (((_a = pageInstance.type) == null ? void 0 : _a.name) !== "Page") {
-    pageInstance = pageInstance.parent;
-  }
-  return pageInstance;
-}
 const DIALOG_TAG = "dialog";
 const SYSTEM_DIALOG_TAG = "systemDialog";
-const SYSTEM_DIALOG_PAGE_PATH_STARTER = "uni:";
-const SYSTEM_DIALOG_ACTION_SHEET_PAGE_PATH = "uni:actionSheet";
 function isDialogPageInstance(vm) {
   return isNormalDialogPageInstance(vm) || isSystemDialogPageInstance(vm);
 }
@@ -16877,12 +16840,6 @@ function isNormalDialogPageInstance(vm) {
 }
 function isSystemDialogPageInstance(vm) {
   return vm.attrs["data-type"] === SYSTEM_DIALOG_TAG;
-}
-function isSystemDialogPage(page) {
-  return page.route.startsWith(SYSTEM_DIALOG_PAGE_PATH_STARTER);
-}
-function isSystemActionSheetDialogPage(page) {
-  return page.route.startsWith(SYSTEM_DIALOG_ACTION_SHEET_PAGE_PATH);
 }
 let escBackPageNum = 0;
 const homeDialogPages = [];
@@ -16934,8 +16891,8 @@ class UniPageImpl {
 }
 class UniNormalPageImpl extends UniPageImpl {
   getDialogPages() {
-    var _a;
-    return this.vm ? (_a = getPageInstanceByVm(this.vm)) == null ? void 0 : _a.$dialogPages.value : [];
+    var _a, _b;
+    return ((_b = (_a = this.vm) == null ? void 0 : _a.$pageLayoutInstance) == null ? void 0 : _b.$dialogPages.value) || [];
   }
   constructor({
     route,
@@ -16964,8 +16921,18 @@ class UniDialogPageImpl extends UniPageImpl {
 function initXPage(vm, route, page) {
   var _a, _b;
   initPageVm(vm, page);
+  Object.defineProperty(vm, "$pageLayoutInstance", {
+    get() {
+      var _a2;
+      let res = this.$.parent;
+      while (((_a2 = res == null ? void 0 : res.type) == null ? void 0 : _a2.name) !== "Page") {
+        res = res.parent;
+      }
+      return res;
+    }
+  });
   vm.$basePage = vm.$page;
-  const pageInstance = getPageInstanceByVm(vm);
+  const pageInstance = vm.$pageLayoutInstance;
   if (!isDialogPageInstance(pageInstance)) {
     const uniPage = new UniNormalPageImpl({
       route: (route == null ? void 0 : route.path) || "",
@@ -17015,7 +16982,7 @@ function initXPage(vm, route, page) {
       onReachBottomDistance: pageMeta.onReachBottomDistance || ON_REACH_BOTTOM_DISTANCE,
       backgroundColorContent: pageMeta.backgroundColorContent
     });
-    vm.$dialogPage = (_a = getPageInstanceByVm(vm)) == null ? void 0 : _a.$dialogPage;
+    vm.$dialogPage = (_a = vm.$pageLayoutInstance) == null ? void 0 : _a.$dialogPage;
     currentPagesMap.set(normalizeRouteKey(page.path, page.id), vm);
     if (currentPagesMap.size === 1) {
       setTimeout(() => {
@@ -17037,7 +17004,7 @@ function initXPage(vm, route, page) {
       }
     }
   } else {
-    vm.$page = (_b = getPageInstanceByVm(vm)) == null ? void 0 : _b.$dialogPage;
+    vm.$page = (_b = vm.$pageLayoutInstance) == null ? void 0 : _b.$dialogPage;
     pageInstance.$dialogPage.$vm = vm;
   }
 }
@@ -17118,12 +17085,12 @@ const openDialogPage = (options) => {
         parentPage = currentPages[currentPages.length - 1];
       }
       dialogPage.getParentPage = () => parentPage;
-      (_a = getPageInstanceByVm(parentPage.vm)) == null ? void 0 : _a.$systemDialogPages.value.push(
+      (_a = parentPage.vm.$pageLayoutInstance) == null ? void 0 : _a.$systemDialogPages.value.push(
         dialogPage
       );
       if (isSystemActionSheetDialogPage(dialogPage)) {
         closePreActionSheet(
-          (_b = getPageInstanceByVm(parentPage.vm)) == null ? void 0 : _b.$systemDialogPages.value
+          (_b = parentPage.vm.$pageLayoutInstance) == null ? void 0 : _b.$systemDialogPages.value
         );
       }
     }
@@ -17155,7 +17122,7 @@ function closePreActionSheet(dialogPages) {
   }
 }
 const closeDialogPage = (options) => {
-  var _a, _b, _c;
+  var _a, _b;
   const currentPages = getCurrentPages();
   const currentPage = currentPages[currentPages.length - 1];
   if (!currentPage) {
@@ -17185,7 +17152,7 @@ const closeDialogPage = (options) => {
         return;
       }
     } else {
-      const parentSystemDialogPages = (_a = getPageInstanceByVm(parentPage.vm)) == null ? void 0 : _a.$systemDialogPages.value;
+      const parentSystemDialogPages = parentPage.vm.$pageLayoutInstance.$systemDialogPages.value;
       const index2 = parentSystemDialogPages.indexOf(dialogPage);
       parentSystemDialogPages.splice(index2, 1);
       return;
@@ -17204,8 +17171,8 @@ const closeDialogPage = (options) => {
     dialogPages.length = 0;
   }
   const successOptions = { errMsg: "closeDialogPage: ok" };
-  (_b = options == null ? void 0 : options.success) == null ? void 0 : _b.call(options, successOptions);
-  (_c = options == null ? void 0 : options.complete) == null ? void 0 : _c.call(options, successOptions);
+  (_a = options == null ? void 0 : options.success) == null ? void 0 : _a.call(options, successOptions);
+  (_b = options == null ? void 0 : options.complete) == null ? void 0 : _b.call(options, successOptions);
 };
 function triggerFailCallback(options, errMsg) {
   var _a, _b;
@@ -17249,7 +17216,7 @@ const hideActionSheet2$1 = () => {
   const page = getCurrentPage();
   if (!page)
     return;
-  const systemDialogPages = (_a = getPageInstanceByVm(page.vm)) == null ? void 0 : _a.$systemDialogPages.value;
+  const systemDialogPages = (_a = page.vm.$pageLayoutInstance) == null ? void 0 : _a.$systemDialogPages.value;
   for (let i = 0; i < systemDialogPages.length; i++) {
     if (isSystemActionSheetDialogPage(systemDialogPages[i])) {
       systemDialogPages.splice(i, 1);
@@ -18396,6 +18363,33 @@ function renderPage(component, props2) {
     _: 1
   });
 }
+const launchOptions = /* @__PURE__ */ createLaunchOptions();
+const enterOptions = /* @__PURE__ */ createLaunchOptions();
+function getEnterOptions() {
+  return extend({}, enterOptions);
+}
+function getLaunchOptions() {
+  return extend({}, launchOptions);
+}
+function initLaunchOptions({
+  path,
+  query
+}) {
+  extend(launchOptions, {
+    path,
+    query
+  });
+  extend(enterOptions, launchOptions);
+  return extend({}, launchOptions);
+}
+function getPageInstanceByChild(child) {
+  var _a;
+  let pageInstance = child;
+  while (((_a = pageInstance.type) == null ? void 0 : _a.name) !== "Page") {
+    pageInstance = pageInstance.parent;
+  }
+  return pageInstance;
+}
 function wrapperComponentSetup(comp, { clone, init: init2, setup, before }) {
   if (clone) {
     comp = extend({}, comp);
@@ -18477,7 +18471,7 @@ function setupPage(comp) {
           const pageInstance = getPageInstanceByChild(instance2);
           if (pageInstance.attrs["data-type"] === DIALOG_TAG) {
             const parentPage = ((_a = instance2.proxy) == null ? void 0 : _a.$page).getParentPage();
-            const parentPageInstance = parentPage ? getPageInstanceByVm(parentPage.vm) : null;
+            const parentPageInstance = parentPage == null ? void 0 : parentPage.vm.$pageLayoutInstance;
             if (parentPageInstance) {
               const dialogPages = parentPageInstance.$dialogPages.value;
               if (dialogPages.length > 1) {
@@ -18928,8 +18922,10 @@ function removePage(routeKey, removeRouteCaches = true) {
     for (let i = dialogPages.length - 1; i >= 0; i--) {
       closeDialogPage({ dialogPage: dialogPages[i] });
     }
-    const systemDialogPages = (_a = getPageInstanceByVm(pageVm)) == null ? void 0 : _a.$systemDialogPages.value;
-    systemDialogPages.length = 0;
+    const systemDialogPages = (_a = pageVm.$pageLayoutInstance) == null ? void 0 : _a.$systemDialogPages.value;
+    if (systemDialogPages) {
+      systemDialogPages.length = 0;
+    }
   }
   pageVm.$.__isUnload = true;
   invokeHook(pageVm, ON_UNLOAD);
@@ -28463,7 +28459,6 @@ export {
   getLocale,
   getLocation,
   getNetworkType,
-  getPageInstanceByVm,
   getProvider,
   getPushClientId,
   getRealPath,
@@ -28496,7 +28491,6 @@ export {
   hideTopWindow,
   interceptors,
   invokePushCallback,
-  isSystemActionSheetDialogPage,
   loadFontFace,
   login,
   makePhoneCall,

@@ -5,7 +5,6 @@ import {
   normalizeTitleColor,
 } from '@dcloudio/uni-shared'
 import { handleBeforeEntryPageRoutes } from '../../../service/api/route/utils'
-import { getPageInstanceByVm } from '../../../framework/setup/utils'
 
 import type {
   UniDialogPage,
@@ -94,7 +93,7 @@ class UniPageImpl implements UniPage {
 
 class UniNormalPageImpl extends UniPageImpl implements UniNormalPage {
   getDialogPages(): UniPage[] {
-    return this.vm ? getPageInstanceByVm(this.vm)?.$dialogPages.value : []
+    return this.vm?.$pageLayoutInstance?.$dialogPages.value || []
   }
   constructor({
     route,
@@ -138,8 +137,18 @@ export function initXPage(
   page: Page.PageInstance['$page']
 ) {
   initPageVm(vm, page)
+  // 获取 packages/uni-h5/src/framework/components/page/index.ts defineSystemComponent page currentInstance
+  Object.defineProperty(vm, '$pageLayoutInstance', {
+    get() {
+      let res = this.$.parent
+      while (res?.type?.name !== 'Page') {
+        res = res.parent
+      }
+      return res
+    },
+  })
   vm.$basePage = vm.$page as Page.PageInstance['$page']
-  const pageInstance = getPageInstanceByVm(vm)!
+  const pageInstance = vm.$pageLayoutInstance!
   if (!isDialogPageInstance(pageInstance)) {
     const uniPage = new UniNormalPageImpl({
       route: route?.path || '',
@@ -196,8 +205,7 @@ export function initXPage(
           pageMeta.onReachBottomDistance || ON_REACH_BOTTOM_DISTANCE,
         backgroundColorContent: pageMeta.backgroundColorContent,
       })
-    // @ts-expect-error
-    vm.$dialogPage = getPageInstanceByVm(vm)?.$dialogPage
+    vm.$dialogPage = vm.$pageLayoutInstance?.$dialogPage
 
     currentPagesMap.set(normalizeRouteKey(page.path, page.id), vm)
     if (currentPagesMap.size === 1) {
@@ -221,7 +229,7 @@ export function initXPage(
       }
     }
   } else {
-    vm.$page = getPageInstanceByVm(vm)?.$dialogPage!
+    vm.$page = vm.$pageLayoutInstance?.$dialogPage!
     pageInstance.$dialogPage!.$vm = vm
   }
 }

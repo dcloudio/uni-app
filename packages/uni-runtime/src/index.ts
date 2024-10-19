@@ -15,7 +15,13 @@ export {
   defineOnApi,
   defineOffApi,
 } from '@dcloudio/uni-api'
-export { Emitter, resolveComponentInstance } from '@dcloudio/uni-shared'
+export {
+  Emitter,
+  resolveComponentInstance,
+  //#if _X_
+  isSystemActionSheetDialogPage,
+  //#endif
+} from '@dcloudio/uni-shared'
 export {
   getRealPath,
   requestComponentInfo,
@@ -29,8 +35,4 @@ export {
   getCurrentPageVm,
   getPageIdByVm,
 } from '@dcloudio/uni-core'
-export {
-  getPageInstanceByVm,
-  isSystemActionSheetDialogPage,
-} from '@dcloudio/uni-h5'
 export const __uniConfig = globalThis.__uniConfig

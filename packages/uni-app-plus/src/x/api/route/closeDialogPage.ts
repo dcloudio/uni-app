@@ -1,6 +1,6 @@
-import { ON_SHOW } from '@dcloudio/uni-shared'
+import { ON_SHOW, isSystemDialogPage } from '@dcloudio/uni-shared'
 import { invokeHook } from '@dcloudio/uni-core'
-import { closeNativeDialogPage, isSystemDialogPage } from './utils'
+import { closeNativeDialogPage } from './utils'
 import type { CloseDialogPageOptions } from '@dcloudio/uni-app-x/types/uni'
 
 export const closeDialogPage = (options?: CloseDialogPageOptions) => {

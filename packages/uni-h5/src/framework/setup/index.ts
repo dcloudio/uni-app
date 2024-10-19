@@ -46,7 +46,6 @@ import { usePageMeta, usePageRoute } from './provide'
 import {
   getEnterOptions,
   getPageInstanceByChild,
-  getPageInstanceByVm,
   initLaunchOptions,
 } from './utils'
 import type { RouteLocationNormalizedLoaded } from 'vue-router'
@@ -166,9 +165,7 @@ export function setupPage(comp: any) {
             const parentPage = (
               instance.proxy?.$page as UniPage
             ).getParentPage()
-            const parentPageInstance = parentPage
-              ? getPageInstanceByVm(parentPage.vm)
-              : null
+            const parentPageInstance = parentPage?.vm.$pageLayoutInstance
             if (parentPageInstance) {
               const dialogPages = parentPageInstance.$dialogPages.value
               if (dialogPages.length > 1) {

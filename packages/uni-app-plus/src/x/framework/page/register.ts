@@ -9,6 +9,7 @@ import {
   ON_READY,
   ON_RESIZE,
   ON_UNLOAD,
+  SYSTEM_DIALOG_PAGE_PATH_STARTER,
   formatLog,
 } from '@dcloudio/uni-shared'
 import {
@@ -28,7 +29,6 @@ import { getAppThemeFallbackOS, normalizePageStyles } from '../theme'
 import { invokePageReadyHooks } from '../../api/route/performance'
 import { homeDialogPages, homeSystemDialogPages } from './dialogPage'
 import type { UniDialogPage } from '@dcloudio/uni-app-x/types/page'
-import { SYSTEM_DIALOG_PAGE_PATH_STARTER } from '../../api/route/utils'
 
 type PageNodeOptions = {}
 

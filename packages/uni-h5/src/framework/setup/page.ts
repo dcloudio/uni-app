@@ -36,7 +36,6 @@ import { closeDialogPage } from '../../x/service/api'
 //#endif
 //#if _X_
 import { initXPage } from '../../x/framework/setup/page'
-import { getPageInstanceByVm } from './utils'
 //#endif
 
 const SEP = '$$'
@@ -128,8 +127,10 @@ export function removePage(routeKey: string, removeRouteCaches = true) {
       closeDialogPage({ dialogPage: dialogPages[i] })
     }
     const systemDialogPages =
-      getPageInstanceByVm(pageVm)?.$systemDialogPages.value
-    systemDialogPages.length = 0
+      pageVm.$pageLayoutInstance?.$systemDialogPages.value
+    if (systemDialogPages) {
+      systemDialogPages.length = 0
+    }
   }
   pageVm.$.__isUnload = true
   invokeHook(pageVm, ON_UNLOAD)

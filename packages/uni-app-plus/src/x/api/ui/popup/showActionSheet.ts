@@ -1,9 +1,11 @@
-import { once } from '@dcloudio/uni-shared'
+import {
+  SYSTEM_DIALOG_ACTION_SHEET_PAGE_PATH,
+  once,
+} from '@dcloudio/uni-shared'
 
 import showActionSheetPage from '@dcloudio/uni-ext-api/uni-actionSheet/pages/actionSheet/actionSheet.vue'
 
 import { definePage } from '../../../../service/framework/page'
-import { SYSTEM_DIALOG_ACTION_SHEET_PAGE_PATH } from '../../route/utils'
 
 const registerShowActionSheetPage = once(() => {
   const route = SYSTEM_DIALOG_ACTION_SHEET_PAGE_PATH

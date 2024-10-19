@@ -17,3 +17,4 @@ export { default as Emitter } from './TinyEmitter'
 export * from './theme'
 
 export * from './node/locale'
+export * from './dialogPage'

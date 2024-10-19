@@ -1,5 +1,8 @@
 import { isArray } from '@vue/shared'
-import { once } from '@dcloudio/uni-shared'
+import {
+  SYSTEM_DIALOG_ACTION_SHEET_PAGE_PATH,
+  once,
+} from '@dcloudio/uni-shared'
 import { updateStyle } from '@dcloudio/uni-core'
 
 // @ts-expect-error
@@ -9,7 +12,6 @@ import showActionSheetPage from '@dcloudio/uni-ext-api/uni-actionSheet/pages/act
 
 import { renderPage } from '../utils'
 import { setupPage } from '../../../../../framework/setup'
-import { SYSTEM_DIALOG_ACTION_SHEET_PAGE_PATH } from '../../../../framework/helpers/utils'
 
 const registerShowActionSheetPageOnce = once(() => {
   if (

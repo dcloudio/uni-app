@@ -1,4 +1,10 @@
-import { EventChannel, ON_HIDE, parseUrl } from '@dcloudio/uni-shared'
+import {
+  EventChannel,
+  ON_HIDE,
+  isSystemActionSheetDialogPage,
+  isSystemDialogPage,
+  parseUrl,
+} from '@dcloudio/uni-shared'
 import { getCurrentPage, getRouteMeta, invokeHook } from '@dcloudio/uni-core'
 
 import { ANI_DURATION, ANI_SHOW } from '../../../service/constants'
@@ -12,11 +18,7 @@ import { registerDialogPage } from '../../framework/page/register'
 import { getWebviewId } from '../../../service/framework/webview/utils'
 import type { UniDialogPage } from '@dcloudio/uni-app-x/types/page'
 import type { OpenDialogPageOptions } from '@dcloudio/uni-app-x/types/uni'
-import {
-  closeNativeDialogPage,
-  isSystemActionSheetDialogPage,
-  isSystemDialogPage,
-} from './utils'
+import { closeNativeDialogPage } from './utils'
 
 export const openDialogPage = (
   options: OpenDialogPageOptions

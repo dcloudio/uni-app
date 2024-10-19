@@ -5,6 +5,7 @@ import { ComponentPublicInstance } from 'vue';
 import type { createApp } from 'vue';
 import type { NormalizedStyle } from '@vue/shared';
 import type { RendererNode } from 'vue';
+import type { UniDialogPage } from '@dcloudio/uni-app-x/types/page';
 
 export declare const ACTION_TYPE_ADD_EVENT = 8;
 
@@ -286,6 +287,10 @@ export declare function isMiniProgramNativeTag(tag: string): boolean;
 export declare function isRootHook(name: string): boolean;
 
 export declare function isRootImmediateHook(name: string): boolean;
+
+export declare function isSystemActionSheetDialogPage(page: UniDialogPage): boolean;
+
+export declare function isSystemDialogPage(page: UniDialogPage): boolean;
 
 export declare function isUniLifecycleHook(name: string, value: unknown, checkType?: boolean): boolean;
 
@@ -682,6 +687,10 @@ export declare const SLOT_DEFAULT_NAME = "d";
 export declare function sortObject<T extends Object>(obj: T): T;
 
 export declare function stringifyQuery(obj?: Record<string, any>, encodeStr?: typeof encodeURIComponent): string;
+
+export declare const SYSTEM_DIALOG_ACTION_SHEET_PAGE_PATH = "uni:actionSheet";
+
+export declare const SYSTEM_DIALOG_PAGE_PATH_STARTER = "uni:";
 
 export declare const TABBAR_HEIGHT = 50;
 

@@ -1,6 +1,7 @@
 import type { EventChannel, UniLifecycleHooks } from '@dcloudio/uni-shared'
 import { ComponentCustomProperties, ComponentInternalInstance } from 'vue'
 import type { IPage } from '@dcloudio/uni-app-x/types/native'
+import type { UniDialogPage } from '@dcloudio/uni-app-x/types/page'
 
 declare module '@vue/runtime-core' {
   interface ComponentCustomOptions {
@@ -32,6 +33,8 @@ declare module '@vue/runtime-core' {
     $page: Page.PageInstance['$page'] | UniPage | UniDialogPage
     // X web start
     $basePage: Page.PageInstance['$page']
+    $dialogPage?: UniDialogPage
+    $pageLayoutInstance: ComponentInternalInstance | null
     // X web end
     $mpType?: 'app' | 'page'
     $locale?: string

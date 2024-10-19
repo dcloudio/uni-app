@@ -1,10 +1,8 @@
 import { decrementEscBackPageNum } from '../../../framework/setup/page'
 import { invokeHook } from '@dcloudio/uni-core'
-import { ON_SHOW, ON_UNLOAD } from '@dcloudio/uni-shared'
+import { ON_SHOW, ON_UNLOAD, isSystemDialogPage } from '@dcloudio/uni-shared'
 import type { CloseDialogPageOptions } from '@dcloudio/uni-app-x/types/uni'
 import type { UniDialogPage } from '@dcloudio/uni-app-x/types/page'
-import { getPageInstanceByVm } from '../../../../framework/setup/utils'
-import { isSystemDialogPage } from '../../../framework/helpers/utils'
 
 export const closeDialogPage = (options?: CloseDialogPageOptions) => {
   const currentPages = getCurrentPages() as UniPage[]
@@ -37,8 +35,8 @@ export const closeDialogPage = (options?: CloseDialogPageOptions) => {
         return
       }
     } else {
-      const parentSystemDialogPages = getPageInstanceByVm(parentPage!.vm)
-        ?.$systemDialogPages.value
+      const parentSystemDialogPages =
+        parentPage!.vm.$pageLayoutInstance!.$systemDialogPages.value
       const index = parentSystemDialogPages.indexOf(dialogPage)
       parentSystemDialogPages.splice(index, 1)
       return
