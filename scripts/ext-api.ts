@@ -51,8 +51,10 @@ export function uts2ts({ target, platform }: Options): Plugin {
             {
               find: /^@dcloudio\/uni-ext-api\/(.*)/,
               replacement: '$1',
-              customResolver(source) {
-                return resolveExtApi(target, platform, source)
+              async customResolver(source) {
+                return resolveExtApi(target, platform, source).then(
+                  (fileName) => fileName.replace(/\\/g, '/')
+                )
               },
             },
           ],
