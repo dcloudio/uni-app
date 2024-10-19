@@ -1,4 +1,4 @@
-import { EventChannel, ON_HIDE, parseUrl } from '@dcloudio/uni-shared'
+import { ON_HIDE, parseUrl } from '@dcloudio/uni-shared'
 import { getCurrentPage, getRouteMeta, invokeHook } from '@dcloudio/uni-core'
 
 import { ANI_DURATION, ANI_SHOW } from '../../../service/constants'
@@ -6,19 +6,18 @@ import { showWebview } from './webview'
 import { beforeRoute, createNormalizeUrl } from '@dcloudio/uni-api'
 import { homeDialogPages } from '../../framework/page/dialogPage'
 import { registerDialogPage } from '../../framework/page/register'
-import { getWebviewId } from '../../../service/framework/webview/utils'
 import type { UniDialogPage } from '@dcloudio/uni-app-x/types/page'
 import type { OpenDialogPageOptions } from '@dcloudio/uni-app-x/types/uni'
 
 export const openDialogPage = (
   options: OpenDialogPageOptions
 ): UniDialogPage | null => {
-  const { url, events, animationType } = options
+  const { url, animationType } = options
   if (!options.url) {
     triggerFailCallback(options, 'url is required')
     return null
   }
-  const { path, query } = parseUrl(url)
+  const { path, query } = parseUrl(url as string)
   const normalizeUrl = createNormalizeUrl('navigateTo')
   const errMsg = normalizeUrl(path, {})
   if (errMsg) {
@@ -66,7 +65,7 @@ export const openDialogPage = (
   }
   // 有动画时先执行 show
   const page = registerDialogPage(
-    { url, path, query, openType: 'openDialogPage' },
+    { url: url as string, path, query, openType: 'openDialogPage' },
     dialogPage,
     noAnimation ? undefined : callback,
     // 有动画时延迟创建 vm
@@ -80,8 +79,7 @@ export const openDialogPage = (
   }
 
   const successOptions = {
-    errMsg: 'openDialogPage: ok',
-    eventChannel: new EventChannel(getWebviewId() + 1, events),
+    errMsg: 'openDialogPage:ok',
   }
   options.success?.(successOptions)
   options.complete?.(successOptions)

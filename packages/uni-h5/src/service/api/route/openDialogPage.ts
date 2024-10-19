@@ -5,7 +5,7 @@ import {
   homeDialogPages,
   incrementEscBackPageNum,
 } from '../../../framework/setup/page'
-import { EventChannel, parseUrl } from '@dcloudio/uni-shared'
+import { parseUrl } from '@dcloudio/uni-shared'
 import type { OpenDialogPageOptions } from '@dcloudio/uni-app-x/types/uni'
 import type { UniDialogPage } from '@dcloudio/uni-app-x/types/page'
 
@@ -58,8 +58,7 @@ export const openDialogPage = (
   }
 
   const successOptions = {
-    errMsg: 'openDialogPage: ok',
-    eventChannel: new EventChannel(0, options.events),
+    errMsg: 'openDialogPage:ok',
   }
   options.success?.(successOptions)
   options.complete?.(successOptions)
