@@ -269,6 +269,15 @@ export async function compileArkTSExtApi(
       targets: [
         {
           name: 'default',
+          config: {
+            buildOption: {
+              arkOptions: {
+                runtimeOnly: {
+                  packages: ['@dcloudio/uni-app-runtime'],
+                },
+              },
+            },
+          },
         },
       ],
     },
