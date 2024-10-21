@@ -1,6 +1,6 @@
 {
   "name": "@dcloudio/uni-uts-v1",
-  "version": "3.0.0-alpha-4030120241009001",
+  "version": "3.0.0-alpha-4030120241021001",
   "description": "uni-uts-v1",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -20,7 +20,7 @@
   "dependencies": {
     "@babel/code-frame": "^7.23.5",
     "@dcloudio/uni-app-x": "^0.7.35",
-    "@dcloudio/uts": "3.0.0-alpha-4030120241009001",
+    "@dcloudio/uts": "3.0.0-alpha-4030120241021001",
     "@rollup/pluginutils": "^5.0.5",
     "@vue/shared": "3.4.21",
     "adm-zip": "^0.5.12",
