@@ -16,8 +16,6 @@ import { buildByVite, initBuildOptions } from './build'
 import { addConfigFile, cleanOptions, printStartupDuration } from './utils'
 import { initEasycom } from '../utils/easycom'
 import { stopProfiler } from './action'
-import path from 'path'
-import fs from 'fs-extra'
 
 export function initUVueEnv() {
   // 直接指定了
@@ -59,24 +57,6 @@ export async function runUVueAndroidDev(options: CliOptions & ServerOptions) {
   let isFirstEnd = true
   watcher.on('event', async (event) => {
     if (event.code === 'BUNDLE_START') {
-      setTimeout(() => {
-        const sourceDir = path.join(
-          process.env.UNI_OUTPUT_DIR,
-          '../',
-          'cache/.app/src'
-        )
-        const targetDir =
-          '/Users/wangzhenyu/work/DCloud/git/uni-app-v2-android/framework-demo/src/main/java/uni/UNIXXXXXXX'
-        const targetPath = `${targetDir}/src`
-        try {
-          fs.emptyDirSync(targetDir)
-          console.log('目录已成功清空！')
-          fs.copySync(sourceDir, targetPath)
-          console.log('文件夹拷贝完成！')
-        } catch (err) {
-          console.error(err)
-        }
-      }, 2000)
       if (isFirstStart) {
         isFirstStart = false
         return
