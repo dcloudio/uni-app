@@ -4,7 +4,7 @@ import { type ComponentOptions, type ComponentPublicInstance, ref } from 'vue'
 import { initBaseInstance } from './componentInstance'
 import { initHooks, initUnknownHooks } from './componentHooks'
 import { LOCALE_EN, normalizeLocale } from '@dcloudio/uni-i18n'
-
+import { getBaseSystemInfo } from '@dcloudio/uni-platform'
 import App = WechatMiniprogram.App
 import {
   ON_ERROR,
@@ -161,7 +161,8 @@ export function initAppLifecycle(
 
 function initLocale(appVm: ComponentPublicInstance) {
   const locale = ref<string>(
-    normalizeLocale(__GLOBAL__.getSystemInfoSync().language) || LOCALE_EN
+    normalizeLocale((getBaseSystemInfo as any)('language').language) ||
+      LOCALE_EN
   )
   Object.defineProperty(appVm, '$locale', {
     get() {
