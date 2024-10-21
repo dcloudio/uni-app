@@ -170,8 +170,10 @@ export function setupPage(comp: any) {
               const dialogPages = parentPageInstance.$dialogPages.value
               if (dialogPages.length > 1) {
                 const preDialogPage = dialogPages[dialogPages.length - 2]
-                const { onHide } = preDialogPage.$vm.$
-                onHide && invokeArrayFns(onHide)
+                if (preDialogPage.$vm) {
+                  const { onHide } = preDialogPage.$vm.$
+                  onHide && invokeArrayFns(onHide)
+                }
               }
             }
           }

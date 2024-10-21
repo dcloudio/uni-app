@@ -91,27 +91,19 @@ export default /*#__PURE__*/ defineSystemComponent({
               createVNode(PageHead),
               createPageBodyVNode(ctx),
               __X__
-                ? (createDialogPageVNode(
+                ? createDialogPageVNode(
                     currentInstance!.$dialogPages,
-                    DIALOG_TAG
-                  ),
-                  createDialogPageVNode(
-                    currentInstance!.$systemDialogPages,
-                    SYSTEM_DIALOG_TAG
-                  ))
+                    currentInstance!.$systemDialogPages
+                  )
                 : null,
             ]
           : [
               createPageBodyVNode(ctx),
               __X__
-                ? (createDialogPageVNode(
+                ? createDialogPageVNode(
                     currentInstance!.$dialogPages,
-                    DIALOG_TAG
-                  ),
-                  createDialogPageVNode(
-                    currentInstance!.$systemDialogPages,
-                    SYSTEM_DIALOG_TAG
-                  ))
+                    currentInstance!.$systemDialogPages
+                  )
                 : null,
             ]
       )
@@ -133,25 +125,31 @@ function createPageBodyVNode(ctx: SetupContext) {
 }
 
 function createDialogPageVNode(
-  dialogPages: Ref<UniDialogPage[]>,
-  type: string
+  normalDialogPages: Ref<UniDialogPage[]>,
+  systemDialogPages: Ref<UniDialogPage[]>
 ) {
+  const dialogPages = [
+    ...normalDialogPages.value.map((page) => ({ page, type: DIALOG_TAG })),
+    ...systemDialogPages.value.map((page) => ({
+      page,
+      type: SYSTEM_DIALOG_TAG,
+    })),
+  ]
   return (
     openBlock(true),
     createElementBlock(
       Fragment,
       null,
-      renderList(dialogPages.value, (dialogPage) => {
-        const fullUrl = `${dialogPage.route}${stringifyQuery(
-          dialogPage.options
-        )}`
+      renderList(dialogPages, (dialogPage, index) => {
+        const { type, page } = dialogPage
+        const fullUrl = `${page.route}${stringifyQuery(page.options)}`
         return (
           openBlock(),
           createBlock(
             createVNode(
-              dialogPage.$component,
+              page.$component,
               {
-                key: fullUrl,
+                key: `${fullUrl}_${index}`,
                 style: {
                   position: 'fixed',
                   'z-index': 999,
