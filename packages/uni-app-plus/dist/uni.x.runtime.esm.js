@@ -1241,7 +1241,9 @@ function init() {
       var item = list[index2];
       var path = item.pagePath;
       if (isString(path) && findPageRoute(getRealPath(path, true))) {
-        switchSelect(index2, path);
+        uni.switchTab({
+          url: getRealPath(path, true)
+        });
       } else {
         console.error("switchTab: pagePath not found");
       }
@@ -1824,6 +1826,11 @@ function initAppLaunch(appVm) {
   }
   useTheme();
 }
+function initAppError(appVm, nativeApp2) {
+  nativeApp2.addEventListener(ON_ERROR, function(errorEvent) {
+    invokeHook(appVm, ON_ERROR, errorEvent.error);
+  });
+}
 var redirectTo = /* @__PURE__ */ defineAsyncApi(API_REDIRECT_TO, (_ref, _ref2) => {
   var {
     url
@@ -2245,6 +2252,7 @@ function registerApp(appVm, nativeApp2) {
   initService(nativeApp2);
   initGlobalEvent(nativeApp2);
   initAppLaunch(appVm);
+  initAppError(appVm, nativeApp2);
   initSubscribeHandlers();
   __uniConfig.ready = true;
 }
@@ -2567,7 +2575,7 @@ var openDialogPage = (options) => {
     callback(page);
   }
   var successOptions = {
-    errMsg: "openDialogPage: ok"
+    errMsg: "openDialogPage:ok"
   };
   (_options$success = options.success) === null || _options$success === void 0 || _options$success.call(options, successOptions);
   (_options$complete = options.complete) === null || _options$complete === void 0 || _options$complete.call(options, successOptions);
