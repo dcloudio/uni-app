@@ -16242,6 +16242,33 @@ const createLivePusherContext = defineSyncApi(API_CREATE_LIVE_PUSHER_CONTEXT, (i
     return new LivePusherContextVue(id, vm.$page.id);
 }, CreateLivePusherContextProtocol);
 
+/*! *****************************************************************************
+Copyright (c) Microsoft Corporation.
+
+Permission to use, copy, modify, and/or distribute this software for any
+purpose with or without fee is hereby granted.
+
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH
+REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY
+AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT,
+INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM
+LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR
+OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+PERFORMANCE OF THIS SOFTWARE.
+***************************************************************************** */
+/* global Reflect, Promise */
+
+
+function __awaiter(thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, [])).next());
+    });
+}
+
 const PI = 3.1415926535897932384626;
 const a = 6378245.0;
 const ee = 0.00669342162296594323;
@@ -16775,14 +16802,80 @@ function createFactory(component) {
     };
 }
 
-// @ts-nocheck
-// TODO 优化此处代码，此页面无对应的css
+function tencentMapPlaceSearch(options) {
+    return __awaiter(this, void 0, void 0, function* () {
+        // @ts-expect-error access uni
+        const cloud = uni.__uniCloud;
+        if (!cloud) {
+            throw new Error('使用uni.chooseLocation且使用腾讯地图时，需搭配uniCloud使用，详情请参考：https://uniapp.dcloud.net.cn/api/location/location.html#chooselocation');
+        }
+        const { keyword, latitude, longitude, pageIndex, pageSize, secure } = options;
+        const obj = cloud.importObject('uni-map-co', {
+            customUI: true,
+            secretMethods: secure
+                ? {
+                    chooseLocation: 'both',
+                }
+                : {},
+        });
+        let pois = [];
+        if (keyword) {
+            const res = yield obj.chooseLocation({
+                action: 'search',
+                data: {
+                    keyword,
+                    location: {
+                        lat: latitude,
+                        lng: longitude,
+                    },
+                    radius: 1000,
+                    auto_extend: 1,
+                    get_subpois: 0,
+                    orderby: 'weight',
+                    page_index: pageIndex,
+                    page_size: pageSize,
+                },
+                provider: 'qqmap',
+                needOriginalResult: true,
+            });
+            pois = res.result.data || [];
+        }
+        else {
+            const res = yield obj.chooseLocation({
+                action: 'location2address',
+                data: {
+                    location: `${latitude},${longitude}`,
+                    get_poi: 1,
+                    poi_options: {
+                        page_index: pageIndex,
+                        page_size: pageSize,
+                    },
+                },
+                provider: 'qqmap',
+                needOriginalResult: true,
+            });
+            pois = res.result.result.pois || [];
+        }
+        return pois;
+    });
+}
+function subscribeMapPlaceSearch() {
+    registerServiceMethod('mapPlaceSearch', (args, resolve) => {
+        tencentMapPlaceSearch(args)
+            .then(resolve)
+            .catch((err) => {
+            console.error(err);
+            resolve({ errMsg: 'mapPlaceSearch:fail' });
+        });
+    });
+}
 const LocationPickerPage = {
     data() {
         return {
             keyword: '',
             latitude: 0,
             longitude: 0,
+            useSecureNetwork: false,
             loaded: false,
             channel: void 0,
             closed: false,
@@ -16792,6 +16885,7 @@ const LocationPickerPage = {
         this.latitude = e.latitude;
         this.longitude = e.longitude;
         this.keyword = e.keyword;
+        this.useSecureNetwork = e.useSecureNetwork === true;
         this.loaded = true;
         this.channel = this.getOpenerEventChannel();
     },
@@ -16817,6 +16911,7 @@ const LocationPickerPage = {
                     latitude: $data.latitude,
                     longitude: $data.longitude,
                     keyword: $data.keyword,
+                    useSecureNetwork: $data.useSecureNetwork,
                     onClose: _cache[0] ||
                         (_cache[0] = (...args) => $options.onClose && $options.onClose(...args)),
                 }, null, 40, ['latitude', 'longitude', 'keyword']))
@@ -16841,7 +16936,7 @@ const initLocationPickerPageOnce = once(() => {
 const chooseLocation = defineAsyncApi(API_CHOOSE_LOCATION, (options, { resolve, reject }) => {
     if (__uniConfig.qqMapKey) {
         initLocationPickerPageOnce();
-        const { keyword = '', latitude = '', longitude = '' } = options || {};
+        const { keyword = '', latitude = '', longitude = '', useSecureNetwork = false, } = options || {};
         uni.navigateTo({
             url: '/' +
                 ROUTE_LOCATION_PICKER_PAGE +
@@ -16850,7 +16945,9 @@ const chooseLocation = defineAsyncApi(API_CHOOSE_LOCATION, (options, { resolve, 
                 '&latitude=' +
                 latitude +
                 '&longitude=' +
-                longitude,
+                longitude +
+                '&useSecureNetwork=' +
+                useSecureNetwork,
             events: {
                 close: (res) => {
                     if (res && res.latitude) {
@@ -21034,6 +21131,7 @@ function initSubscribeHandlers() {
             publishHandler(ON_WEBVIEW_READY, {}, 1);
         }
         subscribeGetLocation();
+        subscribeMapPlaceSearch();
     }
 }
 

@@ -1199,7 +1199,7 @@ var tabs = /* @__PURE__ */ new Map();
 var BORDER_COLORS = /* @__PURE__ */ new Map([["white", "rgba(255, 255, 255, 0.33)"], ["black", "rgba(0, 0, 0, 0.33)"]]);
 function getBorderStyle(borderStyle) {
   var value = BORDER_COLORS.get(borderStyle);
-  if (!value) {
+  if (borderStyle && !value) {
     console.warn("4.23 版本起，在 pages.json 设置 tabbar borderStyle、在 uni.setTabBarStyle 设置 borderStyle 时仅支持 white/black，推荐使用 borderColor 自定义颜色。");
   }
   return value || BORDER_COLORS.get("black");
@@ -1956,6 +1956,10 @@ function _reLaunch(_ref3) {
 }
 var reLaunch = /* @__PURE__ */ defineAsyncApi(API_RE_LAUNCH, $reLaunch, ReLaunchProtocol, ReLaunchOptions);
 function closePage(page, animationType, animationDuration) {
+  var dialogPages = page.$page.getDialogPages();
+  for (var i = dialogPages.length - 1; i >= 0; i--) {
+    closeNativeDialogPage(dialogPages[i]);
+  }
   closeWebview(page.$nativePage, animationType, animationDuration);
   removePage(page);
   removeTabBarPage(page);
@@ -2009,7 +2013,7 @@ function handleBeforeEntryPageRoutes() {
 }
 function closeNativeDialogPage(dialogPage, animationType, callback) {
   var webview = getNativeApp().pageManager.findPageById(dialogPage.$vm.$basePage.id + "");
-  closeWebview(webview, animationType, 0, callback);
+  closeWebview(webview, animationType || "none", 0, callback);
 }
 var $switchTab = (args, _ref) => {
   var {
@@ -2434,7 +2438,7 @@ function back(delta, animationType, animationDuration) {
       var dialogPages2 = deltaPage.$page.getDialogPages();
       for (var i2 = dialogPages2.length - 1; i2 >= 0; i2--) {
         var dialogPage2 = dialogPages2[i2];
-        closeNativeDialogPage(dialogPage2, "none");
+        closeNativeDialogPage(dialogPage2);
       }
       closeWebview(getNativeApp().pageManager.findPageById(deltaPage.$basePage.id + ""), "none", 0);
     });
@@ -2460,7 +2464,7 @@ function back(delta, animationType, animationDuration) {
   var dialogPages = currentPage.$page.getDialogPages();
   for (var i = dialogPages.length - 1; i >= 0; i--) {
     var dialogPage = dialogPages[i];
-    closeNativeDialogPage(dialogPage, "none");
+    closeNativeDialogPage(dialogPage);
     if (i > 0) {
       invokeHook(dialogPages[i - 1].$vm, ON_SHOW);
     }
@@ -2471,7 +2475,6 @@ var openDialogPage = (options) => {
   var _options$success, _options$complete;
   var {
     url,
-    events,
     animationType
   } = options;
   if (!options.url) {
@@ -2501,7 +2504,7 @@ var openDialogPage = (options) => {
   }
   var dialogPage = new UniDialogPageImpl();
   dialogPage.route = path;
-  dialogPage.options = new UTSJSONObject(query);
+  dialogPage.optionsByJS = query;
   dialogPage.getParentPage = () => parentPage;
   dialogPage.$component = null;
   dialogPage.$disableEscBack = false;
@@ -2514,7 +2517,7 @@ var openDialogPage = (options) => {
     }
     dialogPages.push(dialogPage);
   }
-  var [aniType, aniDuration] = initAnimation(path, animationType);
+  var [aniType, aniDuration] = initAnimation(path, animationType || "");
   var noAnimation = aniType === "none" || aniDuration === 0;
   function callback(page2) {
     showWebview(page2, aniType, aniDuration, () => {
@@ -2538,8 +2541,7 @@ var openDialogPage = (options) => {
     callback(page);
   }
   var successOptions = {
-    errMsg: "openDialogPage: ok",
-    eventChannel: new EventChannel(getWebviewId() + 1, events)
+    errMsg: "openDialogPage:ok"
   };
   (_options$success = options.success) === null || _options$success === void 0 || _options$success.call(options, successOptions);
   (_options$complete = options.complete) === null || _options$complete === void 0 || _options$complete.call(options, successOptions);
@@ -3267,7 +3269,8 @@ class PerformanceEntryStatus {
     return this._entryData;
   }
   executeBefore() {
-    var page = getCurrentPage().vm;
+    var _getCurrentPage;
+    var page = (_getCurrentPage = getCurrentPage()) === null || _getCurrentPage === void 0 ? void 0 : _getCurrentPage.vm;
     if (page != null) {
       this._entryData.referrerPath = page.route;
     }
