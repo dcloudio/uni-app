@@ -2831,26 +2831,15 @@ function getPageInstanceByChild(child) {
 const SEP = "$$";
 const currentPagesMap = /* @__PURE__ */ new Map();
 const homeDialogPages = [];
-class UniBasePageImpl {
-  constructor({ route, options }) {
-    this.getParentPage = () => null;
-    this.route = route;
-    this.options = options;
-  }
-  getDialogPages() {
-    return [];
-  }
-}
-class UniPageImpl extends UniBasePageImpl {
+class UniPageImpl {
   constructor({
     route,
     options,
     vm
   }) {
-    super({ route, options });
-    this.getParentPage = () => {
-      return null;
-    };
+    this.getParentPage = () => null;
+    this.route = route;
+    this.options = options;
     this.vm = vm;
     this.$vm = vm;
   }
@@ -2873,10 +2862,6 @@ class UniPageImpl extends UniBasePageImpl {
     const uniPageBody = document.querySelector("uni-page-body");
     return uniPageBody ? uniPageBody.querySelector(`#${id2}`) : null;
   }
-  getDialogPages() {
-    var _a;
-    return ((_a = getPageInstanceByVm(this.vm)) == null ? void 0 : _a.$dialogPages.value) || [];
-  }
   getAndroidView() {
     return null;
   }
@@ -2886,6 +2871,22 @@ class UniPageImpl extends UniBasePageImpl {
       return null;
     }
     return document.querySelector("uni-page-body");
+  }
+  getDialogPages() {
+    return [];
+  }
+}
+class UniNormalPageImpl extends UniPageImpl {
+  getDialogPages() {
+    var _a;
+    return this.vm ? (_a = getPageInstanceByVm(this.vm)) == null ? void 0 : _a.$dialogPages.value : [];
+  }
+  constructor({
+    route,
+    options,
+    vm
+  }) {
+    super({ route, options, vm });
   }
 }
 function getPage$BasePage(page) {
@@ -2940,7 +2941,7 @@ function removePage(routeKey, removeRouteCaches = true) {
   {
     const dialogPages = pageVm.$page.getDialogPages();
     for (let i = dialogPages.length - 1; i >= 0; i--) {
-      uni.closeDialogPage({ dialogPage: dialogPages[i] });
+      closeDialogPage({ dialogPage: dialogPages[i] });
     }
   }
   pageVm.$.__isUnload = true;
@@ -2975,7 +2976,7 @@ function initPage(vm) {
     vm.$basePage = vm.$page;
     const pageInstance = getPageInstanceByVm(vm);
     if ((pageInstance == null ? void 0 : pageInstance.attrs.type) !== "dialog") {
-      const uniPage = new UniPageImpl({
+      const uniPage = new UniNormalPageImpl({
         route: (route == null ? void 0 : route.path) || "",
         options: new UTSJSONObject((route == null ? void 0 : route.query) || {}),
         vm
@@ -13894,11 +13895,14 @@ function createDialogPageVNode(dialogPages) {
     vue.Fragment,
     null,
     vue.renderList(dialogPages.value, (dialogPage) => {
+      const fullUrl = `${dialogPage.route}${uniShared.stringifyQuery(
+        dialogPage.options
+      )}`;
       return vue.openBlock(), vue.createBlock(
         vue.createVNode(
           dialogPage.$component,
           {
-            key: dialogPage.route,
+            key: fullUrl,
             style: {
               position: "fixed",
               "z-index": 999,
@@ -13908,9 +13912,8 @@ function createDialogPageVNode(dialogPages) {
               left: 0
             },
             type: "dialog",
-            route: `${dialogPage.route}${uniShared.stringifyQuery(
-              dialogPage.options
-            )}`
+            "data-type": "dialog",
+            route: fullUrl
           },
           null
         )

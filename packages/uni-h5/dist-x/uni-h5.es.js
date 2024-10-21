@@ -4,11 +4,11 @@ var __publicField = (obj, key, value) => {
   __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
   return value;
 };
-import { withModifiers, createVNode, getCurrentInstance, ref, defineComponent, openBlock, createElementBlock, onMounted, provide, computed, watch, onUnmounted, inject, onBeforeUnmount, mergeProps, reactive, injectHook, nextTick, onActivated, onBeforeMount, withDirectives, vShow, shallowRef, watchEffect, isVNode, Fragment, markRaw, Comment, h, createTextVNode, isReactive, Transition, createApp, createBlock, onBeforeActivate, onBeforeDeactivate, renderList, effectScope, withCtx, KeepAlive, resolveDynamicComponent, createElementVNode, normalizeStyle, renderSlot } from "vue";
+import { withModifiers, createVNode, getCurrentInstance, ref, defineComponent, openBlock, createElementBlock, onMounted, provide, computed, watch, onUnmounted, inject, onBeforeUnmount, mergeProps, reactive, injectHook, nextTick, createApp, createBlock, watchEffect, isVNode, withDirectives, vShow, renderList, Transition, isReactive, effectScope, Fragment, onActivated, withCtx, KeepAlive, resolveDynamicComponent, onBeforeMount, shallowRef, markRaw, Comment, h, createTextVNode, onBeforeActivate, onBeforeDeactivate, createElementVNode, normalizeStyle, renderSlot } from "vue";
 import { isArray, isString, extend, remove, stringifyStyle, parseStringStyle, isPlainObject as isPlainObject$1, isFunction, capitalize, camelize, hasOwn, isObject, toRawType, makeMap as makeMap$1, isPromise, hyphenate, invokeArrayFns as invokeArrayFns$1 } from "@vue/shared";
-import { once, UNI_STORAGE_LOCALE, I18N_JSON_DELIMITERS, Emitter, passive, initCustomDatasetOnce, resolveComponentInstance, normalizeStyles, addLeadingSlash, invokeArrayFns, removeLeadingSlash, resolveOwnerVm, resolveOwnerEl, ON_WXS_INVOKE_CALL_METHOD, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_SHOW, ON_HIDE, ON_PAGE_SCROLL, ON_REACH_BOTTOM, EventChannel, parseQuery, NAVBAR_HEIGHT, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, getLen, getCustomDataset, parseUrl, ON_UNLOAD, normalizeTitleColor, ON_REACH_BOTTOM_DISTANCE, SCHEME_RE, DATA_RE, LINEFEED, PRIMARY_COLOR, debounce, isUniLifecycleHook, decodedQuery, ON_LOAD, UniLifecycleHooks, invokeCreateErrorHandler, invokeCreateVueAppHook, ON_THEME_CHANGE, WEB_INVOKE_APPSERVICE, ON_WEB_INVOKE_APP_SERVICE, sortObject, OFF_THEME_CHANGE, updateElementStyle, ON_BACK_PRESS, addFont, ON_NAVIGATION_BAR_CHANGE, scrollTo, RESPONSIVE_MIN_WIDTH, formatDateTime, onCreateVueApp, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_PULL_DOWN_REFRESH, stringifyQuery as stringifyQuery$1 } from "@dcloudio/uni-shared";
+import { once, UNI_STORAGE_LOCALE, I18N_JSON_DELIMITERS, Emitter, passive, initCustomDatasetOnce, resolveComponentInstance, normalizeStyles, addLeadingSlash, invokeArrayFns, removeLeadingSlash, resolveOwnerVm, resolveOwnerEl, ON_WXS_INVOKE_CALL_METHOD, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_SHOW, ON_HIDE, ON_PAGE_SCROLL, ON_REACH_BOTTOM, EventChannel, parseQuery, NAVBAR_HEIGHT, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, getLen, getCustomDataset, parseUrl, sortObject, ON_THEME_CHANGE, OFF_THEME_CHANGE, updateElementStyle, LINEFEED, ON_WEB_INVOKE_APP_SERVICE, formatDateTime, debounce, ON_BACK_PRESS, addFont, ON_NAVIGATION_BAR_CHANGE, scrollTo, RESPONSIVE_MIN_WIDTH, ON_UNLOAD, normalizeTitleColor, ON_REACH_BOTTOM_DISTANCE, SCHEME_RE, DATA_RE, PRIMARY_COLOR, isUniLifecycleHook, decodedQuery, ON_LOAD, UniLifecycleHooks, invokeCreateErrorHandler, invokeCreateVueAppHook, WEB_INVOKE_APPSERVICE, onCreateVueApp, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_PULL_DOWN_REFRESH, stringifyQuery as stringifyQuery$1 } from "@dcloudio/uni-shared";
 import { onCreateVueApp as onCreateVueApp2 } from "@dcloudio/uni-shared";
-import { useRoute, isNavigationFailure, createRouter, createWebHistory, createWebHashHistory, useRouter, RouterView } from "vue-router";
+import { useRoute, isNavigationFailure, RouterView, createRouter, createWebHistory, createWebHashHistory, useRouter } from "vue-router";
 import { initVueI18n, isI18nStr, LOCALE_EN, LOCALE_ES, LOCALE_FR, LOCALE_ZH_HANS, LOCALE_ZH_HANT } from "@dcloudio/uni-i18n";
 function arrayPop(array) {
   if (array.length === 0) {
@@ -8251,29 +8251,9079 @@ const setRootFontSize = (rootFontSize) => {
     document.documentElement.removeAttribute("root-font-size");
   }
 };
+const initInnerAudioContextEventOnce = /* @__PURE__ */ once(() => {
+  innerAudioContextEventNames.forEach((eventName) => {
+    InnerAudioContext.prototype[eventName] = function(callback) {
+      if (isFunction(callback)) {
+        this._events[eventName].push(callback);
+      }
+    };
+  });
+  innerAudioContextOffEventNames.forEach((eventName) => {
+    InnerAudioContext.prototype[eventName] = function(callback) {
+      var handle = this._events[eventName.replace("off", "on")];
+      var index2 = handle.indexOf(callback);
+      if (index2 >= 0) {
+        handle.splice(index2, 1);
+      }
+    };
+  });
+});
+class InnerAudioContext {
+  /**
+   * 音频上下文初始化
+   */
+  constructor() {
+    this._src = "";
+    var audio = this._audio = new Audio();
+    this._stoping = false;
+    const propertys = [
+      "src",
+      "autoplay",
+      "loop",
+      "duration",
+      "currentTime",
+      "paused",
+      "volume"
+    ];
+    propertys.forEach((property) => {
+      Object.defineProperty(this, property, {
+        set: property === "src" ? (src) => {
+          audio.src = getRealPath(src);
+          this._src = src;
+          return src;
+        } : (val) => {
+          audio[property] = val;
+          return val;
+        },
+        get: property === "src" ? () => {
+          return this._src;
+        } : () => {
+          return audio[property];
+        }
+      });
+    });
+    this.startTime = 0;
+    Object.defineProperty(this, "obeyMuteSwitch", {
+      set: () => false,
+      get: () => false
+    });
+    Object.defineProperty(this, "buffered", {
+      get() {
+        var buffered = audio.buffered;
+        if (buffered.length) {
+          return buffered.end(buffered.length - 1);
+        } else {
+          return 0;
+        }
+      }
+    });
+    this._events = {};
+    innerAudioContextEventNames.forEach((eventName) => {
+      this._events[eventName] = [];
+    });
+    audio.addEventListener("loadedmetadata", () => {
+      var startTime = Number(this.startTime) || 0;
+      if (startTime > 0) {
+        audio.currentTime = startTime;
+      }
+    });
+    var stopEventNames = ["canplay", "pause", "seeking", "seeked", "timeUpdate"];
+    var eventNames = stopEventNames.concat([
+      "play",
+      "ended",
+      "error",
+      "waiting"
+    ]);
+    eventNames.forEach((eventName) => {
+      audio.addEventListener(
+        eventName.toLowerCase(),
+        () => {
+          if (this._stoping && stopEventNames.indexOf(eventName) >= 0) {
+            return;
+          }
+          const EventName = `on${eventName.slice(0, 1).toUpperCase()}${eventName.slice(1)}`;
+          this._events[EventName].forEach((callback) => {
+            callback();
+          });
+        },
+        false
+      );
+    });
+    initInnerAudioContextEventOnce();
+  }
+  /**
+   * 播放
+   */
+  play() {
+    this._stoping = false;
+    this._audio.play();
+  }
+  /**
+   * 暂停
+   */
+  pause() {
+    this._audio.pause();
+  }
+  /**
+   * 停止
+   */
+  stop() {
+    this._stoping = true;
+    this._audio.pause();
+    this._audio.currentTime = 0;
+    this._events.onStop.forEach((callback) => {
+      callback();
+    });
+  }
+  /**
+   * 跳转到
+   * @param {number} position
+   */
+  seek(position) {
+    this._stoping = false;
+    position = Number(position);
+    if (typeof position === "number" && !isNaN(position)) {
+      this._audio.currentTime = position;
+    }
+  }
+  /**
+   * 销毁
+   */
+  destroy() {
+    this.stop();
+  }
+}
+const createInnerAudioContext = /* @__PURE__ */ defineSyncApi(
+  API_CREATE_INNER_AUDIO_CONTEXT,
+  () => {
+    return new InnerAudioContext();
+  }
+);
+const makePhoneCall = /* @__PURE__ */ defineAsyncApi(
+  API_MAKE_PHONE_CALL,
+  ({ phoneNumber }, { resolve }) => {
+    window.location.href = `tel:${phoneNumber}`;
+    return resolve();
+  },
+  MakePhoneCallProtocol
+);
+const UUID_KEY = "__DC_STAT_UUID";
+const storage = navigator.cookieEnabled && (window.localStorage || window.sessionStorage) || {};
+let deviceId;
+function deviceId$1() {
+  deviceId = deviceId || storage[UUID_KEY];
+  if (!deviceId) {
+    deviceId = Date.now() + "" + Math.floor(Math.random() * 1e7);
+    try {
+      storage[UUID_KEY] = deviceId;
+    } catch (error) {
+    }
+  }
+  return deviceId;
+}
+const ua = navigator.userAgent;
+const isAndroid = /* @__PURE__ */ /android/i.test(ua);
+const isIOS = /* @__PURE__ */ /iphone|ipad|ipod/i.test(ua);
+const isWindows = /* @__PURE__ */ ua.match(/Windows NT ([\d|\d.\d]*)/i);
+const isMac = /* @__PURE__ */ /Macintosh|Mac/i.test(ua);
+const isLinux = /* @__PURE__ */ /Linux|X11/i.test(ua);
+const isIPadOS = isMac && navigator.maxTouchPoints > 0;
+function getScreenFix() {
+  return /^Apple/.test(navigator.vendor) && typeof window.orientation === "number";
+}
+function isLandscape(screenFix) {
+  return screenFix && Math.abs(window.orientation) === 90;
+}
+function getScreenWidth(screenFix, landscape) {
+  return screenFix ? Math[landscape ? "max" : "min"](screen.width, screen.height) : screen.width;
+}
+function getScreenHeight(screenFix, landscape) {
+  return screenFix ? Math[landscape ? "min" : "max"](screen.height, screen.width) : screen.height;
+}
+function getWindowWidth(screenWidth) {
+  return Math.min(
+    window.innerWidth,
+    document.documentElement.clientWidth,
+    screenWidth
+  ) || screenWidth;
+}
+function getBaseSystemInfo() {
+  const screenFix = getScreenFix();
+  const windowWidth = getWindowWidth(
+    getScreenWidth(screenFix, isLandscape(screenFix))
+  );
+  return {
+    platform: isIOS ? "ios" : "other",
+    pixelRatio: window.devicePixelRatio,
+    windowWidth
+  };
+}
+function IEVersion() {
+  const userAgent = navigator.userAgent;
+  const isIE = userAgent.indexOf("compatible") > -1 && userAgent.indexOf("MSIE") > -1;
+  const isEdge = userAgent.indexOf("Edge") > -1 && !isIE;
+  const isIE11 = userAgent.indexOf("Trident") > -1 && userAgent.indexOf("rv:11.0") > -1;
+  if (isIE) {
+    const reIE = new RegExp("MSIE (\\d+\\.\\d+);");
+    reIE.test(userAgent);
+    const fIEVersion = parseFloat(RegExp.$1);
+    if (fIEVersion > 6) {
+      return fIEVersion;
+    } else {
+      return 6;
+    }
+  } else if (isEdge) {
+    return -1;
+  } else if (isIE11) {
+    return 11;
+  } else {
+    return -1;
+  }
+}
+function getTheme() {
+  if (__uniConfig.darkmode !== true)
+    return isString(__uniConfig.darkmode) ? __uniConfig.darkmode : "light";
+  try {
+    return window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark";
+  } catch (error) {
+    return "light";
+  }
+}
+function getBrowserInfo() {
+  let osname;
+  let osversion = "0";
+  let model = "";
+  let deviceType = "phone";
+  const language = navigator.language;
+  if (isIOS) {
+    osname = "iOS";
+    const osversionFind = ua.match(/OS\s([\w_]+)\slike/);
+    if (osversionFind) {
+      osversion = osversionFind[1].replace(/_/g, ".");
+    }
+    const modelFind = ua.match(/\(([a-zA-Z]+);/);
+    if (modelFind) {
+      model = modelFind[1];
+    }
+  } else if (isAndroid) {
+    osname = "Android";
+    const osversionFind = ua.match(/Android[\s/]([\w\.]+)[;\s]/);
+    if (osversionFind) {
+      osversion = osversionFind[1];
+    }
+    const infoFind = ua.match(/\((.+?)\)/);
+    const infos = infoFind ? infoFind[1].split(";") : ua.split(" ");
+    const otherInfo = [
+      /\bAndroid\b/i,
+      /\bLinux\b/i,
+      /\bU\b/i,
+      /^\s?[a-z][a-z]$/i,
+      /^\s?[a-z][a-z]-[a-z][a-z]$/i,
+      /\bwv\b/i,
+      /\/[\d\.,]+$/,
+      /^\s?[\d\.,]+$/,
+      /\bBrowser\b/i,
+      /\bMobile\b/i
+    ];
+    for (let i = 0; i < infos.length; i++) {
+      const info = infos[i];
+      if (info.indexOf("Build") > 0) {
+        model = info.split("Build")[0].trim();
+        break;
+      }
+      let other;
+      for (let o2 = 0; o2 < otherInfo.length; o2++) {
+        if (otherInfo[o2].test(info)) {
+          other = true;
+          break;
+        }
+      }
+      if (!other) {
+        model = info.trim();
+        break;
+      }
+    }
+  } else if (isIPadOS) {
+    model = "iPad";
+    osname = "iOS";
+    deviceType = "pad";
+    osversion = isFunction(window.BigInt) ? "14.0" : "13.0";
+    if (parseInt(osversion) === 14) {
+      const versionMatched = ua.match(/Version\/(\S*)\b/);
+      if (versionMatched) {
+        osversion = versionMatched[1];
+      }
+    }
+  } else if (isWindows || isMac || isLinux) {
+    model = "PC";
+    osname = "PC";
+    deviceType = "pc";
+    osversion = "0";
+    let osversionFind = ua.match(/\((.+?)\)/)[1];
+    if (isWindows) {
+      osname = "Windows";
+      switch (isWindows[1]) {
+        case "5.1":
+          osversion = "XP";
+          break;
+        case "6.0":
+          osversion = "Vista";
+          break;
+        case "6.1":
+          osversion = "7";
+          break;
+        case "6.2":
+          osversion = "8";
+          break;
+        case "6.3":
+          osversion = "8.1";
+          break;
+        case "10.0":
+          osversion = "10";
+          break;
+      }
+      const framework = osversionFind && osversionFind.match(/[Win|WOW]([\d]+)/);
+      if (framework) {
+        osversion += ` x${framework[1]}`;
+      }
+    } else if (isMac) {
+      osname = "macOS";
+      const _osversion = osversionFind && osversionFind.match(/Mac OS X (.+)/) || "";
+      if (osversion) {
+        osversion = _osversion[1].replace(/_/g, ".");
+        if (osversion.indexOf(";") !== -1) {
+          osversion = osversion.split(";")[0];
+        }
+      }
+    } else if (isLinux) {
+      osname = "Linux";
+      const _osversion = osversionFind && osversionFind.match(/Linux (.*)/) || "";
+      if (_osversion) {
+        osversion = _osversion[1];
+        if (osversion.indexOf(";") !== -1) {
+          osversion = osversion.split(";")[0];
+        }
+      }
+    }
+  } else {
+    osname = "Other";
+    osversion = "0";
+    deviceType = "unknown";
+  }
+  const system = `${osname} ${osversion}`;
+  const platform = osname.toLocaleLowerCase();
+  let browserName = "";
+  let browserVersion = String(IEVersion());
+  if (browserVersion !== "-1") {
+    browserName = "IE";
+  } else {
+    const browseVendors = ["Version", "Firefox", "Chrome", "Edge{0,1}"];
+    const vendors = ["Safari", "Firefox", "Chrome", "Edge"];
+    for (let index2 = 0; index2 < browseVendors.length; index2++) {
+      const vendor = browseVendors[index2];
+      const reg = new RegExp(`(${vendor})/(\\S*)\\b`);
+      if (reg.test(ua)) {
+        browserName = vendors[index2];
+        browserVersion = ua.match(reg)[2];
+      }
+    }
+  }
+  let deviceOrientation = "portrait";
+  const orientation = typeof window.screen.orientation === "undefined" ? window.orientation : window.screen.orientation.angle;
+  deviceOrientation = Math.abs(orientation) === 90 ? "landscape" : "portrait";
+  return {
+    deviceBrand: void 0,
+    brand: void 0,
+    deviceModel: model,
+    deviceOrientation,
+    model,
+    system,
+    platform,
+    browserName: browserName.toLocaleLowerCase(),
+    browserVersion,
+    language,
+    deviceType,
+    ua,
+    osname,
+    osversion,
+    theme: getTheme()
+  };
+}
+const getWindowInfo = /* @__PURE__ */ defineSyncApi(
+  "getWindowInfo",
+  () => {
+    const pixelRatio = window.devicePixelRatio;
+    const screenFix = getScreenFix();
+    const landscape = isLandscape(screenFix);
+    const screenWidth = getScreenWidth(screenFix, landscape);
+    const screenHeight = getScreenHeight(screenFix, landscape);
+    const windowWidth = getWindowWidth(screenWidth);
+    let windowHeight = window.innerHeight;
+    const statusBarHeight = safeAreaInsets$1.top;
+    const safeArea = {
+      left: safeAreaInsets$1.left,
+      right: windowWidth - safeAreaInsets$1.right,
+      top: safeAreaInsets$1.top,
+      bottom: windowHeight - safeAreaInsets$1.bottom,
+      width: windowWidth - safeAreaInsets$1.left - safeAreaInsets$1.right,
+      height: windowHeight - safeAreaInsets$1.top - safeAreaInsets$1.bottom
+    };
+    const { top: windowTop, bottom: windowBottom } = getWindowOffset();
+    windowHeight -= windowTop;
+    windowHeight -= windowBottom;
+    return {
+      windowTop,
+      windowBottom,
+      windowWidth,
+      windowHeight,
+      pixelRatio,
+      screenWidth,
+      screenHeight,
+      statusBarHeight,
+      safeArea,
+      safeAreaInsets: {
+        top: safeAreaInsets$1.top,
+        right: safeAreaInsets$1.right,
+        bottom: safeAreaInsets$1.bottom,
+        left: safeAreaInsets$1.left
+      },
+      screenTop: screenHeight - windowHeight
+    };
+  }
+);
+let browserInfo;
+let _initBrowserInfo = true;
+function initBrowserInfo() {
+  if (!_initBrowserInfo)
+    return;
+  browserInfo = getBrowserInfo();
+}
+const getDeviceInfo = /* @__PURE__ */ defineSyncApi(
+  "getDeviceInfo",
+  () => {
+    initBrowserInfo();
+    const {
+      deviceBrand,
+      deviceModel,
+      brand,
+      model,
+      platform,
+      system,
+      deviceOrientation,
+      deviceType,
+      osname,
+      osversion
+    } = browserInfo;
+    return extend(
+      {
+        brand,
+        deviceBrand,
+        deviceModel,
+        devicePixelRatio: window.devicePixelRatio,
+        deviceId: deviceId$1(),
+        deviceOrientation,
+        deviceType,
+        model,
+        platform,
+        system
+      },
+      {
+        osName: osname ? osname.toLocaleLowerCase() : void 0,
+        osVersion: osversion
+      }
+    );
+  }
+);
+const getAppBaseInfo = /* @__PURE__ */ defineSyncApi(
+  "getAppBaseInfo",
+  () => {
+    initBrowserInfo();
+    const { theme, language, browserName, browserVersion } = browserInfo;
+    return extend(
+      {
+        appId: __uniConfig.appId,
+        appName: __uniConfig.appName,
+        appVersion: __uniConfig.appVersion,
+        appVersionCode: __uniConfig.appVersionCode,
+        appLanguage: getLocale ? getLocale() : language,
+        enableDebug: false,
+        hostSDKVersion: void 0,
+        hostPackageName: void 0,
+        hostFontSizeSetting: void 0,
+        hostName: browserName,
+        hostVersion: browserVersion,
+        hostTheme: theme,
+        hostLanguage: language,
+        language,
+        SDKVersion: "",
+        theme,
+        version: ""
+      },
+      {
+        uniCompilerVersion: __uniConfig.compilerVersion,
+        uniRuntimeVersion: __uniConfig.compilerVersion,
+        uniCompilerVersionCode: parseFloat(__uniConfig.compilerVersion),
+        uniRuntimeVersionCode: parseFloat(__uniConfig.compilerVersion),
+        isUniAppX: true
+      }
+    );
+  }
+);
+const getSystemInfoSync = /* @__PURE__ */ defineSyncApi(
+  "getSystemInfoSync",
+  () => {
+    _initBrowserInfo = true;
+    initBrowserInfo();
+    _initBrowserInfo = false;
+    const windowInfo = getWindowInfo();
+    const deviceInfo = getDeviceInfo();
+    const appBaseInfo = getAppBaseInfo();
+    _initBrowserInfo = true;
+    const { ua: ua2, browserName, browserVersion, osname, osversion } = browserInfo;
+    const systemInfo = extend(
+      windowInfo,
+      deviceInfo,
+      appBaseInfo,
+      {
+        ua: ua2,
+        browserName,
+        browserVersion,
+        uniPlatform: "web",
+        uniCompileVersion: __uniConfig.compilerVersion,
+        uniRuntimeVersion: __uniConfig.compilerVersion,
+        fontSizeSetting: void 0,
+        osName: osname.toLocaleLowerCase(),
+        osVersion: osversion,
+        osLanguage: void 0,
+        osTheme: void 0
+      }
+    );
+    delete systemInfo.screenTop;
+    delete systemInfo.enableDebug;
+    if (!__uniConfig.darkmode)
+      delete systemInfo.theme;
+    return sortObject(systemInfo);
+  }
+);
+const getSystemInfo = /* @__PURE__ */ defineAsyncApi(
+  "getSystemInfo",
+  (_args, { resolve }) => {
+    return resolve(getSystemInfoSync());
+  }
+);
+const API_ON_NETWORK_STATUS_CHANGE = "onNetworkStatusChange";
+function networkListener() {
+  getNetworkType().then(({ networkType }) => {
+    UniServiceJSBridge.invokeOnCallback(
+      API_ON_NETWORK_STATUS_CHANGE,
+      {
+        isConnected: networkType !== "none",
+        networkType
+      }
+    );
+  });
+}
+function getConnection() {
+  return navigator.connection || navigator.webkitConnection || navigator.mozConnection;
+}
+const onNetworkStatusChange = /* @__PURE__ */ defineOnApi(
+  API_ON_NETWORK_STATUS_CHANGE,
+  () => {
+    const connection = getConnection();
+    if (connection) {
+      connection.addEventListener("change", networkListener);
+    } else {
+      window.addEventListener("offline", networkListener);
+      window.addEventListener("online", networkListener);
+    }
+  }
+);
+const offNetworkStatusChange = /* @__PURE__ */ defineOffApi("offNetworkStatusChange", () => {
+  const connection = getConnection();
+  if (connection) {
+    connection.removeEventListener("change", networkListener);
+  } else {
+    window.removeEventListener("offline", networkListener);
+    window.removeEventListener("online", networkListener);
+  }
+});
+const getNetworkType = /* @__PURE__ */ defineAsyncApi(
+  "getNetworkType",
+  (_args, { resolve }) => {
+    const connection = getConnection();
+    let networkType = "unknown";
+    if (connection) {
+      networkType = connection.type;
+      if (networkType === "cellular" && connection.effectiveType) {
+        networkType = connection.effectiveType.replace("slow-", "");
+      } else if (!networkType && connection.effectiveType) {
+        networkType = connection.effectiveType;
+      } else if (!["none", "wifi"].includes(networkType)) {
+        networkType = "unknown";
+      }
+    } else if (navigator.onLine === false) {
+      networkType = "none";
+    }
+    return resolve({ networkType });
+  }
+);
+let listener$1 = null;
+const onAccelerometerChange = /* @__PURE__ */ defineOnApi(API_ON_ACCELEROMETER, () => {
+  startAccelerometer();
+});
+const offAccelerometerChange = /* @__PURE__ */ defineOffApi(API_OFF_ACCELEROMETER, () => {
+  stopAccelerometer();
+});
+const startAccelerometer = /* @__PURE__ */ defineAsyncApi(
+  API_START_ACCELEROMETER,
+  (_, { resolve, reject }) => {
+    if (!window.DeviceMotionEvent) {
+      reject();
+      return;
+    }
+    function addEventListener() {
+      listener$1 = function(event) {
+        const acceleration = event.acceleration || event.accelerationIncludingGravity;
+        UniServiceJSBridge.invokeOnCallback(API_ON_ACCELEROMETER, {
+          x: acceleration && acceleration.x || 0,
+          y: acceleration && acceleration.y || 0,
+          z: acceleration && acceleration.z || 0
+        });
+      };
+      window.addEventListener("devicemotion", listener$1, false);
+    }
+    if (!listener$1) {
+      if (DeviceMotionEvent.requestPermission) {
+        DeviceMotionEvent.requestPermission().then((res) => {
+          if (res === "granted") {
+            addEventListener();
+            resolve();
+          } else {
+            reject(`${res}`);
+          }
+        }).catch((error) => {
+          reject(`${error}`);
+        });
+        return;
+      }
+      addEventListener();
+    }
+    resolve();
+  }
+);
+const stopAccelerometer = /* @__PURE__ */ defineAsyncApi(
+  API_STOP_ACCELEROMETER,
+  (_, { resolve }) => {
+    if (listener$1) {
+      window.removeEventListener("devicemotion", listener$1, false);
+      listener$1 = null;
+    }
+    resolve();
+  }
+);
+let listener = null;
+const onCompassChange = /* @__PURE__ */ defineOnApi(
+  API_ON_COMPASS,
+  () => {
+    startCompass();
+  }
+);
+const offCompassChange = /* @__PURE__ */ defineOffApi(
+  API_OFF_COMPASS,
+  () => {
+    stopCompass();
+  }
+);
+const startCompass = /* @__PURE__ */ defineAsyncApi(
+  API_START_COMPASS,
+  (_, { resolve, reject }) => {
+    if (!window.DeviceOrientationEvent) {
+      reject();
+      return;
+    }
+    function addEventListener() {
+      listener = function(event) {
+        const direction2 = 360 - (event.alpha !== null ? event.alpha : 360);
+        UniServiceJSBridge.invokeOnCallback(API_ON_COMPASS, {
+          direction: direction2
+        });
+      };
+      window.addEventListener("deviceorientation", listener, false);
+    }
+    if (!listener) {
+      if (DeviceOrientationEvent.requestPermission) {
+        DeviceOrientationEvent.requestPermission().then((res) => {
+          if (res === "granted") {
+            addEventListener();
+            resolve();
+          } else {
+            reject(`${res}`);
+          }
+        }).catch((error) => {
+          reject(`${error}`);
+        });
+        return;
+      }
+      addEventListener();
+    }
+    resolve();
+  }
+);
+const stopCompass = /* @__PURE__ */ defineAsyncApi(
+  API_STOP_COMPASS,
+  (_, { resolve }) => {
+    if (listener) {
+      window.removeEventListener("deviceorientation", listener, false);
+      listener = null;
+    }
+    resolve();
+  }
+);
+const _isSupport = !!window.navigator.vibrate;
+const vibrateShort = /* @__PURE__ */ defineAsyncApi(
+  API_VIBRATE_SHORT,
+  (args, { resolve, reject }) => {
+    if (_isSupport && window.navigator.vibrate(15)) {
+      resolve();
+    } else {
+      reject("vibrateLong:fail");
+    }
+  }
+);
+const vibrateLong = /* @__PURE__ */ defineAsyncApi(
+  API_VIBRATE_LONG,
+  (args, { resolve, reject }) => {
+    if (_isSupport && window.navigator.vibrate(400)) {
+      resolve();
+    } else {
+      reject("vibrateLong:fail");
+    }
+  }
+);
+var __async = (__this, __arguments, generator) => {
+  return new Promise((resolve, reject) => {
+    var fulfilled = (value) => {
+      try {
+        step(generator.next(value));
+      } catch (e2) {
+        reject(e2);
+      }
+    };
+    var rejected = (value) => {
+      try {
+        step(generator.throw(value));
+      } catch (e2) {
+        reject(e2);
+      }
+    };
+    var step = (x) => x.done ? resolve(x.value) : Promise.resolve(x.value).then(fulfilled, rejected);
+    step((generator = generator.apply(__this, __arguments)).next());
+  });
+};
+const getClipboardData = /* @__PURE__ */ defineAsyncApi(
+  API_GET_CLIPBOARD_DATA,
+  (_0, _1) => __async(void 0, [_0, _1], function* (_, { resolve, reject }) {
+    initI18nGetClipboardDataMsgsOnce();
+    const { t: t2 } = useI18n();
+    try {
+      const data = yield navigator.clipboard.readText();
+      resolve({ data });
+    } catch (error) {
+      _getClipboardData(resolve, () => {
+        reject(`${error} ${t2("uni.getClipboardData.fail")}`);
+      });
+    }
+  })
+);
+const setClipboardData = /* @__PURE__ */ defineAsyncApi(
+  API_SET_CLIPBOARD_DATA,
+  (_0, _1) => __async(void 0, [_0, _1], function* ({ data }, { resolve, reject }) {
+    try {
+      yield navigator.clipboard.writeText(data);
+      resolve();
+    } catch (error) {
+      _setClipboardData(data, resolve, reject);
+    }
+  }),
+  SetClipboardDataProtocol,
+  SetClipboardDataOptions
+);
+function _getClipboardData(resolve, reject) {
+  const pasteText = document.getElementById("#clipboard");
+  const data = pasteText ? pasteText.value : void 0;
+  if (data) {
+    resolve({ data });
+  } else {
+    reject();
+  }
+}
+function _setClipboardData(data, resolve, reject) {
+  const pasteText = document.getElementById("#clipboard");
+  pasteText && pasteText.remove();
+  const textarea = document.createElement("textarea");
+  textarea.setAttribute("inputmode", "none");
+  textarea.id = "#clipboard";
+  textarea.style.position = "fixed";
+  textarea.style.top = "-9999px";
+  textarea.style.zIndex = "-9999";
+  document.body.appendChild(textarea);
+  textarea.value = data;
+  textarea.select();
+  textarea.setSelectionRange(0, textarea.value.length);
+  const result = document.execCommand("Copy", false);
+  textarea.blur();
+  if (result) {
+    resolve();
+  } else {
+    reject();
+  }
+}
+const themeChangeCallBack = (res) => {
+  UniServiceJSBridge.invokeOnCallback(ON_THEME_CHANGE, res);
+};
+const onThemeChange$2 = /* @__PURE__ */ defineOnApi(
+  ON_THEME_CHANGE,
+  () => {
+    UniServiceJSBridge.on(ON_THEME_CHANGE, themeChangeCallBack);
+  }
+);
+const offThemeChange$1 = /* @__PURE__ */ defineOffApi(
+  OFF_THEME_CHANGE,
+  () => {
+    UniServiceJSBridge.off(ON_THEME_CHANGE, themeChangeCallBack);
+  }
+);
+const STORAGE_KEYS = "uni-storage-keys";
+function parseValue(value) {
+  const types = ["object", "string", "number", "boolean", "undefined"];
+  try {
+    const object = isString(value) ? JSON.parse(value) : value;
+    const type = object.type;
+    if (types.indexOf(type) >= 0) {
+      const keys = Object.keys(object);
+      if (keys.length === 2 && "data" in object) {
+        if (typeof object.data === type) {
+          if (type === "object" && !Array.isArray(object.data)) {
+            return new UTSJSONObject(object.data);
+          }
+          return object.data;
+        }
+        if (type === "object" && /^\d{4}-\d{2}-\d{2}T\d{2}\:\d{2}\:\d{2}\.\d{3}Z$/.test(object.data)) {
+          return new Date(object.data);
+        }
+      } else if (keys.length === 1) {
+        return "";
+      }
+    }
+  } catch (error) {
+  }
+}
+const setStorageSync = /* @__PURE__ */ defineSyncApi(
+  API_SET_STORAGE_SYNC,
+  (key, data) => {
+    const type = typeof data;
+    const value = type === "string" ? data : JSON.stringify({
+      type,
+      data
+    });
+    localStorage.setItem(key, value);
+  },
+  SetStorageSyncProtocol
+);
+const setStorage = /* @__PURE__ */ defineAsyncApi(
+  API_SET_STORAGE,
+  ({ key, data }, { resolve, reject }) => {
+    try {
+      setStorageSync(key, data);
+      resolve();
+    } catch (error) {
+      reject(error.message);
+    }
+  },
+  SetStorageProtocol
+);
+function getStorageOrigin(key) {
+  const value = localStorage && localStorage.getItem(key);
+  if (!isString(value)) {
+    throw new Error("data not found");
+  }
+  let data = value;
+  try {
+    const object = JSON.parse(value);
+    const result = parseValue(object);
+    if (result !== void 0) {
+      data = result;
+    }
+  } catch (error) {
+  }
+  return data;
+}
+const getStorageSync = /* @__PURE__ */ defineSyncApi(
+  API_GET_STORAGE_SYNC,
+  (key) => {
+    try {
+      return getStorageOrigin(key);
+    } catch (error) {
+      return "";
+    }
+  },
+  GetStorageSyncProtocol
+);
+const getStorage = /* @__PURE__ */ defineAsyncApi(
+  API_GET_STORAGE,
+  ({ key }, { resolve, reject }) => {
+    try {
+      const data = getStorageOrigin(key);
+      resolve({
+        data
+      });
+    } catch (error) {
+      reject(error.message);
+    }
+  },
+  GetStorageProtocol
+);
+const removeStorageSync = /* @__PURE__ */ defineSyncApi(
+  API_REMOVE_STORAGE,
+  (key) => {
+    if (localStorage) {
+      localStorage.removeItem(key);
+    }
+  },
+  RemoveStorageSyncProtocol
+);
+const removeStorage = /* @__PURE__ */ defineAsyncApi(
+  API_REMOVE_STORAGE,
+  ({ key }, { resolve }) => {
+    removeStorageSync(key);
+    resolve();
+  },
+  RemoveStorageProtocol
+);
+const clearStorageSync = /* @__PURE__ */ defineSyncApi(
+  "clearStorageSync",
+  () => {
+    if (localStorage) {
+      localStorage.clear();
+    }
+  }
+);
+const clearStorage = /* @__PURE__ */ defineAsyncApi(
+  "clearStorage",
+  (_, { resolve }) => {
+    clearStorageSync();
+    resolve();
+  }
+);
+const getStorageInfoSync = /* @__PURE__ */ defineSyncApi(
+  "getStorageInfoSync",
+  () => {
+    const length = localStorage && localStorage.length || 0;
+    const keys = [];
+    let currentSize = 0;
+    for (let index2 = 0; index2 < length; index2++) {
+      const key = localStorage.key(index2);
+      const value = localStorage.getItem(key) || "";
+      currentSize += key.length + value.length;
+      if (key !== STORAGE_KEYS) {
+        keys.push(key);
+      }
+    }
+    return {
+      keys,
+      currentSize: Math.ceil(currentSize * 2 / 1024),
+      limitSize: Number.MAX_VALUE
+    };
+  }
+);
+const getStorageInfo = /* @__PURE__ */ defineAsyncApi(
+  "getStorageInfo",
+  (_, { resolve }) => {
+    resolve(getStorageInfoSync());
+  }
+);
+const files = {};
+function urlToFile(url, local) {
+  const file = files[url];
+  if (file) {
+    return Promise.resolve(file);
+  }
+  if (/^data:[a-z-]+\/[a-z-]+;base64,/.test(url)) {
+    return Promise.resolve(base64ToFile(url));
+  }
+  if (local) {
+    return Promise.reject(new Error("not find"));
+  }
+  return new Promise((resolve, reject) => {
+    const xhr = new XMLHttpRequest();
+    xhr.open("GET", url, true);
+    xhr.responseType = "blob";
+    xhr.onload = function() {
+      resolve(this.response);
+    };
+    xhr.onerror = reject;
+    xhr.send();
+  });
+}
+function base64ToFile(base64) {
+  const base64Array = base64.split(",");
+  const res = base64Array[0].match(/:(.*?);/);
+  const type = res ? res[1] : "";
+  const str = atob(base64Array[1]);
+  let n = str.length;
+  const array = new Uint8Array(n);
+  while (n--) {
+    array[n] = str.charCodeAt(n);
+  }
+  return blobToFile(array, type);
+}
+function getExtname(type) {
+  const extname = type.split("/")[1];
+  return extname ? `.${extname}` : "";
+}
+function getFileName(url) {
+  url = url.split("#")[0].split("?")[0];
+  const array = url.split("/");
+  return array[array.length - 1];
+}
+function blobToFile(blob, type) {
+  let file;
+  if (blob instanceof File) {
+    file = blob;
+  } else {
+    type = type || blob.type || "";
+    const filename = `${Date.now()}${getExtname(type)}`;
+    try {
+      file = new File([blob], filename, { type });
+    } catch (error) {
+      blob = blob instanceof Blob ? blob : new Blob([blob], { type });
+      file = blob;
+      file.name = file.name || filename;
+    }
+  }
+  return file;
+}
+function fileToUrl(file) {
+  for (const key in files) {
+    if (hasOwn(files, key)) {
+      const oldFile = files[key];
+      if (oldFile === file) {
+        return key;
+      }
+    }
+  }
+  var url = (window.URL || window.webkitURL).createObjectURL(file);
+  files[url] = file;
+  return url;
+}
+function revokeObjectURL(url) {
+  const URL = window.URL || window.webkitURL;
+  URL.revokeObjectURL(url);
+  delete files[url];
+}
+const getFileInfo = /* @__PURE__ */ defineAsyncApi(
+  API_GET_FILE_INFO,
+  ({ filePath }, { resolve, reject }) => {
+    urlToFile(filePath).then((res) => {
+      resolve({
+        size: res.size
+      });
+    }).catch((err) => {
+      reject(String(err));
+    });
+  },
+  GetFileInfoProtocol,
+  GetFileInfoOptions
+);
+const openDocument = /* @__PURE__ */ defineAsyncApi(
+  API_OPEN_DOCUMENT,
+  ({ filePath }, { resolve }) => {
+    window.open(filePath);
+    return resolve();
+  },
+  OpenDocumentProtocol,
+  OpenDocumentOptions
+);
+const hideKeyboard = /* @__PURE__ */ defineAsyncApi(
+  API_HIDE_KEYBOARD,
+  (args, { resolve, reject }) => {
+    const activeElement = document.activeElement;
+    if (activeElement && (activeElement.tagName === "TEXTAREA" || activeElement.tagName === "INPUT")) {
+      activeElement.blur();
+      resolve();
+    }
+  }
+);
+function getServiceAddress() {
+  return window.location.protocol + "//" + window.location.host;
+}
+const getImageInfo = /* @__PURE__ */ defineAsyncApi(
+  API_GET_IMAGE_INFO,
+  ({ src }, { resolve, reject }) => {
+    const img = new Image();
+    img.onload = function() {
+      resolve({
+        width: img.naturalWidth,
+        height: img.naturalHeight,
+        path: src.indexOf("/") === 0 ? getServiceAddress() + src : src
+      });
+    };
+    img.onerror = function() {
+      reject();
+    };
+    img.src = src;
+  },
+  GetImageInfoProtocol,
+  GetImageInfoOptions
+);
+const getVideoInfo = /* @__PURE__ */ defineAsyncApi(
+  API_GET_VIDEO_INFO,
+  ({ src }, { resolve, reject }) => {
+    urlToFile(src, true).then((file) => {
+      return file;
+    }).catch(() => {
+      return null;
+    }).then((file) => {
+      const video = document.createElement("video");
+      if (video.onloadedmetadata !== void 0) {
+        const handle = setTimeout(
+          () => {
+            video.onloadedmetadata = null;
+            video.onerror = null;
+            reject();
+          },
+          src.startsWith("data:") || src.startsWith("blob:") ? 300 : 3e3
+        );
+        video.onloadedmetadata = function() {
+          clearTimeout(handle);
+          video.onerror = null;
+          resolve({
+            size: Math.ceil((file ? file.size : 0) / 1024),
+            duration: video.duration || 0,
+            width: video.videoWidth || 0,
+            height: video.videoHeight || 0
+          });
+        };
+        video.onerror = function() {
+          clearTimeout(handle);
+          video.onloadedmetadata = null;
+          reject();
+        };
+        video.src = src;
+      } else {
+        reject();
+      }
+    });
+  },
+  GetVideoInfoProtocol,
+  GetVideoInfoOptions
+);
+const MIMEType = {
+  /**
+   * 关于图片常见的MIME类型
+   */
+  image: {
+    jpg: "jpeg",
+    jpe: "jpeg",
+    pbm: "x-portable-bitmap",
+    pgm: "x-portable-graymap",
+    pnm: "x-portable-anymap",
+    ppm: "x-portable-pixmap",
+    psd: "vnd.adobe.photoshop",
+    pic: "x-pict",
+    rgb: "x-rgb",
+    svg: "svg+xml",
+    svgz: "svg+xml",
+    tif: "tiff",
+    xif: "vnd.xiff",
+    wbmp: "vnd.wap.wbmp",
+    wdp: "vnd.ms-photo",
+    xbm: "x-xbitmap",
+    ico: "x-icon"
+  },
+  /**
+   * 关于视频常见的MIME类型
+   */
+  video: {
+    "3g2": "3gpp2",
+    "3gp": "3gpp",
+    avi: "x-msvideo",
+    f4v: "x-f4v",
+    flv: "x-flv",
+    jpgm: "jpm",
+    jpgv: "jpeg",
+    m1v: "mpeg",
+    m2v: "mpeg",
+    mpe: "mpeg",
+    mpg: "mpeg",
+    mpg4: "mpeg",
+    m4v: "x-m4v",
+    mkv: "x-matroska",
+    mov: "quicktime",
+    qt: "quicktime",
+    movie: "x-sgi-movie",
+    mp4v: "mp4",
+    ogv: "ogg",
+    smv: "x-smv",
+    wm: "x-ms-wm",
+    wmv: "x-ms-wmv",
+    wmx: "x-ms-wmx",
+    wvx: "x-ms-wvx"
+  }
+};
+const ALL = "all";
+function isWXEnv() {
+  const ua2 = window.navigator.userAgent.toLowerCase();
+  const matchUA = ua2.match(/MicroMessenger/i);
+  return !!(matchUA && matchUA[0] === "micromessenger");
+}
+function _createInput({
+  count,
+  sourceType,
+  type,
+  extension
+}) {
+  addInteractListener();
+  const inputEl = document.createElement("input");
+  inputEl.type = "file";
+  updateElementStyle(inputEl, {
+    position: "absolute",
+    visibility: "hidden",
+    zIndex: "-999",
+    width: "0",
+    height: "0",
+    top: "0",
+    left: "0"
+  });
+  inputEl.accept = extension.map((item) => {
+    if (type !== ALL) {
+      const MIMEKey = item.replace(".", "");
+      return `${type}/${MIMEType[type][MIMEKey] || MIMEKey}`;
+    } else {
+      if (isWXEnv()) {
+        return ".";
+      }
+      return item.indexOf(".") === 0 ? item : `.${item}`;
+    }
+  }).join(",");
+  if (count && count > 1) {
+    inputEl.multiple = true;
+  }
+  if (type !== ALL && sourceType instanceof Array && sourceType.length === 1 && sourceType[0] === "camera") {
+    inputEl.setAttribute("capture", "camera");
+  }
+  return inputEl;
+}
+let fileInput = null;
+const chooseFile = /* @__PURE__ */ defineAsyncApi(
+  API_CHOOSE_FILE,
+  ({
+    // sizeType,
+    count,
+    sourceType,
+    type,
+    extension
+  }, { resolve, reject }) => {
+    initI18nChooseFileMsgsOnce();
+    const { t: t2 } = useI18n();
+    if (fileInput) {
+      document.body.removeChild(fileInput);
+      fileInput = null;
+    }
+    fileInput = _createInput({
+      count,
+      sourceType,
+      type,
+      extension
+    });
+    document.body.appendChild(fileInput);
+    fileInput.addEventListener("change", function(event) {
+      const eventTarget = event.target;
+      const tempFiles = [];
+      if (eventTarget && eventTarget.files) {
+        const fileCount = eventTarget.files.length;
+        for (let i = 0; i < fileCount; i++) {
+          const file = eventTarget.files[i];
+          let filePath;
+          Object.defineProperty(file, "path", {
+            get() {
+              filePath = filePath || fileToUrl(file);
+              return filePath;
+            }
+          });
+          if (i < count)
+            tempFiles.push(file);
+        }
+      }
+      const res = {
+        get tempFilePaths() {
+          return tempFiles.map(({ path }) => path);
+        },
+        tempFiles
+      };
+      resolve(res);
+    });
+    fileInput.click();
+    if (!getInteractStatus()) {
+      console.warn(t2("uni.chooseFile.notUserActivation"));
+    }
+  },
+  ChooseFileProtocol,
+  ChooseFileOptions
+);
+let imageInput = null;
+const chooseImage = /* @__PURE__ */ defineAsyncApi(
+  API_CHOOSE_IMAGE,
+  ({
+    count,
+    // sizeType,
+    sourceType,
+    extension
+  }, { resolve, reject }) => {
+    initI18nChooseFileMsgsOnce();
+    const { t: t2 } = useI18n();
+    if (imageInput) {
+      document.body.removeChild(imageInput);
+      imageInput = null;
+    }
+    imageInput = _createInput({
+      count,
+      sourceType,
+      extension,
+      type: "image"
+    });
+    document.body.appendChild(imageInput);
+    imageInput.addEventListener("change", function(event) {
+      const eventTarget = event.target;
+      const tempFiles = [];
+      if (eventTarget && eventTarget.files) {
+        const fileCount = eventTarget.files.length;
+        for (let i = 0; i < fileCount; i++) {
+          const file = eventTarget.files[i];
+          let filePath;
+          Object.defineProperty(file, "path", {
+            get() {
+              filePath = filePath || fileToUrl(file);
+              return filePath;
+            }
+          });
+          if (i < count)
+            tempFiles.push(file);
+        }
+      }
+      const res = {
+        get tempFilePaths() {
+          return tempFiles.map(({ path }) => path);
+        },
+        tempFiles
+      };
+      resolve(res);
+    });
+    imageInput.click();
+    if (!getInteractStatus()) {
+      console.warn(t2("uni.chooseFile.notUserActivation"));
+    }
+  },
+  ChooseImageProtocol,
+  ChooseImageOptions
+);
+const KEY_MAPS = {
+  esc: ["Esc", "Escape"],
+  // tab: ['Tab'],
+  enter: ["Enter"]
+  // space: [' ', 'Spacebar'],
+  // up: ['Up', 'ArrowUp'],
+  // left: ['Left', 'ArrowLeft'],
+  // right: ['Right', 'ArrowRight'],
+  // down: ['Down', 'ArrowDown'],
+  // delete: ['Backspace', 'Delete', 'Del'],
+};
+const KEYS = Object.keys(KEY_MAPS);
+function useKeyboard() {
+  const key = ref("");
+  const disable = ref(false);
+  const onKeyup = (evt) => {
+    if (disable.value) {
+      return;
+    }
+    const res = KEYS.find(
+      (key2) => KEY_MAPS[key2].indexOf(evt.key) !== -1
+    );
+    if (res) {
+      key.value = res;
+    }
+    nextTick(() => key.value = "");
+  };
+  onMounted(() => {
+    document.addEventListener("keyup", onKeyup);
+  });
+  onBeforeUnmount(() => {
+    document.removeEventListener("keyup", onKeyup);
+  });
+  return {
+    key,
+    disable
+  };
+}
+const VNODE_MASK = /* @__PURE__ */ createVNode(
+  "div",
+  { class: "uni-mask" },
+  null,
+  -1
+  /* HOISTED */
+);
+function createRootApp(component, rootState, callback) {
+  rootState.onClose = (...args) => (rootState.visible = false, callback.apply(null, args));
+  return createApp(
+    defineComponent({
+      setup() {
+        return () => (openBlock(), createBlock(
+          component,
+          rootState,
+          null,
+          16
+          /* FULL_PROPS */
+        ));
+      }
+    })
+  );
+}
+function ensureRoot(id2) {
+  let rootEl = document.getElementById(id2);
+  if (!rootEl) {
+    rootEl = document.createElement("div");
+    rootEl.id = id2;
+    document.body.append(rootEl);
+  }
+  return rootEl;
+}
+function usePopup(props2, {
+  onEsc,
+  onEnter
+}) {
+  const visible = ref(props2.visible);
+  const { key, disable } = useKeyboard();
+  watch(
+    () => props2.visible,
+    (value) => visible.value = value
+  );
+  watch(
+    () => visible.value,
+    (value) => disable.value = !value
+  );
+  watchEffect(() => {
+    const { value } = key;
+    if (value === "esc") {
+      onEsc && onEsc();
+    } else if (value === "enter") {
+      onEnter && onEnter();
+    }
+  });
+  return visible;
+}
+let index$s = 0;
+let overflow = "";
+function preventScroll(prevent) {
+  let before = index$s;
+  index$s += prevent ? 1 : -1;
+  index$s = Math.max(0, index$s);
+  if (index$s > 0) {
+    if (before === 0) {
+      overflow = document.body.style.overflow;
+      document.body.style.overflow = "hidden";
+    }
+  } else {
+    document.body.style.overflow = overflow;
+    overflow = "";
+  }
+}
+function usePreventScroll() {
+  onMounted(() => preventScroll(true));
+  onUnmounted(() => preventScroll(false));
+}
+const props$u = {
+  src: {
+    type: String,
+    default: ""
+  }
+};
+const ImageView = /* @__PURE__ */ defineSystemComponent({
+  name: "ImageView",
+  props: props$u,
+  setup(props2) {
+    const state2 = reactive({
+      direction: "none"
+    });
+    let scale = 1;
+    let imgWidth = 0;
+    let imgHeight = 0;
+    let width = 0;
+    let height = 0;
+    function onScale({
+      detail
+    }) {
+      scale = detail.scale;
+    }
+    function onImgLoad(event) {
+      const target = event.target;
+      const rect = target.getBoundingClientRect();
+      imgWidth = rect.width;
+      imgHeight = rect.height;
+    }
+    function onTouchStart(event) {
+      const target = event.target;
+      const rect = target.getBoundingClientRect();
+      width = rect.width;
+      height = rect.height;
+      checkDirection(event);
+    }
+    function onTouchEnd(event) {
+      const horizontal = scale * imgWidth > width;
+      const vertical = scale * imgHeight > height;
+      if (horizontal && vertical) {
+        state2.direction = "all";
+      } else if (horizontal) {
+        state2.direction = "horizontal";
+      } else if (vertical) {
+        state2.direction = "vertical";
+      } else {
+        state2.direction = "none";
+      }
+      checkDirection(event);
+    }
+    function checkDirection(event) {
+      if (state2.direction === "all" || state2.direction === "horizontal") {
+        event.stopPropagation();
+      }
+    }
+    return () => {
+      const viewStyle = {
+        position: "absolute",
+        left: "0",
+        top: "0",
+        width: "100%",
+        height: "100%"
+      };
+      return createVNode(MovableArea, {
+        "style": viewStyle,
+        "onTouchstart": withWebEvent(onTouchStart),
+        "onTouchmove": withWebEvent(checkDirection),
+        "onTouchend": withWebEvent(onTouchEnd)
+      }, {
+        default: () => [createVNode(MovableView, {
+          "style": viewStyle,
+          "direction": state2.direction,
+          "inertia": true,
+          "scale": true,
+          "scale-min": "1",
+          "scale-max": "4",
+          "onScale": onScale
+        }, {
+          default: () => [createVNode("img", {
+            "src": props2.src,
+            "style": {
+              position: "absolute",
+              left: "50%",
+              top: "50%",
+              transform: "translate(-50%, -50%)",
+              maxHeight: "100%",
+              maxWidth: "100%"
+            },
+            "onLoad": onImgLoad
+          }, null, 40, ["src", "onLoad"])]
+        }, 8, ["style", "direction", "inertia", "scale", "onScale"])]
+      }, 8, ["style", "onTouchstart", "onTouchmove", "onTouchend"]);
+    };
+  }
+});
+function _isSlot$2(s) {
+  return typeof s === "function" || Object.prototype.toString.call(s) === "[object Object]" && !isVNode(s);
+}
+const props$t = {
+  urls: {
+    type: Array,
+    default() {
+      return [];
+    }
+  },
+  current: {
+    type: [Number, String],
+    default: 0
+  }
+};
+function getIndex(props2) {
+  let index2 = typeof props2.current === "number" ? props2.current : props2.urls.indexOf(props2.current);
+  index2 = index2 < 0 ? 0 : index2;
+  return index2;
+}
+const ImagePreview = /* @__PURE__ */ defineSystemComponent({
+  name: "ImagePreview",
+  props: props$t,
+  emits: ["close"],
+  setup(props2, {
+    emit: emit2
+  }) {
+    usePreventScroll();
+    const rootRef = ref(null);
+    const indexRef = ref(getIndex(props2));
+    watch(() => props2.current, () => indexRef.value = getIndex(props2));
+    let preventDefault;
+    onMounted(() => {
+      const el = rootRef.value;
+      const MAX_MOVE = 20;
+      let x = 0;
+      let y = 0;
+      el.addEventListener("mousedown", (event) => {
+        preventDefault = false;
+        x = event.clientX;
+        y = event.clientY;
+      });
+      el.addEventListener("mouseup", (event) => {
+        if (Math.abs(event.clientX - x) > MAX_MOVE || Math.abs(event.clientY - y) > MAX_MOVE) {
+          preventDefault = true;
+        }
+      });
+    });
+    function onClick() {
+      if (!preventDefault) {
+        nextTick(() => {
+          emit2("close");
+        });
+      }
+    }
+    function onChange2(event) {
+      indexRef.value = event.detail.current;
+    }
+    const closeBtnStyle = {
+      position: "absolute",
+      "box-sizing": "border-box",
+      top: "0",
+      right: "0",
+      width: "60px",
+      height: "44px",
+      padding: "6px",
+      "line-height": "32px",
+      "font-size": "26px",
+      color: "white",
+      "text-align": "center",
+      cursor: "pointer"
+    };
+    return () => {
+      let _slot;
+      return createVNode("div", {
+        "ref": rootRef,
+        "style": {
+          display: "block",
+          position: "fixed",
+          left: "0",
+          top: "0",
+          width: "100%",
+          height: "100%",
+          zIndex: 999,
+          background: "rgba(0,0,0,0.8)"
+        },
+        "onClick": onClick
+      }, [createVNode(Swiper, {
+        "navigation": "auto",
+        "current": indexRef.value,
+        "onChange": onChange2,
+        "indicator-dots": false,
+        "autoplay": false,
+        "style": {
+          position: "absolute",
+          left: "0",
+          top: "0",
+          width: "100%",
+          height: "100%"
+        }
+      }, _isSlot$2(_slot = props2.urls.map((src) => createVNode(SwiperItem, null, {
+        default: () => [createVNode(ImageView, {
+          "src": src
+        }, null, 8, ["src"])]
+      }))) ? _slot : {
+        default: () => [_slot],
+        _: 1
+      }, 8, ["current", "onChange"]), createVNode("div", {
+        "style": closeBtnStyle
+      }, [createSvgIconVNode(ICON_PATH_CLOSE, "#ffffff", 26)], 4)], 8, ["onClick"]);
+    };
+  }
+});
+let state$2 = null;
+let imagePreviewInstance;
+const closePreviewImageView = () => {
+  state$2 = null;
+  nextTick(() => {
+    imagePreviewInstance == null ? void 0 : imagePreviewInstance.unmount();
+    imagePreviewInstance = null;
+  });
+};
+const previewImage = /* @__PURE__ */ defineAsyncApi(
+  API_PREVIEW_IMAGE,
+  (args, { resolve }) => {
+    if (!state$2) {
+      state$2 = reactive(args);
+      nextTick(() => {
+        imagePreviewInstance = createRootApp(
+          ImagePreview,
+          state$2,
+          closePreviewImageView
+        );
+        imagePreviewInstance.mount(ensureRoot("u-a-p"));
+      });
+    } else {
+      extend(state$2, args);
+    }
+    resolve();
+  },
+  PreviewImageProtocol,
+  PreviewImageOptions
+);
+const closePreviewImage = /* @__PURE__ */ defineAsyncApi(
+  API_CLOSE_PREVIEW_IMAGE,
+  (_, { resolve, reject }) => {
+    if (imagePreviewInstance) {
+      closePreviewImageView();
+      resolve();
+    } else {
+      reject();
+    }
+  }
+);
+let videoInput = null;
+const chooseVideo = /* @__PURE__ */ defineAsyncApi(
+  API_CHOOSE_VIDEO,
+  ({ sourceType, extension }, { resolve, reject }) => {
+    initI18nChooseFileMsgsOnce();
+    const { t: t2 } = useI18n();
+    if (videoInput) {
+      document.body.removeChild(videoInput);
+      videoInput = null;
+    }
+    videoInput = _createInput({
+      sourceType,
+      extension,
+      type: "video"
+    });
+    document.body.appendChild(videoInput);
+    videoInput.addEventListener("change", function(event) {
+      const eventTarget = event.target;
+      const file = eventTarget.files[0];
+      let filePath = "";
+      const callbackResult = {
+        tempFilePath: filePath,
+        tempFile: file,
+        size: file.size,
+        duration: 0,
+        width: 0,
+        height: 0,
+        name: file.name
+      };
+      Object.defineProperty(callbackResult, "tempFilePath", {
+        get() {
+          filePath = filePath || fileToUrl(this.tempFile);
+          return filePath;
+        }
+      });
+      const video = document.createElement("video");
+      if (video.onloadedmetadata !== void 0) {
+        const filePath2 = fileToUrl(file);
+        video.onloadedmetadata = function() {
+          revokeObjectURL(filePath2);
+          resolve(
+            extend(callbackResult, {
+              duration: video.duration || 0,
+              width: video.videoWidth || 0,
+              height: video.videoHeight || 0
+            })
+          );
+        };
+        setTimeout(() => {
+          video.onloadedmetadata = null;
+          revokeObjectURL(filePath2);
+          resolve(callbackResult);
+        }, 300);
+        video.src = filePath2;
+      } else {
+        resolve(callbackResult);
+      }
+    });
+    videoInput.click();
+    if (!getInteractStatus()) {
+      console.warn(t2("uni.chooseFile.notUserActivation"));
+    }
+  },
+  ChooseVideoProtocol,
+  ChooseVideoOptions
+);
+const request = /* @__PURE__ */ defineTaskApi(
+  API_REQUEST,
+  ({
+    url,
+    data,
+    header = {},
+    method,
+    dataType: dataType2,
+    responseType,
+    withCredentials,
+    timeout = __uniConfig.networkTimeout.request
+  }, { resolve, reject }) => {
+    {
+      timeout = timeout == null ? __uniConfig.networkTimeout.request : timeout;
+    }
+    let body = null;
+    const contentType = normalizeContentType(header);
+    if (method !== "GET") {
+      if (isString(data) || data instanceof ArrayBuffer) {
+        body = data;
+      } else {
+        if (contentType === "json") {
+          try {
+            body = JSON.stringify(data);
+          } catch (error) {
+            body = data.toString();
+          }
+        } else if (contentType === "urlencoded") {
+          const bodyArray = [];
+          for (const key in data) {
+            if (hasOwn(data, key)) {
+              bodyArray.push(
+                encodeURIComponent(key) + "=" + encodeURIComponent(data[key])
+              );
+            }
+          }
+          body = bodyArray.join("&");
+        } else {
+          body = data.toString();
+        }
+      }
+    }
+    const xhr = new XMLHttpRequest();
+    const requestTask = new RequestTask(xhr);
+    xhr.open(method, url);
+    for (const key in header) {
+      if (hasOwn(header, key)) {
+        xhr.setRequestHeader(key, header[key]);
+      }
+    }
+    const timer = setTimeout(function() {
+      xhr.onload = xhr.onabort = xhr.onerror = null;
+      requestTask.abort();
+      reject("timeout", { errCode: 5 });
+    }, timeout);
+    xhr.responseType = responseType;
+    xhr.onload = function() {
+      clearTimeout(timer);
+      const statusCode = xhr.status;
+      let res = responseType === "text" ? xhr.responseText : xhr.response;
+      if (responseType === "text" && dataType2 === "json") {
+        try {
+          res = UTS.JSON.parse(res);
+        } catch (error) {
+        }
+      }
+      resolve({
+        data: res,
+        statusCode,
+        header: parseHeaders(xhr.getAllResponseHeaders()),
+        cookies: []
+      });
+    };
+    xhr.onabort = function() {
+      clearTimeout(timer);
+      reject("abort", { errCode: 600003 });
+    };
+    xhr.onerror = function() {
+      clearTimeout(timer);
+      reject(void 0, { errCode: 5 });
+    };
+    xhr.withCredentials = withCredentials;
+    xhr.send(body);
+    return requestTask;
+  },
+  RequestProtocol,
+  RequestOptions
+);
+function normalizeContentType(header) {
+  const name = Object.keys(header).find(
+    (name2) => name2.toLowerCase() === "content-type"
+  );
+  if (!name) {
+    return;
+  }
+  const contentType = header[name];
+  if (contentType.indexOf("application/json") === 0) {
+    return "json";
+  } else if (contentType.indexOf("application/x-www-form-urlencoded") === 0) {
+    return "urlencoded";
+  }
+  return "string";
+}
+class RequestTask {
+  constructor(xhr) {
+    this._xhr = xhr;
+  }
+  abort() {
+    if (this._xhr) {
+      this._xhr.abort();
+      delete this._xhr;
+    }
+  }
+  onHeadersReceived(callback) {
+    throw new Error("Method not implemented.");
+  }
+  offHeadersReceived(callback) {
+    throw new Error("Method not implemented.");
+  }
+}
+function parseHeaders(headers) {
+  const headersObject = {};
+  headers.split(LINEFEED).forEach((header) => {
+    const find = header.match(/(\S+\s*):\s*(.*)/);
+    if (!find || find.length !== 3) {
+      return;
+    }
+    headersObject[find[1]] = find[2];
+  });
+  return headersObject;
+}
+class DownloadTask {
+  constructor(xhr) {
+    this._callbacks = [];
+    this._xhr = xhr;
+  }
+  /**
+   * 监听下载进度
+   * @param {Function} callback 回调
+   */
+  onProgressUpdate(callback) {
+    if (!isFunction(callback)) {
+      return;
+    }
+    this._callbacks.push(callback);
+  }
+  offProgressUpdate(callback) {
+    const index2 = this._callbacks.indexOf(callback);
+    if (index2 >= 0) {
+      this._callbacks.splice(index2, 1);
+    }
+  }
+  /**
+   * 停止任务
+   */
+  abort() {
+    if (this._xhr) {
+      this._xhr.abort();
+      delete this._xhr;
+    }
+  }
+  onHeadersReceived(callback) {
+    throw new Error("Method not implemented.");
+  }
+  offHeadersReceived(callback) {
+    throw new Error("Method not implemented.");
+  }
+}
+const downloadFile = /* @__PURE__ */ defineTaskApi(
+  API_DOWNLOAD_FILE,
+  ({ url, header = {}, timeout = __uniConfig.networkTimeout.downloadFile }, { resolve, reject }) => {
+    {
+      timeout = timeout == null ? __uniConfig.networkTimeout.downloadFile : timeout;
+    }
+    var timer;
+    var xhr = new XMLHttpRequest();
+    var downloadTask = new DownloadTask(xhr);
+    xhr.open("GET", url, true);
+    Object.keys(header).forEach((key) => {
+      xhr.setRequestHeader(key, header[key]);
+    });
+    xhr.responseType = "blob";
+    xhr.onload = function() {
+      clearTimeout(timer);
+      const statusCode = xhr.status;
+      const blob = this.response;
+      let filename;
+      const contentDisposition = xhr.getResponseHeader("content-disposition");
+      if (contentDisposition) {
+        const res = contentDisposition.match(/filename="?(\S+)"?\b/);
+        if (res) {
+          filename = res[1];
+        }
+      }
+      blob.name = filename || getFileName(url);
+      resolve({
+        statusCode,
+        tempFilePath: fileToUrl(blob)
+      });
+    };
+    xhr.onabort = function() {
+      clearTimeout(timer);
+      reject("abort", { errCode: 600003 });
+    };
+    xhr.onerror = function() {
+      clearTimeout(timer);
+      reject("", { errCode: 602001 });
+    };
+    xhr.onprogress = function(event) {
+      downloadTask._callbacks.forEach((callback) => {
+        var totalBytesWritten = event.loaded;
+        var totalBytesExpectedToWrite = event.total;
+        var progress = Math.round(
+          totalBytesWritten / totalBytesExpectedToWrite * 100
+        );
+        callback({
+          progress,
+          totalBytesWritten,
+          totalBytesExpectedToWrite
+        });
+      });
+    };
+    xhr.send();
+    timer = setTimeout(function() {
+      xhr.onprogress = xhr.onload = xhr.onabort = xhr.onerror = null;
+      downloadTask.abort();
+      reject("timeout", { errCode: 5 });
+    }, timeout);
+    return downloadTask;
+  },
+  DownloadFileProtocol,
+  DownloadFileOptions
+);
+class UploadTask {
+  constructor(xhr) {
+    this._callbacks = [];
+    this._xhr = xhr;
+  }
+  /**
+   * 监听上传进度
+   * @param callback 回调
+   */
+  onProgressUpdate(callback) {
+    if (!isFunction(callback)) {
+      return;
+    }
+    this._callbacks.push(callback);
+  }
+  offProgressUpdate(callback) {
+    const index2 = this._callbacks.indexOf(callback);
+    if (index2 >= 0) {
+      this._callbacks.splice(index2, 1);
+    }
+  }
+  /**
+   * 中断上传任务
+   */
+  abort() {
+    this._isAbort = true;
+    if (this._xhr) {
+      this._xhr.abort();
+      delete this._xhr;
+    }
+  }
+  onHeadersReceived(callback) {
+    throw new Error("Method not implemented.");
+  }
+  offHeadersReceived(callback) {
+    throw new Error("Method not implemented.");
+  }
+}
+const uploadFile = /* @__PURE__ */ defineTaskApi(
+  API_UPLOAD_FILE,
+  ({
+    url,
+    file,
+    filePath,
+    name,
+    files: files2,
+    header = {},
+    formData = {},
+    timeout = __uniConfig.networkTimeout.uploadFile
+  }, { resolve, reject }) => {
+    {
+      timeout = timeout == null ? __uniConfig.networkTimeout.uploadFile : timeout;
+    }
+    var uploadTask = new UploadTask();
+    if (!isArray(files2) || !files2.length) {
+      files2 = [
+        {
+          name,
+          file,
+          uri: filePath
+        }
+      ];
+    }
+    function upload(realFiles) {
+      var xhr = new XMLHttpRequest();
+      var form = new FormData();
+      var timer;
+      Object.keys(formData).forEach((key) => {
+        form.append(key, formData[key]);
+      });
+      Object.values(files2).forEach(({ name: name2 }, index2) => {
+        const file2 = realFiles[index2];
+        form.append(name2 || "file", file2, file2.name || `file-${Date.now()}`);
+      });
+      xhr.open("POST", url);
+      Object.keys(header).forEach((key) => {
+        xhr.setRequestHeader(key, header[key]);
+      });
+      xhr.upload.onprogress = function(event) {
+        uploadTask._callbacks.forEach((callback) => {
+          var totalBytesSent = event.loaded;
+          var totalBytesExpectedToSend = event.total;
+          var progress = Math.round(
+            totalBytesSent / totalBytesExpectedToSend * 100
+          );
+          callback({
+            progress,
+            totalBytesSent,
+            totalBytesExpectedToSend
+          });
+        });
+      };
+      xhr.onerror = function() {
+        clearTimeout(timer);
+        reject("", { errCode: 602001 });
+      };
+      xhr.onabort = function() {
+        clearTimeout(timer);
+        reject("abort", { errCode: 600003 });
+      };
+      xhr.onload = function() {
+        clearTimeout(timer);
+        const statusCode = xhr.status;
+        resolve({
+          statusCode,
+          data: xhr.responseText || xhr.response
+        });
+      };
+      if (!uploadTask._isAbort) {
+        timer = setTimeout(function() {
+          xhr.upload.onprogress = xhr.onload = xhr.onabort = xhr.onerror = null;
+          uploadTask.abort();
+          reject("timeout", { errCode: 5 });
+        }, timeout);
+        xhr.send(form);
+        uploadTask._xhr = xhr;
+      } else {
+        reject("abort", { errCode: 600003 });
+      }
+    }
+    Promise.all(
+      files2.map(
+        ({ file: file2, uri }) => file2 instanceof Blob ? Promise.resolve(blobToFile(file2)) : urlToFile(uri)
+      )
+    ).then(upload).catch(() => {
+      setTimeout(() => {
+        reject("file error");
+      }, 0);
+    });
+    return uploadTask;
+  },
+  UploadFileProtocol,
+  UploadFileOptions
+);
+const socketTasks = [];
+const globalEvent = {
+  open: "",
+  close: "",
+  error: "",
+  message: ""
+};
+class SocketTask {
+  /**
+   * 构造函数
+   * @param {string} url
+   * @param {Array} protocols
+   */
+  constructor(url, protocols, callback) {
+    this._callbacks = {
+      open: [],
+      close: [],
+      error: [],
+      message: []
+    };
+    let error;
+    try {
+      const webSocket = this._webSocket = new WebSocket(url, protocols);
+      webSocket.binaryType = "arraybuffer";
+      const eventNames = ["open", "close", "error", "message"];
+      eventNames.forEach((name) => {
+        this._callbacks[name] = [];
+        webSocket.addEventListener(name, (event) => {
+          const { data, code, reason } = event;
+          const res = name === "message" ? { data } : name === "close" ? { code, reason } : {};
+          this._callbacks[name].forEach((callback2) => {
+            try {
+              callback2(res);
+            } catch (e2) {
+              console.error(
+                `thirdScriptError
+${e2};at socketTask.on${capitalize(
+                  name
+                )} callback function
+`,
+                e2
+              );
+            }
+          });
+          if (this === socketTasks[0] && globalEvent[name]) {
+            UniServiceJSBridge.invokeOnCallback(globalEvent[name], res);
+          }
+          if (name === "error" || name === "close") {
+            const index2 = socketTasks.indexOf(this);
+            if (index2 >= 0) {
+              socketTasks.splice(index2, 1);
+            }
+          }
+        });
+      });
+      const propertys = [
+        "CLOSED",
+        "CLOSING",
+        "CONNECTING",
+        "OPEN",
+        "readyState"
+      ];
+      propertys.forEach((property) => {
+        Object.defineProperty(this, property, {
+          get() {
+            return webSocket[property];
+          }
+        });
+      });
+    } catch (e2) {
+      error = e2;
+    }
+    callback && callback(error, this);
+  }
+  /**
+   * 发送
+   * @param {any} data
+   */
+  send(options) {
+    const data = (options || {}).data;
+    const ws = this._webSocket;
+    try {
+      if (ws.readyState !== ws.OPEN) {
+        callOptions(options, {
+          errMsg: `sendSocketMessage:fail SocketTask.readyState is not OPEN`,
+          errCode: 10002
+        });
+        throw new Error("SocketTask.readyState is not OPEN");
+      }
+      ws.send(data);
+      callOptions(options, "sendSocketMessage:ok");
+    } catch (error) {
+      callOptions(options, {
+        errMsg: `sendSocketMessage:fail ${error}`,
+        errCode: 602001
+      });
+    }
+  }
+  /**
+   * 关闭
+   * @param {number} code
+   * @param {string} reason
+   */
+  close(options = {}) {
+    const ws = this._webSocket;
+    try {
+      const code = options.code || 1e3;
+      const reason = options.reason;
+      if (isString(reason)) {
+        ws.close(code, reason);
+      } else {
+        ws.close(code);
+      }
+      callOptions(options, "closeSocket:ok");
+    } catch (error) {
+      callOptions(options, `closeSocket:fail ${error}`);
+    }
+  }
+  onOpen(callback) {
+    this._callbacks.open.push(callback);
+  }
+  onMessage(callback) {
+    this._callbacks.message.push(callback);
+  }
+  onError(callback) {
+    this._callbacks.error.push(callback);
+  }
+  onClose(callback) {
+    this._callbacks.close.push(callback);
+  }
+}
+const connectSocket = /* @__PURE__ */ defineTaskApi(
+  API_CONNECT_SOCKET,
+  ({ url, protocols }, { resolve, reject }) => {
+    return new SocketTask(
+      url,
+      protocols,
+      (error, socketTask) => {
+        if (error) {
+          reject(error.toString(), {
+            errCode: 600009
+          });
+          return;
+        }
+        socketTasks.push(socketTask);
+        resolve();
+      }
+    );
+  },
+  ConnectSocketProtocol,
+  ConnectSocketOptions
+);
+function callSocketTask(socketTask, method, option, resolve, reject) {
+  const fn = socketTask[method];
+  if (isFunction(fn)) {
+    fn.call(
+      socketTask,
+      extend({}, option, {
+        success() {
+          resolve();
+        },
+        fail({ errMsg }) {
+          reject(errMsg.replace("sendSocketMessage:fail ", ""));
+        },
+        complete: void 0
+      })
+    );
+  }
+}
+const sendSocketMessage = /* @__PURE__ */ defineAsyncApi(
+  API_SEND_SOCKET_MESSAGE,
+  (options, { resolve, reject }) => {
+    const socketTask = socketTasks[0];
+    if (socketTask && socketTask.readyState === socketTask.OPEN) {
+      callSocketTask(socketTask, "send", options, resolve, reject);
+    } else {
+      reject("WebSocket is not connected");
+    }
+  },
+  SendSocketMessageProtocol
+);
+const closeSocket = /* @__PURE__ */ defineAsyncApi(
+  API_CLOSE_SOCKET,
+  (options, { resolve, reject }) => {
+    const socketTask = socketTasks[0];
+    if (socketTask) {
+      callSocketTask(socketTask, "close", options, resolve, reject);
+    } else {
+      reject("WebSocket is not connected");
+    }
+  },
+  CloseSocketProtocol
+);
+function on(event) {
+  const api2 = `onSocket${capitalize(event)}`;
+  return /* @__PURE__ */ defineOnApi(api2, () => {
+    globalEvent[event] = api2;
+  });
+}
+const onSocketOpen = /* @__PURE__ */ on("open");
+const onSocketError = /* @__PURE__ */ on("error");
+const onSocketMessage = /* @__PURE__ */ on("message");
+const onSocketClose = /* @__PURE__ */ on("close");
+let index$r = 0;
+function getJSONP(url, options, success, error) {
+  var js = document.createElement("script");
+  var callbackKey = options.callback || "callback";
+  var callbackName = "__uni_jsonp_callback_" + index$r++;
+  var timeout = options.timeout || 3e4;
+  var timing;
+  function end() {
+    clearTimeout(timing);
+    delete window[callbackName];
+    js.remove();
+  }
+  window[callbackName] = (res) => {
+    if (isFunction(success)) {
+      success(res);
+    }
+    end();
+  };
+  js.onerror = () => {
+    if (isFunction(error)) {
+      error();
+    }
+    end();
+  };
+  timing = setTimeout(function() {
+    if (isFunction(error)) {
+      error();
+    }
+    end();
+  }, timeout);
+  js.src = url + (url.indexOf("?") >= 0 ? "&" : "?") + callbackKey + "=" + callbackName;
+  document.body.appendChild(js);
+}
+function createCallout(maps2) {
+  function onAdd() {
+    const div = this.div;
+    const panes = this.getPanes();
+    panes.floatPane.appendChild(div);
+  }
+  function onRemove() {
+    const parentNode = this.div.parentNode;
+    if (parentNode) {
+      parentNode.removeChild(this.div);
+    }
+  }
+  function createAMapText() {
+    const option = this.option;
+    this.Text = new maps2.Text({
+      text: option.content,
+      anchor: "bottom-center",
+      // 设置文本标记锚点
+      offset: new maps2.Pixel(0, option.offsetY - 16),
+      style: {
+        padding: (option.padding || 8) + "px",
+        "line-height": (option.fontSize || 14) + "px",
+        "border-radius": (option.borderRadius || 0) + "px",
+        "border-color": `${option.bgColor || "#fff"} transparent transparent`,
+        "background-color": option.bgColor || "#fff",
+        "box-shadow": "0 2px 6px 0 rgba(114, 124, 245, .5)",
+        "text-align": "center",
+        "font-size": (option.fontSize || 14) + "px",
+        color: option.color || "#000"
+      },
+      position: option.position
+    });
+    const event = maps2.event || maps2.Event;
+    event.addListener(this.Text, "click", () => {
+      this.callback();
+    });
+    this.Text.setMap(option.map);
+  }
+  function createBMapText() {
+  }
+  function removeAMapText() {
+    if (this.Text) {
+      this.option.map.remove(this.Text);
+    }
+  }
+  function removeBMapText() {
+    if (this.Text) {
+      this.option.map.remove(this.Text);
+    }
+  }
+  class Callout {
+    constructor(option = {}, callback) {
+      this.createAMapText = createAMapText;
+      this.removeAMapText = removeAMapText;
+      this.createBMapText = createBMapText;
+      this.removeBMapText = removeBMapText;
+      this.onAdd = onAdd;
+      this.construct = onAdd;
+      this.onRemove = onRemove;
+      this.destroy = onRemove;
+      this.option = option || {};
+      const visible = this.visible = this.alwaysVisible = option.display === "ALWAYS";
+      if (getIsAMap()) {
+        this.callback = callback;
+        if (this.visible) {
+          this.createAMapText();
+        }
+      } else if (getIsBMap()) {
+        if (this.visible) {
+          this.createBMapText();
+        }
+      } else {
+        const map = option.map;
+        this.position = option.position;
+        this.index = 1;
+        const div = this.div = document.createElement("div");
+        const divStyle = div.style;
+        divStyle.position = "absolute";
+        divStyle.whiteSpace = "nowrap";
+        divStyle.transform = "translateX(-50%) translateY(-100%)";
+        divStyle.zIndex = "1";
+        divStyle.boxShadow = option.boxShadow || "none";
+        divStyle.display = visible ? "block" : "none";
+        const triangle = this.triangle = document.createElement("div");
+        triangle.setAttribute(
+          "style",
+          "position: absolute;white-space: nowrap;border-width: 4px;border-style: solid;border-color: #fff transparent transparent;border-image: initial;font-size: 12px;padding: 0px;background-color: transparent;width: 0px;height: 0px;transform: translate(-50%, 100%);left: 50%;bottom: 0;"
+        );
+        this.setStyle(option);
+        div.appendChild(triangle);
+        if (map) {
+          this.setMap(map);
+        }
+      }
+    }
+    set onclick(callback) {
+      this.div.onclick = callback;
+    }
+    get onclick() {
+      return this.div.onclick;
+    }
+    setOption(option) {
+      this.option = option;
+      if (option.display === "ALWAYS") {
+        this.alwaysVisible = this.visible = true;
+      } else {
+        this.alwaysVisible = false;
+      }
+      if (getIsAMap()) {
+        if (this.visible) {
+          this.createAMapText();
+        }
+      } else if (getIsBMap()) {
+        if (this.visible) {
+          this.createBMapText();
+        }
+      } else {
+        this.setPosition(option.position);
+        this.setStyle(option);
+      }
+    }
+    setStyle(option) {
+      const div = this.div;
+      const divStyle = div.style;
+      div.innerText = option.content || "";
+      divStyle.lineHeight = (option.fontSize || 14) + "px";
+      divStyle.fontSize = (option.fontSize || 14) + "px";
+      divStyle.padding = (option.padding || 8) + "px";
+      divStyle.color = option.color || "#000";
+      divStyle.borderRadius = (option.borderRadius || 0) + "px";
+      divStyle.backgroundColor = option.bgColor || "#fff";
+      divStyle.marginTop = "-" + ((option.top || 0) + 5) + "px";
+      this.triangle.style.borderColor = `${option.bgColor || "#fff"} transparent transparent`;
+    }
+    setPosition(position) {
+      this.position = position;
+      this.draw();
+    }
+    draw() {
+      const overlayProjection = this.getProjection();
+      if (!this.position || !this.div || !overlayProjection) {
+        return;
+      }
+      const pixel = overlayProjection.fromLatLngToDivPixel(
+        this.position
+      );
+      const divStyle = this.div.style;
+      divStyle.left = pixel.x + "px";
+      divStyle.top = pixel.y + "px";
+    }
+    changed() {
+      const divStyle = this.div.style;
+      divStyle.display = this.visible ? "block" : "none";
+    }
+  }
+  if (!getIsAMap() && !getIsBMap()) {
+    const overlay = new (maps2.OverlayView || maps2.Overlay)();
+    Callout.prototype.setMap = overlay.setMap;
+    Callout.prototype.getMap = overlay.getMap;
+    Callout.prototype.getPanes = overlay.getPanes;
+    Callout.prototype.getProjection = overlay.getProjection;
+    Callout.prototype.map_changed = overlay.map_changed;
+    Callout.prototype.set = overlay.set;
+    Callout.prototype.get = overlay.get;
+    Callout.prototype.setOptions = overlay.setValues;
+    Callout.prototype.bindTo = overlay.bindTo;
+    Callout.prototype.bindsTo = overlay.bindsTo;
+    Callout.prototype.notify = overlay.notify;
+    Callout.prototype.setValues = overlay.setValues;
+    Callout.prototype.unbind = overlay.unbind;
+    Callout.prototype.unbindAll = overlay.unbindAll;
+    Callout.prototype.addListener = overlay.addListener;
+  }
+  return Callout;
+}
+let maps;
+const callbacksMap = {};
+const GOOGLE_MAP_CALLBACKNAME = "__map_callback__";
+function loadMaps(libraries, callback) {
+  const mapInfo = getMapInfo();
+  if (!mapInfo.key) {
+    console.error("Map key not configured.");
+    return;
+  }
+  const callbacks2 = callbacksMap[mapInfo.type] = callbacksMap[mapInfo.type] || [];
+  if (maps) {
+    callback(maps);
+  } else if (window[mapInfo.type] && window[mapInfo.type].maps) {
+    maps = getIsAMap() || getIsBMap() ? window[mapInfo.type] : window[mapInfo.type].maps;
+    maps.Callout = maps.Callout || createCallout(maps);
+    callback(maps);
+  } else if (callbacks2.length) {
+    callbacks2.push(callback);
+  } else {
+    callbacks2.push(callback);
+    const globalExt = window;
+    const callbackName = GOOGLE_MAP_CALLBACKNAME + mapInfo.type;
+    globalExt[callbackName] = function() {
+      delete globalExt[callbackName];
+      maps = getIsAMap() || getIsBMap() ? window[mapInfo.type] : window[mapInfo.type].maps;
+      maps.Callout = createCallout(maps);
+      callbacks2.forEach((callback2) => callback2(maps));
+      callbacks2.length = 0;
+    };
+    if (getIsAMap()) {
+      handleAMapSecurityPolicy(mapInfo);
+    }
+    const script = document.createElement("script");
+    let src = getScriptBaseUrl(mapInfo.type);
+    if (mapInfo.type === MapType.QQ) {
+      libraries.push("geometry");
+    }
+    if (libraries.length) {
+      src += `libraries=${libraries.join("%2C")}&`;
+    }
+    if (mapInfo.type === MapType.BMAP) {
+      script.src = `${src}ak=${mapInfo.key}&callback=${callbackName}`;
+    } else {
+      script.src = `${src}key=${mapInfo.key}&callback=${callbackName}`;
+    }
+    script.onerror = function() {
+      console.error("Map load failed.");
+    };
+    document.body.appendChild(script);
+  }
+}
+const getScriptBaseUrl = (mapType) => {
+  const urlMap = {
+    qq: "https://map.qq.com/api/js?v=2.exp&",
+    google: "https://maps.googleapis.com/maps/api/js?",
+    AMap: "https://webapi.amap.com/maps?v=2.0&",
+    BMapGL: "https://api.map.baidu.com/api?type=webgl&v=1.0&"
+  };
+  return urlMap[mapType];
+};
+function handleAMapSecurityPolicy(mapInfo) {
+  window._AMapSecurityConfig = {
+    securityJsCode: mapInfo.securityJsCode || "",
+    serviceHost: mapInfo.serviceHost || ""
+  };
+}
+const ICON_PATH_LOCTAION = "M13.3334375 16 q0.033125 1.1334375 0.783125 1.8834375 q0.75 0.75 1.8834375 0.75 q1.1334375 0 1.8834375 -0.75 q0.75 -0.75 0.75 -1.8834375 q0 -1.1334375 -0.75 -1.8834375 q-0.75 -0.75 -1.8834375 -0.75 q-1.1334375 0 -1.8834375 0.75 q-0.75 0.75 -0.783125 1.8834375 ZM30.9334375 14.9334375 l-1.1334375 0 q-0.5 -5.2 -4.0165625 -8.716875 q-3.516875 -3.5165625 -8.716875 -4.0165625 l0 -1.1334375 q0 -0.4665625 -0.3 -0.7665625 q-0.3 -0.3 -0.7665625 -0.3 q-0.4665625 0 -0.7665625 0.3 q-0.3 0.3 -0.3 0.7665625 l0 1.1334375 q-5.2 0.5 -8.716875 4.0165625 q-3.5165625 3.516875 -4.0165625 8.716875 l-1.1334375 0 q-0.4665625 0 -0.7665625 0.3 q-0.3 0.3 -0.3 0.7665625 q0 0.4665625 0.3 0.7665625 q0.3 0.3 0.7665625 0.3 l1.1334375 0 q0.5 5.2 4.0165625 8.716875 q3.516875 3.5165625 8.716875 4.0165625 l0 1.1334375 q0 0.4665625 0.3 0.7665625 q0.3 0.3 0.7665625 0.3 q0.4665625 0 0.7665625 -0.3 q0.3 -0.3 0.3 -0.7665625 l0 -1.1334375 q5.2 -0.5 8.716875 -4.0165625 q3.5165625 -3.516875 4.0165625 -8.716875 l1.1334375 0 q0.4665625 0 0.7665625 -0.3 q0.3 -0.3 0.3 -0.7665625 q0 -0.4665625 -0.3 -0.7665625 q-0.3 -0.3 -0.7665625 -0.3 ZM17.0665625 27.6665625 l0 -2.0665625 q0 -0.4665625 -0.3 -0.7665625 q-0.3 -0.3 -0.7665625 -0.3 q-0.4665625 0 -0.7665625 0.3 q-0.3 0.3 -0.3 0.7665625 l0 2.0665625 q-4.3 -0.4665625 -7.216875 -3.383125 q-2.916875 -2.916875 -3.3834375 -7.216875 l2.0665625 0 q0.4665625 0 0.7665625 -0.3 q0.3 -0.3 0.3 -0.7665625 q0 -0.4665625 -0.3 -0.7665625 q-0.3 -0.3 -0.7665625 -0.3 l-2.0665625 0 q0.4665625 -4.3 3.3834375 -7.216875 q2.9165625 -2.916875 7.216875 -3.3834375 l0 2.0665625 q0 0.4665625 0.3 0.7665625 q0.3 0.3 0.7665625 0.3 q0.4665625 0 0.7665625 -0.3 q0.3 -0.3 0.3 -0.7665625 l0 -2.0665625 q4.3 0.4665625 7.216875 3.3834375 q2.9165625 2.9165625 3.383125 7.216875 l-2.0665625 0 q-0.4665625 0 -0.7665625 0.3 q-0.3 0.3 -0.3 0.7665625 q0 0.4665625 0.3 0.7665625 q0.3 0.3 0.7665625 0.3 l2.0665625 0 q-0.4665625 4.3 -3.383125 7.216875 q-2.916875 2.9165625 -7.216875 3.383125 Z";
+const ICON_PATH_ORIGIN = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIQAAACECAMAAABmmnOVAAAC01BMVEUAAAAAef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef96quGStdqStdpbnujMzMzCyM7Gyc7Ky83MzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMwAef8GfP0yjfNWnOp0qOKKsdyYt9mju9aZt9mMstx1qeJYnekyjvIIfP0qivVmouaWttnMzMyat9lppOUujPQKffxhoOfNzc3Y2Njh4eHp6enu7u7y8vL19fXv7+/i4uLZ2dnOzs6auNgOf/sKff15quHR0dHx8fH9/f3////j4+N6quFdn+iywdPb29vw8PD+/v7c3NyywtLa2tr29vbS0tLd3d38/Pzf39/o6Ojc7f+q0v+HwP9rsf9dqv9Hnv9Vpv/q6urj8P+Vx/9Am/8Pgf8Iff/z8/OAvP95uf/n5+c5l//V6f+52v+y1//7+/vt7e0rkP/09PTQ0NDq9P8Whf+cy//W1tbe3t7A3v/m5ubs7OxOov/r6+vk5OQiaPjKAAAAknRSTlMACBZ9oB71/jiqywJBZATT6hBukRXv+zDCAVrkDIf4JbQsTb7eVeJLbwfa8Rh4G/OlPS/6/kxQ9/xdmZudoJxNVhng7B6wtWdzAtQOipcF1329wS44doK/BAkyP1pvgZOsrbnGXArAg34G2IsD1eMRe7bi7k5YnqFT9V0csyPedQyYD3p/Fje+hDpskq/MwpRBC6yKp2MAAAQdSURBVHja7Zn1exMxGIAPHbrhDsPdneHuNtzd3d3dIbjLh93o2o4i7TpgG1Jk0g0mMNwd/gTa5rq129reHnK5e/bk/TFNk/dJ7r5894XjGAwGg8GgTZasCpDIll1+hxw5vXLJLpEboTx5ZXbIhyzkl9fB28cqUaCgrBKFkI3CcjoUKYolihWXUSI7EihRUjaHXF52CVRKLoe8eZIdUOkyMknkRw6UlcehYAFHiXK+skgURk6Ul8OhQjFnCVRRBolKqRxQ5SzUHaqgNGSj7VCmalqJnDkoS5RF6ZCbroNvufQkUD6qEuXTdUA+3hQdqiEXVKfnUKOmK4latalJ1EEuoZZ6162HJ9x/4OChw0eOHj12/MTJU6dxG7XUu751tjNnz4ET5y9ctLZTSr0beKFLl89bpuUDrqgC1RqNWqsKuqqzNFw7e51S6u3tc+OmZUJ9kCHY6ECwOkRvab51iUrqXej2HYDQsHBjWgx3Ae7dppB6N2wEcF9jdMGDUIDGTaR2aNoM9FqjG7QmaN5CWgc/gIePjG559BigpZQOrYB/4jBfRGRUtDkmJjY6KjLCofkpD62lc2gDfMpWPIuLdwyV8XEpHgaddBZ+wBuSFcwJqSN2ovmZ/dfnOvCTxqGtwzq8SEjv4EhISn48eWgnhUP7DvDSvgzxrs6vV6+FLiro2EkCic4QKkzwJsH1KYreCp0eQhfyDl1B/w4P/xa5JVJ4U03QjbRD9x7wXlgH5IE3wmMBHXoSlugFAcI6f/AkkSi8q6HQm6xDn77wEQ8djTwSj3tqAMguRTe4ikeOQyJ4YV+KfkQl+oNW5GbY4gWOWgbwJ+kwAD6Fi90MK2ZsrIeBBCUGwRXbqJ+/iJMQliIEBhOU6AJhtlG/IpHE2bqrYQg5h6HA4yQiRqwEfkGCdTCMmMRw+IbPDCQaHCsCYAQxiZHw3TbmD/ESOHgHwShiEqPhp/gggYkSztIxxCRawy/bmEniJaJtfwiEscQkxkFgRqJESqQwwHhiEuMBp3Vm8RK/cZoHEzKXhCK2QxEPpiJe0YlKCFaKCNv/cYBNUsBRPlkJSc0U+dM7E9H0ThGJbgZT/iR7yj+VqMS06Qr4+OFm2JdCxIa8lugzkJs5K6MfxAaYPUcBpYG5khZJEkUUSb7DPCnKRfPBXj6M8FwuegoLpCgXcQszVjhbJFUJUee2hBhLoYTIcYtB57KY+opSMdVqwatSlZVj05aV//CwJLMX2DluaUcwhXm4ali2XOoLjxUrPV26zFtF4f5p0Gp310+z13BUWNvbehEXona6iAtX/zVZmtfN4WixfsNky4S6gCCVVq3RPLdfSfpv3MRRZfPoLc6Xs/5bt3EyMGzE9h07/Xft2t15z6i9+zgGg8FgMBgMBoPBYDAYDAYj8/APG67Rie8pUDsAAAAASUVORK5CYII=";
+const ICON_PATH_TARGET = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGAAAACcCAMAAAC3Fl5oAAAB3VBMVEVMaXH/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/EhL/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/Dw//AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/GRn/NTX/Dw//Fhb/AAD/AAD/AAD/GRn/GRn/Y2P/AAD/AAD/ExP/Ghr/AAD/AAD/MzP/GRn/AAD/Hh7/AAD/RUX/AAD/AAD/AAD/AAD/AAD/AAD/Dg7/AAD/HR3/Dw//FRX/SUn/AAD/////kJD/DQ3/Zmb/+/v/wMD/mJj/6en/vb3/1NT//Pz/ODj/+fn/3Nz/nJz/j4//9/f/7e3/9vb/7Oz/2Nj/x8f/Ozv/+Pj/3d3/nZ3/2dn//f3/6Oj/2tr/v7//09P/vr7/mZn/l5cdSvP3AAAAe3RSTlMAAhLiZgTb/vztB/JMRhlp6lQW86g8mQ4KFPs3UCH5U8huwlesWtTYGI7RsdVeJGfTW5rxnutLsvXWF8vQNdo6qQbuz7D4hgVIx2xtw8GC1TtZaIw0i84P98tU0/fsj7PKaAgiZZxeVfo8Z52eg1P0nESrENnjXVPUgw/uuSmDAAADsUlEQVR42u3aZ3cTRxgF4GtbYleSLdnGcsENG2ODjbExEHrvhAQCIb1Bem+QdkeuuFMNBBJIfmuOckzZI8/srHYmH3Lm+QNXK632LTvQ03Tu/IWeU/tTGTKT2n+q58L5c00wpXJd47DHEt5w47pKxLbhdLdPKb/7dBYxVLxw1GcI/2h1BcpzKNFHLX2JQ4gumaiitqpEEhEdOMJI9h5AFC3feYzI+7IF2tpSLEOqDXpObPRYFm/jCWho/4Ble7MdoT7fzhhq9yHEz28wltU1UPrJZ0wd66HwicfYvEFIfePTAP8tSLTupBHvtGJFH9bSkNrNWEHzERrT34xSH9Ogr1CijkbVAUH1KRqVqkdQAw07iIAaGlcTqI+/0LjeJJ5J0IIEnkpXMdzs4sTtW9dnZq7fuj2xOMtwVWk88RHDjBYejYvnjD8qjOpfQsUqhvj7oSjxcJIhVj3pyKqpNjYvVjQ/RrXq5YABKi3MCYm5BSrtWO5v11DlmlC4RpU1WRS9SJU7QukOVbpQ9JLu549+Dd0AUOlTbkGEuk85vxLAK5QbuytC3R2j3HoAjZSbFxrmKTcCoJdSk0LLJKV6gSaPMqNTQsvUKGW8JrxKqUWhaZFSeWyh1LTQNE2pHF6mzOy40DQ+S5mLimJcENoKlOnBWsr8KbRNUGYt5LXgd6HtD3lNQIoyN4S2G5RJIUOZm0LbTcqsBqVmhLYZSlkPsP4VWf+Rrd+m1v9o9h8Vv5p42C1R5qL1x7WRglOgVN52yfwNOBu76P+lLPoYidu23KPciIHGa07ZeIW1jvcNtI7q5vexCPGYCmf+m/Y9a3sAwQ5bI9T7ukPgPcn9GToEao+xk1OixJT+GIsvNAbx6eAgPq0xiF+KtkpYKhRXCQ8eFFcJhSWGu3rZ8jJkCM8kz9K4TUnrC6mAgzTsB9tLwQ2W15qfosQ2GrQNpZr7aczbzVjBZsvLcaC1g0bsbIVEnU8DOr6H1KDH2LwtUBi0/JII6Dxm9zUXkH+XMWzfh1Dte1i2Pe3QkC77Zel7aehpO8wyHG6Dtt0NjKxhN6I4uSli/TqJiJJDUQ4NDCURXTrXRy1XcumyD24M+AzhD1RXIIZsl/LoyZmurJHDM7s8lvB2FQ/PmPJ6PseAXP5HGMYAAC7ABbgAF+ACXIALcAEuwAW4ABfgAlyAC3ABLsAFuID/d8Cx4NEt8/byOf0wLnis8zjMq9/Kp7bWw4JOj8u8TlhRl+G/Mp2wpOX48GffvvZ1CyL4B53LAS6zb08EAAAAAElFTkSuQmCC";
+var MapType = /* @__PURE__ */ ((MapType2) => {
+  MapType2["QQ"] = "qq";
+  MapType2["GOOGLE"] = "google";
+  MapType2["AMAP"] = "AMap";
+  MapType2["BMAP"] = "BMapGL";
+  MapType2["UNKNOWN"] = "";
+  return MapType2;
+})(MapType || {});
+function getMapInfo() {
+  if (__uniConfig.bMapKey) {
+    return {
+      type: "BMapGL",
+      key: __uniConfig.bMapKey
+    };
+  }
+  if (__uniConfig.qqMapKey) {
+    return {
+      type: "qq",
+      key: __uniConfig.qqMapKey
+    };
+  }
+  if (__uniConfig.googleMapKey) {
+    return {
+      type: "google",
+      key: __uniConfig.googleMapKey
+    };
+  }
+  if (__uniConfig.aMapKey) {
+    return {
+      type: "AMap",
+      key: __uniConfig.aMapKey,
+      securityJsCode: __uniConfig.aMapSecurityJsCode,
+      serviceHost: __uniConfig.aMapServiceHost
+    };
+  }
+  return {
+    type: "",
+    key: ""
+  };
+}
+let IS_AMAP = false;
+let hasGetIsAMap = false;
+const getIsAMap = () => {
+  if (hasGetIsAMap) {
+    return IS_AMAP;
+  } else {
+    hasGetIsAMap = true;
+    return IS_AMAP = getMapInfo().type === "AMap";
+  }
+};
+const getIsBMap = () => {
+  return getMapInfo().type === "BMapGL";
+};
+function translateCoordinateSystem(type, coords, skip) {
+  const mapInfo = getMapInfo();
+  const wgs84Map = [
+    "google"
+    /* GOOGLE */
+  ];
+  if (type && type.toUpperCase() === "WGS84" || wgs84Map.includes(mapInfo.type) || skip) {
+    return Promise.resolve(coords);
+  }
+  if (mapInfo.type === "qq") {
+    return new Promise((resolve) => {
+      getJSONP(
+        `https://apis.map.qq.com/ws/coord/v1/translate?type=1&locations=${coords.latitude},${coords.longitude}&key=${mapInfo.key}&output=jsonp`,
+        {
+          callback: "callback"
+        },
+        (res) => {
+          if ("locations" in res && res.locations.length) {
+            const { lng, lat } = res.locations[0];
+            resolve({
+              longitude: lng,
+              latitude: lat,
+              altitude: coords.altitude,
+              accuracy: coords.accuracy,
+              altitudeAccuracy: coords.altitudeAccuracy,
+              heading: coords.heading,
+              speed: coords.speed
+            });
+          } else {
+            resolve(coords);
+          }
+        },
+        () => resolve(coords)
+      );
+    });
+  }
+  if (mapInfo.type === "AMap") {
+    return new Promise((resolve) => {
+      loadMaps([], () => {
+        window.AMap.convertFrom(
+          [coords.longitude, coords.latitude],
+          "gps",
+          (_, res) => {
+            if (res.info === "ok" && res.locations.length) {
+              const { lat, lng } = res.locations[0];
+              resolve({
+                longitude: lng,
+                latitude: lat,
+                altitude: coords.altitude,
+                accuracy: coords.accuracy,
+                altitudeAccuracy: coords.altitudeAccuracy,
+                heading: coords.heading,
+                speed: coords.speed
+              });
+            } else {
+              resolve(coords);
+            }
+          }
+        );
+      });
+    });
+  }
+  return Promise.reject(new Error("translate coordinate system faild"));
+}
+const getLocation = /* @__PURE__ */ defineAsyncApi(
+  API_GET_LOCATION,
+  ({ type, altitude, highAccuracyExpireTime, isHighAccuracy }, { resolve, reject }) => {
+    const mapInfo = getMapInfo();
+    new Promise((resolve2, reject2) => {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          (res) => resolve2({ coords: res.coords }),
+          reject2,
+          {
+            enableHighAccuracy: isHighAccuracy || altitude,
+            timeout: highAccuracyExpireTime || 1e3 * 100
+          }
+        );
+      } else {
+        reject2(new Error("device nonsupport geolocation"));
+      }
+    }).catch((error) => {
+      return new Promise(
+        (resolve2, reject2) => {
+          if (mapInfo.type === MapType.QQ) {
+            getJSONP(
+              `https://apis.map.qq.com/ws/location/v1/ip?output=jsonp&key=${mapInfo.key}`,
+              {
+                callback: "callback"
+              },
+              (res) => {
+                if ("result" in res && res.result.location) {
+                  const location2 = res.result.location;
+                  resolve2({
+                    coords: {
+                      latitude: location2.lat,
+                      longitude: location2.lng
+                    },
+                    skip: true
+                  });
+                } else {
+                  reject2(new Error(res.message || JSON.stringify(res)));
+                }
+              },
+              () => reject2(new Error("network error"))
+            );
+          } else if (mapInfo.type === MapType.GOOGLE) {
+            request({
+              method: "POST",
+              url: `https://www.googleapis.com/geolocation/v1/geolocate?key=${mapInfo.key}`,
+              success(res) {
+                const data = res.data;
+                if ("location" in data) {
+                  resolve2({
+                    coords: {
+                      latitude: data.location.lat,
+                      longitude: data.location.lng,
+                      accuracy: data.accuracy
+                    },
+                    skip: true
+                  });
+                } else {
+                  reject2(
+                    new Error(
+                      data.error && data.error.message || JSON.stringify(res)
+                    )
+                  );
+                }
+              },
+              fail() {
+                reject2(new Error("network error"));
+              }
+            });
+          } else if (mapInfo.type === MapType.AMAP) {
+            loadMaps([], () => {
+              window.AMap.plugin("AMap.Geolocation", () => {
+                const geolocation = new window.AMap.Geolocation({
+                  enableHighAccuracy: true,
+                  timeout: 1e4
+                });
+                geolocation.getCurrentPosition(
+                  (status, data) => {
+                    if (status === "complete") {
+                      resolve2({
+                        coords: {
+                          latitude: data.position.lat,
+                          longitude: data.position.lng,
+                          accuracy: data.accuracy
+                        },
+                        skip: true
+                      });
+                    } else {
+                      reject2(new Error(data.message));
+                    }
+                  }
+                );
+              });
+            });
+          } else {
+            reject2(error);
+          }
+        }
+      );
+    }).then(({ coords, skip }) => {
+      translateCoordinateSystem(type, coords, skip).then((coords2) => {
+        resolve({
+          latitude: coords2.latitude,
+          longitude: coords2.longitude,
+          accuracy: coords2.accuracy,
+          speed: coords2.altitude || 0,
+          altitude: coords2.altitude || 0,
+          verticalAccuracy: coords2.altitudeAccuracy || 0,
+          // 无专门水平精度，使用位置精度替代
+          horizontalAccuracy: coords2.accuracy || 0
+        });
+      }).catch((error) => {
+        reject(error.message);
+      });
+    }).catch((error) => {
+      reject(error.message || JSON.stringify(error));
+    });
+  },
+  GetLocationProtocol,
+  GetLocationOptions
+);
+function formatTime(val) {
+  val = val > 0 && val < Infinity ? val : 0;
+  const h2 = Math.floor(val / 3600);
+  const m = Math.floor(val % 3600 / 60);
+  const s = Math.floor(val % 3600 % 60);
+  const hStr = (h2 < 10 ? "0" : "") + h2;
+  const mStr = (m < 10 ? "0" : "") + m;
+  const sStr = (s < 10 ? "0" : "") + s;
+  let str = mStr + ":" + sStr;
+  if (hStr !== "00") {
+    str = hStr + ":" + str;
+  }
+  return str;
+}
+function useGesture(props2, videoRef, fullscreenState) {
+  const state2 = reactive({
+    gestureType: "none",
+    volumeOld: 0,
+    volumeNew: 0,
+    currentTimeOld: 0,
+    currentTimeNew: 0
+  });
+  const touchStartOrigin = {
+    x: 0,
+    y: 0
+  };
+  function onTouchstart(event) {
+    const toucher = event.targetTouches[0];
+    touchStartOrigin.x = toucher.pageX;
+    touchStartOrigin.y = toucher.pageY;
+    state2.gestureType = "none";
+    state2.volumeOld = 0;
+    state2.currentTimeOld = state2.currentTimeNew = 0;
+  }
+  function onTouchmove(event) {
+    function stop() {
+      event.stopPropagation();
+      event.preventDefault();
+    }
+    if (fullscreenState.fullscreen) {
+      stop();
+    }
+    const gestureType = state2.gestureType;
+    if (gestureType === "stop") {
+      return;
+    }
+    const toucher = event.targetTouches[0];
+    const pageX = toucher.pageX;
+    const pageY = toucher.pageY;
+    const origin = touchStartOrigin;
+    const video = videoRef.value;
+    if (gestureType === "progress") {
+      changeProgress(pageX - origin.x);
+    } else if (gestureType === "volume") {
+      changeVolume(pageY - origin.y);
+    }
+    if (gestureType !== "none") {
+      return;
+    }
+    if (Math.abs(pageX - origin.x) > Math.abs(pageY - origin.y)) {
+      if (!props2.enableProgressGesture) {
+        state2.gestureType = "stop";
+        return;
+      }
+      state2.gestureType = "progress";
+      state2.currentTimeOld = state2.currentTimeNew = video.currentTime;
+      if (!fullscreenState.fullscreen) {
+        stop();
+      }
+    } else {
+      if (!props2.pageGesture) {
+        state2.gestureType = "stop";
+        return;
+      }
+      state2.gestureType = "volume";
+      state2.volumeOld = video.volume;
+      if (!fullscreenState.fullscreen) {
+        stop();
+      }
+    }
+  }
+  function onTouchend(event) {
+    const video = videoRef.value;
+    if (state2.gestureType !== "none" && state2.gestureType !== "stop") {
+      event.stopPropagation();
+      event.preventDefault();
+    }
+    if (state2.gestureType === "progress" && state2.currentTimeOld !== state2.currentTimeNew) {
+      video.currentTime = state2.currentTimeNew;
+    }
+    state2.gestureType = "none";
+  }
+  function changeProgress(x) {
+    const video = videoRef.value;
+    const duration = video.duration;
+    let currentTimeNew = x / 600 * duration + state2.currentTimeOld;
+    if (currentTimeNew < 0) {
+      currentTimeNew = 0;
+    } else if (currentTimeNew > duration) {
+      currentTimeNew = duration;
+    }
+    state2.currentTimeNew = currentTimeNew;
+  }
+  function changeVolume(y) {
+    const video = videoRef.value;
+    const valueOld = state2.volumeOld;
+    let value;
+    if (typeof valueOld === "number") {
+      value = valueOld - y / 200;
+      if (value < 0) {
+        value = 0;
+      } else if (value > 1) {
+        value = 1;
+      }
+      video.volume = value;
+      state2.volumeNew = value;
+    }
+  }
+  return {
+    state: state2,
+    onTouchstart,
+    onTouchmove,
+    onTouchend
+  };
+}
+function useFullscreen(trigger, containerRef, videoRef, userActionState, rootRef) {
+  const state2 = reactive({
+    fullscreen: false
+  });
+  const isSafari = /^Apple/.test(navigator.vendor);
+  function onFullscreenChange($event, webkit) {
+    if (webkit && document.fullscreenEnabled) {
+      return;
+    }
+    emitFullscreenChange(!!(document.fullscreenElement || document.webkitFullscreenElement));
+  }
+  function emitFullscreenChange(val) {
+    state2.fullscreen = val;
+    trigger("fullscreenchange", {}, {
+      fullScreen: val,
+      direction: "vertical"
+    });
+  }
+  function toggleFullscreen(val) {
+    const root = rootRef.value;
+    const container = containerRef.value;
+    const video = videoRef.value;
+    let mockFullScreen;
+    if (val) {
+      if ((document.fullscreenEnabled || document.webkitFullscreenEnabled) && (!isSafari || userActionState.userAction)) {
+        container[document.fullscreenEnabled ? "requestFullscreen" : "webkitRequestFullscreen"]();
+      } else if (video.webkitEnterFullScreen) {
+        video.webkitEnterFullScreen();
+      } else {
+        mockFullScreen = true;
+        container.remove();
+        container.classList.add("uni-video-type-fullscreen");
+        document.body.appendChild(container);
+      }
+    } else {
+      if (document.fullscreenEnabled || document.webkitFullscreenEnabled) {
+        if (document.fullscreenElement) {
+          document.exitFullscreen();
+        } else if (document.webkitFullscreenElement) {
+          document.webkitExitFullscreen();
+        }
+      } else if (video.webkitExitFullScreen) {
+        video.webkitExitFullScreen();
+      } else {
+        mockFullScreen = true;
+        container.remove();
+        container.classList.remove("uni-video-type-fullscreen");
+        root.appendChild(container);
+      }
+    }
+    if (mockFullScreen) {
+      emitFullscreenChange(val);
+    }
+  }
+  function requestFullScreen() {
+    toggleFullscreen(true);
+  }
+  function exitFullScreen() {
+    toggleFullscreen(false);
+  }
+  onBeforeUnmount(exitFullScreen);
+  return {
+    state: state2,
+    onFullscreenChange,
+    emitFullscreenChange,
+    toggleFullscreen,
+    requestFullScreen,
+    exitFullScreen
+  };
+}
+function useVideo(props2, attrs2, trigger) {
+  const videoRef = ref(null);
+  const src = computed(() => getRealPath(props2.src));
+  const muted = computed(() => props2.muted === "true" || props2.muted === true);
+  const state2 = reactive({
+    start: false,
+    src,
+    playing: false,
+    currentTime: 0,
+    duration: 0,
+    progress: 0,
+    buffered: 0,
+    muted
+  });
+  watch(() => src.value, () => {
+    state2.playing = false;
+    state2.currentTime = 0;
+  });
+  watch(() => state2.buffered, (buffered) => {
+    trigger("progress", {}, {
+      buffered
+    });
+  });
+  watch(() => muted.value, (muted2) => {
+    const video = videoRef.value;
+    video.muted = muted2;
+  });
+  function onDurationChange({
+    target
+  }) {
+    state2.duration = target.duration;
+  }
+  function onLoadedMetadata($event) {
+    const initialTime = Number(props2.initialTime) || 0;
+    const video = $event.target;
+    if (initialTime > 0) {
+      video.currentTime = initialTime;
+    }
+    trigger("loadedmetadata", $event, {
+      width: video.videoWidth,
+      height: video.videoHeight,
+      duration: video.duration
+    });
+    onProgress($event);
+  }
+  function onProgress($event) {
+    const video = $event.target;
+    const buffered = video.buffered;
+    if (buffered.length) {
+      state2.buffered = buffered.end(buffered.length - 1) / video.duration * 100;
+    }
+  }
+  function onWaiting($event) {
+    trigger("waiting", $event, {});
+  }
+  function onVideoError($event) {
+    state2.playing = false;
+    trigger("error", $event, {});
+  }
+  function onPlay($event) {
+    state2.start = true;
+    state2.playing = true;
+    trigger("play", $event, {});
+  }
+  function onPause($event) {
+    state2.playing = false;
+    trigger("pause", $event, {});
+  }
+  function onEnded($event) {
+    state2.playing = false;
+    trigger("ended", $event, {});
+  }
+  function onTimeUpdate($event) {
+    const video = $event.target;
+    const currentTime = state2.currentTime = video.currentTime;
+    trigger("timeupdate", $event, {
+      currentTime,
+      duration: video.duration
+    });
+  }
+  function toggle() {
+    const video = videoRef.value;
+    if (state2.playing) {
+      video.pause();
+    } else {
+      video.play();
+    }
+  }
+  function play() {
+    const video = videoRef.value;
+    state2.start = true;
+    video.play();
+  }
+  function pause() {
+    const video = videoRef.value;
+    video.pause();
+  }
+  function seek(position) {
+    const video = videoRef.value;
+    position = Number(position);
+    if (typeof position === "number" && !isNaN(position)) {
+      video.currentTime = position;
+    }
+  }
+  function stop() {
+    seek(0);
+    pause();
+  }
+  function playbackRate(rate) {
+    const video = videoRef.value;
+    video.playbackRate = rate;
+  }
+  return {
+    videoRef,
+    state: state2,
+    play,
+    pause,
+    stop,
+    seek,
+    playbackRate,
+    toggle,
+    onDurationChange,
+    onLoadedMetadata,
+    onProgress,
+    onWaiting,
+    onVideoError,
+    onPlay,
+    onPause,
+    onEnded,
+    onTimeUpdate
+  };
+}
+function useControls(props2, videoState, seek) {
+  const progressRef = ref(null);
+  const ballRef = ref(null);
+  const centerPlayBtnShow = computed(() => props2.showCenterPlayBtn && !videoState.start);
+  const controlsVisible = ref(true);
+  const controlsShow = computed(() => !centerPlayBtnShow.value && props2.controls && controlsVisible.value);
+  const state2 = reactive({
+    touching: false,
+    controlsTouching: false,
+    centerPlayBtnShow,
+    controlsShow,
+    controlsVisible
+  });
+  function clickProgress(event) {
+    const $progress = progressRef.value;
+    let element = event.target;
+    let x = event.offsetX;
+    while (element && element !== $progress) {
+      x += element.offsetLeft;
+      element = element.parentNode;
+    }
+    const w = $progress.offsetWidth;
+    let progress = 0;
+    if (x >= 0 && x <= w) {
+      progress = x / w;
+      seek(videoState.duration * progress);
+    }
+  }
+  function toggleControls() {
+    state2.controlsVisible = !state2.controlsVisible;
+  }
+  let hideTiming;
+  function autoHideStart() {
+    hideTiming = setTimeout(() => {
+      state2.controlsVisible = false;
+    }, 3e3);
+  }
+  function autoHideEnd() {
+    if (hideTiming) {
+      clearTimeout(hideTiming);
+      hideTiming = null;
+    }
+  }
+  onBeforeUnmount(() => {
+    if (hideTiming) {
+      clearTimeout(hideTiming);
+    }
+  });
+  watch(() => state2.controlsShow && videoState.playing && !state2.controlsTouching, (val) => {
+    if (val) {
+      autoHideStart();
+    } else {
+      autoHideEnd();
+    }
+  });
+  watch([() => videoState.currentTime, () => {
+    props2.duration;
+  }], function updateProgress() {
+    if (!state2.touching) {
+      videoState.progress = videoState.currentTime / videoState.duration * 100;
+    }
+  });
+  onMounted(() => {
+    const passiveOptions2 = passive(false);
+    let originX;
+    let originY;
+    let moveOnce = true;
+    let originProgress;
+    const ball = ballRef.value;
+    function touchmove2(event) {
+      const toucher = event.targetTouches[0];
+      const pageX = toucher.pageX;
+      const pageY = toucher.pageY;
+      if (moveOnce && Math.abs(pageX - originX) < Math.abs(pageY - originY)) {
+        touchend(event);
+        return;
+      }
+      moveOnce = false;
+      const progressEl = progressRef.value;
+      const w = progressEl.offsetWidth;
+      let progress = originProgress + (pageX - originX) / w * 100;
+      if (progress < 0) {
+        progress = 0;
+      } else if (progress > 100) {
+        progress = 100;
+      }
+      videoState.progress = progress;
+      event.preventDefault();
+      event.stopPropagation();
+    }
+    function touchend(event) {
+      state2.controlsTouching = false;
+      if (state2.touching) {
+        ball.removeEventListener("touchmove", touchmove2, passiveOptions2);
+        if (!moveOnce) {
+          event.preventDefault();
+          event.stopPropagation();
+          seek(videoState.duration * videoState.progress / 100);
+        }
+        state2.touching = false;
+      }
+    }
+    ball.addEventListener("touchstart", (event) => {
+      state2.controlsTouching = true;
+      const toucher = event.targetTouches[0];
+      originX = toucher.pageX;
+      originY = toucher.pageY;
+      originProgress = videoState.progress;
+      moveOnce = true;
+      state2.touching = true;
+      ball.addEventListener("touchmove", touchmove2, passiveOptions2);
+    });
+    ball.addEventListener("touchend", touchend);
+    ball.addEventListener("touchcancel", touchend);
+  });
+  return {
+    state: state2,
+    progressRef,
+    ballRef,
+    clickProgress,
+    toggleControls,
+    autoHideStart,
+    autoHideEnd
+  };
+}
+function useDanmu(props2, videoState) {
+  const danmuRef = ref(null);
+  const state2 = reactive({
+    enable: Boolean(props2.enableDanmu)
+  });
+  let danmuIndex = {
+    time: 0,
+    index: -1
+  };
+  const danmuList = isArray(props2.danmuList) ? JSON.parse(JSON.stringify(props2.danmuList)) : [];
+  danmuList.sort(function(a2, b) {
+    return (a2.time || 0) - (b.time || 0);
+  });
+  function toggleDanmu() {
+    state2.enable = !state2.enable;
+  }
+  function updateDanmu(event) {
+    const video = event.target;
+    const currentTime = video.currentTime;
+    const oldDanmuIndex = danmuIndex;
+    const newDanmuIndex = {
+      time: currentTime,
+      index: oldDanmuIndex.index
+    };
+    if (currentTime > oldDanmuIndex.time) {
+      for (let index2 = oldDanmuIndex.index + 1; index2 < danmuList.length; index2++) {
+        const element = danmuList[index2];
+        if (currentTime >= (element.time || 0)) {
+          newDanmuIndex.index = index2;
+          if (videoState.playing && state2.enable) {
+            playDanmu(element);
+          }
+        } else {
+          break;
+        }
+      }
+    } else if (currentTime < oldDanmuIndex.time) {
+      for (let index2 = oldDanmuIndex.index - 1; index2 > -1; index2--) {
+        const element = danmuList[index2];
+        if (currentTime <= (element.time || 0)) {
+          newDanmuIndex.index = index2 - 1;
+        } else {
+          break;
+        }
+      }
+    }
+    danmuIndex = newDanmuIndex;
+  }
+  function playDanmu(danmu) {
+    const p2 = document.createElement("p");
+    p2.className = "uni-video-danmu-item";
+    p2.innerText = danmu.text;
+    let style = `bottom: ${Math.random() * 100}%;color: ${danmu.color};`;
+    p2.setAttribute("style", style);
+    const danmuEl = danmuRef.value;
+    danmuEl.appendChild(p2);
+    setTimeout(function() {
+      style += "left: 0;-webkit-transform: translateX(-100%);transform: translateX(-100%);";
+      p2.setAttribute("style", style);
+      setTimeout(function() {
+        p2.remove();
+      }, 4e3);
+    }, 17);
+  }
+  function sendDanmu(danmu) {
+    danmuList.splice(danmuIndex.index + 1, 0, {
+      text: String(danmu.text),
+      color: danmu.color,
+      time: videoState.currentTime || 0
+    });
+  }
+  return {
+    state: state2,
+    danmuRef,
+    updateDanmu,
+    toggleDanmu,
+    sendDanmu
+  };
+}
+function useContext(play, pause, stop, seek, sendDanmu, playbackRate, requestFullScreen, exitFullScreen) {
+  const methods = {
+    play,
+    stop,
+    pause,
+    seek,
+    sendDanmu,
+    playbackRate,
+    requestFullScreen,
+    exitFullScreen
+  };
+  const id2 = useContextInfo();
+  useSubscribe((type, data) => {
+    let options;
+    switch (type) {
+      case "seek":
+        options = data.position;
+        break;
+      case "sendDanmu":
+        options = data;
+        break;
+      case "playbackRate":
+        options = data.rate;
+        break;
+    }
+    if (type in methods) {
+      methods[type](options);
+    }
+  }, id2, true);
+}
+const props$s = {
+  id: {
+    type: String,
+    default: ""
+  },
+  src: {
+    type: String,
+    default: ""
+  },
+  duration: {
+    type: [Number, String],
+    default: ""
+  },
+  controls: {
+    type: [Boolean, String],
+    default: true
+  },
+  danmuList: {
+    type: Array,
+    default() {
+      return [];
+    }
+  },
+  danmuBtn: {
+    type: [Boolean, String],
+    default: false
+  },
+  enableDanmu: {
+    type: [Boolean, String],
+    default: false
+  },
+  autoplay: {
+    type: [Boolean, String],
+    default: false
+  },
+  loop: {
+    type: [Boolean, String],
+    default: false
+  },
+  muted: {
+    type: [Boolean, String],
+    default: false
+  },
+  objectFit: {
+    type: String,
+    default: "contain"
+  },
+  poster: {
+    type: String,
+    default: ""
+  },
+  direction: {
+    type: [String, Number],
+    default: ""
+  },
+  showProgress: {
+    type: Boolean,
+    default: true
+  },
+  initialTime: {
+    type: [String, Number],
+    default: 0
+  },
+  showFullscreenBtn: {
+    type: [Boolean, String],
+    default: true
+  },
+  pageGesture: {
+    type: [Boolean, String],
+    default: false
+  },
+  enableProgressGesture: {
+    type: [Boolean, String],
+    default: true
+  },
+  showPlayBtn: {
+    type: [Boolean, String],
+    default: true
+  },
+  showCenterPlayBtn: {
+    type: [Boolean, String],
+    default: true
+  }
+};
+class UniVideoElement extends UniElement {
+}
+const index$q = /* @__PURE__ */ defineBuiltInComponent({
+  name: "Video",
+  props: props$s,
+  emits: ["fullscreenchange", "progress", "loadedmetadata", "waiting", "error", "play", "pause", "ended", "timeupdate"],
+  rootElement: {
+    name: "uni-video",
+    class: UniVideoElement
+  },
+  setup(props2, {
+    emit: emit2,
+    attrs: attrs2,
+    slots
+  }) {
+    const rootRef = ref(null);
+    const containerRef = ref(null);
+    const trigger = useCustomEvent(rootRef, emit2);
+    const {
+      state: userActionState
+    } = useUserAction();
+    const {
+      $attrs: videoAttrs
+    } = useAttrs({
+      excludeListeners: true
+    });
+    const {
+      t: t2
+    } = useI18n();
+    initI18nVideoMsgsOnce();
+    const {
+      videoRef,
+      state: videoState,
+      play,
+      pause,
+      stop,
+      seek,
+      playbackRate,
+      toggle,
+      onDurationChange,
+      onLoadedMetadata,
+      onProgress,
+      onWaiting,
+      onVideoError,
+      onPlay,
+      onPause,
+      onEnded,
+      onTimeUpdate
+    } = useVideo(props2, attrs2, trigger);
+    const {
+      state: danmuState,
+      danmuRef,
+      updateDanmu,
+      toggleDanmu,
+      sendDanmu
+    } = useDanmu(props2, videoState);
+    const {
+      state: fullscreenState,
+      onFullscreenChange,
+      emitFullscreenChange,
+      toggleFullscreen,
+      requestFullScreen,
+      exitFullScreen
+    } = useFullscreen(trigger, containerRef, videoRef, userActionState, rootRef);
+    const {
+      state: gestureState,
+      onTouchstart,
+      onTouchend,
+      onTouchmove
+    } = useGesture(props2, videoRef, fullscreenState);
+    const {
+      state: controlsState,
+      progressRef,
+      ballRef,
+      clickProgress,
+      toggleControls
+    } = useControls(props2, videoState, seek);
+    useContext(play, pause, stop, seek, sendDanmu, playbackRate, requestFullScreen, exitFullScreen);
+    onMounted(() => {
+      const rootElement = rootRef.value;
+      Object.assign(rootElement, {
+        play,
+        pause,
+        stop,
+        seek,
+        sendDanmu,
+        playbackRate,
+        requestFullScreen,
+        exitFullScreen
+      });
+      rootElement.attachVmProps(props2);
+    });
+    return () => {
+      return createVNode("uni-video", {
+        "ref": rootRef,
+        "id": props2.id,
+        "onClick": toggleControls
+      }, [createVNode("div", {
+        "ref": containerRef,
+        "class": "uni-video-container",
+        "onTouchstart": onTouchstart,
+        "onTouchend": onTouchend,
+        "onTouchmove": onTouchmove,
+        "onFullscreenchange": withModifiers(onFullscreenChange, ["stop"]),
+        "onWebkitfullscreenchange": withModifiers(($event) => onFullscreenChange($event, true), ["stop"])
+      }, [createVNode("video", mergeProps({
+        "ref": videoRef,
+        "style": {
+          "object-fit": props2.objectFit
+        },
+        "muted": !!props2.muted,
+        "loop": !!props2.loop,
+        "src": videoState.src,
+        "poster": props2.poster,
+        "autoplay": !!props2.autoplay
+      }, videoAttrs.value, {
+        "class": "uni-video-video",
+        "webkit-playsinline": true,
+        "playsinline": true,
+        "onDurationchange": onDurationChange,
+        "onLoadedmetadata": onLoadedMetadata,
+        "onProgress": onProgress,
+        "onWaiting": onWaiting,
+        "onError": onVideoError,
+        "onPlay": onPlay,
+        "onPause": onPause,
+        "onEnded": onEnded,
+        "onTimeupdate": (event) => {
+          onTimeUpdate(event);
+          updateDanmu(event);
+        },
+        "onWebkitbeginfullscreen": () => emitFullscreenChange(true),
+        "onX5videoenterfullscreen": () => emitFullscreenChange(true),
+        "onWebkitendfullscreen": () => emitFullscreenChange(false),
+        "onX5videoexitfullscreen": () => emitFullscreenChange(false)
+      }), null, 16, ["muted", "loop", "src", "poster", "autoplay", "webkit-playsinline", "playsinline", "onDurationchange", "onLoadedmetadata", "onProgress", "onWaiting", "onError", "onPlay", "onPause", "onEnded", "onTimeupdate", "onWebkitbeginfullscreen", "onX5videoenterfullscreen", "onWebkitendfullscreen", "onX5videoexitfullscreen"]), withDirectives(createVNode("div", {
+        "class": "uni-video-bar uni-video-bar-full",
+        "onClick": withModifiers(() => {
+        }, ["stop"])
+      }, [createVNode("div", {
+        "class": "uni-video-controls"
+      }, [withDirectives(createVNode("div", {
+        "class": {
+          "uni-video-control-button": true,
+          "uni-video-control-button-play": !videoState.playing,
+          "uni-video-control-button-pause": videoState.playing
+        },
+        "onClick": withModifiers(toggle, ["stop"])
+      }, null, 10, ["onClick"]), [[vShow, props2.showPlayBtn]]), withDirectives(createVNode("div", {
+        "class": "uni-video-current-time"
+      }, [formatTime(videoState.currentTime)], 512), [[vShow, props2.showProgress]]), withDirectives(createVNode("div", {
+        "ref": progressRef,
+        "class": "uni-video-progress-container",
+        "onClick": withModifiers(clickProgress, ["stop"])
+      }, [createVNode("div", {
+        "class": "uni-video-progress"
+      }, [createVNode("div", {
+        "style": {
+          width: videoState.buffered + "%"
+        },
+        "class": "uni-video-progress-buffered"
+      }, null, 4), createVNode("div", {
+        "ref": ballRef,
+        "style": {
+          left: videoState.progress + "%"
+        },
+        "class": "uni-video-ball"
+      }, [createVNode("div", {
+        "class": "uni-video-inner"
+      }, null)], 4)])], 8, ["onClick"]), [[vShow, props2.showProgress]]), withDirectives(createVNode("div", {
+        "class": "uni-video-duration"
+      }, [formatTime(Number(props2.duration) || videoState.duration)], 512), [[vShow, props2.showProgress]])]), withDirectives(createVNode("div", {
+        "class": {
+          "uni-video-danmu-button": true,
+          "uni-video-danmu-button-active": danmuState.enable
+        },
+        "onClick": withModifiers(toggleDanmu, ["stop"])
+      }, [t2("uni.video.danmu")], 10, ["onClick"]), [[vShow, props2.danmuBtn]]), withDirectives(createVNode("div", {
+        "class": {
+          "uni-video-fullscreen": true,
+          "uni-video-type-fullscreen": fullscreenState.fullscreen
+        },
+        "onClick": withModifiers(() => toggleFullscreen(!fullscreenState.fullscreen), ["stop"])
+      }, null, 10, ["onClick"]), [[vShow, props2.showFullscreenBtn]])], 8, ["onClick"]), [[vShow, controlsState.controlsShow]]), withDirectives(createVNode("div", {
+        "ref": danmuRef,
+        "style": "z-index: 0;",
+        "class": "uni-video-danmu"
+      }, null, 512), [[vShow, videoState.start && danmuState.enable]]), controlsState.centerPlayBtnShow && createVNode("div", {
+        "class": "uni-video-cover",
+        "onClick": withModifiers(() => {
+        }, ["stop"])
+      }, [createVNode("div", {
+        "class": "uni-video-cover-play-button",
+        "onClick": withModifiers(play, ["stop"])
+      }, null, 8, ["onClick"]), createVNode("p", {
+        "class": "uni-video-cover-duration"
+      }, [formatTime(Number(props2.duration) || videoState.duration)])], 8, ["onClick"]), createVNode("div", {
+        "class": {
+          "uni-video-toast": true,
+          "uni-video-toast-volume": gestureState.gestureType === "volume"
+        }
+      }, [createVNode("div", {
+        "class": "uni-video-toast-title"
+      }, [t2("uni.video.volume")]), createVNode("svg", {
+        "class": "uni-video-toast-icon",
+        "width": "200px",
+        "height": "200px",
+        "viewBox": "0 0 1024 1024",
+        "version": "1.1",
+        "xmlns": "http://www.w3.org/2000/svg"
+      }, [createVNode("path", {
+        "d": "M475.400704 201.19552l0 621.674496q0 14.856192-10.856448 25.71264t-25.71264 10.856448-25.71264-10.856448l-190.273536-190.273536-149.704704 0q-14.856192 0-25.71264-10.856448t-10.856448-25.71264l0-219.414528q0-14.856192 10.856448-25.71264t25.71264-10.856448l149.704704 0 190.273536-190.273536q10.856448-10.856448 25.71264-10.856448t25.71264 10.856448 10.856448 25.71264zm219.414528 310.837248q0 43.425792-24.28416 80.851968t-64.2816 53.425152q-5.71392 2.85696-14.2848 2.85696-14.856192 0-25.71264-10.570752t-10.856448-25.998336q0-11.999232 6.856704-20.284416t16.570368-14.2848 19.427328-13.142016 16.570368-20.284416 6.856704-32.569344-6.856704-32.569344-16.570368-20.284416-19.427328-13.142016-16.570368-14.2848-6.856704-20.284416q0-15.427584 10.856448-25.998336t25.71264-10.570752q8.57088 0 14.2848 2.85696 39.99744 15.427584 64.2816 53.139456t24.28416 81.137664zm146.276352 0q0 87.422976-48.56832 161.41824t-128.5632 107.707392q-7.428096 2.85696-14.2848 2.85696-15.427584 0-26.284032-10.856448t-10.856448-25.71264q0-22.284288 22.284288-33.712128 31.997952-16.570368 43.425792-25.141248 42.283008-30.855168 65.995776-77.423616t23.712768-99.136512-23.712768-99.136512-65.995776-77.423616q-11.42784-8.57088-43.425792-25.141248-22.284288-11.42784-22.284288-33.712128 0-14.856192 10.856448-25.71264t25.71264-10.856448q7.428096 0 14.856192 2.85696 79.99488 33.712128 128.5632 107.707392t48.56832 161.41824zm146.276352 0q0 131.42016-72.566784 241.41312t-193.130496 161.989632q-7.428096 2.85696-14.856192 2.85696-14.856192 0-25.71264-10.856448t-10.856448-25.71264q0-20.570112 22.284288-33.712128 3.999744-2.285568 12.85632-5.999616t12.85632-5.999616q26.284032-14.2848 46.854144-29.140992 70.281216-51.996672 109.707264-129.705984t39.426048-165.132288-39.426048-165.132288-109.707264-129.705984q-20.570112-14.856192-46.854144-29.140992-3.999744-2.285568-12.85632-5.999616t-12.85632-5.999616q-22.284288-13.142016-22.284288-33.712128 0-14.856192 10.856448-25.71264t25.71264-10.856448q7.428096 0 14.856192 2.85696 120.563712 51.996672 193.130496 161.989632t72.566784 241.41312z"
+      }, null)]), createVNode("div", {
+        "class": "uni-video-toast-value"
+      }, [createVNode("div", {
+        "style": {
+          width: gestureState.volumeNew * 100 + "%"
+        },
+        "class": "uni-video-toast-value-content"
+      }, [createVNode("div", {
+        "class": "uni-video-toast-volume-grids"
+      }, [renderList(10, () => createVNode("div", {
+        "class": "uni-video-toast-volume-grids-item"
+      }, null))])], 4)])], 2), createVNode("div", {
+        "class": {
+          "uni-video-toast": true,
+          "uni-video-toast-progress": gestureState.gestureType === "progress"
+        }
+      }, [createVNode("div", {
+        "class": "uni-video-toast-title"
+      }, [formatTime(gestureState.currentTimeNew), " / ", formatTime(videoState.duration)])], 2), createVNode("div", {
+        "class": "uni-video-slots"
+      }, [slots.default && slots.default()])], 40, ["onTouchstart", "onTouchend", "onTouchmove", "onFullscreenchange", "onWebkitfullscreenchange"])], 8, ["id", "onClick"]);
+    };
+  }
+});
+const onWebInvokeAppService = ({ name, arg }) => {
+  if (name === "postMessage")
+    ;
+  else {
+    uni[name](arg);
+  }
+};
+const Invoke = /* @__PURE__ */ once(() => UniServiceJSBridge.on(ON_WEB_INVOKE_APP_SERVICE, onWebInvokeAppService));
+const props$r = {
+  src: {
+    type: String,
+    default: ""
+  }
+};
+class UniWebViewElement extends UniElement {
+}
+const indexX$3 = /* @__PURE__ */ defineBuiltInComponent({
+  inheritAttrs: false,
+  name: "WebView",
+  props: props$r,
+  rootElement: {
+    name: "uni-web-view",
+    class: UniWebViewElement
+  },
+  setup(props2) {
+    Invoke();
+    const rootRef = ref(null);
+    const iframeRef = ref(null);
+    const {
+      $attrs,
+      $excludeAttrs,
+      $listeners
+    } = useAttrs({
+      excludeListeners: true
+    });
+    const renderIframe = () => {
+      const iframe = document.createElement("iframe");
+      watchEffect(() => {
+        for (const key in $attrs.value) {
+          if (hasOwn($attrs.value, key)) {
+            const attr2 = $attrs.value[key];
+            iframe[key] = attr2;
+          }
+        }
+      });
+      watchEffect(() => {
+        iframe.src = getRealPath(props2.src);
+      });
+      iframeRef.value = iframe;
+    };
+    renderIframe();
+    onMounted(() => {
+      var _a;
+      (_a = rootRef.value) == null ? void 0 : _a.appendChild(iframeRef.value);
+    });
+    onMounted(() => {
+      const rootElement = rootRef.value;
+      rootElement.attachVmProps(props2);
+    });
+    return () => {
+      return createVNode("uni-web-view", mergeProps({
+        "class": "uni-webview"
+      }, $listeners.value, $excludeAttrs.value, {
+        "ref": rootRef
+      }), null, 16);
+    };
+  }
+});
+const props$q = {
+  id: {
+    type: [Number, String],
+    default: ""
+  },
+  latitude: {
+    type: [Number, String],
+    require: true
+  },
+  longitude: {
+    type: [Number, String],
+    require: true
+  },
+  title: {
+    type: String,
+    default: ""
+  },
+  iconPath: {
+    type: String,
+    require: true
+  },
+  rotate: {
+    type: [Number, String],
+    default: 0
+  },
+  alpha: {
+    type: [Number, String],
+    default: 1
+  },
+  width: {
+    type: [Number, String],
+    default: ""
+  },
+  height: {
+    type: [Number, String],
+    default: ""
+  },
+  callout: {
+    type: Object,
+    default: null
+  },
+  label: {
+    type: Object,
+    default: null
+  },
+  anchor: {
+    type: Object,
+    default: null
+  },
+  clusterId: {
+    type: [Number, String],
+    default: ""
+  },
+  customCallout: {
+    type: Object,
+    default: null
+  },
+  ariaLabel: {
+    type: String,
+    default: ""
+  }
+};
+function useMarkerLabelStyle(id2) {
+  const className = "uni-map-marker-label-" + id2;
+  const styleEl = document.createElement("style");
+  styleEl.id = className;
+  document.head.appendChild(styleEl);
+  onUnmounted(() => {
+    styleEl.remove();
+  });
+  return function updateMarkerLabelStyle(style) {
+    const newStyle = Object.assign({}, style, {
+      position: "absolute",
+      top: "70px",
+      borderStyle: "solid"
+    });
+    const div = document.createElement("div");
+    Object.keys(newStyle).forEach((key) => {
+      div.style[key] = newStyle[key] || "";
+    });
+    styleEl.innerText = `.${className}{${div.getAttribute("style")}}`;
+    return className;
+  };
+}
+const MapMarker = /* @__PURE__ */ defineSystemComponent({
+  name: "MapMarker",
+  props: props$q,
+  setup(props2) {
+    const id2 = String(!isNaN(Number(props2.id)) ? props2.id : "");
+    const onMapReady = inject("onMapReady");
+    const updateMarkerLabelStyle = useMarkerLabelStyle(id2);
+    let marker;
+    function removeMarker() {
+      if (marker) {
+        if (marker.label && "setMap" in marker.label) {
+          marker.label.setMap(null);
+        }
+        if (marker.callout) {
+          removeMarkerCallout(marker.callout);
+        }
+        marker.setMap(null);
+      }
+    }
+    function removeMarkerCallout(callout) {
+      if (getIsAMap()) {
+        callout.removeAMapText();
+      } else {
+        callout.setMap(null);
+      }
+    }
+    onMapReady((map, maps2, trigger) => {
+      function updateMarker(option) {
+        const title = option.title;
+        let position;
+        if (getIsAMap()) {
+          position = new maps2.LngLat(option.longitude, option.latitude);
+        } else if (getIsBMap()) {
+          position = new maps2.Point(option.longitude, option.latitude);
+        } else {
+          position = new maps2.LatLng(option.latitude, option.longitude);
+        }
+        const img = new Image();
+        let imgHeight = 0;
+        img.onload = () => {
+          const anchor = option.anchor || {};
+          let icon;
+          let w;
+          let h2;
+          let top;
+          let x = typeof anchor.x === "number" ? anchor.x : 0.5;
+          let y = typeof anchor.y === "number" ? anchor.y : 1;
+          if (option.iconPath && (option.width || option.height)) {
+            w = option.width || img.width / img.height * option.height;
+            h2 = option.height || img.height / img.width * option.width;
+          } else {
+            w = img.width / 2;
+            h2 = img.height / 2;
+          }
+          imgHeight = h2;
+          top = h2 - (h2 - y * h2);
+          if ("MarkerImage" in maps2) {
+            icon = new maps2.MarkerImage(img.src, null, null, new maps2.Point(x * w, y * h2), new maps2.Size(w, h2));
+          } else if ("Icon" in maps2) {
+            icon = new maps2.Icon({
+              image: img.src,
+              size: new maps2.Size(w, h2),
+              imageSize: new maps2.Size(w, h2),
+              imageOffset: new maps2.Pixel(x * w, y * h2)
+            });
+          } else {
+            icon = {
+              url: img.src,
+              anchor: new maps2.Point(x, y),
+              size: new maps2.Size(w, h2)
+            };
+          }
+          if (getIsBMap()) {
+            marker = new maps2.Marker(new maps2.Point(position.lng, position.lat));
+            map.addOverlay(marker);
+          } else {
+            marker.setPosition(position);
+            marker.setIcon(icon);
+          }
+          if ("setRotation" in marker) {
+            marker.setRotation(option.rotate || 0);
+          }
+          const labelOpt = option.label || {};
+          if ("label" in marker) {
+            marker.label.setMap(null);
+            delete marker.label;
+          }
+          let label;
+          if (labelOpt.content) {
+            const labelStyle = {
+              borderColor: labelOpt.borderColor,
+              borderWidth: (Number(labelOpt.borderWidth) || 0) + "px",
+              padding: (Number(labelOpt.padding) || 0) + "px",
+              borderRadius: (Number(labelOpt.borderRadius) || 0) + "px",
+              backgroundColor: labelOpt.bgColor,
+              color: labelOpt.color,
+              fontSize: (labelOpt.fontSize || 14) + "px",
+              lineHeight: (labelOpt.fontSize || 14) + "px",
+              marginLeft: (Number(labelOpt.anchorX || labelOpt.x) || 0) + "px",
+              marginTop: (Number(labelOpt.anchorY || labelOpt.y) || 0) + "px"
+            };
+            if ("Label" in maps2) {
+              label = new maps2.Label({
+                position,
+                map,
+                clickable: false,
+                content: labelOpt.content,
+                style: labelStyle
+              });
+              marker.label = label;
+            } else if ("setLabel" in marker) {
+              if (getIsAMap()) {
+                const content = `<div style="
+                  margin-left:${labelStyle.marginLeft};
+                  margin-top:${labelStyle.marginTop};
+                  padding:${labelStyle.padding};
+                  background-color:${labelStyle.backgroundColor};
+                  border-radius:${labelStyle.borderRadius};
+                  line-height:${labelStyle.lineHeight};
+                  color:${labelStyle.color};
+                  font-size:${labelStyle.fontSize};
+
+                  ">
+                  ${labelOpt.content}
+                <div>`;
+                marker.setLabel({
+                  content,
+                  direction: "bottom-right"
+                });
+              } else {
+                const className = updateMarkerLabelStyle(labelStyle);
+                marker.setLabel({
+                  text: labelOpt.content,
+                  color: labelStyle.color,
+                  fontSize: labelStyle.fontSize,
+                  className
+                });
+              }
+            }
+          }
+          const calloutOpt = option.callout || {};
+          let callout = marker.callout;
+          let calloutStyle;
+          if (calloutOpt.content || title) {
+            if (getIsAMap() && calloutOpt.content) {
+              calloutOpt.content = calloutOpt.content.replaceAll("\n", "<br/>");
+            }
+            const boxShadow = "0px 0px 3px 1px rgba(0,0,0,0.5)";
+            let offsetY = -imgHeight / 2;
+            if (option.width || option.height) {
+              offsetY += 14 - imgHeight / 2;
+            }
+            calloutStyle = calloutOpt.content ? {
+              position,
+              map,
+              top,
+              // handle AMap callout offset
+              offsetY,
+              content: calloutOpt.content,
+              color: calloutOpt.color,
+              fontSize: calloutOpt.fontSize,
+              borderRadius: calloutOpt.borderRadius,
+              bgColor: calloutOpt.bgColor,
+              padding: calloutOpt.padding,
+              boxShadow: calloutOpt.boxShadow || boxShadow,
+              display: calloutOpt.display
+            } : {
+              position,
+              map,
+              top,
+              // handle AMap callout offset
+              offsetY,
+              content: title,
+              boxShadow
+            };
+            if (callout) {
+              callout.setOption(calloutStyle);
+            } else {
+              if (getIsAMap()) {
+                const callback = () => {
+                  if (id2 !== "") {
+                    trigger("callouttap", {}, {
+                      markerId: Number(id2)
+                    });
+                  }
+                };
+                callout = marker.callout = new maps2.Callout(calloutStyle, callback);
+              } else {
+                callout = marker.callout = new maps2.Callout(calloutStyle);
+                callout.div.onclick = function($event) {
+                  if (id2 !== "") {
+                    trigger("callouttap", $event, {
+                      markerId: Number(id2)
+                    });
+                  }
+                  $event.stopPropagation();
+                  $event.preventDefault();
+                };
+                if (getMapInfo().type === MapType.GOOGLE) {
+                  callout.div.ontouchstart = function($event) {
+                    $event.stopPropagation();
+                  };
+                  callout.div.onpointerdown = function($event) {
+                    $event.stopPropagation();
+                  };
+                }
+              }
+            }
+          } else {
+            if (callout) {
+              removeMarkerCallout(callout);
+              delete marker.callout;
+            }
+          }
+        };
+        if (option.iconPath) {
+          img.src = getRealPath(option.iconPath);
+        } else {
+          console.error("Marker.iconPath is required.");
+        }
+      }
+      function addMarker(props3) {
+        if (!getIsBMap()) {
+          marker = new maps2.Marker({
+            map,
+            flat: true,
+            autoRotation: false
+          });
+        }
+        updateMarker(props3);
+        const MapsEvent = maps2.event || maps2.Event;
+        if (getIsBMap())
+          ;
+        else {
+          MapsEvent.addListener(marker, "click", () => {
+            const callout = marker.callout;
+            if (callout && !callout.alwaysVisible) {
+              if (getIsAMap()) {
+                callout.visible = !callout.visible;
+                if (callout.visible) {
+                  marker.callout.createAMapText();
+                } else {
+                  marker.callout.removeAMapText();
+                }
+              } else {
+                callout.set("visible", !callout.visible);
+                if (callout.visible) {
+                  const div = callout.div;
+                  const parent = div.parentNode;
+                  parent.removeChild(div);
+                  parent.appendChild(div);
+                }
+              }
+            }
+            if (id2) {
+              trigger("markertap", {}, {
+                markerId: Number(id2),
+                latitude: props3.latitude,
+                longitude: props3.longitude
+              });
+            }
+          });
+        }
+      }
+      addMarker(props2);
+      watch(props2, updateMarker);
+    });
+    if (id2) {
+      const addMapChidlContext = inject("addMapChidlContext");
+      const removeMapChidlContext = inject("removeMapChidlContext");
+      const context = {
+        id: id2,
+        translate(data) {
+          onMapReady((map, maps2, trigger) => {
+            const destination = data.destination;
+            const duration = data.duration;
+            const autoRotate = !!data.autoRotate;
+            let rotate = Number(data.rotate) || 0;
+            let rotation = 0;
+            if ("getRotation" in marker) {
+              rotation = marker.getRotation();
+            }
+            const a2 = marker.getPosition();
+            const b = new maps2.LatLng(destination.latitude, destination.longitude);
+            const distance2 = maps2.geometry.spherical.computeDistanceBetween(a2, b) / 1e3;
+            const time = (typeof duration === "number" ? duration : 1e3) / (1e3 * 60 * 60);
+            const speed = distance2 / time;
+            const MapsEvent = maps2.event || maps2.Event;
+            const movingEvent = MapsEvent.addListener(marker, "moving", (e2) => {
+              const latLng = e2.latLng;
+              const label = marker.label;
+              if (label) {
+                label.setPosition(latLng);
+              }
+              const callout = marker.callout;
+              if (callout) {
+                callout.setPosition(latLng);
+              }
+            });
+            const event = MapsEvent.addListener(marker, "moveend", () => {
+              event.remove();
+              movingEvent.remove();
+              marker.lastPosition = a2;
+              marker.setPosition(b);
+              const label = marker.label;
+              if (label) {
+                label.setPosition(b);
+              }
+              const callout = marker.callout;
+              if (callout) {
+                callout.setPosition(b);
+              }
+              const cb = data.animationEnd;
+              if (isFunction(cb)) {
+                cb();
+              }
+            });
+            let lastRtate = 0;
+            if (autoRotate) {
+              if (marker.lastPosition) {
+                lastRtate = maps2.geometry.spherical.computeHeading(marker.lastPosition, a2);
+              }
+              rotate = maps2.geometry.spherical.computeHeading(a2, b) - lastRtate;
+            }
+            if ("setRotation" in marker) {
+              marker.setRotation(rotation + rotate);
+            }
+            if ("moveTo" in marker) {
+              marker.moveTo(b, speed);
+            } else {
+              marker.setPosition(b);
+              MapsEvent.trigger(marker, "moveend", {});
+            }
+          });
+        }
+      };
+      addMapChidlContext(context);
+      onUnmounted(() => removeMapChidlContext(context));
+    }
+    onUnmounted(removeMarker);
+    return () => {
+      return null;
+    };
+  }
+});
+function hexToRgba(hex) {
+  if (!hex) {
+    return {
+      r: 0,
+      g: 0,
+      b: 0,
+      a: 0
+    };
+  }
+  let tmpHex = hex.slice(1);
+  const tmpHexLen = tmpHex.length;
+  if (![3, 4, 6, 8].includes(tmpHexLen)) {
+    return {
+      r: 0,
+      g: 0,
+      b: 0,
+      a: 0
+    };
+  }
+  if (tmpHexLen === 3 || tmpHexLen === 4) {
+    tmpHex = tmpHex.replace(/(\w{1})/g, "$1$1");
+  }
+  let [sr, sg, sb, sa] = tmpHex.match(/(\w{2})/g);
+  const r = parseInt(sr, 16), g2 = parseInt(sg, 16), b = parseInt(sb, 16);
+  if (!sa) {
+    return { r, g: g2, b, a: 1 };
+  }
+  return {
+    r,
+    g: g2,
+    b,
+    a: (`0x100${sa}` - 65536) / 255
+  };
+}
+const props$p = {
+  points: {
+    type: Array,
+    require: true
+  },
+  color: {
+    type: String,
+    default: "#000000"
+  },
+  width: {
+    type: [Number, String],
+    default: ""
+  },
+  dottedLine: {
+    type: [Boolean, String],
+    default: false
+  },
+  arrowLine: {
+    type: [Boolean, String],
+    default: false
+  },
+  arrowIconPath: {
+    type: String,
+    default: ""
+  },
+  borderColor: {
+    type: String,
+    default: "#000000"
+  },
+  borderWidth: {
+    type: [Number, String],
+    default: ""
+  },
+  colorList: {
+    type: Array,
+    default() {
+      return [];
+    }
+  },
+  level: {
+    type: String,
+    default: ""
+  }
+};
+const MapPolyline = /* @__PURE__ */ defineSystemComponent({
+  name: "MapPolyline",
+  props: props$p,
+  setup(props2) {
+    const onMapReady = inject("onMapReady");
+    let polyline;
+    let polylineBorder;
+    function removePolyline() {
+      if (polyline) {
+        polyline.setMap(null);
+      }
+      if (polylineBorder) {
+        polylineBorder.setMap(null);
+      }
+    }
+    onMapReady((map, maps2) => {
+      function updatePolyline(option) {
+        removePolyline();
+        addPolyline(option);
+      }
+      function addPolyline(option) {
+        const path = [];
+        option.points.forEach((point) => {
+          let pointPosition;
+          if (getIsAMap()) {
+            pointPosition = [point.longitude, point.latitude];
+          } else if (getIsBMap()) {
+            pointPosition = new maps2.Point(point.longitude, point.latitude);
+          } else {
+            pointPosition = new maps2.LatLng(point.latitude, point.longitude);
+          }
+          path.push(pointPosition);
+        });
+        const strokeWeight = Number(option.width) || 1;
+        const {
+          r: sr,
+          g: sg,
+          b: sb,
+          a: sa
+        } = hexToRgba(option.color);
+        const {
+          r: br,
+          g: bg,
+          b: bb,
+          a: ba
+        } = hexToRgba(option.borderColor);
+        const polylineOptions = {
+          map,
+          clickable: false,
+          path,
+          strokeWeight,
+          strokeColor: option.color || void 0,
+          strokeDashStyle: option.dottedLine ? "dash" : "solid"
+        };
+        const borderWidth = Number(option.borderWidth) || 0;
+        const polylineBorderOptions = {
+          map,
+          clickable: false,
+          path,
+          strokeWeight: strokeWeight + borderWidth * 2,
+          strokeColor: option.borderColor || void 0,
+          strokeDashStyle: option.dottedLine ? "dash" : "solid"
+        };
+        if ("Color" in maps2) {
+          polylineOptions.strokeColor = new maps2.Color(sr, sg, sb, sa);
+          polylineBorderOptions.strokeColor = new maps2.Color(br, bg, bb, ba);
+        } else {
+          polylineOptions.strokeColor = `rgb(${sr}, ${sg}, ${sb})`;
+          polylineOptions.strokeOpacity = sa;
+          polylineBorderOptions.strokeColor = `rgb(${br}, ${bg}, ${bb})`;
+          polylineBorderOptions.strokeOpacity = ba;
+        }
+        if (borderWidth) {
+          polylineBorder = new maps2.Polyline(polylineBorderOptions);
+        }
+        if (getIsBMap()) {
+          polyline = new maps2.Polyline(polylineOptions.path, polylineOptions);
+          map.addOverlay(polyline);
+        } else {
+          polyline = new maps2.Polyline(polylineOptions);
+        }
+      }
+      addPolyline(props2);
+      watch(props2, updatePolyline);
+    });
+    onUnmounted(removePolyline);
+    return () => {
+      return null;
+    };
+  }
+});
+const props$o = {
+  latitude: {
+    type: [Number, String],
+    require: true
+  },
+  longitude: {
+    type: [Number, String],
+    require: true
+  },
+  color: {
+    type: String,
+    default: "#000000"
+  },
+  fillColor: {
+    type: String,
+    default: "#00000000"
+  },
+  radius: {
+    type: [Number, String],
+    require: true
+  },
+  strokeWidth: {
+    type: [Number, String],
+    default: ""
+  },
+  level: {
+    type: String,
+    default: ""
+  }
+};
+const MapCircle = /* @__PURE__ */ defineSystemComponent({
+  name: "MapCircle",
+  props: props$o,
+  setup(props2) {
+    const onMapReady = inject("onMapReady");
+    let circle;
+    function removeCircle() {
+      if (circle) {
+        circle.setMap(null);
+      }
+    }
+    onMapReady((map, maps2) => {
+      function updateCircle(option) {
+        removeCircle();
+        addCircle(option);
+      }
+      function addCircle(option) {
+        const center = getIsAMap() || getIsBMap() ? [option.longitude, option.latitude] : new maps2.LatLng(option.latitude, option.longitude);
+        const circleOptions = {
+          map,
+          center,
+          clickable: false,
+          radius: option.radius,
+          strokeWeight: Number(option.strokeWidth) || 1,
+          strokeDashStyle: "solid"
+        };
+        if (getIsBMap()) {
+          circleOptions.strokeColor = option.color;
+          circleOptions.fillColor = option.fillColor || "#000";
+          circleOptions.fillOpacity = 1;
+        } else {
+          const {
+            r: fr,
+            g: fg,
+            b: fb,
+            a: fa
+          } = hexToRgba(option.fillColor);
+          const {
+            r: sr,
+            g: sg,
+            b: sb,
+            a: sa
+          } = hexToRgba(option.color);
+          if ("Color" in maps2) {
+            circleOptions.fillColor = new maps2.Color(fr, fg, fb, fa);
+            circleOptions.strokeColor = new maps2.Color(sr, sg, sb, sa);
+          } else {
+            circleOptions.fillColor = `rgb(${fr}, ${fg}, ${fb})`;
+            circleOptions.fillOpacity = fa;
+            circleOptions.strokeColor = `rgb(${sr}, ${sg}, ${sb})`;
+            circleOptions.strokeOpacity = sa;
+          }
+        }
+        if (getIsBMap()) {
+          let pt = new maps2.Point(
+            // @ts-ignore
+            circleOptions.center[0],
+            // @ts-ignore
+            circleOptions.center[1]
+          );
+          circle = new maps2.Circle(pt, circleOptions.radius, circleOptions);
+          map.addOverlay(circle);
+        } else {
+          circle = new maps2.Circle(circleOptions);
+          if (getIsAMap()) {
+            map.add(circle);
+          }
+        }
+      }
+      addCircle(props2);
+      watch(props2, updateCircle);
+    });
+    onUnmounted(removeCircle);
+    return () => {
+      return null;
+    };
+  }
+});
+const props$n = {
+  id: {
+    type: [Number, String],
+    default: ""
+  },
+  position: {
+    type: Object,
+    required: true
+  },
+  iconPath: {
+    type: String,
+    required: true
+  },
+  clickable: {
+    type: [Boolean, String],
+    default: ""
+  },
+  trigger: {
+    type: Function,
+    required: true
+  }
+};
+const MapControl = /* @__PURE__ */ defineSystemComponent({
+  name: "MapControl",
+  props: props$n,
+  setup(props2) {
+    const imgPath = computed(() => getRealPath(props2.iconPath));
+    const positionStyle = computed(() => {
+      let positionStyle2 = `top:${props2.position.top || 0}px;left:${props2.position.left || 0}px;`;
+      if (props2.position.width) {
+        positionStyle2 += `width:${props2.position.width}px;`;
+      }
+      if (props2.position.height) {
+        positionStyle2 += `height:${props2.position.height}px;`;
+      }
+      return positionStyle2;
+    });
+    const handleClick = ($event) => {
+      if (props2.clickable) {
+        props2.trigger("controltap", $event, {
+          controlId: props2.id
+        });
+      }
+    };
+    return () => {
+      return createVNode("div", {
+        "class": "uni-map-control"
+      }, [createVNode("img", {
+        "src": imgPath.value,
+        "style": positionStyle.value,
+        "class": "uni-map-control-icon",
+        "onClick": handleClick
+      }, null, 12, ["src", "onClick"])]);
+    };
+  }
+});
+const CONTEXT_ID = "MAP_LOCATION";
+const MapLocation = /* @__PURE__ */ defineSystemComponent({
+  name: "MapLocation",
+  setup() {
+    const state2 = reactive({
+      latitude: 0,
+      longitude: 0,
+      rotate: 0
+    });
+    {
+      let compassChangeHandler = function(res) {
+        state2.rotate = res.direction;
+      }, updateLocation = function() {
+        getLocation({
+          type: "gcj02",
+          success: (res) => {
+            state2.latitude = res.latitude;
+            state2.longitude = res.longitude;
+          },
+          complete: () => {
+            timer = setTimeout(updateLocation, 3e4);
+          }
+        });
+      }, removeLocation = function() {
+        if (timer) {
+          clearTimeout(timer);
+        }
+        offCompassChange(compassChangeHandler);
+      };
+      const onMapReady = inject("onMapReady");
+      let timer;
+      onCompassChange(compassChangeHandler);
+      onMapReady(updateLocation);
+      onUnmounted(removeLocation);
+      const addMapChidlContext = inject("addMapChidlContext");
+      const removeMapChidlContext = inject("removeMapChidlContext");
+      const context = {
+        id: CONTEXT_ID,
+        state: state2
+      };
+      addMapChidlContext(context);
+      onUnmounted(() => removeMapChidlContext(context));
+    }
+    return () => {
+      return state2.latitude ? createVNode(MapMarker, mergeProps({
+        "anchor": {
+          x: 0.5,
+          y: 0.5
+        },
+        "width": "44",
+        "height": "44",
+        "iconPath": ICON_PATH_ORIGIN
+      }, state2), null, 16, ["iconPath"]) : null;
+    };
+  }
+});
+const props$m = {
+  // 边框虚线，腾讯地图支持，google 高德 地图不支持，默认值为[0, 0] 为实线，非 [0, 0] 为虚线，H5 端无法像微信小程序一样控制虚线的间隔像素大小
+  dashArray: {
+    type: Array,
+    default: () => [0, 0]
+  },
+  // 经纬度数组，[{latitude: 0, longitude: 0}]
+  points: {
+    type: Array,
+    required: true
+  },
+  // 描边的宽度
+  strokeWidth: {
+    type: Number,
+    default: 1
+  },
+  // 描边的颜色，十六进制
+  strokeColor: {
+    type: String,
+    default: "#000000"
+  },
+  // 填充颜色，十六进制
+  fillColor: {
+    type: String,
+    default: "#00000000"
+  },
+  // 设置多边形 Z 轴数值
+  zIndex: {
+    type: Number,
+    default: 0
+  }
+};
+const MapPolygon = /* @__PURE__ */ defineSystemComponent({
+  name: "MapPolygon",
+  props: props$m,
+  setup(props2) {
+    let polygonIns;
+    const onMapReady = inject("onMapReady");
+    onMapReady((map, maps2, trigger) => {
+      function drawPolygon() {
+        const {
+          points,
+          strokeWidth,
+          strokeColor,
+          dashArray,
+          fillColor,
+          zIndex
+        } = props2;
+        const path = points.map((item) => {
+          const {
+            latitude,
+            longitude
+          } = item;
+          if (getIsAMap()) {
+            return [longitude, latitude];
+          } else if (getIsBMap()) {
+            return new maps2.Point(longitude, latitude);
+          } else {
+            return new maps2.LatLng(latitude, longitude);
+          }
+        });
+        const {
+          r: fcR,
+          g: fcG,
+          b: fcB,
+          a: fcA
+        } = hexToRgba(fillColor);
+        const {
+          r: scR,
+          g: scG,
+          b: scB,
+          a: scA
+        } = hexToRgba(strokeColor);
+        const polygonOptions = {
+          //多边形是否可点击。
+          clickable: true,
+          //鼠标在多边形内的光标样式。
+          cursor: "crosshair",
+          //多边形是否可编辑。
+          editable: false,
+          // 地图实例，即要显示多边形的地图
+          // @ts-ignore
+          map,
+          // 区域填充色
+          fillColor: "",
+          //多边形的路径，以经纬度坐标数组构成。
+          path,
+          // 区域边框
+          strokeColor: "",
+          //多边形的边框样式。实线是solid，虚线是dash。
+          strokeDashStyle: dashArray.some((item) => item > 0) ? "dash" : "solid",
+          //多边形的边框线宽。
+          strokeWeight: strokeWidth,
+          //多边形是否可见。
+          visible: true,
+          //多边形的zIndex值。
+          zIndex
+        };
+        if (maps2.Color) {
+          polygonOptions.fillColor = new maps2.Color(fcR, fcG, fcB, fcA);
+          polygonOptions.strokeColor = new maps2.Color(scR, scG, scB, scA);
+        } else {
+          polygonOptions.fillColor = `rgb(${fcR}, ${fcG}, ${fcB})`;
+          polygonOptions.fillOpacity = fcA;
+          polygonOptions.strokeColor = `rgb(${scR}, ${scG}, ${scB})`;
+          polygonOptions.strokeOpacity = scA;
+        }
+        if (polygonIns) {
+          polygonIns.setOptions(polygonOptions);
+          return;
+        }
+        if (getIsBMap()) {
+          polygonIns = new maps2.Polygon(polygonOptions.path, polygonOptions);
+          map.addOverlay(polygonIns);
+        } else {
+          polygonIns = new maps2.Polygon(polygonOptions);
+        }
+      }
+      drawPolygon();
+      watch(props2, drawPolygon);
+    });
+    onUnmounted(() => {
+      polygonIns.setMap(null);
+    });
+    return () => null;
+  }
+});
+const props$l = {
+  id: {
+    type: String,
+    default: ""
+  },
+  latitude: {
+    type: [String, Number],
+    default: 0
+  },
+  longitude: {
+    type: [String, Number],
+    default: 0
+  },
+  scale: {
+    type: [String, Number],
+    default: 16
+  },
+  markers: {
+    type: Array,
+    default() {
+      return [];
+    }
+  },
+  includePoints: {
+    type: Array,
+    default() {
+      return [];
+    }
+  },
+  polyline: {
+    type: Array,
+    default() {
+      return [];
+    }
+  },
+  circles: {
+    type: Array,
+    default() {
+      return [];
+    }
+  },
+  controls: {
+    type: Array,
+    default() {
+      return [];
+    }
+  },
+  showLocation: {
+    type: [Boolean, String],
+    default: false
+  },
+  libraries: {
+    type: Array,
+    default() {
+      return [];
+    }
+  },
+  polygons: {
+    type: Array,
+    default: () => []
+  }
+};
+function getPoints(points) {
+  const newPoints = [];
+  if (isArray(points)) {
+    points.forEach((point) => {
+      if (point && point.latitude && point.longitude) {
+        newPoints.push({
+          latitude: point.latitude,
+          longitude: point.longitude
+        });
+      }
+    });
+  }
+  return newPoints;
+}
+function getAMapPosition(maps2, latitude, longitude) {
+  return new maps2.LngLat(longitude, latitude);
+}
+function getBMapPosition(maps2, latitude, longitude) {
+  return new maps2.Point(longitude, latitude);
+}
+function getGoogleOrQQMapPosition(maps2, latitude, longitude) {
+  return new maps2.LatLng(latitude, longitude);
+}
+function getMapPosition(maps2, latitude, longitude) {
+  if (getIsBMap()) {
+    return getBMapPosition(maps2, latitude, longitude);
+  } else if (getIsAMap()) {
+    return getAMapPosition(maps2, latitude, longitude);
+  } else {
+    return getGoogleOrQQMapPosition(maps2, latitude, longitude);
+  }
+}
+function getLat(latLng) {
+  if ("getLat" in latLng) {
+    return latLng.getLat();
+  } else {
+    if (getIsBMap()) {
+      return latLng.lat;
+    }
+    return latLng.lat();
+  }
+}
+function getLng(latLng) {
+  if ("getLng" in latLng) {
+    return latLng.getLng();
+  } else {
+    if (getIsBMap()) {
+      return latLng.lng;
+    }
+    return latLng.lng();
+  }
+}
+function useMap(props2, rootRef, emit2) {
+  const trigger = useCustomEvent(rootRef, emit2);
+  const mapRef = ref(null);
+  let maps2;
+  let map;
+  const state2 = reactive({
+    latitude: Number(props2.latitude),
+    longitude: Number(props2.longitude),
+    includePoints: getPoints(props2.includePoints)
+  });
+  const onMapReadyCallbacks = [];
+  let isMapReady;
+  function onMapReady(callback) {
+    if (isMapReady) {
+      callback(map, maps2, trigger);
+    } else {
+      onMapReadyCallbacks.push(callback);
+    }
+  }
+  function emitMapReady() {
+    isMapReady = true;
+    onMapReadyCallbacks.forEach((callback) => callback(map, maps2, trigger));
+    onMapReadyCallbacks.length = 0;
+  }
+  let isBoundsReady;
+  const onBoundsReadyCallbacks = [];
+  function onBoundsReady(callback) {
+    if (isBoundsReady) {
+      callback();
+    } else {
+      onMapReadyCallbacks.push(callback);
+    }
+  }
+  const contexts = {};
+  function addMapChidlContext(context) {
+    contexts[context.id] = context;
+  }
+  function removeMapChidlContext(context) {
+    delete contexts[context.id];
+  }
+  watch([() => props2.latitude, () => props2.longitude], ([latitudeVlaue, longitudeVlaue]) => {
+    const latitude = Number(latitudeVlaue);
+    const longitude = Number(longitudeVlaue);
+    if (latitude !== state2.latitude || longitude !== state2.longitude) {
+      state2.latitude = latitude;
+      state2.longitude = longitude;
+      if (map) {
+        const centerPosition = getMapPosition(maps2, state2.latitude, state2.longitude);
+        map.setCenter(centerPosition);
+      }
+    }
+  });
+  watch(() => props2.includePoints, (points) => {
+    state2.includePoints = getPoints(points);
+    if (isBoundsReady) {
+      updateBounds();
+    }
+  }, {
+    deep: true
+  });
+  function emitBoundsReady() {
+    isBoundsReady = true;
+    onBoundsReadyCallbacks.forEach((callback) => callback());
+    onBoundsReadyCallbacks.length = 0;
+  }
+  function getMapInfo2() {
+    const center = map.getCenter();
+    return {
+      scale: map.getZoom(),
+      centerLocation: {
+        latitude: getLat(center),
+        longitude: getLng(center)
+      }
+    };
+  }
+  function updateCenter() {
+    const centerPosition = getMapPosition(maps2, state2.latitude, state2.longitude);
+    map.setCenter(centerPosition);
+  }
+  function updateBounds() {
+    if (getIsAMap()) {
+      const points = [];
+      state2.includePoints.forEach((point) => {
+        points.push([point.longitude, point.latitude]);
+      });
+      const bounds = new maps2.Bounds(...points);
+      map.setBounds(bounds);
+    } else if (getIsBMap())
+      ;
+    else {
+      const bounds = new maps2.LatLngBounds();
+      state2.includePoints.forEach(({
+        latitude,
+        longitude
+      }) => {
+        const latLng = new maps2.LatLng(latitude, longitude);
+        bounds.extend(latLng);
+      });
+      map.fitBounds(bounds);
+    }
+  }
+  function initMap() {
+    const mapEl = mapRef.value;
+    const center = getMapPosition(maps2, state2.latitude, state2.longitude);
+    const event = maps2.event || maps2.Event;
+    const map2 = new maps2.Map(mapEl, {
+      center,
+      zoom: Number(props2.scale),
+      // scrollwheel: false,
+      disableDoubleClickZoom: true,
+      mapTypeControl: false,
+      zoomControl: false,
+      scaleControl: false,
+      panControl: false,
+      fullscreenControl: false,
+      streetViewControl: false,
+      keyboardShortcuts: false,
+      minZoom: 5,
+      maxZoom: 18,
+      draggable: true
+    });
+    if (getIsBMap()) {
+      map2.centerAndZoom(center, Number(props2.scale));
+      map2.enableScrollWheelZoom();
+      map2._printLog && map2._printLog("uniapp");
+    }
+    watch(() => props2.scale, (scale) => {
+      map2.setZoom(Number(scale) || 16);
+    });
+    onBoundsReady(() => {
+      if (state2.includePoints.length) {
+        updateBounds();
+        updateCenter();
+      }
+    });
+    if (getIsBMap()) {
+      map2.addEventListener("click", () => {
+        trigger("tap", {}, {});
+        trigger("click", {}, {});
+      });
+      map2.addEventListener("dragstart", () => {
+        trigger("regionchange", {}, {
+          type: "begin",
+          causedBy: "gesture"
+        });
+      });
+      map2.addEventListener("dragend", () => {
+        trigger("regionchange", {}, extend({
+          type: "end",
+          causedBy: "drag"
+        }, getMapInfo2()));
+      });
+    } else {
+      const boundsChangedEvent = event.addListener(map2, "bounds_changed", () => {
+        boundsChangedEvent.remove();
+        emitBoundsReady();
+      });
+      event.addListener(map2, "click", () => {
+        trigger("tap", {}, {});
+        trigger("click", {}, {});
+      });
+      event.addListener(map2, "dragstart", () => {
+        trigger("regionchange", {}, {
+          type: "begin",
+          causedBy: "gesture"
+        });
+      });
+      event.addListener(map2, "dragend", () => {
+        trigger("regionchange", {}, extend({
+          type: "end",
+          causedBy: "drag"
+        }, getMapInfo2()));
+      });
+      const zoomChangedCallback = () => {
+        emit2("update:scale", map2.getZoom());
+        trigger("regionchange", {}, extend({
+          type: "end",
+          causedBy: "scale"
+        }, getMapInfo2()));
+      };
+      event.addListener(map2, "zoom_changed", zoomChangedCallback);
+      event.addListener(map2, "zoomend", zoomChangedCallback);
+      event.addListener(map2, "center_changed", () => {
+        const center2 = map2.getCenter();
+        const latitude = getLat(center2);
+        const longitude = getLng(center2);
+        emit2("update:latitude", latitude);
+        emit2("update:longitude", longitude);
+      });
+    }
+    return map2;
+  }
+  try {
+    const id2 = useContextInfo();
+    useSubscribe((type, data = {}) => {
+      switch (type) {
+        case "getCenterLocation":
+          onMapReady(() => {
+            const center = map.getCenter();
+            callOptions(data, {
+              latitude: getLat(center),
+              longitude: getLng(center),
+              errMsg: `${type}:ok`
+            });
+          });
+          break;
+        case "moveToLocation":
+          {
+            let latitude = Number(data.latitude);
+            let longitude = Number(data.longitude);
+            if (!latitude || !longitude) {
+              const context = contexts[CONTEXT_ID];
+              if (context) {
+                latitude = context.state.latitude;
+                longitude = context.state.longitude;
+              }
+            }
+            if (latitude && longitude) {
+              state2.latitude = latitude;
+              state2.longitude = longitude;
+              if (map) {
+                const centerPosition = getMapPosition(maps2, latitude, longitude);
+                map.setCenter(centerPosition);
+              }
+              onMapReady(() => {
+                callOptions(data, `${type}:ok`);
+              });
+            } else {
+              callOptions(data, `${type}:fail`);
+            }
+          }
+          break;
+        case "translateMarker":
+          onMapReady(() => {
+            const context = contexts[data.markerId];
+            if (context) {
+              try {
+                context.translate(data);
+              } catch (error) {
+                callOptions(data, `${type}:fail ${error.message}`);
+              }
+              callOptions(data, `${type}:ok`);
+            } else {
+              callOptions(data, `${type}:fail not found`);
+            }
+          });
+          break;
+        case "includePoints":
+          state2.includePoints = getPoints(data.includePoints);
+          if (isBoundsReady || getIsAMap()) {
+            updateBounds();
+          }
+          onBoundsReady(() => {
+            callOptions(data, `${type}:ok`);
+          });
+          break;
+        case "getRegion":
+          onBoundsReady(() => {
+            const latLngBounds = map.getBounds();
+            const southwest = latLngBounds.getSouthWest();
+            const northeast = latLngBounds.getNorthEast();
+            callOptions(data, {
+              southwest: {
+                latitude: getLat(southwest),
+                longitude: getLng(southwest)
+              },
+              northeast: {
+                latitude: getLat(northeast),
+                longitude: getLng(northeast)
+              },
+              errMsg: `${type}:ok`
+            });
+          });
+          break;
+        case "getScale":
+          onMapReady(() => {
+            callOptions(data, {
+              scale: map.getZoom(),
+              errMsg: `${type}:ok`
+            });
+          });
+          break;
+      }
+    }, id2, true);
+  } catch (error) {
+  }
+  onMounted(() => {
+    loadMaps(props2.libraries, (result) => {
+      maps2 = result;
+      map = initMap();
+      emitMapReady();
+      trigger("updated", {}, {});
+    });
+  });
+  provide("onMapReady", onMapReady);
+  provide("addMapChidlContext", addMapChidlContext);
+  provide("removeMapChidlContext", removeMapChidlContext);
+  return {
+    state: state2,
+    mapRef,
+    trigger
+  };
+}
+class UniMapElement extends UniElement {
+}
+const Map$1 = /* @__PURE__ */ defineBuiltInComponent({
+  name: "Map",
+  props: props$l,
+  emits: ["markertap", "labeltap", "callouttap", "controltap", "regionchange", "tap", "click", "updated", "update:scale", "update:latitude", "update:longitude"],
+  rootElement: {
+    name: "uni-map",
+    class: UniMapElement
+  },
+  setup(props2, {
+    emit: emit2,
+    slots
+  }) {
+    const rootRef = ref(null);
+    const {
+      mapRef,
+      trigger
+    } = useMap(props2, rootRef, emit2);
+    onMounted(() => {
+      const rootElement = rootRef.value;
+      rootElement.attachVmProps(props2);
+    });
+    return () => {
+      return createVNode("uni-map", {
+        "ref": rootRef,
+        "id": props2.id
+      }, [createVNode("div", {
+        "ref": mapRef,
+        "style": "width: 100%; height: 100%; position: relative; overflow: hidden"
+      }, null, 512), props2.markers.map((item) => createVNode(MapMarker, mergeProps({
+        "key": item.id
+      }, item), null, 16)), props2.polyline.map((item) => createVNode(MapPolyline, item, null, 16)), props2.circles.map((item) => createVNode(MapCircle, item, null, 16)), props2.controls.map((item) => createVNode(MapControl, mergeProps(item, {
+        "trigger": trigger
+      }), null, 16, ["trigger"])), props2.showLocation && createVNode(MapLocation, null, null), props2.polygons.map((item) => createVNode(MapPolygon, item, null, 16)), createVNode("div", {
+        "style": "position: absolute;top: 0;width: 100%;height: 100%;overflow: hidden;pointer-events: none;"
+      }, [slots.default && slots.default()])], 8, ["id"]);
+    };
+  }
+});
+const props$k = {
+  scrollTop: {
+    type: [String, Number],
+    default: 0
+  }
+};
+class UniCoverViewElement extends UniElement {
+}
+const index$p = /* @__PURE__ */ defineBuiltInComponent({
+  name: "CoverView",
+  compatConfig: {
+    MODE: 3
+  },
+  props: props$k,
+  rootElement: {
+    name: "uni-cover-view",
+    class: UniCoverViewElement
+  },
+  setup(props2, {
+    slots
+  }) {
+    const root = ref(null);
+    const content = ref(null);
+    watch(() => props2.scrollTop, (val) => {
+      setScrollTop(val);
+    });
+    function setScrollTop(val) {
+      let _content = content.value;
+      if (getComputedStyle(_content).overflowY === "scroll") {
+        _content.scrollTop = _upx2pxNum(val);
+      }
+    }
+    function _upx2pxNum(val) {
+      let _val = String(val);
+      if (/\d+[ur]px$/i.test(_val)) {
+        _val.replace(/\d+[ur]px$/i, (text2) => {
+          return String(uni.upx2px(parseFloat(text2)));
+        });
+      }
+      return parseFloat(_val) || 0;
+    }
+    onMounted(() => {
+      setScrollTop(props2.scrollTop);
+    });
+    onMounted(() => {
+      const rootElement = root.value;
+      rootElement.attachVmProps(props2);
+    });
+    return () => {
+      return createVNode("uni-cover-view", {
+        "scroll-top": props2.scrollTop,
+        "ref": root
+      }, [createVNode("div", {
+        "ref": content,
+        "class": "uni-cover-view"
+      }, [slots.default && slots.default()], 512)], 8, ["scroll-top"]);
+    };
+  }
+});
+class UniCoverImageElement extends UniElement {
+}
+const index$o = /* @__PURE__ */ defineBuiltInComponent({
+  name: "CoverImage",
+  compatConfig: {
+    MODE: 3
+  },
+  props: {
+    src: {
+      type: String,
+      default: ""
+    }
+  },
+  rootElement: {
+    name: "uni-cover-image",
+    class: UniCoverImageElement
+  },
+  emits: ["load", "error"],
+  setup(props2, {
+    emit: emit2
+  }) {
+    const root = ref(null);
+    const trigger = useCustomEvent(root, emit2);
+    function load($event) {
+      trigger("load", $event);
+    }
+    function error($event) {
+      trigger("error", $event);
+    }
+    onMounted(() => {
+      const rootElement = root.value;
+      rootElement.attachVmProps(props2);
+    });
+    return () => {
+      const {
+        src
+      } = props2;
+      return createVNode("uni-cover-image", {
+        "ref": root,
+        "src": src
+      }, [createVNode("div", {
+        "class": "uni-cover-image"
+      }, [src ? createVNode("img", {
+        "src": getRealPath(src),
+        "onLoad": load,
+        "onError": error
+      }, null, 40, ["src", "onLoad", "onError"]) : null])], 8, ["src"]);
+    };
+  }
+});
+function usePopupStyle(props2) {
+  const popupWidth = ref(0);
+  const popupHeight = ref(0);
+  const isDesktop = computed(
+    () => popupWidth.value >= 500 && popupHeight.value >= 500
+  );
+  const popupStyle = computed(() => {
+    const style = {
+      content: {
+        transform: "",
+        left: "",
+        top: "",
+        bottom: ""
+      },
+      triangle: {
+        left: "",
+        top: "",
+        bottom: "",
+        "border-width": "",
+        "border-color": ""
+      }
+    };
+    const contentStyle = style.content;
+    const triangleStyle = style.triangle;
+    const popover = props2.popover;
+    function getNumber(value) {
+      return Number(value) || 0;
+    }
+    if (isDesktop.value && popover) {
+      extend(triangleStyle, {
+        position: "absolute",
+        width: "0",
+        height: "0",
+        "margin-left": "-6px",
+        "border-style": "solid"
+      });
+      const popoverLeft = getNumber(popover.left);
+      const popoverWidth = getNumber(popover.width);
+      const popoverTop = getNumber(popover.top);
+      const popoverHeight = getNumber(popover.height);
+      const center = popoverLeft + popoverWidth / 2;
+      contentStyle.transform = "none !important";
+      const contentLeft = Math.max(0, center - 300 / 2);
+      contentStyle.left = `${contentLeft}px`;
+      let triangleLeft = Math.max(12, center - contentLeft);
+      triangleLeft = Math.min(300 - 12, triangleLeft);
+      triangleStyle.left = `${triangleLeft}px`;
+      const vcl = popupHeight.value / 2;
+      if (popoverTop + popoverHeight - vcl > vcl - popoverTop) {
+        contentStyle.top = "auto";
+        contentStyle.bottom = `${popupHeight.value - popoverTop + 6}px`;
+        triangleStyle.bottom = "-6px";
+        triangleStyle["border-width"] = "6px 6px 0 6px";
+        triangleStyle["border-color"] = "#fcfcfd transparent transparent transparent";
+      } else {
+        contentStyle.top = `${popoverTop + popoverHeight + 6}px`;
+        triangleStyle.top = "-6px";
+        triangleStyle["border-width"] = "0 6px 6px 6px";
+        triangleStyle["border-color"] = "transparent transparent #fcfcfd transparent";
+      }
+    }
+    return style;
+  });
+  onMounted(() => {
+    const fixSize = () => {
+      const { windowWidth, windowHeight, windowTop } = uni.getSystemInfoSync();
+      popupWidth.value = windowWidth;
+      popupHeight.value = windowHeight + (windowTop || 0);
+    };
+    window.addEventListener("resize", fixSize);
+    fixSize();
+    onUnmounted(() => {
+      window.removeEventListener("resize", fixSize);
+    });
+  });
+  return {
+    isDesktop,
+    popupStyle
+  };
+}
+function _isSlot$1(s) {
+  return typeof s === "function" || Object.prototype.toString.call(s) === "[object Object]" && !isVNode(s);
+}
+function getDefaultStartValue(props2) {
+  if (props2.mode === mode.TIME) {
+    return "00:00";
+  }
+  if (props2.mode === mode.DATE) {
+    const year = (/* @__PURE__ */ new Date()).getFullYear() - 150;
+    switch (props2.fields) {
+      case fields.YEAR:
+        return year.toString();
+      case fields.MONTH:
+        return year + "-01";
+      default:
+        return year + "-01-01";
+    }
+  }
+  return "";
+}
+function getDefaultEndValue(props2) {
+  if (props2.mode === mode.TIME) {
+    return "23:59";
+  }
+  if (props2.mode === mode.DATE) {
+    const year = (/* @__PURE__ */ new Date()).getFullYear() + 150;
+    switch (props2.fields) {
+      case fields.YEAR:
+        return year.toString();
+      case fields.MONTH:
+        return year + "-12";
+      default:
+        return year + "-12-31";
+    }
+  }
+  return "";
+}
+function getDateValueArray(props2, state2, valueStr, defaultValue) {
+  const splitStr = props2.mode === mode.DATE ? "-" : ":";
+  const array = props2.mode === mode.DATE ? state2.dateArray : state2.timeArray;
+  let max;
+  if (props2.mode === mode.TIME) {
+    max = 2;
+  } else {
+    switch (props2.fields) {
+      case fields.YEAR:
+        max = 1;
+        break;
+      case fields.MONTH:
+        max = 2;
+        break;
+      default:
+        max = 3;
+        break;
+    }
+  }
+  const inputArray = String(valueStr).split(splitStr);
+  let value = [];
+  for (let i = 0; i < max; i++) {
+    const val = inputArray[i];
+    value.push(array[i].indexOf(val));
+  }
+  if (value.indexOf(-1) >= 0) {
+    value = defaultValue ? getDateValueArray(props2, state2, defaultValue) : value.map(() => 0);
+  }
+  return value;
+}
+const mode = {
+  SELECTOR: "selector",
+  MULTISELECTOR: "multiSelector",
+  TIME: "time",
+  DATE: "date"
+  // 暂不支持城市选择
+  // REGION: 'region'
+};
+const fields = {
+  YEAR: "year",
+  MONTH: "month",
+  DAY: "day"
+};
+const selectorType = {
+  PICKER: "picker",
+  SELECT: "select"
+};
+const props$j = {
+  name: {
+    type: String,
+    default: ""
+  },
+  range: {
+    type: Array,
+    default() {
+      return [];
+    }
+  },
+  rangeKey: {
+    type: String,
+    default: ""
+  },
+  value: {
+    type: [Number, String, Array],
+    default: 0
+  },
+  mode: {
+    type: String,
+    default: mode.SELECTOR,
+    validator(val) {
+      return Object.values(mode).includes(val);
+    }
+  },
+  fields: {
+    type: String,
+    default: ""
+  },
+  start: {
+    type: String,
+    default: (props2) => {
+      return getDefaultStartValue(props2);
+    }
+  },
+  end: {
+    type: String,
+    default: (props2) => {
+      return getDefaultEndValue(props2);
+    }
+  },
+  disabled: {
+    type: [Boolean, String],
+    default: false
+  },
+  selectorType: {
+    type: String,
+    default: ""
+  }
+};
+class UniPickerElement extends UniElement {
+}
+const index$n = /* @__PURE__ */ defineBuiltInComponent({
+  name: "Picker",
+  compatConfig: {
+    MODE: 3
+  },
+  props: props$j,
+  emits: ["change", "cancel", "columnchange"],
+  rootElement: {
+    name: "uni-picker",
+    class: UniPickerElement
+  },
+  setup(props2, {
+    emit: emit2,
+    slots
+  }) {
+    initI18nPickerMsgsOnce();
+    const {
+      t: t2
+    } = useI18n();
+    const rootRef = ref(null);
+    const pickerRef = ref(null);
+    const selectRef = ref(null);
+    const inputRef = ref(null);
+    const pickerRender = ref(false);
+    const {
+      state: state2,
+      rangeArray
+    } = usePickerState(props2);
+    const trigger = useCustomEvent(rootRef, emit2);
+    const {
+      system,
+      selectorTypeComputed,
+      _show,
+      _l10nColumn,
+      _l10nItem,
+      _input,
+      _fixInputPosition,
+      _pickerViewChange,
+      _cancel,
+      _change,
+      _resetFormData,
+      _getFormData,
+      _createTime,
+      _createDate,
+      _setValueSync
+    } = usePickerMethods(props2, state2, trigger, rootRef, pickerRef, selectRef, inputRef);
+    usePickerWatch(state2, _cancel, _change);
+    usePickerForm(_resetFormData, _getFormData);
+    _createTime();
+    _createDate();
+    _setValueSync();
+    const popup = usePopupStyle(state2);
+    watchEffect(() => {
+      state2.isDesktop = popup.isDesktop.value;
+      state2.popupStyle = popup.popupStyle.value;
+    });
+    onBeforeUnmount(() => {
+      pickerRef.value && pickerRef.value.remove();
+    });
+    onMounted(() => {
+      pickerRender.value = true;
+    });
+    onMounted(() => {
+      const rootElement = rootRef.value;
+      rootElement.attachVmProps(props2);
+    });
+    return () => {
+      let _slot2;
+      const {
+        visible,
+        contentVisible,
+        valueArray,
+        popupStyle,
+        valueSync
+      } = state2;
+      const {
+        rangeKey,
+        mode: mode2,
+        start,
+        end
+      } = props2;
+      const booleanAttrs = useBooleanAttr(props2, "disabled");
+      return createVNode("uni-picker", mergeProps({
+        "ref": rootRef
+      }, booleanAttrs, {
+        "onClick": withWebEvent(_show)
+      }), [pickerRender.value ? createVNode("div", {
+        "ref": pickerRef,
+        "class": ["uni-picker-container", `uni-${mode2}-${selectorTypeComputed.value}`],
+        "onWheel": onEventPrevent,
+        "onTouchmove": onEventPrevent
+      }, [createVNode(Transition, {
+        "name": "uni-fade"
+      }, {
+        default: () => [withDirectives(createVNode("div", {
+          "class": "uni-mask uni-picker-mask",
+          "onClick": withWebEvent(_cancel),
+          "onMousemove": _fixInputPosition
+        }, null, 40, ["onClick", "onMousemove"]), [[vShow, visible]])]
+      }), !system.value ? createVNode("div", {
+        "class": [{
+          "uni-picker-toggle": visible
+        }, "uni-picker-custom"],
+        "style": popupStyle.content
+      }, [createVNode("div", {
+        "class": "uni-picker-header",
+        "onClick": onEventStop
+      }, [createVNode("div", {
+        "class": "uni-picker-action uni-picker-action-cancel",
+        "onClick": withWebEvent(_cancel)
+      }, [t2("uni.picker.cancel")], 8, ["onClick"]), createVNode("div", {
+        "class": "uni-picker-action uni-picker-action-confirm",
+        "onClick": _change
+      }, [t2("uni.picker.done")], 8, ["onClick"])], 8, ["onClick"]), contentVisible ? createVNode(PickerView, {
+        "value": _l10nColumn(valueArray),
+        "class": "uni-picker-content",
+        "onChange": _pickerViewChange
+      }, _isSlot$1(_slot2 = renderList(_l10nColumn(rangeArray.value), (rangeItem, index0) => {
+        let _slot;
+        return createVNode(PickerViewColumn, {
+          "key": index0
+        }, _isSlot$1(_slot = renderList(rangeItem, (item, index2) => createVNode("div", {
+          "key": index2,
+          "class": "uni-picker-item"
+        }, [typeof item === "object" ? item[rangeKey] || "" : _l10nItem(item, index0)]))) ? _slot : {
+          default: () => [_slot],
+          _: 1
+        });
+      })) ? _slot2 : {
+        default: () => [_slot2],
+        _: 1
+      }, 8, ["value", "onChange"]) : null, createVNode("div", {
+        "ref": selectRef,
+        "class": "uni-picker-select",
+        "onWheel": onEventStop,
+        "onTouchmove": onEventStop
+      }, [renderList(rangeArray.value[0], (item, index2) => createVNode("div", {
+        "key": index2,
+        "class": ["uni-picker-item", {
+          selected: valueArray[0] === index2
+        }],
+        "onClick": () => {
+          valueArray[0] = index2;
+          _change();
+        }
+      }, [typeof item === "object" ? item[rangeKey] || "" : item], 10, ["onClick"]))], 40, ["onWheel", "onTouchmove"]), createVNode("div", {
+        "style": popupStyle.triangle
+      }, null, 4)], 6) : null], 40, ["onWheel", "onTouchmove"]) : null, createVNode("div", null, [slots.default && slots.default()]), system.value ? createVNode("div", {
+        "class": "uni-picker-system",
+        "onMousemove": withWebEvent(_fixInputPosition)
+      }, [createVNode("input", {
+        "class": ["uni-picker-system_input", system.value],
+        "ref": inputRef,
+        "value": valueSync,
+        "type": mode2,
+        "tabindex": "-1",
+        "min": start,
+        "max": end,
+        "onChange": ($event) => {
+          _input($event);
+          onEventStop($event);
+        }
+      }, null, 42, ["value", "type", "min", "max", "onChange"])], 40, ["onMousemove"]) : null], 16, ["onClick"]);
+    };
+  }
+});
+function usePickerState(props2) {
+  const state2 = reactive({
+    valueSync: void 0,
+    visible: false,
+    contentVisible: false,
+    popover: null,
+    valueChangeSource: "",
+    timeArray: [],
+    dateArray: [],
+    valueArray: [],
+    oldValueArray: [],
+    isDesktop: false,
+    popupStyle: {
+      content: {},
+      triangle: {}
+    }
+  });
+  const rangeArray = computed(() => {
+    let val = props2.range;
+    switch (props2.mode) {
+      case mode.SELECTOR:
+        return [val];
+      case mode.MULTISELECTOR:
+        return val;
+      case mode.TIME:
+        return state2.timeArray;
+      case mode.DATE: {
+        const dateArray = state2.dateArray;
+        switch (props2.fields) {
+          case fields.YEAR:
+            return [dateArray[0]];
+          case fields.MONTH:
+            return [dateArray[0], dateArray[1]];
+          default:
+            return [dateArray[0], dateArray[1], dateArray[2]];
+        }
+      }
+    }
+    return [];
+  });
+  return {
+    state: state2,
+    rangeArray
+  };
+}
+const getiPadFlag = () => String(navigator.vendor).indexOf("Apple") === 0 && navigator.maxTouchPoints > 0;
+function useIsiPad() {
+  const isiPad = ref(false);
+  {
+    isiPad.value = getiPadFlag();
+  }
+  return isiPad;
+}
+const getSystem = () => {
+  if (/win|mac/i.test(navigator.platform)) {
+    if (navigator.vendor === "Google Inc.") {
+      return "chrome";
+    } else if (/Firefox/.test(navigator.userAgent)) {
+      return "firefox";
+    }
+  }
+  return "";
+};
+function useSystem() {
+  const _system = ref("");
+  {
+    _system.value = getSystem();
+  }
+  return _system;
+}
+let __contentVisibleDelay;
+function usePickerMethods(props2, state2, trigger, rootRef, pickerRef, selectRef, inputRef) {
+  const isiPad = useIsiPad();
+  const _system = useSystem();
+  const selectorTypeComputed = computed(() => {
+    const type = props2.selectorType;
+    if (Object.values(selectorType).includes(type)) {
+      return type;
+    }
+    return isiPad.value ? selectorType.PICKER : selectorType.SELECT;
+  });
+  const system = computed(() => {
+    if (props2.mode === mode.DATE && !Object.values(fields).includes(props2.fields) && state2.isDesktop) {
+      return _system.value;
+    }
+    return "";
+  });
+  const startArray = computed(() => {
+    return getDateValueArray(props2, state2, props2.start, getDefaultStartValue(props2));
+  });
+  const endArray = computed(() => {
+    return getDateValueArray(props2, state2, props2.end, getDefaultEndValue(props2));
+  });
+  function _show(event) {
+    if (props2.disabled) {
+      return;
+    }
+    state2.valueChangeSource = "";
+    let $picker = pickerRef.value;
+    let _currentTarget = event.currentTarget;
+    $picker.remove();
+    (document.querySelector("uni-app") || document.body).appendChild($picker);
+    $picker.style.display = "block";
+    const rect = _currentTarget.getBoundingClientRect();
+    state2.popover = {
+      top: rect.top,
+      left: rect.left,
+      width: rect.width,
+      height: rect.height
+    };
+    setTimeout(() => {
+      state2.visible = true;
+    }, 20);
+  }
+  function _getFormData() {
+    return {
+      value: state2.valueSync,
+      key: props2.name
+    };
+  }
+  function _resetFormData() {
+    switch (props2.mode) {
+      case mode.SELECTOR:
+        state2.valueSync = 0;
+        break;
+      case mode.MULTISELECTOR:
+        state2.valueSync = props2.value.map((val) => 0);
+        break;
+      case mode.DATE:
+      case mode.TIME:
+        state2.valueSync = "";
+        break;
+    }
+  }
+  function _createTime() {
+    let hours = [];
+    let minutes = [];
+    for (let i = 0; i < 24; i++) {
+      hours.push((i < 10 ? "0" : "") + i);
+    }
+    for (let i = 0; i < 60; i++) {
+      minutes.push((i < 10 ? "0" : "") + i);
+    }
+    state2.timeArray.push(hours, minutes);
+  }
+  function getYearStartEnd() {
+    let year = (/* @__PURE__ */ new Date()).getFullYear();
+    let start = year - 150;
+    let end = year + 150;
+    if (props2.start) {
+      const _year = new Date(props2.start).getFullYear();
+      if (!isNaN(_year) && _year < start) {
+        start = _year;
+      }
+    }
+    if (props2.end) {
+      const _year = new Date(props2.end).getFullYear();
+      if (!isNaN(_year) && _year > end) {
+        end = _year;
+      }
+    }
+    return {
+      start,
+      end
+    };
+  }
+  function _createDate() {
+    let years = [];
+    const year = getYearStartEnd();
+    for (let i = year.start, end = year.end; i <= end; i++) {
+      years.push(String(i));
+    }
+    let months = [];
+    for (let i = 1; i <= 12; i++) {
+      months.push((i < 10 ? "0" : "") + i);
+    }
+    let days = [];
+    for (let i = 1; i <= 31; i++) {
+      days.push((i < 10 ? "0" : "") + i);
+    }
+    state2.dateArray.push(years, months, days);
+  }
+  function _getTimeValue(val) {
+    return val[0] * 60 + val[1];
+  }
+  function _getDateValue(val) {
+    const DAY = 31;
+    return val[0] * DAY * 12 + (val[1] || 0) * DAY + (val[2] || 0);
+  }
+  function _cloneArray(val1, val2) {
+    for (let i = 0; i < val1.length && i < val2.length; i++) {
+      val1[i] = val2[i];
+    }
+  }
+  function _setValueSync() {
+    let val = props2.value;
+    switch (props2.mode) {
+      case mode.MULTISELECTOR:
+        {
+          if (!isArray(val)) {
+            val = state2.valueArray;
+          }
+          if (!isArray(state2.valueSync)) {
+            state2.valueSync = [];
+          }
+          const length = state2.valueSync.length = Math.max(val.length, props2.range.length);
+          for (let index2 = 0; index2 < length; index2++) {
+            const val0 = Number(val[index2]);
+            const val1 = Number(state2.valueSync[index2]);
+            const val2 = isNaN(val0) ? isNaN(val1) ? 0 : val1 : val0;
+            const maxVal = props2.range[index2] ? props2.range[index2].length - 1 : 0;
+            state2.valueSync.splice(index2, 1, val2 < 0 || val2 > maxVal ? 0 : val2);
+          }
+        }
+        break;
+      case mode.TIME:
+      case mode.DATE:
+        state2.valueSync = String(val);
+        break;
+      default: {
+        const valueSync = Number(val);
+        state2.valueSync = valueSync < 0 ? 0 : valueSync;
+        break;
+      }
+    }
+  }
+  function _setValueArray() {
+    let val = state2.valueSync;
+    let valueArray;
+    switch (props2.mode) {
+      case mode.MULTISELECTOR:
+        valueArray = [...val];
+        break;
+      case mode.TIME:
+        valueArray = getDateValueArray(props2, state2, val, formatDateTime({
+          mode: mode.TIME
+        }));
+        break;
+      case mode.DATE:
+        valueArray = getDateValueArray(props2, state2, val, formatDateTime({
+          mode: mode.DATE
+        }));
+        break;
+      default:
+        valueArray = [val];
+        break;
+    }
+    state2.oldValueArray = [...valueArray];
+    state2.valueArray = [...valueArray];
+  }
+  function _getValue() {
+    let val = state2.valueArray;
+    switch (props2.mode) {
+      case mode.SELECTOR:
+        return val[0];
+      case mode.MULTISELECTOR:
+        return val.map((val2) => val2);
+      case mode.TIME:
+        return state2.valueArray.map((val2, i) => state2.timeArray[i][val2]).join(":");
+      case mode.DATE:
+        return state2.valueArray.map((val2, i) => state2.dateArray[i][val2]).join("-");
+    }
+  }
+  function _change() {
+    _close();
+    state2.valueChangeSource = "click";
+    const value = _getValue();
+    state2.valueSync = isArray(value) ? value.map((val) => val) : value;
+    trigger("change", {}, {
+      value
+    });
+  }
+  function _cancel($event) {
+    if (system.value === "firefox" && $event) {
+      const {
+        top,
+        left,
+        width,
+        height
+      } = state2.popover;
+      const {
+        pageX,
+        pageY
+      } = $event;
+      if (pageX > left && pageX < left + width && pageY > top && pageY < top + height) {
+        return;
+      }
+    }
+    _close();
+    trigger("cancel", {}, {});
+  }
+  function _close() {
+    state2.visible = false;
+    setTimeout(() => {
+      let $picker = pickerRef.value;
+      $picker.remove();
+      rootRef.value.prepend($picker);
+      $picker.style.display = "none";
+    }, 260);
+  }
+  function _select() {
+    if (props2.mode === mode.SELECTOR && selectorTypeComputed.value === selectorType.SELECT) {
+      selectRef.value.scrollTop = state2.valueArray[0] * 34;
+    }
+  }
+  function _input($event) {
+    const EventTarget = $event.target;
+    state2.valueSync = EventTarget.value;
+    nextTick(() => {
+      _change();
+    });
+  }
+  function _fixInputPosition($event) {
+    if (system.value === "chrome") {
+      const rect = rootRef.value.getBoundingClientRect();
+      const fontSize = 32;
+      inputRef.value.style.left = `${$event.clientX - rect.left - fontSize * 1.5}px`;
+      inputRef.value.style.top = `${$event.clientY - rect.top - fontSize * 0.5}px`;
+    }
+  }
+  function _pickerViewChange(event) {
+    state2.valueArray = _l10nColumn(event.detail.value, true);
+  }
+  function _l10nColumn(array, normalize) {
+    const {
+      getLocale: getLocale2
+    } = useI18n();
+    if (props2.mode === mode.DATE) {
+      const locale = getLocale2();
+      if (!locale.startsWith("zh")) {
+        switch (props2.fields) {
+          case fields.YEAR:
+            return array;
+          case fields.MONTH:
+            return [array[1], array[0]];
+          default:
+            switch (locale) {
+              case "es":
+              case "fr":
+                return [array[2], array[1], array[0]];
+              default:
+                return normalize ? [array[2], array[0], array[1]] : [array[1], array[2], array[0]];
+            }
+        }
+      }
+    }
+    return array;
+  }
+  function _l10nItem(item, index2) {
+    const {
+      getLocale: getLocale2
+    } = useI18n();
+    if (props2.mode === mode.DATE) {
+      const locale = getLocale2();
+      if (locale.startsWith("zh")) {
+        const array = ["年", "月", "日"];
+        return item + array[index2];
+      } else if (props2.fields !== fields.YEAR && index2 === (props2.fields !== fields.MONTH && (locale === "es" || locale === "fr") ? 1 : 0)) {
+        let array;
+        switch (locale) {
+          case "es":
+            array = ["enero", "febrero", "marzo", "abril", "mayo", "junio", "​​julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"];
+            break;
+          case "fr":
+            array = ["janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août", "septembre", "octobre", "novembre", "décembre"];
+            break;
+          default:
+            array = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+            break;
+        }
+        return array[Number(item) - 1];
+      }
+    }
+    return item;
+  }
+  watch(() => state2.visible, (val) => {
+    if (val) {
+      clearTimeout(__contentVisibleDelay);
+      state2.contentVisible = val;
+      _select();
+    } else {
+      __contentVisibleDelay = setTimeout(() => {
+        state2.contentVisible = val;
+      }, 300);
+    }
+  });
+  watch([() => props2.mode, () => props2.value, () => props2.range], _setValueSync, {
+    deep: true
+  });
+  watch(() => state2.valueSync, _setValueArray, {
+    deep: true
+  });
+  watch(() => state2.valueArray, (val) => {
+    if (props2.mode === mode.TIME || props2.mode === mode.DATE) {
+      const getValue = props2.mode === mode.TIME ? _getTimeValue : _getDateValue;
+      const valueArray = state2.valueArray;
+      const _startArray = startArray.value;
+      const _endArray = endArray.value;
+      if (props2.mode === mode.DATE) {
+        const dateArray = state2.dateArray;
+        const max = dateArray[2].length;
+        const day = Number(dateArray[2][valueArray[2]]) || 1;
+        const realDay = (/* @__PURE__ */ new Date(`${dateArray[0][valueArray[0]]}/${dateArray[1][valueArray[1]]}/${day}`)).getDate();
+        if (realDay < day) {
+          valueArray[2] -= realDay + max - day;
+        }
+      }
+      if (getValue(valueArray) < getValue(_startArray)) {
+        _cloneArray(valueArray, _startArray);
+      } else if (getValue(valueArray) > getValue(_endArray)) {
+        _cloneArray(valueArray, _endArray);
+      }
+    }
+    val.forEach((value, column) => {
+      if (value !== state2.oldValueArray[column]) {
+        state2.oldValueArray[column] = value;
+        if (props2.mode === mode.MULTISELECTOR) {
+          trigger("columnchange", {}, {
+            column,
+            value
+          });
+        }
+      }
+    });
+  });
+  return {
+    selectorTypeComputed,
+    system,
+    _show,
+    _cancel,
+    _change,
+    _l10nColumn,
+    _l10nItem,
+    _input,
+    _resetFormData,
+    _getFormData,
+    _createTime,
+    _createDate,
+    _setValueSync,
+    _fixInputPosition,
+    _pickerViewChange
+  };
+}
+function usePickerWatch(state2, _cancel, _change) {
+  const {
+    key,
+    disable
+  } = useKeyboard();
+  watchEffect(() => {
+    disable.value = !state2.visible;
+  });
+  watch(key, (value) => {
+    if (value === "esc") {
+      _cancel();
+    } else if (value === "enter") {
+      _change();
+    }
+  });
+}
+function usePickerForm(_resetFormData, _getFormData) {
+  const uniForm = inject(uniFormKey, false);
+  if (uniForm) {
+    const field = {
+      reset: _resetFormData,
+      submit: () => {
+        const data = ["", null];
+        const {
+          key,
+          value
+        } = _getFormData();
+        if (key !== "") {
+          data[0] = key;
+          data[1] = value;
+        }
+        return data;
+      }
+    };
+    uniForm.addField(field);
+    onBeforeUnmount(() => {
+      uniForm.removeField(field);
+    });
+  }
+}
+const index$m = /* @__PURE__ */ defineUnsupportedComponent("ad");
+const index$l = /* @__PURE__ */ defineUnsupportedComponent("ad-content-page");
+const index$k = /* @__PURE__ */ defineUnsupportedComponent("ad-draw");
+const index$j = /* @__PURE__ */ defineUnsupportedComponent("camera");
+const index$i = /* @__PURE__ */ defineUnsupportedComponent("live-player");
+const index$h = /* @__PURE__ */ defineUnsupportedComponent("live-pusher");
+const ICON_PATH_NAV = "M28 17c-6.49396875 0-12.13721875 2.57040625-15 6.34840625V5.4105l6.29859375 6.29859375c0.387875 0.387875 1.02259375 0.387875 1.4105 0 0.387875-0.387875 0.387875-1.02259375 0-1.4105L12.77853125 2.36803125a0.9978125 0.9978125 0 0 0-0.0694375-0.077125c-0.1944375-0.1944375-0.45090625-0.291375-0.70721875-0.290875l-0.00184375-0.0000625-0.00184375 0.0000625c-0.2563125-0.0005-0.51278125 0.09640625-0.70721875 0.290875a0.9978125 0.9978125 0 0 0-0.0694375 0.077125l-7.930625 7.9305625c-0.387875 0.387875-0.387875 1.02259375 0 1.4105 0.387875 0.387875 1.02259375 0.387875 1.4105 0L11 5.4105V29c0 0.55 0.45 1 1 1s1-0.45 1-1c0-5.52284375 6.71571875-10 15-10 0.55228125 0 1-0.44771875 1-1 0-0.55228125-0.44771875-1-1-1z";
+const props$i = {
+  latitude: {
+    type: Number
+  },
+  longitude: {
+    type: Number
+  },
+  scale: {
+    type: Number,
+    default: 18
+  },
+  name: {
+    type: String,
+    default: ""
+  },
+  address: {
+    type: String,
+    default: ""
+  }
+};
+function useState$4(props2) {
+  const state2 = reactive({
+    center: {
+      latitude: 0,
+      longitude: 0
+    },
+    marker: {
+      id: 1,
+      latitude: 0,
+      longitude: 0,
+      iconPath: ICON_PATH_TARGET,
+      width: 32,
+      height: 52
+    },
+    location: {
+      id: 2,
+      latitude: 0,
+      longitude: 0,
+      iconPath: ICON_PATH_ORIGIN,
+      width: 44,
+      height: 44
+    }
+  });
+  function updatePosition() {
+    if (props2.latitude && props2.longitude) {
+      state2.center.latitude = props2.latitude;
+      state2.center.longitude = props2.longitude;
+      state2.marker.latitude = props2.latitude;
+      state2.marker.longitude = props2.longitude;
+    }
+  }
+  watch([() => props2.latitude, () => props2.longitude], updatePosition);
+  updatePosition();
+  return state2;
+}
+const LocationView = /* @__PURE__ */ defineSystemComponent({
+  name: "LocationView",
+  props: props$i,
+  emits: ["close"],
+  setup(props2, {
+    emit: emit2
+  }) {
+    const state2 = useState$4(props2);
+    usePreventScroll();
+    getLocation({
+      type: "gcj02",
+      success: ({
+        latitude,
+        longitude
+      }) => {
+        state2.location.latitude = latitude;
+        state2.location.longitude = longitude;
+      }
+    });
+    function onRegionChange(event) {
+      const centerLocation = event.detail.centerLocation;
+      if (centerLocation) {
+        state2.center.latitude = centerLocation.latitude;
+        state2.center.longitude = centerLocation.longitude;
+      }
+    }
+    function nav() {
+      const mapInfo = getMapInfo();
+      let url = "";
+      if (mapInfo.type === MapType.GOOGLE) {
+        const origin = state2.location.latitude ? `&origin=${state2.location.latitude}%2C${state2.location.longitude}` : "";
+        url = `https://www.google.com/maps/dir/?api=1${origin}&destination=${props2.latitude}%2C${props2.longitude}`;
+      } else if (mapInfo.type === MapType.QQ) {
+        const fromcoord = state2.location.latitude ? `&fromcoord=${state2.location.latitude}%2C${state2.location.longitude}&from=${encodeURIComponent("我的位置")}` : "";
+        url = `https://apis.map.qq.com/uri/v1/routeplan?type=drive${fromcoord}&tocoord=${props2.latitude}%2C${props2.longitude}&to=${encodeURIComponent(props2.name || "目的地")}&ref=${mapInfo.key}`;
+      } else if (mapInfo.type === MapType.AMAP) {
+        const from = state2.location.latitude ? `from=${state2.location.longitude},${state2.location.latitude},${encodeURIComponent("我的位置")}&` : "";
+        url = `https://uri.amap.com/navigation?${from}to=${props2.longitude},${props2.latitude},${encodeURIComponent(props2.name || "目的地")}`;
+      }
+      window.open(url);
+    }
+    function back() {
+      emit2("close");
+    }
+    function setCenter({
+      latitude,
+      longitude
+    }) {
+      state2.center.latitude = latitude;
+      state2.center.longitude = longitude;
+    }
+    return () => {
+      return createVNode("div", {
+        "class": "uni-system-open-location"
+      }, [createVNode(Map$1, {
+        "latitude": state2.center.latitude,
+        "longitude": state2.center.longitude,
+        "class": "map",
+        "markers": [state2.marker, state2.location],
+        "onRegionchange": onRegionChange
+      }, {
+        default: () => [createVNode("div", {
+          "class": "map-move",
+          "onClick": () => setCenter(state2.location)
+        }, [createSvgIconVNode(ICON_PATH_LOCTAION, "#000000", 24)], 8, ["onClick"])]
+      }, 8, ["latitude", "longitude", "markers", "onRegionchange"]), createVNode("div", {
+        "class": "info"
+      }, [createVNode("div", {
+        "class": "name",
+        "onClick": () => setCenter(state2.marker)
+      }, [props2.name], 8, ["onClick"]), createVNode("div", {
+        "class": "address",
+        "onClick": () => setCenter(state2.marker)
+      }, [props2.address], 8, ["onClick"]), createVNode("div", {
+        "class": "nav",
+        "onClick": nav
+      }, [createSvgIconVNode(ICON_PATH_NAV, "#ffffff", 26)], 8, ["onClick"])]), createVNode("div", {
+        "class": "nav-btn-back",
+        "onClick": back
+      }, [createSvgIconVNode(ICON_PATH_BACK, "#ffffff", 26)], 8, ["onClick"])]);
+    };
+  }
+});
+let state$1 = null;
+const openLocation = /* @__PURE__ */ defineAsyncApi(
+  API_OPEN_LOCATION,
+  (args, { resolve }) => {
+    if (!state$1) {
+      state$1 = reactive(args);
+      nextTick(() => {
+        const app = createRootApp(LocationView, state$1, () => {
+          state$1 = null;
+          nextTick(() => {
+            app.unmount();
+          });
+        });
+        app.mount(ensureRoot("u-a-o"));
+      });
+    } else {
+      extend(state$1, args);
+    }
+    resolve();
+  },
+  OpenLocationProtocol,
+  OpenLocationOptions
+);
+function _isSlot(s) {
+  return typeof s === "function" || Object.prototype.toString.call(s) === "[object Object]" && !isVNode(s);
+}
+const props$h = {
+  latitude: {
+    type: Number
+  },
+  longitude: {
+    type: Number
+  }
+};
+function distance(distance2) {
+  if (distance2 > 100) {
+    return `${distance2 > 1e3 ? (distance2 / 1e3).toFixed(1) + "k" : distance2.toFixed(0)}m | `;
+  } else if (distance2 > 0) {
+    return "<100m | ";
+  } else {
+    return "";
+  }
+}
+function useState$3(props2) {
+  const state2 = reactive({
+    latitude: 0,
+    longitude: 0,
+    keyword: "",
+    searching: false
+  });
+  function updatePosition() {
+    if (props2.latitude && props2.longitude) {
+      state2.latitude = props2.latitude;
+      state2.longitude = props2.longitude;
+    }
+  }
+  watch([() => props2.latitude, () => props2.longitude], updatePosition);
+  updatePosition();
+  return state2;
+}
+function useList(state2) {
+  const key = __uniConfig.qqMapKey;
+  const list2 = reactive([]);
+  const selectedIndexRef = ref(-1);
+  const selectedRef = computed(() => list2[selectedIndexRef.value]);
+  const listState = reactive({
+    loading: true,
+    // google map default
+    pageSize: 20,
+    pageIndex: 1,
+    hasNextPage: true,
+    nextPage: null,
+    selectedIndex: selectedIndexRef,
+    selected: selectedRef
+  });
+  const adcodeRef = ref("");
+  const boundaryRef = computed(() => adcodeRef.value ? `region(${adcodeRef.value},1,${state2.latitude},${state2.longitude})` : `nearby(${state2.latitude},${state2.longitude},5000)`);
+  function pushData(array) {
+    array.forEach((item) => {
+      list2.push({
+        name: item.title || item.name,
+        address: item.address,
+        distance: item._distance || item.distance,
+        latitude: item.location.lat,
+        longitude: item.location.lng
+      });
+    });
+  }
+  function getList() {
+    listState.loading = true;
+    const mapInfo = getMapInfo();
+    if (mapInfo.type === MapType.GOOGLE) {
+      if (listState.pageIndex > 1 && listState.nextPage) {
+        listState.nextPage();
+        return;
+      }
+      const service = new google.maps.places.PlacesService(document.createElement("div"));
+      service[state2.searching ? "textSearch" : "nearbySearch"]({
+        location: {
+          lat: state2.latitude,
+          lng: state2.longitude
+        },
+        query: state2.keyword,
+        radius: 5e3
+      }, (results, state3, page) => {
+        listState.loading = false;
+        if (results && results.length) {
+          results.forEach((item) => {
+            list2.push({
+              name: item.name || "",
+              address: item.vicinity || item.formatted_address || "",
+              distance: 0,
+              latitude: item.geometry.location.lat(),
+              longitude: item.geometry.location.lng()
+            });
+          });
+        }
+        if (page) {
+          if (!page.hasNextPage) {
+            listState.hasNextPage = false;
+          } else {
+            listState.nextPage = () => {
+              page.nextPage();
+            };
+          }
+        }
+      });
+    } else if (mapInfo.type === MapType.QQ) {
+      const url = state2.searching ? `https://apis.map.qq.com/ws/place/v1/search?output=jsonp&key=${key}&boundary=${boundaryRef.value}&keyword=${state2.keyword}&page_size=${listState.pageSize}&page_index=${listState.pageIndex}` : `https://apis.map.qq.com/ws/geocoder/v1/?output=jsonp&key=${key}&location=${state2.latitude},${state2.longitude}&get_poi=1&poi_options=page_size=${listState.pageSize};page_index=${listState.pageIndex}`;
+      getJSONP(url, {
+        callback: "callback"
+      }, (res) => {
+        listState.loading = false;
+        if (state2.searching && "data" in res && res.data.length) {
+          pushData(res.data);
+        } else if ("result" in res) {
+          const result = res.result;
+          adcodeRef.value = result.ad_info ? result.ad_info.adcode : "";
+          if (result.pois) {
+            pushData(result.pois);
+          }
+        }
+        if (list2.length === listState.pageSize * listState.pageIndex) {
+          listState.hasNextPage = false;
+        }
+      }, () => {
+        listState.loading = false;
+      });
+    } else if (mapInfo.type === MapType.AMAP) {
+      window.AMap.plugin("AMap.PlaceSearch", function() {
+        const placeSearch = new window.AMap.PlaceSearch({
+          city: "全国",
+          pageSize: 10,
+          pageIndex: listState.pageIndex
+        });
+        const keyword = state2.searching ? state2.keyword : "";
+        const radius = state2.searching ? 5e4 : 5e3;
+        placeSearch.searchNearBy(keyword, [state2.longitude, state2.latitude], radius, function(status, result) {
+          if (status === "error") {
+            console.error(result);
+          } else if (status === "no_data") {
+            listState.hasNextPage = false;
+          } else {
+            pushData(result.poiList.pois);
+          }
+        });
+        listState.loading = false;
+      });
+    }
+  }
+  function loadMore() {
+    if (!listState.loading && listState.hasNextPage) {
+      listState.pageIndex++;
+      getList();
+    }
+  }
+  function reset() {
+    listState.selectedIndex = -1;
+    listState.pageIndex = 1;
+    listState.hasNextPage = true;
+    listState.nextPage = null;
+    list2.splice(0, list2.length);
+  }
+  return {
+    listState,
+    list: list2,
+    loadMore,
+    reset,
+    getList
+  };
+}
+const LoctaionPicker = /* @__PURE__ */ defineSystemComponent({
+  name: "LoctaionPicker",
+  props: props$h,
+  emits: ["close"],
+  setup(props2, {
+    emit: emit2
+  }) {
+    usePreventScroll();
+    initI18nChooseLocationMsgsOnce();
+    const {
+      t: t2
+    } = useI18n();
+    const state2 = useState$3(props2);
+    const {
+      list: list2,
+      listState,
+      loadMore,
+      reset,
+      getList
+    } = useList(state2);
+    const search = debounce(() => {
+      reset();
+      if (state2.keyword) {
+        getList();
+      }
+    }, 1e3, {
+      setTimeout,
+      clearTimeout
+    });
+    watch(() => state2.searching, (val) => {
+      reset();
+      if (!val) {
+        getList();
+      }
+    });
+    function onInput(event) {
+      state2.keyword = event.detail.value;
+      search();
+    }
+    function onChoose() {
+      emit2("close", extend({}, listState.selected));
+    }
+    function onBack() {
+      emit2("close");
+    }
+    function onRegionChange(event) {
+      const centerLocation = event.detail.centerLocation;
+      if (centerLocation) {
+        move(centerLocation);
+      }
+    }
+    function moveToLocation() {
+      getLocation({
+        type: "gcj02",
+        success: move,
+        fail: () => {
+        }
+      });
+    }
+    function move({
+      latitude,
+      longitude
+    }) {
+      state2.latitude = latitude;
+      state2.longitude = longitude;
+      if (!state2.searching) {
+        reset();
+        getList();
+      }
+    }
+    if (!state2.latitude || !state2.longitude) {
+      moveToLocation();
+    }
+    return () => {
+      const content = list2.map((item, index2) => {
+        return createVNode("div", {
+          "key": index2,
+          "class": {
+            "list-item": true,
+            selected: listState.selectedIndex === index2
+          },
+          "onClick": () => {
+            listState.selectedIndex = index2;
+            state2.latitude = item.latitude;
+            state2.longitude = item.longitude;
+          }
+        }, [createSvgIconVNode(ICON_PATH_CONFIRM, "#007aff", 24), createVNode("div", {
+          "class": "list-item-title"
+        }, [item.name]), createVNode("div", {
+          "class": "list-item-detail"
+        }, [distance(item.distance), item.address])], 10, ["onClick"]);
+      });
+      if (listState.loading) {
+        content.unshift(createVNode("div", {
+          "class": "list-loading"
+        }, [createVNode("i", {
+          "class": "uni-loading"
+        }, null)]));
+      }
+      return createVNode("div", {
+        "class": "uni-system-choose-location"
+      }, [createVNode(Map$1, {
+        "latitude": state2.latitude,
+        "longitude": state2.longitude,
+        "class": "map",
+        "show-location": true,
+        "libraries": ["places"],
+        "onUpdated": getList,
+        "onRegionchange": onRegionChange
+      }, {
+        default: () => [createVNode("div", {
+          "class": "map-location",
+          "style": `background-image: url("${ICON_PATH_TARGET}")`
+        }, null), createVNode("div", {
+          "class": "map-move",
+          "onClick": moveToLocation
+        }, [createSvgIconVNode(ICON_PATH_LOCTAION, "#000000", 24)], 8, ["onClick"])],
+        _: 1
+      }, 8, ["latitude", "longitude", "show-location", "onUpdated", "onRegionchange"]), createVNode("div", {
+        "class": "nav"
+      }, [createVNode("div", {
+        "class": "nav-btn back",
+        "onClick": onBack
+      }, [createSvgIconVNode(ICON_PATH_CLOSE, "#ffffff", 26)], 8, ["onClick"]), createVNode("div", {
+        "class": {
+          "nav-btn": true,
+          confirm: true,
+          disable: !listState.selected
+        },
+        "onClick": onChoose
+      }, [createSvgIconVNode(ICON_PATH_CONFIRM, "#ffffff", 26)], 10, ["onClick"])]), createVNode("div", {
+        "class": "menu"
+      }, [createVNode("div", {
+        "class": "search"
+      }, [createVNode(Input, {
+        "value": state2.keyword,
+        "class": "search-input",
+        "placeholder": t2("uni.chooseLocation.search"),
+        "onFocus": () => state2.searching = true,
+        "onInput": onInput
+      }, null, 8, ["value", "placeholder", "onFocus", "onInput"]), state2.searching && createVNode("div", {
+        "class": "search-btn",
+        "onClick": () => {
+          state2.searching = false;
+          state2.keyword = "";
+        }
+      }, [t2("uni.chooseLocation.cancel")], 8, ["onClick"])]), createVNode(ScrollView, {
+        "scroll-y": true,
+        "class": "list",
+        "onScrolltolower": loadMore
+      }, _isSlot(content) ? content : {
+        default: () => [content],
+        _: 2
+      }, 8, ["scroll-y", "onScrolltolower"])])]);
+    };
+  }
+});
+let state = null;
+const chooseLocation = /* @__PURE__ */ defineAsyncApi(
+  API_CHOOSE_LOCATION,
+  (args, { resolve, reject }) => {
+    if (!state) {
+      state = reactive(args);
+      nextTick(() => {
+        const app = createRootApp(
+          LoctaionPicker,
+          state,
+          (poi) => {
+            state = null;
+            nextTick(() => {
+              app.unmount();
+            });
+            poi ? resolve(poi) : reject("cancel");
+          }
+        );
+        app.mount(ensureRoot("u-a-c"));
+      });
+    } else {
+      reject("cancel");
+    }
+  },
+  ChooseLocationProtocol
+);
+let started = false;
+let watchId = 0;
+const startLocationUpdate = /* @__PURE__ */ defineAsyncApi(
+  API_START_LOCATION_UPDATE,
+  (options, { resolve, reject }) => {
+    if (!navigator.geolocation) {
+      reject();
+      return;
+    }
+    watchId = watchId || navigator.geolocation.watchPosition(
+      (res) => {
+        started = true;
+        translateCoordinateSystem(options == null ? void 0 : options.type, res.coords).then((coords) => {
+          UniServiceJSBridge.invokeOnCallback(
+            API_ON_LOCATION_CHANGE,
+            coords
+          );
+          resolve();
+        }).catch((error) => {
+          UniServiceJSBridge.invokeOnCallback(
+            API_ON_LOCATION_CHANGE_ERROR,
+            { errMsg: `onLocationChange:fail ${error.message}` }
+          );
+        });
+      },
+      (error) => {
+        if (!started) {
+          reject(error.message);
+          started = true;
+        }
+        UniServiceJSBridge.invokeOnCallback(API_ON_LOCATION_CHANGE_ERROR, {
+          errMsg: `onLocationChange:fail ${error.message}`
+        });
+      }
+    );
+    setTimeout(resolve, 100);
+  },
+  StartLocationUpdateProtocol,
+  StartLocationUpdateOptions
+);
+const stopLocationUpdate = /* @__PURE__ */ defineAsyncApi(
+  API_STOP_LOCATION_UPDATE,
+  (_, { resolve }) => {
+    if (watchId) {
+      navigator.geolocation.clearWatch(watchId);
+      started = false;
+      watchId = 0;
+    }
+    resolve();
+  }
+);
+const onLocationChange = /* @__PURE__ */ defineOnApi(
+  API_ON_LOCATION_CHANGE,
+  () => {
+  }
+);
+const offLocationChange = /* @__PURE__ */ defineOffApi(
+  API_OFF_LOCATION_CHANGE,
+  () => {
+  }
+);
+const onLocationChangeError = /* @__PURE__ */ defineOnApi(
+  API_ON_LOCATION_CHANGE_ERROR,
+  () => {
+  }
+);
+const offLocationChangeError = /* @__PURE__ */ defineOffApi(
+  API_OFF_LOCATION_CHANGE_ERROR,
+  () => {
+  }
+);
+const navigateBack = /* @__PURE__ */ defineAsyncApi(
+  API_NAVIGATE_BACK,
+  (args, { resolve, reject }) => {
+    var _a, _b;
+    let canBack = true;
+    if (invokeHook(ON_BACK_PRESS, {
+      from: args.from || "navigateBack"
+    }) === true) {
+      canBack = false;
+    }
+    {
+      const currentPage = getCurrentPage();
+      if (currentPage) {
+        const dialogPages = currentPage.getDialogPages();
+        const dialogPage = dialogPages[dialogPages.length - 1];
+        if (((_b = dialogPage == null ? void 0 : (_a = dialogPage.$vm.$options).onBackPress) == null ? void 0 : _b.call(_a)) === true) {
+          canBack = false;
+        }
+      }
+    }
+    if (!canBack) {
+      return reject(ON_BACK_PRESS);
+    }
+    {
+      getApp().vm.$router.go(-args.delta);
+    }
+    return resolve();
+  },
+  NavigateBackProtocol,
+  NavigateBackOptions
+);
+const navigateTo = /* @__PURE__ */ defineAsyncApi(
+  API_NAVIGATE_TO,
+  // @ts-expect-error
+  ({ url, events, isAutomatedTesting }, { resolve, reject }) => {
+    if (!entryPageState.handledBeforeEntryPageRoutes) {
+      navigateToPagesBeforeEntryPages.push({
+        args: { type: API_NAVIGATE_TO, url, events, isAutomatedTesting },
+        resolve,
+        reject
+      });
+      return;
+    }
+    return navigate({ type: API_NAVIGATE_TO, url, events, isAutomatedTesting }).then(resolve).catch(reject);
+  },
+  NavigateToProtocol,
+  NavigateToOptions
+);
+const preloadPage = /* @__PURE__ */ defineAsyncApi(
+  API_PRELOAD_PAGE,
+  ({ url }, { resolve, reject }) => {
+    const path = url.split("?")[0];
+    const route = getRouteOptions(path);
+    if (!route) {
+      reject(`${url}}`);
+      return;
+    }
+    route.loader && route.loader().then(() => {
+      resolve({
+        url,
+        errMsg: "preloadPage:ok"
+      });
+    }).catch((err) => {
+      reject(`${url} ${String(err)}`);
+    });
+  },
+  PreloadPageProtocol
+);
+if (process.env.NODE_ENV !== "production") {
+  document.addEventListener("DOMContentLoaded", () => {
+    console.log("Preload pages in uni-app-x development mode.");
+    __uniRoutes.reduce((prev, route) => {
+      return prev.then(() => {
+        return new Promise((resolve) => {
+          preloadPage({
+            url: route.alias || route.path,
+            complete() {
+              setTimeout(() => {
+                resolve();
+              }, 200);
+            }
+          });
+        });
+      });
+    }, Promise.resolve());
+  });
+}
+function onThemeChange$1(callback) {
+  if (__uniConfig.darkmode) {
+    UniServiceJSBridge.on(ON_THEME_CHANGE, callback);
+  }
+}
+function offThemeChange(callback) {
+  UniServiceJSBridge.off(ON_THEME_CHANGE, callback);
+}
+function parseTheme(pageStyle) {
+  let parsedStyle = {};
+  if (__uniConfig.darkmode) {
+    parsedStyle = normalizeStyles(
+      pageStyle,
+      __uniConfig.themeConfig,
+      getTheme()
+    );
+  }
+  return __uniConfig.darkmode ? parsedStyle : pageStyle;
+}
+function useTheme(pageStyle, onThemeChangeCallback) {
+  const isReactivity = isReactive(pageStyle);
+  const reactivePageStyle = isReactivity ? reactive(parseTheme(pageStyle)) : parseTheme(pageStyle);
+  if (__uniConfig.darkmode && isReactivity) {
+    watch(pageStyle, (value) => {
+      const _pageStyle = parseTheme(value);
+      for (const key in _pageStyle) {
+        reactivePageStyle[key] = _pageStyle[key];
+      }
+    });
+  }
+  onThemeChangeCallback && onThemeChange$1(onThemeChangeCallback);
+  return reactivePageStyle;
+}
+const ModalTheme = {
+  light: {
+    cancelColor: "#000000"
+  },
+  dark: {
+    cancelColor: "rgb(170, 170, 170)"
+  }
+};
+const setCancelColor = (theme, cancelColor) => cancelColor.value = ModalTheme[theme].cancelColor;
+const props$g = {
+  title: {
+    type: String,
+    default: ""
+  },
+  content: {
+    type: String,
+    default: ""
+  },
+  showCancel: {
+    type: Boolean,
+    default: true
+  },
+  cancelText: {
+    type: String,
+    default: "Cancel"
+  },
+  cancelColor: {
+    type: String,
+    default: "#000000"
+  },
+  confirmText: {
+    type: String,
+    default: "OK"
+  },
+  confirmColor: {
+    type: String,
+    default: "#576b95"
+  },
+  visible: {
+    type: Boolean
+  },
+  editable: {
+    type: Boolean,
+    default: false
+  },
+  placeholderText: {
+    type: String,
+    default: ""
+  }
+};
+const modal = /* @__PURE__ */ defineComponent({
+  props: props$g,
+  setup(props2, {
+    emit: emit2
+  }) {
+    const editContent = ref("");
+    const close = () => visible.value = false;
+    const cancel = () => (close(), emit2("close", "cancel"));
+    const confirm = () => (close(), emit2("close", "confirm", editContent.value));
+    const visible = usePopup(props2, {
+      onEsc: cancel,
+      onEnter: () => {
+        !props2.editable && confirm();
+      }
+    });
+    const cancelColor = useOnThemeChange$1(props2);
+    return () => {
+      const {
+        title,
+        content,
+        showCancel,
+        confirmText,
+        confirmColor,
+        editable,
+        placeholderText
+      } = props2;
+      editContent.value = content;
+      return createVNode(Transition, {
+        "name": "uni-fade"
+      }, {
+        default: () => [withDirectives(createVNode("uni-modal", {
+          "onTouchmove": onEventPrevent
+        }, [VNODE_MASK, createVNode("div", {
+          "class": "uni-modal"
+        }, [title || true ? createVNode("div", {
+          "class": "uni-modal__hd"
+        }, [createVNode("strong", {
+          "class": "uni-modal__title",
+          "textContent": title || ""
+        }, null, 8, ["textContent"])]) : null, editable ? createVNode("div", {
+          "class": "uni-modal__bd",
+          "key": "uni-modal-bd-editable"
+        }, [createVNode("textarea", {
+          "class": "uni-modal__textarea",
+          "rows": "2",
+          "placeholder": placeholderText,
+          "value": content,
+          "onInput": (e2) => editContent.value = e2.target.value
+        }, null, 40, ["placeholder", "value", "onInput"])]) : createVNode("div", {
+          "class": "uni-modal__bd",
+          "onTouchmovePassive": onEventStop,
+          "textContent": content
+        }, null, 40, ["onTouchmovePassive", "textContent"]), createVNode("div", {
+          "class": "uni-modal__ft"
+        }, [showCancel && createVNode("div", {
+          "style": {
+            color: cancelColor.value
+          },
+          "class": "uni-modal__btn uni-modal__btn_default",
+          "onClick": cancel
+        }, [props2.cancelText], 12, ["onClick"]), createVNode("div", {
+          "style": {
+            color: confirmColor
+          },
+          "class": "uni-modal__btn uni-modal__btn_primary",
+          "onClick": confirm
+        }, [confirmText], 12, ["onClick"])])])], 40, ["onTouchmove"]), [[vShow, visible.value]])]
+      });
+    };
+  }
+});
+function useOnThemeChange$1(props2) {
+  const cancelColor = ref(props2.cancelColor);
+  const _onThemeChange = ({
+    theme
+  }) => {
+    setCancelColor(theme, cancelColor);
+  };
+  watchEffect(() => {
+    if (props2.visible) {
+      cancelColor.value = props2.cancelColor;
+      if (props2.cancelColor === "#000") {
+        if (getTheme() === "dark")
+          _onThemeChange({
+            theme: "dark"
+          });
+        onThemeChange$1(_onThemeChange);
+      }
+    } else {
+      offThemeChange(_onThemeChange);
+    }
+  });
+  return cancelColor;
+}
+let showModalState;
+const onHidePopupOnce$1 = /* @__PURE__ */ once(() => {
+  UniServiceJSBridge.on("onHidePopup", () => showModalState.visible = false);
+});
+let currentShowModalResolve;
+function onModalClose(type, content) {
+  const isConfirm = type === "confirm";
+  const res = {
+    confirm: isConfirm,
+    cancel: type === "cancel"
+  };
+  isConfirm && showModalState.editable && (res.content = content);
+  currentShowModalResolve && currentShowModalResolve(res);
+}
+const hideModal = () => {
+  if (showModalState) {
+    showModalState.visible = false;
+  }
+};
+const showModal = /* @__PURE__ */ defineAsyncApi(
+  API_SHOW_MODAL,
+  (args, { resolve }) => {
+    onHidePopupOnce$1();
+    currentShowModalResolve = resolve;
+    if (!showModalState) {
+      showModalState = reactive(args);
+      nextTick(
+        () => (createRootApp(modal, showModalState, onModalClose).mount(
+          ensureRoot("u-a-m")
+        ), //下一帧执行，确保首次显示时有动画效果
+        nextTick(() => showModalState.visible = true))
+      );
+    } else {
+      extend(showModalState, args);
+      showModalState.visible = true;
+    }
+  },
+  ShowModalProtocol,
+  ShowModalOptions
+);
+const props$f = {
+  title: {
+    type: String,
+    default: ""
+  },
+  icon: {
+    default: "success",
+    validator(value) {
+      return SHOW_TOAST_ICON.indexOf(value) !== -1;
+    }
+  },
+  image: {
+    type: String,
+    default: ""
+  },
+  duration: {
+    type: Number,
+    default: 1500
+  },
+  mask: {
+    type: Boolean,
+    default: false
+  },
+  visible: {
+    type: Boolean
+  }
+};
+const ToastIconClassName = "uni-toast__icon";
+const ICONCOLOR = {
+  light: "#fff",
+  dark: "rgba(255,255,255,0.9)"
+};
+const getIconColor = (theme) => ICONCOLOR[theme];
+const Toast = /* @__PURE__ */ defineComponent({
+  name: "Toast",
+  props: props$f,
+  setup(props2) {
+    initI18nShowToastMsgsOnce();
+    initI18nShowLoadingMsgsOnce();
+    const {
+      Icon
+    } = useToastIcon(props2);
+    const visible = usePopup(props2, {});
+    return () => {
+      const {
+        mask,
+        duration,
+        title,
+        image: image2
+      } = props2;
+      return createVNode(Transition, {
+        "name": "uni-fade"
+      }, {
+        default: () => [withDirectives(createVNode("uni-toast", {
+          "data-duration": duration
+        }, [mask ? createVNode("div", {
+          "class": "uni-mask",
+          "style": "background: transparent;",
+          "onTouchmove": onEventPrevent
+        }, null, 40, ["onTouchmove"]) : "", !image2 && !Icon.value ? createVNode("div", {
+          "class": "uni-sample-toast"
+        }, [createVNode("p", {
+          "class": "uni-simple-toast__text"
+        }, [title])]) : createVNode("div", {
+          "class": "uni-toast"
+        }, [image2 ? createVNode("img", {
+          "src": image2,
+          "class": ToastIconClassName
+        }, null, 10, ["src"]) : Icon.value, createVNode("p", {
+          "class": "uni-toast__content"
+        }, [title])])], 8, ["data-duration"]), [[vShow, visible.value]])]
+      });
+    };
+  }
+});
+function useToastIcon(props2) {
+  const iconColor = ref(getIconColor(getTheme()));
+  const _onThemeChange = ({
+    theme
+  }) => iconColor.value = getIconColor(theme);
+  watchEffect(() => {
+    if (props2.visible) {
+      onThemeChange$1(_onThemeChange);
+    } else {
+      offThemeChange(_onThemeChange);
+    }
+  });
+  const Icon = computed(() => {
+    switch (props2.icon) {
+      case "success":
+        return createVNode(createSvgIconVNode(ICON_PATH_SUCCESS_NO_CIRCLE, iconColor.value, 38), {
+          class: ToastIconClassName
+        });
+      case "error":
+        return createVNode(createSvgIconVNode(ICON_PATH_WARN, iconColor.value, 38), {
+          class: ToastIconClassName
+        });
+      case "loading":
+        return createVNode("i", {
+          "class": [ToastIconClassName, "uni-loading"]
+        }, null, 2);
+      default:
+        return null;
+    }
+  });
+  return {
+    Icon
+  };
+}
+let showToastState;
+let showType = "";
+let timeoutId;
+const scope = /* @__PURE__ */ effectScope();
+function watchVisible() {
+  scope.run(() => {
+    watch(
+      [() => showToastState.visible, () => showToastState.duration],
+      ([visible, duration]) => {
+        if (visible) {
+          timeoutId && clearTimeout(timeoutId);
+          if (showType === "onShowLoading")
+            return;
+          timeoutId = setTimeout(() => {
+            hidePopup("onHideToast");
+          }, duration);
+        } else {
+          timeoutId && clearTimeout(timeoutId);
+        }
+      }
+    );
+  });
+}
+function createToast(args) {
+  if (!showToastState) {
+    showToastState = reactive(extend(args, { visible: false }));
+    nextTick(() => {
+      watchVisible();
+      UniServiceJSBridge.on("onHidePopup", () => hidePopup("onHidePopup"));
+      createRootApp(Toast, showToastState, () => {
+      }).mount(ensureRoot("u-a-t"));
+    });
+  } else {
+    extend(showToastState, args);
+  }
+  setTimeout(() => {
+    showToastState.visible = true;
+  }, 10);
+}
+const showToast = /* @__PURE__ */ defineAsyncApi(
+  API_SHOW_TOAST,
+  (args, { resolve, reject }) => {
+    createToast(args);
+    showType = "onShowToast";
+    resolve();
+  },
+  ShowToastProtocol,
+  ShowToastOptions
+);
+const showLoadingDefaultState = {
+  icon: "loading",
+  duration: 1e8,
+  image: ""
+};
+const showLoading = /* @__PURE__ */ defineAsyncApi(
+  API_SHOW_LOADING,
+  (args, { resolve, reject }) => {
+    extend(args, showLoadingDefaultState);
+    createToast(args);
+    showType = "onShowLoading";
+    resolve();
+  },
+  ShowLoadingProtocol,
+  ShowLoadingOptions
+);
+const hideToast = /* @__PURE__ */ defineAsyncApi(
+  API_HIDE_TOAST,
+  (args, { resolve, reject }) => {
+    hidePopup("onHideToast");
+    resolve();
+  }
+);
+const hideLoading = /* @__PURE__ */ defineAsyncApi(
+  API_HIDE_LOADING,
+  (args, { resolve, reject }) => {
+    hidePopup("onHideLoading");
+    resolve();
+  }
+);
+function hidePopup(type) {
+  const { t: t2 } = useI18n();
+  if (!showType) {
+    return;
+  }
+  let warnMsg = "";
+  if (type === "onHideToast" && showType !== "onShowToast") {
+    warnMsg = t2("uni.showToast.unpaired");
+  } else if (type === "onHideLoading" && showType !== "onShowLoading") {
+    warnMsg = t2("uni.showLoading.unpaired");
+  }
+  if (warnMsg) {
+    return console.warn(warnMsg);
+  }
+  showType = "";
+  setTimeout(() => {
+    showToastState.visible = false;
+  }, 10);
+}
+const ACTION_SHEET_THEME = {
+  light: {
+    listItemColor: "#000000",
+    cancelItemColor: "#000000"
+  },
+  dark: {
+    listItemColor: "rgba(255, 255, 255, 0.8)",
+    cancelItemColor: "rgba(255, 255, 255)"
+  }
+};
+function setActionSheetTheme(theme, actionSheetTheme) {
+  const ActionSheetThemeKey = ["listItemColor", "cancelItemColor"];
+  ActionSheetThemeKey.forEach((key) => {
+    actionSheetTheme[key] = ACTION_SHEET_THEME[theme][key];
+  });
+}
+const props$e = {
+  title: {
+    type: String,
+    default: ""
+  },
+  itemList: {
+    type: Array,
+    default() {
+      return [];
+    }
+  },
+  itemColor: {
+    type: String,
+    default: "#000000"
+  },
+  popover: {
+    type: Object,
+    default: null
+  },
+  visible: {
+    type: Boolean,
+    default: false
+  }
+};
+const actionSheet = /* @__PURE__ */ defineComponent({
+  name: "ActionSheet",
+  props: props$e,
+  emits: ["close"],
+  setup(props2, {
+    emit: emit2
+  }) {
+    initI18nShowActionSheetMsgsOnce();
+    const HEIGHT = ref(336);
+    const contentHeight = ref(0);
+    const titleHeight = ref(0);
+    const deltaY = ref(0);
+    const scrollTop = ref(0);
+    const content = ref(null);
+    const main = ref(null);
+    const {
+      t: t2
+    } = useI18n();
+    const {
+      _close
+    } = useActionSheetLoader(props2, emit2);
+    const {
+      popupStyle
+    } = usePopupStyle(props2);
+    let scroller;
+    onMounted(() => {
+      const {
+        scroller: _scroller,
+        handleTouchStart,
+        handleTouchMove,
+        handleTouchEnd
+      } = useScroller(content.value, {
+        enableY: true,
+        friction: new Friction(1e-4),
+        spring: new Spring(2, 90, 20),
+        onScroll: (e2) => {
+          scrollTop.value = e2.target.scrollTop;
+        }
+      });
+      scroller = _scroller;
+      useTouchtrack(content.value, (e2) => {
+        if (_scroller) {
+          switch (e2.detail.state) {
+            case "start":
+              handleTouchStart(e2);
+              break;
+            case "move":
+              handleTouchMove(e2);
+              break;
+            case "end":
+            case "cancel":
+              handleTouchEnd(e2);
+          }
+        }
+      }, true);
+    });
+    function _handleWheel($event) {
+      const _deltaY = deltaY.value + $event.deltaY;
+      if (Math.abs(_deltaY) > 10) {
+        scrollTop.value += _deltaY / 3;
+        scrollTop.value = scrollTop.value >= contentHeight.value ? contentHeight.value : scrollTop.value <= 0 ? 0 : scrollTop.value;
+        scroller.scrollTo(scrollTop.value);
+      } else {
+        deltaY.value = _deltaY;
+      }
+      $event.preventDefault();
+    }
+    watch(() => props2.visible, () => {
+      nextTick(() => {
+        if (props2.title) {
+          titleHeight.value = document.querySelector(".uni-actionsheet__title").offsetHeight;
+        }
+        scroller.update();
+        if (content.value)
+          contentHeight.value = content.value.clientHeight - HEIGHT.value;
+        document.querySelectorAll(".uni-actionsheet__cell").forEach((item) => {
+          initClick(item);
+        });
+      });
+    });
+    const actionSheetTheme = useOnThemeChange(props2);
+    return () => {
+      return createVNode("uni-actionsheet", {
+        "onTouchmove": onEventPrevent
+      }, [createVNode(Transition, {
+        "name": "uni-fade"
+      }, {
+        default: () => [withDirectives(createVNode("div", {
+          "class": "uni-mask uni-actionsheet__mask",
+          "onClick": () => _close(-1)
+        }, null, 8, ["onClick"]), [[vShow, props2.visible]])]
+      }), createVNode("div", {
+        "class": ["uni-actionsheet", {
+          "uni-actionsheet_toggle": props2.visible
+        }],
+        "style": popupStyle.value.content
+      }, [createVNode("div", {
+        "ref": main,
+        "class": "uni-actionsheet__menu",
+        "onWheel": _handleWheel
+      }, [props2.title ? createVNode(Fragment, null, [createVNode("div", {
+        "class": "uni-actionsheet__cell",
+        "style": {
+          height: `${titleHeight.value}px`
+        }
+      }, null), createVNode("div", {
+        "class": "uni-actionsheet__title"
+      }, [props2.title])]) : "", createVNode("div", {
+        "style": {
+          maxHeight: `${HEIGHT.value}px`,
+          overflow: "hidden"
+        }
+      }, [createVNode("div", {
+        "ref": content
+      }, [props2.itemList.map((itemTitle, index2) => createVNode("div", {
+        "key": index2,
+        "style": {
+          color: actionSheetTheme.listItemColor
+        },
+        "class": "uni-actionsheet__cell",
+        "onClick": () => _close(index2)
+      }, [itemTitle], 12, ["onClick"]))], 512)])], 40, ["onWheel"]), createVNode("div", {
+        "class": "uni-actionsheet__action"
+      }, [createVNode("div", {
+        "style": {
+          color: actionSheetTheme.cancelItemColor
+        },
+        "class": "uni-actionsheet__cell",
+        "onClick": () => _close(-1)
+      }, [t2("uni.showActionSheet.cancel")], 12, ["onClick"])]), createVNode("div", {
+        "style": popupStyle.value.triangle
+      }, null, 4)], 6)], 40, ["onTouchmove"]);
+    };
+  }
+});
+function useActionSheetLoader(props2, emit2) {
+  function _close(tapIndex) {
+    emit2("close", tapIndex);
+  }
+  const {
+    key,
+    disable
+  } = useKeyboard();
+  watch(() => props2.visible, (value) => disable.value = !value);
+  watchEffect(() => {
+    const {
+      value
+    } = key;
+    if (value === "esc") {
+      _close && _close(-1);
+    }
+  });
+  return {
+    _close
+  };
+}
+function initClick(dom) {
+  const MAX_MOVE = 20;
+  let x = 0;
+  let y = 0;
+  dom.addEventListener("touchstart", (event) => {
+    const info = event.changedTouches[0];
+    x = info.clientX;
+    y = info.clientY;
+  });
+  dom.addEventListener("touchend", (event) => {
+    const info = event.changedTouches[0];
+    if (Math.abs(info.clientX - x) < MAX_MOVE && Math.abs(info.clientY - y) < MAX_MOVE) {
+      const target = event.target;
+      const currentTarget = event.currentTarget;
+      const customEvent = new CustomEvent("click", {
+        bubbles: true,
+        cancelable: true,
+        target,
+        currentTarget
+      });
+      ["screenX", "screenY", "clientX", "clientY", "pageX", "pageY"].forEach((key) => {
+        customEvent[key] = info[key];
+      });
+      event.target.dispatchEvent(customEvent);
+    }
+  });
+}
+function useOnThemeChange(props2) {
+  const actionSheetTheme = reactive({
+    listItemColor: "#000",
+    cancelItemColor: "#000"
+  });
+  const _onThemeChange = ({
+    theme
+  }) => {
+    setActionSheetTheme(theme, actionSheetTheme);
+  };
+  watchEffect(() => {
+    if (props2.visible) {
+      actionSheetTheme.listItemColor = actionSheetTheme.cancelItemColor = props2.itemColor;
+      if (props2.itemColor === "#000") {
+        _onThemeChange({
+          theme: getTheme()
+        });
+        onThemeChange$1(_onThemeChange);
+      }
+    } else {
+      offThemeChange(_onThemeChange);
+    }
+  });
+  return actionSheetTheme;
+}
+let resolveAction;
+let rejectAction;
+let showActionSheetState;
+const onHidePopupOnce = /* @__PURE__ */ once(() => {
+  UniServiceJSBridge.on(
+    "onHidePopup",
+    () => showActionSheetState.visible = false
+  );
+});
+function onActionSheetClose(tapIndex) {
+  if (tapIndex === -1) {
+    rejectAction && rejectAction("cancel");
+  } else {
+    resolveAction && resolveAction({ tapIndex });
+  }
+}
+const hideActionSheet = () => {
+  if (showActionSheetState) {
+    showActionSheetState.visible = false;
+  }
+};
+const showActionSheet = /* @__PURE__ */ defineAsyncApi(
+  API_SHOW_ACTION_SHEET,
+  (args, { resolve, reject }) => {
+    onHidePopupOnce();
+    resolveAction = resolve;
+    rejectAction = reject;
+    if (!showActionSheetState) {
+      showActionSheetState = reactive(args);
+      nextTick(
+        () => (createRootApp(
+          actionSheet,
+          showActionSheetState,
+          onActionSheetClose
+        ).mount(ensureRoot("u-s-a-s")), //下一帧执行，确保首次显示时有动画效果
+        nextTick(() => showActionSheetState.visible = true))
+      );
+    } else {
+      extend(showActionSheetState, args);
+      showActionSheetState.visible = true;
+    }
+  },
+  ShowActionSheetProtocol,
+  ShowActionSheetOptions
+);
+const loadFontFace = /* @__PURE__ */ defineAsyncApi(
+  API_LOAD_FONT_FACE,
+  ({ family, source, desc }, { resolve, reject }) => {
+    if (source.startsWith(`url("`) || source.startsWith(`url('`)) {
+      source = `url('${getRealPath(source.substring(5, source.length - 2))}')`;
+    } else if (source.startsWith("url(")) {
+      source = `url('${getRealPath(source.substring(4, source.length - 1))}')`;
+    } else {
+      source = getRealPath(source);
+    }
+    addFont(family, source, desc).then(() => {
+      resolve();
+    }).catch((err) => {
+      reject(`loadFontFace:fail ${err}`);
+    });
+  },
+  LoadFontFaceProtocol
+);
+const clazz = { class: "uni-async-loading" };
+const loadingVNode = /* @__PURE__ */ createVNode(
+  "i",
+  { class: "uni-loading" },
+  null,
+  -1
+  /* HOISTED */
+);
+const AsyncLoadingComponent = /* @__PURE__ */ defineSystemComponent({
+  name: "AsyncLoading",
+  render() {
+    return openBlock(), createBlock("div", clazz, [loadingVNode]);
+  }
+});
+function reload() {
+  window.location.reload();
+}
+const AsyncErrorComponent = /* @__PURE__ */ defineSystemComponent({
+  name: "AsyncError",
+  setup() {
+    initI18nAsyncMsgsOnce();
+    const {
+      t: t2
+    } = useI18n();
+    return () => createVNode("div", {
+      "class": "uni-async-error",
+      "onClick": reload
+    }, [t2("uni.async.error")], 8, ["onClick"]);
+  }
+});
+let appVm;
+let $uniApp;
+{
+  class UniAppImpl {
+    get vm() {
+      return appVm;
+    }
+    get $vm() {
+      return appVm;
+    }
+    get globalData() {
+      return (appVm == null ? void 0 : appVm.globalData) || {};
+    }
+    getAndroidApplication() {
+      return null;
+    }
+  }
+  $uniApp = new UniAppImpl();
+}
+function getApp$1() {
+  {
+    return $uniApp;
+  }
+}
+function initApp$1(vm) {
+  appVm = vm;
+  Object.defineProperty(appVm.$.ctx, "$children", {
+    get() {
+      return getCurrentBasePages().map((page) => page.$vm);
+    }
+  });
+  const app = appVm.$.appContext.app;
+  if (!app.component(AsyncLoadingComponent.name)) {
+    app.component(AsyncLoadingComponent.name, AsyncLoadingComponent);
+  }
+  if (!app.component(AsyncErrorComponent.name)) {
+    app.component(AsyncErrorComponent.name, AsyncErrorComponent);
+  }
+  initAppVm(appVm);
+  defineGlobalData(appVm);
+  initService();
+  initView();
+}
+function updateDocumentTitle(title) {
+  {
+    document.title = title;
+  }
+  UniServiceJSBridge.emit(ON_NAVIGATION_BAR_CHANGE, { titleText: title });
+}
+function useDocumentTitle(pageMeta) {
+  function update() {
+    updateDocumentTitle(pageMeta.navigationBar.titleText);
+  }
+  watchEffect(update);
+  onActivated(update);
+}
+function setNavigationBar(pageMeta, type, args, resolve, reject) {
+  if (!pageMeta) {
+    return reject("page not found");
+  }
+  const { navigationBar } = pageMeta;
+  switch (type) {
+    case API_SET_NAVIGATION_BAR_COLOR:
+      const { frontColor, backgroundColor, animation: animation2 } = args;
+      const { duration, timingFunc } = animation2;
+      if (frontColor) {
+        navigationBar.titleColor = frontColor === "#000000" ? "#000000" : "#ffffff";
+      }
+      if (backgroundColor) {
+        navigationBar.backgroundColor = backgroundColor;
+      }
+      navigationBar.duration = duration + "ms";
+      navigationBar.timingFunc = timingFunc;
+      break;
+    case API_SHOW_NAVIGATION_BAR_LOADING:
+      navigationBar.loading = true;
+      break;
+    case API_HIDE_NAVIGATION_BAR_LOADING:
+      navigationBar.loading = false;
+      break;
+    case API_SET_NAVIGATION_BAR_TITLE:
+      const { title } = args;
+      navigationBar.titleText = title;
+      break;
+  }
+  resolve();
+}
+const setNavigationBarColor = /* @__PURE__ */ defineAsyncApi(
+  API_SET_NAVIGATION_BAR_COLOR,
+  (args, { resolve, reject }) => {
+    setNavigationBar(
+      getCurrentPageMeta(),
+      API_SET_NAVIGATION_BAR_COLOR,
+      args,
+      resolve,
+      reject
+    );
+  },
+  SetNavigationBarColorProtocol,
+  SetNavigationBarColorOptions
+);
+const showNavigationBarLoading = /* @__PURE__ */ defineAsyncApi(
+  API_SHOW_NAVIGATION_BAR_LOADING,
+  (args, { resolve, reject }) => {
+    setNavigationBar(
+      getCurrentPageMeta(),
+      API_SHOW_NAVIGATION_BAR_LOADING,
+      args || {},
+      resolve,
+      reject
+    );
+  }
+);
+const hideNavigationBarLoading = /* @__PURE__ */ defineAsyncApi(
+  API_HIDE_NAVIGATION_BAR_LOADING,
+  (args, { resolve, reject }) => {
+    setNavigationBar(
+      getCurrentPageMeta(),
+      API_HIDE_NAVIGATION_BAR_LOADING,
+      args || {},
+      resolve,
+      reject
+    );
+  }
+);
+const setNavigationBarTitle = /* @__PURE__ */ defineAsyncApi(
+  API_SET_NAVIGATION_BAR_TITLE,
+  (args, { resolve, reject }) => {
+    setNavigationBar(
+      getCurrentPageMeta(),
+      API_SET_NAVIGATION_BAR_TITLE,
+      args,
+      resolve,
+      reject
+    );
+  },
+  SetNavigationBarTitleProtocol
+);
+const pageScrollTo = /* @__PURE__ */ defineAsyncApi(
+  API_PAGE_SCROLL_TO,
+  ({ scrollTop, selector, duration }, { resolve }) => {
+    scrollTo(selector || scrollTop || 0, duration, true);
+    resolve();
+  },
+  PageScrollToProtocol,
+  PageScrollToOptions
+);
+const startPullDownRefresh = /* @__PURE__ */ defineAsyncApi(
+  API_START_PULL_DOWN_REFRESH,
+  (_args, { resolve }) => {
+    UniServiceJSBridge.invokeViewMethod(
+      API_START_PULL_DOWN_REFRESH,
+      {},
+      getCurrentPageId()
+    );
+    resolve();
+  }
+);
+const stopPullDownRefresh = /* @__PURE__ */ defineAsyncApi(
+  API_STOP_PULL_DOWN_REFRESH,
+  (_args, { resolve }) => {
+    UniServiceJSBridge.invokeViewMethod(
+      API_STOP_PULL_DOWN_REFRESH,
+      {},
+      getCurrentPageId()
+    );
+    resolve();
+  }
+);
+const setTabBarItemProps = [
+  "text",
+  "iconPath",
+  "iconfont",
+  "selectedIconPath",
+  "visible"
+];
+const setTabBarStyleProps = [
+  "color",
+  "selectedColor",
+  "backgroundColor",
+  "borderStyle",
+  "borderColor",
+  "midButton"
+];
+const setTabBarBadgeProps = ["badge", "redDot"];
+function setProperties(item, props2, propsData) {
+  props2.forEach(function(name) {
+    if (hasOwn(propsData, name)) {
+      item[name] = propsData[name];
+    }
+  });
+}
+function setTabBar(type, args, resolve, reject) {
+  var _a;
+  let isTabBar = false;
+  const pages = getCurrentBasePages();
+  if (pages.length) {
+    if (getPage$BasePage(pages[pages.length - 1]).meta.isTabBar) {
+      isTabBar = true;
+    }
+  }
+  if (!isTabBar) {
+    return reject(`not TabBar page`);
+  }
+  const { index: index2 } = args;
+  if (typeof index2 === "number") {
+    const tabBarListLength = (_a = __uniConfig == null ? void 0 : __uniConfig.tabBar) == null ? void 0 : _a.list.length;
+    if (!tabBarListLength || index2 >= tabBarListLength) {
+      return reject(`tabbar item not found`);
+    }
+  }
+  const tabBar2 = useTabBar();
+  switch (type) {
+    case API_SHOW_TAB_BAR:
+      tabBar2.shown = true;
+      break;
+    case API_HIDE_TAB_BAR:
+      tabBar2.shown = false;
+      break;
+    case API_SET_TAB_BAR_ITEM:
+      const tabBarItem = tabBar2.list[index2];
+      const oldPagePath = tabBarItem.pagePath;
+      setProperties(tabBarItem, setTabBarItemProps, args);
+      const { pagePath } = args;
+      if (pagePath) {
+        const newPagePath = addLeadingSlash(pagePath);
+        if (newPagePath !== oldPagePath) {
+          normalizeTabBarRoute(index2, oldPagePath, newPagePath);
+        }
+      }
+      break;
+    case API_SET_TAB_BAR_STYLE:
+      setProperties(tabBar2, setTabBarStyleProps, args);
+      break;
+    case API_SHOW_TAB_BAR_RED_DOT:
+      setProperties(tabBar2.list[index2], setTabBarBadgeProps, {
+        badge: "",
+        redDot: true
+      });
+      break;
+    case API_SET_TAB_BAR_BADGE:
+      setProperties(tabBar2.list[index2], setTabBarBadgeProps, {
+        badge: args.text,
+        redDot: true
+      });
+      break;
+    case API_HIDE_TAB_BAR_RED_DOT:
+    case API_REMOVE_TAB_BAR_BADGE:
+      setProperties(tabBar2.list[index2], setTabBarBadgeProps, {
+        badge: "",
+        redDot: false
+      });
+      break;
+  }
+  resolve();
+}
+const setTabBarItem = /* @__PURE__ */ defineAsyncApi(
+  API_SET_TAB_BAR_ITEM,
+  (args, { resolve, reject }) => {
+    setTabBar(API_SET_TAB_BAR_ITEM, args, resolve, reject);
+  },
+  SetTabBarItemProtocol,
+  SetTabBarItemOptions
+);
+const setTabBarStyle = /* @__PURE__ */ defineAsyncApi(
+  API_SET_TAB_BAR_STYLE,
+  (args, { resolve, reject }) => {
+    setTabBar(API_SET_TAB_BAR_STYLE, args, resolve, reject);
+  },
+  SetTabBarStyleProtocol,
+  SetTabBarStyleOptions
+);
+const hideTabBar = /* @__PURE__ */ defineAsyncApi(
+  API_HIDE_TAB_BAR,
+  (args, { resolve, reject }) => {
+    setTabBar(API_HIDE_TAB_BAR, args ? args : {}, resolve, reject);
+  },
+  HideTabBarProtocol
+);
+const showTabBar = /* @__PURE__ */ defineAsyncApi(
+  API_SHOW_TAB_BAR,
+  (args, { resolve, reject }) => {
+    setTabBar(API_SHOW_TAB_BAR, args ? args : {}, resolve, reject);
+  },
+  ShowTabBarProtocol
+);
+const hideTabBarRedDot = /* @__PURE__ */ defineAsyncApi(
+  API_HIDE_TAB_BAR_RED_DOT,
+  (args, { resolve, reject }) => {
+    setTabBar(API_HIDE_TAB_BAR_RED_DOT, args, resolve, reject);
+  },
+  HideTabBarRedDotProtocol,
+  HideTabBarRedDotOptions
+);
+const showTabBarRedDot = /* @__PURE__ */ defineAsyncApi(
+  API_SHOW_TAB_BAR_RED_DOT,
+  (args, { resolve, reject }) => {
+    setTabBar(API_SHOW_TAB_BAR_RED_DOT, args, resolve, reject);
+  },
+  ShowTabBarRedDotProtocol,
+  ShowTabBarRedDotOptions
+);
+const removeTabBarBadge = /* @__PURE__ */ defineAsyncApi(
+  API_REMOVE_TAB_BAR_BADGE,
+  (args, { resolve, reject }) => {
+    setTabBar(API_REMOVE_TAB_BAR_BADGE, args, resolve, reject);
+  },
+  RemoveTabBarBadgeProtocol,
+  RemoveTabBarBadgeOptions
+);
+const setTabBarBadge = /* @__PURE__ */ defineAsyncApi(
+  API_SET_TAB_BAR_BADGE,
+  (args, { resolve, reject }) => {
+    setTabBar(API_SET_TAB_BAR_BADGE, args, resolve, reject);
+  },
+  SetTabBarBadgeProtocol,
+  SetTabBarBadgeOptions
+);
+const UNI_TABBAR_ICON_FONT = "UniTabbarIconFont";
+const _middleButton = {
+  width: "50px",
+  height: "50px",
+  iconWidth: "24px"
+};
+const TabBar = /* @__PURE__ */ defineSystemComponent({
+  name: "TabBar",
+  setup() {
+    const visibleList = ref([]);
+    const _tabBar = useTabBar();
+    const tabBar2 = useTheme(_tabBar, () => {
+      const tabBarStyle = parseTheme(_tabBar);
+      tabBar2.backgroundColor = tabBarStyle.backgroundColor;
+      tabBar2.borderStyle = tabBarStyle.borderStyle;
+      tabBar2.color = tabBarStyle.color;
+      tabBar2.selectedColor = tabBarStyle.selectedColor;
+      tabBar2.blurEffect = tabBarStyle.blurEffect;
+      tabBar2.midButton = tabBarStyle.midButton;
+      if (tabBarStyle.list && tabBarStyle.list.length) {
+        tabBarStyle.list.forEach((item, index2) => {
+          tabBar2.list[index2].iconPath = item.iconPath;
+          tabBar2.list[index2].selectedIconPath = item.selectedIconPath;
+        });
+      }
+    });
+    useVisibleList(tabBar2, visibleList);
+    useTabBarCssVar(tabBar2);
+    const onSwitchTab = useSwitchTab(useRoute(), tabBar2, visibleList);
+    const {
+      style,
+      borderStyle,
+      placeholderStyle
+    } = useTabBarStyle(tabBar2);
+    onMounted(() => {
+      if (tabBar2.iconfontSrc) {
+        loadFontFace({
+          family: UNI_TABBAR_ICON_FONT,
+          source: `url("${tabBar2.iconfontSrc}")`
+        });
+      }
+    });
+    return () => {
+      const tabBarItemsTsx = createTabBarItemsTsx(tabBar2, onSwitchTab, visibleList);
+      return createVNode("uni-tabbar", {
+        "class": "uni-tabbar-" + tabBar2.position
+      }, [createVNode("div", {
+        "class": "uni-tabbar",
+        "style": style.value
+      }, [createVNode("div", {
+        "class": "uni-tabbar-border",
+        "style": borderStyle.value
+      }, null, 4), tabBarItemsTsx], 4), createVNode("div", {
+        "class": "uni-placeholder",
+        "style": placeholderStyle.value
+      }, null, 4)], 2);
+    };
+  }
+});
+function useTabBarCssVar(tabBar2) {
+  watch(() => tabBar2.shown, (value) => {
+    updatePageCssVar({
+      "--window-bottom": normalizeWindowBottom(value ? parseInt(tabBar2.height) : 0)
+    });
+  });
+}
+function useVisibleList(tabBar2, visibleList) {
+  const internalMidButton = ref(extend({
+    type: "midButton"
+  }, tabBar2.midButton));
+  function setVisibleList() {
+    let tempList = [];
+    tempList = tabBar2.list.filter((item) => item.visible !== false);
+    if (__UNI_FEATURE_TABBAR_MIDBUTTON__ && tabBar2.midButton) {
+      internalMidButton.value = extend({}, _middleButton, internalMidButton.value, tabBar2.midButton);
+      tempList = tempList.filter((item) => !isMidButton(item));
+      if (tempList.length % 2 === 0) {
+        tempList.splice(Math.floor(tempList.length / 2), 0, internalMidButton.value);
+      }
+    }
+    visibleList.value = tempList;
+  }
+  watchEffect(setVisibleList);
+}
+function useSwitchTab(route, tabBar2, visibleList) {
+  watchEffect(() => {
+    const meta = route.meta;
+    if (meta.isTabBar) {
+      const pagePath = meta.route;
+      const index2 = visibleList.value.findIndex((item) => item.pagePath === pagePath);
+      tabBar2.selectedIndex = index2;
+    }
+  });
+  return (tabBarItem, index2) => {
+    const {
+      type
+    } = tabBarItem;
+    return () => {
+      if (__UNI_FEATURE_TABBAR_MIDBUTTON__ && type === "midButton") {
+        return UniServiceJSBridge.invokeOnCallback(API_ON_TAB_BAR_MID_BUTTON_TAP);
+      }
+      const {
+        pagePath,
+        text: text2
+      } = tabBarItem;
+      let url = addLeadingSlash(pagePath);
+      if (url === __uniRoutes[0].alias) {
+        url = "/";
+      }
+      if (route.path !== url) {
+        uni.switchTab({
+          from: "tabBar",
+          url,
+          tabBarText: text2
+        });
+      } else {
+        invokeHook("onTabItemTap", {
+          index: index2,
+          text: text2,
+          pagePath
+        });
+      }
+    };
+  };
+}
+const DEFAULT_BG_COLOR = "#f7f7fa";
+const BLUR_EFFECT_COLOR_DARK = "rgb(0, 0, 0, 0.8)";
+const BLUR_EFFECT_COLOR_LIGHT = "rgb(250, 250, 250, 0.8)";
+const BLUR_EFFECT_COLORS = {
+  dark: BLUR_EFFECT_COLOR_DARK,
+  light: BLUR_EFFECT_COLOR_LIGHT,
+  extralight: BLUR_EFFECT_COLOR_LIGHT
+};
+const BORDER_COLORS = {
+  white: "rgba(255, 255, 255, 0.33)",
+  black: "rgba(0, 0, 0, 0.33)"
+};
+function useTabBarStyle(tabBar2) {
+  const style = computed(() => {
+    let backgroundColor = tabBar2.backgroundColor;
+    const blurEffect = tabBar2.blurEffect;
+    if (!backgroundColor) {
+      if (cssBackdropFilter && blurEffect && blurEffect !== "none") {
+        backgroundColor = BLUR_EFFECT_COLORS[blurEffect];
+      }
+    }
+    return {
+      backgroundColor: backgroundColor || DEFAULT_BG_COLOR,
+      backdropFilter: blurEffect !== "none" ? "blur(10px)" : blurEffect
+    };
+  });
+  const borderStyle = computed(() => {
+    const {
+      borderStyle: borderStyle2,
+      borderColor
+    } = tabBar2;
+    if (borderColor && isString(borderColor)) {
+      return {
+        backgroundColor: borderColor
+      };
+    }
+    return {
+      backgroundColor: BORDER_COLORS[borderStyle2] || BORDER_COLORS["black"]
+    };
+  });
+  const placeholderStyle = computed(() => {
+    return {
+      height: tabBar2.height
+    };
+  });
+  return {
+    style,
+    borderStyle,
+    placeholderStyle
+  };
+}
+function isMidButton(item) {
+  return item.type === "midButton";
+}
+function createTabBarItemsTsx(tabBar2, onSwitchTab, visibleList) {
+  const {
+    selectedIndex,
+    selectedColor,
+    color
+  } = tabBar2;
+  return visibleList.value.map((item, index2) => {
+    const selected = selectedIndex === index2;
+    const textColor = selected ? selectedColor : color;
+    const iconPath = (selected ? item.selectedIconPath || item.iconPath : item.iconPath) || "";
+    const iconfontText = item.iconfont ? selected ? item.iconfont.selectedText || item.iconfont.text : item.iconfont.text : void 0;
+    const iconfontColor = item.iconfont ? selected ? item.iconfont.selectedColor || item.iconfont.color : item.iconfont.color : void 0;
+    if (!__UNI_FEATURE_TABBAR_MIDBUTTON__) {
+      return createTabBarItemTsx(textColor, iconPath, iconfontText, iconfontColor, item, tabBar2, index2, onSwitchTab);
+    }
+    return isMidButton(item) ? createTabBarMidButtonTsx(textColor, iconPath, iconfontText, iconfontColor, item, tabBar2, index2, onSwitchTab) : createTabBarItemTsx(textColor, iconPath, iconfontText, iconfontColor, item, tabBar2, index2, onSwitchTab);
+  });
+}
+function createTabBarItemTsx(color, iconPath, iconfontText, iconfontColor, tabBarItem, tabBar2, index2, onSwitchTab) {
+  return createVNode("div", {
+    "key": index2,
+    "class": "uni-tabbar__item",
+    "onClick": onSwitchTab(tabBarItem, index2)
+  }, [createTabBarItemBdTsx(color, iconPath || "", iconfontText, iconfontColor, tabBarItem, tabBar2)], 8, ["onClick"]);
+}
+function createTabBarItemBdTsx(color, iconPath, iconfontText, iconfontColor, tabBarItem, tabBar2) {
+  const {
+    height
+  } = tabBar2;
+  return createVNode("div", {
+    "class": "uni-tabbar__bd",
+    "style": {
+      height
+    }
+  }, [iconfontText ? createTabBarItemIconfontTsx(iconfontText, iconfontColor || BLUR_EFFECT_COLOR_DARK, tabBarItem, tabBar2) : iconPath && createTabBarItemIconTsx(iconPath, tabBarItem, tabBar2), tabBarItem.text && createTabBarItemTextTsx(color, tabBarItem, tabBar2), tabBarItem.redDot && createTabBarItemRedDotTsx(tabBarItem.badge)], 4);
+}
+function createTabBarItemIconTsx(iconPath, tabBarItem, tabBar2) {
+  const {
+    type,
+    text: text2
+  } = tabBarItem;
+  const {
+    iconWidth
+  } = tabBar2;
+  const clazz2 = "uni-tabbar__icon" + (text2 ? " uni-tabbar__icon__diff" : "");
+  const style = {
+    width: iconWidth,
+    height: iconWidth
+  };
+  return createVNode("div", {
+    "class": clazz2,
+    "style": style
+  }, [type !== "midButton" && createVNode("img", {
+    "src": getRealPath(iconPath)
+  }, null, 8, ["src"])], 6);
+}
+function createTabBarItemIconfontTsx(iconfontText, iconfontColor, tabBarItem, tabBar2) {
+  var _a;
+  const {
+    type,
+    text: text2
+  } = tabBarItem;
+  const {
+    iconWidth
+  } = tabBar2;
+  const clazz2 = "uni-tabbar__icon" + (text2 ? " uni-tabbar__icon__diff" : "");
+  const style = {
+    width: iconWidth,
+    height: iconWidth
+  };
+  const iconfontStyle = {
+    fontSize: ((_a = tabBarItem.iconfont) == null ? void 0 : _a.fontSize) || iconWidth,
+    color: iconfontColor
+  };
+  return createVNode("div", {
+    "class": clazz2,
+    "style": style
+  }, [type !== "midButton" && createVNode("div", {
+    "class": "uni-tabbar__iconfont",
+    "style": iconfontStyle
+  }, [iconfontText], 4)], 6);
+}
+function createTabBarItemTextTsx(color, tabBarItem, tabBar2) {
+  const {
+    iconPath,
+    text: text2
+  } = tabBarItem;
+  const {
+    fontSize,
+    spacing
+  } = tabBar2;
+  const style = {
+    color,
+    fontSize,
+    lineHeight: !iconPath ? 1.8 : "normal",
+    marginTop: !iconPath ? "inherit" : spacing
+  };
+  return createVNode("div", {
+    "class": "uni-tabbar__label",
+    "style": style
+  }, [text2], 4);
+}
+function createTabBarItemRedDotTsx(badge) {
+  const clazz2 = "uni-tabbar__reddot" + (badge ? " uni-tabbar__badge" : "");
+  return createVNode("div", {
+    "class": clazz2
+  }, [badge], 2);
+}
+function createTabBarMidButtonTsx(color, iconPath, iconfontText, iconfontColor, midButton, tabBar2, index2, onSwitchTab) {
+  const {
+    width,
+    height,
+    backgroundImage,
+    iconWidth
+  } = midButton;
+  return createVNode("div", {
+    "key": "midButton",
+    "class": "uni-tabbar__item",
+    "style": {
+      flex: "0 0 " + width,
+      position: "relative"
+    },
+    "onClick": onSwitchTab(midButton, index2)
+  }, [createVNode("div", {
+    "class": "uni-tabbar__mid",
+    "style": {
+      width,
+      height,
+      backgroundImage: backgroundImage ? "url('" + getRealPath(backgroundImage) + "')" : "none"
+    }
+  }, [iconPath && createVNode("img", {
+    "style": {
+      width: iconWidth,
+      height: iconWidth
+    },
+    "src": getRealPath(iconPath)
+  }, null, 12, ["src"])], 4), createTabBarItemBdTsx(color, iconPath, iconfontText, iconfontColor, midButton, tabBar2)], 12, ["onClick"]);
+}
+const DEFAULT_CSS_VAR_VALUE = "0px";
+let globalLayoutState = void 0;
+function getLayoutState() {
+  return globalLayoutState;
+}
+const LayoutComponent = /* @__PURE__ */ defineSystemComponent({
+  name: "Layout",
+  setup(_props, {
+    emit: emit2
+  }) {
+    const rootRef = ref(null);
+    initCssVar();
+    const keepAliveRoute = __UNI_FEATURE_PAGES__ && useKeepAliveRoute();
+    const {
+      layoutState,
+      windowState
+    } = useState$2();
+    useMaxWidth(layoutState, rootRef);
+    const topWindow = __UNI_FEATURE_TOPWINDOW__ && useTopWindow(layoutState);
+    const leftWindow = __UNI_FEATURE_LEFTWINDOW__ && useLeftWindow(layoutState);
+    const rightWindow = __UNI_FEATURE_RIGHTWINDOW__ && useRightWindow(layoutState);
+    const showTabBar2 = __UNI_FEATURE_TABBAR__ && useShowTabBar();
+    const clazz2 = useAppClass(showTabBar2);
+    globalLayoutState = layoutState;
+    return () => {
+      const layoutTsx = createLayoutTsx(keepAliveRoute, layoutState, windowState, topWindow, leftWindow, rightWindow);
+      const tabBarTsx = __UNI_FEATURE_TABBAR__ && createTabBarTsx(showTabBar2);
+      return createVNode("uni-app", {
+        "ref": rootRef,
+        "class": clazz2.value
+      }, [layoutTsx, tabBarTsx], 2);
+    };
+  }
+});
+function useAppClass(showTabBar2) {
+  const showMaxWidth = ref(false);
+  return computed(() => {
+    return {
+      "uni-app--showtabbar": showTabBar2 && showTabBar2.value,
+      "uni-app--maxwidth": showMaxWidth.value
+    };
+  });
+}
+function initCssVar() {
+  updateCssVar({
+    "--status-bar-height": DEFAULT_CSS_VAR_VALUE,
+    "--top-window-height": DEFAULT_CSS_VAR_VALUE,
+    "--window-left": DEFAULT_CSS_VAR_VALUE,
+    "--window-right": DEFAULT_CSS_VAR_VALUE,
+    "--window-margin": DEFAULT_CSS_VAR_VALUE,
+    "--tab-bar-height": DEFAULT_CSS_VAR_VALUE
+  });
+}
+function initMediaQuery(minWidth, callback) {
+  const mediaQueryList = window.matchMedia("(min-width: " + minWidth + "px)");
+  if (mediaQueryList.addEventListener) {
+    mediaQueryList.addEventListener("change", callback);
+  } else {
+    mediaQueryList.addListener(callback);
+  }
+  return mediaQueryList.matches;
+}
+function useMaxWidth(layoutState, rootRef) {
+  const route = usePageRoute();
+  function checkMaxWidth2() {
+    const windowWidth = document.body.clientWidth;
+    const pages = getCurrentBasePages();
+    let meta = {};
+    if (pages.length > 0) {
+      const curPage = pages[pages.length - 1];
+      meta = getPage$BasePage(curPage).meta;
+    } else {
+      const routeOptions = getRouteOptions(route.path, true);
+      if (routeOptions) {
+        meta = routeOptions.meta;
+      }
+    }
+    const maxWidth2 = parseInt(String((hasOwn(meta, "maxWidth") ? meta.maxWidth : __uniConfig.globalStyle.maxWidth) || Number.MAX_SAFE_INTEGER));
+    let showMaxWidth = false;
+    if (windowWidth > maxWidth2) {
+      showMaxWidth = true;
+    } else {
+      showMaxWidth = false;
+    }
+    if (showMaxWidth && maxWidth2) {
+      layoutState.marginWidth = (windowWidth - maxWidth2) / 2;
+      nextTick(() => {
+        const rootEl = rootRef.value;
+        if (rootEl) {
+          rootEl.setAttribute("style", "max-width:" + maxWidth2 + "px;margin:0 auto;");
+        }
+      });
+    } else {
+      layoutState.marginWidth = 0;
+      nextTick(() => {
+        const rootEl = rootRef.value;
+        if (rootEl) {
+          rootEl.removeAttribute("style");
+        }
+      });
+    }
+  }
+  watch([() => route.path], checkMaxWidth2);
+  onMounted(() => {
+    checkMaxWidth2();
+    window.addEventListener("resize", checkMaxWidth2);
+  });
+}
+function useState$2() {
+  const route = usePageRoute();
+  if (!__UNI_FEATURE_RESPONSIVE__) {
+    const layoutState2 = reactive({
+      marginWidth: 0,
+      leftWindowWidth: 0,
+      rightWindowWidth: 0
+    });
+    watch(() => layoutState2.marginWidth, (value) => updateCssVar({
+      "--window-margin": value + "px"
+    }));
+    watch(() => layoutState2.leftWindowWidth + layoutState2.marginWidth, (value) => {
+      updateCssVar({
+        "--window-left": value + "px"
+      });
+    });
+    watch(() => layoutState2.rightWindowWidth + layoutState2.marginWidth, (value) => {
+      updateCssVar({
+        "--window-right": value + "px"
+      });
+    });
+    return {
+      layoutState: layoutState2,
+      windowState: computed(() => ({}))
+    };
+  }
+  const topWindowMediaQuery = ref(false);
+  const leftWindowMediaQuery = ref(false);
+  const rightWindowMediaQuery = ref(false);
+  const showTopWindow2 = computed(() => __UNI_FEATURE_TOPWINDOW__ && route.meta.topWindow !== false && topWindowMediaQuery.value);
+  const showLeftWindow2 = computed(() => __UNI_FEATURE_LEFTWINDOW__ && route.meta.leftWindow !== false && leftWindowMediaQuery.value);
+  const showRightWindow2 = computed(() => __UNI_FEATURE_RIGHTWINDOW__ && route.meta.rightWindow !== false && rightWindowMediaQuery.value);
+  const layoutState = reactive({
+    topWindowMediaQuery,
+    showTopWindow: showTopWindow2,
+    apiShowTopWindow: false,
+    leftWindowMediaQuery,
+    showLeftWindow: showLeftWindow2,
+    apiShowLeftWindow: false,
+    rightWindowMediaQuery,
+    showRightWindow: showRightWindow2,
+    apiShowRightWindow: false,
+    topWindowHeight: 0,
+    marginWidth: 0,
+    leftWindowWidth: 0,
+    rightWindowWidth: 0,
+    navigationBarTitleText: "",
+    topWindowStyle: {},
+    leftWindowStyle: {},
+    rightWindowStyle: {}
+  });
+  const props2 = ["topWindow", "leftWindow", "rightWindow"];
+  props2.forEach((prop) => {
+    var _a;
+    const matchMedia = (_a = __uniConfig[prop]) == null ? void 0 : _a.matchMedia;
+    let topWindowMinWidth = RESPONSIVE_MIN_WIDTH;
+    if (matchMedia && hasOwn(matchMedia, "minWidth")) {
+      const minWidth = matchMedia.minWidth;
+      topWindowMinWidth = checkMinWidth(minWidth) ? minWidth : topWindowMinWidth;
+    }
+    const matches2 = initMediaQuery(topWindowMinWidth, (ev) => {
+      layoutState[`${prop}MediaQuery`] = ev.matches;
+    });
+    layoutState[`${prop}MediaQuery`] = matches2;
+  });
+  watch(() => layoutState.topWindowHeight, (value) => updateCssVar({
+    "--top-window-height": value + "px"
+  }));
+  watch(() => layoutState.marginWidth, (value) => updateCssVar({
+    "--window-margin": value + "px"
+  }));
+  watch(() => layoutState.leftWindowWidth + layoutState.marginWidth, (value) => {
+    updateCssVar({
+      "--window-left": value + "px"
+    });
+  });
+  watch(() => layoutState.rightWindowWidth + layoutState.marginWidth, (value) => {
+    updateCssVar({
+      "--window-right": value + "px"
+    });
+  });
+  UniServiceJSBridge.on(ON_NAVIGATION_BAR_CHANGE, (navigationBar) => {
+    layoutState.navigationBarTitleText = navigationBar.titleText;
+  });
+  const windowState = computed(() => ({
+    matchTopWindow: layoutState.topWindowMediaQuery,
+    showTopWindow: layoutState.showTopWindow || layoutState.apiShowTopWindow,
+    matchLeftWindow: layoutState.leftWindowMediaQuery,
+    showLeftWindow: layoutState.showLeftWindow || layoutState.apiShowLeftWindow,
+    matchRightWindow: layoutState.rightWindowMediaQuery,
+    showRightWindow: layoutState.showRightWindow || layoutState.apiShowRightWindow
+  }));
+  return {
+    layoutState,
+    windowState
+  };
+}
+function createLayoutTsx(keepAliveRoute, layoutState, windowState, topWindow, leftWindow, rightWindow) {
+  const routerVNode = __UNI_FEATURE_PAGES__ ? createRouterViewVNode(keepAliveRoute) : createPageVNode();
+  if (!__UNI_FEATURE_RESPONSIVE__) {
+    return routerVNode;
+  }
+  const topWindowTsx = __UNI_FEATURE_TOPWINDOW__ ? createTopWindowTsx(topWindow, layoutState, windowState.value) : null;
+  const leftWindowTsx = __UNI_FEATURE_LEFTWINDOW__ ? createLeftWindowTsx(leftWindow, layoutState, windowState.value) : null;
+  const rightWindowTsx = __UNI_FEATURE_RIGHTWINDOW__ ? createRightWindowTsx(rightWindow, layoutState, windowState.value) : null;
+  return createVNode("uni-layout", {
+    "class": {
+      "uni-app--showtopwindow": __UNI_FEATURE_TOPWINDOW__ && layoutState.showTopWindow,
+      "uni-app--showleftwindow": __UNI_FEATURE_LEFTWINDOW__ && layoutState.showLeftWindow,
+      "uni-app--showrightwindow": __UNI_FEATURE_RIGHTWINDOW__ && layoutState.showRightWindow
+    }
+  }, [topWindowTsx, createVNode("uni-content", null, [createVNode("uni-main", null, [routerVNode]), leftWindowTsx, rightWindowTsx])], 2);
+}
+function useShowTabBar(emit2) {
+  const route = usePageRoute();
+  const tabBar2 = useTabBar();
+  const showTabBar2 = computed(() => route.meta.isTabBar && tabBar2.shown);
+  updateCssVar({
+    "--tab-bar-height": tabBar2.height
+  });
+  return showTabBar2;
+}
+function createTabBarTsx(showTabBar2) {
+  return withDirectives(createVNode(TabBar, null, null, 512), [[vShow, showTabBar2.value]]);
+}
+function createPageVNode() {
+  return createVNode(__uniRoutes[0].component);
+}
+function createRouterViewVNode({
+  routeKey,
+  isTabBar,
+  routeCache: routeCache2
+}) {
+  return createVNode(RouterView, null, {
+    default: withCtx(({
+      Component
+    }) => [(openBlock(), createBlock(KeepAlive, {
+      matchBy: "key",
+      cache: routeCache2
+    }, [(openBlock(), createBlock(resolveDynamicComponent(Component), {
+      type: isTabBar.value ? "tabBar" : "",
+      key: routeKey.value
+    }))], 1032, ["cache"]))]),
+    _: 1
+    /* STABLE */
+  });
+}
+function useTopWindow(layoutState) {
+  const {
+    component,
+    style
+  } = __uniConfig.topWindow;
+  const windowRef = ref(null);
+  function updateWindow() {
+    const instance2 = windowRef.value;
+    const el = resolveOwnerEl(instance2.$);
+    const height = el.getBoundingClientRect().height;
+    layoutState.topWindowHeight = height;
+  }
+  onMounted(updateWindow);
+  watch(() => layoutState.showTopWindow || layoutState.apiShowTopWindow, () => nextTick(updateWindow));
+  layoutState.topWindowStyle = style;
+  return {
+    component,
+    windowRef
+  };
+}
+function useLeftWindow(layoutState) {
+  const {
+    component,
+    style
+  } = __uniConfig.leftWindow;
+  const windowRef = ref(null);
+  function updateWindow() {
+    const instance2 = windowRef.value;
+    const el = resolveOwnerEl(instance2.$);
+    const width = el.getBoundingClientRect().width;
+    layoutState.leftWindowWidth = width;
+  }
+  onMounted(updateWindow);
+  watch(() => layoutState.showLeftWindow || layoutState.apiShowLeftWindow, () => nextTick(updateWindow));
+  layoutState.leftWindowStyle = style;
+  return {
+    component,
+    windowRef
+  };
+}
+function useRightWindow(layoutState) {
+  const {
+    component,
+    style
+  } = __uniConfig.rightWindow;
+  const windowRef = ref(null);
+  function updateWindow() {
+    const instance2 = windowRef.value;
+    const el = resolveOwnerEl(instance2.$);
+    const width = el.getBoundingClientRect().width;
+    layoutState.rightWindowWidth = width;
+  }
+  onMounted(updateWindow);
+  watch(() => layoutState.showRightWindow || layoutState.apiShowRightWindow, () => nextTick(updateWindow));
+  layoutState.rightWindowStyle = style;
+  return {
+    component,
+    windowRef
+  };
+}
+function createTopWindowTsx(topWindow, layoutState, windowState) {
+  if (topWindow) {
+    const {
+      component: TopWindow,
+      windowRef
+    } = topWindow;
+    return withDirectives(createVNode("uni-top-window", null, [createVNode("div", {
+      "class": "uni-top-window",
+      "style": layoutState.topWindowStyle
+    }, [createVNode(TopWindow, mergeProps({
+      "ref": windowRef,
+      "navigation-bar-title-text": layoutState.navigationBarTitleText
+    }, windowState), null, 16, ["navigation-bar-title-text"])], 4), createVNode("div", {
+      "class": "uni-top-window--placeholder",
+      "style": {
+        height: layoutState.topWindowHeight + "px"
+      }
+    }, null, 4)], 512), [[vShow, layoutState.showTopWindow || layoutState.apiShowTopWindow]]);
+  }
+}
+function createLeftWindowTsx(leftWindow, layoutState, windowState) {
+  if (leftWindow) {
+    const {
+      component: LeftWindow,
+      windowRef
+    } = leftWindow;
+    return withDirectives(createVNode("uni-left-window", {
+      "data-show": layoutState.apiShowLeftWindow || void 0,
+      "style": layoutState.leftWindowStyle
+    }, [layoutState.apiShowLeftWindow ? createVNode("div", {
+      "class": "uni-mask",
+      "onClick": () => layoutState.apiShowLeftWindow = false
+    }, null, 8, ["onClick"]) : null, createVNode("div", {
+      "class": "uni-left-window"
+    }, [createVNode(LeftWindow, mergeProps({
+      "ref": windowRef
+    }, windowState), null, 16)])], 12, ["data-show"]), [[vShow, layoutState.showLeftWindow || layoutState.apiShowLeftWindow]]);
+  }
+}
+function createRightWindowTsx(rightWindow, layoutState, windowState) {
+  if (rightWindow) {
+    const {
+      component: RightWindow,
+      windowRef
+    } = rightWindow;
+    return withDirectives(createVNode("uni-right-window", {
+      "data-show": layoutState.apiShowRightWindow || void 0,
+      "style": layoutState.rightWindowStyle
+    }, [layoutState.apiShowRightWindow ? createVNode("div", {
+      "class": "uni-mask",
+      "onClick": () => layoutState.apiShowRightWindow = false
+    }, null, 8, ["onClick"]) : null, createVNode("div", {
+      "class": "uni-right-window"
+    }, [createVNode(RightWindow, mergeProps({
+      "ref": windowRef
+    }, windowState), null, 16)])], 12, ["data-show"]), [[vShow, layoutState.showRightWindow || layoutState.apiShowRightWindow]]);
+  }
+}
+const showTopWindow = /* @__PURE__ */ defineAsyncApi(
+  "showTopWindow",
+  (_, { resolve, reject }) => {
+    const state2 = getLayoutState();
+    if (!state2) {
+      reject();
+      return;
+    }
+    state2.apiShowTopWindow = true;
+    nextTick(resolve);
+  }
+);
+const hideTopWindow = /* @__PURE__ */ defineAsyncApi(
+  "hideTopWindow",
+  (_, { resolve, reject }) => {
+    const state2 = getLayoutState();
+    if (!state2) {
+      reject();
+      return;
+    }
+    state2.apiShowTopWindow = false;
+    nextTick(resolve);
+  }
+);
+const showLeftWindow = /* @__PURE__ */ defineAsyncApi(
+  "showLeftWindow",
+  (_, { resolve, reject }) => {
+    const state2 = getLayoutState();
+    if (!state2) {
+      reject();
+      return;
+    }
+    state2.apiShowLeftWindow = true;
+    nextTick(resolve);
+  }
+);
+const hideLeftWindow = /* @__PURE__ */ defineAsyncApi(
+  "hideLeftWindow",
+  (_, { resolve, reject }) => {
+    const state2 = getLayoutState();
+    if (!state2) {
+      reject();
+      return;
+    }
+    state2.apiShowLeftWindow = false;
+    nextTick(resolve);
+  }
+);
+const showRightWindow = /* @__PURE__ */ defineAsyncApi(
+  "showRightWindow",
+  (_, { resolve, reject }) => {
+    const state2 = getLayoutState();
+    if (!state2) {
+      reject();
+      return;
+    }
+    state2.apiShowRightWindow = true;
+    nextTick(resolve);
+  }
+);
+const hideRightWindow = /* @__PURE__ */ defineAsyncApi(
+  "hideRightWindow",
+  (_, { resolve, reject }) => {
+    const state2 = getLayoutState();
+    if (!state2) {
+      reject();
+      return;
+    }
+    state2.apiShowRightWindow = false;
+    nextTick(resolve);
+  }
+);
+const getTopWindowStyle = /* @__PURE__ */ defineSyncApi(
+  "getTopWindowStyle",
+  () => {
+    const state2 = getLayoutState();
+    return extend({}, state2 && state2.topWindowStyle);
+  }
+);
+const setTopWindowStyle = /* @__PURE__ */ defineSyncApi(
+  "setTopWindowStyle",
+  (style) => {
+    const state2 = getLayoutState();
+    if (state2) {
+      state2.topWindowStyle = style;
+    }
+  }
+);
+const getLeftWindowStyle = /* @__PURE__ */ defineSyncApi(
+  "getLeftWindowStyle",
+  () => {
+    const state2 = getLayoutState();
+    return extend({}, state2 && state2.leftWindowStyle);
+  }
+);
+const setLeftWindowStyle = /* @__PURE__ */ defineSyncApi(
+  "setLeftWindowStyle",
+  (style) => {
+    const state2 = getLayoutState();
+    if (state2) {
+      state2.leftWindowStyle = style;
+    }
+  }
+);
+const getRightWindowStyle = /* @__PURE__ */ defineSyncApi("getRightWindowStyle", () => {
+  const state2 = getLayoutState();
+  return extend({}, state2 && state2.rightWindowStyle);
+});
+const setRightWindowStyle = /* @__PURE__ */ defineSyncApi("setRightWindowStyle", (style) => {
+  const state2 = getLayoutState();
+  if (state2) {
+    state2.rightWindowStyle = style;
+  }
+});
+const getElementById = /* @__PURE__ */ defineSyncApi(
+  "getElementById",
+  (id2) => {
+    const uniPageBody = document.querySelector("uni-page-body");
+    return uniPageBody ? uniPageBody.querySelector(`#${id2}`) : null;
+  }
+);
+const saveImageToPhotosAlbum = /* @__PURE__ */ defineAsyncApi(
+  API_SAVE_IMAGE_TO_PHOTOS_ALBUM,
+  createUnsupportedAsyncApi(API_SAVE_IMAGE_TO_PHOTOS_ALBUM)
+);
+const API_GET_RECORDER_MANAGER = "getRecorderManager";
+const getRecorderManager = /* @__PURE__ */ defineSyncApi(
+  API_GET_RECORDER_MANAGER,
+  createUnsupportedSyncApi(API_GET_RECORDER_MANAGER)
+);
+const saveVideoToPhotosAlbum = /* @__PURE__ */ defineAsyncApi(
+  API_SAVE_VIDEO_TO_PHOTOS_ALBUM,
+  createUnsupportedAsyncApi(API_SAVE_VIDEO_TO_PHOTOS_ALBUM)
+);
+const API_CREATE_CAMERA_CONTEXT = "createCameraContext";
+const createCameraContext = /* @__PURE__ */ defineSyncApi(
+  API_CREATE_CAMERA_CONTEXT,
+  createUnsupportedSyncApi(API_CREATE_CAMERA_CONTEXT)
+);
+const API_CREATE_LIVE_PLAYER_CONTEXT = "createLivePlayerContext";
+const createLivePlayerContext = /* @__PURE__ */ defineSyncApi(
+  API_CREATE_LIVE_PLAYER_CONTEXT,
+  createUnsupportedSyncApi(API_CREATE_LIVE_PLAYER_CONTEXT)
+);
+const API_SAVE_FILE = "saveFile";
+const saveFile = /* @__PURE__ */ defineAsyncApi(
+  API_SAVE_FILE,
+  createUnsupportedAsyncApi(API_SAVE_FILE)
+);
+const API_GET_SAVED_FILE_LIST = "getSavedFileList";
+const getSavedFileList = /* @__PURE__ */ defineAsyncApi(
+  API_GET_SAVED_FILE_LIST,
+  createUnsupportedAsyncApi(API_GET_SAVED_FILE_LIST)
+);
+const API_GET_SAVED_FILE_INFO = "getSavedFileInfo";
+const getSavedFileInfo = /* @__PURE__ */ defineAsyncApi(
+  API_GET_SAVED_FILE_INFO,
+  createUnsupportedAsyncApi(API_GET_SAVED_FILE_INFO)
+);
+const API_REMOVE_SAVED_FILE = "removeSavedFile";
+const removeSavedFile = /* @__PURE__ */ defineAsyncApi(
+  API_REMOVE_SAVED_FILE,
+  createUnsupportedAsyncApi(API_REMOVE_SAVED_FILE)
+);
+const API_ON_MEMORY_WARNING = "onMemoryWarning";
+const onMemoryWarning = /* @__PURE__ */ defineOnApi(
+  API_ON_MEMORY_WARNING,
+  createUnsupportedOnApi(API_ON_MEMORY_WARNING)
+);
+const API_ON_GYROSCOPE_CHANGE = "onGyroscopeChange";
+const onGyroscopeChange = /* @__PURE__ */ defineOnApi(
+  API_ON_GYROSCOPE_CHANGE,
+  createUnsupportedOnApi(API_ON_GYROSCOPE_CHANGE)
+);
+const API_START_GYROSCOPE = "startGyroscope";
+const startGyroscope = /* @__PURE__ */ defineAsyncApi(
+  API_START_GYROSCOPE,
+  createUnsupportedAsyncApi(API_START_GYROSCOPE)
+);
+const API_STOP_GYROSCOPE = "stopGyroscope";
+const stopGyroscope = /* @__PURE__ */ defineAsyncApi(
+  API_STOP_GYROSCOPE,
+  createUnsupportedAsyncApi(API_STOP_GYROSCOPE)
+);
+const API_SCAN_CODE = "scanCode";
+const scanCode = /* @__PURE__ */ defineAsyncApi(
+  API_SCAN_CODE,
+  createUnsupportedAsyncApi(API_SCAN_CODE)
+);
+const API_SET_SCREEN_BRIGHTNESS = "setScreenBrightness";
+const setScreenBrightness = /* @__PURE__ */ defineAsyncApi(
+  API_SET_SCREEN_BRIGHTNESS,
+  createUnsupportedAsyncApi(API_SET_SCREEN_BRIGHTNESS)
+);
+const API_GET_SCREEN_BRIGHTNESS = "getScreenBrightness";
+const getScreenBrightness = /* @__PURE__ */ defineAsyncApi(
+  API_GET_SCREEN_BRIGHTNESS,
+  createUnsupportedAsyncApi(API_GET_SCREEN_BRIGHTNESS)
+);
+const API_SET_KEEP_SCREEN_ON = "setKeepScreenOn";
+const setKeepScreenOn = /* @__PURE__ */ defineAsyncApi(
+  API_SET_KEEP_SCREEN_ON,
+  createUnsupportedAsyncApi(API_SET_KEEP_SCREEN_ON)
+);
+const API_ON_USER_CAPTURE_SCREEN = "onUserCaptureScreen";
+const onUserCaptureScreen = /* @__PURE__ */ defineOnApi(
+  API_ON_USER_CAPTURE_SCREEN,
+  createUnsupportedOnApi(API_ON_USER_CAPTURE_SCREEN)
+);
+const API_ADD_PHONE_CONTACT = "addPhoneContact";
+const addPhoneContact = /* @__PURE__ */ defineAsyncApi(
+  API_ADD_PHONE_CONTACT,
+  createUnsupportedAsyncApi(API_ADD_PHONE_CONTACT)
+);
+const API_LOGIN = "login";
+const login = /* @__PURE__ */ defineAsyncApi(
+  API_LOGIN,
+  createUnsupportedAsyncApi(API_LOGIN)
+);
+const API_GET_PROVIDER = "getProvider";
+const getProvider = /* @__PURE__ */ defineAsyncApi(
+  API_GET_PROVIDER,
+  createUnsupportedAsyncApi(API_GET_PROVIDER)
+);
+class CanvasContextImpl {
+  constructor(element) {
+    this._element = element;
+  }
+  getContext(type) {
+    return this._element.getContext(type);
+  }
+  toBlob(callback, type, quality) {
+    this._element.toBlob(callback, type, quality);
+  }
+  toDataURL(type, encoderOptions) {
+    return this._element.toDataURL(type, encoderOptions);
+  }
+  // @ts-expect-error TODO 类型不匹配?
+  createImage() {
+    return new Image();
+  }
+  createPath2D() {
+    return new Path2D();
+  }
+  requestAnimationFrame(callback) {
+    return window.requestAnimationFrame(callback);
+  }
+  cancelAnimationFrame(taskId) {
+    window.cancelAnimationFrame(taskId);
+  }
+}
+const createCanvasContextAsync = function(options) {
+  var _a, _b, _c, _d, _e, _f;
+  const pages = getCurrentBasePages();
+  const currentPage = (_a = options.component) != null ? _a : pages[pages.length - 1];
+  if (currentPage != null) {
+    const element = (_b = currentPage.$el) == null ? void 0 : _b.querySelector("#" + options.id);
+    if (element != null) {
+      const canvas = element;
+      (_c = options.success) == null ? void 0 : _c.call(options, new CanvasContextImpl(canvas));
+    } else {
+      const uniError = new UniError(
+        "uni-createCanvasContextAsync",
+        -1,
+        "canvas id invalid."
+      );
+      (_d = options.fail) == null ? void 0 : _d.call(options, uniError);
+    }
+  } else {
+    const uniError = new UniError(
+      "uni-createCanvasContextAsync",
+      -1,
+      "No found current page."
+    );
+    (_e = options.fail) == null ? void 0 : _e.call(options, uniError);
+  }
+  (_f = options.complete) == null ? void 0 : _f.call(options);
+};
+const openDialogPage = (options) => {
+  var _a, _b;
+  if (!options.url) {
+    triggerFailCallback$1(options, "url is required");
+    return null;
+  }
+  const { path, query } = parseUrl(options.url);
+  const normalizeUrl = createNormalizeUrl("navigateTo");
+  const errMsg = normalizeUrl(path, {});
+  if (errMsg) {
+    triggerFailCallback$1(options, errMsg);
+    return null;
+  }
+  const targetRoute = __uniRoutes.find((route) => {
+    return path.indexOf(route.meta.route) !== -1;
+  });
+  const dialogPage = new UniDialogPageImpl({
+    route: path,
+    options: new UTSJSONObject(query),
+    $component: targetRoute.component,
+    getParentPage: () => null,
+    $disableEscBack: options.disableEscBack
+  });
+  let parentPage = options.parentPage;
+  const currentPages = getCurrentPages();
+  if (parentPage) {
+    if (currentPages.indexOf(parentPage) === -1) {
+      triggerFailCallback$1(options, "parentPage is not a valid page");
+      return null;
+    }
+  }
+  if (!currentPages.length) {
+    homeDialogPages.push(dialogPage);
+  } else {
+    if (!parentPage) {
+      parentPage = currentPages[currentPages.length - 1];
+    }
+    dialogPage.getParentPage = () => parentPage;
+    parentPage.getDialogPages().push(dialogPage);
+  }
+  if (!options.disableEscBack) {
+    incrementEscBackPageNum();
+  }
+  const successOptions = {
+    errMsg: "openDialogPage:ok"
+  };
+  (_a = options.success) == null ? void 0 : _a.call(options, successOptions);
+  (_b = options.complete) == null ? void 0 : _b.call(options, successOptions);
+  return dialogPage;
+};
+function triggerFailCallback$1(options, errMsg) {
+  var _a, _b;
+  const failOptions = new UniError(
+    "uni-openDialogPage",
+    4,
+    `openDialogPage: fail, ${errMsg}`
+  );
+  (_a = options.fail) == null ? void 0 : _a.call(options, failOptions);
+  (_b = options.complete) == null ? void 0 : _b.call(options, failOptions);
+}
+const closeDialogPage = (options) => {
+  var _a, _b;
+  const currentPages = getCurrentPages();
+  const currentPage = currentPages[currentPages.length - 1];
+  if (!currentPage) {
+    triggerFailCallback(options, "currentPage is null");
+    return;
+  }
+  if (options == null ? void 0 : options.dialogPage) {
+    const dialogPage = options == null ? void 0 : options.dialogPage;
+    const parentPage = dialogPage.getParentPage();
+    if (parentPage && currentPages.indexOf(parentPage) !== -1) {
+      const parentDialogPages = parentPage.getDialogPages();
+      const index2 = parentDialogPages.indexOf(dialogPage);
+      parentDialogPages.splice(index2, 1);
+      invokeHook(dialogPage.$vm, ON_UNLOAD);
+      if (index2 > 0 && index2 === parentDialogPages.length) {
+        invokeHook(
+          parentDialogPages[parentDialogPages.length - 1].$vm,
+          ON_SHOW
+        );
+      }
+      if (!dialogPage.$disableEscBack) {
+        decrementEscBackPageNum();
+      }
+    } else {
+      triggerFailCallback(options, "dialogPage is not a valid page");
+      return;
+    }
+  } else {
+    const dialogPages = currentPage.getDialogPages();
+    for (let i = dialogPages.length - 1; i >= 0; i--) {
+      invokeHook(dialogPages[i].$vm, ON_UNLOAD);
+      if (i > 0) {
+        invokeHook(dialogPages[i - 1].$vm, ON_SHOW);
+      }
+      if ((!dialogPages[i]).$disableEscBack) {
+        decrementEscBackPageNum();
+      }
+    }
+    dialogPages.length = 0;
+  }
+  const successOptions = { errMsg: "closeDialogPage: ok" };
+  (_a = options == null ? void 0 : options.success) == null ? void 0 : _a.call(options, successOptions);
+  (_b = options == null ? void 0 : options.complete) == null ? void 0 : _b.call(options, successOptions);
+};
+function triggerFailCallback(options, errMsg) {
+  var _a, _b;
+  const failOptions = new UniError(
+    "uni-closeDialogPage",
+    4,
+    `closeDialogPage: fail, ${errMsg}`
+  );
+  (_a = options == null ? void 0 : options.fail) == null ? void 0 : _a.call(options, failOptions);
+  (_b = options == null ? void 0 : options.complete) == null ? void 0 : _b.call(options, failOptions);
+}
 const SEP = "$$";
 const currentPagesMap = /* @__PURE__ */ new Map();
 const homeDialogPages = [];
-class UniBasePageImpl {
-  constructor({ route, options }) {
-    this.getParentPage = () => null;
-    this.route = route;
-    this.options = options;
-  }
-  getDialogPages() {
-    return [];
-  }
-}
-class UniPageImpl extends UniBasePageImpl {
+class UniPageImpl {
   constructor({
     route,
     options,
     vm
   }) {
-    super({ route, options });
-    this.getParentPage = () => {
-      return null;
-    };
+    this.getParentPage = () => null;
+    this.route = route;
+    this.options = options;
     this.vm = vm;
     this.$vm = vm;
   }
@@ -8296,10 +17346,6 @@ class UniPageImpl extends UniBasePageImpl {
     const uniPageBody = document.querySelector("uni-page-body");
     return uniPageBody ? uniPageBody.querySelector(`#${id2}`) : null;
   }
-  getDialogPages() {
-    var _a;
-    return ((_a = getPageInstanceByVm(this.vm)) == null ? void 0 : _a.$dialogPages.value) || [];
-  }
   getAndroidView() {
     return null;
   }
@@ -8310,11 +17356,27 @@ class UniPageImpl extends UniBasePageImpl {
     }
     return document.querySelector("uni-page-body");
   }
+  getDialogPages() {
+    return [];
+  }
+}
+class UniNormalPageImpl extends UniPageImpl {
+  getDialogPages() {
+    var _a;
+    return this.vm ? (_a = getPageInstanceByVm(this.vm)) == null ? void 0 : _a.$dialogPages.value : [];
+  }
+  constructor({
+    route,
+    options,
+    vm
+  }) {
+    super({ route, options, vm });
+  }
 }
 function getPage$BasePage(page) {
   return page.$basePage;
 }
-class UniDialogPageImpl extends UniBasePageImpl {
+class UniDialogPageImpl extends UniPageImpl {
   constructor({
     route,
     options,
@@ -8322,9 +17384,7 @@ class UniDialogPageImpl extends UniBasePageImpl {
     getParentPage,
     $disableEscBack = false
   }) {
-    super({ route, options });
-    this.vm = null;
-    this.$vm = null;
+    super({ route, options, vm: null });
     this.$component = null;
     this.$disableEscBack = false;
     this.$component = $component;
@@ -8341,12 +17401,14 @@ const redirectToPagesBeforeEntryPages = [];
 const reLaunchPagesBeforeEntryPages = [];
 let escBackPageNum = 0;
 function handleEscKeyPress(event) {
-  if (event.key === "Escape") {
-    const currentPage = getCurrentPage();
-    const dialogPages = currentPage.getDialogPages();
-    const dialogPage = dialogPages[dialogPages.length - 1];
-    if (!dialogPage.$disableEscBack) {
-      uni.closeDialogPage({ dialogPage });
+  {
+    if (event.key === "Escape") {
+      const currentPage = getCurrentPage();
+      const dialogPages = currentPage.getDialogPages();
+      const dialogPage = dialogPages[dialogPages.length - 1];
+      if (!dialogPage.$disableEscBack) {
+        closeDialogPage({ dialogPage });
+      }
     }
   }
 }
@@ -8404,7 +17466,7 @@ function removePage(routeKey, removeRouteCaches = true) {
   {
     const dialogPages = pageVm.$page.getDialogPages();
     for (let i = dialogPages.length - 1; i >= 0; i--) {
-      uni.closeDialogPage({ dialogPage: dialogPages[i] });
+      closeDialogPage({ dialogPage: dialogPages[i] });
     }
   }
   pageVm.$.__isUnload = true;
@@ -8439,7 +17501,7 @@ function initPage(vm) {
     vm.$basePage = vm.$page;
     const pageInstance = getPageInstanceByVm(vm);
     if ((pageInstance == null ? void 0 : pageInstance.attrs.type) !== "dialog") {
-      const uniPage = new UniPageImpl({
+      const uniPage = new UniNormalPageImpl({
         route: (route == null ? void 0 : route.path) || "",
         options: new UTSJSONObject((route == null ? void 0 : route.query) || {}),
         vm
@@ -8728,43 +17790,6 @@ function getRealPath(filePath) {
     );
   }
   return filePath;
-}
-const ua = navigator.userAgent;
-const isAndroid = /* @__PURE__ */ /android/i.test(ua);
-const isIOS = /* @__PURE__ */ /iphone|ipad|ipod/i.test(ua);
-const isWindows = /* @__PURE__ */ ua.match(/Windows NT ([\d|\d.\d]*)/i);
-const isMac = /* @__PURE__ */ /Macintosh|Mac/i.test(ua);
-const isLinux = /* @__PURE__ */ /Linux|X11/i.test(ua);
-const isIPadOS = isMac && navigator.maxTouchPoints > 0;
-function getScreenFix() {
-  return /^Apple/.test(navigator.vendor) && typeof window.orientation === "number";
-}
-function isLandscape(screenFix) {
-  return screenFix && Math.abs(window.orientation) === 90;
-}
-function getScreenWidth(screenFix, landscape) {
-  return screenFix ? Math[landscape ? "max" : "min"](screen.width, screen.height) : screen.width;
-}
-function getScreenHeight(screenFix, landscape) {
-  return screenFix ? Math[landscape ? "min" : "max"](screen.height, screen.width) : screen.height;
-}
-function getWindowWidth(screenWidth) {
-  return Math.min(
-    window.innerWidth,
-    document.documentElement.clientWidth,
-    screenWidth
-  ) || screenWidth;
-}
-function getBaseSystemInfo() {
-  const screenFix = getScreenFix();
-  const windowWidth = getWindowWidth(
-    getScreenWidth(screenFix, isLandscape(screenFix))
-  );
-  return {
-    platform: isIOS ? "ios" : "other",
-    pixelRatio: window.devicePixelRatio,
-    windowWidth
-  };
 }
 function operateVideoPlayer(videoId, pageId, type, data) {
   UniServiceJSBridge.invokeViewMethod(
@@ -9118,85 +18143,6 @@ function removeMediaQueryObserver({ reqId, component }, _pageId) {
     delete listeners[reqId];
     delete mediaQueryObservers[reqId];
   }
-}
-const files = {};
-function urlToFile(url, local) {
-  const file = files[url];
-  if (file) {
-    return Promise.resolve(file);
-  }
-  if (/^data:[a-z-]+\/[a-z-]+;base64,/.test(url)) {
-    return Promise.resolve(base64ToFile(url));
-  }
-  if (local) {
-    return Promise.reject(new Error("not find"));
-  }
-  return new Promise((resolve, reject) => {
-    const xhr = new XMLHttpRequest();
-    xhr.open("GET", url, true);
-    xhr.responseType = "blob";
-    xhr.onload = function() {
-      resolve(this.response);
-    };
-    xhr.onerror = reject;
-    xhr.send();
-  });
-}
-function base64ToFile(base64) {
-  const base64Array = base64.split(",");
-  const res = base64Array[0].match(/:(.*?);/);
-  const type = res ? res[1] : "";
-  const str = atob(base64Array[1]);
-  let n = str.length;
-  const array = new Uint8Array(n);
-  while (n--) {
-    array[n] = str.charCodeAt(n);
-  }
-  return blobToFile(array, type);
-}
-function getExtname(type) {
-  const extname = type.split("/")[1];
-  return extname ? `.${extname}` : "";
-}
-function getFileName(url) {
-  url = url.split("#")[0].split("?")[0];
-  const array = url.split("/");
-  return array[array.length - 1];
-}
-function blobToFile(blob, type) {
-  let file;
-  if (blob instanceof File) {
-    file = blob;
-  } else {
-    type = type || blob.type || "";
-    const filename = `${Date.now()}${getExtname(type)}`;
-    try {
-      file = new File([blob], filename, { type });
-    } catch (error) {
-      blob = blob instanceof Blob ? blob : new Blob([blob], { type });
-      file = blob;
-      file.name = file.name || filename;
-    }
-  }
-  return file;
-}
-function fileToUrl(file) {
-  for (const key in files) {
-    if (hasOwn(files, key)) {
-      const oldFile = files[key];
-      if (oldFile === file) {
-        return key;
-      }
-    }
-  }
-  var url = (window.URL || window.webkitURL).createObjectURL(file);
-  files[url] = file;
-  return url;
-}
-function revokeObjectURL(url) {
-  const URL = window.URL || window.webkitURL;
-  URL.revokeObjectURL(url);
-  delete files[url];
 }
 var startTag = /^<([-A-Za-z0-9_]+)((?:\s+[a-zA-Z_:][-a-zA-Z0-9_:.]*(?:\s*=\s*(?:(?:"[^"]*")|(?:'[^']*')|[^>\s]+))?)*)\s*(\/?)>/;
 var endTag = /^<\/([-A-Za-z0-9_]+)[^>]*>/;
@@ -9990,7 +18936,7 @@ function useQuill(props2, rootRef, trigger) {
     });
   });
 }
-const props$u = /* @__PURE__ */ extend({}, props$v, {
+const props$d = /* @__PURE__ */ extend({}, props$v, {
   id: {
     type: String,
     default: ""
@@ -10018,9 +18964,9 @@ const props$u = /* @__PURE__ */ extend({}, props$v, {
 });
 class UniEditorElement extends UniElement {
 }
-const index$s = /* @__PURE__ */ defineBuiltInComponent({
+const index$g = /* @__PURE__ */ defineBuiltInComponent({
   name: "Editor",
-  props: props$u,
+  props: props$d,
   emit: ["ready", "focus", "blur", "input", "statuschange", ...emit$1],
   rootElement: {
     name: "uni-editor",
@@ -10090,7 +19036,7 @@ const ICONS = {
 };
 class UniIconElement extends UniElement {
 }
-const index$r = /* @__PURE__ */ defineBuiltInComponent({
+const index$f = /* @__PURE__ */ defineBuiltInComponent({
   name: "Icon",
   props: {
     type: {
@@ -10196,7 +19142,7 @@ function useResizeSensorLifecycle(rootRef, props2, update, reset) {
     }
   });
 }
-const props$t = {
+const props$c = {
   src: {
     type: String,
     default: ""
@@ -10235,9 +19181,9 @@ const IMAGE_MODES = {
 };
 class UniImageElement extends UniElement {
 }
-const index$q = /* @__PURE__ */ defineBuiltInComponent({
+const index$e = /* @__PURE__ */ defineBuiltInComponent({
   name: "Image",
-  props: props$t,
+  props: props$c,
   rootElement: {
     name: "uni-image",
     class: UniImageElement
@@ -10600,7 +19546,7 @@ const INPUT_MODES = [
   "email",
   "url"
 ];
-const props$s = /* @__PURE__ */ extend(
+const props$b = /* @__PURE__ */ extend(
   {},
   {
     name: {
@@ -10940,7 +19886,7 @@ function useField(props2, rootRef, emit2, beforeInput) {
     trigger
   };
 }
-const props$r = /* @__PURE__ */ extend({}, props$s, {
+const props$a = /* @__PURE__ */ extend({}, props$b, {
   placeholderClass: {
     type: String,
     default: "input-placeholder"
@@ -11017,7 +19963,7 @@ class UniInputElement extends UniElement {
 }
 const Input = /* @__PURE__ */ defineBuiltInComponent({
   name: "Input",
-  props: props$r,
+  props: props$a,
   emits: ["confirm", ...emit],
   rootElement: {
     name: "uni-input",
@@ -12777,7 +21723,7 @@ function createNavigatorOnClick(props2) {
 }
 class UniNavigatorElement extends UniElement {
 }
-const index$p = /* @__PURE__ */ defineBuiltInComponent({
+const index$d = /* @__PURE__ */ defineBuiltInComponent({
   name: "Navigator",
   inheritAttrs: false,
   compatConfig: {
@@ -12858,7 +21804,7 @@ const pickerViewProps = {
     default: ""
   }
 };
-function useState$4(props2) {
+function useState$1(props2) {
   const value = reactive([...props2.value]);
   const state2 = reactive({
     value,
@@ -12893,7 +21839,7 @@ const PickerView = /* @__PURE__ */ defineBuiltInComponent({
     const rootRef = ref(null);
     const wrapperRef = ref(null);
     const trigger = useCustomEvent(rootRef, emit2);
-    const state2 = useState$4(props2);
+    const state2 = useState$1(props2);
     const resizeSensorRef = ref(null);
     const onMountedCallback = () => {
       const resizeSensor = resizeSensorRef.value;
@@ -13944,7 +22890,7 @@ const progressProps = {
 };
 class UniProgressElement extends UniElement {
 }
-const index$o = /* @__PURE__ */ defineBuiltInComponent({
+const index$c = /* @__PURE__ */ defineBuiltInComponent({
   name: "Progress",
   props: progressProps,
   rootElement: {
@@ -14052,7 +22998,7 @@ function _activeAnimation(state2, props2) {
   }
 }
 const uniRadioGroupKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniCheckGroup" : "ucg");
-const props$q = {
+const props$9 = {
   name: {
     type: String,
     default: ""
@@ -14060,9 +23006,9 @@ const props$q = {
 };
 class UniRadioGroupElement extends UniElement {
 }
-const index$n = /* @__PURE__ */ defineBuiltInComponent({
+const index$b = /* @__PURE__ */ defineBuiltInComponent({
   name: "RadioGroup",
-  props: props$q,
+  props: props$9,
   // emits: ['change'],
   rootElement: {
     name: "uni-radio-group",
@@ -14154,7 +23100,7 @@ function useProvideRadioGroup(props2, trigger) {
   }
   return fields2;
 }
-const props$p = {
+const props$8 = {
   checked: {
     type: [Boolean, String],
     default: false
@@ -14203,9 +23149,9 @@ const props$p = {
 };
 class UniRadioElement extends UniElement {
 }
-const indexX$3 = /* @__PURE__ */ defineBuiltInComponent({
+const indexX$2 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Radio",
-  props: props$p,
+  props: props$8,
   rootElement: {
     name: "uni-radio",
     class: UniRadioElement
@@ -14596,7 +23542,7 @@ function parseHtml(html) {
   });
   return results.children;
 }
-const props$o = {
+const props$7 = {
   nodes: {
     type: [Array, String],
     default: function() {
@@ -14606,12 +23552,12 @@ const props$o = {
 };
 class UniRichTextElement extends UniElement {
 }
-const index$m = /* @__PURE__ */ defineBuiltInComponent({
+const index$a = /* @__PURE__ */ defineBuiltInComponent({
   name: "RichText",
   compatConfig: {
     MODE: 3
   },
-  props: props$o,
+  props: props$7,
   emits: ["itemclick"],
   rootElement: {
     name: "uni-rich-text",
@@ -14752,7 +23698,7 @@ const Refresher = /* @__PURE__ */ defineBuiltInComponent({
   }
 });
 const passiveOptions = /* @__PURE__ */ passive(true);
-const props$n = {
+const props$6 = {
   direction: {
     type: [String],
     default: "vertical"
@@ -14825,7 +23771,7 @@ const ScrollView = /* @__PURE__ */ defineBuiltInComponent({
   compatConfig: {
     MODE: 3
   },
-  props: props$n,
+  props: props$6,
   emits: ["scroll", "scrolltoupper", "scrolltolower", "refresherrefresh", "refresherrestore", "refresherpulling", "refresherabort", "update:refresherTriggered"],
   rootElement: {
     name: "uni-scroll-view",
@@ -15317,7 +24263,7 @@ function useScrollViewLoader(props2, state2, scrollTopNumber, scrollLeftNumber, 
 }
 const SLIDER_BLOCK_SIZE_MIN_VALUE = 12;
 const SLIDER_BLOCK_SIZE_MAX_VALUE = 28;
-const props$m = {
+const props$5 = {
   name: {
     type: String,
     default: ""
@@ -15424,9 +24370,9 @@ class UniSliderElement extends UniElement {
     this.inputValue.innerText = value.toString();
   }
 }
-const indexX$2 = /* @__PURE__ */ defineBuiltInComponent({
+const indexX$1 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Slider",
-  props: props$m,
+  props: props$5,
   emits: ["changing", "change"],
   rootElement: {
     name: "uni-slider",
@@ -15576,7 +24522,7 @@ function useSliderLoader(props2, sliderRef, trigger) {
     _onChange
   };
 }
-const props$l = {
+const props$4 = {
   indicatorDots: {
     type: [Boolean, String],
     default: false
@@ -15650,7 +24596,7 @@ const props$l = {
     default: "rgba(53, 53, 53, 0.6)"
   }
 };
-function useState$3(props2) {
+function useState(props2) {
   const interval = computed(() => {
     const interval2 = Number(props2.interval);
     return isNaN(interval2) ? 5e3 : interval2;
@@ -16079,7 +25025,7 @@ class UniSwiperElement extends UniElement {
 }
 const Swiper = /* @__PURE__ */ defineBuiltInComponent({
   name: "Swiper",
-  props: props$l,
+  props: props$4,
   emits: ["change", "transition", "animationfinish", "update:current", "update:currentItemId"],
   rootElement: {
     name: "uni-swiper",
@@ -16093,7 +25039,7 @@ const Swiper = /* @__PURE__ */ defineBuiltInComponent({
     const trigger = useCustomEvent(rootRef, emit2);
     const slidesWrapperRef = ref(null);
     const slideFrameRef = ref(null);
-    const state2 = useState$3(props2);
+    const state2 = useState(props2);
     const slidesStyle = computed(() => {
       let style = {};
       if (props2.nextMargin || props2.previousMargin) {
@@ -16311,7 +25257,7 @@ const useSwiperNavigation = (rootRef, props2, state2, onSwiperDotClick, swiperCo
   }
   return createNavigationTsx;
 };
-const props$k = {
+const props$3 = {
   itemId: {
     type: String,
     default: ""
@@ -16321,7 +25267,7 @@ class UniSwiperItemElement extends UniElement {
 }
 const SwiperItem = /* @__PURE__ */ defineBuiltInComponent({
   name: "SwiperItem",
-  props: props$k,
+  props: props$3,
   rootElement: {
     name: "uni-swiper-item",
     class: UniSwiperItemElement
@@ -16378,7 +25324,7 @@ const SwiperItem = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const props$j = {
+const props$2 = {
   name: {
     type: String,
     default: ""
@@ -16422,9 +25368,9 @@ const props$j = {
 };
 class UniSwitchElement extends UniElement {
 }
-const indexX$1 = /* @__PURE__ */ defineBuiltInComponent({
+const indexX = /* @__PURE__ */ defineBuiltInComponent({
   name: "Switch",
-  props: props$j,
+  props: props$2,
   emits: ["change"],
   rootElement: {
     name: "uni-switch",
@@ -16581,7 +25527,7 @@ function parseText(text2, options) {
 }
 class UniTextElement extends UniElement {
 }
-const index$l = /* @__PURE__ */ defineBuiltInComponent({
+const index$9 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Text",
   rootElement: {
     name: "uni-text",
@@ -16644,7 +25590,7 @@ const index$l = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const props$i = /* @__PURE__ */ extend({}, props$s, {
+const props$1 = /* @__PURE__ */ extend({}, props$b, {
   placeholderClass: {
     type: String,
     default: "input-placeholder"
@@ -16673,9 +25619,9 @@ class UniTextareaElement extends UniElement {
     (_a = this.querySelector("textarea")) == null ? void 0 : _a.focus(options);
   }
 }
-const index$k = /* @__PURE__ */ defineBuiltInComponent({
+const index$8 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Textarea",
-  props: props$i,
+  props: props$1,
   emits: ["confirm", "linechange", ...emit],
   rootElement: {
     name: "uni-textarea",
@@ -16846,7 +25792,7 @@ const index$k = /* @__PURE__ */ defineBuiltInComponent({
 });
 class UniViewElement extends UniElement {
 }
-const index$j = /* @__PURE__ */ defineBuiltInComponent({
+const index$7 = /* @__PURE__ */ defineBuiltInComponent({
   name: "View",
   props: /* @__PURE__ */ extend({}, hoverProps),
   rootElement: {
@@ -16916,7 +25862,7 @@ function traverseStickySection(stickySectionVNode, callback) {
     callback(child);
   }
 }
-const props$h = {
+const props = {
   direction: {
     type: String,
     default: "vertical",
@@ -16976,9 +25922,9 @@ const props$h = {
 };
 class UniListViewElement extends UniElement {
 }
-const index$i = /* @__PURE__ */ defineBuiltInComponent({
+const index$6 = /* @__PURE__ */ defineBuiltInComponent({
   name: "ListView",
-  props: props$h,
+  props,
   emits: [
     "scroll",
     "scrolltoupper",
@@ -17471,7 +26417,7 @@ function getSize(isVertical, el) {
 }
 class UniListItemElement extends UniElement {
 }
-const index$h = /* @__PURE__ */ defineBuiltInComponent({
+const index$5 = /* @__PURE__ */ defineBuiltInComponent({
   name: "ListItem",
   props: {},
   rootElement: {
@@ -17525,7 +26471,7 @@ const index$h = /* @__PURE__ */ defineBuiltInComponent({
 });
 class UniStickySectionElement extends UniElement {
 }
-const index$g = /* @__PURE__ */ defineBuiltInComponent({
+const index$4 = /* @__PURE__ */ defineBuiltInComponent({
   name: "StickySection",
   props: {
     padding: {
@@ -17580,7 +26526,7 @@ const index$g = /* @__PURE__ */ defineBuiltInComponent({
 });
 class UniStickyHeaderElement extends UniElement {
 }
-const index$f = /* @__PURE__ */ defineBuiltInComponent({
+const index$3 = /* @__PURE__ */ defineBuiltInComponent({
   name: "StickyHeader",
   props: {
     padding: {
@@ -17682,13 +26628,13 @@ function useOn(name, callback) {
   onMounted(() => UniViewJSBridge.on(name, callback));
   onBeforeUnmount(() => UniViewJSBridge.off(name));
 }
-let index$e = 0;
+let index$2 = 0;
 function useContextInfo(_id) {
   const page = useCurrentPageId();
   const instance2 = getCurrentInstance();
   const vm = instance2.proxy;
   const type = vm.$options.name.toLowerCase();
-  const id2 = vm.id || `context${index$e++}`;
+  const id2 = vm.id || `context${index$2++}`;
   onMounted(() => {
     const el = vm.$el;
     el.__uniContextInfo = {
@@ -17855,7 +26801,7 @@ function uniIdMixin(globalProperties) {
     return tokenExpired > Date.now();
   };
 }
-function initApp$1(app) {
+function initApp(app) {
   const appConfig = app._context.config;
   appConfig.errorHandler = invokeCreateErrorHandler(app, createErrorHandler);
   initOptionMergeStrategies(appConfig.optionMergeStrategies);
@@ -17874,881 +26820,6 @@ function initApp$1(app) {
     invokeCreateVueAppHook(app);
   }
 }
-function usePopupStyle(props2) {
-  const popupWidth = ref(0);
-  const popupHeight = ref(0);
-  const isDesktop = computed(
-    () => popupWidth.value >= 500 && popupHeight.value >= 500
-  );
-  const popupStyle = computed(() => {
-    const style = {
-      content: {
-        transform: "",
-        left: "",
-        top: "",
-        bottom: ""
-      },
-      triangle: {
-        left: "",
-        top: "",
-        bottom: "",
-        "border-width": "",
-        "border-color": ""
-      }
-    };
-    const contentStyle = style.content;
-    const triangleStyle = style.triangle;
-    const popover = props2.popover;
-    function getNumber(value) {
-      return Number(value) || 0;
-    }
-    if (isDesktop.value && popover) {
-      extend(triangleStyle, {
-        position: "absolute",
-        width: "0",
-        height: "0",
-        "margin-left": "-6px",
-        "border-style": "solid"
-      });
-      const popoverLeft = getNumber(popover.left);
-      const popoverWidth = getNumber(popover.width);
-      const popoverTop = getNumber(popover.top);
-      const popoverHeight = getNumber(popover.height);
-      const center = popoverLeft + popoverWidth / 2;
-      contentStyle.transform = "none !important";
-      const contentLeft = Math.max(0, center - 300 / 2);
-      contentStyle.left = `${contentLeft}px`;
-      let triangleLeft = Math.max(12, center - contentLeft);
-      triangleLeft = Math.min(300 - 12, triangleLeft);
-      triangleStyle.left = `${triangleLeft}px`;
-      const vcl = popupHeight.value / 2;
-      if (popoverTop + popoverHeight - vcl > vcl - popoverTop) {
-        contentStyle.top = "auto";
-        contentStyle.bottom = `${popupHeight.value - popoverTop + 6}px`;
-        triangleStyle.bottom = "-6px";
-        triangleStyle["border-width"] = "6px 6px 0 6px";
-        triangleStyle["border-color"] = "#fcfcfd transparent transparent transparent";
-      } else {
-        contentStyle.top = `${popoverTop + popoverHeight + 6}px`;
-        triangleStyle.top = "-6px";
-        triangleStyle["border-width"] = "0 6px 6px 6px";
-        triangleStyle["border-color"] = "transparent transparent #fcfcfd transparent";
-      }
-    }
-    return style;
-  });
-  onMounted(() => {
-    const fixSize = () => {
-      const { windowWidth, windowHeight, windowTop } = uni.getSystemInfoSync();
-      popupWidth.value = windowWidth;
-      popupHeight.value = windowHeight + (windowTop || 0);
-    };
-    window.addEventListener("resize", fixSize);
-    fixSize();
-    onUnmounted(() => {
-      window.removeEventListener("resize", fixSize);
-    });
-  });
-  return {
-    isDesktop,
-    popupStyle
-  };
-}
-const KEY_MAPS = {
-  esc: ["Esc", "Escape"],
-  // tab: ['Tab'],
-  enter: ["Enter"]
-  // space: [' ', 'Spacebar'],
-  // up: ['Up', 'ArrowUp'],
-  // left: ['Left', 'ArrowLeft'],
-  // right: ['Right', 'ArrowRight'],
-  // down: ['Down', 'ArrowDown'],
-  // delete: ['Backspace', 'Delete', 'Del'],
-};
-const KEYS = Object.keys(KEY_MAPS);
-function useKeyboard() {
-  const key = ref("");
-  const disable = ref(false);
-  const onKeyup = (evt) => {
-    if (disable.value) {
-      return;
-    }
-    const res = KEYS.find(
-      (key2) => KEY_MAPS[key2].indexOf(evt.key) !== -1
-    );
-    if (res) {
-      key.value = res;
-    }
-    nextTick(() => key.value = "");
-  };
-  onMounted(() => {
-    document.addEventListener("keyup", onKeyup);
-  });
-  onBeforeUnmount(() => {
-    document.removeEventListener("keyup", onKeyup);
-  });
-  return {
-    key,
-    disable
-  };
-}
-function IEVersion() {
-  const userAgent = navigator.userAgent;
-  const isIE = userAgent.indexOf("compatible") > -1 && userAgent.indexOf("MSIE") > -1;
-  const isEdge = userAgent.indexOf("Edge") > -1 && !isIE;
-  const isIE11 = userAgent.indexOf("Trident") > -1 && userAgent.indexOf("rv:11.0") > -1;
-  if (isIE) {
-    const reIE = new RegExp("MSIE (\\d+\\.\\d+);");
-    reIE.test(userAgent);
-    const fIEVersion = parseFloat(RegExp.$1);
-    if (fIEVersion > 6) {
-      return fIEVersion;
-    } else {
-      return 6;
-    }
-  } else if (isEdge) {
-    return -1;
-  } else if (isIE11) {
-    return 11;
-  } else {
-    return -1;
-  }
-}
-function getTheme() {
-  if (__uniConfig.darkmode !== true)
-    return isString(__uniConfig.darkmode) ? __uniConfig.darkmode : "light";
-  try {
-    return window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark";
-  } catch (error) {
-    return "light";
-  }
-}
-function getBrowserInfo() {
-  let osname;
-  let osversion = "0";
-  let model = "";
-  let deviceType = "phone";
-  const language = navigator.language;
-  if (isIOS) {
-    osname = "iOS";
-    const osversionFind = ua.match(/OS\s([\w_]+)\slike/);
-    if (osversionFind) {
-      osversion = osversionFind[1].replace(/_/g, ".");
-    }
-    const modelFind = ua.match(/\(([a-zA-Z]+);/);
-    if (modelFind) {
-      model = modelFind[1];
-    }
-  } else if (isAndroid) {
-    osname = "Android";
-    const osversionFind = ua.match(/Android[\s/]([\w\.]+)[;\s]/);
-    if (osversionFind) {
-      osversion = osversionFind[1];
-    }
-    const infoFind = ua.match(/\((.+?)\)/);
-    const infos = infoFind ? infoFind[1].split(";") : ua.split(" ");
-    const otherInfo = [
-      /\bAndroid\b/i,
-      /\bLinux\b/i,
-      /\bU\b/i,
-      /^\s?[a-z][a-z]$/i,
-      /^\s?[a-z][a-z]-[a-z][a-z]$/i,
-      /\bwv\b/i,
-      /\/[\d\.,]+$/,
-      /^\s?[\d\.,]+$/,
-      /\bBrowser\b/i,
-      /\bMobile\b/i
-    ];
-    for (let i = 0; i < infos.length; i++) {
-      const info = infos[i];
-      if (info.indexOf("Build") > 0) {
-        model = info.split("Build")[0].trim();
-        break;
-      }
-      let other;
-      for (let o2 = 0; o2 < otherInfo.length; o2++) {
-        if (otherInfo[o2].test(info)) {
-          other = true;
-          break;
-        }
-      }
-      if (!other) {
-        model = info.trim();
-        break;
-      }
-    }
-  } else if (isIPadOS) {
-    model = "iPad";
-    osname = "iOS";
-    deviceType = "pad";
-    osversion = isFunction(window.BigInt) ? "14.0" : "13.0";
-    if (parseInt(osversion) === 14) {
-      const versionMatched = ua.match(/Version\/(\S*)\b/);
-      if (versionMatched) {
-        osversion = versionMatched[1];
-      }
-    }
-  } else if (isWindows || isMac || isLinux) {
-    model = "PC";
-    osname = "PC";
-    deviceType = "pc";
-    osversion = "0";
-    let osversionFind = ua.match(/\((.+?)\)/)[1];
-    if (isWindows) {
-      osname = "Windows";
-      switch (isWindows[1]) {
-        case "5.1":
-          osversion = "XP";
-          break;
-        case "6.0":
-          osversion = "Vista";
-          break;
-        case "6.1":
-          osversion = "7";
-          break;
-        case "6.2":
-          osversion = "8";
-          break;
-        case "6.3":
-          osversion = "8.1";
-          break;
-        case "10.0":
-          osversion = "10";
-          break;
-      }
-      const framework = osversionFind && osversionFind.match(/[Win|WOW]([\d]+)/);
-      if (framework) {
-        osversion += ` x${framework[1]}`;
-      }
-    } else if (isMac) {
-      osname = "macOS";
-      const _osversion = osversionFind && osversionFind.match(/Mac OS X (.+)/) || "";
-      if (osversion) {
-        osversion = _osversion[1].replace(/_/g, ".");
-        if (osversion.indexOf(";") !== -1) {
-          osversion = osversion.split(";")[0];
-        }
-      }
-    } else if (isLinux) {
-      osname = "Linux";
-      const _osversion = osversionFind && osversionFind.match(/Linux (.*)/) || "";
-      if (_osversion) {
-        osversion = _osversion[1];
-        if (osversion.indexOf(";") !== -1) {
-          osversion = osversion.split(";")[0];
-        }
-      }
-    }
-  } else {
-    osname = "Other";
-    osversion = "0";
-    deviceType = "unknown";
-  }
-  const system = `${osname} ${osversion}`;
-  const platform = osname.toLocaleLowerCase();
-  let browserName = "";
-  let browserVersion = String(IEVersion());
-  if (browserVersion !== "-1") {
-    browserName = "IE";
-  } else {
-    const browseVendors = ["Version", "Firefox", "Chrome", "Edge{0,1}"];
-    const vendors = ["Safari", "Firefox", "Chrome", "Edge"];
-    for (let index2 = 0; index2 < browseVendors.length; index2++) {
-      const vendor = browseVendors[index2];
-      const reg = new RegExp(`(${vendor})/(\\S*)\\b`);
-      if (reg.test(ua)) {
-        browserName = vendors[index2];
-        browserVersion = ua.match(reg)[2];
-      }
-    }
-  }
-  let deviceOrientation = "portrait";
-  const orientation = typeof window.screen.orientation === "undefined" ? window.orientation : window.screen.orientation.angle;
-  deviceOrientation = Math.abs(orientation) === 90 ? "landscape" : "portrait";
-  return {
-    deviceBrand: void 0,
-    brand: void 0,
-    deviceModel: model,
-    deviceOrientation,
-    model,
-    system,
-    platform,
-    browserName: browserName.toLocaleLowerCase(),
-    browserVersion,
-    language,
-    deviceType,
-    ua,
-    osname,
-    osversion,
-    theme: getTheme()
-  };
-}
-function onThemeChange$2(callback) {
-  if (__uniConfig.darkmode) {
-    UniServiceJSBridge.on(ON_THEME_CHANGE, callback);
-  }
-}
-function offThemeChange$1(callback) {
-  UniServiceJSBridge.off(ON_THEME_CHANGE, callback);
-}
-function parseTheme(pageStyle) {
-  let parsedStyle = {};
-  if (__uniConfig.darkmode) {
-    parsedStyle = normalizeStyles(
-      pageStyle,
-      __uniConfig.themeConfig,
-      getTheme()
-    );
-  }
-  return __uniConfig.darkmode ? parsedStyle : pageStyle;
-}
-function useTheme(pageStyle, onThemeChangeCallback) {
-  const isReactivity = isReactive(pageStyle);
-  const reactivePageStyle = isReactivity ? reactive(parseTheme(pageStyle)) : parseTheme(pageStyle);
-  if (__uniConfig.darkmode && isReactivity) {
-    watch(pageStyle, (value) => {
-      const _pageStyle = parseTheme(value);
-      for (const key in _pageStyle) {
-        reactivePageStyle[key] = _pageStyle[key];
-      }
-    });
-  }
-  onThemeChangeCallback && onThemeChange$2(onThemeChangeCallback);
-  return reactivePageStyle;
-}
-const ACTION_SHEET_THEME = {
-  light: {
-    listItemColor: "#000000",
-    cancelItemColor: "#000000"
-  },
-  dark: {
-    listItemColor: "rgba(255, 255, 255, 0.8)",
-    cancelItemColor: "rgba(255, 255, 255)"
-  }
-};
-function setActionSheetTheme(theme, actionSheetTheme) {
-  const ActionSheetThemeKey = ["listItemColor", "cancelItemColor"];
-  ActionSheetThemeKey.forEach((key) => {
-    actionSheetTheme[key] = ACTION_SHEET_THEME[theme][key];
-  });
-}
-const props$g = {
-  title: {
-    type: String,
-    default: ""
-  },
-  itemList: {
-    type: Array,
-    default() {
-      return [];
-    }
-  },
-  itemColor: {
-    type: String,
-    default: "#000000"
-  },
-  popover: {
-    type: Object,
-    default: null
-  },
-  visible: {
-    type: Boolean,
-    default: false
-  }
-};
-const actionSheet = /* @__PURE__ */ defineComponent({
-  name: "ActionSheet",
-  props: props$g,
-  emits: ["close"],
-  setup(props2, {
-    emit: emit2
-  }) {
-    initI18nShowActionSheetMsgsOnce();
-    const HEIGHT = ref(336);
-    const contentHeight = ref(0);
-    const titleHeight = ref(0);
-    const deltaY = ref(0);
-    const scrollTop = ref(0);
-    const content = ref(null);
-    const main = ref(null);
-    const {
-      t: t2
-    } = useI18n();
-    const {
-      _close
-    } = useActionSheetLoader(props2, emit2);
-    const {
-      popupStyle
-    } = usePopupStyle(props2);
-    let scroller;
-    onMounted(() => {
-      const {
-        scroller: _scroller,
-        handleTouchStart,
-        handleTouchMove,
-        handleTouchEnd
-      } = useScroller(content.value, {
-        enableY: true,
-        friction: new Friction(1e-4),
-        spring: new Spring(2, 90, 20),
-        onScroll: (e2) => {
-          scrollTop.value = e2.target.scrollTop;
-        }
-      });
-      scroller = _scroller;
-      useTouchtrack(content.value, (e2) => {
-        if (_scroller) {
-          switch (e2.detail.state) {
-            case "start":
-              handleTouchStart(e2);
-              break;
-            case "move":
-              handleTouchMove(e2);
-              break;
-            case "end":
-            case "cancel":
-              handleTouchEnd(e2);
-          }
-        }
-      }, true);
-    });
-    function _handleWheel($event) {
-      const _deltaY = deltaY.value + $event.deltaY;
-      if (Math.abs(_deltaY) > 10) {
-        scrollTop.value += _deltaY / 3;
-        scrollTop.value = scrollTop.value >= contentHeight.value ? contentHeight.value : scrollTop.value <= 0 ? 0 : scrollTop.value;
-        scroller.scrollTo(scrollTop.value);
-      } else {
-        deltaY.value = _deltaY;
-      }
-      $event.preventDefault();
-    }
-    watch(() => props2.visible, () => {
-      nextTick(() => {
-        if (props2.title) {
-          titleHeight.value = document.querySelector(".uni-actionsheet__title").offsetHeight;
-        }
-        scroller.update();
-        if (content.value)
-          contentHeight.value = content.value.clientHeight - HEIGHT.value;
-        document.querySelectorAll(".uni-actionsheet__cell").forEach((item) => {
-          initClick(item);
-        });
-      });
-    });
-    const actionSheetTheme = useOnThemeChange$1(props2);
-    return () => {
-      return createVNode("uni-actionsheet", {
-        "onTouchmove": onEventPrevent
-      }, [createVNode(Transition, {
-        "name": "uni-fade"
-      }, {
-        default: () => [withDirectives(createVNode("div", {
-          "class": "uni-mask uni-actionsheet__mask",
-          "onClick": () => _close(-1)
-        }, null, 8, ["onClick"]), [[vShow, props2.visible]])]
-      }), createVNode("div", {
-        "class": ["uni-actionsheet", {
-          "uni-actionsheet_toggle": props2.visible
-        }],
-        "style": popupStyle.value.content
-      }, [createVNode("div", {
-        "ref": main,
-        "class": "uni-actionsheet__menu",
-        "onWheel": _handleWheel
-      }, [props2.title ? createVNode(Fragment, null, [createVNode("div", {
-        "class": "uni-actionsheet__cell",
-        "style": {
-          height: `${titleHeight.value}px`
-        }
-      }, null), createVNode("div", {
-        "class": "uni-actionsheet__title"
-      }, [props2.title])]) : "", createVNode("div", {
-        "style": {
-          maxHeight: `${HEIGHT.value}px`,
-          overflow: "hidden"
-        }
-      }, [createVNode("div", {
-        "ref": content
-      }, [props2.itemList.map((itemTitle, index2) => createVNode("div", {
-        "key": index2,
-        "style": {
-          color: actionSheetTheme.listItemColor
-        },
-        "class": "uni-actionsheet__cell",
-        "onClick": () => _close(index2)
-      }, [itemTitle], 12, ["onClick"]))], 512)])], 40, ["onWheel"]), createVNode("div", {
-        "class": "uni-actionsheet__action"
-      }, [createVNode("div", {
-        "style": {
-          color: actionSheetTheme.cancelItemColor
-        },
-        "class": "uni-actionsheet__cell",
-        "onClick": () => _close(-1)
-      }, [t2("uni.showActionSheet.cancel")], 12, ["onClick"])]), createVNode("div", {
-        "style": popupStyle.value.triangle
-      }, null, 4)], 6)], 40, ["onTouchmove"]);
-    };
-  }
-});
-function useActionSheetLoader(props2, emit2) {
-  function _close(tapIndex) {
-    emit2("close", tapIndex);
-  }
-  const {
-    key,
-    disable
-  } = useKeyboard();
-  watch(() => props2.visible, (value) => disable.value = !value);
-  watchEffect(() => {
-    const {
-      value
-    } = key;
-    if (value === "esc") {
-      _close && _close(-1);
-    }
-  });
-  return {
-    _close
-  };
-}
-function initClick(dom) {
-  const MAX_MOVE = 20;
-  let x = 0;
-  let y = 0;
-  dom.addEventListener("touchstart", (event) => {
-    const info = event.changedTouches[0];
-    x = info.clientX;
-    y = info.clientY;
-  });
-  dom.addEventListener("touchend", (event) => {
-    const info = event.changedTouches[0];
-    if (Math.abs(info.clientX - x) < MAX_MOVE && Math.abs(info.clientY - y) < MAX_MOVE) {
-      const target = event.target;
-      const currentTarget = event.currentTarget;
-      const customEvent = new CustomEvent("click", {
-        bubbles: true,
-        cancelable: true,
-        target,
-        currentTarget
-      });
-      ["screenX", "screenY", "clientX", "clientY", "pageX", "pageY"].forEach((key) => {
-        customEvent[key] = info[key];
-      });
-      event.target.dispatchEvent(customEvent);
-    }
-  });
-}
-function useOnThemeChange$1(props2) {
-  const actionSheetTheme = reactive({
-    listItemColor: "#000",
-    cancelItemColor: "#000"
-  });
-  const _onThemeChange = ({
-    theme
-  }) => {
-    setActionSheetTheme(theme, actionSheetTheme);
-  };
-  watchEffect(() => {
-    if (props2.visible) {
-      actionSheetTheme.listItemColor = actionSheetTheme.cancelItemColor = props2.itemColor;
-      if (props2.itemColor === "#000") {
-        _onThemeChange({
-          theme: getTheme()
-        });
-        onThemeChange$2(_onThemeChange);
-      }
-    } else {
-      offThemeChange$1(_onThemeChange);
-    }
-  });
-  return actionSheetTheme;
-}
-const VNODE_MASK = /* @__PURE__ */ createVNode(
-  "div",
-  { class: "uni-mask" },
-  null,
-  -1
-  /* HOISTED */
-);
-function createRootApp(component, rootState, callback) {
-  rootState.onClose = (...args) => (rootState.visible = false, callback.apply(null, args));
-  return createApp(
-    defineComponent({
-      setup() {
-        return () => (openBlock(), createBlock(
-          component,
-          rootState,
-          null,
-          16
-          /* FULL_PROPS */
-        ));
-      }
-    })
-  );
-}
-function ensureRoot(id2) {
-  let rootEl = document.getElementById(id2);
-  if (!rootEl) {
-    rootEl = document.createElement("div");
-    rootEl.id = id2;
-    document.body.append(rootEl);
-  }
-  return rootEl;
-}
-function usePopup(props2, {
-  onEsc,
-  onEnter
-}) {
-  const visible = ref(props2.visible);
-  const { key, disable } = useKeyboard();
-  watch(
-    () => props2.visible,
-    (value) => visible.value = value
-  );
-  watch(
-    () => visible.value,
-    (value) => disable.value = !value
-  );
-  watchEffect(() => {
-    const { value } = key;
-    if (value === "esc") {
-      onEsc && onEsc();
-    } else if (value === "enter") {
-      onEnter && onEnter();
-    }
-  });
-  return visible;
-}
-let resolveAction;
-let rejectAction;
-let showActionSheetState;
-const onHidePopupOnce$1 = /* @__PURE__ */ once(() => {
-  UniServiceJSBridge.on(
-    "onHidePopup",
-    () => showActionSheetState.visible = false
-  );
-});
-function onActionSheetClose(tapIndex) {
-  if (tapIndex === -1) {
-    rejectAction && rejectAction("cancel");
-  } else {
-    resolveAction && resolveAction({ tapIndex });
-  }
-}
-const hideActionSheet = () => {
-  if (showActionSheetState) {
-    showActionSheetState.visible = false;
-  }
-};
-const showActionSheet = /* @__PURE__ */ defineAsyncApi(
-  API_SHOW_ACTION_SHEET,
-  (args, { resolve, reject }) => {
-    onHidePopupOnce$1();
-    resolveAction = resolve;
-    rejectAction = reject;
-    if (!showActionSheetState) {
-      showActionSheetState = reactive(args);
-      nextTick(
-        () => (createRootApp(
-          actionSheet,
-          showActionSheetState,
-          onActionSheetClose
-        ).mount(ensureRoot("u-s-a-s")), //下一帧执行，确保首次显示时有动画效果
-        nextTick(() => showActionSheetState.visible = true))
-      );
-    } else {
-      extend(showActionSheetState, args);
-      showActionSheetState.visible = true;
-    }
-  },
-  ShowActionSheetProtocol,
-  ShowActionSheetOptions
-);
-const ModalTheme = {
-  light: {
-    cancelColor: "#000000"
-  },
-  dark: {
-    cancelColor: "rgb(170, 170, 170)"
-  }
-};
-const setCancelColor = (theme, cancelColor) => cancelColor.value = ModalTheme[theme].cancelColor;
-const props$f = {
-  title: {
-    type: String,
-    default: ""
-  },
-  content: {
-    type: String,
-    default: ""
-  },
-  showCancel: {
-    type: Boolean,
-    default: true
-  },
-  cancelText: {
-    type: String,
-    default: "Cancel"
-  },
-  cancelColor: {
-    type: String,
-    default: "#000000"
-  },
-  confirmText: {
-    type: String,
-    default: "OK"
-  },
-  confirmColor: {
-    type: String,
-    default: "#576b95"
-  },
-  visible: {
-    type: Boolean
-  },
-  editable: {
-    type: Boolean,
-    default: false
-  },
-  placeholderText: {
-    type: String,
-    default: ""
-  }
-};
-const modal = /* @__PURE__ */ defineComponent({
-  props: props$f,
-  setup(props2, {
-    emit: emit2
-  }) {
-    const editContent = ref("");
-    const close = () => visible.value = false;
-    const cancel = () => (close(), emit2("close", "cancel"));
-    const confirm = () => (close(), emit2("close", "confirm", editContent.value));
-    const visible = usePopup(props2, {
-      onEsc: cancel,
-      onEnter: () => {
-        !props2.editable && confirm();
-      }
-    });
-    const cancelColor = useOnThemeChange(props2);
-    return () => {
-      const {
-        title,
-        content,
-        showCancel,
-        confirmText,
-        confirmColor,
-        editable,
-        placeholderText
-      } = props2;
-      editContent.value = content;
-      return createVNode(Transition, {
-        "name": "uni-fade"
-      }, {
-        default: () => [withDirectives(createVNode("uni-modal", {
-          "onTouchmove": onEventPrevent
-        }, [VNODE_MASK, createVNode("div", {
-          "class": "uni-modal"
-        }, [title || true ? createVNode("div", {
-          "class": "uni-modal__hd"
-        }, [createVNode("strong", {
-          "class": "uni-modal__title",
-          "textContent": title || ""
-        }, null, 8, ["textContent"])]) : null, editable ? createVNode("div", {
-          "class": "uni-modal__bd",
-          "key": "uni-modal-bd-editable"
-        }, [createVNode("textarea", {
-          "class": "uni-modal__textarea",
-          "rows": "2",
-          "placeholder": placeholderText,
-          "value": content,
-          "onInput": (e2) => editContent.value = e2.target.value
-        }, null, 40, ["placeholder", "value", "onInput"])]) : createVNode("div", {
-          "class": "uni-modal__bd",
-          "onTouchmovePassive": onEventStop,
-          "textContent": content
-        }, null, 40, ["onTouchmovePassive", "textContent"]), createVNode("div", {
-          "class": "uni-modal__ft"
-        }, [showCancel && createVNode("div", {
-          "style": {
-            color: cancelColor.value
-          },
-          "class": "uni-modal__btn uni-modal__btn_default",
-          "onClick": cancel
-        }, [props2.cancelText], 12, ["onClick"]), createVNode("div", {
-          "style": {
-            color: confirmColor
-          },
-          "class": "uni-modal__btn uni-modal__btn_primary",
-          "onClick": confirm
-        }, [confirmText], 12, ["onClick"])])])], 40, ["onTouchmove"]), [[vShow, visible.value]])]
-      });
-    };
-  }
-});
-function useOnThemeChange(props2) {
-  const cancelColor = ref(props2.cancelColor);
-  const _onThemeChange = ({
-    theme
-  }) => {
-    setCancelColor(theme, cancelColor);
-  };
-  watchEffect(() => {
-    if (props2.visible) {
-      cancelColor.value = props2.cancelColor;
-      if (props2.cancelColor === "#000") {
-        if (getTheme() === "dark")
-          _onThemeChange({
-            theme: "dark"
-          });
-        onThemeChange$2(_onThemeChange);
-      }
-    } else {
-      offThemeChange$1(_onThemeChange);
-    }
-  });
-  return cancelColor;
-}
-let showModalState;
-const onHidePopupOnce = /* @__PURE__ */ once(() => {
-  UniServiceJSBridge.on("onHidePopup", () => showModalState.visible = false);
-});
-let currentShowModalResolve;
-function onModalClose(type, content) {
-  const isConfirm = type === "confirm";
-  const res = {
-    confirm: isConfirm,
-    cancel: type === "cancel"
-  };
-  isConfirm && showModalState.editable && (res.content = content);
-  currentShowModalResolve && currentShowModalResolve(res);
-}
-const hideModal = () => {
-  if (showModalState) {
-    showModalState.visible = false;
-  }
-};
-const showModal = /* @__PURE__ */ defineAsyncApi(
-  API_SHOW_MODAL,
-  (args, { resolve }) => {
-    onHidePopupOnce();
-    currentShowModalResolve = resolve;
-    if (!showModalState) {
-      showModalState = reactive(args);
-      nextTick(
-        () => (createRootApp(modal, showModalState, onModalClose).mount(
-          ensureRoot("u-a-m")
-        ), //下一帧执行，确保首次显示时有动画效果
-        nextTick(() => showModalState.visible = true))
-      );
-    } else {
-      extend(showModalState, args);
-      showModalState.visible = true;
-    }
-  },
-  ShowModalProtocol,
-  ShowModalOptions
-);
 function initRouter(app) {
   const router = createRouter(createRouterOptions());
   router.beforeEach((to, from) => {
@@ -18823,9 +26894,9 @@ function initHistory() {
   });
   return history2;
 }
-const index$d = {
+const index$1 = {
   install(app) {
-    initApp$1(app);
+    initApp(app);
     initViewPlugin(app);
     initServicePlugin(app);
     if (!app.config.warnHandler) {
@@ -18853,79 +26924,6 @@ function warnHandler(msg, instance2, trace) {
 `, trace);
   }
   console.warn(...warnArgs);
-}
-const clazz = { class: "uni-async-loading" };
-const loadingVNode = /* @__PURE__ */ createVNode(
-  "i",
-  { class: "uni-loading" },
-  null,
-  -1
-  /* HOISTED */
-);
-const AsyncLoadingComponent = /* @__PURE__ */ defineSystemComponent({
-  name: "AsyncLoading",
-  render() {
-    return openBlock(), createBlock("div", clazz, [loadingVNode]);
-  }
-});
-function reload() {
-  window.location.reload();
-}
-const AsyncErrorComponent = /* @__PURE__ */ defineSystemComponent({
-  name: "AsyncError",
-  setup() {
-    initI18nAsyncMsgsOnce();
-    const {
-      t: t2
-    } = useI18n();
-    return () => createVNode("div", {
-      "class": "uni-async-error",
-      "onClick": reload
-    }, [t2("uni.async.error")], 8, ["onClick"]);
-  }
-});
-let appVm;
-let $uniApp;
-{
-  class UniAppImpl {
-    get vm() {
-      return appVm;
-    }
-    get $vm() {
-      return appVm;
-    }
-    get globalData() {
-      return (appVm == null ? void 0 : appVm.globalData) || {};
-    }
-    getAndroidApplication() {
-      return null;
-    }
-  }
-  $uniApp = new UniAppImpl();
-}
-function getApp$1() {
-  {
-    return $uniApp;
-  }
-}
-function initApp(vm) {
-  appVm = vm;
-  Object.defineProperty(appVm.$.ctx, "$children", {
-    get() {
-      return getCurrentBasePages().map((page) => page.$vm);
-    }
-  });
-  const app = appVm.$.appContext.app;
-  if (!app.component(AsyncLoadingComponent.name)) {
-    app.component(AsyncLoadingComponent.name, AsyncLoadingComponent);
-  }
-  if (!app.component(AsyncErrorComponent.name)) {
-    app.component(AsyncErrorComponent.name, AsyncErrorComponent);
-  }
-  initAppVm(appVm);
-  defineGlobalData(appVm);
-  initService();
-  initView();
 }
 function wrapperComponentSetup(comp, { clone, init: init2, setup, before }) {
   if (clone) {
@@ -19060,7 +27058,7 @@ function setupApp(comp) {
     comp.__mpType = "app";
   }
   return setupComponent(comp, {
-    init: initApp,
+    init: initApp$1,
     setup(instance2) {
       const route = usePageRoute();
       const onLaunch = () => {
@@ -19103,7 +27101,7 @@ function setupApp(comp) {
         );
         window.addEventListener("message", onMessage);
         document.addEventListener("visibilitychange", onVisibilityChange);
-        onThemeChange$1();
+        onThemeChange();
       });
       return route.query;
     },
@@ -19152,7 +27150,7 @@ function onVisibilityChange() {
     emit2(ON_APP_ENTER_BACKGROUND);
   }
 }
-function onThemeChange$1() {
+function onThemeChange() {
   let mediaQueryList = null;
   try {
     mediaQueryList = window.matchMedia("(prefers-color-scheme: dark)");
@@ -19181,8004 +27179,6 @@ function invokeOnTabItemTap(route) {
     });
   }
 }
-function formatTime(val) {
-  val = val > 0 && val < Infinity ? val : 0;
-  const h2 = Math.floor(val / 3600);
-  const m = Math.floor(val % 3600 / 60);
-  const s = Math.floor(val % 3600 % 60);
-  const hStr = (h2 < 10 ? "0" : "") + h2;
-  const mStr = (m < 10 ? "0" : "") + m;
-  const sStr = (s < 10 ? "0" : "") + s;
-  let str = mStr + ":" + sStr;
-  if (hStr !== "00") {
-    str = hStr + ":" + str;
-  }
-  return str;
-}
-function useGesture(props2, videoRef, fullscreenState) {
-  const state2 = reactive({
-    gestureType: "none",
-    volumeOld: 0,
-    volumeNew: 0,
-    currentTimeOld: 0,
-    currentTimeNew: 0
-  });
-  const touchStartOrigin = {
-    x: 0,
-    y: 0
-  };
-  function onTouchstart(event) {
-    const toucher = event.targetTouches[0];
-    touchStartOrigin.x = toucher.pageX;
-    touchStartOrigin.y = toucher.pageY;
-    state2.gestureType = "none";
-    state2.volumeOld = 0;
-    state2.currentTimeOld = state2.currentTimeNew = 0;
-  }
-  function onTouchmove(event) {
-    function stop() {
-      event.stopPropagation();
-      event.preventDefault();
-    }
-    if (fullscreenState.fullscreen) {
-      stop();
-    }
-    const gestureType = state2.gestureType;
-    if (gestureType === "stop") {
-      return;
-    }
-    const toucher = event.targetTouches[0];
-    const pageX = toucher.pageX;
-    const pageY = toucher.pageY;
-    const origin = touchStartOrigin;
-    const video = videoRef.value;
-    if (gestureType === "progress") {
-      changeProgress(pageX - origin.x);
-    } else if (gestureType === "volume") {
-      changeVolume(pageY - origin.y);
-    }
-    if (gestureType !== "none") {
-      return;
-    }
-    if (Math.abs(pageX - origin.x) > Math.abs(pageY - origin.y)) {
-      if (!props2.enableProgressGesture) {
-        state2.gestureType = "stop";
-        return;
-      }
-      state2.gestureType = "progress";
-      state2.currentTimeOld = state2.currentTimeNew = video.currentTime;
-      if (!fullscreenState.fullscreen) {
-        stop();
-      }
-    } else {
-      if (!props2.pageGesture) {
-        state2.gestureType = "stop";
-        return;
-      }
-      state2.gestureType = "volume";
-      state2.volumeOld = video.volume;
-      if (!fullscreenState.fullscreen) {
-        stop();
-      }
-    }
-  }
-  function onTouchend(event) {
-    const video = videoRef.value;
-    if (state2.gestureType !== "none" && state2.gestureType !== "stop") {
-      event.stopPropagation();
-      event.preventDefault();
-    }
-    if (state2.gestureType === "progress" && state2.currentTimeOld !== state2.currentTimeNew) {
-      video.currentTime = state2.currentTimeNew;
-    }
-    state2.gestureType = "none";
-  }
-  function changeProgress(x) {
-    const video = videoRef.value;
-    const duration = video.duration;
-    let currentTimeNew = x / 600 * duration + state2.currentTimeOld;
-    if (currentTimeNew < 0) {
-      currentTimeNew = 0;
-    } else if (currentTimeNew > duration) {
-      currentTimeNew = duration;
-    }
-    state2.currentTimeNew = currentTimeNew;
-  }
-  function changeVolume(y) {
-    const video = videoRef.value;
-    const valueOld = state2.volumeOld;
-    let value;
-    if (typeof valueOld === "number") {
-      value = valueOld - y / 200;
-      if (value < 0) {
-        value = 0;
-      } else if (value > 1) {
-        value = 1;
-      }
-      video.volume = value;
-      state2.volumeNew = value;
-    }
-  }
-  return {
-    state: state2,
-    onTouchstart,
-    onTouchmove,
-    onTouchend
-  };
-}
-function useFullscreen(trigger, containerRef, videoRef, userActionState, rootRef) {
-  const state2 = reactive({
-    fullscreen: false
-  });
-  const isSafari = /^Apple/.test(navigator.vendor);
-  function onFullscreenChange($event, webkit) {
-    if (webkit && document.fullscreenEnabled) {
-      return;
-    }
-    emitFullscreenChange(!!(document.fullscreenElement || document.webkitFullscreenElement));
-  }
-  function emitFullscreenChange(val) {
-    state2.fullscreen = val;
-    trigger("fullscreenchange", {}, {
-      fullScreen: val,
-      direction: "vertical"
-    });
-  }
-  function toggleFullscreen(val) {
-    const root = rootRef.value;
-    const container = containerRef.value;
-    const video = videoRef.value;
-    let mockFullScreen;
-    if (val) {
-      if ((document.fullscreenEnabled || document.webkitFullscreenEnabled) && (!isSafari || userActionState.userAction)) {
-        container[document.fullscreenEnabled ? "requestFullscreen" : "webkitRequestFullscreen"]();
-      } else if (video.webkitEnterFullScreen) {
-        video.webkitEnterFullScreen();
-      } else {
-        mockFullScreen = true;
-        container.remove();
-        container.classList.add("uni-video-type-fullscreen");
-        document.body.appendChild(container);
-      }
-    } else {
-      if (document.fullscreenEnabled || document.webkitFullscreenEnabled) {
-        if (document.fullscreenElement) {
-          document.exitFullscreen();
-        } else if (document.webkitFullscreenElement) {
-          document.webkitExitFullscreen();
-        }
-      } else if (video.webkitExitFullScreen) {
-        video.webkitExitFullScreen();
-      } else {
-        mockFullScreen = true;
-        container.remove();
-        container.classList.remove("uni-video-type-fullscreen");
-        root.appendChild(container);
-      }
-    }
-    if (mockFullScreen) {
-      emitFullscreenChange(val);
-    }
-  }
-  function requestFullScreen() {
-    toggleFullscreen(true);
-  }
-  function exitFullScreen() {
-    toggleFullscreen(false);
-  }
-  onBeforeUnmount(exitFullScreen);
-  return {
-    state: state2,
-    onFullscreenChange,
-    emitFullscreenChange,
-    toggleFullscreen,
-    requestFullScreen,
-    exitFullScreen
-  };
-}
-function useVideo(props2, attrs2, trigger) {
-  const videoRef = ref(null);
-  const src = computed(() => getRealPath(props2.src));
-  const muted = computed(() => props2.muted === "true" || props2.muted === true);
-  const state2 = reactive({
-    start: false,
-    src,
-    playing: false,
-    currentTime: 0,
-    duration: 0,
-    progress: 0,
-    buffered: 0,
-    muted
-  });
-  watch(() => src.value, () => {
-    state2.playing = false;
-    state2.currentTime = 0;
-  });
-  watch(() => state2.buffered, (buffered) => {
-    trigger("progress", {}, {
-      buffered
-    });
-  });
-  watch(() => muted.value, (muted2) => {
-    const video = videoRef.value;
-    video.muted = muted2;
-  });
-  function onDurationChange({
-    target
-  }) {
-    state2.duration = target.duration;
-  }
-  function onLoadedMetadata($event) {
-    const initialTime = Number(props2.initialTime) || 0;
-    const video = $event.target;
-    if (initialTime > 0) {
-      video.currentTime = initialTime;
-    }
-    trigger("loadedmetadata", $event, {
-      width: video.videoWidth,
-      height: video.videoHeight,
-      duration: video.duration
-    });
-    onProgress($event);
-  }
-  function onProgress($event) {
-    const video = $event.target;
-    const buffered = video.buffered;
-    if (buffered.length) {
-      state2.buffered = buffered.end(buffered.length - 1) / video.duration * 100;
-    }
-  }
-  function onWaiting($event) {
-    trigger("waiting", $event, {});
-  }
-  function onVideoError($event) {
-    state2.playing = false;
-    trigger("error", $event, {});
-  }
-  function onPlay($event) {
-    state2.start = true;
-    state2.playing = true;
-    trigger("play", $event, {});
-  }
-  function onPause($event) {
-    state2.playing = false;
-    trigger("pause", $event, {});
-  }
-  function onEnded($event) {
-    state2.playing = false;
-    trigger("ended", $event, {});
-  }
-  function onTimeUpdate($event) {
-    const video = $event.target;
-    const currentTime = state2.currentTime = video.currentTime;
-    trigger("timeupdate", $event, {
-      currentTime,
-      duration: video.duration
-    });
-  }
-  function toggle() {
-    const video = videoRef.value;
-    if (state2.playing) {
-      video.pause();
-    } else {
-      video.play();
-    }
-  }
-  function play() {
-    const video = videoRef.value;
-    state2.start = true;
-    video.play();
-  }
-  function pause() {
-    const video = videoRef.value;
-    video.pause();
-  }
-  function seek(position) {
-    const video = videoRef.value;
-    position = Number(position);
-    if (typeof position === "number" && !isNaN(position)) {
-      video.currentTime = position;
-    }
-  }
-  function stop() {
-    seek(0);
-    pause();
-  }
-  function playbackRate(rate) {
-    const video = videoRef.value;
-    video.playbackRate = rate;
-  }
-  return {
-    videoRef,
-    state: state2,
-    play,
-    pause,
-    stop,
-    seek,
-    playbackRate,
-    toggle,
-    onDurationChange,
-    onLoadedMetadata,
-    onProgress,
-    onWaiting,
-    onVideoError,
-    onPlay,
-    onPause,
-    onEnded,
-    onTimeUpdate
-  };
-}
-function useControls(props2, videoState, seek) {
-  const progressRef = ref(null);
-  const ballRef = ref(null);
-  const centerPlayBtnShow = computed(() => props2.showCenterPlayBtn && !videoState.start);
-  const controlsVisible = ref(true);
-  const controlsShow = computed(() => !centerPlayBtnShow.value && props2.controls && controlsVisible.value);
-  const state2 = reactive({
-    touching: false,
-    controlsTouching: false,
-    centerPlayBtnShow,
-    controlsShow,
-    controlsVisible
-  });
-  function clickProgress(event) {
-    const $progress = progressRef.value;
-    let element = event.target;
-    let x = event.offsetX;
-    while (element && element !== $progress) {
-      x += element.offsetLeft;
-      element = element.parentNode;
-    }
-    const w = $progress.offsetWidth;
-    let progress = 0;
-    if (x >= 0 && x <= w) {
-      progress = x / w;
-      seek(videoState.duration * progress);
-    }
-  }
-  function toggleControls() {
-    state2.controlsVisible = !state2.controlsVisible;
-  }
-  let hideTiming;
-  function autoHideStart() {
-    hideTiming = setTimeout(() => {
-      state2.controlsVisible = false;
-    }, 3e3);
-  }
-  function autoHideEnd() {
-    if (hideTiming) {
-      clearTimeout(hideTiming);
-      hideTiming = null;
-    }
-  }
-  onBeforeUnmount(() => {
-    if (hideTiming) {
-      clearTimeout(hideTiming);
-    }
-  });
-  watch(() => state2.controlsShow && videoState.playing && !state2.controlsTouching, (val) => {
-    if (val) {
-      autoHideStart();
-    } else {
-      autoHideEnd();
-    }
-  });
-  watch([() => videoState.currentTime, () => {
-    props2.duration;
-  }], function updateProgress() {
-    if (!state2.touching) {
-      videoState.progress = videoState.currentTime / videoState.duration * 100;
-    }
-  });
-  onMounted(() => {
-    const passiveOptions2 = passive(false);
-    let originX;
-    let originY;
-    let moveOnce = true;
-    let originProgress;
-    const ball = ballRef.value;
-    function touchmove2(event) {
-      const toucher = event.targetTouches[0];
-      const pageX = toucher.pageX;
-      const pageY = toucher.pageY;
-      if (moveOnce && Math.abs(pageX - originX) < Math.abs(pageY - originY)) {
-        touchend(event);
-        return;
-      }
-      moveOnce = false;
-      const progressEl = progressRef.value;
-      const w = progressEl.offsetWidth;
-      let progress = originProgress + (pageX - originX) / w * 100;
-      if (progress < 0) {
-        progress = 0;
-      } else if (progress > 100) {
-        progress = 100;
-      }
-      videoState.progress = progress;
-      event.preventDefault();
-      event.stopPropagation();
-    }
-    function touchend(event) {
-      state2.controlsTouching = false;
-      if (state2.touching) {
-        ball.removeEventListener("touchmove", touchmove2, passiveOptions2);
-        if (!moveOnce) {
-          event.preventDefault();
-          event.stopPropagation();
-          seek(videoState.duration * videoState.progress / 100);
-        }
-        state2.touching = false;
-      }
-    }
-    ball.addEventListener("touchstart", (event) => {
-      state2.controlsTouching = true;
-      const toucher = event.targetTouches[0];
-      originX = toucher.pageX;
-      originY = toucher.pageY;
-      originProgress = videoState.progress;
-      moveOnce = true;
-      state2.touching = true;
-      ball.addEventListener("touchmove", touchmove2, passiveOptions2);
-    });
-    ball.addEventListener("touchend", touchend);
-    ball.addEventListener("touchcancel", touchend);
-  });
-  return {
-    state: state2,
-    progressRef,
-    ballRef,
-    clickProgress,
-    toggleControls,
-    autoHideStart,
-    autoHideEnd
-  };
-}
-function useDanmu(props2, videoState) {
-  const danmuRef = ref(null);
-  const state2 = reactive({
-    enable: Boolean(props2.enableDanmu)
-  });
-  let danmuIndex = {
-    time: 0,
-    index: -1
-  };
-  const danmuList = isArray(props2.danmuList) ? JSON.parse(JSON.stringify(props2.danmuList)) : [];
-  danmuList.sort(function(a2, b) {
-    return (a2.time || 0) - (b.time || 0);
-  });
-  function toggleDanmu() {
-    state2.enable = !state2.enable;
-  }
-  function updateDanmu(event) {
-    const video = event.target;
-    const currentTime = video.currentTime;
-    const oldDanmuIndex = danmuIndex;
-    const newDanmuIndex = {
-      time: currentTime,
-      index: oldDanmuIndex.index
-    };
-    if (currentTime > oldDanmuIndex.time) {
-      for (let index2 = oldDanmuIndex.index + 1; index2 < danmuList.length; index2++) {
-        const element = danmuList[index2];
-        if (currentTime >= (element.time || 0)) {
-          newDanmuIndex.index = index2;
-          if (videoState.playing && state2.enable) {
-            playDanmu(element);
-          }
-        } else {
-          break;
-        }
-      }
-    } else if (currentTime < oldDanmuIndex.time) {
-      for (let index2 = oldDanmuIndex.index - 1; index2 > -1; index2--) {
-        const element = danmuList[index2];
-        if (currentTime <= (element.time || 0)) {
-          newDanmuIndex.index = index2 - 1;
-        } else {
-          break;
-        }
-      }
-    }
-    danmuIndex = newDanmuIndex;
-  }
-  function playDanmu(danmu) {
-    const p2 = document.createElement("p");
-    p2.className = "uni-video-danmu-item";
-    p2.innerText = danmu.text;
-    let style = `bottom: ${Math.random() * 100}%;color: ${danmu.color};`;
-    p2.setAttribute("style", style);
-    const danmuEl = danmuRef.value;
-    danmuEl.appendChild(p2);
-    setTimeout(function() {
-      style += "left: 0;-webkit-transform: translateX(-100%);transform: translateX(-100%);";
-      p2.setAttribute("style", style);
-      setTimeout(function() {
-        p2.remove();
-      }, 4e3);
-    }, 17);
-  }
-  function sendDanmu(danmu) {
-    danmuList.splice(danmuIndex.index + 1, 0, {
-      text: String(danmu.text),
-      color: danmu.color,
-      time: videoState.currentTime || 0
-    });
-  }
-  return {
-    state: state2,
-    danmuRef,
-    updateDanmu,
-    toggleDanmu,
-    sendDanmu
-  };
-}
-function useContext(play, pause, stop, seek, sendDanmu, playbackRate, requestFullScreen, exitFullScreen) {
-  const methods = {
-    play,
-    stop,
-    pause,
-    seek,
-    sendDanmu,
-    playbackRate,
-    requestFullScreen,
-    exitFullScreen
-  };
-  const id2 = useContextInfo();
-  useSubscribe((type, data) => {
-    let options;
-    switch (type) {
-      case "seek":
-        options = data.position;
-        break;
-      case "sendDanmu":
-        options = data;
-        break;
-      case "playbackRate":
-        options = data.rate;
-        break;
-    }
-    if (type in methods) {
-      methods[type](options);
-    }
-  }, id2, true);
-}
-const props$e = {
-  id: {
-    type: String,
-    default: ""
-  },
-  src: {
-    type: String,
-    default: ""
-  },
-  duration: {
-    type: [Number, String],
-    default: ""
-  },
-  controls: {
-    type: [Boolean, String],
-    default: true
-  },
-  danmuList: {
-    type: Array,
-    default() {
-      return [];
-    }
-  },
-  danmuBtn: {
-    type: [Boolean, String],
-    default: false
-  },
-  enableDanmu: {
-    type: [Boolean, String],
-    default: false
-  },
-  autoplay: {
-    type: [Boolean, String],
-    default: false
-  },
-  loop: {
-    type: [Boolean, String],
-    default: false
-  },
-  muted: {
-    type: [Boolean, String],
-    default: false
-  },
-  objectFit: {
-    type: String,
-    default: "contain"
-  },
-  poster: {
-    type: String,
-    default: ""
-  },
-  direction: {
-    type: [String, Number],
-    default: ""
-  },
-  showProgress: {
-    type: Boolean,
-    default: true
-  },
-  initialTime: {
-    type: [String, Number],
-    default: 0
-  },
-  showFullscreenBtn: {
-    type: [Boolean, String],
-    default: true
-  },
-  pageGesture: {
-    type: [Boolean, String],
-    default: false
-  },
-  enableProgressGesture: {
-    type: [Boolean, String],
-    default: true
-  },
-  showPlayBtn: {
-    type: [Boolean, String],
-    default: true
-  },
-  showCenterPlayBtn: {
-    type: [Boolean, String],
-    default: true
-  }
-};
-class UniVideoElement extends UniElement {
-}
-const index$c = /* @__PURE__ */ defineBuiltInComponent({
-  name: "Video",
-  props: props$e,
-  emits: ["fullscreenchange", "progress", "loadedmetadata", "waiting", "error", "play", "pause", "ended", "timeupdate"],
-  rootElement: {
-    name: "uni-video",
-    class: UniVideoElement
-  },
-  setup(props2, {
-    emit: emit2,
-    attrs: attrs2,
-    slots
-  }) {
-    const rootRef = ref(null);
-    const containerRef = ref(null);
-    const trigger = useCustomEvent(rootRef, emit2);
-    const {
-      state: userActionState
-    } = useUserAction();
-    const {
-      $attrs: videoAttrs
-    } = useAttrs({
-      excludeListeners: true
-    });
-    const {
-      t: t2
-    } = useI18n();
-    initI18nVideoMsgsOnce();
-    const {
-      videoRef,
-      state: videoState,
-      play,
-      pause,
-      stop,
-      seek,
-      playbackRate,
-      toggle,
-      onDurationChange,
-      onLoadedMetadata,
-      onProgress,
-      onWaiting,
-      onVideoError,
-      onPlay,
-      onPause,
-      onEnded,
-      onTimeUpdate
-    } = useVideo(props2, attrs2, trigger);
-    const {
-      state: danmuState,
-      danmuRef,
-      updateDanmu,
-      toggleDanmu,
-      sendDanmu
-    } = useDanmu(props2, videoState);
-    const {
-      state: fullscreenState,
-      onFullscreenChange,
-      emitFullscreenChange,
-      toggleFullscreen,
-      requestFullScreen,
-      exitFullScreen
-    } = useFullscreen(trigger, containerRef, videoRef, userActionState, rootRef);
-    const {
-      state: gestureState,
-      onTouchstart,
-      onTouchend,
-      onTouchmove
-    } = useGesture(props2, videoRef, fullscreenState);
-    const {
-      state: controlsState,
-      progressRef,
-      ballRef,
-      clickProgress,
-      toggleControls
-    } = useControls(props2, videoState, seek);
-    useContext(play, pause, stop, seek, sendDanmu, playbackRate, requestFullScreen, exitFullScreen);
-    onMounted(() => {
-      const rootElement = rootRef.value;
-      Object.assign(rootElement, {
-        play,
-        pause,
-        stop,
-        seek,
-        sendDanmu,
-        playbackRate,
-        requestFullScreen,
-        exitFullScreen
-      });
-      rootElement.attachVmProps(props2);
-    });
-    return () => {
-      return createVNode("uni-video", {
-        "ref": rootRef,
-        "id": props2.id,
-        "onClick": toggleControls
-      }, [createVNode("div", {
-        "ref": containerRef,
-        "class": "uni-video-container",
-        "onTouchstart": onTouchstart,
-        "onTouchend": onTouchend,
-        "onTouchmove": onTouchmove,
-        "onFullscreenchange": withModifiers(onFullscreenChange, ["stop"]),
-        "onWebkitfullscreenchange": withModifiers(($event) => onFullscreenChange($event, true), ["stop"])
-      }, [createVNode("video", mergeProps({
-        "ref": videoRef,
-        "style": {
-          "object-fit": props2.objectFit
-        },
-        "muted": !!props2.muted,
-        "loop": !!props2.loop,
-        "src": videoState.src,
-        "poster": props2.poster,
-        "autoplay": !!props2.autoplay
-      }, videoAttrs.value, {
-        "class": "uni-video-video",
-        "webkit-playsinline": true,
-        "playsinline": true,
-        "onDurationchange": onDurationChange,
-        "onLoadedmetadata": onLoadedMetadata,
-        "onProgress": onProgress,
-        "onWaiting": onWaiting,
-        "onError": onVideoError,
-        "onPlay": onPlay,
-        "onPause": onPause,
-        "onEnded": onEnded,
-        "onTimeupdate": (event) => {
-          onTimeUpdate(event);
-          updateDanmu(event);
-        },
-        "onWebkitbeginfullscreen": () => emitFullscreenChange(true),
-        "onX5videoenterfullscreen": () => emitFullscreenChange(true),
-        "onWebkitendfullscreen": () => emitFullscreenChange(false),
-        "onX5videoexitfullscreen": () => emitFullscreenChange(false)
-      }), null, 16, ["muted", "loop", "src", "poster", "autoplay", "webkit-playsinline", "playsinline", "onDurationchange", "onLoadedmetadata", "onProgress", "onWaiting", "onError", "onPlay", "onPause", "onEnded", "onTimeupdate", "onWebkitbeginfullscreen", "onX5videoenterfullscreen", "onWebkitendfullscreen", "onX5videoexitfullscreen"]), withDirectives(createVNode("div", {
-        "class": "uni-video-bar uni-video-bar-full",
-        "onClick": withModifiers(() => {
-        }, ["stop"])
-      }, [createVNode("div", {
-        "class": "uni-video-controls"
-      }, [withDirectives(createVNode("div", {
-        "class": {
-          "uni-video-control-button": true,
-          "uni-video-control-button-play": !videoState.playing,
-          "uni-video-control-button-pause": videoState.playing
-        },
-        "onClick": withModifiers(toggle, ["stop"])
-      }, null, 10, ["onClick"]), [[vShow, props2.showPlayBtn]]), withDirectives(createVNode("div", {
-        "class": "uni-video-current-time"
-      }, [formatTime(videoState.currentTime)], 512), [[vShow, props2.showProgress]]), withDirectives(createVNode("div", {
-        "ref": progressRef,
-        "class": "uni-video-progress-container",
-        "onClick": withModifiers(clickProgress, ["stop"])
-      }, [createVNode("div", {
-        "class": "uni-video-progress"
-      }, [createVNode("div", {
-        "style": {
-          width: videoState.buffered + "%"
-        },
-        "class": "uni-video-progress-buffered"
-      }, null, 4), createVNode("div", {
-        "ref": ballRef,
-        "style": {
-          left: videoState.progress + "%"
-        },
-        "class": "uni-video-ball"
-      }, [createVNode("div", {
-        "class": "uni-video-inner"
-      }, null)], 4)])], 8, ["onClick"]), [[vShow, props2.showProgress]]), withDirectives(createVNode("div", {
-        "class": "uni-video-duration"
-      }, [formatTime(Number(props2.duration) || videoState.duration)], 512), [[vShow, props2.showProgress]])]), withDirectives(createVNode("div", {
-        "class": {
-          "uni-video-danmu-button": true,
-          "uni-video-danmu-button-active": danmuState.enable
-        },
-        "onClick": withModifiers(toggleDanmu, ["stop"])
-      }, [t2("uni.video.danmu")], 10, ["onClick"]), [[vShow, props2.danmuBtn]]), withDirectives(createVNode("div", {
-        "class": {
-          "uni-video-fullscreen": true,
-          "uni-video-type-fullscreen": fullscreenState.fullscreen
-        },
-        "onClick": withModifiers(() => toggleFullscreen(!fullscreenState.fullscreen), ["stop"])
-      }, null, 10, ["onClick"]), [[vShow, props2.showFullscreenBtn]])], 8, ["onClick"]), [[vShow, controlsState.controlsShow]]), withDirectives(createVNode("div", {
-        "ref": danmuRef,
-        "style": "z-index: 0;",
-        "class": "uni-video-danmu"
-      }, null, 512), [[vShow, videoState.start && danmuState.enable]]), controlsState.centerPlayBtnShow && createVNode("div", {
-        "class": "uni-video-cover",
-        "onClick": withModifiers(() => {
-        }, ["stop"])
-      }, [createVNode("div", {
-        "class": "uni-video-cover-play-button",
-        "onClick": withModifiers(play, ["stop"])
-      }, null, 8, ["onClick"]), createVNode("p", {
-        "class": "uni-video-cover-duration"
-      }, [formatTime(Number(props2.duration) || videoState.duration)])], 8, ["onClick"]), createVNode("div", {
-        "class": {
-          "uni-video-toast": true,
-          "uni-video-toast-volume": gestureState.gestureType === "volume"
-        }
-      }, [createVNode("div", {
-        "class": "uni-video-toast-title"
-      }, [t2("uni.video.volume")]), createVNode("svg", {
-        "class": "uni-video-toast-icon",
-        "width": "200px",
-        "height": "200px",
-        "viewBox": "0 0 1024 1024",
-        "version": "1.1",
-        "xmlns": "http://www.w3.org/2000/svg"
-      }, [createVNode("path", {
-        "d": "M475.400704 201.19552l0 621.674496q0 14.856192-10.856448 25.71264t-25.71264 10.856448-25.71264-10.856448l-190.273536-190.273536-149.704704 0q-14.856192 0-25.71264-10.856448t-10.856448-25.71264l0-219.414528q0-14.856192 10.856448-25.71264t25.71264-10.856448l149.704704 0 190.273536-190.273536q10.856448-10.856448 25.71264-10.856448t25.71264 10.856448 10.856448 25.71264zm219.414528 310.837248q0 43.425792-24.28416 80.851968t-64.2816 53.425152q-5.71392 2.85696-14.2848 2.85696-14.856192 0-25.71264-10.570752t-10.856448-25.998336q0-11.999232 6.856704-20.284416t16.570368-14.2848 19.427328-13.142016 16.570368-20.284416 6.856704-32.569344-6.856704-32.569344-16.570368-20.284416-19.427328-13.142016-16.570368-14.2848-6.856704-20.284416q0-15.427584 10.856448-25.998336t25.71264-10.570752q8.57088 0 14.2848 2.85696 39.99744 15.427584 64.2816 53.139456t24.28416 81.137664zm146.276352 0q0 87.422976-48.56832 161.41824t-128.5632 107.707392q-7.428096 2.85696-14.2848 2.85696-15.427584 0-26.284032-10.856448t-10.856448-25.71264q0-22.284288 22.284288-33.712128 31.997952-16.570368 43.425792-25.141248 42.283008-30.855168 65.995776-77.423616t23.712768-99.136512-23.712768-99.136512-65.995776-77.423616q-11.42784-8.57088-43.425792-25.141248-22.284288-11.42784-22.284288-33.712128 0-14.856192 10.856448-25.71264t25.71264-10.856448q7.428096 0 14.856192 2.85696 79.99488 33.712128 128.5632 107.707392t48.56832 161.41824zm146.276352 0q0 131.42016-72.566784 241.41312t-193.130496 161.989632q-7.428096 2.85696-14.856192 2.85696-14.856192 0-25.71264-10.856448t-10.856448-25.71264q0-20.570112 22.284288-33.712128 3.999744-2.285568 12.85632-5.999616t12.85632-5.999616q26.284032-14.2848 46.854144-29.140992 70.281216-51.996672 109.707264-129.705984t39.426048-165.132288-39.426048-165.132288-109.707264-129.705984q-20.570112-14.856192-46.854144-29.140992-3.999744-2.285568-12.85632-5.999616t-12.85632-5.999616q-22.284288-13.142016-22.284288-33.712128 0-14.856192 10.856448-25.71264t25.71264-10.856448q7.428096 0 14.856192 2.85696 120.563712 51.996672 193.130496 161.989632t72.566784 241.41312z"
-      }, null)]), createVNode("div", {
-        "class": "uni-video-toast-value"
-      }, [createVNode("div", {
-        "style": {
-          width: gestureState.volumeNew * 100 + "%"
-        },
-        "class": "uni-video-toast-value-content"
-      }, [createVNode("div", {
-        "class": "uni-video-toast-volume-grids"
-      }, [renderList(10, () => createVNode("div", {
-        "class": "uni-video-toast-volume-grids-item"
-      }, null))])], 4)])], 2), createVNode("div", {
-        "class": {
-          "uni-video-toast": true,
-          "uni-video-toast-progress": gestureState.gestureType === "progress"
-        }
-      }, [createVNode("div", {
-        "class": "uni-video-toast-title"
-      }, [formatTime(gestureState.currentTimeNew), " / ", formatTime(videoState.duration)])], 2), createVNode("div", {
-        "class": "uni-video-slots"
-      }, [slots.default && slots.default()])], 40, ["onTouchstart", "onTouchend", "onTouchmove", "onFullscreenchange", "onWebkitfullscreenchange"])], 8, ["id", "onClick"]);
-    };
-  }
-});
-const onWebInvokeAppService = ({ name, arg }) => {
-  if (name === "postMessage")
-    ;
-  else {
-    uni[name](arg);
-  }
-};
-const Invoke = /* @__PURE__ */ once(() => UniServiceJSBridge.on(ON_WEB_INVOKE_APP_SERVICE, onWebInvokeAppService));
-const props$d = {
-  src: {
-    type: String,
-    default: ""
-  }
-};
-class UniWebViewElement extends UniElement {
-}
-const indexX = /* @__PURE__ */ defineBuiltInComponent({
-  inheritAttrs: false,
-  name: "WebView",
-  props: props$d,
-  rootElement: {
-    name: "uni-web-view",
-    class: UniWebViewElement
-  },
-  setup(props2) {
-    Invoke();
-    const rootRef = ref(null);
-    const iframeRef = ref(null);
-    const {
-      $attrs,
-      $excludeAttrs,
-      $listeners
-    } = useAttrs({
-      excludeListeners: true
-    });
-    const renderIframe = () => {
-      const iframe = document.createElement("iframe");
-      watchEffect(() => {
-        for (const key in $attrs.value) {
-          if (hasOwn($attrs.value, key)) {
-            const attr2 = $attrs.value[key];
-            iframe[key] = attr2;
-          }
-        }
-      });
-      watchEffect(() => {
-        iframe.src = getRealPath(props2.src);
-      });
-      iframeRef.value = iframe;
-    };
-    renderIframe();
-    onMounted(() => {
-      var _a;
-      (_a = rootRef.value) == null ? void 0 : _a.appendChild(iframeRef.value);
-    });
-    onMounted(() => {
-      const rootElement = rootRef.value;
-      rootElement.attachVmProps(props2);
-    });
-    return () => {
-      return createVNode("uni-web-view", mergeProps({
-        "class": "uni-webview"
-      }, $listeners.value, $excludeAttrs.value, {
-        "ref": rootRef
-      }), null, 16);
-    };
-  }
-});
-let index$b = 0;
-function getJSONP(url, options, success, error) {
-  var js = document.createElement("script");
-  var callbackKey = options.callback || "callback";
-  var callbackName = "__uni_jsonp_callback_" + index$b++;
-  var timeout = options.timeout || 3e4;
-  var timing;
-  function end() {
-    clearTimeout(timing);
-    delete window[callbackName];
-    js.remove();
-  }
-  window[callbackName] = (res) => {
-    if (isFunction(success)) {
-      success(res);
-    }
-    end();
-  };
-  js.onerror = () => {
-    if (isFunction(error)) {
-      error();
-    }
-    end();
-  };
-  timing = setTimeout(function() {
-    if (isFunction(error)) {
-      error();
-    }
-    end();
-  }, timeout);
-  js.src = url + (url.indexOf("?") >= 0 ? "&" : "?") + callbackKey + "=" + callbackName;
-  document.body.appendChild(js);
-}
-function createCallout(maps2) {
-  function onAdd() {
-    const div = this.div;
-    const panes = this.getPanes();
-    panes.floatPane.appendChild(div);
-  }
-  function onRemove() {
-    const parentNode = this.div.parentNode;
-    if (parentNode) {
-      parentNode.removeChild(this.div);
-    }
-  }
-  function createAMapText() {
-    const option = this.option;
-    this.Text = new maps2.Text({
-      text: option.content,
-      anchor: "bottom-center",
-      // 设置文本标记锚点
-      offset: new maps2.Pixel(0, option.offsetY - 16),
-      style: {
-        padding: (option.padding || 8) + "px",
-        "line-height": (option.fontSize || 14) + "px",
-        "border-radius": (option.borderRadius || 0) + "px",
-        "border-color": `${option.bgColor || "#fff"} transparent transparent`,
-        "background-color": option.bgColor || "#fff",
-        "box-shadow": "0 2px 6px 0 rgba(114, 124, 245, .5)",
-        "text-align": "center",
-        "font-size": (option.fontSize || 14) + "px",
-        color: option.color || "#000"
-      },
-      position: option.position
-    });
-    const event = maps2.event || maps2.Event;
-    event.addListener(this.Text, "click", () => {
-      this.callback();
-    });
-    this.Text.setMap(option.map);
-  }
-  function createBMapText() {
-  }
-  function removeAMapText() {
-    if (this.Text) {
-      this.option.map.remove(this.Text);
-    }
-  }
-  function removeBMapText() {
-    if (this.Text) {
-      this.option.map.remove(this.Text);
-    }
-  }
-  class Callout {
-    constructor(option = {}, callback) {
-      this.createAMapText = createAMapText;
-      this.removeAMapText = removeAMapText;
-      this.createBMapText = createBMapText;
-      this.removeBMapText = removeBMapText;
-      this.onAdd = onAdd;
-      this.construct = onAdd;
-      this.onRemove = onRemove;
-      this.destroy = onRemove;
-      this.option = option || {};
-      const visible = this.visible = this.alwaysVisible = option.display === "ALWAYS";
-      if (getIsAMap()) {
-        this.callback = callback;
-        if (this.visible) {
-          this.createAMapText();
-        }
-      } else if (getIsBMap()) {
-        if (this.visible) {
-          this.createBMapText();
-        }
-      } else {
-        const map = option.map;
-        this.position = option.position;
-        this.index = 1;
-        const div = this.div = document.createElement("div");
-        const divStyle = div.style;
-        divStyle.position = "absolute";
-        divStyle.whiteSpace = "nowrap";
-        divStyle.transform = "translateX(-50%) translateY(-100%)";
-        divStyle.zIndex = "1";
-        divStyle.boxShadow = option.boxShadow || "none";
-        divStyle.display = visible ? "block" : "none";
-        const triangle = this.triangle = document.createElement("div");
-        triangle.setAttribute(
-          "style",
-          "position: absolute;white-space: nowrap;border-width: 4px;border-style: solid;border-color: #fff transparent transparent;border-image: initial;font-size: 12px;padding: 0px;background-color: transparent;width: 0px;height: 0px;transform: translate(-50%, 100%);left: 50%;bottom: 0;"
-        );
-        this.setStyle(option);
-        div.appendChild(triangle);
-        if (map) {
-          this.setMap(map);
-        }
-      }
-    }
-    set onclick(callback) {
-      this.div.onclick = callback;
-    }
-    get onclick() {
-      return this.div.onclick;
-    }
-    setOption(option) {
-      this.option = option;
-      if (option.display === "ALWAYS") {
-        this.alwaysVisible = this.visible = true;
-      } else {
-        this.alwaysVisible = false;
-      }
-      if (getIsAMap()) {
-        if (this.visible) {
-          this.createAMapText();
-        }
-      } else if (getIsBMap()) {
-        if (this.visible) {
-          this.createBMapText();
-        }
-      } else {
-        this.setPosition(option.position);
-        this.setStyle(option);
-      }
-    }
-    setStyle(option) {
-      const div = this.div;
-      const divStyle = div.style;
-      div.innerText = option.content || "";
-      divStyle.lineHeight = (option.fontSize || 14) + "px";
-      divStyle.fontSize = (option.fontSize || 14) + "px";
-      divStyle.padding = (option.padding || 8) + "px";
-      divStyle.color = option.color || "#000";
-      divStyle.borderRadius = (option.borderRadius || 0) + "px";
-      divStyle.backgroundColor = option.bgColor || "#fff";
-      divStyle.marginTop = "-" + ((option.top || 0) + 5) + "px";
-      this.triangle.style.borderColor = `${option.bgColor || "#fff"} transparent transparent`;
-    }
-    setPosition(position) {
-      this.position = position;
-      this.draw();
-    }
-    draw() {
-      const overlayProjection = this.getProjection();
-      if (!this.position || !this.div || !overlayProjection) {
-        return;
-      }
-      const pixel = overlayProjection.fromLatLngToDivPixel(
-        this.position
-      );
-      const divStyle = this.div.style;
-      divStyle.left = pixel.x + "px";
-      divStyle.top = pixel.y + "px";
-    }
-    changed() {
-      const divStyle = this.div.style;
-      divStyle.display = this.visible ? "block" : "none";
-    }
-  }
-  if (!getIsAMap() && !getIsBMap()) {
-    const overlay = new (maps2.OverlayView || maps2.Overlay)();
-    Callout.prototype.setMap = overlay.setMap;
-    Callout.prototype.getMap = overlay.getMap;
-    Callout.prototype.getPanes = overlay.getPanes;
-    Callout.prototype.getProjection = overlay.getProjection;
-    Callout.prototype.map_changed = overlay.map_changed;
-    Callout.prototype.set = overlay.set;
-    Callout.prototype.get = overlay.get;
-    Callout.prototype.setOptions = overlay.setValues;
-    Callout.prototype.bindTo = overlay.bindTo;
-    Callout.prototype.bindsTo = overlay.bindsTo;
-    Callout.prototype.notify = overlay.notify;
-    Callout.prototype.setValues = overlay.setValues;
-    Callout.prototype.unbind = overlay.unbind;
-    Callout.prototype.unbindAll = overlay.unbindAll;
-    Callout.prototype.addListener = overlay.addListener;
-  }
-  return Callout;
-}
-let maps;
-const callbacksMap = {};
-const GOOGLE_MAP_CALLBACKNAME = "__map_callback__";
-function loadMaps(libraries, callback) {
-  const mapInfo = getMapInfo();
-  if (!mapInfo.key) {
-    console.error("Map key not configured.");
-    return;
-  }
-  const callbacks2 = callbacksMap[mapInfo.type] = callbacksMap[mapInfo.type] || [];
-  if (maps) {
-    callback(maps);
-  } else if (window[mapInfo.type] && window[mapInfo.type].maps) {
-    maps = getIsAMap() || getIsBMap() ? window[mapInfo.type] : window[mapInfo.type].maps;
-    maps.Callout = maps.Callout || createCallout(maps);
-    callback(maps);
-  } else if (callbacks2.length) {
-    callbacks2.push(callback);
-  } else {
-    callbacks2.push(callback);
-    const globalExt = window;
-    const callbackName = GOOGLE_MAP_CALLBACKNAME + mapInfo.type;
-    globalExt[callbackName] = function() {
-      delete globalExt[callbackName];
-      maps = getIsAMap() || getIsBMap() ? window[mapInfo.type] : window[mapInfo.type].maps;
-      maps.Callout = createCallout(maps);
-      callbacks2.forEach((callback2) => callback2(maps));
-      callbacks2.length = 0;
-    };
-    if (getIsAMap()) {
-      handleAMapSecurityPolicy(mapInfo);
-    }
-    const script = document.createElement("script");
-    let src = getScriptBaseUrl(mapInfo.type);
-    if (mapInfo.type === MapType.QQ) {
-      libraries.push("geometry");
-    }
-    if (libraries.length) {
-      src += `libraries=${libraries.join("%2C")}&`;
-    }
-    if (mapInfo.type === MapType.BMAP) {
-      script.src = `${src}ak=${mapInfo.key}&callback=${callbackName}`;
-    } else {
-      script.src = `${src}key=${mapInfo.key}&callback=${callbackName}`;
-    }
-    script.onerror = function() {
-      console.error("Map load failed.");
-    };
-    document.body.appendChild(script);
-  }
-}
-const getScriptBaseUrl = (mapType) => {
-  const urlMap = {
-    qq: "https://map.qq.com/api/js?v=2.exp&",
-    google: "https://maps.googleapis.com/maps/api/js?",
-    AMap: "https://webapi.amap.com/maps?v=2.0&",
-    BMapGL: "https://api.map.baidu.com/api?type=webgl&v=1.0&"
-  };
-  return urlMap[mapType];
-};
-function handleAMapSecurityPolicy(mapInfo) {
-  window._AMapSecurityConfig = {
-    securityJsCode: mapInfo.securityJsCode || "",
-    serviceHost: mapInfo.serviceHost || ""
-  };
-}
-const ICON_PATH_LOCTAION = "M13.3334375 16 q0.033125 1.1334375 0.783125 1.8834375 q0.75 0.75 1.8834375 0.75 q1.1334375 0 1.8834375 -0.75 q0.75 -0.75 0.75 -1.8834375 q0 -1.1334375 -0.75 -1.8834375 q-0.75 -0.75 -1.8834375 -0.75 q-1.1334375 0 -1.8834375 0.75 q-0.75 0.75 -0.783125 1.8834375 ZM30.9334375 14.9334375 l-1.1334375 0 q-0.5 -5.2 -4.0165625 -8.716875 q-3.516875 -3.5165625 -8.716875 -4.0165625 l0 -1.1334375 q0 -0.4665625 -0.3 -0.7665625 q-0.3 -0.3 -0.7665625 -0.3 q-0.4665625 0 -0.7665625 0.3 q-0.3 0.3 -0.3 0.7665625 l0 1.1334375 q-5.2 0.5 -8.716875 4.0165625 q-3.5165625 3.516875 -4.0165625 8.716875 l-1.1334375 0 q-0.4665625 0 -0.7665625 0.3 q-0.3 0.3 -0.3 0.7665625 q0 0.4665625 0.3 0.7665625 q0.3 0.3 0.7665625 0.3 l1.1334375 0 q0.5 5.2 4.0165625 8.716875 q3.516875 3.5165625 8.716875 4.0165625 l0 1.1334375 q0 0.4665625 0.3 0.7665625 q0.3 0.3 0.7665625 0.3 q0.4665625 0 0.7665625 -0.3 q0.3 -0.3 0.3 -0.7665625 l0 -1.1334375 q5.2 -0.5 8.716875 -4.0165625 q3.5165625 -3.516875 4.0165625 -8.716875 l1.1334375 0 q0.4665625 0 0.7665625 -0.3 q0.3 -0.3 0.3 -0.7665625 q0 -0.4665625 -0.3 -0.7665625 q-0.3 -0.3 -0.7665625 -0.3 ZM17.0665625 27.6665625 l0 -2.0665625 q0 -0.4665625 -0.3 -0.7665625 q-0.3 -0.3 -0.7665625 -0.3 q-0.4665625 0 -0.7665625 0.3 q-0.3 0.3 -0.3 0.7665625 l0 2.0665625 q-4.3 -0.4665625 -7.216875 -3.383125 q-2.916875 -2.916875 -3.3834375 -7.216875 l2.0665625 0 q0.4665625 0 0.7665625 -0.3 q0.3 -0.3 0.3 -0.7665625 q0 -0.4665625 -0.3 -0.7665625 q-0.3 -0.3 -0.7665625 -0.3 l-2.0665625 0 q0.4665625 -4.3 3.3834375 -7.216875 q2.9165625 -2.916875 7.216875 -3.3834375 l0 2.0665625 q0 0.4665625 0.3 0.7665625 q0.3 0.3 0.7665625 0.3 q0.4665625 0 0.7665625 -0.3 q0.3 -0.3 0.3 -0.7665625 l0 -2.0665625 q4.3 0.4665625 7.216875 3.3834375 q2.9165625 2.9165625 3.383125 7.216875 l-2.0665625 0 q-0.4665625 0 -0.7665625 0.3 q-0.3 0.3 -0.3 0.7665625 q0 0.4665625 0.3 0.7665625 q0.3 0.3 0.7665625 0.3 l2.0665625 0 q-0.4665625 4.3 -3.383125 7.216875 q-2.916875 2.9165625 -7.216875 3.383125 Z";
-const ICON_PATH_ORIGIN = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIQAAACECAMAAABmmnOVAAAC01BMVEUAAAAAef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef8Aef96quGStdqStdpbnujMzMzCyM7Gyc7Ky83MzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMwAef8GfP0yjfNWnOp0qOKKsdyYt9mju9aZt9mMstx1qeJYnekyjvIIfP0qivVmouaWttnMzMyat9lppOUujPQKffxhoOfNzc3Y2Njh4eHp6enu7u7y8vL19fXv7+/i4uLZ2dnOzs6auNgOf/sKff15quHR0dHx8fH9/f3////j4+N6quFdn+iywdPb29vw8PD+/v7c3NyywtLa2tr29vbS0tLd3d38/Pzf39/o6Ojc7f+q0v+HwP9rsf9dqv9Hnv9Vpv/q6urj8P+Vx/9Am/8Pgf8Iff/z8/OAvP95uf/n5+c5l//V6f+52v+y1//7+/vt7e0rkP/09PTQ0NDq9P8Whf+cy//W1tbe3t7A3v/m5ubs7OxOov/r6+vk5OQiaPjKAAAAknRSTlMACBZ9oB71/jiqywJBZATT6hBukRXv+zDCAVrkDIf4JbQsTb7eVeJLbwfa8Rh4G/OlPS/6/kxQ9/xdmZudoJxNVhng7B6wtWdzAtQOipcF1329wS44doK/BAkyP1pvgZOsrbnGXArAg34G2IsD1eMRe7bi7k5YnqFT9V0csyPedQyYD3p/Fje+hDpskq/MwpRBC6yKp2MAAAQdSURBVHja7Zn1exMxGIAPHbrhDsPdneHuNtzd3d3dIbjLh93o2o4i7TpgG1Jk0g0mMNwd/gTa5rq129reHnK5e/bk/TFNk/dJ7r5894XjGAwGg8GgTZasCpDIll1+hxw5vXLJLpEboTx5ZXbIhyzkl9fB28cqUaCgrBKFkI3CcjoUKYolihWXUSI7EihRUjaHXF52CVRKLoe8eZIdUOkyMknkRw6UlcehYAFHiXK+skgURk6Ul8OhQjFnCVRRBolKqRxQ5SzUHaqgNGSj7VCmalqJnDkoS5RF6ZCbroNvufQkUD6qEuXTdUA+3hQdqiEXVKfnUKOmK4latalJ1EEuoZZ6162HJ9x/4OChw0eOHj12/MTJU6dxG7XUu751tjNnz4ET5y9ctLZTSr0beKFLl89bpuUDrqgC1RqNWqsKuqqzNFw7e51S6u3tc+OmZUJ9kCHY6ECwOkRvab51iUrqXej2HYDQsHBjWgx3Ae7dppB6N2wEcF9jdMGDUIDGTaR2aNoM9FqjG7QmaN5CWgc/gIePjG559BigpZQOrYB/4jBfRGRUtDkmJjY6KjLCofkpD62lc2gDfMpWPIuLdwyV8XEpHgaddBZ+wBuSFcwJqSN2ovmZ/dfnOvCTxqGtwzq8SEjv4EhISn48eWgnhUP7DvDSvgzxrs6vV6+FLiro2EkCic4QKkzwJsH1KYreCp0eQhfyDl1B/w4P/xa5JVJ4U03QjbRD9x7wXlgH5IE3wmMBHXoSlugFAcI6f/AkkSi8q6HQm6xDn77wEQ8djTwSj3tqAMguRTe4ikeOQyJ4YV+KfkQl+oNW5GbY4gWOWgbwJ+kwAD6Fi90MK2ZsrIeBBCUGwRXbqJ+/iJMQliIEBhOU6AJhtlG/IpHE2bqrYQg5h6HA4yQiRqwEfkGCdTCMmMRw+IbPDCQaHCsCYAQxiZHw3TbmD/ESOHgHwShiEqPhp/gggYkSztIxxCRawy/bmEniJaJtfwiEscQkxkFgRqJESqQwwHhiEuMBp3Vm8RK/cZoHEzKXhCK2QxEPpiJe0YlKCFaKCNv/cYBNUsBRPlkJSc0U+dM7E9H0ThGJbgZT/iR7yj+VqMS06Qr4+OFm2JdCxIa8lugzkJs5K6MfxAaYPUcBpYG5khZJEkUUSb7DPCnKRfPBXj6M8FwuegoLpCgXcQszVjhbJFUJUee2hBhLoYTIcYtB57KY+opSMdVqwatSlZVj05aV//CwJLMX2DluaUcwhXm4ali2XOoLjxUrPV26zFtF4f5p0Gp310+z13BUWNvbehEXona6iAtX/zVZmtfN4WixfsNky4S6gCCVVq3RPLdfSfpv3MRRZfPoLc6Xs/5bt3EyMGzE9h07/Xft2t15z6i9+zgGg8FgMBgMBoPBYDAYDAYj8/APG67Rie8pUDsAAAAASUVORK5CYII=";
-const ICON_PATH_TARGET = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGAAAACcCAMAAAC3Fl5oAAAB3VBMVEVMaXH/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/EhL/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/Dw//AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/GRn/NTX/Dw//Fhb/AAD/AAD/AAD/GRn/GRn/Y2P/AAD/AAD/ExP/Ghr/AAD/AAD/MzP/GRn/AAD/Hh7/AAD/RUX/AAD/AAD/AAD/AAD/AAD/AAD/Dg7/AAD/HR3/Dw//FRX/SUn/AAD/////kJD/DQ3/Zmb/+/v/wMD/mJj/6en/vb3/1NT//Pz/ODj/+fn/3Nz/nJz/j4//9/f/7e3/9vb/7Oz/2Nj/x8f/Ozv/+Pj/3d3/nZ3/2dn//f3/6Oj/2tr/v7//09P/vr7/mZn/l5cdSvP3AAAAe3RSTlMAAhLiZgTb/vztB/JMRhlp6lQW86g8mQ4KFPs3UCH5U8huwlesWtTYGI7RsdVeJGfTW5rxnutLsvXWF8vQNdo6qQbuz7D4hgVIx2xtw8GC1TtZaIw0i84P98tU0/fsj7PKaAgiZZxeVfo8Z52eg1P0nESrENnjXVPUgw/uuSmDAAADsUlEQVR42u3aZ3cTRxgF4GtbYleSLdnGcsENG2ODjbExEHrvhAQCIb1Bem+QdkeuuFMNBBJIfmuOckzZI8/srHYmH3Lm+QNXK632LTvQ03Tu/IWeU/tTGTKT2n+q58L5c00wpXJd47DHEt5w47pKxLbhdLdPKb/7dBYxVLxw1GcI/2h1BcpzKNFHLX2JQ4gumaiitqpEEhEdOMJI9h5AFC3feYzI+7IF2tpSLEOqDXpObPRYFm/jCWho/4Ble7MdoT7fzhhq9yHEz28wltU1UPrJZ0wd66HwicfYvEFIfePTAP8tSLTupBHvtGJFH9bSkNrNWEHzERrT34xSH9Ogr1CijkbVAUH1KRqVqkdQAw07iIAaGlcTqI+/0LjeJJ5J0IIEnkpXMdzs4sTtW9dnZq7fuj2xOMtwVWk88RHDjBYejYvnjD8qjOpfQsUqhvj7oSjxcJIhVj3pyKqpNjYvVjQ/RrXq5YABKi3MCYm5BSrtWO5v11DlmlC4RpU1WRS9SJU7QukOVbpQ9JLu549+Dd0AUOlTbkGEuk85vxLAK5QbuytC3R2j3HoAjZSbFxrmKTcCoJdSk0LLJKV6gSaPMqNTQsvUKGW8JrxKqUWhaZFSeWyh1LTQNE2pHF6mzOy40DQ+S5mLimJcENoKlOnBWsr8KbRNUGYt5LXgd6HtD3lNQIoyN4S2G5RJIUOZm0LbTcqsBqVmhLYZSlkPsP4VWf+Rrd+m1v9o9h8Vv5p42C1R5qL1x7WRglOgVN52yfwNOBu76P+lLPoYidu23KPciIHGa07ZeIW1jvcNtI7q5vexCPGYCmf+m/Y9a3sAwQ5bI9T7ukPgPcn9GToEao+xk1OixJT+GIsvNAbx6eAgPq0xiF+KtkpYKhRXCQ8eFFcJhSWGu3rZ8jJkCM8kz9K4TUnrC6mAgzTsB9tLwQ2W15qfosQ2GrQNpZr7aczbzVjBZsvLcaC1g0bsbIVEnU8DOr6H1KDH2LwtUBi0/JII6Dxm9zUXkH+XMWzfh1Dte1i2Pe3QkC77Zel7aehpO8wyHG6Dtt0NjKxhN6I4uSli/TqJiJJDUQ4NDCURXTrXRy1XcumyD24M+AzhD1RXIIZsl/LoyZmurJHDM7s8lvB2FQ/PmPJ6PseAXP5HGMYAAC7ABbgAF+ACXIALcAEuwAW4ABfgAlyAC3ABLsAFuID/d8Cx4NEt8/byOf0wLnis8zjMq9/Kp7bWw4JOj8u8TlhRl+G/Mp2wpOX48GffvvZ1CyL4B53LAS6zb08EAAAAAElFTkSuQmCC";
-var MapType = /* @__PURE__ */ ((MapType2) => {
-  MapType2["QQ"] = "qq";
-  MapType2["GOOGLE"] = "google";
-  MapType2["AMAP"] = "AMap";
-  MapType2["BMAP"] = "BMapGL";
-  MapType2["UNKNOWN"] = "";
-  return MapType2;
-})(MapType || {});
-function getMapInfo() {
-  if (__uniConfig.bMapKey) {
-    return {
-      type: "BMapGL",
-      key: __uniConfig.bMapKey
-    };
-  }
-  if (__uniConfig.qqMapKey) {
-    return {
-      type: "qq",
-      key: __uniConfig.qqMapKey
-    };
-  }
-  if (__uniConfig.googleMapKey) {
-    return {
-      type: "google",
-      key: __uniConfig.googleMapKey
-    };
-  }
-  if (__uniConfig.aMapKey) {
-    return {
-      type: "AMap",
-      key: __uniConfig.aMapKey,
-      securityJsCode: __uniConfig.aMapSecurityJsCode,
-      serviceHost: __uniConfig.aMapServiceHost
-    };
-  }
-  return {
-    type: "",
-    key: ""
-  };
-}
-let IS_AMAP = false;
-let hasGetIsAMap = false;
-const getIsAMap = () => {
-  if (hasGetIsAMap) {
-    return IS_AMAP;
-  } else {
-    hasGetIsAMap = true;
-    return IS_AMAP = getMapInfo().type === "AMap";
-  }
-};
-const getIsBMap = () => {
-  return getMapInfo().type === "BMapGL";
-};
-function translateCoordinateSystem(type, coords, skip) {
-  const mapInfo = getMapInfo();
-  const wgs84Map = [
-    "google"
-    /* GOOGLE */
-  ];
-  if (type && type.toUpperCase() === "WGS84" || wgs84Map.includes(mapInfo.type) || skip) {
-    return Promise.resolve(coords);
-  }
-  if (mapInfo.type === "qq") {
-    return new Promise((resolve) => {
-      getJSONP(
-        `https://apis.map.qq.com/ws/coord/v1/translate?type=1&locations=${coords.latitude},${coords.longitude}&key=${mapInfo.key}&output=jsonp`,
-        {
-          callback: "callback"
-        },
-        (res) => {
-          if ("locations" in res && res.locations.length) {
-            const { lng, lat } = res.locations[0];
-            resolve({
-              longitude: lng,
-              latitude: lat,
-              altitude: coords.altitude,
-              accuracy: coords.accuracy,
-              altitudeAccuracy: coords.altitudeAccuracy,
-              heading: coords.heading,
-              speed: coords.speed
-            });
-          } else {
-            resolve(coords);
-          }
-        },
-        () => resolve(coords)
-      );
-    });
-  }
-  if (mapInfo.type === "AMap") {
-    return new Promise((resolve) => {
-      loadMaps([], () => {
-        window.AMap.convertFrom(
-          [coords.longitude, coords.latitude],
-          "gps",
-          (_, res) => {
-            if (res.info === "ok" && res.locations.length) {
-              const { lat, lng } = res.locations[0];
-              resolve({
-                longitude: lng,
-                latitude: lat,
-                altitude: coords.altitude,
-                accuracy: coords.accuracy,
-                altitudeAccuracy: coords.altitudeAccuracy,
-                heading: coords.heading,
-                speed: coords.speed
-              });
-            } else {
-              resolve(coords);
-            }
-          }
-        );
-      });
-    });
-  }
-  return Promise.reject(new Error("translate coordinate system faild"));
-}
-const props$c = {
-  id: {
-    type: [Number, String],
-    default: ""
-  },
-  latitude: {
-    type: [Number, String],
-    require: true
-  },
-  longitude: {
-    type: [Number, String],
-    require: true
-  },
-  title: {
-    type: String,
-    default: ""
-  },
-  iconPath: {
-    type: String,
-    require: true
-  },
-  rotate: {
-    type: [Number, String],
-    default: 0
-  },
-  alpha: {
-    type: [Number, String],
-    default: 1
-  },
-  width: {
-    type: [Number, String],
-    default: ""
-  },
-  height: {
-    type: [Number, String],
-    default: ""
-  },
-  callout: {
-    type: Object,
-    default: null
-  },
-  label: {
-    type: Object,
-    default: null
-  },
-  anchor: {
-    type: Object,
-    default: null
-  },
-  clusterId: {
-    type: [Number, String],
-    default: ""
-  },
-  customCallout: {
-    type: Object,
-    default: null
-  },
-  ariaLabel: {
-    type: String,
-    default: ""
-  }
-};
-function useMarkerLabelStyle(id2) {
-  const className = "uni-map-marker-label-" + id2;
-  const styleEl = document.createElement("style");
-  styleEl.id = className;
-  document.head.appendChild(styleEl);
-  onUnmounted(() => {
-    styleEl.remove();
-  });
-  return function updateMarkerLabelStyle(style) {
-    const newStyle = Object.assign({}, style, {
-      position: "absolute",
-      top: "70px",
-      borderStyle: "solid"
-    });
-    const div = document.createElement("div");
-    Object.keys(newStyle).forEach((key) => {
-      div.style[key] = newStyle[key] || "";
-    });
-    styleEl.innerText = `.${className}{${div.getAttribute("style")}}`;
-    return className;
-  };
-}
-const MapMarker = /* @__PURE__ */ defineSystemComponent({
-  name: "MapMarker",
-  props: props$c,
-  setup(props2) {
-    const id2 = String(!isNaN(Number(props2.id)) ? props2.id : "");
-    const onMapReady = inject("onMapReady");
-    const updateMarkerLabelStyle = useMarkerLabelStyle(id2);
-    let marker;
-    function removeMarker() {
-      if (marker) {
-        if (marker.label && "setMap" in marker.label) {
-          marker.label.setMap(null);
-        }
-        if (marker.callout) {
-          removeMarkerCallout(marker.callout);
-        }
-        marker.setMap(null);
-      }
-    }
-    function removeMarkerCallout(callout) {
-      if (getIsAMap()) {
-        callout.removeAMapText();
-      } else {
-        callout.setMap(null);
-      }
-    }
-    onMapReady((map, maps2, trigger) => {
-      function updateMarker(option) {
-        const title = option.title;
-        let position;
-        if (getIsAMap()) {
-          position = new maps2.LngLat(option.longitude, option.latitude);
-        } else if (getIsBMap()) {
-          position = new maps2.Point(option.longitude, option.latitude);
-        } else {
-          position = new maps2.LatLng(option.latitude, option.longitude);
-        }
-        const img = new Image();
-        let imgHeight = 0;
-        img.onload = () => {
-          const anchor = option.anchor || {};
-          let icon;
-          let w;
-          let h2;
-          let top;
-          let x = typeof anchor.x === "number" ? anchor.x : 0.5;
-          let y = typeof anchor.y === "number" ? anchor.y : 1;
-          if (option.iconPath && (option.width || option.height)) {
-            w = option.width || img.width / img.height * option.height;
-            h2 = option.height || img.height / img.width * option.width;
-          } else {
-            w = img.width / 2;
-            h2 = img.height / 2;
-          }
-          imgHeight = h2;
-          top = h2 - (h2 - y * h2);
-          if ("MarkerImage" in maps2) {
-            icon = new maps2.MarkerImage(img.src, null, null, new maps2.Point(x * w, y * h2), new maps2.Size(w, h2));
-          } else if ("Icon" in maps2) {
-            icon = new maps2.Icon({
-              image: img.src,
-              size: new maps2.Size(w, h2),
-              imageSize: new maps2.Size(w, h2),
-              imageOffset: new maps2.Pixel(x * w, y * h2)
-            });
-          } else {
-            icon = {
-              url: img.src,
-              anchor: new maps2.Point(x, y),
-              size: new maps2.Size(w, h2)
-            };
-          }
-          if (getIsBMap()) {
-            marker = new maps2.Marker(new maps2.Point(position.lng, position.lat));
-            map.addOverlay(marker);
-          } else {
-            marker.setPosition(position);
-            marker.setIcon(icon);
-          }
-          if ("setRotation" in marker) {
-            marker.setRotation(option.rotate || 0);
-          }
-          const labelOpt = option.label || {};
-          if ("label" in marker) {
-            marker.label.setMap(null);
-            delete marker.label;
-          }
-          let label;
-          if (labelOpt.content) {
-            const labelStyle = {
-              borderColor: labelOpt.borderColor,
-              borderWidth: (Number(labelOpt.borderWidth) || 0) + "px",
-              padding: (Number(labelOpt.padding) || 0) + "px",
-              borderRadius: (Number(labelOpt.borderRadius) || 0) + "px",
-              backgroundColor: labelOpt.bgColor,
-              color: labelOpt.color,
-              fontSize: (labelOpt.fontSize || 14) + "px",
-              lineHeight: (labelOpt.fontSize || 14) + "px",
-              marginLeft: (Number(labelOpt.anchorX || labelOpt.x) || 0) + "px",
-              marginTop: (Number(labelOpt.anchorY || labelOpt.y) || 0) + "px"
-            };
-            if ("Label" in maps2) {
-              label = new maps2.Label({
-                position,
-                map,
-                clickable: false,
-                content: labelOpt.content,
-                style: labelStyle
-              });
-              marker.label = label;
-            } else if ("setLabel" in marker) {
-              if (getIsAMap()) {
-                const content = `<div style="
-                  margin-left:${labelStyle.marginLeft};
-                  margin-top:${labelStyle.marginTop};
-                  padding:${labelStyle.padding};
-                  background-color:${labelStyle.backgroundColor};
-                  border-radius:${labelStyle.borderRadius};
-                  line-height:${labelStyle.lineHeight};
-                  color:${labelStyle.color};
-                  font-size:${labelStyle.fontSize};
-
-                  ">
-                  ${labelOpt.content}
-                <div>`;
-                marker.setLabel({
-                  content,
-                  direction: "bottom-right"
-                });
-              } else {
-                const className = updateMarkerLabelStyle(labelStyle);
-                marker.setLabel({
-                  text: labelOpt.content,
-                  color: labelStyle.color,
-                  fontSize: labelStyle.fontSize,
-                  className
-                });
-              }
-            }
-          }
-          const calloutOpt = option.callout || {};
-          let callout = marker.callout;
-          let calloutStyle;
-          if (calloutOpt.content || title) {
-            if (getIsAMap() && calloutOpt.content) {
-              calloutOpt.content = calloutOpt.content.replaceAll("\n", "<br/>");
-            }
-            const boxShadow = "0px 0px 3px 1px rgba(0,0,0,0.5)";
-            let offsetY = -imgHeight / 2;
-            if (option.width || option.height) {
-              offsetY += 14 - imgHeight / 2;
-            }
-            calloutStyle = calloutOpt.content ? {
-              position,
-              map,
-              top,
-              // handle AMap callout offset
-              offsetY,
-              content: calloutOpt.content,
-              color: calloutOpt.color,
-              fontSize: calloutOpt.fontSize,
-              borderRadius: calloutOpt.borderRadius,
-              bgColor: calloutOpt.bgColor,
-              padding: calloutOpt.padding,
-              boxShadow: calloutOpt.boxShadow || boxShadow,
-              display: calloutOpt.display
-            } : {
-              position,
-              map,
-              top,
-              // handle AMap callout offset
-              offsetY,
-              content: title,
-              boxShadow
-            };
-            if (callout) {
-              callout.setOption(calloutStyle);
-            } else {
-              if (getIsAMap()) {
-                const callback = () => {
-                  if (id2 !== "") {
-                    trigger("callouttap", {}, {
-                      markerId: Number(id2)
-                    });
-                  }
-                };
-                callout = marker.callout = new maps2.Callout(calloutStyle, callback);
-              } else {
-                callout = marker.callout = new maps2.Callout(calloutStyle);
-                callout.div.onclick = function($event) {
-                  if (id2 !== "") {
-                    trigger("callouttap", $event, {
-                      markerId: Number(id2)
-                    });
-                  }
-                  $event.stopPropagation();
-                  $event.preventDefault();
-                };
-                if (getMapInfo().type === MapType.GOOGLE) {
-                  callout.div.ontouchstart = function($event) {
-                    $event.stopPropagation();
-                  };
-                  callout.div.onpointerdown = function($event) {
-                    $event.stopPropagation();
-                  };
-                }
-              }
-            }
-          } else {
-            if (callout) {
-              removeMarkerCallout(callout);
-              delete marker.callout;
-            }
-          }
-        };
-        if (option.iconPath) {
-          img.src = getRealPath(option.iconPath);
-        } else {
-          console.error("Marker.iconPath is required.");
-        }
-      }
-      function addMarker(props3) {
-        if (!getIsBMap()) {
-          marker = new maps2.Marker({
-            map,
-            flat: true,
-            autoRotation: false
-          });
-        }
-        updateMarker(props3);
-        const MapsEvent = maps2.event || maps2.Event;
-        if (getIsBMap())
-          ;
-        else {
-          MapsEvent.addListener(marker, "click", () => {
-            const callout = marker.callout;
-            if (callout && !callout.alwaysVisible) {
-              if (getIsAMap()) {
-                callout.visible = !callout.visible;
-                if (callout.visible) {
-                  marker.callout.createAMapText();
-                } else {
-                  marker.callout.removeAMapText();
-                }
-              } else {
-                callout.set("visible", !callout.visible);
-                if (callout.visible) {
-                  const div = callout.div;
-                  const parent = div.parentNode;
-                  parent.removeChild(div);
-                  parent.appendChild(div);
-                }
-              }
-            }
-            if (id2) {
-              trigger("markertap", {}, {
-                markerId: Number(id2),
-                latitude: props3.latitude,
-                longitude: props3.longitude
-              });
-            }
-          });
-        }
-      }
-      addMarker(props2);
-      watch(props2, updateMarker);
-    });
-    if (id2) {
-      const addMapChidlContext = inject("addMapChidlContext");
-      const removeMapChidlContext = inject("removeMapChidlContext");
-      const context = {
-        id: id2,
-        translate(data) {
-          onMapReady((map, maps2, trigger) => {
-            const destination = data.destination;
-            const duration = data.duration;
-            const autoRotate = !!data.autoRotate;
-            let rotate = Number(data.rotate) || 0;
-            let rotation = 0;
-            if ("getRotation" in marker) {
-              rotation = marker.getRotation();
-            }
-            const a2 = marker.getPosition();
-            const b = new maps2.LatLng(destination.latitude, destination.longitude);
-            const distance2 = maps2.geometry.spherical.computeDistanceBetween(a2, b) / 1e3;
-            const time = (typeof duration === "number" ? duration : 1e3) / (1e3 * 60 * 60);
-            const speed = distance2 / time;
-            const MapsEvent = maps2.event || maps2.Event;
-            const movingEvent = MapsEvent.addListener(marker, "moving", (e2) => {
-              const latLng = e2.latLng;
-              const label = marker.label;
-              if (label) {
-                label.setPosition(latLng);
-              }
-              const callout = marker.callout;
-              if (callout) {
-                callout.setPosition(latLng);
-              }
-            });
-            const event = MapsEvent.addListener(marker, "moveend", () => {
-              event.remove();
-              movingEvent.remove();
-              marker.lastPosition = a2;
-              marker.setPosition(b);
-              const label = marker.label;
-              if (label) {
-                label.setPosition(b);
-              }
-              const callout = marker.callout;
-              if (callout) {
-                callout.setPosition(b);
-              }
-              const cb = data.animationEnd;
-              if (isFunction(cb)) {
-                cb();
-              }
-            });
-            let lastRtate = 0;
-            if (autoRotate) {
-              if (marker.lastPosition) {
-                lastRtate = maps2.geometry.spherical.computeHeading(marker.lastPosition, a2);
-              }
-              rotate = maps2.geometry.spherical.computeHeading(a2, b) - lastRtate;
-            }
-            if ("setRotation" in marker) {
-              marker.setRotation(rotation + rotate);
-            }
-            if ("moveTo" in marker) {
-              marker.moveTo(b, speed);
-            } else {
-              marker.setPosition(b);
-              MapsEvent.trigger(marker, "moveend", {});
-            }
-          });
-        }
-      };
-      addMapChidlContext(context);
-      onUnmounted(() => removeMapChidlContext(context));
-    }
-    onUnmounted(removeMarker);
-    return () => {
-      return null;
-    };
-  }
-});
-function hexToRgba(hex) {
-  if (!hex) {
-    return {
-      r: 0,
-      g: 0,
-      b: 0,
-      a: 0
-    };
-  }
-  let tmpHex = hex.slice(1);
-  const tmpHexLen = tmpHex.length;
-  if (![3, 4, 6, 8].includes(tmpHexLen)) {
-    return {
-      r: 0,
-      g: 0,
-      b: 0,
-      a: 0
-    };
-  }
-  if (tmpHexLen === 3 || tmpHexLen === 4) {
-    tmpHex = tmpHex.replace(/(\w{1})/g, "$1$1");
-  }
-  let [sr, sg, sb, sa] = tmpHex.match(/(\w{2})/g);
-  const r = parseInt(sr, 16), g2 = parseInt(sg, 16), b = parseInt(sb, 16);
-  if (!sa) {
-    return { r, g: g2, b, a: 1 };
-  }
-  return {
-    r,
-    g: g2,
-    b,
-    a: (`0x100${sa}` - 65536) / 255
-  };
-}
-const props$b = {
-  points: {
-    type: Array,
-    require: true
-  },
-  color: {
-    type: String,
-    default: "#000000"
-  },
-  width: {
-    type: [Number, String],
-    default: ""
-  },
-  dottedLine: {
-    type: [Boolean, String],
-    default: false
-  },
-  arrowLine: {
-    type: [Boolean, String],
-    default: false
-  },
-  arrowIconPath: {
-    type: String,
-    default: ""
-  },
-  borderColor: {
-    type: String,
-    default: "#000000"
-  },
-  borderWidth: {
-    type: [Number, String],
-    default: ""
-  },
-  colorList: {
-    type: Array,
-    default() {
-      return [];
-    }
-  },
-  level: {
-    type: String,
-    default: ""
-  }
-};
-const MapPolyline = /* @__PURE__ */ defineSystemComponent({
-  name: "MapPolyline",
-  props: props$b,
-  setup(props2) {
-    const onMapReady = inject("onMapReady");
-    let polyline;
-    let polylineBorder;
-    function removePolyline() {
-      if (polyline) {
-        polyline.setMap(null);
-      }
-      if (polylineBorder) {
-        polylineBorder.setMap(null);
-      }
-    }
-    onMapReady((map, maps2) => {
-      function updatePolyline(option) {
-        removePolyline();
-        addPolyline(option);
-      }
-      function addPolyline(option) {
-        const path = [];
-        option.points.forEach((point) => {
-          let pointPosition;
-          if (getIsAMap()) {
-            pointPosition = [point.longitude, point.latitude];
-          } else if (getIsBMap()) {
-            pointPosition = new maps2.Point(point.longitude, point.latitude);
-          } else {
-            pointPosition = new maps2.LatLng(point.latitude, point.longitude);
-          }
-          path.push(pointPosition);
-        });
-        const strokeWeight = Number(option.width) || 1;
-        const {
-          r: sr,
-          g: sg,
-          b: sb,
-          a: sa
-        } = hexToRgba(option.color);
-        const {
-          r: br,
-          g: bg,
-          b: bb,
-          a: ba
-        } = hexToRgba(option.borderColor);
-        const polylineOptions = {
-          map,
-          clickable: false,
-          path,
-          strokeWeight,
-          strokeColor: option.color || void 0,
-          strokeDashStyle: option.dottedLine ? "dash" : "solid"
-        };
-        const borderWidth = Number(option.borderWidth) || 0;
-        const polylineBorderOptions = {
-          map,
-          clickable: false,
-          path,
-          strokeWeight: strokeWeight + borderWidth * 2,
-          strokeColor: option.borderColor || void 0,
-          strokeDashStyle: option.dottedLine ? "dash" : "solid"
-        };
-        if ("Color" in maps2) {
-          polylineOptions.strokeColor = new maps2.Color(sr, sg, sb, sa);
-          polylineBorderOptions.strokeColor = new maps2.Color(br, bg, bb, ba);
-        } else {
-          polylineOptions.strokeColor = `rgb(${sr}, ${sg}, ${sb})`;
-          polylineOptions.strokeOpacity = sa;
-          polylineBorderOptions.strokeColor = `rgb(${br}, ${bg}, ${bb})`;
-          polylineBorderOptions.strokeOpacity = ba;
-        }
-        if (borderWidth) {
-          polylineBorder = new maps2.Polyline(polylineBorderOptions);
-        }
-        if (getIsBMap()) {
-          polyline = new maps2.Polyline(polylineOptions.path, polylineOptions);
-          map.addOverlay(polyline);
-        } else {
-          polyline = new maps2.Polyline(polylineOptions);
-        }
-      }
-      addPolyline(props2);
-      watch(props2, updatePolyline);
-    });
-    onUnmounted(removePolyline);
-    return () => {
-      return null;
-    };
-  }
-});
-const props$a = {
-  latitude: {
-    type: [Number, String],
-    require: true
-  },
-  longitude: {
-    type: [Number, String],
-    require: true
-  },
-  color: {
-    type: String,
-    default: "#000000"
-  },
-  fillColor: {
-    type: String,
-    default: "#00000000"
-  },
-  radius: {
-    type: [Number, String],
-    require: true
-  },
-  strokeWidth: {
-    type: [Number, String],
-    default: ""
-  },
-  level: {
-    type: String,
-    default: ""
-  }
-};
-const MapCircle = /* @__PURE__ */ defineSystemComponent({
-  name: "MapCircle",
-  props: props$a,
-  setup(props2) {
-    const onMapReady = inject("onMapReady");
-    let circle;
-    function removeCircle() {
-      if (circle) {
-        circle.setMap(null);
-      }
-    }
-    onMapReady((map, maps2) => {
-      function updateCircle(option) {
-        removeCircle();
-        addCircle(option);
-      }
-      function addCircle(option) {
-        const center = getIsAMap() || getIsBMap() ? [option.longitude, option.latitude] : new maps2.LatLng(option.latitude, option.longitude);
-        const circleOptions = {
-          map,
-          center,
-          clickable: false,
-          radius: option.radius,
-          strokeWeight: Number(option.strokeWidth) || 1,
-          strokeDashStyle: "solid"
-        };
-        if (getIsBMap()) {
-          circleOptions.strokeColor = option.color;
-          circleOptions.fillColor = option.fillColor || "#000";
-          circleOptions.fillOpacity = 1;
-        } else {
-          const {
-            r: fr,
-            g: fg,
-            b: fb,
-            a: fa
-          } = hexToRgba(option.fillColor);
-          const {
-            r: sr,
-            g: sg,
-            b: sb,
-            a: sa
-          } = hexToRgba(option.color);
-          if ("Color" in maps2) {
-            circleOptions.fillColor = new maps2.Color(fr, fg, fb, fa);
-            circleOptions.strokeColor = new maps2.Color(sr, sg, sb, sa);
-          } else {
-            circleOptions.fillColor = `rgb(${fr}, ${fg}, ${fb})`;
-            circleOptions.fillOpacity = fa;
-            circleOptions.strokeColor = `rgb(${sr}, ${sg}, ${sb})`;
-            circleOptions.strokeOpacity = sa;
-          }
-        }
-        if (getIsBMap()) {
-          let pt = new maps2.Point(
-            // @ts-ignore
-            circleOptions.center[0],
-            // @ts-ignore
-            circleOptions.center[1]
-          );
-          circle = new maps2.Circle(pt, circleOptions.radius, circleOptions);
-          map.addOverlay(circle);
-        } else {
-          circle = new maps2.Circle(circleOptions);
-          if (getIsAMap()) {
-            map.add(circle);
-          }
-        }
-      }
-      addCircle(props2);
-      watch(props2, updateCircle);
-    });
-    onUnmounted(removeCircle);
-    return () => {
-      return null;
-    };
-  }
-});
-const props$9 = {
-  id: {
-    type: [Number, String],
-    default: ""
-  },
-  position: {
-    type: Object,
-    required: true
-  },
-  iconPath: {
-    type: String,
-    required: true
-  },
-  clickable: {
-    type: [Boolean, String],
-    default: ""
-  },
-  trigger: {
-    type: Function,
-    required: true
-  }
-};
-const MapControl = /* @__PURE__ */ defineSystemComponent({
-  name: "MapControl",
-  props: props$9,
-  setup(props2) {
-    const imgPath = computed(() => getRealPath(props2.iconPath));
-    const positionStyle = computed(() => {
-      let positionStyle2 = `top:${props2.position.top || 0}px;left:${props2.position.left || 0}px;`;
-      if (props2.position.width) {
-        positionStyle2 += `width:${props2.position.width}px;`;
-      }
-      if (props2.position.height) {
-        positionStyle2 += `height:${props2.position.height}px;`;
-      }
-      return positionStyle2;
-    });
-    const handleClick = ($event) => {
-      if (props2.clickable) {
-        props2.trigger("controltap", $event, {
-          controlId: props2.id
-        });
-      }
-    };
-    return () => {
-      return createVNode("div", {
-        "class": "uni-map-control"
-      }, [createVNode("img", {
-        "src": imgPath.value,
-        "style": positionStyle.value,
-        "class": "uni-map-control-icon",
-        "onClick": handleClick
-      }, null, 12, ["src", "onClick"])]);
-    };
-  }
-});
-const initInnerAudioContextEventOnce = /* @__PURE__ */ once(() => {
-  innerAudioContextEventNames.forEach((eventName) => {
-    InnerAudioContext.prototype[eventName] = function(callback) {
-      if (isFunction(callback)) {
-        this._events[eventName].push(callback);
-      }
-    };
-  });
-  innerAudioContextOffEventNames.forEach((eventName) => {
-    InnerAudioContext.prototype[eventName] = function(callback) {
-      var handle = this._events[eventName.replace("off", "on")];
-      var index2 = handle.indexOf(callback);
-      if (index2 >= 0) {
-        handle.splice(index2, 1);
-      }
-    };
-  });
-});
-class InnerAudioContext {
-  /**
-   * 音频上下文初始化
-   */
-  constructor() {
-    this._src = "";
-    var audio = this._audio = new Audio();
-    this._stoping = false;
-    const propertys = [
-      "src",
-      "autoplay",
-      "loop",
-      "duration",
-      "currentTime",
-      "paused",
-      "volume"
-    ];
-    propertys.forEach((property) => {
-      Object.defineProperty(this, property, {
-        set: property === "src" ? (src) => {
-          audio.src = getRealPath(src);
-          this._src = src;
-          return src;
-        } : (val) => {
-          audio[property] = val;
-          return val;
-        },
-        get: property === "src" ? () => {
-          return this._src;
-        } : () => {
-          return audio[property];
-        }
-      });
-    });
-    this.startTime = 0;
-    Object.defineProperty(this, "obeyMuteSwitch", {
-      set: () => false,
-      get: () => false
-    });
-    Object.defineProperty(this, "buffered", {
-      get() {
-        var buffered = audio.buffered;
-        if (buffered.length) {
-          return buffered.end(buffered.length - 1);
-        } else {
-          return 0;
-        }
-      }
-    });
-    this._events = {};
-    innerAudioContextEventNames.forEach((eventName) => {
-      this._events[eventName] = [];
-    });
-    audio.addEventListener("loadedmetadata", () => {
-      var startTime = Number(this.startTime) || 0;
-      if (startTime > 0) {
-        audio.currentTime = startTime;
-      }
-    });
-    var stopEventNames = ["canplay", "pause", "seeking", "seeked", "timeUpdate"];
-    var eventNames = stopEventNames.concat([
-      "play",
-      "ended",
-      "error",
-      "waiting"
-    ]);
-    eventNames.forEach((eventName) => {
-      audio.addEventListener(
-        eventName.toLowerCase(),
-        () => {
-          if (this._stoping && stopEventNames.indexOf(eventName) >= 0) {
-            return;
-          }
-          const EventName = `on${eventName.slice(0, 1).toUpperCase()}${eventName.slice(1)}`;
-          this._events[EventName].forEach((callback) => {
-            callback();
-          });
-        },
-        false
-      );
-    });
-    initInnerAudioContextEventOnce();
-  }
-  /**
-   * 播放
-   */
-  play() {
-    this._stoping = false;
-    this._audio.play();
-  }
-  /**
-   * 暂停
-   */
-  pause() {
-    this._audio.pause();
-  }
-  /**
-   * 停止
-   */
-  stop() {
-    this._stoping = true;
-    this._audio.pause();
-    this._audio.currentTime = 0;
-    this._events.onStop.forEach((callback) => {
-      callback();
-    });
-  }
-  /**
-   * 跳转到
-   * @param {number} position
-   */
-  seek(position) {
-    this._stoping = false;
-    position = Number(position);
-    if (typeof position === "number" && !isNaN(position)) {
-      this._audio.currentTime = position;
-    }
-  }
-  /**
-   * 销毁
-   */
-  destroy() {
-    this.stop();
-  }
-}
-const createInnerAudioContext = /* @__PURE__ */ defineSyncApi(
-  API_CREATE_INNER_AUDIO_CONTEXT,
-  () => {
-    return new InnerAudioContext();
-  }
-);
-const makePhoneCall = /* @__PURE__ */ defineAsyncApi(
-  API_MAKE_PHONE_CALL,
-  ({ phoneNumber }, { resolve }) => {
-    window.location.href = `tel:${phoneNumber}`;
-    return resolve();
-  },
-  MakePhoneCallProtocol
-);
-const UUID_KEY = "__DC_STAT_UUID";
-const storage = navigator.cookieEnabled && (window.localStorage || window.sessionStorage) || {};
-let deviceId;
-function deviceId$1() {
-  deviceId = deviceId || storage[UUID_KEY];
-  if (!deviceId) {
-    deviceId = Date.now() + "" + Math.floor(Math.random() * 1e7);
-    try {
-      storage[UUID_KEY] = deviceId;
-    } catch (error) {
-    }
-  }
-  return deviceId;
-}
-const getWindowInfo = /* @__PURE__ */ defineSyncApi(
-  "getWindowInfo",
-  () => {
-    const pixelRatio = window.devicePixelRatio;
-    const screenFix = getScreenFix();
-    const landscape = isLandscape(screenFix);
-    const screenWidth = getScreenWidth(screenFix, landscape);
-    const screenHeight = getScreenHeight(screenFix, landscape);
-    const windowWidth = getWindowWidth(screenWidth);
-    let windowHeight = window.innerHeight;
-    const statusBarHeight = safeAreaInsets$1.top;
-    const safeArea = {
-      left: safeAreaInsets$1.left,
-      right: windowWidth - safeAreaInsets$1.right,
-      top: safeAreaInsets$1.top,
-      bottom: windowHeight - safeAreaInsets$1.bottom,
-      width: windowWidth - safeAreaInsets$1.left - safeAreaInsets$1.right,
-      height: windowHeight - safeAreaInsets$1.top - safeAreaInsets$1.bottom
-    };
-    const { top: windowTop, bottom: windowBottom } = getWindowOffset();
-    windowHeight -= windowTop;
-    windowHeight -= windowBottom;
-    return {
-      windowTop,
-      windowBottom,
-      windowWidth,
-      windowHeight,
-      pixelRatio,
-      screenWidth,
-      screenHeight,
-      statusBarHeight,
-      safeArea,
-      safeAreaInsets: {
-        top: safeAreaInsets$1.top,
-        right: safeAreaInsets$1.right,
-        bottom: safeAreaInsets$1.bottom,
-        left: safeAreaInsets$1.left
-      },
-      screenTop: screenHeight - windowHeight
-    };
-  }
-);
-let browserInfo;
-let _initBrowserInfo = true;
-function initBrowserInfo() {
-  if (!_initBrowserInfo)
-    return;
-  browserInfo = getBrowserInfo();
-}
-const getDeviceInfo = /* @__PURE__ */ defineSyncApi(
-  "getDeviceInfo",
-  () => {
-    initBrowserInfo();
-    const {
-      deviceBrand,
-      deviceModel,
-      brand,
-      model,
-      platform,
-      system,
-      deviceOrientation,
-      deviceType,
-      osname,
-      osversion
-    } = browserInfo;
-    return extend(
-      {
-        brand,
-        deviceBrand,
-        deviceModel,
-        devicePixelRatio: window.devicePixelRatio,
-        deviceId: deviceId$1(),
-        deviceOrientation,
-        deviceType,
-        model,
-        platform,
-        system
-      },
-      {
-        osName: osname ? osname.toLocaleLowerCase() : void 0,
-        osVersion: osversion
-      }
-    );
-  }
-);
-const getAppBaseInfo = /* @__PURE__ */ defineSyncApi(
-  "getAppBaseInfo",
-  () => {
-    initBrowserInfo();
-    const { theme, language, browserName, browserVersion } = browserInfo;
-    return extend(
-      {
-        appId: __uniConfig.appId,
-        appName: __uniConfig.appName,
-        appVersion: __uniConfig.appVersion,
-        appVersionCode: __uniConfig.appVersionCode,
-        appLanguage: getLocale ? getLocale() : language,
-        enableDebug: false,
-        hostSDKVersion: void 0,
-        hostPackageName: void 0,
-        hostFontSizeSetting: void 0,
-        hostName: browserName,
-        hostVersion: browserVersion,
-        hostTheme: theme,
-        hostLanguage: language,
-        language,
-        SDKVersion: "",
-        theme,
-        version: ""
-      },
-      {
-        uniCompilerVersion: __uniConfig.compilerVersion,
-        uniRuntimeVersion: __uniConfig.compilerVersion,
-        uniCompilerVersionCode: parseFloat(__uniConfig.compilerVersion),
-        uniRuntimeVersionCode: parseFloat(__uniConfig.compilerVersion),
-        isUniAppX: true
-      }
-    );
-  }
-);
-const getSystemInfoSync = /* @__PURE__ */ defineSyncApi(
-  "getSystemInfoSync",
-  () => {
-    _initBrowserInfo = true;
-    initBrowserInfo();
-    _initBrowserInfo = false;
-    const windowInfo = getWindowInfo();
-    const deviceInfo = getDeviceInfo();
-    const appBaseInfo = getAppBaseInfo();
-    _initBrowserInfo = true;
-    const { ua: ua2, browserName, browserVersion, osname, osversion } = browserInfo;
-    const systemInfo = extend(
-      windowInfo,
-      deviceInfo,
-      appBaseInfo,
-      {
-        ua: ua2,
-        browserName,
-        browserVersion,
-        uniPlatform: "web",
-        uniCompileVersion: __uniConfig.compilerVersion,
-        uniRuntimeVersion: __uniConfig.compilerVersion,
-        fontSizeSetting: void 0,
-        osName: osname.toLocaleLowerCase(),
-        osVersion: osversion,
-        osLanguage: void 0,
-        osTheme: void 0
-      }
-    );
-    delete systemInfo.screenTop;
-    delete systemInfo.enableDebug;
-    if (!__uniConfig.darkmode)
-      delete systemInfo.theme;
-    return sortObject(systemInfo);
-  }
-);
-const getSystemInfo = /* @__PURE__ */ defineAsyncApi(
-  "getSystemInfo",
-  (_args, { resolve }) => {
-    return resolve(getSystemInfoSync());
-  }
-);
-const API_ON_NETWORK_STATUS_CHANGE = "onNetworkStatusChange";
-function networkListener() {
-  getNetworkType().then(({ networkType }) => {
-    UniServiceJSBridge.invokeOnCallback(
-      API_ON_NETWORK_STATUS_CHANGE,
-      {
-        isConnected: networkType !== "none",
-        networkType
-      }
-    );
-  });
-}
-function getConnection() {
-  return navigator.connection || navigator.webkitConnection || navigator.mozConnection;
-}
-const onNetworkStatusChange = /* @__PURE__ */ defineOnApi(
-  API_ON_NETWORK_STATUS_CHANGE,
-  () => {
-    const connection = getConnection();
-    if (connection) {
-      connection.addEventListener("change", networkListener);
-    } else {
-      window.addEventListener("offline", networkListener);
-      window.addEventListener("online", networkListener);
-    }
-  }
-);
-const offNetworkStatusChange = /* @__PURE__ */ defineOffApi("offNetworkStatusChange", () => {
-  const connection = getConnection();
-  if (connection) {
-    connection.removeEventListener("change", networkListener);
-  } else {
-    window.removeEventListener("offline", networkListener);
-    window.removeEventListener("online", networkListener);
-  }
-});
-const getNetworkType = /* @__PURE__ */ defineAsyncApi(
-  "getNetworkType",
-  (_args, { resolve }) => {
-    const connection = getConnection();
-    let networkType = "unknown";
-    if (connection) {
-      networkType = connection.type;
-      if (networkType === "cellular" && connection.effectiveType) {
-        networkType = connection.effectiveType.replace("slow-", "");
-      } else if (!networkType && connection.effectiveType) {
-        networkType = connection.effectiveType;
-      } else if (!["none", "wifi"].includes(networkType)) {
-        networkType = "unknown";
-      }
-    } else if (navigator.onLine === false) {
-      networkType = "none";
-    }
-    return resolve({ networkType });
-  }
-);
-let listener$1 = null;
-const onAccelerometerChange = /* @__PURE__ */ defineOnApi(API_ON_ACCELEROMETER, () => {
-  startAccelerometer();
-});
-const offAccelerometerChange = /* @__PURE__ */ defineOffApi(API_OFF_ACCELEROMETER, () => {
-  stopAccelerometer();
-});
-const startAccelerometer = /* @__PURE__ */ defineAsyncApi(
-  API_START_ACCELEROMETER,
-  (_, { resolve, reject }) => {
-    if (!window.DeviceMotionEvent) {
-      reject();
-      return;
-    }
-    function addEventListener() {
-      listener$1 = function(event) {
-        const acceleration = event.acceleration || event.accelerationIncludingGravity;
-        UniServiceJSBridge.invokeOnCallback(API_ON_ACCELEROMETER, {
-          x: acceleration && acceleration.x || 0,
-          y: acceleration && acceleration.y || 0,
-          z: acceleration && acceleration.z || 0
-        });
-      };
-      window.addEventListener("devicemotion", listener$1, false);
-    }
-    if (!listener$1) {
-      if (DeviceMotionEvent.requestPermission) {
-        DeviceMotionEvent.requestPermission().then((res) => {
-          if (res === "granted") {
-            addEventListener();
-            resolve();
-          } else {
-            reject(`${res}`);
-          }
-        }).catch((error) => {
-          reject(`${error}`);
-        });
-        return;
-      }
-      addEventListener();
-    }
-    resolve();
-  }
-);
-const stopAccelerometer = /* @__PURE__ */ defineAsyncApi(
-  API_STOP_ACCELEROMETER,
-  (_, { resolve }) => {
-    if (listener$1) {
-      window.removeEventListener("devicemotion", listener$1, false);
-      listener$1 = null;
-    }
-    resolve();
-  }
-);
-let listener = null;
-const onCompassChange = /* @__PURE__ */ defineOnApi(
-  API_ON_COMPASS,
-  () => {
-    startCompass();
-  }
-);
-const offCompassChange = /* @__PURE__ */ defineOffApi(
-  API_OFF_COMPASS,
-  () => {
-    stopCompass();
-  }
-);
-const startCompass = /* @__PURE__ */ defineAsyncApi(
-  API_START_COMPASS,
-  (_, { resolve, reject }) => {
-    if (!window.DeviceOrientationEvent) {
-      reject();
-      return;
-    }
-    function addEventListener() {
-      listener = function(event) {
-        const direction2 = 360 - (event.alpha !== null ? event.alpha : 360);
-        UniServiceJSBridge.invokeOnCallback(API_ON_COMPASS, {
-          direction: direction2
-        });
-      };
-      window.addEventListener("deviceorientation", listener, false);
-    }
-    if (!listener) {
-      if (DeviceOrientationEvent.requestPermission) {
-        DeviceOrientationEvent.requestPermission().then((res) => {
-          if (res === "granted") {
-            addEventListener();
-            resolve();
-          } else {
-            reject(`${res}`);
-          }
-        }).catch((error) => {
-          reject(`${error}`);
-        });
-        return;
-      }
-      addEventListener();
-    }
-    resolve();
-  }
-);
-const stopCompass = /* @__PURE__ */ defineAsyncApi(
-  API_STOP_COMPASS,
-  (_, { resolve }) => {
-    if (listener) {
-      window.removeEventListener("deviceorientation", listener, false);
-      listener = null;
-    }
-    resolve();
-  }
-);
-const _isSupport = !!window.navigator.vibrate;
-const vibrateShort = /* @__PURE__ */ defineAsyncApi(
-  API_VIBRATE_SHORT,
-  (args, { resolve, reject }) => {
-    if (_isSupport && window.navigator.vibrate(15)) {
-      resolve();
-    } else {
-      reject("vibrateLong:fail");
-    }
-  }
-);
-const vibrateLong = /* @__PURE__ */ defineAsyncApi(
-  API_VIBRATE_LONG,
-  (args, { resolve, reject }) => {
-    if (_isSupport && window.navigator.vibrate(400)) {
-      resolve();
-    } else {
-      reject("vibrateLong:fail");
-    }
-  }
-);
-var __async = (__this, __arguments, generator) => {
-  return new Promise((resolve, reject) => {
-    var fulfilled = (value) => {
-      try {
-        step(generator.next(value));
-      } catch (e2) {
-        reject(e2);
-      }
-    };
-    var rejected = (value) => {
-      try {
-        step(generator.throw(value));
-      } catch (e2) {
-        reject(e2);
-      }
-    };
-    var step = (x) => x.done ? resolve(x.value) : Promise.resolve(x.value).then(fulfilled, rejected);
-    step((generator = generator.apply(__this, __arguments)).next());
-  });
-};
-const getClipboardData = /* @__PURE__ */ defineAsyncApi(
-  API_GET_CLIPBOARD_DATA,
-  (_0, _1) => __async(void 0, [_0, _1], function* (_, { resolve, reject }) {
-    initI18nGetClipboardDataMsgsOnce();
-    const { t: t2 } = useI18n();
-    try {
-      const data = yield navigator.clipboard.readText();
-      resolve({ data });
-    } catch (error) {
-      _getClipboardData(resolve, () => {
-        reject(`${error} ${t2("uni.getClipboardData.fail")}`);
-      });
-    }
-  })
-);
-const setClipboardData = /* @__PURE__ */ defineAsyncApi(
-  API_SET_CLIPBOARD_DATA,
-  (_0, _1) => __async(void 0, [_0, _1], function* ({ data }, { resolve, reject }) {
-    try {
-      yield navigator.clipboard.writeText(data);
-      resolve();
-    } catch (error) {
-      _setClipboardData(data, resolve, reject);
-    }
-  }),
-  SetClipboardDataProtocol,
-  SetClipboardDataOptions
-);
-function _getClipboardData(resolve, reject) {
-  const pasteText = document.getElementById("#clipboard");
-  const data = pasteText ? pasteText.value : void 0;
-  if (data) {
-    resolve({ data });
-  } else {
-    reject();
-  }
-}
-function _setClipboardData(data, resolve, reject) {
-  const pasteText = document.getElementById("#clipboard");
-  pasteText && pasteText.remove();
-  const textarea = document.createElement("textarea");
-  textarea.setAttribute("inputmode", "none");
-  textarea.id = "#clipboard";
-  textarea.style.position = "fixed";
-  textarea.style.top = "-9999px";
-  textarea.style.zIndex = "-9999";
-  document.body.appendChild(textarea);
-  textarea.value = data;
-  textarea.select();
-  textarea.setSelectionRange(0, textarea.value.length);
-  const result = document.execCommand("Copy", false);
-  textarea.blur();
-  if (result) {
-    resolve();
-  } else {
-    reject();
-  }
-}
-const themeChangeCallBack = (res) => {
-  UniServiceJSBridge.invokeOnCallback(ON_THEME_CHANGE, res);
-};
-const onThemeChange = /* @__PURE__ */ defineOnApi(
-  ON_THEME_CHANGE,
-  () => {
-    UniServiceJSBridge.on(ON_THEME_CHANGE, themeChangeCallBack);
-  }
-);
-const offThemeChange = /* @__PURE__ */ defineOffApi(
-  OFF_THEME_CHANGE,
-  () => {
-    UniServiceJSBridge.off(ON_THEME_CHANGE, themeChangeCallBack);
-  }
-);
-const STORAGE_KEYS = "uni-storage-keys";
-function parseValue(value) {
-  const types = ["object", "string", "number", "boolean", "undefined"];
-  try {
-    const object = isString(value) ? JSON.parse(value) : value;
-    const type = object.type;
-    if (types.indexOf(type) >= 0) {
-      const keys = Object.keys(object);
-      if (keys.length === 2 && "data" in object) {
-        if (typeof object.data === type) {
-          if (type === "object" && !Array.isArray(object.data)) {
-            return new UTSJSONObject(object.data);
-          }
-          return object.data;
-        }
-        if (type === "object" && /^\d{4}-\d{2}-\d{2}T\d{2}\:\d{2}\:\d{2}\.\d{3}Z$/.test(object.data)) {
-          return new Date(object.data);
-        }
-      } else if (keys.length === 1) {
-        return "";
-      }
-    }
-  } catch (error) {
-  }
-}
-const setStorageSync = /* @__PURE__ */ defineSyncApi(
-  API_SET_STORAGE_SYNC,
-  (key, data) => {
-    const type = typeof data;
-    const value = type === "string" ? data : JSON.stringify({
-      type,
-      data
-    });
-    localStorage.setItem(key, value);
-  },
-  SetStorageSyncProtocol
-);
-const setStorage = /* @__PURE__ */ defineAsyncApi(
-  API_SET_STORAGE,
-  ({ key, data }, { resolve, reject }) => {
-    try {
-      setStorageSync(key, data);
-      resolve();
-    } catch (error) {
-      reject(error.message);
-    }
-  },
-  SetStorageProtocol
-);
-function getStorageOrigin(key) {
-  const value = localStorage && localStorage.getItem(key);
-  if (!isString(value)) {
-    throw new Error("data not found");
-  }
-  let data = value;
-  try {
-    const object = JSON.parse(value);
-    const result = parseValue(object);
-    if (result !== void 0) {
-      data = result;
-    }
-  } catch (error) {
-  }
-  return data;
-}
-const getStorageSync = /* @__PURE__ */ defineSyncApi(
-  API_GET_STORAGE_SYNC,
-  (key) => {
-    try {
-      return getStorageOrigin(key);
-    } catch (error) {
-      return "";
-    }
-  },
-  GetStorageSyncProtocol
-);
-const getStorage = /* @__PURE__ */ defineAsyncApi(
-  API_GET_STORAGE,
-  ({ key }, { resolve, reject }) => {
-    try {
-      const data = getStorageOrigin(key);
-      resolve({
-        data
-      });
-    } catch (error) {
-      reject(error.message);
-    }
-  },
-  GetStorageProtocol
-);
-const removeStorageSync = /* @__PURE__ */ defineSyncApi(
-  API_REMOVE_STORAGE,
-  (key) => {
-    if (localStorage) {
-      localStorage.removeItem(key);
-    }
-  },
-  RemoveStorageSyncProtocol
-);
-const removeStorage = /* @__PURE__ */ defineAsyncApi(
-  API_REMOVE_STORAGE,
-  ({ key }, { resolve }) => {
-    removeStorageSync(key);
-    resolve();
-  },
-  RemoveStorageProtocol
-);
-const clearStorageSync = /* @__PURE__ */ defineSyncApi(
-  "clearStorageSync",
-  () => {
-    if (localStorage) {
-      localStorage.clear();
-    }
-  }
-);
-const clearStorage = /* @__PURE__ */ defineAsyncApi(
-  "clearStorage",
-  (_, { resolve }) => {
-    clearStorageSync();
-    resolve();
-  }
-);
-const getStorageInfoSync = /* @__PURE__ */ defineSyncApi(
-  "getStorageInfoSync",
-  () => {
-    const length = localStorage && localStorage.length || 0;
-    const keys = [];
-    let currentSize = 0;
-    for (let index2 = 0; index2 < length; index2++) {
-      const key = localStorage.key(index2);
-      const value = localStorage.getItem(key) || "";
-      currentSize += key.length + value.length;
-      if (key !== STORAGE_KEYS) {
-        keys.push(key);
-      }
-    }
-    return {
-      keys,
-      currentSize: Math.ceil(currentSize * 2 / 1024),
-      limitSize: Number.MAX_VALUE
-    };
-  }
-);
-const getStorageInfo = /* @__PURE__ */ defineAsyncApi(
-  "getStorageInfo",
-  (_, { resolve }) => {
-    resolve(getStorageInfoSync());
-  }
-);
-const getFileInfo = /* @__PURE__ */ defineAsyncApi(
-  API_GET_FILE_INFO,
-  ({ filePath }, { resolve, reject }) => {
-    urlToFile(filePath).then((res) => {
-      resolve({
-        size: res.size
-      });
-    }).catch((err) => {
-      reject(String(err));
-    });
-  },
-  GetFileInfoProtocol,
-  GetFileInfoOptions
-);
-const openDocument = /* @__PURE__ */ defineAsyncApi(
-  API_OPEN_DOCUMENT,
-  ({ filePath }, { resolve }) => {
-    window.open(filePath);
-    return resolve();
-  },
-  OpenDocumentProtocol,
-  OpenDocumentOptions
-);
-const hideKeyboard = /* @__PURE__ */ defineAsyncApi(
-  API_HIDE_KEYBOARD,
-  (args, { resolve, reject }) => {
-    const activeElement = document.activeElement;
-    if (activeElement && (activeElement.tagName === "TEXTAREA" || activeElement.tagName === "INPUT")) {
-      activeElement.blur();
-      resolve();
-    }
-  }
-);
-function getServiceAddress() {
-  return window.location.protocol + "//" + window.location.host;
-}
-const getImageInfo = /* @__PURE__ */ defineAsyncApi(
-  API_GET_IMAGE_INFO,
-  ({ src }, { resolve, reject }) => {
-    const img = new Image();
-    img.onload = function() {
-      resolve({
-        width: img.naturalWidth,
-        height: img.naturalHeight,
-        path: src.indexOf("/") === 0 ? getServiceAddress() + src : src
-      });
-    };
-    img.onerror = function() {
-      reject();
-    };
-    img.src = src;
-  },
-  GetImageInfoProtocol,
-  GetImageInfoOptions
-);
-const getVideoInfo = /* @__PURE__ */ defineAsyncApi(
-  API_GET_VIDEO_INFO,
-  ({ src }, { resolve, reject }) => {
-    urlToFile(src, true).then((file) => {
-      return file;
-    }).catch(() => {
-      return null;
-    }).then((file) => {
-      const video = document.createElement("video");
-      if (video.onloadedmetadata !== void 0) {
-        const handle = setTimeout(
-          () => {
-            video.onloadedmetadata = null;
-            video.onerror = null;
-            reject();
-          },
-          src.startsWith("data:") || src.startsWith("blob:") ? 300 : 3e3
-        );
-        video.onloadedmetadata = function() {
-          clearTimeout(handle);
-          video.onerror = null;
-          resolve({
-            size: Math.ceil((file ? file.size : 0) / 1024),
-            duration: video.duration || 0,
-            width: video.videoWidth || 0,
-            height: video.videoHeight || 0
-          });
-        };
-        video.onerror = function() {
-          clearTimeout(handle);
-          video.onloadedmetadata = null;
-          reject();
-        };
-        video.src = src;
-      } else {
-        reject();
-      }
-    });
-  },
-  GetVideoInfoProtocol,
-  GetVideoInfoOptions
-);
-const MIMEType = {
-  /**
-   * 关于图片常见的MIME类型
-   */
-  image: {
-    jpg: "jpeg",
-    jpe: "jpeg",
-    pbm: "x-portable-bitmap",
-    pgm: "x-portable-graymap",
-    pnm: "x-portable-anymap",
-    ppm: "x-portable-pixmap",
-    psd: "vnd.adobe.photoshop",
-    pic: "x-pict",
-    rgb: "x-rgb",
-    svg: "svg+xml",
-    svgz: "svg+xml",
-    tif: "tiff",
-    xif: "vnd.xiff",
-    wbmp: "vnd.wap.wbmp",
-    wdp: "vnd.ms-photo",
-    xbm: "x-xbitmap",
-    ico: "x-icon"
-  },
-  /**
-   * 关于视频常见的MIME类型
-   */
-  video: {
-    "3g2": "3gpp2",
-    "3gp": "3gpp",
-    avi: "x-msvideo",
-    f4v: "x-f4v",
-    flv: "x-flv",
-    jpgm: "jpm",
-    jpgv: "jpeg",
-    m1v: "mpeg",
-    m2v: "mpeg",
-    mpe: "mpeg",
-    mpg: "mpeg",
-    mpg4: "mpeg",
-    m4v: "x-m4v",
-    mkv: "x-matroska",
-    mov: "quicktime",
-    qt: "quicktime",
-    movie: "x-sgi-movie",
-    mp4v: "mp4",
-    ogv: "ogg",
-    smv: "x-smv",
-    wm: "x-ms-wm",
-    wmv: "x-ms-wmv",
-    wmx: "x-ms-wmx",
-    wvx: "x-ms-wvx"
-  }
-};
-const ALL = "all";
-function isWXEnv() {
-  const ua2 = window.navigator.userAgent.toLowerCase();
-  const matchUA = ua2.match(/MicroMessenger/i);
-  return !!(matchUA && matchUA[0] === "micromessenger");
-}
-function _createInput({
-  count,
-  sourceType,
-  type,
-  extension
-}) {
-  addInteractListener();
-  const inputEl = document.createElement("input");
-  inputEl.type = "file";
-  updateElementStyle(inputEl, {
-    position: "absolute",
-    visibility: "hidden",
-    zIndex: "-999",
-    width: "0",
-    height: "0",
-    top: "0",
-    left: "0"
-  });
-  inputEl.accept = extension.map((item) => {
-    if (type !== ALL) {
-      const MIMEKey = item.replace(".", "");
-      return `${type}/${MIMEType[type][MIMEKey] || MIMEKey}`;
-    } else {
-      if (isWXEnv()) {
-        return ".";
-      }
-      return item.indexOf(".") === 0 ? item : `.${item}`;
-    }
-  }).join(",");
-  if (count && count > 1) {
-    inputEl.multiple = true;
-  }
-  if (type !== ALL && sourceType instanceof Array && sourceType.length === 1 && sourceType[0] === "camera") {
-    inputEl.setAttribute("capture", "camera");
-  }
-  return inputEl;
-}
-let fileInput = null;
-const chooseFile = /* @__PURE__ */ defineAsyncApi(
-  API_CHOOSE_FILE,
-  ({
-    // sizeType,
-    count,
-    sourceType,
-    type,
-    extension
-  }, { resolve, reject }) => {
-    initI18nChooseFileMsgsOnce();
-    const { t: t2 } = useI18n();
-    if (fileInput) {
-      document.body.removeChild(fileInput);
-      fileInput = null;
-    }
-    fileInput = _createInput({
-      count,
-      sourceType,
-      type,
-      extension
-    });
-    document.body.appendChild(fileInput);
-    fileInput.addEventListener("change", function(event) {
-      const eventTarget = event.target;
-      const tempFiles = [];
-      if (eventTarget && eventTarget.files) {
-        const fileCount = eventTarget.files.length;
-        for (let i = 0; i < fileCount; i++) {
-          const file = eventTarget.files[i];
-          let filePath;
-          Object.defineProperty(file, "path", {
-            get() {
-              filePath = filePath || fileToUrl(file);
-              return filePath;
-            }
-          });
-          if (i < count)
-            tempFiles.push(file);
-        }
-      }
-      const res = {
-        get tempFilePaths() {
-          return tempFiles.map(({ path }) => path);
-        },
-        tempFiles
-      };
-      resolve(res);
-    });
-    fileInput.click();
-    if (!getInteractStatus()) {
-      console.warn(t2("uni.chooseFile.notUserActivation"));
-    }
-  },
-  ChooseFileProtocol,
-  ChooseFileOptions
-);
-let imageInput = null;
-const chooseImage = /* @__PURE__ */ defineAsyncApi(
-  API_CHOOSE_IMAGE,
-  ({
-    count,
-    // sizeType,
-    sourceType,
-    extension
-  }, { resolve, reject }) => {
-    initI18nChooseFileMsgsOnce();
-    const { t: t2 } = useI18n();
-    if (imageInput) {
-      document.body.removeChild(imageInput);
-      imageInput = null;
-    }
-    imageInput = _createInput({
-      count,
-      sourceType,
-      extension,
-      type: "image"
-    });
-    document.body.appendChild(imageInput);
-    imageInput.addEventListener("change", function(event) {
-      const eventTarget = event.target;
-      const tempFiles = [];
-      if (eventTarget && eventTarget.files) {
-        const fileCount = eventTarget.files.length;
-        for (let i = 0; i < fileCount; i++) {
-          const file = eventTarget.files[i];
-          let filePath;
-          Object.defineProperty(file, "path", {
-            get() {
-              filePath = filePath || fileToUrl(file);
-              return filePath;
-            }
-          });
-          if (i < count)
-            tempFiles.push(file);
-        }
-      }
-      const res = {
-        get tempFilePaths() {
-          return tempFiles.map(({ path }) => path);
-        },
-        tempFiles
-      };
-      resolve(res);
-    });
-    imageInput.click();
-    if (!getInteractStatus()) {
-      console.warn(t2("uni.chooseFile.notUserActivation"));
-    }
-  },
-  ChooseImageProtocol,
-  ChooseImageOptions
-);
-let index$a = 0;
-let overflow = "";
-function preventScroll(prevent) {
-  let before = index$a;
-  index$a += prevent ? 1 : -1;
-  index$a = Math.max(0, index$a);
-  if (index$a > 0) {
-    if (before === 0) {
-      overflow = document.body.style.overflow;
-      document.body.style.overflow = "hidden";
-    }
-  } else {
-    document.body.style.overflow = overflow;
-    overflow = "";
-  }
-}
-function usePreventScroll() {
-  onMounted(() => preventScroll(true));
-  onUnmounted(() => preventScroll(false));
-}
-const props$8 = {
-  src: {
-    type: String,
-    default: ""
-  }
-};
-const ImageView = /* @__PURE__ */ defineSystemComponent({
-  name: "ImageView",
-  props: props$8,
-  setup(props2) {
-    const state2 = reactive({
-      direction: "none"
-    });
-    let scale = 1;
-    let imgWidth = 0;
-    let imgHeight = 0;
-    let width = 0;
-    let height = 0;
-    function onScale({
-      detail
-    }) {
-      scale = detail.scale;
-    }
-    function onImgLoad(event) {
-      const target = event.target;
-      const rect = target.getBoundingClientRect();
-      imgWidth = rect.width;
-      imgHeight = rect.height;
-    }
-    function onTouchStart(event) {
-      const target = event.target;
-      const rect = target.getBoundingClientRect();
-      width = rect.width;
-      height = rect.height;
-      checkDirection(event);
-    }
-    function onTouchEnd(event) {
-      const horizontal = scale * imgWidth > width;
-      const vertical = scale * imgHeight > height;
-      if (horizontal && vertical) {
-        state2.direction = "all";
-      } else if (horizontal) {
-        state2.direction = "horizontal";
-      } else if (vertical) {
-        state2.direction = "vertical";
-      } else {
-        state2.direction = "none";
-      }
-      checkDirection(event);
-    }
-    function checkDirection(event) {
-      if (state2.direction === "all" || state2.direction === "horizontal") {
-        event.stopPropagation();
-      }
-    }
-    return () => {
-      const viewStyle = {
-        position: "absolute",
-        left: "0",
-        top: "0",
-        width: "100%",
-        height: "100%"
-      };
-      return createVNode(MovableArea, {
-        "style": viewStyle,
-        "onTouchstart": withWebEvent(onTouchStart),
-        "onTouchmove": withWebEvent(checkDirection),
-        "onTouchend": withWebEvent(onTouchEnd)
-      }, {
-        default: () => [createVNode(MovableView, {
-          "style": viewStyle,
-          "direction": state2.direction,
-          "inertia": true,
-          "scale": true,
-          "scale-min": "1",
-          "scale-max": "4",
-          "onScale": onScale
-        }, {
-          default: () => [createVNode("img", {
-            "src": props2.src,
-            "style": {
-              position: "absolute",
-              left: "50%",
-              top: "50%",
-              transform: "translate(-50%, -50%)",
-              maxHeight: "100%",
-              maxWidth: "100%"
-            },
-            "onLoad": onImgLoad
-          }, null, 40, ["src", "onLoad"])]
-        }, 8, ["style", "direction", "inertia", "scale", "onScale"])]
-      }, 8, ["style", "onTouchstart", "onTouchmove", "onTouchend"]);
-    };
-  }
-});
-function _isSlot$2(s) {
-  return typeof s === "function" || Object.prototype.toString.call(s) === "[object Object]" && !isVNode(s);
-}
-const props$7 = {
-  urls: {
-    type: Array,
-    default() {
-      return [];
-    }
-  },
-  current: {
-    type: [Number, String],
-    default: 0
-  }
-};
-function getIndex(props2) {
-  let index2 = typeof props2.current === "number" ? props2.current : props2.urls.indexOf(props2.current);
-  index2 = index2 < 0 ? 0 : index2;
-  return index2;
-}
-const ImagePreview = /* @__PURE__ */ defineSystemComponent({
-  name: "ImagePreview",
-  props: props$7,
-  emits: ["close"],
-  setup(props2, {
-    emit: emit2
-  }) {
-    usePreventScroll();
-    const rootRef = ref(null);
-    const indexRef = ref(getIndex(props2));
-    watch(() => props2.current, () => indexRef.value = getIndex(props2));
-    let preventDefault;
-    onMounted(() => {
-      const el = rootRef.value;
-      const MAX_MOVE = 20;
-      let x = 0;
-      let y = 0;
-      el.addEventListener("mousedown", (event) => {
-        preventDefault = false;
-        x = event.clientX;
-        y = event.clientY;
-      });
-      el.addEventListener("mouseup", (event) => {
-        if (Math.abs(event.clientX - x) > MAX_MOVE || Math.abs(event.clientY - y) > MAX_MOVE) {
-          preventDefault = true;
-        }
-      });
-    });
-    function onClick() {
-      if (!preventDefault) {
-        nextTick(() => {
-          emit2("close");
-        });
-      }
-    }
-    function onChange2(event) {
-      indexRef.value = event.detail.current;
-    }
-    const closeBtnStyle = {
-      position: "absolute",
-      "box-sizing": "border-box",
-      top: "0",
-      right: "0",
-      width: "60px",
-      height: "44px",
-      padding: "6px",
-      "line-height": "32px",
-      "font-size": "26px",
-      color: "white",
-      "text-align": "center",
-      cursor: "pointer"
-    };
-    return () => {
-      let _slot;
-      return createVNode("div", {
-        "ref": rootRef,
-        "style": {
-          display: "block",
-          position: "fixed",
-          left: "0",
-          top: "0",
-          width: "100%",
-          height: "100%",
-          zIndex: 999,
-          background: "rgba(0,0,0,0.8)"
-        },
-        "onClick": onClick
-      }, [createVNode(Swiper, {
-        "navigation": "auto",
-        "current": indexRef.value,
-        "onChange": onChange2,
-        "indicator-dots": false,
-        "autoplay": false,
-        "style": {
-          position: "absolute",
-          left: "0",
-          top: "0",
-          width: "100%",
-          height: "100%"
-        }
-      }, _isSlot$2(_slot = props2.urls.map((src) => createVNode(SwiperItem, null, {
-        default: () => [createVNode(ImageView, {
-          "src": src
-        }, null, 8, ["src"])]
-      }))) ? _slot : {
-        default: () => [_slot],
-        _: 1
-      }, 8, ["current", "onChange"]), createVNode("div", {
-        "style": closeBtnStyle
-      }, [createSvgIconVNode(ICON_PATH_CLOSE, "#ffffff", 26)], 4)], 8, ["onClick"]);
-    };
-  }
-});
-let state$2 = null;
-let imagePreviewInstance;
-const closePreviewImageView = () => {
-  state$2 = null;
-  nextTick(() => {
-    imagePreviewInstance == null ? void 0 : imagePreviewInstance.unmount();
-    imagePreviewInstance = null;
-  });
-};
-const previewImage = /* @__PURE__ */ defineAsyncApi(
-  API_PREVIEW_IMAGE,
-  (args, { resolve }) => {
-    if (!state$2) {
-      state$2 = reactive(args);
-      nextTick(() => {
-        imagePreviewInstance = createRootApp(
-          ImagePreview,
-          state$2,
-          closePreviewImageView
-        );
-        imagePreviewInstance.mount(ensureRoot("u-a-p"));
-      });
-    } else {
-      extend(state$2, args);
-    }
-    resolve();
-  },
-  PreviewImageProtocol,
-  PreviewImageOptions
-);
-const closePreviewImage = /* @__PURE__ */ defineAsyncApi(
-  API_CLOSE_PREVIEW_IMAGE,
-  (_, { resolve, reject }) => {
-    if (imagePreviewInstance) {
-      closePreviewImageView();
-      resolve();
-    } else {
-      reject();
-    }
-  }
-);
-let videoInput = null;
-const chooseVideo = /* @__PURE__ */ defineAsyncApi(
-  API_CHOOSE_VIDEO,
-  ({ sourceType, extension }, { resolve, reject }) => {
-    initI18nChooseFileMsgsOnce();
-    const { t: t2 } = useI18n();
-    if (videoInput) {
-      document.body.removeChild(videoInput);
-      videoInput = null;
-    }
-    videoInput = _createInput({
-      sourceType,
-      extension,
-      type: "video"
-    });
-    document.body.appendChild(videoInput);
-    videoInput.addEventListener("change", function(event) {
-      const eventTarget = event.target;
-      const file = eventTarget.files[0];
-      let filePath = "";
-      const callbackResult = {
-        tempFilePath: filePath,
-        tempFile: file,
-        size: file.size,
-        duration: 0,
-        width: 0,
-        height: 0,
-        name: file.name
-      };
-      Object.defineProperty(callbackResult, "tempFilePath", {
-        get() {
-          filePath = filePath || fileToUrl(this.tempFile);
-          return filePath;
-        }
-      });
-      const video = document.createElement("video");
-      if (video.onloadedmetadata !== void 0) {
-        const filePath2 = fileToUrl(file);
-        video.onloadedmetadata = function() {
-          revokeObjectURL(filePath2);
-          resolve(
-            extend(callbackResult, {
-              duration: video.duration || 0,
-              width: video.videoWidth || 0,
-              height: video.videoHeight || 0
-            })
-          );
-        };
-        setTimeout(() => {
-          video.onloadedmetadata = null;
-          revokeObjectURL(filePath2);
-          resolve(callbackResult);
-        }, 300);
-        video.src = filePath2;
-      } else {
-        resolve(callbackResult);
-      }
-    });
-    videoInput.click();
-    if (!getInteractStatus()) {
-      console.warn(t2("uni.chooseFile.notUserActivation"));
-    }
-  },
-  ChooseVideoProtocol,
-  ChooseVideoOptions
-);
-const request = /* @__PURE__ */ defineTaskApi(
-  API_REQUEST,
-  ({
-    url,
-    data,
-    header = {},
-    method,
-    dataType: dataType2,
-    responseType,
-    withCredentials,
-    timeout = __uniConfig.networkTimeout.request
-  }, { resolve, reject }) => {
-    {
-      timeout = timeout == null ? __uniConfig.networkTimeout.request : timeout;
-    }
-    let body = null;
-    const contentType = normalizeContentType(header);
-    if (method !== "GET") {
-      if (isString(data) || data instanceof ArrayBuffer) {
-        body = data;
-      } else {
-        if (contentType === "json") {
-          try {
-            body = JSON.stringify(data);
-          } catch (error) {
-            body = data.toString();
-          }
-        } else if (contentType === "urlencoded") {
-          const bodyArray = [];
-          for (const key in data) {
-            if (hasOwn(data, key)) {
-              bodyArray.push(
-                encodeURIComponent(key) + "=" + encodeURIComponent(data[key])
-              );
-            }
-          }
-          body = bodyArray.join("&");
-        } else {
-          body = data.toString();
-        }
-      }
-    }
-    const xhr = new XMLHttpRequest();
-    const requestTask = new RequestTask(xhr);
-    xhr.open(method, url);
-    for (const key in header) {
-      if (hasOwn(header, key)) {
-        xhr.setRequestHeader(key, header[key]);
-      }
-    }
-    const timer = setTimeout(function() {
-      xhr.onload = xhr.onabort = xhr.onerror = null;
-      requestTask.abort();
-      reject("timeout", { errCode: 5 });
-    }, timeout);
-    xhr.responseType = responseType;
-    xhr.onload = function() {
-      clearTimeout(timer);
-      const statusCode = xhr.status;
-      let res = responseType === "text" ? xhr.responseText : xhr.response;
-      if (responseType === "text" && dataType2 === "json") {
-        try {
-          res = UTS.JSON.parse(res);
-        } catch (error) {
-        }
-      }
-      resolve({
-        data: res,
-        statusCode,
-        header: parseHeaders(xhr.getAllResponseHeaders()),
-        cookies: []
-      });
-    };
-    xhr.onabort = function() {
-      clearTimeout(timer);
-      reject("abort", { errCode: 600003 });
-    };
-    xhr.onerror = function() {
-      clearTimeout(timer);
-      reject(void 0, { errCode: 5 });
-    };
-    xhr.withCredentials = withCredentials;
-    xhr.send(body);
-    return requestTask;
-  },
-  RequestProtocol,
-  RequestOptions
-);
-function normalizeContentType(header) {
-  const name = Object.keys(header).find(
-    (name2) => name2.toLowerCase() === "content-type"
-  );
-  if (!name) {
-    return;
-  }
-  const contentType = header[name];
-  if (contentType.indexOf("application/json") === 0) {
-    return "json";
-  } else if (contentType.indexOf("application/x-www-form-urlencoded") === 0) {
-    return "urlencoded";
-  }
-  return "string";
-}
-class RequestTask {
-  constructor(xhr) {
-    this._xhr = xhr;
-  }
-  abort() {
-    if (this._xhr) {
-      this._xhr.abort();
-      delete this._xhr;
-    }
-  }
-  onHeadersReceived(callback) {
-    throw new Error("Method not implemented.");
-  }
-  offHeadersReceived(callback) {
-    throw new Error("Method not implemented.");
-  }
-}
-function parseHeaders(headers) {
-  const headersObject = {};
-  headers.split(LINEFEED).forEach((header) => {
-    const find = header.match(/(\S+\s*):\s*(.*)/);
-    if (!find || find.length !== 3) {
-      return;
-    }
-    headersObject[find[1]] = find[2];
-  });
-  return headersObject;
-}
-class DownloadTask {
-  constructor(xhr) {
-    this._callbacks = [];
-    this._xhr = xhr;
-  }
-  /**
-   * 监听下载进度
-   * @param {Function} callback 回调
-   */
-  onProgressUpdate(callback) {
-    if (!isFunction(callback)) {
-      return;
-    }
-    this._callbacks.push(callback);
-  }
-  offProgressUpdate(callback) {
-    const index2 = this._callbacks.indexOf(callback);
-    if (index2 >= 0) {
-      this._callbacks.splice(index2, 1);
-    }
-  }
-  /**
-   * 停止任务
-   */
-  abort() {
-    if (this._xhr) {
-      this._xhr.abort();
-      delete this._xhr;
-    }
-  }
-  onHeadersReceived(callback) {
-    throw new Error("Method not implemented.");
-  }
-  offHeadersReceived(callback) {
-    throw new Error("Method not implemented.");
-  }
-}
-const downloadFile = /* @__PURE__ */ defineTaskApi(
-  API_DOWNLOAD_FILE,
-  ({ url, header = {}, timeout = __uniConfig.networkTimeout.downloadFile }, { resolve, reject }) => {
-    {
-      timeout = timeout == null ? __uniConfig.networkTimeout.downloadFile : timeout;
-    }
-    var timer;
-    var xhr = new XMLHttpRequest();
-    var downloadTask = new DownloadTask(xhr);
-    xhr.open("GET", url, true);
-    Object.keys(header).forEach((key) => {
-      xhr.setRequestHeader(key, header[key]);
-    });
-    xhr.responseType = "blob";
-    xhr.onload = function() {
-      clearTimeout(timer);
-      const statusCode = xhr.status;
-      const blob = this.response;
-      let filename;
-      const contentDisposition = xhr.getResponseHeader("content-disposition");
-      if (contentDisposition) {
-        const res = contentDisposition.match(/filename="?(\S+)"?\b/);
-        if (res) {
-          filename = res[1];
-        }
-      }
-      blob.name = filename || getFileName(url);
-      resolve({
-        statusCode,
-        tempFilePath: fileToUrl(blob)
-      });
-    };
-    xhr.onabort = function() {
-      clearTimeout(timer);
-      reject("abort", { errCode: 600003 });
-    };
-    xhr.onerror = function() {
-      clearTimeout(timer);
-      reject("", { errCode: 602001 });
-    };
-    xhr.onprogress = function(event) {
-      downloadTask._callbacks.forEach((callback) => {
-        var totalBytesWritten = event.loaded;
-        var totalBytesExpectedToWrite = event.total;
-        var progress = Math.round(
-          totalBytesWritten / totalBytesExpectedToWrite * 100
-        );
-        callback({
-          progress,
-          totalBytesWritten,
-          totalBytesExpectedToWrite
-        });
-      });
-    };
-    xhr.send();
-    timer = setTimeout(function() {
-      xhr.onprogress = xhr.onload = xhr.onabort = xhr.onerror = null;
-      downloadTask.abort();
-      reject("timeout", { errCode: 5 });
-    }, timeout);
-    return downloadTask;
-  },
-  DownloadFileProtocol,
-  DownloadFileOptions
-);
-class UploadTask {
-  constructor(xhr) {
-    this._callbacks = [];
-    this._xhr = xhr;
-  }
-  /**
-   * 监听上传进度
-   * @param callback 回调
-   */
-  onProgressUpdate(callback) {
-    if (!isFunction(callback)) {
-      return;
-    }
-    this._callbacks.push(callback);
-  }
-  offProgressUpdate(callback) {
-    const index2 = this._callbacks.indexOf(callback);
-    if (index2 >= 0) {
-      this._callbacks.splice(index2, 1);
-    }
-  }
-  /**
-   * 中断上传任务
-   */
-  abort() {
-    this._isAbort = true;
-    if (this._xhr) {
-      this._xhr.abort();
-      delete this._xhr;
-    }
-  }
-  onHeadersReceived(callback) {
-    throw new Error("Method not implemented.");
-  }
-  offHeadersReceived(callback) {
-    throw new Error("Method not implemented.");
-  }
-}
-const uploadFile = /* @__PURE__ */ defineTaskApi(
-  API_UPLOAD_FILE,
-  ({
-    url,
-    file,
-    filePath,
-    name,
-    files: files2,
-    header = {},
-    formData = {},
-    timeout = __uniConfig.networkTimeout.uploadFile
-  }, { resolve, reject }) => {
-    {
-      timeout = timeout == null ? __uniConfig.networkTimeout.uploadFile : timeout;
-    }
-    var uploadTask = new UploadTask();
-    if (!isArray(files2) || !files2.length) {
-      files2 = [
-        {
-          name,
-          file,
-          uri: filePath
-        }
-      ];
-    }
-    function upload(realFiles) {
-      var xhr = new XMLHttpRequest();
-      var form = new FormData();
-      var timer;
-      Object.keys(formData).forEach((key) => {
-        form.append(key, formData[key]);
-      });
-      Object.values(files2).forEach(({ name: name2 }, index2) => {
-        const file2 = realFiles[index2];
-        form.append(name2 || "file", file2, file2.name || `file-${Date.now()}`);
-      });
-      xhr.open("POST", url);
-      Object.keys(header).forEach((key) => {
-        xhr.setRequestHeader(key, header[key]);
-      });
-      xhr.upload.onprogress = function(event) {
-        uploadTask._callbacks.forEach((callback) => {
-          var totalBytesSent = event.loaded;
-          var totalBytesExpectedToSend = event.total;
-          var progress = Math.round(
-            totalBytesSent / totalBytesExpectedToSend * 100
-          );
-          callback({
-            progress,
-            totalBytesSent,
-            totalBytesExpectedToSend
-          });
-        });
-      };
-      xhr.onerror = function() {
-        clearTimeout(timer);
-        reject("", { errCode: 602001 });
-      };
-      xhr.onabort = function() {
-        clearTimeout(timer);
-        reject("abort", { errCode: 600003 });
-      };
-      xhr.onload = function() {
-        clearTimeout(timer);
-        const statusCode = xhr.status;
-        resolve({
-          statusCode,
-          data: xhr.responseText || xhr.response
-        });
-      };
-      if (!uploadTask._isAbort) {
-        timer = setTimeout(function() {
-          xhr.upload.onprogress = xhr.onload = xhr.onabort = xhr.onerror = null;
-          uploadTask.abort();
-          reject("timeout", { errCode: 5 });
-        }, timeout);
-        xhr.send(form);
-        uploadTask._xhr = xhr;
-      } else {
-        reject("abort", { errCode: 600003 });
-      }
-    }
-    Promise.all(
-      files2.map(
-        ({ file: file2, uri }) => file2 instanceof Blob ? Promise.resolve(blobToFile(file2)) : urlToFile(uri)
-      )
-    ).then(upload).catch(() => {
-      setTimeout(() => {
-        reject("file error");
-      }, 0);
-    });
-    return uploadTask;
-  },
-  UploadFileProtocol,
-  UploadFileOptions
-);
-const socketTasks = [];
-const globalEvent = {
-  open: "",
-  close: "",
-  error: "",
-  message: ""
-};
-class SocketTask {
-  /**
-   * 构造函数
-   * @param {string} url
-   * @param {Array} protocols
-   */
-  constructor(url, protocols, callback) {
-    this._callbacks = {
-      open: [],
-      close: [],
-      error: [],
-      message: []
-    };
-    let error;
-    try {
-      const webSocket = this._webSocket = new WebSocket(url, protocols);
-      webSocket.binaryType = "arraybuffer";
-      const eventNames = ["open", "close", "error", "message"];
-      eventNames.forEach((name) => {
-        this._callbacks[name] = [];
-        webSocket.addEventListener(name, (event) => {
-          const { data, code, reason } = event;
-          const res = name === "message" ? { data } : name === "close" ? { code, reason } : {};
-          this._callbacks[name].forEach((callback2) => {
-            try {
-              callback2(res);
-            } catch (e2) {
-              console.error(
-                `thirdScriptError
-${e2};at socketTask.on${capitalize(
-                  name
-                )} callback function
-`,
-                e2
-              );
-            }
-          });
-          if (this === socketTasks[0] && globalEvent[name]) {
-            UniServiceJSBridge.invokeOnCallback(globalEvent[name], res);
-          }
-          if (name === "error" || name === "close") {
-            const index2 = socketTasks.indexOf(this);
-            if (index2 >= 0) {
-              socketTasks.splice(index2, 1);
-            }
-          }
-        });
-      });
-      const propertys = [
-        "CLOSED",
-        "CLOSING",
-        "CONNECTING",
-        "OPEN",
-        "readyState"
-      ];
-      propertys.forEach((property) => {
-        Object.defineProperty(this, property, {
-          get() {
-            return webSocket[property];
-          }
-        });
-      });
-    } catch (e2) {
-      error = e2;
-    }
-    callback && callback(error, this);
-  }
-  /**
-   * 发送
-   * @param {any} data
-   */
-  send(options) {
-    const data = (options || {}).data;
-    const ws = this._webSocket;
-    try {
-      if (ws.readyState !== ws.OPEN) {
-        callOptions(options, {
-          errMsg: `sendSocketMessage:fail SocketTask.readyState is not OPEN`,
-          errCode: 10002
-        });
-        throw new Error("SocketTask.readyState is not OPEN");
-      }
-      ws.send(data);
-      callOptions(options, "sendSocketMessage:ok");
-    } catch (error) {
-      callOptions(options, {
-        errMsg: `sendSocketMessage:fail ${error}`,
-        errCode: 602001
-      });
-    }
-  }
-  /**
-   * 关闭
-   * @param {number} code
-   * @param {string} reason
-   */
-  close(options = {}) {
-    const ws = this._webSocket;
-    try {
-      const code = options.code || 1e3;
-      const reason = options.reason;
-      if (isString(reason)) {
-        ws.close(code, reason);
-      } else {
-        ws.close(code);
-      }
-      callOptions(options, "closeSocket:ok");
-    } catch (error) {
-      callOptions(options, `closeSocket:fail ${error}`);
-    }
-  }
-  onOpen(callback) {
-    this._callbacks.open.push(callback);
-  }
-  onMessage(callback) {
-    this._callbacks.message.push(callback);
-  }
-  onError(callback) {
-    this._callbacks.error.push(callback);
-  }
-  onClose(callback) {
-    this._callbacks.close.push(callback);
-  }
-}
-const connectSocket = /* @__PURE__ */ defineTaskApi(
-  API_CONNECT_SOCKET,
-  ({ url, protocols }, { resolve, reject }) => {
-    return new SocketTask(
-      url,
-      protocols,
-      (error, socketTask) => {
-        if (error) {
-          reject(error.toString(), {
-            errCode: 600009
-          });
-          return;
-        }
-        socketTasks.push(socketTask);
-        resolve();
-      }
-    );
-  },
-  ConnectSocketProtocol,
-  ConnectSocketOptions
-);
-function callSocketTask(socketTask, method, option, resolve, reject) {
-  const fn = socketTask[method];
-  if (isFunction(fn)) {
-    fn.call(
-      socketTask,
-      extend({}, option, {
-        success() {
-          resolve();
-        },
-        fail({ errMsg }) {
-          reject(errMsg.replace("sendSocketMessage:fail ", ""));
-        },
-        complete: void 0
-      })
-    );
-  }
-}
-const sendSocketMessage = /* @__PURE__ */ defineAsyncApi(
-  API_SEND_SOCKET_MESSAGE,
-  (options, { resolve, reject }) => {
-    const socketTask = socketTasks[0];
-    if (socketTask && socketTask.readyState === socketTask.OPEN) {
-      callSocketTask(socketTask, "send", options, resolve, reject);
-    } else {
-      reject("WebSocket is not connected");
-    }
-  },
-  SendSocketMessageProtocol
-);
-const closeSocket = /* @__PURE__ */ defineAsyncApi(
-  API_CLOSE_SOCKET,
-  (options, { resolve, reject }) => {
-    const socketTask = socketTasks[0];
-    if (socketTask) {
-      callSocketTask(socketTask, "close", options, resolve, reject);
-    } else {
-      reject("WebSocket is not connected");
-    }
-  },
-  CloseSocketProtocol
-);
-function on(event) {
-  const api2 = `onSocket${capitalize(event)}`;
-  return /* @__PURE__ */ defineOnApi(api2, () => {
-    globalEvent[event] = api2;
-  });
-}
-const onSocketOpen = /* @__PURE__ */ on("open");
-const onSocketError = /* @__PURE__ */ on("error");
-const onSocketMessage = /* @__PURE__ */ on("message");
-const onSocketClose = /* @__PURE__ */ on("close");
-const getLocation = /* @__PURE__ */ defineAsyncApi(
-  API_GET_LOCATION,
-  ({ type, altitude, highAccuracyExpireTime, isHighAccuracy }, { resolve, reject }) => {
-    const mapInfo = getMapInfo();
-    new Promise((resolve2, reject2) => {
-      if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(
-          (res) => resolve2({ coords: res.coords }),
-          reject2,
-          {
-            enableHighAccuracy: isHighAccuracy || altitude,
-            timeout: highAccuracyExpireTime || 1e3 * 100
-          }
-        );
-      } else {
-        reject2(new Error("device nonsupport geolocation"));
-      }
-    }).catch((error) => {
-      return new Promise(
-        (resolve2, reject2) => {
-          if (mapInfo.type === MapType.QQ) {
-            getJSONP(
-              `https://apis.map.qq.com/ws/location/v1/ip?output=jsonp&key=${mapInfo.key}`,
-              {
-                callback: "callback"
-              },
-              (res) => {
-                if ("result" in res && res.result.location) {
-                  const location2 = res.result.location;
-                  resolve2({
-                    coords: {
-                      latitude: location2.lat,
-                      longitude: location2.lng
-                    },
-                    skip: true
-                  });
-                } else {
-                  reject2(new Error(res.message || JSON.stringify(res)));
-                }
-              },
-              () => reject2(new Error("network error"))
-            );
-          } else if (mapInfo.type === MapType.GOOGLE) {
-            request({
-              method: "POST",
-              url: `https://www.googleapis.com/geolocation/v1/geolocate?key=${mapInfo.key}`,
-              success(res) {
-                const data = res.data;
-                if ("location" in data) {
-                  resolve2({
-                    coords: {
-                      latitude: data.location.lat,
-                      longitude: data.location.lng,
-                      accuracy: data.accuracy
-                    },
-                    skip: true
-                  });
-                } else {
-                  reject2(
-                    new Error(
-                      data.error && data.error.message || JSON.stringify(res)
-                    )
-                  );
-                }
-              },
-              fail() {
-                reject2(new Error("network error"));
-              }
-            });
-          } else if (mapInfo.type === MapType.AMAP) {
-            loadMaps([], () => {
-              window.AMap.plugin("AMap.Geolocation", () => {
-                const geolocation = new window.AMap.Geolocation({
-                  enableHighAccuracy: true,
-                  timeout: 1e4
-                });
-                geolocation.getCurrentPosition(
-                  (status, data) => {
-                    if (status === "complete") {
-                      resolve2({
-                        coords: {
-                          latitude: data.position.lat,
-                          longitude: data.position.lng,
-                          accuracy: data.accuracy
-                        },
-                        skip: true
-                      });
-                    } else {
-                      reject2(new Error(data.message));
-                    }
-                  }
-                );
-              });
-            });
-          } else {
-            reject2(error);
-          }
-        }
-      );
-    }).then(({ coords, skip }) => {
-      translateCoordinateSystem(type, coords, skip).then((coords2) => {
-        resolve({
-          latitude: coords2.latitude,
-          longitude: coords2.longitude,
-          accuracy: coords2.accuracy,
-          speed: coords2.altitude || 0,
-          altitude: coords2.altitude || 0,
-          verticalAccuracy: coords2.altitudeAccuracy || 0,
-          // 无专门水平精度，使用位置精度替代
-          horizontalAccuracy: coords2.accuracy || 0
-        });
-      }).catch((error) => {
-        reject(error.message);
-      });
-    }).catch((error) => {
-      reject(error.message || JSON.stringify(error));
-    });
-  },
-  GetLocationProtocol,
-  GetLocationOptions
-);
-const ICON_PATH_NAV = "M28 17c-6.49396875 0-12.13721875 2.57040625-15 6.34840625V5.4105l6.29859375 6.29859375c0.387875 0.387875 1.02259375 0.387875 1.4105 0 0.387875-0.387875 0.387875-1.02259375 0-1.4105L12.77853125 2.36803125a0.9978125 0.9978125 0 0 0-0.0694375-0.077125c-0.1944375-0.1944375-0.45090625-0.291375-0.70721875-0.290875l-0.00184375-0.0000625-0.00184375 0.0000625c-0.2563125-0.0005-0.51278125 0.09640625-0.70721875 0.290875a0.9978125 0.9978125 0 0 0-0.0694375 0.077125l-7.930625 7.9305625c-0.387875 0.387875-0.387875 1.02259375 0 1.4105 0.387875 0.387875 1.02259375 0.387875 1.4105 0L11 5.4105V29c0 0.55 0.45 1 1 1s1-0.45 1-1c0-5.52284375 6.71571875-10 15-10 0.55228125 0 1-0.44771875 1-1 0-0.55228125-0.44771875-1-1-1z";
-const props$6 = {
-  latitude: {
-    type: Number
-  },
-  longitude: {
-    type: Number
-  },
-  scale: {
-    type: Number,
-    default: 18
-  },
-  name: {
-    type: String,
-    default: ""
-  },
-  address: {
-    type: String,
-    default: ""
-  }
-};
-function useState$2(props2) {
-  const state2 = reactive({
-    center: {
-      latitude: 0,
-      longitude: 0
-    },
-    marker: {
-      id: 1,
-      latitude: 0,
-      longitude: 0,
-      iconPath: ICON_PATH_TARGET,
-      width: 32,
-      height: 52
-    },
-    location: {
-      id: 2,
-      latitude: 0,
-      longitude: 0,
-      iconPath: ICON_PATH_ORIGIN,
-      width: 44,
-      height: 44
-    }
-  });
-  function updatePosition() {
-    if (props2.latitude && props2.longitude) {
-      state2.center.latitude = props2.latitude;
-      state2.center.longitude = props2.longitude;
-      state2.marker.latitude = props2.latitude;
-      state2.marker.longitude = props2.longitude;
-    }
-  }
-  watch([() => props2.latitude, () => props2.longitude], updatePosition);
-  updatePosition();
-  return state2;
-}
-const LocationView = /* @__PURE__ */ defineSystemComponent({
-  name: "LocationView",
-  props: props$6,
-  emits: ["close"],
-  setup(props2, {
-    emit: emit2
-  }) {
-    const state2 = useState$2(props2);
-    usePreventScroll();
-    getLocation({
-      type: "gcj02",
-      success: ({
-        latitude,
-        longitude
-      }) => {
-        state2.location.latitude = latitude;
-        state2.location.longitude = longitude;
-      }
-    });
-    function onRegionChange(event) {
-      const centerLocation = event.detail.centerLocation;
-      if (centerLocation) {
-        state2.center.latitude = centerLocation.latitude;
-        state2.center.longitude = centerLocation.longitude;
-      }
-    }
-    function nav() {
-      const mapInfo = getMapInfo();
-      let url = "";
-      if (mapInfo.type === MapType.GOOGLE) {
-        const origin = state2.location.latitude ? `&origin=${state2.location.latitude}%2C${state2.location.longitude}` : "";
-        url = `https://www.google.com/maps/dir/?api=1${origin}&destination=${props2.latitude}%2C${props2.longitude}`;
-      } else if (mapInfo.type === MapType.QQ) {
-        const fromcoord = state2.location.latitude ? `&fromcoord=${state2.location.latitude}%2C${state2.location.longitude}&from=${encodeURIComponent("我的位置")}` : "";
-        url = `https://apis.map.qq.com/uri/v1/routeplan?type=drive${fromcoord}&tocoord=${props2.latitude}%2C${props2.longitude}&to=${encodeURIComponent(props2.name || "目的地")}&ref=${mapInfo.key}`;
-      } else if (mapInfo.type === MapType.AMAP) {
-        const from = state2.location.latitude ? `from=${state2.location.longitude},${state2.location.latitude},${encodeURIComponent("我的位置")}&` : "";
-        url = `https://uri.amap.com/navigation?${from}to=${props2.longitude},${props2.latitude},${encodeURIComponent(props2.name || "目的地")}`;
-      }
-      window.open(url);
-    }
-    function back() {
-      emit2("close");
-    }
-    function setCenter({
-      latitude,
-      longitude
-    }) {
-      state2.center.latitude = latitude;
-      state2.center.longitude = longitude;
-    }
-    return () => {
-      return createVNode("div", {
-        "class": "uni-system-open-location"
-      }, [createVNode(Map$1, {
-        "latitude": state2.center.latitude,
-        "longitude": state2.center.longitude,
-        "class": "map",
-        "markers": [state2.marker, state2.location],
-        "onRegionchange": onRegionChange
-      }, {
-        default: () => [createVNode("div", {
-          "class": "map-move",
-          "onClick": () => setCenter(state2.location)
-        }, [createSvgIconVNode(ICON_PATH_LOCTAION, "#000000", 24)], 8, ["onClick"])]
-      }, 8, ["latitude", "longitude", "markers", "onRegionchange"]), createVNode("div", {
-        "class": "info"
-      }, [createVNode("div", {
-        "class": "name",
-        "onClick": () => setCenter(state2.marker)
-      }, [props2.name], 8, ["onClick"]), createVNode("div", {
-        "class": "address",
-        "onClick": () => setCenter(state2.marker)
-      }, [props2.address], 8, ["onClick"]), createVNode("div", {
-        "class": "nav",
-        "onClick": nav
-      }, [createSvgIconVNode(ICON_PATH_NAV, "#ffffff", 26)], 8, ["onClick"])]), createVNode("div", {
-        "class": "nav-btn-back",
-        "onClick": back
-      }, [createSvgIconVNode(ICON_PATH_BACK, "#ffffff", 26)], 8, ["onClick"])]);
-    };
-  }
-});
-let state$1 = null;
-const openLocation = /* @__PURE__ */ defineAsyncApi(
-  API_OPEN_LOCATION,
-  (args, { resolve }) => {
-    if (!state$1) {
-      state$1 = reactive(args);
-      nextTick(() => {
-        const app = createRootApp(LocationView, state$1, () => {
-          state$1 = null;
-          nextTick(() => {
-            app.unmount();
-          });
-        });
-        app.mount(ensureRoot("u-a-o"));
-      });
-    } else {
-      extend(state$1, args);
-    }
-    resolve();
-  },
-  OpenLocationProtocol,
-  OpenLocationOptions
-);
-function _isSlot$1(s) {
-  return typeof s === "function" || Object.prototype.toString.call(s) === "[object Object]" && !isVNode(s);
-}
-const props$5 = {
-  latitude: {
-    type: Number
-  },
-  longitude: {
-    type: Number
-  }
-};
-function distance(distance2) {
-  if (distance2 > 100) {
-    return `${distance2 > 1e3 ? (distance2 / 1e3).toFixed(1) + "k" : distance2.toFixed(0)}m | `;
-  } else if (distance2 > 0) {
-    return "<100m | ";
-  } else {
-    return "";
-  }
-}
-function useState$1(props2) {
-  const state2 = reactive({
-    latitude: 0,
-    longitude: 0,
-    keyword: "",
-    searching: false
-  });
-  function updatePosition() {
-    if (props2.latitude && props2.longitude) {
-      state2.latitude = props2.latitude;
-      state2.longitude = props2.longitude;
-    }
-  }
-  watch([() => props2.latitude, () => props2.longitude], updatePosition);
-  updatePosition();
-  return state2;
-}
-function useList(state2) {
-  const key = __uniConfig.qqMapKey;
-  const list2 = reactive([]);
-  const selectedIndexRef = ref(-1);
-  const selectedRef = computed(() => list2[selectedIndexRef.value]);
-  const listState = reactive({
-    loading: true,
-    // google map default
-    pageSize: 20,
-    pageIndex: 1,
-    hasNextPage: true,
-    nextPage: null,
-    selectedIndex: selectedIndexRef,
-    selected: selectedRef
-  });
-  const adcodeRef = ref("");
-  const boundaryRef = computed(() => adcodeRef.value ? `region(${adcodeRef.value},1,${state2.latitude},${state2.longitude})` : `nearby(${state2.latitude},${state2.longitude},5000)`);
-  function pushData(array) {
-    array.forEach((item) => {
-      list2.push({
-        name: item.title || item.name,
-        address: item.address,
-        distance: item._distance || item.distance,
-        latitude: item.location.lat,
-        longitude: item.location.lng
-      });
-    });
-  }
-  function getList() {
-    listState.loading = true;
-    const mapInfo = getMapInfo();
-    if (mapInfo.type === MapType.GOOGLE) {
-      if (listState.pageIndex > 1 && listState.nextPage) {
-        listState.nextPage();
-        return;
-      }
-      const service = new google.maps.places.PlacesService(document.createElement("div"));
-      service[state2.searching ? "textSearch" : "nearbySearch"]({
-        location: {
-          lat: state2.latitude,
-          lng: state2.longitude
-        },
-        query: state2.keyword,
-        radius: 5e3
-      }, (results, state3, page) => {
-        listState.loading = false;
-        if (results && results.length) {
-          results.forEach((item) => {
-            list2.push({
-              name: item.name || "",
-              address: item.vicinity || item.formatted_address || "",
-              distance: 0,
-              latitude: item.geometry.location.lat(),
-              longitude: item.geometry.location.lng()
-            });
-          });
-        }
-        if (page) {
-          if (!page.hasNextPage) {
-            listState.hasNextPage = false;
-          } else {
-            listState.nextPage = () => {
-              page.nextPage();
-            };
-          }
-        }
-      });
-    } else if (mapInfo.type === MapType.QQ) {
-      const url = state2.searching ? `https://apis.map.qq.com/ws/place/v1/search?output=jsonp&key=${key}&boundary=${boundaryRef.value}&keyword=${state2.keyword}&page_size=${listState.pageSize}&page_index=${listState.pageIndex}` : `https://apis.map.qq.com/ws/geocoder/v1/?output=jsonp&key=${key}&location=${state2.latitude},${state2.longitude}&get_poi=1&poi_options=page_size=${listState.pageSize};page_index=${listState.pageIndex}`;
-      getJSONP(url, {
-        callback: "callback"
-      }, (res) => {
-        listState.loading = false;
-        if (state2.searching && "data" in res && res.data.length) {
-          pushData(res.data);
-        } else if ("result" in res) {
-          const result = res.result;
-          adcodeRef.value = result.ad_info ? result.ad_info.adcode : "";
-          if (result.pois) {
-            pushData(result.pois);
-          }
-        }
-        if (list2.length === listState.pageSize * listState.pageIndex) {
-          listState.hasNextPage = false;
-        }
-      }, () => {
-        listState.loading = false;
-      });
-    } else if (mapInfo.type === MapType.AMAP) {
-      window.AMap.plugin("AMap.PlaceSearch", function() {
-        const placeSearch = new window.AMap.PlaceSearch({
-          city: "全国",
-          pageSize: 10,
-          pageIndex: listState.pageIndex
-        });
-        const keyword = state2.searching ? state2.keyword : "";
-        const radius = state2.searching ? 5e4 : 5e3;
-        placeSearch.searchNearBy(keyword, [state2.longitude, state2.latitude], radius, function(status, result) {
-          if (status === "error") {
-            console.error(result);
-          } else if (status === "no_data") {
-            listState.hasNextPage = false;
-          } else {
-            pushData(result.poiList.pois);
-          }
-        });
-        listState.loading = false;
-      });
-    }
-  }
-  function loadMore() {
-    if (!listState.loading && listState.hasNextPage) {
-      listState.pageIndex++;
-      getList();
-    }
-  }
-  function reset() {
-    listState.selectedIndex = -1;
-    listState.pageIndex = 1;
-    listState.hasNextPage = true;
-    listState.nextPage = null;
-    list2.splice(0, list2.length);
-  }
-  return {
-    listState,
-    list: list2,
-    loadMore,
-    reset,
-    getList
-  };
-}
-const LoctaionPicker = /* @__PURE__ */ defineSystemComponent({
-  name: "LoctaionPicker",
-  props: props$5,
-  emits: ["close"],
-  setup(props2, {
-    emit: emit2
-  }) {
-    usePreventScroll();
-    initI18nChooseLocationMsgsOnce();
-    const {
-      t: t2
-    } = useI18n();
-    const state2 = useState$1(props2);
-    const {
-      list: list2,
-      listState,
-      loadMore,
-      reset,
-      getList
-    } = useList(state2);
-    const search = debounce(() => {
-      reset();
-      if (state2.keyword) {
-        getList();
-      }
-    }, 1e3, {
-      setTimeout,
-      clearTimeout
-    });
-    watch(() => state2.searching, (val) => {
-      reset();
-      if (!val) {
-        getList();
-      }
-    });
-    function onInput(event) {
-      state2.keyword = event.detail.value;
-      search();
-    }
-    function onChoose() {
-      emit2("close", extend({}, listState.selected));
-    }
-    function onBack() {
-      emit2("close");
-    }
-    function onRegionChange(event) {
-      const centerLocation = event.detail.centerLocation;
-      if (centerLocation) {
-        move(centerLocation);
-      }
-    }
-    function moveToLocation() {
-      getLocation({
-        type: "gcj02",
-        success: move,
-        fail: () => {
-        }
-      });
-    }
-    function move({
-      latitude,
-      longitude
-    }) {
-      state2.latitude = latitude;
-      state2.longitude = longitude;
-      if (!state2.searching) {
-        reset();
-        getList();
-      }
-    }
-    if (!state2.latitude || !state2.longitude) {
-      moveToLocation();
-    }
-    return () => {
-      const content = list2.map((item, index2) => {
-        return createVNode("div", {
-          "key": index2,
-          "class": {
-            "list-item": true,
-            selected: listState.selectedIndex === index2
-          },
-          "onClick": () => {
-            listState.selectedIndex = index2;
-            state2.latitude = item.latitude;
-            state2.longitude = item.longitude;
-          }
-        }, [createSvgIconVNode(ICON_PATH_CONFIRM, "#007aff", 24), createVNode("div", {
-          "class": "list-item-title"
-        }, [item.name]), createVNode("div", {
-          "class": "list-item-detail"
-        }, [distance(item.distance), item.address])], 10, ["onClick"]);
-      });
-      if (listState.loading) {
-        content.unshift(createVNode("div", {
-          "class": "list-loading"
-        }, [createVNode("i", {
-          "class": "uni-loading"
-        }, null)]));
-      }
-      return createVNode("div", {
-        "class": "uni-system-choose-location"
-      }, [createVNode(Map$1, {
-        "latitude": state2.latitude,
-        "longitude": state2.longitude,
-        "class": "map",
-        "show-location": true,
-        "libraries": ["places"],
-        "onUpdated": getList,
-        "onRegionchange": onRegionChange
-      }, {
-        default: () => [createVNode("div", {
-          "class": "map-location",
-          "style": `background-image: url("${ICON_PATH_TARGET}")`
-        }, null), createVNode("div", {
-          "class": "map-move",
-          "onClick": moveToLocation
-        }, [createSvgIconVNode(ICON_PATH_LOCTAION, "#000000", 24)], 8, ["onClick"])],
-        _: 1
-      }, 8, ["latitude", "longitude", "show-location", "onUpdated", "onRegionchange"]), createVNode("div", {
-        "class": "nav"
-      }, [createVNode("div", {
-        "class": "nav-btn back",
-        "onClick": onBack
-      }, [createSvgIconVNode(ICON_PATH_CLOSE, "#ffffff", 26)], 8, ["onClick"]), createVNode("div", {
-        "class": {
-          "nav-btn": true,
-          confirm: true,
-          disable: !listState.selected
-        },
-        "onClick": onChoose
-      }, [createSvgIconVNode(ICON_PATH_CONFIRM, "#ffffff", 26)], 10, ["onClick"])]), createVNode("div", {
-        "class": "menu"
-      }, [createVNode("div", {
-        "class": "search"
-      }, [createVNode(Input, {
-        "value": state2.keyword,
-        "class": "search-input",
-        "placeholder": t2("uni.chooseLocation.search"),
-        "onFocus": () => state2.searching = true,
-        "onInput": onInput
-      }, null, 8, ["value", "placeholder", "onFocus", "onInput"]), state2.searching && createVNode("div", {
-        "class": "search-btn",
-        "onClick": () => {
-          state2.searching = false;
-          state2.keyword = "";
-        }
-      }, [t2("uni.chooseLocation.cancel")], 8, ["onClick"])]), createVNode(ScrollView, {
-        "scroll-y": true,
-        "class": "list",
-        "onScrolltolower": loadMore
-      }, _isSlot$1(content) ? content : {
-        default: () => [content],
-        _: 2
-      }, 8, ["scroll-y", "onScrolltolower"])])]);
-    };
-  }
-});
-let state = null;
-const chooseLocation = /* @__PURE__ */ defineAsyncApi(
-  API_CHOOSE_LOCATION,
-  (args, { resolve, reject }) => {
-    if (!state) {
-      state = reactive(args);
-      nextTick(() => {
-        const app = createRootApp(
-          LoctaionPicker,
-          state,
-          (poi) => {
-            state = null;
-            nextTick(() => {
-              app.unmount();
-            });
-            poi ? resolve(poi) : reject("cancel");
-          }
-        );
-        app.mount(ensureRoot("u-a-c"));
-      });
-    } else {
-      reject("cancel");
-    }
-  },
-  ChooseLocationProtocol
-);
-let started = false;
-let watchId = 0;
-const startLocationUpdate = /* @__PURE__ */ defineAsyncApi(
-  API_START_LOCATION_UPDATE,
-  (options, { resolve, reject }) => {
-    if (!navigator.geolocation) {
-      reject();
-      return;
-    }
-    watchId = watchId || navigator.geolocation.watchPosition(
-      (res) => {
-        started = true;
-        translateCoordinateSystem(options == null ? void 0 : options.type, res.coords).then((coords) => {
-          UniServiceJSBridge.invokeOnCallback(
-            API_ON_LOCATION_CHANGE,
-            coords
-          );
-          resolve();
-        }).catch((error) => {
-          UniServiceJSBridge.invokeOnCallback(
-            API_ON_LOCATION_CHANGE_ERROR,
-            { errMsg: `onLocationChange:fail ${error.message}` }
-          );
-        });
-      },
-      (error) => {
-        if (!started) {
-          reject(error.message);
-          started = true;
-        }
-        UniServiceJSBridge.invokeOnCallback(API_ON_LOCATION_CHANGE_ERROR, {
-          errMsg: `onLocationChange:fail ${error.message}`
-        });
-      }
-    );
-    setTimeout(resolve, 100);
-  },
-  StartLocationUpdateProtocol,
-  StartLocationUpdateOptions
-);
-const stopLocationUpdate = /* @__PURE__ */ defineAsyncApi(
-  API_STOP_LOCATION_UPDATE,
-  (_, { resolve }) => {
-    if (watchId) {
-      navigator.geolocation.clearWatch(watchId);
-      started = false;
-      watchId = 0;
-    }
-    resolve();
-  }
-);
-const onLocationChange = /* @__PURE__ */ defineOnApi(
-  API_ON_LOCATION_CHANGE,
-  () => {
-  }
-);
-const offLocationChange = /* @__PURE__ */ defineOffApi(
-  API_OFF_LOCATION_CHANGE,
-  () => {
-  }
-);
-const onLocationChangeError = /* @__PURE__ */ defineOnApi(
-  API_ON_LOCATION_CHANGE_ERROR,
-  () => {
-  }
-);
-const offLocationChangeError = /* @__PURE__ */ defineOffApi(
-  API_OFF_LOCATION_CHANGE_ERROR,
-  () => {
-  }
-);
-const navigateBack = /* @__PURE__ */ defineAsyncApi(
-  API_NAVIGATE_BACK,
-  (args, { resolve, reject }) => {
-    var _a, _b;
-    let canBack = true;
-    if (invokeHook(ON_BACK_PRESS, {
-      from: args.from || "navigateBack"
-    }) === true) {
-      canBack = false;
-    }
-    {
-      const currentPage = getCurrentPage();
-      if (currentPage) {
-        const dialogPages = currentPage.getDialogPages();
-        const dialogPage = dialogPages[dialogPages.length - 1];
-        if (((_b = dialogPage == null ? void 0 : (_a = dialogPage.$vm.$options).onBackPress) == null ? void 0 : _b.call(_a)) === true) {
-          canBack = false;
-        }
-      }
-    }
-    if (!canBack) {
-      return reject(ON_BACK_PRESS);
-    }
-    {
-      getApp().vm.$router.go(-args.delta);
-    }
-    return resolve();
-  },
-  NavigateBackProtocol,
-  NavigateBackOptions
-);
-const navigateTo = /* @__PURE__ */ defineAsyncApi(
-  API_NAVIGATE_TO,
-  // @ts-expect-error
-  ({ url, events, isAutomatedTesting }, { resolve, reject }) => {
-    if (!entryPageState.handledBeforeEntryPageRoutes) {
-      navigateToPagesBeforeEntryPages.push({
-        args: { type: API_NAVIGATE_TO, url, events, isAutomatedTesting },
-        resolve,
-        reject
-      });
-      return;
-    }
-    return navigate({ type: API_NAVIGATE_TO, url, events, isAutomatedTesting }).then(resolve).catch(reject);
-  },
-  NavigateToProtocol,
-  NavigateToOptions
-);
-const preloadPage = /* @__PURE__ */ defineAsyncApi(
-  API_PRELOAD_PAGE,
-  ({ url }, { resolve, reject }) => {
-    const path = url.split("?")[0];
-    const route = getRouteOptions(path);
-    if (!route) {
-      reject(`${url}}`);
-      return;
-    }
-    route.loader && route.loader().then(() => {
-      resolve({
-        url,
-        errMsg: "preloadPage:ok"
-      });
-    }).catch((err) => {
-      reject(`${url} ${String(err)}`);
-    });
-  },
-  PreloadPageProtocol
-);
-if (process.env.NODE_ENV !== "production") {
-  document.addEventListener("DOMContentLoaded", () => {
-    console.log("Preload pages in uni-app-x development mode.");
-    __uniRoutes.reduce((prev, route) => {
-      return prev.then(() => {
-        return new Promise((resolve) => {
-          preloadPage({
-            url: route.alias || route.path,
-            complete() {
-              setTimeout(() => {
-                resolve();
-              }, 200);
-            }
-          });
-        });
-      });
-    }, Promise.resolve());
-  });
-}
-const props$4 = {
-  title: {
-    type: String,
-    default: ""
-  },
-  icon: {
-    default: "success",
-    validator(value) {
-      return SHOW_TOAST_ICON.indexOf(value) !== -1;
-    }
-  },
-  image: {
-    type: String,
-    default: ""
-  },
-  duration: {
-    type: Number,
-    default: 1500
-  },
-  mask: {
-    type: Boolean,
-    default: false
-  },
-  visible: {
-    type: Boolean
-  }
-};
-const ToastIconClassName = "uni-toast__icon";
-const ICONCOLOR = {
-  light: "#fff",
-  dark: "rgba(255,255,255,0.9)"
-};
-const getIconColor = (theme) => ICONCOLOR[theme];
-const Toast = /* @__PURE__ */ defineComponent({
-  name: "Toast",
-  props: props$4,
-  setup(props2) {
-    initI18nShowToastMsgsOnce();
-    initI18nShowLoadingMsgsOnce();
-    const {
-      Icon
-    } = useToastIcon(props2);
-    const visible = usePopup(props2, {});
-    return () => {
-      const {
-        mask,
-        duration,
-        title,
-        image: image2
-      } = props2;
-      return createVNode(Transition, {
-        "name": "uni-fade"
-      }, {
-        default: () => [withDirectives(createVNode("uni-toast", {
-          "data-duration": duration
-        }, [mask ? createVNode("div", {
-          "class": "uni-mask",
-          "style": "background: transparent;",
-          "onTouchmove": onEventPrevent
-        }, null, 40, ["onTouchmove"]) : "", !image2 && !Icon.value ? createVNode("div", {
-          "class": "uni-sample-toast"
-        }, [createVNode("p", {
-          "class": "uni-simple-toast__text"
-        }, [title])]) : createVNode("div", {
-          "class": "uni-toast"
-        }, [image2 ? createVNode("img", {
-          "src": image2,
-          "class": ToastIconClassName
-        }, null, 10, ["src"]) : Icon.value, createVNode("p", {
-          "class": "uni-toast__content"
-        }, [title])])], 8, ["data-duration"]), [[vShow, visible.value]])]
-      });
-    };
-  }
-});
-function useToastIcon(props2) {
-  const iconColor = ref(getIconColor(getTheme()));
-  const _onThemeChange = ({
-    theme
-  }) => iconColor.value = getIconColor(theme);
-  watchEffect(() => {
-    if (props2.visible) {
-      onThemeChange$2(_onThemeChange);
-    } else {
-      offThemeChange$1(_onThemeChange);
-    }
-  });
-  const Icon = computed(() => {
-    switch (props2.icon) {
-      case "success":
-        return createVNode(createSvgIconVNode(ICON_PATH_SUCCESS_NO_CIRCLE, iconColor.value, 38), {
-          class: ToastIconClassName
-        });
-      case "error":
-        return createVNode(createSvgIconVNode(ICON_PATH_WARN, iconColor.value, 38), {
-          class: ToastIconClassName
-        });
-      case "loading":
-        return createVNode("i", {
-          "class": [ToastIconClassName, "uni-loading"]
-        }, null, 2);
-      default:
-        return null;
-    }
-  });
-  return {
-    Icon
-  };
-}
-let showToastState;
-let showType = "";
-let timeoutId;
-const scope = /* @__PURE__ */ effectScope();
-function watchVisible() {
-  scope.run(() => {
-    watch(
-      [() => showToastState.visible, () => showToastState.duration],
-      ([visible, duration]) => {
-        if (visible) {
-          timeoutId && clearTimeout(timeoutId);
-          if (showType === "onShowLoading")
-            return;
-          timeoutId = setTimeout(() => {
-            hidePopup("onHideToast");
-          }, duration);
-        } else {
-          timeoutId && clearTimeout(timeoutId);
-        }
-      }
-    );
-  });
-}
-function createToast(args) {
-  if (!showToastState) {
-    showToastState = reactive(extend(args, { visible: false }));
-    nextTick(() => {
-      watchVisible();
-      UniServiceJSBridge.on("onHidePopup", () => hidePopup("onHidePopup"));
-      createRootApp(Toast, showToastState, () => {
-      }).mount(ensureRoot("u-a-t"));
-    });
-  } else {
-    extend(showToastState, args);
-  }
-  setTimeout(() => {
-    showToastState.visible = true;
-  }, 10);
-}
-const showToast = /* @__PURE__ */ defineAsyncApi(
-  API_SHOW_TOAST,
-  (args, { resolve, reject }) => {
-    createToast(args);
-    showType = "onShowToast";
-    resolve();
-  },
-  ShowToastProtocol,
-  ShowToastOptions
-);
-const showLoadingDefaultState = {
-  icon: "loading",
-  duration: 1e8,
-  image: ""
-};
-const showLoading = /* @__PURE__ */ defineAsyncApi(
-  API_SHOW_LOADING,
-  (args, { resolve, reject }) => {
-    extend(args, showLoadingDefaultState);
-    createToast(args);
-    showType = "onShowLoading";
-    resolve();
-  },
-  ShowLoadingProtocol,
-  ShowLoadingOptions
-);
-const hideToast = /* @__PURE__ */ defineAsyncApi(
-  API_HIDE_TOAST,
-  (args, { resolve, reject }) => {
-    hidePopup("onHideToast");
-    resolve();
-  }
-);
-const hideLoading = /* @__PURE__ */ defineAsyncApi(
-  API_HIDE_LOADING,
-  (args, { resolve, reject }) => {
-    hidePopup("onHideLoading");
-    resolve();
-  }
-);
-function hidePopup(type) {
-  const { t: t2 } = useI18n();
-  if (!showType) {
-    return;
-  }
-  let warnMsg = "";
-  if (type === "onHideToast" && showType !== "onShowToast") {
-    warnMsg = t2("uni.showToast.unpaired");
-  } else if (type === "onHideLoading" && showType !== "onShowLoading") {
-    warnMsg = t2("uni.showLoading.unpaired");
-  }
-  if (warnMsg) {
-    return console.warn(warnMsg);
-  }
-  showType = "";
-  setTimeout(() => {
-    showToastState.visible = false;
-  }, 10);
-}
-const loadFontFace = /* @__PURE__ */ defineAsyncApi(
-  API_LOAD_FONT_FACE,
-  ({ family, source, desc }, { resolve, reject }) => {
-    if (source.startsWith(`url("`) || source.startsWith(`url('`)) {
-      source = `url('${getRealPath(source.substring(5, source.length - 2))}')`;
-    } else if (source.startsWith("url(")) {
-      source = `url('${getRealPath(source.substring(4, source.length - 1))}')`;
-    } else {
-      source = getRealPath(source);
-    }
-    addFont(family, source, desc).then(() => {
-      resolve();
-    }).catch((err) => {
-      reject(`loadFontFace:fail ${err}`);
-    });
-  },
-  LoadFontFaceProtocol
-);
-function updateDocumentTitle(title) {
-  {
-    document.title = title;
-  }
-  UniServiceJSBridge.emit(ON_NAVIGATION_BAR_CHANGE, { titleText: title });
-}
-function useDocumentTitle(pageMeta) {
-  function update() {
-    updateDocumentTitle(pageMeta.navigationBar.titleText);
-  }
-  watchEffect(update);
-  onActivated(update);
-}
-function setNavigationBar(pageMeta, type, args, resolve, reject) {
-  if (!pageMeta) {
-    return reject("page not found");
-  }
-  const { navigationBar } = pageMeta;
-  switch (type) {
-    case API_SET_NAVIGATION_BAR_COLOR:
-      const { frontColor, backgroundColor, animation: animation2 } = args;
-      const { duration, timingFunc } = animation2;
-      if (frontColor) {
-        navigationBar.titleColor = frontColor === "#000000" ? "#000000" : "#ffffff";
-      }
-      if (backgroundColor) {
-        navigationBar.backgroundColor = backgroundColor;
-      }
-      navigationBar.duration = duration + "ms";
-      navigationBar.timingFunc = timingFunc;
-      break;
-    case API_SHOW_NAVIGATION_BAR_LOADING:
-      navigationBar.loading = true;
-      break;
-    case API_HIDE_NAVIGATION_BAR_LOADING:
-      navigationBar.loading = false;
-      break;
-    case API_SET_NAVIGATION_BAR_TITLE:
-      const { title } = args;
-      navigationBar.titleText = title;
-      break;
-  }
-  resolve();
-}
-const setNavigationBarColor = /* @__PURE__ */ defineAsyncApi(
-  API_SET_NAVIGATION_BAR_COLOR,
-  (args, { resolve, reject }) => {
-    setNavigationBar(
-      getCurrentPageMeta(),
-      API_SET_NAVIGATION_BAR_COLOR,
-      args,
-      resolve,
-      reject
-    );
-  },
-  SetNavigationBarColorProtocol,
-  SetNavigationBarColorOptions
-);
-const showNavigationBarLoading = /* @__PURE__ */ defineAsyncApi(
-  API_SHOW_NAVIGATION_BAR_LOADING,
-  (args, { resolve, reject }) => {
-    setNavigationBar(
-      getCurrentPageMeta(),
-      API_SHOW_NAVIGATION_BAR_LOADING,
-      args || {},
-      resolve,
-      reject
-    );
-  }
-);
-const hideNavigationBarLoading = /* @__PURE__ */ defineAsyncApi(
-  API_HIDE_NAVIGATION_BAR_LOADING,
-  (args, { resolve, reject }) => {
-    setNavigationBar(
-      getCurrentPageMeta(),
-      API_HIDE_NAVIGATION_BAR_LOADING,
-      args || {},
-      resolve,
-      reject
-    );
-  }
-);
-const setNavigationBarTitle = /* @__PURE__ */ defineAsyncApi(
-  API_SET_NAVIGATION_BAR_TITLE,
-  (args, { resolve, reject }) => {
-    setNavigationBar(
-      getCurrentPageMeta(),
-      API_SET_NAVIGATION_BAR_TITLE,
-      args,
-      resolve,
-      reject
-    );
-  },
-  SetNavigationBarTitleProtocol
-);
-const pageScrollTo = /* @__PURE__ */ defineAsyncApi(
-  API_PAGE_SCROLL_TO,
-  ({ scrollTop, selector, duration }, { resolve }) => {
-    scrollTo(selector || scrollTop || 0, duration, true);
-    resolve();
-  },
-  PageScrollToProtocol,
-  PageScrollToOptions
-);
-const startPullDownRefresh = /* @__PURE__ */ defineAsyncApi(
-  API_START_PULL_DOWN_REFRESH,
-  (_args, { resolve }) => {
-    UniServiceJSBridge.invokeViewMethod(
-      API_START_PULL_DOWN_REFRESH,
-      {},
-      getCurrentPageId()
-    );
-    resolve();
-  }
-);
-const stopPullDownRefresh = /* @__PURE__ */ defineAsyncApi(
-  API_STOP_PULL_DOWN_REFRESH,
-  (_args, { resolve }) => {
-    UniServiceJSBridge.invokeViewMethod(
-      API_STOP_PULL_DOWN_REFRESH,
-      {},
-      getCurrentPageId()
-    );
-    resolve();
-  }
-);
-const setTabBarItemProps = [
-  "text",
-  "iconPath",
-  "iconfont",
-  "selectedIconPath",
-  "visible"
-];
-const setTabBarStyleProps = [
-  "color",
-  "selectedColor",
-  "backgroundColor",
-  "borderStyle",
-  "borderColor",
-  "midButton"
-];
-const setTabBarBadgeProps = ["badge", "redDot"];
-function setProperties(item, props2, propsData) {
-  props2.forEach(function(name) {
-    if (hasOwn(propsData, name)) {
-      item[name] = propsData[name];
-    }
-  });
-}
-function setTabBar(type, args, resolve, reject) {
-  var _a;
-  let isTabBar = false;
-  const pages = getCurrentBasePages();
-  if (pages.length) {
-    if (getPage$BasePage(pages[pages.length - 1]).meta.isTabBar) {
-      isTabBar = true;
-    }
-  }
-  if (!isTabBar) {
-    return reject(`not TabBar page`);
-  }
-  const { index: index2 } = args;
-  if (typeof index2 === "number") {
-    const tabBarListLength = (_a = __uniConfig == null ? void 0 : __uniConfig.tabBar) == null ? void 0 : _a.list.length;
-    if (!tabBarListLength || index2 >= tabBarListLength) {
-      return reject(`tabbar item not found`);
-    }
-  }
-  const tabBar2 = useTabBar();
-  switch (type) {
-    case API_SHOW_TAB_BAR:
-      tabBar2.shown = true;
-      break;
-    case API_HIDE_TAB_BAR:
-      tabBar2.shown = false;
-      break;
-    case API_SET_TAB_BAR_ITEM:
-      const tabBarItem = tabBar2.list[index2];
-      const oldPagePath = tabBarItem.pagePath;
-      setProperties(tabBarItem, setTabBarItemProps, args);
-      const { pagePath } = args;
-      if (pagePath) {
-        const newPagePath = addLeadingSlash(pagePath);
-        if (newPagePath !== oldPagePath) {
-          normalizeTabBarRoute(index2, oldPagePath, newPagePath);
-        }
-      }
-      break;
-    case API_SET_TAB_BAR_STYLE:
-      setProperties(tabBar2, setTabBarStyleProps, args);
-      break;
-    case API_SHOW_TAB_BAR_RED_DOT:
-      setProperties(tabBar2.list[index2], setTabBarBadgeProps, {
-        badge: "",
-        redDot: true
-      });
-      break;
-    case API_SET_TAB_BAR_BADGE:
-      setProperties(tabBar2.list[index2], setTabBarBadgeProps, {
-        badge: args.text,
-        redDot: true
-      });
-      break;
-    case API_HIDE_TAB_BAR_RED_DOT:
-    case API_REMOVE_TAB_BAR_BADGE:
-      setProperties(tabBar2.list[index2], setTabBarBadgeProps, {
-        badge: "",
-        redDot: false
-      });
-      break;
-  }
-  resolve();
-}
-const setTabBarItem = /* @__PURE__ */ defineAsyncApi(
-  API_SET_TAB_BAR_ITEM,
-  (args, { resolve, reject }) => {
-    setTabBar(API_SET_TAB_BAR_ITEM, args, resolve, reject);
-  },
-  SetTabBarItemProtocol,
-  SetTabBarItemOptions
-);
-const setTabBarStyle = /* @__PURE__ */ defineAsyncApi(
-  API_SET_TAB_BAR_STYLE,
-  (args, { resolve, reject }) => {
-    setTabBar(API_SET_TAB_BAR_STYLE, args, resolve, reject);
-  },
-  SetTabBarStyleProtocol,
-  SetTabBarStyleOptions
-);
-const hideTabBar = /* @__PURE__ */ defineAsyncApi(
-  API_HIDE_TAB_BAR,
-  (args, { resolve, reject }) => {
-    setTabBar(API_HIDE_TAB_BAR, args ? args : {}, resolve, reject);
-  },
-  HideTabBarProtocol
-);
-const showTabBar = /* @__PURE__ */ defineAsyncApi(
-  API_SHOW_TAB_BAR,
-  (args, { resolve, reject }) => {
-    setTabBar(API_SHOW_TAB_BAR, args ? args : {}, resolve, reject);
-  },
-  ShowTabBarProtocol
-);
-const hideTabBarRedDot = /* @__PURE__ */ defineAsyncApi(
-  API_HIDE_TAB_BAR_RED_DOT,
-  (args, { resolve, reject }) => {
-    setTabBar(API_HIDE_TAB_BAR_RED_DOT, args, resolve, reject);
-  },
-  HideTabBarRedDotProtocol,
-  HideTabBarRedDotOptions
-);
-const showTabBarRedDot = /* @__PURE__ */ defineAsyncApi(
-  API_SHOW_TAB_BAR_RED_DOT,
-  (args, { resolve, reject }) => {
-    setTabBar(API_SHOW_TAB_BAR_RED_DOT, args, resolve, reject);
-  },
-  ShowTabBarRedDotProtocol,
-  ShowTabBarRedDotOptions
-);
-const removeTabBarBadge = /* @__PURE__ */ defineAsyncApi(
-  API_REMOVE_TAB_BAR_BADGE,
-  (args, { resolve, reject }) => {
-    setTabBar(API_REMOVE_TAB_BAR_BADGE, args, resolve, reject);
-  },
-  RemoveTabBarBadgeProtocol,
-  RemoveTabBarBadgeOptions
-);
-const setTabBarBadge = /* @__PURE__ */ defineAsyncApi(
-  API_SET_TAB_BAR_BADGE,
-  (args, { resolve, reject }) => {
-    setTabBar(API_SET_TAB_BAR_BADGE, args, resolve, reject);
-  },
-  SetTabBarBadgeProtocol,
-  SetTabBarBadgeOptions
-);
-const UNI_TABBAR_ICON_FONT = "UniTabbarIconFont";
-const _middleButton = {
-  width: "50px",
-  height: "50px",
-  iconWidth: "24px"
-};
-const TabBar = /* @__PURE__ */ defineSystemComponent({
-  name: "TabBar",
-  setup() {
-    const visibleList = ref([]);
-    const _tabBar = useTabBar();
-    const tabBar2 = useTheme(_tabBar, () => {
-      const tabBarStyle = parseTheme(_tabBar);
-      tabBar2.backgroundColor = tabBarStyle.backgroundColor;
-      tabBar2.borderStyle = tabBarStyle.borderStyle;
-      tabBar2.color = tabBarStyle.color;
-      tabBar2.selectedColor = tabBarStyle.selectedColor;
-      tabBar2.blurEffect = tabBarStyle.blurEffect;
-      tabBar2.midButton = tabBarStyle.midButton;
-      if (tabBarStyle.list && tabBarStyle.list.length) {
-        tabBarStyle.list.forEach((item, index2) => {
-          tabBar2.list[index2].iconPath = item.iconPath;
-          tabBar2.list[index2].selectedIconPath = item.selectedIconPath;
-        });
-      }
-    });
-    useVisibleList(tabBar2, visibleList);
-    useTabBarCssVar(tabBar2);
-    const onSwitchTab = useSwitchTab(useRoute(), tabBar2, visibleList);
-    const {
-      style,
-      borderStyle,
-      placeholderStyle
-    } = useTabBarStyle(tabBar2);
-    onMounted(() => {
-      if (tabBar2.iconfontSrc) {
-        loadFontFace({
-          family: UNI_TABBAR_ICON_FONT,
-          source: `url("${tabBar2.iconfontSrc}")`
-        });
-      }
-    });
-    return () => {
-      const tabBarItemsTsx = createTabBarItemsTsx(tabBar2, onSwitchTab, visibleList);
-      return createVNode("uni-tabbar", {
-        "class": "uni-tabbar-" + tabBar2.position
-      }, [createVNode("div", {
-        "class": "uni-tabbar",
-        "style": style.value
-      }, [createVNode("div", {
-        "class": "uni-tabbar-border",
-        "style": borderStyle.value
-      }, null, 4), tabBarItemsTsx], 4), createVNode("div", {
-        "class": "uni-placeholder",
-        "style": placeholderStyle.value
-      }, null, 4)], 2);
-    };
-  }
-});
-function useTabBarCssVar(tabBar2) {
-  watch(() => tabBar2.shown, (value) => {
-    updatePageCssVar({
-      "--window-bottom": normalizeWindowBottom(value ? parseInt(tabBar2.height) : 0)
-    });
-  });
-}
-function useVisibleList(tabBar2, visibleList) {
-  const internalMidButton = ref(extend({
-    type: "midButton"
-  }, tabBar2.midButton));
-  function setVisibleList() {
-    let tempList = [];
-    tempList = tabBar2.list.filter((item) => item.visible !== false);
-    if (__UNI_FEATURE_TABBAR_MIDBUTTON__ && tabBar2.midButton) {
-      internalMidButton.value = extend({}, _middleButton, internalMidButton.value, tabBar2.midButton);
-      tempList = tempList.filter((item) => !isMidButton(item));
-      if (tempList.length % 2 === 0) {
-        tempList.splice(Math.floor(tempList.length / 2), 0, internalMidButton.value);
-      }
-    }
-    visibleList.value = tempList;
-  }
-  watchEffect(setVisibleList);
-}
-function useSwitchTab(route, tabBar2, visibleList) {
-  watchEffect(() => {
-    const meta = route.meta;
-    if (meta.isTabBar) {
-      const pagePath = meta.route;
-      const index2 = visibleList.value.findIndex((item) => item.pagePath === pagePath);
-      tabBar2.selectedIndex = index2;
-    }
-  });
-  return (tabBarItem, index2) => {
-    const {
-      type
-    } = tabBarItem;
-    return () => {
-      if (__UNI_FEATURE_TABBAR_MIDBUTTON__ && type === "midButton") {
-        return UniServiceJSBridge.invokeOnCallback(API_ON_TAB_BAR_MID_BUTTON_TAP);
-      }
-      const {
-        pagePath,
-        text: text2
-      } = tabBarItem;
-      let url = addLeadingSlash(pagePath);
-      if (url === __uniRoutes[0].alias) {
-        url = "/";
-      }
-      if (route.path !== url) {
-        uni.switchTab({
-          from: "tabBar",
-          url,
-          tabBarText: text2
-        });
-      } else {
-        invokeHook("onTabItemTap", {
-          index: index2,
-          text: text2,
-          pagePath
-        });
-      }
-    };
-  };
-}
-const DEFAULT_BG_COLOR = "#f7f7fa";
-const BLUR_EFFECT_COLOR_DARK = "rgb(0, 0, 0, 0.8)";
-const BLUR_EFFECT_COLOR_LIGHT = "rgb(250, 250, 250, 0.8)";
-const BLUR_EFFECT_COLORS = {
-  dark: BLUR_EFFECT_COLOR_DARK,
-  light: BLUR_EFFECT_COLOR_LIGHT,
-  extralight: BLUR_EFFECT_COLOR_LIGHT
-};
-const BORDER_COLORS = {
-  white: "rgba(255, 255, 255, 0.33)",
-  black: "rgba(0, 0, 0, 0.33)"
-};
-function useTabBarStyle(tabBar2) {
-  const style = computed(() => {
-    let backgroundColor = tabBar2.backgroundColor;
-    const blurEffect = tabBar2.blurEffect;
-    if (!backgroundColor) {
-      if (cssBackdropFilter && blurEffect && blurEffect !== "none") {
-        backgroundColor = BLUR_EFFECT_COLORS[blurEffect];
-      }
-    }
-    return {
-      backgroundColor: backgroundColor || DEFAULT_BG_COLOR,
-      backdropFilter: blurEffect !== "none" ? "blur(10px)" : blurEffect
-    };
-  });
-  const borderStyle = computed(() => {
-    const {
-      borderStyle: borderStyle2,
-      borderColor
-    } = tabBar2;
-    if (borderColor && isString(borderColor)) {
-      return {
-        backgroundColor: borderColor
-      };
-    }
-    return {
-      backgroundColor: BORDER_COLORS[borderStyle2] || BORDER_COLORS["black"]
-    };
-  });
-  const placeholderStyle = computed(() => {
-    return {
-      height: tabBar2.height
-    };
-  });
-  return {
-    style,
-    borderStyle,
-    placeholderStyle
-  };
-}
-function isMidButton(item) {
-  return item.type === "midButton";
-}
-function createTabBarItemsTsx(tabBar2, onSwitchTab, visibleList) {
-  const {
-    selectedIndex,
-    selectedColor,
-    color
-  } = tabBar2;
-  return visibleList.value.map((item, index2) => {
-    const selected = selectedIndex === index2;
-    const textColor = selected ? selectedColor : color;
-    const iconPath = (selected ? item.selectedIconPath || item.iconPath : item.iconPath) || "";
-    const iconfontText = item.iconfont ? selected ? item.iconfont.selectedText || item.iconfont.text : item.iconfont.text : void 0;
-    const iconfontColor = item.iconfont ? selected ? item.iconfont.selectedColor || item.iconfont.color : item.iconfont.color : void 0;
-    if (!__UNI_FEATURE_TABBAR_MIDBUTTON__) {
-      return createTabBarItemTsx(textColor, iconPath, iconfontText, iconfontColor, item, tabBar2, index2, onSwitchTab);
-    }
-    return isMidButton(item) ? createTabBarMidButtonTsx(textColor, iconPath, iconfontText, iconfontColor, item, tabBar2, index2, onSwitchTab) : createTabBarItemTsx(textColor, iconPath, iconfontText, iconfontColor, item, tabBar2, index2, onSwitchTab);
-  });
-}
-function createTabBarItemTsx(color, iconPath, iconfontText, iconfontColor, tabBarItem, tabBar2, index2, onSwitchTab) {
-  return createVNode("div", {
-    "key": index2,
-    "class": "uni-tabbar__item",
-    "onClick": onSwitchTab(tabBarItem, index2)
-  }, [createTabBarItemBdTsx(color, iconPath || "", iconfontText, iconfontColor, tabBarItem, tabBar2)], 8, ["onClick"]);
-}
-function createTabBarItemBdTsx(color, iconPath, iconfontText, iconfontColor, tabBarItem, tabBar2) {
-  const {
-    height
-  } = tabBar2;
-  return createVNode("div", {
-    "class": "uni-tabbar__bd",
-    "style": {
-      height
-    }
-  }, [iconfontText ? createTabBarItemIconfontTsx(iconfontText, iconfontColor || BLUR_EFFECT_COLOR_DARK, tabBarItem, tabBar2) : iconPath && createTabBarItemIconTsx(iconPath, tabBarItem, tabBar2), tabBarItem.text && createTabBarItemTextTsx(color, tabBarItem, tabBar2), tabBarItem.redDot && createTabBarItemRedDotTsx(tabBarItem.badge)], 4);
-}
-function createTabBarItemIconTsx(iconPath, tabBarItem, tabBar2) {
-  const {
-    type,
-    text: text2
-  } = tabBarItem;
-  const {
-    iconWidth
-  } = tabBar2;
-  const clazz2 = "uni-tabbar__icon" + (text2 ? " uni-tabbar__icon__diff" : "");
-  const style = {
-    width: iconWidth,
-    height: iconWidth
-  };
-  return createVNode("div", {
-    "class": clazz2,
-    "style": style
-  }, [type !== "midButton" && createVNode("img", {
-    "src": getRealPath(iconPath)
-  }, null, 8, ["src"])], 6);
-}
-function createTabBarItemIconfontTsx(iconfontText, iconfontColor, tabBarItem, tabBar2) {
-  var _a;
-  const {
-    type,
-    text: text2
-  } = tabBarItem;
-  const {
-    iconWidth
-  } = tabBar2;
-  const clazz2 = "uni-tabbar__icon" + (text2 ? " uni-tabbar__icon__diff" : "");
-  const style = {
-    width: iconWidth,
-    height: iconWidth
-  };
-  const iconfontStyle = {
-    fontSize: ((_a = tabBarItem.iconfont) == null ? void 0 : _a.fontSize) || iconWidth,
-    color: iconfontColor
-  };
-  return createVNode("div", {
-    "class": clazz2,
-    "style": style
-  }, [type !== "midButton" && createVNode("div", {
-    "class": "uni-tabbar__iconfont",
-    "style": iconfontStyle
-  }, [iconfontText], 4)], 6);
-}
-function createTabBarItemTextTsx(color, tabBarItem, tabBar2) {
-  const {
-    iconPath,
-    text: text2
-  } = tabBarItem;
-  const {
-    fontSize,
-    spacing
-  } = tabBar2;
-  const style = {
-    color,
-    fontSize,
-    lineHeight: !iconPath ? 1.8 : "normal",
-    marginTop: !iconPath ? "inherit" : spacing
-  };
-  return createVNode("div", {
-    "class": "uni-tabbar__label",
-    "style": style
-  }, [text2], 4);
-}
-function createTabBarItemRedDotTsx(badge) {
-  const clazz2 = "uni-tabbar__reddot" + (badge ? " uni-tabbar__badge" : "");
-  return createVNode("div", {
-    "class": clazz2
-  }, [badge], 2);
-}
-function createTabBarMidButtonTsx(color, iconPath, iconfontText, iconfontColor, midButton, tabBar2, index2, onSwitchTab) {
-  const {
-    width,
-    height,
-    backgroundImage,
-    iconWidth
-  } = midButton;
-  return createVNode("div", {
-    "key": "midButton",
-    "class": "uni-tabbar__item",
-    "style": {
-      flex: "0 0 " + width,
-      position: "relative"
-    },
-    "onClick": onSwitchTab(midButton, index2)
-  }, [createVNode("div", {
-    "class": "uni-tabbar__mid",
-    "style": {
-      width,
-      height,
-      backgroundImage: backgroundImage ? "url('" + getRealPath(backgroundImage) + "')" : "none"
-    }
-  }, [iconPath && createVNode("img", {
-    "style": {
-      width: iconWidth,
-      height: iconWidth
-    },
-    "src": getRealPath(iconPath)
-  }, null, 12, ["src"])], 4), createTabBarItemBdTsx(color, iconPath, iconfontText, iconfontColor, midButton, tabBar2)], 12, ["onClick"]);
-}
-const DEFAULT_CSS_VAR_VALUE = "0px";
-let globalLayoutState = void 0;
-function getLayoutState() {
-  return globalLayoutState;
-}
-const LayoutComponent = /* @__PURE__ */ defineSystemComponent({
-  name: "Layout",
-  setup(_props, {
-    emit: emit2
-  }) {
-    const rootRef = ref(null);
-    initCssVar();
-    const keepAliveRoute = __UNI_FEATURE_PAGES__ && useKeepAliveRoute();
-    const {
-      layoutState,
-      windowState
-    } = useState();
-    useMaxWidth(layoutState, rootRef);
-    const topWindow = __UNI_FEATURE_TOPWINDOW__ && useTopWindow(layoutState);
-    const leftWindow = __UNI_FEATURE_LEFTWINDOW__ && useLeftWindow(layoutState);
-    const rightWindow = __UNI_FEATURE_RIGHTWINDOW__ && useRightWindow(layoutState);
-    const showTabBar2 = __UNI_FEATURE_TABBAR__ && useShowTabBar();
-    const clazz2 = useAppClass(showTabBar2);
-    globalLayoutState = layoutState;
-    return () => {
-      const layoutTsx = createLayoutTsx(keepAliveRoute, layoutState, windowState, topWindow, leftWindow, rightWindow);
-      const tabBarTsx = __UNI_FEATURE_TABBAR__ && createTabBarTsx(showTabBar2);
-      return createVNode("uni-app", {
-        "ref": rootRef,
-        "class": clazz2.value
-      }, [layoutTsx, tabBarTsx], 2);
-    };
-  }
-});
-function useAppClass(showTabBar2) {
-  const showMaxWidth = ref(false);
-  return computed(() => {
-    return {
-      "uni-app--showtabbar": showTabBar2 && showTabBar2.value,
-      "uni-app--maxwidth": showMaxWidth.value
-    };
-  });
-}
-function initCssVar() {
-  updateCssVar({
-    "--status-bar-height": DEFAULT_CSS_VAR_VALUE,
-    "--top-window-height": DEFAULT_CSS_VAR_VALUE,
-    "--window-left": DEFAULT_CSS_VAR_VALUE,
-    "--window-right": DEFAULT_CSS_VAR_VALUE,
-    "--window-margin": DEFAULT_CSS_VAR_VALUE,
-    "--tab-bar-height": DEFAULT_CSS_VAR_VALUE
-  });
-}
-function initMediaQuery(minWidth, callback) {
-  const mediaQueryList = window.matchMedia("(min-width: " + minWidth + "px)");
-  if (mediaQueryList.addEventListener) {
-    mediaQueryList.addEventListener("change", callback);
-  } else {
-    mediaQueryList.addListener(callback);
-  }
-  return mediaQueryList.matches;
-}
-function useMaxWidth(layoutState, rootRef) {
-  const route = usePageRoute();
-  function checkMaxWidth2() {
-    const windowWidth = document.body.clientWidth;
-    const pages = getCurrentBasePages();
-    let meta = {};
-    if (pages.length > 0) {
-      const curPage = pages[pages.length - 1];
-      meta = getPage$BasePage(curPage).meta;
-    } else {
-      const routeOptions = getRouteOptions(route.path, true);
-      if (routeOptions) {
-        meta = routeOptions.meta;
-      }
-    }
-    const maxWidth2 = parseInt(String((hasOwn(meta, "maxWidth") ? meta.maxWidth : __uniConfig.globalStyle.maxWidth) || Number.MAX_SAFE_INTEGER));
-    let showMaxWidth = false;
-    if (windowWidth > maxWidth2) {
-      showMaxWidth = true;
-    } else {
-      showMaxWidth = false;
-    }
-    if (showMaxWidth && maxWidth2) {
-      layoutState.marginWidth = (windowWidth - maxWidth2) / 2;
-      nextTick(() => {
-        const rootEl = rootRef.value;
-        if (rootEl) {
-          rootEl.setAttribute("style", "max-width:" + maxWidth2 + "px;margin:0 auto;");
-        }
-      });
-    } else {
-      layoutState.marginWidth = 0;
-      nextTick(() => {
-        const rootEl = rootRef.value;
-        if (rootEl) {
-          rootEl.removeAttribute("style");
-        }
-      });
-    }
-  }
-  watch([() => route.path], checkMaxWidth2);
-  onMounted(() => {
-    checkMaxWidth2();
-    window.addEventListener("resize", checkMaxWidth2);
-  });
-}
-function useState() {
-  const route = usePageRoute();
-  if (!__UNI_FEATURE_RESPONSIVE__) {
-    const layoutState2 = reactive({
-      marginWidth: 0,
-      leftWindowWidth: 0,
-      rightWindowWidth: 0
-    });
-    watch(() => layoutState2.marginWidth, (value) => updateCssVar({
-      "--window-margin": value + "px"
-    }));
-    watch(() => layoutState2.leftWindowWidth + layoutState2.marginWidth, (value) => {
-      updateCssVar({
-        "--window-left": value + "px"
-      });
-    });
-    watch(() => layoutState2.rightWindowWidth + layoutState2.marginWidth, (value) => {
-      updateCssVar({
-        "--window-right": value + "px"
-      });
-    });
-    return {
-      layoutState: layoutState2,
-      windowState: computed(() => ({}))
-    };
-  }
-  const topWindowMediaQuery = ref(false);
-  const leftWindowMediaQuery = ref(false);
-  const rightWindowMediaQuery = ref(false);
-  const showTopWindow2 = computed(() => __UNI_FEATURE_TOPWINDOW__ && route.meta.topWindow !== false && topWindowMediaQuery.value);
-  const showLeftWindow2 = computed(() => __UNI_FEATURE_LEFTWINDOW__ && route.meta.leftWindow !== false && leftWindowMediaQuery.value);
-  const showRightWindow2 = computed(() => __UNI_FEATURE_RIGHTWINDOW__ && route.meta.rightWindow !== false && rightWindowMediaQuery.value);
-  const layoutState = reactive({
-    topWindowMediaQuery,
-    showTopWindow: showTopWindow2,
-    apiShowTopWindow: false,
-    leftWindowMediaQuery,
-    showLeftWindow: showLeftWindow2,
-    apiShowLeftWindow: false,
-    rightWindowMediaQuery,
-    showRightWindow: showRightWindow2,
-    apiShowRightWindow: false,
-    topWindowHeight: 0,
-    marginWidth: 0,
-    leftWindowWidth: 0,
-    rightWindowWidth: 0,
-    navigationBarTitleText: "",
-    topWindowStyle: {},
-    leftWindowStyle: {},
-    rightWindowStyle: {}
-  });
-  const props2 = ["topWindow", "leftWindow", "rightWindow"];
-  props2.forEach((prop) => {
-    var _a;
-    const matchMedia = (_a = __uniConfig[prop]) == null ? void 0 : _a.matchMedia;
-    let topWindowMinWidth = RESPONSIVE_MIN_WIDTH;
-    if (matchMedia && hasOwn(matchMedia, "minWidth")) {
-      const minWidth = matchMedia.minWidth;
-      topWindowMinWidth = checkMinWidth(minWidth) ? minWidth : topWindowMinWidth;
-    }
-    const matches2 = initMediaQuery(topWindowMinWidth, (ev) => {
-      layoutState[`${prop}MediaQuery`] = ev.matches;
-    });
-    layoutState[`${prop}MediaQuery`] = matches2;
-  });
-  watch(() => layoutState.topWindowHeight, (value) => updateCssVar({
-    "--top-window-height": value + "px"
-  }));
-  watch(() => layoutState.marginWidth, (value) => updateCssVar({
-    "--window-margin": value + "px"
-  }));
-  watch(() => layoutState.leftWindowWidth + layoutState.marginWidth, (value) => {
-    updateCssVar({
-      "--window-left": value + "px"
-    });
-  });
-  watch(() => layoutState.rightWindowWidth + layoutState.marginWidth, (value) => {
-    updateCssVar({
-      "--window-right": value + "px"
-    });
-  });
-  UniServiceJSBridge.on(ON_NAVIGATION_BAR_CHANGE, (navigationBar) => {
-    layoutState.navigationBarTitleText = navigationBar.titleText;
-  });
-  const windowState = computed(() => ({
-    matchTopWindow: layoutState.topWindowMediaQuery,
-    showTopWindow: layoutState.showTopWindow || layoutState.apiShowTopWindow,
-    matchLeftWindow: layoutState.leftWindowMediaQuery,
-    showLeftWindow: layoutState.showLeftWindow || layoutState.apiShowLeftWindow,
-    matchRightWindow: layoutState.rightWindowMediaQuery,
-    showRightWindow: layoutState.showRightWindow || layoutState.apiShowRightWindow
-  }));
-  return {
-    layoutState,
-    windowState
-  };
-}
-function createLayoutTsx(keepAliveRoute, layoutState, windowState, topWindow, leftWindow, rightWindow) {
-  const routerVNode = __UNI_FEATURE_PAGES__ ? createRouterViewVNode(keepAliveRoute) : createPageVNode();
-  if (!__UNI_FEATURE_RESPONSIVE__) {
-    return routerVNode;
-  }
-  const topWindowTsx = __UNI_FEATURE_TOPWINDOW__ ? createTopWindowTsx(topWindow, layoutState, windowState.value) : null;
-  const leftWindowTsx = __UNI_FEATURE_LEFTWINDOW__ ? createLeftWindowTsx(leftWindow, layoutState, windowState.value) : null;
-  const rightWindowTsx = __UNI_FEATURE_RIGHTWINDOW__ ? createRightWindowTsx(rightWindow, layoutState, windowState.value) : null;
-  return createVNode("uni-layout", {
-    "class": {
-      "uni-app--showtopwindow": __UNI_FEATURE_TOPWINDOW__ && layoutState.showTopWindow,
-      "uni-app--showleftwindow": __UNI_FEATURE_LEFTWINDOW__ && layoutState.showLeftWindow,
-      "uni-app--showrightwindow": __UNI_FEATURE_RIGHTWINDOW__ && layoutState.showRightWindow
-    }
-  }, [topWindowTsx, createVNode("uni-content", null, [createVNode("uni-main", null, [routerVNode]), leftWindowTsx, rightWindowTsx])], 2);
-}
-function useShowTabBar(emit2) {
-  const route = usePageRoute();
-  const tabBar2 = useTabBar();
-  const showTabBar2 = computed(() => route.meta.isTabBar && tabBar2.shown);
-  updateCssVar({
-    "--tab-bar-height": tabBar2.height
-  });
-  return showTabBar2;
-}
-function createTabBarTsx(showTabBar2) {
-  return withDirectives(createVNode(TabBar, null, null, 512), [[vShow, showTabBar2.value]]);
-}
-function createPageVNode() {
-  return createVNode(__uniRoutes[0].component);
-}
-function createRouterViewVNode({
-  routeKey,
-  isTabBar,
-  routeCache: routeCache2
-}) {
-  return createVNode(RouterView, null, {
-    default: withCtx(({
-      Component
-    }) => [(openBlock(), createBlock(KeepAlive, {
-      matchBy: "key",
-      cache: routeCache2
-    }, [(openBlock(), createBlock(resolveDynamicComponent(Component), {
-      type: isTabBar.value ? "tabBar" : "",
-      key: routeKey.value
-    }))], 1032, ["cache"]))]),
-    _: 1
-    /* STABLE */
-  });
-}
-function useTopWindow(layoutState) {
-  const {
-    component,
-    style
-  } = __uniConfig.topWindow;
-  const windowRef = ref(null);
-  function updateWindow() {
-    const instance2 = windowRef.value;
-    const el = resolveOwnerEl(instance2.$);
-    const height = el.getBoundingClientRect().height;
-    layoutState.topWindowHeight = height;
-  }
-  onMounted(updateWindow);
-  watch(() => layoutState.showTopWindow || layoutState.apiShowTopWindow, () => nextTick(updateWindow));
-  layoutState.topWindowStyle = style;
-  return {
-    component,
-    windowRef
-  };
-}
-function useLeftWindow(layoutState) {
-  const {
-    component,
-    style
-  } = __uniConfig.leftWindow;
-  const windowRef = ref(null);
-  function updateWindow() {
-    const instance2 = windowRef.value;
-    const el = resolveOwnerEl(instance2.$);
-    const width = el.getBoundingClientRect().width;
-    layoutState.leftWindowWidth = width;
-  }
-  onMounted(updateWindow);
-  watch(() => layoutState.showLeftWindow || layoutState.apiShowLeftWindow, () => nextTick(updateWindow));
-  layoutState.leftWindowStyle = style;
-  return {
-    component,
-    windowRef
-  };
-}
-function useRightWindow(layoutState) {
-  const {
-    component,
-    style
-  } = __uniConfig.rightWindow;
-  const windowRef = ref(null);
-  function updateWindow() {
-    const instance2 = windowRef.value;
-    const el = resolveOwnerEl(instance2.$);
-    const width = el.getBoundingClientRect().width;
-    layoutState.rightWindowWidth = width;
-  }
-  onMounted(updateWindow);
-  watch(() => layoutState.showRightWindow || layoutState.apiShowRightWindow, () => nextTick(updateWindow));
-  layoutState.rightWindowStyle = style;
-  return {
-    component,
-    windowRef
-  };
-}
-function createTopWindowTsx(topWindow, layoutState, windowState) {
-  if (topWindow) {
-    const {
-      component: TopWindow,
-      windowRef
-    } = topWindow;
-    return withDirectives(createVNode("uni-top-window", null, [createVNode("div", {
-      "class": "uni-top-window",
-      "style": layoutState.topWindowStyle
-    }, [createVNode(TopWindow, mergeProps({
-      "ref": windowRef,
-      "navigation-bar-title-text": layoutState.navigationBarTitleText
-    }, windowState), null, 16, ["navigation-bar-title-text"])], 4), createVNode("div", {
-      "class": "uni-top-window--placeholder",
-      "style": {
-        height: layoutState.topWindowHeight + "px"
-      }
-    }, null, 4)], 512), [[vShow, layoutState.showTopWindow || layoutState.apiShowTopWindow]]);
-  }
-}
-function createLeftWindowTsx(leftWindow, layoutState, windowState) {
-  if (leftWindow) {
-    const {
-      component: LeftWindow,
-      windowRef
-    } = leftWindow;
-    return withDirectives(createVNode("uni-left-window", {
-      "data-show": layoutState.apiShowLeftWindow || void 0,
-      "style": layoutState.leftWindowStyle
-    }, [layoutState.apiShowLeftWindow ? createVNode("div", {
-      "class": "uni-mask",
-      "onClick": () => layoutState.apiShowLeftWindow = false
-    }, null, 8, ["onClick"]) : null, createVNode("div", {
-      "class": "uni-left-window"
-    }, [createVNode(LeftWindow, mergeProps({
-      "ref": windowRef
-    }, windowState), null, 16)])], 12, ["data-show"]), [[vShow, layoutState.showLeftWindow || layoutState.apiShowLeftWindow]]);
-  }
-}
-function createRightWindowTsx(rightWindow, layoutState, windowState) {
-  if (rightWindow) {
-    const {
-      component: RightWindow,
-      windowRef
-    } = rightWindow;
-    return withDirectives(createVNode("uni-right-window", {
-      "data-show": layoutState.apiShowRightWindow || void 0,
-      "style": layoutState.rightWindowStyle
-    }, [layoutState.apiShowRightWindow ? createVNode("div", {
-      "class": "uni-mask",
-      "onClick": () => layoutState.apiShowRightWindow = false
-    }, null, 8, ["onClick"]) : null, createVNode("div", {
-      "class": "uni-right-window"
-    }, [createVNode(RightWindow, mergeProps({
-      "ref": windowRef
-    }, windowState), null, 16)])], 12, ["data-show"]), [[vShow, layoutState.showRightWindow || layoutState.apiShowRightWindow]]);
-  }
-}
-const showTopWindow = /* @__PURE__ */ defineAsyncApi(
-  "showTopWindow",
-  (_, { resolve, reject }) => {
-    const state2 = getLayoutState();
-    if (!state2) {
-      reject();
-      return;
-    }
-    state2.apiShowTopWindow = true;
-    nextTick(resolve);
-  }
-);
-const hideTopWindow = /* @__PURE__ */ defineAsyncApi(
-  "hideTopWindow",
-  (_, { resolve, reject }) => {
-    const state2 = getLayoutState();
-    if (!state2) {
-      reject();
-      return;
-    }
-    state2.apiShowTopWindow = false;
-    nextTick(resolve);
-  }
-);
-const showLeftWindow = /* @__PURE__ */ defineAsyncApi(
-  "showLeftWindow",
-  (_, { resolve, reject }) => {
-    const state2 = getLayoutState();
-    if (!state2) {
-      reject();
-      return;
-    }
-    state2.apiShowLeftWindow = true;
-    nextTick(resolve);
-  }
-);
-const hideLeftWindow = /* @__PURE__ */ defineAsyncApi(
-  "hideLeftWindow",
-  (_, { resolve, reject }) => {
-    const state2 = getLayoutState();
-    if (!state2) {
-      reject();
-      return;
-    }
-    state2.apiShowLeftWindow = false;
-    nextTick(resolve);
-  }
-);
-const showRightWindow = /* @__PURE__ */ defineAsyncApi(
-  "showRightWindow",
-  (_, { resolve, reject }) => {
-    const state2 = getLayoutState();
-    if (!state2) {
-      reject();
-      return;
-    }
-    state2.apiShowRightWindow = true;
-    nextTick(resolve);
-  }
-);
-const hideRightWindow = /* @__PURE__ */ defineAsyncApi(
-  "hideRightWindow",
-  (_, { resolve, reject }) => {
-    const state2 = getLayoutState();
-    if (!state2) {
-      reject();
-      return;
-    }
-    state2.apiShowRightWindow = false;
-    nextTick(resolve);
-  }
-);
-const getTopWindowStyle = /* @__PURE__ */ defineSyncApi(
-  "getTopWindowStyle",
-  () => {
-    const state2 = getLayoutState();
-    return extend({}, state2 && state2.topWindowStyle);
-  }
-);
-const setTopWindowStyle = /* @__PURE__ */ defineSyncApi(
-  "setTopWindowStyle",
-  (style) => {
-    const state2 = getLayoutState();
-    if (state2) {
-      state2.topWindowStyle = style;
-    }
-  }
-);
-const getLeftWindowStyle = /* @__PURE__ */ defineSyncApi(
-  "getLeftWindowStyle",
-  () => {
-    const state2 = getLayoutState();
-    return extend({}, state2 && state2.leftWindowStyle);
-  }
-);
-const setLeftWindowStyle = /* @__PURE__ */ defineSyncApi(
-  "setLeftWindowStyle",
-  (style) => {
-    const state2 = getLayoutState();
-    if (state2) {
-      state2.leftWindowStyle = style;
-    }
-  }
-);
-const getRightWindowStyle = /* @__PURE__ */ defineSyncApi("getRightWindowStyle", () => {
-  const state2 = getLayoutState();
-  return extend({}, state2 && state2.rightWindowStyle);
-});
-const setRightWindowStyle = /* @__PURE__ */ defineSyncApi("setRightWindowStyle", (style) => {
-  const state2 = getLayoutState();
-  if (state2) {
-    state2.rightWindowStyle = style;
-  }
-});
-const getElementById = /* @__PURE__ */ defineSyncApi(
-  "getElementById",
-  (id2) => {
-    const uniPageBody = document.querySelector("uni-page-body");
-    return uniPageBody ? uniPageBody.querySelector(`#${id2}`) : null;
-  }
-);
-const saveImageToPhotosAlbum = /* @__PURE__ */ defineAsyncApi(
-  API_SAVE_IMAGE_TO_PHOTOS_ALBUM,
-  createUnsupportedAsyncApi(API_SAVE_IMAGE_TO_PHOTOS_ALBUM)
-);
-const API_GET_RECORDER_MANAGER = "getRecorderManager";
-const getRecorderManager = /* @__PURE__ */ defineSyncApi(
-  API_GET_RECORDER_MANAGER,
-  createUnsupportedSyncApi(API_GET_RECORDER_MANAGER)
-);
-const saveVideoToPhotosAlbum = /* @__PURE__ */ defineAsyncApi(
-  API_SAVE_VIDEO_TO_PHOTOS_ALBUM,
-  createUnsupportedAsyncApi(API_SAVE_VIDEO_TO_PHOTOS_ALBUM)
-);
-const API_CREATE_CAMERA_CONTEXT = "createCameraContext";
-const createCameraContext = /* @__PURE__ */ defineSyncApi(
-  API_CREATE_CAMERA_CONTEXT,
-  createUnsupportedSyncApi(API_CREATE_CAMERA_CONTEXT)
-);
-const API_CREATE_LIVE_PLAYER_CONTEXT = "createLivePlayerContext";
-const createLivePlayerContext = /* @__PURE__ */ defineSyncApi(
-  API_CREATE_LIVE_PLAYER_CONTEXT,
-  createUnsupportedSyncApi(API_CREATE_LIVE_PLAYER_CONTEXT)
-);
-const API_SAVE_FILE = "saveFile";
-const saveFile = /* @__PURE__ */ defineAsyncApi(
-  API_SAVE_FILE,
-  createUnsupportedAsyncApi(API_SAVE_FILE)
-);
-const API_GET_SAVED_FILE_LIST = "getSavedFileList";
-const getSavedFileList = /* @__PURE__ */ defineAsyncApi(
-  API_GET_SAVED_FILE_LIST,
-  createUnsupportedAsyncApi(API_GET_SAVED_FILE_LIST)
-);
-const API_GET_SAVED_FILE_INFO = "getSavedFileInfo";
-const getSavedFileInfo = /* @__PURE__ */ defineAsyncApi(
-  API_GET_SAVED_FILE_INFO,
-  createUnsupportedAsyncApi(API_GET_SAVED_FILE_INFO)
-);
-const API_REMOVE_SAVED_FILE = "removeSavedFile";
-const removeSavedFile = /* @__PURE__ */ defineAsyncApi(
-  API_REMOVE_SAVED_FILE,
-  createUnsupportedAsyncApi(API_REMOVE_SAVED_FILE)
-);
-const API_ON_MEMORY_WARNING = "onMemoryWarning";
-const onMemoryWarning = /* @__PURE__ */ defineOnApi(
-  API_ON_MEMORY_WARNING,
-  createUnsupportedOnApi(API_ON_MEMORY_WARNING)
-);
-const API_ON_GYROSCOPE_CHANGE = "onGyroscopeChange";
-const onGyroscopeChange = /* @__PURE__ */ defineOnApi(
-  API_ON_GYROSCOPE_CHANGE,
-  createUnsupportedOnApi(API_ON_GYROSCOPE_CHANGE)
-);
-const API_START_GYROSCOPE = "startGyroscope";
-const startGyroscope = /* @__PURE__ */ defineAsyncApi(
-  API_START_GYROSCOPE,
-  createUnsupportedAsyncApi(API_START_GYROSCOPE)
-);
-const API_STOP_GYROSCOPE = "stopGyroscope";
-const stopGyroscope = /* @__PURE__ */ defineAsyncApi(
-  API_STOP_GYROSCOPE,
-  createUnsupportedAsyncApi(API_STOP_GYROSCOPE)
-);
-const API_SCAN_CODE = "scanCode";
-const scanCode = /* @__PURE__ */ defineAsyncApi(
-  API_SCAN_CODE,
-  createUnsupportedAsyncApi(API_SCAN_CODE)
-);
-const API_SET_SCREEN_BRIGHTNESS = "setScreenBrightness";
-const setScreenBrightness = /* @__PURE__ */ defineAsyncApi(
-  API_SET_SCREEN_BRIGHTNESS,
-  createUnsupportedAsyncApi(API_SET_SCREEN_BRIGHTNESS)
-);
-const API_GET_SCREEN_BRIGHTNESS = "getScreenBrightness";
-const getScreenBrightness = /* @__PURE__ */ defineAsyncApi(
-  API_GET_SCREEN_BRIGHTNESS,
-  createUnsupportedAsyncApi(API_GET_SCREEN_BRIGHTNESS)
-);
-const API_SET_KEEP_SCREEN_ON = "setKeepScreenOn";
-const setKeepScreenOn = /* @__PURE__ */ defineAsyncApi(
-  API_SET_KEEP_SCREEN_ON,
-  createUnsupportedAsyncApi(API_SET_KEEP_SCREEN_ON)
-);
-const API_ON_USER_CAPTURE_SCREEN = "onUserCaptureScreen";
-const onUserCaptureScreen = /* @__PURE__ */ defineOnApi(
-  API_ON_USER_CAPTURE_SCREEN,
-  createUnsupportedOnApi(API_ON_USER_CAPTURE_SCREEN)
-);
-const API_ADD_PHONE_CONTACT = "addPhoneContact";
-const addPhoneContact = /* @__PURE__ */ defineAsyncApi(
-  API_ADD_PHONE_CONTACT,
-  createUnsupportedAsyncApi(API_ADD_PHONE_CONTACT)
-);
-const API_LOGIN = "login";
-const login = /* @__PURE__ */ defineAsyncApi(
-  API_LOGIN,
-  createUnsupportedAsyncApi(API_LOGIN)
-);
-const API_GET_PROVIDER = "getProvider";
-const getProvider = /* @__PURE__ */ defineAsyncApi(
-  API_GET_PROVIDER,
-  createUnsupportedAsyncApi(API_GET_PROVIDER)
-);
-class CanvasContextImpl {
-  constructor(element) {
-    this._element = element;
-  }
-  getContext(type) {
-    return this._element.getContext(type);
-  }
-  toBlob(callback, type, quality) {
-    this._element.toBlob(callback, type, quality);
-  }
-  toDataURL(type, encoderOptions) {
-    return this._element.toDataURL(type, encoderOptions);
-  }
-  // @ts-expect-error TODO 类型不匹配?
-  createImage() {
-    return new Image();
-  }
-  createPath2D() {
-    return new Path2D();
-  }
-  requestAnimationFrame(callback) {
-    return window.requestAnimationFrame(callback);
-  }
-  cancelAnimationFrame(taskId) {
-    window.cancelAnimationFrame(taskId);
-  }
-}
-const createCanvasContextAsync = function(options) {
-  var _a, _b, _c, _d, _e, _f;
-  const pages = getCurrentBasePages();
-  const currentPage = (_a = options.component) != null ? _a : pages[pages.length - 1];
-  if (currentPage != null) {
-    const element = (_b = currentPage.$el) == null ? void 0 : _b.querySelector("#" + options.id);
-    if (element != null) {
-      const canvas = element;
-      (_c = options.success) == null ? void 0 : _c.call(options, new CanvasContextImpl(canvas));
-    } else {
-      const uniError = new UniError(
-        "uni-createCanvasContextAsync",
-        -1,
-        "canvas id invalid."
-      );
-      (_d = options.fail) == null ? void 0 : _d.call(options, uniError);
-    }
-  } else {
-    const uniError = new UniError(
-      "uni-createCanvasContextAsync",
-      -1,
-      "No found current page."
-    );
-    (_e = options.fail) == null ? void 0 : _e.call(options, uniError);
-  }
-  (_f = options.complete) == null ? void 0 : _f.call(options);
-};
-const openDialogPage = (options) => {
-  var _a, _b;
-  if (!options.url) {
-    triggerFailCallback$1(options, "url is required");
-    return null;
-  }
-  const { path, query } = parseUrl(options.url);
-  const normalizeUrl = createNormalizeUrl("navigateTo");
-  const errMsg = normalizeUrl(path, {});
-  if (errMsg) {
-    triggerFailCallback$1(options, errMsg);
-    return null;
-  }
-  const targetRoute = __uniRoutes.find((route) => {
-    return path.indexOf(route.meta.route) !== -1;
-  });
-  const dialogPage = new UniDialogPageImpl({
-    route: path,
-    options: new UTSJSONObject(query),
-    $component: targetRoute.component,
-    getParentPage: () => null,
-    $disableEscBack: options.disableEscBack
-  });
-  let parentPage = options.parentPage;
-  const currentPages = getCurrentPages();
-  if (parentPage) {
-    if (currentPages.indexOf(parentPage) === -1) {
-      triggerFailCallback$1(options, "parentPage is not a valid page");
-      return null;
-    }
-  }
-  if (!currentPages.length) {
-    homeDialogPages.push(dialogPage);
-  } else {
-    if (!parentPage) {
-      parentPage = currentPages[currentPages.length - 1];
-    }
-    dialogPage.getParentPage = () => parentPage;
-    parentPage.getDialogPages().push(dialogPage);
-  }
-  if (!options.disableEscBack) {
-    incrementEscBackPageNum();
-  }
-  const successOptions = {
-    errMsg: "openDialogPage: ok",
-    eventChannel: new EventChannel(0, options.events)
-  };
-  (_a = options.success) == null ? void 0 : _a.call(options, successOptions);
-  (_b = options.complete) == null ? void 0 : _b.call(options, successOptions);
-  return dialogPage;
-};
-function triggerFailCallback$1(options, errMsg) {
-  var _a, _b;
-  const failOptions = new UniError(
-    "uni-openDialogPage",
-    4,
-    `openDialogPage: fail, ${errMsg}`
-  );
-  (_a = options.fail) == null ? void 0 : _a.call(options, failOptions);
-  (_b = options.complete) == null ? void 0 : _b.call(options, failOptions);
-}
-const closeDialogPage = (options) => {
-  var _a, _b;
-  const currentPages = getCurrentPages();
-  const currentPage = currentPages[currentPages.length - 1];
-  if (!currentPage) {
-    triggerFailCallback(options, "currentPage is null");
-    return;
-  }
-  if (options == null ? void 0 : options.dialogPage) {
-    const dialogPage = options == null ? void 0 : options.dialogPage;
-    const parentPage = dialogPage.getParentPage();
-    if (parentPage && currentPages.indexOf(parentPage) !== -1) {
-      const parentDialogPages = parentPage.getDialogPages();
-      const index2 = parentDialogPages.indexOf(dialogPage);
-      parentDialogPages.splice(index2, 1);
-      invokeHook(dialogPage.$vm, ON_UNLOAD);
-      if (index2 > 0 && index2 === parentDialogPages.length) {
-        invokeHook(
-          parentDialogPages[parentDialogPages.length - 1].$vm,
-          ON_SHOW
-        );
-      }
-      if (!dialogPage.$disableEscBack) {
-        decrementEscBackPageNum();
-      }
-    } else {
-      triggerFailCallback(options, "dialogPage is not a valid page");
-      return;
-    }
-  } else {
-    const dialogPages = currentPage.getDialogPages();
-    for (let i = dialogPages.length - 1; i >= 0; i--) {
-      invokeHook(dialogPages[i].$vm, ON_UNLOAD);
-      if (i > 0) {
-        invokeHook(dialogPages[i - 1].$vm, ON_SHOW);
-      }
-      if (!dialogPages[i].$disableEscBack) {
-        decrementEscBackPageNum();
-      }
-    }
-    dialogPages.length = 0;
-  }
-  const successOptions = { errMsg: "closeDialogPage: ok" };
-  (_a = options == null ? void 0 : options.success) == null ? void 0 : _a.call(options, successOptions);
-  (_b = options == null ? void 0 : options.complete) == null ? void 0 : _b.call(options, successOptions);
-};
-function triggerFailCallback(options, errMsg) {
-  var _a, _b;
-  const failOptions = new UniError(
-    "uni-closeDialogPage",
-    4,
-    `closeDialogPage: fail, ${errMsg}`
-  );
-  (_a = options == null ? void 0 : options.fail) == null ? void 0 : _a.call(options, failOptions);
-  (_b = options == null ? void 0 : options.complete) == null ? void 0 : _b.call(options, failOptions);
-}
-const CONTEXT_ID = "MAP_LOCATION";
-const MapLocation = /* @__PURE__ */ defineSystemComponent({
-  name: "MapLocation",
-  setup() {
-    const state2 = reactive({
-      latitude: 0,
-      longitude: 0,
-      rotate: 0
-    });
-    {
-      let compassChangeHandler = function(res) {
-        state2.rotate = res.direction;
-      }, updateLocation = function() {
-        getLocation({
-          type: "gcj02",
-          success: (res) => {
-            state2.latitude = res.latitude;
-            state2.longitude = res.longitude;
-          },
-          complete: () => {
-            timer = setTimeout(updateLocation, 3e4);
-          }
-        });
-      }, removeLocation = function() {
-        if (timer) {
-          clearTimeout(timer);
-        }
-        offCompassChange(compassChangeHandler);
-      };
-      const onMapReady = inject("onMapReady");
-      let timer;
-      onCompassChange(compassChangeHandler);
-      onMapReady(updateLocation);
-      onUnmounted(removeLocation);
-      const addMapChidlContext = inject("addMapChidlContext");
-      const removeMapChidlContext = inject("removeMapChidlContext");
-      const context = {
-        id: CONTEXT_ID,
-        state: state2
-      };
-      addMapChidlContext(context);
-      onUnmounted(() => removeMapChidlContext(context));
-    }
-    return () => {
-      return state2.latitude ? createVNode(MapMarker, mergeProps({
-        "anchor": {
-          x: 0.5,
-          y: 0.5
-        },
-        "width": "44",
-        "height": "44",
-        "iconPath": ICON_PATH_ORIGIN
-      }, state2), null, 16, ["iconPath"]) : null;
-    };
-  }
-});
-const props$3 = {
-  // 边框虚线，腾讯地图支持，google 高德 地图不支持，默认值为[0, 0] 为实线，非 [0, 0] 为虚线，H5 端无法像微信小程序一样控制虚线的间隔像素大小
-  dashArray: {
-    type: Array,
-    default: () => [0, 0]
-  },
-  // 经纬度数组，[{latitude: 0, longitude: 0}]
-  points: {
-    type: Array,
-    required: true
-  },
-  // 描边的宽度
-  strokeWidth: {
-    type: Number,
-    default: 1
-  },
-  // 描边的颜色，十六进制
-  strokeColor: {
-    type: String,
-    default: "#000000"
-  },
-  // 填充颜色，十六进制
-  fillColor: {
-    type: String,
-    default: "#00000000"
-  },
-  // 设置多边形 Z 轴数值
-  zIndex: {
-    type: Number,
-    default: 0
-  }
-};
-const MapPolygon = /* @__PURE__ */ defineSystemComponent({
-  name: "MapPolygon",
-  props: props$3,
-  setup(props2) {
-    let polygonIns;
-    const onMapReady = inject("onMapReady");
-    onMapReady((map, maps2, trigger) => {
-      function drawPolygon() {
-        const {
-          points,
-          strokeWidth,
-          strokeColor,
-          dashArray,
-          fillColor,
-          zIndex
-        } = props2;
-        const path = points.map((item) => {
-          const {
-            latitude,
-            longitude
-          } = item;
-          if (getIsAMap()) {
-            return [longitude, latitude];
-          } else if (getIsBMap()) {
-            return new maps2.Point(longitude, latitude);
-          } else {
-            return new maps2.LatLng(latitude, longitude);
-          }
-        });
-        const {
-          r: fcR,
-          g: fcG,
-          b: fcB,
-          a: fcA
-        } = hexToRgba(fillColor);
-        const {
-          r: scR,
-          g: scG,
-          b: scB,
-          a: scA
-        } = hexToRgba(strokeColor);
-        const polygonOptions = {
-          //多边形是否可点击。
-          clickable: true,
-          //鼠标在多边形内的光标样式。
-          cursor: "crosshair",
-          //多边形是否可编辑。
-          editable: false,
-          // 地图实例，即要显示多边形的地图
-          // @ts-ignore
-          map,
-          // 区域填充色
-          fillColor: "",
-          //多边形的路径，以经纬度坐标数组构成。
-          path,
-          // 区域边框
-          strokeColor: "",
-          //多边形的边框样式。实线是solid，虚线是dash。
-          strokeDashStyle: dashArray.some((item) => item > 0) ? "dash" : "solid",
-          //多边形的边框线宽。
-          strokeWeight: strokeWidth,
-          //多边形是否可见。
-          visible: true,
-          //多边形的zIndex值。
-          zIndex
-        };
-        if (maps2.Color) {
-          polygonOptions.fillColor = new maps2.Color(fcR, fcG, fcB, fcA);
-          polygonOptions.strokeColor = new maps2.Color(scR, scG, scB, scA);
-        } else {
-          polygonOptions.fillColor = `rgb(${fcR}, ${fcG}, ${fcB})`;
-          polygonOptions.fillOpacity = fcA;
-          polygonOptions.strokeColor = `rgb(${scR}, ${scG}, ${scB})`;
-          polygonOptions.strokeOpacity = scA;
-        }
-        if (polygonIns) {
-          polygonIns.setOptions(polygonOptions);
-          return;
-        }
-        if (getIsBMap()) {
-          polygonIns = new maps2.Polygon(polygonOptions.path, polygonOptions);
-          map.addOverlay(polygonIns);
-        } else {
-          polygonIns = new maps2.Polygon(polygonOptions);
-        }
-      }
-      drawPolygon();
-      watch(props2, drawPolygon);
-    });
-    onUnmounted(() => {
-      polygonIns.setMap(null);
-    });
-    return () => null;
-  }
-});
-const props$2 = {
-  id: {
-    type: String,
-    default: ""
-  },
-  latitude: {
-    type: [String, Number],
-    default: 0
-  },
-  longitude: {
-    type: [String, Number],
-    default: 0
-  },
-  scale: {
-    type: [String, Number],
-    default: 16
-  },
-  markers: {
-    type: Array,
-    default() {
-      return [];
-    }
-  },
-  includePoints: {
-    type: Array,
-    default() {
-      return [];
-    }
-  },
-  polyline: {
-    type: Array,
-    default() {
-      return [];
-    }
-  },
-  circles: {
-    type: Array,
-    default() {
-      return [];
-    }
-  },
-  controls: {
-    type: Array,
-    default() {
-      return [];
-    }
-  },
-  showLocation: {
-    type: [Boolean, String],
-    default: false
-  },
-  libraries: {
-    type: Array,
-    default() {
-      return [];
-    }
-  },
-  polygons: {
-    type: Array,
-    default: () => []
-  }
-};
-function getPoints(points) {
-  const newPoints = [];
-  if (isArray(points)) {
-    points.forEach((point) => {
-      if (point && point.latitude && point.longitude) {
-        newPoints.push({
-          latitude: point.latitude,
-          longitude: point.longitude
-        });
-      }
-    });
-  }
-  return newPoints;
-}
-function getAMapPosition(maps2, latitude, longitude) {
-  return new maps2.LngLat(longitude, latitude);
-}
-function getBMapPosition(maps2, latitude, longitude) {
-  return new maps2.Point(longitude, latitude);
-}
-function getGoogleOrQQMapPosition(maps2, latitude, longitude) {
-  return new maps2.LatLng(latitude, longitude);
-}
-function getMapPosition(maps2, latitude, longitude) {
-  if (getIsBMap()) {
-    return getBMapPosition(maps2, latitude, longitude);
-  } else if (getIsAMap()) {
-    return getAMapPosition(maps2, latitude, longitude);
-  } else {
-    return getGoogleOrQQMapPosition(maps2, latitude, longitude);
-  }
-}
-function getLat(latLng) {
-  if ("getLat" in latLng) {
-    return latLng.getLat();
-  } else {
-    if (getIsBMap()) {
-      return latLng.lat;
-    }
-    return latLng.lat();
-  }
-}
-function getLng(latLng) {
-  if ("getLng" in latLng) {
-    return latLng.getLng();
-  } else {
-    if (getIsBMap()) {
-      return latLng.lng;
-    }
-    return latLng.lng();
-  }
-}
-function useMap(props2, rootRef, emit2) {
-  const trigger = useCustomEvent(rootRef, emit2);
-  const mapRef = ref(null);
-  let maps2;
-  let map;
-  const state2 = reactive({
-    latitude: Number(props2.latitude),
-    longitude: Number(props2.longitude),
-    includePoints: getPoints(props2.includePoints)
-  });
-  const onMapReadyCallbacks = [];
-  let isMapReady;
-  function onMapReady(callback) {
-    if (isMapReady) {
-      callback(map, maps2, trigger);
-    } else {
-      onMapReadyCallbacks.push(callback);
-    }
-  }
-  function emitMapReady() {
-    isMapReady = true;
-    onMapReadyCallbacks.forEach((callback) => callback(map, maps2, trigger));
-    onMapReadyCallbacks.length = 0;
-  }
-  let isBoundsReady;
-  const onBoundsReadyCallbacks = [];
-  function onBoundsReady(callback) {
-    if (isBoundsReady) {
-      callback();
-    } else {
-      onMapReadyCallbacks.push(callback);
-    }
-  }
-  const contexts = {};
-  function addMapChidlContext(context) {
-    contexts[context.id] = context;
-  }
-  function removeMapChidlContext(context) {
-    delete contexts[context.id];
-  }
-  watch([() => props2.latitude, () => props2.longitude], ([latitudeVlaue, longitudeVlaue]) => {
-    const latitude = Number(latitudeVlaue);
-    const longitude = Number(longitudeVlaue);
-    if (latitude !== state2.latitude || longitude !== state2.longitude) {
-      state2.latitude = latitude;
-      state2.longitude = longitude;
-      if (map) {
-        const centerPosition = getMapPosition(maps2, state2.latitude, state2.longitude);
-        map.setCenter(centerPosition);
-      }
-    }
-  });
-  watch(() => props2.includePoints, (points) => {
-    state2.includePoints = getPoints(points);
-    if (isBoundsReady) {
-      updateBounds();
-    }
-  }, {
-    deep: true
-  });
-  function emitBoundsReady() {
-    isBoundsReady = true;
-    onBoundsReadyCallbacks.forEach((callback) => callback());
-    onBoundsReadyCallbacks.length = 0;
-  }
-  function getMapInfo2() {
-    const center = map.getCenter();
-    return {
-      scale: map.getZoom(),
-      centerLocation: {
-        latitude: getLat(center),
-        longitude: getLng(center)
-      }
-    };
-  }
-  function updateCenter() {
-    const centerPosition = getMapPosition(maps2, state2.latitude, state2.longitude);
-    map.setCenter(centerPosition);
-  }
-  function updateBounds() {
-    if (getIsAMap()) {
-      const points = [];
-      state2.includePoints.forEach((point) => {
-        points.push([point.longitude, point.latitude]);
-      });
-      const bounds = new maps2.Bounds(...points);
-      map.setBounds(bounds);
-    } else if (getIsBMap())
-      ;
-    else {
-      const bounds = new maps2.LatLngBounds();
-      state2.includePoints.forEach(({
-        latitude,
-        longitude
-      }) => {
-        const latLng = new maps2.LatLng(latitude, longitude);
-        bounds.extend(latLng);
-      });
-      map.fitBounds(bounds);
-    }
-  }
-  function initMap() {
-    const mapEl = mapRef.value;
-    const center = getMapPosition(maps2, state2.latitude, state2.longitude);
-    const event = maps2.event || maps2.Event;
-    const map2 = new maps2.Map(mapEl, {
-      center,
-      zoom: Number(props2.scale),
-      // scrollwheel: false,
-      disableDoubleClickZoom: true,
-      mapTypeControl: false,
-      zoomControl: false,
-      scaleControl: false,
-      panControl: false,
-      fullscreenControl: false,
-      streetViewControl: false,
-      keyboardShortcuts: false,
-      minZoom: 5,
-      maxZoom: 18,
-      draggable: true
-    });
-    if (getIsBMap()) {
-      map2.centerAndZoom(center, Number(props2.scale));
-      map2.enableScrollWheelZoom();
-      map2._printLog && map2._printLog("uniapp");
-    }
-    watch(() => props2.scale, (scale) => {
-      map2.setZoom(Number(scale) || 16);
-    });
-    onBoundsReady(() => {
-      if (state2.includePoints.length) {
-        updateBounds();
-        updateCenter();
-      }
-    });
-    if (getIsBMap()) {
-      map2.addEventListener("click", () => {
-        trigger("tap", {}, {});
-        trigger("click", {}, {});
-      });
-      map2.addEventListener("dragstart", () => {
-        trigger("regionchange", {}, {
-          type: "begin",
-          causedBy: "gesture"
-        });
-      });
-      map2.addEventListener("dragend", () => {
-        trigger("regionchange", {}, extend({
-          type: "end",
-          causedBy: "drag"
-        }, getMapInfo2()));
-      });
-    } else {
-      const boundsChangedEvent = event.addListener(map2, "bounds_changed", () => {
-        boundsChangedEvent.remove();
-        emitBoundsReady();
-      });
-      event.addListener(map2, "click", () => {
-        trigger("tap", {}, {});
-        trigger("click", {}, {});
-      });
-      event.addListener(map2, "dragstart", () => {
-        trigger("regionchange", {}, {
-          type: "begin",
-          causedBy: "gesture"
-        });
-      });
-      event.addListener(map2, "dragend", () => {
-        trigger("regionchange", {}, extend({
-          type: "end",
-          causedBy: "drag"
-        }, getMapInfo2()));
-      });
-      const zoomChangedCallback = () => {
-        emit2("update:scale", map2.getZoom());
-        trigger("regionchange", {}, extend({
-          type: "end",
-          causedBy: "scale"
-        }, getMapInfo2()));
-      };
-      event.addListener(map2, "zoom_changed", zoomChangedCallback);
-      event.addListener(map2, "zoomend", zoomChangedCallback);
-      event.addListener(map2, "center_changed", () => {
-        const center2 = map2.getCenter();
-        const latitude = getLat(center2);
-        const longitude = getLng(center2);
-        emit2("update:latitude", latitude);
-        emit2("update:longitude", longitude);
-      });
-    }
-    return map2;
-  }
-  try {
-    const id2 = useContextInfo();
-    useSubscribe((type, data = {}) => {
-      switch (type) {
-        case "getCenterLocation":
-          onMapReady(() => {
-            const center = map.getCenter();
-            callOptions(data, {
-              latitude: getLat(center),
-              longitude: getLng(center),
-              errMsg: `${type}:ok`
-            });
-          });
-          break;
-        case "moveToLocation":
-          {
-            let latitude = Number(data.latitude);
-            let longitude = Number(data.longitude);
-            if (!latitude || !longitude) {
-              const context = contexts[CONTEXT_ID];
-              if (context) {
-                latitude = context.state.latitude;
-                longitude = context.state.longitude;
-              }
-            }
-            if (latitude && longitude) {
-              state2.latitude = latitude;
-              state2.longitude = longitude;
-              if (map) {
-                const centerPosition = getMapPosition(maps2, latitude, longitude);
-                map.setCenter(centerPosition);
-              }
-              onMapReady(() => {
-                callOptions(data, `${type}:ok`);
-              });
-            } else {
-              callOptions(data, `${type}:fail`);
-            }
-          }
-          break;
-        case "translateMarker":
-          onMapReady(() => {
-            const context = contexts[data.markerId];
-            if (context) {
-              try {
-                context.translate(data);
-              } catch (error) {
-                callOptions(data, `${type}:fail ${error.message}`);
-              }
-              callOptions(data, `${type}:ok`);
-            } else {
-              callOptions(data, `${type}:fail not found`);
-            }
-          });
-          break;
-        case "includePoints":
-          state2.includePoints = getPoints(data.includePoints);
-          if (isBoundsReady || getIsAMap()) {
-            updateBounds();
-          }
-          onBoundsReady(() => {
-            callOptions(data, `${type}:ok`);
-          });
-          break;
-        case "getRegion":
-          onBoundsReady(() => {
-            const latLngBounds = map.getBounds();
-            const southwest = latLngBounds.getSouthWest();
-            const northeast = latLngBounds.getNorthEast();
-            callOptions(data, {
-              southwest: {
-                latitude: getLat(southwest),
-                longitude: getLng(southwest)
-              },
-              northeast: {
-                latitude: getLat(northeast),
-                longitude: getLng(northeast)
-              },
-              errMsg: `${type}:ok`
-            });
-          });
-          break;
-        case "getScale":
-          onMapReady(() => {
-            callOptions(data, {
-              scale: map.getZoom(),
-              errMsg: `${type}:ok`
-            });
-          });
-          break;
-      }
-    }, id2, true);
-  } catch (error) {
-  }
-  onMounted(() => {
-    loadMaps(props2.libraries, (result) => {
-      maps2 = result;
-      map = initMap();
-      emitMapReady();
-      trigger("updated", {}, {});
-    });
-  });
-  provide("onMapReady", onMapReady);
-  provide("addMapChidlContext", addMapChidlContext);
-  provide("removeMapChidlContext", removeMapChidlContext);
-  return {
-    state: state2,
-    mapRef,
-    trigger
-  };
-}
-class UniMapElement extends UniElement {
-}
-const Map$1 = /* @__PURE__ */ defineBuiltInComponent({
-  name: "Map",
-  props: props$2,
-  emits: ["markertap", "labeltap", "callouttap", "controltap", "regionchange", "tap", "click", "updated", "update:scale", "update:latitude", "update:longitude"],
-  rootElement: {
-    name: "uni-map",
-    class: UniMapElement
-  },
-  setup(props2, {
-    emit: emit2,
-    slots
-  }) {
-    const rootRef = ref(null);
-    const {
-      mapRef,
-      trigger
-    } = useMap(props2, rootRef, emit2);
-    onMounted(() => {
-      const rootElement = rootRef.value;
-      rootElement.attachVmProps(props2);
-    });
-    return () => {
-      return createVNode("uni-map", {
-        "ref": rootRef,
-        "id": props2.id
-      }, [createVNode("div", {
-        "ref": mapRef,
-        "style": "width: 100%; height: 100%; position: relative; overflow: hidden"
-      }, null, 512), props2.markers.map((item) => createVNode(MapMarker, mergeProps({
-        "key": item.id
-      }, item), null, 16)), props2.polyline.map((item) => createVNode(MapPolyline, item, null, 16)), props2.circles.map((item) => createVNode(MapCircle, item, null, 16)), props2.controls.map((item) => createVNode(MapControl, mergeProps(item, {
-        "trigger": trigger
-      }), null, 16, ["trigger"])), props2.showLocation && createVNode(MapLocation, null, null), props2.polygons.map((item) => createVNode(MapPolygon, item, null, 16)), createVNode("div", {
-        "style": "position: absolute;top: 0;width: 100%;height: 100%;overflow: hidden;pointer-events: none;"
-      }, [slots.default && slots.default()])], 8, ["id"]);
-    };
-  }
-});
-const props$1 = {
-  scrollTop: {
-    type: [String, Number],
-    default: 0
-  }
-};
-class UniCoverViewElement extends UniElement {
-}
-const index$9 = /* @__PURE__ */ defineBuiltInComponent({
-  name: "CoverView",
-  compatConfig: {
-    MODE: 3
-  },
-  props: props$1,
-  rootElement: {
-    name: "uni-cover-view",
-    class: UniCoverViewElement
-  },
-  setup(props2, {
-    slots
-  }) {
-    const root = ref(null);
-    const content = ref(null);
-    watch(() => props2.scrollTop, (val) => {
-      setScrollTop(val);
-    });
-    function setScrollTop(val) {
-      let _content = content.value;
-      if (getComputedStyle(_content).overflowY === "scroll") {
-        _content.scrollTop = _upx2pxNum(val);
-      }
-    }
-    function _upx2pxNum(val) {
-      let _val = String(val);
-      if (/\d+[ur]px$/i.test(_val)) {
-        _val.replace(/\d+[ur]px$/i, (text2) => {
-          return String(uni.upx2px(parseFloat(text2)));
-        });
-      }
-      return parseFloat(_val) || 0;
-    }
-    onMounted(() => {
-      setScrollTop(props2.scrollTop);
-    });
-    onMounted(() => {
-      const rootElement = root.value;
-      rootElement.attachVmProps(props2);
-    });
-    return () => {
-      return createVNode("uni-cover-view", {
-        "scroll-top": props2.scrollTop,
-        "ref": root
-      }, [createVNode("div", {
-        "ref": content,
-        "class": "uni-cover-view"
-      }, [slots.default && slots.default()], 512)], 8, ["scroll-top"]);
-    };
-  }
-});
-class UniCoverImageElement extends UniElement {
-}
-const index$8 = /* @__PURE__ */ defineBuiltInComponent({
-  name: "CoverImage",
-  compatConfig: {
-    MODE: 3
-  },
-  props: {
-    src: {
-      type: String,
-      default: ""
-    }
-  },
-  rootElement: {
-    name: "uni-cover-image",
-    class: UniCoverImageElement
-  },
-  emits: ["load", "error"],
-  setup(props2, {
-    emit: emit2
-  }) {
-    const root = ref(null);
-    const trigger = useCustomEvent(root, emit2);
-    function load($event) {
-      trigger("load", $event);
-    }
-    function error($event) {
-      trigger("error", $event);
-    }
-    onMounted(() => {
-      const rootElement = root.value;
-      rootElement.attachVmProps(props2);
-    });
-    return () => {
-      const {
-        src
-      } = props2;
-      return createVNode("uni-cover-image", {
-        "ref": root,
-        "src": src
-      }, [createVNode("div", {
-        "class": "uni-cover-image"
-      }, [src ? createVNode("img", {
-        "src": getRealPath(src),
-        "onLoad": load,
-        "onError": error
-      }, null, 40, ["src", "onLoad", "onError"]) : null])], 8, ["src"]);
-    };
-  }
-});
-function _isSlot(s) {
-  return typeof s === "function" || Object.prototype.toString.call(s) === "[object Object]" && !isVNode(s);
-}
-function getDefaultStartValue(props2) {
-  if (props2.mode === mode.TIME) {
-    return "00:00";
-  }
-  if (props2.mode === mode.DATE) {
-    const year = (/* @__PURE__ */ new Date()).getFullYear() - 150;
-    switch (props2.fields) {
-      case fields.YEAR:
-        return year.toString();
-      case fields.MONTH:
-        return year + "-01";
-      default:
-        return year + "-01-01";
-    }
-  }
-  return "";
-}
-function getDefaultEndValue(props2) {
-  if (props2.mode === mode.TIME) {
-    return "23:59";
-  }
-  if (props2.mode === mode.DATE) {
-    const year = (/* @__PURE__ */ new Date()).getFullYear() + 150;
-    switch (props2.fields) {
-      case fields.YEAR:
-        return year.toString();
-      case fields.MONTH:
-        return year + "-12";
-      default:
-        return year + "-12-31";
-    }
-  }
-  return "";
-}
-function getDateValueArray(props2, state2, valueStr, defaultValue) {
-  const splitStr = props2.mode === mode.DATE ? "-" : ":";
-  const array = props2.mode === mode.DATE ? state2.dateArray : state2.timeArray;
-  let max;
-  if (props2.mode === mode.TIME) {
-    max = 2;
-  } else {
-    switch (props2.fields) {
-      case fields.YEAR:
-        max = 1;
-        break;
-      case fields.MONTH:
-        max = 2;
-        break;
-      default:
-        max = 3;
-        break;
-    }
-  }
-  const inputArray = String(valueStr).split(splitStr);
-  let value = [];
-  for (let i = 0; i < max; i++) {
-    const val = inputArray[i];
-    value.push(array[i].indexOf(val));
-  }
-  if (value.indexOf(-1) >= 0) {
-    value = defaultValue ? getDateValueArray(props2, state2, defaultValue) : value.map(() => 0);
-  }
-  return value;
-}
-const mode = {
-  SELECTOR: "selector",
-  MULTISELECTOR: "multiSelector",
-  TIME: "time",
-  DATE: "date"
-  // 暂不支持城市选择
-  // REGION: 'region'
-};
-const fields = {
-  YEAR: "year",
-  MONTH: "month",
-  DAY: "day"
-};
-const selectorType = {
-  PICKER: "picker",
-  SELECT: "select"
-};
-const props = {
-  name: {
-    type: String,
-    default: ""
-  },
-  range: {
-    type: Array,
-    default() {
-      return [];
-    }
-  },
-  rangeKey: {
-    type: String,
-    default: ""
-  },
-  value: {
-    type: [Number, String, Array],
-    default: 0
-  },
-  mode: {
-    type: String,
-    default: mode.SELECTOR,
-    validator(val) {
-      return Object.values(mode).includes(val);
-    }
-  },
-  fields: {
-    type: String,
-    default: ""
-  },
-  start: {
-    type: String,
-    default: (props2) => {
-      return getDefaultStartValue(props2);
-    }
-  },
-  end: {
-    type: String,
-    default: (props2) => {
-      return getDefaultEndValue(props2);
-    }
-  },
-  disabled: {
-    type: [Boolean, String],
-    default: false
-  },
-  selectorType: {
-    type: String,
-    default: ""
-  }
-};
-class UniPickerElement extends UniElement {
-}
-const index$7 = /* @__PURE__ */ defineBuiltInComponent({
-  name: "Picker",
-  compatConfig: {
-    MODE: 3
-  },
-  props,
-  emits: ["change", "cancel", "columnchange"],
-  rootElement: {
-    name: "uni-picker",
-    class: UniPickerElement
-  },
-  setup(props2, {
-    emit: emit2,
-    slots
-  }) {
-    initI18nPickerMsgsOnce();
-    const {
-      t: t2
-    } = useI18n();
-    const rootRef = ref(null);
-    const pickerRef = ref(null);
-    const selectRef = ref(null);
-    const inputRef = ref(null);
-    const pickerRender = ref(false);
-    const {
-      state: state2,
-      rangeArray
-    } = usePickerState(props2);
-    const trigger = useCustomEvent(rootRef, emit2);
-    const {
-      system,
-      selectorTypeComputed,
-      _show,
-      _l10nColumn,
-      _l10nItem,
-      _input,
-      _fixInputPosition,
-      _pickerViewChange,
-      _cancel,
-      _change,
-      _resetFormData,
-      _getFormData,
-      _createTime,
-      _createDate,
-      _setValueSync
-    } = usePickerMethods(props2, state2, trigger, rootRef, pickerRef, selectRef, inputRef);
-    usePickerWatch(state2, _cancel, _change);
-    usePickerForm(_resetFormData, _getFormData);
-    _createTime();
-    _createDate();
-    _setValueSync();
-    const popup = usePopupStyle(state2);
-    watchEffect(() => {
-      state2.isDesktop = popup.isDesktop.value;
-      state2.popupStyle = popup.popupStyle.value;
-    });
-    onBeforeUnmount(() => {
-      pickerRef.value && pickerRef.value.remove();
-    });
-    onMounted(() => {
-      pickerRender.value = true;
-    });
-    onMounted(() => {
-      const rootElement = rootRef.value;
-      rootElement.attachVmProps(props2);
-    });
-    return () => {
-      let _slot2;
-      const {
-        visible,
-        contentVisible,
-        valueArray,
-        popupStyle,
-        valueSync
-      } = state2;
-      const {
-        rangeKey,
-        mode: mode2,
-        start,
-        end
-      } = props2;
-      const booleanAttrs = useBooleanAttr(props2, "disabled");
-      return createVNode("uni-picker", mergeProps({
-        "ref": rootRef
-      }, booleanAttrs, {
-        "onClick": withWebEvent(_show)
-      }), [pickerRender.value ? createVNode("div", {
-        "ref": pickerRef,
-        "class": ["uni-picker-container", `uni-${mode2}-${selectorTypeComputed.value}`],
-        "onWheel": onEventPrevent,
-        "onTouchmove": onEventPrevent
-      }, [createVNode(Transition, {
-        "name": "uni-fade"
-      }, {
-        default: () => [withDirectives(createVNode("div", {
-          "class": "uni-mask uni-picker-mask",
-          "onClick": withWebEvent(_cancel),
-          "onMousemove": _fixInputPosition
-        }, null, 40, ["onClick", "onMousemove"]), [[vShow, visible]])]
-      }), !system.value ? createVNode("div", {
-        "class": [{
-          "uni-picker-toggle": visible
-        }, "uni-picker-custom"],
-        "style": popupStyle.content
-      }, [createVNode("div", {
-        "class": "uni-picker-header",
-        "onClick": onEventStop
-      }, [createVNode("div", {
-        "class": "uni-picker-action uni-picker-action-cancel",
-        "onClick": withWebEvent(_cancel)
-      }, [t2("uni.picker.cancel")], 8, ["onClick"]), createVNode("div", {
-        "class": "uni-picker-action uni-picker-action-confirm",
-        "onClick": _change
-      }, [t2("uni.picker.done")], 8, ["onClick"])], 8, ["onClick"]), contentVisible ? createVNode(PickerView, {
-        "value": _l10nColumn(valueArray),
-        "class": "uni-picker-content",
-        "onChange": _pickerViewChange
-      }, _isSlot(_slot2 = renderList(_l10nColumn(rangeArray.value), (rangeItem, index0) => {
-        let _slot;
-        return createVNode(PickerViewColumn, {
-          "key": index0
-        }, _isSlot(_slot = renderList(rangeItem, (item, index2) => createVNode("div", {
-          "key": index2,
-          "class": "uni-picker-item"
-        }, [typeof item === "object" ? item[rangeKey] || "" : _l10nItem(item, index0)]))) ? _slot : {
-          default: () => [_slot],
-          _: 1
-        });
-      })) ? _slot2 : {
-        default: () => [_slot2],
-        _: 1
-      }, 8, ["value", "onChange"]) : null, createVNode("div", {
-        "ref": selectRef,
-        "class": "uni-picker-select",
-        "onWheel": onEventStop,
-        "onTouchmove": onEventStop
-      }, [renderList(rangeArray.value[0], (item, index2) => createVNode("div", {
-        "key": index2,
-        "class": ["uni-picker-item", {
-          selected: valueArray[0] === index2
-        }],
-        "onClick": () => {
-          valueArray[0] = index2;
-          _change();
-        }
-      }, [typeof item === "object" ? item[rangeKey] || "" : item], 10, ["onClick"]))], 40, ["onWheel", "onTouchmove"]), createVNode("div", {
-        "style": popupStyle.triangle
-      }, null, 4)], 6) : null], 40, ["onWheel", "onTouchmove"]) : null, createVNode("div", null, [slots.default && slots.default()]), system.value ? createVNode("div", {
-        "class": "uni-picker-system",
-        "onMousemove": withWebEvent(_fixInputPosition)
-      }, [createVNode("input", {
-        "class": ["uni-picker-system_input", system.value],
-        "ref": inputRef,
-        "value": valueSync,
-        "type": mode2,
-        "tabindex": "-1",
-        "min": start,
-        "max": end,
-        "onChange": ($event) => {
-          _input($event);
-          onEventStop($event);
-        }
-      }, null, 42, ["value", "type", "min", "max", "onChange"])], 40, ["onMousemove"]) : null], 16, ["onClick"]);
-    };
-  }
-});
-function usePickerState(props2) {
-  const state2 = reactive({
-    valueSync: void 0,
-    visible: false,
-    contentVisible: false,
-    popover: null,
-    valueChangeSource: "",
-    timeArray: [],
-    dateArray: [],
-    valueArray: [],
-    oldValueArray: [],
-    isDesktop: false,
-    popupStyle: {
-      content: {},
-      triangle: {}
-    }
-  });
-  const rangeArray = computed(() => {
-    let val = props2.range;
-    switch (props2.mode) {
-      case mode.SELECTOR:
-        return [val];
-      case mode.MULTISELECTOR:
-        return val;
-      case mode.TIME:
-        return state2.timeArray;
-      case mode.DATE: {
-        const dateArray = state2.dateArray;
-        switch (props2.fields) {
-          case fields.YEAR:
-            return [dateArray[0]];
-          case fields.MONTH:
-            return [dateArray[0], dateArray[1]];
-          default:
-            return [dateArray[0], dateArray[1], dateArray[2]];
-        }
-      }
-    }
-    return [];
-  });
-  return {
-    state: state2,
-    rangeArray
-  };
-}
-const getiPadFlag = () => String(navigator.vendor).indexOf("Apple") === 0 && navigator.maxTouchPoints > 0;
-function useIsiPad() {
-  const isiPad = ref(false);
-  {
-    isiPad.value = getiPadFlag();
-  }
-  return isiPad;
-}
-const getSystem = () => {
-  if (/win|mac/i.test(navigator.platform)) {
-    if (navigator.vendor === "Google Inc.") {
-      return "chrome";
-    } else if (/Firefox/.test(navigator.userAgent)) {
-      return "firefox";
-    }
-  }
-  return "";
-};
-function useSystem() {
-  const _system = ref("");
-  {
-    _system.value = getSystem();
-  }
-  return _system;
-}
-let __contentVisibleDelay;
-function usePickerMethods(props2, state2, trigger, rootRef, pickerRef, selectRef, inputRef) {
-  const isiPad = useIsiPad();
-  const _system = useSystem();
-  const selectorTypeComputed = computed(() => {
-    const type = props2.selectorType;
-    if (Object.values(selectorType).includes(type)) {
-      return type;
-    }
-    return isiPad.value ? selectorType.PICKER : selectorType.SELECT;
-  });
-  const system = computed(() => {
-    if (props2.mode === mode.DATE && !Object.values(fields).includes(props2.fields) && state2.isDesktop) {
-      return _system.value;
-    }
-    return "";
-  });
-  const startArray = computed(() => {
-    return getDateValueArray(props2, state2, props2.start, getDefaultStartValue(props2));
-  });
-  const endArray = computed(() => {
-    return getDateValueArray(props2, state2, props2.end, getDefaultEndValue(props2));
-  });
-  function _show(event) {
-    if (props2.disabled) {
-      return;
-    }
-    state2.valueChangeSource = "";
-    let $picker = pickerRef.value;
-    let _currentTarget = event.currentTarget;
-    $picker.remove();
-    (document.querySelector("uni-app") || document.body).appendChild($picker);
-    $picker.style.display = "block";
-    const rect = _currentTarget.getBoundingClientRect();
-    state2.popover = {
-      top: rect.top,
-      left: rect.left,
-      width: rect.width,
-      height: rect.height
-    };
-    setTimeout(() => {
-      state2.visible = true;
-    }, 20);
-  }
-  function _getFormData() {
-    return {
-      value: state2.valueSync,
-      key: props2.name
-    };
-  }
-  function _resetFormData() {
-    switch (props2.mode) {
-      case mode.SELECTOR:
-        state2.valueSync = 0;
-        break;
-      case mode.MULTISELECTOR:
-        state2.valueSync = props2.value.map((val) => 0);
-        break;
-      case mode.DATE:
-      case mode.TIME:
-        state2.valueSync = "";
-        break;
-    }
-  }
-  function _createTime() {
-    let hours = [];
-    let minutes = [];
-    for (let i = 0; i < 24; i++) {
-      hours.push((i < 10 ? "0" : "") + i);
-    }
-    for (let i = 0; i < 60; i++) {
-      minutes.push((i < 10 ? "0" : "") + i);
-    }
-    state2.timeArray.push(hours, minutes);
-  }
-  function getYearStartEnd() {
-    let year = (/* @__PURE__ */ new Date()).getFullYear();
-    let start = year - 150;
-    let end = year + 150;
-    if (props2.start) {
-      const _year = new Date(props2.start).getFullYear();
-      if (!isNaN(_year) && _year < start) {
-        start = _year;
-      }
-    }
-    if (props2.end) {
-      const _year = new Date(props2.end).getFullYear();
-      if (!isNaN(_year) && _year > end) {
-        end = _year;
-      }
-    }
-    return {
-      start,
-      end
-    };
-  }
-  function _createDate() {
-    let years = [];
-    const year = getYearStartEnd();
-    for (let i = year.start, end = year.end; i <= end; i++) {
-      years.push(String(i));
-    }
-    let months = [];
-    for (let i = 1; i <= 12; i++) {
-      months.push((i < 10 ? "0" : "") + i);
-    }
-    let days = [];
-    for (let i = 1; i <= 31; i++) {
-      days.push((i < 10 ? "0" : "") + i);
-    }
-    state2.dateArray.push(years, months, days);
-  }
-  function _getTimeValue(val) {
-    return val[0] * 60 + val[1];
-  }
-  function _getDateValue(val) {
-    const DAY = 31;
-    return val[0] * DAY * 12 + (val[1] || 0) * DAY + (val[2] || 0);
-  }
-  function _cloneArray(val1, val2) {
-    for (let i = 0; i < val1.length && i < val2.length; i++) {
-      val1[i] = val2[i];
-    }
-  }
-  function _setValueSync() {
-    let val = props2.value;
-    switch (props2.mode) {
-      case mode.MULTISELECTOR:
-        {
-          if (!isArray(val)) {
-            val = state2.valueArray;
-          }
-          if (!isArray(state2.valueSync)) {
-            state2.valueSync = [];
-          }
-          const length = state2.valueSync.length = Math.max(val.length, props2.range.length);
-          for (let index2 = 0; index2 < length; index2++) {
-            const val0 = Number(val[index2]);
-            const val1 = Number(state2.valueSync[index2]);
-            const val2 = isNaN(val0) ? isNaN(val1) ? 0 : val1 : val0;
-            const maxVal = props2.range[index2] ? props2.range[index2].length - 1 : 0;
-            state2.valueSync.splice(index2, 1, val2 < 0 || val2 > maxVal ? 0 : val2);
-          }
-        }
-        break;
-      case mode.TIME:
-      case mode.DATE:
-        state2.valueSync = String(val);
-        break;
-      default: {
-        const valueSync = Number(val);
-        state2.valueSync = valueSync < 0 ? 0 : valueSync;
-        break;
-      }
-    }
-  }
-  function _setValueArray() {
-    let val = state2.valueSync;
-    let valueArray;
-    switch (props2.mode) {
-      case mode.MULTISELECTOR:
-        valueArray = [...val];
-        break;
-      case mode.TIME:
-        valueArray = getDateValueArray(props2, state2, val, formatDateTime({
-          mode: mode.TIME
-        }));
-        break;
-      case mode.DATE:
-        valueArray = getDateValueArray(props2, state2, val, formatDateTime({
-          mode: mode.DATE
-        }));
-        break;
-      default:
-        valueArray = [val];
-        break;
-    }
-    state2.oldValueArray = [...valueArray];
-    state2.valueArray = [...valueArray];
-  }
-  function _getValue() {
-    let val = state2.valueArray;
-    switch (props2.mode) {
-      case mode.SELECTOR:
-        return val[0];
-      case mode.MULTISELECTOR:
-        return val.map((val2) => val2);
-      case mode.TIME:
-        return state2.valueArray.map((val2, i) => state2.timeArray[i][val2]).join(":");
-      case mode.DATE:
-        return state2.valueArray.map((val2, i) => state2.dateArray[i][val2]).join("-");
-    }
-  }
-  function _change() {
-    _close();
-    state2.valueChangeSource = "click";
-    const value = _getValue();
-    state2.valueSync = isArray(value) ? value.map((val) => val) : value;
-    trigger("change", {}, {
-      value
-    });
-  }
-  function _cancel($event) {
-    if (system.value === "firefox" && $event) {
-      const {
-        top,
-        left,
-        width,
-        height
-      } = state2.popover;
-      const {
-        pageX,
-        pageY
-      } = $event;
-      if (pageX > left && pageX < left + width && pageY > top && pageY < top + height) {
-        return;
-      }
-    }
-    _close();
-    trigger("cancel", {}, {});
-  }
-  function _close() {
-    state2.visible = false;
-    setTimeout(() => {
-      let $picker = pickerRef.value;
-      $picker.remove();
-      rootRef.value.prepend($picker);
-      $picker.style.display = "none";
-    }, 260);
-  }
-  function _select() {
-    if (props2.mode === mode.SELECTOR && selectorTypeComputed.value === selectorType.SELECT) {
-      selectRef.value.scrollTop = state2.valueArray[0] * 34;
-    }
-  }
-  function _input($event) {
-    const EventTarget = $event.target;
-    state2.valueSync = EventTarget.value;
-    nextTick(() => {
-      _change();
-    });
-  }
-  function _fixInputPosition($event) {
-    if (system.value === "chrome") {
-      const rect = rootRef.value.getBoundingClientRect();
-      const fontSize = 32;
-      inputRef.value.style.left = `${$event.clientX - rect.left - fontSize * 1.5}px`;
-      inputRef.value.style.top = `${$event.clientY - rect.top - fontSize * 0.5}px`;
-    }
-  }
-  function _pickerViewChange(event) {
-    state2.valueArray = _l10nColumn(event.detail.value, true);
-  }
-  function _l10nColumn(array, normalize) {
-    const {
-      getLocale: getLocale2
-    } = useI18n();
-    if (props2.mode === mode.DATE) {
-      const locale = getLocale2();
-      if (!locale.startsWith("zh")) {
-        switch (props2.fields) {
-          case fields.YEAR:
-            return array;
-          case fields.MONTH:
-            return [array[1], array[0]];
-          default:
-            switch (locale) {
-              case "es":
-              case "fr":
-                return [array[2], array[1], array[0]];
-              default:
-                return normalize ? [array[2], array[0], array[1]] : [array[1], array[2], array[0]];
-            }
-        }
-      }
-    }
-    return array;
-  }
-  function _l10nItem(item, index2) {
-    const {
-      getLocale: getLocale2
-    } = useI18n();
-    if (props2.mode === mode.DATE) {
-      const locale = getLocale2();
-      if (locale.startsWith("zh")) {
-        const array = ["年", "月", "日"];
-        return item + array[index2];
-      } else if (props2.fields !== fields.YEAR && index2 === (props2.fields !== fields.MONTH && (locale === "es" || locale === "fr") ? 1 : 0)) {
-        let array;
-        switch (locale) {
-          case "es":
-            array = ["enero", "febrero", "marzo", "abril", "mayo", "junio", "​​julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"];
-            break;
-          case "fr":
-            array = ["janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août", "septembre", "octobre", "novembre", "décembre"];
-            break;
-          default:
-            array = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-            break;
-        }
-        return array[Number(item) - 1];
-      }
-    }
-    return item;
-  }
-  watch(() => state2.visible, (val) => {
-    if (val) {
-      clearTimeout(__contentVisibleDelay);
-      state2.contentVisible = val;
-      _select();
-    } else {
-      __contentVisibleDelay = setTimeout(() => {
-        state2.contentVisible = val;
-      }, 300);
-    }
-  });
-  watch([() => props2.mode, () => props2.value, () => props2.range], _setValueSync, {
-    deep: true
-  });
-  watch(() => state2.valueSync, _setValueArray, {
-    deep: true
-  });
-  watch(() => state2.valueArray, (val) => {
-    if (props2.mode === mode.TIME || props2.mode === mode.DATE) {
-      const getValue = props2.mode === mode.TIME ? _getTimeValue : _getDateValue;
-      const valueArray = state2.valueArray;
-      const _startArray = startArray.value;
-      const _endArray = endArray.value;
-      if (props2.mode === mode.DATE) {
-        const dateArray = state2.dateArray;
-        const max = dateArray[2].length;
-        const day = Number(dateArray[2][valueArray[2]]) || 1;
-        const realDay = (/* @__PURE__ */ new Date(`${dateArray[0][valueArray[0]]}/${dateArray[1][valueArray[1]]}/${day}`)).getDate();
-        if (realDay < day) {
-          valueArray[2] -= realDay + max - day;
-        }
-      }
-      if (getValue(valueArray) < getValue(_startArray)) {
-        _cloneArray(valueArray, _startArray);
-      } else if (getValue(valueArray) > getValue(_endArray)) {
-        _cloneArray(valueArray, _endArray);
-      }
-    }
-    val.forEach((value, column) => {
-      if (value !== state2.oldValueArray[column]) {
-        state2.oldValueArray[column] = value;
-        if (props2.mode === mode.MULTISELECTOR) {
-          trigger("columnchange", {}, {
-            column,
-            value
-          });
-        }
-      }
-    });
-  });
-  return {
-    selectorTypeComputed,
-    system,
-    _show,
-    _cancel,
-    _change,
-    _l10nColumn,
-    _l10nItem,
-    _input,
-    _resetFormData,
-    _getFormData,
-    _createTime,
-    _createDate,
-    _setValueSync,
-    _fixInputPosition,
-    _pickerViewChange
-  };
-}
-function usePickerWatch(state2, _cancel, _change) {
-  const {
-    key,
-    disable
-  } = useKeyboard();
-  watchEffect(() => {
-    disable.value = !state2.visible;
-  });
-  watch(key, (value) => {
-    if (value === "esc") {
-      _cancel();
-    } else if (value === "enter") {
-      _change();
-    }
-  });
-}
-function usePickerForm(_resetFormData, _getFormData) {
-  const uniForm = inject(uniFormKey, false);
-  if (uniForm) {
-    const field = {
-      reset: _resetFormData,
-      submit: () => {
-        const data = ["", null];
-        const {
-          key,
-          value
-        } = _getFormData();
-        if (key !== "") {
-          data[0] = key;
-          data[1] = value;
-        }
-        return data;
-      }
-    };
-    uniForm.addField(field);
-    onBeforeUnmount(() => {
-      uniForm.removeField(field);
-    });
-  }
-}
-const index$6 = /* @__PURE__ */ defineUnsupportedComponent("ad");
-const index$5 = /* @__PURE__ */ defineUnsupportedComponent("ad-content-page");
-const index$4 = /* @__PURE__ */ defineUnsupportedComponent("ad-draw");
-const index$3 = /* @__PURE__ */ defineUnsupportedComponent("camera");
-const index$2 = /* @__PURE__ */ defineUnsupportedComponent("live-player");
-const index$1 = /* @__PURE__ */ defineUnsupportedComponent("live-pusher");
 const UniViewJSBridge$1 = /* @__PURE__ */ extend(ViewJSBridge, {
   publishHandler(event, args, pageId) {
     UniServiceJSBridge.subscribeHandler(event, args, pageId);
@@ -27283,7 +27283,7 @@ const api = /* @__PURE__ */ Object.defineProperty({
   offNetworkStatusChange,
   offPageNotFound,
   offPushMessage,
-  offThemeChange,
+  offThemeChange: offThemeChange$1,
   offUnhandledRejection,
   offWindowResize,
   onAccelerometerChange,
@@ -27305,7 +27305,7 @@ const api = /* @__PURE__ */ Object.defineProperty({
   onSocketMessage,
   onSocketOpen,
   onTabBarMidButtonTap,
-  onThemeChange,
+  onThemeChange: onThemeChange$2,
   onUnhandledRejection,
   onUserCaptureScreen,
   onWindowResize,
@@ -27397,7 +27397,7 @@ function useBackgroundColorContent(pageMeta) {
       );
     }
   }
-  onThemeChange$2(update);
+  onThemeChange$1(update);
   watchEffect(update);
   onActivated(update);
 }
@@ -28225,11 +28225,14 @@ function createDialogPageVNode(dialogPages) {
     Fragment,
     null,
     renderList(dialogPages.value, (dialogPage) => {
+      const fullUrl = `${dialogPage.route}${stringifyQuery$1(
+        dialogPage.options
+      )}`;
       return openBlock(), createBlock(
         createVNode(
           dialogPage.$component,
           {
-            key: dialogPage.route,
+            key: fullUrl,
             style: {
               position: "fixed",
               "z-index": 999,
@@ -28239,9 +28242,8 @@ function createDialogPageVNode(dialogPages) {
               left: 0
             },
             type: "dialog",
-            route: `${dialogPage.route}${stringifyQuery$1(
-              dialogPage.options
-            )}`
+            "data-type": "dialog",
+            route: fullUrl
           },
           null
         )
@@ -28254,51 +28256,51 @@ export {
   $off,
   $on,
   $once,
-  index$6 as Ad,
-  index$5 as AdContentPage,
-  index$4 as AdDraw,
+  index$m as Ad,
+  index$l as AdContentPage,
+  index$k as AdDraw,
   AsyncErrorComponent,
   AsyncLoadingComponent,
   index$w as Button,
-  index$3 as Camera,
+  index$j as Camera,
   indexX$4 as Canvas,
   index$u as Checkbox,
   index$v as CheckboxGroup,
-  index$8 as CoverImage,
-  index$9 as CoverView,
-  index$s as Editor,
+  index$o as CoverImage,
+  index$p as CoverView,
+  index$g as Editor,
   index$y as Form,
-  index$r as Icon,
-  index$q as Image,
+  index$f as Icon,
+  index$e as Image,
   Input,
   index$x as Label,
   LayoutComponent,
-  index$h as ListItem,
-  index$i as ListView,
-  index$2 as LivePlayer,
-  index$1 as LivePusher,
+  index$5 as ListItem,
+  index$6 as ListView,
+  index$i as LivePlayer,
+  index$h as LivePusher,
   Map$1 as Map,
   MovableArea,
   MovableView,
-  index$p as Navigator,
+  index$d as Navigator,
   index as PageComponent,
-  index$7 as Picker,
+  index$n as Picker,
   PickerView,
   PickerViewColumn,
-  index$o as Progress,
-  indexX$3 as Radio,
-  index$n as RadioGroup,
+  index$c as Progress,
+  indexX$2 as Radio,
+  index$b as RadioGroup,
   ResizeSensor,
-  index$m as RichText,
+  index$a as RichText,
   ScrollView,
-  indexX$2 as Slider,
-  index$f as StickyHeader,
-  index$g as StickySection,
+  indexX$1 as Slider,
+  index$3 as StickyHeader,
+  index$4 as StickySection,
   Swiper,
   SwiperItem,
-  indexX$1 as Switch,
-  index$l as Text,
-  index$k as Textarea,
+  indexX as Switch,
+  index$9 as Text,
+  index$8 as Textarea,
   UniButtonElement,
   UniCanvasElement,
   UniCheckboxElement,
@@ -28340,9 +28342,9 @@ export {
   UniViewElement,
   UniViewJSBridge$1 as UniViewJSBridge,
   UniWebViewElement,
-  index$c as Video,
-  index$j as View,
-  indexX as WebView,
+  index$q as Video,
+  index$7 as View,
+  indexX$3 as WebView,
   addInterceptor,
   addPhoneContact,
   arrayBufferToBase64,
@@ -28438,7 +28440,7 @@ export {
   offNetworkStatusChange,
   offPageNotFound,
   offPushMessage,
-  offThemeChange,
+  offThemeChange$1 as offThemeChange,
   offUnhandledRejection,
   offWindowResize,
   onAccelerometerChange,
@@ -28460,7 +28462,7 @@ export {
   onSocketMessage,
   onSocketOpen,
   onTabBarMidButtonTap,
-  onThemeChange,
+  onThemeChange$2 as onThemeChange,
   onUnhandledRejection,
   onUserCaptureScreen,
   onWindowResize,
@@ -28468,7 +28470,7 @@ export {
   openDocument,
   openLocation,
   pageScrollTo,
-  index$d as plugin,
+  index$1 as plugin,
   preloadPage,
   previewImage,
   reLaunch,

@@ -99,13 +99,16 @@ function createDialogPageVNode(dialogPages: Ref<UniDialogPage[]>) {
       Fragment,
       null,
       renderList(dialogPages.value, (dialogPage) => {
+        const fullUrl = `${dialogPage.route}${stringifyQuery(
+          dialogPage.options
+        )}`
         return (
           openBlock(),
           createBlock(
             createVNode(
               dialogPage.$component,
               {
-                key: dialogPage.route,
+                key: fullUrl,
                 style: {
                   position: 'fixed',
                   'z-index': 999,
@@ -115,9 +118,8 @@ function createDialogPageVNode(dialogPages: Ref<UniDialogPage[]>) {
                   left: 0,
                 },
                 type: 'dialog',
-                route: `${dialogPage.route}${stringifyQuery(
-                  dialogPage.options
-                )}`,
+                'data-type': 'dialog',
+                route: fullUrl,
               },
               null
             )
