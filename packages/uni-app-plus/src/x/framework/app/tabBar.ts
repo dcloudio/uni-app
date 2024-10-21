@@ -122,7 +122,10 @@ function init() {
       const item = list![index]
       const path = item.pagePath
       if (isString(path) && findPageRoute(getRealPath(path, true))) {
-        switchSelect(index, path as string)
+        // 调用 switchTab 拦截器
+        uni.switchTab({
+          url: getRealPath(path, true),
+        })
       } else {
         console.error('switchTab: pagePath not found')
       }
