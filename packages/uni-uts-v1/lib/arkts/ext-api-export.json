@@ -576,9 +576,6 @@
   ],
   "@uni_modules/uni-push": [
     [
-      "OnPushMessageCallbackResult"
-    ],
-    [
       "getPushClientId"
     ],
     [

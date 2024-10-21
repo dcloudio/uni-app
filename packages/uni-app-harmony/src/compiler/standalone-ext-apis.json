@@ -6,21 +6,7 @@
       "startFacialRecognitionVerify",
       "getFacialRecognitionMetaInfo"
     ],
-    "version": "1.0.0"
-  },
-  {
-    "type": "extapi",
-    "plugin": "uni-push",
-    "apis": [
-      "getPushClientId",
-      "onPushMessage",
-      "offPushMessage",
-      "getChannelManager",
-      "getPushChannelManager",
-      "createPushMessage",
-      "setAppBadgeNumber"
-    ],
-    "version": "1.0.0"
+    "version": "1.0.1"
   },
   {
     "type": "provider",
@@ -34,6 +20,18 @@
     "plugin": "uni-payment-alipay",
     "provider": "alipay",
     "service": "payment",
+    "version": "1.0.0"
+  },
+  {
+    "type": "extapi",
+    "plugin": "uni-push",
+    "apis": [
+      "getPushClientId",
+      "onPushMessage",
+      "offPushMessage",
+      "createPushMessage",
+      "setAppBadgeNumber"
+    ],
     "version": "1.0.0"
   }
 ]
