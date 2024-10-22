@@ -19,7 +19,7 @@ var StandaloneExtApis = [
 			"startFacialRecognitionVerify",
 			"getFacialRecognitionMetaInfo"
 		],
-		version: "1.0.0"
+		version: "1.0.2"
 	},
 	{
 		type: "extapi",
@@ -31,21 +31,21 @@ var StandaloneExtApis = [
 			"createPushMessage",
 			"setAppBadgeNumber"
 		],
-		version: "1.0.0"
+		version: "1.0.1"
 	},
 	{
 		type: "provider",
 		plugin: "uni-oauth-huawei",
 		provider: "huawei",
 		service: "oauth",
-		version: "1.0.0"
+		version: "1.0.1"
 	},
 	{
 		type: "provider",
 		plugin: "uni-payment-alipay",
 		provider: "alipay",
 		service: "payment",
-		version: "1.0.0"
+		version: "1.0.1"
 	}
 ];
 
@@ -238,7 +238,7 @@ function genAppHarmonyUniModules(inputDir, utsPlugins) {
                     moduleSpecifier: harmonyModuleName,
                     plugin: module,
                     source: 'ohpm',
-                    version: matchedStandaloneExtApi.version,
+                    version: '*',
                 });
                 matchedStandaloneExtApi.apis?.forEach((apiName) => {
                     importCodes.push(`import { ${apiName} } from '${harmonyModuleName}'`);
@@ -273,7 +273,7 @@ function genAppHarmonyUniModules(inputDir, utsPlugins) {
             moduleSpecifier: `@uni_modules/${extapi.plugin.toLowerCase()}`,
             plugin: extapi.plugin,
             source: 'ohpm',
-            version: extapi.version,
+            version: '*',
         });
     });
     relatedProviders.forEach((relatedProvider) => {
