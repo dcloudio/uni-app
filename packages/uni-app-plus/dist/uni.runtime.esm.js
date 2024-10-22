@@ -13793,7 +13793,7 @@ function weexGetSystemInfoSync() {
 }
 const getDeviceInfo = defineSyncApi('getDeviceInfo', () => {
     weexGetSystemInfoSync();
-    const { deviceBrand = '', deviceModel, osName, osVersion, deviceOrientation, deviceType, deviceId, } = systemInfo;
+    const { deviceBrand = '', deviceModel, osName, osVersion, deviceOrientation, deviceType, deviceId, osLanguage, osTheme, romName, romVersion } = systemInfo;
     const brand = deviceBrand.toLowerCase();
     const _osName = osName.toLowerCase();
     return {
@@ -13807,11 +13807,17 @@ const getDeviceInfo = defineSyncApi('getDeviceInfo', () => {
         model: deviceModel,
         platform: _osName,
         system: `${_osName === 'ios' ? 'iOS' : 'Android'} ${osVersion}`,
+        osName,
+        osVersion,
+        osLanguage,
+        osTheme,
+        romName,
+        romVersion
     };
 });
 const getAppBaseInfo = defineSyncApi('getAppBaseInfo', () => {
     weexGetSystemInfoSync();
-    const { hostPackageName, hostName, hostVersion, hostLanguage, osLanguage, hostTheme, appId, appName, appVersion, appVersionCode, appWgtVersion, } = systemInfo;
+    const { hostPackageName, hostName, hostVersion, hostLanguage, osLanguage, hostTheme, appId, appName, appVersion, appVersionCode, appWgtVersion, uniCompileVersion, uniPlatform } = systemInfo;
     return {
         appId,
         appName,
@@ -13831,6 +13837,10 @@ const getAppBaseInfo = defineSyncApi('getAppBaseInfo', () => {
         SDKVersion: '',
         theme: getTheme(),
         version: plus.runtime.innerVersion,
+        isUniAppX: false,
+        uniPlatform,
+        uniCompileVersion,
+        uniCompilerVersion: uniCompileVersion
     };
 });
 const getSystemInfoSync = defineSyncApi('getSystemInfoSync', () => {

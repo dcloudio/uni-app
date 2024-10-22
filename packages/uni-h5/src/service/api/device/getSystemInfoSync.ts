@@ -35,28 +35,22 @@ export const getDeviceInfo = defineSyncApi<typeof uni.getDeviceInfo>(
       osversion,
     } = browserInfo
 
-    return extend(
-      {
-        brand,
-        deviceBrand,
-        deviceModel,
-        devicePixelRatio: __NODE_JS__ ? 1 : window.devicePixelRatio,
-        deviceId: __NODE_JS__
-          ? Date.now() + '' + Math.floor(Math.random() * 1e7)
-          : deviceId(),
-        deviceOrientation,
-        deviceType,
-        model,
-        platform,
-        system,
-      },
-      __X__
-        ? {
-            osName: osname ? osname.toLocaleLowerCase() : undefined,
-            osVersion: osversion,
-          }
-        : {}
-    )
+    return extend({
+      brand,
+      deviceBrand,
+      deviceModel,
+      devicePixelRatio: __NODE_JS__ ? 1 : window.devicePixelRatio,
+      deviceId: __NODE_JS__
+        ? Date.now() + '' + Math.floor(Math.random() * 1e7)
+        : deviceId(),
+      deviceOrientation,
+      deviceType,
+      model,
+      platform,
+      system,
+      osName: osname ? osname.toLocaleLowerCase() : undefined,
+      osVersion: osversion,
+    })
   }
 )
 export const getAppBaseInfo = defineSyncApi<typeof uni.getAppBaseInfo>(
@@ -84,14 +78,16 @@ export const getAppBaseInfo = defineSyncApi<typeof uni.getAppBaseInfo>(
         SDKVersion: '',
         theme,
         version: '',
+        uniPlatform: 'web',
+        isUniAppX: __X__,
+        uniCompileVersion: __uniConfig.compilerVersion,
+        uniCompilerVersion: __uniConfig.compilerVersion,
       },
       __X__
         ? {
-            uniCompilerVersion: __uniConfig.compilerVersion,
-            uniRuntimeVersion: __uniConfig.compilerVersion,
             uniCompilerVersionCode: parseFloat(__uniConfig.compilerVersion),
             uniRuntimeVersionCode: parseFloat(__uniConfig.compilerVersion),
-            isUniAppX: true,
+            uniRuntimeVersion: __uniConfig.compilerVersion,
           }
         : {}
     )
@@ -105,7 +101,7 @@ export const getSystemInfoSync = defineSyncApi<typeof uni.getSystemInfoSync>(
   'getSystemInfoSync',
   () => {
     if (__NODE_JS__) {
-      //TODO 临时搞一下配合 uniCloud 测试
+      //TODO 配合 uniCloud 测试
       return {
         deviceId: Date.now() + '' + Math.floor(Math.random() * 1e7),
         platform: 'nodejs',
