@@ -100,7 +100,7 @@ const LocationPickerPage: ThisType<any> = {
     this.latitude = e.latitude
     this.longitude = e.longitude
     this.keyword = e.keyword
-    this.useSecureNetwork = e.useSecureNetwork === true
+    this.useSecureNetwork = e.useSecureNetwork === 'true'
     this.loaded = true
     this.channel = this.getOpenerEventChannel()
   },
