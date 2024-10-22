@@ -22,6 +22,10 @@ export const getAppBaseInfo: MPProtocol = {
         appVersion: process.env.UNI_APP_VERSION_NAME,
         appVersionCode: process.env.UNI_APP_VERSION_CODE,
         appLanguage: getAppLanguage(hostLanguage),
+        isUniAppX: __X__,
+        uniPlatform: process.env.UNI_SUB_PLATFORM || process.env.UNI_PLATFORM,
+        uniCompileVersion: process.env.UNI_COMPILER_VERSION,
+        uniCompilerVersion: process.env.UNI_COMPILER_VERSION,
       })
     )
   },

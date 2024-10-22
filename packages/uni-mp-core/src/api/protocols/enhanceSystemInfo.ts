@@ -112,6 +112,7 @@ export function populateParameters(
     appVersionCode: process.env.UNI_APP_VERSION_CODE,
     appLanguage: getAppLanguage(hostLanguage),
     uniCompileVersion: process.env.UNI_COMPILER_VERSION,
+    uniCompilerVersion: process.env.UNI_COMPILER_VERSION,
     uniRuntimeVersion: process.env.UNI_COMPILER_VERSION,
     uniPlatform: process.env.UNI_SUB_PLATFORM || process.env.UNI_PLATFORM,
     deviceBrand,
@@ -136,6 +137,7 @@ export function populateParameters(
     hostPackageName: undefined,
     browserName: undefined,
     browserVersion: undefined,
+    isUniAppX: __X__,
   }
 
   extend(toRes, parameters)

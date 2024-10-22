@@ -12561,9 +12561,7 @@ const getDeviceInfo = /* @__PURE__ */ defineSyncApi(
         deviceType,
         model,
         platform,
-        system
-      },
-      {
+        system,
         osName: osname ? osname.toLocaleLowerCase() : void 0,
         osVersion: osversion
       }
@@ -12593,14 +12591,16 @@ const getAppBaseInfo = /* @__PURE__ */ defineSyncApi(
         language,
         SDKVersion: "",
         theme,
-        version: ""
+        version: "",
+        uniPlatform: "web",
+        isUniAppX: true,
+        uniCompileVersion: __uniConfig.compilerVersion,
+        uniCompilerVersion: __uniConfig.compilerVersion
       },
       {
-        uniCompilerVersion: __uniConfig.compilerVersion,
-        uniRuntimeVersion: __uniConfig.compilerVersion,
         uniCompilerVersionCode: parseFloat(__uniConfig.compilerVersion),
         uniRuntimeVersionCode: parseFloat(__uniConfig.compilerVersion),
-        isUniAppX: true
+        uniRuntimeVersion: __uniConfig.compilerVersion
       }
     );
   }
