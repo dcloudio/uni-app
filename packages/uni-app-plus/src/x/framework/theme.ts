@@ -65,7 +65,7 @@ export const onThemeChange = function (themeMode: IThemeMode) {
       const routeOptions = initRouteOptions(page.$basePage.path, '')
       const style = parsePageStyle(routeOptions)
 
-      ;(page.$page as UniPage).setPageStyle(new Map(Object.entries(style)))
+      ;(page.$page as UniPage).setPageStyle(new UTSJSONObject(style))
     })
   }
 

@@ -1411,7 +1411,7 @@ var onThemeChange = function(themeMode) {
     pages2.forEach((page) => {
       var routeOptions = initRouteOptions(page.$basePage.path, "");
       var style = parsePageStyle(routeOptions);
-      page.$page.setPageStyle(new Map(Object.entries(style)));
+      page.$page.setPageStyle(new UTSJSONObject(style));
     });
   };
   handlePage();

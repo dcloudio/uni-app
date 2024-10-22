@@ -13794,7 +13794,7 @@ function weexGetSystemInfoSync() {
 }
 const getDeviceInfo = defineSyncApi('getDeviceInfo', () => {
     weexGetSystemInfoSync();
-    const { deviceBrand = '', deviceModel, osName, osVersion, deviceOrientation, deviceType, deviceId, osLanguage, osTheme, romName, romVersion } = systemInfo;
+    const { deviceBrand = '', deviceModel, osName, osVersion, deviceOrientation, deviceType, deviceId, osLanguage, osTheme, romName, romVersion, } = systemInfo;
     const brand = deviceBrand.toLowerCase();
     const _osName = osName.toLowerCase();
     return {
@@ -13813,12 +13813,12 @@ const getDeviceInfo = defineSyncApi('getDeviceInfo', () => {
         osLanguage,
         osTheme,
         romName,
-        romVersion
+        romVersion,
     };
 });
 const getAppBaseInfo = defineSyncApi('getAppBaseInfo', () => {
     weexGetSystemInfoSync();
-    const { hostPackageName, hostName, hostVersion, hostLanguage, osLanguage, hostTheme, appId, appName, appVersion, appVersionCode, appWgtVersion, uniCompileVersion, uniPlatform } = systemInfo;
+    const { hostPackageName, hostName, hostVersion, hostLanguage, osLanguage, hostTheme, appId, appName, appVersion, appVersionCode, appWgtVersion, uniCompileVersion, uniPlatform, } = systemInfo;
     return {
         appId,
         appName,
@@ -13841,7 +13841,7 @@ const getAppBaseInfo = defineSyncApi('getAppBaseInfo', () => {
         isUniAppX: false,
         uniPlatform,
         uniCompileVersion,
-        uniCompilerVersion: uniCompileVersion
+        uniCompilerVersion: uniCompileVersion,
     };
 });
 const getSystemInfoSync = defineSyncApi('getSystemInfoSync', () => {
@@ -16896,7 +16896,7 @@ const LocationPickerPage = {
         this.latitude = e.latitude;
         this.longitude = e.longitude;
         this.keyword = e.keyword;
-        this.useSecureNetwork = e.useSecureNetwork === true;
+        this.useSecureNetwork = e.useSecureNetwork === 'true';
         this.loaded = true;
         this.channel = this.getOpenerEventChannel();
     },
