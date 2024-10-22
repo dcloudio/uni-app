@@ -126,7 +126,7 @@ function genViewHtml(bundle: OutputBundle) {
       rpxCalcBaseDeviceWidth: (globalStyle as any).rpxCalcBaseDeviceWidth,
     },
     darkmode,
-    qqMapKey: platformConfig?.distribute?.sdkConfigs?.maps?.qqmap?.key,
+    qqMapKey: platformConfig?.distribute?.sdkConfigs?.maps?.tencent?.key,
   }
   const wxsCode = bundle[APP_WXS_JS]
     ? `<script src="${APP_WXS_JS}"></script>`
