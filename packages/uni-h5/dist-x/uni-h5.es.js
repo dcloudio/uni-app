@@ -4,7 +4,7 @@ var __publicField = (obj, key, value) => {
   __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
   return value;
 };
-import { withModifiers, createVNode, getCurrentInstance, ref, defineComponent, openBlock, createElementBlock, onMounted, provide, computed, watch, onUnmounted, inject, onBeforeUnmount, mergeProps, reactive, injectHook, nextTick, createApp, createBlock, watchEffect, isVNode, withDirectives, vShow, renderList, isReactive, Transition, effectScope, onActivated, withCtx, KeepAlive, resolveDynamicComponent, markRaw, createElementVNode, normalizeClass, normalizeStyle, toDisplayString, createCommentVNode, Fragment, onBeforeMount, renderSlot, onBeforeActivate, onBeforeDeactivate, shallowRef, Comment, h, createTextVNode } from "vue";
+import { withModifiers, createVNode, getCurrentInstance, ref, defineComponent, openBlock, createElementBlock, onMounted, provide, computed, watch, onUnmounted, inject, onBeforeUnmount, mergeProps, reactive, injectHook, nextTick, createApp, createBlock, watchEffect, isVNode, withDirectives, vShow, renderList, isReactive, Transition, effectScope, Fragment, onActivated, withCtx, KeepAlive, resolveDynamicComponent, markRaw, createElementVNode, normalizeClass, normalizeStyle, toDisplayString, createCommentVNode, onBeforeMount, renderSlot, onBeforeActivate, onBeforeDeactivate, shallowRef, Comment, h, createTextVNode } from "vue";
 import { isArray, isString, extend, remove, stringifyStyle, parseStringStyle, isPlainObject as isPlainObject$1, isFunction, capitalize, camelize, hasOwn, isObject, toRawType, makeMap as makeMap$1, isPromise, invokeArrayFns as invokeArrayFns$1, hyphenate } from "@vue/shared";
 import { once, UNI_STORAGE_LOCALE, I18N_JSON_DELIMITERS, Emitter, passive, initCustomDatasetOnce, resolveComponentInstance, normalizeStyles, addLeadingSlash, invokeArrayFns, removeLeadingSlash, resolveOwnerVm, resolveOwnerEl, ON_WXS_INVOKE_CALL_METHOD, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_SHOW, ON_HIDE, ON_PAGE_SCROLL, ON_REACH_BOTTOM, EventChannel, parseQuery, NAVBAR_HEIGHT, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, getLen, getCustomDataset, parseUrl, sortObject, ON_THEME_CHANGE, OFF_THEME_CHANGE, updateElementStyle, LINEFEED, ON_WEB_INVOKE_APP_SERVICE, debounce, ON_BACK_PRESS, addFont, ON_NAVIGATION_BAR_CHANGE, scrollTo, RESPONSIVE_MIN_WIDTH, formatDateTime, normalizeTitleColor, ON_REACH_BOTTOM_DISTANCE, isSystemDialogPage, isSystemActionSheetDialogPage, ON_UNLOAD, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_PULL_DOWN_REFRESH, stringifyQuery as stringifyQuery$1, decodedQuery, WEB_INVOKE_APPSERVICE, SYSTEM_DIALOG_ACTION_SHEET_PAGE_PATH, onCreateVueApp, SCHEME_RE, DATA_RE, PRIMARY_COLOR, isUniLifecycleHook, ON_LOAD, UniLifecycleHooks, invokeCreateErrorHandler, invokeCreateVueAppHook } from "@dcloudio/uni-shared";
 import { onCreateVueApp as onCreateVueApp2 } from "@dcloudio/uni-shared";
@@ -746,6 +746,33 @@ const initI18nAsyncMsgsOnce = /* @__PURE__ */ once(() => {
     useI18n().add(
       LOCALE_ZH_HANT,
       normalizeMessages(name, keys, ["連接服務器超時，點擊屏幕重試"]),
+      false
+    );
+  }
+});
+const initI18nShowActionSheetMsgsOnce = /* @__PURE__ */ once(() => {
+  const name = "uni.showActionSheet.";
+  const keys = ["cancel"];
+  if (__UNI_FEATURE_I18N_EN__) {
+    useI18n().add(LOCALE_EN, normalizeMessages(name, keys, ["Cancel"]), false);
+  }
+  if (__UNI_FEATURE_I18N_ES__) {
+    useI18n().add(LOCALE_ES, normalizeMessages(name, keys, ["Cancelar"]), false);
+  }
+  if (__UNI_FEATURE_I18N_FR__) {
+    useI18n().add(LOCALE_FR, normalizeMessages(name, keys, ["Annuler"]), false);
+  }
+  if (__UNI_FEATURE_I18N_ZH_HANS__) {
+    useI18n().add(
+      LOCALE_ZH_HANS,
+      normalizeMessages(name, keys, ["取消"]),
+      false
+    );
+  }
+  if (__UNI_FEATURE_I18N_ZH_HANT__) {
+    useI18n().add(
+      LOCALE_ZH_HANT,
+      normalizeMessages(name, keys, ["取消"]),
       false
     );
   }
@@ -3063,7 +3090,7 @@ const index$v = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const props$x = {
+const props$y = {
   disableScroll: {
     type: [Boolean, String],
     default: false
@@ -3099,7 +3126,7 @@ const indexX$4 = /* @__PURE__ */ defineBuiltInComponent({
   compatConfig: {
     MODE: 3
   },
-  props: props$x,
+  props: props$y,
   rootElement: {
     name: "uni-canvas",
     class: UniCanvasElement
@@ -3122,7 +3149,7 @@ const indexX$4 = /* @__PURE__ */ defineBuiltInComponent({
   }
 });
 const uniCheckGroupKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniCheckGroup" : "ucg");
-const props$w = {
+const props$x = {
   name: {
     type: String,
     default: ""
@@ -3132,7 +3159,7 @@ class UniCheckboxGroupElement extends UniElement {
 }
 const index$u = /* @__PURE__ */ defineBuiltInComponent({
   name: "CheckboxGroup",
-  props: props$w,
+  props: props$x,
   emits: ["change"],
   rootElement: {
     name: "uni-checkbox-group",
@@ -3192,7 +3219,7 @@ function useProvideCheckGroup(props2, trigger) {
   }
   return getFieldsValue;
 }
-const props$v = {
+const props$w = {
   checked: {
     type: [Boolean, String],
     default: false
@@ -3243,7 +3270,7 @@ class UniCheckboxElement extends UniElement {
 }
 const index$t = /* @__PURE__ */ defineBuiltInComponent({
   name: "Checkbox",
-  props: props$v,
+  props: props$w,
   rootElement: {
     name: "uni-checkbox",
     class: UniCheckboxElement
@@ -3384,7 +3411,7 @@ function useCheckboxInject(checkboxChecked, checkboxValue, reset) {
 let resetTimer;
 function iosHideKeyboard() {
 }
-const props$u = {
+const props$v = {
   cursorSpacing: {
     type: [Number, String],
     default: 0
@@ -7110,6 +7137,21 @@ const PageScrollToOptions = {
     duration: 300
   }
 };
+const API_SHOW_ACTION_SHEET = "showActionSheet";
+const ShowActionSheetProtocol = {
+  itemList: {
+    type: Array,
+    required: true
+  },
+  title: String,
+  itemColor: String,
+  popover: Object
+};
+const ShowActionSheetOptions = {
+  formatArgs: {
+    itemColor: "#000"
+  }
+};
 const API_SHOW_LOADING = "showLoading";
 const ShowLoadingProtocol = {
   title: String,
@@ -9669,7 +9711,7 @@ function usePreventScroll() {
   onMounted(() => preventScroll(true));
   onUnmounted(() => preventScroll(false));
 }
-const props$t = {
+const props$u = {
   src: {
     type: String,
     default: ""
@@ -9677,7 +9719,7 @@ const props$t = {
 };
 const ImageView = /* @__PURE__ */ defineSystemComponent({
   name: "ImageView",
-  props: props$t,
+  props: props$u,
   setup(props2) {
     const state2 = reactive({
       direction: "none"
@@ -9767,7 +9809,7 @@ const ImageView = /* @__PURE__ */ defineSystemComponent({
 function _isSlot$2(s) {
   return typeof s === "function" || Object.prototype.toString.call(s) === "[object Object]" && !isVNode(s);
 }
-const props$s = {
+const props$t = {
   urls: {
     type: Array,
     default() {
@@ -9786,7 +9828,7 @@ function getIndex(props2) {
 }
 const ImagePreview = /* @__PURE__ */ defineSystemComponent({
   name: "ImagePreview",
-  props: props$s,
+  props: props$t,
   emits: ["close"],
   setup(props2, {
     emit: emit2
@@ -11630,7 +11672,7 @@ function useContext(play, pause, stop, seek, sendDanmu, playbackRate, requestFul
     }
   }, id2, true);
 }
-const props$r = {
+const props$s = {
   id: {
     type: String,
     default: ""
@@ -11718,7 +11760,7 @@ class UniVideoElement extends UniElement {
 }
 const index$p = /* @__PURE__ */ defineBuiltInComponent({
   name: "Video",
-  props: props$r,
+  props: props$s,
   emits: ["fullscreenchange", "progress", "loadedmetadata", "waiting", "error", "play", "pause", "ended", "timeupdate"],
   rootElement: {
     name: "uni-video",
@@ -11958,7 +12000,7 @@ const onWebInvokeAppService = ({ name, arg }) => {
   }
 };
 const Invoke = /* @__PURE__ */ once(() => UniServiceJSBridge.on(ON_WEB_INVOKE_APP_SERVICE, onWebInvokeAppService));
-const props$q = {
+const props$r = {
   src: {
     type: String,
     default: ""
@@ -11969,7 +12011,7 @@ class UniWebViewElement extends UniElement {
 const indexX$3 = /* @__PURE__ */ defineBuiltInComponent({
   inheritAttrs: false,
   name: "WebView",
-  props: props$q,
+  props: props$r,
   rootElement: {
     name: "uni-web-view",
     class: UniWebViewElement
@@ -12018,7 +12060,7 @@ const indexX$3 = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const props$p = {
+const props$q = {
   id: {
     type: [Number, String],
     default: ""
@@ -12104,7 +12146,7 @@ function useMarkerLabelStyle(id2) {
 }
 const MapMarker = /* @__PURE__ */ defineSystemComponent({
   name: "MapMarker",
-  props: props$p,
+  props: props$q,
   setup(props2) {
     const id2 = String(!isNaN(Number(props2.id)) ? props2.id : "");
     const onMapReady = inject("onMapReady");
@@ -12481,7 +12523,7 @@ function hexToRgba(hex) {
     a: (`0x100${sa}` - 65536) / 255
   };
 }
-const props$o = {
+const props$p = {
   points: {
     type: Array,
     require: true
@@ -12527,7 +12569,7 @@ const props$o = {
 };
 const MapPolyline = /* @__PURE__ */ defineSystemComponent({
   name: "MapPolyline",
-  props: props$o,
+  props: props$p,
   setup(props2) {
     const onMapReady = inject("onMapReady");
     let polyline;
@@ -12616,7 +12658,7 @@ const MapPolyline = /* @__PURE__ */ defineSystemComponent({
     };
   }
 });
-const props$n = {
+const props$o = {
   latitude: {
     type: [Number, String],
     require: true
@@ -12648,7 +12690,7 @@ const props$n = {
 };
 const MapCircle = /* @__PURE__ */ defineSystemComponent({
   name: "MapCircle",
-  props: props$n,
+  props: props$o,
   setup(props2) {
     const onMapReady = inject("onMapReady");
     let circle;
@@ -12724,7 +12766,7 @@ const MapCircle = /* @__PURE__ */ defineSystemComponent({
     };
   }
 });
-const props$m = {
+const props$n = {
   id: {
     type: [Number, String],
     default: ""
@@ -12748,7 +12790,7 @@ const props$m = {
 };
 const MapControl = /* @__PURE__ */ defineSystemComponent({
   name: "MapControl",
-  props: props$m,
+  props: props$n,
   setup(props2) {
     const imgPath = computed(() => getRealPath(props2.iconPath));
     const positionStyle = computed(() => {
@@ -12783,7 +12825,7 @@ const MapControl = /* @__PURE__ */ defineSystemComponent({
 function _isSlot$1(s) {
   return typeof s === "function" || Object.prototype.toString.call(s) === "[object Object]" && !isVNode(s);
 }
-const props$l = {
+const props$m = {
   latitude: {
     type: Number
   },
@@ -12950,7 +12992,7 @@ function useList(state2) {
 }
 const LoctaionPicker = /* @__PURE__ */ defineSystemComponent({
   name: "LoctaionPicker",
-  props: props$l,
+  props: props$m,
   emits: ["close"],
   setup(props2, {
     emit: emit2
@@ -13331,7 +13373,7 @@ const ModalTheme = {
   }
 };
 const setCancelColor = (theme, cancelColor) => cancelColor.value = ModalTheme[theme].cancelColor;
-const props$k = {
+const props$l = {
   title: {
     type: String,
     default: ""
@@ -13373,7 +13415,7 @@ const props$k = {
   }
 };
 const modal = /* @__PURE__ */ defineComponent({
-  props: props$k,
+  props: props$l,
   setup(props2, {
     emit: emit2
   }) {
@@ -13387,7 +13429,7 @@ const modal = /* @__PURE__ */ defineComponent({
         !props2.editable && confirm();
       }
     });
-    const cancelColor = useOnThemeChange(props2);
+    const cancelColor = useOnThemeChange$1(props2);
     return () => {
       const {
         title,
@@ -13443,7 +13485,7 @@ const modal = /* @__PURE__ */ defineComponent({
     };
   }
 });
-function useOnThemeChange(props2) {
+function useOnThemeChange$1(props2) {
   const cancelColor = ref(props2.cancelColor);
   const _onThemeChange = ({
     theme
@@ -13467,7 +13509,7 @@ function useOnThemeChange(props2) {
   return cancelColor;
 }
 let showModalState;
-const onHidePopupOnce = /* @__PURE__ */ once(() => {
+const onHidePopupOnce$1 = /* @__PURE__ */ once(() => {
   UniServiceJSBridge.on("onHidePopup", () => showModalState.visible = false);
 });
 let currentShowModalResolve;
@@ -13488,7 +13530,7 @@ const hideModal = () => {
 const showModal = /* @__PURE__ */ defineAsyncApi(
   API_SHOW_MODAL,
   (args, { resolve }) => {
-    onHidePopupOnce();
+    onHidePopupOnce$1();
     currentShowModalResolve = resolve;
     if (!showModalState) {
       showModalState = reactive(args);
@@ -13506,7 +13548,7 @@ const showModal = /* @__PURE__ */ defineAsyncApi(
   ShowModalProtocol,
   ShowModalOptions
 );
-const props$j = {
+const props$k = {
   title: {
     type: String,
     default: ""
@@ -13541,7 +13583,7 @@ const ICONCOLOR = {
 const getIconColor = (theme) => ICONCOLOR[theme];
 const Toast = /* @__PURE__ */ defineComponent({
   name: "Toast",
-  props: props$j,
+  props: props$k,
   setup(props2) {
     initI18nShowToastMsgsOnce();
     initI18nShowLoadingMsgsOnce();
@@ -13793,6 +13835,299 @@ function usePopupStyle(props2) {
     popupStyle
   };
 }
+const ACTION_SHEET_THEME = {
+  light: {
+    listItemColor: "#000000",
+    cancelItemColor: "#000000"
+  },
+  dark: {
+    listItemColor: "rgba(255, 255, 255, 0.8)",
+    cancelItemColor: "rgba(255, 255, 255)"
+  }
+};
+function setActionSheetTheme(theme, actionSheetTheme) {
+  const ActionSheetThemeKey = ["listItemColor", "cancelItemColor"];
+  ActionSheetThemeKey.forEach((key) => {
+    actionSheetTheme[key] = ACTION_SHEET_THEME[theme][key];
+  });
+}
+const props$j = {
+  title: {
+    type: String,
+    default: ""
+  },
+  itemList: {
+    type: Array,
+    default() {
+      return [];
+    }
+  },
+  itemColor: {
+    type: String,
+    default: "#000000"
+  },
+  popover: {
+    type: Object,
+    default: null
+  },
+  visible: {
+    type: Boolean,
+    default: false
+  }
+};
+const actionSheet = /* @__PURE__ */ defineComponent({
+  name: "ActionSheet",
+  props: props$j,
+  emits: ["close"],
+  setup(props2, {
+    emit: emit2
+  }) {
+    initI18nShowActionSheetMsgsOnce();
+    const HEIGHT = ref(336);
+    const contentHeight = ref(0);
+    const titleHeight = ref(0);
+    const deltaY = ref(0);
+    const scrollTop = ref(0);
+    const content = ref(null);
+    const main = ref(null);
+    const {
+      t: t2
+    } = useI18n();
+    const {
+      _close
+    } = useActionSheetLoader(props2, emit2);
+    const {
+      popupStyle
+    } = usePopupStyle(props2);
+    let scroller;
+    onMounted(() => {
+      const {
+        scroller: _scroller,
+        handleTouchStart,
+        handleTouchMove,
+        handleTouchEnd
+      } = useScroller(content.value, {
+        enableY: true,
+        friction: new Friction(1e-4),
+        spring: new Spring(2, 90, 20),
+        onScroll: (e2) => {
+          scrollTop.value = e2.target.scrollTop;
+        }
+      });
+      scroller = _scroller;
+      useTouchtrack(content.value, (e2) => {
+        if (_scroller) {
+          switch (e2.detail.state) {
+            case "start":
+              handleTouchStart(e2);
+              break;
+            case "move":
+              handleTouchMove(e2);
+              break;
+            case "end":
+            case "cancel":
+              handleTouchEnd(e2);
+          }
+        }
+      }, true);
+    });
+    function _handleWheel($event) {
+      const _deltaY = deltaY.value + $event.deltaY;
+      if (Math.abs(_deltaY) > 10) {
+        scrollTop.value += _deltaY / 3;
+        scrollTop.value = scrollTop.value >= contentHeight.value ? contentHeight.value : scrollTop.value <= 0 ? 0 : scrollTop.value;
+        scroller.scrollTo(scrollTop.value);
+      } else {
+        deltaY.value = _deltaY;
+      }
+      $event.preventDefault();
+    }
+    watch(() => props2.visible, () => {
+      nextTick(() => {
+        if (props2.title) {
+          titleHeight.value = document.querySelector(".uni-actionsheet__title").offsetHeight;
+        }
+        scroller.update();
+        if (content.value)
+          contentHeight.value = content.value.clientHeight - HEIGHT.value;
+        document.querySelectorAll(".uni-actionsheet__cell").forEach((item) => {
+          initClick(item);
+        });
+      });
+    });
+    const actionSheetTheme = useOnThemeChange(props2);
+    return () => {
+      return createVNode("uni-actionsheet", {
+        "onTouchmove": onEventPrevent
+      }, [createVNode(Transition, {
+        "name": "uni-fade"
+      }, {
+        default: () => [withDirectives(createVNode("div", {
+          "class": "uni-mask uni-actionsheet__mask",
+          "onClick": () => _close(-1)
+        }, null, 8, ["onClick"]), [[vShow, props2.visible]])]
+      }), createVNode("div", {
+        "class": ["uni-actionsheet", {
+          "uni-actionsheet_toggle": props2.visible
+        }],
+        "style": popupStyle.value.content
+      }, [createVNode("div", {
+        "ref": main,
+        "class": "uni-actionsheet__menu",
+        "onWheel": _handleWheel
+      }, [props2.title ? createVNode(Fragment, null, [createVNode("div", {
+        "class": "uni-actionsheet__cell",
+        "style": {
+          height: `${titleHeight.value}px`
+        }
+      }, null), createVNode("div", {
+        "class": "uni-actionsheet__title"
+      }, [props2.title])]) : "", createVNode("div", {
+        "style": {
+          maxHeight: `${HEIGHT.value}px`,
+          overflow: "hidden"
+        }
+      }, [createVNode("div", {
+        "ref": content
+      }, [props2.itemList.map((itemTitle, index2) => createVNode("div", {
+        "key": index2,
+        "style": {
+          color: actionSheetTheme.listItemColor
+        },
+        "class": "uni-actionsheet__cell",
+        "onClick": () => _close(index2)
+      }, [itemTitle], 12, ["onClick"]))], 512)])], 40, ["onWheel"]), createVNode("div", {
+        "class": "uni-actionsheet__action"
+      }, [createVNode("div", {
+        "style": {
+          color: actionSheetTheme.cancelItemColor
+        },
+        "class": "uni-actionsheet__cell",
+        "onClick": () => _close(-1)
+      }, [t2("uni.showActionSheet.cancel")], 12, ["onClick"])]), createVNode("div", {
+        "style": popupStyle.value.triangle
+      }, null, 4)], 6)], 40, ["onTouchmove"]);
+    };
+  }
+});
+function useActionSheetLoader(props2, emit2) {
+  function _close(tapIndex) {
+    emit2("close", tapIndex);
+  }
+  const {
+    key,
+    disable
+  } = useKeyboard();
+  watch(() => props2.visible, (value) => disable.value = !value);
+  watchEffect(() => {
+    const {
+      value
+    } = key;
+    if (value === "esc") {
+      _close && _close(-1);
+    }
+  });
+  return {
+    _close
+  };
+}
+function initClick(dom) {
+  const MAX_MOVE = 20;
+  let x = 0;
+  let y = 0;
+  dom.addEventListener("touchstart", (event) => {
+    const info = event.changedTouches[0];
+    x = info.clientX;
+    y = info.clientY;
+  });
+  dom.addEventListener("touchend", (event) => {
+    const info = event.changedTouches[0];
+    if (Math.abs(info.clientX - x) < MAX_MOVE && Math.abs(info.clientY - y) < MAX_MOVE) {
+      const target = event.target;
+      const currentTarget = event.currentTarget;
+      const customEvent = new CustomEvent("click", {
+        bubbles: true,
+        cancelable: true,
+        target,
+        currentTarget
+      });
+      ["screenX", "screenY", "clientX", "clientY", "pageX", "pageY"].forEach((key) => {
+        customEvent[key] = info[key];
+      });
+      event.target.dispatchEvent(customEvent);
+    }
+  });
+}
+function useOnThemeChange(props2) {
+  const actionSheetTheme = reactive({
+    listItemColor: "#000",
+    cancelItemColor: "#000"
+  });
+  const _onThemeChange = ({
+    theme
+  }) => {
+    setActionSheetTheme(theme, actionSheetTheme);
+  };
+  watchEffect(() => {
+    if (props2.visible) {
+      actionSheetTheme.listItemColor = actionSheetTheme.cancelItemColor = props2.itemColor;
+      if (props2.itemColor === "#000") {
+        _onThemeChange({
+          theme: getTheme()
+        });
+        onThemeChange$1(_onThemeChange);
+      }
+    } else {
+      offThemeChange(_onThemeChange);
+    }
+  });
+  return actionSheetTheme;
+}
+let resolveAction;
+let rejectAction;
+let showActionSheetState;
+const onHidePopupOnce = /* @__PURE__ */ once(() => {
+  UniServiceJSBridge.on(
+    "onHidePopup",
+    () => showActionSheetState.visible = false
+  );
+});
+function onActionSheetClose(tapIndex) {
+  if (tapIndex === -1) {
+    rejectAction && rejectAction("cancel");
+  } else {
+    resolveAction && resolveAction({ tapIndex });
+  }
+}
+const hideActionSheet = () => {
+  if (showActionSheetState) {
+    showActionSheetState.visible = false;
+  }
+};
+const showActionSheet = /* @__PURE__ */ defineAsyncApi(
+  API_SHOW_ACTION_SHEET,
+  (args, { resolve, reject }) => {
+    onHidePopupOnce();
+    resolveAction = resolve;
+    rejectAction = reject;
+    if (!showActionSheetState) {
+      showActionSheetState = reactive(args);
+      nextTick(
+        () => (createRootApp(
+          actionSheet,
+          showActionSheetState,
+          onActionSheetClose
+        ).mount(ensureRoot("u-s-a-s")), //下一帧执行，确保首次显示时有动画效果
+        nextTick(() => showActionSheetState.visible = true))
+      );
+    } else {
+      extend(showActionSheetState, args);
+      showActionSheetState.visible = true;
+    }
+  },
+  ShowActionSheetProtocol,
+  ShowActionSheetOptions
+);
 const loadFontFace = /* @__PURE__ */ defineAsyncApi(
   API_LOAD_FONT_FACE,
   ({ family, source, desc }, { resolve, reject }) => {
@@ -17405,7 +17740,7 @@ const _sfc_main$1 = {
     }
   }
 };
-const _style_0 = "\n.uni-actionsheet_dialog__mask {\n    position: fixed;\n    z-index: 999;\n    top: 0;\n    right: 0;\n    left: 0;\n    bottom: 0;\n    opacity: 0;\n    background-color: rgba(0, 0, 0, 0.6);\n    transition: opacity 0.1s;\n}\n.uni-actionsheet_dialog__mask__show {\n    opacity: 1;\n}\n.uni-actionsheet_dialog__container {\n    position: fixed;\n    width: 100%;\n    overflow: hidden;\n    left: 0;\n    bottom: 0;\n    z-index: 999;\n    backface-visibility: hidden;\n    transform: translate(0, 100%);\n\n\n\n\n    visibility: hidden;\n    transition: transform 0.3s, visibility 0.3s;\n\n    border-top-left-radius: 12px;\n    border-top-right-radius: 12px;\n}\n.uni-actionsheet_dialog__container.uni-actionsheet_dialog__show {\n\n    visibility: visible;\n\n    transform: translate(0, 0);\n}\n.uni-actionsheet_dialog__menu{display: block;}\n.uni-actionsheet_dialog__title,\n  .uni-actionsheet_dialog__cell,\n  .uni-actionsheet_dialog__action {\n    display: block;\n    padding: 16px;\n    cursor: pointer;\n    text-align: center;\n}\n.uni-actionsheet_dialog__title,\n  .uni-actionsheet_dialog__cell,\n  .uni-actionsheet_dialog__action,\n\n  .uni-actionsheet_dialog__title__text,\n  .uni-actionsheet_dialog__cell__text,\n  .uni-actionsheet_dialog__action__text {\n    line-height: 1.4;\n    text-align: center;\n    white-space: nowrap;\n    overflow: hidden;\n    text-overflow: ellipsis;\n}\n.uni-actionsheet_dialog__action {\n    margin-top: 8px;\n}\n@media screen and (min-width: 500px) and (min-height: 500px) {\n.uni-actionsheet_dialog__mask {\n      background: none;\n}\n.uni-actionsheet_dialog__container {\n      width: 300px;\n      position: fixed;\n      left: 50%;\n      right: auto;\n      top: 50%;\n      bottom: auto;\n      z-index: 999;\n      opacity: 0;\n      visibility: hidden;\n      backface-visibility: hidden;\n      border-radius: 5px;\n      transform: translate(-50%, -50%);\n      transition: opacity 0.3s, visibility 0.3s;\n      box-shadow: 0 0 20px 5px rgba(0, 0, 0, 0.3);\n}\n.uni-actionsheet_dialog__show {\n      visibility: visible;\n      opacity: 1;\n      transform: translate(-50%, -50%) !important;\n}\n.uni-actionsheet_dialog__action {\n      display: none;\n}\n.uni-actionsheet_dialog__title {\n      font-size: 15px;\n}\n.uni-actionsheet_dialog__title,\n    .uni-actionsheet_dialog__cell,\n    .uni-actionsheet_dialog__action {\n      padding: 16px;\n}\n}\n";
+const _style_0 = "\n.uni-actionsheet_dialog__mask {\n    position: fixed;\n    z-index: 999;\n    top: 0;\n    right: 0;\n    left: 0;\n    bottom: 0;\n    opacity: 0;\n    background-color: rgba(0, 0, 0, 0.6);\n    transition: opacity 0.1s;\n}\n.uni-actionsheet_dialog__mask__show {\n    opacity: 1;\n}\n.uni-actionsheet_dialog__container {\n    position: fixed;\n    width: 100%;\n    overflow: hidden;\n    left: 0;\n    bottom: 0;\n    z-index: 999;\n    backface-visibility: hidden;\n    transform: translate(0, 100%);\n\n\n\n\n    visibility: hidden;\n    transition: transform 0.3s, visibility 0.3s;\n\n    border-top-left-radius: 12px;\n    border-top-right-radius: 12px;\n}\n.uni-actionsheet_dialog__container.uni-actionsheet_dialog__show {\n\n    visibility: visible;\n\n    transform: translate(0, 0);\n}\n.uni-actionsheet_dialog__menu{display: block;}\n.uni-actionsheet_dialog__title,\n  .uni-actionsheet_dialog__cell,\n  .uni-actionsheet_dialog__action {\n    display: block;\n    padding: 16px;\n    text-align: center;\n}\n.uni-actionsheet_dialog__cell,\n  .uni-actionsheet_dialog__action {\n    cursor: pointer;\n}\n.uni-actionsheet_dialog__title,\n  .uni-actionsheet_dialog__cell,\n  .uni-actionsheet_dialog__action,\n\n  .uni-actionsheet_dialog__title__text,\n  .uni-actionsheet_dialog__cell__text,\n  .uni-actionsheet_dialog__action__text {\n    line-height: 1.4;\n    text-align: center;\n    white-space: nowrap;\n    overflow: hidden;\n    text-overflow: ellipsis;\n}\n.uni-actionsheet_dialog__action {\n    margin-top: 8px;\n}\n@media screen and (min-width: 500px) and (min-height: 500px) {\n.uni-actionsheet_dialog__mask {\n      background: none;\n}\n.uni-actionsheet_dialog__container {\n      width: 300px;\n      position: fixed;\n      left: 50%;\n      right: auto;\n      top: 50%;\n      bottom: auto;\n      z-index: 999;\n      opacity: 0;\n      visibility: hidden;\n      backface-visibility: hidden;\n      border-radius: 5px;\n      transform: translate(-50%, -50%);\n      transition: opacity 0.3s, visibility 0.3s;\n      box-shadow: 0 0 20px 5px rgba(0, 0, 0, 0.3);\n}\n.uni-actionsheet_dialog__show {\n      visibility: visible;\n      opacity: 1;\n      transform: translate(-50%, -50%) !important;\n}\n.uni-actionsheet_dialog__action {\n      display: none;\n}\n.uni-actionsheet_dialog__title {\n      font-size: 15px;\n}\n.uni-actionsheet_dialog__title,\n    .uni-actionsheet_dialog__cell,\n    .uni-actionsheet_dialog__action {\n      padding: 16px;\n}\n}\n";
 const _export_sfc = (sfc, props2) => {
   const target = sfc.__vccOpts || sfc;
   for (const [key, val] of props2) {
@@ -18297,22 +18632,16 @@ const PageComponent = /* @__PURE__ */ defineSystemComponent({
       __UNI_FEATURE_NAVIGATIONBAR__ && navigationBar.style !== "custom" ? [
         createVNode(PageHead),
         createPageBodyVNode(ctx),
-        (createDialogPageVNode(
+        createDialogPageVNode(
           currentInstance.$dialogPages,
-          DIALOG_TAG
-        ), createDialogPageVNode(
-          currentInstance.$systemDialogPages,
-          SYSTEM_DIALOG_TAG
-        ))
+          currentInstance.$systemDialogPages
+        )
       ] : [
         createPageBodyVNode(ctx),
-        (createDialogPageVNode(
+        createDialogPageVNode(
           currentInstance.$dialogPages,
-          DIALOG_TAG
-        ), createDialogPageVNode(
-          currentInstance.$systemDialogPages,
-          SYSTEM_DIALOG_TAG
-        ))
+          currentInstance.$systemDialogPages
+        )
       ]
     );
   }
@@ -18327,19 +18656,25 @@ function createPageBodyVNode(ctx) {
     }
   );
 }
-function createDialogPageVNode(dialogPages, type) {
+function createDialogPageVNode(normalDialogPages, systemDialogPages) {
+  const dialogPages = [
+    ...normalDialogPages.value.map((page) => ({ page, type: DIALOG_TAG })),
+    ...systemDialogPages.value.map((page) => ({
+      page,
+      type: SYSTEM_DIALOG_TAG
+    }))
+  ];
   return openBlock(true), createElementBlock(
     Fragment,
     null,
-    renderList(dialogPages.value, (dialogPage) => {
-      const fullUrl = `${dialogPage.route}${stringifyQuery$1(
-        dialogPage.options
-      )}`;
+    renderList(dialogPages, (dialogPage, index2) => {
+      const { type, page } = dialogPage;
+      const fullUrl = `${page.route}${stringifyQuery$1(page.options)}`;
       return openBlock(), createBlock(
         createVNode(
-          dialogPage.$component,
+          page.$component,
           {
-            key: fullUrl,
+            key: `${fullUrl}_${index2}`,
             style: {
               position: "fixed",
               "z-index": 999,
@@ -18484,8 +18819,10 @@ function setupPage(comp) {
               const dialogPages = parentPageInstance.$dialogPages.value;
               if (dialogPages.length > 1) {
                 const preDialogPage = dialogPages[dialogPages.length - 2];
-                const { onHide } = preDialogPage.$vm.$;
-                onHide && invokeArrayFns$1(onHide);
+                if (preDialogPage.$vm) {
+                  const { onHide } = preDialogPage.$vm.$;
+                  onHide && invokeArrayFns$1(onHide);
+                }
               }
             }
           }
@@ -18755,6 +19092,7 @@ const api = /* @__PURE__ */ Object.defineProperty({
   getTopWindowStyle,
   getVideoInfo,
   getWindowInfo,
+  hideActionSheet,
   hideActionSheet2,
   hideKeyboard,
   hideLeftWindow,
@@ -18847,6 +19185,7 @@ const api = /* @__PURE__ */ Object.defineProperty({
   setTabBarItem,
   setTabBarStyle,
   setTopWindowStyle,
+  showActionSheet,
   showActionSheet2,
   showLeftWindow,
   showLoading,
@@ -20326,7 +20665,7 @@ function useQuill(props2, rootRef, trigger) {
     });
   });
 }
-const props$d = /* @__PURE__ */ extend({}, props$u, {
+const props$d = /* @__PURE__ */ extend({}, props$v, {
   id: {
     type: String,
     default: ""
@@ -21026,7 +21365,7 @@ const props$b = /* @__PURE__ */ extend(
       default: ""
     }
   },
-  props$u
+  props$v
 );
 const emit = [
   "input",
@@ -28213,6 +28552,7 @@ function initApp(app) {
 function initRouter(app) {
   const router = createRouter(createRouterOptions());
   router.beforeEach((to, from) => {
+    hideActionSheet();
     hideModal();
     uni.hideToast();
     uni.hideLoading();
@@ -28486,6 +28826,7 @@ export {
   getTopWindowStyle,
   getVideoInfo,
   getWindowInfo,
+  hideActionSheet,
   hideActionSheet2,
   hideKeyboard,
   hideLeftWindow,
@@ -28582,6 +28923,7 @@ export {
   setupApp,
   setupPage,
   setupWindow,
+  showActionSheet,
   showActionSheet2,
   showLeftWindow,
   showLoading,

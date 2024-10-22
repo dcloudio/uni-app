@@ -24,16 +24,16 @@ importers:
         specifier: 3.4.14
         version: 3.4.14
       '@dcloudio/uni-api':
-        specifier: 3.0.0-alpha-4030120240925001
+        specifier: workspace:*
         version: link:packages/uni-api
       '@dcloudio/uni-app':
-        specifier: 3.0.0-alpha-4030120240925001
+        specifier: workspace:*
         version: link:packages/uni-app
       '@dcloudio/uni-app-x':
         specifier: ^0.7.35
         version: 0.7.35
       '@dcloudio/uni-nvue-styler':
-        specifier: 3.0.0-alpha-4030120240925001
+        specifier: workspace:*
         version: link:packages/uni-nvue-styler
       '@jest/types':
         specifier: ^29.0.3

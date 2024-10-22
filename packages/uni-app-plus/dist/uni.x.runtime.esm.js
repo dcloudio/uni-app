@@ -3506,7 +3506,6 @@ const _style_0 = {
       "paddingRight": 16,
       "paddingBottom": 16,
       "paddingLeft": 16,
-      "cursor": "pointer",
       "textAlign": "center"
     }
   },
@@ -3516,8 +3515,8 @@ const _style_0 = {
       "paddingRight": 16,
       "paddingBottom": 16,
       "paddingLeft": 16,
-      "cursor": "pointer",
-      "textAlign": "center"
+      "textAlign": "center",
+      "cursor": "pointer"
     }
   },
   "uni-actionsheet_dialog__action": {
@@ -3526,8 +3525,8 @@ const _style_0 = {
       "paddingRight": 16,
       "paddingBottom": 16,
       "paddingLeft": 16,
-      "cursor": "pointer",
       "textAlign": "center",
+      "cursor": "pointer",
       "marginTop": 8
     }
   },

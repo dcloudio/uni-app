@@ -13899,22 +13899,16 @@ const index = /* @__PURE__ */ defineSystemComponent({
       __UNI_FEATURE_NAVIGATIONBAR__ && navigationBar.style !== "custom" ? [
         vue.createVNode(PageHead),
         createPageBodyVNode(ctx),
-        (createDialogPageVNode(
+        createDialogPageVNode(
           currentInstance.$dialogPages,
-          DIALOG_TAG
-        ), createDialogPageVNode(
-          currentInstance.$systemDialogPages,
-          SYSTEM_DIALOG_TAG
-        ))
+          currentInstance.$systemDialogPages
+        )
       ] : [
         createPageBodyVNode(ctx),
-        (createDialogPageVNode(
+        createDialogPageVNode(
           currentInstance.$dialogPages,
-          DIALOG_TAG
-        ), createDialogPageVNode(
-          currentInstance.$systemDialogPages,
-          SYSTEM_DIALOG_TAG
-        ))
+          currentInstance.$systemDialogPages
+        )
       ]
     );
   }
@@ -13929,19 +13923,25 @@ function createPageBodyVNode(ctx) {
     }
   );
 }
-function createDialogPageVNode(dialogPages, type) {
+function createDialogPageVNode(normalDialogPages, systemDialogPages) {
+  const dialogPages = [
+    ...normalDialogPages.value.map((page) => ({ page, type: DIALOG_TAG })),
+    ...systemDialogPages.value.map((page) => ({
+      page,
+      type: SYSTEM_DIALOG_TAG
+    }))
+  ];
   return vue.openBlock(true), vue.createElementBlock(
     vue.Fragment,
     null,
-    vue.renderList(dialogPages.value, (dialogPage) => {
-      const fullUrl = `${dialogPage.route}${uniShared.stringifyQuery(
-        dialogPage.options
-      )}`;
+    vue.renderList(dialogPages, (dialogPage, index2) => {
+      const { type, page } = dialogPage;
+      const fullUrl = `${page.route}${uniShared.stringifyQuery(page.options)}`;
       return vue.openBlock(), vue.createBlock(
         vue.createVNode(
-          dialogPage.$component,
+          page.$component,
           {
-            key: fullUrl,
+            key: `${fullUrl}_${index2}`,
             style: {
               position: "fixed",
               "z-index": 999,

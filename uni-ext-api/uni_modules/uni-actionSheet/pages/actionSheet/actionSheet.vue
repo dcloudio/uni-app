@@ -278,8 +278,11 @@
   .uni-actionsheet_dialog__action {
     display: block;
     padding: 16px;
-    cursor: pointer;
     text-align: center;
+  }
+  .uni-actionsheet_dialog__cell,
+  .uni-actionsheet_dialog__action {
+    cursor: pointer;
   }
 
     /* #ifndef APP */
