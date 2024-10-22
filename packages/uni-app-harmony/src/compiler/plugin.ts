@@ -269,7 +269,7 @@ function genAppHarmonyUniModules(inputDir: string, utsPlugins: Set<string>) {
           moduleSpecifier: harmonyModuleName,
           plugin: module,
           source: 'ohpm',
-          version: matchedStandaloneExtApi.version,
+          version: '*',
         })
         matchedStandaloneExtApi.apis?.forEach((apiName) => {
           importCodes.push(`import { ${apiName} } from '${harmonyModuleName}'`)
@@ -306,7 +306,7 @@ function genAppHarmonyUniModules(inputDir: string, utsPlugins: Set<string>) {
       moduleSpecifier: `@uni_modules/${extapi.plugin.toLowerCase()}`,
       plugin: extapi.plugin,
       source: 'ohpm',
-      version: extapi.version,
+      version: '*',
     })
   })
 
