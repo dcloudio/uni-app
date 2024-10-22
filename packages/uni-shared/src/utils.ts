@@ -142,3 +142,42 @@ export function sortObject<T extends Object>(obj: T) {
   }
   return !Object.keys(sortObj) ? obj : sortObj
 }
+
+function getGlobalOnce() {
+  if (typeof globalThis !== 'undefined') {
+    return globalThis
+  }
+  // worker
+  if (typeof self !== 'undefined') {
+    return self
+  }
+  // browser
+  if (typeof window !== 'undefined') {
+    return window
+  }
+  // nodejs
+  // if (typeof global !== 'undefined') {
+  //   return global
+  // }
+
+  function g(this: any) {
+    return this
+  }
+
+  if (typeof g() !== 'undefined') {
+    return g()
+  }
+
+  return (function () {
+    return new Function('return this')()
+  })()
+}
+
+let g: any = undefined
+export function getGlobal() {
+  if (g) {
+    return g
+  }
+  g = getGlobalOnce()
+  return g
+}
