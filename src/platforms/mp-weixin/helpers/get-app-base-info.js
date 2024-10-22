@@ -19,7 +19,11 @@ export default {
       hostLanguage,
       hostName: _hostName,
       hostSDKVersion: SDKVersion,
-      hostTheme: theme
+      hostTheme: theme,
+      isUniAppX: false,
+      uniPlatform: process.env.UNI_SUB_PLATFORM || process.env.UNI_PLATFORM,
+      uniCompileVersion: process.env.UNI_COMPILER_VERSION,
+      uniCompilerVersion: process.env.UNI_COMPILER_VERSION
     }))
   }
 }

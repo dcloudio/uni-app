@@ -22,7 +22,7 @@ export function getDeviceInfo () {
   const {
     deviceBrand = '', deviceModel, osName,
     osVersion, deviceOrientation, deviceType,
-    deviceId
+    deviceId, osLanguage, osTheme, romName, romVersion
   } = systemInfo
 
   const brand = deviceBrand.toLowerCase()
@@ -38,7 +38,13 @@ export function getDeviceInfo () {
     deviceType,
     model: deviceModel,
     platform: _osName,
-    system: `${_osName === 'ios' ? 'iOS' : 'Android'} ${osVersion}`
+    system: `${_osName === 'ios' ? 'iOS' : 'Android'} ${osVersion}`,
+    osName,
+    osVersion,
+    osLanguage,
+    osTheme,
+    romName,
+    romVersion
   }
 }
 
@@ -48,7 +54,7 @@ export function getAppBaseInfo () {
     hostPackageName, hostName, osLanguage,
     hostVersion, hostLanguage, hostTheme,
     appId, appName, appVersion, appVersionCode,
-    appWgtVersion
+    appWgtVersion, uniCompileVersion, uniPlatform
   } = systemInfo
 
   const appLanguage = uni
@@ -75,7 +81,11 @@ export function getAppBaseInfo () {
     language: osLanguage,
     SDKVersion: '',
     theme: plus.navigator.getUIStyle(),
-    version: plus.runtime.innerVersion
+    version: plus.runtime.innerVersion,
+    isUniAppX: false,
+    uniPlatform,
+    uniCompileVersion,
+    uniCompilerVersion: uniCompileVersion
   }
 }
 
