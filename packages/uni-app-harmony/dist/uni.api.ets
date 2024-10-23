@@ -262,10 +262,6 @@ class ClipboardCallbackOptions extends UTSObject {
     result!: 'success' | 'fail';
 }
 type ClipboardCallback = (res: ClipboardCallbackOptions) => void;
-interface ClipboardModuleGetStringOptions {
-    result: string;
-    data: string;
-}
 type CreateInnerAudioContext = () => InnerAudioContext;
 interface InnerAudioContext {
     duration: number;
@@ -1587,6 +1583,7 @@ export class ShareWithSystemOptions extends UTSObject {
     summary: string | null = null;
     href: string | null = null;
     imageUrl: string | null = null;
+    imageUrlList: UTSArray<string> | null = null;
     success: ShareWithSystemSuccessCallback | null = null;
     fail: ShareWithSystemFailCallback | null = null;
     complete: ShareWithSystemCallback | null = null;
@@ -2683,19 +2680,23 @@ export function initUniExtApi() {
         }
     };
     const getClipboardData: GetClipboardData = defineAsyncApi<GetClipboardDataOptions, GetClipboardDataSuccess>(API_GET_CLIPBOARD_DATA, (_: GetClipboardDataOptions, res: ApiExecutor<GetClipboardDataSuccess>)=>{
-        getString((ret: ClipboardModuleGetStringOptions)=>{
+        getString((ret: ClipboardCallbackOptions)=>{
             if (ret.result === 'success') {
                 res.resolve({
                     data: ret.data
                 } as GetClipboardDataSuccess);
             } else {
-                res.reject('getClipboardData:fail');
+                res.reject('getClipboardData:fail ' + ret.data);
             }
         });
     }) as GetClipboardData;
     const setClipboardData: SetClipboardData = defineAsyncApi<SetClipboardDataOptions, SetClipboardDataSuccess>(API_SET_CLIPBOARD_DATA, (options: SetClipboardDataOptions, res: ApiExecutor<SetClipboardDataSuccess>)=>{
-        setString(options.data);
-        res.resolve();
+        const ret = setString(options.data);
+        if (ret.result === 'success') {
+            res.resolve();
+        } else {
+            res.reject('setClipboardData:fail ' + ret.data);
+        }
     }, SetClipboardDataProtocol, SetClipboardDataApiOptions) as SetClipboardData;
     const API_CREATE_INNER_AUDIO_CONTEXT = 'createInnerAudioContext';
     const isFileUri = (path: string)=>{
