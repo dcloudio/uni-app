@@ -1655,9 +1655,6 @@ function registerDialogPage(_ref2, dialogPage, onCreated) {
     url,
     pageStyle
   );
-  if (onCreated) {
-    onCreated(nativePage2);
-  }
   routeOptions.meta.id = parseInt(nativePage2.pageId);
   var route = path.startsWith(SYSTEM_DIALOG_PAGE_PATH_STARTER) ? path : path.slice(1);
   var pageInstance = initPageInternalInstance(
@@ -2018,9 +2015,9 @@ function handleBeforeEntryPageRoutes() {
     return $reLaunch(args, handler);
   });
 }
-function closeNativeDialogPage(dialogPage, animationType, callback) {
+function closeNativeDialogPage(dialogPage) {
   var webview = getNativeApp().pageManager.findPageById(dialogPage.$vm.$basePage.id + "");
-  closeWebview(webview, animationType || "none", 0, callback);
+  closeWebview(webview, "none", 0);
 }
 var $switchTab = (args, _ref) => {
   var {
@@ -2299,7 +2296,7 @@ var $navigateTo = (args, _ref) => {
     path,
     query
   } = parseUrl(url);
-  var [aniType, aniDuration] = initAnimation$1(path, animationType, animationDuration);
+  var [aniType, aniDuration] = initAnimation(path, animationType, animationDuration);
   updateEntryPageIsReady(path);
   if (!entryPageState.isReady) {
     navigateToPagesBeforeEntryPages.push({
@@ -2365,7 +2362,7 @@ function _navigateTo(_ref2) {
     }
   });
 }
-function initAnimation$1(path, animationType, animationDuration) {
+function initAnimation(path, animationType, animationDuration) {
   if (!getCurrentPage()) {
     return ["none", 0];
   }
@@ -2487,8 +2484,7 @@ function back(delta, animationType, animationDuration) {
 var openDialogPage = (options) => {
   var _options$success, _options$complete;
   var {
-    url,
-    animationType
+    url
   } = options;
   if (!options.url) {
     triggerFailCallback$1(options, "url is required");
@@ -2548,32 +2544,22 @@ var openDialogPage = (options) => {
       }
     }
   }
-  var [aniType, aniDuration] = initAnimation(path, animationType);
-  var noAnimation = aniType === "none" || aniDuration === 0;
   function callback(page2) {
-    showWebview(page2, aniType, aniDuration, () => {
+    showWebview(page2, "none", 0, () => {
       beforeRoute();
     });
   }
-  var page = registerDialogPage(
-    {
-      url,
-      path,
-      query,
-      openType: "openDialogPage"
-    },
-    dialogPage,
-    noAnimation ? void 0 : callback,
-    // 有动画时延迟创建 vm
-    noAnimation ? 0 : 1
-  );
+  var page = registerDialogPage({
+    url,
+    path,
+    query,
+    openType: "openDialogPage"
+  }, dialogPage, void 0, 0);
   dialogPage.__nativePageId = page.pageId;
   if (systemDialog) {
     dialogPage.__nativeType = "systemDialog";
   }
-  if (noAnimation) {
-    callback(page);
-  }
+  callback(page);
   var successOptions = {
     errMsg: "openDialogPage:ok"
   };
@@ -2586,20 +2572,6 @@ function triggerFailCallback$1(options, errMsg) {
   var failOptions = new UniError("uni-openDialogPage", 4, "openDialogPage: fail, ".concat(errMsg));
   (_options$fail = options.fail) === null || _options$fail === void 0 || _options$fail.call(options, failOptions);
   (_options$complete2 = options.complete) === null || _options$complete2 === void 0 || _options$complete2.call(options, failOptions);
-}
-function initAnimation(path, animationType) {
-  if (!getCurrentPage()) {
-    return ["none", 0];
-  }
-  var {
-    globalStyle
-  } = __uniConfig;
-  var meta = getRouteMeta(path);
-  var _animationType = animationType || meta.animationType || globalStyle.animationType || ANI_SHOW;
-  if (_animationType == "pop-in") {
-    _animationType = "none";
-  }
-  return [_animationType, meta.animationDuration || globalStyle.animationDuration || ANI_DURATION];
 }
 function closePreActionSheet(dialogPages) {
   var actionSheets = dialogPages.filter((page) => isSystemActionSheetDialogPage(page));
@@ -2618,9 +2590,6 @@ var closeDialogPage = (options) => {
     triggerFailCallback(options, "currentPage is null");
     return;
   }
-  if ((options === null || options === void 0 ? void 0 : options.animationType) === "pop-out") {
-    options.animationType = "none";
-  }
   if (options !== null && options !== void 0 && options.dialogPage) {
     var dialogPage = options === null || options === void 0 ? void 0 : options.dialogPage;
     if (!(dialogPage instanceof UniDialogPageImpl)) {
@@ -2633,7 +2602,7 @@ var closeDialogPage = (options) => {
         var parentDialogPages = parentPage.getDialogPages();
         var index2 = parentDialogPages.indexOf(dialogPage);
         parentDialogPages.splice(index2, 1);
-        closeNativeDialogPage(dialogPage, (options === null || options === void 0 ? void 0 : options.animationType) || "none");
+        closeNativeDialogPage(dialogPage);
         if (index2 > 0 && index2 === parentDialogPages.length) {
           invokeHook(parentDialogPages[parentDialogPages.length - 1].$vm, ON_SHOW);
         }
@@ -2651,7 +2620,7 @@ var closeDialogPage = (options) => {
   } else {
     var dialogPages = currentPage.getDialogPages();
     for (var i = dialogPages.length - 1; i >= 0; i--) {
-      closeNativeDialogPage(dialogPages[i], (options === null || options === void 0 ? void 0 : options.animationType) || "none");
+      closeNativeDialogPage(dialogPages[i]);
       if (i > 0) {
         invokeHook(dialogPages[i - 1].$vm, ON_SHOW);
       }

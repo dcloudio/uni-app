@@ -10,10 +10,6 @@ export const closeDialogPage = (options?: CloseDialogPageOptions) => {
     triggerFailCallback(options, 'currentPage is null')
     return
   }
-  // @ts-expect-error
-  if (options?.animationType === 'pop-out') {
-    options.animationType = 'none'
-  }
 
   if (options?.dialogPage) {
     const dialogPage = options?.dialogPage!
@@ -27,7 +23,7 @@ export const closeDialogPage = (options?: CloseDialogPageOptions) => {
         const parentDialogPages = parentPage.getDialogPages()
         const index = parentDialogPages.indexOf(dialogPage)
         parentDialogPages.splice(index, 1)
-        closeNativeDialogPage(dialogPage, options?.animationType || 'none')
+        closeNativeDialogPage(dialogPage)
         if (index > 0 && index === parentDialogPages.length) {
           invokeHook(
             parentDialogPages[parentDialogPages.length - 1].$vm!,
@@ -48,7 +44,7 @@ export const closeDialogPage = (options?: CloseDialogPageOptions) => {
   } else {
     const dialogPages = currentPage.getDialogPages()
     for (let i = dialogPages.length - 1; i >= 0; i--) {
-      closeNativeDialogPage(dialogPages[i], options?.animationType || 'none')
+      closeNativeDialogPage(dialogPages[i])
       if (i > 0) {
         invokeHook(dialogPages[i - 1].$vm!, ON_SHOW)
       }

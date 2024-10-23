@@ -75,13 +75,9 @@ export function handleBeforeEntryPageRoutes() {
   reLaunchPages.forEach(({ args, handler }) => $reLaunch(args, handler))
 }
 
-export function closeNativeDialogPage(
-  dialogPage: UniPage,
-  animationType?: string,
-  callback?: () => void
-) {
+export function closeNativeDialogPage(dialogPage: UniPage) {
   const webview = getNativeApp().pageManager.findPageById(
     dialogPage.$vm!.$basePage.id + ''
   )!
-  closeWebview(webview, animationType || 'none', 0, callback)
+  closeWebview(webview, 'none', 0)
 }
