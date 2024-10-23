@@ -22,6 +22,26 @@
       "ad"
     ]
   },
+  "uni-audio": {
+    "uni": {
+      "createInnerAudioContext": {
+        "name": "createInnerAudioContext",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": false
+        }
+      },
+      "getBackgroundAudioManager": {
+        "name": "getBackgroundAudioManager",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": false
+        }
+      }
+    }
+  },
   "uni-canvas": {
     "uni": {
       "createCanvasContextAsync": {
@@ -773,6 +793,19 @@
           "js": false,
           "kotlin": true,
           "swift": true,
+          "arkts": true
+        }
+      }
+    }
+  },
+  "uni-shareWithSystem": {
+    "uni": {
+      "shareWithSystem": {
+        "name": "shareWithSystem",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": false,
           "arkts": true
         }
       }
