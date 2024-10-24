@@ -8684,22 +8684,20 @@ const getDeviceInfo = /* @__PURE__ */ defineSyncApi(
       osname,
       osversion
     } = browserInfo;
-    return extend(
-      {
-        brand,
-        deviceBrand,
-        deviceModel,
-        devicePixelRatio: window.devicePixelRatio,
-        deviceId: deviceId$1(),
-        deviceOrientation,
-        deviceType,
-        model,
-        platform,
-        system,
-        osName: osname ? osname.toLocaleLowerCase() : void 0,
-        osVersion: osversion
-      }
-    );
+    return extend({
+      brand,
+      deviceBrand,
+      deviceModel,
+      devicePixelRatio: window.devicePixelRatio,
+      deviceId: deviceId$1(),
+      deviceOrientation,
+      deviceType,
+      model,
+      platform,
+      system,
+      osName: osname ? osname.toLocaleLowerCase() : void 0,
+      osVersion: osversion
+    });
   }
 );
 const getAppBaseInfo = /* @__PURE__ */ defineSyncApi(

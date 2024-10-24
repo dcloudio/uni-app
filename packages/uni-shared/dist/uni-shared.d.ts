@@ -230,6 +230,8 @@ export declare function getCustomDataset(el: HTMLElement | HTMLElementWithDatase
 
 export declare function getEnvLocale(): string;
 
+export declare function getGlobal(): any;
+
 export declare function getLen(str?: string): number;
 
 export declare function getValueByDataPath(obj: any, path: string): unknown;

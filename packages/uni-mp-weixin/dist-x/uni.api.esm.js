@@ -977,6 +977,7 @@ function populateParameters(fromRes, toRes) {
         hostPackageName: undefined,
         browserName: undefined,
         browserVersion: undefined,
+        isUniAppX: true,
     };
     extend(toRes, parameters);
 }
@@ -1111,7 +1112,7 @@ const getAppBaseInfo = {
             isUniAppX: true,
             uniPlatform: process.env.UNI_SUB_PLATFORM || process.env.UNI_PLATFORM,
             uniCompileVersion: process.env.UNI_COMPILER_VERSION,
-            uniCompilerVersion: process.env.UNI_COMPILER_VERSION
+            uniCompilerVersion: process.env.UNI_COMPILER_VERSION,
         }));
     },
 };

@@ -1,4 +1,4 @@
-import { isHTMLTag, isSVGTag, hyphenate, camelize, normalizeStyle as normalizeStyle$1, isString, parseStringStyle, isArray, normalizeClass as normalizeClass$1, isFunction, isPlainObject, extend, capitalize } from '@vue/shared';
+import { isHTMLTag, isSVGTag, isString, isFunction, isPlainObject, hyphenate, camelize, normalizeStyle as normalizeStyle$1, parseStringStyle, isArray, normalizeClass as normalizeClass$1, extend, capitalize } from '@vue/shared';
 
 const BUILT_IN_TAG_NAMES = [
     'ad',
@@ -355,129 +355,6 @@ const ON_APP_ENTER_BACKGROUND = 'onAppEnterBackground';
 const ON_WEB_INVOKE_APP_SERVICE = 'onWebInvokeAppService';
 const ON_WXS_INVOKE_CALL_METHOD = 'onWxsInvokeCallMethod';
 
-function isComponentInternalInstance(vm) {
-    return !!vm.appContext;
-}
-function resolveComponentInstance(instance) {
-    return (instance &&
-        (isComponentInternalInstance(instance) ? instance.proxy : instance));
-}
-function resolveOwnerVm(vm) {
-    if (!vm) {
-        return;
-    }
-    let componentName = vm.type.name;
-    while (componentName && isBuiltInComponent(hyphenate(componentName))) {
-        // ownerInstance 内置组件需要使用父 vm
-        vm = vm.parent;
-        componentName = vm.type.name;
-    }
-    return vm.proxy;
-}
-function isElement(el) {
-    // Element
-    return el.nodeType === 1;
-}
-function resolveOwnerEl(instance, multi = false) {
-    const { vnode } = instance;
-    if (isElement(vnode.el)) {
-        return multi ? (vnode.el ? [vnode.el] : []) : vnode.el;
-    }
-    const { subTree } = instance;
-    // ShapeFlags.ARRAY_CHILDREN = 1<<4
-    if (subTree.shapeFlag & 16) {
-        const elemVNodes = subTree.children.filter((vnode) => vnode.el && isElement(vnode.el));
-        if (elemVNodes.length > 0) {
-            if (multi) {
-                return elemVNodes.map((node) => node.el);
-            }
-            return elemVNodes[0].el;
-        }
-    }
-    return multi ? (vnode.el ? [vnode.el] : []) : vnode.el;
-}
-function dynamicSlotName(name) {
-    return name === 'default' ? SLOT_DEFAULT_NAME : name;
-}
-const customizeRE = /:/g;
-function customizeEvent(str) {
-    return camelize(str.replace(customizeRE, '-'));
-}
-function normalizeStyle(value) {
-    if (value instanceof Map) {
-        const styleObject = {};
-        value.forEach((value, key) => {
-            styleObject[key] = value;
-        });
-        return normalizeStyle$1(styleObject);
-    }
-    else if (isString(value)) {
-        return parseStringStyle(value);
-    }
-    else if (isArray(value)) {
-        const res = {};
-        for (let i = 0; i < value.length; i++) {
-            const item = value[i];
-            const normalized = isString(item)
-                ? parseStringStyle(item)
-                : normalizeStyle(item);
-            if (normalized) {
-                for (const key in normalized) {
-                    res[key] = normalized[key];
-                }
-            }
-        }
-        return res;
-    }
-    else {
-        return normalizeStyle$1(value);
-    }
-}
-function normalizeClass(value) {
-    let res = '';
-    if (value instanceof Map) {
-        value.forEach((value, key) => {
-            if (value) {
-                res += key + ' ';
-            }
-        });
-    }
-    else if (isArray(value)) {
-        for (let i = 0; i < value.length; i++) {
-            const normalized = normalizeClass(value[i]);
-            if (normalized) {
-                res += normalized + ' ';
-            }
-        }
-    }
-    else {
-        res = normalizeClass$1(value);
-    }
-    return res.trim();
-}
-function normalizeProps(props) {
-    if (!props)
-        return null;
-    let { class: klass, style } = props;
-    if (klass && !isString(klass)) {
-        props.class = normalizeClass(klass);
-    }
-    if (style) {
-        props.style = normalizeStyle(style);
-    }
-    return props;
-}
-
-let lastLogTime = 0;
-function formatLog(module, ...args) {
-    const now = Date.now();
-    const diff = lastLogTime ? now - lastLogTime : 0;
-    lastLogTime = now;
-    return `[${now}][${diff}ms][${module}]：${args
-        .map((arg) => JSON.stringify(arg))
-        .join(' ')}`;
-}
-
 function cache(fn) {
     const cache = Object.create(null);
     return (str) => {
@@ -583,6 +460,179 @@ function sortObject(obj) {
         });
     }
     return !Object.keys(sortObj) ? obj : sortObj;
+}
+function getGlobalOnce() {
+    if (typeof globalThis !== 'undefined') {
+        return globalThis;
+    }
+    // worker
+    if (typeof self !== 'undefined') {
+        return self;
+    }
+    // browser
+    if (typeof window !== 'undefined') {
+        return window;
+    }
+    // nodejs
+    // if (typeof global !== 'undefined') {
+    //   return global
+    // }
+    function g() {
+        return this;
+    }
+    if (typeof g() !== 'undefined') {
+        return g();
+    }
+    return (function () {
+        return new Function('return this')();
+    })();
+}
+let g = undefined;
+function getGlobal() {
+    if (g) {
+        return g;
+    }
+    g = getGlobalOnce();
+    return g;
+}
+
+function isComponentInternalInstance(vm) {
+    return !!vm.appContext;
+}
+function resolveComponentInstance(instance) {
+    return (instance &&
+        (isComponentInternalInstance(instance) ? instance.proxy : instance));
+}
+function resolveOwnerVm(vm) {
+    if (!vm) {
+        return;
+    }
+    let componentName = vm.type.name;
+    while (componentName && isBuiltInComponent(hyphenate(componentName))) {
+        // ownerInstance 内置组件需要使用父 vm
+        vm = vm.parent;
+        componentName = vm.type.name;
+    }
+    return vm.proxy;
+}
+function isElement(el) {
+    // Element
+    return el.nodeType === 1;
+}
+function resolveOwnerEl(instance, multi = false) {
+    const { vnode } = instance;
+    if (isElement(vnode.el)) {
+        return multi ? (vnode.el ? [vnode.el] : []) : vnode.el;
+    }
+    const { subTree } = instance;
+    // ShapeFlags.ARRAY_CHILDREN = 1<<4
+    if (subTree.shapeFlag & 16) {
+        const elemVNodes = subTree.children.filter((vnode) => vnode.el && isElement(vnode.el));
+        if (elemVNodes.length > 0) {
+            if (multi) {
+                return elemVNodes.map((node) => node.el);
+            }
+            return elemVNodes[0].el;
+        }
+    }
+    return multi ? (vnode.el ? [vnode.el] : []) : vnode.el;
+}
+function dynamicSlotName(name) {
+    return name === 'default' ? SLOT_DEFAULT_NAME : name;
+}
+const customizeRE = /:/g;
+function customizeEvent(str) {
+    return camelize(str.replace(customizeRE, '-'));
+}
+function normalizeStyle(value) {
+    const g = getGlobal();
+    if (g && g.UTSJSONObject && value instanceof g.UTSJSONObject) {
+        const styleObject = {};
+        g.UTSJSONObject.keys(value).forEach((key) => {
+            styleObject[key] = value[key];
+        });
+        return normalizeStyle$1(styleObject);
+    }
+    else if (value instanceof Map) {
+        const styleObject = {};
+        value.forEach((value, key) => {
+            styleObject[key] = value;
+        });
+        return normalizeStyle$1(styleObject);
+    }
+    else if (isString(value)) {
+        return parseStringStyle(value);
+    }
+    else if (isArray(value)) {
+        const res = {};
+        for (let i = 0; i < value.length; i++) {
+            const item = value[i];
+            const normalized = isString(item)
+                ? parseStringStyle(item)
+                : normalizeStyle(item);
+            if (normalized) {
+                for (const key in normalized) {
+                    res[key] = normalized[key];
+                }
+            }
+        }
+        return res;
+    }
+    else {
+        return normalizeStyle$1(value);
+    }
+}
+function normalizeClass(value) {
+    let res = '';
+    const g = getGlobal();
+    if (g && g.UTSJSONObject && value instanceof g.UTSJSONObject) {
+        g.UTSJSONObject.keys(value).forEach((key) => {
+            if (value[key]) {
+                res += key + ' ';
+            }
+        });
+    }
+    else if (value instanceof Map) {
+        value.forEach((value, key) => {
+            if (value) {
+                res += key + ' ';
+            }
+        });
+    }
+    else if (isArray(value)) {
+        for (let i = 0; i < value.length; i++) {
+            const normalized = normalizeClass(value[i]);
+            if (normalized) {
+                res += normalized + ' ';
+            }
+        }
+    }
+    else {
+        res = normalizeClass$1(value);
+    }
+    return res.trim();
+}
+function normalizeProps(props) {
+    if (!props)
+        return null;
+    let { class: klass, style } = props;
+    if (klass && !isString(klass)) {
+        props.class = normalizeClass(klass);
+    }
+    if (style) {
+        props.style = normalizeStyle(style);
+    }
+    return props;
+}
+
+let lastLogTime = 0;
+function formatLog(module, ...args) {
+    const now = Date.now();
+    const diff = lastLogTime ? now - lastLogTime : 0;
+    lastLogTime = now;
+    return `[${now}][${diff}ms][${module}]：${args
+        .map((arg) => JSON.stringify(arg))
+        .join(' ')}`;
 }
 
 function formatKey(key) {
@@ -1637,4 +1687,4 @@ function isSystemActionSheetDialogPage(page) {
     return page.route.startsWith(SYSTEM_DIALOG_ACTION_SHEET_PAGE_PATH);
 }
 
-export { ACTION_TYPE_ADD_EVENT, ACTION_TYPE_ADD_WXS_EVENT, ACTION_TYPE_CREATE, ACTION_TYPE_EVENT, ACTION_TYPE_INSERT, ACTION_TYPE_PAGE_CREATE, ACTION_TYPE_PAGE_CREATED, ACTION_TYPE_PAGE_SCROLL, ACTION_TYPE_REMOVE, ACTION_TYPE_REMOVE_ATTRIBUTE, ACTION_TYPE_REMOVE_EVENT, ACTION_TYPE_SET_ATTRIBUTE, ACTION_TYPE_SET_TEXT, ATTR_CHANGE_PREFIX, ATTR_CLASS, ATTR_INNER_HTML, ATTR_STYLE, ATTR_TEXT_CONTENT, ATTR_V_OWNER_ID, ATTR_V_RENDERJS, ATTR_V_SHOW, BACKGROUND_COLOR, BUILT_IN_TAGS, BUILT_IN_TAG_NAMES, COMPONENT_NAME_PREFIX, COMPONENT_PREFIX, COMPONENT_SELECTOR_PREFIX, DATA_RE, E$1 as Emitter, EventChannel, EventModifierFlags, I18N_JSON_DELIMITERS, JSON_PROTOCOL, LINEFEED, MINI_PROGRAM_PAGE_RUNTIME_HOOKS, NAVBAR_HEIGHT, NODE_TYPE_COMMENT, NODE_TYPE_ELEMENT, NODE_TYPE_PAGE, NODE_TYPE_TEXT, NVUE_BUILT_IN_TAGS, NVUE_U_BUILT_IN_TAGS, OFF_THEME_CHANGE, ON_ADD_TO_FAVORITES, ON_APP_ENTER_BACKGROUND, ON_APP_ENTER_FOREGROUND, ON_BACK_PRESS, ON_ERROR, ON_EXIT, ON_HIDE, ON_INIT, ON_KEYBOARD_HEIGHT_CHANGE, ON_LAUNCH, ON_LOAD, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_CHANGE, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_PAGE_NOT_FOUND, ON_PAGE_SCROLL, ON_PULL_DOWN_REFRESH, ON_REACH_BOTTOM, ON_REACH_BOTTOM_DISTANCE, ON_READY, ON_RESIZE, ON_SAVE_EXIT_STATE, ON_SHARE_APP_MESSAGE, ON_SHARE_CHAT, ON_SHARE_TIMELINE, ON_SHOW, ON_TAB_ITEM_TAP, ON_THEME_CHANGE, ON_UNHANDLE_REJECTION, ON_UNLOAD, ON_WEB_INVOKE_APP_SERVICE, ON_WXS_INVOKE_CALL_METHOD, PLUS_RE, PRIMARY_COLOR, RENDERJS_MODULES, RESPONSIVE_MIN_WIDTH, SCHEME_RE, SELECTED_COLOR, SLOT_DEFAULT_NAME, SYSTEM_DIALOG_ACTION_SHEET_PAGE_PATH, SYSTEM_DIALOG_PAGE_PATH_STARTER, TABBAR_HEIGHT, TAGS, UNI_SSR, UNI_SSR_DATA, UNI_SSR_GLOBAL_DATA, UNI_SSR_STORE, UNI_SSR_TITLE, UNI_STORAGE_LOCALE, UNI_UI_CONFLICT_TAGS, UVUE_BUILT_IN_TAGS, UVUE_IOS_BUILT_IN_TAGS, UVUE_WEB_BUILT_IN_TAGS, UniBaseNode, UniCommentNode, UniElement, UniEvent, UniInputElement, UniLifecycleHooks, UniNode, UniTextAreaElement, UniTextNode, WEB_INVOKE_APPSERVICE, WXS_MODULES, WXS_PROTOCOL, addFont, addLeadingSlash, borderStyles, cache, cacheStringFunction, callOptions, createIsCustomElement, createRpx2Unit, createUniEvent, customizeEvent, debounce, decode, decodedQuery, defaultMiniProgramRpx2Unit, defaultNVueRpx2Unit, defaultRpx2Unit, dynamicSlotName, forcePatchProp, formatDateTime, formatLog, getCustomDataset, getEnvLocale, getLen, getValueByDataPath, initCustomDatasetOnce, invokeArrayFns, invokeCreateErrorHandler, invokeCreateVueAppHook, isAppIOSUVueNativeTag, isAppNVueNativeTag, isAppNativeTag, isAppUVueBuiltInEasyComponent, isAppUVueNativeTag, isBuiltInComponent, isComponentInternalInstance, isComponentTag, isH5CustomElement, isH5NativeTag, isMiniProgramNativeTag, isRootHook, isRootImmediateHook, isSystemActionSheetDialogPage, isSystemDialogPage, isUniLifecycleHook, isUniXElement, normalizeClass, normalizeDataset, normalizeEventType, normalizeProps, normalizeStyle, normalizeStyles, normalizeTabBarStyles, normalizeTarget, normalizeTitleColor, onCreateVueApp, once, parseEventName, parseNVueDataset, parseQuery, parseUrl, passive, plusReady, removeLeadingSlash, resolveComponentInstance, resolveOwnerEl, resolveOwnerVm, sanitise, scrollTo, sortObject, stringifyQuery, updateElementStyle };
+export { ACTION_TYPE_ADD_EVENT, ACTION_TYPE_ADD_WXS_EVENT, ACTION_TYPE_CREATE, ACTION_TYPE_EVENT, ACTION_TYPE_INSERT, ACTION_TYPE_PAGE_CREATE, ACTION_TYPE_PAGE_CREATED, ACTION_TYPE_PAGE_SCROLL, ACTION_TYPE_REMOVE, ACTION_TYPE_REMOVE_ATTRIBUTE, ACTION_TYPE_REMOVE_EVENT, ACTION_TYPE_SET_ATTRIBUTE, ACTION_TYPE_SET_TEXT, ATTR_CHANGE_PREFIX, ATTR_CLASS, ATTR_INNER_HTML, ATTR_STYLE, ATTR_TEXT_CONTENT, ATTR_V_OWNER_ID, ATTR_V_RENDERJS, ATTR_V_SHOW, BACKGROUND_COLOR, BUILT_IN_TAGS, BUILT_IN_TAG_NAMES, COMPONENT_NAME_PREFIX, COMPONENT_PREFIX, COMPONENT_SELECTOR_PREFIX, DATA_RE, E$1 as Emitter, EventChannel, EventModifierFlags, I18N_JSON_DELIMITERS, JSON_PROTOCOL, LINEFEED, MINI_PROGRAM_PAGE_RUNTIME_HOOKS, NAVBAR_HEIGHT, NODE_TYPE_COMMENT, NODE_TYPE_ELEMENT, NODE_TYPE_PAGE, NODE_TYPE_TEXT, NVUE_BUILT_IN_TAGS, NVUE_U_BUILT_IN_TAGS, OFF_THEME_CHANGE, ON_ADD_TO_FAVORITES, ON_APP_ENTER_BACKGROUND, ON_APP_ENTER_FOREGROUND, ON_BACK_PRESS, ON_ERROR, ON_EXIT, ON_HIDE, ON_INIT, ON_KEYBOARD_HEIGHT_CHANGE, ON_LAUNCH, ON_LOAD, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_CHANGE, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_PAGE_NOT_FOUND, ON_PAGE_SCROLL, ON_PULL_DOWN_REFRESH, ON_REACH_BOTTOM, ON_REACH_BOTTOM_DISTANCE, ON_READY, ON_RESIZE, ON_SAVE_EXIT_STATE, ON_SHARE_APP_MESSAGE, ON_SHARE_CHAT, ON_SHARE_TIMELINE, ON_SHOW, ON_TAB_ITEM_TAP, ON_THEME_CHANGE, ON_UNHANDLE_REJECTION, ON_UNLOAD, ON_WEB_INVOKE_APP_SERVICE, ON_WXS_INVOKE_CALL_METHOD, PLUS_RE, PRIMARY_COLOR, RENDERJS_MODULES, RESPONSIVE_MIN_WIDTH, SCHEME_RE, SELECTED_COLOR, SLOT_DEFAULT_NAME, SYSTEM_DIALOG_ACTION_SHEET_PAGE_PATH, SYSTEM_DIALOG_PAGE_PATH_STARTER, TABBAR_HEIGHT, TAGS, UNI_SSR, UNI_SSR_DATA, UNI_SSR_GLOBAL_DATA, UNI_SSR_STORE, UNI_SSR_TITLE, UNI_STORAGE_LOCALE, UNI_UI_CONFLICT_TAGS, UVUE_BUILT_IN_TAGS, UVUE_IOS_BUILT_IN_TAGS, UVUE_WEB_BUILT_IN_TAGS, UniBaseNode, UniCommentNode, UniElement, UniEvent, UniInputElement, UniLifecycleHooks, UniNode, UniTextAreaElement, UniTextNode, WEB_INVOKE_APPSERVICE, WXS_MODULES, WXS_PROTOCOL, addFont, addLeadingSlash, borderStyles, cache, cacheStringFunction, callOptions, createIsCustomElement, createRpx2Unit, createUniEvent, customizeEvent, debounce, decode, decodedQuery, defaultMiniProgramRpx2Unit, defaultNVueRpx2Unit, defaultRpx2Unit, dynamicSlotName, forcePatchProp, formatDateTime, formatLog, getCustomDataset, getEnvLocale, getGlobal, getLen, getValueByDataPath, initCustomDatasetOnce, invokeArrayFns, invokeCreateErrorHandler, invokeCreateVueAppHook, isAppIOSUVueNativeTag, isAppNVueNativeTag, isAppNativeTag, isAppUVueBuiltInEasyComponent, isAppUVueNativeTag, isBuiltInComponent, isComponentInternalInstance, isComponentTag, isH5CustomElement, isH5NativeTag, isMiniProgramNativeTag, isRootHook, isRootImmediateHook, isSystemActionSheetDialogPage, isSystemDialogPage, isUniLifecycleHook, isUniXElement, normalizeClass, normalizeDataset, normalizeEventType, normalizeProps, normalizeStyle, normalizeStyles, normalizeTabBarStyles, normalizeTarget, normalizeTitleColor, onCreateVueApp, once, parseEventName, parseNVueDataset, parseQuery, parseUrl, passive, plusReady, removeLeadingSlash, resolveComponentInstance, resolveOwnerEl, resolveOwnerVm, sanitise, scrollTo, sortObject, stringifyQuery, updateElementStyle };

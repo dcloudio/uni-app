@@ -1382,13 +1382,54 @@ var ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED = 'onNavigationBarSearchInputClicked'
 var ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED = 'onNavigationBarSearchInputChanged';
 var ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED = 'onNavigationBarSearchInputConfirmed';
 var ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED = 'onNavigationBarSearchInputFocusChanged';
+function getGlobalOnce() {
+  if (typeof globalThis !== 'undefined') {
+    return globalThis;
+  }
+  // worker
+  if (typeof self !== 'undefined') {
+    return self;
+  }
+  // browser
+  if (typeof window !== 'undefined') {
+    return window;
+  }
+  // nodejs
+  // if (typeof global !== 'undefined') {
+  //   return global
+  // }
+  function g() {
+    return this;
+  }
+  if (typeof g() !== 'undefined') {
+    return g();
+  }
+  return function () {
+    return new Function('return this')();
+  }();
+}
+var g = undefined;
+function getGlobal() {
+  if (g) {
+    return g;
+  }
+  g = getGlobalOnce();
+  return g;
+}
 function normalizeStyle$1(value) {
-  if (value instanceof Map) {
+  var g = getGlobal();
+  if (g && g.UTSJSONObject && value instanceof g.UTSJSONObject) {
     var styleObject = {};
-    value.forEach((value, key) => {
-      styleObject[key] = value;
+    g.UTSJSONObject.keys(value).forEach(key => {
+      styleObject[key] = value[key];
     });
     return normalizeStyle$2(styleObject);
+  } else if (value instanceof Map) {
+    var _styleObject = {};
+    value.forEach((value, key) => {
+      _styleObject[key] = value;
+    });
+    return normalizeStyle$2(_styleObject);
   } else if (isString(value)) {
     return parseStringStyle(value);
   } else if (isArray$1(value)) {
@@ -1409,7 +1450,14 @@ function normalizeStyle$1(value) {
 }
 function normalizeClass(value) {
   var res = '';
-  if (value instanceof Map) {
+  var g = getGlobal();
+  if (g && g.UTSJSONObject && value instanceof g.UTSJSONObject) {
+    g.UTSJSONObject.keys(value).forEach(key => {
+      if (value[key]) {
+        res += key + ' ';
+      }
+    });
+  } else if (value instanceof Map) {
     value.forEach((value, key) => {
       if (value) {
         res += key + ' ';
@@ -8724,10 +8772,10 @@ var getCurrentInstance = () => currentInstance || currentRenderingInstance;
 var internalSetCurrentInstance;
 var setInSSRSetupState;
 {
-  var g = getGlobalThis();
+  var _g = getGlobalThis();
   var registerGlobalSetter = (key, setter) => {
     var setters;
-    if (!(setters = g[key])) setters = g[key] = [];
+    if (!(setters = _g[key])) setters = _g[key] = [];
     setters.push(setter);
     return v => {
       if (setters.length > 1) setters.forEach(set => set(v));else setters[0](v);
