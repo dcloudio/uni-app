@@ -68,8 +68,15 @@ function invokeFail(
   errMsg?: string,
   errRes: any = {}
 ) {
-  const apiErrMsg = name + ':fail' + (errMsg ? ' ' + errMsg : '')
-
+  const errMsgPrefix = name + ':fail'
+  let apiErrMsg = ''
+  if (!errMsg) {
+    apiErrMsg = errMsgPrefix
+  } else if (errMsg.indexOf(errMsgPrefix) === 0) {
+    apiErrMsg = errMsg
+  } else {
+    apiErrMsg = errMsgPrefix + ' ' + errMsg
+  }
   if (!__X__) {
     delete errRes.errCode
   }
@@ -164,7 +171,11 @@ function parseErrMsg(errMsg?: string | Error) {
     return errMsg
   }
   if (errMsg.stack) {
-    if (!__X__) {
+    // 此处同时被鸿蒙arkts和jsvm使用，暂时使用运行时判断鸿蒙jsvm环境，注意此用法仅内部使用
+    if (
+      !__X__ &&
+      (typeof globalThis === 'undefined' || !(globalThis as any).harmonyChannel)
+    ) {
       console.error(errMsg.message + '\n' + errMsg.stack)
     }
     return errMsg.message
