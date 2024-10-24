@@ -14,8 +14,10 @@ interface JSON {
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *           "uniVer": "√",
-   *            "unixVer": "3.9+"
+   *           "uniVer": "x",
+   *           "unixVer": "3.90",
+   *           "uniUtsPlugin": "√",
+   *           "unixUtsPlugin": "3.90"
    *        },
    *        "ios": {
    *           "osVer": "12.0",
@@ -41,8 +43,10 @@ interface JSON {
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *           "uniVer": "3.9+",
-   *            "unixVer": "3.9+"
+   *           "uniVer": "x",
+   *           "unixVer": "3.90",
+   *           "uniUtsPlugin": "3.90",
+   *           "unixUtsPlugin": "3.90"
    *        },
    *        "ios": {
    *           "osVer": "12.0",
@@ -68,8 +72,10 @@ interface JSON {
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *           "uniVer": "√",
-   *            "unixVer": "3.9+"
+   *           "uniVer": "x",
+   *           "unixVer": "3.90",
+   *           "uniUtsPlugin": "3.90",
+   *           "unixUtsPlugin": "3.90"
    *        },
    *        "ios": {
    *           "osVer": "12.0",
@@ -98,8 +104,10 @@ interface JSON {
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *           "uniVer": "3.9+",
-   *            "unixVer": "3.9+"
+   *           "uniVer": "x",
+   *           "unixVer": "3.90",
+   *           "uniUtsPlugin": "3.90",
+   *           "unixUtsPlugin": "3.90"
    *        },
    *        "ios": {
    *           "osVer": "12.0",
@@ -126,8 +134,10 @@ interface JSON {
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *           "uniVer": "√",
-   *            "unixVer": "3.9+"
+   *           "uniVer": "x",
+   *           "unixVer": "3.90",
+   *           "uniUtsPlugin": "3.90",
+   *           "unixUtsPlugin": "3.90"
    *        },
    *        "ios": {
    *           "osVer": "12.0",
@@ -153,8 +163,10 @@ interface JSON {
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *           "uniVer": "√",
-   *            "unixVer": "3.9+"
+   *           "uniVer": "x",
+   *           "unixVer": "3.90",
+   *           "uniUtsPlugin": "3.90",
+   *           "unixUtsPlugin": "3.90"
    *        },
    *        "ios": {
    *           "osVer": "12.0",
@@ -178,9 +190,11 @@ interface JSON {
    * @param-uniPlatform replacer {
    *  "app": {
    *    "android": {
-   *      "osVer": "5.0",
-   *      "uniVer": "√",
-   *      "unixVer": "4.25"
+   *        "osVer": "5.0",
+   *        "uniVer": "x",
+   *        "unixVer": "4.25",
+   *        "uniUtsPlugin": "√",
+   *        "unixUtsPlugin": "4.25"
    *     },
    *    "ios": {
    *      "osVer": "12.0",
@@ -198,8 +212,10 @@ interface JSON {
    *  "app": {
    *    "android": {
    *      "osVer": "5.0",
-   *      "uniVer": "√",
-   *      "unixVer": "4.25"
+   *      "uniVer": "x",
+   *      "unixVer": "4.25",
+   *      "uniUtsPlugin": "√",
+   *      "unixUtsPlugin": "4.25"
    *     },
    *    "ios": {
    *      "osVer": "12.0",
@@ -217,8 +233,10 @@ interface JSON {
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *           "uniVer": "√",
-   *            "unixVer": "3.9+"
+   *           "uniVer": "x",
+   *           "unixVer": "3.90",
+   *           "uniUtsPlugin": "√",
+   *           "unixUtsPlugin": "3.90"
    *        },
    *        "ios": {
    *           "osVer": "12.0",

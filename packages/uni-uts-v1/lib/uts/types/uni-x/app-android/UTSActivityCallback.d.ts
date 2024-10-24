@@ -9,8 +9,10 @@ declare class UniActivityParams {
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *  		     "uniVer": "x",
-   * 			     "unixVer": "4.18"
+   *           "uniVer": "x",
+   *           "unixVer": "4.18",
+   *           "uniUtsPlugin": "x",
+   *           "unixUtsPlugin": "4.18"
    *        },
    *        "ios": {
    *           "osVer": "x",
@@ -27,8 +29,10 @@ declare class UniActivityParams {
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *  		     "uniVer": "x",
-   * 			     "unixVer": "4.18"
+   *           "uniVer": "x",
+   *           "unixVer": "4.18",
+   *           "uniUtsPlugin": "x",
+   *           "unixUtsPlugin": "4.18"
    *        },
    *        "ios": {
    *           "osVer": "x",
@@ -55,8 +59,10 @@ declare class UniActivityCallback implements IUniActivityCallback {
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *  		     "uniVer": "x",
-   * 			     "unixVer": "4.18"
+   *           "uniVer": "x",
+   *           "unixVer": "4.18",
+   *           "uniUtsPlugin": "x",
+   *           "unixUtsPlugin": "4.18"
    *        },
    *        "ios": {
    *           "osVer": "x",
@@ -76,8 +82,10 @@ declare class UniActivityCallback implements IUniActivityCallback {
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *  		     "uniVer": "x",
-   * 			     "unixVer": "4.18"
+   *           "uniVer": "x",
+   *           "unixVer": "4.18",
+   *           "uniUtsPlugin": "x",
+   *           "unixUtsPlugin": "4.18"
    *        },
    *        "ios": {
    *           "osVer": "x",
@@ -98,8 +106,10 @@ declare class UniActivityCallback implements IUniActivityCallback {
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *  		     "uniVer": "x",
-   * 			     "unixVer": "4.18"
+   *           "uniVer": "x",
+   *           "unixVer": "4.18",
+   *           "uniUtsPlugin": "x",
+   *           "unixUtsPlugin": "4.18"
    *        },
    *        "ios": {
    *           "osVer": "x",
@@ -123,8 +133,10 @@ declare class UniActivityCallback implements IUniActivityCallback {
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *  		     "uniVer": "x",
-   * 			     "unixVer": "4.18"
+   *           "uniVer": "x",
+   *           "unixVer": "4.18",
+   *           "uniUtsPlugin": "x",
+   *           "unixUtsPlugin": "4.18"
    *        },
    *        "ios": {
    *           "osVer": "x",
@@ -148,8 +160,10 @@ declare class UniActivityCallback implements IUniActivityCallback {
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *  		     "uniVer": "x",
-   * 			     "unixVer": "4.18"
+   *           "uniVer": "x",
+   *           "unixVer": "4.18",
+   *           "uniUtsPlugin": "x",
+   *           "unixUtsPlugin": "4.18"
    *        },
    *        "ios": {
    *           "osVer": "x",
@@ -173,8 +187,10 @@ declare class UniActivityCallback implements IUniActivityCallback {
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *  		     "uniVer": "x",
-   * 			     "unixVer": "4.18"
+   *           "uniVer": "x",
+   *           "unixVer": "4.18",
+   *           "uniUtsPlugin": "x",
+   *           "unixUtsPlugin": "4.18"
    *        },
    *        "ios": {
    *           "osVer": "x",
@@ -199,8 +215,10 @@ declare class UniActivityCallback implements IUniActivityCallback {
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *  		     "uniVer": "x",
-   * 			     "unixVer": "4.18"
+   *           "uniVer": "x",
+   *           "unixVer": "4.18",
+   *           "uniUtsPlugin": "x",
+   *           "unixUtsPlugin": "4.18"
    *        },
    *        "ios": {
    *           "osVer": "x",
@@ -221,8 +239,10 @@ declare class UniActivityCallback implements IUniActivityCallback {
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *  		     "uniVer": "x",
-   * 			     "unixVer": "4.18"
+   *           "uniVer": "x",
+   *           "unixVer": "4.18",
+   *           "uniUtsPlugin": "x",
+   *           "unixUtsPlugin": "4.18"
    *        },
    *        "ios": {
    *           "osVer": "x",
@@ -244,8 +264,10 @@ declare class UniActivityCallback implements IUniActivityCallback {
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *  		     "uniVer": "x",
-   * 			     "unixVer": "4.18"
+   *           "uniVer": "x",
+   *           "unixVer": "4.18",
+   *           "uniUtsPlugin": "x",
+   *           "unixUtsPlugin": "4.18"
    *        },
    *        "ios": {
    *           "osVer": "x",
@@ -267,8 +289,10 @@ declare class UniActivityCallback implements IUniActivityCallback {
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *  		     "uniVer": "x",
-   * 			     "unixVer": "4.18"
+   *           "uniVer": "x",
+   *           "unixVer": "4.18",
+   *           "uniUtsPlugin": "x",
+   *           "unixUtsPlugin": "4.18"
    *        },
    *        "ios": {
    *           "osVer": "x",
@@ -291,8 +315,10 @@ declare class UniActivityCallback implements IUniActivityCallback {
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *  		     "uniVer": "x",
-   * 			     "unixVer": "4.18"
+   *           "uniVer": "x",
+   *           "unixVer": "4.18",
+   *           "uniUtsPlugin": "x",
+   *           "unixUtsPlugin": "4.18"
    *        },
    *        "ios": {
    *           "osVer": "x",
@@ -314,8 +340,10 @@ declare class UniActivityCallback implements IUniActivityCallback {
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *  		     "uniVer": "x",
-   * 			     "unixVer": "4.18"
+   *           "uniVer": "x",
+   *           "unixVer": "4.18",
+   *           "uniUtsPlugin": "x",
+   *           "unixUtsPlugin": "4.18"
    *        },
    *        "ios": {
    *           "osVer": "x",
@@ -336,8 +364,10 @@ declare class UniActivityCallback implements IUniActivityCallback {
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *  		     "uniVer": "x",
-   * 			     "unixVer": "4.18"
+   *           "uniVer": "x",
+   *           "unixVer": "4.18",
+   *           "uniUtsPlugin": "x",
+   *           "unixUtsPlugin": "4.18"
    *        },
    *        "ios": {
    *           "osVer": "x",
@@ -359,8 +389,10 @@ declare class UniActivityCallback implements IUniActivityCallback {
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *  		     "uniVer": "x",
-   * 			     "unixVer": "4.18"
+   *           "uniVer": "x",
+   *           "unixVer": "4.18",
+   *           "uniUtsPlugin": "x",
+   *           "unixUtsPlugin": "4.18"
    *        },
    *        "ios": {
    *           "osVer": "x",
@@ -381,8 +413,10 @@ declare class UniActivityCallback implements IUniActivityCallback {
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *  		     "uniVer": "x",
-   * 			     "unixVer": "4.18"
+   *           "uniVer": "x",
+   *           "unixVer": "4.18",
+   *           "uniUtsPlugin": "x",
+   *           "unixUtsPlugin": "4.18"
    *        },
    *        "ios": {
    *           "osVer": "x",
@@ -404,8 +438,10 @@ declare class UniActivityCallback implements IUniActivityCallback {
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *  		     "uniVer": "x",
-   * 			     "unixVer": "4.18"
+   *           "uniVer": "x",
+   *           "unixVer": "4.18",
+   *           "uniUtsPlugin": "x",
+   *           "unixUtsPlugin": "4.18"
    *        },
    *        "ios": {
    *           "osVer": "x",
@@ -426,8 +462,10 @@ declare class UniActivityCallback implements IUniActivityCallback {
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *  		     "uniVer": "x",
-   * 			     "unixVer": "4.18"
+   *           "uniVer": "x",
+   *           "unixVer": "4.18",
+   *           "uniUtsPlugin": "x",
+   *           "unixUtsPlugin": "4.18"
    *        },
    *        "ios": {
    *           "osVer": "x",
@@ -449,8 +487,10 @@ declare class UniActivityCallback implements IUniActivityCallback {
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *  		     "uniVer": "x",
-   * 			     "unixVer": "4.18"
+   *           "uniVer": "x",
+   *           "unixVer": "4.18",
+   *           "uniUtsPlugin": "x",
+   *           "unixUtsPlugin": "4.18"
    *        },
    *        "ios": {
    *           "osVer": "x",
@@ -474,8 +514,10 @@ declare class UniActivityCallback implements IUniActivityCallback {
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *  		     "uniVer": "x",
-   * 			     "unixVer": "4.18"
+   *           "uniVer": "x",
+   *           "unixVer": "4.18",
+   *           "uniUtsPlugin": "x",
+   *           "unixUtsPlugin": "4.18"
    *        },
    *        "ios": {
    *           "osVer": "x",
@@ -509,8 +551,10 @@ declare class UniActivityCallback implements IUniActivityCallback {
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *  		     "uniVer": "x",
-   * 			     "unixVer": "4.18"
+   *           "uniVer": "x",
+   *           "unixVer": "4.18",
+   *           "uniUtsPlugin": "x",
+   *           "unixUtsPlugin": "4.18"
    *        },
    *        "ios": {
    *           "osVer": "x",
@@ -535,8 +579,10 @@ declare class UniActivityCallback implements IUniActivityCallback {
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *  		     "uniVer": "x",
-   * 			     "unixVer": "4.18"
+   *           "uniVer": "x",
+   *           "unixVer": "4.18",
+   *           "uniUtsPlugin": "x",
+   *           "unixUtsPlugin": "4.18"
    *        },
    *        "ios": {
    *           "osVer": "x",
@@ -559,8 +605,10 @@ declare class UniActivityCallback implements IUniActivityCallback {
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *  		     "uniVer": "x",
-   * 			     "unixVer": "4.18"
+   *           "uniVer": "x",
+   *           "unixVer": "4.18",
+   *           "uniUtsPlugin": "x",
+   *           "unixUtsPlugin": "4.18"
    *        },
    *        "ios": {
    *           "osVer": "x",
@@ -583,8 +631,10 @@ declare class UniActivityCallback implements IUniActivityCallback {
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *  		     "uniVer": "x",
-   * 			     "unixVer": "4.18"
+   *           "uniVer": "x",
+   *           "unixVer": "4.18",
+   *           "uniUtsPlugin": "x",
+   *           "unixUtsPlugin": "4.18"
    *        },
    *        "ios": {
    *           "osVer": "x",
@@ -606,8 +656,10 @@ declare class UniActivityCallback implements IUniActivityCallback {
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *  		     "uniVer": "x",
-   * 			     "unixVer": "4.18"
+   *           "uniVer": "x",
+   *           "unixVer": "4.18",
+   *           "uniUtsPlugin": "x",
+   *           "unixUtsPlugin": "4.18"
    *        },
    *        "ios": {
    *           "osVer": "x",
@@ -631,8 +683,10 @@ declare class UniActivityCallback implements IUniActivityCallback {
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *  		     "uniVer": "x",
-   * 			     "unixVer": "4.18"
+   *           "uniVer": "x",
+   *           "unixVer": "4.18",
+   *           "uniUtsPlugin": "x",
+   *           "unixUtsPlugin": "4.18"
    *        },
    *        "ios": {
    *           "osVer": "x",
@@ -654,8 +708,10 @@ declare class UniActivityCallback implements IUniActivityCallback {
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *  		     "uniVer": "x",
-   * 			     "unixVer": "4.18"
+   *           "uniVer": "x",
+   *           "unixVer": "4.18",
+   *           "uniUtsPlugin": "x",
+   *           "unixUtsPlugin": "4.18"
    *        },
    *        "ios": {
    *           "osVer": "x",
@@ -677,8 +733,10 @@ declare class UniActivityCallback implements IUniActivityCallback {
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *  		     "uniVer": "x",
-   * 			     "unixVer": "4.18"
+   *           "uniVer": "x",
+   *           "unixVer": "4.18",
+   *           "uniUtsPlugin": "x",
+   *           "unixUtsPlugin": "4.18"
    *        },
    *        "ios": {
    *           "osVer": "x",
@@ -699,8 +757,10 @@ declare class UniActivityCallback implements IUniActivityCallback {
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *  		     "uniVer": "x",
-   * 			     "unixVer": "4.18"
+   *           "uniVer": "x",
+   *           "unixVer": "4.18",
+   *           "uniUtsPlugin": "x",
+   *           "unixUtsPlugin": "4.18"
    *        },
    *        "ios": {
    *           "osVer": "x",
@@ -722,8 +782,10 @@ declare class UniActivityCallback implements IUniActivityCallback {
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *  		     "uniVer": "x",
-   * 			     "unixVer": "4.18"
+   *           "uniVer": "x",
+   *           "unixVer": "4.18",
+   *           "uniUtsPlugin": "x",
+   *           "unixUtsPlugin": "4.18"
    *        },
    *        "ios": {
    *           "osVer": "x",
@@ -752,8 +814,10 @@ declare class UniActivityComponentCallback implements IUniActivityCallback {
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *  		     "uniVer": "x",
-   * 			     "unixVer": "4.18"
+   *           "uniVer": "x",
+   *           "unixVer": "4.18",
+   *           "uniUtsPlugin": "x",
+   *           "unixUtsPlugin": "4.18"
    *        },
    *        "ios": {
    *           "osVer": "x",
@@ -774,8 +838,10 @@ declare class UniActivityComponentCallback implements IUniActivityCallback {
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *  		     "uniVer": "x",
-   * 			     "unixVer": "4.18"
+   *           "uniVer": "x",
+   *           "unixVer": "4.18",
+   *           "uniUtsPlugin": "x",
+   *           "unixUtsPlugin": "4.18"
    *        },
    *        "ios": {
    *           "osVer": "x",
@@ -796,8 +862,10 @@ declare class UniActivityComponentCallback implements IUniActivityCallback {
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *  		     "uniVer": "x",
-   * 			     "unixVer": "4.18"
+   *           "uniVer": "x",
+   *           "unixVer": "4.18",
+   *           "uniUtsPlugin": "x",
+   *           "unixUtsPlugin": "4.18"
    *        },
    *        "ios": {
    *           "osVer": "x",
@@ -819,8 +887,10 @@ declare class UniActivityComponentCallback implements IUniActivityCallback {
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *  		     "uniVer": "x",
-   * 			     "unixVer": "4.18"
+   *           "uniVer": "x",
+   *           "unixVer": "4.18",
+   *           "uniUtsPlugin": "x",
+   *           "unixUtsPlugin": "4.18"
    *        },
    *        "ios": {
    *           "osVer": "x",
@@ -841,8 +911,10 @@ declare class UniActivityComponentCallback implements IUniActivityCallback {
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *  		     "uniVer": "x",
-   * 			     "unixVer": "4.18"
+   *           "uniVer": "x",
+   *           "unixVer": "4.18",
+   *           "uniUtsPlugin": "x",
+   *           "unixUtsPlugin": "4.18"
    *        },
    *        "ios": {
    *           "osVer": "x",
@@ -864,8 +936,10 @@ declare class UniActivityComponentCallback implements IUniActivityCallback {
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *  		     "uniVer": "x",
-   * 			     "unixVer": "4.18"
+   *           "uniVer": "x",
+   *           "unixVer": "4.18",
+   *           "uniUtsPlugin": "x",
+   *           "unixUtsPlugin": "4.18"
    *        },
    *        "ios": {
    *           "osVer": "x",
@@ -895,8 +969,10 @@ declare class UniActivityKeyEventCallback implements IUniActivityCallback {
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *  		     "uniVer": "x",
-   * 			     "unixVer": "4.18"
+   *           "uniVer": "x",
+   *           "unixVer": "4.18",
+   *           "uniUtsPlugin": "x",
+   *           "unixUtsPlugin": "4.18"
    *        },
    *        "ios": {
    *           "osVer": "x",
@@ -919,8 +995,10 @@ declare class UniActivityKeyEventCallback implements IUniActivityCallback {
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *  		     "uniVer": "x",
-   * 			     "unixVer": "4.18"
+   *           "uniVer": "x",
+   *           "unixVer": "4.18",
+   *           "uniUtsPlugin": "x",
+   *           "unixUtsPlugin": "4.18"
    *        },
    *        "ios": {
    *           "osVer": "x",
@@ -942,8 +1020,10 @@ declare class UniActivityKeyEventCallback implements IUniActivityCallback {
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *  		     "uniVer": "x",
-   * 			     "unixVer": "4.18"
+   *           "uniVer": "x",
+   *           "unixVer": "4.18",
+   *           "uniUtsPlugin": "x",
+   *           "unixUtsPlugin": "4.18"
    *        },
    *        "ios": {
    *           "osVer": "x",
@@ -967,8 +1047,10 @@ declare class UniActivityKeyEventCallback implements IUniActivityCallback {
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *  		     "uniVer": "x",
-   * 			     "unixVer": "4.18"
+   *           "uniVer": "x",
+   *           "unixVer": "4.18",
+   *           "uniUtsPlugin": "x",
+   *           "unixUtsPlugin": "4.18"
    *        },
    *        "ios": {
    *           "osVer": "x",
@@ -991,8 +1073,10 @@ declare class UniActivityKeyEventCallback implements IUniActivityCallback {
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *  		     "uniVer": "x",
-   * 			     "unixVer": "4.18"
+   *           "uniVer": "x",
+   *           "unixVer": "4.18",
+   *           "uniUtsPlugin": "x",
+   *           "unixUtsPlugin": "4.18"
    *        },
    *        "ios": {
    *           "osVer": "x",
@@ -1015,8 +1099,10 @@ declare class UniActivityKeyEventCallback implements IUniActivityCallback {
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *  		     "uniVer": "x",
-   * 			     "unixVer": "4.18"
+   *           "uniVer": "x",
+   *           "unixVer": "4.18",
+   *           "uniUtsPlugin": "x",
+   *           "unixUtsPlugin": "4.18"
    *        },
    *        "ios": {
    *           "osVer": "x",
@@ -1039,8 +1125,10 @@ declare class UniActivityKeyEventCallback implements IUniActivityCallback {
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *  		     "uniVer": "x",
-   * 			     "unixVer": "4.18"
+   *           "uniVer": "x",
+   *           "unixVer": "4.18",
+   *           "uniUtsPlugin": "x",
+   *           "unixUtsPlugin": "4.18"
    *        },
    *        "ios": {
    *           "osVer": "x",
@@ -1064,8 +1152,10 @@ declare class UniActivityKeyEventCallback implements IUniActivityCallback {
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *  		     "uniVer": "x",
-   * 			     "unixVer": "4.18"
+   *           "uniVer": "x",
+   *           "unixVer": "4.18",
+   *           "uniUtsPlugin": "x",
+   *           "unixUtsPlugin": "4.18"
    *        },
    *        "ios": {
    *           "osVer": "x",
@@ -1094,8 +1184,10 @@ declare class UniActivityLifeCycleCallback implements IUniActivityCallback {
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *  		     "uniVer": "x",
-   * 			     "unixVer": "4.18"
+   *           "uniVer": "x",
+   *           "unixVer": "4.18",
+   *           "uniUtsPlugin": "x",
+   *           "unixUtsPlugin": "4.18"
    *        },
    *        "ios": {
    *           "osVer": "x",
@@ -1118,8 +1210,10 @@ declare class UniActivityLifeCycleCallback implements IUniActivityCallback {
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *  		     "uniVer": "x",
-   * 			     "unixVer": "4.18"
+   *           "uniVer": "x",
+   *           "unixVer": "4.18",
+   *           "uniUtsPlugin": "x",
+   *           "unixUtsPlugin": "4.18"
    *        },
    *        "ios": {
    *           "osVer": "x",
@@ -1141,8 +1235,10 @@ declare class UniActivityLifeCycleCallback implements IUniActivityCallback {
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *  		     "uniVer": "x",
-   * 			     "unixVer": "4.18"
+   *           "uniVer": "x",
+   *           "unixVer": "4.18",
+   *           "uniUtsPlugin": "x",
+   *           "unixUtsPlugin": "4.18"
    *        },
    *        "ios": {
    *           "osVer": "x",
@@ -1163,8 +1259,10 @@ declare class UniActivityLifeCycleCallback implements IUniActivityCallback {
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *  		     "uniVer": "x",
-   * 			     "unixVer": "4.18"
+   *           "uniVer": "x",
+   *           "unixVer": "4.18",
+   *           "uniUtsPlugin": "x",
+   *           "unixUtsPlugin": "4.18"
    *        },
    *        "ios": {
    *           "osVer": "x",
@@ -1185,8 +1283,10 @@ declare class UniActivityLifeCycleCallback implements IUniActivityCallback {
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *  		     "uniVer": "x",
-   * 			     "unixVer": "4.18"
+   *           "uniVer": "x",
+   *           "unixVer": "4.18",
+   *           "uniUtsPlugin": "x",
+   *           "unixUtsPlugin": "4.18"
    *        },
    *        "ios": {
    *           "osVer": "x",
@@ -1206,8 +1306,10 @@ declare class UniActivityLifeCycleCallback implements IUniActivityCallback {
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *  		     "uniVer": "x",
-   * 			     "unixVer": "4.18"
+   *           "uniVer": "x",
+   *           "unixVer": "4.18",
+   *           "uniUtsPlugin": "x",
+   *           "unixUtsPlugin": "4.18"
    *        },
    *        "ios": {
    *           "osVer": "x",
@@ -1228,8 +1330,10 @@ declare class UniActivityLifeCycleCallback implements IUniActivityCallback {
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *  		     "uniVer": "x",
-   * 			     "unixVer": "4.18"
+   *           "uniVer": "x",
+   *           "unixVer": "4.18",
+   *           "uniUtsPlugin": "x",
+   *           "unixUtsPlugin": "4.18"
    *        },
    *        "ios": {
    *           "osVer": "x",
@@ -1251,8 +1355,10 @@ declare class UniActivityLifeCycleCallback implements IUniActivityCallback {
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *  		     "uniVer": "x",
-   * 			     "unixVer": "4.18"
+   *           "uniVer": "x",
+   *           "unixVer": "4.18",
+   *           "uniUtsPlugin": "x",
+   *           "unixUtsPlugin": "4.18"
    *        },
    *        "ios": {
    *           "osVer": "x",
@@ -1273,8 +1379,10 @@ declare class UniActivityLifeCycleCallback implements IUniActivityCallback {
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *  		     "uniVer": "x",
-   * 			     "unixVer": "4.18"
+   *           "uniVer": "x",
+   *           "unixVer": "4.18",
+   *           "uniUtsPlugin": "x",
+   *           "unixUtsPlugin": "4.18"
    *        },
    *        "ios": {
    *           "osVer": "x",
@@ -1295,8 +1403,10 @@ declare class UniActivityLifeCycleCallback implements IUniActivityCallback {
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *  		     "uniVer": "x",
-   * 			     "unixVer": "4.18"
+   *           "uniVer": "x",
+   *           "unixVer": "4.18",
+   *           "uniUtsPlugin": "x",
+   *           "unixUtsPlugin": "4.18"
    *        },
    *        "ios": {
    *           "osVer": "x",
@@ -1318,8 +1428,10 @@ declare class UniActivityLifeCycleCallback implements IUniActivityCallback {
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *  		     "uniVer": "x",
-   * 			     "unixVer": "4.18"
+   *           "uniVer": "x",
+   *           "unixVer": "4.18",
+   *           "uniUtsPlugin": "x",
+   *           "unixUtsPlugin": "4.18"
    *        },
    *        "ios": {
    *           "osVer": "x",
@@ -1340,8 +1452,10 @@ declare class UniActivityLifeCycleCallback implements IUniActivityCallback {
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *  		     "uniVer": "x",
-   * 			     "unixVer": "4.18"
+   *           "uniVer": "x",
+   *           "unixVer": "4.18",
+   *           "uniUtsPlugin": "x",
+   *           "unixUtsPlugin": "4.18"
    *        },
    *        "ios": {
    *           "osVer": "x",
@@ -1362,8 +1476,10 @@ declare class UniActivityLifeCycleCallback implements IUniActivityCallback {
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *  		     "uniVer": "x",
-   * 			     "unixVer": "4.18"
+   *           "uniVer": "x",
+   *           "unixVer": "4.18",
+   *           "uniUtsPlugin": "x",
+   *           "unixUtsPlugin": "4.18"
    *        },
    *        "ios": {
    *           "osVer": "x",
@@ -1384,8 +1500,10 @@ declare class UniActivityLifeCycleCallback implements IUniActivityCallback {
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *  		     "uniVer": "x",
-   * 			     "unixVer": "4.18"
+   *           "uniVer": "x",
+   *           "unixVer": "4.18",
+   *           "uniUtsPlugin": "x",
+   *           "unixUtsPlugin": "4.18"
    *        },
    *        "ios": {
    *           "osVer": "x",
@@ -1411,8 +1529,10 @@ declare class UniActivityWindowCallback implements IUniActivityCallback {
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *  		     "uniVer": "x",
-   * 			     "unixVer": "4.18"
+   *           "uniVer": "x",
+   *           "unixVer": "4.18",
+   *           "uniUtsPlugin": "x",
+   *           "unixUtsPlugin": "4.18"
    *        },
    *        "ios": {
    *           "osVer": "x",
@@ -1433,8 +1553,10 @@ declare class UniActivityWindowCallback implements IUniActivityCallback {
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *  		     "uniVer": "x",
-   * 			     "unixVer": "4.18"
+   *           "uniVer": "x",
+   *           "unixVer": "4.18",
+   *           "uniUtsPlugin": "x",
+   *           "unixUtsPlugin": "4.18"
    *        },
    *        "ios": {
    *           "osVer": "x",
@@ -1456,8 +1578,10 @@ declare class UniActivityWindowCallback implements IUniActivityCallback {
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *  		     "uniVer": "x",
-   * 			     "unixVer": "4.18"
+   *           "uniVer": "x",
+   *           "unixVer": "4.18",
+   *           "uniUtsPlugin": "x",
+   *           "unixUtsPlugin": "4.18"
    *        },
    *        "ios": {
    *           "osVer": "x",
@@ -1479,8 +1603,10 @@ declare class UniActivityWindowCallback implements IUniActivityCallback {
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *  		     "uniVer": "x",
-   * 			     "unixVer": "4.18"
+   *           "uniVer": "x",
+   *           "unixVer": "4.18",
+   *           "uniUtsPlugin": "x",
+   *           "unixUtsPlugin": "4.18"
    *        },
    *        "ios": {
    *           "osVer": "x",
@@ -1501,8 +1627,10 @@ declare class UniActivityWindowCallback implements IUniActivityCallback {
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *  		     "uniVer": "x",
-   * 			     "unixVer": "4.18"
+   *           "uniVer": "x",
+   *           "unixVer": "4.18",
+   *           "uniUtsPlugin": "x",
+   *           "unixUtsPlugin": "4.18"
    *        },
    *        "ios": {
    *           "osVer": "x",
@@ -1525,8 +1653,10 @@ declare class UniActivityWindowCallback implements IUniActivityCallback {
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *  		     "uniVer": "x",
-   * 			     "unixVer": "4.18"
+   *           "uniVer": "x",
+   *           "unixVer": "4.18",
+   *           "uniUtsPlugin": "x",
+   *           "unixUtsPlugin": "4.18"
    *        },
    *        "ios": {
    *           "osVer": "x",
@@ -1546,8 +1676,10 @@ declare class UniActivityWindowCallback implements IUniActivityCallback {
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *  		     "uniVer": "x",
-   * 			     "unixVer": "4.18"
+   *           "uniVer": "x",
+   *           "unixVer": "4.18",
+   *           "uniUtsPlugin": "x",
+   *           "unixUtsPlugin": "4.18"
    *        },
    *        "ios": {
    *           "osVer": "x",
@@ -1569,8 +1701,10 @@ declare class UniActivityWindowCallback implements IUniActivityCallback {
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *  		     "uniVer": "x",
-   * 			     "unixVer": "4.18"
+   *           "uniVer": "x",
+   *           "unixVer": "4.18",
+   *           "uniUtsPlugin": "x",
+   *           "unixUtsPlugin": "4.18"
    *        },
    *        "ios": {
    *           "osVer": "x",
@@ -1593,8 +1727,10 @@ declare class UniActivityWindowCallback implements IUniActivityCallback {
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *  		     "uniVer": "x",
-   * 			     "unixVer": "4.18"
+   *           "uniVer": "x",
+   *           "unixVer": "4.18",
+   *           "uniUtsPlugin": "x",
+   *           "unixUtsPlugin": "4.18"
    *        },
    *        "ios": {
    *           "osVer": "x",
@@ -1616,8 +1752,10 @@ declare class UniActivityWindowCallback implements IUniActivityCallback {
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *  		     "uniVer": "x",
-   * 			     "unixVer": "4.18"
+   *           "uniVer": "x",
+   *           "unixVer": "4.18",
+   *           "uniUtsPlugin": "x",
+   *           "unixUtsPlugin": "4.18"
    *        },
    *        "ios": {
    *           "osVer": "x",
@@ -1639,8 +1777,10 @@ declare class UniActivityWindowCallback implements IUniActivityCallback {
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *  		     "uniVer": "x",
-   * 			     "unixVer": "4.18"
+   *           "uniVer": "x",
+   *           "unixVer": "4.18",
+   *           "uniUtsPlugin": "x",
+   *           "unixUtsPlugin": "4.18"
    *        },
    *        "ios": {
    *           "osVer": "x",
@@ -1664,8 +1804,10 @@ declare class UniActivityWindowCallback implements IUniActivityCallback {
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *  		     "uniVer": "x",
-   * 			     "unixVer": "4.18"
+   *           "uniVer": "x",
+   *           "unixVer": "4.18",
+   *           "uniUtsPlugin": "x",
+   *           "unixUtsPlugin": "4.18"
    *        },
    *        "ios": {
    *           "osVer": "x",
@@ -1687,8 +1829,10 @@ declare class UniActivityWindowCallback implements IUniActivityCallback {
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *  		     "uniVer": "x",
-   * 			     "unixVer": "4.18"
+   *           "uniVer": "x",
+   *           "unixVer": "4.18",
+   *           "uniUtsPlugin": "x",
+   *           "unixUtsPlugin": "4.18"
    *        },
    *        "ios": {
    *           "osVer": "x",
@@ -1709,8 +1853,10 @@ declare class UniActivityWindowCallback implements IUniActivityCallback {
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *  		     "uniVer": "x",
-   * 			     "unixVer": "4.18"
+   *           "uniVer": "x",
+   *           "unixVer": "4.18",
+   *           "uniUtsPlugin": "x",
+   *           "unixUtsPlugin": "4.18"
    *        },
    *        "ios": {
    *           "osVer": "x",
@@ -1731,8 +1877,10 @@ declare class UniActivityWindowCallback implements IUniActivityCallback {
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *  		     "uniVer": "x",
-   * 			     "unixVer": "4.18"
+   *           "uniVer": "x",
+   *           "unixVer": "4.18",
+   *           "uniUtsPlugin": "x",
+   *           "unixUtsPlugin": "4.18"
    *        },
    *        "ios": {
    *           "osVer": "x",
@@ -1754,8 +1902,10 @@ declare class UniActivityWindowCallback implements IUniActivityCallback {
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *  		     "uniVer": "x",
-   * 			     "unixVer": "4.18"
+   *           "uniVer": "x",
+   *           "unixVer": "4.18",
+   *           "uniUtsPlugin": "x",
+   *           "unixUtsPlugin": "4.18"
    *        },
    *        "ios": {
    *           "osVer": "x",
@@ -1777,8 +1927,10 @@ declare class UniActivityWindowCallback implements IUniActivityCallback {
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *  		     "uniVer": "x",
-   * 			     "unixVer": "4.18"
+   *           "uniVer": "x",
+   *           "unixVer": "4.18",
+   *           "uniUtsPlugin": "x",
+   *           "unixUtsPlugin": "4.18"
    *        },
    *        "ios": {
    *           "osVer": "x",
@@ -1799,8 +1951,10 @@ declare class UniActivityWindowCallback implements IUniActivityCallback {
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *  		     "uniVer": "x",
-   * 			     "unixVer": "4.18"
+   *           "uniVer": "x",
+   *           "unixVer": "4.18",
+   *           "uniUtsPlugin": "x",
+   *           "unixUtsPlugin": "4.18"
    *        },
    *        "ios": {
    *           "osVer": "x",
@@ -1823,8 +1977,10 @@ declare class UniActivityWindowCallback implements IUniActivityCallback {
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *  		     "uniVer": "x",
-   * 			     "unixVer": "4.18"
+   *           "uniVer": "x",
+   *           "unixVer": "4.18",
+   *           "uniUtsPlugin": "x",
+   *           "unixUtsPlugin": "4.18"
    *        },
    *        "ios": {
    *           "osVer": "x",
@@ -1845,8 +2001,10 @@ declare class UniActivityWindowCallback implements IUniActivityCallback {
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *  		     "uniVer": "x",
-   * 			     "unixVer": "4.18"
+   *           "uniVer": "x",
+   *           "unixVer": "4.18",
+   *           "uniUtsPlugin": "x",
+   *           "unixUtsPlugin": "4.18"
    *        },
    *        "ios": {
    *           "osVer": "x",
@@ -1868,8 +2026,10 @@ declare class UniActivityWindowCallback implements IUniActivityCallback {
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *  		     "uniVer": "x",
-   * 			     "unixVer": "4.18"
+   *           "uniVer": "x",
+   *           "unixVer": "4.18",
+   *           "uniUtsPlugin": "x",
+   *           "unixUtsPlugin": "4.18"
    *        },
    *        "ios": {
    *           "osVer": "x",
@@ -1891,8 +2051,10 @@ declare class UniActivityWindowCallback implements IUniActivityCallback {
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *  		     "uniVer": "x",
-   * 			     "unixVer": "4.18"
+   *           "uniVer": "x",
+   *           "unixVer": "4.18",
+   *           "uniUtsPlugin": "x",
+   *           "unixUtsPlugin": "4.18"
    *        },
    *        "ios": {
    *           "osVer": "x",
@@ -1915,8 +2077,10 @@ declare class UniActivityWindowCallback implements IUniActivityCallback {
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *  		     "uniVer": "x",
-   * 			     "unixVer": "4.18"
+   *           "uniVer": "x",
+   *           "unixVer": "4.18",
+   *           "uniUtsPlugin": "x",
+   *           "unixUtsPlugin": "4.18"
    *        },
    *        "ios": {
    *           "osVer": "x",
@@ -1938,8 +2102,10 @@ declare class UniActivityWindowCallback implements IUniActivityCallback {
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *  		     "uniVer": "x",
-   * 			     "unixVer": "4.18"
+   *           "uniVer": "x",
+   *           "unixVer": "4.18",
+   *           "uniUtsPlugin": "x",
+   *           "unixUtsPlugin": "4.18"
    *        },
    *        "ios": {
    *           "osVer": "x",
@@ -1961,8 +2127,10 @@ declare class UniActivityWindowCallback implements IUniActivityCallback {
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *  		     "uniVer": "x",
-   * 			     "unixVer": "4.18"
+   *           "uniVer": "x",
+   *           "unixVer": "4.18",
+   *           "uniUtsPlugin": "x",
+   *           "unixUtsPlugin": "4.18"
    *        },
    *        "ios": {
    *           "osVer": "x",
@@ -1986,8 +2154,10 @@ declare class UniActivityWindowCallback implements IUniActivityCallback {
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *  		     "uniVer": "x",
-   * 			     "unixVer": "4.18"
+   *           "uniVer": "x",
+   *           "unixVer": "4.18",
+   *           "uniUtsPlugin": "x",
+   *           "unixUtsPlugin": "4.18"
    *        },
    *        "ios": {
    *           "osVer": "x",
@@ -2009,8 +2179,10 @@ declare class UniActivityWindowCallback implements IUniActivityCallback {
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *  		     "uniVer": "x",
-   * 			     "unixVer": "4.18"
+   *           "uniVer": "x",
+   *           "unixVer": "4.18",
+   *           "uniUtsPlugin": "x",
+   *           "unixUtsPlugin": "4.18"
    *        },
    *        "ios": {
    *           "osVer": "x",
@@ -2032,8 +2204,10 @@ declare class UniActivityWindowCallback implements IUniActivityCallback {
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *  		     "uniVer": "x",
-   * 			     "unixVer": "4.18"
+   *           "uniVer": "x",
+   *           "unixVer": "4.18",
+   *           "uniUtsPlugin": "x",
+   *           "unixUtsPlugin": "4.18"
    *        },
    *        "ios": {
    *           "osVer": "x",
@@ -2054,8 +2228,10 @@ declare class UniActivityWindowCallback implements IUniActivityCallback {
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *  		     "uniVer": "x",
-   * 			     "unixVer": "4.18"
+   *           "uniVer": "x",
+   *           "unixVer": "4.18",
+   *           "uniUtsPlugin": "x",
+   *           "unixUtsPlugin": "4.18"
    *        },
    *        "ios": {
    *           "osVer": "x",

@@ -38,8 +38,10 @@ declare function eval(x : string) : any;
  *    "app": {
  *        "android": {
  *           "osVer": "5.0",
- *           "uniVer": "3.9+",
- *            "unixVer": "3.9+"
+ *           "uniVer": "x",
+ *           "unixVer": "3.90",
+ *           "uniUtsPlugin": "3.90",
+ *           "unixUtsPlugin": "3.90"
  *        },
  *        "ios": {
  *           "osVer": "12.0",
@@ -64,8 +66,10 @@ declare function parseInt(string : string, radix ?: number) : number;
  *    "app": {
  *        "android": {
  *           "osVer": "5.0",
- *           "uniVer": "3.9+",
- *            "unixVer": "3.9+"
+ *           "uniVer": "x",
+ *           "unixVer": "3.90",
+ *           "uniUtsPlugin": "3.90",
+ *           "unixUtsPlugin": "3.90"
  *        },
  *        "ios": {
  *           "osVer": "12.0",
@@ -90,8 +94,10 @@ declare function parseFloat(string : string) : number;
  *    "app": {
  *        "android": {
  *           "osVer": "5.0",
- *           "uniVer": "3.9+",
- *            "unixVer": "3.9+"
+ *           "uniVer": "x",
+ *           "unixVer": "3.90",
+ *           "uniUtsPlugin": "3.90",
+ *           "unixUtsPlugin": "3.90"
  *        },
  *        "ios": {
  *           "osVer": "12.0",
@@ -116,8 +122,10 @@ declare function isNaN(number : number) : boolean;
  *    "app": {
  *        "android": {
  *           "osVer": "5.0",
- *           "uniVer": "3.9+",
- *            "unixVer": "3.9+"
+ *           "uniVer": "x",
+ *           "unixVer": "3.90",
+ *           "uniUtsPlugin": "3.90",
+ *           "unixUtsPlugin": "3.90"
  *        },
  *        "ios": {
  *           "osVer": "12.0",
@@ -142,8 +150,10 @@ declare function isFinite(number : number) : boolean;
  *    "app": {
  *        "android": {
  *           "osVer": "5.0",
- *           "uniVer": "3.91",
- *            "unixVer": "3.91"
+ *           "uniVer": "x",
+ *           "unixVer": "3.91",
+ *           "uniUtsPlugin": "3.91",
+ *           "unixUtsPlugin": "3.91"
  *        },
  *        "ios": {
  *           "osVer": "12.0",
@@ -168,8 +178,10 @@ declare function decodeURI(encodedURI : string) : string|null;
  *    "app": {
  *        "android": {
  *           "osVer": "5.0",
- *           "uniVer": "3.91",
- *            "unixVer": "3.91"
+ *           "uniVer": "x",
+ *           "unixVer": "3.91",
+ *           "uniUtsPlugin": "3.91",
+ *           "unixUtsPlugin": "3.91"
  *        },
  *        "ios": {
  *           "osVer": "12.0",
@@ -194,8 +206,10 @@ declare function decodeURIComponent(encodedURIComponent : string) : string|null;
  *    "app": {
  *        "android": {
  *           "osVer": "5.0",
- *           "uniVer": "3.91",
- *            "unixVer": "3.91"
+ *           "uniVer": "x",
+ *           "unixVer": "3.91",
+ *           "uniUtsPlugin": "3.91",
+ *           "unixUtsPlugin": "3.91"
  *        },
  *        "ios": {
  *           "osVer": "12.0",
@@ -220,8 +234,10 @@ declare function encodeURI(uri : string) : string|null;
  *    "app": {
  *        "android": {
  *           "osVer": "5.0",
- *           "uniVer": "3.91",
- *            "unixVer": "3.91"
+ *           "uniVer": "x",
+ *           "unixVer": "3.91",
+ *           "uniUtsPlugin": "3.91",
+ *           "unixUtsPlugin": "3.91"
  *        },
  *        "ios": {
  *           "osVer": "12.0",
@@ -247,8 +263,10 @@ declare function encodeURIComponent(uriComponent : string) : string|null;
  *    "app": {
  *        "android": {
  *           "osVer": "5.0",
- *           "uniVer": "4.25",
- *           "unixVer": "4.25"
+ *           "uniVer": "x",
+ *           "unixVer": "4.25",
+ *           "uniUtsPlugin": "4.25",
+ *           "unixUtsPlugin": "4.25"
  *        },
  *        "ios": {
  *           "osVer": "x",
@@ -274,8 +292,10 @@ declare function atob(encodedData : string) : string
  *    "app": {
  *        "android": {
  *           "osVer": "5.0",
- *           "uniVer": "4.25",
- *           "unixVer": "4.25"
+ *           "uniVer": "x",
+ *           "unixVer": "4.25",
+ *           "uniUtsPlugin": "4.25",
+ *           "unixUtsPlugin": "4.25"
  *        },
  *        "ios": {
  *           "osVer": "x",
@@ -298,7 +318,9 @@ declare function btoa(stringToEncode : string) : string
  *     "android": {
  *       "osVer": "5.0",
  *       "uniVer": "x",
- *       "unixVer": "4.25"
+ *       "unixVer": "4.25",
+ *       "uniUtsPlugin": "x",
+ *       "unixUtsPlugin": "4.25"
  *     },
  *     "ios": {
  *       "osVer": "12.0",
@@ -321,7 +343,9 @@ declare function requestAnimationFrame(callback: RequestAnimationFrameCallback):
  *     "android": {
  *       "osVer": "5.0",
  *       "uniVer": "x",
- *       "unixVer": "4.25"
+ *       "unixVer": "4.25",
+ *       "uniUtsPlugin": "x",
+ *       "unixUtsPlugin": "4.25"
  *     },
  *     "ios": {
  *       "osVer": "12.0",
