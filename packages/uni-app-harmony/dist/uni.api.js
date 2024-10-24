@@ -416,7 +416,17 @@ function invokeSuccess(id, name, res) {
     return invokeCallback(id, extend((res || {}), result));
 }
 function invokeFail(id, name, errMsg, errRes = {}) {
-    const apiErrMsg = name + ':fail' + (errMsg ? ' ' + errMsg : '');
+    const errMsgPrefix = name + ':fail';
+    let apiErrMsg = '';
+    if (!errMsg) {
+        apiErrMsg = errMsgPrefix;
+    }
+    else if (errMsg.indexOf(errMsgPrefix) === 0) {
+        apiErrMsg = errMsg;
+    }
+    else {
+        apiErrMsg = errMsgPrefix + ' ' + errMsg;
+    }
     let res = extend({ errMsg: apiErrMsg }, errRes);
     {
         if (typeof UniError !== 'undefined') {
@@ -486,7 +496,6 @@ function parseErrMsg(errMsg) {
         return errMsg;
     }
     if (errMsg.stack) {
-        console.error(errMsg.message + '\n' + errMsg.stack);
         return errMsg.message;
     }
     return errMsg;
