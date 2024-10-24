@@ -404,7 +404,15 @@ function invokeSuccess(id2, name, res) {
 }
 function invokeFail(id2, name, errMsg) {
   var errRes = arguments.length > 3 && arguments[3] !== void 0 ? arguments[3] : {};
-  var apiErrMsg = name + ":fail" + (errMsg ? " " + errMsg : "");
+  var errMsgPrefix = name + ":fail";
+  var apiErrMsg = "";
+  if (!errMsg) {
+    apiErrMsg = errMsgPrefix;
+  } else if (errMsg.indexOf(errMsgPrefix) === 0) {
+    apiErrMsg = errMsg;
+  } else {
+    apiErrMsg = errMsgPrefix + " " + errMsg;
+  }
   var res = extend({
     errMsg: apiErrMsg
   }, errRes);
@@ -432,7 +440,6 @@ function parseErrMsg(errMsg) {
     return errMsg;
   }
   if (errMsg.stack) {
-    console.error(errMsg.message + "\n" + errMsg.stack);
     return errMsg.message;
   }
   return errMsg;
@@ -1024,10 +1031,10 @@ function setupPage(component) {
       }
     } = ctx;
     var instance = getCurrentInstance();
-    instance.$dialogPages = [];
     var pageVm = instance.proxy;
     initPageVm(pageVm, __pageInstance);
     {
+      instance.$dialogPages = [];
       var uniPage = new UniPageImpl();
       pageVm.$basePage = pageVm.$page;
       pageVm.$page = uniPage;
@@ -1072,9 +1079,9 @@ function setupPage(component) {
       };
       uniPage.getAndroidView = () => null;
       uniPage.getHTMLElement = () => null;
-    }
-    if (getPage$BasePage(pageVm).openType !== "openDialogPage") {
-      addCurrentPage(initScope(__pageId, pageVm, __pageInstance));
+      if (getPage$BasePage(pageVm).openType !== "openDialogPage") {
+        addCurrentPageWithInitScope(__pageId, pageVm, __pageInstance);
+      }
     }
     if (oldSetup) {
       return oldSetup(props, ctx);
@@ -1107,6 +1114,9 @@ function initScope(pageId, vm, pageInstance) {
     return pageInstance.eventChannel;
   };
   return vm;
+}
+function addCurrentPageWithInitScope(pageId, pageVm, pageInstance) {
+  addCurrentPage(initScope(pageId, pageVm, pageInstance));
 }
 function isVuePageAsyncComponent(component) {
   return isFunction$1(component);

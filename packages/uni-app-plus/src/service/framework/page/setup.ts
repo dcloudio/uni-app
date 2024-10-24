@@ -26,10 +26,10 @@ export function setupPage(component: VuePageComponent) {
       console.log(formatLog(__pagePath as string, 'setup'))
     }
     const instance = getCurrentInstance()!
-    instance.$dialogPages = []
     const pageVm = instance.proxy!
     initPageVm(pageVm, __pageInstance as Page.PageInstance['$page'])
     if (__X__) {
+      instance.$dialogPages = []
       const uniPage = new UniPageImpl()
       pageVm.$basePage = pageVm.$page as Page.PageInstance['$page']
       pageVm.$page = uniPage
@@ -79,14 +79,19 @@ export function setupPage(component: VuePageComponent) {
 
       uniPage.getAndroidView = () => null
       uniPage.getHTMLElement = () => null
-    }
-    if (getPage$BasePage(pageVm).openType !== 'openDialogPage') {
-      addCurrentPage(
-        initScope(
+
+      if (getPage$BasePage(pageVm).openType !== 'openDialogPage') {
+        addCurrentPageWithInitScope(
           __pageId as number,
           pageVm,
           __pageInstance as Page.PageInstance['$page']
         )
+      }
+    } else {
+      addCurrentPageWithInitScope(
+        __pageId as number,
+        pageVm,
+        __pageInstance as Page.PageInstance['$page']
       )
     }
     if (!__X__) {
@@ -145,4 +150,12 @@ export function initScope(
     return pageInstance.eventChannel as EventChannel
   }
   return vm
+}
+
+function addCurrentPageWithInitScope(
+  pageId: number,
+  pageVm: ComponentPublicInstance,
+  pageInstance: Page.PageInstance['$page']
+) {
+  addCurrentPage(initScope(pageId, pageVm, pageInstance))
 }
