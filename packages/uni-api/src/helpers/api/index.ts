@@ -164,7 +164,9 @@ function parseErrMsg(errMsg?: string | Error) {
     return errMsg
   }
   if (errMsg.stack) {
-    console.error(errMsg.message + '\n' + errMsg.stack)
+    if (!__X__) {
+      console.error(errMsg.message + '\n' + errMsg.stack)
+    }
     return errMsg.message
   }
   return errMsg as unknown as string
