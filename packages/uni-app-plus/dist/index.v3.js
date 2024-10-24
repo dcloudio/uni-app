@@ -8030,7 +8030,7 @@ var serviceContext = (function () {
     const {
       deviceBrand = '', deviceModel, osName,
       osVersion, deviceOrientation, deviceType,
-      deviceId
+      deviceId, osLanguage, osTheme, romName, romVersion
     } = systemInfo;
 
     const brand = deviceBrand.toLowerCase();
@@ -8046,7 +8046,13 @@ var serviceContext = (function () {
       deviceType,
       model: deviceModel,
       platform: _osName,
-      system: `${_osName === 'ios' ? 'iOS' : 'Android'} ${osVersion}`
+      system: `${_osName === 'ios' ? 'iOS' : 'Android'} ${osVersion}`,
+      osName,
+      osVersion,
+      osLanguage,
+      osTheme,
+      romName,
+      romVersion
     }
   }
 
@@ -8056,7 +8062,7 @@ var serviceContext = (function () {
       hostPackageName, hostName, osLanguage,
       hostVersion, hostLanguage, hostTheme,
       appId, appName, appVersion, appVersionCode,
-      appWgtVersion
+      appWgtVersion, uniCompileVersion, uniPlatform
     } = systemInfo;
 
     const appLanguage = uni
@@ -8083,7 +8089,11 @@ var serviceContext = (function () {
       language: osLanguage,
       SDKVersion: '',
       theme: plus.navigator.getUIStyle(),
-      version: plus.runtime.innerVersion
+      version: plus.runtime.innerVersion,
+      isUniAppX: false,
+      uniPlatform,
+      uniCompileVersion,
+      uniCompilerVersion: uniCompileVersion
     }
   }
 
