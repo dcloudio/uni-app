@@ -38,7 +38,10 @@ import { rewriteConsoleExpr } from '../../../logs/console'
 /* eslint-disable no-restricted-globals */
 const { preprocess } = require('../../../../lib/preprocess')
 
-function rewriteUniModulesConsoleExpr(fileName: string, content: string) {
+export function rewriteUniModulesConsoleExpr(
+  fileName: string,
+  content: string
+) {
   // 仅开发模式补充console.log的at信息
   if (process.env.NODE_ENV !== 'development') {
     return content
@@ -47,7 +50,9 @@ function rewriteUniModulesConsoleExpr(fileName: string, content: string) {
     return rewriteConsoleExpr(
       '__f__',
       '',
-      normalizePath(path.relative(process.env.UNI_INPUT_DIR, fileName)),
+      normalizePath(
+        path.relative(process.env.UNI_INPUT_DIR, fileName.split('?')[0])
+      ),
       content,
       false
     ).code

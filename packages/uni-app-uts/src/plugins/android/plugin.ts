@@ -21,6 +21,7 @@ import {
   parseVueRequest,
   resolveMainPathOnce,
   resolveUTSCompiler,
+  rewriteUniModulesConsoleExpr,
   tscOutDir,
   uvueOutDir,
 } from '@dcloudio/uni-cli-shared'
@@ -173,7 +174,12 @@ export function uniAppPlugin(): UniVitePlugin {
       // 忽略 uni-app-uts/lib/automator/index.uts
       if (!filename.includes('uni-app-uts')) {
         code = (
-          await transformAutoImport(transformUniCloudMixinDataCom(code), id)
+          await transformAutoImport(
+            transformUniCloudMixinDataCom(
+              rewriteUniModulesConsoleExpr(id, code)
+            ),
+            id
+          )
         ).code
         const isMainUTS = normalizePath(id) === mainUTS
         this.emitFile({
