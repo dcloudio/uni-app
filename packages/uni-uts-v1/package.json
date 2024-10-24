@@ -43,6 +43,6 @@
     "@types/adm-zip": "^0.5.5",
     "@types/android-versions": "^1.8.0",
     "@types/fs-extra": "^9.0.13",
-    "rollup": "^4.13.0"
+    "rollup": "^4.21.2"
   }
 }

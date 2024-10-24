@@ -959,7 +959,7 @@ importers:
         specifier: ^8.4.21
         version: 8.4.45
       rollup:
-        specifier: ^4.13.0
+        specifier: ^4.21.2
         version: 4.21.2
       vite:
         specifier: ^5.2.8
@@ -1977,7 +1977,7 @@ importers:
         specifier: ^9.0.13
         version: 9.0.13
       rollup:
-        specifier: ^4.13.0
+        specifier: ^4.21.2
         version: 4.21.2
 
   packages/uni-vue:
