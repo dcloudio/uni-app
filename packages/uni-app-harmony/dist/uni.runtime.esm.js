@@ -536,7 +536,17 @@ function invokeSuccess(id, name, res) {
     return invokeCallback(id, extend((res || {}), result));
 }
 function invokeFail(id, name, errMsg, errRes = {}) {
-    const apiErrMsg = name + ':fail' + (errMsg ? ' ' + errMsg : '');
+    const errMsgPrefix = name + ':fail';
+    let apiErrMsg = '';
+    if (!errMsg) {
+        apiErrMsg = errMsgPrefix;
+    }
+    else if (errMsg.indexOf(errMsgPrefix) === 0) {
+        apiErrMsg = errMsg;
+    }
+    else {
+        apiErrMsg = errMsgPrefix + ' ' + errMsg;
+    }
     {
         delete errRes.errCode;
     }
@@ -601,7 +611,10 @@ function parseErrMsg(errMsg) {
         return errMsg;
     }
     if (errMsg.stack) {
-        console.error(errMsg.message + '\n' + errMsg.stack);
+        // 此处同时被鸿蒙arkts和jsvm使用，暂时使用运行时判断鸿蒙jsvm环境，注意此用法仅内部使用
+        if ((typeof globalThis === 'undefined' || !globalThis.harmonyChannel)) {
+            console.error(errMsg.message + '\n' + errMsg.stack);
+        }
         return errMsg.message;
     }
     return errMsg;
@@ -7476,24 +7489,6 @@ const ON_APP_ENTER_FOREGROUND = 'onAppEnterForeground';
 const ON_APP_ENTER_BACKGROUND = 'onAppEnterBackground';
 const ON_WXS_INVOKE_CALL_METHOD = 'onWxsInvokeCallMethod';
 
-function isComponentInternalInstance(vm) {
-    return !!vm.appContext;
-}
-function resolveComponentInstance(instance) {
-    return (instance &&
-        (isComponentInternalInstance(instance) ? instance.proxy : instance));
-}
-
-let lastLogTime = 0;
-function formatLog(module, ...args) {
-    const now = Date.now();
-    const diff = lastLogTime ? now - lastLogTime : 0;
-    lastLogTime = now;
-    return `[${now}][${diff}ms][${module}]：${args
-        .map((arg) => JSON.stringify(arg))
-        .join(' ')}`;
-}
-
 function cache(fn) {
     const cache = Object.create(null);
     return (str) => {
@@ -7553,6 +7548,24 @@ function callOptions(options, data) {
     if (isFunction(options.complete)) {
         options.complete(data);
     }
+}
+
+function isComponentInternalInstance(vm) {
+    return !!vm.appContext;
+}
+function resolveComponentInstance(instance) {
+    return (instance &&
+        (isComponentInternalInstance(instance) ? instance.proxy : instance));
+}
+
+let lastLogTime = 0;
+function formatLog(module, ...args) {
+    const now = Date.now();
+    const diff = lastLogTime ? now - lastLogTime : 0;
+    lastLogTime = now;
+    return `[${now}][${diff}ms][${module}]：${args
+        .map((arg) => JSON.stringify(arg))
+        .join(' ')}`;
 }
 
 const encode$1 = encodeURIComponent;
@@ -11055,6 +11068,7 @@ const onTabBarMidButtonTap = defineOnApi(API_ON_TAB_BAR_MID_BUTTON_TAP, () => {
 });
 
 const API_ON_WINDOW_RESIZE = 'onWindowResize';
+const API_OFF_WINDOW_RESIZE = 'offWindowResize';
 
 /**
  * 监听窗口大小变化
@@ -11062,6 +11076,12 @@ const API_ON_WINDOW_RESIZE = 'onWindowResize';
 const onWindowResize = defineOnApi(API_ON_WINDOW_RESIZE, () => {
     // 生命周期包括onResize，框架直接监听resize
     // window.addEventListener('resize', onResize)
+});
+/**
+ * 取消监听窗口大小变化
+ */
+const offWindowResize = defineOffApi(API_OFF_WINDOW_RESIZE, () => {
+    // window.removeEventListener('resize', onResize)
 });
 
 const API_SET_LOCALE = 'setLocale';
@@ -11101,14 +11121,14 @@ const setLocale = defineSyncApi(API_SET_LOCALE, (locale) => {
 const API_SET_BACKGROUND_COLOR = 'setBackgroundColor';
 const SetBackgroundColorProtocol = {
     backgroundColor: {
-        type: String
+        type: String,
     },
 };
 const API_SET_BACKGROUND_TEXT_STYLE = 'setBackgroundTextStyle';
 const SetBackgroundTextStyleProtocol = {
     textStyle: {
         type: String,
-        required: true
+        required: true,
     },
 };
 
@@ -12017,12 +12037,9 @@ const setBackgroundColor = defineAsyncApi(API_SET_BACKGROUND_COLOR, ({ __page__,
     if (isString(backgroundColor)) {
         const webview = getWebview(__page__);
         if (webview) {
-            const style = webview.getStyle();
-            if (style && style.titleNView) {
-                webview.setStyle({
-                    background: backgroundColor
-                });
-            }
+            webview.setStyle({
+                background: backgroundColor,
+            });
             resolve();
         }
         else {
@@ -12037,13 +12054,9 @@ const setBackgroundTextStyle = defineAsyncApi(API_SET_BACKGROUND_TEXT_STYLE, ({ 
     if (isString(textStyle)) {
         const webview = getWebview(__page__);
         if (webview) {
-            const style = webview.getStyle();
-            if (style && style.titleNView) {
-                webview.setStyle({
-                    // @ts-expect-error
-                    backgroundTextStyle: textStyle
-                });
-            }
+            webview.setStyle({
+                backgroundTextStyle: textStyle,
+            });
             resolve();
         }
         else {
@@ -13180,9 +13193,10 @@ const navigateBack = defineAsyncApi(API_NAVIGATE_BACK, (args, { resolve, reject 
     })) {
         return resolve();
     }
-    if (uni.hideToast) {
-        uni.hideToast();
-    }
+    // TODO 鸿蒙不支持hideToast方法
+    // if (uni.hideToast) {
+    //   uni.hideToast()
+    // }
     if (uni.hideLoading) {
         uni.hideLoading();
     }
@@ -13687,9 +13701,32 @@ const startLocationUpdate = defineAsyncApi(API_START_LOCATION_UPDATE, (options, 
                 });
             }, {
                 coordsType: options?.type,
+                enableHighAccuracy: true,
             });
     setTimeout(resolve, 100);
 }, StartLocationUpdateProtocol, StartLocationUpdateOptions);
+const startLocationUpdateBackground = defineAsyncApi('startLocationUpdateBackground', (options, { resolve, reject }) => {
+    watchId =
+        watchId ||
+            plus.geolocation.watchPosition((res) => {
+                started = true;
+                UniServiceJSBridge.invokeOnCallback(API_ON_LOCATION_CHANGE, res.coords);
+            }, (error) => {
+                if (!started) {
+                    reject(error.message);
+                    started = true;
+                }
+                UniServiceJSBridge.invokeOnCallback(API_ON_LOCATION_CHANGE_ERROR, {
+                    errMsg: `onLocationChange:fail ${error.message}`,
+                });
+            }, {
+                coordsType: options?.type,
+                enableHighAccuracy: true,
+                // @ts-expect-error 增加background参数
+                background: true,
+            });
+    setTimeout(resolve, 100);
+});
 const stopLocationUpdate = defineAsyncApi(API_STOP_LOCATION_UPDATE, (_, { resolve }) => {
     if (watchId) {
         plus.geolocation.clearWatch(watchId);
@@ -13776,6 +13813,7 @@ var uni$1 = {
   offKeyboardHeightChange: offKeyboardHeightChange,
   offLocationChange: offLocationChange,
   offLocationChangeError: offLocationChangeError,
+  offWindowResize: offWindowResize,
   onKeyboardHeightChange: onKeyboardHeightChange,
   onLocaleChange: onLocaleChange,
   onLocationChange: onLocationChange,
@@ -13800,6 +13838,7 @@ var uni$1 = {
   showTabBar: showTabBar,
   showTabBarRedDot: showTabBarRedDot,
   startLocationUpdate: startLocationUpdate,
+  startLocationUpdateBackground: startLocationUpdateBackground,
   stopLocationUpdate: stopLocationUpdate,
   switchTab: switchTab
 };

@@ -19,7 +19,7 @@ var StandaloneExtApis = [
 			"startFacialRecognitionVerify",
 			"getFacialRecognitionMetaInfo"
 		],
-		version: "1.0.0"
+		version: "1.0.2"
 	},
 	{
 		type: "extapi",
@@ -28,26 +28,24 @@ var StandaloneExtApis = [
 			"getPushClientId",
 			"onPushMessage",
 			"offPushMessage",
-			"getChannelManager",
-			"getPushChannelManager",
 			"createPushMessage",
 			"setAppBadgeNumber"
 		],
-		version: "1.0.0"
+		version: "1.0.1"
 	},
 	{
 		type: "provider",
 		plugin: "uni-oauth-huawei",
 		provider: "huawei",
 		service: "oauth",
-		version: "1.0.0"
+		version: "1.0.1"
 	},
 	{
 		type: "provider",
 		plugin: "uni-payment-alipay",
 		provider: "alipay",
 		service: "payment",
-		version: "1.0.0"
+		version: "1.0.1"
 	}
 ];
 
@@ -130,8 +128,10 @@ function uniAppHarmonyPlugin() {
 }
 // 仅存放重命名的provider service
 const SupportedProviderService = {
-    oauth: {},
-    payment: {
+    'uni-oauth': {
+        huawei: 'huawei',
+    },
+    'uni-payment': {
         weixin: 'wxpay',
     },
 };
@@ -141,17 +141,17 @@ const SupportedProviderService = {
 function getRelatedProviders(inputDir) {
     const manifest = uniCliShared.parseManifestJsonOnce(inputDir);
     const providers = [];
-    const sdkConfigs = manifest?.['app-plus']?.distribute?.sdkConfigs;
-    if (!sdkConfigs) {
+    const manifestModules = manifest?.['app-harmony']?.distribute?.modules;
+    if (!manifestModules) {
         return providers;
     }
-    for (const service in sdkConfigs) {
-        if (Object.prototype.hasOwnProperty.call(sdkConfigs, service)) {
-            const ProviderNameMap = SupportedProviderService[service];
+    for (const uniModule in manifestModules) {
+        if (Object.prototype.hasOwnProperty.call(manifestModules, uniModule)) {
+            const ProviderNameMap = SupportedProviderService[uniModule];
             if (!ProviderNameMap) {
                 continue;
             }
-            const relatedProviders = sdkConfigs[service];
+            const relatedProviders = manifestModules[uniModule];
             for (const name in relatedProviders) {
                 if (Object.prototype.hasOwnProperty.call(relatedProviders, name)) {
                     const providerConf = relatedProviders[name];
@@ -163,7 +163,7 @@ function getRelatedProviders(inputDir) {
                             providerConf.__platform__.includes('harmonyos'))) {
                         const providerName = ProviderNameMap[name];
                         providers.push({
-                            service,
+                            service: uniModule.replace(/^uni-/, ''),
                             name: providerName || name,
                         });
                     }
@@ -174,14 +174,14 @@ function getRelatedProviders(inputDir) {
     return providers;
 }
 const SupportedModules = {
-    FacialRecognitionVerify: 'uni-facialRecognitionVerify',
-    Push: 'uni-push',
+    'uni-facialRecognitionVerify': 'uni-facialRecognitionVerify',
+    'uni-push': 'uni-push',
 };
 // 获取uni_modules中的相关模块
 function getRelatedModules(inputDir) {
     const manifest = uniCliShared.parseManifestJsonOnce(inputDir);
     const modules = [];
-    const manifestModules = manifest?.['app-plus']?.modules;
+    const manifestModules = manifest?.['app-harmony']?.distribute?.modules;
     if (!manifestModules) {
         return modules;
     }
@@ -238,7 +238,7 @@ function genAppHarmonyUniModules(inputDir, utsPlugins) {
                     moduleSpecifier: harmonyModuleName,
                     plugin: module,
                     source: 'ohpm',
-                    version: matchedStandaloneExtApi.version,
+                    version: '*',
                 });
                 matchedStandaloneExtApi.apis?.forEach((apiName) => {
                     importCodes.push(`import { ${apiName} } from '${harmonyModuleName}'`);
@@ -273,7 +273,7 @@ function genAppHarmonyUniModules(inputDir, utsPlugins) {
             moduleSpecifier: `@uni_modules/${extapi.plugin.toLowerCase()}`,
             plugin: extapi.plugin,
             source: 'ohpm',
-            version: extapi.version,
+            version: '*',
         });
     });
     relatedProviders.forEach((relatedProvider) => {

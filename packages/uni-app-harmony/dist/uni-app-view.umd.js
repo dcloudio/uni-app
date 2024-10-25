@@ -25585,6 +25585,9 @@
         search();
       }
       function onChoose(e2) {
+        if (!listState.selected) {
+          return;
+        }
         var event = new CustomEvent("close", {
           detail: extend({}, listState.selected)
         });

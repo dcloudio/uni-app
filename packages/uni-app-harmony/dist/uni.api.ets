@@ -6,25 +6,27 @@ import deviceInfo from '@ohos.deviceInfo';
 import fs from '@ohos.file.fs';
 import photoAccessHelper from '@ohos.file.photoAccessHelper';
 import inputMethod from '@ohos.inputMethod';
-import image from '@ohos.multimedia.image';
 import connection from '@ohos.net.connection';
 import webSocket from '@ohos.net.webSocket';
+import pasteboard from '@ohos.pasteboard';
 import call from '@ohos.telephony.call';
 import radio from '@ohos.telephony.radio';
 import webview from '@ohos.web.webview';
 import { BusinessError as BusinessError1 } from '@kit.BasicServicesKit';
 import { BusinessError as BusinessError10 } from '@ohos.base';
 import { BusinessError as BusinessError11 } from '@ohos.base';
+import { BusinessError as BusinessError12 } from '@ohos.base';
 import { BusinessError as BusinessError2 } from '@ohos.base';
-import { BusinessError as BusinessError3 } from '@kit.BasicServicesKit';
+import { BusinessError as BusinessError3 } from '@ohos.base';
 import { BusinessError as BusinessError4 } from '@kit.BasicServicesKit';
 import { BusinessError as BusinessError5 } from '@kit.BasicServicesKit';
 import { BusinessError as BusinessError6 } from '@kit.BasicServicesKit';
 import { BusinessError as BusinessError7 } from '@kit.BasicServicesKit';
 import { BusinessError as BusinessError8 } from '@kit.BasicServicesKit';
-import { BusinessError as BusinessError9 } from '@ohos.base';
+import { BusinessError as BusinessError9 } from '@kit.BasicServicesKit';
 import { BusinessError } from '@kit.BasicServicesKit';
 import { CompressorResponseCode, CompressorResponse, VideoCompressor, CompressQuality } from '@ohos/videocompressor';
+import { Emitter as Emitter1, onNativePageReady } from "@dcloudio/uni-mp-sdk";
 import { Emitter as Emitter5, getCurrentMP as getCurrentMP4 } from "@dcloudio/uni-mp-sdk";
 import { Emitter } from "@dcloudio/uni-mp-sdk";
 import Hash from '@ohos.file.hash';
@@ -33,16 +35,7 @@ import I18n1 from '@ohos.i18n';
 import I18n2 from '@ohos.i18n';
 import { ListFileOptions } from '@ohos.file.fs';
 import { ReadOptions } from '@ohos.file.fs';
-import { UTSHarmony as UTSHarmony1 } from "@dcloudio/uni-mp-sdk";
-import { UTSHarmony as UTSHarmony10 } from "@dcloudio/uni-mp-sdk";
-import { UTSHarmony as UTSHarmony2 } from "@dcloudio/uni-mp-sdk";
-import { UTSHarmony as UTSHarmony3 } from "@dcloudio/uni-mp-sdk";
-import { UTSHarmony as UTSHarmony4, getDeviceId } from "@dcloudio/uni-mp-sdk";
-import { UTSHarmony as UTSHarmony5, Emitter as Emitter1, onNativePageReady } from "@dcloudio/uni-mp-sdk";
-import { UTSHarmony as UTSHarmony6 } from "@dcloudio/uni-mp-sdk";
-import { UTSHarmony as UTSHarmony7, getWindowInfo as internalGetWindowInfo, getDeviceId as getDeviceId1 } from "@dcloudio/uni-mp-sdk";
-import { UTSHarmony as UTSHarmony8 } from "@dcloudio/uni-mp-sdk";
-import { UTSHarmony as UTSHarmony9 } from "@dcloudio/uni-mp-sdk";
+import { UTSHarmony } from "@dcloudio/uni-mp-sdk";
 import { UTSObject, UTSJSONObject } from "@dcloudio/uts-harmony";
 import { UniError, IUniError, UniProvider, string, AsyncApiSuccessResult, AsyncApiResult, ApiOptions, ProtocolOptions, defineAsyncApi, ApiExecutor, ApiError, defineSyncApi, getUniProviders, defineTaskApi, getUniProvider } from "@dcloudio/uni-app-harmony";
 import Want1 from '@ohos.app.ability.Want';
@@ -58,7 +51,6 @@ import bundleManager2 from '@ohos.bundle.bundleManager';
 import { camera } from '@kit.CameraKit';
 import { cameraPicker as cameraPicker1 } from '@kit.CameraKit';
 import { cameraPicker } from '@kit.CameraKit';
-import { clipboard } from "@dcloudio/uni-mp-sdk";
 import common1 from '@ohos.app.ability.common';
 import common2 from '@ohos.app.ability.common';
 import common3 from '@ohos.app.ability.common';
@@ -79,22 +71,8 @@ import fs3 from '@ohos.file.fs';
 import fs4 from '@ohos.file.fs';
 import fs5 from '@ohos.file.fs';
 import { geoLocationManager } from '@kit.LocationKit';
-import { getAbilityContext as getAbilityContext1 } from "@dcloudio/uni-mp-sdk";
-import { getAbilityContext as getAbilityContext10 } from "@dcloudio/uni-mp-sdk";
-import { getAbilityContext as getAbilityContext11, getCurrentMP as getCurrentMP3 } from "@dcloudio/uni-mp-sdk";
-import { getAbilityContext as getAbilityContext2 } from "@dcloudio/uni-mp-sdk";
-import { getAbilityContext as getAbilityContext4 } from "@dcloudio/uni-mp-sdk";
-import { getAbilityContext as getAbilityContext5, getCurrentWindow as getCurrentWindow2 } from "@dcloudio/uni-mp-sdk";
-import { getAbilityContext as getAbilityContext6 } from "@dcloudio/uni-mp-sdk";
-import { getAbilityContext as getAbilityContext7 } from "@dcloudio/uni-mp-sdk";
-import { getAbilityContext as getAbilityContext8 } from "@dcloudio/uni-mp-sdk";
-import { getAbilityContext as getAbilityContext9 } from "@dcloudio/uni-mp-sdk";
-import { getAbilityContext, UTSHarmony } from "@dcloudio/uni-mp-sdk";
-import { getCurrentWindow as getCurrentWindow1 } from "@dcloudio/uni-mp-sdk";
-import { getCurrentWindow as getCurrentWindow3 } from "@dcloudio/uni-mp-sdk";
-import { getCurrentWindow as getCurrentWindow4 } from "@dcloudio/uni-mp-sdk";
-import { getCurrentWindow as getCurrentWindow5 } from "@dcloudio/uni-mp-sdk";
-import { getCurrentWindow } from "@dcloudio/uni-mp-sdk";
+import { getCurrentMP as getCurrentMP3 } from "@dcloudio/uni-mp-sdk";
+import { getDeviceId } from "@dcloudio/uni-mp-sdk";
 import { getEnv as getEnv1 } from "@dcloudio/uni-mp-sdk";
 import { getEnv as getEnv2 } from "@dcloudio/uni-mp-sdk";
 import { getEnv as getEnv3, Emitter as Emitter4, getCurrentMP as getCurrentMP2 } from "@dcloudio/uni-mp-sdk";
@@ -105,8 +83,9 @@ import { getRealPath as getRealPath1 } from "@dcloudio/uni-mp-sdk";
 import { getRealPath as getRealPath2, onNativePageReady as onNativePageReady1 } from "@dcloudio/uni-mp-sdk";
 import { getRealPath as getRealPath3 } from "@dcloudio/uni-mp-sdk";
 import { getRealPath as getRealPath4, Emitter as Emitter3, getCurrentMP as getCurrentMP1 } from "@dcloudio/uni-mp-sdk";
-import { getResourceStr, getAbilityContext as getAbilityContext3 } from "@dcloudio/uni-mp-sdk";
+import { getResourceStr } from "@dcloudio/uni-mp-sdk";
 import { getTabBar } from "@dcloudio/uni-mp-sdk";
+import { getWindowInfo as internalGetWindowInfo, getDeviceId as getDeviceId1 } from "@dcloudio/uni-mp-sdk";
 import harmonyUrl from '@ohos.url';
 import harmonyUrl1 from '@ohos.url';
 import harmonyWindow from '@ohos.window';
@@ -114,7 +93,8 @@ import { http } from '@kit.NetworkKit';
 import http1 from '@ohos.net.http';
 import http2 from '@ohos.net.http';
 import http3 from '@ohos.net.http';
-import { image as image1 } from '@kit.ImageKit';
+import { image } from '@kit.ImageKit';
+import image1 from '@ohos.multimedia.image';
 import { isPlainObject, Emitter as Emitter2, getCurrentMP } from "@dcloudio/uni-mp-sdk";
 import { media as media1 } from '@kit.MediaKit';
 import { media } from '@kit.MediaKit';
@@ -146,15 +126,8 @@ import { window } from '@kit.ArkUI';
 type AddPhoneContact = (options: AddPhoneContactOptions) => void;
 class AddPhoneContactSuccess extends UTSObject {
 }
-class UniError1 extends UTSObject {
-    errSubject!: string;
-    errCode!: number;
-    errMsg!: string;
-    data: object | null = null;
-    cause: Object | null = null;
-}
 type AddPhoneContactSuccessCallback = (result: AddPhoneContactSuccess) => void;
-type AddPhoneContactFail = UniError1;
+type AddPhoneContactFail = UniError;
 type AddPhoneContactFailCallback = (result: AddPhoneContactFail) => void;
 type AddPhoneContactComplete = Object;
 type AddPhoneContactCompleteCallback = (result: AddPhoneContactComplete) => void;
@@ -205,8 +178,8 @@ class StartSoterAuthenticationSuccess extends UTSObject {
     errMsg!: string;
 }
 type StartSoterAuthenticationSuccessCallback = (result: StartSoterAuthenticationSuccess) => void;
-type StartSoterAuthenticationFail = UniError2;
-class UniError2 extends UTSObject {
+type StartSoterAuthenticationFail = UniError1;
+class UniError1 extends UTSObject {
     errSubject!: string;
     errCode!: number;
     errMsg!: string;
@@ -230,7 +203,7 @@ class CheckIsSupportSoterAuthenticationSuccess extends UTSObject {
     errMsg!: string;
 }
 type CheckIsSupportSoterAuthenticationSuccessCallback = (result: CheckIsSupportSoterAuthenticationSuccess) => void;
-type CheckIsSupportSoterAuthenticationFail = UniError2;
+type CheckIsSupportSoterAuthenticationFail = UniError1;
 type CheckIsSupportSoterAuthenticationFailCallback = (result: CheckIsSupportSoterAuthenticationFail) => void;
 type CheckIsSupportSoterAuthenticationComplete = Object;
 type CheckIsSupportSoterAuthenticationCompleteCallback = (result: CheckIsSupportSoterAuthenticationComplete) => void;
@@ -245,7 +218,7 @@ class CheckIsSoterEnrolledInDeviceSuccess extends UTSObject {
     errMsg!: string;
 }
 type CheckIsSoterEnrolledInDeviceSuccessCallback = (result: CheckIsSoterEnrolledInDeviceSuccess) => void;
-type CheckIsSoterEnrolledInDeviceFail = UniError2;
+type CheckIsSoterEnrolledInDeviceFail = UniError1;
 type CheckIsSoterEnrolledInDeviceFailCallback = (result: CheckIsSoterEnrolledInDeviceFail) => void;
 type CheckIsSoterEnrolledInDeviceComplete = Object;
 type CheckIsSoterEnrolledInDeviceCompleteCallback = (result: CheckIsSoterEnrolledInDeviceComplete) => void;
@@ -284,10 +257,11 @@ export class GetClipboardDataOptions extends UTSObject {
     fail: GetClipboardDataFailCallback | null = null;
     complete: GetClipboardDataCompleteCallback | null = null;
 }
-interface ClipboardModuleGetStringOptions {
-    result: string;
-    data: string;
+class ClipboardCallbackOptions extends UTSObject {
+    data!: string;
+    result!: 'success' | 'fail';
 }
+type ClipboardCallback = (res: ClipboardCallbackOptions) => void;
 type CreateInnerAudioContext = () => InnerAudioContext;
 interface InnerAudioContext {
     duration: number;
@@ -1036,6 +1010,10 @@ export class ChooseMediaOptions extends UTSObject {
     complete: (ChooseMediaCompleteCallback) | null = null;
 }
 export type ChooseMedia = (options: ChooseMediaOptions) => void;
+interface _CompressImageSuccess {
+    size: number;
+    tempFilePath: string;
+}
 interface MediaFile {
     fileType: 'video' | 'image';
     tempFilePath: string;
@@ -1094,10 +1072,6 @@ interface IPreviewImageOptions {
 interface ISaveMediaError {
     code: number;
     message: string;
-}
-interface _CompressImageSuccess {
-    size: number;
-    tempFilePath: string;
 }
 interface IFile {
     path: string;
@@ -2020,7 +1994,7 @@ export function initUniExtApi() {
         formatArgs: new Map<string, ((firstName: string) => string | undefined)>([
             [
                 'firstName',
-                (firstName: string) => {
+                (firstName: string)=>{
                     if (!firstName) {
                         return 'addPhoneContact:fail parameter error: parameter.firstName should not be empty;';
                     }
@@ -2224,10 +2198,10 @@ export function initUniExtApi() {
             }
         ]
     ]);
-    const addPhoneContact: AddPhoneContact = defineAsyncApi<AddPhoneContactOptions, AddPhoneContactSuccess>(API_ADD_PHONE_CONTACT, (args: AddPhoneContactOptions, executor: ApiExecutor<AddPhoneContactSuccess>) => {
+    const addPhoneContact: AddPhoneContact = defineAsyncApi<AddPhoneContactOptions, AddPhoneContactSuccess>(API_ADD_PHONE_CONTACT, (args: AddPhoneContactOptions, executor: ApiExecutor<AddPhoneContactSuccess>)=>{
         UTSHarmony.requestSystemPermission([
             'ohos.permission.WRITE_CONTACTS'
-        ], (allRight: boolean) => {
+        ], (allRight: boolean)=>{
             if (allRight) {
                 const photoFilePath = args.photoFilePath, _args_nickName = args.nickName, nickName = _args_nickName == null ? '' : _args_nickName, _args_lastName = args.lastName, lastName = _args_lastName == null ? '' : _args_lastName, _args_middleName = args.middleName, middleName = _args_middleName == null ? '' : _args_middleName, _args_firstName = args.firstName, firstName = _args_firstName == null ? '' : _args_firstName, _args_remark = args.remark, remark = _args_remark == null ? '' : _args_remark, _args_mobilePhoneNumber = args.mobilePhoneNumber, mobilePhoneNumber = _args_mobilePhoneNumber == null ? '' : _args_mobilePhoneNumber, _args_addressCountry = args.addressCountry, addressCountry = _args_addressCountry == null ? '' : _args_addressCountry, _args_addressState = args.addressState, addressState = _args_addressState == null ? '' : _args_addressState, _args_addressCity = args.addressCity, addressCity = _args_addressCity == null ? '' : _args_addressCity, _args_addressStreet = args.addressStreet, addressStreet = _args_addressStreet == null ? '' : _args_addressStreet, _args_addressPostalCode = args.addressPostalCode, addressPostalCode = _args_addressPostalCode == null ? '' : _args_addressPostalCode, _args_organization = args.organization, organization = _args_organization == null ? '' : _args_organization, _args_url = args.url, url = _args_url == null ? '' : _args_url, _args_workPhoneNumber = args.workPhoneNumber, workPhoneNumber = _args_workPhoneNumber == null ? '' : _args_workPhoneNumber, _args_workFaxNumber = args.workFaxNumber, workFaxNumber = _args_workFaxNumber == null ? '' : _args_workFaxNumber, _args_hostNumber = args.hostNumber, hostNumber = _args_hostNumber == null ? '' : _args_hostNumber, _args_email = args.email, email = _args_email == null ? '' : _args_email, _args_title = args.title, title = _args_title == null ? '' : _args_title, _args_workAddressCountry = args.workAddressCountry, workAddressCountry = _args_workAddressCountry == null ? '' : _args_workAddressCountry, _args_workAddressState = args.workAddressState, workAddressState = _args_workAddressState == null ? '' : _args_workAddressState, _args_workAddressCity = args.workAddressCity, workAddressCity = _args_workAddressCity == null ? '' : _args_workAddressCity, _args_workAddressStreet = args.workAddressStreet, workAddressStreet = _args_workAddressStreet == null ? '' : _args_workAddressStreet, workAddressPostalCode = args.workAddressPostalCode, _args_homeFaxNumber = args.homeFaxNumber, homeFaxNumber = _args_homeFaxNumber == null ? '' : _args_homeFaxNumber, _args_homePhoneNumber = args.homePhoneNumber, homePhoneNumber = _args_homePhoneNumber == null ? '' : _args_homePhoneNumber, _args_homeAddressCountry = args.homeAddressCountry, homeAddressCountry = _args_homeAddressCountry == null ? '' : _args_homeAddressCountry, _args_homeAddressState = args.homeAddressState, homeAddressState = _args_homeAddressState == null ? '' : _args_homeAddressState, _args_homeAddressCity = args.homeAddressCity, homeAddressCity = _args_homeAddressCity == null ? '' : _args_homeAddressCity, _args_homeAddressStreet = args.homeAddressStreet, homeAddressStreet = _args_homeAddressStreet == null ? '' : _args_homeAddressStreet, _args_homeAddressPostalCode = args.homeAddressPostalCode, homeAddressPostalCode = _args_homeAddressPostalCode == null ? '' : _args_homeAddressPostalCode;
                 const contactInfo: contact.Contact = {
@@ -2348,22 +2322,22 @@ export function initUniExtApi() {
                     } as contact.PostalAddress);
                 }
                 if (postalAddresses.length) contactInfo.postalAddresses = postalAddresses;
-                contact.addContact(getAbilityContext()!, contactInfo).then((contactId) => {
+                contact.addContact(UTSHarmony.getUIAbilityContext()!, contactInfo).then((contactId)=>{
                     executor.resolve(contactId);
-                }).catch((err: BusinessError) => {
+                }).catch((err: BusinessError)=>{
                     executor.reject(err.message);
                 });
             } else {
                 executor.reject('Permission denied');
             }
-        }, () => executor.reject('Permission denied'));
+        }, ()=>executor.reject('Permission denied'));
     }, AddPhoneContactApiProtocol, AddPhoneContactApiOptions) as AddPhoneContact;
     const API_START_SOTER_AUTHENTICATION = 'startSoterAuthentication';
     const StartSoterAuthenticationApiOptions: ApiOptions<StartSoterAuthenticationOptions> = {
         formatArgs: new Map<string, ((value: string) => string | undefined)>([
             [
                 'requestAuthModes',
-                (value: string) => {
+                (value: string)=>{
                     if (!value.includes('fingerPrint') && !value.includes('facial')) {
                         return 'requestAuthModes 填写错误';
                     }
@@ -2403,7 +2377,7 @@ export function initUniExtApi() {
         formatArgs: new Map<string, ((value: string) => string | undefined)>([
             [
                 'checkAuthMode',
-                (value: string) => {
+                (value: string)=>{
                     if (!checkAuthModes.includes(value as SoterAuthMode)) {
                         return 'checkAuthMode 填写错误';
                     }
@@ -2421,8 +2395,8 @@ export function initUniExtApi() {
         ]
     ]);
     const API_CHECK_IS_SUPPORT_SOTER_AUTHENTICATION = 'checkIsSupportSoterAuthentication';
-    const getErrorMessage = (code: number): string => {
-        switch (code) {
+    const getErrorMessage = (code: number): string =>{
+        switch(code){
             case 201:
                 return "权限认证失败";
             case 401:
@@ -2453,8 +2427,8 @@ export function initUniExtApi() {
                 return '';
         }
     };
-    const getUniErrMsg = (code: number): number => {
-        switch (code) {
+    const getUniErrMsg = (code: number): number =>{
+        switch(code){
             case 201:
                 return 90002;
             case 401:
@@ -2485,9 +2459,9 @@ export function initUniExtApi() {
                 return -1;
         }
     };
-    const toUint8Arr = (str: string) => {
+    const toUint8Arr = (str: string)=>{
         const buffer: number[] = [];
-        for (let i of str) {
+        for (let i of str){
             const _code: number = i.charCodeAt(0);
             if (_code < 0x80) {
                 buffer.push(_code);
@@ -2502,9 +2476,9 @@ export function initUniExtApi() {
         }
         return Uint8Array.from(buffer);
     };
-    const startSoterAuthentication: StartSoterAuthentication = defineAsyncApi<StartSoterAuthenticationOptions, StartSoterAuthenticationSuccess>(API_START_SOTER_AUTHENTICATION, (args: StartSoterAuthenticationOptions, executor: ApiExecutor<StartSoterAuthenticationSuccess>) => {
+    const startSoterAuthentication: StartSoterAuthentication = defineAsyncApi<StartSoterAuthenticationOptions, StartSoterAuthenticationSuccess>(API_START_SOTER_AUTHENTICATION, (args: StartSoterAuthenticationOptions, executor: ApiExecutor<StartSoterAuthenticationSuccess>)=>{
         const authType: userAuth.UserAuthType[] = [];
-        args.requestAuthModes.forEach((item) => {
+        args.requestAuthModes.forEach((item)=>{
             if (item === 'fingerPrint') {
                 authType.push(userAuth.UserAuthType.FINGERPRINT);
             } else if (item === 'facial') {
@@ -2522,7 +2496,7 @@ export function initUniExtApi() {
                 title: authContent
             } as userAuth.WidgetParam);
             auth.on("result", {
-                onResult: (result: userAuth.UserAuthResult) => {
+                onResult: (result: userAuth.UserAuthResult)=>{
                     if (result.result === userAuth.UserAuthResultCode.SUCCESS) {
                         executor.resolve({
                             errCode: 0,
@@ -2550,7 +2524,7 @@ export function initUniExtApi() {
             } as ApiError);
         }
     }, StartSoterAuthenticationApiProtocols, StartSoterAuthenticationApiOptions) as StartSoterAuthentication;
-    const fingerPrintAvailable = () => {
+    const fingerPrintAvailable = ()=>{
         try {
             userAuth.getAvailableStatus(userAuth.UserAuthType.FINGERPRINT, userAuth.AuthTrustLevel.ATL1);
             return true;
@@ -2558,7 +2532,7 @@ export function initUniExtApi() {
             return false;
         }
     };
-    const faceAvailable = () => {
+    const faceAvailable = ()=>{
         try {
             userAuth.getAvailableStatus(userAuth.UserAuthType.FACE, userAuth.AuthTrustLevel.ATL1);
             return true;
@@ -2569,8 +2543,8 @@ export function initUniExtApi() {
     const PERMISSIONS = [
         'ohos.permission.ACCESS_BIOMETRIC'
     ];
-    const checkIsSupportSoterAuthentication: CheckIsSupportSoterAuthentication = defineAsyncApi<CheckIsSupportSoterAuthenticationOptions, CheckIsSupportSoterAuthenticationSuccess>(API_CHECK_IS_SUPPORT_SOTER_AUTHENTICATION, (args: CheckIsSupportSoterAuthenticationOptions, executor: ApiExecutor<CheckIsSupportSoterAuthenticationSuccess>) => {
-        UTSHarmony1.requestSystemPermission(PERMISSIONS, (allRight: boolean) => {
+    const checkIsSupportSoterAuthentication: CheckIsSupportSoterAuthentication = defineAsyncApi<CheckIsSupportSoterAuthenticationOptions, CheckIsSupportSoterAuthenticationSuccess>(API_CHECK_IS_SUPPORT_SOTER_AUTHENTICATION, (args: CheckIsSupportSoterAuthenticationOptions, executor: ApiExecutor<CheckIsSupportSoterAuthenticationSuccess>)=>{
+        UTSHarmony.requestSystemPermission(PERMISSIONS, (allRight: boolean)=>{
             if (allRight) {
                 try {
                     const supportMode: SoterAuthMode[] = [];
@@ -2589,19 +2563,19 @@ export function initUniExtApi() {
             } else {
                 executor.reject(getErrorMessage(201));
             }
-        }, () => {
+        }, ()=>{
             executor.reject(getErrorMessage(201));
         });
     }) as CheckIsSupportSoterAuthentication;
-    const getFingerPrintEnrolledState = () => {
+    const getFingerPrintEnrolledState = ()=>{
         userAuth.getEnrolledState(userAuth.UserAuthType.FINGERPRINT);
         return true;
     };
-    const getFaceEnrolledState = () => {
+    const getFaceEnrolledState = ()=>{
         userAuth.getEnrolledState(userAuth.UserAuthType.FACE);
         return true;
     };
-    const harmonyCheckIsSoterEnrolledInDevice = (checkAuthMode: SoterAuthMode): boolean => {
+    const harmonyCheckIsSoterEnrolledInDevice = (checkAuthMode: SoterAuthMode): boolean =>{
         if (checkAuthMode === 'fingerPrint') {
             return getFingerPrintEnrolledState();
         } else if (checkAuthMode === 'facial') {
@@ -2609,8 +2583,8 @@ export function initUniExtApi() {
         }
         return false;
     };
-    const checkIsSoterEnrolledInDevice: CheckIsSoterEnrolledInDevice = defineAsyncApi<CheckIsSoterEnrolledInDeviceOptions, CheckIsSoterEnrolledInDeviceSuccess>(API_CHECK_IS_SOTER_ENROLLED_IN_DEVICE, (args: CheckIsSoterEnrolledInDeviceOptions, executor: ApiExecutor<CheckIsSoterEnrolledInDeviceSuccess>) => {
-        UTSHarmony1.requestSystemPermission(PERMISSIONS, (allRight: boolean) => {
+    const checkIsSoterEnrolledInDevice: CheckIsSoterEnrolledInDevice = defineAsyncApi<CheckIsSoterEnrolledInDeviceOptions, CheckIsSoterEnrolledInDeviceSuccess>(API_CHECK_IS_SOTER_ENROLLED_IN_DEVICE, (args: CheckIsSoterEnrolledInDeviceOptions, executor: ApiExecutor<CheckIsSoterEnrolledInDeviceSuccess>)=>{
+        UTSHarmony.requestSystemPermission(PERMISSIONS, (allRight: boolean)=>{
             if (allRight) {
                 try {
                     const isEnrolled = harmonyCheckIsSoterEnrolledInDevice(args.checkAuthMode);
@@ -2627,7 +2601,7 @@ export function initUniExtApi() {
             } else {
                 executor.reject(getErrorMessage(201));
             }
-        }, () => {
+        }, ()=>{
             executor.reject(getErrorMessage(201));
         });
     }, CheckIsSoterEnrolledInDeviceProtocols, CheckIsSoterEnrolledInDeviceApiOptions) as CheckIsSoterEnrolledInDevice;
@@ -2656,29 +2630,81 @@ export function initUniExtApi() {
             }
         ]
     ]);
-    const getClipboardData: GetClipboardData = defineAsyncApi<GetClipboardDataOptions, GetClipboardDataSuccess>(API_GET_CLIPBOARD_DATA, (_: GetClipboardDataOptions, res: ApiExecutor<GetClipboardDataSuccess>) => {
-        clipboard.getString((ret: ClipboardModuleGetStringOptions) => {
+    const getString = (callback: ClipboardCallback)=>{
+        const systemPasteboard: pasteboard.SystemPasteboard = pasteboard.getSystemPasteboard();
+        UTSHarmony.requestSystemPermission([
+            'ohos.permission.READ_PASTEBOARD'
+        ], (allRight: boolean)=>{
+            if (allRight) {
+                const pasteData = systemPasteboard.getDataSync();
+                try {
+                    const text: string = pasteData.getPrimaryText();
+                    callback({
+                        data: text,
+                        result: 'success'
+                    } as ClipboardCallbackOptions);
+                } catch (err) {
+                    callback({
+                        data: (err as BusinessError2<void>).message,
+                        result: 'fail'
+                    } as ClipboardCallbackOptions);
+                }
+            } else {
+                callback({
+                    data: 'Permission denied',
+                    result: 'fail'
+                } as ClipboardCallbackOptions);
+            }
+        }, ()=>{
+            callback({
+                data: 'Permission denied',
+                result: 'fail'
+            } as ClipboardCallbackOptions);
+        });
+    };
+    const setString = (data: string)=>{
+        const pasteData: pasteboard.PasteData = pasteboard.createData(pasteboard.MIMETYPE_TEXT_PLAIN, data);
+        const systemPasteboard: pasteboard.SystemPasteboard = pasteboard.getSystemPasteboard();
+        try {
+            systemPasteboard.setDataSync(pasteData);
+            return {
+                data,
+                result: 'success'
+            } as ClipboardCallbackOptions;
+        } catch (err) {
+            return {
+                data: (err as BusinessError2<void>).message,
+                result: 'fail'
+            } as ClipboardCallbackOptions;
+        }
+    };
+    const getClipboardData: GetClipboardData = defineAsyncApi<GetClipboardDataOptions, GetClipboardDataSuccess>(API_GET_CLIPBOARD_DATA, (_: GetClipboardDataOptions, res: ApiExecutor<GetClipboardDataSuccess>)=>{
+        getString((ret: ClipboardCallbackOptions)=>{
             if (ret.result === 'success') {
                 res.resolve({
                     data: ret.data
                 } as GetClipboardDataSuccess);
             } else {
-                res.reject('getClipboardData:fail');
+                res.reject('getClipboardData:fail ' + ret.data);
             }
         });
     }) as GetClipboardData;
-    const setClipboardData: SetClipboardData = defineAsyncApi<SetClipboardDataOptions, SetClipboardDataSuccess>(API_SET_CLIPBOARD_DATA, (options: SetClipboardDataOptions, res: ApiExecutor<SetClipboardDataSuccess>) => {
-        clipboard.setString(options.data);
-        res.resolve();
+    const setClipboardData: SetClipboardData = defineAsyncApi<SetClipboardDataOptions, SetClipboardDataSuccess>(API_SET_CLIPBOARD_DATA, (options: SetClipboardDataOptions, res: ApiExecutor<SetClipboardDataSuccess>)=>{
+        const ret = setString(options.data);
+        if (ret.result === 'success') {
+            res.resolve();
+        } else {
+            res.reject('setClipboardData:fail ' + ret.data);
+        }
     }, SetClipboardDataProtocol, SetClipboardDataApiOptions) as SetClipboardData;
     const API_CREATE_INNER_AUDIO_CONTEXT = 'createInnerAudioContext';
-    const isFileUri = (path: string) => {
+    const isFileUri = (path: string)=>{
         return path && typeof path === 'string' && (path.startsWith('file://') || path.startsWith('datashare://'));
     };
-    const isSandboxPath = (path: string) => {
+    const isSandboxPath = (path: string)=>{
         return path && typeof path === 'string' && path.startsWith('/data/storage/');
     };
-    const getFdFromUriOrSandBoxPath = (uri: string) => {
+    const getFdFromUriOrSandBoxPath = (uri: string)=>{
         try {
             const file = fileIo.openSync(uri, fileIo.OpenMode.READ_ONLY);
             return file.fd;
@@ -2687,12 +2713,12 @@ export function initUniExtApi() {
         }
         throw new Error('file is not exist');
     };
-    const callCallbacks = (callbacks: Function[], ...args: Object[]) => {
-        callbacks.forEach((cb) => {
+    const callCallbacks = (callbacks: Function[], ...args: Object[])=>{
+        callbacks.forEach((cb)=>{
             typeof cb === 'function' && cb(...args);
         });
     };
-    const remoteCallback = (callbacks: Function[], callback: Function) => {
+    const remoteCallback = (callbacks: Function[], callback: Function)=>{
         const index = callbacks.indexOf(callback);
         if (index > -1) {
             callbacks.splice(index, 1);
@@ -2701,7 +2727,7 @@ export function initUniExtApi() {
     class AudioPlayerError {
         errMsg: string;
         errCode: number;
-        constructor(errMsg: string, errCode: number) {
+        constructor(errMsg: string, errCode: number){
             this.errMsg = errMsg;
             this.errCode = errCode;
         }
@@ -2717,7 +2743,7 @@ export function initUniExtApi() {
         onWaitingCallbacks: Function[] = [];
         onSeekingCallbacks: Function[] = [];
         onSeekedCallbacks: Function[] = [];
-        constructor() { }
+        constructor(){}
         canPlay() {
             callCallbacks(this.onCanplayCallbacks);
         }
@@ -2817,7 +2843,7 @@ export function initUniExtApi() {
     }
     const AUDIOS: Record<string, InnerAudioContext | undefined> = {};
     const AUDIO_PLAYERS: Record<string, media.AudioPlayer | undefined> = {};
-    const LOG = (msg: string) => console.log(`[createInnerAudioContext]: ${msg}`);
+    const LOG = (msg: string)=>console.log(`[createInnerAudioContext]: ${msg}`);
     class STATE_TYPE {
         static IDLE: string = 'idle';
         static PLAYING: string = 'playing';
@@ -2836,30 +2862,30 @@ export function initUniExtApi() {
         private audioId: string = '';
         private _playbackRate: number = 1;
         readonly obeyMuteSwitch: boolean = false;
-        constructor(audioId: string) {
+        constructor(audioId: string){
             this.audioId = audioId;
             this.init();
         }
         init() {
-            AUDIO_PLAYERS[this.audioId]?.on('dataLoad', () => {
+            AUDIO_PLAYERS[this.audioId]?.on('dataLoad', ()=>{
                 this.audioPlayerCallback.canPlay();
             });
-            AUDIO_PLAYERS[this.audioId]?.on('play', () => {
+            AUDIO_PLAYERS[this.audioId]?.on('play', ()=>{
                 this.audioPlayerCallback.play();
             });
-            AUDIO_PLAYERS[this.audioId]?.on('pause', () => {
+            AUDIO_PLAYERS[this.audioId]?.on('pause', ()=>{
                 this.audioPlayerCallback.pause();
             });
-            AUDIO_PLAYERS[this.audioId]?.on('finish', () => {
+            AUDIO_PLAYERS[this.audioId]?.on('finish', ()=>{
                 this.audioPlayerCallback.ended();
             });
-            AUDIO_PLAYERS[this.audioId]?.on('timeUpdate', (res) => {
+            AUDIO_PLAYERS[this.audioId]?.on('timeUpdate', (res)=>{
                 this.audioPlayerCallback.timeUpdate(res / 1000);
             });
-            AUDIO_PLAYERS[this.audioId]?.on('error', (err) => {
+            AUDIO_PLAYERS[this.audioId]?.on('error', (err)=>{
                 this.audioPlayerCallback.error(new AudioPlayerError(err.message, err.code));
             });
-            AUDIO_PLAYERS[this.audioId]?.on('bufferingUpdate', (infoType, value) => {
+            AUDIO_PLAYERS[this.audioId]?.on('bufferingUpdate', (infoType, value)=>{
                 console.info(`[AdvancedAPI] audioPlayer bufferingUpdate ${infoType} ${value}`);
                 if (infoType === media.BufferingInfoType.BUFFERING_PERCENT && value !== 0 && AUDIO_PLAYERS[this.audioId]) {
                     this._buffered = value;
@@ -2868,7 +2894,7 @@ export function initUniExtApi() {
                     }
                 }
             });
-            AUDIO_PLAYERS[this.audioId]?.on('audioInterrupt', (InterruptEvent) => {
+            AUDIO_PLAYERS[this.audioId]?.on('audioInterrupt', (InterruptEvent)=>{
                 console.info('[AdvancedAPI]  audioInterrupt:' + JSON.stringify(InterruptEvent));
                 if (AUDIO_PLAYERS[this.audioId] && InterruptEvent.hintType === audio.InterruptHint.INTERRUPT_HINT_PAUSE) {
                     AUDIO_PLAYERS[this.audioId]!.pause();
@@ -3116,13 +3142,13 @@ export function initUniExtApi() {
             this.audioPlayerCallback.offSeeked(callback);
         }
     }
-    const createAudioInstance = () => {
+    const createAudioInstance = ()=>{
         const audioId = `${Date.now()}${Math.random()}`;
         AUDIO_PLAYERS[audioId] = media.createAudioPlayer();
         AUDIOS[audioId] = new AudioPlayer(audioId);
         return audioId;
     };
-    const createInnerAudioContext: CreateInnerAudioContext = defineSyncApi<InnerAudioContext>(API_CREATE_INNER_AUDIO_CONTEXT, () => {
+    const createInnerAudioContext: CreateInnerAudioContext = defineSyncApi<InnerAudioContext>(API_CREATE_INNER_AUDIO_CONTEXT, ()=>{
         const audioId = createAudioInstance();
         return AUDIOS[audioId];
     }) as CreateInnerAudioContext;
@@ -3131,35 +3157,35 @@ export function initUniExtApi() {
     const API_$_OFF = '$off';
     const API_$_EMIT = '$emit';
     const emitter: IUniEventEmitter = new Emitter() as IUniEventEmitter;
-    const $on: $On = defineSyncApi<number>(API_$_ON, (eventName: string, callback: Function) => {
+    const $on: $On = defineSyncApi<number>(API_$_ON, (eventName: string, callback: Function)=>{
         return emitter.on(eventName, callback);
     }) as $On;
-    const $once: $Once = defineSyncApi<number>(API_$_ONCE, (eventName: string, callback: Function) => {
+    const $once: $Once = defineSyncApi<number>(API_$_ONCE, (eventName: string, callback: Function)=>{
         return emitter.once(eventName, callback);
     }) as $Once;
-    const $off: $Off = defineSyncApi<void>(API_$_OFF, (eventName: string, callback: Function) => {
+    const $off: $Off = defineSyncApi<void>(API_$_OFF, (eventName: string, callback: Function)=>{
         emitter.off(eventName, callback);
     }) as $Off;
-    const $emit: $Emit = defineSyncApi<void>(API_$_EMIT, (eventName: string, ...args: (Object | undefined | null)[]) => {
+    const $emit: $Emit = defineSyncApi<void>(API_$_EMIT, (eventName: string, ...args: (Object | undefined | null)[])=>{
         emitter.emit(eventName, ...args);
     }) as $Emit;
     const API_EXIT = 'exit';
-    const exit: Exit = defineSyncApi<void>(API_EXIT, () => {
-        UTSHarmony2.exit();
+    const exit: Exit = defineSyncApi<void>(API_EXIT, ()=>{
+        UTSHarmony.exit();
     }) as Exit;
     const API_SAVE_FILE = 'saveFile';
     const API_GET_FILE_INFO = 'getFileInfo';
     const API_GET_SAVED_FILE_INFO = 'getSavedFileInfo';
     const API_GET_SAVED_FILE_LIST = 'getSavedFileList';
     const API_REMOVE_SAVED_FILE = 'removeSavedFile';
-    const getSavedDir = () => {
+    const getSavedDir = ()=>{
         return getEnv().USER_DATA_PATH + '/saved';
     };
     let savedIndex: [string, number] = [
         '0',
         0
     ];
-    const getSavedFileName = (filePath: string) => {
+    const getSavedFileName = (filePath: string)=>{
         const ext = filePath.split('/').pop()?.split('.').slice(1).join('.');
         let fileName = Date.now() + '';
         if (savedIndex[0] === fileName) {
@@ -3176,7 +3202,7 @@ export function initUniExtApi() {
         }
         return fileName;
     };
-    const getFsPath = (filePath: string) => {
+    const getFsPath = (filePath: string)=>{
         filePath = getRealPath(filePath) as string;
         if (!/^file:/.test(filePath)) {
             return filePath;
@@ -3187,7 +3213,7 @@ export function initUniExtApi() {
         }
         return filePath;
     };
-    const saveFile: SaveFile = defineAsyncApi<SaveFileOptions, SaveFileSuccess>(API_SAVE_FILE, (options: SaveFileOptions, exec: ApiExecutor<SaveFileSuccess>) => {
+    const saveFile: SaveFile = defineAsyncApi<SaveFileOptions, SaveFileSuccess>(API_SAVE_FILE, (options: SaveFileOptions, exec: ApiExecutor<SaveFileSuccess>)=>{
         const tempFilePath = getRealPath(options.tempFilePath) as string;
         const savedPath = getSavedDir();
         if (!fs.accessSync(savedPath)) {
@@ -3201,46 +3227,46 @@ export function initUniExtApi() {
             return;
         }
         const savedFilePath = savedPath + '/' + getSavedFileName(tempFilePath);
-        fs.copyFile(srcFile.fd, savedFilePath, (err) => {
+        fs.copyFile(srcFile.fd, savedFilePath, (err)=>{
             fs.closeSync(srcFile);
             if (err) {
                 exec.reject(err.message);
             } else {
                 exec.resolve({
-                    savedFilePath: 'file://' + savedFilePath
+                    savedFilePath
                 } as SaveFileSuccess);
             }
         });
     }) as SaveFile;
-    const getSavedFileList: GetSavedFileList = defineAsyncApi<GetSavedFileListOptions, GetSavedFileListSuccess>(API_GET_SAVED_FILE_LIST, (options: GetSavedFileListOptions, exec: ApiExecutor<GetSavedFileListSuccess>) => {
+    const getSavedFileList: GetSavedFileList = defineAsyncApi<GetSavedFileListOptions, GetSavedFileListSuccess>(API_GET_SAVED_FILE_LIST, (options: GetSavedFileListOptions, exec: ApiExecutor<GetSavedFileListSuccess>)=>{
         const savedPath = getSavedDir();
         if (!fs.accessSync(savedPath)) {
             exec.resolve({
                 fileList: []
             } as GetSavedFileListSuccess);
         }
-        fs.listFile(savedPath, {} as ListFileOptions, (err, fileList) => {
+        fs.listFile(savedPath, {} as ListFileOptions, (err, fileList)=>{
             if (err) {
                 exec.reject(err.message);
             } else {
                 exec.resolve({
-                    fileList: fileList.map((filePath: string) => {
+                    fileList: fileList.map((filePath: string)=>{
                         const fullPath = savedPath + '/' + filePath;
                         const stat = fs.statSync(fullPath);
                         if (!stat.isFile()) {
                             return null;
                         }
                         return {
-                            filePath: 'file://' + fullPath,
+                            filePath: fullPath,
                             size: stat.size,
                             createTime: stat.ctime
                         } as SavedFileListItem;
-                    }).filter((item) => !!item)
+                    }).filter((item)=>!!item)
                 } as GetSavedFileListSuccess);
             }
         });
     }) as GetSavedFileList;
-    const getSavedFileInfo: GetSavedFileInfo = defineAsyncApi<GetSavedFileInfoOptions, GetSavedFileInfoSuccess>(API_GET_SAVED_FILE_INFO, (options: GetSavedFileInfoOptions, exec: ApiExecutor<GetSavedFileInfoSuccess>) => {
+    const getSavedFileInfo: GetSavedFileInfo = defineAsyncApi<GetSavedFileInfoOptions, GetSavedFileInfoSuccess>(API_GET_SAVED_FILE_INFO, (options: GetSavedFileInfoOptions, exec: ApiExecutor<GetSavedFileInfoSuccess>)=>{
         const savedFilePath = getFsPath(options.filePath);
         if (!fs.accessSync(savedFilePath)) {
             exec.reject('file not exist');
@@ -3255,13 +3281,13 @@ export function initUniExtApi() {
             createTime: stat.ctime
         } as GetSavedFileInfoSuccess);
     }) as GetSavedFileInfo;
-    const removeSavedFile: RemoveSavedFile = defineAsyncApi<RemoveSavedFileOptions, RemoveSavedFileSuccess>(API_REMOVE_SAVED_FILE, (options: RemoveSavedFileOptions, exec: ApiExecutor<RemoveSavedFileSuccess>) => {
+    const removeSavedFile: RemoveSavedFile = defineAsyncApi<RemoveSavedFileOptions, RemoveSavedFileSuccess>(API_REMOVE_SAVED_FILE, (options: RemoveSavedFileOptions, exec: ApiExecutor<RemoveSavedFileSuccess>)=>{
         const savedFilePath = getFsPath(options.filePath);
         if (!fs.accessSync(savedFilePath)) {
             exec.reject('file not exist');
             return;
         }
-        fs.unlink(savedFilePath, (err) => {
+        fs.unlink(savedFilePath, (err)=>{
             if (err) {
                 exec.reject(err.message);
             } else {
@@ -3273,7 +3299,7 @@ export function initUniExtApi() {
         'md5',
         'sha1'
     ];
-    const getFileInfo: GetFileInfo = defineAsyncApi<GetFileInfoOptions, GetFileInfoSuccess>(API_GET_FILE_INFO, (options: GetFileInfoOptions, exec: ApiExecutor<GetFileInfoSuccess>) => {
+    const getFileInfo: GetFileInfo = defineAsyncApi<GetFileInfoOptions, GetFileInfoSuccess>(API_GET_FILE_INFO, (options: GetFileInfoOptions, exec: ApiExecutor<GetFileInfoSuccess>)=>{
         const filePath = getFsPath(options.filePath);
         const digestAlgorithm = options.digestAlgorithm && SupportedHashAlgorithm.includes(options.digestAlgorithm) ? options.digestAlgorithm : 'md5';
         if (!fs.accessSync(filePath)) {
@@ -3284,7 +3310,7 @@ export function initUniExtApi() {
         if (!stat.isFile()) {
             exec.reject('file not exist');
         }
-        Hash.hash(filePath, digestAlgorithm, (err, hash) => {
+        Hash.hash(filePath, digestAlgorithm, (err, hash)=>{
             if (err) {
                 exec.reject(err.message);
             } else {
@@ -3315,7 +3341,7 @@ export function initUniExtApi() {
         accessTokenId: number;
         atManager: abilityAccessCtrl.AtManager;
         appAuthorizeSetting: AppAuthorizeSetting;
-        constructor(accessTokenId: number, atManager: abilityAccessCtrl.AtManager, appAuthorizeSetting: AppAuthorizeSetting) {
+        constructor(accessTokenId: number, atManager: abilityAccessCtrl.AtManager, appAuthorizeSetting: AppAuthorizeSetting){
             this.accessTokenId = accessTokenId;
             this.atManager = atManager;
             this.appAuthorizeSetting = appAuthorizeSetting;
@@ -3395,15 +3421,15 @@ export function initUniExtApi() {
             }
         }
     }
-    const getAppAuthorizeSetting: GetAppAuthorizeSetting = defineSyncApi<GetAppAuthorizeSettingResult>('getAppAuthorizeSetting', () => {
+    const getAppAuthorizeSetting: GetAppAuthorizeSetting = defineSyncApi<GetAppAuthorizeSettingResult>('getAppAuthorizeSetting', ()=>{
         const bundleInfoWithApplication = bundleManager.getBundleInfoForSelfSync(bundleManager.BundleFlag.GET_BUNDLE_INFO_WITH_APPLICATION);
         const appAuthorizeSettingImpl = new GetAppAuthorizeSettingImpl(bundleInfoWithApplication.appInfo.accessTokenId, abilityAccessCtrl.createAtManager(), new AppAuthorizeSetting());
         return appAuthorizeSettingImpl.appAuthorizeSetting as GetAppAuthorizeSettingResult;
     }) as GetAppAuthorizeSetting;
     const API_GET_APP_BASE_INFO = 'getAppBaseInfo';
-    const getBundleInfoOnce = () => {
+    const getBundleInfoOnce = ()=>{
         let bundleInfo: bundleManager1.BundleInfo | null = null;
-        return (): bundleManager1.BundleInfo => {
+        return (): bundleManager1.BundleInfo =>{
             if (bundleInfo) {
                 return bundleInfo;
             }
@@ -3412,21 +3438,21 @@ export function initUniExtApi() {
         };
     };
     const getBundleInfo = getBundleInfoOnce();
-    const getAppBaseInfo: GetAppBaseInfo = defineSyncApi<GetAppBaseInfoResult>(API_GET_APP_BASE_INFO, (): GetAppBaseInfoResult => {
-        const appVersion: IAppBaseInfoAppVersion = UTSHarmony3.getAppVersion();
+    const getAppBaseInfo: GetAppBaseInfo = defineSyncApi<GetAppBaseInfoResult>(API_GET_APP_BASE_INFO, (): GetAppBaseInfoResult =>{
+        const appVersion: IAppBaseInfoAppVersion = UTSHarmony.getAppVersion();
         const appLanguage = I18n.System.getAppPreferredLanguage();
-        const uniCompilerVersion: string = UTSHarmony3.getUniCompilerVersion();
-        const uniRuntimeVersion: string = UTSHarmony3.getUniRuntimeVersion();
+        const uniCompilerVersion: string = UTSHarmony.getUniCompilerVersion() as string;
+        const uniRuntimeVersion: string = UTSHarmony.getUniRuntimeVersion();
         return {
-            appId: UTSHarmony3.getAppId() as string,
+            appId: UTSHarmony.getAppId() as string,
             appLanguage,
-            appName: UTSHarmony3.getAppName() as string,
-            appTheme: UTSHarmony3.getAppTheme() as string,
+            appName: UTSHarmony.getAppName() as string,
+            appTheme: UTSHarmony.getAppTheme() as string,
             appVersion: appVersion.name,
             appVersionCode: appVersion.code,
             appWgtVersion: appVersion.name,
             hostLanguage: I18n.System.getSystemLanguage(),
-            isUniAppX: UTSHarmony3.isUniAppX() as boolean,
+            isUniAppX: UTSHarmony.isUniAppX() as boolean,
             packageName: getBundleInfo().name,
             uniCompilerVersion: uniCompilerVersion,
             uniCompilerVersionCode: parseFloat(uniCompilerVersion),
@@ -3436,13 +3462,13 @@ export function initUniExtApi() {
         } as GetAppBaseInfoResult;
     }) as GetAppBaseInfo;
     const API_GET_BACKGROUND_AUDIO_MANAGER = 'getBackgroundAudioManager';
-    const isFileUri1 = (path: string) => {
+    const isFileUri1 = (path: string)=>{
         return path && typeof path === 'string' && (path.startsWith('file://') || path.startsWith('datashare://'));
     };
-    const isSandboxPath1 = (path: string) => {
+    const isSandboxPath1 = (path: string)=>{
         return path && typeof path === 'string' && path.startsWith('/data/storage/');
     };
-    const getFdFromUriOrSandBoxPath1 = (uri: string) => {
+    const getFdFromUriOrSandBoxPath1 = (uri: string)=>{
         try {
             const file = fileIo1.openSync(uri, fileIo1.OpenMode.READ_ONLY);
             return file.fd;
@@ -3451,12 +3477,12 @@ export function initUniExtApi() {
         }
         throw new Error('file is not exist');
     };
-    const callCallbacks1 = (callbacks: Function[], ...args: Object[]) => {
-        callbacks.forEach((cb) => {
+    const callCallbacks1 = (callbacks: Function[], ...args: Object[])=>{
+        callbacks.forEach((cb)=>{
             typeof cb === 'function' && cb(...args);
         });
     };
-    const remoteCallback1 = (callbacks: Function[], callback: Function) => {
+    const remoteCallback1 = (callbacks: Function[], callback: Function)=>{
         const index = callbacks.indexOf(callback);
         if (index > -1) {
             callbacks.splice(index, 1);
@@ -3465,7 +3491,7 @@ export function initUniExtApi() {
     class AudioPlayerError1 {
         errMsg: string;
         errCode: number;
-        constructor(errMsg: string, errCode: number) {
+        constructor(errMsg: string, errCode: number){
             this.errMsg = errMsg;
             this.errCode = errCode;
         }
@@ -3481,7 +3507,7 @@ export function initUniExtApi() {
         onWaitingCallbacks: Function[] = [];
         onSeekingCallbacks: Function[] = [];
         onSeekedCallbacks: Function[] = [];
-        constructor() { }
+        constructor(){}
         canPlay() {
             callCallbacks1(this.onCanplayCallbacks);
         }
@@ -3581,20 +3607,20 @@ export function initUniExtApi() {
     }
     const audioPlayerCallback = new AudioPlayerCallback1();
     let AV_SESSION: avSession.AVSession | null = null;
-    const createAVSession = () => {
-        avSession.createAVSession(getAbilityContext1()!, 'player', 'audio').then((data) => {
+    const createAVSession = ()=>{
+        avSession.createAVSession(UTSHarmony.getUIAbilityContext()!, 'player', 'audio').then((data)=>{
             AV_SESSION = data;
         });
     };
-    const destroyAVSession = () => {
+    const destroyAVSession = ()=>{
         if (AV_SESSION === null) {
             return;
         }
         AV_SESSION.destroy();
         AV_SESSION = null;
     };
-    const startBackgroundTask = () => {
-        const abilityInfo: TempAbilityInfo = getAbilityContext1()!.abilityInfo;
+    const startBackgroundTask = ()=>{
+        const abilityInfo: TempAbilityInfo = UTSHarmony.getUIAbilityContext()!.abilityInfo;
         const wantAgentInfo: wantAgent.WantAgentInfo = {
             wants: [
                 {
@@ -3608,30 +3634,30 @@ export function initUniExtApi() {
                 wantAgent.WantAgentFlags.UPDATE_PRESENT_FLAG
             ]
         };
-        wantAgent.getWantAgent(wantAgentInfo).then((wantAgentObj) => {
-            return backgroundTaskManager.startBackgroundRunning(getAbilityContext1()!, backgroundTaskManager.BackgroundMode.AUDIO_PLAYBACK, wantAgentObj);
-        }).then(() => {
+        wantAgent.getWantAgent(wantAgentInfo).then((wantAgentObj)=>{
+            return backgroundTaskManager.startBackgroundRunning(UTSHarmony.getUIAbilityContext()!, backgroundTaskManager.BackgroundMode.AUDIO_PLAYBACK, wantAgentObj);
+        }).then(()=>{
             console.debug('[getBackgroundAudioManager]  start bg operation succeeded');
-        }).catch((err: BusinessError2) => {
+        }).catch((err: BusinessError3)=>{
             audioPlayerCallback.error(new AudioPlayerError1(err.message, err.code));
         });
     };
-    const stopBackgroundTask = () => {
-        backgroundTaskManager.stopBackgroundRunning(getAbilityContext1()!).then(() => {
+    const stopBackgroundTask = ()=>{
+        backgroundTaskManager.stopBackgroundRunning(UTSHarmony.getUIAbilityContext()!).then(()=>{
             console.debug('[getBackgroundAudioManager]  stop operation succeeded');
-        }).catch((err: BusinessError2) => {
+        }).catch((err: BusinessError3)=>{
             audioPlayerCallback.error(new AudioPlayerError1(err.message, err.code));
         });
     };
-    const START_BACKGROUND = () => {
+    const START_BACKGROUND = ()=>{
         startBackgroundTask();
         createAVSession();
     };
-    const STOP_BACKGROUND = () => {
+    const STOP_BACKGROUND = ()=>{
         destroyAVSession();
         stopBackgroundTask();
     };
-    const LOG1 = (msg: string) => console.log(`[getBackgroundAudioManager]: ${msg}`);
+    const LOG1 = (msg: string)=>console.log(`[getBackgroundAudioManager]: ${msg}`);
     class STATE_TYPE1 {
         static IDLE: string = 'idle';
         static PLAYING: string = 'playing';
@@ -3652,31 +3678,31 @@ export function initUniExtApi() {
         private _protocol: string = '';
         private _playbackRate: number = 1;
         readonly obeyMuteSwitch: boolean = false;
-        constructor() {
+        constructor(){
             this.init();
         }
         init() {
             BackgroundAudioManagerImpl.audioPlayer = media1.createAudioPlayer();
-            BackgroundAudioManagerImpl.audioPlayer.on('dataLoad', () => {
+            BackgroundAudioManagerImpl.audioPlayer.on('dataLoad', ()=>{
                 audioPlayerCallback.canPlay();
             });
-            BackgroundAudioManagerImpl.audioPlayer.on('play', () => {
+            BackgroundAudioManagerImpl.audioPlayer.on('play', ()=>{
                 audioPlayerCallback.play();
             });
-            BackgroundAudioManagerImpl.audioPlayer.on('pause', () => {
+            BackgroundAudioManagerImpl.audioPlayer.on('pause', ()=>{
                 audioPlayerCallback.pause();
             });
-            BackgroundAudioManagerImpl.audioPlayer.on('finish', () => {
+            BackgroundAudioManagerImpl.audioPlayer.on('finish', ()=>{
                 STOP_BACKGROUND();
                 audioPlayerCallback.ended();
             });
-            BackgroundAudioManagerImpl.audioPlayer.on('timeUpdate', (res) => {
+            BackgroundAudioManagerImpl.audioPlayer.on('timeUpdate', (res)=>{
                 audioPlayerCallback.timeUpdate(res / 1000);
             });
-            BackgroundAudioManagerImpl.audioPlayer.on('error', (err) => {
+            BackgroundAudioManagerImpl.audioPlayer.on('error', (err)=>{
                 audioPlayerCallback.error(new AudioPlayerError1(err.message, err.code));
             });
-            BackgroundAudioManagerImpl.audioPlayer.on('bufferingUpdate', (infoType, value) => {
+            BackgroundAudioManagerImpl.audioPlayer.on('bufferingUpdate', (infoType, value)=>{
                 console.info(`[AdvancedAPI] audioPlayer bufferingUpdate ${infoType} ${value}`);
                 if (infoType === media1.BufferingInfoType.BUFFERING_PERCENT && value !== 0 && BackgroundAudioManagerImpl.audioPlayer) {
                     this._buffered = value;
@@ -3685,7 +3711,7 @@ export function initUniExtApi() {
                     }
                 }
             });
-            BackgroundAudioManagerImpl.audioPlayer.on('audioInterrupt', (InterruptEvent) => {
+            BackgroundAudioManagerImpl.audioPlayer.on('audioInterrupt', (InterruptEvent)=>{
                 console.info('[AdvancedAPI]  audioInterrupt:' + JSON.stringify(InterruptEvent));
                 if (BackgroundAudioManagerImpl.audioPlayer && InterruptEvent.hintType === audio1.InterruptHint.INTERRUPT_HINT_PAUSE) {
                     BackgroundAudioManagerImpl.audioPlayer.pause();
@@ -3740,7 +3766,7 @@ export function initUniExtApi() {
                     const fd = getFdFromUriOrSandBoxPath1(value);
                     path = `fd://${fd}`;
                 } catch (err) {
-                    audioPlayerCallback.error(new AudioPlayerError1((err as BusinessError2).message, (err as BusinessError2).code));
+                    audioPlayerCallback.error(new AudioPlayerError1((err as BusinessError3).message, (err as BusinessError3).code));
                 }
             }
             if (BackgroundAudioManagerImpl.audioPlayer.src && path !== BackgroundAudioManagerImpl.audioPlayer.src) {
@@ -3919,13 +3945,13 @@ export function initUniExtApi() {
         }
     }
     let backgroundAudioManager: BackgroundAudioManager | null = null;
-    const getBackgroundAudioManager: GetBackgroundAudioManager = defineSyncApi<BackgroundAudioManager>(API_GET_BACKGROUND_AUDIO_MANAGER, () => {
+    const getBackgroundAudioManager: GetBackgroundAudioManager = defineSyncApi<BackgroundAudioManager>(API_GET_BACKGROUND_AUDIO_MANAGER, ()=>{
         if (!backgroundAudioManager) backgroundAudioManager = new BackgroundAudioManagerImpl();
         return backgroundAudioManager;
     }) as GetBackgroundAudioManager;
     const API_GET_DEVICE_INFO = 'getDeviceInfo';
-    const parseDeviceType = (deviceType: string): 'phone' | 'pad' | 'tv' | 'watch' | 'pc' | 'unknown' | 'car' | 'vr' | 'appliance' => {
-        switch (deviceType) {
+    const parseDeviceType = (deviceType: string): 'phone' | 'pad' | 'tv' | 'watch' | 'pc' | 'unknown' | 'car' | 'vr' | 'appliance' =>{
+        switch(deviceType){
             case 'phone':
                 return 'phone';
             case 'wearable':
@@ -3944,7 +3970,7 @@ export function initUniExtApi() {
                 return 'unknown';
         }
     };
-    const getDeviceInfo: GetDeviceInfo = defineSyncApi<GetDeviceInfoResult>(API_GET_DEVICE_INFO, (): GetDeviceInfoResult => {
+    const getDeviceInfo: GetDeviceInfo = defineSyncApi<GetDeviceInfoResult>(API_GET_DEVICE_INFO, (): GetDeviceInfoResult =>{
         return {
             deviceBrand: deviceInfo.brand.toLowerCase(),
             deviceId: getDeviceId(),
@@ -3953,7 +3979,7 @@ export function initUniExtApi() {
             devicePixelRatio: vp2px(1),
             deviceType: parseDeviceType(deviceInfo.deviceType),
             osLanguage: I18n1.System.getSystemLanguage(),
-            osTheme: UTSHarmony4.getOsTheme() as string,
+            osTheme: UTSHarmony.getOsTheme() as string,
             osVersion: deviceInfo.majorVersion + '.' + deviceInfo.seniorVersion + '.' + deviceInfo.featureVersion + '.' + deviceInfo.buildVersion,
             osName: 'harmonyos',
             platform: 'harmonyos',
@@ -3976,8 +4002,8 @@ export function initUniExtApi() {
         "4G" = 6,
         "5G" = 7
     }
-    const signalType = (resultObj: radio.NetworkType) => {
-        switch (resultObj) {
+    const signalType = (resultObj: radio.NetworkType)=>{
+        switch(resultObj){
             case radio.NetworkType.NETWORK_TYPE_GSM:
             case radio.NetworkType.NETWORK_TYPE_CDMA:
                 return NetworkinfoType['2G'];
@@ -3994,12 +4020,12 @@ export function initUniExtApi() {
                 return NetworkinfoType.NONE;
         }
     };
-    const networkGetType = () => {
-        return new Promise<number>((resolve, reject) => {
-            UTSHarmony5.requestSystemPermission(PERMISSIONS1, (allRight: boolean) => {
+    const networkGetType = ()=>{
+        return new Promise<number>((resolve, reject)=>{
+            UTSHarmony.requestSystemPermission(PERMISSIONS1, (allRight: boolean)=>{
                 if (allRight) {
                     try {
-                        radio.getPrimarySlotId().then((slotId: number) => radio.getSignalInformationSync(slotId)).then((signalInformation: Array<radio.SignalInformation>) => {
+                        radio.getPrimarySlotId().then((slotId: number)=>radio.getSignalInformationSync(slotId)).then((signalInformation: Array<radio.SignalInformation>)=>{
                             const data = signalInformation[0];
                             if (data && data.signalType) {
                                 resolve(signalType(data.signalType));
@@ -4008,18 +4034,18 @@ export function initUniExtApi() {
                             }
                         });
                     } catch (error) {
-                        reject(error as BusinessError3);
+                        reject(error as BusinessError4);
                     }
                 } else {
                     reject('permission denied');
                 }
-            }, () => reject('permission denied'));
+            }, ()=>reject('permission denied'));
         });
     };
     class GlobalContext {
         netList: connection.NetHandle[] = [];
         netHandle: connection.NetHandle | null = null;
-        private constructor() { }
+        private constructor(){}
         private static instance: GlobalContext;
         public static getContext(): GlobalContext {
             if (!GlobalContext.instance) {
@@ -4028,18 +4054,18 @@ export function initUniExtApi() {
             return GlobalContext.instance;
         }
     }
-    const getCurrentType = () => {
-        return new Promise<number>((resolve, reject) => {
-            UTSHarmony5.requestSystemPermission(PERMISSIONS1, (allRight: boolean) => {
+    const getCurrentType = ()=>{
+        return new Promise<number>((resolve, reject)=>{
+            UTSHarmony.requestSystemPermission(PERMISSIONS1, (allRight: boolean)=>{
                 if (allRight) {
                     try {
-                        connection.getDefaultNet().then((data: connection.NetHandle) => {
+                        connection.getDefaultNet().then((data: connection.NetHandle)=>{
                             if (data) {
                                 GlobalContext.getContext().netHandle = data;
-                                connection.getNetCapabilities(GlobalContext.getContext().netHandle!).then((data: connection.NetCapabilities) => {
+                                connection.getNetCapabilities(GlobalContext.getContext().netHandle!).then((data: connection.NetCapabilities)=>{
                                     const bearerTypes: Set<number> = new Set(data.bearerTypes);
                                     const bearerTypesNum = Array.from(bearerTypes.values());
-                                    for (const item of bearerTypesNum) {
+                                    for (const item of bearerTypesNum){
                                         if (item == connection.NetBearType.BEARER_CELLULAR) {
                                             networkGetType().then(resolve).catch(reject);
                                         } else if (item == connection.NetBearType.BEARER_WIFI) {
@@ -4050,7 +4076,7 @@ export function initUniExtApi() {
                                             resolve(NetworkinfoType.UNKNOW);
                                         }
                                     }
-                                }).catch((err: BusinessError3) => {
+                                }).catch((err: BusinessError4)=>{
                                     reject(err);
                                 });
                             }
@@ -4066,24 +4092,24 @@ export function initUniExtApi() {
     };
     class Network {
         static netConnection: connection.NetConnection | null = null;
-        constructor() {
+        constructor(){
             Network.netConnection = connection.createNetConnection();
         }
         static ohoSubscribe() {
             if (!Network.netConnection) {
                 Network.netConnection = connection.createNetConnection();
             }
-            UTSHarmony5.requestSystemPermission(PERMISSIONS1, (allRight: boolean) => {
+            UTSHarmony.requestSystemPermission(PERMISSIONS1, (allRight: boolean)=>{
                 if (allRight && Network.netConnection) {
-                    Network.netConnection.register((err: BusinessError3) => { });
-                    Network.netConnection.on('netCapabilitiesChange', (capability: connection.NetCapabilityInfo) => {
+                    Network.netConnection.register((err: BusinessError4)=>{});
+                    Network.netConnection.on('netCapabilitiesChange', (capability: connection.NetCapabilityInfo)=>{
                         const NetBearType = capability?.netCap?.bearerTypes[0];
                         let networkType = '';
-                        switch (NetBearType) {
+                        switch(NetBearType){
                             case connection.NetBearType.BEARER_CELLULAR:
-                                getCurrentType().then((type: number) => {
+                                getCurrentType().then((type: number)=>{
                                     invokeOnNetworkStatusChange(NetworkinfoType[type]);
-                                }).catch(() => {
+                                }).catch(()=>{
                                     invokeOnNetworkStatusChange(NetworkinfoType[1]);
                                 });
                                 return;
@@ -4098,7 +4124,7 @@ export function initUniExtApi() {
                         }
                         invokeOnNetworkStatusChange(networkType);
                     });
-                    Network.netConnection.on('netLost', (netLost: connection.NetHandle) => {
+                    Network.netConnection.on('netLost', (netLost: connection.NetHandle)=>{
                         invokeOnNetworkStatusChange(NetworkinfoType[1]);
                     });
                 }
@@ -4106,30 +4132,38 @@ export function initUniExtApi() {
         }
     }
     new Network();
-    onNativePageReady().then(() => {
+    onNativePageReady().then(()=>{
         Network.ohoSubscribe();
     });
-    const getNetworkType: GetNetworkType = defineAsyncApi<GetNetworkTypeOptions, GetNetworkTypeSuccess>(API_GET_NETWORK_TYPE, (options: GetNetworkTypeOptions, res: ApiExecutor<GetNetworkTypeSuccess>) => {
-        getCurrentType().then((type: number) => {
+    const getNetworkType: GetNetworkType = defineAsyncApi<GetNetworkTypeOptions, GetNetworkTypeSuccess>(API_GET_NETWORK_TYPE, (options: GetNetworkTypeOptions, res: ApiExecutor<GetNetworkTypeSuccess>)=>{
+        getCurrentType().then((type: number)=>{
             res.resolve({
                 networkType: NetworkinfoType[type].toLocaleLowerCase()
             } as GetNetworkTypeSuccess);
-        }).catch((err: BusinessError3) => {
+        }).catch((err: BusinessError4)=>{
             res.reject(err.message);
         });
     }) as GetNetworkType;
-    const invokeOnNetworkStatusChange = (networkType: string) => {
+    const invokeOnNetworkStatusChange = (networkType: string)=>{
         UniGetNetworkTypeEventEmitter.emit('networkStatusChange', {
             isConnected: networkType !== NetworkinfoType[1],
             networkType: networkType.toLocaleLowerCase()
         } as OnNetworkStatusChangeCallbackResult);
     };
     const UniGetNetworkTypeEventEmitter = new Emitter1() as IUniGetNetworkTypeEventEmitter;
-    const onNetworkStatusChange: OnNetworkStatusChange = (callback: Function) => {
-        UniGetNetworkTypeEventEmitter.on('networkStatusChange', callback);
+    const onNetworkStatusChange: OnNetworkStatusChange = (callback: Function)=>{
+        UTSHarmony.requestSystemPermission(PERMISSIONS1, (allRight: boolean)=>{
+            if (allRight) {
+                UniGetNetworkTypeEventEmitter.on('networkStatusChange', callback);
+            }
+        });
     };
-    const offNetworkStatusChange: OffNetworkStatusChange = (callback: Function) => {
-        UniGetNetworkTypeEventEmitter.off('networkStatusChange', callback);
+    const offNetworkStatusChange: OffNetworkStatusChange = (callback: Function)=>{
+        UTSHarmony.requestSystemPermission(PERMISSIONS1, (allRight: boolean)=>{
+            if (allRight) {
+                UniGetNetworkTypeEventEmitter.off('networkStatusChange', callback);
+            }
+        });
     };
     const API_GET_PROVIDER = 'getProvider';
     const API_GET_PROVIDER_SYNC = 'getProviderSync';
@@ -4140,12 +4174,12 @@ export function initUniExtApi() {
         'push',
         'location'
     ];
-    const _getProviderSync = (options: GetProviderOptions) => {
+    const _getProviderSync = (options: GetProviderOptions)=>{
         if (!SupportedProviderServiceList.includes(options.service)) {
             return 'Parameter service invalid.';
         }
         const providers = getUniProviders(options.service);
-        const providerIds = providers.map((provider): string => {
+        const providerIds = providers.map((provider): string =>{
             return provider.id;
         });
         const result: GetProviderSuccess = {
@@ -4155,12 +4189,12 @@ export function initUniExtApi() {
         };
         return result;
     };
-    const getProvider: GetProvider = defineAsyncApi<GetProviderOptions, GetProviderSuccess>(API_GET_PROVIDER, (options: GetProviderOptions, exec: ApiExecutor<GetProviderSuccess>): void => {
+    const getProvider: GetProvider = defineAsyncApi<GetProviderOptions, GetProviderSuccess>(API_GET_PROVIDER, (options: GetProviderOptions, exec: ApiExecutor<GetProviderSuccess>): void =>{
         const res = _getProviderSync(options);
         if (typeof res === 'string') exec.reject(res);
         else exec.resolve(res);
     }) as GetProvider;
-    const getProviderSync: GetProviderSync = defineSyncApi<GetProviderSyncSuccess>(API_GET_PROVIDER_SYNC, (options: GetProviderSyncOptions): GetProviderSyncSuccess => {
+    const getProviderSync: GetProviderSync = defineSyncApi<GetProviderSyncSuccess>(API_GET_PROVIDER_SYNC, (options: GetProviderSyncOptions): GetProviderSyncSuccess =>{
         const res = _getProviderSync(options as GetProviderOptions);
         if (typeof res === 'string') throw new Error(res);
         return {
@@ -4180,8 +4214,8 @@ export function initUniExtApi() {
         interruptionBegin: [],
         interruptionEnd: []
     };
-    const setRecordStateCallback = (state: RecorderState, cb: Function) => {
-        switch (state) {
+    const setRecordStateCallback = (state: RecorderState, cb: Function)=>{
+        switch(state){
             case 'pause':
                 callbacks.pause.push(cb);
                 break;
@@ -4208,9 +4242,9 @@ export function initUniExtApi() {
                 break;
         }
     };
-    const onRecorderStateChange = (state: RecorderState, res: StateChangeRes | null = null) => {
-        const cbs: Function[] = (() => {
-            switch (state) {
+    const onRecorderStateChange = (state: RecorderState, res: StateChangeRes | null = null)=>{
+        const cbs: Function[] = (()=>{
+            switch(state){
                 case 'pause':
                     return callbacks.pause;
                 case 'resume':
@@ -4231,13 +4265,13 @@ export function initUniExtApi() {
                     return [];
             }
         })();
-        cbs.forEach((fn) => {
+        cbs.forEach((fn)=>{
             if (typeof fn === 'function') {
                 fn(res);
             }
         });
     };
-    const createFile = (supportFormats: string[], format: string, defaultExt: string) => {
+    const createFile = (supportFormats: string[], format: string, defaultExt: string)=>{
         const TEMP_PATH = getEnv1().TEMP_PATH as string;
         const filePath = `${TEMP_PATH}/recorder/`;
         if (!fileIo2.accessSync(filePath)) {
@@ -4247,7 +4281,7 @@ export function initUniExtApi() {
         const file: fileIo2.File = fileIo2.openSync(`${filePath}${fileName}`, fileIo2.OpenMode.READ_WRITE | fileIo2.OpenMode.CREATE);
         return file;
     };
-    const permissionDenied = () => {
+    const permissionDenied = ()=>{
         throw new Error('Permission MICROPHONE denied');
     };
     const supportFormats = [
@@ -4256,11 +4290,11 @@ export function initUniExtApi() {
     class AVRecorder implements RecorderManager {
         private avRecorder?: media2.AVRecorder;
         private isFirstStart: boolean = true;
-        constructor() { }
+        constructor(){}
         private onStateChange(file: fileIo3.File) {
             if (this.avRecorder) {
-                this.avRecorder.on('stateChange', async (state, reason) => {
-                    switch (state) {
+                this.avRecorder.on('stateChange', async (state, reason)=>{
+                    switch(state){
                         case 'idle':
                             this.isFirstStart = true;
                             break;
@@ -4289,7 +4323,7 @@ export function initUniExtApi() {
                             break;
                     }
                 });
-                this.avRecorder.on('error', (err: BusinessError4) => {
+                this.avRecorder.on('error', (err: BusinessError5)=>{
                     onRecorderStateChange('error', {
                         errMsg: `${err.message} ${err.code}`
                     } as StateChangeRes);
@@ -4323,14 +4357,14 @@ export function initUniExtApi() {
                 profile: audioProfile,
                 url: 'fd://' + file.fd
             };
-            UTSHarmony6.requestSystemPermission([
+            UTSHarmony.requestSystemPermission([
                 'ohos.permission.MICROPHONE'
-            ], async (allRight: boolean) => {
+            ], async (allRight: boolean)=>{
                 if (allRight) {
                     await this.avRecorder?.prepare(audioConfig);
                     await this.avRecorder?.start();
                     if (duration) {
-                        setTimeout(async () => {
+                        setTimeout(async ()=>{
                             await this.avRecorder?.stop();
                         }, duration);
                     }
@@ -4414,7 +4448,7 @@ export function initUniExtApi() {
             if (RECORDER_MANAGER) {
                 try {
                     await RECORDER_MANAGER.stop();
-                } catch (error) { }
+                } catch (error) {}
                 RECORDER_MANAGER = null;
             }
         }
@@ -4444,7 +4478,7 @@ export function initUniExtApi() {
         }
     }
     let recorderManager: RecorderManager | null = null;
-    const getRecorderManager: GetRecorderManager = defineSyncApi<RecorderManager>(API_GET_RECORDER_MANAGER, (): RecorderManager => {
+    const getRecorderManager: GetRecorderManager = defineSyncApi<RecorderManager>(API_GET_RECORDER_MANAGER, (): RecorderManager =>{
         if (recorderManager) return recorderManager;
         else recorderManager = new RecorderManagerImpl();
         return recorderManager;
@@ -4452,8 +4486,8 @@ export function initUniExtApi() {
     const API_GET_SYSTEM_INFO = 'getSystemInfo';
     const API_GET_SYSTEM_INFO_SYNC = 'getSystemInfoSync';
     const API_GET_WINDOW_INFO = 'getWindowInfo';
-    const parseDeviceType1 = (deviceType: string): 'phone' | 'pad' | 'tv' | 'watch' | 'pc' | 'unknown' | 'car' | 'vr' | 'appliance' => {
-        switch (deviceType) {
+    const parseDeviceType1 = (deviceType: string): 'phone' | 'pad' | 'tv' | 'watch' | 'pc' | 'unknown' | 'car' | 'vr' | 'appliance' =>{
+        switch(deviceType){
             case 'phone':
                 return 'phone';
             case 'wearable':
@@ -4472,15 +4506,15 @@ export function initUniExtApi() {
                 return 'unknown';
         }
     };
-    const getWindowInfo: GetWindowInfo = defineSyncApi<GetWindowInfoResult>(API_GET_WINDOW_INFO, (): GetWindowInfoResult => {
+    const getWindowInfo: GetWindowInfo = defineSyncApi<GetWindowInfoResult>(API_GET_WINDOW_INFO, (): GetWindowInfoResult =>{
         return internalGetWindowInfo() as GetWindowInfoResult;
     }) as GetWindowInfo;
-    const internalGetSystemInfo = (): GetSystemInfoResult => {
-        const appVersion: ISystemInfoAppVersion = UTSHarmony7.getAppVersion();
+    const internalGetSystemInfo = (): GetSystemInfoResult =>{
+        const appVersion: ISystemInfoAppVersion = UTSHarmony.getAppVersion();
         const appLanguage = I18n2.System.getAppPreferredLanguage();
-        const uniCompilerVersion: string = UTSHarmony7.getUniCompilerVersion();
+        const uniCompilerVersion: string = UTSHarmony.getUniCompilerVersion() as string;
         const uniCompilerVersionCode: number = parseFloat(uniCompilerVersion);
-        const uniRuntimeVersion: string = UTSHarmony7.getUniRuntimeVersion();
+        const uniRuntimeVersion: string = UTSHarmony.getUniRuntimeVersion();
         const windowInfo = internalGetWindowInfo() as GetWindowInfoResult;
         const pixelRatio = windowInfo.pixelRatio;
         const safeArea = windowInfo.safeArea;
@@ -4493,10 +4527,10 @@ export function initUniExtApi() {
         const windowTop = windowInfo.windowTop;
         const windowWidth = windowInfo.windowWidth;
         return {
-            appId: UTSHarmony7.getAppId() as string,
+            appId: UTSHarmony.getAppId() as string,
             appLanguage,
-            appName: UTSHarmony7.getAppName() as string,
-            appTheme: UTSHarmony7.getAppTheme() as string,
+            appName: UTSHarmony.getAppName() as string,
+            appTheme: UTSHarmony.getAppTheme() as string,
             appVersion: appVersion.name,
             appVersionCode: appVersion.code,
             appWgtVersion: appVersion.name,
@@ -4512,7 +4546,7 @@ export function initUniExtApi() {
             devicePixelRatio: vp2px(1),
             deviceType: parseDeviceType1(deviceInfo1.deviceType),
             osLanguage: I18n2.System.getSystemLanguage(),
-            osTheme: UTSHarmony7.getOsTheme() as string,
+            osTheme: UTSHarmony.getOsTheme() as string,
             osVersion: deviceInfo1.majorVersion + '.' + deviceInfo1.seniorVersion + '.' + deviceInfo1.featureVersion + '.' + deviceInfo1.buildVersion,
             osName: 'harmonyos',
             romName: deviceInfo1.distributionOSName,
@@ -4541,17 +4575,17 @@ export function initUniExtApi() {
             version: ''
         } as GetSystemInfoResult;
     };
-    const getSystemInfoSync: GetSystemInfoSync = defineSyncApi<GetSystemInfoResult>(API_GET_SYSTEM_INFO_SYNC, (): GetSystemInfoResult => {
+    const getSystemInfoSync: GetSystemInfoSync = defineSyncApi<GetSystemInfoResult>(API_GET_SYSTEM_INFO_SYNC, (): GetSystemInfoResult =>{
         return internalGetSystemInfo();
     }) as GetSystemInfoSync;
-    const getSystemInfo: GetSystemInfo = defineAsyncApi<GetSystemInfoOptions, GetSystemInfoResult>(API_GET_SYSTEM_INFO, (options: GetSystemInfoOptions, exec: ApiExecutor<GetSystemInfoResult>) => {
+    const getSystemInfo: GetSystemInfo = defineAsyncApi<GetSystemInfoOptions, GetSystemInfoResult>(API_GET_SYSTEM_INFO, (options: GetSystemInfoOptions, exec: ApiExecutor<GetSystemInfoResult>)=>{
         try {
             exec.resolve(internalGetSystemInfo());
         } catch (error) {
             exec.reject((error as Error).message);
         }
     }) as GetSystemInfo;
-    const getSystemSetting: GetSystemSetting = defineSyncApi<GetSystemSettingResult>('getSystemSetting', (): GetSystemSettingResult => {
+    const getSystemSetting: GetSystemSetting = defineSyncApi<GetSystemSettingResult>('getSystemSetting', (): GetSystemSettingResult =>{
         const defaultDisplay = display.getDefaultDisplaySync();
         const res: GetSystemSettingResult = {
             bluetoothEnabled: false,
@@ -4564,23 +4598,23 @@ export function initUniExtApi() {
         try {
             if (access.getState() === access.BluetoothState.STATE_ON) res.bluetoothEnabled = true;
         } catch (err) {
-            res.bluetoothError = (err as BusinessError5).message;
+            res.bluetoothError = (err as BusinessError6).message;
         }
         try {
             res.locationEnabled = geoLocationManager.isLocationEnabled();
-        } catch (err) { }
+        } catch (err) {}
         try {
             res.wifiEnabled = wifiManager.isWifiActive();
         } catch (err) {
-            res.wifiError = (err as BusinessError5).message;
+            res.wifiError = (err as BusinessError6).message;
         }
         return res;
     }) as GetSystemSetting;
     const API_HIDE_KEYBOARD = 'hideKeyboard';
-    const hideKeyboard: HideKeyboard = defineAsyncApi<HideKeyboardOptions, HideKeyboardSuccess>(API_HIDE_KEYBOARD, (options: HideKeyboardOptions, exec: ApiExecutor<HideKeyboardSuccess>) => {
-        inputMethod.getController().hideTextInput().then(() => {
+    const hideKeyboard: HideKeyboard = defineAsyncApi<HideKeyboardOptions, HideKeyboardSuccess>(API_HIDE_KEYBOARD, (options: HideKeyboardOptions, exec: ApiExecutor<HideKeyboardSuccess>)=>{
+        inputMethod.getController().hideTextInput().then(()=>{
             exec.resolve();
-        }, (err: Error) => {
+        }, (err: Error)=>{
             exec.reject(err.message);
         });
     }) as HideKeyboard;
@@ -4594,26 +4628,26 @@ export function initUniExtApi() {
             }
         ]
     ]);
-    const isPromise = (res: Object) => {
+    const isPromise = (res: Object)=>{
         if ((typeof res === "object" || typeof res === "function") && typeof (res as Promise<void>).then === "function") {
             return true;
         }
         return false;
     };
-    const dial = (number: string, confirm = true) => {
+    const dial = (number: string, confirm = true)=>{
         if (!confirm && typeof call.dial === 'function') {
-            return new Promise<void>((resolve, reject) => {
-                UTSHarmony8.requestSystemPermission([
+            return new Promise<void>((resolve, reject)=>{
+                UTSHarmony.requestSystemPermission([
                     'ohos.permission.PLACE_CALL'
-                ], (allRight: boolean) => {
+                ], (allRight: boolean)=>{
                     if (allRight) {
-                        call.dial(number).then(() => {
+                        call.dial(number).then(()=>{
                             resolve();
                         }).catch(reject);
                     } else {
                         reject('permission denied');
                     }
-                }, () => {
+                }, ()=>{
                     reject('permission denied');
                 });
             });
@@ -4621,152 +4655,16 @@ export function initUniExtApi() {
             return call.makeCall(number);
         }
     };
-    const makePhoneCall: MakePhoneCall = defineAsyncApi<MakePhoneCallOptions, MakePhoneCallSuccess>(API_MAKE_PHONE_CALL, (options: MakePhoneCallOptions, res: ApiExecutor<MakePhoneCallSuccess>) => {
+    const makePhoneCall: MakePhoneCall = defineAsyncApi<MakePhoneCallOptions, MakePhoneCallSuccess>(API_MAKE_PHONE_CALL, (options: MakePhoneCallOptions, res: ApiExecutor<MakePhoneCallSuccess>)=>{
         const dialRes = dial(options.phoneNumber) as Object as Promise<void>;
         if (isPromise(dialRes)) {
-            dialRes.then(res.resolve).catch((err: BusinessError6<void>) => {
+            dialRes.then(res.resolve).catch((err: BusinessError7<void>)=>{
                 res.reject(err.message);
             });
         } else {
             res.resolve();
         }
     }, MakePhoneCallProtocol) as MakePhoneCall;
-    const _getVideoInfo = async (uri: string): Promise<GetVideoInfoSuccess> => {
-        const file = await fs1.open(uri, fs1.OpenMode.READ_ONLY);
-        const avMetadataExtractor = await media3.createAVMetadataExtractor();
-        let metadata: media3.AVMetadata | null = null;
-        let size: number = 0;
-        try {
-            size = (await fs1.stat(file.fd)).size;
-            avMetadataExtractor.dataSrc = {
-                fileSize: size,
-                callback: (buffer: ArrayBuffer, length: number, pos: number | null = null) => {
-                    return fs1.readSync(file.fd, buffer, {
-                        offset: pos,
-                        length
-                    } as ReadOptions);
-                }
-            };
-            metadata = await avMetadataExtractor.fetchMetadata();
-        } catch (error) {
-            throw error as Error;
-        } finally {
-            await avMetadataExtractor.release();
-            await fs1.close(file);
-        }
-        const videoOrientationArr = [
-            'up',
-            'right',
-            'down',
-            'left'
-        ] as MediaOrientation[];
-        return {
-            size: size,
-            duration: metadata.duration ? Number(metadata.duration) / 1000 : undefined,
-            width: metadata.videoWidth ? Number(metadata.videoWidth) : undefined,
-            height: metadata.videoHeight ? Number(metadata.videoHeight) : undefined,
-            type: metadata.mimeType,
-            orientation: metadata.videoOrientation ? videoOrientationArr[Number(metadata.videoOrientation) / 90] : undefined
-        } as GetVideoInfoSuccess;
-    };
-    const _getImageInfo = async (uri: string): Promise<GetImageInfoSuccess> => {
-        const file = await fs1.open(uri, fs1.OpenMode.READ_ONLY);
-        const imageSource = image.createImageSource(file.fd);
-        const imageInfo = await imageSource.getImageInfo();
-        let orientation: string = '';
-        try {
-            orientation = await imageSource.getImageProperty(image.PropertyKey.ORIENTATION);
-        } catch (error) { }
-        await imageSource.release();
-        await fs1.close(file.fd);
-        let orientationNum = 0;
-        if (typeof orientation === 'string') {
-            const matched = orientation.match(/^Unknown value (\d)$/);
-            if (matched && matched[1]) {
-                orientationNum = Number(matched[1]);
-            } else if (/^\d$/.test(orientation)) {
-                orientationNum = Number(orientation);
-            }
-        } else if (typeof orientation === 'number') {
-            orientationNum = orientation;
-        }
-        let orientationStr: MediaOrientation = 'up';
-        switch (orientationNum) {
-            case 2:
-                orientationStr = 'up-mirrored';
-                break;
-            case 3:
-                orientationStr = 'down';
-                break;
-            case 4:
-                orientationStr = 'down-mirrored';
-                break;
-            case 5:
-                orientationStr = 'left-mirrored';
-                break;
-            case 6:
-                orientationStr = 'right';
-                break;
-            case 7:
-                orientationStr = 'right-mirrored';
-                break;
-            case 8:
-                orientationStr = 'left';
-                break;
-            case 0:
-            case 1:
-            default:
-                orientationStr = 'up';
-                break;
-        }
-        return {
-            path: uri,
-            width: imageInfo.size.width,
-            height: imageInfo.size.height,
-            orientation: orientationStr
-        } as GetImageInfoSuccess;
-    };
-    const _chooseMedia = async (options: _ChooseMediaOptions): Promise<chooseMediaSuccessCallbackResult> => {
-        const photoSelectOptions = new photoAccessHelper.PhotoSelectOptions();
-        const mimeType = options.mimeType;
-        photoSelectOptions.MIMEType = mimeType;
-        photoSelectOptions.maxSelectNumber = options.count || 9;
-        photoSelectOptions.isOriginalSupported = options.isOriginalSupported;
-        photoSelectOptions.isPhotoTakingSupported = !(options.sourceType && !options.sourceType.includes('camera'));
-        const photoPicker = new photoAccessHelper.PhotoViewPicker();
-        const photoSelectResult = await photoPicker.select(photoSelectOptions);
-        const uris = photoSelectResult.photoUris;
-        if (mimeType !== photoAccessHelper.PhotoViewMIMETypes.VIDEO_TYPE) {
-            return {
-                tempFiles: uris.map((uri) => {
-                    const file = fs1.openSync(uri, fs1.OpenMode.READ_ONLY);
-                    const stat = fs1.statSync(file.fd);
-                    fs1.closeSync(file);
-                    return {
-                        fileType: 'image',
-                        tempFilePath: uri,
-                        size: stat.size
-                    } as MediaFile;
-                })
-            };
-        }
-        const tempFiles: MediaFile[] = [];
-        for (let i = 0; i < uris.length; i++) {
-            const uri = uris[i];
-            const videoInfo = await _getVideoInfo(uri);
-            tempFiles.push({
-                fileType: 'video',
-                tempFilePath: uri,
-                size: videoInfo.size,
-                duration: videoInfo.duration,
-                width: videoInfo.width,
-                height: videoInfo.height
-            } as MediaFile);
-        }
-        return {
-            tempFiles
-        } as chooseMediaSuccessCallbackResult;
-    };
     const API_GET_IMAGE_INFO = 'getImageInfo';
     const GetImageInfoApiProtocol = new Map<string, ProtocolOptions>([
         [
@@ -4781,7 +4679,7 @@ export function initUniExtApi() {
         formatArgs: new Map<string, Function>([
             [
                 'src',
-                (src: string, params: GetImageInfoOptions) => {
+                (src: string, params: GetImageInfoOptions)=>{
                     params.src = getRealPath1(src);
                 }
             ]
@@ -4822,7 +4720,7 @@ export function initUniExtApi() {
         formatArgs: new Map<string, Function>([
             [
                 'count',
-                (count: number, params: ChooseImageOptions) => {
+                (count: number, params: ChooseImageOptions)=>{
                     if (count == null) {
                         params.count = 9;
                     }
@@ -4830,7 +4728,7 @@ export function initUniExtApi() {
             ],
             [
                 'sizeType',
-                (sizeType: string[], params: ChooseImageOptions) => {
+                (sizeType: string[], params: ChooseImageOptions)=>{
                     if (sizeType == null) {
                         params.sizeType = [
                             'original',
@@ -4841,7 +4739,7 @@ export function initUniExtApi() {
             ],
             [
                 'sourceType',
-                (sourceType: string[], params: ChooseImageOptions) => {
+                (sourceType: string[], params: ChooseImageOptions)=>{
                     if (sourceType == null) {
                         params.sourceType = [
                             'album',
@@ -4852,7 +4750,7 @@ export function initUniExtApi() {
             ],
             [
                 'extension',
-                (extension: string[], params: ChooseImageOptions) => {
+                (extension: string[], params: ChooseImageOptions)=>{
                     if (extension == null) {
                         params.extension = [
                             '*'
@@ -4876,7 +4774,7 @@ export function initUniExtApi() {
         formatArgs: new Map<string, Function>([
             [
                 'src',
-                (src: string, params: GetVideoInfoOptions) => {
+                (src: string, params: GetVideoInfoOptions)=>{
                     params.src = getRealPath1(src);
                 }
             ]
@@ -4924,7 +4822,7 @@ export function initUniExtApi() {
         formatArgs: new Map<string, Function>([
             [
                 'sourceType',
-                (sourceType: string[], params: ChooseVideoOptions) => {
+                (sourceType: string[], params: ChooseVideoOptions)=>{
                     if (sourceType == null) {
                         params.sourceType = [
                             'album',
@@ -4935,7 +4833,7 @@ export function initUniExtApi() {
             ],
             [
                 'compressed',
-                (compressed: boolean, params: ChooseVideoOptions) => {
+                (compressed: boolean, params: ChooseVideoOptions)=>{
                     if (compressed == null) {
                         params.compressed = true;
                     }
@@ -4943,7 +4841,7 @@ export function initUniExtApi() {
             ],
             [
                 'maxDuration',
-                (maxDuration: number, params: ChooseVideoOptions) => {
+                (maxDuration: number, params: ChooseVideoOptions)=>{
                     if (maxDuration == null) {
                         params.maxDuration = 60;
                     }
@@ -4951,7 +4849,7 @@ export function initUniExtApi() {
             ],
             [
                 'camera',
-                (camera: string, params: ChooseVideoOptions) => {
+                (camera: string, params: ChooseVideoOptions)=>{
                     if (camera == null) {
                         params.camera = 'back';
                     }
@@ -4959,7 +4857,7 @@ export function initUniExtApi() {
             ],
             [
                 'extension',
-                (extension: string[], params: ChooseVideoOptions) => {
+                (extension: string[], params: ChooseVideoOptions)=>{
                     if (extension == null) {
                         params.extension = [
                             '*'
@@ -4990,8 +4888,8 @@ export function initUniExtApi() {
         formatArgs: new Map<string, Function>([
             [
                 'urls',
-                (urls: string[], params: PreviewImageOptions) => {
-                    params.urls = urls.map((url) => getRealPath1(url) as string);
+                (urls: string[], params: PreviewImageOptions)=>{
+                    params.urls = urls.map((url)=>getRealPath1(url) as string);
                 }
             ]
         ])
@@ -5021,13 +4919,13 @@ export function initUniExtApi() {
         formatArgs: new Map<string, Function>([
             [
                 'src',
-                (src: string, params: CompressImageOptions) => {
+                (src: string, params: CompressImageOptions)=>{
                     if (src) params.src = getRealPath1(src);
                 }
             ],
             [
                 'quality',
-                (quality: number, params: CompressImageOptions) => {
+                (quality: number, params: CompressImageOptions)=>{
                     if (quality == null) {
                         params.quality = 80;
                     }
@@ -5076,7 +4974,7 @@ export function initUniExtApi() {
         formatArgs: new Map<string, Function>([
             [
                 'count',
-                (count: number, params: ChooseFileOptions) => {
+                (count: number, params: ChooseFileOptions)=>{
                     if (!count || count <= 0) {
                         params.count = 100;
                     }
@@ -5085,8 +4983,8 @@ export function initUniExtApi() {
             ],
             [
                 'sourceType',
-                (sourceType: string[] = [], params: ChooseFileOptions) => {
-                    sourceType = sourceType.filter((type) => CHOOSE_FILE_SOURCE_TYPE.includes(type));
+                (sourceType: string[] = [], params: ChooseFileOptions)=>{
+                    sourceType = sourceType.filter((type)=>CHOOSE_FILE_SOURCE_TYPE.includes(type));
                     if (!sourceType.length) {
                         params.sourceType = [
                             'album',
@@ -5098,7 +4996,7 @@ export function initUniExtApi() {
             ],
             [
                 'type',
-                (type: string = 'all', params: ChooseFileOptions) => {
+                (type: string = 'all', params: ChooseFileOptions)=>{
                     if (!CHOOSE_MEDIA_TYPE.includes(type)) {
                         params.type = 'all';
                     }
@@ -5107,7 +5005,7 @@ export function initUniExtApi() {
             ],
             [
                 'extension',
-                (extension: string[], params: ChooseFileOptions) => {
+                (extension: string[], params: ChooseFileOptions)=>{
                     if (extension instanceof Array && extension.length === 0) {
                         return 'param extension should not be empty.';
                     }
@@ -5187,7 +5085,7 @@ export function initUniExtApi() {
         formatArgs: new Map<string, Function>([
             [
                 'count',
-                (count: number, params: ChooseMediaOptions) => {
+                (count: number, params: ChooseMediaOptions)=>{
                     if (count == null) {
                         params.count = 9;
                     }
@@ -5198,7 +5096,7 @@ export function initUniExtApi() {
             ],
             [
                 'mediaType',
-                (mediaType: string[], params: ChooseMediaOptions) => {
+                (mediaType: string[], params: ChooseMediaOptions)=>{
                     if (mediaType == null) {
                         params.mediaType = [
                             'image',
@@ -5209,7 +5107,7 @@ export function initUniExtApi() {
             ],
             [
                 'sourceType',
-                (sourceType: string[], params: ChooseMediaOptions) => {
+                (sourceType: string[], params: ChooseMediaOptions)=>{
                     if (sourceType == null) {
                         params.sourceType = [
                             'album',
@@ -5220,7 +5118,7 @@ export function initUniExtApi() {
             ],
             [
                 'sizeType',
-                (sizeType: string[], params: ChooseMediaOptions) => {
+                (sizeType: string[], params: ChooseMediaOptions)=>{
                     if (sizeType == null) {
                         params.sizeType = [
                             'original',
@@ -5231,7 +5129,7 @@ export function initUniExtApi() {
             ],
             [
                 'maxDuration',
-                (maxDuration: number, params: ChooseMediaOptions) => {
+                (maxDuration: number, params: ChooseMediaOptions)=>{
                     if (maxDuration == null) {
                         params.maxDuration = 10;
                     }
@@ -5239,7 +5137,7 @@ export function initUniExtApi() {
             ],
             [
                 'camera',
-                (camera: string, params: ChooseMediaOptions) => {
+                (camera: string, params: ChooseMediaOptions)=>{
                     if (camera == null) {
                         params.camera = 'back';
                     }
@@ -5252,7 +5150,7 @@ export function initUniExtApi() {
         formatArgs: new Map<string, Function>([
             [
                 'src',
-                (src: string, params: CompressVideoOptions) => {
+                (src: string, params: CompressVideoOptions)=>{
                     if (src) params.src = getRealPath1(src);
                 }
             ]
@@ -5291,6 +5189,227 @@ export function initUniExtApi() {
             }
         ]
     ]);
+    const getFileName = (path: string)=>{
+        const array = path.split('/');
+        return array[array.length - 1];
+    };
+    let id: number = 0;
+    const _compressImage = (args: CompressImageOptions)=>{
+        const imageName = getFileName(args.src);
+        const imageExt = imageName.split('.').slice(-1)[0];
+        const imagePacker: image.ImagePacker = image.createImagePacker();
+        const file2 = fileIo4.openSync(args.src, fileIo4.OpenMode.READ_ONLY);
+        if (!file2) {
+            throw new Error('open file failed');
+        }
+        const imageSource: image.ImageSource = image.createImageSource(file2.fd);
+        if (imageSource == null) {
+            throw new Error('create image source failed');
+        }
+        let decodingOptions: image.DecodingOptions = {
+            editable: true
+        };
+        if (args.rotate != null) {
+            decodingOptions.rotate = args.rotate;
+        }
+        if (args.compressedHeight != null || args.compressedWidth != null) {
+            decodingOptions.desiredSize = {
+                height: (args.compressedHeight ?? args.compressedWidth)!,
+                width: (args.compressedWidth ?? args.compressedHeight)!
+            };
+        }
+        const pixelMap = imageSource.createPixelMapSync(decodingOptions);
+        let format: string = '';
+        if ([
+            'jpg',
+            'jpe',
+            'jpeg',
+            'png'
+        ].includes(imageExt)) {
+            format = 'image/jpeg';
+        }
+        if (imageExt === 'webp') format = 'image/webp';
+        if (!format.length) {
+            throw new Error('error image format');
+        }
+        const packOptions: image.PackingOption = {
+            format,
+            quality: args.quality ?? 80
+        };
+        const tempFileName = `${Date.now()}_${id++}_${imageName}`;
+        const tempDirPath = `${getEnv2().TEMP_PATH}/compress`;
+        if (!fileIo4.accessSync(tempDirPath)) {
+            fileIo4.mkdirSync(tempDirPath, true);
+        }
+        const tempFilePath: string = `${tempDirPath}/${tempFileName}`;
+        const file = fileIo4.openSync(tempFilePath, fileIo4.OpenMode.CREATE | fileIo4.OpenMode.READ_WRITE);
+        return imagePacker.packToFile(pixelMap, file.fd, packOptions).then((_)=>{
+            const size = fileIo4.statSync(file.fd).size;
+            fileIo4.closeSync(file.fd);
+            pixelMap.release();
+            return {
+                size,
+                tempFilePath
+            } as _CompressImageSuccess;
+        });
+    };
+    const compressImage: CompressImage = defineAsyncApi<CompressImageOptions, CompressImageSuccess>(API_CHOOSE_IMAGE, (args: CompressImageOptions, executor: ApiExecutor<CompressImageSuccess>)=>{
+        try {
+            _compressImage(args).then((res)=>{
+                executor.resolve({
+                    tempFilePath: res.tempFilePath
+                } as CompressImageSuccess);
+            });
+        } catch (error) {
+            executor.reject((error as BusinessError8).message);
+        }
+    }, CompressImageApiProtocol, CompressImageApiOptions) as CompressImage;
+    const _getVideoInfo = async (uri: string): Promise<GetVideoInfoSuccess> =>{
+        const file = await fs1.open(uri, fs1.OpenMode.READ_ONLY);
+        const avMetadataExtractor = await media3.createAVMetadataExtractor();
+        let metadata: media3.AVMetadata | null = null;
+        let size: number = 0;
+        try {
+            size = (await fs1.stat(file.fd)).size;
+            avMetadataExtractor.dataSrc = {
+                fileSize: size,
+                callback: (buffer: ArrayBuffer, length: number, pos: number | null = null)=>{
+                    return fs1.readSync(file.fd, buffer, {
+                        offset: pos,
+                        length
+                    } as ReadOptions);
+                }
+            };
+            metadata = await avMetadataExtractor.fetchMetadata();
+        } catch (error) {
+            throw error as Error;
+        } finally{
+            await avMetadataExtractor.release();
+            await fs1.close(file);
+        }
+        const videoOrientationArr = [
+            'up',
+            'right',
+            'down',
+            'left'
+        ] as MediaOrientation[];
+        return {
+            size: size,
+            duration: metadata.duration ? Number(metadata.duration) / 1000 : undefined,
+            width: metadata.videoWidth ? Number(metadata.videoWidth) : undefined,
+            height: metadata.videoHeight ? Number(metadata.videoHeight) : undefined,
+            type: metadata.mimeType,
+            orientation: metadata.videoOrientation ? videoOrientationArr[Number(metadata.videoOrientation) / 90] : undefined
+        } as GetVideoInfoSuccess;
+    };
+    const _getImageInfo = async (uri: string): Promise<GetImageInfoSuccess> =>{
+        const file = await fs1.open(uri, fs1.OpenMode.READ_ONLY);
+        const imageSource = image1.createImageSource(file.fd);
+        const imageInfo = await imageSource.getImageInfo();
+        let orientation: string = '';
+        try {
+            orientation = await imageSource.getImageProperty(image1.PropertyKey.ORIENTATION);
+        } catch (error) {}
+        await imageSource.release();
+        await fs1.close(file.fd);
+        let orientationNum = 0;
+        if (typeof orientation === 'string') {
+            const matched = orientation.match(/^Unknown value (\d)$/);
+            if (matched && matched[1]) {
+                orientationNum = Number(matched[1]);
+            } else if (/^\d$/.test(orientation)) {
+                orientationNum = Number(orientation);
+            }
+        } else if (typeof orientation === 'number') {
+            orientationNum = orientation;
+        }
+        let orientationStr: MediaOrientation = 'up';
+        switch(orientationNum){
+            case 2:
+                orientationStr = 'up-mirrored';
+                break;
+            case 3:
+                orientationStr = 'down';
+                break;
+            case 4:
+                orientationStr = 'down-mirrored';
+                break;
+            case 5:
+                orientationStr = 'left-mirrored';
+                break;
+            case 6:
+                orientationStr = 'right';
+                break;
+            case 7:
+                orientationStr = 'right-mirrored';
+                break;
+            case 8:
+                orientationStr = 'left';
+                break;
+            case 0:
+            case 1:
+            default:
+                orientationStr = 'up';
+                break;
+        }
+        return {
+            path: uri,
+            width: imageInfo.size.width,
+            height: imageInfo.size.height,
+            orientation: orientationStr
+        } as GetImageInfoSuccess;
+    };
+    const _chooseMedia = async (options: _ChooseMediaOptions): Promise<chooseMediaSuccessCallbackResult> =>{
+        const photoSelectOptions = new photoAccessHelper.PhotoSelectOptions();
+        const mimeType = options.mimeType;
+        photoSelectOptions.MIMEType = mimeType;
+        photoSelectOptions.maxSelectNumber = options.count || 9;
+        photoSelectOptions.isOriginalSupported = options.isOriginalSupported;
+        photoSelectOptions.isPhotoTakingSupported = !(options.sourceType && !options.sourceType.includes('camera'));
+        const photoPicker = new photoAccessHelper.PhotoViewPicker();
+        const photoSelectResult = await photoPicker.select(photoSelectOptions);
+        const uris = photoSelectResult.photoUris;
+        if (mimeType !== photoAccessHelper.PhotoViewMIMETypes.VIDEO_TYPE) {
+            let realUris: string[] = uris;
+            if (!photoSelectResult.isOriginalPhoto) {
+                const compressResult = await Promise.all(uris.map((uri): Promise<CompressImageSuccess> =>{
+                    return _compressImage({
+                        src: uri,
+                        quality: 80
+                    } as CompressImageOptions);
+                }));
+                realUris = compressResult.map((result)=>result.tempFilePath);
+            }
+            return {
+                tempFiles: realUris.map((uri)=>{
+                    const file = fs1.openSync(uri, fs1.OpenMode.READ_ONLY);
+                    const stat = fs1.statSync(file.fd);
+                    fs1.closeSync(file);
+                    return {
+                        fileType: 'image',
+                        tempFilePath: uri,
+                        size: stat.size
+                    } as MediaFile;
+                })
+            };
+        }
+        const tempFiles: MediaFile[] = [];
+        for(let i = 0; i < uris.length; i++){
+            const uri = uris[i];
+            const videoInfo = await _getVideoInfo(uri);
+            tempFiles.push({
+                fileType: 'video',
+                tempFilePath: uri,
+                size: videoInfo.size,
+                duration: videoInfo.duration,
+                width: videoInfo.width,
+                height: videoInfo.height
+            } as MediaFile);
+        }
+        return {
+            tempFiles
+        } as chooseMediaSuccessCallbackResult;
+    };
     const MediaUniErrors: Map<number, string> = new Map([
         [
             1101001,
@@ -5333,8 +5452,8 @@ export function initUniExtApi() {
             "unexpect error:"
         ]
     ]);
-    const getHMCameraPosition = (cameraType: CameraPosition) => {
-        switch (cameraType) {
+    const getHMCameraPosition = (cameraType: CameraPosition)=>{
+        switch(cameraType){
             case 'back':
                 return camera.CameraPosition.CAMERA_POSITION_BACK;
             case 'front':
@@ -5343,11 +5462,11 @@ export function initUniExtApi() {
                 return camera.CameraPosition.CAMERA_POSITION_BACK;
         }
     };
-    const takePhoto = async (cameraType: CameraPosition = 'back') => {
+    const takePhoto = async (cameraType: CameraPosition = 'back')=>{
         let pickerProfile: cameraPicker.PickerProfile = {
             cameraPosition: getHMCameraPosition(cameraType)
         };
-        const res = await cameraPicker.pick(getAbilityContext2()!, [
+        const res = await cameraPicker.pick(UTSHarmony.getUIAbilityContext()!, [
             cameraPicker.PickerMediaType.PHOTO
         ], pickerProfile);
         const file = fs2.openSync(res.resultUri, fs2.OpenMode.READ_ONLY);
@@ -5361,15 +5480,15 @@ export function initUniExtApi() {
             ]
         } as TakePhotoRes;
     };
-    const takeVideo = async (args: TakeVideoOptions | null = null) => {
+    const takeVideo = async (args: TakeVideoOptions | null = null)=>{
         let pickerProfile: cameraPicker.PickerProfile = {
             cameraPosition: getHMCameraPosition(args?.cameraType ?? 'back'),
             videoDuration: args?.videoDuration
         };
-        const res = await cameraPicker.pick(getAbilityContext2()!, [
+        const res = await cameraPicker.pick(UTSHarmony.getUIAbilityContext()!, [
             cameraPicker.PickerMediaType.VIDEO
         ], pickerProfile);
-        return _getVideoInfo(res.resultUri).then((getVideInfoRes) => {
+        return _getVideoInfo(res.resultUri).then((getVideInfoRes)=>{
             return {
                 path: res.resultUri,
                 size: getVideInfoRes.size,
@@ -5382,7 +5501,7 @@ export function initUniExtApi() {
         });
     };
     const errSubject = 'uni-chooseImage';
-    const _chooseImage = (options: ChooseImageOptions, res: ApiExecutor<ChooseImageSuccess>) => {
+    const _chooseImage = (options: ChooseImageOptions, res: ApiExecutor<ChooseImageSuccess>)=>{
         _chooseMedia({
             mimeType: photoAccessHelper1.PhotoViewMIMETypes.IMAGE_TYPE,
             sourceType: [
@@ -5390,7 +5509,7 @@ export function initUniExtApi() {
             ],
             isOriginalSupported: options.sizeType?.includes('original') !== false,
             count: options.count!
-        } as _ChooseMediaOptions).then((chooseMediaRes) => {
+        } as _ChooseMediaOptions).then((chooseMediaRes)=>{
             const tempFiles = chooseMediaRes.tempFiles;
             if (tempFiles.length === 0) {
                 const errMsg = MediaUniErrors.get(1101001) as string;
@@ -5402,40 +5521,40 @@ export function initUniExtApi() {
             res.resolve({
                 errMsg: '',
                 errSubject,
-                tempFilePaths: chooseMediaRes.tempFiles.map((file) => file.tempFilePath),
-                tempFiles: chooseMediaRes.tempFiles.map((file) => {
+                tempFilePaths: chooseMediaRes.tempFiles.map((file)=>file.tempFilePath),
+                tempFiles: chooseMediaRes.tempFiles.map((file)=>{
                     return {
                         path: file.tempFilePath,
                         size: file.size
                     } as ChooseImageTempFile;
                 })
             } as ChooseImageSuccess);
-        }, (err: Error) => {
+        }, (err: Error)=>{
             res.reject(err.message);
         });
     };
-    const _takePhoto = (options: ChooseImageOptions, res: ApiExecutor<ChooseImageSuccess>) => {
-        takePhoto().then((photo) => {
+    const _takePhoto = (options: ChooseImageOptions, res: ApiExecutor<ChooseImageSuccess>)=>{
+        takePhoto().then((photo)=>{
             res.resolve({
                 errMsg: '',
                 errSubject,
-                tempFilePaths: photo.tempFiles.map((file) => file.tempFilePath),
-                tempFiles: photo.tempFiles.map((tempFile): ChooseImageTempFile => ({
-                    path: tempFile.tempFilePath,
-                    size: tempFile.size
-                } as ChooseImageTempFile))
+                tempFilePaths: photo.tempFiles.map((file)=>file.tempFilePath),
+                tempFiles: photo.tempFiles.map((tempFile): ChooseImageTempFile =>({
+                        path: tempFile.tempFilePath,
+                        size: tempFile.size
+                    } as ChooseImageTempFile))
             } as ChooseImageSuccess);
-        }).catch((err: Error) => {
+        }).catch((err: Error)=>{
             res.reject(err.message);
         });
     };
-    const chooseImage: ChooseImage = defineAsyncApi<ChooseImageOptions, ChooseImageSuccess>(API_CHOOSE_IMAGE, async (options: ChooseImageOptions, res: ApiExecutor<ChooseImageSuccess>) => {
+    const chooseImage: ChooseImage = defineAsyncApi<ChooseImageOptions, ChooseImageSuccess>(API_CHOOSE_IMAGE, async (options: ChooseImageOptions, res: ApiExecutor<ChooseImageSuccess>)=>{
         if (options.sourceType?.length === 1 && options.sourceType[0] === 'camera') {
             _takePhoto(options, res);
         } else if (options.sourceType?.length === 1 && options.sourceType[0] === 'album') {
             _chooseImage(options, res);
         } else {
-            const lastWindow = getCurrentWindow() as window.Window;
+            const lastWindow = UTSHarmony.getCurrentWindow() as window.Window;
             const UIContextPromptAction = await lastWindow.getUIContext().getPromptAction();
             UIContextPromptAction.showActionMenu({
                 buttons: [
@@ -5448,7 +5567,7 @@ export function initUniExtApi() {
                         color: '#000000'
                     }
                 ]
-            } as promptAction1.ActionMenuOptions, (err, ref) => {
+            } as promptAction1.ActionMenuOptions, (err, ref)=>{
                 let index = ref.index;
                 if (err) {
                     res.reject('cancel');
@@ -5462,14 +5581,14 @@ export function initUniExtApi() {
             });
         }
     }, ChooseImageApiProtocol, ChooseImageApiOptions) as ChooseImage;
-    const _chooseVideo = (options: ChooseVideoOptions, res: ApiExecutor<ChooseVideoSuccess>) => {
+    const _chooseVideo = (options: ChooseVideoOptions, res: ApiExecutor<ChooseVideoSuccess>)=>{
         _chooseMedia({
             mimeType: photoAccessHelper2.PhotoViewMIMETypes.VIDEO_TYPE,
             sourceType: [
                 "album"
             ],
             isOriginalSupported: options.compressed === false
-        } as _ChooseMediaOptions).then((chooseMediaRes) => {
+        } as _ChooseMediaOptions).then((chooseMediaRes)=>{
             const file = chooseMediaRes.tempFiles[0];
             if (!file) {
                 const errMsg = MediaUniErrors.get(1101001) as string;
@@ -5485,16 +5604,16 @@ export function initUniExtApi() {
                 width: file.width,
                 height: file.height
             } as ChooseVideoSuccess);
-        }, (err: Error) => {
+        }, (err: Error)=>{
             res.reject(err.message);
         });
     };
-    const _takeVideo = (options: ChooseVideoOptions, res: ApiExecutor<ChooseVideoSuccess>) => {
+    const _takeVideo = (options: ChooseVideoOptions, res: ApiExecutor<ChooseVideoSuccess>)=>{
         const takeVideoOptions: TakeVideoOptions = {
             cameraType: options.camera! as CameraPosition,
             videoDuration: options.maxDuration!
         };
-        takeVideo(takeVideoOptions).then((video) => {
+        takeVideo(takeVideoOptions).then((video)=>{
             res.resolve({
                 tempFilePath: video.path,
                 duration: video.duration,
@@ -5502,17 +5621,17 @@ export function initUniExtApi() {
                 width: video.width,
                 height: video.height
             } as ChooseVideoSuccess);
-        }).catch((err: Error) => {
+        }).catch((err: Error)=>{
             res.reject(err.message);
         });
     };
-    const chooseVideo: ChooseVideo = defineAsyncApi<ChooseVideoOptions, ChooseVideoSuccess>(API_CHOOSE_VIDEO, async (options: ChooseVideoOptions, res: ApiExecutor<ChooseVideoSuccess>) => {
+    const chooseVideo: ChooseVideo = defineAsyncApi<ChooseVideoOptions, ChooseVideoSuccess>(API_CHOOSE_VIDEO, async (options: ChooseVideoOptions, res: ApiExecutor<ChooseVideoSuccess>)=>{
         if (options.sourceType?.length === 1 && options.sourceType[0] === 'camera') {
             _takeVideo(options, res);
         } else if (options.sourceType?.length === 1 && options.sourceType[0] === 'album') {
             _chooseVideo(options, res);
         } else {
-            const lastWindow = getCurrentWindow1() as window1.Window;
+            const lastWindow = UTSHarmony.getCurrentWindow() as window1.Window;
             const UIContextPromptAction = await lastWindow.getUIContext().getPromptAction();
             UIContextPromptAction.showActionMenu({
                 buttons: [
@@ -5525,7 +5644,7 @@ export function initUniExtApi() {
                         color: '#000000'
                     }
                 ]
-            } as promptAction2.ActionMenuOptions, (err, ref) => {
+            } as promptAction2.ActionMenuOptions, (err, ref)=>{
                 let index = ref.index;
                 if (err) {
                     res.reject('cancel');
@@ -5539,17 +5658,17 @@ export function initUniExtApi() {
             });
         }
     }, ChooseVideoApiProtocol, ChooseVideoApiOptions) as ChooseVideo;
-    const getImageInfo: GetImageInfo = defineAsyncApi<GetImageInfoOptions, GetImageInfoSuccess>(API_GET_IMAGE_INFO, async (options: GetImageInfoOptions, res: ApiExecutor<GetImageInfoSuccess>) => {
+    const getImageInfo: GetImageInfo = defineAsyncApi<GetImageInfoOptions, GetImageInfoSuccess>(API_GET_IMAGE_INFO, async (options: GetImageInfoOptions, res: ApiExecutor<GetImageInfoSuccess>)=>{
         let src = options.src;
         if (src.startsWith('http:') || src.startsWith('https:')) {
             try {
-                src = await new Promise<string>((resolve, reject) => {
+                src = await new Promise<string>((resolve, reject)=>{
                     uni.downloadFile({
                         url: options.src,
-                        success: (res: IGetImageInfoDownloadSuccess) => {
+                        success: (res: IGetImageInfoDownloadSuccess)=>{
                             resolve(res.tempFilePath);
                         },
-                        fail: (err: IGetImageInfoDownloadFail) => {
+                        fail: (err: IGetImageInfoDownloadFail)=>{
                             reject(err);
                         }
                     } as IGetImageInfoDownloadOptions);
@@ -5560,14 +5679,14 @@ export function initUniExtApi() {
                 return;
             }
         }
-        _getImageInfo(src).then((getImageInfoRes) => {
+        _getImageInfo(src).then((getImageInfoRes)=>{
             res.resolve(getImageInfoRes);
-        }, (err: Error) => {
+        }, (err: Error)=>{
             res.reject(err.message);
         });
     }, GetImageInfoApiProtocol, GetImageInfoApiOptions) as GetImageInfo;
-    const getVideoInfo: GetVideoInfo = defineAsyncApi<GetVideoInfoOptions, GetVideoInfoSuccess>(API_GET_VIDEO_INFO, (options: GetVideoInfoOptions, res: ApiExecutor<GetVideoInfoSuccess>) => {
-        _getVideoInfo(options.src).then((getVideInfoRes) => {
+    const getVideoInfo: GetVideoInfo = defineAsyncApi<GetVideoInfoOptions, GetVideoInfoSuccess>(API_GET_VIDEO_INFO, (options: GetVideoInfoOptions, res: ApiExecutor<GetVideoInfoSuccess>)=>{
+        _getVideoInfo(options.src).then((getVideInfoRes)=>{
             res.resolve({
                 size: getVideInfoRes.size,
                 duration: getVideInfoRes.duration!,
@@ -5576,15 +5695,15 @@ export function initUniExtApi() {
                 type: getVideInfoRes.type!,
                 orientation: getVideInfoRes.orientation!
             } as GetVideoInfoSuccess);
-        }, (err: Error) => {
+        }, (err: Error)=>{
             res.reject(err.message);
         });
     }, GetVideoInfoApiProtocol, GetVideoInfoApiOptions) as GetVideoInfo;
-    const previewImage: PreviewImage = defineAsyncApi<PreviewImageOptions, PreviewImageSuccess>(API_PREVIEW_IMAGE, (options: PreviewImageOptions, exec: ApiExecutor<PreviewImageSuccess>) => {
+    const previewImage: PreviewImage = defineAsyncApi<PreviewImageOptions, PreviewImageSuccess>(API_PREVIEW_IMAGE, (options: PreviewImageOptions, exec: ApiExecutor<PreviewImageSuccess>)=>{
         const currentUrl = typeof options.current === 'number' ? options.urls[options.current ?? 0] : options.current as string;
-        onNativePageReady1().then((nativePage: Object) => {
+        onNativePageReady1().then((nativePage: Object)=>{
             getOSRuntime().previewImage({
-                urls: options.urls.map((url) => getRealPath2(url) as string),
+                urls: options.urls.map((url)=>getRealPath2(url) as string),
                 current: getRealPath2(currentUrl || ''),
                 showmenu: options.showmenu === false ? false : true
             } as IPreviewImageOptions, nativePage);
@@ -5594,16 +5713,16 @@ export function initUniExtApi() {
             } as PreviewImageSuccess);
         });
     }, PreviewImageApiProtocol, PreviewImageApiOptions) as PreviewImage;
-    const closePreviewImage: ClosePreviewImage = defineAsyncApi<ClosePreviewImageOptions, ClosePreviewImageSuccess>(API_CLOSE_PREVIEW_IMAGE, (options: ClosePreviewImageOptions, exec: ApiExecutor<ClosePreviewImageSuccess>) => {
-        onNativePageReady1().then((nativePage: Object) => {
+    const closePreviewImage: ClosePreviewImage = defineAsyncApi<ClosePreviewImageOptions, ClosePreviewImageSuccess>(API_CLOSE_PREVIEW_IMAGE, (options: ClosePreviewImageOptions, exec: ApiExecutor<ClosePreviewImageSuccess>)=>{
+        onNativePageReady1().then((nativePage: Object)=>{
             getOSRuntime().closePreviewImage();
             exec.resolve({
                 errMsg: ''
             } as ClosePreviewImageSuccess);
         });
     }) as ClosePreviewImage;
-    const saveResource = async (src: Resource, dest: string) => {
-        const context = getAbilityContext3() as common.UIAbilityContext;
+    const saveResource = async (src: Resource, dest: string)=>{
+        const context = UTSHarmony.getUIAbilityContext() as common.UIAbilityContext;
         const resourceManager = context.resourceManager;
         const srcPath: string = src.params?.[0] as string;
         const destFile = fs3.openSync(dest, fs3.OpenMode.WRITE_ONLY);
@@ -5611,16 +5730,16 @@ export function initUniExtApi() {
         await fs3.write(destFile.fd, content.buffer);
         await fs3.close(destFile);
     };
-    const saveUri = async (src: string, dest: string) => {
+    const saveUri = async (src: string, dest: string)=>{
         const srcFile = fs3.openSync(src, fs3.OpenMode.READ_ONLY);
         const destFile = fs3.openSync(dest, fs3.OpenMode.WRITE_ONLY);
         await fs3.copyFile(srcFile.fd, destFile.fd);
         await fs3.close(srcFile);
         await fs3.close(destFile);
     };
-    const saveMediaToAlbum = async (fromUri: string, type: 'image' | 'video'): Promise<string | ISaveMediaError> => {
+    const saveMediaToAlbum = async (fromUri: string, type: 'image' | 'video'): Promise<string | ISaveMediaError> =>{
         const realPath = getResourceStr(fromUri) as string | Resource;
-        const context = getAbilityContext3() as common.UIAbilityContext;
+        const context = UTSHarmony.getUIAbilityContext() as common.UIAbilityContext;
         let fileName = Date.now() + (type === 'image' ? '.png' : '.mp4');
         const isResource = typeof realPath !== 'string';
         if (isResource) {
@@ -5664,8 +5783,8 @@ export function initUniExtApi() {
         }
         return destUri;
     };
-    const saveImageToPhotosAlbum: SaveImageToPhotosAlbum = defineAsyncApi<SaveImageToPhotosAlbumOptions, SaveImageToPhotosAlbumSuccess>(API_SAVE_IMAGE_TO_PHOTOS_ALBUM, (options: SaveImageToPhotosAlbumOptions, res: ApiExecutor<SaveImageToPhotosAlbumSuccess>) => {
-        saveMediaToAlbum(options.filePath, 'image').then((uri) => {
+    const saveImageToPhotosAlbum: SaveImageToPhotosAlbum = defineAsyncApi<SaveImageToPhotosAlbumOptions, SaveImageToPhotosAlbumSuccess>(API_SAVE_IMAGE_TO_PHOTOS_ALBUM, (options: SaveImageToPhotosAlbumOptions, res: ApiExecutor<SaveImageToPhotosAlbumSuccess>)=>{
+        saveMediaToAlbum(options.filePath, 'image').then((uri)=>{
             if (typeof uri === 'object') {
                 const err = uri as ISaveMediaError;
                 res.reject(err.message, {
@@ -5676,12 +5795,12 @@ export function initUniExtApi() {
             res.resolve({
                 path: uri
             } as SaveImageToPhotosAlbumSuccess);
-        }, (err: Error) => {
+        }, (err: Error)=>{
             res.reject(err.message);
         });
     }, SaveImageToPhotosAlbumApiProtocol) as SaveImageToPhotosAlbum;
-    const saveVideoToPhotosAlbum: SaveVideoToPhotosAlbum = defineAsyncApi<SaveVideoToPhotosAlbumOptions, SaveVideoToPhotosAlbumSuccess>(API_SAVE_VIDEO_TO_PHOTOS_ALBUM, (options: SaveVideoToPhotosAlbumOptions, res: ApiExecutor<SaveVideoToPhotosAlbumSuccess>) => {
-        saveMediaToAlbum(options.filePath, 'video').then((uri) => {
+    const saveVideoToPhotosAlbum: SaveVideoToPhotosAlbum = defineAsyncApi<SaveVideoToPhotosAlbumOptions, SaveVideoToPhotosAlbumSuccess>(API_SAVE_VIDEO_TO_PHOTOS_ALBUM, (options: SaveVideoToPhotosAlbumOptions, res: ApiExecutor<SaveVideoToPhotosAlbumSuccess>)=>{
+        saveMediaToAlbum(options.filePath, 'video').then((uri)=>{
             if (typeof uri === 'object') {
                 const err = uri as ISaveMediaError;
                 res.reject(err.message, {
@@ -5690,85 +5809,10 @@ export function initUniExtApi() {
                 return;
             }
             res.resolve({} as SaveVideoToPhotosAlbumSuccess);
-        }, (err: Error) => {
+        }, (err: Error)=>{
             res.reject(err.message);
         });
     }, SaveVideoToPhotosAlbumApiProtocol) as SaveVideoToPhotosAlbum;
-    const getFileName = (path: string) => {
-        const array = path.split('/');
-        return array[array.length - 1];
-    };
-    let id: number = 0;
-    const _compressImage = (args: CompressImageOptions) => {
-        const imageName = getFileName(args.src);
-        const imageExt = imageName.split('.').slice(-1)[0];
-        const imagePacker: image1.ImagePacker = image1.createImagePacker();
-        const file2 = fileIo4.openSync(args.src, fileIo4.OpenMode.READ_ONLY);
-        if (!file2) {
-            throw new Error('open file failed');
-        }
-        const imageSource: image1.ImageSource = image1.createImageSource(file2.fd);
-        if (imageSource == null) {
-            throw new Error('create image source failed');
-        }
-        let decodingOptions: image1.DecodingOptions = {
-            editable: true
-        };
-        if (args.rotate != null) {
-            decodingOptions.rotate = args.rotate;
-        }
-        if (args.compressedHeight != null || args.compressedWidth != null) {
-            decodingOptions.desiredSize = {
-                height: (args.compressedHeight ?? args.compressedWidth)!,
-                width: (args.compressedWidth ?? args.compressedHeight)!
-            };
-        }
-        const pixelMap = imageSource.createPixelMapSync(decodingOptions);
-        let format: string = '';
-        if ([
-            'jpg',
-            'jpe',
-            'jpeg',
-            'png'
-        ].includes(imageExt)) {
-            format = 'image/jpeg';
-        }
-        if (imageExt === 'webp') format = 'image/webp';
-        if (!format.length) {
-            throw new Error('error image format');
-        }
-        const packOptions: image1.PackingOption = {
-            format,
-            quality: args.quality ?? 80
-        };
-        const tempFileName = `${Date.now()}_${id++}_${imageName}`;
-        const tempDirPath = `${getEnv2().TEMP_PATH}/compress`;
-        if (!fileIo4.accessSync(tempDirPath)) {
-            fileIo4.mkdirSync(tempDirPath, true);
-        }
-        const tempFilePath: string = `${tempDirPath}/${tempFileName}`;
-        const file = fileIo4.openSync(tempFilePath, fileIo4.OpenMode.CREATE | fileIo4.OpenMode.READ_WRITE);
-        return imagePacker.packToFile(pixelMap, file.fd, packOptions).then((_) => {
-            const size = fileIo4.statSync(file.fd).size;
-            fileIo4.closeSync(file.fd);
-            pixelMap.release();
-            return {
-                size,
-                tempFilePath
-            } as _CompressImageSuccess;
-        });
-    };
-    const compressImage: CompressImage = defineAsyncApi<CompressImageOptions, CompressImageSuccess>(API_CHOOSE_IMAGE, (args: CompressImageOptions, executor: ApiExecutor<CompressImageSuccess>) => {
-        try {
-            _compressImage(args).then((res) => {
-                executor.resolve({
-                    tempFilePath: res.tempFilePath
-                } as CompressImageSuccess);
-            });
-        } catch (error) {
-            executor.reject((error as BusinessError7).message);
-        }
-    }, CompressImageApiProtocol, CompressImageApiOptions) as CompressImage;
     const IMAGES: string[] = [
         "jpg",
         "jpe",
@@ -5814,7 +5858,7 @@ export function initUniExtApi() {
         "wmx",
         "wvx"
     ];
-    const getFile = (url: string) => {
+    const getFile = (url: string)=>{
         const file = fileIo5.openSync(url, fileIo5.OpenMode.READ_ONLY);
         const size = fileIo5.statSync(file.fd).size;
         return {
@@ -5824,7 +5868,7 @@ export function initUniExtApi() {
             type: file.name.split('.').pop()!
         } as IFile;
     };
-    const chooseFile: ChooseFile = defineAsyncApi<ChooseFileOptions, ChooseFileSuccess>(API_CHOOSE_FILE, (args: ChooseFileOptions, executor: ApiExecutor<ChooseFileSuccess>) => {
+    const chooseFile: ChooseFile = defineAsyncApi<ChooseFileOptions, ChooseFileSuccess>(API_CHOOSE_FILE, (args: ChooseFileOptions, executor: ApiExecutor<ChooseFileSuccess>)=>{
         if ([
             'image',
             'video'
@@ -5832,13 +5876,13 @@ export function initUniExtApi() {
             if (args.type === 'image') {
                 chooseImage({
                     sourceType: args.sourceType,
-                    success(res: ChooseFileSuccess) {
+                    success (res: ChooseFileSuccess) {
                         executor.resolve({
                             tempFilePaths: res.tempFilePaths,
-                            tempFiles: res.tempFilePaths.map((url): IFile => getFile(url))
+                            tempFiles: res.tempFilePaths.map((url): IFile =>getFile(url))
                         } as ChooseFileSuccess);
                     },
-                    fail(err: IMediaError) {
+                    fail (err: IMediaError) {
                         executor.reject(err.errMsg, {
                             errCode: err.errCode
                         } as ApiError);
@@ -5848,7 +5892,7 @@ export function initUniExtApi() {
             if (args.type === 'video') {
                 chooseVideo({
                     sourceType: args.sourceType,
-                    success(res: ChooseVideoSuccess) {
+                    success (res: ChooseVideoSuccess) {
                         executor.resolve({
                             tempFilePaths: [
                                 res.tempFilePath
@@ -5858,7 +5902,7 @@ export function initUniExtApi() {
                             ]
                         } as ChooseFileSuccess);
                     },
-                    fail(err: IMediaError) {
+                    fail (err: IMediaError) {
                         executor.reject(err.errMsg, {
                             errCode: err.errCode
                         } as ApiError);
@@ -5868,7 +5912,7 @@ export function initUniExtApi() {
         } else {
             try {
                 let documentSelectOptions = new picker.DocumentSelectOptions();
-                let documentPicker = new picker.DocumentViewPicker(getAbilityContext4()!);
+                let documentPicker = new picker.DocumentViewPicker(UTSHarmony.getUIAbilityContext()!);
                 documentSelectOptions.selectMode = picker.DocumentSelectMode.FILE;
                 if (args.count) documentSelectOptions.maxSelectNumber = args.count;
                 if (args.extension) documentSelectOptions.fileSuffixFilters = args.extension;
@@ -5878,8 +5922,8 @@ export function initUniExtApi() {
                 if (args.type === 'video') {
                     documentSelectOptions.fileSuffixFilters = documentSelectOptions.fileSuffixFilters?.concat(VIDEOS);
                 }
-                documentPicker.select(documentSelectOptions).then((documentSelectResult: Array<string>) => {
-                    let tempFiles = documentSelectResult.map((url): IFile => getFile(url));
+                documentPicker.select(documentSelectOptions).then((documentSelectResult: Array<string>)=>{
+                    let tempFiles = documentSelectResult.map((url): IFile =>getFile(url));
                     if (tempFiles.length !== 0) {
                         executor.resolve({
                             tempFilePaths: documentSelectResult,
@@ -5888,20 +5932,20 @@ export function initUniExtApi() {
                     } else {
                         executor.reject('cancel');
                     }
-                }).catch((err: BusinessError8) => {
+                }).catch((err: BusinessError9)=>{
                     executor.reject(err.message, {
                         errCode: err.code
                     } as ApiError);
                 });
             } catch (error) {
-                let err: BusinessError8 = error as BusinessError8;
+                let err: BusinessError9 = error as BusinessError9;
                 executor.reject(err.message, {
                     errCode: err.code
                 } as ApiError);
             }
         }
     }, ChooseFileApiProtocol, ChooseFileApiOptions) as ChooseFile;
-    const getCameraPickerMediaTypes = (UniMediaTypes: UNI_MEDIA_TYPE[]): cameraPicker1.PickerMediaType[] => {
+    const getCameraPickerMediaTypes = (UniMediaTypes: UNI_MEDIA_TYPE[]): cameraPicker1.PickerMediaType[] =>{
         let mediaTypes: Array<cameraPicker1.PickerMediaType> = [];
         if (UniMediaTypes.includes('mix')) {
             mediaTypes.push(cameraPicker1.PickerMediaType.PHOTO, cameraPicker1.PickerMediaType.VIDEO);
@@ -5915,14 +5959,14 @@ export function initUniExtApi() {
         }
         return mediaTypes;
     };
-    const _takeCamera = async (args: ChooseMediaOptions, executor: ApiExecutor<ChooseMediaSuccess>) => {
+    const _takeCamera = async (args: ChooseMediaOptions, executor: ApiExecutor<ChooseMediaSuccess>)=>{
         try {
             let pickerProfile: cameraPicker1.PickerProfile = {
                 cameraPosition: getHMCameraPosition(args?.camera ?? 'back'),
                 videoDuration: args?.maxDuration ?? 10
             };
             const mediaTypes = getCameraPickerMediaTypes((args.mediaType ?? []) as UNI_MEDIA_TYPE[]);
-            const res = await cameraPicker1.pick(getAbilityContext5()!, mediaTypes, pickerProfile);
+            const res = await cameraPicker1.pick(UTSHarmony.getUIAbilityContext()!, mediaTypes, pickerProfile);
             executor.resolve({
                 type: 'mix',
                 tempFiles: [
@@ -5933,53 +5977,53 @@ export function initUniExtApi() {
                 ]
             } as ChooseMediaSuccess);
         } catch (error) {
-            const err = error as BusinessError9;
+            const err = error as BusinessError10;
             executor.reject(err.message, {
                 errCode: err.code
             } as ApiError);
         }
     };
-    const __chooseMedia = async (args: ChooseMediaOptions, executor: ApiExecutor<ChooseMediaSuccess>) => _chooseMedia({
-        mimeType: photoAccessHelper4.PhotoViewMIMETypes.IMAGE_VIDEO_TYPE,
-        sourceType: [
-            "album"
-        ],
-        count: args.count!,
-        isOriginalSupported: args.sizeType?.includes('original') !== false
-    } as _ChooseMediaOptions).then((res) => {
-        executor.resolve({
-            type: 'mix',
-            tempFiles: res.tempFiles.map((tempFile): ChooseMediaTempFile => {
-                if (tempFile.fileType === 'image') {
+    const __chooseMedia = async (args: ChooseMediaOptions, executor: ApiExecutor<ChooseMediaSuccess>)=>_chooseMedia({
+            mimeType: photoAccessHelper4.PhotoViewMIMETypes.IMAGE_VIDEO_TYPE,
+            sourceType: [
+                "album"
+            ],
+            count: args.count!,
+            isOriginalSupported: args.sizeType?.includes('original') !== false
+        } as _ChooseMediaOptions).then((res)=>{
+            executor.resolve({
+                type: 'mix',
+                tempFiles: res.tempFiles.map((tempFile): ChooseMediaTempFile =>{
+                    if (tempFile.fileType === 'image') {
+                        return {
+                            fileType: tempFile.fileType,
+                            tempFilePath: tempFile.tempFilePath,
+                            size: tempFile.size
+                        } as ChooseMediaTempFile;
+                    }
                     return {
-                        fileType: tempFile.fileType,
                         tempFilePath: tempFile.tempFilePath,
-                        size: tempFile.size
+                        duration: tempFile.duration,
+                        size: tempFile.size,
+                        height: tempFile.height,
+                        width: tempFile.width,
+                        fileType: tempFile.fileType
                     } as ChooseMediaTempFile;
-                }
-                return {
-                    tempFilePath: tempFile.tempFilePath,
-                    duration: tempFile.duration,
-                    size: tempFile.size,
-                    height: tempFile.height,
-                    width: tempFile.width,
-                    fileType: tempFile.fileType
-                } as ChooseMediaTempFile;
-            })
-        } as ChooseMediaSuccess);
-    }).catch((err: Error) => {
-        executor.reject(err.message);
-    });
-    const chooseMedia: ChooseMedia = defineAsyncApi<ChooseMediaOptions, ChooseMediaSuccess>(API_CHOOSE_MEDIA, async (args: ChooseMediaOptions, executor: ApiExecutor<ChooseMediaSuccess>) => {
+                })
+            } as ChooseMediaSuccess);
+        }).catch((err: Error)=>{
+            executor.reject(err.message);
+        });
+    const chooseMedia: ChooseMedia = defineAsyncApi<ChooseMediaOptions, ChooseMediaSuccess>(API_CHOOSE_MEDIA, async (args: ChooseMediaOptions, executor: ApiExecutor<ChooseMediaSuccess>)=>{
         if (args.mediaType?.length === 1 && args.mediaType[0] === 'image') {
             chooseImage({
                 count: args.count,
                 sizeType: args.sizeType,
                 sourceType: args.sourceType,
-                success(res) {
+                success (res) {
                     executor.resolve({
                         type: 'image',
-                        tempFiles: res.tempFiles.map((tempFile: ChooseImageTempFile) => {
+                        tempFiles: res.tempFiles.map((tempFile: ChooseImageTempFile)=>{
                             return {
                                 fileType: 'image',
                                 tempFilePath: tempFile.path,
@@ -5988,7 +6032,7 @@ export function initUniExtApi() {
                         })
                     } as ChooseMediaSuccess);
                 },
-                fail(err: IMediaError) {
+                fail (err: IMediaError) {
                     executor.reject(err.errMsg, {
                         errCode: err.errCode
                     } as ApiError);
@@ -6001,7 +6045,7 @@ export function initUniExtApi() {
                 sourceType: args.sourceType,
                 maxDuration: args.maxDuration,
                 camera: args.camera,
-                success(res) {
+                success (res) {
                     executor.resolve({
                         type: 'video',
                         tempFiles: [
@@ -6016,7 +6060,7 @@ export function initUniExtApi() {
                         ]
                     } as ChooseMediaSuccess);
                 },
-                fail(err: IMediaError) {
+                fail (err: IMediaError) {
                     executor.reject(err.errMsg, {
                         errCode: err.errCode
                     } as ApiError);
@@ -6027,7 +6071,7 @@ export function initUniExtApi() {
         if (args.sourceType?.length === 1 && args.sourceType[0] === 'camera') {
             _takeCamera(args, executor);
         } else {
-            const lastWindow = getCurrentWindow2() as window2.Window;
+            const lastWindow = UTSHarmony.getCurrentWindow() as window2.Window;
             const UIContextPromptAction = await lastWindow.getUIContext().getPromptAction();
             UIContextPromptAction.showActionMenu({
                 buttons: [
@@ -6040,7 +6084,7 @@ export function initUniExtApi() {
                         color: '#000000'
                     }
                 ]
-            } as promptAction3.ActionMenuOptions, (err, ref) => {
+            } as promptAction3.ActionMenuOptions, (err, ref)=>{
                 let index = ref.index;
                 if (err) {
                     executor.reject('cancel');
@@ -6054,8 +6098,8 @@ export function initUniExtApi() {
             });
         }
     }, ChooseMediaApiProtocol, ChooseMediaApiOptions) as ChooseMedia;
-    const getQuality = (quality: string | null = null) => {
-        switch (quality) {
+    const getQuality = (quality: string | null = null)=>{
+        switch(quality){
             case "low":
                 return CompressQuality.COMPRESS_QUALITY_LOW;
             case 'medium':
@@ -6063,11 +6107,11 @@ export function initUniExtApi() {
         }
         return CompressQuality.COMPRESS_QUALITY_HIGH;
     };
-    const compressVideo: CompressVideo = defineAsyncApi<CompressVideoOptions, CompressVideoSuccess>(API_COMPRESS_VIDEO, async (args: CompressVideoOptions, executor: ApiExecutor<CompressVideoSuccess>) => {
+    const compressVideo: CompressVideo = defineAsyncApi<CompressVideoOptions, CompressVideoSuccess>(API_COMPRESS_VIDEO, async (args: CompressVideoOptions, executor: ApiExecutor<CompressVideoSuccess>)=>{
         let videoCompressor = new VideoCompressor();
-        videoCompressor.compressVideo(getAbilityContext6()!, args.src, getQuality(args.quality!)).then((data: CompressorResponse): void => {
+        videoCompressor.compressVideo(UTSHarmony.getUIAbilityContext()!, args.src, getQuality(args.quality!)).then((data: CompressorResponse): void =>{
             if (data.code == CompressorResponseCode.SUCCESS) {
-                _getVideoInfo(data.outputPath).then((res) => {
+                _getVideoInfo(data.outputPath).then((res)=>{
                     executor.resolve({
                         tempFilePath: data.outputPath,
                         size: res.size
@@ -6078,7 +6122,7 @@ export function initUniExtApi() {
                     errCode: data.code
                 } as ApiError);
             }
-        }).catch((err: Error) => {
+        }).catch((err: Error)=>{
             executor.reject(err.message);
         });
     }, CompressVideoApiProtocol, CompressVideoApiOptions) as CompressVideo;
@@ -6159,7 +6203,7 @@ export function initUniExtApi() {
         formatArgs: new Map<string, Function>([
             [
                 'url',
-                (url: string, params: RequestOptions<Object>) => {
+                (url: string, params: RequestOptions<Object>)=>{
                     if (url == null) {
                         throw new Error('url is required');
                     }
@@ -6167,13 +6211,13 @@ export function initUniExtApi() {
             ],
             [
                 'method',
-                (method: string, params: RequestOptions<Object>) => {
+                (method: string, params: RequestOptions<Object>)=>{
                     params.method = (method || 'GET').toUpperCase() as RequestMethod;
                 }
             ],
             [
                 'dataType',
-                (dataType: string, params: RequestOptions<Object>) => {
+                (dataType: string, params: RequestOptions<Object>)=>{
                     if (dataType == null) {
                         params.dataType = 'json';
                     }
@@ -6181,7 +6225,7 @@ export function initUniExtApi() {
             ],
             [
                 'responseType',
-                (responseType: string, params: RequestOptions<Object>) => {
+                (responseType: string, params: RequestOptions<Object>)=>{
                     if (responseType == null) {
                         params.responseType = 'text';
                     }
@@ -6189,7 +6233,7 @@ export function initUniExtApi() {
             ],
             [
                 'timeout',
-                (timeout: number, params: RequestOptions<Object>) => {
+                (timeout: number, params: RequestOptions<Object>)=>{
                     if (timeout == null) {
                         params.timeout = 60000;
                     }
@@ -6197,7 +6241,7 @@ export function initUniExtApi() {
             ],
             [
                 'sslVerify',
-                (sslVerify: boolean, params: RequestOptions<Object>) => {
+                (sslVerify: boolean, params: RequestOptions<Object>)=>{
                     if (sslVerify == null) {
                         params.sslVerify = true;
                     }
@@ -6205,7 +6249,7 @@ export function initUniExtApi() {
             ],
             [
                 'withCredentials',
-                (withCredentials: boolean, params: RequestOptions<Object>) => {
+                (withCredentials: boolean, params: RequestOptions<Object>)=>{
                     if (withCredentials == null) {
                         params.withCredentials = false;
                     }
@@ -6213,7 +6257,7 @@ export function initUniExtApi() {
             ],
             [
                 'firstIpv4',
-                (firstIpv4: boolean, params: RequestOptions<Object>) => {
+                (firstIpv4: boolean, params: RequestOptions<Object>)=>{
                     if (firstIpv4 == null) {
                         params.firstIpv4 = false;
                     }
@@ -6249,7 +6293,7 @@ export function initUniExtApi() {
         formatArgs: new Map<string, Function>([
             [
                 'url',
-                (url: string, params: DownloadFileOptions) => {
+                (url: string, params: DownloadFileOptions)=>{
                     if (url == null) {
                         throw new Error('url is required');
                     }
@@ -6306,7 +6350,7 @@ export function initUniExtApi() {
         formatArgs: new Map<string, Function>([
             [
                 'url',
-                (url: string, params: UploadFileOptions) => {
+                (url: string, params: UploadFileOptions)=>{
                     if (url == null) {
                         throw new Error('url is required');
                     }
@@ -6314,7 +6358,7 @@ export function initUniExtApi() {
             ],
             [
                 'name',
-                (name: string, params: UploadFileOptions) => {
+                (name: string, params: UploadFileOptions)=>{
                     if (name == null) {
                         params.name = 'file';
                     }
@@ -6336,8 +6380,8 @@ export function initUniExtApi() {
         formatArgs: new Map<string, Function>([
             [
                 'certificates',
-                (certificates: (Certificate[]) | null = null) => {
-                    if (!certificates || certificates.some((item) => typeof item.host !== 'string')) {
+                (certificates: (Certificate[]) | null = null)=>{
+                    if (!certificates || certificates.some((item)=>typeof item.host !== 'string')) {
                         return '参数 certificates 配置错误，请确认后重试';
                     }
                     return undefined;
@@ -6345,7 +6389,7 @@ export function initUniExtApi() {
             ]
         ])
     };
-    const needsEncoding = (str: string) => {
+    const needsEncoding = (str: string)=>{
         const decoded = decodeURIComponent(str);
         if (decoded !== str) {
             if (encodeURIComponent(decoded) === str) {
@@ -6354,9 +6398,9 @@ export function initUniExtApi() {
         }
         return encodeURIComponent(decoded) !== decoded;
     };
-    const parseUrl = (url: string) => {
+    const parseUrl = (url: string)=>{
         const urlObj = harmonyUrl.URL.parseURL(url);
-        urlObj.params.forEach((value, key) => {
+        urlObj.params.forEach((value, key)=>{
             if (needsEncoding(value)) {
                 urlObj.params.set(key, value);
             }
@@ -6364,9 +6408,9 @@ export function initUniExtApi() {
         return urlObj.toString();
     };
     const certificates: Certificate[] = [];
-    const getCertType = (certPath: string): http.CertType => {
+    const getCertType = (certPath: string): http.CertType =>{
         const certExt = certPath.split('.').pop();
-        switch (certExt) {
+        switch(certExt){
             case 'p12':
                 return http.CertType.P12;
             case 'pem':
@@ -6375,10 +6419,10 @@ export function initUniExtApi() {
                 return http.CertType.PEM;
         }
     };
-    const getClientCertificate = (url: string): http.ClientCert | undefined => {
+    const getClientCertificate = (url: string): http.ClientCert | undefined =>{
         if (certificates.length === 0) return undefined;
         const urlObj = harmonyUrl.URL.parseURL(url);
-        const cert = certificates.find((certificate) => certificate.host === urlObj.host);
+        const cert = certificates.find((certificate)=>certificate.host === urlObj.host);
         if (cert) {
             return {
                 certType: getCertType(cert.client!),
@@ -6389,15 +6433,15 @@ export function initUniExtApi() {
         }
         return undefined;
     };
-    const getCookieSync = (url: string): string => {
+    const getCookieSync = (url: string): string =>{
         return webview.WebCookieManager.fetchCookieSync(url);
     };
-    const setCookieSync = (url: string, cookies: string[]): void => {
-        cookies.forEach((cookie) => {
+    const setCookieSync = (url: string, cookies: string[]): void =>{
+        cookies.forEach((cookie)=>{
             let hasSecure = false;
             let hasSameSite = false;
-            let savedCookie = cookie.split(';').map((cookieItem) => {
-                const pair = cookieItem.split('=').map((item) => item.trim());
+            let savedCookie = cookie.split(';').map((cookieItem)=>{
+                const pair = cookieItem.split('=').map((item)=>item.trim());
                 const keyLower = pair[0].toLowerCase();
                 if (keyLower === 'secure') {
                     hasSecure = true;
@@ -6419,10 +6463,10 @@ export function initUniExtApi() {
         });
         webview.WebCookieManager.saveCookieAsync();
     };
-    const cookiesParse = (header: Record<string, string>) => {
+    const cookiesParse = (header: Record<string, string>)=>{
         let cookiesArr: string[] = [];
         const handleCookiesArr = (header['Set-Cookie'] || header['set-cookie'] || []) as string[];
-        for (let i = 0; i < handleCookiesArr.length; i++) {
+        for(let i = 0; i < handleCookiesArr.length; i++){
             if (handleCookiesArr[i].indexOf('Expires=') !== -1 || handleCookiesArr[i].indexOf('expires=') !== -1) {
                 cookiesArr.push(handleCookiesArr[i].replace(',', ''));
             } else {
@@ -6433,7 +6477,7 @@ export function initUniExtApi() {
     };
     class RequestTask1 implements RequestTask {
         private _requestTask: IRequestTask;
-        constructor(requestTask: IRequestTask) {
+        constructor(requestTask: IRequestTask){
             this._requestTask = requestTask;
         }
         abort() {
@@ -6446,7 +6490,7 @@ export function initUniExtApi() {
             this._requestTask.offHeadersReceived(callback);
         }
     }
-    const request = defineTaskApi<RequestOptions<Object>, RequestSuccess<Object>, RequestTask>(API_REQUEST, (args: RequestOptions<Object>, exec: ApiExecutor<RequestSuccess<Object>>) => {
+    const request = defineTaskApi<RequestOptions<Object>, RequestSuccess<Object>, RequestTask>(API_REQUEST, (args: RequestOptions<Object>, exec: ApiExecutor<RequestSuccess<Object>>)=>{
         let header = args.header, method = args.method, data = args.data, dataType = args.dataType, timeout = args.timeout, url = args.url, responseType = args.responseType;
         header = header || {} as ESObject;
         if (!header!['Cookie'] && !header!['cookie']) {
@@ -6456,7 +6500,7 @@ export function initUniExtApi() {
         const headers = {} as Record<string, Object>;
         const headerRecord = header as Object as Record<string, string>;
         const headerKeys = Object.keys(headerRecord);
-        for (let i = 0; i < headerKeys.length; i++) {
+        for(let i = 0; i < headerKeys.length; i++){
             const name = headerKeys[i];
             if (name.toLowerCase() === 'content-type') {
                 contentType = headerRecord[name] as string;
@@ -6469,7 +6513,7 @@ export function initUniExtApi() {
         }
         if (method === 'GET' && data && isPlainObject(data)) {
             const dataRecord = data as Record<string, Object>;
-            const query = Object.keys(dataRecord).map((key) => {
+            const query = Object.keys(dataRecord).map((key)=>{
                 return (encodeURIComponent(key) + '=' + encodeURIComponent(dataRecord[key] as string | number | boolean));
             }).join('&');
             url += query ? (url.indexOf('?') > -1 ? '&' : '?') + query : '';
@@ -6478,7 +6522,7 @@ export function initUniExtApi() {
             data = JSON.stringify(data);
         } else if (method !== 'GET' && contentType && contentType.indexOf('application/x-www-form-urlencoded') === 0 && isPlainObject(data)) {
             const dataRecord = data as Record<string, Object>;
-            data = Object.keys(dataRecord).map((key) => {
+            data = Object.keys(dataRecord).map((key)=>{
                 return (encodeURIComponent(key) + '=' + encodeURIComponent(dataRecord[key] as number | string | boolean));
             }).join('&');
         }
@@ -6490,24 +6534,24 @@ export function initUniExtApi() {
         }
         const emitter = new Emitter2() as IUniRequestEmitter;
         const requestTask: IRequestTask = {
-            abort() {
+            abort () {
                 emitter.off('headersReceive');
                 httpRequest.destroy();
             },
-            onHeadersReceived(callback: Function) {
+            onHeadersReceived (callback: Function) {
                 emitter.on('headersReceive', callback);
             },
-            offHeadersReceived(callback: Function | null = null) {
+            offHeadersReceived (callback: Function | null = null) {
                 emitter.off('headersReceive', callback);
             }
         };
-        const destroy = () => {
+        const destroy = ()=>{
             emitter.off('headersReceive');
             httpRequest.destroy();
         };
         mp.on('beforeClose', destroy);
         let latestHeaders: Object | null = null;
-        httpRequest.on('headersReceive', (headers: Object) => {
+        httpRequest.on('headersReceive', (headers: Object)=>{
             const realHeaders = headers as Record<string, string | string[]>;
             const setCookieHeader = realHeaders['set-cookie'] || realHeaders['Set-Cookie'];
             if (setCookieHeader) {
@@ -6516,7 +6560,7 @@ export function initUniExtApi() {
             latestHeaders = headers;
         });
         const bufs = [] as buffer.Buffer[];
-        httpRequest.on('dataReceive', (data) => {
+        httpRequest.on('dataReceive', (data)=>{
             bufs.push(buffer.from(data));
         });
         httpRequest.requestInStream(parseUrl(url), {
@@ -6526,7 +6570,7 @@ export function initUniExtApi() {
             connectTimeout: timeout ? timeout : undefined,
             readTimeout: timeout ? timeout : undefined,
             clientCert: getClientCertificate(url)
-        } as http1.HttpRequestOptions, (err, statusCode) => {
+        } as http1.HttpRequestOptions, (err, statusCode)=>{
             if (err) {
                 exec.reject(err.message);
             } else {
@@ -6539,7 +6583,7 @@ export function initUniExtApi() {
                     if (dataType === 'json') {
                         try {
                             data = JSON.parse(data);
-                        } catch (e) { }
+                        } catch (e) {}
                     }
                 }
                 const headers = latestHeaders as Record<string, string | string[]>;
@@ -6566,21 +6610,21 @@ export function initUniExtApi() {
         });
         return new RequestTask1(requestTask);
     }, RequestApiProtocol, RequestApiOptions) as Request<Object>;
-    const lookupExt = (contentType: string): string | undefined => {
+    const lookupExt = (contentType: string): string | undefined =>{
         const rawContentType = contentType.split(';')[0].trim().toLowerCase();
-        return (UTSHarmony9.getExtensionFromMimeType(rawContentType) as string | null) || undefined;
+        return (UTSHarmony.getExtensionFromMimeType(rawContentType) as string | null) || undefined;
     };
-    const lookupContentTypeWithUri = (uri: string): string | undefined => {
+    const lookupContentTypeWithUri = (uri: string): string | undefined =>{
         const uriArr = uri.split('.');
         if (uriArr.length <= 1) {
             return undefined;
         }
         const ext = uriArr.pop() as string;
-        return (UTSHarmony9.getMimeTypeFromExtension(ext) as string | null) || undefined;
+        return (UTSHarmony.getMimeTypeFromExtension(ext) as string | null) || undefined;
     };
     class UploadTask1 implements UploadTask {
         private _uploadTask: IUploadTask;
-        constructor(uploadTask: IUploadTask) {
+        constructor(uploadTask: IUploadTask){
             this._uploadTask = uploadTask;
         }
         abort() {
@@ -6599,7 +6643,7 @@ export function initUniExtApi() {
             this._uploadTask.offHeadersReceived(callback);
         }
     }
-    const readFile = (filePath: string): ArrayBuffer => {
+    const readFile = (filePath: string): ArrayBuffer =>{
         const readFilePath = getRealPath4(filePath) as string;
         const file = fs4.openSync(readFilePath, fs4.OpenMode.READ_ONLY);
         const stat = fs4.statSync(file.fd);
@@ -6608,7 +6652,7 @@ export function initUniExtApi() {
         fs4.closeSync(file.fd);
         return data;
     };
-    const uploadFile = defineTaskApi<UploadFileOptions, UploadFileSuccess, UploadTask>(API_UPLOAD_FILE, (args: UploadFileOptions, exec: ApiExecutor<UploadFileSuccess>) => {
+    const uploadFile = defineTaskApi<UploadFileOptions, UploadFileSuccess, UploadTask>(API_UPLOAD_FILE, (args: UploadFileOptions, exec: ApiExecutor<UploadFileSuccess>)=>{
         let url = args.url, timeout = args.timeout, header = args.header, formData = args.formData, files = args.files, filePath = args.filePath, name = args.name;
         header = header || {} as ESObject;
         if (!header!['Cookie'] && !header!['cookie']) {
@@ -6618,7 +6662,7 @@ export function initUniExtApi() {
         if (header) {
             const headerRecord = header as Object as Record<string, string>;
             const headerKeys = Object.keys(headerRecord);
-            for (let i = 0; i < headerKeys.length; i++) {
+            for(let i = 0; i < headerKeys.length; i++){
                 const name = headerKeys[i];
                 headers[name.toLowerCase()] = headerRecord[name];
             }
@@ -6628,7 +6672,7 @@ export function initUniExtApi() {
         if (formData) {
             const formDataRecord = formData as Object as Record<string, Object>;
             const formDataKeys = Object.keys(formDataRecord);
-            for (let i = 0; i < formDataKeys.length; i++) {
+            for(let i = 0; i < formDataKeys.length; i++){
                 const name = formDataKeys[i];
                 multiFormDataList.push({
                     name,
@@ -6639,7 +6683,7 @@ export function initUniExtApi() {
         }
         try {
             if (files && files.length) {
-                for (let i = 0; i < files.length; i++) {
+                for(let i = 0; i < files.length; i++){
                     const _files_i = files[i], name = _files_i.name, uri = _files_i.uri;
                     multiFormDataList.push({
                         name: name || 'file',
@@ -6659,11 +6703,11 @@ export function initUniExtApi() {
         } catch (error) {
             exec.reject((error as Error).message);
             return new UploadTask1({
-                abort: () => { },
-                onHeadersReceived: (callback: Function) => { },
-                offHeadersReceived: (callback: Function) => { },
-                onProgressUpdate: (callback: Function) => { },
-                offProgressUpdate: (callback: Function) => { }
+                abort: ()=>{},
+                onHeadersReceived: (callback: Function)=>{},
+                offHeadersReceived: (callback: Function)=>{},
+                onProgressUpdate: (callback: Function)=>{},
+                offProgressUpdate: (callback: Function)=>{}
             } as IUploadTask);
         }
         const httpRequest = http2.createHttp();
@@ -6674,38 +6718,38 @@ export function initUniExtApi() {
         }
         const emitter = new Emitter3() as IUniUploadFileEmitter;
         const uploadTask: IUploadTask = {
-            abort() {
+            abort () {
                 emitter.off('headersReceive');
                 emitter.off('progress');
                 httpRequest.destroy();
             },
-            onHeadersReceived(callback: Function) {
+            onHeadersReceived (callback: Function) {
                 emitter.on('headersReceive', callback);
             },
-            offHeadersReceived(callback: Function | null = null) {
+            offHeadersReceived (callback: Function | null = null) {
                 emitter.off('headersReceive', callback);
             },
-            onProgressUpdate(callback: Function) {
+            onProgressUpdate (callback: Function) {
                 emitter.on('progress', callback);
             },
-            offProgressUpdate(callback: Function | null = null) {
+            offProgressUpdate (callback: Function | null = null) {
                 emitter.off('progress', callback);
             }
         };
-        const destroy = () => {
+        const destroy = ()=>{
             emitter.off('headersReceive');
             emitter.off('progress');
             httpRequest.destroy();
         };
         mp.on('beforeClose', destroy);
-        httpRequest.on('headersReceive', (headers: Object) => {
+        httpRequest.on('headersReceive', (headers: Object)=>{
             const realHeaders = headers as Record<string, string | string[]>;
             const setCookieHeader = realHeaders['set-cookie'] || realHeaders['Set-Cookie'];
             if (setCookieHeader) {
                 setCookieSync(url, setCookieHeader as string[]);
             }
         });
-        httpRequest.on('dataSendProgress', (ref) => {
+        httpRequest.on('dataSendProgress', (ref)=>{
             let sendSize = ref.sendSize, totalSize = ref.totalSize;
             emitter.emit('progress', {
                 progress: Math.floor((sendSize / totalSize) * 100),
@@ -6721,7 +6765,7 @@ export function initUniExtApi() {
             multiFormDataList,
             expectDataType: http2.HttpDataType.STRING,
             clientCert: getClientCertificate(url)
-        } as http2.HttpRequestOptions, (err, res) => {
+        } as http2.HttpRequestOptions, (err, res)=>{
             if (err) {
                 exec.reject(err.message);
             } else {
@@ -6737,7 +6781,7 @@ export function initUniExtApi() {
         });
         return new UploadTask1(uploadTask);
     }, UploadFileApiProtocol, UploadFileApiOptions) as UploadFile;
-    const getPossibleExt = (contentType: string, contentDisposition: string, url: string): string => {
+    const getPossibleExt = (contentType: string, contentDisposition: string, url: string): string =>{
         const contentDispositionFileNameMatches = contentDisposition.match(/filename="(.*)"/);
         const contentDispositionFileName = contentDispositionFileNameMatches ? contentDispositionFileNameMatches[1] : '';
         const contentDispositionExt = contentDispositionFileName ? contentDispositionFileName.split('.').pop() : '';
@@ -6754,7 +6798,7 @@ export function initUniExtApi() {
     };
     class DownloadTask1 implements DownloadTask {
         private _downloadTask: IDownloadTask;
-        constructor(downloadTask: IDownloadTask) {
+        constructor(downloadTask: IDownloadTask){
             this._downloadTask = downloadTask;
         }
         abort() {
@@ -6777,7 +6821,7 @@ export function initUniExtApi() {
         '0',
         0
     ];
-    const getDownloadFileName = (ext: string) => {
+    const getDownloadFileName = (ext: string)=>{
         let fileName = Date.now() + '';
         if (downloadIndex[0] === fileName) {
             downloadIndex[1]++;
@@ -6793,7 +6837,7 @@ export function initUniExtApi() {
         }
         return fileName;
     };
-    const downloadFile = defineTaskApi<DownloadFileOptions, DownloadFileSuccess, DownloadTask>(API_DOWNLOAD_FILE, (args: DownloadFileOptions, exec: ApiExecutor<DownloadFileSuccess>) => {
+    const downloadFile = defineTaskApi<DownloadFileOptions, DownloadFileSuccess, DownloadTask>(API_DOWNLOAD_FILE, (args: DownloadFileOptions, exec: ApiExecutor<DownloadFileSuccess>)=>{
         let url = args.url, timeout = args.timeout, header = args.header, filePath = args.filePath;
         header = header || {} as ESObject;
         if (!header!['Cookie'] && !header!['cookie']) {
@@ -6807,31 +6851,31 @@ export function initUniExtApi() {
         }
         const emitter = new Emitter4() as IUniDownloadFileEmitter;
         const downloadTask: IDownloadTask = {
-            abort() {
+            abort () {
                 emitter.off('headersReceive');
                 emitter.off('progress');
                 httpRequest.destroy();
             },
-            onHeadersReceived(callback: Function) {
+            onHeadersReceived (callback: Function) {
                 emitter.on('headersReceive', callback);
             },
-            offHeadersReceived(callback: Function | null = null) {
+            offHeadersReceived (callback: Function | null = null) {
                 emitter.off('headersReceive', callback);
             },
-            onProgressUpdate(callback: Function) {
+            onProgressUpdate (callback: Function) {
                 emitter.on('progress', callback);
             },
-            offProgressUpdate(callback: Function | null = null) {
+            offProgressUpdate (callback: Function | null = null) {
                 emitter.off('progress', callback);
             }
         };
-        const destroy = () => {
+        const destroy = ()=>{
             downloadTask.abort();
         };
         mp.on('beforeClose', destroy);
         let responseContentType = '';
         let responseContentDisposition = '';
-        httpRequest.on('headersReceive', (headers: Object) => {
+        httpRequest.on('headersReceive', (headers: Object)=>{
             const realHeaders = headers as Record<string, string | string[]>;
             responseContentType = realHeaders['content-type'] as string || realHeaders['Content-Type'] as string || '';
             responseContentDisposition = realHeaders['content-disposition'] as string || realHeaders['Content-Disposition'] as string || '';
@@ -6840,7 +6884,7 @@ export function initUniExtApi() {
                 setCookieSync(url, setCookieHeader as string[]);
             }
         });
-        httpRequest.on('dataReceiveProgress', (ref) => {
+        httpRequest.on('dataReceiveProgress', (ref)=>{
             let receiveSize = ref.receiveSize, totalSize = ref.totalSize;
             emitter.emit('progress', {
                 progress: Math.floor((receiveSize / totalSize) * 100),
@@ -6856,14 +6900,14 @@ export function initUniExtApi() {
         let stream: fs5.Stream;
         let tempFilePath = '';
         let writePromise = Promise.resolve(0);
-        const queueWrite = async (data: ArrayBuffer): Promise<number> => {
-            writePromise = writePromise.then(async (total) => {
+        const queueWrite = async (data: ArrayBuffer): Promise<number> =>{
+            writePromise = writePromise.then(async (total)=>{
                 const length = await stream.write(data);
                 return total + length;
             });
             return writePromise;
         };
-        httpRequest.on('dataReceive', (data) => {
+        httpRequest.on('dataReceive', (data)=>{
             if (!stream) {
                 const ext = getPossibleExt(responseContentType, responseContentDisposition, url);
                 tempFilePath = filePath ? filePath.replace(/^file:\/\//, '') : downloadPath + '/' + getDownloadFileName(ext);
@@ -6877,23 +6921,23 @@ export function initUniExtApi() {
             connectTimeout: timeout ? timeout : undefined,
             readTimeout: timeout ? timeout : undefined,
             clientCert: getClientCertificate(url)
-        } as http3.HttpRequestOptions, (err, statusCode) => {
+        } as http3.HttpRequestOptions, (err, statusCode)=>{
             let finishPromise: Promise<void> = Promise.resolve();
             if (err) {
                 exec.reject(err.message);
             } else {
-                finishPromise = writePromise.then(async () => {
+                finishPromise = writePromise.then(async ()=>{
                     await stream.flush();
                     await stream.close();
                     exec.resolve({
-                        tempFilePath: 'file://' + tempFilePath,
+                        tempFilePath,
                         statusCode
                     } as DownloadFileSuccess);
-                }).catch((err: Error) => {
+                }).catch((err: Error)=>{
                     exec.reject(err.message);
                 });
             }
-            finishPromise.then(() => {
+            finishPromise.then(()=>{
                 downloadTask.offHeadersReceived();
                 downloadTask.offProgressUpdate();
                 httpRequest.destroy();
@@ -6902,10 +6946,10 @@ export function initUniExtApi() {
         });
         return new DownloadTask1(downloadTask);
     }, DownloadFileApiProtocol, DownloadFileApiOptions) as DownloadFile;
-    const configMTLS: ConfigMTLS = defineAsyncApi<ConfigMTLSOptions, ConfigMTLSSuccess>(API_CONFIG_MTLS, (args: ConfigMTLSOptions, executor: ApiExecutor<ConfigMTLSSuccess>) => {
+    const configMTLS: ConfigMTLS = defineAsyncApi<ConfigMTLSOptions, ConfigMTLSSuccess>(API_CONFIG_MTLS, (args: ConfigMTLSOptions, executor: ApiExecutor<ConfigMTLSSuccess>)=>{
         try {
-            args.certificates.forEach((certificate) => {
-                const certHosts = certificates.map((cert) => cert.host);
+            args.certificates.forEach((certificate)=>{
+                const certHosts = certificates.map((cert)=>cert.host);
                 const certHostIndex = certHosts.indexOf(certificate.host);
                 if (certHostIndex > -1) {
                     certificates.splice(certHostIndex, 1);
@@ -6914,7 +6958,7 @@ export function initUniExtApi() {
             });
             executor.resolve();
         } catch (error) {
-            executor.reject((error as BusinessError10).message);
+            executor.reject((error as BusinessError11).message);
         }
     }, ConfigMTLSApiProtocol, ConfigMTLSApiOptions) as ConfigMTLS;
     const API_LOGIN = 'login';
@@ -6949,38 +6993,38 @@ export function initUniExtApi() {
     ]);
     const SERVICE = 'oauth';
     const PROVIDER = 'huawei';
-    const login: Login = defineAsyncApi<LoginOptions, LoginSuccess>(API_LOGIN, (args: LoginOptions, executor: ApiExecutor<LoginSuccess>) => {
+    const login: Login = defineAsyncApi<LoginOptions, LoginSuccess>(API_LOGIN, (args: LoginOptions, executor: ApiExecutor<LoginSuccess>)=>{
         const provider = getUniProvider<UniOAuthProvider>(SERVICE, args.provider ?? PROVIDER);
         if (!provider) {
             executor.reject('Provider not found.');
             return;
         }
         provider.login({
-            success(res) {
+            success (res) {
                 executor.resolve(res);
             },
-            fail(err) {
+            fail (err) {
                 executor.reject(err.errMsg);
             }
         } as LoginOptions);
     }, LoginApiProtocol) as Login;
-    const getUserInfo: GetUserInfo = defineAsyncApi<GetUserInfoOptions, GetUserInfoSuccess>(API_GET_USER_INFO, (args: GetUserInfoOptions, executor: ApiExecutor<GetUserInfoSuccess>) => {
+    const getUserInfo: GetUserInfo = defineAsyncApi<GetUserInfoOptions, GetUserInfoSuccess>(API_GET_USER_INFO, (args: GetUserInfoOptions, executor: ApiExecutor<GetUserInfoSuccess>)=>{
         const provider = getUniProvider<UniOAuthProvider>(SERVICE, args.provider ?? PROVIDER);
         if (!provider) {
             executor.reject('Provider not found.');
             return;
         }
         provider.getUserInfo({
-            success(res) {
+            success (res) {
                 executor.resolve(res);
             },
-            fail(err) {
+            fail (err) {
                 executor.reject(err.errMsg);
             }
         } as GetUserInfoOptions);
     }, GetUserInfoApiProtocol) as GetUserInfo;
     const API_OPEN_APP_AUTHORIZE_SETTING = 'openAppAuthorizeSetting';
-    const openAppAuthorizeSetting: OpenAppAuthorizeSetting = defineAsyncApi<OpenAppAuthorizeSettingOptions, OpenAppAuthorizeSettingSuccess>(API_OPEN_APP_AUTHORIZE_SETTING, (options: OpenAppAuthorizeSettingOptions, exec: ApiExecutor<OpenAppAuthorizeSettingSuccess>) => {
+    const openAppAuthorizeSetting: OpenAppAuthorizeSetting = defineAsyncApi<OpenAppAuthorizeSettingOptions, OpenAppAuthorizeSettingSuccess>(API_OPEN_APP_AUTHORIZE_SETTING, (options: OpenAppAuthorizeSettingOptions, exec: ApiExecutor<OpenAppAuthorizeSettingSuccess>)=>{
         const want: Want = {
             bundleName: 'com.huawei.hmos.settings',
             abilityName: 'com.huawei.hmos.settings.MainAbility',
@@ -6989,22 +7033,22 @@ export function initUniExtApi() {
                 pushParams: bundleManager2.getBundleInfoForSelfSync(bundleManager2.BundleFlag.GET_BUNDLE_INFO_DEFAULT).name
             }
         } as Want;
-        const context = getAbilityContext7() as common1.UIAbilityContext;
-        context.startAbility(want).then(() => {
+        const context = UTSHarmony.getUIAbilityContext() as common1.UIAbilityContext;
+        context.startAbility(want).then(()=>{
             exec.resolve({
                 errMsg: ''
             } as OpenAppAuthorizeSettingSuccess);
-        }, (err: Error) => {
+        }, (err: Error)=>{
             exec.reject(err.message);
         });
     }) as OpenAppAuthorizeSetting;
     const API_OPEN_DOCUMENT = 'openDocument';
-    const getContentType = (filePath: string, fileType: string | null = null): string | void => {
+    const getContentType = (filePath: string, fileType: string | null = null): string | void =>{
         const suffix = fileType || filePath.split('.').pop();
         if (!suffix) {
             return;
         }
-        switch (suffix) {
+        switch(suffix){
             case 'doc':
             case 'docx':
                 return 'application/msword';
@@ -7020,7 +7064,7 @@ export function initUniExtApi() {
                 return;
         }
     };
-    const openDocument: OpenDocument = defineAsyncApi<OpenDocumentOptions, OpenDocumentSuccess>(API_OPEN_DOCUMENT, (options: OpenDocumentOptions, exec: ApiExecutor<OpenDocumentSuccess>) => {
+    const openDocument: OpenDocument = defineAsyncApi<OpenDocumentOptions, OpenDocumentSuccess>(API_OPEN_DOCUMENT, (options: OpenDocumentOptions, exec: ApiExecutor<OpenDocumentSuccess>)=>{
         const filePath = options.filePath;
         const uri = fileUri.getUriFromPath(filePath.replace(/^file:\/\//, ''));
         const fileContentType = getContentType(filePath, options.fileType);
@@ -7034,10 +7078,10 @@ export function initUniExtApi() {
             uri: uri,
             type: fileContentType as string
         };
-        const abilityContext = getAbilityContext8() as common2.UIAbilityContext;
-        abilityContext.startAbility(want).then(() => {
+        const abilityContext = UTSHarmony.getUIAbilityContext() as common2.UIAbilityContext;
+        abilityContext.startAbility(want).then(()=>{
             exec.resolve({} as OpenDocumentSuccess);
-        }, (err: Error) => {
+        }, (err: Error)=>{
             exec.reject(err.message);
         });
     }) as OpenDocument;
@@ -7096,7 +7140,7 @@ export function initUniExtApi() {
         ]
     ]);
     const API_REQUEST_PAYMENT = 'requestPayment';
-    const requestPayment: RequestPayment = defineAsyncApi<RequestPaymentOptions, RequestPaymentSuccess>(API_REQUEST_PAYMENT, (options: RequestPaymentOptions, exec: ApiExecutor<RequestPaymentSuccess>): void => {
+    const requestPayment: RequestPayment = defineAsyncApi<RequestPaymentOptions, RequestPaymentSuccess>(API_REQUEST_PAYMENT, (options: RequestPaymentOptions, exec: ApiExecutor<RequestPaymentSuccess>): void =>{
         const provider = getUniProvider<UniPaymentProvider>('payment', options.provider);
         if (!provider) {
             exec.reject('Provider not found.');
@@ -7104,10 +7148,10 @@ export function initUniExtApi() {
         }
         provider.requestPayment({
             orderInfo: options.orderInfo,
-            success: (result: RequestPaymentSuccess) => {
+            success: (result: RequestPaymentSuccess)=>{
                 exec.resolve(result);
             },
-            fail: (error: RequestPaymentFail) => {
+            fail: (error: RequestPaymentFail)=>{
                 const errMsg = RequestPaymentUniErrors.get(error.errCode) ?? "";
                 exec.reject(errMsg, {
                     errCode: error.errCode
@@ -7280,7 +7324,7 @@ export function initUniExtApi() {
         ])
     };
     const API_HIDE_LOADING = 'hideLoading';
-    const showToast: ShowToast = defineAsyncApi<ShowToastOptions, ShowToastSuccess>(API_SHOW_TOAST, (options: ShowToastOptions, res: ApiExecutor<ShowToastSuccess>) => {
+    const showToast: ShowToast = defineAsyncApi<ShowToastOptions, ShowToastSuccess>(API_SHOW_TOAST, (options: ShowToastOptions, res: ApiExecutor<ShowToastSuccess>)=>{
         try {
             const showToastOptions: promptAction4.ShowToastOptions = {
                 message: options.title,
@@ -7288,7 +7332,7 @@ export function initUniExtApi() {
                 alignment: Alignment.Center
             };
             if (options.position) {
-                switch (options.position) {
+                switch(options.position){
                     case 'top':
                         showToastOptions.alignment = Alignment.Top;
                         break;
@@ -7297,23 +7341,21 @@ export function initUniExtApi() {
                         break;
                 }
             }
-            const window = getCurrentWindow3() as window.Window;
+            const window = UTSHarmony.getCurrentWindow() as window.Window;
             window.getUIContext().getPromptAction().showToast(showToastOptions);
             res.resolve({} as ShowToastSuccess);
         } catch (error) {
-            let message = (error as BusinessError11).message;
+            let message = (error as BusinessError12).message;
             res.reject(message);
         }
     }, ShowToastProtocol, ShowToastApiOptions) as ShowToast;
-    const hideToast: HideToast = defineAsyncApi(API_HIDE_TOAST, (_, res: ApiExecutor<Object>) => {
-        res.reject('hideToast is not supported on HarmonyOS');
-    }) as HideToast;
-    const showModal: ShowModal = defineAsyncApi<ShowModalOptions, ShowModalSuccess>(API_SHOW_MODAL, async (args: ShowModalOptions, res: ApiExecutor<ShowModalSuccess>) => {
-        const modalRes = await new Promise<ShowModalSuccess>((resolve, reject) => {
+    const hideToast: HideToast = defineAsyncApi(API_HIDE_TOAST, (_, res: ApiExecutor<Object>)=>{}) as HideToast;
+    const showModal: ShowModal = defineAsyncApi<ShowModalOptions, ShowModalSuccess>(API_SHOW_MODAL, async (args: ShowModalOptions, res: ApiExecutor<ShowModalSuccess>)=>{
+        const modalRes = await new Promise<ShowModalSuccess>((resolve, reject)=>{
             const confirmButton: AlertDialogButtonOptions = {
                 value: args.confirmText ?? '确定',
                 fontColor: args.confirmColor!,
-                action: () => {
+                action: ()=>{
                     resolve({
                         "confirm": true
                     } as ShowModalSuccess);
@@ -7322,7 +7364,7 @@ export function initUniExtApi() {
             const cancelButton: AlertDialogButtonOptions = {
                 value: args.cancelText ?? '取消',
                 fontColor: args.cancelColor ?? '#000000',
-                action: () => {
+                action: ()=>{
                     resolve({
                         "cancel": true
                     } as ShowModalSuccess);
@@ -7333,14 +7375,14 @@ export function initUniExtApi() {
                 buttons.push(cancelButton);
             }
             buttons.push(confirmButton);
-            const window = getCurrentWindow4() as window.Window;
+            const window = UTSHarmony.getCurrentWindow() as window.Window;
             window.getUIContext().showAlertDialog({
                 title: args.title ?? '',
                 message: args.content ?? '',
                 autoCancel: false,
                 alignment: DialogAlignment.Center,
                 buttons,
-                cancel: () => {
+                cancel: ()=>{
                     resolve({
                         'cancel': true
                     } as ShowModalSuccess);
@@ -7356,7 +7398,7 @@ export function initUniExtApi() {
         modalRes.content = null;
         res.resolve(modalRes as ShowModalSuccess);
     }, ShowModalProtocol, ShowModalApiOptions) as ShowModal;
-    const showActionSheet: ShowActionSheet = defineAsyncApi<ShowActionSheetOptions, ShowActionSheetSuccess>(API_SHOW_ACTION_SHEET, async (options: ShowActionSheetOptions, res: ApiExecutor<ShowActionSheetSuccess>) => {
+    const showActionSheet: ShowActionSheet = defineAsyncApi<ShowActionSheetOptions, ShowActionSheetSuccess>(API_SHOW_ACTION_SHEET, async (options: ShowActionSheetOptions, res: ApiExecutor<ShowActionSheetSuccess>)=>{
         const actionItemList = options.itemList.filter(Boolean);
         if (actionItemList.length === 0) {
             return;
@@ -7368,21 +7410,21 @@ export function initUniExtApi() {
                 color: options.itemColor!
             }
         ];
-        actionItemList.slice(1).forEach((item) => {
+        actionItemList.slice(1).forEach((item)=>{
             actionMenuButtons.push({
                 text: item,
                 color: options.itemColor!
             } as promptAction5.Button);
         });
-        const window = getCurrentWindow5() as window.Window;
+        const window = UTSHarmony.getCurrentWindow() as window.Window;
         window.getUIContext().getPromptAction().showActionMenu({
             title: options.title,
             buttons: actionMenuButtons
-        } as promptAction5.ActionMenuOptions).then((showACtionSheetRes) => {
+        } as promptAction5.ActionMenuOptions).then((showACtionSheetRes)=>{
             res.resolve({
                 tapIndex: showACtionSheetRes.index
             } as ShowActionSheetSuccess);
-        }).catch((e: Error) => {
+        }).catch((e: Error)=>{
             if (e.message === 'cancel') {
                 res.reject('cancel');
                 return;
@@ -7390,8 +7432,8 @@ export function initUniExtApi() {
             res.reject(e.message);
         });
     }, ShowActionSheetProtocol, ShowActionSheetApiOptions) as ShowActionSheet;
-    const showLoading: ShowLoading = defineAsyncApi<ShowLoadingOptions, ShowLoadingSuccess>(API_SHOW_LOADING, async (options: ShowLoadingOptions, exec: ApiExecutor<ShowLoadingSuccess>) => {
-        onNativePageReady2().then((nativePage: Object) => {
+    const showLoading: ShowLoading = defineAsyncApi<ShowLoadingOptions, ShowLoadingSuccess>(API_SHOW_LOADING, async (options: ShowLoadingOptions, exec: ApiExecutor<ShowLoadingSuccess>)=>{
+        onNativePageReady2().then((nativePage: Object)=>{
             getOSRuntime1().showLoading({
                 title: options.title || '',
                 mask: options.mask == null ? false : options.mask
@@ -7399,24 +7441,24 @@ export function initUniExtApi() {
             exec.resolve({} as ShowLoadingSuccess);
         });
     }, ShowLoadingProtocol, ShowLoadingApiOptions) as ShowLoading;
-    const hideLoading: HideLoading = defineSyncApi<void>(API_HIDE_LOADING, () => {
-        onNativePageReady2().then((nativePage: Object) => {
+    const hideLoading: HideLoading = defineSyncApi<void>(API_HIDE_LOADING, ()=>{
+        onNativePageReady2().then((nativePage: Object)=>{
             getOSRuntime1().hideLoading();
         });
     }) as HideLoading;
     const API_START_PULL_DOWN_REFRESH = 'startPullDownRefresh';
     const API_STOP_PULL_DOWN_REFRESH = 'stopPullDownRefresh';
-    const startPullDownRefresh = defineAsyncApi<StartPullDownRefreshOptions, StartPullDownRefreshSuccess>(API_START_PULL_DOWN_REFRESH, (_, res) => {
+    const startPullDownRefresh = defineAsyncApi<StartPullDownRefreshOptions, StartPullDownRefreshSuccess>(API_START_PULL_DOWN_REFRESH, (_, res)=>{
         internalStartPullDownRefresh();
         res.resolve();
     }) as StartPullDownRefresh;
-    const stopPullDownRefresh = defineSyncApi<void>(API_STOP_PULL_DOWN_REFRESH, () => {
+    const stopPullDownRefresh = defineSyncApi<void>(API_STOP_PULL_DOWN_REFRESH, ()=>{
         internalStopPullDownRefresh();
     }) as StopPullDownRefresh;
     const API_RPX2PX = 'rpx2px';
     const EPS = 1e-4;
-    const rpx2px: Rpx2px = defineSyncApi<number>(API_RPX2PX, (number: number): number => {
-        const windowStage: harmonyWindow.WindowStage = UTSHarmony10.getWindowStage();
+    const rpx2px: Rpx2px = defineSyncApi<number>(API_RPX2PX, (number: number): number =>{
+        const windowStage: harmonyWindow.WindowStage = UTSHarmony.getWindowStage() as harmonyWindow.WindowStage;
         let windowWidthInVp: number = 384;
         let windowWidthInPx: number = 1344;
         if (windowStage) {
@@ -7519,14 +7561,14 @@ export function initUniExtApi() {
             'UPC_E'
         ]
     ]);
-    const scanCode: ScanCode = defineAsyncApi<ScanCodeOptions, ScanCodeSuccess>(API_SCAN_CODE, (options: ScanCodeOptions, exec: ApiExecutor<ScanCodeSuccess>) => {
+    const scanCode: ScanCode = defineAsyncApi<ScanCodeOptions, ScanCodeSuccess>(API_SCAN_CODE, (options: ScanCodeOptions, exec: ApiExecutor<ScanCodeSuccess>)=>{
         if (!canIUse('SystemCapability.Multimedia.Scan.ScanBarcode')) {
             exec.reject('not support');
             return;
         }
         let scanTypes: scanCore.ScanType[] = [];
         if (options.scanType && Array.isArray(options.scanType) && options.scanType.length > 0) {
-            for (let i = 0; i < options.scanType.length; i++) {
+            for(let i = 0; i < options.scanType.length; i++){
                 const uniScanType = options.scanType[i];
                 const harmonyScanTypes = HarmonyScanTypeMap.get(uniScanType);
                 if (!harmonyScanTypes) {
@@ -7545,7 +7587,7 @@ export function initUniExtApi() {
             enableMultiMode: true,
             enableAlbum: !options.onlyFromCamera
         };
-        scanBarcode.startScanForResult(getAbilityContext9()!, scanOptions, (err, data) => {
+        scanBarcode.startScanForResult(UTSHarmony.getUIAbilityContext()!, scanOptions, (err, data)=>{
             if (err) {
                 exec.reject(err.message);
                 return;
@@ -7557,7 +7599,7 @@ export function initUniExtApi() {
         });
     }) as ScanCode;
     const API_SHARE_WITH_SYSTEM = 'shareWithSystem';
-    const shareWithSystem = defineAsyncApi<ShareWithSystemOptions, ShareWithSystemSuccess>(API_SHARE_WITH_SYSTEM, (args: ShareWithSystemOptions, exec: ApiExecutor<ShareWithSystemSuccess>) => {
+    const shareWithSystem = defineAsyncApi<ShareWithSystemOptions, ShareWithSystemSuccess>(API_SHARE_WITH_SYSTEM, (args: ShareWithSystemOptions, exec: ApiExecutor<ShareWithSystemSuccess>)=>{
         const href = args.href;
         const imageUrl = args.imageUrl;
         const summary = args.summary;
@@ -7585,12 +7627,12 @@ export function initUniExtApi() {
             return;
         }
         const shareData = new systemShare.SharedData(shareRecords[0]);
-        for (let index = 1; index < shareRecords.length; index++) {
+        for(let index = 1; index < shareRecords.length; index++){
             shareData.addRecord(shareRecords[index]);
         }
         const shareController: systemShare.ShareController = new systemShare.ShareController(shareData);
-        shareController.show(getAbilityContext10() as common3.UIAbilityContext, {} as systemShare.ShareControllerOptions);
-        const onDismiss = () => {
+        shareController.show(UTSHarmony.getUIAbilityContext() as common3.UIAbilityContext, {} as systemShare.ShareControllerOptions);
+        const onDismiss = ()=>{
             shareController.off('dismiss', onDismiss);
             exec.resolve({} as ShareWithSystemSuccess);
         };
@@ -7606,40 +7648,40 @@ export function initUniExtApi() {
     const API_CLEAR_STORAGE_SYNC = 'clearStorageSync';
     const API_GET_STORAGE_INFO = 'getStorageInfo';
     const API_GET_STORAGE_INFO_SYNC = 'getStorageInfoSync';
-    const parseStorageValue = (value: string): Object => {
+    const parseStorageValue = (value: string): Object =>{
         try {
             return JSON.parse(value).data;
         } catch (e) {
             return value;
         }
     };
-    const stringifyStorageValue = (value: Object): string => {
+    const stringifyStorageValue = (value: Object): string =>{
         return JSON.stringify({
             type: typeof value,
             data: value
         } as ESObject);
     };
     const stores = new Map<string, dataPreferences.Preferences>();
-    const createStore = (): dataPreferences.Preferences => {
+    const createStore = (): dataPreferences.Preferences =>{
         const appId = (getCurrentMP3() as UniStorageMP).id;
         if (stores.has(appId)) {
             return stores.get(appId)!;
         }
-        const store = dataPreferences.getPreferencesSync(getAbilityContext11() as common4.UIAbilityContext, {
+        const store = dataPreferences.getPreferencesSync(UTSHarmony.getUIAbilityContext() as common4.UIAbilityContext, {
             name: `storage.${appId}`
         } as dataPreferences.Options);
         stores.set(appId, store);
         return store;
     };
-    const getStorageSync = defineSyncApi<Object>(API_GET_STORAGE_SYNC, (key: string) => {
+    const getStorageSync = defineSyncApi<Object>(API_GET_STORAGE_SYNC, (key: string)=>{
         const storeValue = createStore().getSync(key, '');
         if (!storeValue) {
             return '';
         }
         return parseStorageValue(storeValue as string);
     }) as GetStorageSync;
-    const getStorage = defineAsyncApi<GetStorageOptions, GetStorageSuccess>(API_GET_STORAGE, (args: GetStorageOptions, exec: ApiExecutor<GetStorageSuccess>) => {
-        createStore().get(args.key, '').then((storeValue) => {
+    const getStorage = defineAsyncApi<GetStorageOptions, GetStorageSuccess>(API_GET_STORAGE, (args: GetStorageOptions, exec: ApiExecutor<GetStorageSuccess>)=>{
+        createStore().get(args.key, '').then((storeValue)=>{
             if (!storeValue) {
                 return exec.reject('data not found');
             }
@@ -7655,47 +7697,47 @@ export function initUniExtApi() {
             } as GetStorageSuccess);
         });
     }) as GetStorage;
-    const setStorageSync = defineSyncApi<void>(API_SET_STORAGE_SYNC, (key: string, value: Object) => {
+    const setStorageSync = defineSyncApi<void>(API_SET_STORAGE_SYNC, (key: string, value: Object)=>{
         createStore().putSync(key, stringifyStorageValue(value));
         createStore().flush();
     }) as SetStorageSync;
-    const setStorage = defineAsyncApi<SetStorageOptions, SetStorageSuccess>(API_SET_STORAGE, (args: SetStorageOptions, exec: ApiExecutor<SetStorageSuccess>) => {
+    const setStorage = defineAsyncApi<SetStorageOptions, SetStorageSuccess>(API_SET_STORAGE, (args: SetStorageOptions, exec: ApiExecutor<SetStorageSuccess>)=>{
         try {
-            createStore().put(args.key, stringifyStorageValue(args.data)).then(() => {
+            createStore().put(args.key, stringifyStorageValue(args.data)).then(()=>{
                 createStore().flush();
                 exec.resolve({} as ESObject);
-            }, (error: Error) => {
+            }, (error: Error)=>{
                 exec.reject(error.message);
             });
         } catch (error) {
             exec.reject((error as Error).message);
         }
     }) as SetStorage;
-    const removeStorageSync = defineSyncApi<void>(API_REMOVE_STORAGE_SYNC, (key: string) => {
+    const removeStorageSync = defineSyncApi<void>(API_REMOVE_STORAGE_SYNC, (key: string)=>{
         createStore().deleteSync(key);
         createStore().flush();
     }) as RemoveStorageSync;
-    const removeStorage = defineAsyncApi<RemoveStorageOptions, RemoveStorageSuccess>(API_REMOVE_STORAGE, (args: RemoveStorageOptions, exec: ApiExecutor<RemoveStorageSuccess>) => {
-        createStore().delete(args.key).then(() => {
+    const removeStorage = defineAsyncApi<RemoveStorageOptions, RemoveStorageSuccess>(API_REMOVE_STORAGE, (args: RemoveStorageOptions, exec: ApiExecutor<RemoveStorageSuccess>)=>{
+        createStore().delete(args.key).then(()=>{
             createStore().flush();
             exec.resolve({} as ESObject);
-        }, (error: Error) => {
+        }, (error: Error)=>{
             exec.reject(error.message);
         });
     }) as RemoveStorage;
-    const clearStorageSync = defineSyncApi<void>(API_CLEAR_STORAGE_SYNC, () => {
+    const clearStorageSync = defineSyncApi<void>(API_CLEAR_STORAGE_SYNC, ()=>{
         createStore().clearSync();
         createStore().flush();
     }) as ClearStorageSync;
-    const clearStorage = defineAsyncApi<ClearStorageOptions, ClearStorageSuccess>(API_CLEAR_STORAGE, (args: ClearStorageOptions, exec: ApiExecutor<ClearStorageSuccess>) => {
-        createStore().clear().then(() => {
+    const clearStorage = defineAsyncApi<ClearStorageOptions, ClearStorageSuccess>(API_CLEAR_STORAGE, (args: ClearStorageOptions, exec: ApiExecutor<ClearStorageSuccess>)=>{
+        createStore().clear().then(()=>{
             createStore().flush();
             exec.resolve({} as ESObject);
-        }, (error: Error) => {
+        }, (error: Error)=>{
             exec.reject(error.message);
         });
     }) as ClearStorage;
-    const getStorageInfoSync = defineSyncApi<GetStorageInfoSuccess>(API_GET_STORAGE_INFO_SYNC, () => {
+    const getStorageInfoSync = defineSyncApi<GetStorageInfoSuccess>(API_GET_STORAGE_INFO_SYNC, ()=>{
         const allData = createStore().getAllSync();
         return {
             keys: Object.keys(allData),
@@ -7703,8 +7745,8 @@ export function initUniExtApi() {
             limitSize: 0
         } as GetStorageInfoSuccess;
     }) as GetStorageInfoSync;
-    const getStorageInfo = defineAsyncApi<GetStorageInfoOptions, GetStorageInfoSuccess>(API_GET_STORAGE_INFO, (args: GetStorageInfoOptions, exec: ApiExecutor<GetStorageInfoSuccess>) => {
-        createStore().getAll().then((allData) => {
+    const getStorageInfo = defineAsyncApi<GetStorageInfoOptions, GetStorageInfoSuccess>(API_GET_STORAGE_INFO, (args: GetStorageInfoOptions, exec: ApiExecutor<GetStorageInfoSuccess>)=>{
+        createStore().getAll().then((allData)=>{
             exec.resolve({
                 keys: Object.keys(allData),
                 currentSize: 0,
@@ -7872,7 +7914,7 @@ export function initUniExtApi() {
             }
         ]
     ]);
-    const setTabBarBadge = defineAsyncApi<SetTabBarBadgeOptions, SetTabBarBadgeSuccess>(API_SET_TAB_BAR_BADGE, (options: SetTabBarBadgeOptions, exec: ApiExecutor<SetTabBarBadgeSuccess>) => {
+    const setTabBarBadge = defineAsyncApi<SetTabBarBadgeOptions, SetTabBarBadgeSuccess>(API_SET_TAB_BAR_BADGE, (options: SetTabBarBadgeOptions, exec: ApiExecutor<SetTabBarBadgeSuccess>)=>{
         const tabBar = getTabBar() as ITabBar;
         if (tabBar === null) {
             exec.reject('tabBar is not exist');
@@ -7881,7 +7923,7 @@ export function initUniExtApi() {
         tabBar!.setTabBarBadge(options);
         exec.resolve();
     }, SetTabBarBadgeApiProtocol);
-    const removeTabBarBadge = defineAsyncApi<RemoveTabBarBadgeOptions, RemoveTabBarBadgeSuccess>(API_REMOVE_TAB_BAR_BADGE, (options: RemoveTabBarBadgeOptions, exec: ApiExecutor<RemoveTabBarBadgeSuccess>) => {
+    const removeTabBarBadge = defineAsyncApi<RemoveTabBarBadgeOptions, RemoveTabBarBadgeSuccess>(API_REMOVE_TAB_BAR_BADGE, (options: RemoveTabBarBadgeOptions, exec: ApiExecutor<RemoveTabBarBadgeSuccess>)=>{
         const tabBar = getTabBar() as ITabBar;
         if (tabBar == null) {
             exec.reject('tabBar is not exist');
@@ -7890,7 +7932,7 @@ export function initUniExtApi() {
         tabBar!.removeTabBarBadge(options);
         exec.resolve();
     }, RemoveTabBarBadgeApiProtocol);
-    const setTabBarItem = defineAsyncApi<SetTabBarItemOptions, SetTabBarItemSuccess>(API_SET_TAB_BAR_ITEM, (options: SetTabBarItemOptions, res: ApiExecutor<SetTabBarItemSuccess>) => {
+    const setTabBarItem = defineAsyncApi<SetTabBarItemOptions, SetTabBarItemSuccess>(API_SET_TAB_BAR_ITEM, (options: SetTabBarItemOptions, res: ApiExecutor<SetTabBarItemSuccess>)=>{
         const tabBar = getTabBar() as ITabBar;
         if (tabBar == null) {
             res.reject('tabBar is not exist');
@@ -7899,7 +7941,7 @@ export function initUniExtApi() {
         tabBar!.setTabBarItem(options);
         res.resolve();
     }, SetTabBarItemApiProtocol);
-    const setTabBarStyle = defineAsyncApi<SetTabBarStyleOptions, SetTabBarStyleSuccess>(API_SET_TAB_BAR_STYLE, (options: SetTabBarStyleOptions, exec: ApiExecutor<SetTabBarStyleSuccess>) => {
+    const setTabBarStyle = defineAsyncApi<SetTabBarStyleOptions, SetTabBarStyleSuccess>(API_SET_TAB_BAR_STYLE, (options: SetTabBarStyleOptions, exec: ApiExecutor<SetTabBarStyleSuccess>)=>{
         const tabBar = getTabBar() as ITabBar;
         if (tabBar == null) {
             exec.reject('tabBar is not exist');
@@ -7908,7 +7950,7 @@ export function initUniExtApi() {
         tabBar!.setTabBarStyle(options);
         exec.resolve();
     }, SetTabBarStyleApiProtocol);
-    const hideTabBar = defineAsyncApi<HideTabBarOptions, HideTabBarSuccess>(API_HIDE_TAB_BAR, (options: HideTabBarOptions | null, exec: ApiExecutor<HideTabBarSuccess>) => {
+    const hideTabBar = defineAsyncApi<HideTabBarOptions, HideTabBarSuccess>(API_HIDE_TAB_BAR, (options: HideTabBarOptions | null, exec: ApiExecutor<HideTabBarSuccess>)=>{
         const tabBar = getTabBar() as ITabBar;
         if (tabBar == null) {
             exec.reject('tabBar is not exist');
@@ -7917,7 +7959,7 @@ export function initUniExtApi() {
         tabBar!.hideTabBar();
         exec.resolve();
     });
-    const showTabBar = defineAsyncApi<ShowTabBarOptions, ShowTabBarSuccess>(API_SHOW_TAB_BAR, (options: ShowTabBarOptions, exec: ApiExecutor<ShowTabBarSuccess>) => {
+    const showTabBar = defineAsyncApi<ShowTabBarOptions, ShowTabBarSuccess>(API_SHOW_TAB_BAR, (options: ShowTabBarOptions, exec: ApiExecutor<ShowTabBarSuccess>)=>{
         const tabBar = getTabBar() as ITabBar;
         if (tabBar == null) {
             exec.reject('tabBar is not exist');
@@ -7926,7 +7968,7 @@ export function initUniExtApi() {
         tabBar!.showTabBar();
         exec.resolve();
     });
-    const showTabBarRedDot = defineAsyncApi<ShowTabBarRedDotOptions, ShowTabBarRedDotSuccess>(API_SHOW_TAB_BAR_RED_DOT, (options: ShowTabBarRedDotOptions, exec: ApiExecutor<ShowTabBarRedDotSuccess>) => {
+    const showTabBarRedDot = defineAsyncApi<ShowTabBarRedDotOptions, ShowTabBarRedDotSuccess>(API_SHOW_TAB_BAR_RED_DOT, (options: ShowTabBarRedDotOptions, exec: ApiExecutor<ShowTabBarRedDotSuccess>)=>{
         const tabBar = getTabBar() as ITabBar;
         if (tabBar == null) {
             exec.reject('tabBar is not exist');
@@ -7935,7 +7977,7 @@ export function initUniExtApi() {
         tabBar!.showTabBarRedDot(options);
         exec.resolve();
     }, ShowTabBarRedDotApiProtocol);
-    const hideTabBarRedDot = defineAsyncApi<HideTabBarRedDotOptions, HideTabBarRedDotSuccess>(API_HIDE_TAB_BAR_RED_DOT, (options: HideTabBarRedDotOptions, exec: ApiExecutor<HideTabBarRedDotSuccess>) => {
+    const hideTabBarRedDot = defineAsyncApi<HideTabBarRedDotOptions, HideTabBarRedDotSuccess>(API_HIDE_TAB_BAR_RED_DOT, (options: HideTabBarRedDotOptions, exec: ApiExecutor<HideTabBarRedDotSuccess>)=>{
         const tabBar = getTabBar() as ITabBar;
         if (tabBar == null) {
             exec.reject('tabBar is not exist');
@@ -7972,7 +8014,7 @@ export function initUniExtApi() {
         formatArgs: new Map<string, Function>([
             [
                 'url',
-                (url: string, params: ConnectSocketOptions) => {
+                (url: string, params: ConnectSocketOptions)=>{
                     if (url == null) {
                         throw new Error('url is required');
                     }
@@ -7982,7 +8024,7 @@ export function initUniExtApi() {
     };
     const API_SEND_SOCKET_MESSAGE = 'sendSocketMessage';
     const API_CLOSE_SOCKET = 'closeSocket';
-    const tryExec = (fn: Function | null | undefined, ...args: Object[]) => {
+    const tryExec = (fn: Function | null | undefined, ...args: Object[])=>{
         if (!fn) {
             return;
         }
@@ -7993,7 +8035,7 @@ export function initUniExtApi() {
         }
     };
     const GlobalWebsocketEmitter = new Emitter5() as IUniWebsocketEmitter;
-    const destroySocketTaskEmitter = (emitter: IUniWebsocketEmitter) => {
+    const destroySocketTaskEmitter = (emitter: IUniWebsocketEmitter)=>{
         emitter.off('message');
         emitter.off('open');
         emitter.off('error');
@@ -8003,10 +8045,10 @@ export function initUniExtApi() {
         _destroy: Function;
         private _ws: webSocket.WebSocket;
         private _emitter: IUniWebsocketEmitter = new Emitter5() as IUniWebsocketEmitter;
-        constructor(ws: webSocket.WebSocket) {
+        constructor(ws: webSocket.WebSocket){
             const mp = getCurrentMP4() as UniWebsocketMP;
             this._ws = ws;
-            this._ws.on('message', (_, data) => {
+            this._ws.on('message', (_, data)=>{
                 const message = {
                     data
                 } as OnSocketMessageCallbackResult;
@@ -8016,14 +8058,14 @@ export function initUniExtApi() {
                     GlobalWebsocketEmitter.emit('message', message);
                 }
             });
-            this._ws.on('open', (_, data) => {
+            this._ws.on('open', (_, data)=>{
                 this._emitter.emit('open', data);
                 const socketTasks = getSocketTasks(mp.id);
                 if (this === socketTasks[0]) {
                     GlobalWebsocketEmitter.emit('open', data);
                 }
             });
-            this._ws.on('error', (error) => {
+            this._ws.on('error', (error)=>{
                 const message = {
                     errMsg: error.message
                 } as OnSocketErrorCallbackResult;
@@ -8033,7 +8075,7 @@ export function initUniExtApi() {
                     GlobalWebsocketEmitter.emit('error', message);
                 }
             });
-            this._ws.on('close', (_, data) => {
+            this._ws.on('close', (_, data)=>{
                 this._emitter.emit('close', data);
                 const socketTasks = getSocketTasks(mp.id);
                 if (this === socketTasks[0]) {
@@ -8044,19 +8086,19 @@ export function initUniExtApi() {
                     socketTasks.splice(index, 1);
                 }
             });
-            this._destroy = () => {
+            this._destroy = ()=>{
                 destroySocketTaskEmitter(this._emitter);
                 this.close();
             };
         }
         send(options: SendSocketMessageOptions) {
-            this._ws.send(options.data as string | ArrayBuffer).then((success: boolean) => {
+            this._ws.send(options.data as string | ArrayBuffer).then((success: boolean)=>{
                 if (success) {
                     tryExec(options.success, {} as GeneralCallbackResult);
                 } else {
                     tryExec(options.fail, new UniError('send message failed'));
                 }
-            }, (err: Error) => {
+            }, (err: Error)=>{
                 tryExec(options.fail, new UniError(err.message));
             });
         }
@@ -8064,13 +8106,13 @@ export function initUniExtApi() {
             this._ws.close({
                 code: typeof options?.code === 'number' ? options.code : 1000,
                 reason: typeof options?.reason === 'string' ? options.reason : ''
-            } as webSocket.WebSocketCloseOptions).then((success: boolean) => {
+            } as webSocket.WebSocketCloseOptions).then((success: boolean)=>{
                 if (success) {
                     tryExec(options?.success, {} as GeneralCallbackResult);
                 } else {
                     tryExec(options?.fail, new UniError('close socket failed'));
                 }
-            }, (err: Error) => {
+            }, (err: Error)=>{
                 tryExec(options?.fail, new UniError(err.message));
             });
         }
@@ -8085,14 +8127,13 @@ export function initUniExtApi() {
         }
         onClose(callback: Function) {
             this._emitter.on('close', callback);
-            destroySocketTaskEmitter(this._emitter);
         }
     }
     const socketTasksMap: Map<string, SocketTask1[]> = new Map();
-    const addSocketTask = (task: SocketTask1) => {
+    const addSocketTask = (task: SocketTask1)=>{
         const mp = getCurrentMP4() as UniWebsocketMP;
         mp.on('beforeClose', task._destroy);
-        task.onClose(() => {
+        task.onClose(()=>{
             mp.off('beforeClose', task._destroy);
         });
         const id = mp.id;
@@ -8102,14 +8143,14 @@ export function initUniExtApi() {
         const socketTasks = socketTasksMap.get(id) as SocketTask1[];
         socketTasks.push(task);
     };
-    const getSocketTasks = (id: string | null = null) => {
+    const getSocketTasks = (id: string | null = null)=>{
         if (!id) {
             const mp = getCurrentMP4() as UniWebsocketMP;
             id = mp.id;
         }
         return socketTasksMap.get(id) || [];
     };
-    const connectSocket = defineTaskApi<ConnectSocketOptions, ConnectSocketSuccess, SocketTask>(API_CONNECT_SOCKET, (args: ConnectSocketOptions, exec: ApiExecutor<ConnectSocketSuccess>) => {
+    const connectSocket = defineTaskApi<ConnectSocketOptions, ConnectSocketSuccess, SocketTask>(API_CONNECT_SOCKET, (args: ConnectSocketOptions, exec: ApiExecutor<ConnectSocketSuccess>)=>{
         const ws = webSocket.createWebSocket();
         const mp = getCurrentMP4() as UniWebsocketMP;
         ws.connect(args.url, {
@@ -8118,34 +8159,34 @@ export function initUniExtApi() {
         } as webSocket.WebSocketRequestOptions);
         const task = new SocketTask1(ws);
         mp.on('beforeClose', task._destroy);
-        task.onClose(() => {
+        task.onClose(()=>{
             mp.off('beforeClose', task._destroy);
         });
         addSocketTask(task);
         return task;
     }, ConnectSocketApiProtocol, ConnectSocketApiOptions) as ConnectSocket;
-    const onSocketMessage: OnSocketMessage = (callback: Function) => {
+    const onSocketMessage: OnSocketMessage = (callback: Function)=>{
         GlobalWebsocketEmitter.on('message', callback);
     };
-    const onSocketOpen: OnSocketOpen = (callback: Function) => {
+    const onSocketOpen: OnSocketOpen = (callback: Function)=>{
         GlobalWebsocketEmitter.on('open', callback);
     };
-    const onSocketError: OnSocketError = (callback: Function) => {
+    const onSocketError: OnSocketError = (callback: Function)=>{
         GlobalWebsocketEmitter.on('error', callback);
     };
-    const onSocketClose: OnSocketClose = (callback: Function) => {
+    const onSocketClose: OnSocketClose = (callback: Function)=>{
         GlobalWebsocketEmitter.on('close', callback);
     };
-    const sendSocketMessage = defineAsyncApi<SendSocketMessageOptions, GeneralCallbackResult>(API_SEND_SOCKET_MESSAGE, (args: SendSocketMessageOptions, exec: ApiExecutor<GeneralCallbackResult>) => {
+    const sendSocketMessage = defineAsyncApi<SendSocketMessageOptions, GeneralCallbackResult>(API_SEND_SOCKET_MESSAGE, (args: SendSocketMessageOptions, exec: ApiExecutor<GeneralCallbackResult>)=>{
         const socketTasks = getSocketTasks();
         const task = socketTasks[0];
         if (task) {
             task.send({
                 data: args.data,
-                success(res) {
+                success (res) {
                     exec.resolve(res);
                 },
-                fail(err) {
+                fail (err) {
                     exec.reject('sendSocketMessage:fail');
                 }
             } as SendSocketMessageOptions);
@@ -8153,17 +8194,17 @@ export function initUniExtApi() {
             exec.reject('WebSocket is not connected');
         }
     }) as SendSocketMessage;
-    const closeSocket = defineAsyncApi<CloseSocketOptions, GeneralCallbackResult>(API_CLOSE_SOCKET, (args: CloseSocketOptions, exec: ApiExecutor<GeneralCallbackResult>) => {
+    const closeSocket = defineAsyncApi<CloseSocketOptions, GeneralCallbackResult>(API_CLOSE_SOCKET, (args: CloseSocketOptions, exec: ApiExecutor<GeneralCallbackResult>)=>{
         const socketTasks = getSocketTasks();
         const task = socketTasks[0];
         if (task) {
             task.close({
                 code: args.code,
                 reason: args.reason,
-                success(res) {
+                success (res) {
                     exec.resolve(res);
                 },
-                fail(err) {
+                fail (err) {
                     exec.reject('closeSocket:fail');
                 }
             } as CloseSocketOptions);
