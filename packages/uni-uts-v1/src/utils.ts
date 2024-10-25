@@ -984,3 +984,14 @@ export function isEnableUTSNumber() {
   }
   return enableUtsNumber
 }
+
+let enableNarrowType: boolean
+export function isEnableNarrowType() {
+  if (enableNarrowType === undefined) {
+    enableNarrowType = !!(
+      process.env.UNI_INPUT_DIR &&
+      fs.existsSync(path.resolve(process.env.UNI_INPUT_DIR, 'NARROWTYPE'))
+    )
+  }
+  return enableNarrowType
+}

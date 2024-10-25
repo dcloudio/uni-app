@@ -70,6 +70,7 @@ export type UTSOutputOptions = {
   }
   transform?: {
     enableUtsNumber?: boolean
+    enableNarrowType?: boolean
     paramDefaultValue?: boolean
     constructorInvocation?: boolean
     uniExtApiDefaultNamespace?: string

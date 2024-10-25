@@ -4,7 +4,7 @@ import * as tsTypes from 'typescript';
 import tsTypes__default, { CompilerOptions } from 'typescript';
 import * as _uts_transforms_base from '@uts/transforms_base';
 
-declare function isTypeRelatedTo(ts: typeof tsTypes, typeChecker: tsTypes.TypeChecker, source: tsTypes.Type, target: tsTypes.Type): true | undefined;
+declare function isTypeRelatedTo(ts: typeof tsTypes__default, typeChecker: tsTypes__default.TypeChecker, source: tsTypes__default.Type, target: tsTypes__default.Type): true | undefined;
 
 declare function isRelatedTo(ts: typeof tsTypes__default, checker: tsTypes__default.TypeChecker, source: tsTypes__default.Type, target: tsTypes__default.Type): true | undefined;
 
@@ -27,6 +27,7 @@ declare function initTargetHacker(_targetLanguage: TargetLanguage): {
 };
 interface CreateTransformerOptions {
     enableUTSNumber?: boolean;
+    enableNarrowType?: boolean;
 }
 declare function initTargetTransformers(targetLanguage: TargetLanguage, options?: CreateTransformerOptions): _uts_transforms_base.UTSTransformerFactoryCreator[];
 

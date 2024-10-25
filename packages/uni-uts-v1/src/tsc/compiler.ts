@@ -8,7 +8,7 @@ import type {
 } from '../../lib/uni-x/dist/compiler'
 import { originalPositionForSync } from '../sourceMap'
 import { normalizePath } from '../shared'
-import { isEnableUTSNumber } from '../utils'
+import { isEnableNarrowType, isEnableUTSNumber } from '../utils'
 
 export type { UniXCompiler } from '../../lib/uni-x/dist/compiler'
 
@@ -82,6 +82,7 @@ export function createUniXCompiler(
     incremental: mode === 'development',
     transformOptions: {
       enableUTSNumber: isEnableUTSNumber(),
+      enableNarrowType: isEnableNarrowType(),
     },
     ...options,
   }

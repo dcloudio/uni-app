@@ -29,6 +29,7 @@ import { parseUTSSyntaxError } from '../stacktrace'
 import {
   getCompilerServer,
   getUTSCompiler,
+  isEnableNarrowType,
   isEnableUTSNumber,
   parseExtApiDefaultParameters,
   parseInjectModules,
@@ -169,6 +170,7 @@ export async function compileApp(entry: string, options: CompileAppOptions) {
         autoImports,
         uniModulesArtifacts: options.uniModulesArtifacts,
         enableUtsNumber: isEnableUTSNumber(),
+        enableNarrowType: isEnableNarrowType(),
         ...options.transform,
       },
     },
