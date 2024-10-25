@@ -23367,7 +23367,7 @@
   });
   class UniVideo extends UniComponent {
     constructor(id2, parentNodeId, refNodeId, nodeJson) {
-      super(id2, "uni-video", Video, parentNodeId, refNodeId, nodeJson);
+      super(id2, "uni-video", Video, parentNodeId, refNodeId, nodeJson, ".uni-video-slot");
     }
   }
   var mode = {
@@ -26003,9 +26003,9 @@
       };
     }
   });
-  class UniCoverView extends UniComponent {
+  class UniCoverView extends UniContainerComponent {
     constructor(id2, parentNodeId, refNodeId, nodeJson) {
-      super(id2, "uni-cover-view", CoverView, parentNodeId, refNodeId, nodeJson);
+      super(id2, "uni-cover-view", CoverView, parentNodeId, refNodeId, nodeJson, ".uni-cover-view");
     }
   }
   class UniLivePlayer extends UniComponent {
