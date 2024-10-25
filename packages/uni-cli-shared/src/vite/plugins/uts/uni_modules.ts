@@ -99,12 +99,27 @@ function createUniModulesSyncFilePreprocessor(
         preferConst: true,
       })
     } else if (extname === '.uts' || extname === '.ts') {
-      return rewriteUniModulesConsoleExpr(fileName, preJs(content))
+      return replaceExtApiPages(
+        rewriteUniModulesConsoleExpr(fileName, preJs(content))
+      )
     } else if (extname === '.uvue' || extname === '.vue') {
       return rewriteUniModulesConsoleExpr(fileName, preJs(preHtml(content)))
     }
     return content
   }
+}
+
+function replaceExtApiPages(code: string) {
+  // 定制实现
+  if (process.env.UNI_COMPILE_EXT_API_PAGES) {
+    const pages: Record<string, string> = JSON.parse(
+      process.env.UNI_COMPILE_EXT_API_PAGES
+    )
+    Object.keys(pages).forEach((page) => {
+      code = code.replaceAll(page, pages[page])
+    })
+  }
+  return code
 }
 
 export function createAppAndroidUniModulesSyncFilePreprocessorOnce(
