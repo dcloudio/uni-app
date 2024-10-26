@@ -12844,11 +12844,10 @@ function setupPage(component) {
             console.log(formatLog(__pagePath, 'setup'));
         }
         const instance = getCurrentInstance();
-        instance.$dialogPages = [];
         const pageVm = instance.proxy;
         initPageVm(pageVm, __pageInstance);
-        if (getPage$BasePage(pageVm).openType !== 'openDialogPage') {
-            addCurrentPage(initScope(__pageId, pageVm, __pageInstance));
+        {
+            addCurrentPageWithInitScope(__pageId, pageVm, __pageInstance);
         }
         {
             onMounted(() => {
@@ -12885,6 +12884,9 @@ function initScope(pageId, vm, pageInstance) {
         return pageInstance.eventChannel;
     };
     return vm;
+}
+function addCurrentPageWithInitScope(pageId, pageVm, pageInstance) {
+    addCurrentPage(initScope(pageId, pageVm, pageInstance));
 }
 
 function isVuePageAsyncComponent(component) {

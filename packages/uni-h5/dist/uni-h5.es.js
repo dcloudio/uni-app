@@ -2965,7 +2965,15 @@ function invokeSuccess(id2, name, res) {
   return invokeCallback(id2, extend(res || {}, result));
 }
 function invokeFail(id2, name, errMsg, errRes = {}) {
-  const apiErrMsg = name + ":fail" + (errMsg ? " " + errMsg : "");
+  const errMsgPrefix = name + ":fail";
+  let apiErrMsg = "";
+  if (!errMsg) {
+    apiErrMsg = errMsgPrefix;
+  } else if (errMsg.indexOf(errMsgPrefix) === 0) {
+    apiErrMsg = errMsg;
+  } else {
+    apiErrMsg = errMsgPrefix + " " + errMsg;
+  }
   {
     delete errRes.errCode;
   }
@@ -3030,7 +3038,9 @@ function parseErrMsg(errMsg) {
     return errMsg;
   }
   if (errMsg.stack) {
-    console.error(errMsg.message + "\n" + errMsg.stack);
+    if (typeof globalThis === "undefined" || !globalThis.harmonyChannel) {
+      console.error(errMsg.message + "\n" + errMsg.stack);
+    }
     return errMsg.message;
   }
   return errMsg;
