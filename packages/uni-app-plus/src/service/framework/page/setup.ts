@@ -105,6 +105,19 @@ export function setupPage(component: VuePageComponent) {
       onBeforeUnmount(() => {
         invokeHook(pageVm, ON_UNLOAD)
       })
+    } else {
+      onMounted(() => {
+        const rootElement = pageVm.$el?._parent
+        if (rootElement) {
+          rootElement._page = pageVm.$page
+        }
+      })
+      onBeforeUnmount(() => {
+        const rootElement = pageVm.$el?._parent
+        if (rootElement) {
+          rootElement._page = null
+        }
+      })
     }
     if (oldSetup) {
       return oldSetup(props, ctx)
