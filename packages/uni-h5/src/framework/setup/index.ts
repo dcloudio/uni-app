@@ -160,6 +160,9 @@ export function setupPage(comp: any) {
       })
       onMounted(() => {
         if (__X__) {
+          if (instance.subTree.el) {
+            instance.subTree.el._page = instance.proxy?.$page as UniPage
+          }
           const pageInstance = getPageInstanceByChild(instance)
           if (pageInstance.attrs['data-type'] === DIALOG_TAG) {
             const parentPage = (

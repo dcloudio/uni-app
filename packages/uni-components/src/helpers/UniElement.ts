@@ -1,4 +1,3 @@
-import { getCurrentPage } from '@dcloudio/uni-core'
 import { camelize } from '@vue/shared'
 
 function transformRpx(value: string) {
@@ -12,11 +11,12 @@ function transformRpx(value: string) {
 
 export class UniElement extends HTMLElement {
   private _props: Record<string, any> = {}
-  private _page: UniPage | null = null
+  //#if _X_
+  _page: UniPage | null = null
+  //#endif
   public __isUniElement: boolean
   constructor() {
     super()
-    this._page = __X__ ? (getCurrentPage() as unknown as UniPage) : null
     this.__isUniElement = true
   }
 
@@ -30,10 +30,18 @@ export class UniElement extends HTMLElement {
       ? this._props[name] + ''
       : super.getAttribute(qualifiedName) || null
   }
-
+  //#if _X_
   getPage() {
-    return this._page
+    if (this._page) {
+      return this._page
+    }
+    let parent = this.parentNode as UniElement | null
+    while (parent && !parent._page) {
+      parent = parent.parentNode as UniElement | null
+    }
+    return parent?._page || null
   }
+  //#endif
 
   get style() {
     const originalStyle = super.style
