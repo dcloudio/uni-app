@@ -216,6 +216,11 @@ export function setupPage(comp: any) {
       subscribeViewMethod(pageMeta.id!)
       onBeforeUnmount(() => {
         unsubscribeViewMethod(pageMeta.id!)
+        if (__X__) {
+          if (instance.subTree.el) {
+            instance.subTree.el._page = null
+          }
+        }
       })
 
       return query
