@@ -1,29 +1,10 @@
-import {
-  SYSTEM_DIALOG_ACTION_SHEET_PAGE_PATH,
-  once,
-} from '@dcloudio/uni-shared'
 
-import showActionSheetPage from '@dcloudio/uni-ext-api/uni-actionSheet/pages/actionSheet/actionSheet.vue'
+import UniActionSheetPage from "@/uni_modules/uni-actionSheet/pages/actionSheet/actionSheet.vue";
+import { registerSystemRoute } from "@dcloudio/uni-runtime";
 
-import { definePage } from '../../../../service/framework/page'
 
-const registerShowActionSheetPage = once(() => {
-  const route = SYSTEM_DIALOG_ACTION_SHEET_PAGE_PATH
-  __uniRoutes.push({
-    path: route,
-    meta: {
-      isQuit: false,
-      isEntry: false,
-      route,
-      navigationBar: {},
-    },
-  })
-
-  definePage(route, showActionSheetPage)
-})
-
-export const showActionSheet2 = (options: any) => {
-  registerShowActionSheetPage()
+export const showActionSheet2 = defineAsyncApi('showActionSheet2', (options: any) => {
+  registerSystemRoute('uni:actionSheet', UniActionSheetPage)
   const uuid = Date.now() + '' + Math.floor(Math.random() * 1e7)
   const baseEventName = `_action_sheet_${uuid}`
   const readyEventName = `${baseEventName}_ready`
@@ -46,4 +27,4 @@ export const showActionSheet2 = (options: any) => {
       uni.$off(readyEventName)
     },
   })
-}
+})

@@ -12,7 +12,7 @@ function resolve(file: string) {
 
 interface Options {
   target: Target
-  platform: 'web' | 'app-ios'
+  platform: 'web' | 'app-js'
 }
 
 if (!process.env.UNI_APP_EXT_API_DIR) {

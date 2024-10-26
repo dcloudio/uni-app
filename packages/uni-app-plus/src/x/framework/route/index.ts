@@ -1,6 +1,8 @@
 import { getCurrentPage } from '@dcloudio/uni-core'
 import { addLeadingSlash, parseUrl } from '@dcloudio/uni-shared'
 
+import { definePage } from '../../../service/framework/page'
+
 export function hasLeadingSlash(str: string): boolean {
   return str.indexOf('/') == 0
 }
@@ -26,4 +28,18 @@ export function getRealPath(path: string, fix: boolean = false): string {
     }
   }
   return addLeadingSlash(currentPathArray.concat(resultArray).join('/'))
+}
+
+export function registerSystemRoute(route: string, page: any) {
+  __uniRoutes.push({
+    path: route,
+    meta: {
+      isQuit: false,
+      isEntry: false,
+      route,
+      navigationBar: {},
+    },
+  })
+
+  definePage(route, page)
 }

@@ -127,7 +127,7 @@ export default defineConfig({
         initUniAppIosCssPlugin(config)
       },
     },
-    uts2ts({ target: 'uni-app-plus', platform: 'app-ios' }),
+    uts2ts({ target: 'uni-app-plus', platform: 'app-js' }),
     vue({
       customElement: true,
       template: {
