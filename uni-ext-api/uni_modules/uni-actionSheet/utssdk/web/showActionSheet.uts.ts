@@ -1,8 +1,14 @@
 import { ShowActionSheet2, ShowActionSheet2Options } from "../interface.uts";
 
-export const showActionSheet2: ShowActionSheet2 = function (
+import { registerSystemRoute } from "@dcloudio/uni-runtime";
+
+import UniActionSheetPage from "@/uni_modules/uni-actionSheet/pages/actionSheet/actionSheet.vue";
+
+
+export const showActionSheet2: ShowActionSheet2 = defineAsyncApi('showActionSheet2', (
   options: ShowActionSheet2Options
-) {
+)=> {
+  registerSystemRoute("uni:actionSheet", UniActionSheetPage);
   const uuid = Date.now() + '' + Math.floor(Math.random() * 1e7)
   const baseEventName = `_action_sheet_${uuid}`
   const readyEventName = `${baseEventName}_ready`
@@ -13,20 +19,16 @@ export const showActionSheet2: ShowActionSheet2 = function (
     uni.$emit(optionsEventName, options)
   })
   uni.$on(successEventName, (index: number) => {
-    // @ts-expect-error
     options.success?.({ errMsg: 'showActionSheet:ok', tapIndex: index })
   })
   uni.$on(failEventName, () => {
-    // @ts-expect-error
     options.fail?.({ errMsg: `showActionSheet:failed cancel` })
   })
   uni.openDialogPage({
     url: `uni:actionSheet?readyEventName=${readyEventName}&optionsEventName=${optionsEventName}&successEventName=${successEventName}&failEventName=${failEventName}`,
     fail(err) {
-      // @ts-expect-error
       options.fail?.({ errMsg: `showActionSheet:failed ${err.errMsg}` })
-      // @ts-expect-error
       uni.$off(readyEventName, null)
     }
   })
-};
+});

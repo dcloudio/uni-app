@@ -27,6 +27,9 @@ export {
   requestComponentInfo,
   addIntersectionObserver,
   removeIntersectionObserver,
+  //#if _X_
+  registerSystemRoute,
+  //#endif
 } from '@dcloudio/uni-platform'
 export {
   getCurrentPage,

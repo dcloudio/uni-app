@@ -6,7 +6,7 @@ import {
   openBlock,
   withCtx,
 } from 'vue'
-import PageComponent from '../../../../framework/components/page/index'
+import PageComponent from '../../framework/components/page/index'
 
 export function renderPage(component: VNodeTypes, props: unknown) {
   return (

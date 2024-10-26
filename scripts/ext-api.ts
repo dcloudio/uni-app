@@ -57,6 +57,15 @@ export function uts2ts({ target, platform }: Options): Plugin {
                 )
               },
             },
+            {
+              find: /^@\/uni_modules\/(.*)/,
+              replacement: '$1',
+              async customResolver(source) {
+                return resolveExtApi(target, platform, source).then(
+                  (fileName) => fileName.replace(/\\/g, '/')
+                )
+              },
+            },
           ],
         },
       }
