@@ -1564,6 +1564,31 @@ importers:
 
   packages/uni-mp-core: {}
 
+  packages/uni-mp-harmony:
+    dependencies:
+      '@dcloudio/uni-cli-shared':
+        specifier: 3.0.0-alpha-4030120240925001
+        version: link:../uni-cli-shared
+      '@dcloudio/uni-mp-vite':
+        specifier: 3.0.0-alpha-4030120240925001
+        version: link:../uni-mp-vite
+      '@dcloudio/uni-mp-vue':
+        specifier: 3.0.0-alpha-4030120240925001
+        version: link:../uni-mp-vue
+      '@dcloudio/uni-quickapp-webview':
+        specifier: 3.0.0-alpha-4030120240925001
+        version: link:../uni-quickapp-webview
+      '@dcloudio/uni-shared':
+        specifier: 3.0.0-alpha-4030120240925001
+        version: link:../uni-shared
+      '@vue/shared':
+        specifier: 3.4.21
+        version: 3.4.21
+    devDependencies:
+      '@dcloudio/uni-mp-compiler':
+        specifier: 3.0.0-alpha-4030120240925001
+        version: link:../uni-mp-compiler
+
   packages/uni-mp-jd:
     dependencies:
       '@dcloudio/uni-cli-shared':

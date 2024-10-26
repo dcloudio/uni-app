@@ -9,6 +9,7 @@ declare var qq: any
 declare var ks: any
 declare var jd: any
 declare var xhs: any
+declare var has: any
 declare var __NVUE__: undefined | boolean
 declare var __PLATFORM__: UniApp.PLATFORM
 declare var __PLATFORM_PREFIX__:
