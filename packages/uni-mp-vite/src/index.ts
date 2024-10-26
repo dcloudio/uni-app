@@ -54,12 +54,10 @@ export default (options: UniMiniProgramPluginOptions) => {
           }),
         ]
       : []),
-    (options: {
-      vueOptions?: { script?: Partial<SFCScriptCompileOptions> }
-    }) => {
+    () => {
       return uniMainJsPlugin({
         normalizeComponentName,
-        babelParserPlugins: options.vueOptions?.script?.babelParserPlugins,
+        babelParserPlugins: ['typescript'],
       })
     },
     uniManifestJsonPlugin(options),
