@@ -45,7 +45,7 @@ function onAppEnterBackground() {
   )
   invokeHook(
     (__X__
-      ? (getCurrentPage() as unknown as UniPage).vm
+      ? (getCurrentPage() as unknown as UniPage)?.vm
       : getCurrentPage()) as ComponentPublicInstance,
     ON_HIDE
   )
