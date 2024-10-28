@@ -140,6 +140,9 @@ uni-tabbar {
   height: calc(100% - var(--tab-bar-height) - constant(safe-area-inset-bottom));
   height: calc(100% - var(--tab-bar-height) - env(safe-area-inset-bottom));
 }
+uni-page[data-type] uni-page-wrapper {
+  height: 100%;
+}
 .uni-app--showtabbar uni-page-wrapper::after {
   content: '';
   display: block;
