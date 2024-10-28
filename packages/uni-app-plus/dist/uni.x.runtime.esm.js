@@ -475,7 +475,7 @@ function wrapperAsyncApi(name, fn, protocol, options) {
 function defineSyncApi(name, fn, protocol, options) {
   return wrapperSyncApi(name, fn, void 0, options);
 }
-function defineAsyncApi$1(name, fn, protocol, options) {
+function defineAsyncApi(name, fn, protocol, options) {
   return promisify(name, wrapperAsyncApi(name, fn, void 0, options));
 }
 var vueApp;
@@ -1866,7 +1866,7 @@ function initAppError(appVm, nativeApp2) {
     invokeHook(appVm, ON_ERROR, errorEvent.error);
   });
 }
-var redirectTo = /* @__PURE__ */ defineAsyncApi$1(API_REDIRECT_TO, (_ref, _ref2) => {
+var redirectTo = /* @__PURE__ */ defineAsyncApi(API_REDIRECT_TO, (_ref, _ref2) => {
   var {
     url
   } = _ref;
@@ -1988,7 +1988,7 @@ function _reLaunch(_ref3) {
     }
   });
 }
-var reLaunch = /* @__PURE__ */ defineAsyncApi$1(API_RE_LAUNCH, $reLaunch, ReLaunchProtocol, ReLaunchOptions);
+var reLaunch = /* @__PURE__ */ defineAsyncApi(API_RE_LAUNCH, $reLaunch, ReLaunchProtocol, ReLaunchOptions);
 function closePage(page, animationType, animationDuration) {
   var dialogPages = page.$page.getDialogPages();
   for (var i = dialogPages.length - 1; i >= 0; i--) {
@@ -2087,7 +2087,7 @@ var $switchTab = (args, _ref) => {
   }).then(resolve).catch(reject);
   handleBeforeEntryPageRoutes();
 };
-var switchTab = /* @__PURE__ */ defineAsyncApi$1(API_SWITCH_TAB, $switchTab, SwitchTabProtocol, SwitchTabOptions);
+var switchTab = /* @__PURE__ */ defineAsyncApi(API_SWITCH_TAB, $switchTab, SwitchTabProtocol, SwitchTabOptions);
 function _switchTab(_ref2) {
   var {
     url,
@@ -2356,7 +2356,7 @@ var $navigateTo = (args, _ref) => {
   }).then(resolve).catch(reject);
   handleBeforeEntryPageRoutes();
 };
-var navigateTo = /* @__PURE__ */ defineAsyncApi$1(API_NAVIGATE_TO, $navigateTo, NavigateToProtocol, NavigateToOptions);
+var navigateTo = /* @__PURE__ */ defineAsyncApi(API_NAVIGATE_TO, $navigateTo, NavigateToProtocol, NavigateToOptions);
 function _navigateTo(_ref2) {
   var _getCurrentPage;
   var {
@@ -2421,7 +2421,7 @@ function reLaunchEntryPage() {
     url: (_uniConfig$entryPage = __uniConfig.entryPagePath) !== null && _uniConfig$entryPage !== void 0 && _uniConfig$entryPage.startsWith("/") ? __uniConfig.entryPagePath : "/" + __uniConfig.entryPagePath
   });
 }
-var navigateBack = /* @__PURE__ */ defineAsyncApi$1(API_NAVIGATE_BACK, (args, _ref) => {
+var navigateBack = /* @__PURE__ */ defineAsyncApi(API_NAVIGATE_BACK, (args, _ref) => {
   var {
     resolve,
     reject
@@ -2678,7 +2678,7 @@ function triggerFailCallback(options, errMsg) {
   options === null || options === void 0 || (_options$fail = options.fail) === null || _options$fail === void 0 || _options$fail.call(options, failOptions);
   options === null || options === void 0 || (_options$complete2 = options.complete) === null || _options$complete2 === void 0 || _options$complete2.call(options, failOptions);
 }
-var setTabBarBadge = /* @__PURE__ */ defineAsyncApi$1(API_SET_TAB_BAR_BADGE, (_ref, _ref2) => {
+var setTabBarBadge = /* @__PURE__ */ defineAsyncApi(API_SET_TAB_BAR_BADGE, (_ref, _ref2) => {
   var {
     index: index2,
     text
@@ -2695,7 +2695,7 @@ var setTabBarBadge = /* @__PURE__ */ defineAsyncApi$1(API_SET_TAB_BAR_BADGE, (_r
   tabBar.setTabBarBadge(/* @__PURE__ */ new Map([["index", index2], ["text", text]]));
   resolve();
 }, SetTabBarBadgeProtocol, SetTabBarBadgeOptions);
-var removeTabBarBadge = /* @__PURE__ */ defineAsyncApi$1(API_REMOVE_TAB_BAR_BADGE, (_ref, _ref2) => {
+var removeTabBarBadge = /* @__PURE__ */ defineAsyncApi(API_REMOVE_TAB_BAR_BADGE, (_ref, _ref2) => {
   var {
     index: index2
   } = _ref;
@@ -2711,7 +2711,7 @@ var removeTabBarBadge = /* @__PURE__ */ defineAsyncApi$1(API_REMOVE_TAB_BAR_BADG
   tabBar.removeTabBarBadge(/* @__PURE__ */ new Map([["index", index2]]));
   resolve();
 }, RemoveTabBarBadgeProtocol, RemoveTabBarBadgeOptions);
-var setTabBarItem = /* @__PURE__ */ defineAsyncApi$1(API_SET_TAB_BAR_ITEM, (_ref, _ref2) => {
+var setTabBarItem = /* @__PURE__ */ defineAsyncApi(API_SET_TAB_BAR_ITEM, (_ref, _ref2) => {
   var {
     index: index2,
     text,
@@ -2739,7 +2739,7 @@ var setTabBarItem = /* @__PURE__ */ defineAsyncApi$1(API_SET_TAB_BAR_ITEM, (_ref
   tabBar.setTabBarItem(item);
   resolve();
 }, SetTabBarItemProtocol, SetTabBarItemOptions);
-var setTabBarStyle = /* @__PURE__ */ defineAsyncApi$1(API_SET_TAB_BAR_STYLE, (options, _ref) => {
+var setTabBarStyle = /* @__PURE__ */ defineAsyncApi(API_SET_TAB_BAR_STYLE, (options, _ref) => {
   var {
     resolve,
     reject
@@ -2764,7 +2764,7 @@ var setTabBarStyle = /* @__PURE__ */ defineAsyncApi$1(API_SET_TAB_BAR_STYLE, (op
   tabBar.setTabBarStyle(style);
   resolve();
 }, SetTabBarStyleProtocol, SetTabBarStyleOptions);
-var hideTabBar = /* @__PURE__ */ defineAsyncApi$1(API_HIDE_TAB_BAR, (options, _ref) => {
+var hideTabBar = /* @__PURE__ */ defineAsyncApi(API_HIDE_TAB_BAR, (options, _ref) => {
   var {
     resolve,
     reject
@@ -2777,7 +2777,7 @@ var hideTabBar = /* @__PURE__ */ defineAsyncApi$1(API_HIDE_TAB_BAR, (options, _r
   tabBar.hideTabBar(/* @__PURE__ */ new Map([["animation", options === null || options === void 0 ? void 0 : options.animation]]));
   resolve();
 });
-var showTabBar = /* @__PURE__ */ defineAsyncApi$1(API_SHOW_TAB_BAR, (args, _ref) => {
+var showTabBar = /* @__PURE__ */ defineAsyncApi(API_SHOW_TAB_BAR, (args, _ref) => {
   var {
     resolve,
     reject
@@ -2791,7 +2791,7 @@ var showTabBar = /* @__PURE__ */ defineAsyncApi$1(API_SHOW_TAB_BAR, (args, _ref)
   tabBar.showTabBar(/* @__PURE__ */ new Map([["animation", animation2]]));
   resolve();
 });
-var showTabBarRedDot = /* @__PURE__ */ defineAsyncApi$1(API_SHOW_TAB_BAR_RED_DOT, (_ref, _ref2) => {
+var showTabBarRedDot = /* @__PURE__ */ defineAsyncApi(API_SHOW_TAB_BAR_RED_DOT, (_ref, _ref2) => {
   var {
     index: index2
   } = _ref;
@@ -2807,7 +2807,7 @@ var showTabBarRedDot = /* @__PURE__ */ defineAsyncApi$1(API_SHOW_TAB_BAR_RED_DOT
   tabBar.showTabBarRedDot(/* @__PURE__ */ new Map([["index", index2]]));
   resolve();
 }, ShowTabBarRedDotProtocol, ShowTabBarRedDotOptions);
-var hideTabBarRedDot = /* @__PURE__ */ defineAsyncApi$1(API_HIDE_TAB_BAR_RED_DOT, (_ref, _ref2) => {
+var hideTabBarRedDot = /* @__PURE__ */ defineAsyncApi(API_HIDE_TAB_BAR_RED_DOT, (_ref, _ref2) => {
   var {
     index: index2
   } = _ref;
@@ -2826,7 +2826,7 @@ var hideTabBarRedDot = /* @__PURE__ */ defineAsyncApi$1(API_HIDE_TAB_BAR_RED_DOT
 var onTabBarMidButtonTap = (cb) => {
   onTabBarMidButtonTapCallback.push(cb);
 };
-var setNavigationBarColor = /* @__PURE__ */ defineAsyncApi$1(API_SET_NAVIGATION_BAR_COLOR, (_ref, _ref2) => {
+var setNavigationBarColor = /* @__PURE__ */ defineAsyncApi(API_SET_NAVIGATION_BAR_COLOR, (_ref, _ref2) => {
   var {
     frontColor,
     backgroundColor
@@ -2843,7 +2843,7 @@ var setNavigationBarColor = /* @__PURE__ */ defineAsyncApi$1(API_SET_NAVIGATION_
   appPage.updateStyle(/* @__PURE__ */ new Map([["navigationBarTextStyle", frontColor == "#000000" ? "black" : "white"], ["navigationBarBackgroundColor", backgroundColor]]));
   resolve();
 }, SetNavigationBarColorProtocol, SetNavigationBarColorOptions);
-var setNavigationBarTitle = /* @__PURE__ */ defineAsyncApi$1(API_SET_NAVIGATION_BAR_TITLE, (options, _ref) => {
+var setNavigationBarTitle = /* @__PURE__ */ defineAsyncApi(API_SET_NAVIGATION_BAR_TITLE, (options, _ref) => {
   var {
     resolve,
     reject
@@ -3121,7 +3121,7 @@ var createSelectorQuery = function() {
   var instance = getCurrentPage().vm;
   return new SelectorQueryImpl(instance);
 };
-var createCanvasContextAsync = /* @__PURE__ */ defineAsyncApi$1("createCanvasContextAsync", (options, _ref) => {
+var createCanvasContextAsync = /* @__PURE__ */ defineAsyncApi("createCanvasContextAsync", (options, _ref) => {
   var _page$$el;
   var {
     resolve,
@@ -3182,7 +3182,7 @@ function queryElementTop(component, selector) {
   }
   return null;
 }
-var pageScrollTo = /* @__PURE__ */ defineAsyncApi$1(API_PAGE_SCROLL_TO, (options, res) => {
+var pageScrollTo = /* @__PURE__ */ defineAsyncApi(API_PAGE_SCROLL_TO, (options, res) => {
   var currentPage = getCurrentPage().vm;
   var scrollViewNode = currentPage === null || currentPage === void 0 ? void 0 : currentPage.$el;
   if (scrollViewNode == null || scrollViewNode.tagName != "SCROLL-VIEW") {
@@ -3242,7 +3242,7 @@ function getLoadFontFaceOptions(options, res) {
     }
   };
 }
-var loadFontFace = /* @__PURE__ */ defineAsyncApi$1(API_LOAD_FONT_FACE, (options, res) => {
+var loadFontFace = /* @__PURE__ */ defineAsyncApi(API_LOAD_FONT_FACE, (options, res) => {
   if (options.global === true) {
     if (checkOptionSource(options, res)) {
       var app = getNativeApp();
@@ -3265,7 +3265,7 @@ var loadFontFace = /* @__PURE__ */ defineAsyncApi$1(API_LOAD_FONT_FACE, (options
     }
   }
 });
-var startPullDownRefresh = /* @__PURE__ */ defineAsyncApi$1(API_START_PULL_DOWN_REFRESH, (_options, res) => {
+var startPullDownRefresh = /* @__PURE__ */ defineAsyncApi(API_START_PULL_DOWN_REFRESH, (_options, res) => {
   var page = getCurrentPage().vm;
   if (page === null) {
     res.reject("page is not ready");
@@ -3276,7 +3276,7 @@ var startPullDownRefresh = /* @__PURE__ */ defineAsyncApi$1(API_START_PULL_DOWN_
     fail: res.reject
   });
 });
-var stopPullDownRefresh = /* @__PURE__ */ defineAsyncApi$1(API_STOP_PULL_DOWN_REFRESH, (_args, res) => {
+var stopPullDownRefresh = /* @__PURE__ */ defineAsyncApi(API_STOP_PULL_DOWN_REFRESH, (_args, res) => {
   var page = getCurrentPage().vm;
   if (page === null) {
     res.reject("page is not ready");
@@ -3476,7 +3476,15 @@ const _style_0 = {
       "paddingTop": 16,
       "paddingRight": 16,
       "paddingBottom": 16,
-      "paddingLeft": 16
+      "paddingLeft": 16,
+      "borderBottomWidth": 1,
+      "borderBottomStyle": "solid",
+      "borderBottomColor": "#e5e5e5"
+    },
+    ".uni-action-sheet_dark__mode": {
+      "borderBottomWidth": 1,
+      "borderBottomStyle": "solid",
+      "borderBottomColor": "#2F3131"
     }
   },
   "uni-action-sheet_dialog__cell": {
@@ -3547,6 +3555,11 @@ const _style_0 = {
       "color": "#ffffff"
     }
   },
+  "uni-action-sheet_dialog__cell__container": {
+    "": {
+      "maxHeight": 330
+    }
+  },
   "@TRANSITION": {
     "uni-action-sheet_dialog__mask": {
       "property": "opacity",
@@ -3566,8 +3579,7 @@ const _export_sfc = (sfc, props) => {
   return target;
 };
 var _hoisted_1 = {
-  key: 0,
-  class: "uni-action-sheet_dialog__title"
+  class: "uni-action-sheet_dialog__cell__container"
 };
 var _hoisted_2 = ["onClick"];
 function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
@@ -3590,16 +3602,21 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
     class: normalizeClass(["uni-action-sheet_dialog__menu", {
       "uni-action-sheet_dark__mode": $data.theme == "dark"
     }])
-  }, [$data.title ? (openBlock(), createElementBlock("view", _hoisted_1, [createElementVNode("text", {
+  }, [$data.title ? (openBlock(), createElementBlock("view", {
+    key: 0,
+    class: normalizeClass(["uni-action-sheet_dialog__title", {
+      "uni-action-sheet_dark__mode": $data.theme == "dark"
+    }])
+  }, [createElementVNode("text", {
     style: normalizeStyle({
       color: $data.titleColor
     }),
     class: normalizeClass(["uni-action-sheet_dialog__title__text", {
       "uni-action-sheet_dark__mode": $data.theme == "dark"
     }])
-  }, toDisplayString($data.title), 7)])) : createCommentVNode("", true), (openBlock(true), createElementBlock(Fragment, null, renderList($data.itemList, (item, index2) => {
+  }, toDisplayString($data.title), 7)], 2)) : createCommentVNode("", true), createElementVNode("scroll-view", _hoisted_1, [(openBlock(true), createElementBlock(Fragment, null, renderList($data.itemList, (item, index2) => {
     return openBlock(), createElementBlock("view", {
-      style: normalizeStyle(index2 == 0 && $data.title == null ? {
+      style: normalizeStyle(index2 == 0 ? {
         borderTop: "none"
       } : {}),
       class: normalizeClass(["uni-action-sheet_dialog__cell", {
@@ -3615,7 +3632,7 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
         "uni-action-sheet_dark__mode": $data.theme == "dark"
       }])
     }, toDisplayString(item), 7)], 14, _hoisted_2);
-  }), 128))], 6), createElementVNode("view", {
+  }), 128))])], 6), createElementVNode("view", {
     style: normalizeStyle($data.backgroundColor != null ? {
       backgroundColor: $data.backgroundColor
     } : {}),
@@ -3667,9 +3684,18 @@ var showActionSheet2 = /* @__PURE__ */ defineAsyncApi("showActionSheet2", (optio
         errMsg: "showActionSheet:failed, ".concat(err.errMsg)
       });
       uni.$off(readyEventName);
+      uni.$off(successEventName);
+      uni.$off(failEventName);
     }
   });
 });
+var hideActionSheet2 = () => {
+  var page = getCurrentPage();
+  page.vm.$systemDialogPages.forEach((page2) => {
+    closeNativeDialogPage(page2);
+  });
+  page.vm.$systemDialogPages = [];
+};
 var env = {
   USER_DATA_PATH: "unifile://usr/",
   CACHE_PATH: "unifile://cache/",
@@ -4502,6 +4528,7 @@ const uni$1 = /* @__PURE__ */ Object.defineProperty({
   __log__,
   addInterceptor,
   closeDialogPage,
+  closeNativeDialogPage,
   createCanvasContextAsync,
   createSelectorQuery,
   env,
@@ -4509,6 +4536,7 @@ const uni$1 = /* @__PURE__ */ Object.defineProperty({
   getEnterOptionsSync,
   getLaunchOptionsSync,
   getPerformance,
+  hideActionSheet2,
   hideTabBar,
   hideTabBarRedDot,
   initUTSClassName,

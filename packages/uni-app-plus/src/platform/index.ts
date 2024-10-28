@@ -40,4 +40,5 @@ export const getEnv: (() => Env) | undefined = () => ({
 
 //#if _X_
 export { registerSystemRoute } from '../x/framework/route'
+export { closeNativeDialogPage } from '../x/api'
 //#endif
