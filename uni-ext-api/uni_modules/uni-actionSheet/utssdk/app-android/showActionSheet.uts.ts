@@ -1,11 +1,12 @@
+import { registerSystemRoute } from "@dcloudio/uni-runtime";
+import UniActionSheetPage from "@/uni_modules/uni-actionSheet/pages/actionSheet/actionSheet.vue";
 import { ShowActionSheet2, ShowActionSheet2Options, ShowActionSheetSuccessImpl, ShowActionSheetFailImpl } from "../interface.uts";
-// @ts-expect-error
-import { registerBuiltInPagesOnce } from 'io.dcloud.uniapp.framework.extapi';
 
 export const showActionSheet2: ShowActionSheet2 = function (
   options: ShowActionSheet2Options
 ) {
-  registerBuiltInPagesOnce()
+  registerSystemRoute("uni:actionSheet", UniActionSheetPage);
+
   const uuid = Date.now() + '' + Math.floor(Math.random() * 1e7)
   const baseEventName = `_action_sheet_${uuid}`
   const readyEventName = `${baseEventName}_ready`
@@ -25,8 +26,9 @@ export const showActionSheet2: ShowActionSheet2 = function (
     url: `uni:actionSheet?readyEventName=${readyEventName}&optionsEventName=${optionsEventName}&successEventName=${successEventName}&failEventName=${failEventName}`,
     fail(err) {
       options.fail?.(new ShowActionSheetFailImpl(`showActionSheet failed, ${err.errMsg}`))
-      // @ts-expect-error
       uni.$off(readyEventName, null)
+      uni.$off(successEventName, null)
+      uni.$off(failEventName, null)
     }
     // @ts-expect-error
   } as io.dcloud.uniapp.framework.extapi.OpenDialogPageOptions)

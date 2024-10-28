@@ -14,7 +14,7 @@
         :style="backgroundColor != null ? {backgroundColor} : {}"
         class="uni-action-sheet_dialog__menu"
         :class="{ 'uni-action-sheet_dark__mode': theme == 'dark' }">
-        <view v-if="title" class="uni-action-sheet_dialog__title">
+        <view v-if="title" class="uni-action-sheet_dialog__title" :class="{ 'uni-action-sheet_dark__mode': theme == 'dark' }">
           <text
           :style="{ color: titleColor }"
           class="uni-action-sheet_dialog__title__text"
@@ -22,19 +22,31 @@
             {{ title }}
           </text>
         </view>
-        <view
-          :style="index == 0 && title == null ? {borderTop: 'none'} : {}"
-          class="uni-action-sheet_dialog__cell"
-          :class="{ 'uni-action-sheet_dark__mode': theme == 'dark' }"
-          v-for="(item, index) in itemList" :key="index"
-          @click="handleMenuItemClick(index)">
-          <text
-            :style="{color: itemColor}"
-            class="uni-action-sheet_dialog__cell__text"
-            :class="{ 'uni-action-sheet_dark__mode': theme == 'dark' }">
-            {{ item }}
-          </text>
-        </view>
+        <!-- #ifdef WEB -->
+        <view class="uni-action-sheet_dialog__cell__container">
+        <!-- #endif -->
+        <!-- #ifdef APP -->
+        <scroll-view class="uni-action-sheet_dialog__cell__container">
+        <!-- #endif -->
+          <view
+            :style="index == 0 ? {borderTop: 'none'} : {}"
+            class="uni-action-sheet_dialog__cell"
+            :class="{ 'uni-action-sheet_dark__mode': theme == 'dark' }"
+            v-for="(item, index) in itemList" :key="index"
+            @click="handleMenuItemClick(index)">
+            <text
+              :style="{color: itemColor}"
+              class="uni-action-sheet_dialog__cell__text"
+              :class="{ 'uni-action-sheet_dark__mode': theme == 'dark' }">
+              {{ item }}
+            </text>
+          </view>
+        <!-- #ifdef APP -->
+        </scroll-view>
+        <!-- #endif -->
+        <!-- #ifdef WEB -->
+          </view>
+        <!-- #endif -->
       </view>
       <view
         :style="backgroundColor != null ? {backgroundColor} : {}"
@@ -127,7 +139,6 @@
       })
       uni.$emit(this.readyEventName, {})
 
-      // #ifndef APP-ANDROID
       const systemInfo = uni.getSystemInfoSync()
       const osLanguage = systemInfo.osLanguage
       const appLanguage = systemInfo.appLanguage
@@ -146,7 +157,6 @@
       } else if (osTheme != null) {
         this.theme = osTheme
       }
-      // #endif
 
       // #ifdef WEB
       this.windowHeight = systemInfo.windowHeight
@@ -162,7 +172,7 @@
         this.theme = res.theme
       });
       // #endif
-      // #ifdef APP-IOS
+      // #ifdef APP
       uni.onAppThemeChange((res: AppThemeChangeResult) => {
         this.theme = res.appTheme
       })
@@ -377,6 +387,19 @@
   .uni-action-sheet_dialog__action {
     background-color: #ffffff;
   }
+
+  .uni-action-sheet_dialog__title{
+    border-bottom: 1px solid #e5e5e5;
+  }
+
+  .uni-action-sheet_dialog__cell__container{
+    max-height: 330px;
+    /* #ifdef WEB */
+    display: block;
+    overflow-y: auto;
+    scrollbar-width: none;
+    /* #endif */
+  }
   .uni-action-sheet_dialog__cell{
     border-top: 1px solid #e5e5e5;
   }
@@ -388,6 +411,9 @@
   .uni-action-sheet_dialog__menu.uni-action-sheet_dark__mode,
   .uni-action-sheet_dialog__action.uni-action-sheet_dark__mode {
     background-color: #2C2C2B;
+  }
+  .uni-action-sheet_dialog__title.uni-action-sheet_dark__mode {
+    border-bottom: 1px solid #2F3131;
   }
   .uni-action-sheet_dialog__cell.uni-action-sheet_dark__mode {
     border-top: 1px solid #2F3131;

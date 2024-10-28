@@ -1,14 +1,12 @@
-import { ShowActionSheet2, ShowActionSheet2Options } from "../interface.uts";
-
 import { registerSystemRoute } from "@dcloudio/uni-runtime";
-
 import UniActionSheetPage from "@/uni_modules/uni-actionSheet/pages/actionSheet/actionSheet.vue";
-
+import { ShowActionSheet2, ShowActionSheet2Options } from "../interface.uts";
 
 export const showActionSheet2: ShowActionSheet2 = defineAsyncApi('showActionSheet2', (
   options: ShowActionSheet2Options
-)=> {
+) => {
   registerSystemRoute("uni:actionSheet", UniActionSheetPage);
+
   const uuid = Date.now() + '' + Math.floor(Math.random() * 1e7)
   const baseEventName = `_action_sheet_${uuid}`
   const readyEventName = `${baseEventName}_ready`
@@ -28,7 +26,9 @@ export const showActionSheet2: ShowActionSheet2 = defineAsyncApi('showActionShee
     url: `uni:actionSheet?readyEventName=${readyEventName}&optionsEventName=${optionsEventName}&successEventName=${successEventName}&failEventName=${failEventName}`,
     fail(err) {
       options.fail?.({ errMsg: `showActionSheet:failed ${err.errMsg}` })
-      uni.$off(readyEventName, null)
+      uni.$off(readyEventName)
+      uni.$off(successEventName)
+      uni.$off(failEventName)
     }
   })
 });

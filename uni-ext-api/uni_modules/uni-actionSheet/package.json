@@ -39,6 +39,19 @@
 			"uni-getSystemInfo",
 			"uni-dialogPage"
 		],
+		"uni-ext-api": {
+			"uni": {
+				"showActionSheet2": {
+					"name": "showActionSheet2",
+					"app": {
+						"js": false,
+						"kotlin": true,
+						"swift": false,
+						"arkts": false
+					}
+				}
+			}
+		},
 		"encrypt": [],
 		"platforms": {
 			"cloud": {
