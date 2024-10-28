@@ -21,6 +21,7 @@ export {
   cssLangRE,
   commonjsProxyRE,
   rewriteScssReadFileSync,
+  getCssDepMap,
 } from './vitejs/plugins/css'
 
 export {
