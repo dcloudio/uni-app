@@ -1,4 +1,17 @@
 {
+  "uni-actionSheet": {
+    "uni": {
+      "showActionSheet2": {
+        "name": "showActionSheet2",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": false,
+          "arkts": false
+        }
+      }
+    }
+  },
   "uni-ad": {
     "uni": {
       "createRewardedVideoAd": {
