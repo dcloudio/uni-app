@@ -8,6 +8,7 @@ import {
   buildUniExtApis,
   emptyDir,
   enableSourceMap,
+  getCssDepMap,
   getCurrentCompiledUTSPlugins,
   getUniExtApiProviderRegisters,
   initUTSKotlinAutoImportsOnce,
@@ -212,6 +213,12 @@ export function uniAppPlugin(): UniVitePlugin {
           const plugin = fileName.slice(uniModulesDir.length + 1).split('/')[0]
           if (getCurrentCompiledUTSPlugins().has(plugin)) {
             return
+          }
+        }
+        const depMap = getCssDepMap()
+        if (depMap.has(fileName)) {
+          for (const id of depMap.get(fileName)!) {
+            changedFiles.push({ fileName: id, event: change.event })
           }
         }
         changedFiles.push({ fileName, event: change.event })

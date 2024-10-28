@@ -180,6 +180,11 @@ function wrapResolve(
     return
   }
 }
+
+const depMap = new Map<string, Set<string>>()
+export function getCssDepMap() {
+  return depMap
+}
 /**
  * Plugin applied before user plugins
  */
@@ -279,8 +284,16 @@ export function cssPlugin(
 
       // track deps for build watch mode
       if (config.command === 'build' && config.build.watch && deps) {
+        const normalizedId = normalizePath(id.split('?')[0])
         for (const file of deps) {
           this.addWatchFile(file)
+          if (options.isAndroidX) {
+            const normalizedFile = normalizePath(file.split('?')[0])
+            if (!depMap.has(normalizedFile)) {
+              depMap.set(normalizedFile, new Set())
+            }
+            depMap.get(normalizedFile)!.add(normalizedId)
+          }
         }
       }
 
