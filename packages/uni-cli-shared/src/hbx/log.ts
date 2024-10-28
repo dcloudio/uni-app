@@ -139,41 +139,56 @@ function buildErrorMessage(
   includeStack = true
 ): string {
   if (err.plugin) {
-    const otherMsgs: string[] = []
-    if (err.message.includes(': [plugin ')) {
-      const messages = err.message.split(': [plugin ')
-      err.message = messages[0]
-      messages.slice(1).forEach((msg) => {
-        otherMsgs.push(`[plugin:${msg}`)
-      })
-    }
-    args.push(
-      `${colors.magenta('[plugin:' + err.plugin + ']')} ${colors.red(
-        err.message
-      )}`
-    )
-    args.push(...otherMsgs)
-    if (
-      err.loc &&
-      err.hook === 'transform' &&
-      err.plugin === 'rollup-plugin-dynamic-import-variables' &&
-      err.id &&
-      EXTNAME_VUE_RE.test(err.id)
-    ) {
-      try {
-        const ast = parseVue(fs.readFileSync(err.id, 'utf8'), [])
-        const scriptNode = ast.children.find(
-          (node) => node.type === NodeTypes.ELEMENT && node.tag === 'script'
-        )
-        if (scriptNode) {
-          const scriptLoc = scriptNode.loc
-          args.push(
-            colors.yellow(pad(generateCodeFrame(scriptLoc.source, err.loc)))
-          )
-          // correct error location
-          err.loc.line = scriptLoc.start.line + err.loc.line - 1
+    // 避免出现这样的错误：[plugin:vite:vue] [plugin vite:vue]
+    if (err.message.startsWith(`[plugin ${err.plugin}]`)) {
+      let msg = err.message.replace(`[plugin ${err.plugin}]`, '')
+      if (err.loc) {
+        // [plugin:vite:vue]  pages/index/index.vue (2:12): v-on="" is not supported
+        const locStr = `(${err.loc.line}:${err.loc.column}):`
+        if (msg.includes(locStr)) {
+          msg = msg.split(locStr)[1]
         }
-      } catch (e: any) {}
+      }
+      args.push(
+        `${colors.magenta('[plugin:' + err.plugin + ']')} ${colors.red(msg)}`
+      )
+    } else {
+      const otherMsgs: string[] = []
+      if (err.message.includes(': [plugin ')) {
+        const messages = err.message.split(': [plugin ')
+        err.message = messages[0]
+        messages.slice(1).forEach((msg) => {
+          otherMsgs.push(`[plugin:${msg}`)
+        })
+      }
+      args.push(
+        `${colors.magenta('[plugin:' + err.plugin + ']')} ${colors.red(
+          err.message
+        )}`
+      )
+      args.push(...otherMsgs)
+      if (
+        err.loc &&
+        err.hook === 'transform' &&
+        err.plugin === 'rollup-plugin-dynamic-import-variables' &&
+        err.id &&
+        EXTNAME_VUE_RE.test(err.id)
+      ) {
+        try {
+          const ast = parseVue(fs.readFileSync(err.id, 'utf8'), [])
+          const scriptNode = ast.children.find(
+            (node) => node.type === NodeTypes.ELEMENT && node.tag === 'script'
+          )
+          if (scriptNode) {
+            const scriptLoc = scriptNode.loc
+            args.push(
+              colors.yellow(pad(generateCodeFrame(scriptLoc.source, err.loc)))
+            )
+            // correct error location
+            err.loc.line = scriptLoc.start.line + err.loc.line - 1
+          }
+        } catch (e: any) {}
+      }
     }
   } else {
     args.push(colors.red(err.message))
