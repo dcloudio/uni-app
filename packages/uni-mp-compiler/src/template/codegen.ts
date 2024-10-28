@@ -487,6 +487,9 @@ function genOn(
   node: ElementNode,
   { push, event, isBuiltInComponent }: TemplateCodegenContext
 ) {
+  if (!prop.arg) {
+    return
+  }
   const arg = (prop.arg as SimpleExpressionNode).content
   const exp = prop.exp as SimpleExpressionNode
   const modifiers = prop.modifiers
