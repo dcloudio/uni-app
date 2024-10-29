@@ -2987,6 +2987,7 @@ function initXPage(vm, route, page) {
     }
   } else {
     vm.$page = (_b = vm.$pageLayoutInstance) == null ? void 0 : _b.$dialogPage;
+    pageInstance.$dialogPage.vm = vm;
     pageInstance.$dialogPage.$vm = vm;
   }
 }

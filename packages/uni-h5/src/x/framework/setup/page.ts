@@ -230,6 +230,7 @@ export function initXPage(
     }
   } else {
     vm.$page = vm.$pageLayoutInstance?.$dialogPage!
+    pageInstance.$dialogPage!.vm = vm
     pageInstance.$dialogPage!.$vm = vm
   }
 }
