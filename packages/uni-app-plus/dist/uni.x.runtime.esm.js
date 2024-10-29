@@ -1738,7 +1738,16 @@ function registerDialogPage(_ref2, dialogPage, onCreated) {
       invokeHook(page, ON_REACH_BOTTOM);
     });
     nativePage2.addPageEventListener(ON_RESIZE, (arg) => {
-      invokeHook(page, ON_RESIZE, arg);
+      var args = {
+        deviceOrientation: arg.deviceOrientation,
+        size: {
+          windowWidth: arg.size.windowWidth,
+          windowHeight: arg.size.windowHeight,
+          screenWidth: arg.size.screenWidth,
+          screenHeight: arg.size.screenHeight
+        }
+      };
+      invokeHook(page, ON_RESIZE, args);
     });
     nativePage2.startRender();
   }
@@ -3308,7 +3317,8 @@ const _sfc_main = {
       cancelColor: null,
       backgroundColor: null,
       language: "zh-Hans",
-      theme: "light"
+      theme: "light",
+      isLandscape: false
     };
   },
   onLoad(options) {
@@ -3348,14 +3358,12 @@ const _sfc_main = {
     }
     var osTheme = systemInfo.osTheme;
     var appTheme = systemInfo.appTheme;
-    var hostTheme = systemInfo.hostTheme;
-    if (hostTheme != null) {
-      this.theme = hostTheme;
-    } else if (appTheme != null) {
+    if (appTheme != null) {
       this.theme = appTheme;
     } else if (osTheme != null) {
       this.theme = osTheme;
     }
+    this.isLandscape = systemInfo.deviceOrientation == "landscape";
     uni.onAppThemeChange((res) => {
       this.theme = res.appTheme;
     });
@@ -3391,6 +3399,10 @@ const _sfc_main = {
     setTimeout(() => {
       this.show = true;
     }, 10);
+  },
+  onResize() {
+    var systemInfo = uni.getSystemInfoSync();
+    this.isLandscape = systemInfo.deviceOrientation == "landscape";
   },
   onUnload() {
     uni.$off(this.optionsEventName, null);
@@ -3444,9 +3456,8 @@ const _style_0 = {
       "left": 0,
       "bottom": 0,
       "zIndex": 999,
-      "WebkitBackfaceVisibility": "hidden",
-      "backfaceVisibility": "hidden",
       "transform": "translate(0, 100%)",
+      "opacity": 0,
       "transitionProperty": "transform",
       "transitionDuration": "0.3s",
       "backgroundColor": "#f7f7f7",
@@ -3454,10 +3465,27 @@ const _style_0 = {
       "borderTopRightRadius": 12
     },
     ".uni-action-sheet_dialog__show": {
+      "opacity": 1,
       "transform": "translate(0, 0)"
     },
     ".uni-action-sheet_dark__mode": {
       "backgroundColor": "#1D1E1E"
+    },
+    ".uni-action-sheet_landscape__mode": {
+      "width": 300,
+      "position": "fixed",
+      "left": "50%",
+      "right": "auto",
+      "top": "50%",
+      "bottom": "auto",
+      "zIndex": 999,
+      "transform": "translate(-50%, -50%)",
+      "borderTopLeftRadius": 5,
+      "borderTopRightRadius": 5,
+      "borderBottomLeftRadius": 5,
+      "borderBottomRightRadius": 5,
+      "transitionProperty": "opacity",
+      "transitionDuration": "0.3s"
     }
   },
   "uni-action-sheet_dialog__menu": {
@@ -3469,6 +3497,11 @@ const _style_0 = {
     },
     ".uni-action-sheet_dark__mode": {
       "backgroundColor": "#2C2C2B"
+    },
+    ".uni-action-sheet_landscape__mode": {
+      "borderTopLeftRadius": 5,
+      "borderTopRightRadius": 5,
+      "boxShadow": "0 0 20px 5px rgba(0, 0, 0, 0.3)"
     }
   },
   "uni-action-sheet_dialog__title": {
@@ -3485,6 +3518,12 @@ const _style_0 = {
       "borderBottomWidth": 1,
       "borderBottomStyle": "solid",
       "borderBottomColor": "#2F3131"
+    },
+    ".uni-action-sheet_landscape__mode": {
+      "paddingTop": 10,
+      "paddingRight": 6,
+      "paddingBottom": 10,
+      "paddingLeft": 6
     }
   },
   "uni-action-sheet_dialog__cell": {
@@ -3501,6 +3540,12 @@ const _style_0 = {
       "borderTopWidth": 1,
       "borderTopStyle": "solid",
       "borderTopColor": "#2F3131"
+    },
+    ".uni-action-sheet_landscape__mode": {
+      "paddingTop": 10,
+      "paddingRight": 6,
+      "paddingBottom": 10,
+      "paddingLeft": 6
     }
   },
   "uni-action-sheet_dialog__action": {
@@ -3514,6 +3559,13 @@ const _style_0 = {
     },
     ".uni-action-sheet_dark__mode": {
       "backgroundColor": "#2C2C2B"
+    },
+    ".uni-action-sheet_landscape__mode": {
+      "display": "none",
+      "paddingTop": 10,
+      "paddingRight": 6,
+      "paddingBottom": 10,
+      "paddingLeft": 6
     }
   },
   "uni-action-sheet_dialog__title__text": {
@@ -3558,6 +3610,9 @@ const _style_0 = {
   "uni-action-sheet_dialog__cell__container": {
     "": {
       "maxHeight": 330
+    },
+    ".uni-action-sheet_landscape__mode": {
+      "maxHeight": 260
     }
   },
   "@TRANSITION": {
@@ -3566,7 +3621,7 @@ const _style_0 = {
       "duration": "0.1s"
     },
     "uni-action-sheet_dialog__container": {
-      "property": "transform",
+      "property": "opacity",
       "duration": "0.3s"
     }
   }
@@ -3578,10 +3633,7 @@ const _export_sfc = (sfc, props) => {
   }
   return target;
 };
-var _hoisted_1 = {
-  class: "uni-action-sheet_dialog__cell__container"
-};
-var _hoisted_2 = ["onClick"];
+var _hoisted_1 = ["onClick"];
 function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createElementBlock("view", null, [createElementVNode("view", {
     class: normalizeClass(["uni-action-sheet_dialog__mask", {
@@ -3593,19 +3645,22 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   }, null, 2), createElementVNode("view", {
     class: normalizeClass(["uni-action-sheet_dialog__container", {
       "uni-action-sheet_dialog__show": $data.show,
-      "uni-action-sheet_dark__mode": $data.theme == "dark"
+      "uni-action-sheet_dark__mode": $data.theme == "dark",
+      "uni-action-sheet_landscape__mode": $data.isLandscape
     }])
   }, [createElementVNode("view", {
     style: normalizeStyle($data.backgroundColor != null ? {
       backgroundColor: $data.backgroundColor
     } : {}),
     class: normalizeClass(["uni-action-sheet_dialog__menu", {
-      "uni-action-sheet_dark__mode": $data.theme == "dark"
+      "uni-action-sheet_dark__mode": $data.theme == "dark",
+      "uni-action-sheet_landscape__mode": $data.isLandscape
     }])
   }, [$data.title ? (openBlock(), createElementBlock("view", {
     key: 0,
     class: normalizeClass(["uni-action-sheet_dialog__title", {
-      "uni-action-sheet_dark__mode": $data.theme == "dark"
+      "uni-action-sheet_dark__mode": $data.theme == "dark",
+      "uni-action-sheet_landscape__mode": $data.isLandscape
     }])
   }, [createElementVNode("text", {
     style: normalizeStyle({
@@ -3614,13 +3669,18 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
     class: normalizeClass(["uni-action-sheet_dialog__title__text", {
       "uni-action-sheet_dark__mode": $data.theme == "dark"
     }])
-  }, toDisplayString($data.title), 7)], 2)) : createCommentVNode("", true), createElementVNode("scroll-view", _hoisted_1, [(openBlock(true), createElementBlock(Fragment, null, renderList($data.itemList, (item, index2) => {
+  }, toDisplayString($data.title), 7)], 2)) : createCommentVNode("", true), createElementVNode("scroll-view", {
+    class: normalizeClass(["uni-action-sheet_dialog__cell__container", {
+      "uni-action-sheet_landscape__mode": $data.isLandscape
+    }])
+  }, [(openBlock(true), createElementBlock(Fragment, null, renderList($data.itemList, (item, index2) => {
     return openBlock(), createElementBlock("view", {
       style: normalizeStyle(index2 == 0 ? {
         borderTop: "none"
       } : {}),
       class: normalizeClass(["uni-action-sheet_dialog__cell", {
-        "uni-action-sheet_dark__mode": $data.theme == "dark"
+        "uni-action-sheet_dark__mode": $data.theme == "dark",
+        "uni-action-sheet_landscape__mode": $data.isLandscape
       }]),
       key: index2,
       onClick: ($event) => $options.handleMenuItemClick(index2)
@@ -3631,13 +3691,14 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
       class: normalizeClass(["uni-action-sheet_dialog__cell__text", {
         "uni-action-sheet_dark__mode": $data.theme == "dark"
       }])
-    }, toDisplayString(item), 7)], 14, _hoisted_2);
-  }), 128))])], 6), createElementVNode("view", {
+    }, toDisplayString(item), 7)], 14, _hoisted_1);
+  }), 128))], 2)], 6), createElementVNode("view", {
     style: normalizeStyle($data.backgroundColor != null ? {
       backgroundColor: $data.backgroundColor
     } : {}),
     class: normalizeClass(["uni-action-sheet_dialog__action", {
-      "uni-action-sheet_dark__mode": $data.theme == "dark"
+      "uni-action-sheet_dark__mode": $data.theme == "dark",
+      "uni-action-sheet_landscape__mode": $data.isLandscape
     }]),
     onClick: _cache[1] || (_cache[1] = function() {
       return $options.handleCancel && $options.handleCancel(...arguments);
