@@ -34,10 +34,8 @@
 	"uni_modules": {
 		"dependencies": [
 			"uni-framework",
-			"uni-event",
 			"uni-theme",
-			"uni-getSystemInfo",
-			"uni-dialogPage"
+			"uni-getSystemInfo"
 		],
 		"uni-ext-api": {
 			"uni": {

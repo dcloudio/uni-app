@@ -1,4 +1,4 @@
-export type Popover = {
+export type Popover2 = {
   /**
    * 指示区域坐标，使用原生 navigationBar 时一般需要加上 navigationBar 的高度
    */
@@ -23,15 +23,15 @@ export type Popover = {
  */
 export type ShowActionSheetErrorCode = 4
 // @ts-expect-error
-export interface ShowActionSheetSuccess extends AsyncApiSuccessResult {
+export interface ShowActionSheetSuccess2 extends AsyncApiSuccessResult {
   tapIndex: number
 }
-type ShowActionSheetSuccessCallback = (result: ShowActionSheetSuccess) => void
+type ShowActionSheetSuccessCallback = (result: ShowActionSheetSuccess2) => void
 // @ts-expect-error
-export interface ShowActionSheetFail extends IUniError {
+export interface ShowActionSheetFail2 extends IUniError {
   errCode: ShowActionSheetErrorCode
 }
-type ShowActionSheetFailCallback = (result: ShowActionSheetFail) => void
+type ShowActionSheetFailCallback = (result: ShowActionSheetFail2) => void
 // @ts-expect-error
 export type ShowActionSheetComplete = AsyncApiResult
 type ShowActionSheetCompleteCallback = (result: ShowActionSheetComplete) => void
@@ -63,7 +63,7 @@ export type ShowActionSheet2Options = {
   /**
    * 大屏设备弹出原生选择按钮框的指示区域，默认居中显示
    */
-  popover?: Popover | null,
+  popover?: Popover2 | null,
   /**
    * 菜单标题文字颜色，字符串格式
    */
@@ -199,7 +199,7 @@ export interface Uni {
 }
 
 // @ts-expect-error
-export class ShowActionSheetSuccessImpl extends AsyncApiSuccessResult implements ShowActionSheetSuccess {
+export class ShowActionSheetSuccessImpl extends AsyncApiSuccessResult implements ShowActionSheetSuccess2 {
   tapIndex: number
   // @ts-expect-error
   override errMsg: string
@@ -209,7 +209,7 @@ export class ShowActionSheetSuccessImpl extends AsyncApiSuccessResult implements
     this.tapIndex = tapIndex
   }
 }
-export class ShowActionSheetFailImpl extends UniError implements ShowActionSheetFail {
+export class ShowActionSheetFailImpl extends UniError implements ShowActionSheetFail2 {
   // @ts-expect-error
   override errCode: ShowActionSheetErrorCode
   constructor(errMsg: string = 'showActionSheet:fail cancel', errCode: ShowActionSheetErrorCode = 4) {
