@@ -55,7 +55,7 @@ export const options: UniMiniProgramPluginOptions = {
   global: 'has',
   app: {
     darkmode: false,
-    subpackages: true,
+    subpackages: false,
     usingComponents: true,
   },
   template: {

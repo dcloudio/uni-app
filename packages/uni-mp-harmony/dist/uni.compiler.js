@@ -53,7 +53,7 @@ const options = {
     global: 'has',
     app: {
         darkmode: false,
-        subpackages: true,
+        subpackages: false,
         usingComponents: true,
     },
     template: Object.assign(Object.assign({}, miniProgram), { filter: {
@@ -85,6 +85,28 @@ const uniMiniProgramHarmonyPlugin = {
                 assetsInlineLimit: uniCliShared.ASSETS_INLINE_LIMIT,
             },
         };
+    },
+    generateBundle(_, bundle) {
+        const appJson = bundle['app.json'];
+        if (appJson) {
+            const appJsonStr = appJson.source.toString();
+            if (appJsonStr.includes('subPackages')) {
+                const appJsonObj = JSON.parse(appJsonStr);
+                const subPackages = appJsonObj['subPackages'];
+                if (subPackages) {
+                    if (Array.isArray(subPackages)) {
+                        subPackages.forEach((subPackage) => {
+                            if (subPackage && subPackage.root && !subPackage.resource) {
+                                subPackage.resource = subPackage.root.replace(/\//g, '_');
+                            }
+                        });
+                    }
+                    delete appJsonObj['subPackages'];
+                    appJsonObj['subpackages'] = subPackages;
+                    appJson.source = JSON.stringify(appJsonObj, null, 2);
+                }
+            }
+        }
     },
 };
 var index = [uniMiniProgramHarmonyPlugin, ...initMiniProgramPlugin__default.default(options)];
