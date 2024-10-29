@@ -53,19 +53,19 @@ const options = {
     global: 'has',
     app: {
         darkmode: false,
-        subpackages: false,
+        subpackages: true,
         usingComponents: true,
     },
     template: Object.assign(Object.assign({}, miniProgram), { filter: {
-            extname: '.qjs',
-            lang: 'qjs',
+            extname: '.hjs',
+            lang: 'hjs',
             generate(filter, filename) {
                 if (filename) {
-                    return `<qjs src="${filename}.qjs" module="${filter.name}"/>`;
+                    return `<hjs src="${filename}.hjs" module="${filter.name}"/>`;
                 }
-                return `<qjs module="${filter.name}">
+                return `<hjs module="${filter.name}">
 ${filter.code}
-</qjs>`;
+</hjs>`;
             },
         }, extname: '.hxml', compilerOptions }),
     style: {
