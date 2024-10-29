@@ -404,7 +404,15 @@ function invokeSuccess(id2, name, res) {
 }
 function invokeFail(id2, name, errMsg) {
   var errRes = arguments.length > 3 && arguments[3] !== void 0 ? arguments[3] : {};
-  var apiErrMsg = name + ":fail" + (errMsg ? " " + errMsg : "");
+  var errMsgPrefix = name + ":fail";
+  var apiErrMsg = "";
+  if (!errMsg) {
+    apiErrMsg = errMsgPrefix;
+  } else if (errMsg.indexOf(errMsgPrefix) === 0) {
+    apiErrMsg = errMsg;
+  } else {
+    apiErrMsg = errMsgPrefix + " " + errMsg;
+  }
   var res = extend({
     errMsg: apiErrMsg
   }, errRes);
@@ -432,7 +440,6 @@ function parseErrMsg(errMsg) {
     return errMsg;
   }
   if (errMsg.stack) {
-    console.error(errMsg.message + "\n" + errMsg.stack);
     return errMsg.message;
   }
   return errMsg;
@@ -1428,7 +1435,7 @@ var onThemeChange = function(themeMode) {
     pages2.forEach((page) => {
       var routeOptions = initRouteOptions(page.$basePage.path, "");
       var style = parsePageStyle(routeOptions);
-      page.$page.setPageStyle(new Map(Object.entries(style)));
+      page.$page.setPageStyle(new UTSJSONObject(style));
     });
   };
   handlePage();

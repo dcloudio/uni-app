@@ -357,129 +357,6 @@ const ON_APP_ENTER_BACKGROUND = 'onAppEnterBackground';
 const ON_WEB_INVOKE_APP_SERVICE = 'onWebInvokeAppService';
 const ON_WXS_INVOKE_CALL_METHOD = 'onWxsInvokeCallMethod';
 
-function isComponentInternalInstance(vm) {
-    return !!vm.appContext;
-}
-function resolveComponentInstance(instance) {
-    return (instance &&
-        (isComponentInternalInstance(instance) ? instance.proxy : instance));
-}
-function resolveOwnerVm(vm) {
-    if (!vm) {
-        return;
-    }
-    let componentName = vm.type.name;
-    while (componentName && isBuiltInComponent(shared.hyphenate(componentName))) {
-        // ownerInstance 内置组件需要使用父 vm
-        vm = vm.parent;
-        componentName = vm.type.name;
-    }
-    return vm.proxy;
-}
-function isElement(el) {
-    // Element
-    return el.nodeType === 1;
-}
-function resolveOwnerEl(instance, multi = false) {
-    const { vnode } = instance;
-    if (isElement(vnode.el)) {
-        return multi ? (vnode.el ? [vnode.el] : []) : vnode.el;
-    }
-    const { subTree } = instance;
-    // ShapeFlags.ARRAY_CHILDREN = 1<<4
-    if (subTree.shapeFlag & 16) {
-        const elemVNodes = subTree.children.filter((vnode) => vnode.el && isElement(vnode.el));
-        if (elemVNodes.length > 0) {
-            if (multi) {
-                return elemVNodes.map((node) => node.el);
-            }
-            return elemVNodes[0].el;
-        }
-    }
-    return multi ? (vnode.el ? [vnode.el] : []) : vnode.el;
-}
-function dynamicSlotName(name) {
-    return name === 'default' ? SLOT_DEFAULT_NAME : name;
-}
-const customizeRE = /:/g;
-function customizeEvent(str) {
-    return shared.camelize(str.replace(customizeRE, '-'));
-}
-function normalizeStyle(value) {
-    if (value instanceof Map) {
-        const styleObject = {};
-        value.forEach((value, key) => {
-            styleObject[key] = value;
-        });
-        return shared.normalizeStyle(styleObject);
-    }
-    else if (shared.isString(value)) {
-        return shared.parseStringStyle(value);
-    }
-    else if (shared.isArray(value)) {
-        const res = {};
-        for (let i = 0; i < value.length; i++) {
-            const item = value[i];
-            const normalized = shared.isString(item)
-                ? shared.parseStringStyle(item)
-                : normalizeStyle(item);
-            if (normalized) {
-                for (const key in normalized) {
-                    res[key] = normalized[key];
-                }
-            }
-        }
-        return res;
-    }
-    else {
-        return shared.normalizeStyle(value);
-    }
-}
-function normalizeClass(value) {
-    let res = '';
-    if (value instanceof Map) {
-        value.forEach((value, key) => {
-            if (value) {
-                res += key + ' ';
-            }
-        });
-    }
-    else if (shared.isArray(value)) {
-        for (let i = 0; i < value.length; i++) {
-            const normalized = normalizeClass(value[i]);
-            if (normalized) {
-                res += normalized + ' ';
-            }
-        }
-    }
-    else {
-        res = shared.normalizeClass(value);
-    }
-    return res.trim();
-}
-function normalizeProps(props) {
-    if (!props)
-        return null;
-    let { class: klass, style } = props;
-    if (klass && !shared.isString(klass)) {
-        props.class = normalizeClass(klass);
-    }
-    if (style) {
-        props.style = normalizeStyle(style);
-    }
-    return props;
-}
-
-let lastLogTime = 0;
-function formatLog(module, ...args) {
-    const now = Date.now();
-    const diff = lastLogTime ? now - lastLogTime : 0;
-    lastLogTime = now;
-    return `[${now}][${diff}ms][${module}]：${args
-        .map((arg) => JSON.stringify(arg))
-        .join(' ')}`;
-}
-
 function cache(fn) {
     const cache = Object.create(null);
     return (str) => {
@@ -585,6 +462,179 @@ function sortObject(obj) {
         });
     }
     return !Object.keys(sortObj) ? obj : sortObj;
+}
+function getGlobalOnce() {
+    if (typeof globalThis !== 'undefined') {
+        return globalThis;
+    }
+    // worker
+    if (typeof self !== 'undefined') {
+        return self;
+    }
+    // browser
+    if (typeof window !== 'undefined') {
+        return window;
+    }
+    // nodejs
+    // if (typeof global !== 'undefined') {
+    //   return global
+    // }
+    function g() {
+        return this;
+    }
+    if (typeof g() !== 'undefined') {
+        return g();
+    }
+    return (function () {
+        return new Function('return this')();
+    })();
+}
+let g = undefined;
+function getGlobal() {
+    if (g) {
+        return g;
+    }
+    g = getGlobalOnce();
+    return g;
+}
+
+function isComponentInternalInstance(vm) {
+    return !!vm.appContext;
+}
+function resolveComponentInstance(instance) {
+    return (instance &&
+        (isComponentInternalInstance(instance) ? instance.proxy : instance));
+}
+function resolveOwnerVm(vm) {
+    if (!vm) {
+        return;
+    }
+    let componentName = vm.type.name;
+    while (componentName && isBuiltInComponent(shared.hyphenate(componentName))) {
+        // ownerInstance 内置组件需要使用父 vm
+        vm = vm.parent;
+        componentName = vm.type.name;
+    }
+    return vm.proxy;
+}
+function isElement(el) {
+    // Element
+    return el.nodeType === 1;
+}
+function resolveOwnerEl(instance, multi = false) {
+    const { vnode } = instance;
+    if (isElement(vnode.el)) {
+        return multi ? (vnode.el ? [vnode.el] : []) : vnode.el;
+    }
+    const { subTree } = instance;
+    // ShapeFlags.ARRAY_CHILDREN = 1<<4
+    if (subTree.shapeFlag & 16) {
+        const elemVNodes = subTree.children.filter((vnode) => vnode.el && isElement(vnode.el));
+        if (elemVNodes.length > 0) {
+            if (multi) {
+                return elemVNodes.map((node) => node.el);
+            }
+            return elemVNodes[0].el;
+        }
+    }
+    return multi ? (vnode.el ? [vnode.el] : []) : vnode.el;
+}
+function dynamicSlotName(name) {
+    return name === 'default' ? SLOT_DEFAULT_NAME : name;
+}
+const customizeRE = /:/g;
+function customizeEvent(str) {
+    return shared.camelize(str.replace(customizeRE, '-'));
+}
+function normalizeStyle(value) {
+    const g = getGlobal();
+    if (g && g.UTSJSONObject && value instanceof g.UTSJSONObject) {
+        const styleObject = {};
+        g.UTSJSONObject.keys(value).forEach((key) => {
+            styleObject[key] = value[key];
+        });
+        return shared.normalizeStyle(styleObject);
+    }
+    else if (value instanceof Map) {
+        const styleObject = {};
+        value.forEach((value, key) => {
+            styleObject[key] = value;
+        });
+        return shared.normalizeStyle(styleObject);
+    }
+    else if (shared.isString(value)) {
+        return shared.parseStringStyle(value);
+    }
+    else if (shared.isArray(value)) {
+        const res = {};
+        for (let i = 0; i < value.length; i++) {
+            const item = value[i];
+            const normalized = shared.isString(item)
+                ? shared.parseStringStyle(item)
+                : normalizeStyle(item);
+            if (normalized) {
+                for (const key in normalized) {
+                    res[key] = normalized[key];
+                }
+            }
+        }
+        return res;
+    }
+    else {
+        return shared.normalizeStyle(value);
+    }
+}
+function normalizeClass(value) {
+    let res = '';
+    const g = getGlobal();
+    if (g && g.UTSJSONObject && value instanceof g.UTSJSONObject) {
+        g.UTSJSONObject.keys(value).forEach((key) => {
+            if (value[key]) {
+                res += key + ' ';
+            }
+        });
+    }
+    else if (value instanceof Map) {
+        value.forEach((value, key) => {
+            if (value) {
+                res += key + ' ';
+            }
+        });
+    }
+    else if (shared.isArray(value)) {
+        for (let i = 0; i < value.length; i++) {
+            const normalized = normalizeClass(value[i]);
+            if (normalized) {
+                res += normalized + ' ';
+            }
+        }
+    }
+    else {
+        res = shared.normalizeClass(value);
+    }
+    return res.trim();
+}
+function normalizeProps(props) {
+    if (!props)
+        return null;
+    let { class: klass, style } = props;
+    if (klass && !shared.isString(klass)) {
+        props.class = normalizeClass(klass);
+    }
+    if (style) {
+        props.style = normalizeStyle(style);
+    }
+    return props;
+}
+
+let lastLogTime = 0;
+function formatLog(module, ...args) {
+    const now = Date.now();
+    const diff = lastLogTime ? now - lastLogTime : 0;
+    lastLogTime = now;
+    return `[${now}][${diff}ms][${module}]：${args
+        .map((arg) => JSON.stringify(arg))
+        .join(' ')}`;
 }
 
 function formatKey(key) {
@@ -1761,6 +1811,7 @@ exports.formatDateTime = formatDateTime;
 exports.formatLog = formatLog;
 exports.getCustomDataset = getCustomDataset;
 exports.getEnvLocale = getEnvLocale;
+exports.getGlobal = getGlobal;
 exports.getLen = getLen;
 exports.getValueByDataPath = getValueByDataPath;
 exports.initCustomDatasetOnce = initCustomDatasetOnce;

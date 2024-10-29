@@ -515,7 +515,17 @@ function invokeSuccess(id, name, res) {
     return invokeCallback(id, extend((res || {}), result));
 }
 function invokeFail(id, name, errMsg, errRes = {}) {
-    const apiErrMsg = name + ':fail' + (errMsg ? ' ' + errMsg : '');
+    const errMsgPrefix = name + ':fail';
+    let apiErrMsg = '';
+    if (!errMsg) {
+        apiErrMsg = errMsgPrefix;
+    }
+    else if (errMsg.indexOf(errMsgPrefix) === 0) {
+        apiErrMsg = errMsg;
+    }
+    else {
+        apiErrMsg = errMsgPrefix + ' ' + errMsg;
+    }
     {
         delete errRes.errCode;
     }
@@ -580,7 +590,10 @@ function parseErrMsg(errMsg) {
         return errMsg;
     }
     if (errMsg.stack) {
-        console.error(errMsg.message + '\n' + errMsg.stack);
+        // 此处同时被鸿蒙arkts和jsvm使用，暂时使用运行时判断鸿蒙jsvm环境，注意此用法仅内部使用
+        if ((typeof globalThis === 'undefined' || !globalThis.harmonyChannel)) {
+            console.error(errMsg.message + '\n' + errMsg.stack);
+        }
         return errMsg.message;
     }
     return errMsg;
@@ -13793,7 +13806,7 @@ function weexGetSystemInfoSync() {
 }
 const getDeviceInfo = defineSyncApi('getDeviceInfo', () => {
     weexGetSystemInfoSync();
-    const { deviceBrand = '', deviceModel, osName, osVersion, deviceOrientation, deviceType, deviceId, osLanguage, osTheme, romName, romVersion } = systemInfo;
+    const { deviceBrand = '', deviceModel, osName, osVersion, deviceOrientation, deviceType, deviceId, osLanguage, osTheme, romName, romVersion, } = systemInfo;
     const brand = deviceBrand.toLowerCase();
     const _osName = osName.toLowerCase();
     return {
@@ -13812,12 +13825,12 @@ const getDeviceInfo = defineSyncApi('getDeviceInfo', () => {
         osLanguage,
         osTheme,
         romName,
-        romVersion
+        romVersion,
     };
 });
 const getAppBaseInfo = defineSyncApi('getAppBaseInfo', () => {
     weexGetSystemInfoSync();
-    const { hostPackageName, hostName, hostVersion, hostLanguage, osLanguage, hostTheme, appId, appName, appVersion, appVersionCode, appWgtVersion, uniCompileVersion, uniPlatform } = systemInfo;
+    const { hostPackageName, hostName, hostVersion, hostLanguage, osLanguage, hostTheme, appId, appName, appVersion, appVersionCode, appWgtVersion, uniCompileVersion, uniPlatform, } = systemInfo;
     return {
         appId,
         appName,
@@ -13840,7 +13853,7 @@ const getAppBaseInfo = defineSyncApi('getAppBaseInfo', () => {
         isUniAppX: false,
         uniPlatform,
         uniCompileVersion,
-        uniCompilerVersion: uniCompileVersion
+        uniCompilerVersion: uniCompileVersion,
     };
 });
 const getSystemInfoSync = defineSyncApi('getSystemInfoSync', () => {
@@ -16895,7 +16908,7 @@ const LocationPickerPage = {
         this.latitude = e.latitude;
         this.longitude = e.longitude;
         this.keyword = e.keyword;
-        this.useSecureNetwork = e.useSecureNetwork === true;
+        this.useSecureNetwork = e.useSecureNetwork === 'true';
         this.loaded = true;
         this.channel = this.getOpenerEventChannel();
     },

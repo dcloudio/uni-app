@@ -1526,7 +1526,15 @@ function invokeSuccess(id2, name, res) {
   return invokeCallback(id2, shared.extend(res || {}, result));
 }
 function invokeFail(id2, name, errMsg, errRes = {}) {
-  const apiErrMsg = name + ":fail" + (errMsg ? " " + errMsg : "");
+  const errMsgPrefix = name + ":fail";
+  let apiErrMsg = "";
+  if (!errMsg) {
+    apiErrMsg = errMsgPrefix;
+  } else if (errMsg.indexOf(errMsgPrefix) === 0) {
+    apiErrMsg = errMsg;
+  } else {
+    apiErrMsg = errMsgPrefix + " " + errMsg;
+  }
   {
     delete errRes.errCode;
   }
@@ -1553,7 +1561,9 @@ function parseErrMsg(errMsg) {
     return errMsg;
   }
   if (errMsg.stack) {
-    console.error(errMsg.message + "\n" + errMsg.stack);
+    if (typeof globalThis === "undefined" || !globalThis.harmonyChannel) {
+      console.error(errMsg.message + "\n" + errMsg.stack);
+    }
     return errMsg.message;
   }
   return errMsg;
@@ -11684,22 +11694,20 @@ const getDeviceInfo = /* @__PURE__ */ defineSyncApi(
       osname,
       osversion
     } = browserInfo;
-    return shared.extend(
-      {
-        brand,
-        deviceBrand,
-        deviceModel,
-        devicePixelRatio: 1,
-        deviceId: Date.now() + "" + Math.floor(Math.random() * 1e7),
-        deviceOrientation,
-        deviceType,
-        model,
-        platform,
-        system,
-        osName: osname ? osname.toLocaleLowerCase() : void 0,
-        osVersion: osversion
-      }
-    );
+    return shared.extend({
+      brand,
+      deviceBrand,
+      deviceModel,
+      devicePixelRatio: 1,
+      deviceId: Date.now() + "" + Math.floor(Math.random() * 1e7),
+      deviceOrientation,
+      deviceType,
+      model,
+      platform,
+      system,
+      osName: osname ? osname.toLocaleLowerCase() : void 0,
+      osVersion: osversion
+    });
   }
 );
 const getAppBaseInfo = /* @__PURE__ */ defineSyncApi(
