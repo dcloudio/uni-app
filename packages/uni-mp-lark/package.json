@@ -1,6 +1,6 @@
 {
   "name": "@dcloudio/uni-mp-lark",
-  "version": "3.0.0-alpha-4030120241024002",
+  "version": "3.0.0-alpha-4030220241029001",
   "description": "uni-app mp-lark",
   "main": "dist/index.js",
   "files": [
@@ -25,12 +25,12 @@
   },
   "gitHead": "33e807d66e1fe47e2ee08ad9c59247e37b8884da",
   "dependencies": {
-    "@dcloudio/uni-cli-shared": "3.0.0-alpha-4030120241024002",
-    "@dcloudio/uni-mp-compiler": "3.0.0-alpha-4030120241024002",
-    "@dcloudio/uni-mp-toutiao": "3.0.0-alpha-4030120241024002",
-    "@dcloudio/uni-mp-vite": "3.0.0-alpha-4030120241024002",
-    "@dcloudio/uni-mp-vue": "3.0.0-alpha-4030120241024002",
-    "@dcloudio/uni-shared": "3.0.0-alpha-4030120241024002",
+    "@dcloudio/uni-cli-shared": "3.0.0-alpha-4030220241029001",
+    "@dcloudio/uni-mp-compiler": "3.0.0-alpha-4030220241029001",
+    "@dcloudio/uni-mp-toutiao": "3.0.0-alpha-4030220241029001",
+    "@dcloudio/uni-mp-vite": "3.0.0-alpha-4030220241029001",
+    "@dcloudio/uni-mp-vue": "3.0.0-alpha-4030220241029001",
+    "@dcloudio/uni-shared": "3.0.0-alpha-4030220241029001",
     "@vue/compiler-core": "3.4.21",
     "@vue/shared": "3.4.21"
   }
