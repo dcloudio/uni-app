@@ -38,7 +38,11 @@ export function initPropsObserver(componentOptions: MPComponentOptions) {
       updateMiniProgramComponentProperties(resolvePropValue(up), this)
     }
   }
-  if (__PLATFORM__ === 'mp-weixin' || __PLATFORM__ === 'mp-qq') {
+  if (
+    __PLATFORM__ === 'mp-weixin' ||
+    __PLATFORM__ === 'mp-qq' ||
+    __PLATFORM__ === 'mp-harmony'
+  ) {
     if (!componentOptions.observers) {
       componentOptions.observers = {}
     }
