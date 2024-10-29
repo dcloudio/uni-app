@@ -9,6 +9,7 @@ import {
   findPropsData,
   initFormField,
   initSetRef,
+  resolvePropValue,
 } from '@dcloudio/uni-mp-core'
 
 import {
@@ -39,7 +40,7 @@ export function initLifetimes({
   function attached(this: MPComponentInstance) {
     initSetRef(this)
     const properties = this.properties
-    initVueIds(properties.uI, this)
+    initVueIds(resolvePropValue(properties.uI), this)
     const relationOptions: RelationOptions = {
       vuePid: this._$vuePid,
     }
@@ -60,7 +61,7 @@ export function initLifetimes({
       {
         mpType,
         mpInstance,
-        slots: properties.uS || {}, // vueSlots
+        slots: resolvePropValue(properties.uS) || {}, // vueSlots
         parentComponent: relationOptions.parent && relationOptions.parent.$,
         onBeforeSetup(
           instance: ComponentInternalInstance,

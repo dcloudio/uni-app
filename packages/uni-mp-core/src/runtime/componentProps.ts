@@ -188,7 +188,7 @@ export function findPropsData(
   return (
     (isPage
       ? findPagePropsData(properties)
-      : findComponentPropsData(properties.uP)) || {}
+      : findComponentPropsData(resolvePropValue(properties.uP))) || {}
   )
 }
 
@@ -197,7 +197,9 @@ function findPagePropsData(properties: Record<string, any>) {
   if (isPlainObject(properties)) {
     Object.keys(properties).forEach((name) => {
       if (builtInProps.indexOf(name) === -1) {
-        propsData[name] = (properties as Record<string, any>)[name]
+        propsData[name] = resolvePropValue(
+          (properties as Record<string, any>)[name]
+        )
       }
     })
   }
@@ -225,4 +227,14 @@ export function initFormField(vm: ComponentPublicInstance) {
       }
     )
   }
+}
+
+export function resolvePropValue(prop: string | { value: string }): any {
+  if (__PLATFORM__ === 'mp-harmony') {
+    if (isPlainObject(prop)) {
+      // 目前 mp-harmony 的 prop 返回的是配置项？
+      return prop.value
+    }
+  }
+  return prop
 }

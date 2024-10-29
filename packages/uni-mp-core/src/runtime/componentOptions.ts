@@ -19,6 +19,7 @@ import {
 import type { MPComponentInstance } from '..'
 
 import type { MPComponentOptions } from './component'
+import { resolvePropValue } from './componentProps'
 
 export function initData(_: ComponentOptions) {
   return {}
@@ -31,10 +32,10 @@ export function initPropsObserver(componentOptions: MPComponentOptions) {
       return
     }
     if (this.$vm) {
-      updateComponentProps(up, this.$vm.$)
-    } else if (this.properties.uT === 'm') {
+      updateComponentProps(resolvePropValue(up), this.$vm.$)
+    } else if (resolvePropValue(this.properties.uT) === 'm') {
       // 小程序组件
-      updateMiniProgramComponentProperties(up, this)
+      updateMiniProgramComponentProperties(resolvePropValue(up), this)
     }
   }
   if (__PLATFORM__ === 'mp-weixin' || __PLATFORM__ === 'mp-qq') {

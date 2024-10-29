@@ -203,6 +203,7 @@ declare namespace UniNamespace {
     'app-harmony'?: PagesJsonPageStyle
     'mp-alipay'?: PagesJsonPageStyle
     'mp-baidu'?: PagesJsonPageStyle
+    'mp-harmony'?: PagesJsonPageStyle
     'mp-qq'?: PagesJsonPageStyle
     'mp-toutiao'?: PagesJsonPageStyle
     'mp-weixin'?: PagesJsonPageStyle

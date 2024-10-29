@@ -501,14 +501,14 @@ function initPageProps({ properties }, rawProps) {
 function findPropsData(properties, isPage) {
     return ((isPage
         ? findPagePropsData(properties)
-        : findComponentPropsData(properties.uP)) || {});
+        : findComponentPropsData(resolvePropValue(properties.uP))) || {});
 }
 function findPagePropsData(properties) {
     const propsData = {};
     if (isPlainObject(properties)) {
         Object.keys(properties).forEach((name) => {
             if (builtInProps.indexOf(name) === -1) {
-                propsData[name] = properties[name];
+                propsData[name] = resolvePropValue(properties[name]);
             }
         });
     }
@@ -530,6 +530,15 @@ function initFormField(vm) {
         });
     }
 }
+function resolvePropValue(prop) {
+    {
+        if (isPlainObject(prop)) {
+            // 目前 mp-harmony 的 prop 返回的是配置项？
+            return prop.value;
+        }
+    }
+    return prop;
+}
 
 function initData(_) {
     return {};
@@ -541,11 +550,11 @@ function initPropsObserver(componentOptions) {
             return;
         }
         if (this.$vm) {
-            updateComponentProps(up, this.$vm.$);
+            updateComponentProps(resolvePropValue(up), this.$vm.$);
         }
-        else if (this.properties.uT === 'm') {
+        else if (resolvePropValue(this.properties.uT) === 'm') {
             // 小程序组件
-            updateMiniProgramComponentProperties(up, this);
+            updateMiniProgramComponentProperties(resolvePropValue(up), this);
         }
     };
     {
@@ -886,7 +895,7 @@ function initLifetimes$1({ mocks, isPage, initRelation, vueOptions, }) {
     function attached() {
         initSetRef(this);
         const properties = this.properties;
-        initVueIds(properties.uI, this);
+        initVueIds(resolvePropValue(properties.uI), this);
         const relationOptions = {
             vuePid: this._$vuePid,
         };
@@ -903,7 +912,7 @@ function initLifetimes$1({ mocks, isPage, initRelation, vueOptions, }) {
         }, {
             mpType,
             mpInstance,
-            slots: properties.uS || {}, // vueSlots
+            slots: resolvePropValue(properties.uS) || {}, // vueSlots
             parentComponent: relationOptions.parent && relationOptions.parent.$,
             onBeforeSetup(instance, options) {
                 initRefs(instance, mpInstance);
@@ -1054,13 +1063,6 @@ const createApp = initCreateApp();
 const createPage = initCreatePage(parsePageOptions);
 const createComponent = initCreateComponent(parseComponentOptions);
 const createSubpackageApp = initCreateSubpackageApp();
-qa.EventChannel = EventChannel;
-qa.createApp = global.createApp = createApp;
-qa.createPage = createPage;
-qa.createComponent = createComponent;
-qa.createSubpackageApp = global.createSubpackageApp =
-    createSubpackageApp;
-
 has.EventChannel = EventChannel;
 has.createApp = global.createApp = createApp;
 has.createPage = createPage;
