@@ -558,7 +558,10 @@ function initPropsObserver(componentOptions) {
         }
     };
     {
-        componentOptions.properties.uP.observer = observe;
+        if (!componentOptions.observers) {
+            componentOptions.observers = {};
+        }
+        componentOptions.observers.uP = observe;
     }
 }
 function updateMiniProgramComponentProperties(up, mpInstance) {
