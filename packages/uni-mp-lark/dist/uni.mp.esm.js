@@ -529,14 +529,14 @@ function initPageProps({ properties }, rawProps) {
 function findPropsData(properties, isPage) {
     return ((isPage
         ? findPagePropsData(properties)
-        : findComponentPropsData(properties.uP)) || {});
+        : findComponentPropsData(resolvePropValue(properties.uP))) || {});
 }
 function findPagePropsData(properties) {
     const propsData = {};
     if (isPlainObject(properties)) {
         Object.keys(properties).forEach((name) => {
             if (builtInProps.indexOf(name) === -1) {
-                propsData[name] = properties[name];
+                propsData[name] = resolvePropValue(properties[name]);
             }
         });
     }
@@ -558,6 +558,9 @@ function initFormField(vm) {
         });
     }
 }
+function resolvePropValue(prop) {
+    return prop;
+}
 
 function initData(_) {
     return {};
@@ -569,11 +572,11 @@ function initPropsObserver(componentOptions) {
             return;
         }
         if (this.$vm) {
-            updateComponentProps(up, this.$vm.$);
+            updateComponentProps(resolvePropValue(up), this.$vm.$);
         }
-        else if (this.properties.uT === 'm') {
+        else if (resolvePropValue(this.properties.uT) === 'm') {
             // 小程序组件
-            updateMiniProgramComponentProperties(up, this);
+            updateMiniProgramComponentProperties(resolvePropValue(up), this);
         }
     };
     {
@@ -918,7 +921,7 @@ function initLifetimes$1({ mocks, isPage, initRelation, vueOptions, }) {
     function attached() {
         initSetRef(this);
         const properties = this.properties;
-        initVueIds(properties.uI, this);
+        initVueIds(resolvePropValue(properties.uI), this);
         const relationOptions = {
             vuePid: this._$vuePid,
         };
@@ -935,7 +938,7 @@ function initLifetimes$1({ mocks, isPage, initRelation, vueOptions, }) {
         }, {
             mpType,
             mpInstance,
-            slots: properties.uS || {}, // vueSlots
+            slots: resolvePropValue(properties.uS) || {}, // vueSlots
             parentComponent: relationOptions.parent && relationOptions.parent.$,
             onBeforeSetup(instance, options) {
                 initRefs(instance, mpInstance);

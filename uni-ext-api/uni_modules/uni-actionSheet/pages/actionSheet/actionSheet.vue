@@ -485,6 +485,10 @@
       box-shadow: 0 0 20px 5px rgba(0, 0, 0, 0.3);
     }
 
+    .uni-action-sheet_dialog__cell__container{
+      max-height: 260px;
+    }
+
     .uni-action-sheet_dialog__action {
       display: none;
     }

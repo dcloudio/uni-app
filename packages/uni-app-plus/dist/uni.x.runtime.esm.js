@@ -1220,10 +1220,6 @@ function invokeAfterRouteHooks(type) {
 function invokePageReadyHooks(page) {
   invokeArrayFns$1(pageReadyHooks, page);
 }
-var onTabBarMidButtonTapCallback = [];
-var tabBar0 = null;
-var selected0 = -1;
-var tabs = /* @__PURE__ */ new Map();
 var BORDER_COLORS = /* @__PURE__ */ new Map([["white", "rgba(255, 255, 255, 0.33)"], ["black", "rgba(0, 0, 0, 0.33)"]]);
 function getBorderStyle(borderStyle) {
   var value = BORDER_COLORS.get(borderStyle);
@@ -1243,6 +1239,10 @@ function fixBorderStyle(tabBarConfig) {
   tabBarConfig.set("borderStyle", borderStyle);
   tabBarConfig.delete("borderColor");
 }
+var onTabBarMidButtonTapCallback = [];
+var tabBar0 = null;
+var selected0 = -1;
+var tabs = /* @__PURE__ */ new Map();
 function getTabList() {
   var tabConfig = __uniConfig.tabBar ? /* @__PURE__ */ new Map() : null;
   if (__uniConfig.tabBar) {
