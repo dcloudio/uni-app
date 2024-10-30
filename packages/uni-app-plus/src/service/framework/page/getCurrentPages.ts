@@ -3,7 +3,6 @@ import { formatLog } from '@dcloudio/uni-shared'
 import type { ComponentPublicInstance } from 'vue'
 import { getVueApp } from '../app/vueApp'
 
-
 export function getPage$BasePage(
   page: ComponentPublicInstance
 ): Page.PageInstance['$page'] {
@@ -18,7 +17,7 @@ export function addCurrentPage(page: ComponentPublicInstance) {
     return pages.push(page)
   }
   // 开发阶段热刷新需要移除旧的相同 id 的 page
-  const index = pages.findIndex((p) => getPage$BasePage(page).id === $page.id)
+  const index = pages.findIndex((p) => getPage$BasePage(p).id === $page.id)
   if (index > -1) {
     pages.splice(index, 1, page)
   } else {

@@ -520,7 +520,7 @@ function addCurrentPage(page) {
   if (!$page.meta.isNVue) {
     return pages.push(page);
   }
-  var index2 = pages.findIndex((p) => getPage$BasePage(page).id === $page.id);
+  var index2 = pages.findIndex((p) => getPage$BasePage(p).id === $page.id);
   if (index2 > -1) {
     pages.splice(index2, 1, page);
   } else {
