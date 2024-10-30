@@ -1,5 +1,5 @@
 import type { ComponentPropsOptions, ComponentPublicInstance } from 'vue'
-import { extend, isArray, isFunction, isPlainObject } from '@vue/shared'
+import { extend, hasOwn, isArray, isFunction, isPlainObject } from '@vue/shared'
 import type { MPComponentInstance, MPComponentOptions } from './component'
 // @ts-expect-error
 import { findComponentPropsData } from 'vue'
@@ -229,9 +229,9 @@ export function initFormField(vm: ComponentPublicInstance) {
   }
 }
 
-export function resolvePropValue(prop: string | { value: string }): any {
+export function resolvePropValue(prop: string | { value: unknown }): any {
   if (__PLATFORM__ === 'mp-harmony') {
-    if (isPlainObject(prop)) {
+    if (isPlainObject(prop) && hasOwn(prop, 'value')) {
       // 目前 mp-harmony 的 prop 返回的是配置项？
       return prop.value
     }

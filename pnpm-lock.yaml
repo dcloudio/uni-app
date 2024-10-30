@@ -1562,7 +1562,14 @@ importers:
         specifier: ^1.0.2
         version: 1.2.1
 
-  packages/uni-mp-core: {}
+  packages/uni-mp-core:
+    dependencies:
+      '@vue/shared':
+        specifier: 3.4.21
+        version: 3.4.21
+      vue:
+        specifier: 3.4.21
+        version: 3.4.21(typescript@5.4.2)
 
   packages/uni-mp-harmony:
     dependencies:
