@@ -53,6 +53,7 @@ export function uniAppPlugin(): UniVitePlugin {
   const outputDir = process.env.UNI_OUTPUT_DIR
   const uniModulesDir = normalizePath(path.resolve(inputDir, 'uni_modules'))
   const mainUTS = resolveMainPathOnce(inputDir)
+  const pagesJsonPath = normalizePath(path.resolve(inputDir, 'pages.json'))
   const uvueOutputDir = uvueOutDir('app-android')
   const tscOutputDir = tscOutDir('app-android')
 
@@ -208,17 +209,27 @@ export function uniAppPlugin(): UniVitePlugin {
       if (uniXKotlinCompiler) {
         // watcher && watcher.watch(3000)
         fileName = normalizePath(fileName)
-        if (fileName.startsWith(uniModulesDir)) {
-          // 忽略uni_modules uts原生插件中的文件
-          const plugin = fileName.slice(uniModulesDir.length + 1).split('/')[0]
-          if (getCurrentCompiledUTSPlugins().has(plugin)) {
-            return
+        if (fileName === pagesJsonPath) {
+          // pages.json 被注入了main.uts，需要触发main.uts的重新编译
+          changedFiles.push({
+            fileName: normalizePath(mainUTS),
+            event: change.event,
+          })
+        } else {
+          if (fileName.startsWith(uniModulesDir)) {
+            // 忽略uni_modules uts原生插件中的文件
+            const plugin = fileName
+              .slice(uniModulesDir.length + 1)
+              .split('/')[0]
+            if (getCurrentCompiledUTSPlugins().has(plugin)) {
+              return
+            }
           }
-        }
-        const depMap = getCssDepMap()
-        if (depMap.has(fileName)) {
-          for (const id of depMap.get(fileName)!) {
-            changedFiles.push({ fileName: id, event: change.event })
+          const depMap = getCssDepMap()
+          if (depMap.has(fileName)) {
+            for (const id of depMap.get(fileName)!) {
+              changedFiles.push({ fileName: id, event: change.event })
+            }
           }
         }
         changedFiles.push({ fileName, event: change.event })
