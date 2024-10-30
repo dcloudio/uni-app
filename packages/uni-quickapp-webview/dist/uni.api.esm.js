@@ -979,6 +979,8 @@ function populateParameters(fromRes, toRes) {
         browserName: undefined,
         browserVersion: undefined,
         isUniAppX: false,
+        romName: undefined,
+        romVersion: undefined,
     };
     extend(toRes, parameters);
 }
