@@ -15,6 +15,7 @@ import { resolveDefineCode } from './utils'
 import { resolveGenTemplateCodeOptions } from '../../template'
 import { addExtApiComponents } from '../../../../../utils'
 import { genTemplateCode } from '../../../code/template'
+import type { TransformPluginContext } from 'rollup'
 
 export function processNormalScript(
   ctx: ScriptCompileContext,
@@ -110,7 +111,8 @@ export function processTemplate(
     bindingMetadata?: BindingMetadata
     className: string
     rootDir: string
-  }
+  },
+  pluginContext?: TransformPluginContext
 ) {
   const options = resolveGenTemplateCodeOptions(
     relativeFilename,
@@ -123,7 +125,8 @@ export function processTemplate(
       rootDir,
       sourceMap: enableSourceMap(),
       bindingMetadata,
-    }
+    },
+    pluginContext
   )
   const { code, preamble, elements, map, easyComponentAutoImports } =
     genTemplateCode(sfc, options)
