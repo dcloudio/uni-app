@@ -27,12 +27,12 @@ export interface ShowActionSheetSuccess2 extends AsyncApiSuccessResult {
   tapIndex: number
 }
 type ShowActionSheetSuccessCallback = (result: ShowActionSheetSuccess2) => void
-// @ts-expect-error
+
 export interface ShowActionSheetFail2 extends IUniError {
   errCode: ShowActionSheetErrorCode
 }
 type ShowActionSheetFailCallback = (result: ShowActionSheetFail2) => void
-// @ts-expect-error
+
 export type ShowActionSheetComplete = AsyncApiResult
 type ShowActionSheetCompleteCallback = (result: ShowActionSheetComplete) => void
 
@@ -43,11 +43,11 @@ export type ShowActionSheet2Options = {
   /**
      * 菜单标题
      */
-  title: string | null,
+  title?: string | null,
   /**
-   * 警示文案（同菜单标题, app无效）
+   * 警示文案（仅微信小程序真机有效）
    */
-  alertText: string | null,
+  alertText?: string | null,
   /**
    * 按钮的文字数组
    */
@@ -55,7 +55,7 @@ export type ShowActionSheet2Options = {
   /**
    * 取消按钮的文字，默认为"取消"
    */
-  cancelText: string | null,
+  cancelText?: string | null,
   /**
    * 按钮的文字颜色，字符串格式
    */
@@ -67,27 +67,27 @@ export type ShowActionSheet2Options = {
   /**
    * 菜单标题文字颜色，字符串格式
    */
-  titleColor: string.ColorString | null,
+  titleColor?: string.ColorString | null,
   /**
    * 取消按钮的文字颜色，字符串格式
    */
-  cancelColor: string.ColorString | null,
+  cancelColor?: string.ColorString | null,
   /**
    * 弹框背景颜色
    */
-  backgroundColor: string.ColorString | null,
+  backgroundColor?: string.ColorString | null,
   /**
    * 接口调用成功的回调函数
    */
-  success: ShowActionSheetSuccessCallback | null,
+  success?: ShowActionSheetSuccessCallback | null,
   /**
    * 接口调用失败的回调函数
    */
-  fail: ShowActionSheetFailCallback | null,
+  fail?: ShowActionSheetFailCallback | null,
   /**
    * 接口调用结束的回调函数（调用成功、失败都会执行）
    */
-  complete: ShowActionSheetCompleteCallback | null
+  complete?: ShowActionSheetCompleteCallback | null
 };
 
 /**
@@ -210,7 +210,6 @@ export class ShowActionSheetSuccessImpl extends AsyncApiSuccessResult implements
   }
 }
 export class ShowActionSheetFailImpl extends UniError implements ShowActionSheetFail2 {
-  // @ts-expect-error
   override errCode: ShowActionSheetErrorCode
   constructor(errMsg: string = 'showActionSheet:fail cancel', errCode: ShowActionSheetErrorCode = 4) {
     super(errMsg)

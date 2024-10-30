@@ -2351,7 +2351,11 @@ function onResize$1(res) {
     }
     const systemDialogPages = (_b = page.$pageLayoutInstance) == null ? void 0 : _b.$systemDialogPages.value;
     if ((systemDialogPages == null ? void 0 : systemDialogPages.length) > 0) {
-      invokeHook(systemDialogPages[systemDialogPages.length - 1].vm, ON_RESIZE, res);
+      invokeHook(
+        systemDialogPages[systemDialogPages.length - 1].vm,
+        ON_RESIZE,
+        res
+      );
     }
   }
   UniServiceJSBridge.invokeOnCallback("onWindowResize", res);

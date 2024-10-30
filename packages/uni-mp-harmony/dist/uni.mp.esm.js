@@ -532,7 +532,7 @@ function initFormField(vm) {
 }
 function resolvePropValue(prop) {
     {
-        if (isPlainObject(prop)) {
+        if (isPlainObject(prop) && hasOwn(prop, 'value')) {
             // 目前 mp-harmony 的 prop 返回的是配置项？
             return prop.value;
         }
