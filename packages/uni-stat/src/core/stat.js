@@ -4,11 +4,10 @@ import { set_page_residence_time } from '../utils/pageTime.js'
 import {
   get_page_types,
   get_platform_name,
-  get_route,
   get_space,
   is_debug,
+  is_push_clientid,
   is_page_report,
-  is_push_clientid
 } from '../utils/pageInfo.js'
 import { dbSet } from '../utils/db.js'
 class Stat extends Report {
