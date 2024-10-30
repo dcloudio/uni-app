@@ -976,7 +976,8 @@ function initLifetimes(lifetimesOptions) {
 const mocks = ['nodeId', 'componentName', '_componentId', 'uniquePrefix'];
 
 function isPage(mpInstance) {
-    return !!(mpInstance._methods || mpInstance.methods).onLoad;
+    return (!!mpInstance.route ||
+        !!(mpInstance._methods || mpInstance.methods || mpInstance).onLoad);
 }
 function initRelation(mpInstance) {
     // triggerEvent 后，接收事件时机特别晚，已经到了 ready 之后
