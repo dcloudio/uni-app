@@ -4146,7 +4146,8 @@ function normalizeArg(arg, callbacks, keepAlive) {
       }
       return {
         pageId,
-        nodeId
+        nodeId,
+        __uni_element: true
       };
     } else {
       var newArg = {};

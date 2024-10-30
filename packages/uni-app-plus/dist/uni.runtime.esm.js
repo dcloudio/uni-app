@@ -18341,7 +18341,7 @@ function normalizeArg(arg, callbacks, keepAlive) {
                 pageId = el.pageId;
                 nodeId = el.getNodeId();
             }
-            return { pageId, nodeId };
+            return { pageId, nodeId, __uni_element: true };
         }
         else {
             // 必须复制，否则会污染原始对象，比如：
