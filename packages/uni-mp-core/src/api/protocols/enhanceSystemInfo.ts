@@ -108,7 +108,7 @@ export function populateParameters(
 
   // wx.getAccountInfoSync
 
-  const parameters = {
+  const parameters: Record<string, string | number | boolean | undefined> = {
     appId: process.env.UNI_APP_ID,
     appName: process.env.UNI_APP_NAME,
     appVersion: process.env.UNI_APP_VERSION_NAME,
@@ -141,8 +141,10 @@ export function populateParameters(
     browserName: undefined,
     browserVersion: undefined,
     isUniAppX: __X__,
-    romName: __PLATFORM__ === 'mp-harmony' ? 'HarmonyOS' : undefined,
-    romVersion: undefined,
+  }
+
+  if (__PLATFORM__ === 'mp-harmony') {
+    parameters.romName = 'HarmonyOS'
   }
 
   extend(toRes, parameters)
