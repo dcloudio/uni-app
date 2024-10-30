@@ -3,12 +3,12 @@ import UniActionSheetPage from "@/uni_modules/uni-actionSheet/pages/actionSheet/
 import { ShowActionSheet2, ShowActionSheet2Options } from "../interface.uts";
 
 export const showActionSheet2: ShowActionSheet2 = defineAsyncApi('showActionSheet2', (
-  options: ShowActionSheet2Options
+  options: ShowActionSheet2Options, { resolve, reject }
 ) => {
   registerSystemRoute("uni:actionSheet", UniActionSheetPage);
 
   const uuid = Date.now() + '' + Math.floor(Math.random() * 1e7)
-  const baseEventName = `_action_sheet_${uuid}`
+  const baseEventName = `uni_action_sheet_${uuid}`
   const readyEventName = `${baseEventName}_ready`
   const optionsEventName = `${baseEventName}_options`
   const successEventName = `${baseEventName}_success`
@@ -17,10 +17,10 @@ export const showActionSheet2: ShowActionSheet2 = defineAsyncApi('showActionShee
     uni.$emit(optionsEventName, options)
   })
   uni.$on(successEventName, (index: number) => {
-    options.success?.({ errMsg: 'showActionSheet:ok', tapIndex: index })
+    resolve({ tapIndex: index })
   })
   uni.$on(failEventName, () => {
-    options.fail?.({ errMsg: `showActionSheet:failed cancel` })
+    reject('cancel')
   })
   uni.openDialogPage({
     url: `uni:actionSheet?readyEventName=${readyEventName}&optionsEventName=${optionsEventName}&successEventName=${successEventName}&failEventName=${failEventName}`,

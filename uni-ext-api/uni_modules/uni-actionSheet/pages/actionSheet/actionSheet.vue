@@ -49,7 +49,7 @@
         </text>
       </view>
       <!-- #ifdef WEB -->
-      <view v-if='isWidescreen && !!popover' :style='triangleStyle' class="uni-action-sheet_dialog__triangle" />
+      <view v-if='isWidescreen && Object.keys(popover).length > 0' :style='triangleStyle' class="uni-action-sheet_dialog__triangle" />
       <!-- #endif -->
     </view>
   </view>
@@ -136,6 +136,12 @@
       } else if (osTheme != null) {
         this.theme = osTheme
       }
+      // #ifdef WEB
+      const hostTheme = systemInfo.hostTheme
+      if (hostTheme != null) {
+        this.theme = hostTheme
+      } 
+      // #endif
       this.isLandscape = systemInfo.deviceOrientation == 'landscape'
 
       // #ifdef WEB
@@ -169,7 +175,7 @@
         return this.windowHeight >= 500 && this.windowWidth >= 500
       },
       containerStyle(): UTSJSONObject {
-        if (!this.popover) {
+        if (Object.keys(this.popover).length == 0) {
           return {}
         }
         const res = {
@@ -192,7 +198,7 @@
         return res
       },
       triangleStyle(): UTSJSONObject {
-        if (!this.popover) {
+        if (Object.keys(this.popover).length == 0) {
           return {}
         }
         const res = {}
@@ -437,6 +443,8 @@
   .uni-action-sheet_dialog__menu.uni-action-sheet_landscape__mode {
     border-top-left-radius: 5px;
     border-top-right-radius: 5px;
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
     box-shadow: 0 0 20px 5px rgba(0, 0, 0, 0.3);
   }
 
@@ -498,13 +506,10 @@
       z-index: 999;
       border-radius: 5px;
       opacity: 0;
-      visibility: hidden;
-      backface-visibility: hidden;
       transform: translate(-50%, -50%);
-      transition: opacity 0.3s, visibility 0.3s;
+      transition: opacity 0.3s;
     }
     .uni-action-sheet_dialog__show {
-      visibility: visible;
       opacity: 1;
       transform: translate(-50%, -50%) !important;
     }

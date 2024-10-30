@@ -3501,6 +3501,8 @@ const _style_0 = {
     ".uni-action-sheet_landscape__mode": {
       "borderTopLeftRadius": 5,
       "borderTopRightRadius": 5,
+      "borderBottomLeftRadius": 5,
+      "borderBottomRightRadius": 5,
       "boxShadow": "0 0 20px 5px rgba(0, 0, 0, 0.3)"
     }
   },
@@ -3713,10 +3715,14 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   }, toDisplayString($options.cancelText), 7)], 6)], 2)]);
 }
 const UniActionSheetPage = /* @__PURE__ */ _export_sfc(_sfc_main, [["render", _sfc_render], ["styles", [_style_0]]]);
-var showActionSheet2 = /* @__PURE__ */ defineAsyncApi("showActionSheet2", (options) => {
+var showActionSheet2 = /* @__PURE__ */ defineAsyncApi("showActionSheet2", (options, _ref) => {
+  var {
+    resolve,
+    reject
+  } = _ref;
   registerSystemRoute("uni:actionSheet", UniActionSheetPage);
   var uuid = Date.now() + "" + Math.floor(Math.random() * 1e7);
-  var baseEventName = "_action_sheet_".concat(uuid);
+  var baseEventName = "uni_action_sheet_".concat(uuid);
   var readyEventName = "".concat(baseEventName, "_ready");
   var optionsEventName = "".concat(baseEventName, "_options");
   var successEventName = "".concat(baseEventName, "_success");
@@ -3725,23 +3731,18 @@ var showActionSheet2 = /* @__PURE__ */ defineAsyncApi("showActionSheet2", (optio
     uni.$emit(optionsEventName, options);
   });
   uni.$on(successEventName, (index2) => {
-    var _options$success;
-    (_options$success = options.success) === null || _options$success === void 0 || _options$success.call(options, {
-      errMsg: "showActionSheet:ok",
+    resolve({
       tapIndex: index2
     });
   });
   uni.$on(failEventName, () => {
-    var _options$fail;
-    (_options$fail = options.fail) === null || _options$fail === void 0 || _options$fail.call(options, {
-      errMsg: "showActionSheet:failed cancel"
-    });
+    reject("cancel");
   });
   uni.openDialogPage({
     url: "uni:actionSheet?readyEventName=".concat(readyEventName, "&optionsEventName=").concat(optionsEventName, "&successEventName=").concat(successEventName, "&failEventName=").concat(failEventName),
     fail: function(err) {
-      var _options$fail2;
-      (_options$fail2 = options.fail) === null || _options$fail2 === void 0 || _options$fail2.call(options, {
+      var _options$fail;
+      (_options$fail = options.fail) === null || _options$fail === void 0 || _options$fail.call(options, {
         errMsg: "showActionSheet:failed, ".concat(err.errMsg)
       });
       uni.$off(readyEventName);

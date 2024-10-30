@@ -22,7 +22,6 @@ export type Popover2 = {
  * - 4: 框架内部异常
  */
 export type ShowActionSheetErrorCode = 4
-// @ts-expect-error
 export interface ShowActionSheetSuccess2 extends AsyncApiSuccessResult {
   tapIndex: number
 }
