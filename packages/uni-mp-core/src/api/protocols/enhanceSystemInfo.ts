@@ -64,6 +64,9 @@ export function populateParameters(
     osName = system.split(' ')[0] || ''
     osVersion = system.split(' ')[1] || ''
   }
+  if (__PLATFORM__ === 'mp-harmony') {
+    osName = 'harmonyos'
+  }
   let hostVersion = version
   // host 枚举值 https://smartprogram.baidu.com/docs/develop/api/device_sys/hostlist/
   if (__PLATFORM__ === 'mp-baidu') {
@@ -138,6 +141,8 @@ export function populateParameters(
     browserName: undefined,
     browserVersion: undefined,
     isUniAppX: __X__,
+    romName: __PLATFORM__ === 'mp-harmony' ? 'HarmonyOS' : undefined,
+    romVersion: undefined,
   }
 
   extend(toRes, parameters)
@@ -183,7 +188,11 @@ export function getAppLanguage(defaultLanguage: string) {
 
 export function getHostName(fromRes: any) {
   const _platform =
-    __PLATFORM__ === 'mp-weixin' ? 'WeChat' : __PLATFORM__.split('-')[1]
+    __PLATFORM__ === 'mp-weixin'
+      ? 'WeChat'
+      : __PLATFORM__ === 'mp-harmony'
+      ? 'HarmonyOS'
+      : __PLATFORM__.split('-')[1]
   let _hostName = fromRes.hostName || _platform // mp-jd
   if (__PLATFORM__ === 'mp-weixin') {
     if (fromRes.environment) {
