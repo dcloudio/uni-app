@@ -485,21 +485,15 @@ function updateCurPageAttrs(pageMeta: UniApp.PageRouteMeta) {
     }
   }
 }
-// 触发页面page-meta.vue的设置
 function updatePageMeta(pageMeta: UniApp.PageRouteMeta) {
-  setCurrentPageMeta(null, {
-    pageStyle: pageMeta.pageStyle,
-    rootFontSize: pageMeta.rootFontSize,
+  // 触发页面page-meta.vue的设置
+  nextTick(() => {
+    setCurrentPageMeta(null, {
+      pageStyle: pageMeta.pageStyle,
+      rootFontSize: pageMeta.rootFontSize,
+    })
   })
 }
-// 页面mounted和activeated时触发
-export function onPageActivated(
-  instance: ComponentInternalInstance,
-  pageMeta: UniApp.PageRouteMeta
-) {
-  updatePageMeta(pageMeta)
-}
-
 export function onPageShow(
   instance: ComponentInternalInstance,
   pageMeta: UniApp.PageRouteMeta
@@ -507,10 +501,8 @@ export function onPageShow(
   updateBodyScopeId(instance)
   updateCurPageCssVar(pageMeta)
   updateCurPageAttrs(pageMeta)
+  updatePageMeta(pageMeta)
   initPageScrollListener(instance, pageMeta)
-  nextTick(() => {
-    onPageActivated(instance, pageMeta)
-  })
 }
 
 export function onPageReady(instance: ComponentInternalInstance) {
