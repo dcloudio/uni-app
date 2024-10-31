@@ -1,6 +1,5 @@
 import type { ComponentPublicInstance } from 'vue'
 import type { SetPageMetaOptions } from '@dcloudio/uni-api'
-import { hasOwn } from '@vue/shared'
 
 export function setCurrentPageMeta(
   page: ComponentPublicInstance | null,
@@ -9,18 +8,18 @@ export function setCurrentPageMeta(
   const { pageStyle, rootFontSize } = options
   // h5端 page-meta.vue组件触发时setPageMeta时, 需要将pageStyle和rootFontSize存储到page.$page.meta
   if (__PLATFORM__ === 'h5' && page) {
-    if (hasOwn(options, 'pageStyle')) {
+    if (hasKey(options, 'pageStyle')) {
       page.$page.meta.pageStyle = pageStyle
     }
-    if (hasOwn(options, 'rootFontSize')) {
+    if (hasKey(options, 'rootFontSize')) {
       page.$page.meta.rootFontSize = rootFontSize
     }
   }
 
-  if (hasOwn(options, 'pageStyle')) {
+  if (hasKey(options, 'pageStyle')) {
     setPageStyle(pageStyle)
   }
-  if (hasOwn(options, 'rootFontSize')) {
+  if (hasKey(options, 'rootFontSize')) {
     setRootFontSize(rootFontSize)
   }
 }
@@ -49,4 +48,11 @@ const setRootFontSize = (rootFontSize: string | undefined | null) => {
     document.documentElement.style.removeProperty('font-size')
     document.documentElement.removeAttribute('root-font-size')
   }
+}
+
+function hasKey<T extends object, K extends keyof T>(
+  obj: T,
+  key: K
+): obj is T & Record<K, unknown> {
+  return obj.hasOwnProperty(key)
 }
