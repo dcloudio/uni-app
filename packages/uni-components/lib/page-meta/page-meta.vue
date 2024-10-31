@@ -138,12 +138,12 @@ export default {
   },
   beforeMount () {
     this.setBackgroundColor()
-    this.backgroundTextStyle && this.setBackgroundTextStyle()
-  },
-  mounted() {
     if (this.rootFontSize || this.pageStyle) {
       this.setPageMeta()
     }
+    this.backgroundTextStyle && this.setBackgroundTextStyle()
+  },
+  mounted() {
     this.scrollTop && this.pageScrollTo()
   },
   methods: {
