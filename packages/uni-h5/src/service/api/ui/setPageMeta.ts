@@ -1,7 +1,6 @@
 import type { ComponentPublicInstance } from 'vue'
 import type { SetPageMetaOptions } from '@dcloudio/uni-api'
 import { hasOwn } from '@vue/shared'
-import { getPage$BasePage } from 'packages/uni-h5/src/framework/setup/page'
 
 export function setCurrentPageMeta(
   page: ComponentPublicInstance | null,
@@ -11,10 +10,10 @@ export function setCurrentPageMeta(
   // h5端 page-meta.vue组件触发时setPageMeta时, 需要将pageStyle和rootFontSize存储到page.$page.meta
   if (__PLATFORM__ === 'h5' && page) {
     if (hasOwn(options, 'pageStyle')) {
-      getPage$BasePage(page).meta.pageStyle = pageStyle
+      page.$page.meta.pageStyle = pageStyle
     }
     if (hasOwn(options, 'rootFontSize')) {
-      getPage$BasePage(page).meta.rootFontSize = rootFontSize
+      page.$page.meta.rootFontSize = rootFontSize
     }
   }
 
