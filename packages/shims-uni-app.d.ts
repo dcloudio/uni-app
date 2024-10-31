@@ -257,9 +257,6 @@ declare namespace UniNamespace {
     eventChannel?: any
     // 目前 app-harmony 专用
     isNVueStyle?: boolean
-    // 目前 h5 专用
-    pageStyle?:any, 
-    rootFontSize?:string
   }
 
   interface PagesJsonPageOptions {
