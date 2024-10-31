@@ -51,7 +51,7 @@ let isFirst = true
 export function uniAppPlugin(): UniVitePlugin {
   const inputDir = process.env.UNI_INPUT_DIR
   const outputDir = process.env.UNI_OUTPUT_DIR
-  const uniModulesDir = normalizePath(path.resolve(inputDir, 'uni_modules'))
+  // const uniModulesDir = normalizePath(path.resolve(inputDir, 'uni_modules'))
   const mainUTS = resolveMainPathOnce(inputDir)
   const pagesJsonPath = normalizePath(path.resolve(inputDir, 'pages.json'))
   const uvueOutputDir = uvueOutDir('app-android')
@@ -216,15 +216,16 @@ export function uniAppPlugin(): UniVitePlugin {
             event: change.event,
           })
         } else {
-          if (fileName.startsWith(uniModulesDir)) {
-            // 忽略uni_modules uts原生插件中的文件
-            const plugin = fileName
-              .slice(uniModulesDir.length + 1)
-              .split('/')[0]
-            if (getCurrentCompiledUTSPlugins().has(plugin)) {
-              return
-            }
-          }
+          // 主工程可能引入uni_modules中的文件
+          // if (fileName.startsWith(uniModulesDir)) {
+          //   // 忽略uni_modules uts原生插件中的文件
+          //   const plugin = fileName
+          //     .slice(uniModulesDir.length + 1)
+          //     .split('/')[0]
+          //   if (getCurrentCompiledUTSPlugins().has(plugin)) {
+          //     return
+          //   }
+          // }
           const depMap = getCssDepMap()
           if (depMap.has(fileName)) {
             for (const id of depMap.get(fileName)!) {
