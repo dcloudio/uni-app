@@ -819,16 +819,6 @@
   var ON_PAGE_SCROLL = "onPageScroll";
   var ON_REACH_BOTTOM = "onReachBottom";
   var ON_WXS_INVOKE_CALL_METHOD = "onWxsInvokeCallMethod";
-  var lastLogTime = 0;
-  function formatLog(module) {
-    var now = Date.now();
-    var diff = lastLogTime ? now - lastLogTime : 0;
-    lastLogTime = now;
-    for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key2 = 1; _key2 < _len; _key2++) {
-      args[_key2 - 1] = arguments[_key2];
-    }
-    return "[".concat(now, "][").concat(diff, "ms][").concat(module, "]：").concat(args.map((arg) => JSON.stringify(arg)).join(" "));
-  }
   function cache(fn) {
     var cache2 = /* @__PURE__ */ Object.create(null);
     return (str) => {
@@ -850,8 +840,8 @@
     var res;
     return function() {
       if (fn) {
-        for (var _len2 = arguments.length, args = new Array(_len2), _key3 = 0; _key3 < _len2; _key3++) {
-          args[_key3] = arguments[_key3];
+        for (var _len = arguments.length, args = new Array(_len), _key2 = 0; _key2 < _len; _key2++) {
+          args[_key2] = arguments[_key2];
         }
         res = fn.apply(ctx2, args);
         fn = null;
@@ -873,6 +863,16 @@
       return obj[key2];
     }
     return getValueByDataPath(obj[key2], parts.slice(1).join("."));
+  }
+  var lastLogTime = 0;
+  function formatLog(module) {
+    var now = Date.now();
+    var diff = lastLogTime ? now - lastLogTime : 0;
+    lastLogTime = now;
+    for (var _len2 = arguments.length, args = new Array(_len2 > 1 ? _len2 - 1 : 0), _key3 = 1; _key3 < _len2; _key3++) {
+      args[_key3 - 1] = arguments[_key3];
+    }
+    return "[".concat(now, "][").concat(diff, "ms][").concat(module, "]：").concat(args.map((arg) => JSON.stringify(arg)).join(" "));
   }
   function formatKey(key2) {
     return camelize(key2.substring(5));
@@ -1666,9 +1666,7 @@
     function updateRem() {
       var width = getWindowWidth();
       width = width <= maxWidth2 ? width : baseWidth2;
-      if (!document.documentElement.hasAttribute("root-font-size")) {
-        document.documentElement.style.fontSize = width / 23.4375 + "px";
-      }
+      document.documentElement.style.fontSize = width / 23.4375 + "px";
     }
     updateRem();
     document.addEventListener("DOMContentLoaded", updateRem);
@@ -26259,38 +26257,6 @@
   function onWebviewReady$1() {
     UniViewJSBridge.publishHandler(ON_WEBVIEW_READY);
   }
-  function setCurrentPageMeta(page, options) {
-    var {
-      pageStyle,
-      rootFontSize
-    } = options;
-    if (hasOwn$1(options, "pageStyle")) {
-      setPageStyle(pageStyle);
-    }
-    if (hasOwn$1(options, "rootFontSize")) {
-      setRootFontSize(rootFontSize);
-    }
-  }
-  var setPageStyle = (pageStyle) => {
-    var pageElm = document.querySelector("uni-page-body") || document.body;
-    if (pageStyle) {
-      pageElm.setAttribute("style", pageStyle);
-    } else {
-      pageElm.removeAttribute("style");
-    }
-  };
-  var setRootFontSize = (rootFontSize) => {
-    if (document.documentElement.style.fontSize === rootFontSize) {
-      return;
-    }
-    if (rootFontSize) {
-      document.documentElement.style.fontSize = rootFontSize;
-      document.documentElement.setAttribute("root-font-size", "true");
-    } else {
-      document.documentElement.style.removeProperty("font-size");
-      document.documentElement.removeAttribute("root-font-size");
-    }
-  };
   function findElem(vm) {
     {
       return window.__$__(vm).$;
@@ -26451,6 +26417,19 @@
       }
     });
     callback(result);
+  }
+  function setCurrentPageMeta(_page, _ref) {
+    var {
+      pageStyle,
+      rootFontSize
+    } = _ref;
+    if (pageStyle) {
+      var pageElm = document.querySelector("uni-page-body") || document.body;
+      pageElm.setAttribute("style", pageStyle);
+    }
+    if (rootFontSize && document.documentElement.style.fontSize !== rootFontSize) {
+      document.documentElement.style.fontSize = rootFontSize;
+    }
   }
   function addIntersectionObserver(_ref, _pageId) {
     var {

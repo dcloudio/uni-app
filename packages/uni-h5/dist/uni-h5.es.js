@@ -724,9 +724,7 @@ function useRem() {
   function updateRem() {
     let width = getWindowWidth$1();
     width = width <= maxWidth2 ? width : baseWidth2;
-    if (!document.documentElement.hasAttribute("root-font-size")) {
-      document.documentElement.style.fontSize = width / 23.4375 + "px";
-    }
+    document.documentElement.style.fontSize = width / 23.4375 + "px";
   }
   updateRem();
   document.addEventListener("DOMContentLoaded", updateRem);
@@ -7122,46 +7120,6 @@ function initLaunchOptions({
   extend(enterOptions, launchOptions);
   return extend({}, launchOptions);
 }
-function setCurrentPageMeta(page, options) {
-  const { pageStyle, rootFontSize } = options;
-  if (page) {
-    if (hasOwn(options, "pageStyle")) {
-      getPage$BasePage(page).meta.pageStyle = pageStyle;
-    }
-    if (hasOwn(options, "rootFontSize")) {
-      getPage$BasePage(page).meta.rootFontSize = rootFontSize;
-    }
-  }
-  if (hasOwn(options, "pageStyle")) {
-    setPageStyle(pageStyle);
-  }
-  if (hasOwn(options, "rootFontSize")) {
-    setRootFontSize(rootFontSize);
-  }
-}
-const setPageStyle = (pageStyle) => {
-  const pageElm = document.querySelector("uni-page-body") || document.body;
-  if (pageElm === document.body) {
-    console.warn("uni-page-body 获取失败");
-  }
-  if (pageStyle) {
-    pageElm.setAttribute("style", pageStyle);
-  } else {
-    pageElm.removeAttribute("style");
-  }
-};
-const setRootFontSize = (rootFontSize) => {
-  if (document.documentElement.style.fontSize === rootFontSize) {
-    return;
-  }
-  if (rootFontSize) {
-    document.documentElement.style.fontSize = rootFontSize;
-    document.documentElement.setAttribute("root-font-size", "true");
-  } else {
-    document.documentElement.style.removeProperty("font-size");
-    document.documentElement.removeAttribute("root-font-size");
-  }
-};
 const SEP = "$$";
 const currentPagesMap = /* @__PURE__ */ new Map();
 function getPage$BasePage(page) {
@@ -7312,23 +7270,11 @@ function updateCurPageAttrs(pageMeta) {
     }
   }
 }
-function updatePageMeta(pageMeta) {
-  setCurrentPageMeta(null, {
-    pageStyle: pageMeta.pageStyle,
-    rootFontSize: pageMeta.rootFontSize
-  });
-}
-function onPageActivated(instance2, pageMeta) {
-  updatePageMeta(pageMeta);
-}
 function onPageShow(instance2, pageMeta) {
   updateBodyScopeId(instance2);
   updateCurPageCssVar(pageMeta);
   updateCurPageAttrs(pageMeta);
   initPageScrollListener(instance2, pageMeta);
-  nextTick(() => {
-    onPageActivated(instance2, pageMeta);
-  });
 }
 function onPageReady(instance2) {
   const scopeId = getScopeId(instance2);
@@ -7638,6 +7584,15 @@ function requestComponentInfo(page, reqs, callback) {
     }
   });
   callback(result);
+}
+function setCurrentPageMeta(_page, { pageStyle, rootFontSize }) {
+  if (pageStyle) {
+    const pageElm = document.querySelector("uni-page-body") || document.body;
+    pageElm.setAttribute("style", pageStyle);
+  }
+  if (rootFontSize && document.documentElement.style.fontSize !== rootFontSize) {
+    document.documentElement.style.fontSize = rootFontSize;
+  }
 }
 function addIntersectionObserver({ reqId, component, options, callback }, _pageId) {
   const $el = findElem(component);

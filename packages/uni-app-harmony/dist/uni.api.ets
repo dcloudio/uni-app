@@ -1533,6 +1533,10 @@ interface IShowLoadingOptions {
     title: string;
     mask: boolean;
 }
+interface IHideLoadingOptions {
+}
+interface IHideLoadingSuccess {
+}
 type PullDownRefreshErrorCode = 4;
 interface StartPullDownRefreshFail extends IUniError {
     errCode: PullDownRefreshErrorCode;
@@ -4141,7 +4145,13 @@ export function initUniExtApi() {
                 networkType: NetworkinfoType[type].toLocaleLowerCase()
             } as GetNetworkTypeSuccess);
         }).catch((err: BusinessError4)=>{
-            res.reject(err.message);
+            if (err.code === 2100001) {
+                res.resolve({
+                    networkType: NetworkinfoType[1].toLocaleLowerCase()
+                } as GetNetworkTypeSuccess);
+            } else {
+                res.reject(err.message);
+            }
         });
     }) as GetNetworkType;
     const invokeOnNetworkStatusChange = (networkType: string)=>{
@@ -6399,13 +6409,17 @@ export function initUniExtApi() {
         return encodeURIComponent(decoded) !== decoded;
     };
     const parseUrl = (url: string)=>{
-        const urlObj = harmonyUrl.URL.parseURL(url);
-        urlObj.params.forEach((value, key)=>{
-            if (needsEncoding(value)) {
-                urlObj.params.set(key, value);
-            }
-        });
-        return urlObj.toString();
+        try {
+            const urlObj = harmonyUrl.URL.parseURL(url);
+            urlObj.params.forEach((value, key)=>{
+                if (needsEncoding(value)) {
+                    urlObj.params.set(key, value);
+                }
+            });
+            return urlObj.toString();
+        } catch (error) {
+            return url;
+        }
     };
     const certificates: Certificate[] = [];
     const getCertType = (certPath: string): http.CertType =>{
@@ -6433,8 +6447,11 @@ export function initUniExtApi() {
         }
         return undefined;
     };
+    const replaceHttpWithHttps = (url: string): string =>{
+        return url.replace(/^http:/, 'https:');
+    };
     const getCookieSync = (url: string): string =>{
-        return webview.WebCookieManager.fetchCookieSync(url);
+        return webview.WebCookieManager.fetchCookieSync(replaceHttpWithHttps(url));
     };
     const setCookieSync = (url: string, cookies: string[]): void =>{
         cookies.forEach((cookie)=>{
@@ -6459,7 +6476,9 @@ export function initUniExtApi() {
             if (!hasSameSite) {
                 savedCookie += '; samesite=none';
             }
-            webview.WebCookieManager.configCookieSync(url, savedCookie);
+            try {
+                webview.WebCookieManager.configCookieSync(replaceHttpWithHttps(url), savedCookie);
+            } catch (error) {}
         });
         webview.WebCookieManager.saveCookieAsync();
     };
@@ -6551,13 +6570,18 @@ export function initUniExtApi() {
         };
         mp.on('beforeClose', destroy);
         let latestHeaders: Object | null = null;
+        let lastUrl = url;
         httpRequest.on('headersReceive', (headers: Object)=>{
             const realHeaders = headers as Record<string, string | string[]>;
             const setCookieHeader = realHeaders['set-cookie'] || realHeaders['Set-Cookie'];
             if (setCookieHeader) {
-                setCookieSync(url, setCookieHeader as string[]);
+                setCookieSync(lastUrl, setCookieHeader as string[]);
             }
             latestHeaders = headers;
+            const location = realHeaders['location'] || realHeaders['Location'];
+            if (location) {
+                lastUrl = location as string;
+            }
         });
         const bufs = [] as buffer.Buffer[];
         httpRequest.on('dataReceive', (data)=>{
@@ -6742,11 +6766,16 @@ export function initUniExtApi() {
             httpRequest.destroy();
         };
         mp.on('beforeClose', destroy);
+        let lastUrl = url;
         httpRequest.on('headersReceive', (headers: Object)=>{
             const realHeaders = headers as Record<string, string | string[]>;
             const setCookieHeader = realHeaders['set-cookie'] || realHeaders['Set-Cookie'];
             if (setCookieHeader) {
-                setCookieSync(url, setCookieHeader as string[]);
+                setCookieSync(lastUrl, setCookieHeader as string[]);
+            }
+            const location = realHeaders['location'] || realHeaders['Location'];
+            if (location) {
+                lastUrl = location as string;
             }
         });
         httpRequest.on('dataSendProgress', (ref)=>{
@@ -6875,13 +6904,18 @@ export function initUniExtApi() {
         mp.on('beforeClose', destroy);
         let responseContentType = '';
         let responseContentDisposition = '';
+        let lastUrl = url;
         httpRequest.on('headersReceive', (headers: Object)=>{
             const realHeaders = headers as Record<string, string | string[]>;
             responseContentType = realHeaders['content-type'] as string || realHeaders['Content-Type'] as string || '';
             responseContentDisposition = realHeaders['content-disposition'] as string || realHeaders['Content-Disposition'] as string || '';
             const setCookieHeader = realHeaders['set-cookie'] || realHeaders['Set-Cookie'];
             if (setCookieHeader) {
-                setCookieSync(url, setCookieHeader as string[]);
+                setCookieSync(lastUrl, setCookieHeader as string[]);
+            }
+            const location = realHeaders['location'] || realHeaders['Location'];
+            if (location) {
+                lastUrl = location as string;
             }
         });
         httpRequest.on('dataReceiveProgress', (ref)=>{
@@ -7441,9 +7475,10 @@ export function initUniExtApi() {
             exec.resolve({} as ShowLoadingSuccess);
         });
     }, ShowLoadingProtocol, ShowLoadingApiOptions) as ShowLoading;
-    const hideLoading: HideLoading = defineSyncApi<void>(API_HIDE_LOADING, ()=>{
+    const hideLoading: HideLoading = defineAsyncApi<IHideLoadingOptions, IHideLoadingSuccess>(API_HIDE_LOADING, (options: IHideLoadingOptions, exec: ApiExecutor<IHideLoadingSuccess>)=>{
         onNativePageReady2().then((nativePage: Object)=>{
             getOSRuntime1().hideLoading();
+            exec.resolve({} as IHideLoadingSuccess);
         });
     }) as HideLoading;
     const API_START_PULL_DOWN_REFRESH = 'startPullDownRefresh';
