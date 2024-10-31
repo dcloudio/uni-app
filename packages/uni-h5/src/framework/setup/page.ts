@@ -30,7 +30,6 @@ import {
 } from '../../service/api/route/utils'
 import { updateCurPageCssVar } from '../../helpers/cssVar'
 import { getStateId } from '../../helpers/dom'
-import { setCurrentPageMeta } from '../../service/api/ui/setPageMeta'
 //#if _X_ && !_NODE_JS_
 import { closeDialogPage } from '../../x/service/api'
 //#endif
@@ -268,14 +267,7 @@ function updateCurPageAttrs(pageMeta: UniApp.PageRouteMeta) {
     }
   }
 }
-function updatePageMeta(pageMeta: UniApp.PageRouteMeta) {
-  if (pageMeta.pageStyle) {
-    setCurrentPageMeta(null, { pageStyle: pageMeta.pageStyle })
-  }
-  if (pageMeta.rootFontSize) {
-    setCurrentPageMeta(null, { rootFontSize: pageMeta.rootFontSize })
-  }
-}
+
 export function onPageShow(
   instance: ComponentInternalInstance,
   pageMeta: UniApp.PageRouteMeta
@@ -283,7 +275,6 @@ export function onPageShow(
   updateBodyScopeId(instance)
   updateCurPageCssVar(pageMeta)
   updateCurPageAttrs(pageMeta)
-  updatePageMeta(pageMeta)
   initPageScrollListener(instance, pageMeta)
 }
 
