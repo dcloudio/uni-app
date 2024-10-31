@@ -45,7 +45,12 @@ function init() {
   const style = new Map<string, any | null>()
   style.set('navigationStyle', 'custom')
 
-  const page = getPageManager().createPage('tabBar', 'tabBar', style)
+  const page = getPageManager().createPage(
+    'tabBar',
+    // id 后增加 Date.now() 保证唯一性，与 android 端统一
+    `tabBar_${Date.now()}`,
+    style
+  )
   const document = page.createDocument(
     new NodeData(
       'root',
