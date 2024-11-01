@@ -18,7 +18,7 @@ export class UniVideo extends UniComponent {
       parentNodeId,
       refNodeId,
       nodeJson,
-      '.uni-video-slot'
+      '.uni-video-slots'
     )
   }
 }
