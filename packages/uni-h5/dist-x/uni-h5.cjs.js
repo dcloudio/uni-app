@@ -1423,10 +1423,15 @@ function useBooleanAttr(props2, keys) {
     return res;
   }, /* @__PURE__ */ Object.create(null));
 }
+const rpx2Unit = uniShared.createRpx2Unit(
+  uniShared.defaultRpx2Unit.unit,
+  uniShared.defaultRpx2Unit.unitRatio,
+  uniShared.defaultRpx2Unit.unitPrecision
+);
 function transformRpx(value) {
   if (/(-?(?:\d+\.)?\d+)[ur]px/gi.test(value)) {
     return value.replace(/(-?(?:\d+\.)?\d+)[ur]px/gi, (text, num) => {
-      return `${uni.upx2px(parseFloat(num))}px`;
+      return rpx2Unit(num + "rpx");
     });
   }
   return value;
