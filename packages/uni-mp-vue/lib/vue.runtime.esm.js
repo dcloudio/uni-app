@@ -4580,7 +4580,7 @@ function flushCallbacks(instance) {
     if (process.env.UNI_DEBUG) {
       const mpInstance = ctx.$scope;
       console.log(
-        "[" + +/* @__PURE__ */ new Date() + "][" + (mpInstance.is || mpInstance.route) + "][" + instance.uid + "]:flushCallbacks[" + callbacks.length + "]"
+        "uni-app:[" + +/* @__PURE__ */ new Date() + "][" + (mpInstance.is || mpInstance.route) + "][" + instance.uid + "]:flushCallbacks[" + callbacks.length + "]"
       );
     }
     const copies = callbacks.slice(0);
@@ -4596,7 +4596,7 @@ function nextTick(instance, fn) {
     if (process.env.UNI_DEBUG) {
       const mpInstance = ctx.$scope;
       console.log(
-        "[" + +/* @__PURE__ */ new Date() + "][" + (mpInstance.is || mpInstance.route) + "][" + instance.uid + "]:nextVueTick"
+        "uni-app:[" + +/* @__PURE__ */ new Date() + "][" + (mpInstance.is || mpInstance.route) + "][" + instance.uid + "]:nextVueTick"
       );
     }
     return nextTick$1(fn && fn.bind(instance.proxy));
@@ -4604,7 +4604,7 @@ function nextTick(instance, fn) {
   if (process.env.UNI_DEBUG) {
     const mpInstance = ctx.$scope;
     console.log(
-      "[" + +/* @__PURE__ */ new Date() + "][" + (mpInstance.is || mpInstance.route) + "][" + instance.uid + "]:nextMPTick"
+      "uni-app:[" + +/* @__PURE__ */ new Date() + "][" + (mpInstance.is || mpInstance.route) + "][" + instance.uid + "]:nextMPTick"
     );
   }
   let _resolve;
@@ -4685,7 +4685,7 @@ function patch(instance, data, oldData) {
     if (Object.keys(diffData).length) {
       if (process.env.UNI_DEBUG) {
         console.log(
-          "[" + +/* @__PURE__ */ new Date() + "][" + (mpInstance.is || mpInstance.route) + "][" + instance.uid + "][\u8017\u65F6" + (Date.now() - start) + "]\u5DEE\u91CF\u66F4\u65B0",
+          "uni-app:[" + +/* @__PURE__ */ new Date() + "][" + (mpInstance.is || mpInstance.route) + "][" + instance.uid + "][\u8017\u65F6" + (Date.now() - start) + "]\u5DEE\u91CF\u66F4\u65B0",
           JSON.stringify(diffData)
         );
       }
@@ -4999,7 +4999,7 @@ function componentUpdateScopedSlotsFn() {
   if (Object.keys(diffData).length) {
     if (process.env.UNI_DEBUG) {
       console.log(
-        "[" + +/* @__PURE__ */ new Date() + "][" + (mpInstance.is || mpInstance.route) + "][" + this.uid + "][\u8017\u65F6" + (Date.now() - start) + "]\u4F5C\u7528\u57DF\u63D2\u69FD\u5DEE\u91CF\u66F4\u65B0",
+        "uni-app:[" + +/* @__PURE__ */ new Date() + "][" + (mpInstance.is || mpInstance.route) + "][" + this.uid + "][\u8017\u65F6" + (Date.now() - start) + "]\u4F5C\u7528\u57DF\u63D2\u69FD\u5DEE\u91CF\u66F4\u65B0",
         JSON.stringify(diffData)
       );
     }
