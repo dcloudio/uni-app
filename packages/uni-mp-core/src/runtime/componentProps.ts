@@ -38,19 +38,27 @@ function initDefaultProps(
       }
     })
     // 小程序不能直接定义 $slots 的 props，所以通过 vueSlots 转换到 $slots
+    function observerSlots(this: MPComponentInstance, newVal) {
+      const $slots = Object.create(null)
+      newVal &&
+        newVal.forEach((slotName: string) => {
+          $slots[slotName] = true
+        })
+      this.setData({
+        $slots,
+      })
+    }
     properties.uS = {
       type: null,
       value: [],
-      observer: function (this: MPComponentInstance, newVal) {
-        const $slots = Object.create(null)
-        newVal &&
-          newVal.forEach((slotName: string) => {
-            $slots[slotName] = true
-          })
-        this.setData({
-          $slots,
-        })
-      },
+    }
+    if (__PLATFORM__ === 'mp-harmony') {
+      if (!options.observers) {
+        options.observers = {}
+      }
+      options.observers.uS = observerSlots
+    } else {
+      properties.uS.observer = observerSlots
     }
   }
   if (options.behaviors) {
