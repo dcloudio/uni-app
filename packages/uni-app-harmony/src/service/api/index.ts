@@ -45,5 +45,18 @@ export {
   base64ToArrayBuffer,
   arrayBufferToBase64,
   onTabBarMidButtonTap,
+  upx2px,
+  onCreateVueApp,
+  setPageMeta,
+  onAppHide,
+  onAppShow,
+  onError,
+  onPageNotFound,
+  onUnhandledRejection,
+  offAppHide,
+  offAppShow,
+  offError,
+  offPageNotFound,
+  offUnhandledRejection,
 } from '@dcloudio/uni-api'
 export { pageScrollTo } from '@dcloudio/uni-app-plus/service/api'
