@@ -74,6 +74,11 @@ function createInvoker(
   const invoker: Invoker = (e: MPEvent) => {
     patchMPEvent(e)
     let args: unknown[] = [e]
+    if (instance && (instance as any).ctx.$getTriggerEventDetail) {
+      if (typeof e.detail === 'number') {
+        e.detail = (instance as any).ctx.$getTriggerEventDetail(e.detail)
+      }
+    }
     if ((e as MPEvent).detail && (e as MPEvent).detail.__args__) {
       args = (e as MPEvent).detail.__args__!
     }

@@ -14,6 +14,7 @@ import {
   devtoolsComponentRemoved,
 } from 'vue'
 import type { MPComponentInstance } from './component'
+import { getTriggerEventDetail } from './util'
 
 const MP_METHODS = [
   'createSelectorQuery',
@@ -74,6 +75,10 @@ export function initBaseInstance(
   ctx.$mpType = options.mpType
   ctx.$mpPlatform = __PLATFORM__
   ctx.$scope = options.mpInstance
+
+  if (__PLATFORM__ === 'mp-harmony' || __PLATFORM__ === 'quickapp-webview') {
+    ctx.$getTriggerEventDetail = getTriggerEventDetail
+  }
 
   // TODO @deprecated
   ctx.$mp = {}

@@ -202,3 +202,19 @@ export function initSetRef(mpInstance: MPComponentInstance) {
     }
   }
 }
+
+let triggerEventId = 0
+
+const triggerEventDetails: Record<string, unknown> = {}
+
+export function wrapTriggerEventArgs(detail?: unknown, options?: unknown) {
+  triggerEventId++
+  triggerEventDetails[triggerEventId] = detail
+  return [triggerEventId, options]
+}
+
+export function getTriggerEventDetail(eventId: number) {
+  const detail = triggerEventDetails[eventId]
+  delete triggerEventDetails[eventId]
+  return detail
+}
