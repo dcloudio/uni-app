@@ -3,11 +3,11 @@
 * (c) 2018-present Yuxi (Evan) You and Vue contributors
 * @license MIT
 **/
-import { isString, isFunction, isPromise, getGlobalThis, isArray, NOOP, extend as extend$1, EMPTY_OBJ, toHandlerKey, looseToNumber, hyphenate, camelize, isObject, isOn, hasOwn, isModelListener, capitalize, toNumber, hasChanged, remove, isSet, isMap, isPlainObject, isBuiltInDirective, invokeArrayFns, isRegExp, isGloballyAllowed, NO, def, isReservedProp, EMPTY_ARR, toRawType, makeMap, normalizeClass, stringifyStyle, normalizeStyle as normalizeStyle$1, isKnownSvgAttr, isBooleanAttr, isKnownHtmlAttr, includeBooleanAttr, isRenderableAttrValue, parseStringStyle } from '@vue/shared';
+import { EMPTY_ARR, EMPTY_OBJ, NO, NOOP, camelize, capitalize, def, extend as extend$1, getGlobalThis, hasChanged, hasOwn, hyphenate, includeBooleanAttr, invokeArrayFns, isArray, isBooleanAttr, isBuiltInDirective, isFunction, isGloballyAllowed, isKnownHtmlAttr, isKnownSvgAttr, isMap, isModelListener, isObject, isOn, isPlainObject, isPromise, isRegExp, isRenderableAttrValue, isReservedProp, isSet, isString, looseToNumber, makeMap, normalizeClass, normalizeStyle as normalizeStyle$1, parseStringStyle, remove, stringifyStyle, toHandlerKey, toNumber, toRawType } from '@vue/shared';
 export { camelize, capitalize, hyphenate, toDisplayString, toHandlerKey } from '@vue/shared';
-import { pauseTracking, resetTracking, isRef, toRaw, isShallow, isReactive, ReactiveEffect, getCurrentScope, ref, shallowReadonly, track, reactive, shallowReactive, trigger, isProxy, proxyRefs, markRaw, EffectScope, computed as computed$1, customRef, isReadonly } from '@vue/reactivity';
+import { EffectScope, ReactiveEffect, computed as computed$1, customRef, getCurrentScope, isProxy, isReactive, isReadonly, isRef, isShallow, markRaw, pauseTracking, proxyRefs, reactive, ref, resetTracking, shallowReactive, shallowReadonly, toRaw, track, trigger } from '@vue/reactivity';
 export { EffectScope, ReactiveEffect, TrackOpTypes, TriggerOpTypes, customRef, effect, effectScope, getCurrentScope, isProxy, isReactive, isReadonly, isRef, isShallow, markRaw, onScopeDispose, proxyRefs, reactive, readonly, ref, shallowReactive, shallowReadonly, shallowRef, stop, toRaw, toRef, toRefs, toValue, triggerRef, unref } from '@vue/reactivity';
-import { isRootHook, isRootImmediateHook, ON_LOAD, normalizeClass as normalizeClass$1, normalizeStyle as normalizeStyle$2 } from '@dcloudio/uni-shared';
+import { ON_LOAD, isRootHook, isRootImmediateHook, normalizeClass as normalizeClass$1, normalizeStyle as normalizeStyle$2 } from '@dcloudio/uni-shared';
 export { normalizeClass, normalizeProps, normalizeStyle } from '@dcloudio/uni-shared';
 import PromisePolyfill from 'promise-polyfill';
 import { expand } from '@dcloudio/uni-nvue-styler/dist/uni-nvue-styler.es';
@@ -8609,6 +8609,9 @@ function updateClassStyles(el) {
   if (styles.size == 0) {
     return;
   }
+  if (el._vsh) {
+    styles.set("display", "none");
+  }
   el.updateStyle(styles);
 }
 
@@ -8943,6 +8946,9 @@ function patchStyle(el, prev, next) {
   if (batchedStyles.size == 0) {
     return;
   }
+  if (el._vsh) {
+    batchedStyles.set("display", "none");
+  }
   el.updateStyle(batchedStyles);
 }
 function setBatchedStyles(batchedStyles, key, value) {
@@ -9118,6 +9124,7 @@ const vShow = {
 };
 function setDisplay(el, value) {
   el.style.setProperty("display", value ? el._vod : "none");
+  el._vsh = !value;
 }
 
 const rendererOptions = extend$1({ patchProp }, nodeOps);
