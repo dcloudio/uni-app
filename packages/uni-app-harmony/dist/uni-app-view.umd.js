@@ -23365,7 +23365,7 @@
   });
   class UniVideo extends UniComponent {
     constructor(id2, parentNodeId, refNodeId, nodeJson) {
-      super(id2, "uni-video", Video, parentNodeId, refNodeId, nodeJson, ".uni-video-slot");
+      super(id2, "uni-video", Video, parentNodeId, refNodeId, nodeJson, ".uni-video-slots");
     }
   }
   var mode = {
