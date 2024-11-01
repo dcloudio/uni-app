@@ -21,8 +21,6 @@ import {
   initVueIds,
 } from '@dcloudio/uni-mp-core'
 
-import { initInjections, initProvide } from './apiInject'
-
 const fixAttached = __PLATFORM__ === 'mp-toutiao'
 
 // 基础库 2.0 以上 attached 顺序错乱，按照 created 顺序强制纠正
@@ -76,13 +74,6 @@ export function initLifetimes({
 
     if (mpType === 'component') {
       initFormField(this.$vm)
-    }
-
-    if (mpType === 'page') {
-      if (__VUE_OPTIONS_API__) {
-        initInjections(this.$vm)
-        initProvide(this.$vm)
-      }
     }
 
     // 处理父子关系
