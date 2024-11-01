@@ -48,7 +48,7 @@ export function initRelation(
 
   // 使用 virtualHost 后，头条不支持 triggerEvent，通过主动调用方法抹平差异
   if (
-    __PLATFORM__ === 'mp-toutiao' &&
+    (__PLATFORM__ === 'mp-toutiao' || __PLATFORM__ === 'mp-lark') &&
     mpInstance?.$vm?.$options?.options?.virtualHost
   ) {
     nextSetDataTick(mpInstance, () => {
