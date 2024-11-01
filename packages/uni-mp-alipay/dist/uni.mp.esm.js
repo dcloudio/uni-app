@@ -3,6 +3,50 @@ import { isArray, isFunction, capitalize, hasOwn, extend, isPlainObject, isStrin
 import { ref, findComponentPropsData, toRaw, updateProps, hasQueueJob, invalidateJob, getExposeProxy, EMPTY_OBJ, isRef, setTemplateRef, devtoolsComponentAdded, pruneComponentPropsCache } from 'vue';
 import { normalizeLocale, LOCALE_EN } from '@dcloudio/uni-i18n';
 
+function initVueIds(vueIds, mpInstance) {
+    if (!vueIds) {
+        return;
+    }
+    const ids = vueIds.split(',');
+    const len = ids.length;
+    if (len === 1) {
+        mpInstance._$vueId = ids[0];
+    }
+    else if (len === 2) {
+        mpInstance._$vueId = ids[0];
+        mpInstance._$vuePid = ids[1];
+    }
+}
+function initWxsCallMethods(methods, wxsCallMethods) {
+    if (!isArray(wxsCallMethods)) {
+        return;
+    }
+    wxsCallMethods.forEach((callMethod) => {
+        methods[callMethod] = function (args) {
+            return this.$vm[callMethod](args);
+        };
+    });
+}
+function findVmByVueId(instance, vuePid) {
+    // 标准 vue3 中 没有 $children，定制了内核
+    const $children = instance.$children;
+    // 优先查找直属(反向查找:https://github.com/dcloudio/uni-app/issues/1200)
+    for (let i = $children.length - 1; i >= 0; i--) {
+        const childVm = $children[i];
+        if (childVm.$scope._$vueId === vuePid) {
+            return childVm;
+        }
+    }
+    // 反向递归查找
+    let parentVm;
+    for (let i = $children.length - 1; i >= 0; i--) {
+        parentVm = findVmByVueId($children[i], vuePid);
+        if (parentVm) {
+            return parentVm;
+        }
+    }
+}
+
 const MP_METHODS = [
     'createSelectorQuery',
     'createIntersectionObserver',
@@ -292,50 +336,6 @@ function initLocale(appVm) {
             locale.value = v;
         },
     });
-}
-
-function initVueIds(vueIds, mpInstance) {
-    if (!vueIds) {
-        return;
-    }
-    const ids = vueIds.split(',');
-    const len = ids.length;
-    if (len === 1) {
-        mpInstance._$vueId = ids[0];
-    }
-    else if (len === 2) {
-        mpInstance._$vueId = ids[0];
-        mpInstance._$vuePid = ids[1];
-    }
-}
-function initWxsCallMethods(methods, wxsCallMethods) {
-    if (!isArray(wxsCallMethods)) {
-        return;
-    }
-    wxsCallMethods.forEach((callMethod) => {
-        methods[callMethod] = function (args) {
-            return this.$vm[callMethod](args);
-        };
-    });
-}
-function findVmByVueId(instance, vuePid) {
-    // 标准 vue3 中 没有 $children，定制了内核
-    const $children = instance.$children;
-    // 优先查找直属(反向查找:https://github.com/dcloudio/uni-app/issues/1200)
-    for (let i = $children.length - 1; i >= 0; i--) {
-        const childVm = $children[i];
-        if (childVm.$scope._$vueId === vuePid) {
-            return childVm;
-        }
-    }
-    // 反向递归查找
-    let parentVm;
-    for (let i = $children.length - 1; i >= 0; i--) {
-        parentVm = findVmByVueId($children[i], vuePid);
-        if (parentVm) {
-            return parentVm;
-        }
-    }
 }
 
 const builtInProps = [

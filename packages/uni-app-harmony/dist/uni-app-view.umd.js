@@ -1666,9 +1666,7 @@
     function updateRem() {
       var width = getWindowWidth();
       width = width <= maxWidth2 ? width : baseWidth2;
-      if (!document.documentElement.hasAttribute("root-font-size")) {
-        document.documentElement.style.fontSize = width / 23.4375 + "px";
-      }
+      document.documentElement.style.fontSize = width / 23.4375 + "px";
     }
     updateRem();
     document.addEventListener("DOMContentLoaded", updateRem);
@@ -26310,38 +26308,6 @@
   function onWebviewReady$1() {
     UniViewJSBridge.publishHandler(ON_WEBVIEW_READY);
   }
-  function setCurrentPageMeta(page, options) {
-    var {
-      pageStyle,
-      rootFontSize
-    } = options;
-    if (hasOwn$1(options, "pageStyle")) {
-      setPageStyle(pageStyle);
-    }
-    if (hasOwn$1(options, "rootFontSize")) {
-      setRootFontSize(rootFontSize);
-    }
-  }
-  var setPageStyle = (pageStyle) => {
-    var pageElm = document.querySelector("uni-page-body") || document.body;
-    if (pageStyle) {
-      pageElm.setAttribute("style", pageStyle);
-    } else {
-      pageElm.removeAttribute("style");
-    }
-  };
-  var setRootFontSize = (rootFontSize) => {
-    if (document.documentElement.style.fontSize === rootFontSize) {
-      return;
-    }
-    if (rootFontSize) {
-      document.documentElement.style.fontSize = rootFontSize;
-      document.documentElement.setAttribute("root-font-size", "true");
-    } else {
-      document.documentElement.style.removeProperty("font-size");
-      document.documentElement.removeAttribute("root-font-size");
-    }
-  };
   function findElem(vm) {
     {
       return window.__$__(vm).$;
@@ -26502,6 +26468,19 @@
       }
     });
     callback(result);
+  }
+  function setCurrentPageMeta(_page, _ref) {
+    var {
+      pageStyle,
+      rootFontSize
+    } = _ref;
+    if (pageStyle) {
+      var pageElm = document.querySelector("uni-page-body") || document.body;
+      pageElm.setAttribute("style", pageStyle);
+    }
+    if (rootFontSize && document.documentElement.style.fontSize !== rootFontSize) {
+      document.documentElement.style.fontSize = rootFontSize;
+    }
   }
   function addIntersectionObserver(_ref, _pageId) {
     var {

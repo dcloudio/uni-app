@@ -7811,6 +7811,11 @@ function createInvoker(initialValue, instance) {
     const invoker = (e) => {
         patchMPEvent(e);
         let args = [e];
+        if (instance && instance.ctx.$getTriggerEventDetail) {
+            if (typeof e.detail === 'number') {
+                e.detail = instance.ctx.$getTriggerEventDetail(e.detail);
+            }
+        }
         if (e.detail && e.detail.__args__) {
             args = e.detail.__args__;
         }

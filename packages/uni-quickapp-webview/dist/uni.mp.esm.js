@@ -1,7 +1,90 @@
 import { SLOT_DEFAULT_NAME, EventChannel, invokeArrayFns, MINI_PROGRAM_PAGE_RUNTIME_HOOKS, ON_LOAD, ON_SHOW, ON_HIDE, ON_UNLOAD, ON_RESIZE, ON_TAB_ITEM_TAP, ON_REACH_BOTTOM, ON_PULL_DOWN_REFRESH, ON_ADD_TO_FAVORITES, isUniLifecycleHook, ON_READY, once, ON_LAUNCH, ON_ERROR, ON_THEME_CHANGE, ON_PAGE_NOT_FOUND, ON_UNHANDLE_REJECTION, addLeadingSlash, stringifyQuery, customizeEvent } from '@dcloudio/uni-shared';
-import { isArray, isFunction, hasOwn, extend, isPlainObject, isObject } from '@vue/shared';
-import { ref, nextTick, findComponentPropsData, toRaw, updateProps, hasQueueJob, invalidateJob, devtoolsComponentAdded, getExposeProxy, isRef, pruneComponentPropsCache } from 'vue';
+import { hasOwn, isArray, isFunction, extend, isPlainObject, isObject } from '@vue/shared';
+import { nextTick, ref, findComponentPropsData, toRaw, updateProps, hasQueueJob, invalidateJob, devtoolsComponentAdded, getExposeProxy, isRef, pruneComponentPropsCache } from 'vue';
 import { normalizeLocale, LOCALE_EN } from '@dcloudio/uni-i18n';
+
+function initVueIds(vueIds, mpInstance) {
+    if (!vueIds) {
+        return;
+    }
+    const ids = vueIds.split(',');
+    const len = ids.length;
+    if (len === 1) {
+        mpInstance._$vueId = ids[0];
+    }
+    else if (len === 2) {
+        mpInstance._$vueId = ids[0];
+        mpInstance._$vuePid = ids[1];
+    }
+}
+const EXTRAS = ['externalClasses'];
+function initExtraOptions(miniProgramComponentOptions, vueOptions) {
+    EXTRAS.forEach((name) => {
+        if (hasOwn(vueOptions, name)) {
+            miniProgramComponentOptions[name] = vueOptions[name];
+        }
+    });
+}
+function initWxsCallMethods(methods, wxsCallMethods) {
+    if (!isArray(wxsCallMethods)) {
+        return;
+    }
+    wxsCallMethods.forEach((callMethod) => {
+        methods[callMethod] = function (args) {
+            return this.$vm[callMethod](args);
+        };
+    });
+}
+function selectAllComponents(mpInstance, selector, $refs) {
+    const components = mpInstance.selectAllComponents(selector);
+    components.forEach((component) => {
+        const ref = component.properties.uR;
+        $refs[ref] = component.$vm || component;
+    });
+}
+function initRefs(instance, mpInstance) {
+    Object.defineProperty(instance, 'refs', {
+        get() {
+            const $refs = {};
+            selectAllComponents(mpInstance, '.r', $refs);
+            const forComponents = mpInstance.selectAllComponents('.r-i-f');
+            forComponents.forEach((component) => {
+                const ref = component.properties.uR;
+                if (!ref) {
+                    return;
+                }
+                if (!$refs[ref]) {
+                    $refs[ref] = [];
+                }
+                $refs[ref].push(component.$vm || component);
+            });
+            return $refs;
+        },
+    });
+}
+function nextSetDataTick(mpInstance, fn) {
+    // 随便设置一个字段来触发回调（部分平台必须有字段才可以，比如头条）
+    mpInstance.setData({ r1: 1 }, () => fn());
+}
+function initSetRef(mpInstance) {
+    if (!mpInstance._$setRef) {
+        mpInstance._$setRef = (fn) => {
+            nextTick(() => nextSetDataTick(mpInstance, fn));
+        };
+    }
+}
+let triggerEventId = 0;
+const triggerEventDetails = {};
+function wrapTriggerEventArgs(detail, options) {
+    triggerEventId++;
+    triggerEventDetails[triggerEventId] = detail;
+    return [triggerEventId, options];
+}
+function getTriggerEventDetail(eventId) {
+    const detail = triggerEventDetails[eventId];
+    delete triggerEventDetails[eventId];
+    return detail;
+}
 
 const MP_METHODS = [
     'createSelectorQuery',
@@ -28,6 +111,9 @@ function initBaseInstance(instance, options) {
     ctx.$mpType = options.mpType;
     ctx.$mpPlatform = "quickapp-webview";
     ctx.$scope = options.mpInstance;
+    {
+        ctx.$getTriggerEventDetail = getTriggerEventDetail;
+    }
     // TODO @deprecated
     ctx.$mp = {};
     if (__VUE_OPTIONS_API__) {
@@ -297,77 +383,6 @@ function initLocale(appVm) {
             locale.value = v;
         },
     });
-}
-
-function initVueIds(vueIds, mpInstance) {
-    if (!vueIds) {
-        return;
-    }
-    const ids = vueIds.split(',');
-    const len = ids.length;
-    if (len === 1) {
-        mpInstance._$vueId = ids[0];
-    }
-    else if (len === 2) {
-        mpInstance._$vueId = ids[0];
-        mpInstance._$vuePid = ids[1];
-    }
-}
-const EXTRAS = ['externalClasses'];
-function initExtraOptions(miniProgramComponentOptions, vueOptions) {
-    EXTRAS.forEach((name) => {
-        if (hasOwn(vueOptions, name)) {
-            miniProgramComponentOptions[name] = vueOptions[name];
-        }
-    });
-}
-function initWxsCallMethods(methods, wxsCallMethods) {
-    if (!isArray(wxsCallMethods)) {
-        return;
-    }
-    wxsCallMethods.forEach((callMethod) => {
-        methods[callMethod] = function (args) {
-            return this.$vm[callMethod](args);
-        };
-    });
-}
-function selectAllComponents(mpInstance, selector, $refs) {
-    const components = mpInstance.selectAllComponents(selector);
-    components.forEach((component) => {
-        const ref = component.properties.uR;
-        $refs[ref] = component.$vm || component;
-    });
-}
-function initRefs(instance, mpInstance) {
-    Object.defineProperty(instance, 'refs', {
-        get() {
-            const $refs = {};
-            selectAllComponents(mpInstance, '.r', $refs);
-            const forComponents = mpInstance.selectAllComponents('.r-i-f');
-            forComponents.forEach((component) => {
-                const ref = component.properties.uR;
-                if (!ref) {
-                    return;
-                }
-                if (!$refs[ref]) {
-                    $refs[ref] = [];
-                }
-                $refs[ref].push(component.$vm || component);
-            });
-            return $refs;
-        },
-    });
-}
-function nextSetDataTick(mpInstance, fn) {
-    // 随便设置一个字段来触发回调（部分平台必须有字段才可以，比如头条）
-    mpInstance.setData({ r1: 1 }, () => fn());
-}
-function initSetRef(mpInstance) {
-    if (!mpInstance._$setRef) {
-        mpInstance._$setRef = (fn) => {
-            nextTick(() => nextSetDataTick(mpInstance, fn));
-        };
-    }
 }
 
 const builtInProps = [
@@ -743,7 +758,18 @@ const MPComponent = Component;
 function initTriggerEvent(mpInstance) {
     const oldTriggerEvent = mpInstance.triggerEvent;
     const newTriggerEvent = function (event, ...args) {
-        return oldTriggerEvent.apply(mpInstance, [customizeEvent(event), ...args]);
+        {
+            if (event !== '__l' && event !== '__e') {
+                // 忽略 handleLink，还有其他内置事件吗？
+                // triggerEvent的参数被序列化，导致vue的响应式数据对比始终不相等，从而陷入死循环
+                // 比如 uni-ui 的 collapse 组件的v-model
+                args = wrapTriggerEventArgs(args[0], args[1]);
+            }
+        }
+        return oldTriggerEvent.apply(mpInstance, [
+            customizeEvent(event),
+            ...args,
+        ]);
     };
     // 京东小程序triggerEvent为只读属性
     try {
@@ -951,6 +977,15 @@ function initLifetimes(lifetimesOptions) {
                 }
                 this.$vm.$callCreatedHook();
                 nextSetDataTick(this, () => {
+                    {
+                        const vm = this.$vm;
+                        // 处理当前 vm 子
+                        if (vm._$childVues) {
+                            vm._$childVues.forEach(([createdVm]) => createdVm());
+                            vm._$childVues.forEach(([, mountedVm]) => mountedVm());
+                            delete vm._$childVues;
+                        }
+                    }
                     this.$vm.$callHook('mounted');
                     this.$vm.$callHook(ON_READY);
                 });

@@ -930,6 +930,9 @@ function populateParameters(fromRes, toRes) {
         osName = system.split(' ')[0] || '';
         osVersion = system.split(' ')[1] || '';
     }
+    {
+        osName = 'harmonyos';
+    }
     let hostVersion = version;
     // deviceType
     let deviceType = getGetDeviceType(fromRes, model);
@@ -980,6 +983,9 @@ function populateParameters(fromRes, toRes) {
         browserVersion: undefined,
         isUniAppX: false,
     };
+    {
+        parameters.romName = 'HarmonyOS';
+    }
     extend(toRes, parameters);
 }
 function getGetDeviceType(fromRes, model) {
@@ -1015,7 +1021,8 @@ function getAppLanguage(defaultLanguage) {
     return getLocale ? getLocale() : defaultLanguage;
 }
 function getHostName(fromRes) {
-    const _platform = "mp-harmony".split('-')[1];
+    const _platform = 'HarmonyOS'
+            ;
     let _hostName = fromRes.hostName || _platform; // mp-jd
     return _hostName;
 }

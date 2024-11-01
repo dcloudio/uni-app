@@ -1023,7 +1023,8 @@ function getAppLanguage(defaultLanguage) {
     return getLocale ? getLocale() : defaultLanguage;
 }
 function getHostName(fromRes) {
-    const _platform = 'WeChat' ;
+    const _platform = 'WeChat'
+        ;
     let _hostName = fromRes.hostName || _platform; // mp-jd
     {
         if (fromRes.environment) {

@@ -1260,7 +1260,12 @@ function init() {
   var list = getTabList();
   var style = /* @__PURE__ */ new Map();
   style.set("navigationStyle", "custom");
-  var page = getPageManager().createPage("tabBar", "tabBar", style);
+  var page = getPageManager().createPage(
+    "tabBar",
+    // id 后增加 Date.now() 保证唯一性，与 android 端统一
+    "tabBar_".concat(Date.now()),
+    style
+  );
   var document = page.createDocument(new NodeData("root", "view", /* @__PURE__ */ new Map(), /* @__PURE__ */ new Map([["flex", "1"]])));
   var tabParent = document.createElement(new NodeData("tabs", "tabs", /* @__PURE__ */ new Map(), /* @__PURE__ */ new Map([["overflow", "hidden"], ["flex", "1"]])));
   document.appendChild(tabParent);
