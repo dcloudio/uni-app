@@ -1,10 +1,17 @@
 import { getCurrentPage } from '@dcloudio/uni-core'
 import { camelize } from '@vue/shared'
+import { createRpx2Unit, defaultRpx2Unit } from '@dcloudio/uni-shared'
+
+const rpx2Unit = createRpx2Unit(
+  defaultRpx2Unit.unit,
+  defaultRpx2Unit.unitRatio,
+  defaultRpx2Unit.unitPrecision
+)
 
 function transformRpx(value: string) {
   if (/(-?(?:\d+\.)?\d+)[ur]px/gi.test(value)) {
     return value.replace(/(-?(?:\d+\.)?\d+)[ur]px/gi, (text, num) => {
-      return `${uni.upx2px(parseFloat(num))}px`
+      return rpx2Unit(num + 'rpx')
     })
   }
   return value
