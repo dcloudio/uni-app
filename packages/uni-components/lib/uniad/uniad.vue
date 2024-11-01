@@ -8,11 +8,20 @@
       @close="_onmpclose"
       @error="_onmperror"
     />
+    <!-- #ifdef MP-WEIXIN -->
+    <uniad-plugin-wx v-if="wxchannel" class="uniad-plugin-wx" @error="_onwxchannelerror"></uniad-plugin-wx>
+    <!-- #endif -->
   </view>
 </template>
 
 <script>
-import adMixin from '../ad/ad.mixin.mp.js'
+// #ifdef MP-WEIXIN
+import adMixin from "../ad/ad.mixin.mp-weixin.js"
+// #endif
+// #ifdef MP-ALIPAY
+import adMixin from "../ad/ad.mixin.mp-alipay.js"
+// #endif
+
 export default {
   name: 'Uniad',
   mixins: [adMixin]
