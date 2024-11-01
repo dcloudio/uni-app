@@ -1,6 +1,6 @@
 import { SLOT_DEFAULT_NAME, EventChannel, invokeArrayFns, MINI_PROGRAM_PAGE_RUNTIME_HOOKS, ON_LOAD, ON_SHOW, ON_HIDE, ON_UNLOAD, ON_RESIZE, ON_TAB_ITEM_TAP, ON_REACH_BOTTOM, ON_PULL_DOWN_REFRESH, ON_ADD_TO_FAVORITES, isUniLifecycleHook, ON_READY, once, ON_LAUNCH, ON_ERROR, ON_THEME_CHANGE, ON_PAGE_NOT_FOUND, ON_UNHANDLE_REJECTION, addLeadingSlash, stringifyQuery, customizeEvent } from '@dcloudio/uni-shared';
 import { hasOwn, isArray, isFunction, extend, isPlainObject, isObject } from '@vue/shared';
-import { nextTick, ref, findComponentPropsData, toRaw, updateProps, hasQueueJob, invalidateJob, devtoolsComponentAdded, getExposeProxy, isRef, pruneComponentPropsCache } from 'vue';
+import { nextTick, ref, findComponentPropsData, toRaw, updateProps, hasQueueJob, invalidateJob, devtoolsComponentAdded, getExposeProxy, pruneComponentPropsCache } from 'vue';
 import { normalizeLocale, LOCALE_EN } from '@dcloudio/uni-i18n';
 
 function initVueIds(vueIds, mpInstance) {
@@ -808,108 +808,6 @@ Component = function (options) {
     return MPComponent(options);
 };
 
-function provide(instance, key, value) {
-    if (!instance) {
-        if ((process.env.NODE_ENV !== 'production')) {
-            console.warn(`provide() can only be used inside setup().`);
-        }
-    }
-    else {
-        let provides = instance.provides;
-        // by default an instance inherits its parent's provides object
-        // but when it needs to provide values of its own, it creates its
-        // own provides object using parent provides object as prototype.
-        // this way in `inject` we can simply look up injections from direct
-        // parent and let the prototype chain do the work.
-        const parentProvides = instance.parent && instance.parent.provides;
-        if (parentProvides === provides) {
-            provides = instance.provides = Object.create(parentProvides);
-        }
-        // TS doesn't allow symbol as index type
-        provides[key] = value;
-    }
-}
-function initProvide(instance) {
-    const provideOptions = instance.$options.provide;
-    if (!provideOptions) {
-        return;
-    }
-    const provides = isFunction(provideOptions)
-        ? provideOptions.call(instance)
-        : provideOptions;
-    const internalInstance = instance.$;
-    for (const key in provides) {
-        provide(internalInstance, key, provides[key]);
-    }
-}
-function inject(instance, key, defaultValue, treatDefaultAsFactory = false) {
-    if (instance) {
-        // #2400
-        // to support `app.use` plugins,
-        // fallback to appContext's `provides` if the intance is at root
-        const provides = instance.parent == null
-            ? instance.vnode.appContext && instance.vnode.appContext.provides
-            : instance.parent.provides;
-        if (provides && key in provides) {
-            // TS doesn't allow symbol as index type
-            return provides[key];
-        }
-        else if (arguments.length > 1) {
-            return treatDefaultAsFactory && isFunction(defaultValue)
-                ? defaultValue()
-                : defaultValue;
-        }
-        else if ((process.env.NODE_ENV !== 'production')) {
-            console.warn(`injection "${String(key)}" not found.`);
-        }
-    }
-    else if ((process.env.NODE_ENV !== 'production')) {
-        console.warn(`inject() can only be used inside setup() or functional components.`);
-    }
-}
-function initInjections(instance) {
-    const injectOptions = instance.$options.inject;
-    if (!injectOptions) {
-        return;
-    }
-    const internalInstance = instance.$;
-    const ctx = internalInstance.ctx;
-    if (isArray(injectOptions)) {
-        for (let i = 0; i < injectOptions.length; i++) {
-            const key = injectOptions[i];
-            ctx[key] = inject(internalInstance, key);
-        }
-    }
-    else {
-        for (const key in injectOptions) {
-            const opt = injectOptions[key];
-            let injected;
-            if (isObject(opt)) {
-                if ('default' in opt) {
-                    injected = inject(internalInstance, opt.from || key, opt.default, true /* treat default function as factory */);
-                }
-                else {
-                    injected = inject(internalInstance, opt.from || key);
-                }
-            }
-            else {
-                injected = inject(internalInstance, opt);
-            }
-            if (isRef(injected)) {
-                Object.defineProperty(ctx, key, {
-                    enumerable: true,
-                    configurable: true,
-                    get: () => injected.value,
-                    set: (v) => (injected.value = v),
-                });
-            }
-            else {
-                ctx[key] = injected;
-            }
-        }
-    }
-}
-
 // @ts-expect-error
 function initLifetimes$1({ mocks, isPage, initRelation, vueOptions, }) {
     function attached() {
@@ -942,12 +840,6 @@ function initLifetimes$1({ mocks, isPage, initRelation, vueOptions, }) {
         });
         if (mpType === 'component') {
             initFormField(this.$vm);
-        }
-        if (mpType === 'page') {
-            if (__VUE_OPTIONS_API__) {
-                initInjections(this.$vm);
-                initProvide(this.$vm);
-            }
         }
         // 处理父子关系
         initRelation(this, relationOptions);
@@ -1037,12 +929,6 @@ function handleLink({ detail: { nodeId, webviewId }, }) {
     const createdVm = function () {
         if (__VUE_OPTIONS_API__) {
             parentVm.$children.push(vm);
-            const parent = parentVm.$;
-            vm.$.provides = parent
-                ? parent.provides
-                : Object.create(parent.appContext.provides);
-            initInjections(vm);
-            initProvide(vm);
         }
         vm.$callCreatedHook();
     };

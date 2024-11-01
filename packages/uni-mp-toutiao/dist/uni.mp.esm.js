@@ -1,6 +1,6 @@
 import { SLOT_DEFAULT_NAME, EventChannel, invokeArrayFns, MINI_PROGRAM_PAGE_RUNTIME_HOOKS, ON_LOAD, ON_SHOW, ON_HIDE, ON_UNLOAD, ON_RESIZE, ON_TAB_ITEM_TAP, ON_REACH_BOTTOM, ON_PULL_DOWN_REFRESH, ON_ADD_TO_FAVORITES, isUniLifecycleHook, ON_READY, once, ON_LAUNCH, ON_ERROR, ON_THEME_CHANGE, ON_PAGE_NOT_FOUND, ON_UNHANDLE_REJECTION, addLeadingSlash, stringifyQuery, customizeEvent } from '@dcloudio/uni-shared';
 import { hasOwn, isArray, isFunction, extend, isPlainObject, isObject } from '@vue/shared';
-import { nextTick, ref, findComponentPropsData, toRaw, updateProps, hasQueueJob, invalidateJob, devtoolsComponentAdded, getExposeProxy, isRef, pruneComponentPropsCache } from 'vue';
+import { nextTick, ref, findComponentPropsData, toRaw, updateProps, hasQueueJob, invalidateJob, devtoolsComponentAdded, getExposeProxy, pruneComponentPropsCache } from 'vue';
 import { normalizeLocale, LOCALE_EN } from '@dcloudio/uni-i18n';
 
 function initVueIds(vueIds, mpInstance) {
@@ -830,108 +830,6 @@ Component = function (options) {
     return MPComponent(options);
 };
 
-function provide(instance, key, value) {
-    if (!instance) {
-        if ((process.env.NODE_ENV !== 'production')) {
-            console.warn(`provide() can only be used inside setup().`);
-        }
-    }
-    else {
-        let provides = instance.provides;
-        // by default an instance inherits its parent's provides object
-        // but when it needs to provide values of its own, it creates its
-        // own provides object using parent provides object as prototype.
-        // this way in `inject` we can simply look up injections from direct
-        // parent and let the prototype chain do the work.
-        const parentProvides = instance.parent && instance.parent.provides;
-        if (parentProvides === provides) {
-            provides = instance.provides = Object.create(parentProvides);
-        }
-        // TS doesn't allow symbol as index type
-        provides[key] = value;
-    }
-}
-function initProvide(instance) {
-    const provideOptions = instance.$options.provide;
-    if (!provideOptions) {
-        return;
-    }
-    const provides = isFunction(provideOptions)
-        ? provideOptions.call(instance)
-        : provideOptions;
-    const internalInstance = instance.$;
-    for (const key in provides) {
-        provide(internalInstance, key, provides[key]);
-    }
-}
-function inject(instance, key, defaultValue, treatDefaultAsFactory = false) {
-    if (instance) {
-        // #2400
-        // to support `app.use` plugins,
-        // fallback to appContext's `provides` if the intance is at root
-        const provides = instance.parent == null
-            ? instance.vnode.appContext && instance.vnode.appContext.provides
-            : instance.parent.provides;
-        if (provides && key in provides) {
-            // TS doesn't allow symbol as index type
-            return provides[key];
-        }
-        else if (arguments.length > 1) {
-            return treatDefaultAsFactory && isFunction(defaultValue)
-                ? defaultValue()
-                : defaultValue;
-        }
-        else if ((process.env.NODE_ENV !== 'production')) {
-            console.warn(`injection "${String(key)}" not found.`);
-        }
-    }
-    else if ((process.env.NODE_ENV !== 'production')) {
-        console.warn(`inject() can only be used inside setup() or functional components.`);
-    }
-}
-function initInjections(instance) {
-    const injectOptions = instance.$options.inject;
-    if (!injectOptions) {
-        return;
-    }
-    const internalInstance = instance.$;
-    const ctx = internalInstance.ctx;
-    if (isArray(injectOptions)) {
-        for (let i = 0; i < injectOptions.length; i++) {
-            const key = injectOptions[i];
-            ctx[key] = inject(internalInstance, key);
-        }
-    }
-    else {
-        for (const key in injectOptions) {
-            const opt = injectOptions[key];
-            let injected;
-            if (isObject(opt)) {
-                if ('default' in opt) {
-                    injected = inject(internalInstance, opt.from || key, opt.default, true /* treat default function as factory */);
-                }
-                else {
-                    injected = inject(internalInstance, opt.from || key);
-                }
-            }
-            else {
-                injected = inject(internalInstance, opt);
-            }
-            if (isRef(injected)) {
-                Object.defineProperty(ctx, key, {
-                    enumerable: true,
-                    configurable: true,
-                    get: () => injected.value,
-                    set: (v) => (injected.value = v),
-                });
-            }
-            else {
-                ctx[key] = injected;
-            }
-        }
-    }
-}
-
 // @ts-expect-error
 // 基础库 2.0 以上 attached 顺序错乱，按照 created 顺序强制纠正
 const components = [];
@@ -969,12 +867,6 @@ function initLifetimes$1({ mocks, isPage, initRelation, vueOptions, }) {
         });
         if (mpType === 'component') {
             initFormField(this.$vm);
-        }
-        if (mpType === 'page') {
-            if (__VUE_OPTIONS_API__) {
-                initInjections(this.$vm);
-                initProvide(this.$vm);
-            }
         }
         // 处理父子关系
         initRelation(this, relationOptions);
@@ -1025,7 +917,7 @@ function initRelation(mpInstance, detail) {
     const webviewId = mpInstance.__webviewId__ + '';
     instances[webviewId + '_' + nodeId] = mpInstance.$vm;
     // 使用 virtualHost 后，头条不支持 triggerEvent，通过主动调用方法抹平差异
-    if ((_c = (_b = (_a = mpInstance === null || mpInstance === void 0 ? void 0 : mpInstance.$vm) === null || _a === void 0 ? void 0 : _a.$options) === null || _b === void 0 ? void 0 : _b.options) === null || _c === void 0 ? void 0 : _c.virtualHost) {
+    if (((_c = (_b = (_a = mpInstance === null || mpInstance === void 0 ? void 0 : mpInstance.$vm) === null || _a === void 0 ? void 0 : _a.$options) === null || _b === void 0 ? void 0 : _b.options) === null || _c === void 0 ? void 0 : _c.virtualHost)) {
         nextSetDataTick(mpInstance, () => {
             handleLink.apply(mpInstance, [
                 {
@@ -1033,6 +925,9 @@ function initRelation(mpInstance, detail) {
                         vuePid: detail.vuePid,
                         nodeId,
                         webviewId,
+                        // 如果是 virtualHost，则需要找到页面 vm 传递给 handleLink，因为此时的上下文是不对的，需要从页面 vm 递归查找
+                        // 目前测试来看，页面的 nodeId 是 0
+                        pageVm: instances[webviewId + '_0'],
                     },
                 },
             ]);
@@ -1046,34 +941,31 @@ function initRelation(mpInstance, detail) {
         });
     }
 }
-function handleLink({ detail: { vuePid, nodeId, webviewId }, }) {
-    var _a, _b, _c;
+function handleLink({ detail: { vuePid, nodeId, webviewId, pageVm }, }) {
     const vm = instances[webviewId + '_' + nodeId];
     if (!vm) {
         return;
     }
     let parentVm;
     if (vuePid) {
-        parentVm = findVmByVueId(this.$vm, vuePid);
-    }
-    if (!parentVm) {
-        parentVm = this.$vm;
-    }
-    if ((_c = (_b = (_a = this.$vm) === null || _a === void 0 ? void 0 : _a.$options) === null || _b === void 0 ? void 0 : _b.options) === null || _c === void 0 ? void 0 : _c.virtualHost) {
-        // 抖音小程序下 form 组件开启 virtualHost 出现 infinite loop. see: https://github.com/vuejs/core/blob/32a1433e0debd538c199bde18390bb903b4cde5a/packages/runtime-core/src/componentProps.ts#L227
-        vm.$.parent = null;
+        parentVm = findVmByVueId(pageVm || this.$vm, vuePid);
     }
     else {
+        // 如果 vuePid 不存在，则认为当前组件的父是页面，目前测试来看，页面的 nodeId 是 0
+        parentVm = instances[webviewId + '_0'];
+    }
+    if (parentVm) {
         vm.$.parent = parentVm.$;
     }
-    if (__VUE_OPTIONS_API__) {
+    // 不再需要下述逻辑
+    // if (this.$vm?.$options?.options?.virtualHost) {
+    //   // 抖音小程序下 form 组件开启 virtualHost 出现 infinite loop. see: https://github.com/vuejs/core/blob/32a1433e0debd538c199bde18390bb903b4cde5a/packages/runtime-core/src/componentProps.ts#L227
+    //   // vm.$.parent = null
+    // } else {
+    //   vm.$.parent = parentVm.$
+    // }
+    if (__VUE_OPTIONS_API__ && parentVm) {
         parentVm.$children.push(vm);
-        const parent = parentVm.$;
-        vm.$.provides = parent
-            ? parent.provides
-            : Object.create(parent.appContext.provides);
-        initInjections(vm);
-        initProvide(vm);
     }
     vm.$callCreatedHook();
     // TODO 字节小程序父子组件关系建立的较晚，导致 inject 和 provide 初始化变慢

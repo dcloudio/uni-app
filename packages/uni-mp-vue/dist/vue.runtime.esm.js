@@ -5267,8 +5267,13 @@ function applyOptions$1(instance) {
       }
     }
   }
-  if (!__VUE_CREATED_DEFERRED__ && injectOptions) {
-    resolveInjections(injectOptions, ctx, checkDuplicateProperties);
+  function initInjections() {
+    if (injectOptions) {
+      resolveInjections(injectOptions, ctx, checkDuplicateProperties);
+    }
+  }
+  if (!__VUE_CREATED_DEFERRED__) {
+    initInjections();
   }
   if (methods) {
     for (const key in methods) {
@@ -5358,7 +5363,7 @@ function applyOptions$1(instance) {
       createWatcher(watchOptions[key], ctx, publicThis, key);
     }
   }
-  if (!__VUE_CREATED_DEFERRED__) {
+  function initProvides() {
     if (provideOptions) {
       const provides = isFunction(provideOptions) ? provideOptions.call(publicThis) : provideOptions;
       Reflect.ownKeys(provides).forEach((key) => {
@@ -5366,10 +5371,26 @@ function applyOptions$1(instance) {
       });
     }
   }
+  if (!__VUE_CREATED_DEFERRED__) {
+    initProvides();
+  }
   if (__VUE_CREATED_DEFERRED__) {
-    ctx.$callCreatedHook = function(name) {
+    let callCreatedHook2 = function() {
+      initInjections();
+      initProvides();
       if (created) {
-        return callHook(created, instance, "c");
+        callHook(created, instance, "c");
+      }
+      instance.update();
+    };
+    ctx.$callCreatedHook = function(name) {
+      const reset = setCurrentInstance(instance);
+      pauseTracking();
+      try {
+        callCreatedHook2();
+      } finally {
+        resetTracking();
+        reset();
       }
     };
   } else {
@@ -5658,11 +5679,6 @@ function initProps(instance, rawProps, isStateful, isSSR = false) {
   instance.attrs = attrs;
 }
 function isInHmrContext(instance) {
-  while (instance) {
-    if (instance.type.__hmrId)
-      return true;
-    instance = instance.parent;
-  }
 }
 function updateProps(instance, rawProps, rawPrevProps, optimized) {
   const {
@@ -5677,7 +5693,7 @@ function updateProps(instance, rawProps, rawPrevProps, optimized) {
     // always force full diff in dev
     // - #1942 if hmr is enabled with sfc component
     // - vite#872 non-sfc component used by sfc component
-    !(!!(process.env.NODE_ENV !== "production") && isInHmrContext(instance)) && (optimized || patchFlag > 0) && !(patchFlag & 16)
+    !(!!(process.env.NODE_ENV !== "production") && isInHmrContext()) && (optimized || patchFlag > 0) && !(patchFlag & 16)
   ) {
     if (patchFlag & 8) {
       const propsToUpdate = instance.vnode.dynamicProps;
@@ -7436,7 +7452,9 @@ function setupRenderEffect(instance) {
     effect.onTrigger = instance.rtg ? (e) => invokeArrayFns(instance.rtg, e) : void 0;
     update.ownerInstance = instance;
   }
-  update();
+  if (!__VUE_CREATED_DEFERRED__) {
+    update();
+  }
 }
 function unmountComponent(instance) {
   const { bum, scope, update, um } = instance;

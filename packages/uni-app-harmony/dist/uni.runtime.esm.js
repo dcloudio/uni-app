@@ -8000,6 +8000,12 @@ class EventChannel {
     }
 }
 
+/**
+ * 提供 createApp 的回调事件，方便三方插件接收 App 对象，处理挂靠全局 mixin 之类的逻辑
+ */
+function onCreateVueApp(hook) {
+}
+
 const E = function () {
     // Keep this empty so it's easier to inherit from
     // (via https://github.com/lipsmack from https://github.com/scottcorgan/tiny-emitter/issues/3)
@@ -8763,6 +8769,15 @@ function getPageProxyId(proxy) {
     return proxy.$page?.id || proxy.$basePage?.id;
 }
 
+function removeHook(vm, name, hook) {
+    const hooks = vm.$[name];
+    if (!isArray(hooks)) {
+        return;
+    }
+    if (hook.__weh) {
+        remove(hooks, hook.__weh);
+    }
+}
 function invokeHook(vm, name, args) {
     if (isString(vm)) {
         args = name;
@@ -9315,6 +9330,9 @@ function parseRedirectInfo() {
 }
 
 const TEMP_PATH = ''; // TODO 需要从applicationContext获取
+function setCurrentPageMeta(page, options) {
+    // TODO: Implement
+}
 
 function operateVideoPlayer(videoId, pageId, type, data) {
     UniServiceJSBridge.invokeViewMethod('video.' + videoId, {
@@ -9330,6 +9348,70 @@ function operateMap(id, pageId, type, data, operateMapCallback) {
         data,
     }, pageId, operateMapCallback);
 }
+
+const API_UPX2PX = 'upx2px';
+const Upx2pxProtocol = [
+    {
+        name: 'upx',
+        type: [Number, String],
+        required: true,
+    },
+];
+
+const EPS = 1e-4;
+const BASE_DEVICE_WIDTH = 750;
+let isIOS = false;
+let deviceWidth = 0;
+let deviceDPR = 0;
+let maxWidth = 960;
+let baseWidth = 375;
+let includeWidth = 750;
+function checkDeviceWidth() {
+    const { platform, pixelRatio, windowWidth } = getBaseSystemInfo();
+    deviceWidth = windowWidth;
+    deviceDPR = pixelRatio;
+    isIOS = platform === 'ios';
+}
+function checkValue(value, defaultValue) {
+    const newValue = Number(value);
+    return isNaN(newValue) ? defaultValue : newValue;
+}
+function checkMaxWidth() {
+    const config = __uniConfig.globalStyle || {};
+    maxWidth = checkValue(config.rpxCalcMaxDeviceWidth, 960);
+    baseWidth = checkValue(config.rpxCalcBaseDeviceWidth, 375);
+    includeWidth = checkValue(config.rpxCalcBaseDeviceWidth, 750);
+}
+const upx2px = defineSyncApi(API_UPX2PX, (number, newDeviceWidth) => {
+    if (deviceWidth === 0) {
+        checkDeviceWidth();
+        {
+            checkMaxWidth();
+        }
+    }
+    number = Number(number);
+    if (number === 0) {
+        return 0;
+    }
+    let width = newDeviceWidth || deviceWidth;
+    {
+        width = number === includeWidth || width <= maxWidth ? width : baseWidth;
+    }
+    let result = (number / BASE_DEVICE_WIDTH) * width;
+    if (result < 0) {
+        result = -result;
+    }
+    result = Math.floor(result + EPS);
+    if (result === 0) {
+        if (deviceDPR === 1 || !isIOS) {
+            result = 1;
+        }
+        else {
+            result = 0.5;
+        }
+    }
+    return number < 0 ? -result : result;
+}, Upx2pxProtocol);
 
 const API_ADD_INTERCEPTOR = 'addInterceptor';
 const API_REMOVE_INTERCEPTOR = 'removeInterceptor';
@@ -11119,6 +11201,11 @@ const setLocale = defineSyncApi(API_SET_LOCALE, (locale) => {
     return false;
 });
 
+const API_SET_PAGE_META = 'setPageMeta';
+const setPageMeta = defineAsyncApi(API_SET_PAGE_META, (options, { resolve }) => {
+    resolve(setCurrentPageMeta(getCurrentPageVm()));
+});
+
 const API_SET_BACKGROUND_COLOR = 'setBackgroundColor';
 const SetBackgroundColorProtocol = {
     backgroundColor: {
@@ -11154,12 +11241,56 @@ const appHooks = {
     [ON_SHOW]: [],
     [ON_HIDE]: [],
 };
+function onAppHook(type, hook) {
+    const app = getApp({ allowDefault: true });
+    if (app && app.$vm) {
+        return injectHook(type, hook, app.$vm.$);
+    }
+    appHooks[type].push(hook);
+}
 function injectAppHooks(appInstance) {
     Object.keys(appHooks).forEach((type) => {
         appHooks[type].forEach((hook) => {
             injectHook(type, hook, appInstance);
         });
     });
+}
+function offAppHook(type, hook) {
+    const app = getApp({ allowDefault: true });
+    if (app && app.$vm) {
+        return removeHook(app.$vm, type, hook);
+    }
+    remove(appHooks[type], hook);
+}
+function onUnhandledRejection(hook) {
+    onAppHook(ON_UNHANDLE_REJECTION, hook);
+}
+function offUnhandledRejection(hook) {
+    offAppHook(ON_UNHANDLE_REJECTION, hook);
+}
+function onPageNotFound(hook) {
+    onAppHook(ON_PAGE_NOT_FOUND, hook);
+}
+function offPageNotFound(hook) {
+    offAppHook(ON_PAGE_NOT_FOUND, hook);
+}
+function onError(hook) {
+    onAppHook(ON_ERROR, hook);
+}
+function offError(hook) {
+    offAppHook(ON_ERROR, hook);
+}
+function onAppShow(hook) {
+    onAppHook(ON_SHOW, hook);
+}
+function offAppShow(hook) {
+    offAppHook(ON_SHOW, hook);
+}
+function onAppHide(hook) {
+    onAppHook(ON_HIDE, hook);
+}
+function offAppHide(hook) {
+    offAppHook(ON_HIDE, hook);
 }
 const API_GET_ENTER_OPTIONS_SYNC = 'getEnterOptionsSync';
 const getEnterOptionsSync = defineSyncApi(API_GET_ENTER_OPTIONS_SYNC, () => {
@@ -13813,15 +13944,26 @@ var uni$1 = {
   loadFontFace: loadFontFace,
   navigateBack: navigateBack,
   navigateTo: navigateTo,
+  offAppHide: offAppHide,
+  offAppShow: offAppShow,
+  offError: offError,
   offKeyboardHeightChange: offKeyboardHeightChange,
   offLocationChange: offLocationChange,
   offLocationChangeError: offLocationChangeError,
+  offPageNotFound: offPageNotFound,
+  offUnhandledRejection: offUnhandledRejection,
   offWindowResize: offWindowResize,
+  onAppHide: onAppHide,
+  onAppShow: onAppShow,
+  onCreateVueApp: onCreateVueApp,
+  onError: onError,
   onKeyboardHeightChange: onKeyboardHeightChange,
   onLocaleChange: onLocaleChange,
   onLocationChange: onLocationChange,
   onLocationChangeError: onLocationChangeError,
+  onPageNotFound: onPageNotFound,
   onTabBarMidButtonTap: onTabBarMidButtonTap,
+  onUnhandledRejection: onUnhandledRejection,
   onWindowResize: onWindowResize,
   openLocation: openLocation,
   pageScrollTo: pageScrollTo,
@@ -13834,6 +13976,7 @@ var uni$1 = {
   setLocale: setLocale,
   setNavigationBarColor: setNavigationBarColor,
   setNavigationBarTitle: setNavigationBarTitle,
+  setPageMeta: setPageMeta,
   setTabBarBadge: setTabBarBadge,
   setTabBarItem: setTabBarItem,
   setTabBarStyle: setTabBarStyle,
@@ -13843,7 +13986,8 @@ var uni$1 = {
   startLocationUpdate: startLocationUpdate,
   startLocationUpdateBackground: startLocationUpdateBackground,
   stopLocationUpdate: stopLocationUpdate,
-  switchTab: switchTab
+  switchTab: switchTab,
+  upx2px: upx2px
 };
 
 const UniServiceJSBridge$1 = /*#__PURE__*/ extend(ServiceJSBridge, {
