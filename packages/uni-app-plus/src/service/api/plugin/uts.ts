@@ -24,9 +24,28 @@ function isComponentPublicInstance(instance: any) {
 function parseElement(obj: any) {
   if (isUniElement(obj)) {
     return obj
-  } else if (isComponentPublicInstance(obj)) {
+  }
+}
+
+function parseComponentPublicInstance(obj: any) {
+  if (isComponentPublicInstance(obj)) {
     return obj.$el
   }
+}
+
+// 序列化 UniElement | ComponentPublicInstance
+function serialize(
+  el: any,
+  type: '__uni_element' | '__component_public_instance'
+) {
+  let nodeId = ''
+  let pageId = ''
+  // 非 x 可能不存在 getNodeId 方法？
+  if (el && el.getNodeId) {
+    pageId = el.pageId
+    nodeId = el.getNodeId()
+  }
+  return { pageId, nodeId, [type]: true }
 }
 
 function toRaw(observed?: unknown): unknown {
@@ -52,17 +71,18 @@ export function normalizeArg(
       callbacks[id] = arg
     }
     return id
+    // 为啥还要额外判断了isUniElement?，isPlainObject不是包含isUniElement的逻辑吗？为了避免出bug，保留此逻辑
   } else if (isPlainObject(arg) || isUniElement(arg)) {
-    const el = parseElement(arg)
+    const uniElement = parseElement(arg)
+    const componentPublicInstanceUniElement = !uniElement
+      ? parseComponentPublicInstance(arg)
+      : undefined
+    const el = uniElement || componentPublicInstanceUniElement
     if (el) {
-      let nodeId = ''
-      let pageId = ''
-      // 非 x 可能不存在 getNodeId 方法？
-      if (el && el.getNodeId) {
-        pageId = el.pageId
-        nodeId = el.getNodeId()
-      }
-      return { pageId, nodeId, __uni_element: true }
+      return serialize(
+        el,
+        uniElement ? '__uni_element' : '__component_public_instance'
+      )
     } else {
       // 必须复制，否则会污染原始对象，比如：
       // const obj = {
