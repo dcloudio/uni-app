@@ -1,4 +1,4 @@
-import { registerSystemRoute } from "@dcloudio/uni-runtime";
+import { defineAsyncApi, registerSystemRoute } from "@dcloudio/uni-runtime";
 import UniActionSheetPage from "@/uni_modules/uni-actionSheet/pages/actionSheet/actionSheet.vue";
 import { ShowActionSheet2, ShowActionSheet2Options } from "../interface.uts";
 
