@@ -1,4 +1,4 @@
-import type { CompilerOptions } from '@dcloudio/uni-mp-compiler'
+import type { CompilerOptions, NodeTransform } from '@dcloudio/uni-mp-compiler'
 import {
   COMPONENT_CUSTOM_HIDDEN,
   type MiniProgramCompilerOptions,
@@ -12,6 +12,7 @@ import {
   resolveMiniProgramRuntime,
 } from '@dcloudio/uni-mp-vite'
 import { transformAd } from './transforms/transformAd'
+import { transformCanvas } from './transforms/x/transformCanvas'
 
 import source from './project.config.json'
 
@@ -54,8 +55,17 @@ export const customElements = [
   'store-home',
 ]
 
+const nodeTransforms: NodeTransform[] = [
+  transformRef,
+  transformComponentLink,
+  transformAd,
+]
+if (process.env.UNI_APP_X === 'true') {
+  nodeTransforms.push(transformCanvas)
+}
+
 export const compilerOptions: CompilerOptions = {
-  nodeTransforms: [transformRef, transformComponentLink, transformAd],
+  nodeTransforms,
 }
 
 const COMPONENTS_DIR = 'wxcomponents'
