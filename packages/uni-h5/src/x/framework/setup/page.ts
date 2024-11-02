@@ -140,8 +140,8 @@ export function initXPage(
   // 获取 packages/uni-h5/src/framework/components/page/index.ts defineSystemComponent page currentInstance
   Object.defineProperty(vm, '$pageLayoutInstance', {
     get() {
-      let res = this.$.parent
-      while (res?.type?.name !== 'Page') {
+      let res = vm.$?.parent
+      while (res && res.type?.name !== 'Page') {
         res = res.parent
       }
       return res
