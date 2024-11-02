@@ -1,7 +1,19 @@
+page {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
 label,
 scroll-view,
 swiper-item,
-view {
+view,
+navigator,
+form,
+radio-group,
+radio,
+checkbox-group,
+checkbox {
   display: flex;
   flex-direction: column;
   flex-shrink: 0;
@@ -31,4 +43,9 @@ swiper-item {
 
 button {
   margin: 0;
+}
+
+slider {
+  margin: 0px;
+  padding: 4px 0px;
 }
