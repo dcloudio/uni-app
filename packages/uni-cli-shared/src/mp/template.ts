@@ -69,6 +69,10 @@ export interface MiniProgramCompilerOptions {
   }
   component?: {
     /**
+     * 是否支持 :host 伪类
+     */
+    ':host'?: boolean
+    /**
      * 平台自定义组件目录，如 wxcomponents
      */
     dir?: string

@@ -11,6 +11,8 @@ import {
   injectCssPostPlugin,
   normalizeMiniProgramFilename,
   normalizePath,
+  parseManifestJsonOnce,
+  parseUniXFlexDirection,
   relativeFile,
   removeExt,
   resolveMainPathOnce,
@@ -116,6 +118,12 @@ export function createConfigResolved({
             }
           }
           if (process.env.UNI_APP_X === 'true') {
+            if (component?.[':host']) {
+              const flexDirection = parseUniXFlexDirection(
+                parseManifestJsonOnce(process.env.UNI_INPUT_DIR)
+              )
+              return `:host{display:flex;flex-direction:${flexDirection}}\n${cssCode}`
+            }
             return cssCode
           }
           const nvueCssPaths = getNVueCssPaths(config)
