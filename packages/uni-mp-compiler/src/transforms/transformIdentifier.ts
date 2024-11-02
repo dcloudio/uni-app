@@ -30,6 +30,7 @@ import {
 } from './transformComponent'
 import { isUserComponent } from '@dcloudio/uni-cli-shared'
 import { isString, isSymbol } from '@vue/shared'
+import { rewriteId } from './transformId'
 
 export const transformIdentifier: NodeTransform = (node, context) => {
   return function transformIdentifier() {
@@ -61,6 +62,10 @@ export const transformIdentifier: NodeTransform = (node, context) => {
       let hasStyleBinding = false
 
       rewriteRef(node, context)
+
+      if (context.isX) {
+        rewriteId(node, context)
+      }
 
       if (isUserComponent(node, context)) {
         rewriteBinding(node, context)

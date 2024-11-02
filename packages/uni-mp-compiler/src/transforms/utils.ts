@@ -36,6 +36,7 @@ export const ATTR_VUE_PROPS = 'u-p'
 export const ATTR_VUE_REF = 'u-' + VUE_REF
 export const ATTR_VUE_REF_IN_FOR = 'u-' + VUE_REF_IN_FOR
 export const ATTR_COM_TYPE = 'u-t'
+export const ATTR_ELEMENT_ID = 'u-e'
 
 export const SCOPED_SLOT_IDENTIFIER = '__SCOPED_SLOT__'
 

@@ -4120,9 +4120,25 @@ function isComponentPublicInstance(instance) {
 function parseElement(obj) {
   if (isUniElement(obj)) {
     return obj;
-  } else if (isComponentPublicInstance(obj)) {
+  }
+}
+function parseComponentPublicInstance(obj) {
+  if (isComponentPublicInstance(obj)) {
     return obj.$el;
   }
+}
+function serialize(el, type) {
+  var nodeId = "";
+  var pageId = "";
+  if (el && el.getNodeId) {
+    pageId = el.pageId;
+    nodeId = el.getNodeId();
+  }
+  return {
+    pageId,
+    nodeId,
+    [type]: true
+  };
 }
 function toRaw(observed) {
   var raw = observed && observed.__v_raw;
@@ -4142,19 +4158,11 @@ function normalizeArg(arg, callbacks, keepAlive) {
     }
     return id2;
   } else if (isPlainObject(arg) || isUniElement(arg)) {
-    var el = parseElement(arg);
+    var uniElement = parseElement(arg);
+    var componentPublicInstanceUniElement = !uniElement ? parseComponentPublicInstance(arg) : void 0;
+    var el = uniElement || componentPublicInstanceUniElement;
     if (el) {
-      var nodeId = "";
-      var pageId = "";
-      if (el && el.getNodeId) {
-        pageId = el.pageId;
-        nodeId = el.getNodeId();
-      }
-      return {
-        pageId,
-        nodeId,
-        __uni_element: true
-      };
+      return serialize(el, uniElement ? "__uni_element" : "__component_public_instance");
     } else {
       var newArg = {};
       Object.keys(arg).forEach((name) => {

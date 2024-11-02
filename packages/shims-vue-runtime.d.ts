@@ -64,6 +64,8 @@ declare module '@vue/runtime-core' {
     $dialogPages?: Ref<UniDialogPage[]>
     $systemDialogPages?: Ref<UniDialogPage[]>
     $dialogPage?: UniDialogPage
+    $uniElements: Map<string, UniElement>
+    $uniElementIds: string[]
   }
 
   export const onBeforeActivate: (fn: () => void) => void

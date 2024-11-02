@@ -31,6 +31,7 @@ import { type IfElementNode, isIfElementNode } from '../transforms/vIf'
 import { findSlotName } from '../transforms/vSlot'
 import type { TransformContext } from '../transform'
 import {
+  ATTR_ELEMENT_ID,
   ATTR_VUE_PROPS,
   VIRTUAL_HOST_CLASS,
   VIRTUAL_HOST_STYLE,
@@ -535,6 +536,10 @@ function genDirectiveNode(
     )
   } else if (prop.arg && prop.exp) {
     const arg = (prop.arg as SimpleExpressionNode).content
+    if (arg === ATTR_ELEMENT_ID) {
+      // 模板忽略生成 u-e，只需要 render 中生成
+      return
+    }
     const exp = (prop.exp as SimpleExpressionNode).content
     checkVirtualHostProps(arg, virtualHost).forEach((arg) => {
       push(` ${arg}="{{${exp}}}"`)

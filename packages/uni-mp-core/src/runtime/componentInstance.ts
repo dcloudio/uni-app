@@ -12,9 +12,11 @@ import {
   devtoolsComponentAdded,
   // @ts-expect-error
   devtoolsComponentRemoved,
+  onUpdated,
 } from 'vue'
 import type { MPComponentInstance } from './component'
 import { getTriggerEventDetail } from './util'
+import { pruneUniElements } from './element'
 
 const MP_METHODS = [
   'createSelectorQuery',
@@ -117,6 +119,12 @@ export function initBaseInstance(
 
   // $emit
   instance.emit = createEmitFn(instance.emit, ctx)
+
+  if (__X__) {
+    onUpdated(() => {
+      pruneUniElements(instance)
+    })
+  }
 }
 
 export function initComponentInstance(

@@ -1,6 +1,6 @@
 import { SLOT_DEFAULT_NAME, invokeArrayFns, MINI_PROGRAM_PAGE_RUNTIME_HOOKS, ON_LOAD, ON_SHOW, ON_HIDE, ON_UNLOAD, ON_RESIZE, ON_TAB_ITEM_TAP, ON_REACH_BOTTOM, ON_PULL_DOWN_REFRESH, ON_ADD_TO_FAVORITES, isUniLifecycleHook, ON_READY, once, ON_LAUNCH, ON_ERROR, ON_THEME_CHANGE, ON_PAGE_NOT_FOUND, ON_UNHANDLE_REJECTION, addLeadingSlash, stringifyQuery, customizeEvent } from '@dcloudio/uni-shared';
 import { hasOwn, isArray, isFunction, extend, isPlainObject as isPlainObject$1, isObject } from '@vue/shared';
-import { ref, findComponentPropsData, toRaw, updateProps, hasQueueJob, invalidateJob, devtoolsComponentAdded, getExposeProxy, pruneComponentPropsCache } from 'vue';
+import { onUpdated, ref, findComponentPropsData, toRaw, updateProps, hasQueueJob, invalidateJob, devtoolsComponentAdded, getExposeProxy, pruneComponentPropsCache } from 'vue';
 import { normalizeLocale, LOCALE_EN } from '@dcloudio/uni-i18n';
 
 function arrayPop(array) {
@@ -787,6 +787,19 @@ function findVmByVueId(instance, vuePid) {
     }
 }
 
+/**
+ * 每次 render 完成，删除不在 $uniElementIds 中的元素
+ * @param ins
+ */
+function pruneUniElements(ins) {
+    // 如果 $uniElements 不在 $uniElementIds 中，则删除
+    ins.$uniElements.forEach((_, id) => {
+        if (!ins.$uniElementIds.includes(id)) {
+            ins.$uniElements.delete(id);
+        }
+    });
+}
+
 const MP_METHODS = [
     'createSelectorQuery',
     'createIntersectionObserver',
@@ -837,6 +850,11 @@ function initBaseInstance(instance, options) {
     ctx.$callHook = callHook;
     // $emit
     instance.emit = createEmitFn(instance.emit, ctx);
+    {
+        onUpdated(() => {
+            pruneUniElements(instance);
+        });
+    }
 }
 function initComponentInstance(instance, options) {
     initBaseInstance(instance, options);
