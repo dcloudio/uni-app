@@ -259,6 +259,7 @@ function defaultOnWarn(msg: CompilerError) {
 export function createTransformContext(
   rootNode: RootNode,
   {
+    isX = false,
     root = '',
     filename = '',
     isTS = false,
@@ -338,6 +339,7 @@ export function createTransformContext(
   const context: TransformContext = {
     // options
     // 暂不提供根据文件名生成递归组件
+    isX,
     selfName: '', //nameMatch && capitalize(camelize(nameMatch[1])),
     miniProgram,
     isTS,

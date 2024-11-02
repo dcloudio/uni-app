@@ -52,6 +52,7 @@ interface ParserOptions {
 interface SharedTransformCodegenOptions {
   inline?: boolean
   isTS?: boolean
+  isX?: boolean
   root?: string
   filename?: string
   bindingMetadata?: BindingMetadata

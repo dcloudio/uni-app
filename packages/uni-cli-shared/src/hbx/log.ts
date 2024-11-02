@@ -124,6 +124,21 @@ export const removeWarnFormatter: Formatter = {
   },
 }
 
+export const removeDuplicatePluginFormatter: Formatter = {
+  test() {
+    return true
+  },
+  format(msg) {
+    // [plugin:vite:vue] [plugin vite:vue]
+    // 正则匹配获取第一个插件名称，然后移除 [plugin vite:vue]
+    const pluginName = msg.match(/\[plugin\s([^\]]+)\]/)?.[1]
+    if (pluginName) {
+      return msg.replace(`[plugin ${pluginName}]`, '')
+    }
+    return msg
+  },
+}
+
 export const errorFormatter: Formatter<LogErrorOptions> = {
   test(_, opts) {
     return !!(opts && opts.error)
