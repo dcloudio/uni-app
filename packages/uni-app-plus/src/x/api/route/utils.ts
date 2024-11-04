@@ -78,6 +78,8 @@ export function handleBeforeEntryPageRoutes() {
 export function closeNativeDialogPage(dialogPage: UniPage) {
   const webview = getNativeApp().pageManager.findPageById(
     dialogPage.$vm!.$basePage.id + ''
-  )!
-  closeWebview(webview, 'none', 0)
+  )
+  if (webview) {
+    closeWebview(webview, 'none', 0)
+  }
 }
