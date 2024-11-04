@@ -33,4 +33,12 @@ export default {
       return invokeHarmonyChannel('convertLocalFileSystemURL', [filepath])
     },
   },
+  key: {
+    hideSoftKeybord() {
+      invokeHarmonyChannel('hideSoftKeybord')
+    },
+    showSoftKeybord() {
+      invokeHarmonyChannel('showSoftKeybord')
+    },
+  },
 }
