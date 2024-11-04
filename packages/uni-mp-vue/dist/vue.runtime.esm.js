@@ -8185,9 +8185,9 @@ class UniElement {
  */
 function pruneUniElements(ins) {
     // 如果 $uniElements 不在 $uniElementIds 中，则删除
-    ins.$uniElements.forEach((_, id) => {
-        const uniElement = ins.$uniElements.get(id);
-        if (uniElement) {
+    ins.$uniElements.forEach((uniElement, id) => {
+        const options = ins.$uniElementIds.get(id);
+        if (!options) {
             uniElement.$destroy();
             ins.$uniElements.delete(id);
         }
@@ -8198,11 +8198,8 @@ function pruneUniElements(ins) {
  * @param ins
  */
 function destroyUniElements(ins) {
-    ins.$uniElements.forEach((_, id) => {
-        const uniElement = ins.$uniElements.get(id);
-        if (uniElement) {
-            uniElement.$destroy();
-        }
+    ins.$uniElements.forEach((uniElement, id) => {
+        uniElement.$destroy();
     });
     ins.$uniElements.clear();
 }

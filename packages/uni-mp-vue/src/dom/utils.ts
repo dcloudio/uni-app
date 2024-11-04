@@ -12,10 +12,10 @@ import { UniElement } from './UniElement'
  */
 export function pruneUniElements(ins: ComponentInternalInstance) {
   // 如果 $uniElements 不在 $uniElementIds 中，则删除
-  ins.$uniElements.forEach((_, id) => {
-    const uniElement = ins.$uniElements.get(id) as UniElement | undefined
-    if (uniElement) {
-      uniElement.$destroy()
+  ins.$uniElements.forEach((uniElement, id) => {
+    const options = ins.$uniElementIds.get(id)
+    if (!options) {
+      ;(uniElement as unknown as UniElement).$destroy()
       ins.$uniElements.delete(id)
     }
   })
@@ -26,11 +26,8 @@ export function pruneUniElements(ins: ComponentInternalInstance) {
  * @param ins
  */
 export function destroyUniElements(ins: ComponentInternalInstance) {
-  ins.$uniElements.forEach((_, id) => {
-    const uniElement = ins.$uniElements.get(id) as UniElement | undefined
-    if (uniElement) {
-      uniElement.$destroy()
-    }
+  ins.$uniElements.forEach((uniElement, id) => {
+    ;(uniElement as unknown as UniElement).$destroy()
   })
   ins.$uniElements.clear()
 }
