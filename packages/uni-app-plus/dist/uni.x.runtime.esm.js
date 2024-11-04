@@ -1689,7 +1689,7 @@ function registerDialogPage(_ref2, dialogPage, onCreated) {
   var delay = arguments.length > 3 && arguments[3] !== void 0 ? arguments[3] : 0;
   var id2 = genWebviewId();
   var routeOptions = initRouteOptions(path, openType);
-  var pageStyle = /* @__PURE__ */ new Map([["navigationStyle", "custom"], ["backgroundColor", "transparent"]]);
+  var pageStyle = /* @__PURE__ */ new Map([["navigationStyle", "custom"], ["backgroundColor", "transparent"], ["disableSwipeBack", true]]);
   var parentPage = dialogPage.getParentPage();
   var nativePage2 = getPageManager().createDialogPage(
     // @ts-expect-error
