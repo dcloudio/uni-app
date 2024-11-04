@@ -15,6 +15,7 @@ export const NORMALIZE_CLASS = Symbol(`normalizeClass`)
 export const TO_DISPLAY_STRING = Symbol(`toDisplayString`)
 export const WITH_MODEL_MODIFIERS = Symbol(`withModelModifiers`)
 export const SET_UNI_ELEMENT_ID = Symbol(`setUniElementId`)
+export const WITH_UNI_ELEMENT_STYLE = Symbol(`withUniElementStyle`)
 
 registerRuntimeHelpers({
   [V_ON]: 'o',
@@ -33,4 +34,5 @@ registerRuntimeHelpers({
   [WITH_MODEL_MODIFIERS]: 'm',
   [STRINGIFY_JSON]: 'j',
   [SET_UNI_ELEMENT_ID]: 'si',
+  [WITH_UNI_ELEMENT_STYLE]: 'us',
 })

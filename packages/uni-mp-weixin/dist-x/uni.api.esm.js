@@ -1,10 +1,7 @@
 import { isArray, hasOwn, isString, isPlainObject, isObject, capitalize, toRawType, makeMap, isFunction, isPromise, extend, remove } from '@vue/shared';
 import { normalizeLocale, LOCALE_EN } from '@dcloudio/uni-i18n';
 import { Emitter, sortObject, onCreateVueApp, invokeCreateVueAppHook } from '@dcloudio/uni-shared';
-
-function getBaseSystemInfo() {
-    return wx.getSystemInfoSync();
-}
+import { findUniElement } from 'vue';
 
 function validateProtocolFail(name, msg) {
     console.warn(`${name}: ${msg}`);
@@ -438,6 +435,22 @@ function defineAsyncApi(name, fn, protocol, options) {
     return promisify$1(name, wrapperAsyncApi(name, fn, (process.env.NODE_ENV !== 'production') ? protocol : undefined, options));
 }
 
+// @ts-expect-error
+const API_GET_ELEMENT_BY_ID = 'getElementById';
+const getElementById = defineSyncApi(API_GET_ELEMENT_BY_ID, (id) => {
+    const pages = getCurrentPages();
+    const page = pages[pages.length - 1];
+    if (!page || !page.$vm) {
+        return null;
+    }
+    return findUniElement(id, page.$vm);
+    //return page.getElementById(id)
+});
+
+function getBaseSystemInfo() {
+    return wx.getSystemInfoSync();
+}
+
 const API_UPX2PX = 'upx2px';
 const Upx2pxProtocol = [
     {
@@ -728,6 +741,7 @@ const offPushMessage = (fn) => {
 };
 
 const SYNC_API_RE = /^\$|getLocale|setLocale|sendNativeEvent|restoreGlobal|requireGlobal|getCurrentSubNVue|getMenuButtonBoundingClientRect|^report|interceptors|Interceptor$|getSubNVueById|requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64|getDeviceInfo|getAppBaseInfo|getWindowInfo|getSystemSetting|getAppAuthorizeSetting/;
+const SYNC_API_RE_X = /getElementById/;
 const CONTEXT_API_RE = /^create|Manager$/;
 // Context例外情况
 const CONTEXT_API_RE_EXC = ['createBLEConnection'];
@@ -738,6 +752,9 @@ function isContextApi(name) {
     return CONTEXT_API_RE.test(name) && CONTEXT_API_RE_EXC.indexOf(name) === -1;
 }
 function isSyncApi(name) {
+    if (SYNC_API_RE_X.test(name)) {
+        return true;
+    }
     return SYNC_API_RE.test(name) && ASYNC_API.indexOf(name) === -1;
 }
 function isCallbackApi(name) {
@@ -1168,6 +1185,7 @@ const baseApis = {
     onPushMessage,
     offPushMessage,
     invokePushCallback,
+    getElementById,
 };
 function initUni(api, protocols, platform = wx) {
     const wrapper = initWrapper(protocols);

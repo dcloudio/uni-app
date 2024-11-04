@@ -4,9 +4,9 @@ describe('compiler: transform id', () => {
   test('static id', () => {
     assert(
       `<view id="view"/>`,
-      `<view id="view" style="{{b}}"/>`,
+      `<view id="view" change:e-s="{{uF.sS}}" e-s="{{b}}"/>`,
       `(_ctx, _cache) => {
-  return { a: _si('view'), b: _s(_us('view')) }
+  return { a: _si('view'), b: _us('view') }
 }`,
       {
         isX: true,
@@ -16,9 +16,9 @@ describe('compiler: transform id', () => {
   test('dynamic id', () => {
     assert(
       `<view :id="viewId"/>`,
-      `<view id="{{a}}" style="{{b}}"/>`,
+      `<view id="{{a}}" change:e-s="{{uF.sS}}" e-s="{{b}}"/>`,
       `(_ctx, _cache) => {
-  return { a: _si(_ctx.viewId), b: _s(_us(_ctx.viewId)) }
+  return { a: _si(_ctx.viewId), b: _us(_ctx.viewId) }
 }`,
       {
         isX: true,

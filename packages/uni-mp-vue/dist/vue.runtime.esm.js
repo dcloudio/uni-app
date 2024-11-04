@@ -7281,7 +7281,7 @@ function renderComponentRoot(instance) {
     },
     inheritAttrs
   } = instance;
-  instance.$uniElementIds = /* @__PURE__ */ new Set();
+  instance.$uniElementIds = /* @__PURE__ */ new Map();
   instance.$templateRefs = [];
   instance.$ei = 0;
   pruneComponentPropsCache(uid);
@@ -8096,10 +8096,13 @@ function withModelModifiers(fn, { number, trim }, isComponent = false) {
     };
 }
 
-function setUniElementId(id) {
+function setUniElementId(id, tagName) {
     const { $uniElementIds } = getCurrentInstance();
     id = toRaw(id);
-    $uniElementIds.add(id);
+    // 仅保留第一个，其他忽略
+    if (!$uniElementIds.has(id)) {
+        $uniElementIds.set(id, tagName);
+    }
     return id;
 }
 
@@ -8122,8 +8125,128 @@ const p = (props) => renderProps(props);
 const sr = (ref, id, opts) => setRef(ref, id, opts);
 const m = (fn, modifiers, isComponent = false) => withModelModifiers(fn, modifiers, isComponent);
 const j = (obj) => JSON.stringify(obj);
-const si = (id) => setUniElementId(id);
+const si = (id, tagName) => setUniElementId(id, tagName);
 const us = (style, el) => withUniElementStyle(style, el);
+
+class UniCSSStyleDeclaration {
+    constructor() {
+        this.$styles = {};
+        this.$onChangeCallbacks = [];
+    }
+    setProperty(name, value) {
+        const oldValue = this.$styles[name];
+        if (oldValue === value) {
+            return;
+        }
+        this.$styles[name] = value;
+        this.$onChangeCallbacks.forEach((callback) => callback(this.$styles));
+    }
+    getPropertyValue(property) {
+        return this.$styles[property] || '';
+    }
+    get cssText() {
+        return Object.entries(this.$styles)
+            .map(([key, value]) => `${key}:${value}`)
+            .join(';');
+    }
+    $onChange(callback) {
+        this.$onChangeCallbacks.push(callback);
+    }
+    $destroy() {
+        this.$onChangeCallbacks = [];
+    }
+}
+
+class UniElement {
+    constructor(id, name) {
+        this.style = new UniCSSStyleDeclaration();
+        this.id = id;
+        this.tagName = name.toUpperCase();
+        this.nodeName = this.tagName;
+    }
+    $onStyleChange(callback) {
+        this.style.$onChange(callback);
+    }
+    $destroy() {
+        this.style.$destroy();
+        // @ts-expect-error
+        this.style = null;
+    }
+}
+
+/**
+ * 每次 render 完成，删除不在 $uniElementIds 中的元素
+ * @param ins
+ */
+function pruneUniElements(ins) {
+    // 如果 $uniElements 不在 $uniElementIds 中，则删除
+    ins.$uniElements.forEach((_, id) => {
+        const uniElement = ins.$uniElements.get(id);
+        if (uniElement) {
+            uniElement.$destroy();
+            ins.$uniElements.delete(id);
+        }
+    });
+}
+/**
+ * 销毁所有元素
+ * @param ins
+ */
+function destroyUniElements(ins) {
+    ins.$uniElements.forEach((_, id) => {
+        const uniElement = ins.$uniElements.get(id);
+        if (uniElement) {
+            uniElement.$destroy();
+        }
+    });
+    ins.$uniElements.clear();
+}
+function createUniElement(id, tagName, ins) {
+    const uniElement = new UniElement(id, tagName);
+    if (ins) {
+        uniElement.$onStyleChange((styles) => {
+            var _a;
+            (_a = ins.proxy) === null || _a === void 0 ? void 0 : _a.$scope.setData({
+                [id + ':style']: styles,
+            });
+        });
+    }
+    return uniElement;
+}
+/**
+ * 根据指定 id 查找元素
+ * @param id
+ * @param ins
+ * @returns
+ */
+function findUniElement(id, ins = getCurrentInstance()) {
+    if (!ins) {
+        return null;
+    }
+    // 缓存
+    const element = ins.$uniElements.get(id);
+    if (element) {
+        return element;
+    }
+    const tagName = ins.$uniElementIds.get(id);
+    if (tagName) {
+        const element = createUniElement(id, tagName, ins);
+        // @ts-expect-error
+        ins.$uniElements.set(id, element);
+        return element;
+    }
+    // 递归查找
+    if (ins.proxy) {
+        const children = ins.proxy.$children;
+        for (const child of children) {
+            const element = findUniElement(id, child.$);
+            if (element) {
+                return element;
+            }
+        }
+    }
+    return null;
+}
 
 function createApp(rootComponent, rootProps = null) {
     rootComponent && (rootComponent.mpType = 'app');
@@ -8131,4 +8254,4 @@ function createApp(rootComponent, rootProps = null) {
 }
 const createSSRApp = createApp;
 
-export { EffectScope, Fragment, ReactiveEffect, Text, c, callWithAsyncErrorHandling, callWithErrorHandling, computed, createApp, createPropsRestProxy, createSSRApp, createVNode, createVueApp, customRef, d, defineAsyncComponent, defineComponent, defineEmits, defineExpose, defineProps, devtoolsComponentAdded, devtoolsComponentRemoved, devtoolsComponentUpdated, diff, e, effect, effectScope, f, findComponentPropsData, getCurrentInstance, getCurrentScope, getExposeProxy, guardReactiveProps, h, hasInjectionContext, hasQueueJob, inject, injectHook, invalidateJob, isInSSRComponentSetup, isProxy, isReactive, isReadonly, isRef, isShallow, j, logError, m, markRaw, mergeDefaults, mergeModels, mergeProps, n, nextTick$1 as nextTick, o, onActivated, onBeforeMount, onBeforeUnmount, onBeforeUpdate, onDeactivated, onErrorCaptured, onMounted, onRenderTracked, onRenderTriggered, onScopeDispose, onServerPrefetch, onUnmounted, onUpdated, p, patch, provide, proxyRefs, pruneComponentPropsCache, queuePostFlushCb, r, reactive, readonly, ref, resolveComponent, resolveDirective, resolveFilter, s, setCurrentRenderingInstance, setTemplateRef, setupDevtoolsPlugin, shallowReactive, shallowReadonly, shallowRef, si, sr, stop, t, toHandlers, toRaw, toRef, toRefs, toValue, triggerRef, unref, updateProps, us, useAttrs, useCssModule, useCssVars, useModel, useSSRContext, useSlots, version, w, warn, watch, watchEffect, watchPostEffect, watchSyncEffect, withAsyncContext, withCtx, withDefaults, withDirectives, withModifiers, withScopeId };
+export { EffectScope, Fragment, ReactiveEffect, Text, UniElement, c, callWithAsyncErrorHandling, callWithErrorHandling, computed, createApp, createPropsRestProxy, createSSRApp, createVNode, createVueApp, customRef, d, defineAsyncComponent, defineComponent, defineEmits, defineExpose, defineProps, destroyUniElements, devtoolsComponentAdded, devtoolsComponentRemoved, devtoolsComponentUpdated, diff, e, effect, effectScope, f, findComponentPropsData, findUniElement, getCurrentInstance, getCurrentScope, getExposeProxy, guardReactiveProps, h, hasInjectionContext, hasQueueJob, inject, injectHook, invalidateJob, isInSSRComponentSetup, isProxy, isReactive, isReadonly, isRef, isShallow, j, logError, m, markRaw, mergeDefaults, mergeModels, mergeProps, n, nextTick$1 as nextTick, o, onActivated, onBeforeMount, onBeforeUnmount, onBeforeUpdate, onDeactivated, onErrorCaptured, onMounted, onRenderTracked, onRenderTriggered, onScopeDispose, onServerPrefetch, onUnmounted, onUpdated, p, patch, provide, proxyRefs, pruneComponentPropsCache, pruneUniElements, queuePostFlushCb, r, reactive, readonly, ref, resolveComponent, resolveDirective, resolveFilter, s, setCurrentRenderingInstance, setTemplateRef, setupDevtoolsPlugin, shallowReactive, shallowReadonly, shallowRef, si, sr, stop, t, toHandlers, toRaw, toRef, toRefs, toValue, triggerRef, unref, updateProps, us, useAttrs, useCssModule, useCssVars, useModel, useSSRContext, useSlots, version, w, warn, watch, watchEffect, watchPostEffect, watchSyncEffect, withAsyncContext, withCtx, withDefaults, withDirectives, withModifiers, withScopeId };

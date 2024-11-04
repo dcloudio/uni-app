@@ -4922,7 +4922,7 @@ function renderComponentRoot(instance) {
     },
     inheritAttrs
   } = instance;
-  instance.$uniElementIds = /* @__PURE__ */ new Set();
+  instance.$uniElementIds = /* @__PURE__ */ new Map();
   instance.$templateRefs = [];
   instance.$ei = 0;
   pruneComponentPropsCache(uid);

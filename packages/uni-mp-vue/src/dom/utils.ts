@@ -13,10 +13,42 @@ import { UniElement } from './UniElement'
 export function pruneUniElements(ins: ComponentInternalInstance) {
   // 如果 $uniElements 不在 $uniElementIds 中，则删除
   ins.$uniElements.forEach((_, id) => {
-    if (!ins.$uniElementIds.includes(id)) {
+    const uniElement = ins.$uniElements.get(id) as UniElement | undefined
+    if (uniElement) {
+      uniElement.$destroy()
       ins.$uniElements.delete(id)
     }
   })
+}
+
+/**
+ * 销毁所有元素
+ * @param ins
+ */
+export function destroyUniElements(ins: ComponentInternalInstance) {
+  ins.$uniElements.forEach((_, id) => {
+    const uniElement = ins.$uniElements.get(id) as UniElement | undefined
+    if (uniElement) {
+      uniElement.$destroy()
+    }
+  })
+  ins.$uniElements.clear()
+}
+
+function createUniElement(
+  id: string,
+  tagName: string,
+  ins: ComponentInternalInstance | null
+) {
+  const uniElement = new UniElement(id, tagName)
+  if (ins) {
+    uniElement.$onStyleChange((styles) => {
+      ins.proxy?.$scope.setData({
+        [id + ':style']: styles,
+      })
+    })
+  }
+  return uniElement
 }
 
 /**
@@ -37,8 +69,9 @@ export function findUniElement(
   if (element) {
     return element
   }
-  if (ins.$uniElementIds.includes(id)) {
-    const element = new UniElement(id)
+  const tagName = ins.$uniElementIds.get(id)
+  if (tagName) {
+    const element = createUniElement(id, tagName, ins)
     // @ts-expect-error
     ins.$uniElements.set(id, element)
     return element

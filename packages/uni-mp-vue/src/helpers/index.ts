@@ -48,6 +48,7 @@ export const m: typeof withModelModifiers = (
 
 export const j = (obj: unknown) => JSON.stringify(obj)
 
-export const si = (id: string) => setUniElementId(id)
+export const si: typeof setUniElementId = (id, tagName) =>
+  setUniElementId(id, tagName)
 export const us: typeof withUniElementStyle = (style, el) =>
   withUniElementStyle(style, el)

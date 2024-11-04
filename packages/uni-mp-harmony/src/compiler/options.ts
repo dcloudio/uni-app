@@ -42,7 +42,7 @@ export const miniProgram: MiniProgramCompilerOptions = {
 }
 
 export const options: UniMiniProgramPluginOptions = {
-  cdn: 201, // TODO
+  cdn: 300,
   vite: {
     inject: {
       uni: [path.resolve(__dirname, 'uni.api.esm.js'), 'default'],

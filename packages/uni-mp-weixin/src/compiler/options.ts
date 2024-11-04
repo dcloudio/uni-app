@@ -114,6 +114,10 @@ export const miniProgram: MiniProgramCompilerOptions = {
     normalizeName: (name) =>
       name.startsWith('wx-') ? name.replace('wx-', 'weixin-') : name,
   },
+  filter: {
+    lang: 'wxs',
+    setStyle: true,
+  },
 }
 const projectConfigFilename = 'project.config.json'
 
@@ -165,8 +169,9 @@ export const options: UniMiniProgramPluginOptions = {
     ...miniProgram,
     customElements,
     filter: {
-      extname: '.wxs',
+      ...miniProgram.filter,
       lang: 'wxs',
+      extname: '.wxs',
       generate(filter, filename) {
         if (filename) {
           return `<wxs src="${filename}.wxs" module="${filter.name}"/>`

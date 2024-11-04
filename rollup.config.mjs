@@ -86,18 +86,18 @@ function resolveTsconfigJson() {
 
 function parseExternal(external) {
   const parsed = external === false
-  ? []
-  : Array.isArray(external)
-    ? external
-    : [
-      'vue',
-      '@vue/shared',
-      ...Object.keys(pkg.dependencies || {}),
-      ...Object.keys(pkg.peerDependencies || {}),
-      ...(external || []),
-    ]
+    ? []
+    : Array.isArray(external)
+      ? external
+      : [
+        'vue',
+        '@vue/shared',
+        ...Object.keys(pkg.dependencies || {}),
+        ...Object.keys(pkg.peerDependencies || {}),
+        ...(external || []),
+      ]
   return parsed.map((id) => {
-    if(typeof id === 'string') {
+    if (typeof id === 'string') {
       return id
     }
     return new RegExp(id.source, id.flags)
@@ -131,7 +131,12 @@ function createConfig(entryFile, output, buildOption) {
   hasTSChecked = true
 
   const external = parseExternal(buildOption.external)
-  const isX = process.env.UNI_APP_X === 'true'
+  let isX = process.env.UNI_APP_X === 'true'
+  if (!isX && buildOption.replacements) {
+    if (buildOption.replacements.__X__ === 'true') {
+      isX = true
+    }
+  }
   const plugins = [
     createAliasPlugin(buildOption),
     nodeResolve(),

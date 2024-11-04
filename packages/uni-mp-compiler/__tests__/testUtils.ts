@@ -44,6 +44,7 @@ export function assert(
     },
     miniProgram: {
       ...miniProgram,
+      ...options.miniProgram,
     },
     ...options,
   }

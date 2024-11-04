@@ -66,6 +66,10 @@ export interface MiniProgramCompilerOptions {
   }
   filter?: {
     lang: string
+    /**
+     * 是否支持 setStyle
+     */
+    setStyle?: boolean
   }
   component?: {
     /**

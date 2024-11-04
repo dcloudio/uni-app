@@ -88,6 +88,7 @@ export interface UniMiniProgramPluginOptions {
     filter?: {
       lang: string
       extname: string
+      setStyle?: boolean
       generate: Parameters<typeof findMiniProgramTemplateFiles>[0]
     }
     compilerOptions?: CompilerOptions

@@ -9,14 +9,18 @@ import {
   type ComponentInternalInstance,
   type ComponentPublicInstance,
   // @ts-expect-error
+  destroyUniElements,
+  // @ts-expect-error
   devtoolsComponentAdded,
   // @ts-expect-error
   devtoolsComponentRemoved,
+  onMounted,
   onUpdated,
+  // @ts-expect-error
+  pruneUniElements,
 } from 'vue'
 import type { MPComponentInstance } from './component'
 import { getTriggerEventDetail } from './util'
-import { pruneUniElements } from './element'
 
 const MP_METHODS = [
   'createSelectorQuery',
@@ -123,6 +127,9 @@ export function initBaseInstance(
   if (__X__) {
     onUpdated(() => {
       pruneUniElements(instance)
+    })
+    onMounted(() => {
+      destroyUniElements(instance)
     })
   }
 }

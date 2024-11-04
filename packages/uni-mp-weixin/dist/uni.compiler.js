@@ -200,6 +200,10 @@ const miniProgram = {
         getPropertySync: false, // 为了避免 Setting data field "uP" to undefined is invalid 警告
         normalizeName: (name) => name.startsWith('wx-') ? name.replace('wx-', 'weixin-') : name,
     },
+    filter: {
+        lang: 'wxs',
+        setStyle: true,
+    },
 };
 const projectConfigFilename = 'project.config.json';
 const options = {
@@ -245,18 +249,14 @@ const options = {
         config: ['project.wx.json', 'project.config.json'],
         source,
     },
-    template: Object.assign(Object.assign({}, miniProgram), { customElements, filter: {
-            extname: '.wxs',
-            lang: 'wxs',
-            generate(filter, filename) {
+    template: Object.assign(Object.assign({}, miniProgram), { customElements, filter: Object.assign(Object.assign({}, miniProgram.filter), { lang: 'wxs', extname: '.wxs', generate(filter, filename) {
                 if (filename) {
                     return `<wxs src="${filename}.wxs" module="${filter.name}"/>`;
                 }
                 return `<wxs module="${filter.name}">
 ${filter.code}
 </wxs>`;
-            },
-        }, extname: '.wxml', compilerOptions }),
+            } }), extname: '.wxml', compilerOptions }),
     style: {
         extname: '.wxss',
     },
