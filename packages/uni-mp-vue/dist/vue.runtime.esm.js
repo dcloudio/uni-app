@@ -6451,7 +6451,9 @@ function createComponentInstance(vnode, parent, suspense) {
     rtg: null,
     rtc: null,
     ec: null,
-    sp: null
+    sp: null,
+    // fixed by xxxxxx 用于存储uni-app的元素缓存
+    $uniElements: /* @__PURE__ */ new Map()
   };
   if (!!(process.env.NODE_ENV !== "production")) {
     instance.ctx = createDevRenderContext(instance);
@@ -8097,11 +8099,14 @@ function withModelModifiers(fn, { number, trim }, isComponent = false) {
 }
 
 function setUniElementId(id, tagName) {
-    const { $uniElementIds } = getCurrentInstance();
-    id = toRaw(id);
-    // 仅保留第一个，其他忽略
-    if (!$uniElementIds.has(id)) {
-        $uniElementIds.set(id, tagName);
+    const ins = getCurrentInstance();
+    if (ins) {
+        const { $uniElementIds } = ins;
+        id = toRaw(id);
+        // 仅保留第一个，其他忽略
+        if (!$uniElementIds.has(id)) {
+            $uniElementIds.set(id, { name: tagName });
+        }
     }
     return id;
 }
@@ -8207,7 +8212,7 @@ function createUniElement(id, tagName, ins) {
         uniElement.$onStyleChange((styles) => {
             var _a;
             (_a = ins.proxy) === null || _a === void 0 ? void 0 : _a.$scope.setData({
-                [id + ':style']: styles,
+                [`$eS.${id}`]: styles,
             });
         });
     }
@@ -8228,9 +8233,9 @@ function findUniElement(id, ins = getCurrentInstance()) {
     if (element) {
         return element;
     }
-    const tagName = ins.$uniElementIds.get(id);
-    if (tagName) {
-        const element = createUniElement(id, tagName, ins);
+    const options = ins.$uniElementIds.get(id);
+    if (options) {
+        const element = createUniElement(id, options.name, ins);
         // @ts-expect-error
         ins.$uniElements.set(id, element);
         return element;

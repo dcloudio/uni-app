@@ -1,12 +1,19 @@
 import {
   type DirectiveNode,
   NodeTypes,
+  type SimpleExpressionNode,
   createCompoundExpression,
+  createSimpleExpression,
   isSlotOutlet,
 } from '@vue/compiler-core'
 
 import type { NodeTransform } from '../transform'
-import { ATTR_VUE_SLOTS, rewriteExpression } from './utils'
+import {
+  ATTR_ELEMENT_ID,
+  ATTR_SET_ELEMENT_STYLE,
+  ATTR_VUE_SLOTS,
+  rewriteExpression,
+} from './utils'
 import {
   createVirtualHostClass,
   findStaticClassIndex,
@@ -28,7 +35,10 @@ import {
   rewriteBinding,
   rewritePropsBinding,
 } from './transformComponent'
-import { isUserComponent } from '@dcloudio/uni-cli-shared'
+import {
+  isSimpleExpressionNode,
+  isUserComponent,
+} from '@dcloudio/uni-cli-shared'
 import { isString, isSymbol } from '@vue/shared'
 import { rewriteId } from './transformId'
 
@@ -77,6 +87,7 @@ export const transformIdentifier: NodeTransform = (node, context) => {
         context.rootNode === node
       )
 
+      let elementId: string = ''
       for (let i = 0; i < props.length; i++) {
         const dir = props[i]
         if (dir.type === NodeTypes.DIRECTIVE) {
@@ -107,7 +118,22 @@ export const transformIdentifier: NodeTransform = (node, context) => {
             } else if (isPropsBinding(dir)) {
               rewritePropsBinding(dir, node, context)
             } else {
-              dir.exp = rewriteExpression(exp, context)
+              if (
+                context.isX &&
+                elementId &&
+                arg &&
+                isSimpleExpressionNode(arg) &&
+                arg.content === ATTR_SET_ELEMENT_STYLE
+              ) {
+                dir.exp = createSimpleExpression(`$eS[${elementId}]`)
+              } else {
+                dir.exp = rewriteExpression(exp, context)
+                if (context.isX && arg && isSimpleExpressionNode(arg)) {
+                  if (arg.content === 'id' || arg.content === ATTR_ELEMENT_ID) {
+                    elementId = (dir.exp as SimpleExpressionNode).content
+                  }
+                }
+              }
             }
           }
         }

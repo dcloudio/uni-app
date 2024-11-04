@@ -38,9 +38,10 @@ export const ATTR_VUE_REF_IN_FOR = 'u-' + VUE_REF_IN_FOR
 export const ATTR_COM_TYPE = 'u-t'
 export const ATTR_ELEMENT_ID = 'u-e'
 
-export const ATTR_SET_ELEMENT_STYLE = 'e-s'
+export const ATTR_SET_ELEMENT_STYLE = 'eS' // 不能使用连字符e-s
 
-export const FILTER_MODULE_NAME = 'uF' // uniFilter
+export const FILTER_MODULE_NAME = 'uV' // uniView
+export const FILTER_MODULE_FILE_NAME = 'uniView'
 
 export const FILTER_SET_ELEMENT_STYLE = 'sS' // setStyle
 

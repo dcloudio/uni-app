@@ -134,6 +134,8 @@ export function baseCompile(template: string, options: CompilerOptions = {}) {
       isBuiltInComponent: context.isBuiltInComponent,
       isMiniProgramComponent: context.isMiniProgramComponent,
       checkPropName,
+      autoImportFilters: context.autoImportFilters,
+      filter: options.miniProgram?.filter,
     })
   }
 

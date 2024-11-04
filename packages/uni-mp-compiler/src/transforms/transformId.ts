@@ -13,6 +13,8 @@ import { SET_UNI_ELEMENT_ID, WITH_UNI_ELEMENT_STYLE } from '../runtimeHelpers'
 import {
   ATTR_ELEMENT_ID,
   ATTR_SET_ELEMENT_STYLE,
+  FILTER_MODULE_FILE_NAME,
+  FILTER_MODULE_NAME,
   FILTER_SET_ELEMENT_STYLE,
   filterName,
   filterObserverName,
@@ -25,6 +27,7 @@ export function rewriteId(node: ElementNode, context: TransformContext) {
   }
   let idExprNode: string | ExpressionNode | undefined
   // id="test" => :id="setUniElementId('test')"
+  // 目前标签名有隐患，可能传入的是自定义组件名称
   if (isAttributeNode(idProp)) {
     if (!idProp.value) {
       return
@@ -36,7 +39,7 @@ export function rewriteId(node: ElementNode, context: TransformContext) {
         createCompoundExpression([
           context.helperString(SET_UNI_ELEMENT_ID) + '(',
           idExprNode,
-          ')',
+          ",'" + node.tag + "')",
         ])
       )
     )
@@ -52,7 +55,7 @@ export function rewriteId(node: ElementNode, context: TransformContext) {
         createCompoundExpression([
           context.helperString(SET_UNI_ELEMENT_ID) + '(',
           idExprNode,
-          ')',
+          ",'" + node.tag + "')",
         ])
       )
     )
@@ -76,6 +79,17 @@ export function rewriteId(node: ElementNode, context: TransformContext) {
         ])
       )
     )
+    if (
+      !context.autoImportFilters.find(
+        (filter) => filter.name === FILTER_MODULE_NAME
+      )
+    ) {
+      context.autoImportFilters.push({
+        name: FILTER_MODULE_NAME,
+        id: FILTER_MODULE_FILE_NAME,
+        type: 'filter',
+      })
+    }
     return
   }
 

@@ -110,6 +110,8 @@ export function uniMiniProgramPlugin(
 
   let resetCssEmitted = false
 
+  let autoImportFilterEmitted = false
+
   let resolvedConfig: ResolvedConfig
 
   rewriteCompileScriptOnce()
@@ -123,7 +125,13 @@ export function uniMiniProgramPlugin(
       miniProgram: {
         event: template.event,
         class: template.class,
-        filter: template.filter ? { lang: template.filter.lang } : undefined,
+        filter: template.filter
+          ? {
+              lang: template.filter.lang,
+              setStyle: template.filter.setStyle,
+              generate: template.filter.generate,
+            }
+          : undefined,
         directive: template.directive,
         lazyElement: template.lazyElement,
         component: template.component,
@@ -175,6 +183,17 @@ export function uniMiniProgramPlugin(
     generateBundle() {
       if (template.filter) {
         const extname = template.filter.extname
+        if (!autoImportFilterEmitted) {
+          autoImportFilterEmitted = true
+          this.emitFile({
+            type: 'asset',
+            fileName: `common/uniView${extname}`,
+            source: fs.readFileSync(
+              path.resolve(__dirname, '../../lib/filters/uniView.js'),
+              'utf8'
+            ),
+          })
+        }
         const filterFiles = getFilterFiles(resolvedConfig, this.getModuleInfo)
         Object.keys(filterFiles).forEach((filename) => {
           const { code } = filterFiles[filename]

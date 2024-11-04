@@ -4092,7 +4092,9 @@ function createComponentInstance(vnode, parent, suspense) {
     rtg: null,
     rtc: null,
     ec: null,
-    sp: null
+    sp: null,
+    // fixed by xxxxxx 用于存储uni-app的元素缓存
+    $uniElements: /* @__PURE__ */ new Map()
   };
   if (!!(process.env.NODE_ENV !== "production")) {
     instance.ctx = createDevRenderContext(instance);

@@ -1,14 +1,14 @@
-import { type ComponentInternalInstance, getCurrentInstance, toRaw } from 'vue'
+import { getCurrentInstance, toRaw } from 'vue'
 
 export function setUniElementId(id: string, tagName: string) {
-  const { $uniElementIds } =
-    getCurrentInstance() as ComponentInternalInstance & {
-      $uniElementIds: Set<string>
+  const ins = getCurrentInstance()
+  if (ins) {
+    const { $uniElementIds } = ins
+    id = toRaw(id)
+    // 仅保留第一个，其他忽略
+    if (!$uniElementIds.has(id)) {
+      $uniElementIds.set(id, { name: tagName })
     }
-  id = toRaw(id)
-  // 仅保留第一个，其他忽略
-  if (!$uniElementIds.has(id)) {
-    $uniElementIds.set(id, tagName)
   }
   return id
 }

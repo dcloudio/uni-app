@@ -22,11 +22,14 @@ import {
 } from '../transform'
 import {
   ATTR_COM_TYPE,
+  ATTR_ELEMENT_ID,
+  ATTR_SET_ELEMENT_STYLE,
   ATTR_VUE_ID,
   ATTR_VUE_PROPS,
   ATTR_VUE_REF,
   ATTR_VUE_REF_IN_FOR,
   ATTR_VUE_SLOTS,
+  filterObserverName,
   rewirteWithHelper,
 } from './utils'
 import { genBabelExpr, genExpr } from '../codegen'
@@ -132,6 +135,8 @@ const builtInProps = [
   ATTR_VUE_REF,
   ATTR_VUE_REF_IN_FOR,
   ATTR_COM_TYPE,
+  ATTR_ELEMENT_ID,
+  ATTR_SET_ELEMENT_STYLE,
   'eO',
   'e-o',
   'onVI',
@@ -146,6 +151,9 @@ function isComponentProp(name: string) {
     return false
   }
   if (name.startsWith('data-')) {
+    return false
+  }
+  if (name === filterObserverName(ATTR_SET_ELEMENT_STYLE)) {
     return false
   }
   return true

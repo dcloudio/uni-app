@@ -443,7 +443,7 @@ const getElementById = defineSyncApi(API_GET_ELEMENT_BY_ID, (id) => {
     if (!page || !page.$vm) {
         return null;
     }
-    return findUniElement(id, page.$vm);
+    return findUniElement(id, page.$vm.$);
     //return page.getElementById(id)
 });
 

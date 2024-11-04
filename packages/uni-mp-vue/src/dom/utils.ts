@@ -44,7 +44,7 @@ function createUniElement(
   if (ins) {
     uniElement.$onStyleChange((styles) => {
       ins.proxy?.$scope.setData({
-        [id + ':style']: styles,
+        [`$eS.${id}`]: styles,
       })
     })
   }
@@ -69,9 +69,9 @@ export function findUniElement(
   if (element) {
     return element
   }
-  const tagName = ins.$uniElementIds.get(id)
-  if (tagName) {
-    const element = createUniElement(id, tagName, ins)
+  const options = ins.$uniElementIds.get(id)
+  if (options) {
+    const element = createUniElement(id, options.name, ins)
     // @ts-expect-error
     ins.$uniElements.set(id, element)
     return element

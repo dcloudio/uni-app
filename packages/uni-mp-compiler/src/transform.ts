@@ -37,7 +37,10 @@ import {
   locStub,
 } from '@vue/compiler-core'
 import { findMiniProgramUsingComponents } from '@dcloudio/uni-cli-shared'
-import type { MiniProgramComponentsType } from '@dcloudio/uni-cli-shared'
+import type {
+  MiniProgramComponentsType,
+  MiniProgramFilterOptions,
+} from '@dcloudio/uni-cli-shared'
 import IdentifierGenerator from './identifier'
 import type {
   CodegenRootNode,
@@ -95,6 +98,7 @@ export interface TransformContext
   helpers: Map<symbol, number>
   components: Set<string>
   imports: ImportItem[]
+  autoImportFilters: Array<Omit<MiniProgramFilterOptions, 'code'>>
   bindingComponents: Record<
     string,
     { type: BindingComponentTypes; name: string }
@@ -347,6 +351,7 @@ export function createTransformContext(
     hashId,
     scopeId,
     filters,
+    autoImportFilters: [],
     bindingCssVars,
     bindingMetadata,
     cacheHandlers,

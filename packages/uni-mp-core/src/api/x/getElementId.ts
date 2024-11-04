@@ -11,7 +11,7 @@ export const getElementById = defineSyncApi(
     if (!page || !page.$vm) {
       return null
     }
-    return findUniElement(id, page.$vm)
+    return findUniElement(id, page.$vm.$)
     //return page.getElementById(id)
   }
 )

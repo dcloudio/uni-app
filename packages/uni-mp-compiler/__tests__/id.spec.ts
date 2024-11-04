@@ -6,7 +6,7 @@ describe('compiler: transform id', () => {
       `<view id="view"/>`,
       `<view id="view" style="{{b}}"/>`,
       `(_ctx, _cache) => {
-  return { a: _si('view'), b: _s(_us('view')) }
+  return { a: _si('view', 'view'), b: _s(_us('view')) }
 }`,
       {
         isX: true,
@@ -18,7 +18,7 @@ describe('compiler: transform id', () => {
       `<view :id="viewId"/>`,
       `<view id="{{a}}" style="{{b}}"/>`,
       `(_ctx, _cache) => {
-  return { a: _si(_ctx.viewId), b: _s(_us(_ctx.viewId)) }
+  return { a: _si(_ctx.viewId, 'view'), b: _s(_us(_ctx.viewId)) }
 }`,
       {
         isX: true,

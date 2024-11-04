@@ -70,6 +70,7 @@ export interface MiniProgramCompilerOptions {
      * 是否支持 setStyle
      */
     setStyle?: boolean
+    generate?: Parameters<typeof findMiniProgramTemplateFiles>[0]
   }
   component?: {
     /**

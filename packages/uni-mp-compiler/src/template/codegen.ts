@@ -65,6 +65,8 @@ export function generate(
     isMiniProgramComponent,
     checkPropName,
     component,
+    autoImportFilters,
+    filter,
   }: TemplateCodegenOptions
 ) {
   const context: TemplateCodegenContext = {
@@ -85,6 +87,15 @@ export function generate(
   children.forEach((node) => {
     genNode(node, context)
   })
+  if (filter && filter.generate && autoImportFilters.length) {
+    autoImportFilters.forEach((autoImportFilter) => {
+      context.code +=
+        filter.generate!(
+          autoImportFilter as any,
+          '/common/' + autoImportFilter.id
+        ) + '\n'
+    })
+  }
   emitFile!({ type: 'asset', fileName: filename, source: context.code })
 }
 

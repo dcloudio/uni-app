@@ -14,7 +14,7 @@ import {
   devtoolsComponentAdded,
   // @ts-expect-error
   devtoolsComponentRemoved,
-  onMounted,
+  onUnmounted,
   onUpdated,
   // @ts-expect-error
   pruneUniElements,
@@ -127,10 +127,10 @@ export function initBaseInstance(
   if (__X__) {
     onUpdated(() => {
       pruneUniElements(instance)
-    })
-    onMounted(() => {
+    }, instance)
+    onUnmounted(() => {
       destroyUniElements(instance)
-    })
+    }, instance)
   }
 }
 
