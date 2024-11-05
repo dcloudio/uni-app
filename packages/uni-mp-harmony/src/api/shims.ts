@@ -7,4 +7,12 @@ const providers = {
   push: [],
 }
 
+if (has.canIUse('login')) {
+  providers.oauth.push('huawei')
+}
+
+if (has.canIUse('requestPayment')) {
+  providers.payment.push('harmonypay')
+}
+
 export const getProvider = initGetProvider(providers)
