@@ -2,8 +2,8 @@ import type { CompilerOptions } from '@dcloudio/uni-mp-compiler'
 import {
   COMPONENT_CUSTOM_HIDDEN_BIND,
   type MiniProgramCompilerOptions,
-  transformCanvas,
   transformComponentLink,
+  transformMPBuiltInTag,
   transformMatchMedia,
   transformRef,
 } from '@dcloudio/uni-cli-shared'
@@ -38,7 +38,7 @@ const nodeTransforms = [
 ]
 
 if (process.env.UNI_APP_X === 'true') {
-  nodeTransforms.push(transformCanvas)
+  nodeTransforms.push(transformMPBuiltInTag)
 }
 
 export const compilerOptions: CompilerOptions = {
