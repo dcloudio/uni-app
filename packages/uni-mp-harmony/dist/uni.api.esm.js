@@ -1178,6 +1178,12 @@ const providers = {
     payment: [],
     push: [],
 };
+if (has.canIUse('login')) {
+    providers.oauth.push('huawei');
+}
+if (has.canIUse('requestPayment')) {
+    providers.payment.push('huawei');
+}
 const getProvider = initGetProvider(providers);
 
 var shims = /*#__PURE__*/Object.freeze({
@@ -1186,6 +1192,12 @@ var shims = /*#__PURE__*/Object.freeze({
 });
 
 const navigateTo = navigateTo$1();
+const requestPayment = {
+    name: 'requestPayment',
+    args: {
+        orderInfo: 'orderStr',
+    },
+};
 
 var protocols = /*#__PURE__*/Object.freeze({
   __proto__: null,
@@ -1193,7 +1205,8 @@ var protocols = /*#__PURE__*/Object.freeze({
   getSystemInfoSync: getSystemInfoSync,
   navigateTo: navigateTo,
   previewImage: previewImage,
-  redirectTo: redirectTo
+  redirectTo: redirectTo,
+  requestPayment: requestPayment
 });
 
 var index = initUni(shims, protocols);
