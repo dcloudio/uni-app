@@ -27,12 +27,8 @@
     },
     "external": [
       "vue",
-      {
-        "source": "^@ohos.*"
-      },
-      {
-        "source": "^@hms.*"
-      }
+      "@vue/shared",
+      "@dcloudio/uni-shared"
     ]
   },
   {
@@ -55,7 +51,9 @@
     "output": {
       "format": "esm"
     },
-    "external": ["@vue/shared"],
+    "external": [
+      "@vue/shared"
+    ],
     "replacements": {
       "__X__": "true"
     }
