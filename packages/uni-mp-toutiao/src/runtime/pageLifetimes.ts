@@ -18,6 +18,11 @@ export function initLifetimes(lifetimesOptions: CreateLifetimesOptions) {
         if (this.pageinstance) {
           this.__webviewId__ = (this.pageinstance as any).__pageId__
         }
+        if (process.env.UNI_DEBUG) {
+          console.log(
+            'uni-app:[' + Date.now() + '][' + (this.is || this.route) + ']ready'
+          )
+        }
         this.$vm.$callCreatedHook()
         nextSetDataTick(this, () => {
           if (

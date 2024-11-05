@@ -62,6 +62,17 @@ export function handleLink(
     if (__VUE_OPTIONS_API__) {
       ;(parentVm as any).$children.push(vm)
     }
+    if (process.env.UNI_DEBUG) {
+      console.log(
+        'uni-app:[' +
+          Date.now() +
+          '][' +
+          ((vm.$scope as any).is || (vm.$scope as any).route) +
+          '][' +
+          vm.$.uid +
+          ']created'
+      )
+    }
     vm.$callCreatedHook()
   }
   const mountedVm = function () {

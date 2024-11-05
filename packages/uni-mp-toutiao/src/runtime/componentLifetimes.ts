@@ -72,6 +72,18 @@ export function initLifetimes({
       }
     ) as ComponentPublicInstance
 
+    if (process.env.UNI_DEBUG) {
+      console.log(
+        'uni-app:[' +
+          Date.now() +
+          '][' +
+          (mpInstance.is || mpInstance.route) +
+          '][' +
+          this.$vm.$.uid +
+          ']attached'
+      )
+    }
+
     if (mpType === 'component') {
       initFormField(this.$vm)
     }
