@@ -2,6 +2,7 @@ import { hasOwn } from '@vue/shared'
 // 直接引用具体文件，避免引入其他需要额外配置的信息，比如@dcloudio/uni-platform
 //#if _X_
 import { getElementById } from './x/getElementId'
+import { createCanvasContextAsync } from './x/createCanvasContextAsync'
 //#endif
 import { upx2px } from '@dcloudio/uni-api/src/service/base/upx2px'
 import {
@@ -49,6 +50,7 @@ const baseApis = {
   invokePushCallback,
   //#if _X_
   getElementById,
+  createCanvasContextAsync,
   //#endif
 }
 export function initUni(
