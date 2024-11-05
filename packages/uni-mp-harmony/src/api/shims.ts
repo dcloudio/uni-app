@@ -12,7 +12,7 @@ if (has.canIUse('login')) {
 }
 
 if (has.canIUse('requestPayment')) {
-  providers.payment.push('harmonypay')
+  providers.payment.push('huawei')
 }
 
 export const getProvider = initGetProvider(providers)
