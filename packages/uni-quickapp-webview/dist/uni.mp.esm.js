@@ -841,6 +841,15 @@ function initLifetimes$1({ mocks, isPage, initRelation, vueOptions, }) {
                 initComponentInstance(instance, options);
             },
         });
+        if (process.env.UNI_DEBUG) {
+            console.log('uni-app:[' +
+                Date.now() +
+                '][' +
+                (mpInstance.is || mpInstance.route) +
+                '][' +
+                this.$vm.$.uid +
+                ']attached');
+        }
         if (mpType === 'component') {
             initFormField(this.$vm);
         }
@@ -869,6 +878,9 @@ function initLifetimes(lifetimesOptions) {
             if (this.$vm && lifetimesOptions.isPage(this)) {
                 if (this.pageinstance) {
                     this.__webviewId__ = this.pageinstance.__pageId__;
+                }
+                if (process.env.UNI_DEBUG) {
+                    console.log('uni-app:[' + Date.now() + '][' + (this.is || this.route) + ']ready');
                 }
                 this.$vm.$callCreatedHook();
                 nextSetDataTick(this, () => {
@@ -932,6 +944,15 @@ function handleLink({ detail: { nodeId, webviewId }, }) {
     const createdVm = function () {
         if (__VUE_OPTIONS_API__) {
             parentVm.$children.push(vm);
+        }
+        if (process.env.UNI_DEBUG) {
+            console.log('uni-app:[' +
+                Date.now() +
+                '][' +
+                (vm.$scope.is || vm.$scope.route) +
+                '][' +
+                vm.$.uid +
+                ']created');
         }
         vm.$callCreatedHook();
     };

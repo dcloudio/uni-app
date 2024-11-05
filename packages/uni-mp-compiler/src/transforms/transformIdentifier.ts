@@ -40,7 +40,7 @@ import {
   isUserComponent,
 } from '@dcloudio/uni-cli-shared'
 import { isString, isSymbol } from '@vue/shared'
-import { rewriteId } from './transformId'
+import { rewriteId } from './transformUniElement'
 
 export const transformIdentifier: NodeTransform = (node, context) => {
   return function transformIdentifier() {

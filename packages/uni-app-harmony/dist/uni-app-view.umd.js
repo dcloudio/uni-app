@@ -16151,9 +16151,15 @@
           setTimeout(focus, timeout);
           return;
         }
-        field.focus();
-        if (!userActionState.userAction) {
-          plus.key.showSoftKeybord();
+        {
+          if (!userActionState.userAction) {
+            plus.key.showSoftKeybord();
+            setTimeout(() => {
+              field.focus();
+            }, 100);
+          } else {
+            field.focus();
+          }
         }
       }
     }
@@ -22329,6 +22335,14 @@
     io: {
       convertLocalFileSystemURL(filepath) {
         return invokeHarmonyChannel("convertLocalFileSystemURL", [filepath]);
+      }
+    },
+    key: {
+      hideSoftKeybord() {
+        invokeHarmonyChannel("hideSoftKeybord");
+      },
+      showSoftKeybord() {
+        invokeHarmonyChannel("showSoftKeybord");
       }
     }
   };

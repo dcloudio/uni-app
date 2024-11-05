@@ -30,6 +30,7 @@ export function destroyUniElements(ins: ComponentInternalInstance) {
     ;(uniElement as unknown as UniElement).$destroy()
   })
   ins.$uniElements.clear()
+  ins.$templateUniElementRefs = []
 }
 
 function createUniElement(

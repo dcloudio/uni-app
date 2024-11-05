@@ -130,6 +130,7 @@ export interface TransformContext
   cache<T extends JSChildNode>(exp: T, isVNode?: boolean): CacheExpression | T
   isMiniProgramComponent(name: string): MiniProgramComponentsType | undefined
   rootNode: TemplateChildNode | null
+  elementRefIndex: number
 }
 
 export function isRootScope(scope: CodegenScope): scope is CodegenRootScope {
@@ -496,6 +497,7 @@ export function createTransformContext(
       return miniProgramComponents[name]
     },
     rootNode: null,
+    elementRefIndex: 0,
   }
 
   function addId(id: string) {

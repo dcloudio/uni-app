@@ -33,6 +33,6 @@ registerRuntimeHelpers({
   [TO_DISPLAY_STRING]: 't',
   [WITH_MODEL_MODIFIERS]: 'm',
   [STRINGIFY_JSON]: 'j',
-  [SET_UNI_ELEMENT_ID]: 'si',
+  [SET_UNI_ELEMENT_ID]: 'sei',
   [WITH_UNI_ELEMENT_STYLE]: 'us',
 })

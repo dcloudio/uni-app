@@ -5,8 +5,10 @@ import {
   findProp,
 } from '@vue/compiler-core'
 import {
+  createAttributeNode,
   createBindDirectiveNode,
   isAttributeNode,
+  isUserComponent,
 } from '@dcloudio/uni-cli-shared'
 import type { TransformContext } from '../transform'
 import { SET_UNI_ELEMENT_ID, WITH_UNI_ELEMENT_STYLE } from '../runtimeHelpers'
@@ -19,8 +21,30 @@ import {
   filterName,
   filterObserverName,
 } from './utils'
+import { parseVForKeyAlias } from './transformSlot'
+import { parseRefCode } from './transformRef'
 
 export function rewriteId(node: ElementNode, context: TransformContext) {
+  const isUniElement = !isUserComponent(node, context)
+  if (isUniElement) {
+    // 内置组件使用了 ref，没有 id 时，自动补充一个
+    if (findProp(node, 'ref') && !findProp(node, 'id')) {
+      if (context.inVFor) {
+        // v-for 中的 ref 需要使用 v-for 的 key 作为 id
+        const keyAlias = parseVForKeyAlias(context)
+        const id = context.hashId + '-r' + context.elementRefIndex++ + '-'
+        node.props.push(
+          createBindDirectiveNode(
+            'id',
+            createCompoundExpression([`'${id}'+`, keyAlias.join(`+'-'+`)])
+          )
+        )
+      } else {
+        const id = context.hashId + '-r' + context.elementRefIndex++
+        node.props.push(createAttributeNode('id', id))
+      }
+    }
+  }
   const idProp = findProp(node, 'id')
   if (!idProp) {
     return
@@ -39,7 +63,9 @@ export function rewriteId(node: ElementNode, context: TransformContext) {
         createCompoundExpression([
           context.helperString(SET_UNI_ELEMENT_ID) + '(',
           idExprNode,
-          ",'" + node.tag + "')",
+          ",'" + node.tag + "'",
+          parseUniElementRefCode(node, context),
+          ')',
         ])
       )
     )
@@ -55,7 +81,9 @@ export function rewriteId(node: ElementNode, context: TransformContext) {
         createCompoundExpression([
           context.helperString(SET_UNI_ELEMENT_ID) + '(',
           idExprNode,
-          ",'" + node.tag + "')",
+          ",'" + node.tag + "'",
+          parseUniElementRefCode(node, context),
+          ')',
         ])
       )
     )
@@ -106,4 +134,24 @@ export function rewriteId(node: ElementNode, context: TransformContext) {
       )
     )
   }
+}
+
+function parseUniElementRefCode(node: ElementNode, context: TransformContext) {
+  const refProp = findProp(node, 'ref')
+  if (!refProp) {
+    return ''
+  }
+  const { code, refKey } = parseRefCode(refProp, context)
+  const opts: Record<string, unknown> = {}
+  if (refKey) {
+    opts.k = refKey
+  }
+  if (context.inVFor) {
+    opts.f = 1
+  }
+  const children = [',', code]
+  if (Object.keys(opts).length) {
+    children.push(',', JSON.stringify(opts))
+  }
+  return createCompoundExpression(children)
 }

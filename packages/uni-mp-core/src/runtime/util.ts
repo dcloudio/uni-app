@@ -1,4 +1,4 @@
-import { hasOwn, hyphenate, isArray } from '@vue/shared'
+import { hasOwn, hyphenate, isArray, isString } from '@vue/shared'
 import {
   type ComponentInternalInstance,
   type ComponentOptions,
@@ -101,6 +101,16 @@ export function initRefs(
         }
         $refs[ref].push(component.$vm || component)
       })
+      if (__X__) {
+        const { $templateUniElementRefs } = instance
+        if ($templateUniElementRefs && $templateUniElementRefs.length) {
+          $templateUniElementRefs.forEach((templateRef) => {
+            if (isString(templateRef.r)) {
+              $refs[templateRef.r] = templateRef.v
+            }
+          })
+        }
+      }
       return $refs
     },
   })

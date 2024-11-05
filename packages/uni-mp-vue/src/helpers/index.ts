@@ -9,12 +9,12 @@ import { vOn } from './vOn'
 import { type VForItem, vFor } from './vFor'
 import { renderSlot } from './renderSlot'
 import { withScopedSlot } from './withScopedSlot'
-import { stringifyStyle, withUniElementStyle } from './style'
+import { stringifyStyle } from './style'
 import { dynamicSlot } from './dynamicSlot'
 import { setRef } from './ref'
 import { renderProps } from './renderProps'
 import { withModelModifiers } from './withModelModifiers'
-import { setUniElementId } from './id'
+import { setUniElementId, withUniElementStyle } from './uniElement'
 
 export { setupDevtoolsPlugin } from './devtools'
 
@@ -48,7 +48,5 @@ export const m: typeof withModelModifiers = (
 
 export const j = (obj: unknown) => JSON.stringify(obj)
 
-export const si: typeof setUniElementId = (id, tagName) =>
-  setUniElementId(id, tagName)
-export const us: typeof withUniElementStyle = (style, el) =>
-  withUniElementStyle(style, el)
+export const sei = setUniElementId
+export const us = withUniElementStyle

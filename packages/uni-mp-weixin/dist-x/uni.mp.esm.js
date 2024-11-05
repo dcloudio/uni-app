@@ -1,5 +1,5 @@
 import { SLOT_DEFAULT_NAME, invokeArrayFns, MINI_PROGRAM_PAGE_RUNTIME_HOOKS, ON_LOAD, ON_SHOW, ON_HIDE, ON_UNLOAD, ON_RESIZE, ON_TAB_ITEM_TAP, ON_REACH_BOTTOM, ON_PULL_DOWN_REFRESH, ON_ADD_TO_FAVORITES, isUniLifecycleHook, ON_READY, once, ON_LAUNCH, ON_ERROR, ON_THEME_CHANGE, ON_PAGE_NOT_FOUND, ON_UNHANDLE_REJECTION, addLeadingSlash, stringifyQuery, customizeEvent } from '@dcloudio/uni-shared';
-import { hasOwn, isArray, isFunction, extend, isPlainObject as isPlainObject$1, isObject } from '@vue/shared';
+import { hasOwn, isArray, isString, isFunction, extend, isPlainObject as isPlainObject$1, isObject } from '@vue/shared';
 import { onUpdated, pruneUniElements, onUnmounted, destroyUniElements, ref, findComponentPropsData, toRaw, updateProps, hasQueueJob, invalidateJob, devtoolsComponentAdded, getExposeProxy, pruneComponentPropsCache } from 'vue';
 import { normalizeLocale, LOCALE_EN } from '@dcloudio/uni-i18n';
 
@@ -763,6 +763,16 @@ function initRefs(instance, mpInstance) {
                 }
                 $refs[ref].push(component.$vm || component);
             });
+            {
+                const { $templateUniElementRefs } = instance;
+                if ($templateUniElementRefs && $templateUniElementRefs.length) {
+                    $templateUniElementRefs.forEach((templateRef) => {
+                        if (isString(templateRef.r)) {
+                            $refs[templateRef.r] = templateRef.v;
+                        }
+                    });
+                }
+            }
             return $refs;
         },
     });
@@ -1556,11 +1566,23 @@ function initLifetimes({ mocks, isPage, initRelation, vueOptions, }) {
                     initComponentInstance(instance, options);
                 },
             });
+            if (process.env.UNI_DEBUG) {
+                console.log('uni-app:[' +
+                    Date.now() +
+                    '][' +
+                    (mpInstance.is || mpInstance.route) +
+                    '][' +
+                    this.$vm.$.uid +
+                    ']attached');
+            }
             if (!isMiniProgramPage) {
                 initFormField(this.$vm);
             }
         },
         ready() {
+            if (process.env.UNI_DEBUG) {
+                console.log('uni-app:[' + Date.now() + '][' + (this.is || this.route) + ']ready');
+            }
             // 当组件 props 默认值为 true，初始化时传入 false 会导致 created,ready 触发, 但 attached 不触发
             // https://developers.weixin.qq.com/community/develop/doc/00066ae2844cc0f8eb883e2a557800
             if (this.$vm) {

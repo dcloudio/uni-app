@@ -739,11 +739,23 @@ function initLifetimes({ mocks, isPage, initRelation, vueOptions, }) {
                     initComponentInstance(instance, options);
                 },
             });
+            if (process.env.UNI_DEBUG) {
+                console.log('uni-app:[' +
+                    Date.now() +
+                    '][' +
+                    (mpInstance.is || mpInstance.route) +
+                    '][' +
+                    this.$vm.$.uid +
+                    ']attached');
+            }
             if (!isMiniProgramPage) {
                 initFormField(this.$vm);
             }
         },
         ready() {
+            if (process.env.UNI_DEBUG) {
+                console.log('uni-app:[' + Date.now() + '][' + (this.is || this.route) + ']ready');
+            }
             // 当组件 props 默认值为 true，初始化时传入 false 会导致 created,ready 触发, 但 attached 不触发
             // https://developers.weixin.qq.com/community/develop/doc/00066ae2844cc0f8eb883e2a557800
             if (this.$vm) {

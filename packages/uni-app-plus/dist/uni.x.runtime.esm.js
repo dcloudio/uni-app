@@ -2069,7 +2069,9 @@ function handleBeforeEntryPageRoutes() {
 }
 function closeNativeDialogPage(dialogPage) {
   var webview = getNativeApp().pageManager.findPageById(dialogPage.$vm.$basePage.id + "");
-  closeWebview(webview, "none", 0);
+  if (webview) {
+    closeWebview(webview, "none", 0);
+  }
 }
 var $switchTab = (args, _ref) => {
   var {
