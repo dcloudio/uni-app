@@ -4796,7 +4796,13 @@ function setRef(instance, isUnmount = false) {
     }
     if ($templateUniElementRefs) {
       $templateUniElementRefs.forEach((templateRef) => {
-        setTemplateRef(templateRef, templateRef.v, setupState);
+        if (isArray(templateRef.v)) {
+          templateRef.v.forEach((v) => {
+            setTemplateRef(templateRef, v, setupState);
+          });
+        } else {
+          setTemplateRef(templateRef, templateRef.v, setupState);
+        }
       });
     }
   };

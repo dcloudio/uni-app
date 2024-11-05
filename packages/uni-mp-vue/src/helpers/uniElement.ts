@@ -21,6 +21,7 @@ export function setUniElementId(
       $uniElementIds.set(id, { name: tagName })
     }
     if (ref) {
+      // 指定了ref，则需要存储ref，使得 this.$refs 和 setup 的 ref 生效
       setUniElementRef(ins, ref, id, {
         k: refOpts?.k,
         f: refOpts?.f,

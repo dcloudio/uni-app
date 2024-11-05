@@ -7155,7 +7155,13 @@ function setRef$1(instance, isUnmount = false) {
     }
     if ($templateUniElementRefs) {
       $templateUniElementRefs.forEach((templateRef) => {
-        setTemplateRef(templateRef, templateRef.v, setupState);
+        if (isArray(templateRef.v)) {
+          templateRef.v.forEach((v) => {
+            setTemplateRef(templateRef, v, setupState);
+          });
+        } else {
+          setTemplateRef(templateRef, templateRef.v, setupState);
+        }
       });
     }
   };
@@ -8229,6 +8235,7 @@ function setUniElementId(id, tagName, ref, refOpts) {
             $uniElementIds.set(id, { name: tagName });
         }
         if (ref) {
+            // 指定了ref，则需要存储ref，使得 this.$refs 和 setup 的 ref 生效
             setUniElementRef(ins, ref, id, {
                 k: refOpts === null || refOpts === void 0 ? void 0 : refOpts.k,
                 f: refOpts === null || refOpts === void 0 ? void 0 : refOpts.f,
