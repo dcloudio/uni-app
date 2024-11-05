@@ -1,7 +1,7 @@
 import { isElementNode } from '../../../vite'
 import {
   createAttributeNode,
-  createDirectiveNode,
+  createBindDirectiveNode,
   isPropNameEquals,
 } from '../../utils'
 import {
@@ -65,7 +65,7 @@ export const transformDirection = function (
     const scrollX = `(${exp}) === 'horizontal' || (${exp}) === 'all'`
     const scrollY = `!(${exp}) || (${exp}) === 'vertical' || (${exp}) === 'all'`
     node.props.splice(directionPropIndex, 1)
-    node.props.push(createDirectiveNode('bind', 'scroll-x', scrollX))
-    node.props.push(createDirectiveNode('bind', 'scroll-y', scrollY))
+    node.props.push(createBindDirectiveNode('scroll-x', scrollX))
+    node.props.push(createBindDirectiveNode('scroll-y', scrollY))
   }
 }
