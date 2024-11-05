@@ -44,7 +44,10 @@ function init() {
   const list = getTabList()
   const style = new Map<string, any | null>()
   style.set('navigationStyle', 'custom')
-
+  style.set(
+    'pageOrientation',
+    __uniConfig.globalStyle?.pageOrientation ?? 'portrait'
+  )
   const page = getPageManager().createPage(
     'tabBar',
     // id 后增加 Date.now() 保证唯一性，与 android 端统一
