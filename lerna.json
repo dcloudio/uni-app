@@ -1,9 +1,7 @@
 {
   "npmClient": "yarn",
   "useWorkspaces": false,
-  "packages": [
-    "packages/*"
-  ],
+  "packages": ["packages/*"],
   "publishConfig": {
     "access": "public"
   },
