@@ -1,6 +1,6 @@
 import { camelize } from '@vue/shared'
 import { isElementNode } from '../../../vite'
-import { createAttributeNode } from '../../utils'
+import { createAttributeNode, renameProp } from '../../utils'
 import {
   type AttributeNode,
   type DirectiveNode,
@@ -95,7 +95,7 @@ export function createMPBuiltInTagTransform(
         if (prop.type === NodeTypes.ATTRIBUTE) {
           const propName = camelize(prop.name)
           if (propName in propMap && propMap[propName]) {
-            prop.name = propMap[propName]
+            renameProp(propMap[propName], prop)
           }
         } else if (prop.type === NodeTypes.DIRECTIVE) {
           if (!prop.rawName || !prop.arg || !isStaticExp(prop.arg)) {
@@ -103,8 +103,7 @@ export function createMPBuiltInTagTransform(
           }
           const propName = camelize(prop.rawName.slice(1))
           if (propName in propMap && propMap[propName]) {
-            prop.rawName = ':' + propMap[propName]
-            prop.arg.content = propMap[propName]
+            renameProp(propMap[propName], prop)
           }
         }
       })
