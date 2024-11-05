@@ -1,9 +1,7 @@
 import { camelize } from '@vue/shared'
 import { isElementNode } from '../../../vite'
-import { createAttributeNode, renameProp } from '../../utils'
+import { createAttributeNode, isPropNameEquals, renameProp } from '../../utils'
 import {
-  type AttributeNode,
-  type DirectiveNode,
   NodeTypes,
   type RootNode,
   type TemplateChildNode,
@@ -65,20 +63,6 @@ export const defaultTransformMPBuiltInTagOptions: TransformMPBuiltInTagOptions =
     },
   }
 
-function isPropNameMatch(
-  prop: AttributeNode | DirectiveNode,
-  name: string
-): boolean {
-  if (prop.type === NodeTypes.ATTRIBUTE) {
-    const propName = camelize(prop.name)
-    return propName === name
-  } else if (prop.type === NodeTypes.DIRECTIVE && prop.rawName) {
-    const propName = camelize(prop.rawName.slice(1))
-    return propName === name
-  }
-  return false
-}
-
 export function createMPBuiltInTagTransform(
   options: TransformMPBuiltInTagOptions
 ) {
@@ -111,7 +95,7 @@ export function createMPBuiltInTagTransform(
     if (options.propAdd && node.tag in options.propAdd) {
       const add = options.propAdd[node.tag]
       add.forEach(({ name, value }) => {
-        if (node.props.some((item) => isPropNameMatch(item, name))) {
+        if (node.props.some((item) => isPropNameEquals(item, name))) {
           return
         }
         node.props.push(createAttributeNode(name, value))

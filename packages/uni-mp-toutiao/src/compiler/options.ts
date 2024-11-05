@@ -3,6 +3,7 @@ import {
   COMPONENT_CUSTOM_HIDDEN_BIND,
   type MiniProgramCompilerOptions,
   transformComponentLink,
+  transformDirection,
   transformMPBuiltInTag,
   transformMatchMedia,
   transformRef,
@@ -38,7 +39,7 @@ const nodeTransforms = [
 ]
 
 if (process.env.UNI_APP_X === 'true') {
-  nodeTransforms.push(transformMPBuiltInTag)
+  nodeTransforms.push(transformMPBuiltInTag, transformDirection)
 }
 
 export const compilerOptions: CompilerOptions = {

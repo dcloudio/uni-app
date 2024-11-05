@@ -5,6 +5,7 @@ import {
   copyMiniProgramPluginJson,
   copyMiniProgramThemeJson,
   transformComponentLink,
+  transformDirection,
   transformMPBuiltInTag,
   transformRef,
 } from '@dcloudio/uni-cli-shared'
@@ -61,7 +62,7 @@ const nodeTransforms: NodeTransform[] = [
   transformAd,
 ]
 if (process.env.UNI_APP_X === 'true') {
-  nodeTransforms.push(transformMPBuiltInTag)
+  nodeTransforms.push(transformMPBuiltInTag, transformDirection)
 }
 
 export const compilerOptions: CompilerOptions = {

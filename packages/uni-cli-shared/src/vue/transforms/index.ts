@@ -49,3 +49,4 @@ export const transformComponentLink =
   createTransformComponentLink(COMPONENT_BIND_LINK)
 
 export * from './x/transformMPBuiltInTag'
+export * from './x/transformDirection'
