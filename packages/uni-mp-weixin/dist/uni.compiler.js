@@ -65,29 +65,6 @@ function transformAd(node, context) {
     }
 }
 
-function transformCanvas(node, context) {
-    if (!uniCliShared.isElementNode(node)) {
-        return;
-    }
-    if (node.tag === 'canvas') {
-        if (node.props.some((item) => item.name === 'type')) {
-            return;
-        }
-        const type2DProp = {
-            type: compilerCore.NodeTypes.ATTRIBUTE,
-            name: 'type',
-            value: {
-                type: compilerCore.NodeTypes.TEXT,
-                content: '2d',
-                loc: compilerCore.locStub,
-            },
-            loc: compilerCore.locStub,
-            nameLoc: compilerCore.locStub,
-        };
-        node.props.push(type2DProp);
-    }
-}
-
 var description = "项目配置文件。";
 var packOptions = {
 	ignore: [
@@ -182,7 +159,7 @@ const nodeTransforms = [
     transformAd,
 ];
 if (process.env.UNI_APP_X === 'true') {
-    nodeTransforms.push(transformCanvas);
+    nodeTransforms.push(uniCliShared.transformCanvas);
 }
 const compilerOptions = {
     nodeTransforms,

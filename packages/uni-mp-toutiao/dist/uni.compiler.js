@@ -2,14 +2,12 @@
 
 var uniCliShared = require('@dcloudio/uni-cli-shared');
 var initMiniProgramPlugin = require('@dcloudio/uni-mp-vite');
-var path = require('path');
 var uniMpCompiler = require('@dcloudio/uni-mp-compiler');
 var compilerCore = require('@vue/compiler-core');
 
 function _interopDefault (e) { return e && e.__esModule ? e : { default: e }; }
 
 var initMiniProgramPlugin__default = /*#__PURE__*/_interopDefault(initMiniProgramPlugin);
-var path__default = /*#__PURE__*/_interopDefault(path);
 
 var setting = {
 	urlCheck: false,
@@ -81,6 +79,9 @@ const nodeTransforms = [
     uniCliShared.transformMatchMedia,
     uniCliShared.transformComponentLink,
 ];
+if (process.env.UNI_APP_X === 'true') {
+    nodeTransforms.push(uniCliShared.transformCanvas);
+}
 const compilerOptions = {
     nodeTransforms,
 };
@@ -98,15 +99,19 @@ const miniProgram = {
         dir: COMPONENTS_DIR,
         vShow: uniCliShared.COMPONENT_CUSTOM_HIDDEN_BIND,
     },
+    filter: {
+        lang: 'sjs',
+        setStyle: true,
+    },
 };
 const options = {
     cdn: 4,
     vite: {
         inject: {
-            uni: [path__default.default.resolve(__dirname, 'uni.api.esm.js'), 'default'],
+            uni: [initMiniProgramPlugin.resolveMiniProgramRuntime(__dirname, 'uni.api.esm.js'), 'default'],
         },
         alias: {
-            'uni-mp-runtime': path__default.default.resolve(__dirname, 'uni.mp.esm.js'),
+            'uni-mp-runtime': initMiniProgramPlugin.resolveMiniProgramRuntime(__dirname, 'uni.mp.esm.js'),
         },
         copyOptions: {
             assets: [COMPONENTS_DIR],
@@ -131,18 +136,14 @@ const options = {
         config: ['project.tt.json'],
         source,
     },
-    template: Object.assign(Object.assign({}, miniProgram), { customElements, filter: {
-            extname: '.sjs',
-            lang: 'sjs',
-            generate(filter, filename) {
+    template: Object.assign(Object.assign({}, miniProgram), { customElements, filter: Object.assign(Object.assign({}, miniProgram.filter), { extname: '.sjs', lang: 'sjs', generate(filter, filename) {
                 if (filename) {
                     return `<sjs src="${filename}.sjs" module="${filter.name}"/>`;
                 }
                 return `<sjs module="${filter.name}">
 ${filter.code}
 </sjs>`;
-            },
-        }, extname: '.ttml', compilerOptions }),
+            } }), extname: '.ttml', compilerOptions }),
     style: {
         extname: '.ttss',
     },

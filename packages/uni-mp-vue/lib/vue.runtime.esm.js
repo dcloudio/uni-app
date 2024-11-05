@@ -4794,7 +4794,9 @@ function setRef(instance, isUnmount = false) {
         });
       }
     }
-    if ($templateUniElementRefs) {
+  };
+  if ($templateUniElementRefs && $templateUniElementRefs.length) {
+    nextTick(instance, () => {
       $templateUniElementRefs.forEach((templateRef) => {
         if (isArray(templateRef.v)) {
           templateRef.v.forEach((v) => {
@@ -4804,8 +4806,8 @@ function setRef(instance, isUnmount = false) {
           setTemplateRef(templateRef, templateRef.v, setupState);
         }
       });
-    }
-  };
+    });
+  }
   if ($scope._$setRef) {
     $scope._$setRef(doSet);
   } else {

@@ -1,13 +1,16 @@
-import path from 'path'
 import type { CompilerOptions } from '@dcloudio/uni-mp-compiler'
 import {
   COMPONENT_CUSTOM_HIDDEN_BIND,
   type MiniProgramCompilerOptions,
+  transformCanvas,
   transformComponentLink,
   transformMatchMedia,
   transformRef,
 } from '@dcloudio/uni-cli-shared'
-import type { UniMiniProgramPluginOptions } from '@dcloudio/uni-mp-vite'
+import {
+  type UniMiniProgramPluginOptions,
+  resolveMiniProgramRuntime,
+} from '@dcloudio/uni-mp-vite'
 
 import source from './project.config.json'
 import { transformSwiper } from './transforms/transformSwiper'
@@ -34,6 +37,10 @@ const nodeTransforms = [
   transformComponentLink,
 ]
 
+if (process.env.UNI_APP_X === 'true') {
+  nodeTransforms.push(transformCanvas)
+}
+
 export const compilerOptions: CompilerOptions = {
   nodeTransforms,
 }
@@ -51,16 +58,20 @@ export const miniProgram: MiniProgramCompilerOptions = {
     dir: COMPONENTS_DIR,
     vShow: COMPONENT_CUSTOM_HIDDEN_BIND,
   },
+  filter: {
+    lang: 'sjs',
+    setStyle: true,
+  },
 }
 
 export const options: UniMiniProgramPluginOptions = {
   cdn: 4,
   vite: {
     inject: {
-      uni: [path.resolve(__dirname, 'uni.api.esm.js'), 'default'],
+      uni: [resolveMiniProgramRuntime(__dirname, 'uni.api.esm.js'), 'default'],
     },
     alias: {
-      'uni-mp-runtime': path.resolve(__dirname, 'uni.mp.esm.js'),
+      'uni-mp-runtime': resolveMiniProgramRuntime(__dirname, 'uni.mp.esm.js'),
     },
     copyOptions: {
       assets: [COMPONENTS_DIR],
@@ -90,6 +101,7 @@ export const options: UniMiniProgramPluginOptions = {
     ...miniProgram,
     customElements,
     filter: {
+      ...miniProgram.filter,
       extname: '.sjs',
       lang: 'sjs',
       generate(filter, filename) {

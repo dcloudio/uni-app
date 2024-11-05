@@ -7153,7 +7153,9 @@ function setRef$1(instance, isUnmount = false) {
         });
       }
     }
-    if ($templateUniElementRefs) {
+  };
+  if ($templateUniElementRefs && $templateUniElementRefs.length) {
+    nextTick(instance, () => {
       $templateUniElementRefs.forEach((templateRef) => {
         if (isArray(templateRef.v)) {
           templateRef.v.forEach((v) => {
@@ -7163,8 +7165,8 @@ function setRef$1(instance, isUnmount = false) {
           setTemplateRef(templateRef, templateRef.v, setupState);
         }
       });
-    }
-  };
+    });
+  }
   if ($scope._$setRef) {
     $scope._$setRef(doSet);
   } else {
@@ -8055,6 +8057,7 @@ function stringifyStyle(value) {
     }
     return stringify(normalizeStyle(value));
 }
+// 不使用 @vue/shared 中的 stringifyStyle (#3456)
 function stringify(styles) {
     let ret = '';
     if (!styles || isString(styles)) {
@@ -8184,7 +8187,8 @@ function createUniElement(id, tagName, ins) {
         uniElement.$onStyleChange((styles) => {
             var _a;
             (_a = ins.proxy) === null || _a === void 0 ? void 0 : _a.$scope.setData({
-                [`$eS.${id}`]: styles,
+                // 有些平台不支持对象，比如头条
+                [`$eS.${id}`]: stringifyStyle(styles),
             });
         });
     }

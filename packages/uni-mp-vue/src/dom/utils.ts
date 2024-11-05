@@ -5,6 +5,7 @@ import {
 } from 'vue'
 
 import { UniElement } from './UniElement'
+import { stringifyStyle } from '../helpers/style'
 
 /**
  * 每次 render 完成，删除不在 $uniElementIds 中的元素
@@ -42,7 +43,8 @@ function createUniElement(
   if (ins) {
     uniElement.$onStyleChange((styles) => {
       ins.proxy?.$scope.setData({
-        [`$eS.${id}`]: styles,
+        // 有些平台不支持对象，比如头条
+        [`$eS.${id}`]: stringifyStyle(styles as any),
       })
     })
   }

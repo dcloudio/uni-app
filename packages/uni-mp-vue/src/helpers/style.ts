@@ -8,6 +8,7 @@ export function stringifyStyle(value: unknown) {
   return stringify(normalizeStyle(value))
 }
 
+// 不使用 @vue/shared 中的 stringifyStyle (#3456)
 function stringify(styles: NormalizedStyle | string | undefined): string {
   let ret = ''
   if (!styles || isString(styles)) {

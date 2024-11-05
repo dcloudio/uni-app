@@ -43,5 +43,39 @@
       "@vue/shared",
       "vue"
     ]
+  },
+  {
+    "input": {
+      "src/x/runtime/index.ts": "dist-x/uni.mp.esm.js",
+      "src/x/api/index.ts": "dist-x/uni.api.esm.js"
+    },
+    "alias": {
+      "entries": [
+        {
+          "find": "@dcloudio/uni-platform",
+          "replacement": "packages/uni-mp-toutiao/src/platform/index.ts"
+        },
+        {
+          "find": "@dcloudio/uni-mp-platform",
+          "replacement": "packages/uni-mp-core/src/platform/index.ts"
+        },
+        {
+          "find": "@dcloudio/uni-uts-v1/lib/javascript/lib/runtime/uts.js",
+          "replacement": "packages/uni-uts-v1/lib/javascript/lib/runtime/uts.js"
+        }
+      ]
+    },
+    "replacements": {
+      "__GLOBAL__": "tt",
+      "__X__": "true",
+      "__PLATFORM__": "\"mp-toutiao\"",
+      "__PLATFORM_TITLE__": "字节跳动小程序"
+    },
+    "external": [
+      "@dcloudio/uni-i18n",
+      "@dcloudio/uni-shared",
+      "@vue/shared",
+      "vue"
+    ]
   }
 ]

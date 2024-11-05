@@ -4,6 +4,7 @@ import {
   type MiniProgramCompilerOptions,
   copyMiniProgramPluginJson,
   copyMiniProgramThemeJson,
+  transformCanvas,
   transformComponentLink,
   transformRef,
 } from '@dcloudio/uni-cli-shared'
@@ -12,7 +13,6 @@ import {
   resolveMiniProgramRuntime,
 } from '@dcloudio/uni-mp-vite'
 import { transformAd } from './transforms/transformAd'
-import { transformCanvas } from './transforms/x/transformCanvas'
 
 import source from './project.config.json'
 
