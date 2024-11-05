@@ -45,10 +45,9 @@ export const createCanvasContextAsync = defineAsyncApi(
     if (!page || !page.$vm) {
       reject('current page invalid.')
     } else {
-      // TODO wx.?
       const query = options.component
-        ? wx.createSelectorQuery().in(options.component)
-        : wx.createSelectorQuery()
+        ? __GLOBAL__.createSelectorQuery().in(options.component)
+        : __GLOBAL__.createSelectorQuery()
       query
         .select('#' + options.id)
         .fields({ node: true }, () => {})

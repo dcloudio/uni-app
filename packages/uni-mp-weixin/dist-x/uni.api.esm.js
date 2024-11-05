@@ -447,6 +447,58 @@ const getElementById = defineSyncApi(API_GET_ELEMENT_BY_ID, (id) => {
     //return page.getElementById(id)
 });
 
+const API_CREATE_CANVAS_CONTEXT_ASYNC = 'createCanvasContextAsync';
+class CanvasContext {
+    constructor(element) {
+        this._element = element;
+    }
+    getContext(type) {
+        return this._element.getContext(type);
+    }
+    toDataURL(type, encoderOptions) {
+        return this._element.toDataURL(type, encoderOptions);
+    }
+    createImage() {
+        return this._element.createImage();
+    }
+    createImageData() {
+        return this._element.createImageData();
+    }
+    createPath2D() {
+        return this._element.createPath2D();
+    }
+    requestAnimationFrame(callback) {
+        return this._element.requestAnimationFrame(callback);
+    }
+    cancelAnimationFrame(taskId) {
+        this._element.cancelAnimationFrame(taskId);
+    }
+}
+const createCanvasContextAsync = defineAsyncApi(API_CREATE_CANVAS_CONTEXT_ASYNC, (options, { resolve, reject }) => {
+    const pages = getCurrentPages();
+    const page = pages[pages.length - 1];
+    if (!page || !page.$vm) {
+        reject('current page invalid.');
+    }
+    else {
+        const query = options.component
+            ? wx.createSelectorQuery().in(options.component)
+            : wx.createSelectorQuery();
+        query
+            .select('#' + options.id)
+            .fields({ node: true }, () => { })
+            .exec((res) => {
+            if (res.length > 0) {
+                const canvas = res[0].node;
+                resolve(new CanvasContext(canvas));
+            }
+            else {
+                reject('canvas id invalid.');
+            }
+        });
+    }
+});
+
 function getBaseSystemInfo() {
     return wx.getSystemInfoSync();
 }
@@ -1186,6 +1238,7 @@ const baseApis = {
     offPushMessage,
     invokePushCallback,
     getElementById,
+    createCanvasContextAsync,
 };
 function initUni(api, protocols, platform = wx) {
     const wrapper = initWrapper(protocols);
