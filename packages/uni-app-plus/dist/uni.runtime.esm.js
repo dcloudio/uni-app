@@ -18322,7 +18322,7 @@ function serialize(el, type) {
         pageId = el.pageId;
         nodeId = el.getNodeId();
     }
-    return { pageId, nodeId, [type]: true };
+    return { pageId, nodeId, __type__: type };
 }
 function toRaw(observed) {
     const raw = observed && observed.__v_raw;
@@ -18352,7 +18352,7 @@ function normalizeArg(arg, callbacks, keepAlive) {
             : undefined;
         const el = uniElement || componentPublicInstanceUniElement;
         if (el) {
-            return serialize(el, uniElement ? '__uni_element' : '__component_public_instance');
+            return serialize(el, uniElement ? 'UniElement' : 'ComponentPublicInstance');
         }
         else {
             // 必须复制，否则会污染原始对象，比如：

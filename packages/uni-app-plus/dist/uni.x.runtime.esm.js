@@ -4141,7 +4141,7 @@ function serialize(el, type) {
   return {
     pageId,
     nodeId,
-    [type]: true
+    __type__: type
   };
 }
 function toRaw(observed) {
@@ -4166,7 +4166,7 @@ function normalizeArg(arg, callbacks, keepAlive) {
     var componentPublicInstanceUniElement = !uniElement ? parseComponentPublicInstance(arg) : void 0;
     var el = uniElement || componentPublicInstanceUniElement;
     if (el) {
-      return serialize(el, uniElement ? "__uni_element" : "__component_public_instance");
+      return serialize(el, uniElement ? "UniElement" : "ComponentPublicInstance");
     } else {
       var newArg = {};
       Object.keys(arg).forEach((name) => {
