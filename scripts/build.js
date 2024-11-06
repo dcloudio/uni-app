@@ -151,6 +151,7 @@ async function build(target) {
         cwd: pkgDir,
       }
     )
+    await sleep(500)
     if (target === 'uni-h5') {
       await execa(
         'vite',
@@ -161,6 +162,7 @@ async function build(target) {
           cwd: pkgDir,
         }
       )
+      await sleep(500)
       // uni-h5(uni-app x)
       await execa(
         'vite',
@@ -175,6 +177,7 @@ async function build(target) {
           cwd: pkgDir,
         }
       )
+      await sleep(500)
       await execa(
         'vite',
         ['build', '--config', path.resolve(pkgDir, 'vite.config.ts')],
@@ -188,6 +191,7 @@ async function build(target) {
           cwd: pkgDir,
         }
       )
+      await sleep(500)
     }
     if (target === 'uni-app-plus') {
       await execa(
@@ -199,6 +203,7 @@ async function build(target) {
           cwd: pkgDir,
         }
       )
+      await sleep(500)
     }
   }
   if (hasTscBundler) {
@@ -213,7 +218,7 @@ async function build(target) {
     await execa('tsc', args, {
       stdio: 'inherit',
     })
-    global.gc && global.gc()
+    await sleep(500)
   }
   if (hasArkTSBundler) {
     if (
@@ -247,7 +252,7 @@ async function build(target) {
       ],
       { stdio: 'inherit' }
     )
-    global.gc && global.gc()
+    await sleep(500)
 
     if (types && target !== 'uni-uts-vite') {
       await extract(target)
@@ -397,4 +402,8 @@ async function buildArkTS(target, buildJson) {
   )
   const extApiExportWithHar = genHarmonyExtApiExport()
   fs.outputJSON(extApiExportJsonPath, extApiExportWithHar, { spaces: 2 })
+}
+
+async function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms))
 }
