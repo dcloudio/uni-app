@@ -29,7 +29,8 @@ export function assert(
   template: string,
   templateCode: string,
   renderCode: string,
-  options: CompilerOptions = {}
+  options: CompilerOptions = {},
+  miniProgramOptions: Partial<MiniProgramCompilerOptions> = {}
 ) {
   const compilerOptions: CompilerOptions = {
     root: '',
@@ -45,6 +46,7 @@ export function assert(
     miniProgram: {
       ...miniProgram,
       ...options.miniProgram,
+      ...miniProgramOptions,
     },
     ...options,
   }

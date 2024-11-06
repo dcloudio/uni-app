@@ -2,6 +2,7 @@ import { type ComponentInternalInstance, getCurrentInstance, toRaw } from 'vue'
 import { findUniElement } from '../dom/utils'
 import type { UniCSSStyleDeclaration } from '../dom/UniCSSStyleDeclaration'
 import type { VNodeRef } from './ref'
+import { stringifyStyle } from './style'
 
 export function setUniElementId(
   id: string,
@@ -32,14 +33,28 @@ export function setUniElementId(
   return id
 }
 
-export function withUniElementStyle(id: string, style: string = '') {
-  // 从缓存中获取元素，作用域插槽？
-  const el = getCurrentInstance()?.$uniElements.get(id)
-  if (!el) {
-    return style
+export function setUniElementStyle(id: string, style: unknown = '') {
+  const ins = getCurrentInstance()
+  if (!ins) {
+    return ''
   }
-  const cssText = (el.style as unknown as UniCSSStyleDeclaration).cssText
-  return style ? `${style};${cssText}` : cssText
+  if (style) {
+    style = stringifyStyle(style)
+  }
+
+  if (style) {
+    ins.$templateUniElementStyles[id] = style as string
+  }
+  // 当 patch 的时候，需要增加 $eS 的更新，而 element 的 style 是直接更新到 mp 的 $eS 上
+  // 从缓存中获取元素，作用域插槽？
+  const el = ins.$uniElements.get(id)
+  if (!el) {
+    ins.$eS[id] = style as string
+  } else {
+    const cssText = (el.style as unknown as UniCSSStyleDeclaration).cssText
+    ins.$eS[id] = style ? `${style};${cssText}` : cssText
+  }
+  return ''
 }
 
 function setUniElementRef(

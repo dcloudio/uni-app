@@ -1,4 +1,5 @@
 import {
+  type DirectiveNode,
   type ElementNode,
   type ExpressionNode,
   createCompoundExpression,
@@ -11,7 +12,7 @@ import {
   isUserComponent,
 } from '@dcloudio/uni-cli-shared'
 import type { TransformContext } from '../transform'
-import { SET_UNI_ELEMENT_ID, WITH_UNI_ELEMENT_STYLE } from '../runtimeHelpers'
+import { SET_UNI_ELEMENT_ID, SET_UNI_ELEMENT_STYLE } from '../runtimeHelpers'
 import {
   ATTR_ELEMENT_ID,
   ATTR_SET_ELEMENT_STYLE,
@@ -97,16 +98,7 @@ export function rewriteId(node: ElementNode, context: TransformContext) {
         filterName(FILTER_SET_ELEMENT_STYLE)
       )
     )
-    node.props.push(
-      createBindDirectiveNode(
-        ATTR_SET_ELEMENT_STYLE,
-        createCompoundExpression([
-          context.helperString(WITH_UNI_ELEMENT_STYLE) + '(',
-          idExprNode!,
-          ')',
-        ])
-      )
-    )
+    node.props.push(createBindDirectiveNode(ATTR_SET_ELEMENT_STYLE, ''))
     if (
       !context.autoImportFilters.find(
         (filter) => filter.name === FILTER_MODULE_NAME
@@ -118,21 +110,32 @@ export function rewriteId(node: ElementNode, context: TransformContext) {
         type: 'filter',
       })
     }
-    return
-  }
-
-  // 如果没有动态绑定 style，则创建一个新的
-  if (!findProp(node, 'style', true, true)) {
-    node.props.push(
-      createBindDirectiveNode(
-        'style',
-        createCompoundExpression([
-          context.helperString(WITH_UNI_ELEMENT_STYLE) + '(',
-          idExprNode!,
-          ')',
-        ])
+  } else {
+    // 如果没有动态绑定 style，则创建一个新的
+    const styleProp = findProp(node, 'style', true, true) as
+      | DirectiveNode
+      | undefined
+    if (!styleProp) {
+      node.props.push(
+        createBindDirectiveNode(
+          'style',
+          createCompoundExpression([
+            context.helperString(SET_UNI_ELEMENT_STYLE) + '(',
+            idExprNode!,
+            ')',
+          ])
+        )
       )
-    )
+    } else {
+      // 传递已绑定的 style
+      styleProp.exp = createCompoundExpression([
+        context.helperString(SET_UNI_ELEMENT_STYLE) + '(',
+        idExprNode!,
+        ',',
+        styleProp.exp!,
+        ')',
+      ])
+    }
   }
 }
 

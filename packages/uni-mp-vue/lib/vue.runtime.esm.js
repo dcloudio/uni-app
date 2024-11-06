@@ -4094,7 +4094,10 @@ function createComponentInstance(vnode, parent, suspense) {
     ec: null,
     sp: null,
     // fixed by xxxxxx 用于存储uni-app的元素缓存
-    $uniElements: /* @__PURE__ */ new Map()
+    $uniElements: /* @__PURE__ */ new Map(),
+    $templateUniElementRefs: [],
+    $templateUniElementStyles: {},
+    $eS: {}
   };
   if (!!(process.env.NODE_ENV !== "production")) {
     instance.ctx = createDevRenderContext(instance);
@@ -4692,6 +4695,7 @@ function patch(instance, data, oldData) {
     return;
   }
   data = deepCopy(data);
+  data.$eS = instance.$eS || {};
   const ctx = instance.ctx;
   const mpType = ctx.mpType;
   if (mpType === "page" || mpType === "component") {
@@ -4853,7 +4857,9 @@ function setTemplateRef({ r, f }, refValue, setupState) {
           if (!refValue) {
             return;
           }
-          onBeforeUnmount(() => remove(existing, refValue), refValue.$);
+          if (refValue.$) {
+            onBeforeUnmount(() => remove(existing, refValue), refValue.$);
+          }
         }
       } else if (_isString) {
         if (hasOwn(setupState, r)) {
@@ -4947,6 +4953,7 @@ function renderComponentRoot(instance) {
   instance.$uniElementIds = /* @__PURE__ */ new Map();
   instance.$templateRefs = [];
   instance.$templateUniElementRefs = [];
+  instance.$templateUniElementStyles = {};
   instance.$ei = 0;
   pruneComponentPropsCache(uid);
   instance.__counter = instance.__counter === 0 ? 1 : 0;

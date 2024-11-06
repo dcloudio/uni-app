@@ -24,7 +24,10 @@ import {
   createSimpleExpression,
 } from '@vue/compiler-core'
 import { hyphenate } from '@vue/shared'
-import { createBindDirectiveNode } from '@dcloudio/uni-cli-shared'
+import {
+  createBindDirectiveNode,
+  isCompoundExpressionNode,
+} from '@dcloudio/uni-cli-shared'
 import { HYPHENATE, STRINGIFY_STYLE } from '../runtimeHelpers'
 import { parseExpr, parseStringLiteral } from '../ast'
 import { genBabelExpr } from '../codegen'
@@ -52,7 +55,8 @@ export function rewriteStyle(
   styleBindingProp: DirectiveNode,
   props: (AttributeNode | DirectiveNode)[],
   virtualHost: boolean,
-  context: TransformContext
+  context: TransformContext,
+  elementId?: string
 ) {
   const expr = styleBindingProp.exp
     ? parseExpr(styleBindingProp.exp, context)
@@ -68,10 +72,21 @@ export function rewriteStyle(
         rewriteStyleArrayExpression(expr, context)
       )
     } else {
-      styleBidingExpr = parseExpr(
-        rewriteStyleExpression(styleBindingProp.exp!, context).content,
-        context
-      ) as Expression
+      // 在 x 中，如果有 id 且不支持 setStyle
+      if (
+        elementId &&
+        context.isX &&
+        !context.miniProgram.filter?.setStyle &&
+        isCompoundExpressionNode(styleBindingProp.exp!)
+      ) {
+        rewriteStyleExpression(styleBindingProp.exp!, context)
+        styleBidingExpr = parseExpr(`$eS[${elementId}]`, context)
+      } else {
+        styleBidingExpr = parseExpr(
+          rewriteStyleExpression(styleBindingProp.exp!, context).content,
+          context
+        )
+      }
     }
     if (!styleBidingExpr) {
       return

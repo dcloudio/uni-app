@@ -42,10 +42,34 @@ function createUniElement(
   const uniElement = new UniElement(id, tagName)
   if (ins) {
     uniElement.$onStyleChange((styles) => {
-      ins.proxy?.$scope.setData({
-        // 有些平台不支持对象，比如头条
-        [`$eS.${id}`]: stringifyStyle(styles as any),
-      })
+      let cssText = ''
+      // 如果不支持 wxs setStyle，需要合并模板绑定的 style
+      const templateStyle = ins.$templateUniElementStyles[id]
+      if (templateStyle) {
+        cssText = `${templateStyle};${stringifyStyle(styles as any)}`
+      } else {
+        cssText = stringifyStyle(styles as any)
+      }
+      const mpInstance = ins.proxy?.$scope
+      if (mpInstance) {
+        if (process.env.UNI_DEBUG) {
+          console.log(
+            'uni-app:[' +
+              Date.now() +
+              '][' +
+              (mpInstance.is || mpInstance.route) +
+              '][' +
+              ins.uid +
+              '][' +
+              id +
+              ']setStyle',
+            cssText
+          )
+        }
+        mpInstance.setData({
+          [`$eS.${id}`]: cssText,
+        })
+      }
     })
   }
   return uniElement

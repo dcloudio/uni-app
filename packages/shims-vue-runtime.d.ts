@@ -18,6 +18,8 @@ declare module '@vue/runtime-core' {
     route: string
     options?: Page.PageInstance['$page']['options']
     $scope: {
+      is?: string
+      route?: string
       $getAppWebview?: () => PlusWebviewWebviewObject
       setData(data: Record<string, unknown>, callback?: () => void): void
     }
@@ -73,6 +75,10 @@ declare module '@vue/runtime-core' {
       f?: boolean // refInFor marker
       v: null | UniElement | Array<UniElement | null>
     }[]
+    // 模板绑定的 style ，key 为 elementId，值为 style 字符串，最终会合并到 $eS 中
+    $templateUniElementStyles: Record<string, string>
+    // 元素 style ，key 为 elementId，值为 style 字符串
+    $eS: Record<string, string>
   }
 
   export const onBeforeActivate: (fn: () => void) => void

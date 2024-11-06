@@ -146,7 +146,11 @@ export function uniMiniProgramPlugin(
         base: '/', // 小程序平台强制 base
         resolve: {
           alias: {
-            vue: resolveBuiltIn('@dcloudio/uni-mp-vue'),
+            vue: resolveBuiltIn(
+              `@dcloudio/uni-mp-vue/${
+                process.env.UNI_APP_X === 'true' ? 'dist-x' : 'dist'
+              }/vue.runtime.esm.js`
+            ),
             '@vue/devtools-api': resolveBuiltIn('@dcloudio/uni-mp-vue'),
             'vue-i18n': resolveVueI18nRuntime(),
             ...alias,

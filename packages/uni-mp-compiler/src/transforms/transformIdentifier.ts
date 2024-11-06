@@ -88,7 +88,31 @@ export const transformIdentifier: NodeTransform = (node, context) => {
       )
 
       let elementId: string = ''
+      let skipIndex: number[] = []
+      // 第一步：在 x 中，先处理 id 属性，用于提前获取 elementId 对应的变量名
+      if (context.isX) {
+        for (let i = 0; i < props.length; i++) {
+          const dir = props[i]
+          if (dir.type === NodeTypes.DIRECTIVE) {
+            const { arg, exp } = dir
+            if (arg && exp && isSimpleExpressionNode(arg)) {
+              if (arg.content === 'id' || arg.content === ATTR_ELEMENT_ID) {
+                dir.exp = rewriteExpression(exp, context)
+                elementId = (dir.exp as SimpleExpressionNode).content
+                skipIndex.push(i)
+              }
+            }
+          }
+        }
+      }
+
       for (let i = 0; i < props.length; i++) {
+        if (context.isX) {
+          // 已经处理过了
+          if (skipIndex.includes(i)) {
+            continue
+          }
+        }
         const dir = props[i]
         if (dir.type === NodeTypes.DIRECTIVE) {
           const arg = dir.arg
@@ -114,7 +138,7 @@ export const transformIdentifier: NodeTransform = (node, context) => {
               rewriteClass(i, dir, props, virtualHost, context)
             } else if (isStyleBinding(dir)) {
               hasStyleBinding = true
-              rewriteStyle(i, dir, props, virtualHost, context)
+              rewriteStyle(i, dir, props, virtualHost, context, elementId)
             } else if (isPropsBinding(dir)) {
               rewritePropsBinding(dir, node, context)
             } else {
@@ -128,11 +152,6 @@ export const transformIdentifier: NodeTransform = (node, context) => {
                 dir.exp = createSimpleExpression(`$eS[${elementId}]`)
               } else {
                 dir.exp = rewriteExpression(exp, context)
-                if (context.isX && arg && isSimpleExpressionNode(arg)) {
-                  if (arg.content === 'id' || arg.content === ATTR_ELEMENT_ID) {
-                    elementId = (dir.exp as SimpleExpressionNode).content
-                  }
-                }
               }
             }
           }
