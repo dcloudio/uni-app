@@ -5,7 +5,8 @@
   "main": "dist/vue.runtime.esm.js",
   "module": "dist/vue.runtime.esm.js",
   "files": [
-    "dist"
+    "dist",
+    "dist-x"
   ],
   "sideEffects": false,
   "repository": {
