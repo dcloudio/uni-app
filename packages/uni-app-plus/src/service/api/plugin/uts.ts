@@ -34,10 +34,7 @@ function parseComponentPublicInstance(obj: any) {
 }
 
 // 序列化 UniElement | ComponentPublicInstance
-function serialize(
-  el: any,
-  type: '__uni_element' | '__component_public_instance'
-) {
+function serialize(el: any, type: 'UniElement' | 'ComponentPublicInstance') {
   let nodeId = ''
   let pageId = ''
   // 非 x 可能不存在 getNodeId 方法？
@@ -45,7 +42,7 @@ function serialize(
     pageId = el.pageId
     nodeId = el.getNodeId()
   }
-  return { pageId, nodeId, [type]: true }
+  return { pageId, nodeId, __type__: type }
 }
 
 function toRaw(observed?: unknown): unknown {
@@ -81,7 +78,7 @@ export function normalizeArg(
     if (el) {
       return serialize(
         el,
-        uniElement ? '__uni_element' : '__component_public_instance'
+        uniElement ? 'UniElement' : 'ComponentPublicInstance'
       )
     } else {
       // 必须复制，否则会污染原始对象，比如：
