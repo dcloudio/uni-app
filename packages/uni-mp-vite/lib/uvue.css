@@ -4,16 +4,63 @@ page {
   flex-direction: column;
 }
 
-label,
-scroll-view,
-swiper-item,
-view,
-navigator,
+ad-draw,
+ad-fullscreen-video,
+ad-interactive,
+ad-interstitial,
+ad-rewarded-video,
+ad,
+animation-view,
+audio,
+block,
+button,
+camera,
+canvas,
+checkbox-group,
+checkbox,
+cover-image,
+cover-view,
+custom-tab-bar,
+editor,
 form,
+icon,
+image,
+input,
+label,
+list-item,
+list-view,
+live-player,
+live-pusher,
+map,
+match-media,
+movable-area,
+movable-view,
+navigation-bar,
+navigator,
+open-data,
+page-meta,
+picker-view,
+picker,
+progress,
 radio-group,
 radio,
-checkbox-group,
-checkbox {
+rich-text,
+scroll-view,
+slider,
+sticky-header,
+sticky-section,
+swiper-item,
+swiper,
+switch,
+template,
+text,
+textarea,
+unicloud-db,
+video,
+view,
+web-view {
+  position: relative;
+  box-sizing: border-box;
   display: flex;
   flex-direction: column;
   flex-shrink: 0;
@@ -21,6 +68,9 @@ checkbox {
   flex-basis: auto;
   align-items: stretch;
   align-content: flex-start;
+  min-height: 0px;
+  min-width: 0px;
+  border-width: medium;
 }
 
 image,
@@ -32,9 +82,7 @@ text,
 textarea,
 video,
 view {
-  position: relative;
   border: 0 solid #000;
-  box-sizing: border-box;
 }
 
 swiper-item {
