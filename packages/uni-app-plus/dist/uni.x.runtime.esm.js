@@ -610,7 +610,7 @@ function setupPage(component) {
     initPageVm(pageVm, __pageInstance);
     {
       instance.$dialogPages = [];
-      var uniPage = new UniPageImpl();
+      var uniPage = new UniNormalPageImpl();
       pageVm.$basePage = pageVm.$page;
       pageVm.$page = uniPage;
       uniPage.route = pageVm.$basePage.route;
@@ -1257,9 +1257,11 @@ function getTabList() {
   return list;
 }
 function init() {
+  var _uniConfig$globalSty, _uniConfig$globalSty2;
   var list = getTabList();
   var style = /* @__PURE__ */ new Map();
   style.set("navigationStyle", "custom");
+  style.set("pageOrientation", (_uniConfig$globalSty = (_uniConfig$globalSty2 = __uniConfig.globalStyle) === null || _uniConfig$globalSty2 === void 0 ? void 0 : _uniConfig$globalSty2.pageOrientation) !== null && _uniConfig$globalSty !== void 0 ? _uniConfig$globalSty : "portrait");
   var page = getPageManager().createPage(
     "tabBar",
     // id 后增加 Date.now() 保证唯一性，与 android 端统一

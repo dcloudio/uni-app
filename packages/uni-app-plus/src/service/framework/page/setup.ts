@@ -30,7 +30,7 @@ export function setupPage(component: VuePageComponent) {
     initPageVm(pageVm, __pageInstance as Page.PageInstance['$page'])
     if (__X__) {
       instance.$dialogPages = []
-      const uniPage = new UniPageImpl()
+      const uniPage = new UniNormalPageImpl()
       pageVm.$basePage = pageVm.$page as Page.PageInstance['$page']
       pageVm.$page = uniPage
       uniPage.route = pageVm.$basePage.route

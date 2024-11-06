@@ -85,7 +85,7 @@ interface Require {
   cache: NodeRequire['cache']
 }
 
-declare class UniPageImpl implements UniPage {
+declare class UniNormalPageImpl implements UniPage {
   vm: ComponentPublicInstance
   $vm: ComponentPublicInstance
   route: string
