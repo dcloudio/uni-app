@@ -33,7 +33,8 @@ export function rewriteId(node: ElementNode, context: TransformContext) {
       if (context.inVFor) {
         // v-for 中的 ref 需要使用 v-for 的 key 作为 id
         const keyAlias = parseVForKeyAlias(context)
-        const id = context.hashId + '-r' + context.elementRefIndex++ + '-'
+        // 微信小程序元素id必须以字母开头，所以hashId不能放到前边，它可能是数字开头
+        const id = 'r' + context.elementRefIndex++ + '-' + context.hashId + '-'
         node.props.push(
           createBindDirectiveNode(
             'id',
@@ -41,7 +42,7 @@ export function rewriteId(node: ElementNode, context: TransformContext) {
           )
         )
       } else {
-        const id = context.hashId + '-r' + context.elementRefIndex++
+        const id = 'r' + context.elementRefIndex++ + '-' + context.hashId
         node.props.push(createAttributeNode('id', id))
       }
     }

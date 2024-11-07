@@ -133,9 +133,9 @@ describe('compiler: transform UniElement.style.setProperty', () => {
   test('static ref', () => {
     assert(
       `<view ref="view" style="color:red"/>`,
-      `<view ref="view" id="2a9ec0b0-r0" style="{{'color:red' + ';' + $eS[a]}}"/>`,
+      `<view ref="view" id="r0-2a9ec0b0" style="{{'color:red' + ';' + $eS[a]}}"/>`,
       `(_ctx, _cache) => {
-  const __returned__ = { a: _sei('2a9ec0b0-r0', 'view', 'view'), b: _s(_ses('2a9ec0b0-r0')) }
+  const __returned__ = { a: _sei('r0-2a9ec0b0', 'view', 'view'), b: _s(_ses('r0-2a9ec0b0')) }
   return __returned__
 }`,
       {
@@ -146,7 +146,7 @@ describe('compiler: transform UniElement.style.setProperty', () => {
       `<view v-for="item in 10" ref="view"/>`,
       `<view wx:for="{{a}}" wx:for-item="item" ref="view" id="{{item.a}}" style="{{$eS[item.a]}}"/>`,
       `(_ctx, _cache) => {
-  const __returned__ = { a: _f(10, (item, k0, i0) => { return { a: _sei('2a9ec0b0-r0-' + k0, 'view', 'view', { "f": 1 }), b: _s(_ses('2a9ec0b0-r0-' + k0)) }; }) }
+  const __returned__ = { a: _f(10, (item, k0, i0) => { return { a: _sei('r0-2a9ec0b0-' + k0, 'view', 'view', { "f": 1 }), b: _s(_ses('r0-2a9ec0b0-' + k0)) }; }) }
   return __returned__
 }`,
       {
@@ -157,7 +157,7 @@ describe('compiler: transform UniElement.style.setProperty', () => {
       `<view v-for="item in 10" ref="v0"><view v-for="item in 10" ref="v1"/></view>`,
       `<view wx:for="{{a}}" wx:for-item="item" ref="v0" id="{{item.b}}" style="{{$eS[item.b]}}"><view wx:for="{{item.a}}" wx:for-item="item" ref="v1" id="{{item.a}}" style="{{$eS[item.a]}}"/></view>`,
       `(_ctx, _cache) => {
-  const __returned__ = { a: _f(10, (item, k0, i0) => { return { a: _f(10, (item, k1, i1) => { return { a: _sei('2a9ec0b0-r0-' + k1 + '-' + k0, 'view', 'v1', { "f": 1 }), b: _s(_ses('2a9ec0b0-r0-' + k1 + '-' + k0)) }; }), b: _sei('2a9ec0b0-r1-' + k0, 'view', 'v0', { "f": 1 }), c: _s(_ses('2a9ec0b0-r1-' + k0)) }; }) }
+  const __returned__ = { a: _f(10, (item, k0, i0) => { return { a: _f(10, (item, k1, i1) => { return { a: _sei('r0-2a9ec0b0-' + k1 + '-' + k0, 'view', 'v1', { "f": 1 }), b: _s(_ses('r0-2a9ec0b0-' + k1 + '-' + k0)) }; }), b: _sei('r1-2a9ec0b0-' + k0, 'view', 'v0', { "f": 1 }), c: _s(_ses('r1-2a9ec0b0-' + k0)) }; }) }
   return __returned__
 }`,
       {
@@ -313,9 +313,9 @@ describe('compiler: transform UniElement.style.setProperty (wxs)', () => {
   test('static ref', () => {
     assert(
       `<view ref="view" style="color:red"/>`,
-      `<view ref="view" style="color:red" id="2a9ec0b0-r0" change:eS="{{uV.sS}}" eS="{{$eS[a]}}"/>`,
+      `<view ref="view" style="color:red" id="r0-2a9ec0b0" change:eS="{{uV.sS}}" eS="{{$eS[a]}}"/>`,
       `(_ctx, _cache) => {
-  const __returned__ = { a: _sei('2a9ec0b0-r0', 'view', 'view') }
+  const __returned__ = { a: _sei('r0-2a9ec0b0', 'view', 'view') }
   return __returned__
 }`,
       {
@@ -332,7 +332,7 @@ describe('compiler: transform UniElement.style.setProperty (wxs)', () => {
       `<view v-for="item in 10" ref="view"/>`,
       `<view wx:for="{{a}}" wx:for-item="item" ref="view" id="{{item.a}}" change:eS="{{uV.sS}}" eS="{{$eS[item.a]}}"/>`,
       `(_ctx, _cache) => {
-  const __returned__ = { a: _f(10, (item, k0, i0) => { return { a: _sei('2a9ec0b0-r0-' + k0, 'view', 'view', { "f": 1 }) }; }) }
+  const __returned__ = { a: _f(10, (item, k0, i0) => { return { a: _sei('r0-2a9ec0b0-' + k0, 'view', 'view', { "f": 1 }) }; }) }
   return __returned__
 }`,
       {
@@ -349,7 +349,7 @@ describe('compiler: transform UniElement.style.setProperty (wxs)', () => {
       `<view v-for="item in 10" ref="v0"><view v-for="item in 10" ref="v1"/></view>`,
       `<view wx:for="{{a}}" wx:for-item="item" ref="v0" id="{{item.b}}" change:eS="{{uV.sS}}" eS="{{$eS[item.b]}}"><view wx:for="{{item.a}}" wx:for-item="item" ref="v1" id="{{item.a}}" change:eS="{{uV.sS}}" eS="{{$eS[item.a]}}"/></view>`,
       `(_ctx, _cache) => {
-  const __returned__ = { a: _f(10, (item, k0, i0) => { return { a: _f(10, (item, k1, i1) => { return { a: _sei('2a9ec0b0-r0-' + k1 + '-' + k0, 'view', 'v1', { "f": 1 }) }; }), b: _sei('2a9ec0b0-r1-' + k0, 'view', 'v0', { "f": 1 }) }; }) }
+  const __returned__ = { a: _f(10, (item, k0, i0) => { return { a: _f(10, (item, k1, i1) => { return { a: _sei('r0-2a9ec0b0-' + k1 + '-' + k0, 'view', 'v1', { "f": 1 }) }; }), b: _sei('r1-2a9ec0b0-' + k0, 'view', 'v0', { "f": 1 }) }; }) }
   return __returned__
 }`,
       {
