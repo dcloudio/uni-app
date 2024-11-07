@@ -49,6 +49,9 @@ declare namespace UniNamespace {
   interface UniConfig {
     conditionUrl?: string
     ready?: boolean
+
+    getTabBarConfig: () => Record<string, any>
+
     router?: {
       strict: boolean
       base: string
