@@ -12,8 +12,12 @@ import {
   initI18nOptionsOnce,
   mergeMiniProgramAppJson,
   normalizePagePath,
+  normalizePath,
   parseManifestJsonOnce,
   parseMiniProgramPagesJson,
+  parseVueRequest,
+  removeExt,
+  runByHBuilderX,
 } from '@dcloudio/uni-cli-shared'
 import { virtualPagePath } from './entry'
 import type { UniMiniProgramPluginOptions } from '../plugin'
@@ -33,6 +37,8 @@ export function uniPagesJsonPlugin(
   const platform = process.env.UNI_PLATFORM
   const inputDir = process.env.UNI_INPUT_DIR
   return defineUniPagesJsonPlugin((opts) => {
+    let allPagePaths: string[] = []
+    let isFirst = true
     return {
       name: 'uni:mp-pages-json',
       enforce: 'pre',
@@ -40,6 +46,31 @@ export function uniPagesJsonPlugin(
         resolvedConfig = config
       },
       transform(code, id) {
+        if (process.env.UNI_APP_X === 'true') {
+          if (isFirst && allPagePaths.length) {
+            const { filename } = parseVueRequest(id)
+            if (filename.endsWith('.vue') || filename.endsWith('.uvue')) {
+              const vueFilename = removeExt(
+                normalizePath(
+                  path.relative(process.env.UNI_INPUT_DIR, filename)
+                )
+              )
+              // 项目内的
+              if (!vueFilename.startsWith('.')) {
+                // const index = allPagePaths.indexOf(pagePath)
+                // if (index > -1) {
+                if (runByHBuilderX()) {
+                  console.log(
+                    `当前工程${
+                      allPagePaths.length
+                    }个页面，正在编译${vueFilename}...${'\u200b'}`
+                  )
+                }
+                // }
+              }
+            }
+          }
+        }
         if (!opts.filter(id)) {
           return null
         }
@@ -87,8 +118,10 @@ export function uniPagesJsonPlugin(
         Object.keys(pageJsons).forEach((name) => {
           if (isNormalPage(name)) {
             addMiniProgramPageJson(name, pageJsons[name])
+            allPagePaths.push(name)
           }
         })
+
         return {
           code: `import './${MANIFEST_JSON_JS}'\n` + importPagesCode(appJson),
           map: { mappings: '' },
@@ -105,6 +138,9 @@ export function uniPagesJsonPlugin(
             })
           }
         )
+      },
+      buildEnd() {
+        isFirst = false
       },
     }
   })
