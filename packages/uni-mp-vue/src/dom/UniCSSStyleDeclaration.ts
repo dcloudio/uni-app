@@ -1,4 +1,6 @@
 export class UniCSSStyleDeclaration {
+  // 跳过vue的响应式
+  __v_skip = true
   private $styles: Record<string, string | null> = {}
   private $onChangeCallbacks: ((
     styles: Record<string, string | null>

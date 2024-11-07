@@ -2,6 +2,8 @@ import type { ComponentPublicInstance } from 'vue'
 import { UniCSSStyleDeclaration } from './UniCSSStyleDeclaration'
 
 export class UniElement {
+  // 跳过vue的响应式
+  __v_skip = true
   id: string
   nodeName: string
   tagName: string
