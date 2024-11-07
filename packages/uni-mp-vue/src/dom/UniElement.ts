@@ -1,3 +1,4 @@
+import type { ComponentPublicInstance } from 'vue'
 import { UniCSSStyleDeclaration } from './UniCSSStyleDeclaration'
 
 export class UniElement {
@@ -5,11 +6,13 @@ export class UniElement {
   nodeName: string
   tagName: string
   style: UniCSSStyleDeclaration = new UniCSSStyleDeclaration()
+  $vm: ComponentPublicInstance
 
-  constructor(id: string, name: string) {
+  constructor(id: string, name: string, vm: ComponentPublicInstance) {
     this.id = id
     this.tagName = name.toUpperCase()
     this.nodeName = this.tagName
+    this.$vm = vm
   }
 
   $onStyleChange(callback: (styles: Record<string, string | null>) => void) {

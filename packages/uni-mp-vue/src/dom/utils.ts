@@ -37,9 +37,12 @@ export function destroyUniElements(ins: ComponentInternalInstance) {
 function createUniElement(
   id: string,
   tagName: string,
-  ins: ComponentInternalInstance | null
+  ins: ComponentInternalInstance
 ) {
-  const uniElement = new UniElement(id, tagName)
+  if (!ins || !ins.proxy) {
+    return null
+  }
+  const uniElement = new UniElement(id, tagName, ins.proxy)
   if (ins) {
     uniElement.$onStyleChange((styles) => {
       let cssText = ''

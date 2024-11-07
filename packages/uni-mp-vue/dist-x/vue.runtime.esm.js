@@ -8147,11 +8147,12 @@ class UniCSSStyleDeclaration {
 }
 
 class UniElement {
-    constructor(id, name) {
+    constructor(id, name, vm) {
         this.style = new UniCSSStyleDeclaration();
         this.id = id;
         this.tagName = name.toUpperCase();
         this.nodeName = this.tagName;
+        this.$vm = vm;
     }
     $onStyleChange(callback) {
         this.style.$onChange(callback);
@@ -8189,7 +8190,10 @@ function destroyUniElements(ins) {
     ins.$templateUniElementRefs = [];
 }
 function createUniElement(id, tagName, ins) {
-    const uniElement = new UniElement(id, tagName);
+    if (!ins || !ins.proxy) {
+        return null;
+    }
+    const uniElement = new UniElement(id, tagName, ins.proxy);
     if (ins) {
         uniElement.$onStyleChange((styles) => {
             var _a;
