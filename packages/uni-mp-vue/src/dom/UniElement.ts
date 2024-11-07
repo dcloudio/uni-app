@@ -15,6 +15,16 @@ export class UniElement {
     this.$vm = vm
   }
 
+  getBoundingClientRectAsync() {
+    return new Promise((resolve, reject) => {
+      const query = uni.createSelectorQuery().in(this.$vm)
+      query.select('#' + this.id).boundingClientRect()
+      query.exec(function (res) {
+        resolve(res[0])
+      })
+    })
+  }
+
   $onStyleChange(callback: (styles: Record<string, string | null>) => void) {
     this.style.$onChange(callback)
   }
