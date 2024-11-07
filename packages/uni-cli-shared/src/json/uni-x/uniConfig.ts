@@ -37,5 +37,5 @@ export function normalizeAppXUniConfig(
     config.themeConfig = pagesJson.themeConfig
   }
   // TODO 待支持分包
-  return JSON.stringify(config)
+  return config
 }

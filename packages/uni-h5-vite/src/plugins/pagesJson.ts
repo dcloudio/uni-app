@@ -295,7 +295,15 @@ function generateConfig(
   pagesJson.compilerVersion = process.env.UNI_COMPILER_VERSION
   const isX = process.env.UNI_APP_X === 'true'
   const vueType = isX ? 'uvue' : 'nvue'
-
+  let tabBarCode = ''
+  if (isX) {
+    const tabBar = pagesJson.tabBar
+    delete pagesJson.tabBar
+    tabBarCode = `${globalName}.__uniConfig.getTabBarConfig = () => {return ${
+      tabBar ? JSON.stringify(tabBar) : 'undefined'
+    }};
+    ${globalName}.__uniConfig.tabBar = __uniConfig.getTabBarConfig();`
+  }
   return `${isX ? `${globalName}.__uniX = true` : ''}
   ${globalName}.__uniConfig=extend(${JSON.stringify(pagesJson)},{
   appId,
@@ -320,5 +328,6 @@ function generateConfig(
   darkmode,
   themeConfig,
 })
+${tabBarCode}
 `
 }
