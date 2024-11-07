@@ -80,6 +80,19 @@
       }
     }
   },
+  "uni-createInnerAudioContext": {
+    "uni": {
+      "createInnerAudioContext": {
+        "name": "createInnerAudioContext",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": false,
+          "arkts": true
+        }
+      }
+    }
+  },
   "uni-createRequestPermissionListener": {
     "uni": {
       "createRequestPermissionListener": {
@@ -769,6 +782,19 @@
     "uni": {
       "rpx2px": {
         "name": "rpx2px",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true,
+          "arkts": true
+        }
+      }
+    }
+  },
+  "uni-shareWithSystem": {
+    "uni": {
+      "shareWithSystem": {
+        "name": "shareWithSystem",
         "app": {
           "js": false,
           "kotlin": true,
