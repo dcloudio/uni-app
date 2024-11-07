@@ -34,14 +34,7 @@ function parseValue(value: any) {
       if (keys.length === 2 && 'data' in object) {
         // eslint-disable-next-line valid-typeof
         if (typeof object.data === type) {
-          //#if _X_
-          if (type === 'object' && !Array.isArray(object.data)) {
-            return new UTSJSONObject(object.data)
-          }
           return object.data
-          //#else
-          return object.data
-          //#endif
         }
         // eslint-disable-next-line no-useless-escape
         if (
@@ -94,7 +87,13 @@ function getStorageOrigin(key: string): any {
   }
   let data: any = value
   try {
-    const object = JSON.parse(value)
+    let object
+    //#if _X_
+    // @ts-expect-error 访问global.UTS
+    object = UTS.JSON.parse(value)
+    //#else
+    object = JSON.parse(value)
+    //#endif
     const result = parseValue(object)
     if (result !== undefined) {
       data = result
