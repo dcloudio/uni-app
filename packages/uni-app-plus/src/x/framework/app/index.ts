@@ -7,6 +7,7 @@ import { defineGlobalData } from '@dcloudio/uni-core'
 // import { initTabBar } from './initTabBar'
 import { initGlobalEvent } from './initGlobalEvent'
 import { initAppLaunch } from './initAppLaunch'
+import { initAppError } from './initAppError'
 // import { clearTempFile } from './clearTempFile'
 import { initSubscribeHandlers } from './subscriber'
 import { initVueApp } from '../../../service/framework/app/vueApp'
@@ -131,6 +132,9 @@ export function registerApp(appVm: ComponentPublicInstance, nativeApp: IApp) {
 
   // onLaunch 触发时机 在 WebviewReady 之前
   initAppLaunch(appVm)
+
+  initAppError(appVm, nativeApp)
+
   initSubscribeHandlers()
 
   // // 10s后清理临时文件
