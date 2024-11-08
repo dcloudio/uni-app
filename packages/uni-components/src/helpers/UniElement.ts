@@ -48,6 +48,17 @@ export class UniElement extends HTMLElement {
     }
     return parent?._page || null
   }
+
+  getBoundingClientRectAsync(callback) {
+    if (callback) {
+      callback.success?.(this.getBoundingClientRect())
+      callback.complate?.()
+      return
+    }
+    return new Promise((resolve, reject) => {
+      resolve(this.getBoundingClientRect())
+    })
+  }
   //#endif
 
   get style() {
