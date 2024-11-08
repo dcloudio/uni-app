@@ -192,7 +192,7 @@
         "app": {
           "js": true,
           "kotlin": true,
-          "swift": false,
+          "swift": true,
           "arkts": true
         }
       }
