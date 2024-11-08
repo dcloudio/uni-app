@@ -238,9 +238,10 @@ export function registerDialogPage(
 ) {
   const id = genWebviewId()
   const routeOptions = initRouteOptions(path, openType)
-  const pageStyle = new Map([
+  const pageStyle = new Map<string, any>([
     ['navigationStyle', 'custom'],
     ['backgroundColor', 'transparent'],
+    ['disableSwipeBack', true],
   ])
   const parentPage = dialogPage.getParentPage()
   const nativePage = (getPageManager() as any).createDialogPage(
