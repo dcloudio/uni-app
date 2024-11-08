@@ -6,7 +6,7 @@ var __publicField = (obj, key, value) => {
 };
 import { withModifiers, createVNode, getCurrentInstance, ref, defineComponent, openBlock, createElementBlock, onMounted, provide, computed, watch, onUnmounted, inject, onBeforeUnmount, mergeProps, reactive, injectHook, nextTick, createApp, createBlock, watchEffect, isVNode, withDirectives, vShow, renderList, Transition, isReactive, effectScope, Fragment, onActivated, withCtx, KeepAlive, resolveDynamicComponent, onBeforeMount, shallowRef, markRaw, Comment, h, createTextVNode, onBeforeActivate, onBeforeDeactivate, createElementVNode, normalizeStyle, renderSlot } from "vue";
 import { isArray, isString, extend, remove, stringifyStyle, parseStringStyle, isPlainObject as isPlainObject$1, isFunction, capitalize, camelize, hasOwn, isObject, toRawType, makeMap as makeMap$1, isPromise, hyphenate, invokeArrayFns as invokeArrayFns$1 } from "@vue/shared";
-import { once, UNI_STORAGE_LOCALE, I18N_JSON_DELIMITERS, Emitter, passive, initCustomDatasetOnce, resolveComponentInstance, normalizeStyles, addLeadingSlash, invokeArrayFns, removeLeadingSlash, resolveOwnerVm, resolveOwnerEl, ON_WXS_INVOKE_CALL_METHOD, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_SHOW, ON_HIDE, ON_PAGE_SCROLL, ON_REACH_BOTTOM, EventChannel, parseQuery, NAVBAR_HEIGHT, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, getLen, getCustomDataset, parseUrl, sortObject, ON_THEME_CHANGE, OFF_THEME_CHANGE, updateElementStyle, LINEFEED, ON_WEB_INVOKE_APP_SERVICE, formatDateTime, debounce, ON_BACK_PRESS, addFont, ON_NAVIGATION_BAR_CHANGE, scrollTo, RESPONSIVE_MIN_WIDTH, ON_UNLOAD, normalizeTitleColor, ON_REACH_BOTTOM_DISTANCE, SCHEME_RE, DATA_RE, PRIMARY_COLOR, isUniLifecycleHook, decodedQuery, ON_LOAD, UniLifecycleHooks, invokeCreateErrorHandler, invokeCreateVueAppHook, WEB_INVOKE_APPSERVICE, onCreateVueApp, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_PULL_DOWN_REFRESH, stringifyQuery as stringifyQuery$1 } from "@dcloudio/uni-shared";
+import { once, UNI_STORAGE_LOCALE, I18N_JSON_DELIMITERS, Emitter, passive, initCustomDatasetOnce, resolveComponentInstance, normalizeStyles, addLeadingSlash, invokeArrayFns, removeLeadingSlash, resolveOwnerVm, resolveOwnerEl, ON_WXS_INVOKE_CALL_METHOD, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_SHOW, ON_HIDE, ON_PAGE_SCROLL, ON_REACH_BOTTOM, EventChannel, createRpx2Unit, defaultRpx2Unit, parseQuery, NAVBAR_HEIGHT, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, getLen, getCustomDataset, parseUrl, sortObject, ON_THEME_CHANGE, OFF_THEME_CHANGE, updateElementStyle, LINEFEED, ON_WEB_INVOKE_APP_SERVICE, formatDateTime, debounce, ON_BACK_PRESS, addFont, ON_NAVIGATION_BAR_CHANGE, scrollTo, RESPONSIVE_MIN_WIDTH, ON_UNLOAD, normalizeTitleColor, ON_REACH_BOTTOM_DISTANCE, SCHEME_RE, DATA_RE, PRIMARY_COLOR, isUniLifecycleHook, decodedQuery, ON_LOAD, UniLifecycleHooks, invokeCreateErrorHandler, invokeCreateVueAppHook, WEB_INVOKE_APPSERVICE, onCreateVueApp, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_PULL_DOWN_REFRESH, stringifyQuery as stringifyQuery$1 } from "@dcloudio/uni-shared";
 import { onCreateVueApp as onCreateVueApp2 } from "@dcloudio/uni-shared";
 import { useRoute, isNavigationFailure, RouterView, createRouter, createWebHistory, createWebHashHistory, useRouter } from "vue-router";
 import { initVueI18n, isI18nStr, LOCALE_EN, LOCALE_ES, LOCALE_FR, LOCALE_ZH_HANS, LOCALE_ZH_HANT } from "@dcloudio/uni-i18n";
@@ -229,12 +229,32 @@ class UTSType {
   }
 }
 const OriginalJSON = JSON;
+function createUTSJSONObject(obj) {
+  const result = new UTSJSONObject({});
+  for (const key in obj) {
+    const value = obj[key];
+    if (isPlainObject(value)) {
+      result[key] = createUTSJSONObject(value);
+    } else if (getType$1(value) === "array") {
+      result[key] = value.map((item) => {
+        if (isPlainObject(item)) {
+          return createUTSJSONObject(item);
+        } else {
+          return item;
+        }
+      });
+    } else {
+      result[key] = value;
+    }
+  }
+  return result;
+}
 function parseObjectOrArray(object, utsType) {
   const objectType = getType$1(object);
   if (object === null || objectType !== "object" && objectType !== "array") {
     return object;
   }
-  if (utsType || utsType === UTSJSONObject) {
+  if (utsType && utsType !== UTSJSONObject) {
     try {
       return new utsType(object, void 0, true);
     } catch (error) {
@@ -247,7 +267,7 @@ function parseObjectOrArray(object, utsType) {
       return parseObjectOrArray(value);
     });
   } else if (objectType === "object") {
-    return new UTSJSONObject(object);
+    return createUTSJSONObject(object);
   }
   return object;
 }
@@ -410,21 +430,6 @@ function initUTSJSONObjectProperties(obj) {
   }
   Object.defineProperties(obj, propertyDescriptorMap);
 }
-function setUTSJSONObjectValue(obj, key, value) {
-  if (isPlainObject(value)) {
-    obj[key] = new UTSJSONObject$1(value);
-  } else if (getType$1(value) === "array") {
-    obj[key] = value.map((item) => {
-      if (isPlainObject(item)) {
-        return new UTSJSONObject$1(item);
-      } else {
-        return item;
-      }
-    });
-  } else {
-    obj[key] = value;
-  }
-}
 let UTSJSONObject$1 = class UTSJSONObject2 {
   static keys(obj) {
     return Object.keys(obj);
@@ -441,13 +446,12 @@ let UTSJSONObject$1 = class UTSJSONObject2 {
   constructor(content = {}) {
     if (content instanceof Map) {
       content.forEach((value, key) => {
-        setUTSJSONObjectValue(this, key, value);
+        this[key] = value;
       });
     } else {
       for (const key in content) {
         if (Object.prototype.hasOwnProperty.call(content, key)) {
-          const value = content[key];
-          setUTSJSONObjectValue(this, key, value);
+          this[key] = content[key];
         }
       }
     }
@@ -2754,10 +2758,15 @@ function useBooleanAttr(props2, keys) {
     return res;
   }, /* @__PURE__ */ Object.create(null));
 }
+const rpx2Unit = createRpx2Unit(
+  defaultRpx2Unit.unit,
+  defaultRpx2Unit.unitRatio,
+  defaultRpx2Unit.unitPrecision
+);
 function transformRpx(value) {
   if (/(-?(?:\d+\.)?\d+)[ur]px/gi.test(value)) {
     return value.replace(/(-?(?:\d+\.)?\d+)[ur]px/gi, (text2, num) => {
-      return `${uni.upx2px(parseFloat(num))}px`;
+      return rpx2Unit(num + "rpx");
     });
   }
   return value;
@@ -9067,9 +9076,6 @@ function parseValue(value) {
       const keys = Object.keys(object);
       if (keys.length === 2 && "data" in object) {
         if (typeof object.data === type) {
-          if (type === "object" && !Array.isArray(object.data)) {
-            return new UTSJSONObject(object.data);
-          }
           return object.data;
         }
         if (type === "object" && /^\d{4}-\d{2}-\d{2}T\d{2}\:\d{2}\:\d{2}\.\d{3}Z$/.test(object.data)) {
@@ -9113,7 +9119,8 @@ function getStorageOrigin(key) {
   }
   let data = value;
   try {
-    const object = JSON.parse(value);
+    let object;
+    object = UTS.JSON.parse(value);
     const result = parseValue(object);
     if (result !== void 0) {
       data = result;

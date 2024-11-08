@@ -859,6 +859,11 @@ function useBooleanAttr(props2, keys) {
     return res;
   }, /* @__PURE__ */ Object.create(null));
 }
+uniShared.createRpx2Unit(
+  uniShared.defaultRpx2Unit.unit,
+  uniShared.defaultRpx2Unit.unitRatio,
+  uniShared.defaultRpx2Unit.unitPrecision
+);
 const uniFormKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniForm" : "uf");
 const index$C = /* @__PURE__ */ defineBuiltInComponent({
   name: "Form",
@@ -11570,7 +11575,8 @@ function getStorageOrigin(key) {
   }
   let data = value;
   try {
-    const object = JSON.parse(value);
+    let object;
+    object = JSON.parse(value);
     const result = parseValue(object);
     if (result !== void 0) {
       data = result;
