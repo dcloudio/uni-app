@@ -1463,7 +1463,7 @@ var onThemeChange = function(themeMode) {
   var handleTabBar = () => {
     var tabBar = getTabBar();
     if (tabBar !== null) {
-      var tabBarConfig = extend({}, __uniConfig.tabBar);
+      var tabBarConfig = __uniConfig.getTabBarConfig();
       normalizeTabBarStyles(tabBarConfig, __uniConfig.themeConfig, themeMode);
       var tabBarStyle = /* @__PURE__ */ new Map();
       var tabBarItemUpdateConfig = ["iconPath", "selectedIconPath"];
@@ -4898,7 +4898,7 @@ var styles = {
     "box-sizing": "content-box"
   },
   ["uni-icon"]: {
-    "font-family": "uniappx_components",
+    "font-family": "uni-icon",
     "font-size": "16px",
     width: "16px",
     height: "16px"
@@ -5275,7 +5275,7 @@ var _style_0$1 = {
   },
   "uni-radio-input-icon": {
     "": {
-      fontFamily: "uniappx_components",
+      fontFamily: "uni-icon",
       fontSize: "14px",
       width: "14px",
       height: "14px"

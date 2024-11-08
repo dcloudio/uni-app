@@ -159,7 +159,7 @@ const nodeTransforms = [
     transformAd,
 ];
 if (process.env.UNI_APP_X === 'true') {
-    nodeTransforms.push(uniCliShared.transformMPBuiltInTag);
+    nodeTransforms.push(uniCliShared.transformMPBuiltInTag, uniCliShared.transformDirection);
 }
 const compilerOptions = {
     nodeTransforms,

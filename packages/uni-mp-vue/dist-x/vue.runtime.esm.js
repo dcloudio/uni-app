@@ -8119,6 +8119,8 @@ function withModelModifiers(fn, { number, trim }, isComponent = false) {
 
 class UniCSSStyleDeclaration {
     constructor() {
+        // 跳过vue的响应式
+        this.__v_skip = true;
         this.$styles = {};
         this.$onChangeCallbacks = [];
     }
@@ -8148,11 +8150,22 @@ class UniCSSStyleDeclaration {
 
 class UniElement {
     constructor(id, name, vm) {
+        // 跳过vue的响应式
+        this.__v_skip = true;
         this.style = new UniCSSStyleDeclaration();
         this.id = id;
         this.tagName = name.toUpperCase();
         this.nodeName = this.tagName;
         this.$vm = vm;
+    }
+    getBoundingClientRectAsync() {
+        return new Promise((resolve, reject) => {
+            const query = uni.createSelectorQuery().in(this.$vm);
+            query.select('#' + this.id).boundingClientRect();
+            query.exec(function (res) {
+                resolve(res[0]);
+            });
+        });
     }
     $onStyleChange(callback) {
         this.style.$onChange(callback);
