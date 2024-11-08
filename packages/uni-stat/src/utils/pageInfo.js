@@ -141,6 +141,8 @@ export const get_platform_name = () => {
   const platformList = {
     app: 'n',
     'app-plus': 'n',
+    'app-harmony':'n',
+    'mp-harmony':'mhm',
     h5: 'h5',
     'mp-weixin': 'wx',
     [aliArr.reverse().join('')]: 'ali',

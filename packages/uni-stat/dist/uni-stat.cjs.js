@@ -199,6 +199,8 @@ const get_platform_name = () => {
   const platformList = {
     app: 'n',
     'app-plus': 'n',
+    'app-harmony':'n',
+    'mp-harmony':'mhm',
     h5: 'h5',
     'mp-weixin': 'wx',
     [aliArr.reverse().join('')]: 'ali',
@@ -743,7 +745,7 @@ const eport_Interval = get_report_Interval(OPERATING_TIME);
 let statData = {
   uuid: get_uuid(), // 设备标识
   ak: stat_config.appid, // uni-app 应用 Appid
-  p: sys.platform === 'android' ? 'a' : 'i', // 手机系统
+  p: '', // 手机系统，客户端平台
   ut: get_platform_name(), // 平台类型
   mpn: get_pack_name(), // 原生平台包名、小程序 appid
   usv: STAT_VERSION, // 统计 sdk 版本
@@ -766,6 +768,21 @@ let statData = {
   sw: sys.screenWidth, // screenWidth 屏幕宽度
   sh: sys.screenHeight, // screenHeight 屏幕高度
 };
+
+// 客户端平台，只有app平台平台可以用到
+if(sys.platform){
+  switch (sys.platform) {
+    case 'android':
+      statData.p = 'a';
+      break
+    case 'ios':
+      statData.p = 'i';
+      break
+    case 'harmonyos': 
+      statData.p = 'h';
+      break
+  }
+}
 
 // 获取手机版本
 if (sys.system){
