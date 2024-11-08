@@ -17,13 +17,25 @@ export class UniElement {
     this.$vm = vm
   }
 
-  getBoundingClientRectAsync() {
-    return new Promise((resolve, reject) => {
-      const query = uni.createSelectorQuery().in(this.$vm)
-      query.select('#' + this.id).boundingClientRect()
-      query.exec(function (res) {
-        resolve(res[0])
+  getBoundingClientRectAsync(callback) {
+    // TODO defineAsyncApi?
+    if (callback) {
+      this._getBoundingClientRectAsync((domRect) => {
+        callback.success?.(domRect)
+        callback.complate?.()
       })
+      return
+    }
+    return new Promise((resolve, reject) => {
+      this._getBoundingClientRectAsync(resolve)
+    })
+  }
+
+  _getBoundingClientRectAsync(callback) {
+    const query = uni.createSelectorQuery().in(this.$vm)
+    query.select('#' + this.id).boundingClientRect()
+    query.exec(function (res) {
+      callback(res[0])
     })
   }
 
