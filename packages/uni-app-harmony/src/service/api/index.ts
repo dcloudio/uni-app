@@ -58,5 +58,9 @@ export {
   offError,
   offPageNotFound,
   offUnhandledRejection,
+  $emit,
+  $on,
+  $off,
+  $once,
 } from '@dcloudio/uni-api'
 export { pageScrollTo } from '@dcloudio/uni-app-plus/service/api'
