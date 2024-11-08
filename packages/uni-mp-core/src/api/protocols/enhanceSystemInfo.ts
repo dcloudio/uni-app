@@ -35,6 +35,27 @@ export function addSafeAreaInsets(
   }
 }
 
+export function getOSInfo(system: string, platform?: string) {
+  let osName = ''
+  let osVersion = ''
+
+  if (
+    platform &&
+    (__PLATFORM__ === 'mp-alipay' || __PLATFORM__ === 'mp-baidu')
+  ) {
+    osName = platform
+    osVersion = system
+  } else {
+    osName = system.split(' ')[0] || ''
+    osVersion = system.split(' ')[1] || ''
+  }
+
+  return {
+    osName: osName.toLocaleLowerCase(),
+    osVersion,
+  }
+}
+
 export function populateParameters(
   fromRes: any,
   toRes: UniApp.GetSystemInfoResult
@@ -55,18 +76,7 @@ export function populateParameters(
   // const isQuickApp = __PLATFORM__.indexOf('quickapp-webview') !== -1
 
   // osName osVersion
-  let osName = ''
-  let osVersion = ''
-  if (__PLATFORM__ === 'mp-alipay') {
-    osName = platform
-    osVersion = system
-  } else {
-    osName = system.split(' ')[0] || ''
-    osVersion = system.split(' ')[1] || ''
-  }
-  if (__PLATFORM__ === 'mp-harmony') {
-    osName = 'harmonyos'
-  }
+  const { osName, osVersion } = getOSInfo(system, platform)
   let hostVersion = version
   // host 枚举值 https://smartprogram.baidu.com/docs/develop/api/device_sys/hostlist/
   if (__PLATFORM__ === 'mp-baidu') {
@@ -123,7 +133,7 @@ export function populateParameters(
     deviceType,
     devicePixelRatio: _devicePixelRatio,
     deviceOrientation: _deviceOrientation,
-    osName: osName.toLocaleLowerCase(),
+    osName,
     osVersion,
     hostTheme: theme,
     hostVersion,
@@ -145,6 +155,20 @@ export function populateParameters(
 
   if (__PLATFORM__ === 'mp-harmony') {
     parameters.romName = 'HarmonyOS'
+  }
+
+  if (__X__) {
+    try {
+      parameters.uniCompileVersionCode = parseFloat(
+        process.env.UNI_COMPILER_VERSION
+      )
+      parameters.uniCompilerVersionCode = parseFloat(
+        process.env.UNI_COMPILER_VERSION
+      )
+      parameters.uniRuntimeVersionCode = parseFloat(
+        process.env.UNI_COMPILER_VERSION
+      )
+    } catch (error) {}
   }
 
   extend(toRes, parameters)
