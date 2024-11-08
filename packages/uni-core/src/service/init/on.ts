@@ -27,7 +27,7 @@ function onResize(res: UniApp.WindowResizeResult) {
 
 function onAppEnterForeground(enterOptions: LaunchOptions) {
   const page = __X__
-    ? (getCurrentPage() as unknown as UniPage).vm
+    ? (getCurrentPage() as unknown as UniPage)?.vm
     : getCurrentPage()
 
   invokeHook(
