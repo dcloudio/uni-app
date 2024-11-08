@@ -1,6 +1,6 @@
 {
   "name": "@dcloudio/uni-mp-vue",
-  "version": "3.0.0-alpha-4030220241101001",
+  "version": "3.0.0-alpha-4030320241108001",
   "description": "@dcloudio/uni-mp-vue",
   "main": "dist/vue.runtime.esm.js",
   "module": "dist/vue.runtime.esm.js",
@@ -19,10 +19,10 @@
   },
   "gitHead": "33e807d66e1fe47e2ee08ad9c59247e37b8884da",
   "dependencies": {
-    "@dcloudio/uni-shared": "3.0.0-alpha-4030220241101001",
+    "@dcloudio/uni-shared": "3.0.0-alpha-4030320241108001",
     "@vue/shared": "3.4.21"
   },
   "devDependencies": {
-    "@dcloudio/uni-mp-vue": "3.0.0-alpha-4030220241101001"
+    "@dcloudio/uni-mp-vue": "3.0.0-alpha-4030320241108001"
   }
 }
