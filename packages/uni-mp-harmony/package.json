@@ -1,4 +1,5 @@
 {
+  "private": true,
   "name": "@dcloudio/uni-mp-harmony",
   "version": "3.0.0-alpha-4030120240925001",
   "description": "uni-app mp-harmony",
