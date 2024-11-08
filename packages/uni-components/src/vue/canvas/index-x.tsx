@@ -50,10 +50,12 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     MODE: 3,
   },
   props,
+  //#if _X_ && !_NODE_JS_
   rootElement: {
     name: 'uni-canvas',
     class: UniCanvasElement,
   },
+  //#endif
   setup(props, {}) {
     const rootRef = ref<HTMLElement | null>(null)
     const canvas = ref<HTMLCanvasElement | null>(null)
