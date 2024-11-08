@@ -7,16 +7,6 @@
       "null"
     ]
   },
-  "uni-storage": {
-    "clearStorage": [
-      "null"
-    ]
-  },
-  "uni-scanCode": {
-    "scanCode": [
-      "null"
-    ]
-  },
   "uni-route": {
     "navigateBack": [
       "null"
@@ -86,13 +76,8 @@
       "null"
     ]
   },
-  "uni-exit": {
-    "exit": [
-      "null"
-    ]
-  },
-  "uni-dialogPage": {
-    "closeDialogPage": [
+  "uni-scanCode": {
+    "scanCode": [
       "null"
     ]
   },
@@ -102,14 +87,29 @@
       "null"
     ]
   },
-  "uni-push": {
-    "setAppBadgeNumber": [
-      null,
+  "uni-dialogPage": {
+    "closeDialogPage": [
+      "null"
+    ]
+  },
+  "uni-storage": {
+    "clearStorage": [
+      "null"
+    ]
+  },
+  "uni-exit": {
+    "exit": [
       "null"
     ]
   },
   "uni-map-tencent": {
     "createMapContext": [
+      null,
+      "null"
+    ]
+  },
+  "uni-push": {
+    "setAppBadgeNumber": [
       null,
       "null"
     ]
