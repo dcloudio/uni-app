@@ -2775,8 +2775,6 @@ class UniElement extends HTMLElement {
   constructor() {
     super();
     this._props = {};
-    this._page = null;
-    this._page = getCurrentPage();
     this.__isUniElement = true;
   }
   attachVmProps(props2) {
@@ -2784,10 +2782,8 @@ class UniElement extends HTMLElement {
   }
   getAttribute(qualifiedName) {
     const name = camelize(qualifiedName);
-    return name in this._props ? this._props[name] + "" : super.getAttribute(qualifiedName) || null;
-  }
-  getPage() {
-    return this._page;
+    const attr2 = name in this._props ? this._props[name] + "" : super.getAttribute(qualifiedName);
+    return attr2 === void 0 ? null : attr2;
   }
   get style() {
     const originalStyle = super.style;
@@ -19027,14 +19023,14 @@ const index$f = /* @__PURE__ */ defineBuiltInComponent({
   setup(props2) {
     const rootRef = ref(null);
     const path = computed(() => ICONS[props2.type]);
+    onMounted(() => {
+      const rootElement = rootRef.value;
+      rootElement.attachVmProps(props2);
+    });
     return () => {
       const {
         value
       } = path;
-      onMounted(() => {
-        const rootElement = rootRef.value;
-        rootElement.attachVmProps(props2);
-      });
       return createVNode("uni-icon", {
         "ref": rootRef
       }, [value && value.d && createSvgIconVNode(value.d, props2.color || value.c, rpx2px(props2.size))], 512);

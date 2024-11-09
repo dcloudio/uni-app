@@ -12537,7 +12537,7 @@ const getSystemInfoSync = /* @__PURE__ */ defineSyncApi(
 );
 function updateDocumentTitle(title) {
   {
-    const ssrContext = getApp$1().$.appContext.provides[vue.ssrContextKey];
+    const ssrContext = getApp$1().$vm.$.appContext.provides[vue.ssrContextKey];
     if (ssrContext) {
       ssrContext[uniShared.UNI_SSR_TITLE] = title;
     }
