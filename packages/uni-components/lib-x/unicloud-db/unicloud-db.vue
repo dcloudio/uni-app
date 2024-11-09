@@ -323,6 +323,7 @@
         // @ts-ignore
         typeof customElements !== 'undefined' && customElements.define(
           'uni-cloud-db-element',
+          // @ts-ignore
           UniCloudDBElement,
         )
       }
