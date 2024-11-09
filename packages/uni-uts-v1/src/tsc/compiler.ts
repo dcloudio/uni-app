@@ -8,7 +8,11 @@ import type {
 } from '../../lib/uni-x/dist/compiler'
 import { originalPositionForSync } from '../sourceMap'
 import { normalizePath } from '../shared'
-import { isEnableNarrowType, isEnableUTSNumber } from '../utils'
+import {
+  isEnableGenericsParameterDefaults,
+  isEnableNarrowType,
+  isEnableUTSNumber,
+} from '../utils'
 
 export type { UniXCompiler } from '../../lib/uni-x/dist/compiler'
 
@@ -83,6 +87,7 @@ export function createUniXCompiler(
     transformOptions: {
       enableUTSNumber: isEnableUTSNumber(),
       enableNarrowType: isEnableNarrowType(),
+      enableGenericsParameterDefaults: isEnableGenericsParameterDefaults(),
     },
     ...options,
   }

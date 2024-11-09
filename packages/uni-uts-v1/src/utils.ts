@@ -970,28 +970,50 @@ export function isNormalCompileTarget() {
   return !process.env.UNI_COMPILE_TARGET
 }
 
-let enableUtsNumber: boolean
-export function isEnableUTSNumber() {
-  if (enableUtsNumber === undefined) {
-    if (process.env.UNI_APP_X_ENABLE_UTS_NUMBER === 'true') {
-      enableUtsNumber = true
+// 首先确保是字符串键
+type StringKeys<T> = T extends object ? keyof T & string : never
+
+// 提取以 'enable' 开头的属性键
+type ExtractEnableKeys<T> = T extends object
+  ? StringKeys<T> extends infer K
+    ? K extends string
+      ? K extends `enable${string}`
+        ? K
+        : never
+      : never
+    : never
+  : never
+
+type EnableKeys = ExtractEnableKeys<NonNullable<UTSOutputOptions['transform']>>
+let utsConfig: Pick<NonNullable<UTSOutputOptions['transform']>, EnableKeys>
+
+function getUTSConfig() {
+  if (!utsConfig) {
+    const configPath = path.resolve(
+      process.env.UNI_INPUT_DIR,
+      'uts.config.json'
+    )
+    if (fs.existsSync(configPath)) {
+      utsConfig = require(configPath)
     } else {
-      enableUtsNumber = !!(
-        process.env.UNI_INPUT_DIR &&
-        fs.existsSync(path.resolve(process.env.UNI_INPUT_DIR, 'UTSNUMBER'))
-      )
+      utsConfig = {}
     }
   }
-  return enableUtsNumber
+  return utsConfig
 }
 
-let enableNarrowType: boolean
+function isEnableUTSFeature(feature: EnableKeys) {
+  return getUTSConfig()[feature]
+}
+
+export function isEnableUTSNumber() {
+  return isEnableUTSFeature('enableUtsNumber')
+}
+
 export function isEnableNarrowType() {
-  if (enableNarrowType === undefined) {
-    enableNarrowType = !!(
-      process.env.UNI_INPUT_DIR &&
-      fs.existsSync(path.resolve(process.env.UNI_INPUT_DIR, 'NARROWTYPE'))
-    )
-  }
-  return enableNarrowType
+  return isEnableUTSFeature('enableNarrowType')
+}
+
+export function isEnableGenericsParameterDefaults() {
+  return isEnableUTSFeature('enableGenericsParameterDefaults')
 }
