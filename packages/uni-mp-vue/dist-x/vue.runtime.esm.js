@@ -8152,14 +8152,13 @@ class UniCSSStyleDeclaration {
 }
 
 class UniElement {
-    constructor(id, name, vm) {
+    constructor(id, name) {
         // 跳过vue的响应式
         this.__v_skip = true;
         this.style = new UniCSSStyleDeclaration();
         this.id = id;
         this.tagName = name.toUpperCase();
         this.nodeName = this.tagName;
-        this.$vm = vm;
     }
     getBoundingClientRectAsync(callback) {
         // TODO defineAsyncApi?
@@ -8217,42 +8216,45 @@ function destroyUniElements(ins) {
     ins.$uniElements.clear();
     ins.$templateUniElementRefs = [];
 }
+const customElements = new Map();
+function registerCustomElement(tagName, elementClass) {
+    customElements.set(tagName, elementClass);
+}
 function createUniElement(id, tagName, ins) {
     if (!ins || !ins.proxy) {
         return null;
     }
-    const uniElement = new UniElement(id, tagName, ins.proxy);
-    if (ins) {
-        uniElement.$onStyleChange((styles) => {
-            var _a;
-            let cssText = '';
-            // 如果不支持 wxs setStyle，需要合并模板绑定的 style
-            const templateStyle = ins.$templateUniElementStyles[id];
-            if (templateStyle) {
-                cssText = `${templateStyle};${stringifyStyle(styles)}`;
+    const uniElement = new (customElements.get(tagName) || UniElement)(id, tagName);
+    uniElement.$vm = ins.proxy;
+    uniElement.$onStyleChange((styles) => {
+        var _a;
+        let cssText = '';
+        // 如果不支持 wxs setStyle，需要合并模板绑定的 style
+        const templateStyle = ins.$templateUniElementStyles[id];
+        if (templateStyle) {
+            cssText = `${templateStyle};${stringifyStyle(styles)}`;
+        }
+        else {
+            cssText = stringifyStyle(styles);
+        }
+        const mpInstance = (_a = ins.proxy) === null || _a === void 0 ? void 0 : _a.$scope;
+        if (mpInstance) {
+            if (process.env.UNI_DEBUG) {
+                console.log('uni-app:[' +
+                    Date.now() +
+                    '][' +
+                    (mpInstance.is || mpInstance.route) +
+                    '][' +
+                    ins.uid +
+                    '][' +
+                    id +
+                    ']setStyle', cssText);
             }
-            else {
-                cssText = stringifyStyle(styles);
-            }
-            const mpInstance = (_a = ins.proxy) === null || _a === void 0 ? void 0 : _a.$scope;
-            if (mpInstance) {
-                if (process.env.UNI_DEBUG) {
-                    console.log('uni-app:[' +
-                        Date.now() +
-                        '][' +
-                        (mpInstance.is || mpInstance.route) +
-                        '][' +
-                        ins.uid +
-                        '][' +
-                        id +
-                        ']setStyle', cssText);
-                }
-                mpInstance.setData({
-                    [`$eS.${id}`]: cssText,
-                });
-            }
-        });
-    }
+            mpInstance.setData({
+                [`$eS.${id}`]: cssText,
+            });
+        }
+    });
     return uniElement;
 }
 /**
@@ -8290,9 +8292,18 @@ function findUniElement(id, ins = getCurrentInstance()) {
     return null;
 }
 
-function setUniElementId(id, tagName, ref, refOpts) {
+function setUniElementId(id, options, ref, refOpts) {
     const ins = getCurrentInstance();
     if (ins) {
+        let tagName;
+        let tagType;
+        if (isString(options)) {
+            tagName = options;
+        }
+        else {
+            tagName = options.name;
+            tagType = options.type;
+        }
         const { $uniElementIds } = ins;
         id = toRaw(id);
         // 仅保留第一个，其他忽略
@@ -8305,7 +8316,21 @@ function setUniElementId(id, tagName, ref, refOpts) {
                 k: refOpts === null || refOpts === void 0 ? void 0 : refOpts.k,
                 f: refOpts === null || refOpts === void 0 ? void 0 : refOpts.f,
                 n: tagName,
-            });
+            }, tagType);
+        }
+        if (tagType === 2 /* SetUniElementIdTagType.BuiltInRootElement */ && ins.props.id) {
+            const parent = ins.parent;
+            if (parent) {
+                // 从当前实例中找到元素，并设置到父实例中
+                const uniElement = findUniElement(id, ins);
+                if (uniElement) {
+                    parent.$uniElements.set(ins.props.id, uniElement);
+                    const existTemplateRef = parent.$templateUniElementRefs.find((t) => t.i === ins.props.id);
+                    if (existTemplateRef) {
+                        existTemplateRef.v = uniElement;
+                    }
+                }
+            }
         }
     }
     return id;
@@ -8333,8 +8358,22 @@ function setUniElementStyle(id, style = '') {
     }
     return '';
 }
-function setUniElementRef(ins, ref, id, opts) {
+function setUniElementRef(ins, ref, id, opts, tagType) {
     const { $templateUniElementRefs } = ins;
+    if (tagType === 1 /* SetUniElementIdTagType.BuiltInComponent */) {
+        const existTemplateRef = $templateUniElementRefs.find((t) => t.r === ref);
+        if (!existTemplateRef) {
+            $templateUniElementRefs.push({
+                i: id,
+                r: ref,
+                k: opts.k,
+                f: opts.f,
+                v: null,
+            });
+        }
+        // 不需要处理后续逻辑，交给BuiltInRootElement处理
+        return;
+    }
     const uniElement = findUniElement(id, ins);
     const existTemplateRef = $templateUniElementRefs.find((t) => t.r === ref);
     if (existTemplateRef) {
@@ -8384,4 +8423,4 @@ function createApp(rootComponent, rootProps = null) {
 }
 const createSSRApp = createApp;
 
-export { EffectScope, Fragment, ReactiveEffect, Text, UniElement, c, callWithAsyncErrorHandling, callWithErrorHandling, computed, createApp, createPropsRestProxy, createSSRApp, createVNode, createVueApp, customRef, d, defineAsyncComponent, defineComponent, defineEmits, defineExpose, defineProps, destroyUniElements, devtoolsComponentAdded, devtoolsComponentRemoved, devtoolsComponentUpdated, diff, e, effect, effectScope, f, findComponentPropsData, findUniElement, getCurrentInstance, getCurrentScope, getExposeProxy, guardReactiveProps, h, hasInjectionContext, hasQueueJob, inject, injectHook, invalidateJob, isInSSRComponentSetup, isProxy, isReactive, isReadonly, isRef, isShallow, j, logError, m, markRaw, mergeDefaults, mergeModels, mergeProps, n, nextTick$1 as nextTick, o, onActivated, onBeforeMount, onBeforeUnmount, onBeforeUpdate, onDeactivated, onErrorCaptured, onMounted, onRenderTracked, onRenderTriggered, onScopeDispose, onServerPrefetch, onUnmounted, onUpdated, p, patch, provide, proxyRefs, pruneComponentPropsCache, pruneUniElements, queuePostFlushCb, r, reactive, readonly, ref, resolveComponent, resolveDirective, resolveFilter, s, sei, ses, setCurrentRenderingInstance, setTemplateRef, setupDevtoolsPlugin, shallowReactive, shallowReadonly, shallowRef, sr, stop, t, toHandlers, toRaw, toRef, toRefs, toValue, triggerRef, unref, updateProps, useAttrs, useCssModule, useCssVars, useModel, useSSRContext, useSlots, version, w, warn, watch, watchEffect, watchPostEffect, watchSyncEffect, withAsyncContext, withCtx, withDefaults, withDirectives, withModifiers, withScopeId };
+export { EffectScope, Fragment, ReactiveEffect, Text, UniElement, UniElement as UniElementImpl, c, callWithAsyncErrorHandling, callWithErrorHandling, computed, createApp, createPropsRestProxy, createSSRApp, createVNode, createVueApp, customRef, d, defineAsyncComponent, defineComponent, defineEmits, defineExpose, defineProps, destroyUniElements, devtoolsComponentAdded, devtoolsComponentRemoved, devtoolsComponentUpdated, diff, e, effect, effectScope, f, findComponentPropsData, findUniElement, getCurrentInstance, getCurrentScope, getExposeProxy, guardReactiveProps, h, hasInjectionContext, hasQueueJob, inject, injectHook, invalidateJob, isInSSRComponentSetup, isProxy, isReactive, isReadonly, isRef, isShallow, j, logError, m, markRaw, mergeDefaults, mergeModels, mergeProps, n, nextTick$1 as nextTick, o, onActivated, onBeforeMount, onBeforeUnmount, onBeforeUpdate, onDeactivated, onErrorCaptured, onMounted, onRenderTracked, onRenderTriggered, onScopeDispose, onServerPrefetch, onUnmounted, onUpdated, p, patch, provide, proxyRefs, pruneComponentPropsCache, pruneUniElements, queuePostFlushCb, r, reactive, readonly, ref, registerCustomElement, resolveComponent, resolveDirective, resolveFilter, s, sei, ses, setCurrentRenderingInstance, setTemplateRef, setupDevtoolsPlugin, shallowReactive, shallowReadonly, shallowRef, sr, stop, t, toHandlers, toRaw, toRef, toRefs, toValue, triggerRef, unref, updateProps, useAttrs, useCssModule, useCssVars, useModel, useSSRContext, useSlots, version, w, warn, watch, watchEffect, watchPostEffect, watchSyncEffect, withAsyncContext, withCtx, withDefaults, withDirectives, withModifiers, withScopeId };

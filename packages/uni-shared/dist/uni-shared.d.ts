@@ -690,6 +690,11 @@ number,
 string | number
 ];
 
+export declare const enum SetUniElementIdTagType {
+    BuiltInComponent = 1,// 如：unicloud-db
+    BuiltInRootElement = 2
+}
+
 export declare const SLOT_DEFAULT_NAME = "d";
 
 export declare function sortObject<T extends Object>(obj: T): T;

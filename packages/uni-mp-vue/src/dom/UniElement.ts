@@ -1,6 +1,11 @@
 import type { ComponentPublicInstance } from 'vue'
 import { UniCSSStyleDeclaration } from './UniCSSStyleDeclaration'
 
+export interface UniElementConstructor {
+  new (id: string, tagName: string): UniElement
+  $vm: ComponentPublicInstance
+}
+
 export class UniElement {
   // 跳过vue的响应式
   __v_skip = true
@@ -8,13 +13,12 @@ export class UniElement {
   nodeName: string
   tagName: string
   style: UniCSSStyleDeclaration = new UniCSSStyleDeclaration()
-  $vm: ComponentPublicInstance
+  $vm!: ComponentPublicInstance
 
-  constructor(id: string, name: string, vm: ComponentPublicInstance) {
+  constructor(id: string, name: string) {
     this.id = id
     this.tagName = name.toUpperCase()
     this.nodeName = this.tagName
-    this.$vm = vm
   }
 
   getBoundingClientRectAsync(callback) {

@@ -323,3 +323,8 @@ export function isComponentTag(tag: string) {
 export const COMPONENT_SELECTOR_PREFIX = 'uni-'
 
 export const COMPONENT_PREFIX = 'v-' + COMPONENT_SELECTOR_PREFIX
+
+export const enum SetUniElementIdTagType {
+  BuiltInComponent = 1, // 如：unicloud-db
+  BuiltInRootElement = 2, // 如：uni-cloud-db-element
+}

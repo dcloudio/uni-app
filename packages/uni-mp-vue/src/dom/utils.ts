@@ -4,7 +4,7 @@ import {
   getCurrentInstance,
 } from 'vue'
 
-import { UniElement } from './UniElement'
+import { UniElement, type UniElementConstructor } from './UniElement'
 import { stringifyStyle } from '../helpers/style'
 
 /**
@@ -34,6 +34,15 @@ export function destroyUniElements(ins: ComponentInternalInstance) {
   ins.$templateUniElementRefs = []
 }
 
+const customElements = new Map<string, UniElementConstructor>()
+
+export function registerCustomElement(
+  tagName: string,
+  elementClass: UniElementConstructor
+) {
+  customElements.set(tagName, elementClass)
+}
+
 function createUniElement(
   id: string,
   tagName: string,
@@ -42,39 +51,42 @@ function createUniElement(
   if (!ins || !ins.proxy) {
     return null
   }
-  const uniElement = new UniElement(id, tagName, ins.proxy)
-  if (ins) {
-    uniElement.$onStyleChange((styles) => {
-      let cssText = ''
-      // 如果不支持 wxs setStyle，需要合并模板绑定的 style
-      const templateStyle = ins.$templateUniElementStyles[id]
-      if (templateStyle) {
-        cssText = `${templateStyle};${stringifyStyle(styles as any)}`
-      } else {
-        cssText = stringifyStyle(styles as any)
+  const uniElement = new (customElements.get(tagName) || UniElement)(
+    id,
+    tagName
+  )
+  uniElement.$vm = ins.proxy
+  uniElement.$onStyleChange((styles) => {
+    let cssText = ''
+    // 如果不支持 wxs setStyle，需要合并模板绑定的 style
+    const templateStyle = ins.$templateUniElementStyles[id]
+    if (templateStyle) {
+      cssText = `${templateStyle};${stringifyStyle(styles as any)}`
+    } else {
+      cssText = stringifyStyle(styles as any)
+    }
+    const mpInstance = ins.proxy?.$scope
+    if (mpInstance) {
+      if (process.env.UNI_DEBUG) {
+        console.log(
+          'uni-app:[' +
+            Date.now() +
+            '][' +
+            (mpInstance.is || mpInstance.route) +
+            '][' +
+            ins.uid +
+            '][' +
+            id +
+            ']setStyle',
+          cssText
+        )
       }
-      const mpInstance = ins.proxy?.$scope
-      if (mpInstance) {
-        if (process.env.UNI_DEBUG) {
-          console.log(
-            'uni-app:[' +
-              Date.now() +
-              '][' +
-              (mpInstance.is || mpInstance.route) +
-              '][' +
-              ins.uid +
-              '][' +
-              id +
-              ']setStyle',
-            cssText
-          )
-        }
-        mpInstance.setData({
-          [`$eS.${id}`]: cssText,
-        })
-      }
-    })
-  }
+      mpInstance.setData({
+        [`$eS.${id}`]: cssText,
+      })
+    }
+  })
+
   return uniElement
 }
 

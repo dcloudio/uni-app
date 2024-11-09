@@ -88,7 +88,7 @@ const uniH5Preset = {
 
 const uniMiniProgramPreset = {
   from: 'vue',
-  imports: ['UniElement'],
+  imports: ['UniElement', 'UniElementImpl'],
 }
 
 const cloudPreset = {

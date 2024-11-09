@@ -33,10 +33,10 @@ describe('compiler: transform tag', () => {
   })
   test('built-in custom elements (x)', () => {
     assert(
-      `<uni-cloud-db-element/>`,
-      `<view u-t="uni-cloud-db-element"/>`,
+      `<uni-cloud-db-element ref="udb"/>`,
+      `<view u-t="uni-cloud-db-element" ref="udb" id="r0-2a9ec0b0" style="{{$eS[a]}}"/>`,
       `(_ctx, _cache) => {
-  const __returned__ = {}
+  const __returned__ = { a: _sei('r0-2a9ec0b0', { "name": "uni-cloud-db-element", "type": 2 }, 'udb'), b: _s(_ses('r0-2a9ec0b0')) }
   return __returned__
 }`,
       {

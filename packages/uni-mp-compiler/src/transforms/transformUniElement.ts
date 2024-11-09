@@ -26,44 +26,73 @@ import {
 } from './utils'
 import { parseVForKeyAlias } from './transformSlot'
 import { parseRefCode } from './transformRef'
+import { SetUniElementIdTagType } from '@dcloudio/uni-shared'
+import { isString } from '@vue/shared'
 
 const builtInCustomElements = ['uni-cloud-db-element']
 const builtInComponents = ['unicloud-db']
 
 export function rewriteId(node: ElementNode, context: TransformContext) {
   const isUniElement = !isUserComponent(node, context)
+  const origTagName = node.tag
+  const isBuiltInComponent =
+    !isUniElement && builtInComponents.includes(origTagName)
+  const userComponent = !(isUniElement || isBuiltInComponent)
+  if (userComponent) {
+    // TODO 目前不对用户的自定义组件支持 id 查询 UniElement
+    // 后续要做的话，需要考虑自定义组件内部的单节点或多节点
+    return
+  }
+
+  const isBuiltInCustomElement = builtInCustomElements.includes(origTagName)
+
   if (isUniElement) {
     // 将内置的自定义元素转换为 view
-    if (builtInCustomElements.includes(node.tag)) {
-      node.props.unshift(createAttributeNode(ATTR_ELEMENT_TAG, node.tag))
+    if (isBuiltInCustomElement) {
+      node.props.unshift(createAttributeNode(ATTR_ELEMENT_TAG, origTagName))
       node.tag = 'view'
     }
   }
-  if (isUniElement || builtInComponents.includes(node.tag)) {
-    // 内置组件使用了 ref，没有 id 时，自动补充一个
-    const refProp = findProp(node, ATTR_VUE_REF) || findProp(node, 'ref')
-    if (refProp && !findProp(node, 'id')) {
-      if (context.inVFor) {
-        // v-for 中的 ref 需要使用 v-for 的 key 作为 id
-        const keyAlias = parseVForKeyAlias(context)
-        // 微信小程序元素id必须以字母开头，所以hashId不能放到前边，它可能是数字开头
-        const id = 'r' + context.elementRefIndex++ + '-' + context.hashId + '-'
-        node.props.push(
-          createBindDirectiveNode(
-            'id',
-            createCompoundExpression([`'${id}'+`, keyAlias.join(`+'-'+`)])
-          )
+
+  // 内置组件使用了 ref，没有 id 时，自动补充一个
+  const refProp = findProp(node, ATTR_VUE_REF) || findProp(node, 'ref')
+  if (refProp && !findProp(node, 'id')) {
+    if (context.inVFor) {
+      // v-for 中的 ref 需要使用 v-for 的 key 作为 id
+      const keyAlias = parseVForKeyAlias(context)
+      // 微信小程序元素id必须以字母开头，所以hashId不能放到前边，它可能是数字开头
+      const id = 'r' + context.elementRefIndex++ + '-' + context.hashId + '-'
+      node.props.push(
+        createBindDirectiveNode(
+          'id',
+          createCompoundExpression([`'${id}'+`, keyAlias.join(`+'-'+`)])
         )
-      } else {
-        const id = 'r' + context.elementRefIndex++ + '-' + context.hashId
-        node.props.push(createAttributeNode('id', id))
-      }
+      )
+    } else {
+      const id = 'r' + context.elementRefIndex++ + '-' + context.hashId
+      node.props.push(createAttributeNode('id', id))
     }
   }
+
   const idProp = findProp(node, 'id')
   if (!idProp) {
     return
   }
+  let idOptions:
+    | {
+        name: string
+        type?: SetUniElementIdTagType
+      }
+    | string = origTagName
+  if (isBuiltInComponent || isBuiltInCustomElement) {
+    idOptions = {
+      name: origTagName,
+      type: isBuiltInComponent
+        ? SetUniElementIdTagType.BuiltInComponent
+        : SetUniElementIdTagType.BuiltInRootElement,
+    }
+  }
+
   let idExprNode: string | ExpressionNode | undefined
   // id="test" => :id="setUniElementId('test')"
   // 目前标签名有隐患，可能传入的是自定义组件名称
@@ -78,7 +107,8 @@ export function rewriteId(node: ElementNode, context: TransformContext) {
         createCompoundExpression([
           context.helperString(SET_UNI_ELEMENT_ID) + '(',
           idExprNode,
-          ",'" + node.tag + "'",
+          ',',
+          isString(idOptions) ? `'${idOptions}'` : JSON.stringify(idOptions),
           parseUniElementRefCode(node, context),
           ')',
         ])
@@ -96,7 +126,8 @@ export function rewriteId(node: ElementNode, context: TransformContext) {
         createCompoundExpression([
           context.helperString(SET_UNI_ELEMENT_ID) + '(',
           idExprNode,
-          ",'" + node.tag + "'",
+          ',',
+          isString(idOptions) ? `'${idOptions}'` : JSON.stringify(idOptions),
           parseUniElementRefCode(node, context),
           ')',
         ])

@@ -14,10 +14,21 @@ describe('compiler: transform UniElement.style.setProperty', () => {
       }
     )
     assert(
+      `<custom id="custom"/>`,
+      `<custom id="custom" u-i="2a9ec0b0-0" u-p="{{a}}"/>`,
+      `(_ctx, _cache) => {
+  const __returned__ = { a: _p({ id: 'custom' }) }
+  return __returned__
+}`,
+      {
+        isX: true,
+      }
+    )
+    assert(
       `<unicloud-db ref="udb"/>`,
       `<unicloud-db ref="udb" u-i="2a9ec0b0-0" id="r0-2a9ec0b0" style="{{$eS[a]}}" u-p="{{c}}"/>`,
       `(_ctx, _cache) => {
-  const __returned__ = { a: _sei('r0-2a9ec0b0', 'unicloud-db', 'udb'), b: _s(_ses('r0-2a9ec0b0')), c: _p({ id: 'r0-2a9ec0b0' }) }
+  const __returned__ = { a: _sei('r0-2a9ec0b0', { "name": "unicloud-db", "type": 1 }, 'udb'), b: _s(_ses('r0-2a9ec0b0')), c: _p({ id: 'r0-2a9ec0b0' }) }
   return __returned__
 }`,
       {
@@ -379,7 +390,7 @@ describe('compiler: transform UniElement.style.setProperty (wxs)', () => {
       `<unicloud-db ref="udb"/>`,
       `<unicloud-db ref="udb" u-i="2a9ec0b0-0" id="r0-2a9ec0b0" change:eS="{{uV.sS}}" eS="{{$eS[a]}}" u-p="{{b}}"/>`,
       `(_ctx, _cache) => {
-  const __returned__ = { a: _sei('r0-2a9ec0b0', 'unicloud-db', 'udb'), b: _p({ id: 'r0-2a9ec0b0' }) }
+  const __returned__ = { a: _sei('r0-2a9ec0b0', { "name": "unicloud-db", "type": 1 }, 'udb'), b: _p({ id: 'r0-2a9ec0b0' }) }
   return __returned__
 }`,
       {
