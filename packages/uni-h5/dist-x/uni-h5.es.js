@@ -9065,7 +9065,9 @@ const offThemeChange$1 = /* @__PURE__ */ defineOffApi(
   }
 );
 const hostThemeChangeCallBack = (res) => {
-  UniServiceJSBridge.invokeOnCallback(ON_HOST_THEME_CHANGE, { hostTheme: res.theme });
+  UniServiceJSBridge.invokeOnCallback(ON_HOST_THEME_CHANGE, {
+    hostTheme: res.theme
+  });
 };
 const onHostThemeChange = /* @__PURE__ */ defineOnApi(
   ON_HOST_THEME_CHANGE,
@@ -20853,14 +20855,14 @@ const index$e = /* @__PURE__ */ defineBuiltInComponent({
   setup(props2) {
     const rootRef = ref(null);
     const path = computed(() => ICONS[props2.type]);
+    onMounted(() => {
+      const rootElement = rootRef.value;
+      rootElement.attachVmProps(props2);
+    });
     return () => {
       const {
         value
       } = path;
-      onMounted(() => {
-        const rootElement = rootRef.value;
-        rootElement.attachVmProps(props2);
-      });
       return createVNode("uni-icon", {
         "ref": rootRef
       }, [value && value.d && createSvgIconVNode(value.d, props2.color || value.c, rpx2px(props2.size))], 512);
