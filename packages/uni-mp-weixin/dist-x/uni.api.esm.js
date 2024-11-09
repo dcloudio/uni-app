@@ -1390,11 +1390,31 @@ const host = baseInfo ? baseInfo.host : null;
 const shareVideoMessage = host && host.env === 'SAAASDK'
     ? wx$2.miniapp.shareVideoMessage
     : wx$2.shareVideoMessage;
+const THEME_CALLBACK = [];
+const onHostThemeChange = (callback) => {
+    const onHostThemeChangeCallback = (res) => {
+        callback({ hostTheme: res.theme });
+    };
+    const index = THEME_CALLBACK.push([callback, onHostThemeChangeCallback]) - 1;
+    wx$2.onThemeChange && wx$2.onThemeChange(onHostThemeChangeCallback);
+    return index;
+};
+const offHostThemeChange = (callbackId) => {
+    if (isFunction(callbackId)) {
+        callbackId = THEME_CALLBACK.findIndex(([callback]) => callback === callbackId);
+    }
+    if (callbackId > -1) {
+        const arr = THEME_CALLBACK.splice(callbackId, 1)[0];
+        isArray(arr) && wx$2.offThemeChange && wx$2.offThemeChange(arr[1]);
+    }
+};
 
 var shims = /*#__PURE__*/Object.freeze({
   __proto__: null,
   createSelectorQuery: createSelectorQuery,
   getProvider: getProvider,
+  offHostThemeChange: offHostThemeChange,
+  onHostThemeChange: onHostThemeChange,
   shareVideoMessage: shareVideoMessage
 });
 

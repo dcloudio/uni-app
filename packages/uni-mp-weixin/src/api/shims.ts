@@ -4,6 +4,7 @@ import {
 } from '@dcloudio/uni-mp-core'
 import { mocks } from '../runtime/parseOptions'
 import { initWx } from './wx'
+import { isArray, isFunction } from '@vue/shared'
 
 export const getProvider = initGetProvider({
   oauth: ['weixin'],
@@ -51,3 +52,32 @@ export const shareVideoMessage =
   host && host.env === 'SAAASDK'
     ? wx.miniapp.shareVideoMessage
     : wx.shareVideoMessage
+
+//#if _X_
+const THEME_CALLBACK: Array<
+  [HostThemeChangeCallback, UniApp.OnThemeChangeCallback]
+> = []
+
+type HostThemeChangeCallback = (res: { hostTheme: string }) => void
+export const onHostThemeChange = (callback: HostThemeChangeCallback) => {
+  const onHostThemeChangeCallback: UniApp.OnThemeChangeCallback = (res) => {
+    callback({ hostTheme: res.theme })
+  }
+  const index = THEME_CALLBACK.push([callback, onHostThemeChangeCallback]) - 1
+  wx.onThemeChange && wx.onThemeChange(onHostThemeChangeCallback)
+  return index
+}
+export const offHostThemeChange = (
+  callbackId: number | HostThemeChangeCallback
+) => {
+  if (isFunction(callbackId)) {
+    callbackId = THEME_CALLBACK.findIndex(
+      ([callback]) => callback === callbackId
+    )
+  }
+  if (callbackId > -1) {
+    const arr = THEME_CALLBACK.splice(callbackId, 1)[0]
+    isArray(arr) && wx.offThemeChange && wx.offThemeChange(arr[1])
+  }
+}
+//#endif
