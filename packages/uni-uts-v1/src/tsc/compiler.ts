@@ -11,6 +11,7 @@ import { normalizePath } from '../shared'
 import {
   isEnableGenericsParameterDefaults,
   isEnableNarrowType,
+  isEnableUTSJSONObjectPropertyAccess,
   isEnableUTSNumber,
 } from '../utils'
 
@@ -88,6 +89,7 @@ export function createUniXCompiler(
       enableUTSNumber: isEnableUTSNumber(),
       enableNarrowType: isEnableNarrowType(),
       enableGenericsParameterDefaults: isEnableGenericsParameterDefaults(),
+      enableUTSJSONObjectPropertyAccess: isEnableUTSJSONObjectPropertyAccess(),
     },
     ...options,
   }

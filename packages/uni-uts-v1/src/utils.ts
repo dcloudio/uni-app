@@ -1020,3 +1020,7 @@ export function isEnableNarrowType() {
 export function isEnableGenericsParameterDefaults() {
   return isEnableUTSFeature('enableGenericsParameterDefaults')
 }
+
+export function isEnableUTSJSONObjectPropertyAccess() {
+  return isEnableUTSFeature('enableUTSJSONObjectPropertyAccess')
+}

@@ -25,6 +25,7 @@ import {
   isColorSupported,
   isEnableGenericsParameterDefaults,
   isEnableNarrowType,
+  isEnableUTSJSONObjectPropertyAccess,
   isEnableUTSNumber,
   moveRootIndexSourceMap,
   normalizeUTSResult,
@@ -697,6 +698,8 @@ export async function compile(
         enableUtsNumber: isEnableUTSNumber(),
         enableNarrowType: isEnableNarrowType(),
         enableGenericsParameterDefaults: isEnableGenericsParameterDefaults(),
+        enableUTSJSONObjectPropertyAccess:
+          isEnableUTSJSONObjectPropertyAccess(),
         ...transform,
       },
     },
