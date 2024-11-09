@@ -286,6 +286,8 @@ export declare function isH5NativeTag(tag: string): boolean;
 
 export declare function isMiniProgramNativeTag(tag: string): boolean;
 
+export declare function isMiniProgramUVueNativeTag(tag: string): boolean;
+
 export declare function isRootHook(name: string): boolean;
 
 export declare function isRootImmediateHook(name: string): boolean;

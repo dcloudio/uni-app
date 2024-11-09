@@ -279,6 +279,13 @@ function isAppNVueNativeTag(tag) {
 function isMiniProgramNativeTag(tag) {
     return isBuiltInComponent(tag);
 }
+function isMiniProgramUVueNativeTag(tag) {
+    // 小程序平台内置的自定义元素，会被转换为 view
+    if (tag.startsWith('uni-') && tag.endsWith('-element')) {
+        return true;
+    }
+    return isBuiltInComponent(tag);
+}
 function createIsCustomElement(tags = []) {
     return function isCustomElement(tag) {
         return tags.includes(tag);
@@ -1846,6 +1853,7 @@ exports.isComponentTag = isComponentTag;
 exports.isH5CustomElement = isH5CustomElement;
 exports.isH5NativeTag = isH5NativeTag;
 exports.isMiniProgramNativeTag = isMiniProgramNativeTag;
+exports.isMiniProgramUVueNativeTag = isMiniProgramUVueNativeTag;
 exports.isRootHook = isRootHook;
 exports.isRootImmediateHook = isRootImmediateHook;
 exports.isSystemActionSheetDialogPage = isSystemActionSheetDialogPage;

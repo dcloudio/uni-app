@@ -1,6 +1,7 @@
 import {
   createIsCustomElement,
-  isMiniProgramNativeTag as isNativeTag,
+  isMiniProgramNativeTag,
+  isMiniProgramUVueNativeTag,
 } from '@dcloudio/uni-shared'
 import { type CompilerOptions, compile } from '@dcloudio/uni-mp-compiler'
 
@@ -24,7 +25,9 @@ export function assert(
     generatorOpts: {
       concise: true,
     },
-    isNativeTag,
+    isNativeTag: options.isX
+      ? isMiniProgramUVueNativeTag
+      : isMiniProgramNativeTag,
     isCustomElement: createIsCustomElement(customElements),
     miniProgram: {
       ...miniProgram,

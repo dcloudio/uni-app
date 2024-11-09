@@ -302,6 +302,14 @@ export function isMiniProgramNativeTag(tag: string) {
   return isBuiltInComponent(tag)
 }
 
+export function isMiniProgramUVueNativeTag(tag: string) {
+  // 小程序平台内置的自定义元素，会被转换为 view
+  if (tag.startsWith('uni-') && tag.endsWith('-element')) {
+    return true
+  }
+  return isBuiltInComponent(tag)
+}
+
 export function createIsCustomElement(tags: string[] = []) {
   return function isCustomElement(tag: string) {
     return tags.includes(tag)

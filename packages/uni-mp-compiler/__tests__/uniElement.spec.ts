@@ -14,6 +14,17 @@ describe('compiler: transform UniElement.style.setProperty', () => {
       }
     )
     assert(
+      `<unicloud-db ref="udb"/>`,
+      `<unicloud-db ref="udb" u-i="2a9ec0b0-0" id="r0-2a9ec0b0" style="{{$eS[a]}}" u-p="{{c}}"/>`,
+      `(_ctx, _cache) => {
+  const __returned__ = { a: _sei('r0-2a9ec0b0', 'unicloud-db', 'udb'), b: _s(_ses('r0-2a9ec0b0')), c: _p({ id: 'r0-2a9ec0b0' }) }
+  return __returned__
+}`,
+      {
+        isX: true,
+      }
+    )
+    assert(
       `<view v-for="item in 10" id="view"/>`,
       `<view wx:for="{{a}}" wx:for-item="item" id="view" style="{{$eS[b]}}"/>`,
       `(_ctx, _cache) => {
@@ -350,6 +361,25 @@ describe('compiler: transform UniElement.style.setProperty (wxs)', () => {
       `<view wx:for="{{a}}" wx:for-item="item" ref="v0" id="{{item.b}}" change:eS="{{uV.sS}}" eS="{{$eS[item.b]}}"><view wx:for="{{item.a}}" wx:for-item="item" ref="v1" id="{{item.a}}" change:eS="{{uV.sS}}" eS="{{$eS[item.a]}}"/></view>`,
       `(_ctx, _cache) => {
   const __returned__ = { a: _f(10, (item, k0, i0) => { return { a: _f(10, (item, k1, i1) => { return { a: _sei('r0-2a9ec0b0-' + k1 + '-' + k0, 'view', 'v1', { "f": 1 }) }; }), b: _sei('r1-2a9ec0b0-' + k0, 'view', 'v0', { "f": 1 }) }; }) }
+  return __returned__
+}`,
+      {
+        isX: true,
+      },
+      {
+        filter: {
+          lang: 'wxs',
+          setStyle: true,
+        },
+      }
+    )
+  })
+  test('static ref with unicloud-db', () => {
+    assert(
+      `<unicloud-db ref="udb"/>`,
+      `<unicloud-db ref="udb" u-i="2a9ec0b0-0" id="r0-2a9ec0b0" change:eS="{{uV.sS}}" eS="{{$eS[a]}}" u-p="{{b}}"/>`,
+      `(_ctx, _cache) => {
+  const __returned__ = { a: _sei('r0-2a9ec0b0', 'unicloud-db', 'udb'), b: _p({ id: 'r0-2a9ec0b0' }) }
   return __returned__
 }`,
       {

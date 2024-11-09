@@ -15,7 +15,9 @@ import type { TransformContext } from '../transform'
 import { SET_UNI_ELEMENT_ID, SET_UNI_ELEMENT_STYLE } from '../runtimeHelpers'
 import {
   ATTR_ELEMENT_ID,
+  ATTR_ELEMENT_TAG,
   ATTR_SET_ELEMENT_STYLE,
+  ATTR_VUE_REF,
   FILTER_MODULE_FILE_NAME,
   FILTER_MODULE_NAME,
   FILTER_SET_ELEMENT_STYLE,
@@ -25,11 +27,22 @@ import {
 import { parseVForKeyAlias } from './transformSlot'
 import { parseRefCode } from './transformRef'
 
+const builtInCustomElements = ['uni-cloud-db-element']
+const builtInComponents = ['unicloud-db']
+
 export function rewriteId(node: ElementNode, context: TransformContext) {
   const isUniElement = !isUserComponent(node, context)
   if (isUniElement) {
+    // 将内置的自定义元素转换为 view
+    if (builtInCustomElements.includes(node.tag)) {
+      node.props.unshift(createAttributeNode(ATTR_ELEMENT_TAG, node.tag))
+      node.tag = 'view'
+    }
+  }
+  if (isUniElement || builtInComponents.includes(node.tag)) {
     // 内置组件使用了 ref，没有 id 时，自动补充一个
-    if (findProp(node, 'ref') && !findProp(node, 'id')) {
+    const refProp = findProp(node, ATTR_VUE_REF) || findProp(node, 'ref')
+    if (refProp && !findProp(node, 'id')) {
       if (context.inVFor) {
         // v-for 中的 ref 需要使用 v-for 的 key 作为 id
         const keyAlias = parseVForKeyAlias(context)
@@ -141,7 +154,7 @@ export function rewriteId(node: ElementNode, context: TransformContext) {
 }
 
 function parseUniElementRefCode(node: ElementNode, context: TransformContext) {
-  const refProp = findProp(node, 'ref')
+  const refProp = findProp(node, ATTR_VUE_REF) || findProp(node, 'ref')
   if (!refProp) {
     return ''
   }

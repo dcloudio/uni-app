@@ -22,4 +22,26 @@ describe('compiler: transform tag', () => {
       )
     })
   })
+  test('built-in custom elements', () => {
+    assert(
+      `<uni-cloud-db-element/>`,
+      `<uni-cloud-db-element u-i="2a9ec0b0-0"/>`,
+      `(_ctx, _cache) => {
+  return {}
+}`
+    )
+  })
+  test('built-in custom elements (x)', () => {
+    assert(
+      `<uni-cloud-db-element/>`,
+      `<view u-t="uni-cloud-db-element"/>`,
+      `(_ctx, _cache) => {
+  const __returned__ = {}
+  return __returned__
+}`,
+      {
+        isX: true,
+      }
+    )
+  })
 })
