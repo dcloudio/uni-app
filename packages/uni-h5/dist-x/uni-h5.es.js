@@ -2359,7 +2359,8 @@ function onResize$1(res) {
   UniServiceJSBridge.invokeOnCallback("onWindowResize", res);
 }
 function onAppEnterForeground(enterOptions2) {
-  const page = getCurrentPage().vm;
+  var _a;
+  const page = (_a = getCurrentPage()) == null ? void 0 : _a.vm;
   invokeHook(
     getApp().vm,
     ON_SHOW,
@@ -2809,6 +2810,17 @@ class UniElement extends HTMLElement {
       parent = parent.parentNode;
     }
     return (parent == null ? void 0 : parent._page) || null;
+  }
+  getBoundingClientRectAsync(callback) {
+    var _a, _b;
+    if (callback) {
+      (_a = callback.success) == null ? void 0 : _a.call(callback, this.getBoundingClientRect());
+      (_b = callback.complate) == null ? void 0 : _b.call(callback);
+      return;
+    }
+    return new Promise((resolve, reject) => {
+      resolve(this.getBoundingClientRect());
+    });
   }
   get style() {
     const originalStyle = super.style;

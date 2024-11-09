@@ -8161,13 +8161,25 @@ class UniElement {
         this.nodeName = this.tagName;
         this.$vm = vm;
     }
-    getBoundingClientRectAsync() {
-        return new Promise((resolve, reject) => {
-            const query = uni.createSelectorQuery().in(this.$vm);
-            query.select('#' + this.id).boundingClientRect();
-            query.exec(function (res) {
-                resolve(res[0]);
+    getBoundingClientRectAsync(callback) {
+        // TODO defineAsyncApi?
+        if (callback) {
+            this._getBoundingClientRectAsync((domRect) => {
+                var _a, _b;
+                (_a = callback.success) === null || _a === void 0 ? void 0 : _a.call(callback, domRect);
+                (_b = callback.complate) === null || _b === void 0 ? void 0 : _b.call(callback);
             });
+            return;
+        }
+        return new Promise((resolve, reject) => {
+            this._getBoundingClientRectAsync(resolve);
+        });
+    }
+    _getBoundingClientRectAsync(callback) {
+        const query = uni.createSelectorQuery().in(this.$vm);
+        query.select('#' + this.id).boundingClientRect();
+        query.exec(function (res) {
+            callback(res[0]);
         });
     }
     $onStyleChange(callback) {

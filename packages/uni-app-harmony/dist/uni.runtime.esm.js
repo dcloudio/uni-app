@@ -8781,6 +8781,81 @@ const removeInterceptor = defineSyncApi(API_REMOVE_INTERCEPTOR, (method, interce
 }, RemoveInterceptorProtocol);
 const interceptors = {};
 
+const API_ON = '$on';
+const OnProtocol = [
+    {
+        name: 'event',
+        type: String,
+        required: true,
+    },
+    {
+        name: 'callback',
+        type: Function,
+        required: true,
+    },
+];
+const API_ONCE = '$once';
+const OnceProtocol = OnProtocol;
+const API_OFF = '$off';
+const OffProtocol = [
+    {
+        name: 'event',
+        type: [String, Array],
+    },
+    {
+        name: 'callback',
+        type: [Function, Number],
+    },
+];
+const API_EMIT = '$emit';
+const EmitProtocol = [
+    {
+        name: 'event',
+        type: String,
+        required: true,
+    },
+];
+
+class EventBus {
+    constructor() {
+        this.$emitter = new Emitter();
+    }
+    on(name, callback) {
+        return this.$emitter.on(name, callback);
+    }
+    once(name, callback) {
+        return this.$emitter.once(name, callback);
+    }
+    off(name, callback) {
+        if (!name) {
+            this.$emitter.e = {};
+            return;
+        }
+        this.$emitter.off(name, callback);
+    }
+    emit(name, ...args) {
+        this.$emitter.emit(name, ...args);
+    }
+}
+const eventBus = new EventBus();
+const $on = defineSyncApi(API_ON, (name, callback) => {
+    eventBus.on(name, callback);
+    return () => eventBus.off(name, callback);
+}, OnProtocol);
+const $once = defineSyncApi(API_ONCE, (name, callback) => {
+    eventBus.once(name, callback);
+    return () => eventBus.off(name, callback);
+}, OnceProtocol);
+const $off = defineSyncApi(API_OFF, (name, callback) => {
+    // 类型中不再体现 name 支持 string[] 类型, 仅在 uni.$off 保留该逻辑向下兼容
+    if (!isArray(name))
+        name = name ? [name] : [];
+    name.forEach((n) => eventBus.off(n, callback));
+}, OffProtocol);
+const $emit = defineSyncApi(API_EMIT, (name, ...args) => {
+    eventBus.emit(name, ...args);
+}, EmitProtocol);
+
 const validator = [
     {
         name: 'id',
@@ -13212,6 +13287,10 @@ const pageScrollTo = defineAsyncApi(API_PAGE_SCROLL_TO, (options, { resolve }) =
 
 var uni$1 = {
   __proto__: null,
+  $emit: $emit,
+  $off: $off,
+  $on: $on,
+  $once: $once,
   addInterceptor: addInterceptor,
   arrayBufferToBase64: arrayBufferToBase64,
   base64ToArrayBuffer: base64ToArrayBuffer,

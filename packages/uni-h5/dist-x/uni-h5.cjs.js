@@ -1423,66 +1423,11 @@ function useBooleanAttr(props2, keys) {
     return res;
   }, /* @__PURE__ */ Object.create(null));
 }
-const rpx2Unit = uniShared.createRpx2Unit(
+uniShared.createRpx2Unit(
   uniShared.defaultRpx2Unit.unit,
   uniShared.defaultRpx2Unit.unitRatio,
   uniShared.defaultRpx2Unit.unitPrecision
 );
-function transformRpx(value) {
-  if (/(-?(?:\d+\.)?\d+)[ur]px/gi.test(value)) {
-    return value.replace(/(-?(?:\d+\.)?\d+)[ur]px/gi, (text, num) => {
-      return rpx2Unit(num + "rpx");
-    });
-  }
-  return value;
-}
-class UniElement extends HTMLElement {
-  constructor() {
-    super();
-    this._props = {};
-    this._page = null;
-    this.__isUniElement = true;
-  }
-  attachVmProps(props2) {
-    this._props = props2;
-  }
-  getAttribute(qualifiedName) {
-    const name = shared.camelize(qualifiedName);
-    return name in this._props ? this._props[name] + "" : super.getAttribute(qualifiedName) || null;
-  }
-  getPage() {
-    if (this._page) {
-      return this._page;
-    }
-    let parent = this.parentNode;
-    while (parent && !parent._page) {
-      parent = parent.parentNode;
-    }
-    return (parent == null ? void 0 : parent._page) || null;
-  }
-  get style() {
-    const originalStyle = super.style;
-    if (originalStyle.__patchRpx__) {
-      return originalStyle;
-    }
-    originalStyle.__patchRpx__ = true;
-    const originalSetProperty = originalStyle.setProperty.bind(originalStyle);
-    super.style.setProperty = function(property, value, priority) {
-      return originalSetProperty(
-        property,
-        value ? transformRpx(value + "") : value,
-        priority || void 0
-      );
-    };
-    return super.style;
-  }
-  get tagName() {
-    return super.tagName.replace(/^UNI-/, "");
-  }
-  get nodeName() {
-    return super.nodeName.replace(/^UNI-/, "");
-  }
-}
 const uniFormKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniForm" : "uf");
 const index$A = /* @__PURE__ */ defineBuiltInComponent({
   name: "Form",
@@ -1677,30 +1622,6 @@ const props$r = {
     default: false
   }
 };
-class UniCanvasElement extends UniElement {
-  get width() {
-    return this.querySelector("canvas").width;
-  }
-  set width(value) {
-    this.querySelector("canvas").width = value;
-  }
-  get height() {
-    return this.querySelector("canvas").height;
-  }
-  set height(value) {
-    this.querySelector("canvas").height = value;
-  }
-  getContext(contextId, options) {
-    return this.querySelector("canvas").getContext(contextId, options);
-  }
-  toBlob(...args) {
-    const c = this.querySelector("canvas");
-    return c.toBlob.apply(c, args);
-  }
-  toDataURL(type, encoderOptions) {
-    return this.querySelector("canvas").toDataURL(type, encoderOptions);
-  }
-}
 const indexX$4 = /* @__PURE__ */ defineBuiltInComponent({
   inheritAttrs: true,
   name: "Canvas",
@@ -1708,10 +1629,6 @@ const indexX$4 = /* @__PURE__ */ defineBuiltInComponent({
     MODE: 3
   },
   props: props$r,
-  rootElement: {
-    name: "uni-canvas",
-    class: UniCanvasElement
-  },
   setup(props2, {}) {
     const rootRef = vue.ref(null);
     const canvas = vue.ref(null);

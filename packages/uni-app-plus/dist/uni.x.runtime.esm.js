@@ -2184,6 +2184,7 @@ function _asyncToGenerator(n) {
 function initOn(app) {
   app.addEventListener(ON_SHOW, /* @__PURE__ */ function() {
     var _ref = _asyncToGenerator(function* (event) {
+      var _getCurrentPage;
       var app2 = getNativeApp();
       var MAX_TIMEOUT = 200;
       function getNewIntent() {
@@ -2213,7 +2214,7 @@ function initOn(app) {
         path: __uniConfig.entryPagePath
       }, schemaLink);
       setEnterOptionsSync(showOptions);
-      var page = getCurrentPage().vm;
+      var page = (_getCurrentPage = getCurrentPage()) === null || _getCurrentPage === void 0 ? void 0 : _getCurrentPage.vm;
       invokeHook(getApp().vm, ON_SHOW, showOptions);
       if (page) {
         invokeHook(page, ON_SHOW);
@@ -2224,7 +2225,8 @@ function initOn(app) {
     };
   }());
   app.addEventListener(ON_HIDE, function() {
-    var page = getCurrentPage().vm;
+    var _getCurrentPage2;
+    var page = (_getCurrentPage2 = getCurrentPage()) === null || _getCurrentPage2 === void 0 ? void 0 : _getCurrentPage2.vm;
     invokeHook(getApp().vm, ON_HIDE);
     if (page) {
       invokeHook(page, ON_HIDE);

@@ -920,16 +920,28 @@ function addSafeAreaInsets(fromRes, toRes) {
         };
     }
 }
+function getOSInfo(system, platform) {
+    let osName = '';
+    let osVersion = '';
+    if (platform &&
+        ("mp-alipay" === 'mp-alipay')) {
+        osName = platform;
+        osVersion = system;
+    }
+    else {
+        osName = system.split(' ')[0] || '';
+        osVersion = system.split(' ')[1] || '';
+    }
+    return {
+        osName: osName.toLocaleLowerCase(),
+        osVersion,
+    };
+}
 function populateParameters(fromRes, toRes) {
     const { brand = '', model = '', system = '', language = '', theme, version, platform, fontSizeSetting, SDKVersion, pixelRatio, deviceOrientation, } = fromRes;
     // const isQuickApp = "mp-alipay".indexOf('quickapp-webview') !== -1
     // osName osVersion
-    let osName = '';
-    let osVersion = '';
-    {
-        osName = platform;
-        osVersion = system;
-    }
+    const { osName, osVersion } = getOSInfo(system, platform);
     let hostVersion = version;
     // deviceType
     let deviceType = getGetDeviceType(fromRes, model);
@@ -964,7 +976,7 @@ function populateParameters(fromRes, toRes) {
         deviceType,
         devicePixelRatio: _devicePixelRatio,
         deviceOrientation: _deviceOrientation,
-        osName: osName.toLocaleLowerCase(),
+        osName,
         osVersion,
         hostTheme: theme,
         hostVersion,

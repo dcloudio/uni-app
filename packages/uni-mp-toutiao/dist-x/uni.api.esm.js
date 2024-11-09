@@ -997,16 +997,28 @@ function addSafeAreaInsets(fromRes, toRes) {
         };
     }
 }
+function getOSInfo(system, platform) {
+    let osName = '';
+    let osVersion = '';
+    if (platform &&
+        ("mp-toutiao" === 'mp-baidu')) {
+        osName = platform;
+        osVersion = system;
+    }
+    else {
+        osName = system.split(' ')[0] || '';
+        osVersion = system.split(' ')[1] || '';
+    }
+    return {
+        osName: osName.toLocaleLowerCase(),
+        osVersion,
+    };
+}
 function populateParameters(fromRes, toRes) {
     const { brand = '', model = '', system = '', language = '', theme, version, platform, fontSizeSetting, SDKVersion, pixelRatio, deviceOrientation, } = fromRes;
     // const isQuickApp = "mp-toutiao".indexOf('quickapp-webview') !== -1
     // osName osVersion
-    let osName = '';
-    let osVersion = '';
-    {
-        osName = system.split(' ')[0] || '';
-        osVersion = system.split(' ')[1] || '';
-    }
+    const { osName, osVersion } = getOSInfo(system, platform);
     let hostVersion = version;
     // deviceType
     let deviceType = getGetDeviceType(fromRes, model);
@@ -1038,7 +1050,7 @@ function populateParameters(fromRes, toRes) {
         deviceType,
         devicePixelRatio: _devicePixelRatio,
         deviceOrientation: _deviceOrientation,
-        osName: osName.toLocaleLowerCase(),
+        osName,
         osVersion,
         hostTheme: theme,
         hostVersion,
@@ -1057,6 +1069,14 @@ function populateParameters(fromRes, toRes) {
         browserVersion: undefined,
         isUniAppX: true,
     };
+    {
+        try {
+            parameters.uniCompileVersionCode = parseFloat(process.env.UNI_COMPILER_VERSION);
+            parameters.uniCompilerVersionCode = parseFloat(process.env.UNI_COMPILER_VERSION);
+            parameters.uniRuntimeVersionCode = parseFloat(process.env.UNI_COMPILER_VERSION);
+        }
+        catch (error) { }
+    }
     extend(toRes, parameters);
 }
 function getGetDeviceType(fromRes, model) {

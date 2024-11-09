@@ -11713,13 +11713,11 @@
       }
     });
   }
+  function invokeHarmonyChannel(method, args) {
+    return harmonyChannel.invokeSync(method, args ? args.map((arg) => JSON.stringify(arg)) : void 0);
+  }
   function getSameOriginUrl(url) {
-    var a2 = document.createElement("a");
-    a2.href = url;
-    if (a2.origin === location.origin) {
-      return Promise.resolve(url);
-    }
-    return Promise.resolve(url);
+    return Promise.resolve(invokeHarmonyChannel("getSameOriginUrl", [url]));
   }
   function getRealPath(filepath) {
     if (filepath.indexOf("//") === 0) {
@@ -14128,13 +14126,6 @@
           image2.onload = function() {
             image2.ready = true;
           };
-          if (navigator.vendor === "Google Inc.") {
-            if (src.indexOf("file://") === 0 && false) {
-              image2.crossOrigin = "anonymous";
-            }
-            image2.src = src;
-            return;
-          }
           getSameOriginUrl(src).then((src2) => {
             image2.src = src2;
           }).catch(() => {
@@ -22312,9 +22303,6 @@
     constructor(id2, parentNodeId, refNodeId, nodeJson) {
       super(id2, "uni-icon", Icon, parentNodeId, refNodeId, nodeJson);
     }
-  }
-  function invokeHarmonyChannel(method, args) {
-    return harmonyChannel.invokeSync(method, args ? args.map((arg) => JSON.stringify(arg)) : void 0);
   }
   const plus$1 = {
     webview: {
