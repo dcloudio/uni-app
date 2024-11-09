@@ -5625,6 +5625,27 @@
               "unixVer": "4.0"
             }
           }
+        },
+        {
+          "name": "uni-icon",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "x",
+                "unixVer": "4.33"
+              },
+              "ios": {
+                "osVer": "12.0",
+                "uniVer": "x",
+                "unixVer": "4.33"
+              }
+            },
+            "web": {
+              "uniVer": "x",
+              "unixVer": "x"
+            }
+          }
         }
       ],
       "uniPlatform": {
