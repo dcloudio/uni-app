@@ -2799,7 +2799,8 @@ class UniElement extends HTMLElement {
   }
   getAttribute(qualifiedName) {
     const name = camelize(qualifiedName);
-    return name in this._props ? this._props[name] + "" : super.getAttribute(qualifiedName) || null;
+    const attr2 = name in this._props ? this._props[name] + "" : super.getAttribute(qualifiedName);
+    return attr2 === void 0 ? null : attr2;
   }
   getPage() {
     if (this._page) {
