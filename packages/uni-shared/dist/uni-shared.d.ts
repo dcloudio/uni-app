@@ -465,6 +465,8 @@ export declare interface NVueTaskCenter {
     updateData: (componentId: string, data: Record<string, unknown> | void, callback?: Function) => void;
 }
 
+export declare const OFF_HOST_THEME_CHANGE = "offHostThemeChange";
+
 export declare const OFF_THEME_CHANGE = "offThemeChange";
 
 export declare const ON_ADD_TO_FAVORITES = "onAddToFavorites";
@@ -480,6 +482,8 @@ export declare const ON_ERROR = "onError";
 export declare const ON_EXIT = "onExit";
 
 export declare const ON_HIDE = "onHide";
+
+export declare const ON_HOST_THEME_CHANGE = "onHostThemeChange";
 
 export declare const ON_INIT = "onInit";
 
