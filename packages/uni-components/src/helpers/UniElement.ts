@@ -30,9 +30,11 @@ export class UniElement extends HTMLElement {
 
   getAttribute(qualifiedName: string): string | null {
     const name = camelize(qualifiedName)
-    return name in this._props
-      ? this._props[name] + ''
-      : super.getAttribute(qualifiedName) || null
+    const attr =
+      name in this._props
+        ? this._props[name] + ''
+        : super.getAttribute(qualifiedName)
+    return attr === undefined ? null : attr
   }
 
   get style() {
