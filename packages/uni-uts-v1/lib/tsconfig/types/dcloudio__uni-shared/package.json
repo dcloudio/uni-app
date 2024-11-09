@@ -1,0 +1,4 @@
+{
+  "name": "@dcloudio/uni-shared",
+  "types": "./types/index.d.ts"
+}
