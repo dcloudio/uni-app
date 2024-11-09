@@ -89,14 +89,14 @@ export default /*#__PURE__*/ defineBuiltInComponent({
   setup(props) {
     const rootRef = ref<HTMLElement | null>(null)
     const path = computed(() => ICONS[props.type as keyof typeof ICONS])
+    //#if _X_ && !_NODE_JS_
+    onMounted(() => {
+      const rootElement = rootRef.value as UniIconElement
+      rootElement.attachVmProps(props)
+    })
+    //#endif
     return () => {
       const { value } = path
-      //#if _X_ && !_NODE_JS_
-      onMounted(() => {
-        const rootElement = rootRef.value as UniIconElement
-        rootElement.attachVmProps(props)
-      })
-      //#endif
       return (
         <uni-icon ref={rootRef}>
           {value &&
