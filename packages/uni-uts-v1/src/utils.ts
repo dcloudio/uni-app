@@ -989,13 +989,16 @@ let utsConfig: Pick<NonNullable<UTSOutputOptions['transform']>, EnableKeys>
 
 function getUTSConfig() {
   if (!utsConfig) {
-    const configPath = path.resolve(
-      process.env.UNI_INPUT_DIR,
-      'uts.config.json'
-    )
-    if (fs.existsSync(configPath)) {
-      utsConfig = require(configPath)
-    } else {
+    if (process.env.UNI_INPUT_DIR) {
+      const configPath = path.resolve(
+        process.env.UNI_INPUT_DIR,
+        'uts.config.json'
+      )
+      if (fs.existsSync(configPath)) {
+        utsConfig = require(configPath)
+      }
+    }
+    if (!utsConfig) {
       utsConfig = {}
     }
   }
