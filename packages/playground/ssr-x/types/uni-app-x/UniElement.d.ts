@@ -1,0 +1,1 @@
+interface UniElement extends HTMLElement { }

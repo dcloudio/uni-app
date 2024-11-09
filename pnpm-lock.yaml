@@ -458,6 +458,46 @@ importers:
         specifier: ^5.2.8
         version: 5.2.8(@types/node@18.19.50)(terser@5.32.0)
 
+  packages/playground/ssr-x:
+    dependencies:
+      '@dcloudio/uni-app':
+        specifier: ../../uni-app
+        version: link:../../uni-app
+      '@dcloudio/uni-components':
+        specifier: ../../uni-components
+        version: link:../../uni-components
+      '@dcloudio/uni-h5':
+        specifier: ../../uni-h5
+        version: link:../../uni-h5
+      '@dcloudio/uni-shared':
+        specifier: ../../uni-shared
+        version: link:../../uni-shared
+      vue:
+        specifier: 3.4.21
+        version: 3.4.21(typescript@5.4.2)
+      vue-router:
+        specifier: ^4.3.0
+        version: 4.4.4(vue@3.4.21(typescript@5.4.2))
+      vuex:
+        specifier: ^4.1.0
+        version: 4.1.0(vue@3.4.21(typescript@5.4.2))
+    devDependencies:
+      '@dcloudio/vite-plugin-uni':
+        specifier: ../../vite-plugin-uni
+        version: link:../../vite-plugin-uni
+      compression:
+        specifier: ^1.7.4
+        version: 1.7.4
+      cypress:
+        specifier: ^10.7.0
+        version: 10.11.0
+      serve-static:
+        specifier: ^1.15.0
+        version: 1.16.0
+      vite:
+        specifier: ^5.2.8
+        version: 5.2.8(@types/node@18.19.50)(terser@5.32.0)
+
   packages/playground/static:
     dependencies:
       '@dcloudio/uni-app':
