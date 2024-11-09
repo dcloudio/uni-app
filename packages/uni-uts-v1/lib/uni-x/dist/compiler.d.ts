@@ -29,6 +29,7 @@ interface CreateTransformerOptions {
     enableUTSNumber?: boolean;
     enableNarrowType?: boolean;
     enableGenericsParameterDefaults?: boolean;
+    enableUTSJSONObjectPropertyAccess?: boolean;
 }
 declare function initTargetTransformers(targetLanguage: TargetLanguage, options?: CreateTransformerOptions): _uts_transforms_base.UTSTransformerFactoryCreator[];
 
