@@ -21,6 +21,8 @@
     "postinstall": "simple-git-hooks",
     "e2e:ssr:dev": "cd packages/playground/ssr && npm run dev:ssr",
     "e2e:ssr:open": "cd packages/playground/ssr && npx cypress open",
+    "e2e:ssrx:dev": "cd packages/playground/ssr-x && npm run dev:ssr",
+    "e2e:ssrx:open": "cd packages/playground/ssr-x && npx cypress open",
     "release": "node scripts/release.js"
   },
   "types": "test-dts/index.d.ts",
