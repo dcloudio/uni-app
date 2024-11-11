@@ -32,7 +32,9 @@ import { getNativeApp } from '../../framework/app/app'
 //   }
 // }
 
-const SOURCE_REG = /(.+\.((ttf)|(otf)|(woff2?))$)|(^(http|https):\/\/.+)/
+// 支持 data:font/ttf 格式 base64 字体
+const SOURCE_REG =
+  /(.+\.((ttf)|(otf)|(woff2?))$)|(^(http|https):\/\/.+)|(^(data:font\/))/
 
 function removeUrlWrap(source: string): string {
   if (source.startsWith('url(')) {
@@ -81,7 +83,11 @@ function getLoadFontFaceOptions(
   } as NativeLoadFontFaceOptions
 }
 
-// core
+/**
+ * uni.loadFontFace
+ * 注意：iOS 目前不支持页面级别的加载，功能实际不生效。
+ * 只支持全局加载
+ */
 export const loadFontFace = defineAsyncApi(
   API_LOAD_FONT_FACE,
   (options: LoadFontFaceOptions, res) => {
