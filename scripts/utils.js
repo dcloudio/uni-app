@@ -22,8 +22,8 @@ const priority = {
   'uni-mp-weixin': 70,
   'uni-quickapp-webview': 70,
   'uni-components': 55,
-  'uni-h5': 50,
-  'uni-h5-vite': 40,
+  'uni-h5-vite': 50,
+  'uni-h5': 40,
   'uni-mp-compiler': 40,
   'uni-mp-vite': 35,
   'uni-app-vue': 35,
@@ -57,19 +57,32 @@ const targets = (exports.targets = fs.readdirSync('packages').filter((f) => {
   return false
 })).sort((a, b) => priority[b] - priority[a])
 exports.fuzzyMatchTarget = (partialTargets, includeAllMatching) => {
-  const matched = []
-  partialTargets.forEach((partialTarget) => {
-    for (const target of targets) {
-      if (target.match(partialTarget)) {
-        matched.push(target)
-        if (!includeAllMatching) {
+  const matched = new Set()
+  // 优先完整匹配
+  if (!includeAllMatching) {
+    partialTargets.forEach((partialTarget) => {
+      for (const target of targets) {
+        if (target === partialTarget) {
+          matched.add(target)
           break
         }
       }
-    }
-  })
-  if (matched.length) {
-    return matched.sort((a, b) => priority[b] - priority[a])
+    })
+  }
+  if (includeAllMatching || !matched.size) {
+    partialTargets.forEach((partialTarget) => {
+      for (const target of targets) {
+        if (target.match(partialTarget)) {
+          matched.add(target)
+          if (!includeAllMatching) {
+            break
+          }
+        }
+      }
+    })
+  }
+  if (matched.size) {
+    return Array.from(matched).sort((a, b) => priority[b] - priority[a])
   } else {
     console.log()
     console.error(

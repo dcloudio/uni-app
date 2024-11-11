@@ -15,9 +15,11 @@ import {
   initPreContext,
   normalizePath,
   stripOptions,
+  UNI_EASYCOM_EXCLUDE,
   uniPrePlugin,
 } from '@dcloudio/uni-cli-shared'
-import { isH5CustomElement } from '@dcloudio/uni-shared'
+import { uniEasycomPlugin } from '@dcloudio/uni-h5-vite/dist/plugins/easycom'
+import { isH5CustomElement, isH5NativeTag } from '@dcloudio/uni-shared'
 import { genApiJson } from './api'
 import { uts2ts } from '../../scripts/ext-api'
 
@@ -133,11 +135,14 @@ export default defineConfig({
       customElement: isX,
       template: {
         compilerOptions: {
+          isNativeTag: isH5NativeTag,
           isCustomElement: realIsH5CustomElement,
         },
       },
     }),
     vueJsx({ optimize: true, isCustomElement: realIsH5CustomElement }),
+    // 需要支持uni-chooseLocation等内置页面编译
+    ...(isX ? [uniEasycomPlugin({ exclude: UNI_EASYCOM_EXCLUDE })] : []),
   ],
   esbuild: {
     // 强制为 es2015，否则默认为 esnext，将会生成 __publicField 代码，
@@ -145,6 +150,7 @@ export default defineConfig({
     target: 'es2015',
   },
   build: {
+    cssCodeSplit: true,
     target: 'modules', // keep import.meta...
     emptyOutDir: FORMAT === 'es',
     minify: false,

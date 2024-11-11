@@ -4,7 +4,7 @@ var __publicField = (obj, key, value) => {
   __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
   return value;
 };
-import { withModifiers, createVNode, getCurrentInstance, ref, defineComponent, openBlock, createElementBlock, onMounted, provide, computed, watch, onUnmounted, inject, onBeforeUnmount, mergeProps, reactive, injectHook, nextTick, createApp, createBlock, watchEffect, isVNode, withDirectives, vShow, renderList, isReactive, Transition, effectScope, Fragment, onActivated, withCtx, KeepAlive, resolveDynamicComponent, markRaw, createElementVNode, normalizeClass, normalizeStyle, toDisplayString, createCommentVNode, onBeforeMount, onBeforeActivate, onBeforeDeactivate, renderSlot, shallowRef, Comment, h, createTextVNode } from "vue";
+import { withModifiers, createVNode, getCurrentInstance, ref, defineComponent, openBlock, createElementBlock, onMounted, provide, computed, watch, onUnmounted, inject, onBeforeUnmount, mergeProps, reactive, injectHook, nextTick, createApp, createBlock, watchEffect, isVNode, withDirectives, vShow, renderList, isReactive, Transition, effectScope, Fragment, onActivated, withCtx, KeepAlive, resolveDynamicComponent, markRaw, normalizeClass, normalizeStyle, createTextVNode, toDisplayString, createCommentVNode, onBeforeMount, onBeforeActivate, onBeforeDeactivate, createElementVNode, renderSlot, shallowRef, Comment, h } from "vue";
 import { isArray, isString, extend, remove, stringifyStyle, parseStringStyle, isPlainObject as isPlainObject$1, isFunction, capitalize, camelize, hasOwn, isObject, toRawType, makeMap as makeMap$1, isPromise, invokeArrayFns as invokeArrayFns$1, hyphenate } from "@vue/shared";
 import { once, UNI_STORAGE_LOCALE, I18N_JSON_DELIMITERS, Emitter, passive, initCustomDatasetOnce, resolveComponentInstance, normalizeStyles, addLeadingSlash, invokeArrayFns, removeLeadingSlash, resolveOwnerVm, resolveOwnerEl, ON_WXS_INVOKE_CALL_METHOD, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_SHOW, ON_HIDE, ON_PAGE_SCROLL, ON_REACH_BOTTOM, EventChannel, createRpx2Unit, defaultRpx2Unit, parseQuery, NAVBAR_HEIGHT, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, getLen, getCustomDataset, parseUrl, sortObject, ON_THEME_CHANGE, OFF_THEME_CHANGE, ON_HOST_THEME_CHANGE, OFF_HOST_THEME_CHANGE, updateElementStyle, LINEFEED, ON_WEB_INVOKE_APP_SERVICE, debounce, ON_BACK_PRESS, addFont, ON_NAVIGATION_BAR_CHANGE, scrollTo, RESPONSIVE_MIN_WIDTH, formatDateTime, normalizeTitleColor, ON_REACH_BOTTOM_DISTANCE, isSystemDialogPage, isSystemActionSheetDialogPage, ON_UNLOAD, onCreateVueApp, SCHEME_RE, DATA_RE, decodedQuery, WEB_INVOKE_APPSERVICE, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_PULL_DOWN_REFRESH, stringifyQuery as stringifyQuery$1, PRIMARY_COLOR, isUniLifecycleHook, ON_LOAD, UniLifecycleHooks, invokeCreateErrorHandler, invokeCreateVueAppHook } from "@dcloudio/uni-shared";
 import { onCreateVueApp as onCreateVueApp2 } from "@dcloudio/uni-shared";
@@ -2849,7 +2849,7 @@ class UniElement extends HTMLElement {
 const uniFormKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniForm" : "uf");
 class UniFormElement extends UniElement {
 }
-const index$x = /* @__PURE__ */ defineBuiltInComponent({
+const index$v = /* @__PURE__ */ defineBuiltInComponent({
   name: "Form",
   emits: ["submit", "reset"],
   rootElement: {
@@ -2919,7 +2919,7 @@ function useProvideLabel() {
 }
 class UniLabelElement extends UniElement {
 }
-const index$w = /* @__PURE__ */ defineBuiltInComponent({
+const index$u = /* @__PURE__ */ defineBuiltInComponent({
   name: "Label",
   props: labelProps,
   rootElement: {
@@ -3062,7 +3062,7 @@ const buttonProps = {
 };
 class UniButtonElement extends UniElement {
 }
-const index$v = /* @__PURE__ */ defineBuiltInComponent({
+const index$t = /* @__PURE__ */ defineBuiltInComponent({
   name: "Button",
   props: buttonProps,
   rootElement: {
@@ -3194,7 +3194,7 @@ const props$x = {
 };
 class UniCheckboxGroupElement extends UniElement {
 }
-const index$u = /* @__PURE__ */ defineBuiltInComponent({
+const index$s = /* @__PURE__ */ defineBuiltInComponent({
   name: "CheckboxGroup",
   props: props$x,
   emits: ["change"],
@@ -3305,7 +3305,7 @@ const props$w = {
 };
 class UniCheckboxElement extends UniElement {
 }
-const index$t = /* @__PURE__ */ defineBuiltInComponent({
+const index$r = /* @__PURE__ */ defineBuiltInComponent({
   name: "Checkbox",
   props: props$w,
   rootElement: {
@@ -5841,13 +5841,13 @@ const createMediaQueryObserver = /* @__PURE__ */ defineSyncApi("createMediaQuery
   }
   return new ServiceMediaQueryObserver(getCurrentPageVm());
 });
-let index$s = 0;
+let index$q = 0;
 let optionsCache = {};
 function operateEditor(componentId, pageId, type, options) {
   const data = { options };
   const needCallOptions = options && ("success" in options || "fail" in options || "complete" in options);
   if (needCallOptions) {
-    const callbackId = String(index$s++);
+    const callbackId = String(index$q++);
     data.callbackId = callbackId;
     optionsCache[callbackId] = options;
   }
@@ -9708,13 +9708,13 @@ function usePopup(props2, {
   });
   return visible;
 }
-let index$r = 0;
+let index$p = 0;
 let overflow = "";
 function preventScroll(prevent) {
-  let before = index$r;
-  index$r += prevent ? 1 : -1;
-  index$r = Math.max(0, index$r);
-  if (index$r > 0) {
+  let before = index$p;
+  index$p += prevent ? 1 : -1;
+  index$p = Math.max(0, index$p);
+  if (index$p > 0) {
     if (before === 0) {
       overflow = document.body.style.overflow;
       document.body.style.overflow = "hidden";
@@ -10613,11 +10613,11 @@ const onSocketOpen = /* @__PURE__ */ on("open");
 const onSocketError = /* @__PURE__ */ on("error");
 const onSocketMessage = /* @__PURE__ */ on("message");
 const onSocketClose = /* @__PURE__ */ on("close");
-let index$q = 0;
+let index$o = 0;
 function getJSONP(url, options, success, error) {
   var js = document.createElement("script");
   var callbackKey = options.callback || "callback";
-  var callbackName = "__uni_jsonp_callback_" + index$q++;
+  var callbackName = "__uni_jsonp_callback_" + index$o++;
   var timeout = options.timeout || 3e4;
   var timing;
   function end() {
@@ -11775,7 +11775,7 @@ const props$s = {
 };
 class UniVideoElement extends UniElement {
 }
-const index$p = /* @__PURE__ */ defineBuiltInComponent({
+const index$n = /* @__PURE__ */ defineBuiltInComponent({
   name: "Video",
   props: props$s,
   emits: ["fullscreenchange", "progress", "loadedmetadata", "waiting", "error", "play", "pause", "ended", "timeupdate"],
@@ -16127,7 +16127,7 @@ const props$g = {
 };
 class UniCoverViewElement extends UniElement {
 }
-const index$o = /* @__PURE__ */ defineBuiltInComponent({
+const index$m = /* @__PURE__ */ defineBuiltInComponent({
   name: "CoverView",
   compatConfig: {
     MODE: 3
@@ -16180,7 +16180,7 @@ const index$o = /* @__PURE__ */ defineBuiltInComponent({
 });
 class UniCoverImageElement extends UniElement {
 }
-const index$n = /* @__PURE__ */ defineBuiltInComponent({
+const index$l = /* @__PURE__ */ defineBuiltInComponent({
   name: "CoverImage",
   compatConfig: {
     MODE: 3
@@ -16365,7 +16365,7 @@ const props$f = {
 };
 class UniPickerElement extends UniElement {
 }
-const index$m = /* @__PURE__ */ defineBuiltInComponent({
+const index$k = /* @__PURE__ */ defineBuiltInComponent({
   name: "Picker",
   compatConfig: {
     MODE: 3
@@ -17014,12 +17014,12 @@ function usePickerForm(_resetFormData, _getFormData) {
     });
   }
 }
-const index$l = /* @__PURE__ */ defineUnsupportedComponent("ad");
-const index$k = /* @__PURE__ */ defineUnsupportedComponent("ad-content-page");
-const index$j = /* @__PURE__ */ defineUnsupportedComponent("ad-draw");
-const index$i = /* @__PURE__ */ defineUnsupportedComponent("camera");
-const index$h = /* @__PURE__ */ defineUnsupportedComponent("live-player");
-const index$g = /* @__PURE__ */ defineUnsupportedComponent("live-pusher");
+const index$j = /* @__PURE__ */ defineUnsupportedComponent("ad");
+const index$i = /* @__PURE__ */ defineUnsupportedComponent("ad-content-page");
+const index$h = /* @__PURE__ */ defineUnsupportedComponent("ad-draw");
+const index$g = /* @__PURE__ */ defineUnsupportedComponent("camera");
+const index$f = /* @__PURE__ */ defineUnsupportedComponent("live-player");
+const index$e = /* @__PURE__ */ defineUnsupportedComponent("live-pusher");
 const ICON_PATH_NAV = "M28 17c-6.49396875 0-12.13721875 2.57040625-15 6.34840625V5.4105l6.29859375 6.29859375c0.387875 0.387875 1.02259375 0.387875 1.4105 0 0.387875-0.387875 0.387875-1.02259375 0-1.4105L12.77853125 2.36803125a0.9978125 0.9978125 0 0 0-0.0694375-0.077125c-0.1944375-0.1944375-0.45090625-0.291375-0.70721875-0.290875l-0.00184375-0.0000625-0.00184375 0.0000625c-0.2563125-0.0005-0.51278125 0.09640625-0.70721875 0.290875a0.9978125 0.9978125 0 0 0-0.0694375 0.077125l-7.930625 7.9305625c-0.387875 0.387875-0.387875 1.02259375 0 1.4105 0.387875 0.387875 1.02259375 0.387875 1.4105 0L11 5.4105V29c0 0.55 0.45 1 1 1s1-0.45 1-1c0-5.52284375 6.71571875-10 15-10 0.55228125 0 1-0.44771875 1-1 0-0.55228125-0.44771875-1-1-1z";
 const props$e = {
   latitude: {
@@ -17761,69 +17761,106 @@ const _export_sfc = (sfc, props2) => {
   }
   return target;
 };
-const _hoisted_1$1 = ["onClick"];
 function _sfc_render$1(_ctx, _cache, $props, $setup, $data, $options) {
-  return openBlock(), createElementBlock("view", null, [
-    createElementVNode("view", {
-      class: normalizeClass(["uni-action-sheet_dialog__mask", { "uni-action-sheet_dialog__mask__show": $data.show }]),
-      onClick: _cache[0] || (_cache[0] = (...args) => $options.handleCancel && $options.handleCancel(...args))
-    }, null, 2),
-    createElementVNode("view", {
-      style: normalizeStyle($options.isWidescreen ? $options.containerStyle : {}),
-      class: normalizeClass(["uni-action-sheet_dialog__container", {
-        "uni-action-sheet_dialog__show": $data.show,
-        "uni-action-sheet_dark__mode": $data.theme == "dark",
-        "uni-action-sheet_landscape__mode": $data.isLandscape
-      }])
-    }, [
-      createElementVNode("view", {
-        style: normalizeStyle($data.backgroundColor != null ? { backgroundColor: $data.backgroundColor } : {}),
-        class: normalizeClass(["uni-action-sheet_dialog__menu", { "uni-action-sheet_dark__mode": $data.theme == "dark", "uni-action-sheet_landscape__mode": $data.isLandscape }])
-      }, [
-        $data.title ? (openBlock(), createElementBlock("view", {
-          key: 0,
-          class: normalizeClass(["uni-action-sheet_dialog__title", { "uni-action-sheet_dark__mode": $data.theme == "dark", "uni-action-sheet_landscape__mode": $data.isLandscape }])
-        }, [
-          createElementVNode("text", {
-            style: normalizeStyle({ color: $data.titleColor }),
-            class: normalizeClass(["uni-action-sheet_dialog__title__text", { "uni-action-sheet_dark__mode": $data.theme == "dark" }])
-          }, toDisplayString($data.title), 7)
-        ], 2)) : createCommentVNode("", true),
-        createElementVNode("view", {
-          class: normalizeClass(["uni-action-sheet_dialog__cell__container", { "uni-action-sheet_landscape__mode": $data.isLandscape }])
-        }, [
-          (openBlock(true), createElementBlock(Fragment, null, renderList($data.itemList, (item, index2) => {
-            return openBlock(), createElementBlock("view", {
-              style: normalizeStyle(index2 == 0 ? { borderTop: "none" } : {}),
-              class: normalizeClass(["uni-action-sheet_dialog__cell", { "uni-action-sheet_dark__mode": $data.theme == "dark", "uni-action-sheet_landscape__mode": $data.isLandscape }]),
-              key: index2,
-              onClick: ($event) => $options.handleMenuItemClick(index2)
-            }, [
-              createElementVNode("text", {
-                style: normalizeStyle({ color: $data.itemColor }),
-                class: normalizeClass(["uni-action-sheet_dialog__cell__text", { "uni-action-sheet_dark__mode": $data.theme == "dark" }])
-              }, toDisplayString(item), 7)
-            ], 14, _hoisted_1$1);
-          }), 128))
-        ], 2)
-      ], 6),
-      createElementVNode("view", {
-        style: normalizeStyle($data.backgroundColor != null ? { backgroundColor: $data.backgroundColor } : {}),
-        class: normalizeClass(["uni-action-sheet_dialog__action", { "uni-action-sheet_dark__mode": $data.theme == "dark", "uni-action-sheet_landscape__mode": $data.isLandscape }]),
-        onClick: _cache[1] || (_cache[1] = (...args) => $options.handleCancel && $options.handleCancel(...args))
-      }, [
-        createElementVNode("text", {
-          style: normalizeStyle({ color: $data.cancelColor }),
-          class: normalizeClass(["uni-action-sheet_dialog__action__text", { "uni-action-sheet_dark__mode": $data.theme == "dark" }])
-        }, toDisplayString($options.cancelText), 7)
-      ], 6),
-      $options.isWidescreen && Object.keys($data.popover).length > 0 ? (openBlock(), createElementBlock("view", {
-        key: 0,
-        style: normalizeStyle($options.triangleStyle),
-        class: "uni-action-sheet_dialog__triangle"
-      }, null, 4)) : createCommentVNode("", true)
-    ], 6)
-  ]);
+  const _component_view = __syscom_0;
+  const _component_text = __syscom_1;
+  return openBlock(), createBlock(_component_view, null, {
+    default: withCtx(() => [
+      createVNode(_component_view, {
+        class: normalizeClass(["uni-action-sheet_dialog__mask", { "uni-action-sheet_dialog__mask__show": $data.show }]),
+        onClick: $options.handleCancel
+      }, null, 8, ["class", "onClick"]),
+      createVNode(_component_view, {
+        style: normalizeStyle($options.isWidescreen ? $options.containerStyle : {}),
+        class: normalizeClass(["uni-action-sheet_dialog__container", {
+          "uni-action-sheet_dialog__show": $data.show,
+          "uni-action-sheet_dark__mode": $data.theme == "dark",
+          "uni-action-sheet_landscape__mode": $data.isLandscape
+        }])
+      }, {
+        default: withCtx(() => [
+          createVNode(_component_view, {
+            style: normalizeStyle($data.backgroundColor != null ? { backgroundColor: $data.backgroundColor } : {}),
+            class: normalizeClass(["uni-action-sheet_dialog__menu", { "uni-action-sheet_dark__mode": $data.theme == "dark", "uni-action-sheet_landscape__mode": $data.isLandscape }])
+          }, {
+            default: withCtx(() => [
+              $data.title ? (openBlock(), createBlock(_component_view, {
+                key: 0,
+                class: normalizeClass(["uni-action-sheet_dialog__title", { "uni-action-sheet_dark__mode": $data.theme == "dark", "uni-action-sheet_landscape__mode": $data.isLandscape }])
+              }, {
+                default: withCtx(() => [
+                  createVNode(_component_text, {
+                    style: normalizeStyle({ color: $data.titleColor }),
+                    class: normalizeClass(["uni-action-sheet_dialog__title__text", { "uni-action-sheet_dark__mode": $data.theme == "dark" }])
+                  }, {
+                    default: withCtx(() => [
+                      createTextVNode(toDisplayString($data.title), 1)
+                    ]),
+                    _: 1
+                  }, 8, ["style", "class"])
+                ]),
+                _: 1
+              }, 8, ["class"])) : createCommentVNode("", true),
+              createVNode(_component_view, {
+                class: normalizeClass(["uni-action-sheet_dialog__cell__container", { "uni-action-sheet_landscape__mode": $data.isLandscape }])
+              }, {
+                default: withCtx(() => [
+                  (openBlock(true), createElementBlock(Fragment, null, renderList($data.itemList, (item, index2) => {
+                    return openBlock(), createBlock(_component_view, {
+                      style: normalizeStyle(index2 == 0 ? { borderTop: "none" } : {}),
+                      class: normalizeClass(["uni-action-sheet_dialog__cell", { "uni-action-sheet_dark__mode": $data.theme == "dark", "uni-action-sheet_landscape__mode": $data.isLandscape }]),
+                      key: index2,
+                      onClick: ($event) => $options.handleMenuItemClick(index2)
+                    }, {
+                      default: withCtx(() => [
+                        createVNode(_component_text, {
+                          style: normalizeStyle({ color: $data.itemColor }),
+                          class: normalizeClass(["uni-action-sheet_dialog__cell__text", { "uni-action-sheet_dark__mode": $data.theme == "dark" }])
+                        }, {
+                          default: withCtx(() => [
+                            createTextVNode(toDisplayString(item), 1)
+                          ]),
+                          _: 2
+                        }, 1032, ["style", "class"])
+                      ]),
+                      _: 2
+                    }, 1032, ["style", "class", "onClick"]);
+                  }), 128))
+                ]),
+                _: 1
+              }, 8, ["class"])
+            ]),
+            _: 1
+          }, 8, ["style", "class"]),
+          createVNode(_component_view, {
+            style: normalizeStyle($data.backgroundColor != null ? { backgroundColor: $data.backgroundColor } : {}),
+            class: normalizeClass(["uni-action-sheet_dialog__action", { "uni-action-sheet_dark__mode": $data.theme == "dark", "uni-action-sheet_landscape__mode": $data.isLandscape }]),
+            onClick: $options.handleCancel
+          }, {
+            default: withCtx(() => [
+              createVNode(_component_text, {
+                style: normalizeStyle({ color: $data.cancelColor }),
+                class: normalizeClass(["uni-action-sheet_dialog__action__text", { "uni-action-sheet_dark__mode": $data.theme == "dark" }])
+              }, {
+                default: withCtx(() => [
+                  createTextVNode(toDisplayString($options.cancelText), 1)
+                ]),
+                _: 1
+              }, 8, ["style", "class"])
+            ]),
+            _: 1
+          }, 8, ["style", "class", "onClick"]),
+          $options.isWidescreen && Object.keys($data.popover).length > 0 ? (openBlock(), createBlock(_component_view, {
+            key: 0,
+            style: normalizeStyle($options.triangleStyle),
+            class: "uni-action-sheet_dialog__triangle"
+          }, null, 8, ["style"])) : createCommentVNode("", true)
+        ]),
+        _: 1
+      }, 8, ["style", "class"])
+    ]),
+    _: 1
+  });
 }
 const UniActionSheetPage = /* @__PURE__ */ _export_sfc(_sfc_main$1, [["render", _sfc_render$1], ["styles", [_style_0]]]);
 const showActionSheet2 = /* @__PURE__ */ defineAsyncApi("showActionSheet2", (options, { resolve, reject }) => {
@@ -20760,7 +20797,7 @@ const props$d = /* @__PURE__ */ extend({}, props$v, {
 });
 class UniEditorElement extends UniElement {
 }
-const index$f = /* @__PURE__ */ defineBuiltInComponent({
+const index$d = /* @__PURE__ */ defineBuiltInComponent({
   name: "Editor",
   props: props$d,
   emit: ["ready", "focus", "blur", "input", "statuschange", ...emit$1],
@@ -20832,7 +20869,7 @@ const ICONS = {
 };
 class UniIconElement extends UniElement {
 }
-const index$e = /* @__PURE__ */ defineBuiltInComponent({
+const index$c = /* @__PURE__ */ defineBuiltInComponent({
   name: "Icon",
   props: {
     type: {
@@ -20977,7 +21014,7 @@ const IMAGE_MODES = {
 };
 class UniImageElement extends UniElement {
 }
-const index$d = /* @__PURE__ */ defineBuiltInComponent({
+const index$b = /* @__PURE__ */ defineBuiltInComponent({
   name: "Image",
   props: props$c,
   rootElement: {
@@ -23519,7 +23556,7 @@ function createNavigatorOnClick(props2) {
 }
 class UniNavigatorElement extends UniElement {
 }
-const index$c = /* @__PURE__ */ defineBuiltInComponent({
+const index$a = /* @__PURE__ */ defineBuiltInComponent({
   name: "Navigator",
   inheritAttrs: false,
   compatConfig: {
@@ -24686,7 +24723,7 @@ const progressProps = {
 };
 class UniProgressElement extends UniElement {
 }
-const index$b = /* @__PURE__ */ defineBuiltInComponent({
+const index$9 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Progress",
   props: progressProps,
   rootElement: {
@@ -24802,7 +24839,7 @@ const props$9 = {
 };
 class UniRadioGroupElement extends UniElement {
 }
-const index$a = /* @__PURE__ */ defineBuiltInComponent({
+const index$8 = /* @__PURE__ */ defineBuiltInComponent({
   name: "RadioGroup",
   props: props$9,
   // emits: ['change'],
@@ -25348,7 +25385,7 @@ const props$7 = {
 };
 class UniRichTextElement extends UniElement {
 }
-const index$9 = /* @__PURE__ */ defineBuiltInComponent({
+const index$7 = /* @__PURE__ */ defineBuiltInComponent({
   name: "RichText",
   compatConfig: {
     MODE: 3
@@ -27323,7 +27360,7 @@ function parseText(text2, options) {
 }
 class UniTextElement extends UniElement {
 }
-const index$8 = /* @__PURE__ */ defineBuiltInComponent({
+const __syscom_1 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Text",
   rootElement: {
     name: "uni-text",
@@ -27415,7 +27452,7 @@ class UniTextareaElement extends UniElement {
     (_a = this.querySelector("textarea")) == null ? void 0 : _a.focus(options);
   }
 }
-const index$7 = /* @__PURE__ */ defineBuiltInComponent({
+const index$6 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Textarea",
   props: props$1,
   emits: ["confirm", "linechange", ...emit],
@@ -27588,7 +27625,7 @@ const index$7 = /* @__PURE__ */ defineBuiltInComponent({
 });
 class UniViewElement extends UniElement {
 }
-const index$6 = /* @__PURE__ */ defineBuiltInComponent({
+const __syscom_0 = /* @__PURE__ */ defineBuiltInComponent({
   name: "View",
   props: /* @__PURE__ */ extend({}, hoverProps),
   rootElement: {
@@ -28737,42 +28774,42 @@ export {
   $off,
   $on,
   $once,
-  index$l as Ad,
-  index$k as AdContentPage,
-  index$j as AdDraw,
+  index$j as Ad,
+  index$i as AdContentPage,
+  index$h as AdDraw,
   AsyncErrorComponent,
   AsyncLoadingComponent,
-  index$v as Button,
-  index$i as Camera,
+  index$t as Button,
+  index$g as Camera,
   indexX$4 as Canvas,
-  index$t as Checkbox,
-  index$u as CheckboxGroup,
-  index$n as CoverImage,
-  index$o as CoverView,
-  index$f as Editor,
-  index$x as Form,
-  index$e as Icon,
-  index$d as Image,
+  index$r as Checkbox,
+  index$s as CheckboxGroup,
+  index$l as CoverImage,
+  index$m as CoverView,
+  index$d as Editor,
+  index$v as Form,
+  index$c as Icon,
+  index$b as Image,
   Input,
-  index$w as Label,
+  index$u as Label,
   LayoutComponent,
   index$4 as ListItem,
   index$5 as ListView,
-  index$h as LivePlayer,
-  index$g as LivePusher,
+  index$f as LivePlayer,
+  index$e as LivePusher,
   Map$1 as Map,
   MovableArea,
   MovableView,
-  index$c as Navigator,
+  index$a as Navigator,
   PageComponent,
-  index$m as Picker,
+  index$k as Picker,
   PickerView,
   PickerViewColumn,
-  index$b as Progress,
+  index$9 as Progress,
   indexX$2 as Radio,
-  index$a as RadioGroup,
+  index$8 as RadioGroup,
   ResizeSensor,
-  index$9 as RichText,
+  index$7 as RichText,
   ScrollView,
   indexX$1 as Slider,
   index$2 as StickyHeader,
@@ -28780,8 +28817,8 @@ export {
   Swiper,
   SwiperItem,
   indexX as Switch,
-  index$8 as Text,
-  index$7 as Textarea,
+  __syscom_1 as Text,
+  index$6 as Textarea,
   UniButtonElement,
   UniCanvasElement,
   UniCheckboxElement,
@@ -28823,8 +28860,8 @@ export {
   UniViewElement,
   UniViewJSBridge$1 as UniViewJSBridge,
   UniWebViewElement,
-  index$p as Video,
-  index$6 as View,
+  index$n as Video,
+  __syscom_0 as View,
   indexX$3 as WebView,
   addInterceptor,
   addPhoneContact,
