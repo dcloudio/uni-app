@@ -2,7 +2,7 @@
 
 context('Waiting', () => {
   beforeEach(() => {
-    cy.visit('http://localhost:5173')
+    cy.visit('http://localhost:5174')
   })
 
   it('ssr-view', () => {

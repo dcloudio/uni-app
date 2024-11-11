@@ -70,7 +70,7 @@ jobs:
           install: false
           start: npm run dev:ssr
           working-directory: ./packages/playground/ssr-x
-          wait-on: 'http://localhost:5173'
+          wait-on: 'http://localhost:5174'
           wait-on-timeout: 480
           browser: chrome
         env:
