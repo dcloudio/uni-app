@@ -1,9 +1,18 @@
 'use strict';
 
 /**
- * 获取系统信息
+ * 老版本兼容，系统信息
  */
 const sys = uni.getSystemInfoSync();
+// /**
+//  * app基础信息
+//  */
+// export const baseInfo = uni.getAppBaseInfo()
+
+// /**
+//  * 设备相关
+//  */
+// export const deviceInfo = uni.getDeviceInfo()
 
 // 访问开始即启动小程序，访问结束结分为：进入后台超过5min、在前台无任何操作超过30min、在新的来源打开小程序；
 const STAT_VERSION = process.env.UNI_COMPILER_VERSION;
@@ -190,6 +199,8 @@ const get_platform_name = () => {
   const platformList = {
     app: 'n',
     'app-plus': 'n',
+    'app-harmony':'n',
+    'mp-harmony':'mhm',
     h5: 'h5',
     'mp-weixin': 'wx',
     [aliArr.reverse().join('')]: 'ali',
@@ -265,7 +276,7 @@ const get_scene = (options) => {
 /**
  * 获取页面url，不包含参数
  */
-const get_route$1 = (pageVm) => {
+const get_route = (pageVm) => {
   let _self = pageVm || get_page_vm();
   if (get_platform_name() === 'bd') {
     let mp_route = _self.$mp && _self.$mp.page && _self.$mp.page.is;
@@ -506,13 +517,16 @@ const uni_cloud_config = () => {
 const get_space = (config) => {
   const uniCloudConfig = uni_cloud_config();
   const { spaceId, provider, clientSecret ,secretKey,secretId} = uniCloudConfig;
-  const space_type = ['tcb', 'tencent', 'aliyun','alipay'];
+  const space_type = ['tcb', 'tencent', 'aliyun','alipay','private','dcloud'];
   const is_provider = space_type.indexOf(provider) !== -1;
   const is_aliyun = provider === 'aliyun' && spaceId && clientSecret;
   const is_tcb = (provider === 'tcb' || provider === 'tencent') && spaceId;
   const is_alipay = provider === 'alipay' && spaceId && secretKey && secretId;
 
-  if (is_provider && (is_aliyun || is_tcb || is_alipay)) {
+  const is_private = provider === 'private' && spaceId && clientSecret;
+  const is_dcloud = provider === 'dcloud' && spaceId && clientSecret;
+
+  if (is_provider && (is_aliyun || is_tcb || is_alipay || is_private || is_dcloud)) {
     return uniCloudConfig
   } else {
     if (config && config.spaceId) {
@@ -762,11 +776,12 @@ const get_residence_time = (type) => {
 };
 
 const eport_Interval = get_report_Interval(OPERATING_TIME);
+
 // 统计数据默认值
 let statData = {
   uuid: get_uuid(), // 设备标识
   ak: stat_config.appid, // uni-app 应用 Appid
-  p: sys.platform === 'android' ? 'a' : 'i', // 手机系统
+  p: '', // 手机系统，客户端平台
   ut: get_platform_name(), // 平台类型
   mpn: get_pack_name(), // 原生平台包名、小程序 appid
   usv: STAT_VERSION, // 统计 sdk 版本
@@ -779,7 +794,7 @@ let statData = {
   tt: '',
   brand: sys.brand || '', // 手机品牌
   md: sys.model, // 手机型号
-  sv: sys.system.replace(/(Android|iOS)\s/, ''), // 手机系统版本
+  sv: '', // 手机系统版本
   mpsdk: sys.SDKVersion || '', // x程序 sdk version
   mpv: sys.version || '', // 小程序平台版本 ，如微信、支付宝
   lang: sys.language, // 语言
@@ -789,6 +804,26 @@ let statData = {
   sw: sys.screenWidth, // screenWidth 屏幕宽度
   sh: sys.screenHeight, // screenHeight 屏幕高度
 };
+
+// 客户端平台，只有app平台平台可以用到
+if(sys.platform){
+  switch (sys.platform) {
+    case 'android':
+      statData.p = 'a';
+      break
+    case 'ios':
+      statData.p = 'i';
+      break
+    case 'harmonyos': 
+      statData.p = 'h';
+      break
+  }
+}
+
+// 获取手机版本
+if (sys.system){
+  statData.sv = sys.system.replace(/(Android|iOS)\s/, '');
+}
 class Report {
   constructor() {
     // 页面实例
@@ -910,6 +945,19 @@ class Report {
           cst: 2,
         };
         this.sendReportRequest(options);
+      } else {
+        // 在没有超过时限的时候 ，判断场景值 ，如果是场景值发生了变化，则需要上报应用启动数据
+        // 目前只有微信小程序生效
+        const scene = get_scene();
+        if (scene !== this.statData.sc) {
+          let lastPageRoute = uni.getStorageSync('_STAT_LAST_PAGE_ROUTE');
+          let options = {
+            path: lastPageRoute,
+            scene: scene,
+            cst: 2,
+          };
+          this.sendReportRequest(options);
+        }
       }
       // 状态重置
       this.__licationHide = false;
@@ -955,7 +1003,7 @@ class Report {
     };
 
     const route = get_page_route(self);
-    const routepath = get_route$1(self);
+    const routepath = get_route(self);
 
     this._navigationBarTitle.config = get_page_name(routepath);
     // 表示应用触发 ，页面切换不触发之后的逻辑
@@ -1016,14 +1064,14 @@ class Report {
     let query = is_opt ? '?' + JSON.stringify(options.query) : '';
     const last_time = get_last_visit_time();
     // 非老用户
-    if(last_time !== 0 || !last_time){
+    if (last_time !== 0 || !last_time) {
       const odid = get_odid();
 
       // 2.0 处理规则
       {
         const have_device = is_handle_device();
         // 如果没有上报过设备信息 ，则需要上报设备信息
-        if(!have_device) {
+        if (!have_device) {
           this.statData.odid = odid;
         }
       }
@@ -1100,7 +1148,7 @@ class Report {
     let routepath = '';
 
     try {
-      routepath = get_route$1();
+      routepath = get_route();
     } catch (error) {
       const launch_options = dbGet('__launch_options');
       routepath = launch_options.path;
