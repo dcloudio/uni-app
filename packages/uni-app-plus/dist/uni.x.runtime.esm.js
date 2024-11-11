@@ -3227,7 +3227,7 @@ var pageScrollTo = /* @__PURE__ */ defineAsyncApi(API_PAGE_SCROLL_TO, (options, 
   scrollViewNode.scrollTop = top;
   res.resolve();
 }, PageScrollToProtocol, PageScrollToOptions);
-var SOURCE_REG = /(.+\.((ttf)|(otf)|(woff2?))$)|(^(http|https):\/\/.+)/;
+var SOURCE_REG = /(.+\.((ttf)|(otf)|(woff2?))$)|(^(http|https):\/\/.+)|(^(data:font\/))/;
 function removeUrlWrap(source) {
   if (source.startsWith("url(")) {
     source = source.substring(4, source.length - 1);

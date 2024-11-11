@@ -1434,6 +1434,8 @@ interface StringConstructor {
   //(value ?: any) : string;
   readonly prototype : String;
   /**
+   * String.fromCharCode() 静态方法返回由指定的 UTF-16 码元序列创建的字符串。
+   * @param codes 介于 0 和 65535（0xFFFF）之间的数字，表示一个 UTF-16 码元。大于 0xFFFF 的数字会被截断为最后的 16 位。不进行有效性检查。
    * @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/buildin-object-api/string.html#fromCharCode
    * @uniPlatform {
    *    "app": {
