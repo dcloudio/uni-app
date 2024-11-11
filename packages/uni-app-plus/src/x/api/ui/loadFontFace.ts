@@ -39,7 +39,7 @@ const SOURCE_REG =
 function removeUrlWrap(source: string): string {
   // 考虑 url(xxx) format(xxx) 的情况，去掉 format(xxx)
   if (source.startsWith('url(')) {
-    if (source.split('format(').length > 0) {
+    if (source.split('format(').length > 1) {
       source = source.split('format(')[0].trim()
     }
     source = source.substring(4, source.length - 1)
