@@ -9,7 +9,7 @@
   import { SlotsType } from 'vue'
   //#endif
 
-  //#ifdef WEB || APP-IOS
+  //#ifdef WEB || APP-IOS || MP
   let registerFlag = false
   //#endif
 
@@ -296,7 +296,7 @@
     },
     data() {
       return {
-        //#ifdef WEB
+        //#ifdef WEB || MP
         // TODO 修复类型错误
         // @ts-ignore
         dataList: ssrRef([] as Array<UTSJSONObject>) as Array<UTSJSONObject>,
@@ -316,7 +316,7 @@
         error: null as UniCloudError | null
       }
     },
-    //#ifdef WEB || APP-IOS
+    //#ifdef WEB || APP-IOS || MP
     beforeCreate() {
       if (!registerFlag) {
         registerFlag = true
@@ -407,7 +407,7 @@
       uniCloudDBElement.onUpdate = this.update;
       uniCloudDBElement.onRemove = this.remove;
       //#endif
-      //#ifdef WEB
+      //#ifdef WEB || MP
       uniCloudDBElement.onLoadData = this.loadData.bind(this);
       uniCloudDBElement.onLoadMore = this.loadMore.bind(this);
       uniCloudDBElement.onAdd = this.add.bind(this);
