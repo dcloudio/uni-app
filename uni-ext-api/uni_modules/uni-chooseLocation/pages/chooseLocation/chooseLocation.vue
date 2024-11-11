@@ -30,7 +30,8 @@
       </view>
       <scroll-view :id="scrollId" :ref="scrollId" :scroll-with-animation="false" direction="vertical" :scroll-top="scrollTop" :lower-threshold="500" @scrolltolower="scrolltolower"
         class="uni-choose-location-poi-list">
-        <view class="uni-choose-location-poi-search-loading" v-if="locationLoading"><text
+        <view class="uni-choose-location-poi-search-error" v-if="errMsg != ''"><text class="uni-choose-location-poi-search-error-text">{{ errMsg }}</text></view>
+        <view class="uni-choose-location-poi-search-loading" v-else-if="locationLoading"><text
             class="uni-choose-location-poi-search-loading-text">{{ languageCom['locationLoading'] }}</text></view>
         <view class="uni-choose-location-poi-search-loading" v-else-if="searchLoading && pageIndex == 1"><text
             class="uni-choose-location-poi-search-loading-text">{{ languageCom['loading'] }}</text></view>
@@ -53,7 +54,6 @@
 </template>
 
 <script lang="ts">
-
   type ControlPosition = {
     left : number,
     top : number,
@@ -187,7 +187,8 @@
           selected: -1,
           pois: [] as Array<Poi>,
           scrollTop: 0
-        } as LastPoi
+        } as LastPoi,
+        errMsg: ""
       }
     },
     onLoad(options : UTSJSONObject) {
@@ -289,22 +290,32 @@
         }
       },
       callUniMapCo(action : string, data : UTSJSONObject) : Promise<UTSJSONObject> {
-        const uniMapCo = uniCloud.importObject("uni-map-co", {
-          customUI: true
-        });
         return new Promise((resolve, reject) => {
+          this.errMsg = "";
+          if (typeof uniCloud == 'undefined') {
+            this.errMsg = "uni.chooseLocation 依赖 uniCloud 的 uni-map-common 插件，请先关联服务空间，并安装 uni-map-common 插件，插件地址：https://ext.dcloud.net.cn/plugin?id=13872";
+            console.error(this.errMsg);
+            reject({
+              errCode: -1,
+              errMsg: '请先关联服务空间'
+            });
+          }
+          const uniMapCo = uniCloud.importObject("uni-map-co", {
+            customUI: true
+          });
           uniMapCo.chooseLocation({
             action: action,
             data: data
           }).then((res : UTSJSONObject) => {
             resolve(res);
           }).catch((err) => {
-            console.error('err: ', err);
-            // uni.showModal({
-            //   title: '提示',
-            //   content: (err as UniCloudError).errMsg,
-            //   showCancel: false
-            // });
+            const errMsg = (err as UniCloudError).errMsg;
+            if (errMsg != null && (errMsg.indexOf("在云端不存在") > -1 || errMsg.indexOf("未匹配") > -1)) {
+              this.errMsg = "uni.chooseLocation 依赖 uniCloud 的 uni-map-common 插件，请安装 uni-map-common 插件，插件地址：https://ext.dcloud.net.cn/plugin?id=13872";
+              console.error(this.errMsg);
+            } else {
+              console.error('err: ', err);
+            }
             reject(err);
           });
         });
@@ -575,14 +586,13 @@
 </script>
 
 <style>
-  
   @font-face {
-  	font-family: UniChooseLocationFontFamily;
+    font-family: UniChooseLocationFontFamily;
     src: url('data:font/ttf;charset=utf-8;base64,AAEAAAALAIAAAwAwR1NVQiCLJXoAAAE4AAAAVE9TLzI8Rkp9AAABjAAAAGBjbWFw0euemwAAAgAAAAGyZ2x5ZuBfKy8AAAPAAAACtGhlYWQpySFOAAAA4AAAADZoaGVhB94DhgAAALwAAAAkaG10eBQAAAAAAAHsAAAAFGxvY2EBUAHAAAADtAAAAAxtYXhwARIAfQAAARgAAAAgbmFtZUTMSfwAAAZ0AAADS3Bvc3RLRtf0AAAJwAAAAFIAAQAAA4D/gABcBAAAAAAABAAAAQAAAAAAAAAAAAAAAAAAAAUAAQAAAAEAAI/TJ/hfDzz1AAsEAAAAAADjVO6oAAAAAONU7qgAAP+ABAADgQAAAAgAAgAAAAAAAAABAAAABQBxAAMAAAAAAAIAAAAKAAoAAAD/AAAAAAAAAAEAAAAKADAAPgACREZMVAAObGF0bgAaAAQAAAAAAAAAAQAAAAQAAAAAAAAAAQAAAAFsaWdhAAgAAAABAAAAAQAEAAQAAAABAAgAAQAGAAAAAQAAAAQEAAGQAAUAAAKJAswAAACPAokCzAAAAesAMgEIAAACAAUDAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFBmRWQAwOYx560DgP+AAAAD3ACAAAAAAQAAAAAAAAAAAAAAAAACBAAAAAQAAAAEAAAABAAAAAQAAAAAAAAFAAAAAwAAACwAAAAEAAABcgABAAAAAABsAAMAAQAAACwAAwAKAAABcgAEAEAAAAAKAAgAAgAC5jHmU+aD563//wAA5jHmU+aD563//wAAAAAAAAAAAAEACgAKAAoACgAAAAIAAwAEAAEAAAEGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAwAAAAAAEAAAAAAAAAABAAA5jEAAOYxAAAAAgAA5lMAAOZTAAAAAwAA5oMAAOaDAAAABAAA560AAOetAAAAAQAAAAAAAABIAGYBCAFaAAIAAP/SA4cDNgAdACoAACUGBwYnLgEnJjc+ATc2Fx4BFxYHBgcXHgEOAiYnJTI+ATQuASIOARQeAQJlSFdVT1FsDQwdHodWU1JTeBQUFhc+7AUFBAsPEAX+T0uASkqAln9LS3/MMwkIICKLV1RQUnMQEBoagVZTUlU+7AYPDwsEBAbrSoCWf0tLf5aASgAAAAEAAAAAA8ACyAANAAATNwU3Njc2NxcHBgcGB0A5AQdAVGaPnxdXbWuWfAGPN986TFl8hTpVbG6aiQAAAAMAAP+ABAADgQAzAGcAcAAAAQYHBgcGBxUUBi4BPQEmJyYnJicjIiY+ATsBNjc2NzY3NTQ2MhYdARYXFhcWFzM2HgEGKwIiJj4BOwEmJyYnJicVFAYiJj0BBgcGBwYHMzYeAQYrARYXFhcWFzU0Nh4BHQE2NzY3NiUiJjQ2MhYUBgOyBjk3WlxtDxUPbF1aNzgGNAsPAQ4LNAY4N1pdbA8VD21cWjc5BjMLDwEPC2eaCg8BDgqaBjIwT1BfDxUPXlFOMTEGmAsPAQ8LmQYxMU5RXhAVDl9QTzAy/ocWHR0rHh4BZmxdWjc4BzMLDwEOCzMHODdaXWwQFA9tXFo3OQY0ChAOCzUGOTdaXG0BDxUQEBQPX1BPMDEHmQsODwqZBzEwT1BfAQ8VEF5RTjExBpgLDwEOC5gGMTFOUUUdKx4eKx0AAAMAAP+BAyoDfgAIACYAMwAABRQWMjY0JiIGExEUBisBIiY1ES4BJyY1NDc2NzYyFxYXFhUUBw4BAQYeAj4BLgMOAQHAJTUmJjUlagYEQAQHR3UhIiknREWiRUQnKSIhdf7lAitPXFAuAS1LW00vVBIZGSMZGQFx/ogEBgYEAXgKUz9BSVFFRCcpKSdERVFJQT9TAR0uUTACLk9cTC0CK0sAAAAAAAASAN4AAQAAAAAAAAATAAAAAQAAAAAAAQAbABMAAQAAAAAAAgAHAC4AAQAAAAAAAwAbADUAAQAAAAAABAAbAFAAAQAAAAAABQALAGsAAQAAAAAABgAbAHYAAQAAAAAACgArAJEAAQAAAAAACwATALwAAwABBAkAAAAmAM8AAwABBAkAAQA2APUAAwABBAkAAgAOASsAAwABBAkAAwA2ATkAAwABBAkABAA2AW8AAwABBAkABQAWAaUAAwABBAkABgA2AbsAAwABBAkACgBWAfEAAwABBAkACwAmAkdDcmVhdGVkIGJ5IGljb25mb250VW5pQ2hvb3NlTG9jYXRpb25Gb250RmFtaWx5UmVndWxhclVuaUNob29zZUxvY2F0aW9uRm9udEZhbWlseVVuaUNob29zZUxvY2F0aW9uRm9udEZhbWlseVZlcnNpb24gMS4wVW5pQ2hvb3NlTG9jYXRpb25Gb250RmFtaWx5R2VuZXJhdGVkIGJ5IHN2ZzJ0dGYgZnJvbSBGb250ZWxsbyBwcm9qZWN0Lmh0dHA6Ly9mb250ZWxsby5jb20AQwByAGUAYQB0AGUAZAAgAGIAeQAgAGkAYwBvAG4AZgBvAG4AdABVAG4AaQBDAGgAbwBvAHMAZQBMAG8AYwBhAHQAaQBvAG4ARgBvAG4AdABGAGEAbQBpAGwAeQBSAGUAZwB1AGwAYQByAFUAbgBpAEMAaABvAG8AcwBlAEwAbwBjAGEAdABpAG8AbgBGAG8AbgB0AEYAYQBtAGkAbAB5AFUAbgBpAEMAaABvAG8AcwBlAEwAbwBjAGEAdABpAG8AbgBGAG8AbgB0AEYAYQBtAGkAbAB5AFYAZQByAHMAaQBvAG4AIAAxAC4AMABVAG4AaQBDAGgAbwBvAHMAZQBMAG8AYwBhAHQAaQBvAG4ARgBvAG4AdABGAGEAbQBpAGwAeQBHAGUAbgBlAHIAYQB0AGUAZAAgAGIAeQAgAHMAdgBnADIAdAB0AGYAIABmAHIAbwBtACAARgBvAG4AdABlAGwAbABvACAAcAByAG8AagBlAGMAdAAuAGgAdAB0AHAAOgAvAC8AZgBvAG4AdABlAGwAbABvAC4AYwBvAG0AAAIAAAAAAAAACgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABQECAQMBBAEFAQYABnNvdXN1bwdnb3V4dWFuB2Rpbmd3ZWkLZGl0dS10dWRpbmcAAAAA') format('truetype');
   }
-  
-  
-  
+
+
+
   .uni-choose-location-icons {
     font-family: "UniChooseLocationFontFamily";
     font-size: 16px;
@@ -764,7 +774,18 @@
   .uni-choose-location .uni-choose-location-poi .uni-choose-location-poi-list .uni-choose-location-poi-search-loading .uni-choose-location-poi-search-loading-text {
     color: #191919;
   }
-
+  
+  .uni-choose-location .uni-choose-location-poi .uni-choose-location-poi-list .uni-choose-location-poi-search-error {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+  }
+  
+  .uni-choose-location .uni-choose-location-poi .uni-choose-location-poi-list .uni-choose-location-poi-search-error .uni-choose-location-poi-search-error-text {
+    color: #191919;
+    font-size: 14px;
+  }
+  
   .uni-choose-location .uni-choose-location-poi .uni-choose-location-poi-list .uni-choose-location-poi-item {
     position: relative;
     padding: 15px 10px;
@@ -869,7 +890,7 @@
     box-shadow: 0px 0px 20px 2px rgba(0, 0, 0, .3);
     border-radius: 5px;
   }
-  
+
   .uni-choose-location .uni-choose-location-map-reset.uni-choose-location-landscape {
     left: 40px;
     bottom: 40px;
