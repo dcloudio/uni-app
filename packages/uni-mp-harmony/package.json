@@ -1,0 +1,40 @@
+{
+  "private": true,
+  "name": "@dcloudio/uni-mp-harmony",
+  "version": "3.0.0-alpha-4030120240925001",
+  "description": "uni-app mp-harmony",
+  "main": "dist/index.js",
+  "files": [
+    "dist",
+    "dist-x"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dcloudio/uni-app.git",
+    "directory": "packages/uni-mp-harmony"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "license": "Apache-2.0",
+  "uni-app": {
+    "name": "mp-harmony",
+    "title": "鸿蒙元服务",
+    "apply": [
+      "mp-harmony"
+    ],
+    "main": "dist/uni.compiler.js"
+  },
+  "gitHead": "33e807d66e1fe47e2ee08ad9c59247e37b8884da",
+  "devDependencies": {
+    "@dcloudio/uni-mp-compiler": "3.0.0-alpha-4030120240925001"
+  },
+  "dependencies": {
+    "@dcloudio/uni-cli-shared": "3.0.0-alpha-4030120240925001",
+    "@dcloudio/uni-mp-vite": "3.0.0-alpha-4030120240925001",
+    "@dcloudio/uni-mp-vue": "3.0.0-alpha-4030120240925001",
+    "@dcloudio/uni-quickapp-webview": "3.0.0-alpha-4030120240925001",
+    "@dcloudio/uni-shared": "3.0.0-alpha-4030120240925001",
+    "@vue/shared": "3.4.21"
+  }
+}
