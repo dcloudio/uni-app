@@ -2345,7 +2345,8 @@ function onResize$1(res) {
   UniServiceJSBridge.invokeOnCallback("onWindowResize", res);
 }
 function onAppEnterForeground(enterOptions2) {
-  const page = getCurrentPage().vm;
+  var _a;
+  const page = (_a = getCurrentPage()) == null ? void 0 : _a.vm;
   invokeHook(
     getApp().vm,
     ON_SHOW,
@@ -2354,12 +2355,13 @@ function onAppEnterForeground(enterOptions2) {
   invokeHook(page, ON_SHOW);
 }
 function onAppEnterBackground() {
+  var _a;
   invokeHook(
     getApp().vm,
     ON_HIDE
   );
   invokeHook(
-    getCurrentPage().vm,
+    (_a = getCurrentPage()) == null ? void 0 : _a.vm,
     ON_HIDE
   );
 }
