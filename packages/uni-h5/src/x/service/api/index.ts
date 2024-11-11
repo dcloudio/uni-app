@@ -54,7 +54,6 @@ export * from '../../../service/api/network/socket'
 
 export * from '../../../service/api/location/getLocation'
 export * from '../../../service/api/location/openLocation'
-export * from '../../../service/api/location/chooseLocation'
 export * from '../../../service/api/location/locationChange'
 
 export * from '../../../service/api/route/navigateBack'
@@ -135,6 +134,8 @@ export * from './route/openDialogPage'
 export * from './route/closeDialogPage'
 // @ts-expect-error
 export * from '@dcloudio/uni-ext-api/uni-actionSheet'
+// @ts-expect-error
+export * from '@dcloudio/uni-ext-api/uni-chooseLocation'
 //#endif
 
 // export * from '@dcloudio/uni-ext-api/uni-getLaunchOptionsSync'
