@@ -34,10 +34,14 @@ import { getNativeApp } from '../../framework/app/app'
 
 // 支持 data:font/ttf 格式 base64 字体
 const SOURCE_REG =
-  /(.+\.((ttf)|(otf)|(woff2?))$)|(^(http|https):\/\/.+)|(^(data:font\/))/
+  /(.+\.((ttf)|(otf)|(woff2?))$)|(^(http|https):\/\/.+)|(^(data:font).+)/
 
 function removeUrlWrap(source: string): string {
+  // 考虑 url(xxx) format(xxx) 的情况，去掉 format(xxx)
   if (source.startsWith('url(')) {
+    if (source.split('format(').length > 0) {
+      source = source.split('format(')[0].trim()
+    }
     source = source.substring(4, source.length - 1)
   }
   if (source.startsWith('"') || source.startsWith("'")) {
