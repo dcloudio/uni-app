@@ -8,7 +8,7 @@ import { type CompilerOptions, compile } from '@dcloudio/uni-mp-compiler'
 import {
   compilerOptions,
   customElements,
-  miniProgram,
+  getMiniProgramOptions,
 } from '../src/compiler/options'
 
 export function assert(
@@ -30,7 +30,7 @@ export function assert(
       concise: true,
     },
     miniProgram: {
-      ...miniProgram,
+      ...getMiniProgramOptions(!!options.isX),
       emitFile({ source }) {
         // console.log(source)
         if (!options.onError) {

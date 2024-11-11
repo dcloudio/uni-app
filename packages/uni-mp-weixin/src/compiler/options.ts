@@ -71,56 +71,64 @@ export const compilerOptions: CompilerOptions = {
 
 const COMPONENTS_DIR = 'wxcomponents'
 
-export const miniProgram: MiniProgramCompilerOptions = {
-  class: {
-    array: true,
-  },
-  slot: {
-    fallbackContent: false,
-    dynamicSlotNames: true,
-  },
-  event: {
-    key: true,
-  },
-  directive: 'wx:',
-  lazyElement: {
-    canvas: [
-      { name: 'bind', arg: ['canvas-id', 'id'] },
-      {
-        name: 'on',
-        arg: ['touchstart', 'touchmove', 'touchcancel', 'touchend'],
-      },
-    ],
-    editor: [
-      {
-        name: 'on',
-        arg: ['ready'],
-      },
-    ],
-    'scroll-view': [
-      {
-        name: 'on',
-        arg: ['dragstart', 'dragging', 'dragend'],
-      },
-    ],
-    // iOS 平台需要延迟
-    input: [{ name: 'bind', arg: ['type'] }],
-    textarea: [{ name: 'on', arg: ['input'] }],
-  },
-  component: {
-    ':host': true,
-    dir: COMPONENTS_DIR,
-    vShow: COMPONENT_CUSTOM_HIDDEN,
-    getPropertySync: false, // 为了避免 Setting data field "uP" to undefined is invalid 警告
-    normalizeName: (name) =>
-      name.startsWith('wx-') ? name.replace('wx-', 'weixin-') : name,
-  },
-  filter: {
-    lang: 'wxs',
-    setStyle: true,
-  },
+export function getMiniProgramOptions(
+  isX: boolean
+): MiniProgramCompilerOptions {
+  return {
+    class: {
+      array: true,
+    },
+    slot: {
+      fallbackContent: false,
+      dynamicSlotNames: true,
+    },
+    event: {
+      key: true,
+    },
+    directive: 'wx:',
+    lazyElement: {
+      canvas: [
+        { name: 'bind', arg: ['canvas-id', 'id'] },
+        {
+          name: 'on',
+          arg: ['touchstart', 'touchmove', 'touchcancel', 'touchend'],
+        },
+      ],
+      editor: [
+        {
+          name: 'on',
+          arg: ['ready'],
+        },
+      ],
+      'scroll-view': [
+        {
+          name: 'on',
+          arg: ['dragstart', 'dragging', 'dragend'],
+        },
+      ],
+      // iOS 平台需要延迟
+      input: [{ name: 'bind', arg: ['type'] }],
+      textarea: [{ name: 'on', arg: ['input'] }],
+    },
+    component: {
+      ':host': true,
+      dir: COMPONENTS_DIR,
+      vShow: COMPONENT_CUSTOM_HIDDEN,
+      // 在 x 里边，已经把 u-p 补充了 || '' 来规避，理论上非 x 也可以，目前为了兼容性，暂时不开启
+      getPropertySync: isX, // 为了避免 Setting data field "uP" to undefined is invalid 警告
+      normalizeName: (name) =>
+        name.startsWith('wx-') ? name.replace('wx-', 'weixin-') : name,
+    },
+    filter: {
+      lang: 'wxs',
+      setStyle: true,
+    },
+  }
 }
+
 const projectConfigFilename = 'project.config.json'
+
+const miniProgram = getMiniProgramOptions(process.env.UNI_APP_X === 'true')
 
 export const options: UniMiniProgramPluginOptions = {
   cdn: 1,

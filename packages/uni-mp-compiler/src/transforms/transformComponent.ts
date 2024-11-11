@@ -292,7 +292,7 @@ export function rewritePropsBinding(
   node: ElementNode,
   context: TransformContext
 ) {
-  dir.exp = createSimpleExpression(
+  const exp = createSimpleExpression(
     genBabelExpr(
       rewirteWithHelper(
         RENDER_PROPS,
@@ -302,4 +302,10 @@ export function rewritePropsBinding(
       )!
     ) + (isIfElementNode(node) && node.vIf.name === 'else' ? `||''` : '')
   )
+
+  if (context.miniProgram.component?.getPropertySync) {
+    exp.content += "||''"
+  }
+
+  dir.exp = exp
 }
