@@ -15,4 +15,7 @@ process.env.UNI_CLOUD_SPACES = JSON.stringify([
 export default defineConfig({
   build: { minify: false },
   plugins: [uni({ viteLegacyOptions: false })],
+  server: {
+    port: 5174
+  }
 })
