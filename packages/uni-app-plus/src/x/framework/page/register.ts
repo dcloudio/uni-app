@@ -251,11 +251,10 @@ export function registerDialogPage(
 ) {
   const id = genWebviewId()
   const routeOptions = initRouteOptions(path, openType)
-  const pageStyle = new Map<string, any>([
-    ['navigationStyle', 'custom'],
-    ['backgroundColor', 'transparent'],
-    ['disableSwipeBack', true],
-  ])
+  const pageStyle = parsePageStyle(routeOptions)
+  pageStyle.set('navigationStyle', 'custom')
+  pageStyle.set('backgroundColorContent', 'transparent')
+  pageStyle.set('disableSwipeBack', true)
   const parentPage = dialogPage.getParentPage()
   const nativePage = (getPageManager() as any).createDialogPage(
     // @ts-expect-error
