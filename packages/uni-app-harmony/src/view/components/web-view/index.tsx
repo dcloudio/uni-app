@@ -14,14 +14,14 @@ import {
 } from '@dcloudio/uni-app-plus/constants'
 
 export type OperateWebViewType =
-  | 'evalJs'
+  | 'evalJS'
   | 'back'
   | 'forward'
   | 'reload'
   | 'stop'
 
 function useMethods(embedRef: Ref<InstanceType<typeof Embed> | null>) {
-  const MethodList = ['evalJs', 'back', 'forward', 'reload', 'stop']
+  const MethodList = ['evalJS', 'back', 'forward', 'reload', 'stop']
   const methods = {} as Record<OperateWebViewType, Function>
 
   for (let i = 0; i < MethodList.length; i++) {
@@ -31,7 +31,7 @@ function useMethods(embedRef: Ref<InstanceType<typeof Embed> | null>) {
       resolve: (res: any) => void
     ) {
       const embed = embedRef.value!
-      if (methodName === 'evalJs') {
+      if (methodName === 'evalJS') {
         return resolve(embed['runJavaScript']((data || {}).jsCode || ''))
       } else {
         resolve(embed[methodName]())
