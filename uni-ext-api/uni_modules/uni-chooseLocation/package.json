@@ -38,8 +38,7 @@
       "uni-getLocation",
       "uni-cloud-client",
       "uni-getLocation",
-      "uni-map-tencent",
-      "uni-cloud-client"
+      "uni-map-tencent"
     ],
     "uni-ext-api": {
       "uni": {

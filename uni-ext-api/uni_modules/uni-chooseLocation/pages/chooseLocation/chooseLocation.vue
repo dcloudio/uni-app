@@ -14,7 +14,8 @@
     <view class="uni-choose-location-nav" :style="'height:' + (60 + safeArea.top) + 'px;'">
       <view class="uni-choose-location-nav-btn uni-choose-location-nav-back-btn" :class="[landscapeClassCom]" :style="safeArea.top > 0 ? 'top: ' + safeArea.top + 'px;' : ''"><text
           class="uni-choose-location-nav-text uni-choose-location-nav-back-text" @click="back">{{ languageCom['back'] }}</text></view>
-      <view class="uni-choose-location-nav-btn uni-choose-location-nav-confirm-btn" :class="[landscapeClassCom,selected < 0 ? 'disable' : '']" :style="safeArea.top > 0 ? 'top: ' + safeArea.top + 'px;' : ''" @click="confirm">
+      <view class="uni-choose-location-nav-btn uni-choose-location-nav-confirm-btn" :class="[landscapeClassCom,selected < 0 ? 'disable' : '']"
+        :style="safeArea.top > 0 ? 'top: ' + safeArea.top + 'px;' : ''" @click="confirm">
         <text class="uni-choose-location-nav-text uni-choose-location-nav-confirm-text">{{ languageCom['ok'] }}</text>
       </view>
     </view>
@@ -54,6 +55,10 @@
 </template>
 
 <script lang="ts">
+  // #ifdef APP-ANDROID
+  import "io.dcloud.unicloud.*"
+  // #endif
+  
   type ControlPosition = {
     left : number,
     top : number,
@@ -138,6 +143,17 @@
     }
   };
 
+  // #ifdef APP-ANDROID
+  class CloudObjectUniMapCo extends InternalUniCloudCloudObjectCaller {
+    constructor(obj : InternalUniCloudCloudObject) {
+      super(obj)
+    }
+    chooseLocation(...do_not_transform_spread : Array<any | null>) : Promise<UTSJSONObject> {
+      return this._obj.callMethod('chooseLocation', this._getArgs(...do_not_transform_spread))
+    }
+  }
+  // #endif
+
   export default {
     data() {
       const id1 = `UniMap1_${(Math.random() * 10e5).toString(36)}` as string;
@@ -217,10 +233,10 @@
         this.failEventName = options['failEventName']! as string;
         uni.$on(this.optionsEventName, (data : UTSJSONObject) => {
           if (data['latitude'] != null) {
-            this.chooseLocationOptions.latitude = data.getNumber('latitude');
+            this.chooseLocationOptions.latitude = data['latitude'] as number;
           }
           if (data['longitude'] != null) {
-            this.chooseLocationOptions.longitude = data.getNumber('longitude');
+            this.chooseLocationOptions.longitude = data['longitude'] as number;
           }
           if (data['keyword'] != null) {
             let keyword = data['keyword'] as string;
@@ -300,21 +316,34 @@
               errMsg: '请先关联服务空间'
             });
           }
+          // #ifdef APP-ANDROID
+          const uniCloudInstance = uniCloud as UniCloud;
+          // @ts-ignore
+          const uniMapCo = uniCloudInstance.importObject("uni-map-co", {
+            customUI: true,
+            // @ts-ignore
+          } as UniCloudImportObjectOptions, UTSAndroid.getJavaClass(CloudObjectUniMapCo))
+          // #endif
+          // #ifndef APP-ANDROID
+          // @ts-ignore
           const uniMapCo = uniCloud.importObject("uni-map-co", {
-            customUI: true
+            customUI: true,
           });
+          // #endif
           uniMapCo.chooseLocation({
             action: action,
             data: data
           }).then((res : UTSJSONObject) => {
             resolve(res);
           }).catch((err) => {
-            const errMsg = (err as UniCloudError).errMsg;
-            if (errMsg != null && (errMsg.indexOf("在云端不存在") > -1 || errMsg.indexOf("未匹配") > -1)) {
-              this.errMsg = "uni.chooseLocation 依赖 uniCloud 的 uni-map-common 插件，请安装 uni-map-common 插件，插件地址：https://ext.dcloud.net.cn/plugin?id=13872";
-              console.error(this.errMsg);
-            } else {
-              console.error('err: ', err);
+            if (err instanceof UniCloudError) {
+              const errMsg = (err as UniCloudError).errMsg;
+              if (errMsg.indexOf("在云端不存在") > -1 || errMsg.indexOf("未匹配") > -1) {
+                this.errMsg = "uni.chooseLocation 依赖 uniCloud 的 uni-map-common 插件，请安装 uni-map-common 插件，插件地址：https://ext.dcloud.net.cn/plugin?id=13872";
+                console.error(this.errMsg);
+              } else {
+                console.error('err: ', err);
+              }
             }
             reject(err);
           });
@@ -774,18 +803,18 @@
   .uni-choose-location .uni-choose-location-poi .uni-choose-location-poi-list .uni-choose-location-poi-search-loading .uni-choose-location-poi-search-loading-text {
     color: #191919;
   }
-  
+
   .uni-choose-location .uni-choose-location-poi .uni-choose-location-poi-list .uni-choose-location-poi-search-error {
     display: flex;
     align-items: center;
     padding: 10px;
   }
-  
+
   .uni-choose-location .uni-choose-location-poi .uni-choose-location-poi-list .uni-choose-location-poi-search-error .uni-choose-location-poi-search-error-text {
     color: #191919;
     font-size: 14px;
   }
-  
+
   .uni-choose-location .uni-choose-location-poi .uni-choose-location-poi-list .uni-choose-location-poi-item {
     position: relative;
     padding: 15px 10px;
