@@ -4,8 +4,9 @@ import {
   isSystemDialogPage,
   parseUrl,
 } from '@dcloudio/uni-shared'
-import { invokeHook } from '@dcloudio/uni-core'
+import { getCurrentPage, getRouteMeta, invokeHook } from '@dcloudio/uni-core'
 
+import { ANI_DURATION, ANI_SHOW } from '../../../service/constants'
 import { showWebview } from './webview'
 import { beforeRoute, createNormalizeUrl } from '@dcloudio/uni-api'
 import {
@@ -20,7 +21,7 @@ import { closeNativeDialogPage } from './utils'
 export const openDialogPage = (
   options: OpenDialogPageOptions
 ): UniDialogPage | null => {
-  const { url } = options
+  const { url, animationType } = options
   if (!options.url) {
     triggerFailCallback(options, 'url is required')
     return null
@@ -79,8 +80,12 @@ export const openDialogPage = (
       }
     }
   }
+  // @ts-expect-error
+  const [aniType, aniDuration] = initAnimation(path, animationType)
+
+  const noAnimation = aniType === 'none' || aniDuration === 0
   function callback(page: IPage) {
-    showWebview(page, 'none', 0, () => {
+    showWebview(page, aniType, aniDuration, () => {
       beforeRoute()
     })
   }
@@ -88,8 +93,9 @@ export const openDialogPage = (
   const page = registerDialogPage(
     { url, path, query, openType: 'openDialogPage' },
     dialogPage,
-    undefined,
-    0
+    noAnimation ? undefined : callback,
+    // 有动画时延迟创建 vm
+    noAnimation ? 0 : 1
   )
   // @ts-expect-error
   dialogPage.__nativePageId = page.pageId
@@ -98,7 +104,9 @@ export const openDialogPage = (
     dialogPage.__nativeType = 'systemDialog'
   }
 
-  callback(page)
+  if (noAnimation) {
+    callback(page)
+  }
 
   const successOptions = {
     errMsg: 'openDialogPage:ok',
@@ -118,6 +126,24 @@ function triggerFailCallback(options: OpenDialogPageOptions, errMsg: string) {
   // @ts-expect-error
   options.fail?.(failOptions)
   options.complete?.(failOptions)
+}
+
+function initAnimation(path: string, animationType?: string) {
+  // 首页去除动画
+  if (!getCurrentPage()) {
+    return ['none', 0] as const
+  }
+  const { globalStyle } = __uniConfig
+  const meta = getRouteMeta(path)!
+  let _animationType =
+    animationType || meta.animationType || globalStyle.animationType || ANI_SHOW
+  if (_animationType == 'pop-in') {
+    _animationType = 'none'
+  }
+  return [
+    _animationType,
+    meta.animationDuration || globalStyle.animationDuration || ANI_DURATION,
+  ] as const
 }
 
 function closePreActionSheet(dialogPages: UniDialogPage[]) {
