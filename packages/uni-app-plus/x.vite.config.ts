@@ -132,7 +132,7 @@ export default defineConfig({
       customElement: true,
       template: {
         compilerOptions: {
-          isCustomElement: isAppIOSUVueNativeTag,
+          isNativeTag: isAppIOSUVueNativeTag,
         },
       },
     }),
