@@ -347,6 +347,8 @@ export function registerDialogPage(
       invokeHook(page, ON_RESIZE, args)
     })
     nativePage.startRender()
+    // @ts-expect-error
+    dialogPage.__nativePageId = nativePage.pageId
   }
   if (delay) {
     setTimeout(fn, delay)

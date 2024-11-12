@@ -97,8 +97,6 @@ export const openDialogPage = (
     // 有动画时延迟创建 vm
     noAnimation ? 0 : 1
   )
-  // @ts-expect-error
-  dialogPage.__nativePageId = page.pageId
   if (systemDialog) {
     // @ts-expect-error
     dialogPage.__nativeType = 'systemDialog'
