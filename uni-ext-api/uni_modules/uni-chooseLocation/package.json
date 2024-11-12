@@ -36,7 +36,9 @@
       "uni-theme",
       "uni-getSystemInfo",
       "uni-getLocation",
-      "uni-cloud-client"
+      "uni-cloud-client",
+      "uni-getLocation",
+      "uni-map-tencent"
     ],
     "uni-ext-api": {
       "uni": {
