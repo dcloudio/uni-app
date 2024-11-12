@@ -6,7 +6,7 @@ var __publicField = (obj, key, value) => {
 };
 import { withModifiers, createVNode, getCurrentInstance, ref, defineComponent, openBlock, createElementBlock, onMounted, provide, computed, watch, onUnmounted, inject, onBeforeUnmount, mergeProps, reactive, injectHook, nextTick, createApp, createBlock, watchEffect, isVNode, withDirectives, vShow, renderList, isReactive, Transition, effectScope, Fragment, onActivated, withCtx, KeepAlive, resolveDynamicComponent, markRaw, normalizeClass, normalizeStyle, createTextVNode, toDisplayString, createCommentVNode, onBeforeMount, onBeforeActivate, onBeforeDeactivate, createElementVNode, renderSlot, shallowRef, Comment, h } from "vue";
 import { isArray, isString, extend, remove, stringifyStyle, parseStringStyle, isPlainObject as isPlainObject$1, isFunction, capitalize, camelize, hasOwn, isObject, toRawType, makeMap as makeMap$1, isPromise, invokeArrayFns as invokeArrayFns$1, hyphenate } from "@vue/shared";
-import { once, UNI_STORAGE_LOCALE, I18N_JSON_DELIMITERS, Emitter, passive, initCustomDatasetOnce, resolveComponentInstance, normalizeStyles, addLeadingSlash, invokeArrayFns, removeLeadingSlash, resolveOwnerVm, resolveOwnerEl, ON_WXS_INVOKE_CALL_METHOD, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_SHOW, ON_HIDE, ON_PAGE_SCROLL, ON_REACH_BOTTOM, EventChannel, createRpx2Unit, defaultRpx2Unit, parseQuery, NAVBAR_HEIGHT, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, getLen, getCustomDataset, parseUrl, sortObject, ON_THEME_CHANGE, OFF_THEME_CHANGE, ON_HOST_THEME_CHANGE, OFF_HOST_THEME_CHANGE, updateElementStyle, LINEFEED, ON_WEB_INVOKE_APP_SERVICE, debounce, ON_BACK_PRESS, addFont, ON_NAVIGATION_BAR_CHANGE, scrollTo, RESPONSIVE_MIN_WIDTH, formatDateTime, normalizeTitleColor, ON_REACH_BOTTOM_DISTANCE, isSystemDialogPage, isSystemActionSheetDialogPage, ON_UNLOAD, onCreateVueApp, SCHEME_RE, DATA_RE, decodedQuery, WEB_INVOKE_APPSERVICE, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_PULL_DOWN_REFRESH, stringifyQuery as stringifyQuery$1, PRIMARY_COLOR, isUniLifecycleHook, ON_LOAD, UniLifecycleHooks, invokeCreateErrorHandler, invokeCreateVueAppHook } from "@dcloudio/uni-shared";
+import { once, UNI_STORAGE_LOCALE, I18N_JSON_DELIMITERS, Emitter, passive, initCustomDatasetOnce, resolveComponentInstance, normalizeStyles, addLeadingSlash, invokeArrayFns, removeLeadingSlash, resolveOwnerVm, resolveOwnerEl, ON_WXS_INVOKE_CALL_METHOD, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_SHOW, ON_HIDE, ON_PAGE_SCROLL, ON_REACH_BOTTOM, EventChannel, createRpx2Unit, defaultRpx2Unit, parseQuery, NAVBAR_HEIGHT, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, getLen, getCustomDataset, parseUrl, sortObject, ON_THEME_CHANGE, OFF_THEME_CHANGE, ON_HOST_THEME_CHANGE, OFF_HOST_THEME_CHANGE, updateElementStyle, LINEFEED, ON_WEB_INVOKE_APP_SERVICE, ON_BACK_PRESS, addFont, ON_NAVIGATION_BAR_CHANGE, scrollTo, RESPONSIVE_MIN_WIDTH, formatDateTime, normalizeTitleColor, ON_REACH_BOTTOM_DISTANCE, isSystemDialogPage, isSystemActionSheetDialogPage, ON_UNLOAD, onCreateVueApp, SCHEME_RE, DATA_RE, decodedQuery, debounce, WEB_INVOKE_APPSERVICE, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_PULL_DOWN_REFRESH, stringifyQuery as stringifyQuery$1, PRIMARY_COLOR, isUniLifecycleHook, ON_LOAD, UniLifecycleHooks, invokeCreateErrorHandler, invokeCreateVueAppHook } from "@dcloudio/uni-shared";
 import { onCreateVueApp as onCreateVueApp2 } from "@dcloudio/uni-shared";
 import { useRoute, isNavigationFailure, RouterView, useRouter, createRouter, createWebHistory, createWebHashHistory } from "vue-router";
 import { initVueI18n, isI18nStr, LOCALE_EN, LOCALE_ES, LOCALE_FR, LOCALE_ZH_HANS, LOCALE_ZH_HANT } from "@dcloudio/uni-i18n";
@@ -1126,45 +1126,6 @@ const initI18nVideoMsgsOnce = /* @__PURE__ */ once(() => {
     );
   }
 });
-const initI18nChooseLocationMsgsOnce = /* @__PURE__ */ once(() => {
-  const name = "uni.chooseLocation.";
-  const keys = ["search", "cancel"];
-  if (__UNI_FEATURE_I18N_EN__) {
-    useI18n().add(
-      LOCALE_EN,
-      normalizeMessages(name, keys, ["Find Place", "Cancel"]),
-      false
-    );
-  }
-  if (__UNI_FEATURE_I18N_ES__) {
-    useI18n().add(
-      LOCALE_ES,
-      normalizeMessages(name, keys, ["Encontrar", "Cancelar"]),
-      false
-    );
-  }
-  if (__UNI_FEATURE_I18N_FR__) {
-    useI18n().add(
-      LOCALE_FR,
-      normalizeMessages(name, keys, ["Trouve", "Annuler"]),
-      false
-    );
-  }
-  if (__UNI_FEATURE_I18N_ZH_HANS__) {
-    useI18n().add(
-      LOCALE_ZH_HANS,
-      normalizeMessages(name, keys, ["搜索地点", "取消"]),
-      false
-    );
-  }
-  if (__UNI_FEATURE_I18N_ZH_HANT__) {
-    useI18n().add(
-      LOCALE_ZH_HANT,
-      normalizeMessages(name, keys, ["搜索地點", "取消"]),
-      false
-    );
-  }
-});
 function initNavigationBarI18n(navigationBar) {
   if (isEnableLocale()) {
     return defineI18nProperties(navigationBar, [
@@ -1655,7 +1616,6 @@ const ICON_PATH_WAITING = "M15.84 0.096q-4.224 0-7.872 2.176-3.552 2.112-5.632 5
 const ICON_PATH_WARN = "M15.808 0.16q-4.224 0-7.872 2.176-3.552 2.112-5.632 5.728-2.144 3.744-2.144 8.128 0 4.192 2.144 7.872 2.112 3.52 5.632 5.632 3.68 2.144 7.872 2.144 4.384 0 8.128-2.144 3.616-2.080 5.728-5.632 2.176-3.648 2.176-7.872 0-4.384-2.176-8.128-2.112-3.616-5.728-5.728-3.744-2.176-8.128-2.176zM15.136 8.672h1.728q0.128 0 0.224 0.096t0.096 0.256l-0.384 10.24q0 0.064-0.048 0.112t-0.112 0.048h-1.248q-0.096 0-0.144-0.048t-0.048-0.112l-0.384-10.24q0-0.16 0.096-0.256t0.224-0.096zM16 23.328q-0.48 0-0.832-0.352t-0.352-0.848 0.352-0.848 0.832-0.352 0.832 0.352 0.352 0.848-0.352 0.848-0.832 0.352z";
 const ICON_PATH_BACK = "M21.781 7.844l-9.063 8.594 9.063 8.594q0.25 0.25 0.25 0.609t-0.25 0.578q-0.25 0.25-0.578 0.25t-0.578-0.25l-9.625-9.125q-0.156-0.125-0.203-0.297t-0.047-0.359q0-0.156 0.047-0.328t0.203-0.297l9.625-9.125q0.25-0.25 0.578-0.25t0.578 0.25q0.25 0.219 0.25 0.578t-0.25 0.578z";
 const ICON_PATH_CLOSE = "M17.25 16.156l7.375-7.313q0.281-0.281 0.281-0.641t-0.281-0.641q-0.25-0.25-0.625-0.25t-0.625 0.25l-7.375 7.344-7.313-7.344q-0.25-0.25-0.625-0.25t-0.625 0.25q-0.281 0.25-0.281 0.625t0.281 0.625l7.313 7.344-7.375 7.344q-0.281 0.25-0.281 0.625t0.281 0.625q0.125 0.125 0.281 0.188t0.344 0.063q0.156 0 0.328-0.063t0.297-0.188l7.375-7.344 7.375 7.406q0.125 0.156 0.297 0.219t0.328 0.063q0.188 0 0.344-0.078t0.281-0.203q0.281-0.25 0.281-0.609t-0.281-0.641l-7.375-7.406z";
-const ICON_PATH_CONFIRM = "M31.562 4.9966666659375q0.435 0.399 0.435 0.87 0.036 0.58-0.399 0.98l-18.61 19.917q-0.145 0.145-0.327 0.217-0.073 0.037-0.145 0.11-0.254 0.035-0.472 0.035-0.29 0-0.544-0.036l-0.145-0.072q-0.109-0.073-0.217-0.182l-0.11-0.072L0.363 16.2786666659375q-0.327-0.399-0.363-0.907 0-0.544 0.363-1.016 0.435-0.326 0.961-0.362 0.527-0.036 0.962 0.362l9.722 9.542L29.712 5.0326666659375q0.399-0.363 0.943-0.363 0.544-0.036 0.907 0.327z";
 function createSvgIconVNode(path, color = "#000", size = 27) {
   return createVNode(
     "svg",
@@ -3127,7 +3087,7 @@ const index$t = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const props$y = {
+const props$x = {
   disableScroll: {
     type: [Boolean, String],
     default: false
@@ -3163,7 +3123,7 @@ const indexX$4 = /* @__PURE__ */ defineBuiltInComponent({
   compatConfig: {
     MODE: 3
   },
-  props: props$y,
+  props: props$x,
   rootElement: {
     name: "uni-canvas",
     class: UniCanvasElement
@@ -3186,7 +3146,7 @@ const indexX$4 = /* @__PURE__ */ defineBuiltInComponent({
   }
 });
 const uniCheckGroupKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniCheckGroup" : "ucg");
-const props$x = {
+const props$w = {
   name: {
     type: String,
     default: ""
@@ -3196,7 +3156,7 @@ class UniCheckboxGroupElement extends UniElement {
 }
 const index$s = /* @__PURE__ */ defineBuiltInComponent({
   name: "CheckboxGroup",
-  props: props$x,
+  props: props$w,
   emits: ["change"],
   rootElement: {
     name: "uni-checkbox-group",
@@ -3256,7 +3216,7 @@ function useProvideCheckGroup(props2, trigger) {
   }
   return getFieldsValue;
 }
-const props$w = {
+const props$v = {
   checked: {
     type: [Boolean, String],
     default: false
@@ -3307,7 +3267,7 @@ class UniCheckboxElement extends UniElement {
 }
 const index$r = /* @__PURE__ */ defineBuiltInComponent({
   name: "Checkbox",
-  props: props$w,
+  props: props$v,
   rootElement: {
     name: "uni-checkbox",
     class: UniCheckboxElement
@@ -3448,7 +3408,7 @@ function useCheckboxInject(checkboxChecked, checkboxValue, reset) {
 let resetTimer;
 function iosHideKeyboard() {
 }
-const props$v = {
+const props$u = {
   cursorSpacing: {
     type: [Number, String],
     default: 0
@@ -6555,12 +6515,6 @@ const OpenDocumentProtocol = {
   fileType: String
 };
 const API_HIDE_KEYBOARD = "hideKeyboard";
-const API_CHOOSE_LOCATION = "chooseLocation";
-const ChooseLocationProtocol = {
-  keyword: String,
-  latitude: Number,
-  longitude: Number
-};
 const API_GET_LOCATION = "getLocation";
 const coordTypes$1 = ["wgs84", "gcj02"];
 const GetLocationOptions = {
@@ -9728,7 +9682,7 @@ function usePreventScroll() {
   onMounted(() => preventScroll(true));
   onUnmounted(() => preventScroll(false));
 }
-const props$u = {
+const props$t = {
   src: {
     type: String,
     default: ""
@@ -9736,7 +9690,7 @@ const props$u = {
 };
 const ImageView = /* @__PURE__ */ defineSystemComponent({
   name: "ImageView",
-  props: props$u,
+  props: props$t,
   setup(props2) {
     const state2 = reactive({
       direction: "none"
@@ -9823,10 +9777,10 @@ const ImageView = /* @__PURE__ */ defineSystemComponent({
     };
   }
 });
-function _isSlot$2(s) {
+function _isSlot$1(s) {
   return typeof s === "function" || Object.prototype.toString.call(s) === "[object Object]" && !isVNode(s);
 }
-const props$t = {
+const props$s = {
   urls: {
     type: Array,
     default() {
@@ -9845,7 +9799,7 @@ function getIndex(props2) {
 }
 const ImagePreview = /* @__PURE__ */ defineSystemComponent({
   name: "ImagePreview",
-  props: props$t,
+  props: props$s,
   emits: ["close"],
   setup(props2, {
     emit: emit2
@@ -9923,7 +9877,7 @@ const ImagePreview = /* @__PURE__ */ defineSystemComponent({
           width: "100%",
           height: "100%"
         }
-      }, _isSlot$2(_slot = props2.urls.map((src) => createVNode(SwiperItem, null, {
+      }, _isSlot$1(_slot = props2.urls.map((src) => createVNode(SwiperItem, null, {
         default: () => [createVNode(ImageView, {
           "src": src
         }, null, 8, ["src"])]
@@ -9936,10 +9890,10 @@ const ImagePreview = /* @__PURE__ */ defineSystemComponent({
     };
   }
 });
-let state$2 = null;
+let state$1 = null;
 let imagePreviewInstance;
 const closePreviewImageView = () => {
-  state$2 = null;
+  state$1 = null;
   nextTick(() => {
     imagePreviewInstance == null ? void 0 : imagePreviewInstance.unmount();
     imagePreviewInstance = null;
@@ -9948,18 +9902,18 @@ const closePreviewImageView = () => {
 const previewImage = /* @__PURE__ */ defineAsyncApi(
   API_PREVIEW_IMAGE,
   (args, { resolve }) => {
-    if (!state$2) {
-      state$2 = reactive(args);
+    if (!state$1) {
+      state$1 = reactive(args);
       nextTick(() => {
         imagePreviewInstance = createRootApp(
           ImagePreview,
-          state$2,
+          state$1,
           closePreviewImageView
         );
         imagePreviewInstance.mount(ensureRoot("u-a-p"));
       });
     } else {
-      extend(state$2, args);
+      extend(state$1, args);
     }
     resolve();
   },
@@ -11689,7 +11643,7 @@ function useContext(play, pause, stop, seek, sendDanmu, playbackRate, requestFul
     }
   }, id2, true);
 }
-const props$s = {
+const props$r = {
   id: {
     type: String,
     default: ""
@@ -11777,7 +11731,7 @@ class UniVideoElement extends UniElement {
 }
 const index$n = /* @__PURE__ */ defineBuiltInComponent({
   name: "Video",
-  props: props$s,
+  props: props$r,
   emits: ["fullscreenchange", "progress", "loadedmetadata", "waiting", "error", "play", "pause", "ended", "timeupdate"],
   rootElement: {
     name: "uni-video",
@@ -12017,7 +11971,7 @@ const onWebInvokeAppService = ({ name, arg }) => {
   }
 };
 const Invoke = /* @__PURE__ */ once(() => UniServiceJSBridge.on(ON_WEB_INVOKE_APP_SERVICE, onWebInvokeAppService));
-const props$r = {
+const props$q = {
   src: {
     type: String,
     default: ""
@@ -12028,7 +11982,7 @@ class UniWebViewElement extends UniElement {
 const indexX$3 = /* @__PURE__ */ defineBuiltInComponent({
   inheritAttrs: false,
   name: "WebView",
-  props: props$r,
+  props: props$q,
   rootElement: {
     name: "uni-web-view",
     class: UniWebViewElement
@@ -12077,7 +12031,7 @@ const indexX$3 = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const props$q = {
+const props$p = {
   id: {
     type: [Number, String],
     default: ""
@@ -12163,7 +12117,7 @@ function useMarkerLabelStyle(id2) {
 }
 const MapMarker = /* @__PURE__ */ defineSystemComponent({
   name: "MapMarker",
-  props: props$q,
+  props: props$p,
   setup(props2) {
     const id2 = String(!isNaN(Number(props2.id)) ? props2.id : "");
     const onMapReady = inject("onMapReady");
@@ -12445,9 +12399,9 @@ const MapMarker = /* @__PURE__ */ defineSystemComponent({
             }
             const a2 = marker.getPosition();
             const b = new maps2.LatLng(destination.latitude, destination.longitude);
-            const distance2 = maps2.geometry.spherical.computeDistanceBetween(a2, b) / 1e3;
+            const distance = maps2.geometry.spherical.computeDistanceBetween(a2, b) / 1e3;
             const time = (typeof duration === "number" ? duration : 1e3) / (1e3 * 60 * 60);
-            const speed = distance2 / time;
+            const speed = distance / time;
             const MapsEvent = maps2.event || maps2.Event;
             const movingEvent = MapsEvent.addListener(marker, "moving", (e2) => {
               const latLng = e2.latLng;
@@ -12540,7 +12494,7 @@ function hexToRgba(hex) {
     a: (`0x100${sa}` - 65536) / 255
   };
 }
-const props$p = {
+const props$o = {
   points: {
     type: Array,
     require: true
@@ -12586,7 +12540,7 @@ const props$p = {
 };
 const MapPolyline = /* @__PURE__ */ defineSystemComponent({
   name: "MapPolyline",
-  props: props$p,
+  props: props$o,
   setup(props2) {
     const onMapReady = inject("onMapReady");
     let polyline;
@@ -12675,7 +12629,7 @@ const MapPolyline = /* @__PURE__ */ defineSystemComponent({
     };
   }
 });
-const props$o = {
+const props$n = {
   latitude: {
     type: [Number, String],
     require: true
@@ -12707,7 +12661,7 @@ const props$o = {
 };
 const MapCircle = /* @__PURE__ */ defineSystemComponent({
   name: "MapCircle",
-  props: props$o,
+  props: props$n,
   setup(props2) {
     const onMapReady = inject("onMapReady");
     let circle;
@@ -12783,7 +12737,7 @@ const MapCircle = /* @__PURE__ */ defineSystemComponent({
     };
   }
 });
-const props$n = {
+const props$m = {
   id: {
     type: [Number, String],
     default: ""
@@ -12807,7 +12761,7 @@ const props$n = {
 };
 const MapControl = /* @__PURE__ */ defineSystemComponent({
   name: "MapControl",
-  props: props$n,
+  props: props$m,
   setup(props2) {
     const imgPath = computed(() => getRealPath(props2.iconPath));
     const positionStyle = computed(() => {
@@ -12839,357 +12793,6 @@ const MapControl = /* @__PURE__ */ defineSystemComponent({
     };
   }
 });
-function _isSlot$1(s) {
-  return typeof s === "function" || Object.prototype.toString.call(s) === "[object Object]" && !isVNode(s);
-}
-const props$m = {
-  latitude: {
-    type: Number
-  },
-  longitude: {
-    type: Number
-  }
-};
-function distance(distance2) {
-  if (distance2 > 100) {
-    return `${distance2 > 1e3 ? (distance2 / 1e3).toFixed(1) + "k" : distance2.toFixed(0)}m | `;
-  } else if (distance2 > 0) {
-    return "<100m | ";
-  } else {
-    return "";
-  }
-}
-function useState$4(props2) {
-  const state2 = reactive({
-    latitude: 0,
-    longitude: 0,
-    keyword: "",
-    searching: false
-  });
-  function updatePosition() {
-    if (props2.latitude && props2.longitude) {
-      state2.latitude = props2.latitude;
-      state2.longitude = props2.longitude;
-    }
-  }
-  watch([() => props2.latitude, () => props2.longitude], updatePosition);
-  updatePosition();
-  return state2;
-}
-function useList(state2) {
-  const key = __uniConfig.qqMapKey;
-  const list2 = reactive([]);
-  const selectedIndexRef = ref(-1);
-  const selectedRef = computed(() => list2[selectedIndexRef.value]);
-  const listState = reactive({
-    loading: true,
-    // google map default
-    pageSize: 20,
-    pageIndex: 1,
-    hasNextPage: true,
-    nextPage: null,
-    selectedIndex: selectedIndexRef,
-    selected: selectedRef
-  });
-  const adcodeRef = ref("");
-  const boundaryRef = computed(() => adcodeRef.value ? `region(${adcodeRef.value},1,${state2.latitude},${state2.longitude})` : `nearby(${state2.latitude},${state2.longitude},5000)`);
-  function pushData(array) {
-    array.forEach((item) => {
-      list2.push({
-        name: item.title || item.name,
-        address: item.address,
-        distance: item._distance || item.distance,
-        latitude: item.location.lat,
-        longitude: item.location.lng
-      });
-    });
-  }
-  function getList() {
-    listState.loading = true;
-    const mapInfo = getMapInfo();
-    if (mapInfo.type === MapType.GOOGLE) {
-      if (listState.pageIndex > 1 && listState.nextPage) {
-        listState.nextPage();
-        return;
-      }
-      const service = new google.maps.places.PlacesService(document.createElement("div"));
-      service[state2.searching ? "textSearch" : "nearbySearch"]({
-        location: {
-          lat: state2.latitude,
-          lng: state2.longitude
-        },
-        query: state2.keyword,
-        radius: 5e3
-      }, (results, state3, page) => {
-        listState.loading = false;
-        if (results && results.length) {
-          results.forEach((item) => {
-            list2.push({
-              name: item.name || "",
-              address: item.vicinity || item.formatted_address || "",
-              distance: 0,
-              latitude: item.geometry.location.lat(),
-              longitude: item.geometry.location.lng()
-            });
-          });
-        }
-        if (page) {
-          if (!page.hasNextPage) {
-            listState.hasNextPage = false;
-          } else {
-            listState.nextPage = () => {
-              page.nextPage();
-            };
-          }
-        }
-      });
-    } else if (mapInfo.type === MapType.QQ) {
-      const url = state2.searching ? `https://apis.map.qq.com/ws/place/v1/search?output=jsonp&key=${key}&boundary=${boundaryRef.value}&keyword=${state2.keyword}&page_size=${listState.pageSize}&page_index=${listState.pageIndex}` : `https://apis.map.qq.com/ws/geocoder/v1/?output=jsonp&key=${key}&location=${state2.latitude},${state2.longitude}&get_poi=1&poi_options=page_size=${listState.pageSize};page_index=${listState.pageIndex}`;
-      getJSONP(url, {
-        callback: "callback"
-      }, (res) => {
-        listState.loading = false;
-        if (state2.searching && "data" in res && res.data.length) {
-          pushData(res.data);
-        } else if ("result" in res) {
-          const result = res.result;
-          adcodeRef.value = result.ad_info ? result.ad_info.adcode : "";
-          if (result.pois) {
-            pushData(result.pois);
-          }
-        }
-        if (list2.length === listState.pageSize * listState.pageIndex) {
-          listState.hasNextPage = false;
-        }
-      }, () => {
-        listState.loading = false;
-      });
-    } else if (mapInfo.type === MapType.AMAP) {
-      window.AMap.plugin("AMap.PlaceSearch", function() {
-        const placeSearch = new window.AMap.PlaceSearch({
-          city: "全国",
-          pageSize: 10,
-          pageIndex: listState.pageIndex
-        });
-        const keyword = state2.searching ? state2.keyword : "";
-        const radius = state2.searching ? 5e4 : 5e3;
-        placeSearch.searchNearBy(keyword, [state2.longitude, state2.latitude], radius, function(status, result) {
-          if (status === "error") {
-            console.error(result);
-          } else if (status === "no_data") {
-            listState.hasNextPage = false;
-          } else {
-            pushData(result.poiList.pois);
-          }
-        });
-        listState.loading = false;
-      });
-    }
-  }
-  function loadMore() {
-    if (!listState.loading && listState.hasNextPage) {
-      listState.pageIndex++;
-      getList();
-    }
-  }
-  function reset() {
-    listState.selectedIndex = -1;
-    listState.pageIndex = 1;
-    listState.hasNextPage = true;
-    listState.nextPage = null;
-    list2.splice(0, list2.length);
-  }
-  return {
-    listState,
-    list: list2,
-    loadMore,
-    reset,
-    getList
-  };
-}
-const LoctaionPicker = /* @__PURE__ */ defineSystemComponent({
-  name: "LoctaionPicker",
-  props: props$m,
-  emits: ["close"],
-  setup(props2, {
-    emit: emit2
-  }) {
-    usePreventScroll();
-    initI18nChooseLocationMsgsOnce();
-    const {
-      t: t2
-    } = useI18n();
-    const state2 = useState$4(props2);
-    const {
-      list: list2,
-      listState,
-      loadMore,
-      reset,
-      getList
-    } = useList(state2);
-    const search = debounce(() => {
-      reset();
-      if (state2.keyword) {
-        getList();
-      }
-    }, 1e3, {
-      setTimeout,
-      clearTimeout
-    });
-    watch(() => state2.searching, (val) => {
-      reset();
-      if (!val) {
-        getList();
-      }
-    });
-    function onInput(event) {
-      state2.keyword = event.detail.value;
-      search();
-    }
-    function onChoose() {
-      emit2("close", extend({}, listState.selected));
-    }
-    function onBack() {
-      emit2("close");
-    }
-    function onRegionChange(event) {
-      const centerLocation = event.detail.centerLocation;
-      if (centerLocation) {
-        move(centerLocation);
-      }
-    }
-    function moveToLocation() {
-      getLocation({
-        type: "gcj02",
-        success: move,
-        fail: () => {
-        }
-      });
-    }
-    function move({
-      latitude,
-      longitude
-    }) {
-      state2.latitude = latitude;
-      state2.longitude = longitude;
-      if (!state2.searching) {
-        reset();
-        getList();
-      }
-    }
-    if (!state2.latitude || !state2.longitude) {
-      moveToLocation();
-    }
-    return () => {
-      const content = list2.map((item, index2) => {
-        return createVNode("div", {
-          "key": index2,
-          "class": {
-            "list-item": true,
-            selected: listState.selectedIndex === index2
-          },
-          "onClick": () => {
-            listState.selectedIndex = index2;
-            state2.latitude = item.latitude;
-            state2.longitude = item.longitude;
-          }
-        }, [createSvgIconVNode(ICON_PATH_CONFIRM, "#007aff", 24), createVNode("div", {
-          "class": "list-item-title"
-        }, [item.name]), createVNode("div", {
-          "class": "list-item-detail"
-        }, [distance(item.distance), item.address])], 10, ["onClick"]);
-      });
-      if (listState.loading) {
-        content.unshift(createVNode("div", {
-          "class": "list-loading"
-        }, [createVNode("i", {
-          "class": "uni-loading"
-        }, null)]));
-      }
-      return createVNode("div", {
-        "class": "uni-system-choose-location"
-      }, [createVNode(Map$1, {
-        "latitude": state2.latitude,
-        "longitude": state2.longitude,
-        "class": "map",
-        "show-location": true,
-        "libraries": ["places"],
-        "onUpdated": getList,
-        "onRegionchange": onRegionChange
-      }, {
-        default: () => [createVNode("div", {
-          "class": "map-location",
-          "style": `background-image: url("${ICON_PATH_TARGET}")`
-        }, null), createVNode("div", {
-          "class": "map-move",
-          "onClick": moveToLocation
-        }, [createSvgIconVNode(ICON_PATH_LOCTAION, "#000000", 24)], 8, ["onClick"])],
-        _: 1
-      }, 8, ["latitude", "longitude", "show-location", "onUpdated", "onRegionchange"]), createVNode("div", {
-        "class": "nav"
-      }, [createVNode("div", {
-        "class": "nav-btn back",
-        "onClick": onBack
-      }, [createSvgIconVNode(ICON_PATH_CLOSE, "#ffffff", 26)], 8, ["onClick"]), createVNode("div", {
-        "class": {
-          "nav-btn": true,
-          confirm: true,
-          disable: !listState.selected
-        },
-        "onClick": onChoose
-      }, [createSvgIconVNode(ICON_PATH_CONFIRM, "#ffffff", 26)], 10, ["onClick"])]), createVNode("div", {
-        "class": "menu"
-      }, [createVNode("div", {
-        "class": "search"
-      }, [createVNode(Input, {
-        "value": state2.keyword,
-        "class": "search-input",
-        "placeholder": t2("uni.chooseLocation.search"),
-        "onFocus": () => state2.searching = true,
-        "onInput": onInput
-      }, null, 8, ["value", "placeholder", "onFocus", "onInput"]), state2.searching && createVNode("div", {
-        "class": "search-btn",
-        "onClick": () => {
-          state2.searching = false;
-          state2.keyword = "";
-        }
-      }, [t2("uni.chooseLocation.cancel")], 8, ["onClick"])]), createVNode(ScrollView, {
-        "scroll-y": true,
-        "class": "list",
-        "onScrolltolower": loadMore
-      }, _isSlot$1(content) ? content : {
-        default: () => [content],
-        _: 2
-      }, 8, ["scroll-y", "onScrolltolower"])])]);
-    };
-  }
-});
-let state$1 = null;
-const chooseLocation = /* @__PURE__ */ defineAsyncApi(
-  API_CHOOSE_LOCATION,
-  (args, { resolve, reject }) => {
-    if (!state$1) {
-      state$1 = reactive(args);
-      nextTick(() => {
-        const app = createRootApp(
-          LoctaionPicker,
-          state$1,
-          (poi) => {
-            state$1 = null;
-            nextTick(() => {
-              app.unmount();
-            });
-            poi ? resolve(poi) : reject("cancel");
-          }
-        );
-        app.mount(ensureRoot("u-a-c"));
-      });
-    } else {
-      reject("cancel");
-    }
-  },
-  ChooseLocationProtocol
-);
 let started = false;
 let watchId = 0;
 const startLocationUpdate = /* @__PURE__ */ defineAsyncApi(
@@ -16081,7 +15684,7 @@ function useMap(props2, rootRef, emit2) {
 }
 class UniMapElement extends UniElement {
 }
-const Map$1 = /* @__PURE__ */ defineBuiltInComponent({
+const __syscom_0 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Map",
   props: props$h,
   emits: ["markertap", "labeltap", "callouttap", "controltap", "regionchange", "tap", "click", "updated", "update:scale", "update:latitude", "update:longitude"],
@@ -17130,7 +16733,7 @@ const LocationView = /* @__PURE__ */ defineSystemComponent({
     return () => {
       return createVNode("div", {
         "class": "uni-system-open-location"
-      }, [createVNode(Map$1, {
+      }, [createVNode(__syscom_0, {
         "latitude": state2.center.latitude,
         "longitude": state2.center.longitude,
         "class": "map",
@@ -17538,7 +17141,7 @@ function triggerFailCallback(options, errMsg) {
   (_a = options == null ? void 0 : options.fail) == null ? void 0 : _a.call(options, failOptions);
   (_b = options == null ? void 0 : options.complete) == null ? void 0 : _b.call(options, failOptions);
 }
-const _sfc_main$1 = {
+const _sfc_main$2 = {
   data() {
     return {
       show: false,
@@ -17753,7 +17356,7 @@ const _sfc_main$1 = {
     }
   }
 };
-const _style_0 = "\n.uni-action-sheet_dialog__mask {\n    position: fixed;\n    z-index: 999;\n    top: 0;\n    right: 0;\n    left: 0;\n    bottom: 0;\n    opacity: 0;\n    background-color: rgba(0, 0, 0, 0.6);\n    transition: opacity 0.1s;\n}\n.uni-action-sheet_dialog__mask__show {\n    opacity: 1;\n}\n.uni-action-sheet_dialog__container {\n    position: fixed;\n    width: 100%;\n    left: 0;\n    bottom: 0;\n    z-index: 999;\n    transform: translate(0, 100%);\n    opacity: 0;\n\n\n\n\n    transition: transform 0.3s, opacity 0.3s;\n\n    background-color: #f7f7f7;\n    border-top-left-radius: 12px;\n    border-top-right-radius: 12px;\n}\n.uni-action-sheet_dialog__menu {\n    border-top-left-radius: 12px;\n    border-top-right-radius: 12px;\n    overflow: hidden;\n}\n.uni-action-sheet_dialog__container.uni-action-sheet_dialog__show {\n    opacity: 1;\n    transform: translate(0, 0);\n}\n.uni-action-sheet_dialog__title,\n  .uni-action-sheet_dialog__cell,\n  .uni-action-sheet_dialog__action {\n    padding: 16px;\n}\n.uni-action-sheet_dialog__title__text,\n  .uni-action-sheet_dialog__cell__text,\n  .uni-action-sheet_dialog__action__text {\n    line-height: 1.4;\n    text-align: center;\n    white-space: nowrap;\n    overflow: hidden;\n    text-overflow: ellipsis;\n}\n.uni-action-sheet_dialog__action {\n    margin-top: 8px;\n}\n.uni-action-sheet_dialog__title__text {\n    color: #666666;\n}\n.uni-action-sheet_dialog__cell__text,\n  .uni-action-sheet_dialog__action__text {\n    color: #000000;\n}\n.uni-action-sheet_dialog__menu,\n  .uni-action-sheet_dialog__action {\n    background-color: #ffffff;\n}\n.uni-action-sheet_dialog__title {\n    border-bottom: 1px solid #e5e5e5;\n}\n.uni-action-sheet_dialog__cell__container {\n    max-height: 330px;\n\n    display: block;\n    overflow-y: auto;\n    scrollbar-width: none;\n}\n.uni-action-sheet_dialog__cell {\n    border-top: 1px solid #e5e5e5;\n}\n\n  /* dark mode */\n.uni-action-sheet_dialog__container.uni-action-sheet_dark__mode {\n    background-color: #1D1E1E;\n}\n.uni-action-sheet_dialog__menu.uni-action-sheet_dark__mode,\n  .uni-action-sheet_dialog__action.uni-action-sheet_dark__mode {\n    background-color: #2C2C2B;\n}\n.uni-action-sheet_dialog__title.uni-action-sheet_dark__mode {\n    border-bottom: 1px solid #2F3131;\n}\n.uni-action-sheet_dialog__cell.uni-action-sheet_dark__mode {\n    border-top: 1px solid #2F3131;\n}\n.uni-action-sheet_dialog__title__text.uni-action-sheet_dark__mode {\n    color: #999999;\n}\n.uni-action-sheet_dialog__cell__text.uni-action-sheet_dark__mode,\n  .uni-action-sheet_dialog__action__text.uni-action-sheet_dark__mode {\n    color: #ffffff;\n}\n\n  /* landscape mode */\n.uni-action-sheet_dialog__container.uni-action-sheet_landscape__mode {\n    width: 300px;\n    position: fixed;\n    left: 50%;\n    right: auto;\n    top: 50%;\n    bottom: auto;\n    z-index: 999;\n    transform: translate(-50%, -50%);\n    border-top-left-radius: 5px;\n    border-top-right-radius: 5px;\n    border-bottom-left-radius: 5px;\n    border-bottom-right-radius: 5px;\n    transition: opacity 0.3s;\n}\n.uni-action-sheet_dialog__menu.uni-action-sheet_landscape__mode {\n    border-top-left-radius: 5px;\n    border-top-right-radius: 5px;\n    border-bottom-left-radius: 5px;\n    border-bottom-right-radius: 5px;\n    box-shadow: 0 0 20px 5px rgba(0, 0, 0, 0.3);\n}\n.uni-action-sheet_dialog__action.uni-action-sheet_landscape__mode {\n    display: none;\n}\n.uni-action-sheet_dialog__cell__container.uni-action-sheet_landscape__mode {\n    max-height: 260px;\n}\n.uni-action-sheet_dialog__title.uni-action-sheet_landscape__mode,\n  .uni-action-sheet_dialog__cell.uni-action-sheet_landscape__mode,\n  .uni-action-sheet_dialog__action.uni-action-sheet_landscape__mode {\n    padding: 10px 6px;\n}\n.uni-action-sheet_dialog__menu {\n    display: block;\n}\n.uni-action-sheet_dialog__title,\n  .uni-action-sheet_dialog__cell,\n  .uni-action-sheet_dialog__action {\n    display: block;\n    text-align: center;\n    line-height: 1.4;\n    text-align: center;\n    white-space: nowrap;\n    overflow: hidden;\n    text-overflow: ellipsis;\n}\n.uni-action-sheet_dialog__cell,\n  .uni-action-sheet_dialog__action {\n    cursor: pointer;\n}\n.uni-action-sheet_dialog__triangle {\n    position: absolute;\n    width: 0;\n    height: 0;\n    margin-left: -6px;\n    border-style: solid;\n}\n  /* web wide screen */\n@media screen and (min-width: 500px) and (min-height: 500px) {\n.uni-action-sheet_dialog__mask {\n      background: none;\n}\n.uni-action-sheet_dialog__container {\n      width: 300px;\n      position: fixed;\n      left: 50%;\n      right: auto;\n      top: 50%;\n      bottom: auto;\n      z-index: 999;\n      border-radius: 5px;\n      opacity: 0;\n      transform: translate(-50%, -50%);\n      transition: opacity 0.3s;\n}\n.uni-action-sheet_dialog__show {\n      opacity: 1;\n      transform: translate(-50%, -50%) !important;\n}\n.uni-action-sheet_dialog__menu {\n      border-radius: 5px;\n      box-shadow: 0 0 20px 5px rgba(0, 0, 0, 0.3);\n}\n.uni-action-sheet_dialog__cell__container {\n      max-height: 260px;\n}\n.uni-action-sheet_dialog__action {\n      display: none;\n}\n.uni-action-sheet_dialog__title {\n      font-size: 15px;\n}\n.uni-action-sheet_dialog__title,\n    .uni-action-sheet_dialog__cell,\n    .uni-action-sheet_dialog__action {\n      padding: 10px 6px;\n}\n}\n\n";
+const _style_0$1 = "\n.uni-action-sheet_dialog__mask {\n    position: fixed;\n    z-index: 999;\n    top: 0;\n    right: 0;\n    left: 0;\n    bottom: 0;\n    opacity: 0;\n    background-color: rgba(0, 0, 0, 0.6);\n    transition: opacity 0.1s;\n}\n.uni-action-sheet_dialog__mask__show {\n    opacity: 1;\n}\n.uni-action-sheet_dialog__container {\n    position: fixed;\n    width: 100%;\n    left: 0;\n    bottom: 0;\n    z-index: 999;\n    transform: translate(0, 100%);\n    opacity: 0;\n\n\n\n\n    transition: transform 0.3s, opacity 0.3s;\n\n    background-color: #f7f7f7;\n    border-top-left-radius: 12px;\n    border-top-right-radius: 12px;\n}\n.uni-action-sheet_dialog__menu {\n    border-top-left-radius: 12px;\n    border-top-right-radius: 12px;\n    overflow: hidden;\n}\n.uni-action-sheet_dialog__container.uni-action-sheet_dialog__show {\n    opacity: 1;\n    transform: translate(0, 0);\n}\n.uni-action-sheet_dialog__title,\n  .uni-action-sheet_dialog__cell,\n  .uni-action-sheet_dialog__action {\n    padding: 16px;\n}\n.uni-action-sheet_dialog__title__text,\n  .uni-action-sheet_dialog__cell__text,\n  .uni-action-sheet_dialog__action__text {\n    line-height: 1.4;\n    text-align: center;\n    white-space: nowrap;\n    overflow: hidden;\n    text-overflow: ellipsis;\n}\n.uni-action-sheet_dialog__action {\n    margin-top: 8px;\n}\n.uni-action-sheet_dialog__title__text {\n    color: #666666;\n}\n.uni-action-sheet_dialog__cell__text,\n  .uni-action-sheet_dialog__action__text {\n    color: #000000;\n}\n.uni-action-sheet_dialog__menu,\n  .uni-action-sheet_dialog__action {\n    background-color: #ffffff;\n}\n.uni-action-sheet_dialog__title {\n    border-bottom: 1px solid #e5e5e5;\n}\n.uni-action-sheet_dialog__cell__container {\n    max-height: 330px;\n\n    display: block;\n    overflow-y: auto;\n    scrollbar-width: none;\n}\n.uni-action-sheet_dialog__cell {\n    border-top: 1px solid #e5e5e5;\n}\n\n  /* dark mode */\n.uni-action-sheet_dialog__container.uni-action-sheet_dark__mode {\n    background-color: #1D1E1E;\n}\n.uni-action-sheet_dialog__menu.uni-action-sheet_dark__mode,\n  .uni-action-sheet_dialog__action.uni-action-sheet_dark__mode {\n    background-color: #2C2C2B;\n}\n.uni-action-sheet_dialog__title.uni-action-sheet_dark__mode {\n    border-bottom: 1px solid #2F3131;\n}\n.uni-action-sheet_dialog__cell.uni-action-sheet_dark__mode {\n    border-top: 1px solid #2F3131;\n}\n.uni-action-sheet_dialog__title__text.uni-action-sheet_dark__mode {\n    color: #999999;\n}\n.uni-action-sheet_dialog__cell__text.uni-action-sheet_dark__mode,\n  .uni-action-sheet_dialog__action__text.uni-action-sheet_dark__mode {\n    color: #ffffff;\n}\n\n  /* landscape mode */\n.uni-action-sheet_dialog__container.uni-action-sheet_landscape__mode {\n    width: 300px;\n    position: fixed;\n    left: 50%;\n    right: auto;\n    top: 50%;\n    bottom: auto;\n    z-index: 999;\n    transform: translate(-50%, -50%);\n    border-top-left-radius: 5px;\n    border-top-right-radius: 5px;\n    border-bottom-left-radius: 5px;\n    border-bottom-right-radius: 5px;\n    transition: opacity 0.3s;\n}\n.uni-action-sheet_dialog__menu.uni-action-sheet_landscape__mode {\n    border-top-left-radius: 5px;\n    border-top-right-radius: 5px;\n    border-bottom-left-radius: 5px;\n    border-bottom-right-radius: 5px;\n    box-shadow: 0 0 20px 5px rgba(0, 0, 0, 0.3);\n}\n.uni-action-sheet_dialog__action.uni-action-sheet_landscape__mode {\n    display: none;\n}\n.uni-action-sheet_dialog__cell__container.uni-action-sheet_landscape__mode {\n    max-height: 260px;\n}\n.uni-action-sheet_dialog__title.uni-action-sheet_landscape__mode,\n  .uni-action-sheet_dialog__cell.uni-action-sheet_landscape__mode,\n  .uni-action-sheet_dialog__action.uni-action-sheet_landscape__mode {\n    padding: 10px 6px;\n}\n.uni-action-sheet_dialog__menu {\n    display: block;\n}\n.uni-action-sheet_dialog__title,\n  .uni-action-sheet_dialog__cell,\n  .uni-action-sheet_dialog__action {\n    display: block;\n    text-align: center;\n    line-height: 1.4;\n    text-align: center;\n    white-space: nowrap;\n    overflow: hidden;\n    text-overflow: ellipsis;\n}\n.uni-action-sheet_dialog__cell,\n  .uni-action-sheet_dialog__action {\n    cursor: pointer;\n}\n.uni-action-sheet_dialog__triangle {\n    position: absolute;\n    width: 0;\n    height: 0;\n    margin-left: -6px;\n    border-style: solid;\n}\n  /* web wide screen */\n@media screen and (min-width: 500px) and (min-height: 500px) {\n.uni-action-sheet_dialog__mask {\n      background: none;\n}\n.uni-action-sheet_dialog__container {\n      width: 300px;\n      position: fixed;\n      left: 50%;\n      right: auto;\n      top: 50%;\n      bottom: auto;\n      z-index: 999;\n      border-radius: 5px;\n      opacity: 0;\n      transform: translate(-50%, -50%);\n      transition: opacity 0.3s;\n}\n.uni-action-sheet_dialog__show {\n      opacity: 1;\n      transform: translate(-50%, -50%) !important;\n}\n.uni-action-sheet_dialog__menu {\n      border-radius: 5px;\n      box-shadow: 0 0 20px 5px rgba(0, 0, 0, 0.3);\n}\n.uni-action-sheet_dialog__cell__container {\n      max-height: 260px;\n}\n.uni-action-sheet_dialog__action {\n      display: none;\n}\n.uni-action-sheet_dialog__title {\n      font-size: 15px;\n}\n.uni-action-sheet_dialog__title,\n    .uni-action-sheet_dialog__cell,\n    .uni-action-sheet_dialog__action {\n      padding: 10px 6px;\n}\n}\n\n";
 const _export_sfc = (sfc, props2) => {
   const target = sfc.__vccOpts || sfc;
   for (const [key, val] of props2) {
@@ -17761,8 +17364,8 @@ const _export_sfc = (sfc, props2) => {
   }
   return target;
 };
-function _sfc_render$1(_ctx, _cache, $props, $setup, $data, $options) {
-  const _component_view = __syscom_0;
+function _sfc_render$2(_ctx, _cache, $props, $setup, $data, $options) {
+  const _component_view = __syscom_2;
   const _component_text = __syscom_1;
   return openBlock(), createBlock(_component_view, null, {
     default: withCtx(() => [
@@ -17862,7 +17465,7 @@ function _sfc_render$1(_ctx, _cache, $props, $setup, $data, $options) {
     _: 1
   });
 }
-const UniActionSheetPage = /* @__PURE__ */ _export_sfc(_sfc_main$1, [["render", _sfc_render$1], ["styles", [_style_0]]]);
+const UniActionSheetPage = /* @__PURE__ */ _export_sfc(_sfc_main$2, [["render", _sfc_render$2], ["styles", [_style_0$1]]]);
 const showActionSheet2 = /* @__PURE__ */ defineAsyncApi("showActionSheet2", (options, { resolve, reject }) => {
   registerSystemRoute("uni:actionSheet", UniActionSheetPage);
   const uuid = Date.now() + "" + Math.floor(Math.random() * 1e7);
@@ -17904,6 +17507,1063 @@ const hideActionSheet2 = () => {
     }
   }
 };
+const defaultPoi = {
+  latitude: 39.908823,
+  longitude: 116.39747
+};
+const languageData = {
+  "en": {
+    "back": "cancel",
+    "ok": "ok",
+    "cancel": "cancel",
+    "loading": "loading...",
+    "locationLoading": "positioning...",
+    "search": "Search location",
+    "current-location": "current location"
+  },
+  "zh-Hans": {
+    "back": "取消",
+    "ok": "确定",
+    "cancel": "取消",
+    "loading": "请求中...",
+    "locationLoading": "获取定位中...",
+    "search": "搜索地点",
+    "current-location": "当前位置"
+  },
+  "zh-Hant": {
+    "back": "取消",
+    "ok": "確定",
+    "cancel": "取消",
+    "loading": "請求中...",
+    "locationLoading": "獲取定位中...",
+    "search": "蒐索地點",
+    "current-location": "當前位置"
+  }
+};
+const _sfc_main$1 = {
+  data() {
+    const id1 = `UniMap1_${(Math.random() * 1e6).toString(36)}`;
+    const id2 = `UniMap2_${(Math.random() * 1e6).toString(36)}`;
+    const id3 = `UniMap3_${(Math.random() * 1e6).toString(36)}`;
+    return {
+      readyEventName: "",
+      optionsEventName: "",
+      successEventName: "",
+      failEventName: "",
+      mapId: id1,
+      mapTargetId: id2,
+      scrollId: id3,
+      isFocus: false,
+      latitude: 0,
+      longitude: 0,
+      locationComplete: false,
+      locationLoading: false,
+      chooseLocationOptions: {},
+      pageIndex: 1,
+      pageSize: 20,
+      pois: [],
+      selected: -1,
+      searchValue: "",
+      safeArea: {
+        top: 0,
+        bottom: 0,
+        left: 0,
+        right: 0
+      },
+      icon: {
+        target: "",
+        success: "",
+        position: "",
+        search: ""
+      },
+      lastTime: 0,
+      searchLoading: false,
+      language: "zh-Hans",
+      scrollTop: 0,
+      isLandscape: false,
+      theme: "light",
+      searchValueChangeTimer: -1,
+      lastPoi: {
+        latitude: null,
+        longitude: null,
+        selected: -1,
+        pois: [],
+        scrollTop: 0
+      },
+      errMsg: ""
+    };
+  },
+  onLoad(options) {
+    this.initPageOptions(options);
+    this.getSystemInfo();
+    this.getLocation();
+  },
+  onReady() {
+  },
+  onUnload() {
+    uni.$off(this.optionsEventName, null);
+    uni.$off(this.readyEventName, null);
+    uni.$off(this.successEventName, null);
+    uni.$off(this.failEventName, null);
+  },
+  onResize() {
+    const systemInfo = uni.getSystemInfoSync();
+    this.isLandscape = systemInfo.deviceOrientation == "landscape";
+  },
+  methods: {
+    initPageOptions(options) {
+      this.readyEventName = options["readyEventName"];
+      this.optionsEventName = options["optionsEventName"];
+      this.successEventName = options["successEventName"];
+      this.failEventName = options["failEventName"];
+      uni.$on(this.optionsEventName, (data) => {
+        if (data["latitude"] != null) {
+          this.chooseLocationOptions.latitude = data.getNumber("latitude");
+        }
+        if (data["longitude"] != null) {
+          this.chooseLocationOptions.longitude = data.getNumber("longitude");
+        }
+        if (data["keyword"] != null) {
+          let keyword = data["keyword"];
+          this.chooseLocationOptions.keyword = keyword;
+          this.searchValue = keyword;
+        } else {
+          this.chooseLocationOptions.keyword = "";
+        }
+      });
+      uni.$emit(this.readyEventName, {});
+    },
+    getLocation() {
+      if (this.chooseLocationOptions.latitude != null && this.chooseLocationOptions.longitude != null) {
+        this.latitude = this.chooseLocationOptions.latitude;
+        this.longitude = this.chooseLocationOptions.longitude;
+        this.locationComplete = true;
+        this.getPoi("getLocation");
+      } else {
+        this.locationLoading = true;
+        uni.getLocation({
+          type: "gcj02",
+          success: (res) => {
+            this.latitude = res.latitude;
+            this.longitude = res.longitude;
+            this.locationComplete = true;
+            this.locationLoading = false;
+            this.getPoi("getLocation");
+          },
+          fail: (err) => {
+            console.error("getLocationErr: ", err);
+            this.latitude = defaultPoi.latitude;
+            this.longitude = defaultPoi.longitude;
+            this.locationComplete = true;
+            this.locationLoading = false;
+            this.getPoi("getLocation");
+          }
+        });
+      }
+    },
+    distanceHandle(distance) {
+      if (distance < 1e3) {
+        return distance + "m";
+      } else {
+        return parseFloat((distance / 1e3).toFixed(2)) + "km";
+      }
+    },
+    poiHandle(pois) {
+      let list2 = pois.map((item, index2) => {
+        const location2 = item["location"];
+        return {
+          title: item["title"],
+          address: item["address"],
+          distance: item["distance"],
+          distanceStr: this.distanceHandle(item["distance"]),
+          location: {
+            latitude: location2["lat"],
+            longitude: location2["lng"]
+          }
+        };
+      });
+      let pageIndex = this.pageIndex;
+      if (pageIndex == 1) {
+        this.pois = list2;
+        this.updateScrollTop(0);
+      } else {
+        this.pois = this.pois.concat(list2);
+      }
+    },
+    callUniMapCo(action, data) {
+      return new Promise((resolve, reject) => {
+        this.errMsg = "";
+        if (typeof uniCloud == "undefined") {
+          this.errMsg = "uni.chooseLocation 依赖 uniCloud 的 uni-map-common 插件，请先关联服务空间，并安装 uni-map-common 插件，插件地址：https://ext.dcloud.net.cn/plugin?id=13872";
+          console.error(this.errMsg);
+          reject({
+            errCode: -1,
+            errMsg: "请先关联服务空间"
+          });
+        }
+        const uniMapCo = uniCloud.importObject("uni-map-co", {
+          customUI: true
+        });
+        uniMapCo.chooseLocation({
+          action,
+          data
+        }).then((res) => {
+          resolve(res);
+        }).catch((err) => {
+          const errMsg = err.errMsg;
+          if (errMsg != null && (errMsg.indexOf("在云端不存在") > -1 || errMsg.indexOf("未匹配") > -1)) {
+            this.errMsg = "uni.chooseLocation 依赖 uniCloud 的 uni-map-common 插件，请安装 uni-map-common 插件，插件地址：https://ext.dcloud.net.cn/plugin?id=13872";
+            console.error(this.errMsg);
+          } else {
+            console.error("err: ", err);
+          }
+          reject(err);
+        });
+      });
+    },
+    getPoi(type) {
+      let searchValue = this.searchValue;
+      let latitude = this.latitude;
+      let longitude = this.longitude;
+      let pageIndex = this.pageIndex;
+      let pageSize = this.pageSize;
+      if (["searchValueChange"].indexOf(type) == -1) {
+        this.searchLoading = true;
+      }
+      if (searchValue != "" && searchValue.length > 0) {
+        this.callUniMapCo("search", {
+          keyword: searchValue,
+          location: {
+            lat: latitude,
+            lng: longitude
+          },
+          radius: 5e3,
+          auto_extend: 1,
+          orderby: "weight",
+          page_index: pageIndex,
+          page_size: pageSize
+        }).then((res) => {
+          var _a, _b;
+          let pois = (_b = (_a = res.getJSON("result")) == null ? void 0 : _a.getJSON("result")) == null ? void 0 : _b.getArray("data");
+          this.poiHandle(pois);
+          this.searchLoading = false;
+        }).catch((err) => {
+          this.searchLoading = false;
+        });
+      } else {
+        this.callUniMapCo("location2address", {
+          location: `${latitude},${longitude}`,
+          get_poi: 1,
+          poi_options: {
+            radius: 5e3,
+            policy: 4,
+            roadlevel: 1,
+            homeorcorp: 1,
+            page_index: pageIndex,
+            page_size: pageSize
+          }
+        }).then((res) => {
+          var _a, _b, _c, _d;
+          let pois = (_b = (_a = res.getJSON("result")) == null ? void 0 : _a.getJSON("result")) == null ? void 0 : _b.getArray("pois");
+          if (window["__UNI_CHOOSE_LOCATION_ANY_POINT__"]) {
+            let formatted_addresses = (_d = (_c = res.getJSON("result")) == null ? void 0 : _c.getJSON("result")) == null ? void 0 : _d.getString("formatted_addresses");
+            pois.unshift({
+              title: this.languageCom["current-location"],
+              address: formatted_addresses,
+              distance: 0,
+              location: {
+                lat: latitude,
+                lng: longitude
+              }
+            });
+          }
+          this.poiHandle(pois);
+          this.searchLoading = false;
+        }).catch((err) => {
+          this.searchLoading = false;
+        });
+      }
+    },
+    getSystemInfo() {
+      const info = uni.getWindowInfo();
+      this.safeArea.top = info.safeAreaInsets.top;
+      this.safeArea.bottom = info.safeAreaInsets.bottom;
+      this.safeArea.left = info.safeAreaInsets.left;
+      this.safeArea.right = info.safeAreaInsets.right;
+      const systemInfo = uni.getSystemInfoSync();
+      const appLanguage = systemInfo.appLanguage;
+      this.language = appLanguage;
+      const osTheme = systemInfo.osTheme;
+      const appTheme = systemInfo.appTheme;
+      if (appTheme != null) {
+        this.theme = appTheme;
+      } else if (osTheme != null) {
+        this.theme = osTheme;
+      }
+      this.isLandscape = systemInfo.deviceOrientation == "landscape";
+      const hostTheme = systemInfo.hostTheme;
+      if (hostTheme != null) {
+        this.theme = hostTheme;
+      }
+      const locale = uni.getLocale();
+      this.language = locale;
+      uni.onLocaleChange((res) => {
+        if (res.locale) {
+          this.language = res.locale;
+        }
+      });
+      uni.onThemeChange((res) => {
+        this.theme = res.theme;
+      });
+    },
+    getMapContext() {
+      return uni.createMapContext(this.mapId, this);
+    },
+    regionchange(e2) {
+      let causedBy = e2.causedBy;
+      if (!causedBy) {
+        causedBy = e2.detail.causedBy;
+      }
+      if (e2.type !== "end" || causedBy != "drag" || this.locationComplete == false) {
+        return;
+      }
+      const mapContext = this.getMapContext();
+      if (mapContext != null) {
+        mapContext.getCenterLocation({
+          success: (res) => {
+            let latitudeDiff = Math.abs(res.latitude - this.latitude);
+            let longitudeDiff = Math.abs(res.longitude - this.longitude);
+            if (latitudeDiff > 1e-5 && longitudeDiff > 1e-5) {
+              this.latitude = res.latitude;
+              this.longitude = res.longitude;
+              this.searchValue = "";
+              this.selected = -1;
+              this.pageIndex = 1;
+              this.getPoi("regionchange");
+              const element = this.$refs[this.mapTargetId];
+              if (element != null) {
+                const duration = 250;
+                element.style.setProperty("transition-duration", `${duration}ms`);
+                element.style.setProperty("transform", "translateY(0px)");
+                element.style.setProperty("transform", "translateY(-15px)");
+                setTimeout(() => {
+                  element.style.setProperty("transform", "translateY(0px)");
+                }, duration);
+              }
+            }
+          }
+        });
+      }
+    },
+    clearSearchValueChangeTimer() {
+      if (this.searchValueChangeTimer != -1) {
+        clearTimeout(this.searchValueChangeTimer);
+        this.searchValueChangeTimer = -1;
+      }
+    },
+    searchValueChange(e2) {
+      this.clearSearchValueChangeTimer();
+      this.searchValueChangeTimer = setTimeout(() => {
+        this.poiSearch("searchValueChange");
+      }, 200);
+    },
+    poiSearch(type) {
+      this.clearSearchValueChangeTimer();
+      this.pageIndex = 1;
+      this.selected = -1;
+      this.getPoi(type);
+    },
+    cancelSearch() {
+      this.isFocus = false;
+      this.searchValue = "";
+      if (this.lastPoi.latitude != null) {
+        this.latitude = this.lastPoi.latitude;
+      }
+      if (this.lastPoi.longitude != null) {
+        this.longitude = this.lastPoi.longitude;
+      }
+      if (this.lastPoi.pois.length - 1 > this.lastPoi.selected) {
+        this.pois = this.lastPoi.pois;
+        this.selected = this.lastPoi.selected;
+        this.updateScrollTop(this.lastPoi.scrollTop);
+      } else {
+        this.poiSearch("cancelSearch");
+      }
+    },
+    updateScrollTop(scrollTop) {
+      setTimeout(() => {
+        this.scrollTop = scrollTop;
+      }, 10);
+    },
+    selectPoi(item, index2) {
+      this.selected = index2;
+      this.latitude = item.location.latitude;
+      this.longitude = item.location.longitude;
+      if (this.searchValue == this.chooseLocationOptions.keyword) {
+        this.lastPoi.latitude = this.latitude;
+        this.lastPoi.longitude = this.longitude;
+        this.lastPoi.selected = this.selected;
+        this.lastPoi.pois = this.pois;
+        const scrollElement = this.$refs[this.scrollId];
+        if (scrollElement != null) {
+          const scrollTop = scrollElement.scrollTop;
+          this.lastPoi.scrollTop = scrollTop;
+          this.scrollTop = scrollTop;
+        }
+      }
+    },
+    scrolltolower() {
+      this.pageIndex++;
+      this.getPoi("scrolltolower");
+    },
+    mapReset() {
+      this.pageIndex = 1;
+      this.getLocation();
+    },
+    closeDialogPage() {
+      uni.closeDialogPage({
+        dialogPage: this.$page
+      });
+    },
+    back() {
+      uni.$emit(this.failEventName, {});
+      this.closeDialogPage();
+    },
+    confirm() {
+      if (this.selected < 0) {
+        return;
+      }
+      let item = this.pois[this.selected];
+      let res = {
+        name: item.title,
+        address: item.address,
+        latitude: item.location.latitude,
+        longitude: item.location.longitude
+      };
+      uni.$emit(this.successEventName, res);
+      this.closeDialogPage();
+    }
+  },
+  computed: {
+    languageCom() {
+      const textInfo = languageData[this.language] != null ? languageData[this.language] : languageData["zh-Hans"];
+      return textInfo;
+    },
+    uniChooseLocationClassCom() {
+      let list2 = [];
+      if (this.theme == "dark") {
+        list2.push("uni-choose-location-dark");
+      } else {
+        list2.push("uni-choose-location-light");
+      }
+      return list2.join(" ");
+    },
+    landscapeClassCom() {
+      return this.isLandscape ? "uni-choose-location-landscape" : "";
+    }
+  }
+};
+const _style_0 = `
+@font-face {
+    font-family: UniChooseLocationFontFamily;
+    src: url('data:font/ttf;charset=utf-8;base64,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') format('truetype');
+}
+.uni-choose-location-icons {
+    font-family: "UniChooseLocationFontFamily";
+    font-size: 16px;
+    font-style: normal;
+}
+.uni-choose-location {
+    position: relative;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: #f8f8f8;
+    z-index: 999;
+}
+.uni-choose-location .uni-choose-location-map-box {
+    width: 100%;
+    height: 300px;
+}
+.uni-choose-location .uni-choose-location-map {
+    width: 100%;
+    height: 100%;
+}
+.uni-choose-location .uni-choose-location-map-target {
+    position: absolute;
+    left: 50%;
+    bottom: 50%;
+    width: 50px;
+    height: 50px;
+    margin-left: -25px;
+    transition-property: transform;
+    transition-duration: 0.25s;
+    transition-timing-function: ease-out;
+}
+.uni-choose-location .uni-choose-location-map-target .uni-choose-location-map-target-icon {
+    font-size: 50px;
+    color: #007aff;
+}
+.uni-choose-location .uni-choose-location-map-reset {
+    position: absolute;
+    left: 20px;
+    bottom: 40px;
+    width: 40px;
+    height: 40px;
+    box-sizing: border-box;
+    background-color: #fff;
+    border-radius: 20px;
+    pointer-events: auto;
+    box-shadow: 0px 0px 20px 2px rgba(0, 0, 0, .3);
+    z-index: 9;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.uni-choose-location .uni-choose-location-map-reset .uni-choose-location-map-reset-icon {
+    font-size: 26px;
+    text-align: center;
+    line-height: 40px;
+}
+.uni-choose-location .uni-choose-location-nav {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 60px;
+    background-color: rgba(0, 0, 0, 0);
+    background-image: linear-gradient(to bottom, rgba(0, 0, 0, .5), rgba(0, 0, 0, 0));
+}
+.uni-choose-location .uni-choose-location-nav .uni-choose-location-nav-btn {
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    width: 60px;
+    height: 44px;
+    padding: 5px;
+}
+.uni-choose-location .uni-choose-location-nav .uni-choose-location-nav-btn.uni-choose-location-nav-confirm-btn {
+    left: auto;
+    right: 5px;
+}
+.uni-choose-location .uni-choose-location-nav .uni-choose-location-nav-btn.uni-choose-location-nav-confirm-btn .uni-choose-location-nav-confirm-text {
+    background-color: #007aff;
+    border-radius: 5px;
+}
+.uni-choose-location .uni-choose-location-nav .uni-choose-location-nav-btn.uni-choose-location-nav-confirm-btn:active {
+    opacity: 0.7;
+}
+.uni-choose-location .uni-choose-location-nav .uni-choose-location-nav-btn.uni-choose-location-nav-confirm-btn.disable {
+    opacity: 0.4;
+}
+.uni-choose-location .uni-choose-location-nav .uni-choose-location-nav-btn.uni-choose-location-nav-confirm-btn.disable:active {
+    opacity: 1;
+}
+.uni-choose-location .uni-choose-location-nav .uni-choose-location-nav-btn.uni-choose-location-nav-back-btn .uni-choose-location-nav-back-text {
+    color: #fff;
+}
+.uni-choose-location .uni-choose-location-nav .uni-choose-location-nav-btn .uni-choose-location-nav-text {
+    padding: 8px 0px;
+    font-size: 13px;
+    text-align: center;
+
+    letter-spacing: 0.1em;
+
+    color: #fff;
+    text-align: center;
+}
+.uni-choose-location .uni-choose-location-poi {
+    position: absolute;
+    top: 300px;
+    /* left: auto; */
+    width: 100%;
+    bottom: 0;
+    background-color: #fff;
+}
+.uni-choose-location .uni-choose-location-poi .uni-choose-location-poi-search {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    height: 50px;
+    padding: 8px;
+    background-color: #fff;
+}
+.uni-choose-location .uni-choose-location-poi .uni-choose-location-poi-search-box {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    height: 32px;
+    flex: 1;
+    border-radius: 5px;
+    padding: 0 15px;
+    background-color: #ededed;
+}
+.uni-choose-location .uni-choose-location-poi .uni-choose-location-poi-search .uni-choose-location-poi-search-input {
+    flex: 1;
+    height: 100%;
+    border-radius: 5px;
+    padding: 0 5px;
+    background: #ededed;
+}
+.uni-choose-location .uni-choose-location-poi .uni-choose-location-poi-search .uni-choose-location-poi-search-cancel {
+    margin-left: 5px;
+    color: #007aff;
+    font-size: 17px;
+    text-align: center;
+}
+.uni-choose-location .uni-choose-location-poi .uni-choose-location-poi-list {
+    flex: 1;
+}
+.uni-choose-location .uni-choose-location-poi .uni-choose-location-poi-list .uni-choose-location-poi-search-loading {
+    display: flex;
+    align-items: center;
+    padding: 10px 0px;
+}
+.uni-choose-location .uni-choose-location-poi .uni-choose-location-poi-list .uni-choose-location-poi-search-loading .uni-choose-location-poi-search-loading-text {
+    color: #191919;
+}
+.uni-choose-location .uni-choose-location-poi .uni-choose-location-poi-list .uni-choose-location-poi-search-error {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+}
+.uni-choose-location .uni-choose-location-poi .uni-choose-location-poi-list .uni-choose-location-poi-search-error .uni-choose-location-poi-search-error-text {
+    color: #191919;
+    font-size: 14px;
+}
+.uni-choose-location .uni-choose-location-poi .uni-choose-location-poi-list .uni-choose-location-poi-item {
+    position: relative;
+    padding: 15px 10px;
+    padding-right: 40px;
+}
+.uni-choose-location .uni-choose-location-poi .uni-choose-location-poi-list .uni-choose-location-poi-item .uni-choose-location-poi-item-title-text {
+    font-size: 14px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    color: #191919;
+}
+.uni-choose-location .uni-choose-location-poi .uni-choose-location-poi-list .uni-choose-location-poi-item .uni-choose-location-poi-item-detail-text {
+    font-size: 12px;
+    margin-top: 5px;
+    color: #b2b2b2;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+.uni-choose-location .uni-choose-location-poi .uni-choose-location-poi-list .uni-choose-location-poi-item .uni-choose-location-poi-item-selected-icon {
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    width: 26px;
+    height: 26px;
+    margin-top: -13px;
+    color: #007aff;
+    font-size: 24px;
+}
+.uni-choose-location .uni-choose-location-poi .uni-choose-location-poi-list .uni-choose-location-poi-item .uni-choose-location-poi-item-after {
+    position: absolute;
+    height: 1px;
+    left: 10px;
+    bottom: 0px;
+    right: 10px;
+    width: auto;
+    border-bottom: 1px solid #f8f8f8;
+}
+.uni-choose-location.uni-choose-location-dark .uni-choose-location-map-reset {
+    background-color: #111111;
+    box-shadow: 0px 0px 5px 1px rgba(0, 0, 0, .3);
+}
+.uni-choose-location.uni-choose-location-dark .uni-choose-location-poi .uni-choose-location-poi-search-box {
+    background-color: #181818;
+}
+.uni-choose-location.uni-choose-location-dark .uni-choose-location-search-icon {
+    color: #d1d1d1;
+}
+.uni-choose-location.uni-choose-location-dark .uni-choose-location-poi .uni-choose-location-poi-list .uni-choose-location-poi-search-loading .uni-choose-location-poi-search-loading-text {
+    color: #d1d1d1;
+}
+.uni-choose-location.uni-choose-location-dark .uni-choose-location-poi .uni-choose-location-poi-search {
+    background-color: #181818
+}
+.uni-choose-location.uni-choose-location-dark .uni-choose-location-poi .uni-choose-location-poi-search .uni-choose-location-poi-search-input {
+    background: #111111;
+    color: #d1d1d1;
+}
+.uni-choose-location.uni-choose-location-dark .uni-choose-location-poi .uni-choose-location-poi-list .uni-choose-location-poi-item .uni-choose-location-poi-item-title-text {
+    color: #d1d1d1;
+}
+.uni-choose-location.uni-choose-location-dark .uni-choose-location-poi .uni-choose-location-poi-list .uni-choose-location-poi-item .uni-choose-location-poi-item-detail-text {
+    color: #595959;
+}
+.uni-choose-location.uni-choose-location-dark .uni-choose-location-poi {
+    background-color: #181818
+}
+.uni-choose-location.uni-choose-location-dark .uni-choose-location-poi .uni-choose-location-poi-list .uni-choose-location-poi-item .uni-choose-location-poi-item-after {
+    border-bottom: 1px solid #1e1e1e;
+}
+.uni-choose-location.uni-choose-location-dark .uni-choose-location-map-reset .uni-choose-location-map-reset-icon {
+    color: #d1d1d1;
+}
+.uni-choose-location .uni-choose-location-map-box.uni-choose-location-landscape {
+    height: 100%;
+}
+.uni-choose-location .uni-choose-location-poi.uni-choose-location-landscape {
+    top: 80px;
+    /* left: auto; */
+    right: 25px;
+    width: 300px;
+    bottom: 20px;
+    max-height: 600px;
+    box-shadow: 0px 0px 20px 2px rgba(0, 0, 0, .3);
+    border-radius: 5px;
+}
+.uni-choose-location .uni-choose-location-map-reset.uni-choose-location-landscape {
+    left: 40px;
+    bottom: 40px;
+}
+.uni-choose-location .uni-choose-location-poi .uni-choose-location-poi-list .uni-choose-location-poi-item.uni-choose-location-landscape {
+    padding: 10px;
+}
+.uni-choose-location .uni-choose-location-nav .uni-choose-location-nav-btn.uni-choose-location-landscape {
+    top: 10px;
+    left: 20px;
+}
+.uni-choose-location .uni-choose-location-nav .uni-choose-location-nav-btn.uni-choose-location-nav-confirm-btn.uni-choose-location-landscape {
+    left: auto;
+    right: 20px;
+}
+@media screen and (min-width: 900px) {
+.uni-choose-location .uni-choose-location-map-box {
+      height: 100%;
+}
+.uni-choose-location .uni-choose-location-poi {
+      top: 75px;
+      left: auto;
+      right: 25px;
+      width: 300px;
+      bottom: 20px;
+      max-height: 600px;
+      box-shadow: 0px 0px 20px 2px rgba(0, 0, 0, .3);
+      border-radius: 5px;
+}
+.uni-choose-location .uni-choose-location-poi .uni-choose-location-poi-item {
+      cursor: pointer;
+}
+.uni-choose-location .uni-choose-location-poi .uni-choose-location-poi-list .uni-choose-location-poi-item {
+      padding: 10px;
+}
+.uni-choose-location .uni-choose-location-nav .uni-choose-location-nav-btn {
+      top: 10px;
+      left: 20px;
+}
+.uni-choose-location .uni-choose-location-nav .uni-choose-location-nav-btn.uni-choose-location-nav-confirm-btn {
+      left: auto;
+      right: 20px;
+}
+}
+
+
+`;
+function _sfc_render$1(_ctx, _cache, $props, $setup, $data, $options) {
+  const _component_map = __syscom_0;
+  const _component_text = __syscom_1;
+  const _component_view = __syscom_2;
+  const _component_input = Input;
+  const _component_scroll_view = __syscom_4;
+  return openBlock(), createBlock(_component_view, {
+    class: normalizeClass(["uni-choose-location", $options.uniChooseLocationClassCom])
+  }, {
+    default: withCtx(() => [
+      createVNode(_component_view, {
+        class: normalizeClass(["uni-choose-location-map-box", [$options.landscapeClassCom]])
+      }, {
+        default: withCtx(() => [
+          createVNode(_component_map, {
+            class: "uni-choose-location-map",
+            id: $data.mapId,
+            ref: $data.mapId,
+            latitude: $data.latitude,
+            longitude: $data.longitude,
+            "layer-style": $data.theme == "dark" ? "2" : "1",
+            "show-compass": false,
+            "enable-zoom": true,
+            "enable-scroll": true,
+            "enable-rotate": false,
+            "enable-poi": true,
+            "show-location": true,
+            onRegionchange: $options.regionchange
+          }, null, 8, ["id", "latitude", "longitude", "layer-style", "onRegionchange"]),
+          createVNode(_component_view, {
+            class: "uni-choose-location-map-target",
+            ref: $data.mapTargetId,
+            id: $data.mapTargetId
+          }, {
+            default: withCtx(() => [
+              createVNode(_component_text, { class: "uni-choose-location-icons uni-choose-location-map-target-icon" }, {
+                default: withCtx(() => [
+                  createTextVNode(toDisplayString($data.icon.target), 1)
+                ]),
+                _: 1
+              })
+            ]),
+            _: 1
+          }, 8, ["id"]),
+          createVNode(_component_view, {
+            class: normalizeClass(["uni-choose-location-map-reset", [$options.landscapeClassCom]]),
+            onClick: $options.mapReset
+          }, {
+            default: withCtx(() => [
+              createVNode(_component_text, { class: "uni-choose-location-icons uni-choose-location-map-reset-icon" }, {
+                default: withCtx(() => [
+                  createTextVNode(toDisplayString($data.icon.position), 1)
+                ]),
+                _: 1
+              })
+            ]),
+            _: 1
+          }, 8, ["class", "onClick"])
+        ]),
+        _: 1
+      }, 8, ["class"]),
+      createVNode(_component_view, {
+        class: "uni-choose-location-nav",
+        style: normalizeStyle("height:" + (60 + $data.safeArea.top) + "px;")
+      }, {
+        default: withCtx(() => [
+          createVNode(_component_view, {
+            class: normalizeClass(["uni-choose-location-nav-btn uni-choose-location-nav-back-btn", [$options.landscapeClassCom]]),
+            style: normalizeStyle($data.safeArea.top > 0 ? "top: " + $data.safeArea.top + "px;" : "")
+          }, {
+            default: withCtx(() => [
+              createVNode(_component_text, {
+                class: "uni-choose-location-nav-text uni-choose-location-nav-back-text",
+                onClick: $options.back
+              }, {
+                default: withCtx(() => [
+                  createTextVNode(toDisplayString($options.languageCom["back"]), 1)
+                ]),
+                _: 1
+              }, 8, ["onClick"])
+            ]),
+            _: 1
+          }, 8, ["class", "style"]),
+          createVNode(_component_view, {
+            class: normalizeClass(["uni-choose-location-nav-btn uni-choose-location-nav-confirm-btn", [$options.landscapeClassCom, $data.selected < 0 ? "disable" : ""]]),
+            style: normalizeStyle($data.safeArea.top > 0 ? "top: " + $data.safeArea.top + "px;" : ""),
+            onClick: $options.confirm
+          }, {
+            default: withCtx(() => [
+              createVNode(_component_text, { class: "uni-choose-location-nav-text uni-choose-location-nav-confirm-text" }, {
+                default: withCtx(() => [
+                  createTextVNode(toDisplayString($options.languageCom["ok"]), 1)
+                ]),
+                _: 1
+              })
+            ]),
+            _: 1
+          }, 8, ["class", "style", "onClick"])
+        ]),
+        _: 1
+      }, 8, ["style"]),
+      createVNode(_component_view, {
+        class: normalizeClass(["uni-choose-location-poi", [$options.landscapeClassCom]])
+      }, {
+        default: withCtx(() => [
+          createVNode(_component_view, { class: "uni-choose-location-poi-search" }, {
+            default: withCtx(() => [
+              createVNode(_component_view, { class: "uni-choose-location-poi-search-box" }, {
+                default: withCtx(() => [
+                  $data.isFocus || $data.searchValue != "" ? (openBlock(), createBlock(_component_text, {
+                    key: 0,
+                    class: "uni-choose-location-icons uni-choose-location-search-icon"
+                  }, {
+                    default: withCtx(() => [
+                      createTextVNode(toDisplayString($data.icon.search), 1)
+                    ]),
+                    _: 1
+                  })) : createCommentVNode("", true),
+                  createVNode(_component_input, {
+                    modelValue: $data.searchValue,
+                    "onUpdate:modelValue": _cache[0] || (_cache[0] = ($event) => $data.searchValue = $event),
+                    type: "text",
+                    placeholder: ($data.isFocus ? "" : "") + " " + $options.languageCom["search"],
+                    class: "uni-choose-location-poi-search-input uni-choose-location-icons",
+                    "placeholder-style": $data.isFocus || $data.searchValue != "" ? "text-align: left;" : "text-align: center;",
+                    onFocus: _cache[1] || (_cache[1] = ($event) => $data.isFocus = true),
+                    onConfirm: _cache[2] || (_cache[2] = ($event) => $options.poiSearch("poiSearch")),
+                    onInput: $options.searchValueChange
+                  }, null, 8, ["modelValue", "placeholder", "placeholder-style", "onInput"])
+                ]),
+                _: 1
+              }),
+              $data.isFocus || $data.searchValue != "" ? (openBlock(), createBlock(_component_text, {
+                key: 0,
+                class: "uni-choose-location-poi-search-cancel",
+                onClick: $options.cancelSearch
+              }, {
+                default: withCtx(() => [
+                  createTextVNode(toDisplayString($options.languageCom["cancel"]), 1)
+                ]),
+                _: 1
+              }, 8, ["onClick"])) : createCommentVNode("", true)
+            ]),
+            _: 1
+          }),
+          createVNode(_component_scroll_view, {
+            id: $data.scrollId,
+            ref: $data.scrollId,
+            "scroll-with-animation": false,
+            direction: "vertical",
+            "scroll-top": $data.scrollTop,
+            "lower-threshold": 500,
+            onScrolltolower: $options.scrolltolower,
+            class: "uni-choose-location-poi-list"
+          }, {
+            default: withCtx(() => [
+              $data.errMsg != "" ? (openBlock(), createBlock(_component_view, {
+                key: 0,
+                class: "uni-choose-location-poi-search-error"
+              }, {
+                default: withCtx(() => [
+                  createVNode(_component_text, { class: "uni-choose-location-poi-search-error-text" }, {
+                    default: withCtx(() => [
+                      createTextVNode(toDisplayString($data.errMsg), 1)
+                    ]),
+                    _: 1
+                  })
+                ]),
+                _: 1
+              })) : $data.locationLoading ? (openBlock(), createBlock(_component_view, {
+                key: 1,
+                class: "uni-choose-location-poi-search-loading"
+              }, {
+                default: withCtx(() => [
+                  createVNode(_component_text, { class: "uni-choose-location-poi-search-loading-text" }, {
+                    default: withCtx(() => [
+                      createTextVNode(toDisplayString($options.languageCom["locationLoading"]), 1)
+                    ]),
+                    _: 1
+                  })
+                ]),
+                _: 1
+              })) : $data.searchLoading && $data.pageIndex == 1 ? (openBlock(), createBlock(_component_view, {
+                key: 2,
+                class: "uni-choose-location-poi-search-loading"
+              }, {
+                default: withCtx(() => [
+                  createVNode(_component_text, { class: "uni-choose-location-poi-search-loading-text" }, {
+                    default: withCtx(() => [
+                      createTextVNode(toDisplayString($options.languageCom["loading"]), 1)
+                    ]),
+                    _: 1
+                  })
+                ]),
+                _: 1
+              })) : (openBlock(true), createElementBlock(Fragment, { key: 3 }, renderList($data.pois, (item, index2) => {
+                return openBlock(), createBlock(_component_view, {
+                  key: index2,
+                  class: normalizeClass(["uni-choose-location-poi-item", [$options.landscapeClassCom]]),
+                  onClick: ($event) => $options.selectPoi(item, index2)
+                }, {
+                  default: withCtx(() => [
+                    createVNode(_component_view, null, {
+                      default: withCtx(() => [
+                        createVNode(_component_view, null, {
+                          default: withCtx(() => [
+                            createVNode(_component_text, { class: "uni-choose-location-poi-item-title-text" }, {
+                              default: withCtx(() => [
+                                createTextVNode(toDisplayString(item.title), 1)
+                              ]),
+                              _: 2
+                            }, 1024)
+                          ]),
+                          _: 2
+                        }, 1024),
+                        createVNode(_component_view, null, {
+                          default: withCtx(() => [
+                            createVNode(_component_text, { class: "uni-choose-location-poi-item-detail-text" }, {
+                              default: withCtx(() => [
+                                createTextVNode(toDisplayString(item.distance > 0 ? item.distanceStr + " | " : "") + toDisplayString(item.address), 1)
+                              ]),
+                              _: 2
+                            }, 1024)
+                          ]),
+                          _: 2
+                        }, 1024)
+                      ]),
+                      _: 2
+                    }, 1024),
+                    $data.selected == index2 ? (openBlock(), createBlock(_component_text, {
+                      key: 0,
+                      class: "uni-choose-location-icons uni-choose-location-poi-item-selected-icon"
+                    }, {
+                      default: withCtx(() => [
+                        createTextVNode(toDisplayString($data.icon.success), 1)
+                      ]),
+                      _: 1
+                    })) : createCommentVNode("", true),
+                    createVNode(_component_view, { class: "uni-choose-location-poi-item-after" })
+                  ]),
+                  _: 2
+                }, 1032, ["class", "onClick"]);
+              }), 128)),
+              $data.searchLoading && $data.pageIndex > 1 ? (openBlock(), createBlock(_component_view, {
+                key: 4,
+                class: "uni-choose-location-poi-search-loading"
+              }, {
+                default: withCtx(() => [
+                  createVNode(_component_text, { class: "uni-choose-location-poi-search-loading-text" }, {
+                    default: withCtx(() => [
+                      createTextVNode(toDisplayString($options.languageCom["loading"]), 1)
+                    ]),
+                    _: 1
+                  })
+                ]),
+                _: 1
+              })) : createCommentVNode("", true)
+            ]),
+            _: 1
+          }, 8, ["id", "scroll-top", "onScrolltolower"])
+        ]),
+        _: 1
+      }, 8, ["class"])
+    ]),
+    _: 1
+  }, 8, ["class"]);
+}
+const uniChooseLocationPage = /* @__PURE__ */ _export_sfc(_sfc_main$1, [["render", _sfc_render$1], ["styles", [_style_0]]]);
+const chooseLocation = /* @__PURE__ */ defineAsyncApi("chooseLocation", (options, { resolve, reject }) => {
+  registerSystemRoute("uni:chooseLocation", uniChooseLocationPage);
+  const uuid = Date.now() + "" + Math.floor(Math.random() * 1e7);
+  const baseEventName = `uni_choose_location_${uuid}`;
+  const readyEventName = `${baseEventName}_ready`;
+  const optionsEventName = `${baseEventName}_options`;
+  const successEventName = `${baseEventName}_success`;
+  const failEventName = `${baseEventName}_fail`;
+  uni.$on(readyEventName, () => {
+    uni.$emit(optionsEventName, JSON.parse(JSON.stringify(options)));
+  });
+  uni.$on(successEventName, (result) => {
+    resolve(result);
+  });
+  uni.$on(failEventName, () => {
+    reject("cancel");
+  });
+  uni.openDialogPage({
+    url: `uni:chooseLocation?readyEventName=${readyEventName}&optionsEventName=${optionsEventName}&successEventName=${successEventName}&failEventName=${failEventName}`,
+    fail(err) {
+      var _a;
+      (_a = options.fail) == null ? void 0 : _a.call(options, { errMsg: `chooseLocation:fail ${err.errMsg}` });
+      uni.$off(readyEventName);
+      uni.$off(successEventName);
+      uni.$off(failEventName);
+    }
+  });
+});
 window.UniResizeObserver = window.ResizeObserver;
 const api = /* @__PURE__ */ Object.defineProperty({
   __proto__: null,
@@ -19596,7 +20256,7 @@ function usePageRefresh(refreshRef) {
         addClass();
         restoring(() => {
           removeClass();
-          state2 = distance2 = offset = null;
+          state2 = distance = offset = null;
         });
       }
     },
@@ -19631,7 +20291,7 @@ function usePageRefresh(refreshRef) {
   let startY;
   let canRefresh;
   let state2;
-  let distance2 = null;
+  let distance = null;
   let offset = null;
   function toggleClass(type) {
     if (!state2) {
@@ -19696,7 +20356,7 @@ function usePageRefresh(refreshRef) {
     if (ev.cancelable) {
       ev.preventDefault();
     }
-    if (distance2 === null) {
+    if (distance === null) {
       offset = deltaY;
       state2 = PULLING;
       addClass();
@@ -19705,7 +20365,7 @@ function usePageRefresh(refreshRef) {
     if (deltaY < 0) {
       deltaY = 0;
     }
-    distance2 = deltaY;
+    distance = deltaY;
     const isReached = deltaY >= range && state2 !== REACHED;
     const isPulling = deltaY < range && state2 !== PULLING;
     if (isReached || isPulling) {
@@ -19731,7 +20391,7 @@ function usePageRefresh(refreshRef) {
       addClass();
       aborting(() => {
         removeClass();
-        state2 = distance2 = offset = null;
+        state2 = distance = offset = null;
       });
     } else if (state2 === REACHED) {
       removeClass();
@@ -20769,7 +21429,7 @@ function useQuill(props2, rootRef, trigger) {
     });
   });
 }
-const props$d = /* @__PURE__ */ extend({}, props$v, {
+const props$d = /* @__PURE__ */ extend({}, props$u, {
   id: {
     type: String,
     default: ""
@@ -21469,7 +22129,7 @@ const props$b = /* @__PURE__ */ extend(
       default: ""
     }
   },
-  props$v
+  props$u
 );
 const emit = [
   "input",
@@ -25599,7 +26259,7 @@ const props$6 = {
 };
 class UniScrollViewElement extends UniElement {
 }
-const ScrollView = /* @__PURE__ */ defineBuiltInComponent({
+const __syscom_4 = /* @__PURE__ */ defineBuiltInComponent({
   name: "ScrollView",
   compatConfig: {
     MODE: 3
@@ -27625,7 +28285,7 @@ const index$6 = /* @__PURE__ */ defineBuiltInComponent({
 });
 class UniViewElement extends UniElement {
 }
-const __syscom_0 = /* @__PURE__ */ defineBuiltInComponent({
+const __syscom_2 = /* @__PURE__ */ defineBuiltInComponent({
   name: "View",
   props: /* @__PURE__ */ extend({}, hoverProps),
   rootElement: {
@@ -28797,7 +29457,7 @@ export {
   index$5 as ListView,
   index$f as LivePlayer,
   index$e as LivePusher,
-  Map$1 as Map,
+  __syscom_0 as Map,
   MovableArea,
   MovableView,
   index$a as Navigator,
@@ -28810,7 +29470,7 @@ export {
   index$8 as RadioGroup,
   ResizeSensor,
   index$7 as RichText,
-  ScrollView,
+  __syscom_4 as ScrollView,
   indexX$1 as Slider,
   index$2 as StickyHeader,
   index$3 as StickySection,
@@ -28861,7 +29521,7 @@ export {
   UniViewJSBridge$1 as UniViewJSBridge,
   UniWebViewElement,
   index$n as Video,
-  __syscom_0 as View,
+  __syscom_2 as View,
   indexX$3 as WebView,
   addInterceptor,
   addPhoneContact,

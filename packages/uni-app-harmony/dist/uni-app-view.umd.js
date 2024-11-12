@@ -22410,13 +22410,13 @@
     }
   });
   function useMethods(embedRef) {
-    var MethodList = ["evalJs", "back", "forward", "reload", "stop"];
+    var MethodList = ["evalJS", "back", "forward", "reload", "stop"];
     var methods = {};
     var _loop = function(i3) {
       var methodName = MethodList[i3];
       methods[methodName] = function(data, resolve) {
         var embed = embedRef.value;
-        if (methodName === "evalJs") {
+        if (methodName === "evalJS") {
           return resolve(embed["runJavaScript"]((data || {}).jsCode || ""));
         } else {
           resolve(embed[methodName]());

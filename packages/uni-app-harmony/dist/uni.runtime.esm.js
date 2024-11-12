@@ -13256,8 +13256,14 @@ function createWebviewContext(id, componentInstance) {
     const pageId = getPageIdByVm(componentInstance);
     if (pageId) {
         return {
+            evalJS(jsCode) {
+                operateWebView(id, pageId, 'evalJS', {
+                    jsCode,
+                });
+            },
             evalJs(jsCode) {
-                operateWebView(id, pageId, 'evalJs', {
+                console.warn('The method evalJs is deprecated, please use evalJS instead');
+                operateWebView(id, pageId, 'evalJS', {
                     jsCode,
                 });
             },
