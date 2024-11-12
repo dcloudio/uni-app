@@ -90,8 +90,11 @@ export function initEasycoms(
       ;(globalThis as any).uts2jsSourceCodeMap.initUts2jsEasycom(easycoms)
     }
   }
-  initEasycom(options)
-  initUTSEasycom()
+  // ext-api 模式下，不存在 easycom 特性
+  if (process.env.UNI_COMPILE_TARGET !== 'ext-api') {
+    initEasycom(options)
+    initUTSEasycom()
+  }
   const componentExtNames = isX ? 'uvue|vue' : 'vue'
   const res = {
     options,
@@ -109,8 +112,10 @@ export function initEasycoms(
     ),
     refresh() {
       res.options = initEasycomOptions()
-      initEasycom(res.options)
-      initUTSEasycom()
+      if (process.env.UNI_COMPILE_TARGET !== 'ext-api') {
+        initEasycom(res.options)
+        initUTSEasycom()
+      }
     },
     easycoms,
   }
