@@ -30,8 +30,7 @@ export { pageScrollTo } from './ui/pageScrollTo'
 export { loadFontFace } from './ui/loadFontFace'
 export { startPullDownRefresh } from './ui/startPullDownRefresh'
 export { stopPullDownRefresh } from './ui/stopPullDownRefresh'
-// @ts-expect-error
-export * from '@dcloudio/uni-ext-api/uni-actionSheet'
+// export * from '@dcloudio/uni-ext-api/uni-actionSheet'
 export { closeNativeDialogPage } from './route/utils'
 // @ts-expect-error
 export * from '@dcloudio/uni-ext-api/uni-chooseLocation'
