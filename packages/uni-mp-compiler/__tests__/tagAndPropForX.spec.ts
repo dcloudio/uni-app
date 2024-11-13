@@ -8,7 +8,7 @@ describe('compiler: transform tagAndProp', () => {
   test('list-view', () => {
     assert(
       `<list-view />`,
-      `<scroll-view enable-flex=\"true\"/>`,
+      `<scroll-view enable-flex=\"true\" scroll-y=\"true\"/>`,
       `(_ctx, _cache) => {
   const __returned__ = {}
   return __returned__

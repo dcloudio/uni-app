@@ -39,6 +39,7 @@ export const transformDirection = function (
     directionPropIndex === -1 ||
     (scrollXPropIndex !== -1 && scrollYPropIndex !== -1)
   ) {
+    node.props.push(createAttributeNode('scroll-y', 'true'))
     return
   }
   const directionProp = node.props[directionPropIndex]
