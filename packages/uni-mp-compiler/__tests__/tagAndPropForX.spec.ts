@@ -22,7 +22,7 @@ describe('compiler: transform tagAndProp', () => {
   test('list-view direction horizontal', () => {
     assert(
       `<list-view direction="horizontal" />`,
-      `<scroll-view enable-flex=\"true\" scroll-x=\"true\" scroll-y=\"false\"/>`,
+      `<scroll-view enable-flex=\"true\" scroll-x=\"true\"/>`,
       `(_ctx, _cache) => {
   const __returned__ = {}
   return __returned__

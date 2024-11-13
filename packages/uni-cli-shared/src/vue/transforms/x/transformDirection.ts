@@ -50,8 +50,8 @@ export const transformDirection = function (
       directionValue === 'vertical' ||
       directionValue === 'all'
     node.props.splice(directionPropIndex, 1)
-    node.props.push(createAttributeNode('scroll-x', '' + scrollX))
-    node.props.push(createAttributeNode('scroll-y', '' + scrollY))
+    scrollX && node.props.push(createAttributeNode('scroll-x', '' + scrollX))
+    scrollY && node.props.push(createAttributeNode('scroll-y', '' + scrollY))
   } else if (directionProp.type === NodeTypes.DIRECTIVE) {
     if (
       !directionProp.arg ||
@@ -65,7 +65,7 @@ export const transformDirection = function (
     const scrollX = `(${exp}) === 'horizontal' || (${exp}) === 'all'`
     const scrollY = `!(${exp}) || (${exp}) === 'vertical' || (${exp}) === 'all'`
     node.props.splice(directionPropIndex, 1)
-    node.props.push(createBindDirectiveNode('scroll-x', scrollX))
-    node.props.push(createBindDirectiveNode('scroll-y', scrollY))
+    scrollX && node.props.push(createBindDirectiveNode('scroll-x', scrollX))
+    scrollY && node.props.push(createBindDirectiveNode('scroll-y', scrollY))
   }
 }
