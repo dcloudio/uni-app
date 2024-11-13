@@ -14,9 +14,7 @@ import {
 } from 'vue'
 import type { VuePageComponent } from './define'
 import { addCurrentPage, getPage$BasePage } from './getCurrentPages'
-//#if _X_
 import { OPEN_DIALOG_PAGE } from '../../../x/constants'
-//#endif
 
 export function setupPage(component: VuePageComponent) {
   const oldSetup = component.setup
