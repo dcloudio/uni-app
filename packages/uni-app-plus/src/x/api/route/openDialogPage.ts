@@ -17,6 +17,7 @@ import { registerDialogPage } from '../../framework/page/register'
 import type { UniDialogPage } from '@dcloudio/uni-app-x/types/page'
 import type { OpenDialogPageOptions } from '@dcloudio/uni-app-x/types/uni'
 import { closeNativeDialogPage } from './utils'
+import { OPEN_DIALOG_PAGE } from '../../constants'
 
 export const openDialogPage = (
   options: OpenDialogPageOptions
@@ -91,7 +92,7 @@ export const openDialogPage = (
   }
   // 有动画时先执行 show
   const page = registerDialogPage(
-    { url, path, query, openType: 'openDialogPage' },
+    { url, path, query, openType: OPEN_DIALOG_PAGE },
     dialogPage,
     noAnimation ? undefined : callback,
     // 有动画时延迟创建 vm

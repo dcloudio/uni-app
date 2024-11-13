@@ -14,6 +14,9 @@ import {
 } from 'vue'
 import type { VuePageComponent } from './define'
 import { addCurrentPage, getPage$BasePage } from './getCurrentPages'
+//#if _X_
+import { OPEN_DIALOG_PAGE } from '../../../x/constants'
+//#endif
 
 export function setupPage(component: VuePageComponent) {
   const oldSetup = component.setup
@@ -30,7 +33,11 @@ export function setupPage(component: VuePageComponent) {
     initPageVm(pageVm, __pageInstance as Page.PageInstance['$page'])
     if (__X__) {
       instance.$dialogPages = []
-      const uniPage = new UniNormalPageImpl()
+      const uniPage =
+        (__pageInstance as Page.PageInstance['$page']).openType ===
+        OPEN_DIALOG_PAGE
+          ? new UniDialogPageImpl()
+          : new UniNormalPageImpl()
       pageVm.$basePage = pageVm.$page as Page.PageInstance['$page']
       pageVm.$page = uniPage
       uniPage.route = pageVm.$basePage.route
@@ -80,7 +87,7 @@ export function setupPage(component: VuePageComponent) {
       uniPage.getAndroidView = () => null
       uniPage.getHTMLElement = () => null
 
-      if (getPage$BasePage(pageVm).openType !== 'openDialogPage') {
+      if (getPage$BasePage(pageVm).openType !== OPEN_DIALOG_PAGE) {
         addCurrentPageWithInitScope(
           __pageId as number,
           pageVm,

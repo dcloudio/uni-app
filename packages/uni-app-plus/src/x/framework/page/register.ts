@@ -296,9 +296,6 @@ export function registerDialogPage(
     ) as ComponentPublicInstance
     dialogPage.vm = page
     dialogPage.$vm = page
-    dialogPage.vm.$nativePage = nativePage
-    dialogPage.$vm.$nativePage = nativePage
-    page.$page = dialogPage
 
     // 由于 iOS 调用 show 时机差异，暂不使用页面 onShow 事件
     // nativePage.addPageEventListener(ON_SHOW, (_) => {
@@ -347,8 +344,6 @@ export function registerDialogPage(
       invokeHook(page, ON_RESIZE, args)
     })
     nativePage.startRender()
-    // @ts-expect-error
-    dialogPage.__nativePageId = nativePage.pageId
   }
   if (delay) {
     setTimeout(fn, delay)
