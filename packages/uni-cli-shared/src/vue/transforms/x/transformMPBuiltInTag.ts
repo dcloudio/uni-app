@@ -57,6 +57,12 @@ export const defaultTransformMPBuiltInTagOptions: TransformMPBuiltInTagOptions =
           value: '2d',
         },
       ],
+      'scroll-view': [
+        {
+          name: 'enable-flex',
+          value: 'true',
+        },
+      ],
     },
     tagRename: {
       'list-view': 'scroll-view',
@@ -72,6 +78,9 @@ export function createMPBuiltInTagTransform(
   ) {
     if (!isElementNode(node)) {
       return
+    }
+    if (options.tagRename && node.tag in options.tagRename) {
+      node.tag = options.tagRename[node.tag]
     }
     if (options.propRename && node.tag in options.propRename) {
       const propMap = options.propRename[node.tag]
@@ -100,9 +109,6 @@ export function createMPBuiltInTagTransform(
         }
         node.props.push(createAttributeNode(name, value))
       })
-    }
-    if (options.tagRename && node.tag in options.tagRename) {
-      node.tag = options.tagRename[node.tag]
     }
   }
 }
