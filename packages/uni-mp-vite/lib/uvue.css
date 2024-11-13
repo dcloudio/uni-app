@@ -85,6 +85,10 @@ view {
   border: 0 solid #000;
 }
 
+scroll-view {
+  width: auto;
+}
+
 swiper-item {
   position: absolute;
 }
