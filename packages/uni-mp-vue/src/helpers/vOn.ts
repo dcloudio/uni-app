@@ -67,6 +67,27 @@ export interface MPEvent extends WechatMiniprogram.BaseEvent {
   stopImmediatePropagation: () => void
 }
 
+export interface MPTapEvent extends MPEvent {
+  touches: {
+    clientX: number
+    clientY: number
+    force: number
+    identifier: number
+    pageX: number
+    pageY: number
+    screenX: number
+    screenY: number
+  }[]
+  x: number
+  y: number
+  clientX: number
+  clientY: number
+  pageX: number
+  pageY: number
+  screenX: number
+  screenY: number
+}
+
 function createInvoker(
   initialValue: EventValue,
   instance: ComponentInternalInstance | null
@@ -127,6 +148,27 @@ const bubbles = [
   'animationend',
   'touchforcechange',
 ]
+
+function isMPTapEvent(event: MPEvent): event is MPTapEvent {
+  return event.type === 'tap'
+}
+
+function normalizeXEvent(event: MPEvent) {
+  if (isMPTapEvent(event)) {
+    event.x = event.detail.x
+    event.y = event.detail.y
+    event.clientX = event.detail.x
+    event.clientY = event.detail.y
+    const touch0 = event.touches && event.touches[0]
+    if (touch0) {
+      event.pageX = touch0.pageX
+      event.pageY = touch0.pageY
+      event.screenX = touch0.screenX
+      event.screenY = touch0.screenY
+    }
+  }
+}
+
 function patchMPEvent(event: MPEvent) {
   if (event.type && event.target) {
     event.preventDefault = NOOP
@@ -151,6 +193,10 @@ function patchMPEvent(event: MPEvent) {
 
     if (isPlainObject(event.detail)) {
       event.target = extend({}, event.target, event.detail)
+    }
+
+    if (__X__) {
+      normalizeXEvent(event)
     }
   }
 }
