@@ -47,6 +47,26 @@ export class UniElement {
     this.style.$onChange(callback)
   }
 
+  getAttribute(name: string) {
+    switch (name) {
+      case 'id':
+        return this.id
+      case 'style':
+        return this.style.cssText
+      default:
+        console.warn(
+          `Miniprogram does not support UniElement.getAttribute(${name})`
+        )
+        return null
+    }
+  }
+
+  setAttribute(name: string, value: string) {
+    console.warn(
+      `Miniprogram does not support UniElement.setAttribute(${name}, value)`
+    )
+  }
+
   $destroy() {
     this.style.$destroy()
     // @ts-expect-error
