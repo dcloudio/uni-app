@@ -14,9 +14,9 @@
     "url": "https://github.com/dcloudio/uni-app/issues"
   },
   "devDependencies": {
-    "@dcloudio/uni-mp-vue": "3.0.0-alpha-4030120240925001",
-    "@dcloudio/uni-i18n": "3.0.0-alpha-4030120240925001",
-    "@dcloudio/uni-shared": "3.0.0-alpha-4030120240925001",
+    "@dcloudio/uni-mp-vue": "workspace:*",
+    "@dcloudio/uni-i18n": "workspace:*",
+    "@dcloudio/uni-shared": "workspace:*",
     "safe-area-insets": "^1.4.1"
   }
 }
