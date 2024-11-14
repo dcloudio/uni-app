@@ -279,19 +279,6 @@
       }
     }
   },
-  "uni-getBackgroundAudioManager": {
-    "uni": {
-      "getBackgroundAudioManager": {
-        "name": "getBackgroundAudioManager",
-        "app": {
-          "js": false,
-          "kotlin": true,
-          "swift": false,
-          "arkts": true
-        }
-      }
-    }
-  },
   "uni-getDeviceInfo": {
     "uni": {
       "getDeviceInfo": {
@@ -991,13 +978,7 @@
           "swift": true
         }
       }
-    },
-    "easycom": [
-      "univerify-number",
-      "univerify-privacy-checkbox",
-      "univerify-privacy-text",
-      "univerify-slogan"
-    ]
+    }
   },
   "uni-video": {
     "uni": {
