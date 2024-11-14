@@ -69,6 +69,11 @@
       "null"
     ]
   },
+  "uni-exit": {
+    "exit": [
+      "null"
+    ]
+  },
   "uni-file": {
     "saveFile": [
       "null"
@@ -83,11 +88,6 @@
       "null"
     ],
     "getFileInfo": [
-      "null"
-    ]
-  },
-  "uni-exit": {
-    "exit": [
       "null"
     ]
   },
