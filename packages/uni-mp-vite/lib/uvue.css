@@ -101,3 +101,16 @@ slider {
   margin: 0px;
   padding: 4px 0px;
 }
+
+text {
+  display: inline;
+}
+
+text,
+textarea,
+label {
+  line-height: 1.2;
+  overflow: hidden;
+  flex-basis: auto;
+  letter-spacing: 0;
+}
