@@ -12949,6 +12949,9 @@ function parseValue(value) {
       const keys = Object.keys(object);
       if (keys.length === 2 && "data" in object) {
         if (typeof object.data === type) {
+          if (type === "object" && !Array.isArray(object.data)) {
+            return UTS.JSON.parse(JSON.stringify(object.data));
+          }
           return object.data;
         }
         if (type === "object" && /^\d{4}-\d{2}-\d{2}T\d{2}\:\d{2}\:\d{2}\.\d{3}Z$/.test(object.data)) {
@@ -12992,8 +12995,7 @@ function getStorageOrigin(key) {
   }
   let data = value;
   try {
-    let object;
-    object = UTS.JSON.parse(value);
+    const object = JSON.parse(value);
     const result = parseValue(object);
     if (result !== void 0) {
       data = result;

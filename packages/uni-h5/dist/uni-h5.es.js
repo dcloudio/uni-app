@@ -19545,8 +19545,7 @@ function getStorageOrigin(key) {
   }
   let data = value;
   try {
-    let object;
-    object = JSON.parse(value);
+    const object = JSON.parse(value);
     const result = parseValue(object);
     if (result !== void 0) {
       data = result;

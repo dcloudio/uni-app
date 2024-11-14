@@ -4,7 +4,7 @@ var __publicField = (obj, key, value) => {
   __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
   return value;
 };
-import { withModifiers, createVNode, getCurrentInstance, ref, defineComponent, openBlock, createElementBlock, onMounted, provide, computed, watch, onUnmounted, inject, onBeforeUnmount, mergeProps, reactive, injectHook, nextTick, createApp, createBlock, watchEffect, isVNode, withDirectives, vShow, renderList, isReactive, Transition, effectScope, Fragment, onActivated, withCtx, KeepAlive, resolveDynamicComponent, markRaw, normalizeClass, normalizeStyle, createTextVNode, toDisplayString, createCommentVNode, onBeforeMount, onBeforeActivate, onBeforeDeactivate, createElementVNode, renderSlot, shallowRef, Comment, h } from "vue";
+import { withModifiers, createVNode, getCurrentInstance, ref, defineComponent, openBlock, createElementBlock, onMounted, provide, computed, watch, onUnmounted, inject, onBeforeUnmount, mergeProps, reactive, injectHook, nextTick, createApp, createBlock, watchEffect, isVNode, withDirectives, vShow, renderList, isReactive, Transition, effectScope, Fragment, onActivated, withCtx, KeepAlive, resolveDynamicComponent, markRaw, normalizeClass, createTextVNode, toDisplayString, normalizeStyle, createCommentVNode, onBeforeMount, onBeforeActivate, onBeforeDeactivate, createElementVNode, renderSlot, shallowRef, Comment, h } from "vue";
 import { isArray, isString, extend, remove, stringifyStyle, parseStringStyle, isPlainObject as isPlainObject$1, isFunction, capitalize, camelize, hasOwn, isObject, toRawType, makeMap as makeMap$1, isPromise, invokeArrayFns as invokeArrayFns$1, hyphenate } from "@vue/shared";
 import { once, UNI_STORAGE_LOCALE, I18N_JSON_DELIMITERS, Emitter, passive, initCustomDatasetOnce, resolveComponentInstance, normalizeStyles, addLeadingSlash, invokeArrayFns, removeLeadingSlash, resolveOwnerVm, resolveOwnerEl, ON_WXS_INVOKE_CALL_METHOD, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_SHOW, ON_HIDE, ON_PAGE_SCROLL, ON_REACH_BOTTOM, EventChannel, createRpx2Unit, defaultRpx2Unit, parseQuery, NAVBAR_HEIGHT, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, getLen, getCustomDataset, parseUrl, sortObject, ON_THEME_CHANGE, OFF_THEME_CHANGE, ON_HOST_THEME_CHANGE, OFF_HOST_THEME_CHANGE, updateElementStyle, LINEFEED, ON_WEB_INVOKE_APP_SERVICE, ON_BACK_PRESS, addFont, ON_NAVIGATION_BAR_CHANGE, scrollTo, RESPONSIVE_MIN_WIDTH, formatDateTime, normalizeTitleColor, ON_REACH_BOTTOM_DISTANCE, isSystemDialogPage, isSystemActionSheetDialogPage, ON_UNLOAD, onCreateVueApp, SCHEME_RE, DATA_RE, decodedQuery, debounce, WEB_INVOKE_APPSERVICE, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_PULL_DOWN_REFRESH, stringifyQuery as stringifyQuery$1, PRIMARY_COLOR, isUniLifecycleHook, ON_LOAD, UniLifecycleHooks, invokeCreateErrorHandler, invokeCreateVueAppHook } from "@dcloudio/uni-shared";
 import { onCreateVueApp as onCreateVueApp2 } from "@dcloudio/uni-shared";
@@ -9046,6 +9046,9 @@ function parseValue(value) {
       const keys = Object.keys(object);
       if (keys.length === 2 && "data" in object) {
         if (typeof object.data === type) {
+          if (type === "object" && !Array.isArray(object.data)) {
+            return UTS.JSON.parse(JSON.stringify(object.data));
+          }
           return object.data;
         }
         if (type === "object" && /^\d{4}-\d{2}-\d{2}T\d{2}\:\d{2}\:\d{2}\.\d{3}Z$/.test(object.data)) {
@@ -9089,8 +9092,7 @@ function getStorageOrigin(key) {
   }
   let data = value;
   try {
-    let object;
-    object = UTS.JSON.parse(value);
+    const object = JSON.parse(value);
     const result = parseValue(object);
     if (result !== void 0) {
       data = result;
@@ -17141,372 +17143,6 @@ function triggerFailCallback(options, errMsg) {
   (_a = options == null ? void 0 : options.fail) == null ? void 0 : _a.call(options, failOptions);
   (_b = options == null ? void 0 : options.complete) == null ? void 0 : _b.call(options, failOptions);
 }
-const _sfc_main$2 = {
-  data() {
-    return {
-      show: false,
-      i18nCancelText: {
-        en: "Cancel",
-        es: "Cancelar",
-        fr: "Annuler",
-        "zh-Hans": "取消",
-        "zh-Hant": "取消"
-      },
-      readyEventName: "",
-      optionsEventName: "",
-      successEventName: "",
-      failEventName: "",
-      title: null,
-      itemList: [],
-      optionCancelText: null,
-      titleColor: null,
-      itemColor: null,
-      cancelColor: null,
-      backgroundColor: null,
-      language: "zh-Hans",
-      theme: "light",
-      isLandscape: false,
-      windowWidth: 0,
-      windowHeight: 0,
-      popover: {}
-    };
-  },
-  onLoad(options) {
-    this.readyEventName = options["readyEventName"];
-    this.optionsEventName = options["optionsEventName"];
-    this.successEventName = options["successEventName"];
-    this.failEventName = options["failEventName"];
-    uni.$on(this.optionsEventName, (data) => {
-      this.itemList = data["itemList"];
-      if (data["title"] != null) {
-        this.title = data["title"];
-      }
-      if (data["cancelText"] != null) {
-        this.optionCancelText = data["cancelText"];
-      }
-      if (data["titleColor"] != null) {
-        this.titleColor = data["titleColor"];
-      }
-      if (data["itemColor"] != null) {
-        this.itemColor = data["itemColor"];
-      }
-      if (data["cancelColor"] != null) {
-        this.cancelColor = data["cancelColor"];
-      }
-      if (data["backgroundColor"] != null) {
-        this.backgroundColor = data["backgroundColor"];
-      }
-      if (data["popover"] != null) {
-        this.popover = data["popover"];
-      }
-    });
-    uni.$emit(this.readyEventName, {});
-    const systemInfo = uni.getSystemInfoSync();
-    const osLanguage = systemInfo.osLanguage;
-    const appLanguage = systemInfo.appLanguage;
-    if (appLanguage != null) {
-      this.language = appLanguage;
-    } else if (osLanguage != null) {
-      this.language = osLanguage;
-    }
-    const osTheme = systemInfo.osTheme;
-    const appTheme = systemInfo.appTheme;
-    if (appTheme != null) {
-      this.theme = appTheme;
-    } else if (osTheme != null) {
-      this.theme = osTheme;
-    }
-    const hostTheme = systemInfo.hostTheme;
-    if (hostTheme != null) {
-      this.theme = hostTheme;
-    }
-    this.isLandscape = systemInfo.deviceOrientation == "landscape";
-    this.windowHeight = systemInfo.windowHeight;
-    this.windowWidth = systemInfo.windowWidth;
-    window.addEventListener("resize", this.fixSize);
-    const locale = uni.getLocale();
-    this.language = locale;
-    uni.onLocaleChange((res) => {
-      if (res.locale) {
-        this.language = res.locale;
-      }
-    });
-    uni.onThemeChange((res) => {
-      this.theme = res.theme;
-    });
-  },
-  computed: {
-    isWidescreen() {
-      return this.windowHeight >= 500 && this.windowWidth >= 500;
-    },
-    containerStyle() {
-      if (Object.keys(this.popover).length == 0) {
-        return {};
-      }
-      const res = {
-        transform: "none !important"
-      };
-      const top = this.popover.top;
-      const left = this.popover.left;
-      const width = this.popover.width;
-      const height = this.popover.height;
-      const center = left + width / 2;
-      const contentLeft = Math.max(0, center - 300 / 2);
-      res["left"] = `${contentLeft}px`;
-      const vcl = this.windowHeight / 2;
-      if (top + height - vcl > vcl - top) {
-        res["top"] = "auto";
-        res["bottom"] = `${this.windowHeight - top + 6}px`;
-      } else {
-        res["top"] = `${top + height + 6}px`;
-      }
-      return res;
-    },
-    triangleStyle() {
-      if (Object.keys(this.popover).length == 0) {
-        return {};
-      }
-      const res = {};
-      const borderColor = this.backgroundColor || (this.theme == "dark" ? "#2C2C2B" : "#fcfcfd");
-      const top = this.popover.top;
-      const left = this.popover.left;
-      const width = this.popover.width;
-      const height = this.popover.height;
-      const center = left + width / 2;
-      const contentLeft = Math.max(0, center - 300 / 2);
-      let triangleLeft = Math.max(12, center - contentLeft);
-      triangleLeft = Math.min(300 - 12, triangleLeft);
-      res["left"] = `${triangleLeft}px`;
-      const vcl = this.windowHeight / 2;
-      if (top + height - vcl > vcl - top) {
-        res["bottom"] = "-6px";
-        res["border-width"] = "6px 6px 0 6px";
-        res["border-color"] = `${borderColor} transparent transparent transparent`;
-      } else {
-        res["top"] = "-6px";
-        res["border-width"] = "0 6px 6px 6px";
-        res["border-color"] = `transparent transparent ${borderColor} transparent`;
-      }
-      return res;
-    },
-    cancelText() {
-      if (this.optionCancelText != null) {
-        const res = this.optionCancelText;
-        return res;
-      }
-      if (this.language.startsWith("en")) {
-        return this.i18nCancelText["en"];
-      }
-      if (this.language.startsWith("es")) {
-        return this.i18nCancelText["es"];
-      }
-      if (this.language.startsWith("fr")) {
-        return this.i18nCancelText["fr"];
-      }
-      if (this.language.startsWith("zh-Hans")) {
-        return this.i18nCancelText["zh-Hans"];
-      }
-      if (this.language.startsWith("zh-Hant")) {
-        return this.i18nCancelText["zh-Hant"];
-      }
-      return "取消";
-    }
-  },
-  onReady() {
-    setTimeout(() => {
-      this.show = true;
-    }, 10);
-  },
-  onResize() {
-    const systemInfo = uni.getSystemInfoSync();
-    this.isLandscape = systemInfo.deviceOrientation == "landscape";
-  },
-  onUnload() {
-    uni.$off(this.optionsEventName, null);
-    uni.$off(this.readyEventName, null);
-    uni.$off(this.successEventName, null);
-    uni.$off(this.failEventName, null);
-    window.removeEventListener("resize", this.fixSize);
-  },
-  methods: {
-    fixSize() {
-      const {
-        windowWidth,
-        windowHeight,
-        windowTop
-      } = uni.getSystemInfoSync();
-      this.windowWidth = windowWidth;
-      this.windowHeight = windowHeight + (windowTop || 0);
-    },
-    closeActionSheet() {
-      this.show = false;
-      setTimeout(() => {
-        uni.closeDialogPage({
-          dialogPage: this.$page
-        });
-      }, 300);
-    },
-    handleMenuItemClick(tapIndex) {
-      this.closeActionSheet();
-      uni.$emit(this.successEventName, tapIndex);
-    },
-    handleCancel() {
-      this.closeActionSheet();
-      uni.$emit(this.failEventName, {});
-    }
-  }
-};
-const _style_0$1 = "\n.uni-action-sheet_dialog__mask {\n    position: fixed;\n    z-index: 999;\n    top: 0;\n    right: 0;\n    left: 0;\n    bottom: 0;\n    opacity: 0;\n    background-color: rgba(0, 0, 0, 0.6);\n    transition: opacity 0.1s;\n}\n.uni-action-sheet_dialog__mask__show {\n    opacity: 1;\n}\n.uni-action-sheet_dialog__container {\n    position: fixed;\n    width: 100%;\n    left: 0;\n    bottom: 0;\n    z-index: 999;\n    transform: translate(0, 100%);\n    opacity: 0;\n\n\n\n\n    transition: transform 0.3s, opacity 0.3s;\n\n    background-color: #f7f7f7;\n    border-top-left-radius: 12px;\n    border-top-right-radius: 12px;\n}\n.uni-action-sheet_dialog__menu {\n    border-top-left-radius: 12px;\n    border-top-right-radius: 12px;\n    overflow: hidden;\n}\n.uni-action-sheet_dialog__container.uni-action-sheet_dialog__show {\n    opacity: 1;\n    transform: translate(0, 0);\n}\n.uni-action-sheet_dialog__title,\n  .uni-action-sheet_dialog__cell,\n  .uni-action-sheet_dialog__action {\n    padding: 16px;\n}\n.uni-action-sheet_dialog__title__text,\n  .uni-action-sheet_dialog__cell__text,\n  .uni-action-sheet_dialog__action__text {\n    line-height: 1.4;\n    text-align: center;\n    white-space: nowrap;\n    overflow: hidden;\n    text-overflow: ellipsis;\n}\n.uni-action-sheet_dialog__action {\n    margin-top: 8px;\n}\n.uni-action-sheet_dialog__title__text {\n    color: #666666;\n}\n.uni-action-sheet_dialog__cell__text,\n  .uni-action-sheet_dialog__action__text {\n    color: #000000;\n}\n.uni-action-sheet_dialog__menu,\n  .uni-action-sheet_dialog__action {\n    background-color: #ffffff;\n}\n.uni-action-sheet_dialog__title {\n    border-bottom: 1px solid #e5e5e5;\n}\n.uni-action-sheet_dialog__cell__container {\n    max-height: 330px;\n\n    display: block;\n    overflow-y: auto;\n    scrollbar-width: none;\n}\n.uni-action-sheet_dialog__cell {\n    border-top: 1px solid #e5e5e5;\n}\n\n  /* dark mode */\n.uni-action-sheet_dialog__container.uni-action-sheet_dark__mode {\n    background-color: #1D1E1E;\n}\n.uni-action-sheet_dialog__menu.uni-action-sheet_dark__mode,\n  .uni-action-sheet_dialog__action.uni-action-sheet_dark__mode {\n    background-color: #2C2C2B;\n}\n.uni-action-sheet_dialog__title.uni-action-sheet_dark__mode {\n    border-bottom: 1px solid #2F3131;\n}\n.uni-action-sheet_dialog__cell.uni-action-sheet_dark__mode {\n    border-top: 1px solid #2F3131;\n}\n.uni-action-sheet_dialog__title__text.uni-action-sheet_dark__mode {\n    color: #999999;\n}\n.uni-action-sheet_dialog__cell__text.uni-action-sheet_dark__mode,\n  .uni-action-sheet_dialog__action__text.uni-action-sheet_dark__mode {\n    color: #ffffff;\n}\n\n  /* landscape mode */\n.uni-action-sheet_dialog__container.uni-action-sheet_landscape__mode {\n    width: 300px;\n    position: fixed;\n    left: 50%;\n    right: auto;\n    top: 50%;\n    bottom: auto;\n    z-index: 999;\n    transform: translate(-50%, -50%);\n    border-top-left-radius: 5px;\n    border-top-right-radius: 5px;\n    border-bottom-left-radius: 5px;\n    border-bottom-right-radius: 5px;\n    transition: opacity 0.3s;\n}\n.uni-action-sheet_dialog__menu.uni-action-sheet_landscape__mode {\n    border-top-left-radius: 5px;\n    border-top-right-radius: 5px;\n    border-bottom-left-radius: 5px;\n    border-bottom-right-radius: 5px;\n    box-shadow: 0 0 20px 5px rgba(0, 0, 0, 0.3);\n}\n.uni-action-sheet_dialog__action.uni-action-sheet_landscape__mode {\n    display: none;\n}\n.uni-action-sheet_dialog__cell__container.uni-action-sheet_landscape__mode {\n    max-height: 260px;\n}\n.uni-action-sheet_dialog__title.uni-action-sheet_landscape__mode,\n  .uni-action-sheet_dialog__cell.uni-action-sheet_landscape__mode,\n  .uni-action-sheet_dialog__action.uni-action-sheet_landscape__mode {\n    padding: 10px 6px;\n}\n.uni-action-sheet_dialog__menu {\n    display: block;\n}\n.uni-action-sheet_dialog__title,\n  .uni-action-sheet_dialog__cell,\n  .uni-action-sheet_dialog__action {\n    display: block;\n    text-align: center;\n    line-height: 1.4;\n    text-align: center;\n    white-space: nowrap;\n    overflow: hidden;\n    text-overflow: ellipsis;\n}\n.uni-action-sheet_dialog__cell,\n  .uni-action-sheet_dialog__action {\n    cursor: pointer;\n}\n.uni-action-sheet_dialog__triangle {\n    position: absolute;\n    width: 0;\n    height: 0;\n    margin-left: -6px;\n    border-style: solid;\n}\n  /* web wide screen */\n@media screen and (min-width: 500px) and (min-height: 500px) {\n.uni-action-sheet_dialog__mask {\n      background: none;\n}\n.uni-action-sheet_dialog__container {\n      width: 300px;\n      position: fixed;\n      left: 50%;\n      right: auto;\n      top: 50%;\n      bottom: auto;\n      z-index: 999;\n      border-radius: 5px;\n      opacity: 0;\n      transform: translate(-50%, -50%);\n      transition: opacity 0.3s;\n}\n.uni-action-sheet_dialog__show {\n      opacity: 1;\n      transform: translate(-50%, -50%) !important;\n}\n.uni-action-sheet_dialog__menu {\n      border-radius: 5px;\n      box-shadow: 0 0 20px 5px rgba(0, 0, 0, 0.3);\n}\n.uni-action-sheet_dialog__cell__container {\n      max-height: 260px;\n}\n.uni-action-sheet_dialog__action {\n      display: none;\n}\n.uni-action-sheet_dialog__title {\n      font-size: 15px;\n}\n.uni-action-sheet_dialog__title,\n    .uni-action-sheet_dialog__cell,\n    .uni-action-sheet_dialog__action {\n      padding: 10px 6px;\n}\n}\n\n";
-const _export_sfc = (sfc, props2) => {
-  const target = sfc.__vccOpts || sfc;
-  for (const [key, val] of props2) {
-    target[key] = val;
-  }
-  return target;
-};
-function _sfc_render$2(_ctx, _cache, $props, $setup, $data, $options) {
-  const _component_view = __syscom_2;
-  const _component_text = __syscom_1;
-  return openBlock(), createBlock(_component_view, null, {
-    default: withCtx(() => [
-      createVNode(_component_view, {
-        class: normalizeClass(["uni-action-sheet_dialog__mask", { "uni-action-sheet_dialog__mask__show": $data.show }]),
-        onClick: $options.handleCancel
-      }, null, 8, ["class", "onClick"]),
-      createVNode(_component_view, {
-        style: normalizeStyle($options.isWidescreen ? $options.containerStyle : {}),
-        class: normalizeClass(["uni-action-sheet_dialog__container", {
-          "uni-action-sheet_dialog__show": $data.show,
-          "uni-action-sheet_dark__mode": $data.theme == "dark",
-          "uni-action-sheet_landscape__mode": $data.isLandscape
-        }])
-      }, {
-        default: withCtx(() => [
-          createVNode(_component_view, {
-            style: normalizeStyle($data.backgroundColor != null ? { backgroundColor: $data.backgroundColor } : {}),
-            class: normalizeClass(["uni-action-sheet_dialog__menu", { "uni-action-sheet_dark__mode": $data.theme == "dark", "uni-action-sheet_landscape__mode": $data.isLandscape }])
-          }, {
-            default: withCtx(() => [
-              $data.title ? (openBlock(), createBlock(_component_view, {
-                key: 0,
-                class: normalizeClass(["uni-action-sheet_dialog__title", { "uni-action-sheet_dark__mode": $data.theme == "dark", "uni-action-sheet_landscape__mode": $data.isLandscape }])
-              }, {
-                default: withCtx(() => [
-                  createVNode(_component_text, {
-                    style: normalizeStyle({ color: $data.titleColor }),
-                    class: normalizeClass(["uni-action-sheet_dialog__title__text", { "uni-action-sheet_dark__mode": $data.theme == "dark" }])
-                  }, {
-                    default: withCtx(() => [
-                      createTextVNode(toDisplayString($data.title), 1)
-                    ]),
-                    _: 1
-                  }, 8, ["style", "class"])
-                ]),
-                _: 1
-              }, 8, ["class"])) : createCommentVNode("", true),
-              createVNode(_component_view, {
-                class: normalizeClass(["uni-action-sheet_dialog__cell__container", { "uni-action-sheet_landscape__mode": $data.isLandscape }])
-              }, {
-                default: withCtx(() => [
-                  (openBlock(true), createElementBlock(Fragment, null, renderList($data.itemList, (item, index2) => {
-                    return openBlock(), createBlock(_component_view, {
-                      style: normalizeStyle(index2 == 0 ? { borderTop: "none" } : {}),
-                      class: normalizeClass(["uni-action-sheet_dialog__cell", { "uni-action-sheet_dark__mode": $data.theme == "dark", "uni-action-sheet_landscape__mode": $data.isLandscape }]),
-                      key: index2,
-                      onClick: ($event) => $options.handleMenuItemClick(index2)
-                    }, {
-                      default: withCtx(() => [
-                        createVNode(_component_text, {
-                          style: normalizeStyle({ color: $data.itemColor }),
-                          class: normalizeClass(["uni-action-sheet_dialog__cell__text", { "uni-action-sheet_dark__mode": $data.theme == "dark" }])
-                        }, {
-                          default: withCtx(() => [
-                            createTextVNode(toDisplayString(item), 1)
-                          ]),
-                          _: 2
-                        }, 1032, ["style", "class"])
-                      ]),
-                      _: 2
-                    }, 1032, ["style", "class", "onClick"]);
-                  }), 128))
-                ]),
-                _: 1
-              }, 8, ["class"])
-            ]),
-            _: 1
-          }, 8, ["style", "class"]),
-          createVNode(_component_view, {
-            style: normalizeStyle($data.backgroundColor != null ? { backgroundColor: $data.backgroundColor } : {}),
-            class: normalizeClass(["uni-action-sheet_dialog__action", { "uni-action-sheet_dark__mode": $data.theme == "dark", "uni-action-sheet_landscape__mode": $data.isLandscape }]),
-            onClick: $options.handleCancel
-          }, {
-            default: withCtx(() => [
-              createVNode(_component_text, {
-                style: normalizeStyle({ color: $data.cancelColor }),
-                class: normalizeClass(["uni-action-sheet_dialog__action__text", { "uni-action-sheet_dark__mode": $data.theme == "dark" }])
-              }, {
-                default: withCtx(() => [
-                  createTextVNode(toDisplayString($options.cancelText), 1)
-                ]),
-                _: 1
-              }, 8, ["style", "class"])
-            ]),
-            _: 1
-          }, 8, ["style", "class", "onClick"]),
-          $options.isWidescreen && Object.keys($data.popover).length > 0 ? (openBlock(), createBlock(_component_view, {
-            key: 0,
-            style: normalizeStyle($options.triangleStyle),
-            class: "uni-action-sheet_dialog__triangle"
-          }, null, 8, ["style"])) : createCommentVNode("", true)
-        ]),
-        _: 1
-      }, 8, ["style", "class"])
-    ]),
-    _: 1
-  });
-}
-const UniActionSheetPage = /* @__PURE__ */ _export_sfc(_sfc_main$2, [["render", _sfc_render$2], ["styles", [_style_0$1]]]);
-const showActionSheet2 = /* @__PURE__ */ defineAsyncApi("showActionSheet2", (options, { resolve, reject }) => {
-  registerSystemRoute("uni:actionSheet", UniActionSheetPage);
-  const uuid = Date.now() + "" + Math.floor(Math.random() * 1e7);
-  const baseEventName = `uni_action_sheet_${uuid}`;
-  const readyEventName = `${baseEventName}_ready`;
-  const optionsEventName = `${baseEventName}_options`;
-  const successEventName = `${baseEventName}_success`;
-  const failEventName = `${baseEventName}_fail`;
-  uni.$on(readyEventName, () => {
-    uni.$emit(optionsEventName, options);
-  });
-  uni.$on(successEventName, (index2) => {
-    resolve({ tapIndex: index2 });
-  });
-  uni.$on(failEventName, () => {
-    reject("cancel");
-  });
-  uni.openDialogPage({
-    url: `uni:actionSheet?readyEventName=${readyEventName}&optionsEventName=${optionsEventName}&successEventName=${successEventName}&failEventName=${failEventName}`,
-    fail(err) {
-      var _a;
-      (_a = options.fail) == null ? void 0 : _a.call(options, { errMsg: `showActionSheet:failed ${err.errMsg}` });
-      uni.$off(readyEventName);
-      uni.$off(successEventName);
-      uni.$off(failEventName);
-    }
-  });
-});
-const hideActionSheet2 = () => {
-  var _a;
-  const page = getCurrentPage();
-  if (!page)
-    return;
-  const systemDialogPages = (_a = page.vm.$pageLayoutInstance) == null ? void 0 : _a.$systemDialogPages.value;
-  for (let i = 0; i < systemDialogPages.length; i++) {
-    if (isSystemActionSheetDialogPage(systemDialogPages[i])) {
-      systemDialogPages.splice(i, 1);
-      return;
-    }
-  }
-};
 const defaultPoi = {
   latitude: 39.908823,
   longitude: 116.39747
@@ -17618,10 +17254,10 @@ const _sfc_main$1 = {
       this.failEventName = options["failEventName"];
       uni.$on(this.optionsEventName, (data) => {
         if (data["latitude"] != null) {
-          this.chooseLocationOptions.latitude = data.getNumber("latitude");
+          this.chooseLocationOptions.latitude = data["latitude"];
         }
         if (data["longitude"] != null) {
-          this.chooseLocationOptions.longitude = data.getNumber("longitude");
+          this.chooseLocationOptions.longitude = data["longitude"];
         }
         if (data["keyword"] != null) {
           let keyword = data["keyword"];
@@ -17710,12 +17346,14 @@ const _sfc_main$1 = {
         }).then((res) => {
           resolve(res);
         }).catch((err) => {
-          const errMsg = err.errMsg;
-          if (errMsg != null && (errMsg.indexOf("在云端不存在") > -1 || errMsg.indexOf("未匹配") > -1)) {
-            this.errMsg = "uni.chooseLocation 依赖 uniCloud 的 uni-map-common 插件，请安装 uni-map-common 插件，插件地址：https://ext.dcloud.net.cn/plugin?id=13872";
-            console.error(this.errMsg);
-          } else {
-            console.error("err: ", err);
+          if (err instanceof UniCloudError) {
+            const errMsg = err.errMsg;
+            if (errMsg.indexOf("在云端不存在") > -1 || errMsg.indexOf("未匹配") > -1) {
+              this.errMsg = "uni.chooseLocation 依赖 uniCloud 的 uni-map-common 插件，请安装 uni-map-common 插件，插件地址：https://ext.dcloud.net.cn/plugin?id=13872";
+              console.error(this.errMsg);
+            } else {
+              console.error("err: ", err);
+            }
           }
           reject(err);
         });
@@ -18268,6 +17906,13 @@ const _style_0 = `
 
 
 `;
+const _export_sfc = (sfc, props2) => {
+  const target = sfc.__vccOpts || sfc;
+  for (const [key, val] of props2) {
+    target[key] = val;
+  }
+  return target;
+};
 function _sfc_render$1(_ctx, _cache, $props, $setup, $data, $options) {
   const _component_map = __syscom_0;
   const _component_text = __syscom_1;
@@ -18636,7 +18281,6 @@ const api = /* @__PURE__ */ Object.defineProperty({
   getVideoInfo,
   getWindowInfo,
   hideActionSheet,
-  hideActionSheet2,
   hideKeyboard,
   hideLeftWindow,
   hideLoading,
@@ -18731,7 +18375,6 @@ const api = /* @__PURE__ */ Object.defineProperty({
   setTabBarStyle,
   setTopWindowStyle,
   showActionSheet,
-  showActionSheet2,
   showLeftWindow,
   showLoading,
   showModal,
@@ -29591,7 +29234,6 @@ export {
   getVideoInfo,
   getWindowInfo,
   hideActionSheet,
-  hideActionSheet2,
   hideKeyboard,
   hideLeftWindow,
   hideLoading,
@@ -29690,7 +29332,6 @@ export {
   setupPage,
   setupWindow,
   showActionSheet,
-  showActionSheet2,
   showLeftWindow,
   showLoading,
   showModal,
