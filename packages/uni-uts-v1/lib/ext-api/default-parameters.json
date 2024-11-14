@@ -53,10 +53,6 @@
     "$off": [
       null,
       "null"
-    ],
-    "$emit": [
-      null,
-      "null"
     ]
   },
   "uni-getDeviceInfo": {
