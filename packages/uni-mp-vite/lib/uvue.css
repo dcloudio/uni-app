@@ -133,3 +133,14 @@ label {
 rich-text {
   line-height: 1.5;
 }
+
+progress {
+  flex-direction: row;
+  align-items: center;
+}
+
+radio,
+checkbox {
+  flex-direction: row;
+  align-items: center;
+}
