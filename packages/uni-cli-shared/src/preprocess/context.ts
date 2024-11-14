@@ -24,6 +24,7 @@ const DEFAULT_KEYS = [
   'MP_360',
   'MP_ALIPAY',
   'MP_BAIDU',
+  'MP_HARMONY',
   'MP_QQ',
   'MP_LARK',
   'MP_TOUTIAO',

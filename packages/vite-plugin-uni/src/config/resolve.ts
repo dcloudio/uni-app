@@ -25,6 +25,8 @@ function resolveUTSModuleProxyFile(id: string, importer: string) {
 }
 
 export const customResolver: ResolverFunction = (updatedId, importer) => {
+  updatedId = updatedId.split('?')[0]
+
   const utsImporter = importer
     ? path.dirname(importer)
     : process.env.UNI_INPUT_DIR

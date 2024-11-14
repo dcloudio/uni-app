@@ -1971,11 +1971,13 @@ function initPage(vm) {
   const route = vm.$route;
   const page = initPublicPage(route);
   initPageVm(vm, page);
-  currentPagesMap.set(normalizeRouteKey(page.path, page.id), vm);
-  if (currentPagesMap.size === 1) {
-    setTimeout(() => {
-      handleBeforeEntryPageRoutes();
-    }, 0);
+  {
+    currentPagesMap.set(normalizeRouteKey(page.path, page.id), vm);
+    if (currentPagesMap.size === 1) {
+      setTimeout(() => {
+        handleBeforeEntryPageRoutes();
+      }, 0);
+    }
   }
 }
 function normalizeRouteKey(path, id2) {
@@ -7988,11 +7990,11 @@ const index$f = /* @__PURE__ */ defineBuiltInComponent({
         return vue.createVNode("uni-view", vue.mergeProps({
           "class": hovering.value ? hoverClass : "",
           "ref": rootRef
-        }, binding), [slots.default && slots.default()], 16);
+        }, binding), [vue.renderSlot(slots, "default")], 16);
       }
       return vue.createVNode("uni-view", {
         "ref": rootRef
-      }, [slots.default && slots.default()], 512);
+      }, [vue.renderSlot(slots, "default")], 512);
     };
   }
 });
@@ -12991,8 +12993,7 @@ const index = /* @__PURE__ */ defineSystemComponent({
     const navigationBar = pageMeta.navigationBar;
     const pageStyle = {};
     useDocumentTitle(pageMeta);
-    const currentInstance = vue.getCurrentInstance();
-    currentInstance.$dialogPages = vue.ref([]);
+    vue.getCurrentInstance();
     return () => vue.createVNode(
       "uni-page",
       {

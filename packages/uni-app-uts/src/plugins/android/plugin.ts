@@ -251,7 +251,9 @@ export function uniAppPlugin(): UniVitePlugin {
               disableSplitManifest: process.env.NODE_ENV !== 'development',
               inputDir: uvueOutputDir,
               outputDir: outputDir,
-              outFilename: 'components.kt',
+              outFilename: `${
+                process.env.UNI_COMPILE_EXT_API_OUT_FILE_NAME || 'components'
+              }.kt`,
               package: parseKotlinPackageWithPluginId(
                 process.env.UNI_COMPILE_EXT_API_PLUGIN_ID!,
                 true

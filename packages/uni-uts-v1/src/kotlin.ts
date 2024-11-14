@@ -23,6 +23,9 @@ import {
   getCompilerServer,
   getUTSCompiler,
   isColorSupported,
+  isEnableGenericsParameterDefaults,
+  isEnableNarrowType,
+  isEnableUTSJSONObjectPropertyAccess,
   isEnableUTSNumber,
   moveRootIndexSourceMap,
   normalizeUTSResult,
@@ -52,6 +55,7 @@ import { uvueOutDir } from './uvue'
 export interface KotlinCompilerServer extends CompilerServer {
   getKotlincHome(): string
   getDefaultJar(arg?: any): string[]
+  getCompilerJar?: (userJars: string[], version?: number) => string[]
   compile(
     options: {
       kotlinc: string[]
@@ -441,14 +445,14 @@ export async function compileAndroidDex(
   stderrListener: (data: string) => void
 ) {
   const inputDir = process.env.UNI_INPUT_DIR
-  const { getDefaultJar, getKotlincHome, compile: compileDex } = compilerServer
+  const { getKotlincHome, compile: compileDex } = compilerServer
   const options = {
     pageCount: 0,
     kotlinc: resolveKotlincArgs(
       kotlinFiles,
       jarFile,
       getKotlincHome(),
-      (isX ? getDefaultJar(2) : getDefaultJar()).concat(depJars)
+      getKotlinCompileJars(isX, depJars, compilerServer)
     ),
     d8: resolveD8Args(jarFile),
     sourceRoot: inputDir,
@@ -459,6 +463,17 @@ export async function compileAndroidDex(
   const result = await compileDex(options, inputDir)
   // console.log('dex compile time: ' + (Date.now() - time) + 'ms')
   return result
+}
+
+function getKotlinCompileJars(
+  isX: boolean,
+  depJars: string[],
+  { getDefaultJar, getCompilerJar }: KotlinCompilerServer
+) {
+  if (getCompilerJar) {
+    return getCompilerJar(depJars, isX ? 2 : undefined)
+  }
+  return getDefaultJar(isX ? 2 : undefined).concat(depJars)
 }
 
 function checkDeps(
@@ -633,6 +648,7 @@ export async function compile(
     paths: {
       vue: 'io.dcloud.uniapp.vue',
       '@dcloudio/uni-app': 'io.dcloud.uniapp.framework',
+      '@dcloudio/uni-runtime': 'io.dcloud.uniapp.framework.runtime',
     },
     uniModules,
   }
@@ -680,6 +696,10 @@ export async function compile(
         uniExtApiNamespaces: extApis,
         uniExtApiDefaultParameters: parseExtApiDefaultParameters(),
         enableUtsNumber: isEnableUTSNumber(),
+        enableNarrowType: isEnableNarrowType(),
+        enableGenericsParameterDefaults: isEnableGenericsParameterDefaults(),
+        enableUTSJSONObjectPropertyAccess:
+          isEnableUTSJSONObjectPropertyAccess(),
         ...transform,
       },
     },

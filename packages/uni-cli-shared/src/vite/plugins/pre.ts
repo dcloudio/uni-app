@@ -1,19 +1,11 @@
 import path from 'path'
 import debug from 'debug'
 import type { Plugin, ResolvedConfig } from 'vite'
-import { createFilter } from '@rollup/pluginutils'
-import {
-  EXTNAME_JS,
-  EXTNAME_VUE,
-  X_EXTNAME_VUE,
-  parseVueRequest,
-  preHtml,
-  preJs,
-  preNVueHtml,
-  preNVueJs,
-  withSourcemap,
-} from '@dcloudio/uni-cli-shared'
-import type { UniPluginFilterOptions } from '.'
+import { type FilterPattern, createFilter } from '@rollup/pluginutils'
+
+import { EXTNAME_JS, EXTNAME_VUE, X_EXTNAME_VUE } from '../../constants'
+import { preHtml, preJs, preNVueHtml, preNVueJs } from '../../preprocess'
+import { parseVueRequest, withSourcemap } from '../utils'
 
 const debugPreJs = debug('uni:pre-js')
 const debugPreHtml = debug('uni:pre-html')
@@ -21,7 +13,7 @@ const debugPreHtml = debug('uni:pre-html')
 
 export function uniPrePlugin(
   config: ResolvedConfig,
-  options: UniPluginFilterOptions
+  options: { include?: FilterPattern; exclude?: FilterPattern }
 ): Plugin {
   const isX = process.env.UNI_APP_X === 'true'
   const PRE_JS_EXTNAME = ['.json', '.css']

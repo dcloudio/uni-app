@@ -252,10 +252,14 @@ export function normalizeUniAppXAppConfig(
   pagesJson: UniApp.PagesJson,
   manifestJson: Record<string, any>
 ) {
-  return `const __uniConfig = ${normalizeAppXUniConfig(
-    pagesJson,
-    manifestJson
-  )};
+  const uniConfig = normalizeAppXUniConfig(pagesJson, manifestJson)
+  const tabBar = uniConfig.tabBar
+  delete uniConfig.tabBar
+  return `const __uniConfig = ${JSON.stringify(uniConfig)};
+__uniConfig.getTabBarConfig = () =>  {return ${
+    tabBar ? JSON.stringify(tabBar) : 'undefined'
+  }};
+__uniConfig.tabBar = __uniConfig.getTabBarConfig();
 const __uniRoutes = ${normalizeAppUniRoutes(
     pagesJson
   )}.map(uniRoute=>(uniRoute.meta.route=uniRoute.path,__uniConfig.pages.push(uniRoute.path),uniRoute.path='/'+uniRoute.path,uniRoute));

@@ -145,7 +145,8 @@ const __uniLaunchPage: Map<string, any | null> = ${launchPage}
 function defineAppConfig(){
   __uniConfig.entryPagePath = '/${imports[0]}'
   __uniConfig.globalStyle = ${globalStyle}
-  __uniConfig.tabBar = __uniTabBar as Map<string, any> | null
+  __uniConfig.getTabBarConfig = ():Map<string, any> | null =>  ${tabBar}
+  __uniConfig.tabBar = __uniConfig.getTabBarConfig()
   __uniConfig.conditionUrl = '${conditionUrl}'
   __uniConfig.uniIdRouter = ${uniIdRouter}
   ${codes.join('\n  ')}

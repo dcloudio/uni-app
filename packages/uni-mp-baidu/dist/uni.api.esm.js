@@ -920,16 +920,28 @@ function addSafeAreaInsets(fromRes, toRes) {
         };
     }
 }
+function getOSInfo(system, platform) {
+    let osName = '';
+    let osVersion = '';
+    if (platform &&
+        ("mp-baidu" === 'mp-baidu')) {
+        osName = platform;
+        osVersion = system;
+    }
+    else {
+        osName = system.split(' ')[0] || '';
+        osVersion = system.split(' ')[1] || '';
+    }
+    return {
+        osName: osName.toLocaleLowerCase(),
+        osVersion,
+    };
+}
 function populateParameters(fromRes, toRes) {
     const { brand = '', model = '', system = '', language = '', theme, version, platform, fontSizeSetting, SDKVersion, pixelRatio, deviceOrientation, } = fromRes;
     // const isQuickApp = "mp-baidu".indexOf('quickapp-webview') !== -1
     // osName osVersion
-    let osName = '';
-    let osVersion = '';
-    {
-        osName = system.split(' ')[0] || '';
-        osVersion = system.split(' ')[1] || '';
-    }
+    const { osName, osVersion } = getOSInfo(system, platform);
     let hostVersion = version;
     // host 枚举值 https://smartprogram.baidu.com/docs/develop/api/device_sys/hostlist/
     {
@@ -971,7 +983,7 @@ function populateParameters(fromRes, toRes) {
         deviceType,
         devicePixelRatio: _devicePixelRatio,
         deviceOrientation: _deviceOrientation,
-        osName: osName.toLocaleLowerCase(),
+        osName,
         osVersion,
         hostTheme: theme,
         hostVersion,

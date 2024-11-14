@@ -22,18 +22,6 @@ var StandaloneExtApis = [
 		version: "1.0.2"
 	},
 	{
-		type: "extapi",
-		plugin: "uni-push",
-		apis: [
-			"getPushClientId",
-			"onPushMessage",
-			"offPushMessage",
-			"createPushMessage",
-			"setAppBadgeNumber"
-		],
-		version: "1.0.1"
-	},
-	{
 		type: "provider",
 		plugin: "uni-oauth-huawei",
 		provider: "huawei",
@@ -45,6 +33,18 @@ var StandaloneExtApis = [
 		plugin: "uni-payment-alipay",
 		provider: "alipay",
 		service: "payment",
+		version: "1.0.1"
+	},
+	{
+		type: "extapi",
+		plugin: "uni-push",
+		apis: [
+			"getPushClientId",
+			"onPushMessage",
+			"offPushMessage",
+			"createPushMessage",
+			"setAppBadgeNumber"
+		],
 		version: "1.0.1"
 	}
 ];

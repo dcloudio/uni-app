@@ -1,4 +1,17 @@
 {
+  "uni-actionSheet": {
+    "uni": {
+      "showActionSheet2": {
+        "name": "showActionSheet2",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": false,
+          "arkts": false
+        }
+      }
+    }
+  },
   "uni-ad": {
     "uni": {
       "createRewardedVideoAd": {
@@ -31,6 +44,19 @@
           "x-js": false,
           "kotlin": true,
           "swift": false,
+          "arkts": false
+        }
+      }
+    }
+  },
+  "uni-chooseLocation": {
+    "uni": {
+      "chooseLocation": {
+        "name": "chooseLocation",
+        "app": {
+          "js": true,
+          "kotlin": true,
+          "swift": true,
           "arkts": false
         }
       }
@@ -249,6 +275,19 @@
           "js": false,
           "kotlin": true,
           "swift": true
+        }
+      }
+    }
+  },
+  "uni-getBackgroundAudioManager": {
+    "uni": {
+      "getBackgroundAudioManager": {
+        "name": "getBackgroundAudioManager",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": false,
+          "arkts": true
         }
       }
     }
@@ -952,7 +991,13 @@
           "swift": true
         }
       }
-    }
+    },
+    "easycom": [
+      "univerify-number",
+      "univerify-privacy-checkbox",
+      "univerify-privacy-text",
+      "univerify-slogan"
+    ]
   },
   "uni-video": {
     "uni": {

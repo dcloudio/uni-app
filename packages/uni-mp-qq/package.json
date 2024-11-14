@@ -4,7 +4,8 @@
   "description": "uni-app mp-qq",
   "main": "dist/index.js",
   "files": [
-    "dist"
+    "dist",
+    "dist-x"
   ],
   "repository": {
     "type": "git",

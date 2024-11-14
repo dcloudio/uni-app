@@ -78,6 +78,7 @@ export function removePage(
   }
   const removePages = pages.splice(index, 1)
   if (__X__) {
+    // @ts-expect-error
     removePages[0].$page = null
   }
   if (__DEV__) {

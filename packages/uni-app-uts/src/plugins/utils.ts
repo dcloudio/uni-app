@@ -162,6 +162,9 @@ export function normalizeManifestJson(userManifestJson: Record<string, any>) {
     app.distribute['_uni-app-x_'] = {
       pageOrientation,
     }
+    app.distribute.globalStyle = {
+      pageOrientation,
+    }
   }
 
   return {

@@ -18,6 +18,9 @@ function transformRpx(value: string) {
 
 export class UniElement extends HTMLElement {
   private _props: Record<string, any> = {}
+  //#if _X_
+  _page: UniPage | null = null
+  //#endif
   public __isUniElement: boolean
   constructor() {
     super()
@@ -36,6 +39,29 @@ export class UniElement extends HTMLElement {
         : super.getAttribute(qualifiedName)
     return attr === undefined ? null : attr
   }
+  //#if _X_
+  getPage() {
+    if (this._page) {
+      return this._page
+    }
+    let parent = this.parentNode as UniElement | null
+    while (parent && !parent._page) {
+      parent = parent.parentNode as UniElement | null
+    }
+    return parent?._page || null
+  }
+
+  getBoundingClientRectAsync(callback) {
+    if (callback) {
+      callback.success?.(this.getBoundingClientRect())
+      callback.complate?.()
+      return
+    }
+    return new Promise((resolve, reject) => {
+      resolve(this.getBoundingClientRect())
+    })
+  }
+  //#endif
 
   get style() {
     const originalStyle = super.style

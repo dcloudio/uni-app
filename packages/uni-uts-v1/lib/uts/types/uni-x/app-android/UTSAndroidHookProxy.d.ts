@@ -7,13 +7,15 @@ interface UTSAndroidHookProxy {
 	 *    "app": {
 	 *        "android": {
 	 *           "osVer": "5.0",
-	 *  		     "uniVer": "x",
-	 * 			     "unixVer": "3.97+"
+	 *           "uniVer": "x",
+	 *           "unixVer": "x",
+   *           "uniUtsPlugin": "3.97",
+   *           "unixUtsPlugin": "3.97"
 	 *        },
 	 *        "ios": {
 	 *           "osVer": "x",
-	 *  		     "uniVer": "x",
-	 * 			     "unixVer": "x"
+	 *           "uniVer": "x",
+	 *           "unixVer": "x"
 	 *        }
 	 *    }
 	 * }

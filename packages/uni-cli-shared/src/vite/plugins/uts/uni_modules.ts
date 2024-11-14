@@ -99,12 +99,27 @@ function createUniModulesSyncFilePreprocessor(
         preferConst: true,
       })
     } else if (extname === '.uts' || extname === '.ts') {
-      return rewriteUniModulesConsoleExpr(fileName, preJs(content))
+      return replaceExtApiPages(
+        rewriteUniModulesConsoleExpr(fileName, preJs(content))
+      )
     } else if (extname === '.uvue' || extname === '.vue') {
       return rewriteUniModulesConsoleExpr(fileName, preJs(preHtml(content)))
     }
     return content
   }
+}
+
+function replaceExtApiPages(code: string) {
+  // 定制实现
+  if (process.env.UNI_COMPILE_EXT_API_PAGES) {
+    const pages: Record<string, string> = JSON.parse(
+      process.env.UNI_COMPILE_EXT_API_PAGES
+    )
+    Object.keys(pages).forEach((page) => {
+      code = code.replaceAll(page, pages[page])
+    })
+  }
+  return code
 }
 
 export function createAppAndroidUniModulesSyncFilePreprocessorOnce(
@@ -170,9 +185,13 @@ interface UniUTSPluginOptions {
 }
 
 const utsPlugins = new Set<string>()
+const utsProviders = new Set<string>()
 
 export function getCurrentCompiledUTSPlugins() {
   return utsPlugins
+}
+export function getCurrentCompiledUTSProviders() {
+  return utsProviders
 }
 
 let uniExtApiCompiler = async () => {}
@@ -446,6 +465,7 @@ export function uniUTSAppUniModulesPlugin(
   }
 
   uniExtApiCompiler = async () => {
+    // 此方法为兜底方法，确保uni_modules中的所有插件都会编译，目前仅用于编译provider
     // 获取 provider 扩展(编译所有uni)
     const plugins = getUniExtApiPlugins().filter(
       (provider) => !utsPlugins.has(provider.plugin)
@@ -475,6 +495,7 @@ export function uniUTSAppUniModulesPlugin(
           continue
         }
       }
+      utsProviders.add(plugin.plugin)
       const result = await compilePlugin(pluginDir)
       if (result) {
         // 时机不对，不能addWatch

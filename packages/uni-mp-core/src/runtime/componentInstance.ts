@@ -9,11 +9,18 @@ import {
   type ComponentInternalInstance,
   type ComponentPublicInstance,
   // @ts-expect-error
+  destroyUniElements,
+  // @ts-expect-error
   devtoolsComponentAdded,
   // @ts-expect-error
   devtoolsComponentRemoved,
+  onUnmounted,
+  onUpdated,
+  // @ts-expect-error
+  pruneUniElements,
 } from 'vue'
 import type { MPComponentInstance } from './component'
+import { getTriggerEventDetail } from './util'
 
 const MP_METHODS = [
   'createSelectorQuery',
@@ -75,6 +82,10 @@ export function initBaseInstance(
   ctx.$mpPlatform = __PLATFORM__
   ctx.$scope = options.mpInstance
 
+  if (__PLATFORM__ === 'mp-harmony' || __PLATFORM__ === 'quickapp-webview') {
+    ctx.$getTriggerEventDetail = getTriggerEventDetail
+  }
+
   // TODO @deprecated
   ctx.$mp = {}
   if (__VUE_OPTIONS_API__) {
@@ -112,6 +123,15 @@ export function initBaseInstance(
 
   // $emit
   instance.emit = createEmitFn(instance.emit, ctx)
+
+  if (__X__) {
+    onUpdated(() => {
+      pruneUniElements(instance)
+    }, instance)
+    onUnmounted(() => {
+      destroyUniElements(instance)
+    }, instance)
+  }
 }
 
 export function initComponentInstance(

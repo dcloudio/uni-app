@@ -1578,7 +1578,8 @@ function invokeHook(vm, name, args) {
 }
 
 function normalizeRoute(toRoute) {
-    if (toRoute.indexOf('/') === 0) {
+    // 支持 uni:showActionSheet 这种内置页面形式
+    if (toRoute.indexOf('/') === 0 || toRoute.indexOf('uni:') === 0) {
         return toRoute;
     }
     let fromRoute = '';
@@ -16751,11 +16752,10 @@ function setupPage(component) {
             console.log(formatLog(__pagePath, 'setup'));
         }
         const instance = getCurrentInstance();
-        instance.$dialogPages = [];
         const pageVm = instance.proxy;
         initPageVm(pageVm, __pageInstance);
-        if (getPage$BasePage(pageVm).openType !== 'openDialogPage') {
-            addCurrentPage(initScope(__pageId, pageVm, __pageInstance));
+        {
+            addCurrentPageWithInitScope(__pageId, pageVm, __pageInstance);
         }
         {
             onMounted(() => {
@@ -16792,6 +16792,9 @@ function initScope(pageId, vm, pageInstance) {
         return pageInstance.eventChannel;
     };
     return vm;
+}
+function addCurrentPageWithInitScope(pageId, pageVm, pageInstance) {
+    addCurrentPage(initScope(pageId, pageVm, pageInstance));
 }
 
 function isVuePageAsyncComponent(component) {
@@ -18304,9 +18307,22 @@ function parseElement(obj) {
     if (isUniElement(obj)) {
         return obj;
     }
-    else if (isComponentPublicInstance(obj)) {
+}
+function parseComponentPublicInstance(obj) {
+    if (isComponentPublicInstance(obj)) {
         return obj.$el;
     }
+}
+// 序列化 UniElement | ComponentPublicInstance
+function serialize(el, type) {
+    let nodeId = '';
+    let pageId = '';
+    // 非 x 可能不存在 getNodeId 方法？
+    if (el && el.getNodeId) {
+        pageId = el.pageId;
+        nodeId = el.getNodeId();
+    }
+    return { pageId, nodeId, __type__: type };
 }
 function toRaw(observed) {
     const raw = observed && observed.__v_raw;
@@ -18327,18 +18343,16 @@ function normalizeArg(arg, callbacks, keepAlive) {
             callbacks[id] = arg;
         }
         return id;
+        // 为啥还要额外判断了isUniElement?，isPlainObject不是包含isUniElement的逻辑吗？为了避免出bug，保留此逻辑
     }
     else if (isPlainObject(arg) || isUniElement(arg)) {
-        const el = parseElement(arg);
+        const uniElement = parseElement(arg);
+        const componentPublicInstanceUniElement = !uniElement
+            ? parseComponentPublicInstance(arg)
+            : undefined;
+        const el = uniElement || componentPublicInstanceUniElement;
         if (el) {
-            let nodeId = '';
-            let pageId = '';
-            // 非 x 可能不存在 getNodeId 方法？
-            if (el && el.getNodeId) {
-                pageId = el.pageId;
-                nodeId = el.getNodeId();
-            }
-            return { pageId, nodeId, __uni_element: true };
+            return serialize(el, uniElement ? 'UniElement' : 'ComponentPublicInstance');
         }
         else {
             // 必须复制，否则会污染原始对象，比如：

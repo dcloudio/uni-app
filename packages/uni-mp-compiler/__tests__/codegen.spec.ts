@@ -110,4 +110,16 @@ export function render(_ctx, _cache, $props, $setup, $data, $options) {
       }
     )
   })
+
+  test('setup with x', () => {
+    assert(
+      `<view/>`,
+      `<view/>`,
+      `(_ctx, _cache) => {
+  const __returned__ = {}
+  return __returned__
+}`,
+      { inline: true, mode: 'module', prefixIdentifiers: false, isX: true }
+    )
+  })
 })

@@ -93,7 +93,7 @@ describe('compiler: transform component', () => {
   test(`component with boolean attribute`, () => {
     assert(
       `<uni-collapse accordion/>`,
-      `<uni-collapse u-i="2a9ec0b0-0" u-p="{{a}}"/>`,
+      `<uni-collapse u-i="2a9ec0b0-0" u-p="{{a||''}}"/>`,
       `(_ctx, _cache) => {
   return { a: _p({ accordion: true }) }
 }`
@@ -102,14 +102,14 @@ describe('compiler: transform component', () => {
   test(`component with props`, () => {
     assert(
       `<uni-collapse id="id" :id="id" ref="a" :ref="b" slot="c" :slot="d" class="e" :class="f" style="g:g;" :style="h" @click="i" v-model:first="j" v-model:last="k" prop-a="l" :prop-b="m" data-a="n" :data-b="o" key="p" :key="r" is="s" :is="t"/>`,
-      `<uni-collapse id="id" id="{{a}}" ref="a" ref="{{b}}" slot="c" slot="{{c}}" class="{{['e', d]}}" style="{{'g:g' + ';' + e}}" bindclick="{{f}}" data-a="n" data-b="{{g}}" key="p" key="{{h}}" is="s" is="{{i}}" u-i="2a9ec0b0-0" bindupdateFirst="{{j}}" bindupdateLast="{{k}}" u-p="{{l}}"/>`,
+      `<uni-collapse id="id" id="{{a}}" ref="a" ref="{{b}}" slot="c" slot="{{c}}" class="{{['e', d]}}" style="{{'g:g' + ';' + e}}" bindclick="{{f}}" data-a="n" data-b="{{g}}" key="p" key="{{h}}" is="s" is="{{i}}" u-i="2a9ec0b0-0" bindupdateFirst="{{j}}" bindupdateLast="{{k}}" u-p="{{l||''}}"/>`,
       `(_ctx, _cache) => {
   return { a: _ctx.id, b: _ctx.b, c: _ctx.d, d: _n(_ctx.f), e: _s(_ctx.h), f: _o(_ctx.i), g: _ctx.o, h: _ctx.r, i: _ctx.t, j: _o($event => _ctx.j = $event), k: _o($event => _ctx.k = $event), l: _p({ id: 'id', id: _ctx.id, ['prop-a']: 'l', ['prop-b']: _ctx.m, first: _ctx.j, last: _ctx.k }) }
 }`
     )
     assert(
       `<uni-collapse v-if="ok" :accordion="true"/><uni-collapse v-else :accordion="true"/>`,
-      `<uni-collapse wx:if="{{a}}" u-i="2a9ec0b0-0" u-p="{{b}}"/><uni-collapse wx:else u-i="2a9ec0b0-1" u-p="{{c||''}}"/>`,
+      `<uni-collapse wx:if="{{a}}" u-i="2a9ec0b0-0" u-p="{{b||''}}"/><uni-collapse wx:else u-i="2a9ec0b0-1" u-p="{{c||''}}"/>`,
       `(_ctx, _cache) => {
   return _e({ a: _ctx.ok }, _ctx.ok ? { b: _p({ accordion: true }) } : { c: _p({ accordion: true }) })
 }`
@@ -127,7 +127,7 @@ describe('compiler: transform component', () => {
     })
     assert(
       `<wxparser :rich-text="richText" v-bind="props"/><van-button custom-style="background-color: unset;" :close-on-click-overlay="true" v-bind="props"><template #default><view/></template><template #head><view/></template></van-button>`,
-      `<wxparser rich-text="{{a}}" u-t="m" u-i="dc555fe4-0" bind:__l="__l"/><van-button u-t="m" u-i="dc555fe4-1" bind:__l="__l" u-p="{{b}}"><view/><view slot="head"/></van-button>`,
+      `<wxparser rich-text="{{a}}" u-t="m" u-i="dc555fe4-0" bind:__l="__l"/><van-button u-t="m" u-i="dc555fe4-1" bind:__l="__l" u-p="{{b||''}}"><view/><view slot="head"/></van-button>`,
       `(_ctx, _cache) => {
   return { a: _ctx.richText, b: _p({ customStyle: 'background-color: unset;', closeOnClickOverlay: true, ..._ctx.props }) }
 }`,

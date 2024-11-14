@@ -2,13 +2,11 @@
 
 var uniCliShared = require('@dcloudio/uni-cli-shared');
 var initMiniProgramPlugin = require('@dcloudio/uni-mp-vite');
-var path = require('path');
 var compilerCore = require('@vue/compiler-core');
 
 function _interopDefault (e) { return e && e.__esModule ? e : { default: e }; }
 
 var initMiniProgramPlugin__default = /*#__PURE__*/_interopDefault(initMiniProgramPlugin);
-var path__default = /*#__PURE__*/_interopDefault(path);
 
 function getDefaultExportFromCjs (x) {
 	return x && x.__esModule && Object.prototype.hasOwnProperty.call(x, 'default') ? x['default'] : x;
@@ -62,6 +60,7 @@ function transformAd(node, context) {
     }
     if (AD_COMPONENTS.indexOf(node.tag) > -1) {
         appJsonUniadFlag = true;
+        process.env.HAS_WXAD = '1';
         uniadAppJson(uniCliShared.findJsonFile('app'));
     }
 }
@@ -154,63 +153,80 @@ const customElements = [
     'store-product',
     'store-home',
 ];
+const nodeTransforms = [
+    uniCliShared.transformRef,
+    uniCliShared.transformComponentLink,
+    transformAd,
+];
+if (process.env.UNI_APP_X === 'true') {
+    nodeTransforms.push(uniCliShared.transformMPBuiltInTag, uniCliShared.transformDirection);
+}
 const compilerOptions = {
-    nodeTransforms: [uniCliShared.transformRef, uniCliShared.transformComponentLink, transformAd],
+    nodeTransforms,
 };
 const COMPONENTS_DIR = 'wxcomponents';
-const miniProgram = {
-    class: {
-        array: true,
-    },
-    slot: {
-        fallbackContent: false,
-        dynamicSlotNames: true,
-    },
-    event: {
-        key: true,
-    },
-    directive: 'wx:',
-    lazyElement: {
-        canvas: [
-            { name: 'bind', arg: ['canvas-id', 'id'] },
-            {
-                name: 'on',
-                arg: ['touchstart', 'touchmove', 'touchcancel', 'touchend'],
-            },
-        ],
-        editor: [
-            {
-                name: 'on',
-                arg: ['ready'],
-            },
-        ],
-        'scroll-view': [
-            {
-                name: 'on',
-                arg: ['dragstart', 'dragging', 'dragend'],
-            },
-        ],
-        // iOS 平台需要延迟
-        input: [{ name: 'bind', arg: ['type'] }],
-        textarea: [{ name: 'on', arg: ['input'] }],
-    },
-    component: {
-        dir: COMPONENTS_DIR,
-        vShow: uniCliShared.COMPONENT_CUSTOM_HIDDEN,
-        getPropertySync: false, // 为了避免 Setting data field "uP" to undefined is invalid 警告
-        normalizeName: (name) => name.startsWith('wx-') ? name.replace('wx-', 'weixin-') : name,
-    },
-};
+function getMiniProgramOptions(isX) {
+    return {
+        class: {
+            array: true,
+        },
+        slot: {
+            fallbackContent: false,
+            dynamicSlotNames: true,
+        },
+        event: {
+            key: true,
+        },
+        directive: 'wx:',
+        lazyElement: {
+            canvas: [
+                { name: 'bind', arg: ['canvas-id', 'id'] },
+                {
+                    name: 'on',
+                    arg: ['touchstart', 'touchmove', 'touchcancel', 'touchend'],
+                },
+            ],
+            editor: [
+                {
+                    name: 'on',
+                    arg: ['ready'],
+                },
+            ],
+            'scroll-view': [
+                {
+                    name: 'on',
+                    arg: ['dragstart', 'dragging', 'dragend'],
+                },
+            ],
+            // iOS 平台需要延迟
+            input: [{ name: 'bind', arg: ['type'] }],
+            textarea: [{ name: 'on', arg: ['input'] }],
+        },
+        component: {
+            ':host': true,
+            dir: COMPONENTS_DIR,
+            vShow: uniCliShared.COMPONENT_CUSTOM_HIDDEN,
+            // 在 x 里边，已经把 u-p 补充了 || '' 来规避，理论上非 x 也可以，目前为了兼容性，暂时不开启
+            getPropertySync: isX, // 为了避免 Setting data field "uP" to undefined is invalid 警告
+            normalizeName: (name) => name.startsWith('wx-') ? name.replace('wx-', 'weixin-') : name,
+        },
+        filter: {
+            lang: 'wxs',
+            setStyle: true,
+        },
+    };
+}
 const projectConfigFilename = 'project.config.json';
+const miniProgram = getMiniProgramOptions(process.env.UNI_APP_X === 'true');
 const options = {
     cdn: 1,
     vite: {
         inject: {
-            uni: [path__default.default.resolve(__dirname, 'uni.api.esm.js'), 'default'],
-            wx: [path__default.default.resolve(__dirname, 'uni.api.esm.js'), 'wx'],
+            uni: [initMiniProgramPlugin.resolveMiniProgramRuntime(__dirname, 'uni.api.esm.js'), 'default'],
+            wx: [initMiniProgramPlugin.resolveMiniProgramRuntime(__dirname, 'uni.api.esm.js'), 'wx'],
         },
         alias: {
-            'uni-mp-runtime': path__default.default.resolve(__dirname, 'uni.mp.esm.js'),
+            'uni-mp-runtime': initMiniProgramPlugin.resolveMiniProgramRuntime(__dirname, 'uni.mp.esm.js'),
         },
         copyOptions: {
             assets: [COMPONENTS_DIR],
@@ -245,18 +261,14 @@ const options = {
         config: ['project.wx.json', 'project.config.json'],
         source,
     },
-    template: Object.assign(Object.assign({}, miniProgram), { customElements, filter: {
-            extname: '.wxs',
-            lang: 'wxs',
-            generate(filter, filename) {
+    template: Object.assign(Object.assign({}, miniProgram), { customElements, filter: Object.assign(Object.assign({}, miniProgram.filter), { lang: 'wxs', extname: '.wxs', generate(filter, filename) {
                 if (filename) {
                     return `<wxs src="${filename}.wxs" module="${filter.name}"/>`;
                 }
                 return `<wxs module="${filter.name}">
 ${filter.code}
 </wxs>`;
-            },
-        }, extname: '.wxml', compilerOptions }),
+            } }), extname: '.wxml', compilerOptions }),
     style: {
         extname: '.wxss',
     },

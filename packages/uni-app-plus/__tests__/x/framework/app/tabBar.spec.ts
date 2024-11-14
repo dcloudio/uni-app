@@ -1,4 +1,4 @@
-import { fixBorderStyle } from '../../../../src/x/framework/app/tabBar'
+import { fixBorderStyle } from '../../../../src/x/framework/app/utils'
 
 describe('test tabBar', () => {
   it('定义存在', () => {

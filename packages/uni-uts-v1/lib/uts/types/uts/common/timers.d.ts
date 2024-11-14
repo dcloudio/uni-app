@@ -6,8 +6,10 @@
  *    "app": {
  *        "android": {
  *           "osVer": "5.0",
- *           "uniVer": "3.9",
- *            "unixVer": "3.9"
+ *           "uniVer": "x",
+ *           "unixVer": "3.90",
+ *           "uniUtsPlugin": "3.90",
+ *           "unixUtsPlugin": "3.90"
  *        },
  *        "ios": {
  *           "osVer": "12.0",
@@ -29,8 +31,10 @@ declare function setInterval(handler: string | Function, timeout?: number, ...ar
  *    "app": {
  *        "android": {
  *           "osVer": "5.0",
- *           "uniVer": "3.9",
- *            "unixVer": "3.9"
+ *           "uniVer": "x",
+ *           "unixVer": "3.90",
+ *           "uniUtsPlugin": "3.90",
+ *           "unixUtsPlugin": "3.90"
  *        },
  *        "ios": {
  *           "osVer": "12.0",
@@ -52,8 +56,10 @@ declare function setTimeout(handler:  string | Function, timeout?: number, ...ar
  *    "app": {
  *        "android": {
  *           "osVer": "5.0",
- *           "uniVer": "3.9",
- *            "unixVer": "3.9"
+ *           "uniVer": "x",
+ *           "unixVer": "3.90",
+ *           "uniUtsPlugin": "3.90",
+ *           "unixUtsPlugin": "3.90"
  *        },
  *        "ios": {
  *           "osVer": "12.0",
@@ -76,8 +82,10 @@ declare function clearInterval(id: number | undefined): void;
  *    "app": {
  *        "android": {
  *           "osVer": "5.0",
- *           "uniVer": "3.9",
- *            "unixVer": "3.9"
+ *           "uniVer": "x",
+ *           "unixVer": "3.90",
+ *           "uniUtsPlugin": "3.90",
+ *           "unixUtsPlugin": "3.90"
  *        },
  *        "ios": {
  *           "osVer": "12.0",

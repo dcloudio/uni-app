@@ -29,6 +29,7 @@ import { parseUTSSyntaxError } from '../stacktrace'
 import {
   getCompilerServer,
   getUTSCompiler,
+  isEnableNarrowType,
   isEnableUTSNumber,
   parseExtApiDefaultParameters,
   parseInjectModules,
@@ -115,6 +116,7 @@ export async function compileApp(entry: string, options: CompileAppOptions) {
     paths: {
       vue: 'io.dcloud.uniapp.vue',
       '@dcloudio/uni-app': 'io.dcloud.uniapp.framework',
+      '@dcloudio/uni-runtime': 'io.dcloud.uniapp.framework.runtime',
     },
     uniModules: uni_modules,
     globals: {
@@ -169,6 +171,7 @@ export async function compileApp(entry: string, options: CompileAppOptions) {
         autoImports,
         uniModulesArtifacts: options.uniModulesArtifacts,
         enableUtsNumber: isEnableUTSNumber(),
+        enableNarrowType: isEnableNarrowType(),
         ...options.transform,
       },
     },

@@ -63,9 +63,14 @@ export async function runDev(options: CliOptions & ServerOptions) {
           event.result.close()
           if (isFirstEnd) {
             // 首次全量同步
+            if (
+              options.platform === 'app' ||
+              options.platform === 'app-harmony'
+            ) {
+              process.env.UNI_APP_CHANGED_FILES = ''
+            }
             if (options.platform === 'app') {
               process.env.UNI_APP_CHANGED_PAGES = ''
-              process.env.UNI_APP_CHANGED_FILES = ''
               process.env.UNI_APP_UTS_CHANGED_FILES = ''
             }
             isFirstEnd = false
@@ -113,6 +118,14 @@ export async function runDev(options: CliOptions & ServerOptions) {
                     )
                   )
                 )
+              )
+            }
+          } else if (options.platform === 'app-harmony') {
+            const files = process.env.UNI_APP_CHANGED_FILES
+            if (files) {
+              return output(
+                'log',
+                M['dev.watching.end.files'].replace('{files}', files)
               )
             }
           }
@@ -165,7 +178,7 @@ export async function runBuild(options: CliOptions & BuildOptions) {
       process.exit(0)
     }
   } catch (e: any) {
-    console.error(e)
+    console.error(e.message || e)
     console.error(`Build failed with errors.`)
     process.exit(1)
   }

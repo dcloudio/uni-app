@@ -29,6 +29,7 @@ export {
   initProps,
   initFormField,
   initPageProps,
+  resolvePropValue,
 } from './runtime/componentProps'
 export {
   initHooks,

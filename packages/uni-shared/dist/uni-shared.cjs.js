@@ -133,6 +133,8 @@ const UVUE_BUILT_IN_TAGS = [
     'button',
     'nested-scroll-header',
     'nested-scroll-body',
+    'grid-view',
+    'grid-item',
 ];
 const UVUE_WEB_BUILT_IN_TAGS = [
     'list-view',
@@ -277,6 +279,13 @@ function isAppNVueNativeTag(tag) {
 function isMiniProgramNativeTag(tag) {
     return isBuiltInComponent(tag);
 }
+function isMiniProgramUVueNativeTag(tag) {
+    // 小程序平台内置的自定义元素，会被转换为 view
+    if (tag.startsWith('uni-') && tag.endsWith('-element')) {
+        return true;
+    }
+    return isBuiltInComponent(tag);
+}
 function createIsCustomElement(tags = []) {
     return function isCustomElement(tag) {
         return tags.includes(tag);
@@ -322,6 +331,8 @@ const ON_LAUNCH = 'onLaunch';
 const ON_ERROR = 'onError';
 const ON_THEME_CHANGE = 'onThemeChange';
 const OFF_THEME_CHANGE = 'offThemeChange';
+const ON_HOST_THEME_CHANGE = 'onHostThemeChange';
+const OFF_HOST_THEME_CHANGE = 'offHostThemeChange';
 const ON_KEYBOARD_HEIGHT_CHANGE = 'onKeyboardHeightChange';
 const ON_PAGE_NOT_FOUND = 'onPageNotFound';
 const ON_UNHANDLE_REJECTION = 'onUnhandledRejection';
@@ -1680,6 +1691,15 @@ function getEnvLocale() {
     return (lang && lang.replace(/[.:].*/, '')) || 'en';
 }
 
+const SYSTEM_DIALOG_PAGE_PATH_STARTER = 'uni:';
+const SYSTEM_DIALOG_ACTION_SHEET_PAGE_PATH = 'uni:actionSheet';
+function isSystemDialogPage(page) {
+    return page.route.startsWith(SYSTEM_DIALOG_PAGE_PATH_STARTER);
+}
+function isSystemActionSheetDialogPage(page) {
+    return page.route.startsWith(SYSTEM_DIALOG_ACTION_SHEET_PAGE_PATH);
+}
+
 exports.ACTION_TYPE_ADD_EVENT = ACTION_TYPE_ADD_EVENT;
 exports.ACTION_TYPE_ADD_WXS_EVENT = ACTION_TYPE_ADD_WXS_EVENT;
 exports.ACTION_TYPE_CREATE = ACTION_TYPE_CREATE;
@@ -1722,6 +1742,7 @@ exports.NODE_TYPE_PAGE = NODE_TYPE_PAGE;
 exports.NODE_TYPE_TEXT = NODE_TYPE_TEXT;
 exports.NVUE_BUILT_IN_TAGS = NVUE_BUILT_IN_TAGS;
 exports.NVUE_U_BUILT_IN_TAGS = NVUE_U_BUILT_IN_TAGS;
+exports.OFF_HOST_THEME_CHANGE = OFF_HOST_THEME_CHANGE;
 exports.OFF_THEME_CHANGE = OFF_THEME_CHANGE;
 exports.ON_ADD_TO_FAVORITES = ON_ADD_TO_FAVORITES;
 exports.ON_APP_ENTER_BACKGROUND = ON_APP_ENTER_BACKGROUND;
@@ -1730,6 +1751,7 @@ exports.ON_BACK_PRESS = ON_BACK_PRESS;
 exports.ON_ERROR = ON_ERROR;
 exports.ON_EXIT = ON_EXIT;
 exports.ON_HIDE = ON_HIDE;
+exports.ON_HOST_THEME_CHANGE = ON_HOST_THEME_CHANGE;
 exports.ON_INIT = ON_INIT;
 exports.ON_KEYBOARD_HEIGHT_CHANGE = ON_KEYBOARD_HEIGHT_CHANGE;
 exports.ON_LAUNCH = ON_LAUNCH;
@@ -1765,6 +1787,8 @@ exports.RESPONSIVE_MIN_WIDTH = RESPONSIVE_MIN_WIDTH;
 exports.SCHEME_RE = SCHEME_RE;
 exports.SELECTED_COLOR = SELECTED_COLOR;
 exports.SLOT_DEFAULT_NAME = SLOT_DEFAULT_NAME;
+exports.SYSTEM_DIALOG_ACTION_SHEET_PAGE_PATH = SYSTEM_DIALOG_ACTION_SHEET_PAGE_PATH;
+exports.SYSTEM_DIALOG_PAGE_PATH_STARTER = SYSTEM_DIALOG_PAGE_PATH_STARTER;
 exports.TABBAR_HEIGHT = TABBAR_HEIGHT;
 exports.TAGS = TAGS;
 exports.UNI_SSR = UNI_SSR;
@@ -1829,8 +1853,11 @@ exports.isComponentTag = isComponentTag;
 exports.isH5CustomElement = isH5CustomElement;
 exports.isH5NativeTag = isH5NativeTag;
 exports.isMiniProgramNativeTag = isMiniProgramNativeTag;
+exports.isMiniProgramUVueNativeTag = isMiniProgramUVueNativeTag;
 exports.isRootHook = isRootHook;
 exports.isRootImmediateHook = isRootImmediateHook;
+exports.isSystemActionSheetDialogPage = isSystemActionSheetDialogPage;
+exports.isSystemDialogPage = isSystemDialogPage;
 exports.isUniLifecycleHook = isUniLifecycleHook;
 exports.isUniXElement = isUniXElement;
 exports.normalizeClass = normalizeClass;

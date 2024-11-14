@@ -160,9 +160,10 @@ function generateCssCode(config: ResolvedConfig) {
     parseManifestJsonOnce(process.env.UNI_INPUT_DIR)
   )
   if (config.command === 'serve' || !enableTreeShaking) {
+    const apiDepsCss = API_DEPS_CSS(process.env.UNI_APP_X === 'true')
     // 开发模式或禁用摇树优化，自动添加所有API相关css
-    Object.keys(API_DEPS_CSS).forEach((name) => {
-      const styles = API_DEPS_CSS[name as keyof typeof API_DEPS_CSS]
+    Object.keys(apiDepsCss).forEach((name) => {
+      const styles = apiDepsCss[name as keyof typeof apiDepsCss]
       styles.forEach((style) => {
         if (!cssFiles.includes(style)) {
           cssFiles.push(style)
@@ -295,7 +296,15 @@ function generateConfig(
   pagesJson.compilerVersion = process.env.UNI_COMPILER_VERSION
   const isX = process.env.UNI_APP_X === 'true'
   const vueType = isX ? 'uvue' : 'nvue'
-
+  let tabBarCode = ''
+  if (isX) {
+    const tabBar = pagesJson.tabBar
+    delete pagesJson.tabBar
+    tabBarCode = `${globalName}.__uniConfig.getTabBarConfig = () => {return ${
+      tabBar ? JSON.stringify(tabBar) : 'undefined'
+    }};
+    ${globalName}.__uniConfig.tabBar = __uniConfig.getTabBarConfig();`
+  }
   return `${isX ? `${globalName}.__uniX = true` : ''}
   ${globalName}.__uniConfig=extend(${JSON.stringify(pagesJson)},{
   appId,
@@ -320,5 +329,6 @@ function generateConfig(
   darkmode,
   themeConfig,
 })
+${tabBarCode}
 `
 }

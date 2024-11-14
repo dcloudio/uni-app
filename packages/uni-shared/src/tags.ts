@@ -135,6 +135,8 @@ export const UVUE_BUILT_IN_TAGS = [
   'button',
   'nested-scroll-header',
   'nested-scroll-body',
+  'grid-view',
+  'grid-item',
 ]
 
 export const UVUE_WEB_BUILT_IN_TAGS = [
@@ -300,6 +302,14 @@ export function isMiniProgramNativeTag(tag: string) {
   return isBuiltInComponent(tag)
 }
 
+export function isMiniProgramUVueNativeTag(tag: string) {
+  // 小程序平台内置的自定义元素，会被转换为 view
+  if (tag.startsWith('uni-') && tag.endsWith('-element')) {
+    return true
+  }
+  return isBuiltInComponent(tag)
+}
+
 export function createIsCustomElement(tags: string[] = []) {
   return function isCustomElement(tag: string) {
     return tags.includes(tag)
@@ -313,3 +323,8 @@ export function isComponentTag(tag: string) {
 export const COMPONENT_SELECTOR_PREFIX = 'uni-'
 
 export const COMPONENT_PREFIX = 'v-' + COMPONENT_SELECTOR_PREFIX
+
+export const enum SetUniElementIdTagType {
+  BuiltInComponent = 1, // 如：unicloud-db
+  BuiltInRootElement = 2, // 如：uni-cloud-db-element
+}

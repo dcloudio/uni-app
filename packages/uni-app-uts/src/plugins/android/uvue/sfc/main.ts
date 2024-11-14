@@ -92,12 +92,16 @@ export async function transformMain(
     // template
     const isInline = !!descriptor.scriptSetup
     if (!isInline) {
-      const { code, map, preamble } = processTemplate(descriptor, {
-        relativeFilename,
-        bindingMetadata: bindingMetadata,
-        rootDir: options.root,
-        className,
-      })
+      const { code, map, preamble } = processTemplate(
+        descriptor,
+        {
+          relativeFilename,
+          bindingMetadata: bindingMetadata,
+          rootDir: options.root,
+          className,
+        },
+        pluginContext
+      )
       templateCode = code
       templateMap = map
       templatePreambleCode = preamble || ''

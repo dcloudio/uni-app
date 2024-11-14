@@ -1,4 +1,4 @@
-import { ON_SHOW } from '@dcloudio/uni-shared'
+import { ON_SHOW, isSystemDialogPage } from '@dcloudio/uni-shared'
 import { invokeHook } from '@dcloudio/uni-core'
 import { closeNativeDialogPage } from './utils'
 import type { CloseDialogPageOptions } from '@dcloudio/uni-app-x/types/uni'
@@ -21,20 +21,28 @@ export const closeDialogPage = (options?: CloseDialogPageOptions) => {
       triggerFailCallback(options, 'dialogPage is not a valid page')
       return
     }
-    const parentPage = dialogPage.getParentPage!()
-    if (parentPage && currentPages.indexOf(parentPage) !== -1) {
-      const parentDialogPages = parentPage.getDialogPages()
-      const index = parentDialogPages.indexOf(dialogPage)
-      parentDialogPages.splice(index, 1)
-      closeNativeDialogPage(dialogPage, options?.animationType || 'none')
-      if (index > 0 && index === parentDialogPages.length) {
-        invokeHook(
-          parentDialogPages[parentDialogPages.length - 1].$vm!,
-          ON_SHOW
-        )
+    const parentPage = dialogPage.getParentPage()
+    if (!isSystemDialogPage(dialogPage)) {
+      if (parentPage && currentPages.indexOf(parentPage) !== -1) {
+        const parentDialogPages = parentPage.getDialogPages()
+        const index = parentDialogPages.indexOf(dialogPage)
+        parentDialogPages.splice(index, 1)
+        closeNativeDialogPage(dialogPage, options?.animationType || 'none')
+        if (index > 0 && index === parentDialogPages.length) {
+          invokeHook(
+            parentDialogPages[parentDialogPages.length - 1].$vm!,
+            ON_SHOW
+          )
+        }
+      } else {
+        triggerFailCallback(options, 'dialogPage is not a valid page')
+        return
       }
     } else {
-      triggerFailCallback(options, 'dialogPage is not a valid page')
+      const systemDialogPages = parentPage!.vm.$systemDialogPages
+      const index = systemDialogPages.indexOf(dialogPage)
+      systemDialogPages.splice(index, 1)
+      closeNativeDialogPage(dialogPage)
       return
     }
   } else {

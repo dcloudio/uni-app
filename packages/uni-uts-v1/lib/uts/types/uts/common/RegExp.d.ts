@@ -16,8 +16,10 @@ interface RegExp {
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *           "uniVer": "√",
-   *            "unixVer": "3.9+"
+   *           "uniVer": "x",
+   *           "unixVer": "3.90",
+   *           "uniUtsPlugin": "√",
+   *           "unixUtsPlugin": "3.90"
    *        },
    *        "ios": {
    *           "osVer": "12.0",
@@ -41,7 +43,9 @@ interface RegExp {
    *        "android": {
    *           "osVer": "x",
    *           "uniVer": "x",
-   *            "unixVer": "x"
+   *           "unixVer": "x",
+   *           "uniUtsPlugin": "x",
+   *           "unixUtsPlugin": "x"
    *        },
    *        "ios": {
    *           "osVer": "x",
@@ -65,7 +69,9 @@ interface RegExp {
    *        "android": {
    *           "osVer": "x",
    *           "uniVer": "x",
-   *            "unixVer": "x"
+   *           "unixVer": "x",
+   *           "uniUtsPlugin": "x",
+   *           "unixUtsPlugin": "x"
    *        },
    *        "ios": {
    *           "osVer": "x",
@@ -89,7 +95,9 @@ interface RegExp {
    *        "android": {
    *           "osVer": "x",
    *           "uniVer": "x",
-   *            "unixVer": "x"
+   *           "unixVer": "x",
+   *           "uniUtsPlugin": "x",
+   *           "unixUtsPlugin": "x"
    *        },
    *        "ios": {
    *           "osVer": "x",
@@ -113,7 +121,9 @@ interface RegExp {
    *        "android": {
    *           "osVer": "x",
    *           "uniVer": "x",
-   *            "unixVer": "x"
+   *           "unixVer": "x",
+   *           "uniUtsPlugin": "x",
+   *           "unixUtsPlugin": "x"
    *        },
    *        "ios": {
    *           "osVer": "x",
@@ -138,8 +148,10 @@ interface RegExp {
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *           "uniVer": "√",
-   *            "unixVer": "3.9+"
+   *           "uniVer": "x",
+   *           "unixVer": "3.90",
+   *           "uniUtsPlugin": "√",
+   *           "unixUtsPlugin": "3.90"
    *        },
    *        "ios": {
    *           "osVer": "12.0",
@@ -164,8 +176,10 @@ interface RegExp {
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *           "uniVer": "√",
-   *            "unixVer": "3.9+"
+   *           "uniVer": "x",
+   *           "unixVer": "3.90",
+   *           "uniUtsPlugin": "√",
+   *           "unixUtsPlugin": "3.90"
    *        },
    *        "ios": {
    *           "osVer": "12.0",
@@ -188,8 +202,10 @@ interface RegExp {
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *           "uniVer": "√",
-   *            "unixVer": "3.9+"
+   *           "uniVer": "x",
+   *           "unixVer": "3.90",
+   *           "uniUtsPlugin": "√",
+   *           "unixUtsPlugin": "3.90"
    *        },
    *        "ios": {
    *           "osVer": "12.0",
@@ -212,8 +228,10 @@ interface RegExp {
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *           "uniVer": "√",
-   *            "unixVer": "3.9+"
+   *           "uniVer": "x",
+   *           "unixVer": "3.90",
+   *           "uniUtsPlugin": "√",
+   *           "unixUtsPlugin": "3.90"
    *        },
    *        "ios": {
    *           "osVer": "12.0",
@@ -236,8 +254,10 @@ interface RegExp {
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *           "uniVer": "√",
-   *            "unixVer": "3.9+"
+   *           "uniVer": "x",
+   *           "unixVer": "3.90",
+   *           "uniUtsPlugin": "√",
+   *           "unixUtsPlugin": "3.90"
    *        },
    *        "ios": {
    *           "osVer": "12.0",
@@ -260,8 +280,10 @@ interface RegExp {
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *           "uniVer": "√",
-   *            "unixVer": "3.9+"
+   *           "uniVer": "x",
+   *           "unixVer": "3.90",
+   *           "uniUtsPlugin": "√",
+   *           "unixUtsPlugin": "3.90"
    *        },
    *        "ios": {
    *           "osVer": "12.0",
@@ -283,8 +305,10 @@ interface RegExp {
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *           "uniVer": "√",
-   *            "unixVer": "3.9+"
+   *           "uniVer": "x",
+   *           "unixVer": "3.90",
+   *           "uniUtsPlugin": "√",
+   *           "unixUtsPlugin": "3.90"
    *        },
    *        "ios": {
    *           "osVer": "12.0",
@@ -311,8 +335,10 @@ interface RegExpConstructor {
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *           "uniVer": "√",
-   *            "unixVer": "3.9+"
+   *           "uniVer": "x",
+   *           "unixVer": "3.90",
+   *           "uniUtsPlugin": "√",
+   *           "unixUtsPlugin": "3.90"
    *        },
    *        "ios": {
    *           "osVer": "12.0",
@@ -336,8 +362,10 @@ interface RegExpConstructor {
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *           "uniVer": "√",
-   *            "unixVer": "3.9+"
+   *           "uniVer": "x",
+   *           "unixVer": "3.90",
+   *           "uniUtsPlugin": "√",
+   *           "unixUtsPlugin": "3.90"
    *        },
    *        "ios": {
    *           "osVer": "12.0",

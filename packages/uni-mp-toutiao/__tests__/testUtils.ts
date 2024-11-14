@@ -1,4 +1,7 @@
-import { isMiniProgramNativeTag as isNativeTag } from '@dcloudio/uni-shared'
+import {
+  isMiniProgramNativeTag,
+  isMiniProgramUVueNativeTag,
+} from '@dcloudio/uni-shared'
 import { type CompilerOptions, compile } from '@dcloudio/uni-mp-compiler'
 
 import { compilerOptions, miniProgram } from '../src/compiler/options'
@@ -17,7 +20,9 @@ export function assert(
     generatorOpts: {
       concise: true,
     },
-    isNativeTag,
+    isNativeTag: options.isX
+      ? isMiniProgramUVueNativeTag
+      : isMiniProgramNativeTag,
     miniProgram: {
       ...miniProgram,
       emitFile({ source }) {

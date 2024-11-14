@@ -24,6 +24,7 @@ import { transformTag } from './transforms/transformTag'
 import { transformHtml } from './transforms/vHtml'
 import { transformText } from './transforms/vText'
 import { transformAttr } from './transforms/transformAttr'
+import { FILTER_MODULE_NAME } from './transforms/utils'
 
 export type TransformPreset = [
   NodeTransform[],
@@ -82,6 +83,9 @@ export function baseCompile(template: string, options: CompilerOptions = {}) {
         options.miniProgram.filter.lang,
         options.filename
       )
+      if (options.isX) {
+        options.filters.push(FILTER_MODULE_NAME)
+      }
     }
   }
 
@@ -130,6 +134,8 @@ export function baseCompile(template: string, options: CompilerOptions = {}) {
       isBuiltInComponent: context.isBuiltInComponent,
       isMiniProgramComponent: context.isMiniProgramComponent,
       checkPropName,
+      autoImportFilters: context.autoImportFilters,
+      filter: options.miniProgram?.filter,
     })
   }
 

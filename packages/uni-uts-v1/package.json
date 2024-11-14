@@ -20,7 +20,7 @@
   "dependencies": {
     "@babel/code-frame": "^7.23.5",
     "@dcloudio/uni-app-x": "^0.7.35",
-    "@dcloudio/uts": "3.0.0-alpha-4030320241109002",
+    "@dcloudio/uts": "3.0.0-alpha-4030120240925001",
     "@rollup/pluginutils": "^5.0.5",
     "@vue/shared": "3.4.21",
     "adm-zip": "^0.5.12",
@@ -43,6 +43,6 @@
     "@types/adm-zip": "^0.5.5",
     "@types/android-versions": "^1.8.0",
     "@types/fs-extra": "^9.0.13",
-    "rollup": "^4.13.0"
+    "rollup": "^4.21.2"
   }
 }

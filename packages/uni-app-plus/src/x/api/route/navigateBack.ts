@@ -1,4 +1,4 @@
-import type { ComponentPublicInstance } from 'vue'
+import type { ComponentInternalInstance, ComponentPublicInstance } from 'vue'
 import {
   API_NAVIGATE_BACK,
   type API_TYPE_NAVIGATE_BACK,
@@ -138,6 +138,13 @@ function back(
       invokeHook(dialogPages[i - 1].$vm!, ON_SHOW)
     }
   }
+  const systemDialogPages =
+    (currentPage as unknown as ComponentInternalInstance).$systemDialogPages ||
+    []
+  for (let i = 0; i < systemDialogPages.length; i++) {
+    closeNativeDialogPage(systemDialogPages[i])
+  }
+  ;(currentPage as unknown as ComponentInternalInstance).$systemDialogPages = []
   // TODO 处理子 view
   backPage(webview)
 }

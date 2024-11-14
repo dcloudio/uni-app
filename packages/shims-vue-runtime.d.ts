@@ -1,6 +1,7 @@
 import type { EventChannel, UniLifecycleHooks } from '@dcloudio/uni-shared'
 import { ComponentCustomProperties, ComponentInternalInstance } from 'vue'
 import type { IPage } from '@dcloudio/uni-app-x/types/native'
+import type { UniDialogPage } from '@dcloudio/uni-app-x/types/page'
 
 declare module '@vue/runtime-core' {
   interface ComponentCustomOptions {
@@ -17,6 +18,8 @@ declare module '@vue/runtime-core' {
     route: string
     options?: Page.PageInstance['$page']['options']
     $scope: {
+      is?: string
+      route?: string
       $getAppWebview?: () => PlusWebviewWebviewObject
       setData(data: Record<string, unknown>, callback?: () => void): void
     }
@@ -32,6 +35,8 @@ declare module '@vue/runtime-core' {
     $page: Page.PageInstance['$page'] | UniPage | UniDialogPage
     // X web start
     $basePage: Page.PageInstance['$page']
+    $dialogPage?: UniDialogPage
+    $pageLayoutInstance: ComponentInternalInstance | null
     // X web end
     $mpType?: 'app' | 'page'
     $locale?: string
@@ -56,11 +61,24 @@ declare module '@vue/runtime-core' {
     $pageInstance: ComponentInternalInstance
     // x
     $waitNativeRender: (fn: () => void) => void
-    $dialogPages: Ref<UniDialogPage[]>
     $pageVm: ComponentPublicInstance | null
     $parentInstance?: ComponentInternalInstance
     $dialogPages?: Ref<UniDialogPage[]>
+    $systemDialogPages?: Ref<UniDialogPage[]>
     $dialogPage?: UniDialogPage
+    $uniElements: Map<string, UniElement>
+    $uniElementIds: Map<string, { name: string }>
+    $templateUniElementRefs: {
+      i: string // id
+      r: VNodeRef
+      k?: string // setup ref key
+      f?: boolean // refInFor marker
+      v: null | UniElement | Array<UniElement | null>
+    }[]
+    // 模板绑定的 style ，key 为 elementId，值为 style 字符串，最终会合并到 $eS 中
+    $templateUniElementStyles: Record<string, string>
+    // 元素 style ，key 为 elementId，值为 style 字符串
+    $eS: Record<string, string>
   }
 
   export const onBeforeActivate: (fn: () => void) => void

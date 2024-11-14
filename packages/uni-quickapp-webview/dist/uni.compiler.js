@@ -63,7 +63,7 @@ const miniProgram = {
         array: true,
     },
     slot: {
-        fallbackContent: true,
+        fallbackContent: false,
         dynamicSlotNames: true,
     },
     directive: 'qa:',
@@ -128,6 +128,7 @@ ${filter.code}
     },
 };
 
+let quickappConfigJson = false;
 const uniQuickappWebviewPlugin = {
     name: 'uni:quickapp-webview',
     config() {
@@ -140,6 +141,27 @@ const uniQuickappWebviewPlugin = {
                 assetsInlineLimit: uniCliShared.ASSETS_INLINE_LIMIT,
             },
         };
+    },
+    generateBundle(_, bundle) {
+        if (process.env.UNI_SUB_PLATFORM === 'quickapp-webview-huawei') {
+            if (quickappConfigJson) {
+                return;
+            }
+            quickappConfigJson = true;
+            bundle['quickapp.config.json'] = {
+                type: 'asset',
+                fileName: 'quickapp.config.json',
+                originalFileName: 'quickapp.config.json',
+                name: 'quickapp.config.json',
+                source: JSON.stringify({
+                    quickappRoot: './',
+                    packOptions: {
+                        ignore: [],
+                    },
+                }),
+                needsCodeReference: false,
+            };
+        }
     },
 };
 var index = [uniQuickappWebviewPlugin, ...initMiniProgramPlugin__default.default(options)];

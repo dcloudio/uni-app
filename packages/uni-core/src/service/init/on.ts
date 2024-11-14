@@ -22,6 +22,20 @@ function onResize(res: UniApp.WindowResizeResult) {
     ? (getCurrentPage() as unknown as UniPage)?.vm
     : getCurrentPage()
   invokeHook(page as ComponentPublicInstance, ON_RESIZE, res)
+  if (__X__ && __PLATFORM__ === 'h5') {
+    const dialogPages = page.$page.getDialogPages()
+    if (dialogPages.length > 0) {
+      invokeHook(dialogPages[dialogPages.length - 1].vm, ON_RESIZE, res)
+    }
+    const systemDialogPages = page.$pageLayoutInstance?.$systemDialogPages.value
+    if (systemDialogPages?.length > 0) {
+      invokeHook(
+        systemDialogPages[systemDialogPages.length - 1].vm,
+        ON_RESIZE,
+        res
+      )
+    }
+  }
   UniServiceJSBridge.invokeOnCallback('onWindowResize', res) // API
 }
 

@@ -66,8 +66,17 @@ export interface MiniProgramCompilerOptions {
   }
   filter?: {
     lang: string
+    /**
+     * 是否支持 setStyle
+     */
+    setStyle?: boolean
+    generate?: Parameters<typeof findMiniProgramTemplateFiles>[0]
   }
   component?: {
+    /**
+     * 是否支持 :host 伪类
+     */
+    ':host'?: boolean
     /**
      * 平台自定义组件目录，如 wxcomponents
      */

@@ -1,7 +1,89 @@
 import { SLOT_DEFAULT_NAME, EventChannel, invokeArrayFns, MINI_PROGRAM_PAGE_RUNTIME_HOOKS, ON_LOAD, ON_SHOW, ON_HIDE, ON_UNLOAD, ON_RESIZE, ON_TAB_ITEM_TAP, ON_REACH_BOTTOM, ON_PULL_DOWN_REFRESH, ON_ADD_TO_FAVORITES, isUniLifecycleHook, ON_READY, once, ON_LAUNCH, ON_ERROR, ON_THEME_CHANGE, ON_PAGE_NOT_FOUND, ON_UNHANDLE_REJECTION, customizeEvent, addLeadingSlash, stringifyQuery } from '@dcloudio/uni-shared';
 import { isArray, isFunction, hasOwn, extend, isPlainObject } from '@vue/shared';
-import { ref, nextTick, findComponentPropsData, toRaw, updateProps, hasQueueJob, invalidateJob, getExposeProxy, pruneComponentPropsCache } from 'vue';
+import { nextTick, ref, findComponentPropsData, toRaw, updateProps, hasQueueJob, invalidateJob, getExposeProxy, pruneComponentPropsCache } from 'vue';
 import { normalizeLocale, LOCALE_EN } from '@dcloudio/uni-i18n';
+
+function initVueIds(vueIds, mpInstance) {
+    if (!vueIds) {
+        return;
+    }
+    const ids = vueIds.split(',');
+    const len = ids.length;
+    if (len === 1) {
+        mpInstance._$vueId = ids[0];
+    }
+    else if (len === 2) {
+        mpInstance._$vueId = ids[0];
+        mpInstance._$vuePid = ids[1];
+    }
+}
+function initWxsCallMethods(methods, wxsCallMethods) {
+    if (!isArray(wxsCallMethods)) {
+        return;
+    }
+    wxsCallMethods.forEach((callMethod) => {
+        methods[callMethod] = function (args) {
+            return this.$vm[callMethod](args);
+        };
+    });
+}
+function selectAllComponents(mpInstance, selector, $refs) {
+    const components = mpInstance.selectAllComponents(selector);
+    components.forEach((component) => {
+        const ref = component.properties.uR;
+        $refs[ref] = component.$vm || component;
+    });
+}
+function initRefs(instance, mpInstance) {
+    Object.defineProperty(instance, 'refs', {
+        get() {
+            const $refs = {};
+            selectAllComponents(mpInstance, '.r', $refs);
+            const forComponents = mpInstance.selectAllComponents('.r-i-f');
+            forComponents.forEach((component) => {
+                const ref = component.properties.uR;
+                if (!ref) {
+                    return;
+                }
+                if (!$refs[ref]) {
+                    $refs[ref] = [];
+                }
+                $refs[ref].push(component.$vm || component);
+            });
+            return $refs;
+        },
+    });
+}
+function findVmByVueId(instance, vuePid) {
+    // 标准 vue3 中 没有 $children，定制了内核
+    const $children = instance.$children;
+    // 优先查找直属(反向查找:https://github.com/dcloudio/uni-app/issues/1200)
+    for (let i = $children.length - 1; i >= 0; i--) {
+        const childVm = $children[i];
+        if (childVm.$scope._$vueId === vuePid) {
+            return childVm;
+        }
+    }
+    // 反向递归查找
+    let parentVm;
+    for (let i = $children.length - 1; i >= 0; i--) {
+        parentVm = findVmByVueId($children[i], vuePid);
+        if (parentVm) {
+            return parentVm;
+        }
+    }
+}
+function nextSetDataTick(mpInstance, fn) {
+    // 随便设置一个字段来触发回调（部分平台必须有字段才可以，比如头条）
+    mpInstance.setData({ r1: 1 }, () => fn());
+}
+function initSetRef(mpInstance) {
+    if (!mpInstance._$setRef) {
+        mpInstance._$setRef = (fn) => {
+            nextTick(() => nextSetDataTick(mpInstance, fn));
+        };
+    }
+}
 
 const MP_METHODS = [
     'createSelectorQuery',
@@ -299,88 +381,6 @@ function initLocale(appVm) {
     });
 }
 
-function initVueIds(vueIds, mpInstance) {
-    if (!vueIds) {
-        return;
-    }
-    const ids = vueIds.split(',');
-    const len = ids.length;
-    if (len === 1) {
-        mpInstance._$vueId = ids[0];
-    }
-    else if (len === 2) {
-        mpInstance._$vueId = ids[0];
-        mpInstance._$vuePid = ids[1];
-    }
-}
-function initWxsCallMethods(methods, wxsCallMethods) {
-    if (!isArray(wxsCallMethods)) {
-        return;
-    }
-    wxsCallMethods.forEach((callMethod) => {
-        methods[callMethod] = function (args) {
-            return this.$vm[callMethod](args);
-        };
-    });
-}
-function selectAllComponents(mpInstance, selector, $refs) {
-    const components = mpInstance.selectAllComponents(selector);
-    components.forEach((component) => {
-        const ref = component.properties.uR;
-        $refs[ref] = component.$vm || component;
-    });
-}
-function initRefs(instance, mpInstance) {
-    Object.defineProperty(instance, 'refs', {
-        get() {
-            const $refs = {};
-            selectAllComponents(mpInstance, '.r', $refs);
-            const forComponents = mpInstance.selectAllComponents('.r-i-f');
-            forComponents.forEach((component) => {
-                const ref = component.properties.uR;
-                if (!ref) {
-                    return;
-                }
-                if (!$refs[ref]) {
-                    $refs[ref] = [];
-                }
-                $refs[ref].push(component.$vm || component);
-            });
-            return $refs;
-        },
-    });
-}
-function findVmByVueId(instance, vuePid) {
-    // 标准 vue3 中 没有 $children，定制了内核
-    const $children = instance.$children;
-    // 优先查找直属(反向查找:https://github.com/dcloudio/uni-app/issues/1200)
-    for (let i = $children.length - 1; i >= 0; i--) {
-        const childVm = $children[i];
-        if (childVm.$scope._$vueId === vuePid) {
-            return childVm;
-        }
-    }
-    // 反向递归查找
-    let parentVm;
-    for (let i = $children.length - 1; i >= 0; i--) {
-        parentVm = findVmByVueId($children[i], vuePid);
-        if (parentVm) {
-            return parentVm;
-        }
-    }
-}
-function nextSetDataTick(mpInstance, fn) {
-    // 随便设置一个字段来触发回调（部分平台必须有字段才可以，比如头条）
-    mpInstance.setData({ r1: 1 }, () => fn());
-}
-function initSetRef(mpInstance) {
-    if (!mpInstance._$setRef) {
-        mpInstance._$setRef = (fn) => {
-            nextTick(() => nextSetDataTick(mpInstance, fn));
-        };
-    }
-}
-
 const builtInProps = [
     // 百度小程序,快手小程序自定义组件不支持绑定动态事件，动态dataset，故通过props传递事件信息
     // event-opts
@@ -409,20 +409,23 @@ function initDefaultProps(options, isBehavior = false) {
             };
         });
         // 小程序不能直接定义 $slots 的 props，所以通过 vueSlots 转换到 $slots
+        function observerSlots(newVal) {
+            const $slots = Object.create(null);
+            newVal &&
+                newVal.forEach((slotName) => {
+                    $slots[slotName] = true;
+                });
+            this.setData({
+                $slots,
+            });
+        }
         properties.uS = {
             type: null,
             value: [],
-            observer: function (newVal) {
-                const $slots = Object.create(null);
-                newVal &&
-                    newVal.forEach((slotName) => {
-                        $slots[slotName] = true;
-                    });
-                this.setData({
-                    $slots,
-                });
-            },
         };
+        {
+            properties.uS.observer = observerSlots;
+        }
     }
     if (options.behaviors) {
         // wx://form-field
@@ -512,14 +515,14 @@ function initPageProps({ properties }, rawProps) {
 function findPropsData(properties, isPage) {
     return ((isPage
         ? findPagePropsData(properties)
-        : findComponentPropsData(properties.uP)) || {});
+        : findComponentPropsData(resolvePropValue(properties.uP))) || {});
 }
 function findPagePropsData(properties) {
     const propsData = {};
     if (isPlainObject(properties)) {
         Object.keys(properties).forEach((name) => {
             if (builtInProps.indexOf(name) === -1) {
-                propsData[name] = properties[name];
+                propsData[name] = resolvePropValue(properties[name]);
             }
         });
     }
@@ -541,6 +544,9 @@ function initFormField(vm) {
         });
     }
 }
+function resolvePropValue(prop) {
+    return prop;
+}
 
 function initData(_) {
     return {};
@@ -552,11 +558,11 @@ function initPropsObserver(componentOptions) {
             return;
         }
         if (this.$vm) {
-            updateComponentProps(up, this.$vm.$);
+            updateComponentProps(resolvePropValue(up), this.$vm.$);
         }
-        else if (this.properties.uT === 'm') {
+        else if (resolvePropValue(this.properties.uT) === 'm') {
             // 小程序组件
-            updateMiniProgramComponentProperties(up, this);
+            updateMiniProgramComponentProperties(resolvePropValue(up), this);
         }
     };
     {
@@ -658,7 +664,10 @@ const MPComponent = Component;
 function initTriggerEvent(mpInstance) {
     const oldTriggerEvent = mpInstance.triggerEvent;
     const newTriggerEvent = function (event, ...args) {
-        return oldTriggerEvent.apply(mpInstance, [customizeEvent(event), ...args]);
+        return oldTriggerEvent.apply(mpInstance, [
+            customizeEvent(event),
+            ...args,
+        ]);
     };
     // 京东小程序triggerEvent为只读属性
     try {
@@ -730,11 +739,23 @@ function initLifetimes({ mocks, isPage, initRelation, vueOptions, }) {
                     initComponentInstance(instance, options);
                 },
             });
+            if (process.env.UNI_DEBUG) {
+                console.log('uni-app:[' +
+                    Date.now() +
+                    '][' +
+                    (mpInstance.is || mpInstance.route) +
+                    '][' +
+                    this.$vm.$.uid +
+                    ']attached');
+            }
             if (!isMiniProgramPage) {
                 initFormField(this.$vm);
             }
         },
         ready() {
+            if (process.env.UNI_DEBUG) {
+                console.log('uni-app:[' + Date.now() + '][' + (this.is || this.route) + ']ready');
+            }
             // 当组件 props 默认值为 true，初始化时传入 false 会导致 created,ready 触发, 但 attached 不触发
             // https://developers.weixin.qq.com/community/develop/doc/00066ae2844cc0f8eb883e2a557800
             if (this.$vm) {

@@ -49,6 +49,9 @@ declare namespace UniNamespace {
   interface UniConfig {
     conditionUrl?: string
     ready?: boolean
+
+    getTabBarConfig: () => Record<string, any>
+
     router?: {
       strict: boolean
       base: string
@@ -203,6 +206,7 @@ declare namespace UniNamespace {
     'app-harmony'?: PagesJsonPageStyle
     'mp-alipay'?: PagesJsonPageStyle
     'mp-baidu'?: PagesJsonPageStyle
+    'mp-harmony'?: PagesJsonPageStyle
     'mp-qq'?: PagesJsonPageStyle
     'mp-toutiao'?: PagesJsonPageStyle
     'mp-weixin'?: PagesJsonPageStyle

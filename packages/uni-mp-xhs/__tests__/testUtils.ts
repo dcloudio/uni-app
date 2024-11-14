@@ -1,4 +1,7 @@
-import { isMiniProgramNativeTag as isNativeTag } from '@dcloudio/uni-shared'
+import {
+  isMiniProgramNativeTag,
+  isMiniProgramUVueNativeTag,
+} from '@dcloudio/uni-shared'
 import { type CompilerOptions, compile } from '@dcloudio/uni-mp-compiler'
 
 import { compilerOptions, miniProgram } from '../src/compiler/options'
@@ -14,7 +17,9 @@ export function assert(
     filename: 'foo.vue',
     prefixIdentifiers: true,
     inline: true,
-    isNativeTag,
+    isNativeTag: options.isX
+      ? isMiniProgramUVueNativeTag
+      : isMiniProgramNativeTag,
     generatorOpts: {
       concise: true,
     },

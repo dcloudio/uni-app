@@ -24,16 +24,16 @@ importers:
         specifier: 3.4.14
         version: 3.4.14
       '@dcloudio/uni-api':
-        specifier: 3.0.0-alpha-4030320241109002
+        specifier: workspace:*
         version: link:packages/uni-api
       '@dcloudio/uni-app':
-        specifier: 3.0.0-alpha-4030320241109002
+        specifier: workspace:*
         version: link:packages/uni-app
       '@dcloudio/uni-app-x':
         specifier: ^0.7.35
         version: 0.7.35
       '@dcloudio/uni-nvue-styler':
-        specifier: 3.0.0-alpha-4030320241109002
+        specifier: workspace:*
         version: link:packages/uni-nvue-styler
       '@jest/types':
         specifier: ^29.0.3
@@ -165,7 +165,7 @@ importers:
         specifier: ^8.3.0
         version: 8.3.0
       rollup:
-        specifier: ^4.13.0
+        specifier: ^4.21.2
         version: 4.21.2
       rollup-plugin-jscc:
         specifier: ^2.0.0
@@ -367,6 +367,9 @@ importers:
       '@dcloudio/uni-quickapp-webview':
         specifier: ../../uni-quickapp-webview
         version: link:../../uni-quickapp-webview
+      test-data:
+        specifier: ./test-data
+        version: link:test-data
       vue:
         specifier: 3.4.21
         version: 3.4.21(typescript@5.4.2)
@@ -376,9 +379,6 @@ importers:
       vuex:
         specifier: ^4.1.0
         version: 4.1.0(vue@3.4.21(typescript@5.4.2))
-      web3:
-        specifier: 0.20.7
-        version: 0.20.7
     devDependencies:
       '@dcloudio/uni-cli-shared':
         specifier: ../../uni-cli-shared
@@ -606,9 +606,6 @@ importers:
       vuex:
         specifier: ^4.1.0
         version: 4.1.0(vue@3.4.21(typescript@5.4.2))
-      web3:
-        specifier: 0.20.7
-        version: 0.20.7
     devDependencies:
       '@dcloudio/uni-cli-shared':
         specifier: ../../uni-cli-shared
@@ -1002,7 +999,7 @@ importers:
         specifier: ^8.4.21
         version: 8.4.45
       rollup:
-        specifier: ^4.13.0
+        specifier: ^4.21.2
         version: 4.21.2
       vite:
         specifier: ^5.2.8
@@ -1605,7 +1602,39 @@ importers:
         specifier: ^1.0.2
         version: 1.2.1
 
-  packages/uni-mp-core: {}
+  packages/uni-mp-core:
+    dependencies:
+      '@vue/shared':
+        specifier: 3.4.21
+        version: 3.4.21
+      vue:
+        specifier: 3.4.21
+        version: 3.4.21(typescript@5.4.2)
+
+  packages/uni-mp-harmony:
+    dependencies:
+      '@dcloudio/uni-cli-shared':
+        specifier: 3.0.0-alpha-4030120240925001
+        version: link:../uni-cli-shared
+      '@dcloudio/uni-mp-vite':
+        specifier: 3.0.0-alpha-4030120240925001
+        version: link:../uni-mp-vite
+      '@dcloudio/uni-mp-vue':
+        specifier: 3.0.0-alpha-4030120240925001
+        version: link:../uni-mp-vue
+      '@dcloudio/uni-quickapp-webview':
+        specifier: 3.0.0-alpha-4030120240925001
+        version: link:../uni-quickapp-webview
+      '@dcloudio/uni-shared':
+        specifier: 3.0.0-alpha-4030120240925001
+        version: link:../uni-shared
+      '@vue/shared':
+        specifier: 3.4.21
+        version: 3.4.21
+    devDependencies:
+      '@dcloudio/uni-mp-compiler':
+        specifier: 3.0.0-alpha-4030120240925001
+        version: link:../uni-mp-compiler
 
   packages/uni-mp-jd:
     dependencies:
@@ -1761,6 +1790,9 @@ importers:
       '@dcloudio/uni-shared':
         specifier: 3.0.0-alpha-4030320241109002
         version: link:../uni-shared
+      '@vue/compiler-dom':
+        specifier: 3.4.21
+        version: 3.4.21
       '@vue/compiler-sfc':
         specifier: 3.4.21
         version: 3.4.21
@@ -2017,7 +2049,7 @@ importers:
         specifier: ^9.0.13
         version: 9.0.13
       rollup:
-        specifier: ^4.13.0
+        specifier: ^4.21.2
         version: 4.21.2
 
   packages/uni-vue:
@@ -4153,10 +4185,6 @@ packages:
   bcrypt-pbkdf@1.0.2:
     resolution: {integrity: sha512-qeFIXtP4MSoi6NLqO12WfqARWWuCKi2Rn/9hJLEmtB5yTNr9DqFWkJRCf2qShWzPeAMRnOgCrq0sg/KLv5ES9w==}
 
-  bignumber.js@https://codeload.github.com/frozeman/bignumber.js-nolookahead/tar.gz/57692b3ecfc98bbdd6b3a516cb2353652ea49934:
-    resolution: {tarball: https://codeload.github.com/frozeman/bignumber.js-nolookahead/tar.gz/57692b3ecfc98bbdd6b3a516cb2353652ea49934}
-    version: 2.0.7
-
   binary-extensions@2.3.0:
     resolution: {integrity: sha512-Ceh+7ox5qe7LJuLHoY0feh3pHuUDHAcRUeyL2VYghZwfpkNIy/+8Ocg0a3UuSoYzavmylwuLWQOf3hl0jjMMIw==}
     engines: {node: '>=8'}
@@ -4461,9 +4489,6 @@ packages:
     resolution: {integrity: sha512-U71cyTamuh1CRNCfpGY6to28lxvNwPG4Guz/EVjgf3Jmzv0vlDp1atT9eS5dDjMYHucpHbWns6Lwf3BKz6svdw==}
     engines: {node: '>= 0.6'}
 
-  cookiejar@2.1.4:
-    resolution: {integrity: sha512-LDx6oHrK+PhzLKJU9j5S7/Y3jM/mUHvD/DeI1WQmJn652iPC5Y4TBzC9l+5OMOXlyTTA+SmVUPm0HQUwpD5Jqw==}
-
   core-js-compat@3.38.1:
     resolution: {integrity: sha512-JRH6gfXxGmrzF3tZ57lFx97YARxCXPaMzPo6jELZhv88pBH5VXpQ+y0znKGlFnzuaihqhLbefxSJxWJMPtfDzw==}
 
@@ -4519,9 +4544,6 @@ packages:
 
   crypto-browserify@3.12.0:
     resolution: {integrity: sha512-fz4spIh+znjO2VjL+IdhEpRJ3YN6sMzITSBijk6FK2UvTqruSQW+/cCZTSNsMiZNvUeq0CqurF+dAbyiGOY6Wg==}
-
-  crypto-js@3.3.0:
-    resolution: {integrity: sha512-DIT51nX0dCfKltpRiXV+/TVZq+Qq2NgF4644+K7Ttnla7zEzqc+kjJyiB96BHNyUTBxyjzRcZYpUdZa+QAqi6Q==}
 
   css-font-size-keywords@1.0.0:
     resolution: {integrity: sha512-Q+svMDbMlelgCfH/RVDKtTDaf5021O486ZThQPIpahnIjUkMUslC+WuOQSWTgGSrNCH08Y7tYNEmmy0hkfMI8Q==}
@@ -7187,9 +7209,6 @@ packages:
   url-parse@1.5.10:
     resolution: {integrity: sha512-WypcfiRhfeUP9vvF0j6rw0J3hrWrw6iZv3+22h6iRMJ/8z1Tj6XfLP4DsUix5MhMPnXpiHDoKyoZ/bdCkwBCiQ==}
 
-  utf8@2.1.2:
-    resolution: {integrity: sha512-QXo+O/QkLP/x1nyi54uQiG0XrODxdysuQvE5dtVqv7F5K2Qb6FsN+qbr6KhF5wQ20tfcV3VQp0/2x1e1MRSPWg==}
-
   utif@2.0.1:
     resolution: {integrity: sha512-Z/S1fNKCicQTf375lIP9G8Sa1H/phcysstNrrSdZKj1f9g58J4NMgb5IgiEZN9/nLMPDwF0W7hdOe9Qq2IYoLg==}
 
@@ -7290,9 +7309,6 @@ packages:
   walker@1.0.8:
     resolution: {integrity: sha512-ts/8E8l5b7kY0vlWLewOkDXMmPdLcVV4GmOQLyxuSswIJsweeFZtAsMF7k1Nszz+TYBQrlYRmzOnr398y1JemQ==}
 
-  web3@0.20.7:
-    resolution: {integrity: sha512-VU6/DSUX93d1fCzBz7WP/SGCQizO1rKZi4Px9j/3yRyfssHyFcZamMw2/sj4E8TlfMXONvZLoforR8B4bRoyTQ==}
-
   webidl-conversions@5.0.0:
     resolution: {integrity: sha512-VlZwKPCkYKxQgeSbH5EyngOmRp7Ww7I9rQLERETtf5ofd9pGeswWiOtogpEO850jziPRarreGxn5QIiTqpb2wA==}
     engines: {node: '>=8'}
@@ -7384,9 +7400,6 @@ packages:
         optional: true
       utf-8-validate:
         optional: true
-
-  xhr2-cookies@1.1.0:
-    resolution: {integrity: sha512-hjXUA6q+jl/bd8ADHcVfFsSPIf+tyLIjuO9TwJC9WI6JP2zKcS7C+p56I9kCLLsaCiNT035iYvEUUzdEFj/8+g==}
 
   xhr@2.6.0:
     resolution: {integrity: sha512-/eCGLb5rxjx5e3mF1A7s+pLlR6CGyqWN91fv1JgER5mVWg1MZmlhBvy9kjcsOdRk8RrIujotWyJamfyrp+WIcA==}
@@ -10038,8 +10051,6 @@ snapshots:
     dependencies:
       tweetnacl: 0.14.5
 
-  bignumber.js@https://codeload.github.com/frozeman/bignumber.js-nolookahead/tar.gz/57692b3ecfc98bbdd6b3a516cb2353652ea49934: {}
-
   binary-extensions@2.3.0: {}
 
   bl@0.8.2:
@@ -10362,8 +10373,6 @@ snapshots:
 
   cookie@0.6.0: {}
 
-  cookiejar@2.1.4: {}
-
   core-js-compat@3.38.1:
     dependencies:
       browserslist: 4.23.3
@@ -10457,8 +10466,6 @@ snapshots:
       public-encrypt: 4.0.3
       randombytes: 2.1.0
       randomfill: 1.0.4
-
-  crypto-js@3.3.0: {}
 
   css-font-size-keywords@1.0.0: {}
 
@@ -13722,8 +13729,6 @@ snapshots:
       querystringify: 2.2.0
       requires-port: 1.0.0
 
-  utf8@2.1.2: {}
-
   utif@2.0.1:
     dependencies:
       pako: 1.0.11
@@ -13823,14 +13828,6 @@ snapshots:
     dependencies:
       makeerror: 1.0.12
 
-  web3@0.20.7:
-    dependencies:
-      bignumber.js: https://codeload.github.com/frozeman/bignumber.js-nolookahead/tar.gz/57692b3ecfc98bbdd6b3a516cb2353652ea49934
-      crypto-js: 3.3.0
-      utf8: 2.1.2
-      xhr2-cookies: 1.1.0
-      xmlhttprequest: 1.8.0
-
   webidl-conversions@5.0.0: {}
 
   webidl-conversions@6.1.0: {}
@@ -13897,10 +13894,6 @@ snapshots:
   ws@8.17.1: {}
 
   ws@8.18.0: {}
-
-  xhr2-cookies@1.1.0:
-    dependencies:
-      cookiejar: 2.1.4
 
   xhr@2.6.0:
     dependencies:

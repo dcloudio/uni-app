@@ -1,5 +1,6 @@
 import path from 'path'
 import fs from 'fs-extra'
+import type { ResolvedConfig } from 'vite'
 import {
   APP_SERVICE_FILENAME,
   type UniVitePlugin,
@@ -16,6 +17,18 @@ import {
 } from '@dcloudio/uni-cli-shared'
 import { configResolved, createUniOptions } from '../utils'
 import { uniAppCssPlugin } from './css'
+
+export function initUniAppIosCssPlugin(config: ResolvedConfig) {
+  injectCssPlugin(
+    config,
+    process.env.UNI_COMPILE_TARGET === 'uni_modules'
+      ? {
+          createUrlReplacer: createEncryptCssUrlReplacer,
+        }
+      : {}
+  )
+  injectCssPostPlugin(config, uniAppCssPlugin(config))
+}
 
 export function uniAppIOSPlugin(): UniVitePlugin {
   const inputDir = process.env.UNI_INPUT_DIR
@@ -86,15 +99,7 @@ export function uniAppIOSPlugin(): UniVitePlugin {
     },
     configResolved(config) {
       configResolved(config)
-      injectCssPlugin(
-        config,
-        process.env.UNI_COMPILE_TARGET === 'uni_modules'
-          ? {
-              createUrlReplacer: createEncryptCssUrlReplacer,
-            }
-          : {}
-      )
-      injectCssPostPlugin(config, uniAppCssPlugin(config))
+      initUniAppIosCssPlugin(config)
     },
     generateBundle(_, bundle) {
       const APP_SERVICE_FILENAME_MAP = APP_SERVICE_FILENAME + '.map'

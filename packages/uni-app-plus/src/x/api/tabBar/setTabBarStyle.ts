@@ -5,7 +5,8 @@ import {
   SetTabBarStyleProtocol,
   defineAsyncApi,
 } from '@dcloudio/uni-api'
-import { fixBorderStyle, getTabBar } from '../../framework/app/tabBar'
+import { getTabBar } from '../../framework/app/tabBar'
+import { fixBorderStyle } from '../../framework/app/utils'
 
 export const setTabBarStyle = defineAsyncApi<API_TYPE_SET_TAB_BAR_STYLE>(
   API_SET_TAB_BAR_STYLE,

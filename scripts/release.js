@@ -125,19 +125,21 @@ async function main() {
 
 function updateVersions(version) {
   // 1. update root package.json
-  updatePackage(path.resolve(__dirname, '..'), version)
+  updatePackage(path.resolve(__dirname, '..'), version, true)
   // 2. update all packages
   packages.forEach((p) => updatePackage(getPkgRoot(p), version))
 }
 
-function updatePackage(pkgRoot, version) {
+function updatePackage(pkgRoot, version, ignoreDeps = false) {
   const pkgPath = path.resolve(pkgRoot, 'package.json')
   const pkg = JSON.parse(fs.readFileSync(pkgPath, 'utf-8'))
   pkg.version = version
-  updateDeps(pkg, 'dependencies', version)
-  updateDeps(pkg, 'devDependencies', version)
-  updateDeps(pkg, 'peerDependencies', version)
-  updateDeps(pkg, 'optionalDependencies', version)
+  if (!ignoreDeps) {
+    updateDeps(pkg, 'dependencies', version)
+    updateDeps(pkg, 'devDependencies', version)
+    updateDeps(pkg, 'peerDependencies', version)
+    updateDeps(pkg, 'optionalDependencies', version)
+  }
   fs.writeFileSync(pkgPath, JSON.stringify(pkg, null, 2) + '\n')
 }
 

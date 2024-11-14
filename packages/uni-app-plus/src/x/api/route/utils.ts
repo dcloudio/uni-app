@@ -1,4 +1,4 @@
-import type { ComponentPublicInstance } from 'vue'
+import type { ComponentInternalInstance, ComponentPublicInstance } from 'vue'
 import { removePage } from '../../../service/framework/page/getCurrentPages'
 import { closeWebview } from './webview'
 import { removeTabBarPage } from '../../framework/app/tabBar'
@@ -22,7 +22,16 @@ export function closePage(
   animationType: string,
   animationDuration?: number
 ) {
-  const dialogPages = page.$page.getDialogPages()
+  const dialogPages = (page.$page as UniPage).getDialogPages()
+  for (let i = dialogPages.length - 1; i >= 0; i--) {
+    closeNativeDialogPage(dialogPages[i])
+  }
+  const systemDialogPages =
+    (page as unknown as ComponentInternalInstance).$systemDialogPages || []
+  for (let i = 0; i < systemDialogPages.length; i++) {
+    closeNativeDialogPage(systemDialogPages[i])
+  }
+  ;(page as unknown as ComponentInternalInstance).$systemDialogPages = []
   for (let i = dialogPages.length - 1; i >= 0; i--) {
     closeNativeDialogPage(dialogPages[i])
   }
@@ -75,6 +84,6 @@ export function closeNativeDialogPage(
     dialogPage.$vm!.$basePage.id + ''
   )
   if (webview) {
-    closeWebview(webview, 'none', 0)
+    closeWebview(webview, animationType || 'none', 0, callback)
   }
 }

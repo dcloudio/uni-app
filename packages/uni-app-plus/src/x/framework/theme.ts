@@ -1,8 +1,9 @@
-import { extend, isArray, isString } from '@vue/shared'
+import { isArray, isString } from '@vue/shared'
 import { getAllPages } from '../../service/framework/page/getCurrentPages'
-import { fixBorderStyle, getTabBar } from './app/tabBar'
+import { getTabBar } from './app/tabBar'
 import { parsePageStyle } from './page/register'
 import { initRouteOptions } from '../../service/framework/page/routeOptions'
+import { fixBorderStyle } from './app/utils'
 
 const APP_THEME_AUTO = 'auto'
 export const THEME_KEY_PREFIX = '@'
@@ -75,7 +76,7 @@ export const onThemeChange = function (themeMode: IThemeMode) {
   const handleTabBar = () => {
     const tabBar = getTabBar()
     if (tabBar !== null) {
-      const tabBarConfig = extend({}, __uniConfig.tabBar!)
+      const tabBarConfig = __uniConfig.getTabBarConfig()
 
       normalizeTabBarStyles(tabBarConfig, __uniConfig.themeConfig, themeMode)
 

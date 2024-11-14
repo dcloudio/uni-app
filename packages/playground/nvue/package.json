@@ -20,8 +20,5 @@
   "devDependencies": {
     "@dcloudio/vite-plugin-uni": "../../vite-plugin-uni",
     "vite": "^5.2.8"
-  },
-  "resolutions": {
-    "@dcloudio/uni-app-vite": "../../uni-app-vite"
   }
 }

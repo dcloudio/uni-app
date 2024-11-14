@@ -11,8 +11,15 @@ import vueJsx from '@vitejs/plugin-vue-jsx'
 import AutoImport from 'unplugin-auto-import/vite'
 import type { OutputChunk } from 'rollup'
 
-import { normalizePath, stripOptions } from '@dcloudio/uni-cli-shared'
-import { isH5CustomElement } from '@dcloudio/uni-shared'
+import {
+  initPreContext,
+  normalizePath,
+  stripOptions,
+  UNI_EASYCOM_EXCLUDE,
+  uniPrePlugin,
+} from '@dcloudio/uni-cli-shared'
+import { uniEasycomPlugin } from '@dcloudio/uni-h5-vite/dist/plugins/easycom'
+import { isH5CustomElement, isH5NativeTag } from '@dcloudio/uni-shared'
 import { genApiJson } from './api'
 import { uts2ts } from '../../scripts/ext-api'
 
@@ -23,9 +30,12 @@ function resolve(file: string) {
 const FORMAT = process.env.FORMAT as 'es' | 'cjs'
 
 const isX = process.env.UNI_APP_X === 'true'
-// 暂不启用
-const isNewX = isX && !!process.env.UNI_APP_EXT_API_DIR && false
+// 直接启用
+const isNewX = isX //  && !!process.env.UNI_APP_EXT_API_DIR
 
+if (isNewX) {
+  initPreContext('web', {}, 'web', true)
+}
 const rollupPlugins = [
   replace({
     values: {
@@ -113,15 +123,26 @@ export default defineConfig({
     ],
   },
   plugins: [
-    ...(isNewX ? [uniExtApi(), uts2ts()] : []),
+    ...(isNewX
+      ? [
+          // 仅给vue增加条件编译
+          uniPrePlugin({} as any, { include: ['**/*.vue'] }),
+          uniExtApi(),
+          uts2ts({ target: 'uni-h5', platform: 'web' }),
+        ]
+      : []),
     vue({
+      customElement: isX,
       template: {
         compilerOptions: {
+          isNativeTag: isH5NativeTag,
           isCustomElement: realIsH5CustomElement,
         },
       },
     }),
     vueJsx({ optimize: true, isCustomElement: realIsH5CustomElement }),
+    // 需要支持uni-chooseLocation等内置页面编译
+    ...(isX ? [uniEasycomPlugin({ exclude: UNI_EASYCOM_EXCLUDE })] : []),
   ],
   esbuild: {
     // 强制为 es2015，否则默认为 esnext，将会生成 __publicField 代码，
@@ -129,6 +150,7 @@ export default defineConfig({
     target: 'es2015',
   },
   build: {
+    cssCodeSplit: true,
     target: 'modules', // keep import.meta...
     emptyOutDir: FORMAT === 'es',
     minify: false,

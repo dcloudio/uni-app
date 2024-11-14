@@ -9636,6 +9636,9 @@ function updateClassStyles(el) {
   if (styles.size == 0) {
     return;
   }
+  if (el._vsh) {
+    styles.set("display", "none");
+  }
   el.updateStyle(styles);
 }
 var rootDocument;
@@ -9960,6 +9963,9 @@ function patchStyle(el, prev, next) {
   if (batchedStyles.size == 0) {
     return;
   }
+  if (el._vsh) {
+    batchedStyles.set("display", "none");
+  }
   el.updateStyle(batchedStyles);
 }
 function setBatchedStyles(batchedStyles, key, value) {
@@ -10155,6 +10161,7 @@ var vShow = {
 };
 function setDisplay(el, value) {
   el.style.setProperty("display", value ? el._vod : "none");
+  el._vsh = !value;
 }
 var rendererOptions = extend$1({
   patchProp

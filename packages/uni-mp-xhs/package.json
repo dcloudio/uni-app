@@ -4,7 +4,8 @@
   "description": "uniapp mp-xhs",
   "main": "dist/index.js",
   "files": [
-    "dist"
+    "dist",
+    "dist-x"
   ],
   "repository": {
     "type": "git",

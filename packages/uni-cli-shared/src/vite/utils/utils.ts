@@ -8,7 +8,7 @@ import { enableSourceMap } from '../../utils'
 
 export function withSourcemap(config: ResolvedConfig) {
   if (!process.env.UNI_APP_SOURCEMAP) {
-    if (hasOwn(config.build, 'sourcemap')) {
+    if (config.build && hasOwn(config.build, 'sourcemap')) {
       if (!!config.build.sourcemap) {
         process.env.UNI_APP_SOURCEMAP = 'true'
       } else {

@@ -9,8 +9,10 @@ interface ArrayConstructor {
    *    "app": {
    *        "android": {
    *            "osVer": "5.0",
-   *  		      "uniVer": "√",
-   * 			      "unixVer": "3.9.0"
+   *            "uniVer": "x",
+   *            "unixVer": "3.90",
+   *            "uniUtsPlugin": "√",
+   *            "unixUtsPlugin": "3.90"
    *        },
    *        "ios": {
    *            "osVer": "x",

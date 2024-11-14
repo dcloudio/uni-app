@@ -18,8 +18,28 @@ export function initLifetimes(lifetimesOptions: CreateLifetimesOptions) {
         if (this.pageinstance) {
           this.__webviewId__ = (this.pageinstance as any).__pageId__
         }
+        if (process.env.UNI_DEBUG) {
+          console.log(
+            'uni-app:[' + Date.now() + '][' + (this.is || this.route) + ']ready'
+          )
+        }
         this.$vm.$callCreatedHook()
         nextSetDataTick(this, () => {
+          if (
+            __PLATFORM__ === 'quickapp-webview' ||
+            __PLATFORM__ === 'mp-harmony'
+          ) {
+            const vm = this.$vm! as {
+              _$childVues?: [Function, Function][]
+            }
+            // 处理当前 vm 子
+            if (vm._$childVues) {
+              vm._$childVues.forEach(([createdVm]) => createdVm())
+              vm._$childVues.forEach(([, mountedVm]) => mountedVm())
+              delete vm._$childVues
+            }
+          }
+
           this.$vm!.$callHook('mounted')
           this.$vm!.$callHook(ON_READY)
         })

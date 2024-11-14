@@ -1,7 +1,97 @@
 import { SLOT_DEFAULT_NAME, EventChannel, invokeArrayFns, MINI_PROGRAM_PAGE_RUNTIME_HOOKS, ON_LOAD, ON_SHOW, ON_HIDE, ON_UNLOAD, ON_RESIZE, ON_TAB_ITEM_TAP, ON_REACH_BOTTOM, ON_PULL_DOWN_REFRESH, ON_ADD_TO_FAVORITES, isUniLifecycleHook, ON_READY, once, ON_LAUNCH, ON_ERROR, ON_THEME_CHANGE, ON_PAGE_NOT_FOUND, ON_UNHANDLE_REJECTION, addLeadingSlash, stringifyQuery, customizeEvent } from '@dcloudio/uni-shared';
-import { isArray, isFunction, hasOwn, extend, isPlainObject, isObject } from '@vue/shared';
-import { ref, nextTick, findComponentPropsData, toRaw, updateProps, hasQueueJob, invalidateJob, devtoolsComponentAdded, getExposeProxy, isRef, pruneComponentPropsCache } from 'vue';
+import { hasOwn, isArray, isFunction, extend, isPlainObject, isObject } from '@vue/shared';
+import { nextTick, ref, findComponentPropsData, toRaw, updateProps, hasQueueJob, invalidateJob, devtoolsComponentAdded, getExposeProxy, pruneComponentPropsCache } from 'vue';
 import { normalizeLocale, LOCALE_EN } from '@dcloudio/uni-i18n';
+
+function initVueIds(vueIds, mpInstance) {
+    if (!vueIds) {
+        return;
+    }
+    const ids = vueIds.split(',');
+    const len = ids.length;
+    if (len === 1) {
+        mpInstance._$vueId = ids[0];
+    }
+    else if (len === 2) {
+        mpInstance._$vueId = ids[0];
+        mpInstance._$vuePid = ids[1];
+    }
+}
+const EXTRAS = ['externalClasses'];
+function initExtraOptions(miniProgramComponentOptions, vueOptions) {
+    EXTRAS.forEach((name) => {
+        if (hasOwn(vueOptions, name)) {
+            miniProgramComponentOptions[name] = vueOptions[name];
+        }
+    });
+}
+function initWxsCallMethods(methods, wxsCallMethods) {
+    if (!isArray(wxsCallMethods)) {
+        return;
+    }
+    wxsCallMethods.forEach((callMethod) => {
+        methods[callMethod] = function (args) {
+            return this.$vm[callMethod](args);
+        };
+    });
+}
+function selectAllComponents(mpInstance, selector, $refs) {
+    const components = mpInstance.selectAllComponents(selector);
+    components.forEach((component) => {
+        const ref = component.properties.uR;
+        $refs[ref] = component.$vm || component;
+    });
+}
+function initRefs(instance, mpInstance) {
+    Object.defineProperty(instance, 'refs', {
+        get() {
+            const $refs = {};
+            selectAllComponents(mpInstance, '.r', $refs);
+            const forComponents = mpInstance.selectAllComponents('.r-i-f');
+            forComponents.forEach((component) => {
+                const ref = component.properties.uR;
+                if (!ref) {
+                    return;
+                }
+                if (!$refs[ref]) {
+                    $refs[ref] = [];
+                }
+                $refs[ref].push(component.$vm || component);
+            });
+            return $refs;
+        },
+    });
+}
+function findVmByVueId(instance, vuePid) {
+    // 标准 vue3 中 没有 $children，定制了内核
+    const $children = instance.$children;
+    // 优先查找直属(反向查找:https://github.com/dcloudio/uni-app/issues/1200)
+    for (let i = $children.length - 1; i >= 0; i--) {
+        const childVm = $children[i];
+        if (childVm.$scope._$vueId === vuePid) {
+            return childVm;
+        }
+    }
+    // 反向递归查找
+    let parentVm;
+    for (let i = $children.length - 1; i >= 0; i--) {
+        parentVm = findVmByVueId($children[i], vuePid);
+        if (parentVm) {
+            return parentVm;
+        }
+    }
+}
+function nextSetDataTick(mpInstance, fn) {
+    // 随便设置一个字段来触发回调（部分平台必须有字段才可以，比如头条）
+    mpInstance.setData({ r1: 1 }, () => fn());
+}
+function initSetRef(mpInstance) {
+    if (!mpInstance._$setRef) {
+        mpInstance._$setRef = (fn) => {
+            nextTick(() => nextSetDataTick(mpInstance, fn));
+        };
+    }
+}
 
 const MP_METHODS = [
     'createSelectorQuery',
@@ -302,96 +392,6 @@ function initLocale(appVm) {
     });
 }
 
-function initVueIds(vueIds, mpInstance) {
-    if (!vueIds) {
-        return;
-    }
-    const ids = vueIds.split(',');
-    const len = ids.length;
-    if (len === 1) {
-        mpInstance._$vueId = ids[0];
-    }
-    else if (len === 2) {
-        mpInstance._$vueId = ids[0];
-        mpInstance._$vuePid = ids[1];
-    }
-}
-const EXTRAS = ['externalClasses'];
-function initExtraOptions(miniProgramComponentOptions, vueOptions) {
-    EXTRAS.forEach((name) => {
-        if (hasOwn(vueOptions, name)) {
-            miniProgramComponentOptions[name] = vueOptions[name];
-        }
-    });
-}
-function initWxsCallMethods(methods, wxsCallMethods) {
-    if (!isArray(wxsCallMethods)) {
-        return;
-    }
-    wxsCallMethods.forEach((callMethod) => {
-        methods[callMethod] = function (args) {
-            return this.$vm[callMethod](args);
-        };
-    });
-}
-function selectAllComponents(mpInstance, selector, $refs) {
-    const components = mpInstance.selectAllComponents(selector);
-    components.forEach((component) => {
-        const ref = component.properties.uR;
-        $refs[ref] = component.$vm || component;
-    });
-}
-function initRefs(instance, mpInstance) {
-    Object.defineProperty(instance, 'refs', {
-        get() {
-            const $refs = {};
-            selectAllComponents(mpInstance, '.r', $refs);
-            const forComponents = mpInstance.selectAllComponents('.r-i-f');
-            forComponents.forEach((component) => {
-                const ref = component.properties.uR;
-                if (!ref) {
-                    return;
-                }
-                if (!$refs[ref]) {
-                    $refs[ref] = [];
-                }
-                $refs[ref].push(component.$vm || component);
-            });
-            return $refs;
-        },
-    });
-}
-function findVmByVueId(instance, vuePid) {
-    // 标准 vue3 中 没有 $children，定制了内核
-    const $children = instance.$children;
-    // 优先查找直属(反向查找:https://github.com/dcloudio/uni-app/issues/1200)
-    for (let i = $children.length - 1; i >= 0; i--) {
-        const childVm = $children[i];
-        if (childVm.$scope._$vueId === vuePid) {
-            return childVm;
-        }
-    }
-    // 反向递归查找
-    let parentVm;
-    for (let i = $children.length - 1; i >= 0; i--) {
-        parentVm = findVmByVueId($children[i], vuePid);
-        if (parentVm) {
-            return parentVm;
-        }
-    }
-}
-function nextSetDataTick(mpInstance, fn) {
-    // 随便设置一个字段来触发回调（部分平台必须有字段才可以，比如头条）
-    mpInstance.setData({ r1: 1 }, () => fn());
-}
-function initSetRef(mpInstance) {
-    if (!mpInstance._$setRef) {
-        mpInstance._$setRef = (fn) => {
-            nextTick(() => nextSetDataTick(mpInstance, fn));
-        };
-    }
-}
-
 const builtInProps = [
     // 百度小程序,快手小程序自定义组件不支持绑定动态事件，动态dataset，故通过props传递事件信息
     // event-opts
@@ -420,20 +420,23 @@ function initDefaultProps(options, isBehavior = false) {
             };
         });
         // 小程序不能直接定义 $slots 的 props，所以通过 vueSlots 转换到 $slots
+        function observerSlots(newVal) {
+            const $slots = Object.create(null);
+            newVal &&
+                newVal.forEach((slotName) => {
+                    $slots[slotName] = true;
+                });
+            this.setData({
+                $slots,
+            });
+        }
         properties.uS = {
             type: null,
             value: [],
-            observer: function (newVal) {
-                const $slots = Object.create(null);
-                newVal &&
-                    newVal.forEach((slotName) => {
-                        $slots[slotName] = true;
-                    });
-                this.setData({
-                    $slots,
-                });
-            },
         };
+        {
+            properties.uS.observer = observerSlots;
+        }
     }
     if (options.behaviors) {
         // wx://form-field
@@ -538,14 +541,14 @@ function initPageProps({ properties }, rawProps) {
 function findPropsData(properties, isPage) {
     return ((isPage
         ? findPagePropsData(properties)
-        : findComponentPropsData(properties.uP)) || {});
+        : findComponentPropsData(resolvePropValue(properties.uP))) || {});
 }
 function findPagePropsData(properties) {
     const propsData = {};
     if (isPlainObject(properties)) {
         Object.keys(properties).forEach((name) => {
             if (builtInProps.indexOf(name) === -1) {
-                propsData[name] = properties[name];
+                propsData[name] = resolvePropValue(properties[name]);
             }
         });
     }
@@ -567,6 +570,9 @@ function initFormField(vm) {
         });
     }
 }
+function resolvePropValue(prop) {
+    return prop;
+}
 
 function initData(_) {
     return {};
@@ -578,11 +584,11 @@ function initPropsObserver(componentOptions) {
             return;
         }
         if (this.$vm) {
-            updateComponentProps(up, this.$vm.$);
+            updateComponentProps(resolvePropValue(up), this.$vm.$);
         }
-        else if (this.properties.uT === 'm') {
+        else if (resolvePropValue(this.properties.uT) === 'm') {
             // 小程序组件
-            updateMiniProgramComponentProperties(up, this);
+            updateMiniProgramComponentProperties(resolvePropValue(up), this);
         }
     };
     {
@@ -781,7 +787,10 @@ const MPComponent = Component;
 function initTriggerEvent(mpInstance) {
     const oldTriggerEvent = mpInstance.triggerEvent;
     const newTriggerEvent = function (event, ...args) {
-        return oldTriggerEvent.apply(mpInstance, [customizeEvent(event), ...args]);
+        return oldTriggerEvent.apply(mpInstance, [
+            customizeEvent(event),
+            ...args,
+        ]);
     };
     // 京东小程序triggerEvent为只读属性
     try {
@@ -824,108 +833,6 @@ Component = function (options) {
     return MPComponent(options);
 };
 
-function provide(instance, key, value) {
-    if (!instance) {
-        if ((process.env.NODE_ENV !== 'production')) {
-            console.warn(`provide() can only be used inside setup().`);
-        }
-    }
-    else {
-        let provides = instance.provides;
-        // by default an instance inherits its parent's provides object
-        // but when it needs to provide values of its own, it creates its
-        // own provides object using parent provides object as prototype.
-        // this way in `inject` we can simply look up injections from direct
-        // parent and let the prototype chain do the work.
-        const parentProvides = instance.parent && instance.parent.provides;
-        if (parentProvides === provides) {
-            provides = instance.provides = Object.create(parentProvides);
-        }
-        // TS doesn't allow symbol as index type
-        provides[key] = value;
-    }
-}
-function initProvide(instance) {
-    const provideOptions = instance.$options.provide;
-    if (!provideOptions) {
-        return;
-    }
-    const provides = isFunction(provideOptions)
-        ? provideOptions.call(instance)
-        : provideOptions;
-    const internalInstance = instance.$;
-    for (const key in provides) {
-        provide(internalInstance, key, provides[key]);
-    }
-}
-function inject(instance, key, defaultValue, treatDefaultAsFactory = false) {
-    if (instance) {
-        // #2400
-        // to support `app.use` plugins,
-        // fallback to appContext's `provides` if the intance is at root
-        const provides = instance.parent == null
-            ? instance.vnode.appContext && instance.vnode.appContext.provides
-            : instance.parent.provides;
-        if (provides && key in provides) {
-            // TS doesn't allow symbol as index type
-            return provides[key];
-        }
-        else if (arguments.length > 1) {
-            return treatDefaultAsFactory && isFunction(defaultValue)
-                ? defaultValue()
-                : defaultValue;
-        }
-        else if ((process.env.NODE_ENV !== 'production')) {
-            console.warn(`injection "${String(key)}" not found.`);
-        }
-    }
-    else if ((process.env.NODE_ENV !== 'production')) {
-        console.warn(`inject() can only be used inside setup() or functional components.`);
-    }
-}
-function initInjections(instance) {
-    const injectOptions = instance.$options.inject;
-    if (!injectOptions) {
-        return;
-    }
-    const internalInstance = instance.$;
-    const ctx = internalInstance.ctx;
-    if (isArray(injectOptions)) {
-        for (let i = 0; i < injectOptions.length; i++) {
-            const key = injectOptions[i];
-            ctx[key] = inject(internalInstance, key);
-        }
-    }
-    else {
-        for (const key in injectOptions) {
-            const opt = injectOptions[key];
-            let injected;
-            if (isObject(opt)) {
-                if ('default' in opt) {
-                    injected = inject(internalInstance, opt.from || key, opt.default, true /* treat default function as factory */);
-                }
-                else {
-                    injected = inject(internalInstance, opt.from || key);
-                }
-            }
-            else {
-                injected = inject(internalInstance, opt);
-            }
-            if (isRef(injected)) {
-                Object.defineProperty(ctx, key, {
-                    enumerable: true,
-                    configurable: true,
-                    get: () => injected.value,
-                    set: (v) => (injected.value = v),
-                });
-            }
-            else {
-                ctx[key] = injected;
-            }
-        }
-    }
-}
-
 // @ts-expect-error
 // 基础库 2.0 以上 attached 顺序错乱，按照 created 顺序强制纠正
 const components = [];
@@ -936,7 +843,7 @@ function initLifetimes$1({ mocks, isPage, initRelation, vueOptions, }) {
     function attached() {
         initSetRef(this);
         const properties = this.properties;
-        initVueIds(properties.uI, this);
+        initVueIds(resolvePropValue(properties.uI), this);
         const relationOptions = {
             vuePid: this._$vuePid,
         };
@@ -953,7 +860,7 @@ function initLifetimes$1({ mocks, isPage, initRelation, vueOptions, }) {
         }, {
             mpType,
             mpInstance,
-            slots: properties.uS || {}, // vueSlots
+            slots: resolvePropValue(properties.uS) || {}, // vueSlots
             parentComponent: relationOptions.parent && relationOptions.parent.$,
             onBeforeSetup(instance, options) {
                 initRefs(instance, mpInstance);
@@ -961,14 +868,17 @@ function initLifetimes$1({ mocks, isPage, initRelation, vueOptions, }) {
                 initComponentInstance(instance, options);
             },
         });
+        if (process.env.UNI_DEBUG) {
+            console.log('uni-app:[' +
+                Date.now() +
+                '][' +
+                (mpInstance.is || mpInstance.route) +
+                '][' +
+                this.$vm.$.uid +
+                ']attached');
+        }
         if (mpType === 'component') {
             initFormField(this.$vm);
-        }
-        if (mpType === 'page') {
-            if (__VUE_OPTIONS_API__) {
-                initInjections(this.$vm);
-                initProvide(this.$vm);
-            }
         }
         // 处理父子关系
         initRelation(this, relationOptions);
@@ -1019,7 +929,7 @@ function initRelation(mpInstance, detail) {
     const webviewId = mpInstance.__webviewId__ + '';
     instances[webviewId + '_' + nodeId] = mpInstance.$vm;
     // 使用 virtualHost 后，头条不支持 triggerEvent，通过主动调用方法抹平差异
-    if ((_c = (_b = (_a = mpInstance === null || mpInstance === void 0 ? void 0 : mpInstance.$vm) === null || _a === void 0 ? void 0 : _a.$options) === null || _b === void 0 ? void 0 : _b.options) === null || _c === void 0 ? void 0 : _c.virtualHost) {
+    if (((_c = (_b = (_a = mpInstance === null || mpInstance === void 0 ? void 0 : mpInstance.$vm) === null || _a === void 0 ? void 0 : _a.$options) === null || _b === void 0 ? void 0 : _b.options) === null || _c === void 0 ? void 0 : _c.virtualHost)) {
         nextSetDataTick(mpInstance, () => {
             handleLink.apply(mpInstance, [
                 {
@@ -1027,6 +937,9 @@ function initRelation(mpInstance, detail) {
                         vuePid: detail.vuePid,
                         nodeId,
                         webviewId,
+                        // 如果是 virtualHost，则需要找到页面 vm 传递给 handleLink，因为此时的上下文是不对的，需要从页面 vm 递归查找
+                        // 目前测试来看，页面的 nodeId 是 0
+                        pageVm: instances[webviewId + '_0'],
                     },
                 },
             ]);
@@ -1040,34 +953,31 @@ function initRelation(mpInstance, detail) {
         });
     }
 }
-function handleLink({ detail: { vuePid, nodeId, webviewId }, }) {
-    var _a, _b, _c;
+function handleLink({ detail: { vuePid, nodeId, webviewId, pageVm }, }) {
     const vm = instances[webviewId + '_' + nodeId];
     if (!vm) {
         return;
     }
     let parentVm;
     if (vuePid) {
-        parentVm = findVmByVueId(this.$vm, vuePid);
-    }
-    if (!parentVm) {
-        parentVm = this.$vm;
-    }
-    if ((_c = (_b = (_a = this.$vm) === null || _a === void 0 ? void 0 : _a.$options) === null || _b === void 0 ? void 0 : _b.options) === null || _c === void 0 ? void 0 : _c.virtualHost) {
-        // 抖音小程序下 form 组件开启 virtualHost 出现 infinite loop. see: https://github.com/vuejs/core/blob/32a1433e0debd538c199bde18390bb903b4cde5a/packages/runtime-core/src/componentProps.ts#L227
-        vm.$.parent = null;
+        parentVm = findVmByVueId(pageVm || this.$vm, vuePid);
     }
     else {
+        // 如果 vuePid 不存在，则认为当前组件的父是页面，目前测试来看，页面的 nodeId 是 0
+        parentVm = instances[webviewId + '_0'];
+    }
+    if (parentVm) {
         vm.$.parent = parentVm.$;
     }
-    if (__VUE_OPTIONS_API__) {
+    // 不再需要下述逻辑
+    // if (this.$vm?.$options?.options?.virtualHost) {
+    //   // 抖音小程序下 form 组件开启 virtualHost 出现 infinite loop. see: https://github.com/vuejs/core/blob/32a1433e0debd538c199bde18390bb903b4cde5a/packages/runtime-core/src/componentProps.ts#L227
+    //   // vm.$.parent = null
+    // } else {
+    //   vm.$.parent = parentVm.$
+    // }
+    if (__VUE_OPTIONS_API__ && parentVm) {
         parentVm.$children.push(vm);
-        const parent = parentVm.$;
-        vm.$.provides = parent
-            ? parent.provides
-            : Object.create(parent.appContext.provides);
-        initInjections(vm);
-        initProvide(vm);
     }
     vm.$callCreatedHook();
     // TODO 字节小程序父子组件关系建立的较晚，导致 inject 和 provide 初始化变慢
@@ -1102,6 +1012,9 @@ function initLifetimes(lifetimesOptions) {
             if (this.$vm && lifetimesOptions.isPage(this)) {
                 if (this.pageinstance) {
                     this.__webviewId__ = this.pageinstance.__pageId__;
+                }
+                if (process.env.UNI_DEBUG) {
+                    console.log('uni-app:[' + Date.now() + '][' + (this.is || this.route) + ']ready');
                 }
                 this.$vm.$callCreatedHook();
                 nextSetDataTick(this, () => {

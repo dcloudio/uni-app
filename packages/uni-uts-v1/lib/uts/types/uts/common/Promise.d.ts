@@ -11,9 +11,9 @@
  *    "ios": {
  *      "osVer": "12.0",
  *      "uniVer": "√",
- *      "uniUtsPlugin": "4.27",
+ *      "uniUtsPlugin": "4.31",
  *      "unixVer": "4.11",
- *      "unixUtsPlugin": "4.27"
+ *      "unixUtsPlugin": "4.31"
  *    }
  *  },
  *  "web": {
@@ -38,9 +38,9 @@ interface PromiseSettledResult<T> {
  *    "ios": {
  *      "osVer": "12.0",
  *      "uniVer": "√",
- *      "uniUtsPlugin": "4.27",
+ *      "uniUtsPlugin": "4.31",
  *      "unixVer": "4.11",
- *      "unixUtsPlugin": "4.27"
+ *      "unixUtsPlugin": "4.31"
  *    }
  *  }
  *}
@@ -62,9 +62,9 @@ interface PromiseFulfilledResult<T>
  *    "ios": {
  *      "osVer": "12.0",
  *      "uniVer": "√",
- *      "uniUtsPlugin": "4.27",
+ *      "uniUtsPlugin": "4.31",
  *      "unixVer": "4.11",
- *      "unixUtsPlugin": "4.27"
+ *      "unixUtsPlugin": "4.31"
  *    }
  *  },
  *  "web": {
@@ -90,9 +90,9 @@ interface PromiseRejectedResult
  *    "ios": {
  *      "osVer": "12.0",
  *      "uniVer": "√",
- *      "uniUtsPlugin": "4.27",
+ *      "uniUtsPlugin": "4.31",
  *      "unixVer": "4.11",
- *      "unixUtsPlugin": "4.27"
+ *      "unixUtsPlugin": "4.31"
  *    }
  *  },
  *  "web": {
@@ -117,9 +117,9 @@ declare class Promise<T> {
    *    "ios": {
    *      "osVer": "12.0",
    *      "uniVer": "√",
-   *      "uniUtsPlugin": "4.27",
+   *      "uniUtsPlugin": "4.31",
    *      "unixVer": "4.11",
-   *      "unixUtsPlugin": "4.27"
+   *      "unixUtsPlugin": "4.31"
    *    }
    *  },
    *  "web": {
@@ -149,9 +149,9 @@ declare class Promise<T> {
    *    "ios": {
    *      "osVer": "12.0",
    *      "uniVer": "√",
-   *      "uniUtsPlugin": "4.27",
+   *      "uniUtsPlugin": "4.31",
    *      "unixVer": "4.11",
-   *      "unixUtsPlugin": "4.27"
+   *      "unixUtsPlugin": "4.31"
    *    }
    *  },
    *  "web": {
@@ -176,9 +176,9 @@ declare class Promise<T> {
    *    "ios": {
    *      "osVer": "12.0",
    *      "uniVer": "√",
-   *      "uniUtsPlugin": "4.27",
+   *      "uniUtsPlugin": "4.31",
    *      "unixVer": "4.11",
-   *      "unixUtsPlugin": "4.27"
+   *      "unixUtsPlugin": "4.31"
    *    }
    *  },
    *  "web": {
@@ -205,9 +205,9 @@ declare class Promise<T> {
    *    "ios": {
    *      "osVer": "12.0",
    *      "uniVer": "√",
-   *      "uniUtsPlugin": "4.27",
+   *      "uniUtsPlugin": "4.31",
    *      "unixVer": "4.11",
-   *      "unixUtsPlugin": "4.27"
+   *      "unixUtsPlugin": "4.31"
    *    }
    *  },
    *  "web": {
@@ -234,9 +234,9 @@ declare class Promise<T> {
    *    "ios": {
    *      "osVer": "12.0",
    *      "uniVer": "√",
-   *      "uniUtsPlugin": "4.27",
+   *      "uniUtsPlugin": "4.31",
    *      "unixVer": "4.11",
-   *      "unixUtsPlugin": "4.27"
+   *      "unixUtsPlugin": "4.31"
    *    }
    *  },
    *  "web": {
@@ -266,9 +266,9 @@ declare class Promise<T> {
    *    "ios": {
    *      "osVer": "12.0",
    *      "uniVer": "√",
-   *      "uniUtsPlugin": "4.27",
+   *      "uniUtsPlugin": "4.31",
    *      "unixVer": "4.11",
-   *      "unixUtsPlugin": "4.27"
+   *      "unixUtsPlugin": "4.31"
    *    }
    *  },
    *  "web": {
@@ -298,9 +298,9 @@ declare class Promise<T> {
    *    "ios": {
    *      "osVer": "12.0",
    *      "uniVer": "√",
-   *      "uniUtsPlugin": "4.27",
+   *      "uniUtsPlugin": "4.31",
    *      "unixVer": "4.11",
-   *      "unixUtsPlugin": "4.27"
+   *      "unixUtsPlugin": "4.31"
    *    }
    *  },
    *  "web": {
@@ -328,9 +328,9 @@ declare class Promise<T> {
    *    "ios": {
    *      "osVer": "12.0",
    *      "uniVer": "√",
-   *      "uniUtsPlugin": "4.27",
+   *      "uniUtsPlugin": "4.31",
    *      "unixVer": "4.11",
-   *      "unixUtsPlugin": "4.27"
+   *      "unixUtsPlugin": "4.31"
    *    }
    *  },
    *  "web": {
@@ -356,9 +356,9 @@ declare class Promise<T> {
    *    "ios": {
    *      "osVer": "12.0",
    *      "uniVer": "√",
-   *      "uniUtsPlugin": "4.27",
+   *      "uniUtsPlugin": "4.31",
    *      "unixVer": "4.11",
-   *      "unixUtsPlugin": "4.27"
+   *      "unixUtsPlugin": "4.31"
    *    }
    *  },
    *  "web": {
@@ -384,9 +384,9 @@ declare class Promise<T> {
    *    "ios": {
    *      "osVer": "12.0",
    *      "uniVer": "√",
-   *      "uniUtsPlugin": "4.27",
+   *      "uniUtsPlugin": "4.31",
    *      "unixVer": "4.11",
-   *      "unixUtsPlugin": "4.27"
+   *      "unixUtsPlugin": "4.31"
    *    }
    *  },
    *  "web": {
@@ -412,9 +412,9 @@ declare class Promise<T> {
    *    "ios": {
    *      "osVer": "12.0",
    *      "uniVer": "√",
-   *      "uniUtsPlugin": "4.27",
+   *      "uniUtsPlugin": "4.31",
    *      "unixVer": "4.11",
-   *      "unixUtsPlugin": "4.27"
+   *      "unixUtsPlugin": "4.31"
    *    }
    *  },
    *  "web": {
@@ -440,9 +440,9 @@ declare class Promise<T> {
    *    "ios": {
    *      "osVer": "12.0",
    *      "uniVer": "√",
-   *      "uniUtsPlugin": "4.27",
+   *      "uniUtsPlugin": "4.31",
    *      "unixVer": "4.11",
-   *      "unixUtsPlugin": "4.27"
+   *      "unixUtsPlugin": "4.31"
    *    }
    *  },
    *  "web": {
@@ -468,9 +468,9 @@ declare class Promise<T> {
    *    "ios": {
    *      "osVer": "12.0",
    *      "uniVer": "√",
-   *      "uniUtsPlugin": "4.27",
+   *      "uniUtsPlugin": "4.31",
    *      "unixVer": "4.11",
-   *      "unixUtsPlugin": "4.27"
+   *      "unixUtsPlugin": "4.31"
    *    }
    *  },
    *  "web": {
@@ -495,9 +495,9 @@ declare class Promise<T> {
    *    "ios": {
    *      "osVer": "12.0",
    *      "uniVer": "√",
-   *      "uniUtsPlugin": "4.27",
+   *      "uniUtsPlugin": "4.31",
    *      "unixVer": "4.11",
-   *      "unixUtsPlugin": "4.27"
+   *      "unixUtsPlugin": "4.31"
    *    }
    *  },
    *  "web": {
@@ -523,9 +523,9 @@ declare class Promise<T> {
    *    "ios": {
    *      "osVer": "12.0",
    *      "uniVer": "√",
-   *      "uniUtsPlugin": "4.27",
+   *      "uniUtsPlugin": "4.31",
    *      "unixVer": "4.11",
-   *      "unixUtsPlugin": "4.27"
+   *      "unixUtsPlugin": "4.31"
    *    }
    *  },
    *  "web": {
@@ -551,9 +551,9 @@ declare class Promise<T> {
    *    "ios": {
    *      "osVer": "12.0",
    *      "uniVer": "√",
-   *      "uniUtsPlugin": "4.27",
+   *      "uniUtsPlugin": "4.31",
    *      "unixVer": "4.11",
-   *      "unixUtsPlugin": "4.27"
+   *      "unixUtsPlugin": "4.31"
    *    }
    *  },
    *  "web": {
@@ -579,9 +579,9 @@ declare class Promise<T> {
    *    "ios": {
    *      "osVer": "12.0",
    *      "uniVer": "√",
-   *      "uniUtsPlugin": "4.27",
+   *      "uniUtsPlugin": "4.31",
    *      "unixVer": "4.11",
-   *      "unixUtsPlugin": "4.27"
+   *      "unixUtsPlugin": "4.31"
    *    }
    *  },
    *  "web": {
@@ -607,9 +607,9 @@ declare class Promise<T> {
    *    "ios": {
    *      "osVer": "12.0",
    *      "uniVer": "√",
-   *      "uniUtsPlugin": "4.27",
+   *      "uniUtsPlugin": "4.31",
    *      "unixVer": "4.11",
-   *      "unixUtsPlugin": "4.27"
+   *      "unixUtsPlugin": "4.31"
    *    }
    *  },
    *  "web": {
@@ -635,9 +635,9 @@ declare class Promise<T> {
    *    "ios": {
    *      "osVer": "12.0",
    *      "uniVer": "√",
-   *      "uniUtsPlugin": "4.27",
+   *      "uniUtsPlugin": "4.31",
    *      "unixVer": "4.11",
-   *      "unixUtsPlugin": "4.27"
+   *      "unixUtsPlugin": "4.31"
    *    }
    *  },
    *  "web": {
@@ -663,9 +663,9 @@ declare class Promise<T> {
    *    "ios": {
    *      "osVer": "12.0",
    *      "uniVer": "√",
-   *      "uniUtsPlugin": "4.27",
+   *      "uniUtsPlugin": "4.31",
    *      "unixVer": "4.11",
-   *      "unixUtsPlugin": "4.27"
+   *      "unixUtsPlugin": "4.31"
    *    }
    *  },
    *  "web": {
@@ -691,9 +691,9 @@ declare class Promise<T> {
    *    "ios": {
    *      "osVer": "12.0",
    *      "uniVer": "√",
-   *      "uniUtsPlugin": "4.27",
+   *      "uniUtsPlugin": "4.31",
    *      "unixVer": "4.11",
-   *      "unixUtsPlugin": "4.27"
+   *      "unixUtsPlugin": "4.31"
    *    }
    *  },
    *  "web": {

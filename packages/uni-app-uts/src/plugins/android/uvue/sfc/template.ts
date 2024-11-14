@@ -1,3 +1,4 @@
+import type { TransformPluginContext } from 'rollup'
 import type {
   BindingMetadata,
   CompilerOptions,
@@ -6,6 +7,7 @@ import type {
 } from 'vue/compiler-sfc'
 import path from 'path'
 import {
+  createRollupError,
   generateCodeFrameColumns,
   matchEasycom,
   normalizePath,
@@ -31,7 +33,8 @@ export function resolveGenTemplateCodeOptions(
     bindingMetadata?: BindingMetadata
     preprocessLang?: string
     preprocessOptions?: any
-  }
+  },
+  pluginContext?: TransformPluginContext
 ): TemplateCompilerOptions & { genDefaultAs?: string } {
   const block = descriptor.template
   if (!block) {
@@ -69,10 +72,38 @@ export function resolveGenTemplateCodeOptions(
       return source
     },
     onWarn(warning) {
-      onTemplateLog('warn', warning, code, relativeFileName, templateStartLine)
+      if (pluginContext) {
+        pluginContext.warn(
+          createRollupError(
+            '',
+            path.resolve(options.rootDir, relativeFileName),
+            warning,
+            code
+          )
+        )
+      } else {
+        onTemplateLog(
+          'warn',
+          warning,
+          code,
+          relativeFileName,
+          templateStartLine
+        )
+      }
     },
     onError(error) {
-      onTemplateLog('error', error, code, relativeFileName, templateStartLine)
+      if (pluginContext) {
+        pluginContext.error(
+          createRollupError(
+            '',
+            path.resolve(options.rootDir, relativeFileName),
+            error,
+            code
+          )
+        )
+      } else {
+        onTemplateLog('error', error, code, relativeFileName, templateStartLine)
+      }
     },
     parseUTSComponent,
   }

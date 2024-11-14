@@ -50,7 +50,7 @@ export function rewriteRef(node: ElementNode, context: TransformContext) {
       )
     }
   } else {
-    rewriteRefProp(refProp, vueIdProp, context)
+    rewriteRefProp(SET_REF, refProp, vueIdProp, {}, context)
   }
 }
 
@@ -79,7 +79,7 @@ function parseRef(
   return { expr, refKey }
 }
 
-function parseRefCode(
+export function parseRefCode(
   prop: AttributeNode | DirectiveNode,
   context: TransformContext
 ) {
@@ -90,25 +90,27 @@ function parseRefCode(
   return { code: genBabelExpr(expr), refKey }
 }
 
-function rewriteRefProp(
+export function rewriteRefProp(
+  helper: symbol,
   prop: AttributeNode | DirectiveNode,
-  vueIdProp: AttributeNode | DirectiveNode,
+  idProp: AttributeNode | DirectiveNode,
+  opts: Record<string, any>,
   context: TransformContext
 ) {
   let id = ''
-  if (isDirectiveNode(vueIdProp)) {
-    const vueIdExpr = parseExpr(vueIdProp.exp!, context, vueIdProp.exp)
+  if (isDirectiveNode(idProp)) {
+    const vueIdExpr = parseExpr(idProp.exp!, context, idProp.exp)
     if (vueIdExpr) {
       id = genBabelExpr(vueIdExpr)
     }
   } else {
-    id = `'${vueIdProp.value!.content}'`
+    id = `'${idProp.value!.content}'`
   }
   if (!id) {
     return
   }
   const { code, refKey } = parseRefCode(prop, context)
-  const opts = Object.create(null)
+
   if (refKey) {
     opts.k = refKey
   }
@@ -116,7 +118,7 @@ function rewriteRefProp(
     opts.f = 1
   }
   parseExprWithRewrite(
-    context.helperString(SET_REF) +
+    context.helperString(helper) +
       '(' +
       code +
       ', ' +

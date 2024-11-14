@@ -9,6 +9,8 @@ import {
 const SYNC_API_RE =
   /^\$|getLocale|setLocale|sendNativeEvent|restoreGlobal|requireGlobal|getCurrentSubNVue|getMenuButtonBoundingClientRect|^report|interceptors|Interceptor$|getSubNVueById|requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64|getDeviceInfo|getAppBaseInfo|getWindowInfo|getSystemSetting|getAppAuthorizeSetting/
 
+const SYNC_API_RE_X = /getElementById/
+
 const CONTEXT_API_RE = /^create|Manager$/
 
 // Context例外情况
@@ -24,7 +26,11 @@ const CALLBACK_API_RE = /^on|^off/
 export function isContextApi(name: string) {
   return CONTEXT_API_RE.test(name) && CONTEXT_API_RE_EXC.indexOf(name) === -1
 }
+
 export function isSyncApi(name: string) {
+  if (__X__ && SYNC_API_RE_X.test(name)) {
+    return true
+  }
   return SYNC_API_RE.test(name) && ASYNC_API.indexOf(name) === -1
 }
 

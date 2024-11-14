@@ -1,5 +1,5 @@
 import type { ComponentPropsOptions, ComponentPublicInstance } from 'vue'
-import { extend, isArray, isFunction, isPlainObject } from '@vue/shared'
+import { extend, hasOwn, isArray, isFunction, isPlainObject } from '@vue/shared'
 import type { MPComponentInstance, MPComponentOptions } from './component'
 // @ts-expect-error
 import { findComponentPropsData } from 'vue'
@@ -38,19 +38,27 @@ function initDefaultProps(
       }
     })
     // 小程序不能直接定义 $slots 的 props，所以通过 vueSlots 转换到 $slots
+    function observerSlots(this: MPComponentInstance, newVal) {
+      const $slots = Object.create(null)
+      newVal &&
+        newVal.forEach((slotName: string) => {
+          $slots[slotName] = true
+        })
+      this.setData({
+        $slots,
+      })
+    }
     properties.uS = {
       type: null,
       value: [],
-      observer: function (this: MPComponentInstance, newVal) {
-        const $slots = Object.create(null)
-        newVal &&
-          newVal.forEach((slotName: string) => {
-            $slots[slotName] = true
-          })
-        this.setData({
-          $slots,
-        })
-      },
+    }
+    if (__PLATFORM__ === 'mp-harmony') {
+      if (!options.observers) {
+        options.observers = {}
+      }
+      options.observers.uS = observerSlots
+    } else {
+      properties.uS.observer = observerSlots
     }
   }
   if (options.behaviors) {
@@ -188,7 +196,7 @@ export function findPropsData(
   return (
     (isPage
       ? findPagePropsData(properties)
-      : findComponentPropsData(properties.uP)) || {}
+      : findComponentPropsData(resolvePropValue(properties.uP))) || {}
   )
 }
 
@@ -197,7 +205,9 @@ function findPagePropsData(properties: Record<string, any>) {
   if (isPlainObject(properties)) {
     Object.keys(properties).forEach((name) => {
       if (builtInProps.indexOf(name) === -1) {
-        propsData[name] = (properties as Record<string, any>)[name]
+        propsData[name] = resolvePropValue(
+          (properties as Record<string, any>)[name]
+        )
       }
     })
   }
@@ -225,4 +235,14 @@ export function initFormField(vm: ComponentPublicInstance) {
       }
     )
   }
+}
+
+export function resolvePropValue(prop: string | { value: unknown }): any {
+  if (__PLATFORM__ === 'mp-harmony') {
+    if (isPlainObject(prop) && hasOwn(prop, 'value')) {
+      // 目前 mp-harmony 的 prop 返回的是配置项？
+      return prop.value
+    }
+  }
+  return prop
 }

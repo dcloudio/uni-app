@@ -9,6 +9,7 @@ import {
   ON_READY,
   ON_RESIZE,
   ON_UNLOAD,
+  SYSTEM_DIALOG_PAGE_PATH_STARTER,
   formatLog,
 } from '@dcloudio/uni-shared'
 import {
@@ -26,7 +27,7 @@ import { getPageManager } from '../app/app'
 import { ON_POP_GESTURE } from '../../constants'
 import { getAppThemeFallbackOS, normalizePageStyles } from '../theme'
 import { invokePageReadyHooks } from '../../api/route/performance'
-import { homeDialogPages } from './dialogPage'
+import { homeDialogPages, homeSystemDialogPages } from './dialogPage'
 import type { UniDialogPage } from '@dcloudio/uni-app-x/types/page'
 
 type PageNodeOptions = {}
@@ -160,13 +161,25 @@ export function registerPage(
     //   invokeHook(page, ON_SHOW)
     // })
     const pages = getCurrentPages()
-    if (pages.length === 1 && homeDialogPages.length) {
-      const homePage = pages[0] as unknown as UniPage
-      homePage.vm.$.$dialogPages = homeDialogPages.map((dialogPage) => {
-        dialogPage.getParentPage = () => homePage
-        return dialogPage
-      })
-      homeDialogPages.length = 0
+    if (pages.length === 1) {
+      if (homeDialogPages.length) {
+        const homePage = pages[0] as unknown as UniPage
+        homePage.vm.$.$dialogPages = homeDialogPages.map((dialogPage) => {
+          dialogPage.getParentPage = () => homePage
+          return dialogPage
+        })
+        homeDialogPages.length = 0
+      }
+      if (homeSystemDialogPages.length) {
+        const homePage = pages[0] as unknown as UniPage
+        homePage.vm.$systemDialogPages = homeSystemDialogPages.map(
+          (dialogPage) => {
+            dialogPage.getParentPage = () => homePage
+            return dialogPage
+          }
+        )
+        homeDialogPages.length = 0
+      }
     }
     nativePage.addPageEventListener(ON_POP_GESTURE, function (e) {
       uni.navigateBack({
@@ -238,11 +251,10 @@ export function registerDialogPage(
 ) {
   const id = genWebviewId()
   const routeOptions = initRouteOptions(path, openType)
-  const pageStyle = new Map<string, any>([
-    ['navigationStyle', 'custom'],
-    ['backgroundColor', 'transparent'],
-    ['disableSwipeBack', true],
-  ])
+  const pageStyle = parsePageStyle(routeOptions)
+  pageStyle.set('navigationStyle', 'custom')
+  pageStyle.set('backgroundColorContent', 'transparent')
+  pageStyle.set('disableSwipeBack', true)
   const parentPage = dialogPage.getParentPage()
   const nativePage = (getPageManager() as any).createDialogPage(
     // @ts-expect-error
@@ -260,7 +272,9 @@ export function registerDialogPage(
   }
   // TODO initWebview
   // initWebview(webview, path, query, routeOptions.meta)
-  const route = path.slice(1)
+  const route = path.startsWith(SYSTEM_DIALOG_PAGE_PATH_STARTER)
+    ? path
+    : path.slice(1)
   // ;(webview as any).__uniapp_route = route
   const pageInstance = initPageInternalInstance(
     openType,
@@ -282,9 +296,6 @@ export function registerDialogPage(
     ) as ComponentPublicInstance
     dialogPage.vm = page
     dialogPage.$vm = page
-    dialogPage.vm.$nativePage = nativePage
-    dialogPage.$vm.$nativePage = nativePage
-    page.$page = dialogPage
 
     // 由于 iOS 调用 show 时机差异，暂不使用页面 onShow 事件
     // nativePage.addPageEventListener(ON_SHOW, (_) => {

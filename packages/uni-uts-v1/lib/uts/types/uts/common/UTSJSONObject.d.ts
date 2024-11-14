@@ -9,8 +9,10 @@ interface UTSJSONObject {
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *           "uniVer": "3.9+",
-   *            "unixVer": "3.9+"
+   *           "uniVer": "x",
+   *           "unixVer": "3.90",
+   *           "uniUtsPlugin": "3.90",
+   *           "unixUtsPlugin": "3.90"
    *        },
    *        "ios": {
    *           "osVer": "12.0",
@@ -26,15 +28,16 @@ interface UTSJSONObject {
    */
   get(key:string) : any|null;
   /**
-   * 获取一个 属性，返回类型是any 或者 null
-   * @return 如果属性存在返回结果，不存在返回null
+   * 添加或更新一个指定的属性
    * @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/UTSJSONObject.html#set
    * @uniPlatform {
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *           "uniVer": "3.9+",
-   *            "unixVer": "3.9+"
+   *           "uniVer": "x",
+   *           "unixVer": "3.90",
+   *           "uniUtsPlugin": "3.90",
+   *           "unixUtsPlugin": "3.90"
    *        },
    *        "ios": {
    *           "osVer": "12.0",
@@ -57,8 +60,10 @@ interface UTSJSONObject {
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *           "uniVer": "3.9+",
-   *            "unixVer": "3.9+"
+   *           "uniVer": "x",
+   *           "unixVer": "3.90",
+   *           "uniUtsPlugin": "3.90",
+   *           "unixUtsPlugin": "3.90"
    *        },
    *        "ios": {
    *           "osVer": "12.0",
@@ -83,8 +88,10 @@ interface UTSJSONObject {
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *           "uniVer": "3.9+",
-   *            "unixVer": "3.9+"
+   *           "uniVer": "x",
+   *           "unixVer": "3.90",
+   *           "uniUtsPlugin": "3.90",
+   *           "unixUtsPlugin": "3.90"
    *        },
    *        "ios": {
    *           "osVer": "12.0",
@@ -107,8 +114,10 @@ interface UTSJSONObject {
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *           "uniVer": "3.9+",
-   *            "unixVer": "3.9+"
+   *           "uniVer": "x",
+   *           "unixVer": "3.90",
+   *           "uniUtsPlugin": "3.90",
+   *           "unixUtsPlugin": "3.90"
    *        },
    *        "ios": {
    *           "osVer": "12.0",
@@ -133,8 +142,10 @@ interface UTSJSONObject {
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *           "uniVer": "3.9+",
-   *            "unixVer": "3.9+"
+   *           "uniVer": "x",
+   *           "unixVer": "3.90",
+   *           "uniUtsPlugin": "3.90",
+   *           "unixUtsPlugin": "3.90"
    *        },
    *        "ios": {
    *           "osVer": "12.0",
@@ -157,8 +168,10 @@ interface UTSJSONObject {
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *           "uniVer": "3.9+",
-   *            "unixVer": "3.9+"
+   *           "uniVer": "x",
+   *           "unixVer": "3.90",
+   *           "uniUtsPlugin": "3.90",
+   *           "unixUtsPlugin": "3.90"
    *        },
    *        "ios": {
    *           "osVer": "12.0",
@@ -183,8 +196,10 @@ interface UTSJSONObject {
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *           "uniVer": "3.9+",
-   *            "unixVer": "3.9+"
+   *           "uniVer": "x",
+   *           "unixVer": "3.90",
+   *           "uniUtsPlugin": "3.90",
+   *           "unixUtsPlugin": "3.90"
    *        },
    *        "ios": {
    *           "osVer": "12.0",
@@ -207,8 +222,10 @@ interface UTSJSONObject {
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *           "uniVer": "3.9+",
-   *            "unixVer": "3.9+"
+   *           "uniVer": "x",
+   *           "unixVer": "3.90",
+   *           "uniUtsPlugin": "3.90",
+   *           "unixUtsPlugin": "3.90"
    *        },
    *        "ios": {
    *           "osVer": "12.0",
@@ -233,8 +250,10 @@ interface UTSJSONObject {
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *           "uniVer": "3.9+",
-   *            "unixVer": "3.9+"
+   *           "uniVer": "x",
+   *           "unixVer": "3.90",
+   *           "uniUtsPlugin": "3.90",
+   *           "unixUtsPlugin": "3.90"
    *        },
    *        "ios": {
    *           "osVer": "12.0",
@@ -257,8 +276,10 @@ interface UTSJSONObject {
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *           "uniVer": "3.9+",
-   *            "unixVer": "3.9+"
+   *           "uniVer": "x",
+   *           "unixVer": "3.90",
+   *           "uniUtsPlugin": "3.90",
+   *           "unixUtsPlugin": "3.90"
    *        },
    *        "ios": {
    *           "osVer": "12.0",
@@ -283,8 +304,10 @@ interface UTSJSONObject {
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *           "uniVer": "3.9+",
-   *            "unixVer": "3.9+"
+   *           "uniVer": "x",
+   *           "unixVer": "3.90",
+   *           "uniUtsPlugin": "3.90",
+   *           "unixUtsPlugin": "3.90"
    *        },
    *        "ios": {
    *           "osVer": "12.0",
@@ -307,8 +330,10 @@ interface UTSJSONObject {
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *           "uniVer": "3.9+",
-   *            "unixVer": "3.9+"
+   *           "uniVer": "x",
+   *           "unixVer": "3.90",
+   *           "uniUtsPlugin": "3.90",
+   *           "unixUtsPlugin": "3.90"
    *        },
    *        "ios": {
    *           "osVer": "12.0",
@@ -333,8 +358,10 @@ interface UTSJSONObject {
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *           "uniVer": "3.9+",
-   *            "unixVer": "3.9+"
+   *           "uniVer": "x",
+   *           "unixVer": "3.90",
+   *           "uniUtsPlugin": "3.90",
+   *           "unixUtsPlugin": "3.90"
    *        },
    *        "ios": {
    *           "osVer": "12.0",
@@ -357,8 +384,10 @@ interface UTSJSONObject {
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *           "uniVer": "3.9+",
-   *            "unixVer": "3.9+"
+   *           "uniVer": "x",
+   *           "unixVer": "3.90",
+   *           "uniUtsPlugin": "3.90",
+   *           "unixUtsPlugin": "3.90"
    *        },
    *        "ios": {
    *           "osVer": "12.0",
@@ -383,8 +412,10 @@ interface UTSJSONObject {
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *           "uniVer": "3.9+",
-   *            "unixVer": "3.9+"
+   *           "uniVer": "x",
+   *           "unixVer": "3.90",
+   *           "uniUtsPlugin": "3.90",
+   *           "unixUtsPlugin": "3.90"
    *        },
    *        "ios": {
    *           "osVer": "x",
@@ -407,8 +438,10 @@ interface UTSJSONObject {
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *           "uniVer": "3.9+",
-   *            "unixVer": "3.9+"
+   *           "uniVer": "x",
+   *           "unixVer": "3.90",
+   *           "uniUtsPlugin": "3.90",
+   *           "unixUtsPlugin": "3.90"
    *        },
    *        "ios": {
    *           "osVer": "12.0",
@@ -433,8 +466,10 @@ interface UTSJSONObject {
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *           "uniVer": "3.9+",
-   *            "unixVer": "3.9+"
+   *           "uniVer": "x",
+   *           "unixVer": "3.90",
+   *           "uniUtsPlugin": "3.90",
+   *           "unixUtsPlugin": "3.90"
    *        },
    *        "ios": {
    *           "osVer": "x",
@@ -463,8 +498,10 @@ interface UTSJSONObjectConstructor {
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *           "uniVer": "4.18",
-   *            "unixVer": "4.18"
+   *           "uniVer": "x",
+   *           "unixVer": "4.18",
+   *           "uniUtsPlugin": "4.18",
+   *           "unixUtsPlugin": "4.18"
    *        },
    *        "ios": {
    *           "osVer": "12.0",
@@ -489,8 +526,10 @@ interface UTSJSONObjectConstructor {
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *           "uniVer": "4.18",
-   *            "unixVer": "4.18"
+   *           "uniVer": "x",
+   *           "unixVer": "4.18",
+   *           "uniUtsPlugin": "4.18",
+   *           "unixUtsPlugin": "4.18"
    *        },
    *        "ios": {
    *           "osVer": "12.0",
@@ -515,8 +554,10 @@ interface UTSJSONObjectConstructor {
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *           "uniVer": "4.18",
-   *            "unixVer": "4.18"
+   *           "uniVer": "x",
+   *           "unixVer": "4.18",
+   *           "uniUtsPlugin": "4.18",
+   *           "unixUtsPlugin": "4.18"
    *        },
    *        "ios": {
    *           "osVer": "12.0",

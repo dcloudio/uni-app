@@ -14,6 +14,7 @@ import {
 } from 'vue'
 import type { VuePageComponent } from './define'
 import { addCurrentPage, getPage$BasePage } from './getCurrentPages'
+import { OPEN_DIALOG_PAGE } from '../../../x/constants'
 
 export function setupPage(component: VuePageComponent) {
   const oldSetup = component.setup
@@ -26,11 +27,15 @@ export function setupPage(component: VuePageComponent) {
       console.log(formatLog(__pagePath as string, 'setup'))
     }
     const instance = getCurrentInstance()!
-    instance.$dialogPages = []
     const pageVm = instance.proxy!
     initPageVm(pageVm, __pageInstance as Page.PageInstance['$page'])
     if (__X__) {
-      const uniPage = new UniPageImpl()
+      instance.$dialogPages = []
+      const uniPage =
+        (__pageInstance as Page.PageInstance['$page']).openType ===
+        OPEN_DIALOG_PAGE
+          ? new UniDialogPageImpl()
+          : new UniNormalPageImpl()
       pageVm.$basePage = pageVm.$page as Page.PageInstance['$page']
       pageVm.$page = uniPage
       uniPage.route = pageVm.$basePage.route
@@ -79,14 +84,19 @@ export function setupPage(component: VuePageComponent) {
 
       uniPage.getAndroidView = () => null
       uniPage.getHTMLElement = () => null
-    }
-    if (getPage$BasePage(pageVm).openType !== 'openDialogPage') {
-      addCurrentPage(
-        initScope(
+
+      if (getPage$BasePage(pageVm).openType !== OPEN_DIALOG_PAGE) {
+        addCurrentPageWithInitScope(
           __pageId as number,
           pageVm,
           __pageInstance as Page.PageInstance['$page']
         )
+      }
+    } else {
+      addCurrentPageWithInitScope(
+        __pageId as number,
+        pageVm,
+        __pageInstance as Page.PageInstance['$page']
       )
     }
     if (!__X__) {
@@ -99,6 +109,19 @@ export function setupPage(component: VuePageComponent) {
       })
       onBeforeUnmount(() => {
         invokeHook(pageVm, ON_UNLOAD)
+      })
+    } else {
+      onMounted(() => {
+        const rootElement = pageVm.$el?._parent
+        if (rootElement) {
+          rootElement._page = pageVm.$page
+        }
+      })
+      onBeforeUnmount(() => {
+        const rootElement = pageVm.$el?._parent
+        if (rootElement) {
+          rootElement._page = null
+        }
       })
     }
     if (oldSetup) {
@@ -137,16 +160,6 @@ export function initScope(
         return vm.$nativePage!.setPageStyle.bind(vm.$nativePage!)
       },
     })
-    Object.defineProperty(vm, 'getDialogPages', {
-      get() {
-        return () => vm.$.$dialogPages
-      },
-    })
-    Object.defineProperty(vm, 'getParentPage', {
-      get() {
-        return () => null
-      },
-    })
   }
   vm.getOpenerEventChannel = () => {
     if (!pageInstance.eventChannel) {
@@ -155,4 +168,12 @@ export function initScope(
     return pageInstance.eventChannel as EventChannel
   }
   return vm
+}
+
+function addCurrentPageWithInitScope(
+  pageId: number,
+  pageVm: ComponentPublicInstance,
+  pageInstance: Page.PageInstance['$page']
+) {
+  addCurrentPage(initScope(pageId, pageVm, pageInstance))
 }

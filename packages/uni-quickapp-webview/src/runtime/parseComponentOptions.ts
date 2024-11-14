@@ -1,17 +1,16 @@
 import type { ComponentPublicInstance } from 'vue'
 import type { MPComponentInstance } from '@dcloudio/uni-mp-core'
 
-import {
-  initInjections,
-  initProvide,
-  instances,
-} from '@dcloudio/uni-mp-toutiao'
+import { instances } from '@dcloudio/uni-mp-toutiao'
 import { ON_READY } from '@dcloudio/uni-shared'
 
 export { mocks } from '@dcloudio/uni-mp-baidu'
 
 export function isPage(mpInstance: MPComponentInstance) {
-  return !!((mpInstance._methods || mpInstance.methods) as any).onLoad
+  return (
+    !!mpInstance.route ||
+    !!((mpInstance._methods || mpInstance.methods || mpInstance) as any).onLoad
+  )
 }
 export {
   parseComponent as parse,
@@ -62,12 +61,17 @@ export function handleLink(
   const createdVm = function () {
     if (__VUE_OPTIONS_API__) {
       ;(parentVm as any).$children.push(vm)
-      const parent = parentVm.$ as any
-      ;(vm.$ as any).provides = parent
-        ? parent.provides
-        : Object.create(parent.appContext.provides)
-      initInjections(vm)
-      initProvide(vm)
+    }
+    if (process.env.UNI_DEBUG) {
+      console.log(
+        'uni-app:[' +
+          Date.now() +
+          '][' +
+          ((vm.$scope as any).is || (vm.$scope as any).route) +
+          '][' +
+          vm.$.uid +
+          ']created'
+      )
     }
     vm.$callCreatedHook()
   }

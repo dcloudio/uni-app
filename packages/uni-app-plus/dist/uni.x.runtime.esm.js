@@ -1,6 +1,6 @@
-import { normalizeStyles as normalizeStyles$1, addLeadingSlash, invokeArrayFns, parseQuery, Emitter, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, ON_ERROR, ON_SHOW, ON_HIDE, removeLeadingSlash, getLen, EventChannel, once, parseUrl, ON_UNLOAD, ON_READY, ON_PAGE_SCROLL, ON_PULL_DOWN_REFRESH, ON_REACH_BOTTOM, ON_RESIZE, ON_LAUNCH, ON_BACK_PRESS } from "@dcloudio/uni-shared";
+import { normalizeStyles as normalizeStyles$1, addLeadingSlash, invokeArrayFns, parseQuery, EventChannel, once, parseUrl, Emitter, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, ON_ERROR, ON_SHOW, ON_HIDE, removeLeadingSlash, getLen, SYSTEM_DIALOG_PAGE_PATH_STARTER, ON_UNLOAD, ON_READY, ON_PAGE_SCROLL, ON_PULL_DOWN_REFRESH, ON_REACH_BOTTOM, ON_RESIZE, ON_LAUNCH, ON_BACK_PRESS, isSystemDialogPage, isSystemActionSheetDialogPage } from "@dcloudio/uni-shared";
 import { extend, isString, isPlainObject, isFunction as isFunction$1, isArray, isPromise, hasOwn, remove, invokeArrayFns as invokeArrayFns$1, capitalize, toTypeString, toRawType, parseStringStyle } from "@vue/shared";
-import { createVNode, render, injectHook, getCurrentInstance, defineComponent, warn, isInSSRComponentSetup, ref, watchEffect, watch, computed, onMounted, camelize, onUnmounted, reactive, provide, inject, nextTick } from "vue";
+import { createVNode, render, getCurrentInstance, onMounted, onBeforeUnmount, injectHook, openBlock, createElementBlock, createElementVNode, normalizeClass, normalizeStyle, toDisplayString, createCommentVNode, Fragment, renderList, resolveComponent, withDirectives, vModelText, defineComponent, warn, isInSSRComponentSetup, ref, watchEffect, watch, computed, camelize, onUnmounted, reactive, provide, inject, nextTick } from "vue";
 function get$pageByPage(page) {
   return page.vm.$basePage;
 }
@@ -86,7 +86,7 @@ function invokeHook(vm, name, args) {
   return hooks && invokeArrayFns(hooks, args);
 }
 function normalizeRoute(toRoute) {
-  if (toRoute.indexOf("/") === 0) {
+  if (toRoute.indexOf("/") === 0 || toRoute.indexOf("uni:") === 0) {
     return toRoute;
   }
   var fromRoute = "";
@@ -593,6 +593,195 @@ function initLaunchOptions(_ref2) {
   extend(enterOptions$1, launchOptions$1);
   return enterOptions$1;
 }
+function setupPage(component) {
+  var oldSetup = component.setup;
+  component.inheritAttrs = false;
+  component.setup = (props, ctx) => {
+    var {
+      attrs: {
+        __pageId,
+        __pagePath,
+        /*__pageQuery,*/
+        __pageInstance
+      }
+    } = ctx;
+    var instance = getCurrentInstance();
+    var pageVm = instance.proxy;
+    initPageVm(pageVm, __pageInstance);
+    {
+      instance.$dialogPages = [];
+      var uniPage = new UniNormalPageImpl();
+      pageVm.$basePage = pageVm.$page;
+      pageVm.$page = uniPage;
+      uniPage.route = pageVm.$basePage.route;
+      uniPage.optionsByJS = pageVm.$basePage.options;
+      Object.defineProperty(uniPage, "options", {
+        get: function() {
+          return new UTSJSONObject(pageVm.$basePage.options);
+        }
+      });
+      uniPage.vm = pageVm;
+      uniPage.$vm = pageVm;
+      uniPage.getElementById = (id2) => {
+        var _pageVm$$el;
+        var currentPage = getCurrentPage();
+        if (currentPage !== uniPage) {
+          return null;
+        }
+        var bodyNode = (_pageVm$$el = pageVm.$el) === null || _pageVm$$el === void 0 ? void 0 : _pageVm$$el.parentNode;
+        if (bodyNode == null) {
+          console.warn("bodyNode is null");
+          return null;
+        }
+        return bodyNode.querySelector("#".concat(id2));
+      };
+      uniPage.getParentPage = () => {
+        var parentPage = uniPage.getParentPageByJS();
+        return parentPage || null;
+      };
+      uniPage.getPageStyle = () => {
+        var pageStyle = uniPage.getPageStyleByJS();
+        return new UTSJSONObject(pageStyle);
+      };
+      uniPage.$getPageStyle = () => {
+        return uniPage.getPageStyle();
+      };
+      uniPage.setPageStyle = (styles2) => {
+        uniPage.setPageStyleByJS(styles2);
+      };
+      uniPage.$setPageStyle = (styles2) => {
+        uniPage.setPageStyle(styles2);
+      };
+      uniPage.getAndroidView = () => null;
+      uniPage.getHTMLElement = () => null;
+      if (getPage$BasePage(pageVm).openType !== "openDialogPage") {
+        addCurrentPageWithInitScope(__pageId, pageVm, __pageInstance);
+      }
+    }
+    {
+      onMounted(() => {
+        var _pageVm$$el2;
+        var rootElement = (_pageVm$$el2 = pageVm.$el) === null || _pageVm$$el2 === void 0 ? void 0 : _pageVm$$el2._parent;
+        if (rootElement) {
+          rootElement._page = pageVm.$page;
+        }
+      });
+      onBeforeUnmount(() => {
+        var _pageVm$$el3;
+        var rootElement = (_pageVm$$el3 = pageVm.$el) === null || _pageVm$$el3 === void 0 ? void 0 : _pageVm$$el3._parent;
+        if (rootElement) {
+          rootElement._page = null;
+        }
+      });
+    }
+    if (oldSetup) {
+      return oldSetup(props, ctx);
+    }
+  };
+  return component;
+}
+function initScope(pageId, vm, pageInstance) {
+  {
+    Object.defineProperty(vm, "$viewToTempFilePath", {
+      get() {
+        return vm.$nativePage.viewToTempFilePath.bind(vm.$nativePage);
+      }
+    });
+    Object.defineProperty(vm, "$getPageStyle", {
+      get() {
+        return vm.$nativePage.getPageStyle.bind(vm.$nativePage);
+      }
+    });
+    Object.defineProperty(vm, "$setPageStyle", {
+      get() {
+        return vm.$nativePage.setPageStyle.bind(vm.$nativePage);
+      }
+    });
+  }
+  vm.getOpenerEventChannel = () => {
+    if (!pageInstance.eventChannel) {
+      pageInstance.eventChannel = new EventChannel(pageId);
+    }
+    return pageInstance.eventChannel;
+  };
+  return vm;
+}
+function addCurrentPageWithInitScope(pageId, pageVm, pageInstance) {
+  addCurrentPage(initScope(pageId, pageVm, pageInstance));
+}
+function isVuePageAsyncComponent(component) {
+  return isFunction$1(component);
+}
+var pagesMap = /* @__PURE__ */ new Map();
+function definePage(pagePath, asyncComponent) {
+  pagesMap.set(pagePath, once(createFactory(asyncComponent)));
+}
+function createFactory(component) {
+  return () => {
+    if (isVuePageAsyncComponent(component)) {
+      return component().then((component2) => setupPage(component2));
+    }
+    return setupPage(component);
+  };
+}
+function initRouteOptions(path, openType) {
+  var routeOptions = JSON.parse(JSON.stringify(getRouteOptions(path)));
+  routeOptions.meta = initRouteMeta(routeOptions.meta);
+  if (openType !== "preloadPage" && !__uniConfig.realEntryPagePath && (openType === "reLaunch" || getCurrentPages().length === 0)) {
+    routeOptions.meta.isQuit = true;
+  } else if (!routeOptions.meta.isTabBar) {
+    routeOptions.meta.isQuit = false;
+  }
+  return routeOptions;
+}
+var id = 1;
+function getWebviewId() {
+  return id;
+}
+function genWebviewId() {
+  return id++;
+}
+var ANI_SHOW = "pop-in";
+var ANI_DURATION = 300;
+var ANI_CLOSE = "pop-out";
+function hasLeadingSlash(str) {
+  return str.indexOf("/") == 0;
+}
+function getRealPath(path) {
+  var fix = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : false;
+  if (hasLeadingSlash(path)) {
+    return path;
+  }
+  if (fix && path.indexOf(".") !== 0) {
+    return "/" + path;
+  }
+  var currentPage = getCurrentPage().vm;
+  var currentPath = !currentPage ? "/" : parseUrl(currentPage.route).path;
+  var currentPathArray = currentPath.split("/");
+  var pathArray = path.split("/");
+  var resultArray = [];
+  for (var index2 = 0; index2 < pathArray.length; index2++) {
+    var element = pathArray[index2];
+    if (element == "..") {
+      currentPathArray.pop();
+    } else if (element != ".") {
+      resultArray.push(element);
+    }
+  }
+  return addLeadingSlash(currentPathArray.concat(resultArray).join("/"));
+}
+function registerSystemRoute(route, page) {
+  __uniRoutes.push({
+    path: route,
+    meta: {
+      isQuit: false,
+      isEntry: false,
+      route,
+      navigationBar: {}
+    }
+  });
+  definePage(route, page);
+}
 var API_ADD_INTERCEPTOR = "addInterceptor";
 var API_REMOVE_INTERCEPTOR = "removeInterceptor";
 function mergeInterceptorHook(interceptors2, interceptor) {
@@ -988,9 +1177,6 @@ var SetTabBarBadgeOptions = {
     }
   }, IndexOptions.formatArgs)
 };
-var ANI_SHOW = "pop-in";
-var ANI_DURATION = 300;
-var ANI_CLOSE = "pop-out";
 function showWebview(nPage, animationType, animationDuration, showCallback) {
   nPage.show(/* @__PURE__ */ new Map([["animationType", animationType], ["animationDuration", animationDuration]]), showCallback);
 }
@@ -1000,145 +1186,6 @@ function closeWebview(nPage, animationType, animationDuration, callback) {
     options.set("animationDuration", animationDuration);
   }
   nPage.close(options, callback);
-}
-var id = 1;
-function getWebviewId() {
-  return id;
-}
-function genWebviewId() {
-  return id++;
-}
-function initRouteOptions(path, openType) {
-  var routeOptions = JSON.parse(JSON.stringify(getRouteOptions(path)));
-  routeOptions.meta = initRouteMeta(routeOptions.meta);
-  if (openType !== "preloadPage" && !__uniConfig.realEntryPagePath && (openType === "reLaunch" || getCurrentPages().length === 0)) {
-    routeOptions.meta.isQuit = true;
-  } else if (!routeOptions.meta.isTabBar) {
-    routeOptions.meta.isQuit = false;
-  }
-  return routeOptions;
-}
-function setupPage(component) {
-  var oldSetup = component.setup;
-  component.inheritAttrs = false;
-  component.setup = (props, ctx) => {
-    var {
-      attrs: {
-        __pageId,
-        __pagePath,
-        /*__pageQuery,*/
-        __pageInstance
-      }
-    } = ctx;
-    var instance = getCurrentInstance();
-    instance.$dialogPages = [];
-    var pageVm = instance.proxy;
-    initPageVm(pageVm, __pageInstance);
-    {
-      var uniPage = new UniPageImpl();
-      pageVm.$basePage = pageVm.$page;
-      pageVm.$page = uniPage;
-      uniPage.route = pageVm.$basePage.route;
-      uniPage.optionsByJS = pageVm.$basePage.options;
-      Object.defineProperty(uniPage, "options", {
-        get: function() {
-          return new UTSJSONObject(pageVm.$basePage.options);
-        }
-      });
-      uniPage.vm = pageVm;
-      uniPage.$vm = pageVm;
-      uniPage.getElementById = (id2) => {
-        var _pageVm$$el;
-        var currentPage = getCurrentPage();
-        if (currentPage !== uniPage) {
-          return null;
-        }
-        var bodyNode = (_pageVm$$el = pageVm.$el) === null || _pageVm$$el === void 0 ? void 0 : _pageVm$$el.parentNode;
-        if (bodyNode == null) {
-          console.warn("bodyNode is null");
-          return null;
-        }
-        return bodyNode.querySelector("#".concat(id2));
-      };
-      uniPage.getParentPage = () => {
-        var parentPage = uniPage.getParentPageByJS();
-        return parentPage || null;
-      };
-      uniPage.getPageStyle = () => {
-        var pageStyle = uniPage.getPageStyleByJS();
-        return new UTSJSONObject(pageStyle);
-      };
-      uniPage.$getPageStyle = () => {
-        return uniPage.getPageStyle();
-      };
-      uniPage.setPageStyle = (styles2) => {
-        uniPage.setPageStyleByJS(styles2);
-      };
-      uniPage.$setPageStyle = (styles2) => {
-        uniPage.setPageStyle(styles2);
-      };
-      uniPage.getAndroidView = () => null;
-      uniPage.getHTMLElement = () => null;
-    }
-    if (getPage$BasePage(pageVm).openType !== "openDialogPage") {
-      addCurrentPage(initScope(__pageId, pageVm, __pageInstance));
-    }
-    if (oldSetup) {
-      return oldSetup(props, ctx);
-    }
-  };
-  return component;
-}
-function initScope(pageId, vm, pageInstance) {
-  {
-    Object.defineProperty(vm, "$viewToTempFilePath", {
-      get() {
-        return vm.$nativePage.viewToTempFilePath.bind(vm.$nativePage);
-      }
-    });
-    Object.defineProperty(vm, "$getPageStyle", {
-      get() {
-        return vm.$nativePage.getPageStyle.bind(vm.$nativePage);
-      }
-    });
-    Object.defineProperty(vm, "$setPageStyle", {
-      get() {
-        return vm.$nativePage.setPageStyle.bind(vm.$nativePage);
-      }
-    });
-    Object.defineProperty(vm, "getDialogPages", {
-      get() {
-        return () => vm.$.$dialogPages;
-      }
-    });
-    Object.defineProperty(vm, "getParentPage", {
-      get() {
-        return () => null;
-      }
-    });
-  }
-  vm.getOpenerEventChannel = () => {
-    if (!pageInstance.eventChannel) {
-      pageInstance.eventChannel = new EventChannel(pageId);
-    }
-    return pageInstance.eventChannel;
-  };
-  return vm;
-}
-function isVuePageAsyncComponent(component) {
-  return isFunction$1(component);
-}
-var pagesMap = /* @__PURE__ */ new Map();
-function definePage(pagePath, asyncComponent) {
-  pagesMap.set(pagePath, once(createFactory(asyncComponent)));
-}
-function createFactory(component) {
-  return () => {
-    if (isVuePageAsyncComponent(component)) {
-      return component().then((component2) => setupPage(component2));
-    }
-    return setupPage(component);
-  };
 }
 var nativeApp;
 function getNativeApp() {
@@ -1152,32 +1199,6 @@ function getPageManager() {
 }
 var ON_BACK_BUTTON = "onBackButton";
 var ON_POP_GESTURE = "onPopGesture";
-function hasLeadingSlash(str) {
-  return str.indexOf("/") == 0;
-}
-function getRealPath(path) {
-  var fix = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : false;
-  if (hasLeadingSlash(path)) {
-    return path;
-  }
-  if (fix && path.indexOf(".") !== 0) {
-    return "/" + path;
-  }
-  var currentPage = getCurrentPage().vm;
-  var currentPath = !currentPage ? "/" : parseUrl(currentPage.route).path;
-  var currentPathArray = currentPath.split("/");
-  var pathArray = path.split("/");
-  var resultArray = [];
-  for (var index2 = 0; index2 < pathArray.length; index2++) {
-    var element = pathArray[index2];
-    if (element == "..") {
-      currentPathArray.pop();
-    } else if (element != ".") {
-      resultArray.push(element);
-    }
-  }
-  return addLeadingSlash(currentPathArray.concat(resultArray).join("/"));
-}
 var beforeRouteHooks = [];
 var afterRouteHooks = [];
 var pageReadyHooks = [];
@@ -1199,10 +1220,6 @@ function invokeAfterRouteHooks(type) {
 function invokePageReadyHooks(page) {
   invokeArrayFns$1(pageReadyHooks, page);
 }
-var onTabBarMidButtonTapCallback = [];
-var tabBar0 = null;
-var selected0 = -1;
-var tabs = /* @__PURE__ */ new Map();
 var BORDER_COLORS = /* @__PURE__ */ new Map([["white", "rgba(255, 255, 255, 0.33)"], ["black", "rgba(0, 0, 0, 0.33)"]]);
 function getBorderStyle(borderStyle) {
   var value = BORDER_COLORS.get(borderStyle);
@@ -1222,6 +1239,10 @@ function fixBorderStyle(tabBarConfig) {
   tabBarConfig.set("borderStyle", borderStyle);
   tabBarConfig.delete("borderColor");
 }
+var onTabBarMidButtonTapCallback = [];
+var tabBar0 = null;
+var selected0 = -1;
+var tabs = /* @__PURE__ */ new Map();
 function getTabList() {
   var tabConfig = __uniConfig.tabBar ? /* @__PURE__ */ new Map() : null;
   if (__uniConfig.tabBar) {
@@ -1241,7 +1262,12 @@ function init() {
   var style = /* @__PURE__ */ new Map();
   style.set("navigationStyle", "custom");
   style.set("pageOrientation", (_uniConfig$globalSty = (_uniConfig$globalSty2 = __uniConfig.globalStyle) === null || _uniConfig$globalSty2 === void 0 ? void 0 : _uniConfig$globalSty2.pageOrientation) !== null && _uniConfig$globalSty !== void 0 ? _uniConfig$globalSty : "portrait");
-  var page = getPageManager().createPage("tabBar", "tabBar", style);
+  var page = getPageManager().createPage(
+    "tabBar",
+    // id 后增加 Date.now() 保证唯一性，与 android 端统一
+    "tabBar_".concat(Date.now()),
+    style
+  );
   var document = page.createDocument(new NodeData("root", "view", /* @__PURE__ */ new Map(), /* @__PURE__ */ new Map([["flex", "1"]])));
   var tabParent = document.createElement(new NodeData("tabs", "tabs", /* @__PURE__ */ new Map(), /* @__PURE__ */ new Map([["overflow", "hidden"], ["flex", "1"]])));
   document.appendChild(tabParent);
@@ -1260,7 +1286,9 @@ function init() {
       var item = list[index2];
       var path = item.pagePath;
       if (isString(path) && findPageRoute(getRealPath(path, true))) {
-        switchSelect(index2, path);
+        uni.switchTab({
+          url: getRealPath(path, true)
+        });
       } else {
         console.error("switchTab: pagePath not found");
       }
@@ -1361,7 +1389,7 @@ function getTabPage(path) {
   return new TabPageInfo(page, isFirst);
 }
 function switchSelect(selected, path) {
-  var _getCurrentPage, _pageStyle$pageOrient, _uniConfig$globalSty3;
+  var _getCurrentPage;
   var query = arguments.length > 2 && arguments[2] !== void 0 ? arguments[2] : {};
   var rebuild = arguments.length > 3 && arguments[3] !== void 0 ? arguments[3] : false;
   var callback = arguments.length > 4 ? arguments[4] : void 0;
@@ -1381,13 +1409,6 @@ function switchSelect(selected, path) {
     }
   }
   tabBar0.switchSelect(page.$basePage.id.toString(), selected);
-  var pageStyle = page.$page.getPageStyle();
-  var pageOrientation = (_pageStyle$pageOrient = pageStyle["pageOrientation"]) !== null && _pageStyle$pageOrient !== void 0 ? _pageStyle$pageOrient : (_uniConfig$globalSty3 = __uniConfig.globalStyle) === null || _uniConfig$globalSty3 === void 0 ? void 0 : _uniConfig$globalSty3.pageOrientation;
-  if (pageOrientation) {
-    getPageManager().findPageById("tabBar").setPageStyle({
-      pageOrientation
-    });
-  }
   if (shouldShow) {
     invokeHook(page, ON_SHOW);
   }
@@ -1442,7 +1463,7 @@ var onThemeChange = function(themeMode) {
   var handleTabBar = () => {
     var tabBar = getTabBar();
     if (tabBar !== null) {
-      var tabBarConfig = extend({}, __uniConfig.tabBar);
+      var tabBarConfig = __uniConfig.getTabBarConfig();
       normalizeTabBarStyles(tabBarConfig, __uniConfig.themeConfig, themeMode);
       var tabBarStyle = /* @__PURE__ */ new Map();
       var tabBarItemUpdateConfig = ["iconPath", "selectedIconPath"];
@@ -1514,6 +1535,7 @@ function useTheme() {
   registerThemeChange(onThemeChange);
 }
 var homeDialogPages = [];
+var homeSystemDialogPages = [];
 function parsePageStyle(route) {
   var style = /* @__PURE__ */ new Map();
   var routeMeta = route.meta;
@@ -1589,13 +1611,23 @@ function registerPage(_ref, onCreated) {
   function fn() {
     var page = createVuePage(id2, route, query, pageInstance, {}, nativePage2);
     var pages2 = getCurrentPages();
-    if (pages2.length === 1 && homeDialogPages.length) {
-      var homePage = pages2[0];
-      homePage.vm.$.$dialogPages = homeDialogPages.map((dialogPage) => {
-        dialogPage.getParentPage = () => homePage;
-        return dialogPage;
-      });
-      homeDialogPages.length = 0;
+    if (pages2.length === 1) {
+      if (homeDialogPages.length) {
+        var homePage = pages2[0];
+        homePage.vm.$.$dialogPages = homeDialogPages.map((dialogPage) => {
+          dialogPage.getParentPage = () => homePage;
+          return dialogPage;
+        });
+        homeDialogPages.length = 0;
+      }
+      if (homeSystemDialogPages.length) {
+        var _homePage = pages2[0];
+        _homePage.vm.$systemDialogPages = homeSystemDialogPages.map((dialogPage) => {
+          dialogPage.getParentPage = () => _homePage;
+          return dialogPage;
+        });
+        homeDialogPages.length = 0;
+      }
     }
     nativePage2.addPageEventListener(ON_POP_GESTURE, function(e) {
       uni.navigateBack({
@@ -1659,20 +1691,20 @@ function registerDialogPage(_ref2, dialogPage, onCreated) {
   var delay = arguments.length > 3 && arguments[3] !== void 0 ? arguments[3] : 0;
   var id2 = genWebviewId();
   var routeOptions = initRouteOptions(path, openType);
-  var pageStyle = /* @__PURE__ */ new Map([["navigationStyle", "custom"], ["backgroundColor", "transparent"]]);
+  var pageStyle = parsePageStyle(routeOptions);
+  pageStyle.set("navigationStyle", "custom");
+  pageStyle.set("backgroundColorContent", "transparent");
+  pageStyle.set("disableSwipeBack", true);
   var parentPage = dialogPage.getParentPage();
   var nativePage2 = getPageManager().createDialogPage(
     // @ts-expect-error
-    parentPage ? parentPage.nativePageId : "",
+    parentPage ? parentPage.__nativePageId : "",
     id2.toString(),
     url,
     pageStyle
   );
-  if (onCreated) {
-    onCreated(nativePage2);
-  }
   routeOptions.meta.id = parseInt(nativePage2.pageId);
-  var route = path.slice(1);
+  var route = path.startsWith(SYSTEM_DIALOG_PAGE_PATH_STARTER) ? path : path.slice(1);
   var pageInstance = initPageInternalInstance(
     openType,
     url,
@@ -1716,7 +1748,16 @@ function registerDialogPage(_ref2, dialogPage, onCreated) {
       invokeHook(page, ON_REACH_BOTTOM);
     });
     nativePage2.addPageEventListener(ON_RESIZE, (arg) => {
-      invokeHook(page, ON_RESIZE, arg);
+      var args = {
+        deviceOrientation: arg.deviceOrientation,
+        size: {
+          windowWidth: arg.size.windowWidth,
+          windowHeight: arg.size.windowHeight,
+          screenWidth: arg.size.screenWidth,
+          screenHeight: arg.size.screenHeight
+        }
+      };
+      invokeHook(page, ON_RESIZE, args);
     });
     nativePage2.startRender();
   }
@@ -1838,6 +1879,11 @@ function initAppLaunch(appVm) {
     loadFontFaceByStyles(appStyle, true);
   }
   useTheme();
+}
+function initAppError(appVm, nativeApp2) {
+  nativeApp2.addEventListener(ON_ERROR, function(errorEvent) {
+    invokeHook(appVm, ON_ERROR, errorEvent.error);
+  });
 }
 var redirectTo = /* @__PURE__ */ defineAsyncApi(API_REDIRECT_TO, (_ref, _ref2) => {
   var {
@@ -1967,6 +2013,14 @@ function closePage(page, animationType, animationDuration) {
   for (var i = dialogPages.length - 1; i >= 0; i--) {
     closeNativeDialogPage(dialogPages[i]);
   }
+  var systemDialogPages = page.$systemDialogPages || [];
+  for (var _i = 0; _i < systemDialogPages.length; _i++) {
+    closeNativeDialogPage(systemDialogPages[_i]);
+  }
+  page.$systemDialogPages = [];
+  for (var _i2 = dialogPages.length - 1; _i2 >= 0; _i2--) {
+    closeNativeDialogPage(dialogPages[_i2]);
+  }
   closeWebview(page.$nativePage, animationType, animationDuration);
   removePage(page);
   removeTabBarPage(page);
@@ -2018,9 +2072,11 @@ function handleBeforeEntryPageRoutes() {
     return $reLaunch(args, handler);
   });
 }
-function closeNativeDialogPage(dialogPage, animationType, callback) {
+function closeNativeDialogPage(dialogPage) {
   var webview = getNativeApp().pageManager.findPageById(dialogPage.$vm.$basePage.id + "");
-  closeWebview(webview, animationType || "none", 0, callback);
+  if (webview) {
+    closeWebview(webview, "none", 0);
+  }
 }
 var $switchTab = (args, _ref) => {
   var {
@@ -2131,6 +2187,7 @@ function _asyncToGenerator(n) {
 function initOn(app) {
   app.addEventListener(ON_SHOW, /* @__PURE__ */ function() {
     var _ref = _asyncToGenerator(function* (event) {
+      var _getCurrentPage;
       var app2 = getNativeApp();
       var MAX_TIMEOUT = 200;
       function getNewIntent() {
@@ -2160,7 +2217,7 @@ function initOn(app) {
         path: __uniConfig.entryPagePath
       }, schemaLink);
       setEnterOptionsSync(showOptions);
-      var page = getCurrentPage().vm;
+      var page = (_getCurrentPage = getCurrentPage()) === null || _getCurrentPage === void 0 ? void 0 : _getCurrentPage.vm;
       invokeHook(getApp().vm, ON_SHOW, showOptions);
       if (page) {
         invokeHook(page, ON_SHOW);
@@ -2171,7 +2228,8 @@ function initOn(app) {
     };
   }());
   app.addEventListener(ON_HIDE, function() {
-    var page = getCurrentPage().vm;
+    var _getCurrentPage2;
+    var page = (_getCurrentPage2 = getCurrentPage()) === null || _getCurrentPage2 === void 0 ? void 0 : _getCurrentPage2.vm;
     invokeHook(getApp().vm, ON_HIDE);
     if (page) {
       invokeHook(page, ON_HIDE);
@@ -2192,7 +2250,7 @@ function initComponentInstance(app) {
       var pageId = instance.root.attrs.__pageId;
       vm.$nativePage = getNativeApp().pageManager.findPageById(pageId + "");
       if (vm.$page) {
-        vm.$page.nativePageId = vm.$nativePage.pageId;
+        vm.$page.__nativePageId = vm.$nativePage.pageId;
       }
     },
     beforeMount() {
@@ -2252,6 +2310,7 @@ function registerApp(appVm, nativeApp2) {
   initService(nativeApp2);
   initGlobalEvent(nativeApp2);
   initAppLaunch(appVm);
+  initAppError(appVm, nativeApp2);
   initSubscribeHandlers();
   __uniConfig.ready = true;
 }
@@ -2298,7 +2357,7 @@ var $navigateTo = (args, _ref) => {
     path,
     query
   } = parseUrl(url);
-  var [aniType, aniDuration] = initAnimation$1(path, animationType, animationDuration);
+  var [aniType, aniDuration] = initAnimation(path, animationType, animationDuration);
   updateEntryPageIsReady(path);
   if (!entryPageState.isReady) {
     navigateToPagesBeforeEntryPages.push({
@@ -2364,7 +2423,7 @@ function _navigateTo(_ref2) {
     }
   });
 }
-function initAnimation$1(path, animationType, animationDuration) {
+function initAnimation(path, animationType, animationDuration) {
   if (!getCurrentPage()) {
     return ["none", 0];
   }
@@ -2476,13 +2535,17 @@ function back(delta, animationType, animationDuration) {
       invokeHook(dialogPages[i - 1].$vm, ON_SHOW);
     }
   }
+  var systemDialogPages = currentPage.$systemDialogPages || [];
+  for (var _i = 0; _i < systemDialogPages.length; _i++) {
+    closeNativeDialogPage(systemDialogPages[_i]);
+  }
+  currentPage.$systemDialogPages = [];
   backPage(webview);
 }
 var openDialogPage = (options) => {
   var _options$success, _options$complete;
   var {
-    url,
-    animationType
+    url
   } = options;
   if (!options.url) {
     triggerFailCallback$1(options, "url is required");
@@ -2515,38 +2578,49 @@ var openDialogPage = (options) => {
   dialogPage.getParentPage = () => parentPage;
   dialogPage.$component = null;
   dialogPage.$disableEscBack = false;
-  if (!parentPage) {
-    homeDialogPages.push(dialogPage);
-  } else {
-    var dialogPages = parentPage.getDialogPages();
-    if (dialogPages.length) {
-      invokeHook(dialogPages[dialogPages.length - 1].$vm, ON_HIDE);
+  var systemDialog = isSystemDialogPage(dialogPage);
+  if (!systemDialog) {
+    if (!parentPage) {
+      homeDialogPages.push(dialogPage);
+    } else {
+      var dialogPages = parentPage.getDialogPages();
+      if (dialogPages.length) {
+        invokeHook(dialogPages[dialogPages.length - 1].$vm, ON_HIDE);
+      }
+      dialogPages.push(dialogPage);
     }
-    dialogPages.push(dialogPage);
+  } else {
+    if (!parentPage) {
+      homeSystemDialogPages.push(dialogPage);
+      if (isSystemActionSheetDialogPage(dialogPage)) {
+        closePreActionSheet(homeSystemDialogPages);
+      }
+    } else {
+      if (!parentPage.vm.$systemDialogPages) {
+        parentPage.vm.$systemDialogPages = [];
+      }
+      parentPage.vm.$systemDialogPages.push(dialogPage);
+      if (isSystemActionSheetDialogPage(dialogPage)) {
+        closePreActionSheet(parentPage.vm.$systemDialogPages);
+      }
+    }
   }
-  var [aniType, aniDuration] = initAnimation(path, animationType || "");
-  var noAnimation = aniType === "none" || aniDuration === 0;
   function callback(page2) {
-    showWebview(page2, aniType, aniDuration, () => {
+    showWebview(page2, "none", 0, () => {
       beforeRoute();
     });
   }
-  var page = registerDialogPage(
-    {
-      url,
-      path,
-      query,
-      openType: "openDialogPage"
-    },
-    dialogPage,
-    noAnimation ? void 0 : callback,
-    // 有动画时延迟创建 vm
-    noAnimation ? 0 : 1
-  );
-  dialogPage.nativePageId = page.pageId;
-  if (noAnimation) {
-    callback(page);
+  var page = registerDialogPage({
+    url,
+    path,
+    query,
+    openType: "openDialogPage"
+  }, dialogPage, void 0, 0);
+  dialogPage.__nativePageId = page.pageId;
+  if (systemDialog) {
+    dialogPage.__nativeType = "systemDialog";
   }
+  callback(page);
   var successOptions = {
     errMsg: "openDialogPage:ok"
   };
@@ -2560,19 +2634,14 @@ function triggerFailCallback$1(options, errMsg) {
   (_options$fail = options.fail) === null || _options$fail === void 0 || _options$fail.call(options, failOptions);
   (_options$complete2 = options.complete) === null || _options$complete2 === void 0 || _options$complete2.call(options, failOptions);
 }
-function initAnimation(path, animationType) {
-  if (!getCurrentPage()) {
-    return ["none", 0];
+function closePreActionSheet(dialogPages) {
+  var actionSheets = dialogPages.filter((page) => isSystemActionSheetDialogPage(page));
+  if (actionSheets.length > 1) {
+    setTimeout(() => {
+      closeNativeDialogPage(actionSheets[0]);
+      dialogPages.splice(dialogPages.indexOf(actionSheets[0]), 1);
+    }, 150);
   }
-  var {
-    globalStyle
-  } = __uniConfig;
-  var meta = getRouteMeta(path);
-  var _animationType = animationType || meta.animationType || globalStyle.animationType || ANI_SHOW;
-  if (_animationType == "pop-in") {
-    _animationType = "none";
-  }
-  return [_animationType, meta.animationDuration || globalStyle.animationDuration || ANI_DURATION];
 }
 var closeDialogPage = (options) => {
   var _options$success, _options$complete;
@@ -2582,9 +2651,6 @@ var closeDialogPage = (options) => {
     triggerFailCallback(options, "currentPage is null");
     return;
   }
-  if ((options === null || options === void 0 ? void 0 : options.animationType) === "pop-out") {
-    options.animationType = "none";
-  }
   if (options !== null && options !== void 0 && options.dialogPage) {
     var dialogPage = options === null || options === void 0 ? void 0 : options.dialogPage;
     if (!(dialogPage instanceof UniDialogPageImpl)) {
@@ -2592,22 +2658,30 @@ var closeDialogPage = (options) => {
       return;
     }
     var parentPage = dialogPage.getParentPage();
-    if (parentPage && currentPages.indexOf(parentPage) !== -1) {
-      var parentDialogPages = parentPage.getDialogPages();
-      var index2 = parentDialogPages.indexOf(dialogPage);
-      parentDialogPages.splice(index2, 1);
-      closeNativeDialogPage(dialogPage, (options === null || options === void 0 ? void 0 : options.animationType) || "none");
-      if (index2 > 0 && index2 === parentDialogPages.length) {
-        invokeHook(parentDialogPages[parentDialogPages.length - 1].$vm, ON_SHOW);
+    if (!isSystemDialogPage(dialogPage)) {
+      if (parentPage && currentPages.indexOf(parentPage) !== -1) {
+        var parentDialogPages = parentPage.getDialogPages();
+        var index2 = parentDialogPages.indexOf(dialogPage);
+        parentDialogPages.splice(index2, 1);
+        closeNativeDialogPage(dialogPage);
+        if (index2 > 0 && index2 === parentDialogPages.length) {
+          invokeHook(parentDialogPages[parentDialogPages.length - 1].$vm, ON_SHOW);
+        }
+      } else {
+        triggerFailCallback(options, "dialogPage is not a valid page");
+        return;
       }
     } else {
-      triggerFailCallback(options, "dialogPage is not a valid page");
+      var systemDialogPages = parentPage.vm.$systemDialogPages;
+      var _index = systemDialogPages.indexOf(dialogPage);
+      systemDialogPages.splice(_index, 1);
+      closeNativeDialogPage(dialogPage);
       return;
     }
   } else {
     var dialogPages = currentPage.getDialogPages();
     for (var i = dialogPages.length - 1; i >= 0; i--) {
-      closeNativeDialogPage(dialogPages[i], (options === null || options === void 0 ? void 0 : options.animationType) || "none");
+      closeNativeDialogPage(dialogPages[i]);
       if (i > 0) {
         invokeHook(dialogPages[i - 1].$vm, ON_SHOW);
       }
@@ -3156,9 +3230,12 @@ var pageScrollTo = /* @__PURE__ */ defineAsyncApi(API_PAGE_SCROLL_TO, (options, 
   scrollViewNode.scrollTop = top;
   res.resolve();
 }, PageScrollToProtocol, PageScrollToOptions);
-var SOURCE_REG = /(.+\.((ttf)|(otf)|(woff2?))$)|(^(http|https):\/\/.+)/;
+var SOURCE_REG = /(.+\.((ttf)|(otf)|(woff2?))$)|(^(http|https):\/\/.+)|(^(data:font).+)/;
 function removeUrlWrap(source) {
   if (source.startsWith("url(")) {
+    if (source.split("format(").length > 1) {
+      source = source.split("format(")[0].trim();
+    }
     source = source.substring(4, source.length - 1);
   }
   if (source.startsWith('"') || source.startsWith("'")) {
@@ -3233,6 +3310,1454 @@ var stopPullDownRefresh = /* @__PURE__ */ defineAsyncApi(API_STOP_PULL_DOWN_REFR
   }
   page.$nativePage.stopPullDownRefresh();
   res.resolve();
+});
+const _sfc_main$1 = {
+  data() {
+    return {
+      show: false,
+      i18nCancelText: {
+        en: "Cancel",
+        es: "Cancelar",
+        fr: "Annuler",
+        "zh-Hans": "取消",
+        "zh-Hant": "取消"
+      },
+      readyEventName: "",
+      optionsEventName: "",
+      successEventName: "",
+      failEventName: "",
+      title: null,
+      itemList: [],
+      optionCancelText: null,
+      titleColor: null,
+      itemColor: null,
+      cancelColor: null,
+      backgroundColor: null,
+      language: "zh-Hans",
+      theme: "light",
+      isLandscape: false
+    };
+  },
+  onLoad(options) {
+    this.readyEventName = options["readyEventName"];
+    this.optionsEventName = options["optionsEventName"];
+    this.successEventName = options["successEventName"];
+    this.failEventName = options["failEventName"];
+    uni.$on(this.optionsEventName, (data) => {
+      this.itemList = data["itemList"];
+      if (data["title"] != null) {
+        this.title = data["title"];
+      }
+      if (data["cancelText"] != null) {
+        this.optionCancelText = data["cancelText"];
+      }
+      if (data["titleColor"] != null) {
+        this.titleColor = data["titleColor"];
+      }
+      if (data["itemColor"] != null) {
+        this.itemColor = data["itemColor"];
+      }
+      if (data["cancelColor"] != null) {
+        this.cancelColor = data["cancelColor"];
+      }
+      if (data["backgroundColor"] != null) {
+        this.backgroundColor = data["backgroundColor"];
+      }
+    });
+    uni.$emit(this.readyEventName, {});
+    var systemInfo = uni.getSystemInfoSync();
+    var osLanguage = systemInfo.osLanguage;
+    var appLanguage = systemInfo.appLanguage;
+    if (appLanguage != null) {
+      this.language = appLanguage;
+    } else if (osLanguage != null) {
+      this.language = osLanguage;
+    }
+    var osTheme = systemInfo.osTheme;
+    var appTheme = systemInfo.appTheme;
+    if (appTheme != null) {
+      this.theme = appTheme;
+    } else if (osTheme != null) {
+      this.theme = osTheme;
+    }
+    this.isLandscape = systemInfo.deviceOrientation == "landscape";
+    uni.onAppThemeChange((res) => {
+      this.theme = res.appTheme;
+    });
+    uni.onOsThemeChange((res) => {
+      this.theme = res.osTheme;
+    });
+  },
+  computed: {
+    cancelText() {
+      if (this.optionCancelText != null) {
+        var res = this.optionCancelText;
+        return res;
+      }
+      if (this.language.startsWith("en")) {
+        return this.i18nCancelText["en"];
+      }
+      if (this.language.startsWith("es")) {
+        return this.i18nCancelText["es"];
+      }
+      if (this.language.startsWith("fr")) {
+        return this.i18nCancelText["fr"];
+      }
+      if (this.language.startsWith("zh-Hans")) {
+        return this.i18nCancelText["zh-Hans"];
+      }
+      if (this.language.startsWith("zh-Hant")) {
+        return this.i18nCancelText["zh-Hant"];
+      }
+      return "取消";
+    }
+  },
+  onReady() {
+    setTimeout(() => {
+      this.show = true;
+    }, 10);
+  },
+  onResize() {
+    var systemInfo = uni.getSystemInfoSync();
+    this.isLandscape = systemInfo.deviceOrientation == "landscape";
+  },
+  onUnload() {
+    uni.$off(this.optionsEventName, null);
+    uni.$off(this.readyEventName, null);
+    uni.$off(this.successEventName, null);
+    uni.$off(this.failEventName, null);
+  },
+  methods: {
+    closeActionSheet() {
+      this.show = false;
+      setTimeout(() => {
+        uni.closeDialogPage({
+          dialogPage: this.$page
+        });
+      }, 300);
+    },
+    handleMenuItemClick(tapIndex) {
+      this.closeActionSheet();
+      uni.$emit(this.successEventName, tapIndex);
+    },
+    handleCancel() {
+      this.closeActionSheet();
+      uni.$emit(this.failEventName, {});
+    }
+  }
+};
+const _style_0$2 = {
+  "uni-action-sheet_dialog__mask": {
+    "": {
+      "position": "fixed",
+      "zIndex": 999,
+      "top": 0,
+      "right": 0,
+      "left": 0,
+      "bottom": 0,
+      "opacity": 0,
+      "backgroundColor": "rgba(0,0,0,0.6)",
+      "transitionProperty": "opacity",
+      "transitionDuration": "0.1s"
+    }
+  },
+  "uni-action-sheet_dialog__mask__show": {
+    "": {
+      "opacity": 1
+    }
+  },
+  "uni-action-sheet_dialog__container": {
+    "": {
+      "position": "fixed",
+      "width": "100%",
+      "left": 0,
+      "bottom": 0,
+      "zIndex": 999,
+      "transform": "translate(0, 100%)",
+      "opacity": 0,
+      "transitionProperty": "transform",
+      "transitionDuration": "0.3s",
+      "backgroundColor": "#f7f7f7",
+      "borderTopLeftRadius": 12,
+      "borderTopRightRadius": 12
+    },
+    ".uni-action-sheet_dialog__show": {
+      "opacity": 1,
+      "transform": "translate(0, 0)"
+    },
+    ".uni-action-sheet_dark__mode": {
+      "backgroundColor": "#1D1E1E"
+    },
+    ".uni-action-sheet_landscape__mode": {
+      "width": 300,
+      "position": "fixed",
+      "left": "50%",
+      "right": "auto",
+      "top": "50%",
+      "bottom": "auto",
+      "zIndex": 999,
+      "transform": "translate(-50%, -50%)",
+      "borderTopLeftRadius": 5,
+      "borderTopRightRadius": 5,
+      "borderBottomLeftRadius": 5,
+      "borderBottomRightRadius": 5,
+      "transitionProperty": "opacity",
+      "transitionDuration": "0.3s"
+    }
+  },
+  "uni-action-sheet_dialog__menu": {
+    "": {
+      "borderTopLeftRadius": 12,
+      "borderTopRightRadius": 12,
+      "overflow": "hidden",
+      "backgroundColor": "#ffffff"
+    },
+    ".uni-action-sheet_dark__mode": {
+      "backgroundColor": "#2C2C2B"
+    },
+    ".uni-action-sheet_landscape__mode": {
+      "borderTopLeftRadius": 5,
+      "borderTopRightRadius": 5,
+      "borderBottomLeftRadius": 5,
+      "borderBottomRightRadius": 5,
+      "boxShadow": "0 0 20px 5px rgba(0, 0, 0, 0.3)"
+    }
+  },
+  "uni-action-sheet_dialog__title": {
+    "": {
+      "paddingTop": 16,
+      "paddingRight": 16,
+      "paddingBottom": 16,
+      "paddingLeft": 16,
+      "borderBottomWidth": 1,
+      "borderBottomStyle": "solid",
+      "borderBottomColor": "#e5e5e5"
+    },
+    ".uni-action-sheet_dark__mode": {
+      "borderBottomWidth": 1,
+      "borderBottomStyle": "solid",
+      "borderBottomColor": "#2F3131"
+    },
+    ".uni-action-sheet_landscape__mode": {
+      "paddingTop": 10,
+      "paddingRight": 6,
+      "paddingBottom": 10,
+      "paddingLeft": 6
+    }
+  },
+  "uni-action-sheet_dialog__cell": {
+    "": {
+      "paddingTop": 16,
+      "paddingRight": 16,
+      "paddingBottom": 16,
+      "paddingLeft": 16,
+      "borderTopWidth": 1,
+      "borderTopStyle": "solid",
+      "borderTopColor": "#e5e5e5"
+    },
+    ".uni-action-sheet_dark__mode": {
+      "borderTopWidth": 1,
+      "borderTopStyle": "solid",
+      "borderTopColor": "#2F3131"
+    },
+    ".uni-action-sheet_landscape__mode": {
+      "paddingTop": 10,
+      "paddingRight": 6,
+      "paddingBottom": 10,
+      "paddingLeft": 6
+    }
+  },
+  "uni-action-sheet_dialog__action": {
+    "": {
+      "paddingTop": 16,
+      "paddingRight": 16,
+      "paddingBottom": 16,
+      "paddingLeft": 16,
+      "marginTop": 8,
+      "backgroundColor": "#ffffff"
+    },
+    ".uni-action-sheet_dark__mode": {
+      "backgroundColor": "#2C2C2B"
+    },
+    ".uni-action-sheet_landscape__mode": {
+      "display": "none",
+      "paddingTop": 10,
+      "paddingRight": 6,
+      "paddingBottom": 10,
+      "paddingLeft": 6
+    }
+  },
+  "uni-action-sheet_dialog__title__text": {
+    "": {
+      "lineHeight": 1.4,
+      "textAlign": "center",
+      "whiteSpace": "nowrap",
+      "overflow": "hidden",
+      "textOverflow": "ellipsis",
+      "color": "#666666"
+    },
+    ".uni-action-sheet_dark__mode": {
+      "color": "#999999"
+    }
+  },
+  "uni-action-sheet_dialog__cell__text": {
+    "": {
+      "lineHeight": 1.4,
+      "textAlign": "center",
+      "whiteSpace": "nowrap",
+      "overflow": "hidden",
+      "textOverflow": "ellipsis",
+      "color": "#000000"
+    },
+    ".uni-action-sheet_dark__mode": {
+      "color": "#ffffff"
+    }
+  },
+  "uni-action-sheet_dialog__action__text": {
+    "": {
+      "lineHeight": 1.4,
+      "textAlign": "center",
+      "whiteSpace": "nowrap",
+      "overflow": "hidden",
+      "textOverflow": "ellipsis",
+      "color": "#000000"
+    },
+    ".uni-action-sheet_dark__mode": {
+      "color": "#ffffff"
+    }
+  },
+  "uni-action-sheet_dialog__cell__container": {
+    "": {
+      "maxHeight": 330
+    },
+    ".uni-action-sheet_landscape__mode": {
+      "maxHeight": 260
+    }
+  },
+  "@TRANSITION": {
+    "uni-action-sheet_dialog__mask": {
+      "property": "opacity",
+      "duration": "0.1s"
+    },
+    "uni-action-sheet_dialog__container": {
+      "property": "opacity",
+      "duration": "0.3s"
+    }
+  }
+};
+const _export_sfc = (sfc, props) => {
+  const target = sfc.__vccOpts || sfc;
+  for (const [key, val] of props) {
+    target[key] = val;
+  }
+  return target;
+};
+var _hoisted_1$1 = ["onClick"];
+function _sfc_render$1(_ctx, _cache, $props, $setup, $data, $options) {
+  return openBlock(), createElementBlock("view", null, [createElementVNode("view", {
+    class: normalizeClass(["uni-action-sheet_dialog__mask", {
+      "uni-action-sheet_dialog__mask__show": $data.show
+    }]),
+    onClick: _cache[0] || (_cache[0] = function() {
+      return $options.handleCancel && $options.handleCancel(...arguments);
+    })
+  }, null, 2), createElementVNode("view", {
+    class: normalizeClass(["uni-action-sheet_dialog__container", {
+      "uni-action-sheet_dialog__show": $data.show,
+      "uni-action-sheet_dark__mode": $data.theme == "dark",
+      "uni-action-sheet_landscape__mode": $data.isLandscape
+    }])
+  }, [createElementVNode("view", {
+    style: normalizeStyle($data.backgroundColor != null ? {
+      backgroundColor: $data.backgroundColor
+    } : {}),
+    class: normalizeClass(["uni-action-sheet_dialog__menu", {
+      "uni-action-sheet_dark__mode": $data.theme == "dark",
+      "uni-action-sheet_landscape__mode": $data.isLandscape
+    }])
+  }, [$data.title ? (openBlock(), createElementBlock("view", {
+    key: 0,
+    class: normalizeClass(["uni-action-sheet_dialog__title", {
+      "uni-action-sheet_dark__mode": $data.theme == "dark",
+      "uni-action-sheet_landscape__mode": $data.isLandscape
+    }])
+  }, [createElementVNode("text", {
+    style: normalizeStyle({
+      color: $data.titleColor
+    }),
+    class: normalizeClass(["uni-action-sheet_dialog__title__text", {
+      "uni-action-sheet_dark__mode": $data.theme == "dark"
+    }])
+  }, toDisplayString($data.title), 7)], 2)) : createCommentVNode("", true), createElementVNode("scroll-view", {
+    class: normalizeClass(["uni-action-sheet_dialog__cell__container", {
+      "uni-action-sheet_landscape__mode": $data.isLandscape
+    }])
+  }, [(openBlock(true), createElementBlock(Fragment, null, renderList($data.itemList, (item, index2) => {
+    return openBlock(), createElementBlock("view", {
+      style: normalizeStyle(index2 == 0 ? {
+        borderTop: "none"
+      } : {}),
+      class: normalizeClass(["uni-action-sheet_dialog__cell", {
+        "uni-action-sheet_dark__mode": $data.theme == "dark",
+        "uni-action-sheet_landscape__mode": $data.isLandscape
+      }]),
+      key: index2,
+      onClick: ($event) => $options.handleMenuItemClick(index2)
+    }, [createElementVNode("text", {
+      style: normalizeStyle({
+        color: $data.itemColor
+      }),
+      class: normalizeClass(["uni-action-sheet_dialog__cell__text", {
+        "uni-action-sheet_dark__mode": $data.theme == "dark"
+      }])
+    }, toDisplayString(item), 7)], 14, _hoisted_1$1);
+  }), 128))], 2)], 6), createElementVNode("view", {
+    style: normalizeStyle($data.backgroundColor != null ? {
+      backgroundColor: $data.backgroundColor
+    } : {}),
+    class: normalizeClass(["uni-action-sheet_dialog__action", {
+      "uni-action-sheet_dark__mode": $data.theme == "dark",
+      "uni-action-sheet_landscape__mode": $data.isLandscape
+    }]),
+    onClick: _cache[1] || (_cache[1] = function() {
+      return $options.handleCancel && $options.handleCancel(...arguments);
+    })
+  }, [createElementVNode("text", {
+    style: normalizeStyle({
+      color: $data.cancelColor
+    }),
+    class: normalizeClass(["uni-action-sheet_dialog__action__text", {
+      "uni-action-sheet_dark__mode": $data.theme == "dark"
+    }])
+  }, toDisplayString($options.cancelText), 7)], 6)], 2)]);
+}
+const UniActionSheetPage = /* @__PURE__ */ _export_sfc(_sfc_main$1, [["render", _sfc_render$1], ["styles", [_style_0$2]]]);
+var showActionSheet2 = /* @__PURE__ */ defineAsyncApi("showActionSheet2", (options, _ref) => {
+  var {
+    resolve,
+    reject
+  } = _ref;
+  registerSystemRoute("uni:actionSheet", UniActionSheetPage);
+  var uuid = Date.now() + "" + Math.floor(Math.random() * 1e7);
+  var baseEventName = "uni_action_sheet_".concat(uuid);
+  var readyEventName = "".concat(baseEventName, "_ready");
+  var optionsEventName = "".concat(baseEventName, "_options");
+  var successEventName = "".concat(baseEventName, "_success");
+  var failEventName = "".concat(baseEventName, "_fail");
+  uni.$on(readyEventName, () => {
+    uni.$emit(optionsEventName, options);
+  });
+  uni.$on(successEventName, (index2) => {
+    resolve({
+      tapIndex: index2
+    });
+  });
+  uni.$on(failEventName, () => {
+    reject("cancel");
+  });
+  uni.openDialogPage({
+    url: "uni:actionSheet?readyEventName=".concat(readyEventName, "&optionsEventName=").concat(optionsEventName, "&successEventName=").concat(successEventName, "&failEventName=").concat(failEventName),
+    fail: function(err) {
+      var _options$fail;
+      (_options$fail = options.fail) === null || _options$fail === void 0 || _options$fail.call(options, {
+        errMsg: "showActionSheet:failed, ".concat(err.errMsg)
+      });
+      uni.$off(readyEventName);
+      uni.$off(successEventName);
+      uni.$off(failEventName);
+    }
+  });
+});
+var hideActionSheet2 = () => {
+  var page = getCurrentPage();
+  page.vm.$systemDialogPages.forEach((page2) => {
+    closeNativeDialogPage(page2);
+  });
+  page.vm.$systemDialogPages = [];
+};
+var defaultPoi = {
+  latitude: 39.908823,
+  longitude: 116.39747
+};
+var languageData = {
+  "en": {
+    "back": "cancel",
+    "ok": "ok",
+    "cancel": "cancel",
+    "loading": "loading...",
+    "locationLoading": "positioning...",
+    "search": "Search location",
+    "current-location": "current location"
+  },
+  "zh-Hans": {
+    "back": "取消",
+    "ok": "确定",
+    "cancel": "取消",
+    "loading": "请求中...",
+    "locationLoading": "获取定位中...",
+    "search": "搜索地点",
+    "current-location": "当前位置"
+  },
+  "zh-Hant": {
+    "back": "取消",
+    "ok": "確定",
+    "cancel": "取消",
+    "loading": "請求中...",
+    "locationLoading": "獲取定位中...",
+    "search": "蒐索地點",
+    "current-location": "當前位置"
+  }
+};
+const _sfc_main = {
+  data() {
+    var id1 = "UniMap1_".concat((Math.random() * 1e6).toString(36));
+    var id2 = "UniMap2_".concat((Math.random() * 1e6).toString(36));
+    var id3 = "UniMap3_".concat((Math.random() * 1e6).toString(36));
+    return {
+      readyEventName: "",
+      optionsEventName: "",
+      successEventName: "",
+      failEventName: "",
+      mapId: id1,
+      mapTargetId: id2,
+      scrollId: id3,
+      isFocus: false,
+      latitude: 0,
+      longitude: 0,
+      locationComplete: false,
+      locationLoading: false,
+      chooseLocationOptions: {},
+      pageIndex: 1,
+      pageSize: 20,
+      pois: [],
+      selected: -1,
+      searchValue: "",
+      safeArea: {
+        top: 0,
+        bottom: 0,
+        left: 0,
+        right: 0
+      },
+      icon: {
+        target: "",
+        success: "",
+        position: "",
+        search: ""
+      },
+      lastTime: 0,
+      searchLoading: false,
+      language: "zh-Hans",
+      scrollTop: 0,
+      isLandscape: false,
+      theme: "light",
+      searchValueChangeTimer: -1,
+      lastPoi: {
+        latitude: null,
+        longitude: null,
+        selected: -1,
+        pois: [],
+        scrollTop: 0
+      },
+      errMsg: ""
+    };
+  },
+  onLoad(options) {
+    this.initPageOptions(options);
+    this.getSystemInfo();
+    this.getLocation();
+  },
+  onReady() {
+  },
+  onUnload() {
+    uni.$off(this.optionsEventName, null);
+    uni.$off(this.readyEventName, null);
+    uni.$off(this.successEventName, null);
+    uni.$off(this.failEventName, null);
+  },
+  onResize() {
+    var systemInfo = uni.getSystemInfoSync();
+    this.isLandscape = systemInfo.deviceOrientation == "landscape";
+  },
+  methods: {
+    initPageOptions(options) {
+      this.readyEventName = options["readyEventName"];
+      this.optionsEventName = options["optionsEventName"];
+      this.successEventName = options["successEventName"];
+      this.failEventName = options["failEventName"];
+      uni.$on(this.optionsEventName, (data) => {
+        if (data["latitude"] != null) {
+          this.chooseLocationOptions.latitude = data.getNumber("latitude");
+        }
+        if (data["longitude"] != null) {
+          this.chooseLocationOptions.longitude = data.getNumber("longitude");
+        }
+        if (data["keyword"] != null) {
+          var keyword = data["keyword"];
+          this.chooseLocationOptions.keyword = keyword;
+          this.searchValue = keyword;
+        } else {
+          this.chooseLocationOptions.keyword = "";
+        }
+      });
+      uni.$emit(this.readyEventName, {});
+    },
+    getLocation() {
+      if (this.chooseLocationOptions.latitude != null && this.chooseLocationOptions.longitude != null) {
+        this.latitude = this.chooseLocationOptions.latitude;
+        this.longitude = this.chooseLocationOptions.longitude;
+        this.locationComplete = true;
+        this.getPoi("getLocation");
+      } else {
+        this.locationLoading = true;
+        uni.getLocation({
+          type: "gcj02",
+          success: (res) => {
+            this.latitude = res.latitude;
+            this.longitude = res.longitude;
+            this.locationComplete = true;
+            this.locationLoading = false;
+            this.getPoi("getLocation");
+          },
+          fail: (err) => {
+            console.error("getLocationErr: ", err);
+            this.latitude = defaultPoi.latitude;
+            this.longitude = defaultPoi.longitude;
+            this.locationComplete = true;
+            this.locationLoading = false;
+            this.getPoi("getLocation");
+          }
+        });
+      }
+    },
+    distanceHandle(distance) {
+      if (distance < 1e3) {
+        return distance + "m";
+      } else {
+        return parseFloat((distance / 1e3).toFixed(2)) + "km";
+      }
+    },
+    poiHandle(pois) {
+      var list = pois.map((item, index2) => {
+        var location = item["location"];
+        return {
+          title: item["title"],
+          address: item["address"],
+          distance: item["distance"],
+          distanceStr: this.distanceHandle(item["distance"]),
+          location: {
+            latitude: location["lat"],
+            longitude: location["lng"]
+          }
+        };
+      });
+      var pageIndex = this.pageIndex;
+      if (pageIndex == 1) {
+        this.pois = list;
+        this.updateScrollTop(0);
+      } else {
+        this.pois = this.pois.concat(list);
+      }
+    },
+    callUniMapCo(action, data) {
+      return new Promise((resolve, reject) => {
+        this.errMsg = "";
+        if (typeof uniCloud == "undefined") {
+          this.errMsg = "uni.chooseLocation 依赖 uniCloud 的 uni-map-common 插件，请先关联服务空间，并安装 uni-map-common 插件，插件地址：https://ext.dcloud.net.cn/plugin?id=13872";
+          console.error(this.errMsg);
+          reject({
+            errCode: -1,
+            errMsg: "请先关联服务空间"
+          });
+        }
+        var uniMapCo = uniCloud.importObject("uni-map-co", {
+          customUI: true
+        });
+        uniMapCo.chooseLocation({
+          action,
+          data
+        }).then((res) => {
+          resolve(res);
+        }).catch((err) => {
+          var errMsg = err.errMsg;
+          if (errMsg != null && (errMsg.indexOf("在云端不存在") > -1 || errMsg.indexOf("未匹配") > -1)) {
+            this.errMsg = "uni.chooseLocation 依赖 uniCloud 的 uni-map-common 插件，请安装 uni-map-common 插件，插件地址：https://ext.dcloud.net.cn/plugin?id=13872";
+            console.error(this.errMsg);
+          } else {
+            console.error("err: ", err);
+          }
+          reject(err);
+        });
+      });
+    },
+    getPoi(type) {
+      var searchValue = this.searchValue;
+      var latitude = this.latitude;
+      var longitude = this.longitude;
+      var pageIndex = this.pageIndex;
+      var pageSize = this.pageSize;
+      if (["searchValueChange"].indexOf(type) == -1) {
+        this.searchLoading = true;
+      }
+      if (searchValue != "" && searchValue.length > 0) {
+        this.callUniMapCo("search", {
+          keyword: searchValue,
+          location: {
+            lat: latitude,
+            lng: longitude
+          },
+          radius: 5e3,
+          auto_extend: 1,
+          orderby: "weight",
+          page_index: pageIndex,
+          page_size: pageSize
+        }).then((res) => {
+          var _res$getJSON;
+          var pois = (_res$getJSON = res.getJSON("result")) === null || _res$getJSON === void 0 || (_res$getJSON = _res$getJSON.getJSON("result")) === null || _res$getJSON === void 0 ? void 0 : _res$getJSON.getArray("data");
+          this.poiHandle(pois);
+          this.searchLoading = false;
+        }).catch((err) => {
+          this.searchLoading = false;
+        });
+      } else {
+        this.callUniMapCo("location2address", {
+          location: "".concat(latitude, ",").concat(longitude),
+          get_poi: 1,
+          poi_options: {
+            radius: 5e3,
+            policy: 4,
+            roadlevel: 1,
+            homeorcorp: 1,
+            page_index: pageIndex,
+            page_size: pageSize
+          }
+        }).then((res) => {
+          var _res$getJSON2;
+          var pois = (_res$getJSON2 = res.getJSON("result")) === null || _res$getJSON2 === void 0 || (_res$getJSON2 = _res$getJSON2.getJSON("result")) === null || _res$getJSON2 === void 0 ? void 0 : _res$getJSON2.getArray("pois");
+          this.poiHandle(pois);
+          this.searchLoading = false;
+        }).catch((err) => {
+          this.searchLoading = false;
+        });
+      }
+    },
+    getSystemInfo() {
+      var info = uni.getWindowInfo();
+      this.safeArea.top = info.safeAreaInsets.top;
+      this.safeArea.bottom = info.safeAreaInsets.bottom;
+      this.safeArea.left = info.safeAreaInsets.left;
+      this.safeArea.right = info.safeAreaInsets.right;
+      var systemInfo = uni.getSystemInfoSync();
+      var appLanguage = systemInfo.appLanguage;
+      this.language = appLanguage;
+      var osTheme = systemInfo.osTheme;
+      var appTheme = systemInfo.appTheme;
+      if (appTheme != null) {
+        this.theme = appTheme;
+      } else if (osTheme != null) {
+        this.theme = osTheme;
+      }
+      this.isLandscape = systemInfo.deviceOrientation == "landscape";
+      uni.onAppThemeChange((res) => {
+        this.theme = res.appTheme;
+      });
+      uni.onOsThemeChange((res) => {
+        this.theme = res.osTheme;
+      });
+    },
+    getMapContext() {
+      return uni.createMapContext(this.mapId, this);
+    },
+    regionchange(e) {
+      var causedBy = e.causedBy;
+      if (e.type !== "end" || causedBy != "drag" || this.locationComplete == false) {
+        return;
+      }
+      var mapContext = this.getMapContext();
+      if (mapContext != null) {
+        mapContext.getCenterLocation({
+          success: (res) => {
+            var latitudeDiff = Math.abs(res.latitude - this.latitude);
+            var longitudeDiff = Math.abs(res.longitude - this.longitude);
+            if (latitudeDiff > 1e-5 && longitudeDiff > 1e-5) {
+              this.latitude = res.latitude;
+              this.longitude = res.longitude;
+              this.searchValue = "";
+              this.selected = -1;
+              this.pageIndex = 1;
+              this.getPoi("regionchange");
+              var element = this.$refs[this.mapTargetId];
+              if (element != null) {
+                var duration = 250;
+                element.style.setProperty("transition-duration", "".concat(duration, "ms"));
+                element.style.setProperty("transform", "translateY(0px)");
+                element.style.setProperty("transform", "translateY(-15px)");
+                setTimeout(() => {
+                  element.style.setProperty("transform", "translateY(0px)");
+                }, duration);
+              }
+            }
+          }
+        });
+      }
+    },
+    clearSearchValueChangeTimer() {
+      if (this.searchValueChangeTimer != -1) {
+        clearTimeout(this.searchValueChangeTimer);
+        this.searchValueChangeTimer = -1;
+      }
+    },
+    searchValueChange(e) {
+      this.clearSearchValueChangeTimer();
+      this.searchValueChangeTimer = setTimeout(() => {
+        this.poiSearch("searchValueChange");
+      }, 200);
+    },
+    poiSearch(type) {
+      this.clearSearchValueChangeTimer();
+      this.pageIndex = 1;
+      this.selected = -1;
+      this.getPoi(type);
+    },
+    cancelSearch() {
+      this.isFocus = false;
+      this.searchValue = "";
+      if (this.lastPoi.latitude != null) {
+        this.latitude = this.lastPoi.latitude;
+      }
+      if (this.lastPoi.longitude != null) {
+        this.longitude = this.lastPoi.longitude;
+      }
+      if (this.lastPoi.pois.length - 1 > this.lastPoi.selected) {
+        this.pois = this.lastPoi.pois;
+        this.selected = this.lastPoi.selected;
+        this.updateScrollTop(this.lastPoi.scrollTop);
+      } else {
+        this.poiSearch("cancelSearch");
+      }
+    },
+    updateScrollTop(scrollTop) {
+      setTimeout(() => {
+        this.scrollTop = scrollTop;
+      }, 10);
+    },
+    selectPoi(item, index2) {
+      this.selected = index2;
+      this.latitude = item.location.latitude;
+      this.longitude = item.location.longitude;
+      if (this.searchValue == this.chooseLocationOptions.keyword) {
+        this.lastPoi.latitude = this.latitude;
+        this.lastPoi.longitude = this.longitude;
+        this.lastPoi.selected = this.selected;
+        this.lastPoi.pois = this.pois;
+        var scrollElement = this.$refs[this.scrollId];
+        if (scrollElement != null) {
+          var scrollTop = scrollElement.scrollTop;
+          this.lastPoi.scrollTop = scrollTop;
+          this.scrollTop = scrollTop;
+        }
+      }
+    },
+    scrolltolower() {
+      this.pageIndex++;
+      this.getPoi("scrolltolower");
+    },
+    mapReset() {
+      this.pageIndex = 1;
+      this.getLocation();
+    },
+    closeDialogPage() {
+      uni.closeDialogPage({
+        dialogPage: this.$page
+      });
+    },
+    back() {
+      uni.$emit(this.failEventName, {});
+      this.closeDialogPage();
+    },
+    confirm() {
+      if (this.selected < 0) {
+        return;
+      }
+      var item = this.pois[this.selected];
+      var res = {
+        name: item.title,
+        address: item.address,
+        latitude: item.location.latitude,
+        longitude: item.location.longitude
+      };
+      uni.$emit(this.successEventName, res);
+      this.closeDialogPage();
+    }
+  },
+  computed: {
+    languageCom() {
+      var textInfo = languageData[this.language] != null ? languageData[this.language] : languageData["zh-Hans"];
+      return textInfo;
+    },
+    uniChooseLocationClassCom() {
+      var list = [];
+      if (this.theme == "dark") {
+        list.push("uni-choose-location-dark");
+      } else {
+        list.push("uni-choose-location-light");
+      }
+      return list.join(" ");
+    },
+    landscapeClassCom() {
+      return this.isLandscape ? "uni-choose-location-landscape" : "";
+    }
+  }
+};
+const _style_0 = {
+  "uni-choose-location-icons": {
+    "": {
+      "fontFamily": "UniChooseLocationFontFamily",
+      "fontSize": 16,
+      "fontStyle": "normal"
+    }
+  },
+  "uni-choose-location": {
+    "": {
+      "position": "relative",
+      "left": 0,
+      "top": 0,
+      "width": "100%",
+      "height": "100%",
+      "backgroundImage": "none",
+      "backgroundColor": "#f8f8f8",
+      "zIndex": 999
+    }
+  },
+  "uni-choose-location-map-box": {
+    ".uni-choose-location ": {
+      "width": "100%",
+      "height": 300
+    },
+    ".uni-choose-location .uni-choose-location-landscape": {
+      "height": "100%"
+    }
+  },
+  "uni-choose-location-map": {
+    ".uni-choose-location ": {
+      "width": "100%",
+      "height": "100%"
+    }
+  },
+  "uni-choose-location-map-target": {
+    ".uni-choose-location ": {
+      "position": "absolute",
+      "left": "50%",
+      "bottom": "50%",
+      "width": 50,
+      "height": 50,
+      "marginLeft": -25,
+      "transitionProperty": "transform",
+      "transitionDuration": "0.25s",
+      "transitionTimingFunction": "ease-out"
+    }
+  },
+  "uni-choose-location-map-target-icon": {
+    ".uni-choose-location .uni-choose-location-map-target ": {
+      "fontSize": 50,
+      "color": "#007aff"
+    }
+  },
+  "uni-choose-location-map-reset": {
+    ".uni-choose-location ": {
+      "position": "absolute",
+      "left": 20,
+      "bottom": 40,
+      "width": 40,
+      "height": 40,
+      "boxSizing": "border-box",
+      "backgroundColor": "#ffffff",
+      "borderRadius": 20,
+      "pointerEvents": "auto",
+      "boxShadow": "0px 0px 20px 2px rgba(0, 0, 0, .3)",
+      "zIndex": 9,
+      "display": "flex",
+      "justifyContent": "center",
+      "alignItems": "center"
+    },
+    ".uni-choose-location.uni-choose-location-dark ": {
+      "backgroundColor": "#111111",
+      "boxShadow": "0px 0px 5px 1px rgba(0, 0, 0, .3)"
+    },
+    ".uni-choose-location .uni-choose-location-landscape": {
+      "left": 40,
+      "bottom": 40
+    }
+  },
+  "uni-choose-location-map-reset-icon": {
+    ".uni-choose-location .uni-choose-location-map-reset ": {
+      "fontSize": 26,
+      "textAlign": "center",
+      "lineHeight": "40px"
+    },
+    ".uni-choose-location.uni-choose-location-dark .uni-choose-location-map-reset ": {
+      "color": "#d1d1d1"
+    }
+  },
+  "uni-choose-location-nav": {
+    ".uni-choose-location ": {
+      "position": "absolute",
+      "top": 0,
+      "left": 0,
+      "width": "100%",
+      "height": 60,
+      "backgroundColor": "rgba(0,0,0,0)",
+      "backgroundImage": "linear-gradient(to bottom, rgba(0, 0, 0, .5), rgba(0, 0, 0, 0))"
+    }
+  },
+  "uni-choose-location-nav-btn": {
+    ".uni-choose-location .uni-choose-location-nav ": {
+      "position": "absolute",
+      "top": 5,
+      "left": 5,
+      "width": 60,
+      "height": 44,
+      "paddingTop": 5,
+      "paddingRight": 5,
+      "paddingBottom": 5,
+      "paddingLeft": 5
+    },
+    ".uni-choose-location .uni-choose-location-nav .uni-choose-location-nav-confirm-btn": {
+      "left": "auto",
+      "right": 5
+    },
+    ".uni-choose-location .uni-choose-location-nav .uni-choose-location-nav-confirm-btn:active": {
+      "opacity": 0.7
+    },
+    ".uni-choose-location .uni-choose-location-nav .uni-choose-location-nav-confirm-btn.disable": {
+      "opacity": 0.4
+    },
+    ".uni-choose-location .uni-choose-location-nav .uni-choose-location-nav-confirm-btn.disable:active": {
+      "opacity": 1
+    },
+    ".uni-choose-location .uni-choose-location-nav .uni-choose-location-landscape": {
+      "top": 10,
+      "left": 20
+    },
+    ".uni-choose-location .uni-choose-location-nav .uni-choose-location-nav-confirm-btn.uni-choose-location-landscape": {
+      "left": "auto",
+      "right": 20
+    }
+  },
+  "uni-choose-location-nav-confirm-text": {
+    ".uni-choose-location .uni-choose-location-nav .uni-choose-location-nav-btn.uni-choose-location-nav-confirm-btn ": {
+      "backgroundColor": "#007aff",
+      "borderRadius": 5
+    }
+  },
+  "uni-choose-location-nav-back-text": {
+    ".uni-choose-location .uni-choose-location-nav .uni-choose-location-nav-btn.uni-choose-location-nav-back-btn ": {
+      "color": "#ffffff"
+    }
+  },
+  "uni-choose-location-nav-text": {
+    ".uni-choose-location .uni-choose-location-nav .uni-choose-location-nav-btn ": {
+      "paddingTop": 8,
+      "paddingRight": 0,
+      "paddingBottom": 8,
+      "paddingLeft": 0,
+      "fontSize": 13,
+      "textAlign": "center",
+      "color": "#ffffff"
+    }
+  },
+  "uni-choose-location-poi": {
+    ".uni-choose-location ": {
+      "position": "absolute",
+      "top": 300,
+      "width": "100%",
+      "bottom": 0,
+      "backgroundColor": "#ffffff"
+    },
+    ".uni-choose-location.uni-choose-location-dark ": {
+      "backgroundColor": "#181818"
+    },
+    ".uni-choose-location .uni-choose-location-landscape": {
+      "top": 80,
+      "right": 25,
+      "width": 300,
+      "bottom": 20,
+      "maxHeight": 600,
+      "boxShadow": "0px 0px 20px 2px rgba(0, 0, 0, .3)",
+      "borderRadius": 5
+    }
+  },
+  "uni-choose-location-poi-search": {
+    ".uni-choose-location .uni-choose-location-poi ": {
+      "display": "flex",
+      "flexDirection": "row",
+      "alignItems": "center",
+      "justifyContent": "center",
+      "height": 50,
+      "paddingTop": 8,
+      "paddingRight": 8,
+      "paddingBottom": 8,
+      "paddingLeft": 8,
+      "backgroundColor": "#ffffff"
+    },
+    ".uni-choose-location.uni-choose-location-dark .uni-choose-location-poi ": {
+      "backgroundColor": "#181818"
+    }
+  },
+  "uni-choose-location-poi-search-box": {
+    ".uni-choose-location .uni-choose-location-poi ": {
+      "display": "flex",
+      "flexDirection": "row",
+      "alignItems": "center",
+      "justifyContent": "center",
+      "height": 32,
+      "flex": 1,
+      "borderRadius": 5,
+      "paddingTop": 0,
+      "paddingRight": 15,
+      "paddingBottom": 0,
+      "paddingLeft": 15,
+      "backgroundColor": "#ededed"
+    },
+    ".uni-choose-location.uni-choose-location-dark .uni-choose-location-poi ": {
+      "backgroundColor": "#181818"
+    }
+  },
+  "uni-choose-location-poi-search-input": {
+    ".uni-choose-location .uni-choose-location-poi .uni-choose-location-poi-search ": {
+      "flex": 1,
+      "height": "100%",
+      "borderRadius": 5,
+      "paddingTop": 0,
+      "paddingRight": 5,
+      "paddingBottom": 0,
+      "paddingLeft": 5,
+      "backgroundImage": "none",
+      "backgroundColor": "#ededed"
+    },
+    ".uni-choose-location.uni-choose-location-dark .uni-choose-location-poi .uni-choose-location-poi-search ": {
+      "backgroundImage": "none",
+      "backgroundColor": "#111111",
+      "color": "#d1d1d1"
+    }
+  },
+  "uni-choose-location-poi-search-cancel": {
+    ".uni-choose-location .uni-choose-location-poi .uni-choose-location-poi-search ": {
+      "marginLeft": 5,
+      "color": "#007aff",
+      "fontSize": 17,
+      "textAlign": "center"
+    }
+  },
+  "uni-choose-location-poi-list": {
+    ".uni-choose-location .uni-choose-location-poi ": {
+      "flex": 1
+    }
+  },
+  "uni-choose-location-poi-search-loading": {
+    ".uni-choose-location .uni-choose-location-poi .uni-choose-location-poi-list ": {
+      "display": "flex",
+      "alignItems": "center",
+      "paddingTop": 10,
+      "paddingRight": 0,
+      "paddingBottom": 10,
+      "paddingLeft": 0
+    }
+  },
+  "uni-choose-location-poi-search-loading-text": {
+    ".uni-choose-location .uni-choose-location-poi .uni-choose-location-poi-list .uni-choose-location-poi-search-loading ": {
+      "color": "#191919"
+    },
+    ".uni-choose-location.uni-choose-location-dark .uni-choose-location-poi .uni-choose-location-poi-list .uni-choose-location-poi-search-loading ": {
+      "color": "#d1d1d1"
+    }
+  },
+  "uni-choose-location-poi-search-error": {
+    ".uni-choose-location .uni-choose-location-poi .uni-choose-location-poi-list ": {
+      "display": "flex",
+      "alignItems": "center",
+      "paddingTop": 10,
+      "paddingRight": 10,
+      "paddingBottom": 10,
+      "paddingLeft": 10
+    }
+  },
+  "uni-choose-location-poi-search-error-text": {
+    ".uni-choose-location .uni-choose-location-poi .uni-choose-location-poi-list .uni-choose-location-poi-search-error ": {
+      "color": "#191919",
+      "fontSize": 14
+    }
+  },
+  "uni-choose-location-poi-item": {
+    ".uni-choose-location .uni-choose-location-poi .uni-choose-location-poi-list ": {
+      "position": "relative",
+      "paddingTop": 15,
+      "paddingRight": 40,
+      "paddingBottom": 15,
+      "paddingLeft": 10
+    },
+    ".uni-choose-location .uni-choose-location-poi .uni-choose-location-poi-list .uni-choose-location-landscape": {
+      "paddingTop": 10,
+      "paddingRight": 10,
+      "paddingBottom": 10,
+      "paddingLeft": 10
+    }
+  },
+  "uni-choose-location-poi-item-title-text": {
+    ".uni-choose-location .uni-choose-location-poi .uni-choose-location-poi-list .uni-choose-location-poi-item ": {
+      "fontSize": 14,
+      "overflow": "hidden",
+      "whiteSpace": "nowrap",
+      "textOverflow": "ellipsis",
+      "color": "#191919"
+    },
+    ".uni-choose-location.uni-choose-location-dark .uni-choose-location-poi .uni-choose-location-poi-list .uni-choose-location-poi-item ": {
+      "color": "#d1d1d1"
+    }
+  },
+  "uni-choose-location-poi-item-detail-text": {
+    ".uni-choose-location .uni-choose-location-poi .uni-choose-location-poi-list .uni-choose-location-poi-item ": {
+      "fontSize": 12,
+      "marginTop": 5,
+      "color": "#b2b2b2",
+      "overflow": "hidden",
+      "whiteSpace": "nowrap",
+      "textOverflow": "ellipsis"
+    },
+    ".uni-choose-location.uni-choose-location-dark .uni-choose-location-poi .uni-choose-location-poi-list .uni-choose-location-poi-item ": {
+      "color": "#595959"
+    }
+  },
+  "uni-choose-location-poi-item-selected-icon": {
+    ".uni-choose-location .uni-choose-location-poi .uni-choose-location-poi-list .uni-choose-location-poi-item ": {
+      "position": "absolute",
+      "top": "50%",
+      "right": 10,
+      "width": 26,
+      "height": 26,
+      "marginTop": -13,
+      "color": "#007aff",
+      "fontSize": 24
+    }
+  },
+  "uni-choose-location-poi-item-after": {
+    ".uni-choose-location .uni-choose-location-poi .uni-choose-location-poi-list .uni-choose-location-poi-item ": {
+      "position": "absolute",
+      "height": 1,
+      "left": 10,
+      "bottom": 0,
+      "right": 10,
+      "width": "auto",
+      "borderBottomWidth": 1,
+      "borderBottomStyle": "solid",
+      "borderBottomColor": "#f8f8f8"
+    },
+    ".uni-choose-location.uni-choose-location-dark .uni-choose-location-poi .uni-choose-location-poi-list .uni-choose-location-poi-item ": {
+      "borderBottomWidth": 1,
+      "borderBottomStyle": "solid",
+      "borderBottomColor": "#1e1e1e"
+    }
+  },
+  "uni-choose-location-search-icon": {
+    ".uni-choose-location.uni-choose-location-dark ": {
+      "color": "#d1d1d1"
+    }
+  },
+  "@FONT-FACE": [{
+    "fontFamily": "UniChooseLocationFontFamily",
+    "src": "url('data:font/ttf;charset=utf-8;base64,AAEAAAALAIAAAwAwR1NVQiCLJXoAAAE4AAAAVE9TLzI8Rkp9AAABjAAAAGBjbWFw0euemwAAAgAAAAGyZ2x5ZuBfKy8AAAPAAAACtGhlYWQpySFOAAAA4AAAADZoaGVhB94DhgAAALwAAAAkaG10eBQAAAAAAAHsAAAAFGxvY2EBUAHAAAADtAAAAAxtYXhwARIAfQAAARgAAAAgbmFtZUTMSfwAAAZ0AAADS3Bvc3RLRtf0AAAJwAAAAFIAAQAAA4D/gABcBAAAAAAABAAAAQAAAAAAAAAAAAAAAAAAAAUAAQAAAAEAAI/TJ/hfDzz1AAsEAAAAAADjVO6oAAAAAONU7qgAAP+ABAADgQAAAAgAAgAAAAAAAAABAAAABQBxAAMAAAAAAAIAAAAKAAoAAAD/AAAAAAAAAAEAAAAKADAAPgACREZMVAAObGF0bgAaAAQAAAAAAAAAAQAAAAQAAAAAAAAAAQAAAAFsaWdhAAgAAAABAAAAAQAEAAQAAAABAAgAAQAGAAAAAQAAAAQEAAGQAAUAAAKJAswAAACPAokCzAAAAesAMgEIAAACAAUDAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFBmRWQAwOYx560DgP+AAAAD3ACAAAAAAQAAAAAAAAAAAAAAAAACBAAAAAQAAAAEAAAABAAAAAQAAAAAAAAFAAAAAwAAACwAAAAEAAABcgABAAAAAABsAAMAAQAAACwAAwAKAAABcgAEAEAAAAAKAAgAAgAC5jHmU+aD563//wAA5jHmU+aD563//wAAAAAAAAAAAAEACgAKAAoACgAAAAIAAwAEAAEAAAEGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAwAAAAAAEAAAAAAAAAABAAA5jEAAOYxAAAAAgAA5lMAAOZTAAAAAwAA5oMAAOaDAAAABAAA560AAOetAAAAAQAAAAAAAABIAGYBCAFaAAIAAP/SA4cDNgAdACoAACUGBwYnLgEnJjc+ATc2Fx4BFxYHBgcXHgEOAiYnJTI+ATQuASIOARQeAQJlSFdVT1FsDQwdHodWU1JTeBQUFhc+7AUFBAsPEAX+T0uASkqAln9LS3/MMwkIICKLV1RQUnMQEBoagVZTUlU+7AYPDwsEBAbrSoCWf0tLf5aASgAAAAEAAAAAA8ACyAANAAATNwU3Njc2NxcHBgcGB0A5AQdAVGaPnxdXbWuWfAGPN986TFl8hTpVbG6aiQAAAAMAAP+ABAADgQAzAGcAcAAAAQYHBgcGBxUUBi4BPQEmJyYnJicjIiY+ATsBNjc2NzY3NTQ2MhYdARYXFhcWFzM2HgEGKwIiJj4BOwEmJyYnJicVFAYiJj0BBgcGBwYHMzYeAQYrARYXFhcWFzU0Nh4BHQE2NzY3NiUiJjQ2MhYUBgOyBjk3WlxtDxUPbF1aNzgGNAsPAQ4LNAY4N1pdbA8VD21cWjc5BjMLDwEPC2eaCg8BDgqaBjIwT1BfDxUPXlFOMTEGmAsPAQ8LmQYxMU5RXhAVDl9QTzAy/ocWHR0rHh4BZmxdWjc4BzMLDwEOCzMHODdaXWwQFA9tXFo3OQY0ChAOCzUGOTdaXG0BDxUQEBQPX1BPMDEHmQsODwqZBzEwT1BfAQ8VEF5RTjExBpgLDwEOC5gGMTFOUUUdKx4eKx0AAAMAAP+BAyoDfgAIACYAMwAABRQWMjY0JiIGExEUBisBIiY1ES4BJyY1NDc2NzYyFxYXFhUUBw4BAQYeAj4BLgMOAQHAJTUmJjUlagYEQAQHR3UhIiknREWiRUQnKSIhdf7lAitPXFAuAS1LW00vVBIZGSMZGQFx/ogEBgYEAXgKUz9BSVFFRCcpKSdERVFJQT9TAR0uUTACLk9cTC0CK0sAAAAAAAASAN4AAQAAAAAAAAATAAAAAQAAAAAAAQAbABMAAQAAAAAAAgAHAC4AAQAAAAAAAwAbADUAAQAAAAAABAAbAFAAAQAAAAAABQALAGsAAQAAAAAABgAbAHYAAQAAAAAACgArAJEAAQAAAAAACwATALwAAwABBAkAAAAmAM8AAwABBAkAAQA2APUAAwABBAkAAgAOASsAAwABBAkAAwA2ATkAAwABBAkABAA2AW8AAwABBAkABQAWAaUAAwABBAkABgA2AbsAAwABBAkACgBWAfEAAwABBAkACwAmAkdDcmVhdGVkIGJ5IGljb25mb250VW5pQ2hvb3NlTG9jYXRpb25Gb250RmFtaWx5UmVndWxhclVuaUNob29zZUxvY2F0aW9uRm9udEZhbWlseVVuaUNob29zZUxvY2F0aW9uRm9udEZhbWlseVZlcnNpb24gMS4wVW5pQ2hvb3NlTG9jYXRpb25Gb250RmFtaWx5R2VuZXJhdGVkIGJ5IHN2ZzJ0dGYgZnJvbSBGb250ZWxsbyBwcm9qZWN0Lmh0dHA6Ly9mb250ZWxsby5jb20AQwByAGUAYQB0AGUAZAAgAGIAeQAgAGkAYwBvAG4AZgBvAG4AdABVAG4AaQBDAGgAbwBvAHMAZQBMAG8AYwBhAHQAaQBvAG4ARgBvAG4AdABGAGEAbQBpAGwAeQBSAGUAZwB1AGwAYQByAFUAbgBpAEMAaABvAG8AcwBlAEwAbwBjAGEAdABpAG8AbgBGAG8AbgB0AEYAYQBtAGkAbAB5AFUAbgBpAEMAaABvAG8AcwBlAEwAbwBjAGEAdABpAG8AbgBGAG8AbgB0AEYAYQBtAGkAbAB5AFYAZQByAHMAaQBvAG4AIAAxAC4AMABVAG4AaQBDAGgAbwBvAHMAZQBMAG8AYwBhAHQAaQBvAG4ARgBvAG4AdABGAGEAbQBpAGwAeQBHAGUAbgBlAHIAYQB0AGUAZAAgAGIAeQAgAHMAdgBnADIAdAB0AGYAIABmAHIAbwBtACAARgBvAG4AdABlAGwAbABvACAAcAByAG8AagBlAGMAdAAuAGgAdAB0AHAAOgAvAC8AZgBvAG4AdABlAGwAbABvAC4AYwBvAG0AAAIAAAAAAAAACgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABQECAQMBBAEFAQYABnNvdXN1bwdnb3V4dWFuB2Rpbmd3ZWkLZGl0dS10dWRpbmcAAAAA') format('truetype')"
+  }],
+  "@TRANSITION": {
+    "uni-choose-location-map-target": {
+      "property": "transform",
+      "duration": "0.25s",
+      "timingFunction": "ease-out"
+    }
+  }
+};
+var _hoisted_1 = ["id"];
+var _hoisted_2 = {
+  class: "uni-choose-location-icons uni-choose-location-map-target-icon"
+};
+var _hoisted_3 = {
+  class: "uni-choose-location-icons uni-choose-location-map-reset-icon"
+};
+var _hoisted_4 = {
+  class: "uni-choose-location-nav-text uni-choose-location-nav-confirm-text"
+};
+var _hoisted_5 = {
+  class: "uni-choose-location-poi-search"
+};
+var _hoisted_6 = {
+  class: "uni-choose-location-poi-search-box"
+};
+var _hoisted_7 = {
+  key: 0,
+  class: "uni-choose-location-icons uni-choose-location-search-icon"
+};
+var _hoisted_8 = ["placeholder", "placeholder-style"];
+var _hoisted_9 = ["id", "scroll-top"];
+var _hoisted_10 = {
+  key: 0,
+  class: "uni-choose-location-poi-search-error"
+};
+var _hoisted_11 = {
+  class: "uni-choose-location-poi-search-error-text"
+};
+var _hoisted_12 = {
+  key: 1,
+  class: "uni-choose-location-poi-search-loading"
+};
+var _hoisted_13 = {
+  class: "uni-choose-location-poi-search-loading-text"
+};
+var _hoisted_14 = {
+  key: 2,
+  class: "uni-choose-location-poi-search-loading"
+};
+var _hoisted_15 = {
+  class: "uni-choose-location-poi-search-loading-text"
+};
+var _hoisted_16 = ["onClick"];
+var _hoisted_17 = {
+  class: "uni-choose-location-poi-item-title-text"
+};
+var _hoisted_18 = {
+  class: "uni-choose-location-poi-item-detail-text"
+};
+var _hoisted_19 = {
+  key: 0,
+  class: "uni-choose-location-icons uni-choose-location-poi-item-selected-icon"
+};
+var _hoisted_20 = /* @__PURE__ */ createElementVNode("view", {
+  class: "uni-choose-location-poi-item-after"
+}, null, -1);
+var _hoisted_21 = {
+  key: 4,
+  class: "uni-choose-location-poi-search-loading"
+};
+var _hoisted_22 = {
+  class: "uni-choose-location-poi-search-loading-text"
+};
+function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
+  var _component_map = resolveComponent("map");
+  return openBlock(), createElementBlock("view", {
+    class: normalizeClass(["uni-choose-location", $options.uniChooseLocationClassCom])
+  }, [createElementVNode("view", {
+    class: normalizeClass(["uni-choose-location-map-box", [$options.landscapeClassCom]])
+  }, [createVNode(_component_map, {
+    class: "uni-choose-location-map",
+    id: $data.mapId,
+    ref: $data.mapId,
+    latitude: $data.latitude,
+    longitude: $data.longitude,
+    "layer-style": $data.theme == "dark" ? "2" : "1",
+    "show-compass": false,
+    "enable-zoom": true,
+    "enable-scroll": true,
+    "enable-rotate": false,
+    "enable-poi": true,
+    "show-location": true,
+    onRegionchange: $options.regionchange
+  }, null, 8, ["id", "latitude", "longitude", "layer-style", "onRegionchange"]), createElementVNode("view", {
+    class: "uni-choose-location-map-target",
+    ref: $data.mapTargetId,
+    id: $data.mapTargetId
+  }, [createElementVNode("text", _hoisted_2, toDisplayString($data.icon.target), 1)], 8, _hoisted_1), createElementVNode("view", {
+    class: normalizeClass(["uni-choose-location-map-reset", [$options.landscapeClassCom]]),
+    onClick: _cache[0] || (_cache[0] = function() {
+      return $options.mapReset && $options.mapReset(...arguments);
+    })
+  }, [createElementVNode("text", _hoisted_3, toDisplayString($data.icon.position), 1)], 2)], 2), createElementVNode("view", {
+    class: "uni-choose-location-nav",
+    style: normalizeStyle("height:" + (60 + $data.safeArea.top) + "px;")
+  }, [createElementVNode("view", {
+    class: normalizeClass(["uni-choose-location-nav-btn uni-choose-location-nav-back-btn", [$options.landscapeClassCom]]),
+    style: normalizeStyle($data.safeArea.top > 0 ? "top: " + $data.safeArea.top + "px;" : "")
+  }, [createElementVNode("text", {
+    class: "uni-choose-location-nav-text uni-choose-location-nav-back-text",
+    onClick: _cache[1] || (_cache[1] = function() {
+      return $options.back && $options.back(...arguments);
+    })
+  }, toDisplayString($options.languageCom["back"]), 1)], 6), createElementVNode("view", {
+    class: normalizeClass(["uni-choose-location-nav-btn uni-choose-location-nav-confirm-btn", [$options.landscapeClassCom, $data.selected < 0 ? "disable" : ""]]),
+    style: normalizeStyle($data.safeArea.top > 0 ? "top: " + $data.safeArea.top + "px;" : ""),
+    onClick: _cache[2] || (_cache[2] = function() {
+      return $options.confirm && $options.confirm(...arguments);
+    })
+  }, [createElementVNode("text", _hoisted_4, toDisplayString($options.languageCom["ok"]), 1)], 6)], 4), createElementVNode("view", {
+    class: normalizeClass(["uni-choose-location-poi", [$options.landscapeClassCom]])
+  }, [createElementVNode("view", _hoisted_5, [createElementVNode("view", _hoisted_6, [$data.isFocus || $data.searchValue != "" ? (openBlock(), createElementBlock("text", _hoisted_7, toDisplayString($data.icon.search), 1)) : createCommentVNode("", true), withDirectives(createElementVNode("input", {
+    "onUpdate:modelValue": _cache[3] || (_cache[3] = ($event) => $data.searchValue = $event),
+    type: "text",
+    placeholder: ($data.isFocus ? "" : "") + " " + $options.languageCom["search"],
+    class: "uni-choose-location-poi-search-input uni-choose-location-icons",
+    "placeholder-style": $data.isFocus || $data.searchValue != "" ? "text-align: left;" : "text-align: center;",
+    onFocus: _cache[4] || (_cache[4] = ($event) => $data.isFocus = true),
+    onConfirm: _cache[5] || (_cache[5] = ($event) => $options.poiSearch("poiSearch")),
+    onInput: _cache[6] || (_cache[6] = function() {
+      return $options.searchValueChange && $options.searchValueChange(...arguments);
+    })
+  }, null, 40, _hoisted_8), [[vModelText, $data.searchValue]])]), $data.isFocus || $data.searchValue != "" ? (openBlock(), createElementBlock("text", {
+    key: 0,
+    class: "uni-choose-location-poi-search-cancel",
+    onClick: _cache[7] || (_cache[7] = function() {
+      return $options.cancelSearch && $options.cancelSearch(...arguments);
+    })
+  }, toDisplayString($options.languageCom["cancel"]), 1)) : createCommentVNode("", true)]), createElementVNode("scroll-view", {
+    id: $data.scrollId,
+    ref: $data.scrollId,
+    "scroll-with-animation": false,
+    direction: "vertical",
+    "scroll-top": $data.scrollTop,
+    "lower-threshold": 500,
+    onScrolltolower: _cache[8] || (_cache[8] = function() {
+      return $options.scrolltolower && $options.scrolltolower(...arguments);
+    }),
+    class: "uni-choose-location-poi-list"
+  }, [$data.errMsg != "" ? (openBlock(), createElementBlock("view", _hoisted_10, [createElementVNode("text", _hoisted_11, toDisplayString($data.errMsg), 1)])) : $data.locationLoading ? (openBlock(), createElementBlock("view", _hoisted_12, [createElementVNode("text", _hoisted_13, toDisplayString($options.languageCom["locationLoading"]), 1)])) : $data.searchLoading && $data.pageIndex == 1 ? (openBlock(), createElementBlock("view", _hoisted_14, [createElementVNode("text", _hoisted_15, toDisplayString($options.languageCom["loading"]), 1)])) : (openBlock(true), createElementBlock(Fragment, {
+    key: 3
+  }, renderList($data.pois, (item, index2) => {
+    return openBlock(), createElementBlock("view", {
+      key: index2,
+      class: normalizeClass(["uni-choose-location-poi-item", [$options.landscapeClassCom]]),
+      onClick: ($event) => $options.selectPoi(item, index2)
+    }, [createElementVNode("view", null, [createElementVNode("view", null, [createElementVNode("text", _hoisted_17, toDisplayString(item.title), 1)]), createElementVNode("view", null, [createElementVNode("text", _hoisted_18, toDisplayString(item.distance > 0 ? item.distanceStr + " | " : "") + toDisplayString(item.address), 1)])]), $data.selected == index2 ? (openBlock(), createElementBlock("text", _hoisted_19, toDisplayString($data.icon.success), 1)) : createCommentVNode("", true), _hoisted_20], 10, _hoisted_16);
+  }), 128)), $data.searchLoading && $data.pageIndex > 1 ? (openBlock(), createElementBlock("view", _hoisted_21, [createElementVNode("text", _hoisted_22, toDisplayString($options.languageCom["loading"]), 1)])) : createCommentVNode("", true)], 40, _hoisted_9)], 2)], 2);
+}
+const uniChooseLocationPage = /* @__PURE__ */ _export_sfc(_sfc_main, [["render", _sfc_render], ["styles", [_style_0]]]);
+var chooseLocation = /* @__PURE__ */ defineAsyncApi("chooseLocation", (options, _ref) => {
+  var {
+    resolve,
+    reject
+  } = _ref;
+  registerSystemRoute("uni:chooseLocation", uniChooseLocationPage);
+  var uuid = Date.now() + "" + Math.floor(Math.random() * 1e7);
+  var baseEventName = "uni_choose_location_".concat(uuid);
+  var readyEventName = "".concat(baseEventName, "_ready");
+  var optionsEventName = "".concat(baseEventName, "_options");
+  var successEventName = "".concat(baseEventName, "_success");
+  var failEventName = "".concat(baseEventName, "_fail");
+  uni.$on(readyEventName, () => {
+    uni.$emit(optionsEventName, JSON.parse(JSON.stringify(options)));
+  });
+  uni.$on(successEventName, (result) => {
+    resolve(result);
+  });
+  uni.$on(failEventName, () => {
+    reject("cancel");
+  });
+  uni.openDialogPage({
+    url: "uni:chooseLocation?readyEventName=".concat(readyEventName, "&optionsEventName=").concat(optionsEventName, "&successEventName=").concat(successEventName, "&failEventName=").concat(failEventName),
+    fail(err) {
+      var _options$fail;
+      (_options$fail = options.fail) === null || _options$fail === void 0 || _options$fail.call(options, {
+        errMsg: "chooseLocation:fail ".concat(err.errMsg)
+      });
+      uni.$off(readyEventName);
+      uni.$off(successEventName);
+      uni.$off(failEventName);
+    }
+  });
 });
 var env = {
   USER_DATA_PATH: "unifile://usr/",
@@ -3591,9 +5116,25 @@ function isComponentPublicInstance(instance) {
 function parseElement(obj) {
   if (isUniElement(obj)) {
     return obj;
-  } else if (isComponentPublicInstance(obj)) {
+  }
+}
+function parseComponentPublicInstance(obj) {
+  if (isComponentPublicInstance(obj)) {
     return obj.$el;
   }
+}
+function serialize(el, type) {
+  var nodeId = "";
+  var pageId = "";
+  if (el && el.getNodeId) {
+    pageId = el.pageId;
+    nodeId = el.getNodeId();
+  }
+  return {
+    pageId,
+    nodeId,
+    __type__: type
+  };
 }
 function toRaw(observed) {
   var raw = observed && observed.__v_raw;
@@ -3613,19 +5154,11 @@ function normalizeArg(arg, callbacks, keepAlive) {
     }
     return id2;
   } else if (isPlainObject(arg) || isUniElement(arg)) {
-    var el = parseElement(arg);
+    var uniElement = parseElement(arg);
+    var componentPublicInstanceUniElement = !uniElement ? parseComponentPublicInstance(arg) : void 0;
+    var el = uniElement || componentPublicInstanceUniElement;
     if (el) {
-      var nodeId = "";
-      var pageId = "";
-      if (el && el.getNodeId) {
-        pageId = el.pageId;
-        nodeId = el.getNodeId();
-      }
-      return {
-        pageId,
-        nodeId,
-        __uni_element: true
-      };
+      return serialize(el, uniElement ? "UniElement" : "ComponentPublicInstance");
     } else {
       var newArg = {};
       Object.keys(arg).forEach((name) => {
@@ -4066,7 +5599,9 @@ const uni$1 = /* @__PURE__ */ Object.defineProperty({
   $once,
   __log__,
   addInterceptor,
+  chooseLocation,
   closeDialogPage,
+  closeNativeDialogPage,
   createCanvasContextAsync,
   createSelectorQuery,
   env,
@@ -4074,6 +5609,7 @@ const uni$1 = /* @__PURE__ */ Object.defineProperty({
   getEnterOptionsSync,
   getLaunchOptionsSync,
   getPerformance,
+  hideActionSheet2,
   hideTabBar,
   hideTabBarRedDot,
   initUTSClassName,
@@ -4099,6 +5635,7 @@ const uni$1 = /* @__PURE__ */ Object.defineProperty({
   setTabBarBadge,
   setTabBarItem,
   setTabBarStyle,
+  showActionSheet2,
   showTabBar,
   showTabBarRedDot,
   startPullDownRefresh,

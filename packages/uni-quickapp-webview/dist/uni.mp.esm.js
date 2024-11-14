@@ -1,7 +1,90 @@
 import { SLOT_DEFAULT_NAME, EventChannel, invokeArrayFns, MINI_PROGRAM_PAGE_RUNTIME_HOOKS, ON_LOAD, ON_SHOW, ON_HIDE, ON_UNLOAD, ON_RESIZE, ON_TAB_ITEM_TAP, ON_REACH_BOTTOM, ON_PULL_DOWN_REFRESH, ON_ADD_TO_FAVORITES, isUniLifecycleHook, ON_READY, once, ON_LAUNCH, ON_ERROR, ON_THEME_CHANGE, ON_PAGE_NOT_FOUND, ON_UNHANDLE_REJECTION, addLeadingSlash, stringifyQuery, customizeEvent } from '@dcloudio/uni-shared';
-import { isArray, isFunction, hasOwn, extend, isPlainObject, isObject } from '@vue/shared';
-import { ref, nextTick, findComponentPropsData, toRaw, updateProps, hasQueueJob, invalidateJob, devtoolsComponentAdded, getExposeProxy, isRef, pruneComponentPropsCache } from 'vue';
+import { hasOwn, isArray, isFunction, extend, isPlainObject, isObject } from '@vue/shared';
+import { nextTick, ref, findComponentPropsData, toRaw, updateProps, hasQueueJob, invalidateJob, devtoolsComponentAdded, getExposeProxy, pruneComponentPropsCache } from 'vue';
 import { normalizeLocale, LOCALE_EN } from '@dcloudio/uni-i18n';
+
+function initVueIds(vueIds, mpInstance) {
+    if (!vueIds) {
+        return;
+    }
+    const ids = vueIds.split(',');
+    const len = ids.length;
+    if (len === 1) {
+        mpInstance._$vueId = ids[0];
+    }
+    else if (len === 2) {
+        mpInstance._$vueId = ids[0];
+        mpInstance._$vuePid = ids[1];
+    }
+}
+const EXTRAS = ['externalClasses'];
+function initExtraOptions(miniProgramComponentOptions, vueOptions) {
+    EXTRAS.forEach((name) => {
+        if (hasOwn(vueOptions, name)) {
+            miniProgramComponentOptions[name] = vueOptions[name];
+        }
+    });
+}
+function initWxsCallMethods(methods, wxsCallMethods) {
+    if (!isArray(wxsCallMethods)) {
+        return;
+    }
+    wxsCallMethods.forEach((callMethod) => {
+        methods[callMethod] = function (args) {
+            return this.$vm[callMethod](args);
+        };
+    });
+}
+function selectAllComponents(mpInstance, selector, $refs) {
+    const components = mpInstance.selectAllComponents(selector);
+    components.forEach((component) => {
+        const ref = component.properties.uR;
+        $refs[ref] = component.$vm || component;
+    });
+}
+function initRefs(instance, mpInstance) {
+    Object.defineProperty(instance, 'refs', {
+        get() {
+            const $refs = {};
+            selectAllComponents(mpInstance, '.r', $refs);
+            const forComponents = mpInstance.selectAllComponents('.r-i-f');
+            forComponents.forEach((component) => {
+                const ref = component.properties.uR;
+                if (!ref) {
+                    return;
+                }
+                if (!$refs[ref]) {
+                    $refs[ref] = [];
+                }
+                $refs[ref].push(component.$vm || component);
+            });
+            return $refs;
+        },
+    });
+}
+function nextSetDataTick(mpInstance, fn) {
+    // 随便设置一个字段来触发回调（部分平台必须有字段才可以，比如头条）
+    mpInstance.setData({ r1: 1 }, () => fn());
+}
+function initSetRef(mpInstance) {
+    if (!mpInstance._$setRef) {
+        mpInstance._$setRef = (fn) => {
+            nextTick(() => nextSetDataTick(mpInstance, fn));
+        };
+    }
+}
+let triggerEventId = 0;
+const triggerEventDetails = {};
+function wrapTriggerEventArgs(detail, options) {
+    triggerEventId++;
+    triggerEventDetails[triggerEventId] = detail;
+    return [triggerEventId, options];
+}
+function getTriggerEventDetail(eventId) {
+    const detail = triggerEventDetails[eventId];
+    delete triggerEventDetails[eventId];
+    return detail;
+}
 
 const MP_METHODS = [
     'createSelectorQuery',
@@ -28,6 +111,9 @@ function initBaseInstance(instance, options) {
     ctx.$mpType = options.mpType;
     ctx.$mpPlatform = "quickapp-webview";
     ctx.$scope = options.mpInstance;
+    {
+        ctx.$getTriggerEventDetail = getTriggerEventDetail;
+    }
     // TODO @deprecated
     ctx.$mp = {};
     if (__VUE_OPTIONS_API__) {
@@ -299,77 +385,6 @@ function initLocale(appVm) {
     });
 }
 
-function initVueIds(vueIds, mpInstance) {
-    if (!vueIds) {
-        return;
-    }
-    const ids = vueIds.split(',');
-    const len = ids.length;
-    if (len === 1) {
-        mpInstance._$vueId = ids[0];
-    }
-    else if (len === 2) {
-        mpInstance._$vueId = ids[0];
-        mpInstance._$vuePid = ids[1];
-    }
-}
-const EXTRAS = ['externalClasses'];
-function initExtraOptions(miniProgramComponentOptions, vueOptions) {
-    EXTRAS.forEach((name) => {
-        if (hasOwn(vueOptions, name)) {
-            miniProgramComponentOptions[name] = vueOptions[name];
-        }
-    });
-}
-function initWxsCallMethods(methods, wxsCallMethods) {
-    if (!isArray(wxsCallMethods)) {
-        return;
-    }
-    wxsCallMethods.forEach((callMethod) => {
-        methods[callMethod] = function (args) {
-            return this.$vm[callMethod](args);
-        };
-    });
-}
-function selectAllComponents(mpInstance, selector, $refs) {
-    const components = mpInstance.selectAllComponents(selector);
-    components.forEach((component) => {
-        const ref = component.properties.uR;
-        $refs[ref] = component.$vm || component;
-    });
-}
-function initRefs(instance, mpInstance) {
-    Object.defineProperty(instance, 'refs', {
-        get() {
-            const $refs = {};
-            selectAllComponents(mpInstance, '.r', $refs);
-            const forComponents = mpInstance.selectAllComponents('.r-i-f');
-            forComponents.forEach((component) => {
-                const ref = component.properties.uR;
-                if (!ref) {
-                    return;
-                }
-                if (!$refs[ref]) {
-                    $refs[ref] = [];
-                }
-                $refs[ref].push(component.$vm || component);
-            });
-            return $refs;
-        },
-    });
-}
-function nextSetDataTick(mpInstance, fn) {
-    // 随便设置一个字段来触发回调（部分平台必须有字段才可以，比如头条）
-    mpInstance.setData({ r1: 1 }, () => fn());
-}
-function initSetRef(mpInstance) {
-    if (!mpInstance._$setRef) {
-        mpInstance._$setRef = (fn) => {
-            nextTick(() => nextSetDataTick(mpInstance, fn));
-        };
-    }
-}
-
 const builtInProps = [
     // 百度小程序,快手小程序自定义组件不支持绑定动态事件，动态dataset，故通过props传递事件信息
     // event-opts
@@ -398,20 +413,23 @@ function initDefaultProps(options, isBehavior = false) {
             };
         });
         // 小程序不能直接定义 $slots 的 props，所以通过 vueSlots 转换到 $slots
+        function observerSlots(newVal) {
+            const $slots = Object.create(null);
+            newVal &&
+                newVal.forEach((slotName) => {
+                    $slots[slotName] = true;
+                });
+            this.setData({
+                $slots,
+            });
+        }
         properties.uS = {
             type: null,
             value: [],
-            observer: function (newVal) {
-                const $slots = Object.create(null);
-                newVal &&
-                    newVal.forEach((slotName) => {
-                        $slots[slotName] = true;
-                    });
-                this.setData({
-                    $slots,
-                });
-            },
         };
+        {
+            properties.uS.observer = observerSlots;
+        }
     }
     if (options.behaviors) {
         // wx://form-field
@@ -501,14 +519,14 @@ function initPageProps({ properties }, rawProps) {
 function findPropsData(properties, isPage) {
     return ((isPage
         ? findPagePropsData(properties)
-        : findComponentPropsData(properties.uP)) || {});
+        : findComponentPropsData(resolvePropValue(properties.uP))) || {});
 }
 function findPagePropsData(properties) {
     const propsData = {};
     if (isPlainObject(properties)) {
         Object.keys(properties).forEach((name) => {
             if (builtInProps.indexOf(name) === -1) {
-                propsData[name] = properties[name];
+                propsData[name] = resolvePropValue(properties[name]);
             }
         });
     }
@@ -530,6 +548,9 @@ function initFormField(vm) {
         });
     }
 }
+function resolvePropValue(prop) {
+    return prop;
+}
 
 function initData(_) {
     return {};
@@ -541,11 +562,11 @@ function initPropsObserver(componentOptions) {
             return;
         }
         if (this.$vm) {
-            updateComponentProps(up, this.$vm.$);
+            updateComponentProps(resolvePropValue(up), this.$vm.$);
         }
-        else if (this.properties.uT === 'm') {
+        else if (resolvePropValue(this.properties.uT) === 'm') {
             // 小程序组件
-            updateMiniProgramComponentProperties(up, this);
+            updateMiniProgramComponentProperties(resolvePropValue(up), this);
         }
     };
     {
@@ -740,7 +761,18 @@ const MPComponent = Component;
 function initTriggerEvent(mpInstance) {
     const oldTriggerEvent = mpInstance.triggerEvent;
     const newTriggerEvent = function (event, ...args) {
-        return oldTriggerEvent.apply(mpInstance, [customizeEvent(event), ...args]);
+        {
+            if (event !== '__l' && event !== '__e') {
+                // 忽略 handleLink，还有其他内置事件吗？
+                // triggerEvent的参数被序列化，导致vue的响应式数据对比始终不相等，从而陷入死循环
+                // 比如 uni-ui 的 collapse 组件的v-model
+                args = wrapTriggerEventArgs(args[0], args[1]);
+            }
+        }
+        return oldTriggerEvent.apply(mpInstance, [
+            customizeEvent(event),
+            ...args,
+        ]);
     };
     // 京东小程序triggerEvent为只读属性
     try {
@@ -779,114 +811,12 @@ Component = function (options) {
     return MPComponent(options);
 };
 
-function provide(instance, key, value) {
-    if (!instance) {
-        if ((process.env.NODE_ENV !== 'production')) {
-            console.warn(`provide() can only be used inside setup().`);
-        }
-    }
-    else {
-        let provides = instance.provides;
-        // by default an instance inherits its parent's provides object
-        // but when it needs to provide values of its own, it creates its
-        // own provides object using parent provides object as prototype.
-        // this way in `inject` we can simply look up injections from direct
-        // parent and let the prototype chain do the work.
-        const parentProvides = instance.parent && instance.parent.provides;
-        if (parentProvides === provides) {
-            provides = instance.provides = Object.create(parentProvides);
-        }
-        // TS doesn't allow symbol as index type
-        provides[key] = value;
-    }
-}
-function initProvide(instance) {
-    const provideOptions = instance.$options.provide;
-    if (!provideOptions) {
-        return;
-    }
-    const provides = isFunction(provideOptions)
-        ? provideOptions.call(instance)
-        : provideOptions;
-    const internalInstance = instance.$;
-    for (const key in provides) {
-        provide(internalInstance, key, provides[key]);
-    }
-}
-function inject(instance, key, defaultValue, treatDefaultAsFactory = false) {
-    if (instance) {
-        // #2400
-        // to support `app.use` plugins,
-        // fallback to appContext's `provides` if the intance is at root
-        const provides = instance.parent == null
-            ? instance.vnode.appContext && instance.vnode.appContext.provides
-            : instance.parent.provides;
-        if (provides && key in provides) {
-            // TS doesn't allow symbol as index type
-            return provides[key];
-        }
-        else if (arguments.length > 1) {
-            return treatDefaultAsFactory && isFunction(defaultValue)
-                ? defaultValue()
-                : defaultValue;
-        }
-        else if ((process.env.NODE_ENV !== 'production')) {
-            console.warn(`injection "${String(key)}" not found.`);
-        }
-    }
-    else if ((process.env.NODE_ENV !== 'production')) {
-        console.warn(`inject() can only be used inside setup() or functional components.`);
-    }
-}
-function initInjections(instance) {
-    const injectOptions = instance.$options.inject;
-    if (!injectOptions) {
-        return;
-    }
-    const internalInstance = instance.$;
-    const ctx = internalInstance.ctx;
-    if (isArray(injectOptions)) {
-        for (let i = 0; i < injectOptions.length; i++) {
-            const key = injectOptions[i];
-            ctx[key] = inject(internalInstance, key);
-        }
-    }
-    else {
-        for (const key in injectOptions) {
-            const opt = injectOptions[key];
-            let injected;
-            if (isObject(opt)) {
-                if ('default' in opt) {
-                    injected = inject(internalInstance, opt.from || key, opt.default, true /* treat default function as factory */);
-                }
-                else {
-                    injected = inject(internalInstance, opt.from || key);
-                }
-            }
-            else {
-                injected = inject(internalInstance, opt);
-            }
-            if (isRef(injected)) {
-                Object.defineProperty(ctx, key, {
-                    enumerable: true,
-                    configurable: true,
-                    get: () => injected.value,
-                    set: (v) => (injected.value = v),
-                });
-            }
-            else {
-                ctx[key] = injected;
-            }
-        }
-    }
-}
-
 // @ts-expect-error
 function initLifetimes$1({ mocks, isPage, initRelation, vueOptions, }) {
     function attached() {
         initSetRef(this);
         const properties = this.properties;
-        initVueIds(properties.uI, this);
+        initVueIds(resolvePropValue(properties.uI), this);
         const relationOptions = {
             vuePid: this._$vuePid,
         };
@@ -903,7 +833,7 @@ function initLifetimes$1({ mocks, isPage, initRelation, vueOptions, }) {
         }, {
             mpType,
             mpInstance,
-            slots: properties.uS || {}, // vueSlots
+            slots: resolvePropValue(properties.uS) || {}, // vueSlots
             parentComponent: relationOptions.parent && relationOptions.parent.$,
             onBeforeSetup(instance, options) {
                 initRefs(instance, mpInstance);
@@ -911,14 +841,17 @@ function initLifetimes$1({ mocks, isPage, initRelation, vueOptions, }) {
                 initComponentInstance(instance, options);
             },
         });
+        if (process.env.UNI_DEBUG) {
+            console.log('uni-app:[' +
+                Date.now() +
+                '][' +
+                (mpInstance.is || mpInstance.route) +
+                '][' +
+                this.$vm.$.uid +
+                ']attached');
+        }
         if (mpType === 'component') {
             initFormField(this.$vm);
-        }
-        if (mpType === 'page') {
-            if (__VUE_OPTIONS_API__) {
-                initInjections(this.$vm);
-                initProvide(this.$vm);
-            }
         }
         // 处理父子关系
         initRelation(this, relationOptions);
@@ -946,8 +879,20 @@ function initLifetimes(lifetimesOptions) {
                 if (this.pageinstance) {
                     this.__webviewId__ = this.pageinstance.__pageId__;
                 }
+                if (process.env.UNI_DEBUG) {
+                    console.log('uni-app:[' + Date.now() + '][' + (this.is || this.route) + ']ready');
+                }
                 this.$vm.$callCreatedHook();
                 nextSetDataTick(this, () => {
+                    {
+                        const vm = this.$vm;
+                        // 处理当前 vm 子
+                        if (vm._$childVues) {
+                            vm._$childVues.forEach(([createdVm]) => createdVm());
+                            vm._$childVues.forEach(([, mountedVm]) => mountedVm());
+                            delete vm._$childVues;
+                        }
+                    }
                     this.$vm.$callHook('mounted');
                     this.$vm.$callHook(ON_READY);
                 });
@@ -973,7 +918,8 @@ function initLifetimes(lifetimesOptions) {
 const mocks = ['nodeId', 'componentName', '_componentId', 'uniquePrefix'];
 
 function isPage(mpInstance) {
-    return !!(mpInstance._methods || mpInstance.methods).onLoad;
+    return (!!mpInstance.route ||
+        !!(mpInstance._methods || mpInstance.methods || mpInstance).onLoad);
 }
 function initRelation(mpInstance) {
     // triggerEvent 后，接收事件时机特别晚，已经到了 ready 之后
@@ -998,12 +944,15 @@ function handleLink({ detail: { nodeId, webviewId }, }) {
     const createdVm = function () {
         if (__VUE_OPTIONS_API__) {
             parentVm.$children.push(vm);
-            const parent = parentVm.$;
-            vm.$.provides = parent
-                ? parent.provides
-                : Object.create(parent.appContext.provides);
-            initInjections(vm);
-            initProvide(vm);
+        }
+        if (process.env.UNI_DEBUG) {
+            console.log('uni-app:[' +
+                Date.now() +
+                '][' +
+                (vm.$scope.is || vm.$scope.route) +
+                '][' +
+                vm.$.uid +
+                ']created');
         }
         vm.$callCreatedHook();
     };

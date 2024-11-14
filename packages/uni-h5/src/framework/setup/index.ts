@@ -46,11 +46,16 @@ import { usePageMeta, usePageRoute } from './provide'
 import {
   getEnterOptions,
   getPageInstanceByChild,
-  getPageInstanceByVm,
   initLaunchOptions,
 } from './utils'
 import type { RouteLocationNormalizedLoaded } from 'vue-router'
 import { useRouter } from 'vue-router'
+//#if _X_
+import {
+  DIALOG_TAG,
+  isDialogPageInstance,
+} from '../../x/framework/helpers/utils'
+//#endif
 
 interface SetupComponentOptions {
   clone?: boolean
@@ -123,7 +128,7 @@ export function setupPage(comp: any) {
       instance.attrs.__pageQuery = query
       if (__X__) {
         const pageInstance = getPageInstanceByChild(instance)
-        if (pageInstance.attrs.type === 'dialog') {
+        if (isDialogPageInstance(pageInstance)) {
           instance.attrs.__pageQuery = decodedQuery(
             parseQuery((pageInstance.attrs.route as string).split('?')[1] || '')
           )
@@ -155,20 +160,23 @@ export function setupPage(comp: any) {
       })
       onMounted(() => {
         if (__X__) {
+          if (instance.subTree.el) {
+            instance.subTree.el._page = instance.proxy?.$page as UniPage
+          }
           const pageInstance = getPageInstanceByChild(instance)
-          if (pageInstance.attrs.type === 'dialog') {
+          if (pageInstance.attrs['data-type'] === DIALOG_TAG) {
             const parentPage = (
               instance.proxy?.$page as UniPage
             ).getParentPage()
-            const parentPageInstance = parentPage
-              ? getPageInstanceByVm(parentPage.vm)
-              : null
+            const parentPageInstance = parentPage?.vm.$pageLayoutInstance
             if (parentPageInstance) {
               const dialogPages = parentPageInstance.$dialogPages.value
               if (dialogPages.length > 1) {
                 const preDialogPage = dialogPages[dialogPages.length - 2]
-                const { onHide } = preDialogPage.$vm.$
-                onHide && invokeArrayFns(onHide)
+                if (preDialogPage.$vm) {
+                  const { onHide } = preDialogPage.$vm.$
+                  onHide && invokeArrayFns(onHide)
+                }
               }
             }
           }
@@ -194,7 +202,7 @@ export function setupPage(comp: any) {
           instance.__isVisible = false
           if (__X__) {
             const pageInstance = getPageInstanceByChild(instance)
-            if (pageInstance.attrs.type !== 'dialog') {
+            if (pageInstance.attrs['data-type'] !== DIALOG_TAG) {
               const { onHide } = instance
               onHide && invokeArrayFns(onHide)
             }
@@ -208,6 +216,11 @@ export function setupPage(comp: any) {
       subscribeViewMethod(pageMeta.id!)
       onBeforeUnmount(() => {
         unsubscribeViewMethod(pageMeta.id!)
+        if (__X__) {
+          if (instance.subTree.el) {
+            instance.subTree.el._page = null
+          }
+        }
       })
 
       return query

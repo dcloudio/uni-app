@@ -6,8 +6,10 @@ interface Array<T> {
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *           "uniVer": "√",
-   *            "unixVer": "3.9+"
+   *           "uniVer": "x",
+   *           "unixVer": "3.90"
+   *           "uniUtsPlugin": "√",
+   *           "unixUtsPlugin": "3.90"
    *        },
    *        "ios": {
    *           "osVer": "12.0",
@@ -31,7 +33,9 @@ interface Array<T> {
    *        "android": {
    *           "osVer": "x",
    *           "uniVer": "x",
-   *            "unixVer": "x"
+   *           "unixVer": "3.90"
+   *           "uniUtsPlugin": "√",
+   *           "unixUtsPlugin": "3.90"
    *        },
    *        "ios": {
    *           "osVer": "x",
@@ -54,8 +58,10 @@ interface Array<T> {
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *           "uniVer": "3.9+",
-   *            "unixVer": "3.9+"
+   *           "uniVer": "x",
+   *           "unixVer": "3.90"
+   *           "uniUtsPlugin": "3.90",
+   *           "unixUtsPlugin": "3.90"
    *        },
    *        "ios": {
    *           "osVer": "x",
@@ -76,8 +82,10 @@ interface Array<T> {
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *           "uniVer": "√",
-   *           "unixVer": "3.9"
+   *           "uniVer": "x",
+   *           "unixVer": "3.90"
+   *           "uniUtsPlugin": "√",
+   *           "unixUtsPlugin": "3.90"
    *        },
    *        "ios": {
    *           "osVer": "x",
@@ -97,7 +105,9 @@ interface Array<T> {
    *        "android": {
    *           "osVer": "x",
    *           "uniVer": "x",
-   *            "unixVer": "x"
+   *           "unixVer": "x",
+   *           "uniUtsPlugin": "x",
+   *           "unixUtsPlugin": "x"
    *        },
    *        "ios": {
    *           "osVer": "x",
@@ -122,8 +132,10 @@ interface Array<T> {
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *           "uniVer": "√",
-   *           "unixVer": "3.9"
+   *           "uniVer": "x",
+   *           "unixVer": "3.90"
+   *           "uniUtsPlugin": "√",
+   *           "unixUtsPlugin": "3.90"
    *        },
    *        "ios": {
    *           "osVer": "x",
@@ -143,8 +155,10 @@ interface Array<T> {
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *           "uniVer": "√",
-   *            "unixVer": "3.9+"
+   *           "uniVer": "x",
+   *           "unixVer": "3.90"
+   *           "uniUtsPlugin": "√",
+   *           "unixUtsPlugin": "3.90"
    *        },
    *        "ios": {
    *           "osVer": "12.0",
@@ -168,8 +182,10 @@ interface Array<T> {
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *           "uniVer": "√",
-   *            "unixVer": "3.9+"
+   *           "uniVer": "x",
+   *           "unixVer": "3.90"
+   *           "uniUtsPlugin": "√",
+   *           "unixUtsPlugin": "3.90"
    *        },
    *        "ios": {
    *           "osVer": "12.0",
@@ -194,8 +210,10 @@ interface Array<T> {
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *           "uniVer": "√",
-   *            "unixVer": "3.9+"
+   *           "uniVer": "x",
+   *           "unixVer": "3.90"
+   *           "uniUtsPlugin": "√",
+   *           "unixUtsPlugin": "3.90"
    *        },
    *        "ios": {
    *           "osVer": "12.0",
@@ -219,8 +237,10 @@ interface Array<T> {
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *           "uniVer": "√",
-   *            "unixVer": "3.9+"
+   *           "uniVer": "x",
+   *           "unixVer": "3.90"
+   *           "uniUtsPlugin": "√",
+   *           "unixUtsPlugin": "3.90"
    *        },
    *        "ios": {
    *           "osVer": "12.0",
@@ -244,8 +264,10 @@ interface Array<T> {
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *           "uniVer": "√",
-   *            "unixVer": "3.9+"
+   *           "uniVer": "x",
+   *           "unixVer": "3.90"
+   *           "uniUtsPlugin": "√",
+   *           "unixUtsPlugin": "3.90"
    *        },
    *        "ios": {
    *           "osVer": "12.0",
@@ -264,8 +286,10 @@ interface Array<T> {
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *           "uniVer": "√",
-   *            "unixVer": "3.9+"
+   *           "uniVer": "x",
+   *           "unixVer": "3.90"
+   *           "uniUtsPlugin": "√",
+   *           "unixUtsPlugin": "3.90"
    *        },
    *        "ios": {
    *           "osVer": "12.0",
@@ -288,8 +312,10 @@ interface Array<T> {
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *           "uniVer": "√",
-   *            "unixVer": "3.9+"
+   *           "uniVer": "x",
+   *           "unixVer": "3.90"
+   *           "uniUtsPlugin": "√",
+   *           "unixUtsPlugin": "3.90"
    *        },
    *        "ios": {
    *           "osVer": "12.0",
@@ -313,8 +339,10 @@ interface Array<T> {
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *           "uniVer": "√",
-   *            "unixVer": "3.9+"
+   *           "uniVer": "x",
+   *           "unixVer": "3.90"
+   *           "uniUtsPlugin": "√",
+   *           "unixUtsPlugin": "3.90"
    *        },
    *        "ios": {
    *           "osVer": "12.0",
@@ -342,8 +370,10 @@ interface Array<T> {
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *           "uniVer": "√",
-   *            "unixVer": "3.9+"
+   *           "uniVer": "x",
+   *           "unixVer": "3.90"
+   *           "uniUtsPlugin": "√",
+   *           "unixUtsPlugin": "3.90"
    *        },
    *        "ios": {
    *           "osVer": "12.0",
@@ -368,8 +398,10 @@ interface Array<T> {
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *           "uniVer": "√",
-   *            "unixVer": "3.9+"
+   *           "uniVer": "x",
+   *           "unixVer": "3.90"
+   *           "uniUtsPlugin": "√",
+   *           "unixUtsPlugin": "3.90"
    *        },
    *        "ios": {
    *           "osVer": "x",
@@ -394,8 +426,10 @@ interface Array<T> {
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *           "uniVer": "√",
-   *            "unixVer": "3.9+"
+   *           "uniVer": "x",
+   *           "unixVer": "3.90"
+   *           "uniUtsPlugin": "√",
+   *           "unixUtsPlugin": "3.90"
    *        },
    *        "ios": {
    *           "osVer": "12.0",
@@ -419,8 +453,10 @@ interface Array<T> {
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *           "uniVer": "√",
-   *            "unixVer": "3.9+"
+   *           "uniVer": "x",
+   *           "unixVer": "3.90"
+   *           "uniUtsPlugin": "√",
+   *           "unixUtsPlugin": "3.90"
    *        },
    *        "ios": {
    *           "osVer": "12.0",
@@ -445,8 +481,10 @@ interface Array<T> {
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *           "uniVer": "√",
-   *            "unixVer": "3.9+"
+   *           "uniVer": "x",
+   *           "unixVer": "3.90"
+   *           "uniUtsPlugin": "√",
+   *           "unixUtsPlugin": "3.90"
    *        },
    *        "ios": {
    *           "osVer": "12.0",
@@ -470,8 +508,10 @@ interface Array<T> {
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *           "uniVer": "√",
-   *            "unixVer": "3.9+"
+   *           "uniVer": "x",
+   *           "unixVer": "3.90"
+   *           "uniUtsPlugin": "√",
+   *           "unixUtsPlugin": "3.90"
    *        },
    *        "ios": {
    *           "osVer": "12.0",
@@ -588,8 +628,10 @@ interface Array<T> {
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *           "uniVer": "√",
-   *            "unixVer": "3.9+"
+   *           "uniVer": "x",
+   *           "unixVer": "3.90"
+   *           "uniUtsPlugin": "√",
+   *           "unixUtsPlugin": "3.90"
    *        },
    *        "ios": {
    *           "osVer": "12.0",
@@ -618,8 +660,10 @@ interface Array<T> {
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *           "uniVer": "√",
-   *            "unixVer": "3.9+"
+   *           "uniVer": "x",
+   *           "unixVer": "3.90"
+   *           "uniUtsPlugin": "√",
+   *           "unixUtsPlugin": "3.90"
    *        },
    *        "ios": {
    *           "osVer": "12.0",
@@ -644,8 +688,10 @@ interface Array<T> {
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *           "uniVer": "√",
-   *            "unixVer": "3.9+"
+   *           "uniVer": "x",
+   *           "unixVer": "3.90"
+   *           "uniUtsPlugin": "√",
+   *           "unixUtsPlugin": "3.90"
    *        },
    *        "ios": {
    *           "osVer": "12.0",
@@ -673,8 +719,10 @@ interface Array<T> {
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *           "uniVer": "√",
-   *            "unixVer": "3.9+"
+   *           "uniVer": "x",
+   *           "unixVer": "3.90"
+   *           "uniUtsPlugin": "√",
+   *           "unixUtsPlugin": "3.90"
    *        },
    *        "ios": {
    *           "osVer": "12.0",
@@ -704,8 +752,10 @@ interface Array<T> {
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *           "uniVer": "√",
-   *            "unixVer": "3.9+"
+   *           "uniVer": "x",
+   *           "unixVer": "3.90"
+   *           "uniUtsPlugin": "√",
+   *           "unixUtsPlugin": "3.90"
    *        },
    *        "ios": {
    *           "osVer": "12.0",
@@ -731,8 +781,10 @@ interface Array<T> {
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *           "uniVer": "√",
-   *            "unixVer": "3.9+"
+   *           "uniVer": "x",
+   *           "unixVer": "3.90"
+   *           "uniUtsPlugin": "√",
+   *           "unixUtsPlugin": "3.90"
    *        },
    *        "ios": {
    *           "osVer": "12.0",
@@ -759,8 +811,10 @@ interface Array<T> {
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *           "uniVer": "√",
-   *            "unixVer": "3.9+"
+   *           "uniVer": "x",
+   *           "unixVer": "3.90"
+   *           "uniUtsPlugin": "√",
+   *           "unixUtsPlugin": "3.90"
    *        },
    *        "ios": {
    *           "osVer": "12.0",
@@ -789,8 +843,10 @@ interface Array<T> {
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *           "uniVer": "√",
-   *            "unixVer": "3.9+"
+   *           "uniVer": "x",
+   *           "unixVer": "3.90"
+   *           "uniUtsPlugin": "√",
+   *           "unixUtsPlugin": "3.90"
    *        },
    *        "ios": {
    *           "osVer": "12.0",
@@ -815,8 +871,10 @@ interface Array<T> {
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *           "uniVer": "√",
-   *            "unixVer": "3.9+"
+   *           "uniVer": "x",
+   *           "unixVer": "3.90"
+   *           "uniUtsPlugin": "√",
+   *           "unixUtsPlugin": "3.90"
    *        },
    *        "ios": {
    *           "osVer": "12.0",
@@ -843,8 +901,10 @@ interface Array<T> {
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *           "uniVer": "√",
-   *            "unixVer": "3.9+"
+   *           "uniVer": "x",
+   *           "unixVer": "3.90"
+   *           "uniUtsPlugin": "√",
+   *           "unixUtsPlugin": "3.90"
    *        },
    *        "ios": {
    *           "osVer": "12.0",
@@ -873,8 +933,10 @@ interface Array<T> {
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *           "uniVer": "√",
-   *            "unixVer": "3.9+"
+   *           "uniVer": "x",
+   *           "unixVer": "3.90"
+   *           "uniUtsPlugin": "√",
+   *           "unixUtsPlugin": "3.90"
    *        },
    *        "ios": {
    *           "osVer": "12.0",
@@ -899,8 +961,10 @@ interface Array<T> {
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *           "uniVer": "√",
-   *            "unixVer": "3.9+"
+   *           "uniVer": "x",
+   *           "unixVer": "3.90"
+   *           "uniUtsPlugin": "√",
+   *           "unixUtsPlugin": "3.90"
    *        },
    *        "ios": {
    *           "osVer": "12.0",
@@ -1014,8 +1078,10 @@ interface Array<T> {
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *           "uniVer": "√",
-   *            "unixVer": "3.9+"
+   *           "uniVer": "x",
+   *           "unixVer": "3.90"
+   *           "uniUtsPlugin": "√",
+   *           "unixUtsPlugin": "3.90"
    *        },
    *        "ios": {
    *           "osVer": "12.0",
@@ -1044,8 +1110,10 @@ interface Array<T> {
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *           "uniVer": "√",
-   *            "unixVer": "3.9+"
+   *           "uniVer": "x",
+   *           "unixVer": "3.90"
+   *           "uniUtsPlugin": "√",
+   *           "unixUtsPlugin": "3.90"
    *        },
    *        "ios": {
    *           "osVer": "12.0",
@@ -1070,8 +1138,10 @@ interface Array<T> {
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *           "uniVer": "√",
-   *            "unixVer": "3.9+"
+   *           "uniVer": "x",
+   *           "unixVer": "3.90"
+   *           "uniUtsPlugin": "√",
+   *           "unixUtsPlugin": "3.90"
    *        },
    *        "ios": {
    *           "osVer": "12.0",
@@ -1098,8 +1168,10 @@ interface Array<T> {
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *           "uniVer": "√",
-   *            "unixVer": "3.9+"
+   *           "uniVer": "x",
+   *           "unixVer": "3.90"
+   *           "uniUtsPlugin": "√",
+   *           "unixUtsPlugin": "3.90"
    *        },
    *        "ios": {
    *           "osVer": "12.0",
@@ -1132,8 +1204,10 @@ interface Array<T> {
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *           "uniVer": "√",
-   *            "unixVer": "3.9+"
+   *           "uniVer": "x",
+   *           "unixVer": "3.90"
+   *           "uniUtsPlugin": "√",
+   *           "unixUtsPlugin": "3.90"
    *        },
    *        "ios": {
    *           "osVer": "12.0",
@@ -1160,8 +1234,10 @@ interface Array<T> {
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *           "uniVer": "√",
-   *            "unixVer": "3.9+"
+   *           "uniVer": "x",
+   *           "unixVer": "3.90"
+   *           "uniUtsPlugin": "√",
+   *           "unixUtsPlugin": "3.90"
    *        },
    *        "ios": {
    *           "osVer": "12.0",
@@ -1189,8 +1265,10 @@ interface Array<T> {
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *           "uniVer": "√",
-   *            "unixVer": "3.9+"
+   *           "uniVer": "x",
+   *           "unixVer": "3.90"
+   *           "uniUtsPlugin": "√",
+   *           "unixUtsPlugin": "3.90"
    *        },
    *        "ios": {
    *           "osVer": "12.0",
@@ -1225,8 +1303,10 @@ interface Array<T> {
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *           "uniVer": "√",
-   *            "unixVer": "3.9+"
+   *           "uniVer": "x",
+   *           "unixVer": "3.90"
+   *           "uniUtsPlugin": "√",
+   *           "unixUtsPlugin": "3.90"
    *        },
    *        "ios": {
    *           "osVer": "12.0",
@@ -1255,8 +1335,10 @@ interface Array<T> {
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *           "uniVer": "√",
-   *            "unixVer": "3.9+"
+   *           "uniVer": "x",
+   *           "unixVer": "3.90"
+   *           "uniUtsPlugin": "√",
+   *           "unixUtsPlugin": "3.90"
    *        },
    *        "ios": {
    *           "osVer": "12.0",
@@ -1384,8 +1466,10 @@ interface Array<T> {
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *           "uniVer": "√",
-   *            "unixVer": "3.9+"
+   *           "uniVer": "x",
+   *           "unixVer": "3.90"
+   *           "uniUtsPlugin": "√",
+   *           "unixUtsPlugin": "3.90"
    *        },
    *        "ios": {
    *           "osVer": "12.0",
@@ -1418,8 +1502,10 @@ interface Array<T> {
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *           "uniVer": "√",
-   *            "unixVer": "3.9+"
+   *           "uniVer": "x",
+   *           "unixVer": "3.90"
+   *           "uniUtsPlugin": "√",
+   *           "unixUtsPlugin": "3.90"
    *        },
    *        "ios": {
    *           "osVer": "12.0",
@@ -1446,8 +1532,10 @@ interface Array<T> {
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *           "uniVer": "√",
-   *            "unixVer": "3.9+"
+   *           "uniVer": "x",
+   *           "unixVer": "3.90"
+   *           "uniUtsPlugin": "√",
+   *           "unixUtsPlugin": "3.90"
    *        },
    *        "ios": {
    *           "osVer": "12.0",
@@ -1475,8 +1563,10 @@ reduceRight(callbackfn: (previousValue: T, currentValue: T) => T): T
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *           "uniVer": "√",
-   *            "unixVer": "3.9+"
+   *           "uniVer": "x",
+   *           "unixVer": "3.90"
+   *           "uniUtsPlugin": "√",
+   *           "unixUtsPlugin": "3.90"
    *        },
    *        "ios": {
    *           "osVer": "12.0",
@@ -1511,8 +1601,10 @@ reduceRight(callbackfn: (previousValue: T, currentValue: T) => T): T
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *           "uniVer": "√",
-   *            "unixVer": "3.9+"
+   *           "uniVer": "x",
+   *           "unixVer": "3.90"
+   *           "uniUtsPlugin": "√",
+   *           "unixUtsPlugin": "3.90"
    *        },
    *        "ios": {
    *           "osVer": "12.0",
@@ -1541,8 +1633,10 @@ reduceRight(callbackfn: (previousValue: T, currentValue: T) => T): T
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *           "uniVer": "√",
-   *            "unixVer": "3.9+"
+   *           "uniVer": "x",
+   *           "unixVer": "3.90"
+   *           "uniUtsPlugin": "√",
+   *           "unixUtsPlugin": "3.90"
    *        },
    *        "ios": {
    *           "osVer": "12.0",
@@ -1672,8 +1766,10 @@ reduceRight(callbackfn: (previousValue: T, currentValue: T) => T): T
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *           "uniVer": "√",
-   *            "unixVer": "3.9+"
+   *           "uniVer": "x",
+   *           "unixVer": "3.90"
+   *           "uniUtsPlugin": "√",
+   *           "unixUtsPlugin": "3.90"
    *        },
    *        "ios": {
    *           "osVer": "12.0",
@@ -1701,8 +1797,10 @@ reduceRight(callbackfn: (previousValue: T, currentValue: T) => T): T
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *           "uniVer": "√",
-   *            "unixVer": "3.9+"
+   *           "uniVer": "x",
+   *           "unixVer": "3.90"
+   *           "uniUtsPlugin": "√",
+   *           "unixUtsPlugin": "3.90"
    *        },
    *        "ios": {
    *           "osVer": "12.0",
@@ -1730,8 +1828,10 @@ reduceRight(callbackfn: (previousValue: T, currentValue: T) => T): T
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *           "uniVer": "√",
-   *            "unixVer": "3.9+"
+   *           "uniVer": "x",
+   *           "unixVer": "3.90"
+   *           "uniUtsPlugin": "√",
+   *           "unixUtsPlugin": "3.90"
    *        },
    *        "ios": {
    *           "osVer": "12.0",
@@ -1766,8 +1866,10 @@ reduceRight(callbackfn: (previousValue: T, currentValue: T) => T): T
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *           "uniVer": "√",
-   *            "unixVer": "3.9+"
+   *           "uniVer": "x",
+   *           "unixVer": "3.90"
+   *           "uniUtsPlugin": "√",
+   *           "unixUtsPlugin": "3.90"
    *        },
    *        "ios": {
    *           "osVer": "12.0",
@@ -1796,8 +1898,10 @@ reduceRight(callbackfn: (previousValue: T, currentValue: T) => T): T
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *           "uniVer": "√",
-   *            "unixVer": "3.9+"
+   *           "uniVer": "x",
+   *           "unixVer": "3.90",
+   *           "uniUtsPlugin": "√",
+   *           "unixUtsPlugin": "3.90"
    *        },
    *        "ios": {
    *           "osVer": "12.0",
@@ -1825,8 +1929,10 @@ reduceRight(callbackfn: (previousValue: T, currentValue: T) => T): T
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *           "uniVer": "√",
-   *            "unixVer": "3.9+"
+   *           "uniVer": "x",
+   *           "unixVer": "3.90",
+   *           "uniUtsPlugin": "√",
+   *           "unixUtsPlugin": "3.90"
    *        },
    *        "ios": {
    *           "osVer": "12.0",
@@ -1852,8 +1958,10 @@ reduceRight(callbackfn: (previousValue: T, currentValue: T) => T): T
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *           "uniVer": "√",
-   *            "unixVer": "3.9+"
+   *           "uniVer": "x",
+   *           "unixVer": "3.90",
+   *           "uniUtsPlugin": "√",
+   *           "unixUtsPlugin": "3.90"
    *        },
    *        "ios": {
    *           "osVer": "12.0",
@@ -1879,8 +1987,10 @@ reduceRight(callbackfn: (previousValue: T, currentValue: T) => T): T
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *           "uniVer": "√",
-   *            "unixVer": "3.9+"
+   *           "uniVer": "x",
+   *           "unixVer": "3.90",
+   *           "uniUtsPlugin": "√",
+   *           "unixUtsPlugin": "3.90"
    *        },
    *        "ios": {
    *           "osVer": "12.0",
@@ -1906,8 +2016,10 @@ reduceRight(callbackfn: (previousValue: T, currentValue: T) => T): T
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *           "uniVer": "√",
-   *            "unixVer": "3.9+"
+   *           "uniVer": "x",
+   *           "unixVer": "3.90",
+   *           "uniUtsPlugin": "√",
+   *           "unixUtsPlugin": "3.90"
    *        },
    *        "ios": {
    *           "osVer": "12.0",
@@ -1975,8 +2087,10 @@ interface ArrayConstructor {
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *           "uniVer": "√",
-   *            "unixVer": "3.9+"
+   *           "uniVer": "x",
+   *           "unixVer": "3.90",
+   *           "uniUtsPlugin": "√",
+   *           "unixUtsPlugin": "3.90"
    *        },
    *        "ios": {
    *           "osVer": "12.0",
@@ -2066,8 +2180,10 @@ interface ArrayConstructor {
    *    "app": {
    *        "android": {
    *           "osVer": "5.0",
-   *           "uniVer": "√",
-   *            "unixVer": "3.9+"
+   *           "uniVer": "x",
+   *           "unixVer": "3.90",
+   *           "uniUtsPlugin": "√",
+   *           "unixUtsPlugin": "3.90"
    *        },
    *        "ios": {
    *           "osVer": "12.0",

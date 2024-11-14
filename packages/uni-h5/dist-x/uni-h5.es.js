@@ -4,12 +4,12 @@ var __publicField = (obj, key, value) => {
   __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
   return value;
 };
-import { withModifiers, createVNode, getCurrentInstance, ref, defineComponent, openBlock, createElementBlock, onMounted, provide, computed, watch, onUnmounted, inject, onBeforeUnmount, mergeProps, reactive, injectHook, nextTick, createApp, createBlock, watchEffect, isVNode, withDirectives, vShow, renderList, Transition, isReactive, effectScope, Fragment, onActivated, withCtx, KeepAlive, resolveDynamicComponent, onBeforeMount, shallowRef, markRaw, Comment, h, createTextVNode, onBeforeActivate, onBeforeDeactivate, createElementVNode, normalizeStyle, renderSlot } from "vue";
-import { isArray, isString, extend, remove, stringifyStyle, parseStringStyle, isPlainObject as isPlainObject$1, isFunction, capitalize, camelize, hasOwn, isObject, toRawType, makeMap as makeMap$1, isPromise, hyphenate, invokeArrayFns as invokeArrayFns$1 } from "@vue/shared";
-import { once, UNI_STORAGE_LOCALE, I18N_JSON_DELIMITERS, Emitter, passive, initCustomDatasetOnce, resolveComponentInstance, normalizeStyles, addLeadingSlash, invokeArrayFns, removeLeadingSlash, resolveOwnerVm, resolveOwnerEl, ON_WXS_INVOKE_CALL_METHOD, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_SHOW, ON_HIDE, ON_PAGE_SCROLL, ON_REACH_BOTTOM, EventChannel, createRpx2Unit, defaultRpx2Unit, parseQuery, NAVBAR_HEIGHT, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, getLen, getCustomDataset, parseUrl, sortObject, ON_THEME_CHANGE, OFF_THEME_CHANGE, updateElementStyle, LINEFEED, ON_WEB_INVOKE_APP_SERVICE, formatDateTime, debounce, ON_BACK_PRESS, addFont, ON_NAVIGATION_BAR_CHANGE, scrollTo, RESPONSIVE_MIN_WIDTH, ON_UNLOAD, normalizeTitleColor, ON_REACH_BOTTOM_DISTANCE, SCHEME_RE, DATA_RE, PRIMARY_COLOR, isUniLifecycleHook, decodedQuery, ON_LOAD, UniLifecycleHooks, invokeCreateErrorHandler, invokeCreateVueAppHook, WEB_INVOKE_APPSERVICE, onCreateVueApp, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_PULL_DOWN_REFRESH, stringifyQuery as stringifyQuery$1 } from "@dcloudio/uni-shared";
+import { Comment, Fragment, KeepAlive, Transition, computed, createApp, createBlock, createCommentVNode, createElementBlock, createElementVNode, createTextVNode, createVNode, defineComponent, effectScope, getCurrentInstance, h, inject, injectHook, isReactive, isVNode, markRaw, mergeProps, nextTick, normalizeClass, normalizeStyle, onActivated, onBeforeActivate, onBeforeDeactivate, onBeforeMount, onBeforeUnmount, onMounted, onUnmounted, openBlock, provide, reactive, ref, renderList, renderSlot, resolveDynamicComponent, shallowRef, toDisplayString, vShow, watch, watchEffect, withCtx, withDirectives, withModifiers } from "vue";
+import { camelize, capitalize, extend, hasOwn, hyphenate, invokeArrayFns as invokeArrayFns$1, isArray, isFunction, isObject, isPlainObject as isPlainObject$1, isPromise, isString, makeMap as makeMap$1, parseStringStyle, remove, stringifyStyle, toRawType } from "@vue/shared";
+import { DATA_RE, Emitter, EventChannel, I18N_JSON_DELIMITERS, LINEFEED, NAVBAR_HEIGHT, OFF_HOST_THEME_CHANGE, OFF_THEME_CHANGE, ON_APP_ENTER_BACKGROUND, ON_APP_ENTER_FOREGROUND, ON_BACK_PRESS, ON_ERROR, ON_HIDE, ON_HOST_THEME_CHANGE, ON_LOAD, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_CHANGE, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_PAGE_NOT_FOUND, ON_PAGE_SCROLL, ON_PULL_DOWN_REFRESH, ON_REACH_BOTTOM, ON_REACH_BOTTOM_DISTANCE, ON_RESIZE, ON_SHOW, ON_THEME_CHANGE, ON_UNHANDLE_REJECTION, ON_UNLOAD, ON_WEB_INVOKE_APP_SERVICE, ON_WXS_INVOKE_CALL_METHOD, PRIMARY_COLOR, RESPONSIVE_MIN_WIDTH, SCHEME_RE, UNI_STORAGE_LOCALE, UniLifecycleHooks, WEB_INVOKE_APPSERVICE, addFont, addLeadingSlash, callOptions, createRpx2Unit, debounce, decodedQuery, defaultRpx2Unit, formatDateTime, getCustomDataset, getLen, initCustomDatasetOnce, invokeArrayFns, invokeCreateErrorHandler, invokeCreateVueAppHook, isSystemActionSheetDialogPage, isSystemDialogPage, isUniLifecycleHook, normalizeStyles, normalizeTitleColor, onCreateVueApp, once, parseQuery, parseUrl, passive, removeLeadingSlash, resolveComponentInstance, resolveOwnerEl, resolveOwnerVm, scrollTo, sortObject, stringifyQuery as stringifyQuery$1, updateElementStyle } from "@dcloudio/uni-shared";
 import { onCreateVueApp as onCreateVueApp2 } from "@dcloudio/uni-shared";
-import { useRoute, isNavigationFailure, RouterView, createRouter, createWebHistory, createWebHashHistory, useRouter } from "vue-router";
-import { initVueI18n, isI18nStr, LOCALE_EN, LOCALE_ES, LOCALE_FR, LOCALE_ZH_HANS, LOCALE_ZH_HANT } from "@dcloudio/uni-i18n";
+import { RouterView, createRouter, createWebHashHistory, createWebHistory, isNavigationFailure, useRoute, useRouter } from "vue-router";
+import { LOCALE_EN, LOCALE_ES, LOCALE_FR, LOCALE_ZH_HANS, LOCALE_ZH_HANT, initVueI18n, isI18nStr } from "@dcloudio/uni-i18n";
 function arrayPop(array) {
   if (array.length === 0) {
     return null;
@@ -1126,45 +1126,6 @@ const initI18nVideoMsgsOnce = /* @__PURE__ */ once(() => {
     );
   }
 });
-const initI18nChooseLocationMsgsOnce = /* @__PURE__ */ once(() => {
-  const name = "uni.chooseLocation.";
-  const keys = ["search", "cancel"];
-  if (__UNI_FEATURE_I18N_EN__) {
-    useI18n().add(
-      LOCALE_EN,
-      normalizeMessages(name, keys, ["Find Place", "Cancel"]),
-      false
-    );
-  }
-  if (__UNI_FEATURE_I18N_ES__) {
-    useI18n().add(
-      LOCALE_ES,
-      normalizeMessages(name, keys, ["Encontrar", "Cancelar"]),
-      false
-    );
-  }
-  if (__UNI_FEATURE_I18N_FR__) {
-    useI18n().add(
-      LOCALE_FR,
-      normalizeMessages(name, keys, ["Trouve", "Annuler"]),
-      false
-    );
-  }
-  if (__UNI_FEATURE_I18N_ZH_HANS__) {
-    useI18n().add(
-      LOCALE_ZH_HANS,
-      normalizeMessages(name, keys, ["搜索地点", "取消"]),
-      false
-    );
-  }
-  if (__UNI_FEATURE_I18N_ZH_HANT__) {
-    useI18n().add(
-      LOCALE_ZH_HANT,
-      normalizeMessages(name, keys, ["搜索地點", "取消"]),
-      false
-    );
-  }
-});
 function initNavigationBarI18n(navigationBar) {
   if (isEnableLocale()) {
     return defineI18nProperties(navigationBar, [
@@ -1655,7 +1616,6 @@ const ICON_PATH_WAITING = "M15.84 0.096q-4.224 0-7.872 2.176-3.552 2.112-5.632 5
 const ICON_PATH_WARN = "M15.808 0.16q-4.224 0-7.872 2.176-3.552 2.112-5.632 5.728-2.144 3.744-2.144 8.128 0 4.192 2.144 7.872 2.112 3.52 5.632 5.632 3.68 2.144 7.872 2.144 4.384 0 8.128-2.144 3.616-2.080 5.728-5.632 2.176-3.648 2.176-7.872 0-4.384-2.176-8.128-2.112-3.616-5.728-5.728-3.744-2.176-8.128-2.176zM15.136 8.672h1.728q0.128 0 0.224 0.096t0.096 0.256l-0.384 10.24q0 0.064-0.048 0.112t-0.112 0.048h-1.248q-0.096 0-0.144-0.048t-0.048-0.112l-0.384-10.24q0-0.16 0.096-0.256t0.224-0.096zM16 23.328q-0.48 0-0.832-0.352t-0.352-0.848 0.352-0.848 0.832-0.352 0.832 0.352 0.352 0.848-0.352 0.848-0.832 0.352z";
 const ICON_PATH_BACK = "M21.781 7.844l-9.063 8.594 9.063 8.594q0.25 0.25 0.25 0.609t-0.25 0.578q-0.25 0.25-0.578 0.25t-0.578-0.25l-9.625-9.125q-0.156-0.125-0.203-0.297t-0.047-0.359q0-0.156 0.047-0.328t0.203-0.297l9.625-9.125q0.25-0.25 0.578-0.25t0.578 0.25q0.25 0.219 0.25 0.578t-0.25 0.578z";
 const ICON_PATH_CLOSE = "M17.25 16.156l7.375-7.313q0.281-0.281 0.281-0.641t-0.281-0.641q-0.25-0.25-0.625-0.25t-0.625 0.25l-7.375 7.344-7.313-7.344q-0.25-0.25-0.625-0.25t-0.625 0.25q-0.281 0.25-0.281 0.625t0.281 0.625l7.313 7.344-7.375 7.344q-0.281 0.25-0.281 0.625t0.281 0.625q0.125 0.125 0.281 0.188t0.344 0.063q0.156 0 0.328-0.063t0.297-0.188l7.375-7.344 7.375 7.406q0.125 0.156 0.297 0.219t0.328 0.063q0.188 0 0.344-0.078t0.281-0.203q0.281-0.25 0.281-0.609t-0.281-0.641l-7.375-7.406z";
-const ICON_PATH_CONFIRM = "M31.562 4.9966666659375q0.435 0.399 0.435 0.87 0.036 0.58-0.399 0.98l-18.61 19.917q-0.145 0.145-0.327 0.217-0.073 0.037-0.145 0.11-0.254 0.035-0.472 0.035-0.29 0-0.544-0.036l-0.145-0.072q-0.109-0.073-0.217-0.182l-0.11-0.072L0.363 16.2786666659375q-0.327-0.399-0.363-0.907 0-0.544 0.363-1.016 0.435-0.326 0.961-0.362 0.527-0.036 0.962 0.362l9.722 9.542L29.712 5.0326666659375q0.399-0.363 0.943-0.363 0.544-0.036 0.907 0.327z";
 function createSvgIconVNode(path, color = "#000", size = 27) {
   return createVNode(
     "svg",
@@ -1871,7 +1831,7 @@ function createScrollListener({
   };
 }
 function normalizeRoute(toRoute) {
-  if (toRoute.indexOf("/") === 0) {
+  if (toRoute.indexOf("/") === 0 || toRoute.indexOf("uni:") === 0) {
     return toRoute;
   }
   let fromRoute = "";
@@ -2339,9 +2299,23 @@ function initOn() {
   on2(ON_APP_ENTER_BACKGROUND, onAppEnterBackground);
 }
 function onResize$1(res) {
-  var _a;
+  var _a, _b;
   const page = (_a = getCurrentPage()) == null ? void 0 : _a.vm;
   invokeHook(page, ON_RESIZE, res);
+  {
+    const dialogPages = page.$page.getDialogPages();
+    if (dialogPages.length > 0) {
+      invokeHook(dialogPages[dialogPages.length - 1].vm, ON_RESIZE, res);
+    }
+    const systemDialogPages = (_b = page.$pageLayoutInstance) == null ? void 0 : _b.$systemDialogPages.value;
+    if ((systemDialogPages == null ? void 0 : systemDialogPages.length) > 0) {
+      invokeHook(
+        systemDialogPages[systemDialogPages.length - 1].vm,
+        ON_RESIZE,
+        res
+      );
+    }
+  }
   UniServiceJSBridge.invokeOnCallback("onWindowResize", res);
 }
 function onAppEnterForeground(enterOptions2) {
@@ -2777,6 +2751,7 @@ class UniElement extends HTMLElement {
   constructor() {
     super();
     this._props = {};
+    this._page = null;
     this.__isUniElement = true;
   }
   attachVmProps(props2) {
@@ -2786,6 +2761,27 @@ class UniElement extends HTMLElement {
     const name = camelize(qualifiedName);
     const attr2 = name in this._props ? this._props[name] + "" : super.getAttribute(qualifiedName);
     return attr2 === void 0 ? null : attr2;
+  }
+  getPage() {
+    if (this._page) {
+      return this._page;
+    }
+    let parent = this.parentNode;
+    while (parent && !parent._page) {
+      parent = parent.parentNode;
+    }
+    return (parent == null ? void 0 : parent._page) || null;
+  }
+  getBoundingClientRectAsync(callback) {
+    var _a, _b;
+    if (callback) {
+      (_a = callback.success) == null ? void 0 : _a.call(callback, this.getBoundingClientRect());
+      (_b = callback.complate) == null ? void 0 : _b.call(callback);
+      return;
+    }
+    return new Promise((resolve, reject) => {
+      resolve(this.getBoundingClientRect());
+    });
   }
   get style() {
     const originalStyle = super.style;
@@ -2813,7 +2809,7 @@ class UniElement extends HTMLElement {
 const uniFormKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniForm" : "uf");
 class UniFormElement extends UniElement {
 }
-const index$y = /* @__PURE__ */ defineBuiltInComponent({
+const index$v = /* @__PURE__ */ defineBuiltInComponent({
   name: "Form",
   emits: ["submit", "reset"],
   rootElement: {
@@ -2883,7 +2879,7 @@ function useProvideLabel() {
 }
 class UniLabelElement extends UniElement {
 }
-const index$x = /* @__PURE__ */ defineBuiltInComponent({
+const index$u = /* @__PURE__ */ defineBuiltInComponent({
   name: "Label",
   props: labelProps,
   rootElement: {
@@ -3026,7 +3022,7 @@ const buttonProps = {
 };
 class UniButtonElement extends UniElement {
 }
-const index$w = /* @__PURE__ */ defineBuiltInComponent({
+const index$t = /* @__PURE__ */ defineBuiltInComponent({
   name: "Button",
   props: buttonProps,
   rootElement: {
@@ -3091,7 +3087,7 @@ const index$w = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const props$y = {
+const props$x = {
   disableScroll: {
     type: [Boolean, String],
     default: false
@@ -3127,7 +3123,7 @@ const indexX$4 = /* @__PURE__ */ defineBuiltInComponent({
   compatConfig: {
     MODE: 3
   },
-  props: props$y,
+  props: props$x,
   rootElement: {
     name: "uni-canvas",
     class: UniCanvasElement
@@ -3150,7 +3146,7 @@ const indexX$4 = /* @__PURE__ */ defineBuiltInComponent({
   }
 });
 const uniCheckGroupKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniCheckGroup" : "ucg");
-const props$x = {
+const props$w = {
   name: {
     type: String,
     default: ""
@@ -3158,9 +3154,9 @@ const props$x = {
 };
 class UniCheckboxGroupElement extends UniElement {
 }
-const index$v = /* @__PURE__ */ defineBuiltInComponent({
+const index$s = /* @__PURE__ */ defineBuiltInComponent({
   name: "CheckboxGroup",
-  props: props$x,
+  props: props$w,
   emits: ["change"],
   rootElement: {
     name: "uni-checkbox-group",
@@ -3220,7 +3216,7 @@ function useProvideCheckGroup(props2, trigger) {
   }
   return getFieldsValue;
 }
-const props$w = {
+const props$v = {
   checked: {
     type: [Boolean, String],
     default: false
@@ -3269,9 +3265,9 @@ const props$w = {
 };
 class UniCheckboxElement extends UniElement {
 }
-const index$u = /* @__PURE__ */ defineBuiltInComponent({
+const index$r = /* @__PURE__ */ defineBuiltInComponent({
   name: "Checkbox",
-  props: props$w,
+  props: props$v,
   rootElement: {
     name: "uni-checkbox",
     class: UniCheckboxElement
@@ -3412,7 +3408,7 @@ function useCheckboxInject(checkboxChecked, checkboxValue, reset) {
 let resetTimer;
 function iosHideKeyboard() {
 }
-const props$v = {
+const props$u = {
   cursorSpacing: {
     type: [Number, String],
     default: 0
@@ -5805,13 +5801,13 @@ const createMediaQueryObserver = /* @__PURE__ */ defineSyncApi("createMediaQuery
   }
   return new ServiceMediaQueryObserver(getCurrentPageVm());
 });
-let index$t = 0;
+let index$q = 0;
 let optionsCache = {};
 function operateEditor(componentId, pageId, type, options) {
   const data = { options };
   const needCallOptions = options && ("success" in options || "fail" in options || "complete" in options);
   if (needCallOptions) {
-    const callbackId = String(index$t++);
+    const callbackId = String(index$q++);
     data.callbackId = callbackId;
     optionsCache[callbackId] = options;
   }
@@ -6519,12 +6515,6 @@ const OpenDocumentProtocol = {
   fileType: String
 };
 const API_HIDE_KEYBOARD = "hideKeyboard";
-const API_CHOOSE_LOCATION = "chooseLocation";
-const ChooseLocationProtocol = {
-  keyword: String,
-  latitude: Number,
-  longitude: Number
-};
 const API_GET_LOCATION = "getLocation";
 const coordTypes$1 = ["wgs84", "gcj02"];
 const GetLocationOptions = {
@@ -8188,41 +8178,6 @@ function normalizeWindowTop(windowTop) {
 function normalizeWindowBottom(windowBottom) {
   return envMethod ? `calc(${windowBottom}px + ${envMethod}(safe-area-inset-bottom))` : `${windowBottom}px`;
 }
-const launchOptions = /* @__PURE__ */ createLaunchOptions();
-const enterOptions = /* @__PURE__ */ createLaunchOptions();
-function getEnterOptions() {
-  return extend({}, enterOptions);
-}
-function getLaunchOptions() {
-  return extend({}, launchOptions);
-}
-function initLaunchOptions({
-  path,
-  query
-}) {
-  extend(launchOptions, {
-    path,
-    query
-  });
-  extend(enterOptions, launchOptions);
-  return extend({}, launchOptions);
-}
-function getPageInstanceByVm(vm) {
-  var _a;
-  let pageInstance = vm.$.parent;
-  while (pageInstance && ((_a = pageInstance.type) == null ? void 0 : _a.name) !== "Page") {
-    pageInstance = pageInstance.parent;
-  }
-  return pageInstance;
-}
-function getPageInstanceByChild(child) {
-  var _a;
-  let pageInstance = child;
-  while (((_a = pageInstance.type) == null ? void 0 : _a.name) !== "Page") {
-    pageInstance = pageInstance.parent;
-  }
-  return pageInstance;
-}
 const initInnerAudioContextEventOnce = /* @__PURE__ */ once(() => {
   innerAudioContextEventNames.forEach((eventName) => {
     InnerAudioContext.prototype[eventName] = function(callback) {
@@ -9064,6 +9019,23 @@ const offThemeChange$1 = /* @__PURE__ */ defineOffApi(
     UniServiceJSBridge.off(ON_THEME_CHANGE, themeChangeCallBack);
   }
 );
+const hostThemeChangeCallBack = (res) => {
+  UniServiceJSBridge.invokeOnCallback(ON_HOST_THEME_CHANGE, {
+    hostTheme: res.theme
+  });
+};
+const onHostThemeChange = /* @__PURE__ */ defineOnApi(
+  ON_HOST_THEME_CHANGE,
+  () => {
+    UniServiceJSBridge.on(ON_THEME_CHANGE, hostThemeChangeCallBack);
+  }
+);
+const offHostThemeChange = /* @__PURE__ */ defineOnApi(
+  OFF_HOST_THEME_CHANGE,
+  () => {
+    UniServiceJSBridge.off(ON_THEME_CHANGE, hostThemeChangeCallBack);
+  }
+);
 const STORAGE_KEYS = "uni-storage-keys";
 function parseValue(value) {
   const types = ["object", "string", "number", "boolean", "undefined"];
@@ -9690,13 +9662,13 @@ function usePopup(props2, {
   });
   return visible;
 }
-let index$s = 0;
+let index$p = 0;
 let overflow = "";
 function preventScroll(prevent) {
-  let before = index$s;
-  index$s += prevent ? 1 : -1;
-  index$s = Math.max(0, index$s);
-  if (index$s > 0) {
+  let before = index$p;
+  index$p += prevent ? 1 : -1;
+  index$p = Math.max(0, index$p);
+  if (index$p > 0) {
     if (before === 0) {
       overflow = document.body.style.overflow;
       document.body.style.overflow = "hidden";
@@ -9710,7 +9682,7 @@ function usePreventScroll() {
   onMounted(() => preventScroll(true));
   onUnmounted(() => preventScroll(false));
 }
-const props$u = {
+const props$t = {
   src: {
     type: String,
     default: ""
@@ -9718,7 +9690,7 @@ const props$u = {
 };
 const ImageView = /* @__PURE__ */ defineSystemComponent({
   name: "ImageView",
-  props: props$u,
+  props: props$t,
   setup(props2) {
     const state2 = reactive({
       direction: "none"
@@ -9805,10 +9777,10 @@ const ImageView = /* @__PURE__ */ defineSystemComponent({
     };
   }
 });
-function _isSlot$2(s) {
+function _isSlot$1(s) {
   return typeof s === "function" || Object.prototype.toString.call(s) === "[object Object]" && !isVNode(s);
 }
-const props$t = {
+const props$s = {
   urls: {
     type: Array,
     default() {
@@ -9827,7 +9799,7 @@ function getIndex(props2) {
 }
 const ImagePreview = /* @__PURE__ */ defineSystemComponent({
   name: "ImagePreview",
-  props: props$t,
+  props: props$s,
   emits: ["close"],
   setup(props2, {
     emit: emit2
@@ -9905,7 +9877,7 @@ const ImagePreview = /* @__PURE__ */ defineSystemComponent({
           width: "100%",
           height: "100%"
         }
-      }, _isSlot$2(_slot = props2.urls.map((src) => createVNode(SwiperItem, null, {
+      }, _isSlot$1(_slot = props2.urls.map((src) => createVNode(SwiperItem, null, {
         default: () => [createVNode(ImageView, {
           "src": src
         }, null, 8, ["src"])]
@@ -9918,10 +9890,10 @@ const ImagePreview = /* @__PURE__ */ defineSystemComponent({
     };
   }
 });
-let state$2 = null;
+let state$1 = null;
 let imagePreviewInstance;
 const closePreviewImageView = () => {
-  state$2 = null;
+  state$1 = null;
   nextTick(() => {
     imagePreviewInstance == null ? void 0 : imagePreviewInstance.unmount();
     imagePreviewInstance = null;
@@ -9930,18 +9902,18 @@ const closePreviewImageView = () => {
 const previewImage = /* @__PURE__ */ defineAsyncApi(
   API_PREVIEW_IMAGE,
   (args, { resolve }) => {
-    if (!state$2) {
-      state$2 = reactive(args);
+    if (!state$1) {
+      state$1 = reactive(args);
       nextTick(() => {
         imagePreviewInstance = createRootApp(
           ImagePreview,
-          state$2,
+          state$1,
           closePreviewImageView
         );
         imagePreviewInstance.mount(ensureRoot("u-a-p"));
       });
     } else {
-      extend(state$2, args);
+      extend(state$1, args);
     }
     resolve();
   },
@@ -10595,11 +10567,11 @@ const onSocketOpen = /* @__PURE__ */ on("open");
 const onSocketError = /* @__PURE__ */ on("error");
 const onSocketMessage = /* @__PURE__ */ on("message");
 const onSocketClose = /* @__PURE__ */ on("close");
-let index$r = 0;
+let index$o = 0;
 function getJSONP(url, options, success, error) {
   var js = document.createElement("script");
   var callbackKey = options.callback || "callback";
-  var callbackName = "__uni_jsonp_callback_" + index$r++;
+  var callbackName = "__uni_jsonp_callback_" + index$o++;
   var timeout = options.timeout || 3e4;
   var timing;
   function end() {
@@ -11671,7 +11643,7 @@ function useContext(play, pause, stop, seek, sendDanmu, playbackRate, requestFul
     }
   }, id2, true);
 }
-const props$s = {
+const props$r = {
   id: {
     type: String,
     default: ""
@@ -11757,9 +11729,9 @@ const props$s = {
 };
 class UniVideoElement extends UniElement {
 }
-const index$q = /* @__PURE__ */ defineBuiltInComponent({
+const index$n = /* @__PURE__ */ defineBuiltInComponent({
   name: "Video",
-  props: props$s,
+  props: props$r,
   emits: ["fullscreenchange", "progress", "loadedmetadata", "waiting", "error", "play", "pause", "ended", "timeupdate"],
   rootElement: {
     name: "uni-video",
@@ -11999,7 +11971,7 @@ const onWebInvokeAppService = ({ name, arg }) => {
   }
 };
 const Invoke = /* @__PURE__ */ once(() => UniServiceJSBridge.on(ON_WEB_INVOKE_APP_SERVICE, onWebInvokeAppService));
-const props$r = {
+const props$q = {
   src: {
     type: String,
     default: ""
@@ -12010,7 +11982,7 @@ class UniWebViewElement extends UniElement {
 const indexX$3 = /* @__PURE__ */ defineBuiltInComponent({
   inheritAttrs: false,
   name: "WebView",
-  props: props$r,
+  props: props$q,
   rootElement: {
     name: "uni-web-view",
     class: UniWebViewElement
@@ -12059,7 +12031,7 @@ const indexX$3 = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const props$q = {
+const props$p = {
   id: {
     type: [Number, String],
     default: ""
@@ -12145,7 +12117,7 @@ function useMarkerLabelStyle(id2) {
 }
 const MapMarker = /* @__PURE__ */ defineSystemComponent({
   name: "MapMarker",
-  props: props$q,
+  props: props$p,
   setup(props2) {
     const id2 = String(!isNaN(Number(props2.id)) ? props2.id : "");
     const onMapReady = inject("onMapReady");
@@ -12427,9 +12399,9 @@ const MapMarker = /* @__PURE__ */ defineSystemComponent({
             }
             const a2 = marker.getPosition();
             const b = new maps2.LatLng(destination.latitude, destination.longitude);
-            const distance2 = maps2.geometry.spherical.computeDistanceBetween(a2, b) / 1e3;
+            const distance = maps2.geometry.spherical.computeDistanceBetween(a2, b) / 1e3;
             const time = (typeof duration === "number" ? duration : 1e3) / (1e3 * 60 * 60);
-            const speed = distance2 / time;
+            const speed = distance / time;
             const MapsEvent = maps2.event || maps2.Event;
             const movingEvent = MapsEvent.addListener(marker, "moving", (e2) => {
               const latLng = e2.latLng;
@@ -12522,7 +12494,7 @@ function hexToRgba(hex) {
     a: (`0x100${sa}` - 65536) / 255
   };
 }
-const props$p = {
+const props$o = {
   points: {
     type: Array,
     require: true
@@ -12568,7 +12540,7 @@ const props$p = {
 };
 const MapPolyline = /* @__PURE__ */ defineSystemComponent({
   name: "MapPolyline",
-  props: props$p,
+  props: props$o,
   setup(props2) {
     const onMapReady = inject("onMapReady");
     let polyline;
@@ -12657,7 +12629,7 @@ const MapPolyline = /* @__PURE__ */ defineSystemComponent({
     };
   }
 });
-const props$o = {
+const props$n = {
   latitude: {
     type: [Number, String],
     require: true
@@ -12689,7 +12661,7 @@ const props$o = {
 };
 const MapCircle = /* @__PURE__ */ defineSystemComponent({
   name: "MapCircle",
-  props: props$o,
+  props: props$n,
   setup(props2) {
     const onMapReady = inject("onMapReady");
     let circle;
@@ -12742,9 +12714,9 @@ const MapCircle = /* @__PURE__ */ defineSystemComponent({
         }
         if (getIsBMap()) {
           let pt = new maps2.Point(
-            // @ts-ignore
+            // @ts-expect-error
             circleOptions.center[0],
-            // @ts-ignore
+            // @ts-expect-error
             circleOptions.center[1]
           );
           circle = new maps2.Circle(pt, circleOptions.radius, circleOptions);
@@ -12765,7 +12737,7 @@ const MapCircle = /* @__PURE__ */ defineSystemComponent({
     };
   }
 });
-const props$n = {
+const props$m = {
   id: {
     type: [Number, String],
     default: ""
@@ -12789,7 +12761,7 @@ const props$n = {
 };
 const MapControl = /* @__PURE__ */ defineSystemComponent({
   name: "MapControl",
-  props: props$n,
+  props: props$m,
   setup(props2) {
     const imgPath = computed(() => getRealPath(props2.iconPath));
     const positionStyle = computed(() => {
@@ -12821,2140 +12793,6 @@ const MapControl = /* @__PURE__ */ defineSystemComponent({
     };
   }
 });
-const CONTEXT_ID = "MAP_LOCATION";
-const MapLocation = /* @__PURE__ */ defineSystemComponent({
-  name: "MapLocation",
-  setup() {
-    const state2 = reactive({
-      latitude: 0,
-      longitude: 0,
-      rotate: 0
-    });
-    {
-      let compassChangeHandler = function(res) {
-        state2.rotate = res.direction;
-      }, updateLocation = function() {
-        getLocation({
-          type: "gcj02",
-          success: (res) => {
-            state2.latitude = res.latitude;
-            state2.longitude = res.longitude;
-          },
-          complete: () => {
-            timer = setTimeout(updateLocation, 3e4);
-          }
-        });
-      }, removeLocation = function() {
-        if (timer) {
-          clearTimeout(timer);
-        }
-        offCompassChange(compassChangeHandler);
-      };
-      const onMapReady = inject("onMapReady");
-      let timer;
-      onCompassChange(compassChangeHandler);
-      onMapReady(updateLocation);
-      onUnmounted(removeLocation);
-      const addMapChidlContext = inject("addMapChidlContext");
-      const removeMapChidlContext = inject("removeMapChidlContext");
-      const context = {
-        id: CONTEXT_ID,
-        state: state2
-      };
-      addMapChidlContext(context);
-      onUnmounted(() => removeMapChidlContext(context));
-    }
-    return () => {
-      return state2.latitude ? createVNode(MapMarker, mergeProps({
-        "anchor": {
-          x: 0.5,
-          y: 0.5
-        },
-        "width": "44",
-        "height": "44",
-        "iconPath": ICON_PATH_ORIGIN
-      }, state2), null, 16, ["iconPath"]) : null;
-    };
-  }
-});
-const props$m = {
-  // 边框虚线，腾讯地图支持，google 高德 地图不支持，默认值为[0, 0] 为实线，非 [0, 0] 为虚线，H5 端无法像微信小程序一样控制虚线的间隔像素大小
-  dashArray: {
-    type: Array,
-    default: () => [0, 0]
-  },
-  // 经纬度数组，[{latitude: 0, longitude: 0}]
-  points: {
-    type: Array,
-    required: true
-  },
-  // 描边的宽度
-  strokeWidth: {
-    type: Number,
-    default: 1
-  },
-  // 描边的颜色，十六进制
-  strokeColor: {
-    type: String,
-    default: "#000000"
-  },
-  // 填充颜色，十六进制
-  fillColor: {
-    type: String,
-    default: "#00000000"
-  },
-  // 设置多边形 Z 轴数值
-  zIndex: {
-    type: Number,
-    default: 0
-  }
-};
-const MapPolygon = /* @__PURE__ */ defineSystemComponent({
-  name: "MapPolygon",
-  props: props$m,
-  setup(props2) {
-    let polygonIns;
-    const onMapReady = inject("onMapReady");
-    onMapReady((map, maps2, trigger) => {
-      function drawPolygon() {
-        const {
-          points,
-          strokeWidth,
-          strokeColor,
-          dashArray,
-          fillColor,
-          zIndex
-        } = props2;
-        const path = points.map((item) => {
-          const {
-            latitude,
-            longitude
-          } = item;
-          if (getIsAMap()) {
-            return [longitude, latitude];
-          } else if (getIsBMap()) {
-            return new maps2.Point(longitude, latitude);
-          } else {
-            return new maps2.LatLng(latitude, longitude);
-          }
-        });
-        const {
-          r: fcR,
-          g: fcG,
-          b: fcB,
-          a: fcA
-        } = hexToRgba(fillColor);
-        const {
-          r: scR,
-          g: scG,
-          b: scB,
-          a: scA
-        } = hexToRgba(strokeColor);
-        const polygonOptions = {
-          //多边形是否可点击。
-          clickable: true,
-          //鼠标在多边形内的光标样式。
-          cursor: "crosshair",
-          //多边形是否可编辑。
-          editable: false,
-          // 地图实例，即要显示多边形的地图
-          // @ts-ignore
-          map,
-          // 区域填充色
-          fillColor: "",
-          //多边形的路径，以经纬度坐标数组构成。
-          path,
-          // 区域边框
-          strokeColor: "",
-          //多边形的边框样式。实线是solid，虚线是dash。
-          strokeDashStyle: dashArray.some((item) => item > 0) ? "dash" : "solid",
-          //多边形的边框线宽。
-          strokeWeight: strokeWidth,
-          //多边形是否可见。
-          visible: true,
-          //多边形的zIndex值。
-          zIndex
-        };
-        if (maps2.Color) {
-          polygonOptions.fillColor = new maps2.Color(fcR, fcG, fcB, fcA);
-          polygonOptions.strokeColor = new maps2.Color(scR, scG, scB, scA);
-        } else {
-          polygonOptions.fillColor = `rgb(${fcR}, ${fcG}, ${fcB})`;
-          polygonOptions.fillOpacity = fcA;
-          polygonOptions.strokeColor = `rgb(${scR}, ${scG}, ${scB})`;
-          polygonOptions.strokeOpacity = scA;
-        }
-        if (polygonIns) {
-          polygonIns.setOptions(polygonOptions);
-          return;
-        }
-        if (getIsBMap()) {
-          polygonIns = new maps2.Polygon(polygonOptions.path, polygonOptions);
-          map.addOverlay(polygonIns);
-        } else {
-          polygonIns = new maps2.Polygon(polygonOptions);
-        }
-      }
-      drawPolygon();
-      watch(props2, drawPolygon);
-    });
-    onUnmounted(() => {
-      polygonIns.setMap(null);
-    });
-    return () => null;
-  }
-});
-const props$l = {
-  id: {
-    type: String,
-    default: ""
-  },
-  latitude: {
-    type: [String, Number],
-    default: 0
-  },
-  longitude: {
-    type: [String, Number],
-    default: 0
-  },
-  scale: {
-    type: [String, Number],
-    default: 16
-  },
-  markers: {
-    type: Array,
-    default() {
-      return [];
-    }
-  },
-  includePoints: {
-    type: Array,
-    default() {
-      return [];
-    }
-  },
-  polyline: {
-    type: Array,
-    default() {
-      return [];
-    }
-  },
-  circles: {
-    type: Array,
-    default() {
-      return [];
-    }
-  },
-  controls: {
-    type: Array,
-    default() {
-      return [];
-    }
-  },
-  showLocation: {
-    type: [Boolean, String],
-    default: false
-  },
-  libraries: {
-    type: Array,
-    default() {
-      return [];
-    }
-  },
-  polygons: {
-    type: Array,
-    default: () => []
-  }
-};
-function getPoints(points) {
-  const newPoints = [];
-  if (isArray(points)) {
-    points.forEach((point) => {
-      if (point && point.latitude && point.longitude) {
-        newPoints.push({
-          latitude: point.latitude,
-          longitude: point.longitude
-        });
-      }
-    });
-  }
-  return newPoints;
-}
-function getAMapPosition(maps2, latitude, longitude) {
-  return new maps2.LngLat(longitude, latitude);
-}
-function getBMapPosition(maps2, latitude, longitude) {
-  return new maps2.Point(longitude, latitude);
-}
-function getGoogleOrQQMapPosition(maps2, latitude, longitude) {
-  return new maps2.LatLng(latitude, longitude);
-}
-function getMapPosition(maps2, latitude, longitude) {
-  if (getIsBMap()) {
-    return getBMapPosition(maps2, latitude, longitude);
-  } else if (getIsAMap()) {
-    return getAMapPosition(maps2, latitude, longitude);
-  } else {
-    return getGoogleOrQQMapPosition(maps2, latitude, longitude);
-  }
-}
-function getLat(latLng) {
-  if ("getLat" in latLng) {
-    return latLng.getLat();
-  } else {
-    if (getIsBMap()) {
-      return latLng.lat;
-    }
-    return latLng.lat();
-  }
-}
-function getLng(latLng) {
-  if ("getLng" in latLng) {
-    return latLng.getLng();
-  } else {
-    if (getIsBMap()) {
-      return latLng.lng;
-    }
-    return latLng.lng();
-  }
-}
-function useMap(props2, rootRef, emit2) {
-  const trigger = useCustomEvent(rootRef, emit2);
-  const mapRef = ref(null);
-  let maps2;
-  let map;
-  const state2 = reactive({
-    latitude: Number(props2.latitude),
-    longitude: Number(props2.longitude),
-    includePoints: getPoints(props2.includePoints)
-  });
-  const onMapReadyCallbacks = [];
-  let isMapReady;
-  function onMapReady(callback) {
-    if (isMapReady) {
-      callback(map, maps2, trigger);
-    } else {
-      onMapReadyCallbacks.push(callback);
-    }
-  }
-  function emitMapReady() {
-    isMapReady = true;
-    onMapReadyCallbacks.forEach((callback) => callback(map, maps2, trigger));
-    onMapReadyCallbacks.length = 0;
-  }
-  let isBoundsReady;
-  const onBoundsReadyCallbacks = [];
-  function onBoundsReady(callback) {
-    if (isBoundsReady) {
-      callback();
-    } else {
-      onMapReadyCallbacks.push(callback);
-    }
-  }
-  const contexts = {};
-  function addMapChidlContext(context) {
-    contexts[context.id] = context;
-  }
-  function removeMapChidlContext(context) {
-    delete contexts[context.id];
-  }
-  watch([() => props2.latitude, () => props2.longitude], ([latitudeVlaue, longitudeVlaue]) => {
-    const latitude = Number(latitudeVlaue);
-    const longitude = Number(longitudeVlaue);
-    if (latitude !== state2.latitude || longitude !== state2.longitude) {
-      state2.latitude = latitude;
-      state2.longitude = longitude;
-      if (map) {
-        const centerPosition = getMapPosition(maps2, state2.latitude, state2.longitude);
-        map.setCenter(centerPosition);
-      }
-    }
-  });
-  watch(() => props2.includePoints, (points) => {
-    state2.includePoints = getPoints(points);
-    if (isBoundsReady) {
-      updateBounds();
-    }
-  }, {
-    deep: true
-  });
-  function emitBoundsReady() {
-    isBoundsReady = true;
-    onBoundsReadyCallbacks.forEach((callback) => callback());
-    onBoundsReadyCallbacks.length = 0;
-  }
-  function getMapInfo2() {
-    const center = map.getCenter();
-    return {
-      scale: map.getZoom(),
-      centerLocation: {
-        latitude: getLat(center),
-        longitude: getLng(center)
-      }
-    };
-  }
-  function updateCenter() {
-    const centerPosition = getMapPosition(maps2, state2.latitude, state2.longitude);
-    map.setCenter(centerPosition);
-  }
-  function updateBounds() {
-    if (getIsAMap()) {
-      const points = [];
-      state2.includePoints.forEach((point) => {
-        points.push([point.longitude, point.latitude]);
-      });
-      const bounds = new maps2.Bounds(...points);
-      map.setBounds(bounds);
-    } else if (getIsBMap())
-      ;
-    else {
-      const bounds = new maps2.LatLngBounds();
-      state2.includePoints.forEach(({
-        latitude,
-        longitude
-      }) => {
-        const latLng = new maps2.LatLng(latitude, longitude);
-        bounds.extend(latLng);
-      });
-      map.fitBounds(bounds);
-    }
-  }
-  function initMap() {
-    const mapEl = mapRef.value;
-    const center = getMapPosition(maps2, state2.latitude, state2.longitude);
-    const event = maps2.event || maps2.Event;
-    const map2 = new maps2.Map(mapEl, {
-      center,
-      zoom: Number(props2.scale),
-      // scrollwheel: false,
-      disableDoubleClickZoom: true,
-      mapTypeControl: false,
-      zoomControl: false,
-      scaleControl: false,
-      panControl: false,
-      fullscreenControl: false,
-      streetViewControl: false,
-      keyboardShortcuts: false,
-      minZoom: 5,
-      maxZoom: 18,
-      draggable: true
-    });
-    if (getIsBMap()) {
-      map2.centerAndZoom(center, Number(props2.scale));
-      map2.enableScrollWheelZoom();
-      map2._printLog && map2._printLog("uniapp");
-    }
-    watch(() => props2.scale, (scale) => {
-      map2.setZoom(Number(scale) || 16);
-    });
-    onBoundsReady(() => {
-      if (state2.includePoints.length) {
-        updateBounds();
-        updateCenter();
-      }
-    });
-    if (getIsBMap()) {
-      map2.addEventListener("click", () => {
-        trigger("tap", {}, {});
-        trigger("click", {}, {});
-      });
-      map2.addEventListener("dragstart", () => {
-        trigger("regionchange", {}, {
-          type: "begin",
-          causedBy: "gesture"
-        });
-      });
-      map2.addEventListener("dragend", () => {
-        trigger("regionchange", {}, extend({
-          type: "end",
-          causedBy: "drag"
-        }, getMapInfo2()));
-      });
-    } else {
-      const boundsChangedEvent = event.addListener(map2, "bounds_changed", () => {
-        boundsChangedEvent.remove();
-        emitBoundsReady();
-      });
-      event.addListener(map2, "click", () => {
-        trigger("tap", {}, {});
-        trigger("click", {}, {});
-      });
-      event.addListener(map2, "dragstart", () => {
-        trigger("regionchange", {}, {
-          type: "begin",
-          causedBy: "gesture"
-        });
-      });
-      event.addListener(map2, "dragend", () => {
-        trigger("regionchange", {}, extend({
-          type: "end",
-          causedBy: "drag"
-        }, getMapInfo2()));
-      });
-      const zoomChangedCallback = () => {
-        emit2("update:scale", map2.getZoom());
-        trigger("regionchange", {}, extend({
-          type: "end",
-          causedBy: "scale"
-        }, getMapInfo2()));
-      };
-      event.addListener(map2, "zoom_changed", zoomChangedCallback);
-      event.addListener(map2, "zoomend", zoomChangedCallback);
-      event.addListener(map2, "center_changed", () => {
-        const center2 = map2.getCenter();
-        const latitude = getLat(center2);
-        const longitude = getLng(center2);
-        emit2("update:latitude", latitude);
-        emit2("update:longitude", longitude);
-      });
-    }
-    return map2;
-  }
-  try {
-    const id2 = useContextInfo();
-    useSubscribe((type, data = {}) => {
-      switch (type) {
-        case "getCenterLocation":
-          onMapReady(() => {
-            const center = map.getCenter();
-            callOptions(data, {
-              latitude: getLat(center),
-              longitude: getLng(center),
-              errMsg: `${type}:ok`
-            });
-          });
-          break;
-        case "moveToLocation":
-          {
-            let latitude = Number(data.latitude);
-            let longitude = Number(data.longitude);
-            if (!latitude || !longitude) {
-              const context = contexts[CONTEXT_ID];
-              if (context) {
-                latitude = context.state.latitude;
-                longitude = context.state.longitude;
-              }
-            }
-            if (latitude && longitude) {
-              state2.latitude = latitude;
-              state2.longitude = longitude;
-              if (map) {
-                const centerPosition = getMapPosition(maps2, latitude, longitude);
-                map.setCenter(centerPosition);
-              }
-              onMapReady(() => {
-                callOptions(data, `${type}:ok`);
-              });
-            } else {
-              callOptions(data, `${type}:fail`);
-            }
-          }
-          break;
-        case "translateMarker":
-          onMapReady(() => {
-            const context = contexts[data.markerId];
-            if (context) {
-              try {
-                context.translate(data);
-              } catch (error) {
-                callOptions(data, `${type}:fail ${error.message}`);
-              }
-              callOptions(data, `${type}:ok`);
-            } else {
-              callOptions(data, `${type}:fail not found`);
-            }
-          });
-          break;
-        case "includePoints":
-          state2.includePoints = getPoints(data.includePoints);
-          if (isBoundsReady || getIsAMap()) {
-            updateBounds();
-          }
-          onBoundsReady(() => {
-            callOptions(data, `${type}:ok`);
-          });
-          break;
-        case "getRegion":
-          onBoundsReady(() => {
-            const latLngBounds = map.getBounds();
-            const southwest = latLngBounds.getSouthWest();
-            const northeast = latLngBounds.getNorthEast();
-            callOptions(data, {
-              southwest: {
-                latitude: getLat(southwest),
-                longitude: getLng(southwest)
-              },
-              northeast: {
-                latitude: getLat(northeast),
-                longitude: getLng(northeast)
-              },
-              errMsg: `${type}:ok`
-            });
-          });
-          break;
-        case "getScale":
-          onMapReady(() => {
-            callOptions(data, {
-              scale: map.getZoom(),
-              errMsg: `${type}:ok`
-            });
-          });
-          break;
-      }
-    }, id2, true);
-  } catch (error) {
-  }
-  onMounted(() => {
-    loadMaps(props2.libraries, (result) => {
-      maps2 = result;
-      map = initMap();
-      emitMapReady();
-      trigger("updated", {}, {});
-    });
-  });
-  provide("onMapReady", onMapReady);
-  provide("addMapChidlContext", addMapChidlContext);
-  provide("removeMapChidlContext", removeMapChidlContext);
-  return {
-    state: state2,
-    mapRef,
-    trigger
-  };
-}
-class UniMapElement extends UniElement {
-}
-const Map$1 = /* @__PURE__ */ defineBuiltInComponent({
-  name: "Map",
-  props: props$l,
-  emits: ["markertap", "labeltap", "callouttap", "controltap", "regionchange", "tap", "click", "updated", "update:scale", "update:latitude", "update:longitude"],
-  rootElement: {
-    name: "uni-map",
-    class: UniMapElement
-  },
-  setup(props2, {
-    emit: emit2,
-    slots
-  }) {
-    const rootRef = ref(null);
-    const {
-      mapRef,
-      trigger
-    } = useMap(props2, rootRef, emit2);
-    onMounted(() => {
-      const rootElement = rootRef.value;
-      rootElement.attachVmProps(props2);
-    });
-    return () => {
-      return createVNode("uni-map", {
-        "ref": rootRef,
-        "id": props2.id
-      }, [createVNode("div", {
-        "ref": mapRef,
-        "style": "width: 100%; height: 100%; position: relative; overflow: hidden"
-      }, null, 512), props2.markers.map((item) => createVNode(MapMarker, mergeProps({
-        "key": item.id
-      }, item), null, 16)), props2.polyline.map((item) => createVNode(MapPolyline, item, null, 16)), props2.circles.map((item) => createVNode(MapCircle, item, null, 16)), props2.controls.map((item) => createVNode(MapControl, mergeProps(item, {
-        "trigger": trigger
-      }), null, 16, ["trigger"])), props2.showLocation && createVNode(MapLocation, null, null), props2.polygons.map((item) => createVNode(MapPolygon, item, null, 16)), createVNode("div", {
-        "style": "position: absolute;top: 0;width: 100%;height: 100%;overflow: hidden;pointer-events: none;"
-      }, [slots.default && slots.default()])], 8, ["id"]);
-    };
-  }
-});
-const props$k = {
-  scrollTop: {
-    type: [String, Number],
-    default: 0
-  }
-};
-class UniCoverViewElement extends UniElement {
-}
-const index$p = /* @__PURE__ */ defineBuiltInComponent({
-  name: "CoverView",
-  compatConfig: {
-    MODE: 3
-  },
-  props: props$k,
-  rootElement: {
-    name: "uni-cover-view",
-    class: UniCoverViewElement
-  },
-  setup(props2, {
-    slots
-  }) {
-    const root = ref(null);
-    const content = ref(null);
-    watch(() => props2.scrollTop, (val) => {
-      setScrollTop(val);
-    });
-    function setScrollTop(val) {
-      let _content = content.value;
-      if (getComputedStyle(_content).overflowY === "scroll") {
-        _content.scrollTop = _upx2pxNum(val);
-      }
-    }
-    function _upx2pxNum(val) {
-      let _val = String(val);
-      if (/\d+[ur]px$/i.test(_val)) {
-        _val.replace(/\d+[ur]px$/i, (text2) => {
-          return String(uni.upx2px(parseFloat(text2)));
-        });
-      }
-      return parseFloat(_val) || 0;
-    }
-    onMounted(() => {
-      setScrollTop(props2.scrollTop);
-    });
-    onMounted(() => {
-      const rootElement = root.value;
-      rootElement.attachVmProps(props2);
-    });
-    return () => {
-      return createVNode("uni-cover-view", {
-        "scroll-top": props2.scrollTop,
-        "ref": root
-      }, [createVNode("div", {
-        "ref": content,
-        "class": "uni-cover-view"
-      }, [slots.default && slots.default()], 512)], 8, ["scroll-top"]);
-    };
-  }
-});
-class UniCoverImageElement extends UniElement {
-}
-const index$o = /* @__PURE__ */ defineBuiltInComponent({
-  name: "CoverImage",
-  compatConfig: {
-    MODE: 3
-  },
-  props: {
-    src: {
-      type: String,
-      default: ""
-    }
-  },
-  rootElement: {
-    name: "uni-cover-image",
-    class: UniCoverImageElement
-  },
-  emits: ["load", "error"],
-  setup(props2, {
-    emit: emit2
-  }) {
-    const root = ref(null);
-    const trigger = useCustomEvent(root, emit2);
-    function load($event) {
-      trigger("load", $event);
-    }
-    function error($event) {
-      trigger("error", $event);
-    }
-    onMounted(() => {
-      const rootElement = root.value;
-      rootElement.attachVmProps(props2);
-    });
-    return () => {
-      const {
-        src
-      } = props2;
-      return createVNode("uni-cover-image", {
-        "ref": root,
-        "src": src
-      }, [createVNode("div", {
-        "class": "uni-cover-image"
-      }, [src ? createVNode("img", {
-        "src": getRealPath(src),
-        "onLoad": load,
-        "onError": error
-      }, null, 40, ["src", "onLoad", "onError"]) : null])], 8, ["src"]);
-    };
-  }
-});
-function usePopupStyle(props2) {
-  const popupWidth = ref(0);
-  const popupHeight = ref(0);
-  const isDesktop = computed(
-    () => popupWidth.value >= 500 && popupHeight.value >= 500
-  );
-  const popupStyle = computed(() => {
-    const style = {
-      content: {
-        transform: "",
-        left: "",
-        top: "",
-        bottom: ""
-      },
-      triangle: {
-        left: "",
-        top: "",
-        bottom: "",
-        "border-width": "",
-        "border-color": ""
-      }
-    };
-    const contentStyle = style.content;
-    const triangleStyle = style.triangle;
-    const popover = props2.popover;
-    function getNumber(value) {
-      return Number(value) || 0;
-    }
-    if (isDesktop.value && popover) {
-      extend(triangleStyle, {
-        position: "absolute",
-        width: "0",
-        height: "0",
-        "margin-left": "-6px",
-        "border-style": "solid"
-      });
-      const popoverLeft = getNumber(popover.left);
-      const popoverWidth = getNumber(popover.width);
-      const popoverTop = getNumber(popover.top);
-      const popoverHeight = getNumber(popover.height);
-      const center = popoverLeft + popoverWidth / 2;
-      contentStyle.transform = "none !important";
-      const contentLeft = Math.max(0, center - 300 / 2);
-      contentStyle.left = `${contentLeft}px`;
-      let triangleLeft = Math.max(12, center - contentLeft);
-      triangleLeft = Math.min(300 - 12, triangleLeft);
-      triangleStyle.left = `${triangleLeft}px`;
-      const vcl = popupHeight.value / 2;
-      if (popoverTop + popoverHeight - vcl > vcl - popoverTop) {
-        contentStyle.top = "auto";
-        contentStyle.bottom = `${popupHeight.value - popoverTop + 6}px`;
-        triangleStyle.bottom = "-6px";
-        triangleStyle["border-width"] = "6px 6px 0 6px";
-        triangleStyle["border-color"] = "#fcfcfd transparent transparent transparent";
-      } else {
-        contentStyle.top = `${popoverTop + popoverHeight + 6}px`;
-        triangleStyle.top = "-6px";
-        triangleStyle["border-width"] = "0 6px 6px 6px";
-        triangleStyle["border-color"] = "transparent transparent #fcfcfd transparent";
-      }
-    }
-    return style;
-  });
-  onMounted(() => {
-    const fixSize = () => {
-      const { windowWidth, windowHeight, windowTop } = uni.getSystemInfoSync();
-      popupWidth.value = windowWidth;
-      popupHeight.value = windowHeight + (windowTop || 0);
-    };
-    window.addEventListener("resize", fixSize);
-    fixSize();
-    onUnmounted(() => {
-      window.removeEventListener("resize", fixSize);
-    });
-  });
-  return {
-    isDesktop,
-    popupStyle
-  };
-}
-function _isSlot$1(s) {
-  return typeof s === "function" || Object.prototype.toString.call(s) === "[object Object]" && !isVNode(s);
-}
-function getDefaultStartValue(props2) {
-  if (props2.mode === mode.TIME) {
-    return "00:00";
-  }
-  if (props2.mode === mode.DATE) {
-    const year = (/* @__PURE__ */ new Date()).getFullYear() - 150;
-    switch (props2.fields) {
-      case fields.YEAR:
-        return year.toString();
-      case fields.MONTH:
-        return year + "-01";
-      default:
-        return year + "-01-01";
-    }
-  }
-  return "";
-}
-function getDefaultEndValue(props2) {
-  if (props2.mode === mode.TIME) {
-    return "23:59";
-  }
-  if (props2.mode === mode.DATE) {
-    const year = (/* @__PURE__ */ new Date()).getFullYear() + 150;
-    switch (props2.fields) {
-      case fields.YEAR:
-        return year.toString();
-      case fields.MONTH:
-        return year + "-12";
-      default:
-        return year + "-12-31";
-    }
-  }
-  return "";
-}
-function getDateValueArray(props2, state2, valueStr, defaultValue) {
-  const splitStr = props2.mode === mode.DATE ? "-" : ":";
-  const array = props2.mode === mode.DATE ? state2.dateArray : state2.timeArray;
-  let max;
-  if (props2.mode === mode.TIME) {
-    max = 2;
-  } else {
-    switch (props2.fields) {
-      case fields.YEAR:
-        max = 1;
-        break;
-      case fields.MONTH:
-        max = 2;
-        break;
-      default:
-        max = 3;
-        break;
-    }
-  }
-  const inputArray = String(valueStr).split(splitStr);
-  let value = [];
-  for (let i = 0; i < max; i++) {
-    const val = inputArray[i];
-    value.push(array[i].indexOf(val));
-  }
-  if (value.indexOf(-1) >= 0) {
-    value = defaultValue ? getDateValueArray(props2, state2, defaultValue) : value.map(() => 0);
-  }
-  return value;
-}
-const mode = {
-  SELECTOR: "selector",
-  MULTISELECTOR: "multiSelector",
-  TIME: "time",
-  DATE: "date"
-  // 暂不支持城市选择
-  // REGION: 'region'
-};
-const fields = {
-  YEAR: "year",
-  MONTH: "month",
-  DAY: "day"
-};
-const selectorType = {
-  PICKER: "picker",
-  SELECT: "select"
-};
-const props$j = {
-  name: {
-    type: String,
-    default: ""
-  },
-  range: {
-    type: Array,
-    default() {
-      return [];
-    }
-  },
-  rangeKey: {
-    type: String,
-    default: ""
-  },
-  value: {
-    type: [Number, String, Array],
-    default: 0
-  },
-  mode: {
-    type: String,
-    default: mode.SELECTOR,
-    validator(val) {
-      return Object.values(mode).includes(val);
-    }
-  },
-  fields: {
-    type: String,
-    default: ""
-  },
-  start: {
-    type: String,
-    default: (props2) => {
-      return getDefaultStartValue(props2);
-    }
-  },
-  end: {
-    type: String,
-    default: (props2) => {
-      return getDefaultEndValue(props2);
-    }
-  },
-  disabled: {
-    type: [Boolean, String],
-    default: false
-  },
-  selectorType: {
-    type: String,
-    default: ""
-  }
-};
-class UniPickerElement extends UniElement {
-}
-const index$n = /* @__PURE__ */ defineBuiltInComponent({
-  name: "Picker",
-  compatConfig: {
-    MODE: 3
-  },
-  props: props$j,
-  emits: ["change", "cancel", "columnchange"],
-  rootElement: {
-    name: "uni-picker",
-    class: UniPickerElement
-  },
-  setup(props2, {
-    emit: emit2,
-    slots
-  }) {
-    initI18nPickerMsgsOnce();
-    const {
-      t: t2
-    } = useI18n();
-    const rootRef = ref(null);
-    const pickerRef = ref(null);
-    const selectRef = ref(null);
-    const inputRef = ref(null);
-    const pickerRender = ref(false);
-    const {
-      state: state2,
-      rangeArray
-    } = usePickerState(props2);
-    const trigger = useCustomEvent(rootRef, emit2);
-    const {
-      system,
-      selectorTypeComputed,
-      _show,
-      _l10nColumn,
-      _l10nItem,
-      _input,
-      _fixInputPosition,
-      _pickerViewChange,
-      _cancel,
-      _change,
-      _resetFormData,
-      _getFormData,
-      _createTime,
-      _createDate,
-      _setValueSync
-    } = usePickerMethods(props2, state2, trigger, rootRef, pickerRef, selectRef, inputRef);
-    usePickerWatch(state2, _cancel, _change);
-    usePickerForm(_resetFormData, _getFormData);
-    _createTime();
-    _createDate();
-    _setValueSync();
-    const popup = usePopupStyle(state2);
-    watchEffect(() => {
-      state2.isDesktop = popup.isDesktop.value;
-      state2.popupStyle = popup.popupStyle.value;
-    });
-    onBeforeUnmount(() => {
-      pickerRef.value && pickerRef.value.remove();
-    });
-    onMounted(() => {
-      pickerRender.value = true;
-    });
-    onMounted(() => {
-      const rootElement = rootRef.value;
-      rootElement.attachVmProps(props2);
-    });
-    return () => {
-      let _slot2;
-      const {
-        visible,
-        contentVisible,
-        valueArray,
-        popupStyle,
-        valueSync
-      } = state2;
-      const {
-        rangeKey,
-        mode: mode2,
-        start,
-        end
-      } = props2;
-      const booleanAttrs = useBooleanAttr(props2, "disabled");
-      return createVNode("uni-picker", mergeProps({
-        "ref": rootRef
-      }, booleanAttrs, {
-        "onClick": withWebEvent(_show)
-      }), [pickerRender.value ? createVNode("div", {
-        "ref": pickerRef,
-        "class": ["uni-picker-container", `uni-${mode2}-${selectorTypeComputed.value}`],
-        "onWheel": onEventPrevent,
-        "onTouchmove": onEventPrevent
-      }, [createVNode(Transition, {
-        "name": "uni-fade"
-      }, {
-        default: () => [withDirectives(createVNode("div", {
-          "class": "uni-mask uni-picker-mask",
-          "onClick": withWebEvent(_cancel),
-          "onMousemove": _fixInputPosition
-        }, null, 40, ["onClick", "onMousemove"]), [[vShow, visible]])]
-      }), !system.value ? createVNode("div", {
-        "class": [{
-          "uni-picker-toggle": visible
-        }, "uni-picker-custom"],
-        "style": popupStyle.content
-      }, [createVNode("div", {
-        "class": "uni-picker-header",
-        "onClick": onEventStop
-      }, [createVNode("div", {
-        "class": "uni-picker-action uni-picker-action-cancel",
-        "onClick": withWebEvent(_cancel)
-      }, [t2("uni.picker.cancel")], 8, ["onClick"]), createVNode("div", {
-        "class": "uni-picker-action uni-picker-action-confirm",
-        "onClick": _change
-      }, [t2("uni.picker.done")], 8, ["onClick"])], 8, ["onClick"]), contentVisible ? createVNode(PickerView, {
-        "value": _l10nColumn(valueArray),
-        "class": "uni-picker-content",
-        "onChange": _pickerViewChange
-      }, _isSlot$1(_slot2 = renderList(_l10nColumn(rangeArray.value), (rangeItem, index0) => {
-        let _slot;
-        return createVNode(PickerViewColumn, {
-          "key": index0
-        }, _isSlot$1(_slot = renderList(rangeItem, (item, index2) => createVNode("div", {
-          "key": index2,
-          "class": "uni-picker-item"
-        }, [typeof item === "object" ? item[rangeKey] || "" : _l10nItem(item, index0)]))) ? _slot : {
-          default: () => [_slot],
-          _: 1
-        });
-      })) ? _slot2 : {
-        default: () => [_slot2],
-        _: 1
-      }, 8, ["value", "onChange"]) : null, createVNode("div", {
-        "ref": selectRef,
-        "class": "uni-picker-select",
-        "onWheel": onEventStop,
-        "onTouchmove": onEventStop
-      }, [renderList(rangeArray.value[0], (item, index2) => createVNode("div", {
-        "key": index2,
-        "class": ["uni-picker-item", {
-          selected: valueArray[0] === index2
-        }],
-        "onClick": () => {
-          valueArray[0] = index2;
-          _change();
-        }
-      }, [typeof item === "object" ? item[rangeKey] || "" : item], 10, ["onClick"]))], 40, ["onWheel", "onTouchmove"]), createVNode("div", {
-        "style": popupStyle.triangle
-      }, null, 4)], 6) : null], 40, ["onWheel", "onTouchmove"]) : null, createVNode("div", null, [slots.default && slots.default()]), system.value ? createVNode("div", {
-        "class": "uni-picker-system",
-        "onMousemove": withWebEvent(_fixInputPosition)
-      }, [createVNode("input", {
-        "class": ["uni-picker-system_input", system.value],
-        "ref": inputRef,
-        "value": valueSync,
-        "type": mode2,
-        "tabindex": "-1",
-        "min": start,
-        "max": end,
-        "onChange": ($event) => {
-          _input($event);
-          onEventStop($event);
-        }
-      }, null, 42, ["value", "type", "min", "max", "onChange"])], 40, ["onMousemove"]) : null], 16, ["onClick"]);
-    };
-  }
-});
-function usePickerState(props2) {
-  const state2 = reactive({
-    valueSync: void 0,
-    visible: false,
-    contentVisible: false,
-    popover: null,
-    valueChangeSource: "",
-    timeArray: [],
-    dateArray: [],
-    valueArray: [],
-    oldValueArray: [],
-    isDesktop: false,
-    popupStyle: {
-      content: {},
-      triangle: {}
-    }
-  });
-  const rangeArray = computed(() => {
-    let val = props2.range;
-    switch (props2.mode) {
-      case mode.SELECTOR:
-        return [val];
-      case mode.MULTISELECTOR:
-        return val;
-      case mode.TIME:
-        return state2.timeArray;
-      case mode.DATE: {
-        const dateArray = state2.dateArray;
-        switch (props2.fields) {
-          case fields.YEAR:
-            return [dateArray[0]];
-          case fields.MONTH:
-            return [dateArray[0], dateArray[1]];
-          default:
-            return [dateArray[0], dateArray[1], dateArray[2]];
-        }
-      }
-    }
-    return [];
-  });
-  return {
-    state: state2,
-    rangeArray
-  };
-}
-const getiPadFlag = () => String(navigator.vendor).indexOf("Apple") === 0 && navigator.maxTouchPoints > 0;
-function useIsiPad() {
-  const isiPad = ref(false);
-  {
-    isiPad.value = getiPadFlag();
-  }
-  return isiPad;
-}
-const getSystem = () => {
-  if (/win|mac/i.test(navigator.platform)) {
-    if (navigator.vendor === "Google Inc.") {
-      return "chrome";
-    } else if (/Firefox/.test(navigator.userAgent)) {
-      return "firefox";
-    }
-  }
-  return "";
-};
-function useSystem() {
-  const _system = ref("");
-  {
-    _system.value = getSystem();
-  }
-  return _system;
-}
-let __contentVisibleDelay;
-function usePickerMethods(props2, state2, trigger, rootRef, pickerRef, selectRef, inputRef) {
-  const isiPad = useIsiPad();
-  const _system = useSystem();
-  const selectorTypeComputed = computed(() => {
-    const type = props2.selectorType;
-    if (Object.values(selectorType).includes(type)) {
-      return type;
-    }
-    return isiPad.value ? selectorType.PICKER : selectorType.SELECT;
-  });
-  const system = computed(() => {
-    if (props2.mode === mode.DATE && !Object.values(fields).includes(props2.fields) && state2.isDesktop) {
-      return _system.value;
-    }
-    return "";
-  });
-  const startArray = computed(() => {
-    return getDateValueArray(props2, state2, props2.start, getDefaultStartValue(props2));
-  });
-  const endArray = computed(() => {
-    return getDateValueArray(props2, state2, props2.end, getDefaultEndValue(props2));
-  });
-  function _show(event) {
-    if (props2.disabled) {
-      return;
-    }
-    state2.valueChangeSource = "";
-    let $picker = pickerRef.value;
-    let _currentTarget = event.currentTarget;
-    $picker.remove();
-    (document.querySelector("uni-app") || document.body).appendChild($picker);
-    $picker.style.display = "block";
-    const rect = _currentTarget.getBoundingClientRect();
-    state2.popover = {
-      top: rect.top,
-      left: rect.left,
-      width: rect.width,
-      height: rect.height
-    };
-    setTimeout(() => {
-      state2.visible = true;
-    }, 20);
-  }
-  function _getFormData() {
-    return {
-      value: state2.valueSync,
-      key: props2.name
-    };
-  }
-  function _resetFormData() {
-    switch (props2.mode) {
-      case mode.SELECTOR:
-        state2.valueSync = 0;
-        break;
-      case mode.MULTISELECTOR:
-        state2.valueSync = props2.value.map((val) => 0);
-        break;
-      case mode.DATE:
-      case mode.TIME:
-        state2.valueSync = "";
-        break;
-    }
-  }
-  function _createTime() {
-    let hours = [];
-    let minutes = [];
-    for (let i = 0; i < 24; i++) {
-      hours.push((i < 10 ? "0" : "") + i);
-    }
-    for (let i = 0; i < 60; i++) {
-      minutes.push((i < 10 ? "0" : "") + i);
-    }
-    state2.timeArray.push(hours, minutes);
-  }
-  function getYearStartEnd() {
-    let year = (/* @__PURE__ */ new Date()).getFullYear();
-    let start = year - 150;
-    let end = year + 150;
-    if (props2.start) {
-      const _year = new Date(props2.start).getFullYear();
-      if (!isNaN(_year) && _year < start) {
-        start = _year;
-      }
-    }
-    if (props2.end) {
-      const _year = new Date(props2.end).getFullYear();
-      if (!isNaN(_year) && _year > end) {
-        end = _year;
-      }
-    }
-    return {
-      start,
-      end
-    };
-  }
-  function _createDate() {
-    let years = [];
-    const year = getYearStartEnd();
-    for (let i = year.start, end = year.end; i <= end; i++) {
-      years.push(String(i));
-    }
-    let months = [];
-    for (let i = 1; i <= 12; i++) {
-      months.push((i < 10 ? "0" : "") + i);
-    }
-    let days = [];
-    for (let i = 1; i <= 31; i++) {
-      days.push((i < 10 ? "0" : "") + i);
-    }
-    state2.dateArray.push(years, months, days);
-  }
-  function _getTimeValue(val) {
-    return val[0] * 60 + val[1];
-  }
-  function _getDateValue(val) {
-    const DAY = 31;
-    return val[0] * DAY * 12 + (val[1] || 0) * DAY + (val[2] || 0);
-  }
-  function _cloneArray(val1, val2) {
-    for (let i = 0; i < val1.length && i < val2.length; i++) {
-      val1[i] = val2[i];
-    }
-  }
-  function _setValueSync() {
-    let val = props2.value;
-    switch (props2.mode) {
-      case mode.MULTISELECTOR:
-        {
-          if (!isArray(val)) {
-            val = state2.valueArray;
-          }
-          if (!isArray(state2.valueSync)) {
-            state2.valueSync = [];
-          }
-          const length = state2.valueSync.length = Math.max(val.length, props2.range.length);
-          for (let index2 = 0; index2 < length; index2++) {
-            const val0 = Number(val[index2]);
-            const val1 = Number(state2.valueSync[index2]);
-            const val2 = isNaN(val0) ? isNaN(val1) ? 0 : val1 : val0;
-            const maxVal = props2.range[index2] ? props2.range[index2].length - 1 : 0;
-            state2.valueSync.splice(index2, 1, val2 < 0 || val2 > maxVal ? 0 : val2);
-          }
-        }
-        break;
-      case mode.TIME:
-      case mode.DATE:
-        state2.valueSync = String(val);
-        break;
-      default: {
-        const valueSync = Number(val);
-        state2.valueSync = valueSync < 0 ? 0 : valueSync;
-        break;
-      }
-    }
-  }
-  function _setValueArray() {
-    let val = state2.valueSync;
-    let valueArray;
-    switch (props2.mode) {
-      case mode.MULTISELECTOR:
-        valueArray = [...val];
-        break;
-      case mode.TIME:
-        valueArray = getDateValueArray(props2, state2, val, formatDateTime({
-          mode: mode.TIME
-        }));
-        break;
-      case mode.DATE:
-        valueArray = getDateValueArray(props2, state2, val, formatDateTime({
-          mode: mode.DATE
-        }));
-        break;
-      default:
-        valueArray = [val];
-        break;
-    }
-    state2.oldValueArray = [...valueArray];
-    state2.valueArray = [...valueArray];
-  }
-  function _getValue() {
-    let val = state2.valueArray;
-    switch (props2.mode) {
-      case mode.SELECTOR:
-        return val[0];
-      case mode.MULTISELECTOR:
-        return val.map((val2) => val2);
-      case mode.TIME:
-        return state2.valueArray.map((val2, i) => state2.timeArray[i][val2]).join(":");
-      case mode.DATE:
-        return state2.valueArray.map((val2, i) => state2.dateArray[i][val2]).join("-");
-    }
-  }
-  function _change() {
-    _close();
-    state2.valueChangeSource = "click";
-    const value = _getValue();
-    state2.valueSync = isArray(value) ? value.map((val) => val) : value;
-    trigger("change", {}, {
-      value
-    });
-  }
-  function _cancel($event) {
-    if (system.value === "firefox" && $event) {
-      const {
-        top,
-        left,
-        width,
-        height
-      } = state2.popover;
-      const {
-        pageX,
-        pageY
-      } = $event;
-      if (pageX > left && pageX < left + width && pageY > top && pageY < top + height) {
-        return;
-      }
-    }
-    _close();
-    trigger("cancel", {}, {});
-  }
-  function _close() {
-    state2.visible = false;
-    setTimeout(() => {
-      let $picker = pickerRef.value;
-      $picker.remove();
-      rootRef.value.prepend($picker);
-      $picker.style.display = "none";
-    }, 260);
-  }
-  function _select() {
-    if (props2.mode === mode.SELECTOR && selectorTypeComputed.value === selectorType.SELECT) {
-      selectRef.value.scrollTop = state2.valueArray[0] * 34;
-    }
-  }
-  function _input($event) {
-    const EventTarget = $event.target;
-    state2.valueSync = EventTarget.value;
-    nextTick(() => {
-      _change();
-    });
-  }
-  function _fixInputPosition($event) {
-    if (system.value === "chrome") {
-      const rect = rootRef.value.getBoundingClientRect();
-      const fontSize = 32;
-      inputRef.value.style.left = `${$event.clientX - rect.left - fontSize * 1.5}px`;
-      inputRef.value.style.top = `${$event.clientY - rect.top - fontSize * 0.5}px`;
-    }
-  }
-  function _pickerViewChange(event) {
-    state2.valueArray = _l10nColumn(event.detail.value, true);
-  }
-  function _l10nColumn(array, normalize) {
-    const {
-      getLocale: getLocale2
-    } = useI18n();
-    if (props2.mode === mode.DATE) {
-      const locale = getLocale2();
-      if (!locale.startsWith("zh")) {
-        switch (props2.fields) {
-          case fields.YEAR:
-            return array;
-          case fields.MONTH:
-            return [array[1], array[0]];
-          default:
-            switch (locale) {
-              case "es":
-              case "fr":
-                return [array[2], array[1], array[0]];
-              default:
-                return normalize ? [array[2], array[0], array[1]] : [array[1], array[2], array[0]];
-            }
-        }
-      }
-    }
-    return array;
-  }
-  function _l10nItem(item, index2) {
-    const {
-      getLocale: getLocale2
-    } = useI18n();
-    if (props2.mode === mode.DATE) {
-      const locale = getLocale2();
-      if (locale.startsWith("zh")) {
-        const array = ["年", "月", "日"];
-        return item + array[index2];
-      } else if (props2.fields !== fields.YEAR && index2 === (props2.fields !== fields.MONTH && (locale === "es" || locale === "fr") ? 1 : 0)) {
-        let array;
-        switch (locale) {
-          case "es":
-            array = ["enero", "febrero", "marzo", "abril", "mayo", "junio", "​​julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"];
-            break;
-          case "fr":
-            array = ["janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août", "septembre", "octobre", "novembre", "décembre"];
-            break;
-          default:
-            array = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-            break;
-        }
-        return array[Number(item) - 1];
-      }
-    }
-    return item;
-  }
-  watch(() => state2.visible, (val) => {
-    if (val) {
-      clearTimeout(__contentVisibleDelay);
-      state2.contentVisible = val;
-      _select();
-    } else {
-      __contentVisibleDelay = setTimeout(() => {
-        state2.contentVisible = val;
-      }, 300);
-    }
-  });
-  watch([() => props2.mode, () => props2.value, () => props2.range], _setValueSync, {
-    deep: true
-  });
-  watch(() => state2.valueSync, _setValueArray, {
-    deep: true
-  });
-  watch(() => state2.valueArray, (val) => {
-    if (props2.mode === mode.TIME || props2.mode === mode.DATE) {
-      const getValue = props2.mode === mode.TIME ? _getTimeValue : _getDateValue;
-      const valueArray = state2.valueArray;
-      const _startArray = startArray.value;
-      const _endArray = endArray.value;
-      if (props2.mode === mode.DATE) {
-        const dateArray = state2.dateArray;
-        const max = dateArray[2].length;
-        const day = Number(dateArray[2][valueArray[2]]) || 1;
-        const realDay = (/* @__PURE__ */ new Date(`${dateArray[0][valueArray[0]]}/${dateArray[1][valueArray[1]]}/${day}`)).getDate();
-        if (realDay < day) {
-          valueArray[2] -= realDay + max - day;
-        }
-      }
-      if (getValue(valueArray) < getValue(_startArray)) {
-        _cloneArray(valueArray, _startArray);
-      } else if (getValue(valueArray) > getValue(_endArray)) {
-        _cloneArray(valueArray, _endArray);
-      }
-    }
-    val.forEach((value, column) => {
-      if (value !== state2.oldValueArray[column]) {
-        state2.oldValueArray[column] = value;
-        if (props2.mode === mode.MULTISELECTOR) {
-          trigger("columnchange", {}, {
-            column,
-            value
-          });
-        }
-      }
-    });
-  });
-  return {
-    selectorTypeComputed,
-    system,
-    _show,
-    _cancel,
-    _change,
-    _l10nColumn,
-    _l10nItem,
-    _input,
-    _resetFormData,
-    _getFormData,
-    _createTime,
-    _createDate,
-    _setValueSync,
-    _fixInputPosition,
-    _pickerViewChange
-  };
-}
-function usePickerWatch(state2, _cancel, _change) {
-  const {
-    key,
-    disable
-  } = useKeyboard();
-  watchEffect(() => {
-    disable.value = !state2.visible;
-  });
-  watch(key, (value) => {
-    if (value === "esc") {
-      _cancel();
-    } else if (value === "enter") {
-      _change();
-    }
-  });
-}
-function usePickerForm(_resetFormData, _getFormData) {
-  const uniForm = inject(uniFormKey, false);
-  if (uniForm) {
-    const field = {
-      reset: _resetFormData,
-      submit: () => {
-        const data = ["", null];
-        const {
-          key,
-          value
-        } = _getFormData();
-        if (key !== "") {
-          data[0] = key;
-          data[1] = value;
-        }
-        return data;
-      }
-    };
-    uniForm.addField(field);
-    onBeforeUnmount(() => {
-      uniForm.removeField(field);
-    });
-  }
-}
-const index$m = /* @__PURE__ */ defineUnsupportedComponent("ad");
-const index$l = /* @__PURE__ */ defineUnsupportedComponent("ad-content-page");
-const index$k = /* @__PURE__ */ defineUnsupportedComponent("ad-draw");
-const index$j = /* @__PURE__ */ defineUnsupportedComponent("camera");
-const index$i = /* @__PURE__ */ defineUnsupportedComponent("live-player");
-const index$h = /* @__PURE__ */ defineUnsupportedComponent("live-pusher");
-const ICON_PATH_NAV = "M28 17c-6.49396875 0-12.13721875 2.57040625-15 6.34840625V5.4105l6.29859375 6.29859375c0.387875 0.387875 1.02259375 0.387875 1.4105 0 0.387875-0.387875 0.387875-1.02259375 0-1.4105L12.77853125 2.36803125a0.9978125 0.9978125 0 0 0-0.0694375-0.077125c-0.1944375-0.1944375-0.45090625-0.291375-0.70721875-0.290875l-0.00184375-0.0000625-0.00184375 0.0000625c-0.2563125-0.0005-0.51278125 0.09640625-0.70721875 0.290875a0.9978125 0.9978125 0 0 0-0.0694375 0.077125l-7.930625 7.9305625c-0.387875 0.387875-0.387875 1.02259375 0 1.4105 0.387875 0.387875 1.02259375 0.387875 1.4105 0L11 5.4105V29c0 0.55 0.45 1 1 1s1-0.45 1-1c0-5.52284375 6.71571875-10 15-10 0.55228125 0 1-0.44771875 1-1 0-0.55228125-0.44771875-1-1-1z";
-const props$i = {
-  latitude: {
-    type: Number
-  },
-  longitude: {
-    type: Number
-  },
-  scale: {
-    type: Number,
-    default: 18
-  },
-  name: {
-    type: String,
-    default: ""
-  },
-  address: {
-    type: String,
-    default: ""
-  }
-};
-function useState$4(props2) {
-  const state2 = reactive({
-    center: {
-      latitude: 0,
-      longitude: 0
-    },
-    marker: {
-      id: 1,
-      latitude: 0,
-      longitude: 0,
-      iconPath: ICON_PATH_TARGET,
-      width: 32,
-      height: 52
-    },
-    location: {
-      id: 2,
-      latitude: 0,
-      longitude: 0,
-      iconPath: ICON_PATH_ORIGIN,
-      width: 44,
-      height: 44
-    }
-  });
-  function updatePosition() {
-    if (props2.latitude && props2.longitude) {
-      state2.center.latitude = props2.latitude;
-      state2.center.longitude = props2.longitude;
-      state2.marker.latitude = props2.latitude;
-      state2.marker.longitude = props2.longitude;
-    }
-  }
-  watch([() => props2.latitude, () => props2.longitude], updatePosition);
-  updatePosition();
-  return state2;
-}
-const LocationView = /* @__PURE__ */ defineSystemComponent({
-  name: "LocationView",
-  props: props$i,
-  emits: ["close"],
-  setup(props2, {
-    emit: emit2
-  }) {
-    const state2 = useState$4(props2);
-    usePreventScroll();
-    getLocation({
-      type: "gcj02",
-      success: ({
-        latitude,
-        longitude
-      }) => {
-        state2.location.latitude = latitude;
-        state2.location.longitude = longitude;
-      }
-    });
-    function onRegionChange(event) {
-      const centerLocation = event.detail.centerLocation;
-      if (centerLocation) {
-        state2.center.latitude = centerLocation.latitude;
-        state2.center.longitude = centerLocation.longitude;
-      }
-    }
-    function nav() {
-      const mapInfo = getMapInfo();
-      let url = "";
-      if (mapInfo.type === MapType.GOOGLE) {
-        const origin = state2.location.latitude ? `&origin=${state2.location.latitude}%2C${state2.location.longitude}` : "";
-        url = `https://www.google.com/maps/dir/?api=1${origin}&destination=${props2.latitude}%2C${props2.longitude}`;
-      } else if (mapInfo.type === MapType.QQ) {
-        const fromcoord = state2.location.latitude ? `&fromcoord=${state2.location.latitude}%2C${state2.location.longitude}&from=${encodeURIComponent("我的位置")}` : "";
-        url = `https://apis.map.qq.com/uri/v1/routeplan?type=drive${fromcoord}&tocoord=${props2.latitude}%2C${props2.longitude}&to=${encodeURIComponent(props2.name || "目的地")}&ref=${mapInfo.key}`;
-      } else if (mapInfo.type === MapType.AMAP) {
-        const from = state2.location.latitude ? `from=${state2.location.longitude},${state2.location.latitude},${encodeURIComponent("我的位置")}&` : "";
-        url = `https://uri.amap.com/navigation?${from}to=${props2.longitude},${props2.latitude},${encodeURIComponent(props2.name || "目的地")}`;
-      }
-      window.open(url);
-    }
-    function back() {
-      emit2("close");
-    }
-    function setCenter({
-      latitude,
-      longitude
-    }) {
-      state2.center.latitude = latitude;
-      state2.center.longitude = longitude;
-    }
-    return () => {
-      return createVNode("div", {
-        "class": "uni-system-open-location"
-      }, [createVNode(Map$1, {
-        "latitude": state2.center.latitude,
-        "longitude": state2.center.longitude,
-        "class": "map",
-        "markers": [state2.marker, state2.location],
-        "onRegionchange": onRegionChange
-      }, {
-        default: () => [createVNode("div", {
-          "class": "map-move",
-          "onClick": () => setCenter(state2.location)
-        }, [createSvgIconVNode(ICON_PATH_LOCTAION, "#000000", 24)], 8, ["onClick"])]
-      }, 8, ["latitude", "longitude", "markers", "onRegionchange"]), createVNode("div", {
-        "class": "info"
-      }, [createVNode("div", {
-        "class": "name",
-        "onClick": () => setCenter(state2.marker)
-      }, [props2.name], 8, ["onClick"]), createVNode("div", {
-        "class": "address",
-        "onClick": () => setCenter(state2.marker)
-      }, [props2.address], 8, ["onClick"]), createVNode("div", {
-        "class": "nav",
-        "onClick": nav
-      }, [createSvgIconVNode(ICON_PATH_NAV, "#ffffff", 26)], 8, ["onClick"])]), createVNode("div", {
-        "class": "nav-btn-back",
-        "onClick": back
-      }, [createSvgIconVNode(ICON_PATH_BACK, "#ffffff", 26)], 8, ["onClick"])]);
-    };
-  }
-});
-let state$1 = null;
-const openLocation = /* @__PURE__ */ defineAsyncApi(
-  API_OPEN_LOCATION,
-  (args, { resolve }) => {
-    if (!state$1) {
-      state$1 = reactive(args);
-      nextTick(() => {
-        const app = createRootApp(LocationView, state$1, () => {
-          state$1 = null;
-          nextTick(() => {
-            app.unmount();
-          });
-        });
-        app.mount(ensureRoot("u-a-o"));
-      });
-    } else {
-      extend(state$1, args);
-    }
-    resolve();
-  },
-  OpenLocationProtocol,
-  OpenLocationOptions
-);
-function _isSlot(s) {
-  return typeof s === "function" || Object.prototype.toString.call(s) === "[object Object]" && !isVNode(s);
-}
-const props$h = {
-  latitude: {
-    type: Number
-  },
-  longitude: {
-    type: Number
-  }
-};
-function distance(distance2) {
-  if (distance2 > 100) {
-    return `${distance2 > 1e3 ? (distance2 / 1e3).toFixed(1) + "k" : distance2.toFixed(0)}m | `;
-  } else if (distance2 > 0) {
-    return "<100m | ";
-  } else {
-    return "";
-  }
-}
-function useState$3(props2) {
-  const state2 = reactive({
-    latitude: 0,
-    longitude: 0,
-    keyword: "",
-    searching: false
-  });
-  function updatePosition() {
-    if (props2.latitude && props2.longitude) {
-      state2.latitude = props2.latitude;
-      state2.longitude = props2.longitude;
-    }
-  }
-  watch([() => props2.latitude, () => props2.longitude], updatePosition);
-  updatePosition();
-  return state2;
-}
-function useList(state2) {
-  const key = __uniConfig.qqMapKey;
-  const list2 = reactive([]);
-  const selectedIndexRef = ref(-1);
-  const selectedRef = computed(() => list2[selectedIndexRef.value]);
-  const listState = reactive({
-    loading: true,
-    // google map default
-    pageSize: 20,
-    pageIndex: 1,
-    hasNextPage: true,
-    nextPage: null,
-    selectedIndex: selectedIndexRef,
-    selected: selectedRef
-  });
-  const adcodeRef = ref("");
-  const boundaryRef = computed(() => adcodeRef.value ? `region(${adcodeRef.value},1,${state2.latitude},${state2.longitude})` : `nearby(${state2.latitude},${state2.longitude},5000)`);
-  function pushData(array) {
-    array.forEach((item) => {
-      list2.push({
-        name: item.title || item.name,
-        address: item.address,
-        distance: item._distance || item.distance,
-        latitude: item.location.lat,
-        longitude: item.location.lng
-      });
-    });
-  }
-  function getList() {
-    listState.loading = true;
-    const mapInfo = getMapInfo();
-    if (mapInfo.type === MapType.GOOGLE) {
-      if (listState.pageIndex > 1 && listState.nextPage) {
-        listState.nextPage();
-        return;
-      }
-      const service = new google.maps.places.PlacesService(document.createElement("div"));
-      service[state2.searching ? "textSearch" : "nearbySearch"]({
-        location: {
-          lat: state2.latitude,
-          lng: state2.longitude
-        },
-        query: state2.keyword,
-        radius: 5e3
-      }, (results, state3, page) => {
-        listState.loading = false;
-        if (results && results.length) {
-          results.forEach((item) => {
-            list2.push({
-              name: item.name || "",
-              address: item.vicinity || item.formatted_address || "",
-              distance: 0,
-              latitude: item.geometry.location.lat(),
-              longitude: item.geometry.location.lng()
-            });
-          });
-        }
-        if (page) {
-          if (!page.hasNextPage) {
-            listState.hasNextPage = false;
-          } else {
-            listState.nextPage = () => {
-              page.nextPage();
-            };
-          }
-        }
-      });
-    } else if (mapInfo.type === MapType.QQ) {
-      const url = state2.searching ? `https://apis.map.qq.com/ws/place/v1/search?output=jsonp&key=${key}&boundary=${boundaryRef.value}&keyword=${state2.keyword}&page_size=${listState.pageSize}&page_index=${listState.pageIndex}` : `https://apis.map.qq.com/ws/geocoder/v1/?output=jsonp&key=${key}&location=${state2.latitude},${state2.longitude}&get_poi=1&poi_options=page_size=${listState.pageSize};page_index=${listState.pageIndex}`;
-      getJSONP(url, {
-        callback: "callback"
-      }, (res) => {
-        listState.loading = false;
-        if (state2.searching && "data" in res && res.data.length) {
-          pushData(res.data);
-        } else if ("result" in res) {
-          const result = res.result;
-          adcodeRef.value = result.ad_info ? result.ad_info.adcode : "";
-          if (result.pois) {
-            pushData(result.pois);
-          }
-        }
-        if (list2.length === listState.pageSize * listState.pageIndex) {
-          listState.hasNextPage = false;
-        }
-      }, () => {
-        listState.loading = false;
-      });
-    } else if (mapInfo.type === MapType.AMAP) {
-      window.AMap.plugin("AMap.PlaceSearch", function() {
-        const placeSearch = new window.AMap.PlaceSearch({
-          city: "全国",
-          pageSize: 10,
-          pageIndex: listState.pageIndex
-        });
-        const keyword = state2.searching ? state2.keyword : "";
-        const radius = state2.searching ? 5e4 : 5e3;
-        placeSearch.searchNearBy(keyword, [state2.longitude, state2.latitude], radius, function(status, result) {
-          if (status === "error") {
-            console.error(result);
-          } else if (status === "no_data") {
-            listState.hasNextPage = false;
-          } else {
-            pushData(result.poiList.pois);
-          }
-        });
-        listState.loading = false;
-      });
-    }
-  }
-  function loadMore() {
-    if (!listState.loading && listState.hasNextPage) {
-      listState.pageIndex++;
-      getList();
-    }
-  }
-  function reset() {
-    listState.selectedIndex = -1;
-    listState.pageIndex = 1;
-    listState.hasNextPage = true;
-    listState.nextPage = null;
-    list2.splice(0, list2.length);
-  }
-  return {
-    listState,
-    list: list2,
-    loadMore,
-    reset,
-    getList
-  };
-}
-const LoctaionPicker = /* @__PURE__ */ defineSystemComponent({
-  name: "LoctaionPicker",
-  props: props$h,
-  emits: ["close"],
-  setup(props2, {
-    emit: emit2
-  }) {
-    usePreventScroll();
-    initI18nChooseLocationMsgsOnce();
-    const {
-      t: t2
-    } = useI18n();
-    const state2 = useState$3(props2);
-    const {
-      list: list2,
-      listState,
-      loadMore,
-      reset,
-      getList
-    } = useList(state2);
-    const search = debounce(() => {
-      reset();
-      if (state2.keyword) {
-        getList();
-      }
-    }, 1e3, {
-      setTimeout,
-      clearTimeout
-    });
-    watch(() => state2.searching, (val) => {
-      reset();
-      if (!val) {
-        getList();
-      }
-    });
-    function onInput(event) {
-      state2.keyword = event.detail.value;
-      search();
-    }
-    function onChoose() {
-      emit2("close", extend({}, listState.selected));
-    }
-    function onBack() {
-      emit2("close");
-    }
-    function onRegionChange(event) {
-      const centerLocation = event.detail.centerLocation;
-      if (centerLocation) {
-        move(centerLocation);
-      }
-    }
-    function moveToLocation() {
-      getLocation({
-        type: "gcj02",
-        success: move,
-        fail: () => {
-        }
-      });
-    }
-    function move({
-      latitude,
-      longitude
-    }) {
-      state2.latitude = latitude;
-      state2.longitude = longitude;
-      if (!state2.searching) {
-        reset();
-        getList();
-      }
-    }
-    if (!state2.latitude || !state2.longitude) {
-      moveToLocation();
-    }
-    return () => {
-      const content = list2.map((item, index2) => {
-        return createVNode("div", {
-          "key": index2,
-          "class": {
-            "list-item": true,
-            selected: listState.selectedIndex === index2
-          },
-          "onClick": () => {
-            listState.selectedIndex = index2;
-            state2.latitude = item.latitude;
-            state2.longitude = item.longitude;
-          }
-        }, [createSvgIconVNode(ICON_PATH_CONFIRM, "#007aff", 24), createVNode("div", {
-          "class": "list-item-title"
-        }, [item.name]), createVNode("div", {
-          "class": "list-item-detail"
-        }, [distance(item.distance), item.address])], 10, ["onClick"]);
-      });
-      if (listState.loading) {
-        content.unshift(createVNode("div", {
-          "class": "list-loading"
-        }, [createVNode("i", {
-          "class": "uni-loading"
-        }, null)]));
-      }
-      return createVNode("div", {
-        "class": "uni-system-choose-location"
-      }, [createVNode(Map$1, {
-        "latitude": state2.latitude,
-        "longitude": state2.longitude,
-        "class": "map",
-        "show-location": true,
-        "libraries": ["places"],
-        "onUpdated": getList,
-        "onRegionchange": onRegionChange
-      }, {
-        default: () => [createVNode("div", {
-          "class": "map-location",
-          "style": `background-image: url("${ICON_PATH_TARGET}")`
-        }, null), createVNode("div", {
-          "class": "map-move",
-          "onClick": moveToLocation
-        }, [createSvgIconVNode(ICON_PATH_LOCTAION, "#000000", 24)], 8, ["onClick"])],
-        _: 1
-      }, 8, ["latitude", "longitude", "show-location", "onUpdated", "onRegionchange"]), createVNode("div", {
-        "class": "nav"
-      }, [createVNode("div", {
-        "class": "nav-btn back",
-        "onClick": onBack
-      }, [createSvgIconVNode(ICON_PATH_CLOSE, "#ffffff", 26)], 8, ["onClick"]), createVNode("div", {
-        "class": {
-          "nav-btn": true,
-          confirm: true,
-          disable: !listState.selected
-        },
-        "onClick": onChoose
-      }, [createSvgIconVNode(ICON_PATH_CONFIRM, "#ffffff", 26)], 10, ["onClick"])]), createVNode("div", {
-        "class": "menu"
-      }, [createVNode("div", {
-        "class": "search"
-      }, [createVNode(Input, {
-        "value": state2.keyword,
-        "class": "search-input",
-        "placeholder": t2("uni.chooseLocation.search"),
-        "onFocus": () => state2.searching = true,
-        "onInput": onInput
-      }, null, 8, ["value", "placeholder", "onFocus", "onInput"]), state2.searching && createVNode("div", {
-        "class": "search-btn",
-        "onClick": () => {
-          state2.searching = false;
-          state2.keyword = "";
-        }
-      }, [t2("uni.chooseLocation.cancel")], 8, ["onClick"])]), createVNode(ScrollView, {
-        "scroll-y": true,
-        "class": "list",
-        "onScrolltolower": loadMore
-      }, _isSlot(content) ? content : {
-        default: () => [content],
-        _: 2
-      }, 8, ["scroll-y", "onScrolltolower"])])]);
-    };
-  }
-});
-let state = null;
-const chooseLocation = /* @__PURE__ */ defineAsyncApi(
-  API_CHOOSE_LOCATION,
-  (args, { resolve, reject }) => {
-    if (!state) {
-      state = reactive(args);
-      nextTick(() => {
-        const app = createRootApp(
-          LoctaionPicker,
-          state,
-          (poi) => {
-            state = null;
-            nextTick(() => {
-              app.unmount();
-            });
-            poi ? resolve(poi) : reject("cancel");
-          }
-        );
-        app.mount(ensureRoot("u-a-c"));
-      });
-    } else {
-      reject("cancel");
-    }
-  },
-  ChooseLocationProtocol
-);
 let started = false;
 let watchId = 0;
 const startLocationUpdate = /* @__PURE__ */ defineAsyncApi(
@@ -15155,7 +12993,7 @@ const ModalTheme = {
   }
 };
 const setCancelColor = (theme, cancelColor) => cancelColor.value = ModalTheme[theme].cancelColor;
-const props$g = {
+const props$l = {
   title: {
     type: String,
     default: ""
@@ -15197,7 +13035,7 @@ const props$g = {
   }
 };
 const modal = /* @__PURE__ */ defineComponent({
-  props: props$g,
+  props: props$l,
   setup(props2, {
     emit: emit2
   }) {
@@ -15330,7 +13168,7 @@ const showModal = /* @__PURE__ */ defineAsyncApi(
   ShowModalProtocol,
   ShowModalOptions
 );
-const props$f = {
+const props$k = {
   title: {
     type: String,
     default: ""
@@ -15365,7 +13203,7 @@ const ICONCOLOR = {
 const getIconColor = (theme) => ICONCOLOR[theme];
 const Toast = /* @__PURE__ */ defineComponent({
   name: "Toast",
-  props: props$f,
+  props: props$k,
   setup(props2) {
     initI18nShowToastMsgsOnce();
     initI18nShowLoadingMsgsOnce();
@@ -15537,6 +13375,86 @@ function hidePopup(type) {
     showToastState.visible = false;
   }, 10);
 }
+function usePopupStyle(props2) {
+  const popupWidth = ref(0);
+  const popupHeight = ref(0);
+  const isDesktop = computed(
+    () => popupWidth.value >= 500 && popupHeight.value >= 500
+  );
+  const popupStyle = computed(() => {
+    const style = {
+      content: {
+        transform: "",
+        left: "",
+        top: "",
+        bottom: ""
+      },
+      triangle: {
+        left: "",
+        top: "",
+        bottom: "",
+        "border-width": "",
+        "border-color": ""
+      }
+    };
+    const contentStyle = style.content;
+    const triangleStyle = style.triangle;
+    const popover = props2.popover;
+    function getNumber(value) {
+      return Number(value) || 0;
+    }
+    if (isDesktop.value && popover) {
+      extend(triangleStyle, {
+        position: "absolute",
+        width: "0",
+        height: "0",
+        "margin-left": "-6px",
+        "border-style": "solid"
+      });
+      const popoverLeft = getNumber(popover.left);
+      const popoverWidth = getNumber(popover.width);
+      const popoverTop = getNumber(popover.top);
+      const popoverHeight = getNumber(popover.height);
+      const center = popoverLeft + popoverWidth / 2;
+      contentStyle.transform = "none !important";
+      const contentLeft = Math.max(0, center - 300 / 2);
+      contentStyle.left = `${contentLeft}px`;
+      let triangleLeft = Math.max(12, center - contentLeft);
+      triangleLeft = Math.min(300 - 12, triangleLeft);
+      triangleStyle.left = `${triangleLeft}px`;
+      const vcl = popupHeight.value / 2;
+      if (popoverTop + popoverHeight - vcl > vcl - popoverTop) {
+        contentStyle.top = "auto";
+        contentStyle.bottom = `${popupHeight.value - popoverTop + 6}px`;
+        triangleStyle.bottom = "-6px";
+        triangleStyle["border-width"] = "6px 6px 0 6px";
+        triangleStyle["border-color"] = "#fcfcfd transparent transparent transparent";
+      } else {
+        contentStyle.top = `${popoverTop + popoverHeight + 6}px`;
+        triangleStyle.top = "-6px";
+        triangleStyle["border-width"] = "0 6px 6px 6px";
+        triangleStyle["border-color"] = "transparent transparent #fcfcfd transparent";
+      }
+    }
+    return style;
+  });
+  onMounted(() => {
+    const fixSize = () => {
+      const { windowWidth, windowHeight, windowTop } = uni.getSystemInfoSync();
+      popupWidth.value = windowWidth;
+      popupHeight.value = windowHeight + (windowTop || 0);
+    };
+    window.addEventListener("resize", fixSize);
+    fixSize();
+    onUnmounted(() => {
+      window.removeEventListener("resize", fixSize);
+    });
+  });
+  return {
+    isDesktop,
+    popupStyle
+  };
+}
 const ACTION_SHEET_THEME = {
   light: {
     listItemColor: "#000000",
@@ -15553,7 +13471,7 @@ function setActionSheetTheme(theme, actionSheetTheme) {
     actionSheetTheme[key] = ACTION_SHEET_THEME[theme][key];
   });
 }
-const props$e = {
+const props$j = {
   title: {
     type: String,
     default: ""
@@ -15579,7 +13497,7 @@ const props$e = {
 };
 const actionSheet = /* @__PURE__ */ defineComponent({
   name: "ActionSheet",
-  props: props$e,
+  props: props$j,
   emits: ["close"],
   setup(props2, {
     emit: emit2
@@ -16529,7 +14447,7 @@ const LayoutComponent = /* @__PURE__ */ defineSystemComponent({
     const {
       layoutState,
       windowState
-    } = useState$2();
+    } = useState$3();
     useMaxWidth(layoutState, rootRef);
     const topWindow = __UNI_FEATURE_TOPWINDOW__ && useTopWindow(layoutState);
     const leftWindow = __UNI_FEATURE_LEFTWINDOW__ && useLeftWindow(layoutState);
@@ -16621,7 +14539,7 @@ function useMaxWidth(layoutState, rootRef) {
     window.addEventListener("resize", checkMaxWidth2);
   });
 }
-function useState$2() {
+function useState$3() {
   const route = usePageRoute();
   if (!__UNI_FEATURE_RESPONSIVE__) {
     const layoutState2 = reactive({
@@ -17164,125 +15082,1723 @@ const createCanvasContextAsync = function(options) {
   }
   (_f = options.complete) == null ? void 0 : _f.call(options);
 };
-const openDialogPage = (options) => {
-  var _a, _b;
-  if (!options.url) {
-    triggerFailCallback$1(options, "url is required");
-    return null;
-  }
-  const { path, query } = parseUrl(options.url);
-  const normalizeUrl = createNormalizeUrl("navigateTo");
-  const errMsg = normalizeUrl(path, {});
-  if (errMsg) {
-    triggerFailCallback$1(options, errMsg);
-    return null;
-  }
-  const targetRoute = __uniRoutes.find((route) => {
-    return path.indexOf(route.meta.route) !== -1;
-  });
-  const dialogPage = new UniDialogPageImpl({
-    route: path,
-    options: new UTSJSONObject(query),
-    $component: targetRoute.component,
-    getParentPage: () => null,
-    $disableEscBack: options.disableEscBack
-  });
-  let parentPage = options.parentPage;
-  const currentPages = getCurrentPages();
-  if (parentPage) {
-    if (currentPages.indexOf(parentPage) === -1) {
-      triggerFailCallback$1(options, "parentPage is not a valid page");
-      return null;
+const CONTEXT_ID = "MAP_LOCATION";
+const MapLocation = /* @__PURE__ */ defineSystemComponent({
+  name: "MapLocation",
+  setup() {
+    const state2 = reactive({
+      latitude: 0,
+      longitude: 0,
+      rotate: 0
+    });
+    {
+      let compassChangeHandler = function(res) {
+        state2.rotate = res.direction;
+      }, updateLocation = function() {
+        getLocation({
+          type: "gcj02",
+          success: (res) => {
+            state2.latitude = res.latitude;
+            state2.longitude = res.longitude;
+          },
+          complete: () => {
+            timer = setTimeout(updateLocation, 3e4);
+          }
+        });
+      }, removeLocation = function() {
+        if (timer) {
+          clearTimeout(timer);
+        }
+        offCompassChange(compassChangeHandler);
+      };
+      const onMapReady = inject("onMapReady");
+      let timer;
+      onCompassChange(compassChangeHandler);
+      onMapReady(updateLocation);
+      onUnmounted(removeLocation);
+      const addMapChidlContext = inject("addMapChidlContext");
+      const removeMapChidlContext = inject("removeMapChidlContext");
+      const context = {
+        id: CONTEXT_ID,
+        state: state2
+      };
+      addMapChidlContext(context);
+      onUnmounted(() => removeMapChidlContext(context));
     }
+    return () => {
+      return state2.latitude ? createVNode(MapMarker, mergeProps({
+        "anchor": {
+          x: 0.5,
+          y: 0.5
+        },
+        "width": "44",
+        "height": "44",
+        "iconPath": ICON_PATH_ORIGIN
+      }, state2), null, 16, ["iconPath"]) : null;
+    };
   }
-  if (!currentPages.length) {
-    homeDialogPages.push(dialogPage);
-  } else {
-    if (!parentPage) {
-      parentPage = currentPages[currentPages.length - 1];
-    }
-    dialogPage.getParentPage = () => parentPage;
-    parentPage.getDialogPages().push(dialogPage);
+});
+const props$i = {
+  // 边框虚线，腾讯地图支持，google 高德 地图不支持，默认值为[0, 0] 为实线，非 [0, 0] 为虚线，H5 端无法像微信小程序一样控制虚线的间隔像素大小
+  dashArray: {
+    type: Array,
+    default: () => [0, 0]
+  },
+  // 经纬度数组，[{latitude: 0, longitude: 0}]
+  points: {
+    type: Array,
+    required: true
+  },
+  // 描边的宽度
+  strokeWidth: {
+    type: Number,
+    default: 1
+  },
+  // 描边的颜色，十六进制
+  strokeColor: {
+    type: String,
+    default: "#000000"
+  },
+  // 填充颜色，十六进制
+  fillColor: {
+    type: String,
+    default: "#00000000"
+  },
+  // 设置多边形 Z 轴数值
+  zIndex: {
+    type: Number,
+    default: 0
   }
-  if (!options.disableEscBack) {
-    incrementEscBackPageNum();
-  }
-  const successOptions = {
-    errMsg: "openDialogPage:ok"
-  };
-  (_a = options.success) == null ? void 0 : _a.call(options, successOptions);
-  (_b = options.complete) == null ? void 0 : _b.call(options, successOptions);
-  return dialogPage;
 };
-function triggerFailCallback$1(options, errMsg) {
-  var _a, _b;
-  const failOptions = new UniError(
-    "uni-openDialogPage",
-    4,
-    `openDialogPage: fail, ${errMsg}`
-  );
-  (_a = options.fail) == null ? void 0 : _a.call(options, failOptions);
-  (_b = options.complete) == null ? void 0 : _b.call(options, failOptions);
-}
-const closeDialogPage = (options) => {
-  var _a, _b;
-  const currentPages = getCurrentPages();
-  const currentPage = currentPages[currentPages.length - 1];
-  if (!currentPage) {
-    triggerFailCallback(options, "currentPage is null");
-    return;
+const MapPolygon = /* @__PURE__ */ defineSystemComponent({
+  name: "MapPolygon",
+  props: props$i,
+  setup(props2) {
+    let polygonIns;
+    const onMapReady = inject("onMapReady");
+    onMapReady((map, maps2, trigger) => {
+      function drawPolygon() {
+        const {
+          points,
+          strokeWidth,
+          strokeColor,
+          dashArray,
+          fillColor,
+          zIndex
+        } = props2;
+        const path = points.map((item) => {
+          const {
+            latitude,
+            longitude
+          } = item;
+          if (getIsAMap()) {
+            return [longitude, latitude];
+          } else if (getIsBMap()) {
+            return new maps2.Point(longitude, latitude);
+          } else {
+            return new maps2.LatLng(latitude, longitude);
+          }
+        });
+        const {
+          r: fcR,
+          g: fcG,
+          b: fcB,
+          a: fcA
+        } = hexToRgba(fillColor);
+        const {
+          r: scR,
+          g: scG,
+          b: scB,
+          a: scA
+        } = hexToRgba(strokeColor);
+        const polygonOptions = {
+          //多边形是否可点击。
+          clickable: true,
+          //鼠标在多边形内的光标样式。
+          cursor: "crosshair",
+          //多边形是否可编辑。
+          editable: false,
+          // 地图实例，即要显示多边形的地图
+          // @ts-expect-error
+          map,
+          // 区域填充色
+          fillColor: "",
+          //多边形的路径，以经纬度坐标数组构成。
+          path,
+          // 区域边框
+          strokeColor: "",
+          //多边形的边框样式。实线是solid，虚线是dash。
+          strokeDashStyle: dashArray.some((item) => item > 0) ? "dash" : "solid",
+          //多边形的边框线宽。
+          strokeWeight: strokeWidth,
+          //多边形是否可见。
+          visible: true,
+          //多边形的zIndex值。
+          zIndex
+        };
+        if (maps2.Color) {
+          polygonOptions.fillColor = new maps2.Color(fcR, fcG, fcB, fcA);
+          polygonOptions.strokeColor = new maps2.Color(scR, scG, scB, scA);
+        } else {
+          polygonOptions.fillColor = `rgb(${fcR}, ${fcG}, ${fcB})`;
+          polygonOptions.fillOpacity = fcA;
+          polygonOptions.strokeColor = `rgb(${scR}, ${scG}, ${scB})`;
+          polygonOptions.strokeOpacity = scA;
+        }
+        if (polygonIns) {
+          polygonIns.setOptions(polygonOptions);
+          return;
+        }
+        if (getIsBMap()) {
+          polygonIns = new maps2.Polygon(polygonOptions.path, polygonOptions);
+          map.addOverlay(polygonIns);
+        } else {
+          polygonIns = new maps2.Polygon(polygonOptions);
+        }
+      }
+      drawPolygon();
+      watch(props2, drawPolygon);
+    });
+    onUnmounted(() => {
+      polygonIns.setMap(null);
+    });
+    return () => null;
   }
-  if (options == null ? void 0 : options.dialogPage) {
-    const dialogPage = options == null ? void 0 : options.dialogPage;
-    const parentPage = dialogPage.getParentPage();
-    if (parentPage && currentPages.indexOf(parentPage) !== -1) {
-      const parentDialogPages = parentPage.getDialogPages();
-      const index2 = parentDialogPages.indexOf(dialogPage);
-      parentDialogPages.splice(index2, 1);
-      invokeHook(dialogPage.$vm, ON_UNLOAD);
-      if (index2 > 0 && index2 === parentDialogPages.length) {
-        invokeHook(
-          parentDialogPages[parentDialogPages.length - 1].$vm,
-          ON_SHOW
-        );
+});
+const props$h = {
+  id: {
+    type: String,
+    default: ""
+  },
+  latitude: {
+    type: [String, Number],
+    default: 0
+  },
+  longitude: {
+    type: [String, Number],
+    default: 0
+  },
+  scale: {
+    type: [String, Number],
+    default: 16
+  },
+  markers: {
+    type: Array,
+    default() {
+      return [];
+    }
+  },
+  includePoints: {
+    type: Array,
+    default() {
+      return [];
+    }
+  },
+  polyline: {
+    type: Array,
+    default() {
+      return [];
+    }
+  },
+  circles: {
+    type: Array,
+    default() {
+      return [];
+    }
+  },
+  controls: {
+    type: Array,
+    default() {
+      return [];
+    }
+  },
+  showLocation: {
+    type: [Boolean, String],
+    default: false
+  },
+  libraries: {
+    type: Array,
+    default() {
+      return [];
+    }
+  },
+  polygons: {
+    type: Array,
+    default: () => []
+  }
+};
+function getPoints(points) {
+  const newPoints = [];
+  if (isArray(points)) {
+    points.forEach((point) => {
+      if (point && point.latitude && point.longitude) {
+        newPoints.push({
+          latitude: point.latitude,
+          longitude: point.longitude
+        });
       }
-      if (!dialogPage.$disableEscBack) {
-        decrementEscBackPageNum();
-      }
+    });
+  }
+  return newPoints;
+}
+function getAMapPosition(maps2, latitude, longitude) {
+  return new maps2.LngLat(longitude, latitude);
+}
+function getBMapPosition(maps2, latitude, longitude) {
+  return new maps2.Point(longitude, latitude);
+}
+function getGoogleOrQQMapPosition(maps2, latitude, longitude) {
+  return new maps2.LatLng(latitude, longitude);
+}
+function getMapPosition(maps2, latitude, longitude) {
+  if (getIsBMap()) {
+    return getBMapPosition(maps2, latitude, longitude);
+  } else if (getIsAMap()) {
+    return getAMapPosition(maps2, latitude, longitude);
+  } else {
+    return getGoogleOrQQMapPosition(maps2, latitude, longitude);
+  }
+}
+function getLat(latLng) {
+  if ("getLat" in latLng) {
+    return latLng.getLat();
+  } else {
+    if (getIsBMap()) {
+      return latLng.lat;
+    }
+    return latLng.lat();
+  }
+}
+function getLng(latLng) {
+  if ("getLng" in latLng) {
+    return latLng.getLng();
+  } else {
+    if (getIsBMap()) {
+      return latLng.lng;
+    }
+    return latLng.lng();
+  }
+}
+function useMap(props2, rootRef, emit2) {
+  const trigger = useCustomEvent(rootRef, emit2);
+  const mapRef = ref(null);
+  let maps2;
+  let map;
+  const state2 = reactive({
+    latitude: Number(props2.latitude),
+    longitude: Number(props2.longitude),
+    includePoints: getPoints(props2.includePoints)
+  });
+  const onMapReadyCallbacks = [];
+  let isMapReady;
+  function onMapReady(callback) {
+    if (isMapReady) {
+      callback(map, maps2, trigger);
     } else {
-      triggerFailCallback(options, "dialogPage is not a valid page");
+      onMapReadyCallbacks.push(callback);
+    }
+  }
+  function emitMapReady() {
+    isMapReady = true;
+    onMapReadyCallbacks.forEach((callback) => callback(map, maps2, trigger));
+    onMapReadyCallbacks.length = 0;
+  }
+  let isBoundsReady;
+  const onBoundsReadyCallbacks = [];
+  function onBoundsReady(callback) {
+    if (isBoundsReady) {
+      callback();
+    } else {
+      onMapReadyCallbacks.push(callback);
+    }
+  }
+  const contexts = {};
+  function addMapChidlContext(context) {
+    contexts[context.id] = context;
+  }
+  function removeMapChidlContext(context) {
+    delete contexts[context.id];
+  }
+  watch([() => props2.latitude, () => props2.longitude], ([latitudeVlaue, longitudeVlaue]) => {
+    const latitude = Number(latitudeVlaue);
+    const longitude = Number(longitudeVlaue);
+    if (latitude !== state2.latitude || longitude !== state2.longitude) {
+      state2.latitude = latitude;
+      state2.longitude = longitude;
+      if (map) {
+        const centerPosition = getMapPosition(maps2, state2.latitude, state2.longitude);
+        map.setCenter(centerPosition);
+      }
+    }
+  });
+  watch(() => props2.includePoints, (points) => {
+    state2.includePoints = getPoints(points);
+    if (isBoundsReady) {
+      updateBounds();
+    }
+  }, {
+    deep: true
+  });
+  function emitBoundsReady() {
+    isBoundsReady = true;
+    onBoundsReadyCallbacks.forEach((callback) => callback());
+    onBoundsReadyCallbacks.length = 0;
+  }
+  function getMapInfo2() {
+    const center = map.getCenter();
+    return {
+      scale: map.getZoom(),
+      centerLocation: {
+        latitude: getLat(center),
+        longitude: getLng(center)
+      }
+    };
+  }
+  function updateCenter() {
+    const centerPosition = getMapPosition(maps2, state2.latitude, state2.longitude);
+    map.setCenter(centerPosition);
+  }
+  function updateBounds() {
+    if (getIsAMap()) {
+      const points = [];
+      state2.includePoints.forEach((point) => {
+        points.push([point.longitude, point.latitude]);
+      });
+      const bounds = new maps2.Bounds(...points);
+      map.setBounds(bounds);
+    } else if (getIsBMap())
+      ;
+    else {
+      const bounds = new maps2.LatLngBounds();
+      state2.includePoints.forEach(({
+        latitude,
+        longitude
+      }) => {
+        const latLng = new maps2.LatLng(latitude, longitude);
+        bounds.extend(latLng);
+      });
+      map.fitBounds(bounds);
+    }
+  }
+  function initMap() {
+    const mapEl = mapRef.value;
+    const center = getMapPosition(maps2, state2.latitude, state2.longitude);
+    const event = maps2.event || maps2.Event;
+    const map2 = new maps2.Map(mapEl, {
+      center,
+      zoom: Number(props2.scale),
+      // scrollwheel: false,
+      disableDoubleClickZoom: true,
+      mapTypeControl: false,
+      zoomControl: false,
+      scaleControl: false,
+      panControl: false,
+      fullscreenControl: false,
+      streetViewControl: false,
+      keyboardShortcuts: false,
+      minZoom: 5,
+      maxZoom: 18,
+      draggable: true
+    });
+    if (getIsBMap()) {
+      map2.centerAndZoom(center, Number(props2.scale));
+      map2.enableScrollWheelZoom();
+      map2._printLog && map2._printLog("uniapp");
+    }
+    watch(() => props2.scale, (scale) => {
+      map2.setZoom(Number(scale) || 16);
+    });
+    onBoundsReady(() => {
+      if (state2.includePoints.length) {
+        updateBounds();
+        updateCenter();
+      }
+    });
+    if (getIsBMap()) {
+      map2.addEventListener("click", () => {
+        trigger("tap", {}, {});
+        trigger("click", {}, {});
+      });
+      map2.addEventListener("dragstart", () => {
+        trigger("regionchange", {}, {
+          type: "begin",
+          causedBy: "gesture"
+        });
+      });
+      map2.addEventListener("dragend", () => {
+        trigger("regionchange", {}, extend({
+          type: "end",
+          causedBy: "drag"
+        }, getMapInfo2()));
+      });
+    } else {
+      const boundsChangedEvent = event.addListener(map2, "bounds_changed", () => {
+        boundsChangedEvent.remove();
+        emitBoundsReady();
+      });
+      event.addListener(map2, "click", () => {
+        trigger("tap", {}, {});
+        trigger("click", {}, {});
+      });
+      event.addListener(map2, "dragstart", () => {
+        trigger("regionchange", {}, {
+          type: "begin",
+          causedBy: "gesture"
+        });
+      });
+      event.addListener(map2, "dragend", () => {
+        trigger("regionchange", {}, extend({
+          type: "end",
+          causedBy: "drag"
+        }, getMapInfo2()));
+      });
+      const zoomChangedCallback = () => {
+        emit2("update:scale", map2.getZoom());
+        trigger("regionchange", {}, extend({
+          type: "end",
+          causedBy: "scale"
+        }, getMapInfo2()));
+      };
+      event.addListener(map2, "zoom_changed", zoomChangedCallback);
+      event.addListener(map2, "zoomend", zoomChangedCallback);
+      event.addListener(map2, "center_changed", () => {
+        const center2 = map2.getCenter();
+        const latitude = getLat(center2);
+        const longitude = getLng(center2);
+        emit2("update:latitude", latitude);
+        emit2("update:longitude", longitude);
+      });
+    }
+    return map2;
+  }
+  try {
+    const id2 = useContextInfo();
+    useSubscribe((type, data = {}) => {
+      switch (type) {
+        case "getCenterLocation":
+          onMapReady(() => {
+            const center = map.getCenter();
+            callOptions(data, {
+              latitude: getLat(center),
+              longitude: getLng(center),
+              errMsg: `${type}:ok`
+            });
+          });
+          break;
+        case "moveToLocation":
+          {
+            let latitude = Number(data.latitude);
+            let longitude = Number(data.longitude);
+            if (!latitude || !longitude) {
+              const context = contexts[CONTEXT_ID];
+              if (context) {
+                latitude = context.state.latitude;
+                longitude = context.state.longitude;
+              }
+            }
+            if (latitude && longitude) {
+              state2.latitude = latitude;
+              state2.longitude = longitude;
+              if (map) {
+                const centerPosition = getMapPosition(maps2, latitude, longitude);
+                map.setCenter(centerPosition);
+              }
+              onMapReady(() => {
+                callOptions(data, `${type}:ok`);
+              });
+            } else {
+              callOptions(data, `${type}:fail`);
+            }
+          }
+          break;
+        case "translateMarker":
+          onMapReady(() => {
+            const context = contexts[data.markerId];
+            if (context) {
+              try {
+                context.translate(data);
+              } catch (error) {
+                callOptions(data, `${type}:fail ${error.message}`);
+              }
+              callOptions(data, `${type}:ok`);
+            } else {
+              callOptions(data, `${type}:fail not found`);
+            }
+          });
+          break;
+        case "includePoints":
+          state2.includePoints = getPoints(data.includePoints);
+          if (isBoundsReady || getIsAMap()) {
+            updateBounds();
+          }
+          onBoundsReady(() => {
+            callOptions(data, `${type}:ok`);
+          });
+          break;
+        case "getRegion":
+          onBoundsReady(() => {
+            const latLngBounds = map.getBounds();
+            const southwest = latLngBounds.getSouthWest();
+            const northeast = latLngBounds.getNorthEast();
+            callOptions(data, {
+              southwest: {
+                latitude: getLat(southwest),
+                longitude: getLng(southwest)
+              },
+              northeast: {
+                latitude: getLat(northeast),
+                longitude: getLng(northeast)
+              },
+              errMsg: `${type}:ok`
+            });
+          });
+          break;
+        case "getScale":
+          onMapReady(() => {
+            callOptions(data, {
+              scale: map.getZoom(),
+              errMsg: `${type}:ok`
+            });
+          });
+          break;
+      }
+    }, id2, true);
+  } catch (error) {
+  }
+  onMounted(() => {
+    loadMaps(props2.libraries, (result) => {
+      maps2 = result;
+      map = initMap();
+      emitMapReady();
+      trigger("updated", {}, {});
+    });
+  });
+  provide("onMapReady", onMapReady);
+  provide("addMapChidlContext", addMapChidlContext);
+  provide("removeMapChidlContext", removeMapChidlContext);
+  return {
+    state: state2,
+    mapRef,
+    trigger
+  };
+}
+class UniMapElement extends UniElement {
+}
+const __syscom_0 = /* @__PURE__ */ defineBuiltInComponent({
+  name: "Map",
+  props: props$h,
+  emits: ["markertap", "labeltap", "callouttap", "controltap", "regionchange", "tap", "click", "updated", "update:scale", "update:latitude", "update:longitude"],
+  rootElement: {
+    name: "uni-map",
+    class: UniMapElement
+  },
+  setup(props2, {
+    emit: emit2,
+    slots
+  }) {
+    const rootRef = ref(null);
+    const {
+      mapRef,
+      trigger
+    } = useMap(props2, rootRef, emit2);
+    onMounted(() => {
+      const rootElement = rootRef.value;
+      rootElement.attachVmProps(props2);
+    });
+    return () => {
+      return createVNode("uni-map", {
+        "ref": rootRef,
+        "id": props2.id
+      }, [createVNode("div", {
+        "ref": mapRef,
+        "style": "width: 100%; height: 100%; position: relative; overflow: hidden"
+      }, null, 512), props2.markers.map((item) => createVNode(MapMarker, mergeProps({
+        "key": item.id
+      }, item), null, 16)), props2.polyline.map((item) => createVNode(MapPolyline, item, null, 16)), props2.circles.map((item) => createVNode(MapCircle, item, null, 16)), props2.controls.map((item) => createVNode(MapControl, mergeProps(item, {
+        "trigger": trigger
+      }), null, 16, ["trigger"])), props2.showLocation && createVNode(MapLocation, null, null), props2.polygons.map((item) => createVNode(MapPolygon, item, null, 16)), createVNode("div", {
+        "style": "position: absolute;top: 0;width: 100%;height: 100%;overflow: hidden;pointer-events: none;"
+      }, [slots.default && slots.default()])], 8, ["id"]);
+    };
+  }
+});
+const props$g = {
+  scrollTop: {
+    type: [String, Number],
+    default: 0
+  }
+};
+class UniCoverViewElement extends UniElement {
+}
+const index$m = /* @__PURE__ */ defineBuiltInComponent({
+  name: "CoverView",
+  compatConfig: {
+    MODE: 3
+  },
+  props: props$g,
+  rootElement: {
+    name: "uni-cover-view",
+    class: UniCoverViewElement
+  },
+  setup(props2, {
+    slots
+  }) {
+    const root = ref(null);
+    const content = ref(null);
+    watch(() => props2.scrollTop, (val) => {
+      setScrollTop(val);
+    });
+    function setScrollTop(val) {
+      let _content = content.value;
+      if (getComputedStyle(_content).overflowY === "scroll") {
+        _content.scrollTop = _upx2pxNum(val);
+      }
+    }
+    function _upx2pxNum(val) {
+      let _val = String(val);
+      if (/\d+[ur]px$/i.test(_val)) {
+        _val.replace(/\d+[ur]px$/i, (text2) => {
+          return String(uni.upx2px(parseFloat(text2)));
+        });
+      }
+      return parseFloat(_val) || 0;
+    }
+    onMounted(() => {
+      setScrollTop(props2.scrollTop);
+    });
+    onMounted(() => {
+      const rootElement = root.value;
+      rootElement.attachVmProps(props2);
+    });
+    return () => {
+      return createVNode("uni-cover-view", {
+        "scroll-top": props2.scrollTop,
+        "ref": root
+      }, [createVNode("div", {
+        "ref": content,
+        "class": "uni-cover-view"
+      }, [slots.default && slots.default()], 512)], 8, ["scroll-top"]);
+    };
+  }
+});
+class UniCoverImageElement extends UniElement {
+}
+const index$l = /* @__PURE__ */ defineBuiltInComponent({
+  name: "CoverImage",
+  compatConfig: {
+    MODE: 3
+  },
+  props: {
+    src: {
+      type: String,
+      default: ""
+    }
+  },
+  rootElement: {
+    name: "uni-cover-image",
+    class: UniCoverImageElement
+  },
+  emits: ["load", "error"],
+  setup(props2, {
+    emit: emit2
+  }) {
+    const root = ref(null);
+    const trigger = useCustomEvent(root, emit2);
+    function load($event) {
+      trigger("load", $event);
+    }
+    function error($event) {
+      trigger("error", $event);
+    }
+    onMounted(() => {
+      const rootElement = root.value;
+      rootElement.attachVmProps(props2);
+    });
+    return () => {
+      const {
+        src
+      } = props2;
+      return createVNode("uni-cover-image", {
+        "ref": root,
+        "src": src
+      }, [createVNode("div", {
+        "class": "uni-cover-image"
+      }, [src ? createVNode("img", {
+        "src": getRealPath(src),
+        "onLoad": load,
+        "onError": error
+      }, null, 40, ["src", "onLoad", "onError"]) : null])], 8, ["src"]);
+    };
+  }
+});
+function _isSlot(s) {
+  return typeof s === "function" || Object.prototype.toString.call(s) === "[object Object]" && !isVNode(s);
+}
+function getDefaultStartValue(props2) {
+  if (props2.mode === mode.TIME) {
+    return "00:00";
+  }
+  if (props2.mode === mode.DATE) {
+    const year = (/* @__PURE__ */ new Date()).getFullYear() - 150;
+    switch (props2.fields) {
+      case fields.YEAR:
+        return year.toString();
+      case fields.MONTH:
+        return year + "-01";
+      default:
+        return year + "-01-01";
+    }
+  }
+  return "";
+}
+function getDefaultEndValue(props2) {
+  if (props2.mode === mode.TIME) {
+    return "23:59";
+  }
+  if (props2.mode === mode.DATE) {
+    const year = (/* @__PURE__ */ new Date()).getFullYear() + 150;
+    switch (props2.fields) {
+      case fields.YEAR:
+        return year.toString();
+      case fields.MONTH:
+        return year + "-12";
+      default:
+        return year + "-12-31";
+    }
+  }
+  return "";
+}
+function getDateValueArray(props2, state2, valueStr, defaultValue) {
+  const splitStr = props2.mode === mode.DATE ? "-" : ":";
+  const array = props2.mode === mode.DATE ? state2.dateArray : state2.timeArray;
+  let max;
+  if (props2.mode === mode.TIME) {
+    max = 2;
+  } else {
+    switch (props2.fields) {
+      case fields.YEAR:
+        max = 1;
+        break;
+      case fields.MONTH:
+        max = 2;
+        break;
+      default:
+        max = 3;
+        break;
+    }
+  }
+  const inputArray = String(valueStr).split(splitStr);
+  let value = [];
+  for (let i = 0; i < max; i++) {
+    const val = inputArray[i];
+    value.push(array[i].indexOf(val));
+  }
+  if (value.indexOf(-1) >= 0) {
+    value = defaultValue ? getDateValueArray(props2, state2, defaultValue) : value.map(() => 0);
+  }
+  return value;
+}
+const mode = {
+  SELECTOR: "selector",
+  MULTISELECTOR: "multiSelector",
+  TIME: "time",
+  DATE: "date"
+  // 暂不支持城市选择
+  // REGION: 'region'
+};
+const fields = {
+  YEAR: "year",
+  MONTH: "month",
+  DAY: "day"
+};
+const selectorType = {
+  PICKER: "picker",
+  SELECT: "select"
+};
+const props$f = {
+  name: {
+    type: String,
+    default: ""
+  },
+  range: {
+    type: Array,
+    default() {
+      return [];
+    }
+  },
+  rangeKey: {
+    type: String,
+    default: ""
+  },
+  value: {
+    type: [Number, String, Array],
+    default: 0
+  },
+  mode: {
+    type: String,
+    default: mode.SELECTOR,
+    validator(val) {
+      return Object.values(mode).includes(val);
+    }
+  },
+  fields: {
+    type: String,
+    default: ""
+  },
+  start: {
+    type: String,
+    default: (props2) => {
+      return getDefaultStartValue(props2);
+    }
+  },
+  end: {
+    type: String,
+    default: (props2) => {
+      return getDefaultEndValue(props2);
+    }
+  },
+  disabled: {
+    type: [Boolean, String],
+    default: false
+  },
+  selectorType: {
+    type: String,
+    default: ""
+  }
+};
+class UniPickerElement extends UniElement {
+}
+const index$k = /* @__PURE__ */ defineBuiltInComponent({
+  name: "Picker",
+  compatConfig: {
+    MODE: 3
+  },
+  props: props$f,
+  emits: ["change", "cancel", "columnchange"],
+  rootElement: {
+    name: "uni-picker",
+    class: UniPickerElement
+  },
+  setup(props2, {
+    emit: emit2,
+    slots
+  }) {
+    initI18nPickerMsgsOnce();
+    const {
+      t: t2
+    } = useI18n();
+    const rootRef = ref(null);
+    const pickerRef = ref(null);
+    const selectRef = ref(null);
+    const inputRef = ref(null);
+    const pickerRender = ref(false);
+    const {
+      state: state2,
+      rangeArray
+    } = usePickerState(props2);
+    const trigger = useCustomEvent(rootRef, emit2);
+    const {
+      system,
+      selectorTypeComputed,
+      _show,
+      _l10nColumn,
+      _l10nItem,
+      _input,
+      _fixInputPosition,
+      _pickerViewChange,
+      _cancel,
+      _change,
+      _resetFormData,
+      _getFormData,
+      _createTime,
+      _createDate,
+      _setValueSync
+    } = usePickerMethods(props2, state2, trigger, rootRef, pickerRef, selectRef, inputRef);
+    usePickerWatch(state2, _cancel, _change);
+    usePickerForm(_resetFormData, _getFormData);
+    _createTime();
+    _createDate();
+    _setValueSync();
+    const popup = usePopupStyle(state2);
+    watchEffect(() => {
+      state2.isDesktop = popup.isDesktop.value;
+      state2.popupStyle = popup.popupStyle.value;
+    });
+    onBeforeUnmount(() => {
+      pickerRef.value && pickerRef.value.remove();
+    });
+    onMounted(() => {
+      pickerRender.value = true;
+    });
+    onMounted(() => {
+      const rootElement = rootRef.value;
+      rootElement.attachVmProps(props2);
+    });
+    return () => {
+      let _slot2;
+      const {
+        visible,
+        contentVisible,
+        valueArray,
+        popupStyle,
+        valueSync
+      } = state2;
+      const {
+        rangeKey,
+        mode: mode2,
+        start,
+        end
+      } = props2;
+      const booleanAttrs = useBooleanAttr(props2, "disabled");
+      return createVNode("uni-picker", mergeProps({
+        "ref": rootRef
+      }, booleanAttrs, {
+        "onClick": withWebEvent(_show)
+      }), [pickerRender.value ? createVNode("div", {
+        "ref": pickerRef,
+        "class": ["uni-picker-container", `uni-${mode2}-${selectorTypeComputed.value}`],
+        "onWheel": onEventPrevent,
+        "onTouchmove": onEventPrevent
+      }, [createVNode(Transition, {
+        "name": "uni-fade"
+      }, {
+        default: () => [withDirectives(createVNode("div", {
+          "class": "uni-mask uni-picker-mask",
+          "onClick": withWebEvent(_cancel),
+          "onMousemove": _fixInputPosition
+        }, null, 40, ["onClick", "onMousemove"]), [[vShow, visible]])]
+      }), !system.value ? createVNode("div", {
+        "class": [{
+          "uni-picker-toggle": visible
+        }, "uni-picker-custom"],
+        "style": popupStyle.content
+      }, [createVNode("div", {
+        "class": "uni-picker-header",
+        "onClick": onEventStop
+      }, [createVNode("div", {
+        "class": "uni-picker-action uni-picker-action-cancel",
+        "onClick": withWebEvent(_cancel)
+      }, [t2("uni.picker.cancel")], 8, ["onClick"]), createVNode("div", {
+        "class": "uni-picker-action uni-picker-action-confirm",
+        "onClick": _change
+      }, [t2("uni.picker.done")], 8, ["onClick"])], 8, ["onClick"]), contentVisible ? createVNode(PickerView, {
+        "value": _l10nColumn(valueArray),
+        "class": "uni-picker-content",
+        "onChange": _pickerViewChange
+      }, _isSlot(_slot2 = renderList(_l10nColumn(rangeArray.value), (rangeItem, index0) => {
+        let _slot;
+        return createVNode(PickerViewColumn, {
+          "key": index0
+        }, _isSlot(_slot = renderList(rangeItem, (item, index2) => createVNode("div", {
+          "key": index2,
+          "class": "uni-picker-item"
+        }, [typeof item === "object" ? item[rangeKey] || "" : _l10nItem(item, index0)]))) ? _slot : {
+          default: () => [_slot],
+          _: 1
+        });
+      })) ? _slot2 : {
+        default: () => [_slot2],
+        _: 1
+      }, 8, ["value", "onChange"]) : null, createVNode("div", {
+        "ref": selectRef,
+        "class": "uni-picker-select",
+        "onWheel": onEventStop,
+        "onTouchmove": onEventStop
+      }, [renderList(rangeArray.value[0], (item, index2) => createVNode("div", {
+        "key": index2,
+        "class": ["uni-picker-item", {
+          selected: valueArray[0] === index2
+        }],
+        "onClick": () => {
+          valueArray[0] = index2;
+          _change();
+        }
+      }, [typeof item === "object" ? item[rangeKey] || "" : item], 10, ["onClick"]))], 40, ["onWheel", "onTouchmove"]), createVNode("div", {
+        "style": popupStyle.triangle
+      }, null, 4)], 6) : null], 40, ["onWheel", "onTouchmove"]) : null, createVNode("div", null, [slots.default && slots.default()]), system.value ? createVNode("div", {
+        "class": "uni-picker-system",
+        "onMousemove": withWebEvent(_fixInputPosition)
+      }, [createVNode("input", {
+        "class": ["uni-picker-system_input", system.value],
+        "ref": inputRef,
+        "value": valueSync,
+        "type": mode2,
+        "tabindex": "-1",
+        "min": start,
+        "max": end,
+        "onChange": ($event) => {
+          _input($event);
+          onEventStop($event);
+        }
+      }, null, 42, ["value", "type", "min", "max", "onChange"])], 40, ["onMousemove"]) : null], 16, ["onClick"]);
+    };
+  }
+});
+function usePickerState(props2) {
+  const state2 = reactive({
+    valueSync: void 0,
+    visible: false,
+    contentVisible: false,
+    popover: null,
+    valueChangeSource: "",
+    timeArray: [],
+    dateArray: [],
+    valueArray: [],
+    oldValueArray: [],
+    isDesktop: false,
+    popupStyle: {
+      content: {},
+      triangle: {}
+    }
+  });
+  const rangeArray = computed(() => {
+    let val = props2.range;
+    switch (props2.mode) {
+      case mode.SELECTOR:
+        return [val];
+      case mode.MULTISELECTOR:
+        return val;
+      case mode.TIME:
+        return state2.timeArray;
+      case mode.DATE: {
+        const dateArray = state2.dateArray;
+        switch (props2.fields) {
+          case fields.YEAR:
+            return [dateArray[0]];
+          case fields.MONTH:
+            return [dateArray[0], dateArray[1]];
+          default:
+            return [dateArray[0], dateArray[1], dateArray[2]];
+        }
+      }
+    }
+    return [];
+  });
+  return {
+    state: state2,
+    rangeArray
+  };
+}
+const getiPadFlag = () => String(navigator.vendor).indexOf("Apple") === 0 && navigator.maxTouchPoints > 0;
+function useIsiPad() {
+  const isiPad = ref(false);
+  {
+    isiPad.value = getiPadFlag();
+  }
+  return isiPad;
+}
+const getSystem = () => {
+  if (/win|mac/i.test(navigator.platform)) {
+    if (navigator.vendor === "Google Inc.") {
+      return "chrome";
+    } else if (/Firefox/.test(navigator.userAgent)) {
+      return "firefox";
+    }
+  }
+  return "";
+};
+function useSystem() {
+  const _system = ref("");
+  {
+    _system.value = getSystem();
+  }
+  return _system;
+}
+let __contentVisibleDelay;
+function usePickerMethods(props2, state2, trigger, rootRef, pickerRef, selectRef, inputRef) {
+  const isiPad = useIsiPad();
+  const _system = useSystem();
+  const selectorTypeComputed = computed(() => {
+    const type = props2.selectorType;
+    if (Object.values(selectorType).includes(type)) {
+      return type;
+    }
+    return isiPad.value ? selectorType.PICKER : selectorType.SELECT;
+  });
+  const system = computed(() => {
+    if (props2.mode === mode.DATE && !Object.values(fields).includes(props2.fields) && state2.isDesktop) {
+      return _system.value;
+    }
+    return "";
+  });
+  const startArray = computed(() => {
+    return getDateValueArray(props2, state2, props2.start, getDefaultStartValue(props2));
+  });
+  const endArray = computed(() => {
+    return getDateValueArray(props2, state2, props2.end, getDefaultEndValue(props2));
+  });
+  function _show(event) {
+    if (props2.disabled) {
       return;
     }
-  } else {
-    const dialogPages = currentPage.getDialogPages();
-    for (let i = dialogPages.length - 1; i >= 0; i--) {
-      invokeHook(dialogPages[i].$vm, ON_UNLOAD);
-      if (i > 0) {
-        invokeHook(dialogPages[i - 1].$vm, ON_SHOW);
-      }
-      if ((!dialogPages[i]).$disableEscBack) {
-        decrementEscBackPageNum();
+    state2.valueChangeSource = "";
+    let $picker = pickerRef.value;
+    let _currentTarget = event.currentTarget;
+    $picker.remove();
+    (document.querySelector("uni-app") || document.body).appendChild($picker);
+    $picker.style.display = "block";
+    const rect = _currentTarget.getBoundingClientRect();
+    state2.popover = {
+      top: rect.top,
+      left: rect.left,
+      width: rect.width,
+      height: rect.height
+    };
+    setTimeout(() => {
+      state2.visible = true;
+    }, 20);
+  }
+  function _getFormData() {
+    return {
+      value: state2.valueSync,
+      key: props2.name
+    };
+  }
+  function _resetFormData() {
+    switch (props2.mode) {
+      case mode.SELECTOR:
+        state2.valueSync = 0;
+        break;
+      case mode.MULTISELECTOR:
+        state2.valueSync = props2.value.map((val) => 0);
+        break;
+      case mode.DATE:
+      case mode.TIME:
+        state2.valueSync = "";
+        break;
+    }
+  }
+  function _createTime() {
+    let hours = [];
+    let minutes = [];
+    for (let i = 0; i < 24; i++) {
+      hours.push((i < 10 ? "0" : "") + i);
+    }
+    for (let i = 0; i < 60; i++) {
+      minutes.push((i < 10 ? "0" : "") + i);
+    }
+    state2.timeArray.push(hours, minutes);
+  }
+  function getYearStartEnd() {
+    let year = (/* @__PURE__ */ new Date()).getFullYear();
+    let start = year - 150;
+    let end = year + 150;
+    if (props2.start) {
+      const _year = new Date(props2.start).getFullYear();
+      if (!isNaN(_year) && _year < start) {
+        start = _year;
       }
     }
-    dialogPages.length = 0;
+    if (props2.end) {
+      const _year = new Date(props2.end).getFullYear();
+      if (!isNaN(_year) && _year > end) {
+        end = _year;
+      }
+    }
+    return {
+      start,
+      end
+    };
   }
-  const successOptions = { errMsg: "closeDialogPage: ok" };
-  (_a = options == null ? void 0 : options.success) == null ? void 0 : _a.call(options, successOptions);
-  (_b = options == null ? void 0 : options.complete) == null ? void 0 : _b.call(options, successOptions);
-};
-function triggerFailCallback(options, errMsg) {
-  var _a, _b;
-  const failOptions = new UniError(
-    "uni-closeDialogPage",
-    4,
-    `closeDialogPage: fail, ${errMsg}`
-  );
-  (_a = options == null ? void 0 : options.fail) == null ? void 0 : _a.call(options, failOptions);
-  (_b = options == null ? void 0 : options.complete) == null ? void 0 : _b.call(options, failOptions);
+  function _createDate() {
+    let years = [];
+    const year = getYearStartEnd();
+    for (let i = year.start, end = year.end; i <= end; i++) {
+      years.push(String(i));
+    }
+    let months = [];
+    for (let i = 1; i <= 12; i++) {
+      months.push((i < 10 ? "0" : "") + i);
+    }
+    let days = [];
+    for (let i = 1; i <= 31; i++) {
+      days.push((i < 10 ? "0" : "") + i);
+    }
+    state2.dateArray.push(years, months, days);
+  }
+  function _getTimeValue(val) {
+    return val[0] * 60 + val[1];
+  }
+  function _getDateValue(val) {
+    const DAY = 31;
+    return val[0] * DAY * 12 + (val[1] || 0) * DAY + (val[2] || 0);
+  }
+  function _cloneArray(val1, val2) {
+    for (let i = 0; i < val1.length && i < val2.length; i++) {
+      val1[i] = val2[i];
+    }
+  }
+  function _setValueSync() {
+    let val = props2.value;
+    switch (props2.mode) {
+      case mode.MULTISELECTOR:
+        {
+          if (!isArray(val)) {
+            val = state2.valueArray;
+          }
+          if (!isArray(state2.valueSync)) {
+            state2.valueSync = [];
+          }
+          const length = state2.valueSync.length = Math.max(val.length, props2.range.length);
+          for (let index2 = 0; index2 < length; index2++) {
+            const val0 = Number(val[index2]);
+            const val1 = Number(state2.valueSync[index2]);
+            const val2 = isNaN(val0) ? isNaN(val1) ? 0 : val1 : val0;
+            const maxVal = props2.range[index2] ? props2.range[index2].length - 1 : 0;
+            state2.valueSync.splice(index2, 1, val2 < 0 || val2 > maxVal ? 0 : val2);
+          }
+        }
+        break;
+      case mode.TIME:
+      case mode.DATE:
+        state2.valueSync = String(val);
+        break;
+      default: {
+        const valueSync = Number(val);
+        state2.valueSync = valueSync < 0 ? 0 : valueSync;
+        break;
+      }
+    }
+  }
+  function _setValueArray() {
+    let val = state2.valueSync;
+    let valueArray;
+    switch (props2.mode) {
+      case mode.MULTISELECTOR:
+        valueArray = [...val];
+        break;
+      case mode.TIME:
+        valueArray = getDateValueArray(props2, state2, val, formatDateTime({
+          mode: mode.TIME
+        }));
+        break;
+      case mode.DATE:
+        valueArray = getDateValueArray(props2, state2, val, formatDateTime({
+          mode: mode.DATE
+        }));
+        break;
+      default:
+        valueArray = [val];
+        break;
+    }
+    state2.oldValueArray = [...valueArray];
+    state2.valueArray = [...valueArray];
+  }
+  function _getValue() {
+    let val = state2.valueArray;
+    switch (props2.mode) {
+      case mode.SELECTOR:
+        return val[0];
+      case mode.MULTISELECTOR:
+        return val.map((val2) => val2);
+      case mode.TIME:
+        return state2.valueArray.map((val2, i) => state2.timeArray[i][val2]).join(":");
+      case mode.DATE:
+        return state2.valueArray.map((val2, i) => state2.dateArray[i][val2]).join("-");
+    }
+  }
+  function _change() {
+    _close();
+    state2.valueChangeSource = "click";
+    const value = _getValue();
+    state2.valueSync = isArray(value) ? value.map((val) => val) : value;
+    trigger("change", {}, {
+      value
+    });
+  }
+  function _cancel($event) {
+    if (system.value === "firefox" && $event) {
+      const {
+        top,
+        left,
+        width,
+        height
+      } = state2.popover;
+      const {
+        pageX,
+        pageY
+      } = $event;
+      if (pageX > left && pageX < left + width && pageY > top && pageY < top + height) {
+        return;
+      }
+    }
+    _close();
+    trigger("cancel", {}, {});
+  }
+  function _close() {
+    state2.visible = false;
+    setTimeout(() => {
+      let $picker = pickerRef.value;
+      $picker.remove();
+      rootRef.value.prepend($picker);
+      $picker.style.display = "none";
+    }, 260);
+  }
+  function _select() {
+    if (props2.mode === mode.SELECTOR && selectorTypeComputed.value === selectorType.SELECT) {
+      selectRef.value.scrollTop = state2.valueArray[0] * 34;
+    }
+  }
+  function _input($event) {
+    const EventTarget = $event.target;
+    state2.valueSync = EventTarget.value;
+    nextTick(() => {
+      _change();
+    });
+  }
+  function _fixInputPosition($event) {
+    if (system.value === "chrome") {
+      const rect = rootRef.value.getBoundingClientRect();
+      const fontSize = 32;
+      inputRef.value.style.left = `${$event.clientX - rect.left - fontSize * 1.5}px`;
+      inputRef.value.style.top = `${$event.clientY - rect.top - fontSize * 0.5}px`;
+    }
+  }
+  function _pickerViewChange(event) {
+    state2.valueArray = _l10nColumn(event.detail.value, true);
+  }
+  function _l10nColumn(array, normalize) {
+    const {
+      getLocale: getLocale2
+    } = useI18n();
+    if (props2.mode === mode.DATE) {
+      const locale = getLocale2();
+      if (!locale.startsWith("zh")) {
+        switch (props2.fields) {
+          case fields.YEAR:
+            return array;
+          case fields.MONTH:
+            return [array[1], array[0]];
+          default:
+            switch (locale) {
+              case "es":
+              case "fr":
+                return [array[2], array[1], array[0]];
+              default:
+                return normalize ? [array[2], array[0], array[1]] : [array[1], array[2], array[0]];
+            }
+        }
+      }
+    }
+    return array;
+  }
+  function _l10nItem(item, index2) {
+    const {
+      getLocale: getLocale2
+    } = useI18n();
+    if (props2.mode === mode.DATE) {
+      const locale = getLocale2();
+      if (locale.startsWith("zh")) {
+        const array = ["年", "月", "日"];
+        return item + array[index2];
+      } else if (props2.fields !== fields.YEAR && index2 === (props2.fields !== fields.MONTH && (locale === "es" || locale === "fr") ? 1 : 0)) {
+        let array;
+        switch (locale) {
+          case "es":
+            array = ["enero", "febrero", "marzo", "abril", "mayo", "junio", "​​julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"];
+            break;
+          case "fr":
+            array = ["janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août", "septembre", "octobre", "novembre", "décembre"];
+            break;
+          default:
+            array = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+            break;
+        }
+        return array[Number(item) - 1];
+      }
+    }
+    return item;
+  }
+  watch(() => state2.visible, (val) => {
+    if (val) {
+      clearTimeout(__contentVisibleDelay);
+      state2.contentVisible = val;
+      _select();
+    } else {
+      __contentVisibleDelay = setTimeout(() => {
+        state2.contentVisible = val;
+      }, 300);
+    }
+  });
+  watch([() => props2.mode, () => props2.value, () => props2.range], _setValueSync, {
+    deep: true
+  });
+  watch(() => state2.valueSync, _setValueArray, {
+    deep: true
+  });
+  watch(() => state2.valueArray, (val) => {
+    if (props2.mode === mode.TIME || props2.mode === mode.DATE) {
+      const getValue = props2.mode === mode.TIME ? _getTimeValue : _getDateValue;
+      const valueArray = state2.valueArray;
+      const _startArray = startArray.value;
+      const _endArray = endArray.value;
+      if (props2.mode === mode.DATE) {
+        const dateArray = state2.dateArray;
+        const max = dateArray[2].length;
+        const day = Number(dateArray[2][valueArray[2]]) || 1;
+        const realDay = (/* @__PURE__ */ new Date(`${dateArray[0][valueArray[0]]}/${dateArray[1][valueArray[1]]}/${day}`)).getDate();
+        if (realDay < day) {
+          valueArray[2] -= realDay + max - day;
+        }
+      }
+      if (getValue(valueArray) < getValue(_startArray)) {
+        _cloneArray(valueArray, _startArray);
+      } else if (getValue(valueArray) > getValue(_endArray)) {
+        _cloneArray(valueArray, _endArray);
+      }
+    }
+    val.forEach((value, column) => {
+      if (value !== state2.oldValueArray[column]) {
+        state2.oldValueArray[column] = value;
+        if (props2.mode === mode.MULTISELECTOR) {
+          trigger("columnchange", {}, {
+            column,
+            value
+          });
+        }
+      }
+    });
+  });
+  return {
+    selectorTypeComputed,
+    system,
+    _show,
+    _cancel,
+    _change,
+    _l10nColumn,
+    _l10nItem,
+    _input,
+    _resetFormData,
+    _getFormData,
+    _createTime,
+    _createDate,
+    _setValueSync,
+    _fixInputPosition,
+    _pickerViewChange
+  };
 }
-const SEP = "$$";
-const currentPagesMap = /* @__PURE__ */ new Map();
+function usePickerWatch(state2, _cancel, _change) {
+  const {
+    key,
+    disable
+  } = useKeyboard();
+  watchEffect(() => {
+    disable.value = !state2.visible;
+  });
+  watch(key, (value) => {
+    if (value === "esc") {
+      _cancel();
+    } else if (value === "enter") {
+      _change();
+    }
+  });
+}
+function usePickerForm(_resetFormData, _getFormData) {
+  const uniForm = inject(uniFormKey, false);
+  if (uniForm) {
+    const field = {
+      reset: _resetFormData,
+      submit: () => {
+        const data = ["", null];
+        const {
+          key,
+          value
+        } = _getFormData();
+        if (key !== "") {
+          data[0] = key;
+          data[1] = value;
+        }
+        return data;
+      }
+    };
+    uniForm.addField(field);
+    onBeforeUnmount(() => {
+      uniForm.removeField(field);
+    });
+  }
+}
+const index$j = /* @__PURE__ */ defineUnsupportedComponent("ad");
+const index$i = /* @__PURE__ */ defineUnsupportedComponent("ad-content-page");
+const index$h = /* @__PURE__ */ defineUnsupportedComponent("ad-draw");
+const index$g = /* @__PURE__ */ defineUnsupportedComponent("camera");
+const index$f = /* @__PURE__ */ defineUnsupportedComponent("live-player");
+const index$e = /* @__PURE__ */ defineUnsupportedComponent("live-pusher");
+const ICON_PATH_NAV = "M28 17c-6.49396875 0-12.13721875 2.57040625-15 6.34840625V5.4105l6.29859375 6.29859375c0.387875 0.387875 1.02259375 0.387875 1.4105 0 0.387875-0.387875 0.387875-1.02259375 0-1.4105L12.77853125 2.36803125a0.9978125 0.9978125 0 0 0-0.0694375-0.077125c-0.1944375-0.1944375-0.45090625-0.291375-0.70721875-0.290875l-0.00184375-0.0000625-0.00184375 0.0000625c-0.2563125-0.0005-0.51278125 0.09640625-0.70721875 0.290875a0.9978125 0.9978125 0 0 0-0.0694375 0.077125l-7.930625 7.9305625c-0.387875 0.387875-0.387875 1.02259375 0 1.4105 0.387875 0.387875 1.02259375 0.387875 1.4105 0L11 5.4105V29c0 0.55 0.45 1 1 1s1-0.45 1-1c0-5.52284375 6.71571875-10 15-10 0.55228125 0 1-0.44771875 1-1 0-0.55228125-0.44771875-1-1-1z";
+const props$e = {
+  latitude: {
+    type: Number
+  },
+  longitude: {
+    type: Number
+  },
+  scale: {
+    type: Number,
+    default: 18
+  },
+  name: {
+    type: String,
+    default: ""
+  },
+  address: {
+    type: String,
+    default: ""
+  }
+};
+function useState$2(props2) {
+  const state2 = reactive({
+    center: {
+      latitude: 0,
+      longitude: 0
+    },
+    marker: {
+      id: 1,
+      latitude: 0,
+      longitude: 0,
+      iconPath: ICON_PATH_TARGET,
+      width: 32,
+      height: 52
+    },
+    location: {
+      id: 2,
+      latitude: 0,
+      longitude: 0,
+      iconPath: ICON_PATH_ORIGIN,
+      width: 44,
+      height: 44
+    }
+  });
+  function updatePosition() {
+    if (props2.latitude && props2.longitude) {
+      state2.center.latitude = props2.latitude;
+      state2.center.longitude = props2.longitude;
+      state2.marker.latitude = props2.latitude;
+      state2.marker.longitude = props2.longitude;
+    }
+  }
+  watch([() => props2.latitude, () => props2.longitude], updatePosition);
+  updatePosition();
+  return state2;
+}
+const LocationView = /* @__PURE__ */ defineSystemComponent({
+  name: "LocationView",
+  props: props$e,
+  emits: ["close"],
+  setup(props2, {
+    emit: emit2
+  }) {
+    const state2 = useState$2(props2);
+    usePreventScroll();
+    getLocation({
+      type: "gcj02",
+      success: ({
+        latitude,
+        longitude
+      }) => {
+        state2.location.latitude = latitude;
+        state2.location.longitude = longitude;
+      }
+    });
+    function onRegionChange(event) {
+      const centerLocation = event.detail.centerLocation;
+      if (centerLocation) {
+        state2.center.latitude = centerLocation.latitude;
+        state2.center.longitude = centerLocation.longitude;
+      }
+    }
+    function nav() {
+      const mapInfo = getMapInfo();
+      let url = "";
+      if (mapInfo.type === MapType.GOOGLE) {
+        const origin = state2.location.latitude ? `&origin=${state2.location.latitude}%2C${state2.location.longitude}` : "";
+        url = `https://www.google.com/maps/dir/?api=1${origin}&destination=${props2.latitude}%2C${props2.longitude}`;
+      } else if (mapInfo.type === MapType.QQ) {
+        const fromcoord = state2.location.latitude ? `&fromcoord=${state2.location.latitude}%2C${state2.location.longitude}&from=${encodeURIComponent("我的位置")}` : "";
+        url = `https://apis.map.qq.com/uri/v1/routeplan?type=drive${fromcoord}&tocoord=${props2.latitude}%2C${props2.longitude}&to=${encodeURIComponent(props2.name || "目的地")}&ref=${mapInfo.key}`;
+      } else if (mapInfo.type === MapType.AMAP) {
+        const from = state2.location.latitude ? `from=${state2.location.longitude},${state2.location.latitude},${encodeURIComponent("我的位置")}&` : "";
+        url = `https://uri.amap.com/navigation?${from}to=${props2.longitude},${props2.latitude},${encodeURIComponent(props2.name || "目的地")}`;
+      }
+      window.open(url);
+    }
+    function back() {
+      emit2("close");
+    }
+    function setCenter({
+      latitude,
+      longitude
+    }) {
+      state2.center.latitude = latitude;
+      state2.center.longitude = longitude;
+    }
+    return () => {
+      return createVNode("div", {
+        "class": "uni-system-open-location"
+      }, [createVNode(__syscom_0, {
+        "latitude": state2.center.latitude,
+        "longitude": state2.center.longitude,
+        "class": "map",
+        "markers": [state2.marker, state2.location],
+        "onRegionchange": onRegionChange
+      }, {
+        default: () => [createVNode("div", {
+          "class": "map-move",
+          "onClick": () => setCenter(state2.location)
+        }, [createSvgIconVNode(ICON_PATH_LOCTAION, "#000000", 24)], 8, ["onClick"])]
+      }, 8, ["latitude", "longitude", "markers", "onRegionchange"]), createVNode("div", {
+        "class": "info"
+      }, [createVNode("div", {
+        "class": "name",
+        "onClick": () => setCenter(state2.marker)
+      }, [props2.name], 8, ["onClick"]), createVNode("div", {
+        "class": "address",
+        "onClick": () => setCenter(state2.marker)
+      }, [props2.address], 8, ["onClick"]), createVNode("div", {
+        "class": "nav",
+        "onClick": nav
+      }, [createSvgIconVNode(ICON_PATH_NAV, "#ffffff", 26)], 8, ["onClick"])]), createVNode("div", {
+        "class": "nav-btn-back",
+        "onClick": back
+      }, [createSvgIconVNode(ICON_PATH_BACK, "#ffffff", 26)], 8, ["onClick"])]);
+    };
+  }
+});
+let state = null;
+const openLocation = /* @__PURE__ */ defineAsyncApi(
+  API_OPEN_LOCATION,
+  (args, { resolve }) => {
+    if (!state) {
+      state = reactive(args);
+      nextTick(() => {
+        const app = createRootApp(LocationView, state, () => {
+          state = null;
+          nextTick(() => {
+            app.unmount();
+          });
+        });
+        app.mount(ensureRoot("u-a-o"));
+      });
+    } else {
+      extend(state, args);
+    }
+    resolve();
+  },
+  OpenLocationProtocol,
+  OpenLocationOptions
+);
+const DIALOG_TAG = "dialog";
+const SYSTEM_DIALOG_TAG = "systemDialog";
+function isDialogPageInstance(vm) {
+  return isNormalDialogPageInstance(vm) || isSystemDialogPageInstance(vm);
+}
+function isNormalDialogPageInstance(vm) {
+  return vm.attrs["data-type"] === DIALOG_TAG;
+}
+function isSystemDialogPageInstance(vm) {
+  return vm.attrs["data-type"] === SYSTEM_DIALOG_TAG;
+}
+let escBackPageNum = 0;
 const homeDialogPages = [];
+const homeSystemDialogPages = [];
 class UniPageImpl {
   constructor({
     route,
@@ -17330,8 +16846,8 @@ class UniPageImpl {
 }
 class UniNormalPageImpl extends UniPageImpl {
   getDialogPages() {
-    var _a;
-    return this.vm ? (_a = getPageInstanceByVm(this.vm)) == null ? void 0 : _a.$dialogPages.value : [];
+    var _a, _b;
+    return ((_b = (_a = this.vm) == null ? void 0 : _a.$pageLayoutInstance) == null ? void 0 : _b.$dialogPages.value) || [];
   }
   constructor({
     route,
@@ -17340,9 +16856,6 @@ class UniNormalPageImpl extends UniPageImpl {
   }) {
     super({ route, options, vm });
   }
-}
-function getPage$BasePage(page) {
-  return page.$basePage;
 }
 class UniDialogPageImpl extends UniPageImpl {
   constructor({
@@ -17355,28 +16868,109 @@ class UniDialogPageImpl extends UniPageImpl {
     super({ route, options, vm: null });
     this.$component = null;
     this.$disableEscBack = false;
-    this.$component = $component;
+    this.$component = markRaw($component);
     this.getParentPage = getParentPage;
     this.$disableEscBack = !!$disableEscBack;
   }
 }
-const entryPageState = {
-  handledBeforeEntryPageRoutes: false
-};
-const navigateToPagesBeforeEntryPages = [];
-const switchTabPagesBeforeEntryPages = [];
-const redirectToPagesBeforeEntryPages = [];
-const reLaunchPagesBeforeEntryPages = [];
-let escBackPageNum = 0;
-function handleEscKeyPress(event) {
-  {
-    if (event.key === "Escape") {
-      const currentPage = getCurrentPage();
-      const dialogPages = currentPage.getDialogPages();
-      const dialogPage = dialogPages[dialogPages.length - 1];
-      if (!dialogPage.$disableEscBack) {
-        closeDialogPage({ dialogPage });
+function initXPage(vm, route, page) {
+  var _a, _b;
+  initPageVm(vm, page);
+  Object.defineProperty(vm, "$pageLayoutInstance", {
+    get() {
+      var _a2, _b2;
+      let res = (_a2 = vm.$) == null ? void 0 : _a2.parent;
+      while (res && ((_b2 = res.type) == null ? void 0 : _b2.name) !== "Page") {
+        res = res.parent;
       }
+      return res;
+    }
+  });
+  vm.$basePage = vm.$page;
+  const pageInstance = vm.$pageLayoutInstance;
+  if (!isDialogPageInstance(pageInstance)) {
+    const uniPage = new UniNormalPageImpl({
+      route: (route == null ? void 0 : route.path) || "",
+      options: new UTSJSONObject((route == null ? void 0 : route.query) || {}),
+      vm
+    });
+    vm.$page = uniPage;
+    const pageMeta = page.meta;
+    uniPage.setPageStyle = (style) => {
+      for (const key in style) {
+        switch (key) {
+          case "navigationBarBackgroundColor":
+            pageMeta.navigationBar.backgroundColor = style[key];
+            break;
+          case "navigationBarTextStyle":
+            const textStyle = style[key];
+            if (textStyle == null) {
+              continue;
+            }
+            pageMeta.navigationBar.titleColor = ["black", "white"].includes(
+              textStyle
+            ) ? normalizeTitleColor(textStyle || "") : textStyle;
+            break;
+          case "navigationBarTitleText":
+            pageMeta.navigationBar.titleText = style[key];
+            break;
+          case "titleImage":
+            pageMeta.navigationBar.titleImage = style[key];
+            break;
+          case "navigationStyle":
+            pageMeta.navigationBar.style = style[key];
+            break;
+          default:
+            pageMeta[key] = style[key];
+            break;
+        }
+      }
+    };
+    uniPage.getPageStyle = () => new UTSJSONObject({
+      navigationBarBackgroundColor: pageMeta.navigationBar.backgroundColor,
+      navigationBarTextStyle: pageMeta.navigationBar.titleColor,
+      navigationBarTitleText: pageMeta.navigationBar.titleText,
+      titleImage: pageMeta.navigationBar.titleImage || "",
+      navigationStyle: pageMeta.navigationBar.style || "default",
+      disableScroll: pageMeta.disableScroll || false,
+      enablePullDownRefresh: pageMeta.enablePullDownRefresh || false,
+      onReachBottomDistance: pageMeta.onReachBottomDistance || ON_REACH_BOTTOM_DISTANCE,
+      backgroundColorContent: pageMeta.backgroundColorContent
+    });
+    vm.$dialogPage = (_a = vm.$pageLayoutInstance) == null ? void 0 : _a.$dialogPage;
+    currentPagesMap.set(normalizeRouteKey(page.path, page.id), vm);
+    if (currentPagesMap.size === 1) {
+      setTimeout(() => {
+        handleBeforeEntryPageRoutes();
+      }, 0);
+      if (homeDialogPages.length) {
+        homeDialogPages.forEach((dialogPage) => {
+          dialogPage.getParentPage = () => vm.$page;
+          pageInstance.$dialogPages.value.push(dialogPage);
+        });
+        homeDialogPages.length = 0;
+      }
+      if (homeSystemDialogPages.length) {
+        homeSystemDialogPages.forEach((dialogPage) => {
+          dialogPage.getParentPage = () => vm.$page;
+          pageInstance.$systemDialogPages.value.push(dialogPage);
+        });
+        homeSystemDialogPages.length = 0;
+      }
+    }
+  } else {
+    vm.$page = (_b = vm.$pageLayoutInstance) == null ? void 0 : _b.$dialogPage;
+    pageInstance.$dialogPage.vm = vm;
+    pageInstance.$dialogPage.$vm = vm;
+  }
+}
+function handleEscKeyPress(event) {
+  if (event.key === "Escape") {
+    const currentPage = getCurrentPage();
+    const dialogPages = currentPage.getDialogPages();
+    const dialogPage = dialogPages[dialogPages.length - 1];
+    if (!dialogPage.$disableEscBack) {
+      closeDialogPage({ dialogPage });
     }
   }
 }
@@ -17392,6 +16986,1789 @@ function decrementEscBackPageNum() {
     document.removeEventListener("keydown", handleEscKeyPress);
   }
 }
+const openDialogPage = (options) => {
+  var _a, _b, _c, _d;
+  if (!options.url) {
+    triggerFailCallback$1(options, "url is required");
+    return null;
+  }
+  const { path, query } = parseUrl(options.url);
+  const normalizeUrl = createNormalizeUrl("navigateTo");
+  const errMsg = normalizeUrl(path, {});
+  if (errMsg) {
+    triggerFailCallback$1(options, errMsg);
+    return null;
+  }
+  const targetRoute = __uniRoutes.find((route) => {
+    return path.indexOf(route.meta.route) !== -1;
+  });
+  const dialogPage = new UniDialogPageImpl({
+    route: path,
+    options: new UTSJSONObject(query),
+    $component: targetRoute.component,
+    getParentPage: () => null,
+    $disableEscBack: options.disableEscBack
+  });
+  let parentPage = options.parentPage;
+  const currentPages = getCurrentPages();
+  if (parentPage) {
+    if (currentPages.indexOf(parentPage) === -1) {
+      triggerFailCallback$1(options, "parentPage is not a valid page");
+      return null;
+    }
+  }
+  if (!isSystemDialogPage(dialogPage)) {
+    if (!currentPages.length) {
+      homeDialogPages.push(dialogPage);
+    } else {
+      if (!parentPage) {
+        parentPage = currentPages[currentPages.length - 1];
+      }
+      dialogPage.getParentPage = () => parentPage;
+      parentPage.getDialogPages().push(dialogPage);
+    }
+    if (!options.disableEscBack) {
+      incrementEscBackPageNum();
+    }
+  } else {
+    if (!currentPages.length) {
+      homeSystemDialogPages.push(dialogPage);
+      if (isSystemActionSheetDialogPage(dialogPage)) {
+        closePreActionSheet(homeSystemDialogPages);
+      }
+    } else {
+      if (!parentPage) {
+        parentPage = currentPages[currentPages.length - 1];
+      }
+      dialogPage.getParentPage = () => parentPage;
+      (_a = parentPage.vm.$pageLayoutInstance) == null ? void 0 : _a.$systemDialogPages.value.push(
+        dialogPage
+      );
+      if (isSystemActionSheetDialogPage(dialogPage)) {
+        closePreActionSheet(
+          (_b = parentPage.vm.$pageLayoutInstance) == null ? void 0 : _b.$systemDialogPages.value
+        );
+      }
+    }
+  }
+  const successOptions = {
+    errMsg: "openDialogPage:ok"
+  };
+  (_c = options.success) == null ? void 0 : _c.call(options, successOptions);
+  (_d = options.complete) == null ? void 0 : _d.call(options, successOptions);
+  return dialogPage;
+};
+function triggerFailCallback$1(options, errMsg) {
+  var _a, _b;
+  const failOptions = new UniError(
+    "uni-openDialogPage",
+    4,
+    `openDialogPage: fail, ${errMsg}`
+  );
+  (_a = options.fail) == null ? void 0 : _a.call(options, failOptions);
+  (_b = options.complete) == null ? void 0 : _b.call(options, failOptions);
+}
+function closePreActionSheet(dialogPages) {
+  const actionSheets = dialogPages.filter(
+    (page) => isSystemActionSheetDialogPage(page)
+  );
+  if (actionSheets.length > 1) {
+    setTimeout(() => {
+      dialogPages.splice(dialogPages.indexOf(actionSheets[0]), 1);
+    }, 100);
+  }
+}
+const closeDialogPage = (options) => {
+  var _a, _b;
+  const currentPages = getCurrentPages();
+  const currentPage = currentPages[currentPages.length - 1];
+  if (!currentPage) {
+    triggerFailCallback(options, "currentPage is null");
+    return;
+  }
+  if (options == null ? void 0 : options.dialogPage) {
+    const dialogPage = options == null ? void 0 : options.dialogPage;
+    const parentPage = dialogPage.getParentPage();
+    if (!isSystemDialogPage(dialogPage)) {
+      if (parentPage && currentPages.indexOf(parentPage) !== -1) {
+        const parentDialogPages = parentPage.getDialogPages();
+        const index2 = parentDialogPages.indexOf(dialogPage);
+        parentDialogPages.splice(index2, 1);
+        invokeHook(dialogPage.$vm, ON_UNLOAD);
+        if (index2 > 0 && index2 === parentDialogPages.length) {
+          invokeHook(
+            parentDialogPages[parentDialogPages.length - 1].$vm,
+            ON_SHOW
+          );
+        }
+        if (!dialogPage.$disableEscBack) {
+          decrementEscBackPageNum();
+        }
+      } else {
+        triggerFailCallback(options, "dialogPage is not a valid page");
+        return;
+      }
+    } else {
+      const parentSystemDialogPages = parentPage.vm.$pageLayoutInstance.$systemDialogPages.value;
+      const index2 = parentSystemDialogPages.indexOf(dialogPage);
+      parentSystemDialogPages.splice(index2, 1);
+      return;
+    }
+  } else {
+    const dialogPages = currentPage.getDialogPages();
+    for (let i = dialogPages.length - 1; i >= 0; i--) {
+      invokeHook(dialogPages[i].$vm, ON_UNLOAD);
+      if (i > 0) {
+        invokeHook(dialogPages[i - 1].$vm, ON_SHOW);
+      }
+      if ((!dialogPages[i]).$disableEscBack) {
+        decrementEscBackPageNum();
+      }
+    }
+    dialogPages.length = 0;
+  }
+  const successOptions = { errMsg: "closeDialogPage: ok" };
+  (_a = options == null ? void 0 : options.success) == null ? void 0 : _a.call(options, successOptions);
+  (_b = options == null ? void 0 : options.complete) == null ? void 0 : _b.call(options, successOptions);
+};
+function triggerFailCallback(options, errMsg) {
+  var _a, _b;
+  const failOptions = new UniError(
+    "uni-closeDialogPage",
+    4,
+    `closeDialogPage: fail, ${errMsg}`
+  );
+  (_a = options == null ? void 0 : options.fail) == null ? void 0 : _a.call(options, failOptions);
+  (_b = options == null ? void 0 : options.complete) == null ? void 0 : _b.call(options, failOptions);
+}
+const _sfc_main$2 = {
+  data() {
+    return {
+      show: false,
+      i18nCancelText: {
+        en: "Cancel",
+        es: "Cancelar",
+        fr: "Annuler",
+        "zh-Hans": "取消",
+        "zh-Hant": "取消"
+      },
+      readyEventName: "",
+      optionsEventName: "",
+      successEventName: "",
+      failEventName: "",
+      title: null,
+      itemList: [],
+      optionCancelText: null,
+      titleColor: null,
+      itemColor: null,
+      cancelColor: null,
+      backgroundColor: null,
+      language: "zh-Hans",
+      theme: "light",
+      isLandscape: false,
+      windowWidth: 0,
+      windowHeight: 0,
+      popover: {}
+    };
+  },
+  onLoad(options) {
+    this.readyEventName = options["readyEventName"];
+    this.optionsEventName = options["optionsEventName"];
+    this.successEventName = options["successEventName"];
+    this.failEventName = options["failEventName"];
+    uni.$on(this.optionsEventName, (data) => {
+      this.itemList = data["itemList"];
+      if (data["title"] != null) {
+        this.title = data["title"];
+      }
+      if (data["cancelText"] != null) {
+        this.optionCancelText = data["cancelText"];
+      }
+      if (data["titleColor"] != null) {
+        this.titleColor = data["titleColor"];
+      }
+      if (data["itemColor"] != null) {
+        this.itemColor = data["itemColor"];
+      }
+      if (data["cancelColor"] != null) {
+        this.cancelColor = data["cancelColor"];
+      }
+      if (data["backgroundColor"] != null) {
+        this.backgroundColor = data["backgroundColor"];
+      }
+      if (data["popover"] != null) {
+        this.popover = data["popover"];
+      }
+    });
+    uni.$emit(this.readyEventName, {});
+    const systemInfo = uni.getSystemInfoSync();
+    const osLanguage = systemInfo.osLanguage;
+    const appLanguage = systemInfo.appLanguage;
+    if (appLanguage != null) {
+      this.language = appLanguage;
+    } else if (osLanguage != null) {
+      this.language = osLanguage;
+    }
+    const osTheme = systemInfo.osTheme;
+    const appTheme = systemInfo.appTheme;
+    if (appTheme != null) {
+      this.theme = appTheme;
+    } else if (osTheme != null) {
+      this.theme = osTheme;
+    }
+    const hostTheme = systemInfo.hostTheme;
+    if (hostTheme != null) {
+      this.theme = hostTheme;
+    }
+    this.isLandscape = systemInfo.deviceOrientation == "landscape";
+    this.windowHeight = systemInfo.windowHeight;
+    this.windowWidth = systemInfo.windowWidth;
+    window.addEventListener("resize", this.fixSize);
+    const locale = uni.getLocale();
+    this.language = locale;
+    uni.onLocaleChange((res) => {
+      if (res.locale) {
+        this.language = res.locale;
+      }
+    });
+    uni.onThemeChange((res) => {
+      this.theme = res.theme;
+    });
+  },
+  computed: {
+    isWidescreen() {
+      return this.windowHeight >= 500 && this.windowWidth >= 500;
+    },
+    containerStyle() {
+      if (Object.keys(this.popover).length == 0) {
+        return {};
+      }
+      const res = {
+        transform: "none !important"
+      };
+      const top = this.popover.top;
+      const left = this.popover.left;
+      const width = this.popover.width;
+      const height = this.popover.height;
+      const center = left + width / 2;
+      const contentLeft = Math.max(0, center - 300 / 2);
+      res["left"] = `${contentLeft}px`;
+      const vcl = this.windowHeight / 2;
+      if (top + height - vcl > vcl - top) {
+        res["top"] = "auto";
+        res["bottom"] = `${this.windowHeight - top + 6}px`;
+      } else {
+        res["top"] = `${top + height + 6}px`;
+      }
+      return res;
+    },
+    triangleStyle() {
+      if (Object.keys(this.popover).length == 0) {
+        return {};
+      }
+      const res = {};
+      const borderColor = this.backgroundColor || (this.theme == "dark" ? "#2C2C2B" : "#fcfcfd");
+      const top = this.popover.top;
+      const left = this.popover.left;
+      const width = this.popover.width;
+      const height = this.popover.height;
+      const center = left + width / 2;
+      const contentLeft = Math.max(0, center - 300 / 2);
+      let triangleLeft = Math.max(12, center - contentLeft);
+      triangleLeft = Math.min(300 - 12, triangleLeft);
+      res["left"] = `${triangleLeft}px`;
+      const vcl = this.windowHeight / 2;
+      if (top + height - vcl > vcl - top) {
+        res["bottom"] = "-6px";
+        res["border-width"] = "6px 6px 0 6px";
+        res["border-color"] = `${borderColor} transparent transparent transparent`;
+      } else {
+        res["top"] = "-6px";
+        res["border-width"] = "0 6px 6px 6px";
+        res["border-color"] = `transparent transparent ${borderColor} transparent`;
+      }
+      return res;
+    },
+    cancelText() {
+      if (this.optionCancelText != null) {
+        const res = this.optionCancelText;
+        return res;
+      }
+      if (this.language.startsWith("en")) {
+        return this.i18nCancelText["en"];
+      }
+      if (this.language.startsWith("es")) {
+        return this.i18nCancelText["es"];
+      }
+      if (this.language.startsWith("fr")) {
+        return this.i18nCancelText["fr"];
+      }
+      if (this.language.startsWith("zh-Hans")) {
+        return this.i18nCancelText["zh-Hans"];
+      }
+      if (this.language.startsWith("zh-Hant")) {
+        return this.i18nCancelText["zh-Hant"];
+      }
+      return "取消";
+    }
+  },
+  onReady() {
+    setTimeout(() => {
+      this.show = true;
+    }, 10);
+  },
+  onResize() {
+    const systemInfo = uni.getSystemInfoSync();
+    this.isLandscape = systemInfo.deviceOrientation == "landscape";
+  },
+  onUnload() {
+    uni.$off(this.optionsEventName, null);
+    uni.$off(this.readyEventName, null);
+    uni.$off(this.successEventName, null);
+    uni.$off(this.failEventName, null);
+    window.removeEventListener("resize", this.fixSize);
+  },
+  methods: {
+    fixSize() {
+      const {
+        windowWidth,
+        windowHeight,
+        windowTop
+      } = uni.getSystemInfoSync();
+      this.windowWidth = windowWidth;
+      this.windowHeight = windowHeight + (windowTop || 0);
+    },
+    closeActionSheet() {
+      this.show = false;
+      setTimeout(() => {
+        uni.closeDialogPage({
+          dialogPage: this.$page
+        });
+      }, 300);
+    },
+    handleMenuItemClick(tapIndex) {
+      this.closeActionSheet();
+      uni.$emit(this.successEventName, tapIndex);
+    },
+    handleCancel() {
+      this.closeActionSheet();
+      uni.$emit(this.failEventName, {});
+    }
+  }
+};
+const _style_0$1 = "\n.uni-action-sheet_dialog__mask {\n    position: fixed;\n    z-index: 999;\n    top: 0;\n    right: 0;\n    left: 0;\n    bottom: 0;\n    opacity: 0;\n    background-color: rgba(0, 0, 0, 0.6);\n    transition: opacity 0.1s;\n}\n.uni-action-sheet_dialog__mask__show {\n    opacity: 1;\n}\n.uni-action-sheet_dialog__container {\n    position: fixed;\n    width: 100%;\n    left: 0;\n    bottom: 0;\n    z-index: 999;\n    transform: translate(0, 100%);\n    opacity: 0;\n\n\n\n\n    transition: transform 0.3s, opacity 0.3s;\n\n    background-color: #f7f7f7;\n    border-top-left-radius: 12px;\n    border-top-right-radius: 12px;\n}\n.uni-action-sheet_dialog__menu {\n    border-top-left-radius: 12px;\n    border-top-right-radius: 12px;\n    overflow: hidden;\n}\n.uni-action-sheet_dialog__container.uni-action-sheet_dialog__show {\n    opacity: 1;\n    transform: translate(0, 0);\n}\n.uni-action-sheet_dialog__title,\n  .uni-action-sheet_dialog__cell,\n  .uni-action-sheet_dialog__action {\n    padding: 16px;\n}\n.uni-action-sheet_dialog__title__text,\n  .uni-action-sheet_dialog__cell__text,\n  .uni-action-sheet_dialog__action__text {\n    line-height: 1.4;\n    text-align: center;\n    white-space: nowrap;\n    overflow: hidden;\n    text-overflow: ellipsis;\n}\n.uni-action-sheet_dialog__action {\n    margin-top: 8px;\n}\n.uni-action-sheet_dialog__title__text {\n    color: #666666;\n}\n.uni-action-sheet_dialog__cell__text,\n  .uni-action-sheet_dialog__action__text {\n    color: #000000;\n}\n.uni-action-sheet_dialog__menu,\n  .uni-action-sheet_dialog__action {\n    background-color: #ffffff;\n}\n.uni-action-sheet_dialog__title {\n    border-bottom: 1px solid #e5e5e5;\n}\n.uni-action-sheet_dialog__cell__container {\n    max-height: 330px;\n\n    display: block;\n    overflow-y: auto;\n    scrollbar-width: none;\n}\n.uni-action-sheet_dialog__cell {\n    border-top: 1px solid #e5e5e5;\n}\n\n  /* dark mode */\n.uni-action-sheet_dialog__container.uni-action-sheet_dark__mode {\n    background-color: #1D1E1E;\n}\n.uni-action-sheet_dialog__menu.uni-action-sheet_dark__mode,\n  .uni-action-sheet_dialog__action.uni-action-sheet_dark__mode {\n    background-color: #2C2C2B;\n}\n.uni-action-sheet_dialog__title.uni-action-sheet_dark__mode {\n    border-bottom: 1px solid #2F3131;\n}\n.uni-action-sheet_dialog__cell.uni-action-sheet_dark__mode {\n    border-top: 1px solid #2F3131;\n}\n.uni-action-sheet_dialog__title__text.uni-action-sheet_dark__mode {\n    color: #999999;\n}\n.uni-action-sheet_dialog__cell__text.uni-action-sheet_dark__mode,\n  .uni-action-sheet_dialog__action__text.uni-action-sheet_dark__mode {\n    color: #ffffff;\n}\n\n  /* landscape mode */\n.uni-action-sheet_dialog__container.uni-action-sheet_landscape__mode {\n    width: 300px;\n    position: fixed;\n    left: 50%;\n    right: auto;\n    top: 50%;\n    bottom: auto;\n    z-index: 999;\n    transform: translate(-50%, -50%);\n    border-top-left-radius: 5px;\n    border-top-right-radius: 5px;\n    border-bottom-left-radius: 5px;\n    border-bottom-right-radius: 5px;\n    transition: opacity 0.3s;\n}\n.uni-action-sheet_dialog__menu.uni-action-sheet_landscape__mode {\n    border-top-left-radius: 5px;\n    border-top-right-radius: 5px;\n    border-bottom-left-radius: 5px;\n    border-bottom-right-radius: 5px;\n    box-shadow: 0 0 20px 5px rgba(0, 0, 0, 0.3);\n}\n.uni-action-sheet_dialog__action.uni-action-sheet_landscape__mode {\n    display: none;\n}\n.uni-action-sheet_dialog__cell__container.uni-action-sheet_landscape__mode {\n    max-height: 260px;\n}\n.uni-action-sheet_dialog__title.uni-action-sheet_landscape__mode,\n  .uni-action-sheet_dialog__cell.uni-action-sheet_landscape__mode,\n  .uni-action-sheet_dialog__action.uni-action-sheet_landscape__mode {\n    padding: 10px 6px;\n}\n.uni-action-sheet_dialog__menu {\n    display: block;\n}\n.uni-action-sheet_dialog__title,\n  .uni-action-sheet_dialog__cell,\n  .uni-action-sheet_dialog__action {\n    display: block;\n    text-align: center;\n    line-height: 1.4;\n    text-align: center;\n    white-space: nowrap;\n    overflow: hidden;\n    text-overflow: ellipsis;\n}\n.uni-action-sheet_dialog__cell,\n  .uni-action-sheet_dialog__action {\n    cursor: pointer;\n}\n.uni-action-sheet_dialog__triangle {\n    position: absolute;\n    width: 0;\n    height: 0;\n    margin-left: -6px;\n    border-style: solid;\n}\n  /* web wide screen */\n@media screen and (min-width: 500px) and (min-height: 500px) {\n.uni-action-sheet_dialog__mask {\n      background: none;\n}\n.uni-action-sheet_dialog__container {\n      width: 300px;\n      position: fixed;\n      left: 50%;\n      right: auto;\n      top: 50%;\n      bottom: auto;\n      z-index: 999;\n      border-radius: 5px;\n      opacity: 0;\n      transform: translate(-50%, -50%);\n      transition: opacity 0.3s;\n}\n.uni-action-sheet_dialog__show {\n      opacity: 1;\n      transform: translate(-50%, -50%) !important;\n}\n.uni-action-sheet_dialog__menu {\n      border-radius: 5px;\n      box-shadow: 0 0 20px 5px rgba(0, 0, 0, 0.3);\n}\n.uni-action-sheet_dialog__cell__container {\n      max-height: 260px;\n}\n.uni-action-sheet_dialog__action {\n      display: none;\n}\n.uni-action-sheet_dialog__title {\n      font-size: 15px;\n}\n.uni-action-sheet_dialog__title,\n    .uni-action-sheet_dialog__cell,\n    .uni-action-sheet_dialog__action {\n      padding: 10px 6px;\n}\n}\n\n";
+const _export_sfc = (sfc, props2) => {
+  const target = sfc.__vccOpts || sfc;
+  for (const [key, val] of props2) {
+    target[key] = val;
+  }
+  return target;
+};
+function _sfc_render$2(_ctx, _cache, $props, $setup, $data, $options) {
+  const _component_view = __syscom_2;
+  const _component_text = __syscom_1;
+  return openBlock(), createBlock(_component_view, null, {
+    default: withCtx(() => [
+      createVNode(_component_view, {
+        class: normalizeClass(["uni-action-sheet_dialog__mask", { "uni-action-sheet_dialog__mask__show": $data.show }]),
+        onClick: $options.handleCancel
+      }, null, 8, ["class", "onClick"]),
+      createVNode(_component_view, {
+        style: normalizeStyle($options.isWidescreen ? $options.containerStyle : {}),
+        class: normalizeClass(["uni-action-sheet_dialog__container", {
+          "uni-action-sheet_dialog__show": $data.show,
+          "uni-action-sheet_dark__mode": $data.theme == "dark",
+          "uni-action-sheet_landscape__mode": $data.isLandscape
+        }])
+      }, {
+        default: withCtx(() => [
+          createVNode(_component_view, {
+            style: normalizeStyle($data.backgroundColor != null ? { backgroundColor: $data.backgroundColor } : {}),
+            class: normalizeClass(["uni-action-sheet_dialog__menu", { "uni-action-sheet_dark__mode": $data.theme == "dark", "uni-action-sheet_landscape__mode": $data.isLandscape }])
+          }, {
+            default: withCtx(() => [
+              $data.title ? (openBlock(), createBlock(_component_view, {
+                key: 0,
+                class: normalizeClass(["uni-action-sheet_dialog__title", { "uni-action-sheet_dark__mode": $data.theme == "dark", "uni-action-sheet_landscape__mode": $data.isLandscape }])
+              }, {
+                default: withCtx(() => [
+                  createVNode(_component_text, {
+                    style: normalizeStyle({ color: $data.titleColor }),
+                    class: normalizeClass(["uni-action-sheet_dialog__title__text", { "uni-action-sheet_dark__mode": $data.theme == "dark" }])
+                  }, {
+                    default: withCtx(() => [
+                      createTextVNode(toDisplayString($data.title), 1)
+                    ]),
+                    _: 1
+                  }, 8, ["style", "class"])
+                ]),
+                _: 1
+              }, 8, ["class"])) : createCommentVNode("", true),
+              createVNode(_component_view, {
+                class: normalizeClass(["uni-action-sheet_dialog__cell__container", { "uni-action-sheet_landscape__mode": $data.isLandscape }])
+              }, {
+                default: withCtx(() => [
+                  (openBlock(true), createElementBlock(Fragment, null, renderList($data.itemList, (item, index2) => {
+                    return openBlock(), createBlock(_component_view, {
+                      style: normalizeStyle(index2 == 0 ? { borderTop: "none" } : {}),
+                      class: normalizeClass(["uni-action-sheet_dialog__cell", { "uni-action-sheet_dark__mode": $data.theme == "dark", "uni-action-sheet_landscape__mode": $data.isLandscape }]),
+                      key: index2,
+                      onClick: ($event) => $options.handleMenuItemClick(index2)
+                    }, {
+                      default: withCtx(() => [
+                        createVNode(_component_text, {
+                          style: normalizeStyle({ color: $data.itemColor }),
+                          class: normalizeClass(["uni-action-sheet_dialog__cell__text", { "uni-action-sheet_dark__mode": $data.theme == "dark" }])
+                        }, {
+                          default: withCtx(() => [
+                            createTextVNode(toDisplayString(item), 1)
+                          ]),
+                          _: 2
+                        }, 1032, ["style", "class"])
+                      ]),
+                      _: 2
+                    }, 1032, ["style", "class", "onClick"]);
+                  }), 128))
+                ]),
+                _: 1
+              }, 8, ["class"])
+            ]),
+            _: 1
+          }, 8, ["style", "class"]),
+          createVNode(_component_view, {
+            style: normalizeStyle($data.backgroundColor != null ? { backgroundColor: $data.backgroundColor } : {}),
+            class: normalizeClass(["uni-action-sheet_dialog__action", { "uni-action-sheet_dark__mode": $data.theme == "dark", "uni-action-sheet_landscape__mode": $data.isLandscape }]),
+            onClick: $options.handleCancel
+          }, {
+            default: withCtx(() => [
+              createVNode(_component_text, {
+                style: normalizeStyle({ color: $data.cancelColor }),
+                class: normalizeClass(["uni-action-sheet_dialog__action__text", { "uni-action-sheet_dark__mode": $data.theme == "dark" }])
+              }, {
+                default: withCtx(() => [
+                  createTextVNode(toDisplayString($options.cancelText), 1)
+                ]),
+                _: 1
+              }, 8, ["style", "class"])
+            ]),
+            _: 1
+          }, 8, ["style", "class", "onClick"]),
+          $options.isWidescreen && Object.keys($data.popover).length > 0 ? (openBlock(), createBlock(_component_view, {
+            key: 0,
+            style: normalizeStyle($options.triangleStyle),
+            class: "uni-action-sheet_dialog__triangle"
+          }, null, 8, ["style"])) : createCommentVNode("", true)
+        ]),
+        _: 1
+      }, 8, ["style", "class"])
+    ]),
+    _: 1
+  });
+}
+const UniActionSheetPage = /* @__PURE__ */ _export_sfc(_sfc_main$2, [["render", _sfc_render$2], ["styles", [_style_0$1]]]);
+const showActionSheet2 = /* @__PURE__ */ defineAsyncApi("showActionSheet2", (options, { resolve, reject }) => {
+  registerSystemRoute("uni:actionSheet", UniActionSheetPage);
+  const uuid = Date.now() + "" + Math.floor(Math.random() * 1e7);
+  const baseEventName = `uni_action_sheet_${uuid}`;
+  const readyEventName = `${baseEventName}_ready`;
+  const optionsEventName = `${baseEventName}_options`;
+  const successEventName = `${baseEventName}_success`;
+  const failEventName = `${baseEventName}_fail`;
+  uni.$on(readyEventName, () => {
+    uni.$emit(optionsEventName, options);
+  });
+  uni.$on(successEventName, (index2) => {
+    resolve({ tapIndex: index2 });
+  });
+  uni.$on(failEventName, () => {
+    reject("cancel");
+  });
+  uni.openDialogPage({
+    url: `uni:actionSheet?readyEventName=${readyEventName}&optionsEventName=${optionsEventName}&successEventName=${successEventName}&failEventName=${failEventName}`,
+    fail(err) {
+      var _a;
+      (_a = options.fail) == null ? void 0 : _a.call(options, { errMsg: `showActionSheet:failed ${err.errMsg}` });
+      uni.$off(readyEventName);
+      uni.$off(successEventName);
+      uni.$off(failEventName);
+    }
+  });
+});
+const hideActionSheet2 = () => {
+  var _a;
+  const page = getCurrentPage();
+  if (!page)
+    return;
+  const systemDialogPages = (_a = page.vm.$pageLayoutInstance) == null ? void 0 : _a.$systemDialogPages.value;
+  for (let i = 0; i < systemDialogPages.length; i++) {
+    if (isSystemActionSheetDialogPage(systemDialogPages[i])) {
+      systemDialogPages.splice(i, 1);
+      return;
+    }
+  }
+};
+const defaultPoi = {
+  latitude: 39.908823,
+  longitude: 116.39747
+};
+const languageData = {
+  "en": {
+    "back": "cancel",
+    "ok": "ok",
+    "cancel": "cancel",
+    "loading": "loading...",
+    "locationLoading": "positioning...",
+    "search": "Search location",
+    "current-location": "current location"
+  },
+  "zh-Hans": {
+    "back": "取消",
+    "ok": "确定",
+    "cancel": "取消",
+    "loading": "请求中...",
+    "locationLoading": "获取定位中...",
+    "search": "搜索地点",
+    "current-location": "当前位置"
+  },
+  "zh-Hant": {
+    "back": "取消",
+    "ok": "確定",
+    "cancel": "取消",
+    "loading": "請求中...",
+    "locationLoading": "獲取定位中...",
+    "search": "蒐索地點",
+    "current-location": "當前位置"
+  }
+};
+const _sfc_main$1 = {
+  data() {
+    const id1 = `UniMap1_${(Math.random() * 1e6).toString(36)}`;
+    const id2 = `UniMap2_${(Math.random() * 1e6).toString(36)}`;
+    const id3 = `UniMap3_${(Math.random() * 1e6).toString(36)}`;
+    return {
+      readyEventName: "",
+      optionsEventName: "",
+      successEventName: "",
+      failEventName: "",
+      mapId: id1,
+      mapTargetId: id2,
+      scrollId: id3,
+      isFocus: false,
+      latitude: 0,
+      longitude: 0,
+      locationComplete: false,
+      locationLoading: false,
+      chooseLocationOptions: {},
+      pageIndex: 1,
+      pageSize: 20,
+      pois: [],
+      selected: -1,
+      searchValue: "",
+      safeArea: {
+        top: 0,
+        bottom: 0,
+        left: 0,
+        right: 0
+      },
+      icon: {
+        target: "",
+        success: "",
+        position: "",
+        search: ""
+      },
+      lastTime: 0,
+      searchLoading: false,
+      language: "zh-Hans",
+      scrollTop: 0,
+      isLandscape: false,
+      theme: "light",
+      searchValueChangeTimer: -1,
+      lastPoi: {
+        latitude: null,
+        longitude: null,
+        selected: -1,
+        pois: [],
+        scrollTop: 0
+      },
+      errMsg: ""
+    };
+  },
+  onLoad(options) {
+    this.initPageOptions(options);
+    this.getSystemInfo();
+    this.getLocation();
+  },
+  onReady() {
+  },
+  onUnload() {
+    uni.$off(this.optionsEventName, null);
+    uni.$off(this.readyEventName, null);
+    uni.$off(this.successEventName, null);
+    uni.$off(this.failEventName, null);
+  },
+  onResize() {
+    const systemInfo = uni.getSystemInfoSync();
+    this.isLandscape = systemInfo.deviceOrientation == "landscape";
+  },
+  methods: {
+    initPageOptions(options) {
+      this.readyEventName = options["readyEventName"];
+      this.optionsEventName = options["optionsEventName"];
+      this.successEventName = options["successEventName"];
+      this.failEventName = options["failEventName"];
+      uni.$on(this.optionsEventName, (data) => {
+        if (data["latitude"] != null) {
+          this.chooseLocationOptions.latitude = data.getNumber("latitude");
+        }
+        if (data["longitude"] != null) {
+          this.chooseLocationOptions.longitude = data.getNumber("longitude");
+        }
+        if (data["keyword"] != null) {
+          let keyword = data["keyword"];
+          this.chooseLocationOptions.keyword = keyword;
+          this.searchValue = keyword;
+        } else {
+          this.chooseLocationOptions.keyword = "";
+        }
+      });
+      uni.$emit(this.readyEventName, {});
+    },
+    getLocation() {
+      if (this.chooseLocationOptions.latitude != null && this.chooseLocationOptions.longitude != null) {
+        this.latitude = this.chooseLocationOptions.latitude;
+        this.longitude = this.chooseLocationOptions.longitude;
+        this.locationComplete = true;
+        this.getPoi("getLocation");
+      } else {
+        this.locationLoading = true;
+        uni.getLocation({
+          type: "gcj02",
+          success: (res) => {
+            this.latitude = res.latitude;
+            this.longitude = res.longitude;
+            this.locationComplete = true;
+            this.locationLoading = false;
+            this.getPoi("getLocation");
+          },
+          fail: (err) => {
+            console.error("getLocationErr: ", err);
+            this.latitude = defaultPoi.latitude;
+            this.longitude = defaultPoi.longitude;
+            this.locationComplete = true;
+            this.locationLoading = false;
+            this.getPoi("getLocation");
+          }
+        });
+      }
+    },
+    distanceHandle(distance) {
+      if (distance < 1e3) {
+        return distance + "m";
+      } else {
+        return parseFloat((distance / 1e3).toFixed(2)) + "km";
+      }
+    },
+    poiHandle(pois) {
+      let list2 = pois.map((item, index2) => {
+        const location2 = item["location"];
+        return {
+          title: item["title"],
+          address: item["address"],
+          distance: item["distance"],
+          distanceStr: this.distanceHandle(item["distance"]),
+          location: {
+            latitude: location2["lat"],
+            longitude: location2["lng"]
+          }
+        };
+      });
+      let pageIndex = this.pageIndex;
+      if (pageIndex == 1) {
+        this.pois = list2;
+        this.updateScrollTop(0);
+      } else {
+        this.pois = this.pois.concat(list2);
+      }
+    },
+    callUniMapCo(action, data) {
+      return new Promise((resolve, reject) => {
+        this.errMsg = "";
+        if (typeof uniCloud == "undefined") {
+          this.errMsg = "uni.chooseLocation 依赖 uniCloud 的 uni-map-common 插件，请先关联服务空间，并安装 uni-map-common 插件，插件地址：https://ext.dcloud.net.cn/plugin?id=13872";
+          console.error(this.errMsg);
+          reject({
+            errCode: -1,
+            errMsg: "请先关联服务空间"
+          });
+        }
+        const uniMapCo = uniCloud.importObject("uni-map-co", {
+          customUI: true
+        });
+        uniMapCo.chooseLocation({
+          action,
+          data
+        }).then((res) => {
+          resolve(res);
+        }).catch((err) => {
+          const errMsg = err.errMsg;
+          if (errMsg != null && (errMsg.indexOf("在云端不存在") > -1 || errMsg.indexOf("未匹配") > -1)) {
+            this.errMsg = "uni.chooseLocation 依赖 uniCloud 的 uni-map-common 插件，请安装 uni-map-common 插件，插件地址：https://ext.dcloud.net.cn/plugin?id=13872";
+            console.error(this.errMsg);
+          } else {
+            console.error("err: ", err);
+          }
+          reject(err);
+        });
+      });
+    },
+    getPoi(type) {
+      let searchValue = this.searchValue;
+      let latitude = this.latitude;
+      let longitude = this.longitude;
+      let pageIndex = this.pageIndex;
+      let pageSize = this.pageSize;
+      if (["searchValueChange"].indexOf(type) == -1) {
+        this.searchLoading = true;
+      }
+      if (searchValue != "" && searchValue.length > 0) {
+        this.callUniMapCo("search", {
+          keyword: searchValue,
+          location: {
+            lat: latitude,
+            lng: longitude
+          },
+          radius: 5e3,
+          auto_extend: 1,
+          orderby: "weight",
+          page_index: pageIndex,
+          page_size: pageSize
+        }).then((res) => {
+          var _a, _b;
+          let pois = (_b = (_a = res.getJSON("result")) == null ? void 0 : _a.getJSON("result")) == null ? void 0 : _b.getArray("data");
+          this.poiHandle(pois);
+          this.searchLoading = false;
+        }).catch((err) => {
+          this.searchLoading = false;
+        });
+      } else {
+        this.callUniMapCo("location2address", {
+          location: `${latitude},${longitude}`,
+          get_poi: 1,
+          poi_options: {
+            radius: 5e3,
+            policy: 4,
+            roadlevel: 1,
+            homeorcorp: 1,
+            page_index: pageIndex,
+            page_size: pageSize
+          }
+        }).then((res) => {
+          var _a, _b, _c, _d;
+          let pois = (_b = (_a = res.getJSON("result")) == null ? void 0 : _a.getJSON("result")) == null ? void 0 : _b.getArray("pois");
+          if (window["__UNI_CHOOSE_LOCATION_ANY_POINT__"]) {
+            let formatted_addresses = (_d = (_c = res.getJSON("result")) == null ? void 0 : _c.getJSON("result")) == null ? void 0 : _d.getString("formatted_addresses");
+            pois.unshift({
+              title: this.languageCom["current-location"],
+              address: formatted_addresses,
+              distance: 0,
+              location: {
+                lat: latitude,
+                lng: longitude
+              }
+            });
+          }
+          this.poiHandle(pois);
+          this.searchLoading = false;
+        }).catch((err) => {
+          this.searchLoading = false;
+        });
+      }
+    },
+    getSystemInfo() {
+      const info = uni.getWindowInfo();
+      this.safeArea.top = info.safeAreaInsets.top;
+      this.safeArea.bottom = info.safeAreaInsets.bottom;
+      this.safeArea.left = info.safeAreaInsets.left;
+      this.safeArea.right = info.safeAreaInsets.right;
+      const systemInfo = uni.getSystemInfoSync();
+      const appLanguage = systemInfo.appLanguage;
+      this.language = appLanguage;
+      const osTheme = systemInfo.osTheme;
+      const appTheme = systemInfo.appTheme;
+      if (appTheme != null) {
+        this.theme = appTheme;
+      } else if (osTheme != null) {
+        this.theme = osTheme;
+      }
+      this.isLandscape = systemInfo.deviceOrientation == "landscape";
+      const hostTheme = systemInfo.hostTheme;
+      if (hostTheme != null) {
+        this.theme = hostTheme;
+      }
+      const locale = uni.getLocale();
+      this.language = locale;
+      uni.onLocaleChange((res) => {
+        if (res.locale) {
+          this.language = res.locale;
+        }
+      });
+      uni.onThemeChange((res) => {
+        this.theme = res.theme;
+      });
+    },
+    getMapContext() {
+      return uni.createMapContext(this.mapId, this);
+    },
+    regionchange(e2) {
+      let causedBy = e2.causedBy;
+      if (!causedBy) {
+        causedBy = e2.detail.causedBy;
+      }
+      if (e2.type !== "end" || causedBy != "drag" || this.locationComplete == false) {
+        return;
+      }
+      const mapContext = this.getMapContext();
+      if (mapContext != null) {
+        mapContext.getCenterLocation({
+          success: (res) => {
+            let latitudeDiff = Math.abs(res.latitude - this.latitude);
+            let longitudeDiff = Math.abs(res.longitude - this.longitude);
+            if (latitudeDiff > 1e-5 && longitudeDiff > 1e-5) {
+              this.latitude = res.latitude;
+              this.longitude = res.longitude;
+              this.searchValue = "";
+              this.selected = -1;
+              this.pageIndex = 1;
+              this.getPoi("regionchange");
+              const element = this.$refs[this.mapTargetId];
+              if (element != null) {
+                const duration = 250;
+                element.style.setProperty("transition-duration", `${duration}ms`);
+                element.style.setProperty("transform", "translateY(0px)");
+                element.style.setProperty("transform", "translateY(-15px)");
+                setTimeout(() => {
+                  element.style.setProperty("transform", "translateY(0px)");
+                }, duration);
+              }
+            }
+          }
+        });
+      }
+    },
+    clearSearchValueChangeTimer() {
+      if (this.searchValueChangeTimer != -1) {
+        clearTimeout(this.searchValueChangeTimer);
+        this.searchValueChangeTimer = -1;
+      }
+    },
+    searchValueChange(e2) {
+      this.clearSearchValueChangeTimer();
+      this.searchValueChangeTimer = setTimeout(() => {
+        this.poiSearch("searchValueChange");
+      }, 200);
+    },
+    poiSearch(type) {
+      this.clearSearchValueChangeTimer();
+      this.pageIndex = 1;
+      this.selected = -1;
+      this.getPoi(type);
+    },
+    cancelSearch() {
+      this.isFocus = false;
+      this.searchValue = "";
+      if (this.lastPoi.latitude != null) {
+        this.latitude = this.lastPoi.latitude;
+      }
+      if (this.lastPoi.longitude != null) {
+        this.longitude = this.lastPoi.longitude;
+      }
+      if (this.lastPoi.pois.length - 1 > this.lastPoi.selected) {
+        this.pois = this.lastPoi.pois;
+        this.selected = this.lastPoi.selected;
+        this.updateScrollTop(this.lastPoi.scrollTop);
+      } else {
+        this.poiSearch("cancelSearch");
+      }
+    },
+    updateScrollTop(scrollTop) {
+      setTimeout(() => {
+        this.scrollTop = scrollTop;
+      }, 10);
+    },
+    selectPoi(item, index2) {
+      this.selected = index2;
+      this.latitude = item.location.latitude;
+      this.longitude = item.location.longitude;
+      if (this.searchValue == this.chooseLocationOptions.keyword) {
+        this.lastPoi.latitude = this.latitude;
+        this.lastPoi.longitude = this.longitude;
+        this.lastPoi.selected = this.selected;
+        this.lastPoi.pois = this.pois;
+        const scrollElement = this.$refs[this.scrollId];
+        if (scrollElement != null) {
+          const scrollTop = scrollElement.scrollTop;
+          this.lastPoi.scrollTop = scrollTop;
+          this.scrollTop = scrollTop;
+        }
+      }
+    },
+    scrolltolower() {
+      this.pageIndex++;
+      this.getPoi("scrolltolower");
+    },
+    mapReset() {
+      this.pageIndex = 1;
+      this.getLocation();
+    },
+    closeDialogPage() {
+      uni.closeDialogPage({
+        dialogPage: this.$page
+      });
+    },
+    back() {
+      uni.$emit(this.failEventName, {});
+      this.closeDialogPage();
+    },
+    confirm() {
+      if (this.selected < 0) {
+        return;
+      }
+      let item = this.pois[this.selected];
+      let res = {
+        name: item.title,
+        address: item.address,
+        latitude: item.location.latitude,
+        longitude: item.location.longitude
+      };
+      uni.$emit(this.successEventName, res);
+      this.closeDialogPage();
+    }
+  },
+  computed: {
+    languageCom() {
+      const textInfo = languageData[this.language] != null ? languageData[this.language] : languageData["zh-Hans"];
+      return textInfo;
+    },
+    uniChooseLocationClassCom() {
+      let list2 = [];
+      if (this.theme == "dark") {
+        list2.push("uni-choose-location-dark");
+      } else {
+        list2.push("uni-choose-location-light");
+      }
+      return list2.join(" ");
+    },
+    landscapeClassCom() {
+      return this.isLandscape ? "uni-choose-location-landscape" : "";
+    }
+  }
+};
+const _style_0 = `
+@font-face {
+    font-family: UniChooseLocationFontFamily;
+    src: url('data:font/ttf;charset=utf-8;base64,AAEAAAALAIAAAwAwR1NVQiCLJXoAAAE4AAAAVE9TLzI8Rkp9AAABjAAAAGBjbWFw0euemwAAAgAAAAGyZ2x5ZuBfKy8AAAPAAAACtGhlYWQpySFOAAAA4AAAADZoaGVhB94DhgAAALwAAAAkaG10eBQAAAAAAAHsAAAAFGxvY2EBUAHAAAADtAAAAAxtYXhwARIAfQAAARgAAAAgbmFtZUTMSfwAAAZ0AAADS3Bvc3RLRtf0AAAJwAAAAFIAAQAAA4D/gABcBAAAAAAABAAAAQAAAAAAAAAAAAAAAAAAAAUAAQAAAAEAAI/TJ/hfDzz1AAsEAAAAAADjVO6oAAAAAONU7qgAAP+ABAADgQAAAAgAAgAAAAAAAAABAAAABQBxAAMAAAAAAAIAAAAKAAoAAAD/AAAAAAAAAAEAAAAKADAAPgACREZMVAAObGF0bgAaAAQAAAAAAAAAAQAAAAQAAAAAAAAAAQAAAAFsaWdhAAgAAAABAAAAAQAEAAQAAAABAAgAAQAGAAAAAQAAAAQEAAGQAAUAAAKJAswAAACPAokCzAAAAesAMgEIAAACAAUDAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFBmRWQAwOYx560DgP+AAAAD3ACAAAAAAQAAAAAAAAAAAAAAAAACBAAAAAQAAAAEAAAABAAAAAQAAAAAAAAFAAAAAwAAACwAAAAEAAABcgABAAAAAABsAAMAAQAAACwAAwAKAAABcgAEAEAAAAAKAAgAAgAC5jHmU+aD563//wAA5jHmU+aD563//wAAAAAAAAAAAAEACgAKAAoACgAAAAIAAwAEAAEAAAEGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAwAAAAAAEAAAAAAAAAABAAA5jEAAOYxAAAAAgAA5lMAAOZTAAAAAwAA5oMAAOaDAAAABAAA560AAOetAAAAAQAAAAAAAABIAGYBCAFaAAIAAP/SA4cDNgAdACoAACUGBwYnLgEnJjc+ATc2Fx4BFxYHBgcXHgEOAiYnJTI+ATQuASIOARQeAQJlSFdVT1FsDQwdHodWU1JTeBQUFhc+7AUFBAsPEAX+T0uASkqAln9LS3/MMwkIICKLV1RQUnMQEBoagVZTUlU+7AYPDwsEBAbrSoCWf0tLf5aASgAAAAEAAAAAA8ACyAANAAATNwU3Njc2NxcHBgcGB0A5AQdAVGaPnxdXbWuWfAGPN986TFl8hTpVbG6aiQAAAAMAAP+ABAADgQAzAGcAcAAAAQYHBgcGBxUUBi4BPQEmJyYnJicjIiY+ATsBNjc2NzY3NTQ2MhYdARYXFhcWFzM2HgEGKwIiJj4BOwEmJyYnJicVFAYiJj0BBgcGBwYHMzYeAQYrARYXFhcWFzU0Nh4BHQE2NzY3NiUiJjQ2MhYUBgOyBjk3WlxtDxUPbF1aNzgGNAsPAQ4LNAY4N1pdbA8VD21cWjc5BjMLDwEPC2eaCg8BDgqaBjIwT1BfDxUPXlFOMTEGmAsPAQ8LmQYxMU5RXhAVDl9QTzAy/ocWHR0rHh4BZmxdWjc4BzMLDwEOCzMHODdaXWwQFA9tXFo3OQY0ChAOCzUGOTdaXG0BDxUQEBQPX1BPMDEHmQsODwqZBzEwT1BfAQ8VEF5RTjExBpgLDwEOC5gGMTFOUUUdKx4eKx0AAAMAAP+BAyoDfgAIACYAMwAABRQWMjY0JiIGExEUBisBIiY1ES4BJyY1NDc2NzYyFxYXFhUUBw4BAQYeAj4BLgMOAQHAJTUmJjUlagYEQAQHR3UhIiknREWiRUQnKSIhdf7lAitPXFAuAS1LW00vVBIZGSMZGQFx/ogEBgYEAXgKUz9BSVFFRCcpKSdERVFJQT9TAR0uUTACLk9cTC0CK0sAAAAAAAASAN4AAQAAAAAAAAATAAAAAQAAAAAAAQAbABMAAQAAAAAAAgAHAC4AAQAAAAAAAwAbADUAAQAAAAAABAAbAFAAAQAAAAAABQALAGsAAQAAAAAABgAbAHYAAQAAAAAACgArAJEAAQAAAAAACwATALwAAwABBAkAAAAmAM8AAwABBAkAAQA2APUAAwABBAkAAgAOASsAAwABBAkAAwA2ATkAAwABBAkABAA2AW8AAwABBAkABQAWAaUAAwABBAkABgA2AbsAAwABBAkACgBWAfEAAwABBAkACwAmAkdDcmVhdGVkIGJ5IGljb25mb250VW5pQ2hvb3NlTG9jYXRpb25Gb250RmFtaWx5UmVndWxhclVuaUNob29zZUxvY2F0aW9uRm9udEZhbWlseVVuaUNob29zZUxvY2F0aW9uRm9udEZhbWlseVZlcnNpb24gMS4wVW5pQ2hvb3NlTG9jYXRpb25Gb250RmFtaWx5R2VuZXJhdGVkIGJ5IHN2ZzJ0dGYgZnJvbSBGb250ZWxsbyBwcm9qZWN0Lmh0dHA6Ly9mb250ZWxsby5jb20AQwByAGUAYQB0AGUAZAAgAGIAeQAgAGkAYwBvAG4AZgBvAG4AdABVAG4AaQBDAGgAbwBvAHMAZQBMAG8AYwBhAHQAaQBvAG4ARgBvAG4AdABGAGEAbQBpAGwAeQBSAGUAZwB1AGwAYQByAFUAbgBpAEMAaABvAG8AcwBlAEwAbwBjAGEAdABpAG8AbgBGAG8AbgB0AEYAYQBtAGkAbAB5AFUAbgBpAEMAaABvAG8AcwBlAEwAbwBjAGEAdABpAG8AbgBGAG8AbgB0AEYAYQBtAGkAbAB5AFYAZQByAHMAaQBvAG4AIAAxAC4AMABVAG4AaQBDAGgAbwBvAHMAZQBMAG8AYwBhAHQAaQBvAG4ARgBvAG4AdABGAGEAbQBpAGwAeQBHAGUAbgBlAHIAYQB0AGUAZAAgAGIAeQAgAHMAdgBnADIAdAB0AGYAIABmAHIAbwBtACAARgBvAG4AdABlAGwAbABvACAAcAByAG8AagBlAGMAdAAuAGgAdAB0AHAAOgAvAC8AZgBvAG4AdABlAGwAbABvAC4AYwBvAG0AAAIAAAAAAAAACgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABQECAQMBBAEFAQYABnNvdXN1bwdnb3V4dWFuB2Rpbmd3ZWkLZGl0dS10dWRpbmcAAAAA') format('truetype');
+}
+.uni-choose-location-icons {
+    font-family: "UniChooseLocationFontFamily";
+    font-size: 16px;
+    font-style: normal;
+}
+.uni-choose-location {
+    position: relative;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: #f8f8f8;
+    z-index: 999;
+}
+.uni-choose-location .uni-choose-location-map-box {
+    width: 100%;
+    height: 300px;
+}
+.uni-choose-location .uni-choose-location-map {
+    width: 100%;
+    height: 100%;
+}
+.uni-choose-location .uni-choose-location-map-target {
+    position: absolute;
+    left: 50%;
+    bottom: 50%;
+    width: 50px;
+    height: 50px;
+    margin-left: -25px;
+    transition-property: transform;
+    transition-duration: 0.25s;
+    transition-timing-function: ease-out;
+}
+.uni-choose-location .uni-choose-location-map-target .uni-choose-location-map-target-icon {
+    font-size: 50px;
+    color: #007aff;
+}
+.uni-choose-location .uni-choose-location-map-reset {
+    position: absolute;
+    left: 20px;
+    bottom: 40px;
+    width: 40px;
+    height: 40px;
+    box-sizing: border-box;
+    background-color: #fff;
+    border-radius: 20px;
+    pointer-events: auto;
+    box-shadow: 0px 0px 20px 2px rgba(0, 0, 0, .3);
+    z-index: 9;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.uni-choose-location .uni-choose-location-map-reset .uni-choose-location-map-reset-icon {
+    font-size: 26px;
+    text-align: center;
+    line-height: 40px;
+}
+.uni-choose-location .uni-choose-location-nav {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 60px;
+    background-color: rgba(0, 0, 0, 0);
+    background-image: linear-gradient(to bottom, rgba(0, 0, 0, .5), rgba(0, 0, 0, 0));
+}
+.uni-choose-location .uni-choose-location-nav .uni-choose-location-nav-btn {
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    width: 60px;
+    height: 44px;
+    padding: 5px;
+}
+.uni-choose-location .uni-choose-location-nav .uni-choose-location-nav-btn.uni-choose-location-nav-confirm-btn {
+    left: auto;
+    right: 5px;
+}
+.uni-choose-location .uni-choose-location-nav .uni-choose-location-nav-btn.uni-choose-location-nav-confirm-btn .uni-choose-location-nav-confirm-text {
+    background-color: #007aff;
+    border-radius: 5px;
+}
+.uni-choose-location .uni-choose-location-nav .uni-choose-location-nav-btn.uni-choose-location-nav-confirm-btn:active {
+    opacity: 0.7;
+}
+.uni-choose-location .uni-choose-location-nav .uni-choose-location-nav-btn.uni-choose-location-nav-confirm-btn.disable {
+    opacity: 0.4;
+}
+.uni-choose-location .uni-choose-location-nav .uni-choose-location-nav-btn.uni-choose-location-nav-confirm-btn.disable:active {
+    opacity: 1;
+}
+.uni-choose-location .uni-choose-location-nav .uni-choose-location-nav-btn.uni-choose-location-nav-back-btn .uni-choose-location-nav-back-text {
+    color: #fff;
+}
+.uni-choose-location .uni-choose-location-nav .uni-choose-location-nav-btn .uni-choose-location-nav-text {
+    padding: 8px 0px;
+    font-size: 13px;
+    text-align: center;
+
+    letter-spacing: 0.1em;
+
+    color: #fff;
+    text-align: center;
+}
+.uni-choose-location .uni-choose-location-poi {
+    position: absolute;
+    top: 300px;
+    /* left: auto; */
+    width: 100%;
+    bottom: 0;
+    background-color: #fff;
+}
+.uni-choose-location .uni-choose-location-poi .uni-choose-location-poi-search {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    height: 50px;
+    padding: 8px;
+    background-color: #fff;
+}
+.uni-choose-location .uni-choose-location-poi .uni-choose-location-poi-search-box {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    height: 32px;
+    flex: 1;
+    border-radius: 5px;
+    padding: 0 15px;
+    background-color: #ededed;
+}
+.uni-choose-location .uni-choose-location-poi .uni-choose-location-poi-search .uni-choose-location-poi-search-input {
+    flex: 1;
+    height: 100%;
+    border-radius: 5px;
+    padding: 0 5px;
+    background: #ededed;
+}
+.uni-choose-location .uni-choose-location-poi .uni-choose-location-poi-search .uni-choose-location-poi-search-cancel {
+    margin-left: 5px;
+    color: #007aff;
+    font-size: 17px;
+    text-align: center;
+}
+.uni-choose-location .uni-choose-location-poi .uni-choose-location-poi-list {
+    flex: 1;
+}
+.uni-choose-location .uni-choose-location-poi .uni-choose-location-poi-list .uni-choose-location-poi-search-loading {
+    display: flex;
+    align-items: center;
+    padding: 10px 0px;
+}
+.uni-choose-location .uni-choose-location-poi .uni-choose-location-poi-list .uni-choose-location-poi-search-loading .uni-choose-location-poi-search-loading-text {
+    color: #191919;
+}
+.uni-choose-location .uni-choose-location-poi .uni-choose-location-poi-list .uni-choose-location-poi-search-error {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+}
+.uni-choose-location .uni-choose-location-poi .uni-choose-location-poi-list .uni-choose-location-poi-search-error .uni-choose-location-poi-search-error-text {
+    color: #191919;
+    font-size: 14px;
+}
+.uni-choose-location .uni-choose-location-poi .uni-choose-location-poi-list .uni-choose-location-poi-item {
+    position: relative;
+    padding: 15px 10px;
+    padding-right: 40px;
+}
+.uni-choose-location .uni-choose-location-poi .uni-choose-location-poi-list .uni-choose-location-poi-item .uni-choose-location-poi-item-title-text {
+    font-size: 14px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    color: #191919;
+}
+.uni-choose-location .uni-choose-location-poi .uni-choose-location-poi-list .uni-choose-location-poi-item .uni-choose-location-poi-item-detail-text {
+    font-size: 12px;
+    margin-top: 5px;
+    color: #b2b2b2;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+.uni-choose-location .uni-choose-location-poi .uni-choose-location-poi-list .uni-choose-location-poi-item .uni-choose-location-poi-item-selected-icon {
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    width: 26px;
+    height: 26px;
+    margin-top: -13px;
+    color: #007aff;
+    font-size: 24px;
+}
+.uni-choose-location .uni-choose-location-poi .uni-choose-location-poi-list .uni-choose-location-poi-item .uni-choose-location-poi-item-after {
+    position: absolute;
+    height: 1px;
+    left: 10px;
+    bottom: 0px;
+    right: 10px;
+    width: auto;
+    border-bottom: 1px solid #f8f8f8;
+}
+.uni-choose-location.uni-choose-location-dark .uni-choose-location-map-reset {
+    background-color: #111111;
+    box-shadow: 0px 0px 5px 1px rgba(0, 0, 0, .3);
+}
+.uni-choose-location.uni-choose-location-dark .uni-choose-location-poi .uni-choose-location-poi-search-box {
+    background-color: #181818;
+}
+.uni-choose-location.uni-choose-location-dark .uni-choose-location-search-icon {
+    color: #d1d1d1;
+}
+.uni-choose-location.uni-choose-location-dark .uni-choose-location-poi .uni-choose-location-poi-list .uni-choose-location-poi-search-loading .uni-choose-location-poi-search-loading-text {
+    color: #d1d1d1;
+}
+.uni-choose-location.uni-choose-location-dark .uni-choose-location-poi .uni-choose-location-poi-search {
+    background-color: #181818
+}
+.uni-choose-location.uni-choose-location-dark .uni-choose-location-poi .uni-choose-location-poi-search .uni-choose-location-poi-search-input {
+    background: #111111;
+    color: #d1d1d1;
+}
+.uni-choose-location.uni-choose-location-dark .uni-choose-location-poi .uni-choose-location-poi-list .uni-choose-location-poi-item .uni-choose-location-poi-item-title-text {
+    color: #d1d1d1;
+}
+.uni-choose-location.uni-choose-location-dark .uni-choose-location-poi .uni-choose-location-poi-list .uni-choose-location-poi-item .uni-choose-location-poi-item-detail-text {
+    color: #595959;
+}
+.uni-choose-location.uni-choose-location-dark .uni-choose-location-poi {
+    background-color: #181818
+}
+.uni-choose-location.uni-choose-location-dark .uni-choose-location-poi .uni-choose-location-poi-list .uni-choose-location-poi-item .uni-choose-location-poi-item-after {
+    border-bottom: 1px solid #1e1e1e;
+}
+.uni-choose-location.uni-choose-location-dark .uni-choose-location-map-reset .uni-choose-location-map-reset-icon {
+    color: #d1d1d1;
+}
+.uni-choose-location .uni-choose-location-map-box.uni-choose-location-landscape {
+    height: 100%;
+}
+.uni-choose-location .uni-choose-location-poi.uni-choose-location-landscape {
+    top: 80px;
+    /* left: auto; */
+    right: 25px;
+    width: 300px;
+    bottom: 20px;
+    max-height: 600px;
+    box-shadow: 0px 0px 20px 2px rgba(0, 0, 0, .3);
+    border-radius: 5px;
+}
+.uni-choose-location .uni-choose-location-map-reset.uni-choose-location-landscape {
+    left: 40px;
+    bottom: 40px;
+}
+.uni-choose-location .uni-choose-location-poi .uni-choose-location-poi-list .uni-choose-location-poi-item.uni-choose-location-landscape {
+    padding: 10px;
+}
+.uni-choose-location .uni-choose-location-nav .uni-choose-location-nav-btn.uni-choose-location-landscape {
+    top: 10px;
+    left: 20px;
+}
+.uni-choose-location .uni-choose-location-nav .uni-choose-location-nav-btn.uni-choose-location-nav-confirm-btn.uni-choose-location-landscape {
+    left: auto;
+    right: 20px;
+}
+@media screen and (min-width: 900px) {
+.uni-choose-location .uni-choose-location-map-box {
+      height: 100%;
+}
+.uni-choose-location .uni-choose-location-poi {
+      top: 75px;
+      left: auto;
+      right: 25px;
+      width: 300px;
+      bottom: 20px;
+      max-height: 600px;
+      box-shadow: 0px 0px 20px 2px rgba(0, 0, 0, .3);
+      border-radius: 5px;
+}
+.uni-choose-location .uni-choose-location-poi .uni-choose-location-poi-item {
+      cursor: pointer;
+}
+.uni-choose-location .uni-choose-location-poi .uni-choose-location-poi-list .uni-choose-location-poi-item {
+      padding: 10px;
+}
+.uni-choose-location .uni-choose-location-nav .uni-choose-location-nav-btn {
+      top: 10px;
+      left: 20px;
+}
+.uni-choose-location .uni-choose-location-nav .uni-choose-location-nav-btn.uni-choose-location-nav-confirm-btn {
+      left: auto;
+      right: 20px;
+}
+}
+
+
+`;
+function _sfc_render$1(_ctx, _cache, $props, $setup, $data, $options) {
+  const _component_map = __syscom_0;
+  const _component_text = __syscom_1;
+  const _component_view = __syscom_2;
+  const _component_input = Input;
+  const _component_scroll_view = __syscom_4;
+  return openBlock(), createBlock(_component_view, {
+    class: normalizeClass(["uni-choose-location", $options.uniChooseLocationClassCom])
+  }, {
+    default: withCtx(() => [
+      createVNode(_component_view, {
+        class: normalizeClass(["uni-choose-location-map-box", [$options.landscapeClassCom]])
+      }, {
+        default: withCtx(() => [
+          createVNode(_component_map, {
+            class: "uni-choose-location-map",
+            id: $data.mapId,
+            ref: $data.mapId,
+            latitude: $data.latitude,
+            longitude: $data.longitude,
+            "layer-style": $data.theme == "dark" ? "2" : "1",
+            "show-compass": false,
+            "enable-zoom": true,
+            "enable-scroll": true,
+            "enable-rotate": false,
+            "enable-poi": true,
+            "show-location": true,
+            onRegionchange: $options.regionchange
+          }, null, 8, ["id", "latitude", "longitude", "layer-style", "onRegionchange"]),
+          createVNode(_component_view, {
+            class: "uni-choose-location-map-target",
+            ref: $data.mapTargetId,
+            id: $data.mapTargetId
+          }, {
+            default: withCtx(() => [
+              createVNode(_component_text, { class: "uni-choose-location-icons uni-choose-location-map-target-icon" }, {
+                default: withCtx(() => [
+                  createTextVNode(toDisplayString($data.icon.target), 1)
+                ]),
+                _: 1
+              })
+            ]),
+            _: 1
+          }, 8, ["id"]),
+          createVNode(_component_view, {
+            class: normalizeClass(["uni-choose-location-map-reset", [$options.landscapeClassCom]]),
+            onClick: $options.mapReset
+          }, {
+            default: withCtx(() => [
+              createVNode(_component_text, { class: "uni-choose-location-icons uni-choose-location-map-reset-icon" }, {
+                default: withCtx(() => [
+                  createTextVNode(toDisplayString($data.icon.position), 1)
+                ]),
+                _: 1
+              })
+            ]),
+            _: 1
+          }, 8, ["class", "onClick"])
+        ]),
+        _: 1
+      }, 8, ["class"]),
+      createVNode(_component_view, {
+        class: "uni-choose-location-nav",
+        style: normalizeStyle("height:" + (60 + $data.safeArea.top) + "px;")
+      }, {
+        default: withCtx(() => [
+          createVNode(_component_view, {
+            class: normalizeClass(["uni-choose-location-nav-btn uni-choose-location-nav-back-btn", [$options.landscapeClassCom]]),
+            style: normalizeStyle($data.safeArea.top > 0 ? "top: " + $data.safeArea.top + "px;" : "")
+          }, {
+            default: withCtx(() => [
+              createVNode(_component_text, {
+                class: "uni-choose-location-nav-text uni-choose-location-nav-back-text",
+                onClick: $options.back
+              }, {
+                default: withCtx(() => [
+                  createTextVNode(toDisplayString($options.languageCom["back"]), 1)
+                ]),
+                _: 1
+              }, 8, ["onClick"])
+            ]),
+            _: 1
+          }, 8, ["class", "style"]),
+          createVNode(_component_view, {
+            class: normalizeClass(["uni-choose-location-nav-btn uni-choose-location-nav-confirm-btn", [$options.landscapeClassCom, $data.selected < 0 ? "disable" : ""]]),
+            style: normalizeStyle($data.safeArea.top > 0 ? "top: " + $data.safeArea.top + "px;" : ""),
+            onClick: $options.confirm
+          }, {
+            default: withCtx(() => [
+              createVNode(_component_text, { class: "uni-choose-location-nav-text uni-choose-location-nav-confirm-text" }, {
+                default: withCtx(() => [
+                  createTextVNode(toDisplayString($options.languageCom["ok"]), 1)
+                ]),
+                _: 1
+              })
+            ]),
+            _: 1
+          }, 8, ["class", "style", "onClick"])
+        ]),
+        _: 1
+      }, 8, ["style"]),
+      createVNode(_component_view, {
+        class: normalizeClass(["uni-choose-location-poi", [$options.landscapeClassCom]])
+      }, {
+        default: withCtx(() => [
+          createVNode(_component_view, { class: "uni-choose-location-poi-search" }, {
+            default: withCtx(() => [
+              createVNode(_component_view, { class: "uni-choose-location-poi-search-box" }, {
+                default: withCtx(() => [
+                  $data.isFocus || $data.searchValue != "" ? (openBlock(), createBlock(_component_text, {
+                    key: 0,
+                    class: "uni-choose-location-icons uni-choose-location-search-icon"
+                  }, {
+                    default: withCtx(() => [
+                      createTextVNode(toDisplayString($data.icon.search), 1)
+                    ]),
+                    _: 1
+                  })) : createCommentVNode("", true),
+                  createVNode(_component_input, {
+                    modelValue: $data.searchValue,
+                    "onUpdate:modelValue": _cache[0] || (_cache[0] = ($event) => $data.searchValue = $event),
+                    type: "text",
+                    placeholder: ($data.isFocus ? "" : "") + " " + $options.languageCom["search"],
+                    class: "uni-choose-location-poi-search-input uni-choose-location-icons",
+                    "placeholder-style": $data.isFocus || $data.searchValue != "" ? "text-align: left;" : "text-align: center;",
+                    onFocus: _cache[1] || (_cache[1] = ($event) => $data.isFocus = true),
+                    onConfirm: _cache[2] || (_cache[2] = ($event) => $options.poiSearch("poiSearch")),
+                    onInput: $options.searchValueChange
+                  }, null, 8, ["modelValue", "placeholder", "placeholder-style", "onInput"])
+                ]),
+                _: 1
+              }),
+              $data.isFocus || $data.searchValue != "" ? (openBlock(), createBlock(_component_text, {
+                key: 0,
+                class: "uni-choose-location-poi-search-cancel",
+                onClick: $options.cancelSearch
+              }, {
+                default: withCtx(() => [
+                  createTextVNode(toDisplayString($options.languageCom["cancel"]), 1)
+                ]),
+                _: 1
+              }, 8, ["onClick"])) : createCommentVNode("", true)
+            ]),
+            _: 1
+          }),
+          createVNode(_component_scroll_view, {
+            id: $data.scrollId,
+            ref: $data.scrollId,
+            "scroll-with-animation": false,
+            direction: "vertical",
+            "scroll-top": $data.scrollTop,
+            "lower-threshold": 500,
+            onScrolltolower: $options.scrolltolower,
+            class: "uni-choose-location-poi-list"
+          }, {
+            default: withCtx(() => [
+              $data.errMsg != "" ? (openBlock(), createBlock(_component_view, {
+                key: 0,
+                class: "uni-choose-location-poi-search-error"
+              }, {
+                default: withCtx(() => [
+                  createVNode(_component_text, { class: "uni-choose-location-poi-search-error-text" }, {
+                    default: withCtx(() => [
+                      createTextVNode(toDisplayString($data.errMsg), 1)
+                    ]),
+                    _: 1
+                  })
+                ]),
+                _: 1
+              })) : $data.locationLoading ? (openBlock(), createBlock(_component_view, {
+                key: 1,
+                class: "uni-choose-location-poi-search-loading"
+              }, {
+                default: withCtx(() => [
+                  createVNode(_component_text, { class: "uni-choose-location-poi-search-loading-text" }, {
+                    default: withCtx(() => [
+                      createTextVNode(toDisplayString($options.languageCom["locationLoading"]), 1)
+                    ]),
+                    _: 1
+                  })
+                ]),
+                _: 1
+              })) : $data.searchLoading && $data.pageIndex == 1 ? (openBlock(), createBlock(_component_view, {
+                key: 2,
+                class: "uni-choose-location-poi-search-loading"
+              }, {
+                default: withCtx(() => [
+                  createVNode(_component_text, { class: "uni-choose-location-poi-search-loading-text" }, {
+                    default: withCtx(() => [
+                      createTextVNode(toDisplayString($options.languageCom["loading"]), 1)
+                    ]),
+                    _: 1
+                  })
+                ]),
+                _: 1
+              })) : (openBlock(true), createElementBlock(Fragment, { key: 3 }, renderList($data.pois, (item, index2) => {
+                return openBlock(), createBlock(_component_view, {
+                  key: index2,
+                  class: normalizeClass(["uni-choose-location-poi-item", [$options.landscapeClassCom]]),
+                  onClick: ($event) => $options.selectPoi(item, index2)
+                }, {
+                  default: withCtx(() => [
+                    createVNode(_component_view, null, {
+                      default: withCtx(() => [
+                        createVNode(_component_view, null, {
+                          default: withCtx(() => [
+                            createVNode(_component_text, { class: "uni-choose-location-poi-item-title-text" }, {
+                              default: withCtx(() => [
+                                createTextVNode(toDisplayString(item.title), 1)
+                              ]),
+                              _: 2
+                            }, 1024)
+                          ]),
+                          _: 2
+                        }, 1024),
+                        createVNode(_component_view, null, {
+                          default: withCtx(() => [
+                            createVNode(_component_text, { class: "uni-choose-location-poi-item-detail-text" }, {
+                              default: withCtx(() => [
+                                createTextVNode(toDisplayString(item.distance > 0 ? item.distanceStr + " | " : "") + toDisplayString(item.address), 1)
+                              ]),
+                              _: 2
+                            }, 1024)
+                          ]),
+                          _: 2
+                        }, 1024)
+                      ]),
+                      _: 2
+                    }, 1024),
+                    $data.selected == index2 ? (openBlock(), createBlock(_component_text, {
+                      key: 0,
+                      class: "uni-choose-location-icons uni-choose-location-poi-item-selected-icon"
+                    }, {
+                      default: withCtx(() => [
+                        createTextVNode(toDisplayString($data.icon.success), 1)
+                      ]),
+                      _: 1
+                    })) : createCommentVNode("", true),
+                    createVNode(_component_view, { class: "uni-choose-location-poi-item-after" })
+                  ]),
+                  _: 2
+                }, 1032, ["class", "onClick"]);
+              }), 128)),
+              $data.searchLoading && $data.pageIndex > 1 ? (openBlock(), createBlock(_component_view, {
+                key: 4,
+                class: "uni-choose-location-poi-search-loading"
+              }, {
+                default: withCtx(() => [
+                  createVNode(_component_text, { class: "uni-choose-location-poi-search-loading-text" }, {
+                    default: withCtx(() => [
+                      createTextVNode(toDisplayString($options.languageCom["loading"]), 1)
+                    ]),
+                    _: 1
+                  })
+                ]),
+                _: 1
+              })) : createCommentVNode("", true)
+            ]),
+            _: 1
+          }, 8, ["id", "scroll-top", "onScrolltolower"])
+        ]),
+        _: 1
+      }, 8, ["class"])
+    ]),
+    _: 1
+  }, 8, ["class"]);
+}
+const uniChooseLocationPage = /* @__PURE__ */ _export_sfc(_sfc_main$1, [["render", _sfc_render$1], ["styles", [_style_0]]]);
+const chooseLocation = /* @__PURE__ */ defineAsyncApi("chooseLocation", (options, { resolve, reject }) => {
+  registerSystemRoute("uni:chooseLocation", uniChooseLocationPage);
+  const uuid = Date.now() + "" + Math.floor(Math.random() * 1e7);
+  const baseEventName = `uni_choose_location_${uuid}`;
+  const readyEventName = `${baseEventName}_ready`;
+  const optionsEventName = `${baseEventName}_options`;
+  const successEventName = `${baseEventName}_success`;
+  const failEventName = `${baseEventName}_fail`;
+  uni.$on(readyEventName, () => {
+    uni.$emit(optionsEventName, JSON.parse(JSON.stringify(options)));
+  });
+  uni.$on(successEventName, (result) => {
+    resolve(result);
+  });
+  uni.$on(failEventName, () => {
+    reject("cancel");
+  });
+  uni.openDialogPage({
+    url: `uni:chooseLocation?readyEventName=${readyEventName}&optionsEventName=${optionsEventName}&successEventName=${successEventName}&failEventName=${failEventName}`,
+    fail(err) {
+      var _a;
+      (_a = options.fail) == null ? void 0 : _a.call(options, { errMsg: `chooseLocation:fail ${err.errMsg}` });
+      uni.$off(readyEventName);
+      uni.$off(successEventName);
+      uni.$off(failEventName);
+    }
+  });
+});
+window.UniResizeObserver = window.ResizeObserver;
+const api = /* @__PURE__ */ Object.defineProperty({
+  __proto__: null,
+  $emit,
+  $off,
+  $on,
+  $once,
+  addInterceptor,
+  addPhoneContact,
+  arrayBufferToBase64,
+  base64ToArrayBuffer,
+  canIUse,
+  canvasGetImageData,
+  canvasPutImageData,
+  canvasToTempFilePath,
+  chooseFile,
+  chooseImage,
+  chooseLocation,
+  chooseVideo,
+  clearStorage,
+  clearStorageSync,
+  closeDialogPage,
+  closePreviewImage,
+  closeSocket,
+  connectSocket,
+  createAnimation: createAnimation$1,
+  createCameraContext,
+  createCanvasContext,
+  createCanvasContextAsync,
+  createInnerAudioContext,
+  createIntersectionObserver,
+  createLivePlayerContext,
+  createMapContext,
+  createMediaQueryObserver,
+  createSelectorQuery,
+  createVideoContext,
+  cssBackdropFilter,
+  cssConstant,
+  cssEnv,
+  cssVar,
+  downloadFile,
+  getAppBaseInfo,
+  getClipboardData,
+  getDeviceInfo,
+  getElementById,
+  getEnterOptionsSync,
+  getFileInfo,
+  getImageInfo,
+  getLaunchOptionsSync,
+  getLeftWindowStyle,
+  getLocale,
+  getLocation,
+  getNetworkType,
+  getProvider,
+  getPushClientId,
+  getRecorderManager,
+  getRightWindowStyle,
+  getSavedFileInfo,
+  getSavedFileList,
+  getScreenBrightness,
+  getSelectedTextRange: getSelectedTextRange$1,
+  getStorage,
+  getStorageInfo,
+  getStorageInfoSync,
+  getStorageSync,
+  getSystemInfo,
+  getSystemInfoSync,
+  getTabBarPageId,
+  getTopWindowStyle,
+  getVideoInfo,
+  getWindowInfo,
+  hideActionSheet,
+  hideActionSheet2,
+  hideKeyboard,
+  hideLeftWindow,
+  hideLoading,
+  hideModal,
+  hideNavigationBarLoading,
+  hideRightWindow,
+  hideTabBar,
+  hideTabBarRedDot,
+  hideToast,
+  hideTopWindow,
+  interceptors,
+  invokePushCallback,
+  loadFontFace,
+  login,
+  makePhoneCall,
+  navigateBack,
+  navigateTo,
+  offAccelerometerChange,
+  offAppHide,
+  offAppShow,
+  offCompassChange,
+  offError,
+  offHostThemeChange,
+  offLocationChange,
+  offLocationChangeError,
+  offNetworkStatusChange,
+  offPageNotFound,
+  offPushMessage,
+  offThemeChange: offThemeChange$1,
+  offUnhandledRejection,
+  offWindowResize,
+  onAccelerometerChange,
+  onAppHide,
+  onAppShow,
+  onCompassChange,
+  onCreateVueApp,
+  onError,
+  onGyroscopeChange,
+  onHostThemeChange,
+  onLocaleChange,
+  onLocationChange,
+  onLocationChangeError,
+  onMemoryWarning,
+  onNetworkStatusChange,
+  onPageNotFound,
+  onPushMessage,
+  onSocketClose,
+  onSocketError,
+  onSocketMessage,
+  onSocketOpen,
+  onTabBarMidButtonTap,
+  onThemeChange: onThemeChange$2,
+  onUnhandledRejection,
+  onUserCaptureScreen,
+  onWindowResize,
+  openDialogPage,
+  openDocument,
+  openLocation,
+  pageScrollTo,
+  preloadPage,
+  previewImage,
+  reLaunch,
+  redirectTo,
+  removeAllPages,
+  removeInterceptor,
+  removeLastPage,
+  removeNonTabBarPages,
+  removeSavedFile,
+  removeStorage,
+  removeStorageSync,
+  removeTabBarBadge,
+  request,
+  rpx2px: upx2px,
+  saveFile,
+  saveImageToPhotosAlbum,
+  saveVideoToPhotosAlbum,
+  scanCode,
+  sendSocketMessage,
+  setClipboardData,
+  setKeepScreenOn,
+  setLeftWindowStyle,
+  setLocale,
+  setNavigationBarColor,
+  setNavigationBarTitle,
+  setPageMeta,
+  setRightWindowStyle,
+  setScreenBrightness,
+  setStorage,
+  setStorageSync,
+  setTabBarBadge,
+  setTabBarItem,
+  setTabBarStyle,
+  setTopWindowStyle,
+  showActionSheet,
+  showActionSheet2,
+  showLeftWindow,
+  showLoading,
+  showModal,
+  showNavigationBarLoading,
+  showRightWindow,
+  showTabBar,
+  showTabBarRedDot,
+  showToast,
+  showTopWindow,
+  startAccelerometer,
+  startCompass,
+  startGyroscope,
+  startLocationUpdate,
+  startPullDownRefresh,
+  stopAccelerometer,
+  stopCompass,
+  stopGyroscope,
+  stopLocationUpdate,
+  stopPullDownRefresh,
+  switchTab,
+  uploadFile,
+  upx2px,
+  vibrateLong,
+  vibrateShort
+}, Symbol.toStringTag, { value: "Module" });
+const SEP = "$$";
+const currentPagesMap = /* @__PURE__ */ new Map();
+function getPage$BasePage(page) {
+  return page.$basePage;
+}
+const entryPageState = {
+  handledBeforeEntryPageRoutes: false
+};
+const navigateToPagesBeforeEntryPages = [];
+const switchTabPagesBeforeEntryPages = [];
+const redirectToPagesBeforeEntryPages = [];
+const reLaunchPagesBeforeEntryPages = [];
 function pruneCurrentPages() {
   currentPagesMap.forEach((page, id2) => {
     if (page.$.isUnmounted) {
@@ -17430,11 +18807,16 @@ function removeRouteCache(routeKey) {
   }
 }
 function removePage(routeKey, removeRouteCaches = true) {
+  var _a;
   const pageVm = currentPagesMap.get(routeKey);
   {
     const dialogPages = pageVm.$page.getDialogPages();
     for (let i = dialogPages.length - 1; i >= 0; i--) {
       closeDialogPage({ dialogPage: dialogPages[i] });
+    }
+    const systemDialogPages = (_a = pageVm.$pageLayoutInstance) == null ? void 0 : _a.$systemDialogPages.value;
+    if (systemDialogPages) {
+      systemDialogPages.length = 0;
     }
   }
   pageVm.$.__isUnload = true;
@@ -17461,87 +18843,11 @@ function initPublicPage(route) {
   return initPageInternalInstance("navigateTo", fullPath, {}, meta);
 }
 function initPage(vm) {
-  var _a, _b;
   const route = vm.$route;
   const page = initPublicPage(route);
   initPageVm(vm, page);
   {
-    vm.$basePage = vm.$page;
-    const pageInstance = getPageInstanceByVm(vm);
-    if ((pageInstance == null ? void 0 : pageInstance.attrs.type) !== "dialog") {
-      const uniPage = new UniNormalPageImpl({
-        route: (route == null ? void 0 : route.path) || "",
-        options: new UTSJSONObject((route == null ? void 0 : route.query) || {}),
-        vm
-      });
-      vm.$page = uniPage;
-      const pageMeta = page.meta;
-      uniPage.setPageStyle = (style) => {
-        for (const key in style) {
-          switch (key) {
-            case "navigationBarBackgroundColor":
-              pageMeta.navigationBar.backgroundColor = style[key];
-              break;
-            case "navigationBarTextStyle":
-              const textStyle = style[key];
-              if (textStyle == null) {
-                continue;
-              }
-              pageMeta.navigationBar.titleColor = ["black", "white"].includes(
-                textStyle
-              ) ? normalizeTitleColor(textStyle || "") : textStyle;
-              break;
-            case "navigationBarTitleText":
-              pageMeta.navigationBar.titleText = style[key];
-              break;
-            case "titleImage":
-              pageMeta.navigationBar.titleImage = style[key];
-              break;
-            case "navigationStyle":
-              pageMeta.navigationBar.style = style[key];
-              break;
-            default:
-              pageMeta[key] = style[key];
-              break;
-          }
-        }
-      };
-      uniPage.getPageStyle = () => new UTSJSONObject({
-        navigationBarBackgroundColor: pageMeta.navigationBar.backgroundColor,
-        navigationBarTextStyle: pageMeta.navigationBar.titleColor,
-        navigationBarTitleText: pageMeta.navigationBar.titleText,
-        titleImage: pageMeta.navigationBar.titleImage || "",
-        navigationStyle: pageMeta.navigationBar.style || "default",
-        disableScroll: pageMeta.disableScroll || false,
-        enablePullDownRefresh: pageMeta.enablePullDownRefresh || false,
-        onReachBottomDistance: pageMeta.onReachBottomDistance || ON_REACH_BOTTOM_DISTANCE,
-        backgroundColorContent: pageMeta.backgroundColorContent
-      });
-      vm.$dialogPage = (_a = getPageInstanceByVm(vm)) == null ? void 0 : _a.$dialogPage;
-    } else {
-      vm.$page = (_b = getPageInstanceByVm(vm)) == null ? void 0 : _b.$dialogPage;
-    }
-  }
-  {
-    const pageInstance = getPageInstanceByVm(vm);
-    if ((pageInstance == null ? void 0 : pageInstance.attrs.type) !== "dialog") {
-      currentPagesMap.set(normalizeRouteKey(page.path, page.id), vm);
-      if (currentPagesMap.size === 1) {
-        setTimeout(() => {
-          handleBeforeEntryPageRoutes();
-        }, 0);
-        if (homeDialogPages.length) {
-          homeDialogPages.forEach((dialogPage) => {
-            dialogPage.getParentPage = () => vm.$page;
-            pageInstance.$dialogPages.value.push(dialogPage);
-          });
-          homeDialogPages.length = 0;
-        }
-      }
-    } else {
-      pageInstance.$dialogPage.$vm = vm;
-    }
-    return;
+    initXPage(vm, route, page);
   }
 }
 function normalizeRouteKey(path, id2) {
@@ -18108,6 +19414,1228 @@ function removeMediaQueryObserver({ reqId, component }, _pageId) {
     delete listeners[reqId];
     delete mediaQueryObservers[reqId];
   }
+}
+const launchOptions = /* @__PURE__ */ createLaunchOptions();
+const enterOptions = /* @__PURE__ */ createLaunchOptions();
+function getEnterOptions() {
+  return extend({}, enterOptions);
+}
+function getLaunchOptions() {
+  return extend({}, launchOptions);
+}
+function initLaunchOptions({
+  path,
+  query
+}) {
+  extend(launchOptions, {
+    path,
+    query
+  });
+  extend(enterOptions, launchOptions);
+  return extend({}, launchOptions);
+}
+function getPageInstanceByChild(child) {
+  var _a;
+  let pageInstance = child;
+  while (((_a = pageInstance.type) == null ? void 0 : _a.name) !== "Page") {
+    pageInstance = pageInstance.parent;
+  }
+  return pageInstance;
+}
+function wrapperComponentSetup(comp, { clone, init: init2, setup, before }) {
+  if (clone) {
+    comp = extend({}, comp);
+  }
+  before && before(comp);
+  const oldSetup = comp.setup;
+  comp.setup = (props2, ctx) => {
+    const instance2 = getCurrentInstance();
+    init2(instance2.proxy);
+    setup(instance2);
+    if (oldSetup) {
+      return oldSetup(props2, ctx);
+    }
+  };
+  return comp;
+}
+function setupComponent(comp, options) {
+  if (comp && (comp.__esModule || comp[Symbol.toStringTag] === "Module")) {
+    return wrapperComponentSetup(comp.default, options);
+  }
+  return wrapperComponentSetup(comp, options);
+}
+function setupWindow(comp, id2) {
+  return setupComponent(comp, {
+    init: (vm) => {
+      {
+        vm.$basePage = {
+          id: id2
+        };
+      }
+    },
+    setup(instance2) {
+      instance2.$pageInstance = instance2;
+    }
+  });
+}
+function setupPage(comp) {
+  if (process.env.NODE_ENV !== "production") {
+    comp.__mpType = "page";
+  }
+  return setupComponent(comp, {
+    clone: true,
+    // 页面组件可能会被其他地方手动引用，比如 windows 等，需要 clone 一份新的作为页面组件
+    init: initPage,
+    setup(instance2) {
+      instance2.$pageInstance = instance2;
+      const route = usePageRoute();
+      const query = decodedQuery(route.query);
+      instance2.attrs.__pageQuery = query;
+      {
+        const pageInstance = getPageInstanceByChild(instance2);
+        if (isDialogPageInstance(pageInstance)) {
+          instance2.attrs.__pageQuery = decodedQuery(
+            parseQuery(pageInstance.attrs.route.split("?")[1] || "")
+          );
+        }
+      }
+      getPage$BasePage(instance2.proxy).options = query;
+      instance2.proxy.options = query;
+      const pageMeta = usePageMeta();
+      instance2.onReachBottom = reactive([]);
+      instance2.onPageScroll = reactive([]);
+      watch(
+        [instance2.onReachBottom, instance2.onPageScroll],
+        () => {
+          const currentPage = getCurrentPage().vm;
+          if (instance2.proxy === currentPage) {
+            initPageScrollListener(instance2, pageMeta);
+          }
+        },
+        { once: true }
+      );
+      onBeforeMount(() => {
+        onPageShow(instance2, pageMeta);
+      });
+      onMounted(() => {
+        var _a, _b;
+        {
+          if (instance2.subTree.el) {
+            instance2.subTree.el._page = (_a = instance2.proxy) == null ? void 0 : _a.$page;
+          }
+          const pageInstance = getPageInstanceByChild(instance2);
+          if (pageInstance.attrs["data-type"] === DIALOG_TAG) {
+            const parentPage = ((_b = instance2.proxy) == null ? void 0 : _b.$page).getParentPage();
+            const parentPageInstance = parentPage == null ? void 0 : parentPage.vm.$pageLayoutInstance;
+            if (parentPageInstance) {
+              const dialogPages = parentPageInstance.$dialogPages.value;
+              if (dialogPages.length > 1) {
+                const preDialogPage = dialogPages[dialogPages.length - 2];
+                if (preDialogPage.$vm) {
+                  const { onHide } = preDialogPage.$vm.$;
+                  onHide && invokeArrayFns$1(onHide);
+                }
+              }
+            }
+          }
+        }
+        onPageReady(instance2);
+        const { onReady } = instance2;
+        onReady && invokeArrayFns$1(onReady);
+        invokeOnTabItemTap(route);
+      });
+      onBeforeActivate(() => {
+        if (!instance2.__isVisible) {
+          onPageShow(instance2, pageMeta);
+          instance2.__isVisible = true;
+          const { onShow } = instance2;
+          onShow && invokeArrayFns$1(onShow);
+          nextTick(() => {
+            invokeOnTabItemTap(route);
+          });
+        }
+      });
+      onBeforeDeactivate(() => {
+        if (instance2.__isVisible && !instance2.__isUnload) {
+          instance2.__isVisible = false;
+          {
+            const pageInstance = getPageInstanceByChild(instance2);
+            if (pageInstance.attrs["data-type"] !== DIALOG_TAG) {
+              const { onHide } = instance2;
+              onHide && invokeArrayFns$1(onHide);
+            }
+          }
+        }
+      });
+      subscribeViewMethod(pageMeta.id);
+      onBeforeUnmount(() => {
+        unsubscribeViewMethod(pageMeta.id);
+        {
+          if (instance2.subTree.el) {
+            instance2.subTree.el._page = null;
+          }
+        }
+      });
+      return query;
+    }
+  });
+}
+function setupApp(comp) {
+  if (process.env.NODE_ENV !== "production") {
+    comp.__mpType = "app";
+  }
+  return setupComponent(comp, {
+    init: initApp$1,
+    setup(instance2) {
+      const route = usePageRoute();
+      const onLaunch = () => {
+        injectAppHooks(instance2);
+        const { onLaunch: onLaunch2, onShow, onPageNotFound: onPageNotFound2, onError: onError2 } = instance2;
+        const path = route.path.slice(1);
+        const launchOptions2 = initLaunchOptions({
+          path: path || __uniRoutes[0].meta.route,
+          query: decodedQuery(route.query)
+        });
+        onLaunch2 && invokeArrayFns$1(onLaunch2, launchOptions2);
+        onShow && invokeArrayFns$1(onShow, launchOptions2);
+        if (__UNI_FEATURE_PAGES__) {
+          if (!route.matched.length) {
+            const pageNotFoundOptions = {
+              notFound: true,
+              openType: "appLaunch",
+              path: route.path,
+              query: {},
+              scene: 1001
+            };
+            onPageNotFound2 && invokeArrayFns$1(onPageNotFound2, pageNotFoundOptions);
+          }
+        }
+        if (onError2) {
+          instance2.appContext.config.errorHandler = (err) => {
+            invokeArrayFns$1(onError2, err);
+          };
+        }
+      };
+      if (__UNI_FEATURE_PAGES__) {
+        useRouter().isReady().then(onLaunch);
+      } else {
+        onBeforeMount(onLaunch);
+      }
+      onMounted(() => {
+        window.addEventListener(
+          "resize",
+          debounce(onResize, 50, { setTimeout, clearTimeout })
+        );
+        window.addEventListener("message", onMessage);
+        document.addEventListener("visibilitychange", onVisibilityChange);
+        onThemeChange();
+      });
+      return route.query;
+    },
+    before(comp2) {
+      comp2.mpType = "app";
+      const { setup } = comp2;
+      const render = () => {
+        return openBlock(), createBlock(LayoutComponent);
+      };
+      comp2.setup = (props2, ctx) => {
+        const res = setup && setup(props2, ctx);
+        return isFunction(res) ? render : res;
+      };
+      comp2.render = render;
+    }
+  });
+}
+function onResize() {
+  const { windowWidth, windowHeight, screenWidth, screenHeight } = uni.getSystemInfoSync();
+  const landscape = Math.abs(Number(window.orientation)) === 90;
+  const deviceOrientation = landscape ? "landscape" : "portrait";
+  UniServiceJSBridge.emit(ON_RESIZE, {
+    deviceOrientation,
+    size: {
+      windowWidth,
+      windowHeight,
+      screenWidth,
+      screenHeight
+    }
+  });
+}
+function onMessage(evt) {
+  if (isPlainObject$1(evt.data) && evt.data.type === WEB_INVOKE_APPSERVICE) {
+    UniServiceJSBridge.emit(
+      ON_WEB_INVOKE_APP_SERVICE,
+      evt.data.data,
+      evt.data.pageId
+    );
+  }
+}
+function onVisibilityChange() {
+  const { emit: emit2 } = UniServiceJSBridge;
+  if (document.visibilityState === "visible") {
+    emit2(ON_APP_ENTER_FOREGROUND, getEnterOptions());
+  } else {
+    emit2(ON_APP_ENTER_BACKGROUND);
+  }
+}
+function onThemeChange() {
+  let mediaQueryList = null;
+  try {
+    mediaQueryList = window.matchMedia("(prefers-color-scheme: dark)");
+  } catch (error) {
+  }
+  if (mediaQueryList) {
+    let callback = (e2) => {
+      UniServiceJSBridge.emit(ON_THEME_CHANGE, {
+        theme: e2.matches ? "dark" : "light"
+      });
+    };
+    if (mediaQueryList.addEventListener) {
+      mediaQueryList.addEventListener("change", callback);
+    } else {
+      mediaQueryList.addListener(callback);
+    }
+  }
+}
+function invokeOnTabItemTap(route) {
+  const { tabBarText, tabBarIndex, route: pagePath } = route.meta;
+  if (tabBarText) {
+    invokeHook("onTabItemTap", {
+      index: tabBarIndex,
+      text: tabBarText,
+      pagePath
+    });
+  }
+}
+function updateBackgroundColorContent(backgroundColorContent) {
+  if (backgroundColorContent) {
+    document.body.style.setProperty(
+      "--background-color-content",
+      backgroundColorContent
+    );
+  } else {
+    document.body.style.removeProperty("--background-color-content");
+  }
+}
+function useBackgroundColorContent(pageMeta) {
+  function update() {
+    if (pageMeta.backgroundColorContent) {
+      updateBackgroundColorContent(
+        parseTheme({ backgroundColorContent: pageMeta.backgroundColorContent }).backgroundColorContent
+      );
+    }
+  }
+  onThemeChange$1(update);
+  watchEffect(update);
+  onActivated(update);
+}
+function usePageHeadTransparentBackgroundColor(backgroundColor) {
+  const { r, g: g2, b } = hexToRgba(backgroundColor);
+  return `rgba(${r},${g2},${b},0)`;
+}
+function usePageHeadTransparent(headRef, {
+  id: id2,
+  navigationBar: { titleColor, coverage, backgroundColor }
+}) {
+  let A = 0;
+  const rgb = computed(() => hexToRgba(backgroundColor));
+  const offset = parseInt(coverage);
+  let titleElem;
+  let transparentElemStyle;
+  const iconElemsPaths = [];
+  const borderRadiusElemsStyles = [];
+  const oldColors = [];
+  onMounted(() => {
+    const $el = headRef.value;
+    transparentElemStyle = $el.style;
+    titleElem = $el.querySelector(".uni-page-head__title");
+    const borderRadiusElems = $el.querySelectorAll(
+      ".uni-page-head-btn"
+    );
+    const iconSvgElems = $el.querySelectorAll(
+      "svg path"
+    );
+    for (let i = 0; i < iconSvgElems.length; i++) {
+      iconElemsPaths.push(iconSvgElems[i]);
+    }
+    for (let i = 0; i < borderRadiusElems.length; i++) {
+      const borderRadiusElem = borderRadiusElems[i];
+      oldColors.push(getComputedStyle(borderRadiusElem).backgroundColor);
+      borderRadiusElemsStyles.push(borderRadiusElem.style);
+    }
+  });
+  useOn(id2 + ".onPageScroll", ({ scrollTop }) => {
+    const alpha = Math.min(scrollTop / offset, 1);
+    if (alpha === 1 && A === 1) {
+      return;
+    }
+    if (alpha > 0.5 && A <= 0.5) {
+      iconElemsPaths.forEach(function(iconElemPath) {
+        iconElemPath.setAttribute("fill", titleColor);
+      });
+    } else if (alpha <= 0.5 && A > 0.5) {
+      iconElemsPaths.forEach(function(iconElemPath) {
+        iconElemPath.setAttribute("fill", "#fff");
+      });
+    }
+    A = alpha;
+    if (titleElem) {
+      titleElem.style.opacity = alpha;
+    }
+    const bg = rgb.value;
+    transparentElemStyle.backgroundColor = `rgba(${bg.r},${bg.g},${bg.b},${alpha})`;
+    borderRadiusElemsStyles.forEach(function(borderRadiusElemStyle, index2) {
+      const oldColor = oldColors[index2];
+      const rgba = oldColor.match(/[\d+\.]+/g);
+      rgba[3] = (1 - alpha) * (rgba.length === 4 ? rgba[3] : 1);
+      borderRadiusElemStyle.backgroundColor = `rgba(${rgba})`;
+    });
+  });
+}
+const ICON_PATHS = {
+  none: "",
+  forward: "M11 7.844q-0.25-0.219-0.25-0.578t0.25-0.578q0.219-0.25 0.563-0.25t0.563 0.25l9.656 9.125q0.125 0.125 0.188 0.297t0.063 0.328q0 0.188-0.063 0.359t-0.188 0.297l-9.656 9.125q-0.219 0.25-0.563 0.25t-0.563-0.25q-0.25-0.219-0.25-0.578t0.25-0.609l9.063-8.594-9.063-8.594z",
+  back: ICON_PATH_BACK,
+  select: ICON_PATH_BACK,
+  share: "M26.563 24.844q0 0.125-0.109 0.234t-0.234 0.109h-17.938q-0.125 0-0.219-0.109t-0.094-0.234v-13.25q0-0.156 0.094-0.25t0.219-0.094h5.5v-1.531h-6q-0.531 0-0.906 0.391t-0.375 0.922v14.375q0 0.531 0.375 0.922t0.906 0.391h18.969q0.531 0 0.891-0.391t0.359-0.953v-5.156h-1.438v4.625zM29.813 10.969l-5.125-5.375-1.031 1.094 3.438 3.594-3.719 0.031q-2.313 0.188-4.344 1.125t-3.578 2.422-2.5 3.453-1.109 4.188l-0.031 0.25h1.469v-0.219q0.156-1.875 1-3.594t2.25-3.063 3.234-2.125 3.828-0.906l0.188-0.031 3.313-0.031-3.438 3.625 1.031 1.063 5.125-5.375-0.031-0.063 0.031-0.063z",
+  favorite: "M27.594 13.375q-0.063-0.188-0.219-0.313t-0.344-0.156l-7.094-0.969-3.219-6.406q-0.094-0.188-0.25-0.281t-0.375-0.094q-0.188 0-0.344 0.094t-0.25 0.281l-3.125 6.438-7.094 1.094q-0.188 0.031-0.344 0.156t-0.219 0.313q-0.031 0.188 0.016 0.375t0.172 0.313l5.156 4.969-1.156 7.063q-0.031 0.188 0.047 0.375t0.234 0.313q0.094 0.063 0.188 0.094t0.219 0.031q0.063 0 0.141-0.031t0.172-0.063l6.313-3.375 6.375 3.313q0.063 0.031 0.141 0.047t0.172 0.016q0.188 0 0.344-0.094t0.25-0.281q0.063-0.094 0.078-0.234t-0.016-0.234q0-0.031 0-0.063l-1.25-6.938 5.094-5.031q0.156-0.156 0.203-0.344t-0.016-0.375zM11.469 19.063q0.031-0.188-0.016-0.344t-0.172-0.281l-4.406-4.25 6.063-0.906q0.156-0.031 0.297-0.125t0.203-0.25l2.688-5.531 2.75 5.5q0.063 0.156 0.203 0.25t0.297 0.125l6.094 0.844-4.375 4.281q-0.125 0.125-0.172 0.297t-0.016 0.328l1.063 6.031-5.438-2.813q-0.156-0.094-0.328-0.078t-0.297 0.078l-5.438 2.875 1-6.031z",
+  home: "M23.719 16.5q-0.313 0-0.531 0.219t-0.219 0.5v7.063q0 0.219-0.172 0.391t-0.391 0.172h-12.344q-0.25 0-0.422-0.172t-0.172-0.391v-7.063q0-0.281-0.219-0.5t-0.531-0.219q-0.281 0-0.516 0.219t-0.234 0.5v7.063q0.031 0.844 0.625 1.453t1.438 0.609h12.375q0.844 0 1.453-0.609t0.609-1.453v-7.063q0-0.125-0.063-0.266t-0.156-0.234q-0.094-0.125-0.234-0.172t-0.297-0.047zM26.5 14.875l-8.813-8.813q-0.313-0.313-0.688-0.453t-0.781-0.141-0.781 0.141-0.656 0.422l-8.813 8.844q-0.188 0.219-0.188 0.516t0.219 0.484q0.094 0.125 0.234 0.172t0.297 0.047q0.125 0 0.25-0.047t0.25-0.141l8.781-8.781q0.156-0.156 0.406-0.156t0.406 0.156l8.813 8.781q0.219 0.188 0.516 0.188t0.516-0.219q0.188-0.188 0.203-0.484t-0.172-0.516z",
+  menu: "M8.938 18.313q0.875 0 1.484-0.609t0.609-1.453-0.609-1.453-1.484-0.609q-0.844 0-1.453 0.609t-0.609 1.453 0.609 1.453 1.453 0.609zM16.188 18.313q0.875 0 1.484-0.609t0.609-1.453-0.609-1.453-1.484-0.609q-0.844 0-1.453 0.609t-0.609 1.453 0.609 1.453 1.453 0.609zM23.469 18.313q0.844 0 1.453-0.609t0.609-1.453-0.609-1.453-1.453-0.609q-0.875 0-1.484 0.609t-0.609 1.453 0.609 1.453 1.484 0.609z",
+  close: ICON_PATH_CLOSE
+};
+const PageHead = /* @__PURE__ */ defineSystemComponent({
+  name: "PageHead",
+  setup() {
+    const headRef = ref(null);
+    const pageMeta = usePageMeta();
+    const navigationBar = useTheme(pageMeta.navigationBar, () => {
+      const _navigationBar = parseTheme(pageMeta.navigationBar);
+      navigationBar.backgroundColor = _navigationBar.backgroundColor;
+      navigationBar.titleColor = _navigationBar.titleColor;
+    });
+    const {
+      clazz: clazz2,
+      style
+    } = usePageHead(navigationBar);
+    const buttons = __UNI_FEATURE_NAVIGATIONBAR_BUTTONS__ && usePageHeadButtons(pageMeta);
+    const searchInput = __UNI_FEATURE_NAVIGATIONBAR_SEARCHINPUT__ && navigationBar.searchInput && usePageHeadSearchInput(pageMeta);
+    __UNI_FEATURE_NAVIGATIONBAR_TRANSPARENT__ && navigationBar.type === "transparent" && usePageHeadTransparent(headRef, pageMeta);
+    return () => {
+      const backButtonTsx = __UNI_FEATURE_PAGES__ ? createBackButtonTsx(navigationBar, pageMeta.isQuit) : null;
+      const leftButtonsTsx = __UNI_FEATURE_NAVIGATIONBAR_BUTTONS__ ? createButtonsTsx(buttons.left) : [];
+      const rightButtonsTsx = __UNI_FEATURE_NAVIGATIONBAR_BUTTONS__ ? createButtonsTsx(buttons.right) : [];
+      const type = navigationBar.type || "default";
+      const placeholderTsx = type !== "transparent" && type !== "float" && createVNode("div", {
+        "class": {
+          "uni-placeholder": true,
+          "uni-placeholder-titlePenetrate": navigationBar.titlePenetrate
+        }
+      }, null, 2);
+      return createVNode("uni-page-head", {
+        "uni-page-head-type": type
+      }, [createVNode("div", {
+        "ref": headRef,
+        "class": clazz2.value,
+        "style": style.value
+      }, [createVNode("div", {
+        "class": "uni-page-head-hd"
+      }, [backButtonTsx, ...leftButtonsTsx]), createPageHeadBdTsx(navigationBar, searchInput), createVNode("div", {
+        "class": "uni-page-head-ft"
+      }, [...rightButtonsTsx])], 6), placeholderTsx], 8, ["uni-page-head-type"]);
+    };
+  }
+});
+function createBackButtonTsx(navigationBar, isQuit) {
+  if (!isQuit) {
+    return createVNode("div", {
+      "class": "uni-page-head-btn",
+      "onClick": onPageHeadBackButton
+    }, [createSvgIconVNode(ICON_PATH_BACK, navigationBar.type === "transparent" ? "#fff" : navigationBar.titleColor, 26)], 8, ["onClick"]);
+  }
+}
+function createButtonsTsx(btns) {
+  return btns.map(({
+    onClick,
+    btnClass,
+    btnStyle,
+    btnText,
+    btnIconPath,
+    badgeText,
+    iconStyle,
+    btnSelect
+  }, index2) => {
+    return createVNode("div", {
+      "key": index2,
+      "class": btnClass,
+      "style": btnStyle,
+      "onClick": onClick,
+      "badge-text": badgeText
+    }, [btnIconPath ? createSvgIconVNode(btnIconPath, iconStyle.color, iconStyle.fontSize) : btnSelect ? createVNode("span", {
+      "style": iconStyle
+    }, [createVNode("i", {
+      "class": "uni-btn-icon",
+      "innerHTML": btnText
+    }, null, 8, ["innerHTML"]), createSvgIconVNode(ICON_PATHS["select"], "#000", 14)], 4) : createVNode("i", {
+      "class": "uni-btn-icon",
+      "style": iconStyle,
+      "innerHTML": btnText
+    }, null, 12, ["innerHTML"])], 14, ["onClick", "badge-text"]);
+  });
+}
+function createPageHeadBdTsx(navigationBar, searchInput) {
+  if (!__UNI_FEATURE_NAVIGATIONBAR_SEARCHINPUT__ || !navigationBar.searchInput) {
+    return createPageHeadTitleTextTsx(navigationBar);
+  }
+  return createPageHeadSearchInputTsx(navigationBar, searchInput);
+}
+function createPageHeadTitleTextTsx({
+  type,
+  loading,
+  titleSize,
+  titleText,
+  titleImage
+}) {
+  return createVNode("div", {
+    "class": "uni-page-head-bd"
+  }, [createVNode("div", {
+    "style": {
+      fontSize: titleSize,
+      opacity: type === "transparent" ? 0 : 1
+    },
+    "class": "uni-page-head__title"
+  }, [loading ? createVNode("i", {
+    "class": "uni-loading"
+  }, null) : titleImage ? createVNode("img", {
+    "src": titleImage,
+    "class": "uni-page-head__title_image"
+  }, null, 8, ["src"]) : titleText], 4)]);
+}
+function createPageHeadSearchInputTsx(navigationBar, {
+  text: text2,
+  focus,
+  composing,
+  onBlur,
+  onFocus,
+  onInput,
+  onConfirm,
+  onClick
+}) {
+  const {
+    color,
+    align: align2,
+    autoFocus,
+    disabled,
+    borderRadius,
+    backgroundColor,
+    placeholder,
+    placeholderColor
+  } = navigationBar.searchInput;
+  const searchStyle = {
+    borderRadius,
+    backgroundColor
+  };
+  const placeholderClass = ["uni-page-head-search-placeholder", `uni-page-head-search-placeholder-${focus.value || text2.value ? "left" : align2}`];
+  return createVNode("div", {
+    "class": "uni-page-head-search",
+    "style": searchStyle
+  }, [createVNode("div", {
+    "style": {
+      color: placeholderColor
+    },
+    "class": placeholderClass
+  }, [createVNode("div", {
+    "class": "uni-page-head-search-icon"
+  }, [createSvgIconVNode(ICON_PATH_SEARCH, placeholderColor, 20)]), text2.value || composing.value ? "" : placeholder], 6), disabled ? createVNode(Input, {
+    "disabled": true,
+    "style": {
+      color
+    },
+    "placeholder-style": "color: " + placeholderColor,
+    "class": "uni-page-head-search-input",
+    "confirm-type": "search",
+    "onClick": onClick
+  }, null, 8, ["style", "placeholder-style", "onClick"]) : createVNode(Input, {
+    "focus": autoFocus,
+    "style": {
+      color
+    },
+    "placeholder-style": "color: " + placeholderColor,
+    "class": "uni-page-head-search-input",
+    "confirm-type": "search",
+    "onFocus": onFocus,
+    "onBlur": onBlur,
+    "onInput": onInput,
+    "onConfirm": onConfirm
+  }, null, 8, ["focus", "style", "placeholder-style", "onFocus", "onBlur", "onInput", "onConfirm"])], 4);
+}
+function onPageHeadBackButton() {
+  if (getCurrentPages().length === 1) {
+    uni.reLaunch({
+      url: "/"
+    });
+  } else {
+    uni.navigateBack({
+      from: "backbutton",
+      success() {
+      }
+      // 传入空方法，避免返回Promise，因为onBackPress可能导致fail
+    });
+  }
+}
+function usePageHead(navigationBar) {
+  const clazz2 = computed(() => {
+    const {
+      type,
+      titlePenetrate,
+      shadowColorType
+    } = navigationBar;
+    const clazz3 = {
+      "uni-page-head": true,
+      "uni-page-head-transparent": type === "transparent",
+      "uni-page-head-titlePenetrate": titlePenetrate === "YES",
+      "uni-page-head-shadow": !!shadowColorType
+    };
+    if (shadowColorType) {
+      clazz3[`uni-page-head-shadow-${shadowColorType}`] = true;
+    }
+    return clazz3;
+  });
+  const style = computed(() => {
+    const backgroundColor = __UNI_FEATURE_NAVIGATIONBAR_TRANSPARENT__ && navigationBar.type === "transparent" ? usePageHeadTransparentBackgroundColor(navigationBar.backgroundColor) : navigationBar.backgroundColor;
+    return {
+      backgroundColor,
+      color: navigationBar.titleColor,
+      transitionDuration: navigationBar.duration,
+      transitionTimingFunction: navigationBar.timingFunc
+    };
+  });
+  return {
+    clazz: clazz2,
+    style
+  };
+}
+function usePageHeadButtons({
+  id: id2,
+  navigationBar
+}) {
+  const left = [];
+  const right = [];
+  const {
+    buttons
+  } = navigationBar;
+  if (isArray(buttons)) {
+    const {
+      type
+    } = navigationBar;
+    const isTransparent = type === "transparent";
+    const fonts = /* @__PURE__ */ Object.create(null);
+    buttons.forEach((btn, index2) => {
+      if (btn.fontSrc && !btn.fontFamily) {
+        const fontSrc = getRealPath(btn.fontSrc);
+        let fontFamily = fonts[fontSrc];
+        if (!fontFamily) {
+          fontFamily = `font${Date.now()}`;
+          fonts[fontSrc] = fontFamily;
+          onBeforeMount(() => updateStyle("uni-btn-" + fontFamily, `@font-face{font-family: "${fontFamily}";src: url("${fontSrc}") format("truetype")}`));
+        }
+        btn.fontFamily = fontFamily;
+      }
+      const pageHeadBtn = usePageHeadButton(id2, index2, btn, isTransparent);
+      if (btn.float === "left") {
+        left.push(pageHeadBtn);
+      } else {
+        right.push(pageHeadBtn);
+      }
+    });
+  }
+  return {
+    left,
+    right
+  };
+}
+function usePageHeadButton(pageId, index2, btn, isTransparent) {
+  const iconStyle = {
+    color: btn.color,
+    fontSize: btn.fontSize,
+    fontWeight: btn.fontWeight
+  };
+  if (btn.fontFamily) {
+    iconStyle.fontFamily = btn.fontFamily;
+  }
+  return new Proxy({
+    btnClass: {
+      // 类似这样的大量重复的字符串，会在gzip时压缩大小，无需在代码层考虑优化相同字符串
+      "uni-page-head-btn": true,
+      "uni-page-head-btn-red-dot": !!(btn.redDot || btn.badgeText),
+      "uni-page-head-btn-select": !!btn.select
+    },
+    btnStyle: {
+      backgroundColor: isTransparent ? btn.background : "transparent",
+      width: btn.width
+    },
+    btnText: "",
+    btnIconPath: ICON_PATHS[btn.type],
+    badgeText: btn.badgeText,
+    iconStyle,
+    onClick() {
+      invokeHook(pageId, ON_NAVIGATION_BAR_BUTTON_TAP, extend({
+        index: index2
+      }, btn));
+    },
+    btnSelect: btn.select
+  }, {
+    get(target, key, receiver) {
+      if (["btnText"].includes(key)) {
+        return btn.fontSrc && btn.fontFamily ? btn.text.replace("\\u", "&#x") : btn.text;
+      } else {
+        return Reflect.get(target, key, receiver);
+      }
+    }
+  });
+}
+function usePageHeadSearchInput({
+  id: id2,
+  navigationBar: {
+    searchInput
+  }
+}) {
+  const focus = ref(false);
+  const text2 = ref("");
+  const composing = ref(false);
+  const {
+    disabled
+  } = searchInput;
+  if (disabled) {
+    const onClick = () => {
+      invokeHook(id2, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED);
+    };
+    return {
+      focus,
+      text: text2,
+      composing,
+      onClick
+    };
+  }
+  const onFocus = () => {
+    focus.value = true;
+    invokeHook(id2, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, {
+      focus: true
+    });
+  };
+  const onBlur = () => {
+    focus.value = false;
+    invokeHook(id2, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, {
+      focus: false
+    });
+  };
+  const onInput = (evt) => {
+    text2.value = evt.detail.value;
+    invokeHook(id2, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, {
+      text: text2.value
+    });
+  };
+  const onConfirm = (evt) => {
+    invokeHook(id2, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, {
+      text: text2.value
+    });
+  };
+  return {
+    focus,
+    text: text2,
+    composing,
+    onFocus,
+    onBlur,
+    onInput,
+    onConfirm
+  };
+}
+const _sfc_main = {
+  name: "PageRefresh",
+  setup() {
+    const { pullToRefresh } = usePageMeta();
+    return {
+      offset: pullToRefresh.offset,
+      color: pullToRefresh.color
+    };
+  }
+};
+const _hoisted_1 = { class: "uni-page-refresh-inner" };
+const _hoisted_2 = ["fill"];
+const _hoisted_3 = /* @__PURE__ */ createElementVNode("path", { d: "M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z" }, null, -1);
+const _hoisted_4 = /* @__PURE__ */ createElementVNode("path", {
+  d: "M0 0h24v24H0z",
+  fill: "none"
+}, null, -1);
+const _hoisted_5 = [
+  _hoisted_3,
+  _hoisted_4
+];
+const _hoisted_6 = {
+  class: "uni-page-refresh__spinner",
+  width: "24",
+  height: "24",
+  viewBox: "25 25 50 50"
+};
+const _hoisted_7 = ["stroke"];
+function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
+  return openBlock(), createElementBlock("uni-page-refresh", null, [
+    createElementVNode("div", {
+      style: normalizeStyle({ "margin-top": $setup.offset + "px" }),
+      class: "uni-page-refresh"
+    }, [
+      createElementVNode("div", _hoisted_1, [
+        (openBlock(), createElementBlock("svg", {
+          fill: $setup.color,
+          class: "uni-page-refresh__icon",
+          width: "24",
+          height: "24",
+          viewBox: "0 0 24 24"
+        }, _hoisted_5, 8, _hoisted_2)),
+        (openBlock(), createElementBlock("svg", _hoisted_6, [
+          createElementVNode("circle", {
+            stroke: $setup.color,
+            class: "uni-page-refresh__path",
+            cx: "50",
+            cy: "50",
+            r: "20",
+            fill: "none",
+            "stroke-width": "4",
+            "stroke-miterlimit": "10"
+          }, null, 8, _hoisted_7)
+        ]))
+      ])
+    ], 4)
+  ]);
+}
+const PageRefresh = /* @__PURE__ */ _export_sfc(_sfc_main, [["render", _sfc_render]]);
+function processDeltaY(ev, identifier, startY) {
+  const touch = Array.prototype.slice.call(ev.changedTouches).filter((touch2) => touch2.identifier === identifier)[0];
+  if (!touch) {
+    return false;
+  }
+  ev.deltaY = touch.pageY - startY;
+  return true;
+}
+const PULLING = "pulling";
+const REACHED = "reached";
+const ABORTING = "aborting";
+const REFRESHING = "refreshing";
+const RESTORING = "restoring";
+function usePageRefresh(refreshRef) {
+  const pageMeta = usePageMeta();
+  const { id: id2, pullToRefresh } = pageMeta;
+  const { range, height } = pullToRefresh;
+  let refreshContainerElem;
+  let refreshControllerElem;
+  let refreshControllerElemStyle;
+  let refreshInnerElemStyle;
+  useSubscribe(
+    () => {
+      if (!pageMeta.enablePullDownRefresh) {
+        return;
+      }
+      if (!state2) {
+        state2 = REFRESHING;
+        addClass();
+        setTimeout(() => {
+          refreshing();
+        }, 50);
+      }
+    },
+    API_START_PULL_DOWN_REFRESH,
+    false,
+    id2
+  );
+  useSubscribe(
+    () => {
+      if (!pageMeta.enablePullDownRefresh) {
+        return;
+      }
+      if (state2 === REFRESHING) {
+        removeClass();
+        state2 = RESTORING;
+        addClass();
+        restoring(() => {
+          removeClass();
+          state2 = distance = offset = null;
+        });
+      }
+    },
+    API_STOP_PULL_DOWN_REFRESH,
+    false,
+    id2
+  );
+  function initElement() {
+    refreshContainerElem = refreshRef.value.$el;
+    refreshControllerElem = refreshContainerElem.querySelector(".uni-page-refresh");
+    refreshControllerElemStyle = refreshControllerElem.style;
+    refreshInnerElemStyle = refreshControllerElem.querySelector(
+      ".uni-page-refresh-inner"
+    ).style;
+  }
+  onMounted(() => {
+    initElement();
+  });
+  {
+    watch(
+      () => pageMeta.enablePullDownRefresh,
+      (enablePullDownRefresh) => {
+        if (enablePullDownRefresh) {
+          nextTick(() => {
+            initElement();
+          });
+        }
+      }
+    );
+  }
+  let touchId;
+  let startY;
+  let canRefresh;
+  let state2;
+  let distance = null;
+  let offset = null;
+  function toggleClass(type) {
+    if (!state2) {
+      return;
+    }
+    if (refreshContainerElem) {
+      refreshContainerElem.classList[type]("uni-page-refresh--" + state2);
+    }
+  }
+  function addClass() {
+    toggleClass("add");
+  }
+  function removeClass() {
+    toggleClass("remove");
+  }
+  function pulling(deltaY) {
+    if (!refreshControllerElem) {
+      return;
+    }
+    let rotate = deltaY / range;
+    if (rotate > 1) {
+      rotate = 1;
+    } else {
+      rotate = rotate * rotate * rotate;
+    }
+    const y = Math.round(deltaY / (range / height)) || 0;
+    refreshInnerElemStyle.transform = "rotate(" + 360 * rotate + "deg)";
+    refreshControllerElemStyle.clip = "rect(" + (45 - y) + "px,45px,45px,-5px)";
+    refreshControllerElemStyle.transform = "translate3d(-50%, " + y + "px, 0)";
+  }
+  const onTouchstartPassive = withWebEvent((ev) => {
+    if (!pageMeta.enablePullDownRefresh) {
+      return;
+    }
+    const touch = ev.changedTouches[0];
+    touchId = touch.identifier;
+    startY = touch.pageY;
+    if ([ABORTING, REFRESHING, RESTORING].indexOf(state2) >= 0) {
+      canRefresh = false;
+    } else {
+      canRefresh = true;
+    }
+  });
+  const onTouchmove = withWebEvent((ev) => {
+    if (!pageMeta.enablePullDownRefresh) {
+      return;
+    }
+    if (!canRefresh) {
+      return;
+    }
+    if (!processDeltaY(ev, touchId, startY)) {
+      return;
+    }
+    let { deltaY } = ev;
+    if ((document.documentElement.scrollTop || document.body.scrollTop) !== 0) {
+      touchId = null;
+      return;
+    }
+    if (deltaY < 0 && !state2) {
+      return;
+    }
+    if (ev.cancelable) {
+      ev.preventDefault();
+    }
+    if (distance === null) {
+      offset = deltaY;
+      state2 = PULLING;
+      addClass();
+    }
+    deltaY = deltaY - offset;
+    if (deltaY < 0) {
+      deltaY = 0;
+    }
+    distance = deltaY;
+    const isReached = deltaY >= range && state2 !== REACHED;
+    const isPulling = deltaY < range && state2 !== PULLING;
+    if (isReached || isPulling) {
+      removeClass();
+      state2 = state2 === REACHED ? PULLING : REACHED;
+      addClass();
+    }
+    pulling(deltaY);
+  });
+  const onTouchend = withWebEvent((ev) => {
+    if (!pageMeta.enablePullDownRefresh) {
+      return;
+    }
+    if (!processDeltaY(ev, touchId, startY)) {
+      return;
+    }
+    if (state2 === null) {
+      return;
+    }
+    if (state2 === PULLING) {
+      removeClass();
+      state2 = ABORTING;
+      addClass();
+      aborting(() => {
+        removeClass();
+        state2 = distance = offset = null;
+      });
+    } else if (state2 === REACHED) {
+      removeClass();
+      state2 = REFRESHING;
+      addClass();
+      refreshing();
+    }
+  });
+  function aborting(callback) {
+    if (!refreshControllerElem) {
+      return;
+    }
+    if (refreshControllerElemStyle.transform) {
+      refreshControllerElemStyle.transition = "-webkit-transform 0.3s";
+      refreshControllerElemStyle.transform = "translate3d(-50%, 0, 0)";
+      const abortTransitionEnd = function() {
+        timeout && clearTimeout(timeout);
+        refreshControllerElem.removeEventListener(
+          "webkitTransitionEnd",
+          abortTransitionEnd
+        );
+        refreshControllerElemStyle.transition = "";
+        callback();
+      };
+      refreshControllerElem.addEventListener(
+        "webkitTransitionEnd",
+        abortTransitionEnd
+      );
+      const timeout = setTimeout(abortTransitionEnd, 350);
+    } else {
+      callback();
+    }
+  }
+  function refreshing() {
+    if (!refreshControllerElem) {
+      return;
+    }
+    refreshControllerElemStyle.transition = "-webkit-transform 0.2s";
+    refreshControllerElemStyle.transform = "translate3d(-50%, " + height + "px, 0)";
+    invokeHook(id2, ON_PULL_DOWN_REFRESH);
+  }
+  function restoring(callback) {
+    if (!refreshControllerElem) {
+      return;
+    }
+    refreshControllerElemStyle.transition = "-webkit-transform 0.3s";
+    refreshControllerElemStyle.transform += " scale(0.01)";
+    const restoreTransitionEnd = function() {
+      timeout && clearTimeout(timeout);
+      refreshControllerElem.removeEventListener(
+        "webkitTransitionEnd",
+        restoreTransitionEnd
+      );
+      refreshControllerElemStyle.transition = "";
+      refreshControllerElemStyle.transform = "translate3d(-50%, 0, 0)";
+      callback();
+    };
+    refreshControllerElem.addEventListener(
+      "webkitTransitionEnd",
+      restoreTransitionEnd
+    );
+    const timeout = setTimeout(restoreTransitionEnd, 350);
+  }
+  return {
+    onTouchstartPassive,
+    onTouchmove,
+    onTouchend,
+    onTouchcancel: onTouchend
+  };
+}
+const PageBody = /* @__PURE__ */ defineSystemComponent({
+  name: "PageBody",
+  setup(props2, ctx) {
+    const pageMeta = __UNI_FEATURE_PULL_DOWN_REFRESH__ && usePageMeta();
+    const refreshRef = __UNI_FEATURE_PULL_DOWN_REFRESH__ && ref(null);
+    const _pageRefresh = __UNI_FEATURE_PULL_DOWN_REFRESH__ && (pageMeta.enablePullDownRefresh || true) ? usePageRefresh(refreshRef) : null;
+    const pageRefresh = ref(null);
+    watch(() => {
+      return pageMeta.enablePullDownRefresh;
+    }, () => {
+      pageRefresh.value = pageMeta.enablePullDownRefresh ? _pageRefresh : null;
+    }, {
+      immediate: true
+    });
+    return () => {
+      const pageRefreshTsx = __UNI_FEATURE_PULL_DOWN_REFRESH__ && createPageRefreshTsx(refreshRef);
+      return createVNode(Fragment, null, [pageRefreshTsx, createVNode("uni-page-wrapper", pageRefresh.value, [createVNode("uni-page-body", null, [renderSlot(ctx.slots, "default")])], 16)]);
+    };
+  }
+});
+function createPageRefreshTsx(refreshRef, pageMeta) {
+  return createVNode(PageRefresh, {
+    "ref": refreshRef
+  }, null, 512);
+}
+const PageComponent = /* @__PURE__ */ defineSystemComponent({
+  name: "Page",
+  setup(_props, ctx) {
+    const pageMeta = providePageMeta(getStateId());
+    const navigationBar = pageMeta.navigationBar;
+    const pageStyle = {};
+    useDocumentTitle(pageMeta);
+    const currentInstance = getCurrentInstance();
+    {
+      currentInstance.$dialogPages = ref([]);
+      currentInstance.$systemDialogPages = ref([]);
+      useBackgroundColorContent(pageMeta);
+      if (isDialogPageInstance(ctx)) {
+        navigationBar.style = "custom";
+        pageMeta.route = ctx.attrs.route;
+        const parentInstance = inject(
+          "parentInstance"
+        );
+        if (currentInstance && parentInstance) {
+          currentInstance.$parentInstance = parentInstance;
+          if (isNormalDialogPageInstance(
+            ctx
+          )) {
+            const parentDialogPages = parentInstance.$dialogPages.value;
+            currentInstance.$dialogPage = parentDialogPages[parentDialogPages.length - 1];
+          }
+          if (isSystemDialogPageInstance(
+            ctx
+          )) {
+            const parentSystemDialogPages = parentInstance.$systemDialogPages.value;
+            currentInstance.$dialogPage = parentSystemDialogPages[parentSystemDialogPages.length - 1];
+          }
+        }
+      } else {
+        provide("parentInstance", currentInstance);
+      }
+    }
+    return () => createVNode(
+      "uni-page",
+      {
+        "data-page": pageMeta.route,
+        style: pageStyle
+      },
+      __UNI_FEATURE_NAVIGATIONBAR__ && navigationBar.style !== "custom" ? [
+        createVNode(PageHead),
+        createPageBodyVNode(ctx),
+        createDialogPageVNode(
+          currentInstance.$dialogPages,
+          currentInstance.$systemDialogPages
+        )
+      ] : [
+        createPageBodyVNode(ctx),
+        createDialogPageVNode(
+          currentInstance.$dialogPages,
+          currentInstance.$systemDialogPages
+        )
+      ]
+    );
+  }
+});
+function createPageBodyVNode(ctx) {
+  return openBlock(), createBlock(
+    PageBody,
+    { key: 0 },
+    {
+      default: withCtx(() => [renderSlot(ctx.slots, "page")]),
+      _: 3
+    }
+  );
+}
+function createDialogPageVNode(normalDialogPages, systemDialogPages) {
+  const dialogPages = [
+    ...normalDialogPages.value.map((page) => ({ page, type: DIALOG_TAG })),
+    ...systemDialogPages.value.map((page) => ({
+      page,
+      type: SYSTEM_DIALOG_TAG
+    }))
+  ];
+  return openBlock(true), createElementBlock(
+    Fragment,
+    null,
+    renderList(dialogPages, (dialogPage, index2) => {
+      const { type, page } = dialogPage;
+      const fullUrl = `${page.route}${stringifyQuery$1(page.options)}`;
+      return openBlock(), createBlock(
+        createVNode(
+          page.$component,
+          {
+            key: `${fullUrl}_${index2}`,
+            style: {
+              position: "fixed",
+              "z-index": 999,
+              top: 0,
+              right: 0,
+              bottom: 0,
+              left: 0
+            },
+            "data-type": type,
+            route: fullUrl
+          },
+          null
+        )
+      );
+    })
+  );
+}
+function renderPage(component, props2) {
+  return openBlock(), createBlock(PageComponent, null, {
+    page: withCtx(() => [
+      createVNode(
+        component,
+        extend({}, props2, { ref: "page" }),
+        null,
+        512
+        /* NEED_PATCH */
+      )
+    ]),
+    _: 1
+  });
+}
+const systemRoutes = [];
+function registerSystemRoute(route, page) {
+  if (systemRoutes.includes(route)) {
+    return;
+  }
+  systemRoutes.push(route);
+  if (isArray(page.styles) && page.styles.length > 0) {
+    page.styles.forEach((style, index2) => {
+      updateStyle(`${route}-style-${index2}`, style);
+    });
+  }
+  const __uniPage = setupPage(page);
+  __uniRoutes.push({
+    path: route,
+    component: {
+      mpType: "page",
+      setup() {
+        const app = getApp();
+        const query = app && app.$route && app.$route.query || {};
+        return () => renderPage(__uniPage, query);
+      }
+    },
+    meta: {
+      isQuit: false,
+      isEntry: false,
+      navigationBar: {},
+      route
+    }
+  });
 }
 var startTag = /^<([-A-Za-z0-9_]+)((?:\s+[a-zA-Z_:][-a-zA-Z0-9_:.]*(?:\s*=\s*(?:(?:"[^"]*")|(?:'[^']*')|[^>\s]+))?)*)\s*(\/?)>/;
 var endTag = /^<\/([-A-Za-z0-9_]+)[^>]*>/;
@@ -18901,7 +21429,7 @@ function useQuill(props2, rootRef, trigger) {
     });
   });
 }
-const props$d = /* @__PURE__ */ extend({}, props$v, {
+const props$d = /* @__PURE__ */ extend({}, props$u, {
   id: {
     type: String,
     default: ""
@@ -18929,7 +21457,7 @@ const props$d = /* @__PURE__ */ extend({}, props$v, {
 });
 class UniEditorElement extends UniElement {
 }
-const index$g = /* @__PURE__ */ defineBuiltInComponent({
+const index$d = /* @__PURE__ */ defineBuiltInComponent({
   name: "Editor",
   props: props$d,
   emit: ["ready", "focus", "blur", "input", "statuschange", ...emit$1],
@@ -19001,7 +21529,7 @@ const ICONS = {
 };
 class UniIconElement extends UniElement {
 }
-const index$f = /* @__PURE__ */ defineBuiltInComponent({
+const index$c = /* @__PURE__ */ defineBuiltInComponent({
   name: "Icon",
   props: {
     type: {
@@ -19146,7 +21674,7 @@ const IMAGE_MODES = {
 };
 class UniImageElement extends UniElement {
 }
-const index$e = /* @__PURE__ */ defineBuiltInComponent({
+const index$b = /* @__PURE__ */ defineBuiltInComponent({
   name: "Image",
   props: props$c,
   rootElement: {
@@ -19601,7 +22129,7 @@ const props$b = /* @__PURE__ */ extend(
       default: ""
     }
   },
-  props$v
+  props$u
 );
 const emit = [
   "input",
@@ -21688,7 +24216,7 @@ function createNavigatorOnClick(props2) {
 }
 class UniNavigatorElement extends UniElement {
 }
-const index$d = /* @__PURE__ */ defineBuiltInComponent({
+const index$a = /* @__PURE__ */ defineBuiltInComponent({
   name: "Navigator",
   inheritAttrs: false,
   compatConfig: {
@@ -22855,7 +25383,7 @@ const progressProps = {
 };
 class UniProgressElement extends UniElement {
 }
-const index$c = /* @__PURE__ */ defineBuiltInComponent({
+const index$9 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Progress",
   props: progressProps,
   rootElement: {
@@ -22971,7 +25499,7 @@ const props$9 = {
 };
 class UniRadioGroupElement extends UniElement {
 }
-const index$b = /* @__PURE__ */ defineBuiltInComponent({
+const index$8 = /* @__PURE__ */ defineBuiltInComponent({
   name: "RadioGroup",
   props: props$9,
   // emits: ['change'],
@@ -23517,7 +26045,7 @@ const props$7 = {
 };
 class UniRichTextElement extends UniElement {
 }
-const index$a = /* @__PURE__ */ defineBuiltInComponent({
+const index$7 = /* @__PURE__ */ defineBuiltInComponent({
   name: "RichText",
   compatConfig: {
     MODE: 3
@@ -23731,7 +26259,7 @@ const props$6 = {
 };
 class UniScrollViewElement extends UniElement {
 }
-const ScrollView = /* @__PURE__ */ defineBuiltInComponent({
+const __syscom_4 = /* @__PURE__ */ defineBuiltInComponent({
   name: "ScrollView",
   compatConfig: {
     MODE: 3
@@ -25492,7 +28020,7 @@ function parseText(text2, options) {
 }
 class UniTextElement extends UniElement {
 }
-const index$9 = /* @__PURE__ */ defineBuiltInComponent({
+const __syscom_1 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Text",
   rootElement: {
     name: "uni-text",
@@ -25584,7 +28112,7 @@ class UniTextareaElement extends UniElement {
     (_a = this.querySelector("textarea")) == null ? void 0 : _a.focus(options);
   }
 }
-const index$8 = /* @__PURE__ */ defineBuiltInComponent({
+const index$6 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Textarea",
   props: props$1,
   emits: ["confirm", "linechange", ...emit],
@@ -25757,7 +28285,7 @@ const index$8 = /* @__PURE__ */ defineBuiltInComponent({
 });
 class UniViewElement extends UniElement {
 }
-const index$7 = /* @__PURE__ */ defineBuiltInComponent({
+const __syscom_2 = /* @__PURE__ */ defineBuiltInComponent({
   name: "View",
   props: /* @__PURE__ */ extend({}, hoverProps),
   rootElement: {
@@ -25782,11 +28310,11 @@ const index$7 = /* @__PURE__ */ defineBuiltInComponent({
         return createVNode("uni-view", mergeProps({
           "class": hovering.value ? hoverClass : "",
           "ref": rootRef
-        }, binding), [slots.default && slots.default()], 16);
+        }, binding), [renderSlot(slots, "default")], 16);
       }
       return createVNode("uni-view", {
         "ref": rootRef
-      }, [slots.default && slots.default()], 512);
+      }, [renderSlot(slots, "default")], 512);
     };
   }
 });
@@ -25887,7 +28415,7 @@ const props = {
 };
 class UniListViewElement extends UniElement {
 }
-const index$6 = /* @__PURE__ */ defineBuiltInComponent({
+const index$5 = /* @__PURE__ */ defineBuiltInComponent({
   name: "ListView",
   props,
   emits: [
@@ -26382,7 +28910,7 @@ function getSize(isVertical, el) {
 }
 class UniListItemElement extends UniElement {
 }
-const index$5 = /* @__PURE__ */ defineBuiltInComponent({
+const index$4 = /* @__PURE__ */ defineBuiltInComponent({
   name: "ListItem",
   props: {},
   rootElement: {
@@ -26436,7 +28964,7 @@ const index$5 = /* @__PURE__ */ defineBuiltInComponent({
 });
 class UniStickySectionElement extends UniElement {
 }
-const index$4 = /* @__PURE__ */ defineBuiltInComponent({
+const index$3 = /* @__PURE__ */ defineBuiltInComponent({
   name: "StickySection",
   props: {
     padding: {
@@ -26491,7 +29019,7 @@ const index$4 = /* @__PURE__ */ defineBuiltInComponent({
 });
 class UniStickyHeaderElement extends UniElement {
 }
-const index$3 = /* @__PURE__ */ defineBuiltInComponent({
+const index$2 = /* @__PURE__ */ defineBuiltInComponent({
   name: "StickyHeader",
   props: {
     padding: {
@@ -26593,13 +29121,13 @@ function useOn(name, callback) {
   onMounted(() => UniViewJSBridge.on(name, callback));
   onBeforeUnmount(() => UniViewJSBridge.off(name));
 }
-let index$2 = 0;
+let index$1 = 0;
 function useContextInfo(_id) {
   const page = useCurrentPageId();
   const instance2 = getCurrentInstance();
   const vm = instance2.proxy;
   const type = vm.$options.name.toLowerCase();
-  const id2 = vm.id || `context${index$2++}`;
+  const id2 = vm.id || `context${index$1++}`;
   onMounted(() => {
     const el = vm.$el;
     el.__uniContextInfo = {
@@ -26859,7 +29387,7 @@ function initHistory() {
   });
   return history2;
 }
-const index$1 = {
+const index = {
   install(app) {
     initApp(app);
     initViewPlugin(app);
@@ -26890,1382 +29418,67 @@ function warnHandler(msg, instance2, trace) {
   }
   console.warn(...warnArgs);
 }
-function wrapperComponentSetup(comp, { clone, init: init2, setup, before }) {
-  if (clone) {
-    comp = extend({}, comp);
-  }
-  before && before(comp);
-  const oldSetup = comp.setup;
-  comp.setup = (props2, ctx) => {
-    const instance2 = getCurrentInstance();
-    init2(instance2.proxy);
-    setup(instance2);
-    if (oldSetup) {
-      return oldSetup(props2, ctx);
-    }
-  };
-  return comp;
-}
-function setupComponent(comp, options) {
-  if (comp && (comp.__esModule || comp[Symbol.toStringTag] === "Module")) {
-    return wrapperComponentSetup(comp.default, options);
-  }
-  return wrapperComponentSetup(comp, options);
-}
-function setupWindow(comp, id2) {
-  return setupComponent(comp, {
-    init: (vm) => {
-      {
-        vm.$basePage = {
-          id: id2
-        };
-      }
-    },
-    setup(instance2) {
-      instance2.$pageInstance = instance2;
-    }
-  });
-}
-function setupPage(comp) {
-  if (process.env.NODE_ENV !== "production") {
-    comp.__mpType = "page";
-  }
-  return setupComponent(comp, {
-    clone: true,
-    // 页面组件可能会被其他地方手动引用，比如 windows 等，需要 clone 一份新的作为页面组件
-    init: initPage,
-    setup(instance2) {
-      instance2.$pageInstance = instance2;
-      const route = usePageRoute();
-      const query = decodedQuery(route.query);
-      instance2.attrs.__pageQuery = query;
-      {
-        const pageInstance = getPageInstanceByChild(instance2);
-        if (pageInstance.attrs.type === "dialog") {
-          instance2.attrs.__pageQuery = decodedQuery(
-            parseQuery(pageInstance.attrs.route.split("?")[1] || "")
-          );
-        }
-      }
-      getPage$BasePage(instance2.proxy).options = query;
-      instance2.proxy.options = query;
-      const pageMeta = usePageMeta();
-      instance2.onReachBottom = reactive([]);
-      instance2.onPageScroll = reactive([]);
-      watch(
-        [instance2.onReachBottom, instance2.onPageScroll],
-        () => {
-          const currentPage = getCurrentPage().vm;
-          if (instance2.proxy === currentPage) {
-            initPageScrollListener(instance2, pageMeta);
-          }
-        },
-        { once: true }
-      );
-      onBeforeMount(() => {
-        onPageShow(instance2, pageMeta);
-      });
-      onMounted(() => {
-        var _a;
-        {
-          const pageInstance = getPageInstanceByChild(instance2);
-          if (pageInstance.attrs.type === "dialog") {
-            const parentPage = ((_a = instance2.proxy) == null ? void 0 : _a.$page).getParentPage();
-            const parentPageInstance = parentPage ? getPageInstanceByVm(parentPage.vm) : null;
-            if (parentPageInstance) {
-              const dialogPages = parentPageInstance.$dialogPages.value;
-              if (dialogPages.length > 1) {
-                const preDialogPage = dialogPages[dialogPages.length - 2];
-                const { onHide } = preDialogPage.$vm.$;
-                onHide && invokeArrayFns$1(onHide);
-              }
-            }
-          }
-        }
-        onPageReady(instance2);
-        const { onReady } = instance2;
-        onReady && invokeArrayFns$1(onReady);
-        invokeOnTabItemTap(route);
-      });
-      onBeforeActivate(() => {
-        if (!instance2.__isVisible) {
-          onPageShow(instance2, pageMeta);
-          instance2.__isVisible = true;
-          const { onShow } = instance2;
-          onShow && invokeArrayFns$1(onShow);
-          nextTick(() => {
-            invokeOnTabItemTap(route);
-          });
-        }
-      });
-      onBeforeDeactivate(() => {
-        if (instance2.__isVisible && !instance2.__isUnload) {
-          instance2.__isVisible = false;
-          {
-            const pageInstance = getPageInstanceByChild(instance2);
-            if (pageInstance.attrs.type !== "dialog") {
-              const { onHide } = instance2;
-              onHide && invokeArrayFns$1(onHide);
-            }
-          }
-        }
-      });
-      subscribeViewMethod(pageMeta.id);
-      onBeforeUnmount(() => {
-        unsubscribeViewMethod(pageMeta.id);
-      });
-      return query;
-    }
-  });
-}
-function setupApp(comp) {
-  if (process.env.NODE_ENV !== "production") {
-    comp.__mpType = "app";
-  }
-  return setupComponent(comp, {
-    init: initApp$1,
-    setup(instance2) {
-      const route = usePageRoute();
-      const onLaunch = () => {
-        injectAppHooks(instance2);
-        const { onLaunch: onLaunch2, onShow, onPageNotFound: onPageNotFound2, onError: onError2 } = instance2;
-        const path = route.path.slice(1);
-        const launchOptions2 = initLaunchOptions({
-          path: path || __uniRoutes[0].meta.route,
-          query: decodedQuery(route.query)
-        });
-        onLaunch2 && invokeArrayFns$1(onLaunch2, launchOptions2);
-        onShow && invokeArrayFns$1(onShow, launchOptions2);
-        if (__UNI_FEATURE_PAGES__) {
-          if (!route.matched.length) {
-            const pageNotFoundOptions = {
-              notFound: true,
-              openType: "appLaunch",
-              path: route.path,
-              query: {},
-              scene: 1001
-            };
-            onPageNotFound2 && invokeArrayFns$1(onPageNotFound2, pageNotFoundOptions);
-          }
-        }
-        if (onError2) {
-          instance2.appContext.config.errorHandler = (err) => {
-            invokeArrayFns$1(onError2, err);
-          };
-        }
-      };
-      if (__UNI_FEATURE_PAGES__) {
-        useRouter().isReady().then(onLaunch);
-      } else {
-        onBeforeMount(onLaunch);
-      }
-      onMounted(() => {
-        window.addEventListener(
-          "resize",
-          debounce(onResize, 50, { setTimeout, clearTimeout })
-        );
-        window.addEventListener("message", onMessage);
-        document.addEventListener("visibilitychange", onVisibilityChange);
-        onThemeChange();
-      });
-      return route.query;
-    },
-    before(comp2) {
-      comp2.mpType = "app";
-      const { setup } = comp2;
-      const render = () => {
-        return openBlock(), createBlock(LayoutComponent);
-      };
-      comp2.setup = (props2, ctx) => {
-        const res = setup && setup(props2, ctx);
-        return isFunction(res) ? render : res;
-      };
-      comp2.render = render;
-    }
-  });
-}
-function onResize() {
-  const { windowWidth, windowHeight, screenWidth, screenHeight } = uni.getSystemInfoSync();
-  const landscape = Math.abs(Number(window.orientation)) === 90;
-  const deviceOrientation = landscape ? "landscape" : "portrait";
-  UniServiceJSBridge.emit(ON_RESIZE, {
-    deviceOrientation,
-    size: {
-      windowWidth,
-      windowHeight,
-      screenWidth,
-      screenHeight
-    }
-  });
-}
-function onMessage(evt) {
-  if (isPlainObject$1(evt.data) && evt.data.type === WEB_INVOKE_APPSERVICE) {
-    UniServiceJSBridge.emit(
-      ON_WEB_INVOKE_APP_SERVICE,
-      evt.data.data,
-      evt.data.pageId
-    );
-  }
-}
-function onVisibilityChange() {
-  const { emit: emit2 } = UniServiceJSBridge;
-  if (document.visibilityState === "visible") {
-    emit2(ON_APP_ENTER_FOREGROUND, getEnterOptions());
-  } else {
-    emit2(ON_APP_ENTER_BACKGROUND);
-  }
-}
-function onThemeChange() {
-  let mediaQueryList = null;
-  try {
-    mediaQueryList = window.matchMedia("(prefers-color-scheme: dark)");
-  } catch (error) {
-  }
-  if (mediaQueryList) {
-    let callback = (e2) => {
-      UniServiceJSBridge.emit(ON_THEME_CHANGE, {
-        theme: e2.matches ? "dark" : "light"
-      });
-    };
-    if (mediaQueryList.addEventListener) {
-      mediaQueryList.addEventListener("change", callback);
-    } else {
-      mediaQueryList.addListener(callback);
-    }
-  }
-}
-function invokeOnTabItemTap(route) {
-  const { tabBarText, tabBarIndex, route: pagePath } = route.meta;
-  if (tabBarText) {
-    invokeHook("onTabItemTap", {
-      index: tabBarIndex,
-      text: tabBarText,
-      pagePath
-    });
-  }
-}
 const UniViewJSBridge$1 = /* @__PURE__ */ extend(ViewJSBridge, {
   publishHandler(event, args, pageId) {
     UniServiceJSBridge.subscribeHandler(event, args, pageId);
   }
 });
-window.UniResizeObserver = window.ResizeObserver;
-const api = /* @__PURE__ */ Object.defineProperty({
-  __proto__: null,
-  $emit,
-  $off,
-  $on,
-  $once,
-  addInterceptor,
-  addPhoneContact,
-  arrayBufferToBase64,
-  base64ToArrayBuffer,
-  canIUse,
-  canvasGetImageData,
-  canvasPutImageData,
-  canvasToTempFilePath,
-  chooseFile,
-  chooseImage,
-  chooseLocation,
-  chooseVideo,
-  clearStorage,
-  clearStorageSync,
-  closeDialogPage,
-  closePreviewImage,
-  closeSocket,
-  connectSocket,
-  createAnimation: createAnimation$1,
-  createCameraContext,
-  createCanvasContext,
-  createCanvasContextAsync,
-  createInnerAudioContext,
-  createIntersectionObserver,
-  createLivePlayerContext,
-  createMapContext,
-  createMediaQueryObserver,
-  createSelectorQuery,
-  createVideoContext,
-  cssBackdropFilter,
-  cssConstant,
-  cssEnv,
-  cssVar,
-  downloadFile,
-  getAppBaseInfo,
-  getClipboardData,
-  getDeviceInfo,
-  getElementById,
-  getEnterOptionsSync,
-  getFileInfo,
-  getImageInfo,
-  getLaunchOptionsSync,
-  getLeftWindowStyle,
-  getLocale,
-  getLocation,
-  getNetworkType,
-  getProvider,
-  getPushClientId,
-  getRecorderManager,
-  getRightWindowStyle,
-  getSavedFileInfo,
-  getSavedFileList,
-  getScreenBrightness,
-  getSelectedTextRange: getSelectedTextRange$1,
-  getStorage,
-  getStorageInfo,
-  getStorageInfoSync,
-  getStorageSync,
-  getSystemInfo,
-  getSystemInfoSync,
-  getTabBarPageId,
-  getTopWindowStyle,
-  getVideoInfo,
-  getWindowInfo,
-  hideActionSheet,
-  hideKeyboard,
-  hideLeftWindow,
-  hideLoading,
-  hideModal,
-  hideNavigationBarLoading,
-  hideRightWindow,
-  hideTabBar,
-  hideTabBarRedDot,
-  hideToast,
-  hideTopWindow,
-  interceptors,
-  invokePushCallback,
-  loadFontFace,
-  login,
-  makePhoneCall,
-  navigateBack,
-  navigateTo,
-  offAccelerometerChange,
-  offAppHide,
-  offAppShow,
-  offCompassChange,
-  offError,
-  offLocationChange,
-  offLocationChangeError,
-  offNetworkStatusChange,
-  offPageNotFound,
-  offPushMessage,
-  offThemeChange: offThemeChange$1,
-  offUnhandledRejection,
-  offWindowResize,
-  onAccelerometerChange,
-  onAppHide,
-  onAppShow,
-  onCompassChange,
-  onCreateVueApp,
-  onError,
-  onGyroscopeChange,
-  onLocaleChange,
-  onLocationChange,
-  onLocationChangeError,
-  onMemoryWarning,
-  onNetworkStatusChange,
-  onPageNotFound,
-  onPushMessage,
-  onSocketClose,
-  onSocketError,
-  onSocketMessage,
-  onSocketOpen,
-  onTabBarMidButtonTap,
-  onThemeChange: onThemeChange$2,
-  onUnhandledRejection,
-  onUserCaptureScreen,
-  onWindowResize,
-  openDialogPage,
-  openDocument,
-  openLocation,
-  pageScrollTo,
-  preloadPage,
-  previewImage,
-  reLaunch,
-  redirectTo,
-  removeAllPages,
-  removeInterceptor,
-  removeLastPage,
-  removeNonTabBarPages,
-  removeSavedFile,
-  removeStorage,
-  removeStorageSync,
-  removeTabBarBadge,
-  request,
-  rpx2px: upx2px,
-  saveFile,
-  saveImageToPhotosAlbum,
-  saveVideoToPhotosAlbum,
-  scanCode,
-  sendSocketMessage,
-  setClipboardData,
-  setKeepScreenOn,
-  setLeftWindowStyle,
-  setLocale,
-  setNavigationBarColor,
-  setNavigationBarTitle,
-  setPageMeta,
-  setRightWindowStyle,
-  setScreenBrightness,
-  setStorage,
-  setStorageSync,
-  setTabBarBadge,
-  setTabBarItem,
-  setTabBarStyle,
-  setTopWindowStyle,
-  showActionSheet,
-  showLeftWindow,
-  showLoading,
-  showModal,
-  showNavigationBarLoading,
-  showRightWindow,
-  showTabBar,
-  showTabBarRedDot,
-  showToast,
-  showTopWindow,
-  startAccelerometer,
-  startCompass,
-  startGyroscope,
-  startLocationUpdate,
-  startPullDownRefresh,
-  stopAccelerometer,
-  stopCompass,
-  stopGyroscope,
-  stopLocationUpdate,
-  stopPullDownRefresh,
-  switchTab,
-  uploadFile,
-  upx2px,
-  vibrateLong,
-  vibrateShort
-}, Symbol.toStringTag, { value: "Module" });
 const uni$1 = api;
 const UniServiceJSBridge$1 = /* @__PURE__ */ extend(ServiceJSBridge, {
   publishHandler(event, args, pageId) {
     UniViewJSBridge.subscribeHandler(event, args, pageId);
   }
 });
-function updateBackgroundColorContent(backgroundColorContent) {
-  if (backgroundColorContent) {
-    document.body.style.setProperty(
-      "--background-color-content",
-      backgroundColorContent
-    );
-  } else {
-    document.body.style.removeProperty("--background-color-content");
-  }
-}
-function useBackgroundColorContent(pageMeta) {
-  function update() {
-    if (pageMeta.backgroundColorContent) {
-      updateBackgroundColorContent(
-        parseTheme({ backgroundColorContent: pageMeta.backgroundColorContent }).backgroundColorContent
-      );
-    }
-  }
-  onThemeChange$1(update);
-  watchEffect(update);
-  onActivated(update);
-}
-function usePageHeadTransparentBackgroundColor(backgroundColor) {
-  const { r, g: g2, b } = hexToRgba(backgroundColor);
-  return `rgba(${r},${g2},${b},0)`;
-}
-function usePageHeadTransparent(headRef, {
-  id: id2,
-  navigationBar: { titleColor, coverage, backgroundColor }
-}) {
-  let A = 0;
-  const rgb = computed(() => hexToRgba(backgroundColor));
-  const offset = parseInt(coverage);
-  let titleElem;
-  let transparentElemStyle;
-  const iconElemsPaths = [];
-  const borderRadiusElemsStyles = [];
-  const oldColors = [];
-  onMounted(() => {
-    const $el = headRef.value;
-    transparentElemStyle = $el.style;
-    titleElem = $el.querySelector(".uni-page-head__title");
-    const borderRadiusElems = $el.querySelectorAll(
-      ".uni-page-head-btn"
-    );
-    const iconSvgElems = $el.querySelectorAll(
-      "svg path"
-    );
-    for (let i = 0; i < iconSvgElems.length; i++) {
-      iconElemsPaths.push(iconSvgElems[i]);
-    }
-    for (let i = 0; i < borderRadiusElems.length; i++) {
-      const borderRadiusElem = borderRadiusElems[i];
-      oldColors.push(getComputedStyle(borderRadiusElem).backgroundColor);
-      borderRadiusElemsStyles.push(borderRadiusElem.style);
-    }
-  });
-  useOn(id2 + ".onPageScroll", ({ scrollTop }) => {
-    const alpha = Math.min(scrollTop / offset, 1);
-    if (alpha === 1 && A === 1) {
-      return;
-    }
-    if (alpha > 0.5 && A <= 0.5) {
-      iconElemsPaths.forEach(function(iconElemPath) {
-        iconElemPath.setAttribute("fill", titleColor);
-      });
-    } else if (alpha <= 0.5 && A > 0.5) {
-      iconElemsPaths.forEach(function(iconElemPath) {
-        iconElemPath.setAttribute("fill", "#fff");
-      });
-    }
-    A = alpha;
-    if (titleElem) {
-      titleElem.style.opacity = alpha;
-    }
-    const bg = rgb.value;
-    transparentElemStyle.backgroundColor = `rgba(${bg.r},${bg.g},${bg.b},${alpha})`;
-    borderRadiusElemsStyles.forEach(function(borderRadiusElemStyle, index2) {
-      const oldColor = oldColors[index2];
-      const rgba = oldColor.match(/[\d+\.]+/g);
-      rgba[3] = (1 - alpha) * (rgba.length === 4 ? rgba[3] : 1);
-      borderRadiusElemStyle.backgroundColor = `rgba(${rgba})`;
-    });
-  });
-}
-const ICON_PATHS = {
-  none: "",
-  forward: "M11 7.844q-0.25-0.219-0.25-0.578t0.25-0.578q0.219-0.25 0.563-0.25t0.563 0.25l9.656 9.125q0.125 0.125 0.188 0.297t0.063 0.328q0 0.188-0.063 0.359t-0.188 0.297l-9.656 9.125q-0.219 0.25-0.563 0.25t-0.563-0.25q-0.25-0.219-0.25-0.578t0.25-0.609l9.063-8.594-9.063-8.594z",
-  back: ICON_PATH_BACK,
-  select: ICON_PATH_BACK,
-  share: "M26.563 24.844q0 0.125-0.109 0.234t-0.234 0.109h-17.938q-0.125 0-0.219-0.109t-0.094-0.234v-13.25q0-0.156 0.094-0.25t0.219-0.094h5.5v-1.531h-6q-0.531 0-0.906 0.391t-0.375 0.922v14.375q0 0.531 0.375 0.922t0.906 0.391h18.969q0.531 0 0.891-0.391t0.359-0.953v-5.156h-1.438v4.625zM29.813 10.969l-5.125-5.375-1.031 1.094 3.438 3.594-3.719 0.031q-2.313 0.188-4.344 1.125t-3.578 2.422-2.5 3.453-1.109 4.188l-0.031 0.25h1.469v-0.219q0.156-1.875 1-3.594t2.25-3.063 3.234-2.125 3.828-0.906l0.188-0.031 3.313-0.031-3.438 3.625 1.031 1.063 5.125-5.375-0.031-0.063 0.031-0.063z",
-  favorite: "M27.594 13.375q-0.063-0.188-0.219-0.313t-0.344-0.156l-7.094-0.969-3.219-6.406q-0.094-0.188-0.25-0.281t-0.375-0.094q-0.188 0-0.344 0.094t-0.25 0.281l-3.125 6.438-7.094 1.094q-0.188 0.031-0.344 0.156t-0.219 0.313q-0.031 0.188 0.016 0.375t0.172 0.313l5.156 4.969-1.156 7.063q-0.031 0.188 0.047 0.375t0.234 0.313q0.094 0.063 0.188 0.094t0.219 0.031q0.063 0 0.141-0.031t0.172-0.063l6.313-3.375 6.375 3.313q0.063 0.031 0.141 0.047t0.172 0.016q0.188 0 0.344-0.094t0.25-0.281q0.063-0.094 0.078-0.234t-0.016-0.234q0-0.031 0-0.063l-1.25-6.938 5.094-5.031q0.156-0.156 0.203-0.344t-0.016-0.375zM11.469 19.063q0.031-0.188-0.016-0.344t-0.172-0.281l-4.406-4.25 6.063-0.906q0.156-0.031 0.297-0.125t0.203-0.25l2.688-5.531 2.75 5.5q0.063 0.156 0.203 0.25t0.297 0.125l6.094 0.844-4.375 4.281q-0.125 0.125-0.172 0.297t-0.016 0.328l1.063 6.031-5.438-2.813q-0.156-0.094-0.328-0.078t-0.297 0.078l-5.438 2.875 1-6.031z",
-  home: "M23.719 16.5q-0.313 0-0.531 0.219t-0.219 0.5v7.063q0 0.219-0.172 0.391t-0.391 0.172h-12.344q-0.25 0-0.422-0.172t-0.172-0.391v-7.063q0-0.281-0.219-0.5t-0.531-0.219q-0.281 0-0.516 0.219t-0.234 0.5v7.063q0.031 0.844 0.625 1.453t1.438 0.609h12.375q0.844 0 1.453-0.609t0.609-1.453v-7.063q0-0.125-0.063-0.266t-0.156-0.234q-0.094-0.125-0.234-0.172t-0.297-0.047zM26.5 14.875l-8.813-8.813q-0.313-0.313-0.688-0.453t-0.781-0.141-0.781 0.141-0.656 0.422l-8.813 8.844q-0.188 0.219-0.188 0.516t0.219 0.484q0.094 0.125 0.234 0.172t0.297 0.047q0.125 0 0.25-0.047t0.25-0.141l8.781-8.781q0.156-0.156 0.406-0.156t0.406 0.156l8.813 8.781q0.219 0.188 0.516 0.188t0.516-0.219q0.188-0.188 0.203-0.484t-0.172-0.516z",
-  menu: "M8.938 18.313q0.875 0 1.484-0.609t0.609-1.453-0.609-1.453-1.484-0.609q-0.844 0-1.453 0.609t-0.609 1.453 0.609 1.453 1.453 0.609zM16.188 18.313q0.875 0 1.484-0.609t0.609-1.453-0.609-1.453-1.484-0.609q-0.844 0-1.453 0.609t-0.609 1.453 0.609 1.453 1.453 0.609zM23.469 18.313q0.844 0 1.453-0.609t0.609-1.453-0.609-1.453-1.453-0.609q-0.875 0-1.484 0.609t-0.609 1.453 0.609 1.453 1.484 0.609z",
-  close: ICON_PATH_CLOSE
-};
-const PageHead = /* @__PURE__ */ defineSystemComponent({
-  name: "PageHead",
-  setup() {
-    const headRef = ref(null);
-    const pageMeta = usePageMeta();
-    const navigationBar = useTheme(pageMeta.navigationBar, () => {
-      const _navigationBar = parseTheme(pageMeta.navigationBar);
-      navigationBar.backgroundColor = _navigationBar.backgroundColor;
-      navigationBar.titleColor = _navigationBar.titleColor;
-    });
-    const {
-      clazz: clazz2,
-      style
-    } = usePageHead(navigationBar);
-    const buttons = __UNI_FEATURE_NAVIGATIONBAR_BUTTONS__ && usePageHeadButtons(pageMeta);
-    const searchInput = __UNI_FEATURE_NAVIGATIONBAR_SEARCHINPUT__ && navigationBar.searchInput && usePageHeadSearchInput(pageMeta);
-    __UNI_FEATURE_NAVIGATIONBAR_TRANSPARENT__ && navigationBar.type === "transparent" && usePageHeadTransparent(headRef, pageMeta);
-    return () => {
-      const backButtonTsx = __UNI_FEATURE_PAGES__ ? createBackButtonTsx(navigationBar, pageMeta.isQuit) : null;
-      const leftButtonsTsx = __UNI_FEATURE_NAVIGATIONBAR_BUTTONS__ ? createButtonsTsx(buttons.left) : [];
-      const rightButtonsTsx = __UNI_FEATURE_NAVIGATIONBAR_BUTTONS__ ? createButtonsTsx(buttons.right) : [];
-      const type = navigationBar.type || "default";
-      const placeholderTsx = type !== "transparent" && type !== "float" && createVNode("div", {
-        "class": {
-          "uni-placeholder": true,
-          "uni-placeholder-titlePenetrate": navigationBar.titlePenetrate
-        }
-      }, null, 2);
-      return createVNode("uni-page-head", {
-        "uni-page-head-type": type
-      }, [createVNode("div", {
-        "ref": headRef,
-        "class": clazz2.value,
-        "style": style.value
-      }, [createVNode("div", {
-        "class": "uni-page-head-hd"
-      }, [backButtonTsx, ...leftButtonsTsx]), createPageHeadBdTsx(navigationBar, searchInput), createVNode("div", {
-        "class": "uni-page-head-ft"
-      }, [...rightButtonsTsx])], 6), placeholderTsx], 8, ["uni-page-head-type"]);
-    };
-  }
-});
-function createBackButtonTsx(navigationBar, isQuit) {
-  if (!isQuit) {
-    return createVNode("div", {
-      "class": "uni-page-head-btn",
-      "onClick": onPageHeadBackButton
-    }, [createSvgIconVNode(ICON_PATH_BACK, navigationBar.type === "transparent" ? "#fff" : navigationBar.titleColor, 26)], 8, ["onClick"]);
-  }
-}
-function createButtonsTsx(btns) {
-  return btns.map(({
-    onClick,
-    btnClass,
-    btnStyle,
-    btnText,
-    btnIconPath,
-    badgeText,
-    iconStyle,
-    btnSelect
-  }, index2) => {
-    return createVNode("div", {
-      "key": index2,
-      "class": btnClass,
-      "style": btnStyle,
-      "onClick": onClick,
-      "badge-text": badgeText
-    }, [btnIconPath ? createSvgIconVNode(btnIconPath, iconStyle.color, iconStyle.fontSize) : btnSelect ? createVNode("span", {
-      "style": iconStyle
-    }, [createVNode("i", {
-      "class": "uni-btn-icon",
-      "innerHTML": btnText
-    }, null, 8, ["innerHTML"]), createSvgIconVNode(ICON_PATHS["select"], "#000", 14)], 4) : createVNode("i", {
-      "class": "uni-btn-icon",
-      "style": iconStyle,
-      "innerHTML": btnText
-    }, null, 12, ["innerHTML"])], 14, ["onClick", "badge-text"]);
-  });
-}
-function createPageHeadBdTsx(navigationBar, searchInput) {
-  if (!__UNI_FEATURE_NAVIGATIONBAR_SEARCHINPUT__ || !navigationBar.searchInput) {
-    return createPageHeadTitleTextTsx(navigationBar);
-  }
-  return createPageHeadSearchInputTsx(navigationBar, searchInput);
-}
-function createPageHeadTitleTextTsx({
-  type,
-  loading,
-  titleSize,
-  titleText,
-  titleImage
-}) {
-  return createVNode("div", {
-    "class": "uni-page-head-bd"
-  }, [createVNode("div", {
-    "style": {
-      fontSize: titleSize,
-      opacity: type === "transparent" ? 0 : 1
-    },
-    "class": "uni-page-head__title"
-  }, [loading ? createVNode("i", {
-    "class": "uni-loading"
-  }, null) : titleImage ? createVNode("img", {
-    "src": titleImage,
-    "class": "uni-page-head__title_image"
-  }, null, 8, ["src"]) : titleText], 4)]);
-}
-function createPageHeadSearchInputTsx(navigationBar, {
-  text: text2,
-  focus,
-  composing,
-  onBlur,
-  onFocus,
-  onInput,
-  onConfirm,
-  onClick
-}) {
-  const {
-    color,
-    align: align2,
-    autoFocus,
-    disabled,
-    borderRadius,
-    backgroundColor,
-    placeholder,
-    placeholderColor
-  } = navigationBar.searchInput;
-  const searchStyle = {
-    borderRadius,
-    backgroundColor
-  };
-  const placeholderClass = ["uni-page-head-search-placeholder", `uni-page-head-search-placeholder-${focus.value || text2.value ? "left" : align2}`];
-  return createVNode("div", {
-    "class": "uni-page-head-search",
-    "style": searchStyle
-  }, [createVNode("div", {
-    "style": {
-      color: placeholderColor
-    },
-    "class": placeholderClass
-  }, [createVNode("div", {
-    "class": "uni-page-head-search-icon"
-  }, [createSvgIconVNode(ICON_PATH_SEARCH, placeholderColor, 20)]), text2.value || composing.value ? "" : placeholder], 6), disabled ? createVNode(Input, {
-    "disabled": true,
-    "style": {
-      color
-    },
-    "placeholder-style": "color: " + placeholderColor,
-    "class": "uni-page-head-search-input",
-    "confirm-type": "search",
-    "onClick": onClick
-  }, null, 8, ["style", "placeholder-style", "onClick"]) : createVNode(Input, {
-    "focus": autoFocus,
-    "style": {
-      color
-    },
-    "placeholder-style": "color: " + placeholderColor,
-    "class": "uni-page-head-search-input",
-    "confirm-type": "search",
-    "onFocus": onFocus,
-    "onBlur": onBlur,
-    "onInput": onInput,
-    "onConfirm": onConfirm
-  }, null, 8, ["focus", "style", "placeholder-style", "onFocus", "onBlur", "onInput", "onConfirm"])], 4);
-}
-function onPageHeadBackButton() {
-  if (getCurrentPages().length === 1) {
-    uni.reLaunch({
-      url: "/"
-    });
-  } else {
-    uni.navigateBack({
-      from: "backbutton",
-      success() {
-      }
-      // 传入空方法，避免返回Promise，因为onBackPress可能导致fail
-    });
-  }
-}
-function usePageHead(navigationBar) {
-  const clazz2 = computed(() => {
-    const {
-      type,
-      titlePenetrate,
-      shadowColorType
-    } = navigationBar;
-    const clazz3 = {
-      "uni-page-head": true,
-      "uni-page-head-transparent": type === "transparent",
-      "uni-page-head-titlePenetrate": titlePenetrate === "YES",
-      "uni-page-head-shadow": !!shadowColorType
-    };
-    if (shadowColorType) {
-      clazz3[`uni-page-head-shadow-${shadowColorType}`] = true;
-    }
-    return clazz3;
-  });
-  const style = computed(() => {
-    const backgroundColor = __UNI_FEATURE_NAVIGATIONBAR_TRANSPARENT__ && navigationBar.type === "transparent" ? usePageHeadTransparentBackgroundColor(navigationBar.backgroundColor) : navigationBar.backgroundColor;
-    return {
-      backgroundColor,
-      color: navigationBar.titleColor,
-      transitionDuration: navigationBar.duration,
-      transitionTimingFunction: navigationBar.timingFunc
-    };
-  });
-  return {
-    clazz: clazz2,
-    style
-  };
-}
-function usePageHeadButtons({
-  id: id2,
-  navigationBar
-}) {
-  const left = [];
-  const right = [];
-  const {
-    buttons
-  } = navigationBar;
-  if (isArray(buttons)) {
-    const {
-      type
-    } = navigationBar;
-    const isTransparent = type === "transparent";
-    const fonts = /* @__PURE__ */ Object.create(null);
-    buttons.forEach((btn, index2) => {
-      if (btn.fontSrc && !btn.fontFamily) {
-        const fontSrc = getRealPath(btn.fontSrc);
-        let fontFamily = fonts[fontSrc];
-        if (!fontFamily) {
-          fontFamily = `font${Date.now()}`;
-          fonts[fontSrc] = fontFamily;
-          onBeforeMount(() => updateStyle("uni-btn-" + fontFamily, `@font-face{font-family: "${fontFamily}";src: url("${fontSrc}") format("truetype")}`));
-        }
-        btn.fontFamily = fontFamily;
-      }
-      const pageHeadBtn = usePageHeadButton(id2, index2, btn, isTransparent);
-      if (btn.float === "left") {
-        left.push(pageHeadBtn);
-      } else {
-        right.push(pageHeadBtn);
-      }
-    });
-  }
-  return {
-    left,
-    right
-  };
-}
-function usePageHeadButton(pageId, index2, btn, isTransparent) {
-  const iconStyle = {
-    color: btn.color,
-    fontSize: btn.fontSize,
-    fontWeight: btn.fontWeight
-  };
-  if (btn.fontFamily) {
-    iconStyle.fontFamily = btn.fontFamily;
-  }
-  return new Proxy({
-    btnClass: {
-      // 类似这样的大量重复的字符串，会在gzip时压缩大小，无需在代码层考虑优化相同字符串
-      "uni-page-head-btn": true,
-      "uni-page-head-btn-red-dot": !!(btn.redDot || btn.badgeText),
-      "uni-page-head-btn-select": !!btn.select
-    },
-    btnStyle: {
-      backgroundColor: isTransparent ? btn.background : "transparent",
-      width: btn.width
-    },
-    btnText: "",
-    btnIconPath: ICON_PATHS[btn.type],
-    badgeText: btn.badgeText,
-    iconStyle,
-    onClick() {
-      invokeHook(pageId, ON_NAVIGATION_BAR_BUTTON_TAP, extend({
-        index: index2
-      }, btn));
-    },
-    btnSelect: btn.select
-  }, {
-    get(target, key, receiver) {
-      if (["btnText"].includes(key)) {
-        return btn.fontSrc && btn.fontFamily ? btn.text.replace("\\u", "&#x") : btn.text;
-      } else {
-        return Reflect.get(target, key, receiver);
-      }
-    }
-  });
-}
-function usePageHeadSearchInput({
-  id: id2,
-  navigationBar: {
-    searchInput
-  }
-}) {
-  const focus = ref(false);
-  const text2 = ref("");
-  const composing = ref(false);
-  const {
-    disabled
-  } = searchInput;
-  if (disabled) {
-    const onClick = () => {
-      invokeHook(id2, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED);
-    };
-    return {
-      focus,
-      text: text2,
-      composing,
-      onClick
-    };
-  }
-  const onFocus = () => {
-    focus.value = true;
-    invokeHook(id2, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, {
-      focus: true
-    });
-  };
-  const onBlur = () => {
-    focus.value = false;
-    invokeHook(id2, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, {
-      focus: false
-    });
-  };
-  const onInput = (evt) => {
-    text2.value = evt.detail.value;
-    invokeHook(id2, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, {
-      text: text2.value
-    });
-  };
-  const onConfirm = (evt) => {
-    invokeHook(id2, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, {
-      text: text2.value
-    });
-  };
-  return {
-    focus,
-    text: text2,
-    composing,
-    onFocus,
-    onBlur,
-    onInput,
-    onConfirm
-  };
-}
-const _sfc_main = {
-  name: "PageRefresh",
-  setup() {
-    const { pullToRefresh } = usePageMeta();
-    return {
-      offset: pullToRefresh.offset,
-      color: pullToRefresh.color
-    };
-  }
-};
-const _export_sfc = (sfc, props2) => {
-  const target = sfc.__vccOpts || sfc;
-  for (const [key, val] of props2) {
-    target[key] = val;
-  }
-  return target;
-};
-const _hoisted_1 = { class: "uni-page-refresh-inner" };
-const _hoisted_2 = ["fill"];
-const _hoisted_3 = /* @__PURE__ */ createElementVNode("path", { d: "M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z" }, null, -1);
-const _hoisted_4 = /* @__PURE__ */ createElementVNode("path", {
-  d: "M0 0h24v24H0z",
-  fill: "none"
-}, null, -1);
-const _hoisted_5 = [
-  _hoisted_3,
-  _hoisted_4
-];
-const _hoisted_6 = {
-  class: "uni-page-refresh__spinner",
-  width: "24",
-  height: "24",
-  viewBox: "25 25 50 50"
-};
-const _hoisted_7 = ["stroke"];
-function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
-  return openBlock(), createElementBlock("uni-page-refresh", null, [
-    createElementVNode("div", {
-      style: normalizeStyle({ "margin-top": $setup.offset + "px" }),
-      class: "uni-page-refresh"
-    }, [
-      createElementVNode("div", _hoisted_1, [
-        (openBlock(), createElementBlock("svg", {
-          fill: $setup.color,
-          class: "uni-page-refresh__icon",
-          width: "24",
-          height: "24",
-          viewBox: "0 0 24 24"
-        }, _hoisted_5, 8, _hoisted_2)),
-        (openBlock(), createElementBlock("svg", _hoisted_6, [
-          createElementVNode("circle", {
-            stroke: $setup.color,
-            class: "uni-page-refresh__path",
-            cx: "50",
-            cy: "50",
-            r: "20",
-            fill: "none",
-            "stroke-width": "4",
-            "stroke-miterlimit": "10"
-          }, null, 8, _hoisted_7)
-        ]))
-      ])
-    ], 4)
-  ]);
-}
-const PageRefresh = /* @__PURE__ */ _export_sfc(_sfc_main, [["render", _sfc_render]]);
-function processDeltaY(ev, identifier, startY) {
-  const touch = Array.prototype.slice.call(ev.changedTouches).filter((touch2) => touch2.identifier === identifier)[0];
-  if (!touch) {
-    return false;
-  }
-  ev.deltaY = touch.pageY - startY;
-  return true;
-}
-const PULLING = "pulling";
-const REACHED = "reached";
-const ABORTING = "aborting";
-const REFRESHING = "refreshing";
-const RESTORING = "restoring";
-function usePageRefresh(refreshRef) {
-  const pageMeta = usePageMeta();
-  const { id: id2, pullToRefresh } = pageMeta;
-  const { range, height } = pullToRefresh;
-  let refreshContainerElem;
-  let refreshControllerElem;
-  let refreshControllerElemStyle;
-  let refreshInnerElemStyle;
-  useSubscribe(
-    () => {
-      if (!pageMeta.enablePullDownRefresh) {
-        return;
-      }
-      if (!state2) {
-        state2 = REFRESHING;
-        addClass();
-        setTimeout(() => {
-          refreshing();
-        }, 50);
-      }
-    },
-    API_START_PULL_DOWN_REFRESH,
-    false,
-    id2
-  );
-  useSubscribe(
-    () => {
-      if (!pageMeta.enablePullDownRefresh) {
-        return;
-      }
-      if (state2 === REFRESHING) {
-        removeClass();
-        state2 = RESTORING;
-        addClass();
-        restoring(() => {
-          removeClass();
-          state2 = distance2 = offset = null;
-        });
-      }
-    },
-    API_STOP_PULL_DOWN_REFRESH,
-    false,
-    id2
-  );
-  function initElement() {
-    refreshContainerElem = refreshRef.value.$el;
-    refreshControllerElem = refreshContainerElem.querySelector(".uni-page-refresh");
-    refreshControllerElemStyle = refreshControllerElem.style;
-    refreshInnerElemStyle = refreshControllerElem.querySelector(
-      ".uni-page-refresh-inner"
-    ).style;
-  }
-  onMounted(() => {
-    initElement();
-  });
-  {
-    watch(
-      () => pageMeta.enablePullDownRefresh,
-      (enablePullDownRefresh) => {
-        if (enablePullDownRefresh) {
-          nextTick(() => {
-            initElement();
-          });
-        }
-      }
-    );
-  }
-  let touchId;
-  let startY;
-  let canRefresh;
-  let state2;
-  let distance2 = null;
-  let offset = null;
-  function toggleClass(type) {
-    if (!state2) {
-      return;
-    }
-    if (refreshContainerElem) {
-      refreshContainerElem.classList[type]("uni-page-refresh--" + state2);
-    }
-  }
-  function addClass() {
-    toggleClass("add");
-  }
-  function removeClass() {
-    toggleClass("remove");
-  }
-  function pulling(deltaY) {
-    if (!refreshControllerElem) {
-      return;
-    }
-    let rotate = deltaY / range;
-    if (rotate > 1) {
-      rotate = 1;
-    } else {
-      rotate = rotate * rotate * rotate;
-    }
-    const y = Math.round(deltaY / (range / height)) || 0;
-    refreshInnerElemStyle.transform = "rotate(" + 360 * rotate + "deg)";
-    refreshControllerElemStyle.clip = "rect(" + (45 - y) + "px,45px,45px,-5px)";
-    refreshControllerElemStyle.transform = "translate3d(-50%, " + y + "px, 0)";
-  }
-  const onTouchstartPassive = withWebEvent((ev) => {
-    if (!pageMeta.enablePullDownRefresh) {
-      return;
-    }
-    const touch = ev.changedTouches[0];
-    touchId = touch.identifier;
-    startY = touch.pageY;
-    if ([ABORTING, REFRESHING, RESTORING].indexOf(state2) >= 0) {
-      canRefresh = false;
-    } else {
-      canRefresh = true;
-    }
-  });
-  const onTouchmove = withWebEvent((ev) => {
-    if (!pageMeta.enablePullDownRefresh) {
-      return;
-    }
-    if (!canRefresh) {
-      return;
-    }
-    if (!processDeltaY(ev, touchId, startY)) {
-      return;
-    }
-    let { deltaY } = ev;
-    if ((document.documentElement.scrollTop || document.body.scrollTop) !== 0) {
-      touchId = null;
-      return;
-    }
-    if (deltaY < 0 && !state2) {
-      return;
-    }
-    if (ev.cancelable) {
-      ev.preventDefault();
-    }
-    if (distance2 === null) {
-      offset = deltaY;
-      state2 = PULLING;
-      addClass();
-    }
-    deltaY = deltaY - offset;
-    if (deltaY < 0) {
-      deltaY = 0;
-    }
-    distance2 = deltaY;
-    const isReached = deltaY >= range && state2 !== REACHED;
-    const isPulling = deltaY < range && state2 !== PULLING;
-    if (isReached || isPulling) {
-      removeClass();
-      state2 = state2 === REACHED ? PULLING : REACHED;
-      addClass();
-    }
-    pulling(deltaY);
-  });
-  const onTouchend = withWebEvent((ev) => {
-    if (!pageMeta.enablePullDownRefresh) {
-      return;
-    }
-    if (!processDeltaY(ev, touchId, startY)) {
-      return;
-    }
-    if (state2 === null) {
-      return;
-    }
-    if (state2 === PULLING) {
-      removeClass();
-      state2 = ABORTING;
-      addClass();
-      aborting(() => {
-        removeClass();
-        state2 = distance2 = offset = null;
-      });
-    } else if (state2 === REACHED) {
-      removeClass();
-      state2 = REFRESHING;
-      addClass();
-      refreshing();
-    }
-  });
-  function aborting(callback) {
-    if (!refreshControllerElem) {
-      return;
-    }
-    if (refreshControllerElemStyle.transform) {
-      refreshControllerElemStyle.transition = "-webkit-transform 0.3s";
-      refreshControllerElemStyle.transform = "translate3d(-50%, 0, 0)";
-      const abortTransitionEnd = function() {
-        timeout && clearTimeout(timeout);
-        refreshControllerElem.removeEventListener(
-          "webkitTransitionEnd",
-          abortTransitionEnd
-        );
-        refreshControllerElemStyle.transition = "";
-        callback();
-      };
-      refreshControllerElem.addEventListener(
-        "webkitTransitionEnd",
-        abortTransitionEnd
-      );
-      const timeout = setTimeout(abortTransitionEnd, 350);
-    } else {
-      callback();
-    }
-  }
-  function refreshing() {
-    if (!refreshControllerElem) {
-      return;
-    }
-    refreshControllerElemStyle.transition = "-webkit-transform 0.2s";
-    refreshControllerElemStyle.transform = "translate3d(-50%, " + height + "px, 0)";
-    invokeHook(id2, ON_PULL_DOWN_REFRESH);
-  }
-  function restoring(callback) {
-    if (!refreshControllerElem) {
-      return;
-    }
-    refreshControllerElemStyle.transition = "-webkit-transform 0.3s";
-    refreshControllerElemStyle.transform += " scale(0.01)";
-    const restoreTransitionEnd = function() {
-      timeout && clearTimeout(timeout);
-      refreshControllerElem.removeEventListener(
-        "webkitTransitionEnd",
-        restoreTransitionEnd
-      );
-      refreshControllerElemStyle.transition = "";
-      refreshControllerElemStyle.transform = "translate3d(-50%, 0, 0)";
-      callback();
-    };
-    refreshControllerElem.addEventListener(
-      "webkitTransitionEnd",
-      restoreTransitionEnd
-    );
-    const timeout = setTimeout(restoreTransitionEnd, 350);
-  }
-  return {
-    onTouchstartPassive,
-    onTouchmove,
-    onTouchend,
-    onTouchcancel: onTouchend
-  };
-}
-const PageBody = /* @__PURE__ */ defineSystemComponent({
-  name: "PageBody",
-  setup(props2, ctx) {
-    const pageMeta = __UNI_FEATURE_PULL_DOWN_REFRESH__ && usePageMeta();
-    const refreshRef = __UNI_FEATURE_PULL_DOWN_REFRESH__ && ref(null);
-    const _pageRefresh = __UNI_FEATURE_PULL_DOWN_REFRESH__ && (pageMeta.enablePullDownRefresh || true) ? usePageRefresh(refreshRef) : null;
-    const pageRefresh = ref(null);
-    watch(() => {
-      return pageMeta.enablePullDownRefresh;
-    }, () => {
-      pageRefresh.value = pageMeta.enablePullDownRefresh ? _pageRefresh : null;
-    }, {
-      immediate: true
-    });
-    return () => {
-      const pageRefreshTsx = __UNI_FEATURE_PULL_DOWN_REFRESH__ && createPageRefreshTsx(refreshRef);
-      return createVNode(Fragment, null, [pageRefreshTsx, createVNode("uni-page-wrapper", pageRefresh.value, [createVNode("uni-page-body", null, [renderSlot(ctx.slots, "default")])], 16)]);
-    };
-  }
-});
-function createPageRefreshTsx(refreshRef, pageMeta) {
-  return createVNode(PageRefresh, {
-    "ref": refreshRef
-  }, null, 512);
-}
-const index = /* @__PURE__ */ defineSystemComponent({
-  name: "Page",
-  setup(_props, ctx) {
-    const pageMeta = providePageMeta(getStateId());
-    const navigationBar = pageMeta.navigationBar;
-    const pageStyle = {};
-    useDocumentTitle(pageMeta);
-    const currentInstance = getCurrentInstance();
-    currentInstance.$dialogPages = ref([]);
-    {
-      useBackgroundColorContent(pageMeta);
-      if (ctx.attrs.type === "dialog") {
-        navigationBar.style = "custom";
-        pageMeta.route = ctx.attrs.route;
-        const parentInstance = inject(
-          "parentInstance"
-        );
-        if (currentInstance && parentInstance) {
-          currentInstance.$parentInstance = parentInstance;
-          const parentDialogPages = parentInstance.$dialogPages.value;
-          currentInstance.$dialogPage = parentDialogPages[parentDialogPages.length - 1];
-        }
-      } else {
-        provide("parentInstance", currentInstance);
-      }
-    }
-    return () => createVNode(
-      "uni-page",
-      {
-        "data-page": pageMeta.route,
-        style: pageStyle
-      },
-      __UNI_FEATURE_NAVIGATIONBAR__ && navigationBar.style !== "custom" ? [
-        createVNode(PageHead),
-        createPageBodyVNode(ctx),
-        createDialogPageVNode(currentInstance.$dialogPages)
-      ] : [
-        createPageBodyVNode(ctx),
-        createDialogPageVNode(currentInstance.$dialogPages)
-      ]
-    );
-  }
-});
-function createPageBodyVNode(ctx) {
-  return openBlock(), createBlock(
-    PageBody,
-    { key: 0 },
-    {
-      default: withCtx(() => [renderSlot(ctx.slots, "page")]),
-      _: 3
-    }
-  );
-}
-function createDialogPageVNode(dialogPages) {
-  return openBlock(true), createElementBlock(
-    Fragment,
-    null,
-    renderList(dialogPages.value, (dialogPage) => {
-      const fullUrl = `${dialogPage.route}${stringifyQuery$1(
-        dialogPage.options
-      )}`;
-      return openBlock(), createBlock(
-        createVNode(
-          dialogPage.$component,
-          {
-            key: fullUrl,
-            style: {
-              position: "fixed",
-              "z-index": 999,
-              top: 0,
-              right: 0,
-              bottom: 0,
-              left: 0
-            },
-            type: "dialog",
-            "data-type": "dialog",
-            route: fullUrl
-          },
-          null
-        )
-      );
-    })
-  );
-}
 export {
   $emit,
   $off,
   $on,
   $once,
-  index$m as Ad,
-  index$l as AdContentPage,
-  index$k as AdDraw,
+  index$j as Ad,
+  index$i as AdContentPage,
+  index$h as AdDraw,
   AsyncErrorComponent,
   AsyncLoadingComponent,
-  index$w as Button,
-  index$j as Camera,
+  index$t as Button,
+  index$g as Camera,
   indexX$4 as Canvas,
-  index$u as Checkbox,
-  index$v as CheckboxGroup,
-  index$o as CoverImage,
-  index$p as CoverView,
-  index$g as Editor,
-  index$y as Form,
-  index$f as Icon,
-  index$e as Image,
+  index$r as Checkbox,
+  index$s as CheckboxGroup,
+  index$l as CoverImage,
+  index$m as CoverView,
+  index$d as Editor,
+  index$v as Form,
+  index$c as Icon,
+  index$b as Image,
   Input,
-  index$x as Label,
+  index$u as Label,
   LayoutComponent,
-  index$5 as ListItem,
-  index$6 as ListView,
-  index$i as LivePlayer,
-  index$h as LivePusher,
-  Map$1 as Map,
+  index$4 as ListItem,
+  index$5 as ListView,
+  index$f as LivePlayer,
+  index$e as LivePusher,
+  __syscom_0 as Map,
   MovableArea,
   MovableView,
-  index$d as Navigator,
-  index as PageComponent,
-  index$n as Picker,
+  index$a as Navigator,
+  PageComponent,
+  index$k as Picker,
   PickerView,
   PickerViewColumn,
-  index$c as Progress,
+  index$9 as Progress,
   indexX$2 as Radio,
-  index$b as RadioGroup,
+  index$8 as RadioGroup,
   ResizeSensor,
-  index$a as RichText,
-  ScrollView,
+  index$7 as RichText,
+  __syscom_4 as ScrollView,
   indexX$1 as Slider,
-  index$3 as StickyHeader,
-  index$4 as StickySection,
+  index$2 as StickyHeader,
+  index$3 as StickySection,
   Swiper,
   SwiperItem,
   indexX as Switch,
-  index$9 as Text,
-  index$8 as Textarea,
+  __syscom_1 as Text,
+  index$6 as Textarea,
   UniButtonElement,
   UniCanvasElement,
   UniCheckboxElement,
@@ -28307,8 +29520,8 @@ export {
   UniViewElement,
   UniViewJSBridge$1 as UniViewJSBridge,
   UniWebViewElement,
-  index$q as Video,
-  index$7 as View,
+  index$n as Video,
+  __syscom_2 as View,
   indexX$3 as WebView,
   addInterceptor,
   addPhoneContact,
@@ -28378,6 +29591,7 @@ export {
   getVideoInfo,
   getWindowInfo,
   hideActionSheet,
+  hideActionSheet2,
   hideKeyboard,
   hideLeftWindow,
   hideLoading,
@@ -28400,6 +29614,7 @@ export {
   offAppShow,
   offCompassChange,
   offError,
+  offHostThemeChange,
   offLocationChange,
   offLocationChangeError,
   offNetworkStatusChange,
@@ -28415,6 +29630,7 @@ export {
   onCreateVueApp2 as onCreateVueApp,
   onError,
   onGyroscopeChange,
+  onHostThemeChange,
   onLocaleChange,
   onLocationChange,
   onLocationChangeError,
@@ -28435,7 +29651,7 @@ export {
   openDocument,
   openLocation,
   pageScrollTo,
-  index$1 as plugin,
+  index as plugin,
   preloadPage,
   previewImage,
   reLaunch,
@@ -28474,6 +29690,7 @@ export {
   setupPage,
   setupWindow,
   showActionSheet,
+  showActionSheet2,
   showLeftWindow,
   showLoading,
   showModal,

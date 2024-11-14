@@ -39,10 +39,13 @@ const uniInjectPluginOptions: Partial<InjectOptions> = {
 
 export function uniInjectPlugin(): Plugin {
   let resolvedConfig: ResolvedConfig
+
+  const apiDepsCss = API_DEPS_CSS(process.env.UNI_APP_X === 'true')
+
   const callback: InjectOptions['callback'] = function (imports, mod) {
     const styles =
       mod[0] === '@dcloudio/uni-h5' &&
-      API_DEPS_CSS[mod[1] as keyof typeof API_DEPS_CSS]
+      apiDepsCss[mod[1] as keyof typeof apiDepsCss]
     if (!styles) {
       return
     }
