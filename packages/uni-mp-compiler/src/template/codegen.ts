@@ -61,9 +61,8 @@ export interface TemplateCodegenContext {
  * - 用户源码内不会出现>字符。虽然emsp等字符可以出现在用户的源码里面，但是一般不会有人这么做。因此无论用户写的是&emsp;还是\u2003，都被转义为&emsp;对用户而言影响不大
  */
 const mpEscapeText = getEscaper(
-  /[&<>\u2009\u00A0\u2002\u2003]/g,
+  /[<>\u2009\u00A0\u2002\u2003]/g,
   new Map([
-    [38, '&amp;'],
     [60, '&lt;'],
     [62, '&gt;'],
     [0x2009, '&thinsp;'],
