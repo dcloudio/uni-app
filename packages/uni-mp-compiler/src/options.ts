@@ -108,6 +108,7 @@ export interface CodegenOptions extends SharedTransformCodegenOptions {
 }
 
 export interface TemplateCodegenOptions extends MiniProgramCompilerOptions {
+  isX?: boolean
   scopeId?: string | null
   filename: string
   autoImportFilters: Array<Omit<MiniProgramFilterOptions, 'code'>>

@@ -39,6 +39,7 @@ import {
 } from '../transforms/utils'
 
 export interface TemplateCodegenContext {
+  isX?: boolean
   code: string
   directive: string
   scopeId?: string | null
@@ -88,6 +89,7 @@ export function generate(
     component,
     autoImportFilters,
     filter,
+    isX,
   }: TemplateCodegenOptions
 ) {
   const context: TemplateCodegenContext = {
@@ -104,6 +106,7 @@ export function generate(
     push(code) {
       context.code += code
     },
+    isX,
   }
   children.forEach((node) => {
     genNode(node, context)
@@ -147,8 +150,8 @@ export function genNode(
   }
 }
 
-function genText(node: TextNode, { push }: TemplateCodegenContext) {
-  if (process.env.UNI_APP_X === 'true') {
+function genText(node: TextNode, { push, isX }: TemplateCodegenContext) {
+  if (isX) {
     push(mpEscapeText(node.content))
   } else {
     push(node.content)
