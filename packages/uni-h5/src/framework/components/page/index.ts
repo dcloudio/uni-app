@@ -140,7 +140,7 @@ function createDialogPageVNode(
     createElementBlock(
       Fragment,
       null,
-      renderList(dialogPages, (dialogPage, index) => {
+      renderList(dialogPages, (dialogPage) => {
         const { type, page } = dialogPage
         const fullUrl = `${page.route}${stringifyQuery(page.options)}`
         return (
@@ -149,7 +149,7 @@ function createDialogPageVNode(
             createVNode(
               page.$component,
               {
-                key: `${fullUrl}_${index}`,
+                key: fullUrl,
                 style: {
                   position: 'fixed',
                   'z-index': 999,
