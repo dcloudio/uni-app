@@ -1,4 +1,4 @@
-import { isArray, isString } from '@vue/shared'
+import { isArray, isPlainObject, isString } from '@vue/shared'
 import { getAllPages } from '../../service/framework/page/getCurrentPages'
 import { getTabBar } from './app/tabBar'
 import { parsePageStyle } from './page/register'
@@ -81,7 +81,6 @@ export const onThemeChange = function (themeMode: IThemeMode) {
       normalizeTabBarStyles(tabBarConfig, __uniConfig.themeConfig, themeMode)
 
       const tabBarStyle = new Map<string, any | null>()
-      const tabBarItemUpdateConfig = ['iconPath', 'selectedIconPath']
       const tabBarConfigKeys = Object.keys(tabBarConfig)
 
       tabBarConfigKeys.forEach((key) => {
@@ -94,7 +93,7 @@ export const onThemeChange = function (themeMode: IThemeMode) {
           valueAsArray.forEach((item) => {
             const tabBarItemMap = new Map<string, any | null>()
             tabBarItemMap.set('index', index)
-            tabBarItemUpdateConfig.forEach((tabBarItemkey) => {
+            Object.keys(item).forEach((tabBarItemkey) => {
               if (item[tabBarItemkey] != null) {
                 tabBarItemMap.set(tabBarItemkey, item[tabBarItemkey])
               }
@@ -149,6 +148,8 @@ function normalizeStyles(
       valueAsArray.forEach((item) => {
         normalizeStyles(item, themeMap)
       })
+    } else if (isPlainObject(value)) {
+      normalizeStyles(value, themeMap)
     }
   })
 }
