@@ -4992,7 +4992,9 @@
       },
       "unixTags": [
         "text",
-        "button"
+        "button",
+        "input",
+        "textarea"
       ],
       "defaultValue": "normal"
     },
