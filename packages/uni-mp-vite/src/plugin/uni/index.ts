@@ -30,6 +30,12 @@ export function uniOptions({
   const manifest = parseManifestJsonOnce(process.env.UNI_INPUT_DIR)
   const platformOptions = manifest[process.env.UNI_PLATFORM] || {}
 
+  const mergeVirtualHostAttributes =
+    platformOptions.mergeVirtualHostAttributes != null
+      ? platformOptions.mergeVirtualHostAttributes
+      : process.env.UNI_PLATFORM === 'mp-weixin' &&
+        process.env.UNI_APP_X === 'true'
+
   return {
     copyOptions,
     compiler: compiler as TemplateCompiler,
@@ -37,8 +43,7 @@ export function uniOptions({
       root: process.env.UNI_INPUT_DIR,
       miniProgram: extend({}, miniProgram, {
         component: extend({}, miniProgram.component, {
-          mergeVirtualHostAttributes:
-            platformOptions.mergeVirtualHostAttributes,
+          mergeVirtualHostAttributes,
         }),
       }),
       isNativeTag:
