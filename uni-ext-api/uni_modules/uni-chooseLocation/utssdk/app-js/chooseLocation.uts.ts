@@ -5,7 +5,9 @@ import { ChooseLocation, ChooseLocationOptions, ChooseLocationSuccess } from "..
 export const chooseLocation: ChooseLocation = defineAsyncApi('chooseLocation', (
   options: ChooseLocationOptions, { resolve, reject }
 ) => {
-  registerSystemRoute("uni:chooseLocation", uniChooseLocationPage);
+  registerSystemRoute("uni:chooseLocation", uniChooseLocationPage, {
+    disableSwipeBack: false
+  });
 
   const uuid = Date.now() + '' + Math.floor(Math.random() * 1e7)
   const baseEventName = `uni_choose_location_${uuid}`
