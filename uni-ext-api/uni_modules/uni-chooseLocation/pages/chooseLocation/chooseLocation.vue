@@ -14,7 +14,7 @@
     <view class="uni-choose-location-nav" :style="'height:' + (60 + safeArea.top) + 'px;'">
       <view class="uni-choose-location-nav-btn uni-choose-location-nav-back-btn" :class="[landscapeClassCom]" :style="safeArea.top > 0 ? 'top: ' + safeArea.top + 'px;' : ''"><text
           class="uni-choose-location-nav-text uni-choose-location-nav-back-text" @click="back">{{ languageCom['back'] }}</text></view>
-      <view class="uni-choose-location-nav-btn uni-choose-location-nav-confirm-btn" :class="[landscapeClassCom,selected < 0 ? 'disable' : '']"
+      <view class="uni-choose-location-nav-btn uni-choose-location-nav-confirm-btn" :class="[landscapeClassCom,selected < 0 ? 'disable' : 'active']"
         :style="safeArea.top > 0 ? 'top: ' + safeArea.top + 'px;' : ''" @click="confirm">
         <text class="uni-choose-location-nav-text uni-choose-location-nav-confirm-text">{{ languageCom['ok'] }}</text>
       </view>
@@ -58,7 +58,7 @@
   // #ifdef APP-ANDROID
   import "io.dcloud.unicloud.*"
   // #endif
-  
+
   type ControlPosition = {
     left : number,
     top : number,
@@ -337,12 +337,13 @@
             resolve(res);
           }).catch((err) => {
             if (err instanceof UniCloudError) {
+              const errCode = (err as UniCloudError).errCode;
               const errMsg = (err as UniCloudError).errMsg;
               if (errMsg.indexOf("在云端不存在") > -1 || errMsg.indexOf("未匹配") > -1) {
                 this.errMsg = "uni.chooseLocation 依赖 uniCloud 的 uni-map-common 插件，请安装 uni-map-common 插件，插件地址：https://ext.dcloud.net.cn/plugin?id=13872";
                 console.error(this.errMsg);
               } else {
-                console.error('err: ', err);
+                console.error("获取POI信息失败，" + JSON.stringify({errCode, errMsg}));
               }
             }
             reject(err);
@@ -391,21 +392,23 @@
             }
           }).then((res : UTSJSONObject) => {
             let pois = res.getJSON('result')?.getJSON('result')?.getArray('pois') as Array<UTSJSONObject>;
-            // #ifdef WEB
-            if (window['__UNI_CHOOSE_LOCATION_ANY_POINT__']) {
-              let formatted_addresses = res.getJSON('result')?.getJSON('result')?.getString('formatted_addresses') as string;
-              pois.unshift({
-                title: this.languageCom['current-location'],
-                address: formatted_addresses,
-                distance: 0,
-                location: {
-                  lat: latitude,
-                  lng: longitude
-                }
-              });
-            }
-            // #endif
+            let formatted_addresses = res.getJSON('result')?.getJSON('result')?.getString('formatted_addresses') as string;
+            let street = res.getJSON('result')?.getJSON('result')?.getString('street') as string;
+            let street_number = res.getJSON('result')?.getJSON('result')?.getString('street_number') as string;
+            let title = street_number != '' ? street_number : street;
+            pois.unshift({
+              title: title,
+              address: formatted_addresses,
+              distance: 0,
+              location: {
+                lat: latitude,
+                lng: longitude
+              }
+            });
             this.poiHandle(pois);
+            if (this.selected == -1) {
+              this.selected = 0;
+            }
             this.searchLoading = false;
           }).catch((err) => {
             this.searchLoading = false;
@@ -565,12 +568,13 @@
       closeDialogPage() {
         // #ifdef APP-ANDROID
         uni.closeDialogPage({
-          dialogPage: this.$page
+          dialogPage: this.$page,
+          //animationType: 'zoom-fade-out',
         } as io.dcloud.uniapp.framework.extapi.CloseDialogPageOptions)
         // #endif
         // #ifndef APP-ANDROID
         uni.closeDialogPage({
-          dialogPage: this.$page
+          dialogPage: this.$page,
         })
         // #endif
       },
@@ -638,17 +642,17 @@
     z-index: 999;
   }
 
-  .uni-choose-location .uni-choose-location-map-box {
+  .uni-choose-location-map-box {
     width: 100%;
-    height: 300px;
+    height: 350px;
   }
 
-  .uni-choose-location .uni-choose-location-map {
+  .uni-choose-location-map {
     width: 100%;
     height: 100%;
   }
 
-  .uni-choose-location .uni-choose-location-map-target {
+  .uni-choose-location-map-target {
     position: absolute;
     left: 50%;
     bottom: 50%;
@@ -660,12 +664,12 @@
     transition-timing-function: ease-out;
   }
 
-  .uni-choose-location .uni-choose-location-map-target .uni-choose-location-map-target-icon {
+  .uni-choose-location-map-target-icon {
     font-size: 50px;
-    color: #007aff;
+    color: #f0493e;
   }
 
-  .uni-choose-location .uni-choose-location-map-reset {
+  .uni-choose-location-map-reset {
     position: absolute;
     left: 20px;
     bottom: 40px;
@@ -682,60 +686,56 @@
     align-items: center;
   }
 
-  .uni-choose-location .uni-choose-location-map-reset .uni-choose-location-map-reset-icon {
+  .uni-choose-location-map-reset-icon {
     font-size: 26px;
     text-align: center;
     line-height: 40px;
   }
 
-  .uni-choose-location .uni-choose-location-nav {
+  .uni-choose-location-nav {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 60px;
     background-color: rgba(0, 0, 0, 0);
-    background-image: linear-gradient(to bottom, rgba(0, 0, 0, .5), rgba(0, 0, 0, 0));
+    background-image: linear-gradient(to bottom, rgba(0, 0, 0, .6), rgba(0, 0, 0, 0));
   }
 
-  .uni-choose-location .uni-choose-location-nav .uni-choose-location-nav-btn {
+  .uni-choose-location-nav-btn {
     position: absolute;
     top: 5px;
     left: 5px;
-    width: 60px;
+    width: 64px;
     height: 44px;
     padding: 5px;
   }
 
-  .uni-choose-location .uni-choose-location-nav .uni-choose-location-nav-btn.uni-choose-location-nav-confirm-btn {
+  .uni-choose-location-nav-btn.uni-choose-location-nav-confirm-btn {
     left: auto;
     right: 5px;
   }
 
-  .uni-choose-location .uni-choose-location-nav .uni-choose-location-nav-btn.uni-choose-location-nav-confirm-btn .uni-choose-location-nav-confirm-text {
+  .uni-choose-location-nav-btn.uni-choose-location-nav-confirm-btn .uni-choose-location-nav-confirm-text {
     background-color: #007aff;
     border-radius: 5px;
   }
 
-  .uni-choose-location .uni-choose-location-nav .uni-choose-location-nav-btn.uni-choose-location-nav-confirm-btn:active {
+  .uni-choose-location-nav-btn.uni-choose-location-nav-confirm-btn.active:active {
     opacity: 0.7;
   }
 
-  .uni-choose-location .uni-choose-location-nav .uni-choose-location-nav-btn.uni-choose-location-nav-confirm-btn.disable {
+  .uni-choose-location-nav-btn.uni-choose-location-nav-confirm-btn.disable {
     opacity: 0.4;
   }
 
-  .uni-choose-location .uni-choose-location-nav .uni-choose-location-nav-btn.uni-choose-location-nav-confirm-btn.disable:active {
-    opacity: 1;
-  }
-
-  .uni-choose-location .uni-choose-location-nav .uni-choose-location-nav-btn.uni-choose-location-nav-back-btn .uni-choose-location-nav-back-text {
+  .uni-choose-location-nav-btn.uni-choose-location-nav-back-btn .uni-choose-location-nav-back-text {
     color: #fff;
   }
 
-  .uni-choose-location .uni-choose-location-nav .uni-choose-location-nav-btn .uni-choose-location-nav-text {
+  .uni-choose-location-nav-text {
     padding: 8px 0px;
-    font-size: 13px;
+    font-size: 14px;
     text-align: center;
     /* #ifdef WEB */
     letter-spacing: 0.1em;
@@ -744,16 +744,16 @@
     text-align: center;
   }
 
-  .uni-choose-location .uni-choose-location-poi {
+  .uni-choose-location-poi {
     position: absolute;
-    top: 300px;
+    top: 350px;
     /* left: auto; */
     width: 100%;
     bottom: 0;
     background-color: #fff;
   }
 
-  .uni-choose-location .uni-choose-location-poi .uni-choose-location-poi-search {
+  .uni-choose-location-poi-search {
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -763,7 +763,7 @@
     background-color: #fff;
   }
 
-  .uni-choose-location .uni-choose-location-poi .uni-choose-location-poi-search-box {
+  .uni-choose-location-poi-search-box {
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -775,7 +775,7 @@
     background-color: #ededed;
   }
 
-  .uni-choose-location .uni-choose-location-poi .uni-choose-location-poi-search .uni-choose-location-poi-search-input {
+  .uni-choose-location-poi-search-input {
     flex: 1;
     height: 100%;
     border-radius: 5px;
@@ -783,45 +783,45 @@
     background: #ededed;
   }
 
-  .uni-choose-location .uni-choose-location-poi .uni-choose-location-poi-search .uni-choose-location-poi-search-cancel {
+  .uni-choose-location-poi-search-cancel {
     margin-left: 5px;
     color: #007aff;
-    font-size: 17px;
+    font-size: 15px;
     text-align: center;
   }
 
-  .uni-choose-location .uni-choose-location-poi .uni-choose-location-poi-list {
+  .uni-choose-location-poi-list {
     flex: 1;
   }
 
-  .uni-choose-location .uni-choose-location-poi .uni-choose-location-poi-list .uni-choose-location-poi-search-loading {
+  .uni-choose-location-poi-search-loading {
     display: flex;
     align-items: center;
     padding: 10px 0px;
   }
 
-  .uni-choose-location .uni-choose-location-poi .uni-choose-location-poi-list .uni-choose-location-poi-search-loading .uni-choose-location-poi-search-loading-text {
+  .uni-choose-location-poi-search-loading-text {
     color: #191919;
   }
 
-  .uni-choose-location .uni-choose-location-poi .uni-choose-location-poi-list .uni-choose-location-poi-search-error {
+  .uni-choose-location-poi-search-error {
     display: flex;
     align-items: center;
     padding: 10px;
   }
 
-  .uni-choose-location .uni-choose-location-poi .uni-choose-location-poi-list .uni-choose-location-poi-search-error .uni-choose-location-poi-search-error-text {
+  .uni-choose-location-poi-search-error-text {
     color: #191919;
     font-size: 14px;
   }
 
-  .uni-choose-location .uni-choose-location-poi .uni-choose-location-poi-list .uni-choose-location-poi-item {
+  .uni-choose-location-poi-item {
     position: relative;
     padding: 15px 10px;
     padding-right: 40px;
   }
 
-  .uni-choose-location .uni-choose-location-poi .uni-choose-location-poi-list .uni-choose-location-poi-item .uni-choose-location-poi-item-title-text {
+  .uni-choose-location-poi-item-title-text {
     font-size: 14px;
     overflow: hidden;
     white-space: nowrap;
@@ -829,7 +829,7 @@
     color: #191919;
   }
 
-  .uni-choose-location .uni-choose-location-poi .uni-choose-location-poi-list .uni-choose-location-poi-item .uni-choose-location-poi-item-detail-text {
+  .uni-choose-location-poi-item-detail-text {
     font-size: 12px;
     margin-top: 5px;
     color: #b2b2b2;
@@ -838,7 +838,7 @@
     text-overflow: ellipsis;
   }
 
-  .uni-choose-location .uni-choose-location-poi .uni-choose-location-poi-list .uni-choose-location-poi-item .uni-choose-location-poi-item-selected-icon {
+  .uni-choose-location-poi-item-selected-icon {
     position: absolute;
     top: 50%;
     right: 10px;
@@ -849,7 +849,7 @@
     font-size: 24px;
   }
 
-  .uni-choose-location .uni-choose-location-poi .uni-choose-location-poi-list .uni-choose-location-poi-item .uni-choose-location-poi-item-after {
+  .uni-choose-location-poi-item-after {
     position: absolute;
     height: 1px;
     left: 10px;
@@ -859,49 +859,54 @@
     border-bottom: 1px solid #f8f8f8;
   }
 
-  .uni-choose-location.uni-choose-location-dark .uni-choose-location-map-reset {
+  .uni-choose-location-search-icon {
+    color: #808080;
+    padding-left: 5px;
+  }
+
+  .uni-choose-location-dark .uni-choose-location-map-reset {
     background-color: #111111;
     box-shadow: 0px 0px 5px 1px rgba(0, 0, 0, .3);
   }
 
-  .uni-choose-location.uni-choose-location-dark .uni-choose-location-poi .uni-choose-location-poi-search-box {
+  .uni-choose-location-dark .uni-choose-location-poi-search-box {
     background-color: #181818;
   }
 
-  .uni-choose-location.uni-choose-location-dark .uni-choose-location-search-icon {
+  .uni-choose-location-dark .uni-choose-location-search-icon {
     color: #d1d1d1;
   }
 
-  .uni-choose-location.uni-choose-location-dark .uni-choose-location-poi .uni-choose-location-poi-list .uni-choose-location-poi-search-loading .uni-choose-location-poi-search-loading-text {
+  .uni-choose-location-dark .uni-choose-location-poi-search-loading-text {
     color: #d1d1d1;
   }
 
-  .uni-choose-location.uni-choose-location-dark .uni-choose-location-poi .uni-choose-location-poi-search {
+  .uni-choose-location-dark .uni-choose-location-poi-search {
     background-color: #181818
   }
 
-  .uni-choose-location.uni-choose-location-dark .uni-choose-location-poi .uni-choose-location-poi-search .uni-choose-location-poi-search-input {
+  .uni-choose-location-dark .uni-choose-location-poi-search-input {
     background: #111111;
     color: #d1d1d1;
   }
 
-  .uni-choose-location.uni-choose-location-dark .uni-choose-location-poi .uni-choose-location-poi-list .uni-choose-location-poi-item .uni-choose-location-poi-item-title-text {
+  .uni-choose-location-dark .uni-choose-location-poi-item-title-text {
     color: #d1d1d1;
   }
 
-  .uni-choose-location.uni-choose-location-dark .uni-choose-location-poi .uni-choose-location-poi-list .uni-choose-location-poi-item .uni-choose-location-poi-item-detail-text {
+  .uni-choose-location-dark .uni-choose-location-poi-item-detail-text {
     color: #595959;
   }
 
-  .uni-choose-location.uni-choose-location-dark .uni-choose-location-poi {
+  .uni-choose-location-dark .uni-choose-location-poi {
     background-color: #181818
   }
 
-  .uni-choose-location.uni-choose-location-dark .uni-choose-location-poi .uni-choose-location-poi-list .uni-choose-location-poi-item .uni-choose-location-poi-item-after {
+  .uni-choose-location-dark .uni-choose-location-poi-item-after {
     border-bottom: 1px solid #1e1e1e;
   }
 
-  .uni-choose-location.uni-choose-location-dark .uni-choose-location-map-reset .uni-choose-location-map-reset-icon {
+  .uni-choose-location-dark .uni-choose-location-map-reset-icon {
     color: #d1d1d1;
   }
 
@@ -925,16 +930,16 @@
     bottom: 40px;
   }
 
-  .uni-choose-location .uni-choose-location-poi .uni-choose-location-poi-list .uni-choose-location-poi-item.uni-choose-location-landscape {
+  .uni-choose-location .uni-choose-location-poi-item.uni-choose-location-landscape {
     padding: 10px;
   }
 
-  .uni-choose-location .uni-choose-location-nav .uni-choose-location-nav-btn.uni-choose-location-landscape {
+  .uni-choose-location .uni-choose-location-nav-btn.uni-choose-location-landscape {
     top: 10px;
     left: 20px;
   }
 
-  .uni-choose-location .uni-choose-location-nav .uni-choose-location-nav-btn.uni-choose-location-nav-confirm-btn.uni-choose-location-landscape {
+  .uni-choose-location .uni-choose-location-nav-btn.uni-choose-location-nav-confirm-btn.uni-choose-location-landscape {
     left: auto;
     right: 20px;
   }
@@ -957,20 +962,17 @@
       border-radius: 5px;
     }
 
-    .uni-choose-location .uni-choose-location-poi .uni-choose-location-poi-item {
+    .uni-choose-location .uni-choose-location-poi-item {
       cursor: pointer;
-    }
-
-    .uni-choose-location .uni-choose-location-poi .uni-choose-location-poi-list .uni-choose-location-poi-item {
       padding: 10px;
     }
 
-    .uni-choose-location .uni-choose-location-nav .uni-choose-location-nav-btn {
+    .uni-choose-location .uni-choose-location-nav-btn {
       top: 10px;
       left: 20px;
     }
 
-    .uni-choose-location .uni-choose-location-nav .uni-choose-location-nav-btn.uni-choose-location-nav-confirm-btn {
+    .uni-choose-location .uni-choose-location-nav-btn.uni-choose-location-nav-confirm-btn {
       left: auto;
       right: 20px;
     }
