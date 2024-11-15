@@ -25,8 +25,16 @@ export class UniElement {
     // TODO defineAsyncApi?
     if (callback) {
       this._getBoundingClientRectAsync((domRect) => {
-        callback.success?.(domRect)
-        callback.complete?.()
+        try {
+          callback.success?.(domRect)
+        } catch (error) {
+          console.error(error)
+        }
+        try {
+          callback.complete?.(domRect)
+        } catch (error) {
+          console.error(error)
+        }
       })
       return
     }

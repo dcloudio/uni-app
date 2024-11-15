@@ -53,8 +53,16 @@ export class UniElement extends HTMLElement {
 
   getBoundingClientRectAsync(callback) {
     if (callback) {
-      callback.success?.(this.getBoundingClientRect())
-      callback.complete?.()
+      try {
+        callback.success?.(this.getBoundingClientRect())
+      } catch (error) {
+        console.error(error)
+      }
+      try {
+        callback.complete?.(this.getBoundingClientRect())
+      } catch (error) {
+        console.error(error)
+      }
       return
     }
     return new Promise((resolve, reject) => {
