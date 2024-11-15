@@ -26,7 +26,7 @@ export class UniElement {
     if (callback) {
       this._getBoundingClientRectAsync((domRect) => {
         callback.success?.(domRect)
-        callback.complate?.()
+        callback.complete?.()
       })
       return
     }

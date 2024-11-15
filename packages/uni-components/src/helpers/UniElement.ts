@@ -54,7 +54,7 @@ export class UniElement extends HTMLElement {
   getBoundingClientRectAsync(callback) {
     if (callback) {
       callback.success?.(this.getBoundingClientRect())
-      callback.complate?.()
+      callback.complete?.()
       return
     }
     return new Promise((resolve, reject) => {
