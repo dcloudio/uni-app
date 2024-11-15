@@ -1,10 +1,14 @@
 import { updateStyle } from '@dcloudio/uni-core'
-import { isArray } from '@vue/shared'
+import { extend, isArray } from '@vue/shared'
 import { setupPage } from '../../framework/setup'
 import { renderPage } from './utils'
 
 const systemRoutes: string[] = []
-export function registerSystemRoute(route: string, page: any) {
+export function registerSystemRoute(
+  route: string,
+  page: any,
+  meta: Partial<UniApp.PageRouteMeta> = {}
+) {
   if (systemRoutes.includes(route)) {
     return
   }
@@ -26,11 +30,14 @@ export function registerSystemRoute(route: string, page: any) {
         return () => renderPage(__uniPage, query)
       },
     },
-    meta: {
-      isQuit: false,
-      isEntry: false,
-      navigationBar: {},
-      route,
-    },
+    meta: extend(
+      {
+        isQuit: false,
+        isEntry: false,
+        navigationBar: {},
+        route,
+      },
+      meta
+    ),
   })
 }
