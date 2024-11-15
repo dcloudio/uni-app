@@ -254,7 +254,9 @@ export function registerDialogPage(
   const pageStyle = parsePageStyle(routeOptions)
   pageStyle.set('navigationStyle', 'custom')
   pageStyle.set('backgroundColorContent', 'transparent')
-  pageStyle.set('disableSwipeBack', true)
+  if (typeof pageStyle.get('disableSwipeBack') !== 'boolean') {
+    pageStyle.set('disableSwipeBack', true)
+  }
   const parentPage = dialogPage.getParentPage()
   const nativePage = (getPageManager() as any).createDialogPage(
     // @ts-expect-error
