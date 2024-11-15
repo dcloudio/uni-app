@@ -78,12 +78,18 @@ export function handleBeforeEntryPageRoutes() {
 export function closeNativeDialogPage(
   dialogPage: UniPage,
   animationType?: string,
+  animationDuration?: number,
   callback?: () => void
 ) {
   const webview = getNativeApp().pageManager.findPageById(
     dialogPage.$vm!.$basePage.id + ''
   )
   if (webview) {
-    closeWebview(webview, animationType || 'none', 0, callback)
+    closeWebview(
+      webview,
+      animationType || 'none',
+      animationDuration || 0,
+      callback
+    )
   }
 }
