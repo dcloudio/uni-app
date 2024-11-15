@@ -170,13 +170,20 @@ export function initCreateComponent(parseOptions: ParseComponentOptions) {
       rootElement?: { name: string; class: any }
     }
   ) {
+    const componentOptions = parseComponent(vueComponentOptions, parseOptions)
     if (__X__) {
       const rootElement = vueComponentOptions.rootElement
       if (rootElement) {
         registerCustomElement(rootElement.name, rootElement.class)
       }
+      if (__PLATFORM__ === 'mp-weixin') {
+        if (!componentOptions.options) {
+          componentOptions.options = {}
+        }
+        componentOptions.options.virtualHost = true
+      }
     }
-    return Component(parseComponent(vueComponentOptions, parseOptions))
+    return Component(componentOptions)
   }
 }
 
