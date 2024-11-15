@@ -1,6 +1,6 @@
 import { normalizeStyles as normalizeStyles$1, addLeadingSlash, invokeArrayFns, parseQuery, EventChannel, once, parseUrl, Emitter, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, ON_ERROR, ON_SHOW, ON_HIDE, removeLeadingSlash, getLen, SYSTEM_DIALOG_PAGE_PATH_STARTER, ON_UNLOAD, ON_READY, ON_PAGE_SCROLL, ON_PULL_DOWN_REFRESH, ON_REACH_BOTTOM, ON_RESIZE, ON_LAUNCH, ON_BACK_PRESS, isSystemDialogPage, isSystemActionSheetDialogPage } from "@dcloudio/uni-shared";
 import { extend, isString, isPlainObject, isFunction as isFunction$1, isArray, isPromise, hasOwn, remove, invokeArrayFns as invokeArrayFns$1, capitalize, toTypeString, toRawType, parseStringStyle } from "@vue/shared";
-import { createVNode, render, getCurrentInstance, onMounted, onBeforeUnmount, injectHook, openBlock, createElementBlock, createElementVNode, normalizeClass, normalizeStyle, toDisplayString, createCommentVNode, Fragment, renderList, resolveComponent, withDirectives, vModelText, defineComponent, warn, isInSSRComponentSetup, ref, watchEffect, watch, computed, camelize, onUnmounted, reactive, provide, inject, nextTick } from "vue";
+import { createVNode, render, getCurrentInstance, onMounted, onBeforeUnmount, injectHook, resolveComponent, openBlock, createElementBlock, normalizeClass, createElementVNode, toDisplayString, normalizeStyle, createCommentVNode, withDirectives, vModelText, Fragment, renderList, defineComponent, warn, isInSSRComponentSetup, ref, watchEffect, watch, computed, camelize, onUnmounted, reactive, provide, inject, nextTick } from "vue";
 function get$pageByPage(page) {
   return page.vm.$basePage;
 }
@@ -593,6 +593,9 @@ function initLaunchOptions(_ref2) {
   extend(enterOptions$1, launchOptions$1);
   return enterOptions$1;
 }
+var ON_BACK_BUTTON = "onBackButton";
+var ON_POP_GESTURE = "onPopGesture";
+var OPEN_DIALOG_PAGE = "openDialogPage";
 function setupPage(component) {
   var oldSetup = component.setup;
   component.inheritAttrs = false;
@@ -610,7 +613,7 @@ function setupPage(component) {
     initPageVm(pageVm, __pageInstance);
     {
       instance.$dialogPages = [];
-      var uniPage = new UniNormalPageImpl();
+      var uniPage = __pageInstance.openType === OPEN_DIALOG_PAGE ? new UniDialogPageImpl() : new UniNormalPageImpl();
       pageVm.$basePage = pageVm.$page;
       pageVm.$page = uniPage;
       uniPage.route = pageVm.$basePage.route;
@@ -654,7 +657,7 @@ function setupPage(component) {
       };
       uniPage.getAndroidView = () => null;
       uniPage.getHTMLElement = () => null;
-      if (getPage$BasePage(pageVm).openType !== "openDialogPage") {
+      if (getPage$BasePage(pageVm).openType !== OPEN_DIALOG_PAGE) {
         addCurrentPageWithInitScope(__pageId, pageVm, __pageInstance);
       }
     }
@@ -771,14 +774,15 @@ function getRealPath(path) {
   return addLeadingSlash(currentPathArray.concat(resultArray).join("/"));
 }
 function registerSystemRoute(route, page) {
+  var meta = arguments.length > 2 && arguments[2] !== void 0 ? arguments[2] : {};
   __uniRoutes.push({
     path: route,
-    meta: {
+    meta: extend({
       isQuit: false,
       isEntry: false,
       route,
       navigationBar: {}
-    }
+    }, meta)
   });
   definePage(route, page);
 }
@@ -1197,8 +1201,6 @@ function setNativeApp(app) {
 function getPageManager() {
   return nativeApp.pageManager;
 }
-var ON_BACK_BUTTON = "onBackButton";
-var ON_POP_GESTURE = "onPopGesture";
 var beforeRouteHooks = [];
 var afterRouteHooks = [];
 var pageReadyHooks = [];
@@ -1466,7 +1468,6 @@ var onThemeChange = function(themeMode) {
       var tabBarConfig = __uniConfig.getTabBarConfig();
       normalizeTabBarStyles(tabBarConfig, __uniConfig.themeConfig, themeMode);
       var tabBarStyle = /* @__PURE__ */ new Map();
-      var tabBarItemUpdateConfig = ["iconPath", "selectedIconPath"];
       var tabBarConfigKeys = Object.keys(tabBarConfig);
       tabBarConfigKeys.forEach((key) => {
         var value = tabBarConfig[key];
@@ -1478,7 +1479,7 @@ var onThemeChange = function(themeMode) {
           valueAsArray.forEach((item) => {
             var tabBarItemMap = /* @__PURE__ */ new Map();
             tabBarItemMap.set("index", index2);
-            tabBarItemUpdateConfig.forEach((tabBarItemkey) => {
+            Object.keys(item).forEach((tabBarItemkey) => {
               if (item[tabBarItemkey] != null) {
                 tabBarItemMap.set(tabBarItemkey, item[tabBarItemkey]);
               }
@@ -1518,6 +1519,8 @@ function normalizeStyles(style, themeMap) {
       valueAsArray.forEach((item) => {
         normalizeStyles(item, themeMap);
       });
+    } else if (isPlainObject(value)) {
+      normalizeStyles(value, themeMap);
     }
   });
 }
@@ -1694,7 +1697,9 @@ function registerDialogPage(_ref2, dialogPage, onCreated) {
   var pageStyle = parsePageStyle(routeOptions);
   pageStyle.set("navigationStyle", "custom");
   pageStyle.set("backgroundColorContent", "transparent");
-  pageStyle.set("disableSwipeBack", true);
+  if (typeof pageStyle.get("disableSwipeBack") !== "boolean") {
+    pageStyle.set("disableSwipeBack", true);
+  }
   var parentPage = dialogPage.getParentPage();
   var nativePage2 = getPageManager().createDialogPage(
     // @ts-expect-error
@@ -1703,6 +1708,9 @@ function registerDialogPage(_ref2, dialogPage, onCreated) {
     url,
     pageStyle
   );
+  if (onCreated) {
+    onCreated(nativePage2);
+  }
   routeOptions.meta.id = parseInt(nativePage2.pageId);
   var route = path.startsWith(SYSTEM_DIALOG_PAGE_PATH_STARTER) ? path : path.slice(1);
   var pageInstance = initPageInternalInstance(
@@ -1718,9 +1726,6 @@ function registerDialogPage(_ref2, dialogPage, onCreated) {
     var page = createVuePage(id2, route, query, pageInstance, {}, nativePage2);
     dialogPage.vm = page;
     dialogPage.$vm = page;
-    dialogPage.vm.$nativePage = nativePage2;
-    dialogPage.$vm.$nativePage = nativePage2;
-    page.$page = dialogPage;
     nativePage2.addPageEventListener(ON_POP_GESTURE, function(e) {
       uni.navigateBack({
         from: "popGesture",
@@ -2072,10 +2077,10 @@ function handleBeforeEntryPageRoutes() {
     return $reLaunch(args, handler);
   });
 }
-function closeNativeDialogPage(dialogPage) {
+function closeNativeDialogPage(dialogPage, animationType, animationDuration, callback) {
   var webview = getNativeApp().pageManager.findPageById(dialogPage.$vm.$basePage.id + "");
   if (webview) {
-    closeWebview(webview, "none", 0);
+    closeWebview(webview, animationType || "none", animationDuration || 0, callback);
   }
 }
 var $switchTab = (args, _ref) => {
@@ -2357,7 +2362,7 @@ var $navigateTo = (args, _ref) => {
     path,
     query
   } = parseUrl(url);
-  var [aniType, aniDuration] = initAnimation(path, animationType, animationDuration);
+  var [aniType, aniDuration] = initAnimation$1(path, animationType, animationDuration);
   updateEntryPageIsReady(path);
   if (!entryPageState.isReady) {
     navigateToPagesBeforeEntryPages.push({
@@ -2423,7 +2428,7 @@ function _navigateTo(_ref2) {
     }
   });
 }
-function initAnimation(path, animationType, animationDuration) {
+function initAnimation$1(path, animationType, animationDuration) {
   if (!getCurrentPage()) {
     return ["none", 0];
   }
@@ -2545,7 +2550,8 @@ function back(delta, animationType, animationDuration) {
 var openDialogPage = (options) => {
   var _options$success, _options$complete;
   var {
-    url
+    url,
+    animationType
   } = options;
   if (!options.url) {
     triggerFailCallback$1(options, "url is required");
@@ -2605,22 +2611,31 @@ var openDialogPage = (options) => {
       }
     }
   }
+  var [aniType, aniDuration] = initAnimation(path, animationType);
+  var noAnimation = aniType === "none" || aniDuration === 0;
   function callback(page2) {
-    showWebview(page2, "none", 0, () => {
+    showWebview(page2, aniType, aniDuration, () => {
       beforeRoute();
     });
   }
-  var page = registerDialogPage({
-    url,
-    path,
-    query,
-    openType: "openDialogPage"
-  }, dialogPage, void 0, 0);
-  dialogPage.__nativePageId = page.pageId;
+  var page = registerDialogPage(
+    {
+      url,
+      path,
+      query,
+      openType: OPEN_DIALOG_PAGE
+    },
+    dialogPage,
+    noAnimation ? void 0 : callback,
+    // 有动画时延迟创建 vm
+    noAnimation ? 0 : 1
+  );
   if (systemDialog) {
     dialogPage.__nativeType = "systemDialog";
   }
-  callback(page);
+  if (noAnimation) {
+    callback(page);
+  }
   var successOptions = {
     errMsg: "openDialogPage:ok"
   };
@@ -2633,6 +2648,20 @@ function triggerFailCallback$1(options, errMsg) {
   var failOptions = new UniError("uni-openDialogPage", 4, "openDialogPage: fail, ".concat(errMsg));
   (_options$fail = options.fail) === null || _options$fail === void 0 || _options$fail.call(options, failOptions);
   (_options$complete2 = options.complete) === null || _options$complete2 === void 0 || _options$complete2.call(options, failOptions);
+}
+function initAnimation(path, animationType) {
+  if (!getCurrentPage()) {
+    return ["none", 0];
+  }
+  var {
+    globalStyle
+  } = __uniConfig;
+  var meta = getRouteMeta(path);
+  var _animationType = animationType || meta.animationType || globalStyle.animationType || ANI_SHOW;
+  if (_animationType == "pop-in") {
+    _animationType = "none";
+  }
+  return [_animationType, meta.animationDuration || globalStyle.animationDuration || ANI_DURATION];
 }
 function closePreActionSheet(dialogPages) {
   var actionSheets = dialogPages.filter((page) => isSystemActionSheetDialogPage(page));
@@ -2651,6 +2680,9 @@ var closeDialogPage = (options) => {
     triggerFailCallback(options, "currentPage is null");
     return;
   }
+  if ((options === null || options === void 0 ? void 0 : options.animationType) === "pop-out") {
+    options.animationType = "none";
+  }
   if (options !== null && options !== void 0 && options.dialogPage) {
     var dialogPage = options === null || options === void 0 ? void 0 : options.dialogPage;
     if (!(dialogPage instanceof UniDialogPageImpl)) {
@@ -2663,7 +2695,7 @@ var closeDialogPage = (options) => {
         var parentDialogPages = parentPage.getDialogPages();
         var index2 = parentDialogPages.indexOf(dialogPage);
         parentDialogPages.splice(index2, 1);
-        closeNativeDialogPage(dialogPage);
+        closeNativeDialogPage(dialogPage, (options === null || options === void 0 ? void 0 : options.animationType) || "none", (options === null || options === void 0 ? void 0 : options.animationDuration) || ANI_DURATION);
         if (index2 > 0 && index2 === parentDialogPages.length) {
           invokeHook(parentDialogPages[parentDialogPages.length - 1].$vm, ON_SHOW);
         }
@@ -2681,7 +2713,7 @@ var closeDialogPage = (options) => {
   } else {
     var dialogPages = currentPage.getDialogPages();
     for (var i = dialogPages.length - 1; i >= 0; i--) {
-      closeNativeDialogPage(dialogPages[i]);
+      closeNativeDialogPage(dialogPages[i], (options === null || options === void 0 ? void 0 : options.animationType) || "none", (options === null || options === void 0 ? void 0 : options.animationDuration) || ANI_DURATION);
       if (i > 0) {
         invokeHook(dialogPages[i - 1].$vm, ON_SHOW);
       }
@@ -3311,470 +3343,6 @@ var stopPullDownRefresh = /* @__PURE__ */ defineAsyncApi(API_STOP_PULL_DOWN_REFR
   page.$nativePage.stopPullDownRefresh();
   res.resolve();
 });
-const _sfc_main$1 = {
-  data() {
-    return {
-      show: false,
-      i18nCancelText: {
-        en: "Cancel",
-        es: "Cancelar",
-        fr: "Annuler",
-        "zh-Hans": "取消",
-        "zh-Hant": "取消"
-      },
-      readyEventName: "",
-      optionsEventName: "",
-      successEventName: "",
-      failEventName: "",
-      title: null,
-      itemList: [],
-      optionCancelText: null,
-      titleColor: null,
-      itemColor: null,
-      cancelColor: null,
-      backgroundColor: null,
-      language: "zh-Hans",
-      theme: "light",
-      isLandscape: false
-    };
-  },
-  onLoad(options) {
-    this.readyEventName = options["readyEventName"];
-    this.optionsEventName = options["optionsEventName"];
-    this.successEventName = options["successEventName"];
-    this.failEventName = options["failEventName"];
-    uni.$on(this.optionsEventName, (data) => {
-      this.itemList = data["itemList"];
-      if (data["title"] != null) {
-        this.title = data["title"];
-      }
-      if (data["cancelText"] != null) {
-        this.optionCancelText = data["cancelText"];
-      }
-      if (data["titleColor"] != null) {
-        this.titleColor = data["titleColor"];
-      }
-      if (data["itemColor"] != null) {
-        this.itemColor = data["itemColor"];
-      }
-      if (data["cancelColor"] != null) {
-        this.cancelColor = data["cancelColor"];
-      }
-      if (data["backgroundColor"] != null) {
-        this.backgroundColor = data["backgroundColor"];
-      }
-    });
-    uni.$emit(this.readyEventName, {});
-    var systemInfo = uni.getSystemInfoSync();
-    var osLanguage = systemInfo.osLanguage;
-    var appLanguage = systemInfo.appLanguage;
-    if (appLanguage != null) {
-      this.language = appLanguage;
-    } else if (osLanguage != null) {
-      this.language = osLanguage;
-    }
-    var osTheme = systemInfo.osTheme;
-    var appTheme = systemInfo.appTheme;
-    if (appTheme != null) {
-      this.theme = appTheme;
-    } else if (osTheme != null) {
-      this.theme = osTheme;
-    }
-    this.isLandscape = systemInfo.deviceOrientation == "landscape";
-    uni.onAppThemeChange((res) => {
-      this.theme = res.appTheme;
-    });
-    uni.onOsThemeChange((res) => {
-      this.theme = res.osTheme;
-    });
-  },
-  computed: {
-    cancelText() {
-      if (this.optionCancelText != null) {
-        var res = this.optionCancelText;
-        return res;
-      }
-      if (this.language.startsWith("en")) {
-        return this.i18nCancelText["en"];
-      }
-      if (this.language.startsWith("es")) {
-        return this.i18nCancelText["es"];
-      }
-      if (this.language.startsWith("fr")) {
-        return this.i18nCancelText["fr"];
-      }
-      if (this.language.startsWith("zh-Hans")) {
-        return this.i18nCancelText["zh-Hans"];
-      }
-      if (this.language.startsWith("zh-Hant")) {
-        return this.i18nCancelText["zh-Hant"];
-      }
-      return "取消";
-    }
-  },
-  onReady() {
-    setTimeout(() => {
-      this.show = true;
-    }, 10);
-  },
-  onResize() {
-    var systemInfo = uni.getSystemInfoSync();
-    this.isLandscape = systemInfo.deviceOrientation == "landscape";
-  },
-  onUnload() {
-    uni.$off(this.optionsEventName, null);
-    uni.$off(this.readyEventName, null);
-    uni.$off(this.successEventName, null);
-    uni.$off(this.failEventName, null);
-  },
-  methods: {
-    closeActionSheet() {
-      this.show = false;
-      setTimeout(() => {
-        uni.closeDialogPage({
-          dialogPage: this.$page
-        });
-      }, 300);
-    },
-    handleMenuItemClick(tapIndex) {
-      this.closeActionSheet();
-      uni.$emit(this.successEventName, tapIndex);
-    },
-    handleCancel() {
-      this.closeActionSheet();
-      uni.$emit(this.failEventName, {});
-    }
-  }
-};
-const _style_0$2 = {
-  "uni-action-sheet_dialog__mask": {
-    "": {
-      "position": "fixed",
-      "zIndex": 999,
-      "top": 0,
-      "right": 0,
-      "left": 0,
-      "bottom": 0,
-      "opacity": 0,
-      "backgroundColor": "rgba(0,0,0,0.6)",
-      "transitionProperty": "opacity",
-      "transitionDuration": "0.1s"
-    }
-  },
-  "uni-action-sheet_dialog__mask__show": {
-    "": {
-      "opacity": 1
-    }
-  },
-  "uni-action-sheet_dialog__container": {
-    "": {
-      "position": "fixed",
-      "width": "100%",
-      "left": 0,
-      "bottom": 0,
-      "zIndex": 999,
-      "transform": "translate(0, 100%)",
-      "opacity": 0,
-      "transitionProperty": "transform",
-      "transitionDuration": "0.3s",
-      "backgroundColor": "#f7f7f7",
-      "borderTopLeftRadius": 12,
-      "borderTopRightRadius": 12
-    },
-    ".uni-action-sheet_dialog__show": {
-      "opacity": 1,
-      "transform": "translate(0, 0)"
-    },
-    ".uni-action-sheet_dark__mode": {
-      "backgroundColor": "#1D1E1E"
-    },
-    ".uni-action-sheet_landscape__mode": {
-      "width": 300,
-      "position": "fixed",
-      "left": "50%",
-      "right": "auto",
-      "top": "50%",
-      "bottom": "auto",
-      "zIndex": 999,
-      "transform": "translate(-50%, -50%)",
-      "borderTopLeftRadius": 5,
-      "borderTopRightRadius": 5,
-      "borderBottomLeftRadius": 5,
-      "borderBottomRightRadius": 5,
-      "transitionProperty": "opacity",
-      "transitionDuration": "0.3s"
-    }
-  },
-  "uni-action-sheet_dialog__menu": {
-    "": {
-      "borderTopLeftRadius": 12,
-      "borderTopRightRadius": 12,
-      "overflow": "hidden",
-      "backgroundColor": "#ffffff"
-    },
-    ".uni-action-sheet_dark__mode": {
-      "backgroundColor": "#2C2C2B"
-    },
-    ".uni-action-sheet_landscape__mode": {
-      "borderTopLeftRadius": 5,
-      "borderTopRightRadius": 5,
-      "borderBottomLeftRadius": 5,
-      "borderBottomRightRadius": 5,
-      "boxShadow": "0 0 20px 5px rgba(0, 0, 0, 0.3)"
-    }
-  },
-  "uni-action-sheet_dialog__title": {
-    "": {
-      "paddingTop": 16,
-      "paddingRight": 16,
-      "paddingBottom": 16,
-      "paddingLeft": 16,
-      "borderBottomWidth": 1,
-      "borderBottomStyle": "solid",
-      "borderBottomColor": "#e5e5e5"
-    },
-    ".uni-action-sheet_dark__mode": {
-      "borderBottomWidth": 1,
-      "borderBottomStyle": "solid",
-      "borderBottomColor": "#2F3131"
-    },
-    ".uni-action-sheet_landscape__mode": {
-      "paddingTop": 10,
-      "paddingRight": 6,
-      "paddingBottom": 10,
-      "paddingLeft": 6
-    }
-  },
-  "uni-action-sheet_dialog__cell": {
-    "": {
-      "paddingTop": 16,
-      "paddingRight": 16,
-      "paddingBottom": 16,
-      "paddingLeft": 16,
-      "borderTopWidth": 1,
-      "borderTopStyle": "solid",
-      "borderTopColor": "#e5e5e5"
-    },
-    ".uni-action-sheet_dark__mode": {
-      "borderTopWidth": 1,
-      "borderTopStyle": "solid",
-      "borderTopColor": "#2F3131"
-    },
-    ".uni-action-sheet_landscape__mode": {
-      "paddingTop": 10,
-      "paddingRight": 6,
-      "paddingBottom": 10,
-      "paddingLeft": 6
-    }
-  },
-  "uni-action-sheet_dialog__action": {
-    "": {
-      "paddingTop": 16,
-      "paddingRight": 16,
-      "paddingBottom": 16,
-      "paddingLeft": 16,
-      "marginTop": 8,
-      "backgroundColor": "#ffffff"
-    },
-    ".uni-action-sheet_dark__mode": {
-      "backgroundColor": "#2C2C2B"
-    },
-    ".uni-action-sheet_landscape__mode": {
-      "display": "none",
-      "paddingTop": 10,
-      "paddingRight": 6,
-      "paddingBottom": 10,
-      "paddingLeft": 6
-    }
-  },
-  "uni-action-sheet_dialog__title__text": {
-    "": {
-      "lineHeight": 1.4,
-      "textAlign": "center",
-      "whiteSpace": "nowrap",
-      "overflow": "hidden",
-      "textOverflow": "ellipsis",
-      "color": "#666666"
-    },
-    ".uni-action-sheet_dark__mode": {
-      "color": "#999999"
-    }
-  },
-  "uni-action-sheet_dialog__cell__text": {
-    "": {
-      "lineHeight": 1.4,
-      "textAlign": "center",
-      "whiteSpace": "nowrap",
-      "overflow": "hidden",
-      "textOverflow": "ellipsis",
-      "color": "#000000"
-    },
-    ".uni-action-sheet_dark__mode": {
-      "color": "#ffffff"
-    }
-  },
-  "uni-action-sheet_dialog__action__text": {
-    "": {
-      "lineHeight": 1.4,
-      "textAlign": "center",
-      "whiteSpace": "nowrap",
-      "overflow": "hidden",
-      "textOverflow": "ellipsis",
-      "color": "#000000"
-    },
-    ".uni-action-sheet_dark__mode": {
-      "color": "#ffffff"
-    }
-  },
-  "uni-action-sheet_dialog__cell__container": {
-    "": {
-      "maxHeight": 330
-    },
-    ".uni-action-sheet_landscape__mode": {
-      "maxHeight": 260
-    }
-  },
-  "@TRANSITION": {
-    "uni-action-sheet_dialog__mask": {
-      "property": "opacity",
-      "duration": "0.1s"
-    },
-    "uni-action-sheet_dialog__container": {
-      "property": "opacity",
-      "duration": "0.3s"
-    }
-  }
-};
-const _export_sfc = (sfc, props) => {
-  const target = sfc.__vccOpts || sfc;
-  for (const [key, val] of props) {
-    target[key] = val;
-  }
-  return target;
-};
-var _hoisted_1$1 = ["onClick"];
-function _sfc_render$1(_ctx, _cache, $props, $setup, $data, $options) {
-  return openBlock(), createElementBlock("view", null, [createElementVNode("view", {
-    class: normalizeClass(["uni-action-sheet_dialog__mask", {
-      "uni-action-sheet_dialog__mask__show": $data.show
-    }]),
-    onClick: _cache[0] || (_cache[0] = function() {
-      return $options.handleCancel && $options.handleCancel(...arguments);
-    })
-  }, null, 2), createElementVNode("view", {
-    class: normalizeClass(["uni-action-sheet_dialog__container", {
-      "uni-action-sheet_dialog__show": $data.show,
-      "uni-action-sheet_dark__mode": $data.theme == "dark",
-      "uni-action-sheet_landscape__mode": $data.isLandscape
-    }])
-  }, [createElementVNode("view", {
-    style: normalizeStyle($data.backgroundColor != null ? {
-      backgroundColor: $data.backgroundColor
-    } : {}),
-    class: normalizeClass(["uni-action-sheet_dialog__menu", {
-      "uni-action-sheet_dark__mode": $data.theme == "dark",
-      "uni-action-sheet_landscape__mode": $data.isLandscape
-    }])
-  }, [$data.title ? (openBlock(), createElementBlock("view", {
-    key: 0,
-    class: normalizeClass(["uni-action-sheet_dialog__title", {
-      "uni-action-sheet_dark__mode": $data.theme == "dark",
-      "uni-action-sheet_landscape__mode": $data.isLandscape
-    }])
-  }, [createElementVNode("text", {
-    style: normalizeStyle({
-      color: $data.titleColor
-    }),
-    class: normalizeClass(["uni-action-sheet_dialog__title__text", {
-      "uni-action-sheet_dark__mode": $data.theme == "dark"
-    }])
-  }, toDisplayString($data.title), 7)], 2)) : createCommentVNode("", true), createElementVNode("scroll-view", {
-    class: normalizeClass(["uni-action-sheet_dialog__cell__container", {
-      "uni-action-sheet_landscape__mode": $data.isLandscape
-    }])
-  }, [(openBlock(true), createElementBlock(Fragment, null, renderList($data.itemList, (item, index2) => {
-    return openBlock(), createElementBlock("view", {
-      style: normalizeStyle(index2 == 0 ? {
-        borderTop: "none"
-      } : {}),
-      class: normalizeClass(["uni-action-sheet_dialog__cell", {
-        "uni-action-sheet_dark__mode": $data.theme == "dark",
-        "uni-action-sheet_landscape__mode": $data.isLandscape
-      }]),
-      key: index2,
-      onClick: ($event) => $options.handleMenuItemClick(index2)
-    }, [createElementVNode("text", {
-      style: normalizeStyle({
-        color: $data.itemColor
-      }),
-      class: normalizeClass(["uni-action-sheet_dialog__cell__text", {
-        "uni-action-sheet_dark__mode": $data.theme == "dark"
-      }])
-    }, toDisplayString(item), 7)], 14, _hoisted_1$1);
-  }), 128))], 2)], 6), createElementVNode("view", {
-    style: normalizeStyle($data.backgroundColor != null ? {
-      backgroundColor: $data.backgroundColor
-    } : {}),
-    class: normalizeClass(["uni-action-sheet_dialog__action", {
-      "uni-action-sheet_dark__mode": $data.theme == "dark",
-      "uni-action-sheet_landscape__mode": $data.isLandscape
-    }]),
-    onClick: _cache[1] || (_cache[1] = function() {
-      return $options.handleCancel && $options.handleCancel(...arguments);
-    })
-  }, [createElementVNode("text", {
-    style: normalizeStyle({
-      color: $data.cancelColor
-    }),
-    class: normalizeClass(["uni-action-sheet_dialog__action__text", {
-      "uni-action-sheet_dark__mode": $data.theme == "dark"
-    }])
-  }, toDisplayString($options.cancelText), 7)], 6)], 2)]);
-}
-const UniActionSheetPage = /* @__PURE__ */ _export_sfc(_sfc_main$1, [["render", _sfc_render$1], ["styles", [_style_0$2]]]);
-var showActionSheet2 = /* @__PURE__ */ defineAsyncApi("showActionSheet2", (options, _ref) => {
-  var {
-    resolve,
-    reject
-  } = _ref;
-  registerSystemRoute("uni:actionSheet", UniActionSheetPage);
-  var uuid = Date.now() + "" + Math.floor(Math.random() * 1e7);
-  var baseEventName = "uni_action_sheet_".concat(uuid);
-  var readyEventName = "".concat(baseEventName, "_ready");
-  var optionsEventName = "".concat(baseEventName, "_options");
-  var successEventName = "".concat(baseEventName, "_success");
-  var failEventName = "".concat(baseEventName, "_fail");
-  uni.$on(readyEventName, () => {
-    uni.$emit(optionsEventName, options);
-  });
-  uni.$on(successEventName, (index2) => {
-    resolve({
-      tapIndex: index2
-    });
-  });
-  uni.$on(failEventName, () => {
-    reject("cancel");
-  });
-  uni.openDialogPage({
-    url: "uni:actionSheet?readyEventName=".concat(readyEventName, "&optionsEventName=").concat(optionsEventName, "&successEventName=").concat(successEventName, "&failEventName=").concat(failEventName),
-    fail: function(err) {
-      var _options$fail;
-      (_options$fail = options.fail) === null || _options$fail === void 0 || _options$fail.call(options, {
-        errMsg: "showActionSheet:failed, ".concat(err.errMsg)
-      });
-      uni.$off(readyEventName);
-      uni.$off(successEventName);
-      uni.$off(failEventName);
-    }
-  });
-});
-var hideActionSheet2 = () => {
-  var page = getCurrentPage();
-  page.vm.$systemDialogPages.forEach((page2) => {
-    closeNativeDialogPage(page2);
-  });
-  page.vm.$systemDialogPages = [];
-};
 var defaultPoi = {
   latitude: 39.908823,
   longitude: 116.39747
@@ -3886,10 +3454,10 @@ const _sfc_main = {
       this.failEventName = options["failEventName"];
       uni.$on(this.optionsEventName, (data) => {
         if (data["latitude"] != null) {
-          this.chooseLocationOptions.latitude = data.getNumber("latitude");
+          this.chooseLocationOptions.latitude = data["latitude"];
         }
         if (data["longitude"] != null) {
-          this.chooseLocationOptions.longitude = data.getNumber("longitude");
+          this.chooseLocationOptions.longitude = data["longitude"];
         }
         if (data["keyword"] != null) {
           var keyword = data["keyword"];
@@ -3978,12 +3546,18 @@ const _sfc_main = {
         }).then((res) => {
           resolve(res);
         }).catch((err) => {
-          var errMsg = err.errMsg;
-          if (errMsg != null && (errMsg.indexOf("在云端不存在") > -1 || errMsg.indexOf("未匹配") > -1)) {
-            this.errMsg = "uni.chooseLocation 依赖 uniCloud 的 uni-map-common 插件，请安装 uni-map-common 插件，插件地址：https://ext.dcloud.net.cn/plugin?id=13872";
-            console.error(this.errMsg);
-          } else {
-            console.error("err: ", err);
+          if (err instanceof UniCloudError) {
+            var errCode = err.errCode;
+            var errMsg = err.errMsg;
+            if (errMsg.indexOf("在云端不存在") > -1 || errMsg.indexOf("未匹配") > -1) {
+              this.errMsg = "uni.chooseLocation 依赖 uniCloud 的 uni-map-common 插件，请安装 uni-map-common 插件，插件地址：https://ext.dcloud.net.cn/plugin?id=13872";
+              console.error(this.errMsg);
+            } else {
+              console.error("获取POI信息失败，" + JSON.stringify({
+                errCode,
+                errMsg
+              }));
+            }
           }
           reject(err);
         });
@@ -4031,9 +3605,25 @@ const _sfc_main = {
             page_size: pageSize
           }
         }).then((res) => {
-          var _res$getJSON2;
+          var _res$getJSON2, _res$getJSON3, _res$getJSON4, _res$getJSON5;
           var pois = (_res$getJSON2 = res.getJSON("result")) === null || _res$getJSON2 === void 0 || (_res$getJSON2 = _res$getJSON2.getJSON("result")) === null || _res$getJSON2 === void 0 ? void 0 : _res$getJSON2.getArray("pois");
+          var formatted_addresses = (_res$getJSON3 = res.getJSON("result")) === null || _res$getJSON3 === void 0 || (_res$getJSON3 = _res$getJSON3.getJSON("result")) === null || _res$getJSON3 === void 0 ? void 0 : _res$getJSON3.getString("formatted_addresses");
+          var street = (_res$getJSON4 = res.getJSON("result")) === null || _res$getJSON4 === void 0 || (_res$getJSON4 = _res$getJSON4.getJSON("result")) === null || _res$getJSON4 === void 0 ? void 0 : _res$getJSON4.getString("street");
+          var street_number = (_res$getJSON5 = res.getJSON("result")) === null || _res$getJSON5 === void 0 || (_res$getJSON5 = _res$getJSON5.getJSON("result")) === null || _res$getJSON5 === void 0 ? void 0 : _res$getJSON5.getString("street_number");
+          var title = street_number != "" ? street_number : street;
+          pois.unshift({
+            title,
+            address: formatted_addresses,
+            distance: 0,
+            location: {
+              lat: latitude,
+              lng: longitude
+            }
+          });
           this.poiHandle(pois);
+          if (this.selected == -1) {
+            this.selected = 0;
+          }
           this.searchLoading = false;
         }).catch((err) => {
           this.searchLoading = false;
@@ -4229,22 +3819,22 @@ const _style_0 = {
     }
   },
   "uni-choose-location-map-box": {
-    ".uni-choose-location ": {
+    "": {
       "width": "100%",
-      "height": 300
+      "height": 350
     },
     ".uni-choose-location .uni-choose-location-landscape": {
       "height": "100%"
     }
   },
   "uni-choose-location-map": {
-    ".uni-choose-location ": {
+    "": {
       "width": "100%",
       "height": "100%"
     }
   },
   "uni-choose-location-map-target": {
-    ".uni-choose-location ": {
+    "": {
       "position": "absolute",
       "left": "50%",
       "bottom": "50%",
@@ -4257,13 +3847,13 @@ const _style_0 = {
     }
   },
   "uni-choose-location-map-target-icon": {
-    ".uni-choose-location .uni-choose-location-map-target ": {
+    "": {
       "fontSize": 50,
-      "color": "#007aff"
+      "color": "#f0493e"
     }
   },
   "uni-choose-location-map-reset": {
-    ".uni-choose-location ": {
+    "": {
       "position": "absolute",
       "left": 20,
       "bottom": 40,
@@ -4279,7 +3869,7 @@ const _style_0 = {
       "justifyContent": "center",
       "alignItems": "center"
     },
-    ".uni-choose-location.uni-choose-location-dark ": {
+    ".uni-choose-location-dark ": {
       "backgroundColor": "#111111",
       "boxShadow": "0px 0px 5px 1px rgba(0, 0, 0, .3)"
     },
@@ -4289,91 +3879,88 @@ const _style_0 = {
     }
   },
   "uni-choose-location-map-reset-icon": {
-    ".uni-choose-location .uni-choose-location-map-reset ": {
+    "": {
       "fontSize": 26,
       "textAlign": "center",
       "lineHeight": "40px"
     },
-    ".uni-choose-location.uni-choose-location-dark .uni-choose-location-map-reset ": {
+    ".uni-choose-location-dark ": {
       "color": "#d1d1d1"
     }
   },
   "uni-choose-location-nav": {
-    ".uni-choose-location ": {
+    "": {
       "position": "absolute",
       "top": 0,
       "left": 0,
       "width": "100%",
       "height": 60,
       "backgroundColor": "rgba(0,0,0,0)",
-      "backgroundImage": "linear-gradient(to bottom, rgba(0, 0, 0, .5), rgba(0, 0, 0, 0))"
+      "backgroundImage": "linear-gradient(to bottom, rgba(0, 0, 0, .6), rgba(0, 0, 0, 0))"
     }
   },
   "uni-choose-location-nav-btn": {
-    ".uni-choose-location .uni-choose-location-nav ": {
+    "": {
       "position": "absolute",
       "top": 5,
       "left": 5,
-      "width": 60,
+      "width": 64,
       "height": 44,
       "paddingTop": 5,
       "paddingRight": 5,
       "paddingBottom": 5,
       "paddingLeft": 5
     },
-    ".uni-choose-location .uni-choose-location-nav .uni-choose-location-nav-confirm-btn": {
+    ".uni-choose-location-nav-confirm-btn": {
       "left": "auto",
       "right": 5
     },
-    ".uni-choose-location .uni-choose-location-nav .uni-choose-location-nav-confirm-btn:active": {
+    ".uni-choose-location-nav-confirm-btn.active:active": {
       "opacity": 0.7
     },
-    ".uni-choose-location .uni-choose-location-nav .uni-choose-location-nav-confirm-btn.disable": {
+    ".uni-choose-location-nav-confirm-btn.disable": {
       "opacity": 0.4
     },
-    ".uni-choose-location .uni-choose-location-nav .uni-choose-location-nav-confirm-btn.disable:active": {
-      "opacity": 1
-    },
-    ".uni-choose-location .uni-choose-location-nav .uni-choose-location-landscape": {
+    ".uni-choose-location .uni-choose-location-landscape": {
       "top": 10,
       "left": 20
     },
-    ".uni-choose-location .uni-choose-location-nav .uni-choose-location-nav-confirm-btn.uni-choose-location-landscape": {
+    ".uni-choose-location .uni-choose-location-nav-confirm-btn.uni-choose-location-landscape": {
       "left": "auto",
       "right": 20
     }
   },
   "uni-choose-location-nav-confirm-text": {
-    ".uni-choose-location .uni-choose-location-nav .uni-choose-location-nav-btn.uni-choose-location-nav-confirm-btn ": {
+    ".uni-choose-location-nav-btn.uni-choose-location-nav-confirm-btn ": {
       "backgroundColor": "#007aff",
       "borderRadius": 5
     }
   },
   "uni-choose-location-nav-back-text": {
-    ".uni-choose-location .uni-choose-location-nav .uni-choose-location-nav-btn.uni-choose-location-nav-back-btn ": {
+    ".uni-choose-location-nav-btn.uni-choose-location-nav-back-btn ": {
       "color": "#ffffff"
     }
   },
   "uni-choose-location-nav-text": {
-    ".uni-choose-location .uni-choose-location-nav .uni-choose-location-nav-btn ": {
+    "": {
       "paddingTop": 8,
       "paddingRight": 0,
       "paddingBottom": 8,
       "paddingLeft": 0,
-      "fontSize": 13,
+      "fontSize": 14,
       "textAlign": "center",
       "color": "#ffffff"
     }
   },
   "uni-choose-location-poi": {
-    ".uni-choose-location ": {
+    "": {
       "position": "absolute",
-      "top": 300,
+      "top": 350,
       "width": "100%",
       "bottom": 0,
       "backgroundColor": "#ffffff"
     },
-    ".uni-choose-location.uni-choose-location-dark ": {
+    ".uni-choose-location-dark ": {
       "backgroundColor": "#181818"
     },
     ".uni-choose-location .uni-choose-location-landscape": {
@@ -4387,7 +3974,7 @@ const _style_0 = {
     }
   },
   "uni-choose-location-poi-search": {
-    ".uni-choose-location .uni-choose-location-poi ": {
+    "": {
       "display": "flex",
       "flexDirection": "row",
       "alignItems": "center",
@@ -4399,12 +3986,12 @@ const _style_0 = {
       "paddingLeft": 8,
       "backgroundColor": "#ffffff"
     },
-    ".uni-choose-location.uni-choose-location-dark .uni-choose-location-poi ": {
+    ".uni-choose-location-dark ": {
       "backgroundColor": "#181818"
     }
   },
   "uni-choose-location-poi-search-box": {
-    ".uni-choose-location .uni-choose-location-poi ": {
+    "": {
       "display": "flex",
       "flexDirection": "row",
       "alignItems": "center",
@@ -4418,12 +4005,12 @@ const _style_0 = {
       "paddingLeft": 15,
       "backgroundColor": "#ededed"
     },
-    ".uni-choose-location.uni-choose-location-dark .uni-choose-location-poi ": {
+    ".uni-choose-location-dark ": {
       "backgroundColor": "#181818"
     }
   },
   "uni-choose-location-poi-search-input": {
-    ".uni-choose-location .uni-choose-location-poi .uni-choose-location-poi-search ": {
+    "": {
       "flex": 1,
       "height": "100%",
       "borderRadius": 5,
@@ -4434,27 +4021,27 @@ const _style_0 = {
       "backgroundImage": "none",
       "backgroundColor": "#ededed"
     },
-    ".uni-choose-location.uni-choose-location-dark .uni-choose-location-poi .uni-choose-location-poi-search ": {
+    ".uni-choose-location-dark ": {
       "backgroundImage": "none",
       "backgroundColor": "#111111",
       "color": "#d1d1d1"
     }
   },
   "uni-choose-location-poi-search-cancel": {
-    ".uni-choose-location .uni-choose-location-poi .uni-choose-location-poi-search ": {
+    "": {
       "marginLeft": 5,
       "color": "#007aff",
-      "fontSize": 17,
+      "fontSize": 15,
       "textAlign": "center"
     }
   },
   "uni-choose-location-poi-list": {
-    ".uni-choose-location .uni-choose-location-poi ": {
+    "": {
       "flex": 1
     }
   },
   "uni-choose-location-poi-search-loading": {
-    ".uni-choose-location .uni-choose-location-poi .uni-choose-location-poi-list ": {
+    "": {
       "display": "flex",
       "alignItems": "center",
       "paddingTop": 10,
@@ -4464,15 +4051,15 @@ const _style_0 = {
     }
   },
   "uni-choose-location-poi-search-loading-text": {
-    ".uni-choose-location .uni-choose-location-poi .uni-choose-location-poi-list .uni-choose-location-poi-search-loading ": {
+    "": {
       "color": "#191919"
     },
-    ".uni-choose-location.uni-choose-location-dark .uni-choose-location-poi .uni-choose-location-poi-list .uni-choose-location-poi-search-loading ": {
+    ".uni-choose-location-dark ": {
       "color": "#d1d1d1"
     }
   },
   "uni-choose-location-poi-search-error": {
-    ".uni-choose-location .uni-choose-location-poi .uni-choose-location-poi-list ": {
+    "": {
       "display": "flex",
       "alignItems": "center",
       "paddingTop": 10,
@@ -4482,20 +4069,20 @@ const _style_0 = {
     }
   },
   "uni-choose-location-poi-search-error-text": {
-    ".uni-choose-location .uni-choose-location-poi .uni-choose-location-poi-list .uni-choose-location-poi-search-error ": {
+    "": {
       "color": "#191919",
       "fontSize": 14
     }
   },
   "uni-choose-location-poi-item": {
-    ".uni-choose-location .uni-choose-location-poi .uni-choose-location-poi-list ": {
+    "": {
       "position": "relative",
       "paddingTop": 15,
       "paddingRight": 40,
       "paddingBottom": 15,
       "paddingLeft": 10
     },
-    ".uni-choose-location .uni-choose-location-poi .uni-choose-location-poi-list .uni-choose-location-landscape": {
+    ".uni-choose-location .uni-choose-location-landscape": {
       "paddingTop": 10,
       "paddingRight": 10,
       "paddingBottom": 10,
@@ -4503,19 +4090,19 @@ const _style_0 = {
     }
   },
   "uni-choose-location-poi-item-title-text": {
-    ".uni-choose-location .uni-choose-location-poi .uni-choose-location-poi-list .uni-choose-location-poi-item ": {
+    "": {
       "fontSize": 14,
       "overflow": "hidden",
       "whiteSpace": "nowrap",
       "textOverflow": "ellipsis",
       "color": "#191919"
     },
-    ".uni-choose-location.uni-choose-location-dark .uni-choose-location-poi .uni-choose-location-poi-list .uni-choose-location-poi-item ": {
+    ".uni-choose-location-dark ": {
       "color": "#d1d1d1"
     }
   },
   "uni-choose-location-poi-item-detail-text": {
-    ".uni-choose-location .uni-choose-location-poi .uni-choose-location-poi-list .uni-choose-location-poi-item ": {
+    "": {
       "fontSize": 12,
       "marginTop": 5,
       "color": "#b2b2b2",
@@ -4523,12 +4110,12 @@ const _style_0 = {
       "whiteSpace": "nowrap",
       "textOverflow": "ellipsis"
     },
-    ".uni-choose-location.uni-choose-location-dark .uni-choose-location-poi .uni-choose-location-poi-list .uni-choose-location-poi-item ": {
+    ".uni-choose-location-dark ": {
       "color": "#595959"
     }
   },
   "uni-choose-location-poi-item-selected-icon": {
-    ".uni-choose-location .uni-choose-location-poi .uni-choose-location-poi-list .uni-choose-location-poi-item ": {
+    "": {
       "position": "absolute",
       "top": "50%",
       "right": 10,
@@ -4540,7 +4127,7 @@ const _style_0 = {
     }
   },
   "uni-choose-location-poi-item-after": {
-    ".uni-choose-location .uni-choose-location-poi .uni-choose-location-poi-list .uni-choose-location-poi-item ": {
+    "": {
       "position": "absolute",
       "height": 1,
       "left": 10,
@@ -4551,14 +4138,18 @@ const _style_0 = {
       "borderBottomStyle": "solid",
       "borderBottomColor": "#f8f8f8"
     },
-    ".uni-choose-location.uni-choose-location-dark .uni-choose-location-poi .uni-choose-location-poi-list .uni-choose-location-poi-item ": {
+    ".uni-choose-location-dark ": {
       "borderBottomWidth": 1,
       "borderBottomStyle": "solid",
       "borderBottomColor": "#1e1e1e"
     }
   },
   "uni-choose-location-search-icon": {
-    ".uni-choose-location.uni-choose-location-dark ": {
+    "": {
+      "color": "#808080",
+      "paddingLeft": 5
+    },
+    ".uni-choose-location-dark ": {
       "color": "#d1d1d1"
     }
   },
@@ -4573,6 +4164,13 @@ const _style_0 = {
       "timingFunction": "ease-out"
     }
   }
+};
+const _export_sfc = (sfc, props) => {
+  const target = sfc.__vccOpts || sfc;
+  for (const [key, val] of props) {
+    target[key] = val;
+  }
+  return target;
 };
 var _hoisted_1 = ["id"];
 var _hoisted_2 = {
@@ -4679,7 +4277,7 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
       return $options.back && $options.back(...arguments);
     })
   }, toDisplayString($options.languageCom["back"]), 1)], 6), createElementVNode("view", {
-    class: normalizeClass(["uni-choose-location-nav-btn uni-choose-location-nav-confirm-btn", [$options.landscapeClassCom, $data.selected < 0 ? "disable" : ""]]),
+    class: normalizeClass(["uni-choose-location-nav-btn uni-choose-location-nav-confirm-btn", [$options.landscapeClassCom, $data.selected < 0 ? "disable" : "active"]]),
     style: normalizeStyle($data.safeArea.top > 0 ? "top: " + $data.safeArea.top + "px;" : ""),
     onClick: _cache[2] || (_cache[2] = function() {
       return $options.confirm && $options.confirm(...arguments);
@@ -4730,7 +4328,9 @@ var chooseLocation = /* @__PURE__ */ defineAsyncApi("chooseLocation", (options, 
     resolve,
     reject
   } = _ref;
-  registerSystemRoute("uni:chooseLocation", uniChooseLocationPage);
+  registerSystemRoute("uni:chooseLocation", uniChooseLocationPage, {
+    disableSwipeBack: false
+  });
   var uuid = Date.now() + "" + Math.floor(Math.random() * 1e7);
   var baseEventName = "uni_choose_location_".concat(uuid);
   var readyEventName = "".concat(baseEventName, "_ready");
@@ -5609,7 +5209,6 @@ const uni$1 = /* @__PURE__ */ Object.defineProperty({
   getEnterOptionsSync,
   getLaunchOptionsSync,
   getPerformance,
-  hideActionSheet2,
   hideTabBar,
   hideTabBarRedDot,
   initUTSClassName,
@@ -5635,7 +5234,6 @@ const uni$1 = /* @__PURE__ */ Object.defineProperty({
   setTabBarBadge,
   setTabBarItem,
   setTabBarStyle,
-  showActionSheet2,
   showTabBar,
   showTabBarRedDot,
   startPullDownRefresh,
