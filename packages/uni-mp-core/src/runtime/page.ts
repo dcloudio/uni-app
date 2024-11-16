@@ -31,6 +31,7 @@ function parsePage(
   const miniProgramPageOptions = parseComponent(vueOptions, {
     mocks,
     isPage,
+    isPageInProject: true,
     initRelation,
     handleLink,
     initLifetimes,

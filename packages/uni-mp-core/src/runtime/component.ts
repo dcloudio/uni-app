@@ -68,6 +68,10 @@ export interface ParseComponentOptions {
   ) => void
   mocks: string[]
   isPage: (mpInstance: MPComponentInstance) => boolean
+  /**
+   * 当前组件在uni-app项目内是否为页面
+   */
+  isPageInProject?: boolean
   initRelation: (
     mpInstance: MPComponentInstance,
     options: RelationOptions
@@ -86,6 +90,7 @@ export function parseComponent(
     parse,
     mocks,
     isPage,
+    isPageInProject,
     initRelation,
     handleLink,
     initLifetimes,
@@ -98,6 +103,10 @@ export function parseComponent(
     // styleIsolation: 'apply-shared',
     addGlobalClass: true,
     pureDataPattern: /^uP$/,
+  }
+
+  if (__X__ && __PLATFORM__ === 'mp-weixin' && !isPageInProject) {
+    options.virtualHost = true
   }
 
   if (isArray(vueOptions.mixins)) {
@@ -170,20 +179,13 @@ export function initCreateComponent(parseOptions: ParseComponentOptions) {
       rootElement?: { name: string; class: any }
     }
   ) {
-    const componentOptions = parseComponent(vueComponentOptions, parseOptions)
     if (__X__) {
       const rootElement = vueComponentOptions.rootElement
       if (rootElement) {
         registerCustomElement(rootElement.name, rootElement.class)
       }
-      if (__PLATFORM__ === 'mp-weixin') {
-        if (!componentOptions.options) {
-          componentOptions.options = {}
-        }
-        componentOptions.options.virtualHost = true
-      }
     }
-    return Component(componentOptions)
+    return Component(parseComponent(vueComponentOptions, parseOptions))
   }
 }
 
