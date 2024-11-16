@@ -3,6 +3,7 @@ import {
   EventChannel,
   ON_READY,
   ON_UNLOAD,
+  SYSTEM_DIALOG_PAGE_PATH_STARTER,
   formatLog,
 } from '@dcloudio/uni-shared'
 import {
@@ -31,11 +32,23 @@ export function setupPage(component: VuePageComponent) {
     initPageVm(pageVm, __pageInstance as Page.PageInstance['$page'])
     if (__X__) {
       instance.$dialogPages = []
-      const uniPage =
+      let uniPage: UniPage
+      if (
         (__pageInstance as Page.PageInstance['$page']).openType ===
         OPEN_DIALOG_PAGE
-          ? new UniDialogPageImpl()
-          : new UniNormalPageImpl()
+      ) {
+        const currentPage = getCurrentPage() as unknown as UniPage
+        if (
+          (__pagePath as string).startsWith(SYSTEM_DIALOG_PAGE_PATH_STARTER)
+        ) {
+          const systemDialogPages = currentPage.vm.$systemDialogPages
+          uniPage = systemDialogPages[systemDialogPages.length - 1]
+        } else {
+          uniPage = new UniDialogPageImpl()
+        }
+      } else {
+        uniPage = new UniNormalPageImpl()
+      }
       pageVm.$basePage = pageVm.$page as Page.PageInstance['$page']
       pageVm.$page = uniPage
       uniPage.route = pageVm.$basePage.route
@@ -63,11 +76,13 @@ export function setupPage(component: VuePageComponent) {
         return bodyNode.querySelector(`#${id}`)
       }
       uniPage.getParentPage = () => {
+        // @ts-expect-error
         const parentPage = uniPage.getParentPageByJS()
         return parentPage || null
       }
 
       uniPage.getPageStyle = (): UTSJSONObject => {
+        // @ts-expect-error
         const pageStyle = uniPage.getPageStyleByJS()
         return new UTSJSONObject(pageStyle)
       }
@@ -76,6 +91,7 @@ export function setupPage(component: VuePageComponent) {
       }
 
       uniPage.setPageStyle = (styles: UTSJSONObject) => {
+        // @ts-expect-error
         uniPage.setPageStyleByJS(styles)
       }
       uniPage.$setPageStyle = (styles: UTSJSONObject) => {
