@@ -29,6 +29,7 @@ import { getAppThemeFallbackOS, normalizePageStyles } from '../theme'
 import { invokePageReadyHooks } from '../../api/route/performance'
 import { homeDialogPages, homeSystemDialogPages } from './dialogPage'
 import type { UniDialogPage } from '@dcloudio/uni-app-x/types/page'
+import { closeDialogPage } from '../../api'
 
 type PageNodeOptions = {}
 
@@ -304,14 +305,7 @@ export function registerDialogPage(
     //   invokeHook(page, ON_SHOW)
     // })
     nativePage.addPageEventListener(ON_POP_GESTURE, function (e) {
-      uni.navigateBack({
-        from: 'popGesture',
-        fail(e) {
-          if (e.errMsg.endsWith('cancel')) {
-            nativePage.show()
-          }
-        },
-      } as UniApp.NavigateBackOptions)
+      closeDialogPage({ dialogPage })
     })
     nativePage.addPageEventListener(ON_UNLOAD, (_) => {
       invokeHook(page, ON_UNLOAD)
