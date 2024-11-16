@@ -31,6 +31,10 @@ jest.mock('../../../../src/x/framework/app/tabBar', () => ({
   getTabBar: jest.fn(() => ({})),
 }))
 
+jest.mock('../../../../src/service/framework/page', () => ({
+  definePage: jest.fn(),
+}))
+
 import {
   getAppThemeFallbackOS,
   normalizePageStyles,

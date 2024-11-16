@@ -29,7 +29,7 @@ import { getAppThemeFallbackOS, normalizePageStyles } from '../theme'
 import { invokePageReadyHooks } from '../../api/route/performance'
 import { homeDialogPages, homeSystemDialogPages } from './dialogPage'
 import type { UniDialogPage } from '@dcloudio/uni-app-x/types/page'
-import { closeDialogPage } from '../../api'
+import { closeDialogPage } from '../../api/route/closeDialogPage'
 
 type PageNodeOptions = {}
 
