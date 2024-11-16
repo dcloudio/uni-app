@@ -13,10 +13,7 @@ import {
   type KotlinCompilerServer,
   type RunKotlinBuildResult,
   type RunKotlinDevResult,
-  addInjectComponents,
   createStderrListener,
-  getInjectApis,
-  getInjectComponents,
   getUniModulesCacheJars,
   getUniModulesEncryptCacheJars,
   getUniModulesJars,
@@ -27,7 +24,10 @@ import {
 } from '../kotlin'
 import { parseUTSSyntaxError } from '../stacktrace'
 import {
+  addPluginInjectComponents,
   getCompilerServer,
+  getPluginInjectApis,
+  getPluginInjectComponents,
   getUTSCompiler,
   isEnableNarrowType,
   isEnableUTSNumber,
@@ -436,11 +436,11 @@ async function runKotlinDev(
 
 async function runKotlinBuild(options: CompileAppOptions, result: UTSResult) {
   ;(result as RunKotlinBuildResult).type = 'kotlin'
-  addInjectComponents(options.extApiComponents)
+  addPluginInjectComponents(options.extApiComponents)
   ;(result as RunKotlinBuildResult).inject_modules = parseInjectModules(
-    (result.inject_apis || []).concat(getInjectApis()),
+    (result.inject_apis || []).concat(getPluginInjectApis()),
     options.extApis || {},
-    getInjectComponents()
+    getPluginInjectComponents()
   )
   ;(result as RunKotlinBuildResult).kotlinc = false
   return result as RunKotlinBuildResult

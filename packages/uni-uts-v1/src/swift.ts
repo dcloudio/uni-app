@@ -4,6 +4,7 @@ import {
   type RunDevOptions,
   type RunProdOptions,
   type ToSwiftOptions,
+  addPluginInjectApis,
   copyPlatformFiles,
   genComponentsCode,
   genUTSPlatformResource,
@@ -20,6 +21,8 @@ import {
   resolvePackage,
   resolveUTSPlatformFile,
   resolveUTSSourceMapPath,
+  shouldAutoImportUniCloud,
+  updateManifestModules,
 } from './utils'
 import { parseJson } from './shared'
 import type {
@@ -50,6 +53,7 @@ export async function runSwiftProd(
     components,
     uniModuleId,
     isPlugin,
+    isModule,
     isX,
     isSingleThread,
     isExtApi,
@@ -85,6 +89,26 @@ export async function runSwiftProd(
   if (result.error) {
     throw parseUTSSyntaxError(result.error, inputDir)
   }
+
+  const autoImportUniCloud = shouldAutoImportUniCloud()
+  const useUniCloudApi =
+    result.inject_apis &&
+    result.inject_apis.find((api) => api.startsWith('uniCloud.'))
+  if (autoImportUniCloud && !useUniCloudApi) {
+    result.inject_apis = result.inject_apis || []
+    result.inject_apis.push('uniCloud.importObject')
+  }
+
+  if (result.inject_apis && result.inject_apis.length) {
+    if (isModule) {
+      // noop
+    } else if (isX && process.env.UNI_UTS_COMPILER_TYPE === 'cloud') {
+      updateManifestModules(inputDir, result.inject_apis, extApis)
+    } else {
+      addPluginInjectApis(result.inject_apis)
+    }
+  }
+
   genUTSPlatformResource(filename, {
     isX,
     pluginId: uniModuleId,

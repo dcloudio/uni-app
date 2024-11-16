@@ -55,6 +55,8 @@ import { existsSync, readdirSync, rmSync } from 'fs-extra'
 
 export * from './tsc'
 
+export { getPluginInjectApis, getPluginInjectComponents } from './utils'
+
 export { parseExportIdentifiers } from './code'
 
 export {
