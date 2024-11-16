@@ -31,11 +31,16 @@ export function getRealPath(path: string, fix: boolean = false): string {
   return addLeadingSlash(currentPathArray.concat(resultArray).join('/'))
 }
 
+const systemRoutes: string[] = []
 export function registerSystemRoute(
   route: string,
   page: any,
   meta: Partial<UniApp.PageRouteMeta> = {}
 ) {
+  if (systemRoutes.includes(route)) {
+    return
+  }
+  systemRoutes.push(route)
   __uniRoutes.push({
     path: route,
     meta: extend(
