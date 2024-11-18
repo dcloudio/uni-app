@@ -502,6 +502,11 @@
       "UniPaymentAlipayProviderImpl"
     ]
   ],
+  "@uni_modules/uni-payment-huawei": [
+    [
+      "UniPaymentHuaweiProviderImpl"
+    ]
+  ],
   "@uni_modules/uni-push": [
     [
       "getPushClientId"
