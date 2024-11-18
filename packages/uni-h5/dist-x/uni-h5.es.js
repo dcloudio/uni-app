@@ -6,7 +6,7 @@ var __publicField = (obj, key, value) => {
 };
 import { withModifiers, createVNode, getCurrentInstance, ref, defineComponent, openBlock, createElementBlock, onMounted, provide, computed, watch, onUnmounted, inject, onBeforeUnmount, mergeProps, reactive, injectHook, nextTick, createApp, createBlock, watchEffect, isVNode, withDirectives, vShow, renderList, isReactive, Transition, effectScope, Fragment, onActivated, withCtx, KeepAlive, resolveDynamicComponent, markRaw, normalizeClass, createTextVNode, toDisplayString, normalizeStyle, createCommentVNode, onBeforeMount, onBeforeActivate, onBeforeDeactivate, createElementVNode, renderSlot, shallowRef, Comment, h } from "vue";
 import { isArray, isString, extend, remove, stringifyStyle, parseStringStyle, isPlainObject as isPlainObject$1, isFunction, capitalize, camelize, hasOwn, isObject, toRawType, makeMap as makeMap$1, isPromise, invokeArrayFns as invokeArrayFns$1, hyphenate } from "@vue/shared";
-import { once, UNI_STORAGE_LOCALE, I18N_JSON_DELIMITERS, Emitter, passive, initCustomDatasetOnce, resolveComponentInstance, normalizeStyles, addLeadingSlash, invokeArrayFns, removeLeadingSlash, resolveOwnerVm, resolveOwnerEl, ON_WXS_INVOKE_CALL_METHOD, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_SHOW, ON_HIDE, ON_PAGE_SCROLL, ON_REACH_BOTTOM, EventChannel, createRpx2Unit, defaultRpx2Unit, parseQuery, NAVBAR_HEIGHT, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, getLen, getCustomDataset, parseUrl, sortObject, ON_THEME_CHANGE, OFF_THEME_CHANGE, ON_HOST_THEME_CHANGE, OFF_HOST_THEME_CHANGE, updateElementStyle, LINEFEED, ON_WEB_INVOKE_APP_SERVICE, ON_BACK_PRESS, addFont, ON_NAVIGATION_BAR_CHANGE, scrollTo, RESPONSIVE_MIN_WIDTH, formatDateTime, normalizeTitleColor, ON_REACH_BOTTOM_DISTANCE, isSystemDialogPage, isSystemActionSheetDialogPage, ON_UNLOAD, onCreateVueApp, SCHEME_RE, DATA_RE, decodedQuery, debounce, WEB_INVOKE_APPSERVICE, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_PULL_DOWN_REFRESH, stringifyQuery as stringifyQuery$1, PRIMARY_COLOR, isUniLifecycleHook, ON_LOAD, UniLifecycleHooks, invokeCreateErrorHandler, invokeCreateVueAppHook } from "@dcloudio/uni-shared";
+import { once, UNI_STORAGE_LOCALE, I18N_JSON_DELIMITERS, Emitter, passive, initCustomDatasetOnce, resolveComponentInstance, normalizeStyles, addLeadingSlash, invokeArrayFns, removeLeadingSlash, resolveOwnerVm, resolveOwnerEl, ON_WXS_INVOKE_CALL_METHOD, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_SHOW, ON_HIDE, ON_PAGE_SCROLL, ON_REACH_BOTTOM, EventChannel, createRpx2Unit, defaultRpx2Unit, parseQuery, NAVBAR_HEIGHT, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, getLen, getCustomDataset, parseUrl, sortObject, ON_THEME_CHANGE, OFF_THEME_CHANGE, ON_HOST_THEME_CHANGE, OFF_HOST_THEME_CHANGE, updateElementStyle, LINEFEED, ON_WEB_INVOKE_APP_SERVICE, ON_BACK_PRESS, addFont, ON_NAVIGATION_BAR_CHANGE, scrollTo, RESPONSIVE_MIN_WIDTH, formatDateTime, ON_REACH_BOTTOM_DISTANCE, normalizeTitleColor, isSystemDialogPage, isSystemActionSheetDialogPage, ON_UNLOAD, onCreateVueApp, SCHEME_RE, DATA_RE, decodedQuery, debounce, WEB_INVOKE_APPSERVICE, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_PULL_DOWN_REFRESH, stringifyQuery as stringifyQuery$1, PRIMARY_COLOR, isUniLifecycleHook, ON_LOAD, UniLifecycleHooks, invokeCreateErrorHandler, invokeCreateVueAppHook } from "@dcloudio/uni-shared";
 import { onCreateVueApp as onCreateVueApp2 } from "@dcloudio/uni-shared";
 import { useRoute, isNavigationFailure, RouterView, useRouter, createRouter, createWebHistory, createWebHashHistory } from "vue-router";
 import { initVueI18n, isI18nStr, LOCALE_EN, LOCALE_ES, LOCALE_FR, LOCALE_ZH_HANS, LOCALE_ZH_HANT } from "@dcloudio/uni-i18n";
@@ -2775,12 +2775,22 @@ class UniElement extends HTMLElement {
   getBoundingClientRectAsync(callback) {
     var _a, _b;
     if (callback) {
-      (_a = callback.success) == null ? void 0 : _a.call(callback, this.getBoundingClientRect());
-      (_b = callback.complate) == null ? void 0 : _b.call(callback);
+      const domRect = this.getBoundingClientRect();
+      try {
+        (_a = callback.success) == null ? void 0 : _a.call(callback, domRect);
+      } catch (error) {
+        console.error(error);
+      }
+      try {
+        (_b = callback.complete) == null ? void 0 : _b.call(callback, domRect);
+      } catch (error) {
+        console.error(error);
+      }
       return;
     }
     return new Promise((resolve, reject) => {
-      resolve(this.getBoundingClientRect());
+      const domRect = this.getBoundingClientRect();
+      resolve(domRect);
     });
   }
   get style() {
@@ -16814,12 +16824,56 @@ class UniPageImpl {
     this.$vm = vm;
   }
   getPageStyle() {
-    return new UTSJSONObject({});
+    var _a;
+    const pageMeta = (_a = this.vm) == null ? void 0 : _a.$basePage.meta;
+    return pageMeta ? new UTSJSONObject({
+      navigationBarBackgroundColor: pageMeta.navigationBar.backgroundColor,
+      navigationBarTextStyle: pageMeta.navigationBar.titleColor,
+      navigationBarTitleText: pageMeta.navigationBar.titleText,
+      titleImage: pageMeta.navigationBar.titleImage || "",
+      navigationStyle: pageMeta.navigationBar.style || "default",
+      disableScroll: pageMeta.disableScroll || false,
+      enablePullDownRefresh: pageMeta.enablePullDownRefresh || false,
+      onReachBottomDistance: pageMeta.onReachBottomDistance || ON_REACH_BOTTOM_DISTANCE,
+      backgroundColorContent: pageMeta.backgroundColorContent
+    }) : new UTSJSONObject({});
   }
   $getPageStyle() {
     return this.getPageStyle();
   }
   setPageStyle(style) {
+    var _a;
+    const pageMeta = (_a = this.vm) == null ? void 0 : _a.$basePage.meta;
+    if (!pageMeta)
+      return;
+    for (const key in style) {
+      switch (key) {
+        case "navigationBarBackgroundColor":
+          pageMeta.navigationBar.backgroundColor = style[key];
+          break;
+        case "navigationBarTextStyle":
+          const textStyle = style[key];
+          if (textStyle == null) {
+            continue;
+          }
+          pageMeta.navigationBar.titleColor = ["black", "white"].includes(
+            textStyle
+          ) ? normalizeTitleColor(textStyle || "") : textStyle;
+          break;
+        case "navigationBarTitleText":
+          pageMeta.navigationBar.titleText = style[key];
+          break;
+        case "titleImage":
+          pageMeta.navigationBar.titleImage = style[key];
+          break;
+        case "navigationStyle":
+          pageMeta.navigationBar.style = style[key];
+          break;
+        default:
+          pageMeta[key] = style[key];
+          break;
+      }
+    }
   }
   $setPageStyle(style) {
     this.setPageStyle(style);
@@ -16833,6 +16887,9 @@ class UniPageImpl {
     return uniPageBody ? uniPageBody.querySelector(`#${id2}`) : null;
   }
   getAndroidView() {
+    return null;
+  }
+  getIOSView() {
     return null;
   }
   getHTMLElement() {
@@ -16874,6 +16931,27 @@ class UniDialogPageImpl extends UniPageImpl {
     this.getParentPage = getParentPage;
     this.$disableEscBack = !!$disableEscBack;
   }
+  getElementById(id2) {
+    var _a;
+    const currentPage = getCurrentPage();
+    if (currentPage !== this.getParentPage()) {
+      return null;
+    }
+    const uniPageBody = document.querySelector(
+      `uni-page[data-page="${(_a = this.vm) == null ? void 0 : _a.route}"] uni-page-body`
+    );
+    return uniPageBody ? uniPageBody.querySelector(`#${id2}`) : null;
+  }
+  getHTMLElement() {
+    var _a;
+    const currentPage = getCurrentPage();
+    if (currentPage !== this.getParentPage()) {
+      return null;
+    }
+    return document.querySelector(
+      `uni-page[data-page="${(_a = this.vm) == null ? void 0 : _a.route}"] uni-page-body`
+    );
+  }
 }
 function initXPage(vm, route, page) {
   var _a, _b;
@@ -16897,48 +16975,6 @@ function initXPage(vm, route, page) {
       vm
     });
     vm.$page = uniPage;
-    const pageMeta = page.meta;
-    uniPage.setPageStyle = (style) => {
-      for (const key in style) {
-        switch (key) {
-          case "navigationBarBackgroundColor":
-            pageMeta.navigationBar.backgroundColor = style[key];
-            break;
-          case "navigationBarTextStyle":
-            const textStyle = style[key];
-            if (textStyle == null) {
-              continue;
-            }
-            pageMeta.navigationBar.titleColor = ["black", "white"].includes(
-              textStyle
-            ) ? normalizeTitleColor(textStyle || "") : textStyle;
-            break;
-          case "navigationBarTitleText":
-            pageMeta.navigationBar.titleText = style[key];
-            break;
-          case "titleImage":
-            pageMeta.navigationBar.titleImage = style[key];
-            break;
-          case "navigationStyle":
-            pageMeta.navigationBar.style = style[key];
-            break;
-          default:
-            pageMeta[key] = style[key];
-            break;
-        }
-      }
-    };
-    uniPage.getPageStyle = () => new UTSJSONObject({
-      navigationBarBackgroundColor: pageMeta.navigationBar.backgroundColor,
-      navigationBarTextStyle: pageMeta.navigationBar.titleColor,
-      navigationBarTitleText: pageMeta.navigationBar.titleText,
-      titleImage: pageMeta.navigationBar.titleImage || "",
-      navigationStyle: pageMeta.navigationBar.style || "default",
-      disableScroll: pageMeta.disableScroll || false,
-      enablePullDownRefresh: pageMeta.enablePullDownRefresh || false,
-      onReachBottomDistance: pageMeta.onReachBottomDistance || ON_REACH_BOTTOM_DISTANCE,
-      backgroundColorContent: pageMeta.backgroundColorContent
-    });
     vm.$dialogPage = (_a = vm.$pageLayoutInstance) == null ? void 0 : _a.$dialogPage;
     currentPagesMap.set(normalizeRouteKey(page.path, page.id), vm);
     if (currentPagesMap.size === 1) {
@@ -17347,12 +17383,13 @@ const _sfc_main$1 = {
           resolve(res);
         }).catch((err) => {
           if (err instanceof UniCloudError) {
+            const errCode = err.errCode;
             const errMsg = err.errMsg;
             if (errMsg.indexOf("在云端不存在") > -1 || errMsg.indexOf("未匹配") > -1) {
               this.errMsg = "uni.chooseLocation 依赖 uniCloud 的 uni-map-common 插件，请安装 uni-map-common 插件，插件地址：https://ext.dcloud.net.cn/plugin?id=13872";
               console.error(this.errMsg);
             } else {
-              console.error("err: ", err);
+              console.error("获取POI信息失败，" + JSON.stringify({ errCode, errMsg }));
             }
           }
           reject(err);
@@ -17401,21 +17438,25 @@ const _sfc_main$1 = {
             page_size: pageSize
           }
         }).then((res) => {
-          var _a, _b, _c, _d;
+          var _a, _b, _c, _d, _e, _f, _g, _h;
           let pois = (_b = (_a = res.getJSON("result")) == null ? void 0 : _a.getJSON("result")) == null ? void 0 : _b.getArray("pois");
-          if (window["__UNI_CHOOSE_LOCATION_ANY_POINT__"]) {
-            let formatted_addresses = (_d = (_c = res.getJSON("result")) == null ? void 0 : _c.getJSON("result")) == null ? void 0 : _d.getString("formatted_addresses");
-            pois.unshift({
-              title: this.languageCom["current-location"],
-              address: formatted_addresses,
-              distance: 0,
-              location: {
-                lat: latitude,
-                lng: longitude
-              }
-            });
-          }
+          let formatted_addresses = (_d = (_c = res.getJSON("result")) == null ? void 0 : _c.getJSON("result")) == null ? void 0 : _d.getString("formatted_addresses");
+          let street = (_f = (_e = res.getJSON("result")) == null ? void 0 : _e.getJSON("result")) == null ? void 0 : _f.getString("street");
+          let street_number = (_h = (_g = res.getJSON("result")) == null ? void 0 : _g.getJSON("result")) == null ? void 0 : _h.getString("street_number");
+          let title = street_number != "" ? street_number : street;
+          pois.unshift({
+            title,
+            address: formatted_addresses,
+            distance: 0,
+            location: {
+              lat: latitude,
+              lng: longitude
+            }
+          });
           this.poiHandle(pois);
+          if (this.selected == -1) {
+            this.selected = 0;
+          }
           this.searchLoading = false;
         }).catch((err) => {
           this.searchLoading = false;
@@ -17620,15 +17661,15 @@ const _style_0 = `
     background: #f8f8f8;
     z-index: 999;
 }
-.uni-choose-location .uni-choose-location-map-box {
+.uni-choose-location-map-box {
     width: 100%;
-    height: 300px;
+    height: 350px;
 }
-.uni-choose-location .uni-choose-location-map {
+.uni-choose-location-map {
     width: 100%;
     height: 100%;
 }
-.uni-choose-location .uni-choose-location-map-target {
+.uni-choose-location-map-target {
     position: absolute;
     left: 50%;
     bottom: 50%;
@@ -17639,11 +17680,11 @@ const _style_0 = `
     transition-duration: 0.25s;
     transition-timing-function: ease-out;
 }
-.uni-choose-location .uni-choose-location-map-target .uni-choose-location-map-target-icon {
+.uni-choose-location-map-target-icon {
     font-size: 50px;
-    color: #007aff;
+    color: #f0493e;
 }
-.uni-choose-location .uni-choose-location-map-reset {
+.uni-choose-location-map-reset {
     position: absolute;
     left: 20px;
     bottom: 40px;
@@ -17659,51 +17700,48 @@ const _style_0 = `
     justify-content: center;
     align-items: center;
 }
-.uni-choose-location .uni-choose-location-map-reset .uni-choose-location-map-reset-icon {
+.uni-choose-location-map-reset-icon {
     font-size: 26px;
     text-align: center;
     line-height: 40px;
 }
-.uni-choose-location .uni-choose-location-nav {
+.uni-choose-location-nav {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 60px;
     background-color: rgba(0, 0, 0, 0);
-    background-image: linear-gradient(to bottom, rgba(0, 0, 0, .5), rgba(0, 0, 0, 0));
+    background-image: linear-gradient(to bottom, rgba(0, 0, 0, .6), rgba(0, 0, 0, 0));
 }
-.uni-choose-location .uni-choose-location-nav .uni-choose-location-nav-btn {
+.uni-choose-location-nav-btn {
     position: absolute;
     top: 5px;
     left: 5px;
-    width: 60px;
+    width: 64px;
     height: 44px;
     padding: 5px;
 }
-.uni-choose-location .uni-choose-location-nav .uni-choose-location-nav-btn.uni-choose-location-nav-confirm-btn {
+.uni-choose-location-nav-btn.uni-choose-location-nav-confirm-btn {
     left: auto;
     right: 5px;
 }
-.uni-choose-location .uni-choose-location-nav .uni-choose-location-nav-btn.uni-choose-location-nav-confirm-btn .uni-choose-location-nav-confirm-text {
+.uni-choose-location-nav-btn.uni-choose-location-nav-confirm-btn .uni-choose-location-nav-confirm-text {
     background-color: #007aff;
     border-radius: 5px;
 }
-.uni-choose-location .uni-choose-location-nav .uni-choose-location-nav-btn.uni-choose-location-nav-confirm-btn:active {
+.uni-choose-location-nav-btn.uni-choose-location-nav-confirm-btn.active:active {
     opacity: 0.7;
 }
-.uni-choose-location .uni-choose-location-nav .uni-choose-location-nav-btn.uni-choose-location-nav-confirm-btn.disable {
+.uni-choose-location-nav-btn.uni-choose-location-nav-confirm-btn.disable {
     opacity: 0.4;
 }
-.uni-choose-location .uni-choose-location-nav .uni-choose-location-nav-btn.uni-choose-location-nav-confirm-btn.disable:active {
-    opacity: 1;
-}
-.uni-choose-location .uni-choose-location-nav .uni-choose-location-nav-btn.uni-choose-location-nav-back-btn .uni-choose-location-nav-back-text {
+.uni-choose-location-nav-btn.uni-choose-location-nav-back-btn .uni-choose-location-nav-back-text {
     color: #fff;
 }
-.uni-choose-location .uni-choose-location-nav .uni-choose-location-nav-btn .uni-choose-location-nav-text {
+.uni-choose-location-nav-text {
     padding: 8px 0px;
-    font-size: 13px;
+    font-size: 14px;
     text-align: center;
 
     letter-spacing: 0.1em;
@@ -17711,15 +17749,15 @@ const _style_0 = `
     color: #fff;
     text-align: center;
 }
-.uni-choose-location .uni-choose-location-poi {
+.uni-choose-location-poi {
     position: absolute;
-    top: 300px;
+    top: 350px;
     /* left: auto; */
     width: 100%;
     bottom: 0;
     background-color: #fff;
 }
-.uni-choose-location .uni-choose-location-poi .uni-choose-location-poi-search {
+.uni-choose-location-poi-search {
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -17728,7 +17766,7 @@ const _style_0 = `
     padding: 8px;
     background-color: #fff;
 }
-.uni-choose-location .uni-choose-location-poi .uni-choose-location-poi-search-box {
+.uni-choose-location-poi-search-box {
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -17739,52 +17777,52 @@ const _style_0 = `
     padding: 0 15px;
     background-color: #ededed;
 }
-.uni-choose-location .uni-choose-location-poi .uni-choose-location-poi-search .uni-choose-location-poi-search-input {
+.uni-choose-location-poi-search-input {
     flex: 1;
     height: 100%;
     border-radius: 5px;
     padding: 0 5px;
     background: #ededed;
 }
-.uni-choose-location .uni-choose-location-poi .uni-choose-location-poi-search .uni-choose-location-poi-search-cancel {
+.uni-choose-location-poi-search-cancel {
     margin-left: 5px;
     color: #007aff;
-    font-size: 17px;
+    font-size: 15px;
     text-align: center;
 }
-.uni-choose-location .uni-choose-location-poi .uni-choose-location-poi-list {
+.uni-choose-location-poi-list {
     flex: 1;
 }
-.uni-choose-location .uni-choose-location-poi .uni-choose-location-poi-list .uni-choose-location-poi-search-loading {
+.uni-choose-location-poi-search-loading {
     display: flex;
     align-items: center;
     padding: 10px 0px;
 }
-.uni-choose-location .uni-choose-location-poi .uni-choose-location-poi-list .uni-choose-location-poi-search-loading .uni-choose-location-poi-search-loading-text {
+.uni-choose-location-poi-search-loading-text {
     color: #191919;
 }
-.uni-choose-location .uni-choose-location-poi .uni-choose-location-poi-list .uni-choose-location-poi-search-error {
+.uni-choose-location-poi-search-error {
     display: flex;
     align-items: center;
     padding: 10px;
 }
-.uni-choose-location .uni-choose-location-poi .uni-choose-location-poi-list .uni-choose-location-poi-search-error .uni-choose-location-poi-search-error-text {
+.uni-choose-location-poi-search-error-text {
     color: #191919;
     font-size: 14px;
 }
-.uni-choose-location .uni-choose-location-poi .uni-choose-location-poi-list .uni-choose-location-poi-item {
+.uni-choose-location-poi-item {
     position: relative;
     padding: 15px 10px;
     padding-right: 40px;
 }
-.uni-choose-location .uni-choose-location-poi .uni-choose-location-poi-list .uni-choose-location-poi-item .uni-choose-location-poi-item-title-text {
+.uni-choose-location-poi-item-title-text {
     font-size: 14px;
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
     color: #191919;
 }
-.uni-choose-location .uni-choose-location-poi .uni-choose-location-poi-list .uni-choose-location-poi-item .uni-choose-location-poi-item-detail-text {
+.uni-choose-location-poi-item-detail-text {
     font-size: 12px;
     margin-top: 5px;
     color: #b2b2b2;
@@ -17792,7 +17830,7 @@ const _style_0 = `
     white-space: nowrap;
     text-overflow: ellipsis;
 }
-.uni-choose-location .uni-choose-location-poi .uni-choose-location-poi-list .uni-choose-location-poi-item .uni-choose-location-poi-item-selected-icon {
+.uni-choose-location-poi-item-selected-icon {
     position: absolute;
     top: 50%;
     right: 10px;
@@ -17802,7 +17840,7 @@ const _style_0 = `
     color: #007aff;
     font-size: 24px;
 }
-.uni-choose-location .uni-choose-location-poi .uni-choose-location-poi-list .uni-choose-location-poi-item .uni-choose-location-poi-item-after {
+.uni-choose-location-poi-item-after {
     position: absolute;
     height: 1px;
     left: 10px;
@@ -17811,39 +17849,43 @@ const _style_0 = `
     width: auto;
     border-bottom: 1px solid #f8f8f8;
 }
-.uni-choose-location.uni-choose-location-dark .uni-choose-location-map-reset {
+.uni-choose-location-search-icon {
+    color: #808080;
+    padding-left: 5px;
+}
+.uni-choose-location-dark .uni-choose-location-map-reset {
     background-color: #111111;
     box-shadow: 0px 0px 5px 1px rgba(0, 0, 0, .3);
 }
-.uni-choose-location.uni-choose-location-dark .uni-choose-location-poi .uni-choose-location-poi-search-box {
+.uni-choose-location-dark .uni-choose-location-poi-search-box {
     background-color: #181818;
 }
-.uni-choose-location.uni-choose-location-dark .uni-choose-location-search-icon {
+.uni-choose-location-dark .uni-choose-location-search-icon {
     color: #d1d1d1;
 }
-.uni-choose-location.uni-choose-location-dark .uni-choose-location-poi .uni-choose-location-poi-list .uni-choose-location-poi-search-loading .uni-choose-location-poi-search-loading-text {
+.uni-choose-location-dark .uni-choose-location-poi-search-loading-text {
     color: #d1d1d1;
 }
-.uni-choose-location.uni-choose-location-dark .uni-choose-location-poi .uni-choose-location-poi-search {
+.uni-choose-location-dark .uni-choose-location-poi-search {
     background-color: #181818
 }
-.uni-choose-location.uni-choose-location-dark .uni-choose-location-poi .uni-choose-location-poi-search .uni-choose-location-poi-search-input {
+.uni-choose-location-dark .uni-choose-location-poi-search-input {
     background: #111111;
     color: #d1d1d1;
 }
-.uni-choose-location.uni-choose-location-dark .uni-choose-location-poi .uni-choose-location-poi-list .uni-choose-location-poi-item .uni-choose-location-poi-item-title-text {
+.uni-choose-location-dark .uni-choose-location-poi-item-title-text {
     color: #d1d1d1;
 }
-.uni-choose-location.uni-choose-location-dark .uni-choose-location-poi .uni-choose-location-poi-list .uni-choose-location-poi-item .uni-choose-location-poi-item-detail-text {
+.uni-choose-location-dark .uni-choose-location-poi-item-detail-text {
     color: #595959;
 }
-.uni-choose-location.uni-choose-location-dark .uni-choose-location-poi {
+.uni-choose-location-dark .uni-choose-location-poi {
     background-color: #181818
 }
-.uni-choose-location.uni-choose-location-dark .uni-choose-location-poi .uni-choose-location-poi-list .uni-choose-location-poi-item .uni-choose-location-poi-item-after {
+.uni-choose-location-dark .uni-choose-location-poi-item-after {
     border-bottom: 1px solid #1e1e1e;
 }
-.uni-choose-location.uni-choose-location-dark .uni-choose-location-map-reset .uni-choose-location-map-reset-icon {
+.uni-choose-location-dark .uni-choose-location-map-reset-icon {
     color: #d1d1d1;
 }
 .uni-choose-location .uni-choose-location-map-box.uni-choose-location-landscape {
@@ -17863,14 +17905,14 @@ const _style_0 = `
     left: 40px;
     bottom: 40px;
 }
-.uni-choose-location .uni-choose-location-poi .uni-choose-location-poi-list .uni-choose-location-poi-item.uni-choose-location-landscape {
+.uni-choose-location .uni-choose-location-poi-item.uni-choose-location-landscape {
     padding: 10px;
 }
-.uni-choose-location .uni-choose-location-nav .uni-choose-location-nav-btn.uni-choose-location-landscape {
+.uni-choose-location .uni-choose-location-nav-btn.uni-choose-location-landscape {
     top: 10px;
     left: 20px;
 }
-.uni-choose-location .uni-choose-location-nav .uni-choose-location-nav-btn.uni-choose-location-nav-confirm-btn.uni-choose-location-landscape {
+.uni-choose-location .uni-choose-location-nav-btn.uni-choose-location-nav-confirm-btn.uni-choose-location-landscape {
     left: auto;
     right: 20px;
 }
@@ -17888,17 +17930,15 @@ const _style_0 = `
       box-shadow: 0px 0px 20px 2px rgba(0, 0, 0, .3);
       border-radius: 5px;
 }
-.uni-choose-location .uni-choose-location-poi .uni-choose-location-poi-item {
+.uni-choose-location .uni-choose-location-poi-item {
       cursor: pointer;
-}
-.uni-choose-location .uni-choose-location-poi .uni-choose-location-poi-list .uni-choose-location-poi-item {
       padding: 10px;
 }
-.uni-choose-location .uni-choose-location-nav .uni-choose-location-nav-btn {
+.uni-choose-location .uni-choose-location-nav-btn {
       top: 10px;
       left: 20px;
 }
-.uni-choose-location .uni-choose-location-nav .uni-choose-location-nav-btn.uni-choose-location-nav-confirm-btn {
+.uni-choose-location .uni-choose-location-nav-btn.uni-choose-location-nav-confirm-btn {
       left: auto;
       right: 20px;
 }
@@ -17997,7 +18037,7 @@ function _sfc_render$1(_ctx, _cache, $props, $setup, $data, $options) {
             _: 1
           }, 8, ["class", "style"]),
           createVNode(_component_view, {
-            class: normalizeClass(["uni-choose-location-nav-btn uni-choose-location-nav-confirm-btn", [$options.landscapeClassCom, $data.selected < 0 ? "disable" : ""]]),
+            class: normalizeClass(["uni-choose-location-nav-btn uni-choose-location-nav-confirm-btn", [$options.landscapeClassCom, $data.selected < 0 ? "disable" : "active"]]),
             style: normalizeStyle($data.safeArea.top > 0 ? "top: " + $data.safeArea.top + "px;" : ""),
             onClick: $options.confirm
           }, {
@@ -20211,14 +20251,14 @@ function createDialogPageVNode(normalDialogPages, systemDialogPages) {
   return openBlock(true), createElementBlock(
     Fragment,
     null,
-    renderList(dialogPages, (dialogPage, index2) => {
+    renderList(dialogPages, (dialogPage) => {
       const { type, page } = dialogPage;
       const fullUrl = `${page.route}${stringifyQuery$1(page.options)}`;
       return openBlock(), createBlock(
         createVNode(
           page.$component,
           {
-            key: `${fullUrl}_${index2}`,
+            key: fullUrl,
             style: {
               position: "fixed",
               "z-index": 999,
@@ -20251,7 +20291,7 @@ function renderPage(component, props2) {
   });
 }
 const systemRoutes = [];
-function registerSystemRoute(route, page) {
+function registerSystemRoute(route, page, meta = {}) {
   if (systemRoutes.includes(route)) {
     return;
   }
@@ -20272,12 +20312,15 @@ function registerSystemRoute(route, page) {
         return () => renderPage(__uniPage, query);
       }
     },
-    meta: {
-      isQuit: false,
-      isEntry: false,
-      navigationBar: {},
-      route
-    }
+    meta: extend(
+      {
+        isQuit: false,
+        isEntry: false,
+        navigationBar: {},
+        route
+      },
+      meta
+    )
   });
 }
 var startTag = /^<([-A-Za-z0-9_]+)((?:\s+[a-zA-Z_:][-a-zA-Z0-9_:.]*(?:\s*=\s*(?:(?:"[^"]*")|(?:'[^']*')|[^>\s]+))?)*)\s*(\/?)>/;

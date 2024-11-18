@@ -2777,12 +2777,56 @@ class UniPageImpl {
     this.$vm = vm;
   }
   getPageStyle() {
-    return new UTSJSONObject({});
+    var _a;
+    const pageMeta = (_a = this.vm) == null ? void 0 : _a.$basePage.meta;
+    return pageMeta ? new UTSJSONObject({
+      navigationBarBackgroundColor: pageMeta.navigationBar.backgroundColor,
+      navigationBarTextStyle: pageMeta.navigationBar.titleColor,
+      navigationBarTitleText: pageMeta.navigationBar.titleText,
+      titleImage: pageMeta.navigationBar.titleImage || "",
+      navigationStyle: pageMeta.navigationBar.style || "default",
+      disableScroll: pageMeta.disableScroll || false,
+      enablePullDownRefresh: pageMeta.enablePullDownRefresh || false,
+      onReachBottomDistance: pageMeta.onReachBottomDistance || uniShared.ON_REACH_BOTTOM_DISTANCE,
+      backgroundColorContent: pageMeta.backgroundColorContent
+    }) : new UTSJSONObject({});
   }
   $getPageStyle() {
     return this.getPageStyle();
   }
   setPageStyle(style) {
+    var _a;
+    const pageMeta = (_a = this.vm) == null ? void 0 : _a.$basePage.meta;
+    if (!pageMeta)
+      return;
+    for (const key in style) {
+      switch (key) {
+        case "navigationBarBackgroundColor":
+          pageMeta.navigationBar.backgroundColor = style[key];
+          break;
+        case "navigationBarTextStyle":
+          const textStyle = style[key];
+          if (textStyle == null) {
+            continue;
+          }
+          pageMeta.navigationBar.titleColor = ["black", "white"].includes(
+            textStyle
+          ) ? uniShared.normalizeTitleColor(textStyle || "") : textStyle;
+          break;
+        case "navigationBarTitleText":
+          pageMeta.navigationBar.titleText = style[key];
+          break;
+        case "titleImage":
+          pageMeta.navigationBar.titleImage = style[key];
+          break;
+        case "navigationStyle":
+          pageMeta.navigationBar.style = style[key];
+          break;
+        default:
+          pageMeta[key] = style[key];
+          break;
+      }
+    }
   }
   $setPageStyle(style) {
     this.setPageStyle(style);
@@ -2796,6 +2840,9 @@ class UniPageImpl {
     return uniPageBody ? uniPageBody.querySelector(`#${id2}`) : null;
   }
   getAndroidView() {
+    return null;
+  }
+  getIOSView() {
     return null;
   }
   getHTMLElement() {
@@ -2844,48 +2891,6 @@ function initXPage(vm, route, page) {
       vm
     });
     vm.$page = uniPage;
-    const pageMeta = page.meta;
-    uniPage.setPageStyle = (style) => {
-      for (const key in style) {
-        switch (key) {
-          case "navigationBarBackgroundColor":
-            pageMeta.navigationBar.backgroundColor = style[key];
-            break;
-          case "navigationBarTextStyle":
-            const textStyle = style[key];
-            if (textStyle == null) {
-              continue;
-            }
-            pageMeta.navigationBar.titleColor = ["black", "white"].includes(
-              textStyle
-            ) ? uniShared.normalizeTitleColor(textStyle || "") : textStyle;
-            break;
-          case "navigationBarTitleText":
-            pageMeta.navigationBar.titleText = style[key];
-            break;
-          case "titleImage":
-            pageMeta.navigationBar.titleImage = style[key];
-            break;
-          case "navigationStyle":
-            pageMeta.navigationBar.style = style[key];
-            break;
-          default:
-            pageMeta[key] = style[key];
-            break;
-        }
-      }
-    };
-    uniPage.getPageStyle = () => new UTSJSONObject({
-      navigationBarBackgroundColor: pageMeta.navigationBar.backgroundColor,
-      navigationBarTextStyle: pageMeta.navigationBar.titleColor,
-      navigationBarTitleText: pageMeta.navigationBar.titleText,
-      titleImage: pageMeta.navigationBar.titleImage || "",
-      navigationStyle: pageMeta.navigationBar.style || "default",
-      disableScroll: pageMeta.disableScroll || false,
-      enablePullDownRefresh: pageMeta.enablePullDownRefresh || false,
-      onReachBottomDistance: pageMeta.onReachBottomDistance || uniShared.ON_REACH_BOTTOM_DISTANCE,
-      backgroundColorContent: pageMeta.backgroundColorContent
-    });
     vm.$dialogPage = (_a = vm.$pageLayoutInstance) == null ? void 0 : _a.$dialogPage;
     currentPagesMap.set(normalizeRouteKey(page.path, page.id), vm);
     if (currentPagesMap.size === 1) {
@@ -3904,14 +3909,14 @@ function createDialogPageVNode(normalDialogPages, systemDialogPages) {
   return vue.openBlock(true), vue.createElementBlock(
     vue.Fragment,
     null,
-    vue.renderList(dialogPages, (dialogPage, index2) => {
+    vue.renderList(dialogPages, (dialogPage) => {
       const { type, page } = dialogPage;
       const fullUrl = `${page.route}${uniShared.stringifyQuery(page.options)}`;
       return vue.openBlock(), vue.createBlock(
         vue.createVNode(
           page.$component,
           {
-            key: `${fullUrl}_${index2}`,
+            key: fullUrl,
             style: {
               position: "fixed",
               "z-index": 999,

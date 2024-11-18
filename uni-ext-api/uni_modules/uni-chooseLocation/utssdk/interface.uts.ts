@@ -97,18 +97,18 @@ export interface Uni {
       }
     });
    * ```
-   * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/prompt.html#chooselocation
+   * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/choose-location.html
    * @uniPlatform {
    *    "app": {
    *        "android": {
    *            "osVer": "5.0",
    *            "uniVer": "√",
-   *            "unixVer": "3.9.0"
+   *            "unixVer": "4.33"
    *        },
    *        "ios": {
    *            "osVer": "12.0",
    *            "uniVer": "√",
-   *            "unixVer": "4.11"
+   *            "unixVer": "4.33"
    *        },
    *    "harmony": {
    *      "osVer": "3.0",
