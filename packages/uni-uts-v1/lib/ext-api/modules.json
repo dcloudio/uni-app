@@ -997,13 +997,7 @@
           "swift": true
         }
       }
-    },
-    "easycom": [
-      "univerify-number",
-      "univerify-privacy-checkbox",
-      "univerify-privacy-text",
-      "univerify-slogan"
-    ]
+    }
   },
   "uni-video": {
     "uni": {
