@@ -3904,14 +3904,14 @@ function createDialogPageVNode(normalDialogPages, systemDialogPages) {
   return vue.openBlock(true), vue.createElementBlock(
     vue.Fragment,
     null,
-    vue.renderList(dialogPages, (dialogPage, index2) => {
+    vue.renderList(dialogPages, (dialogPage) => {
       const { type, page } = dialogPage;
       const fullUrl = `${page.route}${uniShared.stringifyQuery(page.options)}`;
       return vue.openBlock(), vue.createBlock(
         vue.createVNode(
           page.$component,
           {
-            key: `${fullUrl}_${index2}`,
+            key: fullUrl,
             style: {
               position: "fixed",
               "z-index": 999,
@@ -11355,9 +11355,9 @@ const MapCircle = /* @__PURE__ */ defineSystemComponent({
         }
         if (getIsBMap()) {
           let pt = new maps.Point(
-            // @ts-expect-error
+            // @ts-ignore
             circleOptions.center[0],
-            // @ts-expect-error
+            // @ts-ignore
             circleOptions.center[1]
           );
           circle = new maps.Circle(pt, circleOptions.radius, circleOptions);
@@ -11536,7 +11536,7 @@ const MapPolygon = /* @__PURE__ */ defineSystemComponent({
           //多边形是否可编辑。
           editable: false,
           // 地图实例，即要显示多边形的地图
-          // @ts-expect-error
+          // @ts-ignore
           map,
           // 区域填充色
           fillColor: "",
@@ -12949,6 +12949,9 @@ function parseValue(value) {
       const keys = Object.keys(object);
       if (keys.length === 2 && "data" in object) {
         if (typeof object.data === type) {
+          if (type === "object" && !Array.isArray(object.data)) {
+            return UTS.JSON.parse(JSON.stringify(object.data));
+          }
           return object.data;
         }
         if (type === "object" && /^\d{4}-\d{2}-\d{2}T\d{2}\:\d{2}\:\d{2}\.\d{3}Z$/.test(object.data)) {
@@ -12992,8 +12995,7 @@ function getStorageOrigin(key) {
   }
   let data = value;
   try {
-    let object;
-    object = UTS.JSON.parse(value);
+    const object = JSON.parse(value);
     const result = parseValue(object);
     if (result !== void 0) {
       data = result;

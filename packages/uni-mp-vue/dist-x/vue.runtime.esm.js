@@ -7910,6 +7910,24 @@ const bubbles = [
     'animationend',
     'touchforcechange',
 ];
+function isMPTapEvent(event) {
+    return event.type === 'tap';
+}
+function normalizeXEvent(event) {
+    if (isMPTapEvent(event)) {
+        event.x = event.detail.x;
+        event.y = event.detail.y;
+        event.clientX = event.detail.x;
+        event.clientY = event.detail.y;
+        const touch0 = event.touches && event.touches[0];
+        if (touch0) {
+            event.pageX = touch0.pageX;
+            event.pageY = touch0.pageY;
+            event.screenX = touch0.screenX;
+            event.screenY = touch0.screenY;
+        }
+    }
+}
 function patchMPEvent(event) {
     if (event.type && event.target) {
         event.preventDefault = NOOP;
@@ -7930,6 +7948,9 @@ function patchMPEvent(event) {
         }
         if (isPlainObject(event.detail)) {
             event.target = extend({}, event.target, event.detail);
+        }
+        {
+            normalizeXEvent(event);
         }
     }
 }
@@ -8183,6 +8204,20 @@ class UniElement {
     }
     $onStyleChange(callback) {
         this.style.$onChange(callback);
+    }
+    getAttribute(name) {
+        switch (name) {
+            case 'id':
+                return this.id;
+            case 'style':
+                return this.style.cssText;
+            default:
+                console.warn(`Miniprogram does not support UniElement.getAttribute(${name})`);
+                return null;
+        }
+    }
+    setAttribute(name, value) {
+        console.warn(`Miniprogram does not support UniElement.setAttribute(${name}, value)`);
     }
     $destroy() {
         this.style.$destroy();
