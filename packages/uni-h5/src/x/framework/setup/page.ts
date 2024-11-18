@@ -64,6 +64,9 @@ class UniPageImpl implements UniPage {
   getAndroidView() {
     return null
   }
+  getIOSView() {
+    return null
+  }
   getHTMLElement() {
     const currentPage = getCurrentPage() as unknown as UniPage
     if (currentPage !== this) {
