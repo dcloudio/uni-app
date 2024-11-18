@@ -99,6 +99,7 @@ export function setupPage(component: VuePageComponent) {
       }
 
       uniPage.getAndroidView = () => null
+      uniPage.getIOSView = () => null
       uniPage.getHTMLElement = () => null
 
       if (getPage$BasePage(pageVm).openType !== OPEN_DIALOG_PAGE) {
