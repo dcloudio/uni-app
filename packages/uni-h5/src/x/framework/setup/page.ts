@@ -164,6 +164,18 @@ class UniNormalPageImpl extends UniPageImpl implements UniNormalPage {
 export class UniDialogPageImpl extends UniPageImpl implements UniDialogPage {
   $component: any | null = null
   $disableEscBack: boolean = false
+  getElementById(id: string.IDString | string): UniElement | null {
+    const currentPage = getCurrentPage() as unknown as UniPage
+    if (currentPage !== this.getParentPage()) {
+      return null
+    }
+    const uniPageBody = document.querySelector(
+      `uni-page[data-page="${this.vm?.route}"] uni-page-body`
+    )
+    return uniPageBody
+      ? (uniPageBody.querySelector(`#${id}`) as unknown as UniElement)
+      : null
+  }
   constructor({
     route,
     options,
