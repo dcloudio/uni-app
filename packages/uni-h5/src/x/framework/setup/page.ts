@@ -176,6 +176,15 @@ export class UniDialogPageImpl extends UniPageImpl implements UniDialogPage {
       ? (uniPageBody.querySelector(`#${id}`) as unknown as UniElement)
       : null
   }
+  getHTMLElement() {
+    const currentPage = getCurrentPage() as unknown as UniPage
+    if (currentPage !== this.getParentPage()) {
+      return null
+    }
+    return document.querySelector(
+      `uni-page[data-page="${this.vm?.route}"] uni-page-body`
+    ) as unknown as UniElement
+  }
   constructor({
     route,
     options,
