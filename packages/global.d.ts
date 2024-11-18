@@ -101,6 +101,7 @@ declare class UniNormalPageImpl implements UniPage {
   setPageStyleByJS(style: UTSJSONObject): void
   getElementById(id: string.IDString | string): UniElement | null
   getAndroidView(): null
+  getIOSView(): null
   getHTMLElement(): null
 }
 
@@ -120,6 +121,7 @@ declare class UniDialogPageImpl implements UniPage {
   setPageStyleByJS(style: UTSJSONObject): void
   getElementById(id: string.IDString | string): UniElement | null
   getAndroidView(): null
+  getIOSView(): null
   getHTMLElement(): null
   $component: any | null
   $disableEscBack: boolean
