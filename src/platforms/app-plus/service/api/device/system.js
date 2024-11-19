@@ -52,7 +52,7 @@ export function getAppBaseInfo () {
   weexGetSystemInfoSync()
   const {
     hostPackageName, hostName, osLanguage,
-    hostVersion, hostLanguage, hostTheme,
+    hostVersion, hostLanguage, hostTheme, uniRuntimeVersion,
     appId, appName, appVersion, appVersionCode,
     appWgtVersion, uniCompileVersion, uniPlatform
   } = systemInfo
@@ -84,6 +84,7 @@ export function getAppBaseInfo () {
     version: plus.runtime.innerVersion,
     isUniAppX: false,
     uniPlatform,
+    uniRuntimeVersion,
     uniCompileVersion,
     uniCompilerVersion: uniCompileVersion
   }
