@@ -143,7 +143,7 @@ function initMiniProgramNode(
         .in(ins.proxy)
         .select('#' + uniElement.id)
         .fields({ node: true }, (res) => {
-          const node = res[0].node
+          const node = (res as any).node
           resolve(node)
           // 实现一个假的Promise，确保同步调用
           uniElement.$node = {
@@ -152,6 +152,7 @@ function initMiniProgramNode(
             },
           }
         })
+        .exec()
     })
   }
 }
