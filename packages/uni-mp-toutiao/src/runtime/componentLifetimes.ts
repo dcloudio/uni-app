@@ -72,6 +72,10 @@ export function initLifetimes({
       }
     ) as ComponentPublicInstance
 
+    if (__X__) {
+      this.vm = this.$vm
+    }
+
     if (process.env.UNI_DEBUG) {
       console.log(
         'uni-app:[' +

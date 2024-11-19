@@ -42,6 +42,9 @@ export function initCreatePage() {
         // 初始化 vue 实例
         this.props = query
         this.$vm = createVueComponent('page', this, vueOptions)
+        if (__X__) {
+          this.vm = this.$vm
+        }
         initSpecialMethods(this)
         this.$vm.$callHook(ON_LOAD, this.options)
       },

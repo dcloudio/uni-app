@@ -28,6 +28,7 @@ import Component = WechatMiniprogram.Component
 
 export interface CustomComponentInstanceProperty {
   $vm?: ComponentPublicInstance
+  vm?: ComponentPublicInstance
   _$vueId: string
   _$vuePid?: string
   _$setRef?: (fn: Function) => void
