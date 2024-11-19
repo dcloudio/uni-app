@@ -62,6 +62,10 @@ export const defaultTransformMPBuiltInTagOptions: TransformMPBuiltInTagOptions =
           name: 'enable-flex',
           value: 'true',
         },
+        {
+          name: 'enhanced',
+          value: 'true',
+        },
       ],
     },
     tagRename: {
