@@ -49,6 +49,9 @@ export const defaultTransformMPBuiltInTagOptions: TransformMPBuiltInTagOptions =
         // "foreColor": "",
         // "activeForeColor": ""
       },
+      'rich-text': {
+        selectable: 'user-select',
+      },
     },
     propAdd: {
       canvas: [
