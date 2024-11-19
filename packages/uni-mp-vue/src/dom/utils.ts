@@ -56,6 +56,7 @@ function createUniElement(
     tagName
   )
   uniElement.$vm = ins.proxy
+  initMiniProgramNode(uniElement, ins)
   uniElement.$onStyleChange((styles) => {
     let cssText = ''
     // 如果不支持 wxs setStyle，需要合并模板绑定的 style
@@ -128,4 +129,29 @@ export function findUniElement(
     }
   }
   return null
+}
+
+function initMiniProgramNode(
+  uniElement: UniElement,
+  ins: ComponentInternalInstance
+) {
+  // 可能需要条件编译，部分小程序不支持
+  if (uniElement.tagName === 'SCROLL-VIEW') {
+    uniElement.$node = new Promise((resolve) => {
+      uni
+        .createSelectorQuery()
+        .in(ins.proxy)
+        .select('#' + uniElement.id)
+        .fields({ node: true }, (res) => {
+          const node = res[0].node
+          resolve(node)
+          // 实现一个假的Promise，确保同步调用
+          uniElement.$node = {
+            then(fn) {
+              fn(node)
+            },
+          }
+        })
+    })
+  }
 }

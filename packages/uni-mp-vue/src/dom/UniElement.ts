@@ -14,11 +14,24 @@ export class UniElement {
   tagName: string
   style: UniCSSStyleDeclaration = new UniCSSStyleDeclaration()
   $vm!: ComponentPublicInstance
+  $node?: {
+    then: (fn: (node: any) => void) => void
+  }
 
   constructor(id: string, name: string) {
     this.id = id
     this.tagName = name.toUpperCase()
     this.nodeName = this.tagName
+  }
+
+  scrollTo(options: unknown) {
+    if (this.$node) {
+      this.$node.then((node) => {
+        node.scrollTo(options)
+      })
+    } else {
+      console.warn(`scrollTo is only supported on scroll-view`)
+    }
   }
 
   getBoundingClientRectAsync(callback) {

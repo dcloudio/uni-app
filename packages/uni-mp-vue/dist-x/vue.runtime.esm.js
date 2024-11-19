@@ -8181,13 +8181,33 @@ class UniElement {
         this.tagName = name.toUpperCase();
         this.nodeName = this.tagName;
     }
+    scrollTo(options) {
+        if (this.$node) {
+            this.$node.then((node) => {
+                node.scrollTo(options);
+            });
+        }
+        else {
+            console.warn(`scrollTo is only supported on scroll-view`);
+        }
+    }
     getBoundingClientRectAsync(callback) {
         // TODO defineAsyncApi?
         if (callback) {
             this._getBoundingClientRectAsync((domRect) => {
                 var _a, _b;
-                (_a = callback.success) === null || _a === void 0 ? void 0 : _a.call(callback, domRect);
-                (_b = callback.complate) === null || _b === void 0 ? void 0 : _b.call(callback);
+                try {
+                    (_a = callback.success) === null || _a === void 0 ? void 0 : _a.call(callback, domRect);
+                }
+                catch (error) {
+                    console.error(error);
+                }
+                try {
+                    (_b = callback.complete) === null || _b === void 0 ? void 0 : _b.call(callback, domRect);
+                }
+                catch (error) {
+                    console.error(error);
+                }
             });
             return;
         }
@@ -8261,6 +8281,7 @@ function createUniElement(id, tagName, ins) {
     }
     const uniElement = new (customElements.get(tagName) || UniElement)(id, tagName);
     uniElement.$vm = ins.proxy;
+    initMiniProgramNode(uniElement, ins);
     uniElement.$onStyleChange((styles) => {
         var _a;
         let cssText = '';
@@ -8325,6 +8346,27 @@ function findUniElement(id, ins = getCurrentInstance()) {
         }
     }
     return null;
+}
+function initMiniProgramNode(uniElement, ins) {
+    // 可能需要条件编译，部分小程序不支持
+    if (uniElement.tagName === 'SCROLL-VIEW') {
+        uniElement.$node = new Promise((resolve) => {
+            uni
+                .createSelectorQuery()
+                .in(ins.proxy)
+                .select('#' + uniElement.id)
+                .fields({ node: true }, (res) => {
+                const node = res[0].node;
+                resolve(node);
+                // 实现一个假的Promise，确保同步调用
+                uniElement.$node = {
+                    then(fn) {
+                        fn(node);
+                    },
+                };
+            });
+        });
+    }
 }
 
 function setUniElementId(id, options, ref, refOpts) {
