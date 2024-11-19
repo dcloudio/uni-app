@@ -25,6 +25,7 @@ import {
   getUTSCompiler,
   isColorSupported,
   isEnableGenericsParameterDefaults,
+  isEnableInlineReified,
   isEnableNarrowType,
   isEnableUTSJSONObjectPropertyAccess,
   isEnableUTSNumber,
@@ -643,6 +644,7 @@ export async function compile(
         enableGenericsParameterDefaults: isEnableGenericsParameterDefaults(),
         enableUTSJSONObjectPropertyAccess:
           isEnableUTSJSONObjectPropertyAccess(),
+        enableInlineReified: isEnableInlineReified(),
         ...transform,
       },
     },

@@ -1025,6 +1025,10 @@ export function isEnableUTSJSONObjectPropertyAccess() {
   return isEnableUTSFeature('enableUTSJSONObjectPropertyAccess')
 }
 
+export function isEnableInlineReified() {
+  return isEnableUTSFeature('enableInlineReified')
+}
+
 export function updateManifestModules(
   inputDir: string,
   inject_apis: string[],

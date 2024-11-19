@@ -73,6 +73,7 @@ export type UTSOutputOptions = {
     enableNarrowType?: boolean
     enableGenericsParameterDefaults?: boolean
     enableUTSJSONObjectPropertyAccess?: boolean
+    enableInlineReified?: boolean
     paramDefaultValue?: boolean
     constructorInvocation?: boolean
     uniExtApiDefaultNamespace?: string
