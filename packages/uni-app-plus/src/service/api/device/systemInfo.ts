@@ -78,6 +78,7 @@ export const getAppBaseInfo = defineSyncApi<typeof uni.getAppBaseInfo>(
       appVersionCode,
       appWgtVersion,
       uniCompileVersion,
+      uniRuntimeVersion,
       uniPlatform,
     } = systemInfo
 
@@ -102,6 +103,7 @@ export const getAppBaseInfo = defineSyncApi<typeof uni.getAppBaseInfo>(
       version: plus.runtime.innerVersion!,
       isUniAppX: __X__,
       uniPlatform,
+      uniRuntimeVersion,
       uniCompileVersion,
       uniCompilerVersion: uniCompileVersion,
     }
