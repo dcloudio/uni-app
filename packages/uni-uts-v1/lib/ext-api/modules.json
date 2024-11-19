@@ -35,76 +35,6 @@
       "ad"
     ]
   },
-  "uni-addPhoneContact": {
-    "uni": {
-      "addPhoneContact": {
-        "name": "addPhoneContact",
-        "app": {
-          "js": false,
-          "kotlin": false,
-          "swift": false,
-          "arkts": true
-        }
-      }
-    }
-  },
-  "uni-arrayBufferToBase64": {
-    "uni": {
-      "arrayBufferToBase64": {
-        "name": "arrayBufferToBase64",
-        "app": {
-          "js": false,
-          "kotlin": false,
-          "swift": false,
-          "arkts": false
-        }
-      }
-    }
-  },
-  "uni-authentication": {
-    "uni": {
-      "startSoterAuthentication": {
-        "name": "startSoterAuthentication",
-        "app": {
-          "js": false,
-          "kotlin": false,
-          "swift": false,
-          "arkts": true
-        }
-      },
-      "checkIsSupportSoterAuthentication": {
-        "name": "checkIsSupportSoterAuthentication",
-        "app": {
-          "js": false,
-          "kotlin": false,
-          "swift": false,
-          "arkts": true
-        }
-      },
-      "checkIsSoterEnrolledInDevice": {
-        "name": "checkIsSoterEnrolledInDevice",
-        "app": {
-          "js": false,
-          "kotlin": false,
-          "swift": false,
-          "arkts": true
-        }
-      }
-    }
-  },
-  "uni-base64ToArrayBuffer": {
-    "uni": {
-      "base64ToArrayBuffer": {
-        "name": "base64ToArrayBuffer",
-        "app": {
-          "js": false,
-          "kotlin": false,
-          "swift": false,
-          "arkts": false
-        }
-      }
-    }
-  },
   "uni-canvas": {
     "uni": {
       "createCanvasContextAsync": {
@@ -128,28 +58,6 @@
           "kotlin": true,
           "swift": true,
           "arkts": false
-        }
-      }
-    }
-  },
-  "uni-clipboard": {
-    "uni": {
-      "getClipboardData": {
-        "name": "getClipboardData",
-        "app": {
-          "js": false,
-          "kotlin": false,
-          "swift": false,
-          "arkts": true
-        }
-      },
-      "setClipboardData": {
-        "name": "setClipboardData",
-        "app": {
-          "js": false,
-          "kotlin": false,
-          "swift": false,
-          "arkts": true
         }
       }
     }
@@ -211,19 +119,6 @@
       }
     }
   },
-  "uni-createIntersectionObserver": {
-    "uni": {
-      "createIntersectionObserver": {
-        "name": "createIntersectionObserver",
-        "app": {
-          "js": false,
-          "kotlin": false,
-          "swift": false,
-          "arkts": false
-        }
-      }
-    }
-  },
   "uni-createRequestPermissionListener": {
     "uni": {
       "createRequestPermissionListener": {
@@ -232,19 +127,6 @@
           "js": true,
           "kotlin": true,
           "swift": false
-        }
-      }
-    }
-  },
-  "uni-createSelectorQuery": {
-    "uni": {
-      "createSelectorQuery": {
-        "name": "createSelectorQuery",
-        "app": {
-          "js": false,
-          "kotlin": false,
-          "swift": false,
-          "arkts": false
         }
       }
     }
@@ -347,55 +229,6 @@
       "startFacialRecognitionVerify",
       "getFacialRecognitionMetaInfo"
     ]
-  },
-  "uni-file": {
-    "uni": {
-      "saveFile": {
-        "name": "saveFile",
-        "app": {
-          "js": false,
-          "kotlin": false,
-          "swift": false,
-          "arkts": true
-        }
-      },
-      "getSavedFileList": {
-        "name": "getSavedFileList",
-        "app": {
-          "js": false,
-          "kotlin": false,
-          "swift": false,
-          "arkts": true
-        }
-      },
-      "getSavedFileInfo": {
-        "name": "getSavedFileInfo",
-        "app": {
-          "js": false,
-          "kotlin": false,
-          "swift": false,
-          "arkts": true
-        }
-      },
-      "removeSavedFile": {
-        "name": "removeSavedFile",
-        "app": {
-          "js": false,
-          "kotlin": false,
-          "swift": false,
-          "arkts": true
-        }
-      },
-      "getFileInfo": {
-        "name": "getFileInfo",
-        "app": {
-          "js": false,
-          "kotlin": false,
-          "swift": false,
-          "arkts": true
-        }
-      }
-    }
   },
   "uni-fileSystemManager": {
     "uni": {
@@ -567,19 +400,6 @@
       }
     }
   },
-  "uni-getRecorderManager": {
-    "uni": {
-      "getRecorderManager": {
-        "name": "getRecorderManager",
-        "app": {
-          "js": false,
-          "kotlin": false,
-          "swift": false,
-          "arkts": true
-        }
-      }
-    }
-  },
   "uni-getSystemInfo": {
     "uni": {
       "getSystemInfo": {
@@ -629,32 +449,6 @@
           "js": true,
           "kotlin": true,
           "swift": false
-        }
-      }
-    }
-  },
-  "uni-keyboard": {
-    "uni": {
-      "hideKeyboard": {
-        "name": "hideKeyboard",
-        "app": {
-          "js": false,
-          "kotlin": false,
-          "swift": false,
-          "arkts": true
-        }
-      }
-    }
-  },
-  "uni-makePhoneCall": {
-    "uni": {
-      "makePhoneCall": {
-        "name": "makePhoneCall",
-        "app": {
-          "js": false,
-          "kotlin": false,
-          "swift": false,
-          "arkts": true
         }
       }
     }
@@ -787,46 +581,6 @@
       }
     }
   },
-  "uni-navigationBar": {
-    "uni": {
-      "setNavigationBarColor": {
-        "name": "setNavigationBarColor",
-        "app": {
-          "js": false,
-          "kotlin": false,
-          "swift": false,
-          "arkts": false
-        }
-      },
-      "setNavigationBarTitle": {
-        "name": "setNavigationBarTitle",
-        "app": {
-          "js": false,
-          "kotlin": false,
-          "swift": false,
-          "arkts": false
-        }
-      },
-      "showNavigationBarLoading": {
-        "name": "showNavigationBarLoading",
-        "app": {
-          "js": false,
-          "kotlin": false,
-          "swift": false,
-          "arkts": false
-        }
-      },
-      "hideNavigationBarLoading": {
-        "name": "hideNavigationBarLoading",
-        "app": {
-          "js": false,
-          "kotlin": false,
-          "swift": false,
-          "arkts": false
-        }
-      }
-    }
-  },
   "uni-network": {
     "uni": {
       "request": {
@@ -867,37 +621,6 @@
       }
     }
   },
-  "uni-oauth": {
-    "provider": {
-      "service": "oauth",
-      "app": {
-        "js": false,
-        "kotlin": false,
-        "swift": false,
-        "arkts": true
-      }
-    },
-    "uni": {
-      "login": {
-        "name": "login",
-        "app": {
-          "js": false,
-          "kotlin": false,
-          "swift": false,
-          "arkts": true
-        }
-      },
-      "getUserInfo": {
-        "name": "getUserInfo",
-        "app": {
-          "js": false,
-          "kotlin": false,
-          "swift": false,
-          "arkts": true
-        }
-      }
-    }
-  },
   "uni-openAppAuthorizeSetting": {
     "uni": {
       "openAppAuthorizeSetting": {
@@ -906,32 +629,6 @@
           "js": false,
           "kotlin": true,
           "swift": true
-        }
-      }
-    }
-  },
-  "uni-openDocument": {
-    "uni": {
-      "openDocument": {
-        "name": "openDocument",
-        "app": {
-          "js": false,
-          "kotlin": false,
-          "swift": false,
-          "arkts": true
-        }
-      }
-    }
-  },
-  "uni-pageScrollTo": {
-    "uni": {
-      "pageScrollTo": {
-        "name": "pageScrollTo",
-        "app": {
-          "js": false,
-          "kotlin": false,
-          "swift": false,
-          "arkts": false
         }
       }
     }
@@ -1053,28 +750,6 @@
       }
     }
   },
-  "uni-pullDownRefresh": {
-    "uni": {
-      "startPullDownRefresh": {
-        "name": "startPullDownRefresh",
-        "app": {
-          "js": false,
-          "kotlin": false,
-          "swift": false,
-          "arkts": true
-        }
-      },
-      "stopPullDownRefresh": {
-        "name": "stopPullDownRefresh",
-        "app": {
-          "js": false,
-          "kotlin": false,
-          "swift": false,
-          "arkts": true
-        }
-      }
-    }
-  },
   "uni-push": {
     "uni": {
       "getPushClientId": {
@@ -1150,19 +825,6 @@
           "js": false,
           "kotlin": true,
           "swift": true,
-          "arkts": true
-        }
-      }
-    }
-  },
-  "uni-scanCode": {
-    "uni": {
-      "scanCode": {
-        "name": "scanCode",
-        "app": {
-          "js": false,
-          "kotlin": false,
-          "swift": false,
           "arkts": true
         }
       }
@@ -1271,91 +933,6 @@
           "kotlin": true,
           "swift": true,
           "arkts": true
-        }
-      }
-    }
-  },
-  "uni-tabBar": {
-    "uni": {
-      "showTabBarRedDot": {
-        "name": "showTabBarRedDot",
-        "app": {
-          "js": false,
-          "kotlin": false,
-          "swift": false,
-          "arkts": false
-        }
-      },
-      "hideTabBarRedDot": {
-        "name": "hideTabBarRedDot",
-        "app": {
-          "js": false,
-          "kotlin": false,
-          "swift": false,
-          "arkts": false
-        }
-      },
-      "setTabBarBadge": {
-        "name": "setTabBarBadge",
-        "app": {
-          "js": false,
-          "kotlin": false,
-          "swift": false,
-          "arkts": false
-        }
-      },
-      "removeTabBarBadge": {
-        "name": "removeTabBarBadge",
-        "app": {
-          "js": false,
-          "kotlin": false,
-          "swift": false,
-          "arkts": false
-        }
-      },
-      "setTabBarItem": {
-        "name": "setTabBarItem",
-        "app": {
-          "js": false,
-          "kotlin": false,
-          "swift": false,
-          "arkts": false
-        }
-      },
-      "setTabBarStyle": {
-        "name": "setTabBarStyle",
-        "app": {
-          "js": false,
-          "kotlin": false,
-          "swift": false,
-          "arkts": false
-        }
-      },
-      "showTabBar": {
-        "name": "showTabBar",
-        "app": {
-          "js": false,
-          "kotlin": false,
-          "swift": false,
-          "arkts": false
-        }
-      },
-      "hideTabBar": {
-        "name": "hideTabBar",
-        "app": {
-          "js": false,
-          "kotlin": false,
-          "swift": false,
-          "arkts": false
-        }
-      },
-      "onTabBarMidButtonTap": {
-        "name": "onTabBarMidButtonTap",
-        "app": {
-          "js": false,
-          "kotlin": false,
-          "swift": false,
-          "arkts": false
         }
       }
     }
