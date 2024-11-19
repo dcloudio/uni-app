@@ -2,6 +2,9 @@ import { defineAsyncApi } from '@dcloudio/uni-api/src/helpers/api'
 export const API_CREATE_CANVAS_CONTEXT_ASYNC = 'createCanvasContextAsync'
 
 class CanvasContext {
+  // 跳过vue的响应式
+  __v_skip = true
+
   _element: any
 
   constructor(element) {
