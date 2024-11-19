@@ -131,6 +131,19 @@
       }
     }
   },
+  "uni-createSelectorQuery": {
+    "uni": {
+      "createSelectorQuery": {
+        "name": "createSelectorQuery",
+        "app": {
+          "js": false,
+          "kotlin": false,
+          "swift": false,
+          "arkts": false
+        }
+      }
+    }
+  },
   "uni-createWebviewContext": {
     "uni": {
       "createWebviewContext": {
@@ -581,6 +594,46 @@
       }
     }
   },
+  "uni-navigationBar": {
+    "uni": {
+      "setNavigationBarColor": {
+        "name": "setNavigationBarColor",
+        "app": {
+          "js": false,
+          "kotlin": false,
+          "swift": false,
+          "arkts": false
+        }
+      },
+      "setNavigationBarTitle": {
+        "name": "setNavigationBarTitle",
+        "app": {
+          "js": false,
+          "kotlin": false,
+          "swift": false,
+          "arkts": false
+        }
+      },
+      "showNavigationBarLoading": {
+        "name": "showNavigationBarLoading",
+        "app": {
+          "js": false,
+          "kotlin": false,
+          "swift": false,
+          "arkts": false
+        }
+      },
+      "hideNavigationBarLoading": {
+        "name": "hideNavigationBarLoading",
+        "app": {
+          "js": false,
+          "kotlin": false,
+          "swift": false,
+          "arkts": false
+        }
+      }
+    }
+  },
   "uni-network": {
     "uni": {
       "request": {
@@ -633,6 +686,19 @@
       }
     }
   },
+  "uni-pageScrollTo": {
+    "uni": {
+      "pageScrollTo": {
+        "name": "pageScrollTo",
+        "app": {
+          "js": false,
+          "kotlin": false,
+          "swift": false,
+          "arkts": false
+        }
+      }
+    }
+  },
   "uni-payment": {
     "provider": {
       "service": "payment"
@@ -653,12 +719,6 @@
     "provider": {
       "service": "payment",
       "name": "alipay"
-    }
-  },
-  "uni-payment-huawei": {
-    "provider": {
-      "service": "payment",
-      "name": "huawei"
     }
   },
   "uni-payment-wxpay": {
@@ -752,6 +812,28 @@
           "js": false,
           "kotlin": true,
           "swift": true
+        }
+      }
+    }
+  },
+  "uni-pullDownRefresh": {
+    "uni": {
+      "startPullDownRefresh": {
+        "name": "startPullDownRefresh",
+        "app": {
+          "js": false,
+          "kotlin": false,
+          "swift": false,
+          "arkts": true
+        }
+      },
+      "stopPullDownRefresh": {
+        "name": "stopPullDownRefresh",
+        "app": {
+          "js": false,
+          "kotlin": false,
+          "swift": false,
+          "arkts": true
         }
       }
     }
@@ -939,6 +1021,91 @@
           "kotlin": true,
           "swift": true,
           "arkts": true
+        }
+      }
+    }
+  },
+  "uni-tabBar": {
+    "uni": {
+      "showTabBarRedDot": {
+        "name": "showTabBarRedDot",
+        "app": {
+          "js": false,
+          "kotlin": false,
+          "swift": false,
+          "arkts": false
+        }
+      },
+      "hideTabBarRedDot": {
+        "name": "hideTabBarRedDot",
+        "app": {
+          "js": false,
+          "kotlin": false,
+          "swift": false,
+          "arkts": false
+        }
+      },
+      "setTabBarBadge": {
+        "name": "setTabBarBadge",
+        "app": {
+          "js": false,
+          "kotlin": false,
+          "swift": false,
+          "arkts": false
+        }
+      },
+      "removeTabBarBadge": {
+        "name": "removeTabBarBadge",
+        "app": {
+          "js": false,
+          "kotlin": false,
+          "swift": false,
+          "arkts": false
+        }
+      },
+      "setTabBarItem": {
+        "name": "setTabBarItem",
+        "app": {
+          "js": false,
+          "kotlin": false,
+          "swift": false,
+          "arkts": false
+        }
+      },
+      "setTabBarStyle": {
+        "name": "setTabBarStyle",
+        "app": {
+          "js": false,
+          "kotlin": false,
+          "swift": false,
+          "arkts": false
+        }
+      },
+      "showTabBar": {
+        "name": "showTabBar",
+        "app": {
+          "js": false,
+          "kotlin": false,
+          "swift": false,
+          "arkts": false
+        }
+      },
+      "hideTabBar": {
+        "name": "hideTabBar",
+        "app": {
+          "js": false,
+          "kotlin": false,
+          "swift": false,
+          "arkts": false
+        }
+      },
+      "onTabBarMidButtonTap": {
+        "name": "onTabBarMidButtonTap",
+        "app": {
+          "js": false,
+          "kotlin": false,
+          "swift": false,
+          "arkts": false
         }
       }
     }
