@@ -13831,7 +13831,7 @@ const getDeviceInfo = defineSyncApi('getDeviceInfo', () => {
 });
 const getAppBaseInfo = defineSyncApi('getAppBaseInfo', () => {
     weexGetSystemInfoSync();
-    const { hostPackageName, hostName, hostVersion, hostLanguage, osLanguage, hostTheme, appId, appName, appVersion, appVersionCode, appWgtVersion, uniCompileVersion, uniPlatform, } = systemInfo;
+    const { hostPackageName, hostName, hostVersion, hostLanguage, osLanguage, hostTheme, appId, appName, appVersion, appVersionCode, appWgtVersion, uniCompileVersion, uniRuntimeVersion, uniPlatform, } = systemInfo;
     return {
         appId,
         appName,
@@ -13853,6 +13853,7 @@ const getAppBaseInfo = defineSyncApi('getAppBaseInfo', () => {
         version: plus.runtime.innerVersion,
         isUniAppX: false,
         uniPlatform,
+        uniRuntimeVersion,
         uniCompileVersion,
         uniCompilerVersion: uniCompileVersion,
     };

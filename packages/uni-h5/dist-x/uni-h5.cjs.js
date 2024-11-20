@@ -13153,7 +13153,8 @@ const getAppBaseInfo = /* @__PURE__ */ defineSyncApi(
         uniPlatform: "web",
         isUniAppX: true,
         uniCompileVersion: __uniConfig.compilerVersion,
-        uniCompilerVersion: __uniConfig.compilerVersion
+        uniCompilerVersion: __uniConfig.compilerVersion,
+        uniRuntimeVersion: __uniConfig.compilerVersion
       },
       {
         uniCompilerVersionCode: parseFloat(__uniConfig.compilerVersion),
