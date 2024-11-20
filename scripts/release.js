@@ -132,6 +132,10 @@ function updateVersions(version) {
 
 function updatePackage(pkgRoot, version, ignoreDeps = false) {
   const pkgPath = path.resolve(pkgRoot, 'package.json')
+  if (!fs.existsSync(pkgPath)) {
+    console.log(colors.yellow(`Cannot find package.json in ${pkgRoot}`))
+    return
+  }
   const pkg = JSON.parse(fs.readFileSync(pkgPath, 'utf-8'))
   pkg.version = version
   // workspace:* 依赖交给 pnpm 处理
@@ -166,6 +170,10 @@ async function publishPackage(pkgName, version, runIfNotDry) {
   }
   const pkgRoot = getPkgRoot(pkgName)
   const pkgPath = path.resolve(pkgRoot, 'package.json')
+  if (!fs.existsSync(pkgPath)) {
+    console.log(colors.yellow(`Cannot find package.json in ${pkgRoot}`))
+    return
+  }
   const pkg = JSON.parse(fs.readFileSync(pkgPath, 'utf-8'))
   if (pkg.private) {
     return
