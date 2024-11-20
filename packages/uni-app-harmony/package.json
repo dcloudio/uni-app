@@ -1,6 +1,6 @@
 {
   "name": "@dcloudio/uni-app-harmony",
-  "version": "3.0.0-alpha-4030320241117001",
+  "version": "3.0.0-alpha-4030420241120001",
   "description": "@dcloudio/uni-app-harmony",
   "files": [
     "dist"
@@ -26,18 +26,18 @@
     "main": "dist/uni.compiler.js"
   },
   "dependencies": {
-    "@dcloudio/uni-app-vite": "3.0.0-alpha-4030320241117001",
+    "@dcloudio/uni-app-vite": "3.0.0-alpha-4030420241120001",
     "debug": "^4.3.3",
     "fs-extra": "^10.0.0",
     "licia": "^1.29.0",
     "postcss-selector-parser": "^6.0.6"
   },
   "devDependencies": {
-    "@dcloudio/uni-cli-shared": "3.0.0-alpha-4030320241117001",
-    "@dcloudio/uni-app-plus": "3.0.0-alpha-4030320241117001",
-    "@dcloudio/uni-components": "3.0.0-alpha-4030320241117001",
-    "@dcloudio/uni-i18n": "3.0.0-alpha-4030320241117001",
-    "@dcloudio/uni-shared": "3.0.0-alpha-4030320241117001",
+    "@dcloudio/uni-cli-shared": "3.0.0-alpha-4030420241120001",
+    "@dcloudio/uni-app-plus": "3.0.0-alpha-4030420241120001",
+    "@dcloudio/uni-components": "3.0.0-alpha-4030420241120001",
+    "@dcloudio/uni-i18n": "3.0.0-alpha-4030420241120001",
+    "@dcloudio/uni-shared": "3.0.0-alpha-4030420241120001",
     "@types/pako": "1.0.2",
     "@types/google.maps": "^3.45.6",
     "@amap/amap-jsapi-types": "^0.0.8",
