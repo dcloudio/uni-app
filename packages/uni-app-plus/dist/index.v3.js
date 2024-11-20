@@ -8060,7 +8060,7 @@ var serviceContext = (function () {
     weexGetSystemInfoSync();
     const {
       hostPackageName, hostName, osLanguage,
-      hostVersion, hostLanguage, hostTheme,
+      hostVersion, hostLanguage, hostTheme, uniRuntimeVersion,
       appId, appName, appVersion, appVersionCode,
       appWgtVersion, uniCompileVersion, uniPlatform
     } = systemInfo;
@@ -8092,6 +8092,7 @@ var serviceContext = (function () {
       version: plus.runtime.innerVersion,
       isUniAppX: false,
       uniPlatform,
+      uniRuntimeVersion,
       uniCompileVersion,
       uniCompilerVersion: uniCompileVersion
     }
@@ -10591,9 +10592,22 @@ var serviceContext = (function () {
       if (isUniElement(obj)) {
           return obj;
       }
-      else if (isComponentPublicInstance(obj)) {
+  }
+  function parseComponentPublicInstance(obj) {
+      if (isComponentPublicInstance(obj)) {
           return obj.$el;
       }
+  }
+  // 序列化 UniElement | ComponentPublicInstance
+  function serialize(el, type) {
+      let nodeId = '';
+      let pageId = '';
+      // 非 x 可能不存在 getNodeId 方法？
+      if (el && el.getNodeId) {
+          pageId = el.pageId;
+          nodeId = el.getNodeId();
+      }
+      return { pageId, nodeId, __type__: type };
   }
   function toRaw(observed) {
       const raw = observed && observed.__v_raw;
@@ -10614,18 +10628,16 @@ var serviceContext = (function () {
               callbacks[id] = arg;
           }
           return id;
+          // 为啥还要额外判断了isUniElement?，isPlainObject不是包含isUniElement的逻辑吗？为了避免出bug，保留此逻辑
       }
       else if (isPlainObject(arg) || isUniElement(arg)) {
-          const el = parseElement(arg);
+          const uniElement = parseElement(arg);
+          const componentPublicInstanceUniElement = !uniElement
+              ? parseComponentPublicInstance(arg)
+              : undefined;
+          const el = uniElement || componentPublicInstanceUniElement;
           if (el) {
-              let nodeId = '';
-              let pageId = '';
-              // 非 x 可能不存在 getNodeId 方法？
-              if (el && el.getNodeId) {
-                  pageId = el.pageId;
-                  nodeId = el.getNodeId();
-              }
-              return { pageId, nodeId };
+              return serialize(el, uniElement ? 'UniElement' : 'ComponentPublicInstance');
           }
           else {
               // 必须复制，否则会污染原始对象，比如：
