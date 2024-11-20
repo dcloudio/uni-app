@@ -1,7 +1,7 @@
 import type { ComponentInternalInstance } from 'vue'
 import { extend } from '@vue/shared'
 import { normalizeTarget } from '@dcloudio/uni-shared'
-import { getWindowTop } from '../../helpers'
+import { getWindowTop, isBuiltInElement } from '../../helpers'
 import { wrapperH5WxsEvent } from './componentWxs'
 
 const isKeyboardEvent = (val: Event): val is KeyboardEvent =>
@@ -25,7 +25,7 @@ export function $nne(
   if (!(evt instanceof Event) || !(currentTarget instanceof HTMLElement)) {
     return [evt]
   }
-  const isHTMLTarget = currentTarget.tagName.indexOf('UNI-') !== 0
+  const isHTMLTarget = !isBuiltInElement(currentTarget)
   // App 平台时不返回原始事件对象 https://github.com/dcloudio/uni-app/issues/3240
   if (__PLATFORM__ === 'h5') {
     if (isHTMLTarget) {
@@ -73,7 +73,7 @@ export function $nne(
 }
 
 function findUniTarget(target: HTMLElement): HTMLElement {
-  while (target && target.tagName.indexOf('UNI-') !== 0) {
+  while (!isBuiltInElement(target)) {
     target = target.parentElement as HTMLElement
   }
   return target
