@@ -7,7 +7,7 @@ import type {
   MPProtocols,
 } from './protocols'
 
-import { isContextApi, isSyncApi } from './promise'
+import { isContextApi, isSyncApi, isTaskApi } from './promise'
 
 const CALLBACKS = ['success', 'fail', 'cancel', 'complete']
 
@@ -94,6 +94,13 @@ export function initWrapper(protocols: MPProtocols) {
   }
   return function wrapper(methodName: string, method: unknown) {
     if (!hasOwn(protocols, methodName)) {
+      if (isContextApi(methodName) || isTaskApi(methodName)) {
+        return function (...args: unknown[]) {
+          const contextOrTask = (method as Function)(...args)
+          contextOrTask.__v_skip = true
+          return contextOrTask
+        }
+      }
       return method
     }
     const protocol = protocols[methodName] as MPProtocolObject
@@ -120,6 +127,11 @@ export function initWrapper(protocols: MPProtocols) {
         __GLOBAL__,
         args
       )
+      if (isContextApi(methodName) || isTaskApi(methodName)) {
+        if (returnValue && !returnValue.__v_skip) {
+          returnValue.__v_skip = true
+        }
+      }
       if (isSyncApi(methodName)) {
         // 同步 api
         return processReturnValue(
