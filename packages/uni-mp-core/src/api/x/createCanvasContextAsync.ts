@@ -6,13 +6,32 @@ class CanvasContext {
   __v_skip = true
 
   _element: any
+  _width = 0
+  _height = 0
 
-  constructor(element) {
+  constructor(element, width, height) {
     this._element = element
+    this._width = width
+    this._height = height
   }
 
   getContext(type: string): any | null {
-    return this._element.getContext(type)
+    const context = this._element.getContext(type)
+    if (!context.canvas.offsetWidth || !context.canvas.offsetHeight) {
+      Object.defineProperties(context.canvas, {
+        offsetWidth: {
+          value: this._width,
+          writable: true,
+        },
+      })
+      Object.defineProperties(context.canvas, {
+        offsetHeight: {
+          value: this._height,
+          writable: true,
+        },
+      })
+    }
+    return context
   }
 
   toDataURL(type: string, encoderOptions: any): string {
@@ -53,11 +72,11 @@ export const createCanvasContextAsync = defineAsyncApi(
         : __GLOBAL__.createSelectorQuery()
       query
         .select('#' + options.id)
-        .fields({ node: true }, () => {})
+        .fields({ node: true, size: true }, () => {})
         .exec((res) => {
-          if (res.length > 0) {
-            const canvas = res[0].node
-            resolve(new CanvasContext(canvas))
+          if (res.length > 0 && res[0].node) {
+            const result = res[0]
+            resolve(new CanvasContext(result.node, result.width, result.height))
           } else {
             reject('canvas id invalid.')
           }
