@@ -51,10 +51,8 @@ import {
 import type { RouteLocationNormalizedLoaded } from 'vue-router'
 import { useRouter } from 'vue-router'
 //#if _X_
-import {
-  DIALOG_TAG,
-  isDialogPageInstance,
-} from '../../x/framework/helpers/utils'
+import { isDialogPageInstance } from '../../x/framework/helpers/utils'
+import { useBackgroundColorContent } from '../../x/framework/setup/page'
 //#endif
 
 interface SetupComponentOptions {
@@ -164,7 +162,7 @@ export function setupPage(comp: any) {
             instance.subTree.el._page = instance.proxy?.$page as UniPage
           }
           const pageInstance = getPageInstanceByChild(instance)
-          if (pageInstance.attrs['data-type'] === DIALOG_TAG) {
+          if (isDialogPageInstance(pageInstance)) {
             const parentPage = (
               instance.proxy?.$page as UniPage
             ).getParentPage()
@@ -179,6 +177,7 @@ export function setupPage(comp: any) {
                 }
               }
             }
+            useBackgroundColorContent(instance.proxy)
           }
         }
         onPageReady(instance)
@@ -202,7 +201,7 @@ export function setupPage(comp: any) {
           instance.__isVisible = false
           if (__X__) {
             const pageInstance = getPageInstanceByChild(instance)
-            if (pageInstance.attrs['data-type'] !== DIALOG_TAG) {
+            if (!isDialogPageInstance(pageInstance)) {
               const { onHide } = instance
               onHide && invokeArrayFns(onHide)
             }

@@ -1,4 +1,4 @@
-import { type ComponentPublicInstance, markRaw } from 'vue'
+import { type ComponentPublicInstance, markRaw, watchEffect } from 'vue'
 import { getCurrentPage, initPageVm } from '@dcloudio/uni-core'
 import {
   ON_REACH_BOTTOM_DISTANCE,
@@ -258,6 +258,20 @@ export function initXPage(
     pageInstance.$dialogPage!.vm = vm
     pageInstance.$dialogPage!.$vm = vm
   }
+}
+
+export function useBackgroundColorContent(vm: ComponentPublicInstance | null) {
+  vm &&
+    watchEffect(() => {
+      const uniPageBody = document.querySelector(
+        `uni-page[data-page="${vm.route}"] uni-page-body`
+      )
+      if (uniPageBody && vm.$basePage.meta.backgroundColorContent) {
+        // @ts-expect-error
+        uniPageBody.style.backgroundColor =
+          vm.$basePage.meta.backgroundColorContent
+      }
+    })
 }
 
 function handleEscKeyPress(event) {
