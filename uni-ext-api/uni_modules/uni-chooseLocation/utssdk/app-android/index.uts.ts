@@ -33,8 +33,7 @@ export const chooseLocation: ChooseLocation = function (options: ChooseLocationO
   uni.openDialogPage({
     url: `uni:chooseLocation?readyEventName=${readyEventName}&optionsEventName=${optionsEventName}&successEventName=${successEventName}&failEventName=${failEventName}`,
     fail(err) {
-      console.error("err", err);
-      options.fail?.(new ChooseLocationFailImpl(`showActionSheet failed, ${err.errMsg}`))
+      options.fail?.(new ChooseLocationFailImpl(`showActionSheet failed, ${err.errMsg}`, 4))
       uni.$off(readyEventName)
       uni.$off(successEventName)
       uni.$off(failEventName)

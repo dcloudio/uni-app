@@ -1,8 +1,15 @@
 /**
- * chooseLocation 错误码
- * - 4: 框架内部异常
+ * 错误码
  */
-export type ChooseLocationErrorCode = 4
+export type ChooseLocationErrorCode =
+  /**
+   * 取消
+   */
+  1 |
+  /**
+   * 框架内部错误
+   */
+  4;
 export interface ChooseLocationSuccess extends AsyncApiSuccessResult {
   name : string,
   address : string,
@@ -99,27 +106,69 @@ export interface Uni {
    * ```
    * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/choose-location.html
    * @uniPlatform {
-   *    "app": {
-   *        "android": {
-   *            "osVer": "5.0",
-   *            "uniVer": "√",
-   *            "unixVer": "4.33"
-   *        },
-   *        "ios": {
-   *            "osVer": "12.0",
-   *            "uniVer": "√",
-   *            "unixVer": "4.33"
-   *        },
+   *  "app": {
+   *    "android": {
+   *      "osVer": "5.0",
+   *      "uniVer": "√",
+   *      "unixVer": "4.33"
+   *    },
+   *    "ios": {
+   *      "osVer": "12.0",
+   *      "uniVer": "√",
+   *      "unixVer": "4.33"
+   *    },
    *    "harmony": {
    *      "osVer": "3.0",
    *      "uniVer": "4.23",
    *      "unixVer": "x"
    *    }
-   *    },
-   *    "web": {
+   *  },
+   *  "mp": {
+   *    "weixin": {
+   *        "hostVer": "√",
    *        "uniVer": "√",
-   *        "unixVer": "4.0"
+   *        "unixVer": "4.35"
+   *    },
+   *    "alipay": {
+   *        "hostVer": "√",
+   *        "uniVer": "√",
+   *        "unixVer": "x"
+   *    },
+   *    "baidu": {
+   *        "hostVer": "√",
+   *        "uniVer": "√",
+   *        "unixVer": "x"
+   *    },
+   *    "toutiao": {
+   *        "hostVer": "√",
+   *        "uniVer": "√",
+   *        "unixVer": "x"
+   *    },
+   *    "lark": {
+   *        "hostVer": "√",
+   *        "uniVer": "√",
+   *        "unixVer": "x"
+   *    },
+   *    "qq": {
+   *        "hostVer": "√",
+   *        "uniVer": "√",
+   *        "unixVer": "x"
+   *    },
+   *    "kuaishou": {
+   *        "hostVer": "√",
+   *        "uniVer": "√",
+   *        "unixVer": "x"
+   *    },
+   *    "jd": {
+   *        "hostVer": "√",
+   *        "uniVer": "√",
+   *        "unixVer": "x"
    *    }
+   *  },
+   *  "web": {
+   *      "uniVer": "√",
+   *      "unixVer": "4.0"
+   *  }
    * }
    */
   chooseLocation(options : ChooseLocationOptions) : void;

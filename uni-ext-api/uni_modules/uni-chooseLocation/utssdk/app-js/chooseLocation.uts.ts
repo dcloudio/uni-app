@@ -22,12 +22,14 @@ export const chooseLocation: ChooseLocation = defineAsyncApi('chooseLocation', (
     resolve(result)
   })
   uni.$on(failEventName, () => {
-    reject('cancel')
+    reject('cancel', {
+    	errCode: 1
+    })
   })
   uni.openDialogPage({
     url: `uni:chooseLocation?readyEventName=${readyEventName}&optionsEventName=${optionsEventName}&successEventName=${successEventName}&failEventName=${failEventName}`,
     fail(err) {
-      options.fail?.({ errMsg: `chooseLocation:fail ${err.errMsg}` })
+      options.fail?.({ errMsg: `chooseLocation:fail ${err.errMsg}`, errCode: 4 })
       uni.$off(readyEventName)
       uni.$off(successEventName)
       uni.$off(failEventName)
