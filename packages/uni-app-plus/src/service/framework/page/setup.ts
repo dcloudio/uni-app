@@ -14,9 +14,7 @@ import {
 } from 'vue'
 import type { VuePageComponent } from './define'
 import { addCurrentPage } from './getCurrentPages'
-//#if _X_
 import { setupXPage } from '../../../x/framework/page/setup'
-//#endif
 
 export function setupPage(component: VuePageComponent) {
   const oldSetup = component.setup
