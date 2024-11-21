@@ -84,6 +84,27 @@ describe('compiler: transform slot', () => {
 }`
     )
   })
+
+  test('names slots with fallback content name start with number', () => {
+    assert(
+      `<button><slot name="1A">Submit</slot></button>`,
+      `<button><block wx:if=\"{{$slots['1A']}}\"><slot name=\"1A\"></slot></block><block wx:else>Submit</block></button>`,
+      `(_ctx, _cache) => {
+  return {}
+}`
+    )
+  })
+
+  test('names slots with fallback content name is number', () => {
+    assert(
+      `<button><slot name="1">Submit</slot></button>`,
+      `<button><block wx:if=\"{{$slots['1']}}\"><slot name=\"1\"></slot></block><block wx:else>Submit</block></button>`,
+      `(_ctx, _cache) => {
+  return {}
+}`
+    )
+  })
+
   test('slot with component', () => {
     assert(
       `<view><custom><slot><view>fallback</view></slot></custom></view>`,
