@@ -8,7 +8,7 @@ describe('compiler: transform tagAndProp', () => {
   test('list-view', () => {
     assert(
       `<list-view />`,
-      `<scroll-view enable-flex=\"true\" scroll-y=\"true\"/>`,
+      `<scroll-view enable-flex=\"true\" enhanced=\"true\" scroll-y=\"true\"/>`,
       `(_ctx, _cache) => {
   const __returned__ = {}
   return __returned__
@@ -22,7 +22,7 @@ describe('compiler: transform tagAndProp', () => {
   test('list-view direction horizontal', () => {
     assert(
       `<list-view direction="horizontal" />`,
-      `<scroll-view enable-flex=\"true\" scroll-x=\"true\"/>`,
+      `<scroll-view enable-flex=\"true\" enhanced=\"true\" scroll-x=\"true\"/>`,
       `(_ctx, _cache) => {
   const __returned__ = {}
   return __returned__
@@ -36,7 +36,7 @@ describe('compiler: transform tagAndProp', () => {
   test('scroll-view direction horizontal', () => {
     assert(
       `<scroll-view direction="horizontal" />`,
-      `<scroll-view enable-flex=\"true\" scroll-x=\"true\"/>`,
+      `<scroll-view enable-flex=\"true\" enhanced=\"true\" scroll-x=\"true\"/>`,
       `(_ctx, _cache) => {
   const __returned__ = {}
   return __returned__
@@ -50,7 +50,7 @@ describe('compiler: transform tagAndProp', () => {
   test('scroll-view dynamic direction', () => {
     assert(
       `<scroll-view :direction="d" />`,
-      `<scroll-view enable-flex=\"true\" scroll-x=\"{{a}}\" scroll-y=\"{{b}}\"/>`,
+      `<scroll-view enable-flex=\"true\" enhanced=\"true\" scroll-x=\"{{a}}\" scroll-y=\"{{b}}\"/>`,
       `(_ctx, _cache) => {
   const __returned__ = { a: _ctx.d === 'horizontal' || _ctx.d === 'all', b: !_ctx.d || _ctx.d === 'vertical' || _ctx.d === 'all' }
   return __returned__
