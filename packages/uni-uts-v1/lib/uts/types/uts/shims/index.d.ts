@@ -1,7 +1,4 @@
 /// <reference path="./shims.d.ts" />
-/// <reference path="./Array.d.ts" />
-/// <reference path="./Map.d.ts" />
-/// <reference path="./Set.d.ts" />
 /// <reference path="./lib.es5.d.ts" />
 /// <reference path="./lib.es2015.collection.d.ts" />
 /// <reference path="./lib.es2015.promise.d.ts" />

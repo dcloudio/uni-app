@@ -111,60 +111,6 @@ interface Set<T> {
     thisArg ?: any
   ) : void
   /**
-     对 Set 对象中的每个值按插入顺序执行一次提供的函数。
-     @param callbackfn 为集合中每个元素执行的回调函数，该函数接收两个参数：value、key。
-     @param thisArg 值在执行 callbackFn 时作为 this 使用。
-     @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/Set.html#forEach
-     @uniPlatform {
-        "app": {
-            "android": {
-               "osVer": "5.0",
-               "uniVer": "x",
-               "unixVer": "3.90",
-               "uniUtsPlugin": "√",
-               "unixUtsPlugin": "3.90"
-            },
-            "ios": {
-               "osVer": "12.0",
-               "uniVer": "√",
-                "unixVer": "4.11"
-            }
-        },
-        "web": {
-            "uniVer": "√",
-            "unixVer": "4.0"
-        }
-     }
-   */
-  forEach(callbackfn : (value : T, value2 : T) => void, thisArg ?: any) : void
-  /**
-     对 Set 对象中的每个值按插入顺序执行一次提供的函数。
-     @param callbackfn 为集合中每个元素执行的回调函数，该函数接收一个参数：value。
-     @param thisArg 值在执行 callbackFn 时作为 this 使用。
-     @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/Set.html#forEach
-     @uniPlatform {
-        "app": {
-            "android": {
-               "osVer": "5.0",
-               "uniVer": "x",
-               "unixVer": "3.90",
-               "uniUtsPlugin": "√",
-               "unixUtsPlugin": "3.90"
-            },
-            "ios": {
-               "osVer": "12.0",
-               "uniVer": "√",
-                "unixVer": "4.11"
-            }
-        },
-        "web": {
-            "uniVer": "√",
-            "unixVer": "4.0"
-        }
-     }
-   */
-  forEach(callbackfn : (value : T) => void, thisArg ?: any) : void
-  /**
      返回一个布尔值来指示对应的值是否存在于 Set 对象中。
      @param value 要测试是否存在于 Set 对象中的值。
      @return 如果 Set 对象中存在具有指定值的元素，则返回 true；否则返回 false。

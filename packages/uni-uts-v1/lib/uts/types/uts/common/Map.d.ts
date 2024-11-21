@@ -86,63 +86,6 @@ interface Map<K, V> {
     thisArg ?: any
   ) : void
   /**
-     按照插入顺序依次对 Map 中每个键/值对执行一次给定的函数。
-     @param callbackfn Map 中每个元素所要执行的函数。它具有如下的参数：
-     value: 每个迭代的值。
-     key: 每个迭代的键。
-     @param thisArg 在 callbackfn 执行中使用的 this 的值。
-     @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/map.html#forEach
-     @uniPlatform {
-        "app": {
-            "android": {
-               "osVer": "5.0",
-               "uniVer": "x",
-               "unixVer": "3.90",
-               "uniUtsPlugin": "√",
-               "unixUtsPlugin": "3.90"
-            },
-            "ios": {
-               "osVer": "12.0",
-               "uniVer": "√",
-                "unixVer": "4.11"
-            }
-        },
-        "web": {
-            "uniVer": "√",
-            "unixVer": "4.0"
-        }
-     }
-   */
-  forEach(callbackfn : (value : V, key : K) => void, thisArg ?: any) : void
-  /**
-     按照插入顺序依次对 Map 中每个键/值对执行一次给定的函数。
-     @param callbackfn Map 中每个元素所要执行的函数。它具有如下的参数：
-     value: 每个迭代的值。
-     @param thisArg 在 callbackfn 执行中使用的 this 的值。
-     @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/map.html#forEach
-     @uniPlatform {
-        "app": {
-            "android": {
-               "osVer": "5.0",
-               "uniVer": "x",
-               "unixVer": "3.90",
-               "uniUtsPlugin": "√",
-               "unixUtsPlugin": "3.90"
-            },
-            "ios": {
-               "osVer": "12.0",
-               "uniVer": "√",
-                "unixVer": "4.11"
-            }
-        },
-        "web": {
-            "uniVer": "√",
-            "unixVer": "4.0"
-        }
-     }
-   */
-  forEach(callbackfn : (value : V) => void, thisArg ?: any) : void
-  /**
      从 Map 对象返回指定的元素。如果与所提供的键相关联的值是一个对象，那么你将获得该对象的引用，对该对象所做的任何更改都会有效地在 Map 对象中修改它。
      @param key 从 Map 对象返回的元素的键。
      @return 与指定键相关联的元素，如果键在 Map 对象中找不到，则返回 null。
