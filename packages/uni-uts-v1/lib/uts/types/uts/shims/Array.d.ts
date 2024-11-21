@@ -11,16 +11,16 @@ interface Array<T> {
     predicate: (value: T, index: number, array: T[]) => value is S,
     thisArg?: any
   ): this is S[]
-  every(predicate: (value: T) => unknown, thisArg?: any): boolean
-  every(predicate: (value: T, index: number) => unknown, thisArg?: any): boolean
+  every(predicate: (value: T) => boolean, thisArg?: any): boolean
+  every(predicate: (value: T, index: number) => boolean, thisArg?: any): boolean
   every(
-    predicate: (value: T, index: number, array: T[]) => unknown,
+    predicate: (value: T, index: number, array: T[]) => boolean,
     thisArg?: any
   ): boolean
-  some(predicate: (value: T) => unknown, thisArg?: any): boolean
-  some(predicate: (value: T, index: number) => unknown, thisArg?: any): boolean
+  some(predicate: (value: T) => boolean, thisArg?: any): boolean
+  some(predicate: (value: T, index: number) => boolean, thisArg?: any): boolean
   some(
-    predicate: (value: T, index: number, array: T[]) => unknown,
+    predicate: (value: T, index: number, array: T[]) => boolean,
     thisArg?: any
   ): boolean
   forEach(callbackfn: (value: T) => void, thisArg?: any): void
@@ -44,10 +44,10 @@ interface Array<T> {
     predicate: (value: T, index: number, array: T[]) => value is S,
     thisArg?: any
   ): S[]
-  filter(predicate: (value: T) => unknown, thisArg?: any): T[]
-  filter(predicate: (value: T, index: number) => unknown, thisArg?: any): T[]
+  filter(predicate: (value: T) => boolean, thisArg?: any): T[]
+  filter(predicate: (value: T, index: number) => boolean, thisArg?: any): T[]
   filter(
-    predicate: (value: T, index: number, array: T[]) => unknown,
+    predicate: (value: T, index: number, array: T[]) => boolean,
     thisArg?: any
   ): T[]
   reduce(callbackfn: (previousValue: T, currentValue: T) => T): T
@@ -154,19 +154,19 @@ interface Array<T> {
     predicate: (value: T, index: number, obj: T[]) => value is S,
     thisArg?: any
   ): S | null
-  find(predicate: (value: T) => unknown, thisArg?: any): T | null
-  find(predicate: (value: T, index: number) => unknown, thisArg?: any): T | null
+  find(predicate: (value: T) => boolean, thisArg?: any): T | null
+  find(predicate: (value: T, index: number) => boolean, thisArg?: any): T | null
   find(
-    predicate: (value: T, index: number, obj: T[]) => unknown,
+    predicate: (value: T, index: number, obj: T[]) => boolean,
     thisArg?: any
   ): T | null
-  findIndex(predicate: (value: T) => unknown, thisArg?: any): number
+  findIndex(predicate: (value: T) => boolean, thisArg?: any): number
   findIndex(
-    predicate: (value: T, index: number) => unknown,
+    predicate: (value: T, index: number) => boolean,
     thisArg?: any
   ): number
   findIndex(
-    predicate: (value: T, index: number, obj: T[]) => unknown,
+    predicate: (value: T, index: number, obj: T[]) => boolean,
     thisArg?: any
   ): number
 }
