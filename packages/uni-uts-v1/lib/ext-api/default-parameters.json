@@ -1,14 +1,14 @@
 {
-  "uni-storage": {
-    "clearStorage": [
-      "null"
-    ]
-  },
   "uni-tabBar": {
     "hideTabBar": [
       "null"
     ],
     "showTabBar": [
+      "null"
+    ]
+  },
+  "uni-storage": {
+    "clearStorage": [
       "null"
     ]
   },
