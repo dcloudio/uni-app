@@ -52,5 +52,5 @@ export function isBuiltInElement(target: HTMLElement): boolean {
     // @ts-expect-error use private property
     return !!target.__isUniElement
   }
-  return target.tagName.indexOf('UNI-') !== 0
+  return target.tagName.indexOf('UNI-') === 0
 }

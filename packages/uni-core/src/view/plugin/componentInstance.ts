@@ -42,23 +42,28 @@ export function $nne(
 
   const res = createNativeEvent(evt, isHTMLTarget)
 
-  if (isClickEvent(evt)) {
-    normalizeClickEvent(res as WechatMiniprogram.Touch, evt)
-  } else if (isMouseEvent(evt)) {
-    normalizeMouseEvent(res as WechatMiniprogram.Touch, evt)
-  } else if (isTouchEvent(evt)) {
-    const top = getWindowTop()
-    ;(res as any).touches = normalizeTouchEvent(evt.touches, top)
-    ;(res as any).changedTouches = normalizeTouchEvent(evt.changedTouches, top)
-  } else if (isKeyboardEvent(evt)) {
-    const proxyKeys: (keyof KeyboardEvent)[] = ['key', 'code']
-    proxyKeys.forEach((key) => {
-      Object.defineProperty(res, key, {
-        get() {
-          return evt[key]
-        },
+  if (!__X__) {
+    if (isClickEvent(evt)) {
+      normalizeClickEvent(res as WechatMiniprogram.Touch, evt)
+    } else if (isMouseEvent(evt)) {
+      normalizeMouseEvent(res as WechatMiniprogram.Touch, evt)
+    } else if (isTouchEvent(evt)) {
+      const top = getWindowTop()
+      ;(res as any).touches = normalizeTouchEvent(evt.touches, top)
+      ;(res as any).changedTouches = normalizeTouchEvent(
+        evt.changedTouches,
+        top
+      )
+    } else if (isKeyboardEvent(evt)) {
+      const proxyKeys: (keyof KeyboardEvent)[] = ['key', 'code']
+      proxyKeys.forEach((key) => {
+        Object.defineProperty(res, key, {
+          get() {
+            return evt[key]
+          },
+        })
       })
-    })
+    }
   }
   if (__PLATFORM__ === 'h5') {
     return (
@@ -85,18 +90,19 @@ export function createNativeEvent(
 ) {
   const { type, timeStamp, target, currentTarget } = evt
   let realTarget, realCurrentTarget
-  //#if _X_ && !_NODE_JS_
-  realTarget = htmlElement
-    ? (target as HTMLElement)
-    : findUniTarget(target as HTMLElement)
-  realCurrentTarget = currentTarget
-  //#endif
-  //#if !_X_ || _NODE_JS_
-  realTarget = normalizeTarget(
-    htmlElement ? (target as HTMLElement) : findUniTarget(target as HTMLElement)
-  )
-  realCurrentTarget = normalizeTarget(currentTarget as HTMLElement)
-  //#endif
+  if (__X__) {
+    realTarget = htmlElement
+      ? (target as HTMLElement)
+      : findUniTarget(target as HTMLElement)
+    realCurrentTarget = currentTarget
+  } else {
+    realTarget = normalizeTarget(
+      htmlElement
+        ? (target as HTMLElement)
+        : findUniTarget(target as HTMLElement)
+    )
+    realCurrentTarget = normalizeTarget(currentTarget as HTMLElement)
+  }
   const event = {
     type,
     timeStamp,
@@ -114,7 +120,18 @@ export function createNativeEvent(
   }
 
   if (__PLATFORM__ === 'h5') {
-    wrapperEvent(event, evt)
+    if (__X__) {
+      for (const key in event) {
+        Object.defineProperty(evt, key, {
+          get() {
+            return event[key]
+          },
+        })
+      }
+      return evt
+    } else {
+      wrapperEvent(event, evt)
+    }
   }
 
   return event
@@ -138,13 +155,6 @@ function normalizeClickEvent(
   const { x, y } = mouseEvt
   const top = getWindowTop()
   evt.detail = { x, y: y - top }
-  //#if _X_ && !_NODE_JS_
-  // TODO 类型调整
-  // @ts-expect-error
-  evt.x = x
-  // @ts-expect-error
-  evt.y = y - top
-  //#endif
   evt.touches = evt.changedTouches = [createTouchEvent(mouseEvt, top)]
 }
 
@@ -171,28 +181,13 @@ function createTouchEvent(evt: MouseEvent, top: number) {
 function normalizeTouchEvent(touches: TouchList, top: number) {
   const res: any[] = []
   for (let i = 0; i < touches.length; i++) {
-    const {
-      identifier,
-      pageX,
-      pageY,
-      clientX,
-      clientY,
-      force,
-      //#if _X_ && !_NODE_JS_
-      screenX,
-      screenY,
-      //#endif
-    } = touches[i]
+    const { identifier, pageX, pageY, clientX, clientY, force } = touches[i]
     res.push({
       identifier,
       pageX,
       pageY: pageY - top,
       clientX: clientX,
       clientY: clientY - top,
-      //#if _X_ && !_NODE_JS_
-      screenX,
-      screenY,
-      //#endif
       force: force || 0,
     })
   }
