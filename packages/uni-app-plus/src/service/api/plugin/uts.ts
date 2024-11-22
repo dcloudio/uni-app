@@ -3,6 +3,7 @@ import {
   capitalize,
   extend,
   hasOwn,
+  isArray,
   isPlainObject,
   isString,
 } from '@vue/shared'
@@ -53,7 +54,11 @@ function toRaw(observed?: unknown): unknown {
 export function normalizeArg(
   arg: unknown,
   callbacks: Record<string, Function>,
-  keepAlive: boolean
+  keepAlive: boolean,
+  context: {
+    depth: number
+    nested: boolean
+  }
 ) {
   arg = toRaw(arg)
   if (typeof arg === 'function') {
@@ -68,6 +73,9 @@ export function normalizeArg(
       callbacks[id] = arg
     }
     return id
+  } else if (isArray(arg)) {
+    context.depth++
+    return arg.map((item) => normalizeArg(item, callbacks, keepAlive, context))
     // 为啥还要额外判断了isUniElement?，isPlainObject不是包含isUniElement的逻辑吗？为了避免出bug，保留此逻辑
   } else if (isPlainObject(arg) || isUniElement(arg)) {
     const uniElement = parseElement(arg)
@@ -76,6 +84,9 @@ export function normalizeArg(
       : undefined
     const el = uniElement || componentPublicInstanceUniElement
     if (el) {
+      if (context.depth > 0) {
+        context.nested = true
+      }
       return serialize(
         el,
         uniElement ? 'UniElement' : 'ComponentPublicInstance'
@@ -90,7 +101,13 @@ export function normalizeArg(
       // newObj.a = 2 // 这会污染原始对象 obj
       const newArg = {}
       Object.keys(arg as object).forEach((name) => {
-        newArg[name] = normalizeArg((arg as any)[name], callbacks, keepAlive)
+        context.depth++
+        newArg[name] = normalizeArg(
+          (arg as any)[name],
+          callbacks,
+          keepAlive,
+          context
+        )
       })
       return newArg
     }
@@ -234,6 +251,10 @@ interface InvokeInstanceArgs extends ModuleOptions {
    */
   keepAlive: boolean
   /**
+   * 参数中是否包含嵌套序列化对象
+   */
+  nested: boolean
+  /**
    * 执行方法时的真实参数列表
    */
   params?: unknown[]
@@ -267,6 +288,10 @@ interface InvokeStaticArgs extends ModuleOptions {
    * 回调是否持久保留
    */
   keepAlive: boolean
+  /**
+   * 参数中是否包含嵌套序列化对象
+   */
+  nested: boolean
   /**
    * 执行方法时的真实参数列表
    */
@@ -455,6 +480,7 @@ function initProxyFunction(
         type,
         name: methodName,
         method: methodParams,
+        nested: false,
         keepAlive,
       }
     : {
@@ -466,6 +492,7 @@ function initProxyFunction(
         type,
         companion,
         method: methodParams,
+        nested: false,
         keepAlive,
       }
   return (...args: unknown[]) => {
@@ -491,9 +518,18 @@ function initProxyFunction(
         )
       }
     }
+    const context = {
+      depth: 0,
+      nested: false,
+    }
     const invokeArgs = extend({}, baseArgs, {
-      params: args.map((arg) => normalizeArg(arg, callbacks, keepAlive)),
+      params: args.map((arg) =>
+        normalizeArg(arg, callbacks, keepAlive, context)
+      ),
     })
+
+    invokeArgs.nested = context.nested
+
     if (async) {
       return new Promise((resolve, reject) => {
         if (__DEV__) {
@@ -680,6 +716,7 @@ export function initUTSProxyClass(
                 id: instance.__instanceId,
                 type: 'getter',
                 keepAlive: false,
+                nested: false,
                 name: name as string,
                 errMsg,
               })
