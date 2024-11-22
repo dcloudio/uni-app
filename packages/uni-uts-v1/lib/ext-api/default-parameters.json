@@ -1,14 +1,14 @@
 {
+  "uni-storage": {
+    "clearStorage": [
+      "null"
+    ]
+  },
   "uni-tabBar": {
     "hideTabBar": [
       "null"
     ],
     "showTabBar": [
-      "null"
-    ]
-  },
-  "uni-storage": {
-    "clearStorage": [
       "null"
     ]
   },
@@ -40,6 +40,11 @@
       "null"
     ]
   },
+  "uni-keyboard": {
+    "hideKeyboard": [
+      "null"
+    ]
+  },
   "uni-base": {
     "removeInterceptor": [
       null,
@@ -51,11 +56,6 @@
     ],
     "$emit": [
       null,
-      "null"
-    ]
-  },
-  "uni-keyboard": {
-    "hideKeyboard": [
       "null"
     ]
   },
