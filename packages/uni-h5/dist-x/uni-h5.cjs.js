@@ -3839,7 +3839,6 @@ const PageComponent = /* @__PURE__ */ defineSystemComponent({
     {
       currentInstance.$dialogPages = vue.ref([]);
       currentInstance.$systemDialogPages = vue.ref([]);
-      useBackgroundColorContent(pageMeta);
       if (isDialogPageInstance(ctx)) {
         navigationBar.style = "custom";
         pageMeta.route = ctx.attrs.route;
@@ -3862,6 +3861,7 @@ const PageComponent = /* @__PURE__ */ defineSystemComponent({
           }
         }
       } else {
+        useBackgroundColorContent(pageMeta);
         vue.provide("parentInstance", currentInstance);
       }
     }
@@ -13158,7 +13158,8 @@ const getAppBaseInfo = /* @__PURE__ */ defineSyncApi(
         uniPlatform: "web",
         isUniAppX: true,
         uniCompileVersion: __uniConfig.compilerVersion,
-        uniCompilerVersion: __uniConfig.compilerVersion
+        uniCompilerVersion: __uniConfig.compilerVersion,
+        uniRuntimeVersion: __uniConfig.compilerVersion
       },
       {
         uniCompilerVersionCode: parseFloat(__uniConfig.compilerVersion),
