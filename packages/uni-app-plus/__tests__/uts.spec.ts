@@ -108,6 +108,22 @@ describe('uts-module', () => {
     ])
     expect(context3.depth).toBe(2)
     expect(context3.nested).toBe(true)
+
+    const context4 = { depth: 0, nested: false }
+    const obj4 = [
+      {},
+      {
+        element: [1, 2, 3],
+      },
+    ]
+    expect(normalizeArg(obj4, {}, false, context4)).toEqual([
+      {},
+      {
+        element: [1, 2, 3],
+      },
+    ])
+    expect(context4.depth).toBe(3)
+    expect(context4.nested).toBe(false)
   })
   test(`initProxyFunction`, () => {
     const onMemory = initUTSProxyFunction(false, {
