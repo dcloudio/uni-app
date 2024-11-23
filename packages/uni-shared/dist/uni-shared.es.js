@@ -650,11 +650,13 @@ function formatKey(key) {
     return camelize(key.substring(5));
 }
 // question/139181，增加副作用，避免 initCustomDataset 在 build 下被 tree-shaking
-const initCustomDatasetOnce = /*#__PURE__*/ once(() => {
+const initCustomDatasetOnce = /*#__PURE__*/ once((isBuiltInElement) => {
+    isBuiltInElement =
+        isBuiltInElement || ((el) => el.tagName.startsWith('UNI-'));
     const prototype = HTMLElement.prototype;
     const setAttribute = prototype.setAttribute;
     prototype.setAttribute = function (key, value) {
-        if (key.startsWith('data-') && this.tagName.startsWith('UNI-')) {
+        if (key.startsWith('data-') && isBuiltInElement(this)) {
             const dataset = this.__uniDataset ||
                 (this.__uniDataset = {});
             dataset[formatKey(key)] = value;
@@ -665,7 +667,7 @@ const initCustomDatasetOnce = /*#__PURE__*/ once(() => {
     prototype.removeAttribute = function (key) {
         if (this.__uniDataset &&
             key.startsWith('data-') &&
-            this.tagName.startsWith('UNI-')) {
+            isBuiltInElement(this)) {
             delete this.__uniDataset[formatKey(key)];
         }
         removeAttribute.call(this, key);

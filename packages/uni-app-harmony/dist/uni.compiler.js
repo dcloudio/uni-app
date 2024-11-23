@@ -34,6 +34,13 @@ var StandaloneExtApis = [
 		version: "1.0.1"
 	},
 	{
+		type: "provider",
+		plugin: "uni-payment-huawei",
+		provider: "huawei",
+		service: "payment",
+		version: "1.0.0"
+	},
+	{
 		type: "extapi",
 		plugin: "uni-push",
 		apis: [

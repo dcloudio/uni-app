@@ -39,6 +39,8 @@ interface JSON {
      @param text 要被解析成 JavaScript 值的字符串
      @return 返回一个T类型的值或者对象 或者 null
      @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/JSON.html#parse<T>
+     @inline
+     @reified
      @uniPlatform {
         "app": {
             "android": {
@@ -68,6 +70,8 @@ interface JSON {
      @param text 要被解析成 JavaScript 值的字符串
      @return 返回一个UTSJSONObjet 或者 null
      @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/JSON.html#parseObject
+     @inline
+     @reified
      @uniPlatform {
         "app": {
             "android": {
@@ -100,6 +104,8 @@ interface JSON {
      @param text 要被解析成 JavaScript 值的字符串
      @return 返回一个T类型对象 或者 null
      @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/JSON.html#parseObject<T>
+     @inline
+     @reified
      @uniPlatform {
         "app": {
             "android": {
@@ -159,6 +165,8 @@ interface JSON {
      @param text 要被解析成 JavaScript 值的字符串
      @return 返回一个Array 或者 null
      @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/JSON.html#parseArray<T>
+     @inline
+     @reified
      @uniPlatform {
         "app": {
             "android": {

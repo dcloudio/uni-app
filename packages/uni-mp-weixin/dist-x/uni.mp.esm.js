@@ -997,6 +997,9 @@ function parseApp(instance, parseAppOptions) {
         $vm: instance, // mp-alipay 组件 data 初始化比 onLaunch 早，提前挂载
         onLaunch(options) {
             this.$vm = instance; // 飞书小程序可能会把 AppOptions 序列化，导致 $vm 对象部分属性丢失
+            {
+                this.vm = this.$vm;
+            }
             const ctx = internalInstance.ctx;
             if (this.$vm && ctx.$scope && ctx.$callHook) {
                 // 已经初始化过了，主要是为了百度，百度 onShow 在 onLaunch 之前
@@ -1364,7 +1367,7 @@ function applyOptions(componentOptions, vueOptions) {
     componentOptions.behaviors = initBehaviors(vueOptions);
 }
 
-function parseComponent(vueOptions, { parse, mocks, isPage, initRelation, handleLink, initLifetimes, }) {
+function parseComponent(vueOptions, { parse, mocks, isPage, isPageInProject, initRelation, handleLink, initLifetimes, }) {
     vueOptions = vueOptions.default || vueOptions;
     const options = {
         multipleSlots: true,
@@ -1372,6 +1375,9 @@ function parseComponent(vueOptions, { parse, mocks, isPage, initRelation, handle
         addGlobalClass: true,
         pureDataPattern: /^uP$/,
     };
+    if (!isPageInProject) {
+        options.virtualHost = true;
+    }
     if (isArray(vueOptions.mixins)) {
         vueOptions.mixins.forEach((item) => {
             if (isObject(item.options)) {
@@ -1459,6 +1465,7 @@ function parsePage(vueOptions, parseOptions) {
     const miniProgramPageOptions = parseComponent(vueOptions, {
         mocks,
         isPage,
+        isPageInProject: true,
         initRelation,
         handleLink,
         initLifetimes,
@@ -1572,6 +1579,9 @@ function initLifetimes({ mocks, isPage, initRelation, vueOptions, }) {
                     initComponentInstance(instance, options);
                 },
             });
+            {
+                this.vm = this.$vm;
+            }
             if (process.env.UNI_DEBUG) {
                 console.log('uni-app:[' +
                     Date.now() +

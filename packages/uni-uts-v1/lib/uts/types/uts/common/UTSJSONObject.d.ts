@@ -326,6 +326,8 @@ interface UTSJSONObject {
      获取一个Array属性，返回类型是Array 或者 null, 数组元素类型由泛型T决定
      @return 如果属性名存在，且类型为Array返回对应的结果，不存在返回null
      @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/UTSJSONObject.html#getArray<T>
+     @inline
+     @reified
      @uniPlatform {
         "app": {
             "android": {
@@ -354,6 +356,8 @@ interface UTSJSONObject {
      @param def 指定的默认值
      @return 如果属性名存在，且类型为Array返回对应的结果，不存在返回指定的默认值
      @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/UTSJSONObject.html#getArray<T>
+     @inline
+     @reified
      @uniPlatform {
         "app": {
             "android": {
@@ -462,6 +466,8 @@ interface UTSJSONObject {
      将当前的UTSJSONObject对象转换为某一个具体的类型 T
      @return 具体的类型T，如果失败返回null
      @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/UTSJSONObject.html#parse
+     @inline
+     @reified
      @uniPlatform {
         "app": {
             "android": {
@@ -550,6 +556,8 @@ interface UTSJSONObjectConstructor {
      @param items 需要被合并的实例对象
      @return 合并后的泛型对象
      @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/UTSJSONObject.html#assign
+     @inline
+     @reified
      @uniPlatform {
         "app": {
             "android": {

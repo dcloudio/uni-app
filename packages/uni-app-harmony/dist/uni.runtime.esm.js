@@ -12350,8 +12350,6 @@ function setupPage(component) {
         initPageVm(pageVm, __pageInstance);
         {
             addCurrentPageWithInitScope(__pageId, pageVm, __pageInstance);
-        }
-        {
             onMounted(() => {
                 nextTick(() => {
                     // onShow被延迟，故onReady也同时延迟

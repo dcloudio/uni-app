@@ -1325,8 +1325,9 @@ interface UTSAndroid {
 
   /**
      获取类型T 对应的 java.lang.reflect.Type 对象
-
-     @uniPlatform {
+      @inline
+      @reified
+      @uniPlatform {
         "app": {
             "android": {
                "osVer": "5.0",
@@ -1347,6 +1348,8 @@ interface UTSAndroid {
 
   /**
      获取类型 T 对应的 class name
+     @inline
+     @reified
      @uniPlatform {
         "app": {
             "android": {

@@ -8,7 +8,6 @@ import io.dcloud.uts.Map;
 import kotlinx.coroutines.CoroutineScope;
 import kotlinx.coroutines.Deferred;
 import kotlinx.coroutines.Dispatchers;
-import kotlinx.coroutines.async;
 import io.dcloud.uts.extapi.showModel as uni_showModel;
 import io.dcloud.uts.extapi.showToast as uni_showToast;
 fun test() {
@@ -36,40 +35,27 @@ typealias ShowToast = (msg: String) -> Unit;
 val test1 = arrayOf(1, 2, 3);
 open class User : IUser {
     open fun login(name: String, pwd: String): UTSPromise<Unit> {
-        suspend fun async(): Unit {
-            setTimeout(fun(){
-                console.log("timeout");
-            }
-            , 1000);
-            uts.sdk.modules.testUniPlugin.login(name, pwd);
-            run {
-                var i: Number = 0;
-                while(i < 10){
-                    console.log(i);
-                    i++;
+        return wrapUTSPromise(suspend {
+                setTimeout(fun(){
+                    console.log("timeout");
                 }
-            }
-            Log.info(`default`);
-            console.log("def android");
-            console.log("ndef ios");
-            console.log("def android || def ios");
-            val a: Number = -3;
-            console.log(a.inv());
-            XToast<XToast<*>>(getUniActivity()).setContentView(R.layout.toast_hint).setDuration(1000).setImageDrawable(android.R.id.icon, R.mipmap.ic_dialog_tip_finish).setText(android.R.id.message, "点我消失").show();
-        }
-        return UTSPromise(fun(resolve, reject) {
-            kotlinx.coroutines.CoroutineScope(io.dcloud.uts.UTSAndroid.getDomCoroutineDispatcher()).async {
-                try {
-                    val result = async();
-                    resolve(result);
+                , 1000);
+                uts.sdk.modules.testUniPlugin.login(name, pwd);
+                run {
+                    var i: Number = 0;
+                    while(i < 10){
+                        console.log(i);
+                        i++;
+                    }
                 }
-                 catch (e: Throwable) {
-                    reject(e);
-                }
-            }
-            ;
-        }
-        );
+                Log.info(`default`);
+                console.log("def android");
+                console.log("ndef ios");
+                console.log("def android || def ios");
+                val a: Number = -3;
+                console.log(a.inv());
+                XToast<XToast<*>>(getUniActivity()).setContentView(R.layout.toast_hint).setDuration(1000).setImageDrawable(android.R.id.icon, R.mipmap.ic_dialog_tip_finish).setText(android.R.id.message, "点我消失").show();
+        });
     }
     override fun register(name: String, callback: () -> Unit) {
         Log.info(`default` as FrameLayout);

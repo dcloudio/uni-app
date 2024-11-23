@@ -449,11 +449,32 @@ const getElementById = defineSyncApi(API_GET_ELEMENT_BY_ID, (id) => {
 
 const API_CREATE_CANVAS_CONTEXT_ASYNC = 'createCanvasContextAsync';
 class CanvasContext {
-    constructor(element) {
+    constructor(element, width, height) {
+        // 跳过vue的响应式
+        this.__v_skip = true;
+        this._width = 0;
+        this._height = 0;
         this._element = element;
+        this._width = width;
+        this._height = height;
     }
     getContext(type) {
-        return this._element.getContext(type);
+        const context = this._element.getContext(type);
+        if (!context.canvas.offsetWidth || !context.canvas.offsetHeight) {
+            Object.defineProperties(context.canvas, {
+                offsetWidth: {
+                    value: this._width,
+                    writable: true,
+                },
+            });
+            Object.defineProperties(context.canvas, {
+                offsetHeight: {
+                    value: this._height,
+                    writable: true,
+                },
+            });
+        }
+        return context;
     }
     toDataURL(type, encoderOptions) {
         return this._element.toDataURL(type, encoderOptions);
@@ -486,11 +507,11 @@ const createCanvasContextAsync = defineAsyncApi(API_CREATE_CANVAS_CONTEXT_ASYNC,
             : wx.createSelectorQuery();
         query
             .select('#' + options.id)
-            .fields({ node: true }, () => { })
+            .fields({ node: true, size: true }, () => { })
             .exec((res) => {
-            if (res.length > 0) {
-                const canvas = res[0].node;
-                resolve(new CanvasContext(canvas));
+            if (res.length > 0 && res[0].node) {
+                const result = res[0];
+                resolve(new CanvasContext(result.node, result.width, result.height));
             }
             else {
                 reject('canvas id invalid.');
@@ -797,6 +818,7 @@ const SYNC_API_RE_X = /getElementById/;
 const CONTEXT_API_RE = /^create|Manager$/;
 // Context例外情况
 const CONTEXT_API_RE_EXC = ['createBLEConnection'];
+const TASK_APIS = ['request', 'downloadFile', 'uploadFile', 'connectSocket'];
 // 同步例外情况
 const ASYNC_API = ['createBLEConnection'];
 const CALLBACK_API_RE = /^on|^off/;
@@ -811,6 +833,9 @@ function isSyncApi(name) {
 }
 function isCallbackApi(name) {
     return CALLBACK_API_RE.test(name) && name !== 'onPush';
+}
+function isTaskApi(name) {
+    return TASK_APIS.indexOf(name) !== -1;
 }
 function shouldPromise(name) {
     if (isContextApi(name) || isSyncApi(name) || isCallbackApi(name)) {
@@ -910,6 +935,13 @@ function initWrapper(protocols) {
     }
     return function wrapper(methodName, method) {
         if (!hasOwn(protocols, methodName)) {
+            if (isContextApi(methodName) || isTaskApi(methodName)) {
+                return function (...args) {
+                    const contextOrTask = method(...args);
+                    contextOrTask.__v_skip = true;
+                    return contextOrTask;
+                };
+            }
             return method;
         }
         const protocol = protocols[methodName];
@@ -931,6 +963,11 @@ function initWrapper(protocols) {
                 args.push(arg2);
             }
             const returnValue = wx[options.name || methodName].apply(wx, args);
+            if (isContextApi(methodName) || isTaskApi(methodName)) {
+                if (returnValue && !returnValue.__v_skip) {
+                    returnValue.__v_skip = true;
+                }
+            }
             if (isSyncApi(methodName)) {
                 // 同步 api
                 return processReturnValue(methodName, returnValue, options.returnValue, isContextApi(methodName));
@@ -1349,6 +1386,7 @@ function initWx() {
     if (typeof globalThis !== 'undefined' &&
         typeof requireMiniProgram === 'undefined') {
         globalThis.wx = newWx;
+        globalThis.__uniX = true;
     }
     return newWx;
 }

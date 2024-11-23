@@ -723,6 +723,7 @@ const SYNC_API_RE = /^\$|getLocale|setLocale|sendNativeEvent|restoreGlobal|requi
 const CONTEXT_API_RE = /^create|Manager$/;
 // Context例外情况
 const CONTEXT_API_RE_EXC = ['createBLEConnection'];
+const TASK_APIS = ['request', 'downloadFile', 'uploadFile', 'connectSocket'];
 // 同步例外情况
 const ASYNC_API = ['createBLEConnection'];
 const CALLBACK_API_RE = /^on|^off/;
@@ -734,6 +735,9 @@ function isSyncApi(name) {
 }
 function isCallbackApi(name) {
     return CALLBACK_API_RE.test(name) && name !== 'onPush';
+}
+function isTaskApi(name) {
+    return TASK_APIS.indexOf(name) !== -1;
 }
 function shouldPromise(name) {
     if (isContextApi(name) || isSyncApi(name) || isCallbackApi(name)) {
@@ -833,6 +837,13 @@ function initWrapper(protocols) {
     }
     return function wrapper(methodName, method) {
         if (!hasOwn(protocols, methodName)) {
+            if (isContextApi(methodName) || isTaskApi(methodName)) {
+                return function (...args) {
+                    const contextOrTask = method(...args);
+                    contextOrTask.__v_skip = true;
+                    return contextOrTask;
+                };
+            }
             return method;
         }
         const protocol = protocols[methodName];
@@ -854,6 +865,11 @@ function initWrapper(protocols) {
                 args.push(arg2);
             }
             const returnValue = jd[options.name || methodName].apply(jd, args);
+            if (isContextApi(methodName) || isTaskApi(methodName)) {
+                if (returnValue && !returnValue.__v_skip) {
+                    returnValue.__v_skip = true;
+                }
+            }
             if (isSyncApi(methodName)) {
                 // 同步 api
                 return processReturnValue(methodName, returnValue, options.returnValue, isContextApi(methodName));
