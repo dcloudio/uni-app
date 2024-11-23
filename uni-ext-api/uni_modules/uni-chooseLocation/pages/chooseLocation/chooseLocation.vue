@@ -260,6 +260,9 @@
           } else {
             this.chooseLocationOptions.keyword = "";
           }
+          if (data['payload'] != null) {
+            this.chooseLocationOptions.payload = data['payload'] as UTSJSONObject;
+          }
         });
         uni.$emit(this.readyEventName, {});
       },
@@ -348,10 +351,15 @@
             customUI: true,
           });
           // #endif
-          uniMapCo.chooseLocation({
+          let chooseLocationData = {
             action: action,
             data: data
-          }).then((res : UTSJSONObject) => {
+          } as UTSJSONObject;
+          
+          if (this.chooseLocationOptions.payload != null) {
+            chooseLocationData['payload'] = this.chooseLocationOptions.payload;
+          }
+          uniMapCo.chooseLocation(chooseLocationData).then((res : UTSJSONObject) => {
             resolve(res);
           }).catch((err) => {
             if (err instanceof UniCloudError) {
@@ -370,8 +378,8 @@
         });
         promise.then((res) => {
           this.callUniMapCoErr = false;
-        });
-        promise.catch((err) => {
+        })
+        .catch((err) => {
           this.callUniMapCoErr = true;
         });
         return promise as Promise<UTSJSONObject>;
@@ -1085,6 +1093,5 @@
     height: 100%;
     background-repeat: no-repeat;
   }
-
   /* #endif */
 </style>
