@@ -34,8 +34,15 @@ function parseComponentPublicInstance(obj: any) {
   }
 }
 
+function serializeArrayBuffer(obj: ArrayBuffer) {
+  return { __type__: 'ArrayBuffer', value: obj }
+}
+
 // 序列化 UniElement | ComponentPublicInstance
-function serialize(el: any, type: 'UniElement' | 'ComponentPublicInstance') {
+function serializeUniElement(
+  el: any,
+  type: 'UniElement' | 'ComponentPublicInstance'
+) {
   let nodeId = ''
   let pageId = ''
   // 非 x 可能不存在 getNodeId 方法？
@@ -43,7 +50,7 @@ function serialize(el: any, type: 'UniElement' | 'ComponentPublicInstance') {
     pageId = el.pageId
     nodeId = el.getNodeId()
   }
-  return { pageId, nodeId, __type__: type }
+  return { __type__: type, pageId, nodeId }
 }
 
 function toRaw(observed?: unknown): unknown {
@@ -77,6 +84,11 @@ export function normalizeArg(
     context.depth++
     return arg.map((item) => normalizeArg(item, callbacks, keepAlive, context))
     // 为啥还要额外判断了isUniElement?，isPlainObject不是包含isUniElement的逻辑吗？为了避免出bug，保留此逻辑
+  } else if (arg instanceof ArrayBuffer) {
+    if (context.depth > 0) {
+      context.nested = true
+    }
+    return serializeArrayBuffer(arg)
   } else if (isPlainObject(arg) || isUniElement(arg)) {
     const uniElement = parseElement(arg)
     const componentPublicInstanceUniElement = !uniElement
@@ -87,7 +99,7 @@ export function normalizeArg(
       if (context.depth > 0) {
         context.nested = true
       }
-      return serialize(
+      return serializeUniElement(
         el,
         uniElement ? 'UniElement' : 'ComponentPublicInstance'
       )

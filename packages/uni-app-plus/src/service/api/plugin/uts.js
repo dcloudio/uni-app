@@ -20,8 +20,11 @@ function parseComponentPublicInstance(obj) {
         return obj.$el;
     }
 }
+function serializeArrayBuffer(obj) {
+    return { __type__: 'ArrayBuffer', value: obj };
+}
 // 序列化 UniElement | ComponentPublicInstance
-function serialize(el, type) {
+function serializeUniElement(el, type) {
     let nodeId = '';
     let pageId = '';
     // 非 x 可能不存在 getNodeId 方法？
@@ -29,14 +32,13 @@ function serialize(el, type) {
         pageId = el.pageId;
         nodeId = el.getNodeId();
     }
-    return { pageId, nodeId, __type__: type };
+    return { __type__: type, pageId, nodeId };
 }
 function toRaw(observed) {
     const raw = observed && observed.__v_raw;
     return raw ? toRaw(raw) : observed;
 }
 function normalizeArg(arg, callbacks, keepAlive, context) {
-    context.depth++;
     arg = toRaw(arg);
     if (typeof arg === 'function') {
         let id;
@@ -53,8 +55,15 @@ function normalizeArg(arg, callbacks, keepAlive, context) {
         return id;
     }
     else if (isArray(arg)) {
+        context.depth++;
         return arg.map((item) => normalizeArg(item, callbacks, keepAlive, context));
         // 为啥还要额外判断了isUniElement?，isPlainObject不是包含isUniElement的逻辑吗？为了避免出bug，保留此逻辑
+    }
+    else if (arg instanceof ArrayBuffer) {
+        if (context.depth > 0) {
+            context.nested = true;
+        }
+        return serializeArrayBuffer(arg);
     }
     else if (isPlainObject(arg) || isUniElement(arg)) {
         const uniElement = parseElement(arg);
@@ -63,10 +72,10 @@ function normalizeArg(arg, callbacks, keepAlive, context) {
             : undefined;
         const el = uniElement || componentPublicInstanceUniElement;
         if (el) {
-            if (context.depth > 1) {
+            if (context.depth > 0) {
                 context.nested = true;
             }
-            return serialize(el, uniElement ? 'UniElement' : 'ComponentPublicInstance');
+            return serializeUniElement(el, uniElement ? 'UniElement' : 'ComponentPublicInstance');
         }
         else {
             // 必须复制，否则会污染原始对象，比如：
@@ -78,6 +87,7 @@ function normalizeArg(arg, callbacks, keepAlive, context) {
             // newObj.a = 2 // 这会污染原始对象 obj
             const newArg = {};
             Object.keys(arg).forEach((name) => {
+                context.depth++;
                 newArg[name] = normalizeArg(arg[name], callbacks, keepAlive, context);
             });
             return newArg;
