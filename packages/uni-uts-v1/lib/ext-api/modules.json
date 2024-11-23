@@ -978,6 +978,50 @@
           "kotlin": true,
           "swift": true
         }
+      },
+      "onThemeChange": {
+        "name": "offAppThemeChange",
+        "app": {
+          "js": true,
+          "x-js": true,
+          "kotlin": false,
+          "swift": false,
+          "arkts": false,
+          "mp-weixin": true
+        }
+      },
+      "offThemeChange": {
+        "name": "offAppThemeChange",
+        "app": {
+          "js": true,
+          "x-js": true,
+          "kotlin": false,
+          "swift": false,
+          "arkts": false,
+          "mp-weixin": true
+        }
+      },
+      "onHostThemeChange": {
+        "name": "offAppThemeChange",
+        "app": {
+          "js": false,
+          "x-js": true,
+          "kotlin": false,
+          "swift": false,
+          "arkts": false,
+          "mp-weixin": true
+        }
+      },
+      "offHostThemeChange": {
+        "name": "offAppThemeChange",
+        "app": {
+          "js": false,
+          "x-js": true,
+          "kotlin": false,
+          "swift": false,
+          "arkts": false,
+          "mp-weixin": true
+        }
       }
     }
   },
