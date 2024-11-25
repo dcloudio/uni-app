@@ -79,6 +79,7 @@ export const createCanvasContextAsync = defineAsyncApi(
 
     // onMounted fix issues13212
     createSelectorQuery()
+      .in(options.component ?? null)
       .select('#' + options.id)
       .fields(
         {
