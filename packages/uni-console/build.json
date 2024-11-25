@@ -1,0 +1,22 @@
+[
+  {
+    "input": {
+      "src/compiler/index.ts": "dist/uni.compiler.js"
+    },
+    "output": {
+      "format": "cjs"
+    },
+    "external": ["@dcloudio/uni-cli-shared"],
+    "compilerOptions": {
+      "target": "es2018"
+    }
+  },
+  {
+    "input": {
+      "src/runtime/index.ts": "dist/runtime.es.js"
+    },
+    "compilerOptions": {
+      "declaration": false
+    }
+  }
+]

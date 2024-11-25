@@ -23,6 +23,9 @@ const BUILT_IN_PLATFORMS = [
 
 const platforms = [...BUILT_IN_PLATFORMS]
 export function registerPlatform(platform: string) {
+  if (platform === 'mp') {
+    return
+  }
   if (!platforms.includes(platform)) {
     platforms.push(platform)
   }

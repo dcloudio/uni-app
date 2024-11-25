@@ -97,6 +97,10 @@ declare namespace NodeJS {
     UNI_AUTOMATOR_PORT?: string // 自动化测试port
     UNI_AUTOMATOR_WS_ENDPOINT?: string // 自动化测试ws endpoint
     UNI_OS_NAME?: string // 操作系统名称
+    // HBuilderX的Socket通道
+    UNI_SOCKET_ID?: string
+    UNI_SOCKET_PORT?: string
+    UNI_SOCKET_HOSTS?: string
   }
 }
 
