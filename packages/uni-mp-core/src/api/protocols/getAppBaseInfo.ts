@@ -32,9 +32,6 @@ export const getAppBaseInfo: MPProtocol = {
 
     if (__X__) {
       try {
-        toRes.uniCompileVersionCode = parseFloat(
-          process.env.UNI_COMPILER_VERSION
-        )
         toRes.uniCompilerVersionCode = parseFloat(
           process.env.UNI_COMPILER_VERSION
         )

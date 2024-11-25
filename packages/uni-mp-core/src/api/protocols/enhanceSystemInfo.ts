@@ -159,9 +159,6 @@ export function populateParameters(
 
   if (__X__) {
     try {
-      parameters.uniCompileVersionCode = parseFloat(
-        process.env.UNI_COMPILER_VERSION
-      )
       parameters.uniCompilerVersionCode = parseFloat(
         process.env.UNI_COMPILER_VERSION
       )
