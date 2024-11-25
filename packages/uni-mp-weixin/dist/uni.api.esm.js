@@ -1131,7 +1131,7 @@ const getAppBaseInfo = {
         const { version, language, SDKVersion, theme } = fromRes;
         let _hostName = getHostName(fromRes);
         let hostLanguage = language.replace(/_/g, '-');
-        toRes = sortObject(extend(toRes, {
+        const parameters = {
             hostVersion: version,
             hostLanguage,
             hostName: _hostName,
@@ -1147,7 +1147,8 @@ const getAppBaseInfo = {
             uniCompileVersion: process.env.UNI_COMPILER_VERSION,
             uniCompilerVersion: process.env.UNI_COMPILER_VERSION,
             uniRuntimeVersion: process.env.UNI_COMPILER_VERSION,
-        }));
+        };
+        extend(toRes, parameters);
     },
 };
 

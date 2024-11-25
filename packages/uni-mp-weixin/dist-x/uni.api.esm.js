@@ -1108,7 +1108,6 @@ function populateParameters(fromRes, toRes) {
     };
     {
         try {
-            parameters.uniCompileVersionCode = parseFloat(process.env.UNI_COMPILER_VERSION);
             parameters.uniCompilerVersionCode = parseFloat(process.env.UNI_COMPILER_VERSION);
             parameters.uniRuntimeVersionCode = parseFloat(process.env.UNI_COMPILER_VERSION);
         }
@@ -1237,7 +1236,7 @@ const getAppBaseInfo = {
         const { version, language, SDKVersion, theme } = fromRes;
         let _hostName = getHostName(fromRes);
         let hostLanguage = language.replace(/_/g, '-');
-        toRes = sortObject(extend(toRes, {
+        const parameters = {
             hostVersion: version,
             hostLanguage,
             hostName: _hostName,
@@ -1253,15 +1252,15 @@ const getAppBaseInfo = {
             uniCompileVersion: process.env.UNI_COMPILER_VERSION,
             uniCompilerVersion: process.env.UNI_COMPILER_VERSION,
             uniRuntimeVersion: process.env.UNI_COMPILER_VERSION,
-        }));
+        };
         {
             try {
-                toRes.uniCompileVersionCode = parseFloat(process.env.UNI_COMPILER_VERSION);
-                toRes.uniCompilerVersionCode = parseFloat(process.env.UNI_COMPILER_VERSION);
-                toRes.uniRuntimeVersionCode = parseFloat(process.env.UNI_COMPILER_VERSION);
+                parameters.uniCompilerVersionCode = parseFloat(process.env.UNI_COMPILER_VERSION);
+                parameters.uniRuntimeVersionCode = parseFloat(process.env.UNI_COMPILER_VERSION);
             }
             catch (error) { }
         }
+        return sortObject(extend(toRes, parameters));
     },
 };
 
