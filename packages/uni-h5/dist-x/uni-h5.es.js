@@ -15059,10 +15059,10 @@ class CanvasContextImpl {
   }
 }
 const createCanvasContextAsync = function(options) {
-  var _a, _b, _c, _d, _e, _f;
-  const pages = getCurrentBasePages();
-  const currentPage = (_a = options.component) != null ? _a : pages[pages.length - 1];
-  if (currentPage != null) {
+  nextTick(() => {
+    var _a, _b, _c, _d, _e;
+    const pages = getCurrentBasePages();
+    const currentPage = (_a = options.component) != null ? _a : pages[pages.length - 1];
     const element = (_b = currentPage.$el) == null ? void 0 : _b.querySelector("#" + options.id);
     if (element != null) {
       const canvas = element;
@@ -15075,15 +15075,8 @@ const createCanvasContextAsync = function(options) {
       );
       (_d = options.fail) == null ? void 0 : _d.call(options, uniError);
     }
-  } else {
-    const uniError = new UniError(
-      "uni-createCanvasContextAsync",
-      -1,
-      "No found current page."
-    );
-    (_e = options.fail) == null ? void 0 : _e.call(options, uniError);
-  }
-  (_f = options.complete) == null ? void 0 : _f.call(options);
+    (_e = options.complete) == null ? void 0 : _e.call(options);
+  });
 };
 const CONTEXT_ID = "MAP_LOCATION";
 const MapLocation = /* @__PURE__ */ defineSystemComponent({
@@ -17279,6 +17272,9 @@ const _sfc_main$1 = {
         } else {
           this.chooseLocationOptions.keyword = "";
         }
+        if (data["payload"] != null) {
+          this.chooseLocationOptions.payload = data["payload"];
+        }
       });
       uni.$emit(this.readyEventName, {});
     },
@@ -17356,21 +17352,27 @@ const _sfc_main$1 = {
         const uniMapCo = uniCloud.importObject("uni-map-co", {
           customUI: true
         });
-        uniMapCo.chooseLocation({
+        let chooseLocationData = {
           action,
           data
-        }).then((res) => {
+        };
+        if (this.chooseLocationOptions.payload != null) {
+          chooseLocationData["payload"] = this.chooseLocationOptions.payload;
+        }
+        uniMapCo.chooseLocation(chooseLocationData).then((res) => {
           resolve(res);
         }).catch((err) => {
           if (err instanceof UniCloudError) {
-            const errCode = err.errCode;
-            const errMsg = err.errMsg;
+            const cloudError = err;
+            const errCode = cloudError.errCode;
+            const errMsg = cloudError.errMsg;
+            const errSubject = cloudError.errSubject;
             if (errMsg.indexOf("在云端不存在") > -1 || errMsg.indexOf("未匹配") > -1) {
               this.errMsg = "uni.chooseLocation 依赖 uniCloud 的 uni-map-common 插件，请安装 uni-map-common 插件，插件地址：https://ext.dcloud.net.cn/plugin?id=13872";
               console.error(this.errMsg);
             } else {
               this.errMsg = errMsg;
-              console.error("获取POI信息失败，" + JSON.stringify({ errCode, errMsg }));
+              console.error("获取POI信息失败，" + JSON.stringify({ errCode, errMsg, errSubject }));
             }
           }
           reject(err);
@@ -17378,8 +17380,7 @@ const _sfc_main$1 = {
       });
       promise.then((res) => {
         this.callUniMapCoErr = false;
-      });
-      promise.catch((err) => {
+      }).catch((err) => {
         this.callUniMapCoErr = true;
       });
       return promise;
@@ -17980,7 +17981,7 @@ const _style_0 = `
     box-shadow: 0px 0px 5px 1px rgba(0, 0, 0, .3);
 }
 .uni-choose-location-dark .uni-choose-location-poi-search-box {
-    background-color: #181818;
+    background-color: #111111;
 }
 .uni-choose-location-dark .uni-choose-location-search-icon {
     color: #d1d1d1;
@@ -18017,7 +18018,6 @@ uni-image > div {
     height: 100%;
     background-repeat: no-repeat;
 }
-
 
 `;
 const _export_sfc = (sfc, props2) => {
