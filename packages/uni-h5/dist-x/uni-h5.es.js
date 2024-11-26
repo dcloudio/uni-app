@@ -2234,11 +2234,11 @@ function onResize$1(res) {
   const page = (_a = getCurrentPage()) == null ? void 0 : _a.vm;
   invokeHook(page, ON_RESIZE, res);
   {
-    const dialogPages = page.$page.getDialogPages();
-    if (dialogPages.length > 0) {
+    const dialogPages = page == null ? void 0 : page.$page.getDialogPages();
+    if ((dialogPages == null ? void 0 : dialogPages.length) > 0) {
       invokeHook(dialogPages[dialogPages.length - 1].vm, ON_RESIZE, res);
     }
-    const systemDialogPages = (_b = page.$pageLayoutInstance) == null ? void 0 : _b.$systemDialogPages.value;
+    const systemDialogPages = (_b = page == null ? void 0 : page.$pageLayoutInstance) == null ? void 0 : _b.$systemDialogPages.value;
     if ((systemDialogPages == null ? void 0 : systemDialogPages.length) > 0) {
       invokeHook(
         systemDialogPages[systemDialogPages.length - 1].vm,
