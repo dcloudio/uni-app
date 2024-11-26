@@ -23,8 +23,7 @@ declare namespace NodeJS {
     UNI_NVUE_COMPILER: 'uni-app' | 'weex' | 'vue' | 'vite'
     UNI_NVUE_STYLE_COMPILER: 'uni-app' | 'weex'
     UNI_APP_CODE_SPLITING?: 'true'
-    UNI_H5_BASE?: string
-    UNI_H5_BROWSER?: 'builtin'
+
     UNI_CUSTOM_SCRIPT?: string
     UNI_CUSTOM_DEFINE?: string
     UNI_CUSTOM_CONTEXT?: string
@@ -63,7 +62,13 @@ declare namespace NodeJS {
     UNI_COMPILE_EXT_API_INPUT?: string
     UNI_APP_NEXT_WORKSPACE?: string
 
+    // 内部使用，是否开启HBuilderX的Socket日志通道
+    UNI_CONSOLE?: 'true' | 'false'
+
     // HBuilderX 可能传入的环境变量
+    UNI_H5_BASE?: string
+    UNI_H5_BROWSER?: 'builtin'
+
     HX_DEPENDENCIES_DIR?: string // 基座缓存目录，如：unpackage/cache/uts_standard_android
     HX_USE_BASE_TYPE?: 'standard' | 'custom' // 基座类型
     SOURCEMAP?: 'true' | 'false' // 是否生成 sourcemap

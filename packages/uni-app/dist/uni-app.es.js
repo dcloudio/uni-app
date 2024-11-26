@@ -62,7 +62,7 @@ function formatAppLog(type, filename, ...args) {
         console[type].apply(console, [...args, filename]);
     }
 }
-function formatH5Log(type, filename, ...args) {
+function formatLog(type, filename, ...args) {
     console[type].apply(console, [...args, filename]);
 }
 
@@ -129,4 +129,4 @@ function renderComponentSlot(slots, name, props = null) {
     return null;
 }
 
-export { formatAppLog, formatH5Log, getCurrentSubNVue, getSsrGlobalData, onAddToFavorites, onBackPress, onError, onExit, onHide, onInit, onLaunch, onLoad, onNavigationBarButtonTap, onNavigationBarSearchInputChanged, onNavigationBarSearchInputClicked, onNavigationBarSearchInputConfirmed, onNavigationBarSearchInputFocusChanged, onPageHide, onPageNotFound, onPageScroll, onPageShow, onPullDownRefresh, onReachBottom, onReady, onResize, onSaveExitState, onShareAppMessage, onShareTimeline, onShow, onTabItemTap, onThemeChange, onUnhandledRejection, onUnload, renderComponentSlot, requireNativePlugin, resolveEasycom, shallowSsrRef, ssrRef };
+export { formatAppLog, formatLog, getCurrentSubNVue, getSsrGlobalData, onAddToFavorites, onBackPress, onError, onExit, onHide, onInit, onLaunch, onLoad, onNavigationBarButtonTap, onNavigationBarSearchInputChanged, onNavigationBarSearchInputClicked, onNavigationBarSearchInputConfirmed, onNavigationBarSearchInputFocusChanged, onPageHide, onPageNotFound, onPageScroll, onPageShow, onPullDownRefresh, onReachBottom, onReady, onResize, onSaveExitState, onShareAppMessage, onShareTimeline, onShow, onTabItemTap, onThemeChange, onUnhandledRejection, onUnload, renderComponentSlot, requireNativePlugin, resolveEasycom, shallowSsrRef, ssrRef };

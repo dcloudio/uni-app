@@ -91,7 +91,7 @@ function formatAppLog(type, filename, ...args) {
         console[type].apply(console, [...args, filename]);
     }
 }
-function formatH5Log(type, filename, ...args) {
+function formatLog(type, filename, ...args) {
     console[type].apply(console, [...args, filename]);
 }
 
@@ -175,7 +175,7 @@ Object.defineProperty(exports, "isPlainObject", {
   get: function () { return shared.isPlainObject; }
 });
 exports.formatAppLog = formatAppLog;
-exports.formatH5Log = formatH5Log;
+exports.formatLog = formatLog;
 exports.getCurrentSubNVue = getCurrentSubNVue;
 exports.getSsrGlobalData = getSsrGlobalData;
 exports.onAddToFavorites = onAddToFavorites;

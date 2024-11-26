@@ -1,6 +1,10 @@
 import type { Plugin } from 'vite'
 import path from 'path'
-import { defineUniMainJsPlugin, resolveBuiltIn } from '@dcloudio/uni-cli-shared'
+import {
+  defineUniMainJsPlugin,
+  isEnableConsole,
+  resolveBuiltIn,
+} from '@dcloudio/uni-cli-shared'
 
 const uniConsoleRuntimePlugin = (): Plugin => {
   return {
@@ -28,11 +32,7 @@ export default () => {
   return [
     uniConsoleRuntimePlugin(),
     defineUniMainJsPlugin((opts) => {
-      const hasRuntimeSocket =
-        process.env.NODE_ENV === 'development' &&
-        process.env.UNI_SOCKET_HOSTS &&
-        process.env.UNI_SOCKET_PORT &&
-        process.env.UNI_SOCKET_ID
+      const hasRuntimeSocket = isEnableConsole()
       return {
         name: 'uni:console-main-js',
         enforce: 'post',

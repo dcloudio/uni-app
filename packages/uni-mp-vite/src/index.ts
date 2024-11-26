@@ -2,8 +2,10 @@ import path from 'path'
 import { extend } from '@vue/shared'
 import type { SFCScriptCompileOptions } from '@vue/compiler-sfc'
 import {
+  isEnableConsole,
   resolveUTSCompiler,
   uniDecryptUniModulesPlugin,
+  uniHBuilderXConsolePlugin,
   uniUTSUVueJavaScriptPlugin,
   uniViteInjectPlugin,
 } from '@dcloudio/uni-cli-shared'
@@ -36,6 +38,7 @@ export default (options: UniMiniProgramPluginOptions) => {
   }
   const normalizeComponentName = options.template.component?.normalizeName
   return [
+    ...(isEnableConsole() ? [uniHBuilderXConsolePlugin('uni.__f__')] : []),
     ...(process.env.UNI_APP_X === 'true'
       ? [
           uniDecryptUniModulesPlugin(),

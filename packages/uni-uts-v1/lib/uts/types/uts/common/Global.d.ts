@@ -1,4 +1,55 @@
+/**
+     表示“非数字”（Not-A-Number）。和 NaN 相同。
+     在相等比较中，NaN不等于任何值，包括它自己。要测试一个值是否等于NaN，使用isNaN函数。
+
+     @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/global.html#NaN
+     @uniPlatform {
+        "app": {
+            "android": {
+               "osVer": "5.0",
+               "uniVer": "√",
+               "unixVer": "3.9",
+               "uniUtsPlugin": "3.9",
+               "unixUtsPlugin": "3.9"
+            },
+            "ios": {
+               "osVer": "x",
+               "uniVer": "x",
+                "unixVer": "x"
+            }
+        },
+        "web": {
+            "uniVer": "√",
+            "unixVer": "4.0"
+        }
+     }
+   */
 declare var NaN : number;
+/**
+     全局属性 Infinity 是一个数值，表示无穷大。
+
+     @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/global.html#Infinity
+     @uniPlatform {
+        "app": {
+            "android": {
+               "osVer": "x",
+               "uniVer": "x",
+               "unixVer": "x",
+               "uniUtsPlugin": "x",
+               "unixUtsPlugin": "x"
+            },
+            "ios": {
+               "osVer": "x",
+               "uniVer": "x",
+                "unixVer": "x"
+            }
+        },
+        "web": {
+            "uniVer": "√",
+            "unixVer": "4.0"
+        }
+     }
+   */
 declare var Infinity : number;
 
 declare type RequestAnimationFrameCallback = (task : number) => void

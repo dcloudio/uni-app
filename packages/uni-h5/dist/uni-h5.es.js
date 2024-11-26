@@ -3376,6 +3376,9 @@ const $emit = /* @__PURE__ */ defineSyncApi(
   },
   EmitProtocol
 );
+function __f__(type, filename, ...args) {
+  console[type].apply(console, [...args, filename]);
+}
 const validator = [
   {
     name: "id",
@@ -23710,6 +23713,7 @@ const api = /* @__PURE__ */ Object.defineProperty({
   $off,
   $on,
   $once,
+  __f__,
   addInterceptor,
   addPhoneContact,
   arrayBufferToBase64,
@@ -26244,6 +26248,7 @@ export {
   index$d as Video,
   index$g as View,
   index$c as WebView,
+  __f__,
   addInterceptor,
   addPhoneContact,
   arrayBufferToBase64,

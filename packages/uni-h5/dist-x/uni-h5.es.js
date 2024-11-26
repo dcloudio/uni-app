@@ -4388,6 +4388,9 @@ const $emit = /* @__PURE__ */ defineSyncApi(
   },
   EmitProtocol
 );
+function __f__(type, filename, ...args) {
+  console[type].apply(console, [...args, filename]);
+}
 const validator = [
   {
     name: "id",
@@ -17356,14 +17359,16 @@ const _sfc_main$1 = {
           resolve(res);
         }).catch((err) => {
           if (err instanceof UniCloudError) {
-            const errCode = err.errCode;
-            const errMsg = err.errMsg;
+            const cloudError = err;
+            const errCode = cloudError.errCode;
+            const errMsg = cloudError.errMsg;
+            const errSubject = cloudError.errSubject;
             if (errMsg.indexOf("在云端不存在") > -1 || errMsg.indexOf("未匹配") > -1) {
               this.errMsg = "uni.chooseLocation 依赖 uniCloud 的 uni-map-common 插件，请安装 uni-map-common 插件，插件地址：https://ext.dcloud.net.cn/plugin?id=13872";
               console.error(this.errMsg);
             } else {
               this.errMsg = errMsg;
-              console.error("获取POI信息失败，" + JSON.stringify({ errCode, errMsg }));
+              console.error("获取POI信息失败，" + JSON.stringify({ errCode, errMsg, errSubject }));
             }
           }
           reject(err);
@@ -17972,7 +17977,7 @@ const _style_0 = `
     box-shadow: 0px 0px 5px 1px rgba(0, 0, 0, .3);
 }
 .uni-choose-location-dark .uni-choose-location-poi-search-box {
-    background-color: #181818;
+    background-color: #111111;
 }
 .uni-choose-location-dark .uni-choose-location-search-icon {
     color: #d1d1d1;
@@ -18000,6 +18005,9 @@ const _style_0 = `
     border-bottom: 1px solid #1e1e1e;
 }
 .uni-choose-location-dark .uni-choose-location-map-reset-icon {
+    color: #d1d1d1;
+}
+.uni-choose-location-dark .uni-choose-location-poi-search-error-text {
     color: #d1d1d1;
 }
 
@@ -18322,6 +18330,7 @@ const api = /* @__PURE__ */ Object.defineProperty({
   $off,
   $on,
   $once,
+  __f__,
   addInterceptor,
   addPhoneContact,
   arrayBufferToBase64,
@@ -29276,6 +29285,7 @@ export {
   index$m as Video,
   __syscom_2 as View,
   indexX$3 as WebView,
+  __f__,
   addInterceptor,
   addPhoneContact,
   arrayBufferToBase64,

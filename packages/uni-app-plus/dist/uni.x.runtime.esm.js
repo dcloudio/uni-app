@@ -3263,8 +3263,35 @@ var createSelectorQuery = function() {
   var instance = getCurrentPage().vm;
   return new SelectorQueryImpl(instance);
 };
+class CanvasContextImpl {
+  constructor(element) {
+    this._element = element;
+  }
+  // @ts-expect-error 类型不匹配
+  getContext(contextType) {
+    return this._element.getContext(contextType);
+  }
+  toBlob(callback, type, quality) {
+    throw new Error("Method not implemented.");
+  }
+  toDataURL(type, quality) {
+    return this._element.toDataURL(type, quality);
+  }
+  createImage() {
+    return new Image();
+  }
+  createPath2D() {
+    return new Path2D();
+  }
+  requestAnimationFrame(callback) {
+    return requestAnimationFrame(callback);
+  }
+  cancelAnimationFrame(taskId) {
+    cancelAnimationFrame(taskId);
+  }
+}
 var createCanvasContextAsync = /* @__PURE__ */ defineAsyncApi("createCanvasContextAsync", (options, _ref) => {
-  var _page$$el;
+  var _options$component;
   var {
     resolve,
     reject
@@ -3273,48 +3300,17 @@ var createCanvasContextAsync = /* @__PURE__ */ defineAsyncApi("createCanvasConte
   if (page == null) {
     return null;
   }
-  var bodyNode = (_page$$el = page.$el) === null || _page$$el === void 0 ? void 0 : _page$$el.parentNode;
-  if (bodyNode == null) {
-    reject("bodyNode is null");
-    return null;
-  }
-  if (!options.id) {
-    reject("id is null");
-    return null;
-  }
-  var component = null;
-  if (options.component && isVueComponent(options.component)) {
-    component = options.component;
-    var el = component.$el;
-    if (el != null) {
-      bodyNode = el.parentNode;
+  createSelectorQuery().in((_options$component = options.component) !== null && _options$component !== void 0 ? _options$component : null).select("#" + options.id).fields({
+    node: true
+  }, (ret) => {
+    var node = ret.node;
+    if (node != null) {
+      resolve(new CanvasContextImpl(node));
+    } else {
+      var uniError = new UniError("uni-createCanvasContextAsync", -1, "canvas id invalid.");
+      reject(uniError.errMsg);
     }
-  }
-  var element = bodyNode.querySelector("#".concat(options.id));
-  if (!element) {
-    reject("element is null");
-    return null;
-  }
-  function createImage() {
-    return new Image();
-  }
-  function createPath2D() {
-    return new Path2D();
-  }
-  function requestAnimationFrameFun(callback) {
-    return requestAnimationFrame(callback);
-  }
-  function cancelAnimationFrameFun(taskId) {
-    cancelAnimationFrame(taskId);
-  }
-  resolve({
-    getContext: element.getContext.bind(element),
-    toDataURL: element.toDataURL.bind(element),
-    createImage,
-    createPath2D,
-    requestAnimationFrame: requestAnimationFrameFun,
-    cancelAnimationFrame: cancelAnimationFrameFun
-  });
+  }).exec();
 });
 function queryElementTop(component, selector) {
   var _component$$el;
@@ -3595,8 +3591,10 @@ const _sfc_main = {
           resolve(res);
         }).catch((err) => {
           if (err instanceof UniCloudError) {
-            var errCode = err.errCode;
-            var errMsg = err.errMsg;
+            var cloudError = err;
+            var errCode = cloudError.errCode;
+            var errMsg = cloudError.errMsg;
+            var errSubject = cloudError.errSubject;
             if (errMsg.indexOf("在云端不存在") > -1 || errMsg.indexOf("未匹配") > -1) {
               this.errMsg = "uni.chooseLocation 依赖 uniCloud 的 uni-map-common 插件，请安装 uni-map-common 插件，插件地址：https://ext.dcloud.net.cn/plugin?id=13872";
               console.error(this.errMsg);
@@ -3604,7 +3602,8 @@ const _sfc_main = {
               this.errMsg = errMsg;
               console.error("获取POI信息失败，" + JSON.stringify({
                 errCode,
-                errMsg
+                errMsg,
+                errSubject
               }));
             }
           }
@@ -4159,7 +4158,7 @@ const _style_0 = {
       "backgroundColor": "#ededed"
     },
     ".uni-choose-location-dark ": {
-      "backgroundColor": "#181818"
+      "backgroundColor": "#111111"
     }
   },
   "uni-choose-location-poi-search-input": {
@@ -4225,6 +4224,9 @@ const _style_0 = {
     "": {
       "color": "#191919",
       "fontSize": 14
+    },
+    ".uni-choose-location-dark ": {
+      "color": "#d1d1d1"
     }
   },
   "uni-choose-location-poi-item": {

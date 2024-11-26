@@ -569,6 +569,10 @@ const upx2px = defineSyncApi(API_UPX2PX, (number, newDeviceWidth) => {
     return number < 0 ? -result : result;
 }, Upx2pxProtocol);
 
+function __f__(type, filename, ...args) {
+    console[type].apply(console, [...args, filename]);
+}
+
 const API_ADD_INTERCEPTOR = 'addInterceptor';
 const API_REMOVE_INTERCEPTOR = 'removeInterceptor';
 const AddInterceptorProtocol = [
@@ -813,7 +817,7 @@ const offPushMessage = (fn) => {
     }
 };
 
-const SYNC_API_RE = /^\$|getLocale|setLocale|sendNativeEvent|restoreGlobal|requireGlobal|getCurrentSubNVue|getMenuButtonBoundingClientRect|^report|interceptors|Interceptor$|getSubNVueById|requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64|getDeviceInfo|getAppBaseInfo|getWindowInfo|getSystemSetting|getAppAuthorizeSetting/;
+const SYNC_API_RE = /^\$|__f__|getLocale|setLocale|sendNativeEvent|restoreGlobal|requireGlobal|getCurrentSubNVue|getMenuButtonBoundingClientRect|^report|interceptors|Interceptor$|getSubNVueById|requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64|getDeviceInfo|getAppBaseInfo|getWindowInfo|getSystemSetting|getAppAuthorizeSetting/;
 const SYNC_API_RE_X = /getElementById/;
 const CONTEXT_API_RE = /^create|Manager$/;
 // Context例外情况
@@ -934,18 +938,20 @@ function initWrapper(protocols) {
         return processArgs(methodName, res, returnValue, {}, keepReturnValue);
     }
     return function wrapper(methodName, method) {
-        if (!hasOwn(protocols, methodName)) {
-            if (isContextApi(methodName) || isTaskApi(methodName)) {
-                return function (...args) {
-                    const contextOrTask = method(...args);
+        if (isContextApi(methodName) || isTaskApi(methodName)) {
+            method = function (...args) {
+                const contextOrTask = method(...args);
+                if (contextOrTask) {
                     contextOrTask.__v_skip = true;
-                    return contextOrTask;
-                };
-            }
+                }
+                return contextOrTask;
+            };
+        }
+        if (!hasOwn(protocols, methodName) && !isFunction(protocols.returnValue)) {
             return method;
         }
         const protocol = protocols[methodName];
-        if (!protocol) {
+        if (!protocol && !isFunction(protocols.returnValue)) {
             // 暂不支持的 api
             return function () {
                 console.error(`微信小程序 暂不支持${methodName}`);
@@ -953,7 +959,7 @@ function initWrapper(protocols) {
         }
         return function (arg1, arg2) {
             // 目前 api 最多两个参数
-            let options = protocol;
+            let options = protocol || {};
             if (isFunction(protocol)) {
                 options = protocol(arg1);
             }
@@ -1260,7 +1266,7 @@ const getAppBaseInfo = {
             }
             catch (error) { }
         }
-        return sortObject(extend(toRes, parameters));
+        extend(toRes, parameters);
     },
 };
 
@@ -1305,6 +1311,7 @@ const baseApis = {
     onPushMessage,
     offPushMessage,
     invokePushCallback,
+    __f__,
     getElementById,
     createCanvasContextAsync,
 };
@@ -1348,6 +1355,45 @@ function initGetProvider(providers) {
         }
         isFunction(complete) && complete(res);
     };
+}
+
+function createUTSJSONObjectIfNeed(obj) {
+    if (!isPlainObject(obj) && !Array.isArray(obj)) {
+        return obj;
+    }
+    // TODO globalThis部分平台表现怪异
+    return globalThis.UTS.JSON.parse(JSON.stringify(obj));
+}
+
+const request = {
+    returnValue: (res) => {
+        const { data } = res;
+        res.data = createUTSJSONObjectIfNeed(data);
+        return res;
+    },
+};
+
+const getStorage = {
+    returnValue: (res) => {
+        return createUTSJSONObjectIfNeed(res);
+    },
+};
+
+const getStorageSync = getStorage;
+
+var protocols$1 = /*#__PURE__*/Object.freeze({
+  __proto__: null,
+  getStorage: getStorage,
+  getStorageSync: getStorageSync,
+  request: request
+});
+
+function parseXReturnValue(methodName, res) {
+    const protocol = protocols$1[methodName];
+    if (protocol && isFunction(protocol.returnValue)) {
+        return protocol.returnValue(res);
+    }
+    return res;
 }
 
 const objectKeys = [
@@ -1455,6 +1501,9 @@ var shims = /*#__PURE__*/Object.freeze({
   shareVideoMessage: shareVideoMessage
 });
 
+function returnValue(method, res) {
+    return parseXReturnValue(method, res);
+}
 const compressImage = {
     args(fromArgs, toArgs) {
         // https://developers.weixin.qq.com/community/develop/doc/000c08940c865011298e0a43256800?highLine=compressHeight
@@ -1482,6 +1531,7 @@ var protocols = /*#__PURE__*/Object.freeze({
   getWindowInfo: getWindowInfo,
   previewImage: previewImage,
   redirectTo: redirectTo,
+  returnValue: returnValue,
   showActionSheet: showActionSheet
 });
 

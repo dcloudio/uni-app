@@ -12,7 +12,7 @@ export function formatAppLog(
   }
 }
 
-export function formatH5Log(
+export function formatLog(
   type: keyof Console,
   filename: string,
   ...args: unknown[]

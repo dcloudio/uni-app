@@ -730,6 +730,9 @@ importers:
       '@dcloudio/uni-components':
         specifier: workspace:*
         version: link:../uni-components
+      '@dcloudio/uni-console':
+        specifier: workspace:*
+        version: link:../uni-console
       '@dcloudio/uni-i18n':
         specifier: workspace:*
         version: link:../uni-i18n
@@ -1339,6 +1342,12 @@ importers:
         specifier: 1.3.10
         version: 1.3.10
 
+  packages/uni-console:
+    dependencies:
+      '@dcloudio/uni-cli-shared':
+        specifier: workspace:*
+        version: link:../uni-cli-shared
+
   packages/uni-core:
     devDependencies:
       '@dcloudio/uni-i18n':
@@ -1610,6 +1619,31 @@ importers:
       vue:
         specifier: 3.4.21
         version: 3.4.21(typescript@5.4.2)
+
+  packages/uni-mp-harmony:
+    dependencies:
+      '@dcloudio/uni-cli-shared':
+        specifier: 3.0.0-alpha-4030120240925001
+        version: link:../uni-cli-shared
+      '@dcloudio/uni-mp-vite':
+        specifier: 3.0.0-alpha-4030120240925001
+        version: link:../uni-mp-vite
+      '@dcloudio/uni-mp-vue':
+        specifier: 3.0.0-alpha-4030120240925001
+        version: link:../uni-mp-vue
+      '@dcloudio/uni-quickapp-webview':
+        specifier: 3.0.0-alpha-4030120240925001
+        version: link:../uni-quickapp-webview
+      '@dcloudio/uni-shared':
+        specifier: 3.0.0-alpha-4030120240925001
+        version: link:../uni-shared
+      '@vue/shared':
+        specifier: 3.4.21
+        version: 3.4.21
+    devDependencies:
+      '@dcloudio/uni-mp-compiler':
+        specifier: 3.0.0-alpha-4030120240925001
+        version: link:../uni-mp-compiler
 
   packages/uni-mp-jd:
     dependencies:

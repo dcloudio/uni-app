@@ -569,6 +569,10 @@ const upx2px = defineSyncApi(API_UPX2PX, (number, newDeviceWidth) => {
     return number < 0 ? -result : result;
 }, Upx2pxProtocol);
 
+function __f__(type, filename, ...args) {
+    console[type].apply(console, [...args, filename]);
+}
+
 const API_ADD_INTERCEPTOR = 'addInterceptor';
 const API_REMOVE_INTERCEPTOR = 'removeInterceptor';
 const AddInterceptorProtocol = [
@@ -813,7 +817,7 @@ const offPushMessage = (fn) => {
     }
 };
 
-const SYNC_API_RE = /^\$|getLocale|setLocale|sendNativeEvent|restoreGlobal|requireGlobal|getCurrentSubNVue|getMenuButtonBoundingClientRect|^report|interceptors|Interceptor$|getSubNVueById|requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64|getDeviceInfo|getAppBaseInfo|getWindowInfo|getSystemSetting|getAppAuthorizeSetting/;
+const SYNC_API_RE = /^\$|__f__|getLocale|setLocale|sendNativeEvent|restoreGlobal|requireGlobal|getCurrentSubNVue|getMenuButtonBoundingClientRect|^report|interceptors|Interceptor$|getSubNVueById|requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64|getDeviceInfo|getAppBaseInfo|getWindowInfo|getSystemSetting|getAppAuthorizeSetting/;
 const SYNC_API_RE_X = /getElementById/;
 const CONTEXT_API_RE = /^create|Manager$/;
 // Context例外情况
@@ -934,18 +938,20 @@ function initWrapper(protocols) {
         return processArgs(methodName, res, returnValue, {}, keepReturnValue);
     }
     return function wrapper(methodName, method) {
-        if (!hasOwn(protocols, methodName)) {
-            if (isContextApi(methodName) || isTaskApi(methodName)) {
-                return function (...args) {
-                    const contextOrTask = method(...args);
+        if (isContextApi(methodName) || isTaskApi(methodName)) {
+            method = function (...args) {
+                const contextOrTask = method(...args);
+                if (contextOrTask) {
                     contextOrTask.__v_skip = true;
-                    return contextOrTask;
-                };
-            }
+                }
+                return contextOrTask;
+            };
+        }
+        if (!hasOwn(protocols, methodName) && !isFunction(protocols.returnValue)) {
             return method;
         }
         const protocol = protocols[methodName];
-        if (!protocol) {
+        if (!protocol && !isFunction(protocols.returnValue)) {
             // 暂不支持的 api
             return function () {
                 console.error(`字节跳动小程序 暂不支持${methodName}`);
@@ -953,7 +959,7 @@ function initWrapper(protocols) {
         }
         return function (arg1, arg2) {
             // 目前 api 最多两个参数
-            let options = protocol;
+            let options = protocol || {};
             if (isFunction(protocol)) {
                 options = protocol(arg1);
             }
@@ -1108,7 +1114,6 @@ function populateParameters(fromRes, toRes) {
     };
     {
         try {
-            parameters.uniCompileVersionCode = parseFloat(process.env.UNI_COMPILER_VERSION);
             parameters.uniCompilerVersionCode = parseFloat(process.env.UNI_COMPILER_VERSION);
             parameters.uniRuntimeVersionCode = parseFloat(process.env.UNI_COMPILER_VERSION);
         }
@@ -1255,6 +1260,7 @@ const baseApis = {
     onPushMessage,
     offPushMessage,
     invokePushCallback,
+    __f__,
     getElementById,
     createCanvasContextAsync,
 };

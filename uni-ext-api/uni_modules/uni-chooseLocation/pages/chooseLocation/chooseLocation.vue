@@ -363,14 +363,16 @@
             resolve(res);
           }).catch((err) => {
             if (err instanceof UniCloudError) {
-              const errCode = (err as UniCloudError).errCode;
-              const errMsg = (err as UniCloudError).errMsg;
+              const cloudError = err as UniCloudError;
+              const errCode = cloudError.errCode;
+              const errMsg = cloudError.errMsg;
+              const errSubject = cloudError.errSubject;
               if (errMsg.indexOf("在云端不存在") > -1 || errMsg.indexOf("未匹配") > -1) {
                 this.errMsg = "uni.chooseLocation 依赖 uniCloud 的 uni-map-common 插件，请安装 uni-map-common 插件，插件地址：https://ext.dcloud.net.cn/plugin?id=13872";
                 console.error(this.errMsg);
               } else {
                 this.errMsg = errMsg;
-                console.error("获取POI信息失败，" + JSON.stringify({ errCode, errMsg }));
+                console.error("获取POI信息失败，" + JSON.stringify({ errCode, errMsg, errSubject }));
               }
             }
             reject(err);
@@ -1045,7 +1047,7 @@
   }
 
   .uni-choose-location-dark .uni-choose-location-poi-search-box {
-    background-color: #181818;
+    background-color: #111111;
   }
 
   .uni-choose-location-dark .uni-choose-location-search-icon {
@@ -1082,6 +1084,10 @@
   }
 
   .uni-choose-location-dark .uni-choose-location-map-reset-icon {
+    color: #d1d1d1;
+  }
+  
+  .uni-choose-location-dark .uni-choose-location-poi-search-error-text {
     color: #d1d1d1;
   }
 
