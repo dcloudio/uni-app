@@ -3841,6 +3841,7 @@ const PageComponent = /* @__PURE__ */ defineSystemComponent({
       currentInstance.$systemDialogPages = vue.ref([]);
       if (isDialogPageInstance(ctx)) {
         navigationBar.style = "custom";
+        pageMeta.backgroundColorContent = "transparent";
         pageMeta.route = ctx.attrs.route;
         const parentInstance = vue.inject(
           "parentInstance"

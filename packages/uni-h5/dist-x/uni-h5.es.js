@@ -15012,10 +15012,10 @@ class CanvasContextImpl {
   }
 }
 const createCanvasContextAsync = function(options) {
-  var _a, _b, _c, _d, _e, _f;
-  const pages = getCurrentBasePages();
-  const currentPage = (_a = options.component) != null ? _a : pages[pages.length - 1];
-  if (currentPage != null) {
+  nextTick(() => {
+    var _a, _b, _c, _d, _e;
+    const pages = getCurrentBasePages();
+    const currentPage = (_a = options.component) != null ? _a : pages[pages.length - 1];
     const element = (_b = currentPage.$el) == null ? void 0 : _b.querySelector("#" + options.id);
     if (element != null) {
       const canvas = element;
@@ -15028,15 +15028,8 @@ const createCanvasContextAsync = function(options) {
       );
       (_d = options.fail) == null ? void 0 : _d.call(options, uniError);
     }
-  } else {
-    const uniError = new UniError(
-      "uni-createCanvasContextAsync",
-      -1,
-      "No found current page."
-    );
-    (_e = options.fail) == null ? void 0 : _e.call(options, uniError);
-  }
-  (_f = options.complete) == null ? void 0 : _f.call(options);
+    (_e = options.complete) == null ? void 0 : _e.call(options);
+  });
 };
 const CONTEXT_ID = "MAP_LOCATION";
 const MapLocation = /* @__PURE__ */ defineSystemComponent({
@@ -20259,6 +20252,7 @@ const PageComponent = /* @__PURE__ */ defineSystemComponent({
       currentInstance.$systemDialogPages = ref([]);
       if (isDialogPageInstance(ctx)) {
         navigationBar.style = "custom";
+        pageMeta.backgroundColorContent = "transparent";
         pageMeta.route = ctx.attrs.route;
         const parentInstance = inject(
           "parentInstance"
