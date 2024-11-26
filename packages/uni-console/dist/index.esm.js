@@ -77,9 +77,148 @@ function rewriteConsole() {
 function formatMessage(type, args) {
     return {
         type,
-        message: args.map((arg) => JSON.stringify(arg)).join(' '),
+        args: formatArgs(args),
     };
 }
+function formatArgs(args) {
+    return args.map((arg) => formatArg(arg));
+}
+function formatArg(arg) {
+    return ARG_FORMATTERS[typeof arg](arg);
+}
+function formatObject(value) {
+    if (value === null) {
+        return {
+            type: 'null',
+        };
+    }
+    if (Array.isArray(value)) {
+        return {
+            type: 'object',
+            subType: 'array',
+            value: {
+                properties: value.map(formatArrayElement),
+                methods: [],
+            },
+        };
+    }
+    if (value instanceof Set) {
+        return {
+            type: 'object',
+            subType: 'set',
+            className: 'Set',
+            description: `Set(${value.size})`,
+            value: {
+                entries: Array.from(value).map(formatSetEntry),
+                methods: [],
+            },
+        };
+    }
+    if (value instanceof Map) {
+        return {
+            type: 'object',
+            subType: 'map',
+            className: 'Map',
+            description: `Map(${value.size})`,
+            value: {
+                entries: Array.from(value.entries()).map(formatMapEntry),
+                methods: [],
+            },
+        };
+    }
+    if (value instanceof RegExp) {
+        return {
+            type: 'object',
+            subType: 'regexp',
+            value: String(value),
+            className: 'Regexp',
+        };
+    }
+    if (value instanceof Date) {
+        return {
+            type: 'object',
+            subType: 'date',
+            value: String(value),
+            className: 'Date',
+        };
+    }
+    if (value instanceof Error) {
+        return {
+            type: 'object',
+            subType: 'error',
+            value: value.message || String(value),
+            className: value.name || 'Error',
+        };
+    }
+    return {
+        type: 'object',
+        value: {
+            properties: Object.entries(value).map(([name, value]) => formatObjectProperty(name, value)),
+            methods: [],
+        },
+    };
+}
+function formatObjectProperty(name, value) {
+    return Object.assign(formatArg(value), {
+        name,
+    });
+}
+function formatArrayElement(value, index) {
+    return Object.assign(formatArg(value), {
+        name: `${index}`,
+    });
+}
+function formatSetEntry(value) {
+    return {
+        value: formatArg(value),
+    };
+}
+function formatMapEntry(value) {
+    return {
+        key: formatArg(value[0]),
+        value: formatArg(value[1]),
+    };
+}
+const ARG_FORMATTERS = {
+    undefined() {
+        return {
+            type: 'undefined',
+        };
+    },
+    object(value) {
+        return formatObject(value);
+    },
+    boolean(value) {
+        return {
+            type: 'boolean',
+            value: String(value),
+        };
+    },
+    number(value) {
+        return {
+            type: 'number',
+            value: String(value),
+        };
+    },
+    bigint(value) {
+        return {
+            type: 'bigint',
+            value: String(value),
+        };
+    },
+    string(value) {
+        return {
+            type: 'string',
+            value,
+        };
+    },
+    symbol(value) {
+        return {
+            type: 'symbol',
+            value: value.description,
+        };
+    },
+};
 
 function initConsole() {
     if (!hasRuntimeSocket)
