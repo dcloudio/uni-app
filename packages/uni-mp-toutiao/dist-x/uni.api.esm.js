@@ -947,7 +947,8 @@ function initWrapper(protocols) {
                 return contextOrTask;
             };
         }
-        if (!hasOwn(protocols, methodName) && !isFunction(protocols.returnValue)) {
+        if ((!hasOwn(protocols, methodName) && !isFunction(protocols.returnValue)) ||
+            !isFunction(method)) {
             return method;
         }
         const protocol = protocols[methodName];

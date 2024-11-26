@@ -26,10 +26,7 @@ var index = () => {
     return [
         uniConsoleRuntimePlugin(),
         uniCliShared.defineUniMainJsPlugin((opts) => {
-            const hasRuntimeSocket = process.env.NODE_ENV === 'development' &&
-                process.env.UNI_SOCKET_HOSTS &&
-                process.env.UNI_SOCKET_PORT &&
-                process.env.UNI_SOCKET_ID;
+            const hasRuntimeSocket = uniCliShared.isEnableConsole();
             return {
                 name: 'uni:console-main-js',
                 enforce: 'post',
