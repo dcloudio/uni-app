@@ -35,6 +35,11 @@ function parseComponentPublicInstance(obj: any) {
 }
 
 function serializeArrayBuffer(obj: ArrayBuffer) {
+  // @ts-expect-error ios 提供了 ArrayBufferWrapper 类来处理 ArrayBuffer 的传递
+  if (typeof ArrayBufferWrapper !== 'undefined') {
+    // @ts-expect-error
+    return { __type__: 'ArrayBuffer', value: new ArrayBufferWrapper(obj) }
+  }
   return { __type__: 'ArrayBuffer', value: obj }
 }
 

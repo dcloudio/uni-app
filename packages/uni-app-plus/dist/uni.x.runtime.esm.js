@@ -4909,6 +4909,12 @@ function parseComponentPublicInstance(obj) {
   }
 }
 function serializeArrayBuffer(obj) {
+  if (typeof ArrayBufferWrapper !== "undefined") {
+    return {
+      __type__: "ArrayBuffer",
+      value: new ArrayBufferWrapper(obj)
+    };
+  }
   return {
     __type__: "ArrayBuffer",
     value: obj
