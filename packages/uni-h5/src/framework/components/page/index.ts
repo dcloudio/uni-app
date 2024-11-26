@@ -48,6 +48,7 @@ export default /*#__PURE__*/ defineSystemComponent({
       currentInstance!.$systemDialogPages = ref<UniDialogPage[]>([])
       if (isDialogPageInstance(ctx as unknown as ComponentInternalInstance)) {
         navigationBar.style = 'custom'
+        pageMeta.backgroundColorContent = 'transparent'
         pageMeta.route = ctx.attrs.route as string
         const parentInstance = inject(
           'parentInstance'
