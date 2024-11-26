@@ -93,7 +93,7 @@ export function initWrapper(protocols: MPProtocols) {
     )
   }
   return function wrapper(methodName: string, method: unknown) {
-    if (isContextApi(methodName) || isTaskApi(methodName)) {
+    if ((isContextApi(methodName) || isTaskApi(methodName)) && method) {
       const oldMethod = method as Function
       method = function (...args: unknown[]) {
         const contextOrTask = oldMethod(...args)
