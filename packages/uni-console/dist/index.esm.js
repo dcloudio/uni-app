@@ -42,8 +42,10 @@ const CONSOLE_TYPES = ['log', 'warn', 'error', 'info', 'debug'];
 let send = null;
 function setSend(value) {
     send = value;
-    if (value != null) {
-        value(messageQueue);
+    if (value != null && messageQueue.length > 0) {
+        const messages = messageQueue.slice();
+        messageQueue.length = 0;
+        value(messages);
     }
 }
 const messageQueue = [];
@@ -83,10 +85,16 @@ function formatMessage(type, args) {
 function formatArgs(args) {
     return args.map((arg) => formatArg(arg));
 }
-function formatArg(arg) {
-    return ARG_FORMATTERS[typeof arg](arg);
+function formatArg(arg, depth = 0) {
+    if (depth > 7) {
+        return {
+            type: 'object',
+            value: '[Maximum depth reached]',
+        };
+    }
+    return ARG_FORMATTERS[typeof arg](arg, depth);
 }
-function formatObject(value) {
+function formatObject(value, depth) {
     if (value === null) {
         return {
             type: 'null',
@@ -97,7 +105,7 @@ function formatObject(value) {
             type: 'object',
             subType: 'array',
             value: {
-                properties: value.map(formatArrayElement),
+                properties: value.map((v, i) => formatArrayElement(v, i, depth + 1)),
                 methods: [],
             },
         };
@@ -109,7 +117,7 @@ function formatObject(value) {
             className: 'Set',
             description: `Set(${value.size})`,
             value: {
-                entries: Array.from(value).map(formatSetEntry),
+                entries: Array.from(value).map((v) => formatSetEntry(v, depth + 1)),
                 methods: [],
             },
         };
@@ -121,7 +129,7 @@ function formatObject(value) {
             className: 'Map',
             description: `Map(${value.size})`,
             value: {
-                entries: Array.from(value.entries()).map(formatMapEntry),
+                entries: Array.from(value.entries()).map((v) => formatMapEntry(v, depth + 1)),
                 methods: [],
             },
         };
@@ -153,30 +161,30 @@ function formatObject(value) {
     return {
         type: 'object',
         value: {
-            properties: Object.entries(value).map(([name, value]) => formatObjectProperty(name, value)),
+            properties: Object.entries(value).map(([name, value]) => formatObjectProperty(name, value, depth + 1)),
             methods: [],
         },
     };
 }
-function formatObjectProperty(name, value) {
-    return Object.assign(formatArg(value), {
+function formatObjectProperty(name, value, depth) {
+    return Object.assign(formatArg(value, depth), {
         name,
     });
 }
-function formatArrayElement(value, index) {
-    return Object.assign(formatArg(value), {
+function formatArrayElement(value, index, depth) {
+    return Object.assign(formatArg(value, depth), {
         name: `${index}`,
     });
 }
-function formatSetEntry(value) {
+function formatSetEntry(value, depth) {
     return {
-        value: formatArg(value),
+        value: formatArg(value, depth),
     };
 }
-function formatMapEntry(value) {
+function formatMapEntry(value, depth) {
     return {
-        key: formatArg(value[0]),
-        value: formatArg(value[1]),
+        key: formatArg(value[0], depth),
+        value: formatArg(value[1], depth),
     };
 }
 const ARG_FORMATTERS = {
@@ -185,8 +193,8 @@ const ARG_FORMATTERS = {
             type: 'undefined',
         };
     },
-    object(value) {
-        return formatObject(value);
+    object(value, depth) {
+        return formatObject(value, depth);
     },
     boolean(value) {
         return {

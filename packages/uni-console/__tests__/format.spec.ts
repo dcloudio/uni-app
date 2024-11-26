@@ -162,4 +162,81 @@ describe('uni-console', () => {
       },
     })
   })
+  test('formatArg maximum depth', () => {
+    expect(formatArg([[[[[[[[[1]]]]]]]]])).toEqual({
+      type: 'object',
+      subType: 'array',
+      value: {
+        properties: [
+          {
+            type: 'object',
+            subType: 'array',
+            value: {
+              properties: [
+                {
+                  type: 'object',
+                  subType: 'array',
+                  value: {
+                    properties: [
+                      {
+                        type: 'object',
+                        subType: 'array',
+                        value: {
+                          properties: [
+                            {
+                              type: 'object',
+                              subType: 'array',
+                              value: {
+                                properties: [
+                                  {
+                                    type: 'object',
+                                    subType: 'array',
+                                    value: {
+                                      properties: [
+                                        {
+                                          type: 'object',
+                                          subType: 'array',
+                                          value: {
+                                            properties: [
+                                              {
+                                                type: 'object',
+                                                value:
+                                                  '[Maximum depth reached]',
+                                                name: '0',
+                                              },
+                                            ],
+                                            methods: [],
+                                          },
+                                          name: '0',
+                                        },
+                                      ],
+                                      methods: [],
+                                    },
+                                    name: '0',
+                                  },
+                                ],
+                                methods: [],
+                              },
+                              name: '0',
+                            },
+                          ],
+                          methods: [],
+                        },
+                        name: '0',
+                      },
+                    ],
+                    methods: [],
+                  },
+                  name: '0',
+                },
+              ],
+              methods: [],
+            },
+            name: '0',
+          },
+        ],
+        methods: [],
+      },
+    })
+  })
 })

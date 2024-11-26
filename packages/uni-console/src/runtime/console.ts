@@ -8,8 +8,10 @@ let send: SendFn = null
 
 export function setSend(value: SendFn) {
   send = value
-  if (value != null) {
-    value(messageQueue)
+  if (value != null && messageQueue.length > 0) {
+    const messages = messageQueue.slice()
+    messageQueue.length = 0
+    value(messages)
   }
 }
 
@@ -62,11 +64,17 @@ function formatArgs(args: Array<any | null>) {
   return args.map((arg) => formatArg(arg))
 }
 
-export function formatArg(arg: any | null) {
-  return ARG_FORMATTERS[typeof arg](arg)
+export function formatArg(arg: any | null, depth: number = 0) {
+  if (depth >= 7) {
+    return {
+      type: 'object',
+      value: '[Maximum depth reached]',
+    }
+  }
+  return ARG_FORMATTERS[typeof arg](arg, depth)
 }
 
-function formatObject(value: object) {
+function formatObject(value: object, depth: number) {
   if (value === null) {
     return {
       type: 'null',
@@ -77,7 +85,7 @@ function formatObject(value: object) {
       type: 'object',
       subType: 'array',
       value: {
-        properties: value.map(formatArrayElement),
+        properties: value.map((v, i) => formatArrayElement(v, i, depth + 1)),
         methods: [],
       },
     }
@@ -89,7 +97,7 @@ function formatObject(value: object) {
       className: 'Set',
       description: `Set(${value.size})`,
       value: {
-        entries: Array.from(value).map(formatSetEntry),
+        entries: Array.from(value).map((v) => formatSetEntry(v, depth + 1)),
         methods: [],
       },
     }
@@ -101,7 +109,9 @@ function formatObject(value: object) {
       className: 'Map',
       description: `Map(${value.size})`,
       value: {
-        entries: Array.from(value.entries()).map(formatMapEntry),
+        entries: Array.from(value.entries()).map((v) =>
+          formatMapEntry(v, depth + 1)
+        ),
         methods: [],
       },
     }
@@ -134,34 +144,34 @@ function formatObject(value: object) {
     type: 'object',
     value: {
       properties: Object.entries(value).map(([name, value]) =>
-        formatObjectProperty(name, value)
+        formatObjectProperty(name, value, depth + 1)
       ),
       methods: [],
     },
   }
 }
 
-function formatObjectProperty(name: string, value: any | null) {
-  return Object.assign(formatArg(value), {
+function formatObjectProperty(name: string, value: any | null, depth: number) {
+  return Object.assign(formatArg(value, depth), {
     name,
   })
 }
-function formatArrayElement(value: any | null, index: number) {
-  return Object.assign(formatArg(value), {
+function formatArrayElement(value: any | null, index: number, depth: number) {
+  return Object.assign(formatArg(value, depth), {
     name: `${index}`,
   })
 }
 
-function formatSetEntry(value: any | null) {
+function formatSetEntry(value: any | null, depth: number) {
   return {
-    value: formatArg(value),
+    value: formatArg(value, depth),
   }
 }
 
-function formatMapEntry(value: Array<any | null>) {
+function formatMapEntry(value: Array<any | null>, depth: number) {
   return {
-    key: formatArg(value[0]),
-    value: formatArg(value[1]),
+    key: formatArg(value[0], depth),
+    value: formatArg(value[1], depth),
   }
 }
 
@@ -171,8 +181,8 @@ const ARG_FORMATTERS = {
       type: 'undefined',
     }
   },
-  object(value: object) {
-    return formatObject(value)
+  object(value: object, depth: number) {
+    return formatObject(value, depth)
   },
   boolean(value: boolean) {
     return {
