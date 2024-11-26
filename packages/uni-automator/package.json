@@ -1,6 +1,6 @@
 {
   "name": "@dcloudio/uni-automator",
-  "version": "3.0.0-alpha-4030520241124001",
+  "version": "3.0.0-alpha-4030620241126001",
   "description": "@dcloudio/uni-automator",
   "main": "dist/index.js",
   "files": [
@@ -28,7 +28,7 @@
   },
   "gitHead": "33e807d66e1fe47e2ee08ad9c59247e37b8884da",
   "dependencies": {
-    "@dcloudio/uni-cli-shared": "3.0.0-alpha-4030520241124001",
+    "@dcloudio/uni-cli-shared": "3.0.0-alpha-4030620241126001",
     "address": "^1.1.2",
     "cross-env": "^7.0.3",
     "debug": "^4.3.3",

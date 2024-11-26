@@ -1,6 +1,6 @@
 {
   "name": "@dcloudio/uts",
-  "version": "3.0.0-alpha-4030520241124001",
+  "version": "3.0.0-alpha-4030620241126001",
   "description": "uts",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -14,11 +14,11 @@
     "directory": "packages/uts"
   },
   "optionalDependencies": {
-    "@dcloudio/uts-darwin-arm64": "3.0.0-alpha-4030520241124001",
-    "@dcloudio/uts-darwin-x64": "3.0.0-alpha-4030520241124001",
-    "@dcloudio/uts-linux-x64-gnu": "3.0.0-alpha-4030520241124001",
-    "@dcloudio/uts-linux-x64-musl": "3.0.0-alpha-4030520241124001",
-    "@dcloudio/uts-win32-ia32-msvc": "3.0.0-alpha-4030520241124001",
-    "@dcloudio/uts-win32-x64-msvc": "3.0.0-alpha-4030520241124001"
+    "@dcloudio/uts-darwin-arm64": "3.0.0-alpha-4030620241126001",
+    "@dcloudio/uts-darwin-x64": "3.0.0-alpha-4030620241126001",
+    "@dcloudio/uts-linux-x64-gnu": "3.0.0-alpha-4030620241126001",
+    "@dcloudio/uts-linux-x64-musl": "3.0.0-alpha-4030620241126001",
+    "@dcloudio/uts-win32-ia32-msvc": "3.0.0-alpha-4030620241126001",
+    "@dcloudio/uts-win32-x64-msvc": "3.0.0-alpha-4030620241126001"
   }
 }
