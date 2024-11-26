@@ -1,22 +1,18 @@
-import type { Plugin, ResolvedConfig } from 'vite'
+import type { Plugin } from 'vite'
 import { MINI_PROGRAM_PAGE_RUNTIME_HOOKS } from '@dcloudio/uni-shared'
 import {
+  enableSourceMap,
   isUniPageSetupAndTs,
   isUniPageSfcFile,
-  withSourcemap,
 } from '@dcloudio/uni-cli-shared'
 import { MagicString } from '@vue/compiler-sfc'
 
 type RuntimeHooks = keyof typeof MINI_PROGRAM_PAGE_RUNTIME_HOOKS
 
 export function uniRuntimeHooksPlugin(): Plugin {
-  let resolvedConfig: ResolvedConfig
   return {
     name: 'uni:mp-runtime-hooks',
     enforce: 'post',
-    configResolved(config) {
-      resolvedConfig = config
-    },
     async transform(source, id) {
       const isSetupJs = isUniPageSfcFile(id)
       const isSetupTs = !isSetupJs && isUniPageSetupAndTs(id)
@@ -59,7 +55,7 @@ export function uniRuntimeHooksPlugin(): Plugin {
       }
       return {
         code: source,
-        map: withSourcemap(resolvedConfig)
+        map: enableSourceMap()
           ? new MagicString(source).generateMap()
           : { mappings: '' },
       }

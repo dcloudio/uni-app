@@ -9,8 +9,10 @@ import {
   M,
   dynamicImportPolyfill,
   emptyDir,
+  enableSourceMap,
   hasJsonFile,
   isCSSRequest,
+  isEnableConsole,
   isMiniProgramAssetFile,
   normalizeMiniProgramFilename,
   normalizePath,
@@ -45,7 +47,8 @@ export function createBuildOptions(
 ): BuildOptions {
   const { renderDynamicImport } = dynamicImportPolyfill()
   return {
-    // sourcemap: 'inline', // TODO
+    // TODO 待优化，不同小程序平台sourcemap处理逻辑可能不同
+    sourcemap: isEnableConsole() && enableSourceMap(),
     // target: ['chrome53'], // 由小程序自己启用 es6 编译
     emptyOutDir: false, // 不清空输出目录，否则会影响自定义的一些文件输出，比如wxml
     lib: {
@@ -57,6 +60,26 @@ export function createBuildOptions(
     rollupOptions: {
       input: parseRollupInput(inputDir, platform),
       output: {
+        sourcemapPathTransform: (relativeSourcePath, sourcemapPath) => {
+          let [, modulePath] = relativeSourcePath.split('/node_modules/')
+          if (modulePath) {
+            return `node_modules/${modulePath}`
+          }
+          let [, base64] = relativeSourcePath.split('/uniPage:/')
+          if (base64) {
+            return parseVirtualPagePath(base64) + '?type=page'
+          }
+          ;[, base64] = relativeSourcePath.split('/uniComponent:/')
+          if (base64) {
+            return parseVirtualComponentPath(base64) + '?type=component'
+          }
+          return normalizePath(
+            path.relative(
+              process.env.UNI_INPUT_DIR,
+              path.resolve(path.dirname(sourcemapPath), relativeSourcePath)
+            )
+          )
+        },
         entryFileNames(chunk) {
           if (chunk.name === 'main') {
             return 'app.js'
