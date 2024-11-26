@@ -17,6 +17,10 @@ export { fixSetDataEnd, fixSetDataStart } from './runtime/fixSetData'
 export { initUni } from './api/index'
 export { initGetProvider } from './api/shims'
 
+// #if _X_
+export { parseXReturnValue } from './api/protocols/x'
+// #endif
+
 // mp-alipay
 export {
   initData,

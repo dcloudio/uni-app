@@ -93,18 +93,18 @@ export function initWrapper(protocols: MPProtocols) {
     )
   }
   return function wrapper(methodName: string, method: unknown) {
-    if (!hasOwn(protocols, methodName)) {
-      if (isContextApi(methodName) || isTaskApi(methodName)) {
-        return function (...args: unknown[]) {
-          const contextOrTask = (method as Function)(...args)
-          contextOrTask.__v_skip = true
-          return contextOrTask
-        }
+    if (isContextApi(methodName) || isTaskApi(methodName)) {
+      method = function (...args: unknown[]) {
+        const contextOrTask = (method as Function)(...args)
+        contextOrTask.__v_skip = true
+        return contextOrTask
       }
+    }
+    if (!hasOwn(protocols, methodName) && !isFunction(protocols.returnValue)) {
       return method
     }
     const protocol = protocols[methodName] as MPProtocolObject
-    if (!protocol) {
+    if (!protocol && !isFunction(protocols.returnValue)) {
       // 暂不支持的 api
       return function () {
         console.error(`__PLATFORM_TITLE__ 暂不支持${methodName}`)
@@ -112,7 +112,7 @@ export function initWrapper(protocols: MPProtocols) {
     }
     return function (arg1: unknown, arg2: unknown) {
       // 目前 api 最多两个参数
-      let options = protocol
+      let options = protocol || {}
       if (isFunction(protocol)) {
         options = protocol(arg1)
       }

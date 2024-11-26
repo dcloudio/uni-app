@@ -12,6 +12,14 @@ export {
   getAppAuthorizeSetting,
 } from '@dcloudio/uni-mp-core'
 
+// #if _X_
+import { parseXReturnValue } from '@dcloudio/uni-mp-core'
+
+export function returnValue(method: string, res: unknown) {
+  return parseXReturnValue(method, res)
+}
+// #endif
+
 export const compressImage: MPProtocol = {
   args(
     fromArgs: UniApp.CompressImageOptions,
