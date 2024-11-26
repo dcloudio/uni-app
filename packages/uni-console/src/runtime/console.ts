@@ -9,11 +9,7 @@ let send: SendFn = null
 export function setSend(value: SendFn) {
   send = value
   if (value != null) {
-    const messages = messageQueue.slice()
-    messageQueue.length = 0
-    messages.forEach((msg) => {
-      value(msg)
-    })
+    value(messageQueue)
   }
 }
 
@@ -25,10 +21,16 @@ type Message = {
 const messageQueue: Message[] = []
 
 export function rewriteConsole() {
-  const originalConsole = console
+  // 保存原始控制台方法的副本
+  const originalMethods = CONSOLE_TYPES.reduce((methods, type) => {
+    methods[type] = console[type].bind(console)
+    return methods
+  }, {} as Record<MessageType, typeof console.log>)
 
   function wrapConsole(type: MessageType) {
     return function (...args: any[]) {
+      // 使用保存的原始方法输出到控制台
+      originalMethods[type](...args)
       const message = formatMessage(type, args)
       if (send == null) {
         messageQueue.push(message)
@@ -44,7 +46,7 @@ export function rewriteConsole() {
 
   return function restoreConsole() {
     CONSOLE_TYPES.forEach((type) => {
-      console[type] = originalConsole[type]
+      console[type] = originalMethods[type]
     })
   }
 }

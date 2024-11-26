@@ -1,6 +1,11 @@
 'use strict';
 
+var path = require('path');
 var uniCliShared = require('@dcloudio/uni-cli-shared');
+
+function _interopDefault (e) { return e && e.__esModule ? e : { default: e }; }
+
+var path__default = /*#__PURE__*/_interopDefault(path);
 
 const uniConsoleRuntimePlugin = () => {
     return {
@@ -9,9 +14,9 @@ const uniConsoleRuntimePlugin = () => {
             const isProd = process.env.NODE_ENV === 'production';
             return {
                 define: {
-                    UNI_SOCKET_HOSTS: isProd ? '' : process.env.UNI_SOCKET_HOSTS,
-                    UNI_SOCKET_PORT: isProd ? '' : process.env.UNI_SOCKET_PORT,
-                    UNI_SOCKET_ID: isProd ? '' : process.env.UNI_SOCKET_ID,
+                    __UNI_SOCKET_HOSTS__: JSON.stringify(isProd ? '' : process.env.UNI_SOCKET_HOSTS),
+                    __UNI_SOCKET_PORT__: JSON.stringify(isProd ? '' : process.env.UNI_SOCKET_PORT),
+                    __UNI_SOCKET_ID__: JSON.stringify(isProd ? '' : process.env.UNI_SOCKET_ID),
                 },
             };
         },
@@ -21,12 +26,18 @@ var index = () => {
     return [
         uniConsoleRuntimePlugin(),
         uniCliShared.defineUniMainJsPlugin((opts) => {
-            const hasRuntimeSocket = process.env.UNI_SOCKET_HOSTS &&
+            const hasRuntimeSocket = process.env.NODE_ENV === 'development' &&
+                process.env.UNI_SOCKET_HOSTS &&
                 process.env.UNI_SOCKET_PORT &&
                 process.env.UNI_SOCKET_ID;
             return {
                 name: 'uni:console-main-js',
                 enforce: 'post',
+                resolveId(id) {
+                    if (id === '@dcloudio/uni-console') {
+                        return uniCliShared.resolveBuiltIn(path__default.default.join('@dcloudio/uni-console', 'dist/index.esm.js'));
+                    }
+                },
                 transform(code, id) {
                     if (!hasRuntimeSocket) {
                         return;
@@ -38,7 +49,9 @@ var index = () => {
                         code: `import '@dcloudio/uni-console'
             ${code}
             `,
-                        map: null,
+                        map: {
+                            mappings: '',
+                        },
                     };
                 },
             };

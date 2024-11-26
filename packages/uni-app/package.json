@@ -26,6 +26,7 @@
   "dependencies": {
     "@dcloudio/uni-cloud": "workspace:*",
     "@dcloudio/uni-components": "workspace:*",
+    "@dcloudio/uni-console": "workspace:*",
     "@dcloudio/uni-i18n": "workspace:*",
     "@dcloudio/uni-push": "workspace:*",
     "@dcloudio/uni-shared": "workspace:*",

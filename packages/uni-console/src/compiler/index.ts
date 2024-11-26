@@ -1,6 +1,6 @@
 import type { Plugin } from 'vite'
-
-import { defineUniMainJsPlugin } from '@dcloudio/uni-cli-shared'
+import path from 'path'
+import { defineUniMainJsPlugin, resolveBuiltIn } from '@dcloudio/uni-cli-shared'
 
 const uniConsoleRuntimePlugin = (): Plugin => {
   return {
@@ -9,9 +9,15 @@ const uniConsoleRuntimePlugin = (): Plugin => {
       const isProd = process.env.NODE_ENV === 'production'
       return {
         define: {
-          UNI_SOCKET_HOSTS: isProd ? '' : process.env.UNI_SOCKET_HOSTS,
-          UNI_SOCKET_PORT: isProd ? '' : process.env.UNI_SOCKET_PORT,
-          UNI_SOCKET_ID: isProd ? '' : process.env.UNI_SOCKET_ID,
+          __UNI_SOCKET_HOSTS__: JSON.stringify(
+            isProd ? '' : process.env.UNI_SOCKET_HOSTS
+          ),
+          __UNI_SOCKET_PORT__: JSON.stringify(
+            isProd ? '' : process.env.UNI_SOCKET_PORT
+          ),
+          __UNI_SOCKET_ID__: JSON.stringify(
+            isProd ? '' : process.env.UNI_SOCKET_ID
+          ),
         },
       }
     },
@@ -23,12 +29,20 @@ export default () => {
     uniConsoleRuntimePlugin(),
     defineUniMainJsPlugin((opts) => {
       const hasRuntimeSocket =
+        process.env.NODE_ENV === 'development' &&
         process.env.UNI_SOCKET_HOSTS &&
         process.env.UNI_SOCKET_PORT &&
         process.env.UNI_SOCKET_ID
       return {
         name: 'uni:console-main-js',
         enforce: 'post',
+        resolveId(id: string) {
+          if (id === '@dcloudio/uni-console') {
+            return resolveBuiltIn(
+              path.join('@dcloudio/uni-console', 'dist/index.esm.js')
+            )
+          }
+        },
         transform(code: string, id: string) {
           if (!hasRuntimeSocket) {
             return
@@ -40,7 +54,9 @@ export default () => {
             code: `import '@dcloudio/uni-console'
             ${code}
             `,
-            map: null,
+            map: {
+              mappings: '',
+            },
           }
         },
       }

@@ -1,7 +1,7 @@
 [
   {
     "input": {
-      "src/compiler/index.ts": "dist/uni.compiler.js"
+      "src/compiler/index.ts": "lib/uni.plugin.js"
     },
     "output": {
       "format": "cjs"
@@ -13,9 +13,10 @@
   },
   {
     "input": {
-      "src/runtime/index.ts": "dist/runtime.es.js"
+      "src/runtime/index.ts": "dist/index.esm.js"
     },
     "compilerOptions": {
+      "target": "esnext",
       "declaration": false
     }
   }

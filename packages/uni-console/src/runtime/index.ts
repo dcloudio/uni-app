@@ -1,30 +1,25 @@
 import { hasRuntimeSocket, initRuntimeSocket } from './socket'
 import { rewriteConsole, setSend } from './console'
 
-export async function initConsole() {
-  if (!hasRuntimeSocket) return
+export function initConsole(): Promise<boolean> {
+  if (!hasRuntimeSocket) return Promise.resolve(false)
+
   const restoreConsole = rewriteConsole()
-  const socket = await initRuntimeSocket()
-  if (!socket) {
-    restoreConsole()
-    console.error('开发模式下日志通道连接失败')
-    return
-  }
-
-  function send(msg: any) {
-    socket!.send({
-      data: {
-        type: 'console',
-        data: msg,
-      },
+  return initRuntimeSocket().then((socket) => {
+    if (!socket) {
+      restoreConsole()
+      console.error('开发模式下日志通道建立连接失败')
+      return false
+    }
+    setSend((msgs: any) => {
+      socket!.send({
+        data: {
+          type: 'console',
+          data: msgs,
+        },
+      })
     })
-  }
-
-  socket.onOpen(() => {
-    setSend(send)
-  })
-  socket.onClose(() => {
-    setSend(null)
+    return true
   })
 }
 
