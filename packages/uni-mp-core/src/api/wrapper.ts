@@ -94,8 +94,9 @@ export function initWrapper(protocols: MPProtocols) {
   }
   return function wrapper(methodName: string, method: unknown) {
     if (isContextApi(methodName) || isTaskApi(methodName)) {
+      const oldMethod = method as Function
       method = function (...args: unknown[]) {
-        const contextOrTask = (method as Function)(...args)
+        const contextOrTask = oldMethod(...args)
         if (contextOrTask) {
           contextOrTask.__v_skip = true
         }
