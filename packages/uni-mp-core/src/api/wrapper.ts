@@ -96,7 +96,9 @@ export function initWrapper(protocols: MPProtocols) {
     if (isContextApi(methodName) || isTaskApi(methodName)) {
       method = function (...args: unknown[]) {
         const contextOrTask = (method as Function)(...args)
-        contextOrTask.__v_skip = true
+        if (contextOrTask) {
+          contextOrTask.__v_skip = true
+        }
         return contextOrTask
       }
     }
