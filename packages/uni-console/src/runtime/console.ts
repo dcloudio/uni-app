@@ -36,7 +36,7 @@ export function rewriteConsole() {
         messageQueue.push(message)
         return
       }
-      send(message)
+      send([message])
     }
   }
 

@@ -62,7 +62,7 @@ function rewriteConsole() {
                 messageQueue.push(message);
                 return;
             }
-            send(message);
+            send([message]);
         };
     }
     CONSOLE_TYPES.forEach((type) => {
@@ -232,10 +232,10 @@ function initConsole() {
         }
         setSend((msgs) => {
             socket.send({
-                data: {
+                data: JSON.stringify({
                     type: 'console',
                     data: msgs,
-                },
+                }),
             });
         });
         return true;

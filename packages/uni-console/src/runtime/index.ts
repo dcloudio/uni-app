@@ -13,10 +13,10 @@ export function initConsole(): Promise<boolean> {
     }
     setSend((msgs: any) => {
       socket!.send({
-        data: {
+        data: JSON.stringify({
           type: 'console',
           data: msgs,
-        },
+        }),
       })
     })
     return true
