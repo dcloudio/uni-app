@@ -4,7 +4,7 @@ export {
   getSystemInfo,
   getSystemInfoSync,
 } from '@dcloudio/uni-mp-core'
-import { navigateTo as _navigateTo } from '@dcloudio/uni-mp-core'
+import { navigateTo as _navigateTo, isSyncApi } from '@dcloudio/uni-mp-core'
 
 function createTodoMethod(contextName: string, methodName: string) {
   return function unsupported() {
@@ -15,6 +15,9 @@ function createTodoMethod(contextName: string, methodName: string) {
 type Data = Record<string, any>
 
 export function returnValue(methodName: string, res: Record<string, any> = {}) {
+  if (isSyncApi(methodName)) {
+    return res
+  }
   // 通用 returnValue 解析
   if (res.error || res.errorMessage) {
     res.errMsg = `${methodName}:fail ${res.errorMessage || res.error}`
