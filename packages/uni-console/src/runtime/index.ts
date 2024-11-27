@@ -1,26 +1,26 @@
 import { hasRuntimeSocket, initRuntimeSocket } from './socket'
-import { rewriteConsole, setSend } from './console'
+import { rewriteConsole, setSendConsole } from './console'
+import { initOnError } from './error'
 
-export function initConsole(): Promise<boolean> {
+export function initRuntimeSocketService(): Promise<boolean> {
   if (!hasRuntimeSocket) return Promise.resolve(false)
 
+  const restoreError = initOnError()
   const restoreConsole = rewriteConsole()
   return initRuntimeSocket().then((socket) => {
     if (!socket) {
+      restoreError()
       restoreConsole()
       console.error('开发模式下日志通道建立连接失败')
       return false
     }
-    setSend((msgs: any) => {
+    setSendConsole((data: string) => {
       socket!.send({
-        data: JSON.stringify({
-          type: 'console',
-          data: msgs,
-        }),
+        data,
       })
     })
     return true
   })
 }
 
-initConsole()
+initRuntimeSocketService()

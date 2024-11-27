@@ -1,12 +1,18 @@
 import { relative } from '../utils'
 import {
+  type GenerateAppIOSJavaScriptRuntimeCodeFrameOptions,
   type GenerateJavaScriptRuntimeCodeFrameOptions,
   parseUTSJavaScriptRuntimeStacktrace,
 } from './js'
 import {
+  type GenerateAppAndroidKotlinRuntimeCodeFrameOptions,
   type GenerateKotlinRuntimeCodeFrameOptions,
   parseUTSKotlinRuntimeStacktrace,
 } from './kotlin'
+import {
+  type GenerateWeixinRuntimeCodeFrameOptions,
+  parseWeixinRuntimeStacktrace,
+} from './mp/weixin'
 
 export { parseUTSSwiftPluginStacktrace } from './swift'
 
@@ -16,6 +22,19 @@ export {
 } from './kotlin'
 
 export { parseUTSJavaScriptRuntimeStacktrace } from './js'
+
+export function parseRuntimeStacktrace(
+  stacktrace: string,
+  options:
+    | GenerateAppAndroidKotlinRuntimeCodeFrameOptions
+    | GenerateAppIOSJavaScriptRuntimeCodeFrameOptions
+    | GenerateWeixinRuntimeCodeFrameOptions
+) {
+  if (options.platform === 'mp-weixin') {
+    return parseWeixinRuntimeStacktrace(stacktrace, options)
+  }
+  return parseUTSRuntimeStacktrace(stacktrace, options)
+}
 
 export function parseUTSRuntimeStacktrace(
   stacktrace: string,

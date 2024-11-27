@@ -39,16 +39,26 @@ function tryConnectSocket(host) {
 }
 
 const CONSOLE_TYPES = ['log', 'warn', 'error', 'info', 'debug'];
-let send = null;
-function setSend(value) {
-    send = value;
+let sendConsole = null;
+const messageQueue = [];
+function sendConsoleMessages(messages) {
+    if (sendConsole == null) {
+        messageQueue.push(...messages);
+        return;
+    }
+    sendConsole(JSON.stringify({
+        type: 'console',
+        data: messages,
+    }));
+}
+function setSendConsole(value) {
+    sendConsole = value;
     if (value != null && messageQueue.length > 0) {
         const messages = messageQueue.slice();
         messageQueue.length = 0;
-        value(messages);
+        sendConsoleMessages(messages);
     }
 }
-const messageQueue = [];
 function rewriteConsole() {
     // 保存原始控制台方法的副本
     const originalMethods = CONSOLE_TYPES.reduce((methods, type) => {
@@ -59,12 +69,7 @@ function rewriteConsole() {
         return function (...args) {
             // 使用保存的原始方法输出到控制台
             originalMethods[type](...args);
-            const message = formatMessage(type, args);
-            if (send == null) {
-                messageQueue.push(message);
-                return;
-            }
-            send([message]);
+            sendConsoleMessages([formatMessage(type, args)]);
         };
     }
     CONSOLE_TYPES.forEach((type) => {
@@ -86,7 +91,7 @@ function formatArgs(args) {
     return args.map((arg) => formatArg(arg));
 }
 function formatArg(arg, depth = 0) {
-    if (depth > 7) {
+    if (depth >= 7) {
         return {
             type: 'object',
             value: '[Maximum depth reached]',
@@ -228,27 +233,48 @@ const ARG_FORMATTERS = {
     },
 };
 
-function initConsole() {
+const errorQueue = [];
+function sendErrorMessages(errors) {
+    {
+        errorQueue.push(...errors);
+        return;
+    }
+}
+function initOnError() {
+    function onError(error) {
+        sendErrorMessages([error]);
+    }
+    // TODO 是否需要监听 uni.onUnhandledRejection？
+    if (typeof uni.onError === 'function') {
+        uni.onError(onError);
+    }
+    return function offError() {
+        if (typeof uni.offError === 'function') {
+            uni.offError(onError);
+        }
+    };
+}
+
+function initRuntimeSocketService() {
     if (!hasRuntimeSocket)
         return Promise.resolve(false);
+    const restoreError = initOnError();
     const restoreConsole = rewriteConsole();
     return initRuntimeSocket().then((socket) => {
         if (!socket) {
+            restoreError();
             restoreConsole();
             console.error('开发模式下日志通道建立连接失败');
             return false;
         }
-        setSend((msgs) => {
+        setSendConsole((data) => {
             socket.send({
-                data: JSON.stringify({
-                    type: 'console',
-                    data: msgs,
-                }),
+                data,
             });
         });
         return true;
     });
 }
-initConsole();
+initRuntimeSocketService();
 
-export { initConsole };
+export { initRuntimeSocketService };

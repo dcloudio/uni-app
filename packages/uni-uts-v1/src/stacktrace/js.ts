@@ -14,6 +14,11 @@ export interface GenerateJavaScriptRuntimeCodeFrameOptions
   language: 'javascript'
 }
 
+export interface GenerateAppIOSJavaScriptRuntimeCodeFrameOptions
+  extends GenerateJavaScriptRuntimeCodeFrameOptions {
+  platform: 'app-ios'
+}
+
 const JS_ERROR_RE = /\(\d+:\d+\)\s(.*)\s@([^\s]+\.js)\:(\d+)\:(\d+)/
 const VUE_ERROR_RE = /@([^\s]+\.js)\:(\d+)\:(\d+)/
 
@@ -133,9 +138,20 @@ function parseUTSJavaScriptRuntimeStacktraceJsErrorLine(
     return lines
   }
 
+  processErrorLines(error, sourceMapFile, parseInt(line), lines)
+
+  return lines
+}
+
+export function processErrorLines(
+  error: string,
+  sourceMapFile: string,
+  line: number,
+  lines: string[]
+) {
   const originalPosition = originalPositionForSync({
     sourceMapFile,
-    line: parseInt(line),
+    line,
     column: 0,
     withSourceContent: true,
   })
@@ -160,5 +176,4 @@ function parseUTSJavaScriptRuntimeStacktraceJsErrorLine(
       )
     }
   }
-  return lines
 }

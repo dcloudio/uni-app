@@ -1,19 +1,10 @@
+import type { SendFn } from './utils'
+
 const CONSOLE_TYPES = ['log', 'warn', 'error', 'info', 'debug'] as const
 
 type MessageType = 'log' | 'warn' | 'error' | 'info' | 'debug'
 
-type SendFn = ((msg: any) => void) | null
-
-let send: SendFn = null
-
-export function setSend(value: SendFn) {
-  send = value
-  if (value != null && messageQueue.length > 0) {
-    const messages = messageQueue.slice()
-    messageQueue.length = 0
-    value(messages)
-  }
-}
+let sendConsole: SendFn = null
 
 type Message = {
   type: MessageType
@@ -21,6 +12,28 @@ type Message = {
 }
 
 const messageQueue: Message[] = []
+
+function sendConsoleMessages(messages: Message[]) {
+  if (sendConsole == null) {
+    messageQueue.push(...messages)
+    return
+  }
+  sendConsole(
+    JSON.stringify({
+      type: 'console',
+      data: messages,
+    })
+  )
+}
+
+export function setSendConsole(value: SendFn) {
+  sendConsole = value
+  if (value != null && messageQueue.length > 0) {
+    const messages = messageQueue.slice()
+    messageQueue.length = 0
+    sendConsoleMessages(messages)
+  }
+}
 
 export function rewriteConsole() {
   // 保存原始控制台方法的副本
@@ -33,12 +46,7 @@ export function rewriteConsole() {
     return function (...args: any[]) {
       // 使用保存的原始方法输出到控制台
       originalMethods[type](...args)
-      const message = formatMessage(type, args)
-      if (send == null) {
-        messageQueue.push(message)
-        return
-      }
-      send([message])
+      sendConsoleMessages([formatMessage(type, args)])
     }
   }
 

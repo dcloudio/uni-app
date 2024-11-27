@@ -2,12 +2,13 @@ import path from 'path'
 
 import { parseUTSKotlinRuntimeStacktrace } from '../src/stacktrace/kotlin'
 import { parseUTSJavaScriptRuntimeStacktrace } from '../src/stacktrace/js'
+import { parseWeixinRuntimeStacktrace } from '../src/stacktrace/mp/weixin'
 
 describe('uts:stacktrace:runtime', () => {
   test('parseUTSKotlinRuntimeStacktrace', async () => {
     const cacheDir = path.resolve(
       __dirname,
-      'examples/uni-app-x/unpackage/cache/app-android'
+      'examples/uni-app-x/output/cache/app-android'
     )
     expect(
       parseUTSKotlinRuntimeStacktrace(
@@ -101,7 +102,7 @@ at io.dcloud.uniapp.vue.shared.IndexKt$callFunction$invoke$1.invoke(index.kt:708
   test('parseUTSJavaScriptRuntimeStacktrace', async () => {
     const cacheDir = path.resolve(
       __dirname,
-      'examples/uni-app-x/unpackage/cache/app-ios'
+      'examples/uni-app-x/output/cache/app-ios'
     )
     expect(
       parseUTSJavaScriptRuntimeStacktrace(
@@ -123,6 +124,50 @@ callWithAsyncErrorHandling@uni-app-x-framework.js:2286:38
         {
           language: 'javascript',
           cacheDir,
+        }
+      )
+    ).toMatchSnapshot()
+  })
+
+  test('parseWeixinRuntimeStacktrace', async () => {
+    const outputDir = path.resolve(
+      __dirname,
+      'examples/uni-app-x/output/dist/dev/mp-weixin'
+    )
+    expect(
+      parseWeixinRuntimeStacktrace(
+        `Error: click2
+at Proxy.click2 (http://127.0.0.1:22515/appservice/pages/index/index.js:23:13)
+at http://127.0.0.1:22515/appservice/pages/index/index.js:36:49
+at callWithErrorHandling (http://127.0.0.1:22515/appservice/common/vendor.js:2135:22)
+at callWithAsyncErrorHandling (http://127.0.0.1:22515/appservice/common/vendor.js:2142:15)
+at Function.invoke (http://127.0.0.1:22515/appservice/common/vendor.js:5498:14)
+at f (http://127.0.0.1:22515/appservice/__dev__/WASubContext.js?t=wechat&s=1732624710099&v=3.6.6:1:147076)
+at http://127.0.0.1:22515/appservice/__dev__/WASubContext.js?t=wechat&s=1732624710099&v=3.6.6:1:147519`,
+        {
+          outputDir,
+          platform: 'mp-weixin',
+          language: 'javascript',
+          cacheDir: '',
+        }
+      )
+    ).toMatchSnapshot()
+    expect(
+      parseWeixinRuntimeStacktrace(
+        `MiniProgramError
+bbbbbbbbbbb12
+Error: bbbbbbbbbbb12
+at http://127.0.0.1:37922/appservice/pages/index/index.js:23:13
+at http://127.0.0.1:37922/appservice/__dev__/WASubContext.js?t=wechat&s=1732621970683&v=3.6.1:1:512000
+at p.runWith (http://127.0.0.1:37922/appservice/__dev__/WASubContext.js?t=wechat&s=1732621970683&v=3.6.1:1:501622)
+at q (http://127.0.0.1:37922/appservice/__dev__/WASubContext.js?t=wechat&s=1732621970683&v=3.6.1:1:511978)
+at ide:///package/__APP__/appservice.js:1111:7
+at t.doWhenAllScriptLoaded (ide:///getmainpackage.js:1174:21)`,
+        {
+          outputDir,
+          platform: 'mp-weixin',
+          language: 'javascript',
+          cacheDir: '',
         }
       )
     ).toMatchSnapshot()
