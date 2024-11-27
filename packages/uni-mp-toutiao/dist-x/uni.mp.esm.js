@@ -1603,8 +1603,10 @@ function initLifetimes$1({ mocks, isPage, initRelation, vueOptions, }) {
         if (mpType === 'component') {
             initFormField(this.$vm);
         }
-        // 处理父子关系
-        initRelation(this, relationOptions);
+        {
+            // 处理父子关系
+            initRelation(this, relationOptions);
+        }
     }
     function detached() {
         if (this.$vm) {

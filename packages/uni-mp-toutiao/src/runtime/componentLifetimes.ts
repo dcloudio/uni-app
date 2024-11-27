@@ -42,6 +42,10 @@ export function initLifetimes({
     const relationOptions: RelationOptions = {
       vuePid: this._$vuePid,
     }
+    if (__PLATFORM__ === 'mp-harmony' || __PLATFORM__ === 'quickapp-webview') {
+      // 处理父子关系
+      initRelation(this, relationOptions)
+    }
     // 初始化 vue 实例
     const mpInstance = this
     const mpType = isPage(mpInstance) ? 'page' : 'component'
@@ -91,9 +95,12 @@ export function initLifetimes({
     if (mpType === 'component') {
       initFormField(this.$vm)
     }
-
-    // 处理父子关系
-    initRelation(this, relationOptions)
+    if (
+      !(__PLATFORM__ === 'mp-harmony' || __PLATFORM__ === 'quickapp-webview')
+    ) {
+      // 处理父子关系
+      initRelation(this, relationOptions)
+    }
   }
 
   function detached(this: MPComponentInstance) {

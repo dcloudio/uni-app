@@ -2,7 +2,6 @@ import path from 'path'
 import type { CompilerOptions } from '@dcloudio/uni-mp-compiler'
 import {
   type MiniProgramCompilerOptions,
-  transformComponentLink,
   transformRef,
 } from '@dcloudio/uni-cli-shared'
 import type { UniMiniProgramPluginOptions } from '@dcloudio/uni-mp-vite'
@@ -11,7 +10,7 @@ import source from './jsconfig.json'
 import { formatAppJson } from './utils'
 
 export const compilerOptions: CompilerOptions = {
-  nodeTransforms: [transformRef, transformComponentLink],
+  nodeTransforms: [transformRef],
 }
 
 export const miniProgram: MiniProgramCompilerOptions = {

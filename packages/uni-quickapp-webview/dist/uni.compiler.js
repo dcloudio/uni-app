@@ -56,7 +56,7 @@ function formatAppJson(_appJson, manifestJson, _pagesJson) {
 }
 
 const compilerOptions = {
-    nodeTransforms: [uniCliShared.transformRef, uniCliShared.transformComponentLink],
+    nodeTransforms: [uniCliShared.transformRef],
 };
 const miniProgram = {
     class: {
@@ -134,7 +134,7 @@ const uniQuickappWebviewPlugin = {
     config() {
         return {
             define: {
-                __VUE_CREATED_DEFERRED__: true,
+                __VUE_CREATED_DEFERRED__: false,
             },
             build: {
                 // css 中不支持引用本地资源
