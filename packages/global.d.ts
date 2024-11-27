@@ -75,6 +75,11 @@ declare var UniViewJSBridge: UniApp.UniViewJSBridge
 declare var UniServiceJSBridge: UniApp.UniServiceJSBridge
 // app view
 declare var __id__: string
+
+declare var __UNI_SOCKET_HOSTS__: string
+declare var __UNI_SOCKET_PORT__: string
+declare var __UNI_SOCKET_ID__: string
+
 // TODO X 引入真实类型
 declare class UTSJSONObject {
   constructor(obj: Record<string, any>)

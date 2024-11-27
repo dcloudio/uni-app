@@ -1,9 +1,9 @@
 import { hasRuntimeSocket, initRuntimeSocket } from './socket'
 import { rewriteConsole, setSendConsole } from './console'
-import { initOnError } from './error'
+import { initOnError, setSendError } from './error'
 
 export function initRuntimeSocketService(): Promise<boolean> {
-  if (!hasRuntimeSocket) return Promise.resolve(false)
+  if (!hasRuntimeSocket()) return Promise.resolve(false)
 
   const restoreError = initOnError()
   const restoreConsole = rewriteConsole()
@@ -15,6 +15,11 @@ export function initRuntimeSocketService(): Promise<boolean> {
       return false
     }
     setSendConsole((data: string) => {
+      socket!.send({
+        data,
+      })
+    })
+    setSendError((data: string) => {
       socket!.send({
         data,
       })

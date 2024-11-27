@@ -1,9 +1,14 @@
-const SOCKET_HOSTS = __UNI_SOCKET_HOSTS__; // 日志通道IP列表，需要尝试哪一个
-const SOCKET_PORT = __UNI_SOCKET_PORT__; // 日志通道端口
-const SOCKET_ID = __UNI_SOCKET_ID__; // 日志通道ID
-const hasRuntimeSocket = SOCKET_HOSTS && SOCKET_PORT && SOCKET_ID;
+let SOCKET_HOSTS = ''; // 日志通道IP列表，需要尝试哪一个
+let SOCKET_PORT = ''; // 日志通道端口
+let SOCKET_ID = ''; // 日志通道ID
+function hasRuntimeSocket() {
+    return !!(SOCKET_HOSTS && SOCKET_PORT && SOCKET_ID);
+}
 function initRuntimeSocket() {
-    if (!hasRuntimeSocket)
+    SOCKET_HOSTS = __UNI_SOCKET_HOSTS__;
+    SOCKET_PORT = __UNI_SOCKET_PORT__;
+    SOCKET_ID = __UNI_SOCKET_ID__;
+    if (!hasRuntimeSocket())
         return Promise.resolve(null);
     const hosts = SOCKET_HOSTS.split(',');
     return hosts.reduce((promise, host) => {
@@ -20,7 +25,7 @@ function tryConnectSocket(host) {
             url: `ws://${host}:${SOCKET_PORT}/${SOCKET_ID}`,
             timeout: 1000,
             fail() {
-                reject(null);
+                resolve(null);
             },
         });
         socket.onOpen((e) => {
@@ -29,11 +34,11 @@ function tryConnectSocket(host) {
         });
         socket.onClose((e) => {
             // console.error(`socket 连接关闭: ${host}`, e)
-            reject(null);
+            resolve(null);
         });
         socket.onError((e) => {
             // console.error(`socket 连接失败: ${host}`, e)
-            reject(null);
+            resolve(null);
         });
     });
 }
@@ -111,7 +116,6 @@ function formatObject(value, depth) {
             subType: 'array',
             value: {
                 properties: value.map((v, i) => formatArrayElement(v, i, depth + 1)),
-                methods: [],
             },
         };
     }
@@ -123,7 +127,6 @@ function formatObject(value, depth) {
             description: `Set(${value.size})`,
             value: {
                 entries: Array.from(value).map((v) => formatSetEntry(v, depth + 1)),
-                methods: [],
             },
         };
     }
@@ -135,7 +138,15 @@ function formatObject(value, depth) {
             description: `Map(${value.size})`,
             value: {
                 entries: Array.from(value.entries()).map((v) => formatMapEntry(v, depth + 1)),
-                methods: [],
+            },
+        };
+    }
+    if (value instanceof Promise) {
+        return {
+            type: 'object',
+            subType: 'promise',
+            value: {
+                properties: [],
             },
         };
     }
@@ -167,7 +178,6 @@ function formatObject(value, depth) {
         type: 'object',
         value: {
             properties: Object.entries(value).map(([name, value]) => formatObjectProperty(name, value, depth + 1)),
-            methods: [],
         },
     };
 }
@@ -193,6 +203,12 @@ function formatMapEntry(value, depth) {
     };
 }
 const ARG_FORMATTERS = {
+    function(value) {
+        return {
+            type: 'function',
+            value: value.toString(),
+        };
+    },
     undefined() {
         return {
             type: 'undefined',
@@ -233,11 +249,21 @@ const ARG_FORMATTERS = {
     },
 };
 
+let sendError = null;
 const errorQueue = [];
 function sendErrorMessages(errors) {
-    {
+    if (sendError == null) {
         errorQueue.push(...errors);
         return;
+    }
+    sendError(JSON.stringify({ type: 'error', data: errors }));
+}
+function setSendError(value) {
+    sendError = value;
+    if (value != null && errorQueue.length > 0) {
+        const errors = errorQueue.slice();
+        errorQueue.length = 0;
+        sendErrorMessages(errors);
     }
 }
 function initOnError() {
@@ -269,6 +295,11 @@ function initRuntimeSocketService() {
             return false;
         }
         setSendConsole((data) => {
+            socket.send({
+                data,
+            });
+        });
+        setSendError((data) => {
             socket.send({
                 data,
             });

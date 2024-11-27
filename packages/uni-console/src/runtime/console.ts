@@ -94,7 +94,6 @@ function formatObject(value: object, depth: number) {
       subType: 'array',
       value: {
         properties: value.map((v, i) => formatArrayElement(v, i, depth + 1)),
-        methods: [],
       },
     }
   }
@@ -106,7 +105,6 @@ function formatObject(value: object, depth: number) {
       description: `Set(${value.size})`,
       value: {
         entries: Array.from(value).map((v) => formatSetEntry(v, depth + 1)),
-        methods: [],
       },
     }
   }
@@ -120,7 +118,16 @@ function formatObject(value: object, depth: number) {
         entries: Array.from(value.entries()).map((v) =>
           formatMapEntry(v, depth + 1)
         ),
-        methods: [],
+      },
+    }
+  }
+
+  if (value instanceof Promise) {
+    return {
+      type: 'object',
+      subType: 'promise',
+      value: {
+        properties: [],
       },
     }
   }
@@ -154,7 +161,6 @@ function formatObject(value: object, depth: number) {
       properties: Object.entries(value).map(([name, value]) =>
         formatObjectProperty(name, value, depth + 1)
       ),
-      methods: [],
     },
   }
 }
@@ -184,6 +190,12 @@ function formatMapEntry(value: Array<any | null>, depth: number) {
 }
 
 const ARG_FORMATTERS = {
+  function(value: any) {
+    return {
+      type: 'function',
+      value: value.toString(),
+    }
+  },
   undefined() {
     return {
       type: 'undefined',

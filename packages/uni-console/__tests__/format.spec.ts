@@ -45,6 +45,12 @@ describe('uni-console', () => {
       value: '1',
     })
   })
+  test('formatArg function', () => {
+    expect(formatArg(() => {})).toEqual({
+      type: 'function',
+      value: '() => { }',
+    })
+  })
   test('formatArg array', () => {
     expect(formatArg([1, '2', true])).toEqual({
       type: 'object',
@@ -55,7 +61,6 @@ describe('uni-console', () => {
           { name: '1', type: 'string', value: '2' },
           { name: '2', type: 'boolean', value: 'true' },
         ],
-        methods: [],
       },
     })
   })
@@ -77,7 +82,6 @@ describe('uni-console', () => {
             value: { type: 'boolean', value: 'true' },
           },
         ],
-        methods: [],
       },
     })
   })
@@ -115,7 +119,6 @@ describe('uni-console', () => {
             value: { type: 'number', value: '1' },
           },
         ],
-        methods: [],
       },
     })
   })
@@ -158,7 +161,6 @@ describe('uni-console', () => {
           { name: 'b', type: 'string', value: '2' },
           { name: 'c', type: 'boolean', value: 'true' },
         ],
-        methods: [],
       },
     })
   })
@@ -205,37 +207,30 @@ describe('uni-console', () => {
                                                 name: '0',
                                               },
                                             ],
-                                            methods: [],
                                           },
                                           name: '0',
                                         },
                                       ],
-                                      methods: [],
                                     },
                                     name: '0',
                                   },
                                 ],
-                                methods: [],
                               },
                               name: '0',
                             },
                           ],
-                          methods: [],
                         },
                         name: '0',
                       },
                     ],
-                    methods: [],
                   },
                   name: '0',
                 },
               ],
-              methods: [],
             },
             name: '0',
           },
         ],
-        methods: [],
       },
     })
   })

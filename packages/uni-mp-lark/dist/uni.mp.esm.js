@@ -320,6 +320,7 @@ function parseApp(instance, parseAppOptions) {
     };
     const { onError } = internalInstance;
     if (onError) {
+        // invokeCreateErrorHandler 在 initApp 中已经执行过，但里边只能判断出选项式的 onError 监听，所以这里需要单独处理
         internalInstance.appContext.config.errorHandler = (err) => {
             instance.$callHook(ON_ERROR, err);
         };
