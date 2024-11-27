@@ -6,7 +6,6 @@
 import { NOOP, extend, isArray, isSymbol, isMap, isIntegerKey, hasOwn, hasChanged, isObject, makeMap, capitalize, toRawType, def, isFunction, isString, isPromise, isOn, hyphenate, EMPTY_OBJ, toHandlerKey, looseToNumber, camelize, remove, isSet, isPlainObject, isBuiltInDirective, NO, isReservedProp, EMPTY_ARR, normalizeClass, normalizeStyle, toTypeString, invokeArrayFns, isModelListener } from '@vue/shared';
 export { EMPTY_OBJ, camelize, normalizeClass, normalizeProps, normalizeStyle, toDisplayString, toHandlerKey } from '@vue/shared';
 import { isRootHook, getValueByDataPath } from '@dcloudio/uni-shared';
-export { useCssModule } from '@vue/runtime-dom';
 
 function warn$2(msg, ...args) {
   console.warn(`[Vue warn] ${msg}`, ...args);
@@ -5224,6 +5223,27 @@ function createVueApp(rootComponent, rootProps = null) {
   return app;
 }
 
+function useCssModule(name = "$style") {
+  {
+    const instance = getCurrentInstance();
+    if (!instance) {
+      !!(process.env.NODE_ENV !== "production") && warn(`useCssModule must be called inside setup()`);
+      return EMPTY_OBJ;
+    }
+    const modules = instance.type.__cssModules;
+    if (!modules) {
+      !!(process.env.NODE_ENV !== "production") && warn(`Current instance does not have CSS modules injected.`);
+      return EMPTY_OBJ;
+    }
+    const mod = modules[name];
+    if (!mod) {
+      !!(process.env.NODE_ENV !== "production") && warn(`Current instance does not have CSS module named "${name}".`);
+      return EMPTY_OBJ;
+    }
+    return mod;
+  }
+}
+
 function useCssVars(getter) {
   const instance = getCurrentInstance();
   if (!instance) {
@@ -5248,4 +5268,4 @@ function withModifiers() {
 function createVNode() {
 }
 
-export { EffectScope, Fragment, ReactiveEffect, Text, callWithAsyncErrorHandling, callWithErrorHandling, computed, createPropsRestProxy, createVNode, createVueApp, customRef, defineAsyncComponent, defineComponent, defineEmits, defineExpose, defineProps, devtoolsComponentAdded, devtoolsComponentRemoved, devtoolsComponentUpdated, diff, effect, effectScope, getCurrentInstance, getCurrentScope, getExposeProxy, guardReactiveProps, hasInjectionContext, hasQueueJob, inject, injectHook, invalidateJob, isInSSRComponentSetup, isProxy, isReactive, isReadonly, isRef, isShallow, logError, markRaw, mergeDefaults, mergeModels, mergeProps, nextTick$1 as nextTick, onActivated, onBeforeMount, onBeforeUnmount, onBeforeUpdate, onDeactivated, onErrorCaptured, onMounted, onRenderTracked, onRenderTriggered, onScopeDispose, onServerPrefetch, onUnmounted, onUpdated, patch, provide, proxyRefs, queuePostFlushCb, reactive, readonly, ref, resolveComponent, resolveDirective, resolveFilter, setCurrentRenderingInstance, setTemplateRef, shallowReactive, shallowReadonly, shallowRef, stop, toHandlers, toRaw, toRef, toRefs, toValue, triggerRef, unref, updateProps, useAttrs, useCssVars, useModel, useSSRContext, useSlots, version, warn, watch, watchEffect, watchPostEffect, watchSyncEffect, withAsyncContext, withCtx, withDefaults, withDirectives, withModifiers, withScopeId };
+export { EffectScope, Fragment, ReactiveEffect, Text, callWithAsyncErrorHandling, callWithErrorHandling, computed, createPropsRestProxy, createVNode, createVueApp, customRef, defineAsyncComponent, defineComponent, defineEmits, defineExpose, defineProps, devtoolsComponentAdded, devtoolsComponentRemoved, devtoolsComponentUpdated, diff, effect, effectScope, getCurrentInstance, getCurrentScope, getExposeProxy, guardReactiveProps, hasInjectionContext, hasQueueJob, inject, injectHook, invalidateJob, isInSSRComponentSetup, isProxy, isReactive, isReadonly, isRef, isShallow, logError, markRaw, mergeDefaults, mergeModels, mergeProps, nextTick$1 as nextTick, onActivated, onBeforeMount, onBeforeUnmount, onBeforeUpdate, onDeactivated, onErrorCaptured, onMounted, onRenderTracked, onRenderTriggered, onScopeDispose, onServerPrefetch, onUnmounted, onUpdated, patch, provide, proxyRefs, queuePostFlushCb, reactive, readonly, ref, resolveComponent, resolveDirective, resolveFilter, setCurrentRenderingInstance, setTemplateRef, shallowReactive, shallowReadonly, shallowRef, stop, toHandlers, toRaw, toRef, toRefs, toValue, triggerRef, unref, updateProps, useAttrs, useCssModule, useCssVars, useModel, useSSRContext, useSlots, version, warn, watch, watchEffect, watchPostEffect, watchSyncEffect, withAsyncContext, withCtx, withDefaults, withDirectives, withModifiers, withScopeId };
