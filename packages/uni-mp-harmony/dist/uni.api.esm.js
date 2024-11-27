@@ -479,6 +479,10 @@ const upx2px = defineSyncApi(API_UPX2PX, (number, newDeviceWidth) => {
     return number < 0 ? -result : result;
 }, Upx2pxProtocol);
 
+function __f__(type, filename, ...args) {
+    console[type].apply(console, [...args, filename]);
+}
+
 const API_ADD_INTERCEPTOR = 'addInterceptor';
 const API_REMOVE_INTERCEPTOR = 'removeInterceptor';
 const AddInterceptorProtocol = [
@@ -719,10 +723,11 @@ const offPushMessage = (fn) => {
     }
 };
 
-const SYNC_API_RE = /^\$|getLocale|setLocale|sendNativeEvent|restoreGlobal|requireGlobal|getCurrentSubNVue|getMenuButtonBoundingClientRect|^report|interceptors|Interceptor$|getSubNVueById|requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64|getDeviceInfo|getAppBaseInfo|getWindowInfo|getSystemSetting|getAppAuthorizeSetting/;
+const SYNC_API_RE = /^\$|__f__|getLocale|setLocale|sendNativeEvent|restoreGlobal|requireGlobal|getCurrentSubNVue|getMenuButtonBoundingClientRect|^report|interceptors|Interceptor$|getSubNVueById|requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64|getDeviceInfo|getAppBaseInfo|getWindowInfo|getSystemSetting|getAppAuthorizeSetting/;
 const CONTEXT_API_RE = /^create|Manager$/;
 // Context例外情况
 const CONTEXT_API_RE_EXC = ['createBLEConnection'];
+const TASK_APIS = ['request', 'downloadFile', 'uploadFile', 'connectSocket'];
 // 同步例外情况
 const ASYNC_API = ['createBLEConnection'];
 const CALLBACK_API_RE = /^on|^off/;
@@ -734,6 +739,9 @@ function isSyncApi(name) {
 }
 function isCallbackApi(name) {
     return CALLBACK_API_RE.test(name) && name !== 'onPush';
+}
+function isTaskApi(name) {
+    return TASK_APIS.indexOf(name) !== -1;
 }
 function shouldPromise(name) {
     if (isContextApi(name) || isSyncApi(name) || isCallbackApi(name)) {
@@ -832,11 +840,22 @@ function initWrapper(protocols) {
         return processArgs(methodName, res, returnValue, {}, keepReturnValue);
     }
     return function wrapper(methodName, method) {
-        if (!hasOwn(protocols, methodName)) {
+        if ((isContextApi(methodName) || isTaskApi(methodName)) && method) {
+            const oldMethod = method;
+            method = function (...args) {
+                const contextOrTask = oldMethod(...args);
+                if (contextOrTask) {
+                    contextOrTask.__v_skip = true;
+                }
+                return contextOrTask;
+            };
+        }
+        if ((!hasOwn(protocols, methodName) && !isFunction(protocols.returnValue)) ||
+            !isFunction(method)) {
             return method;
         }
         const protocol = protocols[methodName];
-        if (!protocol) {
+        if (!protocol && !isFunction(protocols.returnValue)) {
             // 暂不支持的 api
             return function () {
                 console.error(`鸿蒙元服务 暂不支持${methodName}`);
@@ -844,7 +863,7 @@ function initWrapper(protocols) {
         }
         return function (arg1, arg2) {
             // 目前 api 最多两个参数
-            let options = protocol;
+            let options = protocol || {};
             if (isFunction(protocol)) {
                 options = protocol(arg1);
             }
@@ -854,6 +873,11 @@ function initWrapper(protocols) {
                 args.push(arg2);
             }
             const returnValue = has[options.name || methodName].apply(has, args);
+            if (isContextApi(methodName) || isTaskApi(methodName)) {
+                if (returnValue && !returnValue.__v_skip) {
+                    returnValue.__v_skip = true;
+                }
+            }
             if (isSyncApi(methodName)) {
                 // 同步 api
                 return processReturnValue(methodName, returnValue, options.returnValue, isContextApi(methodName));
@@ -1134,6 +1158,7 @@ const baseApis = {
     onPushMessage,
     offPushMessage,
     invokePushCallback,
+    __f__,
 };
 function initUni(api, protocols, platform = has) {
     const wrapper = initWrapper(protocols);

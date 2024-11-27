@@ -10,7 +10,7 @@ var initMiniProgramPlugin__default = /*#__PURE__*/_interopDefault(initMiniProgra
 var path__default = /*#__PURE__*/_interopDefault(path);
 
 const compilerOptions = {
-    nodeTransforms: [uniCliShared.transformRef, uniCliShared.transformComponentLink],
+    nodeTransforms: [uniCliShared.transformRef],
 };
 const miniProgram = {
     class: {
@@ -78,7 +78,7 @@ const uniMiniProgramHarmonyPlugin = {
     config() {
         return {
             define: {
-                __VUE_CREATED_DEFERRED__: true,
+                __VUE_CREATED_DEFERRED__: false,
             },
             build: {
                 // css 中不支持引用本地资源

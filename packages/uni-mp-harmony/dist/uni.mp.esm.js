@@ -833,6 +833,10 @@ function initLifetimes$1({ mocks, isPage, initRelation, vueOptions, }) {
         const relationOptions = {
             vuePid: this._$vuePid,
         };
+        {
+            // 处理父子关系
+            initRelation(this, relationOptions);
+        }
         // 初始化 vue 实例
         const mpInstance = this;
         const mpType = isPage(mpInstance) ? 'page' : 'component';
@@ -866,8 +870,6 @@ function initLifetimes$1({ mocks, isPage, initRelation, vueOptions, }) {
         if (mpType === 'component') {
             initFormField(this.$vm);
         }
-        // 处理父子关系
-        initRelation(this, relationOptions);
     }
     function detached() {
         if (this.$vm) {
@@ -934,62 +936,33 @@ function isPage(mpInstance) {
     return (!!mpInstance.route ||
         !!(mpInstance._methods || mpInstance.methods || mpInstance).onLoad);
 }
-function initRelation(mpInstance) {
-    // triggerEvent 后，接收事件时机特别晚，已经到了 ready 之后
+function initRelation(mpInstance, relationOptions) {
     const nodeId = mpInstance.nodeId + '';
     const webviewId = mpInstance.pageinstance.__pageId__ + '';
-    instances[webviewId + '_' + nodeId] = mpInstance.$vm;
-    mpInstance.triggerEvent('__l', {
+    // 存储的是当前mpInstance，而不是$vm，因为$vm还没有创建
+    instances[webviewId + '_' + nodeId] = mpInstance;
+    // 不使用 triggerEvent 是因为时机太晚，应该同步建立父子关系，确保setup中的provide/inject正常
+    // 当前平台有ownerId可以查找父子关系
+    extend(relationOptions, {
         nodeId,
         webviewId,
     });
+    handleLink.call(mpInstance, {
+        detail: relationOptions,
+    });
 }
-function handleLink({ detail: { nodeId, webviewId }, }) {
-    const vm = instances[webviewId + '_' + nodeId];
-    if (!vm) {
+function handleLink({ detail, }) {
+    var _a;
+    const { nodeId, webviewId } = detail;
+    const mpInstance = instances[webviewId + '_' + nodeId];
+    if (!mpInstance) {
         return;
     }
-    let parentVm = instances[webviewId + '_' + vm.$scope.ownerId];
+    let parentVm = (_a = instances[webviewId + '_' + mpInstance.ownerId]) === null || _a === void 0 ? void 0 : _a.$vm;
     if (!parentVm) {
         parentVm = this.$vm;
     }
-    vm.$.parent = parentVm.$;
-    const createdVm = function () {
-        if (__VUE_OPTIONS_API__) {
-            parentVm.$children.push(vm);
-        }
-        if (process.env.UNI_DEBUG) {
-            console.log('uni-app:[' +
-                Date.now() +
-                '][' +
-                (vm.$scope.is || vm.$scope.route) +
-                '][' +
-                vm.$.uid +
-                ']created');
-        }
-        vm.$callCreatedHook();
-    };
-    const mountedVm = function () {
-        // 处理当前 vm 子
-        if (vm._$childVues) {
-            vm._$childVues.forEach(([createdVm]) => createdVm());
-            vm._$childVues.forEach(([, mountedVm]) => mountedVm());
-            delete vm._$childVues;
-        }
-        vm.$callHook('mounted');
-        vm.$callHook(ON_READY);
-    };
-    // 当 parentVm 已经 mounted 时，直接触发，否则延迟
-    if (!parentVm || parentVm.$.isMounted) {
-        createdVm();
-        mountedVm();
-    }
-    else {
-        (parentVm._$childVues || (parentVm._$childVues = [])).push([
-            createdVm,
-            mountedVm,
-        ]);
-    }
+    detail.parent = parentVm;
 }
 
 var parseComponentOptions = /*#__PURE__*/Object.freeze({
