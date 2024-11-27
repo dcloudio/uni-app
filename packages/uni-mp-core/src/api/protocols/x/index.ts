@@ -11,3 +11,7 @@ export function parseXReturnValue(methodName: string, res: any) {
 export function shouldParseXReturnValue(methodName: string) {
   return !!protocols[methodName]
 }
+
+export function shouldKeepReturnValue(methodName: string) {
+  return methodName === 'getStorage' || methodName === 'getStorageSync'
+}

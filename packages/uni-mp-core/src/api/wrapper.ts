@@ -6,6 +6,7 @@ import type {
   MPProtocolObject,
   MPProtocols,
 } from './protocols'
+import { shouldKeepReturnValue } from './protocols/x'
 
 import { isContextApi, isSyncApi, isTaskApi } from './promise'
 
@@ -84,12 +85,14 @@ export function initWrapper(protocols: MPProtocols) {
       // 处理通用 returnValue
       res = protocols.returnValue(methodName, res)
     }
+    const realKeepReturnValue =
+      keepReturnValue || (__X__ && shouldKeepReturnValue(methodName))
     return processArgs(
       methodName,
       res,
       returnValue as MPProtocolArgs,
       {},
-      keepReturnValue
+      realKeepReturnValue
     )
   }
   return function wrapper(methodName: string, method: unknown) {
