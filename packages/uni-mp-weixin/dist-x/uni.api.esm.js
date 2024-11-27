@@ -938,9 +938,10 @@ function initWrapper(protocols) {
         return processArgs(methodName, res, returnValue, {}, keepReturnValue);
     }
     return function wrapper(methodName, method) {
-        if (isContextApi(methodName) || isTaskApi(methodName)) {
+        if ((isContextApi(methodName) || isTaskApi(methodName)) && method) {
+            const oldMethod = method;
             method = function (...args) {
-                const contextOrTask = method(...args);
+                const contextOrTask = oldMethod(...args);
                 if (contextOrTask) {
                     contextOrTask.__v_skip = true;
                 }

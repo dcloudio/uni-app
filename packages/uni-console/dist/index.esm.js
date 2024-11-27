@@ -250,6 +250,7 @@ function initOnError() {
     }
     return function offError() {
         if (typeof uni.offError === 'function') {
+            // @ts-expect-error
             uni.offError(onError);
         }
     };

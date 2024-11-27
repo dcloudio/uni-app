@@ -840,9 +840,10 @@ function initWrapper(protocols) {
         return processArgs(methodName, res, returnValue, {}, keepReturnValue);
     }
     return function wrapper(methodName, method) {
-        if (isContextApi(methodName) || isTaskApi(methodName)) {
+        if ((isContextApi(methodName) || isTaskApi(methodName)) && method) {
+            const oldMethod = method;
             method = function (...args) {
-                const contextOrTask = method(...args);
+                const contextOrTask = oldMethod(...args);
                 if (contextOrTask) {
                     contextOrTask.__v_skip = true;
                 }
@@ -1249,6 +1250,9 @@ function createTodoMethod(contextName, methodName) {
     };
 }
 function returnValue(methodName, res = {}) {
+    if (isSyncApi(methodName)) {
+        return res;
+    }
     // 通用 returnValue 解析
     if (res.error || res.errorMessage) {
         res.errMsg = `${methodName}:fail ${res.errorMessage || res.error}`;
