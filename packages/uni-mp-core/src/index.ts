@@ -71,6 +71,8 @@ export {
   getAppBaseInfo,
   getWindowInfo,
   getAppAuthorizeSetting,
+  onError,
+  offError,
 } from './api/protocols'
 // types
 export { MiniProgramAppOptions, MiniProgramAppInstance } from './runtime/app'

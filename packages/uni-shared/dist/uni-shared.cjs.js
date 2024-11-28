@@ -1572,9 +1572,8 @@ function invokeCreateVueAppHook(app) {
     createVueAppHooks.forEach((hook) => hook(app));
 }
 const invokeCreateErrorHandler = once((app, createErrorHandler) => {
-    if (shared.isFunction(app._component.onError)) {
-        return createErrorHandler(app);
-    }
+    // 不再判断开发者是否监听了onError，直接返回 createErrorHandler，内部 errorHandler 会调用开发者自定义的 errorHandler，以及判断开发者是否监听了onError
+    return createErrorHandler(app);
 });
 
 const E = function () {

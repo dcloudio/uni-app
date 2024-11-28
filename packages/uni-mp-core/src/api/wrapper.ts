@@ -70,6 +70,9 @@ export function initWrapper(protocols: MPProtocols) {
       }
       return toArgs
     } else if (isFunction(fromArgs)) {
+      if (isFunction(argsOption)) {
+        argsOption(fromArgs, {})
+      }
       fromArgs = processCallback(methodName, fromArgs, returnValue)
     }
     return fromArgs

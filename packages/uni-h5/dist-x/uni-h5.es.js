@@ -4,7 +4,7 @@ var __publicField = (obj, key, value) => {
   __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
   return value;
 };
-import { withModifiers, createVNode, getCurrentInstance, ref, defineComponent, openBlock, createElementBlock, onMounted, provide, computed, watch, onUnmounted, inject, onBeforeUnmount, mergeProps, reactive, injectHook, nextTick, createApp, createBlock, watchEffect, isVNode, withDirectives, vShow, renderList, isReactive, Transition, effectScope, Fragment, onActivated, withCtx, KeepAlive, resolveDynamicComponent, markRaw, normalizeClass, normalizeStyle, createTextVNode, toDisplayString, createCommentVNode, onBeforeMount, onBeforeActivate, onBeforeDeactivate, createElementVNode, renderSlot, shallowRef, Comment, h } from "vue";
+import { withModifiers, createVNode, getCurrentInstance, ref, defineComponent, openBlock, createElementBlock, onMounted, provide, computed, watch, onUnmounted, inject, onBeforeUnmount, mergeProps, reactive, injectHook, nextTick, createApp, createBlock, watchEffect, isVNode, withDirectives, vShow, renderList, isReactive, Transition, effectScope, Fragment, onActivated, withCtx, KeepAlive, resolveDynamicComponent, markRaw, normalizeClass, normalizeStyle, createTextVNode, toDisplayString, createCommentVNode, onBeforeMount, onBeforeActivate, onBeforeDeactivate, createElementVNode, renderSlot, shallowRef, Comment, h, logError } from "vue";
 import { isArray, isString, extend, remove, stringifyStyle, parseStringStyle, isPlainObject as isPlainObject$1, isFunction, capitalize, camelize, hasOwn, isObject, toRawType, makeMap as makeMap$1, isPromise, invokeArrayFns as invokeArrayFns$1, hyphenate } from "@vue/shared";
 import { once, UNI_STORAGE_LOCALE, I18N_JSON_DELIMITERS, Emitter, passive, resolveComponentInstance, normalizeStyles, addLeadingSlash, invokeArrayFns, removeLeadingSlash, initCustomDatasetOnce, resolveOwnerVm, resolveOwnerEl, ON_WXS_INVOKE_CALL_METHOD, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_SHOW, ON_HIDE, ON_PAGE_SCROLL, ON_REACH_BOTTOM, EventChannel, createRpx2Unit, defaultRpx2Unit, parseQuery, NAVBAR_HEIGHT, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, getLen, getCustomDataset, parseUrl, sortObject, ON_THEME_CHANGE, ON_HOST_THEME_CHANGE, OFF_HOST_THEME_CHANGE, OFF_THEME_CHANGE, updateElementStyle, LINEFEED, ON_WEB_INVOKE_APP_SERVICE, ON_BACK_PRESS, addFont, ON_NAVIGATION_BAR_CHANGE, scrollTo, RESPONSIVE_MIN_WIDTH, formatDateTime, ON_REACH_BOTTOM_DISTANCE, normalizeTitleColor, isSystemDialogPage, isSystemActionSheetDialogPage, ON_UNLOAD, onCreateVueApp, SCHEME_RE, DATA_RE, decodedQuery, debounce, WEB_INVOKE_APPSERVICE, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_PULL_DOWN_REFRESH, stringifyQuery as stringifyQuery$1, PRIMARY_COLOR, isUniLifecycleHook, ON_LOAD, UniLifecycleHooks, invokeCreateErrorHandler, invokeCreateVueAppHook } from "@dcloudio/uni-shared";
 import { onCreateVueApp as onCreateVueApp2 } from "@dcloudio/uni-shared";
@@ -19342,7 +19342,7 @@ function setupApp(comp) {
       const route = usePageRoute();
       const onLaunch = () => {
         injectAppHooks(instance2);
-        const { onLaunch: onLaunch2, onShow, onPageNotFound: onPageNotFound2, onError: onError2 } = instance2;
+        const { onLaunch: onLaunch2, onShow, onPageNotFound: onPageNotFound2 } = instance2;
         const path = route.path.slice(1);
         const launchOptions2 = initLaunchOptions({
           path: path || __uniRoutes[0].meta.route,
@@ -19361,11 +19361,6 @@ function setupApp(comp) {
             };
             onPageNotFound2 && invokeArrayFns$1(onPageNotFound2, pageNotFoundOptions);
           }
-        }
-        if (onError2) {
-          instance2.appContext.config.errorHandler = (err) => {
-            invokeArrayFns$1(onError2, err);
-          };
         }
       };
       if (__UNI_FEATURE_PAGES__) {
@@ -28956,16 +28951,21 @@ function $callMethod(method, ...args) {
   return null;
 }
 function createErrorHandler(app) {
-  return function errorHandler(err, instance2, _info) {
-    if (!instance2) {
-      throw err;
+  const userErrorHandler = app.config.errorHandler;
+  return function errorHandler(err, instance2, info) {
+    if (userErrorHandler) {
+      userErrorHandler(err, instance2, info);
     }
     const appInstance = app._instance;
     if (!appInstance || !appInstance.proxy) {
       throw err;
     }
-    {
-      invokeHook(appInstance.proxy, ON_ERROR, err);
+    if (appInstance[ON_ERROR]) {
+      {
+        invokeHook(appInstance.proxy, ON_ERROR, err);
+      }
+    } else {
+      logError(err, info, instance2 ? instance2.$.vnode : null, false);
     }
   };
 }
@@ -29051,7 +29051,7 @@ function uniIdMixin(globalProperties) {
   };
 }
 function initApp(app) {
-  const appConfig = app._context.config;
+  const appConfig = app.config;
   appConfig.errorHandler = invokeCreateErrorHandler(app, createErrorHandler);
   initOptionMergeStrategies(appConfig.optionMergeStrategies);
   const globalProperties = appConfig.globalProperties;

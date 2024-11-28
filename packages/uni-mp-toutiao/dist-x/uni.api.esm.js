@@ -1,7 +1,7 @@
 import { isArray, hasOwn, isString, isPlainObject, isObject, capitalize, toRawType, makeMap, isFunction, isPromise, extend, remove } from '@vue/shared';
 import { normalizeLocale, LOCALE_EN } from '@dcloudio/uni-i18n';
-import { findUniElement } from 'vue';
-import { Emitter, onCreateVueApp, invokeCreateVueAppHook } from '@dcloudio/uni-shared';
+import { findUniElement, injectHook } from 'vue';
+import { Emitter, ON_ERROR, onCreateVueApp, invokeCreateVueAppHook } from '@dcloudio/uni-shared';
 
 function validateProtocolFail(name, msg) {
     console.warn(`${name}: ${msg}`);
@@ -878,6 +878,10 @@ function promisify(name, api) {
     };
 }
 
+function shouldKeepReturnValue(methodName) {
+    return methodName === 'getStorage' || methodName === 'getStorageSync';
+}
+
 const CALLBACKS = ['success', 'fail', 'cancel', 'complete'];
 function initWrapper(protocols) {
     function processCallback(methodName, method, returnValue) {
@@ -926,6 +930,9 @@ function initWrapper(protocols) {
             return toArgs;
         }
         else if (isFunction(fromArgs)) {
+            if (isFunction(argsOption)) {
+                argsOption(fromArgs, {});
+            }
             fromArgs = processCallback(methodName, fromArgs, returnValue);
         }
         return fromArgs;
@@ -935,7 +942,8 @@ function initWrapper(protocols) {
             // 处理通用 returnValue
             res = protocols.returnValue(methodName, res);
         }
-        return processArgs(methodName, res, returnValue, {}, keepReturnValue);
+        const realKeepReturnValue = keepReturnValue || (shouldKeepReturnValue(methodName));
+        return processArgs(methodName, res, returnValue, {}, realKeepReturnValue);
     }
     return function wrapper(methodName, method) {
         if ((isContextApi(methodName) || isTaskApi(methodName)) && method) {
@@ -1244,6 +1252,41 @@ const navigateTo$1 = () => {
     };
 };
 
+const onError = {
+    args(fromArgs) {
+        const app = getApp({ allowDefault: true }) || {};
+        if (!app.$vm) {
+            if (!tt.$onErrorHandlers) {
+                tt.$onErrorHandlers = [];
+            }
+            tt.$onErrorHandlers.push(fromArgs);
+        }
+        else {
+            injectHook(ON_ERROR, fromArgs, app.$vm);
+        }
+    },
+};
+const offError = {
+    args(fromArgs) {
+        const app = getApp({ allowDefault: true }) || {};
+        if (!app.$vm) {
+            if (!tt.$onErrorHandlers) {
+                return;
+            }
+            const index = tt.$onErrorHandlers.findIndex((fn) => fn === fromArgs);
+            if (index !== -1) {
+                tt.$onErrorHandlers.splice(index, 1);
+            }
+        }
+        else if (fromArgs.__weh) {
+            const index = app.$vm[ON_ERROR].indexOf(fromArgs.__weh);
+            if (index > -1) {
+                app.$vm[ON_ERROR].splice(index, 1);
+            }
+        }
+    },
+};
+
 const baseApis = {
     $on,
     $off,
@@ -1380,6 +1423,8 @@ var protocols = /*#__PURE__*/Object.freeze({
   getUserInfo: getUserInfo,
   login: login,
   navigateTo: navigateTo,
+  offError: offError,
+  onError: onError,
   previewImage: previewImage,
   redirectTo: redirectTo,
   requestPayment: requestPayment,

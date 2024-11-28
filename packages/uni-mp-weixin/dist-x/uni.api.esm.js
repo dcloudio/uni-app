@@ -1,7 +1,7 @@
 import { isArray, hasOwn, isString, isPlainObject, isObject, capitalize, toRawType, makeMap, isFunction, isPromise, extend, remove } from '@vue/shared';
 import { normalizeLocale, LOCALE_EN } from '@dcloudio/uni-i18n';
-import { Emitter, sortObject, onCreateVueApp, invokeCreateVueAppHook } from '@dcloudio/uni-shared';
-import { findUniElement } from 'vue';
+import { Emitter, sortObject, ON_ERROR, onCreateVueApp, invokeCreateVueAppHook } from '@dcloudio/uni-shared';
+import { findUniElement, injectHook } from 'vue';
 
 function validateProtocolFail(name, msg) {
     console.warn(`${name}: ${msg}`);
@@ -878,6 +878,48 @@ function promisify(name, api) {
     };
 }
 
+function createUTSJSONObjectIfNeed(obj) {
+    if (!isPlainObject(obj) && !Array.isArray(obj)) {
+        return obj;
+    }
+    // TODO globalThis部分平台表现怪异
+    return globalThis.UTS.JSON.parse(JSON.stringify(obj));
+}
+
+const request = {
+    returnValue: (res) => {
+        const { data } = res;
+        res.data = createUTSJSONObjectIfNeed(data);
+        return res;
+    },
+};
+
+const getStorage = {
+    returnValue: (res) => {
+        return createUTSJSONObjectIfNeed(res);
+    },
+};
+
+const getStorageSync = getStorage;
+
+var protocols$1 = /*#__PURE__*/Object.freeze({
+  __proto__: null,
+  getStorage: getStorage,
+  getStorageSync: getStorageSync,
+  request: request
+});
+
+function parseXReturnValue(methodName, res) {
+    const protocol = protocols$1[methodName];
+    if (protocol && isFunction(protocol.returnValue)) {
+        return protocol.returnValue(res);
+    }
+    return res;
+}
+function shouldKeepReturnValue(methodName) {
+    return methodName === 'getStorage' || methodName === 'getStorageSync';
+}
+
 const CALLBACKS = ['success', 'fail', 'cancel', 'complete'];
 function initWrapper(protocols) {
     function processCallback(methodName, method, returnValue) {
@@ -926,6 +968,9 @@ function initWrapper(protocols) {
             return toArgs;
         }
         else if (isFunction(fromArgs)) {
+            if (isFunction(argsOption)) {
+                argsOption(fromArgs, {});
+            }
             fromArgs = processCallback(methodName, fromArgs, returnValue);
         }
         return fromArgs;
@@ -935,7 +980,8 @@ function initWrapper(protocols) {
             // 处理通用 returnValue
             res = protocols.returnValue(methodName, res);
         }
-        return processArgs(methodName, res, returnValue, {}, keepReturnValue);
+        const realKeepReturnValue = keepReturnValue || (shouldKeepReturnValue(methodName));
+        return processArgs(methodName, res, returnValue, {}, realKeepReturnValue);
     }
     return function wrapper(methodName, method) {
         if ((isContextApi(methodName) || isTaskApi(methodName)) && method) {
@@ -1295,6 +1341,41 @@ const getAppAuthorizeSetting = {
     },
 };
 
+const onError = {
+    args(fromArgs) {
+        const app = getApp({ allowDefault: true }) || {};
+        if (!app.$vm) {
+            if (!wx.$onErrorHandlers) {
+                wx.$onErrorHandlers = [];
+            }
+            wx.$onErrorHandlers.push(fromArgs);
+        }
+        else {
+            injectHook(ON_ERROR, fromArgs, app.$vm);
+        }
+    },
+};
+const offError = {
+    args(fromArgs) {
+        const app = getApp({ allowDefault: true }) || {};
+        if (!app.$vm) {
+            if (!wx.$onErrorHandlers) {
+                return;
+            }
+            const index = wx.$onErrorHandlers.findIndex((fn) => fn === fromArgs);
+            if (index !== -1) {
+                wx.$onErrorHandlers.splice(index, 1);
+            }
+        }
+        else if (fromArgs.__weh) {
+            const index = app.$vm[ON_ERROR].indexOf(fromArgs.__weh);
+            if (index > -1) {
+                app.$vm[ON_ERROR].splice(index, 1);
+            }
+        }
+    },
+};
+
 const baseApis = {
     $on,
     $off,
@@ -1357,45 +1438,6 @@ function initGetProvider(providers) {
         }
         isFunction(complete) && complete(res);
     };
-}
-
-function createUTSJSONObjectIfNeed(obj) {
-    if (!isPlainObject(obj) && !Array.isArray(obj)) {
-        return obj;
-    }
-    // TODO globalThis部分平台表现怪异
-    return globalThis.UTS.JSON.parse(JSON.stringify(obj));
-}
-
-const request = {
-    returnValue: (res) => {
-        const { data } = res;
-        res.data = createUTSJSONObjectIfNeed(data);
-        return res;
-    },
-};
-
-const getStorage = {
-    returnValue: (res) => {
-        return createUTSJSONObjectIfNeed(res);
-    },
-};
-
-const getStorageSync = getStorage;
-
-var protocols$1 = /*#__PURE__*/Object.freeze({
-  __proto__: null,
-  getStorage: getStorage,
-  getStorageSync: getStorageSync,
-  request: request
-});
-
-function parseXReturnValue(methodName, res) {
-    const protocol = protocols$1[methodName];
-    if (protocol && isFunction(protocol.returnValue)) {
-        return protocol.returnValue(res);
-    }
-    return res;
 }
 
 const objectKeys = [
@@ -1531,6 +1573,8 @@ var protocols = /*#__PURE__*/Object.freeze({
   getSystemInfo: getSystemInfo,
   getSystemInfoSync: getSystemInfoSync,
   getWindowInfo: getWindowInfo,
+  offError: offError,
+  onError: onError,
   previewImage: previewImage,
   redirectTo: redirectTo,
   returnValue: returnValue,

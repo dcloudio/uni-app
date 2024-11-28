@@ -22,8 +22,12 @@ export function setSendError(value: SendFn) {
 }
 
 export function initOnError() {
-  function onError(error: string) {
-    sendErrorMessages([error])
+  function onError(error: unknown) {
+    if (error instanceof Error && error.stack) {
+      sendErrorMessages([error.stack])
+    } else {
+      sendErrorMessages([String(error)])
+    }
   }
   // TODO 是否需要监听 uni.onUnhandledRejection？
   if (typeof uni.onError === 'function') {
@@ -31,7 +35,6 @@ export function initOnError() {
   }
   return function offError() {
     if (typeof uni.offError === 'function') {
-      // @ts-expect-error
       uni.offError(onError)
     }
   }

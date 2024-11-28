@@ -1,48 +1,3 @@
-let SOCKET_HOSTS = ''; // 日志通道IP列表，需要尝试哪一个
-let SOCKET_PORT = ''; // 日志通道端口
-let SOCKET_ID = ''; // 日志通道ID
-function hasRuntimeSocket() {
-    return !!(SOCKET_HOSTS && SOCKET_PORT && SOCKET_ID);
-}
-function initRuntimeSocket() {
-    SOCKET_HOSTS = __UNI_SOCKET_HOSTS__;
-    SOCKET_PORT = __UNI_SOCKET_PORT__;
-    SOCKET_ID = __UNI_SOCKET_ID__;
-    if (!hasRuntimeSocket())
-        return Promise.resolve(null);
-    const hosts = SOCKET_HOSTS.split(',');
-    return hosts.reduce((promise, host) => {
-        return promise.then((socket) => {
-            if (socket)
-                return socket;
-            return tryConnectSocket(host);
-        });
-    }, Promise.resolve(null));
-}
-function tryConnectSocket(host) {
-    return new Promise((resolve, reject) => {
-        const socket = uni.connectSocket({
-            url: `ws://${host}:${SOCKET_PORT}/${SOCKET_ID}`,
-            timeout: 1000,
-            fail() {
-                resolve(null);
-            },
-        });
-        socket.onOpen((e) => {
-            // console.log(`socket 连接成功: ${host}`, e)
-            resolve(socket);
-        });
-        socket.onClose((e) => {
-            // console.error(`socket 连接关闭: ${host}`, e)
-            resolve(null);
-        });
-        socket.onError((e) => {
-            // console.error(`socket 连接失败: ${host}`, e)
-            resolve(null);
-        });
-    });
-}
-
 const CONSOLE_TYPES = ['log', 'warn', 'error', 'info', 'debug'];
 let sendConsole = null;
 const messageQueue = [];
@@ -64,16 +19,15 @@ function setSendConsole(value) {
         sendConsoleMessages(messages);
     }
 }
+const originalConsole = /*@__PURE__*/ CONSOLE_TYPES.reduce((methods, type) => {
+    methods[type] = console[type].bind(console);
+    return methods;
+}, {});
 function rewriteConsole() {
-    // 保存原始控制台方法的副本
-    const originalMethods = CONSOLE_TYPES.reduce((methods, type) => {
-        methods[type] = console[type].bind(console);
-        return methods;
-    }, {});
     function wrapConsole(type) {
         return function (...args) {
             // 使用保存的原始方法输出到控制台
-            originalMethods[type](...args);
+            originalConsole[type](...args);
             sendConsoleMessages([formatMessage(type, args)]);
         };
     }
@@ -82,7 +36,7 @@ function rewriteConsole() {
     });
     return function restoreConsole() {
         CONSOLE_TYPES.forEach((type) => {
-            console[type] = originalMethods[type];
+            console[type] = originalConsole[type];
         });
     };
 }
@@ -249,6 +203,62 @@ const ARG_FORMATTERS = {
     },
 };
 
+function initRuntimeSocket(hosts, port, id) {
+    if (!hosts || !port || !id)
+        return Promise.resolve(null);
+    return hosts
+        .split(',')
+        .reduce((promise, host) => {
+        return promise.then((socket) => {
+            if (socket)
+                return socket;
+            return tryConnectSocket(host, port, id);
+        });
+    }, Promise.resolve(null));
+}
+const SOCKET_TIMEOUT = 500;
+function tryConnectSocket(host, port, id) {
+    return new Promise((resolve, reject) => {
+        const socket = uni.connectSocket({
+            url: `ws://${host}:${port}/${id}`,
+            fail() {
+                resolve(null);
+            },
+        });
+        const timer = setTimeout(() => {
+            if ((process.env.NODE_ENV !== 'production')) {
+                originalConsole.log(`uni-app:[${Date.now()}][socket]`, `connect timeout: ${host}`);
+            }
+            socket.close({
+                code: 1006,
+                reason: 'connect timeout',
+            });
+            resolve(null);
+        }, SOCKET_TIMEOUT);
+        socket.onOpen((e) => {
+            if ((process.env.NODE_ENV !== 'production')) {
+                originalConsole.log(`uni-app:[${Date.now()}][socket]`, `connect success: ${host}`, e);
+            }
+            clearTimeout(timer);
+            resolve(socket);
+        });
+        socket.onClose((e) => {
+            if ((process.env.NODE_ENV !== 'production')) {
+                originalConsole.log(`uni-app:[${Date.now()}][socket]`, `connect close: ${host}`, e);
+            }
+            clearTimeout(timer);
+            resolve(null);
+        });
+        socket.onError((e) => {
+            if ((process.env.NODE_ENV !== 'production')) {
+                originalConsole.log(`uni-app:[${Date.now()}][socket]`, `connect error: ${host}`, e);
+            }
+            clearTimeout(timer);
+            resolve(null);
+        });
+    });
+}
+
 let sendError = null;
 const errorQueue = [];
 function sendErrorMessages(errors) {
@@ -268,7 +278,12 @@ function setSendError(value) {
 }
 function initOnError() {
     function onError(error) {
-        sendErrorMessages([error]);
+        if (error instanceof Error && error.stack) {
+            sendErrorMessages([error.stack]);
+        }
+        else {
+            sendErrorMessages([String(error)]);
+        }
     }
     // TODO 是否需要监听 uni.onUnhandledRejection？
     if (typeof uni.onError === 'function') {
@@ -276,18 +291,20 @@ function initOnError() {
     }
     return function offError() {
         if (typeof uni.offError === 'function') {
-            // @ts-expect-error
             uni.offError(onError);
         }
     };
 }
 
 function initRuntimeSocketService() {
-    if (!hasRuntimeSocket)
+    const hosts = __UNI_SOCKET_HOSTS__;
+    const port = __UNI_SOCKET_PORT__;
+    const id = __UNI_SOCKET_ID__;
+    if (!hosts || !port || !id)
         return Promise.resolve(false);
     const restoreError = initOnError();
     const restoreConsole = rewriteConsole();
-    return initRuntimeSocket().then((socket) => {
+    return initRuntimeSocket(hosts, port, id).then((socket) => {
         if (!socket) {
             restoreError();
             restoreConsole();
@@ -295,11 +312,17 @@ function initRuntimeSocketService() {
             return false;
         }
         setSendConsole((data) => {
+            if ((process.env.NODE_ENV !== 'production')) {
+                originalConsole.log(`uni-app:[${Date.now()}][console]`, data);
+            }
             socket.send({
                 data,
             });
         });
         setSendError((data) => {
+            if ((process.env.NODE_ENV !== 'production')) {
+                originalConsole.log(`uni-app:[${Date.now()}][error]`, data);
+            }
             socket.send({
                 data,
             });

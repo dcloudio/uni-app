@@ -241,7 +241,7 @@ export function setupApp(comp: any) {
       }
       const onLaunch = () => {
         injectAppHooks(instance)
-        const { onLaunch, onShow, onPageNotFound, onError } = instance
+        const { onLaunch, onShow, onPageNotFound } = instance
         const path = route.path.slice(1)
         const launchOptions = initLaunchOptions({
           path: path || __uniRoutes[0].meta.route,
@@ -260,11 +260,6 @@ export function setupApp(comp: any) {
             }
             onPageNotFound &&
               invokeArrayFns(onPageNotFound, pageNotFoundOptions)
-          }
-        }
-        if (onError) {
-          instance.appContext.config.errorHandler = (err) => {
-            invokeArrayFns(onError, err)
           }
         }
       }

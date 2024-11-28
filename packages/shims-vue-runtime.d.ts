@@ -90,4 +90,11 @@ declare module '@vue/runtime-core' {
     prepend: boolean = false
   ) => Function | undefined
   export const isInSSRComponentSetup: boolean
+
+  export const logError: (
+    err: unknown,
+    type: ErrorTypes,
+    contextVNode: VNode | null,
+    throwInDev?: boolean
+  ) => void
 }

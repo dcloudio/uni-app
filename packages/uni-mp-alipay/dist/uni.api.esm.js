@@ -1,6 +1,7 @@
 import { isArray, hasOwn, isString, isPlainObject, isObject, capitalize, toRawType, makeMap, isFunction, isPromise, extend, remove } from '@vue/shared';
-import { Emitter, onCreateVueApp, invokeCreateVueAppHook } from '@dcloudio/uni-shared';
+import { Emitter, ON_ERROR, onCreateVueApp, invokeCreateVueAppHook } from '@dcloudio/uni-shared';
 import { normalizeLocale, LOCALE_EN } from '@dcloudio/uni-i18n';
+import { injectHook } from 'vue';
 
 function getBaseSystemInfo() {
     return my.getSystemInfoSync();
@@ -828,6 +829,9 @@ function initWrapper(protocols) {
             return toArgs;
         }
         else if (isFunction(fromArgs)) {
+            if (isFunction(argsOption)) {
+                argsOption(fromArgs, {});
+            }
             fromArgs = processCallback(methodName, fromArgs, returnValue);
         }
         return fromArgs;
@@ -837,7 +841,8 @@ function initWrapper(protocols) {
             // 处理通用 returnValue
             res = protocols.returnValue(methodName, res);
         }
-        return processArgs(methodName, res, returnValue, {}, keepReturnValue);
+        const realKeepReturnValue = keepReturnValue || (false);
+        return processArgs(methodName, res, returnValue, {}, realKeepReturnValue);
     }
     return function wrapper(methodName, method) {
         if ((isContextApi(methodName) || isTaskApi(methodName)) && method) {
@@ -1094,6 +1099,41 @@ const navigateTo$1 = () => {
             fromRes.eventChannel = eventChannel;
         },
     };
+};
+
+const onError = {
+    args(fromArgs) {
+        const app = getApp({ allowDefault: true }) || {};
+        if (!app.$vm) {
+            if (!my.$onErrorHandlers) {
+                my.$onErrorHandlers = [];
+            }
+            my.$onErrorHandlers.push(fromArgs);
+        }
+        else {
+            injectHook(ON_ERROR, fromArgs, app.$vm);
+        }
+    },
+};
+const offError = {
+    args(fromArgs) {
+        const app = getApp({ allowDefault: true }) || {};
+        if (!app.$vm) {
+            if (!my.$onErrorHandlers) {
+                return;
+            }
+            const index = my.$onErrorHandlers.findIndex((fn) => fn === fromArgs);
+            if (index !== -1) {
+                my.$onErrorHandlers.splice(index, 1);
+            }
+        }
+        else if (fromArgs.__weh) {
+            const index = app.$vm[ON_ERROR].indexOf(fromArgs.__weh);
+            if (index > -1) {
+                app.$vm[ON_ERROR].splice(index, 1);
+            }
+        }
+    },
 };
 
 const baseApis = {
@@ -1776,7 +1816,9 @@ var protocols = /*#__PURE__*/Object.freeze({
   login: login,
   makePhoneCall: makePhoneCall,
   navigateTo: navigateTo,
+  offError: offError,
   onBLEConnectionStateChange: onBLEConnectionStateChange,
+  onError: onError,
   onNetworkStatusChange: onNetworkStatusChange,
   openLocation: openLocation,
   pageScrollTo: pageScrollTo,

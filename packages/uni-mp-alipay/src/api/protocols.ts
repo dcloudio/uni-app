@@ -10,7 +10,7 @@ import {
 
 import { getStorageSync } from './shims'
 
-export { redirectTo } from '@dcloudio/uni-mp-core'
+export { redirectTo, onError, offError } from '@dcloudio/uni-mp-core'
 
 function handleNetworkInfo(
   fromRes: my.IGetNetworkTypeSuccessResult,

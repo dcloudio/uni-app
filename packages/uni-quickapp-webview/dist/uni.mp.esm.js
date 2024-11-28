@@ -1,6 +1,6 @@
 import { SLOT_DEFAULT_NAME, EventChannel, invokeArrayFns, MINI_PROGRAM_PAGE_RUNTIME_HOOKS, ON_LOAD, ON_SHOW, ON_HIDE, ON_UNLOAD, ON_RESIZE, ON_TAB_ITEM_TAP, ON_REACH_BOTTOM, ON_PULL_DOWN_REFRESH, ON_ADD_TO_FAVORITES, isUniLifecycleHook, ON_READY, once, ON_LAUNCH, ON_ERROR, ON_THEME_CHANGE, ON_PAGE_NOT_FOUND, ON_UNHANDLE_REJECTION, addLeadingSlash, stringifyQuery, customizeEvent } from '@dcloudio/uni-shared';
 import { hasOwn, isArray, isFunction, extend, isPlainObject, isObject } from '@vue/shared';
-import { nextTick, ref, findComponentPropsData, toRaw, updateProps, hasQueueJob, invalidateJob, devtoolsComponentAdded, getExposeProxy, pruneComponentPropsCache } from 'vue';
+import { nextTick, injectHook, ref, findComponentPropsData, toRaw, updateProps, hasQueueJob, invalidateJob, devtoolsComponentAdded, getExposeProxy, pruneComponentPropsCache } from 'vue';
 import { normalizeLocale, LOCALE_EN } from '@dcloudio/uni-i18n';
 
 function initVueIds(vueIds, mpInstance) {
@@ -305,12 +305,12 @@ function parseApp(instance, parseAppOptions) {
             instance.$callHook(ON_LAUNCH, options);
         },
     };
-    const { onError } = internalInstance;
-    if (onError) {
-        // invokeCreateErrorHandler 在 initApp 中已经执行过，但里边只能判断出选项式的 onError 监听，所以这里需要单独处理
-        internalInstance.appContext.config.errorHandler = (err) => {
-            instance.$callHook(ON_ERROR, err);
-        };
+    const onErrorHandlers = qa.$onErrorHandlers;
+    if (onErrorHandlers) {
+        onErrorHandlers.forEach((fn) => {
+            injectHook(ON_ERROR, fn, internalInstance);
+        });
+        onErrorHandlers.length = 0;
     }
     initLocale(instance);
     const vueOptions = instance.$.type;

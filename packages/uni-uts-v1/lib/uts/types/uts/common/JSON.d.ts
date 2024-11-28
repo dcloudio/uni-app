@@ -8,6 +8,33 @@ interface JSON {
      JSON.parse() 方法用来解析 JSON 字符串，构造由字符串描述的 JavaScript 值或对象。提供可选的 reviver 函数用以在返回之前对所得到的对象执行变换 (操作)。
      @param text 要被解析成 JavaScript 值的字符串
      @param reviver [可选] 转换器，如果传入该参数 (函数)，可以用来修改解析生成的原始值，调用时机在 parse 函数返回之前。
+     @param ignoreError [ignoreError=false] 是否要忽略，解析错误时引发的控制台报错，默认为false
+     @param-uniPlatform ignoreError {
+       "app": {
+         "android": {
+           "osVer": "5.0",
+           "uniVer": "x",
+           "unixVer": "4.37",
+           "uniUtsPlugin": "4.37",
+           "unixUtsPlugin": "4.37"
+         },
+         "ios": {
+           "osVer": "x",
+           "uniVer": "x",
+           "unixVer": "x",
+           "unixUtsPlugin": "x"
+         },
+         "harmony": {
+           "osVer": "x",
+           "uniVer": "x",
+           "unixVer": "x"
+         }
+       },
+       "web": {
+         "uniVer": "x",
+         "unixVer": "x"
+       }
+     }
      @return 返回一个any 或者 null
      @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/JSON.html#parse
      @uniPlatform {
@@ -31,12 +58,39 @@ interface JSON {
         }
      }
    */
-  parse(text : string, reviver ?: (this : any, key : string, value : any) => any) : any | null;
+  parse(text : string, reviver ?: (this : any, key : string, value : any) => any, ignoreError ?: boolean) : any | null;
 
   /**
      JSON.parse() 方法用来解析 JSON 字符串，构造由字符串描述的值或者对象，其类型由泛型参数T决定
      如果输入的是一个合法的json值或者对象，返回一个对应的T值或者对象，如果json描述的值或对象和 T 指定的类型不符，将返回null
      @param text 要被解析成 JavaScript 值的字符串
+     @param ignoreError [ignoreError=false] 是否要忽略，解析错误时引发的控制台报错，默认为false
+     @param-uniPlatform ignoreError {
+       "app": {
+         "android": {
+           "osVer": "5.0",
+           "uniVer": "x",
+           "unixVer": "4.37",
+           "uniUtsPlugin": "4.37",
+           "unixUtsPlugin": "4.37"
+         },
+         "ios": {
+           "osVer": "x",
+           "uniVer": "x",
+           "unixVer": "x",
+           "unixUtsPlugin": "x"
+         },
+         "harmony": {
+           "osVer": "x",
+           "uniVer": "x",
+           "unixVer": "x"
+         }
+       },
+       "web": {
+         "uniVer": "x",
+         "unixVer": "x"
+       }
+     }
      @return 返回一个T类型的值或者对象 或者 null
      @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/JSON.html#parse<T>
      @inline
@@ -62,7 +116,8 @@ interface JSON {
         }
      }
    */
-  parse<T>(text : string) : T | null;
+  parse<T>(text : string, ignoreError ?: boolean) : T | null;
+
 
   /**
      JSON.parseObject() 方法用来解析 JSON 字符串，构造由字符串描述的对象。

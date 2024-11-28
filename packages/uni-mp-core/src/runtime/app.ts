@@ -1,5 +1,10 @@
 import { extend, hasOwn, isFunction } from '@vue/shared'
-import { type ComponentOptions, type ComponentPublicInstance, ref } from 'vue'
+import {
+  type ComponentOptions,
+  type ComponentPublicInstance,
+  injectHook,
+  ref,
+} from 'vue'
 
 import { initBaseInstance } from './componentInstance'
 import { initHooks, initUnknownHooks } from './componentHooks'
@@ -76,12 +81,12 @@ export function parseApp(
     },
   }
 
-  const { onError } = internalInstance
-  if (onError) {
-    // invokeCreateErrorHandler 在 initApp 中已经执行过，但里边只能判断出选项式的 onError 监听，所以这里需要单独处理
-    internalInstance.appContext.config.errorHandler = (err) => {
-      instance.$callHook(ON_ERROR, err)
-    }
+  const onErrorHandlers = __GLOBAL__.$onErrorHandlers
+  if (onErrorHandlers) {
+    onErrorHandlers.forEach((fn: Function) => {
+      injectHook(ON_ERROR, fn, internalInstance)
+    })
+    onErrorHandlers.length = 0
   }
 
   initLocale(instance)

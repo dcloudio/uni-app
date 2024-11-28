@@ -9664,16 +9664,21 @@ function $callMethod(method, ...args) {
   return null;
 }
 function createErrorHandler(app) {
-  return function errorHandler(err, instance, _info) {
-    if (!instance) {
-      throw err;
+  const userErrorHandler = app.config.errorHandler;
+  return function errorHandler(err, instance, info) {
+    if (userErrorHandler) {
+      userErrorHandler(err, instance, info);
     }
     const appInstance = app._instance;
     if (!appInstance || !appInstance.proxy) {
       throw err;
     }
-    {
-      invokeHook(appInstance.proxy, uniShared.ON_ERROR, err);
+    if (appInstance[uniShared.ON_ERROR]) {
+      {
+        invokeHook(appInstance.proxy, uniShared.ON_ERROR, err);
+      }
+    } else {
+      vue.logError(err, info, instance ? instance.$.vnode : null, false);
     }
   };
 }
@@ -9759,7 +9764,7 @@ function uniIdMixin(globalProperties) {
   };
 }
 function initApp(app) {
-  const appConfig = app._context.config;
+  const appConfig = app.config;
   appConfig.errorHandler = uniShared.invokeCreateErrorHandler(app, createErrorHandler);
   initOptionMergeStrategies(appConfig.optionMergeStrategies);
   const globalProperties = appConfig.globalProperties;

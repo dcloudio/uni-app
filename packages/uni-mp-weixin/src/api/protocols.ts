@@ -10,6 +10,8 @@ export {
   getAppBaseInfo,
   getWindowInfo,
   getAppAuthorizeSetting,
+  onError,
+  offError,
 } from '@dcloudio/uni-mp-core'
 
 // #if _X_

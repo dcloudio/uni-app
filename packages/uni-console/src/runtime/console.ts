@@ -35,17 +35,19 @@ export function setSendConsole(value: SendFn) {
   }
 }
 
-export function rewriteConsole() {
-  // 保存原始控制台方法的副本
-  const originalMethods = CONSOLE_TYPES.reduce((methods, type) => {
+export const originalConsole = /*@__PURE__*/ CONSOLE_TYPES.reduce(
+  (methods, type) => {
     methods[type] = console[type].bind(console)
     return methods
-  }, {} as Record<MessageType, typeof console.log>)
+  },
+  {} as Record<MessageType, typeof console.log>
+)
 
+export function rewriteConsole() {
   function wrapConsole(type: MessageType) {
     return function (...args: any[]) {
       // 使用保存的原始方法输出到控制台
-      originalMethods[type](...args)
+      originalConsole[type](...args)
       sendConsoleMessages([formatMessage(type, args)])
     }
   }
@@ -56,7 +58,7 @@ export function rewriteConsole() {
 
   return function restoreConsole() {
     CONSOLE_TYPES.forEach((type) => {
-      console[type] = originalMethods[type]
+      console[type] = originalConsole[type]
     })
   }
 }

@@ -6,12 +6,11 @@ declare global {
 }
 
 describe('initRuntimeSocket', () => {
-  beforeEach(() => {
-    // Mock global variables
-    global.__UNI_SOCKET_HOSTS__ = '127.0.0.1,localhost'
-    global.__UNI_SOCKET_PORT__ = '9999'
-    global.__UNI_SOCKET_ID__ = 'test-id'
+  const hosts = '127.0.0.1,localhost'
+  const port = '9999'
+  const id = 'test-id'
 
+  beforeEach(() => {
     uni.connectSocket = jest.fn()
   })
 
@@ -27,17 +26,17 @@ describe('initRuntimeSocket', () => {
       onClose: jest.fn(),
       onError: jest.fn(),
       onMessage: jest.fn(),
+      close: jest.fn(),
     }
 
     // @ts-ignore
     uni.connectSocket.mockReturnValue(mockSocket)
 
-    const result = await initRuntimeSocket()
+    const result = await initRuntimeSocket(hosts, port, id)
 
     expect(result).toBe(mockSocket)
     expect(uni.connectSocket).toHaveBeenCalledWith({
       url: 'ws://127.0.0.1:9999/test-id',
-      timeout: 1000,
       fail: expect.any(Function),
     })
   })
@@ -48,6 +47,7 @@ describe('initRuntimeSocket', () => {
       onClose: jest.fn((cb) => cb({})),
       onError: jest.fn(),
       onMessage: jest.fn(),
+      close: jest.fn(),
     }
 
     const mockSocket2 = {
@@ -55,6 +55,7 @@ describe('initRuntimeSocket', () => {
       onClose: jest.fn(),
       onError: jest.fn(),
       onMessage: jest.fn(),
+      close: jest.fn(),
     }
 
     uni.connectSocket
@@ -63,18 +64,16 @@ describe('initRuntimeSocket', () => {
       // @ts-ignore
       .mockReturnValueOnce(mockSocket2)
 
-    const result = await initRuntimeSocket()
+    const result = await initRuntimeSocket(hosts, port, id)
 
     expect(result).toBe(mockSocket2)
     expect(uni.connectSocket).toHaveBeenCalledTimes(2)
     expect(uni.connectSocket).toHaveBeenNthCalledWith(1, {
       url: 'ws://127.0.0.1:9999/test-id',
-      timeout: 1000,
       fail: expect.any(Function),
     })
     expect(uni.connectSocket).toHaveBeenNthCalledWith(2, {
       url: 'ws://localhost:9999/test-id',
-      timeout: 1000,
       fail: expect.any(Function),
     })
   })
@@ -85,12 +84,13 @@ describe('initRuntimeSocket', () => {
       onClose: jest.fn(),
       onError: jest.fn((cb) => cb({})),
       onMessage: jest.fn(),
+      close: jest.fn(),
     }
 
     // @ts-ignore
     uni.connectSocket.mockReturnValue(mockSocket)
 
-    const result = await initRuntimeSocket()
+    const result = await initRuntimeSocket(hosts, port, id)
 
     expect(result).toBeNull()
     expect(uni.connectSocket).toHaveBeenCalledTimes(2)
@@ -102,6 +102,7 @@ describe('initRuntimeSocket', () => {
       onClose: jest.fn(),
       onError: jest.fn(),
       onMessage: jest.fn(),
+      close: jest.fn(),
     }
 
     const mockSocket2 = {
@@ -109,6 +110,7 @@ describe('initRuntimeSocket', () => {
       onClose: jest.fn(),
       onError: jest.fn(),
       onMessage: jest.fn(),
+      close: jest.fn(),
     }
 
     uni.connectSocket
@@ -120,34 +122,28 @@ describe('initRuntimeSocket', () => {
       // @ts-ignore
       .mockReturnValueOnce(mockSocket2)
 
-    const result = await initRuntimeSocket()
+    const result = await initRuntimeSocket(hosts, port, id)
 
     expect(result).toBe(mockSocket2)
     expect(uni.connectSocket).toHaveBeenCalledTimes(2)
   })
 
   test('should handle empty host list correctly', async () => {
-    global.__UNI_SOCKET_HOSTS__ = ''
-
-    const result = await initRuntimeSocket()
+    const result = await initRuntimeSocket('', port, id)
 
     expect(result).toBeNull()
     expect(uni.connectSocket).not.toHaveBeenCalled()
   })
 
   test('should handle invalid port number correctly', async () => {
-    global.__UNI_SOCKET_PORT__ = ''
-
-    const result = await initRuntimeSocket()
+    const result = await initRuntimeSocket(hosts, '', id)
 
     expect(result).toBeNull()
     expect(uni.connectSocket).not.toHaveBeenCalled()
   })
 
   test('should handle invalid socket ID correctly', async () => {
-    global.__UNI_SOCKET_ID__ = ''
-
-    const result = await initRuntimeSocket()
+    const result = await initRuntimeSocket(hosts, port, '')
 
     expect(result).toBeNull()
     expect(uni.connectSocket).not.toHaveBeenCalled()
