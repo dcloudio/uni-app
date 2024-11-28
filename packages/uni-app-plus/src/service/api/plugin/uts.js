@@ -377,12 +377,12 @@ function initUTSProxyClass(options) {
                     return false;
                 },
             });
-            return proxy;
+            return Object.freeze(proxy);
         }
     };
     const staticPropSetterCache = {};
     const staticMethodCache = {};
-    return new Proxy(ProxyClass, {
+    return Object.freeze(new Proxy(ProxyClass, {
         get(target, name, receiver) {
             name = parseClassMethodName(name, staticMethods);
             if (hasOwn(staticMethods, name)) {
@@ -427,7 +427,7 @@ function initUTSProxyClass(options) {
             }
             return false;
         },
-    });
+    }));
 }
 function isUTSAndroid() {
     return typeof plus !== 'undefined' && plus.os.name === 'Android';

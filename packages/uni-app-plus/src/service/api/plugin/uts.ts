@@ -769,83 +769,85 @@ export function initUTSProxyClass(
           return false
         },
       })
-      return proxy
+      return Object.freeze(proxy)
     }
   }
   const staticPropSetterCache: Record<string, Function> = {}
   const staticMethodCache: Record<string, Function> = {}
-  return new Proxy(ProxyClass, {
-    get(target, name, receiver) {
-      name = parseClassMethodName(name, staticMethods)
-      if (hasOwn(staticMethods, name)) {
-        if (!staticMethodCache[name as string]) {
-          const {
-            async,
-            keepAlive,
-            params,
-            return: returnOptions,
-          } = staticMethods[name]
-          // 静态方法
-          staticMethodCache[name] = initUTSStaticMethod(
-            !!async,
-            extend(
-              {
-                name,
-                companion: true,
-                keepAlive,
-                params,
-                return: returnOptions,
-              },
-              baseOptions
-            )
-          )
-        }
-        return staticMethodCache[name]
-      }
-      if (staticProps.includes(name as string)) {
-        return invokePropGetter(
-          extend(
-            {
-              name: name as string,
-              companion: true,
-              type: 'getter',
-            },
-            baseOptions
-          ) as InvokeStaticArgs
-        )
-      }
-      return Reflect.get(target, name, receiver)
-    },
-    set(_, name, newValue) {
-      if (staticProps.includes(name as string)) {
-        // 静态属性
-        const setter = parseClassPropertySetter(name as string)
-        if (!staticPropSetterCache[setter]) {
-          const param = staticSetters[name as string]
-          if (param) {
-            staticPropSetterCache[setter] = initProxyFunction(
-              'setter',
-              false,
+  return Object.freeze(
+    new Proxy(ProxyClass, {
+      get(target, name, receiver) {
+        name = parseClassMethodName(name, staticMethods)
+        if (hasOwn(staticMethods, name)) {
+          if (!staticMethodCache[name as string]) {
+            const {
+              async,
+              keepAlive,
+              params,
+              return: returnOptions,
+            } = staticMethods[name]
+            // 静态方法
+            staticMethodCache[name] = initUTSStaticMethod(
+              !!async,
               extend(
                 {
-                  name: name as string,
-                  keepAlive: false,
-                  params: [param],
+                  name,
+                  companion: true,
+                  keepAlive,
+                  params,
+                  return: returnOptions,
                 },
                 baseOptions
-              ),
-              0
+              )
             )
           }
+          return staticMethodCache[name]
         }
-        staticPropSetterCache[parseClassPropertySetter(name as string)](
-          newValue
-        )
-        return true
-      }
-      return false
-    },
-  })
+        if (staticProps.includes(name as string)) {
+          return invokePropGetter(
+            extend(
+              {
+                name: name as string,
+                companion: true,
+                type: 'getter',
+              },
+              baseOptions
+            ) as InvokeStaticArgs
+          )
+        }
+        return Reflect.get(target, name, receiver)
+      },
+      set(_, name, newValue) {
+        if (staticProps.includes(name as string)) {
+          // 静态属性
+          const setter = parseClassPropertySetter(name as string)
+          if (!staticPropSetterCache[setter]) {
+            const param = staticSetters[name as string]
+            if (param) {
+              staticPropSetterCache[setter] = initProxyFunction(
+                'setter',
+                false,
+                extend(
+                  {
+                    name: name as string,
+                    keepAlive: false,
+                    params: [param],
+                  },
+                  baseOptions
+                ),
+                0
+              )
+            }
+          }
+          staticPropSetterCache[parseClassPropertySetter(name as string)](
+            newValue
+          )
+          return true
+        }
+        return false
+      },
+    })
+  )
 }
 
 function isUTSAndroid() {

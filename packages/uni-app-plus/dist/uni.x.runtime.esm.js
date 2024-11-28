@@ -5266,12 +5266,12 @@ function initUTSProxyClass(options) {
           return false;
         }
       });
-      return proxy2;
+      return Object.freeze(proxy2);
     }
   };
   var staticPropSetterCache = {};
   var staticMethodCache = {};
-  return new Proxy(ProxyClass, {
+  return Object.freeze(new Proxy(ProxyClass, {
     get(target, name, receiver) {
       name = parseClassMethodName(name, staticMethods);
       if (hasOwn(staticMethods, name)) {
@@ -5319,7 +5319,7 @@ function initUTSProxyClass(options) {
       }
       return false;
     }
-  });
+  }));
 }
 function isUTSAndroid() {
   {
