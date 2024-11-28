@@ -67,10 +67,7 @@ export function uniManifestJsonPlugin(): Plugin {
           sdkConfigs.maps.tencent.key
         const tempQQMapKey =
           sdkConfigs.maps && sdkConfigs.maps.qqmap && sdkConfigs.maps.qqmap.key
-        const qqMapKey =
-          process.env.UNI_APP_X === 'true'
-            ? tempTencentMapKey || tempQQMapKey
-            : tempQQMapKey
+        const qqMapKey = tempTencentMapKey || tempQQMapKey
 
         const bMapKey =
           sdkConfigs.maps && sdkConfigs.maps.bmap && sdkConfigs.maps.bmap.key
