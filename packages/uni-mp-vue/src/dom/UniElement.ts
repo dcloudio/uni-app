@@ -6,6 +6,10 @@ export interface UniElementConstructor {
   $vm: ComponentPublicInstance
 }
 
+/**
+ * event.target、event.currentTarget也是UniElement实例，可能不含id
+ */
+
 export class UniElement {
   // 跳过vue的响应式
   __v_skip = true
@@ -13,6 +17,9 @@ export class UniElement {
   nodeName: string
   tagName: string
   style: UniCSSStyleDeclaration = new UniCSSStyleDeclaration()
+  dataset: WechatMiniprogram.IAnyObject = {}
+  offsetTop = NaN
+  offsetLeft = NaN
   $vm!: ComponentPublicInstance
   $node?: {
     then: (fn: (node: any) => void) => void
@@ -25,6 +32,10 @@ export class UniElement {
   }
 
   scrollTo(options: unknown) {
+    if (!this.id) {
+      console.warn(`scrollTo is only supported on elements with id`)
+      return
+    }
     if (this.$node) {
       this.$node.then((node) => {
         node.scrollTo(options)
@@ -37,6 +48,22 @@ export class UniElement {
   getBoundingClientRectAsync(callback) {
     // TODO defineAsyncApi?
     if (callback) {
+      if (!this.id) {
+        console.warn(
+          `getBoundingClientRectAsync is not supported on elements without id`
+        )
+        try {
+          callback.fail?.()
+        } catch (error) {
+          console.error(error)
+        }
+        try {
+          callback.complete?.()
+        } catch (error) {
+          console.error(error)
+        }
+        return
+      }
       this._getBoundingClientRectAsync((domRect) => {
         try {
           callback.success?.(domRect)
@@ -50,6 +77,12 @@ export class UniElement {
         }
       })
       return
+    }
+    if (!this.id) {
+      console.warn(
+        `getBoundingClientRectAsync is not supported on elements without id`
+      )
+      return Promise.reject()
     }
     return new Promise((resolve, reject) => {
       this._getBoundingClientRectAsync(resolve)
@@ -69,6 +102,12 @@ export class UniElement {
   }
 
   getAttribute(name: string) {
+    if (!this.id) {
+      console.warn(
+        `getAttribute(${name}) is not supported on UniElement without id`
+      )
+      return null
+    }
     switch (name) {
       case 'id':
         return this.id
@@ -76,7 +115,7 @@ export class UniElement {
         return this.style.cssText
       default:
         console.warn(
-          `Miniprogram does not support UniElement.getAttribute(${name})`
+          `getAttribute(${name}) is not supported on UniElement in miniprogram`
         )
         return null
     }

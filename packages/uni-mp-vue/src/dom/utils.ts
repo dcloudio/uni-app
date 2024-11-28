@@ -131,6 +131,37 @@ export function findUniElement(
   return null
 }
 
+function createDummyUniElement() {
+  return new UniElement('', '')
+}
+
+function createEventElement(id: string, ins?: ComponentInternalInstance) {
+  if (!id || !ins) {
+    return createDummyUniElement()
+  }
+  const element = findUniElement(id, ins)
+  if (!element) {
+    return createDummyUniElement()
+  }
+  return createUniElement(id, element.tagName, ins)!
+}
+
+export function createEventTarget(
+  target: WechatMiniprogram.IAnyObject,
+  ins?: ComponentInternalInstance
+) {
+  const id = target?.id || ''
+  const element = createEventElement(id, ins)
+  if (element) {
+    element.dataset = target?.dataset || {}
+    element.offsetTop =
+      typeof target?.offsetTop === 'number' ? target?.offsetTop : NaN
+    element.offsetLeft =
+      typeof target?.offsetLeft === 'number' ? target?.offsetLeft : NaN
+  }
+  return element
+}
+
 function initMiniProgramNode(
   uniElement: UniElement,
   ins: ComponentInternalInstance
