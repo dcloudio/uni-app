@@ -420,7 +420,9 @@ module.exports = function (pagesJson, manifestJson, loader) {
 
   const sdkConfigs = h5.sdkConfigs || {}
 
-  const qqMapKey = sdkConfigs.maps && sdkConfigs.maps.qqmap && sdkConfigs.maps.qqmap.key
+  const tempTencentMapKey = sdkConfigs.maps && sdkConfigs.maps.tencent && sdkConfigs.maps.tencent.key
+  const tempQQMapKey = sdkConfigs.maps && sdkConfigs.maps.qqmap && sdkConfigs.maps.qqmap.key
+  const qqMapKey = tempTencentMapKey || tempQQMapKey
   const googleMapKey = sdkConfigs.maps && sdkConfigs.maps.google && sdkConfigs.maps.google.key
   const aMapKey = sdkConfigs.maps && sdkConfigs.maps.amap && sdkConfigs.maps.amap.key
   const aMapSecurityJsCode =
