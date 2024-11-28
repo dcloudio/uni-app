@@ -23,11 +23,19 @@ const originalConsole = /*@__PURE__*/ CONSOLE_TYPES.reduce((methods, type) => {
     methods[type] = console[type].bind(console);
     return methods;
 }, {});
+const atFileRegex = /^at\s+[\w/./-]+:\d+$/;
 function rewriteConsole() {
     function wrapConsole(type) {
         return function (...args) {
-            // 使用保存的原始方法输出到控制台
-            originalConsole[type](...args);
+            const originalArgs = [...args];
+            if (originalArgs.length) {
+                const maybeAtFile = originalArgs[originalArgs.length - 1];
+                // 移除最后的 at pages/index/index.uvue:6
+                if (typeof maybeAtFile === 'string' && atFileRegex.test(maybeAtFile)) {
+                    originalArgs.pop();
+                }
+            }
+            originalConsole[type](...originalArgs);
             sendConsoleMessages([formatMessage(type, args)]);
         };
     }
@@ -311,6 +319,13 @@ function initRuntimeSocketService() {
             console.error('开发模式下日志通道建立连接失败');
             return false;
         }
+        socket.onClose(() => {
+            if ((process.env.NODE_ENV !== 'production')) {
+                originalConsole.log(`uni-app:[${Date.now()}][socket]`, 'connect close and restore');
+            }
+            restoreError();
+            restoreConsole();
+        });
         setSendConsole((data) => {
             if ((process.env.NODE_ENV !== 'production')) {
                 originalConsole.log(`uni-app:[${Date.now()}][console]`, data);

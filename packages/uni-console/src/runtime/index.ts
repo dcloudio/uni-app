@@ -17,6 +17,16 @@ export function initRuntimeSocketService(): Promise<boolean> {
       console.error('开发模式下日志通道建立连接失败')
       return false
     }
+    socket.onClose(() => {
+      if (__DEV__) {
+        originalConsole.log(
+          `uni-app:[${Date.now()}][socket]`,
+          'connect close and restore'
+        )
+      }
+      restoreError()
+      restoreConsole()
+    })
     setSendConsole((data: string) => {
       if (__DEV__) {
         originalConsole.log(`uni-app:[${Date.now()}][console]`, data)

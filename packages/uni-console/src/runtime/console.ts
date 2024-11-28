@@ -43,11 +43,20 @@ export const originalConsole = /*@__PURE__*/ CONSOLE_TYPES.reduce(
   {} as Record<MessageType, typeof console.log>
 )
 
+const atFileRegex = /^at\s+[\w/./-]+:\d+$/
+
 export function rewriteConsole() {
   function wrapConsole(type: MessageType) {
     return function (...args: any[]) {
-      // 使用保存的原始方法输出到控制台
-      originalConsole[type](...args)
+      const originalArgs = [...args]
+      if (originalArgs.length) {
+        const maybeAtFile = originalArgs[originalArgs.length - 1]
+        // 移除最后的 at pages/index/index.uvue:6
+        if (typeof maybeAtFile === 'string' && atFileRegex.test(maybeAtFile)) {
+          originalArgs.pop()
+        }
+      }
+      originalConsole[type](...originalArgs)
       sendConsoleMessages([formatMessage(type, args)])
     }
   }
