@@ -779,7 +779,7 @@ let statData = {
   tt: '',
   brand: sys.brand || '', // 手机品牌
   md: sys.model, // 手机型号
-  sv: sys.system.replace(/(Android|iOS)\s/, ''), // 手机系统版本
+  sv: sys.system?.replace(/(Android|iOS)\s/, '') ?? '', // 手机系统版本
   mpsdk: sys.SDKVersion || '', // x程序 sdk version
   mpv: sys.version || '', // 小程序平台版本 ，如微信、支付宝
   lang: sys.language, // 语言
