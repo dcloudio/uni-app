@@ -5,6 +5,7 @@ const _completeValue = value => {
   return value > 9 ? value : ('0' + value)
 }
 
+export const isArray = Array.isArray
 export const extend = Object.assign
 
 export function isFn (fn) {
