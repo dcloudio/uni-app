@@ -117,6 +117,13 @@ interface JSON {
      }
    */
   parse<T>(text : string, ignoreError ?: boolean) : T | null;
+  /**
+   * 目前仅限内部使用，重要：不能标记inline、reified
+   * @internal
+   * @param text
+   * @param typeOfT
+   */
+  parse<T>(text : string, typeOfT ?: any) : T | null;
 
 
   /**

@@ -1,3 +1,5 @@
+import Context from 'android.content.Context'
+
 /**
  * 任务分发器
  */
