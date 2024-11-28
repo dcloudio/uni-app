@@ -229,6 +229,21 @@ function findMiniProgramUsingComponent(
   )
 }
 
+/**
+ * 开发者在配置usingComponents时，可以指向具体路径（不含文件后缀），也可以指向目录（指向目录时查找目录下的index.wxml/.json等）
+ * 当usingComponents配置为`"demo": "/components/demo"`时，查找优先级为：
+ * 1. /components/demo.wxml
+ * 2. /components/demo/index.wxml
+ *
+ * 注意如下配置是非法的：
+ * - "demo": "/components/demo.wxml"
+ * - "demo": "/components/demo/"
+ *
+ * 注意用户的pages.json内可以配置如下两种路径：
+ * - "demo": "/wxcomponents/demo"
+ * - "demo": "../wxcomponents/demo"
+ */
+
 export function findUsingComponentsJson(
   pathInpages: string,
   componentsDir: string
@@ -243,9 +258,7 @@ export function findUsingComponentsJson(
   }
   dir = '.' + dir
   const fulldir = path.resolve(process.env.UNI_INPUT_DIR, componentsDir, dir)
-  let filename = path.parse(pathInpages).name + '.json'
-
-  let jsonPath = path.resolve(fulldir, filename)
+  let jsonPath = fulldir + '.json'
   if (fs.existsSync(jsonPath)) {
     return require(jsonPath) as Record<any, any>
   }
