@@ -159,7 +159,7 @@ class SelectorQueryImpl implements SelectorQuery {
   }
 
   in(component: any | null): SelectorQuery {
-    if (isVueComponent(component)) {
+    if (component && isVueComponent(component)) {
       this._component = component as ComponentPublicInstance
     }
     return this
