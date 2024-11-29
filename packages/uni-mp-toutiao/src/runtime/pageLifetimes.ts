@@ -14,35 +14,25 @@ import { instances } from './parseComponentOptions'
 export function initLifetimes(lifetimesOptions: CreateLifetimesOptions) {
   return extend(initComponentLifetimes(lifetimesOptions), {
     ready(this: MPComponentInstance) {
-      if (this.$vm && lifetimesOptions.isPage(this)) {
-        if (this.pageinstance) {
-          this.__webviewId__ = (this.pageinstance as any).__pageId__
-        }
-        if (process.env.UNI_DEBUG) {
-          console.log(
-            'uni-app:[' + Date.now() + '][' + (this.is || this.route) + ']ready'
-          )
-        }
-        this.$vm.$callCreatedHook()
-        nextSetDataTick(this, () => {
-          if (
-            __PLATFORM__ === 'quickapp-webview' ||
-            __PLATFORM__ === 'mp-harmony'
-          ) {
-            const vm = this.$vm! as {
-              _$childVues?: [Function, Function][]
-            }
-            // 处理当前 vm 子
-            if (vm._$childVues) {
-              vm._$childVues.forEach(([createdVm]) => createdVm())
-              vm._$childVues.forEach(([, mountedVm]) => mountedVm())
-              delete vm._$childVues
-            }
+      if (process.env.UNI_DEBUG) {
+        console.log(
+          'uni-app:[' + Date.now() + '][' + (this.is || this.route) + ']ready'
+        )
+      }
+      if (this.$vm) {
+        if (lifetimesOptions.isPage(this)) {
+          if (this.pageinstance) {
+            this.__webviewId__ = (this.pageinstance as any).__pageId__
           }
-
+          this.$vm.$callCreatedHook()
+          nextSetDataTick(this, () => {
+            this.$vm!.$callHook('mounted')
+            this.$vm!.$callHook(ON_READY)
+          })
+        } else {
           this.$vm!.$callHook('mounted')
           this.$vm!.$callHook(ON_READY)
-        })
+        }
       } else {
         this.is && console.warn(this.is + ' is not ready')
       }
