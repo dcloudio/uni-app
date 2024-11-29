@@ -938,6 +938,10 @@ var serviceContext = (function () {
       }
       return new Promise((resolve, reject) => {
         res.then(res => {
+          if (!res) {
+            resolve(res);
+            return
+          }
           if (res[0]) {
             reject(res[0]);
           } else {
@@ -8026,7 +8030,7 @@ var serviceContext = (function () {
     const {
       deviceBrand = '', deviceModel, osName,
       osVersion, deviceOrientation, deviceType,
-      deviceId
+      deviceId, osLanguage, osTheme, romName, romVersion
     } = systemInfo;
 
     const brand = deviceBrand.toLowerCase();
@@ -8042,7 +8046,13 @@ var serviceContext = (function () {
       deviceType,
       model: deviceModel,
       platform: _osName,
-      system: `${_osName === 'ios' ? 'iOS' : 'Android'} ${osVersion}`
+      system: `${_osName === 'ios' ? 'iOS' : 'Android'} ${osVersion}`,
+      osName,
+      osVersion,
+      osLanguage,
+      osTheme,
+      romName,
+      romVersion
     }
   }
 
@@ -8050,9 +8060,9 @@ var serviceContext = (function () {
     weexGetSystemInfoSync();
     const {
       hostPackageName, hostName, osLanguage,
-      hostVersion, hostLanguage, hostTheme,
+      hostVersion, hostLanguage, hostTheme, uniRuntimeVersion,
       appId, appName, appVersion, appVersionCode,
-      appWgtVersion
+      appWgtVersion, uniCompileVersion, uniPlatform
     } = systemInfo;
 
     const appLanguage = uni
@@ -8079,7 +8089,12 @@ var serviceContext = (function () {
       language: osLanguage,
       SDKVersion: '',
       theme: plus.navigator.getUIStyle(),
-      version: plus.runtime.innerVersion
+      version: plus.runtime.innerVersion,
+      isUniAppX: false,
+      uniPlatform,
+      uniRuntimeVersion,
+      uniCompileVersion,
+      uniCompilerVersion: uniCompileVersion
     }
   }
 
@@ -10566,46 +10581,83 @@ var serviceContext = (function () {
   // 生成的 uts.js 需要同步到 vue2 src/platforms/app-plus/service/api/plugin
   let callbackId = 1;
   let proxy;
-  const callbacks$4 = {};
+  const keepAliveCallbacks = {};
+  function isUniElement(obj) {
+      return obj && typeof obj.getNodeId === 'function' && obj.pageId;
+  }
   function isComponentPublicInstance(instance) {
       return instance && instance.$ && instance.$.proxy === instance;
+  }
+  function parseElement(obj) {
+      if (isUniElement(obj)) {
+          return obj;
+      }
+  }
+  function parseComponentPublicInstance(obj) {
+      if (isComponentPublicInstance(obj)) {
+          return obj.$el;
+      }
+  }
+  // 序列化 UniElement | ComponentPublicInstance
+  function serialize(el, type) {
+      let nodeId = '';
+      let pageId = '';
+      // 非 x 可能不存在 getNodeId 方法？
+      if (el && el.getNodeId) {
+          pageId = el.pageId;
+          nodeId = el.getNodeId();
+      }
+      return { pageId, nodeId, __type__: type };
   }
   function toRaw(observed) {
       const raw = observed && observed.__v_raw;
       return raw ? toRaw(raw) : observed;
   }
-  function normalizeArg(arg) {
+  function normalizeArg(arg, callbacks, keepAlive) {
       arg = toRaw(arg);
       if (typeof arg === 'function') {
-          // 查找该函数是否已缓存
-          const oldId = Object.keys(callbacks$4).find((id) => callbacks$4[id] === arg);
-          const id = oldId ? parseInt(oldId) : callbackId++;
-          callbacks$4[id] = arg;
-          return id;
-      }
-      else if (isPlainObject(arg)) {
-          if (isComponentPublicInstance(arg)) {
-              let nodeId = '';
-              let pageId = '';
-              // @ts-expect-error
-              const el = arg.$el;
-              // 非 x 可能不存在 getNodeId 方法？
-              if (el && el.getNodeId) {
-                  pageId = el.pageId;
-                  nodeId = el.getNodeId();
-              }
-              return { pageId, nodeId };
+          let id;
+          if (keepAlive) {
+              // 仅keepAlive时，需要查找缓存，非keepAlive时，直接创建，避免函数被复用时，回调函数被误删
+              const oldId = Object.keys(callbacks).find((id) => callbacks[id] === arg);
+              id = oldId ? parseInt(oldId) : callbackId++;
+              callbacks[id] = arg;
           }
           else {
+              id = callbackId++;
+              callbacks[id] = arg;
+          }
+          return id;
+          // 为啥还要额外判断了isUniElement?，isPlainObject不是包含isUniElement的逻辑吗？为了避免出bug，保留此逻辑
+      }
+      else if (isPlainObject(arg) || isUniElement(arg)) {
+          const uniElement = parseElement(arg);
+          const componentPublicInstanceUniElement = !uniElement
+              ? parseComponentPublicInstance(arg)
+              : undefined;
+          const el = uniElement || componentPublicInstanceUniElement;
+          if (el) {
+              return serialize(el, uniElement ? 'UniElement' : 'ComponentPublicInstance');
+          }
+          else {
+              // 必须复制，否则会污染原始对象，比如：
+              // const obj = {
+              //   a: 1,
+              //   b: () => {}
+              // }
+              // const newObj = normalizeArg(obj, {}, false)
+              // newObj.a = 2 // 这会污染原始对象 obj
+              const newArg = {};
               Object.keys(arg).forEach((name) => {
-                  arg[name] = normalizeArg(arg[name]);
+                  newArg[name] = normalizeArg(arg[name], callbacks, keepAlive);
               });
+              return newArg;
           }
       }
       return arg;
   }
   function initUTSInstanceMethod(async, opts, instanceId, proxy) {
-      return initProxyFunction(async, opts, instanceId, proxy);
+      return initProxyFunction('method', async, opts, instanceId, proxy);
   }
   function getProxy() {
       if (!proxy) {
@@ -10664,42 +10716,55 @@ var serviceContext = (function () {
       }
       return resolveSyncResult(args, getProxy().invokeSync(args, () => { }));
   }
-  function initProxyFunction(async, { moduleName, moduleType, package: pkg, class: cls, name: propOrMethod, method, companion, params: methodParams, return: returnOptions, errMsg, }, instanceId, proxy) {
-      const invokeCallback = ({ id, name, params, keepAlive, }) => {
-          const callback = callbacks$4[id];
-          if (callback) {
-              callback(...params);
-              if (!keepAlive) {
-                  delete callbacks$4[id];
-              }
-          }
-          else {
-              console.error(`${pkg}${cls}.${propOrMethod} ${name} is not found`);
-          }
-      };
+  function initProxyFunction(type, async, { moduleName, moduleType, package: pkg, class: cls, name: methodName, method, companion, keepAlive, params: methodParams, return: returnOptions, errMsg, }, instanceId, proxy) {
+      if (!keepAlive) {
+          keepAlive =
+              methodName.indexOf('on') === 0 &&
+                  methodParams.length === 1 &&
+                  methodParams[0].type === 'UTSCallback';
+      }
       const baseArgs = instanceId
           ? {
               moduleName,
               moduleType,
               id: instanceId,
-              name: propOrMethod,
+              type,
+              name: methodName,
               method: methodParams,
+              keepAlive,
           }
           : {
               moduleName,
               moduleType,
               package: pkg,
               class: cls,
-              name: method || propOrMethod,
+              name: method || methodName,
+              type,
               companion,
               method: methodParams,
+              keepAlive,
           };
       return (...args) => {
           if (errMsg) {
               throw new Error(errMsg);
           }
+          // TODO 隐患：部分callback可能不会被删除，比如传入了success、fail、complete，但是仅触发了success、complete，那么fail就不会被删除
+          // 需要有个机制来知道整个函数已经结束了，需要清理所有相关callbacks
+          const callbacks = keepAlive ? keepAliveCallbacks : {};
+          const invokeCallback = ({ id, name, params }) => {
+              const callback = callbacks[id];
+              if (callback) {
+                  callback(...params);
+                  if (!keepAlive) {
+                      delete callbacks[id];
+                  }
+              }
+              else {
+                  console.error(`uts插件[${moduleName}] ${pkg}${cls}.${methodName.replace('ByJs', '')} ${name}回调函数已释放，不能再次执行，参考文档：https://doc.dcloud.net.cn/uni-app-x/plugin/uts-plugin.html#keepalive`);
+              }
+          };
           const invokeArgs = extend({}, baseArgs, {
-              params: args.map((arg) => normalizeArg(arg)),
+              params: args.map((arg) => normalizeArg(arg, callbacks, keepAlive)),
           });
           if (async) {
               return new Promise((resolve, reject) => {
@@ -10736,7 +10801,7 @@ var serviceContext = (function () {
               opts.method = 's_' + opts.name;
           }
       }
-      return initProxyFunction(async, opts, 0);
+      return initProxyFunction('method', async, opts, 0);
   }
   const initUTSProxyFunction = initUTSStaticMethod;
   function parseClassMethodName(name, methods) {
@@ -10751,8 +10816,11 @@ var serviceContext = (function () {
   function isProxyInterfaceOptions(options) {
       return !isUndefined(options.instanceId);
   }
+  function parseClassPropertySetter(name) {
+      return '__$set' + capitalize(name);
+  }
   function initUTSProxyClass(options) {
-      const { moduleName, moduleType, package: pkg, class: cls, methods, props, errMsg, } = options;
+      const { moduleName, moduleType, package: pkg, class: cls, methods, props, setters, errMsg, } = options;
       const baseOptions = {
           moduleName,
           moduleType,
@@ -10764,6 +10832,7 @@ var serviceContext = (function () {
       let constructorParams = [];
       let staticMethods = {};
       let staticProps = [];
+      let staticSetters = {};
       let isProxyInterface = false;
       if (isProxyInterfaceOptions(options)) {
           isProxyInterface = true;
@@ -10773,6 +10842,7 @@ var serviceContext = (function () {
           constructorParams = options.constructor.params;
           staticMethods = options.staticMethods;
           staticProps = options.staticProps;
+          staticSetters = options.staticSetters;
       }
       // iOS 需要为 ByJs 的 class 构造函数（如果包含JSONObject或UTSCallback类型）补充最后一个参数
       if (isUTSiOS()) {
@@ -10790,7 +10860,11 @@ var serviceContext = (function () {
               // 初始化实例 ID
               if (!isProxyInterface) {
                   // 初始化未指定时，每次都要创建instanceId
-                  this.__instanceId = initProxyFunction(false, extend({ name: 'constructor', params: constructorParams }, baseOptions), 0).apply(null, params);
+                  this.__instanceId = initProxyFunction('constructor', false, extend({
+                      name: 'constructor',
+                      keepAlive: false,
+                      params: constructorParams,
+                  }, baseOptions), 0).apply(null, params);
               }
               else if (typeof instanceId === 'number') {
                   this.__instanceId = instanceId;
@@ -10809,9 +10883,10 @@ var serviceContext = (function () {
                           //实例方法
                           name = parseClassMethodName(name, methods);
                           if (hasOwn(methods, name)) {
-                              const { async, params, return: returnOptions } = methods[name];
+                              const { async, keepAlive, params, return: returnOptions, } = methods[name];
                               target[name] = initUTSInstanceMethod(!!async, extend({
                                   name,
+                                  keepAlive,
                                   params,
                                   return: returnOptions,
                               }, baseOptions), instance.__instanceId, proxy);
@@ -10822,6 +10897,8 @@ var serviceContext = (function () {
                                   moduleName,
                                   moduleType,
                                   id: instance.__instanceId,
+                                  type: 'getter',
+                                  keepAlive: false,
                                   name: name,
                                   errMsg,
                               });
@@ -10829,27 +10906,74 @@ var serviceContext = (function () {
                       }
                       return target[name];
                   },
+                  set(_, name, newValue) {
+                      if (props.includes(name)) {
+                          const setter = parseClassPropertySetter(name);
+                          if (!target[setter]) {
+                              const param = setters[name];
+                              if (param) {
+                                  target[setter] = initProxyFunction('setter', false, extend({
+                                      name: name,
+                                      keepAlive: false,
+                                      params: [param],
+                                  }, baseOptions), instance.__instanceId, proxy);
+                              }
+                          }
+                          target[parseClassPropertySetter(name)](newValue);
+                          return true;
+                      }
+                      return false;
+                  },
               });
               return proxy;
           }
       };
+      const staticPropSetterCache = {};
       const staticMethodCache = {};
       return new Proxy(ProxyClass, {
           get(target, name, receiver) {
               name = parseClassMethodName(name, staticMethods);
               if (hasOwn(staticMethods, name)) {
                   if (!staticMethodCache[name]) {
-                      const { async, params, return: returnOptions } = staticMethods[name];
+                      const { async, keepAlive, params, return: returnOptions, } = staticMethods[name];
                       // 静态方法
-                      staticMethodCache[name] = initUTSStaticMethod(!!async, extend({ name, companion: true, params, return: returnOptions }, baseOptions));
+                      staticMethodCache[name] = initUTSStaticMethod(!!async, extend({
+                          name,
+                          companion: true,
+                          keepAlive,
+                          params,
+                          return: returnOptions,
+                      }, baseOptions));
                   }
                   return staticMethodCache[name];
               }
               if (staticProps.includes(name)) {
-                  // 静态属性
-                  return invokePropGetter(extend({ name: name, companion: true }, baseOptions));
+                  return invokePropGetter(extend({
+                      name: name,
+                      companion: true,
+                      type: 'getter',
+                  }, baseOptions));
               }
               return Reflect.get(target, name, receiver);
+          },
+          set(_, name, newValue) {
+              if (staticProps.includes(name)) {
+                  // 静态属性
+                  const setter = parseClassPropertySetter(name);
+                  if (!staticPropSetterCache[setter]) {
+                      const param = staticSetters[name];
+                      if (param) {
+                          staticPropSetterCache[setter] = initProxyFunction('setter', false, extend({
+                              name: name,
+                              keepAlive: false,
+                              params: [param],
+                          }, baseOptions), 0);
+                      }
+                  }
+                  staticPropSetterCache[parseClassPropertySetter(name)](newValue);
+                  return true;
+              }
+              return false;
           },
       });
   }
@@ -12107,16 +12231,16 @@ var serviceContext = (function () {
     }
   }
 
-  const callbacks$5 = {};
+  const callbacks$4 = {};
 
   function createCallbacks (namespace) {
-    let scopedCallbacks = callbacks$5[namespace];
+    let scopedCallbacks = callbacks$4[namespace];
     if (!scopedCallbacks) {
       scopedCallbacks = {
         id: 1,
         callbacks: Object.create(null)
       };
-      callbacks$5[namespace] = scopedCallbacks;
+      callbacks$4[namespace] = scopedCallbacks;
     }
     return {
       get (id) {
@@ -13101,9 +13225,9 @@ var serviceContext = (function () {
     'error',
     'waiting'
   ];
-  const callbacks$6 = {};
+  const callbacks$5 = {};
   eventNames$2.forEach(name => {
-    callbacks$6[name] = [];
+    callbacks$5[name] = [];
   });
 
   const props = [
@@ -13174,7 +13298,7 @@ var serviceContext = (function () {
         errMsg,
         errCode
       }) => {
-        callbacks$6[state].forEach(callback => {
+        callbacks$5[state].forEach(callback => {
           if (typeof callback === 'function') {
             callback(state === 'error' ? {
               errMsg,
@@ -13185,7 +13309,7 @@ var serviceContext = (function () {
       });
       backgroundEvents.forEach((name) => {
         onMethod(`onBackgroundAudio${name[0].toUpperCase() + name.substr(1)}`, () => {
-          callbacks$6[name].forEach(callback => {
+          callbacks$5[name].forEach(callback => {
             if (typeof callback === 'function') {
               callback({});
             }
@@ -13240,7 +13364,7 @@ var serviceContext = (function () {
   eventNames$2.forEach(item => {
     const name = item[0].toUpperCase() + item.substr(1);
     BackgroundAudioManager.prototype[`on${name}`] = function (callback) {
-      callbacks$6[item].push(callback);
+      callbacks$5[item].push(callback);
     };
   });
 
@@ -21349,24 +21473,24 @@ var serviceContext = (function () {
     createInnerAudioContext: createInnerAudioContext
   });
 
-  const callbacks$7 = [];
+  const callbacks$6 = [];
 
   onMethod('onNetworkStatusChange', res => {
-    callbacks$7.forEach(callbackId => {
+    callbacks$6.forEach(callbackId => {
       invoke$1(callbackId, res);
     });
   });
 
   function onNetworkStatusChange (callbackId) {
-    callbacks$7.push(callbackId);
+    callbacks$6.push(callbackId);
   }
 
   function offNetworkStatusChange (callbackId) {
     // 暂不支持移除所有监听
     if (callbackId) {
-      const index = callbacks$7.indexOf(callbackId);
+      const index = callbacks$6.indexOf(callbackId);
       if (index >= 0) {
-        callbacks$7.splice(index, 1);
+        callbacks$6.splice(index, 1);
       }
     }
   }
@@ -21377,25 +21501,25 @@ var serviceContext = (function () {
     offNetworkStatusChange: offNetworkStatusChange
   });
 
-  const callbacks$8 = [];
+  const callbacks$7 = [];
   const oldCallbacks = [];
 
   onMethod(ON_THEME_CHANGE, function (res) {
-    callbacks$8.forEach(callbackId => {
+    callbacks$7.forEach(callbackId => {
       invoke$1(callbackId, res);
     });
   });
 
   function onThemeChange$1 (callbackId) {
-    callbacks$8.push(callbackId);
+    callbacks$7.push(callbackId);
   }
 
   function offThemeChange$1 (callbackId) {
     // 暂不支持移除所有监听
     if (callbackId) {
-      const index = callbacks$8.indexOf(callbackId);
+      const index = callbacks$7.indexOf(callbackId);
       if (index >= 0) {
-        callbacks$8.splice(index, 1);
+        callbacks$7.splice(index, 1);
       }
     }
   }
@@ -21505,7 +21629,7 @@ var serviceContext = (function () {
     closePreviewImage: closePreviewImage
   });
 
-  const callbacks$9 = {
+  const callbacks$8 = {
     pause: null,
     resume: null,
     start: null,
@@ -21519,14 +21643,14 @@ var serviceContext = (function () {
         const state = res.state;
         delete res.state;
         delete res.errMsg;
-        if (typeof callbacks$9[state] === 'function') {
-          callbacks$9[state](res);
+        if (typeof callbacks$8[state] === 'function') {
+          callbacks$8[state](res);
         }
       });
     }
 
     onError (callback) {
-      callbacks$9.error = callback;
+      callbacks$8.error = callback;
     }
 
     onFrameRecorded (callback) {
@@ -21542,19 +21666,19 @@ var serviceContext = (function () {
     }
 
     onPause (callback) {
-      callbacks$9.pause = callback;
+      callbacks$8.pause = callback;
     }
 
     onResume (callback) {
-      callbacks$9.resume = callback;
+      callbacks$8.resume = callback;
     }
 
     onStart (callback) {
-      callbacks$9.start = callback;
+      callbacks$8.start = callback;
     }
 
     onStop (callback) {
-      callbacks$9.stop = callback;
+      callbacks$8.stop = callback;
     }
 
     pause () {
@@ -21886,7 +22010,7 @@ var serviceContext = (function () {
 
   const socketTasks$1 = Object.create(null);
   const socketTasksArray = [];
-  const callbacks$a = Object.create(null);
+  const callbacks$9 = Object.create(null);
   onMethod('onSocketTaskStateChange', ({
     socketTaskId,
     state,
@@ -21907,8 +22031,8 @@ var serviceContext = (function () {
     if (state === 'open') {
       socketTask.readyState = socketTask.OPEN;
     }
-    if (socketTask === socketTasksArray[0] && callbacks$a[state]) {
-      invoke$1(callbacks$a[state], callbackRes);
+    if (socketTask === socketTasksArray[0] && callbacks$9[state]) {
+      invoke$1(callbacks$9[state], callbackRes);
     }
     if (state === 'error' || state === 'close') {
       socketTask.readyState = socketTask.CLOSED;
@@ -21970,19 +22094,19 @@ var serviceContext = (function () {
   }
 
   function onSocketOpen (callbackId) {
-    callbacks$a.open = callbackId;
+    callbacks$9.open = callbackId;
   }
 
   function onSocketError (callbackId) {
-    callbacks$a.error = callbackId;
+    callbacks$9.error = callbackId;
   }
 
   function onSocketMessage (callbackId) {
-    callbacks$a.message = callbackId;
+    callbacks$9.message = callbackId;
   }
 
   function onSocketClose (callbackId) {
-    callbacks$a.close = callbackId;
+    callbacks$9.close = callbackId;
   }
 
   var require_context_module_1_19 = /*#__PURE__*/Object.freeze({
@@ -22683,16 +22807,16 @@ var serviceContext = (function () {
         });
         weex.requireModule('plus').setLanguage(locale);
       }
-      callbacks$b.forEach(callbackId => {
+      callbacks$a.forEach(callbackId => {
         invoke$1(callbackId, { locale });
       });
       return true
     }
     return false
   }
-  const callbacks$b = [];
+  const callbacks$a = [];
   function onLocaleChange (callbackId) {
-    callbacks$b.push(callbackId);
+    callbacks$a.push(callbackId);
   }
 
   var require_context_module_1_28 = /*#__PURE__*/Object.freeze({
@@ -22748,16 +22872,16 @@ var serviceContext = (function () {
 
   const hideTabBarRedDot$1 = removeTabBarBadge$1;
 
-  const callbacks$c = [];
+  const callbacks$b = [];
 
   onMethod('onTabBarMidButtonTap', res => {
-    callbacks$c.forEach(callbackId => {
+    callbacks$b.forEach(callbackId => {
       invoke$1(callbackId, res);
     });
   });
 
   function onTabBarMidButtonTap (callbackId) {
-    callbacks$c.push(callbackId);
+    callbacks$b.push(callbackId);
   }
 
   var require_context_module_1_31 = /*#__PURE__*/Object.freeze({
@@ -22768,20 +22892,20 @@ var serviceContext = (function () {
     onTabBarMidButtonTap: onTabBarMidButtonTap
   });
 
-  const callbacks$d = [];
+  const callbacks$c = [];
   onMethod('onViewDidResize', res => {
-    callbacks$d.forEach(callbackId => {
+    callbacks$c.forEach(callbackId => {
       invoke$1(callbackId, res);
     });
   });
 
   function onWindowResize (callbackId) {
-    callbacks$d.push(callbackId);
+    callbacks$c.push(callbackId);
   }
 
   function offWindowResize (callbackId) {
     // 此处和微信平台一致查询不到去掉最后一个
-    callbacks$d.splice(callbacks$d.indexOf(callbackId), 1);
+    callbacks$c.splice(callbacks$c.indexOf(callbackId), 1);
   }
 
   var require_context_module_1_32 = /*#__PURE__*/Object.freeze({

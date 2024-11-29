@@ -3,27 +3,38 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.parseUTSModuleDeps = exports.capitalize = exports.camelize = exports.parseInjects = exports.parseUniExtApis = exports.getUniExtApiProviderRegisters = exports.getUniExtApiProviders = void 0;
+exports.parseUTSModuleDeps = exports.capitalize = exports.camelize = exports.parseInjects = exports.parseUniExtApi = exports.parseUniExtApis = exports.getUniExtApiProviderRegisters = exports.formatExtApiProviderName = exports.getUniExtApiPlugins = exports.getUniExtApiProviders = void 0;
 // 重要：此文件编译后的js，需同步至 vue2 编译器中 uni-cli-shared/lib/uts/uni_modules.js
 const path_1 = __importDefault(require("path"));
 const fs_extra_1 = __importDefault(require("fs-extra"));
 const extApiProviders = [];
+const extApiPlugins = new Set();
 function getUniExtApiProviders() {
     return extApiProviders;
 }
 exports.getUniExtApiProviders = getUniExtApiProviders;
+function getUniExtApiPlugins() {
+    return [...extApiPlugins].map((plugin) => {
+        return { plugin };
+    });
+}
+exports.getUniExtApiPlugins = getUniExtApiPlugins;
+function formatExtApiProviderName(service, name) {
+    if (service === 'oauth') {
+        service = 'OAuth';
+    }
+    return `Uni${(0, exports.capitalize)((0, exports.camelize)(service))}${(0, exports.capitalize)((0, exports.camelize)(name))}ProviderImpl`;
+}
+exports.formatExtApiProviderName = formatExtApiProviderName;
 function getUniExtApiProviderRegisters() {
     const result = [];
     extApiProviders.forEach((provider) => {
         if (provider.name && provider.service) {
             result.push({
                 name: provider.name,
+                plugin: provider.plugin,
                 service: provider.service,
-                class: `uts.sdk.modules.${(0, exports.camelize)(provider.plugin)}.${(0, exports.capitalize)((0, exports.camelize)('uni-ext-api-' +
-                    provider.service +
-                    '-' +
-                    provider.name +
-                    '-provider'))}`,
+                class: `uts.sdk.modules.${(0, exports.camelize)(provider.plugin)}.${formatExtApiProviderName(provider.service, provider.name)}`,
             });
         }
     });
@@ -40,6 +51,7 @@ function parseUniExtApis(vite = true, platform, language = 'javascript') {
     }
     const injects = {};
     extApiProviders.length = 0;
+    extApiPlugins.clear();
     fs_extra_1.default.readdirSync(uniModulesDir).forEach((uniModuleDir) => {
         // 必须以 uni- 开头
         if (!uniModuleDir.startsWith('uni-')) {
@@ -62,6 +74,7 @@ function parseUniExtApis(vite = true, platform, language = 'javascript') {
                     provider.plugin = uniModuleDir;
                     extApiProviders.push(provider);
                 }
+                extApiPlugins.add(uniModuleDir);
                 const curInjects = parseInjects(vite, platform, language, `@/uni_modules/${uniModuleDir}`, uniModuleRootDir, exports);
                 Object.assign(injects, curInjects);
             }
@@ -71,6 +84,21 @@ function parseUniExtApis(vite = true, platform, language = 'javascript') {
     return injects;
 }
 exports.parseUniExtApis = parseUniExtApis;
+function parseUniExtApi(pluginDir, pluginId, vite = true, platform, language = 'javascript') {
+    const pkgPath = path_1.default.resolve(pluginDir, 'package.json');
+    if (!fs_extra_1.default.existsSync(pkgPath)) {
+        return;
+    }
+    let exports;
+    const pkg = JSON.parse(fs_extra_1.default.readFileSync(pkgPath, 'utf8'));
+    if (pkg && pkg.uni_modules && pkg.uni_modules['uni-ext-api']) {
+        exports = pkg.uni_modules['uni-ext-api'];
+    }
+    if (exports) {
+        return parseInjects(vite, platform, language, `@/uni_modules/${pluginId}`, pluginDir, exports);
+    }
+}
+exports.parseUniExtApi = parseUniExtApi;
 /**
  *  uni:'getBatteryInfo'
  * import getBatteryInfo from '..'
@@ -113,18 +141,25 @@ function parseInjects(vite = true, platform, language, source, uniModuleRootDir,
             if (platform === 'app') {
                 hasPlatformFile =
                     fs_extra_1.default.existsSync(path_1.default.resolve(uniModuleRootDir, 'utssdk', 'app-android')) ||
-                        fs_extra_1.default.existsSync(path_1.default.resolve(uniModuleRootDir, 'utssdk', 'app-ios'));
+                        fs_extra_1.default.existsSync(path_1.default.resolve(uniModuleRootDir, 'utssdk', 'app-ios')) ||
+                        fs_extra_1.default.existsSync(path_1.default.resolve(uniModuleRootDir, 'utssdk', 'app-harmony'));
             }
         }
         // 其他平台修改source，直接指向目标文件，否则 uts2js 找不到类型信息
         if (platform !== 'app' &&
             platform !== 'app-android' &&
-            platform !== 'app-ios') {
+            platform !== 'app-ios' &&
+            platform !== 'app-harmony') {
             if (fs_extra_1.default.existsSync(platformIndexFileName)) {
                 source = `${source}/utssdk/${platform}/index.uts`;
             }
             else if (fs_extra_1.default.existsSync(rootIndexFileName)) {
                 source = `${source}/utssdk/index.uts`;
+            }
+        }
+        else if (process.env.UNI_APP_X_UVUE_SCRIPT_ENGINE === 'js') {
+            if (fs_extra_1.default.existsSync(path_1.default.resolve(uniModuleRootDir, 'utssdk', 'app-js', 'index.uts'))) {
+                source = `${source}/utssdk/app-js/index.uts`;
             }
         }
         for (const key in rootDefines) {
@@ -162,7 +197,9 @@ function parseInject(vite = true, platform, language, source, globalObject, defi
             }
             else {
                 const defineOptions = define[d];
-                const p = platform === 'app-android' || platform === 'app-ios'
+                const p = platform === 'app-android' ||
+                    platform === 'app-ios' ||
+                    platform === 'app-harmony'
                     ? 'app'
                     : platform;
                 if (!(p in defineOptions)) {
@@ -175,18 +212,12 @@ function parseInject(vite = true, platform, language, source, globalObject, defi
                         if (p === 'app') {
                             const appOptions = defineOptions.app;
                             if (isPlainObject(appOptions)) {
-                                if (language === 'javascript') {
-                                    if (appOptions.js === false) {
-                                        return;
-                                    }
-                                }
-                                else if (language === 'kotlin') {
-                                    if (appOptions.kotlin === false) {
-                                        return;
-                                    }
-                                }
-                                else if (language === 'swift') {
-                                    if (appOptions.swift === false) {
+                                // js engine 下且存在 app-js，不检查
+                                const skipCheck = process.env.UNI_APP_X_UVUE_SCRIPT_ENGINE === 'js' &&
+                                    source.includes('app-js');
+                                if (!skipCheck) {
+                                    const targetLanguage = language === 'javascript' ? 'js' : language;
+                                    if (targetLanguage && appOptions[targetLanguage] === false) {
                                         return;
                                     }
                                 }

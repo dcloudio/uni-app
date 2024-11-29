@@ -40,7 +40,7 @@ function getProvides (isAppService) {
       Behavior: [runtimePath, 'Behavior'],
       getDate: [wxsPath, 'getDate'],
       getRegExp: [wxsPath, 'getRegExp'],
-      uniCloud: [uniCloudPath, 'default'],
+      uniCloud: [uniCloudPath, 'uniCloud'],
       crypto: [cryptoPath, 'default'],
       'window.crypto': [cryptoPath, 'default'],
       'global.crypto': [cryptoPath, 'default']
@@ -127,6 +127,16 @@ const v3 = {
       entry['app-view'] = path.resolve(process.env.UNI_INPUT_DIR, getMainEntry())
     }
 
+    const plugins = [
+      new WebpackUniAppPlugin(),
+      new webpack.ProvidePlugin(getProvides(isAppService))
+    ]
+    if (isAppService) {
+      const {
+        WebpackUTSPlugin
+      } = require('@dcloudio/uni-cli-shared/lib/uts/uts-webpack-plugin.js')
+      plugins.push(new WebpackUTSPlugin())
+    }
     return {
       mode: process.env.NODE_ENV === 'production' ? 'production' : 'development',
       externals: {
@@ -194,10 +204,7 @@ const v3 = {
           // )
         ]
       },
-      plugins: [
-        new WebpackUniAppPlugin(),
-        new webpack.ProvidePlugin(getProvides(isAppService))
-      ]
+      plugins
     }
   },
   chainWebpack (webpackConfig, vueOptions, api) {

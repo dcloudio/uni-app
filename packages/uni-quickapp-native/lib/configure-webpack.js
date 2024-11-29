@@ -81,7 +81,7 @@ module.exports = {
       ENV_PHASE_OL: env.NODE_PHASE === 'prod'
     }),
     new webpack.ProvidePlugin({
-      uniCloud: [uniCloudPath, 'default']
+      uniCloud: [uniCloudPath, 'uniCloud']
     }),
     new CopyPlugin(CopyPluginVersion > 5 ? { patterns } : patterns),
     new HandlerPlugin({}),

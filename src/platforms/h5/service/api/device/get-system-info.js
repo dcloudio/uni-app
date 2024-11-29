@@ -21,7 +21,9 @@ export function getDeviceInfo () {
     platform,
     system,
     deviceOrientation,
-    deviceType
+    deviceType,
+    osname,
+    osversion
   } = browserInfo
 
   return {
@@ -34,7 +36,9 @@ export function getDeviceInfo () {
     deviceType,
     model,
     platform,
-    system
+    system,
+    osName: osname ? osname.toLocaleLowerCase() : undefined,
+    osVersion: osversion
   }
 }
 
@@ -65,7 +69,12 @@ export function getAppBaseInfo () {
     language,
     SDKVersion: '',
     theme,
-    version: ''
+    version: '',
+    uniPlatform: 'web',
+    isUniAppX: false,
+    uniCompileVersion: __uniConfig.compilerVersion,
+    uniCompilerVersion: __uniConfig.compilerVersion,
+    uniRuntimeVersion: __uniConfig.compilerVersion
   }
 }
 

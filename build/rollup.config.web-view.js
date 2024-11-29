@@ -6,7 +6,7 @@ module.exports = {
   input: 'src/core/runtime/web-view/index.js',
   output: {
     name: 'uni',
-    file: 'dist/uni.webview.1.5.5.js',
+    file: 'dist/uni.webview.1.5.6.js',
     format: 'umd'
   },
   plugins: [

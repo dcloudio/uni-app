@@ -50,7 +50,7 @@ const uniPath = process.env.UNI_USING_V8
 const uniCloudPath = require.resolve('@dcloudio/vue-cli-plugin-uni/packages/uni-cloud/dist/index.js')
 
 const provide = {
-  uniCloud: [uniCloudPath, 'default']
+  uniCloud: [uniCloudPath, 'uniCloud']
 }
 
 if (
@@ -236,6 +236,11 @@ if (process.env.UNI_USING_V3_NATIVE) {
 }
 
 if (process.env.UNI_USING_NATIVE || process.env.UNI_USING_V3_NATIVE) {
+  const {
+    WebpackUTSPlugin
+  } = require('@dcloudio/uni-cli-shared/lib/uts/uts-webpack-plugin.js')
+  plugins.push(new WebpackUTSPlugin())
+
   plugins.push(new WebpackUniMPPlugin())
   const assetsDir = 'static'
   const hybridDir = 'hybrid/html'
