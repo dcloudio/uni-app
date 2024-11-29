@@ -1,9 +1,7 @@
 import { extend } from '@vue/shared'
-import { ON_READY } from '@dcloudio/uni-shared'
-import {
-  type CreateLifetimesOptions,
-  type MPComponentInstance,
-  nextSetDataTick,
+import type {
+  CreateLifetimesOptions,
+  MPComponentInstance,
 } from '@dcloudio/uni-mp-core'
 
 import { $destroyComponent } from '@dcloudio/uni-mp-core'
@@ -13,35 +11,6 @@ import { instances } from './parseComponentOptions'
 
 export function initLifetimes(lifetimesOptions: CreateLifetimesOptions) {
   return extend(initComponentLifetimes(lifetimesOptions), {
-    ready(this: MPComponentInstance) {
-      if (process.env.UNI_DEBUG) {
-        console.log(
-          'uni-app:[' + Date.now() + '][' + (this.is || this.route) + ']ready'
-        )
-      }
-      if (this.$vm) {
-        if (lifetimesOptions.isPage(this)) {
-          if (this.pageinstance) {
-            this.__webviewId__ = (this.pageinstance as any).__pageId__
-          }
-          this.$vm.$callCreatedHook()
-          nextSetDataTick(this, () => {
-            this.$vm!.$callHook('mounted')
-            this.$vm!.$callHook(ON_READY)
-          })
-        } else {
-          if (
-            __PLATFORM__ === 'mp-harmony' ||
-            __PLATFORM__ === 'quickapp-webview'
-          ) {
-            this.$vm!.$callHook('mounted')
-            this.$vm!.$callHook(ON_READY)
-          }
-        }
-      } else {
-        this.is && console.warn(this.is + ' is not ready')
-      }
-    },
     detached(this: MPComponentInstance) {
       this.$vm && $destroyComponent(this.$vm)
       // 清理

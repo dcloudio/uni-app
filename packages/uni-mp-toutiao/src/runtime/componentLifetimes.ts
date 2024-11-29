@@ -9,6 +9,7 @@ import {
   findPropsData,
   initFormField,
   initSetRef,
+  nextSetDataTick,
   resolvePropValue,
 } from '@dcloudio/uni-mp-core'
 
@@ -20,6 +21,7 @@ import {
   initRefs,
   initVueIds,
 } from '@dcloudio/uni-mp-core'
+import { ON_READY } from '@dcloudio/uni-shared'
 
 const fixAttached = __PLATFORM__ === 'mp-toutiao'
 
@@ -103,6 +105,42 @@ export function initLifetimes({
     }
   }
 
+  function ready(this: MPComponentInstance) {
+    if (process.env.UNI_DEBUG) {
+      console.log(
+        'uni-app:[' + Date.now() + '][' + (this.is || this.route) + ']ready'
+      )
+    }
+    if (this.$vm) {
+      if (isPage(this)) {
+        if (this.pageinstance) {
+          this.__webviewId__ = (this.pageinstance as any).__pageId__
+        }
+        if (
+          !(
+            __PLATFORM__ === 'mp-harmony' || __PLATFORM__ === 'quickapp-webview'
+          )
+        ) {
+          this.$vm.$callCreatedHook()
+        }
+        nextSetDataTick(this, () => {
+          this.$vm!.$callHook('mounted')
+          this.$vm!.$callHook(ON_READY)
+        })
+      } else {
+        if (
+          __PLATFORM__ === 'mp-harmony' ||
+          __PLATFORM__ === 'quickapp-webview'
+        ) {
+          this.$vm!.$callHook('mounted')
+          this.$vm!.$callHook(ON_READY)
+        }
+      }
+    } else {
+      this.is && console.warn(this.is + ' is not ready')
+    }
+  }
+
   function detached(this: MPComponentInstance) {
     if (this.$vm) {
       pruneComponentPropsCache(this.$vm.$.uid)
@@ -110,7 +148,7 @@ export function initLifetimes({
     }
   }
   if (!fixAttached) {
-    return { attached, detached }
+    return { attached, ready, detached }
   }
   return {
     created,
@@ -131,6 +169,7 @@ export function initLifetimes({
         component = components[0]
       }
     },
+    ready,
     detached,
   }
 }
