@@ -860,6 +860,31 @@ function initLifetimes$1({ mocks, isPage, initRelation, vueOptions, }) {
             initFormField(this.$vm);
         }
     }
+    function ready() {
+        if (process.env.UNI_DEBUG) {
+            console.log('uni-app:[' + Date.now() + '][' + (this.is || this.route) + ']ready');
+        }
+        if (this.$vm) {
+            if (isPage(this)) {
+                if (this.pageinstance) {
+                    this.__webviewId__ = this.pageinstance.__pageId__;
+                }
+                nextSetDataTick(this, () => {
+                    this.$vm.$callHook('mounted');
+                    this.$vm.$callHook(ON_READY);
+                });
+            }
+            else {
+                {
+                    this.$vm.$callHook('mounted');
+                    this.$vm.$callHook(ON_READY);
+                }
+            }
+        }
+        else {
+            this.is && console.warn(this.is + ' is not ready');
+        }
+    }
     function detached() {
         if (this.$vm) {
             pruneComponentPropsCache(this.$vm.$.uid);
@@ -867,7 +892,7 @@ function initLifetimes$1({ mocks, isPage, initRelation, vueOptions, }) {
         }
     }
     {
-        return { attached, detached };
+        return { attached, ready, detached };
     }
 }
 
@@ -878,32 +903,6 @@ function parse(componentOptions, { handleLink }) {
 
 function initLifetimes(lifetimesOptions) {
     return extend(initLifetimes$1(lifetimesOptions), {
-        ready() {
-            if (process.env.UNI_DEBUG) {
-                console.log('uni-app:[' + Date.now() + '][' + (this.is || this.route) + ']ready');
-            }
-            if (this.$vm) {
-                if (lifetimesOptions.isPage(this)) {
-                    if (this.pageinstance) {
-                        this.__webviewId__ = this.pageinstance.__pageId__;
-                    }
-                    this.$vm.$callCreatedHook();
-                    nextSetDataTick(this, () => {
-                        this.$vm.$callHook('mounted');
-                        this.$vm.$callHook(ON_READY);
-                    });
-                }
-                else {
-                    {
-                        this.$vm.$callHook('mounted');
-                        this.$vm.$callHook(ON_READY);
-                    }
-                }
-            }
-            else {
-                this.is && console.warn(this.is + ' is not ready');
-            }
-        },
         detached() {
             this.$vm && $destroyComponent(this.$vm);
             // 清理
