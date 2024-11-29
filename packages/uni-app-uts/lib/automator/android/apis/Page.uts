@@ -1,7 +1,7 @@
-// @ts-ignore
+// @ts-expect-error
 import type { Callback } from '../index.uts'
-// @ts-ignore
-import { pageGetData, pageSetData, getPageVm, getValidComponentsOrNodes, removeUniPrefix } from './util.uts'
+// @ts-expect-error
+import { getPageVm, getValidComponentsOrNodes, pageGetData, pageSetData, removeUniPrefix } from './util.uts'
 
 export type GetDataParams = {
   pageId: string
@@ -41,12 +41,12 @@ export const callMethod = (params: CallMethodParams, callback: Callback): void =
   const page = getPageVm(params.pageId)
   if (page == null) {
     callback(null, { errMsg: `Page[${params.pageId}] not exists` })
-    // @ts-ignore
+    // @ts-expect-error
   } else if (findVueMethod(page.$.type.type, params.method, page) == null) {
     callback(null, { errMsg: `Page.${params.method} not exists` })
   } else {
     const result = params.args.length > 0 ? page.$callMethod(params.method, params.args[0]) : page.$callMethod(params.method)
-    // @ts-ignore
+    // @ts-expect-error
     if (result instanceof Promise<unknown>) {
       (result as Promise<any>).then((res: any) => {
         callback({ result: res }, null)
@@ -70,7 +70,7 @@ export const getElement = (params: GetElementParams, callback: Callback): void =
   if (page == null) {
     callback(null, { errMsg: `Page[${params.pageId}] not exists` })
   } else {
-    // @ts-ignore
+    // @ts-expect-error
     const list: UTSJSONObject[] = []
     getValidComponentsOrNodes(page.$.subTree, removeUniPrefix(params.selector), list)
     if (list.length > 0) {
@@ -87,7 +87,7 @@ export const getElements = (params: GetElementParams, callback: Callback): void 
     callback(null, { errMsg: `Page[${params.pageId}] not exists` })
   } else {
     const elements = page.$querySelectorAll(removeUniPrefix(params.selector))
-    // @ts-ignore
+    // @ts-expect-error
     const result = [] as UTSJSONObject[]
     elements?.forEach(element => {
       result.push({

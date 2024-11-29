@@ -224,12 +224,32 @@ class UTSType {
   }
 }
 const OriginalJSON = JSON;
+function createUTSJSONObject(obj) {
+  const result = new UTSJSONObject({});
+  for (const key in obj) {
+    const value = obj[key];
+    if (isPlainObject(value)) {
+      result[key] = createUTSJSONObject(value);
+    } else if (getType$1(value) === "array") {
+      result[key] = value.map((item) => {
+        if (isPlainObject(item)) {
+          return createUTSJSONObject(item);
+        } else {
+          return item;
+        }
+      });
+    } else {
+      result[key] = value;
+    }
+  }
+  return result;
+}
 function parseObjectOrArray(object, utsType) {
   const objectType = getType$1(object);
   if (object === null || objectType !== "object" && objectType !== "array") {
     return object;
   }
-  if (utsType || utsType === UTSJSONObject) {
+  if (utsType && utsType !== UTSJSONObject) {
     try {
       return new utsType(object, void 0, true);
     } catch (error) {
@@ -242,7 +262,7 @@ function parseObjectOrArray(object, utsType) {
       return parseObjectOrArray(value);
     });
   } else if (objectType === "object") {
-    return new UTSJSONObject(object);
+    return createUTSJSONObject(object);
   }
   return object;
 }
@@ -405,21 +425,6 @@ function initUTSJSONObjectProperties(obj) {
   }
   Object.defineProperties(obj, propertyDescriptorMap);
 }
-function setUTSJSONObjectValue(obj, key, value) {
-  if (isPlainObject(value)) {
-    obj[key] = new UTSJSONObject$1(value);
-  } else if (getType$1(value) === "array") {
-    obj[key] = value.map((item) => {
-      if (isPlainObject(item)) {
-        return new UTSJSONObject$1(item);
-      } else {
-        return item;
-      }
-    });
-  } else {
-    obj[key] = value;
-  }
-}
 let UTSJSONObject$1 = class UTSJSONObject2 {
   static keys(obj) {
     return Object.keys(obj);
@@ -436,13 +441,12 @@ let UTSJSONObject$1 = class UTSJSONObject2 {
   constructor(content = {}) {
     if (content instanceof Map) {
       content.forEach((value, key) => {
-        setUTSJSONObjectValue(this, key, value);
+        this[key] = value;
       });
     } else {
       for (const key in content) {
         if (Object.prototype.hasOwnProperty.call(content, key)) {
-          const value = content[key];
-          setUTSJSONObjectValue(this, key, value);
+          this[key] = content[key];
         }
       }
     }
@@ -919,6 +923,9 @@ function rpx2pxWithReplace(str) {
     return str;
   }
 }
+function get$pageByPage(page) {
+  return page.vm.$basePage;
+}
 const ICON_PATH_CANCEL = "M20.928 10.176l-4.928 4.928-4.928-4.928-0.896 0.896 4.928 4.928-4.928 4.928 0.896 0.896 4.928-4.928 4.928 4.928 0.896-0.896-4.928-4.928 4.928-4.928-0.896-0.896zM16 2.080q-3.776 0-7.040 1.888-3.136 1.856-4.992 4.992-1.888 3.264-1.888 7.040t1.888 7.040q1.856 3.136 4.992 4.992 3.264 1.888 7.040 1.888t7.040-1.888q3.136-1.856 4.992-4.992 1.888-3.264 1.888-7.040t-1.888-7.040q-1.856-3.136-4.992-4.992-3.264-1.888-7.040-1.888zM16 28.64q-3.424 0-6.4-1.728-2.848-1.664-4.512-4.512-1.728-2.976-1.728-6.4t1.728-6.4q1.664-2.848 4.512-4.512 2.976-1.728 6.4-1.728t6.4 1.728q2.848 1.664 4.512 4.512 1.728 2.976 1.728 6.4t-1.728 6.4q-1.664 2.848-4.512 4.512-2.976 1.728-6.4 1.728z";
 const ICON_PATH_CLEAR = "M16 0q-4.352 0-8.064 2.176-3.616 2.144-5.76 5.76-2.176 3.712-2.176 8.064t2.176 8.064q2.144 3.616 5.76 5.76 3.712 2.176 8.064 2.176t8.064-2.176q3.616-2.144 5.76-5.76 2.176-3.712 2.176-8.064t-2.176-8.064q-2.144-3.616-5.76-5.76-3.712-2.176-8.064-2.176zM22.688 21.408q0.32 0.32 0.304 0.752t-0.336 0.736-0.752 0.304-0.752-0.32l-5.184-5.376-5.376 5.184q-0.32 0.32-0.752 0.304t-0.736-0.336-0.304-0.752 0.32-0.752l5.376-5.184-5.184-5.376q-0.32-0.32-0.304-0.752t0.336-0.752 0.752-0.304 0.752 0.336l5.184 5.376 5.376-5.184q0.32-0.32 0.752-0.304t0.752 0.336 0.304 0.752-0.336 0.752l-5.376 5.184 5.184 5.376z";
 const ICON_PATH_DOWNLOAD = "M15.808 1.696q-3.776 0-7.072 1.984-3.2 1.888-5.088 5.152-1.952 3.392-1.952 7.36 0 3.776 1.952 7.072 1.888 3.2 5.088 5.088 3.296 1.952 7.072 1.952 3.968 0 7.36-1.952 3.264-1.888 5.152-5.088 1.984-3.296 1.984-7.072 0-4-1.984-7.36-1.888-3.264-5.152-5.152-3.36-1.984-7.36-1.984zM20.864 18.592l-3.776 4.928q-0.448 0.576-1.088 0.576t-1.088-0.576l-3.776-4.928q-0.448-0.576-0.24-0.992t0.944-0.416h2.976v-8.928q0-0.256 0.176-0.432t0.4-0.176h1.216q0.224 0 0.4 0.176t0.176 0.432v8.928h2.976q0.736 0 0.944 0.416t-0.24 0.992z";
@@ -957,7 +964,7 @@ function createSvgIconVNode(path, color = "#000", size = 27) {
 function useCurrentPageId() {
   {
     const { $pageInstance } = vue.getCurrentInstance();
-    return $pageInstance && $pageInstance.proxy.$page.id;
+    return $pageInstance && getPageProxyId($pageInstance.proxy);
   }
 }
 function getCurrentPage() {
@@ -968,9 +975,10 @@ function getCurrentPage() {
   }
 }
 function getCurrentPageMeta() {
-  const page = getCurrentPage();
-  if (page) {
-    return page.$page.meta;
+  var _a, _b;
+  const $page = (_b = (_a = getCurrentPage()) == null ? void 0 : _a.vm) == null ? void 0 : _b.$basePage;
+  if ($page) {
+    return $page.meta;
   }
 }
 function getCurrentPageId() {
@@ -981,7 +989,8 @@ function getCurrentPageId() {
   return -1;
 }
 function getCurrentPageVm() {
-  const page = getCurrentPage();
+  var _a;
+  const page = (_a = getCurrentPage()) == null ? void 0 : _a.vm;
   if (page) {
     return page.$vm;
   }
@@ -1031,13 +1040,19 @@ function initPageInternalInstance(openType, url, pageQuery, meta, eventChannel, 
     statusBarStyle: titleColor === "#ffffff" ? "light" : "dark"
   };
 }
+function getPageProxyId(proxy) {
+  var _a, _b;
+  return ((_a = proxy.$page) == null ? void 0 : _a.id) || ((_b = proxy.$basePage) == null ? void 0 : _b.id);
+}
 function invokeHook(vm, name, args) {
   if (shared.isString(vm)) {
     args = name;
     name = vm;
     vm = getCurrentPageVm();
   } else if (typeof vm === "number") {
-    const page = getCurrentPages().find((page2) => page2.$page.id === vm);
+    const page = getCurrentPages().find(
+      (page2) => get$pageByPage(page2).id === vm
+    );
     if (page) {
       vm = page.$vm;
     } else {
@@ -1408,52 +1423,13 @@ function useBooleanAttr(props2, keys) {
     return res;
   }, /* @__PURE__ */ Object.create(null));
 }
-function transformRpx(value) {
-  if (/(-?(?:\d+\.)?\d+)[ur]px/gi.test(value)) {
-    return value.replace(/(-?(?:\d+\.)?\d+)[ur]px/gi, (text, num) => {
-      return `${uni.upx2px(parseFloat(num))}px`;
-    });
-  }
-  return value;
-}
-class UniElement extends HTMLElement {
-  constructor() {
-    super();
-    this._props = {};
-    this.__isUniElement = true;
-  }
-  attachVmProps(props2) {
-    this._props = props2;
-  }
-  getAttribute(qualifiedName) {
-    const name = shared.camelize(qualifiedName);
-    return name in this._props ? this._props[name] + "" : super.getAttribute(qualifiedName) || null;
-  }
-  get style() {
-    const originalStyle = super.style;
-    if (originalStyle.__patchRpx__) {
-      return originalStyle;
-    }
-    originalStyle.__patchRpx__ = true;
-    const originalSetProperty = originalStyle.setProperty.bind(originalStyle);
-    super.style.setProperty = function(property, value, priority) {
-      return originalSetProperty(
-        property,
-        value ? transformRpx(value + "") : value,
-        priority || void 0
-      );
-    };
-    return super.style;
-  }
-  get tagName() {
-    return super.tagName.replace(/^UNI-/, "");
-  }
-  get nodeName() {
-    return super.nodeName.replace(/^UNI-/, "");
-  }
-}
+uniShared.createRpx2Unit(
+  uniShared.defaultRpx2Unit.unit,
+  uniShared.defaultRpx2Unit.unitRatio,
+  uniShared.defaultRpx2Unit.unitPrecision
+);
 const uniFormKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniForm" : "uf");
-const index$B = /* @__PURE__ */ defineBuiltInComponent({
+const index$A = /* @__PURE__ */ defineBuiltInComponent({
   name: "Form",
   emits: ["submit", "reset"],
   setup(_props, {
@@ -1513,7 +1489,7 @@ function useProvideLabel() {
   });
   return handlers;
 }
-const index$A = /* @__PURE__ */ defineBuiltInComponent({
+const index$z = /* @__PURE__ */ defineBuiltInComponent({
   name: "Label",
   props: labelProps,
   setup(props2, {
@@ -1589,7 +1565,7 @@ const buttonProps = {
     default: false
   }
 };
-const index$z = /* @__PURE__ */ defineBuiltInComponent({
+const index$y = /* @__PURE__ */ defineBuiltInComponent({
   name: "Button",
   props: buttonProps,
   setup(props2, {
@@ -1646,30 +1622,6 @@ const props$r = {
     default: false
   }
 };
-class UniCanvasElement extends UniElement {
-  get width() {
-    return this.querySelector("canvas").width;
-  }
-  set width(value) {
-    this.querySelector("canvas").width = value;
-  }
-  get height() {
-    return this.querySelector("canvas").height;
-  }
-  set height(value) {
-    this.querySelector("canvas").height = value;
-  }
-  getContext(contextId, options) {
-    return this.querySelector("canvas").getContext(contextId, options);
-  }
-  toBlob(...args) {
-    const c = this.querySelector("canvas");
-    return c.toBlob.apply(c, args);
-  }
-  toDataURL(type, encoderOptions) {
-    return this.querySelector("canvas").toDataURL(type, encoderOptions);
-  }
-}
 const indexX$4 = /* @__PURE__ */ defineBuiltInComponent({
   inheritAttrs: true,
   name: "Canvas",
@@ -1677,10 +1629,6 @@ const indexX$4 = /* @__PURE__ */ defineBuiltInComponent({
     MODE: 3
   },
   props: props$r,
-  rootElement: {
-    name: "uni-canvas",
-    class: UniCanvasElement
-  },
   setup(props2, {}) {
     const rootRef = vue.ref(null);
     const canvas = vue.ref(null);
@@ -1701,7 +1649,7 @@ const props$q = {
     default: ""
   }
 };
-const index$y = /* @__PURE__ */ defineBuiltInComponent({
+const index$x = /* @__PURE__ */ defineBuiltInComponent({
   name: "CheckboxGroup",
   props: props$q,
   emits: ["change"],
@@ -1802,7 +1750,7 @@ const props$p = {
     default: ""
   }
 };
-const index$x = /* @__PURE__ */ defineBuiltInComponent({
+const index$w = /* @__PURE__ */ defineBuiltInComponent({
   name: "Checkbox",
   props: props$p,
   setup(props2, {
@@ -1957,44 +1905,98 @@ function useKeyboard$1(props2, elRef, trigger) {
     (el) => el && initKeyboard(el)
   );
 }
-function addBase(filePath) {
-  const { base: baseUrl } = __uniConfig.router;
-  if (uniShared.addLeadingSlash(filePath).indexOf(baseUrl) === 0) {
-    return uniShared.addLeadingSlash(filePath);
-  }
-  return baseUrl + filePath;
+const pageMetaKey = PolySymbol(process.env.NODE_ENV !== "production" ? "UniPageMeta" : "upm");
+function usePageMeta() {
+  return vue.inject(pageMetaKey);
 }
-function getRealPath(filePath) {
-  const { base, assets } = __uniConfig.router;
-  if (base === "./") {
-    if (filePath.indexOf("./") === 0 && (filePath.includes("/static/") || filePath.indexOf("./" + (assets || "assets") + "/") === 0)) {
-      filePath = filePath.slice(1);
-    }
+function providePageMeta(id2) {
+  const pageMeta = initPageMeta(id2);
+  vue.provide(pageMetaKey, pageMeta);
+  return pageMeta;
+}
+function usePageRoute() {
+  if (__UNI_FEATURE_PAGES__) {
+    return vueRouter.useRoute();
   }
-  if (filePath.indexOf("/") === 0) {
-    if (filePath.indexOf("//") === 0) {
-      filePath = "https:" + filePath;
-    } else {
-      return addBase(filePath.slice(1));
-    }
-  }
-  if (uniShared.SCHEME_RE.test(filePath) || uniShared.DATA_RE.test(filePath) || filePath.indexOf("blob:") === 0) {
-    return filePath;
-  }
-  {
-    if (process.env.NODE_ENV !== "production") {
-      if (!filePath.includes("/static/")) {
-        return filePath;
-      }
-    }
-  }
-  const pages = getCurrentPages();
-  if (pages.length) {
-    return addBase(
-      getRealRoute(pages[pages.length - 1].$page.route, filePath).slice(1)
+  const url = location.href;
+  const searchPos = url.indexOf("?");
+  const hashPos = url.indexOf("#", searchPos > -1 ? searchPos : 0);
+  let query = {};
+  if (searchPos > -1) {
+    query = uniShared.parseQuery(
+      url.slice(searchPos + 1, hashPos > -1 ? hashPos : url.length)
     );
   }
-  return filePath;
+  const { meta } = __uniRoutes[0];
+  const path = uniShared.addLeadingSlash(meta.route);
+  return {
+    meta,
+    query,
+    path,
+    matched: [{ path }]
+  };
+}
+function initPageMeta(id2) {
+  if (__UNI_FEATURE_PAGES__) {
+    return vue.reactive(
+      normalizePageMeta(
+        JSON.parse(
+          JSON.stringify(
+            initRouteMeta(
+              vueRouter.useRoute().meta,
+              id2
+            )
+          )
+        )
+      )
+    );
+  }
+  return vue.reactive(
+    normalizePageMeta(
+      JSON.parse(JSON.stringify(initRouteMeta(__uniRoutes[0].meta, id2)))
+    )
+  );
+}
+function normalizePageMeta(pageMeta) {
+  if (__UNI_FEATURE_PULL_DOWN_REFRESH__) {
+    const { enablePullDownRefresh, navigationBar } = pageMeta;
+    {
+      const pullToRefresh = normalizePullToRefreshRpx(
+        shared.extend(
+          {
+            support: true,
+            color: "#2BD009",
+            style: "circle",
+            height: 70,
+            range: 150,
+            offset: 0
+          },
+          pageMeta.pullToRefresh
+        )
+      );
+      const { type, style } = navigationBar;
+      if (style !== "custom" && type !== "transparent") {
+        pullToRefresh.offset += uniShared.NAVBAR_HEIGHT + 0;
+      }
+      pageMeta.pullToRefresh = pullToRefresh;
+    }
+  }
+  if (__UNI_FEATURE_NAVIGATIONBAR__) {
+    const { navigationBar } = pageMeta;
+    const { titleSize, titleColor, backgroundColor } = navigationBar;
+    navigationBar.titleText = navigationBar.titleText || "";
+    navigationBar.type = navigationBar.type || "default";
+    navigationBar.titleSize = titleSize || "16px";
+    navigationBar.titleColor = titleColor || "#000000";
+    navigationBar.backgroundColor = backgroundColor || "#F8F8F8";
+    __UNI_FEATURE_I18N_LOCALE__ && initNavigationBarI18n(navigationBar);
+  }
+  return pageMeta;
+}
+function getStateId() {
+  {
+    return 1;
+  }
 }
 const HTTP_METHODS = [
   "GET",
@@ -2379,14 +2381,26 @@ function invokeSuccess(id2, name, res) {
   const result = {
     errMsg: name + ":ok"
   };
-  result.errSubject = name;
+  {
+    result.errSubject = name;
+  }
   return invokeCallback(id2, shared.extend(res || {}, result));
 }
 function invokeFail(id2, name, errMsg, errRes = {}) {
-  const apiErrMsg = name + ":fail" + (errMsg ? " " + errMsg : "");
+  const errMsgPrefix = name + ":fail";
+  let apiErrMsg = "";
+  if (!errMsg) {
+    apiErrMsg = errMsgPrefix;
+  } else if (errMsg.indexOf(errMsgPrefix) === 0) {
+    apiErrMsg = errMsg;
+  } else {
+    apiErrMsg = errMsgPrefix + " " + errMsg;
+  }
   let res = shared.extend({ errMsg: apiErrMsg }, errRes);
-  if (typeof UniError !== "undefined") {
-    res = typeof errRes.errCode !== "undefined" ? new UniError(name, errRes.errCode, apiErrMsg) : new UniError(apiErrMsg, errRes);
+  {
+    if (typeof UniError !== "undefined") {
+      res = typeof errRes.errCode !== "undefined" ? new UniError(name, errRes.errCode, apiErrMsg) : new UniError(apiErrMsg, errRes);
+    }
   }
   return invokeCallback(id2, res);
 }
@@ -2410,7 +2424,6 @@ function parseErrMsg(errMsg) {
     return errMsg;
   }
   if (errMsg.stack) {
-    console.error(errMsg.message + "\n" + errMsg.stack);
     return errMsg.message;
   }
   return errMsg;
@@ -2604,6 +2617,1318 @@ const SetNavigationBarTitleProtocol = {
 };
 const API_SHOW_NAVIGATION_BAR_LOADING = "showNavigationBarLoading";
 const API_HIDE_NAVIGATION_BAR_LOADING = "hideNavigationBarLoading";
+function removeNonTabBarPages() {
+  const curTabBarPageVm = getCurrentPageVm();
+  if (!curTabBarPageVm) {
+    return;
+  }
+  const pagesMap = getCurrentPagesMap();
+  const keys = pagesMap.keys();
+  for (const routeKey of keys) {
+    const page = pagesMap.get(routeKey);
+    if (!page.$.__isTabBar) {
+      removePage(routeKey);
+    } else {
+      page.$.__isActive = false;
+    }
+  }
+  if (curTabBarPageVm.$.__isTabBar) {
+    curTabBarPageVm.$.__isVisible = false;
+    invokeHook(curTabBarPageVm, uniShared.ON_HIDE);
+  }
+}
+function isSamePage(url, $page) {
+  return url === $page.fullPath || url === "/" && $page.meta.isEntry;
+}
+function getTabBarPageId(url) {
+  const pages = getCurrentPagesMap().values();
+  for (const page of pages) {
+    const $page = getPage$BasePage(page);
+    if (isSamePage(url, $page)) {
+      page.$.__isActive = true;
+      return $page.id;
+    }
+  }
+}
+function removeLastPage() {
+  var _a;
+  const page = (_a = getCurrentPage()) == null ? void 0 : _a.vm;
+  if (!page) {
+    return;
+  }
+  const $page = getPage$BasePage(page);
+  removePage(normalizeRouteKey($page.path, $page.id));
+}
+function removeAllPages() {
+  const keys = getCurrentPagesMap().keys();
+  for (const routeKey of keys) {
+    removePage(routeKey);
+  }
+}
+function navigate({ type, url, tabBarText, events, isAutomatedTesting }, __id__) {
+  if (process.env.NODE_ENV !== "production" && !__UNI_FEATURE_PAGES__) {
+    console.warn(
+      "当前项目为单页面工程，不能执行页面跳转api。如果需进行页面跳转， 需要在pages.json文件的pages字段中配置多个页面，然后重新运行。"
+    );
+  }
+  const router = getApp().vm.$router;
+  const { path, query } = uniShared.parseUrl(url);
+  return new Promise((resolve, reject) => {
+    const state = createPageState(type, __id__);
+    router[type === "navigateTo" ? "push" : "replace"]({
+      path,
+      query,
+      state,
+      force: true
+    }).then((failure) => {
+      if (vueRouter.isNavigationFailure(failure)) {
+        return reject(failure.message);
+      }
+      if (type === "switchTab") {
+        router.currentRoute.value.meta.tabBarText = tabBarText;
+      }
+      if (type === "navigateTo") {
+        const meta = router.currentRoute.value.meta;
+        if (!meta.eventChannel) {
+          meta.eventChannel = new uniShared.EventChannel(state.__id__, events);
+        } else if (events) {
+          Object.keys(events).forEach((eventName) => {
+            meta.eventChannel._addListener(
+              eventName,
+              "on",
+              events[eventName]
+            );
+          });
+          meta.eventChannel._clearCache();
+        }
+        return isAutomatedTesting ? resolve({
+          __id__: state.__id__
+        }) : resolve({
+          eventChannel: meta.eventChannel
+        });
+      }
+      return isAutomatedTesting ? resolve({ __id__: state.__id__ }) : resolve();
+    });
+  });
+}
+function handleBeforeEntryPageRoutes() {
+  if (entryPageState.handledBeforeEntryPageRoutes) {
+    return;
+  }
+  entryPageState.handledBeforeEntryPageRoutes = true;
+  const navigateToPages = [...navigateToPagesBeforeEntryPages];
+  navigateToPagesBeforeEntryPages.length = 0;
+  navigateToPages.forEach(
+    ({ args, resolve, reject }) => (
+      // @ts-expect-error
+      navigate(args).then(resolve).catch(reject)
+    )
+  );
+  const switchTabPages = [...switchTabPagesBeforeEntryPages];
+  switchTabPagesBeforeEntryPages.length = 0;
+  switchTabPages.forEach(
+    ({ args, resolve, reject }) => (removeNonTabBarPages(), navigate(args, getTabBarPageId(args.url)).then(resolve).catch(reject))
+  );
+  const redirectToPages = [...redirectToPagesBeforeEntryPages];
+  redirectToPagesBeforeEntryPages.length = 0;
+  redirectToPages.forEach(
+    ({ args, resolve, reject }) => (removeLastPage(), navigate(args).then(resolve).catch(reject))
+  );
+  const reLaunchPages = [...reLaunchPagesBeforeEntryPages];
+  reLaunchPagesBeforeEntryPages.length = 0;
+  reLaunchPages.forEach(
+    ({ args, resolve, reject }) => (removeAllPages(), navigate(args).then(resolve).catch(reject))
+  );
+}
+let tabBar;
+function useTabBar() {
+  if (!tabBar) {
+    tabBar = __uniConfig.tabBar && vue.reactive(initTabBarI18n(__uniConfig.tabBar));
+  }
+  return tabBar;
+}
+const envMethod = /* @__PURE__ */ (() => "env")();
+function normalizeWindowBottom(windowBottom) {
+  return envMethod ? `calc(${windowBottom}px + ${envMethod}(safe-area-inset-bottom))` : `${windowBottom}px`;
+}
+const DIALOG_TAG = "dialog";
+const SYSTEM_DIALOG_TAG = "systemDialog";
+function isDialogPageInstance(vm) {
+  return isNormalDialogPageInstance(vm) || isSystemDialogPageInstance(vm);
+}
+function isNormalDialogPageInstance(vm) {
+  return vm.attrs["data-type"] === DIALOG_TAG;
+}
+function isSystemDialogPageInstance(vm) {
+  return vm.attrs["data-type"] === SYSTEM_DIALOG_TAG;
+}
+const homeDialogPages = [];
+const homeSystemDialogPages = [];
+class UniPageImpl {
+  constructor({
+    route,
+    options,
+    vm
+  }) {
+    this.getParentPage = () => null;
+    this.route = route;
+    this.options = options;
+    this.vm = vm;
+    this.$vm = vm;
+  }
+  getPageStyle() {
+    return new UTSJSONObject({});
+  }
+  $getPageStyle() {
+    return this.getPageStyle();
+  }
+  setPageStyle(style) {
+  }
+  $setPageStyle(style) {
+    this.setPageStyle(style);
+  }
+  getElementById(id2) {
+    const currentPage = getCurrentPage();
+    if (currentPage !== this) {
+      return null;
+    }
+    const uniPageBody = document.querySelector("uni-page-body");
+    return uniPageBody ? uniPageBody.querySelector(`#${id2}`) : null;
+  }
+  getAndroidView() {
+    return null;
+  }
+  getHTMLElement() {
+    const currentPage = getCurrentPage();
+    if (currentPage !== this) {
+      return null;
+    }
+    return document.querySelector("uni-page-body");
+  }
+  getDialogPages() {
+    return [];
+  }
+}
+class UniNormalPageImpl extends UniPageImpl {
+  getDialogPages() {
+    var _a, _b;
+    return ((_b = (_a = this.vm) == null ? void 0 : _a.$pageLayoutInstance) == null ? void 0 : _b.$dialogPages.value) || [];
+  }
+  constructor({
+    route,
+    options,
+    vm
+  }) {
+    super({ route, options, vm });
+  }
+}
+function initXPage(vm, route, page) {
+  var _a, _b;
+  initPageVm(vm, page);
+  Object.defineProperty(vm, "$pageLayoutInstance", {
+    get() {
+      var _a2, _b2;
+      let res = (_a2 = vm.$) == null ? void 0 : _a2.parent;
+      while (res && ((_b2 = res.type) == null ? void 0 : _b2.name) !== "Page") {
+        res = res.parent;
+      }
+      return res;
+    }
+  });
+  vm.$basePage = vm.$page;
+  const pageInstance = vm.$pageLayoutInstance;
+  if (!isDialogPageInstance(pageInstance)) {
+    const uniPage = new UniNormalPageImpl({
+      route: (route == null ? void 0 : route.path) || "",
+      options: new UTSJSONObject((route == null ? void 0 : route.query) || {}),
+      vm
+    });
+    vm.$page = uniPage;
+    const pageMeta = page.meta;
+    uniPage.setPageStyle = (style) => {
+      for (const key in style) {
+        switch (key) {
+          case "navigationBarBackgroundColor":
+            pageMeta.navigationBar.backgroundColor = style[key];
+            break;
+          case "navigationBarTextStyle":
+            const textStyle = style[key];
+            if (textStyle == null) {
+              continue;
+            }
+            pageMeta.navigationBar.titleColor = ["black", "white"].includes(
+              textStyle
+            ) ? uniShared.normalizeTitleColor(textStyle || "") : textStyle;
+            break;
+          case "navigationBarTitleText":
+            pageMeta.navigationBar.titleText = style[key];
+            break;
+          case "titleImage":
+            pageMeta.navigationBar.titleImage = style[key];
+            break;
+          case "navigationStyle":
+            pageMeta.navigationBar.style = style[key];
+            break;
+          default:
+            pageMeta[key] = style[key];
+            break;
+        }
+      }
+    };
+    uniPage.getPageStyle = () => new UTSJSONObject({
+      navigationBarBackgroundColor: pageMeta.navigationBar.backgroundColor,
+      navigationBarTextStyle: pageMeta.navigationBar.titleColor,
+      navigationBarTitleText: pageMeta.navigationBar.titleText,
+      titleImage: pageMeta.navigationBar.titleImage || "",
+      navigationStyle: pageMeta.navigationBar.style || "default",
+      disableScroll: pageMeta.disableScroll || false,
+      enablePullDownRefresh: pageMeta.enablePullDownRefresh || false,
+      onReachBottomDistance: pageMeta.onReachBottomDistance || uniShared.ON_REACH_BOTTOM_DISTANCE,
+      backgroundColorContent: pageMeta.backgroundColorContent
+    });
+    vm.$dialogPage = (_a = vm.$pageLayoutInstance) == null ? void 0 : _a.$dialogPage;
+    currentPagesMap.set(normalizeRouteKey(page.path, page.id), vm);
+    if (currentPagesMap.size === 1) {
+      setTimeout(() => {
+        handleBeforeEntryPageRoutes();
+      }, 0);
+      if (homeDialogPages.length) {
+        homeDialogPages.forEach((dialogPage) => {
+          dialogPage.getParentPage = () => vm.$page;
+          pageInstance.$dialogPages.value.push(dialogPage);
+        });
+        homeDialogPages.length = 0;
+      }
+      if (homeSystemDialogPages.length) {
+        homeSystemDialogPages.forEach((dialogPage) => {
+          dialogPage.getParentPage = () => vm.$page;
+          pageInstance.$systemDialogPages.value.push(dialogPage);
+        });
+        homeSystemDialogPages.length = 0;
+      }
+    }
+  } else {
+    vm.$page = (_b = vm.$pageLayoutInstance) == null ? void 0 : _b.$dialogPage;
+    pageInstance.$dialogPage.vm = vm;
+    pageInstance.$dialogPage.$vm = vm;
+  }
+}
+const SEP = "$$";
+const currentPagesMap = /* @__PURE__ */ new Map();
+function getPage$BasePage(page) {
+  return page.$basePage;
+}
+const entryPageState = {
+  handledBeforeEntryPageRoutes: false
+};
+const navigateToPagesBeforeEntryPages = [];
+const switchTabPagesBeforeEntryPages = [];
+const redirectToPagesBeforeEntryPages = [];
+const reLaunchPagesBeforeEntryPages = [];
+function pruneCurrentPages() {
+  currentPagesMap.forEach((page, id2) => {
+    if (page.$.isUnmounted) {
+      currentPagesMap.delete(id2);
+    }
+  });
+}
+function getCurrentPagesMap() {
+  return currentPagesMap;
+}
+function getCurrentPages$1() {
+  const curPages = getCurrentBasePages();
+  {
+    return curPages.map((page) => page.$page);
+  }
+}
+function getCurrentBasePages() {
+  const curPages = [];
+  const pages = currentPagesMap.values();
+  for (const page of pages) {
+    if (page.$.__isTabBar) {
+      if (page.$.__isActive) {
+        curPages.push(page);
+      }
+    } else {
+      curPages.push(page);
+    }
+  }
+  return curPages;
+}
+function removeRouteCache(routeKey) {
+  const vnode = pageCacheMap.get(routeKey);
+  if (vnode) {
+    pageCacheMap.delete(routeKey);
+    routeCache.pruneCacheEntry(vnode);
+  }
+}
+function removePage(routeKey, removeRouteCaches = true) {
+  const pageVm = currentPagesMap.get(routeKey);
+  pageVm.$.__isUnload = true;
+  invokeHook(pageVm, uniShared.ON_UNLOAD);
+  currentPagesMap.delete(routeKey);
+  removeRouteCaches && removeRouteCache(routeKey);
+}
+let id = /* @__PURE__ */ getStateId();
+function createPageState(type, __id__) {
+  return {
+    __id__: __id__ || ++id,
+    __type__: type
+  };
+}
+function initPublicPage(route) {
+  const meta = usePageMeta();
+  if (!__UNI_FEATURE_PAGES__) {
+    return initPageInternalInstance("navigateTo", __uniRoutes[0].path, {}, meta);
+  }
+  let fullPath = route.fullPath;
+  if (route.meta.isEntry && fullPath.indexOf(route.meta.route) === -1) {
+    fullPath = "/" + route.meta.route + fullPath.replace("/", "");
+  }
+  return initPageInternalInstance("navigateTo", fullPath, {}, meta);
+}
+function initPage(vm) {
+  const route = vm.$route;
+  const page = initPublicPage(route);
+  initPageVm(vm, page);
+  {
+    initXPage(vm, route, page);
+  }
+}
+function normalizeRouteKey(path, id2) {
+  return path + SEP + id2;
+}
+function useKeepAliveRoute() {
+  const route = vueRouter.useRoute();
+  const routeKey = vue.computed(
+    () => normalizeRouteKey("/" + route.meta.route, getStateId())
+  );
+  const isTabBar = vue.computed(() => route.meta.isTabBar);
+  return {
+    routeKey,
+    isTabBar,
+    routeCache
+  };
+}
+const pageCacheMap = /* @__PURE__ */ new Map();
+const routeCache = {
+  get(key) {
+    return pageCacheMap.get(key);
+  },
+  set(key, value) {
+    pruneRouteCache(key);
+    pageCacheMap.set(key, value);
+  },
+  delete(key) {
+    const vnode = pageCacheMap.get(key);
+    if (!vnode) {
+      return;
+    }
+    pageCacheMap.delete(key);
+  },
+  forEach(fn) {
+    pageCacheMap.forEach(fn);
+  }
+};
+function isTabBarVNode(vnode) {
+  return vnode.props.type === "tabBar";
+}
+function pruneRouteCache(key) {
+  const pageId = parseInt(key.split(SEP)[1]);
+  if (!pageId) {
+    return;
+  }
+  routeCache.forEach((vnode, key2) => {
+    const cPageId = parseInt(key2.split(SEP)[1]);
+    if (cPageId && cPageId > pageId) {
+      if (__UNI_FEATURE_TABBAR__ && isTabBarVNode(vnode)) {
+        return;
+      }
+      routeCache.delete(key2);
+      routeCache.pruneCacheEntry(vnode);
+      vue.nextTick(() => pruneCurrentPages());
+    }
+  });
+}
+function addBase(filePath) {
+  const { base: baseUrl } = __uniConfig.router;
+  if (uniShared.addLeadingSlash(filePath).indexOf(baseUrl) === 0) {
+    return uniShared.addLeadingSlash(filePath);
+  }
+  return baseUrl + filePath;
+}
+function getRealPath(filePath) {
+  const { base, assets } = __uniConfig.router;
+  if (base === "./") {
+    if (filePath.indexOf("./") === 0 && (filePath.includes("/static/") || filePath.indexOf("./" + (assets || "assets") + "/") === 0)) {
+      filePath = filePath.slice(1);
+    }
+  }
+  if (filePath.indexOf("/") === 0) {
+    if (filePath.indexOf("//") === 0) {
+      filePath = "https:" + filePath;
+    } else {
+      return addBase(filePath.slice(1));
+    }
+  }
+  if (uniShared.SCHEME_RE.test(filePath) || uniShared.DATA_RE.test(filePath) || filePath.indexOf("blob:") === 0) {
+    return filePath;
+  }
+  {
+    if (process.env.NODE_ENV !== "production") {
+      if (!filePath.includes("/static/")) {
+        return filePath;
+      }
+    }
+  }
+  const pages = getCurrentBasePages();
+  if (pages.length) {
+    return addBase(
+      getRealRoute(
+        getPage$BasePage(pages[pages.length - 1]).route,
+        filePath
+      ).slice(1)
+    );
+  }
+  return filePath;
+}
+function getPageInstanceByChild(child) {
+  var _a;
+  let pageInstance = child;
+  while (((_a = pageInstance.type) == null ? void 0 : _a.name) !== "Page") {
+    pageInstance = pageInstance.parent;
+  }
+  return pageInstance;
+}
+const clazz = { class: "uni-async-loading" };
+const loadingVNode = /* @__PURE__ */ vue.createVNode(
+  "i",
+  { class: "uni-loading" },
+  null,
+  -1
+  /* HOISTED */
+);
+const AsyncLoadingComponent = /* @__PURE__ */ defineSystemComponent({
+  name: "AsyncLoading",
+  render() {
+    return vue.openBlock(), vue.createBlock("div", clazz, [loadingVNode]);
+  }
+});
+function reload() {
+  window.location.reload();
+}
+const AsyncErrorComponent = /* @__PURE__ */ defineSystemComponent({
+  name: "AsyncError",
+  setup() {
+    initI18nAsyncMsgsOnce();
+    const {
+      t: t2
+    } = useI18n();
+    return () => vue.createVNode("div", {
+      "class": "uni-async-error",
+      "onClick": reload
+    }, [t2("uni.async.error")], 8, ["onClick"]);
+  }
+});
+let appVm;
+let $uniApp;
+{
+  class UniAppImpl {
+    get vm() {
+      return appVm;
+    }
+    get $vm() {
+      return appVm;
+    }
+    get globalData() {
+      return (appVm == null ? void 0 : appVm.globalData) || {};
+    }
+    getAndroidApplication() {
+      return null;
+    }
+  }
+  $uniApp = new UniAppImpl();
+}
+function getApp$1() {
+  {
+    return $uniApp;
+  }
+}
+function initApp$1(vm) {
+  appVm = vm;
+  Object.defineProperty(appVm.$.ctx, "$children", {
+    get() {
+      return getCurrentBasePages().map((page) => page.$vm);
+    }
+  });
+  const app = appVm.$.appContext.app;
+  if (!app.component(AsyncLoadingComponent.name)) {
+    app.component(AsyncLoadingComponent.name, AsyncLoadingComponent);
+  }
+  if (!app.component(AsyncErrorComponent.name)) {
+    app.component(AsyncErrorComponent.name, AsyncErrorComponent);
+  }
+  initAppVm(appVm);
+  defineGlobalData(appVm);
+}
+function wrapperComponentSetup(comp, { clone, init, setup, before }) {
+  if (clone) {
+    comp = shared.extend({}, comp);
+  }
+  before && before(comp);
+  const oldSetup = comp.setup;
+  comp.setup = (props2, ctx) => {
+    const instance = vue.getCurrentInstance();
+    init(instance.proxy);
+    setup(instance);
+    if (oldSetup) {
+      return oldSetup(props2, ctx);
+    }
+  };
+  return comp;
+}
+function setupComponent(comp, options) {
+  if (comp && (comp.__esModule || comp[Symbol.toStringTag] === "Module")) {
+    return wrapperComponentSetup(comp.default, options);
+  }
+  return wrapperComponentSetup(comp, options);
+}
+function setupWindow(comp, id2) {
+  return setupComponent(comp, {
+    init: (vm) => {
+      {
+        vm.$basePage = {
+          id: id2
+        };
+      }
+    },
+    setup(instance) {
+      instance.$pageInstance = instance;
+    }
+  });
+}
+function setupPage(comp) {
+  if (process.env.NODE_ENV !== "production") {
+    comp.__mpType = "page";
+  }
+  return setupComponent(comp, {
+    clone: true,
+    // 页面组件可能会被其他地方手动引用，比如 windows 等，需要 clone 一份新的作为页面组件
+    init: initPage,
+    setup(instance) {
+      instance.$pageInstance = instance;
+      const route = usePageRoute();
+      const query = uniShared.decodedQuery(route.query);
+      instance.attrs.__pageQuery = query;
+      {
+        const pageInstance = getPageInstanceByChild(instance);
+        if (isDialogPageInstance(pageInstance)) {
+          instance.attrs.__pageQuery = uniShared.decodedQuery(
+            uniShared.parseQuery(pageInstance.attrs.route.split("?")[1] || "")
+          );
+        }
+      }
+      getPage$BasePage(instance.proxy).options = query;
+      instance.proxy.options = query;
+      {
+        return query;
+      }
+    }
+  });
+}
+function setupApp(comp) {
+  if (process.env.NODE_ENV !== "production") {
+    comp.__mpType = "app";
+  }
+  return setupComponent(comp, {
+    init: initApp$1,
+    setup(instance) {
+      const route = usePageRoute();
+      {
+        return route.query;
+      }
+    },
+    before(comp2) {
+      comp2.mpType = "app";
+      const { setup } = comp2;
+      const render = () => {
+        return vue.openBlock(), vue.createBlock(LayoutComponent);
+      };
+      comp2.setup = (props2, ctx) => {
+        const res = setup && setup(props2, ctx);
+        return shared.isFunction(res) ? render : res;
+      };
+      comp2.render = render;
+    }
+  });
+}
+function updateDocumentTitle(title) {
+  {
+    const ssrContext = getApp$1().$vm.$.appContext.provides[vue.ssrContextKey];
+    if (ssrContext) {
+      ssrContext[uniShared.UNI_SSR_TITLE] = title;
+    }
+  }
+  UniServiceJSBridge.emit(uniShared.ON_NAVIGATION_BAR_CHANGE, { titleText: title });
+}
+function useDocumentTitle(pageMeta) {
+  function update() {
+    updateDocumentTitle(pageMeta.navigationBar.titleText);
+  }
+  vue.watchEffect(update);
+}
+function getTheme() {
+  if (__uniConfig.darkmode !== true)
+    return shared.isString(__uniConfig.darkmode) ? __uniConfig.darkmode : "light";
+  try {
+    return window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark";
+  } catch (error) {
+    return "light";
+  }
+}
+function onThemeChange(callback) {
+  if (__uniConfig.darkmode) {
+    UniServiceJSBridge.on(uniShared.ON_THEME_CHANGE, callback);
+  }
+}
+function parseTheme(pageStyle) {
+  let parsedStyle = {};
+  if (__uniConfig.darkmode) {
+    parsedStyle = uniShared.normalizeStyles(
+      pageStyle,
+      __uniConfig.themeConfig,
+      getTheme()
+    );
+  }
+  return __uniConfig.darkmode ? parsedStyle : pageStyle;
+}
+function useTheme(pageStyle, onThemeChangeCallback) {
+  const isReactivity = vue.isReactive(pageStyle);
+  const reactivePageStyle = isReactivity ? vue.reactive(parseTheme(pageStyle)) : parseTheme(pageStyle);
+  if (__uniConfig.darkmode && isReactivity) {
+    vue.watch(pageStyle, (value) => {
+      const _pageStyle = parseTheme(value);
+      for (const key in _pageStyle) {
+        reactivePageStyle[key] = _pageStyle[key];
+      }
+    });
+  }
+  onThemeChangeCallback && onThemeChange(onThemeChangeCallback);
+  return reactivePageStyle;
+}
+function updateBackgroundColorContent(backgroundColorContent) {
+  {
+    return;
+  }
+}
+function useBackgroundColorContent(pageMeta) {
+  function update() {
+    if (pageMeta.backgroundColorContent) {
+      updateBackgroundColorContent(
+        parseTheme({ backgroundColorContent: pageMeta.backgroundColorContent }).backgroundColorContent
+      );
+    }
+  }
+  onThemeChange(update);
+  vue.watchEffect(update);
+}
+function hexToRgba(hex) {
+  if (!hex) {
+    return {
+      r: 0,
+      g: 0,
+      b: 0,
+      a: 0
+    };
+  }
+  let tmpHex = hex.slice(1);
+  const tmpHexLen = tmpHex.length;
+  if (![3, 4, 6, 8].includes(tmpHexLen)) {
+    return {
+      r: 0,
+      g: 0,
+      b: 0,
+      a: 0
+    };
+  }
+  if (tmpHexLen === 3 || tmpHexLen === 4) {
+    tmpHex = tmpHex.replace(/(\w{1})/g, "$1$1");
+  }
+  let [sr, sg, sb, sa] = tmpHex.match(/(\w{2})/g);
+  const r = parseInt(sr, 16), g2 = parseInt(sg, 16), b = parseInt(sb, 16);
+  if (!sa) {
+    return { r, g: g2, b, a: 1 };
+  }
+  return {
+    r,
+    g: g2,
+    b,
+    a: (`0x100${sa}` - 65536) / 255
+  };
+}
+function usePageHeadTransparentBackgroundColor(backgroundColor) {
+  const { r, g: g2, b } = hexToRgba(backgroundColor);
+  return `rgba(${r},${g2},${b},0)`;
+}
+function usePageHeadTransparent(headRef, {
+  id: id2,
+  navigationBar: { titleColor, coverage, backgroundColor }
+}) {
+  vue.computed(() => hexToRgba(backgroundColor));
+}
+const ICON_PATHS = {
+  none: "",
+  forward: "M11 7.844q-0.25-0.219-0.25-0.578t0.25-0.578q0.219-0.25 0.563-0.25t0.563 0.25l9.656 9.125q0.125 0.125 0.188 0.297t0.063 0.328q0 0.188-0.063 0.359t-0.188 0.297l-9.656 9.125q-0.219 0.25-0.563 0.25t-0.563-0.25q-0.25-0.219-0.25-0.578t0.25-0.609l9.063-8.594-9.063-8.594z",
+  back: ICON_PATH_BACK,
+  select: ICON_PATH_BACK,
+  share: "M26.563 24.844q0 0.125-0.109 0.234t-0.234 0.109h-17.938q-0.125 0-0.219-0.109t-0.094-0.234v-13.25q0-0.156 0.094-0.25t0.219-0.094h5.5v-1.531h-6q-0.531 0-0.906 0.391t-0.375 0.922v14.375q0 0.531 0.375 0.922t0.906 0.391h18.969q0.531 0 0.891-0.391t0.359-0.953v-5.156h-1.438v4.625zM29.813 10.969l-5.125-5.375-1.031 1.094 3.438 3.594-3.719 0.031q-2.313 0.188-4.344 1.125t-3.578 2.422-2.5 3.453-1.109 4.188l-0.031 0.25h1.469v-0.219q0.156-1.875 1-3.594t2.25-3.063 3.234-2.125 3.828-0.906l0.188-0.031 3.313-0.031-3.438 3.625 1.031 1.063 5.125-5.375-0.031-0.063 0.031-0.063z",
+  favorite: "M27.594 13.375q-0.063-0.188-0.219-0.313t-0.344-0.156l-7.094-0.969-3.219-6.406q-0.094-0.188-0.25-0.281t-0.375-0.094q-0.188 0-0.344 0.094t-0.25 0.281l-3.125 6.438-7.094 1.094q-0.188 0.031-0.344 0.156t-0.219 0.313q-0.031 0.188 0.016 0.375t0.172 0.313l5.156 4.969-1.156 7.063q-0.031 0.188 0.047 0.375t0.234 0.313q0.094 0.063 0.188 0.094t0.219 0.031q0.063 0 0.141-0.031t0.172-0.063l6.313-3.375 6.375 3.313q0.063 0.031 0.141 0.047t0.172 0.016q0.188 0 0.344-0.094t0.25-0.281q0.063-0.094 0.078-0.234t-0.016-0.234q0-0.031 0-0.063l-1.25-6.938 5.094-5.031q0.156-0.156 0.203-0.344t-0.016-0.375zM11.469 19.063q0.031-0.188-0.016-0.344t-0.172-0.281l-4.406-4.25 6.063-0.906q0.156-0.031 0.297-0.125t0.203-0.25l2.688-5.531 2.75 5.5q0.063 0.156 0.203 0.25t0.297 0.125l6.094 0.844-4.375 4.281q-0.125 0.125-0.172 0.297t-0.016 0.328l1.063 6.031-5.438-2.813q-0.156-0.094-0.328-0.078t-0.297 0.078l-5.438 2.875 1-6.031z",
+  home: "M23.719 16.5q-0.313 0-0.531 0.219t-0.219 0.5v7.063q0 0.219-0.172 0.391t-0.391 0.172h-12.344q-0.25 0-0.422-0.172t-0.172-0.391v-7.063q0-0.281-0.219-0.5t-0.531-0.219q-0.281 0-0.516 0.219t-0.234 0.5v7.063q0.031 0.844 0.625 1.453t1.438 0.609h12.375q0.844 0 1.453-0.609t0.609-1.453v-7.063q0-0.125-0.063-0.266t-0.156-0.234q-0.094-0.125-0.234-0.172t-0.297-0.047zM26.5 14.875l-8.813-8.813q-0.313-0.313-0.688-0.453t-0.781-0.141-0.781 0.141-0.656 0.422l-8.813 8.844q-0.188 0.219-0.188 0.516t0.219 0.484q0.094 0.125 0.234 0.172t0.297 0.047q0.125 0 0.25-0.047t0.25-0.141l8.781-8.781q0.156-0.156 0.406-0.156t0.406 0.156l8.813 8.781q0.219 0.188 0.516 0.188t0.516-0.219q0.188-0.188 0.203-0.484t-0.172-0.516z",
+  menu: "M8.938 18.313q0.875 0 1.484-0.609t0.609-1.453-0.609-1.453-1.484-0.609q-0.844 0-1.453 0.609t-0.609 1.453 0.609 1.453 1.453 0.609zM16.188 18.313q0.875 0 1.484-0.609t0.609-1.453-0.609-1.453-1.484-0.609q-0.844 0-1.453 0.609t-0.609 1.453 0.609 1.453 1.453 0.609zM23.469 18.313q0.844 0 1.453-0.609t0.609-1.453-0.609-1.453-1.453-0.609q-0.875 0-1.484 0.609t-0.609 1.453 0.609 1.453 1.484 0.609z",
+  close: ICON_PATH_CLOSE
+};
+const PageHead = /* @__PURE__ */ defineSystemComponent({
+  name: "PageHead",
+  setup() {
+    const headRef = vue.ref(null);
+    const pageMeta = usePageMeta();
+    const navigationBar = useTheme(pageMeta.navigationBar, () => {
+      const _navigationBar = parseTheme(pageMeta.navigationBar);
+      navigationBar.backgroundColor = _navigationBar.backgroundColor;
+      navigationBar.titleColor = _navigationBar.titleColor;
+    });
+    const {
+      clazz: clazz2,
+      style
+    } = usePageHead(navigationBar);
+    const buttons = __UNI_FEATURE_NAVIGATIONBAR_BUTTONS__ && usePageHeadButtons(pageMeta);
+    const searchInput = __UNI_FEATURE_NAVIGATIONBAR_SEARCHINPUT__ && navigationBar.searchInput && usePageHeadSearchInput(pageMeta);
+    __UNI_FEATURE_NAVIGATIONBAR_TRANSPARENT__ && navigationBar.type === "transparent" && usePageHeadTransparent(headRef, pageMeta);
+    return () => {
+      const backButtonTsx = __UNI_FEATURE_PAGES__ ? createBackButtonTsx(navigationBar, pageMeta.isQuit) : null;
+      const leftButtonsTsx = __UNI_FEATURE_NAVIGATIONBAR_BUTTONS__ ? createButtonsTsx(buttons.left) : [];
+      const rightButtonsTsx = __UNI_FEATURE_NAVIGATIONBAR_BUTTONS__ ? createButtonsTsx(buttons.right) : [];
+      const type = navigationBar.type || "default";
+      const placeholderTsx = type !== "transparent" && type !== "float" && vue.createVNode("div", {
+        "class": {
+          "uni-placeholder": true,
+          "uni-placeholder-titlePenetrate": navigationBar.titlePenetrate
+        }
+      }, null, 2);
+      return vue.createVNode("uni-page-head", {
+        "uni-page-head-type": type
+      }, [vue.createVNode("div", {
+        "ref": headRef,
+        "class": clazz2.value,
+        "style": style.value
+      }, [vue.createVNode("div", {
+        "class": "uni-page-head-hd"
+      }, [backButtonTsx, ...leftButtonsTsx]), createPageHeadBdTsx(navigationBar, searchInput), vue.createVNode("div", {
+        "class": "uni-page-head-ft"
+      }, [...rightButtonsTsx])], 6), placeholderTsx], 8, ["uni-page-head-type"]);
+    };
+  }
+});
+function createBackButtonTsx(navigationBar, isQuit) {
+  if (!isQuit) {
+    return vue.createVNode("div", {
+      "class": "uni-page-head-btn",
+      "onClick": onPageHeadBackButton
+    }, [createSvgIconVNode(ICON_PATH_BACK, navigationBar.type === "transparent" ? "#fff" : navigationBar.titleColor, 26)], 8, ["onClick"]);
+  }
+}
+function createButtonsTsx(btns) {
+  return btns.map(({
+    onClick,
+    btnClass,
+    btnStyle,
+    btnText,
+    btnIconPath,
+    badgeText,
+    iconStyle,
+    btnSelect
+  }, index2) => {
+    return vue.createVNode("div", {
+      "key": index2,
+      "class": btnClass,
+      "style": btnStyle,
+      "onClick": onClick,
+      "badge-text": badgeText
+    }, [btnIconPath ? createSvgIconVNode(btnIconPath, iconStyle.color, iconStyle.fontSize) : btnSelect ? vue.createVNode("span", {
+      "style": iconStyle
+    }, [vue.createVNode("i", {
+      "class": "uni-btn-icon",
+      "innerHTML": btnText
+    }, null, 8, ["innerHTML"]), createSvgIconVNode(ICON_PATHS["select"], "#000", 14)], 4) : vue.createVNode("i", {
+      "class": "uni-btn-icon",
+      "style": iconStyle,
+      "innerHTML": btnText
+    }, null, 12, ["innerHTML"])], 14, ["onClick", "badge-text"]);
+  });
+}
+function createPageHeadBdTsx(navigationBar, searchInput) {
+  if (!__UNI_FEATURE_NAVIGATIONBAR_SEARCHINPUT__ || !navigationBar.searchInput) {
+    return createPageHeadTitleTextTsx(navigationBar);
+  }
+  return createPageHeadSearchInputTsx(navigationBar, searchInput);
+}
+function createPageHeadTitleTextTsx({
+  type,
+  loading,
+  titleSize,
+  titleText,
+  titleImage
+}) {
+  return vue.createVNode("div", {
+    "class": "uni-page-head-bd"
+  }, [vue.createVNode("div", {
+    "style": {
+      fontSize: titleSize,
+      opacity: type === "transparent" ? 0 : 1
+    },
+    "class": "uni-page-head__title"
+  }, [loading ? vue.createVNode("i", {
+    "class": "uni-loading"
+  }, null) : titleImage ? vue.createVNode("img", {
+    "src": titleImage,
+    "class": "uni-page-head__title_image"
+  }, null, 8, ["src"]) : titleText], 4)]);
+}
+function createPageHeadSearchInputTsx(navigationBar, {
+  text,
+  focus,
+  composing,
+  onBlur,
+  onFocus,
+  onInput,
+  onConfirm,
+  onClick
+}) {
+  const {
+    color,
+    align,
+    autoFocus,
+    disabled,
+    borderRadius,
+    backgroundColor,
+    placeholder,
+    placeholderColor
+  } = navigationBar.searchInput;
+  const searchStyle = {
+    borderRadius,
+    backgroundColor
+  };
+  const placeholderClass = ["uni-page-head-search-placeholder", `uni-page-head-search-placeholder-${focus.value || text.value ? "left" : align}`];
+  return vue.createVNode("div", {
+    "class": "uni-page-head-search",
+    "style": searchStyle
+  }, [vue.createVNode("div", {
+    "style": {
+      color: placeholderColor
+    },
+    "class": placeholderClass
+  }, [vue.createVNode("div", {
+    "class": "uni-page-head-search-icon"
+  }, [createSvgIconVNode(ICON_PATH_SEARCH, placeholderColor, 20)]), text.value || composing.value ? "" : placeholder], 6), disabled ? vue.createVNode(Input, {
+    "disabled": true,
+    "style": {
+      color
+    },
+    "placeholder-style": "color: " + placeholderColor,
+    "class": "uni-page-head-search-input",
+    "confirm-type": "search",
+    "onClick": onClick
+  }, null, 8, ["style", "placeholder-style", "onClick"]) : vue.createVNode(Input, {
+    "focus": autoFocus,
+    "style": {
+      color
+    },
+    "placeholder-style": "color: " + placeholderColor,
+    "class": "uni-page-head-search-input",
+    "confirm-type": "search",
+    "onFocus": onFocus,
+    "onBlur": onBlur,
+    "onInput": onInput,
+    "onConfirm": onConfirm
+  }, null, 8, ["focus", "style", "placeholder-style", "onFocus", "onBlur", "onInput", "onConfirm"])], 4);
+}
+function onPageHeadBackButton() {
+  if (getCurrentPages().length === 1) {
+    uni.reLaunch({
+      url: "/"
+    });
+  } else {
+    uni.navigateBack({
+      from: "backbutton",
+      success() {
+      }
+      // 传入空方法，避免返回Promise，因为onBackPress可能导致fail
+    });
+  }
+}
+function usePageHead(navigationBar) {
+  const clazz2 = vue.computed(() => {
+    const {
+      type,
+      titlePenetrate,
+      shadowColorType
+    } = navigationBar;
+    const clazz3 = {
+      "uni-page-head": true,
+      "uni-page-head-transparent": type === "transparent",
+      "uni-page-head-titlePenetrate": titlePenetrate === "YES",
+      "uni-page-head-shadow": !!shadowColorType
+    };
+    if (shadowColorType) {
+      clazz3[`uni-page-head-shadow-${shadowColorType}`] = true;
+    }
+    return clazz3;
+  });
+  const style = vue.computed(() => {
+    const backgroundColor = __UNI_FEATURE_NAVIGATIONBAR_TRANSPARENT__ && navigationBar.type === "transparent" ? usePageHeadTransparentBackgroundColor(navigationBar.backgroundColor) : navigationBar.backgroundColor;
+    return {
+      backgroundColor,
+      color: navigationBar.titleColor,
+      transitionDuration: navigationBar.duration,
+      transitionTimingFunction: navigationBar.timingFunc
+    };
+  });
+  return {
+    clazz: clazz2,
+    style
+  };
+}
+function usePageHeadButtons({
+  id: id2,
+  navigationBar
+}) {
+  const left = [];
+  const right = [];
+  const {
+    buttons
+  } = navigationBar;
+  if (shared.isArray(buttons)) {
+    const {
+      type
+    } = navigationBar;
+    const isTransparent = type === "transparent";
+    const fonts = /* @__PURE__ */ Object.create(null);
+    buttons.forEach((btn, index2) => {
+      if (btn.fontSrc && !btn.fontFamily) {
+        const fontSrc = getRealPath(btn.fontSrc);
+        let fontFamily = fonts[fontSrc];
+        if (!fontFamily) {
+          fontFamily = `font${Date.now()}`;
+          fonts[fontSrc] = fontFamily;
+        }
+        btn.fontFamily = fontFamily;
+      }
+      const pageHeadBtn = usePageHeadButton(id2, index2, btn, isTransparent);
+      if (btn.float === "left") {
+        left.push(pageHeadBtn);
+      } else {
+        right.push(pageHeadBtn);
+      }
+    });
+  }
+  return {
+    left,
+    right
+  };
+}
+function usePageHeadButton(pageId, index2, btn, isTransparent) {
+  const iconStyle = {
+    color: btn.color,
+    fontSize: btn.fontSize,
+    fontWeight: btn.fontWeight
+  };
+  if (btn.fontFamily) {
+    iconStyle.fontFamily = btn.fontFamily;
+  }
+  return new Proxy({
+    btnClass: {
+      // 类似这样的大量重复的字符串，会在gzip时压缩大小，无需在代码层考虑优化相同字符串
+      "uni-page-head-btn": true,
+      "uni-page-head-btn-red-dot": !!(btn.redDot || btn.badgeText),
+      "uni-page-head-btn-select": !!btn.select
+    },
+    btnStyle: {
+      backgroundColor: isTransparent ? btn.background : "transparent",
+      width: btn.width
+    },
+    btnText: "",
+    btnIconPath: ICON_PATHS[btn.type],
+    badgeText: btn.badgeText,
+    iconStyle,
+    onClick() {
+      invokeHook(pageId, uniShared.ON_NAVIGATION_BAR_BUTTON_TAP, shared.extend({
+        index: index2
+      }, btn));
+    },
+    btnSelect: btn.select
+  }, {
+    get(target, key, receiver) {
+      if (["btnText"].includes(key)) {
+        return btn.fontSrc && btn.fontFamily ? btn.text.replace("\\u", "&#x") : btn.text;
+      } else {
+        return Reflect.get(target, key, receiver);
+      }
+    }
+  });
+}
+function usePageHeadSearchInput({
+  id: id2,
+  navigationBar: {
+    searchInput
+  }
+}) {
+  const focus = vue.ref(false);
+  const text = vue.ref("");
+  const composing = vue.ref(false);
+  const {
+    disabled
+  } = searchInput;
+  if (disabled) {
+    const onClick = () => {
+      invokeHook(id2, uniShared.ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED);
+    };
+    return {
+      focus,
+      text,
+      composing,
+      onClick
+    };
+  }
+  const onFocus = () => {
+    focus.value = true;
+    invokeHook(id2, uniShared.ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, {
+      focus: true
+    });
+  };
+  const onBlur = () => {
+    focus.value = false;
+    invokeHook(id2, uniShared.ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, {
+      focus: false
+    });
+  };
+  const onInput = (evt) => {
+    text.value = evt.detail.value;
+    invokeHook(id2, uniShared.ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, {
+      text: text.value
+    });
+  };
+  const onConfirm = (evt) => {
+    invokeHook(id2, uniShared.ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, {
+      text: text.value
+    });
+  };
+  return {
+    focus,
+    text,
+    composing,
+    onFocus,
+    onBlur,
+    onInput,
+    onConfirm
+  };
+}
+const _sfc_main = {
+  name: "PageRefresh",
+  setup() {
+    const { pullToRefresh } = usePageMeta();
+    return {
+      offset: pullToRefresh.offset,
+      color: pullToRefresh.color
+    };
+  }
+};
+const _export_sfc = (sfc, props2) => {
+  const target = sfc.__vccOpts || sfc;
+  for (const [key, val] of props2) {
+    target[key] = val;
+  }
+  return target;
+};
+const _hoisted_1 = { class: "uni-page-refresh-inner" };
+const _hoisted_2 = ["fill"];
+const _hoisted_3 = /* @__PURE__ */ vue.createElementVNode("path", { d: "M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z" }, null, -1);
+const _hoisted_4 = /* @__PURE__ */ vue.createElementVNode("path", {
+  d: "M0 0h24v24H0z",
+  fill: "none"
+}, null, -1);
+const _hoisted_5 = [
+  _hoisted_3,
+  _hoisted_4
+];
+const _hoisted_6 = {
+  class: "uni-page-refresh__spinner",
+  width: "24",
+  height: "24",
+  viewBox: "25 25 50 50"
+};
+const _hoisted_7 = ["stroke"];
+function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
+  return vue.openBlock(), vue.createElementBlock("uni-page-refresh", null, [
+    vue.createElementVNode("div", {
+      style: vue.normalizeStyle({ "margin-top": $setup.offset + "px" }),
+      class: "uni-page-refresh"
+    }, [
+      vue.createElementVNode("div", _hoisted_1, [
+        (vue.openBlock(), vue.createElementBlock("svg", {
+          fill: $setup.color,
+          class: "uni-page-refresh__icon",
+          width: "24",
+          height: "24",
+          viewBox: "0 0 24 24"
+        }, _hoisted_5, 8, _hoisted_2)),
+        (vue.openBlock(), vue.createElementBlock("svg", _hoisted_6, [
+          vue.createElementVNode("circle", {
+            stroke: $setup.color,
+            class: "uni-page-refresh__path",
+            cx: "50",
+            cy: "50",
+            r: "20",
+            fill: "none",
+            "stroke-width": "4",
+            "stroke-miterlimit": "10"
+          }, null, 8, _hoisted_7)
+        ]))
+      ])
+    ], 4)
+  ]);
+}
+const PageRefresh = /* @__PURE__ */ _export_sfc(_sfc_main, [["render", _sfc_render]]);
+const PageBody = /* @__PURE__ */ defineSystemComponent({
+  name: "PageBody",
+  setup(props2, ctx) {
+    const pageMeta = __UNI_FEATURE_PULL_DOWN_REFRESH__ && usePageMeta();
+    const refreshRef = __UNI_FEATURE_PULL_DOWN_REFRESH__ && vue.ref(null);
+    const _pageRefresh = null;
+    const pageRefresh = vue.ref(null);
+    vue.watch(() => {
+      return pageMeta.enablePullDownRefresh;
+    }, () => {
+      pageRefresh.value = pageMeta.enablePullDownRefresh ? _pageRefresh : null;
+    }, {
+      immediate: true
+    });
+    return () => {
+      const pageRefreshTsx = __UNI_FEATURE_PULL_DOWN_REFRESH__ && createPageRefreshTsx(refreshRef);
+      return vue.createVNode(vue.Fragment, null, [pageRefreshTsx, vue.createVNode("uni-page-wrapper", pageRefresh.value, [vue.createVNode("uni-page-body", null, [vue.renderSlot(ctx.slots, "default")])], 16)]);
+    };
+  }
+});
+function createPageRefreshTsx(refreshRef, pageMeta) {
+  return vue.createVNode(PageRefresh, {
+    "ref": refreshRef
+  }, null, 512);
+}
+const PageComponent = /* @__PURE__ */ defineSystemComponent({
+  name: "Page",
+  setup(_props, ctx) {
+    const pageMeta = providePageMeta(getStateId());
+    const navigationBar = pageMeta.navigationBar;
+    const pageStyle = {};
+    useDocumentTitle(pageMeta);
+    const currentInstance = vue.getCurrentInstance();
+    {
+      currentInstance.$dialogPages = vue.ref([]);
+      currentInstance.$systemDialogPages = vue.ref([]);
+      useBackgroundColorContent(pageMeta);
+      if (isDialogPageInstance(ctx)) {
+        navigationBar.style = "custom";
+        pageMeta.route = ctx.attrs.route;
+        const parentInstance = vue.inject(
+          "parentInstance"
+        );
+        if (currentInstance && parentInstance) {
+          currentInstance.$parentInstance = parentInstance;
+          if (isNormalDialogPageInstance(
+            ctx
+          )) {
+            const parentDialogPages = parentInstance.$dialogPages.value;
+            currentInstance.$dialogPage = parentDialogPages[parentDialogPages.length - 1];
+          }
+          if (isSystemDialogPageInstance(
+            ctx
+          )) {
+            const parentSystemDialogPages = parentInstance.$systemDialogPages.value;
+            currentInstance.$dialogPage = parentSystemDialogPages[parentSystemDialogPages.length - 1];
+          }
+        }
+      } else {
+        vue.provide("parentInstance", currentInstance);
+      }
+    }
+    return () => vue.createVNode(
+      "uni-page",
+      {
+        "data-page": pageMeta.route,
+        style: pageStyle
+      },
+      __UNI_FEATURE_NAVIGATIONBAR__ && navigationBar.style !== "custom" ? [
+        vue.createVNode(PageHead),
+        createPageBodyVNode(ctx),
+        createDialogPageVNode(
+          currentInstance.$dialogPages,
+          currentInstance.$systemDialogPages
+        )
+      ] : [
+        createPageBodyVNode(ctx),
+        createDialogPageVNode(
+          currentInstance.$dialogPages,
+          currentInstance.$systemDialogPages
+        )
+      ]
+    );
+  }
+});
+function createPageBodyVNode(ctx) {
+  return vue.openBlock(), vue.createBlock(
+    PageBody,
+    { key: 0 },
+    {
+      default: vue.withCtx(() => [vue.renderSlot(ctx.slots, "page")]),
+      _: 3
+    }
+  );
+}
+function createDialogPageVNode(normalDialogPages, systemDialogPages) {
+  const dialogPages = [
+    ...normalDialogPages.value.map((page) => ({ page, type: DIALOG_TAG })),
+    ...systemDialogPages.value.map((page) => ({
+      page,
+      type: SYSTEM_DIALOG_TAG
+    }))
+  ];
+  return vue.openBlock(true), vue.createElementBlock(
+    vue.Fragment,
+    null,
+    vue.renderList(dialogPages, (dialogPage) => {
+      const { type, page } = dialogPage;
+      const fullUrl = `${page.route}${uniShared.stringifyQuery(page.options)}`;
+      return vue.openBlock(), vue.createBlock(
+        vue.createVNode(
+          page.$component,
+          {
+            key: fullUrl,
+            style: {
+              position: "fixed",
+              "z-index": 999,
+              top: 0,
+              right: 0,
+              bottom: 0,
+              left: 0
+            },
+            "data-type": type,
+            route: fullUrl
+          },
+          null
+        )
+      );
+    })
+  );
+}
 var startTag = /^<([-A-Za-z0-9_]+)((?:\s+[a-zA-Z_:][-a-zA-Z0-9_:.]*(?:\s*=\s*(?:(?:"[^"]*")|(?:'[^']*')|[^>\s]+))?)*)\s*(\/?)>/;
 var endTag = /^<\/([-A-Za-z0-9_]+)[^>]*>/;
 var attr = /([a-zA-Z_:][-a-zA-Z0-9_:.]*)(?:\s*=\s*(?:(?:"((?:\\.|[^"])*)")|(?:'((?:\\.|[^'])*)')|([^>\s]+)))?/g;
@@ -2787,7 +4112,7 @@ const props$n = /* @__PURE__ */ shared.extend({}, props$o, {
     default: false
   }
 });
-const index$w = /* @__PURE__ */ defineBuiltInComponent({
+const index$v = /* @__PURE__ */ defineBuiltInComponent({
   name: "Editor",
   props: props$n,
   emit: ["ready", "focus", "blur", "input", "statuschange", ...emit$1],
@@ -2848,7 +4173,7 @@ const ICONS = {
     c: GREY_COLOR
   }
 };
-const index$v = /* @__PURE__ */ defineBuiltInComponent({
+const index$u = /* @__PURE__ */ defineBuiltInComponent({
   name: "Icon",
   props: {
     type: {
@@ -2967,7 +4292,7 @@ const IMAGE_MODES = {
   "bottom left": ["left bottom"],
   "bottom right": ["right bottom"]
 };
-const index$u = /* @__PURE__ */ defineBuiltInComponent({
+const index$t = /* @__PURE__ */ defineBuiltInComponent({
   name: "Image",
   props: props$m,
   setup(props2, {
@@ -3587,6 +4912,8 @@ const props$k = /* @__PURE__ */ shared.extend({}, props$l, {
     default: ""
   }
 });
+const resolveDigitDecimalPointDeleteContentBackward = uniShared.once(() => {
+});
 function resolveDigitDecimalPoint(event, cache, state, input, resetCache) {
   if (cache.value) {
     if (event.data === ".") {
@@ -3606,7 +4933,7 @@ function resolveDigitDecimalPoint(event, cache, state, input, resetCache) {
         return false;
       }
     } else if (event.inputType === "deleteContentBackward") {
-      if (navigator.userAgent.includes("iPhone OS 16")) {
+      if (resolveDigitDecimalPointDeleteContentBackward()) {
         if (cache.value.slice(-2, -1) === ".") {
           cache.value = state.value = input.value = cache.value.slice(0, -2);
           return true;
@@ -3656,7 +4983,7 @@ const Input = /* @__PURE__ */ defineBuiltInComponent({
           type2 = "number";
           break;
         default:
-          type2 = ~INPUT_TYPES.includes(props2.type) ? props2.type : "text";
+          type2 = INPUT_TYPES.includes(props2.type) ? props2.type : "text";
           break;
       }
       return props2.password ? "password" : type2;
@@ -3710,7 +5037,8 @@ const Input = /* @__PURE__ */ defineBuiltInComponent({
         if (maxlength > 0 && input.value.length > maxlength) {
           input.value = input.value.slice(0, maxlength);
           state2.value = input.value;
-          return false;
+          const modelValue = props2.modelValue !== void 0 && props2.modelValue !== null ? props2.modelValue.toString() : "";
+          return modelValue !== input.value;
         }
       }
     });
@@ -3853,7 +5181,7 @@ const movableAreaProps = {
     default: false
   }
 };
-const index$t = /* @__PURE__ */ defineBuiltInComponent({
+const index$s = /* @__PURE__ */ defineBuiltInComponent({
   inheritAttrs: false,
   name: "MovableArea",
   props: movableAreaProps,
@@ -4401,7 +5729,7 @@ const movableViewProps = {
 function v(a, b) {
   return +((1e3 * a - 1e3 * b) / 1e3).toFixed(1);
 }
-const index$s = /* @__PURE__ */ defineBuiltInComponent({
+const index$r = /* @__PURE__ */ defineBuiltInComponent({
   name: "MovableView",
   props: movableViewProps,
   emits: ["change", "scale"],
@@ -4589,9 +5917,6 @@ function useMovableViewTransform(rootRef, props2, _scaleOffset, _scale, maxX, ma
     };
   }
   function FAandSFACancel() {
-    if (_FA) {
-      _FA.cancel();
-    }
     if (_SFA) {
       _SFA.cancel();
     }
@@ -5051,7 +6376,7 @@ function createNavigatorOnClick(props2) {
     }
   };
 }
-const index$r = /* @__PURE__ */ defineBuiltInComponent({
+const index$q = /* @__PURE__ */ defineBuiltInComponent({
   name: "Navigator",
   inheritAttrs: false,
   compatConfig: {
@@ -5373,7 +6698,7 @@ const progressProps = {
     default: 0
   }
 };
-const index$q = /* @__PURE__ */ defineBuiltInComponent({
+const index$p = /* @__PURE__ */ defineBuiltInComponent({
   name: "Progress",
   props: progressProps,
   setup(props2) {
@@ -5463,7 +6788,7 @@ const props$j = {
     default: ""
   }
 };
-const index$p = /* @__PURE__ */ defineBuiltInComponent({
+const index$o = /* @__PURE__ */ defineBuiltInComponent({
   name: "RadioGroup",
   props: props$j,
   // emits: ['change'],
@@ -5496,7 +6821,7 @@ function useProvideRadioGroup(props2, trigger) {
     },
     radioChange($event, field) {
       const index2 = fields2.indexOf(field);
-      _resetRadioGroupValue(index2, true);
+      _resetRadioGroupValue(index2);
       trigger("change", $event, {
         value: getFieldsValue()
       });
@@ -5527,17 +6852,8 @@ function useProvideRadioGroup(props2, trigger) {
       if (index2 === key) {
         return;
       }
-      if (change) {
+      {
         setFieldChecked(fields2[index2], false);
-      } else {
-        fields2.forEach((v2, i) => {
-          if (index2 >= i) {
-            return;
-          }
-          if (fields2[i].value.radioChecked) {
-            setFieldChecked(fields2[index2], false);
-          }
-        });
       }
     });
   }
@@ -5801,7 +7117,11 @@ function processClickEvent(node, triggerItemClick) {
   if (["a", "img"].includes(node.name) && triggerItemClick) {
     return {
       onClick: (e2) => {
-        triggerItemClick(e2, { node });
+        if (node.name === "a") {
+          triggerItemClick(e2, { href: (node.attrs || {}).href });
+        } else {
+          triggerItemClick(e2, { src: (node.attrs || {}).src });
+        }
         e2.stopPropagation();
         e2.preventDefault();
         e2.returnValue = false;
@@ -5950,13 +7270,13 @@ const props$h = {
     }
   }
 };
-const index$o = /* @__PURE__ */ defineBuiltInComponent({
+const index$n = /* @__PURE__ */ defineBuiltInComponent({
   name: "RichText",
   compatConfig: {
     MODE: 3
   },
   props: props$h,
-  emits: ["click", "touchstart", "touchmove", "touchcancel", "touchend", "longpress", "itemclick"],
+  emits: ["itemclick"],
   setup(props2, {
     emit: emit2
   }) {
@@ -6153,7 +7473,7 @@ const props$g = {
     default: false
   }
 };
-const index$n = /* @__PURE__ */ defineBuiltInComponent({
+const index$m = /* @__PURE__ */ defineBuiltInComponent({
   name: "ScrollView",
   compatConfig: {
     MODE: 3
@@ -7052,7 +8372,7 @@ function useLayout(props2, state, swiperContexts, slideFrameRef, emit2, trigger)
     swiperEnabled
   };
 }
-const index$m = /* @__PURE__ */ defineBuiltInComponent({
+const index$l = /* @__PURE__ */ defineBuiltInComponent({
   name: "Swiper",
   props: props$e,
   emits: ["change", "transition", "animationfinish", "update:current", "update:currentItemId"],
@@ -7130,7 +8450,9 @@ const index$m = /* @__PURE__ */ defineBuiltInComponent({
     }
     return () => {
       const defaultSlots = slots.default && slots.default();
-      swiperItems = flatVNode(defaultSlots);
+      {
+        swiperItems = flatVNode(defaultSlots);
+      }
       return vue.createVNode("uni-swiper", {
         "ref": rootRef
       }, [vue.createVNode("div", {
@@ -7281,7 +8603,7 @@ const props$d = {
     default: ""
   }
 };
-const index$l = /* @__PURE__ */ defineBuiltInComponent({
+const index$k = /* @__PURE__ */ defineBuiltInComponent({
   name: "SwiperItem",
   props: props$d,
   setup(props2, {
@@ -7474,7 +8796,7 @@ function normalizeText(text, { space, decode }) {
 function parseText(text, options) {
   return normalizeText(text, options).split(uniShared.LINEFEED);
 }
-const index$k = /* @__PURE__ */ defineBuiltInComponent({
+const index$j = /* @__PURE__ */ defineBuiltInComponent({
   name: "Text",
   props: {
     selectable: {
@@ -7548,7 +8870,7 @@ const props$b = /* @__PURE__ */ shared.extend({}, props$l, {
 });
 let fixMargin = false;
 const ConfirmTypes = ["done", "go", "next", "search", "send"];
-const index$j = /* @__PURE__ */ defineBuiltInComponent({
+const index$i = /* @__PURE__ */ defineBuiltInComponent({
   name: "Textarea",
   props: props$b,
   emits: ["confirm", "linechange", ...emit],
@@ -7700,7 +9022,7 @@ const index$j = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const index$i = /* @__PURE__ */ defineBuiltInComponent({
+const index$h = /* @__PURE__ */ defineBuiltInComponent({
   name: "View",
   props: /* @__PURE__ */ shared.extend({}, hoverProps),
   setup(props2, {
@@ -7717,11 +9039,11 @@ const index$i = /* @__PURE__ */ defineBuiltInComponent({
         return vue.createVNode("uni-view", vue.mergeProps({
           "class": hovering.value ? hoverClass : "",
           "ref": rootRef
-        }, binding), [slots.default && slots.default()], 16);
+        }, binding), [vue.renderSlot(slots, "default")], 16);
       }
       return vue.createVNode("uni-view", {
         "ref": rootRef
-      }, [slots.default && slots.default()], 512);
+      }, [vue.renderSlot(slots, "default")], 512);
     };
   }
 });
@@ -7820,7 +9142,7 @@ const props$a = {
     default: false
   }
 };
-const index$h = /* @__PURE__ */ defineBuiltInComponent({
+const index$g = /* @__PURE__ */ defineBuiltInComponent({
   name: "ListView",
   props: props$a,
   emits: [
@@ -8133,7 +9455,7 @@ function getSize(isVertical, el) {
     return parseFloat(style.marginLeft) + el.getBoundingClientRect().width + parseFloat(style.marginRight);
   }
 }
-const index$g = /* @__PURE__ */ defineBuiltInComponent({
+const index$f = /* @__PURE__ */ defineBuiltInComponent({
   name: "ListItem",
   props: {},
   setup(props2, {
@@ -8175,7 +9497,7 @@ const index$g = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const index$f = /* @__PURE__ */ defineBuiltInComponent({
+const index$e = /* @__PURE__ */ defineBuiltInComponent({
   name: "StickySection",
   props: {
     padding: {
@@ -8220,7 +9542,7 @@ const index$f = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const index$e = /* @__PURE__ */ defineBuiltInComponent({
+const index$d = /* @__PURE__ */ defineBuiltInComponent({
   name: "StickyHeader",
   props: {
     padding: {
@@ -8268,13 +9590,13 @@ function useSubscribe(callback, name, multiple, pageId) {
   const instance = vue.getCurrentInstance();
   instance.proxy;
 }
-let index$d = 0;
+let index$c = 0;
 function useContextInfo(_id) {
   useCurrentPageId();
   const instance = vue.getCurrentInstance();
   const vm = instance.proxy;
   const type = vm.$options.name.toLowerCase();
-  const id2 = _id || vm.id || `context${index$d++}`;
+  const id2 = vm.id || `context${index$c++}`;
   return `${type}.${id2}`;
 }
 function injectLifecycleHook(name, hook, publicThis, instance) {
@@ -8283,7 +9605,6 @@ function injectLifecycleHook(name, hook, publicThis, instance) {
   }
 }
 function initHooks(options, instance, publicThis) {
-  var _b;
   const mpType = options.mpType || publicThis.$mpType;
   if (!mpType || mpType === "component") {
     return;
@@ -8305,14 +9626,15 @@ function initHooks(options, instance, publicThis) {
     try {
       let query = instance.attrs.__pageQuery;
       if (true) {
-        query = uniShared.decodedQuery(query);
+        query = new UTSJSONObject(uniShared.decodedQuery(query));
       }
       if (false)
         ;
       invokeHook(publicThis, uniShared.ON_LOAD, query);
       delete instance.attrs.__pageQuery;
+      const $basePage = true ? publicThis.$basePage : publicThis.$page;
       if (true) {
-        if (((_b = publicThis.$page) == null ? void 0 : _b.openType) !== "preloadPage") {
+        if (($basePage == null ? void 0 : $basePage.openType) !== "preloadPage") {
           invokeHook(publicThis, uniShared.ON_SHOW);
         }
       }
@@ -8430,7 +9752,7 @@ function uniIdMixin(globalProperties) {
     return tokenExpired > Date.now();
   };
 }
-function initApp$1(app) {
+function initApp(app) {
   const appConfig = app._context.config;
   appConfig.errorHandler = uniShared.invokeCreateErrorHandler(app, createErrorHandler);
   initOptionMergeStrategies(appConfig.optionMergeStrategies);
@@ -8448,402 +9770,6 @@ function initApp$1(app) {
   {
     uniShared.invokeCreateVueAppHook(app);
   }
-}
-const pageMetaKey = PolySymbol(process.env.NODE_ENV !== "production" ? "UniPageMeta" : "upm");
-function usePageMeta() {
-  return vue.inject(pageMetaKey);
-}
-function providePageMeta(id2) {
-  const pageMeta = initPageMeta(id2);
-  vue.provide(pageMetaKey, pageMeta);
-  return pageMeta;
-}
-function usePageRoute() {
-  if (__UNI_FEATURE_PAGES__) {
-    return vueRouter.useRoute();
-  }
-  const url = location.href;
-  const searchPos = url.indexOf("?");
-  const hashPos = url.indexOf("#", searchPos > -1 ? searchPos : 0);
-  let query = {};
-  if (searchPos > -1) {
-    query = uniShared.parseQuery(
-      url.slice(searchPos + 1, hashPos > -1 ? hashPos : url.length)
-    );
-  }
-  const { meta } = __uniRoutes[0];
-  const path = uniShared.addLeadingSlash(meta.route);
-  return {
-    meta,
-    query,
-    path,
-    matched: [{ path }]
-  };
-}
-function initPageMeta(id2) {
-  if (__UNI_FEATURE_PAGES__) {
-    return vue.reactive(
-      normalizePageMeta(
-        JSON.parse(
-          JSON.stringify(
-            initRouteMeta(
-              vueRouter.useRoute().meta,
-              id2
-            )
-          )
-        )
-      )
-    );
-  }
-  return vue.reactive(
-    normalizePageMeta(
-      JSON.parse(JSON.stringify(initRouteMeta(__uniRoutes[0].meta, id2)))
-    )
-  );
-}
-function normalizePageMeta(pageMeta) {
-  if (__UNI_FEATURE_PULL_DOWN_REFRESH__) {
-    const { enablePullDownRefresh, navigationBar } = pageMeta;
-    {
-      const pullToRefresh = normalizePullToRefreshRpx(
-        shared.extend(
-          {
-            support: true,
-            color: "#2BD009",
-            style: "circle",
-            height: 70,
-            range: 150,
-            offset: 0
-          },
-          pageMeta.pullToRefresh
-        )
-      );
-      const { type, style } = navigationBar;
-      if (style !== "custom" && type !== "transparent") {
-        pullToRefresh.offset += uniShared.NAVBAR_HEIGHT + 0;
-      }
-      pageMeta.pullToRefresh = pullToRefresh;
-    }
-  }
-  if (__UNI_FEATURE_NAVIGATIONBAR__) {
-    const { navigationBar } = pageMeta;
-    const { titleSize, titleColor, backgroundColor } = navigationBar;
-    navigationBar.titleText = navigationBar.titleText || "";
-    navigationBar.type = navigationBar.type || "default";
-    navigationBar.titleSize = titleSize || "16px";
-    navigationBar.titleColor = titleColor || "#000000";
-    navigationBar.backgroundColor = backgroundColor || "#F8F8F8";
-    __UNI_FEATURE_I18N_LOCALE__ && initNavigationBarI18n(navigationBar);
-  }
-  return pageMeta;
-}
-function getStateId() {
-  {
-    return 1;
-  }
-}
-function removeNonTabBarPages() {
-  const curTabBarPageVm = getCurrentPageVm();
-  if (!curTabBarPageVm) {
-    return;
-  }
-  const pagesMap = getCurrentPagesMap();
-  const keys = pagesMap.keys();
-  for (const routeKey of keys) {
-    const page = pagesMap.get(routeKey);
-    if (!page.$.__isTabBar) {
-      removePage(routeKey);
-    } else {
-      page.$.__isActive = false;
-    }
-  }
-  if (curTabBarPageVm.$.__isTabBar) {
-    curTabBarPageVm.$.__isVisible = false;
-    invokeHook(curTabBarPageVm, uniShared.ON_HIDE);
-  }
-}
-function isSamePage(url, $page) {
-  return url === $page.fullPath || url === "/" && $page.meta.isEntry;
-}
-function getTabBarPageId(url) {
-  const pages = getCurrentPagesMap().values();
-  for (const page of pages) {
-    const $page = page.$page;
-    if (isSamePage(url, $page)) {
-      page.$.__isActive = true;
-      return $page.id;
-    }
-  }
-}
-function removeLastPage() {
-  const page = getCurrentPage();
-  if (!page) {
-    return;
-  }
-  const $page = page.$page;
-  removePage(normalizeRouteKey($page.path, $page.id));
-}
-function removeAllPages() {
-  const keys = getCurrentPagesMap().keys();
-  for (const routeKey of keys) {
-    removePage(routeKey);
-  }
-}
-function navigate({ type, url, tabBarText, events, isAutomatedTesting }, __id__) {
-  const router = getApp().$router;
-  const { path, query } = uniShared.parseUrl(url);
-  return new Promise((resolve, reject) => {
-    const state = createPageState(type, __id__);
-    router[type === "navigateTo" ? "push" : "replace"]({
-      path,
-      query,
-      state,
-      force: true
-    }).then((failure) => {
-      if (vueRouter.isNavigationFailure(failure)) {
-        return reject(failure.message);
-      }
-      if (type === "switchTab") {
-        router.currentRoute.value.meta.tabBarText = tabBarText;
-      }
-      if (type === "navigateTo") {
-        const meta = router.currentRoute.value.meta;
-        if (!meta.eventChannel) {
-          meta.eventChannel = new uniShared.EventChannel(state.__id__, events);
-        } else if (events) {
-          Object.keys(events).forEach((eventName) => {
-            meta.eventChannel._addListener(
-              eventName,
-              "on",
-              events[eventName]
-            );
-          });
-          meta.eventChannel._clearCache();
-        }
-        return isAutomatedTesting ? resolve({
-          __id__: state.__id__
-        }) : resolve({
-          eventChannel: meta.eventChannel
-        });
-      }
-      return isAutomatedTesting ? resolve({ __id__: state.__id__ }) : resolve();
-    });
-  });
-}
-function handleBeforeEntryPageRoutes() {
-  if (entryPageState.handledBeforeEntryPageRoutes) {
-    return;
-  }
-  entryPageState.handledBeforeEntryPageRoutes = true;
-  const navigateToPages = [...navigateToPagesBeforeEntryPages];
-  navigateToPagesBeforeEntryPages.length = 0;
-  navigateToPages.forEach(
-    ({ args, resolve, reject }) => (
-      // @ts-expect-error
-      navigate(args).then(resolve).catch(reject)
-    )
-  );
-  const switchTabPages = [...switchTabPagesBeforeEntryPages];
-  switchTabPagesBeforeEntryPages.length = 0;
-  switchTabPages.forEach(
-    ({ args, resolve, reject }) => (removeNonTabBarPages(), navigate(args, getTabBarPageId(args.url)).then(resolve).catch(reject))
-  );
-  const redirectToPages = [...redirectToPagesBeforeEntryPages];
-  redirectToPagesBeforeEntryPages.length = 0;
-  redirectToPages.forEach(
-    ({ args, resolve, reject }) => (removeLastPage(), navigate(args).then(resolve).catch(reject))
-  );
-  const reLaunchPages = [...reLaunchPagesBeforeEntryPages];
-  reLaunchPagesBeforeEntryPages.length = 0;
-  reLaunchPages.forEach(
-    ({ args, resolve, reject }) => (removeAllPages(), navigate(args).then(resolve).catch(reject))
-  );
-}
-let tabBar;
-function useTabBar() {
-  if (!tabBar) {
-    tabBar = __uniConfig.tabBar && vue.reactive(initTabBarI18n(__uniConfig.tabBar));
-  }
-  return tabBar;
-}
-const envMethod = /* @__PURE__ */ (() => "env")();
-function normalizeWindowBottom(windowBottom) {
-  return envMethod ? `calc(${windowBottom}px + ${envMethod}(safe-area-inset-bottom))` : `${windowBottom}px`;
-}
-const SEP = "$$";
-const currentPagesMap = /* @__PURE__ */ new Map();
-const entryPageState = {
-  handledBeforeEntryPageRoutes: false
-};
-const navigateToPagesBeforeEntryPages = [];
-const switchTabPagesBeforeEntryPages = [];
-const redirectToPagesBeforeEntryPages = [];
-const reLaunchPagesBeforeEntryPages = [];
-function pruneCurrentPages() {
-  currentPagesMap.forEach((page, id2) => {
-    if (page.$.isUnmounted) {
-      currentPagesMap.delete(id2);
-    }
-  });
-}
-function getCurrentPagesMap() {
-  return currentPagesMap;
-}
-function getCurrentPages$1() {
-  const curPages = [];
-  const pages = currentPagesMap.values();
-  for (const page of pages) {
-    if (page.$.__isTabBar) {
-      if (page.$.__isActive) {
-        curPages.push(page);
-      }
-    } else {
-      curPages.push(page);
-    }
-  }
-  return curPages;
-}
-function removeRouteCache(routeKey) {
-  const vnode = pageCacheMap.get(routeKey);
-  if (vnode) {
-    pageCacheMap.delete(routeKey);
-    routeCache.pruneCacheEntry(vnode);
-  }
-}
-function removePage(routeKey, removeRouteCaches = true) {
-  const pageVm = currentPagesMap.get(routeKey);
-  pageVm.$.__isUnload = true;
-  invokeHook(pageVm, uniShared.ON_UNLOAD);
-  currentPagesMap.delete(routeKey);
-  removeRouteCaches && removeRouteCache(routeKey);
-}
-let id = /* @__PURE__ */ getStateId();
-function createPageState(type, __id__) {
-  return {
-    __id__: __id__ || ++id,
-    __type__: type
-  };
-}
-function initPublicPage(route) {
-  const meta = usePageMeta();
-  if (!__UNI_FEATURE_PAGES__) {
-    return initPageInternalInstance("navigateTo", __uniRoutes[0].path, {}, meta);
-  }
-  let fullPath = route.fullPath;
-  if (route.meta.isEntry && fullPath.indexOf(route.meta.route) === -1) {
-    fullPath = "/" + route.meta.route + fullPath.replace("/", "");
-  }
-  return initPageInternalInstance("navigateTo", fullPath, {}, meta);
-}
-function initPage(vm) {
-  const route = vm.$route;
-  const page = initPublicPage(route);
-  initPageVm(vm, page);
-  {
-    const pageMeta = page.meta;
-    vm.$setPageStyle = (style) => {
-      for (const key in style) {
-        switch (key) {
-          case "navigationBarBackgroundColor":
-            pageMeta.navigationBar.backgroundColor = style[key];
-            break;
-          case "navigationBarTextStyle":
-            const textStyle = style[key];
-            if (textStyle == null) {
-              continue;
-            }
-            pageMeta.navigationBar.titleColor = ["black", "white"].includes(
-              textStyle
-            ) ? uniShared.normalizeTitleColor(textStyle || "") : textStyle;
-            break;
-          case "navigationBarTitleText":
-            pageMeta.navigationBar.titleText = style[key];
-            break;
-          case "titleImage":
-            pageMeta.navigationBar.titleImage = style[key];
-            break;
-          case "navigationStyle":
-            pageMeta.navigationBar.style = style[key];
-            break;
-          default:
-            pageMeta[key] = style[key];
-            break;
-        }
-      }
-    };
-    vm.$getPageStyle = () => new UTSJSONObject({
-      navigationBarBackgroundColor: pageMeta.navigationBar.backgroundColor,
-      navigationBarTextStyle: pageMeta.navigationBar.titleColor,
-      navigationBarTitleText: pageMeta.navigationBar.titleText,
-      titleImage: pageMeta.navigationBar.titleImage || "",
-      navigationStyle: pageMeta.navigationBar.style || "default",
-      disableScroll: pageMeta.disableScroll || false,
-      enablePullDownRefresh: pageMeta.enablePullDownRefresh || false,
-      onReachBottomDistance: pageMeta.onReachBottomDistance || uniShared.ON_REACH_BOTTOM_DISTANCE,
-      backgroundColorContent: pageMeta.backgroundColorContent
-    });
-  }
-  currentPagesMap.set(normalizeRouteKey(page.path, page.id), vm);
-  if (currentPagesMap.size === 1) {
-    setTimeout(() => {
-      handleBeforeEntryPageRoutes();
-    }, 0);
-  }
-}
-function normalizeRouteKey(path, id2) {
-  return path + SEP + id2;
-}
-function useKeepAliveRoute() {
-  const route = vueRouter.useRoute();
-  const routeKey = vue.computed(
-    () => normalizeRouteKey("/" + route.meta.route, getStateId())
-  );
-  const isTabBar = vue.computed(() => route.meta.isTabBar);
-  return {
-    routeKey,
-    isTabBar,
-    routeCache
-  };
-}
-const pageCacheMap = /* @__PURE__ */ new Map();
-const routeCache = {
-  get(key) {
-    return pageCacheMap.get(key);
-  },
-  set(key, value) {
-    pruneRouteCache(key);
-    pageCacheMap.set(key, value);
-  },
-  delete(key) {
-    const vnode = pageCacheMap.get(key);
-    if (!vnode) {
-      return;
-    }
-    pageCacheMap.delete(key);
-  },
-  forEach(fn) {
-    pageCacheMap.forEach(fn);
-  }
-};
-function isTabBarVNode(vnode) {
-  return vnode.props.type === "tabBar";
-}
-function pruneRouteCache(key) {
-  const pageId = parseInt(key.split(SEP)[1]);
-  if (!pageId) {
-    return;
-  }
-  routeCache.forEach((vnode, key2) => {
-    const cPageId = parseInt(key2.split(SEP)[1]);
-    if (cPageId && cPageId > pageId) {
-      if (__UNI_FEATURE_TABBAR__ && isTabBarVNode(vnode)) {
-        return;
-      }
-      routeCache.delete(key2);
-      routeCache.pruneCacheEntry(vnode);
-      vue.nextTick(() => pruneCurrentPages());
-    }
-  });
 }
 function initRouter(app) {
   const router = vueRouter.createRouter(createRouterOptions());
@@ -8900,9 +9826,9 @@ function initHistory() {
     return vueRouter.createMemoryHistory(routerBase);
   }
 }
-const index$c = {
+const index$b = {
   install(app) {
-    initApp$1(app);
+    initApp(app);
     if (!app.config.warnHandler) {
       app.config.warnHandler = warnHandler;
     }
@@ -8928,138 +9854,6 @@ function warnHandler(msg, instance, trace) {
 `, trace);
   }
   console.warn(...warnArgs);
-}
-const clazz = { class: "uni-async-loading" };
-const loadingVNode = /* @__PURE__ */ vue.createVNode(
-  "i",
-  { class: "uni-loading" },
-  null,
-  -1
-  /* HOISTED */
-);
-const AsyncLoadingComponent = /* @__PURE__ */ defineSystemComponent({
-  name: "AsyncLoading",
-  render() {
-    return vue.openBlock(), vue.createBlock("div", clazz, [loadingVNode]);
-  }
-});
-function reload() {
-  window.location.reload();
-}
-const AsyncErrorComponent = /* @__PURE__ */ defineSystemComponent({
-  name: "AsyncError",
-  setup() {
-    initI18nAsyncMsgsOnce();
-    const {
-      t: t2
-    } = useI18n();
-    return () => vue.createVNode("div", {
-      "class": "uni-async-error",
-      "onClick": reload
-    }, [t2("uni.async.error")], 8, ["onClick"]);
-  }
-});
-let appVm;
-function getApp$1() {
-  return appVm;
-}
-function initApp(vm) {
-  appVm = vm;
-  Object.defineProperty(appVm.$.ctx, "$children", {
-    get() {
-      return getCurrentPages().map((page) => page.$vm);
-    }
-  });
-  const app = appVm.$.appContext.app;
-  if (!app.component(AsyncLoadingComponent.name)) {
-    app.component(AsyncLoadingComponent.name, AsyncLoadingComponent);
-  }
-  if (!app.component(AsyncErrorComponent.name)) {
-    app.component(AsyncErrorComponent.name, AsyncErrorComponent);
-  }
-  initAppVm(appVm);
-  defineGlobalData(appVm);
-}
-function wrapperComponentSetup(comp, { clone, init, setup, before }) {
-  if (clone) {
-    comp = shared.extend({}, comp);
-  }
-  before && before(comp);
-  const oldSetup = comp.setup;
-  comp.setup = (props2, ctx) => {
-    const instance = vue.getCurrentInstance();
-    init(instance.proxy);
-    const query = setup(instance);
-    if (oldSetup) {
-      return oldSetup(query || props2, ctx);
-    }
-  };
-  return comp;
-}
-function setupComponent(comp, options) {
-  if (comp && (comp.__esModule || comp[Symbol.toStringTag] === "Module")) {
-    return wrapperComponentSetup(comp.default, options);
-  }
-  return wrapperComponentSetup(comp, options);
-}
-function setupWindow(comp, id2) {
-  return setupComponent(comp, {
-    init: (vm) => {
-      vm.$page = {
-        id: id2
-      };
-    },
-    setup(instance) {
-      instance.$pageInstance = instance;
-    }
-  });
-}
-function setupPage(comp) {
-  if (process.env.NODE_ENV !== "production") {
-    comp.__mpType = "page";
-  }
-  return setupComponent(comp, {
-    clone: true,
-    // 页面组件可能会被其他地方手动引用，比如 windows 等，需要 clone 一份新的作为页面组件
-    init: initPage,
-    setup(instance) {
-      instance.$pageInstance = instance;
-      const route = usePageRoute();
-      const query = uniShared.decodedQuery(route.query);
-      instance.attrs.__pageQuery = query;
-      instance.proxy.$page.options = query;
-      instance.proxy.options = query;
-      {
-        return query;
-      }
-    }
-  });
-}
-function setupApp(comp) {
-  if (process.env.NODE_ENV !== "production") {
-    comp.__mpType = "app";
-  }
-  return setupComponent(comp, {
-    init: initApp,
-    setup(instance) {
-      const route = usePageRoute();
-      {
-        return route.query;
-      }
-    },
-    before(comp2) {
-      comp2.mpType = "app";
-      const { setup } = comp2;
-      const render = () => {
-        return vue.openBlock(), vue.createBlock(LayoutComponent);
-      };
-      comp2.setup = (props2, ctx) => {
-        const res = setup && setup(props2, ctx);
-        return shared.isFunction(res) ? render : res;
-      };
-      comp2.render = render;
-    }
-  });
 }
 function formatTime(val) {
   val = val > 0 && val < Infinity ? val : 0;
@@ -9621,7 +10415,7 @@ const props$9 = {
     default: true
   }
 };
-const index$b = /* @__PURE__ */ defineBuiltInComponent({
+const index$a = /* @__PURE__ */ defineBuiltInComponent({
   name: "Video",
   props: props$9,
   emits: ["fullscreenchange", "progress", "loadedmetadata", "waiting", "error", "play", "pause", "ended", "timeupdate"],
@@ -10342,40 +11136,6 @@ const MapMarker = /* @__PURE__ */ defineSystemComponent({
     };
   }
 });
-function hexToRgba(hex) {
-  if (!hex) {
-    return {
-      r: 0,
-      g: 0,
-      b: 0,
-      a: 0
-    };
-  }
-  let tmpHex = hex.slice(1);
-  const tmpHexLen = tmpHex.length;
-  if (![3, 4, 6, 8].includes(tmpHexLen)) {
-    return {
-      r: 0,
-      g: 0,
-      b: 0,
-      a: 0
-    };
-  }
-  if (tmpHexLen === 3 || tmpHexLen === 4) {
-    tmpHex = tmpHex.replace(/(\w{1})/g, "$1$1");
-  }
-  let [sr, sg, sb, sa] = tmpHex.match(/(\w{2})/g);
-  const r = parseInt(sr, 16), g2 = parseInt(sg, 16), b = parseInt(sb, 16);
-  if (!sa) {
-    return { r, g: g2, b, a: 1 };
-  }
-  return {
-    r,
-    g: g2,
-    b,
-    a: (`0x100${sa}` - 65536) / 255
-  };
-}
 const props$6 = {
   points: {
     type: Array,
@@ -11091,7 +11851,7 @@ function useMap(props2, rootRef, emit2) {
     trigger
   };
 }
-const index$a = /* @__PURE__ */ defineBuiltInComponent({
+const index$9 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Map",
   props: props$2,
   emits: ["markertap", "labeltap", "callouttap", "controltap", "regionchange", "tap", "click", "updated", "update:scale", "update:latitude", "update:longitude"],
@@ -11127,7 +11887,7 @@ const props$1 = {
     default: 0
   }
 };
-const index$9 = /* @__PURE__ */ defineBuiltInComponent({
+const index$8 = /* @__PURE__ */ defineBuiltInComponent({
   name: "CoverView",
   compatConfig: {
     MODE: 3
@@ -11167,7 +11927,7 @@ const index$9 = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const index$8 = /* @__PURE__ */ defineBuiltInComponent({
+const index$7 = /* @__PURE__ */ defineBuiltInComponent({
   name: "CoverImage",
   compatConfig: {
     MODE: 3
@@ -11418,7 +12178,7 @@ const props = {
     default: ""
   }
 };
-const index$7 = /* @__PURE__ */ defineBuiltInComponent({
+const index$6 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Picker",
   compatConfig: {
     MODE: 3
@@ -12033,12 +12793,12 @@ function usePickerForm(_resetFormData, _getFormData) {
     uniForm.addField(field);
   }
 }
-const index$6 = /* @__PURE__ */ defineUnsupportedComponent("ad");
-const index$5 = /* @__PURE__ */ defineUnsupportedComponent("ad-content-page");
-const index$4 = /* @__PURE__ */ defineUnsupportedComponent("ad-draw");
-const index$3 = /* @__PURE__ */ defineUnsupportedComponent("camera");
-const index$2 = /* @__PURE__ */ defineUnsupportedComponent("live-player");
-const index$1 = /* @__PURE__ */ defineUnsupportedComponent("live-pusher");
+const index$5 = /* @__PURE__ */ defineUnsupportedComponent("ad");
+const index$4 = /* @__PURE__ */ defineUnsupportedComponent("ad-content-page");
+const index$3 = /* @__PURE__ */ defineUnsupportedComponent("ad-draw");
+const index$2 = /* @__PURE__ */ defineUnsupportedComponent("camera");
+const index$1 = /* @__PURE__ */ defineUnsupportedComponent("live-player");
+const index = /* @__PURE__ */ defineUnsupportedComponent("live-pusher");
 const UniViewJSBridge$1 = /* @__PURE__ */ shared.extend(ViewJSBridge, {
   publishHandler(event, args, pageId) {
     UniServiceJSBridge.subscribeHandler(event, args, pageId);
@@ -12190,7 +12950,7 @@ function parseValue(value) {
       if (keys.length === 2 && "data" in object) {
         if (typeof object.data === type) {
           if (type === "object" && !Array.isArray(object.data)) {
-            return new UTSJSONObject(object.data);
+            return UTS.JSON.parse(JSON.stringify(object.data));
           }
           return object.data;
         }
@@ -12328,15 +13088,6 @@ const getStorageInfo = /* @__PURE__ */ defineAsyncApi(
     resolve(getStorageInfoSync());
   }
 );
-function getTheme() {
-  if (__uniConfig.darkmode !== true)
-    return shared.isString(__uniConfig.darkmode) ? __uniConfig.darkmode : "light";
-  try {
-    return window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark";
-  } catch (error) {
-    return "light";
-  }
-}
 let browserInfo;
 function initBrowserInfo() {
   {
@@ -12359,24 +13110,20 @@ const getDeviceInfo = /* @__PURE__ */ defineSyncApi(
       osname,
       osversion
     } = browserInfo;
-    return shared.extend(
-      {
-        brand,
-        deviceBrand,
-        deviceModel,
-        devicePixelRatio: 1,
-        deviceId: Date.now() + "" + Math.floor(Math.random() * 1e7),
-        deviceOrientation,
-        deviceType,
-        model,
-        platform,
-        system
-      },
-      {
-        osName: osname ? osname.toLocaleLowerCase() : void 0,
-        osVersion: osversion
-      }
-    );
+    return shared.extend({
+      brand,
+      deviceBrand,
+      deviceModel,
+      devicePixelRatio: 1,
+      deviceId: Date.now() + "" + Math.floor(Math.random() * 1e7),
+      deviceOrientation,
+      deviceType,
+      model,
+      platform,
+      system,
+      osName: osname ? osname.toLocaleLowerCase() : void 0,
+      osVersion: osversion
+    });
   }
 );
 const getAppBaseInfo = /* @__PURE__ */ defineSyncApi(
@@ -12402,14 +13149,17 @@ const getAppBaseInfo = /* @__PURE__ */ defineSyncApi(
         language,
         SDKVersion: "",
         theme,
-        version: ""
+        version: "",
+        uniPlatform: "web",
+        isUniAppX: true,
+        uniCompileVersion: __uniConfig.compilerVersion,
+        uniCompilerVersion: __uniConfig.compilerVersion,
+        uniRuntimeVersion: __uniConfig.compilerVersion
       },
       {
-        uniCompilerVersion: __uniConfig.compilerVersion,
-        uniRuntimeVersion: __uniConfig.compilerVersion,
         uniCompilerVersionCode: parseFloat(__uniConfig.compilerVersion),
         uniRuntimeVersionCode: parseFloat(__uniConfig.compilerVersion),
-        isUniAppX: true
+        uniRuntimeVersion: __uniConfig.compilerVersion
       }
     );
   }
@@ -12425,21 +13175,6 @@ const getSystemInfoSync = /* @__PURE__ */ defineSyncApi(
     }
   }
 );
-function updateDocumentTitle(title) {
-  {
-    const ssrContext = getApp$1().$.appContext.provides[vue.ssrContextKey];
-    if (ssrContext) {
-      ssrContext[uniShared.UNI_SSR_TITLE] = title;
-    }
-  }
-  UniServiceJSBridge.emit(uniShared.ON_NAVIGATION_BAR_CHANGE, { titleText: title });
-}
-function useDocumentTitle(pageMeta) {
-  function update() {
-    updateDocumentTitle(pageMeta.navigationBar.titleText);
-  }
-  vue.watchEffect(update);
-}
 function setNavigationBar(pageMeta, type, args, resolve, reject) {
   if (!pageMeta) {
     return reject("page not found");
@@ -12513,36 +13248,6 @@ const UniServiceJSBridge$1 = /* @__PURE__ */ shared.extend(ServiceJSBridge, {
     UniViewJSBridge.subscribeHandler(event, args, pageId);
   }
 });
-function onThemeChange(callback) {
-  if (__uniConfig.darkmode) {
-    UniServiceJSBridge.on(uniShared.ON_THEME_CHANGE, callback);
-  }
-}
-function parseTheme(pageStyle) {
-  let parsedStyle = {};
-  if (__uniConfig.darkmode) {
-    parsedStyle = uniShared.normalizeStyles(
-      pageStyle,
-      __uniConfig.themeConfig,
-      getTheme()
-    );
-  }
-  return __uniConfig.darkmode ? parsedStyle : pageStyle;
-}
-function useTheme(pageStyle, onThemeChangeCallback) {
-  const isReactivity = vue.isReactive(pageStyle);
-  const reactivePageStyle = isReactivity ? vue.reactive(parseTheme(pageStyle)) : parseTheme(pageStyle);
-  if (__uniConfig.darkmode && isReactivity) {
-    vue.watch(pageStyle, (value) => {
-      const _pageStyle = parseTheme(value);
-      for (const key in _pageStyle) {
-        reactivePageStyle[key] = _pageStyle[key];
-      }
-    });
-  }
-  onThemeChangeCallback && onThemeChange(onThemeChangeCallback);
-  return reactivePageStyle;
-}
 const _middleButton = {
   width: "50px",
   height: "50px",
@@ -12896,11 +13601,11 @@ function useMaxWidth(layoutState, rootRef) {
   const route = usePageRoute();
   function checkMaxWidth() {
     const windowWidth = document.body.clientWidth;
-    const pages = getCurrentPages();
+    const pages = getCurrentBasePages();
     let meta = {};
     if (pages.length > 0) {
       const curPage = pages[pages.length - 1];
-      meta = curPage.$page.meta;
+      meta = getPage$BasePage(curPage).meta;
     } else {
       const routeOptions = getRouteOptions(route.path, true);
       if (routeOptions) {
@@ -13189,558 +13894,55 @@ function createRightWindowTsx(rightWindow, layoutState, windowState) {
     }, windowState), null, 16)])], 12, ["data-show"]), [[vue.vShow, layoutState.showRightWindow || layoutState.apiShowRightWindow]]);
   }
 }
-function updateBackgroundColorContent(backgroundColorContent) {
-  {
-    return;
-  }
-}
-function useBackgroundColorContent(pageMeta) {
-  function update() {
-    if (pageMeta.backgroundColorContent) {
-      updateBackgroundColorContent(
-        parseTheme({ backgroundColorContent: pageMeta.backgroundColorContent }).backgroundColorContent
-      );
-    }
-  }
-  onThemeChange(update);
-  vue.watchEffect(update);
-}
-function usePageHeadTransparentBackgroundColor(backgroundColor) {
-  const { r, g: g2, b } = hexToRgba(backgroundColor);
-  return `rgba(${r},${g2},${b},0)`;
-}
-function usePageHeadTransparent(headRef, {
-  id: id2,
-  navigationBar: { titleColor, coverage, backgroundColor }
-}) {
-  vue.computed(() => hexToRgba(backgroundColor));
-}
-const ICON_PATHS = {
-  none: "",
-  forward: "M11 7.844q-0.25-0.219-0.25-0.578t0.25-0.578q0.219-0.25 0.563-0.25t0.563 0.25l9.656 9.125q0.125 0.125 0.188 0.297t0.063 0.328q0 0.188-0.063 0.359t-0.188 0.297l-9.656 9.125q-0.219 0.25-0.563 0.25t-0.563-0.25q-0.25-0.219-0.25-0.578t0.25-0.609l9.063-8.594-9.063-8.594z",
-  back: ICON_PATH_BACK,
-  select: ICON_PATH_BACK,
-  share: "M26.563 24.844q0 0.125-0.109 0.234t-0.234 0.109h-17.938q-0.125 0-0.219-0.109t-0.094-0.234v-13.25q0-0.156 0.094-0.25t0.219-0.094h5.5v-1.531h-6q-0.531 0-0.906 0.391t-0.375 0.922v14.375q0 0.531 0.375 0.922t0.906 0.391h18.969q0.531 0 0.891-0.391t0.359-0.953v-5.156h-1.438v4.625zM29.813 10.969l-5.125-5.375-1.031 1.094 3.438 3.594-3.719 0.031q-2.313 0.188-4.344 1.125t-3.578 2.422-2.5 3.453-1.109 4.188l-0.031 0.25h1.469v-0.219q0.156-1.875 1-3.594t2.25-3.063 3.234-2.125 3.828-0.906l0.188-0.031 3.313-0.031-3.438 3.625 1.031 1.063 5.125-5.375-0.031-0.063 0.031-0.063z",
-  favorite: "M27.594 13.375q-0.063-0.188-0.219-0.313t-0.344-0.156l-7.094-0.969-3.219-6.406q-0.094-0.188-0.25-0.281t-0.375-0.094q-0.188 0-0.344 0.094t-0.25 0.281l-3.125 6.438-7.094 1.094q-0.188 0.031-0.344 0.156t-0.219 0.313q-0.031 0.188 0.016 0.375t0.172 0.313l5.156 4.969-1.156 7.063q-0.031 0.188 0.047 0.375t0.234 0.313q0.094 0.063 0.188 0.094t0.219 0.031q0.063 0 0.141-0.031t0.172-0.063l6.313-3.375 6.375 3.313q0.063 0.031 0.141 0.047t0.172 0.016q0.188 0 0.344-0.094t0.25-0.281q0.063-0.094 0.078-0.234t-0.016-0.234q0-0.031 0-0.063l-1.25-6.938 5.094-5.031q0.156-0.156 0.203-0.344t-0.016-0.375zM11.469 19.063q0.031-0.188-0.016-0.344t-0.172-0.281l-4.406-4.25 6.063-0.906q0.156-0.031 0.297-0.125t0.203-0.25l2.688-5.531 2.75 5.5q0.063 0.156 0.203 0.25t0.297 0.125l6.094 0.844-4.375 4.281q-0.125 0.125-0.172 0.297t-0.016 0.328l1.063 6.031-5.438-2.813q-0.156-0.094-0.328-0.078t-0.297 0.078l-5.438 2.875 1-6.031z",
-  home: "M23.719 16.5q-0.313 0-0.531 0.219t-0.219 0.5v7.063q0 0.219-0.172 0.391t-0.391 0.172h-12.344q-0.25 0-0.422-0.172t-0.172-0.391v-7.063q0-0.281-0.219-0.5t-0.531-0.219q-0.281 0-0.516 0.219t-0.234 0.5v7.063q0.031 0.844 0.625 1.453t1.438 0.609h12.375q0.844 0 1.453-0.609t0.609-1.453v-7.063q0-0.125-0.063-0.266t-0.156-0.234q-0.094-0.125-0.234-0.172t-0.297-0.047zM26.5 14.875l-8.813-8.813q-0.313-0.313-0.688-0.453t-0.781-0.141-0.781 0.141-0.656 0.422l-8.813 8.844q-0.188 0.219-0.188 0.516t0.219 0.484q0.094 0.125 0.234 0.172t0.297 0.047q0.125 0 0.25-0.047t0.25-0.141l8.781-8.781q0.156-0.156 0.406-0.156t0.406 0.156l8.813 8.781q0.219 0.188 0.516 0.188t0.516-0.219q0.188-0.188 0.203-0.484t-0.172-0.516z",
-  menu: "M8.938 18.313q0.875 0 1.484-0.609t0.609-1.453-0.609-1.453-1.484-0.609q-0.844 0-1.453 0.609t-0.609 1.453 0.609 1.453 1.453 0.609zM16.188 18.313q0.875 0 1.484-0.609t0.609-1.453-0.609-1.453-1.484-0.609q-0.844 0-1.453 0.609t-0.609 1.453 0.609 1.453 1.453 0.609zM23.469 18.313q0.844 0 1.453-0.609t0.609-1.453-0.609-1.453-1.453-0.609q-0.875 0-1.484 0.609t-0.609 1.453 0.609 1.453 1.484 0.609z",
-  close: ICON_PATH_CLOSE
-};
-const PageHead = /* @__PURE__ */ defineSystemComponent({
-  name: "PageHead",
-  setup() {
-    const headRef = vue.ref(null);
-    const pageMeta = usePageMeta();
-    const navigationBar = useTheme(pageMeta.navigationBar, () => {
-      const _navigationBar = parseTheme(pageMeta.navigationBar);
-      navigationBar.backgroundColor = _navigationBar.backgroundColor;
-      navigationBar.titleColor = _navigationBar.titleColor;
-    });
-    const {
-      clazz: clazz2,
-      style
-    } = usePageHead(navigationBar);
-    const buttons = __UNI_FEATURE_NAVIGATIONBAR_BUTTONS__ && usePageHeadButtons(pageMeta);
-    const searchInput = __UNI_FEATURE_NAVIGATIONBAR_SEARCHINPUT__ && navigationBar.searchInput && usePageHeadSearchInput(pageMeta);
-    __UNI_FEATURE_NAVIGATIONBAR_TRANSPARENT__ && navigationBar.type === "transparent" && usePageHeadTransparent(headRef, pageMeta);
-    return () => {
-      const backButtonTsx = __UNI_FEATURE_PAGES__ ? createBackButtonTsx(navigationBar, pageMeta.isQuit) : null;
-      const leftButtonsTsx = __UNI_FEATURE_NAVIGATIONBAR_BUTTONS__ ? createButtonsTsx(buttons.left) : [];
-      const rightButtonsTsx = __UNI_FEATURE_NAVIGATIONBAR_BUTTONS__ ? createButtonsTsx(buttons.right) : [];
-      const type = navigationBar.type || "default";
-      const placeholderTsx = type !== "transparent" && type !== "float" && vue.createVNode("div", {
-        "class": {
-          "uni-placeholder": true,
-          "uni-placeholder-titlePenetrate": navigationBar.titlePenetrate
-        }
-      }, null, 2);
-      return vue.createVNode("uni-page-head", {
-        "uni-page-head-type": type
-      }, [vue.createVNode("div", {
-        "ref": headRef,
-        "class": clazz2.value,
-        "style": style.value
-      }, [vue.createVNode("div", {
-        "class": "uni-page-head-hd"
-      }, [backButtonTsx, ...leftButtonsTsx]), createPageHeadBdTsx(navigationBar, searchInput), vue.createVNode("div", {
-        "class": "uni-page-head-ft"
-      }, [...rightButtonsTsx])], 6), placeholderTsx], 8, ["uni-page-head-type"]);
-    };
-  }
-});
-function createBackButtonTsx(navigationBar, isQuit) {
-  if (!isQuit) {
-    return vue.createVNode("div", {
-      "class": "uni-page-head-btn",
-      "onClick": onPageHeadBackButton
-    }, [createSvgIconVNode(ICON_PATH_BACK, navigationBar.type === "transparent" ? "#fff" : navigationBar.titleColor, 26)], 8, ["onClick"]);
-  }
-}
-function createButtonsTsx(btns) {
-  return btns.map(({
-    onClick,
-    btnClass,
-    btnStyle,
-    btnText,
-    btnIconPath,
-    badgeText,
-    iconStyle,
-    btnSelect
-  }, index2) => {
-    return vue.createVNode("div", {
-      "key": index2,
-      "class": btnClass,
-      "style": btnStyle,
-      "onClick": onClick,
-      "badge-text": badgeText
-    }, [btnIconPath ? createSvgIconVNode(btnIconPath, iconStyle.color, iconStyle.fontSize) : btnSelect ? vue.createVNode("span", {
-      "style": iconStyle
-    }, [vue.createVNode("i", {
-      "class": "uni-btn-icon",
-      "innerHTML": btnText
-    }, null, 8, ["innerHTML"]), createSvgIconVNode(ICON_PATHS["select"], "#000", 14)], 4) : vue.createVNode("i", {
-      "class": "uni-btn-icon",
-      "style": iconStyle,
-      "innerHTML": btnText
-    }, null, 12, ["innerHTML"])], 14, ["onClick", "badge-text"]);
-  });
-}
-function createPageHeadBdTsx(navigationBar, searchInput) {
-  if (!__UNI_FEATURE_NAVIGATIONBAR_SEARCHINPUT__ || !navigationBar.searchInput) {
-    return createPageHeadTitleTextTsx(navigationBar);
-  }
-  return createPageHeadSearchInputTsx(navigationBar, searchInput);
-}
-function createPageHeadTitleTextTsx({
-  type,
-  loading,
-  titleSize,
-  titleText,
-  titleImage
-}) {
-  return vue.createVNode("div", {
-    "class": "uni-page-head-bd"
-  }, [vue.createVNode("div", {
-    "style": {
-      fontSize: titleSize,
-      opacity: type === "transparent" ? 0 : 1
-    },
-    "class": "uni-page-head__title"
-  }, [loading ? vue.createVNode("i", {
-    "class": "uni-loading"
-  }, null) : titleImage ? vue.createVNode("img", {
-    "src": titleImage,
-    "class": "uni-page-head__title_image"
-  }, null, 8, ["src"]) : titleText], 4)]);
-}
-function createPageHeadSearchInputTsx(navigationBar, {
-  text,
-  focus,
-  composing,
-  onBlur,
-  onFocus,
-  onInput,
-  onConfirm,
-  onClick
-}) {
-  const {
-    color,
-    align,
-    autoFocus,
-    disabled,
-    borderRadius,
-    backgroundColor,
-    placeholder,
-    placeholderColor
-  } = navigationBar.searchInput;
-  const searchStyle = {
-    borderRadius,
-    backgroundColor
-  };
-  const placeholderClass = ["uni-page-head-search-placeholder", `uni-page-head-search-placeholder-${focus.value || text.value ? "left" : align}`];
-  return vue.createVNode("div", {
-    "class": "uni-page-head-search",
-    "style": searchStyle
-  }, [vue.createVNode("div", {
-    "style": {
-      color: placeholderColor
-    },
-    "class": placeholderClass
-  }, [vue.createVNode("div", {
-    "class": "uni-page-head-search-icon"
-  }, [createSvgIconVNode(ICON_PATH_SEARCH, placeholderColor, 20)]), text.value || composing.value ? "" : placeholder], 6), disabled ? vue.createVNode(Input, {
-    "disabled": true,
-    "style": {
-      color
-    },
-    "placeholder-style": "color: " + placeholderColor,
-    "class": "uni-page-head-search-input",
-    "confirm-type": "search",
-    "onClick": onClick
-  }, null, 8, ["style", "placeholder-style", "onClick"]) : vue.createVNode(Input, {
-    "focus": autoFocus,
-    "style": {
-      color
-    },
-    "placeholder-style": "color: " + placeholderColor,
-    "class": "uni-page-head-search-input",
-    "confirm-type": "search",
-    "onFocus": onFocus,
-    "onBlur": onBlur,
-    "onInput": onInput,
-    "onConfirm": onConfirm
-  }, null, 8, ["focus", "style", "placeholder-style", "onFocus", "onBlur", "onInput", "onConfirm"])], 4);
-}
-function onPageHeadBackButton() {
-  if (getCurrentPages().length === 1) {
-    uni.reLaunch({
-      url: "/"
-    });
-  } else {
-    uni.navigateBack({
-      from: "backbutton",
-      success() {
-      }
-      // 传入空方法，避免返回Promise，因为onBackPress可能导致fail
-    });
-  }
-}
-function usePageHead(navigationBar) {
-  const clazz2 = vue.computed(() => {
-    const {
-      type,
-      titlePenetrate,
-      shadowColorType
-    } = navigationBar;
-    const clazz3 = {
-      "uni-page-head": true,
-      "uni-page-head-transparent": type === "transparent",
-      "uni-page-head-titlePenetrate": titlePenetrate === "YES",
-      "uni-page-head-shadow": !!shadowColorType
-    };
-    if (shadowColorType) {
-      clazz3[`uni-page-head-shadow-${shadowColorType}`] = true;
-    }
-    return clazz3;
-  });
-  const style = vue.computed(() => {
-    const backgroundColor = __UNI_FEATURE_NAVIGATIONBAR_TRANSPARENT__ && navigationBar.type === "transparent" ? usePageHeadTransparentBackgroundColor(navigationBar.backgroundColor) : navigationBar.backgroundColor;
-    return {
-      backgroundColor,
-      color: navigationBar.titleColor,
-      transitionDuration: navigationBar.duration,
-      transitionTimingFunction: navigationBar.timingFunc
-    };
-  });
-  return {
-    clazz: clazz2,
-    style
-  };
-}
-function usePageHeadButtons({
-  id: id2,
-  navigationBar
-}) {
-  const left = [];
-  const right = [];
-  const {
-    buttons
-  } = navigationBar;
-  if (shared.isArray(buttons)) {
-    const {
-      type
-    } = navigationBar;
-    const isTransparent = type === "transparent";
-    const fonts = /* @__PURE__ */ Object.create(null);
-    buttons.forEach((btn, index2) => {
-      if (btn.fontSrc && !btn.fontFamily) {
-        const fontSrc = getRealPath(btn.fontSrc);
-        let fontFamily = fonts[fontSrc];
-        if (!fontFamily) {
-          fontFamily = `font${Date.now()}`;
-          fonts[fontSrc] = fontFamily;
-        }
-        btn.fontFamily = fontFamily;
-      }
-      const pageHeadBtn = usePageHeadButton(id2, index2, btn, isTransparent);
-      if (btn.float === "left") {
-        left.push(pageHeadBtn);
-      } else {
-        right.push(pageHeadBtn);
-      }
-    });
-  }
-  return {
-    left,
-    right
-  };
-}
-function usePageHeadButton(pageId, index2, btn, isTransparent) {
-  const iconStyle = {
-    color: btn.color,
-    fontSize: btn.fontSize,
-    fontWeight: btn.fontWeight
-  };
-  if (btn.fontFamily) {
-    iconStyle.fontFamily = btn.fontFamily;
-  }
-  return new Proxy({
-    btnClass: {
-      // 类似这样的大量重复的字符串，会在gzip时压缩大小，无需在代码层考虑优化相同字符串
-      "uni-page-head-btn": true,
-      "uni-page-head-btn-red-dot": !!(btn.redDot || btn.badgeText),
-      "uni-page-head-btn-select": !!btn.select
-    },
-    btnStyle: {
-      backgroundColor: isTransparent ? btn.background : "transparent",
-      width: btn.width
-    },
-    btnText: "",
-    btnIconPath: ICON_PATHS[btn.type],
-    badgeText: btn.badgeText,
-    iconStyle,
-    onClick() {
-      invokeHook(pageId, uniShared.ON_NAVIGATION_BAR_BUTTON_TAP, shared.extend({
-        index: index2
-      }, btn));
-    },
-    btnSelect: btn.select
-  }, {
-    get(target, key, receiver) {
-      if (["btnText"].includes(key)) {
-        return btn.fontSrc && btn.fontFamily ? btn.text.replace("\\u", "&#x") : btn.text;
-      } else {
-        return Reflect.get(target, key, receiver);
-      }
-    }
-  });
-}
-function usePageHeadSearchInput({
-  id: id2,
-  navigationBar: {
-    searchInput
-  }
-}) {
-  const focus = vue.ref(false);
-  const text = vue.ref("");
-  const composing = vue.ref(false);
-  const {
-    disabled
-  } = searchInput;
-  if (disabled) {
-    const onClick = () => {
-      invokeHook(id2, uniShared.ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED);
-    };
-    return {
-      focus,
-      text,
-      composing,
-      onClick
-    };
-  }
-  const onFocus = () => {
-    focus.value = true;
-    invokeHook(id2, uniShared.ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, {
-      focus: true
-    });
-  };
-  const onBlur = () => {
-    focus.value = false;
-    invokeHook(id2, uniShared.ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, {
-      focus: false
-    });
-  };
-  const onInput = (evt) => {
-    text.value = evt.detail.value;
-    invokeHook(id2, uniShared.ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, {
-      text: text.value
-    });
-  };
-  const onConfirm = (evt) => {
-    invokeHook(id2, uniShared.ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, {
-      text: text.value
-    });
-  };
-  return {
-    focus,
-    text,
-    composing,
-    onFocus,
-    onBlur,
-    onInput,
-    onConfirm
-  };
-}
-const _sfc_main = {
-  name: "PageRefresh",
-  setup() {
-    const { pullToRefresh } = usePageMeta();
-    return {
-      offset: pullToRefresh.offset,
-      color: pullToRefresh.color
-    };
-  }
-};
-const _export_sfc = (sfc, props2) => {
-  const target = sfc.__vccOpts || sfc;
-  for (const [key, val] of props2) {
-    target[key] = val;
-  }
-  return target;
-};
-const _hoisted_1 = { class: "uni-page-refresh-inner" };
-const _hoisted_2 = ["fill"];
-const _hoisted_3 = /* @__PURE__ */ vue.createElementVNode("path", { d: "M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z" }, null, -1);
-const _hoisted_4 = /* @__PURE__ */ vue.createElementVNode("path", {
-  d: "M0 0h24v24H0z",
-  fill: "none"
-}, null, -1);
-const _hoisted_5 = [
-  _hoisted_3,
-  _hoisted_4
-];
-const _hoisted_6 = {
-  class: "uni-page-refresh__spinner",
-  width: "24",
-  height: "24",
-  viewBox: "25 25 50 50"
-};
-const _hoisted_7 = ["stroke"];
-function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
-  return vue.openBlock(), vue.createElementBlock("uni-page-refresh", null, [
-    vue.createElementVNode("div", {
-      style: vue.normalizeStyle({ "margin-top": $setup.offset + "px" }),
-      class: "uni-page-refresh"
-    }, [
-      vue.createElementVNode("div", _hoisted_1, [
-        (vue.openBlock(), vue.createElementBlock("svg", {
-          fill: $setup.color,
-          class: "uni-page-refresh__icon",
-          width: "24",
-          height: "24",
-          viewBox: "0 0 24 24"
-        }, _hoisted_5, 8, _hoisted_2)),
-        (vue.openBlock(), vue.createElementBlock("svg", _hoisted_6, [
-          vue.createElementVNode("circle", {
-            stroke: $setup.color,
-            class: "uni-page-refresh__path",
-            cx: "50",
-            cy: "50",
-            r: "20",
-            fill: "none",
-            "stroke-width": "4",
-            "stroke-miterlimit": "10"
-          }, null, 8, _hoisted_7)
-        ]))
-      ])
-    ], 4)
-  ]);
-}
-const PageRefresh = /* @__PURE__ */ _export_sfc(_sfc_main, [["render", _sfc_render]]);
-const PageBody = /* @__PURE__ */ defineSystemComponent({
-  name: "PageBody",
-  setup(props2, ctx) {
-    const pageMeta = __UNI_FEATURE_PULL_DOWN_REFRESH__ && usePageMeta();
-    const refreshRef = __UNI_FEATURE_PULL_DOWN_REFRESH__ && vue.ref(null);
-    const _pageRefresh = null;
-    const pageRefresh = vue.ref(null);
-    vue.watch(() => {
-      return pageMeta.enablePullDownRefresh;
-    }, () => {
-      pageRefresh.value = pageMeta.enablePullDownRefresh ? _pageRefresh : null;
-    }, {
-      immediate: true
-    });
-    return () => {
-      const pageRefreshTsx = __UNI_FEATURE_PULL_DOWN_REFRESH__ && createPageRefreshTsx(refreshRef);
-      return vue.createVNode(vue.Fragment, null, [pageRefreshTsx, vue.createVNode("uni-page-wrapper", pageRefresh.value, [vue.createVNode("uni-page-body", null, [vue.renderSlot(ctx.slots, "default")])], 16)]);
-    };
-  }
-});
-function createPageRefreshTsx(refreshRef, pageMeta) {
-  return vue.createVNode(PageRefresh, {
-    "ref": refreshRef
-  }, null, 512);
-}
-const index = /* @__PURE__ */ defineSystemComponent({
-  name: "Page",
-  setup(_props, ctx) {
-    const pageMeta = providePageMeta(getStateId());
-    const navigationBar = pageMeta.navigationBar;
-    const pageStyle = {};
-    useDocumentTitle(pageMeta);
-    {
-      useBackgroundColorContent(pageMeta);
-    }
-    return () => vue.createVNode(
-      "uni-page",
-      {
-        "data-page": pageMeta.route,
-        style: pageStyle
-      },
-      __UNI_FEATURE_NAVIGATIONBAR__ && navigationBar.style !== "custom" ? [vue.createVNode(PageHead), createPageBodyVNode(ctx)] : [createPageBodyVNode(ctx)]
-    );
-  }
-});
-function createPageBodyVNode(ctx) {
-  return vue.openBlock(), vue.createBlock(
-    PageBody,
-    { key: 0 },
-    {
-      default: vue.withCtx(() => [vue.renderSlot(ctx.slots, "page")]),
-      _: 3
-    }
-  );
-}
-exports.Ad = index$6;
-exports.AdContentPage = index$5;
-exports.AdDraw = index$4;
+exports.Ad = index$5;
+exports.AdContentPage = index$4;
+exports.AdDraw = index$3;
 exports.AsyncErrorComponent = AsyncErrorComponent;
 exports.AsyncLoadingComponent = AsyncLoadingComponent;
-exports.Button = index$z;
-exports.Camera = index$3;
+exports.Button = index$y;
+exports.Camera = index$2;
 exports.Canvas = indexX$4;
-exports.Checkbox = index$x;
-exports.CheckboxGroup = index$y;
-exports.CoverImage = index$8;
-exports.CoverView = index$9;
-exports.Editor = index$w;
-exports.Form = index$B;
-exports.Icon = index$v;
-exports.Image = index$u;
+exports.Checkbox = index$w;
+exports.CheckboxGroup = index$x;
+exports.CoverImage = index$7;
+exports.CoverView = index$8;
+exports.Editor = index$v;
+exports.Form = index$A;
+exports.Icon = index$u;
+exports.Image = index$t;
 exports.Input = Input;
-exports.Label = index$A;
+exports.Label = index$z;
 exports.LayoutComponent = LayoutComponent;
-exports.ListItem = index$g;
-exports.ListView = index$h;
-exports.LivePlayer = index$2;
-exports.LivePusher = index$1;
-exports.Map = index$a;
-exports.MovableArea = index$t;
-exports.MovableView = index$s;
-exports.Navigator = index$r;
-exports.PageComponent = index;
-exports.Picker = index$7;
+exports.ListItem = index$f;
+exports.ListView = index$g;
+exports.LivePlayer = index$1;
+exports.LivePusher = index;
+exports.Map = index$9;
+exports.MovableArea = index$s;
+exports.MovableView = index$r;
+exports.Navigator = index$q;
+exports.PageComponent = PageComponent;
+exports.Picker = index$6;
 exports.PickerView = PickerView;
 exports.PickerViewColumn = PickerViewColumn;
-exports.Progress = index$q;
+exports.Progress = index$p;
 exports.Radio = indexX$3;
-exports.RadioGroup = index$p;
+exports.RadioGroup = index$o;
 exports.ResizeSensor = ResizeSensor;
-exports.RichText = index$o;
-exports.ScrollView = index$n;
+exports.RichText = index$n;
+exports.ScrollView = index$m;
 exports.Slider = indexX$2;
-exports.StickyHeader = index$e;
-exports.StickySection = index$f;
-exports.Swiper = index$m;
-exports.SwiperItem = index$l;
+exports.StickyHeader = index$d;
+exports.StickySection = index$e;
+exports.Swiper = index$l;
+exports.SwiperItem = index$k;
 exports.Switch = indexX$1;
-exports.Text = index$k;
-exports.Textarea = index$j;
+exports.Text = index$j;
+exports.Textarea = index$i;
 exports.UniServiceJSBridge = UniServiceJSBridge$1;
 exports.UniViewJSBridge = UniViewJSBridge$1;
-exports.Video = index$b;
-exports.View = index$i;
+exports.Video = index$a;
+exports.View = index$h;
 exports.WebView = indexX;
 exports.clearStorage = clearStorage;
 exports.clearStorageSync = clearStorageSync;
@@ -13754,7 +13956,7 @@ exports.getStorageInfo = getStorageInfo;
 exports.getStorageInfoSync = getStorageInfoSync;
 exports.getStorageSync = getStorageSync;
 exports.getSystemInfoSync = getSystemInfoSync;
-exports.plugin = index$c;
+exports.plugin = index$b;
 exports.removeStorage = removeStorage;
 exports.removeStorageSync = removeStorageSync;
 exports.request = request;

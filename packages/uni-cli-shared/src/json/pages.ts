@@ -7,7 +7,7 @@ import {
   normalizeTitleColor,
   once,
 } from '@dcloudio/uni-shared'
-import { normalizePath, removeExt } from '../utils'
+import { isNormalCompileTarget, normalizePath, removeExt } from '../utils'
 import { parseJson } from './json'
 import { isVueSfcFile } from '../vue/utils'
 import { parseVueRequest } from '../vite'
@@ -57,7 +57,7 @@ export const parsePagesJson = (
 ) => {
   const pagesFilename = path.join(inputDir, 'pages.json')
   if (!fs.existsSync(pagesFilename)) {
-    if (process.env.UNI_COMPILE_TARGET === 'uni_modules') {
+    if (!isNormalCompileTarget()) {
       return {
         pages: [],
         globalStyle: { navigationBar: {} },

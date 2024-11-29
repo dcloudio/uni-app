@@ -6,6 +6,7 @@ import { moduleAliasFormatter } from '../hbx/alias'
 import {
   errorFormatter,
   h5ServeFormatter,
+  removeDuplicatePluginFormatter,
   removeInfoFormatter,
   removeWarnFormatter,
 } from '../hbx/log'
@@ -105,6 +106,7 @@ export function formatWarnMsg(msg: string, options?: LogOptions) {
     options.timestamp = false
   }
   initWarnFormattersOnce()
+  msg = removeDuplicatePluginFormatter.format(msg)
   const formatter = warnFormatters.find(({ test }) => test(msg, options))
   if (formatter) {
     return formatter.format(msg, options)

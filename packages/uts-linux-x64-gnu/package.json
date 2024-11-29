@@ -1,6 +1,6 @@
 {
   "name": "@dcloudio/uts-linux-x64-gnu",
-  "version": "3.0.0-4020920240930001",
+  "version": "3.0.0-alpha-4030620241126001",
   "os": [
     "linux"
   ],

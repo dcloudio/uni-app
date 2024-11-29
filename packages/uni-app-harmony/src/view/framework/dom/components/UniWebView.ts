@@ -1,5 +1,5 @@
 import type { UniNodeJSON } from '@dcloudio/uni-shared'
-import '@dcloudio/uni-app-plus/style/webview.css'
+import '../../../../../style/webview.css'
 import WebView from '../../../components/web-view'
 
 import { UniComponent } from '@dcloudio/uni-app-plus/view/framework/dom/components/UniComponent'

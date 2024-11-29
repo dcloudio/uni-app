@@ -1,5 +1,5 @@
 // 重要，该文件编译后的 js 需要同步到 vue2 编译器 uni-cli-shared/lib/uts
-import fs from 'fs'
+import fs from 'fs-extra'
 import path from 'path'
 import glob from 'fast-glob'
 import type * as UTSCompiler from '@dcloudio/uni-uts-v1'
@@ -13,7 +13,7 @@ import {
   normalizePath,
 } from './utils'
 
-import { parseUniExtApis } from './uni_modules'
+import { type Injects, parseUniExtApis } from './uni_modules'
 import type { EasycomMatcher } from './easycom'
 
 function once<T extends (...args: any[]) => any>(
@@ -136,8 +136,17 @@ function resolveUTSFile(
   }
 }
 
-export function resolveUTSCompiler(): typeof UTSCompiler {
+export function resolveUTSCompiler(throwError = false): typeof UTSCompiler {
   let compilerPath: string = ''
+  if (
+    process.env.UNI_COMPILE_TARGET === 'ext-api' &&
+    process.env.UNI_APP_NEXT_WORKSPACE
+  ) {
+    return require(path.resolve(
+      process.env.UNI_APP_NEXT_WORKSPACE,
+      'packages/uni-uts-v1'
+    ))
+  }
   if (isInHBuilderX()) {
     try {
       compilerPath = require.resolve(
@@ -148,9 +157,12 @@ export function resolveUTSCompiler(): typeof UTSCompiler {
   if (!compilerPath) {
     try {
       compilerPath = require.resolve('@dcloudio/uni-uts-v1', {
-        paths: [process.env.UNI_CLI_CONTEXT],
+        paths: [process.env.UNI_CLI_CONTEXT || process.cwd()],
       })
     } catch (e) {
+      if (throwError) {
+        throw `Error: Cannot find module '@dcloudio/uni-uts-v1'`
+      }
       let utsCompilerVersion = ''
       try {
         utsCompilerVersion = require('../package.json').version
@@ -188,19 +200,18 @@ export function isUTSComponent(name: string) {
   return utsComponents.has(name)
 }
 
-export function getUTSComponentAutoImports() {
+export function getUTSComponentAutoImports(language: 'kotlin' | 'swift') {
   const utsComponentAutoImports: Record<string, [[string]]> = {}
-  utsComponents.forEach(({ kotlinPackage }, name) => {
+  utsComponents.forEach(({ kotlinPackage, swiftModule }, name) => {
+    const source = language === 'kotlin' ? kotlinPackage : swiftModule
     const className = capitalize(camelize(name)) + 'Element'
-    if (!utsComponentAutoImports[kotlinPackage]) {
-      utsComponentAutoImports[kotlinPackage] = [[className]]
+    if (!utsComponentAutoImports[source]) {
+      utsComponentAutoImports[source] = [[className]]
     } else {
       if (
-        !utsComponentAutoImports[kotlinPackage].find(
-          (item) => item[0] === className
-        )
+        !utsComponentAutoImports[source].find((item) => item[0] === className)
       ) {
-        utsComponentAutoImports[kotlinPackage].push([className])
+        utsComponentAutoImports[source].push([className])
       }
     }
   })
@@ -303,19 +314,23 @@ export function initUTSComponents(
 function resolveUTSComponentDirs(inputDir: string) {
   const utssdkDir = path.resolve(inputDir, 'utssdk')
   const uniModulesDir = path.resolve(inputDir, 'uni_modules')
-  return glob
-    .sync('*', {
-      cwd: utssdkDir,
-      absolute: true,
-      onlyDirectories: true,
-    })
-    .concat(
-      glob.sync('*/utssdk', {
-        cwd: uniModulesDir,
-        absolute: true,
-        onlyDirectories: true,
-      })
-    )
+  return (
+    fs.existsSync(utssdkDir)
+      ? glob.sync('*', {
+          cwd: utssdkDir,
+          absolute: true,
+          onlyDirectories: true,
+        })
+      : []
+  ).concat(
+    fs.existsSync(uniModulesDir)
+      ? glob.sync('*/utssdk', {
+          cwd: uniModulesDir,
+          absolute: true,
+          onlyDirectories: true,
+        })
+      : []
+  )
 }
 
 const nameRE = /name\s*:\s*['|"](.*)['|"]/
@@ -356,6 +371,73 @@ export function parseSwiftPackageWithPluginId(
 }
 
 export type UTSTargetLanguage = typeof process.env.UNI_UTS_TARGET_LANGUAGE
+
+async function parseUniExtApiAutoImports(
+  uniExtApiAutoImports: Record<string, [string, string?][]>,
+  extApis: Injects,
+  parseSource: (pluginId: string) => string
+) {
+  if (Object.keys(extApis).length) {
+    const { parseExportIdentifiers } = resolveUTSCompiler()
+    for (const name in extApis) {
+      const options = extApis[name]
+      if (isArray(options) && options.length >= 2) {
+        const pluginId = path.basename(options[0])
+        const source = parseSource(pluginId)
+        if (uniExtApiAutoImports[source]) {
+          continue
+        }
+        uniExtApiAutoImports[source] = []
+        const filename = `uni_modules/${pluginId}/utssdk/interface.uts`
+        const interfaceFileName = path.resolve(
+          process.env.UNI_INPUT_DIR,
+          filename
+        )
+        if (fs.existsSync(interfaceFileName)) {
+          const ids = await parseExportIdentifiers(interfaceFileName)
+          ids
+            // 过滤掉 Uni
+            .filter((id) => id !== 'Uni')
+            .forEach((id) => {
+              uniExtApiAutoImports[source].push([id])
+            })
+        }
+      }
+    }
+  }
+  return uniExtApiAutoImports
+}
+
+let uniExtApiKotlinAutoImports: Record<string, [string, string?][]> | null =
+  null
+async function parseUniExtApiKotlinAutoImportsOnce(extApis: Injects) {
+  if (uniExtApiKotlinAutoImports) {
+    return uniExtApiKotlinAutoImports
+  }
+  uniExtApiKotlinAutoImports = {}
+  return parseUniExtApiAutoImports(
+    uniExtApiKotlinAutoImports,
+    extApis,
+    (pluginId) => {
+      return parseKotlinPackageWithPluginId(pluginId, true)
+    }
+  )
+}
+
+let uniExtApiSwiftAutoImports: Record<string, [string, string?][]> | null = null
+async function parseUniExtApiSwiftAutoImportsOnce(extApis: Injects) {
+  if (uniExtApiSwiftAutoImports) {
+    return uniExtApiSwiftAutoImports
+  }
+  uniExtApiSwiftAutoImports = {}
+  return parseUniExtApiAutoImports(
+    uniExtApiSwiftAutoImports,
+    extApis,
+    (pluginId) => {
+      return parseSwiftPackageWithPluginId(pluginId, true)
+    }
+  )
+}
 
 export const parseUniExtApiNamespacesOnce = once(
   (
@@ -409,4 +491,104 @@ export function resolveUniTypeScript() {
     ))
   }
   return require('@dcloudio/uni-uts-v1/lib/typescript')
+}
+
+async function initUTSAutoImports(
+  autoImports: Record<string, [string, string?][]>,
+  platform: 'app-android' | 'app-ios',
+  language: 'kotlin' | 'swift'
+) {
+  const utsComponents = getUTSComponentAutoImports(language)
+  Object.keys(utsComponents).forEach((source) => {
+    if (autoImports[source]) {
+      autoImports[source].push(...utsComponents[source])
+    } else {
+      autoImports[source] = utsComponents[source]
+    }
+  })
+
+  const extApis = parseUniExtApis(true, platform, language)
+  const extApiImports = await (language === 'kotlin'
+    ? parseUniExtApiKotlinAutoImportsOnce
+    : parseUniExtApiSwiftAutoImportsOnce)(extApis)
+  Object.keys(extApiImports).forEach((source) => {
+    if (autoImports[source]) {
+      autoImports[source].push(...extApiImports[source])
+    } else {
+      autoImports[source] = extApiImports[source]
+    }
+  })
+  return autoImports
+}
+let autoKotlinImports: Record<string, [string, string?][]> | null = null
+export async function initUTSKotlinAutoImportsOnce() {
+  if (autoKotlinImports) {
+    return autoKotlinImports
+  }
+  autoKotlinImports = {}
+  return initUTSAutoImports(autoKotlinImports, 'app-android', 'kotlin')
+}
+
+let autoSwiftImports: Record<string, [string, string?][]> | null = null
+export async function initUTSSwiftAutoImportsOnce() {
+  if (autoSwiftImports) {
+    return autoSwiftImports
+  }
+  autoSwiftImports = {}
+  return initUTSAutoImports(autoSwiftImports, 'app-ios', 'swift')
+}
+
+export const genUniExtApiDeclarationFileOnce = once((tscInputDir: string) => {
+  const extApis = parseUniExtApis(true, 'app-android', 'kotlin')
+  // 之所以往上一级写，是因为 tscInputDir 会被 empty，目前时机有问题，比如先生成了d.ts，又被empty
+  const fileName = path.resolve(tscInputDir, '../uni-ext-api.d.ts')
+  if (fs.existsSync(fileName)) {
+    try {
+      // 先删除
+      fs.unlinkSync(fileName)
+    } catch (e) {}
+  }
+  if (Object.keys(extApis).length) {
+    const apis: string[] = []
+    for (const name in extApis) {
+      const options = extApis[name]
+      if (isArray(options) && options.length >= 2) {
+        const api = name.replace('uni.', '')
+        apis.push(
+          '  ' + api + `: typeof import("${options[0]}")["${options[1]}"]`
+        )
+      }
+    }
+    if (apis.length) {
+      fs.outputFileSync(
+        fileName,
+        `
+interface Uni {
+${apis.join('\n')}
+}
+`
+      )
+    }
+  }
+})
+
+export function uvueOutDir(
+  platform: 'app-android' | 'app-ios' | 'app-harmony'
+) {
+  return path.join(process.env.UNI_APP_X_UVUE_DIR, platform)
+}
+
+export function tscOutDir(platform: 'app-android' | 'app-ios' | 'app-harmony') {
+  return path.join(process.env.UNI_APP_X_TSC_DIR, platform)
+}
+
+const UTSProxyRE = /\?uts-proxy$/
+const UniHelpersRE = /\?uni_helpers$/
+
+export function isUTSProxy(id: string) {
+  return UTSProxyRE.test(id)
+}
+
+export function isUniHelpers(id: string) {
+  return UniHelpersRE.test(id)
 }

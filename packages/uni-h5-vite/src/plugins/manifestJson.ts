@@ -61,8 +61,13 @@ export function uniManifestJsonPlugin(): Plugin {
 
         const sdkConfigs = (h5 && h5.sdkConfigs) || {}
 
-        const qqMapKey =
+        const tempTencentMapKey =
+          sdkConfigs.maps &&
+          sdkConfigs.maps.tencent &&
+          sdkConfigs.maps.tencent.key
+        const tempQQMapKey =
           sdkConfigs.maps && sdkConfigs.maps.qqmap && sdkConfigs.maps.qqmap.key
+        const qqMapKey = tempTencentMapKey || tempQQMapKey
 
         const bMapKey =
           sdkConfigs.maps && sdkConfigs.maps.bmap && sdkConfigs.maps.bmap.key

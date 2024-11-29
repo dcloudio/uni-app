@@ -12,6 +12,7 @@ import {
   invokeAfterRouteHooks,
   invokeBeforeRouteHooks,
 } from '../../api/route/performance'
+import { fixBorderStyle } from './utils'
 
 // 存储 callback
 export let onTabBarMidButtonTapCallback: Function[] = []
@@ -21,36 +22,6 @@ type Page = ComponentPublicInstance
 let tabBar0: ITabsNode | null = null
 let selected0: number = -1
 let tabs = new Map<string, Page>()
-
-const BORDER_COLORS = new Map<string, string>([
-  ['white', 'rgba(255, 255, 255, 0.33)'],
-  ['black', 'rgba(0, 0, 0, 0.33)'],
-])
-
-function getBorderStyle(borderStyle: string): string {
-  const value = BORDER_COLORS.get(borderStyle)
-  return value || (BORDER_COLORS.get('black') as string)
-}
-
-// keep borderStyle aliways black/white
-export function fixBorderStyle(tabBarConfig: Map<string, any>) {
-  let borderStyle = tabBarConfig.get('borderStyle')
-  if (!isString(borderStyle)) {
-    borderStyle = 'black'
-  }
-
-  let borderColor = getBorderStyle(borderStyle as string)
-  // 同时存在 borderColor>borderStyle，前者没有颜色限制，也不做格式化
-  if (
-    tabBarConfig.has('borderColor') &&
-    isString(tabBarConfig.get('borderColor'))
-  ) {
-    borderColor = tabBarConfig.get('borderColor')
-    tabBarConfig.delete('borderColor')
-  }
-
-  tabBarConfig.set('borderStyle', borderColor)
-}
 
 function getTabList() {
   const tabConfig = __uniConfig.tabBar ? new Map<string, any>() : null //__uniConfig.tabBar
@@ -77,7 +48,12 @@ function init() {
     'pageOrientation',
     __uniConfig.globalStyle?.pageOrientation ?? 'portrait'
   )
-  const page = getPageManager().createPage('tabBar', 'tabBar', style)
+  const page = getPageManager().createPage(
+    'tabBar',
+    // id 后增加 Date.now() 保证唯一性，与 android 端统一
+    `tabBar_${Date.now()}`,
+    style
+  )
   const document = page.createDocument(
     new NodeData(
       'root',
@@ -121,7 +97,10 @@ function init() {
       const item = list![index]
       const path = item.pagePath
       if (isString(path) && findPageRoute(getRealPath(path, true))) {
-        switchSelect(index, path as string)
+        // 调用 switchTab 拦截器
+        uni.switchTab({
+          url: getRealPath(path, true),
+        })
       } else {
         console.error('switchTab: pagePath not found')
       }
@@ -203,8 +182,8 @@ function createTab(
 ): Page {
   registerPage({ url: path, path, query, openType: 'switchTab' })
   callback?.()
-  const page = getCurrentPage() as Page
-  tabBar0!.appendItem(page!.$page.id.toString())
+  const page = (getCurrentPage() as unknown as UniPage).vm
+  tabBar0!.appendItem(page!.$basePage.id.toString())
   return page
 }
 
@@ -277,7 +256,7 @@ export function switchSelect(
   if (tabBar0 === null) {
     init()
   }
-  const currentPage = getCurrentPage() as Page
+  const currentPage = (getCurrentPage() as unknown as UniPage)?.vm
 
   const type = currentPage == null ? 'appLaunch' : 'switchTab'
   // 执行beforeRoute
@@ -292,7 +271,7 @@ export function switchSelect(
       invokeHook(currentPage!, ON_HIDE)
     }
   }
-  tabBar0!.switchSelect(page!.$page.id.toString(), selected)
+  tabBar0!.switchSelect(page!.$basePage.id.toString(), selected)
 
   // TODO use page show status
   if (shouldShow) {

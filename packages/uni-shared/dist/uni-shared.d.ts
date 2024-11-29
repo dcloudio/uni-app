@@ -5,6 +5,7 @@ import { ComponentPublicInstance } from 'vue';
 import type { createApp } from 'vue';
 import type { NormalizedStyle } from '@vue/shared';
 import type { RendererNode } from 'vue';
+import type { UniDialogPage } from '@dcloudio/uni-app-x/types/page';
 
 export declare const ACTION_TYPE_ADD_EVENT = 8;
 
@@ -177,10 +178,11 @@ export declare function dynamicSlotName(name: string): string;
 
 export declare interface Emitter {
     e: Record<string, unknown>;
-    on: (name: EventName, callback: EventCallback, ctx?: any) => this;
-    once: (name: EventName, callback: EventCallback, ctx?: any) => this;
+    _id: number;
+    on: (name: EventName, callback: EventCallback, ctx?: any) => number;
+    once: (name: EventName, callback: EventCallback, ctx?: any) => number;
     emit: (name: EventName, ...args: any[]) => this;
-    off: (name: EventName, callback?: EventCallback) => this;
+    off: (name: EventName, callback?: EventCallback | null) => this;
 }
 
 export declare const Emitter: new () => Emitter;
@@ -228,6 +230,8 @@ export declare function getCustomDataset(el: HTMLElement | HTMLElementWithDatase
 
 export declare function getEnvLocale(): string;
 
+export declare function getGlobal(): any;
+
 export declare function getLen(str?: string): number;
 
 export declare function getValueByDataPath(obj: any, path: string): unknown;
@@ -266,6 +270,8 @@ export declare function isAppNativeTag(tag: string): boolean;
 
 export declare function isAppNVueNativeTag(tag: string): boolean;
 
+export declare function isAppUVueBuiltInEasyComponent(tag: string): boolean;
+
 export declare function isAppUVueNativeTag(tag: string): boolean;
 
 export declare function isBuiltInComponent(tag: string): boolean;
@@ -280,9 +286,15 @@ export declare function isH5NativeTag(tag: string): boolean;
 
 export declare function isMiniProgramNativeTag(tag: string): boolean;
 
+export declare function isMiniProgramUVueNativeTag(tag: string): boolean;
+
 export declare function isRootHook(name: string): boolean;
 
 export declare function isRootImmediateHook(name: string): boolean;
+
+export declare function isSystemActionSheetDialogPage(page: UniDialogPage): boolean;
+
+export declare function isSystemDialogPage(page: UniDialogPage): boolean;
 
 export declare function isUniLifecycleHook(name: string, value: unknown, checkType?: boolean): boolean;
 
@@ -455,6 +467,8 @@ export declare interface NVueTaskCenter {
     updateData: (componentId: string, data: Record<string, unknown> | void, callback?: Function) => void;
 }
 
+export declare const OFF_HOST_THEME_CHANGE = "offHostThemeChange";
+
 export declare const OFF_THEME_CHANGE = "offThemeChange";
 
 export declare const ON_ADD_TO_FAVORITES = "onAddToFavorites";
@@ -470,6 +484,8 @@ export declare const ON_ERROR = "onError";
 export declare const ON_EXIT = "onExit";
 
 export declare const ON_HIDE = "onHide";
+
+export declare const ON_HOST_THEME_CHANGE = "onHostThemeChange";
 
 export declare const ON_INIT = "onInit";
 
@@ -508,6 +524,8 @@ export declare const ON_RESIZE = "onResize";
 export declare const ON_SAVE_EXIT_STATE = "onSaveExitState";
 
 export declare const ON_SHARE_APP_MESSAGE = "onShareAppMessage";
+
+export declare const ON_SHARE_CHAT = "onShareChat";
 
 export declare const ON_SHARE_TIMELINE = "onShareTimeline";
 
@@ -672,11 +690,20 @@ number,
 string | number
 ];
 
+export declare const enum SetUniElementIdTagType {
+    BuiltInComponent = 1,// 如：unicloud-db
+    BuiltInRootElement = 2
+}
+
 export declare const SLOT_DEFAULT_NAME = "d";
 
 export declare function sortObject<T extends Object>(obj: T): T;
 
 export declare function stringifyQuery(obj?: Record<string, any>, encodeStr?: typeof encodeURIComponent): string;
+
+export declare const SYSTEM_DIALOG_ACTION_SHEET_PAGE_PATH = "uni:actionSheet";
+
+export declare const SYSTEM_DIALOG_PAGE_PATH_STARTER = "uni:";
 
 export declare const TABBAR_HEIGHT = 50;
 
@@ -779,7 +806,7 @@ export declare class UniInputElement extends UniElement {
     set value(val: string | number);
 }
 
-export declare const UniLifecycleHooks: readonly ["onShow", "onHide", "onLaunch", "onError", "onThemeChange", "onPageNotFound", "onUnhandledRejection", "onExit", "onInit", "onLoad", "onReady", "onUnload", "onResize", "onBackPress", "onPageScroll", "onTabItemTap", "onReachBottom", "onPullDownRefresh", "onShareTimeline", "onAddToFavorites", "onShareAppMessage", "onSaveExitState", "onNavigationBarButtonTap", "onNavigationBarSearchInputClicked", "onNavigationBarSearchInputChanged", "onNavigationBarSearchInputConfirmed", "onNavigationBarSearchInputFocusChanged"];
+export declare const UniLifecycleHooks: readonly ["onShow", "onHide", "onLaunch", "onError", "onThemeChange", "onPageNotFound", "onUnhandledRejection", "onExit", "onInit", "onLoad", "onReady", "onUnload", "onResize", "onBackPress", "onPageScroll", "onTabItemTap", "onReachBottom", "onPullDownRefresh", "onShareTimeline", "onAddToFavorites", "onShareAppMessage", "onShareChat", "onSaveExitState", "onNavigationBarButtonTap", "onNavigationBarSearchInputClicked", "onNavigationBarSearchInputChanged", "onNavigationBarSearchInputConfirmed", "onNavigationBarSearchInputFocusChanged"];
 
 export declare class UniNode extends UniEventTarget {
     nodeId?: number;

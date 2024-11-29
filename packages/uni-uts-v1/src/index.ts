@@ -1,5 +1,5 @@
 import { extend, isArray } from '@vue/shared'
-import { join, relative } from 'path'
+import { extname, join, relative, resolve } from 'path'
 
 import { resolveAndroidDepFiles } from './kotlin'
 import { resolveIOSDepFiles } from './swift'
@@ -41,11 +41,25 @@ import type { UTSOutputOptions } from '@dcloudio/uts'
 import { isModule } from './module'
 import { getCompiler } from './compiler'
 import { uvueOutDir } from './uvue/index'
+import {
+  type SyncUniModulesFilePreprocessor,
+  type UniXCompilerPlatform,
+  compileUniModuleWithTsc,
+  createUniXArkTSCompiler,
+  createUniXKotlinCompiler,
+  createUniXSwiftCompiler,
+  resolveOutputPluginDir,
+  resolveUVueOutputPluginDir,
+} from './uni_modules'
+import { existsSync, readdirSync, rmSync } from 'fs-extra'
 
 export * from './tsc'
 
+export { parseExportIdentifiers } from './code'
+
 export {
   compileArkTS,
+  compileArkTSExtApi,
   getArkTSAutoImports,
   resolveAppHarmonyUniModulesRootDir,
   resolveAppHarmonyUniModulesEntryDir,
@@ -113,7 +127,7 @@ function createResult(
   }
 }
 
-interface CompilerOptions {
+export interface UTSPluginCompilerOptions {
   isX: boolean
   isPlugin: boolean
   isSingleThread: boolean
@@ -122,21 +136,18 @@ interface CompilerOptions {
   transform?: UTSOutputOptions['transform']
   sourceMap?: boolean
   uni_modules?: string[]
+  kotlinAutoImports?: () => Promise<
+    Required<UTSOutputOptions>['transform']['autoImports']
+  >
+  swiftAutoImports?: () => Promise<
+    Required<UTSOutputOptions>['transform']['autoImports']
+  >
 }
 
 // 重要：当调整参数时，需要同步调整 vue2 编译器 uni-cli-shared/lib/uts/uts-loader.js
 export async function compile(
   pluginDir: string,
-  {
-    isX,
-    isPlugin,
-    extApis,
-    isExtApi,
-    transform,
-    sourceMap,
-    isSingleThread,
-    uni_modules,
-  }: CompilerOptions = {
+  compilerOptions: UTSPluginCompilerOptions = {
     isX: false,
     isPlugin: true,
     isSingleThread: true,
@@ -147,17 +158,30 @@ export async function compile(
   if (!pkg) {
     return
   }
+
   // 加密插件
   if (isEncrypt(pluginDir)) {
-    return compileEncrypt(pluginDir, isX)
+    return compileEncrypt(pluginDir, compilerOptions.isX)
   }
+  const {
+    isX,
+    extApis,
+    isExtApi,
+    transform,
+    sourceMap,
+    isSingleThread,
+    uni_modules,
+  } = compilerOptions
+
+  let isPlugin = compilerOptions.isPlugin
+
   const cacheDir = process.env.HX_DEPENDENCIES_DIR || ''
   const inputDir = process.env.UNI_INPUT_DIR
   const outputDir = process.env.UNI_OUTPUT_DIR
   const utsPlatform = process.env.UNI_UTS_PLATFORM
 
   const pluginRelativeDir = relative(
-    isCompileUniModules ? uvueOutDir() : inputDir,
+    isCompileUniModules ? uvueOutDir('app-android') : inputDir,
     pluginDir
   )
   const outputPluginDir = normalizePath(join(outputDir, pluginRelativeDir))
@@ -214,8 +238,11 @@ export async function compile(
 
   let errMsg = ''
   if (process.env.NODE_ENV !== 'development' || isCompileUniModules) {
-    // uts 插件 wgt 模式，本地资源模式不需要编译
-    if (process.env.UNI_APP_PRODUCTION_TYPE === 'WGT') {
+    // uts 插件 wgt 模式，本地资源模式不需要编译、ext-api模式也不需要编译（已经有前置编译过了）
+    if (
+      process.env.UNI_APP_PRODUCTION_TYPE === 'WGT' ||
+      process.env.UNI_COMPILE_TARGET === 'ext-api'
+    ) {
       return createResult(outputPluginDir, errMsg, code, deps, [], [], meta)
     }
     // 生产模式 支持同时生成 android 和 ios 的 uts 插件
@@ -241,7 +268,10 @@ export async function compile(
           isExtApi,
           isModule: !!indexModuleFilename,
           extApis,
-          transform,
+          transform: await initCompilerOptionsTransform(
+            'kotlin',
+            compilerOptions
+          ),
           sourceMap: !!sourceMap,
           hookClass: proxyCodeOptions.androidHookClass || '',
           uniModules: uni_modules || [],
@@ -299,7 +329,10 @@ export async function compile(
           isPlugin: true, // iOS 目前仅有 plugin 模式
           isExtApi,
           extApis,
-          transform,
+          transform: await initCompilerOptionsTransform(
+            'swift',
+            compilerOptions
+          ),
           sourceMap: !!sourceMap,
           hookClass: proxyCodeOptions.iOSHookClass || '',
           uniModules: uni_modules || [],
@@ -463,7 +496,10 @@ export async function compile(
           pluginRelativeDir,
           is_uni_modules: pkg.is_uni_modules,
           extApis,
-          transform,
+          transform: await initCompilerOptionsTransform(
+            compilerType,
+            compilerOptions
+          ),
           sourceMap: !!sourceMap,
           uniModules: uni_modules || [],
         })
@@ -560,3 +596,189 @@ export async function compile(
     meta
   )
 }
+
+export async function initCompilerOptionsTransform(
+  compilerType: 'kotlin' | 'swift',
+  options: UTSPluginCompilerOptions
+) {
+  const transform: Required<UTSPluginCompilerOptions>['transform'] = JSON.parse(
+    JSON.stringify(options.transform || {})
+  )
+  const customAutoImports = await initCompilerOptionsTransformAutoImports(
+    compilerType === 'kotlin'
+      ? options.kotlinAutoImports
+      : options.swiftAutoImports
+  )
+  if (customAutoImports && Object.keys(customAutoImports).length) {
+    const autoImports = transform.autoImports || {}
+    Object.keys(customAutoImports).forEach((source) => {
+      if (autoImports[source]) {
+        autoImports[source].push(...customAutoImports[source])
+      } else {
+        autoImports[source] = customAutoImports[source]
+      }
+    })
+    transform.autoImports = autoImports
+  }
+
+  return transform
+}
+
+async function initCompilerOptionsTransformAutoImports(
+  autoImports: UTSPluginCompilerOptions['kotlinAutoImports']
+) {
+  return autoImports?.()
+}
+
+function emptyCacheDir(
+  platform: 'app-android' | 'app-ios' | 'app-harmony',
+  inputDir: string,
+  pluginDir: string
+) {
+  const outputPluginDir = resolveOutputPluginDir(platform, inputDir, pluginDir)
+  const uvueOutputPluginDir = resolveUVueOutputPluginDir(
+    platform,
+    inputDir,
+    pluginDir
+  )
+  if (existsSync(outputPluginDir)) {
+    emptyDir(outputPluginDir)
+  }
+  if (existsSync(uvueOutputPluginDir)) {
+    emptyDir(uvueOutputPluginDir)
+  }
+}
+
+function emptyDir(dir: string) {
+  try {
+    for (const file of readdirSync(dir)) {
+      // node >= 14.14.0
+      rmSync(resolve(dir, file), { recursive: true, force: true })
+    }
+  } catch (e) {}
+}
+
+/**
+ * 发行模式(会自动清理临时目录)
+ * 目前仅 ext-api 框架的地方使用了
+ * @param platform
+ * @param pluginDir
+ * @param param2
+ * @param compilerOptions
+ */
+export async function buildUniModules(
+  platform: 'app' | 'app-android' | 'app-ios' | 'app-harmony',
+  pluginDir: string,
+  options: {
+    syncUniModulesFilePreprocessors: {
+      android: SyncUniModulesFilePreprocessor
+      ios: SyncUniModulesFilePreprocessor
+      harmony: SyncUniModulesFilePreprocessor
+    }
+    transformVueFile?: (
+      platform: UniXCompilerPlatform,
+      fileName: string
+    ) => Promise<string>
+    rootFiles?: string[]
+  },
+  compilerOptions: UTSPluginCompilerOptions
+) {
+  const inputDir = process.env.UNI_INPUT_DIR
+
+  const syncUniModulesFilePreprocessors = options.transformVueFile
+    ? patchSyncUniModulesFilePreprocessors(
+        options.syncUniModulesFilePreprocessors,
+        options.transformVueFile
+      )
+    : options.syncUniModulesFilePreprocessors
+
+  if (platform === 'app-android' || platform === 'app') {
+    const platform = 'app-android'
+    emptyCacheDir(platform, inputDir, pluginDir)
+    await compileUniModuleWithTsc(
+      'app-android',
+      pluginDir,
+      createUniXKotlinCompiler(),
+      {
+        rootFiles: options.rootFiles,
+        preprocessor: syncUniModulesFilePreprocessors.android,
+      }
+    )
+  }
+  if (platform === 'app-ios' || platform === 'app') {
+    const platform = 'app-ios'
+    emptyCacheDir(platform, inputDir, pluginDir)
+    await compileUniModuleWithTsc(
+      'app-ios',
+      pluginDir,
+      createUniXSwiftCompiler(),
+      {
+        rootFiles: options.rootFiles,
+        preprocessor: syncUniModulesFilePreprocessors.ios,
+      }
+    )
+  }
+  if (platform === 'app-harmony') {
+    const platform = 'app-harmony'
+    emptyCacheDir(platform, inputDir, pluginDir)
+    await compileUniModuleWithTsc(
+      'app-harmony',
+      pluginDir,
+      createUniXArkTSCompiler(),
+      {
+        rootFiles: options.rootFiles,
+        preprocessor: syncUniModulesFilePreprocessors.harmony,
+      }
+    )
+  }
+  return compile(pluginDir, compilerOptions)
+}
+
+function patchSyncUniModulesFilePreprocessors(
+  syncUniModulesFilePreprocessors: {
+    android: SyncUniModulesFilePreprocessor
+    ios: SyncUniModulesFilePreprocessor
+    harmony: SyncUniModulesFilePreprocessor
+  },
+  transformVueFile: (
+    platform: UniXCompilerPlatform,
+    fileName: string
+  ) => Promise<string>
+) {
+  return {
+    android: patchSyncUniModulesFilePreprocessor(
+      'app-android',
+      syncUniModulesFilePreprocessors.android,
+      transformVueFile
+    ),
+    ios: patchSyncUniModulesFilePreprocessor(
+      'app-ios',
+      syncUniModulesFilePreprocessors.ios,
+      transformVueFile
+    ),
+    harmony: patchSyncUniModulesFilePreprocessor(
+      'app-harmony',
+      syncUniModulesFilePreprocessors.harmony,
+      transformVueFile
+    ),
+  }
+}
+
+function patchSyncUniModulesFilePreprocessor(
+  platform: UniXCompilerPlatform,
+  preprocessor: SyncUniModulesFilePreprocessor,
+  transformVueFile: (
+    platform: UniXCompilerPlatform,
+    fileName: string
+  ) => Promise<string>
+) {
+  return async (content: string, fileName: string) => {
+    const fileExtname = extname(fileName)
+    if (['.vue', '.uvue'].includes(fileExtname)) {
+      return transformVueFile(platform, fileName)
+    }
+    return preprocessor(content, fileName)
+  }
+}
+
+export * from './uni_modules'

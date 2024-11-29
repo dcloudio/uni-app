@@ -33,6 +33,7 @@
     },
     "replacements": {
       "__GLOBAL__": "swan",
+      "__X__": "false",
       "__PLATFORM__": "\"mp-baidu\"",
       "__PLATFORM_TITLE__": "百度小程序"
     },

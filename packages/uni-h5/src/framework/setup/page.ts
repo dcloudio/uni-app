@@ -21,7 +21,6 @@ import {
   ON_REACH_BOTTOM,
   ON_REACH_BOTTOM_DISTANCE,
   ON_UNLOAD,
-  normalizeTitleColor,
 } from '@dcloudio/uni-shared'
 import { usePageMeta } from './provide'
 import {
@@ -31,10 +30,22 @@ import {
 } from '../../service/api/route/utils'
 import { updateCurPageCssVar } from '../../helpers/cssVar'
 import { getStateId } from '../../helpers/dom'
+//#if _X_ && !_NODE_JS_
+import { closeDialogPage } from '../../x/service/api'
+//#endif
+//#if _X_
+import { initXPage } from '../../x/framework/setup/page'
+//#endif
 
 const SEP = '$$'
 
-const currentPagesMap = new Map<string, ComponentPublicInstance>()
+export const currentPagesMap = new Map<string, ComponentPublicInstance>()
+
+export function getPage$BasePage(
+  page: ComponentPublicInstance
+): Page.PageInstance['$page'] {
+  return __X__ ? page.$basePage : (page.$page as Page.PageInstance['$page'])
+}
 
 export const entryPageState = {
   handledBeforeEntryPageRoutes: false,
@@ -77,6 +88,14 @@ export function getCurrentPagesMap() {
 }
 
 export function getCurrentPages() {
+  const curPages = getCurrentBasePages()
+  if (__X__) {
+    return curPages.map((page) => page.$page)
+  }
+  return curPages
+}
+
+export function getCurrentBasePages() {
   const curPages: ComponentPublicInstance[] = []
   const pages = currentPagesMap.values()
   for (const page of pages) {
@@ -101,6 +120,17 @@ function removeRouteCache(routeKey: string) {
 
 export function removePage(routeKey: string, removeRouteCaches = true) {
   const pageVm = currentPagesMap.get(routeKey) as ComponentPublicInstance
+  if (__X__ && !__NODE_JS__) {
+    const dialogPages = (pageVm.$page as UniPage).getDialogPages()
+    for (let i = dialogPages.length - 1; i >= 0; i--) {
+      closeDialogPage({ dialogPage: dialogPages[i] })
+    }
+    const systemDialogPages =
+      pageVm.$pageLayoutInstance?.$systemDialogPages.value
+    if (systemDialogPages) {
+      systemDialogPages.length = 0
+    }
+  }
   pageVm.$.__isUnload = true
   invokeHook(pageVm, ON_UNLOAD)
   currentPagesMap.delete(routeKey)
@@ -116,7 +146,7 @@ export function createPageState(type: NavigateType, __id__?: number) {
   }
 }
 
-function initPublicPage(route: RouteLocationNormalizedLoaded) {
+export function initPublicPage(route: RouteLocationNormalizedLoaded) {
   const meta = usePageMeta()
 
   if (!__UNI_FEATURE_PAGES__) {
@@ -129,77 +159,20 @@ function initPublicPage(route: RouteLocationNormalizedLoaded) {
   return initPageInternalInstance('navigateTo', fullPath, {}, meta)
 }
 
-type PageStyle = {
-  navigationBarBackgroundColor?: string
-  navigationBarTextStyle?: string
-  navigationBarTitleText?: string
-  titleImage?: string
-  navigationStyle?: 'default' | 'custom'
-  disableScroll?: boolean
-  enablePullDownRefresh?: boolean
-  onReachBottomDistance?: number
-}
-
 export function initPage(vm: ComponentPublicInstance) {
   const route = vm.$route
   const page = initPublicPage(route)
   initPageVm(vm, page)
   if (__X__) {
-    const pageMeta = page.meta
-    vm.$setPageStyle = (style: PageStyle) => {
-      // TODO uni-cli-shared内处理样式的逻辑移至uni-shared内并复用
-      for (const key in style) {
-        switch (key) {
-          case 'navigationBarBackgroundColor':
-            pageMeta.navigationBar.backgroundColor = style[key]
-            break
-          case 'navigationBarTextStyle':
-            const textStyle = style[key]
-            if (textStyle == null) {
-              continue
-            }
-            // TODO titleColor属性类型定义问题
-            pageMeta.navigationBar.titleColor = ['black', 'white'].includes(
-              textStyle
-            )
-              ? normalizeTitleColor(textStyle || '')
-              : (textStyle as any)
-            break
-          case 'navigationBarTitleText':
-            pageMeta.navigationBar.titleText = style[key]
-            break
-          case 'titleImage':
-            pageMeta.navigationBar.titleImage = style[key]
-            break
-          case 'navigationStyle':
-            pageMeta.navigationBar.style = style[key]
-            break
-          default:
-            pageMeta[key] = style[key]
-            break
-        }
-      }
+    initXPage(vm, route, page)
+  } else {
+    currentPagesMap.set(normalizeRouteKey(page.path, page.id), vm)
+    if (currentPagesMap.size === 1) {
+      // 通过异步保证首页生命周期触发
+      setTimeout(() => {
+        handleBeforeEntryPageRoutes()
+      }, 0)
     }
-    vm.$getPageStyle = () =>
-      new UTSJSONObject({
-        navigationBarBackgroundColor: pageMeta.navigationBar.backgroundColor,
-        navigationBarTextStyle: pageMeta.navigationBar.titleColor,
-        navigationBarTitleText: pageMeta.navigationBar.titleText,
-        titleImage: pageMeta.navigationBar.titleImage || '',
-        navigationStyle: pageMeta.navigationBar.style || 'default',
-        disableScroll: pageMeta.disableScroll || false,
-        enablePullDownRefresh: pageMeta.enablePullDownRefresh || false,
-        onReachBottomDistance:
-          pageMeta.onReachBottomDistance || ON_REACH_BOTTOM_DISTANCE,
-        backgroundColorContent: pageMeta.backgroundColorContent,
-      })
-  }
-  currentPagesMap.set(normalizeRouteKey(page.path, page.id), vm)
-  if (currentPagesMap.size === 1) {
-    // 通过异步保证首页生命周期触发
-    setTimeout(() => {
-      handleBeforeEntryPageRoutes()
-    }, 0)
   }
 }
 
@@ -356,7 +329,7 @@ export function initPageScrollListener(
     return
   }
   const opts: CreateScrollListenerOptions = {}
-  const pageId = instance.proxy!.$page.id
+  const pageId = getPage$BasePage(instance.proxy!).id
   if (onPageScroll || navigationBarTransparent) {
     opts.onPageScroll = createOnPageScroll(
       pageId,

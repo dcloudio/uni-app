@@ -1,11 +1,11 @@
 {
   "private": true,
-  "version": "3.0.0-4020920240930001",
+  "version": "3.0.0-alpha-4030620241126001",
   "workspaces": [
     "packages/*"
   ],
   "scripts": {
-    "all": "npm run lint && npm run format && npm run build && npm run test",
+    "all": "npm run lint && npm run format && node scripts/sync.js && npm run build && npm run test",
     "clean": "rm -rf node_modules **/*/node_modules && pnpm install",
     "build": "node scripts/build.js",
     "build:h5": "node scripts/build.js uni-app uts uni-uts-v1 uni-app-uvue uni-cli-shared uni-h5 uni-i18n uni-stat uni-shared uni-h5-vite vite-plugin-uni",
@@ -14,13 +14,15 @@
     "size": "npm run build size-check",
     "lint": "eslint packages/*/src/**/*.ts packages/*/__tests__/**/*.ts",
     "format": "prettier --write --parser typescript \"packages/**/*.ts?(x)\"",
-    "test": "tsc -p ./test-dts/tsconfig.json && node scripts/test.js && jest",
+    "test": "tsc -p ./packages/uni-uts-v1/__tests__/tsc/tsconfig.json && tsc -p ./test-dts/tsconfig.json && node scripts/test.js && jest",
     "test-nvue-style": "jest --testMatch \"**/uni-nvue-styler/__tests__/*.spec.ts\" --watch",
     "test-dts": "tsc -p ./test-dts/tsconfig.json && tsc -p ./test-dts/tsconfig.build.json",
     "preinstall": "npx only-allow pnpm",
     "postinstall": "simple-git-hooks",
     "e2e:ssr:dev": "cd packages/playground/ssr && npm run dev:ssr",
     "e2e:ssr:open": "cd packages/playground/ssr && npx cypress open",
+    "e2e:ssrx:dev": "cd packages/playground/ssr-x && npm run dev:ssr",
+    "e2e:ssrx:open": "cd packages/playground/ssr-x && npx cypress open",
     "release": "node scripts/release.js"
   },
   "types": "test-dts/index.d.ts",
@@ -32,7 +34,11 @@
     "commit-msg": "node scripts/verifyCommit.js $1"
   },
   "lint-staged": {
-    "packages/**/*.ts?(x)": [
+    "packages/*/src/**/*.ts?(x)": [
+      "eslint",
+      "prettier --parser=typescript --write"
+    ],
+    "packages/*/__tests__/**/*.ts?(x)": [
       "eslint",
       "prettier --parser=typescript --write"
     ]
@@ -44,10 +50,11 @@
     "@babel/core": "^7.23.3",
     "@babel/parser": "^7.23.9",
     "@babel/preset-env": "^7.20.2",
-    "@dcloudio/types": "3.4.11",
-    "@dcloudio/uni-api": "3.0.0-4020920240930001",
-    "@dcloudio/uni-app": "3.0.0-4020920240930001",
-    "@dcloudio/uni-app-x": "^0.7.22",
+    "@dcloudio/types": "3.4.14",
+    "@dcloudio/uni-api": "workspace:*",
+    "@dcloudio/uni-app": "workspace:*",
+    "@dcloudio/uni-app-x": "^0.7.35",
+    "@dcloudio/uni-nvue-styler": "workspace:*",
     "@jest/types": "^29.0.3",
     "@microsoft/api-extractor": "^7.34.5",
     "@rollup/plugin-alias": "^4.0.2",
@@ -91,7 +98,7 @@
     "picocolors": "^1.0.0",
     "prettier": "^2.7.1",
     "promise-polyfill": "^8.3.0",
-    "rollup": "^4.13.0",
+    "rollup": "^4.21.2",
     "rollup-plugin-jscc": "^2.0.0",
     "rollup-plugin-node-builtins": "^2.1.2",
     "rollup-plugin-node-globals": "^1.4.0",

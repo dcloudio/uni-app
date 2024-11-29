@@ -3,6 +3,50 @@ import { isArray, isFunction, capitalize, hasOwn, extend, isPlainObject, isStrin
 import { ref, findComponentPropsData, toRaw, updateProps, hasQueueJob, invalidateJob, getExposeProxy, EMPTY_OBJ, isRef, setTemplateRef, devtoolsComponentAdded, pruneComponentPropsCache } from 'vue';
 import { normalizeLocale, LOCALE_EN } from '@dcloudio/uni-i18n';
 
+function initVueIds(vueIds, mpInstance) {
+    if (!vueIds) {
+        return;
+    }
+    const ids = vueIds.split(',');
+    const len = ids.length;
+    if (len === 1) {
+        mpInstance._$vueId = ids[0];
+    }
+    else if (len === 2) {
+        mpInstance._$vueId = ids[0];
+        mpInstance._$vuePid = ids[1];
+    }
+}
+function initWxsCallMethods(methods, wxsCallMethods) {
+    if (!isArray(wxsCallMethods)) {
+        return;
+    }
+    wxsCallMethods.forEach((callMethod) => {
+        methods[callMethod] = function (args) {
+            return this.$vm[callMethod](args);
+        };
+    });
+}
+function findVmByVueId(instance, vuePid) {
+    // 标准 vue3 中 没有 $children，定制了内核
+    const $children = instance.$children;
+    // 优先查找直属(反向查找:https://github.com/dcloudio/uni-app/issues/1200)
+    for (let i = $children.length - 1; i >= 0; i--) {
+        const childVm = $children[i];
+        if (childVm.$scope._$vueId === vuePid) {
+            return childVm;
+        }
+    }
+    // 反向递归查找
+    let parentVm;
+    for (let i = $children.length - 1; i >= 0; i--) {
+        parentVm = findVmByVueId($children[i], vuePid);
+        if (parentVm) {
+            return parentVm;
+        }
+    }
+}
+
 const MP_METHODS = [
     'createSelectorQuery',
     'createIntersectionObserver',
@@ -197,8 +241,9 @@ function parseApp(instance, parseAppOptions) {
         onLaunch(options) {
             this.$vm = instance; // 飞书小程序可能会把 AppOptions 序列化，导致 $vm 对象部分属性丢失
             const ctx = internalInstance.ctx;
-            if (this.$vm && ctx.$scope) {
+            if (this.$vm && ctx.$scope && ctx.$callHook) {
                 // 已经初始化过了，主要是为了百度，百度 onShow 在 onLaunch 之前
+                // $scope值在微信小程序混合分包情况下存在，额外用$callHook兼容判断处理
                 return;
             }
             initBaseInstance(internalInstance, {
@@ -293,50 +338,6 @@ function initLocale(appVm) {
     });
 }
 
-function initVueIds(vueIds, mpInstance) {
-    if (!vueIds) {
-        return;
-    }
-    const ids = vueIds.split(',');
-    const len = ids.length;
-    if (len === 1) {
-        mpInstance._$vueId = ids[0];
-    }
-    else if (len === 2) {
-        mpInstance._$vueId = ids[0];
-        mpInstance._$vuePid = ids[1];
-    }
-}
-function initWxsCallMethods(methods, wxsCallMethods) {
-    if (!isArray(wxsCallMethods)) {
-        return;
-    }
-    wxsCallMethods.forEach((callMethod) => {
-        methods[callMethod] = function (args) {
-            return this.$vm[callMethod](args);
-        };
-    });
-}
-function findVmByVueId(instance, vuePid) {
-    // 标准 vue3 中 没有 $children，定制了内核
-    const $children = instance.$children;
-    // 优先查找直属(反向查找:https://github.com/dcloudio/uni-app/issues/1200)
-    for (let i = $children.length - 1; i >= 0; i--) {
-        const childVm = $children[i];
-        if (childVm.$scope._$vueId === vuePid) {
-            return childVm;
-        }
-    }
-    // 反向递归查找
-    let parentVm;
-    for (let i = $children.length - 1; i >= 0; i--) {
-        parentVm = findVmByVueId($children[i], vuePid);
-        if (parentVm) {
-            return parentVm;
-        }
-    }
-}
-
 const builtInProps = [
     // 百度小程序,快手小程序自定义组件不支持绑定动态事件，动态dataset，故通过props传递事件信息
     // event-opts
@@ -365,20 +366,23 @@ function initDefaultProps(options, isBehavior = false) {
             };
         });
         // 小程序不能直接定义 $slots 的 props，所以通过 vueSlots 转换到 $slots
+        function observerSlots(newVal) {
+            const $slots = Object.create(null);
+            newVal &&
+                newVal.forEach((slotName) => {
+                    $slots[slotName] = true;
+                });
+            this.setData({
+                $slots,
+            });
+        }
         properties.uS = {
             type: null,
             value: [],
-            observer: function (newVal) {
-                const $slots = Object.create(null);
-                newVal &&
-                    newVal.forEach((slotName) => {
-                        $slots[slotName] = true;
-                    });
-                this.setData({
-                    $slots,
-                });
-            },
         };
+        {
+            properties.uS.observer = observerSlots;
+        }
     }
     if (options.behaviors) {
         // wx://form-field
@@ -424,23 +428,26 @@ function initProps(mpComponentOptions) {
     if (!mpComponentOptions.properties) {
         mpComponentOptions.properties = {};
     }
-    extend(mpComponentOptions.properties, initDefaultProps(mpComponentOptions), initVirtualHostProps(mpComponentOptions.options));
+    extend(mpComponentOptions.properties, initDefaultProps(mpComponentOptions), initVirtualHostProps());
 }
 function findPropsData(properties, isPage) {
     return ((isPage
         ? findPagePropsData(properties)
-        : findComponentPropsData(properties.uP)) || {});
+        : findComponentPropsData(resolvePropValue(properties.uP))) || {});
 }
 function findPagePropsData(properties) {
     const propsData = {};
     if (isPlainObject(properties)) {
         Object.keys(properties).forEach((name) => {
             if (builtInProps.indexOf(name) === -1) {
-                propsData[name] = properties[name];
+                propsData[name] = resolvePropValue(properties[name]);
             }
         });
     }
     return propsData;
+}
+function resolvePropValue(prop) {
+    return prop;
 }
 
 function initData(_) {

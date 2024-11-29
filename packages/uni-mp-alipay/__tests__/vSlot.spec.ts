@@ -77,7 +77,7 @@ describe('mp-alipay: transform v-slot', () => {
   test('v-for + v-for + scoped slots', () => {
     assert(
       `<view v-for="item in items"><custom v-for="item1 in item.list" :item="item1"><template v-slot:default="slotProps"><view>{{ slotProps.item }}</view></template></custom></view>`,
-      `<view a:for="{{a}}" a:for-item="item"><custom a:for="{{item.a}}" a:for-item="item1" u-s="{{['d']}}" u-i="{{item1.b}}" onVI="__l" u-p="{{item1.c}}"><view a:for="{{item1.a}}" a:for-item="slotProps" a:key="b" slot="{{slotProps.c}}"><view>{{slotProps.a}}</view></view></custom></view>`,
+      `<view a:for="{{a}}" a:for-item="item"><custom a:for="{{item.a}}" a:for-item="item1" u-s="{{['d']}}" u-i="{{item1.b}}" onVI="__l" u-p="{{item1.c||''}}"><view a:for="{{item1.a}}" a:for-item="slotProps" a:key="b" slot="{{slotProps.c}}"><view>{{slotProps.a}}</view></view></custom></view>`,
       `(_ctx, _cache) => {
   return { a: _f(_ctx.items, (item, k0, i0) => { return { a: _f(item.list, (item1, k1, i1) => { return { a: _w((slotProps, s2, i2) => { return { a: _t(slotProps.item), b: i2, c: s2 }; }, { name: 'd', path: 'a[' + i0 + '].' + ('a[' + i1 + '].') + 'a', vueId: '2a9ec0b0-0' + '-' + i0 + '-' + i1 }), b: '2a9ec0b0-0' + '-' + i0 + '-' + i1, c: _p({ item: item1 }) }; }) }; }) }
 }`

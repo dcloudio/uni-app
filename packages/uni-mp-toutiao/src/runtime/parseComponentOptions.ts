@@ -8,7 +8,6 @@ import {
 
 import { findVmByVueId } from '@dcloudio/uni-mp-core'
 
-import { initInjections, initProvide } from './apiInject'
 import type { ParseComponentOptions } from 'packages/uni-mp-core/src/runtime/component'
 import { ON_READY } from '@dcloudio/uni-shared'
 
@@ -48,7 +47,10 @@ export function initRelation(
   instances[webviewId + '_' + nodeId] = mpInstance.$vm!
 
   // 使用 virtualHost 后，头条不支持 triggerEvent，通过主动调用方法抹平差异
-  if (mpInstance?.$vm?.$options?.options?.virtualHost) {
+  if (
+    (__PLATFORM__ === 'mp-toutiao' || __PLATFORM__ === 'mp-lark') &&
+    mpInstance?.$vm?.$options?.options?.virtualHost
+  ) {
     nextSetDataTick(mpInstance, () => {
       handleLink.apply(mpInstance, [
         {
@@ -56,6 +58,9 @@ export function initRelation(
             vuePid: detail.vuePid,
             nodeId,
             webviewId,
+            // 如果是 virtualHost，则需要找到页面 vm 传递给 handleLink，因为此时的上下文是不对的，需要从页面 vm 递归查找
+            // 目前测试来看，页面的 nodeId 是 0
+            pageVm: instances[webviewId + '_0'],
           },
         },
       ])
@@ -72,9 +77,9 @@ export function initRelation(
 export function handleLink(
   this: MPComponentInstance,
   {
-    detail: { vuePid, nodeId, webviewId },
+    detail: { vuePid, nodeId, webviewId, pageVm },
   }: {
-    detail: RelationOptions
+    detail: RelationOptions & { pageVm?: ComponentPublicInstance }
   }
 ) {
   const vm = instances[webviewId + '_' + nodeId]
@@ -84,26 +89,25 @@ export function handleLink(
 
   let parentVm
   if (vuePid) {
-    parentVm = findVmByVueId(this.$vm!, vuePid)
-  }
-  if (!parentVm) {
-    parentVm = this.$vm!
-  }
-  if (this.$vm?.$options?.options?.virtualHost) {
-    // 抖音小程序下 form 组件开启 virtualHost 出现 infinite loop. see: https://github.com/vuejs/core/blob/32a1433e0debd538c199bde18390bb903b4cde5a/packages/runtime-core/src/componentProps.ts#L227
-    vm.$.parent = null
+    parentVm = findVmByVueId(pageVm || this.$vm!, vuePid)
   } else {
+    // 如果 vuePid 不存在，则认为当前组件的父是页面，目前测试来看，页面的 nodeId 是 0
+    parentVm = instances[webviewId + '_0']
+  }
+  if (parentVm) {
     vm.$.parent = parentVm.$
   }
 
-  if (__VUE_OPTIONS_API__) {
+  // 不再需要下述逻辑
+  // if (this.$vm?.$options?.options?.virtualHost) {
+  //   // 抖音小程序下 form 组件开启 virtualHost 出现 infinite loop. see: https://github.com/vuejs/core/blob/32a1433e0debd538c199bde18390bb903b4cde5a/packages/runtime-core/src/componentProps.ts#L227
+  //   // vm.$.parent = null
+  // } else {
+  //   vm.$.parent = parentVm.$
+  // }
+
+  if (__VUE_OPTIONS_API__ && parentVm) {
     ;(parentVm as any).$children.push(vm)
-    const parent = parentVm.$ as any
-    ;(vm.$ as any).provides = parent
-      ? parent.provides
-      : Object.create(parent.appContext.provides)
-    initInjections(vm)
-    initProvide(vm)
   }
   vm.$callCreatedHook()
   // TODO 字节小程序父子组件关系建立的较晚，导致 inject 和 provide 初始化变慢

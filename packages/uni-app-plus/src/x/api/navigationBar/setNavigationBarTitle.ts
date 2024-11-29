@@ -5,13 +5,12 @@ import {
   defineAsyncApi,
 } from '@dcloudio/uni-api'
 import { getCurrentPage } from '@dcloudio/uni-core'
-import type { ComponentPublicInstance } from 'vue'
 
 export const setNavigationBarTitle =
   defineAsyncApi<API_TYPE_SET_NAVIGATION_BAR_TITLE>(
     API_SET_NAVIGATION_BAR_TITLE,
     (options, { resolve, reject }) => {
-      const page = getCurrentPage() as ComponentPublicInstance
+      const page = (getCurrentPage() as unknown as UniPage).vm
       if (page == null) {
         reject('page is not ready')
         return

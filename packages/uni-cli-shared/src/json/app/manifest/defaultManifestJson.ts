@@ -23,7 +23,7 @@ const defaultManifestJson = `{
     "permissions": {},
     "plus": {
         "useragent": {
-            "value": "uni-app appservice",
+            "value": "",
             "concatenate": true
         },
         "splashscreen": {
@@ -34,5 +34,11 @@ const defaultManifestJson = `{
         },
         "popGesture": "close",
         "launchwebview": {}
+    },
+    "app-harmony": {
+        "useragent": {
+            "value": "",
+            "concatenate": true
+        }
     }
-  }`
+}`

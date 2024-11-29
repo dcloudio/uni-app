@@ -47,6 +47,10 @@ export const miniProgram: MiniProgramCompilerOptions = {
     dir: COMPONENTS_DIR,
     getPropertySync: true,
   },
+  filter: {
+    lang: 'sjs',
+    setStyle: true,
+  },
 }
 const nodeTransforms = [
   transformRef,

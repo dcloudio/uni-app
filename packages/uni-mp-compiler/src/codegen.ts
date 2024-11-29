@@ -101,8 +101,16 @@ export function generate(
     }
   }
 
-  push(`return `)
-  push(genBabelExpr(ast.renderData, options.generatorOpts))
+  if (isSetupInlined && options.isX) {
+    push(`const __returned__ = `)
+    push(genBabelExpr(ast.renderData, options.generatorOpts))
+    newline()
+    push(`return __returned__`)
+  } else {
+    push(`return `)
+    push(genBabelExpr(ast.renderData, options.generatorOpts))
+  }
+
   if (useWithBlock) {
     deindent()
     push(`}`)

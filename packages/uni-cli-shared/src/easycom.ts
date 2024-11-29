@@ -90,8 +90,11 @@ export function initEasycoms(
       ;(globalThis as any).uts2jsSourceCodeMap.initUts2jsEasycom(easycoms)
     }
   }
-  initEasycom(options)
-  initUTSEasycom()
+  // ext-api 模式下，不存在 easycom 特性
+  if (process.env.UNI_COMPILE_TARGET !== 'ext-api') {
+    initEasycom(options)
+    initUTSEasycom()
+  }
   const componentExtNames = isX ? 'uvue|vue' : 'vue'
   const res = {
     options,
@@ -109,8 +112,10 @@ export function initEasycoms(
     ),
     refresh() {
       res.options = initEasycomOptions()
-      initEasycom(res.options)
-      initUTSEasycom()
+      if (process.env.UNI_COMPILE_TARGET !== 'ext-api') {
+        initEasycom(res.options)
+        initUTSEasycom()
+      }
     },
     easycoms,
   }
@@ -235,12 +240,14 @@ function initAutoScanEasycom(
   }
   const is_uni_modules =
     path.basename(path.resolve(dir, '../..')) === 'uni_modules'
-  const is_encrypt_uni_modules = // uni_modules模式不需要此逻辑
+  const is_easycom_encrypt_uni_modules = // uni_modules模式不需要此逻辑
     process.env.UNI_COMPILE_TARGET !== 'uni_modules' &&
     is_uni_modules &&
-    fs.existsSync(path.resolve(dir, '../encrypt'))
+    // 前端加密插件，不能包含utssdk目录
+    fs.existsSync(path.resolve(dir, '../encrypt')) &&
+    !fs.existsSync(path.resolve(dir, '../utssdk'))
   const uni_modules_plugin_id =
-    is_encrypt_uni_modules && path.basename(path.resolve(dir, '..'))
+    is_easycom_encrypt_uni_modules && path.basename(path.resolve(dir, '..'))
   fs.readdirSync(dir).forEach((name) => {
     const folder = path.resolve(dir, name)
     if (!isDir(folder)) {
@@ -252,7 +259,7 @@ function initAutoScanEasycom(
     for (let i = 0; i < extensions.length; i++) {
       const ext = extensions[i]
       if (files.includes(name + ext)) {
-        easycoms[`^${name}$`] = is_encrypt_uni_modules
+        easycoms[`^${name}$`] = is_easycom_encrypt_uni_modules
           ? normalizePath(
               path.join(
                 rootDir,

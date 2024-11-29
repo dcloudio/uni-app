@@ -14,7 +14,7 @@ let proxy: any
 const keepAliveCallbacks: Record<string, Function> = {}
 
 function isUniElement(obj: any) {
-  return typeof obj.getNodeId === 'function' && obj.pageId
+  return obj && typeof obj.getNodeId === 'function' && obj.pageId
 }
 
 function isComponentPublicInstance(instance: any) {
@@ -24,9 +24,25 @@ function isComponentPublicInstance(instance: any) {
 function parseElement(obj: any) {
   if (isUniElement(obj)) {
     return obj
-  } else if (isComponentPublicInstance(obj)) {
+  }
+}
+
+function parseComponentPublicInstance(obj: any) {
+  if (isComponentPublicInstance(obj)) {
     return obj.$el
   }
+}
+
+// 序列化 UniElement | ComponentPublicInstance
+function serialize(el: any, type: 'UniElement' | 'ComponentPublicInstance') {
+  let nodeId = ''
+  let pageId = ''
+  // 非 x 可能不存在 getNodeId 方法？
+  if (el && el.getNodeId) {
+    pageId = el.pageId
+    nodeId = el.getNodeId()
+  }
+  return { pageId, nodeId, __type__: type }
 }
 
 function toRaw(observed?: unknown): unknown {
@@ -52,17 +68,18 @@ export function normalizeArg(
       callbacks[id] = arg
     }
     return id
-  } else if (isPlainObject(arg)) {
-    const el = parseElement(arg)
+    // 为啥还要额外判断了isUniElement?，isPlainObject不是包含isUniElement的逻辑吗？为了避免出bug，保留此逻辑
+  } else if (isPlainObject(arg) || isUniElement(arg)) {
+    const uniElement = parseElement(arg)
+    const componentPublicInstanceUniElement = !uniElement
+      ? parseComponentPublicInstance(arg)
+      : undefined
+    const el = uniElement || componentPublicInstanceUniElement
     if (el) {
-      let nodeId = ''
-      let pageId = ''
-      // 非 x 可能不存在 getNodeId 方法？
-      if (el && el.getNodeId) {
-        pageId = el.pageId
-        nodeId = el.getNodeId()
-      }
-      return { pageId, nodeId }
+      return serialize(
+        el,
+        uniElement ? 'UniElement' : 'ComponentPublicInstance'
+      )
     } else {
       // 必须复制，否则会污染原始对象，比如：
       // const obj = {
@@ -72,7 +89,7 @@ export function normalizeArg(
       // const newObj = normalizeArg(obj, {}, false)
       // newObj.a = 2 // 这会污染原始对象 obj
       const newArg = {}
-      Object.keys(arg).forEach((name) => {
+      Object.keys(arg as object).forEach((name) => {
         newArg[name] = normalizeArg((arg as any)[name], callbacks, keepAlive)
       })
       return newArg
@@ -307,24 +324,24 @@ function getProxy(): {
           return nativeChannel.invokeSync('APP-SERVICE', args, callback)
         },
         invokeAsync(args: InvokeArgs, callback: InvokeAsyncCallback) {
-          if (
-            // 硬编码
-            args.moduleName === 'uni-ad' &&
-            ['showByJs', 'loadByJs'].includes(args.name)
-          ) {
-            // @ts-expect-error
-            const res: InvokeSyncRes = nativeChannel.invokeSync(
-              'APP-SERVICE',
-              args,
-              callback
-            )
-            callback(
-              extend(res, {
-                params: [res.params],
-              })
-            )
-            return res
-          }
+          // if (
+          //   // 硬编码
+          //   args.moduleName === 'uni-ad' &&
+          //   ['showByJs', 'loadByJs'].includes(args.name)
+          // ) {
+          //   // @ts-expect-error
+          //   const res: InvokeSyncRes = nativeChannel.invokeSync(
+          //     'APP-SERVICE',
+          //     args,
+          //     callback
+          //   )
+          //   callback(
+          //     extend(res, {
+          //       params: [res.params],
+          //     })
+          //   )
+          //   return res
+          // }
           // @ts-expect-error
           return nativeChannel.invokeAsync('APP-SERVICE', args, callback)
         },

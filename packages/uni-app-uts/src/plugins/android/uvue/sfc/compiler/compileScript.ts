@@ -984,7 +984,11 @@ __ins.emit(event, ...do_not_transform_spread)
     )}({${runtimeOptions}\n  ` +
       `${hasAwait ? `async ` : ``}setup(${args}): any | null {
 const __ins = getCurrentInstance()!;
-const _ctx = __ins.proxy;
+const _ctx = __ins.proxy${
+        options.genDefaultAs
+          ? ` as InstanceType<typeof ${options.genDefaultAs}>`
+          : ''
+      };
 const _cache = __ins.renderCache;
 ${exposeCall}`
   )
@@ -1066,8 +1070,8 @@ function generateScriptMap(
   scriptMapConsumer.eachMapping((m) => {
     scriptMapGenerator.addMapping({
       original: {
-        line: m.originalLine,
-        column: m.originalColumn,
+        line: m.originalLine ?? 0,
+        column: m.originalColumn ?? 0,
       },
       generated: {
         line: m.generatedLine,
@@ -1080,8 +1084,8 @@ function generateScriptMap(
   templateMapConsumer.eachMapping((m) => {
     scriptMapGenerator.addMapping({
       original: {
-        line: m.originalLine,
-        column: m.originalColumn,
+        line: m.originalLine ?? 0,
+        column: m.originalColumn ?? 0,
       },
       generated: {
         line: m.generatedLine + offset,

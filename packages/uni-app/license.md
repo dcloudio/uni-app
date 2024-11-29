@@ -1,1 +1,1 @@
-[https://uniapp.dcloud.net.cn/license.html ](https://uniapp.dcloud.net.cn/license.html )
+[https://dcloud.io/license/uni-app.html](https://dcloud.io/license/uni-app.html)

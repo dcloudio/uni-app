@@ -37,6 +37,7 @@ export function transformAd(
   }
   if (AD_COMPONENTS.indexOf(node.tag) > -1) {
     appJsonUniadFlag = true
+    process.env.HAS_WXAD = '1'
     uniadAppJson(findJsonFile('app'))
   }
 }

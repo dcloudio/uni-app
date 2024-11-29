@@ -158,28 +158,30 @@ export interface KotlinManifestCache {
   env: Record<string, string>
   files: Record<string, Record<string, string>>
 }
-function updateUTSKotlinSourceMapManifestCache(cacheDir: string) {
+export function updateUTSKotlinSourceMapManifestCache(cacheDir: string) {
   const manifestFile = path.resolve(cacheDir, 'src/.manifest.json')
-  const stats = fs.statSync(manifestFile)
-  if (stats.isFile()) {
-    if (kotlinManifest.mtimeMs !== stats.mtimeMs) {
-      const { files } = fs.readJSONSync(manifestFile) as KotlinManifestCache
-      if (files) {
-        const classManifest: Record<string, string> = {}
-        Object.keys(files).forEach((name) => {
-          const kotlinClass = files[name].class
-          if (kotlinClass) {
-            classManifest[kotlinClass] = name
-          }
-        })
-        kotlinManifest.mtimeMs = stats.mtimeMs
-        kotlinManifest.manifest = classManifest
+  try {
+    const stats = fs.statSync(manifestFile)
+    if (stats.isFile()) {
+      if (kotlinManifest.mtimeMs !== stats.mtimeMs) {
+        const { files } = fs.readJSONSync(manifestFile) as KotlinManifestCache
+        if (files) {
+          const classManifest: Record<string, string> = {}
+          Object.keys(files).forEach((name) => {
+            const kotlinClass = files[name].class
+            if (kotlinClass) {
+              classManifest[kotlinClass] = name
+            }
+          })
+          kotlinManifest.mtimeMs = stats.mtimeMs
+          kotlinManifest.manifest = classManifest
+        }
       }
     }
-  }
+  } catch (e) {}
 }
 
-function parseFilenameByClassName(className: string) {
+export function parseFilenameByClassName(className: string) {
   return kotlinManifest.manifest[className.split('$')[0]] || 'index.kt'
 }
 

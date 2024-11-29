@@ -23,11 +23,18 @@ import {
   getCompilerServer,
   getUTSCompiler,
   isColorSupported,
+  isEnableGenericsParameterDefaults,
+  isEnableNarrowType,
+  isEnableUTSJSONObjectPropertyAccess,
+  isEnableUTSNumber,
   moveRootIndexSourceMap,
+  normalizeUTSResult,
   parseExtApiDefaultParameters,
   parseInjectModules,
   parseKotlinPackageWithPluginId,
   resolveAndroidDir,
+  resolveBundleInputFileName,
+  resolveBundleInputRoot,
   resolveConfigProvider,
   resolvePackage,
   resolveSourceMapFile,
@@ -48,6 +55,7 @@ import { uvueOutDir } from './uvue'
 export interface KotlinCompilerServer extends CompilerServer {
   getKotlincHome(): string
   getDefaultJar(arg?: any): string[]
+  getCompilerJar?: (userJars: string[], version?: number) => string[]
   compile(
     options: {
       kotlinc: string[]
@@ -139,7 +147,7 @@ export async function runKotlinProd(
   const inputDir = process.env.UNI_INPUT_DIR
   const outputDir = process.env.UNI_OUTPUT_DIR
   const result = await compile(filename, {
-    inputDir: isModule ? uvueOutDir() : inputDir,
+    inputDir: isModule ? uvueOutDir('app-android') : inputDir,
     outputDir,
     sourceMap: !!sourceMap,
     components,
@@ -173,7 +181,7 @@ export async function runKotlinProd(
     if (isModule) {
       // noop
     } else if (isX && process.env.UNI_UTS_COMPILER_TYPE === 'cloud') {
-      updateManifestModules(inputDir, result.inject_apis)
+      updateManifestModules(inputDir, result.inject_apis, extApis)
     } else {
       addInjectApis(result.inject_apis)
     }
@@ -199,7 +207,11 @@ export async function runKotlinProd(
   return result
 }
 
-function updateManifestModules(inputDir: string, inject_apis: string[]) {
+function updateManifestModules(
+  inputDir: string,
+  inject_apis: string[],
+  localExtApis: Record<string, [string, string]> = {}
+) {
   const filename = path.resolve(inputDir, 'manifest.json')
   if (fs.existsSync(filename)) {
     const content = fs.readFileSync(filename, 'utf8')
@@ -216,7 +228,7 @@ function updateManifestModules(inputDir: string, inject_apis: string[]) {
       }
       const modules = json.app.distribute.modules
       let updated = false
-      parseInjectModules(inject_apis, {}, []).forEach((name) => {
+      parseInjectModules(inject_apis, localExtApis, []).forEach((name) => {
         if (!hasOwn(modules, name)) {
           modules[name] = {}
           updated = true
@@ -433,14 +445,14 @@ export async function compileAndroidDex(
   stderrListener: (data: string) => void
 ) {
   const inputDir = process.env.UNI_INPUT_DIR
-  const { getDefaultJar, getKotlincHome, compile: compileDex } = compilerServer
+  const { getKotlincHome, compile: compileDex } = compilerServer
   const options = {
     pageCount: 0,
     kotlinc: resolveKotlincArgs(
       kotlinFiles,
       jarFile,
       getKotlincHome(),
-      (isX ? getDefaultJar(2) : getDefaultJar()).concat(depJars)
+      getKotlinCompileJars(isX, depJars, compilerServer)
     ),
     d8: resolveD8Args(jarFile),
     sourceRoot: inputDir,
@@ -451,6 +463,17 @@ export async function compileAndroidDex(
   const result = await compileDex(options, inputDir)
   // console.log('dex compile time: ' + (Date.now() - time) + 'ms')
   return result
+}
+
+function getKotlinCompileJars(
+  isX: boolean,
+  depJars: string[],
+  { getDefaultJar, getCompilerJar }: KotlinCompilerServer
+) {
+  if (getCompilerJar) {
+    return getCompilerJar(depJars, isX ? 2 : undefined)
+  }
+  return getDefaultJar(isX ? 2 : undefined).concat(depJars)
 }
 
 function checkDeps(
@@ -562,12 +585,13 @@ const DEFAULT_IMPORTS = [
   'io.dcloud.uniapp.*',
 ]
 
-const DEFAULT_IMPORTS_X = [
+const DEFAULT_IMPORTS_VUE_X = [
   'io.dcloud.uniapp.framework.*',
   'io.dcloud.uniapp.vue.*',
   'io.dcloud.uniapp.vue.shared.*',
-  'io.dcloud.uniapp.runtime.*',
 ]
+
+const DEFAULT_IMPORTS_X = ['io.dcloud.uniapp.runtime.*']
 
 export async function compile(
   filename: string,
@@ -590,8 +614,11 @@ export async function compile(
   const { bundle, UTSTarget } = getUTSCompiler()
   // let time = Date.now()
   const imports = [...DEFAULT_IMPORTS]
-  if (isX && !process.env.UNI_UTS_DISABLE_X_IMPORT) {
+  if (isX) {
     imports.push(...DEFAULT_IMPORTS_X)
+    if (!process.env.UNI_UTS_DISABLE_X_IMPORT) {
+      imports.push(...DEFAULT_IMPORTS_VUE_X)
+    }
   }
   const rClass = resolveAndroidResourceClass(filename)
   if (rClass) {
@@ -615,12 +642,13 @@ export async function compile(
   const componentsCode = genComponentsCode(filename, components, isX)
   const { package: pluginPackage, id: pluginId } = parseKotlinPackage(filename)
   const input: UTSInputOptions = {
-    root: inputDir,
-    filename,
+    root: resolveBundleInputRoot('app-android', inputDir),
+    filename: resolveBundleInputFileName('app-android', filename),
     pluginId: isPlugin ? pluginId : '',
     paths: {
       vue: 'io.dcloud.uniapp.vue',
       '@dcloudio/uni-app': 'io.dcloud.uniapp.framework',
+      '@dcloudio/uni-runtime': 'io.dcloud.uniapp.framework.runtime',
     },
     uniModules,
   }
@@ -630,7 +658,12 @@ export async function compile(
       input.fileContent = componentsCode
     } else {
       input.fileContent =
-        fs.readFileSync(filename, 'utf8') + `\n` + componentsCode
+        fs.readFileSync(
+          resolveBundleInputFileName('app-android', filename),
+          'utf8'
+        ) +
+        `\n` +
+        componentsCode
     }
   } else {
     // uts文件不存在，且也无组件
@@ -662,6 +695,11 @@ export async function compile(
         uniExtApiDefaultNamespace: 'io.dcloud.uniapp.extapi',
         uniExtApiNamespaces: extApis,
         uniExtApiDefaultParameters: parseExtApiDefaultParameters(),
+        enableUtsNumber: isEnableUTSNumber(),
+        enableNarrowType: isEnableNarrowType(),
+        enableGenericsParameterDefaults: isEnableGenericsParameterDefaults(),
+        enableUTSJSONObjectPropertyAccess:
+          isEnableUTSJSONObjectPropertyAccess(),
         ...transform,
       },
     },
@@ -679,7 +717,7 @@ export async function compile(
       package: '',
       result,
     })
-  return result
+  return normalizeUTSResult('app-android', result)
 }
 
 export function resolveKotlincArgs(
@@ -950,7 +988,7 @@ export function parseUTSModuleLibsJars(plugins: string[]) {
   return [...jars]
 }
 
-function checkDepsByPlugin(
+async function checkDepsByPlugin(
   checkType: 1 | 2,
   plugin: string,
   checkDependencies: Required<KotlinCompilerServer>['checkDependencies'],

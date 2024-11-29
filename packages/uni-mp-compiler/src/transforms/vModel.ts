@@ -14,8 +14,10 @@ import {
   createCompoundExpression,
   createObjectProperty,
   createSimpleExpression,
+  findDir,
   findProp,
   isSimpleIdentifier,
+  isStaticArgOf,
   isStaticExp,
 } from '@vue/compiler-core'
 import { DOMErrorCodes, createDOMCompilerError } from '@vue/compiler-dom'
@@ -58,8 +60,8 @@ export const transformModel: DirectiveTransform = (
   }
 
   function checkDuplicatedValue() {
-    const value = findProp(node, 'value')
-    if (value) {
+    const value = findDir(node, 'bind')
+    if (value && isStaticArgOf(value.arg, 'value')) {
       context.onError(
         createDOMCompilerError(
           DOMErrorCodes.X_V_MODEL_UNNECESSARY_VALUE,

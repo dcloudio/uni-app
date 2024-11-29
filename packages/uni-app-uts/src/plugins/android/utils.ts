@@ -194,14 +194,6 @@ export function kotlinOutDir() {
   return path.join(process.env.UNI_OUTPUT_DIR, '../.kotlin')
 }
 
-export function uvueOutDir() {
-  return path.join(process.env.UNI_OUTPUT_DIR, '../.uvue')
-}
-
-export function tscOutDir() {
-  return path.join(process.env.UNI_OUTPUT_DIR, '../.tsc')
-}
-
 export function isVue(filename: string) {
   return filename.endsWith('.vue') || filename.endsWith('.uvue')
 }

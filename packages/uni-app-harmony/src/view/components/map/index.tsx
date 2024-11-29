@@ -18,7 +18,6 @@ import {
   useSubscribe,
 } from '@dcloudio/uni-components'
 import '@amap/amap-jsapi-types'
-import { callOptions } from '@dcloudio/uni-shared'
 import { type Point, getIsAMap, getIsBMap } from '../../../helpers/location'
 import {
   type GoogleMap,
@@ -448,12 +447,12 @@ function useMap(
     // TODO 支持在页面外使用
     const id = useContextInfo()
     useSubscribe(
-      (type, data: any = {}) => {
+      (type, data: any = {}, resolve) => {
         switch (type) {
           case 'getCenterLocation':
             onMapReady(() => {
               const center = map.getCenter()!
-              callOptions(data, {
+              resolve({
                 latitude: getLat(center as LatLng),
                 longitude: getLng(center as LatLng),
                 errMsg: `${type}:ok`,
@@ -485,10 +484,14 @@ function useMap(
                   map.setCenter(centerPosition as any)
                 }
                 onMapReady(() => {
-                  callOptions(data, `${type}:ok`)
+                  resolve({
+                    errMsg: `${type}:ok`,
+                  })
                 })
               } else {
-                callOptions(data, `${type}:fail`)
+                resolve({
+                  errMsg: `${type}:fail`,
+                })
               }
             }
             break
@@ -501,11 +504,18 @@ function useMap(
                 try {
                   context.translate(data)
                 } catch (error: any) {
-                  callOptions(data, `${type}:fail ${error.message}`)
+                  resolve({
+                    errMsg: `${type}:fail ${error.message}`,
+                  })
+                  return
                 }
-                callOptions(data, `${type}:ok`)
+                resolve({
+                  errMsg: `${type}:ok`,
+                })
               } else {
-                callOptions(data, `${type}:fail not found`)
+                resolve({
+                  errMsg: `${type}:fail not found`,
+                })
               }
             })
             break
@@ -515,7 +525,9 @@ function useMap(
               updateBounds()
             }
             onBoundsReady(() => {
-              callOptions(data, `${type}:ok`)
+              resolve({
+                errMsg: `${type}:ok`,
+              })
             })
             break
           case 'getRegion':
@@ -523,7 +535,7 @@ function useMap(
               const latLngBounds = map.getBounds()!
               const southwest = latLngBounds.getSouthWest()
               const northeast = latLngBounds.getNorthEast()
-              callOptions(data, {
+              resolve({
                 southwest: {
                   latitude: getLat(southwest as LatLng),
                   longitude: getLng(southwest as LatLng),
@@ -538,7 +550,7 @@ function useMap(
             break
           case 'getScale':
             onMapReady(() => {
-              callOptions(data, {
+              resolve({
                 scale: map.getZoom(),
                 errMsg: `${type}:ok`,
               })

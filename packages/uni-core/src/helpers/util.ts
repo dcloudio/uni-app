@@ -38,3 +38,11 @@ function rpx2pxWithReplace(str: string) {
     return uni.upx2px(parseFloat(b)) + 'px'
   })
 }
+
+export function get$pageByPage(
+  page: UniPage | Page.PageInstance<AnyObject, {}>
+): Page.PageInstance['$page'] {
+  return __X__
+    ? (page as UniPage).vm.$basePage
+    : (page as Page.PageInstance<AnyObject, {}>).$page
+}

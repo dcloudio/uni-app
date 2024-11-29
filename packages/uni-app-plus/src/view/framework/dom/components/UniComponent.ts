@@ -158,6 +158,8 @@ export class UniComponent extends UniNode {
     this.$app.unmount()
     removeElement(this.id)
     this.removeUniChildren()
+    // 同步触发生命周期
+    flushPostFlushCbs()
     this.updateView()
   }
   appendChild(node: Element) {

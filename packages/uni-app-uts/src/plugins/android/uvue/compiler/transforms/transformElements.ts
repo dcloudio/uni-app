@@ -4,6 +4,7 @@ import {
   type RootNode,
   type TemplateChildNode,
 } from '@vue/compiler-core'
+import { isAppUVueBuiltInEasyComponent } from '@dcloudio/uni-shared'
 import { camelize, capitalize } from '@dcloudio/uni-cli-shared'
 import type { TransformContext } from '../transform'
 
@@ -13,7 +14,9 @@ export function transformElements(
 ) {
   if (
     node.type === NodeTypes.ELEMENT &&
-    node.tagType === ElementTypes.ELEMENT
+    (node.tagType === ElementTypes.ELEMENT ||
+      (node.tagType === ElementTypes.COMPONENT &&
+        isAppUVueBuiltInEasyComponent(node.tag)))
   ) {
     context.elements.add(node.tag)
     // 原生UTS组件

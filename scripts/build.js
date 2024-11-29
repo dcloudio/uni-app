@@ -28,7 +28,7 @@ const arkTSOnly = args.ets
 
 run()
 
-async function run () {
+async function run() {
   if (!targets.length) {
     await buildAll(allTargets)
   } else {
@@ -36,7 +36,7 @@ async function run () {
   }
 }
 
-function buildWithChildProcess (target) {
+function buildWithChildProcess(target) {
   const args = [__filename, target]
   devOnly && args.push('-d')
   isRelease && args.push('--release')
@@ -56,7 +56,7 @@ function buildWithChildProcess (target) {
   })
 }
 
-function getTargetGroup (targets) {
+function getTargetGroup(targets) {
   const group = {}
   for (let i = 0; i < targets.length; i++) {
     const target = targets[i]
@@ -70,7 +70,7 @@ function getTargetGroup (targets) {
   return group
 }
 
-async function buildAll (targets) {
+async function buildAll(targets) {
   if (!multiProcess) {
     for (const target of targets) {
       try {
@@ -100,7 +100,7 @@ async function buildAll (targets) {
   }
 }
 
-async function build (target) {
+async function build(target) {
   console.log(`\n${colors.bold(target)}:`)
   const pkgDir = path.resolve(`packages/${target}`)
   const pkg = require(`${pkgDir}/package.json`)
@@ -111,7 +111,8 @@ async function build (target) {
   }
   const tsconfigJsonPath = path.resolve(pkgDir, 'tsconfig.json')
   let hasTscBundler = false
-  const hasViteBundler = !arkTSOnly && fs.existsSync(path.resolve(pkgDir, 'vite.config.ts'))
+  const hasViteBundler =
+    !arkTSOnly && fs.existsSync(path.resolve(pkgDir, 'vite.config.ts'))
   if (fs.existsSync(tsconfigJsonPath)) {
     const tsconfigJson = require(tsconfigJsonPath)
     if (
@@ -121,7 +122,8 @@ async function build (target) {
       hasTscBundler = true
     }
   }
-  const hasRollupBundler = !arkTSOnly && fs.existsSync(path.resolve(pkgDir, 'build.json'))
+  const hasRollupBundler =
+    !arkTSOnly && fs.existsSync(path.resolve(pkgDir, 'build.json'))
 
   const hasArkTSBundler = fs.existsSync(path.resolve(pkgDir, 'build.ets.json'))
 
@@ -149,6 +151,7 @@ async function build (target) {
         cwd: pkgDir,
       }
     )
+    await sleep(500)
     if (target === 'uni-h5') {
       await execa(
         'vite',
@@ -159,6 +162,7 @@ async function build (target) {
           cwd: pkgDir,
         }
       )
+      await sleep(500)
       // uni-h5(uni-app x)
       await execa(
         'vite',
@@ -173,6 +177,7 @@ async function build (target) {
           cwd: pkgDir,
         }
       )
+      await sleep(500)
       await execa(
         'vite',
         ['build', '--config', path.resolve(pkgDir, 'vite.config.ts')],
@@ -186,6 +191,7 @@ async function build (target) {
           cwd: pkgDir,
         }
       )
+      await sleep(500)
     }
     if (target === 'uni-app-plus') {
       await execa(
@@ -197,6 +203,7 @@ async function build (target) {
           cwd: pkgDir,
         }
       )
+      await sleep(500)
     }
   }
   if (hasTscBundler) {
@@ -211,6 +218,22 @@ async function build (target) {
     await execa('tsc', args, {
       stdio: 'inherit',
     })
+    await sleep(500)
+  }
+  if (hasArkTSBundler) {
+    if (
+      process.env.UNI_APP_EXT_API_DIR &&
+      process.env.UNI_APP_EXT_API_INTERNAL_DIR
+    ) {
+      await buildArkTS(
+        target,
+        parse(fs.readFileSync(path.resolve(pkgDir, 'build.ets.json'), 'utf8'))
+      )
+    } else {
+      console.error(
+        `Please set UNI_APP_EXT_API_DIR and UNI_APP_EXT_API_INTERNAL_DIR in .env file`
+      )
+    }
   }
   if (hasRollupBundler) {
     await execa(
@@ -229,48 +252,29 @@ async function build (target) {
       ],
       { stdio: 'inherit' }
     )
+    await sleep(500)
+
     if (types && target !== 'uni-uts-vite') {
       await extract(target)
     }
   }
-  if (hasArkTSBundler) {
-    if (process.env.UNI_APP_EXT_API_DIR) {
-      await buildArkTS(target, parse(fs.readFileSync(path.resolve(pkgDir, 'build.ets.json'), 'utf8')))
-    } else {
-      console.error(`Please set UNI_APP_EXT_API_DIR in .env file`)
-    }
-  }
 }
 
-function getProviderBuildJson (projectDir, buildJson) {
-  const uniExtApiBuildJson = buildJson.find(options => options.input?.['temp/uni-ext-api/index.uts'] === 'uni.api.ets')
-  if (!uniExtApiBuildJson) {
-    return
-  }
-  const providerBuildJsonFilePath = path.resolve(projectDir, 'temp/uni-ext-api/provider.build.json')
-  if (fs.existsSync(providerBuildJsonFilePath)) {
-    return require(providerBuildJsonFilePath)
-  }
-}
-
-async function buildArkTS (target, buildJson) {
+async function buildArkTS(target, buildJson) {
   const projectDir = path.resolve(__dirname, '../packages', target)
   const { bundleArkTS } = require('../packages/uts/dist')
+  const { compileArkTSExtApi } = require('../packages/uni-uts-v1/dist')
   const start = Date.now()
   if (!Array.isArray(buildJson)) {
     buildJson = [buildJson]
   }
-  const providerBuildJson = getProviderBuildJson(projectDir, buildJson)
-  if (providerBuildJson) {
-    buildJson.push(providerBuildJson)
-  }
   for (const options of buildJson) {
-    const inputs = Object.keys(options.input);
+    const inputs = Object.keys(options.input)
     const alias = options.alias || {}
     const replacements = options.replacements || {}
     const vars = {}
     const envs = {}
-    Object.keys(replacements).forEach(key => {
+    Object.keys(replacements).forEach((key) => {
       if (key.startsWith('process.env.')) {
         envs[key.replace('process.env.', '')] = replacements[key]
       } else {
@@ -282,10 +286,7 @@ async function buildArkTS (target, buildJson) {
       const buildOptions = {
         input: {
           root: projectDir,
-          filename: path.resolve(
-            projectDir,
-            input
-          ),
+          filename: path.resolve(projectDir, input),
           paths: Object.keys(alias).reduce((paths, key) => {
             paths[key] = alias[key].replace('<rootDir>', rootDir)
             return paths
@@ -299,8 +300,8 @@ async function buildArkTS (target, buildJson) {
           },
           globals: {
             vars,
-            envs
-          }
+            envs,
+          },
         },
         output: {
           outDir: path.resolve(projectDir, 'dist'),
@@ -312,37 +313,98 @@ async function buildArkTS (target, buildJson) {
           logFilename: false,
           isPlugin: true,
           transform: {
-            autoImportExternals: options.autoImports || {}
+            autoImportExternals: options.autoImports || {},
           },
           treeshake: {
-            noSideEffects: true
+            noSideEffects: true,
           },
           wrapperFunctionName: options.wrapper?.name,
-          wrapperFunctionArgs: options.wrapper?.args
+          wrapperFunctionArgs: options.wrapper?.args,
         },
       }
       // console.log(buildOptions)
       await bundleArkTS(buildOptions).then((res) => {
         console.log('bundle: ' + (Date.now() - start) + 'ms')
         // console.log(JSON.stringify(res))、
-        const filePath = path.resolve(buildOptions.output.outDir, buildOptions.output.outFilename)
+        const filePath = path.resolve(
+          buildOptions.output.outDir,
+          buildOptions.output.outFilename
+        )
         if (input !== 'temp/uni-ext-api/index.uts') {
           if (options.banner) {
-            fs.writeFileSync(filePath, options.banner + '\n' + fs.readFileSync(filePath, 'utf8'))
+            fs.writeFileSync(
+              filePath,
+              options.banner + '\n' + fs.readFileSync(filePath, 'utf8')
+            )
           }
           return
         }
-        const fileContent = (options.banner ? options.banner + '\n' : '') +
-          fs.readFileSync(filePath, 'utf8').replace('export type Request<T>', 'export type Request<T = Object>')
-            .replace('export class RequestOptions<T>', 'export class RequestOptions<T = Object>')
-            .replace('export class RequestSuccess<T>', 'export class RequestSuccess<T = Object>')
+        const fileContent =
+          (options.banner ? options.banner + '\n' : '') +
+          fs
+            .readFileSync(filePath, 'utf8')
+            .replace(
+              'export type Request<T>',
+              'export type Request<T = Object>'
+            )
+            .replace(
+              'export class RequestOptions<T>',
+              'export class RequestOptions<T = Object>'
+            )
+            .replace(
+              'export class RequestSuccess<T>',
+              'export class RequestSuccess<T = Object>'
+            )
         fs.writeFileSync(filePath, fileContent)
       })
     }
   }
+  // 先生成一遍提供给ohpm包使用
+  const extApiExportJsonPath = path.resolve(
+    __dirname,
+    '../packages/uni-uts-v1/lib/arkts/ext-api-export.json'
+  )
+  const extApiExport = genHarmonyExtApiExport()
+  fs.outputJSON(extApiExportJsonPath, extApiExport, { spaces: 2 })
+
+  const harBuildJson = require(path.resolve(
+    projectDir,
+    'temp/uni-ext-api/build.har.json'
+  ))
+  const standaloneExtApis = []
+  for (let i = 0; i < harBuildJson.length; i++) {
+    const { input, output, type, plugin, apis, provider, service } =
+      harBuildJson[i]
+    await compileArkTSExtApi(path.resolve(input, '..'), input, output, {
+      isExtApi: true,
+      isOhpmPackage: true,
+      transform: {},
+    })
+    let version = '1.0.0'
+    const packageJsonPath = path.resolve(input, 'package.json')
+    if (fs.existsSync(packageJsonPath)) {
+      const packageJson = fs.readJSONSync(packageJsonPath)
+      version = packageJson.version || '1.0.0'
+    }
+    standaloneExtApis.push({
+      type,
+      plugin,
+      apis,
+      provider,
+      service,
+      version,
+    })
+  }
   fs.outputJSON(
-    path.resolve(__dirname, '../packages/uni-uts-v1/lib/arkts/ext-api-export.json'),
-    genHarmonyExtApiExport(),
+    path.resolve(projectDir, 'src/compiler/standalone-ext-apis.json'),
+    standaloneExtApis,
     { spaces: 2 }
   )
+  const extApiExportWithHar = genHarmonyExtApiExport()
+  fs.outputJSON(extApiExportJsonPath, extApiExportWithHar, { spaces: 2 })
+}
+
+async function sleep(ms) {
+  global.gc && global.gc()
+  return new Promise((resolve) => setTimeout(resolve, ms))
 }

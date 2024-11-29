@@ -7,6 +7,8 @@ import { subscribePlusMessage } from '@dcloudio/uni-app-plus/service/framework/a
 import {
   EVENT_BACKBUTTON,
   backbuttonListener,
+  initEnterOptions,
+  parseRedirectInfo,
 } from '@dcloudio/uni-app-plus/service/framework/app/utils'
 
 export function initGlobalEvent() {
@@ -20,7 +22,10 @@ export function initGlobalEvent() {
   })
 
   plusGlobalEvent.addEventListener('resume', () => {
-    // TODO options
+    const info = parseRedirectInfo()
+    if (info && info.userAction) {
+      initEnterOptions(info)
+    }
     emit(ON_APP_ENTER_FOREGROUND, {})
   })
 

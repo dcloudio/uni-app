@@ -77,16 +77,15 @@ class PerformanceEntryStatus {
   }
 
   executeBefore() {
-    const page = getCurrentPage()
+    const page = (getCurrentPage() as unknown as UniPage)?.vm
     if (page != null) {
       this._entryData.referrerPath = page.route!
     }
   }
 
   executeAfter() {
-    const page = getCurrentPage()
+    const page = (getCurrentPage() as unknown as UniPage).vm
     if (page != null) {
-      // @ts-expect-error
       this._entryData.pageId = parseInt(page.$nativePage.pageId)
       this._entryData.path = page.route!
     }
@@ -95,11 +94,10 @@ class PerformanceEntryStatus {
   executeReady() {}
 
   getCurrentInnerPage(): IPage | null {
-    const currentPage = getCurrentPage()
+    const currentPage = (getCurrentPage() as unknown as UniPage).vm
     if (currentPage == null) {
       return null
     }
-    // @ts-expect-error
     return currentPage.$nativePage
   }
 }

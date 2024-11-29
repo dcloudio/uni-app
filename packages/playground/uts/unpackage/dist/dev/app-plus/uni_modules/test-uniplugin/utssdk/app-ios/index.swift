@@ -106,14 +106,16 @@ public class Test : NSObject, IUTSSourceMap {
         return nil;
     }
 }
-@available(iOS 13.0.0, *)
-public func testAsync() async -> UTSJSONObject {
+public func testAsync() -> UTSPromise<UTSJSONObject> {
+    return UTSPromise({
+    () -> Any? in
     DCloudUTSExtAPI.showToast();
     DCloudUTSExtAPI.showToast();
     DCloudUTSExtAPI.showModel();
     return UTSJSONObject([
         "a": 1 as NSNumber
     ]);
+    }, UTSJSONObject.self);
 }
 public var showToast1: ShowToast = {
 (_ msg) -> Void in
@@ -161,12 +163,17 @@ public func test1ByJs(_ callback: UTSCallback) -> String {
 @objcMembers
 public class TestByJs : Test {
     public func testByJs() -> String? {
-        return test();
+        return self.test();
     }
 }
-@available(iOS 13.0.0, *)
-public func testAsyncByJs() async -> UTSJSONObject {
-    return await testAsync();
+public func testAsyncByJs(utsCompletionHandler:@escaping (_ res: Any?, _ err: Any?) -> Void) {
+    testAsync().then({
+    (res) -> Void in
+    utsCompletionHandler(res, nil);
+    }).catch({
+    (err) -> Void in
+    utsCompletionHandler(nil, err);
+    });
 }
 public func showToast1ByJs(_ msg: String) -> Void {
     return showToast1(msg);
@@ -186,9 +193,8 @@ public class UTSSDKModulesTestUniPluginIndexSwift : NSObject {
     public static func s_test1ByJs(_ callback: UTSCallback) -> String {
         return test1ByJs(callback);
     }
-    @available(iOS 13.0.0, *)
-    public static func s_testAsyncByJs() async -> UTSJSONObject {
-        return await testAsyncByJs();
+    public static func s_testAsyncByJs(utsCompletionHandler:@escaping (_ res: Any?, _ err: Any?) -> Void) {
+        return testAsyncByJs(utsCompletionHandler: utsCompletionHandler);
     }
     public static func s_showToast1ByJs(_ msg: String) -> Void {
         return showToast1ByJs(msg);

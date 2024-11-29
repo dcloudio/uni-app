@@ -627,7 +627,7 @@
   **/
   function makeMap$1(str, expectsLowerCase) {
     var set2 = new Set(str.split(","));
-    return expectsLowerCase ? (val) => set2.has(val.toLowerCase()) : (val) => set2.has(val);
+    return (val) => set2.has(val);
   }
   var EMPTY_OBJ = {};
   var EMPTY_ARR = [];
@@ -819,16 +819,6 @@
   var ON_PAGE_SCROLL = "onPageScroll";
   var ON_REACH_BOTTOM = "onReachBottom";
   var ON_WXS_INVOKE_CALL_METHOD = "onWxsInvokeCallMethod";
-  var lastLogTime = 0;
-  function formatLog(module) {
-    var now = Date.now();
-    var diff = lastLogTime ? now - lastLogTime : 0;
-    lastLogTime = now;
-    for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key2 = 1; _key2 < _len; _key2++) {
-      args[_key2 - 1] = arguments[_key2];
-    }
-    return "[".concat(now, "][").concat(diff, "ms][").concat(module, "]：").concat(args.map((arg) => JSON.stringify(arg)).join(" "));
-  }
   function cache(fn) {
     var cache2 = /* @__PURE__ */ Object.create(null);
     return (str) => {
@@ -850,34 +840,14 @@
     var res;
     return function() {
       if (fn) {
-        for (var _len2 = arguments.length, args = new Array(_len2), _key3 = 0; _key3 < _len2; _key3++) {
-          args[_key3] = arguments[_key3];
+        for (var _len = arguments.length, args = new Array(_len), _key2 = 0; _key2 < _len; _key2++) {
+          args[_key2] = arguments[_key2];
         }
         res = fn.apply(ctx2, args);
         fn = null;
       }
       return res;
     };
-  }
-  function callOptions(options, data) {
-    options = options || {};
-    if (isString(data)) {
-      data = {
-        errMsg: data
-      };
-    }
-    if (/:ok$/.test(data.errMsg)) {
-      if (isFunction(options.success)) {
-        options.success(data);
-      }
-    } else {
-      if (isFunction(options.fail)) {
-        options.fail(data);
-      }
-    }
-    if (isFunction(options.complete)) {
-      options.complete(data);
-    }
   }
   function getValueByDataPath(obj, path) {
     if (!isString(path)) {
@@ -893,6 +863,16 @@
       return obj[key2];
     }
     return getValueByDataPath(obj[key2], parts.slice(1).join("."));
+  }
+  var lastLogTime = 0;
+  function formatLog(module) {
+    var now = Date.now();
+    var diff = lastLogTime ? now - lastLogTime : 0;
+    lastLogTime = now;
+    for (var _len2 = arguments.length, args = new Array(_len2 > 1 ? _len2 - 1 : 0), _key3 = 1; _key3 < _len2; _key3++) {
+      args[_key3 - 1] = arguments[_key3];
+    }
+    return "[".concat(now, "][").concat(diff, "ms][").concat(module, "]：").concat(args.map((arg) => JSON.stringify(arg)).join(" "));
   }
   function formatKey(key2) {
     return camelize(key2.substring(5));
@@ -1117,13 +1097,15 @@
   var E = function() {
   };
   E.prototype = {
+    _id: 1,
     on: function(name, callback, ctx2) {
       var e2 = this.e || (this.e = {});
       (e2[name] || (e2[name] = [])).push({
         fn: callback,
-        ctx: ctx2
+        ctx: ctx2,
+        _id: this._id
       });
-      return this;
+      return this._id++;
     },
     once: function(name, callback, ctx2) {
       var self2 = this;
@@ -1144,13 +1126,13 @@
       }
       return this;
     },
-    off: function(name, callback) {
+    off: function(name, event) {
       var e2 = this.e || (this.e = {});
       var evts = e2[name];
       var liveEvents = [];
-      if (evts && callback) {
+      if (evts && event) {
         for (var i2 = evts.length - 1; i2 >= 0; i2--) {
-          if (evts[i2].fn === callback || evts[i2].fn._ === callback) {
+          if (evts[i2].fn === event || evts[i2].fn._ === event || evts[i2]._id === event) {
             evts.splice(i2, 1);
             break;
           }
@@ -3579,33 +3561,17 @@
   }
   function renderList(source, renderItem, cache2, index2) {
     var ret;
-    var cached = cache2 && cache2[index2];
+    var cached = cache2;
     if (isArray(source) || isString(source)) {
       ret = new Array(source.length);
       for (var i2 = 0, l = source.length; i2 < l; i2++) {
-        ret[i2] = renderItem(source[i2], i2, void 0, cached && cached[i2]);
-      }
-    } else if (typeof source === "number") {
-      ret = new Array(source);
-      for (var _i2 = 0; _i2 < source; _i2++) {
-        ret[_i2] = renderItem(_i2 + 1, _i2, void 0, cached && cached[_i2]);
-      }
-    } else if (isObject$2(source)) {
-      if (source[Symbol.iterator]) {
-        ret = Array.from(source, (item, i3) => renderItem(item, i3, void 0, cached && cached[i3]));
-      } else {
-        var keys = Object.keys(source);
-        ret = new Array(keys.length);
-        for (var _i3 = 0, _l = keys.length; _i3 < _l; _i3++) {
-          var key2 = keys[_i3];
-          ret[_i3] = renderItem(source[key2], key2, _i3, cached && cached[_i3]);
-        }
+        ret[i2] = renderItem(source[i2], i2, void 0, cached);
       }
     } else {
-      ret = [];
-    }
-    if (cache2) {
-      cache2[index2] = ret;
+      ret = new Array(source);
+      for (var _i2 = 0; _i2 < source; _i2++) {
+        ret[_i2] = renderItem(_i2 + 1, _i2, void 0, cached);
+      }
     }
     return ret;
   }
@@ -5664,9 +5630,6 @@
     };
     var hydrate2;
     var hydrateNode;
-    if (createHydrationFns) {
-      [hydrate2, hydrateNode] = createHydrationFns(internals);
-    }
     return {
       render: render2,
       hydrate: hydrate2,
@@ -7589,6 +7552,8 @@
   var APP_SERVICE_ID = "__uniapp__service";
   var ON_WEBVIEW_READY = "onWebviewReady";
   var ACTION_TYPE_DICT = 0;
+  var WEBVIEW_INSERTED = "webviewInserted";
+  var WEBVIEW_REMOVED = "webviewRemoved";
   var API_SET_LOCALE = "setLocale";
   var UniViewJSBridge$1 = /* @__PURE__ */ extend(ViewJSBridge, {
     publishHandler
@@ -7607,35 +7572,13 @@
     }, APP_SERVICE_ID);
   }
   function formatApiArgs(args, options) {
-    var params = args[0];
-    if (!options || !options.formatArgs || !isPlainObject(options.formatArgs) && isPlainObject(params)) {
+    args[0];
+    {
       return;
-    }
-    var formatArgs = options.formatArgs;
-    var keys = Object.keys(formatArgs);
-    for (var i2 = 0; i2 < keys.length; i2++) {
-      var name = keys[i2];
-      var formatterOrDefaultValue = formatArgs[name];
-      if (isFunction(formatterOrDefaultValue)) {
-        var errMsg = formatterOrDefaultValue(args[0][name], params);
-        if (isString(errMsg)) {
-          return errMsg;
-        }
-      } else {
-        if (!hasOwn$1(params, name)) {
-          params[name] = formatterOrDefaultValue;
-        }
-      }
     }
   }
   function beforeInvokeApi(name, args, protocol, options) {
-    if (options && options.beforeInvoke) {
-      var errMsg2 = options.beforeInvoke(args);
-      if (isString(errMsg2)) {
-        return errMsg2;
-      }
-    }
-    var errMsg = formatApiArgs(args, options);
+    var errMsg = formatApiArgs(args);
     if (errMsg) {
       return errMsg;
     }
@@ -7645,7 +7588,7 @@
       for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
         args[_key] = arguments[_key];
       }
-      var errMsg = beforeInvokeApi(name, args, protocol, options);
+      var errMsg = beforeInvokeApi(name, args);
       if (errMsg) {
         throw new Error(errMsg);
       }
@@ -7653,7 +7596,7 @@
     };
   }
   function defineSyncApi(name, fn, protocol, options) {
-    return wrapperSyncApi(name, fn, void 0, options);
+    return wrapperSyncApi(name, fn);
   }
   function getBaseSystemInfo() {
     if (typeof __SYSTEM_INFO__ !== "undefined") {
@@ -8045,7 +7988,7 @@
   }
   function copy_block(s, buf, len, header) {
     bi_windup(s);
-    if (header) {
+    {
       put_short(s, len);
       put_short(s, ~len);
     }
@@ -8331,7 +8274,7 @@
   }
   function _tr_stored_block(s, buf, stored_len, last) {
     send_bits(s, (STORED_BLOCK << 1) + (last ? 1 : 0), 3);
-    copy_block(s, buf, stored_len, true);
+    copy_block(s, buf, stored_len);
   }
   function _tr_align(s) {
     send_bits(s, STATIC_TREES << 1, 3);
@@ -11770,13 +11713,11 @@
       }
     });
   }
+  function invokeHarmonyChannel(method, args) {
+    return harmonyChannel.invokeSync(method, args ? args.map((arg) => JSON.stringify(arg)) : void 0);
+  }
   function getSameOriginUrl(url) {
-    var a2 = document.createElement("a");
-    a2.href = url;
-    if (a2.origin === location.origin) {
-      return Promise.resolve(url);
-    }
-    return Promise.resolve(url);
+    return Promise.resolve(invokeHarmonyChannel("getSameOriginUrl", [url]));
   }
   function getRealPath(filepath) {
     if (filepath.indexOf("//") === 0) {
@@ -11788,7 +11729,8 @@
     if (isSystemURL(filepath)) {
       return "file:/" + normalizeLocalPath(filepath);
     }
-    var wwwPath = normalizeLocalPath("_www").replace(/.+?\/apps\//, "resource://rawfile/apps/");
+    var href = location.href;
+    var wwwPath = href.substring(0, href.lastIndexOf("/"));
     if (filepath.indexOf("/") === 0) {
       if (filepath.startsWith("/data/storage/")) {
         return "file://" + filepath;
@@ -12327,14 +12269,14 @@
     }
     function addEvent(node, event, fn, opt_useCapture) {
       if (typeof node.addEventListener == "function") {
-        node.addEventListener(event, fn, opt_useCapture || false);
+        node.addEventListener(event, fn, opt_useCapture);
       } else if (typeof node.attachEvent == "function") {
         node.attachEvent("on" + event, fn);
       }
     }
     function removeEvent(node, event, fn, opt_useCapture) {
       if (typeof node.removeEventListener == "function") {
-        node.removeEventListener(event, fn, opt_useCapture || false);
+        node.removeEventListener(event, fn, opt_useCapture);
       } else if (typeof node.detatchEvent == "function") {
         node.detatchEvent("on" + event, fn);
       }
@@ -12635,7 +12577,7 @@
     var ownerEl = resolveOwnerEl(el, ownerId);
     if (isArray(invokerArgs) || isArray(args)) {
       var [moduleName, methodName] = invoker.split(".");
-      return invokeWxsMethod(ownerEl, moduleId, moduleName, methodName, invokerArgs || args);
+      return invokeWxsMethod(ownerEl, moduleId, moduleName, methodName, args);
     }
     return getWxsProp(ownerEl, moduleId, invoker);
   }
@@ -13882,7 +13824,7 @@
     tempCanvas.height = height;
     return tempCanvas;
   }
-  var props$s = {
+  var props$u = {
     canvasId: {
       type: String,
       default: ""
@@ -13902,7 +13844,7 @@
     compatConfig: {
       MODE: 3
     },
-    props: props$s,
+    props: props$u,
     computed: {
       id() {
         return this.canvasId;
@@ -13933,7 +13875,7 @@
         _handleSubscribe,
         _resize
       } = useMethods$1(props2, canvas, actionsWaiting);
-      useSubscribe(_handleSubscribe, useContextInfo(props2.canvasId), true);
+      useSubscribe(_handleSubscribe, useContextInfo(props2.canvasId));
       onMounted(() => {
         _resize();
       });
@@ -14184,13 +14126,6 @@
           image2.onload = function() {
             image2.ready = true;
           };
-          if (navigator.vendor === "Google Inc.") {
-            if (src.indexOf("file://") === 0) {
-              image2.crossOrigin = "anonymous";
-            }
-            image2.src = src;
-            return;
-          }
           getSameOriginUrl(src).then((src2) => {
             image2.src = src2;
           }).catch(() => {
@@ -14391,7 +14326,7 @@
     });
   }
   var uniCheckGroupKey = PolySymbol("ucg");
-  var props$r = {
+  var props$t = {
     name: {
       type: String,
       default: ""
@@ -14399,7 +14334,7 @@
   };
   const CheckboxGroup = /* @__PURE__ */ defineBuiltInComponent({
     name: "CheckboxGroup",
-    props: props$r,
+    props: props$t,
     emits: ["change"],
     setup(props2, _ref) {
       var {
@@ -14452,7 +14387,7 @@
     }
     return getFieldsValue;
   }
-  var props$q = {
+  var props$s = {
     checked: {
       type: [Boolean, String],
       default: false
@@ -14501,7 +14436,7 @@
   };
   const Checkbox = /* @__PURE__ */ defineBuiltInComponent({
     name: "Checkbox",
-    props: props$q,
+    props: props$s,
     setup(props2, _ref) {
       var {
         slots
@@ -14686,7 +14621,7 @@
       });
     }
   }
-  var props$p = {
+  var props$r = {
     cursorSpacing: {
       type: [Number, String],
       default: 0
@@ -15504,7 +15439,7 @@
           })
         });
       }
-    }, id2, true);
+    }, id2);
     onMounted(() => {
       var imageResizeModules = [];
       if (props2.showImgSize) {
@@ -15529,7 +15464,7 @@
       });
     });
   }
-  var props$o = /* @__PURE__ */ extend({}, props$p, {
+  var props$q = /* @__PURE__ */ extend({}, props$r, {
     id: {
       type: String,
       default: ""
@@ -15557,7 +15492,7 @@
   });
   const Editor = /* @__PURE__ */ defineBuiltInComponent({
     name: "Editor",
-    props: props$o,
+    props: props$q,
     emit: ["ready", "focus", "blur", "input", "statuschange", ...emit$1],
     setup(props2, _ref) {
       var {
@@ -15648,7 +15583,7 @@
       };
     }
   });
-  var props$n = {
+  var props$p = {
     src: {
       type: String,
       default: ""
@@ -15687,7 +15622,7 @@
   };
   const Image$1 = /* @__PURE__ */ defineBuiltInComponent({
     name: "Image",
-    props: props$n,
+    props: props$p,
     setup(props2, _ref) {
       var {
         emit: emit2
@@ -16014,13 +15949,12 @@
       value = "";
     }
     var valueStr = value === null || value === void 0 ? "" : String(value);
-    if (maxlength == void 0) {
+    {
       return valueStr;
     }
-    return valueStr.slice(0, maxlength);
   }
   var INPUT_MODES = ["none", "text", "decimal", "numeric", "tel", "search", "email", "url"];
-  var props$m = /* @__PURE__ */ extend({}, {
+  var props$o = /* @__PURE__ */ extend({}, {
     name: {
       type: String,
       default: ""
@@ -16107,7 +16041,7 @@
       type: String,
       default: ""
     }
-  }, props$p);
+  }, props$r);
   var emit = ["input", "focus", "blur", "update:value", "update:modelValue", "update:focus", "compositionstart", "compositionupdate", "compositionend", ...emit$1];
   function useBase(props2, rootRef, emit2) {
     var fieldRef = ref(null);
@@ -16208,9 +16142,15 @@
           setTimeout(focus, timeout);
           return;
         }
-        field.focus();
-        if (!userActionState.userAction) {
-          plus.key.showSoftKeybord();
+        {
+          if (!userActionState.userAction) {
+            plus.key.showSoftKeybord();
+            setTimeout(() => {
+              field.focus();
+            }, 100);
+          } else {
+            field.focus();
+          }
         }
       }
     }
@@ -16347,7 +16287,7 @@
       trigger: trigger2
     };
   }
-  var props$l = /* @__PURE__ */ extend({}, props$m, {
+  var props$n = /* @__PURE__ */ extend({}, props$o, {
     placeholderClass: {
       type: String,
       default: "input-placeholder"
@@ -16355,6 +16295,11 @@
     textContentType: {
       type: String,
       default: ""
+    }
+  });
+  var resolveDigitDecimalPointDeleteContentBackward = once(() => {
+    {
+      return false;
     }
   });
   function resolveDigitDecimalPoint(event, cache2, state, input, resetCache) {
@@ -16375,8 +16320,14 @@
           }
           return false;
         }
-      } else if (event.inputType === "deleteContentBackward")
-        ;
+      } else if (event.inputType === "deleteContentBackward") {
+        if (resolveDigitDecimalPointDeleteContentBackward()) {
+          if (cache2.value.slice(-2, -1) === ".") {
+            cache2.value = state.value = input.value = cache2.value.slice(0, -2);
+            return true;
+          }
+        }
+      }
     }
   }
   function useCache(props2, type) {
@@ -16396,7 +16347,7 @@
   }
   const Input = /* @__PURE__ */ defineBuiltInComponent({
     name: "Input",
-    props: props$l,
+    props: props$n,
     emits: ["confirm", ...emit],
     setup(props2, _ref) {
       var {
@@ -16421,7 +16372,7 @@
             type2 = "number";
             break;
           default:
-            type2 = ~INPUT_TYPES.includes(props2.type) ? props2.type : "text";
+            type2 = INPUT_TYPES.includes(props2.type) ? props2.type : "text";
             break;
         }
         return props2.password ? "password" : type2;
@@ -16475,7 +16426,8 @@
           if (maxlength > 0 && input.value.length > maxlength) {
             input.value = input.value.slice(0, maxlength);
             state2.value = input.value;
-            return false;
+            var modelValue = props2.modelValue !== void 0 && props2.modelValue !== null ? props2.modelValue.toString() : "";
+            return modelValue !== input.value;
           }
         }
       });
@@ -16626,23 +16578,6 @@
         }));
       }
     }
-  }
-  function flatVNode(nodes) {
-    var array = [];
-    if (isArray(nodes)) {
-      nodes.forEach((vnode) => {
-        if (isVNode(vnode)) {
-          if (vnode.type === Fragment) {
-            array.push(...flatVNode(vnode.children));
-          } else {
-            array.push(vnode);
-          }
-        } else if (isArray(vnode)) {
-          array.push(...flatVNode(vnode));
-        }
-      });
-    }
-    return array;
   }
   function useRebuild(callback) {
     var instance = getCurrentInstance();
@@ -19322,7 +19257,7 @@
     }
   }
   var uniRadioGroupKey = PolySymbol("ucg");
-  var props$k = {
+  var props$m = {
     name: {
       type: String,
       default: ""
@@ -19330,7 +19265,7 @@
   };
   const RadioGroup = /* @__PURE__ */ defineBuiltInComponent({
     name: "RadioGroup",
-    props: props$k,
+    props: props$m,
     // emits: ['change'],
     setup(props2, _ref) {
       var {
@@ -19415,7 +19350,7 @@
     }
     return fields2;
   }
-  var props$j = {
+  var props$l = {
     checked: {
       type: [Boolean, String],
       default: false
@@ -19459,7 +19394,7 @@
   };
   const Radio = /* @__PURE__ */ defineBuiltInComponent({
     name: "Radio",
-    props: props$j,
+    props: props$l,
     setup(props2, _ref) {
       var {
         slots
@@ -19816,7 +19751,7 @@
     });
     return results.children;
   }
-  var props$i = {
+  var props$k = {
     nodes: {
       type: [Array, String],
       default: function() {
@@ -19829,8 +19764,8 @@
     compatConfig: {
       MODE: 3
     },
-    props: props$i,
-    emits: ["click", "touchstart", "touchmove", "touchcancel", "touchend", "longpress", "itemclick"],
+    props: props$k,
+    emits: ["itemclick"],
     setup(props2, _ref) {
       var {
         emit: emit2
@@ -19965,7 +19900,7 @@
     }
   });
   var passiveOptions = /* @__PURE__ */ passive(true);
-  var props$h = {
+  var props$j = {
     direction: {
       type: [String],
       default: "vertical"
@@ -20036,7 +19971,7 @@
     compatConfig: {
       MODE: 3
     },
-    props: props$h,
+    props: props$j,
     emits: ["scroll", "scrolltoupper", "scrolltolower", "refresherrefresh", "refresherrestore", "refresherpulling", "refresherabort", "update:refresherTriggered"],
     setup(props2, _ref) {
       var {
@@ -20487,7 +20422,7 @@
       _scrollLeftChanged
     };
   }
-  var props$g = {
+  var props$i = {
     name: {
       type: String,
       default: ""
@@ -20543,7 +20478,7 @@
   };
   const Slider = /* @__PURE__ */ defineBuiltInComponent({
     name: "Slider",
-    props: props$g,
+    props: props$i,
     emits: ["changing", "change"],
     setup(props2, _ref) {
       var {
@@ -20715,7 +20650,7 @@
       return Number(s1.replace(".", "")) * Number(s2.replace(".", "")) / Math.pow(10, m);
     }
   };
-  var props$f = {
+  var props$h = {
     indicatorDots: {
       type: [Boolean, String],
       default: false
@@ -21216,7 +21151,7 @@
   }
   const Swiper = /* @__PURE__ */ defineBuiltInComponent({
     name: "Swiper",
-    props: props$f,
+    props: props$h,
     emits: ["change", "transition", "animationfinish", "update:current", "update:currentItemId"],
     setup(props2, _ref) {
       var {
@@ -21299,7 +21234,6 @@
       var createNavigationTsx = () => null;
       return () => {
         var defaultSlots = slots.default && slots.default();
-        swiperItems = flatVNode(defaultSlots);
         return createVNode("uni-swiper", {
           "ref": rootRef
         }, [createVNode("div", {
@@ -21327,7 +21261,7 @@
       };
     }
   });
-  var props$e = {
+  var props$g = {
     itemId: {
       type: String,
       default: ""
@@ -21335,7 +21269,7 @@
   };
   const SwiperItem = /* @__PURE__ */ defineBuiltInComponent({
     name: "SwiperItem",
-    props: props$e,
+    props: props$g,
     setup(props2, _ref) {
       var {
         slots
@@ -21385,7 +21319,7 @@
       };
     }
   });
-  var props$d = {
+  var props$f = {
     name: {
       type: String,
       default: ""
@@ -21413,7 +21347,7 @@
   };
   const Switch = /* @__PURE__ */ defineBuiltInComponent({
     name: "Switch",
-    props: props$d,
+    props: props$f,
     emits: ["change"],
     setup(props2, _ref) {
       var {
@@ -21538,6 +21472,37 @@
   function parseText(text2, options) {
     return normalizeText(text2, options).split(LINEFEED);
   }
+  function asyncGeneratorStep(n, t2, e2, r, o2, a2, c2) {
+    try {
+      var i2 = n[a2](c2), u = i2.value;
+    } catch (n2) {
+      return void e2(n2);
+    }
+    i2.done ? t2(u) : Promise.resolve(u).then(r, o2);
+  }
+  function _asyncToGenerator(n) {
+    return function() {
+      var t2 = this, e2 = arguments;
+      return new Promise(function(r, o2) {
+        var a2 = n.apply(t2, e2);
+        function _next(n2) {
+          asyncGeneratorStep(a2, r, o2, _next, _throw, "next", n2);
+        }
+        function _throw(n2) {
+          asyncGeneratorStep(a2, r, o2, _next, _throw, "throw", n2);
+        }
+        _next(void 0);
+      });
+    };
+  }
+  function _defineProperty(e2, r, t2) {
+    return (r = _toPropertyKey(r)) in e2 ? Object.defineProperty(e2, r, {
+      value: t2,
+      enumerable: true,
+      configurable: true,
+      writable: true
+    }) : e2[r] = t2, e2;
+  }
   function ownKeys(e2, r) {
     var t2 = Object.keys(e2);
     if (Object.getOwnPropertySymbols) {
@@ -21575,50 +21540,7 @@
     var i2 = _toPrimitive(t2, "string");
     return "symbol" == typeof i2 ? i2 : i2 + "";
   }
-  function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key2, arg) {
-    try {
-      var info = gen[key2](arg);
-      var value = info.value;
-    } catch (error) {
-      reject(error);
-      return;
-    }
-    if (info.done) {
-      resolve(value);
-    } else {
-      Promise.resolve(value).then(_next, _throw);
-    }
-  }
-  function _asyncToGenerator(fn) {
-    return function() {
-      var self2 = this, args = arguments;
-      return new Promise(function(resolve, reject) {
-        var gen = fn.apply(self2, args);
-        function _next(value) {
-          asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value);
-        }
-        function _throw(err2) {
-          asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err2);
-        }
-        _next(void 0);
-      });
-    };
-  }
-  function _defineProperty(obj, key2, value) {
-    key2 = _toPropertyKey(key2);
-    if (key2 in obj) {
-      Object.defineProperty(obj, key2, {
-        value,
-        enumerable: true,
-        configurable: true,
-        writable: true
-      });
-    } else {
-      obj[key2] = value;
-    }
-    return obj;
-  }
-  var props$c = /* @__PURE__ */ extend({}, props$m, {
+  var props$e = /* @__PURE__ */ extend({}, props$o, {
     placeholderClass: {
       type: String,
       default: "input-placeholder"
@@ -21643,7 +21565,7 @@
   }
   const Textarea = /* @__PURE__ */ defineBuiltInComponent({
     name: "Textarea",
-    props: props$c,
+    props: props$e,
     emits: ["confirm", "linechange", ...emit],
     setup(props2, _ref) {
       var {
@@ -21796,7 +21718,7 @@
     if (!name) {
       return;
     }
-    registerViewMethod(pageId || getCurrentPageId(), name, (_ref, resolve) => {
+    registerViewMethod(getCurrentPageId(), name, (_ref, resolve) => {
       var {
         type,
         data
@@ -21808,22 +21730,22 @@
     if (!name) {
       return;
     }
-    unregisterViewMethod(pageId || getCurrentPageId(), name);
+    unregisterViewMethod(getCurrentPageId(), name);
   }
   function useSubscribe(callback, name, multiple, pageId) {
     var instance = getCurrentInstance();
     var vm = instance.proxy;
     onMounted(() => {
-      addSubscribe(name || normalizeEvent(vm), callback, pageId);
-      if (multiple || !name) {
+      addSubscribe(name || normalizeEvent(vm), callback);
+      {
         watch(() => vm.id, (value, oldValue) => {
-          addSubscribe(normalizeEvent(vm, value), callback, pageId);
+          addSubscribe(normalizeEvent(vm, value), callback);
           removeSubscribe(oldValue && normalizeEvent(vm, oldValue));
         });
       }
     });
     onBeforeUnmount(() => {
-      removeSubscribe(name || normalizeEvent(vm), pageId);
+      removeSubscribe(name || normalizeEvent(vm));
     });
   }
   var index$2 = 0;
@@ -22131,6 +22053,7 @@
       this.$app.unmount();
       removeElement(this.id);
       this.removeUniChildren();
+      flushPostFlushCbs();
       this.updateView();
     }
     appendChild(node) {
@@ -22381,7 +22304,37 @@
       super(id2, "uni-icon", Icon, parentNodeId, refNodeId, nodeJson);
     }
   }
-  var props$b = {
+  const plus$1 = {
+    webview: {
+      currentWebview() {
+        return extend({
+          getStyle: () => {
+            return extend({}, invokeHarmonyChannel("getStyle"));
+          },
+          setSoftinputTemporary(options) {
+            invokeHarmonyChannel("setSoftinputTemporary", [options]);
+          }
+        }, invokeHarmonyChannel("currentWebview"));
+      },
+      postMessageToUniNView(data, id2) {
+        invokeHarmonyChannel("postMessageToUniNView", [data, id2]);
+      }
+    },
+    io: {
+      convertLocalFileSystemURL(filepath) {
+        return invokeHarmonyChannel("convertLocalFileSystemURL", [filepath]);
+      }
+    },
+    key: {
+      hideSoftKeybord() {
+        invokeHarmonyChannel("hideSoftKeybord");
+      },
+      showSoftKeybord() {
+        invokeHarmonyChannel("showSoftKeybord");
+      }
+    }
+  };
+  var props$d = {
     tag: {
       type: String,
       default: ""
@@ -22391,23 +22344,39 @@
       default() {
         return {};
       }
+    },
+    methods: {
+      type: Array,
+      default() {
+        return [];
+      }
     }
   };
   var index$1 = 0;
   const Embed = /* @__PURE__ */ defineBuiltInComponent({
-    props: props$b,
+    props: props$d,
     setup(props2, _ref) {
       var {
         expose,
         attrs: attrs2
       } = _ref;
-      var clickRef = ref(0);
       var elId = String(index$1++);
+      var elRef = ref(null);
+      var visibility = ref(0);
+      var intersectionObserver = new IntersectionObserver((entries2) => {
+        visibility.value = entries2[0].intersectionRatio > 0 ? 0 : 2;
+      });
+      onMounted(() => {
+        intersectionObserver.observe(elRef.value);
+      });
+      onBeforeUnmount(() => {
+        intersectionObserver.disconnect();
+      });
       var src = computed(() => {
         var on = [];
         var options = Object.assign({}, props2.options, {
-          click: clickRef.value,
-          on
+          on,
+          visibility: visibility.value
         });
         Object.keys(attrs2).forEach((key2) => {
           if (/^on[A-Z]/.test(key2)) {
@@ -22418,16 +22387,22 @@
       });
       var srcValue = src.value;
       watch(src, (srcValue2) => {
-        harmonyChannel.invokeSync("onNativeEmbedLifecycleChange", [srcValue2]);
+        invokeHarmonyChannel("onNativeEmbedLifecycleChange", [srcValue2]);
       });
-      function click() {
-        clickRef.value++;
-      }
-      expose({
-        click,
+      var exposed = {
         elId
+      };
+      props2.methods.forEach((method) => {
+        exposed[method] = function() {
+          for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+            args[_key] = arguments[_key];
+          }
+          invokeHarmonyChannel("invokeNativeEmbed", [elId, method, args]);
+        };
       });
+      expose(exposed);
       return () => createVNode("embed", mergeProps({
+        "ref": elRef,
         "el-id": elId,
         "type": "native/".concat(props2.tag),
         "src": srcValue
@@ -22435,18 +22410,17 @@
     }
   });
   function useMethods(embedRef) {
-    var MethodList = ["evalJs", "back", "forward", "reload", "stop"];
+    var MethodList = ["evalJS", "back", "forward", "reload", "stop"];
     var methods = {};
     var _loop = function(i3) {
       var methodName = MethodList[i3];
       methods[methodName] = function(data, resolve) {
-        var elId = embedRef.value.elId;
-        UniViewJSBridge.invokeServiceMethod("webview" + capitalize(methodName), {
-          elId,
-          data
-        }, (res) => {
-          resolve(res);
-        });
+        var embed = embedRef.value;
+        if (methodName === "evalJS") {
+          return resolve(embed["runJavaScript"]((data || {}).jsCode || ""));
+        } else {
+          resolve(embed[methodName]());
+        }
       };
     };
     for (var i2 = 0; i2 < MethodList.length; i2++) {
@@ -22462,7 +22436,7 @@
       _handleSubscribe
     });
   }
-  var props$a = {
+  var props$c = {
     id: {
       type: String,
       default: ""
@@ -22475,6 +22449,10 @@
       type: Boolean,
       default: true
     },
+    fullscreen: {
+      type: Boolean,
+      default: true
+    },
     webviewStyles: {
       type: Object,
       default() {
@@ -22484,15 +22462,23 @@
   };
   const WebView = /* @__PURE__ */ defineBuiltInComponent({
     name: "WebView",
-    props: props$a,
+    props: props$c,
     setup(props2) {
       var embedRef = ref(null);
+      var pageId = getCurrentPageId();
       var {
         _handleSubscribe
       } = useMethods(embedRef);
-      useSubscribe(_handleSubscribe, useContextInfo(props2.id), true);
+      useSubscribe(_handleSubscribe, useContextInfo(props2.id));
+      onMounted(() => {
+        UniViewJSBridge.publishHandler(WEBVIEW_INSERTED, {}, pageId);
+      });
+      onBeforeUnmount(() => {
+        UniViewJSBridge.publishHandler(WEBVIEW_REMOVED, {}, pageId);
+      });
       return () => createVNode("uni-web-view", {
-        "id": props2.id
+        "id": props2.id,
+        "class": props2.fullscreen ? "uni-webview--fullscreen" : ""
       }, [createVNode(Embed, {
         "ref": embedRef,
         "tag": "webview",
@@ -22501,8 +22487,9 @@
           updateTitle: props2.updateTitle,
           webviewStyles: props2.webviewStyles
         },
+        "methods": ["runJavaScript", "back", "forward", "reload", "stop"],
         "style": "width:100%;height:100%"
-      }, null, 8, ["options"])], 8, ["id"]);
+      }, null, 8, ["options"])], 10, ["id"]);
     }
   });
   class UniWebView extends UniComponent {
@@ -23075,9 +23062,9 @@
       if (type in methods) {
         methods[type](options);
       }
-    }, id2, true);
+    }, id2);
   }
-  var props$9 = {
+  var props$b = {
     id: {
       type: String,
       default: ""
@@ -23163,7 +23150,7 @@
   };
   const Video = /* @__PURE__ */ defineBuiltInComponent({
     name: "Video",
-    props: props$9,
+    props: props$b,
     emits: ["fullscreenchange", "progress", "loadedmetadata", "waiting", "error", "play", "pause", "ended", "timeupdate"],
     setup(props2, _ref2) {
       var {
@@ -23380,7 +23367,7 @@
   });
   class UniVideo extends UniComponent {
     constructor(id2, parentNodeId, refNodeId, nodeJson) {
-      super(id2, "uni-video", Video, parentNodeId, refNodeId, nodeJson);
+      super(id2, "uni-video", Video, parentNodeId, refNodeId, nodeJson, ".uni-video-slots");
     }
   }
   var mode = {
@@ -23430,7 +23417,7 @@
     }
     return "";
   }
-  var props$8 = {
+  var props$a = {
     name: {
       type: String,
       default: ""
@@ -23475,7 +23462,7 @@
   };
   const Picker = /* @__PURE__ */ defineBuiltInComponent({
     name: "Picker",
-    props: props$8,
+    props: props$a,
     emits: ["change", "cancel", "columnchange"],
     setup(props2, _ref) {
       var {
@@ -23485,7 +23472,7 @@
       var embedRef = ref(null);
       var trigger2 = useCustomEvent(rootRef, emit2);
       function onClick() {
-        embedRef.value.click();
+        embedRef.value.show();
       }
       function onCancel(event) {
         trigger2("cancel", event, event.detail);
@@ -23496,12 +23483,18 @@
       function onChange2(event) {
         trigger2("change", event, event.detail);
       }
+      if (props2.mode === mode.MULTISELECTOR) {
+        watch(() => props2.range, (range) => {
+          embedRef.value.updateRange(range);
+        });
+      }
       return () => createVNode("uni-picker", {
         "ref": rootRef
       }, [createVNode(Embed, {
         "ref": embedRef,
         "tag": "picker",
         "options": props2,
+        "methods": ["show", "updateRange"],
         "onChange": onChange2,
         "onColumnchange": onColumnchange,
         "onCancel": onCancel
@@ -23899,7 +23892,7 @@
   var getIsBMap = () => {
     return (mapInfo == null ? void 0 : mapInfo.type) === "BMapGL";
   };
-  var props$7 = {
+  var props$9 = {
     id: {
       type: [Number, String],
       default: ""
@@ -23985,7 +23978,7 @@
   }
   const MapMarker = /* @__PURE__ */ defineSystemComponent({
     name: "MapMarker",
-    props: props$7,
+    props: props$9,
     setup(props2) {
       var id2 = String(!isNaN(Number(props2.id)) ? props2.id : "");
       var onMapReady = inject("onMapReady");
@@ -24356,7 +24349,7 @@
       a: ("0x100".concat(sa) - 65536) / 255
     };
   }
-  var props$6 = {
+  var props$8 = {
     points: {
       type: Array,
       require: true
@@ -24402,7 +24395,7 @@
   };
   const MapPolyline = /* @__PURE__ */ defineSystemComponent({
     name: "MapPolyline",
-    props: props$6,
+    props: props$8,
     setup(props2) {
       var onMapReady = inject("onMapReady");
       var polyline;
@@ -24491,7 +24484,7 @@
       };
     }
   });
-  var props$5 = {
+  var props$7 = {
     latitude: {
       type: [Number, String],
       require: true
@@ -24523,7 +24516,7 @@
   };
   const MapCircle = /* @__PURE__ */ defineSystemComponent({
     name: "MapCircle",
-    props: props$5,
+    props: props$7,
     setup(props2) {
       var onMapReady = inject("onMapReady");
       var circle;
@@ -24599,7 +24592,7 @@
       };
     }
   });
-  var props$4 = {
+  var props$6 = {
     id: {
       type: [Number, String],
       default: ""
@@ -24623,7 +24616,7 @@
   };
   const MapControl = /* @__PURE__ */ defineSystemComponent({
     name: "MapControl",
-    props: props$4,
+    props: props$6,
     setup(props2) {
       var imgPath = computed(() => getRealPath(props2.iconPath));
       var positionStyle = computed(() => {
@@ -24774,7 +24767,7 @@
       };
     }
   });
-  const props$3 = {
+  const props$5 = {
     // 边框虚线，腾讯地图支持，google 高德 地图不支持，默认值为[0, 0] 为实线，非 [0, 0] 为虚线，H5 端无法像微信小程序一样控制虚线的间隔像素大小
     dashArray: {
       type: Array,
@@ -24808,7 +24801,7 @@
   };
   const MapPolygon = /* @__PURE__ */ defineSystemComponent({
     name: "MapPolygon",
-    props: props$3,
+    props: props$5,
     setup(props2) {
       var polygonIns;
       var onMapReady = inject("onMapReady");
@@ -24901,7 +24894,7 @@
       return () => null;
     }
   });
-  var props$2 = {
+  var props$4 = {
     id: {
       type: String,
       default: ""
@@ -25213,11 +25206,12 @@
       var id2 = useContextInfo();
       useSubscribe(function(type) {
         var data = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : {};
+        var resolve = arguments.length > 2 ? arguments[2] : void 0;
         switch (type) {
           case "getCenterLocation":
             onMapReady(() => {
               var center = map.getCenter();
-              callOptions(data, {
+              resolve({
                 latitude: getLat(center),
                 longitude: getLng(center),
                 errMsg: "".concat(type, ":ok")
@@ -25243,10 +25237,14 @@
                   map.setCenter(centerPosition);
                 }
                 onMapReady(() => {
-                  callOptions(data, "".concat(type, ":ok"));
+                  resolve({
+                    errMsg: "".concat(type, ":ok")
+                  });
                 });
               } else {
-                callOptions(data, "".concat(type, ":fail"));
+                resolve({
+                  errMsg: "".concat(type, ":fail")
+                });
               }
             }
             break;
@@ -25257,11 +25255,18 @@
                 try {
                   context2.translate(data);
                 } catch (error) {
-                  callOptions(data, "".concat(type, ":fail ").concat(error.message));
+                  resolve({
+                    errMsg: "".concat(type, ":fail ").concat(error.message)
+                  });
+                  return;
                 }
-                callOptions(data, "".concat(type, ":ok"));
+                resolve({
+                  errMsg: "".concat(type, ":ok")
+                });
               } else {
-                callOptions(data, "".concat(type, ":fail not found"));
+                resolve({
+                  errMsg: "".concat(type, ":fail not found")
+                });
               }
             });
             break;
@@ -25271,7 +25276,9 @@
               updateBounds();
             }
             onBoundsReady(() => {
-              callOptions(data, "".concat(type, ":ok"));
+              resolve({
+                errMsg: "".concat(type, ":ok")
+              });
             });
             break;
           case "getRegion":
@@ -25279,7 +25286,7 @@
               var latLngBounds = map.getBounds();
               var southwest = latLngBounds.getSouthWest();
               var northeast = latLngBounds.getNorthEast();
-              callOptions(data, {
+              resolve({
                 southwest: {
                   latitude: getLat(southwest),
                   longitude: getLng(southwest)
@@ -25294,7 +25301,7 @@
             break;
           case "getScale":
             onMapReady(() => {
-              callOptions(data, {
+              resolve({
                 scale: map.getZoom(),
                 errMsg: "".concat(type, ":ok")
               });
@@ -25323,7 +25330,7 @@
   }
   const Map$1 = /* @__PURE__ */ defineBuiltInComponent({
     name: "Map",
-    props: props$2,
+    props: props$4,
     emits: ["markertap", "labeltap", "callouttap", "controltap", "regionchange", "tap", "click", "updated", "update:scale", "update:latitude", "update:longitude"],
     setup(props2, _ref3) {
       var {
@@ -25360,7 +25367,7 @@
   function _isSlot(s) {
     return typeof s === "function" || Object.prototype.toString.call(s) === "[object Object]" && !isVNode(s);
   }
-  var props$1 = {
+  var props$3 = {
     latitude: {
       type: Number
     },
@@ -25538,7 +25545,7 @@
   }
   const LocationPicker = /* @__PURE__ */ defineSystemComponent({
     name: "LoctaionPicker",
-    props: props$1,
+    props: props$3,
     emits: ["close"],
     setup(props2, _ref) {
       var {
@@ -25578,6 +25585,9 @@
         search();
       }
       function onChoose(e2) {
+        if (!listState.selected) {
+          return;
+        }
         var event = new CustomEvent("close", {
           detail: extend({}, listState.selected)
         });
@@ -25714,7 +25724,7 @@
     }
   }
   var ICON_PATH_NAV = "M28 17c-6.49396875 0-12.13721875 2.57040625-15 6.34840625V5.4105l6.29859375 6.29859375c0.387875 0.387875 1.02259375 0.387875 1.4105 0 0.387875-0.387875 0.387875-1.02259375 0-1.4105L12.77853125 2.36803125a0.9978125 0.9978125 0 0 0-0.0694375-0.077125c-0.1944375-0.1944375-0.45090625-0.291375-0.70721875-0.290875l-0.00184375-0.0000625-0.00184375 0.0000625c-0.2563125-0.0005-0.51278125 0.09640625-0.70721875 0.290875a0.9978125 0.9978125 0 0 0-0.0694375 0.077125l-7.930625 7.9305625c-0.387875 0.387875-0.387875 1.02259375 0 1.4105 0.387875 0.387875 1.02259375 0.387875 1.4105 0L11 5.4105V29c0 0.55 0.45 1 1 1s1-0.45 1-1c0-5.52284375 6.71571875-10 15-10 0.55228125 0 1-0.44771875 1-1 0-0.55228125-0.44771875-1-1-1z";
-  var props = {
+  var props$2 = {
     latitude: {
       type: Number
     },
@@ -25732,6 +25742,10 @@
     address: {
       type: String,
       default: ""
+    },
+    showNav: {
+      type: Boolean,
+      default: false
     }
   };
   function useState(props2) {
@@ -25771,8 +25785,8 @@
   }
   const LocationView = /* @__PURE__ */ defineSystemComponent({
     name: "LocationView",
-    props,
-    emits: ["close"],
+    props: props$2,
+    emits: ["close", "navChange"],
     setup(props2, _ref) {
       var {
         emit: emit2
@@ -25798,6 +25812,7 @@
           state.center.longitude = centerLocation.longitude;
         }
       }
+      var navUrl = ref("");
       function nav() {
         return _nav.apply(this, arguments);
       }
@@ -25815,13 +25830,24 @@
             var from = state.location.latitude ? "from=".concat(state.location.longitude, ",").concat(state.location.latitude, ",").concat(encodeURIComponent("我的位置"), "&") : "";
             url = "https://uri.amap.com/navigation?".concat(from, "to=").concat(props2.longitude, ",").concat(props2.latitude, ",").concat(encodeURIComponent(props2.name || "目的地"));
           }
-          window.open(url);
+          navUrl.value = url;
+          navChange(true);
         });
         return _nav.apply(this, arguments);
+      }
+      function navChange(showNav) {
+        var event = new CustomEvent("navChange", {});
+        trigger2("navChange", event, {
+          showNav
+        });
       }
       function back(e2) {
         var event = new CustomEvent("close", {});
         trigger2("close", event, event.detail);
+      }
+      function backNav() {
+        navChange(false);
+        navUrl.value = "";
       }
       function setCenter(_ref3) {
         var {
@@ -25860,13 +25886,181 @@
         }, [createSvgIconVNode(ICON_PATH_NAV, "#ffffff", 26)], 8, ["onClick"])]), createVNode("div", {
           "class": "nav-btn-back",
           "onClick": back
-        }, [createSvgIconVNode(ICON_PATH_BACK, "#ffffff", 26)], 8, ["onClick"])], 512);
+        }, [createSvgIconVNode(ICON_PATH_BACK, "#ffffff", 26)], 8, ["onClick"]), withDirectives(createVNode("div", {
+          "class": "nav-view"
+        }, [createVNode("div", {
+          "class": "nav-view-top-placeholder"
+        }, null), createVNode("iframe", {
+          "class": "nav-view-frame",
+          "src": navUrl.value,
+          "frameborder": "0",
+          "allow": "geolocation"
+        }, null, 8, ["src"]), createVNode("div", {
+          "class": "nav-btn-back",
+          "onClick": backNav
+        }, [createSvgIconVNode(ICON_PATH_BACK, "#ffffff", 26)], 8, ["onClick"])], 512), [[vShow, props2.showNav]])], 512);
       };
     }
   });
   class UniLocationView extends UniComponent {
     constructor(id2, parentNodeId, refNodeId, nodeJson) {
       super(id2, "uni-location-view", LocationView, parentNodeId, refNodeId, nodeJson);
+    }
+  }
+  const CoverImage = /* @__PURE__ */ defineBuiltInComponent({
+    name: "CoverImage",
+    compatConfig: {
+      MODE: 3
+    },
+    props: {
+      src: {
+        type: String,
+        default: ""
+      }
+    },
+    emits: ["load", "error"],
+    setup(props2, _ref) {
+      var {
+        emit: emit2
+      } = _ref;
+      var root = ref(null);
+      var trigger2 = useCustomEvent(root, emit2);
+      function load($event) {
+        trigger2("load", $event);
+      }
+      function error($event) {
+        trigger2("error", $event);
+      }
+      return () => {
+        var {
+          src
+        } = props2;
+        return createVNode("uni-cover-image", {
+          "ref": root,
+          "src": src
+        }, [createVNode("div", {
+          "class": "uni-cover-image"
+        }, [src ? createVNode("img", {
+          "src": getRealPath(src),
+          "onLoad": load,
+          "onError": error
+        }, null, 40, ["src", "onLoad", "onError"]) : null])], 8, ["src"]);
+      };
+    }
+  });
+  class UniCoverImage extends UniComponent {
+    constructor(id2, parentNodeId, refNodeId, nodeJson) {
+      super(id2, "uni-cover-image", CoverImage, parentNodeId, refNodeId, nodeJson);
+    }
+  }
+  var props$1 = {
+    scrollTop: {
+      type: [String, Number],
+      default: 0
+    }
+  };
+  const CoverView = /* @__PURE__ */ defineBuiltInComponent({
+    name: "CoverView",
+    compatConfig: {
+      MODE: 3
+    },
+    props: props$1,
+    setup(props2, _ref) {
+      var {
+        slots
+      } = _ref;
+      var root = ref(null);
+      var content = ref(null);
+      watch(() => props2.scrollTop, (val) => {
+        setScrollTop(val);
+      });
+      function setScrollTop(val) {
+        var _content = content.value;
+        if (getComputedStyle(_content).overflowY === "scroll") {
+          _content.scrollTop = _upx2pxNum(val);
+        }
+      }
+      function _upx2pxNum(val) {
+        var _val = String(val);
+        if (/\d+[ur]px$/i.test(_val)) {
+          _val.replace(/\d+[ur]px$/i, (text2) => {
+            return String(uni.upx2px(parseFloat(text2)));
+          });
+        }
+        return parseFloat(_val) || 0;
+      }
+      onMounted(() => {
+        setScrollTop(props2.scrollTop);
+      });
+      return () => {
+        return createVNode("uni-cover-view", {
+          "scroll-top": props2.scrollTop,
+          "ref": root
+        }, [createVNode("div", {
+          "ref": content,
+          "class": "uni-cover-view"
+        }, [slots.default && slots.default()], 512)], 8, ["scroll-top"]);
+      };
+    }
+  });
+  class UniCoverView extends UniContainerComponent {
+    constructor(id2, parentNodeId, refNodeId, nodeJson) {
+      super(id2, "uni-cover-view", CoverView, parentNodeId, refNodeId, nodeJson, ".uni-cover-view");
+    }
+  }
+  class UniLivePlayer extends UniComponent {
+    constructor(id2, parentNodeId, refNodeId, nodeJson) {
+      super(id2, "uni-live-player", Video, parentNodeId, refNodeId, nodeJson);
+    }
+  }
+  var props = {
+    adpid: {
+      type: String,
+      default: ""
+    },
+    disabled: {
+      type: [Boolean, String],
+      default: false
+    }
+  };
+  const Ad = /* @__PURE__ */ defineBuiltInComponent({
+    name: "Ad",
+    props,
+    emits: ["load", "close", "error"],
+    setup(props2, _ref) {
+      var {
+        emit: emit2
+      } = _ref;
+      var rootRef = ref(null);
+      var embedRef = ref(null);
+      var trigger2 = useCustomEvent(rootRef, emit2);
+      function onLoad(event) {
+        trigger2("load", event, event.detail);
+      }
+      function onClose(event) {
+        trigger2("close", event, event.detail);
+      }
+      function onError(event) {
+        trigger2("error", event, event.detail);
+      }
+      function onResize(event) {
+      }
+      return () => createVNode("uni-ad", {
+        "ref": rootRef
+      }, [createVNode(Embed, {
+        "ref": embedRef,
+        "tag": "ad",
+        "options": props2,
+        "onLoad": onLoad,
+        "onClose": onClose,
+        "onError": onError,
+        "onResize": onResize
+      }, null, 8, ["options", "onLoad", "onClose", "onError", "onResize"])], 512);
+    }
+  });
+  class UniAd extends UniComponent {
+    constructor(id2, parentNodeId, refNodeId, nodeJson) {
+      super(id2, "uni-ad", Ad, parentNodeId, refNodeId, nodeJson);
     }
   }
   var BuiltInComponents = {
@@ -25902,9 +26096,13 @@
     CANVAS: UniCanvas,
     VIDEO: UniVideo,
     PICKER: UniPicker,
+    AD: UniAd,
     MAP: UniMap,
     "LOCATION-PICKER": UniLocationPicker,
-    "LOCATION-VIEW": UniLocationView
+    "LOCATION-VIEW": UniLocationView,
+    "COVER-IMAGE": UniCoverImage,
+    "COVER-VIEW": UniCoverView,
+    "LIVE-PLAYER": UniLivePlayer
   };
   function createElement(id2, tag, parentNodeId, refNodeId) {
     var nodeJson = arguments.length > 4 && arguments[4] !== void 0 ? arguments[4] : {};
@@ -26152,7 +26350,7 @@
       topWindowHeight
     } = getWindowOffset();
     if (fields2.node) {
-      var tagName = el.tagName.replace("uni-", "");
+      var tagName = el.tagName.split("-")[1];
       if (tagName) {
         info.node = el.querySelector(tagName);
       }
@@ -26415,28 +26613,6 @@
       setCurrentPageMeta(null, args);
     });
   }
-  const plus$1 = {
-    webview: {
-      currentWebview() {
-        return extend({
-          getStyle: () => {
-            return extend({}, harmonyChannel.invokeSync("getStyle"));
-          },
-          setSoftinputTemporary(options) {
-            harmonyChannel.invokeSync("setSoftinputTemporary", [options]);
-          }
-        }, harmonyChannel.invokeSync("currentWebview"));
-      },
-      postMessageToUniNView(data, id2) {
-        harmonyChannel.invokeSync("postMessageToUniNView", [data, id2]);
-      }
-    },
-    io: {
-      convertLocalFileSystemURL(filepath) {
-        return harmonyChannel.invokeSync("convertLocalFileSystemURL", [filepath]);
-      }
-    }
-  };
   window.plus = plus$1;
   window.uni = uni$1;
   window.UniViewJSBridge = UniViewJSBridge$1;

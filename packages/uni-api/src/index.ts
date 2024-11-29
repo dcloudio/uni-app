@@ -16,6 +16,7 @@ export * from './service/ui/tabBar'
 export * from './service/ui/window'
 export * from './service/ui/locale'
 export * from './service/ui/setPageMeta'
+export * from './service/ui/background'
 
 export * from './service/keyboard/getSelectedTextRange'
 

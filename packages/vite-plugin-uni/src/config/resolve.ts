@@ -2,6 +2,7 @@ import path from 'path'
 import type { Alias, ResolverFunction, UserConfig } from 'vite'
 import {
   extensions,
+  isNormalCompileTarget,
   isWindows,
   normalizePath,
   requireResolve,
@@ -24,6 +25,8 @@ function resolveUTSModuleProxyFile(id: string, importer: string) {
 }
 
 export const customResolver: ResolverFunction = (updatedId, importer) => {
+  updatedId = updatedId.split('?')[0]
+
   const utsImporter = importer
     ? path.dirname(importer)
     : process.env.UNI_INPUT_DIR
@@ -56,7 +59,7 @@ export function createResolve(
   _config: UserConfig
 ): UserConfig['resolve'] {
   const alias: Alias[] = []
-  if (process.env.UNI_COMPILE_TARGET !== 'uni_modules') {
+  if (isNormalCompileTarget()) {
     // 加密组件内部使用的 vue export helper，需要重新映射回来
     alias.push({
       find: 'plugin-vue:export-helper',

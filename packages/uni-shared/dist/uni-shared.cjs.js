@@ -114,7 +114,10 @@ const NVUE_BUILT_IN_TAGS = [
     'gcanvas',
 ];
 const UVUE_BUILT_IN_TAGS = [
-    'object',
+    'ad',
+    'ad-content-page',
+    'ad-draw',
+    'native-view',
     'loading-indicator',
     'list-view',
     'list-item',
@@ -130,6 +133,8 @@ const UVUE_BUILT_IN_TAGS = [
     'button',
     'nested-scroll-header',
     'nested-scroll-body',
+    'grid-view',
+    'grid-item',
 ];
 const UVUE_WEB_BUILT_IN_TAGS = [
     'list-view',
@@ -209,6 +214,16 @@ const NVUE_CUSTOM_COMPONENTS = [
     'picker-view',
     'picker-view-column',
 ];
+// 内置的easycom组件
+const UVUE_BUILT_IN_EASY_COMPONENTS = ['map'];
+function isAppUVueBuiltInEasyComponent(tag) {
+    return UVUE_BUILT_IN_EASY_COMPONENTS.includes(tag);
+}
+// 主要是指前端实现的组件列表
+const UVUE_CUSTOM_COMPONENTS = [
+    ...NVUE_CUSTOM_COMPONENTS,
+    ...UVUE_BUILT_IN_EASY_COMPONENTS,
+];
 function isAppUVueNativeTag(tag) {
     // 前端实现的内置组件都会注册一个根组件
     if (tag.startsWith('uni-') && tag.endsWith('-element')) {
@@ -217,7 +232,7 @@ function isAppUVueNativeTag(tag) {
     if (UVUE_BUILT_IN_TAGS.includes(tag)) {
         return true;
     }
-    if (NVUE_CUSTOM_COMPONENTS.includes(tag)) {
+    if (UVUE_CUSTOM_COMPONENTS.includes(tag)) {
         return false;
     }
     if (isBuiltInComponent(tag)) {
@@ -262,6 +277,13 @@ function isAppNVueNativeTag(tag) {
     return false;
 }
 function isMiniProgramNativeTag(tag) {
+    return isBuiltInComponent(tag);
+}
+function isMiniProgramUVueNativeTag(tag) {
+    // 小程序平台内置的自定义元素，会被转换为 view
+    if (tag.startsWith('uni-') && tag.endsWith('-element')) {
+        return true;
+    }
     return isBuiltInComponent(tag);
 }
 function createIsCustomElement(tags = []) {
@@ -309,6 +331,8 @@ const ON_LAUNCH = 'onLaunch';
 const ON_ERROR = 'onError';
 const ON_THEME_CHANGE = 'onThemeChange';
 const OFF_THEME_CHANGE = 'offThemeChange';
+const ON_HOST_THEME_CHANGE = 'onHostThemeChange';
+const OFF_HOST_THEME_CHANGE = 'offHostThemeChange';
 const ON_KEYBOARD_HEIGHT_CHANGE = 'onKeyboardHeightChange';
 const ON_PAGE_NOT_FOUND = 'onPageNotFound';
 const ON_UNHANDLE_REJECTION = 'onUnhandledRejection';
@@ -328,6 +352,7 @@ const ON_TAB_ITEM_TAP = 'onTabItemTap';
 const ON_REACH_BOTTOM = 'onReachBottom';
 const ON_PULL_DOWN_REFRESH = 'onPullDownRefresh';
 const ON_SHARE_TIMELINE = 'onShareTimeline';
+const ON_SHARE_CHAT = 'onShareChat'; // xhs-share
 const ON_ADD_TO_FAVORITES = 'onAddToFavorites';
 const ON_SHARE_APP_MESSAGE = 'onShareAppMessage';
 // navigationBar
@@ -342,129 +367,6 @@ const ON_APP_ENTER_FOREGROUND = 'onAppEnterForeground';
 const ON_APP_ENTER_BACKGROUND = 'onAppEnterBackground';
 const ON_WEB_INVOKE_APP_SERVICE = 'onWebInvokeAppService';
 const ON_WXS_INVOKE_CALL_METHOD = 'onWxsInvokeCallMethod';
-
-function isComponentInternalInstance(vm) {
-    return !!vm.appContext;
-}
-function resolveComponentInstance(instance) {
-    return (instance &&
-        (isComponentInternalInstance(instance) ? instance.proxy : instance));
-}
-function resolveOwnerVm(vm) {
-    if (!vm) {
-        return;
-    }
-    let componentName = vm.type.name;
-    while (componentName && isBuiltInComponent(shared.hyphenate(componentName))) {
-        // ownerInstance 内置组件需要使用父 vm
-        vm = vm.parent;
-        componentName = vm.type.name;
-    }
-    return vm.proxy;
-}
-function isElement(el) {
-    // Element
-    return el.nodeType === 1;
-}
-function resolveOwnerEl(instance, multi = false) {
-    const { vnode } = instance;
-    if (isElement(vnode.el)) {
-        return multi ? (vnode.el ? [vnode.el] : []) : vnode.el;
-    }
-    const { subTree } = instance;
-    // ShapeFlags.ARRAY_CHILDREN = 1<<4
-    if (subTree.shapeFlag & 16) {
-        const elemVNodes = subTree.children.filter((vnode) => vnode.el && isElement(vnode.el));
-        if (elemVNodes.length > 0) {
-            if (multi) {
-                return elemVNodes.map((node) => node.el);
-            }
-            return elemVNodes[0].el;
-        }
-    }
-    return multi ? (vnode.el ? [vnode.el] : []) : vnode.el;
-}
-function dynamicSlotName(name) {
-    return name === 'default' ? SLOT_DEFAULT_NAME : name;
-}
-const customizeRE = /:/g;
-function customizeEvent(str) {
-    return shared.camelize(str.replace(customizeRE, '-'));
-}
-function normalizeStyle(value) {
-    if (value instanceof Map) {
-        const styleObject = {};
-        value.forEach((value, key) => {
-            styleObject[key] = value;
-        });
-        return shared.normalizeStyle(styleObject);
-    }
-    else if (shared.isString(value)) {
-        return shared.parseStringStyle(value);
-    }
-    else if (shared.isArray(value)) {
-        const res = {};
-        for (let i = 0; i < value.length; i++) {
-            const item = value[i];
-            const normalized = shared.isString(item)
-                ? shared.parseStringStyle(item)
-                : normalizeStyle(item);
-            if (normalized) {
-                for (const key in normalized) {
-                    res[key] = normalized[key];
-                }
-            }
-        }
-        return res;
-    }
-    else {
-        return shared.normalizeStyle(value);
-    }
-}
-function normalizeClass(value) {
-    let res = '';
-    if (value instanceof Map) {
-        value.forEach((value, key) => {
-            if (value) {
-                res += key + ' ';
-            }
-        });
-    }
-    else if (shared.isArray(value)) {
-        for (let i = 0; i < value.length; i++) {
-            const normalized = normalizeClass(value[i]);
-            if (normalized) {
-                res += normalized + ' ';
-            }
-        }
-    }
-    else {
-        res = shared.normalizeClass(value);
-    }
-    return res.trim();
-}
-function normalizeProps(props) {
-    if (!props)
-        return null;
-    let { class: klass, style } = props;
-    if (klass && !shared.isString(klass)) {
-        props.class = normalizeClass(klass);
-    }
-    if (style) {
-        props.style = normalizeStyle(style);
-    }
-    return props;
-}
-
-let lastLogTime = 0;
-function formatLog(module, ...args) {
-    const now = Date.now();
-    const diff = lastLogTime ? now - lastLogTime : 0;
-    lastLogTime = now;
-    return `[${now}][${diff}ms][${module}]：${args
-        .map((arg) => JSON.stringify(arg))
-        .join(' ')}`;
-}
 
 function cache(fn) {
     const cache = Object.create(null);
@@ -571,6 +473,179 @@ function sortObject(obj) {
         });
     }
     return !Object.keys(sortObj) ? obj : sortObj;
+}
+function getGlobalOnce() {
+    if (typeof globalThis !== 'undefined') {
+        return globalThis;
+    }
+    // worker
+    if (typeof self !== 'undefined') {
+        return self;
+    }
+    // browser
+    if (typeof window !== 'undefined') {
+        return window;
+    }
+    // nodejs
+    // if (typeof global !== 'undefined') {
+    //   return global
+    // }
+    function g() {
+        return this;
+    }
+    if (typeof g() !== 'undefined') {
+        return g();
+    }
+    return (function () {
+        return new Function('return this')();
+    })();
+}
+let g = undefined;
+function getGlobal() {
+    if (g) {
+        return g;
+    }
+    g = getGlobalOnce();
+    return g;
+}
+
+function isComponentInternalInstance(vm) {
+    return !!vm.appContext;
+}
+function resolveComponentInstance(instance) {
+    return (instance &&
+        (isComponentInternalInstance(instance) ? instance.proxy : instance));
+}
+function resolveOwnerVm(vm) {
+    if (!vm) {
+        return;
+    }
+    let componentName = vm.type.name;
+    while (componentName && isBuiltInComponent(shared.hyphenate(componentName))) {
+        // ownerInstance 内置组件需要使用父 vm
+        vm = vm.parent;
+        componentName = vm.type.name;
+    }
+    return vm.proxy;
+}
+function isElement(el) {
+    // Element
+    return el.nodeType === 1;
+}
+function resolveOwnerEl(instance, multi = false) {
+    const { vnode } = instance;
+    if (isElement(vnode.el)) {
+        return multi ? (vnode.el ? [vnode.el] : []) : vnode.el;
+    }
+    const { subTree } = instance;
+    // ShapeFlags.ARRAY_CHILDREN = 1<<4
+    if (subTree.shapeFlag & 16) {
+        const elemVNodes = subTree.children.filter((vnode) => vnode.el && isElement(vnode.el));
+        if (elemVNodes.length > 0) {
+            if (multi) {
+                return elemVNodes.map((node) => node.el);
+            }
+            return elemVNodes[0].el;
+        }
+    }
+    return multi ? (vnode.el ? [vnode.el] : []) : vnode.el;
+}
+function dynamicSlotName(name) {
+    return name === 'default' ? SLOT_DEFAULT_NAME : name;
+}
+const customizeRE = /:/g;
+function customizeEvent(str) {
+    return shared.camelize(str.replace(customizeRE, '-'));
+}
+function normalizeStyle(value) {
+    const g = getGlobal();
+    if (g && g.UTSJSONObject && value instanceof g.UTSJSONObject) {
+        const styleObject = {};
+        g.UTSJSONObject.keys(value).forEach((key) => {
+            styleObject[key] = value[key];
+        });
+        return shared.normalizeStyle(styleObject);
+    }
+    else if (value instanceof Map) {
+        const styleObject = {};
+        value.forEach((value, key) => {
+            styleObject[key] = value;
+        });
+        return shared.normalizeStyle(styleObject);
+    }
+    else if (shared.isString(value)) {
+        return shared.parseStringStyle(value);
+    }
+    else if (shared.isArray(value)) {
+        const res = {};
+        for (let i = 0; i < value.length; i++) {
+            const item = value[i];
+            const normalized = shared.isString(item)
+                ? shared.parseStringStyle(item)
+                : normalizeStyle(item);
+            if (normalized) {
+                for (const key in normalized) {
+                    res[key] = normalized[key];
+                }
+            }
+        }
+        return res;
+    }
+    else {
+        return shared.normalizeStyle(value);
+    }
+}
+function normalizeClass(value) {
+    let res = '';
+    const g = getGlobal();
+    if (g && g.UTSJSONObject && value instanceof g.UTSJSONObject) {
+        g.UTSJSONObject.keys(value).forEach((key) => {
+            if (value[key]) {
+                res += key + ' ';
+            }
+        });
+    }
+    else if (value instanceof Map) {
+        value.forEach((value, key) => {
+            if (value) {
+                res += key + ' ';
+            }
+        });
+    }
+    else if (shared.isArray(value)) {
+        for (let i = 0; i < value.length; i++) {
+            const normalized = normalizeClass(value[i]);
+            if (normalized) {
+                res += normalized + ' ';
+            }
+        }
+    }
+    else {
+        res = shared.normalizeClass(value);
+    }
+    return res.trim();
+}
+function normalizeProps(props) {
+    if (!props)
+        return null;
+    let { class: klass, style } = props;
+    if (klass && !shared.isString(klass)) {
+        props.class = normalizeClass(klass);
+    }
+    if (style) {
+        props.style = normalizeStyle(style);
+    }
+    return props;
+}
+
+let lastLogTime = 0;
+function formatLog(module, ...args) {
+    const now = Date.now();
+    const diff = lastLogTime ? now - lastLogTime : 0;
+    lastLogTime = now;
+    return `[${now}][${diff}ms][${module}]：${args
+        .map((arg) => JSON.stringify(arg))
+        .join(' ')}`;
 }
 
 function formatKey(key) {
@@ -1408,6 +1483,7 @@ const PAGE_HOOKS = [
     ON_PULL_DOWN_REFRESH,
     ON_SHARE_TIMELINE,
     ON_SHARE_APP_MESSAGE,
+    ON_SHARE_CHAT,
     ON_ADD_TO_FAVORITES,
     ON_SAVE_EXIT_STATE,
     ON_NAVIGATION_BAR_BUTTON_TAP,
@@ -1446,6 +1522,7 @@ const UniLifecycleHooks = [
     ON_SHARE_TIMELINE,
     ON_ADD_TO_FAVORITES,
     ON_SHARE_APP_MESSAGE,
+    ON_SHARE_CHAT,
     ON_SAVE_EXIT_STATE,
     ON_NAVIGATION_BAR_BUTTON_TAP,
     ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED,
@@ -1503,13 +1580,15 @@ const E = function () {
     // (via https://github.com/lipsmack from https://github.com/scottcorgan/tiny-emitter/issues/3)
 };
 E.prototype = {
+    _id: 1,
     on: function (name, callback, ctx) {
         var e = this.e || (this.e = {});
         (e[name] || (e[name] = [])).push({
             fn: callback,
             ctx: ctx,
+            _id: this._id,
         });
-        return this;
+        return this._id++;
     },
     once: function (name, callback, ctx) {
         var self = this;
@@ -1530,13 +1609,15 @@ E.prototype = {
         }
         return this;
     },
-    off: function (name, callback) {
+    off: function (name, event) {
         var e = this.e || (this.e = {});
         var evts = e[name];
         var liveEvents = [];
-        if (evts && callback) {
+        if (evts && event) {
             for (var i = evts.length - 1; i >= 0; i--) {
-                if (evts[i].fn === callback || evts[i].fn._ === callback) {
+                if (evts[i].fn === event ||
+                    evts[i].fn._ === event ||
+                    evts[i]._id === event) {
                     evts.splice(i, 1);
                     break;
                 }
@@ -1610,6 +1691,15 @@ function getEnvLocale() {
     return (lang && lang.replace(/[.:].*/, '')) || 'en';
 }
 
+const SYSTEM_DIALOG_PAGE_PATH_STARTER = 'uni:';
+const SYSTEM_DIALOG_ACTION_SHEET_PAGE_PATH = 'uni:actionSheet';
+function isSystemDialogPage(page) {
+    return page.route.startsWith(SYSTEM_DIALOG_PAGE_PATH_STARTER);
+}
+function isSystemActionSheetDialogPage(page) {
+    return page.route.startsWith(SYSTEM_DIALOG_ACTION_SHEET_PAGE_PATH);
+}
+
 exports.ACTION_TYPE_ADD_EVENT = ACTION_TYPE_ADD_EVENT;
 exports.ACTION_TYPE_ADD_WXS_EVENT = ACTION_TYPE_ADD_WXS_EVENT;
 exports.ACTION_TYPE_CREATE = ACTION_TYPE_CREATE;
@@ -1652,6 +1742,7 @@ exports.NODE_TYPE_PAGE = NODE_TYPE_PAGE;
 exports.NODE_TYPE_TEXT = NODE_TYPE_TEXT;
 exports.NVUE_BUILT_IN_TAGS = NVUE_BUILT_IN_TAGS;
 exports.NVUE_U_BUILT_IN_TAGS = NVUE_U_BUILT_IN_TAGS;
+exports.OFF_HOST_THEME_CHANGE = OFF_HOST_THEME_CHANGE;
 exports.OFF_THEME_CHANGE = OFF_THEME_CHANGE;
 exports.ON_ADD_TO_FAVORITES = ON_ADD_TO_FAVORITES;
 exports.ON_APP_ENTER_BACKGROUND = ON_APP_ENTER_BACKGROUND;
@@ -1660,6 +1751,7 @@ exports.ON_BACK_PRESS = ON_BACK_PRESS;
 exports.ON_ERROR = ON_ERROR;
 exports.ON_EXIT = ON_EXIT;
 exports.ON_HIDE = ON_HIDE;
+exports.ON_HOST_THEME_CHANGE = ON_HOST_THEME_CHANGE;
 exports.ON_INIT = ON_INIT;
 exports.ON_KEYBOARD_HEIGHT_CHANGE = ON_KEYBOARD_HEIGHT_CHANGE;
 exports.ON_LAUNCH = ON_LAUNCH;
@@ -1679,6 +1771,7 @@ exports.ON_READY = ON_READY;
 exports.ON_RESIZE = ON_RESIZE;
 exports.ON_SAVE_EXIT_STATE = ON_SAVE_EXIT_STATE;
 exports.ON_SHARE_APP_MESSAGE = ON_SHARE_APP_MESSAGE;
+exports.ON_SHARE_CHAT = ON_SHARE_CHAT;
 exports.ON_SHARE_TIMELINE = ON_SHARE_TIMELINE;
 exports.ON_SHOW = ON_SHOW;
 exports.ON_TAB_ITEM_TAP = ON_TAB_ITEM_TAP;
@@ -1694,6 +1787,8 @@ exports.RESPONSIVE_MIN_WIDTH = RESPONSIVE_MIN_WIDTH;
 exports.SCHEME_RE = SCHEME_RE;
 exports.SELECTED_COLOR = SELECTED_COLOR;
 exports.SLOT_DEFAULT_NAME = SLOT_DEFAULT_NAME;
+exports.SYSTEM_DIALOG_ACTION_SHEET_PAGE_PATH = SYSTEM_DIALOG_ACTION_SHEET_PAGE_PATH;
+exports.SYSTEM_DIALOG_PAGE_PATH_STARTER = SYSTEM_DIALOG_PAGE_PATH_STARTER;
 exports.TABBAR_HEIGHT = TABBAR_HEIGHT;
 exports.TAGS = TAGS;
 exports.UNI_SSR = UNI_SSR;
@@ -1740,6 +1835,7 @@ exports.formatDateTime = formatDateTime;
 exports.formatLog = formatLog;
 exports.getCustomDataset = getCustomDataset;
 exports.getEnvLocale = getEnvLocale;
+exports.getGlobal = getGlobal;
 exports.getLen = getLen;
 exports.getValueByDataPath = getValueByDataPath;
 exports.initCustomDatasetOnce = initCustomDatasetOnce;
@@ -1749,6 +1845,7 @@ exports.invokeCreateVueAppHook = invokeCreateVueAppHook;
 exports.isAppIOSUVueNativeTag = isAppIOSUVueNativeTag;
 exports.isAppNVueNativeTag = isAppNVueNativeTag;
 exports.isAppNativeTag = isAppNativeTag;
+exports.isAppUVueBuiltInEasyComponent = isAppUVueBuiltInEasyComponent;
 exports.isAppUVueNativeTag = isAppUVueNativeTag;
 exports.isBuiltInComponent = isBuiltInComponent;
 exports.isComponentInternalInstance = isComponentInternalInstance;
@@ -1756,8 +1853,11 @@ exports.isComponentTag = isComponentTag;
 exports.isH5CustomElement = isH5CustomElement;
 exports.isH5NativeTag = isH5NativeTag;
 exports.isMiniProgramNativeTag = isMiniProgramNativeTag;
+exports.isMiniProgramUVueNativeTag = isMiniProgramUVueNativeTag;
 exports.isRootHook = isRootHook;
 exports.isRootImmediateHook = isRootImmediateHook;
+exports.isSystemActionSheetDialogPage = isSystemActionSheetDialogPage;
+exports.isSystemDialogPage = isSystemDialogPage;
 exports.isUniLifecycleHook = isUniLifecycleHook;
 exports.isUniXElement = isUniXElement;
 exports.normalizeClass = normalizeClass;

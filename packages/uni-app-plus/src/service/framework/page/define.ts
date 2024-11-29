@@ -1,4 +1,4 @@
-import { isFunction, isPromise } from '@vue/shared'
+import { extend, isFunction, isPromise } from '@vue/shared'
 import { type PageNodeOptions, once } from '@dcloudio/uni-shared'
 import type { DefineComponent } from 'vue'
 import { createPageNode } from '../dom/Page'
@@ -44,12 +44,15 @@ export function createVuePage(
   const mountPage = (component: VuePageComponent) =>
     app.mountPage(
       component,
-      {
-        __pageId,
-        __pagePath,
-        __pageQuery,
-        __pageInstance,
-      },
+      extend(
+        {
+          __pageId,
+          __pagePath,
+          __pageQuery,
+          __pageInstance,
+        },
+        __pageQuery
+      ),
       pageNode
     )
   if (isPromise(component)) {

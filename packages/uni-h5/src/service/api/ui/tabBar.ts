@@ -35,6 +35,10 @@ import {
 import { normalizeTabBarRoute } from '@dcloudio/uni-core'
 import { addLeadingSlash } from '@dcloudio/uni-shared'
 import { useTabBar } from '../../../framework/setup/state'
+import {
+  getCurrentBasePages,
+  getPage$BasePage,
+} from '../../../framework/setup/page'
 
 const setTabBarItemProps = [
   'text',
@@ -72,9 +76,9 @@ function setTabBar(
   reject: (errMsg?: string, errRes?: any) => void
 ) {
   let isTabBar = false
-  const pages = getCurrentPages()
+  const pages = getCurrentBasePages()
   if (pages.length) {
-    if (pages[pages.length - 1].$page.meta.isTabBar) {
+    if (getPage$BasePage(pages[pages.length - 1]).meta.isTabBar) {
       isTabBar = true
     }
   }

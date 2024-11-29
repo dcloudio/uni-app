@@ -6,10 +6,7 @@
       "@dcloudio/*": ["packages/*/src"],
       "@dcloudio/uni-app-plus/*": ["packages/uni-app-plus/src/*"],
       "@dcloudio/uni-h5/*": ["packages/uni-h5/src/*"],
-      "@dcloudio/uni-platform": ["packages/uni-app-harmony/src/platform/index.ts"],
-      "@ohos.*": ["packages/uni-app-harmony/types/ohos/api/@ohos.*.d.ts"],
-      "@kit.*": ["packages/uni-app-harmony/types/ohos/kits/@kit.*.d.ts"],
-      "@hms.*": ["packages/uni-app-harmony/types/ohos/hms/@hms.*.d.ts"]
+      "@dcloudio/uni-platform": ["packages/uni-app-harmony/src/platform/index.ts"]
     }
   }
 }

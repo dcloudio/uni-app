@@ -21,12 +21,12 @@ export const setNavigationBarColor =
       { frontColor, backgroundColor }: SetNavigationbarColorOptions,
       { resolve, reject }
     ) => {
-      const page = getCurrentPage() as ComponentPublicInstance
+      const page = getCurrentPage() as unknown as UniPage
       if (!page) {
         return reject(`getCurrentPages is empty`)
       }
 
-      const appPage = page.$nativePage
+      const appPage = page.vm.$nativePage
 
       appPage!.updateStyle(
         new Map<string, any | null>([

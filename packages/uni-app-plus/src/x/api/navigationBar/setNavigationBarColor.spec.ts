@@ -7,8 +7,10 @@ jest.mock('@dcloudio/uni-core', () => {
   return {
     getCurrentPage: jest.fn(() => {
       return {
-        $nativePage: {
-          updateStyle,
+        vm: {
+          $nativePage: {
+            updateStyle,
+          },
         },
       }
     }),

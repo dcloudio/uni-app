@@ -1,7 +1,8 @@
 import { extend } from '@vue/shared'
 import {
   createIsCustomElement,
-  isMiniProgramNativeTag as isNativeTag,
+  isMiniProgramNativeTag,
+  isMiniProgramUVueNativeTag,
 } from '@dcloudio/uni-shared'
 
 import {
@@ -40,7 +41,10 @@ export function uniOptions({
             platformOptions.mergeVirtualHostAttributes,
         }),
       }),
-      isNativeTag,
+      isNativeTag:
+        process.env.UNI_APP_X === 'true'
+          ? isMiniProgramUVueNativeTag
+          : isMiniProgramNativeTag,
       isCustomElement: createIsCustomElement(customElements),
       ...compilerOptions,
       nodeTransforms: [

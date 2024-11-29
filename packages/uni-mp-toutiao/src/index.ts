@@ -1,4 +1,3 @@
-export { initProvide, initInjections } from './runtime/apiInject'
 export {
   parse as parsePage,
   initLifetimes as initPageLifetimes,

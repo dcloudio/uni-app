@@ -418,6 +418,7 @@ describe('uvue-styler: normalize', () => {
       foo: {
         '': {
           backgroundColor: '#ff0000',
+          backgroundImage: 'none',
           abc: 123,
           def: '456px',
           ghi: '789pt',

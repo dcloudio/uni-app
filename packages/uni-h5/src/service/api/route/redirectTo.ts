@@ -8,6 +8,7 @@ import {
 import { getCurrentPage } from '@dcloudio/uni-core'
 import {
   entryPageState,
+  getPage$BasePage,
   normalizeRouteKey,
   redirectToPagesBeforeEntryPages,
   removePage,
@@ -15,11 +16,13 @@ import {
 import { navigate } from './utils'
 
 export function removeLastPage() {
-  const page = getCurrentPage()
+  const page = __X__
+    ? (getCurrentPage() as unknown as UniPage)?.vm
+    : getCurrentPage()
   if (!page) {
     return
   }
-  const $page = page.$page
+  const $page = getPage$BasePage(page)
   removePage(normalizeRouteKey($page.path, $page.id))
 }
 

@@ -17,11 +17,14 @@ export function uniRenderjsPlugin(): Plugin {
       if (!name) {
         this.error(missingModuleName(type, code))
       }
-      return `${require('@vue/compiler-sfc').rewriteDefault(
-        code.replace(/module\.exports\s*=/, 'export default '),
-        '_sfc_' + type
-      )}
-${type === 'renderjs' ? genRenderjsCode(name) : genWxsCode(name)}`
+      return {
+        code: `${require('@vue/compiler-sfc').rewriteDefault(
+          code.replace(/module\.exports\s*=/, 'export default '),
+          '_sfc_' + type
+        )}
+${type === 'renderjs' ? genRenderjsCode(name) : genWxsCode(name)}`,
+        map: { mappings: '' },
+      }
     },
   }
 }

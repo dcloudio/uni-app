@@ -1,3 +1,4 @@
+import { isNormalCompileTarget } from '../../utils'
 import type { ResolvedConfig } from 'vite'
 
 export * from './ast'
@@ -9,7 +10,7 @@ export * from './utils'
 export const buildInCssSet = new Set<string>()
 
 export function isCombineBuiltInCss(config: ResolvedConfig) {
-  if (process.env.UNI_COMPILE_TARGET === 'uni_modules') {
+  if (!isNormalCompileTarget()) {
     return false
   }
   return config.command === 'build' && config.build.cssCodeSplit

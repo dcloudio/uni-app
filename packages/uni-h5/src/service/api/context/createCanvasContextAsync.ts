@@ -5,8 +5,10 @@ import type {
   CanvasContext,
   CanvasContextToBlobCallback,
   CreateCanvasContextAsyncOptions,
-  UniRequestAnimationFrameCallback,
+  RequestAnimationFrameCallback,
 } from '@dcloudio/uni-app-x/types/uni'
+import { getCurrentBasePages } from '../../../framework/setup/page'
+import { type ComponentPublicInstance, nextTick } from 'vue'
 
 class CanvasContextImpl implements CanvasContext {
   _element: UniCanvasElement
@@ -47,7 +49,7 @@ class CanvasContextImpl implements CanvasContext {
     return new Path2D()
   }
 
-  requestAnimationFrame(callback: UniRequestAnimationFrameCallback): number {
+  requestAnimationFrame(callback: RequestAnimationFrameCallback): number {
     return window.requestAnimationFrame(callback)
   }
 
@@ -59,10 +61,10 @@ class CanvasContextImpl implements CanvasContext {
 export const createCanvasContextAsync = function (
   options: CreateCanvasContextAsyncOptions
 ) {
-  // @ts-expect-error
-  const currentPage: ComponentPublicInstance =
-    options.component ?? getCurrentPages()[getCurrentPages().length - 1]
-  if (currentPage != null) {
+  nextTick(() => {
+    const pages = getCurrentBasePages()
+    const currentPage: ComponentPublicInstance =
+      options.component ?? pages[pages.length - 1]
     const element = currentPage.$el?.querySelector('#' + options.id)
     if (element != null) {
       const canvas = element as UniCanvasElement
@@ -75,13 +77,6 @@ export const createCanvasContextAsync = function (
       )
       options.fail?.(uniError)
     }
-  } else {
-    const uniError = new UniError(
-      'uni-createCanvasContextAsync',
-      -1,
-      'No found current page.'
-    )
-    options.fail?.(uniError)
-  }
-  options.complete?.()
+    options.complete?.()
+  })
 }

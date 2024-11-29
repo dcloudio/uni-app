@@ -1,0 +1,12 @@
+uni-web-view {
+  display: block;
+}
+
+uni-web-view.uni-webview--fullscreen {
+  display: inline-block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+}

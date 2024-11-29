@@ -6,6 +6,7 @@ import {
   camelize,
   getCurrentInstance,
   onMounted,
+  provide,
   reactive,
   ref,
   watch,
@@ -62,6 +63,8 @@ export default /*#__PURE__*/ defineBuiltInComponent({
         immediate: true,
       }
     )
+
+    provide('pickerViewProps', props)
 
     const pickerViewElementRef = ref<UniPickerViewElement>()
 

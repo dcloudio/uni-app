@@ -2,6 +2,7 @@ import type { ComponentPublicInstance } from 'vue'
 import { isArray, isString, remove } from '@vue/shared'
 import { invokeArrayFns } from '@dcloudio/uni-shared'
 import { getCurrentPageVm } from './page'
+import { get$pageByPage } from './util'
 
 export function removeHook(
   vm: ComponentPublicInstance,
@@ -36,7 +37,9 @@ export function invokeHook(
     name = vm
     vm = getCurrentPageVm()!
   } else if (typeof vm === 'number') {
-    const page = getCurrentPages().find((page) => page.$page.id === vm)
+    const page = getCurrentPages().find(
+      (page) => get$pageByPage(page).id === vm
+    )
     if (page) {
       vm = (page as any).$vm as ComponentPublicInstance
     } else {
@@ -60,7 +63,9 @@ export function invokeHook(
 
 export function hasHook(vm: ComponentPublicInstance | number, name: string) {
   if (typeof vm === 'number') {
-    const page = getCurrentPages().find((page) => page.$page.id === vm)
+    const page = getCurrentPages().find(
+      (page) => get$pageByPage(page).id === vm
+    )
     if (page) {
       vm = (page as any).$vm as ComponentPublicInstance
     } else {

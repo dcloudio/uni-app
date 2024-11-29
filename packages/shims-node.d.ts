@@ -6,8 +6,6 @@ declare namespace NodeJS {
   interface ProcessEnv {
     NODE_ENV: 'production' | 'development' | 'test'
     UNI_NODE_ENV: 'production' | 'development' | 'test'
-    UNI_PLATFORM: UniApp.PLATFORM
-    UNI_APP_PLATFORM: 'android' | 'ios' | 'harmony'
     UNI_SUB_PLATFORM: 'quickapp-webview-huawei' | 'quickapp-webview-union'
     UNI_UTS_PLATFORM: 'app-android' | 'app-ios' | 'web' | UniApp.PLATFORM
 
@@ -16,11 +14,8 @@ declare namespace NodeJS {
     UNI_UTS_MODULE_PREFIX?: string
     UNI_UTS_TARGET_LANGUAGE?: 'javascript' | 'kotlin' | 'swift' | 'arkts'
 
-    UNI_INPUT_DIR: string
-    UNI_OUTPUT_DIR: string
     UNI_CLI_CONTEXT: string
     UNI_SUBPACKAGE?: string
-    UNI_MP_PLUGIN?: 'true'
     UNI_COMPILER_VERSION: string
     UNI_COMPILER_VERSION_TYPE: 'a' | 'r'
     UNI_HBUILDERX_PLUGINS: string
@@ -28,15 +23,11 @@ declare namespace NodeJS {
     UNI_NVUE_COMPILER: 'uni-app' | 'weex' | 'vue' | 'vite'
     UNI_NVUE_STYLE_COMPILER: 'uni-app' | 'weex'
     UNI_APP_CODE_SPLITING?: 'true'
-    UNI_AUTOMATOR_WS_ENDPOINT?: string
-    UNI_AUTOMATOR_APP_WEBVIEW?: string
-    UNI_AUTOMATOR_APP_WEBVIEW_SRC?: string
     UNI_H5_BASE?: string
     UNI_H5_BROWSER?: 'builtin'
     UNI_CUSTOM_SCRIPT?: string
     UNI_CUSTOM_DEFINE?: string
     UNI_CUSTOM_CONTEXT?: string
-    UNI_MINIMIZE?: 'true'
     UNI_UVUE?: 'true'
     UNI_UVUE_TARGET_LANGUAGE?: 'kotlin' | 'swift' | 'javascript'
     UNI_COMPILER: 'vue' | 'nvue'
@@ -45,31 +36,67 @@ declare namespace NodeJS {
     UNI_APP_CHANGED_FILES: string
     UNI_APP_CHANGED_PAGES: string
     VUE_APP_DARK_MODE: 'true' | 'false'
-    HX_USE_BASE_TYPE?: 'standard' | 'custom'
-    HX_DEPENDENCIES_DIR?: string
 
     __VUE_PROD_DEVTOOLS__?: 'true'
     __VUE_DEVTOOLS_HOST__: string
     __VUE_DEVTOOLS_PORT__: string
 
     UNI_APP_X?: 'true' | 'false'
-    UNI_APP_X_CACHE_DIR: string
 
     HX_Version: string
 
     UNI_APP_X_PAGE_COUNT: string
     UNI_APP_X_TSC?: string
+    UNI_APP_X_TSC_DIR: string
+    UNI_APP_X_TSC_CACHE_DIR: string
+    UNI_APP_X_UVUE_DIR: string
     UNI_APP_X_SINGLE_THREAD?: string
     UNI_APP_X_SETUP?: string
     UNI_APP_X_UVUE_SCRIPT_ENGINE?: 'native' | 'js'
 
-    UNI_COMPILE_TARGET?: 'uni_modules'
+    UNI_COMPILE_TARGET?: 'uni_modules' | 'ext-api'
     UNI_COMPILE_CLOUD_DIR?: string
     UNI_MODULES_ENCRYPT_CACHE_DIR?: string
 
-    UNI_APP_PACK_TYPE?: 'release' | 'debug'
-
     UNI_APP_HARMONY_PROJECT_PATH?: string
+
+    UNI_COMPILE_EXT_API_INPUT?: string
+    UNI_APP_NEXT_WORKSPACE?: string
+
+    // HBuilderX 可能传入的环境变量
+    HX_DEPENDENCIES_DIR?: string // 基座缓存目录，如：unpackage/cache/uts_standard_android
+    HX_USE_BASE_TYPE?: 'standard' | 'custom' // 基座类型
+    SOURCEMAP?: 'true' | 'false' // 是否生成 sourcemap
+    UNI_APP_PACK_TYPE?: 'release' | 'debug' // 打包类型
+    UNI_APP_PLATFORM?: 'android' | 'ios' | 'harmony' // 运行时，可能传入了 UNI_APP_PLATFORM = 'android'|'ios'|'harmony'
+    UNI_APP_PRODUCTION_TYPE?: 'WGT' // 发行类型
+    UNI_APP_X_CACHE_DIR: string // 当前运行/发行平台的缓存目录，如：unpackage/cache/.app-android
+    UNI_CLI_LAUNCH_PAGE_PATH?: string // 开发阶段，传入指定入口页面
+    UNI_CLI_LAUNCH_PAGE_QUERY?: string // 开发阶段，传入指定入口页面参数
+    UNI_SCRIPT?: string // 指定自定义平台，package.json->uni-app->scripts
+    UNI_HBUILDERX_LANGID?: string // 当前HBuilderX环境语言，如：zh_CN
+    UNI_INPUT_DIR: string // 输入目录
+    UNI_OUTPUT_DIR: string // 输出目录
+    UNI_MINIMIZE?: 'true' // 是否压缩
+    UNI_MP_PLUGIN?: 'true' // 是否发行为小程序插件
+    UNI_PLATFORM: UniApp.PLATFORM // 目标平台
+    UNI_SUBPACKGE?: string // 发行子包名
+    // uniCloud相关
+    UNI_CLOUD_SPACES?: string // uniCloud服务空间
+    UNICLOUD_DEBUG?: string // 是否开启uniCloud调试
+    UNICLOUD_DEBUGGER_PATH?: string // uniCloud调试器路径
+    UNI_SECURE_NETWORK_CONFIG?: string // 安全网络配置
+    UNI_SECURE_NETWORK_ENABLE?: string // 是否开启安全网络
+    // 自动化测试
+    HX_RUN_DEVICE_TYPE?: 'ios_simulator' | string // 运行设备类型
+    UNI_AUTOMATOR_APP_WEBVIEW?: string // 自动化测试app webview
+    UNI_AUTOMATOR_APP_WEBVIEW_SRC?: string // 自动化测试app webview目标地址
+    UNI_AUTOMATOR_COMPILE?: string // 是否编译
+    UNI_AUTOMATOR_CONFIG?: string // 自动化测试配置
+    UNI_AUTOMATOR_HOST?: string // 自动化测试host
+    UNI_AUTOMATOR_PORT?: string // 自动化测试port
+    UNI_AUTOMATOR_WS_ENDPOINT?: string // 自动化测试ws endpoint
+    UNI_OS_NAME?: string // 操作系统名称
   }
 }
 

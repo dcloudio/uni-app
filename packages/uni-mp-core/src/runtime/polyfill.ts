@@ -2,14 +2,26 @@ import { ON_LOAD, customizeEvent } from '@dcloudio/uni-shared'
 import type { MPComponentInstance } from './component'
 import { initPropsObserver } from './componentOptions'
 import { initProps } from './componentProps'
+import { wrapTriggerEventArgs } from './util'
 
 const MPPage = Page
 const MPComponent = Component
 
 function initTriggerEvent(mpInstance: MPComponentInstance) {
   const oldTriggerEvent = mpInstance.triggerEvent
-  const newTriggerEvent = function (event: string, ...args: []) {
-    return oldTriggerEvent.apply(mpInstance, [customizeEvent(event), ...args])
+  const newTriggerEvent = function (event: string, ...args: any[]) {
+    if (__PLATFORM__ === 'mp-harmony' || __PLATFORM__ === 'quickapp-webview') {
+      if (event !== '__l' && event !== '__e') {
+        // 忽略 handleLink，还有其他内置事件吗？
+        // triggerEvent的参数被序列化，导致vue的响应式数据对比始终不相等，从而陷入死循环
+        // 比如 uni-ui 的 collapse 组件的v-model
+        args = wrapTriggerEventArgs(args[0], args[1])
+      }
+    }
+    return oldTriggerEvent.apply(mpInstance, [
+      customizeEvent(event),
+      ...args,
+    ] as any)
   }
   // 京东小程序triggerEvent为只读属性
   try {

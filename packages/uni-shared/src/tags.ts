@@ -116,7 +116,10 @@ export const NVUE_BUILT_IN_TAGS = [
 ]
 
 export const UVUE_BUILT_IN_TAGS = [
-  'object',
+  'ad',
+  'ad-content-page',
+  'ad-draw',
+  'native-view',
   'loading-indicator',
   'list-view',
   'list-item',
@@ -132,6 +135,8 @@ export const UVUE_BUILT_IN_TAGS = [
   'button',
   'nested-scroll-header',
   'nested-scroll-body',
+  'grid-view',
+  'grid-item',
 ]
 
 export const UVUE_WEB_BUILT_IN_TAGS = [
@@ -226,6 +231,18 @@ const NVUE_CUSTOM_COMPONENTS = [
   'picker-view-column',
 ]
 
+// 内置的easycom组件
+const UVUE_BUILT_IN_EASY_COMPONENTS = ['map']
+
+export function isAppUVueBuiltInEasyComponent(tag: string) {
+  return UVUE_BUILT_IN_EASY_COMPONENTS.includes(tag)
+}
+// 主要是指前端实现的组件列表
+const UVUE_CUSTOM_COMPONENTS = [
+  ...NVUE_CUSTOM_COMPONENTS,
+  ...UVUE_BUILT_IN_EASY_COMPONENTS,
+]
+
 export function isAppUVueNativeTag(tag: string) {
   // 前端实现的内置组件都会注册一个根组件
   if (tag.startsWith('uni-') && tag.endsWith('-element')) {
@@ -234,7 +251,7 @@ export function isAppUVueNativeTag(tag: string) {
   if (UVUE_BUILT_IN_TAGS.includes(tag)) {
     return true
   }
-  if (NVUE_CUSTOM_COMPONENTS.includes(tag)) {
+  if (UVUE_CUSTOM_COMPONENTS.includes(tag)) {
     return false
   }
   if (isBuiltInComponent(tag)) {
@@ -285,6 +302,14 @@ export function isMiniProgramNativeTag(tag: string) {
   return isBuiltInComponent(tag)
 }
 
+export function isMiniProgramUVueNativeTag(tag: string) {
+  // 小程序平台内置的自定义元素，会被转换为 view
+  if (tag.startsWith('uni-') && tag.endsWith('-element')) {
+    return true
+  }
+  return isBuiltInComponent(tag)
+}
+
 export function createIsCustomElement(tags: string[] = []) {
   return function isCustomElement(tag: string) {
     return tags.includes(tag)
@@ -298,3 +323,8 @@ export function isComponentTag(tag: string) {
 export const COMPONENT_SELECTOR_PREFIX = 'uni-'
 
 export const COMPONENT_PREFIX = 'v-' + COMPONENT_SELECTOR_PREFIX
+
+export const enum SetUniElementIdTagType {
+  BuiltInComponent = 1, // 如：unicloud-db
+  BuiltInRootElement = 2, // 如：uni-cloud-db-element
+}

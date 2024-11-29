@@ -4992,7 +4992,9 @@
       },
       "unixTags": [
         "text",
-        "button"
+        "button",
+        "input",
+        "textarea"
       ],
       "defaultValue": "normal"
     },
@@ -5623,6 +5625,28 @@
             "web": {
               "uniVer": "√",
               "unixVer": "4.0"
+            }
+          }
+        },
+        {
+          "name": "uni-icon",
+          "description": "uni-app x 内置字体图标 uni-icon",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "x",
+                "unixVer": "4.33"
+              },
+              "ios": {
+                "osVer": "12.0",
+                "uniVer": "x",
+                "unixVer": "4.33"
+              }
+            },
+            "web": {
+              "uniVer": "x",
+              "unixVer": "x"
             }
           }
         }

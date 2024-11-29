@@ -1,6 +1,12 @@
+import path from 'path'
 import { extend } from '@vue/shared'
 import type { SFCScriptCompileOptions } from '@vue/compiler-sfc'
-import { uniViteInjectPlugin } from '@dcloudio/uni-cli-shared'
+import {
+  resolveUTSCompiler,
+  uniDecryptUniModulesPlugin,
+  uniUTSUVueJavaScriptPlugin,
+  uniViteInjectPlugin,
+} from '@dcloudio/uni-cli-shared'
 
 import {
   type UniMiniProgramPluginOptions,
@@ -17,6 +23,9 @@ import { uniRuntimeHooksPlugin } from './plugins/runtimeHooks'
 import { uniSubpackagePlugin } from './plugins/subpackage'
 import { uniMiniProgramPluginPlugin } from './plugins/plugin'
 
+import * as vueCompilerDom from '@vue/compiler-dom'
+import * as uniCliShared from '@dcloudio/uni-cli-shared'
+
 export { UniMiniProgramPluginOptions } from './plugin'
 export default (options: UniMiniProgramPluginOptions) => {
   if (!options.app.subpackages) {
@@ -27,12 +36,28 @@ export default (options: UniMiniProgramPluginOptions) => {
   }
   const normalizeComponentName = options.template.component?.normalizeName
   return [
-    (options: {
-      vueOptions?: { script?: Partial<SFCScriptCompileOptions> }
-    }) => {
+    ...(process.env.UNI_APP_X === 'true'
+      ? [
+          uniDecryptUniModulesPlugin(),
+          uniUTSUVueJavaScriptPlugin(),
+          resolveUTSCompiler().uts2js({
+            inputDir: process.env.UNI_INPUT_DIR,
+            version: process.env.UNI_COMPILER_VERSION,
+            cacheRoot: path.resolve(
+              process.env.UNI_APP_X_CACHE_DIR,
+              '.uts2js/cache'
+            ),
+            modules: {
+              vueCompilerDom,
+              uniCliShared,
+            },
+          }),
+        ]
+      : []),
+    () => {
       return uniMainJsPlugin({
         normalizeComponentName,
-        babelParserPlugins: options.vueOptions?.script?.babelParserPlugins,
+        babelParserPlugins: ['typescript'],
       })
     },
     uniManifestJsonPlugin(options),
@@ -56,4 +81,11 @@ export default (options: UniMiniProgramPluginOptions) => {
     ...(process.env.UNI_SUBPACKAGE ? [uniSubpackagePlugin(options)] : []),
     ...(process.env.UNI_MP_PLUGIN ? [uniMiniProgramPluginPlugin(options)] : []),
   ]
+}
+
+export function resolveMiniProgramRuntime(dirname: string, fileName: string) {
+  if (process.env.UNI_APP_X === 'true') {
+    return path.resolve(dirname, `../dist-x/${fileName}`)
+  }
+  return path.resolve(dirname, `${fileName}`)
 }

@@ -1324,28 +1324,25 @@ export function inferRuntimeType(
       case 'TSMethodSignature':
         return ['Function']
       case 'TSFunctionType':
-        let type = 'Function'
+        let fnType = scope.source.slice(
+          node.start! + scope.offset,
+          node.end! + scope.offset
+        )
         if (from === 'defineProps') {
-          const fnType = scope.source.slice(
-            node.start! + scope.offset,
-            node.end! + scope.offset
-          )
-          type = 'Function as PropType<' + fnType + '>'
+          fnType = 'Function as PropType<' + fnType + '>'
         }
-        return [type]
+        return [fnType]
       case 'TSArrayType':
       case 'TSTupleType':
         // TODO (nice to have) generate runtime element type/length checks
-        return [
-          from === 'defineProps'
-            ? 'Array as PropType<' +
-              scope.source.slice(
-                node.start! + scope.offset,
-                node.end! + scope.offset
-              ) +
-              '>'
-            : 'Array',
-        ]
+        let arrType = scope.source.slice(
+          node.start! + scope.offset,
+          node.end! + scope.offset
+        )
+        if (from === 'defineProps') {
+          arrType = 'Array as PropType<' + arrType + '>'
+        }
+        return [arrType]
 
       case 'TSLiteralType':
         switch (node.literal.type) {

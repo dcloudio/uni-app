@@ -4,17 +4,9 @@
       "temp/uni-ext-api/index.uts": "uni.api.ets"
     },
     "alias": {
-      "@vue/shared": "<rootDir>/packages/uni-app-harmony/src/shared",
-      "@dcloudio/uni-api": "<rootDir>/packages/uni-api/src",
-      "@dcloudio/uni-app-plus": "<rootDir>/packages/uni-app-plus/src",
-      "@dcloudio/uni-components": "<rootDir>/packages/uni-components/src",
-      "@dcloudio/uni-core": "<rootDir>/packages/uni-core/src",
-      "@dcloudio/uni-i18n": "<rootDir>/packages/uni-i18n/src",
-      "@dcloudio/uni-platform": "<rootDir>/packages/uni-app-harmony/src/platform",
-      "@dcloudio/uni-shared": "<rootDir>/packages/uni-shared/src",
-      "@dcloudio/uni-runtime": "@dcloudio/uni-app-harmony-framework"
+      "@dcloudio/uni-runtime": "@dcloudio/uni-mp-sdk"
     },
-    "externals": ["@dcloudio/uni-app-harmony-framework"],
+    "externals": ["@dcloudio/uni-mp-sdk"],
     "autoImports": {
       "@dcloudio/uts-harmony": [
         ["IUTSObject"],
@@ -40,7 +32,11 @@
         ["ApiOptions"],
         ["ApiError"],
         ["UniError"],
-        ["UniProvider"]
+        ["UniProvider"],
+        ["SourceError"]
+      ],
+      "@dcloudio/uni-mp-sdk": [
+        ["UTSHarmony"]
       ]
     },
     "replacements": {
@@ -52,7 +48,7 @@
     },
     "wrapper": {
       "name": "initUniExtApi",
-      "args": [["APP_ID", "string"]]
+      "args": []
     }
   },
   {
@@ -60,9 +56,9 @@
       "../uni-runtime/src/helpers/api/index.ts": "uni-api-shared.ets"
     },
     "alias": {
-      "@dcloudio/uni-runtime": "@dcloudio/uni-app-harmony-framework"
+      "@dcloudio/uni-runtime": "@dcloudio/uni-mp-sdk"
     },
-    "externals": ["@dcloudio/uni-app-harmony-framework"],
+    "externals": ["@dcloudio/uni-mp-sdk"],
     "autoImports": {
       "@dcloudio/uts-harmony": [
         ["IUTSObject"],

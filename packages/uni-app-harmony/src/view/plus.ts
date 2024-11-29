@@ -1,5 +1,7 @@
-/// <reference path="./harmonyChannel.d.ts" />
+import { invokeHarmonyChannel } from '../helpers/channel'
 import { extend } from '@vue/shared'
+
+export { invokeHarmonyChannel } from '../helpers/channel'
 
 export default {
   webview: {
@@ -7,22 +9,30 @@ export default {
       return extend(
         {
           getStyle: () => {
-            return extend({}, harmonyChannel.invokeSync('getStyle'))
+            return extend({}, invokeHarmonyChannel('getStyle'))
           },
           setSoftinputTemporary(options: any) {
-            harmonyChannel.invokeSync('setSoftinputTemporary', [options])
+            invokeHarmonyChannel('setSoftinputTemporary', [options])
           },
         },
-        harmonyChannel.invokeSync('currentWebview')
+        invokeHarmonyChannel('currentWebview')
       )
     },
     postMessageToUniNView(data: any, id: string) {
-      harmonyChannel.invokeSync('postMessageToUniNView', [data, id])
+      invokeHarmonyChannel('postMessageToUniNView', [data, id])
     },
   },
   io: {
     convertLocalFileSystemURL(filepath: string) {
-      return harmonyChannel.invokeSync('convertLocalFileSystemURL', [filepath])
+      return invokeHarmonyChannel('convertLocalFileSystemURL', [filepath])
+    },
+  },
+  key: {
+    hideSoftKeybord() {
+      invokeHarmonyChannel('hideSoftKeybord')
+    },
+    showSoftKeybord() {
+      invokeHarmonyChannel('showSoftKeybord')
     },
   },
 }

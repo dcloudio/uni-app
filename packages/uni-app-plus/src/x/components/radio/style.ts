@@ -21,7 +21,7 @@ const _style_0$1 = {
   },
   'uni-radio-input-icon': {
     '': {
-      fontFamily: 'uniappx_components',
+      fontFamily: 'uni-icon',
       fontSize: '14px',
       width: '14px',
       height: '14px',

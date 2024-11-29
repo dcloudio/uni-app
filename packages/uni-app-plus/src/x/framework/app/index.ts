@@ -7,6 +7,7 @@ import { defineGlobalData } from '@dcloudio/uni-core'
 // import { initTabBar } from './initTabBar'
 import { initGlobalEvent } from './initGlobalEvent'
 import { initAppLaunch } from './initAppLaunch'
+import { initAppError } from './initAppError'
 // import { clearTempFile } from './clearTempFile'
 import { initSubscribeHandlers } from './subscriber'
 import { initVueApp } from '../../../service/framework/app/vueApp'
@@ -24,6 +25,23 @@ let appCtx: ComponentPublicInstance
 const defaultApp = {
   globalData: {},
 }
+// @ts-expect-error
+class UniAppImpl implements UniApp {
+  get vm() {
+    return appCtx
+  }
+  get $vm() {
+    return appCtx
+  }
+  get globalData() {
+    return appCtx?.globalData || {}
+  }
+  getAndroidApplication() {
+    return null
+  }
+}
+
+let $uniApp = new UniAppImpl()
 
 export const entryPageState = {
   isReady: false,
@@ -68,18 +86,8 @@ function initAppVm(appVm: ComponentPublicInstance) {
   // TODO uni-app x useI18n
 }
 
-export function getApp({ allowDefault = false } = {}) {
-  if (appCtx) {
-    // 真实的 App 已初始化
-    return appCtx
-  }
-  if (allowDefault) {
-    // 返回默认实现
-    return defaultApp
-  }
-  console.error(
-    '[warn]: getApp() failed. Learn more: https://uniapp.dcloud.io/collocation/frame/window?id=getapp.'
-  )
+export function getApp() {
+  return $uniApp
 }
 
 /**
@@ -124,6 +132,9 @@ export function registerApp(appVm: ComponentPublicInstance, nativeApp: IApp) {
 
   // onLaunch 触发时机 在 WebviewReady 之前
   initAppLaunch(appVm)
+
+  initAppError(appVm, nativeApp)
+
   initSubscribeHandlers()
 
   // // 10s后清理临时文件

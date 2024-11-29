@@ -9,6 +9,11 @@ import {
 // @ts-expect-error
 import { getExposeProxy } from 'vue'
 
+// #if _X_
+// @ts-expect-error
+import { registerCustomElement } from 'vue'
+// #endif
+
 import {
   initExtraOptions,
   initWorkletMethods,
@@ -160,7 +165,17 @@ export function parseComponent(
 declare let Component: WechatMiniprogram.Component.Constructor
 
 export function initCreateComponent(parseOptions: ParseComponentOptions) {
-  return function createComponent(vueComponentOptions: ComponentOptions) {
+  return function createComponent(
+    vueComponentOptions: ComponentOptions & {
+      rootElement?: { name: string; class: any }
+    }
+  ) {
+    if (__X__) {
+      const rootElement = vueComponentOptions.rootElement
+      if (rootElement) {
+        registerCustomElement(rootElement.name, rootElement.class)
+      }
+    }
     return Component(parseComponent(vueComponentOptions, parseOptions))
   }
 }

@@ -35,12 +35,12 @@ export const transformBind: DirectiveTransform = (dir, _node, context) => {
   }
 
   if (modifiers.includes('prop')) {
-    context.onWarn(
+    context[context.isX ? 'onError' : 'onWarn'](
       createMPCompilerError(MPErrorCodes.X_V_BIND_MODIFIER_PROP, loc)
     )
   }
   if (modifiers.includes('attr')) {
-    context.onWarn(
+    context[context.isX ? 'onError' : 'onWarn'](
       createMPCompilerError(MPErrorCodes.X_V_BIND_MODIFIER_ATTR, loc)
     )
   }

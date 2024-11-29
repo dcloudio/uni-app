@@ -3,10 +3,14 @@ import { extend, isString } from '@vue/shared'
 import type { Plugin, ResolvedConfig } from 'vite'
 import type { FilterPattern } from '@rollup/pluginutils'
 
-import { COMMON_EXCLUDE, requireUniHelpers } from '@dcloudio/uni-cli-shared'
+import {
+  COMMON_EXCLUDE,
+  isNormalCompileTarget,
+  requireUniHelpers,
+  uniPrePlugin,
+} from '@dcloudio/uni-cli-shared'
 
 import type { VitePluginUniResolvedOptions } from '../..'
-import { uniPrePlugin } from './pre'
 import { uniJsonPlugin } from './json'
 import { uniPreCssPlugin } from './preCss'
 
@@ -65,10 +69,7 @@ export function initPlugins(
   addPlugin(plugins, uniJsonPlugin(options), 'vite:json', 'pre')
   addPlugin(plugins, uniStaticPlugin(options, config), 'vite:asset', 'pre')
 
-  if (
-    process.env.UNI_HBUILDERX_PLUGINS &&
-    process.env.UNI_COMPILE_TARGET !== 'uni_modules'
-  ) {
+  if (process.env.UNI_HBUILDERX_PLUGINS && isNormalCompileTarget()) {
     try {
       const { V } = requireUniHelpers()
       addPlugin(

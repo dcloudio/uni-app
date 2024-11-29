@@ -24,6 +24,7 @@ const DEFAULT_KEYS = [
   'MP_360',
   'MP_ALIPAY',
   'MP_BAIDU',
+  'MP_HARMONY',
   'MP_QQ',
   'MP_LARK',
   'MP_TOUTIAO',
@@ -55,7 +56,7 @@ export function getPreUVueContext() {
   return preUVueContext
 }
 
-export function initPreContext(
+export function initScopedPreContext(
   platform: UniApp.PLATFORM,
   userPreContext?: Record<string, boolean> | string,
   utsPlatform?: typeof process.env.UNI_UTS_PLATFORM,
@@ -130,9 +131,27 @@ export function initPreContext(
       })
     }
   }
-  extend(preVueContext, defaultContext, vueContext)
-  extend(preNVueContext, defaultContext, nvueContext)
-  extend(preUVueContext, defaultContext, uvueContext)
+  return {
+    preVueContext: extend({}, defaultContext, vueContext),
+    preNVueContext: extend({}, defaultContext, nvueContext),
+    preUVueContext: extend({}, defaultContext, uvueContext),
+  }
+}
+
+export function initPreContext(
+  platform: UniApp.PLATFORM,
+  userPreContext?: Record<string, boolean> | string,
+  utsPlatform?: typeof process.env.UNI_UTS_PLATFORM,
+  isX?: boolean
+) {
+  const {
+    preVueContext: scopedPreVueContext,
+    preNVueContext: scopedPreNVueContext,
+    preUVueContext: scopedPreUVueContext,
+  } = initScopedPreContext(platform, userPreContext, utsPlatform, isX)
+  extend(preVueContext, scopedPreVueContext)
+  extend(preNVueContext, scopedPreNVueContext)
+  extend(preUVueContext, scopedPreUVueContext)
 }
 
 function normalizeKey(name: string) {

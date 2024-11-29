@@ -85,9 +85,16 @@ const uniH5Preset = {
     'UniPickerElement',
   ],
 }
-const cloudPreset = {
-  '@dcloudio/uni-cloud': [['default', 'uniCloud']],
+
+const uniMiniProgramPreset = {
+  from: 'vue',
+  imports: ['UniElement', 'UniElementImpl'],
 }
+
+const cloudPreset = {
+  '@dcloudio/uni-cloud': ['uniCloud', 'UniCloudError'],
+}
+
 const vuePreset = {
   from: 'vue',
   imports: [
@@ -170,6 +177,8 @@ export function initAutoImportOptions(
   const autoImport = [uniPreset, cloudPreset, vuePreset]
   if (platform === 'web') {
     autoImport.push(uniH5Preset)
+  } else if (platform.startsWith('mp-')) {
+    autoImport.push(uniMiniProgramPreset)
   }
   return {
     ...userOptions,

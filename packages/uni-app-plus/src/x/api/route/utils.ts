@@ -1,4 +1,4 @@
-import type { ComponentPublicInstance } from 'vue'
+import type { ComponentInternalInstance, ComponentPublicInstance } from 'vue'
 import { removePage } from '../../../service/framework/page/getCurrentPages'
 import { closeWebview } from './webview'
 import { removeTabBarPage } from '../../framework/app/tabBar'
@@ -15,12 +15,26 @@ import { _redirectTo } from './redirectTo'
 import { $reLaunch } from './reLaunch'
 import { getCurrentPage } from '@dcloudio/uni-core'
 import { addLeadingSlash } from '@dcloudio/uni-shared'
+import { getNativeApp } from '../../framework/app/app'
 
 export function closePage(
   page: ComponentPublicInstance,
   animationType: string,
   animationDuration?: number
 ) {
+  const dialogPages = (page.$page as UniPage).getDialogPages()
+  for (let i = dialogPages.length - 1; i >= 0; i--) {
+    closeNativeDialogPage(dialogPages[i])
+  }
+  const systemDialogPages =
+    (page as unknown as ComponentInternalInstance).$systemDialogPages || []
+  for (let i = 0; i < systemDialogPages.length; i++) {
+    closeNativeDialogPage(systemDialogPages[i])
+  }
+  ;(page as unknown as ComponentInternalInstance).$systemDialogPages = []
+  for (let i = dialogPages.length - 1; i >= 0; i--) {
+    closeNativeDialogPage(dialogPages[i])
+  }
   closeWebview(page.$nativePage!, animationType, animationDuration)
   removePage(page)
   removeTabBarPage(page)
@@ -59,4 +73,23 @@ export function handleBeforeEntryPageRoutes() {
   const reLaunchPages = [...reLaunchPagesBeforeEntryPages]
   reLaunchPagesBeforeEntryPages.length = 0
   reLaunchPages.forEach(({ args, handler }) => $reLaunch(args, handler))
+}
+
+export function closeNativeDialogPage(
+  dialogPage: UniPage,
+  animationType?: string,
+  animationDuration?: number,
+  callback?: () => void
+) {
+  const webview = getNativeApp().pageManager.findPageById(
+    dialogPage.$vm!.$basePage.id + ''
+  )
+  if (webview) {
+    closeWebview(
+      webview,
+      animationType || 'none',
+      animationDuration || 0,
+      callback
+    )
+  }
 }

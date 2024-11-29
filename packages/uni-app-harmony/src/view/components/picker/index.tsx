@@ -1,4 +1,4 @@
-import { type ExtractPropTypes, ref } from 'vue'
+import { type ExtractPropTypes, ref, watch } from 'vue'
 import {
   type EmitEvent,
   defineBuiltInComponent,
@@ -112,7 +112,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     const trigger = useCustomEvent<EmitEvent<typeof emit>>(rootRef, emit)
     function onClick() {
       // @ts-expect-error
-      embedRef.value!.click()
+      embedRef.value!.show()
     }
     function onCancel(event: CustomEvent<any>) {
       trigger('cancel', event, event.detail)
@@ -123,12 +123,22 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     function onChange(event: CustomEvent<any>) {
       trigger('change', event, event.detail)
     }
+    if (props.mode === mode.MULTISELECTOR) {
+      watch(
+        () => props.range,
+        (range) => {
+          // @ts-expect-error
+          embedRef.value!.updateRange(range)
+        }
+      )
+    }
     return () => (
       <uni-picker ref={rootRef}>
         <Embed
           ref={embedRef}
           tag="picker"
           options={props}
+          methods={['show', 'updateRange']}
           onChange={onChange}
           onColumnchange={onColumnchange}
           onCancel={onCancel}

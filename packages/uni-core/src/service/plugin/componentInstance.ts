@@ -8,7 +8,11 @@ export function getOpenerEventChannel(
     if (this.$route) {
       const meta = this.$route.meta
       if (!meta.eventChannel) {
-        meta.eventChannel = new EventChannel(this.$page.id)
+        meta.eventChannel = new EventChannel(
+          __X__
+            ? this.$basePage.id
+            : (this.$page as Page.PageInstance['$page']).id
+        )
       }
       return meta.eventChannel as EventChannel
     }

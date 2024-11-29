@@ -53,6 +53,10 @@
     "$off": [
       null,
       "null"
+    ],
+    "$emit": [
+      null,
+      "null"
     ]
   },
   "uni-getDeviceInfo": {
@@ -104,14 +108,14 @@
       "null"
     ]
   },
-  "uni-video": {
-    "createVideoContext": [
+  "uni-map-tencent": {
+    "createMapContext": [
       null,
       "null"
     ]
   },
-  "uni-createMapContext": {
-    "createMapContext": [
+  "uni-video": {
+    "createVideoContext": [
       null,
       "null"
     ]

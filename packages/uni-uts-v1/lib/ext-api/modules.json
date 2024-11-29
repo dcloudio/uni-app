@@ -1,4 +1,17 @@
 {
+  "uni-actionSheet": {
+    "uni": {
+      "showActionSheet2": {
+        "name": "showActionSheet2",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": false,
+          "arkts": false
+        }
+      }
+    }
+  },
   "uni-ad": {
     "uni": {
       "createRewardedVideoAd": {
@@ -8,8 +21,19 @@
           "kotlin": true,
           "swift": true
         }
+      },
+      "createInterstitialAd": {
+        "name": "createInterstitialAd",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": false
+        }
       }
-    }
+    },
+    "components": [
+      "ad"
+    ]
   },
   "uni-canvas": {
     "uni": {
@@ -21,6 +45,76 @@
           "kotlin": true,
           "swift": false,
           "arkts": false
+        }
+      }
+    }
+  },
+  "uni-chooseLocation": {
+    "uni": {
+      "chooseLocation": {
+        "name": "chooseLocation",
+        "app": {
+          "js": true,
+          "kotlin": true,
+          "swift": true,
+          "arkts": false
+        }
+      }
+    }
+  },
+  "uni-crash": {
+    "uni": {
+      "__onAppCrash": {
+        "name": "__onAppCrash",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true
+        }
+      },
+      "__offAppCrash": {
+        "name": "__offAppCrash",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true
+        }
+      },
+      "__getAppCrashInfo": {
+        "name": "__getAppCrashInfo",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true
+        }
+      },
+      "__deleteAppCrashInfo": {
+        "name": "__deleteAppCrashInfo",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true
+        }
+      },
+      "__creatAppCrash": {
+        "name": "__creatAppCrash",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true
+        }
+      }
+    }
+  },
+  "uni-createInnerAudioContext": {
+    "uni": {
+      "createInnerAudioContext": {
+        "name": "createInnerAudioContext",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": false,
+          "arkts": true
         }
       }
     }
@@ -49,6 +143,74 @@
       }
     }
   },
+  "uni-dialogPage": {
+    "uni": {
+      "openDialogPage": {
+        "name": "openDialogPage",
+        "app": {
+          "js": false,
+          "x-js": false,
+          "kotlin": false,
+          "swift": true,
+          "arkts": false
+        }
+      },
+      "closeDialogPage": {
+        "name": "closeDialogPage",
+        "app": {
+          "js": false,
+          "x-js": false,
+          "kotlin": false,
+          "swift": true,
+          "arkts": false
+        }
+      }
+    }
+  },
+  "uni-event": {
+    "uni": {
+      "$on": {
+        "name": "$on",
+        "app": {
+          "js": false,
+          "x-js": false,
+          "kotlin": false,
+          "swift": true,
+          "arkts": true
+        }
+      },
+      "$once": {
+        "name": "$once",
+        "app": {
+          "js": false,
+          "x-js": false,
+          "kotlin": false,
+          "swift": true,
+          "arkts": true
+        }
+      },
+      "$off": {
+        "name": "$off",
+        "app": {
+          "js": false,
+          "x-js": false,
+          "kotlin": false,
+          "swift": true,
+          "arkts": true
+        }
+      },
+      "$emit": {
+        "name": "$emit",
+        "app": {
+          "js": false,
+          "x-js": false,
+          "kotlin": false,
+          "swift": true,
+          "arkts": true
+        }
+      }
+    }
+  },
   "uni-exit": {
     "uni": {
       "exit": {
@@ -56,7 +218,7 @@
         "app": {
           "js": true,
           "kotlin": true,
-          "swift": false,
+          "swift": true,
           "arkts": true
         }
       }
@@ -99,7 +261,8 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": true
+          "swift": true,
+          "arkts": true
         }
       }
     }
@@ -259,7 +422,8 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": true
+          "swift": true,
+          "arkts": true
         }
       }
     }
@@ -275,6 +439,22 @@
         }
       }
     }
+  },
+  "uni-map-tencent": {
+    "uni": {
+      "createMapContext": {
+        "name": "createMapContext",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true,
+          "arkts": false
+        }
+      }
+    },
+    "easycom": [
+      "map"
+    ]
   },
   "uni-media": {
     "uni": {
@@ -329,7 +509,7 @@
           "js": false,
           "kotlin": true,
           "swift": true,
-          "arkts": false
+          "arkts": true
         }
       },
       "chooseVideo": {
@@ -365,7 +545,25 @@
           "js": false,
           "kotlin": true,
           "swift": true,
-          "arkts": false
+          "arkts": true
+        }
+      },
+      "chooseFile": {
+        "name": "chooseFile",
+        "app": {
+          "js": false,
+          "kotlin": false,
+          "swift": false,
+          "arkts": true
+        }
+      },
+      "chooseMedia": {
+        "name": "chooseMedia",
+        "app": {
+          "js": false,
+          "kotlin": false,
+          "swift": false,
+          "arkts": true
         }
       }
     }
@@ -396,6 +594,15 @@
           "js": false,
           "kotlin": true,
           "swift": true,
+          "arkts": true
+        }
+      },
+      "configMTLS": {
+        "name": "configMTLS",
+        "app": {
+          "js": false,
+          "kotlin": false,
+          "swift": false,
           "arkts": true
         }
       }
@@ -439,6 +646,42 @@
     "provider": {
       "service": "payment",
       "name": "wxpay"
+    }
+  },
+  "uni-privacy": {
+    "uni": {
+      "onPrivacyAuthorizationChange": {
+        "name": "onPrivacyAuthorizationChange",
+        "app": {
+          "js": true,
+          "kotlin": true,
+          "swift": true
+        }
+      },
+      "offPrivacyAuthorizationChange": {
+        "name": "offPrivacyAuthorizationChange",
+        "app": {
+          "js": true,
+          "kotlin": true,
+          "swift": true
+        }
+      },
+      "getPrivacySetting": {
+        "name": "getPrivacySetting",
+        "app": {
+          "js": true,
+          "kotlin": true,
+          "swift": true
+        }
+      },
+      "resetPrivacyAuthorization": {
+        "name": "resetPrivacyAuthorization",
+        "app": {
+          "js": true,
+          "kotlin": true,
+          "swift": true
+        }
+      }
     }
   },
   "uni-prompt": {
@@ -501,7 +744,8 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": true
+          "swift": true,
+          "arkts": true
         }
       },
       "onPushMessage": {
@@ -509,7 +753,8 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": true
+          "swift": true,
+          "arkts": true
         }
       },
       "offPushMessage": {
@@ -517,7 +762,8 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": true
+          "swift": true,
+          "arkts": true
         }
       },
       "getChannelManager": {
@@ -525,7 +771,8 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": false
+          "swift": false,
+          "arkts": false
         }
       },
       "getPushChannelManager": {
@@ -533,7 +780,8 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": false
+          "swift": false,
+          "arkts": false
         }
       },
       "createPushMessage": {
@@ -541,7 +789,8 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": true
+          "swift": true,
+          "arkts": true
         }
       },
       "setAppBadgeNumber": {
@@ -549,7 +798,8 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": true
+          "swift": true,
+          "arkts": true
         }
       }
     }
@@ -558,6 +808,19 @@
     "uni": {
       "rpx2px": {
         "name": "rpx2px",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true,
+          "arkts": true
+        }
+      }
+    }
+  },
+  "uni-shareWithSystem": {
+    "uni": {
+      "shareWithSystem": {
+        "name": "shareWithSystem",
         "app": {
           "js": false,
           "kotlin": true,

@@ -6,9 +6,10 @@ import { filterPlatformPages, validatePages } from '../pages'
 import type { AppJson, NetworkTimeout, PageWindowOptions } from './types'
 import { parseTabBar, parseWindowOptions } from './utils'
 import { normalizePath } from '../../utils'
-import { isMiniProgramProjectJsonKey } from './project'
+import { isMiniProgramProjectJsonKey, projectKeys } from './project'
 import { getPlatformManifestJsonOnce } from '../manifest'
 import { hasThemeJson, initTheme } from '../theme'
+import { checkPagesJson } from '../uni-x'
 
 interface ParsePagesJsonOptions {
   debug?: boolean
@@ -25,6 +26,10 @@ export function parseMiniProgramPagesJson(
   platform: UniApp.PLATFORM,
   options: ParsePagesJsonOptions = { subpackages: false }
 ) {
+  if (process.env.UNI_APP_X === 'true') {
+    // 目前仅对x开放
+    checkPagesJson(jsonStr, process.env.UNI_INPUT_DIR)
+  }
   return parsePagesJson(jsonStr, platform, options)
 }
 
@@ -41,8 +46,15 @@ const NON_APP_JSON_KEYS = [
 
 export function mergeMiniProgramAppJson(
   appJson: Record<string, any>,
-  platformJson: Record<string, any> = {}
+  platformJson: Record<string, any> = {},
+  source: Record<string, any> = {}
 ) {
+  Object.keys(source).forEach((key) => {
+    if (!projectKeys.includes(key)) {
+      projectKeys.push(key)
+    }
+  })
+
   Object.keys(platformJson).forEach((name) => {
     if (
       !isMiniProgramProjectJsonKey(name) &&

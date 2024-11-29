@@ -4,7 +4,7 @@ import { debounce } from '@dcloudio/uni-shared'
 import {
   chokidar,
   initEasycomsOnce,
-  resolveComponentsLibPath,
+  resolveComponentsLibDirs,
 } from '@dcloudio/uni-cli-shared'
 
 const debugEasycom = debug('uni:easycom')
@@ -12,7 +12,7 @@ export const initEasycom = (watcher?: FSWatcher) => {
   const { filter, refresh, options } = initEasycomsOnce(
     process.env.UNI_INPUT_DIR,
     {
-      dirs: [resolveComponentsLibPath()],
+      dirs: resolveComponentsLibDirs(),
       platform: process.env.UNI_PLATFORM,
       isX: process.env.UNI_APP_X === 'true',
     }

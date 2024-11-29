@@ -1,4 +1,4 @@
-import { extend, isString } from '@vue/shared'
+import { camelize, extend, isString } from '@vue/shared'
 import { isComponentTag } from '@dcloudio/uni-shared'
 import {
   type AttributeNode,
@@ -154,6 +154,20 @@ export function renameProp(name: string, prop?: DirectiveNode | AttributeNode) {
   } else {
     prop.name = name
   }
+}
+
+export function isPropNameEquals(
+  prop: AttributeNode | DirectiveNode,
+  name: string
+): boolean {
+  if (prop.type === NodeTypes.ATTRIBUTE) {
+    const propName = camelize(prop.name)
+    return propName === name
+  } else if (prop.type === NodeTypes.DIRECTIVE && prop.rawName) {
+    const propName = camelize(prop.rawName.slice(1))
+    return propName === name
+  }
+  return false
 }
 
 // @vue/compiler-core 没有导出 getLoc，先使用旧版本的 getInnerRange

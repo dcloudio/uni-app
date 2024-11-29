@@ -74,6 +74,8 @@ export function initPluginVueOptions(
   const compilerOptions =
     templateOptions.compilerOptions || (templateOptions.compilerOptions = {})
 
+  ;(compilerOptions as any).isX = process.env.UNI_APP_X === 'true'
+
   const {
     compiler,
     styleOptions: { postcssPlugins },

@@ -57,7 +57,7 @@ export function initHooks(
       let query = instance.attrs.__pageQuery as Record<string, any>
       // onLoad 的 query 进行 decode
       if (__X__) {
-        query = decodedQuery(query)
+        query = new UTSJSONObject(decodedQuery(query))
       }
       if (__PLATFORM__ === 'app' && __X__) {
         // TODO 统一处理 Web
@@ -66,10 +66,11 @@ export function initHooks(
       invokeHook(publicThis, ON_LOAD, query)
       delete instance.attrs.__pageQuery
       // iOS-X 的非 Tab 页面与 uni-app 一致固定触发 onShow
-      if (
-        !(__PLATFORM__ === 'app' && __X__ && publicThis.$page?.meta.isTabBar)
-      ) {
-        if (publicThis.$page?.openType !== 'preloadPage') {
+      const $basePage = __X__
+        ? publicThis.$basePage
+        : (publicThis.$page as Page.PageInstance['$page'])
+      if (!(__PLATFORM__ === 'app' && __X__ && $basePage?.meta.isTabBar)) {
+        if ($basePage?.openType !== 'preloadPage') {
           invokeHook(publicThis, ON_SHOW)
         }
       }

@@ -9,6 +9,7 @@ import {
   ON_READY,
   ON_RESIZE,
   ON_UNLOAD,
+  SYSTEM_DIALOG_PAGE_PATH_STARTER,
   formatLog,
 } from '@dcloudio/uni-shared'
 import {
@@ -26,6 +27,9 @@ import { getPageManager } from '../app/app'
 import { ON_POP_GESTURE } from '../../constants'
 import { getAppThemeFallbackOS, normalizePageStyles } from '../theme'
 import { invokePageReadyHooks } from '../../api/route/performance'
+import { homeDialogPages, homeSystemDialogPages } from './dialogPage'
+import type { UniDialogPage } from '@dcloudio/uni-app-x/types/page'
+import { closeDialogPage } from '../../api'
 
 type PageNodeOptions = {}
 
@@ -157,6 +161,27 @@ export function registerPage(
     // nativePage.addPageEventListener(ON_SHOW, (_) => {
     //   invokeHook(page, ON_SHOW)
     // })
+    const pages = getCurrentPages()
+    if (pages.length === 1) {
+      if (homeDialogPages.length) {
+        const homePage = pages[0] as unknown as UniPage
+        homePage.vm.$.$dialogPages = homeDialogPages.map((dialogPage) => {
+          dialogPage.getParentPage = () => homePage
+          return dialogPage
+        })
+        homeDialogPages.length = 0
+      }
+      if (homeSystemDialogPages.length) {
+        const homePage = pages[0] as unknown as UniPage
+        homePage.vm.$systemDialogPages = homeSystemDialogPages.map(
+          (dialogPage) => {
+            dialogPage.getParentPage = () => homePage
+            return dialogPage
+          }
+        )
+        homeDialogPages.length = 0
+      }
+    }
     nativePage.addPageEventListener(ON_POP_GESTURE, function (e) {
       uni.navigateBack({
         from: 'popGesture',
@@ -166,6 +191,121 @@ export function registerPage(
           }
         },
       } as UniApp.NavigateBackOptions)
+    })
+    nativePage.addPageEventListener(ON_UNLOAD, (_) => {
+      invokeHook(page, ON_UNLOAD)
+    })
+    nativePage.addPageEventListener(ON_READY, (_) => {
+      invokePageReadyHooks(page)
+      invokeHook(page, ON_READY)
+    })
+
+    nativePage.addPageEventListener(ON_PAGE_SCROLL, (arg) => {
+      invokeHook(page, ON_PAGE_SCROLL, {
+        scrollTop: (arg as unknown as OnPageScrollOptions).scrollTop,
+      })
+    })
+
+    nativePage.addPageEventListener(ON_PULL_DOWN_REFRESH, (_) => {
+      invokeHook(page, ON_PULL_DOWN_REFRESH)
+    })
+
+    nativePage.addPageEventListener(ON_REACH_BOTTOM, (_) => {
+      invokeHook(page, ON_REACH_BOTTOM)
+    })
+
+    nativePage.addPageEventListener(ON_RESIZE, (arg: any) => {
+      const args: OnResizeOptions = {
+        deviceOrientation: arg.deviceOrientation,
+        size: {
+          windowWidth: arg.size.windowWidth,
+          windowHeight: arg.size.windowHeight,
+          screenWidth: arg.size.screenWidth,
+          screenHeight: arg.size.screenHeight,
+        },
+      }
+      invokeHook(page, ON_RESIZE, args)
+    })
+    nativePage.startRender()
+  }
+  if (delay) {
+    setTimeout(fn, delay)
+  } else {
+    fn()
+  }
+  return nativePage
+}
+
+export function registerDialogPage(
+  {
+    url,
+    path,
+    query,
+    openType,
+    webview,
+    nvuePageVm,
+    eventChannel,
+  }: RegisterPageOptions,
+  dialogPage: UniDialogPage,
+  onCreated?: (page: IPage) => void,
+  delay = 0
+) {
+  const id = genWebviewId()
+  const routeOptions = initRouteOptions(path, openType)
+  const pageStyle = parsePageStyle(routeOptions)
+  pageStyle.set('navigationStyle', 'custom')
+  pageStyle.set('backgroundColorContent', 'transparent')
+  if (typeof pageStyle.get('disableSwipeBack') !== 'boolean') {
+    pageStyle.set('disableSwipeBack', true)
+  }
+  const parentPage = dialogPage.getParentPage()
+  const nativePage = (getPageManager() as any).createDialogPage(
+    // @ts-expect-error
+    parentPage ? parentPage.__nativePageId : '',
+    id.toString(),
+    url,
+    pageStyle
+  )
+  if (onCreated) {
+    onCreated(nativePage)
+  }
+  routeOptions.meta.id = parseInt(nativePage.pageId)
+  if (__DEV__) {
+    console.log(formatLog('registerPage', path, nativePage.pageId))
+  }
+  // TODO initWebview
+  // initWebview(webview, path, query, routeOptions.meta)
+  const route = path.startsWith(SYSTEM_DIALOG_PAGE_PATH_STARTER)
+    ? path
+    : path.slice(1)
+  // ;(webview as any).__uniapp_route = route
+  const pageInstance = initPageInternalInstance(
+    openType,
+    url,
+    query,
+    routeOptions.meta,
+    eventChannel,
+    // TODO ThemeMode
+    'light'
+  )
+  function fn() {
+    const page = createVuePage(
+      id,
+      route,
+      query,
+      pageInstance,
+      {},
+      nativePage
+    ) as ComponentPublicInstance
+    dialogPage.vm = page
+    dialogPage.$vm = page
+
+    // 由于 iOS 调用 show 时机差异，暂不使用页面 onShow 事件
+    // nativePage.addPageEventListener(ON_SHOW, (_) => {
+    //   invokeHook(page, ON_SHOW)
+    // })
+    nativePage.addPageEventListener(ON_POP_GESTURE, function (e) {
+      closeDialogPage({ dialogPage })
     })
     nativePage.addPageEventListener(ON_UNLOAD, (_) => {
       invokeHook(page, ON_UNLOAD)
@@ -187,8 +327,17 @@ export function registerPage(
       invokeHook(page, ON_REACH_BOTTOM)
     })
 
-    nativePage.addPageEventListener(ON_RESIZE, (_) => {
-      invokeHook(page, ON_RESIZE)
+    nativePage.addPageEventListener(ON_RESIZE, (arg: any) => {
+      const args: OnResizeOptions = {
+        deviceOrientation: arg.deviceOrientation,
+        size: {
+          windowWidth: arg.size.windowWidth,
+          windowHeight: arg.size.windowHeight,
+          screenWidth: arg.size.screenWidth,
+          screenHeight: arg.size.screenHeight,
+        },
+      }
+      invokeHook(page, ON_RESIZE, args)
     })
     nativePage.startRender()
   }

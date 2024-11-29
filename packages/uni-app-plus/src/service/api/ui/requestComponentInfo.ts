@@ -5,13 +5,14 @@ import type {
   SelectorQueryRequest,
 } from '@dcloudio/uni-api'
 import { type NVueElement, parseNVueDataset } from '@dcloudio/uni-shared'
+import { getPage$BasePage } from '../../framework/page/getCurrentPages'
 
 export function requestComponentInfo(
   pageVm: ComponentPublicInstance,
   reqs: Array<SelectorQueryRequest>,
   callback: (result: Array<SelectorQueryNodeInfo | null>) => void
 ) {
-  if (pageVm.$page.meta.isNVue) {
+  if (getPage$BasePage(pageVm).meta.isNVue) {
     requestNVueComponentInfo(pageVm, reqs, callback)
   } else {
     requestVueComponentInfo(pageVm, reqs, callback)
@@ -33,7 +34,7 @@ function requestVueComponentInfo(
         return req
       }),
     },
-    pageVm.$page.id,
+    getPage$BasePage(pageVm).id,
     callback
   )
 }

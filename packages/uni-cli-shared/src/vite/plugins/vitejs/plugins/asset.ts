@@ -28,7 +28,9 @@ const urlRE = /(\?|&)url(?:&|$)/
 
 export const chunkToEmittedAssetsMap = new WeakMap<RenderedChunk, Set<string>>()
 
-const assetCache = new WeakMap<ResolvedConfig, Map<string, string>>()
+type CacheForUrl = Map<string, string>
+type CacheForBase64 = Map<string, string>
+const assetCache = new WeakMap<ResolvedConfig, [CacheForUrl, CacheForBase64]>()
 
 const assetHashToFilenameMap = new WeakMap<
   ResolvedConfig,
@@ -50,7 +52,7 @@ export function assetPlugin(
     name: 'vite:asset',
 
     buildStart() {
-      assetCache.set(config, new Map())
+      assetCache.set(config, [new Map(), new Map()])
       emittedHashMap.set(config, new Set())
     },
 
@@ -255,6 +257,7 @@ export function assetFileNamesToFileName(
   if (isFunction(assetFileNames)) {
     assetFileNames = assetFileNames({
       name: file,
+      originalFileName: null,
       source: content,
       type: 'asset',
     })
@@ -322,7 +325,8 @@ function fileToBuiltUrl(
   if (!skipPublicCheck && checkPublicFile(id, config)) {
     return config.base + id.slice(1)
   }
-  const cache = assetCache.get(config)!
+  const [cacheForUrl, cacheForBase64] = assetCache.get(config)!
+  const cache = canInline ? cacheForBase64 : cacheForUrl
   const cached = cache.get(id)
   if (cached) {
     return cached

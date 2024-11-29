@@ -3,15 +3,21 @@ import { formatLog } from '@dcloudio/uni-shared'
 import type { ComponentPublicInstance } from 'vue'
 import { getVueApp } from '../app/vueApp'
 
+export function getPage$BasePage(
+  page: ComponentPublicInstance
+): Page.PageInstance['$page'] {
+  return __X__ ? page.$basePage : (page.$page as Page.PageInstance['$page'])
+}
+
 const pages: ComponentPublicInstance[] = []
 
 export function addCurrentPage(page: ComponentPublicInstance) {
-  const $page = page.$page
+  const $page = getPage$BasePage(page)
   if (!$page.meta.isNVue) {
     return pages.push(page)
   }
   // 开发阶段热刷新需要移除旧的相同 id 的 page
-  const index = pages.findIndex((p) => p.$page.id === page.$page.id)
+  const index = pages.findIndex((p) => getPage$BasePage(p).id === $page.id)
   if (index > -1) {
     pages.splice(index, 1, page)
   } else {
@@ -20,7 +26,7 @@ export function addCurrentPage(page: ComponentPublicInstance) {
 }
 
 export function getPageById(id: number) {
-  return pages.find((page) => page.$page.id === id)
+  return pages.find((page) => getPage$BasePage(page).id === id)
 }
 
 export function getAllPages() {
@@ -28,6 +34,14 @@ export function getAllPages() {
 }
 
 export function getCurrentPages() {
+  const curPages = getCurrentBasePages()
+  if (__X__) {
+    return curPages.map((page) => page.$page as UniPage)
+  }
+  return curPages
+}
+
+export function getCurrentBasePages() {
   const curPages: ComponentPublicInstance[] = []
   pages.forEach((page) => {
     if (page.$.__isTabBar) {
@@ -42,7 +56,9 @@ export function getCurrentPages() {
 }
 
 export function removeCurrentPage() {
-  const page = getCurrentPage() as ComponentPublicInstance
+  const page = __X__
+    ? (getCurrentPage() as unknown as UniPage).vm
+    : getCurrentPage()
   if (!page) {
     return
   }
@@ -56,11 +72,16 @@ export function removePage(
   if (index === -1) {
     return
   }
-  if (!curPage.$page.meta.isNVue) {
+  const $basePage = getPage$BasePage(curPage as ComponentPublicInstance)
+  if (!$basePage.meta.isNVue) {
     getVueApp().unmountPage(curPage as ComponentPublicInstance)
   }
-  pages.splice(index, 1)
+  const removePages = pages.splice(index, 1)
+  if (__X__) {
+    // @ts-expect-error
+    removePages[0].$page = null
+  }
   if (__DEV__) {
-    console.log(formatLog('removePage', curPage.$page))
+    console.log(formatLog('removePage', $basePage))
   }
 }

@@ -9,6 +9,7 @@ import {
   findPropsData,
   initFormField,
   initSetRef,
+  resolvePropValue,
 } from '@dcloudio/uni-mp-core'
 
 import {
@@ -19,8 +20,6 @@ import {
   initRefs,
   initVueIds,
 } from '@dcloudio/uni-mp-core'
-
-import { initInjections, initProvide } from './apiInject'
 
 const fixAttached = __PLATFORM__ === 'mp-toutiao'
 
@@ -39,7 +38,7 @@ export function initLifetimes({
   function attached(this: MPComponentInstance) {
     initSetRef(this)
     const properties = this.properties
-    initVueIds(properties.uI, this)
+    initVueIds(resolvePropValue(properties.uI), this)
     const relationOptions: RelationOptions = {
       vuePid: this._$vuePid,
     }
@@ -60,7 +59,7 @@ export function initLifetimes({
       {
         mpType,
         mpInstance,
-        slots: properties.uS || {}, // vueSlots
+        slots: resolvePropValue(properties.uS) || {}, // vueSlots
         parentComponent: relationOptions.parent && relationOptions.parent.$,
         onBeforeSetup(
           instance: ComponentInternalInstance,
@@ -73,15 +72,20 @@ export function initLifetimes({
       }
     ) as ComponentPublicInstance
 
-    if (mpType === 'component') {
-      initFormField(this.$vm)
+    if (process.env.UNI_DEBUG) {
+      console.log(
+        'uni-app:[' +
+          Date.now() +
+          '][' +
+          (mpInstance.is || mpInstance.route) +
+          '][' +
+          this.$vm.$.uid +
+          ']attached'
+      )
     }
 
-    if (mpType === 'page') {
-      if (__VUE_OPTIONS_API__) {
-        initInjections(this.$vm)
-        initProvide(this.$vm)
-      }
+    if (mpType === 'component') {
+      initFormField(this.$vm)
     }
 
     // 处理父子关系

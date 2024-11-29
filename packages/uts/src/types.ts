@@ -69,6 +69,10 @@ export type UTSOutputOptions = {
     uvueOutDir: string
   }
   transform?: {
+    enableUtsNumber?: boolean
+    enableNarrowType?: boolean
+    enableGenericsParameterDefaults?: boolean
+    enableUTSJSONObjectPropertyAccess?: boolean
     paramDefaultValue?: boolean
     constructorInvocation?: boolean
     uniExtApiDefaultNamespace?: string

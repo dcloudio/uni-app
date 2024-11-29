@@ -1,5 +1,5 @@
 {
-  "@dcloudio/uni-app-harmony": [
+  "@dcloudio/uni-app-runtime": [
     [
       "SetClipboardData"
     ],
@@ -226,6 +226,15 @@
       "SaveVideoToPhotosAlbum"
     ],
     [
+      "CompressVideoSuccess"
+    ],
+    [
+      "CompressVideoOptions"
+    ],
+    [
+      "CompressVideo"
+    ],
+    [
       "ChooseFile"
     ],
     [
@@ -284,6 +293,45 @@
     ],
     [
       "DownloadTask"
+    ],
+    [
+      "ConfigMTLS"
+    ],
+    [
+      "ConfigMTLSSuccess"
+    ],
+    [
+      "ConfigMTLSOptions"
+    ],
+    [
+      "UniOAuthProvider"
+    ],
+    [
+      "Login"
+    ],
+    [
+      "LoginSuccess"
+    ],
+    [
+      "LoginFail"
+    ],
+    [
+      "LoginOptions"
+    ],
+    [
+      "GetUserInfo"
+    ],
+    [
+      "UserInfo"
+    ],
+    [
+      "GetUserInfoSuccess"
+    ],
+    [
+      "GetUserInfoFail"
+    ],
+    [
+      "GetUserInfoOptions"
     ],
     [
       "OpenAppAuthorizeSetting"
@@ -508,9 +556,39 @@
       "initUniExtApi"
     ]
   ],
-  "@dcloudio/uni-app-harmony/providers/uni-payment-alipay": [
+  "@uni_modules/uni-facialrecognitionverify": [
+    [
+      "getFacialRecognitionMetaInfo"
+    ],
+    [
+      "startFacialRecognitionVerify"
+    ]
+  ],
+  "@uni_modules/uni-oauth-huawei": [
+    [
+      "UniOAuthHuaweiProviderImpl"
+    ]
+  ],
+  "@uni_modules/uni-payment-alipay": [
     [
       "UniPaymentAlipayProviderImpl"
+    ]
+  ],
+  "@uni_modules/uni-push": [
+    [
+      "getPushClientId"
+    ],
+    [
+      "onPushMessage"
+    ],
+    [
+      "offPushMessage"
+    ],
+    [
+      "createPushMessage"
+    ],
+    [
+      "setAppBadgeNumber"
     ]
   ]
 }

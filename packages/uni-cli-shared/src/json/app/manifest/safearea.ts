@@ -12,6 +12,14 @@ export function initSafearea(
         },
       }
     }
+    if (!manifestJson['app-harmony'].safearea) {
+      manifestJson['app-harmony'].safearea = {
+        background: pagesJson.tabBar.backgroundColor || '#FFFFFF',
+        bottom: {
+          offset: 'auto',
+        },
+      }
+    }
   } else {
     if (!manifestJson.plus.launchwebview) {
       manifestJson.plus.launchwebview = {

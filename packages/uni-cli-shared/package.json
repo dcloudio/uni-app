@@ -1,6 +1,6 @@
 {
   "name": "@dcloudio/uni-cli-shared",
-  "version": "3.0.0-4020920240930001",
+  "version": "3.0.0-alpha-4030620241126001",
   "description": "@dcloudio/uni-cli-shared",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -26,8 +26,8 @@
     "@babel/core": "^7.23.3",
     "@babel/parser": "^7.23.9",
     "@babel/types": "^7.20.7",
-    "@dcloudio/uni-i18n": "3.0.0-4020920240930001",
-    "@dcloudio/uni-shared": "3.0.0-4020920240930001",
+    "@dcloudio/uni-i18n": "3.0.0-alpha-4030620241126001",
+    "@dcloudio/uni-shared": "3.0.0-alpha-4030620241126001",
     "@intlify/core-base": "9.1.9",
     "@intlify/shared": "9.1.9",
     "@intlify/vue-devtools": "9.1.9",
@@ -66,12 +66,12 @@
     "resolve": "^1.22.1",
     "source-map-js": "^1.0.2",
     "tapable": "^2.2.0",
-    "unplugin-auto-import": "^0.16.7",
+    "unplugin-auto-import": "^0.18.2",
     "xregexp": "3.1.0"
   },
   "gitHead": "33e807d66e1fe47e2ee08ad9c59247e37b8884da",
   "devDependencies": {
-    "@dcloudio/uni-uts-v1": "3.0.0-4020920240930001",
+    "@dcloudio/uni-uts-v1": "3.0.0-alpha-4030620241126001",
     "@types/adm-zip": "^0.5.5",
     "@types/babel__code-frame": "^7.0.6",
     "@types/babel__core": "^7.1.19",
@@ -87,7 +87,7 @@
     "@types/stylus": "^0.48.36",
     "code-frame": "link:@types/@babel/code-frame",
     "postcss": "^8.4.21",
-    "unimport": "^3.9.0",
+    "unimport": "^3.11.1",
     "vue": "3.4.21"
   }
 }

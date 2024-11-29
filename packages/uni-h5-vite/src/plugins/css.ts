@@ -219,6 +219,7 @@ export function assetFileNamesToFileName(
   if (isFunction(assetFileNames)) {
     assetFileNames = assetFileNames({
       name: file,
+      originalFileName: file,
       source: content,
       type: 'asset',
     })

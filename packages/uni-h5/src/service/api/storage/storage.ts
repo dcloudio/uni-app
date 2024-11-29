@@ -36,7 +36,8 @@ function parseValue(value: any) {
         if (typeof object.data === type) {
           //#if _X_
           if (type === 'object' && !Array.isArray(object.data)) {
-            return new UTSJSONObject(object.data)
+            // @ts-expect-error 访问global.UTS
+            return UTS.JSON.parse(JSON.stringify(object.data))
           }
           return object.data
           //#else

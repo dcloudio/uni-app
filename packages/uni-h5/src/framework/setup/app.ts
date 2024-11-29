@@ -7,11 +7,36 @@ import {
   initService,
   initView,
 } from '@dcloudio/uni-core'
+import { getCurrentBasePages } from './page'
 
 let appVm: ComponentPublicInstance
+// @ts-expect-error
+let $uniApp: UniApp
+if (__X__) {
+  // @ts-expect-error
+  class UniAppImpl implements UniApp {
+    get vm() {
+      return appVm
+    }
+    get $vm() {
+      return appVm
+    }
+    get globalData() {
+      return appVm?.globalData || {}
+    }
+    getAndroidApplication() {
+      return null
+    }
+  }
+  $uniApp = new UniAppImpl()
+}
 
 export function getApp() {
-  return appVm
+  if (__X__) {
+    return $uniApp
+  } else {
+    return appVm
+  }
 }
 
 export function initApp(vm: ComponentPublicInstance) {
@@ -20,16 +45,16 @@ export function initApp(vm: ComponentPublicInstance) {
   // 定制 App 的 $children 为 devtools 服务 __VUE_PROD_DEVTOOLS__
   Object.defineProperty((appVm.$ as any).ctx, '$children', {
     get() {
-      return getCurrentPages().map((page) => page.$vm)
+      return getCurrentBasePages().map((page) => page.$vm)
     },
   })
 
   const app = appVm.$.appContext.app
-  if (!app.component(AsyncLoadingComponent.name)) {
-    app.component(AsyncLoadingComponent.name, AsyncLoadingComponent)
+  if (!app.component(AsyncLoadingComponent.name!)) {
+    app.component(AsyncLoadingComponent.name!, AsyncLoadingComponent)
   }
-  if (!app.component(AsyncErrorComponent.name)) {
-    app.component(AsyncErrorComponent.name, AsyncErrorComponent)
+  if (!app.component(AsyncErrorComponent.name!)) {
+    app.component(AsyncErrorComponent.name!, AsyncErrorComponent)
   }
   initAppVm(appVm)
   defineGlobalData(appVm)

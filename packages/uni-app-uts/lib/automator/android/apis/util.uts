@@ -1,53 +1,49 @@
 /// <reference types="@dcloudio/uni-app-x/types/native-global" />
+/// <reference types="@dcloudio/uni-app-x/types/page" />
 // @ts-expect-error
 import type { IUniNativeDocument } from 'io.dcloud.uniapp.dom'
 
 
-// @ts-expect-error
 function getPageId(page: Page): string {
   return page.$nativePage!.pageId
 }
-// @ts-expect-error
 function getPagePath(page: Page): string {
   return page.route
 }
 // @ts-expect-error
 function getPageQuery(page: Page): UTSJSONObject {
-  return map2Object(page.options as Map<string, any | null>)
+  return page.options
 }
-// @ts-expect-error
 function getPageById(id: string): Page | null {
-  // @ts-expect-error
-  const pages = getCurrentPages()
-  // @ts-expect-error
+  const pages = getCurrentPages() as UniPage[]
   let result: Page | null = null
-  // @ts-expect-error
-  pages.forEach((page: Page) => {
-    if (getPageId(page) == id) {
-      result = page
+  pages.forEach((page: UniPage) => {
+    if (getPageId(page.vm!) == id) {
+      result = page.vm!
     }
   })
   return result
 }
-// @ts-expect-error
 export function getPageVm(id: string): Page | null {
   return getPageById(id)
 }
 
 export function pageGetData(
-  // @ts-expect-error
   vm: Page
   // @ts-expect-error
 ): UTSJSONObject {
   // TODO: path 目前无法处理类型问题，暂由服务端处理
+  // @ts-expect-error
   if (vm.$.exposed.size > 0) {
-    return map2Object(vm.$.exposed)
+    // @ts-expect-error
+    return new UTSJSONObject(vm.$.exposed)
   }
-  return map2Object(vm.$data)
+  // @ts-expect-error
+  return new UTSJSONObject(vm.$data)
 }
-// @ts-expect-error
 export function pageSetData(vm: Page, data: Map<string, any | null>): void {
   data.forEach((value: any | null, key: string) => {
+    // @ts-expect-error
     vm.$data.set(key, value)
   })
 }
@@ -71,6 +67,7 @@ export function getComponentVmBySelector(
     callback(null, { errMsg: `Page[${pageId}] not exists` })
     return null
   }
+  // @ts-expect-error
   const component = page.$children.find(
     // @ts-expect-error
     (child: ComponentPublicInstance): boolean => child.$options.name == selector
@@ -281,9 +278,11 @@ export function componentGetData(
 ): UTSJSONObject {
   // TODO: path 目前无法处理类型问题，暂由服务端处理
   if (vm.$.exposed.size > 0) {
-    return map2Object(vm.$.exposed)
+    // @ts-expect-error
+    return new UTSJSONObject(vm.$.exposed)
   }
-  return map2Object(vm.$data)
+  // @ts-expect-error
+  return new UTSJSONObject(vm.$data)
 }
 export function componentSetData(
   // @ts-expect-error
@@ -314,16 +313,6 @@ export function toCamelCase(str: string): string {
     wordList[i] = word.at(0)!.toUpperCase() + word.substring(1)
   }
   return wordList.join('')
-}
-
-// 不处理用户自定义数据的类型，因为可能存在指定类型，无法处理
-// @ts-expect-error
-function map2Object(data: Map<string, any | null>): UTSJSONObject {
-  const result = {}
-  data.forEach((value: any | null, key: string) => {
-    result[key] = value
-  })
-  return result
 }
 
 export function removeUniPrefix(selector: string): string {

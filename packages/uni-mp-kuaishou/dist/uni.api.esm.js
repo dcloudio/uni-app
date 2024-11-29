@@ -351,29 +351,9 @@ function promisify$1(name, fn) {
 }
 
 function formatApiArgs(args, options) {
-    const params = args[0];
-    if (!options ||
-        !options.formatArgs ||
-        (!isPlainObject(options.formatArgs) && isPlainObject(params))) {
+    args[0];
+    {
         return;
-    }
-    const formatArgs = options.formatArgs;
-    const keys = Object.keys(formatArgs);
-    for (let i = 0; i < keys.length; i++) {
-        const name = keys[i];
-        const formatterOrDefaultValue = formatArgs[name];
-        if (isFunction(formatterOrDefaultValue)) {
-            const errMsg = formatterOrDefaultValue(args[0][name], params);
-            if (isString(errMsg)) {
-                return errMsg;
-            }
-        }
-        else {
-            // defaultValue
-            if (!hasOwn(params, name)) {
-                params[name] = formatterOrDefaultValue;
-            }
-        }
     }
 }
 function invokeSuccess(id, name, res) {
@@ -383,8 +363,20 @@ function invokeSuccess(id, name, res) {
     return invokeCallback(id, extend((res || {}), result));
 }
 function invokeFail(id, name, errMsg, errRes = {}) {
-    const apiErrMsg = name + ':fail' + (errMsg ? ' ' + errMsg : '');
-    delete errRes.errCode;
+    const errMsgPrefix = name + ':fail';
+    let apiErrMsg = '';
+    if (!errMsg) {
+        apiErrMsg = errMsgPrefix;
+    }
+    else if (errMsg.indexOf(errMsgPrefix) === 0) {
+        apiErrMsg = errMsg;
+    }
+    else {
+        apiErrMsg = errMsgPrefix + ' ' + errMsg;
+    }
+    {
+        delete errRes.errCode;
+    }
     let res = extend({ errMsg: apiErrMsg }, errRes);
     return invokeCallback(id, res);
 }
@@ -392,13 +384,7 @@ function beforeInvokeApi(name, args, protocol, options) {
     if ((process.env.NODE_ENV !== 'production')) {
         validateProtocols(name, args, protocol);
     }
-    if (options && options.beforeInvoke) {
-        const errMsg = options.beforeInvoke(args);
-        if (isString(errMsg)) {
-            return errMsg;
-        }
-    }
-    const errMsg = formatApiArgs(args, options);
+    const errMsg = formatApiArgs(args);
     if (errMsg) {
         return errMsg;
     }
@@ -408,7 +394,10 @@ function parseErrMsg(errMsg) {
         return errMsg;
     }
     if (errMsg.stack) {
-        console.error(errMsg.message + '\n' + errMsg.stack);
+        // 此处同时被鸿蒙arkts和jsvm使用，暂时使用运行时判断鸿蒙jsvm环境，注意此用法仅内部使用
+        if ((typeof globalThis === 'undefined' || !globalThis.harmonyChannel)) {
+            console.error(errMsg.message + '\n' + errMsg.stack);
+        }
         return errMsg.message;
     }
     return errMsg;
@@ -416,7 +405,7 @@ function parseErrMsg(errMsg) {
 function wrapperTaskApi(name, fn, protocol, options) {
     return (args) => {
         const id = createAsyncApiCallback(name, args, options);
-        const errMsg = beforeInvokeApi(name, [args], protocol, options);
+        const errMsg = beforeInvokeApi(name, [args], protocol);
         if (errMsg) {
             return invokeFail(id, name, errMsg);
         }
@@ -428,7 +417,7 @@ function wrapperTaskApi(name, fn, protocol, options) {
 }
 function wrapperSyncApi(name, fn, protocol, options) {
     return (...args) => {
-        const errMsg = beforeInvokeApi(name, args, protocol, options);
+        const errMsg = beforeInvokeApi(name, args, protocol);
         if (errMsg) {
             throw new Error(errMsg);
         }
@@ -439,7 +428,7 @@ function wrapperAsyncApi(name, fn, protocol, options) {
     return wrapperTaskApi(name, fn, protocol, options);
 }
 function defineSyncApi(name, fn, protocol, options) {
-    return wrapperSyncApi(name, fn, (process.env.NODE_ENV !== 'production') ? protocol : undefined, options);
+    return wrapperSyncApi(name, fn, (process.env.NODE_ENV !== 'production') ? protocol : undefined);
 }
 function defineAsyncApi(name, fn, protocol, options) {
     return promisify$1(name, wrapperAsyncApi(name, fn, (process.env.NODE_ENV !== 'production') ? protocol : undefined, options));
@@ -585,7 +574,7 @@ const OffProtocol = [
     },
     {
         name: 'callback',
-        type: Function,
+        type: [Function, Number],
     },
 ];
 const API_EMIT = '$emit';
@@ -597,26 +586,44 @@ const EmitProtocol = [
     },
 ];
 
-const emitter = new Emitter();
+class EventBus {
+    constructor() {
+        this.$emitter = new Emitter();
+    }
+    on(name, callback) {
+        return this.$emitter.on(name, callback);
+    }
+    once(name, callback) {
+        return this.$emitter.once(name, callback);
+    }
+    off(name, callback) {
+        if (!name) {
+            this.$emitter.e = {};
+            return;
+        }
+        this.$emitter.off(name, callback);
+    }
+    emit(name, ...args) {
+        this.$emitter.emit(name, ...args);
+    }
+}
+const eventBus = new EventBus();
 const $on = defineSyncApi(API_ON, (name, callback) => {
-    emitter.on(name, callback);
-    return () => emitter.off(name, callback);
+    eventBus.on(name, callback);
+    return () => eventBus.off(name, callback);
 }, OnProtocol);
 const $once = defineSyncApi(API_ONCE, (name, callback) => {
-    emitter.once(name, callback);
-    return () => emitter.off(name, callback);
+    eventBus.once(name, callback);
+    return () => eventBus.off(name, callback);
 }, OnceProtocol);
 const $off = defineSyncApi(API_OFF, (name, callback) => {
-    if (!name) {
-        emitter.e = {};
-        return;
-    }
+    // 类型中不再体现 name 支持 string[] 类型, 仅在 uni.$off 保留该逻辑向下兼容
     if (!isArray(name))
-        name = [name];
-    name.forEach((n) => emitter.off(n, callback));
+        name = name ? [name] : [];
+    name.forEach((n) => eventBus.off(n, callback));
 }, OffProtocol);
 const $emit = defineSyncApi(API_EMIT, (name, ...args) => {
-    emitter.emit(name, ...args);
+    eventBus.emit(name, ...args);
 }, EmitProtocol);
 
 let cid;
@@ -913,16 +920,28 @@ function addSafeAreaInsets(fromRes, toRes) {
         };
     }
 }
+function getOSInfo(system, platform) {
+    let osName = '';
+    let osVersion = '';
+    if (platform &&
+        ("mp-kuaishou" === 'mp-baidu')) {
+        osName = platform;
+        osVersion = system;
+    }
+    else {
+        osName = system.split(' ')[0] || '';
+        osVersion = system.split(' ')[1] || '';
+    }
+    return {
+        osName: osName.toLocaleLowerCase(),
+        osVersion,
+    };
+}
 function populateParameters(fromRes, toRes) {
     const { brand = '', model = '', system = '', language = '', theme, version, platform, fontSizeSetting, SDKVersion, pixelRatio, deviceOrientation, } = fromRes;
     // const isQuickApp = "mp-kuaishou".indexOf('quickapp-webview') !== -1
     // osName osVersion
-    let osName = '';
-    let osVersion = '';
-    {
-        osName = system.split(' ')[0] || '';
-        osVersion = system.split(' ')[1] || '';
-    }
+    const { osName, osVersion } = getOSInfo(system, platform);
     let hostVersion = version;
     // deviceType
     let deviceType = getGetDeviceType(fromRes, model);
@@ -946,6 +965,7 @@ function populateParameters(fromRes, toRes) {
         appVersionCode: process.env.UNI_APP_VERSION_CODE,
         appLanguage: getAppLanguage(hostLanguage),
         uniCompileVersion: process.env.UNI_COMPILER_VERSION,
+        uniCompilerVersion: process.env.UNI_COMPILER_VERSION,
         uniRuntimeVersion: process.env.UNI_COMPILER_VERSION,
         uniPlatform: process.env.UNI_SUB_PLATFORM || process.env.UNI_PLATFORM,
         deviceBrand,
@@ -953,7 +973,7 @@ function populateParameters(fromRes, toRes) {
         deviceType,
         devicePixelRatio: _devicePixelRatio,
         deviceOrientation: _deviceOrientation,
-        osName: osName.toLocaleLowerCase(),
+        osName,
         osVersion,
         hostTheme: theme,
         hostVersion,
@@ -970,6 +990,7 @@ function populateParameters(fromRes, toRes) {
         hostPackageName: undefined,
         browserName: undefined,
         browserVersion: undefined,
+        isUniAppX: false,
     };
     extend(toRes, parameters);
 }

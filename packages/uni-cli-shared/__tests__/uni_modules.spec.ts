@@ -2,7 +2,7 @@ import path from 'path'
 import {
   findEncryptUniModules,
   findUploadEncryptUniModulesFiles,
-} from '../src/uni_modules'
+} from '../src/uni_modules.cloud'
 import { normalizePath } from '../src/utils'
 
 const platforms = ['app-android', 'app-ios', 'web'] as const

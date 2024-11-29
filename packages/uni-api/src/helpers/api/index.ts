@@ -55,9 +55,9 @@ function invokeSuccess(id: number, name: string, res: unknown) {
     errMsg: name + ':ok',
   }
 
-  //#if _X_
-  result.errSubject = name
-  //#endif
+  if (__X__) {
+    result.errSubject = name
+  }
 
   return invokeCallback(id, extend((res || {}) as Object, result))
 }
@@ -68,22 +68,29 @@ function invokeFail(
   errMsg?: string,
   errRes: any = {}
 ) {
-  const apiErrMsg = name + ':fail' + (errMsg ? ' ' + errMsg : '')
-
-  //#if !_X_
-  delete errRes.errCode
-  //#endif
+  const errMsgPrefix = name + ':fail'
+  let apiErrMsg = ''
+  if (!errMsg) {
+    apiErrMsg = errMsgPrefix
+  } else if (errMsg.indexOf(errMsgPrefix) === 0) {
+    apiErrMsg = errMsg
+  } else {
+    apiErrMsg = errMsgPrefix + ' ' + errMsg
+  }
+  if (!__X__) {
+    delete errRes.errCode
+  }
 
   let res = extend({ errMsg: apiErrMsg }, errRes)
 
-  //#if _X_
-  if (typeof UniError !== 'undefined') {
-    res =
-      typeof errRes.errCode !== 'undefined'
-        ? new UniError(name, errRes.errCode, apiErrMsg)
-        : new UniError(apiErrMsg, errRes)
+  if (__X__) {
+    if (typeof UniError !== 'undefined') {
+      res =
+        typeof errRes.errCode !== 'undefined'
+          ? new UniError(name, errRes.errCode, apiErrMsg)
+          : new UniError(apiErrMsg, errRes)
+    }
   }
-  //#endif
 
   return invokeCallback(id, res)
 }
@@ -164,7 +171,13 @@ function parseErrMsg(errMsg?: string | Error) {
     return errMsg
   }
   if (errMsg.stack) {
-    console.error(errMsg.message + '\n' + errMsg.stack)
+    // 此处同时被鸿蒙arkts和jsvm使用，暂时使用运行时判断鸿蒙jsvm环境，注意此用法仅内部使用
+    if (
+      !__X__ &&
+      (typeof globalThis === 'undefined' || !(globalThis as any).harmonyChannel)
+    ) {
+      console.error(errMsg.message + '\n' + errMsg.stack)
+    }
     return errMsg.message
   }
   return errMsg as unknown as string

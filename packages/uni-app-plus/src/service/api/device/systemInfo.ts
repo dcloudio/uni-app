@@ -31,6 +31,10 @@ export const getDeviceInfo = defineSyncApi<typeof uni.getDeviceInfo>(
       deviceOrientation,
       deviceType,
       deviceId,
+      osLanguage,
+      osTheme,
+      romName,
+      romVersion,
     } = systemInfo
 
     const brand = deviceBrand.toLowerCase()
@@ -47,6 +51,12 @@ export const getDeviceInfo = defineSyncApi<typeof uni.getDeviceInfo>(
       model: deviceModel,
       platform: _osName,
       system: `${_osName === 'ios' ? 'iOS' : 'Android'} ${osVersion}`,
+      osName,
+      osVersion,
+      osLanguage,
+      osTheme,
+      romName,
+      romVersion,
     }
   }
 )
@@ -67,6 +77,9 @@ export const getAppBaseInfo = defineSyncApi<typeof uni.getAppBaseInfo>(
       appVersion,
       appVersionCode,
       appWgtVersion,
+      uniCompileVersion,
+      uniRuntimeVersion,
+      uniPlatform,
     } = systemInfo
 
     return {
@@ -88,6 +101,11 @@ export const getAppBaseInfo = defineSyncApi<typeof uni.getAppBaseInfo>(
       SDKVersion: '',
       theme: getTheme(),
       version: plus.runtime.innerVersion!,
+      isUniAppX: __X__,
+      uniPlatform,
+      uniRuntimeVersion,
+      uniCompileVersion,
+      uniCompilerVersion: uniCompileVersion,
     }
   }
 )

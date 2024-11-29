@@ -1,12 +1,19 @@
 import {
   type DirectiveNode,
   NodeTypes,
+  type SimpleExpressionNode,
   createCompoundExpression,
+  createSimpleExpression,
   isSlotOutlet,
 } from '@vue/compiler-core'
 
 import type { NodeTransform } from '../transform'
-import { ATTR_VUE_SLOTS, rewriteExpression } from './utils'
+import {
+  ATTR_ELEMENT_ID,
+  ATTR_SET_ELEMENT_STYLE,
+  ATTR_VUE_SLOTS,
+  rewriteExpression,
+} from './utils'
 import {
   createVirtualHostClass,
   findStaticClassIndex,
@@ -28,8 +35,12 @@ import {
   rewriteBinding,
   rewritePropsBinding,
 } from './transformComponent'
-import { isUserComponent } from '@dcloudio/uni-cli-shared'
+import {
+  isSimpleExpressionNode,
+  isUserComponent,
+} from '@dcloudio/uni-cli-shared'
 import { isString, isSymbol } from '@vue/shared'
+import { rewriteId } from './transformUniElement'
 
 export const transformIdentifier: NodeTransform = (node, context) => {
   return function transformIdentifier() {
@@ -62,6 +73,10 @@ export const transformIdentifier: NodeTransform = (node, context) => {
 
       rewriteRef(node, context)
 
+      if (context.isX) {
+        rewriteId(node, context)
+      }
+
       if (isUserComponent(node, context)) {
         rewriteBinding(node, context)
       }
@@ -72,7 +87,32 @@ export const transformIdentifier: NodeTransform = (node, context) => {
         context.rootNode === node
       )
 
+      let elementId: string = ''
+      let skipIndex: number[] = []
+      // 第一步：在 x 中，先处理 id 属性，用于提前获取 elementId 对应的变量名
+      if (context.isX) {
+        for (let i = 0; i < props.length; i++) {
+          const dir = props[i]
+          if (dir.type === NodeTypes.DIRECTIVE) {
+            const { arg, exp } = dir
+            if (arg && exp && isSimpleExpressionNode(arg)) {
+              if (arg.content === 'id' || arg.content === ATTR_ELEMENT_ID) {
+                dir.exp = rewriteExpression(exp, context)
+                elementId = (dir.exp as SimpleExpressionNode).content
+                skipIndex.push(i)
+              }
+            }
+          }
+        }
+      }
+
       for (let i = 0; i < props.length; i++) {
+        if (context.isX) {
+          // 已经处理过了
+          if (skipIndex.includes(i)) {
+            continue
+          }
+        }
         const dir = props[i]
         if (dir.type === NodeTypes.DIRECTIVE) {
           const arg = dir.arg
@@ -98,11 +138,21 @@ export const transformIdentifier: NodeTransform = (node, context) => {
               rewriteClass(i, dir, props, virtualHost, context)
             } else if (isStyleBinding(dir)) {
               hasStyleBinding = true
-              rewriteStyle(i, dir, props, virtualHost, context)
+              rewriteStyle(i, dir, props, virtualHost, context, elementId)
             } else if (isPropsBinding(dir)) {
               rewritePropsBinding(dir, node, context)
             } else {
-              dir.exp = rewriteExpression(exp, context)
+              if (
+                context.isX &&
+                elementId &&
+                arg &&
+                isSimpleExpressionNode(arg) &&
+                arg.content === ATTR_SET_ELEMENT_STYLE
+              ) {
+                dir.exp = createSimpleExpression(`$eS[${elementId}]`)
+              } else {
+                dir.exp = rewriteExpression(exp, context)
+              }
             }
           }
         }

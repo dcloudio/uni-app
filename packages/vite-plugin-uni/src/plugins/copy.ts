@@ -33,6 +33,7 @@ export function uniCopyPlugin({
   copyOptions!.assets.forEach((asset) => {
     assets.push(asset)
   })
+  const inputDir = normalizePath(process.env.UNI_INPUT_DIR)
   const platform = process.env.UNI_PLATFORM
   // 非当前平台 static 目录
   const ignorePlatformStaticDirs = getPlatforms()
@@ -57,7 +58,6 @@ export function uniCopyPlugin({
       src: assets,
       dest: outputDir,
       watchOptions: {
-        followSymlinks: false, // 不设置为false的话，如果uni_modules软链了，会拷贝所有的不匹配文件
         ignored(path: string) {
           const normalizedPath = normalizePath(path)
           if (
@@ -67,6 +67,14 @@ export function uniCopyPlugin({
             )
           ) {
             return fs.statSync(normalizedPath).isDirectory()
+          }
+          // 应该是软链
+          if (!normalizedPath.startsWith(inputDir)) {
+            // 目前仅简单处理static
+            if (normalizedPath.includes('/static/')) {
+              return false
+            }
+            return true
           }
           return false
         },

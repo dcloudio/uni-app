@@ -77,7 +77,7 @@ function _navigateTo({
   aniType,
   aniDuration,
 }: NavigateToOptions): Promise<void | { eventChannel: EventChannel }> {
-  const currentPage = getCurrentPage()
+  const currentPage = (getCurrentPage() as unknown as UniPage)?.vm
   const currentRouteType = currentPage == null ? 'appLaunch' : API_NAVIGATE_TO
   invokeBeforeRouteHooks(currentRouteType)
   // 当前页面触发 onHide

@@ -101,17 +101,21 @@ exports[`defineModel() w/ types, basic usage 1`] = `
     "count": { type: Number },
     "disabled": { type: Number, ...{ required: false } },
     "any": { type: [Object, Boolean] },
+    "arr": { type: Array as PropType<string[]> },
+    "arr1": { type: Array as PropType<string[]> },
   },
-  emits: ["update:modelValue", "update:count", "update:disabled", "update:any"],
+  emits: ["update:modelValue", "update:count", "update:disabled", "update:any", "update:arr", "update:arr1"],
   setup(__props): any | null {
 const __ins = getCurrentInstance()!;
 const _ctx = __ins.proxy;
 const _cache = __ins.renderCache;
 
       const modelValue = useModel<any>(__ins.props, "modelValue")
-      const count = useModel<Number>(__ins.props, "count")
-      const disabled = useModel<Number>(__ins.props, "disabled")
+      const count = useModel<number>(__ins.props, "count")
+      const disabled = useModel<number>(__ins.props, "disabled")
       const any = useModel<any>(__ins.props, "any")
+      const arr = useModel<string[]>(__ins.props, "arr")
+      const arr1 = useModel<string[]>(__ins.props, "arr1")
       
 return (): any | null => { return null }
 }
@@ -123,10 +127,10 @@ exports[`defineModel() w/ types, production mode 1`] = `
 "export default defineComponent({
   props: {
     "modelValue": { type: Boolean },
-    "fn": {},
-    "fnWithDefault": { type: Function, ...{ default: () => null } },
-    "str": {},
-    "optional": { required: false },
+    "fn": { type: Function as PropType<() => void> },
+    "fnWithDefault": { type: Function as PropType<() => void>, ...{ default: () => null } },
+    "str": { type: String },
+    "optional": { type: String, ...{ required: false } },
   },
   emits: ["update:modelValue", "update:fn", "update:fnWithDefault", "update:str", "update:optional"],
   setup(__props): any | null {
@@ -134,11 +138,11 @@ const __ins = getCurrentInstance()!;
 const _ctx = __ins.proxy;
 const _cache = __ins.renderCache;
 
-      const modelValue = useModel<Boolean>(__ins.props, "modelValue")
-      const fn = useModel<Function>(__ins.props, "fn")
-      const fnWithDefault = useModel<Function>(__ins.props, "fnWithDefault")
-      const str = useModel<String>(__ins.props, "str")
-      const optional = useModel<String>(__ins.props, "optional")
+      const modelValue = useModel<boolean>(__ins.props, "modelValue")
+      const fn = useModel<() => void>(__ins.props, "fn")
+      const fnWithDefault = useModel<() => void>(__ins.props, "fnWithDefault")
+      const str = useModel<string>(__ins.props, "str")
+      const optional = useModel<string>(__ins.props, "optional")
       
 return (): any | null => { return null }
 }

@@ -1,4 +1,4 @@
-import { invokeHook } from '@dcloudio/uni-core'
+import { getCurrentPage, invokeHook } from '@dcloudio/uni-core'
 import {
   API_NAVIGATE_BACK,
   type API_TYPE_NAVIGATE_BACK,
@@ -19,11 +19,26 @@ export const navigateBack = defineAsyncApi<API_TYPE_NAVIGATE_BACK>(
     ) {
       canBack = false
     }
+    if (__X__) {
+      const currentPage = getCurrentPage()
+      if (currentPage) {
+        // @ts-expect-error
+        const dialogPages = currentPage.getDialogPages()
+        const dialogPage = dialogPages[dialogPages.length - 1]
+        if (dialogPage?.$vm.$options.onBackPress?.() === true) {
+          canBack = false
+        }
+      }
+    }
     if (!canBack) {
       return reject(ON_BACK_PRESS)
     }
 
-    getApp().$router.go(-args!.delta!)
+    if (__X__) {
+      getApp().vm.$router.go(-args!.delta!)
+    } else {
+      getApp().$router.go(-args!.delta!)
+    }
     return resolve()
   },
   NavigateBackProtocol,

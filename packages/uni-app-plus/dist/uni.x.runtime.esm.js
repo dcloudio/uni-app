@@ -1,6 +1,9 @@
-import { normalizeStyles as normalizeStyles$1, addLeadingSlash, invokeArrayFns, parseQuery, Emitter, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, ON_ERROR, ON_SHOW, ON_HIDE, removeLeadingSlash, getLen, EventChannel, once, parseUrl, ON_UNLOAD, ON_READY, ON_PAGE_SCROLL, ON_PULL_DOWN_REFRESH, ON_REACH_BOTTOM, ON_RESIZE, ON_LAUNCH, ON_BACK_PRESS } from "@dcloudio/uni-shared";
+import { normalizeStyles as normalizeStyles$1, addLeadingSlash, invokeArrayFns, parseQuery, SYSTEM_DIALOG_PAGE_PATH_STARTER, EventChannel, once, parseUrl, Emitter, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, ON_ERROR, ON_SHOW, ON_HIDE, removeLeadingSlash, getLen, ON_UNLOAD, ON_READY, ON_PAGE_SCROLL, ON_PULL_DOWN_REFRESH, ON_REACH_BOTTOM, ON_RESIZE, ON_LAUNCH, ON_BACK_PRESS, isSystemDialogPage, isSystemActionSheetDialogPage } from "@dcloudio/uni-shared";
 import { extend, isString, isPlainObject, isFunction as isFunction$1, isArray, isPromise, hasOwn, remove, invokeArrayFns as invokeArrayFns$1, capitalize, toTypeString, toRawType, parseStringStyle } from "@vue/shared";
-import { createVNode, render, injectHook, getCurrentInstance, defineComponent, warn, isInSSRComponentSetup, ref, watchEffect, watch, computed, onMounted, camelize, onUnmounted, reactive, nextTick } from "vue";
+import { createVNode, render, getCurrentInstance, onMounted, onBeforeUnmount, injectHook, resolveComponent, openBlock, createElementBlock, normalizeClass, createElementVNode, normalizeStyle, toDisplayString, withDirectives, vModelText, createCommentVNode, Fragment, renderList, defineComponent, warn, isInSSRComponentSetup, ref, watchEffect, watch, computed, camelize, onUnmounted, reactive, provide, inject, nextTick } from "vue";
+function get$pageByPage(page) {
+  return page.vm.$basePage;
+}
 function getCurrentPage() {
   var pages2 = getCurrentPages();
   var len = pages2.length;
@@ -9,13 +12,15 @@ function getCurrentPage() {
   }
 }
 function getCurrentPageMeta() {
-  var page = getCurrentPage();
-  if (page) {
-    return page.$page.meta;
+  var _getCurrentPage;
+  var $page = (_getCurrentPage = getCurrentPage()) === null || _getCurrentPage === void 0 || (_getCurrentPage = _getCurrentPage.vm) === null || _getCurrentPage === void 0 ? void 0 : _getCurrentPage.$basePage;
+  if ($page) {
+    return $page.meta;
   }
 }
 function getCurrentPageVm() {
-  var page = getCurrentPage();
+  var _getCurrentPage3;
+  var page = (_getCurrentPage3 = getCurrentPage()) === null || _getCurrentPage3 === void 0 ? void 0 : _getCurrentPage3.vm;
   if (page) {
     return page.$vm;
   }
@@ -62,7 +67,7 @@ function invokeHook(vm, name, args) {
     name = vm;
     vm = getCurrentPageVm();
   } else if (typeof vm === "number") {
-    var page = getCurrentPages().find((page2) => page2.$page.id === vm);
+    var page = getCurrentPages().find((page2) => get$pageByPage(page2).id === vm);
     if (page) {
       vm = page.$vm;
     } else {
@@ -81,13 +86,13 @@ function invokeHook(vm, name, args) {
   return hooks && invokeArrayFns(hooks, args);
 }
 function normalizeRoute(toRoute) {
-  if (toRoute.indexOf("/") === 0) {
+  if (toRoute.indexOf("/") === 0 || toRoute.indexOf("uni:") === 0) {
     return toRoute;
   }
   var fromRoute = "";
   var pages2 = getCurrentPages();
   if (pages2.length) {
-    fromRoute = pages2[pages2.length - 1].$page.route;
+    fromRoute = get$pageByPage(pages2[pages2.length - 1]).route;
   }
   return getRealRoute(fromRoute, toRoute);
 }
@@ -392,15 +397,30 @@ function invokeSuccess(id2, name, res) {
   var result = {
     errMsg: name + ":ok"
   };
+  {
+    result.errSubject = name;
+  }
   return invokeCallback(id2, extend(res || {}, result));
 }
 function invokeFail(id2, name, errMsg) {
   var errRes = arguments.length > 3 && arguments[3] !== void 0 ? arguments[3] : {};
-  var apiErrMsg = name + ":fail" + (errMsg ? " " + errMsg : "");
-  delete errRes.errCode;
+  var errMsgPrefix = name + ":fail";
+  var apiErrMsg = "";
+  if (!errMsg) {
+    apiErrMsg = errMsgPrefix;
+  } else if (errMsg.indexOf(errMsgPrefix) === 0) {
+    apiErrMsg = errMsg;
+  } else {
+    apiErrMsg = errMsgPrefix + " " + errMsg;
+  }
   var res = extend({
     errMsg: apiErrMsg
   }, errRes);
+  {
+    if (typeof UniError !== "undefined") {
+      res = typeof errRes.errCode !== "undefined" ? new UniError(name, errRes.errCode, apiErrMsg) : new UniError(apiErrMsg, errRes);
+    }
+  }
   return invokeCallback(id2, res);
 }
 function beforeInvokeApi(name, args, protocol, options) {
@@ -420,7 +440,6 @@ function parseErrMsg(errMsg) {
     return errMsg;
   }
   if (errMsg.stack) {
-    console.error(errMsg.message + "\n" + errMsg.stack);
     return errMsg.message;
   }
   return errMsg;
@@ -492,13 +511,16 @@ function initVueApp(appVm) {
     }
   });
 }
+function getPage$BasePage(page) {
+  return page.$basePage;
+}
 var pages = [];
 function addCurrentPage(page) {
-  var $page = page.$page;
+  var $page = getPage$BasePage(page);
   if (!$page.meta.isNVue) {
     return pages.push(page);
   }
-  var index2 = pages.findIndex((p) => p.$page.id === page.$page.id);
+  var index2 = pages.findIndex((p) => getPage$BasePage(p).id === $page.id);
   if (index2 > -1) {
     pages.splice(index2, 1, page);
   } else {
@@ -509,6 +531,12 @@ function getAllPages() {
   return pages;
 }
 function getCurrentPages$1() {
+  var curPages = getCurrentBasePages();
+  {
+    return curPages.map((page) => page.$page);
+  }
+}
+function getCurrentBasePages() {
   var curPages = [];
   pages.forEach((page) => {
     if (page.$.__isTabBar) {
@@ -526,10 +554,14 @@ function removePage(curPage) {
   if (index2 === -1) {
     return;
   }
-  if (!curPage.$page.meta.isNVue) {
+  var $basePage = getPage$BasePage(curPage);
+  if (!$basePage.meta.isNVue) {
     getVueApp().unmountPage(curPage);
   }
-  pages.splice(index2, 1);
+  var removePages2 = pages.splice(index2, 1);
+  {
+    removePages2[0].$page = null;
+  }
 }
 function backbuttonListener() {
   uni.navigateBack({
@@ -560,6 +592,215 @@ function initLaunchOptions(_ref2) {
   });
   extend(enterOptions$1, launchOptions$1);
   return enterOptions$1;
+}
+var ON_BACK_BUTTON = "onBackButton";
+var ON_POP_GESTURE = "onPopGesture";
+var OPEN_DIALOG_PAGE = "openDialogPage";
+function setupPage(component) {
+  var oldSetup = component.setup;
+  component.inheritAttrs = false;
+  component.setup = (props, ctx) => {
+    var {
+      attrs: {
+        __pageId,
+        __pagePath,
+        /*__pageQuery,*/
+        __pageInstance
+      }
+    } = ctx;
+    var instance = getCurrentInstance();
+    var pageVm = instance.proxy;
+    initPageVm(pageVm, __pageInstance);
+    {
+      instance.$dialogPages = [];
+      var uniPage;
+      if (__pageInstance.openType === OPEN_DIALOG_PAGE) {
+        var currentPage = getCurrentPage();
+        if (__pagePath.startsWith(SYSTEM_DIALOG_PAGE_PATH_STARTER)) {
+          var systemDialogPages = currentPage.vm.$systemDialogPages;
+          uniPage = systemDialogPages[systemDialogPages.length - 1];
+        } else {
+          uniPage = new UniDialogPageImpl();
+        }
+      } else {
+        uniPage = new UniNormalPageImpl();
+      }
+      pageVm.$basePage = pageVm.$page;
+      pageVm.$page = uniPage;
+      uniPage.route = pageVm.$basePage.route;
+      uniPage.optionsByJS = pageVm.$basePage.options;
+      Object.defineProperty(uniPage, "options", {
+        get: function() {
+          return new UTSJSONObject(pageVm.$basePage.options);
+        }
+      });
+      uniPage.vm = pageVm;
+      uniPage.$vm = pageVm;
+      uniPage.getElementById = (id2) => {
+        var _pageVm$$el;
+        var currentPage2 = getCurrentPage();
+        if (currentPage2 !== uniPage) {
+          return null;
+        }
+        var bodyNode = (_pageVm$$el = pageVm.$el) === null || _pageVm$$el === void 0 ? void 0 : _pageVm$$el.parentNode;
+        if (bodyNode == null) {
+          console.warn("bodyNode is null");
+          return null;
+        }
+        return bodyNode.querySelector("#".concat(id2));
+      };
+      uniPage.getParentPage = () => {
+        var parentPage = uniPage.getParentPageByJS();
+        return parentPage || null;
+      };
+      uniPage.getPageStyle = () => {
+        var pageStyle = uniPage.getPageStyleByJS();
+        return new UTSJSONObject(pageStyle);
+      };
+      uniPage.$getPageStyle = () => {
+        return uniPage.getPageStyle();
+      };
+      uniPage.setPageStyle = (styles2) => {
+        uniPage.setPageStyleByJS(styles2);
+      };
+      uniPage.$setPageStyle = (styles2) => {
+        uniPage.setPageStyle(styles2);
+      };
+      uniPage.getAndroidView = () => null;
+      uniPage.getHTMLElement = () => null;
+      if (getPage$BasePage(pageVm).openType !== OPEN_DIALOG_PAGE) {
+        addCurrentPageWithInitScope(__pageId, pageVm, __pageInstance);
+      }
+    }
+    {
+      onMounted(() => {
+        var _pageVm$$el2;
+        var rootElement = (_pageVm$$el2 = pageVm.$el) === null || _pageVm$$el2 === void 0 ? void 0 : _pageVm$$el2._parent;
+        if (rootElement) {
+          rootElement._page = pageVm.$page;
+        }
+      });
+      onBeforeUnmount(() => {
+        var _pageVm$$el3;
+        var rootElement = (_pageVm$$el3 = pageVm.$el) === null || _pageVm$$el3 === void 0 ? void 0 : _pageVm$$el3._parent;
+        if (rootElement) {
+          rootElement._page = null;
+        }
+      });
+    }
+    if (oldSetup) {
+      return oldSetup(props, ctx);
+    }
+  };
+  return component;
+}
+function initScope(pageId, vm, pageInstance) {
+  {
+    Object.defineProperty(vm, "$viewToTempFilePath", {
+      get() {
+        return vm.$nativePage.viewToTempFilePath.bind(vm.$nativePage);
+      }
+    });
+    Object.defineProperty(vm, "$getPageStyle", {
+      get() {
+        return vm.$nativePage.getPageStyle.bind(vm.$nativePage);
+      }
+    });
+    Object.defineProperty(vm, "$setPageStyle", {
+      get() {
+        return vm.$nativePage.setPageStyle.bind(vm.$nativePage);
+      }
+    });
+  }
+  vm.getOpenerEventChannel = () => {
+    if (!pageInstance.eventChannel) {
+      pageInstance.eventChannel = new EventChannel(pageId);
+    }
+    return pageInstance.eventChannel;
+  };
+  return vm;
+}
+function addCurrentPageWithInitScope(pageId, pageVm, pageInstance) {
+  addCurrentPage(initScope(pageId, pageVm, pageInstance));
+}
+function isVuePageAsyncComponent(component) {
+  return isFunction$1(component);
+}
+var pagesMap = /* @__PURE__ */ new Map();
+function definePage(pagePath, asyncComponent) {
+  pagesMap.set(pagePath, once(createFactory(asyncComponent)));
+}
+function createFactory(component) {
+  return () => {
+    if (isVuePageAsyncComponent(component)) {
+      return component().then((component2) => setupPage(component2));
+    }
+    return setupPage(component);
+  };
+}
+function initRouteOptions(path, openType) {
+  var routeOptions = JSON.parse(JSON.stringify(getRouteOptions(path)));
+  routeOptions.meta = initRouteMeta(routeOptions.meta);
+  if (openType !== "preloadPage" && !__uniConfig.realEntryPagePath && (openType === "reLaunch" || getCurrentPages().length === 0)) {
+    routeOptions.meta.isQuit = true;
+  } else if (!routeOptions.meta.isTabBar) {
+    routeOptions.meta.isQuit = false;
+  }
+  return routeOptions;
+}
+var id = 1;
+function getWebviewId() {
+  return id;
+}
+function genWebviewId() {
+  return id++;
+}
+var ANI_SHOW = "pop-in";
+var ANI_DURATION = 300;
+var ANI_CLOSE = "pop-out";
+function hasLeadingSlash(str) {
+  return str.indexOf("/") == 0;
+}
+function getRealPath(path) {
+  var fix = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : false;
+  if (hasLeadingSlash(path)) {
+    return path;
+  }
+  if (fix && path.indexOf(".") !== 0) {
+    return "/" + path;
+  }
+  var currentPage = getCurrentPage().vm;
+  var currentPath = !currentPage ? "/" : parseUrl(currentPage.route).path;
+  var currentPathArray = currentPath.split("/");
+  var pathArray = path.split("/");
+  var resultArray = [];
+  for (var index2 = 0; index2 < pathArray.length; index2++) {
+    var element = pathArray[index2];
+    if (element == "..") {
+      currentPathArray.pop();
+    } else if (element != ".") {
+      resultArray.push(element);
+    }
+  }
+  return addLeadingSlash(currentPathArray.concat(resultArray).join("/"));
+}
+var systemRoutes = [];
+function registerSystemRoute(route, page) {
+  var meta = arguments.length > 2 && arguments[2] !== void 0 ? arguments[2] : {};
+  if (systemRoutes.includes(route)) {
+    return;
+  }
+  systemRoutes.push(route);
+  __uniRoutes.push({
+    path: route,
+    meta: extend({
+      isQuit: false,
+      isEntry: false,
+      route,
+      navigationBar: {}
+    }, meta)
+  });
+  definePage(route, page);
 }
 var API_ADD_INTERCEPTOR = "addInterceptor";
 var API_REMOVE_INTERCEPTOR = "removeInterceptor";
@@ -617,29 +858,53 @@ var API_ON = "$on";
 var API_ONCE = "$once";
 var API_OFF = "$off";
 var API_EMIT = "$emit";
-var emitter = new Emitter();
+class EventBus {
+  constructor() {
+    this.$emitter = new Emitter();
+  }
+  on(name, callback) {
+    return this.$emitter.on(name, callback);
+  }
+  once(name, callback) {
+    return this.$emitter.once(name, callback);
+  }
+  off(name, callback) {
+    if (!name) {
+      this.$emitter.e = {};
+      return;
+    }
+    this.$emitter.off(name, callback);
+  }
+  emit(name) {
+    for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+      args[_key - 1] = arguments[_key];
+    }
+    this.$emitter.emit(name, ...args);
+  }
+}
+var eventBus = new EventBus();
 var $on = /* @__PURE__ */ defineSyncApi(API_ON, (name, callback) => {
-  emitter.on(name, callback);
-  return () => emitter.off(name, callback);
+  var id2 = eventBus.on(name, callback);
+  {
+    return id2;
+  }
 });
 var $once = /* @__PURE__ */ defineSyncApi(API_ONCE, (name, callback) => {
-  emitter.once(name, callback);
-  return () => emitter.off(name, callback);
+  var id2 = eventBus.once(name, callback);
+  {
+    return id2;
+  }
 });
 var $off = /* @__PURE__ */ defineSyncApi(API_OFF, (name, callback) => {
-  if (!name) {
-    emitter.e = {};
-    return;
-  }
   if (!isArray(name))
-    name = [name];
-  name.forEach((n) => emitter.off(n, callback));
+    name = name ? [name] : [];
+  name.forEach((n) => eventBus.off(n, callback));
 });
 var $emit = /* @__PURE__ */ defineSyncApi(API_EMIT, function(name) {
-  for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
-    args[_key - 1] = arguments[_key];
+  for (var _len2 = arguments.length, args = new Array(_len2 > 1 ? _len2 - 1 : 0), _key2 = 1; _key2 < _len2; _key2++) {
+    args[_key2 - 1] = arguments[_key2];
   }
-  emitter.emit(name, ...args);
+  eventBus.emit(name, ...args);
 });
 var appHooks = {
   [ON_UNHANDLE_REJECTION]: [],
@@ -932,9 +1197,6 @@ var SetTabBarBadgeOptions = {
     }
   }, IndexOptions.formatArgs)
 };
-var ANI_SHOW = "pop-in";
-var ANI_DURATION = 300;
-var ANI_CLOSE = "pop-out";
 function showWebview(nPage, animationType, animationDuration, showCallback) {
   nPage.show(/* @__PURE__ */ new Map([["animationType", animationType], ["animationDuration", animationDuration]]), showCallback);
 }
@@ -945,86 +1207,6 @@ function closeWebview(nPage, animationType, animationDuration, callback) {
   }
   nPage.close(options, callback);
 }
-var id = 1;
-function getWebviewId() {
-  return id;
-}
-function genWebviewId() {
-  return id++;
-}
-function initRouteOptions(path, openType) {
-  var routeOptions = JSON.parse(JSON.stringify(getRouteOptions(path)));
-  routeOptions.meta = initRouteMeta(routeOptions.meta);
-  if (openType !== "preloadPage" && !__uniConfig.realEntryPagePath && (openType === "reLaunch" || getCurrentPages().length === 0)) {
-    routeOptions.meta.isQuit = true;
-  } else if (!routeOptions.meta.isTabBar) {
-    routeOptions.meta.isQuit = false;
-  }
-  return routeOptions;
-}
-function setupPage(component) {
-  var oldSetup = component.setup;
-  component.inheritAttrs = false;
-  component.setup = (_, ctx) => {
-    var {
-      attrs: {
-        __pageId,
-        __pagePath,
-        __pageQuery,
-        __pageInstance
-      }
-    } = ctx;
-    var instance = getCurrentInstance();
-    var pageVm = instance.proxy;
-    initPageVm(pageVm, __pageInstance);
-    addCurrentPage(initScope(__pageId, pageVm, __pageInstance));
-    if (oldSetup) {
-      return oldSetup(__pageQuery, ctx);
-    }
-  };
-  return component;
-}
-function initScope(pageId, vm, pageInstance) {
-  {
-    Object.defineProperty(vm, "$viewToTempFilePath", {
-      get() {
-        return vm.$nativePage.viewToTempFilePath.bind(vm.$nativePage);
-      }
-    });
-    Object.defineProperty(vm, "$getPageStyle", {
-      get() {
-        return vm.$nativePage.getPageStyle.bind(vm.$nativePage);
-      }
-    });
-    Object.defineProperty(vm, "$setPageStyle", {
-      get() {
-        return vm.$nativePage.setPageStyle.bind(vm.$nativePage);
-      }
-    });
-  }
-  vm.getOpenerEventChannel = () => {
-    if (!pageInstance.eventChannel) {
-      pageInstance.eventChannel = new EventChannel(pageId);
-    }
-    return pageInstance.eventChannel;
-  };
-  return vm;
-}
-function isVuePageAsyncComponent(component) {
-  return isFunction$1(component);
-}
-var pagesMap = /* @__PURE__ */ new Map();
-function definePage(pagePath, asyncComponent) {
-  pagesMap.set(pagePath, once(createFactory(asyncComponent)));
-}
-function createFactory(component) {
-  return () => {
-    if (isVuePageAsyncComponent(component)) {
-      return component().then((component2) => setupPage(component2));
-    }
-    return setupPage(component);
-  };
-}
 var nativeApp;
 function getNativeApp() {
   return nativeApp;
@@ -1034,34 +1216,6 @@ function setNativeApp(app) {
 }
 function getPageManager() {
   return nativeApp.pageManager;
-}
-var ON_BACK_BUTTON = "onBackButton";
-var ON_POP_GESTURE = "onPopGesture";
-function hasLeadingSlash(str) {
-  return str.indexOf("/") == 0;
-}
-function getRealPath(path) {
-  var fix = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : false;
-  if (hasLeadingSlash(path)) {
-    return path;
-  }
-  if (fix && path.indexOf(".") !== 0) {
-    return "/" + path;
-  }
-  var currentPage = getCurrentPage();
-  var currentPath = !currentPage ? "/" : parseUrl(currentPage.route).path;
-  var currentPathArray = currentPath.split("/");
-  var pathArray = path.split("/");
-  var resultArray = [];
-  for (var index2 = 0; index2 < pathArray.length; index2++) {
-    var element = pathArray[index2];
-    if (element == "..") {
-      currentPathArray.pop();
-    } else if (element != ".") {
-      resultArray.push(element);
-    }
-  }
-  return addLeadingSlash(currentPathArray.concat(resultArray).join("/"));
 }
 var beforeRouteHooks = [];
 var afterRouteHooks = [];
@@ -1084,27 +1238,29 @@ function invokeAfterRouteHooks(type) {
 function invokePageReadyHooks(page) {
   invokeArrayFns$1(pageReadyHooks, page);
 }
-var onTabBarMidButtonTapCallback = [];
-var tabBar0 = null;
-var selected0 = -1;
-var tabs = /* @__PURE__ */ new Map();
 var BORDER_COLORS = /* @__PURE__ */ new Map([["white", "rgba(255, 255, 255, 0.33)"], ["black", "rgba(0, 0, 0, 0.33)"]]);
 function getBorderStyle(borderStyle) {
   var value = BORDER_COLORS.get(borderStyle);
+  if (borderStyle && !value) {
+    console.warn("4.23 版本起，在 pages.json 设置 tabbar borderStyle、在 uni.setTabBarStyle 设置 borderStyle 时仅支持 white/black，推荐使用 borderColor 自定义颜色。");
+  }
   return value || BORDER_COLORS.get("black");
 }
 function fixBorderStyle(tabBarConfig) {
   var borderStyle = tabBarConfig.get("borderStyle");
-  if (!isString(borderStyle)) {
-    borderStyle = "black";
+  var borderColor = tabBarConfig.get("borderColor");
+  var isBorderColorFilled = isString(borderColor);
+  borderStyle = getBorderStyle(borderStyle);
+  if (isBorderColorFilled) {
+    borderStyle = borderColor;
   }
-  var borderColor = getBorderStyle(borderStyle);
-  if (tabBarConfig.has("borderColor") && isString(tabBarConfig.get("borderColor"))) {
-    borderColor = tabBarConfig.get("borderColor");
-    tabBarConfig.delete("borderColor");
-  }
-  tabBarConfig.set("borderStyle", borderColor);
+  tabBarConfig.set("borderStyle", borderStyle);
+  tabBarConfig.delete("borderColor");
 }
+var onTabBarMidButtonTapCallback = [];
+var tabBar0 = null;
+var selected0 = -1;
+var tabs = /* @__PURE__ */ new Map();
 function getTabList() {
   var tabConfig = __uniConfig.tabBar ? /* @__PURE__ */ new Map() : null;
   if (__uniConfig.tabBar) {
@@ -1124,7 +1280,12 @@ function init() {
   var style = /* @__PURE__ */ new Map();
   style.set("navigationStyle", "custom");
   style.set("pageOrientation", (_uniConfig$globalSty = (_uniConfig$globalSty2 = __uniConfig.globalStyle) === null || _uniConfig$globalSty2 === void 0 ? void 0 : _uniConfig$globalSty2.pageOrientation) !== null && _uniConfig$globalSty !== void 0 ? _uniConfig$globalSty : "portrait");
-  var page = getPageManager().createPage("tabBar", "tabBar", style);
+  var page = getPageManager().createPage(
+    "tabBar",
+    // id 后增加 Date.now() 保证唯一性，与 android 端统一
+    "tabBar_".concat(Date.now()),
+    style
+  );
   var document = page.createDocument(new NodeData("root", "view", /* @__PURE__ */ new Map(), /* @__PURE__ */ new Map([["flex", "1"]])));
   var tabParent = document.createElement(new NodeData("tabs", "tabs", /* @__PURE__ */ new Map(), /* @__PURE__ */ new Map([["overflow", "hidden"], ["flex", "1"]])));
   document.appendChild(tabParent);
@@ -1143,7 +1304,9 @@ function init() {
       var item = list[index2];
       var path = item.pagePath;
       if (isString(path) && findPageRoute(getRealPath(path, true))) {
-        switchSelect(index2, path);
+        uni.switchTab({
+          url: getRealPath(path, true)
+        });
       } else {
         console.error("switchTab: pagePath not found");
       }
@@ -1197,8 +1360,8 @@ function createTab(path, query, callback) {
     openType: "switchTab"
   });
   callback === null || callback === void 0 || callback();
-  var page = getCurrentPage();
-  tabBar0.appendItem(page.$page.id.toString());
+  var page = getCurrentPage().vm;
+  tabBar0.appendItem(page.$basePage.id.toString());
   return page;
 }
 function findTabPage(path) {
@@ -1244,6 +1407,7 @@ function getTabPage(path) {
   return new TabPageInfo(page, isFirst);
 }
 function switchSelect(selected, path) {
+  var _getCurrentPage;
   var query = arguments.length > 2 && arguments[2] !== void 0 ? arguments[2] : {};
   var rebuild = arguments.length > 3 && arguments[3] !== void 0 ? arguments[3] : false;
   var callback = arguments.length > 4 ? arguments[4] : void 0;
@@ -1251,7 +1415,7 @@ function switchSelect(selected, path) {
   if (tabBar0 === null) {
     init();
   }
-  var currentPage = getCurrentPage();
+  var currentPage = (_getCurrentPage = getCurrentPage()) === null || _getCurrentPage === void 0 ? void 0 : _getCurrentPage.vm;
   var type = currentPage == null ? "appLaunch" : "switchTab";
   invokeBeforeRouteHooks(type);
   var pageInfo = getTabPage(getRealPath(path, true), query, rebuild, callback);
@@ -1262,7 +1426,7 @@ function switchSelect(selected, path) {
       invokeHook(currentPage, ON_HIDE);
     }
   }
-  tabBar0.switchSelect(page.$page.id.toString(), selected);
+  tabBar0.switchSelect(page.$basePage.id.toString(), selected);
   if (shouldShow) {
     invokeHook(page, ON_SHOW);
   }
@@ -1308,19 +1472,18 @@ var onThemeChange = function(themeMode) {
   var handlePage = () => {
     var pages2 = getAllPages();
     pages2.forEach((page) => {
-      var routeOptions = initRouteOptions(page.$page.path, "");
+      var routeOptions = initRouteOptions(page.$basePage.path, "");
       var style = parsePageStyle(routeOptions);
-      page.$setPageStyle(style);
+      page.$page.setPageStyle(new UTSJSONObject(style));
     });
   };
   handlePage();
   var handleTabBar = () => {
     var tabBar = getTabBar();
     if (tabBar !== null) {
-      var tabBarConfig = extend({}, __uniConfig.tabBar);
+      var tabBarConfig = __uniConfig.getTabBarConfig();
       normalizeTabBarStyles(tabBarConfig, __uniConfig.themeConfig, themeMode);
       var tabBarStyle = /* @__PURE__ */ new Map();
-      var tabBarItemUpdateConfig = ["iconPath", "selectedIconPath"];
       var tabBarConfigKeys = Object.keys(tabBarConfig);
       tabBarConfigKeys.forEach((key) => {
         var value = tabBarConfig[key];
@@ -1332,7 +1495,7 @@ var onThemeChange = function(themeMode) {
           valueAsArray.forEach((item) => {
             var tabBarItemMap = /* @__PURE__ */ new Map();
             tabBarItemMap.set("index", index2);
-            tabBarItemUpdateConfig.forEach((tabBarItemkey) => {
+            Object.keys(item).forEach((tabBarItemkey) => {
               if (item[tabBarItemkey] != null) {
                 tabBarItemMap.set(tabBarItemkey, item[tabBarItemkey]);
               }
@@ -1372,6 +1535,8 @@ function normalizeStyles(style, themeMap) {
       valueAsArray.forEach((item) => {
         normalizeStyles(item, themeMap);
       });
+    } else if (isPlainObject(value)) {
+      normalizeStyles(value, themeMap);
     }
   });
 }
@@ -1388,6 +1553,8 @@ function normalizeTabBarStyles(tabBar, themeConfig, themeMode) {
 function useTheme() {
   registerThemeChange(onThemeChange);
 }
+var homeDialogPages = [];
+var homeSystemDialogPages = [];
 function parsePageStyle(route) {
   var style = /* @__PURE__ */ new Map();
   var routeMeta = route.meta;
@@ -1462,6 +1629,25 @@ function registerPage(_ref, onCreated) {
   );
   function fn() {
     var page = createVuePage(id2, route, query, pageInstance, {}, nativePage2);
+    var pages2 = getCurrentPages();
+    if (pages2.length === 1) {
+      if (homeDialogPages.length) {
+        var homePage = pages2[0];
+        homePage.vm.$.$dialogPages = homeDialogPages.map((dialogPage) => {
+          dialogPage.getParentPage = () => homePage;
+          return dialogPage;
+        });
+        homeDialogPages.length = 0;
+      }
+      if (homeSystemDialogPages.length) {
+        var _homePage = pages2[0];
+        _homePage.vm.$systemDialogPages = homeSystemDialogPages.map((dialogPage) => {
+          dialogPage.getParentPage = () => _homePage;
+          return dialogPage;
+        });
+        homeDialogPages.length = 0;
+      }
+    }
     nativePage2.addPageEventListener(ON_POP_GESTURE, function(e) {
       uni.navigateBack({
         from: "popGesture",
@@ -1480,6 +1666,95 @@ function registerPage(_ref, onCreated) {
       invokeHook(page, ON_READY);
     });
     nativePage2.addPageEventListener(ON_PAGE_SCROLL, (arg) => {
+      invokeHook(page, ON_PAGE_SCROLL, {
+        scrollTop: arg.scrollTop
+      });
+    });
+    nativePage2.addPageEventListener(ON_PULL_DOWN_REFRESH, (_) => {
+      invokeHook(page, ON_PULL_DOWN_REFRESH);
+    });
+    nativePage2.addPageEventListener(ON_REACH_BOTTOM, (_) => {
+      invokeHook(page, ON_REACH_BOTTOM);
+    });
+    nativePage2.addPageEventListener(ON_RESIZE, (arg) => {
+      var args = {
+        deviceOrientation: arg.deviceOrientation,
+        size: {
+          windowWidth: arg.size.windowWidth,
+          windowHeight: arg.size.windowHeight,
+          screenWidth: arg.size.screenWidth,
+          screenHeight: arg.size.screenHeight
+        }
+      };
+      invokeHook(page, ON_RESIZE, args);
+    });
+    nativePage2.startRender();
+  }
+  if (delay) {
+    setTimeout(fn, delay);
+  } else {
+    fn();
+  }
+  return nativePage2;
+}
+function registerDialogPage(_ref2, dialogPage, onCreated) {
+  var {
+    url,
+    path,
+    query,
+    openType,
+    webview,
+    nvuePageVm,
+    eventChannel
+  } = _ref2;
+  var delay = arguments.length > 3 && arguments[3] !== void 0 ? arguments[3] : 0;
+  var id2 = genWebviewId();
+  var routeOptions = initRouteOptions(path, openType);
+  var pageStyle = parsePageStyle(routeOptions);
+  pageStyle.set("navigationStyle", "custom");
+  pageStyle.set("backgroundColorContent", "transparent");
+  if (typeof pageStyle.get("disableSwipeBack") !== "boolean") {
+    pageStyle.set("disableSwipeBack", true);
+  }
+  var parentPage = dialogPage.getParentPage();
+  var nativePage2 = getPageManager().createDialogPage(
+    // @ts-expect-error
+    parentPage ? parentPage.__nativePageId : "",
+    id2.toString(),
+    url,
+    pageStyle
+  );
+  if (onCreated) {
+    onCreated(nativePage2);
+  }
+  routeOptions.meta.id = parseInt(nativePage2.pageId);
+  var route = path.startsWith(SYSTEM_DIALOG_PAGE_PATH_STARTER) ? path : path.slice(1);
+  var pageInstance = initPageInternalInstance(
+    openType,
+    url,
+    query,
+    routeOptions.meta,
+    eventChannel,
+    // TODO ThemeMode
+    "light"
+  );
+  function fn() {
+    var page = createVuePage(id2, route, query, pageInstance, {}, nativePage2);
+    dialogPage.vm = page;
+    dialogPage.$vm = page;
+    nativePage2.addPageEventListener(ON_POP_GESTURE, function(e) {
+      closeDialogPage({
+        dialogPage
+      });
+    });
+    nativePage2.addPageEventListener(ON_UNLOAD, (_) => {
+      invokeHook(page, ON_UNLOAD);
+    });
+    nativePage2.addPageEventListener(ON_READY, (_) => {
+      invokePageReadyHooks(page);
+      invokeHook(page, ON_READY);
+    });
+    nativePage2.addPageEventListener(ON_PAGE_SCROLL, (arg) => {
       invokeHook(page, ON_PAGE_SCROLL, arg);
     });
     nativePage2.addPageEventListener(ON_PULL_DOWN_REFRESH, (_) => {
@@ -1488,8 +1763,17 @@ function registerPage(_ref, onCreated) {
     nativePage2.addPageEventListener(ON_REACH_BOTTOM, (_) => {
       invokeHook(page, ON_REACH_BOTTOM);
     });
-    nativePage2.addPageEventListener(ON_RESIZE, (_) => {
-      invokeHook(page, ON_RESIZE);
+    nativePage2.addPageEventListener(ON_RESIZE, (arg) => {
+      var args = {
+        deviceOrientation: arg.deviceOrientation,
+        size: {
+          windowWidth: arg.size.windowWidth,
+          windowHeight: arg.size.windowHeight,
+          screenWidth: arg.size.screenWidth,
+          screenHeight: arg.size.screenHeight
+        }
+      };
+      invokeHook(page, ON_RESIZE, args);
     });
     nativePage2.startRender();
   }
@@ -1516,7 +1800,7 @@ function createVuePage(__pageId, __pagePath, __pageQuery, __pageInstance, pageOp
   return mountPage(component);
 }
 function setStatusBarStyle() {
-  var page = getCurrentPage();
+  var page = getCurrentPage().vm;
   if (page) {
     var nativePage2 = page.$nativePage;
     nativePage2.applyStatusBarStyle();
@@ -1612,6 +1896,11 @@ function initAppLaunch(appVm) {
   }
   useTheme();
 }
+function initAppError(appVm, nativeApp2) {
+  nativeApp2.addEventListener(ON_ERROR, function(errorEvent) {
+    invokeHook(appVm, ON_ERROR, errorEvent.error);
+  });
+}
 var redirectTo = /* @__PURE__ */ defineAsyncApi(API_REDIRECT_TO, (_ref, _ref2) => {
   var {
     url
@@ -1650,7 +1939,7 @@ function _redirectTo(_ref3) {
     path,
     query
   } = _ref3;
-  var lastPage = getCurrentPage();
+  var lastPage = getCurrentPage().vm;
   return new Promise((resolve) => {
     invokeAfterRouteHooks(API_REDIRECT_TO);
     showWebview(registerPage({
@@ -1736,6 +2025,18 @@ function _reLaunch(_ref3) {
 }
 var reLaunch = /* @__PURE__ */ defineAsyncApi(API_RE_LAUNCH, $reLaunch, ReLaunchProtocol, ReLaunchOptions);
 function closePage(page, animationType, animationDuration) {
+  var dialogPages = page.$page.getDialogPages();
+  for (var i = dialogPages.length - 1; i >= 0; i--) {
+    closeNativeDialogPage(dialogPages[i]);
+  }
+  var systemDialogPages = page.$systemDialogPages || [];
+  for (var _i = 0; _i < systemDialogPages.length; _i++) {
+    closeNativeDialogPage(systemDialogPages[_i]);
+  }
+  page.$systemDialogPages = [];
+  for (var _i2 = dialogPages.length - 1; _i2 >= 0; _i2--) {
+    closeNativeDialogPage(dialogPages[_i2]);
+  }
   closeWebview(page.$nativePage, animationType, animationDuration);
   removePage(page);
   removeTabBarPage(page);
@@ -1787,6 +2088,12 @@ function handleBeforeEntryPageRoutes() {
     return $reLaunch(args, handler);
   });
 }
+function closeNativeDialogPage(dialogPage, animationType, animationDuration, callback) {
+  var webview = getNativeApp().pageManager.findPageById(dialogPage.$vm.$basePage.id + "");
+  if (webview) {
+    closeWebview(webview, animationType || "none", animationDuration || 0, callback);
+  }
+}
 var $switchTab = (args, _ref) => {
   var {
     resolve,
@@ -1828,7 +2135,7 @@ function _switchTab(_ref2) {
   if (selected == -1) {
     return Promise.reject("tab ".concat(path, " not found"));
   }
-  var pages2 = getCurrentPages();
+  var pages2 = getCurrentBasePages();
   switchSelect(selected, path, query);
   for (var index2 = pages2.length - 1; index2 >= 0; index2--) {
     var page = pages2[index2];
@@ -1841,14 +2148,13 @@ function _switchTab(_ref2) {
 }
 var isLaunchWebviewReady = false;
 function subscribeWebviewReady(_data, pageId) {
-  var isLaunchWebview = pageId === "1";
-  if (isLaunchWebview && isLaunchWebviewReady) {
+  if (isLaunchWebviewReady) {
     return;
   }
-  if (isLaunchWebview) {
+  {
     isLaunchWebviewReady = true;
   }
-  isLaunchWebview && onLaunchWebviewReady();
+  onLaunchWebviewReady();
 }
 function onLaunchWebviewReady() {
   var entryPagePath = addLeadingSlash(__uniConfig.entryPagePath);
@@ -1869,32 +2175,26 @@ function onLaunchWebviewReady() {
   return $navigateTo(args, handler);
 }
 function initSubscribeHandlers() {
-  subscribeWebviewReady({}, "1");
+  subscribeWebviewReady();
 }
-function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) {
+function asyncGeneratorStep(n, t, e, r, o, a, c) {
   try {
-    var info = gen[key](arg);
-    var value = info.value;
-  } catch (error) {
-    reject(error);
-    return;
+    var i = n[a](c), u = i.value;
+  } catch (n2) {
+    return void e(n2);
   }
-  if (info.done) {
-    resolve(value);
-  } else {
-    Promise.resolve(value).then(_next, _throw);
-  }
+  i.done ? t(u) : Promise.resolve(u).then(r, o);
 }
-function _asyncToGenerator(fn) {
+function _asyncToGenerator(n) {
   return function() {
-    var self = this, args = arguments;
-    return new Promise(function(resolve, reject) {
-      var gen = fn.apply(self, args);
-      function _next(value) {
-        asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value);
+    var t = this, e = arguments;
+    return new Promise(function(r, o) {
+      var a = n.apply(t, e);
+      function _next(n2) {
+        asyncGeneratorStep(a, r, o, _next, _throw, "next", n2);
       }
-      function _throw(err) {
-        asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err);
+      function _throw(n2) {
+        asyncGeneratorStep(a, r, o, _next, _throw, "throw", n2);
       }
       _next(void 0);
     });
@@ -1903,6 +2203,7 @@ function _asyncToGenerator(fn) {
 function initOn(app) {
   app.addEventListener(ON_SHOW, /* @__PURE__ */ function() {
     var _ref = _asyncToGenerator(function* (event) {
+      var _getCurrentPage;
       var app2 = getNativeApp();
       var MAX_TIMEOUT = 200;
       function getNewIntent() {
@@ -1932,8 +2233,8 @@ function initOn(app) {
         path: __uniConfig.entryPagePath
       }, schemaLink);
       setEnterOptionsSync(showOptions);
-      var page = getCurrentPage();
-      invokeHook(getApp(), ON_SHOW, showOptions);
+      var page = (_getCurrentPage = getCurrentPage()) === null || _getCurrentPage === void 0 ? void 0 : _getCurrentPage.vm;
+      invokeHook(getApp().vm, ON_SHOW, showOptions);
       if (page) {
         invokeHook(page, ON_SHOW);
       }
@@ -1943,8 +2244,9 @@ function initOn(app) {
     };
   }());
   app.addEventListener(ON_HIDE, function() {
-    var page = getCurrentPage();
-    invokeHook(getApp(), ON_HIDE);
+    var _getCurrentPage2;
+    var page = (_getCurrentPage2 = getCurrentPage()) === null || _getCurrentPage2 === void 0 ? void 0 : _getCurrentPage2.vm;
+    invokeHook(getApp().vm, ON_HIDE);
     if (page) {
       invokeHook(page, ON_HIDE);
     }
@@ -1963,6 +2265,9 @@ function initComponentInstance(app) {
       }
       var pageId = instance.root.attrs.__pageId;
       vm.$nativePage = getNativeApp().pageManager.findPageById(pageId + "");
+      if (vm.$page) {
+        vm.$page.__nativePageId = vm.$nativePage.pageId;
+      }
     },
     beforeMount() {
       var _vm$$options$styles;
@@ -1979,6 +2284,22 @@ var appCtx;
 var defaultApp = {
   globalData: {}
 };
+class UniAppImpl {
+  get vm() {
+    return appCtx;
+  }
+  get $vm() {
+    return appCtx;
+  }
+  get globalData() {
+    var _appCtx;
+    return ((_appCtx = appCtx) === null || _appCtx === void 0 ? void 0 : _appCtx.globalData) || {};
+  }
+  getAndroidApplication() {
+    return null;
+  }
+}
+var $uniApp = new UniAppImpl();
 var entryPageState = {
   isReady: false,
   handledBeforeEntryPageRoutes: false
@@ -1992,16 +2313,7 @@ function initAppVm(appVm) {
   appVm.$mpType = "app";
 }
 function getApp$1() {
-  var {
-    allowDefault = false
-  } = arguments.length > 0 && arguments[0] !== void 0 ? arguments[0] : {};
-  if (appCtx) {
-    return appCtx;
-  }
-  if (allowDefault) {
-    return defaultApp;
-  }
-  console.error("[warn]: getApp() failed. Learn more: https://uniapp.dcloud.io/collocation/frame/window?id=getapp.");
+  return $uniApp;
 }
 function registerApp(appVm, nativeApp2) {
   initEntryPagePath(nativeApp2);
@@ -2014,6 +2326,7 @@ function registerApp(appVm, nativeApp2) {
   initService(nativeApp2);
   initGlobalEvent(nativeApp2);
   initAppLaunch(appVm);
+  initAppError(appVm, nativeApp2);
   initSubscribeHandlers();
   __uniConfig.ready = true;
 }
@@ -2060,7 +2373,7 @@ var $navigateTo = (args, _ref) => {
     path,
     query
   } = parseUrl(url);
-  var [aniType, aniDuration] = initAnimation(path, animationType, animationDuration);
+  var [aniType, aniDuration] = initAnimation$1(path, animationType, animationDuration);
   updateEntryPageIsReady(path);
   if (!entryPageState.isReady) {
     navigateToPagesBeforeEntryPages.push({
@@ -2084,6 +2397,7 @@ var $navigateTo = (args, _ref) => {
 };
 var navigateTo = /* @__PURE__ */ defineAsyncApi(API_NAVIGATE_TO, $navigateTo, NavigateToProtocol, NavigateToOptions);
 function _navigateTo(_ref2) {
+  var _getCurrentPage;
   var {
     url,
     path,
@@ -2092,7 +2406,7 @@ function _navigateTo(_ref2) {
     aniType,
     aniDuration
   } = _ref2;
-  var currentPage = getCurrentPage();
+  var currentPage = (_getCurrentPage = getCurrentPage()) === null || _getCurrentPage === void 0 ? void 0 : _getCurrentPage.vm;
   var currentRouteType = currentPage == null ? "appLaunch" : API_NAVIGATE_TO;
   invokeBeforeRouteHooks(currentRouteType);
   invokeHook(ON_HIDE);
@@ -2125,7 +2439,7 @@ function _navigateTo(_ref2) {
     }
   });
 }
-function initAnimation(path, animationType, animationDuration) {
+function initAnimation$1(path, animationType, animationDuration) {
   if (!getCurrentPage()) {
     return ["none", 0];
   }
@@ -2136,7 +2450,7 @@ function initAnimation(path, animationType, animationDuration) {
   return [animationType || meta.animationType || globalStyle.animationType || ANI_SHOW, animationDuration || meta.animationDuration || globalStyle.animationDuration || ANI_DURATION];
 }
 function isDirectPage(page) {
-  return !!__uniConfig.realEntryPagePath && getRealPath(page.$page.route, true) === getRealPath(parseUrl(__uniConfig.entryPagePath).path, true);
+  return !!__uniConfig.realEntryPagePath && getRealPath(page.$basePage.route, true) === getRealPath(parseUrl(__uniConfig.entryPagePath).path, true);
 }
 function reLaunchEntryPage() {
   var _uniConfig$entryPage;
@@ -2151,17 +2465,29 @@ var navigateBack = /* @__PURE__ */ defineAsyncApi(API_NAVIGATE_BACK, (args, _ref
     resolve,
     reject
   } = _ref;
-  var page = getCurrentPage();
+  var page = getCurrentPage().vm;
   if (!page) {
     return reject("getCurrentPages is empty");
   }
   if (
     // popGesture 时不触发 onBackPress 事件，避免引发半屏弹窗这种冲突情况
-    args.from !== "popGesture" && invokeHook(page, ON_BACK_PRESS, {
-      from: args.from || "navigateBack"
-    })
+    args.from !== "popGesture"
   ) {
-    return reject("cancel");
+    var onBackPressRes = invokeHook(page, ON_BACK_PRESS, {
+      from: args.from || "navigateBack"
+    });
+    if (onBackPressRes !== true) {
+      var dialogPages = page.$page.getDialogPages();
+      if (dialogPages.length > 0) {
+        var dialogPage = dialogPages[dialogPages.length - 1];
+        onBackPressRes = invokeHook(dialogPage.$vm, ON_BACK_PRESS, {
+          from: args.from || "navigateBack"
+        });
+      }
+    }
+    if (onBackPressRes === true) {
+      return reject("cancel");
+    }
   }
   try {
     uni.hideToast();
@@ -2169,7 +2495,7 @@ var navigateBack = /* @__PURE__ */ defineAsyncApi(API_NAVIGATE_BACK, (args, _ref
   } catch (error) {
     console.warn(error);
   }
-  if (page.$page.meta.isQuit)
+  if (getPage$BasePage(page).meta.isQuit)
     ;
   else {
     if (isDirectPage(page)) {
@@ -2186,19 +2512,24 @@ var navigateBack = /* @__PURE__ */ defineAsyncApi(API_NAVIGATE_BACK, (args, _ref
   return resolve();
 }, NavigateBackProtocol, NavigateBackOptions);
 function back(delta, animationType, animationDuration) {
-  var pages2 = getCurrentPages();
+  var pages2 = getCurrentBasePages();
   var len = pages2.length;
   var currentPage = pages2[len - 1];
   if (delta > 1) {
     pages2.slice(len - delta, len - 1).reverse().forEach((deltaPage) => {
-      closeWebview(getNativeApp().pageManager.findPageById(deltaPage.$page.id + ""), "none", 0);
+      var dialogPages2 = deltaPage.$page.getDialogPages();
+      for (var i2 = dialogPages2.length - 1; i2 >= 0; i2--) {
+        var dialogPage2 = dialogPages2[i2];
+        closeNativeDialogPage(dialogPage2);
+      }
+      closeWebview(getNativeApp().pageManager.findPageById(deltaPage.$basePage.id + ""), "none", 0);
     });
   }
   var backPage = function(webview2) {
     if (animationType) {
       animationDuration = animationDuration || ANI_DURATION;
     } else {
-      if (currentPage.$page.openType === "redirectTo") {
+      if (currentPage.$basePage.openType === "redirectTo") {
         animationType = ANI_CLOSE;
         animationDuration = ANI_DURATION;
       } else {
@@ -2211,8 +2542,207 @@ function back(delta, animationType, animationDuration) {
       setStatusBarStyle();
     });
   };
-  var webview = getNativeApp().pageManager.findPageById(currentPage.$page.id + "");
+  var webview = getNativeApp().pageManager.findPageById(currentPage.$basePage.id + "");
+  var dialogPages = currentPage.$page.getDialogPages();
+  for (var i = dialogPages.length - 1; i >= 0; i--) {
+    var dialogPage = dialogPages[i];
+    closeNativeDialogPage(dialogPage);
+    if (i > 0) {
+      invokeHook(dialogPages[i - 1].$vm, ON_SHOW);
+    }
+  }
+  var systemDialogPages = currentPage.$systemDialogPages || [];
+  for (var _i = 0; _i < systemDialogPages.length; _i++) {
+    closeNativeDialogPage(systemDialogPages[_i]);
+  }
+  currentPage.$systemDialogPages = [];
   backPage(webview);
+}
+var openDialogPage = (options) => {
+  var _options$success, _options$complete;
+  var {
+    url,
+    animationType
+  } = options;
+  if (!options.url) {
+    triggerFailCallback$1(options, "url is required");
+    return null;
+  }
+  var {
+    path,
+    query
+  } = parseUrl(url);
+  var normalizeUrl = createNormalizeUrl("navigateTo");
+  var errMsg = normalizeUrl(path, {});
+  if (errMsg) {
+    triggerFailCallback$1(options, errMsg);
+    return null;
+  }
+  var parentPage = options.parentPage || null;
+  var currentPages = getCurrentPages();
+  if (parentPage) {
+    if (currentPages.indexOf(parentPage) === -1) {
+      triggerFailCallback$1(options, "parentPage is not a valid page");
+      return null;
+    }
+  }
+  if (currentPages.length && !parentPage) {
+    parentPage = currentPages[currentPages.length - 1];
+  }
+  var dialogPage = new UniDialogPageImpl();
+  dialogPage.route = path;
+  dialogPage.optionsByJS = query;
+  dialogPage.getParentPage = () => parentPage;
+  dialogPage.$component = null;
+  dialogPage.$disableEscBack = false;
+  var systemDialog = isSystemDialogPage(dialogPage);
+  if (!systemDialog) {
+    if (!parentPage) {
+      homeDialogPages.push(dialogPage);
+    } else {
+      var dialogPages = parentPage.getDialogPages();
+      if (dialogPages.length) {
+        invokeHook(dialogPages[dialogPages.length - 1].$vm, ON_HIDE);
+      }
+      dialogPages.push(dialogPage);
+    }
+  } else {
+    if (!parentPage) {
+      homeSystemDialogPages.push(dialogPage);
+      if (isSystemActionSheetDialogPage(dialogPage)) {
+        closePreActionSheet(homeSystemDialogPages);
+      }
+    } else {
+      if (!parentPage.vm.$systemDialogPages) {
+        parentPage.vm.$systemDialogPages = [];
+      }
+      parentPage.vm.$systemDialogPages.push(dialogPage);
+      if (isSystemActionSheetDialogPage(dialogPage)) {
+        closePreActionSheet(parentPage.vm.$systemDialogPages);
+      }
+    }
+  }
+  var [aniType, aniDuration] = initAnimation(path, animationType);
+  var noAnimation = aniType === "none" || aniDuration === 0;
+  function callback(page2) {
+    showWebview(page2, aniType, aniDuration, () => {
+      beforeRoute();
+    });
+  }
+  var page = registerDialogPage(
+    {
+      url,
+      path,
+      query,
+      openType: OPEN_DIALOG_PAGE
+    },
+    dialogPage,
+    noAnimation ? void 0 : callback,
+    // 有动画时延迟创建 vm
+    noAnimation ? 0 : 1
+  );
+  if (systemDialog) {
+    dialogPage.__nativeType = "systemDialog";
+  }
+  if (noAnimation) {
+    callback(page);
+  }
+  var successOptions = {
+    errMsg: "openDialogPage:ok"
+  };
+  (_options$success = options.success) === null || _options$success === void 0 || _options$success.call(options, successOptions);
+  (_options$complete = options.complete) === null || _options$complete === void 0 || _options$complete.call(options, successOptions);
+  return dialogPage;
+};
+function triggerFailCallback$1(options, errMsg) {
+  var _options$fail, _options$complete2;
+  var failOptions = new UniError("uni-openDialogPage", 4, "openDialogPage: fail, ".concat(errMsg));
+  (_options$fail = options.fail) === null || _options$fail === void 0 || _options$fail.call(options, failOptions);
+  (_options$complete2 = options.complete) === null || _options$complete2 === void 0 || _options$complete2.call(options, failOptions);
+}
+function initAnimation(path, animationType) {
+  if (!getCurrentPage()) {
+    return ["none", 0];
+  }
+  var {
+    globalStyle
+  } = __uniConfig;
+  var meta = getRouteMeta(path);
+  var _animationType = animationType || meta.animationType || globalStyle.animationType || ANI_SHOW;
+  if (_animationType == "pop-in") {
+    _animationType = "none";
+  }
+  return [_animationType, meta.animationDuration || globalStyle.animationDuration || ANI_DURATION];
+}
+function closePreActionSheet(dialogPages) {
+  var actionSheets = dialogPages.filter((page) => isSystemActionSheetDialogPage(page));
+  if (actionSheets.length > 1) {
+    setTimeout(() => {
+      closeNativeDialogPage(actionSheets[0]);
+      dialogPages.splice(dialogPages.indexOf(actionSheets[0]), 1);
+    }, 150);
+  }
+}
+var closeDialogPage = (options) => {
+  var _options$success, _options$complete;
+  var currentPages = getCurrentPages();
+  var currentPage = currentPages[currentPages.length - 1];
+  if (!currentPage) {
+    triggerFailCallback(options, "currentPage is null");
+    return;
+  }
+  if ((options === null || options === void 0 ? void 0 : options.animationType) === "pop-out") {
+    options.animationType = "none";
+  }
+  if (options !== null && options !== void 0 && options.dialogPage) {
+    var dialogPage = options === null || options === void 0 ? void 0 : options.dialogPage;
+    if (!(dialogPage instanceof UniDialogPageImpl)) {
+      triggerFailCallback(options, "dialogPage is not a valid page");
+      return;
+    }
+    var parentPage = dialogPage.getParentPage();
+    if (!isSystemDialogPage(dialogPage)) {
+      if (parentPage && currentPages.indexOf(parentPage) !== -1) {
+        var parentDialogPages = parentPage.getDialogPages();
+        var index2 = parentDialogPages.indexOf(dialogPage);
+        parentDialogPages.splice(index2, 1);
+        closeNativeDialogPage(dialogPage, (options === null || options === void 0 ? void 0 : options.animationType) || "none", (options === null || options === void 0 ? void 0 : options.animationDuration) || ANI_DURATION);
+        if (index2 > 0 && index2 === parentDialogPages.length) {
+          invokeHook(parentDialogPages[parentDialogPages.length - 1].$vm, ON_SHOW);
+        }
+      } else {
+        triggerFailCallback(options, "dialogPage is not a valid page");
+        return;
+      }
+    } else {
+      var systemDialogPages = parentPage.vm.$systemDialogPages;
+      var _index = systemDialogPages.indexOf(dialogPage);
+      systemDialogPages.splice(_index, 1);
+      closeNativeDialogPage(dialogPage);
+      return;
+    }
+  } else {
+    var dialogPages = currentPage.getDialogPages();
+    for (var i = dialogPages.length - 1; i >= 0; i--) {
+      closeNativeDialogPage(dialogPages[i], (options === null || options === void 0 ? void 0 : options.animationType) || "none", (options === null || options === void 0 ? void 0 : options.animationDuration) || ANI_DURATION);
+      if (i > 0) {
+        invokeHook(dialogPages[i - 1].$vm, ON_SHOW);
+      }
+      dialogPages[i] = null;
+    }
+    dialogPages.length = 0;
+  }
+  var successOptions = {
+    errMsg: "closeDialogPage: ok"
+  };
+  options === null || options === void 0 || (_options$success = options.success) === null || _options$success === void 0 || _options$success.call(options, successOptions);
+  options === null || options === void 0 || (_options$complete = options.complete) === null || _options$complete === void 0 || _options$complete.call(options, successOptions);
+};
+function triggerFailCallback(options, errMsg) {
+  var _options$fail, _options$complete2;
+  var failOptions = new UniError("uni-openDialogPage", 4, "openDialogPage: fail, ".concat(errMsg));
+  options === null || options === void 0 || (_options$fail = options.fail) === null || _options$fail === void 0 || _options$fail.call(options, failOptions);
+  options === null || options === void 0 || (_options$complete2 = options.complete) === null || _options$complete2 === void 0 || _options$complete2.call(options, failOptions);
 }
 var setTabBarBadge = /* @__PURE__ */ defineAsyncApi(API_SET_TAB_BAR_BADGE, (_ref, _ref2) => {
   var {
@@ -2375,7 +2905,7 @@ var setNavigationBarColor = /* @__PURE__ */ defineAsyncApi(API_SET_NAVIGATION_BA
   if (!page) {
     return reject("getCurrentPages is empty");
   }
-  var appPage = page.$nativePage;
+  var appPage = page.vm.$nativePage;
   appPage.updateStyle(/* @__PURE__ */ new Map([["navigationBarTextStyle", frontColor == "#000000" ? "black" : "white"], ["navigationBarBackgroundColor", backgroundColor]]));
   resolve();
 }, SetNavigationBarColorProtocol, SetNavigationBarColorOptions);
@@ -2384,7 +2914,7 @@ var setNavigationBarTitle = /* @__PURE__ */ defineAsyncApi(API_SET_NAVIGATION_BA
     resolve,
     reject
   } = _ref;
-  var page = getCurrentPage();
+  var page = getCurrentPage().vm;
   if (page == null) {
     reject("page is not ready");
     return;
@@ -2395,7 +2925,7 @@ var setNavigationBarTitle = /* @__PURE__ */ defineAsyncApi(API_SET_NAVIGATION_BA
 });
 var getElementById = /* @__PURE__ */ defineSyncApi("getElementById", (id2) => {
   var _page$$el;
-  var page = getCurrentPage();
+  var page = getCurrentPage().vm;
   if (page == null) {
     return null;
   }
@@ -2654,61 +3184,57 @@ function requestComponentInfo(vueComponent, queue2, callback) {
   callback(result);
 }
 var createSelectorQuery = function() {
-  var instance = getCurrentPage();
+  var instance = getCurrentPage().vm;
   return new SelectorQueryImpl(instance);
 };
+class CanvasContextImpl {
+  constructor(element) {
+    this._element = element;
+  }
+  // @ts-expect-error 类型不匹配
+  getContext(contextType) {
+    return this._element.getContext(contextType);
+  }
+  toBlob(callback, type, quality) {
+    throw new Error("Method not implemented.");
+  }
+  toDataURL(type, quality) {
+    return this._element.toDataURL(type, quality);
+  }
+  createImage() {
+    return new Image();
+  }
+  createPath2D() {
+    return new Path2D();
+  }
+  requestAnimationFrame(callback) {
+    return requestAnimationFrame(callback);
+  }
+  cancelAnimationFrame(taskId) {
+    cancelAnimationFrame(taskId);
+  }
+}
 var createCanvasContextAsync = /* @__PURE__ */ defineAsyncApi("createCanvasContextAsync", (options, _ref) => {
-  var _page$$el;
+  var _options$component;
   var {
     resolve,
     reject
   } = _ref;
-  var page = getCurrentPage();
+  var page = getCurrentPage().vm;
   if (page == null) {
     return null;
   }
-  var bodyNode = (_page$$el = page.$el) === null || _page$$el === void 0 ? void 0 : _page$$el.parentNode;
-  if (bodyNode == null) {
-    reject("bodyNode is null");
-    return null;
-  }
-  if (!options.id) {
-    reject("id is null");
-    return null;
-  }
-  var component = null;
-  if (options.component && isVueComponent(options.component)) {
-    component = options.component;
-    var el = component.$el;
-    if (el != null) {
-      bodyNode = el.parentNode;
+  createSelectorQuery().in((_options$component = options.component) !== null && _options$component !== void 0 ? _options$component : null).select("#" + options.id).fields({
+    node: true
+  }, (ret) => {
+    var node = ret.node;
+    if (node != null) {
+      resolve(new CanvasContextImpl(node));
+    } else {
+      var uniError = new UniError("uni-createCanvasContextAsync", -1, "canvas id invalid.");
+      reject(uniError.errMsg);
     }
-  }
-  var element = bodyNode.querySelector("#".concat(options.id));
-  if (!element) {
-    reject("element is null");
-    return null;
-  }
-  function createImage() {
-    return new Image();
-  }
-  function createPath2D() {
-    return new Path2D();
-  }
-  function requestAnimationFrameFun(callback) {
-    return requestAnimationFrame(callback);
-  }
-  function cancelAnimationFrameFun(taskId) {
-    cancelAnimationFrame(taskId);
-  }
-  resolve({
-    getContext: element.getContext.bind(element),
-    toDataURL: element.toDataURL.bind(element),
-    createImage,
-    createPath2D,
-    requestAnimationFrame: requestAnimationFrameFun,
-    cancelAnimationFrame: cancelAnimationFrameFun
-  });
+  }).exec();
 });
 function queryElementTop(component, selector) {
   var _component$$el;
@@ -2719,7 +3245,7 @@ function queryElementTop(component, selector) {
   return null;
 }
 var pageScrollTo = /* @__PURE__ */ defineAsyncApi(API_PAGE_SCROLL_TO, (options, res) => {
-  var currentPage = getCurrentPage();
+  var currentPage = getCurrentPage().vm;
   var scrollViewNode = currentPage === null || currentPage === void 0 ? void 0 : currentPage.$el;
   if (scrollViewNode == null || scrollViewNode.tagName != "SCROLL-VIEW") {
     res.reject("selector invalid");
@@ -2743,9 +3269,12 @@ var pageScrollTo = /* @__PURE__ */ defineAsyncApi(API_PAGE_SCROLL_TO, (options, 
   scrollViewNode.scrollTop = top;
   res.resolve();
 }, PageScrollToProtocol, PageScrollToOptions);
-var SOURCE_REG = /(.+\.((ttf)|(otf)|(woff2?))$)|(^(http|https):\/\/.+)/;
+var SOURCE_REG = /(.+\.((ttf)|(otf)|(woff2?))$)|(^(http|https):\/\/.+)|(^(data:font).+)/;
 function removeUrlWrap(source) {
   if (source.startsWith("url(")) {
+    if (source.split("format(").length > 1) {
+      source = source.split("format(")[0].trim();
+    }
     source = source.substring(4, source.length - 1);
   }
   if (source.startsWith('"') || source.startsWith("'")) {
@@ -2786,7 +3315,7 @@ var loadFontFace = /* @__PURE__ */ defineAsyncApi(API_LOAD_FONT_FACE, (options, 
       app.loadFontFace(fontInfo);
     }
   } else {
-    var page = getCurrentPage();
+    var page = getCurrentPage().vm;
     if (!page) {
       res.reject("page is not ready", 99);
       return;
@@ -2802,7 +3331,7 @@ var loadFontFace = /* @__PURE__ */ defineAsyncApi(API_LOAD_FONT_FACE, (options, 
   }
 });
 var startPullDownRefresh = /* @__PURE__ */ defineAsyncApi(API_START_PULL_DOWN_REFRESH, (_options, res) => {
-  var page = getCurrentPage();
+  var page = getCurrentPage().vm;
   if (page === null) {
     res.reject("page is not ready");
     return;
@@ -2813,13 +3342,1189 @@ var startPullDownRefresh = /* @__PURE__ */ defineAsyncApi(API_START_PULL_DOWN_RE
   });
 });
 var stopPullDownRefresh = /* @__PURE__ */ defineAsyncApi(API_STOP_PULL_DOWN_REFRESH, (_args, res) => {
-  var page = getCurrentPage();
+  var page = getCurrentPage().vm;
   if (page === null) {
     res.reject("page is not ready");
     return;
   }
   page.$nativePage.stopPullDownRefresh();
   res.resolve();
+});
+var defaultPoi = {
+  latitude: 39.908823,
+  longitude: 116.39747
+};
+var languageData = {
+  "en": {
+    "back": "cancel",
+    "ok": "ok",
+    "cancel": "cancel",
+    "loading": "loading...",
+    "locationLoading": "positioning...",
+    "search": "Search location",
+    "current-location": "current location"
+  },
+  "zh-Hans": {
+    "back": "取消",
+    "ok": "确定",
+    "cancel": "取消",
+    "loading": "请求中...",
+    "locationLoading": "获取定位中...",
+    "search": "搜索地点",
+    "current-location": "当前位置"
+  },
+  "zh-Hant": {
+    "back": "取消",
+    "ok": "確定",
+    "cancel": "取消",
+    "loading": "請求中...",
+    "locationLoading": "獲取定位中...",
+    "search": "蒐索地點",
+    "current-location": "當前位置"
+  }
+};
+var loadingPath = "data:image/gif;base64,R0lGODlhLAEsAaIFAMPDw/j4+J2dneHh4aWlpf///wAAAAAAACH/C05FVFNDQVBFMi4wAwEAAAAh/wtYTVAgRGF0YVhNUDw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDkuMC1jMDAwIDc5LjE3MWMyN2ZhYiwgMjAyMi8wOC8xNi0yMjozNTo0MSAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIDI0LjAgKE1hY2ludG9zaCkiIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6MjIxOTdCRjQ2MEQ2MTFFRUI1NjJFQzJFRDFFNUYwODYiIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6MjIxOTdCRjU2MEQ2MTFFRUI1NjJFQzJFRDFFNUYwODYiPiA8eG1wTU06RGVyaXZlZEZyb20gc3RSZWY6aW5zdGFuY2VJRD0ieG1wLmlpZDoyMzMzNjFGRjYwRDMxMUVFQjU2MkVDMkVEMUU1RjA4NiIgc3RSZWY6ZG9jdW1lbnRJRD0ieG1wLmRpZDoyMzMzNjIwMDYwRDMxMUVFQjU2MkVDMkVEMUU1RjA4NiIvPiA8L3JkZjpEZXNjcmlwdGlvbj4gPC9yZGY6UkRGPiA8L3g6eG1wbWV0YT4gPD94cGFja2V0IGVuZD0iciI/PgH//v38+/r5+Pf29fTz8vHw7+7t7Ovq6ejn5uXk4+Lh4N/e3dzb2tnY19bV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";
+const _sfc_main = {
+  data() {
+    var id1 = "UniMap1_".concat((Math.random() * 1e6).toString(36));
+    var id2 = "UniMap2_".concat((Math.random() * 1e6).toString(36));
+    var id3 = "UniMap3_".concat((Math.random() * 1e6).toString(36));
+    return {
+      readyEventName: "",
+      optionsEventName: "",
+      successEventName: "",
+      failEventName: "",
+      mapId: id1,
+      mapTargetId: id2,
+      scrollId: id3,
+      isFocus: false,
+      latitude: 0,
+      longitude: 0,
+      locationComplete: false,
+      locationLoading: false,
+      chooseLocationOptions: {},
+      pageIndex: 1,
+      pageSize: 20,
+      pois: [],
+      selected: -1,
+      searchValue: "",
+      safeArea: {
+        top: 0,
+        bottom: 0,
+        left: 0,
+        right: 0
+      },
+      icon: {
+        target: "",
+        success: "",
+        position: "",
+        search: ""
+      },
+      lastTime: 0,
+      searchLoading: false,
+      language: "zh-Hans",
+      scrollTop: 0,
+      isLandscape: false,
+      theme: "light",
+      searchValueChangeTimer: -1,
+      lastPoi: {
+        latitude: null,
+        longitude: null,
+        selected: -1,
+        pois: [],
+        scrollTop: 0
+      },
+      errMsg: "",
+      callUniMapCoErr: false,
+      useUniCloud: true,
+      loadingPath,
+      mapHeight: 350
+    };
+  },
+  onLoad(options) {
+    this.checkUniCloud();
+    this.initPageOptions(options);
+    this.getSystemInfo();
+    this.getLocation();
+  },
+  onReady() {
+  },
+  onUnload() {
+    uni.$off(this.optionsEventName, null);
+    uni.$off(this.readyEventName, null);
+    uni.$off(this.successEventName, null);
+    uni.$off(this.failEventName, null);
+  },
+  onResize() {
+    this.getSystemInfo();
+  },
+  methods: {
+    checkUniCloud() {
+      if (typeof uniCloud == "undefined") {
+        this.errMsg = "uni.chooseLocation 依赖 uniCloud 的 uni-map-common 插件，请先关联服务空间，并安装 uni-map-common 插件，插件地址：https://ext.dcloud.net.cn/plugin?id=13872";
+        this.useUniCloud = false;
+        console.error(this.errMsg);
+      }
+    },
+    initPageOptions(options) {
+      this.readyEventName = options["readyEventName"];
+      this.optionsEventName = options["optionsEventName"];
+      this.successEventName = options["successEventName"];
+      this.failEventName = options["failEventName"];
+      uni.$on(this.optionsEventName, (data) => {
+        if (data["latitude"] != null) {
+          this.chooseLocationOptions.latitude = data["latitude"];
+        }
+        if (data["longitude"] != null) {
+          this.chooseLocationOptions.longitude = data["longitude"];
+        }
+        if (data["keyword"] != null) {
+          var keyword = data["keyword"];
+          this.chooseLocationOptions.keyword = keyword;
+          this.searchValue = keyword;
+        } else {
+          this.chooseLocationOptions.keyword = "";
+        }
+        if (data["payload"] != null) {
+          this.chooseLocationOptions.payload = data["payload"];
+        }
+      });
+      uni.$emit(this.readyEventName, {});
+    },
+    getLocation() {
+      if (this.chooseLocationOptions.latitude != null && this.chooseLocationOptions.longitude != null) {
+        this.latitude = this.chooseLocationOptions.latitude;
+        this.longitude = this.chooseLocationOptions.longitude;
+        this.locationComplete = true;
+        this.getPoi("getLocation");
+      } else {
+        this.locationLoading = true;
+        uni.getLocation({
+          type: "gcj02",
+          success: (res) => {
+            this.latitude = res.latitude;
+            this.longitude = res.longitude;
+            this.locationComplete = true;
+            this.locationLoading = false;
+            this.getPoi("getLocation");
+          },
+          fail: (err) => {
+            console.error("getLocationErr: ", err);
+            this.latitude = defaultPoi.latitude;
+            this.longitude = defaultPoi.longitude;
+            this.locationComplete = true;
+            this.locationLoading = false;
+            this.getPoi("getLocation");
+          }
+        });
+      }
+    },
+    distanceHandle(distance) {
+      if (distance < 1e3) {
+        return distance + "m";
+      } else {
+        return parseFloat((distance / 1e3).toFixed(2)) + "km";
+      }
+    },
+    poiHandle(pois) {
+      var list = pois.map((item, index2) => {
+        var location = item["location"];
+        var distance = item["distance"];
+        var latitude = location["lat"];
+        var longitude = location["lng"];
+        if (distance == 0) {
+          latitude = this.latitude;
+          longitude = this.longitude;
+        }
+        return {
+          title: item["title"],
+          address: item["address"],
+          distance,
+          distanceStr: this.distanceHandle(distance),
+          location: {
+            latitude,
+            longitude
+          }
+        };
+      });
+      var pageIndex = this.pageIndex;
+      if (pageIndex == 1) {
+        this.pois = list;
+        this.updateScrollTop(0);
+      } else {
+        this.pois = this.pois.concat(list);
+      }
+    },
+    callUniMapCo(action, data) {
+      var promise = new Promise((resolve, reject) => {
+        if (this.useUniCloud == false) {
+          reject(this.errMsg);
+          return;
+        }
+        this.errMsg = "";
+        var uniMapCo = uniCloud.importObject("uni-map-co", {
+          customUI: true
+        });
+        var chooseLocationData = {
+          action,
+          data
+        };
+        if (this.chooseLocationOptions.payload != null) {
+          chooseLocationData["payload"] = this.chooseLocationOptions.payload;
+        }
+        uniMapCo.chooseLocation(chooseLocationData).then((res) => {
+          resolve(res);
+        }).catch((err) => {
+          if (err instanceof UniCloudError) {
+            var cloudError = err;
+            var errCode = cloudError.errCode;
+            var errMsg = cloudError.errMsg;
+            var errSubject = cloudError.errSubject;
+            if (errMsg.indexOf("在云端不存在") > -1 || errMsg.indexOf("未匹配") > -1) {
+              this.errMsg = "uni.chooseLocation 依赖 uniCloud 的 uni-map-common 插件，请安装 uni-map-common 插件，插件地址：https://ext.dcloud.net.cn/plugin?id=13872";
+              console.error(this.errMsg);
+            } else {
+              this.errMsg = errMsg;
+              console.error("获取POI信息失败，" + JSON.stringify({
+                errCode,
+                errMsg,
+                errSubject
+              }));
+            }
+          }
+          reject(err);
+        });
+      });
+      promise.then((res) => {
+        this.callUniMapCoErr = false;
+      }).catch((err) => {
+        this.callUniMapCoErr = true;
+      });
+      return promise;
+    },
+    getPoi(type) {
+      var searchValue = this.searchValue;
+      var latitude = this.latitude;
+      var longitude = this.longitude;
+      var pageIndex = this.pageIndex;
+      var pageSize = this.pageSize;
+      if (["searchValueChange"].indexOf(type) == -1) {
+        this.searchLoading = true;
+      }
+      if (searchValue != "" && searchValue.length > 0) {
+        this.callUniMapCo("search", {
+          keyword: searchValue,
+          location: {
+            lat: latitude,
+            lng: longitude
+          },
+          radius: 5e3,
+          auto_extend: 1,
+          orderby: "weight",
+          page_index: pageIndex,
+          page_size: pageSize
+        }).then((res) => {
+          var _res$getJSON;
+          var pois = (_res$getJSON = res.getJSON("result")) === null || _res$getJSON === void 0 || (_res$getJSON = _res$getJSON.getJSON("result")) === null || _res$getJSON === void 0 ? void 0 : _res$getJSON.getArray("data");
+          this.poiHandle(pois);
+          this.searchLoading = false;
+        }).catch((err) => {
+          this.searchLoading = false;
+        });
+      } else {
+        this.callUniMapCo("location2address", {
+          location: "".concat(latitude, ",").concat(longitude),
+          get_poi: 1,
+          poi_options: {
+            radius: 3e3,
+            policy: pageIndex == 1 ? 3 : 4,
+            roadlevel: 1,
+            homeorcorp: 1,
+            page_index: pageIndex,
+            page_size: pageSize
+          }
+        }).then((res) => {
+          var _res$getJSON2;
+          var pois = (_res$getJSON2 = res.getJSON("result")) === null || _res$getJSON2 === void 0 || (_res$getJSON2 = _res$getJSON2.getJSON("result")) === null || _res$getJSON2 === void 0 ? void 0 : _res$getJSON2.getArray("pois");
+          this.poiHandle(pois);
+          if (this.pois.length > 0 && pageIndex == 1) {
+            var poi = this.pois[0];
+            if (poi.distance > 0) {
+              var poi1 = poi.location;
+              var poi2 = {
+                latitude: this.latitude,
+                longitude: this.longitude
+              };
+              var distance = poi.distance;
+              var direction = this.calcDirection(poi1, poi2);
+              if (poi.address.indexOf("米") == -1) {
+                var suffix = "向".concat(direction).concat(distance, "米");
+                var newPoi = {
+                  title: "".concat(poi.title).concat(suffix),
+                  address: "".concat(poi.address).concat(suffix),
+                  distance: 0,
+                  distanceStr: this.distanceHandle(distance),
+                  location: poi2
+                };
+                this.pois.unshift(newPoi);
+              }
+            }
+            if (this.selected == -1) {
+              this.selected = 0;
+              this.lastPoi.latitude = this.latitude;
+              this.lastPoi.longitude = this.longitude;
+              this.lastPoi.selected = this.selected;
+              this.lastPoi.pois = this.pois;
+            }
+          }
+          this.searchLoading = false;
+        }).catch((err) => {
+          this.searchLoading = false;
+        });
+      }
+    },
+    calcDirection(poi1, poi2) {
+      var toRadians = (angle2) => angle2 * (Math.PI / 180);
+      var toDegrees = (angle2) => angle2 * (180 / Math.PI);
+      var lat1 = toRadians(poi1.latitude);
+      var lon1 = toRadians(poi1.longitude);
+      var lat2 = toRadians(poi2.latitude);
+      var lon2 = toRadians(poi2.longitude);
+      var dLon = lon2 - lon1;
+      var y = Math.sin(dLon) * Math.cos(lat2);
+      var x = Math.cos(lat1) * Math.sin(lat2) - Math.sin(lat1) * Math.cos(lat2) * Math.cos(dLon);
+      var angleRadians = Math.atan2(y, x);
+      var angle = toDegrees(angleRadians);
+      angle = (angle + 360) % 360;
+      if (angle < 22.5 || angle >= 337.5) {
+        return "北";
+      } else if (angle >= 22.5 && angle < 67.5) {
+        return "东北";
+      } else if (angle >= 67.5 && angle < 112.5) {
+        return "东";
+      } else if (angle >= 112.5 && angle < 157.5) {
+        return "东南";
+      } else if (angle >= 157.5 && angle < 202.5) {
+        return "南";
+      } else if (angle >= 202.5 && angle < 247.5) {
+        return "西南";
+      } else if (angle >= 247.5 && angle < 292.5) {
+        return "西";
+      } else {
+        return "西北";
+      }
+    },
+    getSystemInfo() {
+      var info = uni.getWindowInfo();
+      this.safeArea.top = info.safeAreaInsets.top;
+      this.safeArea.bottom = info.safeAreaInsets.bottom;
+      this.safeArea.left = info.safeAreaInsets.left;
+      this.safeArea.right = info.safeAreaInsets.right;
+      var screenHeight = info.screenHeight;
+      this.mapHeight = (screenHeight - this.safeArea.top - this.safeArea.bottom) * 0.6;
+      var systemInfo = uni.getSystemInfoSync();
+      var appLanguage = systemInfo.appLanguage;
+      this.language = appLanguage;
+      var osTheme = systemInfo.osTheme;
+      var appTheme = systemInfo.appTheme;
+      if (appTheme != null && appTheme != "auto") {
+        this.theme = appTheme;
+      } else if (osTheme != null) {
+        this.theme = osTheme;
+      }
+      this.isLandscape = systemInfo.deviceOrientation == "landscape";
+    },
+    getMapContext() {
+      return uni.createMapContext(this.mapId, this);
+    },
+    regionchange(e) {
+      var causedBy = e.causedBy;
+      if (e.type !== "end" || causedBy != "drag" || this.locationComplete == false) {
+        return;
+      }
+      var mapContext = this.getMapContext();
+      if (mapContext != null) {
+        mapContext.getCenterLocation({
+          success: (res) => {
+            var latitudeDiff = Math.abs(res.latitude - this.latitude);
+            var longitudeDiff = Math.abs(res.longitude - this.longitude);
+            if (latitudeDiff > 1e-6 || longitudeDiff > 1e-6) {
+              this.latitude = parseFloat(res.latitude.toFixed(6));
+              this.longitude = parseFloat(res.longitude.toFixed(6));
+              this.searchValue = "";
+              this.selected = -1;
+              this.pageIndex = 1;
+              this.getPoi("regionchange");
+              var element = this.$refs[this.mapTargetId];
+              if (element != null) {
+                var duration = 250;
+                element.style.setProperty("transition-duration", "".concat(duration, "ms"));
+                element.style.setProperty("transform", "translateY(0px)");
+                element.style.setProperty("transform", "translateY(-15px)");
+                setTimeout(() => {
+                  element.style.setProperty("transform", "translateY(0px)");
+                }, duration);
+              }
+            }
+          }
+        });
+      }
+    },
+    clearSearchValueChangeTimer() {
+      if (this.searchValueChangeTimer != -1) {
+        clearTimeout(this.searchValueChangeTimer);
+        this.searchValueChangeTimer = -1;
+      }
+    },
+    searchValueChange(e) {
+      this.clearSearchValueChangeTimer();
+      this.searchValueChangeTimer = setTimeout(() => {
+        this.poiSearch("searchValueChange");
+      }, 200);
+    },
+    poiSearch(type) {
+      this.clearSearchValueChangeTimer();
+      this.pageIndex = 1;
+      this.selected = -1;
+      this.getPoi(type);
+    },
+    cancelSearch() {
+      this.isFocus = false;
+      this.searchValue = "";
+      if (this.lastPoi.latitude != null) {
+        this.latitude = this.lastPoi.latitude;
+      }
+      if (this.lastPoi.longitude != null) {
+        this.longitude = this.lastPoi.longitude;
+      }
+      if (this.lastPoi.pois.length - 1 > this.lastPoi.selected) {
+        this.pois = this.lastPoi.pois;
+        this.selected = this.lastPoi.selected;
+        this.updateScrollTop(this.lastPoi.scrollTop);
+      } else {
+        this.poiSearch("cancelSearch");
+      }
+    },
+    updateScrollTop(scrollTop) {
+      setTimeout(() => {
+        this.scrollTop = scrollTop;
+      }, 10);
+    },
+    selectPoi(item, index2) {
+      this.isFocus = false;
+      this.selected = index2;
+      this.latitude = item.location.latitude;
+      this.longitude = item.location.longitude;
+      if (this.searchValue == this.chooseLocationOptions.keyword) {
+        this.lastPoi.latitude = this.latitude;
+        this.lastPoi.longitude = this.longitude;
+        this.lastPoi.selected = this.selected;
+        this.lastPoi.pois = this.pois;
+        var scrollElement = this.$refs[this.scrollId];
+        if (scrollElement != null) {
+          var scrollTop = scrollElement.scrollTop;
+          this.lastPoi.scrollTop = scrollTop;
+          this.scrollTop = scrollTop;
+        }
+      }
+    },
+    scrolltolower() {
+      this.pageIndex++;
+      this.getPoi("scrolltolower");
+    },
+    mapReset() {
+      this.isFocus = false;
+      this.pageIndex = 1;
+      this.getLocation();
+    },
+    closeDialogPage() {
+      uni.closeDialogPage({
+        dialogPage: this.$page
+      });
+    },
+    back() {
+      uni.$emit(this.failEventName, 1);
+      this.closeDialogPage();
+    },
+    confirm() {
+      if (this.selected < 0) {
+        if (this.callUniMapCoErr) {
+          uni.$emit(this.successEventName, {
+            name: "",
+            address: "",
+            latitude: parseFloat(this.latitude.toFixed(6)),
+            longitude: parseFloat(this.longitude.toFixed(6))
+          });
+          this.closeDialogPage();
+        }
+        return;
+      }
+      var item = this.pois[this.selected];
+      var res = {
+        name: item.title,
+        address: item.address,
+        latitude: item.location.latitude,
+        longitude: item.location.longitude
+      };
+      uni.$emit(this.successEventName, res);
+      this.closeDialogPage();
+    }
+  },
+  computed: {
+    languageCom() {
+      var textInfo = languageData[this.language] != null ? languageData[this.language] : languageData["zh-Hans"];
+      return textInfo;
+    },
+    uniChooseLocationClassCom() {
+      var list = [];
+      if (this.theme == "dark") {
+        list.push("uni-choose-location-dark");
+      } else {
+        list.push("uni-choose-location-light");
+      }
+      return list.join(" ");
+    },
+    landscapeClassCom() {
+      return this.isLandscape ? "uni-choose-location-landscape" : "uni-choose-location-vertical";
+    },
+    mapBoxStyleCom() {
+      var list = [];
+      if (!this.useUniCloud) {
+        list.push("flex: 1;");
+      }
+      if (!this.isLandscape) {
+        var top = this.isFocus ? (300 - this.mapHeight) / 2 : 0;
+        list.push("transform:translateY(".concat(top, "px);"));
+        list.push("height:".concat(this.mapHeight, "px;"));
+      }
+      return list.join("");
+    },
+    poiBoxStyleCom() {
+      var list = [];
+      if (!this.isLandscape) {
+        var top = this.isFocus ? 300 : this.mapHeight;
+        list.push("top:".concat(top, "px;"));
+      }
+      return list.join("");
+    },
+    resetStyleCom() {
+      var list = [];
+      if (!this.isLandscape) {
+        var bottom = this.isFocus ? (this.mapHeight - 300) / 2 + 300 - this.mapHeight : 0;
+        list.push("transform:translateY(".concat(bottom, "px);"));
+      }
+      return list.join("");
+    }
+  }
+};
+const _style_0 = {
+  "uni-choose-location-icons": {
+    "": {
+      "fontFamily": "UniChooseLocationFontFamily",
+      "fontSize": 16,
+      "fontStyle": "normal"
+    }
+  },
+  "uni-choose-location": {
+    "": {
+      "position": "relative",
+      "left": 0,
+      "top": 0,
+      "width": "100%",
+      "height": "100%",
+      "backgroundImage": "none",
+      "backgroundColor": "#f8f8f8",
+      "zIndex": 999
+    }
+  },
+  "uni-choose-location-map-box": {
+    "": {
+      "position": "relative",
+      "width": "100%",
+      "height": 350
+    },
+    ".uni-choose-location-vertical": {
+      "transitionProperty": "transform",
+      "transitionDuration": "0.25s",
+      "transitionTimingFunction": "ease-out"
+    },
+    ".uni-choose-location .uni-choose-location-landscape": {
+      "height": "100%"
+    }
+  },
+  "uni-choose-location-map": {
+    "": {
+      "width": "100%",
+      "height": "100%"
+    }
+  },
+  "uni-choose-location-map-target": {
+    "": {
+      "position": "absolute",
+      "left": "50%",
+      "bottom": "50%",
+      "width": 50,
+      "height": 50,
+      "marginLeft": -25,
+      "transitionProperty": "transform",
+      "transitionDuration": "0.25s",
+      "transitionTimingFunction": "ease-out"
+    }
+  },
+  "uni-choose-location-map-target-icon": {
+    "": {
+      "fontSize": 50,
+      "color": "#f0493e"
+    }
+  },
+  "uni-choose-location-map-reset": {
+    "": {
+      "position": "absolute",
+      "left": 20,
+      "bottom": 40,
+      "width": 40,
+      "height": 40,
+      "boxSizing": "border-box",
+      "backgroundColor": "#ffffff",
+      "borderRadius": 20,
+      "pointerEvents": "auto",
+      "boxShadow": "0px 0px 20px 2px rgba(0, 0, 0, .3)",
+      "zIndex": 9,
+      "display": "flex",
+      "justifyContent": "center",
+      "alignItems": "center"
+    },
+    ".uni-choose-location-vertical": {
+      "transitionProperty": "transform",
+      "transitionDuration": "0.25s",
+      "transitionTimingFunction": "ease-out"
+    },
+    ".uni-choose-location .uni-choose-location-landscape": {
+      "left": 40,
+      "bottom": 40
+    },
+    ".uni-choose-location-dark ": {
+      "backgroundColor": "#111111",
+      "boxShadow": "0px 0px 5px 1px rgba(0, 0, 0, .3)"
+    }
+  },
+  "uni-choose-location-map-reset-icon": {
+    "": {
+      "fontSize": 26,
+      "textAlign": "center",
+      "lineHeight": "40px"
+    },
+    ".uni-choose-location-dark ": {
+      "color": "#d1d1d1"
+    }
+  },
+  "uni-choose-location-nav": {
+    "": {
+      "position": "absolute",
+      "top": 0,
+      "left": 0,
+      "width": "100%",
+      "height": 60,
+      "backgroundColor": "rgba(0,0,0,0)",
+      "backgroundImage": "linear-gradient(to bottom, rgba(0, 0, 0, .6), rgba(0, 0, 0, 0))"
+    }
+  },
+  "uni-choose-location-nav-btn": {
+    "": {
+      "position": "absolute",
+      "top": 5,
+      "left": 5,
+      "width": 64,
+      "height": 44,
+      "paddingTop": 5,
+      "paddingRight": 5,
+      "paddingBottom": 5,
+      "paddingLeft": 5
+    },
+    ".uni-choose-location-nav-confirm-btn": {
+      "left": "auto",
+      "right": 5
+    },
+    ".uni-choose-location-nav-confirm-btn.active:active": {
+      "opacity": 0.7
+    },
+    ".uni-choose-location-nav-confirm-btn.disable": {
+      "opacity": 0.4
+    },
+    ".uni-choose-location .uni-choose-location-landscape": {
+      "top": 10,
+      "left": 20
+    },
+    ".uni-choose-location .uni-choose-location-nav-confirm-btn.uni-choose-location-landscape": {
+      "left": "auto",
+      "right": 20
+    }
+  },
+  "uni-choose-location-nav-confirm-text": {
+    ".uni-choose-location-nav-btn.uni-choose-location-nav-confirm-btn ": {
+      "backgroundColor": "#007aff",
+      "borderRadius": 5
+    }
+  },
+  "uni-choose-location-nav-back-text": {
+    ".uni-choose-location-nav-btn.uni-choose-location-nav-back-btn ": {
+      "color": "#ffffff"
+    }
+  },
+  "uni-choose-location-nav-text": {
+    "": {
+      "paddingTop": 8,
+      "paddingRight": 0,
+      "paddingBottom": 8,
+      "paddingLeft": 0,
+      "fontSize": 14,
+      "textAlign": "center",
+      "color": "#ffffff"
+    }
+  },
+  "uni-choose-location-poi": {
+    "": {
+      "position": "absolute",
+      "top": 350,
+      "width": "100%",
+      "bottom": 0,
+      "backgroundColor": "#ffffff",
+      "zIndex": 10
+    },
+    ".uni-choose-location-vertical": {
+      "transitionProperty": "top",
+      "transitionDuration": "0.25s",
+      "transitionTimingFunction": "ease-out"
+    },
+    ".uni-choose-location .uni-choose-location-landscape": {
+      "position": "absolute",
+      "top": 80,
+      "right": 25,
+      "width": 300,
+      "bottom": 20,
+      "maxHeight": 600,
+      "boxShadow": "0px 0px 20px 2px rgba(0, 0, 0, .3)",
+      "borderRadius": 5
+    },
+    ".uni-choose-location-dark ": {
+      "backgroundColor": "#181818"
+    }
+  },
+  "uni-choose-location-poi-search": {
+    "": {
+      "display": "flex",
+      "flexDirection": "row",
+      "alignItems": "center",
+      "justifyContent": "center",
+      "height": 50,
+      "paddingTop": 8,
+      "paddingRight": 8,
+      "paddingBottom": 8,
+      "paddingLeft": 8,
+      "backgroundColor": "#ffffff"
+    },
+    ".uni-choose-location-dark ": {
+      "backgroundColor": "#181818"
+    }
+  },
+  "uni-choose-location-poi-search-box": {
+    "": {
+      "display": "flex",
+      "flexDirection": "row",
+      "alignItems": "center",
+      "justifyContent": "center",
+      "height": 32,
+      "flex": 1,
+      "borderRadius": 5,
+      "paddingTop": 0,
+      "paddingRight": 15,
+      "paddingBottom": 0,
+      "paddingLeft": 15,
+      "backgroundColor": "#ededed"
+    },
+    ".uni-choose-location-dark ": {
+      "backgroundColor": "#111111"
+    }
+  },
+  "uni-choose-location-poi-search-input": {
+    "": {
+      "flex": 1,
+      "height": "100%",
+      "borderRadius": 5,
+      "paddingTop": 0,
+      "paddingRight": 5,
+      "paddingBottom": 0,
+      "paddingLeft": 5,
+      "backgroundImage": "none",
+      "backgroundColor": "#ededed"
+    },
+    ".uni-choose-location-dark ": {
+      "backgroundImage": "none",
+      "backgroundColor": "#111111",
+      "color": "#d1d1d1"
+    }
+  },
+  "uni-choose-location-poi-search-cancel": {
+    "": {
+      "marginLeft": 5,
+      "color": "#007aff",
+      "fontSize": 15,
+      "textAlign": "center"
+    }
+  },
+  "uni-choose-location-poi-list": {
+    "": {
+      "flex": 1
+    }
+  },
+  "uni-choose-location-poi-search-loading": {
+    "": {
+      "display": "flex",
+      "alignItems": "center",
+      "paddingTop": 10,
+      "paddingRight": 0,
+      "paddingBottom": 10,
+      "paddingLeft": 0
+    }
+  },
+  "uni-choose-location-poi-search-loading-text": {
+    "": {
+      "color": "#191919"
+    },
+    ".uni-choose-location-dark ": {
+      "color": "#d1d1d1"
+    }
+  },
+  "uni-choose-location-poi-search-error": {
+    "": {
+      "display": "flex",
+      "alignItems": "center",
+      "paddingTop": 10,
+      "paddingRight": 10,
+      "paddingBottom": 10,
+      "paddingLeft": 10
+    }
+  },
+  "uni-choose-location-poi-search-error-text": {
+    "": {
+      "color": "#191919",
+      "fontSize": 14
+    }
+  },
+  "uni-choose-location-poi-item": {
+    "": {
+      "position": "relative",
+      "paddingTop": 15,
+      "paddingRight": 40,
+      "paddingBottom": 15,
+      "paddingLeft": 10
+    },
+    ".uni-choose-location .uni-choose-location-landscape": {
+      "paddingTop": 10,
+      "paddingRight": 10,
+      "paddingBottom": 10,
+      "paddingLeft": 10
+    }
+  },
+  "uni-choose-location-poi-item-title-text": {
+    "": {
+      "fontSize": 14,
+      "overflow": "hidden",
+      "whiteSpace": "nowrap",
+      "textOverflow": "ellipsis",
+      "color": "#191919"
+    },
+    ".uni-choose-location-dark ": {
+      "color": "#d1d1d1"
+    }
+  },
+  "uni-choose-location-poi-item-detail-text": {
+    "": {
+      "fontSize": 12,
+      "marginTop": 5,
+      "color": "#b2b2b2",
+      "overflow": "hidden",
+      "whiteSpace": "nowrap",
+      "textOverflow": "ellipsis"
+    },
+    ".uni-choose-location-dark ": {
+      "color": "#595959"
+    }
+  },
+  "uni-choose-location-poi-item-selected-icon": {
+    "": {
+      "position": "absolute",
+      "top": "50%",
+      "right": 10,
+      "width": 26,
+      "height": 26,
+      "marginTop": -13,
+      "color": "#007aff",
+      "fontSize": 24
+    }
+  },
+  "uni-choose-location-poi-item-after": {
+    "": {
+      "position": "absolute",
+      "height": 1,
+      "left": 10,
+      "bottom": 0,
+      "right": 10,
+      "width": "auto",
+      "borderBottomWidth": 1,
+      "borderBottomStyle": "solid",
+      "borderBottomColor": "#f8f8f8"
+    },
+    ".uni-choose-location-dark ": {
+      "borderBottomWidth": 1,
+      "borderBottomStyle": "solid",
+      "borderBottomColor": "#1e1e1e"
+    }
+  },
+  "uni-choose-location-search-icon": {
+    "": {
+      "color": "#808080",
+      "paddingLeft": 5
+    },
+    ".uni-choose-location-dark ": {
+      "color": "#d1d1d1"
+    }
+  },
+  "uni-choose-location-poi-search-loading-image": {
+    "": {
+      "width": 30,
+      "height": 30
+    }
+  },
+  "@FONT-FACE": [{
+    "fontFamily": "UniChooseLocationFontFamily",
+    "src": "url('data:font/ttf;charset=utf-8;base64,AAEAAAALAIAAAwAwR1NVQiCLJXoAAAE4AAAAVE9TLzI8Rkp9AAABjAAAAGBjbWFw0euemwAAAgAAAAGyZ2x5ZuUB/iAAAAPAAAACsGhlYWQp23fyAAAA4AAAADZoaGVhB94DhgAAALwAAAAkaG10eBQAAAAAAAHsAAAAFGxvY2EBUAG+AAADtAAAAAxtYXhwARIAfQAAARgAAAAgbmFtZUTMSfwAAAZwAAADS3Bvc3RLRtf0AAAJvAAAAFIAAQAAA4D/gABcBAAAAAAABAAAAQAAAAAAAAAAAAAAAAAAAAUAAQAAAAEAAIZo1N5fDzz1AAsEAAAAAADjXhn6AAAAAONeGfoAAP+ABAADgQAAAAgAAgAAAAAAAAABAAAABQBxAAMAAAAAAAIAAAAKAAoAAAD/AAAAAAAAAAEAAAAKADAAPgACREZMVAAObGF0bgAaAAQAAAAAAAAAAQAAAAQAAAAAAAAAAQAAAAFsaWdhAAgAAAABAAAAAQAEAAQAAAABAAgAAQAGAAAAAQAAAAQEAAGQAAUAAAKJAswAAACPAokCzAAAAesAMgEIAAACAAUDAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFBmRWQAwOYx560DgP+AAAAD3ACAAAAAAQAAAAAAAAAAAAAAAAACBAAAAAQAAAAEAAAABAAAAAQAAAAAAAAFAAAAAwAAACwAAAAEAAABcgABAAAAAABsAAMAAQAAACwAAwAKAAABcgAEAEAAAAAKAAgAAgAC5jHmU+aD563//wAA5jHmU+aD563//wAAAAAAAAAAAAEACgAKAAoACgAAAAIAAwAEAAEAAAEGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAwAAAAAAEAAAAAAAAAABAAA5jEAAOYxAAAAAgAA5lMAAOZTAAAAAwAA5oMAAOaDAAAABAAA560AAOetAAAAAQAAAAAAAABIAGYBCAFYAAIAAP/SA4cDNgAdACoAACUGBwYnLgEnJjc+ATc2Fx4BFxYHBgcXHgEOAiYnJTI+ATQuASIOARQeAQJlSFdVT1FsDQwdHodWU1JTeBQUFhc+7AUFBAsPEAX+T0uASkqAln9LS3/MMwkIICKLV1RQUnMQEBoagVZTUlU+7AYPDwsEBAbrSoCWf0tLf5aASgAAAAEAAAAAA8ACyAANAAATNwU3Njc2NxcHBgcGB0A5AQdAVGaPnxdXbWuWfAGPN986TFl8hTpVbG6aiQAAAAMAAP+ABAADgQAzAGcAcAAAAQYHBgcGBxUUBi4BPQEmJyYnJicjIiY+ATsBNjc2NzY3NTQ2MhYdARYXFhcWFzM2HgEGKwIiJj4BOwEmJyYnJicVFAYiJj0BBgcGBwYHMzYeAQYrARYXFhcWFzU0Nh4BHQE2NzY3NiUiJjQ2MhYUBgOyBjk3WlxtDxUPbF1aNzgGNAsPAQ4LNAY4N1pdbA8VD21cWjc5BjMLDwEPC2eaCg8BDgqaBjIwT1BfDxUPXlFOMTEGmAsPAQ8LmQYxMU5RXhAVDl9QTzAy/ocWHR0rHh4BZmxdWjc4BzMLDwEOCzMHODdaXWwQFA9tXFo3OQY0ChAOCzUGOTdaXG0BDxUQEBQPX1BPMDEHmQsODwqZBzEwT1BfAQ8VEF5RTjExBpgLDwEOC5gGMTFOUUUdKx4eKx0AAAMAAP+BAyoDfgAIACYAMwAABRQWMjY0JiIGExEUBisBIiY1ES4BJyY1NDc2NzYyFxYXFhUUBw4BAwYeAj4BNC4CDgEBwCU1JiY1JWoGBEAEB0d1ISIpJ0RFokVEJykiIXX9AiRATEImJT9KQCdUEhkZIxkZAXH+iAQGBgQBeApTP0FJUUVEJykpJ0RFUUlBP1MBIiZDJwImQks/JQEjPQAAABIA3gABAAAAAAAAABMAAAABAAAAAAABABsAEwABAAAAAAACAAcALgABAAAAAAADABsANQABAAAAAAAEABsAUAABAAAAAAAFAAsAawABAAAAAAAGABsAdgABAAAAAAAKACsAkQABAAAAAAALABMAvAADAAEECQAAACYAzwADAAEECQABADYA9QADAAEECQACAA4BKwADAAEECQADADYBOQADAAEECQAEADYBbwADAAEECQAFABYBpQADAAEECQAGADYBuwADAAEECQAKAFYB8QADAAEECQALACYCR0NyZWF0ZWQgYnkgaWNvbmZvbnRVbmlDaG9vc2VMb2NhdGlvbkZvbnRGYW1pbHlSZWd1bGFyVW5pQ2hvb3NlTG9jYXRpb25Gb250RmFtaWx5VW5pQ2hvb3NlTG9jYXRpb25Gb250RmFtaWx5VmVyc2lvbiAxLjBVbmlDaG9vc2VMb2NhdGlvbkZvbnRGYW1pbHlHZW5lcmF0ZWQgYnkgc3ZnMnR0ZiBmcm9tIEZvbnRlbGxvIHByb2plY3QuaHR0cDovL2ZvbnRlbGxvLmNvbQBDAHIAZQBhAHQAZQBkACAAYgB5ACAAaQBjAG8AbgBmAG8AbgB0AFUAbgBpAEMAaABvAG8AcwBlAEwAbwBjAGEAdABpAG8AbgBGAG8AbgB0AEYAYQBtAGkAbAB5AFIAZQBnAHUAbABhAHIAVQBuAGkAQwBoAG8AbwBzAGUATABvAGMAYQB0AGkAbwBuAEYAbwBuAHQARgBhAG0AaQBsAHkAVQBuAGkAQwBoAG8AbwBzAGUATABvAGMAYQB0AGkAbwBuAEYAbwBuAHQARgBhAG0AaQBsAHkAVgBlAHIAcwBpAG8AbgAgADEALgAwAFUAbgBpAEMAaABvAG8AcwBlAEwAbwBjAGEAdABpAG8AbgBGAG8AbgB0AEYAYQBtAGkAbAB5AEcAZQBuAGUAcgBhAHQAZQBkACAAYgB5ACAAcwB2AGcAMgB0AHQAZgAgAGYAcgBvAG0AIABGAG8AbgB0AGUAbABsAG8AIABwAHIAbwBqAGUAYwB0AC4AaAB0AHQAcAA6AC8ALwBmAG8AbgB0AGUAbABsAG8ALgBjAG8AbQAAAgAAAAAAAAAKAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFAQIBAwEEAQUBBgAGc291c3VvB2dvdXh1YW4HZGluZ3dlaQtkaXR1LXR1ZGluZwAAAAA=') format('truetype')"
+  }],
+  "@TRANSITION": {
+    "uni-choose-location-map-box": {
+      "property": "transform",
+      "duration": "0.25s",
+      "timingFunction": "ease-out"
+    },
+    "uni-choose-location-map-target": {
+      "property": "transform",
+      "duration": "0.25s",
+      "timingFunction": "ease-out"
+    },
+    "uni-choose-location-map-reset": {
+      "property": "transform",
+      "duration": "0.25s",
+      "timingFunction": "ease-out"
+    },
+    "uni-choose-location-poi": {
+      "property": "top",
+      "duration": "0.25s",
+      "timingFunction": "ease-out"
+    }
+  }
+};
+const _export_sfc = (sfc, props) => {
+  const target = sfc.__vccOpts || sfc;
+  for (const [key, val] of props) {
+    target[key] = val;
+  }
+  return target;
+};
+var _hoisted_1 = ["id"];
+var _hoisted_2 = {
+  class: "uni-choose-location-icons uni-choose-location-map-target-icon"
+};
+var _hoisted_3 = {
+  class: "uni-choose-location-icons uni-choose-location-map-reset-icon"
+};
+var _hoisted_4 = {
+  class: "uni-choose-location-nav-text uni-choose-location-nav-confirm-text"
+};
+var _hoisted_5 = {
+  class: "uni-choose-location-poi-search"
+};
+var _hoisted_6 = {
+  class: "uni-choose-location-poi-search-box"
+};
+var _hoisted_7 = {
+  class: "uni-choose-location-icons uni-choose-location-search-icon"
+};
+var _hoisted_8 = ["placeholder"];
+var _hoisted_9 = ["id", "scroll-top"];
+var _hoisted_10 = {
+  key: 0,
+  class: "uni-choose-location-poi-search-error"
+};
+var _hoisted_11 = {
+  class: "uni-choose-location-poi-search-error-text"
+};
+var _hoisted_12 = {
+  key: 1,
+  class: "uni-choose-location-poi-search-loading"
+};
+var _hoisted_13 = {
+  class: "uni-choose-location-poi-search-loading-text"
+};
+var _hoisted_14 = {
+  key: 2,
+  class: "uni-choose-location-poi-search-loading"
+};
+var _hoisted_15 = ["src"];
+var _hoisted_16 = ["onClick"];
+var _hoisted_17 = {
+  class: "uni-choose-location-poi-item-title-text"
+};
+var _hoisted_18 = {
+  class: "uni-choose-location-poi-item-detail-text"
+};
+var _hoisted_19 = {
+  key: 0,
+  class: "uni-choose-location-icons uni-choose-location-poi-item-selected-icon"
+};
+var _hoisted_20 = /* @__PURE__ */ createElementVNode("view", {
+  class: "uni-choose-location-poi-item-after"
+}, null, -1);
+var _hoisted_21 = {
+  key: 4,
+  class: "uni-choose-location-poi-search-loading"
+};
+var _hoisted_22 = ["src"];
+function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
+  var _component_map = resolveComponent("map");
+  return openBlock(), createElementBlock("view", {
+    class: normalizeClass(["uni-choose-location", $options.uniChooseLocationClassCom])
+  }, [createElementVNode("view", {
+    class: normalizeClass(["uni-choose-location-map-box", [$options.landscapeClassCom]]),
+    style: normalizeStyle($options.mapBoxStyleCom)
+  }, [createVNode(_component_map, {
+    class: "uni-choose-location-map",
+    id: $data.mapId,
+    ref: $data.mapId,
+    latitude: $data.latitude,
+    longitude: $data.longitude,
+    "layer-style": $data.theme == "dark" ? "2" : "1",
+    "show-compass": false,
+    "enable-zoom": true,
+    "enable-scroll": true,
+    "enable-rotate": false,
+    "enable-poi": true,
+    "show-location": true,
+    onRegionchange: $options.regionchange
+  }, null, 8, ["id", "latitude", "longitude", "layer-style", "onRegionchange"]), createElementVNode("view", {
+    class: "uni-choose-location-map-target",
+    ref: $data.mapTargetId,
+    id: $data.mapTargetId
+  }, [createElementVNode("text", _hoisted_2, toDisplayString($data.icon.target), 1)], 8, _hoisted_1), createElementVNode("view", {
+    class: normalizeClass(["uni-choose-location-map-reset", [$options.landscapeClassCom]]),
+    onClick: _cache[0] || (_cache[0] = function() {
+      return $options.mapReset && $options.mapReset(...arguments);
+    }),
+    style: normalizeStyle($options.resetStyleCom)
+  }, [createElementVNode("text", _hoisted_3, toDisplayString($data.icon.position), 1)], 6)], 6), createElementVNode("view", {
+    class: "uni-choose-location-nav",
+    style: normalizeStyle("height:" + (60 + $data.safeArea.top) + "px;")
+  }, [createElementVNode("view", {
+    class: normalizeClass(["uni-choose-location-nav-btn uni-choose-location-nav-back-btn", [$options.landscapeClassCom]]),
+    style: normalizeStyle($data.safeArea.top > 0 ? "top: " + $data.safeArea.top + "px;" : "")
+  }, [createElementVNode("text", {
+    class: "uni-choose-location-nav-text uni-choose-location-nav-back-text",
+    onClick: _cache[1] || (_cache[1] = function() {
+      return $options.back && $options.back(...arguments);
+    })
+  }, toDisplayString($options.languageCom["back"]), 1)], 6), createElementVNode("view", {
+    class: normalizeClass(["uni-choose-location-nav-btn uni-choose-location-nav-confirm-btn", [$options.landscapeClassCom, $data.selected < 0 && !$data.callUniMapCoErr ? "disable" : "active"]]),
+    style: normalizeStyle($data.safeArea.top > 0 ? "top: " + $data.safeArea.top + "px;" : ""),
+    onClick: _cache[2] || (_cache[2] = function() {
+      return $options.confirm && $options.confirm(...arguments);
+    })
+  }, [createElementVNode("text", _hoisted_4, toDisplayString($options.languageCom["ok"]), 1)], 6)], 4), $data.useUniCloud ? (openBlock(), createElementBlock("view", {
+    key: 0,
+    class: normalizeClass(["uni-choose-location-poi", [$options.landscapeClassCom]]),
+    style: normalizeStyle($options.poiBoxStyleCom)
+  }, [createElementVNode("view", _hoisted_5, [createElementVNode("view", _hoisted_6, [createElementVNode("text", _hoisted_7, toDisplayString($data.icon.search), 1), withDirectives(createElementVNode("input", {
+    "onUpdate:modelValue": _cache[3] || (_cache[3] = ($event) => $data.searchValue = $event),
+    type: "text",
+    placeholder: $options.languageCom["search"],
+    class: "uni-choose-location-poi-search-input uni-choose-location-icons",
+    onFocus: _cache[4] || (_cache[4] = ($event) => $data.isFocus = true),
+    onConfirm: _cache[5] || (_cache[5] = ($event) => $options.poiSearch("poiSearch")),
+    onInput: _cache[6] || (_cache[6] = function() {
+      return $options.searchValueChange && $options.searchValueChange(...arguments);
+    })
+  }, null, 40, _hoisted_8), [[vModelText, $data.searchValue]])]), $data.isFocus || $data.searchValue != "" ? (openBlock(), createElementBlock("text", {
+    key: 0,
+    class: "uni-choose-location-poi-search-cancel",
+    onClick: _cache[7] || (_cache[7] = function() {
+      return $options.cancelSearch && $options.cancelSearch(...arguments);
+    })
+  }, toDisplayString($options.languageCom["cancel"]), 1)) : createCommentVNode("", true)]), createElementVNode("scroll-view", {
+    id: $data.scrollId,
+    ref: $data.scrollId,
+    "scroll-with-animation": false,
+    direction: "vertical",
+    "scroll-top": $data.scrollTop,
+    "lower-threshold": 50,
+    onScrolltolower: _cache[8] || (_cache[8] = function() {
+      return $options.scrolltolower && $options.scrolltolower(...arguments);
+    }),
+    class: "uni-choose-location-poi-list"
+  }, [$data.errMsg != "" ? (openBlock(), createElementBlock("view", _hoisted_10, [createElementVNode("text", _hoisted_11, toDisplayString($data.errMsg), 1)])) : $data.locationLoading ? (openBlock(), createElementBlock("view", _hoisted_12, [createElementVNode("text", _hoisted_13, toDisplayString($options.languageCom["locationLoading"]), 1)])) : $data.searchLoading && $data.pageIndex == 1 ? (openBlock(), createElementBlock("view", _hoisted_14, [createElementVNode("image", {
+    src: $data.loadingPath,
+    class: "uni-choose-location-poi-search-loading-image",
+    mode: "widthFix"
+  }, null, 8, _hoisted_15)])) : (openBlock(true), createElementBlock(Fragment, {
+    key: 3
+  }, renderList($data.pois, (item, index2) => {
+    return openBlock(), createElementBlock("view", {
+      key: index2,
+      class: normalizeClass(["uni-choose-location-poi-item", [$options.landscapeClassCom]]),
+      onClick: ($event) => $options.selectPoi(item, index2)
+    }, [createElementVNode("view", null, [createElementVNode("view", null, [createElementVNode("text", _hoisted_17, toDisplayString(item.title), 1)]), createElementVNode("view", null, [createElementVNode("text", _hoisted_18, toDisplayString(item.distance > 0 ? item.distanceStr + " | " : "") + toDisplayString(item.address), 1)])]), $data.selected == index2 ? (openBlock(), createElementBlock("text", _hoisted_19, toDisplayString($data.icon.success), 1)) : createCommentVNode("", true), _hoisted_20], 10, _hoisted_16);
+  }), 128)), $data.searchLoading && $data.pageIndex > 1 ? (openBlock(), createElementBlock("view", _hoisted_21, [createElementVNode("image", {
+    src: $data.loadingPath,
+    class: "uni-choose-location-poi-search-loading-image",
+    mode: "widthFix"
+  }, null, 8, _hoisted_22)])) : createCommentVNode("", true)], 40, _hoisted_9)], 6)) : createCommentVNode("", true)], 2);
+}
+const uniChooseLocationPage = /* @__PURE__ */ _export_sfc(_sfc_main, [["render", _sfc_render], ["styles", [_style_0]]]);
+var chooseLocation = /* @__PURE__ */ defineAsyncApi("chooseLocation", (options, _ref) => {
+  var {
+    resolve,
+    reject
+  } = _ref;
+  registerSystemRoute("uni:chooseLocation", uniChooseLocationPage, {
+    disableSwipeBack: false
+  });
+  var uuid = Date.now() + "" + Math.floor(Math.random() * 1e7);
+  var baseEventName = "uni_choose_location_".concat(uuid);
+  var readyEventName = "".concat(baseEventName, "_ready");
+  var optionsEventName = "".concat(baseEventName, "_options");
+  var successEventName = "".concat(baseEventName, "_success");
+  var failEventName = "".concat(baseEventName, "_fail");
+  uni.$on(readyEventName, () => {
+    uni.$emit(optionsEventName, JSON.parse(JSON.stringify(options)));
+  });
+  uni.$on(successEventName, (result) => {
+    resolve(result);
+  });
+  uni.$on(failEventName, () => {
+    reject("cancel", {
+      errCode: 1
+    });
+  });
+  uni.openDialogPage({
+    url: "uni:chooseLocation?readyEventName=".concat(readyEventName, "&optionsEventName=").concat(optionsEventName, "&successEventName=").concat(successEventName, "&failEventName=").concat(failEventName),
+    fail(err) {
+      var _options$fail;
+      (_options$fail = options.fail) === null || _options$fail === void 0 || _options$fail.call(options, {
+        errMsg: "chooseLocation:fail ".concat(err.errMsg),
+        errCode: 4
+      });
+      uni.$off(readyEventName);
+      uni.$off(successEventName);
+      uni.$off(failEventName);
+    }
+  });
 });
 var env = {
   USER_DATA_PATH: "unifile://usr/",
@@ -2863,13 +4568,14 @@ class PerformanceEntryStatus {
     return this._entryData;
   }
   executeBefore() {
-    var page = getCurrentPage();
+    var _getCurrentPage;
+    var page = (_getCurrentPage = getCurrentPage()) === null || _getCurrentPage === void 0 ? void 0 : _getCurrentPage.vm;
     if (page != null) {
       this._entryData.referrerPath = page.route;
     }
   }
   executeAfter() {
-    var page = getCurrentPage();
+    var page = getCurrentPage().vm;
     if (page != null) {
       this._entryData.pageId = parseInt(page.$nativePage.pageId);
       this._entryData.path = page.route;
@@ -2878,7 +4584,7 @@ class PerformanceEntryStatus {
   executeReady() {
   }
   getCurrentInnerPage() {
-    var currentPage = getCurrentPage();
+    var currentPage = getCurrentPage().vm;
     if (currentPage == null) {
       return null;
     }
@@ -3169,7 +4875,7 @@ var callbackId = 1;
 var proxy;
 var keepAliveCallbacks = {};
 function isUniElement(obj) {
-  return typeof obj.getNodeId === "function" && obj.pageId;
+  return obj && typeof obj.getNodeId === "function" && obj.pageId;
 }
 function isComponentPublicInstance(instance) {
   return instance && instance.$ && instance.$.proxy === instance;
@@ -3177,9 +4883,25 @@ function isComponentPublicInstance(instance) {
 function parseElement(obj) {
   if (isUniElement(obj)) {
     return obj;
-  } else if (isComponentPublicInstance(obj)) {
+  }
+}
+function parseComponentPublicInstance(obj) {
+  if (isComponentPublicInstance(obj)) {
     return obj.$el;
   }
+}
+function serialize(el, type) {
+  var nodeId = "";
+  var pageId = "";
+  if (el && el.getNodeId) {
+    pageId = el.pageId;
+    nodeId = el.getNodeId();
+  }
+  return {
+    pageId,
+    nodeId,
+    __type__: type
+  };
 }
 function toRaw(observed) {
   var raw = observed && observed.__v_raw;
@@ -3198,19 +4920,12 @@ function normalizeArg(arg, callbacks, keepAlive) {
       callbacks[id2] = arg;
     }
     return id2;
-  } else if (isPlainObject(arg)) {
-    var el = parseElement(arg);
+  } else if (isPlainObject(arg) || isUniElement(arg)) {
+    var uniElement = parseElement(arg);
+    var componentPublicInstanceUniElement = !uniElement ? parseComponentPublicInstance(arg) : void 0;
+    var el = uniElement || componentPublicInstanceUniElement;
     if (el) {
-      var nodeId = "";
-      var pageId = "";
-      if (el && el.getNodeId) {
-        pageId = el.pageId;
-        nodeId = el.getNodeId();
-      }
-      return {
-        pageId,
-        nodeId
-      };
+      return serialize(el, uniElement ? "UniElement" : "ComponentPublicInstance");
     } else {
       var newArg = {};
       Object.keys(arg).forEach((name) => {
@@ -3232,16 +4947,6 @@ function getProxy() {
           return nativeChannel.invokeSync("APP-SERVICE", args, callback);
         },
         invokeAsync(args, callback) {
-          if (
-            // 硬编码
-            args.moduleName === "uni-ad" && ["showByJs", "loadByJs"].includes(args.name)
-          ) {
-            var res = nativeChannel.invokeSync("APP-SERVICE", args, callback);
-            callback(extend(res, {
-              params: [res.params]
-            }));
-            return res;
-          }
           return nativeChannel.invokeAsync("APP-SERVICE", args, callback);
         }
       };
@@ -3661,6 +5366,9 @@ const uni$1 = /* @__PURE__ */ Object.defineProperty({
   $once,
   __log__,
   addInterceptor,
+  chooseLocation,
+  closeDialogPage,
+  closeNativeDialogPage,
   createCanvasContextAsync,
   createSelectorQuery,
   env,
@@ -3679,6 +5387,7 @@ const uni$1 = /* @__PURE__ */ Object.defineProperty({
   navigateBack,
   navigateTo,
   onTabBarMidButtonTap,
+  openDialogPage,
   pageScrollTo,
   reLaunch,
   redirectTo,
@@ -3947,7 +5656,7 @@ var styles = {
     "box-sizing": "content-box"
   },
   ["uni-icon"]: {
-    "font-family": "uniappx_components",
+    "font-family": "uni-icon",
     "font-size": "16px",
     width: "16px",
     height: "16px"
@@ -4324,7 +6033,7 @@ var _style_0$1 = {
   },
   "uni-radio-input-icon": {
     "": {
-      fontFamily: "uniappx_components",
+      fontFamily: "uni-icon",
       fontSize: "14px",
       width: "14px",
       height: "14px"
@@ -5145,6 +6854,7 @@ const pickerView = /* @__PURE__ */ defineBuiltInComponent({
     }, {
       immediate: true
     });
+    provide("pickerViewProps", props);
     var pickerViewElementRef = ref();
     var instance = getCurrentInstance();
     var _pickerViewUpdateHandler = (vm, type) => {
@@ -5233,6 +6943,7 @@ const pickerViewColumn = /* @__PURE__ */ defineBuiltInComponent({
     var indicator = ref();
     var scrollViewRef = ref();
     var contentRef = ref();
+    var pickerViewProps = inject("pickerViewProps");
     var data = reactive({
       height: 0,
       indicatorHeight: 0,
@@ -5244,17 +6955,31 @@ const pickerViewColumn = /* @__PURE__ */ defineBuiltInComponent({
       contentStyle: "",
       _isMounted: false
     });
+    var formatUserStyle = (styleStr) => {
+      var formatUserStyle2 = parseStringStyle(styleStr);
+      if (isString(formatUserStyle2["background-color"]) || isString(formatUserStyle2["background"])) {
+        formatUserStyle2 = Object.assign({}, formatUserStyle2, {
+          backgroundImage: "",
+          background: formatUserStyle2["background-color"] || formatUserStyle2["background"]
+        });
+      }
+      return formatUserStyle2;
+    };
     var contentStyle = computed(() => {
       return Object.assign({}, _style_picker_column["uni-picker-view-content"][""], parseStringStyle(data.contentStyle));
     });
     var maskTopStyle = computed(() => {
-      return Object.assign({}, _style_picker_column["uni-picker-view-mask"][""], _style_picker_column["uni-picker-view-mask-top"][""], parseStringStyle(data.maskTopStyle));
+      var userStyle = formatUserStyle(pickerViewProps.maskTopStyle);
+      var style = Object.assign({}, _style_picker_column["uni-picker-view-mask"][""], _style_picker_column["uni-picker-view-mask-top"][""], parseStringStyle(data.maskTopStyle), userStyle);
+      return style;
     });
     var maskBottomStyle = computed(() => {
-      return Object.assign({}, _style_picker_column["uni-picker-view-mask"][""], _style_picker_column["uni-picker-view-mask-bottom"][""], parseStringStyle(data.maskBottomStyle));
+      var userStyle = formatUserStyle(pickerViewProps.maskBottomStyle);
+      return Object.assign({}, _style_picker_column["uni-picker-view-mask"][""], _style_picker_column["uni-picker-view-mask-bottom"][""], parseStringStyle(data.maskBottomStyle), userStyle);
     });
     var indicatorStyle = computed(() => {
-      return Object.assign({}, _style_picker_column["uni-picker-view-indicator"][""], parseStringStyle(data.indicatorStyle));
+      var val = Object.assign({}, _style_picker_column["uni-picker-view-indicator"][""], parseStringStyle(pickerViewProps.indicatorStyle), parseStringStyle(data.indicatorStyle));
+      return val;
     });
     var styleUniPickerViewColumn = computed(() => {
       return Object.assign({}, _style_picker_column["uni-picker-view-column"][""]);
@@ -5272,7 +6997,7 @@ const pickerViewColumn = /* @__PURE__ */ defineBuiltInComponent({
       var maskPosition = "".concat(data.height - padding, "px");
       data.maskTopStyle += ";bottom:".concat(maskPosition);
       data.maskBottomStyle += ";top:".concat(maskPosition);
-      data.indicatorStyle += ";top:".concat(padding, "px");
+      data.indicatorStyle = ";top:".concat(padding, "px");
       data.contentStyle = "padding-top:".concat(padding, "px;padding-bottom:").concat(padding, "px");
       nextTick(() => {
         if (data.current != 0) {
@@ -5298,13 +7023,13 @@ const pickerViewColumn = /* @__PURE__ */ defineBuiltInComponent({
       data.current = current;
       data.scrollToElementTime = Date.now();
     };
+    var uniResizeObserver = new UniResizeObserver((entries) => {
+      init2();
+    });
     var created = () => {
       var _instance$parent;
       var $parent = (instance === null || instance === void 0 || (_instance$parent = instance.parent) === null || _instance$parent === void 0 ? void 0 : _instance$parent.type.name) === "PickerView" ? instance === null || instance === void 0 ? void 0 : instance.parent : null;
       if ($parent !== null) {
-        data.indicatorStyle = $parent.props["indicatorStyle"];
-        data.maskTopStyle = $parent.props["maskTopStyle"];
-        data.maskBottomStyle = $parent.props["maskBottomStyle"];
         $dispatchParent(instance === null || instance === void 0 ? void 0 : instance.proxy, "PickerView", "_pickerViewUpdateHandler", instance === null || instance === void 0 ? void 0 : instance.proxy, "add");
         data.current = $dispatchParent(instance === null || instance === void 0 ? void 0 : instance.proxy, "PickerView", "getItemValue", instance === null || instance === void 0 ? void 0 : instance.proxy);
       }
@@ -5321,10 +7046,12 @@ const pickerViewColumn = /* @__PURE__ */ defineBuiltInComponent({
         setTimeout(() => {
           data._isMounted = true;
         }, 1e3);
+        uniResizeObserver.observe(pickerColumnRef.value);
       });
     });
     onUnmounted(() => {
       var ctx = instance === null || instance === void 0 ? void 0 : instance.proxy;
+      uniResizeObserver.disconnect();
       $dispatch(ctx, "PickerView", "_pickerViewUpdateHandler", ctx, "remove");
     });
     watch(() => data.current, (val, oldVal) => {

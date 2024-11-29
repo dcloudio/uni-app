@@ -1,0 +1,57 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`uni_modules tsc test-a app-android: utssdk/app-android/index.uts 1`] = `
+"export function test(): string {
+    return 'test';
+}
+"
+`;
+
+exports[`uni_modules tsc test-a app-android: utssdk/app-android/index.vue 1`] = `
+"<template></template>
+<script>
+export default {}
+</script>"
+`;
+
+exports[`uni_modules tsc test-a app-android: utssdk/app-ios/index.uts 1`] = `
+"export function test() {
+  return 'test'
+}
+"
+`;
+
+exports[`uni_modules tsc test-a app-ios: utssdk/app-android/index.uts 1`] = `
+"export function test() {
+  return 'test'
+}
+"
+`;
+
+exports[`uni_modules tsc test-a app-ios: utssdk/app-android/index.vue 1`] = `
+"<template></template>
+<script>
+export default {}
+</script>"
+`;
+
+exports[`uni_modules tsc test-a app-ios: utssdk/app-ios/index.uts 1`] = `
+"export function test(): string {
+    return 'test';
+}
+"
+`;
+
+exports[`uni_modules tsc test-b app-android: utssdk/app-android/index.uts 1`] = `
+"export function test(): string {
+    return 'test';
+}
+"
+`;
+
+exports[`uni_modules tsc test-b app-ios: utssdk/app-ios/index.uts 1`] = `
+"export function test(): string {
+    return 'test';
+}
+"
+`;
