@@ -41,6 +41,8 @@ declare var __PLUS__: boolean
 declare var __VUE_OPTIONS_API__: boolean
 declare var __VUE_PROD_DEVTOOLS__: boolean
 
+declare var __UNI_FEATURE_VIRTUAL_HOST__: boolean
+declare var __UNI_FEATURE_UCSS_RESET__: boolean
 declare var __UNI_FEATURE_WX__: boolean
 declare var __UNI_FEATURE_WXS__: boolean
 declare var __UNI_FEATURE_RPX__: boolean
@@ -136,16 +138,16 @@ interface Uni {
   openDialogPage: (options: {
     url: string
     animationType?:
-      | 'auto'
-      | 'none'
-      | 'slide-in-right'
-      | 'slide-in-left'
-      | 'slide-in-top'
-      | 'slide-in-bottom'
-      | 'fade-in'
-      | 'zoom-out'
-      | 'zoom-fade-out'
-      | null
+    | 'auto'
+    | 'none'
+    | 'slide-in-right'
+    | 'slide-in-left'
+    | 'slide-in-top'
+    | 'slide-in-bottom'
+    | 'fade-in'
+    | 'zoom-out'
+    | 'zoom-fade-out'
+    | null
     animationDuration?: number | null
     disableEscBack?: boolean | null
     parentPage?: UniPage | null

@@ -106,7 +106,7 @@ export function parseComponent(
     pureDataPattern: /^uP$/,
   }
 
-  if (__X__ && __PLATFORM__ === 'mp-weixin' && !isPageInProject) {
+  if (__X__ && __UNI_FEATURE_VIRTUAL_HOST__ && !isPageInProject) {
     options.virtualHost = true
   }
 
