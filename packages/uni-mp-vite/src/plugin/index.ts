@@ -248,10 +248,6 @@ export function uniMiniProgramPlugin(
 }
 
 export function genUVueCssCode(manifestJson: Record<string, any>) {
-  const platformConfig = manifestJson[process.env.UNI_PLATFORM] || {}
-  if (platformConfig.enableUcssReset === false) {
-    return ''
-  }
   let cssCode = fs.readFileSync(
     path.resolve(__dirname, '../../lib/uvue.css'),
     'utf8'

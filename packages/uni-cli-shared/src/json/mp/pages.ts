@@ -43,7 +43,6 @@ const NON_APP_JSON_KEYS = [
   'mergeVirtualHostAttributes',
   'styleIsolation',
   'enableVirtualHost',
-  'enableUcssReset',
 ]
 
 export function mergeMiniProgramAppJson(

@@ -14,16 +14,12 @@ export function initDefine(stringifyBoolean: boolean = false) {
   let mpXDefine =
     isX && isMP
       ? {
-          __UNI_FEATURE_UCSS_RESET__: true,
           __UNI_FEATURE_VIRTUAL_HOST__: true,
         }
       : {
-          __UNI_FEATURE_UCSS_RESET__: false,
           __UNI_FEATURE_VIRTUAL_HOST__: false,
         }
   if (isX && isMP) {
-    mpXDefine.__UNI_FEATURE_UCSS_RESET__ =
-      platformManifestJson.enableUcssReset !== false
     mpXDefine.__UNI_FEATURE_VIRTUAL_HOST__ =
       platformManifestJson.enableVirtualHost !== false
   }
