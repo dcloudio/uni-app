@@ -239,9 +239,10 @@ function findMiniProgramUsingComponent(
  * - "demo": "/components/demo.wxml"
  * - "demo": "/components/demo/"
  *
- * 注意用户的pages.json内可以配置如下两种路径：
+ * 注意用户的pages.json内可以配置如下三种路径：
  * - "demo": "/wxcomponents/demo"
- * - "demo": "../wxcomponents/demo"
+ * - "demo": "wxcomponents/demo"
+ * - [TODO 待确认] "demo": "../wxcomponents/demo"
  */
 
 export function findUsingComponentsJson(
