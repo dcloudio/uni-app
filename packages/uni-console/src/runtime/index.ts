@@ -18,7 +18,7 @@ export function initRuntimeSocketService(): Promise<boolean> {
       return false
     }
     socket.onClose(() => {
-      if (__DEV__) {
+      if (process.env.UNI_DEBUG) {
         originalConsole.log(
           `uni-app:[${Date.now()}][socket]`,
           'connect close and restore'
@@ -28,7 +28,7 @@ export function initRuntimeSocketService(): Promise<boolean> {
       restoreConsole()
     })
     setSendConsole((data: string) => {
-      if (__DEV__) {
+      if (process.env.UNI_DEBUG) {
         originalConsole.log(`uni-app:[${Date.now()}][console]`, data)
       }
       socket!.send({
@@ -36,7 +36,7 @@ export function initRuntimeSocketService(): Promise<boolean> {
       })
     })
     setSendError((data: string) => {
-      if (__DEV__) {
+      if (process.env.UNI_DEBUG) {
         originalConsole.log(`uni-app:[${Date.now()}][error]`, data)
       }
       socket!.send({

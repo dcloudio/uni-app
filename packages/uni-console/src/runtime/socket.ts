@@ -37,7 +37,7 @@ function tryConnectSocket(
       },
     })
     const timer = setTimeout(() => {
-      if (__DEV__) {
+      if (process.env.UNI_DEBUG) {
         originalConsole.log(
           `uni-app:[${Date.now()}][socket]`,
           `connect timeout: ${host}`
@@ -51,7 +51,7 @@ function tryConnectSocket(
     }, SOCKET_TIMEOUT)
 
     socket.onOpen((e) => {
-      if (__DEV__) {
+      if (process.env.UNI_DEBUG) {
         originalConsole.log(
           `uni-app:[${Date.now()}][socket]`,
           `connect success: ${host}`,
@@ -62,7 +62,7 @@ function tryConnectSocket(
       resolve(socket)
     })
     socket.onClose((e) => {
-      if (__DEV__) {
+      if (process.env.UNI_DEBUG) {
         originalConsole.log(
           `uni-app:[${Date.now()}][socket]`,
           `connect close: ${host}`,
@@ -73,7 +73,7 @@ function tryConnectSocket(
       resolve(null)
     })
     socket.onError((e) => {
-      if (__DEV__) {
+      if (process.env.UNI_DEBUG) {
         originalConsole.log(
           `uni-app:[${Date.now()}][socket]`,
           `connect error: ${host}`,
