@@ -1,8 +1,6 @@
 import path from 'path'
 
-import { parseUTSKotlinRuntimeStacktrace } from '../src/stacktrace/kotlin'
-import { parseUTSJavaScriptRuntimeStacktrace } from '../src/stacktrace/js'
-import { parseWeixinRuntimeStacktrace } from '../src/stacktrace/mp/weixin'
+import { parseRuntimeStacktrace } from '../src/stacktrace'
 
 describe('uts:stacktrace:runtime', () => {
   test('parseUTSKotlinRuntimeStacktrace', async () => {
@@ -11,7 +9,7 @@ describe('uts:stacktrace:runtime', () => {
       'examples/uni-app-x/output/cache/app-android'
     )
     expect(
-      parseUTSKotlinRuntimeStacktrace(
+      parseRuntimeStacktrace(
         `java.lang.IndexOutOfBoundsException: Index: 1, Size: 1
 at java.util.ArrayList.get(ArrayList.java:437)
 at uni.UNIXXXXXXX.GenPagesIndexIndex$1.invoke(index.kt:24)
@@ -19,6 +17,7 @@ at java.lang.reflect.Method.invoke(Native Method)
 at io.dcloud.uniapp.vue.shared.IndexKt$callFunction$invoke$1.invoke(index.kt:627)
 at io.dcloud.uniapp.vue.shared.IndexKt.callFunction(index.kt:638)`,
         {
+          platform: 'app-android',
           language: 'kotlin',
           appid: '__UNI__XXXXXXX',
           cacheDir,
@@ -26,7 +25,7 @@ at io.dcloud.uniapp.vue.shared.IndexKt.callFunction(index.kt:638)`,
       )
     ).toMatchSnapshot()
     expect(
-      parseUTSKotlinRuntimeStacktrace(
+      parseRuntimeStacktrace(
         `java.lang.IndexOutOfBoundsException: Index: 1, Size: 1
 at java.util.ArrayList.get(ArrayList.java:437)
 at uni.UNIXXXXXXX.GenPagesIndexIndex$click$1.invoke(index.kt:59)
@@ -34,6 +33,7 @@ at java.lang.reflect.Method.invoke(Native Method)
 at io.dcloud.uniapp.vue.shared.IndexKt$callFunction$invoke$1.invoke(index.kt:627)
 at io.dcloud.uniapp.vue.shared.IndexKt.callFunction(index.kt:638)`,
         {
+          platform: 'app-android',
           language: 'kotlin',
           appid: '__UNI__XXXXXXX',
           cacheDir,
@@ -41,7 +41,7 @@ at io.dcloud.uniapp.vue.shared.IndexKt.callFunction(index.kt:638)`,
       )
     ).toMatchSnapshot()
     expect(
-      parseUTSKotlinRuntimeStacktrace(
+      parseRuntimeStacktrace(
         `java.lang.IndexOutOfBoundsException: Index: 1, Size: 1
 at java.util.ArrayList.get(ArrayList.java:437)
 at uni.UNIXXXXXXX.IndexKt.test(index.kt:40)
@@ -50,6 +50,7 @@ at java.lang.reflect.Method.invoke(Native Method)
 at io.dcloud.uniapp.vue.shared.IndexKt$callFunction$invoke$1.invoke(index.kt:627)
 at io.dcloud.uniapp.vue.shared.IndexKt.callFunction(index.kt:638)`,
         {
+          platform: 'app-android',
           language: 'kotlin',
           appid: '__UNI__XXXXXXX',
           cacheDir,
@@ -57,11 +58,12 @@ at io.dcloud.uniapp.vue.shared.IndexKt.callFunction(index.kt:638)`,
       )
     ).toMatchSnapshot()
     expect(
-      parseUTSKotlinRuntimeStacktrace(
+      parseRuntimeStacktrace(
         `java.lang.IndexOutOfBoundsException: Index: 1, Size: 1
 at java.util.ArrayList.get(ArrayList.java:437)
 at uni.UNIXXXXXXX.IndexKt.test(index.kt:40)`,
         {
+          platform: 'app-android',
           language: 'kotlin',
           appid: '__UNI__XXXXXXX',
           cacheDir,
@@ -70,11 +72,12 @@ at uni.UNIXXXXXXX.IndexKt.test(index.kt:40)`,
       )
     ).toMatchSnapshot()
     expect(
-      parseUTSKotlinRuntimeStacktrace(
+      parseRuntimeStacktrace(
         `java.lang.IndexOutOfBoundsException: Index: 1, Size: 1
 at java.util.ArrayList.get(ArrayList.java:437)
 at uni.UNIXXXXXXX.IndexKt.test(index.kt:40)`,
         {
+          platform: 'app-android',
           language: 'kotlin',
           appid: '__UNI__XXXXXXX',
           cacheDir,
@@ -84,13 +87,14 @@ at uni.UNIXXXXXXX.IndexKt.test(index.kt:40)`,
     ).toMatchSnapshot()
 
     expect(
-      parseUTSKotlinRuntimeStacktrace(
+      parseRuntimeStacktrace(
         `java.lang.ClassCastException: java.lang.String cannot be cast to java.lang.Boolean
 at uni.UNIXXXXXXX.GenComponentsTestBooleanTestBoolean.getDisabled1(test-boolean.kt:68)
 at uni.UNIXXXXXXX.GenComponentsTestBooleanTestBoolean$1.invoke(test-boolean.kt:21)
 at java.lang.reflect.Method.invoke(Native Method)
 at io.dcloud.uniapp.vue.shared.IndexKt$callFunction$invoke$1.invoke(index.kt:708)`,
         {
+          platform: 'app-android',
           language: 'kotlin',
           appid: '__UNI__XXXXXXX',
           cacheDir,
@@ -105,16 +109,17 @@ at io.dcloud.uniapp.vue.shared.IndexKt$callFunction$invoke$1.invoke(index.kt:708
       'examples/uni-app-x/output/cache/app-ios'
     )
     expect(
-      parseUTSJavaScriptRuntimeStacktrace(
+      parseRuntimeStacktrace(
         `app-service.js(5:60) ReferenceError:Can't find variable: a @app-service.js:5:60`,
         {
+          platform: 'app-ios',
           language: 'javascript',
           cacheDir,
         }
       )
     ).toMatchSnapshot()
     expect(
-      parseUTSJavaScriptRuntimeStacktrace(
+      parseRuntimeStacktrace(
         `at <Index __pageId=1 __pagePath="pages/index/index" __pageQuery=  ... >
 Can't find variable: a
 onLoad@app-service.js:9:64
@@ -122,6 +127,7 @@ callWithErrorHandling@uni-app-x-framework.js:2279:23
 callWithAsyncErrorHandling@uni-app-x-framework.js:2286:38
 @uni-app-x-framework.js:4763:45`,
         {
+          platform: 'app-ios',
           language: 'javascript',
           cacheDir,
         }
@@ -135,7 +141,7 @@ callWithAsyncErrorHandling@uni-app-x-framework.js:2286:38
       'examples/uni-app-x/output/dist/dev/mp-weixin'
     )
     expect(
-      parseWeixinRuntimeStacktrace(
+      parseRuntimeStacktrace(
         `Error: click2
 at Proxy.click2 (http://127.0.0.1:22515/appservice/pages/index/index.js:23:13)
 at http://127.0.0.1:22515/appservice/pages/index/index.js:36:49
@@ -153,7 +159,7 @@ at http://127.0.0.1:22515/appservice/__dev__/WASubContext.js?t=wechat&s=17326247
       )
     ).toMatchSnapshot()
     expect(
-      parseWeixinRuntimeStacktrace(
+      parseRuntimeStacktrace(
         `MiniProgramError
 bbbbbbbbbbb12
 Error: bbbbbbbbbbb12

@@ -23,6 +23,19 @@ export function setSendError(value: SendFn) {
 
 export function initOnError() {
   function onError(error: unknown) {
+    // 小红书小程序 socket.send 时，会报错，onError错误信息为：
+    // Cannot create property 'errMsg' on string 'taskId'
+    // 导致陷入死循环
+    if (
+      typeof PromiseRejectionEvent !== 'undefined' &&
+      error instanceof PromiseRejectionEvent &&
+      error.reason instanceof Error &&
+      error.reason.message.includes(
+        `Cannot create property 'errMsg' on string 'taskId`
+      )
+    ) {
+      return
+    }
     if (error instanceof Error && error.stack) {
       sendErrorMessages([error.stack])
     } else {
