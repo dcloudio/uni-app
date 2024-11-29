@@ -1571,7 +1571,7 @@
         "scroll-view",
         "list-item",
         "swiper-item",
-        "grid-item",
+        "flow-item",
         "navigator"
       ],
       "defaultValue": {
@@ -1756,7 +1756,7 @@
         "scroll-view",
         "list-view",
         "list-item",
-        "grid-item",
+        "flow-item",
         "swiper-item",
         "navigator"
       ],
@@ -1882,7 +1882,7 @@
         "view",
         "scroll-view",
         "list-item",
-        "grid-item",
+        "flow-item",
         "swiper-item",
         "navigator"
       ],
@@ -2060,7 +2060,7 @@
         "scroll-view",
         "list-view",
         "list-item",
-        "grid-item",
+        "flow-item",
         "swiper-item",
         "navigator"
       ],
@@ -2465,7 +2465,7 @@
         "scroll-view",
         "list-view",
         "list-item",
-        "grid-item",
+        "flow-item",
         "swiper-item",
         "navigator"
       ],
@@ -2979,7 +2979,7 @@
         "scroll-view",
         "list-view",
         "list-item",
-        "grid-item",
+        "flow-item",
         "swiper-item",
         "navigator"
       ]
