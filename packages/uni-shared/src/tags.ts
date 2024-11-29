@@ -135,8 +135,8 @@ export const UVUE_BUILT_IN_TAGS = [
   'button',
   'nested-scroll-header',
   'nested-scroll-body',
-  'grid-view',
-  'grid-item',
+  'waterflow',
+  'flow-item',
 ]
 
 export const UVUE_WEB_BUILT_IN_TAGS = [
