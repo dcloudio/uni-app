@@ -9,6 +9,7 @@ import {
   injectAssetPlugin,
   injectCssPlugin,
   injectCssPostPlugin,
+  isMiniProgramPageFile,
   normalizeMiniProgramFilename,
   normalizePath,
   parseManifestJsonOnce,
@@ -123,6 +124,10 @@ export function createConfigResolved({
               cssCode = `:host{display:flex;flex-direction:${flexDirection}}\n${cssCode}`
             }
 
+            if (!isMiniProgramPageFile(filename)) {
+              return cssCode
+            }
+
             /**
              * 此方法将subPackages中的页面合并到了pages内
              */
@@ -151,7 +156,11 @@ export function createConfigResolved({
                 (page.style as any).renderer === 'skyline')
 
             if (!shouldNotResetStyle) {
-              cssCode = `@import "/uvue${extname}";\n` + cssCode
+              /**
+               * 兼容发布为小程序分包模式
+               */
+              const uvueCssPath = relativeFile(filename, `uvue${extname}`)
+              cssCode = `@import "${uvueCssPath}";\n` + cssCode
             }
             return cssCode
           }
