@@ -50,6 +50,7 @@ import {
 } from './utils'
 import type { RouteLocationNormalizedLoaded } from 'vue-router'
 import { useRouter } from 'vue-router'
+import { handleBeforeEntryPageRoutes } from '../../service/api/route/utils'
 //#if _X_
 import { isDialogPageInstance } from '../../x/framework/helpers/utils'
 import { useBackgroundColorContent } from '../../x/framework/setup/page'
@@ -258,6 +259,7 @@ export function setupApp(comp: any) {
               query: {},
               scene: 1001,
             }
+            handleBeforeEntryPageRoutes()
             onPageNotFound &&
               invokeArrayFns(onPageNotFound, pageNotFoundOptions)
           }

@@ -16482,6 +16482,7 @@ function setupApp(comp) {
               query: {},
               scene: 1001
             };
+            handleBeforeEntryPageRoutes();
             onPageNotFound2 && invokeArrayFns$1(onPageNotFound2, pageNotFoundOptions);
           }
         }
