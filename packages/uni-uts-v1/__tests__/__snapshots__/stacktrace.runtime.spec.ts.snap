@@ -1,5 +1,16 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`uts:stacktrace:runtime parseBaiduRuntimeStacktrace 1`] = `
+"Error: click2
+at pages/index/index.uvue:25:16
+23 |              },
+24 |              click2() {
+25 |                  throw new Error('click2')
+   |                  ^^^^^^^^^^^^^^^^^^^^^^^^^
+26 |              }
+27 |          }"
+`;
+
 exports[`uts:stacktrace:runtime parseUTSJavaScriptRuntimeStacktrace 1`] = `
 "error: [EXCEPTION] ReferenceError:Can't find variable: a
 at pages/index/index.uvue:3:8

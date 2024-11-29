@@ -1154,7 +1154,7 @@ const onError = {
             ks.$onErrorHandlers.push(fromArgs);
         }
         else {
-            injectHook(ON_ERROR, fromArgs, app.$vm);
+            injectHook(ON_ERROR, fromArgs, app.$vm.$);
         }
     },
 };
@@ -1175,7 +1175,7 @@ const offError = {
             if (onErrors) {
                 const index = onErrors.indexOf(fromArgs.__weh);
                 if (index > -1) {
-                    app.$vm[ON_ERROR].splice(index, 1);
+                    onErrors.splice(index, 1);
                 }
             }
         }

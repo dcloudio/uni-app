@@ -7,10 +7,10 @@ import { COLORS, resolveSourceMapFileBySourceFile, splitRE } from '../utils'
 export interface GenerateWeixinRuntimeCodeFrameOptions
   extends GenerateJavaScriptRuntimeCodeFrameOptions {
   outputDir: string
-  platform: 'mp-weixin'
+  platform: 'mp-weixin' | 'mp-baidu'
 }
 
-const JS_ERROR_RE = /\/appservice\/(.+?):(\d+):(\d+)/
+const JS_ERROR_RE = /\/(appservice|output)\/(.+?):(\d+):(\d+)/
 // at http://127.0.0.1:37922/appservice/pages/index/index.js:5:7
 export function parseWeixinRuntimeStacktrace(
   stacktrace: string,
@@ -28,6 +28,7 @@ export function parseWeixinRuntimeStacktrace(
       continue
     }
     const codes = parseWeixinRuntimeStacktraceLine(
+      options.platform,
       errMsgs.join('\n'),
       line,
       sourceMapDir
@@ -51,6 +52,7 @@ export function parseWeixinRuntimeStacktrace(
 }
 
 export function parseWeixinRuntimeStacktraceLine(
+  platform: 'mp-weixin' | 'mp-baidu',
   error: string,
   lineStr: string,
   sourceMapDir: string
@@ -60,7 +62,7 @@ export function parseWeixinRuntimeStacktraceLine(
   if (!matches) {
     return lines
   }
-  const [, filename, line] = matches
+  const [, , filename, line] = matches
   const sourceMapFile = resolveSourceMapFileBySourceFile(filename, sourceMapDir)
   if (!sourceMapFile) {
     return lines
@@ -68,7 +70,8 @@ export function parseWeixinRuntimeStacktraceLine(
   // 微信小程序编译后会增加两行，需要减去
   // define("pages/index/index.js", ...
   // "use strict";
-  processErrorLines(error, sourceMapFile, parseInt(line) - 2, lines)
+  const offset = platform === 'mp-weixin' ? 2 : 0
+  processErrorLines(error, sourceMapFile, parseInt(line) - offset, lines)
 
   return lines
 }

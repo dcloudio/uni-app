@@ -47,4 +47,7 @@ export function initRuntimeSocketService(): Promise<boolean> {
   })
 }
 
-initRuntimeSocketService()
+// 异步初始化，不然部分平台调用 uni.connectSocket 会循环引入vendor.js，比如百度小程序
+Promise.resolve().then(() => {
+  initRuntimeSocketService()
+})

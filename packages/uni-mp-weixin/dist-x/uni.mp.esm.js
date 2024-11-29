@@ -1376,7 +1376,7 @@ function parseComponent(vueOptions, { parse, mocks, isPage, isPageInProject, ini
         addGlobalClass: true,
         pureDataPattern: /^uP$/,
     };
-    if (!isPageInProject) {
+    if (__UNI_FEATURE_VIRTUAL_HOST__ && !isPageInProject) {
         options.virtualHost = true;
     }
     if (isArray(vueOptions.mixins)) {

@@ -39,14 +39,51 @@ function rewriteConsole() {
             sendConsoleMessages([formatMessage(type, args)]);
         };
     }
-    CONSOLE_TYPES.forEach((type) => {
-        console[type] = wrapConsole(type);
-    });
-    return function restoreConsole() {
+    // 百度小程序不允许赋值，所以需要判断是否可写
+    if (isConsoleWritable()) {
         CONSOLE_TYPES.forEach((type) => {
-            console[type] = originalConsole[type];
+            console[type] = wrapConsole(type);
         });
-    };
+        return function restoreConsole() {
+            CONSOLE_TYPES.forEach((type) => {
+                console[type] = originalConsole[type];
+            });
+        };
+    }
+    else {
+        // @ts-expect-error
+        const oldLog = uni.__f__;
+        if (oldLog) {
+            // 重写 uni.__f__ 方法，这样的话，仅能打印开发者代码里的日志，其他没有被重写为__f__的日志将无法打印（比如uni-app框架、小程序框架等）
+            // @ts-expect-error
+            uni.__f__ = function (...args) {
+                const [type, filename, ...rest] = args;
+                // 原始日志移除 filename
+                oldLog([type, , ...rest]);
+                sendConsoleMessages([formatMessage(type, [...rest, filename])]);
+            };
+            return function restoreConsole() {
+                // @ts-expect-error
+                uni.__f__ = oldLog;
+            };
+        }
+    }
+    return function restoreConsole() { };
+}
+function isConsoleWritable() {
+    const value = console.log;
+    const sym = Symbol();
+    try {
+        // @ts-expect-error
+        console.log = sym;
+    }
+    catch (ex) {
+        return false;
+    }
+    // @ts-expect-error
+    const isWritable = console.log === sym;
+    console.log = value;
+    return isWritable;
 }
 function formatMessage(type, args) {
     return {
@@ -229,6 +266,8 @@ function tryConnectSocket(host, port, id) {
     return new Promise((resolve, reject) => {
         const socket = uni.connectSocket({
             url: `ws://${host}:${port}/${id}`,
+            // 支付宝小程序 是否开启多实例
+            multiple: true,
             fail() {
                 resolve(null);
             },
@@ -363,6 +402,9 @@ function initRuntimeSocketService() {
         return true;
     });
 }
-initRuntimeSocketService();
+// 异步初始化，不然部分平台调用 uni.connectSocket 会循环引入vendor.js，比如百度小程序
+Promise.resolve().then(() => {
+    initRuntimeSocketService();
+});
 
 export { initRuntimeSocketService };

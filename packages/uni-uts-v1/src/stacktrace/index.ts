@@ -30,7 +30,7 @@ export function parseRuntimeStacktrace(
     | GenerateAppIOSJavaScriptRuntimeCodeFrameOptions
     | GenerateWeixinRuntimeCodeFrameOptions
 ) {
-  if (options.platform === 'mp-weixin') {
+  if (options.platform === 'mp-weixin' || options.platform === 'mp-baidu') {
     return parseWeixinRuntimeStacktrace(stacktrace, options)
   }
   return parseUTSRuntimeStacktrace(stacktrace, options)

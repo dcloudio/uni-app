@@ -32,6 +32,8 @@ function tryConnectSocket(
   return new Promise((resolve, reject) => {
     const socket = uni.connectSocket({
       url: `ws://${host}:${port}/${id}`,
+      // 支付宝小程序 是否开启多实例
+      multiple: true,
       fail() {
         resolve(null)
       },

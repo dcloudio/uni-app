@@ -178,4 +178,24 @@ at t.doWhenAllScriptLoaded (ide:///getmainpackage.js:1174:21)`,
       )
     ).toMatchSnapshot()
   })
+
+  test('parseBaiduRuntimeStacktrace', async () => {
+    const outputDir = path.resolve(
+      __dirname,
+      'examples/uni-app-x/output/dist/dev/mp-weixin'
+    )
+    expect(
+      parseRuntimeStacktrace(
+        `Error: click2
+at Proxy.click2 (http://127.0.0.1:22515/output/pages/index/index.js:21:13)
+at http://127.0.0.1:22515/output/pages/index/index.js:36:49`,
+        {
+          outputDir,
+          platform: 'mp-baidu',
+          language: 'javascript',
+          cacheDir: '',
+        }
+      )
+    ).toMatchSnapshot()
+  })
 })
