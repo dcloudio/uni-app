@@ -38,7 +38,7 @@ export function parseWeixinRuntimeStacktrace(
         : ''
       const [errorCode, ...other] = codes
       let error =
-        `error: ${errorCode.includes('[EXCEPTION] ') ? '' : '[EXCEPTION] '}` +
+        // `error: ${errorCode.includes('[EXCEPTION] ') ? '' : '[EXCEPTION] '}` +
         errorCode
       if (color) {
         error = color + error + color
