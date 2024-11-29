@@ -37,6 +37,7 @@ describe('initRuntimeSocket', () => {
     expect(result).toBe(mockSocket)
     expect(uni.connectSocket).toHaveBeenCalledWith({
       url: 'ws://127.0.0.1:9999/test-id',
+      multiple: true,
       fail: expect.any(Function),
     })
   })
@@ -70,10 +71,12 @@ describe('initRuntimeSocket', () => {
     expect(uni.connectSocket).toHaveBeenCalledTimes(2)
     expect(uni.connectSocket).toHaveBeenNthCalledWith(1, {
       url: 'ws://127.0.0.1:9999/test-id',
+      multiple: true,
       fail: expect.any(Function),
     })
     expect(uni.connectSocket).toHaveBeenNthCalledWith(2, {
       url: 'ws://localhost:9999/test-id',
+      multiple: true,
       fail: expect.any(Function),
     })
   })
