@@ -3093,7 +3093,7 @@ class SelectorQueryImpl {
     return this._nodesRef;
   }
   in(component) {
-    if (isVueComponent(component)) {
+    if (component && isVueComponent(component)) {
       this._component = component;
     }
     return this;

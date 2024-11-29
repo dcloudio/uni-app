@@ -979,18 +979,20 @@ var parseComponentOptions = /*#__PURE__*/Object.freeze({
 function initLifetimes(lifetimesOptions) {
     return extend(initLifetimes$1(lifetimesOptions), {
         ready() {
-            if (this.$vm && lifetimesOptions.isPage(this)) {
-                if (this.pageinstance) {
-                    this.__webviewId__ = this.pageinstance.__pageId__;
+            if (process.env.UNI_DEBUG) {
+                console.log('uni-app:[' + Date.now() + '][' + (this.is || this.route) + ']ready');
+            }
+            if (this.$vm) {
+                if (lifetimesOptions.isPage(this)) {
+                    if (this.pageinstance) {
+                        this.__webviewId__ = this.pageinstance.__pageId__;
+                    }
+                    this.$vm.$callCreatedHook();
+                    nextSetDataTick(this, () => {
+                        this.$vm.$callHook('mounted');
+                        this.$vm.$callHook(ON_READY);
+                    });
                 }
-                if (process.env.UNI_DEBUG) {
-                    console.log('uni-app:[' + Date.now() + '][' + (this.is || this.route) + ']ready');
-                }
-                this.$vm.$callCreatedHook();
-                nextSetDataTick(this, () => {
-                    this.$vm.$callHook('mounted');
-                    this.$vm.$callHook(ON_READY);
-                });
             }
             else {
                 this.is && console.warn(this.is + ' is not ready');

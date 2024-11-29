@@ -5502,6 +5502,24 @@ function getCreateApp() {
     }
 }
 
+function stringifyStyle(value) {
+    if (isString(value)) {
+        return value;
+    }
+    return stringify(normalizeStyle(value));
+}
+// 不使用 @vue/shared 中的 stringifyStyle (#3456)
+function stringify(styles) {
+    let ret = '';
+    if (!styles || isString(styles)) {
+        return ret;
+    }
+    for (const key in styles) {
+        ret += `${key.startsWith(`--`) ? key : hyphenate(key)}:${styles[key]};`;
+    }
+    return ret;
+}
+
 function vOn(value, key) {
     const instance = getCurrentInstance();
     const ctx = instance.ctx;
@@ -5582,7 +5600,7 @@ const bubbles = [
     'animationend',
     'touchforcechange',
 ];
-function patchMPEvent(event) {
+function patchMPEvent(event, instance) {
     if (event.type && event.target) {
         event.preventDefault = NOOP;
         event.stopPropagation = NOOP;
@@ -5731,24 +5749,6 @@ function createScopedSlotInvoker(instance) {
     };
     invoker.slots = {};
     return invoker;
-}
-
-function stringifyStyle(value) {
-    if (isString(value)) {
-        return value;
-    }
-    return stringify(normalizeStyle(value));
-}
-// 不使用 @vue/shared 中的 stringifyStyle (#3456)
-function stringify(styles) {
-    let ret = '';
-    if (!styles || isString(styles)) {
-        return ret;
-    }
-    for (const key in styles) {
-        ret += `${key.startsWith(`--`) ? key : hyphenate(key)}:${styles[key]};`;
-    }
-    return ret;
 }
 
 /**

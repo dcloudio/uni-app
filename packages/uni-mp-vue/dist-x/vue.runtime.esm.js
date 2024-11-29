@@ -5502,6 +5502,313 @@ function getCreateApp() {
     }
 }
 
+class UniCSSStyleDeclaration {
+    constructor() {
+        // 跳过vue的响应式
+        this.__v_skip = true;
+        this.$styles = {};
+        this.$onChangeCallbacks = [];
+    }
+    setProperty(name, value) {
+        const oldValue = this.$styles[name];
+        if (oldValue === value) {
+            return;
+        }
+        this.$styles[name] = value;
+        this.$onChangeCallbacks.forEach((callback) => callback(this.$styles));
+    }
+    getPropertyValue(property) {
+        return this.$styles[property] || '';
+    }
+    get cssText() {
+        return Object.entries(this.$styles)
+            .map(([key, value]) => `${key}:${value}`)
+            .join(';');
+    }
+    $onChange(callback) {
+        this.$onChangeCallbacks.push(callback);
+    }
+    $destroy() {
+        this.$onChangeCallbacks = [];
+    }
+}
+
+/**
+ * event.target、event.currentTarget也是UniElement实例，可能不含id
+ */
+class UniElement {
+    constructor(id, name) {
+        // 跳过vue的响应式
+        this.__v_skip = true;
+        this.style = new UniCSSStyleDeclaration();
+        this.dataset = {};
+        this.offsetTop = NaN;
+        this.offsetLeft = NaN;
+        this.id = id;
+        this.tagName = name.toUpperCase();
+        this.nodeName = this.tagName;
+    }
+    scrollTo(options) {
+        if (!this.id) {
+            console.warn(`scrollTo is only supported on elements with id`);
+            return;
+        }
+        if (this.$node) {
+            this.$node.then((node) => {
+                node.scrollTo(options);
+            });
+        }
+        else {
+            console.warn(`scrollTo is only supported on scroll-view`);
+        }
+    }
+    getBoundingClientRectAsync(callback) {
+        var _a, _b;
+        // TODO defineAsyncApi?
+        if (callback) {
+            if (!this.id) {
+                console.warn(`getBoundingClientRectAsync is not supported on elements without id`);
+                try {
+                    (_a = callback.fail) === null || _a === void 0 ? void 0 : _a.call(callback);
+                }
+                catch (error) {
+                    console.error(error);
+                }
+                try {
+                    (_b = callback.complete) === null || _b === void 0 ? void 0 : _b.call(callback);
+                }
+                catch (error) {
+                    console.error(error);
+                }
+                return;
+            }
+            this._getBoundingClientRectAsync((domRect) => {
+                var _a, _b;
+                try {
+                    (_a = callback.success) === null || _a === void 0 ? void 0 : _a.call(callback, domRect);
+                }
+                catch (error) {
+                    console.error(error);
+                }
+                try {
+                    (_b = callback.complete) === null || _b === void 0 ? void 0 : _b.call(callback, domRect);
+                }
+                catch (error) {
+                    console.error(error);
+                }
+            });
+            return;
+        }
+        if (!this.id) {
+            console.warn(`getBoundingClientRectAsync is not supported on elements without id`);
+            return Promise.reject();
+        }
+        return new Promise((resolve, reject) => {
+            this._getBoundingClientRectAsync(resolve);
+        });
+    }
+    _getBoundingClientRectAsync(callback) {
+        const query = uni.createSelectorQuery().in(this.$vm);
+        query.select('#' + this.id).boundingClientRect();
+        query.exec(function (res) {
+            callback(res[0]);
+        });
+    }
+    $onStyleChange(callback) {
+        this.style.$onChange(callback);
+    }
+    getAttribute(name) {
+        if (!this.id) {
+            console.warn(`getAttribute(${name}) is not supported on UniElement without id`);
+            return null;
+        }
+        switch (name) {
+            case 'id':
+                return this.id;
+            case 'style':
+                return this.style.cssText;
+            default:
+                console.warn(`getAttribute(${name}) is not supported on UniElement in miniprogram`);
+                return null;
+        }
+    }
+    setAttribute(name, value) {
+        console.warn(`Miniprogram does not support UniElement.setAttribute(${name}, value)`);
+    }
+    $destroy() {
+        this.style.$destroy();
+        // @ts-expect-error
+        this.style = null;
+    }
+}
+
+function stringifyStyle(value) {
+    if (isString(value)) {
+        return value;
+    }
+    return stringify(normalizeStyle$1(value) );
+}
+// 不使用 @vue/shared 中的 stringifyStyle (#3456)
+function stringify(styles) {
+    let ret = '';
+    if (!styles || isString(styles)) {
+        return ret;
+    }
+    for (const key in styles) {
+        ret += `${key.startsWith(`--`) ? key : hyphenate(key)}:${styles[key]};`;
+    }
+    return ret;
+}
+
+/**
+ * 每次 render 完成，删除不在 $uniElementIds 中的元素
+ * @param ins
+ */
+function pruneUniElements(ins) {
+    // 如果 $uniElements 不在 $uniElementIds 中，则删除
+    ins.$uniElements.forEach((uniElement, id) => {
+        const options = ins.$uniElementIds.get(id);
+        if (!options) {
+            uniElement.$destroy();
+            ins.$uniElements.delete(id);
+        }
+    });
+}
+/**
+ * 销毁所有元素
+ * @param ins
+ */
+function destroyUniElements(ins) {
+    ins.$uniElements.forEach((uniElement, id) => {
+        uniElement.$destroy();
+    });
+    ins.$uniElements.clear();
+    ins.$templateUniElementRefs = [];
+}
+const customElements = new Map();
+function registerCustomElement(tagName, elementClass) {
+    customElements.set(tagName, elementClass);
+}
+function createUniElement(id, tagName, ins) {
+    if (!ins || !ins.proxy) {
+        return null;
+    }
+    const uniElement = new (customElements.get(tagName) || UniElement)(id, tagName);
+    uniElement.$vm = ins.proxy;
+    initMiniProgramNode(uniElement, ins);
+    uniElement.$onStyleChange((styles) => {
+        var _a;
+        let cssText = '';
+        // 如果不支持 wxs setStyle，需要合并模板绑定的 style
+        const templateStyle = ins.$templateUniElementStyles[id];
+        if (templateStyle) {
+            cssText = `${templateStyle};${stringifyStyle(styles)}`;
+        }
+        else {
+            cssText = stringifyStyle(styles);
+        }
+        const mpInstance = (_a = ins.proxy) === null || _a === void 0 ? void 0 : _a.$scope;
+        if (mpInstance) {
+            if (process.env.UNI_DEBUG) {
+                console.log('uni-app:[' +
+                    Date.now() +
+                    '][' +
+                    (mpInstance.is || mpInstance.route) +
+                    '][' +
+                    ins.uid +
+                    '][' +
+                    id +
+                    ']setStyle', cssText);
+            }
+            mpInstance.setData({
+                [`$eS.${id}`]: cssText,
+            });
+        }
+    });
+    return uniElement;
+}
+/**
+ * 根据指定 id 查找元素
+ * @param id
+ * @param ins
+ * @returns
+ */
+function findUniElement(id, ins = getCurrentInstance()) {
+    if (!ins) {
+        return null;
+    }
+    // 缓存
+    const element = ins.$uniElements.get(id);
+    if (element) {
+        return element;
+    }
+    const options = ins.$uniElementIds.get(id);
+    if (options) {
+        const element = createUniElement(id, options.name, ins);
+        // @ts-expect-error
+        ins.$uniElements.set(id, element);
+        return element;
+    }
+    // 递归查找
+    if (ins.proxy) {
+        const children = ins.proxy.$children;
+        for (const child of children) {
+            const element = findUniElement(id, child.$);
+            if (element) {
+                return element;
+            }
+        }
+    }
+    return null;
+}
+function createDummyUniElement() {
+    return new UniElement('', '');
+}
+function createEventElement(id, ins) {
+    if (!id || !ins) {
+        return createDummyUniElement();
+    }
+    const element = findUniElement(id, ins);
+    if (!element) {
+        return createDummyUniElement();
+    }
+    return createUniElement(id, element.tagName, ins);
+}
+function createEventTarget(target, ins) {
+    const id = (target === null || target === void 0 ? void 0 : target.id) || '';
+    const element = createEventElement(id, ins);
+    if (element) {
+        element.dataset = (target === null || target === void 0 ? void 0 : target.dataset) || {};
+        element.offsetTop =
+            typeof (target === null || target === void 0 ? void 0 : target.offsetTop) === 'number' ? target === null || target === void 0 ? void 0 : target.offsetTop : NaN;
+        element.offsetLeft =
+            typeof (target === null || target === void 0 ? void 0 : target.offsetLeft) === 'number' ? target === null || target === void 0 ? void 0 : target.offsetLeft : NaN;
+    }
+    return element;
+}
+function initMiniProgramNode(uniElement, ins) {
+    // 可能需要条件编译，部分小程序不支持
+    if (uniElement.tagName === 'SCROLL-VIEW') {
+        uniElement.$node = new Promise((resolve) => {
+            uni
+                .createSelectorQuery()
+                .in(ins.proxy)
+                .select('#' + uniElement.id)
+                .fields({ node: true }, (res) => {
+                const node = res.node;
+                resolve(node);
+                // 实现一个假的Promise，确保同步调用
+                uniElement.$node = {
+                    then(fn) {
+                        fn(node);
+                    },
+                };
+            })
+                .exec();
+        });
+    }
+}
+
 function vOn(value, key) {
     const instance = getCurrentInstance();
     const ctx = instance.ctx;
@@ -5533,7 +5840,7 @@ function vOn(value, key) {
 }
 function createInvoker(initialValue, instance) {
     const invoker = (e) => {
-        patchMPEvent(e);
+        patchMPEvent(e, instance);
         let args = [e];
         if (instance && instance.ctx.$getTriggerEventDetail) {
             if (typeof e.detail === 'number') {
@@ -5585,7 +5892,7 @@ const bubbles = [
 function isMPTapEvent(event) {
     return event.type === 'tap';
 }
-function normalizeXEvent(event) {
+function normalizeXEvent(event, instance) {
     if (isMPTapEvent(event)) {
         event.x = event.detail.x;
         event.y = event.detail.y;
@@ -5599,8 +5906,30 @@ function normalizeXEvent(event) {
             event.screenY = touch0.screenY;
         }
     }
+    if (event.target) {
+        const oldTarget = event.target;
+        Object.defineProperty(event, 'target', {
+            get() {
+                if (!event._target) {
+                    event._target = createEventTarget(oldTarget, instance || undefined);
+                }
+                return event._target;
+            },
+        });
+    }
+    if (event.currentTarget) {
+        const oldCurrentTarget = event.currentTarget;
+        Object.defineProperty(event, 'currentTarget', {
+            get() {
+                if (!event._currentTarget) {
+                    event._currentTarget = createEventTarget(oldCurrentTarget, instance || undefined);
+                }
+                return event._currentTarget;
+            },
+        });
+    }
 }
-function patchMPEvent(event) {
+function patchMPEvent(event, instance) {
     if (event.type && event.target) {
         event.preventDefault = NOOP;
         event.stopPropagation = NOOP;
@@ -5622,7 +5951,7 @@ function patchMPEvent(event) {
             event.target = extend({}, event.target, event.detail);
         }
         {
-            normalizeXEvent(event);
+            normalizeXEvent(event, instance);
         }
     }
 }
@@ -5754,24 +6083,6 @@ function createScopedSlotInvoker(instance) {
     return invoker;
 }
 
-function stringifyStyle(value) {
-    if (isString(value)) {
-        return value;
-    }
-    return stringify(normalizeStyle$1(value) );
-}
-// 不使用 @vue/shared 中的 stringifyStyle (#3456)
-function stringify(styles) {
-    let ret = '';
-    if (!styles || isString(styles)) {
-        return ret;
-    }
-    for (const key in styles) {
-        ret += `${key.startsWith(`--`) ? key : hyphenate(key)}:${styles[key]};`;
-    }
-    return ret;
-}
-
 /**
  * quickapp-webview 不能使用 default 作为插槽名称，故统一转换 default 为 d
  * @param names
@@ -5811,235 +6122,6 @@ function withModelModifiers(fn, { number, trim }, isComponent = false) {
         }
         return fn(event);
     };
-}
-
-class UniCSSStyleDeclaration {
-    constructor() {
-        // 跳过vue的响应式
-        this.__v_skip = true;
-        this.$styles = {};
-        this.$onChangeCallbacks = [];
-    }
-    setProperty(name, value) {
-        const oldValue = this.$styles[name];
-        if (oldValue === value) {
-            return;
-        }
-        this.$styles[name] = value;
-        this.$onChangeCallbacks.forEach((callback) => callback(this.$styles));
-    }
-    getPropertyValue(property) {
-        return this.$styles[property] || '';
-    }
-    get cssText() {
-        return Object.entries(this.$styles)
-            .map(([key, value]) => `${key}:${value}`)
-            .join(';');
-    }
-    $onChange(callback) {
-        this.$onChangeCallbacks.push(callback);
-    }
-    $destroy() {
-        this.$onChangeCallbacks = [];
-    }
-}
-
-class UniElement {
-    constructor(id, name) {
-        // 跳过vue的响应式
-        this.__v_skip = true;
-        this.style = new UniCSSStyleDeclaration();
-        this.id = id;
-        this.tagName = name.toUpperCase();
-        this.nodeName = this.tagName;
-    }
-    scrollTo(options) {
-        if (this.$node) {
-            this.$node.then((node) => {
-                node.scrollTo(options);
-            });
-        }
-        else {
-            console.warn(`scrollTo is only supported on scroll-view`);
-        }
-    }
-    getBoundingClientRectAsync(callback) {
-        // TODO defineAsyncApi?
-        if (callback) {
-            this._getBoundingClientRectAsync((domRect) => {
-                var _a, _b;
-                try {
-                    (_a = callback.success) === null || _a === void 0 ? void 0 : _a.call(callback, domRect);
-                }
-                catch (error) {
-                    console.error(error);
-                }
-                try {
-                    (_b = callback.complete) === null || _b === void 0 ? void 0 : _b.call(callback, domRect);
-                }
-                catch (error) {
-                    console.error(error);
-                }
-            });
-            return;
-        }
-        return new Promise((resolve, reject) => {
-            this._getBoundingClientRectAsync(resolve);
-        });
-    }
-    _getBoundingClientRectAsync(callback) {
-        const query = uni.createSelectorQuery().in(this.$vm);
-        query.select('#' + this.id).boundingClientRect();
-        query.exec(function (res) {
-            callback(res[0]);
-        });
-    }
-    $onStyleChange(callback) {
-        this.style.$onChange(callback);
-    }
-    getAttribute(name) {
-        switch (name) {
-            case 'id':
-                return this.id;
-            case 'style':
-                return this.style.cssText;
-            default:
-                console.warn(`Miniprogram does not support UniElement.getAttribute(${name})`);
-                return null;
-        }
-    }
-    setAttribute(name, value) {
-        console.warn(`Miniprogram does not support UniElement.setAttribute(${name}, value)`);
-    }
-    $destroy() {
-        this.style.$destroy();
-        // @ts-expect-error
-        this.style = null;
-    }
-}
-
-/**
- * 每次 render 完成，删除不在 $uniElementIds 中的元素
- * @param ins
- */
-function pruneUniElements(ins) {
-    // 如果 $uniElements 不在 $uniElementIds 中，则删除
-    ins.$uniElements.forEach((uniElement, id) => {
-        const options = ins.$uniElementIds.get(id);
-        if (!options) {
-            uniElement.$destroy();
-            ins.$uniElements.delete(id);
-        }
-    });
-}
-/**
- * 销毁所有元素
- * @param ins
- */
-function destroyUniElements(ins) {
-    ins.$uniElements.forEach((uniElement, id) => {
-        uniElement.$destroy();
-    });
-    ins.$uniElements.clear();
-    ins.$templateUniElementRefs = [];
-}
-const customElements = new Map();
-function registerCustomElement(tagName, elementClass) {
-    customElements.set(tagName, elementClass);
-}
-function createUniElement(id, tagName, ins) {
-    if (!ins || !ins.proxy) {
-        return null;
-    }
-    const uniElement = new (customElements.get(tagName) || UniElement)(id, tagName);
-    uniElement.$vm = ins.proxy;
-    initMiniProgramNode(uniElement, ins);
-    uniElement.$onStyleChange((styles) => {
-        var _a;
-        let cssText = '';
-        // 如果不支持 wxs setStyle，需要合并模板绑定的 style
-        const templateStyle = ins.$templateUniElementStyles[id];
-        if (templateStyle) {
-            cssText = `${templateStyle};${stringifyStyle(styles)}`;
-        }
-        else {
-            cssText = stringifyStyle(styles);
-        }
-        const mpInstance = (_a = ins.proxy) === null || _a === void 0 ? void 0 : _a.$scope;
-        if (mpInstance) {
-            if (process.env.UNI_DEBUG) {
-                console.log('uni-app:[' +
-                    Date.now() +
-                    '][' +
-                    (mpInstance.is || mpInstance.route) +
-                    '][' +
-                    ins.uid +
-                    '][' +
-                    id +
-                    ']setStyle', cssText);
-            }
-            mpInstance.setData({
-                [`$eS.${id}`]: cssText,
-            });
-        }
-    });
-    return uniElement;
-}
-/**
- * 根据指定 id 查找元素
- * @param id
- * @param ins
- * @returns
- */
-function findUniElement(id, ins = getCurrentInstance()) {
-    if (!ins) {
-        return null;
-    }
-    // 缓存
-    const element = ins.$uniElements.get(id);
-    if (element) {
-        return element;
-    }
-    const options = ins.$uniElementIds.get(id);
-    if (options) {
-        const element = createUniElement(id, options.name, ins);
-        // @ts-expect-error
-        ins.$uniElements.set(id, element);
-        return element;
-    }
-    // 递归查找
-    if (ins.proxy) {
-        const children = ins.proxy.$children;
-        for (const child of children) {
-            const element = findUniElement(id, child.$);
-            if (element) {
-                return element;
-            }
-        }
-    }
-    return null;
-}
-function initMiniProgramNode(uniElement, ins) {
-    // 可能需要条件编译，部分小程序不支持
-    if (uniElement.tagName === 'SCROLL-VIEW') {
-        uniElement.$node = new Promise((resolve) => {
-            uni
-                .createSelectorQuery()
-                .in(ins.proxy)
-                .select('#' + uniElement.id)
-                .fields({ node: true }, (res) => {
-                const node = res.node;
-                resolve(node);
-                // 实现一个假的Promise，确保同步调用
-                uniElement.$node = {
-                    then(fn) {
-                        fn(node);
-                    },
-                };
-            })
-                .exec();
-        });
-    }
 }
 
 function setUniElementId(id, options, ref, refOpts) {

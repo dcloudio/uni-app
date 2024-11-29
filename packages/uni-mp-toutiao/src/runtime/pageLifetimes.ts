@@ -30,8 +30,13 @@ export function initLifetimes(lifetimesOptions: CreateLifetimesOptions) {
             this.$vm!.$callHook(ON_READY)
           })
         } else {
-          this.$vm!.$callHook('mounted')
-          this.$vm!.$callHook(ON_READY)
+          if (
+            __PLATFORM__ === 'mp-harmony' ||
+            __PLATFORM__ === 'quickapp-webview'
+          ) {
+            this.$vm!.$callHook('mounted')
+            this.$vm!.$callHook(ON_READY)
+          }
         }
       } else {
         this.is && console.warn(this.is + ' is not ready')

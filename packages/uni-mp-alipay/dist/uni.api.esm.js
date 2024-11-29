@@ -1128,9 +1128,12 @@ const offError = {
             }
         }
         else if (fromArgs.__weh) {
-            const index = app.$vm[ON_ERROR].indexOf(fromArgs.__weh);
-            if (index > -1) {
-                app.$vm[ON_ERROR].splice(index, 1);
+            const onErrors = app.$vm.$[ON_ERROR];
+            if (onErrors) {
+                const index = onErrors.indexOf(fromArgs.__weh);
+                if (index > -1) {
+                    app.$vm[ON_ERROR].splice(index, 1);
+                }
             }
         }
     },

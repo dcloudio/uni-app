@@ -87,7 +87,7 @@ at components/test-boolean/test-boolean.vue:19:12
 `;
 
 exports[`uts:stacktrace:runtime parseWeixinRuntimeStacktrace 1`] = `
-"error: [EXCEPTION] Error: click2
+"Error: click2
 at pages/index/index.uvue:25:16
 23 |              },
 24 |              click2() {
@@ -98,7 +98,7 @@ at pages/index/index.uvue:25:16
 `;
 
 exports[`uts:stacktrace:runtime parseWeixinRuntimeStacktrace 2`] = `
-"error: [EXCEPTION] MiniProgramError
+"MiniProgramError
 bbbbbbbbbbb12
 Error: bbbbbbbbbbb12
 at pages/index/index.uvue:25:16
