@@ -906,8 +906,10 @@ function initLifetimes(lifetimesOptions) {
                     });
                 }
                 else {
-                    this.$vm.$callHook('mounted');
-                    this.$vm.$callHook(ON_READY);
+                    {
+                        this.$vm.$callHook('mounted');
+                        this.$vm.$callHook(ON_READY);
+                    }
                 }
             }
             else {
