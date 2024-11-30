@@ -481,7 +481,10 @@ const upx2px = defineSyncApi(API_UPX2PX, (number, newDeviceWidth) => {
 }, Upx2pxProtocol);
 
 function __f__(type, filename, ...args) {
-    console[type].apply(console, [...args, filename]);
+    if (filename) {
+        args.push(filename);
+    }
+    console[type].apply(console, args);
 }
 
 const API_ADD_INTERCEPTOR = 'addInterceptor';
@@ -848,7 +851,7 @@ function initWrapper(protocols) {
         if ((isContextApi(methodName) || isTaskApi(methodName)) && method) {
             const oldMethod = method;
             method = function (...args) {
-                const contextOrTask = oldMethod(...args);
+                const contextOrTask = oldMethod.apply(this, args);
                 if (contextOrTask) {
                     contextOrTask.__v_skip = true;
                 }
@@ -1155,7 +1158,7 @@ const onError = {
             has.$onErrorHandlers.push(fromArgs);
         }
         else {
-            injectHook(ON_ERROR, fromArgs, app.$vm);
+            injectHook(ON_ERROR, fromArgs, app.$vm.$);
         }
     },
 };
@@ -1176,7 +1179,7 @@ const offError = {
             if (onErrors) {
                 const index = onErrors.indexOf(fromArgs.__weh);
                 if (index > -1) {
-                    app.$vm[ON_ERROR].splice(index, 1);
+                    onErrors.splice(index, 1);
                 }
             }
         }
