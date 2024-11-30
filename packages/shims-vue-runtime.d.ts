@@ -36,6 +36,7 @@ declare module '@vue/runtime-core' {
     // X web start
     $basePage: Page.PageInstance['$page']
     $dialogPage?: UniDialogPage
+    $triggerParentHide?: boolean
     $pageLayoutInstance: ComponentInternalInstance | null
     // X web end
     $mpType?: 'app' | 'page'

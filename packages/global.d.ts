@@ -131,6 +131,7 @@ declare class UniDialogPageImpl implements UniPage {
   getHTMLElement(): null
   $component: any | null
   $disableEscBack: boolean
+  $triggerParentHide: boolean
 }
 
 interface Uni {

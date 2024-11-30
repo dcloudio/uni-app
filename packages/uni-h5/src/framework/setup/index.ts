@@ -54,6 +54,8 @@ import { handleBeforeEntryPageRoutes } from '../../service/api/route/utils'
 //#if _X_
 import { isDialogPageInstance } from '../../x/framework/helpers/utils'
 import { useBackgroundColorContent } from '../../x/framework/setup/page'
+import type { UniDialogPage } from '@dcloudio/uni-app-x/types/UniPage'
+import { dialogPageTriggerParentHide } from '@dcloudio/uni-core'
 //#endif
 
 interface SetupComponentOptions {
@@ -172,12 +174,13 @@ export function setupPage(comp: any) {
               const dialogPages = parentPageInstance.$dialogPages.value
               if (dialogPages.length > 1) {
                 const preDialogPage = dialogPages[dialogPages.length - 2]
-                if (preDialogPage.$vm) {
-                  const { onHide } = preDialogPage.$vm.$
+                if (preDialogPage.vm) {
+                  const { onHide } = preDialogPage.vm.$
                   onHide && invokeArrayFns(onHide)
                 }
               }
             }
+            dialogPageTriggerParentHide(instance.proxy?.$page as UniDialogPage)
             useBackgroundColorContent(instance.proxy)
           }
         }

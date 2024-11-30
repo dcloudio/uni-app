@@ -164,6 +164,7 @@ class UniNormalPageImpl extends UniPageImpl implements UniNormalPage {
 export class UniDialogPageImpl extends UniPageImpl implements UniDialogPage {
   $component: any | null = null
   $disableEscBack: boolean = false
+  $triggerParentHide: boolean = false
   getElementById(id: string.IDString | string): UniElement | null {
     const currentPage = getCurrentPage() as unknown as UniPage
     if (currentPage !== this.getParentPage()) {
@@ -189,12 +190,14 @@ export class UniDialogPageImpl extends UniPageImpl implements UniDialogPage {
     route,
     options,
     $component,
+    $triggerParentHide,
     getParentPage,
     $disableEscBack = false,
   }: {
     route: string
     options: UTSJSONObject
     $component: any
+    $triggerParentHide: boolean
     getParentPage: () => UniPage | null
     $disableEscBack?: boolean | null
   }) {
@@ -202,6 +205,7 @@ export class UniDialogPageImpl extends UniPageImpl implements UniDialogPage {
     this.$component = markRaw($component)
     this.getParentPage = getParentPage
     this.$disableEscBack = !!$disableEscBack
+    this.$triggerParentHide = !!$triggerParentHide
   }
 }
 

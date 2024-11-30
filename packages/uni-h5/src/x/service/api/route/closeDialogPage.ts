@@ -1,6 +1,10 @@
 import { decrementEscBackPageNum } from '../../../framework/setup/page'
-import { invokeHook } from '@dcloudio/uni-core'
-import { ON_SHOW, ON_UNLOAD, isSystemDialogPage } from '@dcloudio/uni-shared'
+import {
+  dialogPageTriggerParentShow,
+  invokeHook,
+  isSystemDialogPage,
+} from '@dcloudio/uni-core'
+import { ON_SHOW, ON_UNLOAD } from '@dcloudio/uni-shared'
 import type { CloseDialogPageOptions } from '@dcloudio/uni-app-x/types/uni'
 import type { UniDialogPage } from '@dcloudio/uni-app-x/types/page'
 
@@ -20,13 +24,14 @@ export const closeDialogPage = (options?: CloseDialogPageOptions) => {
         const parentDialogPages = parentPage.getDialogPages()
         const index = parentDialogPages.indexOf(dialogPage)
         parentDialogPages.splice(index, 1)
-        invokeHook(dialogPage.$vm!, ON_UNLOAD)
+        invokeHook(dialogPage.vm!, ON_UNLOAD)
         if (index > 0 && index === parentDialogPages.length) {
           invokeHook(
-            parentDialogPages[parentDialogPages.length - 1].$vm!,
+            parentDialogPages[parentDialogPages.length - 1].vm!,
             ON_SHOW
           )
         }
+        dialogPageTriggerParentShow(dialogPage, 1)
         if (!dialogPage.$disableEscBack) {
           decrementEscBackPageNum()
         }
@@ -44,10 +49,11 @@ export const closeDialogPage = (options?: CloseDialogPageOptions) => {
   } else {
     const dialogPages = currentPage.getDialogPages()
     for (let i = dialogPages.length - 1; i >= 0; i--) {
-      invokeHook(dialogPages[i].$vm!, ON_UNLOAD)
+      invokeHook(dialogPages[i].vm!, ON_UNLOAD)
       if (i > 0) {
-        invokeHook(dialogPages[i - 1].$vm!, ON_SHOW)
+        invokeHook(dialogPages[i - 1].vm!, ON_SHOW)
       }
+      dialogPageTriggerParentShow(dialogPages[i] as UniDialogPage, 1)
       if ((!dialogPages[i] as unknown as UniDialogPage).$disableEscBack) {
         decrementEscBackPageNum()
       }
