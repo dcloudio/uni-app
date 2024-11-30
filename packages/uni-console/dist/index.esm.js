@@ -59,7 +59,7 @@ function rewriteConsole() {
             uni.__f__ = function (...args) {
                 const [type, filename, ...rest] = args;
                 // 原始日志移除 filename
-                oldLog([type, , ...rest]);
+                oldLog(type, '', ...rest);
                 sendConsoleMessages([formatMessage(type, [...rest, filename])]);
             };
             return function restoreConsole() {
@@ -348,17 +348,14 @@ function initOnError() {
             error.reason.message.includes(`Cannot create property 'errMsg' on string 'taskId`)) {
             return;
         }
+        originalConsole.error(error);
         sendErrorMessages([error]);
     }
     // TODO 是否需要监听 uni.onUnhandledRejection？
     if (typeof uni.onError === 'function') {
         uni.onError(onError);
     }
-    return function offError() {
-        if (typeof uni.offError === 'function') {
-            uni.offError(onError);
-        }
-    };
+    return function offError() { };
 }
 
 function initRuntimeSocketService() {
@@ -367,44 +364,51 @@ function initRuntimeSocketService() {
     const id = __UNI_SOCKET_ID__;
     if (!hosts || !port || !id)
         return Promise.resolve(false);
-    const restoreError = initOnError();
-    const restoreConsole = rewriteConsole();
-    return initRuntimeSocket(hosts, port, id).then((socket) => {
-        if (!socket) {
-            restoreError();
-            restoreConsole();
-            console.error('开发模式下日志通道建立连接失败');
-            return false;
+    // 百度小程序需要延迟初始化，不然会存在循环引用问题vendor.js
+    const lazy = typeof swan !== 'undefined';
+    // 重写需要同步，避免丢失早期日志信息
+    let restoreError = lazy ? () => { } : initOnError();
+    let restoreConsole = lazy ? () => { } : rewriteConsole();
+    // 百度小程序需要异步初始化，不然调用 uni.connectSocket 会循环引入vendor.js
+    return Promise.resolve().then(() => {
+        if (lazy) {
+            restoreError = initOnError();
+            restoreConsole = rewriteConsole();
         }
-        socket.onClose(() => {
-            if (process.env.UNI_DEBUG) {
-                originalConsole.log(`uni-app:[${Date.now()}][socket]`, 'connect close and restore');
+        return initRuntimeSocket(hosts, port, id).then((socket) => {
+            if (!socket) {
+                restoreError();
+                restoreConsole();
+                originalConsole.error('开发模式下日志通道建立 socket 连接失败，如果是小程序平台，请勾选不校验合法域名配置。');
+                return false;
             }
-            restoreError();
-            restoreConsole();
-        });
-        setSendConsole((data) => {
-            if (process.env.UNI_DEBUG) {
-                originalConsole.log(`uni-app:[${Date.now()}][console]`, data);
-            }
-            socket.send({
-                data,
+            socket.onClose(() => {
+                if (process.env.UNI_DEBUG) {
+                    originalConsole.log(`uni-app:[${Date.now()}][socket]`, 'connect close and restore');
+                }
+                restoreError();
+                restoreConsole();
             });
-        });
-        setSendError((data) => {
-            if (process.env.UNI_DEBUG) {
-                originalConsole.log(`uni-app:[${Date.now()}][error]`, data);
-            }
-            socket.send({
-                data,
+            setSendConsole((data) => {
+                if (process.env.UNI_DEBUG) {
+                    originalConsole.log(`uni-app:[${Date.now()}][console]`, data);
+                }
+                socket.send({
+                    data,
+                });
             });
+            setSendError((data) => {
+                if (process.env.UNI_DEBUG) {
+                    originalConsole.log(`uni-app:[${Date.now()}][error]`, data);
+                }
+                socket.send({
+                    data,
+                });
+            });
+            return true;
         });
-        return true;
     });
 }
-// 异步初始化，不然部分平台调用 uni.connectSocket 会循环引入vendor.js，比如百度小程序
-Promise.resolve().then(() => {
-    initRuntimeSocketService();
-});
+initRuntimeSocketService();
 
 export { initRuntimeSocketService };

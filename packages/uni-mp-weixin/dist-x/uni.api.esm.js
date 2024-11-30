@@ -570,7 +570,10 @@ const upx2px = defineSyncApi(API_UPX2PX, (number, newDeviceWidth) => {
 }, Upx2pxProtocol);
 
 function __f__(type, filename, ...args) {
-    console[type].apply(console, [...args, filename]);
+    if (filename) {
+        args.push(filename);
+    }
+    console[type].apply(console, args);
 }
 
 const API_ADD_INTERCEPTOR = 'addInterceptor';

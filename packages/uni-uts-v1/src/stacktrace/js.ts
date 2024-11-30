@@ -147,22 +147,27 @@ export function processErrorLines(
   error: string,
   sourceMapFile: string,
   line: number,
-  lines: string[]
+  lines: string[],
+  withSourceContent = true
 ) {
   const originalPosition = originalPositionForSync({
     sourceMapFile,
     line,
     column: 0,
-    withSourceContent: true,
+    withSourceContent,
   })
-  if (originalPosition.source && originalPosition.sourceContent) {
+  if (originalPosition.source) {
     lines.push(error)
     lines.push(
       `at ${originalPosition.source.split('?')[0]}:${originalPosition.line}:${
         originalPosition.column
       }`
     )
-    if (originalPosition.line !== null && originalPosition.column !== null) {
+    if (
+      originalPosition.sourceContent &&
+      originalPosition.line !== null &&
+      originalPosition.column !== null
+    ) {
       const { start, end } = lineColumnToStartEnd(
         originalPosition.sourceContent,
         originalPosition.line,

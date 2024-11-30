@@ -92,7 +92,10 @@ function formatAppLog(type, filename, ...args) {
     }
 }
 function formatLog(type, filename, ...args) {
-    console[type].apply(console, [...args, filename]);
+    if (filename) {
+        args.push(filename);
+    }
+    console[type].apply(console, args);
 }
 
 function resolveEasycom(component, easycom) {

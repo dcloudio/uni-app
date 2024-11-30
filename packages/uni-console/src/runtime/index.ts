@@ -7,47 +7,55 @@ export function initRuntimeSocketService(): Promise<boolean> {
   const port: string = __UNI_SOCKET_PORT__
   const id: string = __UNI_SOCKET_ID__
   if (!hosts || !port || !id) return Promise.resolve(false)
-
-  const restoreError = initOnError()
-  const restoreConsole = rewriteConsole()
-  return initRuntimeSocket(hosts, port, id).then((socket) => {
-    if (!socket) {
-      restoreError()
-      restoreConsole()
-      console.error('开发模式下日志通道建立连接失败')
-      return false
+  // 百度小程序需要延迟初始化，不然会存在循环引用问题vendor.js
+  const lazy = typeof swan !== 'undefined'
+  // 重写需要同步，避免丢失早期日志信息
+  let restoreError = lazy ? () => {} : initOnError()
+  let restoreConsole = lazy ? () => {} : rewriteConsole()
+  // 百度小程序需要异步初始化，不然调用 uni.connectSocket 会循环引入vendor.js
+  return Promise.resolve().then(() => {
+    if (lazy) {
+      restoreError = initOnError()
+      restoreConsole = rewriteConsole()
     }
-    socket.onClose(() => {
-      if (process.env.UNI_DEBUG) {
-        originalConsole.log(
-          `uni-app:[${Date.now()}][socket]`,
-          'connect close and restore'
+    return initRuntimeSocket(hosts, port, id).then((socket) => {
+      if (!socket) {
+        restoreError()
+        restoreConsole()
+        originalConsole.error(
+          '开发模式下日志通道建立 socket 连接失败，如果是小程序平台，请勾选不校验合法域名配置。'
         )
+        return false
       }
-      restoreError()
-      restoreConsole()
-    })
-    setSendConsole((data: string) => {
-      if (process.env.UNI_DEBUG) {
-        originalConsole.log(`uni-app:[${Date.now()}][console]`, data)
-      }
-      socket!.send({
-        data,
+      socket.onClose(() => {
+        if (process.env.UNI_DEBUG) {
+          originalConsole.log(
+            `uni-app:[${Date.now()}][socket]`,
+            'connect close and restore'
+          )
+        }
+        restoreError()
+        restoreConsole()
       })
-    })
-    setSendError((data: string) => {
-      if (process.env.UNI_DEBUG) {
-        originalConsole.log(`uni-app:[${Date.now()}][error]`, data)
-      }
-      socket!.send({
-        data,
+      setSendConsole((data: string) => {
+        if (process.env.UNI_DEBUG) {
+          originalConsole.log(`uni-app:[${Date.now()}][console]`, data)
+        }
+        socket!.send({
+          data,
+        })
       })
+      setSendError((data: string) => {
+        if (process.env.UNI_DEBUG) {
+          originalConsole.log(`uni-app:[${Date.now()}][error]`, data)
+        }
+        socket!.send({
+          data,
+        })
+      })
+      return true
     })
-    return true
   })
 }
 
-// 异步初始化，不然部分平台调用 uni.connectSocket 会循环引入vendor.js，比如百度小程序
-Promise.resolve().then(() => {
-  initRuntimeSocketService()
-})
+initRuntimeSocketService()

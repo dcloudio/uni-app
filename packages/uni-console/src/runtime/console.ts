@@ -80,7 +80,7 @@ export function rewriteConsole() {
       uni.__f__ = function (...args: any[]) {
         const [type, filename, ...rest] = args
         // 原始日志移除 filename
-        oldLog([type, , ...rest])
+        oldLog(type, '', ...rest)
         sendConsoleMessages([formatMessage(type, [...rest, filename])])
       }
       return function restoreConsole() {

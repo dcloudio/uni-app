@@ -1,3 +1,4 @@
+import { originalConsole } from './console'
 import type { SendFn } from './utils'
 
 let sendError: SendFn = null
@@ -53,15 +54,12 @@ export function initOnError() {
     ) {
       return
     }
+    originalConsole.error(error)
     sendErrorMessages([error])
   }
   // TODO 是否需要监听 uni.onUnhandledRejection？
   if (typeof uni.onError === 'function') {
     uni.onError(onError)
   }
-  return function offError() {
-    if (typeof uni.offError === 'function') {
-      uni.offError(onError)
-    }
-  }
+  return function offError() {}
 }

@@ -9,10 +9,7 @@ import {
   type GenerateKotlinRuntimeCodeFrameOptions,
   parseUTSKotlinRuntimeStacktrace,
 } from './kotlin'
-import {
-  type GenerateWeixinRuntimeCodeFrameOptions,
-  parseWeixinRuntimeStacktrace,
-} from './mp/weixin'
+import type { GenerateWeixinRuntimeCodeFrameOptions } from './mp/weixin'
 
 export { parseUTSSwiftPluginStacktrace } from './swift'
 
@@ -30,10 +27,15 @@ export function parseRuntimeStacktrace(
     | GenerateAppIOSJavaScriptRuntimeCodeFrameOptions
     | GenerateWeixinRuntimeCodeFrameOptions
 ) {
-  if (options.platform === 'mp-weixin' || options.platform === 'mp-baidu') {
-    return parseWeixinRuntimeStacktrace(stacktrace, options)
+  if (
+    (options.platform === 'app-android' && options.language === 'kotlin') ||
+    (options.platform === 'app-ios' && options.language === 'javascript')
+  ) {
+    return parseUTSRuntimeStacktrace(stacktrace, options)
   }
-  return parseUTSRuntimeStacktrace(stacktrace, options)
+  // 小程序平台暂不处理，因为没法拿到小程序的sourceMap做合并映射
+  return stacktrace
+  // return parseWeixinRuntimeStacktrace(stacktrace, options)
 }
 
 export function parseUTSRuntimeStacktrace(

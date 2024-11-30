@@ -52,7 +52,7 @@ export function parseWeixinRuntimeStacktrace(
 }
 
 export function parseWeixinRuntimeStacktraceLine(
-  platform: 'mp-weixin' | 'mp-baidu',
+  _platform: 'mp-weixin' | 'mp-baidu',
   error: string,
   lineStr: string,
   sourceMapDir: string
@@ -67,11 +67,8 @@ export function parseWeixinRuntimeStacktraceLine(
   if (!sourceMapFile) {
     return lines
   }
-  // 微信小程序编译后会增加两行，需要减去
-  // define("pages/index/index.js", ...
-  // "use strict";
-  const offset = platform === 'mp-weixin' ? 2 : 0
-  processErrorLines(error, sourceMapFile, parseInt(line) - offset, lines)
+
+  processErrorLines(error, sourceMapFile, parseInt(line), lines, false)
 
   return lines
 }

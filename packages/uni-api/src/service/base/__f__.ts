@@ -3,5 +3,8 @@ export function __f__(
   filename: string,
   ...args: unknown[]
 ) {
-  ;(console[type] as Function).apply(console, [...args, filename])
+  if (filename) {
+    args.push(filename)
+  }
+  ;(console[type] as Function).apply(console, args)
 }

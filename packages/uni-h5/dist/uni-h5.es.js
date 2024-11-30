@@ -3377,7 +3377,10 @@ const $emit = /* @__PURE__ */ defineSyncApi(
   EmitProtocol
 );
 function __f__(type, filename, ...args) {
-  console[type].apply(console, [...args, filename]);
+  if (filename) {
+    args.push(filename);
+  }
+  console[type].apply(console, args);
 }
 const validator = [
   {
