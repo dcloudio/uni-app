@@ -9,10 +9,10 @@ import {
   M,
   dynamicImportPolyfill,
   emptyDir,
-  enableSourceMap,
+  // enableSourceMap,
   hasJsonFile,
   isCSSRequest,
-  isEnableConsole,
+  // isEnableConsole,
   isMiniProgramAssetFile,
   normalizeMiniProgramFilename,
   normalizePath,
@@ -48,7 +48,8 @@ export function createBuildOptions(
   const { renderDynamicImport } = dynamicImportPolyfill()
   return {
     // TODO 待优化，不同小程序平台sourcemap处理逻辑可能不同
-    sourcemap: isEnableConsole() && enableSourceMap(),
+    // TODO 目前存在两层sourcemap，一层是vite的，一层是小程序的，目前拿不到小程序的sourcemap，导致没法还原到源码，所以暂时不默认启用
+    // sourcemap: isEnableConsole() && enableSourceMap(),
     // target: ['chrome53'], // 由小程序自己启用 es6 编译
     emptyOutDir: false, // 不清空输出目录，否则会影响自定义的一些文件输出，比如wxml
     lib: {
