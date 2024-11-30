@@ -22,10 +22,9 @@ export const navigateBack = defineAsyncApi<API_TYPE_NAVIGATE_BACK>(
     if (__X__) {
       const currentPage = getCurrentPage()
       if (currentPage) {
-        // @ts-expect-error
-        const dialogPages = currentPage.getDialogPages()
+        const dialogPages = (currentPage as unknown as UniPage).getDialogPages()
         const dialogPage = dialogPages[dialogPages.length - 1]
-        if (dialogPage?.$vm.$options.onBackPress?.() === true) {
+        if (dialogPage?.vm.$options.onBackPress?.() === true) {
           canBack = false
         }
       }
