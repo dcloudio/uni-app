@@ -35,7 +35,12 @@ export function initCreatePage() {
     vueOptions = vueOptions.default || vueOptions
     const pageOptions: tinyapp.PageOptions = {
       onLoad(query) {
-        this.options = query
+        if (__X__) {
+          // query并非多层级结构，无需递归处理
+          this.options = new UTSJSONObject(query || {})
+        } else {
+          this.options = query
+        }
         this.$page = {
           fullPath: addLeadingSlash(this.route + stringifyQuery(query)),
         }
