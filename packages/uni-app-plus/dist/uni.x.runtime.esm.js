@@ -1,4 +1,4 @@
-import { normalizeStyles as normalizeStyles$1, addLeadingSlash, invokeArrayFns, parseQuery, SYSTEM_DIALOG_PAGE_PATH_STARTER, EventChannel, once, parseUrl, ON_UNLOAD, ON_READY, ON_PAGE_SCROLL, ON_PULL_DOWN_REFRESH, ON_REACH_BOTTOM, ON_RESIZE, ON_HIDE, ON_SHOW, ON_LAUNCH, ON_ERROR, isSystemDialogPage, Emitter, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, removeLeadingSlash, getLen, ON_BACK_PRESS, isSystemActionSheetDialogPage } from "@dcloudio/uni-shared";
+import { normalizeStyles as normalizeStyles$1, addLeadingSlash, invokeArrayFns, ON_HIDE, ON_SHOW, parseQuery, EventChannel, once, parseUrl, ON_UNLOAD, ON_READY, ON_PAGE_SCROLL, ON_PULL_DOWN_REFRESH, ON_REACH_BOTTOM, ON_RESIZE, ON_LAUNCH, ON_ERROR, Emitter, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, removeLeadingSlash, getLen, ON_BACK_PRESS } from "@dcloudio/uni-shared";
 import { extend, isString, isPlainObject, isFunction as isFunction$1, isArray, isPromise, hasOwn, invokeArrayFns as invokeArrayFns$1, remove, capitalize, toTypeString, toRawType, parseStringStyle } from "@vue/shared";
 import { createVNode, render, onMounted, onBeforeUnmount, getCurrentInstance, injectHook, resolveComponent, openBlock, createElementBlock, normalizeClass, createElementVNode, normalizeStyle, toDisplayString, withDirectives, vModelText, createCommentVNode, Fragment, renderList, defineComponent, warn, isInSSRComponentSetup, ref, watchEffect, watch, computed, camelize, onUnmounted, reactive, provide, inject, nextTick } from "vue";
 function get$pageByPage(page) {
@@ -126,6 +126,43 @@ function getRouteMeta(path) {
   if (routeOptions) {
     return routeOptions.meta;
   }
+}
+var SYSTEM_DIALOG_PAGE_PATH_STARTER = "uni:";
+var SYSTEM_DIALOG_ACTION_SHEET_PAGE_PATH = "uni:actionSheet";
+function isSystemDialogPage(page) {
+  return page.route.startsWith(SYSTEM_DIALOG_PAGE_PATH_STARTER);
+}
+function isSystemActionSheetDialogPage(page) {
+  return page.route.startsWith(SYSTEM_DIALOG_ACTION_SHEET_PAGE_PATH);
+}
+function dialogPageTriggerParentHide(dialogPage) {
+  dialogPageTriggerParentLifeCycle(dialogPage, ON_HIDE);
+}
+function dialogPageTriggerParentShow(dialogPage) {
+  var triggerParentHideDialogPageNum = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : 0;
+  dialogPageTriggerParentLifeCycle(dialogPage, ON_SHOW, triggerParentHideDialogPageNum);
+}
+function dialogPageTriggerParentLifeCycle(dialogPage, lifeCycle) {
+  var triggerParentHideDialogPageNum = arguments.length > 2 && arguments[2] !== void 0 ? arguments[2] : 0;
+  if (!dialogPage.$triggerParentHide)
+    return;
+  var pages2 = getCurrentPages();
+  var currentPage = pages2[pages2.length - 1];
+  if (!currentPage)
+    return;
+  var parentPage = dialogPage.getParentPage();
+  if (parentPage && parentPage !== currentPage)
+    return;
+  var dialogPages = currentPage.getDialogPages();
+  for (var i = 0; i < dialogPages.length; i++) {
+    if (!!dialogPages[i].$triggerParentHide) {
+      triggerParentHideDialogPageNum++;
+      if (triggerParentHideDialogPageNum > 1) {
+        return;
+      }
+    }
+  }
+  invokeHook(currentPage.vm, lifeCycle);
 }
 function initPageVm(pageVm, page) {
   pageVm.route = page.route;
@@ -605,7 +642,8 @@ function setupXPage(instance, pageInstance, pageVm, pageId, pagePath) {
       var systemDialogPages = currentPage.vm.$systemDialogPages;
       uniPage = systemDialogPages[systemDialogPages.length - 1];
     } else {
-      uniPage = new UniDialogPageImpl();
+      uniPage = currentPage.vm.$currentDialogPage;
+      currentPage.vm.$currentDialogPage = null;
     }
     uniPage.getElementById = (id2) => {
       var _pageVm$$el;
@@ -675,6 +713,9 @@ function setupXPage(instance, pageInstance, pageVm, pageId, pagePath) {
     var rootElement = (_pageVm$$el3 = pageVm.$el) === null || _pageVm$$el3 === void 0 ? void 0 : _pageVm$$el3._parent;
     if (rootElement) {
       rootElement._page = pageVm.$page;
+    }
+    if (getPage$BasePage(pageVm).openType === OPEN_DIALOG_PAGE) {
+      dialogPageTriggerParentHide(uniPage);
     }
   });
   onBeforeUnmount(() => {
@@ -1147,8 +1188,6 @@ function registerDialogPage(_ref2, dialogPage, onCreated) {
     path,
     query,
     openType,
-    webview,
-    nvuePageVm,
     eventChannel
   } = _ref2;
   var delay = arguments.length > 3 && arguments[3] !== void 0 ? arguments[3] : 0;
@@ -1184,8 +1223,6 @@ function registerDialogPage(_ref2, dialogPage, onCreated) {
   );
   function fn() {
     var page = createVuePage(id2, route, query, pageInstance, {}, nativePage2);
-    dialogPage.vm = page;
-    dialogPage.$vm = page;
     nativePage2.addPageEventListener(ON_POP_GESTURE, function(e) {
       closeDialogPage({
         dialogPage
@@ -1193,6 +1230,7 @@ function registerDialogPage(_ref2, dialogPage, onCreated) {
     });
     nativePage2.addPageEventListener(ON_UNLOAD, (_) => {
       invokeHook(page, ON_UNLOAD);
+      dialogPageTriggerParentShow(dialogPage);
     });
     nativePage2.addPageEventListener(ON_READY, (_) => {
       invokePageReadyHooks(page);
@@ -2728,10 +2766,10 @@ var openDialogPage = (options) => {
   }
   var dialogPage = new UniDialogPageImpl();
   dialogPage.route = path;
-  dialogPage.optionsByJS = query;
   dialogPage.getParentPage = () => parentPage;
   dialogPage.$component = null;
   dialogPage.$disableEscBack = false;
+  dialogPage.$triggerParentHide = !!options.triggerParentHide;
   var systemDialog = isSystemDialogPage(dialogPage);
   if (!systemDialog) {
     if (!parentPage) {
@@ -2741,7 +2779,7 @@ var openDialogPage = (options) => {
       if (dialogPages.length) {
         invokeHook(dialogPages[dialogPages.length - 1].$vm, ON_HIDE);
       }
-      dialogPages.push(dialogPage);
+      parentPage.vm.$currentDialogPage = dialogPage;
     }
   } else {
     if (!parentPage) {

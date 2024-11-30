@@ -6,7 +6,7 @@ var __publicField = (obj, key, value) => {
 };
 import { withModifiers, createVNode, getCurrentInstance, ref, defineComponent, openBlock, createElementBlock, onMounted, provide, computed, watch, onUnmounted, inject, onBeforeUnmount, mergeProps, reactive, injectHook, nextTick, createApp, createBlock, watchEffect, isVNode, withDirectives, vShow, renderList, isReactive, Transition, effectScope, Fragment, onActivated, withCtx, KeepAlive, resolveDynamicComponent, markRaw, normalizeClass, normalizeStyle, createTextVNode, toDisplayString, createCommentVNode, onBeforeMount, onBeforeActivate, onBeforeDeactivate, createElementVNode, renderSlot, shallowRef, Comment, h, logError } from "vue";
 import { isArray, isString, extend, remove, stringifyStyle, parseStringStyle, isPlainObject as isPlainObject$1, isFunction, capitalize, camelize, hasOwn, isObject, toRawType, makeMap as makeMap$1, isPromise, invokeArrayFns as invokeArrayFns$1, hyphenate } from "@vue/shared";
-import { once, UNI_STORAGE_LOCALE, I18N_JSON_DELIMITERS, Emitter, passive, resolveComponentInstance, normalizeStyles, addLeadingSlash, invokeArrayFns, removeLeadingSlash, initCustomDatasetOnce, resolveOwnerVm, resolveOwnerEl, ON_WXS_INVOKE_CALL_METHOD, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_SHOW, ON_HIDE, ON_PAGE_SCROLL, ON_REACH_BOTTOM, EventChannel, createRpx2Unit, defaultRpx2Unit, parseQuery, NAVBAR_HEIGHT, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, getLen, getCustomDataset, parseUrl, sortObject, ON_THEME_CHANGE, ON_HOST_THEME_CHANGE, OFF_HOST_THEME_CHANGE, OFF_THEME_CHANGE, updateElementStyle, LINEFEED, ON_WEB_INVOKE_APP_SERVICE, ON_BACK_PRESS, addFont, ON_NAVIGATION_BAR_CHANGE, scrollTo, RESPONSIVE_MIN_WIDTH, formatDateTime, ON_REACH_BOTTOM_DISTANCE, normalizeTitleColor, isSystemDialogPage, isSystemActionSheetDialogPage, ON_UNLOAD, onCreateVueApp, SCHEME_RE, DATA_RE, decodedQuery, debounce, WEB_INVOKE_APPSERVICE, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_PULL_DOWN_REFRESH, stringifyQuery as stringifyQuery$1, PRIMARY_COLOR, isUniLifecycleHook, ON_LOAD, UniLifecycleHooks, invokeCreateErrorHandler, invokeCreateVueAppHook } from "@dcloudio/uni-shared";
+import { once, UNI_STORAGE_LOCALE, I18N_JSON_DELIMITERS, Emitter, passive, resolveComponentInstance, normalizeStyles, addLeadingSlash, invokeArrayFns, removeLeadingSlash, ON_SHOW, ON_HIDE, initCustomDatasetOnce, resolveOwnerVm, resolveOwnerEl, ON_WXS_INVOKE_CALL_METHOD, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_PAGE_SCROLL, ON_REACH_BOTTOM, EventChannel, createRpx2Unit, defaultRpx2Unit, parseQuery, NAVBAR_HEIGHT, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, getLen, getCustomDataset, parseUrl, sortObject, ON_THEME_CHANGE, ON_HOST_THEME_CHANGE, OFF_HOST_THEME_CHANGE, OFF_THEME_CHANGE, updateElementStyle, LINEFEED, ON_WEB_INVOKE_APP_SERVICE, ON_BACK_PRESS, addFont, ON_NAVIGATION_BAR_CHANGE, scrollTo, RESPONSIVE_MIN_WIDTH, formatDateTime, ON_REACH_BOTTOM_DISTANCE, normalizeTitleColor, ON_UNLOAD, onCreateVueApp, SCHEME_RE, DATA_RE, decodedQuery, debounce, WEB_INVOKE_APPSERVICE, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_PULL_DOWN_REFRESH, stringifyQuery as stringifyQuery$1, PRIMARY_COLOR, isUniLifecycleHook, ON_LOAD, UniLifecycleHooks, invokeCreateErrorHandler, invokeCreateVueAppHook } from "@dcloudio/uni-shared";
 import { onCreateVueApp as onCreateVueApp2 } from "@dcloudio/uni-shared";
 import { useRoute, isNavigationFailure, RouterView, useRouter, createRouter, createWebHistory, createWebHashHistory } from "vue-router";
 import { initVueI18n, isI18nStr, LOCALE_EN, LOCALE_ES, LOCALE_FR, LOCALE_ZH_HANS, LOCALE_ZH_HANT } from "@dcloudio/uni-i18n";
@@ -1882,6 +1882,41 @@ function normalizeTabBarRoute(index2, oldPagePath, newPagePath) {
       tabBar2.list[index2].pagePath = removeLeadingSlash(newPagePath);
     }
   }
+}
+const SYSTEM_DIALOG_PAGE_PATH_STARTER = "uni:";
+const SYSTEM_DIALOG_ACTION_SHEET_PAGE_PATH = "uni:actionSheet";
+function isSystemDialogPage(page) {
+  return page.route.startsWith(SYSTEM_DIALOG_PAGE_PATH_STARTER);
+}
+function isSystemActionSheetDialogPage(page) {
+  return page.route.startsWith(SYSTEM_DIALOG_ACTION_SHEET_PAGE_PATH);
+}
+function dialogPageTriggerParentHide(dialogPage) {
+  dialogPageTriggerParentLifeCycle(dialogPage, ON_HIDE);
+}
+function dialogPageTriggerParentShow(dialogPage, triggerParentHideDialogPageNum = 0) {
+  dialogPageTriggerParentLifeCycle(dialogPage, ON_SHOW, triggerParentHideDialogPageNum);
+}
+function dialogPageTriggerParentLifeCycle(dialogPage, lifeCycle, triggerParentHideDialogPageNum = 0) {
+  if (dialogPage.$triggerParentHide !== true)
+    return;
+  const pages = getCurrentPages();
+  const currentPage = pages[pages.length - 1];
+  if (!currentPage)
+    return;
+  const parentPage = dialogPage.getParentPage();
+  if (parentPage && parentPage !== currentPage)
+    return;
+  const dialogPages = currentPage.getDialogPages();
+  for (let i = 0; i < dialogPages.length; i++) {
+    if (dialogPages[i].$triggerParentHide === true) {
+      triggerParentHideDialogPageNum++;
+      if (triggerParentHideDialogPageNum > 1) {
+        return;
+      }
+    }
+  }
+  invokeHook(currentPage.vm, lifeCycle);
 }
 function initView() {
   useRem();
@@ -12838,7 +12873,7 @@ const navigateBack = /* @__PURE__ */ defineAsyncApi(
       if (currentPage) {
         const dialogPages = currentPage.getDialogPages();
         const dialogPage = dialogPages[dialogPages.length - 1];
-        if (((_b = dialogPage == null ? void 0 : (_a = dialogPage.$vm.$options).onBackPress) == null ? void 0 : _b.call(_a)) === true) {
+        if (((_b = dialogPage == null ? void 0 : (_a = dialogPage.vm.$options).onBackPress) == null ? void 0 : _b.call(_a)) === true) {
           canBack = false;
         }
       }
@@ -16861,15 +16896,18 @@ class UniDialogPageImpl extends UniPageImpl {
     route,
     options,
     $component,
+    $triggerParentHide,
     getParentPage,
     $disableEscBack = false
   }) {
     super({ route, options, vm: null });
     this.$component = null;
     this.$disableEscBack = false;
+    this.$triggerParentHide = false;
     this.$component = markRaw($component);
     this.getParentPage = getParentPage;
     this.$disableEscBack = !!$disableEscBack;
+    this.$triggerParentHide = !!$triggerParentHide;
   }
   getElementById(id2) {
     var _a;
@@ -16995,7 +17033,8 @@ const openDialogPage = (options) => {
     options: new UTSJSONObject(query),
     $component: targetRoute.component,
     getParentPage: () => null,
-    $disableEscBack: options.disableEscBack
+    $disableEscBack: options.disableEscBack,
+    $triggerParentHide: options.triggerParentHide
   });
   let parentPage = options.parentPage;
   const currentPages = getCurrentPages();
@@ -17082,13 +17121,14 @@ const closeDialogPage = (options) => {
         const parentDialogPages = parentPage.getDialogPages();
         const index2 = parentDialogPages.indexOf(dialogPage);
         parentDialogPages.splice(index2, 1);
-        invokeHook(dialogPage.$vm, ON_UNLOAD);
+        invokeHook(dialogPage.vm, ON_UNLOAD);
         if (index2 > 0 && index2 === parentDialogPages.length) {
           invokeHook(
-            parentDialogPages[parentDialogPages.length - 1].$vm,
+            parentDialogPages[parentDialogPages.length - 1].vm,
             ON_SHOW
           );
         }
+        dialogPageTriggerParentShow(dialogPage, 1);
         if (!dialogPage.$disableEscBack) {
           decrementEscBackPageNum();
         }
@@ -17105,10 +17145,11 @@ const closeDialogPage = (options) => {
   } else {
     const dialogPages = currentPage.getDialogPages();
     for (let i = dialogPages.length - 1; i >= 0; i--) {
-      invokeHook(dialogPages[i].$vm, ON_UNLOAD);
+      invokeHook(dialogPages[i].vm, ON_UNLOAD);
       if (i > 0) {
-        invokeHook(dialogPages[i - 1].$vm, ON_SHOW);
+        invokeHook(dialogPages[i - 1].vm, ON_SHOW);
       }
+      dialogPageTriggerParentShow(dialogPages[i], 1);
       if ((!dialogPages[i]).$disableEscBack) {
         decrementEscBackPageNum();
       }
@@ -19272,7 +19313,7 @@ function setupPage(comp) {
         onPageShow(instance2, pageMeta);
       });
       onMounted(() => {
-        var _a, _b;
+        var _a, _b, _c;
         {
           if (instance2.subTree.el) {
             instance2.subTree.el._page = (_a = instance2.proxy) == null ? void 0 : _a.$page;
@@ -19285,12 +19326,13 @@ function setupPage(comp) {
               const dialogPages = parentPageInstance.$dialogPages.value;
               if (dialogPages.length > 1) {
                 const preDialogPage = dialogPages[dialogPages.length - 2];
-                if (preDialogPage.$vm) {
-                  const { onHide } = preDialogPage.$vm.$;
+                if (preDialogPage.vm) {
+                  const { onHide } = preDialogPage.vm.$;
                   onHide && invokeArrayFns$1(onHide);
                 }
               }
             }
+            dialogPageTriggerParentHide((_c = instance2.proxy) == null ? void 0 : _c.$page);
             useBackgroundColorContent$1(instance2.proxy);
           }
         }
