@@ -30,8 +30,8 @@ importers:
         specifier: workspace:*
         version: link:packages/uni-app
       '@dcloudio/uni-app-x':
-        specifier: ^0.7.38
-        version: 0.7.38
+        specifier: ^0.7.39
+        version: 0.7.39
       '@dcloudio/uni-nvue-styler':
         specifier: workspace:*
         version: link:packages/uni-nvue-styler
@@ -1531,6 +1531,9 @@ importers:
 
   packages/uni-mp-baidu:
     dependencies:
+      '@dcloudio/uni-app':
+        specifier: workspace:*
+        version: link:../uni-app
       '@dcloudio/uni-cli-shared':
         specifier: workspace:*
         version: link:../uni-cli-shared
@@ -1619,31 +1622,6 @@ importers:
       vue:
         specifier: 3.4.21
         version: 3.4.21(typescript@5.4.2)
-
-  packages/uni-mp-harmony:
-    dependencies:
-      '@dcloudio/uni-cli-shared':
-        specifier: 3.0.0-alpha-4030120240925001
-        version: link:../uni-cli-shared
-      '@dcloudio/uni-mp-vite':
-        specifier: 3.0.0-alpha-4030120240925001
-        version: link:../uni-mp-vite
-      '@dcloudio/uni-mp-vue':
-        specifier: 3.0.0-alpha-4030120240925001
-        version: link:../uni-mp-vue
-      '@dcloudio/uni-quickapp-webview':
-        specifier: 3.0.0-alpha-4030120240925001
-        version: link:../uni-quickapp-webview
-      '@dcloudio/uni-shared':
-        specifier: 3.0.0-alpha-4030120240925001
-        version: link:../uni-shared
-      '@vue/shared':
-        specifier: 3.4.21
-        version: 3.4.21
-    devDependencies:
-      '@dcloudio/uni-mp-compiler':
-        specifier: 3.0.0-alpha-4030120240925001
-        version: link:../uni-mp-compiler
 
   packages/uni-mp-jd:
     dependencies:
@@ -1991,8 +1969,8 @@ importers:
         specifier: ^7.23.5
         version: 7.24.7
       '@dcloudio/uni-app-x':
-        specifier: ^0.7.38
-        version: 0.7.38
+        specifier: ^0.7.39
+        version: 0.7.39
       '@dcloudio/uts':
         specifier: workspace:*
         version: link:../uts
@@ -2858,8 +2836,8 @@ packages:
   '@dcloudio/types@3.4.14':
     resolution: {integrity: sha512-VolQeZfTh8pQFsr2IlfIVX93blfvGTuBoJuZUc7iWOqtHV8gDrq6fXLhzsVlgZyuhhRZLOxlo33rkEqnY+ucAw==}
 
-  '@dcloudio/uni-app-x@0.7.38':
-    resolution: {integrity: sha512-OXLoD12ymFAHTQUEaJqH0Eco48IktXhqznjAyE0eYhb7CN00x6wRm0vOxvzcmBqeljA89e3dPed2fw+jwlBh/Q==}
+  '@dcloudio/uni-app-x@0.7.39':
+    resolution: {integrity: sha512-eZhwqa1YcD2D0asDEVEqmGc1RaTIw4HDW+OYhxUCxZqWPK5b7RUHpfVQHfrQUR/BxbvFTK/kiOA93fvyk8sAuw==}
 
   '@dcloudio/uni-ui@1.5.6':
     resolution: {integrity: sha512-jmb98PasFvZkrIDXGh94GbdWg2/jyhgs1HUG+bU8eyL7Ltias/5XBz4q8w9RXyWUfqepJRqapPA2IIQpLCuTIg==}
@@ -8344,7 +8322,7 @@ snapshots:
 
   '@dcloudio/types@3.4.14': {}
 
-  '@dcloudio/uni-app-x@0.7.38': {}
+  '@dcloudio/uni-app-x@0.7.39': {}
 
   '@dcloudio/uni-ui@1.5.6': {}
 
