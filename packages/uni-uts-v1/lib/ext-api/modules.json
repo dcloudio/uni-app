@@ -685,59 +685,6 @@
       }
     }
   },
-  "uni-prompt": {
-    "uni": {
-      "showToast": {
-        "name": "showToast",
-        "app": {
-          "js": false,
-          "kotlin": true,
-          "swift": true,
-          "arkts": true
-        }
-      },
-      "hideToast": {
-        "name": "hideToast",
-        "app": {
-          "js": false,
-          "kotlin": true,
-          "swift": true
-        }
-      },
-      "showLoading": {
-        "name": "showLoading",
-        "app": {
-          "js": false,
-          "kotlin": true,
-          "swift": true
-        }
-      },
-      "hideLoading": {
-        "name": "hideLoading",
-        "app": {
-          "js": false,
-          "kotlin": true,
-          "swift": true
-        }
-      },
-      "showModal": {
-        "name": "showModal",
-        "app": {
-          "js": false,
-          "kotlin": true,
-          "swift": true
-        }
-      },
-      "showActionSheet": {
-        "name": "showActionSheet",
-        "app": {
-          "js": false,
-          "kotlin": true,
-          "swift": true
-        }
-      }
-    }
-  },
   "uni-push": {
     "uni": {
       "getPushClientId": {
