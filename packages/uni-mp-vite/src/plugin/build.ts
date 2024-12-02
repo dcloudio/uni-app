@@ -62,24 +62,14 @@ export function createBuildOptions(
       input: parseRollupInput(inputDir, platform),
       output: {
         sourcemapPathTransform: (relativeSourcePath, sourcemapPath) => {
-          let [, modulePath] = relativeSourcePath.split('/node_modules/')
-          if (modulePath) {
-            return `node_modules/${modulePath}`
-          }
-          let [, base64] = relativeSourcePath.split('/uniPage:/')
-          if (base64) {
-            return parseVirtualPagePath(base64) + '?type=page'
-          }
-          ;[, base64] = relativeSourcePath.split('/uniComponent:/')
-          if (base64) {
-            return parseVirtualComponentPath(base64) + '?type=component'
-          }
-          return normalizePath(
-            path.relative(
-              process.env.UNI_INPUT_DIR,
-              path.resolve(path.dirname(sourcemapPath), relativeSourcePath)
-            )
+          const result = sourcemapPathTransform(
+            relativeSourcePath,
+            sourcemapPath
           )
+          if (platform === 'mp-alipay') {
+            return path.basename(result)
+          }
+          return result
         },
         entryFileNames(chunk) {
           if (chunk.name === 'main') {
@@ -108,6 +98,34 @@ export function createBuildOptions(
       },
     },
   }
+}
+
+function sourcemapPathTransform(
+  relativeSourcePath: string,
+  sourcemapPath: string
+) {
+  const prefix = ''
+  let [, modulePath] = relativeSourcePath.split('/node_modules/')
+  if (modulePath) {
+    return `${prefix}node_modules/${modulePath}`
+  }
+  let [, base64] = relativeSourcePath.split('/uniPage:/')
+  if (base64) {
+    return prefix + parseVirtualPagePath(base64) + '?type=page'
+  }
+  ;[, base64] = relativeSourcePath.split('/uniComponent:/')
+  if (base64) {
+    return prefix + parseVirtualComponentPath(base64) + '?type=component'
+  }
+  return (
+    prefix +
+    normalizePath(
+      path.relative(
+        process.env.UNI_INPUT_DIR,
+        path.resolve(path.dirname(sourcemapPath), relativeSourcePath)
+      )
+    )
+  )
 }
 
 function parseRollupInput(inputDir: string, platform: UniApp.PLATFORM) {

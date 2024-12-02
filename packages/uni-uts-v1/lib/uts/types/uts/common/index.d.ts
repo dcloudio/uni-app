@@ -27,3 +27,4 @@
 /// <reference path="./DataView.d.ts" />
 /// <reference path="./TextEncoder.d.ts" />
 /// <reference path="./TextDecoder.d.ts" />
+/// <reference path="./Iterable.d.ts" />
