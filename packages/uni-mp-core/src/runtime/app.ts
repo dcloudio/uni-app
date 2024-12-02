@@ -170,7 +170,9 @@ export function initAppLifecycle(
 
 function initLocale(appVm: ComponentPublicInstance) {
   const locale = ref<string>(
-    normalizeLocale(__GLOBAL__.getSystemInfoSync().language) || LOCALE_EN
+    __PLATFORM__ === 'mp-weixin'
+      ? normalizeLocale(__GLOBAL__.getAppBaseInfo().language) || LOCALE_EN
+      : normalizeLocale(__GLOBAL__.getSystemInfoSync().language) || LOCALE_EN
   )
   Object.defineProperty(appVm, '$locale', {
     get() {
