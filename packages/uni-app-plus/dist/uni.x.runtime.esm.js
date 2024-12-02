@@ -633,6 +633,15 @@ function initLaunchOptions(_ref2) {
 var ON_BACK_BUTTON = "onBackButton";
 var ON_POP_GESTURE = "onPopGesture";
 var OPEN_DIALOG_PAGE = "openDialogPage";
+var homeDialogPages = [];
+var homeSystemDialogPages = [];
+var currentNormalDialogPage = null;
+function setCurrentNormalDialogPage(value) {
+  currentNormalDialogPage = value;
+}
+function getCurrentNormalDialogPage() {
+  return currentNormalDialogPage;
+}
 function setupXPage(instance, pageInstance, pageVm, pageId, pagePath) {
   instance.$dialogPages = [];
   var uniPage;
@@ -642,8 +651,8 @@ function setupXPage(instance, pageInstance, pageVm, pageId, pagePath) {
       var systemDialogPages = currentPage.vm.$systemDialogPages;
       uniPage = systemDialogPages[systemDialogPages.length - 1];
     } else {
-      uniPage = currentPage.vm.$currentDialogPage;
-      currentPage.vm.$currentDialogPage = null;
+      uniPage = getCurrentNormalDialogPage();
+      setCurrentNormalDialogPage(null);
     }
     uniPage.getElementById = (id2) => {
       var _pageVm$$el;
@@ -1038,8 +1047,6 @@ function invokeAfterRouteHooks(type) {
 function invokePageReadyHooks(page) {
   invokeArrayFns$1(pageReadyHooks, page);
 }
-var homeDialogPages = [];
-var homeSystemDialogPages = [];
 function parsePageStyle(route) {
   var style = /* @__PURE__ */ new Map();
   var routeMeta = route.meta;
@@ -2779,7 +2786,7 @@ var openDialogPage = (options) => {
       if (dialogPages.length) {
         invokeHook(dialogPages[dialogPages.length - 1].$vm, ON_HIDE);
       }
-      parentPage.vm.$currentDialogPage = dialogPage;
+      setCurrentNormalDialogPage(dialogPage);
     }
   } else {
     if (!parentPage) {
