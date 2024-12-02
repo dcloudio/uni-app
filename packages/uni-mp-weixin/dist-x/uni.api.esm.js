@@ -990,7 +990,7 @@ function initWrapper(protocols) {
         if ((isContextApi(methodName) || isTaskApi(methodName)) && method) {
             const oldMethod = method;
             method = function (...args) {
-                const contextOrTask = oldMethod(...args);
+                const contextOrTask = oldMethod.apply(this, args);
                 if (contextOrTask) {
                     contextOrTask.__v_skip = true;
                 }

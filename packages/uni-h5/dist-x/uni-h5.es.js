@@ -1895,10 +1895,14 @@ function dialogPageTriggerParentHide(dialogPage) {
   dialogPageTriggerParentLifeCycle(dialogPage, ON_HIDE);
 }
 function dialogPageTriggerParentShow(dialogPage, triggerParentHideDialogPageNum = 0) {
-  dialogPageTriggerParentLifeCycle(dialogPage, ON_SHOW, triggerParentHideDialogPageNum);
+  dialogPageTriggerParentLifeCycle(
+    dialogPage,
+    ON_SHOW,
+    triggerParentHideDialogPageNum
+  );
 }
 function dialogPageTriggerParentLifeCycle(dialogPage, lifeCycle, triggerParentHideDialogPageNum = 0) {
-  if (dialogPage.$triggerParentHide !== true)
+  if (!dialogPage.$triggerParentHide)
     return;
   const pages = getCurrentPages();
   const currentPage = pages[pages.length - 1];
@@ -1909,7 +1913,7 @@ function dialogPageTriggerParentLifeCycle(dialogPage, lifeCycle, triggerParentHi
     return;
   const dialogPages = currentPage.getDialogPages();
   for (let i = 0; i < dialogPages.length; i++) {
-    if (dialogPages[i].$triggerParentHide === true) {
+    if (!!dialogPages[i].$triggerParentHide) {
       triggerParentHideDialogPageNum++;
       if (triggerParentHideDialogPageNum > 1) {
         return;
@@ -17034,7 +17038,7 @@ const openDialogPage = (options) => {
     $component: targetRoute.component,
     getParentPage: () => null,
     $disableEscBack: options.disableEscBack,
-    $triggerParentHide: options.triggerParentHide
+    $triggerParentHide: !!options.triggerParentHide
   });
   let parentPage = options.parentPage;
   const currentPages = getCurrentPages();

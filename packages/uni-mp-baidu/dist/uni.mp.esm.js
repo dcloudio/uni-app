@@ -799,7 +799,9 @@ function parsePage(vueOptions, parseOptions) {
     initPageProps(miniProgramPageOptions, (vueOptions.default || vueOptions).props);
     const methods = miniProgramPageOptions.methods;
     methods.onLoad = function (query) {
-        this.options = query;
+        {
+            this.options = query;
+        }
         this.$page = {
             fullPath: addLeadingSlash(this.route + stringifyQuery(query)),
         };
@@ -1109,7 +1111,9 @@ function parse(pageOptions) {
             this._$loaded = true;
             const copyQuery = extend({}, query);
             delete copyQuery.__id__;
-            this.options = copyQuery;
+            {
+                this.options = copyQuery;
+            }
             this.pageinstance.$page = this.$page = {
                 fullPath: '/' + this.pageinstance.route + stringifyQuery(copyQuery),
             };

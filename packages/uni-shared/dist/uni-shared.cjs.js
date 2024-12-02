@@ -1692,15 +1692,6 @@ function getEnvLocale() {
     return (lang && lang.replace(/[.:].*/, '')) || 'en';
 }
 
-const SYSTEM_DIALOG_PAGE_PATH_STARTER = 'uni:';
-const SYSTEM_DIALOG_ACTION_SHEET_PAGE_PATH = 'uni:actionSheet';
-function isSystemDialogPage(page) {
-    return page.route.startsWith(SYSTEM_DIALOG_PAGE_PATH_STARTER);
-}
-function isSystemActionSheetDialogPage(page) {
-    return page.route.startsWith(SYSTEM_DIALOG_ACTION_SHEET_PAGE_PATH);
-}
-
 exports.ACTION_TYPE_ADD_EVENT = ACTION_TYPE_ADD_EVENT;
 exports.ACTION_TYPE_ADD_WXS_EVENT = ACTION_TYPE_ADD_WXS_EVENT;
 exports.ACTION_TYPE_CREATE = ACTION_TYPE_CREATE;
@@ -1788,8 +1779,6 @@ exports.RESPONSIVE_MIN_WIDTH = RESPONSIVE_MIN_WIDTH;
 exports.SCHEME_RE = SCHEME_RE;
 exports.SELECTED_COLOR = SELECTED_COLOR;
 exports.SLOT_DEFAULT_NAME = SLOT_DEFAULT_NAME;
-exports.SYSTEM_DIALOG_ACTION_SHEET_PAGE_PATH = SYSTEM_DIALOG_ACTION_SHEET_PAGE_PATH;
-exports.SYSTEM_DIALOG_PAGE_PATH_STARTER = SYSTEM_DIALOG_PAGE_PATH_STARTER;
 exports.TABBAR_HEIGHT = TABBAR_HEIGHT;
 exports.TAGS = TAGS;
 exports.UNI_SSR = UNI_SSR;
@@ -1857,8 +1846,6 @@ exports.isMiniProgramNativeTag = isMiniProgramNativeTag;
 exports.isMiniProgramUVueNativeTag = isMiniProgramUVueNativeTag;
 exports.isRootHook = isRootHook;
 exports.isRootImmediateHook = isRootImmediateHook;
-exports.isSystemActionSheetDialogPage = isSystemActionSheetDialogPage;
-exports.isSystemDialogPage = isSystemDialogPage;
 exports.isUniLifecycleHook = isUniLifecycleHook;
 exports.isUniXElement = isUniXElement;
 exports.normalizeClass = normalizeClass;

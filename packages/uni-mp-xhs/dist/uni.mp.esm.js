@@ -883,7 +883,9 @@ function initCreatePage() {
         vueOptions = vueOptions.default || vueOptions;
         const pageOptions = {
             onLoad(query) {
-                this.options = query;
+                {
+                    this.options = query;
+                }
                 this.$page = {
                     fullPath: addLeadingSlash(this.route + stringifyQuery(query)),
                 };
