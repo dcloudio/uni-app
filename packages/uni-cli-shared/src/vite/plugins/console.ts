@@ -3,8 +3,9 @@ import type { Plugin, ResolvedConfig } from 'vite'
 import { type FilterPattern, createFilter } from '@rollup/pluginutils'
 
 import { isJsFile, parseVueRequest } from '../utils'
-import { rewriteConsoleExpr } from '../../logs/console'
+import { restoreConsoleExpr, rewriteConsoleExpr } from '../../logs/console'
 import { withSourcemap } from '../../vite/utils/utils'
+import { isRenderjs, isWxs } from '../../filter'
 
 export interface ConsoleOptions {
   method: string
@@ -25,6 +26,9 @@ export function uniConsolePlugin(options: ConsoleOptions): Plugin {
       resolvedConfig = config
     },
     transform(code, id) {
+      if (isRenderjs(id) || isWxs(id)) {
+        return restoreConsoleExpr(code)
+      }
       if (!filter(id)) return null
       if (!isJsFile(id)) return null
       let { filename } = parseVueRequest(id)
