@@ -3,9 +3,12 @@ import { extend } from '@vue/shared'
 import type { SFCScriptCompileOptions } from '@vue/compiler-sfc'
 import {
   isEnableConsole,
+  normalizePath,
+  resolveSourceMapPath,
   resolveUTSCompiler,
   uniDecryptUniModulesPlugin,
   uniHBuilderXConsolePlugin,
+  uniSourceMapPlugin,
   uniUTSUVueJavaScriptPlugin,
   uniViteInjectPlugin,
 } from '@dcloudio/uni-cli-shared'
@@ -37,6 +40,12 @@ export default (options: UniMiniProgramPluginOptions) => {
     delete process.env.UNI_MP_PLUGIN
   }
   const normalizeComponentName = options.template.component?.normalizeName
+
+  const sourceMapDir = resolveSourceMapPath(
+    process.env.UNI_OUTPUT_DIR,
+    process.env.UNI_PLATFORM
+  )
+
   return [
     ...(isEnableConsole() ? [uniHBuilderXConsolePlugin('uni.__f__')] : []),
     ...(process.env.UNI_APP_X === 'true'
@@ -83,6 +92,12 @@ export default (options: UniMiniProgramPluginOptions) => {
     },
     ...(process.env.UNI_SUBPACKAGE ? [uniSubpackagePlugin(options)] : []),
     ...(process.env.UNI_MP_PLUGIN ? [uniMiniProgramPluginPlugin(options)] : []),
+    uniSourceMapPlugin({
+      sourceMapDir,
+      relativeSourceMapDir: normalizePath(
+        path.relative(path.dirname(process.env.UNI_OUTPUT_DIR), sourceMapDir)
+      ),
+    }),
   ]
 }
 
