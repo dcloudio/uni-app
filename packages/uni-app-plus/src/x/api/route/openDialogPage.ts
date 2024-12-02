@@ -13,6 +13,7 @@ import { beforeRoute, createNormalizeUrl } from '@dcloudio/uni-api'
 import {
   homeDialogPages,
   homeSystemDialogPages,
+  setCurrentNormalDialogPage,
 } from '../../framework/page/dialogPage'
 import { registerDialogPage } from '../../framework/page/register'
 import type { UniDialogPage } from '@dcloudio/uni-app-x/types/page'
@@ -63,9 +64,7 @@ export const openDialogPage = (
       if (dialogPages.length) {
         invokeHook(dialogPages[dialogPages.length - 1].$vm!, ON_HIDE)
       }
-      // When setupXPage is used, the client has not established the association between dialogPage and the parent page
-      // so this method is temporarily saved for obtaining during setupXPage
-      parentPage.vm.$currentDialogPage = dialogPage
+      setCurrentNormalDialogPage(dialogPage)
     }
   } else {
     if (!parentPage) {

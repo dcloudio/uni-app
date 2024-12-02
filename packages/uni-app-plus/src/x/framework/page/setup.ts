@@ -13,6 +13,10 @@ import {
 import { addCurrentPageWithInitScope } from '../../../service/framework/page/setup'
 import { getPage$BasePage } from '../../../service/framework/page/getCurrentPages'
 import type { UniDialogPage } from '@dcloudio/uni-app-x/types/UniPage'
+import {
+  getCurrentNormalDialogPage,
+  setCurrentNormalDialogPage,
+} from './dialogPage'
 
 export function setupXPage(
   instance: ComponentInternalInstance,
@@ -31,8 +35,8 @@ export function setupXPage(
       const systemDialogPages = currentPage.vm.$systemDialogPages
       uniPage = systemDialogPages[systemDialogPages.length - 1]
     } else {
-      uniPage = currentPage.vm.$currentDialogPage
-      currentPage.vm.$currentDialogPage = null
+      uniPage = getCurrentNormalDialogPage()!
+      setCurrentNormalDialogPage(null)
     }
     uniPage.getElementById = (
       id: string.IDString | string
