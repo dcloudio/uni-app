@@ -25,7 +25,7 @@ export class UniElement {
     then: (fn: (node: any) => void) => void
   }
 
-  constructor(id: string, name: string) {
+  constructor(id: string = '', name: string = '') {
     this.id = id
     this.tagName = name.toUpperCase()
     this.nodeName = this.tagName
