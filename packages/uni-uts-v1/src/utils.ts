@@ -1021,10 +1021,6 @@ export function isEnableGenericsParameterDefaults() {
   return isEnableUTSFeature('enableGenericsParameterDefaults')
 }
 
-export function isEnableUTSJSONObjectPropertyAccess() {
-  return isEnableUTSFeature('enableUTSJSONObjectPropertyAccess')
-}
-
 export function isEnableInlineReified() {
   return isEnableUTSFeature('enableInlineReified')
 }

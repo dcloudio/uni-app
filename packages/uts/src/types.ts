@@ -72,7 +72,6 @@ export type UTSOutputOptions = {
     enableUtsNumber?: boolean
     enableNarrowType?: boolean
     enableGenericsParameterDefaults?: boolean
-    enableUTSJSONObjectPropertyAccess?: boolean
     enableInlineReified?: boolean
     paramDefaultValue?: boolean
     constructorInvocation?: boolean
