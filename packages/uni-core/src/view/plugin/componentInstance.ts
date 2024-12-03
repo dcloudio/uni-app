@@ -121,14 +121,14 @@ export function createNativeEvent(
 
   if (__PLATFORM__ === 'h5') {
     if (__X__) {
-      for (const key in event) {
-        Object.defineProperty(evt, key, {
-          get() {
+      return new Proxy(evt, {
+        get(target, key) {
+          if (key in event) {
             return event[key]
-          },
-        })
-      }
-      return evt
+          }
+          return target[key]
+        },
+      })
     } else {
       wrapperEvent(event, evt)
     }
