@@ -1,3 +1,4 @@
+// 如果有增删修改，需要同步到common.d.ts中
 /// <reference path="./Array.d.ts" />
 /// <reference path="./Boolean.d.ts" />
 /// <reference path="./console.d.ts" />

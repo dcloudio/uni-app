@@ -1,78 +1,140 @@
+import debug from 'debug'
 import fs from 'fs-extra'
 import path from 'path'
+import crypto from 'crypto'
 
-import type { GenerateJavaScriptRuntimeCodeFrameOptions } from '../js'
+import type { GenerateJavaScriptRuntimeCodeFrameOptions } from './js'
 import {
   COLORS,
   generateCodeFrame,
   lineColumnToStartEnd,
   resolveSourceMapFileBySourceFile,
   splitRE,
-} from '../utils'
-import { originalPositionForSync } from '../../sourceMap'
-import { normalizePath } from '../../shared'
+} from './utils'
+import { originalPositionForSync } from '../sourceMap'
+import { normalizePath, resolveSourceMapPath } from '../shared'
 
-export interface GenerateWeixinRuntimeCodeFrameOptions
+const debugSourceMap = debug('uni:sourcemap')
+export interface GenerateMiniProgramRuntimeCodeFrameOptions
   extends GenerateJavaScriptRuntimeCodeFrameOptions {
   outputDir: string
-  platform: 'mp-weixin' | 'mp-baidu' | 'mp-alipay'
+  platform: 'mp-weixin' | 'mp-baidu' | 'mp-alipay' | 'mp-toutiao'
 }
 
-const JS_ERROR_RE = /(https?:\/\/[^\s]+?):(\d+):(\d+)/
+function parseFileNameAndLine(lineStr: string) {
+  const matches = lineStr.match(/(https?:\/\/[^\s]+?):(\d+):(\d+)/)
+  if (matches) {
+    const [, fileName, line] = matches
+    return { fileName, line: parseInt(line) }
+  }
+}
 
 interface SourceMapPlatformOptions {
+  parseFileNameAndLine(
+    lineStr: string
+  ): { fileName: string; line: number } | undefined
   // base64说明：sourceMappingURL=data:application/json;charset=utf-8;base64,
   // url说明：sourceMappingURL=http://xxx.com/xx.map
   // json说明：当前文件本身就是sourceMap
   sourceMapType: 'base64' | 'url' | 'json'
   sourceMapFileNameRe: RegExp
   fetchHeaders?: Record<string, string>
-  resolveAtSourceFileName?: (fileName: string, sourceMapDir: string) => string
+  needsSecondaryMapping?: boolean // 是否需要二次映射解析
+  resolveAtSourceFileName?: (
+    sourceFileName: string,
+    sourceMapDir: string,
+    stacktraceFileName: string
+  ) => string
+  resolveUrl?: (url: string) => string
 }
 
 export const MP_PLATFORMS: Record<string, SourceMapPlatformOptions> = {
   'mp-weixin': {
+    parseFileNameAndLine,
     sourceMapType: 'base64',
     sourceMapFileNameRe: /\/appservice\/(.+\.js)$/,
+    resolveAtSourceFileName(sourceFileName, _sourceMapDir, stacktraceFileName) {
+      return (
+        normalizePath(path.dirname(stacktraceFileName)) + '/' + sourceFileName
+      )
+    },
+  },
+  'mp-toutiao': {
+    parseFileNameAndLine(lineStr: string) {
+      const matches = lineStr.match(/\(([^()]+\.js):(\d+):(\d+)\)/)
+      if (matches) {
+        const [, fileName, line] = matches
+        return { fileName, line: parseInt(line) }
+      }
+    },
+    sourceMapType: 'base64',
+    sourceMapFileNameRe: /\/app-dist\/(.+\.js)$/,
   },
   'mp-baidu': {
+    parseFileNameAndLine,
     sourceMapType: 'json',
-    sourceMapFileNameRe: /\/output\/(.+\.js)$/,
+    sourceMapFileNameRe: /\/output\/(.+\.js).map$/,
+    needsSecondaryMapping: true,
     fetchHeaders: {
       Referer: 'https://smartapps.cn/defaultkey/devtools/page-frame.html', // 模拟来源页面
       'User-Agent':
-        'Mozilla/5.0 (Linux; Android 5.0) AppleWebKit/537.36 (KHTML, like Gecko) Mobile Safari/537.36 (compatible; Bytespider; https://zhanzhang.toutiao.com/)',
+        'Mozilla/5.0 (iPhone; CPU iPhone OS 13_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E217 swan/2.97.0 swan-baiduboxapp/12.15.0.255 swandevtools',
+    },
+    resolveUrl(url) {
+      return url + '.map'
     },
   },
   'mp-alipay': {
+    parseFileNameAndLine,
     sourceMapType: 'url',
-    sourceMapFileNameRe: /(index\.worker\.js)$/,
+    sourceMapFileNameRe: /(index\.worker\.js)/,
     resolveAtSourceFileName(fileName, sourceMapDir) {
       return normalizePath(
         path.relative(sourceMapDir, fileName.replace('raw-source://', ''))
       )
     },
   },
+  'mp-qq': {
+    parseFileNameAndLine,
+    sourceMapType: 'base64',
+    sourceMapFileNameRe: /\/appservice\/(.+\.js)$/,
+    needsSecondaryMapping: true,
+  },
+}
+
+const MP_TOUTIAO_URL_RE = /127\.0\.0\.1:\d+/
+
+function createResolveMPToutiaoUrl(stacktrace: string) {
+  const ipAndPort = stacktrace.match(MP_TOUTIAO_URL_RE)?.[0] ?? ''
+  if (!ipAndPort) {
+    return
+  }
+  return (url: string) => {
+    return 'http://' + ipAndPort + '/app-dist/' + url
+  }
 }
 
 // at http://127.0.0.1:37922/appservice/pages/index/index.js:5:7
-export async function parseWeixinRuntimeStacktrace(
+export async function parseMiniProgramRuntimeStacktrace(
   stacktrace: string,
-  options: GenerateWeixinRuntimeCodeFrameOptions
+  options: GenerateMiniProgramRuntimeCodeFrameOptions
 ) {
-  const sourceMapDir = options.outputDir
-  const res: string[] = []
+  const mpOptions = MP_PLATFORMS[options.platform]
+  if (options.platform === 'mp-toutiao') {
+    mpOptions.resolveUrl = createResolveMPToutiaoUrl(stacktrace)
+  }
+  const sourceMapDir = resolveSourceMapPath(options.outputDir, options.platform)
   const lines = stacktrace.split(splitRE)
   const errMsgs: string[] = []
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i]
-    const isStackTraceLine = line.includes('at ') && line.includes('http://')
+    const isStackTraceLine = line.trim().startsWith('at ')
     if (!isStackTraceLine) {
       errMsgs.push(line)
       continue
     }
-    const codes = await parseWeixinRuntimeStacktraceLine(
-      options.platform,
+    const codes = await parseMiniProgramRuntimeStacktraceLine(
+      mpOptions,
       errMsgs.join('\n'),
       line,
       sourceMapDir
@@ -90,30 +152,44 @@ export async function parseWeixinRuntimeStacktrace(
       }
       return [error, ...other].join('\n')
     }
-
-    res.push(line)
   }
+  return stacktrace
 }
 
-export async function parseWeixinRuntimeStacktraceLine(
-  platform: 'mp-weixin' | 'mp-baidu' | 'mp-alipay',
+// 使用 MD5 缓存
+const sourceMapCache: Record<string, string> = {}
+
+// 计算 MD5 的辅助函数
+function calculateMD5(content: string): string {
+  return crypto.createHash('md5').update(content).digest('hex')
+}
+
+export async function parseMiniProgramRuntimeStacktraceLine(
+  options: SourceMapPlatformOptions,
   error: string,
   lineStr: string,
   sourceMapDir: string
 ) {
-  const lines: string[] = []
-  const matches = lineStr.match(JS_ERROR_RE)
-  if (!matches) {
-    return lines
-  }
   const {
+    parseFileNameAndLine,
     sourceMapFileNameRe,
     sourceMapType,
+    needsSecondaryMapping,
     fetchHeaders,
     resolveAtSourceFileName,
-  } = MP_PLATFORMS[platform]
-  const [, url, line] = matches
+    resolveUrl,
+  } = options
+  const lines: string[] = []
+  const fileNameAndLine = parseFileNameAndLine(lineStr)
+  // console.error('fileNameAndLine', fileNameAndLine)
+  if (!fileNameAndLine) {
+    return lines
+  }
+
+  const { fileName, line } = fileNameAndLine
+  const url = resolveUrl?.(fileName) || fileName
   const fileNameMatches = url.match(sourceMapFileNameRe)
+  // console.error('url', url, fileNameMatches)
   let filename: string = ''
   if (fileNameMatches) {
     const [, fileName] = fileNameMatches
@@ -124,16 +200,37 @@ export async function parseWeixinRuntimeStacktraceLine(
   }
   // 获取 sourceMap 内容，写入文件
   const sourceMap = await fetchSourceMap(url, sourceMapType, fetchHeaders)
+  // console.error('sourceMap', sourceMap)
   if (!sourceMap) {
     return lines
   }
   const devtoolsSourceMapDir = sourceMapDir + '-devtools'
+  const sourceMapPath = path.resolve(devtoolsSourceMapDir, filename + '.map')
 
-  // 写入 sourceMap 文件
-  fs.outputFileSync(
-    path.resolve(devtoolsSourceMapDir, filename + '.map'),
-    sourceMap
-  )
+  // 计算当前 sourceMap 的 MD5
+  const currentMD5 = calculateMD5(sourceMap)
+
+  // 检查缓存和文件内容是否相同
+  let needsWrite = true
+  if (fs.existsSync(sourceMapPath)) {
+    if (sourceMapCache[sourceMapPath] === currentMD5) {
+      needsWrite = false
+    } else {
+      const existingContent = fs.readFileSync(sourceMapPath, 'utf-8')
+      const existingMD5 = calculateMD5(existingContent)
+      if (existingMD5 === currentMD5) {
+        needsWrite = false
+        // 更新缓存
+        sourceMapCache[sourceMapPath] = currentMD5
+      }
+    }
+  }
+
+  // 只在需要时写入文件
+  if (needsWrite) {
+    fs.outputFileSync(sourceMapPath, sourceMap)
+    sourceMapCache[sourceMapPath] = currentMD5
+  }
 
   const sourceMapFile = resolveSourceMapFileBySourceFile(
     filename,
@@ -143,8 +240,8 @@ export async function parseWeixinRuntimeStacktraceLine(
     return lines
   }
 
-  let originalPosition = getOriginalPosition(sourceMapFile, parseInt(line), 0)
-  if (platform === 'mp-baidu') {
+  let originalPosition = getOriginalPosition(sourceMapFile, line, 0)
+  if (needsSecondaryMapping) {
     const sourceMapFile = resolveSourceMapFileBySourceFile(
       originalPosition.source.replace('swan-source:///', ''),
       sourceMapDir
@@ -158,20 +255,16 @@ export async function parseWeixinRuntimeStacktraceLine(
       originalPosition.line,
       originalPosition.column
     )
-    processErrorLines(originalPosition, '', error, lines)
+    processErrorLines(originalPosition, error, lines)
   } else {
-    if (resolveAtSourceFileName) {
+    if (resolveAtSourceFileName && originalPosition.source) {
       originalPosition.source = resolveAtSourceFileName(
         originalPosition.source,
-        sourceMapDir
+        sourceMapDir,
+        filename
       )
     }
-    processErrorLines(
-      originalPosition,
-      platform === 'mp-weixin' ? path.dirname(filename) : '',
-      error,
-      lines
-    )
+    processErrorLines(originalPosition, error, lines)
   }
 
   return lines
@@ -182,6 +275,7 @@ async function fetchSourceMap(
   sourceMapType: 'base64' | 'url' | 'json' = 'base64',
   headers: Record<string, string> = {}
 ): Promise<string | null> {
+  debugSourceMap.enabled && debugSourceMap('fetchSourceMap %s', url)
   const controller = new AbortController()
   const timeoutId = setTimeout(() => controller.abort(), 1000) // 1秒超时
   try {
@@ -240,16 +334,15 @@ function getOriginalPosition(
 
 function processErrorLines(
   originalPosition: ReturnType<typeof getOriginalPosition>,
-  dir: string,
   error: string,
   lines: string[]
 ) {
   if (originalPosition.source) {
     lines.push(error)
     lines.push(
-      `at ${dir ? dir + '/' : ''}${originalPosition.source.split('?')[0]}:${
-        originalPosition.line
-      }:${originalPosition.column}`
+      `at ${originalPosition.source.split('?')[0]}:${originalPosition.line}:${
+        originalPosition.column
+      }`
     )
     if (
       originalPosition.sourceContent &&

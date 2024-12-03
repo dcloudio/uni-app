@@ -11,23 +11,33 @@ describe('uts:stacktrace:runtime', () => {
         ok: true,
         json: () => Promise.resolve({}),
         text: () => {
+          // mp-weixin
           if (url.includes('appservice/pages/index/index.js')) {
             return fs.readFileSync(
               path.resolve(__dirname, 'data/mp-weixin.js'),
               'utf8'
             )
-          } else if (url.includes('output/pages/index/index.js')) {
+            // mp-baidu
+          } else if (url.includes('output/pages/index/index.js.map')) {
             return fs.readFileSync(
               path.resolve(__dirname, 'data/mp-baidu.js.map'),
               'utf8'
             )
+            // mp-alipay
           } else if (url.includes('index.worker.js.map')) {
             return fs.readFileSync(
               path.resolve(__dirname, 'data/mp-alipay.js.map'),
               'utf8'
             )
+            // mp-alipay
           } else if (url.includes('index.worker.js')) {
             return `//# sourceMappingURL=http://localhost:6600/sourcemaps/index.worker.js.map`
+            // mp-toutiao
+          } else if (url.includes('app-dist/pages/index/index.js')) {
+            return fs.readFileSync(
+              path.resolve(__dirname, 'data/mp-toutiao.js'),
+              'utf8'
+            )
           }
         },
       })
@@ -222,10 +232,36 @@ at Proxy.throwError (http://127.0.0.1:36394/output/pages/index/index.js:11:13)`,
     expect(
       await parseRuntimeStacktrace(
         `Error: bbbbbbbbbbb12
-at Proxy.throwError  (http://127.0.0.1:54378/index.worker.js:196:13)`,
+at Proxy.throwError  (http://127.0.0.1:54378/index.worker.js?hash=66189eae:196:13)`,
         {
           outputDir,
           platform: 'mp-alipay',
+          language: 'javascript',
+          cacheDir: '',
+        }
+      )
+    ).toMatchSnapshot()
+  })
+
+  test('parseToutiaoRuntimeStacktrace', async () => {
+    const outputDir = path.resolve(
+      __dirname,
+      'examples/uni-app-x/output/dist/dev/mp-toutiao'
+    )
+    expect(
+      await parseRuntimeStacktrace(
+        `Error: bbbbbbbbbbb12
+at Proxy.throwError (pages/index/index.js:26:19)
+at pages/index/index.js:32:71
+at callWithErrorHandling (common/vendor.js:1561:23)
+at callWithAsyncErrorHandling (common/vendor.js:1568:19)
+at invoke (common/vendor.js:4589:26)
+at http://127.0.0.1:7046/core/3.46.0.17/tma-core.js:2:191115
+at Ct (http://127.0.0.1:7046/core/3.46.0.17/tma-core.js:2:9631)
+at t (http://127.0.0.1:7046/core/3.46.0.17/tma-core.js:2:15565)`,
+        {
+          outputDir,
+          platform: 'mp-toutiao',
           language: 'javascript',
           cacheDir: '',
         }

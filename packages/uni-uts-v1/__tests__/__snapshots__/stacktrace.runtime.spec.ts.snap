@@ -22,6 +22,17 @@ at pages/index/index.vue:21:16
 23 |          }"
 `;
 
+exports[`uts:stacktrace:runtime parseToutiaoRuntimeStacktrace 1`] = `
+"Error: bbbbbbbbbbb12
+at pages/index/index.vue:21:16
+19 |                  ]))
+20 |  
+21 |                  throw new Error('bbbbbbbbbbb12')
+   |                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+22 |              }
+23 |          }"
+`;
+
 exports[`uts:stacktrace:runtime parseUTSJavaScriptRuntimeStacktrace 1`] = `
 "error: [EXCEPTION] ReferenceError:Can't find variable: a
 at pages/index/index.uvue:3:8
