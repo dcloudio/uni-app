@@ -11777,9 +11777,9 @@
   var includeWidth = 750;
   function checkDeviceWidth() {
     var {
-      platform,
+      windowWidth,
       pixelRatio: pixelRatio2,
-      windowWidth
+      platform
     } = getBaseSystemInfo();
     deviceWidth = windowWidth;
     deviceDPR = pixelRatio2;

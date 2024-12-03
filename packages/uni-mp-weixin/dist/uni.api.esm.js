@@ -3,10 +3,6 @@ import { normalizeLocale, LOCALE_EN } from '@dcloudio/uni-i18n';
 import { Emitter, sortObject, ON_ERROR, onCreateVueApp, invokeCreateVueAppHook } from '@dcloudio/uni-shared';
 import { injectHook } from 'vue';
 
-function getBaseSystemInfo() {
-    return wx.getSystemInfoSync();
-}
-
 function validateProtocolFail(name, msg) {
     console.warn(`${name}: ${msg}`);
 }
@@ -450,7 +446,10 @@ let isIOS = false;
 let deviceWidth = 0;
 let deviceDPR = 0;
 function checkDeviceWidth() {
-    const { platform, pixelRatio, windowWidth } = getBaseSystemInfo();
+    const { windowWidth, pixelRatio, platform } = Object.assign({}, wx.getWindowInfo(), {
+            platform: wx.getDeviceInfo().platform,
+        })
+        ;
     deviceWidth = windowWidth;
     deviceDPR = pixelRatio;
     isIOS = platform === 'ios';
@@ -901,7 +900,8 @@ const getLocale = () => {
     if (app && app.$vm) {
         return app.$vm.$locale;
     }
-    return normalizeLocale(wx.getSystemInfoSync().language) || LOCALE_EN;
+    return normalizeLocale(wx.getAppBaseInfo().language) || LOCALE_EN
+        ;
 };
 const setLocale = (locale) => {
     const app = isFunction(getApp) && getApp();

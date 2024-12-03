@@ -4212,7 +4212,7 @@ let maxWidth = 960;
 let baseWidth = 375;
 let includeWidth = 750;
 function checkDeviceWidth() {
-  const { platform, pixelRatio, windowWidth } = getBaseSystemInfo();
+  const { windowWidth, pixelRatio, platform } = getBaseSystemInfo();
   deviceWidth = windowWidth;
   deviceDPR = pixelRatio;
   isIOS$1 = platform === "ios";
@@ -17153,7 +17153,7 @@ const closeDialogPage = (options) => {
       if (i > 0) {
         invokeHook(dialogPages[i - 1].vm, ON_SHOW);
       }
-      dialogPageTriggerParentShow(dialogPages[i], 1);
+      dialogPageTriggerParentShow(dialogPages[i]);
       if ((!dialogPages[i]).$disableEscBack) {
         decrementEscBackPageNum();
       }

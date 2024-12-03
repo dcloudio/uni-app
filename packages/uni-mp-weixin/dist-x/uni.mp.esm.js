@@ -1085,7 +1085,8 @@ function initAppLifecycle(appOptions, vm) {
     }
 }
 function initLocale(appVm) {
-    const locale = ref(normalizeLocale(wx.getSystemInfoSync().language) || LOCALE_EN);
+    const locale = ref(normalizeLocale(wx.getAppBaseInfo().language) || LOCALE_EN
+        );
     Object.defineProperty(appVm, '$locale', {
         get() {
             return locale.value;

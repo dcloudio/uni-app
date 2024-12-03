@@ -2082,6 +2082,7 @@ function closeNativeDialogPage(dialogPage, animationType, animationDuration, cal
   var webview = getNativeApp().pageManager.findPageById(dialogPage.$vm.$basePage.id + "");
   if (webview) {
     closeWebview(webview, animationType || "none", animationDuration || 0, callback);
+    setStatusBarStyle();
   }
 }
 var closeDialogPage = (options) => {

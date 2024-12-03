@@ -450,7 +450,7 @@ let isIOS = false;
 let deviceWidth = 0;
 let deviceDPR = 0;
 function checkDeviceWidth() {
-    const { platform, pixelRatio, windowWidth } = getBaseSystemInfo();
+    const { windowWidth, pixelRatio, platform } = getBaseSystemInfo();
     deviceWidth = windowWidth;
     deviceDPR = pixelRatio;
     isIOS = platform === 'ios';

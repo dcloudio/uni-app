@@ -520,10 +520,6 @@ const createCanvasContextAsync = defineAsyncApi(API_CREATE_CANVAS_CONTEXT_ASYNC,
     }
 });
 
-function getBaseSystemInfo() {
-    return wx.getSystemInfoSync();
-}
-
 const API_UPX2PX = 'upx2px';
 const Upx2pxProtocol = [
     {
@@ -539,7 +535,10 @@ let isIOS = false;
 let deviceWidth = 0;
 let deviceDPR = 0;
 function checkDeviceWidth() {
-    const { platform, pixelRatio, windowWidth } = getBaseSystemInfo();
+    const { windowWidth, pixelRatio, platform } = Object.assign({}, wx.getWindowInfo(), {
+            platform: wx.getDeviceInfo().platform,
+        })
+        ;
     deviceWidth = windowWidth;
     deviceDPR = pixelRatio;
     isIOS = platform === 'ios';
@@ -1040,7 +1039,8 @@ const getLocale = () => {
     if (app && app.$vm) {
         return app.$vm.$locale;
     }
-    return normalizeLocale(wx.getSystemInfoSync().language) || LOCALE_EN;
+    return normalizeLocale(wx.getAppBaseInfo().language) || LOCALE_EN
+        ;
 };
 const setLocale = (locale) => {
     const app = isFunction(getApp) && getApp();
