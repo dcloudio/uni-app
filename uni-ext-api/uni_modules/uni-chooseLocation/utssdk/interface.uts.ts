@@ -57,7 +57,8 @@ export type ChooseLocationErrorCode =
      */
     4;
 
-export interface ChooseLocationSuccess extends AsyncApiSuccessResult {
+export interface ChooseLocationSuccess {
+    errMsg: string,
     name: string,
     address: string,
     latitude: number,
@@ -70,7 +71,7 @@ export interface ChooseLocationFail extends IUniError {
 }
 type ChooseLocationFailCallback = (result: ChooseLocationFail) => void
 
-export type ChooseLocationComplete = AsyncApiResult
+export type ChooseLocationComplete = any
 type ChooseLocationCompleteCallback = (result: ChooseLocationComplete) => void
 
 /**
@@ -385,17 +386,13 @@ export interface Uni {
      */
     chooseLocation(options: ChooseLocationOptions): void;
 }
-// #ifdef APP-ANDROID
-// @ts-expect-error
-export class ChooseLocationSuccessImpl extends AsyncApiSuccessResult implements ChooseLocationSuccess {
+export class ChooseLocationSuccessImpl implements ChooseLocationSuccess {
+    errMsg: string
     name: string
     address: string
     latitude: number
     longitude: number
-    // @ts-expect-error
-    override errMsg: string
     constructor(name: string, address: string, latitude: number, longitude: number, errMsg: string = 'chooseLocation:ok') {
-        super()
         this.errMsg = errMsg
         this.name = name
         this.address = address
@@ -411,4 +408,3 @@ export class ChooseLocationFailImpl extends UniError implements ChooseLocationFa
         this.errMsg = errMsg
     }
 }
-// #endif

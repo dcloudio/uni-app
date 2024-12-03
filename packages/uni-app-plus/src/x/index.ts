@@ -6,12 +6,21 @@ import {
 } from '../service/framework/page'
 import * as components from './components'
 
+import { registerSystemRoute } from './framework/route'
+import { systemRoutes as __uniSystemRoutes } from './framework/route'
+
+import UniChooseLocationPage from '@dcloudio/uni-ext-api/uni-chooseLocation/pages/chooseLocation/chooseLocation.vue'
+registerSystemRoute('uni:chooseLocation', UniChooseLocationPage, {
+  disableSwipeBack: false,
+})
+
 export default {
   uni,
   getApp,
   getCurrentPages,
   __definePage,
   __registerApp,
+  __uniSystemRoutes,
   initApp,
   components,
 }

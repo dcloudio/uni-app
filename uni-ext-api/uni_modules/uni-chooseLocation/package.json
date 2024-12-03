@@ -45,7 +45,7 @@
         "chooseLocation": {
           "name": "chooseLocation",
           "app": {
-            "js": true,
+            "js": false,
             "kotlin": true,
             "swift": true,
             "arkts": false
