@@ -11,6 +11,11 @@ describe('normalizeColor', () => {
       reason: expect.any(Function),
     })
 
+    expect(normalizeColor('#f008', {})).toEqual({
+      value: '#ff000088',
+      reason: expect.any(Function),
+    })
+
     expect(normalizeColor('#aaffffaa', {})).toEqual({
       value: '#aaffffaa',
     })
