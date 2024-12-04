@@ -90,8 +90,10 @@ export function closeNativeDialogPage(
       webview,
       animationType || 'none',
       animationDuration || 0,
-      callback
+      () => {
+        setStatusBarStyle()
+        callback?.()
+      }
     )
-    setStatusBarStyle()
   }
 }
