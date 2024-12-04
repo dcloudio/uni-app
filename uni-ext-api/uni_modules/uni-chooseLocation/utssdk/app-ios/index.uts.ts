@@ -11,8 +11,12 @@ export const chooseLocation: ChooseLocation = (options: ChooseLocationOptions) =
 		uni.$emit(optionsEventName, JSON.parse(JSON.stringify(options)!))
 	})
 	uni.$on(successEventName, (...res: any) => {
-		const mapRes = res[0] as Map<string, any>
-		const result = new ChooseLocationSuccessImpl(mapRes.get('name') as string, mapRes.get('address') as string, mapRes.get('latitude') as number, mapRes.get('longitude') as number)
+		const resObj = res[0] as UTSJSONObject
+		const name = resObj['name'] as string
+		const address = resObj['address'] as string
+		const latitude = resObj['latitude'] as number
+		const longitude = resObj['longitude'] as number
+		const result = new ChooseLocationSuccessImpl(name, address, latitude, longitude)
 		options.success?.(result)
 		options.complete?.(result)
 	})
@@ -22,6 +26,7 @@ export const chooseLocation: ChooseLocation = (options: ChooseLocationOptions) =
 	})
 	uni.openDialogPage({
 		url: `uni:chooseLocation?readyEventName=${readyEventName}&optionsEventName=${optionsEventName}&successEventName=${successEventName}&failEventName=${failEventName}`,
+		triggerParentHide: true,
 		fail(err) {
 			options.fail?.(new ChooseLocationFailImpl(`chooseLocation:fail ${err.errMsg}`, 4))
 			options.complete?.(new ChooseLocationFailImpl(`chooseLocation:fail ${err.errMsg}`, 4))
