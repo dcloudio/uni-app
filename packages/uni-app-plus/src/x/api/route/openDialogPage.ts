@@ -29,7 +29,7 @@ export const openDialogPage = (
     triggerFailCallback(options, 'url is required')
     return null
   }
-  const { path, query } = parseUrl(url as string)
+  const { path, query } = parseUrl(url)
   const normalizeUrl = createNormalizeUrl('navigateTo')
   const errMsg = normalizeUrl(path, {})
   if (errMsg) {
