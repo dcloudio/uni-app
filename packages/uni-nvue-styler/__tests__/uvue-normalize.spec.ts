@@ -226,8 +226,8 @@ describe('uvue-styler: normalize', () => {
       },
       'color-length-8': {
         '': {
-          color: '#aaffff',
-          backgroundColor: '#aaffff',
+          color: '#aaffffaa',
+          backgroundColor: '#aaffffaa',
         },
       },
     })

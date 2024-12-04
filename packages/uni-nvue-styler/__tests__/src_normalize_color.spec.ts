@@ -20,8 +20,17 @@ describe('normalizeColor', () => {
       value: '#aaffffaa',
     })
 
+    expect(normalizeColor('#AAFFFFAA', {})).toEqual({
+      value: '#AAFFFFAA',
+    })
+
     expect(normalizeColor('rgb(0,0,0)', {})).toEqual({
       value: 'rgb(0,0,0)',
+    })
+
+    expect(normalizeColor('rgb(266,266,266)', {})).toEqual({
+      value: null,
+      reason: expect.any(Function),
     })
     expect(normalizeColor('rgba(0,0,0,1)', {})).toEqual({
       value: 'rgba(0,0,0,1)',
@@ -31,6 +40,10 @@ describe('normalizeColor', () => {
     expect(normalizeColor('blue', {})).toEqual({
       value: '#0000FF',
       reason: expect.any(Function),
+    })
+
+    expect(normalizeColor('transparent', {})).toEqual({
+      value: 'rgba(0,0,0,0)',
     })
   })
 })
