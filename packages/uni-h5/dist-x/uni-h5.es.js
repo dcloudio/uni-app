@@ -17163,6 +17163,7 @@ const closeDialogPage = (options) => {
       const parentSystemDialogPages = parentPage.vm.$pageLayoutInstance.$systemDialogPages.value;
       const index2 = parentSystemDialogPages.indexOf(dialogPage);
       parentSystemDialogPages.splice(index2, 1);
+      dialogPageTriggerParentShow(dialogPage, 1);
       return;
     }
   } else {
