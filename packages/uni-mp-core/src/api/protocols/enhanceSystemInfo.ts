@@ -114,7 +114,7 @@ export function populateParameters(
   }
 
   // hostLanguage
-  const hostLanguage = language.replace(/_/g, '-')
+  const hostLanguage = (language || '').replace(/_/g, '-')
 
   // wx.getAccountInfoSync
 
