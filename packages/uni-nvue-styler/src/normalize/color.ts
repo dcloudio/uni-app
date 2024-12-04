@@ -2,8 +2,14 @@ import { type Normalize, autofixedReason, validReason } from '../utils'
 
 export const normalizeColor: Normalize = (v) => {
   v = (v || '').toString()
+
   if (v.match(/^#[0-9a-fA-F]{6}$/)) {
     return { value: v }
+  }
+  if (v.match(/^#[0-9a-fA-F]{8}$/)) {
+    return {
+      value: v,
+    }
   }
   if (v.match(/^#[0-9a-fA-F]{3}$/)) {
     return {
