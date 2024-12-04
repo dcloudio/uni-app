@@ -109,6 +109,9 @@ function isImplementationOf(leftType, rightType, visited = []) {
   });
 }
 function isInstanceOf(value, type) {
+  if (type === UTSValueIterable) {
+    return value && value[Symbol.iterator];
+  }
   const isNativeInstanceofType = value instanceof type;
   if (isNativeInstanceofType || typeof value !== "object") {
     return isNativeInstanceofType;
@@ -588,6 +591,8 @@ let UTSJSONObject$1 = class UTSJSONObject2 {
     }
   }
 };
+let UTSValueIterable$1 = class UTSValueIterable2 {
+};
 function getGlobal() {
   if (typeof globalThis !== "undefined") {
     return globalThis;
@@ -615,6 +620,7 @@ const realGlobal = getGlobal();
 realGlobal.UTSJSONObject = UTSJSONObject$1;
 realGlobal.UniError = UniError$1;
 realGlobal.UTS = UTS$1;
+realGlobal.UTSValueIterable = UTSValueIterable$1;
 const isEnableLocale = /* @__PURE__ */ uniShared.once(
   () => typeof __uniConfig !== "undefined" && __uniConfig.locales && !!Object.keys(__uniConfig.locales).length
 );

@@ -1,5 +1,6 @@
 interface UTSJSONObject {
   constructor : Function;
+  // 4.41
   [key : string] : any | null
   /**
      获取一个 属性，返回类型是any 或者 null

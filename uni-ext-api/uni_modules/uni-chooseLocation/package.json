@@ -38,7 +38,9 @@
       "uni-getLocation",
       "uni-cloud-client",
       "uni-getLocation",
-      "uni-map-tencent"
+      "uni-map-tencent",
+      "app-ios:uni-dialogPage",
+      "app-ios:uni-event"
     ],
     "uni-ext-api": {
       "uni": {

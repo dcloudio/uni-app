@@ -5537,7 +5537,7 @@ class UniCSSStyleDeclaration {
  * event.target、event.currentTarget也是UniElement实例，可能不含id
  */
 class UniElement {
-    constructor(id, name) {
+    constructor(id = '', name = '') {
         // 跳过vue的响应式
         this.__v_skip = true;
         this.style = new UniCSSStyleDeclaration();
