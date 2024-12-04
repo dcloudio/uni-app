@@ -27,7 +27,10 @@ export function uniConsolePlugin(options: ConsoleOptions): Plugin {
     },
     transform(code, id) {
       if (isRenderjs(id) || isWxs(id)) {
-        return restoreConsoleExpr(code)
+        return {
+          code: restoreConsoleExpr(code),
+          map: { mappings: '' },
+        }
       }
       if (!filter(id)) return null
       if (!isJsFile(id)) return null
