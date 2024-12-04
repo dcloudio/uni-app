@@ -229,6 +229,12 @@
       uni.$off(this.readyEventName, null);
       uni.$off(this.successEventName, null);
       uni.$off(this.failEventName, null);
+      // #ifndef APP-IOS
+      __uniappx__nativeEventBus.off(this.optionsEventName, null)
+      __uniappx__nativeEventBus.off(this.readyEventName, null)
+      __uniappx__nativeEventBus.off(this.successEventName, null)
+      __uniappx__nativeEventBus.off(this.failEventName, null)
+      // #endif
     },
     onResize() {
       this.getSystemInfo();

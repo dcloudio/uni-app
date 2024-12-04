@@ -7,7 +7,7 @@ export const chooseLocation: ChooseLocation = (options: ChooseLocationOptions) =
 	const optionsEventName = `${baseEventName}_options`
 	const successEventName = `${baseEventName}_success`
 	const failEventName = `${baseEventName}_fail`
-	uni.$on(readyEventName, (...options: any) => {
+	uni.$on(readyEventName, (..._: any) => {
 		uni.$emit(optionsEventName, JSON.parse(JSON.stringify(options)!))
 	})
 	uni.$on(successEventName, (...res: any) => {

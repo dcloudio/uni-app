@@ -2204,14 +2204,14 @@ function createNativeEvent(evt, htmlElement = false) {
   }
   {
     {
-      for (const key in event) {
-        Object.defineProperty(evt, key, {
-          get() {
+      return new Proxy(evt, {
+        get(target2, key) {
+          if (key in event) {
             return event[key];
           }
-        });
-      }
-      return evt;
+          return target2[key];
+        }
+      });
     }
   }
 }
@@ -15026,6 +15026,19 @@ const getProvider = /* @__PURE__ */ defineAsyncApi(
   API_GET_PROVIDER,
   createUnsupportedAsyncApi(API_GET_PROVIDER)
 );
+class CanvasImage extends Image {
+  constructor() {
+    super();
+    this._src = "";
+  }
+  get src() {
+    return this._src;
+  }
+  set src(value) {
+    this._src = value;
+    super.src = getRealPath(value);
+  }
+}
 class CanvasContextImpl {
   constructor(element) {
     this._element = element;
@@ -15041,7 +15054,7 @@ class CanvasContextImpl {
   }
   // @ts-expect-error TODO 类型不匹配?
   createImage() {
-    return new Image();
+    return new CanvasImage();
   }
   createPath2D() {
     return new Path2D();
@@ -17278,6 +17291,10 @@ const _sfc_main$1 = {
     uni.$off(this.readyEventName, null);
     uni.$off(this.successEventName, null);
     uni.$off(this.failEventName, null);
+    __uniappx__nativeEventBus.off(this.optionsEventName, null);
+    __uniappx__nativeEventBus.off(this.readyEventName, null);
+    __uniappx__nativeEventBus.off(this.successEventName, null);
+    __uniappx__nativeEventBus.off(this.failEventName, null);
   },
   onResize() {
     this.getSystemInfo();
@@ -17747,318 +17764,318 @@ const _sfc_main$1 = {
   }
 };
 const _style_0 = `
-@font-face {
-    font-family: UniChooseLocationFontFamily;
+@font-face {\r
+    font-family: UniChooseLocationFontFamily;\r
     src: url('data:font/ttf;charset=utf-8;base64,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') format('truetype');
 }
-.uni-choose-location-icons {
-    font-family: "UniChooseLocationFontFamily";
-    font-size: 16px;
+.uni-choose-location-icons {\r
+    font-family: "UniChooseLocationFontFamily";\r
+    font-size: 16px;\r
     font-style: normal;
 }
-.uni-choose-location {
-    position: relative;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    background: #f8f8f8;
+.uni-choose-location {\r
+    position: relative;\r
+    left: 0;\r
+    top: 0;\r
+    width: 100%;\r
+    height: 100%;\r
+    background: #f8f8f8;\r
     z-index: 999;
 }
-.uni-choose-location-map-box {
-    position: relative;
-    width: 100%;
+.uni-choose-location-map-box {\r
+    position: relative;\r
+    width: 100%;\r
     height: 350px;
 }
-.uni-choose-location-map-box.uni-choose-location-vertical {
-    transition-property: transform;
-    transition-duration: 0.25s;
+.uni-choose-location-map-box.uni-choose-location-vertical {\r
+    transition-property: transform;\r
+    transition-duration: 0.25s;\r
     transition-timing-function: ease-out;
 }
-.uni-choose-location-map {
-    width: 100%;
+.uni-choose-location-map {\r
+    width: 100%;\r
     height: 100%;
 }
-.uni-choose-location-map-target {
-    position: absolute;
-    left: 50%;
-    bottom: 50%;
-    width: 50px;
-    height: 50px;
-    margin-left: -25px;
-    transition-property: transform;
-    transition-duration: 0.25s;
+.uni-choose-location-map-target {\r
+    position: absolute;\r
+    left: 50%;\r
+    bottom: 50%;\r
+    width: 50px;\r
+    height: 50px;\r
+    margin-left: -25px;\r
+    transition-property: transform;\r
+    transition-duration: 0.25s;\r
     transition-timing-function: ease-out;
 }
-.uni-choose-location-map-target-icon {
-    font-size: 50px;
+.uni-choose-location-map-target-icon {\r
+    font-size: 50px;\r
     color: #f0493e;
-}
-
+}\r
+\r
   /* #1aad19; #f0493e; #007aff;*/
-.uni-choose-location-map-reset {
-    position: absolute;
-    left: 20px;
-    bottom: 40px;
-    width: 40px;
-    height: 40px;
-    box-sizing: border-box;
-    background-color: #fff;
-    border-radius: 20px;
-    pointer-events: auto;
-    box-shadow: 0px 0px 20px 2px rgba(0, 0, 0, .3);
-    z-index: 9;
-    display: flex;
-    justify-content: center;
+.uni-choose-location-map-reset {\r
+    position: absolute;\r
+    left: 20px;\r
+    bottom: 40px;\r
+    width: 40px;\r
+    height: 40px;\r
+    box-sizing: border-box;\r
+    background-color: #fff;\r
+    border-radius: 20px;\r
+    pointer-events: auto;\r
+    box-shadow: 0px 0px 20px 2px rgba(0, 0, 0, .3);\r
+    z-index: 9;\r
+    display: flex;\r
+    justify-content: center;\r
     align-items: center;
 }
-.uni-choose-location-map-reset.uni-choose-location-vertical {
-    transition-property: transform;
-    transition-duration: 0.25s;
+.uni-choose-location-map-reset.uni-choose-location-vertical {\r
+    transition-property: transform;\r
+    transition-duration: 0.25s;\r
     transition-timing-function: ease-out;
 }
-.uni-choose-location-map-reset-icon {
-    font-size: 26px;
-    text-align: center;
+.uni-choose-location-map-reset-icon {\r
+    font-size: 26px;\r
+    text-align: center;\r
     line-height: 40px;
 }
-.uni-choose-location-nav {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 60px;
-    background-color: rgba(0, 0, 0, 0);
+.uni-choose-location-nav {\r
+    position: absolute;\r
+    top: 0;\r
+    left: 0;\r
+    width: 100%;\r
+    height: 60px;\r
+    background-color: rgba(0, 0, 0, 0);\r
     background-image: linear-gradient(to bottom, rgba(0, 0, 0, .6), rgba(0, 0, 0, 0));
 }
-.uni-choose-location-nav-btn {
-    position: absolute;
-    top: 5px;
-    left: 5px;
-    width: 64px;
-    height: 44px;
+.uni-choose-location-nav-btn {\r
+    position: absolute;\r
+    top: 5px;\r
+    left: 5px;\r
+    width: 64px;\r
+    height: 44px;\r
     padding: 5px;
 }
-.uni-choose-location-nav-btn.uni-choose-location-nav-confirm-btn {
-    left: auto;
+.uni-choose-location-nav-btn.uni-choose-location-nav-confirm-btn {\r
+    left: auto;\r
     right: 5px;
 }
-.uni-choose-location-nav-btn.uni-choose-location-nav-confirm-btn .uni-choose-location-nav-confirm-text {
-    background-color: #007aff;
+.uni-choose-location-nav-btn.uni-choose-location-nav-confirm-btn .uni-choose-location-nav-confirm-text {\r
+    background-color: #007aff;\r
     border-radius: 5px;
 }
-.uni-choose-location-nav-btn.uni-choose-location-nav-confirm-btn.active:active {
+.uni-choose-location-nav-btn.uni-choose-location-nav-confirm-btn.active:active {\r
     opacity: 0.7;
 }
-.uni-choose-location-nav-btn.uni-choose-location-nav-confirm-btn.disable {
+.uni-choose-location-nav-btn.uni-choose-location-nav-confirm-btn.disable {\r
     opacity: 0.4;
 }
-.uni-choose-location-nav-btn.uni-choose-location-nav-back-btn .uni-choose-location-nav-back-text {
+.uni-choose-location-nav-btn.uni-choose-location-nav-back-btn .uni-choose-location-nav-back-text {\r
     color: #fff;
 }
-.uni-choose-location-nav-text {
-    padding: 8px 0px;
-    font-size: 14px;
-    text-align: center;
-
-    letter-spacing: 0.1em;
-
-    color: #fff;
+.uni-choose-location-nav-text {\r
+    padding: 8px 0px;\r
+    font-size: 14px;\r
+    text-align: center;\r
+\r
+    letter-spacing: 0.1em;\r
+\r
+    color: #fff;\r
     text-align: center;
 }
-.uni-choose-location-poi {
-    position: absolute;
-    top: 350px;
-    width: 100%;
-    bottom: 0;
-    background-color: #fff;
+.uni-choose-location-poi {\r
+    position: absolute;\r
+    top: 350px;\r
+    width: 100%;\r
+    bottom: 0;\r
+    background-color: #fff;\r
     z-index: 10
 }
-.uni-choose-location-poi.uni-choose-location-vertical {
-    transition-property: top;
-    transition-duration: 0.25s;
+.uni-choose-location-poi.uni-choose-location-vertical {\r
+    transition-property: top;\r
+    transition-duration: 0.25s;\r
     transition-timing-function: ease-out;
 }
-.uni-choose-location-poi-search {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
-    height: 50px;
-    padding: 8px;
+.uni-choose-location-poi-search {\r
+    display: flex;\r
+    flex-direction: row;\r
+    align-items: center;\r
+    justify-content: center;\r
+    height: 50px;\r
+    padding: 8px;\r
     background-color: #fff;
 }
-.uni-choose-location-poi-search-box {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
-    height: 32px;
-    flex: 1;
-    border-radius: 5px;
-    padding: 0 15px;
+.uni-choose-location-poi-search-box {\r
+    display: flex;\r
+    flex-direction: row;\r
+    align-items: center;\r
+    justify-content: center;\r
+    height: 32px;\r
+    flex: 1;\r
+    border-radius: 5px;\r
+    padding: 0 15px;\r
     background-color: #ededed;
 }
-.uni-choose-location-poi-search-input {
-    flex: 1;
-    height: 100%;
-    border-radius: 5px;
-    padding: 0 5px;
+.uni-choose-location-poi-search-input {\r
+    flex: 1;\r
+    height: 100%;\r
+    border-radius: 5px;\r
+    padding: 0 5px;\r
     background: #ededed;
 }
-.uni-choose-location-poi-search-cancel {
-    margin-left: 5px;
-    color: #007aff;
-    font-size: 15px;
+.uni-choose-location-poi-search-cancel {\r
+    margin-left: 5px;\r
+    color: #007aff;\r
+    font-size: 15px;\r
     text-align: center;
 }
-.uni-choose-location-poi-list {
+.uni-choose-location-poi-list {\r
     flex: 1;
 }
-.uni-choose-location-poi-search-loading {
-    display: flex;
-    align-items: center;
+.uni-choose-location-poi-search-loading {\r
+    display: flex;\r
+    align-items: center;\r
     padding: 10px 0px;
 }
-.uni-choose-location-poi-search-loading-text {
+.uni-choose-location-poi-search-loading-text {\r
     color: #191919;
 }
-.uni-choose-location-poi-search-error {
-    display: flex;
-    align-items: center;
+.uni-choose-location-poi-search-error {\r
+    display: flex;\r
+    align-items: center;\r
     padding: 10px;
 }
-.uni-choose-location-poi-search-error-text {
-    color: #191919;
+.uni-choose-location-poi-search-error-text {\r
+    color: #191919;\r
     font-size: 14px;
 }
-.uni-choose-location-poi-item {
-    position: relative;
-    padding: 15px 10px;
+.uni-choose-location-poi-item {\r
+    position: relative;\r
+    padding: 15px 10px;\r
     padding-right: 40px;
 }
-.uni-choose-location-poi-item-title-text {
-    font-size: 14px;
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
+.uni-choose-location-poi-item-title-text {\r
+    font-size: 14px;\r
+    overflow: hidden;\r
+    white-space: nowrap;\r
+    text-overflow: ellipsis;\r
     color: #191919;
 }
-.uni-choose-location-poi-item-detail-text {
-    font-size: 12px;
-    margin-top: 5px;
-    color: #b2b2b2;
-    overflow: hidden;
-    white-space: nowrap;
+.uni-choose-location-poi-item-detail-text {\r
+    font-size: 12px;\r
+    margin-top: 5px;\r
+    color: #b2b2b2;\r
+    overflow: hidden;\r
+    white-space: nowrap;\r
     text-overflow: ellipsis;
 }
-.uni-choose-location-poi-item-selected-icon {
-    position: absolute;
-    top: 50%;
-    right: 10px;
-    width: 26px;
-    height: 26px;
-    margin-top: -13px;
-    color: #007aff;
+.uni-choose-location-poi-item-selected-icon {\r
+    position: absolute;\r
+    top: 50%;\r
+    right: 10px;\r
+    width: 26px;\r
+    height: 26px;\r
+    margin-top: -13px;\r
+    color: #007aff;\r
     font-size: 24px;
 }
-.uni-choose-location-poi-item-after {
-    position: absolute;
-    height: 1px;
-    left: 10px;
-    bottom: 0px;
-    right: 10px;
-    width: auto;
+.uni-choose-location-poi-item-after {\r
+    position: absolute;\r
+    height: 1px;\r
+    left: 10px;\r
+    bottom: 0px;\r
+    right: 10px;\r
+    width: auto;\r
     border-bottom: 1px solid #f8f8f8;
 }
-.uni-choose-location-search-icon {
-    color: #808080;
+.uni-choose-location-search-icon {\r
+    color: #808080;\r
     padding-left: 5px;
 }
-.uni-choose-location-poi-search-loading-image {
-    width: 30px;
+.uni-choose-location-poi-search-loading-image {\r
+    width: 30px;\r
     height: 30px;
-}
-
+}\r
+\r
   /* 横屏样式开始 */
-.uni-choose-location .uni-choose-location-map-box.uni-choose-location-landscape {
+.uni-choose-location .uni-choose-location-map-box.uni-choose-location-landscape {\r
     height: 100%;
 }
-.uni-choose-location .uni-choose-location-poi.uni-choose-location-landscape {
-    position: absolute;
-    top: 80px;
-    right: 25px;
-    width: 300px;
-    bottom: 20px;
-    max-height: 600px;
-    box-shadow: 0px 0px 20px 2px rgba(0, 0, 0, .3);
+.uni-choose-location .uni-choose-location-poi.uni-choose-location-landscape {\r
+    position: absolute;\r
+    top: 80px;\r
+    right: 25px;\r
+    width: 300px;\r
+    bottom: 20px;\r
+    max-height: 600px;\r
+    box-shadow: 0px 0px 20px 2px rgba(0, 0, 0, .3);\r
     border-radius: 5px;
 }
-.uni-choose-location .uni-choose-location-map-reset.uni-choose-location-landscape {
-    left: 40px;
+.uni-choose-location .uni-choose-location-map-reset.uni-choose-location-landscape {\r
+    left: 40px;\r
     bottom: 40px;
 }
-.uni-choose-location .uni-choose-location-poi-item.uni-choose-location-landscape {
+.uni-choose-location .uni-choose-location-poi-item.uni-choose-location-landscape {\r
     padding: 10px;
 }
-.uni-choose-location .uni-choose-location-nav-btn.uni-choose-location-landscape {
-    top: 10px;
+.uni-choose-location .uni-choose-location-nav-btn.uni-choose-location-landscape {\r
+    top: 10px;\r
     left: 20px;
 }
-.uni-choose-location .uni-choose-location-nav-btn.uni-choose-location-nav-confirm-btn.uni-choose-location-landscape {
-    left: auto;
+.uni-choose-location .uni-choose-location-nav-btn.uni-choose-location-nav-confirm-btn.uni-choose-location-landscape {\r
+    left: auto;\r
     right: 20px;
-}
-
-  /* 横屏样式结束 */
-
+}\r
+\r
+  /* 横屏样式结束 */\r
+\r
   /* 暗黑模式样式开始 */
-.uni-choose-location-dark .uni-choose-location-map-reset {
-    background-color: #111111;
+.uni-choose-location-dark .uni-choose-location-map-reset {\r
+    background-color: #111111;\r
     box-shadow: 0px 0px 5px 1px rgba(0, 0, 0, .3);
 }
-.uni-choose-location-dark .uni-choose-location-poi-search-box {
+.uni-choose-location-dark .uni-choose-location-poi-search-box {\r
     background-color: #111111;
 }
-.uni-choose-location-dark .uni-choose-location-search-icon {
+.uni-choose-location-dark .uni-choose-location-search-icon {\r
     color: #d1d1d1;
 }
-.uni-choose-location-dark .uni-choose-location-poi-search-loading-text {
+.uni-choose-location-dark .uni-choose-location-poi-search-loading-text {\r
     color: #d1d1d1;
 }
-.uni-choose-location-dark .uni-choose-location-poi-search {
+.uni-choose-location-dark .uni-choose-location-poi-search {\r
     background-color: #181818
 }
-.uni-choose-location-dark .uni-choose-location-poi-search-input {
-    background: #111111;
+.uni-choose-location-dark .uni-choose-location-poi-search-input {\r
+    background: #111111;\r
     color: #d1d1d1;
 }
-.uni-choose-location-dark .uni-choose-location-poi-item-title-text {
+.uni-choose-location-dark .uni-choose-location-poi-item-title-text {\r
     color: #d1d1d1;
 }
-.uni-choose-location-dark .uni-choose-location-poi-item-detail-text {
+.uni-choose-location-dark .uni-choose-location-poi-item-detail-text {\r
     color: #595959;
 }
-.uni-choose-location-dark .uni-choose-location-poi {
+.uni-choose-location-dark .uni-choose-location-poi {\r
     background-color: #181818
 }
-.uni-choose-location-dark .uni-choose-location-poi-item-after {
+.uni-choose-location-dark .uni-choose-location-poi-item-after {\r
     border-bottom: 1px solid #1e1e1e;
 }
-.uni-choose-location-dark .uni-choose-location-map-reset-icon {
+.uni-choose-location-dark .uni-choose-location-map-reset-icon {\r
     color: #d1d1d1;
 }
-.uni-choose-location-dark .uni-choose-location-poi-search-error-text {
+.uni-choose-location-dark .uni-choose-location-poi-search-error-text {\r
     color: #d1d1d1;
-}
-
+}\r
+\r
   /* 暗黑模式样式结束 */
-uni-image > div {
-    width: 100%;
-    height: 100%;
+uni-image > div {\r
+    width: 100%;\r
+    height: 100%;\r
     background-repeat: no-repeat;
-}
-
+}\r
+\r
 `;
 const _export_sfc = (sfc, props2) => {
   const target = sfc.__vccOpts || sfc;
@@ -18334,9 +18351,16 @@ function _sfc_render$1(_ctx, _cache, $props, $setup, $data, $options) {
   }, 8, ["class"]);
 }
 const uniChooseLocationPage = /* @__PURE__ */ _export_sfc(_sfc_main$1, [["render", _sfc_render$1], ["styles", [_style_0]]]);
-const chooseLocation = /* @__PURE__ */ defineAsyncApi("chooseLocation", (options, { resolve, reject }) => {
+class ChooseLocationFailImpl extends UniError {
+  constructor(errMsg = "chooseLocation:fail cancel", errCode = 1) {
+    super();
+    this.errCode = errCode;
+    this.errMsg = errMsg;
+  }
+}
+const chooseLocation = (options) => {
   registerSystemRoute("uni:chooseLocation", uniChooseLocationPage);
-  const uuid = Date.now() + "" + Math.floor(Math.random() * 1e7);
+  const uuid = `${Date.now()}${Math.floor(Math.random() * 1e7)}`;
   const baseEventName = `uni_choose_location_${uuid}`;
   const readyEventName = `${baseEventName}_ready`;
   const optionsEventName = `${baseEventName}_options`;
@@ -18346,24 +18370,27 @@ const chooseLocation = /* @__PURE__ */ defineAsyncApi("chooseLocation", (options
     uni.$emit(optionsEventName, JSON.parse(JSON.stringify(options)));
   });
   uni.$on(successEventName, (result) => {
-    resolve(result);
+    var _a, _b;
+    (_a = options.success) == null ? void 0 : _a.call(options, result);
+    (_b = options.complete) == null ? void 0 : _b.call(options, result);
   });
   uni.$on(failEventName, () => {
-    reject("cancel", {
-      errCode: 1
-    });
+    var _a, _b;
+    (_a = options.fail) == null ? void 0 : _a.call(options, new ChooseLocationFailImpl());
+    (_b = options.complete) == null ? void 0 : _b.call(options, new ChooseLocationFailImpl());
   });
   uni.openDialogPage({
     url: `uni:chooseLocation?readyEventName=${readyEventName}&optionsEventName=${optionsEventName}&successEventName=${successEventName}&failEventName=${failEventName}`,
     fail(err) {
-      var _a;
-      (_a = options.fail) == null ? void 0 : _a.call(options, { errMsg: `chooseLocation:fail ${err.errMsg}`, errCode: 4 });
+      var _a, _b;
+      (_a = options.fail) == null ? void 0 : _a.call(options, new ChooseLocationFailImpl(`chooseLocation:fail ${err.errMsg}`, 4));
+      (_b = options.complete) == null ? void 0 : _b.call(options, new ChooseLocationFailImpl(`chooseLocation:fail ${err.errMsg}`, 4));
       uni.$off(readyEventName);
       uni.$off(successEventName);
       uni.$off(failEventName);
     }
   });
-});
+};
 window.UniResizeObserver = window.ResizeObserver;
 const api = /* @__PURE__ */ Object.defineProperty({
   __proto__: null,
