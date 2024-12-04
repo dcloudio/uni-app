@@ -119,6 +119,9 @@ function isImplementationOf(leftType, rightType, visited = []) {
     });
 }
 function isInstanceOf(value, type) {
+    if (type === UTSValueIterable) {
+        return value && value[Symbol.iterator];
+    }
     const isNativeInstanceofType = value instanceof type;
     if (isNativeInstanceofType || typeof value !== 'object') {
         return isNativeInstanceofType;
@@ -658,6 +661,9 @@ let UTSJSONObject$1 = class UTSJSONObject {
     }
 };
 
+let UTSValueIterable$1 = class UTSValueIterable {
+};
+
 // @ts-nocheck
 function getGlobal() {
     if (typeof globalThis !== 'undefined') {
@@ -689,5 +695,6 @@ const realGlobal = getGlobal();
 realGlobal.UTSJSONObject = UTSJSONObject$1;
 realGlobal.UniError = UniError;
 realGlobal.UTS = UTS;
+realGlobal.UTSValueIterable = UTSValueIterable$1;
 
 export { UTSJSONObject$1 as UTSJSONObject, UniError };
