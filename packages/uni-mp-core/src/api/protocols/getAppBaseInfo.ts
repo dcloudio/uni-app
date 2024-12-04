@@ -7,7 +7,7 @@ export const getAppBaseInfo: MPProtocol = {
     const { version, language, SDKVersion, theme } = fromRes
 
     let _hostName = getHostName(fromRes)
-    let hostLanguage = language.replace(/_/g, '-')
+    let hostLanguage = (language || '').replace(/_/g, '-')
 
     const parameters: Record<string, string | number | boolean | undefined> = {
       hostVersion: version,
