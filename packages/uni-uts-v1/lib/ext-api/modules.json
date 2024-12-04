@@ -643,12 +643,6 @@
       "name": "alipay"
     }
   },
-  "uni-payment-huawei": {
-    "provider": {
-      "service": "payment",
-      "name": "huawei"
-    }
-  },
   "uni-payment-wxpay": {
     "provider": {
       "service": "payment",
