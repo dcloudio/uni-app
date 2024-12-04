@@ -44,6 +44,7 @@ export const closeDialogPage = (options?: CloseDialogPageOptions) => {
         parentPage!.vm.$pageLayoutInstance!.$systemDialogPages.value
       const index = parentSystemDialogPages.indexOf(dialogPage)
       parentSystemDialogPages.splice(index, 1)
+      dialogPageTriggerParentShow(dialogPage, 1)
       return
     }
   } else {
