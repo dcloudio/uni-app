@@ -45,7 +45,7 @@ if (__PLATFORM__ === 'h5') {
     locale = ''
   }
 } else {
-  locale = normalizeLocale(__GLOBAL__.getSystemInfoSync().language) || LOCALE_EN
+  locale = normalizeLocale(__PLATFORM__ === 'mp-weixin' ?__GLOBAL__.getAppBaseInfo().language:__GLOBAL__.getSystemInfoSync().language) || LOCALE_EN
 }
 
 function initI18nMessages () {

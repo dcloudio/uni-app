@@ -8030,7 +8030,7 @@ var serviceContext = (function () {
     const {
       deviceBrand = '', deviceModel, osName,
       osVersion, deviceOrientation, deviceType,
-      deviceId, osLanguage, osTheme, romName, romVersion
+      deviceId
     } = systemInfo;
 
     const brand = deviceBrand.toLowerCase();
@@ -8046,13 +8046,7 @@ var serviceContext = (function () {
       deviceType,
       model: deviceModel,
       platform: _osName,
-      system: `${_osName === 'ios' ? 'iOS' : 'Android'} ${osVersion}`,
-      osName,
-      osVersion,
-      osLanguage,
-      osTheme,
-      romName,
-      romVersion
+      system: `${_osName === 'ios' ? 'iOS' : 'Android'} ${osVersion}`
     }
   }
 
@@ -8060,9 +8054,9 @@ var serviceContext = (function () {
     weexGetSystemInfoSync();
     const {
       hostPackageName, hostName, osLanguage,
-      hostVersion, hostLanguage, hostTheme, uniRuntimeVersion,
+      hostVersion, hostLanguage, hostTheme,
       appId, appName, appVersion, appVersionCode,
-      appWgtVersion, uniCompileVersion, uniPlatform
+      appWgtVersion
     } = systemInfo;
 
     const appLanguage = uni
@@ -8089,12 +8083,7 @@ var serviceContext = (function () {
       language: osLanguage,
       SDKVersion: '',
       theme: plus.navigator.getUIStyle(),
-      version: plus.runtime.innerVersion,
-      isUniAppX: false,
-      uniPlatform,
-      uniRuntimeVersion,
-      uniCompileVersion,
-      uniCompilerVersion: uniCompileVersion
+      version: plus.runtime.innerVersion
     }
   }
 
@@ -10592,22 +10581,9 @@ var serviceContext = (function () {
       if (isUniElement(obj)) {
           return obj;
       }
-  }
-  function parseComponentPublicInstance(obj) {
-      if (isComponentPublicInstance(obj)) {
+      else if (isComponentPublicInstance(obj)) {
           return obj.$el;
       }
-  }
-  // 序列化 UniElement | ComponentPublicInstance
-  function serialize(el, type) {
-      let nodeId = '';
-      let pageId = '';
-      // 非 x 可能不存在 getNodeId 方法？
-      if (el && el.getNodeId) {
-          pageId = el.pageId;
-          nodeId = el.getNodeId();
-      }
-      return { pageId, nodeId, __type__: type };
   }
   function toRaw(observed) {
       const raw = observed && observed.__v_raw;
@@ -10628,16 +10604,18 @@ var serviceContext = (function () {
               callbacks[id] = arg;
           }
           return id;
-          // 为啥还要额外判断了isUniElement?，isPlainObject不是包含isUniElement的逻辑吗？为了避免出bug，保留此逻辑
       }
       else if (isPlainObject(arg) || isUniElement(arg)) {
-          const uniElement = parseElement(arg);
-          const componentPublicInstanceUniElement = !uniElement
-              ? parseComponentPublicInstance(arg)
-              : undefined;
-          const el = uniElement || componentPublicInstanceUniElement;
+          const el = parseElement(arg);
           if (el) {
-              return serialize(el, uniElement ? 'UniElement' : 'ComponentPublicInstance');
+              let nodeId = '';
+              let pageId = '';
+              // 非 x 可能不存在 getNodeId 方法？
+              if (el && el.getNodeId) {
+                  pageId = el.pageId;
+                  nodeId = el.getNodeId();
+              }
+              return { pageId, nodeId };
           }
           else {
               // 必须复制，否则会污染原始对象，比如：
