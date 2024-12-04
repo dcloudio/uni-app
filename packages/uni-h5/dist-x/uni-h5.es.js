@@ -17297,10 +17297,6 @@ const _sfc_main$1 = {
     uni.$off(this.readyEventName, null);
     uni.$off(this.successEventName, null);
     uni.$off(this.failEventName, null);
-    __uniappx__nativeEventBus.off(this.optionsEventName, null);
-    __uniappx__nativeEventBus.off(this.readyEventName, null);
-    __uniappx__nativeEventBus.off(this.successEventName, null);
-    __uniappx__nativeEventBus.off(this.failEventName, null);
   },
   onResize() {
     this.getSystemInfo();
@@ -18387,6 +18383,7 @@ const chooseLocation = (options) => {
   });
   uni.openDialogPage({
     url: `uni:chooseLocation?readyEventName=${readyEventName}&optionsEventName=${optionsEventName}&successEventName=${successEventName}&failEventName=${failEventName}`,
+    triggerParentHide: true,
     fail(err) {
       var _a, _b;
       (_a = options.fail) == null ? void 0 : _a.call(options, new ChooseLocationFailImpl(`chooseLocation:fail ${err.errMsg}`, 4));
