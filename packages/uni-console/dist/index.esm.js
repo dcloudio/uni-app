@@ -35,7 +35,9 @@ function rewriteConsole() {
                     originalArgs.pop();
                 }
             }
-            originalConsole[type](...originalArgs);
+            if (__UNI_CONSOLE_KEEP_ORIGINAL__) {
+                originalConsole[type](...originalArgs);
+            }
             sendConsoleMessages([formatMessage(type, args)]);
         };
     }
@@ -348,7 +350,9 @@ function initOnError() {
             error.reason.message.includes(`Cannot create property 'errMsg' on string 'taskId`)) {
             return;
         }
-        originalConsole.error(error);
+        if (__UNI_CONSOLE_KEEP_ORIGINAL__) {
+            originalConsole.error(error);
+        }
         sendErrorMessages([error]);
     }
     // TODO 是否需要监听 uni.onUnhandledRejection？

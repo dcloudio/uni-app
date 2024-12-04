@@ -54,7 +54,9 @@ export function initOnError() {
     ) {
       return
     }
-    originalConsole.error(error)
+    if (__UNI_CONSOLE_KEEP_ORIGINAL__) {
+      originalConsole.error(error)
+    }
     sendErrorMessages([error])
   }
   // TODO 是否需要监听 uni.onUnhandledRejection？

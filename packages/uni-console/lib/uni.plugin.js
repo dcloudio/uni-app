@@ -12,8 +12,16 @@ const uniConsoleRuntimePlugin = () => {
         name: 'uni:console:runtime',
         config() {
             const isProd = process.env.NODE_ENV === 'production';
+            let keepOriginal = true;
+            if (process.env.UNI_PLATFORM == 'mp-harmony' ||
+                process.env.UNI_PLATFORM === 'app-harmony') {
+                keepOriginal = false;
+            }
             return {
                 define: {
+                    __UNI_CONSOLE_KEEP_ORIGINAL__: process.env.UNI_CONSOLE_KEEP_ORIGINAL
+                        ? process.env.UNI_CONSOLE_KEEP_ORIGINAL === 'true'
+                        : keepOriginal,
                     __UNI_SOCKET_HOSTS__: JSON.stringify(isProd ? '' : process.env.UNI_SOCKET_HOSTS),
                     __UNI_SOCKET_PORT__: JSON.stringify(isProd ? '' : process.env.UNI_SOCKET_PORT),
                     __UNI_SOCKET_ID__: JSON.stringify(isProd ? '' : process.env.UNI_SOCKET_ID),

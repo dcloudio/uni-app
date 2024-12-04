@@ -80,6 +80,7 @@ declare var __id__: string
 declare var __UNI_SOCKET_HOSTS__: string
 declare var __UNI_SOCKET_PORT__: string
 declare var __UNI_SOCKET_ID__: string
+declare var __UNI_CONSOLE_KEEP_ORIGINAL__: boolean
 
 // TODO X 引入真实类型
 declare class UTSJSONObject {

@@ -62,8 +62,8 @@ declare namespace NodeJS {
     UNI_COMPILE_EXT_API_INPUT?: string
     UNI_APP_NEXT_WORKSPACE?: string
 
-    // 内部使用，是否开启HBuilderX的Socket日志通道
-    UNI_CONSOLE?: 'true' | 'false'
+    // 内部使用，运行时日志通道是否保留原始日志输出
+    UNI_CONSOLE_KEEP_ORIGINAL?: 'true' | 'false'
 
     // HBuilderX 可能传入的环境变量
     UNI_H5_BASE?: string
