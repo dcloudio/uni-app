@@ -11,7 +11,7 @@ export function getLocale () {
       return app.$vm.$locale
     }
   }
-  return normalizeLocale(__PLATFORM__ === 'mp-weixin' ?__GLOBAL__.getAppBaseInfo().language:__GLOBAL__.getSystemInfoSync().language) || LOCALE_EN
+  return normalizeLocale(__PLATFORM__ === 'mp-weixin' ? __GLOBAL__.getAppBaseInfo().language : __GLOBAL__.getSystemInfoSync().language) || LOCALE_EN
 }
 
 export function setLocale (locale) {

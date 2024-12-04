@@ -404,11 +404,7 @@ let deviceWidth = 0;
 let deviceDPR = 0;
 
 function checkDeviceWidth () {
-  const {
-    platform,
-    pixelRatio,
-    windowWidth
-  } = wx.getSystemInfoSync(); // uni=>wx runtime 编译目标是 uni 对象，内部不允许直接使用 uni
+  const { windowWidth, pixelRatio, platform } =  wx.getSystemInfoSync(); // uni=>wx runtime 编译目标是 uni 对象，内部不允许直接使用 uni
 
   deviceWidth = windowWidth;
   deviceDPR = pixelRatio;
@@ -450,7 +446,7 @@ const messages = {};
 let locale;
 
 {
-  locale = normalizeLocale(wx.getSystemInfoSync().language) || LOCALE_EN;
+  locale = normalizeLocale( wx.getSystemInfoSync().language) || LOCALE_EN;
 }
 
 function initI18nMessages () {
@@ -576,7 +572,7 @@ function getLocale$1 () {
       return app.$vm.$locale
     }
   }
-  return normalizeLocale(wx.getSystemInfoSync().language) || LOCALE_EN
+  return normalizeLocale( wx.getSystemInfoSync().language) || LOCALE_EN
 }
 
 function setLocale$1 (locale) {
@@ -2391,7 +2387,7 @@ function parseBaseApp (vm, {
     });
   }
 
-  initAppLocale(Vue, vm, normalizeLocale(wx.getSystemInfoSync().language) || LOCALE_EN);
+  initAppLocale(Vue, vm,  normalizeLocale(wx.getSystemInfoSync().language) || LOCALE_EN);
 
   initHooks(appOptions, hooks);
   initUnknownHooks(appOptions, vm.$options);

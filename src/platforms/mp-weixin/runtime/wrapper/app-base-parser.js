@@ -216,8 +216,8 @@ export default function parseBaseApp (vm, {
   }
 
   initAppLocale(Vue, vm, __PLATFORM__ === 'mp-weixin'
-      ? normalizeLocale(__GLOBAL__.getAppBaseInfo().language) || LOCALE_EN
-      : normalizeLocale(__GLOBAL__.getSystemInfoSync().language) || LOCALE_EN)
+    ? normalizeLocale(__GLOBAL__.getAppBaseInfo().language) || LOCALE_EN
+    : normalizeLocale(__GLOBAL__.getSystemInfoSync().language) || LOCALE_EN)
 
   initHooks(appOptions, hooks)
   initUnknownHooks(appOptions, vm.$options)
