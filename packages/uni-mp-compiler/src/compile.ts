@@ -129,6 +129,7 @@ export function baseCompile(template: string, options: CompilerOptions = {}) {
       emitFile,
       event,
       slot,
+      isX: options.isX,
       lazyElement,
       component,
       isBuiltInComponent: context.isBuiltInComponent,

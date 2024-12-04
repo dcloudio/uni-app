@@ -20,6 +20,10 @@ export const StandaloneExtApi: IStandaloneExtApi[] = [
     type: 'provider',
   },
   {
+    name: 'uni-payment-huawei',
+    type: 'provider',
+  },
+  {
     name: 'uni-oauth-huawei',
     type: 'provider',
   },

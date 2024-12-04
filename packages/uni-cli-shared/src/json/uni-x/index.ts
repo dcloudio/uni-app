@@ -262,7 +262,7 @@ __uniConfig.getTabBarConfig = () =>  {return ${
 __uniConfig.tabBar = __uniConfig.getTabBarConfig();
 const __uniRoutes = ${normalizeAppUniRoutes(
     pagesJson
-  )}.map(uniRoute=>(uniRoute.meta.route=uniRoute.path,__uniConfig.pages.push(uniRoute.path),uniRoute.path='/'+uniRoute.path,uniRoute));
+  )}.map(uniRoute=>(uniRoute.meta.route=uniRoute.path,__uniConfig.pages.push(uniRoute.path),uniRoute.path='/'+uniRoute.path,uniRoute)).concat(typeof __uniSystemRoutes !== 'undefined' ? __uniSystemRoutes : []);
 
 `
 }

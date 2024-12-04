@@ -191,6 +191,11 @@ export interface GenerateKotlinRuntimeCodeFrameOptions
   language: 'kotlin'
 }
 
+export interface GenerateAppAndroidKotlinRuntimeCodeFrameOptions
+  extends GenerateKotlinRuntimeCodeFrameOptions {
+  platform: 'app-android'
+}
+
 export function parseUTSKotlinRuntimeStacktrace(
   stacktrace: string,
   options: GenerateKotlinRuntimeCodeFrameOptions

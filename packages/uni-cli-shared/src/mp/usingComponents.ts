@@ -503,10 +503,14 @@ function parseGlobalComponents(ast: Program) {
       }
       const [name, value] = args
       if (!isStringLiteral(name)) {
-        return console.warn(M['mp.component.args[0]'])
+        return console.warn(
+          M['mp.component.args[0]'].replace('{0}', 'app.component')
+        )
       }
       if (!isIdentifier(value)) {
-        return console.warn(M['mp.component.args[1]'])
+        return console.warn(
+          M['mp.component.args[1]'].replace('{0}', 'app.component')
+        )
       }
       bindingComponents[value.name] = {
         tag: name.value,

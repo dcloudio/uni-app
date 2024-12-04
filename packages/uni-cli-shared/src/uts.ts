@@ -163,29 +163,33 @@ export function resolveUTSCompiler(throwError = false): typeof UTSCompiler {
       if (throwError) {
         throw `Error: Cannot find module '@dcloudio/uni-uts-v1'`
       }
-      let utsCompilerVersion = ''
-      try {
-        utsCompilerVersion = require('../package.json').version
-      } catch (e) {
-        try {
-          // vue2
-          utsCompilerVersion = require('../../package.json').version
-        } catch (e) {}
-      }
-      if (utsCompilerVersion.startsWith('2.0.')) {
-        utsCompilerVersion = '^3.0.0-alpha-3060920221117001'
-      }
       console.error(
         installDepTips(
           'devDependencies',
           '@dcloudio/uni-uts-v1',
-          utsCompilerVersion
+          resolveUTSCompilerVersion()
         )
       )
       process.exit(0)
     }
   }
   return require(compilerPath)
+}
+
+export function resolveUTSCompilerVersion() {
+  let utsCompilerVersion = ''
+  try {
+    utsCompilerVersion = require('../package.json').version
+  } catch (e) {
+    try {
+      // vue2
+      utsCompilerVersion = require('../../package.json').version
+    } catch (e) {}
+  }
+  if (utsCompilerVersion.startsWith('2.0.')) {
+    utsCompilerVersion = '^3.0.0-alpha-3060920221117001'
+  }
+  return utsCompilerVersion
 }
 
 interface UTSComponentMeta {

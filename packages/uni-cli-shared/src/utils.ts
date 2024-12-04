@@ -278,3 +278,34 @@ export function isNormalCompileTarget() {
   // 目前有特殊编译目标 uni_modules 和 ext-api
   return !process.env.UNI_COMPILE_TARGET
 }
+
+/**
+ * copy from entities 用于转义实体字符
+ * @param regex
+ * @param map
+ * @returns
+ */
+export function getEscaper(
+  regex: RegExp,
+  map: Map<number, string>
+): (data: string) => string {
+  return function escape(data: string): string {
+    let match
+    let lastIndex = 0
+    let result = ''
+
+    while ((match = regex.exec(data))) {
+      if (lastIndex !== match.index) {
+        result += data.substring(lastIndex, match.index)
+      }
+
+      // We know that this character will be in the map.
+      result += map.get(match[0].charCodeAt(0))!
+
+      // Every match will be of length 1
+      lastIndex = match.index + 1
+    }
+
+    return result + data.substring(lastIndex)
+  }
+}

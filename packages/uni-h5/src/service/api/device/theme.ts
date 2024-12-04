@@ -4,7 +4,8 @@ import {
   ON_HOST_THEME_CHANGE,
   ON_THEME_CHANGE,
 } from '@dcloudio/uni-shared'
-import { defineOffApi, defineOnApi } from '@dcloudio/uni-api'
+import { defineOffApi, defineOnApi, defineSyncApi } from '@dcloudio/uni-api'
+import { isArray, isFunction } from '@vue/shared'
 
 const themeChangeCallBack = (res: UniApp.OnThemeChangeCallbackResult) => {
   UniServiceJSBridge.invokeOnCallback(ON_THEME_CHANGE, res)
@@ -25,23 +26,37 @@ export const offThemeChange = defineOffApi<typeof uni.offThemeChange>(
 )
 
 // #if _X_
-const hostThemeChangeCallBack = (res: UniApp.OnThemeChangeCallbackResult) => {
-  UniServiceJSBridge.invokeOnCallback(ON_HOST_THEME_CHANGE, {
-    hostTheme: res.theme,
-  })
-}
+type HostThemeChangeCallback = (res: { hostTheme: string }) => void
+type OnHostThemeChange = (callback: HostThemeChangeCallback) => number
+type OffHostThemeChange = (id: number | HostThemeChangeCallback) => void
+const THEME_CALLBACK: Array<
+  [HostThemeChangeCallback, UniApp.OnThemeChangeCallback]
+> = []
 
-export const onHostThemeChange = defineOnApi<typeof uni.onThemeChange>(
+export const onHostThemeChange = defineSyncApi<OnHostThemeChange>(
   ON_HOST_THEME_CHANGE,
-  () => {
-    UniServiceJSBridge.on(ON_THEME_CHANGE, hostThemeChangeCallBack)
+  (callback) => {
+    const onHostThemeChangeCallback: UniApp.OnThemeChangeCallback = (res) => {
+      callback({ hostTheme: res.theme })
+    }
+    const index = THEME_CALLBACK.push([callback, onHostThemeChangeCallback]) - 1
+    UniServiceJSBridge.on(ON_THEME_CHANGE, onHostThemeChangeCallback)
+    return index
   }
 )
 
-export const offHostThemeChange = defineOnApi<typeof uni.onThemeChange>(
+export const offHostThemeChange = defineSyncApi<OffHostThemeChange>(
   OFF_HOST_THEME_CHANGE,
-  () => {
-    UniServiceJSBridge.off(ON_THEME_CHANGE, hostThemeChangeCallBack)
+  (callbackId) => {
+    if (isFunction(callbackId)) {
+      callbackId = THEME_CALLBACK.findIndex(
+        ([callback]) => callback === callbackId
+      )
+    }
+    if (callbackId > -1) {
+      const arr = THEME_CALLBACK.splice(callbackId, 1)[0]
+      isArray(arr) && UniServiceJSBridge.off(ON_THEME_CHANGE, arr[1])
+    }
   }
 )
 // #endif

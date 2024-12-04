@@ -15,6 +15,7 @@ import {
   parseSwiftPackageWithPluginId,
   resolveUTSAppModule,
   resolveUTSCompiler,
+  resolveUTSCompilerVersion,
   tscOutDir,
   uvueOutDir,
 } from '../../../uts'
@@ -26,6 +27,7 @@ import {
 } from '../../../uni_modules.cloud'
 import {
   enableSourceMap,
+  installDepTips,
   isNormalCompileTarget,
   normalizePath,
 } from '../../../utils'
@@ -243,6 +245,24 @@ export function uniUTSAppUniModulesPlugin(
         name: 'uni:uts-uni_modules-placeholder',
         apply: 'build',
         enforce: 'pre',
+        resolveId(id) {
+          if (isUTSProxy(id) || isUniHelpers(id)) {
+            return id
+          }
+        },
+        load(id) {
+          if (isUTSProxy(id)) {
+            console.error(
+              installDepTips(
+                'devDependencies',
+                '@dcloudio/uni-uts-v1',
+                resolveUTSCompilerVersion()
+              )
+            )
+            process.exit(0)
+            return ''
+          }
+        },
       }
     }
   }

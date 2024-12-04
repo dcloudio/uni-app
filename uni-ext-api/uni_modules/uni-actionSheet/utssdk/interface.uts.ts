@@ -89,35 +89,6 @@ export type ShowActionSheet2Options = {
   complete?: ShowActionSheetCompleteCallback | null
 };
 
-/**
- * 从底部向上弹出操作菜单
- *
- * @param {ShowActionSheetOptions} options
- * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/prompt.html#showactionsheet
- * @uniPlatform {
- *    "app": {
- *        "android": {
- *            "osVer": "5.0",
- *            "uniVer": "√",
- *            "unixVer": "3.9.0"
- *        },
- *        "ios": {
- *            "osVer": "12.0",
- *            "uniVer": "√",
- *            "unixVer": "4.11"
- *   	  },
- *    "harmony": {
- *      "osVer": "3.0",
- *      "uniVer": "4.23",
- *      "unixVer": "x"
- *    }
- *    },
- *    "web": {
- *        "uniVer": "√",
- *        "unixVer": "4.0"
- *    }
- * }
- */
 export type ShowActionSheet2 = (options: ShowActionSheet2Options) => void;
 export type HideActionSheet = () => void;
 
@@ -138,27 +109,73 @@ export interface Uni {
    * ```
    * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/show-action-sheet.html
    * @uniPlatform {
-   *    "app": {
-   *        "android": {
-   *            "osVer": "5.0",
-   *            "uniVer": "√",
-   *            "unixVer": "3.9.0"
-   *        },
-   *        "ios": {
-   *            "osVer": "12.0",
-   *            "uniVer": "√",
-   *            "unixVer": "4.11"
-   *        },
+   *  "app": {
+   *    "android": {
+   *      "osVer": "5.0",
+   *      "uniVer": "√",
+   *      "uniUtsPlugin": "x",
+   *      "unixVer": "3.91",
+   *      "unixUtsPlugin": "3.91"
+   *    },
+   *    "ios": {
+   *      "osVer": "12.0",
+   *      "uniVer": "√",
+   *      "uniUtsPlugin": "x",
+   *      "unixVer": "4.11",
+   *      "unixUtsPlugin": "4.11"
+   *    },
    *    "harmony": {
    *      "osVer": "3.0",
    *      "uniVer": "4.23",
    *      "unixVer": "x"
    *    }
+   *  },
+   *  "mp": {
+   *    "weixin": {
+   *      "hostVer": "√",
+   *      "uniVer": "√",
+   *      "unixVer": "4.41"
    *    },
-   *    "web": {
-   *        "uniVer": "√",
-   *        "unixVer": "4.0"
+   *    "alipay": {
+   *      "hostVer": "√",
+   *      "uniVer": "√",
+   *      "unixVer": "x"
+   *    },
+   *    "baidu": {
+   *      "hostVer": "√",
+   *      "uniVer": "√",
+   *      "unixVer": "x"
+   *    },
+   *    "toutiao": {
+   *      "hostVer": "√",
+   *      "uniVer": "√",
+   *      "unixVer": "x"
+   *    },
+   *    "lark": {
+   *      "hostVer": "√",
+   *      "uniVer": "√",
+   *      "unixVer": "x"
+   *    },
+   *    "qq": {
+   *      "hostVer": "√",
+   *      "uniVer": "√",
+   *      "unixVer": "x"
+   *    },
+   *    "kuaishou": {
+   *      "hostVer": "√",
+   *      "uniVer": "√",
+   *      "unixVer": "x"
+   *    },
+   *    "jd": {
+   *      "hostVer": "√",
+   *      "uniVer": "√",
+   *      "unixVer": "x"
    *    }
+   *  },
+   *  "web": {
+   *    "uniVer": "√",
+   *    "unixVer": "4.0"
+   *  }
    * }
    */
   showActionSheet2(options: ShowActionSheet2Options): void;
@@ -171,27 +188,73 @@ export interface Uni {
    * ```
    * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/hide-action-sheet.html
    * @uniPlatform {
-   *    "app": {
-   *        "android": {
-   *            "osVer": "5.0",
-   *            "uniVer": "√",
-   *            "unixVer": "4.32"
-   *        },
-   *        "ios": {
-   *            "osVer": "12.0",
-   *            "uniVer": "√",
-   *            "unixVer": "4.32"
-   *        },
+   *  "app": {
+   *    "android": {
+   *      "osVer": "5.0",
+   *      "uniVer": "√",
+   *      "uniUtsPlugin": "x",
+   *      "unixVer": "3.91",
+   *      "unixUtsPlugin": "3.91"
+   *    },
+   *    "ios": {
+   *      "osVer": "12.0",
+   *      "uniVer": "√",
+   *      "uniUtsPlugin": "x",
+   *      "unixVer": "4.11",
+   *      "unixUtsPlugin": "4.11"
+   *    },
    *    "harmony": {
    *      "osVer": "3.0",
    *      "uniVer": "4.23",
    *      "unixVer": "x"
    *    }
+   *  },
+   *  "mp": {
+   *    "weixin": {
+   *      "hostVer": "√",
+   *      "uniVer": "√",
+   *      "unixVer": "4.41"
    *    },
-   *    "web": {
-   *        "uniVer": "√",
-   *        "unixVer": "4.32"
+   *    "alipay": {
+   *      "hostVer": "√",
+   *      "uniVer": "√",
+   *      "unixVer": "x"
+   *    },
+   *    "baidu": {
+   *      "hostVer": "√",
+   *      "uniVer": "√",
+   *      "unixVer": "x"
+   *    },
+   *    "toutiao": {
+   *      "hostVer": "√",
+   *      "uniVer": "√",
+   *      "unixVer": "x"
+   *    },
+   *    "lark": {
+   *      "hostVer": "√",
+   *      "uniVer": "√",
+   *      "unixVer": "x"
+   *    },
+   *    "qq": {
+   *      "hostVer": "√",
+   *      "uniVer": "√",
+   *      "unixVer": "x"
+   *    },
+   *    "kuaishou": {
+   *      "hostVer": "√",
+   *      "uniVer": "√",
+   *      "unixVer": "x"
+   *    },
+   *    "jd": {
+   *      "hostVer": "√",
+   *      "uniVer": "√",
+   *      "unixVer": "x"
    *    }
+   *  },
+   *  "web": {
+   *    "uniVer": "√",
+   *    "unixVer": "4.0"
+   *  }
    * }
    */
   hideActionSheet(): void;

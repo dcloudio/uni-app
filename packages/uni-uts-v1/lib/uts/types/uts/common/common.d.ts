@@ -25,3 +25,4 @@
 /// <reference path="./Uint16Array.d.ts" />
 /// <reference path="./Uint32Array.d.ts" />
 /// <reference path="./DataView.d.ts" />
+/// <reference path="./Iterable.d.ts" />

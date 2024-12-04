@@ -1,10 +1,7 @@
 import { isArray, hasOwn, isString, isPlainObject, isObject, capitalize, toRawType, makeMap, isFunction, isPromise, extend, remove } from '@vue/shared';
 import { normalizeLocale, LOCALE_EN } from '@dcloudio/uni-i18n';
-import { Emitter, sortObject, onCreateVueApp, invokeCreateVueAppHook } from '@dcloudio/uni-shared';
-
-function getBaseSystemInfo() {
-    return wx.getSystemInfoSync();
-}
+import { Emitter, sortObject, ON_ERROR, onCreateVueApp, invokeCreateVueAppHook } from '@dcloudio/uni-shared';
+import { injectHook } from 'vue';
 
 function validateProtocolFail(name, msg) {
     console.warn(`${name}: ${msg}`);
@@ -449,7 +446,10 @@ let isIOS = false;
 let deviceWidth = 0;
 let deviceDPR = 0;
 function checkDeviceWidth() {
-    const { platform, pixelRatio, windowWidth } = getBaseSystemInfo();
+    const { windowWidth, pixelRatio, platform } = Object.assign({}, wx.getWindowInfo(), {
+            platform: wx.getDeviceInfo().platform,
+        })
+        ;
     deviceWidth = windowWidth;
     deviceDPR = pixelRatio;
     isIOS = platform === 'ios';
@@ -478,6 +478,13 @@ const upx2px = defineSyncApi(API_UPX2PX, (number, newDeviceWidth) => {
     }
     return number < 0 ? -result : result;
 }, Upx2pxProtocol);
+
+function __f__(type, filename, ...args) {
+    if (filename) {
+        args.push(filename);
+    }
+    console[type].apply(console, args);
+}
 
 const API_ADD_INTERCEPTOR = 'addInterceptor';
 const API_REMOVE_INTERCEPTOR = 'removeInterceptor';
@@ -719,10 +726,11 @@ const offPushMessage = (fn) => {
     }
 };
 
-const SYNC_API_RE = /^\$|getLocale|setLocale|sendNativeEvent|restoreGlobal|requireGlobal|getCurrentSubNVue|getMenuButtonBoundingClientRect|^report|interceptors|Interceptor$|getSubNVueById|requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64|getDeviceInfo|getAppBaseInfo|getWindowInfo|getSystemSetting|getAppAuthorizeSetting/;
+const SYNC_API_RE = /^\$|__f__|getLocale|setLocale|sendNativeEvent|restoreGlobal|requireGlobal|getCurrentSubNVue|getMenuButtonBoundingClientRect|^report|interceptors|Interceptor$|getSubNVueById|requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64|getDeviceInfo|getAppBaseInfo|getWindowInfo|getSystemSetting|getAppAuthorizeSetting/;
 const CONTEXT_API_RE = /^create|Manager$/;
 // Context例外情况
 const CONTEXT_API_RE_EXC = ['createBLEConnection'];
+const TASK_APIS = ['request', 'downloadFile', 'uploadFile', 'connectSocket'];
 // 同步例外情况
 const ASYNC_API = ['createBLEConnection'];
 const CALLBACK_API_RE = /^on|^off/;
@@ -734,6 +742,9 @@ function isSyncApi(name) {
 }
 function isCallbackApi(name) {
     return CALLBACK_API_RE.test(name) && name !== 'onPush';
+}
+function isTaskApi(name) {
+    return TASK_APIS.indexOf(name) !== -1;
 }
 function shouldPromise(name) {
     if (isContextApi(name) || isSyncApi(name) || isCallbackApi(name)) {
@@ -820,6 +831,9 @@ function initWrapper(protocols) {
             return toArgs;
         }
         else if (isFunction(fromArgs)) {
+            if (isFunction(argsOption)) {
+                argsOption(fromArgs, {});
+            }
             fromArgs = processCallback(methodName, fromArgs, returnValue);
         }
         return fromArgs;
@@ -829,14 +843,26 @@ function initWrapper(protocols) {
             // 处理通用 returnValue
             res = protocols.returnValue(methodName, res);
         }
-        return processArgs(methodName, res, returnValue, {}, keepReturnValue);
+        const realKeepReturnValue = keepReturnValue || (false);
+        return processArgs(methodName, res, returnValue, {}, realKeepReturnValue);
     }
     return function wrapper(methodName, method) {
-        if (!hasOwn(protocols, methodName)) {
+        if ((isContextApi(methodName) || isTaskApi(methodName)) && method) {
+            const oldMethod = method;
+            method = function (...args) {
+                const contextOrTask = oldMethod.apply(this, args);
+                if (contextOrTask) {
+                    contextOrTask.__v_skip = true;
+                }
+                return contextOrTask;
+            };
+        }
+        if ((!hasOwn(protocols, methodName) && !isFunction(protocols.returnValue)) ||
+            !isFunction(method)) {
             return method;
         }
         const protocol = protocols[methodName];
-        if (!protocol) {
+        if (!protocol && !isFunction(protocols.returnValue)) {
             // 暂不支持的 api
             return function () {
                 console.error(`微信小程序 暂不支持${methodName}`);
@@ -844,7 +870,7 @@ function initWrapper(protocols) {
         }
         return function (arg1, arg2) {
             // 目前 api 最多两个参数
-            let options = protocol;
+            let options = protocol || {};
             if (isFunction(protocol)) {
                 options = protocol(arg1);
             }
@@ -854,6 +880,11 @@ function initWrapper(protocols) {
                 args.push(arg2);
             }
             const returnValue = wx[options.name || methodName].apply(wx, args);
+            if (isContextApi(methodName) || isTaskApi(methodName)) {
+                if (returnValue && !returnValue.__v_skip) {
+                    returnValue.__v_skip = true;
+                }
+            }
             if (isSyncApi(methodName)) {
                 // 同步 api
                 return processReturnValue(methodName, returnValue, options.returnValue, isContextApi(methodName));
@@ -869,7 +900,8 @@ const getLocale = () => {
     if (app && app.$vm) {
         return app.$vm.$locale;
     }
-    return normalizeLocale(wx.getSystemInfoSync().language) || LOCALE_EN;
+    return normalizeLocale(wx.getAppBaseInfo().language) || LOCALE_EN
+        ;
 };
 const setLocale = (locale) => {
     const app = isFunction(getApp) && getApp();
@@ -1115,7 +1147,7 @@ const getAppBaseInfo = {
         const { version, language, SDKVersion, theme } = fromRes;
         let _hostName = getHostName(fromRes);
         let hostLanguage = language.replace(/_/g, '-');
-        toRes = sortObject(extend(toRes, {
+        const parameters = {
             hostVersion: version,
             hostLanguage,
             hostName: _hostName,
@@ -1131,7 +1163,8 @@ const getAppBaseInfo = {
             uniCompileVersion: process.env.UNI_COMPILER_VERSION,
             uniCompilerVersion: process.env.UNI_COMPILER_VERSION,
             uniRuntimeVersion: process.env.UNI_COMPILER_VERSION,
-        }));
+        };
+        extend(toRes, parameters);
     },
 };
 
@@ -1158,6 +1191,44 @@ const getAppAuthorizeSetting = {
     },
 };
 
+const onError = {
+    args(fromArgs) {
+        const app = getApp({ allowDefault: true }) || {};
+        if (!app.$vm) {
+            if (!wx.$onErrorHandlers) {
+                wx.$onErrorHandlers = [];
+            }
+            wx.$onErrorHandlers.push(fromArgs);
+        }
+        else {
+            injectHook(ON_ERROR, fromArgs, app.$vm.$);
+        }
+    },
+};
+const offError = {
+    args(fromArgs) {
+        const app = getApp({ allowDefault: true }) || {};
+        if (!app.$vm) {
+            if (!wx.$onErrorHandlers) {
+                return;
+            }
+            const index = wx.$onErrorHandlers.findIndex((fn) => fn === fromArgs);
+            if (index !== -1) {
+                wx.$onErrorHandlers.splice(index, 1);
+            }
+        }
+        else if (fromArgs.__weh) {
+            const onErrors = app.$vm.$[ON_ERROR];
+            if (onErrors) {
+                const index = onErrors.indexOf(fromArgs.__weh);
+                if (index > -1) {
+                    onErrors.splice(index, 1);
+                }
+            }
+        }
+    },
+};
+
 const baseApis = {
     $on,
     $off,
@@ -1176,6 +1247,7 @@ const baseApis = {
     onPushMessage,
     offPushMessage,
     invokePushCallback,
+    __f__,
 };
 function initUni(api, protocols, platform = wx) {
     const wrapper = initWrapper(protocols);
@@ -1328,6 +1400,8 @@ var protocols = /*#__PURE__*/Object.freeze({
   getSystemInfo: getSystemInfo,
   getSystemInfoSync: getSystemInfoSync,
   getWindowInfo: getWindowInfo,
+  offError: offError,
+  onError: onError,
   previewImage: previewImage,
   redirectTo: redirectTo,
   showActionSheet: showActionSheet

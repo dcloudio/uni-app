@@ -1,6 +1,6 @@
 import { SLOT_DEFAULT_NAME, invokeArrayFns, MINI_PROGRAM_PAGE_RUNTIME_HOOKS, ON_LOAD, ON_SHOW, ON_HIDE, ON_UNLOAD, ON_RESIZE, ON_TAB_ITEM_TAP, ON_REACH_BOTTOM, ON_PULL_DOWN_REFRESH, ON_ADD_TO_FAVORITES, isUniLifecycleHook, ON_READY, once, ON_LAUNCH, ON_ERROR, ON_THEME_CHANGE, ON_PAGE_NOT_FOUND, ON_UNHANDLE_REJECTION, addLeadingSlash, stringifyQuery, customizeEvent } from '@dcloudio/uni-shared';
 import { hasOwn, isArray, isFunction, extend, isPlainObject, isObject } from '@vue/shared';
-import { ref, findComponentPropsData, toRaw, updateProps, hasQueueJob, invalidateJob, devtoolsComponentAdded, getExposeProxy, pruneComponentPropsCache } from 'vue';
+import { injectHook, ref, findComponentPropsData, toRaw, updateProps, hasQueueJob, invalidateJob, devtoolsComponentAdded, getExposeProxy, pruneComponentPropsCache } from 'vue';
 import { normalizeLocale, LOCALE_EN } from '@dcloudio/uni-i18n';
 
 function initVueIds(vueIds, mpInstance) {
@@ -302,11 +302,12 @@ function parseApp(instance, parseAppOptions) {
             instance.$callHook(ON_LAUNCH, options);
         },
     };
-    const { onError } = internalInstance;
-    if (onError) {
-        internalInstance.appContext.config.errorHandler = (err) => {
-            instance.$callHook(ON_ERROR, err);
-        };
+    const onErrorHandlers = wx.$onErrorHandlers;
+    if (onErrorHandlers) {
+        onErrorHandlers.forEach((fn) => {
+            injectHook(ON_ERROR, fn, internalInstance);
+        });
+        onErrorHandlers.length = 0;
     }
     initLocale(instance);
     const vueOptions = instance.$.type;
@@ -371,7 +372,8 @@ function initAppLifecycle(appOptions, vm) {
     }
 }
 function initLocale(appVm) {
-    const locale = ref(normalizeLocale(wx.getSystemInfoSync().language) || LOCALE_EN);
+    const locale = ref(normalizeLocale(wx.getAppBaseInfo().language) || LOCALE_EN
+        );
     Object.defineProperty(appVm, '$locale', {
         get() {
             return locale.value;
@@ -654,7 +656,7 @@ function applyOptions(componentOptions, vueOptions) {
     componentOptions.behaviors = initBehaviors(vueOptions);
 }
 
-function parseComponent(vueOptions, { parse, mocks, isPage, initRelation, handleLink, initLifetimes, }) {
+function parseComponent(vueOptions, { parse, mocks, isPage, isPageInProject, initRelation, handleLink, initLifetimes, }) {
     vueOptions = vueOptions.default || vueOptions;
     const options = {
         multipleSlots: true,
@@ -743,6 +745,7 @@ function parsePage(vueOptions, parseOptions) {
     const miniProgramPageOptions = parseComponent(vueOptions, {
         mocks,
         isPage,
+        isPageInProject: true,
         initRelation,
         handleLink,
         initLifetimes,
@@ -750,7 +753,9 @@ function parsePage(vueOptions, parseOptions) {
     initPageProps(miniProgramPageOptions, (vueOptions.default || vueOptions).props);
     const methods = miniProgramPageOptions.methods;
     methods.onLoad = function (query) {
-        this.options = query;
+        {
+            this.options = query;
+        }
         this.$page = {
             fullPath: addLeadingSlash(this.route + stringifyQuery(query)),
         };

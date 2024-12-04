@@ -6,13 +6,13 @@ import {
   homeSystemDialogPages,
   incrementEscBackPageNum,
 } from '../../../framework/setup/page'
+import { parseUrl } from '@dcloudio/uni-shared'
+import type { OpenDialogPageOptions } from '@dcloudio/uni-app-x/types/uni'
+import type { UniDialogPage } from '@dcloudio/uni-app-x/types/page'
 import {
   isSystemActionSheetDialogPage,
   isSystemDialogPage,
-  parseUrl,
-} from '@dcloudio/uni-shared'
-import type { OpenDialogPageOptions } from '@dcloudio/uni-app-x/types/uni'
-import type { UniDialogPage } from '@dcloudio/uni-app-x/types/page'
+} from '@dcloudio/uni-core'
 
 export const openDialogPage = (
   options: OpenDialogPageOptions
@@ -38,6 +38,7 @@ export const openDialogPage = (
     $component: targetRoute!.component,
     getParentPage: () => null,
     $disableEscBack: options.disableEscBack,
+    $triggerParentHide: !!options.triggerParentHide,
   })
 
   let parentPage = options.parentPage

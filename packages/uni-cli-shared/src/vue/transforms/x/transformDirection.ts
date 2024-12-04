@@ -9,7 +9,6 @@ import {
   type RootNode,
   type TemplateChildNode,
   type TransformContext,
-  isStaticExp,
 } from '@vue/compiler-core'
 
 /**
@@ -35,6 +34,9 @@ export const transformDirection = function (
   const scrollYPropIndex = node.props.findIndex((prop) =>
     isPropNameEquals(prop, 'scrollY')
   )
+  if (scrollXPropIndex > -1 || scrollYPropIndex > -1) {
+    return
+  }
   if (
     directionPropIndex === -1 ||
     (scrollXPropIndex !== -1 && scrollYPropIndex !== -1)
@@ -56,9 +58,9 @@ export const transformDirection = function (
   } else if (directionProp.type === NodeTypes.DIRECTIVE) {
     if (
       !directionProp.arg ||
-      !isStaticExp(directionProp.arg) ||
+      directionProp.arg.type !== NodeTypes.SIMPLE_EXPRESSION ||
       !directionProp.exp ||
-      !isStaticExp(directionProp.exp)
+      directionProp.exp.type !== NodeTypes.SIMPLE_EXPRESSION
     ) {
       return
     }
@@ -66,7 +68,7 @@ export const transformDirection = function (
     const scrollX = `(${exp}) === 'horizontal' || (${exp}) === 'all'`
     const scrollY = `!(${exp}) || (${exp}) === 'vertical' || (${exp}) === 'all'`
     node.props.splice(directionPropIndex, 1)
-    scrollX && node.props.push(createBindDirectiveNode('scroll-x', scrollX))
-    scrollY && node.props.push(createBindDirectiveNode('scroll-y', scrollY))
+    node.props.push(createBindDirectiveNode('scroll-x', scrollX))
+    node.props.push(createBindDirectiveNode('scroll-y', scrollY))
   }
 }

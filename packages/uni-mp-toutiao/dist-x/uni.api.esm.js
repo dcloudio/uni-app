@@ -1,7 +1,7 @@
 import { isArray, hasOwn, isString, isPlainObject, isObject, capitalize, toRawType, makeMap, isFunction, isPromise, extend, remove } from '@vue/shared';
 import { normalizeLocale, LOCALE_EN } from '@dcloudio/uni-i18n';
-import { findUniElement } from 'vue';
-import { Emitter, onCreateVueApp, invokeCreateVueAppHook } from '@dcloudio/uni-shared';
+import { findUniElement, injectHook } from 'vue';
+import { Emitter, ON_ERROR, onCreateVueApp, invokeCreateVueAppHook } from '@dcloudio/uni-shared';
 
 function validateProtocolFail(name, msg) {
     console.warn(`${name}: ${msg}`);
@@ -449,11 +449,32 @@ const getElementById = defineSyncApi(API_GET_ELEMENT_BY_ID, (id) => {
 
 const API_CREATE_CANVAS_CONTEXT_ASYNC = 'createCanvasContextAsync';
 class CanvasContext {
-    constructor(element) {
+    constructor(element, width, height) {
+        // 跳过vue的响应式
+        this.__v_skip = true;
+        this._width = 0;
+        this._height = 0;
         this._element = element;
+        this._width = width;
+        this._height = height;
     }
     getContext(type) {
-        return this._element.getContext(type);
+        const context = this._element.getContext(type);
+        if (!context.canvas.offsetWidth || !context.canvas.offsetHeight) {
+            Object.defineProperties(context.canvas, {
+                offsetWidth: {
+                    value: this._width,
+                    writable: true,
+                },
+            });
+            Object.defineProperties(context.canvas, {
+                offsetHeight: {
+                    value: this._height,
+                    writable: true,
+                },
+            });
+        }
+        return context;
     }
     toDataURL(type, encoderOptions) {
         return this._element.toDataURL(type, encoderOptions);
@@ -486,11 +507,11 @@ const createCanvasContextAsync = defineAsyncApi(API_CREATE_CANVAS_CONTEXT_ASYNC,
             : tt.createSelectorQuery();
         query
             .select('#' + options.id)
-            .fields({ node: true }, () => { })
+            .fields({ node: true, size: true }, () => { })
             .exec((res) => {
-            if (res.length > 0) {
-                const canvas = res[0].node;
-                resolve(new CanvasContext(canvas));
+            if (res.length > 0 && res[0].node) {
+                const result = res[0];
+                resolve(new CanvasContext(result.node, result.width, result.height));
             }
             else {
                 reject('canvas id invalid.');
@@ -518,7 +539,7 @@ let isIOS = false;
 let deviceWidth = 0;
 let deviceDPR = 0;
 function checkDeviceWidth() {
-    const { platform, pixelRatio, windowWidth } = getBaseSystemInfo();
+    const { windowWidth, pixelRatio, platform } = getBaseSystemInfo();
     deviceWidth = windowWidth;
     deviceDPR = pixelRatio;
     isIOS = platform === 'ios';
@@ -547,6 +568,13 @@ const upx2px = defineSyncApi(API_UPX2PX, (number, newDeviceWidth) => {
     }
     return number < 0 ? -result : result;
 }, Upx2pxProtocol);
+
+function __f__(type, filename, ...args) {
+    if (filename) {
+        args.push(filename);
+    }
+    console[type].apply(console, args);
+}
 
 const API_ADD_INTERCEPTOR = 'addInterceptor';
 const API_REMOVE_INTERCEPTOR = 'removeInterceptor';
@@ -792,11 +820,12 @@ const offPushMessage = (fn) => {
     }
 };
 
-const SYNC_API_RE = /^\$|getLocale|setLocale|sendNativeEvent|restoreGlobal|requireGlobal|getCurrentSubNVue|getMenuButtonBoundingClientRect|^report|interceptors|Interceptor$|getSubNVueById|requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64|getDeviceInfo|getAppBaseInfo|getWindowInfo|getSystemSetting|getAppAuthorizeSetting/;
+const SYNC_API_RE = /^\$|__f__|getLocale|setLocale|sendNativeEvent|restoreGlobal|requireGlobal|getCurrentSubNVue|getMenuButtonBoundingClientRect|^report|interceptors|Interceptor$|getSubNVueById|requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64|getDeviceInfo|getAppBaseInfo|getWindowInfo|getSystemSetting|getAppAuthorizeSetting/;
 const SYNC_API_RE_X = /getElementById/;
 const CONTEXT_API_RE = /^create|Manager$/;
 // Context例外情况
 const CONTEXT_API_RE_EXC = ['createBLEConnection'];
+const TASK_APIS = ['request', 'downloadFile', 'uploadFile', 'connectSocket'];
 // 同步例外情况
 const ASYNC_API = ['createBLEConnection'];
 const CALLBACK_API_RE = /^on|^off/;
@@ -811,6 +840,9 @@ function isSyncApi(name) {
 }
 function isCallbackApi(name) {
     return CALLBACK_API_RE.test(name) && name !== 'onPush';
+}
+function isTaskApi(name) {
+    return TASK_APIS.indexOf(name) !== -1;
 }
 function shouldPromise(name) {
     if (isContextApi(name) || isSyncApi(name) || isCallbackApi(name)) {
@@ -847,6 +879,10 @@ function promisify(name, api) {
             }), rest);
         })));
     };
+}
+
+function shouldKeepReturnValue(methodName) {
+    return methodName === 'getStorage' || methodName === 'getStorageSync';
 }
 
 const CALLBACKS = ['success', 'fail', 'cancel', 'complete'];
@@ -897,6 +933,9 @@ function initWrapper(protocols) {
             return toArgs;
         }
         else if (isFunction(fromArgs)) {
+            if (isFunction(argsOption)) {
+                argsOption(fromArgs, {});
+            }
             fromArgs = processCallback(methodName, fromArgs, returnValue);
         }
         return fromArgs;
@@ -906,14 +945,26 @@ function initWrapper(protocols) {
             // 处理通用 returnValue
             res = protocols.returnValue(methodName, res);
         }
-        return processArgs(methodName, res, returnValue, {}, keepReturnValue);
+        const realKeepReturnValue = keepReturnValue || (shouldKeepReturnValue(methodName));
+        return processArgs(methodName, res, returnValue, {}, realKeepReturnValue);
     }
     return function wrapper(methodName, method) {
-        if (!hasOwn(protocols, methodName)) {
+        if ((isContextApi(methodName) || isTaskApi(methodName)) && method) {
+            const oldMethod = method;
+            method = function (...args) {
+                const contextOrTask = oldMethod.apply(this, args);
+                if (contextOrTask) {
+                    contextOrTask.__v_skip = true;
+                }
+                return contextOrTask;
+            };
+        }
+        if ((!hasOwn(protocols, methodName) && !isFunction(protocols.returnValue)) ||
+            !isFunction(method)) {
             return method;
         }
         const protocol = protocols[methodName];
-        if (!protocol) {
+        if (!protocol && !isFunction(protocols.returnValue)) {
             // 暂不支持的 api
             return function () {
                 console.error(`字节跳动小程序 暂不支持${methodName}`);
@@ -921,7 +972,7 @@ function initWrapper(protocols) {
         }
         return function (arg1, arg2) {
             // 目前 api 最多两个参数
-            let options = protocol;
+            let options = protocol || {};
             if (isFunction(protocol)) {
                 options = protocol(arg1);
             }
@@ -931,6 +982,11 @@ function initWrapper(protocols) {
                 args.push(arg2);
             }
             const returnValue = tt[options.name || methodName].apply(tt, args);
+            if (isContextApi(methodName) || isTaskApi(methodName)) {
+                if (returnValue && !returnValue.__v_skip) {
+                    returnValue.__v_skip = true;
+                }
+            }
             if (isSyncApi(methodName)) {
                 // 同步 api
                 return processReturnValue(methodName, returnValue, options.returnValue, isContextApi(methodName));
@@ -1071,7 +1127,6 @@ function populateParameters(fromRes, toRes) {
     };
     {
         try {
-            parameters.uniCompileVersionCode = parseFloat(process.env.UNI_COMPILER_VERSION);
             parameters.uniCompilerVersionCode = parseFloat(process.env.UNI_COMPILER_VERSION);
             parameters.uniRuntimeVersionCode = parseFloat(process.env.UNI_COMPILER_VERSION);
         }
@@ -1200,6 +1255,44 @@ const navigateTo$1 = () => {
     };
 };
 
+const onError = {
+    args(fromArgs) {
+        const app = getApp({ allowDefault: true }) || {};
+        if (!app.$vm) {
+            if (!tt.$onErrorHandlers) {
+                tt.$onErrorHandlers = [];
+            }
+            tt.$onErrorHandlers.push(fromArgs);
+        }
+        else {
+            injectHook(ON_ERROR, fromArgs, app.$vm.$);
+        }
+    },
+};
+const offError = {
+    args(fromArgs) {
+        const app = getApp({ allowDefault: true }) || {};
+        if (!app.$vm) {
+            if (!tt.$onErrorHandlers) {
+                return;
+            }
+            const index = tt.$onErrorHandlers.findIndex((fn) => fn === fromArgs);
+            if (index !== -1) {
+                tt.$onErrorHandlers.splice(index, 1);
+            }
+        }
+        else if (fromArgs.__weh) {
+            const onErrors = app.$vm.$[ON_ERROR];
+            if (onErrors) {
+                const index = onErrors.indexOf(fromArgs.__weh);
+                if (index > -1) {
+                    onErrors.splice(index, 1);
+                }
+            }
+        }
+    },
+};
+
 const baseApis = {
     $on,
     $off,
@@ -1218,6 +1311,7 @@ const baseApis = {
     onPushMessage,
     offPushMessage,
     invokePushCallback,
+    __f__,
     getElementById,
     createCanvasContextAsync,
 };
@@ -1335,6 +1429,8 @@ var protocols = /*#__PURE__*/Object.freeze({
   getUserInfo: getUserInfo,
   login: login,
   navigateTo: navigateTo,
+  offError: offError,
+  onError: onError,
   previewImage: previewImage,
   redirectTo: redirectTo,
   requestPayment: requestPayment,

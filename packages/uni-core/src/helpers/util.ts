@@ -46,3 +46,11 @@ export function get$pageByPage(
     ? (page as UniPage).vm.$basePage
     : (page as Page.PageInstance<AnyObject, {}>).$page
 }
+
+export function isBuiltInElement(target: HTMLElement): boolean {
+  if (__X__ && __PLATFORM__ === 'h5') {
+    // @ts-expect-error use private property
+    return !!target.__isUniElement
+  }
+  return target.tagName.indexOf('UNI-') === 0
+}

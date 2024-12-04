@@ -31,6 +31,7 @@ function parsePage(
   const miniProgramPageOptions = parseComponent(vueOptions, {
     mocks,
     isPage,
+    isPageInProject: true,
     initRelation,
     handleLink,
     initLifetimes,
@@ -48,7 +49,12 @@ function parsePage(
     this: CustomComponentInstanceProperty,
     query: Record<string, any>
   ) {
-    ;(this as any).options = query
+    if (__X__) {
+      // query并非多层级结构，无需递归处理
+      ;(this as any).options = new UTSJSONObject(query || {})
+    } else {
+      ;(this as any).options = query
+    }
     ;(this as any).$page = {
       fullPath: addLeadingSlash((this as any).route + stringifyQuery(query)),
     }

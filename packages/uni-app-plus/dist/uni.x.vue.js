@@ -1,6 +1,6 @@
-import { invokeArrayFns, isUniLifecycleHook, decodedQuery, ON_LOAD, ON_SHOW, LINEFEED, RENDERJS_MODULES, formatLog, WXS_PROTOCOL, WXS_MODULES, UniLifecycleHooks, ON_ERROR, invokeCreateErrorHandler, invokeCreateVueAppHook } from '@dcloudio/uni-shared';
+import { invokeArrayFns, isUniLifecycleHook, decodedQuery, ON_LOAD, ON_SHOW, LINEFEED, RENDERJS_MODULES, formatLog, WXS_PROTOCOL, WXS_MODULES, ON_ERROR, UniLifecycleHooks, invokeCreateErrorHandler, invokeCreateVueAppHook } from '@dcloudio/uni-shared';
 import { isString, isArray, isFunction } from '@vue/shared';
-import { injectHook } from 'vue';
+import { injectHook, logError } from 'vue';
 
 function get$pageByPage(page) {
     return page.vm.$basePage
@@ -181,16 +181,22 @@ function $callMethod(method, ...args) {
 }
 
 function createErrorHandler(app) {
-    return function errorHandler(err, instance, _info) {
-        if (!instance) {
-            throw err;
+    const userErrorHandler = app.config.errorHandler;
+    return function errorHandler(err, instance, info) {
+        if (userErrorHandler) {
+            userErrorHandler(err, instance, info);
         }
         const appInstance = app._instance;
         if (!appInstance || !appInstance.proxy) {
             throw err;
         }
-        {
-            invokeHook(appInstance.proxy, ON_ERROR, err);
+        if (appInstance[ON_ERROR]) {
+            {
+                invokeHook(appInstance.proxy, ON_ERROR, err);
+            }
+        }
+        else {
+            logError(err, info, instance ? instance.$.vnode : null, false);
         }
     };
 }
@@ -286,7 +292,14 @@ function uniIdMixin(globalProperties) {
 }
 
 function initApp(app) {
-    const appConfig = app._context.config;
+    const appConfig = app.config;
+    // 该逻辑全平台会调用
+    // - 需要兼容支持开发者自定义的 errorHandler
+    // - nvue、vue 需要使用同一个（once） errorHandler
+    // - 需要支持 uni.onError 注册监听
+    //   * 目前仅部分小程序平台支持，调用uni.onError时，如果app已存在，则添加到instance的hooks中，如果不存在，则临时存储，初始化instance时添加到hooks中
+    //   * 目前在 errorHandler 中，会调用 app.$callHook(ON_ERROR, err)，所以上一步需要将 uni.onError 存储到 app 的 hooks 中
+    // - 部分平台（目前主要是小程序）开发阶段 uni-console 会调用 uni.onError 注册监听
     appConfig.errorHandler = invokeCreateErrorHandler(app, createErrorHandler);
     initOptionMergeStrategies(appConfig.optionMergeStrategies);
     const globalProperties = appConfig.globalProperties;

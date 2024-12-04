@@ -41,6 +41,7 @@ declare var __PLUS__: boolean
 declare var __VUE_OPTIONS_API__: boolean
 declare var __VUE_PROD_DEVTOOLS__: boolean
 
+declare var __UNI_FEATURE_VIRTUAL_HOST__: boolean
 declare var __UNI_FEATURE_WX__: boolean
 declare var __UNI_FEATURE_WXS__: boolean
 declare var __UNI_FEATURE_RPX__: boolean
@@ -75,6 +76,12 @@ declare var UniViewJSBridge: UniApp.UniViewJSBridge
 declare var UniServiceJSBridge: UniApp.UniServiceJSBridge
 // app view
 declare var __id__: string
+
+declare var __UNI_SOCKET_HOSTS__: string
+declare var __UNI_SOCKET_PORT__: string
+declare var __UNI_SOCKET_ID__: string
+declare var __UNI_CONSOLE_KEEP_ORIGINAL__: boolean
+
 // TODO X 引入真实类型
 declare class UTSJSONObject {
   constructor(obj: Record<string, any>)
@@ -101,6 +108,7 @@ declare class UniNormalPageImpl implements UniPage {
   setPageStyleByJS(style: UTSJSONObject): void
   getElementById(id: string.IDString | string): UniElement | null
   getAndroidView(): null
+  getIOSView(): null
   getHTMLElement(): null
 }
 
@@ -120,9 +128,11 @@ declare class UniDialogPageImpl implements UniPage {
   setPageStyleByJS(style: UTSJSONObject): void
   getElementById(id: string.IDString | string): UniElement | null
   getAndroidView(): null
+  getIOSView(): null
   getHTMLElement(): null
   $component: any | null
   $disableEscBack: boolean
+  $triggerParentHide: boolean
 }
 
 interface Uni {

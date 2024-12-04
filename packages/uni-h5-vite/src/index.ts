@@ -2,14 +2,18 @@ import path from 'path'
 import {
   UNI_EASYCOM_EXCLUDE,
   isAppVue,
+  isEnableConsole,
   isVueSfcFile,
   resolveUTSCompiler,
   uniCssScopedPlugin,
   uniDecryptUniModulesPlugin,
   uniEncryptUniModulesAssetsPlugin,
   uniEncryptUniModulesPlugin,
+  uniHBuilderXConsolePlugin,
   uniUTSUVueJavaScriptPlugin,
 } from '@dcloudio/uni-cli-shared'
+import * as vueCompilerDom from '@vue/compiler-dom'
+import * as uniCliShared from '@dcloudio/uni-cli-shared'
 import { uniH5Plugin } from './plugin'
 import { uniCssPlugin } from './plugins/css'
 import { uniEasycomPlugin } from './plugins/easycom'
@@ -23,10 +27,9 @@ import { uniResolveIdPlugin } from './plugins/resolveId'
 import { uniSetupPlugin } from './plugins/setup'
 import { uniSSRPlugin } from './plugins/ssr'
 import { uniPostSourceMapPlugin } from './plugins/sourcemap'
-import * as vueCompilerDom from '@vue/compiler-dom'
-import * as uniCliShared from '@dcloudio/uni-cli-shared'
 
-export default [
+export default () => [
+  ...(isEnableConsole() ? [uniHBuilderXConsolePlugin('uni.__f__')] : []),
   ...(process.env.UNI_APP_X === 'true'
     ? [
         uniDecryptUniModulesPlugin(),

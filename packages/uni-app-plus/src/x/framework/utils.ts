@@ -1,4 +1,4 @@
-import { loadFontFace } from '../api'
+import { loadFontFace } from '../api/ui/loadFontFace'
 
 /**
  * 解析 css 中的 @font-face 规则，并加载字体

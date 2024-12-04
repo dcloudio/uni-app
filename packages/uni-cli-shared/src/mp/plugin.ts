@@ -10,7 +10,14 @@ export const copyMiniProgramPluginJson: UniViteCopyPluginTarget = {
     return process.env.UNI_OUTPUT_DIR
   },
   transform(source) {
-    return JSON.stringify(parseJson(source.toString(), true), null, 2)
+    const pluginJson = parseJson(source.toString(), true)
+    if (process.env.UNI_APP_X === 'true') {
+      const pluginMainJs = pluginJson.main
+      if (pluginMainJs && pluginMainJs.endsWith('.uts')) {
+        pluginJson.main = pluginMainJs.replace(/\.uts$/, '.js')
+      }
+    }
+    return JSON.stringify(pluginJson, null, 2)
   },
 }
 

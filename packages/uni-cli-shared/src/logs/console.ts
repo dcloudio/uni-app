@@ -10,7 +10,7 @@ export function rewriteConsoleExpr(
   sourceMap: boolean = false
 ): TransformResult {
   filename = normalizePath(filename)
-  const re = /(console\.(log|info|debug|warn|error))\(([^)]+)\)/g
+  const re = /(console\.(log|info|debug|warn|error))\s*\(([^)]+)\)/g
   const locate = getLocator(code)
   const s = new MagicString(code)
   let match: RegExpExecArray | null
@@ -25,10 +25,17 @@ export function rewriteConsoleExpr(
   if (s.hasChanged()) {
     return {
       code: s.toString(),
-      map: sourceMap ? s.generateMap({ hires: true }) : { mappings: '' },
+      map: { mappings: '' },
     }
   }
   return { code, map: { mappings: '' } }
+}
+
+export function restoreConsoleExpr(code: string): string {
+  return code.replace(
+    /(?:uni\.)?__f__\('([^']+)','at ([^:]+):(\d+)',/g,
+    'console.$1('
+  )
 }
 
 function getLocator(source: string) {

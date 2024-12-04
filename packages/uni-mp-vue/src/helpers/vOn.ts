@@ -12,6 +12,7 @@ import {
   callWithAsyncErrorHandling,
   getCurrentInstance,
 } from 'vue'
+import { createEventTarget } from '../dom/utils'
 
 type EventValue = Function | Function[]
 
@@ -65,6 +66,10 @@ export interface MPEvent extends WechatMiniprogram.BaseEvent {
   preventDefault: () => void
   stopPropagation: () => void
   stopImmediatePropagation: () => void
+  // @internal
+  _target?: any
+  // @internal
+  _currentTarget?: any
 }
 
 export interface MPTapEvent extends MPEvent {
@@ -87,13 +92,12 @@ export interface MPTapEvent extends MPEvent {
   screenX: number
   screenY: number
 }
-
 function createInvoker(
   initialValue: EventValue,
   instance: ComponentInternalInstance | null
 ) {
   const invoker: Invoker = (e: MPEvent) => {
-    patchMPEvent(e)
+    patchMPEvent(e, instance)
     let args: unknown[] = [e]
     if (instance && (instance as any).ctx.$getTriggerEventDetail) {
       if (typeof e.detail === 'number') {
@@ -153,7 +157,10 @@ function isMPTapEvent(event: MPEvent): event is MPTapEvent {
   return event.type === 'tap'
 }
 
-function normalizeXEvent(event: MPEvent) {
+function normalizeXEvent(
+  event: MPEvent,
+  instance?: ComponentInternalInstance | null
+) {
   if (isMPTapEvent(event)) {
     event.x = event.detail.x
     event.y = event.detail.y
@@ -167,9 +174,37 @@ function normalizeXEvent(event: MPEvent) {
       event.screenY = touch0.screenY
     }
   }
+  if (event.target) {
+    const oldTarget = event.target
+    Object.defineProperty(event, 'target', {
+      get() {
+        if (!event._target) {
+          event._target = createEventTarget(oldTarget, instance || undefined)
+        }
+        return event._target
+      },
+    })
+  }
+  if (event.currentTarget) {
+    const oldCurrentTarget = event.currentTarget
+    Object.defineProperty(event, 'currentTarget', {
+      get() {
+        if (!event._currentTarget) {
+          event._currentTarget = createEventTarget(
+            oldCurrentTarget,
+            instance || undefined
+          )
+        }
+        return event._currentTarget
+      },
+    })
+  }
 }
 
-function patchMPEvent(event: MPEvent) {
+function patchMPEvent(
+  event: MPEvent,
+  instance?: ComponentInternalInstance | null
+) {
   if (event.type && event.target) {
     event.preventDefault = NOOP
     event.stopPropagation = NOOP
@@ -196,7 +231,7 @@ function patchMPEvent(event: MPEvent) {
     }
 
     if (__X__) {
-      normalizeXEvent(event)
+      normalizeXEvent(event, instance)
     }
   }
 }

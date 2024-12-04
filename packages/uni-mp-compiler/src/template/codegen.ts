@@ -3,6 +3,7 @@ import { SLOT_DEFAULT_NAME, dynamicSlotName } from '@dcloudio/uni-shared'
 import {
   type MiniProgramCompilerOptions,
   formatMiniProgramEvent,
+  getEscaper,
   isAttributeNode,
   isElementNode,
   isUserComponent,
@@ -38,6 +39,7 @@ import {
 } from '../transforms/utils'
 
 export interface TemplateCodegenContext {
+  isX?: boolean
   code: string
   directive: string
   scopeId?: string | null
@@ -50,6 +52,25 @@ export interface TemplateCodegenContext {
   push(code: string): void
   checkPropName: TemplateCodegenOptions['checkPropName']
 }
+
+/**
+ * 注意此处的 escapeText 并未解决用户代码内的实体字符与产物内的不一致的Bug。
+ * vue编译器在tokenize阶段会将实体字符转义为对应的字符，因此在codegen阶段无法做到完美还原用户代码。
+ * 但是在uni-app-x依然要做反转义，主要考虑以下几点：
+ * - 用户源码&gt;原产物为>，导致wxml解析错误
+ * - 用户源码内不会出现>字符。虽然emsp等字符可以出现在用户的源码里面，但是一般不会有人这么做。因此无论用户写的是&emsp;还是\u2003，都被转义为&emsp;对用户而言影响不大
+ */
+const mpEscapeText = getEscaper(
+  /[<>\u2009\u00A0\u2002\u2003]/g,
+  new Map([
+    [60, '&lt;'],
+    [62, '&gt;'],
+    [0x2009, '&thinsp;'],
+    [0xa0, '&nbsp;'],
+    [0x2002, '&ensp;'],
+    [0x2003, '&emsp;'],
+  ])
+)
 
 export function generate(
   { children }: RootNode,
@@ -67,6 +88,7 @@ export function generate(
     component,
     autoImportFilters,
     filter,
+    isX,
   }: TemplateCodegenOptions
 ) {
   const context: TemplateCodegenContext = {
@@ -83,6 +105,7 @@ export function generate(
     push(code) {
       context.code += code
     },
+    isX,
   }
   children.forEach((node) => {
     genNode(node, context)
@@ -126,8 +149,12 @@ export function genNode(
   }
 }
 
-function genText(node: TextNode, { push }: TemplateCodegenContext) {
-  push(node.content)
+function genText(node: TextNode, { push, isX }: TemplateCodegenContext) {
+  if (isX) {
+    push(mpEscapeText(node.content))
+  } else {
+    push(node.content)
+  }
 }
 
 function genExpression(node: ExpressionNode, { push }: TemplateCodegenContext) {
@@ -202,7 +229,7 @@ function genSlot(node: SlotOutletNode, context: TemplateCodegenContext) {
       }
     }
   }
-  if (name.includes('-')) {
+  if (name.includes('-') || /^\d/.test(name)) {
     genVIf(`$slots['${name}']`, context)
   } else {
     genVIf(`$slots.${name}`, context)

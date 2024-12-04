@@ -1,6 +1,6 @@
 {
   "name": "@dcloudio/uni-app-plus",
-  "version": "3.0.0-alpha-4030620241126001",
+  "version": "3.0.0-alpha-4040120241204001",
   "description": "@dcloudio/uni-app-plus",
   "files": [
     "dist",
@@ -29,20 +29,20 @@
     "main": "dist/uni.compiler.js"
   },
   "dependencies": {
-    "@dcloudio/uni-app-uts": "3.0.0-alpha-4030620241126001",
-    "@dcloudio/uni-app-vite": "3.0.0-alpha-4030620241126001",
-    "@dcloudio/uni-app-vue": "3.0.0-alpha-4030620241126001",
+    "@dcloudio/uni-app-uts": "workspace:*",
+    "@dcloudio/uni-app-vite": "workspace:*",
+    "@dcloudio/uni-app-vue": "workspace:*",
     "debug": "^4.3.3",
     "fs-extra": "^10.0.0",
     "licia": "^1.29.0",
     "postcss-selector-parser": "^6.0.6"
   },
   "devDependencies": {
-    "@dcloudio/uni-cli-shared": "3.0.0-alpha-4030620241126001",
-    "@dcloudio/uni-components": "3.0.0-alpha-4030620241126001",
-    "@dcloudio/uni-h5": "3.0.0-alpha-4030620241126001",
-    "@dcloudio/uni-i18n": "3.0.0-alpha-4030620241126001",
-    "@dcloudio/uni-shared": "3.0.0-alpha-4030620241126001",
+    "@dcloudio/uni-cli-shared": "workspace:*",
+    "@dcloudio/uni-components": "workspace:*",
+    "@dcloudio/uni-h5": "workspace:*",
+    "@dcloudio/uni-i18n": "workspace:*",
+    "@dcloudio/uni-shared": "workspace:*",
     "@types/pako": "1.0.2",
     "@types/google.maps": "^3.45.6",
     "@amap/amap-jsapi-types": "^0.0.8",

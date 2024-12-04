@@ -1,5 +1,10 @@
 import { extend, hasOwn, isFunction } from '@vue/shared'
-import { type ComponentOptions, type ComponentPublicInstance, ref } from 'vue'
+import {
+  type ComponentOptions,
+  type ComponentPublicInstance,
+  injectHook,
+  ref,
+} from 'vue'
 
 import { initBaseInstance } from './componentInstance'
 import { initHooks, initUnknownHooks } from './componentHooks'
@@ -57,6 +62,9 @@ export function parseApp(
     $vm: instance, // mp-alipay 组件 data 初始化比 onLaunch 早，提前挂载
     onLaunch(options: App.LaunchShowOption) {
       this.$vm = instance // 飞书小程序可能会把 AppOptions 序列化，导致 $vm 对象部分属性丢失
+      if (__X__) {
+        this.vm = this.$vm
+      }
       const ctx = (internalInstance as any).ctx as Record<string, any>
       if (this.$vm && ctx.$scope && ctx.$callHook) {
         // 已经初始化过了，主要是为了百度，百度 onShow 在 onLaunch 之前
@@ -73,11 +81,12 @@ export function parseApp(
     },
   }
 
-  const { onError } = internalInstance
-  if (onError) {
-    internalInstance.appContext.config.errorHandler = (err) => {
-      instance.$callHook(ON_ERROR, err)
-    }
+  const onErrorHandlers = __GLOBAL__.$onErrorHandlers
+  if (onErrorHandlers) {
+    onErrorHandlers.forEach((fn: Function) => {
+      injectHook(ON_ERROR, fn, internalInstance)
+    })
+    onErrorHandlers.length = 0
   }
 
   initLocale(instance)
@@ -161,7 +170,9 @@ export function initAppLifecycle(
 
 function initLocale(appVm: ComponentPublicInstance) {
   const locale = ref<string>(
-    normalizeLocale(__GLOBAL__.getSystemInfoSync().language) || LOCALE_EN
+    __PLATFORM__ === 'mp-weixin'
+      ? normalizeLocale(__GLOBAL__.getAppBaseInfo().language) || LOCALE_EN
+      : normalizeLocale(__GLOBAL__.getSystemInfoSync().language) || LOCALE_EN
   )
   Object.defineProperty(appVm, '$locale', {
     get() {

@@ -56,6 +56,7 @@ function createUniElement(
     tagName
   )
   uniElement.$vm = ins.proxy
+  initMiniProgramNode(uniElement, ins)
   uniElement.$onStyleChange((styles) => {
     let cssText = ''
     // 如果不支持 wxs setStyle，需要合并模板绑定的 style
@@ -128,4 +129,61 @@ export function findUniElement(
     }
   }
   return null
+}
+
+function createDummyUniElement() {
+  return new UniElement('', '')
+}
+
+function createEventElement(id: string, ins?: ComponentInternalInstance) {
+  if (!id || !ins) {
+    return createDummyUniElement()
+  }
+  const element = findUniElement(id, ins)
+  if (!element) {
+    return createDummyUniElement()
+  }
+  return createUniElement(id, element.tagName, ins)!
+}
+
+export function createEventTarget(
+  target: WechatMiniprogram.IAnyObject,
+  ins?: ComponentInternalInstance
+) {
+  const id = target?.id || ''
+  const element = createEventElement(id, ins)
+  if (element) {
+    element.dataset = target?.dataset || {}
+    element.offsetTop =
+      typeof target?.offsetTop === 'number' ? target?.offsetTop : NaN
+    element.offsetLeft =
+      typeof target?.offsetLeft === 'number' ? target?.offsetLeft : NaN
+  }
+  return element
+}
+
+function initMiniProgramNode(
+  uniElement: UniElement,
+  ins: ComponentInternalInstance
+) {
+  // 可能需要条件编译，部分小程序不支持
+  if (uniElement.tagName === 'SCROLL-VIEW') {
+    uniElement.$node = new Promise((resolve) => {
+      uni
+        .createSelectorQuery()
+        .in(ins.proxy)
+        .select('#' + uniElement.id)
+        .fields({ node: true }, (res) => {
+          const node = (res as any).node
+          resolve(node)
+          // 实现一个假的Promise，确保同步调用
+          uniElement.$node = {
+            then(fn) {
+              fn(node)
+            },
+          }
+        })
+        .exec()
+    })
+  }
 }

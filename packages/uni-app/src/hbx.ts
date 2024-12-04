@@ -12,10 +12,13 @@ export function formatAppLog(
   }
 }
 
-export function formatH5Log(
+export function formatLog(
   type: keyof Console,
   filename: string,
   ...args: unknown[]
 ) {
-  ;(console[type] as Function).apply(console, [...args, filename])
+  if (filename) {
+    args.push(filename)
+  }
+  ;(console[type] as Function).apply(console, args)
 }

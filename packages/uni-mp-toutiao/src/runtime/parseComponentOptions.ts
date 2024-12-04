@@ -32,8 +32,10 @@ interface RelationOptions {
   webviewId: string
 }
 
-export const instances: Record<string, ComponentPublicInstance> =
-  Object.create(null)
+export const instances: Record<
+  string,
+  ComponentPublicInstance | MPComponentInstance
+> = Object.create(null)
 
 export function initRelation(
   mpInstance: MPComponentInstance,
@@ -60,7 +62,7 @@ export function initRelation(
             webviewId,
             // 如果是 virtualHost，则需要找到页面 vm 传递给 handleLink，因为此时的上下文是不对的，需要从页面 vm 递归查找
             // 目前测试来看，页面的 nodeId 是 0
-            pageVm: instances[webviewId + '_0'],
+            pageVm: instances[webviewId + '_0'] as ComponentPublicInstance,
           },
         },
       ])
@@ -82,7 +84,7 @@ export function handleLink(
     detail: RelationOptions & { pageVm?: ComponentPublicInstance }
   }
 ) {
-  const vm = instances[webviewId + '_' + nodeId]
+  const vm = instances[webviewId + '_' + nodeId] as ComponentPublicInstance
   if (!vm) {
     return
   }

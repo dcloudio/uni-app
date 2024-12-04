@@ -9,10 +9,11 @@ import {
   ON_READY,
   ON_RESIZE,
   ON_UNLOAD,
-  SYSTEM_DIALOG_PAGE_PATH_STARTER,
   formatLog,
 } from '@dcloudio/uni-shared'
 import {
+  SYSTEM_DIALOG_PAGE_PATH_STARTER,
+  dialogPageTriggerParentShow,
   initPageInternalInstance,
   invokeHook,
   // initPageVm,
@@ -29,7 +30,7 @@ import { getAppThemeFallbackOS, normalizePageStyles } from '../theme'
 import { invokePageReadyHooks } from '../../api/route/performance'
 import { homeDialogPages, homeSystemDialogPages } from './dialogPage'
 import type { UniDialogPage } from '@dcloudio/uni-app-x/types/page'
-import { closeDialogPage } from '../../api'
+import { closeDialogPage } from '../../api/route/closeDialogPage'
 
 type PageNodeOptions = {}
 
@@ -237,15 +238,7 @@ export function registerPage(
 }
 
 export function registerDialogPage(
-  {
-    url,
-    path,
-    query,
-    openType,
-    webview,
-    nvuePageVm,
-    eventChannel,
-  }: RegisterPageOptions,
+  { url, path, query, openType, eventChannel }: RegisterPageOptions,
   dialogPage: UniDialogPage,
   onCreated?: (page: IPage) => void,
   delay = 0
@@ -297,9 +290,6 @@ export function registerDialogPage(
       {},
       nativePage
     ) as ComponentPublicInstance
-    dialogPage.vm = page
-    dialogPage.$vm = page
-
     // 由于 iOS 调用 show 时机差异，暂不使用页面 onShow 事件
     // nativePage.addPageEventListener(ON_SHOW, (_) => {
     //   invokeHook(page, ON_SHOW)
@@ -309,6 +299,7 @@ export function registerDialogPage(
     })
     nativePage.addPageEventListener(ON_UNLOAD, (_) => {
       invokeHook(page, ON_UNLOAD)
+      dialogPageTriggerParentShow(dialogPage)
     })
     nativePage.addPageEventListener(ON_READY, (_) => {
       invokePageReadyHooks(page)

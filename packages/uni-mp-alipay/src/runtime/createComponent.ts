@@ -68,6 +68,9 @@ function initVm(
     initRelation(mpInstance, relationOptions)
     // 初始化 vue 实例
     mpInstance.$vm = createComponent(relationOptions.parent!)
+    if (__X__) {
+      mpInstance.vm = mpInstance.$vm
+    }
   } else {
     // 处理父子关系
     initRelation(mpInstance, relationOptions)
@@ -75,6 +78,9 @@ function initVm(
       // 父组件已经初始化，直接初始化子，否则放到父组件的 didMount 中处理
       // 初始化 vue 实例
       mpInstance.$vm = createComponent(relationOptions.parent)
+      if (__X__) {
+        mpInstance.vm = mpInstance.$vm
+      }
       handleRef.call(relationOptions.parent.$scope as any, mpInstance)
       initChildVues(mpInstance)
       mpInstance.$vm.$callHook('mounted')

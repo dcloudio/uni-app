@@ -1,4 +1,4 @@
-import { type ComponentPublicInstance, markRaw } from 'vue'
+import { type ComponentPublicInstance, markRaw, watchEffect } from 'vue'
 import { getCurrentPage, initPageVm } from '@dcloudio/uni-core'
 import {
   ON_REACH_BOTTOM_DISTANCE,
@@ -42,13 +42,63 @@ class UniPageImpl implements UniPage {
   vm: ComponentPublicInstance | null
   $vm: ComponentPublicInstance | null
   getPageStyle(): UTSJSONObject {
-    return new UTSJSONObject({})
+    const pageMeta = this.vm?.$basePage.meta
+    return pageMeta
+      ? new UTSJSONObject({
+          navigationBarBackgroundColor: pageMeta.navigationBar.backgroundColor,
+          navigationBarTextStyle: pageMeta.navigationBar.titleColor,
+          navigationBarTitleText: pageMeta.navigationBar.titleText,
+          titleImage: pageMeta.navigationBar.titleImage || '',
+          navigationStyle: pageMeta.navigationBar.style || 'default',
+          disableScroll: pageMeta.disableScroll || false,
+          enablePullDownRefresh: pageMeta.enablePullDownRefresh || false,
+          onReachBottomDistance:
+            pageMeta.onReachBottomDistance || ON_REACH_BOTTOM_DISTANCE,
+          backgroundColorContent: pageMeta.backgroundColorContent,
+        })
+      : new UTSJSONObject({})
   }
   $getPageStyle(): UTSJSONObject {
     return this.getPageStyle()
   }
-  setPageStyle(style: UTSJSONObject): void {}
-  $setPageStyle(style: UTSJSONObject): void {
+  setPageStyle(style: PageStyle): void {
+    // TODO uni-cli-shared内处理样式的逻辑移至uni-shared内并复用
+    const pageMeta = this.vm?.$basePage.meta
+    if (!pageMeta) return
+
+    for (const key in style) {
+      switch (key) {
+        case 'navigationBarBackgroundColor':
+          pageMeta.navigationBar.backgroundColor = style[key]
+          break
+        case 'navigationBarTextStyle':
+          const textStyle = style[key]
+          if (textStyle == null) {
+            continue
+          }
+          // TODO titleColor属性类型定义问题
+          pageMeta.navigationBar.titleColor = ['black', 'white'].includes(
+            textStyle
+          )
+            ? normalizeTitleColor(textStyle || '')
+            : (textStyle as any)
+          break
+        case 'navigationBarTitleText':
+          pageMeta.navigationBar.titleText = style[key]
+          break
+        case 'titleImage':
+          pageMeta.navigationBar.titleImage = style[key]
+          break
+        case 'navigationStyle':
+          pageMeta.navigationBar.style = style[key]
+          break
+        default:
+          pageMeta[key] = style[key]
+          break
+      }
+    }
+  }
+  $setPageStyle(style: PageStyle): void {
     this.setPageStyle(style)
   }
   getElementById(id: string.IDString | string): UniElement | null {
@@ -62,6 +112,9 @@ class UniPageImpl implements UniPage {
       : null
   }
   getAndroidView() {
+    return null
+  }
+  getIOSView() {
     return null
   }
   getHTMLElement() {
@@ -111,16 +164,40 @@ class UniNormalPageImpl extends UniPageImpl implements UniNormalPage {
 export class UniDialogPageImpl extends UniPageImpl implements UniDialogPage {
   $component: any | null = null
   $disableEscBack: boolean = false
+  $triggerParentHide: boolean = false
+  getElementById(id: string.IDString | string): UniElement | null {
+    const currentPage = getCurrentPage() as unknown as UniPage
+    if (currentPage !== this.getParentPage()) {
+      return null
+    }
+    const uniPageBody = document.querySelector(
+      `uni-page[data-page="${this.vm?.route}"] uni-page-body`
+    )
+    return uniPageBody
+      ? (uniPageBody.querySelector(`#${id}`) as unknown as UniElement)
+      : null
+  }
+  getHTMLElement() {
+    const currentPage = getCurrentPage() as unknown as UniPage
+    if (currentPage !== this.getParentPage()) {
+      return null
+    }
+    return document.querySelector(
+      `uni-page[data-page="${this.vm?.route}"] uni-page-body`
+    ) as unknown as UniElement
+  }
   constructor({
     route,
     options,
     $component,
+    $triggerParentHide,
     getParentPage,
     $disableEscBack = false,
   }: {
     route: string
     options: UTSJSONObject
     $component: any
+    $triggerParentHide: boolean
     getParentPage: () => UniPage | null
     $disableEscBack?: boolean | null
   }) {
@@ -128,6 +205,7 @@ export class UniDialogPageImpl extends UniPageImpl implements UniDialogPage {
     this.$component = markRaw($component)
     this.getParentPage = getParentPage
     this.$disableEscBack = !!$disableEscBack
+    this.$triggerParentHide = !!$triggerParentHide
   }
 }
 
@@ -156,55 +234,6 @@ export function initXPage(
       vm,
     })
     vm.$page = uniPage
-
-    const pageMeta = page.meta
-    uniPage.setPageStyle = (style: PageStyle) => {
-      // TODO uni-cli-shared内处理样式的逻辑移至uni-shared内并复用
-      for (const key in style) {
-        switch (key) {
-          case 'navigationBarBackgroundColor':
-            pageMeta.navigationBar.backgroundColor = style[key]
-            break
-          case 'navigationBarTextStyle':
-            const textStyle = style[key]
-            if (textStyle == null) {
-              continue
-            }
-            // TODO titleColor属性类型定义问题
-            pageMeta.navigationBar.titleColor = ['black', 'white'].includes(
-              textStyle
-            )
-              ? normalizeTitleColor(textStyle || '')
-              : (textStyle as any)
-            break
-          case 'navigationBarTitleText':
-            pageMeta.navigationBar.titleText = style[key]
-            break
-          case 'titleImage':
-            pageMeta.navigationBar.titleImage = style[key]
-            break
-          case 'navigationStyle':
-            pageMeta.navigationBar.style = style[key]
-            break
-          default:
-            pageMeta[key] = style[key]
-            break
-        }
-      }
-    }
-    uniPage.getPageStyle = () =>
-      new UTSJSONObject({
-        navigationBarBackgroundColor: pageMeta.navigationBar.backgroundColor,
-        navigationBarTextStyle: pageMeta.navigationBar.titleColor,
-        navigationBarTitleText: pageMeta.navigationBar.titleText,
-        titleImage: pageMeta.navigationBar.titleImage || '',
-        navigationStyle: pageMeta.navigationBar.style || 'default',
-        disableScroll: pageMeta.disableScroll || false,
-        enablePullDownRefresh: pageMeta.enablePullDownRefresh || false,
-        onReachBottomDistance:
-          pageMeta.onReachBottomDistance || ON_REACH_BOTTOM_DISTANCE,
-        backgroundColorContent: pageMeta.backgroundColorContent,
-      })
     vm.$dialogPage = vm.$pageLayoutInstance?.$dialogPage
 
     currentPagesMap.set(normalizeRouteKey(page.path, page.id), vm)
@@ -233,6 +262,20 @@ export function initXPage(
     pageInstance.$dialogPage!.vm = vm
     pageInstance.$dialogPage!.$vm = vm
   }
+}
+
+export function useBackgroundColorContent(vm: ComponentPublicInstance | null) {
+  vm &&
+    watchEffect(() => {
+      const uniPageBody = document.querySelector(
+        `uni-page[data-page="${vm.route}"] uni-page-body`
+      )
+      if (uniPageBody && vm.$basePage.meta.backgroundColorContent) {
+        // @ts-expect-error
+        uniPageBody.style.backgroundColor =
+          vm.$basePage.meta.backgroundColorContent
+      }
+    })
 }
 
 function handleEscKeyPress(event) {

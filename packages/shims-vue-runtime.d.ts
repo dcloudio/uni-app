@@ -36,6 +36,7 @@ declare module '@vue/runtime-core' {
     // X web start
     $basePage: Page.PageInstance['$page']
     $dialogPage?: UniDialogPage
+    $triggerParentHide?: boolean
     $pageLayoutInstance: ComponentInternalInstance | null
     // X web end
     $mpType?: 'app' | 'page'
@@ -90,4 +91,11 @@ declare module '@vue/runtime-core' {
     prepend: boolean = false
   ) => Function | undefined
   export const isInSSRComponentSetup: boolean
+
+  export const logError: (
+    err: unknown,
+    type: ErrorTypes,
+    contextVNode: VNode | null,
+    throwInDev?: boolean
+  ) => void
 }

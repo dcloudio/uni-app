@@ -125,6 +125,7 @@ export {
   offUnhandledRejection,
   // 内部使用
   invokePushCallback,
+  __f__,
 } from '@dcloudio/uni-api'
 //#endif
 

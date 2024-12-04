@@ -13,9 +13,3 @@ export function initAppProvide() {
     'uni.requireNativePlugin': ['@dcloudio/uni-app', 'requireNativePlugin'],
   }
 }
-
-export function initH5Provide() {
-  return {
-    __f__: ['@dcloudio/uni-app', 'formatH5Log'],
-  }
-}

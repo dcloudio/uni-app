@@ -1,10 +1,11 @@
+import { ON_HIDE, parseUrl } from '@dcloudio/uni-shared'
 import {
-  ON_HIDE,
+  getCurrentPage,
+  getRouteMeta,
+  invokeHook,
   isSystemActionSheetDialogPage,
   isSystemDialogPage,
-  parseUrl,
-} from '@dcloudio/uni-shared'
-import { getCurrentPage, getRouteMeta, invokeHook } from '@dcloudio/uni-core'
+} from '@dcloudio/uni-core'
 
 import { ANI_DURATION, ANI_SHOW } from '../../../service/constants'
 import { showWebview } from './webview'
@@ -12,6 +13,7 @@ import { beforeRoute, createNormalizeUrl } from '@dcloudio/uni-api'
 import {
   homeDialogPages,
   homeSystemDialogPages,
+  setCurrentNormalDialogPage,
 } from '../../framework/page/dialogPage'
 import { registerDialogPage } from '../../framework/page/register'
 import type { UniDialogPage } from '@dcloudio/uni-app-x/types/page'
@@ -49,11 +51,10 @@ export const openDialogPage = (
 
   const dialogPage = new UniDialogPageImpl()
   dialogPage.route = path
-  // @ts-expect-error
-  dialogPage.optionsByJS = query
   dialogPage.getParentPage = () => parentPage
   dialogPage.$component = null
   dialogPage.$disableEscBack = false
+  dialogPage.$triggerParentHide = !!options.triggerParentHide
   const systemDialog = isSystemDialogPage(dialogPage)
   if (!systemDialog) {
     if (!parentPage) {
@@ -63,7 +64,7 @@ export const openDialogPage = (
       if (dialogPages.length) {
         invokeHook(dialogPages[dialogPages.length - 1].$vm!, ON_HIDE)
       }
-      dialogPages.push(dialogPage)
+      setCurrentNormalDialogPage(dialogPage)
     }
   } else {
     if (!parentPage) {

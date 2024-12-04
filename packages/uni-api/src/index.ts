@@ -2,6 +2,7 @@ export * from './service/base/base64'
 export * from './service/base/upx2px'
 export * from './service/base/interceptor'
 export * from './service/base/eventBus'
+export * from './service/base/__f__'
 
 export * from './service/context/createVideoContext'
 export * from './service/context/createMapContext'

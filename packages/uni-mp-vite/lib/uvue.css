@@ -85,6 +85,21 @@ view {
   border: 0 solid #000;
 }
 
+/* 与开发者元素接触的非滚动容器 */
+view,
+label,
+swiper,
+swiper-item,
+movable-area,
+movable-view,
+cover-view,
+list-item,
+navigator,
+radio-group,
+checkbox-group {
+  overflow: hidden;
+}
+
 scroll-view {
   width: auto;
 }
@@ -100,4 +115,32 @@ button {
 slider {
   margin: 0px;
   padding: 4px 0px;
+}
+
+text {
+  display: inline;
+}
+
+text,
+textarea,
+label {
+  line-height: 1.2;
+  overflow: hidden;
+  flex-basis: auto;
+  letter-spacing: 0;
+}
+
+rich-text {
+  line-height: 1.5;
+}
+
+progress {
+  flex-direction: row;
+  align-items: center;
+}
+
+radio,
+checkbox {
+  flex-direction: row;
+  align-items: center;
 }

@@ -3,7 +3,7 @@ module.exports = {
   setupFilesAfterEnv: ['./scripts/setupJestEnv.ts'],
   globals: {
     __X__: false,
-    __DEV__: true,
+    __DEV__: false,
     __TEST__: true,
     __NODE_JS__: true,
     __VERSION__: require('./package.json').version,

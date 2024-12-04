@@ -81,7 +81,10 @@ function getNodeInfo(
     })
   }
   if (fields.scrollOffset) {
-    if (el.tagName === 'UNI-SCROLL-VIEW') {
+    if (
+      (!__X__ && el.tagName === 'UNI-SCROLL-VIEW') ||
+      (__X__ && el.tagName === 'SCROLL-VIEW')
+    ) {
       const scroll = el.children[0].children[0]
       info.scrollLeft = scroll.scrollLeft
       info.scrollTop = scroll.scrollTop

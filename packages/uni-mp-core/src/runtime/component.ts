@@ -28,6 +28,7 @@ import Component = WechatMiniprogram.Component
 
 export interface CustomComponentInstanceProperty {
   $vm?: ComponentPublicInstance
+  vm?: ComponentPublicInstance
   _$vueId: string
   _$vuePid?: string
   _$setRef?: (fn: Function) => void
@@ -68,6 +69,10 @@ export interface ParseComponentOptions {
   ) => void
   mocks: string[]
   isPage: (mpInstance: MPComponentInstance) => boolean
+  /**
+   * 当前组件在uni-app项目内是否为页面
+   */
+  isPageInProject?: boolean
   initRelation: (
     mpInstance: MPComponentInstance,
     options: RelationOptions
@@ -86,6 +91,7 @@ export function parseComponent(
     parse,
     mocks,
     isPage,
+    isPageInProject,
     initRelation,
     handleLink,
     initLifetimes,
@@ -98,6 +104,10 @@ export function parseComponent(
     // styleIsolation: 'apply-shared',
     addGlobalClass: true,
     pureDataPattern: /^uP$/,
+  }
+
+  if (__X__ && __UNI_FEATURE_VIRTUAL_HOST__ && !isPageInProject) {
+    options.virtualHost = true
   }
 
   if (isArray(vueOptions.mixins)) {

@@ -16,6 +16,7 @@ import { $reLaunch } from './reLaunch'
 import { getCurrentPage } from '@dcloudio/uni-core'
 import { addLeadingSlash } from '@dcloudio/uni-shared'
 import { getNativeApp } from '../../framework/app/app'
+import { setStatusBarStyle } from '../../statusBar'
 
 export function closePage(
   page: ComponentPublicInstance,
@@ -89,7 +90,10 @@ export function closeNativeDialogPage(
       webview,
       animationType || 'none',
       animationDuration || 0,
-      callback
+      () => {
+        setStatusBarStyle()
+        callback?.()
+      }
     )
   }
 }

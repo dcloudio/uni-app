@@ -154,6 +154,7 @@ declare global {
   }
   type UniConfigOnReadyCallback = () => void
 
+  const GenUniApp: any
   type UniConfig = {
     realEntryPagePath: string
     entryPagePath: string
@@ -165,6 +166,7 @@ declare global {
     _ready: boolean
     callbacks: UniConfigOnReadyCallback[]
     onReady(callback: UniConfigOnReadyCallback): void
+    getTabBarConfig: () => Map<string, any> | null
     get ready(): boolean
     set ready(value: boolean)
   }

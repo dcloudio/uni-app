@@ -4,11 +4,11 @@
  * @origin UTSError
  */
 declare class Error {
-  constructor ();
-  constructor (message: string);
-  constructor (message: string, options: UTSJSONObject);
+  constructor();
+  constructor(message : string);
+  constructor(message : string, options : UTSJSONObject);
 
-  name: string;
-  message: string;
-  cause: Error | null;
+  name : string;
+  message : string;
+  cause : Error | null;
 }

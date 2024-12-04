@@ -15,7 +15,7 @@ export { extend }
 
 export declare function formatAppLog(type: 'log' | 'info' | 'debug' | 'warn' | 'error', filename: string, ...args: unknown[]): void;
 
-export declare function formatH5Log(type: keyof Console, filename: string, ...args: unknown[]): void;
+export declare function formatLog(type: keyof Console, filename: string, ...args: unknown[]): void;
 
 /**
  * uni 对象是跨实例的，而此处列的 API 均是需要跟当前实例关联的，比如 requireNativePlugin 获取 dom 时，依赖当前 weex 实例

@@ -49,6 +49,9 @@ export const defaultTransformMPBuiltInTagOptions: TransformMPBuiltInTagOptions =
         // "foreColor": "",
         // "activeForeColor": ""
       },
+      'rich-text': {
+        selectable: 'user-select',
+      },
     },
     propAdd: {
       canvas: [
@@ -60,6 +63,10 @@ export const defaultTransformMPBuiltInTagOptions: TransformMPBuiltInTagOptions =
       'scroll-view': [
         {
           name: 'enable-flex',
+          value: 'true',
+        },
+        {
+          name: 'enhanced',
           value: 'true',
         },
       ],
