@@ -1915,7 +1915,9 @@ function dialogPageTriggerParentLifeCycle(dialogPage, lifeCycle, triggerParentHi
   if (!currentPage)
     return;
   const parentPage = dialogPage.getParentPage();
-  if (parentPage && parentPage !== currentPage)
+  if (!parentPage)
+    return;
+  if (parentPage !== currentPage)
     return;
   const dialogPages = currentPage.getDialogPages();
   for (let i = 0; i < dialogPages.length; i++) {
@@ -1926,7 +1928,24 @@ function dialogPageTriggerParentLifeCycle(dialogPage, lifeCycle, triggerParentHi
       }
     }
   }
+  if (triggerParentHideDialogPageNum <= 1) {
+    const systemDialogPage = getSystemDialogPages(parentPage);
+    for (let i = 0; i < systemDialogPage.length; i++) {
+      if (!!systemDialogPage[i].$triggerParentHide) {
+        triggerParentHideDialogPageNum++;
+        if (triggerParentHideDialogPageNum > 1) {
+          return;
+        }
+      }
+    }
+  }
   invokeHook(currentPage.vm, lifeCycle);
+}
+function getSystemDialogPages(parentPage) {
+  var _a;
+  {
+    return (_a = parentPage.vm.$pageLayoutInstance) == null ? void 0 : _a.$systemDialogPages.value;
+  }
 }
 function initView() {
   useRem();
