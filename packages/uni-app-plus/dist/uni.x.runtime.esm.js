@@ -2815,8 +2815,8 @@ var openDialogPage = (options) => {
       if (dialogPages.length) {
         invokeHook(dialogPages[dialogPages.length - 1].$vm, ON_HIDE);
       }
-      setCurrentNormalDialogPage(dialogPage);
     }
+    setCurrentNormalDialogPage(dialogPage);
   } else {
     if (!parentPage) {
       homeSystemDialogPages.push(dialogPage);
