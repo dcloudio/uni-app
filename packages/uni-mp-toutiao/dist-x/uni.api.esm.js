@@ -1089,7 +1089,7 @@ function populateParameters(fromRes, toRes) {
     // SDKVersion
     let _SDKVersion = SDKVersion;
     // hostLanguage
-    const hostLanguage = language.replace(/_/g, '-');
+    const hostLanguage = (language || '').replace(/_/g, '-');
     // wx.getAccountInfoSync
     const parameters = {
         appId: process.env.UNI_APP_ID,
