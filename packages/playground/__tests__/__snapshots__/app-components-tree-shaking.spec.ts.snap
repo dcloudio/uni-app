@@ -9,9 +9,6 @@ exports[`app-components-tree-shaking playground uni-app-x build:app-android 1`] 
     "name": "1.0.0",
     "code": "100"
   },
-  "uni-app-x": {
-    "compilerVersion": "4.31"
-  },
   "app": {
     "distribute": {
       "modules": {
@@ -31,9 +28,6 @@ exports[`app-components-tree-shaking playground uni-app-x build:app-ios 1`] = `
   "version": {
     "name": "1.0.0",
     "code": "100"
-  },
-  "uni-app-x": {
-    "compilerVersion": "4.31"
   },
   "app": {
     "distribute": {
