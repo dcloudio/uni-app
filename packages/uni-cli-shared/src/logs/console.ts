@@ -25,7 +25,7 @@ export function rewriteConsoleExpr(
   if (s.hasChanged()) {
     return {
       code: s.toString(),
-      map: { mappings: '' },
+      map: sourceMap ? s.generateMap({ hires: true }) : { mappings: '' },
     }
   }
   return { code, map: { mappings: '' } }
