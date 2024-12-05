@@ -7,12 +7,10 @@ import {
 import { OPEN_DIALOG_PAGE } from '../../constants'
 import {
   SYSTEM_DIALOG_PAGE_PATH_STARTER,
-  dialogPageTriggerParentHide,
   getCurrentPage,
 } from '@dcloudio/uni-core'
 import { addCurrentPageWithInitScope } from '../../../service/framework/page/setup'
 import { getPage$BasePage } from '../../../service/framework/page/getCurrentPages'
-import type { UniDialogPage } from '@dcloudio/uni-app-x/types/UniPage'
 import {
   getCurrentNormalDialogPage,
   setCurrentNormalDialogPage,
@@ -120,9 +118,6 @@ export function setupXPage(
     const rootElement = pageVm.$el?._parent
     if (rootElement) {
       rootElement._page = pageVm.$page
-    }
-    if (getPage$BasePage(pageVm).openType === OPEN_DIALOG_PAGE) {
-      dialogPageTriggerParentHide(uniPage as UniDialogPage)
     }
   })
   onBeforeUnmount(() => {

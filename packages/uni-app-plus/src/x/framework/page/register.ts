@@ -16,6 +16,7 @@ import {
   dialogPageTriggerParentShow,
   initPageInternalInstance,
   invokeHook,
+  isSystemDialogPage,
   // initPageVm,
   // invokeHook,
 } from '@dcloudio/uni-core'
@@ -299,7 +300,11 @@ export function registerDialogPage(
     })
     nativePage.addPageEventListener(ON_UNLOAD, (_) => {
       invokeHook(page, ON_UNLOAD)
-      dialogPageTriggerParentShow(dialogPage)
+      // 此时 systemDialog 已在数组中移除，故需要初始化 1
+      dialogPageTriggerParentShow(
+        dialogPage,
+        isSystemDialogPage(dialogPage) ? 1 : 0
+      )
     })
     nativePage.addPageEventListener(ON_READY, (_) => {
       invokePageReadyHooks(page)
