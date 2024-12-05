@@ -151,7 +151,9 @@ function dialogPageTriggerParentLifeCycle(dialogPage, lifeCycle) {
   if (!currentPage)
     return;
   var parentPage = dialogPage.getParentPage();
-  if (parentPage && parentPage !== currentPage)
+  if (!parentPage)
+    return;
+  if (parentPage !== currentPage)
     return;
   var dialogPages = currentPage.getDialogPages();
   for (var i = 0; i < dialogPages.length; i++) {
@@ -162,7 +164,23 @@ function dialogPageTriggerParentLifeCycle(dialogPage, lifeCycle) {
       }
     }
   }
+  if (triggerParentHideDialogPageNum <= 1) {
+    var systemDialogPage = getSystemDialogPages(parentPage);
+    for (var _i = 0; _i < systemDialogPage.length; _i++) {
+      if (!!systemDialogPage[_i].$triggerParentHide) {
+        triggerParentHideDialogPageNum++;
+        if (triggerParentHideDialogPageNum > 1) {
+          return;
+        }
+      }
+    }
+  }
   invokeHook(currentPage.vm, lifeCycle);
+}
+function getSystemDialogPages(parentPage) {
+  {
+    return parentPage.vm.$systemDialogPages || [];
+  }
 }
 function initPageVm(pageVm, page) {
   pageVm.route = page.route;

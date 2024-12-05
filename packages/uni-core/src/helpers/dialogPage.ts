@@ -37,7 +37,8 @@ function dialogPageTriggerParentLifeCycle(
   const currentPage = pages[pages.length - 1] as unknown as UniPage
   if (!currentPage) return
   const parentPage = dialogPage.getParentPage()
-  if (parentPage && parentPage !== currentPage) return
+  if (!parentPage) return
+  if (parentPage !== currentPage) return
   const dialogPages = currentPage.getDialogPages() as UniDialogPage[]
   for (let i = 0; i < dialogPages.length; i++) {
     if (!!dialogPages[i].$triggerParentHide) {
@@ -47,5 +48,25 @@ function dialogPageTriggerParentLifeCycle(
       }
     }
   }
+  if (triggerParentHideDialogPageNum <= 1) {
+    const systemDialogPage = getSystemDialogPages(parentPage)
+    for (let i = 0; i < systemDialogPage.length; i++) {
+      if (!!systemDialogPage[i].$triggerParentHide) {
+        triggerParentHideDialogPageNum++
+        if (triggerParentHideDialogPageNum > 1) {
+          return
+        }
+      }
+    }
+  }
   invokeHook(currentPage.vm, lifeCycle)
+}
+
+function getSystemDialogPages(parentPage: UniPage) {
+  if (__PLATFORM__ === 'app') {
+    return parentPage.vm.$systemDialogPages || []
+  }
+  if (__PLATFORM__ === 'h5') {
+    return parentPage.vm.$pageLayoutInstance?.$systemDialogPages.value
+  }
 }
