@@ -48,6 +48,7 @@ import {
 const uniCloudSpaceList = getUniCloudSpaceList()
 
 let isFirst = true
+let isFirstBundleSuccess = false
 export function uniAppPlugin(): UniVitePlugin {
   const inputDir = process.env.UNI_INPUT_DIR
   const outputDir = process.env.UNI_OUTPUT_DIR
@@ -287,6 +288,9 @@ export function uniAppPlugin(): UniVitePlugin {
       let pageCount = 0
       if (isFirst) {
         isFirst = false
+      }
+      // 首次编译成功后，不再显示页面数量进度条
+      if (!isFirstBundleSuccess) {
         // 自动化测试时，不显示页面数量进度条
         // if (!process.env.UNI_AUTOMATOR_WS_ENDPOINT) {
         pageCount = parseInt(process.env.UNI_APP_X_PAGE_COUNT) || 0
@@ -357,6 +361,7 @@ export function uniAppPlugin(): UniVitePlugin {
           }
         }
       }
+      isFirstBundleSuccess = true
     },
   }
 }
