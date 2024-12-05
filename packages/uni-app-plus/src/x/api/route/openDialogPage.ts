@@ -1,5 +1,6 @@
 import { ON_HIDE, parseUrl } from '@dcloudio/uni-shared'
 import {
+  dialogPageTriggerParentHide,
   getCurrentPage,
   getRouteMeta,
   invokeHook,
@@ -89,6 +90,7 @@ export const openDialogPage = (
   function callback(page: IPage) {
     showWebview(page, aniType, aniDuration, () => {
       beforeRoute()
+      dialogPageTriggerParentHide(dialogPage)
     })
   }
   // 有动画时先执行 show

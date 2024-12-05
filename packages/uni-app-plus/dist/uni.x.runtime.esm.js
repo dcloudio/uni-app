@@ -741,9 +741,6 @@ function setupXPage(instance, pageInstance, pageVm, pageId, pagePath) {
     if (rootElement) {
       rootElement._page = pageVm.$page;
     }
-    if (getPage$BasePage(pageVm).openType === OPEN_DIALOG_PAGE) {
-      dialogPageTriggerParentHide(uniPage);
-    }
   });
   onBeforeUnmount(() => {
     var _pageVm$$el4;
@@ -1254,7 +1251,7 @@ function registerDialogPage(_ref2, dialogPage, onCreated) {
     });
     nativePage2.addPageEventListener(ON_UNLOAD, (_) => {
       invokeHook(page, ON_UNLOAD);
-      dialogPageTriggerParentShow(dialogPage);
+      dialogPageTriggerParentShow(dialogPage, isSystemDialogPage(dialogPage) ? 1 : 0);
     });
     nativePage2.addPageEventListener(ON_READY, (_) => {
       invokePageReadyHooks(page);
@@ -2838,6 +2835,7 @@ var openDialogPage = (options) => {
   function callback(page2) {
     showWebview(page2, aniType, aniDuration, () => {
       beforeRoute();
+      dialogPageTriggerParentHide(dialogPage);
     });
   }
   var page = registerDialogPage(
