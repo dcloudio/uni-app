@@ -189,8 +189,6 @@ async function publishPackage(pkgName, version, runIfNotDry) {
       'pnpm',
       [
         'publish',
-        '--new-version',
-        version,
         ...(releaseTag ? ['--tag', releaseTag] : []),
         '--access',
         'public',
