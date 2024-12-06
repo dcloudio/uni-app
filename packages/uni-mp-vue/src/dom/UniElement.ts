@@ -92,9 +92,27 @@ export class UniElement {
   _getBoundingClientRectAsync(callback) {
     const query = uni.createSelectorQuery().in(this.$vm)
     query.select('#' + this.id).boundingClientRect()
-    query.exec(function (res) {
+    query.exec((res) => {
+      this._fixDomRectXY(res[0])
       callback(res[0])
     })
+  }
+
+  _fixDomRectXY(node: any) {
+    if (node.x == undefined) {
+      if (node.width >= 0) {
+        node.x = node.left
+      } else {
+        node.x = node.left - node.width
+      }
+    }
+    if (node.y == undefined) {
+      if (node.height >= 0) {
+        node.y = node.top
+      } else {
+        node.y = node.top - node.height
+      }
+    }
   }
 
   $onStyleChange(callback: (styles: Record<string, string | null>) => void) {
