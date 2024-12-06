@@ -324,10 +324,15 @@ function sendErrorMessages(errors) {
     sendError(JSON.stringify({
         type: 'error',
         data: errors.map((err) => {
-            if (err instanceof Error && err.stack) {
-                return err.stack;
+            const isPromiseRejection = err && 'promise' in err && 'reason' in err;
+            const prefix = isPromiseRejection ? 'UnhandledPromiseRejection: ' : '';
+            if (isPromiseRejection) {
+                err = err.reason;
             }
-            return String(err);
+            if (err instanceof Error && err.stack) {
+                return prefix + err.stack;
+            }
+            return prefix + String(err);
         }),
     }));
 }
@@ -355,11 +360,20 @@ function initOnError() {
         }
         sendErrorMessages([error]);
     }
-    // TODO 是否需要监听 uni.onUnhandledRejection？
     if (typeof uni.onError === 'function') {
         uni.onError(onError);
     }
-    return function offError() { };
+    if (typeof uni.onUnhandledRejection === 'function') {
+        uni.onUnhandledRejection(onError);
+    }
+    return function offError() {
+        if (typeof uni.offError === 'function') {
+            uni.offError(onError);
+        }
+        if (typeof uni.offUnhandledRejection === 'function') {
+            uni.offUnhandledRejection(onError);
+        }
+    };
 }
 
 function initRuntimeSocketService() {
