@@ -37,6 +37,7 @@ const baseApis = {
   $once,
   $emit,
   upx2px,
+  rpx2px: upx2px,
   interceptors,
   addInterceptor,
   removeInterceptor,
