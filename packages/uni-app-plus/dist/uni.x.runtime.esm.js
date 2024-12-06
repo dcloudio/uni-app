@@ -2133,7 +2133,7 @@ var closeDialogPage = (options) => {
         var parentDialogPages = parentPage.getDialogPages();
         var index2 = parentDialogPages.indexOf(dialogPage);
         parentDialogPages.splice(index2, 1);
-        closeNativeDialogPage(dialogPage, (options === null || options === void 0 ? void 0 : options.animationType) || "none", (options === null || options === void 0 ? void 0 : options.animationDuration) || ANI_DURATION);
+        closeNativeDialogPage(dialogPage, (options === null || options === void 0 ? void 0 : options.animationType) || "auto", (options === null || options === void 0 ? void 0 : options.animationDuration) || ANI_DURATION);
         if (index2 > 0 && index2 === parentDialogPages.length) {
           invokeHook(parentDialogPages[parentDialogPages.length - 1].$vm, ON_SHOW);
         }
@@ -2151,7 +2151,7 @@ var closeDialogPage = (options) => {
   } else {
     var dialogPages = currentPage.getDialogPages();
     for (var i = dialogPages.length - 1; i >= 0; i--) {
-      closeNativeDialogPage(dialogPages[i], (options === null || options === void 0 ? void 0 : options.animationType) || "none", (options === null || options === void 0 ? void 0 : options.animationDuration) || ANI_DURATION);
+      closeNativeDialogPage(dialogPages[i], (options === null || options === void 0 ? void 0 : options.animationType) || "auto", (options === null || options === void 0 ? void 0 : options.animationDuration) || ANI_DURATION);
       if (i > 0) {
         invokeHook(dialogPages[i - 1].$vm, ON_SHOW);
       }
