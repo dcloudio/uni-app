@@ -332,6 +332,14 @@ function sendErrorMessages(errors) {
             if (err instanceof Error && err.stack) {
                 return prefix + err.stack;
             }
+            if (typeof err === 'object' && err !== null) {
+                try {
+                    return prefix + JSON.stringify(err);
+                }
+                catch (err) {
+                    return prefix + String(err);
+                }
+            }
             return prefix + String(err);
         }),
     }));
@@ -346,19 +354,25 @@ function setSendError(value) {
 }
 function initOnError() {
     function onError(error) {
-        // 小红书小程序 socket.send 时，会报错，onError错误信息为：
-        // Cannot create property 'errMsg' on string 'taskId'
-        // 导致陷入死循环
-        if (typeof PromiseRejectionEvent !== 'undefined' &&
-            error instanceof PromiseRejectionEvent &&
-            error.reason instanceof Error &&
-            error.reason.message.includes(`Cannot create property 'errMsg' on string 'taskId`)) {
-            return;
+        try {
+            // 小红书小程序 socket.send 时，会报错，onError错误信息为：
+            // Cannot create property 'errMsg' on string 'taskId'
+            // 导致陷入死循环
+            if (typeof PromiseRejectionEvent !== 'undefined' &&
+                error instanceof PromiseRejectionEvent &&
+                error.reason instanceof Error &&
+                error.reason.message &&
+                error.reason.message.includes(`Cannot create property 'errMsg' on string 'taskId`)) {
+                return;
+            }
+            if (__UNI_CONSOLE_KEEP_ORIGINAL__) {
+                originalConsole.error(error);
+            }
+            sendErrorMessages([error]);
         }
-        if (__UNI_CONSOLE_KEEP_ORIGINAL__) {
-            originalConsole.error(error);
+        catch (err) {
+            originalConsole.error(err);
         }
-        sendErrorMessages([error]);
     }
     if (typeof uni.onError === 'function') {
         uni.onError(onError);

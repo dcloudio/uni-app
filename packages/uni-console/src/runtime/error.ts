@@ -29,6 +29,13 @@ function sendErrorMessages(errors: any[]) {
         if (err instanceof Error && err.stack) {
           return prefix + err.stack
         }
+        if (typeof err === 'object' && err !== null) {
+          try {
+            return prefix + JSON.stringify(err)
+          } catch (err) {
+            return prefix + String(err)
+          }
+        }
         return prefix + String(err)
       }),
     })
