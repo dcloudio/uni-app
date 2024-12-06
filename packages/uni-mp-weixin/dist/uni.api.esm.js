@@ -726,7 +726,7 @@ const offPushMessage = (fn) => {
     }
 };
 
-const SYNC_API_RE = /^\$|__f__|getLocale|setLocale|sendNativeEvent|restoreGlobal|requireGlobal|getCurrentSubNVue|getMenuButtonBoundingClientRect|^report|interceptors|Interceptor$|getSubNVueById|requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64|getDeviceInfo|getAppBaseInfo|getWindowInfo|getSystemSetting|getAppAuthorizeSetting/;
+const SYNC_API_RE = /^\$|__f__|getLocale|setLocale|sendNativeEvent|restoreGlobal|requireGlobal|getCurrentSubNVue|getMenuButtonBoundingClientRect|^report|interceptors|Interceptor$|getSubNVueById|requireNativePlugin|upx2px|rpx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64|getDeviceInfo|getAppBaseInfo|getWindowInfo|getSystemSetting|getAppAuthorizeSetting/;
 const CONTEXT_API_RE = /^create|Manager$/;
 // Context例外情况
 const CONTEXT_API_RE_EXC = ['createBLEConnection'];
@@ -988,7 +988,7 @@ function populateParameters(fromRes, toRes) {
     // SDKVersion
     let _SDKVersion = SDKVersion;
     // hostLanguage
-    const hostLanguage = language.replace(/_/g, '-');
+    const hostLanguage = (language || '').replace(/_/g, '-');
     // wx.getAccountInfoSync
     const parameters = {
         appId: process.env.UNI_APP_ID,
@@ -1146,7 +1146,7 @@ const getAppBaseInfo = {
     returnValue: (fromRes, toRes) => {
         const { version, language, SDKVersion, theme } = fromRes;
         let _hostName = getHostName(fromRes);
-        let hostLanguage = language.replace(/_/g, '-');
+        let hostLanguage = (language || '').replace(/_/g, '-');
         const parameters = {
             hostVersion: version,
             hostLanguage,
@@ -1235,6 +1235,7 @@ const baseApis = {
     $once,
     $emit,
     upx2px,
+    rpx2px: upx2px,
     interceptors,
     addInterceptor,
     removeInterceptor,
