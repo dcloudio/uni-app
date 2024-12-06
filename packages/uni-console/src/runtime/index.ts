@@ -36,6 +36,9 @@ export function initRuntimeSocketService(): Promise<boolean> {
             'connect close and restore'
           )
         }
+        originalConsole.error(
+          '开发模式下日志通道 socket 连接关闭，请在 HBuilderX 中重新运行。'
+        )
         restoreError()
         restoreConsole()
       })
