@@ -1,6 +1,6 @@
 {
   "name": "@dcloudio/uni-stat",
-  "version": "3.0.0-alpha-4040120241206001",
+  "version": "3.0.0-alpha-4040120241206002",
   "description": "@dcloudio/uni-stat",
   "main": "dist/uni-stat.es.js",
   "module": "dist/uni-stat.es.js",
