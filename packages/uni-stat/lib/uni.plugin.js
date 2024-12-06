@@ -35,6 +35,7 @@ var index = () => [
             name: 'uni:stat',
             enforce: 'pre',
             config(config, env) {
+                var _a;
                 if (!uniCliShared.isNormalCompileTarget()) {
                     // 不需要统计
                     return;
@@ -56,6 +57,17 @@ var index = () => [
                         titlesJson[page.path] = titleText;
                     }
                 });
+                // 小程序 X 模式下，需要将标题信息注入到环境中
+                if (process.env.UNI_APP_X === 'true') {
+                    if ((_a = process.env.UNI_PLATFORM) === null || _a === void 0 ? void 0 : _a.startsWith('mp-')) {
+                        process.env.UNI_STAT_TITLE_JSON = JSON.stringify(titlesJson);
+                        return {
+                            define: {
+                                'process.env.UNI_STAT_TITLE_JSON': process.env.UNI_STAT_TITLE_JSON,
+                            },
+                        };
+                    }
+                }
                 // ssr 时不开启
                 if (!uniCliShared.isSsr(env.command, config)) {
                     const statConfig = uniCliShared.getUniStatistics(inputDir, platform);
