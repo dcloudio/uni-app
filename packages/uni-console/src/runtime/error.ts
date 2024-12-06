@@ -21,10 +21,15 @@ function sendErrorMessages(errors: any[]) {
     JSON.stringify({
       type: 'error',
       data: errors.map((err) => {
-        if (err instanceof Error && err.stack) {
-          return err.stack
+        const isPromiseRejection = err && 'promise' in err && 'reason' in err
+        const prefix = isPromiseRejection ? 'UnhandledPromiseRejection: ' : ''
+        if (isPromiseRejection) {
+          err = err.reason
         }
-        return String(err)
+        if (err instanceof Error && err.stack) {
+          return prefix + err.stack
+        }
+        return prefix + String(err)
       }),
     })
   )
@@ -40,28 +45,44 @@ export function setSendError(value: SendFn) {
 }
 
 export function initOnError() {
-  function onError(error: unknown) {
-    // 小红书小程序 socket.send 时，会报错，onError错误信息为：
-    // Cannot create property 'errMsg' on string 'taskId'
-    // 导致陷入死循环
-    if (
-      typeof PromiseRejectionEvent !== 'undefined' &&
-      error instanceof PromiseRejectionEvent &&
-      error.reason instanceof Error &&
-      error.reason.message.includes(
-        `Cannot create property 'errMsg' on string 'taskId`
-      )
-    ) {
-      return
+  function onError(error: any) {
+    try {
+      // 小红书小程序 socket.send 时，会报错，onError错误信息为：
+      // Cannot create property 'errMsg' on string 'taskId'
+      // 导致陷入死循环
+      if (
+        typeof PromiseRejectionEvent !== 'undefined' &&
+        error instanceof PromiseRejectionEvent &&
+        error.reason instanceof Error &&
+        error.reason.message &&
+        error.reason.message.includes(
+          `Cannot create property 'errMsg' on string 'taskId`
+        )
+      ) {
+        return
+      }
+
+      if (__UNI_CONSOLE_KEEP_ORIGINAL__) {
+        originalConsole.error(error)
+      }
+      sendErrorMessages([error])
+    } catch (err) {
+      originalConsole.error(err)
     }
-    if (__UNI_CONSOLE_KEEP_ORIGINAL__) {
-      originalConsole.error(error)
-    }
-    sendErrorMessages([error])
   }
-  // TODO 是否需要监听 uni.onUnhandledRejection？
+
   if (typeof uni.onError === 'function') {
     uni.onError(onError)
   }
-  return function offError() {}
+  if (typeof uni.onUnhandledRejection === 'function') {
+    uni.onUnhandledRejection(onError)
+  }
+  return function offError() {
+    if (typeof uni.offError === 'function') {
+      uni.offError(onError)
+    }
+    if (typeof uni.offUnhandledRejection === 'function') {
+      uni.offUnhandledRejection(onError)
+    }
+  }
 }

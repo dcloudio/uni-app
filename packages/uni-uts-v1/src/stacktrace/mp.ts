@@ -61,7 +61,10 @@ export const MP_PLATFORMS: Record<string, SourceMapPlatformOptions> = {
   },
   'mp-toutiao': {
     parseFileNameAndLine(lineStr: string) {
-      const matches = lineStr.match(/\(([^()]+\.js):(\d+):(\d+)\)/)
+      let matches = lineStr.match(/\(([^()]+\.js):(\d+):(\d+)\)/)
+      if (!matches) {
+        matches = lineStr.match(/at ([^()]+\.js):(\d+):(\d+)/)
+      }
       if (matches) {
         const [, fileName, line] = matches
         return { fileName, line: parseInt(line) }
