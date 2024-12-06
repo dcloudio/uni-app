@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "@dcloudio/uni-api",
-  "version": "3.0.0-alpha-4040120241205001",
+  "version": "3.0.0-alpha-4040120241206001",
   "description": "@dcloudio/uni-api",
   "sideEffects": false,
   "module": "src/index.ts",
