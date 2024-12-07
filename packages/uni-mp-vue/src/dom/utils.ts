@@ -169,21 +169,23 @@ function initMiniProgramNode(
   // 可能需要条件编译，部分小程序不支持
   if (uniElement.tagName === 'SCROLL-VIEW') {
     uniElement.$node = new Promise((resolve) => {
-      uni
-        .createSelectorQuery()
-        .in(ins.proxy)
-        .select('#' + uniElement.id)
-        .fields({ node: true }, (res) => {
-          const node = (res as any).node
-          resolve(node)
-          // 实现一个假的Promise，确保同步调用
-          uniElement.$node = {
-            then(fn) {
-              fn(node)
-            },
-          }
-        })
-        .exec()
+      setTimeout(() => {
+        uni
+          .createSelectorQuery()
+          .in(ins.proxy)
+          .select('#' + uniElement.id)
+          .fields({ node: true }, (res) => {
+            const node = (res as any).node
+            resolve(node)
+            // 实现一个假的Promise，确保同步调用
+            uniElement.$node = {
+              then(fn) {
+                fn(node)
+              },
+            }
+          })
+          .exec()
+      }, 2)
     })
   }
 }
