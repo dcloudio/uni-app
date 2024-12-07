@@ -126,7 +126,9 @@ export function createNativeEvent(
           if (key in event) {
             return event[key]
           }
-          return target[key]
+          const value = target[key]
+          // 处理方法调用，保持正确的 this 上下文
+          return typeof value === 'function' ? value.bind(target) : value
         },
       })
     } else {
