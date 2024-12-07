@@ -1,3 +1,4 @@
+import type { ComponentInternalInstance, ComponentPublicInstance } from 'vue'
 import { formatArg } from '../src/runtime/console'
 
 describe('uni-console', () => {
@@ -48,7 +49,13 @@ describe('uni-console', () => {
   test('formatArg function', () => {
     expect(formatArg(() => {})).toEqual({
       type: 'function',
-      value: '() => { }',
+      value: 'function () {}',
+    })
+  })
+  test('formatArg function with name', () => {
+    expect(formatArg(function a() {})).toEqual({
+      type: 'function',
+      value: 'function a() {}',
     })
   })
   test('formatArg array', () => {
@@ -164,6 +171,37 @@ describe('uni-console', () => {
       },
     })
   })
+
+  test('formatArg ComponentPublicInstance', () => {
+    expect(
+      formatArg({
+        $: { type: { __name: 'map' }, uid: 0, appContext: {} },
+      } as ComponentPublicInstance)
+    ).toEqual({
+      type: 'object',
+      className: 'ComponentPublicInstance',
+      value: {
+        properties: [{ name: '__name', type: 'string', value: 'map' }],
+      },
+    })
+  })
+
+  test('formatArg ComponentInternalInstance', () => {
+    expect(
+      formatArg({
+        type: { __name: 'map' },
+        uid: 0,
+        appContext: {},
+      } as ComponentInternalInstance)
+    ).toEqual({
+      type: 'object',
+      className: 'ComponentInternalInstance',
+      value: {
+        properties: [{ name: '__name', type: 'string', value: 'map' }],
+      },
+    })
+  })
+
   test('formatArg maximum depth', () => {
     expect(formatArg([[[[[[[[[1]]]]]]]]])).toEqual({
       type: 'object',

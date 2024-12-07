@@ -1,3 +1,4 @@
+import type { ComponentInternalInstance, ComponentPublicInstance } from 'vue'
 import type { SendFn } from './utils'
 
 const CONSOLE_TYPES = ['log', 'warn', 'error', 'info', 'debug'] as const
@@ -110,9 +111,17 @@ function isConsoleWritable() {
 }
 
 function formatMessage(type: MessageType, args: Array<any | null>): Message {
+  try {
+    return {
+      type,
+      args: formatArgs(args),
+    }
+  } catch (e) {
+    originalConsole.error(e)
+  }
   return {
     type,
-    args: formatArgs(args),
+    args: [],
   }
 }
 
@@ -136,6 +145,23 @@ function formatObject(value: object, depth: number) {
       type: 'null',
     }
   }
+
+  if (isComponentPublicInstance(value)) {
+    return formatComponentPublicInstance(value, depth)
+  }
+
+  if (isComponentInternalInstance(value)) {
+    return formatComponentInternalInstance(value, depth)
+  }
+
+  if (isUniElement(value)) {
+    return formatUniElement(value, depth)
+  }
+
+  if (isCSSStyleDeclaration(value)) {
+    return formatCSSStyleDeclaration(value, depth)
+  }
+
   if (Array.isArray(value)) {
     return {
       type: 'object',
@@ -213,6 +239,99 @@ function formatObject(value: object, depth: number) {
   }
 }
 
+function isComponentPublicInstance(
+  value: any
+): value is ComponentPublicInstance {
+  return value.$ && isComponentInternalInstance(value.$)
+}
+
+function isComponentInternalInstance(
+  value: any
+): value is ComponentInternalInstance {
+  return value.type && value.uid != null && value.appContext
+}
+
+function formatComponentPublicInstance(
+  value: ComponentPublicInstance,
+  depth: number
+) {
+  return {
+    type: 'object',
+    className: 'ComponentPublicInstance',
+    value: {
+      properties: Object.entries(value.$.type).map(([name, value]) =>
+        formatObjectProperty(name, value, depth + 1)
+      ),
+    },
+  }
+}
+
+function formatComponentInternalInstance(
+  value: ComponentInternalInstance,
+  depth: number
+) {
+  return {
+    type: 'object',
+    className: 'ComponentInternalInstance',
+    value: {
+      properties: Object.entries(value.type).map(([name, value]) =>
+        formatObjectProperty(name, value, depth + 1)
+      ),
+    },
+  }
+}
+
+function isUniElement(value: any): value is UniElement {
+  return value.style && value.tagName != null && value.nodeName != null
+}
+
+function formatUniElement(value: UniElement, depth: number) {
+  return {
+    type: 'object',
+    // 非 x 没有 UniElement 的概念
+    // className: 'UniElement',
+    value: {
+      properties: Object.entries(value)
+        .filter(([name]) =>
+          [
+            'id',
+            'tagName',
+            'nodeName',
+            'dataset',
+            'offsetTop',
+            'offsetLeft',
+            'style',
+          ].includes(name)
+        )
+        .map(([name, value]) => formatObjectProperty(name, value, depth + 1)),
+    },
+  }
+}
+
+function isCSSStyleDeclaration(
+  value: any
+): value is CSSStyleDeclaration & { $styles: Record<string, string | null> } {
+  return (
+    typeof value.getPropertyValue === 'function' &&
+    typeof value.setProperty === 'function' &&
+    value.$styles
+  )
+}
+
+function formatCSSStyleDeclaration(
+  style: CSSStyleDeclaration & { $styles: Record<string, string | null> },
+  depth: number
+) {
+  return {
+    type: 'object',
+    value: {
+      properties: Object.entries(style.$styles).map(([name, value]) =>
+        formatObjectProperty(name, value, depth + 1)
+      ),
+    },
+  }
+}
+
 function formatObjectProperty(name: string, value: any | null, depth: number) {
   return Object.assign(formatArg(value, depth), {
     name,
@@ -241,7 +360,7 @@ const ARG_FORMATTERS = {
   function(value: any) {
     return {
       type: 'function',
-      value: value.toString(),
+      value: `function ${value.name}() {}`,
     }
   },
   undefined() {
