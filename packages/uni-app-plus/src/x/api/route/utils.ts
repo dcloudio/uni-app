@@ -15,8 +15,7 @@ import { _redirectTo } from './redirectTo'
 import { $reLaunch } from './reLaunch'
 import { getCurrentPage } from '@dcloudio/uni-core'
 import { addLeadingSlash } from '@dcloudio/uni-shared'
-import { getNativeApp } from '../../framework/app/app'
-import { setStatusBarStyle } from '../../statusBar'
+import closeNativeDialogPage from './closeNativeDialogPage'
 
 export function closePage(
   page: ComponentPublicInstance,
@@ -74,26 +73,4 @@ export function handleBeforeEntryPageRoutes() {
   const reLaunchPages = [...reLaunchPagesBeforeEntryPages]
   reLaunchPagesBeforeEntryPages.length = 0
   reLaunchPages.forEach(({ args, handler }) => $reLaunch(args, handler))
-}
-
-export function closeNativeDialogPage(
-  dialogPage: UniPage,
-  animationType?: string,
-  animationDuration?: number,
-  callback?: () => void
-) {
-  const webview = getNativeApp().pageManager.findPageById(
-    dialogPage.$vm!.$basePage.id + ''
-  )
-  if (webview) {
-    closeWebview(
-      webview,
-      animationType || 'none',
-      animationDuration || 0,
-      () => {
-        setStatusBarStyle()
-        callback?.()
-      }
-    )
-  }
 }

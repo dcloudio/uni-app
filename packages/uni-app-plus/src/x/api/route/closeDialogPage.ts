@@ -1,6 +1,6 @@
 import { ON_SHOW } from '@dcloudio/uni-shared'
 import { invokeHook, isSystemDialogPage } from '@dcloudio/uni-core'
-import { closeNativeDialogPage } from './utils'
+import closeNativeDialogPage from './closeNativeDialogPage'
 import type { CloseDialogPageOptions } from '@dcloudio/uni-app-x/types/uni'
 import { ANI_DURATION } from '../../../service/constants'
 
