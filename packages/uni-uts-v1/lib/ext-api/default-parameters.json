@@ -25,17 +25,6 @@
   "uni-pullDownRefresh": {
     "startPullDownRefresh": [
       "null"
-    ],
-    "stopPullDownRefresh": [
-      "null"
-    ]
-  },
-  "uni-prompt": {
-    "hideToast": [
-      "null"
-    ],
-    "hideLoading": [
-      "null"
     ]
   },
   "uni-openDocument": {
@@ -129,11 +118,6 @@
   "uni-createWebviewContext": {
     "createWebviewContext": [
       null,
-      "null"
-    ]
-  },
-  "uni-createInnerAudioContext": {
-    "createInnerAudioContext": [
       "null"
     ]
   },
