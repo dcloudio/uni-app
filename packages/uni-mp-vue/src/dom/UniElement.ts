@@ -146,7 +146,7 @@ export class UniElement {
   }
 
   $destroy() {
-    this.style.$destroy()
+    this.style?.$destroy()
     // @ts-expect-error
     this.style = null
   }
