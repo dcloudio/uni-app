@@ -881,111 +881,6 @@ function registerSystemRoute(route, page) {
   });
   definePage(route, page);
 }
-var nativeApp;
-function getNativeApp() {
-  return nativeApp;
-}
-function setNativeApp(app) {
-  nativeApp = app;
-}
-function getPageManager() {
-  return nativeApp.pageManager;
-}
-function showWebview(nPage, animationType, animationDuration, showCallback) {
-  nPage.show(/* @__PURE__ */ new Map([["animationType", animationType], ["animationDuration", animationDuration]]), showCallback);
-}
-function closeWebview(nPage, animationType, animationDuration, callback) {
-  var options = /* @__PURE__ */ new Map([["animationType", animationType]]);
-  if (typeof animationDuration === "number") {
-    options.set("animationDuration", animationDuration);
-  }
-  nPage.close(options, callback);
-}
-function setStatusBarStyle() {
-  var page;
-  {
-    var currentPage = getCurrentPage();
-    var dialogPages = currentPage === null || currentPage === void 0 ? void 0 : currentPage.getDialogPages();
-    if (dialogPages !== null && dialogPages !== void 0 && dialogPages.length) {
-      page = dialogPages[dialogPages.length - 1].vm;
-    } else {
-      page = currentPage.vm;
-    }
-  }
-  if (page) {
-    var nativePage2 = page.$nativePage;
-    nativePage2.applyStatusBarStyle();
-  }
-}
-function closeNativeDialogPage(dialogPage, animationType, animationDuration, callback) {
-  var webview = getNativeApp().pageManager.findPageById(dialogPage.$vm.$basePage.id + "");
-  if (webview) {
-    closeWebview(webview, animationType || "none", animationDuration || 0, () => {
-      setStatusBarStyle();
-    });
-  }
-}
-var closeDialogPage = (options) => {
-  var _options$success, _options$complete;
-  var currentPages = getCurrentPages();
-  var currentPage = currentPages[currentPages.length - 1];
-  if (!currentPage) {
-    triggerFailCallback$1(options, "currentPage is null");
-    return;
-  }
-  if ((options === null || options === void 0 ? void 0 : options.animationType) === "pop-out") {
-    options.animationType = "none";
-  }
-  if (options !== null && options !== void 0 && options.dialogPage) {
-    var dialogPage = options === null || options === void 0 ? void 0 : options.dialogPage;
-    if (!(dialogPage instanceof UniDialogPageImpl)) {
-      triggerFailCallback$1(options, "dialogPage is not a valid page");
-      return;
-    }
-    var parentPage = dialogPage.getParentPage();
-    if (!isSystemDialogPage(dialogPage)) {
-      if (parentPage && currentPages.indexOf(parentPage) !== -1) {
-        var parentDialogPages = parentPage.getDialogPages();
-        var index2 = parentDialogPages.indexOf(dialogPage);
-        parentDialogPages.splice(index2, 1);
-        closeNativeDialogPage(dialogPage, (options === null || options === void 0 ? void 0 : options.animationType) || "auto", (options === null || options === void 0 ? void 0 : options.animationDuration) || ANI_DURATION);
-        if (index2 > 0 && index2 === parentDialogPages.length) {
-          invokeHook(parentDialogPages[parentDialogPages.length - 1].$vm, ON_SHOW);
-        }
-      } else {
-        triggerFailCallback$1(options, "dialogPage is not a valid page");
-        return;
-      }
-    } else {
-      var systemDialogPages = parentPage.vm.$systemDialogPages;
-      var _index = systemDialogPages.indexOf(dialogPage);
-      systemDialogPages.splice(_index, 1);
-      closeNativeDialogPage(dialogPage);
-      return;
-    }
-  } else {
-    var dialogPages = currentPage.getDialogPages();
-    for (var i = dialogPages.length - 1; i >= 0; i--) {
-      closeNativeDialogPage(dialogPages[i], (options === null || options === void 0 ? void 0 : options.animationType) || "auto", (options === null || options === void 0 ? void 0 : options.animationDuration) || ANI_DURATION);
-      if (i > 0) {
-        invokeHook(dialogPages[i - 1].$vm, ON_SHOW);
-      }
-      dialogPages[i] = null;
-    }
-    dialogPages.length = 0;
-  }
-  var successOptions = {
-    errMsg: "closeDialogPage: ok"
-  };
-  options === null || options === void 0 || (_options$success = options.success) === null || _options$success === void 0 || _options$success.call(options, successOptions);
-  options === null || options === void 0 || (_options$complete = options.complete) === null || _options$complete === void 0 || _options$complete.call(options, successOptions);
-};
-function triggerFailCallback$1(options, errMsg) {
-  var _options$fail, _options$complete2;
-  var failOptions = new UniError("uni-openDialogPage", 4, "openDialogPage: fail, ".concat(errMsg));
-  options === null || options === void 0 || (_options$fail = options.fail) === null || _options$fail === void 0 || _options$fail.call(options, failOptions);
-  options === null || options === void 0 || (_options$complete2 = options.complete) === null || _options$complete2 === void 0 || _options$complete2.call(options, failOptions);
-}
 var API_ADD_INTERCEPTOR = "addInterceptor";
 var API_REMOVE_INTERCEPTOR = "removeInterceptor";
 function mergeInterceptorHook(interceptors2, interceptor) {
@@ -1381,6 +1276,26 @@ var SetTabBarBadgeOptions = {
     }
   }, IndexOptions.formatArgs)
 };
+function showWebview(nPage, animationType, animationDuration, showCallback) {
+  nPage.show(/* @__PURE__ */ new Map([["animationType", animationType], ["animationDuration", animationDuration]]), showCallback);
+}
+function closeWebview(nPage, animationType, animationDuration, callback) {
+  var options = /* @__PURE__ */ new Map([["animationType", animationType]]);
+  if (typeof animationDuration === "number") {
+    options.set("animationDuration", animationDuration);
+  }
+  nPage.close(options, callback);
+}
+var nativeApp;
+function getNativeApp() {
+  return nativeApp;
+}
+function setNativeApp(app) {
+  nativeApp = app;
+}
+function getPageManager() {
+  return nativeApp.pageManager;
+}
 var beforeRouteHooks = [];
 var afterRouteHooks = [];
 var pageReadyHooks = [];
@@ -1716,6 +1631,91 @@ function normalizeTabBarStyles(tabBar, themeConfig, themeMode) {
 }
 function useTheme() {
   registerThemeChange(onThemeChange);
+}
+function setStatusBarStyle() {
+  var page;
+  {
+    var currentPage = getCurrentPage();
+    var dialogPages = currentPage === null || currentPage === void 0 ? void 0 : currentPage.getDialogPages();
+    if (dialogPages !== null && dialogPages !== void 0 && dialogPages.length) {
+      page = dialogPages[dialogPages.length - 1].vm;
+    } else {
+      page = currentPage.vm;
+    }
+  }
+  if (page) {
+    var nativePage2 = page.$nativePage;
+    nativePage2.applyStatusBarStyle();
+  }
+}
+function closeNativeDialogPage(dialogPage, animationType, animationDuration, callback) {
+  var webview = getNativeApp().pageManager.findPageById(dialogPage.$vm.$basePage.id + "");
+  if (webview) {
+    closeWebview(webview, animationType || "none", animationDuration || 0, () => {
+      setStatusBarStyle();
+    });
+  }
+}
+var closeDialogPage = (options) => {
+  var _options$success, _options$complete;
+  var currentPages = getCurrentPages();
+  var currentPage = currentPages[currentPages.length - 1];
+  if (!currentPage) {
+    triggerFailCallback$1(options, "currentPage is null");
+    return;
+  }
+  if ((options === null || options === void 0 ? void 0 : options.animationType) === "pop-out") {
+    options.animationType = "none";
+  }
+  if (options !== null && options !== void 0 && options.dialogPage) {
+    var dialogPage = options === null || options === void 0 ? void 0 : options.dialogPage;
+    if (!(dialogPage instanceof UniDialogPageImpl)) {
+      triggerFailCallback$1(options, "dialogPage is not a valid page");
+      return;
+    }
+    var parentPage = dialogPage.getParentPage();
+    if (!isSystemDialogPage(dialogPage)) {
+      if (parentPage && currentPages.indexOf(parentPage) !== -1) {
+        var parentDialogPages = parentPage.getDialogPages();
+        var index2 = parentDialogPages.indexOf(dialogPage);
+        parentDialogPages.splice(index2, 1);
+        closeNativeDialogPage(dialogPage, (options === null || options === void 0 ? void 0 : options.animationType) || "auto", (options === null || options === void 0 ? void 0 : options.animationDuration) || ANI_DURATION);
+        if (index2 > 0 && index2 === parentDialogPages.length) {
+          invokeHook(parentDialogPages[parentDialogPages.length - 1].$vm, ON_SHOW);
+        }
+      } else {
+        triggerFailCallback$1(options, "dialogPage is not a valid page");
+        return;
+      }
+    } else {
+      var systemDialogPages = parentPage.vm.$systemDialogPages;
+      var _index = systemDialogPages.indexOf(dialogPage);
+      systemDialogPages.splice(_index, 1);
+      closeNativeDialogPage(dialogPage);
+      return;
+    }
+  } else {
+    var dialogPages = currentPage.getDialogPages();
+    for (var i = dialogPages.length - 1; i >= 0; i--) {
+      closeNativeDialogPage(dialogPages[i], (options === null || options === void 0 ? void 0 : options.animationType) || "auto", (options === null || options === void 0 ? void 0 : options.animationDuration) || ANI_DURATION);
+      if (i > 0) {
+        invokeHook(dialogPages[i - 1].$vm, ON_SHOW);
+      }
+      dialogPages[i] = null;
+    }
+    dialogPages.length = 0;
+  }
+  var successOptions = {
+    errMsg: "closeDialogPage: ok"
+  };
+  options === null || options === void 0 || (_options$success = options.success) === null || _options$success === void 0 || _options$success.call(options, successOptions);
+  options === null || options === void 0 || (_options$complete = options.complete) === null || _options$complete === void 0 || _options$complete.call(options, successOptions);
+};
+function triggerFailCallback$1(options, errMsg) {
+  var _options$fail, _options$complete2;
+  var failOptions = new UniError("uni-openDialogPage", 4, "openDialogPage: fail, ".concat(errMsg));
+  options === null || options === void 0 || (_options$fail = options.fail) === null || _options$fail === void 0 || _options$fail.call(options, failOptions);
+  options === null || options === void 0 || (_options$complete2 = options.complete) === null || _options$complete2 === void 0 || _options$complete2.call(options, failOptions);
 }
 function parsePageStyle(route) {
   var style = /* @__PURE__ */ new Map();
