@@ -93,7 +93,10 @@ export const MP_PLATFORMS: Record<string, SourceMapPlatformOptions> = {
     sourceMapFileNameRe: /(index\.worker\.js)/,
     resolveAtSourceFileName(fileName, sourceMapDir) {
       return normalizePath(
-        path.relative(sourceMapDir, fileName.replace('raw-source://', ''))
+        path.relative(
+          normalizePath(sourceMapDir),
+          fileName.replace('raw-source://', '')
+        )
       )
     },
   },
