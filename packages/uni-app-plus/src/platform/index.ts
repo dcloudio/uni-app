@@ -40,5 +40,4 @@ export const getEnv: (() => Env) | undefined = () => ({
 
 //#if _X_
 export { registerSystemRoute } from '../x/framework/route'
-export { closeDialogPage } from '../x/api/route/closeDialogPage'
 //#endif

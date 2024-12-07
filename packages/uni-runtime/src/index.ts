@@ -23,8 +23,6 @@ export {
   removeIntersectionObserver,
   //#if _X_
   registerSystemRoute,
-  // @ts-expect-error only for uni-app-plus
-  closeNativeDialogPage,
   //#endif
 } from '@dcloudio/uni-platform'
 export {
