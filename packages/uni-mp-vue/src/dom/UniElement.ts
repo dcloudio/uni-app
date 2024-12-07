@@ -146,8 +146,12 @@ export class UniElement {
   }
 
   $destroy() {
-    this.style?.$destroy()
-    // @ts-expect-error
-    this.style = null
+    if (this.style) {
+      // 内置组件的Element可能会被执行两次销毁，因为../helpers/uniElement.ts的SetUniElementIdTagType.BuiltInRootElement会被同时设置到父组件内
+      // 子组件和父组件的销毁时，均会调用$destroy
+      this.style.$destroy()
+      // @ts-expect-error
+      this.style = null
+    }
   }
 }
