@@ -2,6 +2,7 @@ import fs from 'fs-extra'
 import path from 'path'
 
 import { parseRuntimeStacktrace } from '../src/stacktrace'
+import { normalizePath } from '../src/shared'
 
 describe('uts:stacktrace:runtime', () => {
   // 添加 beforeAll 来设置 HTTP mock
@@ -25,10 +26,18 @@ describe('uts:stacktrace:runtime', () => {
             )
             // mp-alipay
           } else if (url.includes('index.worker.js.map')) {
-            return fs.readFileSync(
-              path.resolve(__dirname, 'data/mp-alipay.js.map'),
-              'utf8'
+            const dir = normalizePath(
+              path.resolve(
+                __dirname,
+                'examples/uni-app-x/output/dist/dev/.sourcemap/mp-alipay'
+              )
             )
+            return fs
+              .readFileSync(
+                path.resolve(__dirname, 'data/mp-alipay.js.map'),
+                'utf8'
+              )
+              .replaceAll('{OUTPUT_ROOT}', dir)
             // mp-alipay
           } else if (url.includes('index.worker.js')) {
             return `//# sourceMappingURL=http://localhost:6600/sourcemaps/index.worker.js.map`
