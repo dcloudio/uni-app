@@ -12,7 +12,9 @@ export class UniCSSStyleDeclaration {
     return new Proxy(this, {
       get: (target, prop: string) => {
         if (prop in target) {
-          return target[prop as keyof UniCSSStyleDeclaration]
+          const value = target[prop as keyof UniCSSStyleDeclaration]
+          // 处理方法调用，保持正确的 this 上下文
+          return typeof value === 'function' ? value.bind(target) : value
         }
         return target.getPropertyValue(prop)
       },
