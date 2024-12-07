@@ -19,7 +19,7 @@ import {
 import { registerDialogPage } from '../../framework/page/register'
 import type { UniDialogPage } from '@dcloudio/uni-app-x/types/page'
 import type { OpenDialogPageOptions } from '@dcloudio/uni-app-x/types/uni'
-import { closeNativeDialogPage } from './utils'
+import closeNativeDialogPage from './closeNativeDialogPage'
 import { OPEN_DIALOG_PAGE } from '../../constants'
 
 export const openDialogPage = (
