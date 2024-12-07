@@ -1,5 +1,5 @@
 import type { ComponentInternalInstance } from 'vue'
-import { extend } from '@vue/shared'
+import { extend, isFunction } from '@vue/shared'
 import { normalizeTarget } from '@dcloudio/uni-shared'
 import { getWindowTop, isBuiltInElement } from '../../helpers'
 import { wrapperH5WxsEvent } from './componentWxs'
@@ -128,7 +128,7 @@ export function createNativeEvent(
           }
           const value = target[key]
           // 处理方法调用，保持正确的 this 上下文
-          return typeof value === 'function' ? value.bind(target) : value
+          return isFunction(value) ? value.bind(target) : value
         },
       })
     } else {
