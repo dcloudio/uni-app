@@ -61,12 +61,14 @@ view,
 web-view {
   position: relative;
   box-sizing: border-box;
+  display: flex;
   flex-direction: column;
   flex-shrink: 0;
   flex-grow: 0;
   flex-basis: auto;
   align-items: stretch;
-  align-content: flex-start;
+  align-content: stretch;
+  justify-content: flex-start;
   min-height: 0px;
   min-width: 0px;
   border-width: medium;
@@ -128,18 +130,6 @@ video:not([hidden]),
 view:not([hidden]),
 web-view:not([hidden]) {
   display: flex;
-}
-
-image,
-input,
-scroll-view,
-swiper,
-swiper-item,
-text,
-textarea,
-video,
-view {
-  border: 0 solid #000;
 }
 
 /* 与开发者元素接触的非滚动容器 */
