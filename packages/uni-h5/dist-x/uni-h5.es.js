@@ -2234,7 +2234,8 @@ function createNativeEvent(evt, htmlElement = false) {
           if (key in event) {
             return event[key];
           }
-          return target2[key];
+          const value = target2[key];
+          return isFunction(value) ? value.bind(target2) : value;
         }
       });
     }

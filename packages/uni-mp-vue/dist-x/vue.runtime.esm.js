@@ -5655,9 +5655,13 @@ class UniElement {
         console.warn(`Miniprogram does not support UniElement.setAttribute(${name}, value)`);
     }
     $destroy() {
-        this.style.$destroy();
-        // @ts-expect-error
-        this.style = null;
+        if (this.style) {
+            // 内置组件的Element可能会被执行两次销毁，因为../helpers/uniElement.ts的SetUniElementIdTagType.BuiltInRootElement会被同时设置到父组件内
+            // 子组件和父组件的销毁时，均会调用$destroy
+            this.style.$destroy();
+            // @ts-expect-error
+            this.style = null;
+        }
     }
 }
 
@@ -5809,21 +5813,23 @@ function initMiniProgramNode(uniElement, ins) {
     // 可能需要条件编译，部分小程序不支持
     if (uniElement.tagName === 'SCROLL-VIEW') {
         uniElement.$node = new Promise((resolve) => {
-            uni
-                .createSelectorQuery()
-                .in(ins.proxy)
-                .select('#' + uniElement.id)
-                .fields({ node: true }, (res) => {
-                const node = res.node;
-                resolve(node);
-                // 实现一个假的Promise，确保同步调用
-                uniElement.$node = {
-                    then(fn) {
-                        fn(node);
-                    },
-                };
-            })
-                .exec();
+            setTimeout(() => {
+                uni
+                    .createSelectorQuery()
+                    .in(ins.proxy)
+                    .select('#' + uniElement.id)
+                    .fields({ node: true }, (res) => {
+                    const node = res.node;
+                    resolve(node);
+                    // 实现一个假的Promise，确保同步调用
+                    uniElement.$node = {
+                        then(fn) {
+                            fn(node);
+                        },
+                    };
+                })
+                    .exec();
+            }, 2);
         });
     }
 }
