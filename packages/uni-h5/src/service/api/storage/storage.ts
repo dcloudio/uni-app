@@ -35,7 +35,7 @@ function parseValue(value: any) {
         // eslint-disable-next-line valid-typeof
         if (typeof object.data === type) {
           //#if _X_
-          if (type === 'object' && !Array.isArray(object.data)) {
+          if (type === 'object') {
             // @ts-expect-error 访问global.UTS
             return UTS.JSON.parse(JSON.stringify(object.data))
           }
