@@ -14,7 +14,7 @@ registerSystemRoute('uni:chooseLocation', UniChooseLocationPage, {
   disableSwipeBack: false,
 })
 
-export default {
+export {
   uni,
   getApp,
   getCurrentPages,

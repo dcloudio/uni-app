@@ -4300,7 +4300,7 @@ function normalizeLog(type, filename, args) {
   });
   return msgs.join("---COMMA---") + " " + filename;
 }
-const uni$1 = /* @__PURE__ */ Object.defineProperty({
+const index$1 = /* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   $emit,
   $off,
@@ -6043,7 +6043,7 @@ const pickerViewColumn$1 = /* @__PURE__ */ Object.defineProperty({
   UniPickerViewColumnElement,
   default: pickerViewColumn
 }, Symbol.toStringTag, { value: "Module" });
-const components = /* @__PURE__ */ Object.defineProperty({
+const index = /* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   Checkbox: checkbox$1,
   CheckboxGroup: checkboxGroup$1,
@@ -7201,16 +7201,13 @@ const UniChooseLocationPage = /* @__PURE__ */ _export_sfc(_sfc_main, [["render",
 registerSystemRoute("uni:chooseLocation", UniChooseLocationPage, {
   disableSwipeBack: false
 });
-const index = {
-  uni: uni$1,
-  getApp: getApp$1,
-  getCurrentPages: getCurrentPages$1,
-  __definePage: definePage,
-  __registerApp: registerApp,
-  __uniSystemRoutes: systemRoutes,
-  initApp,
-  components
-};
 export {
-  index as default
+  definePage as __definePage,
+  registerApp as __registerApp,
+  systemRoutes as __uniSystemRoutes,
+  index as components,
+  getApp$1 as getApp,
+  getCurrentPages$1 as getCurrentPages,
+  initApp,
+  index$1 as uni
 };
