@@ -201,6 +201,16 @@ export async function parseMiniProgramRuntimeStacktraceLine(
   if (!filename) {
     return lines
   }
+  // 微信小程序会用@babel/runtime转换代码，需要忽略此类错误
+  if (
+    filename.startsWith('@babel/runtime') ||
+    // 不解析 vendor.js 的错误，因为 vendor.js 的错误通常是开发者自己的代码引发的，放过后，会继续查找开发者自己的代码
+    // 还有一种做法是，解析所有堆栈的源码链接，但是这样就没法提供 codeFrame 了
+    filename.startsWith('common/vendor.js')
+  ) {
+    return lines
+  }
+
   // 获取 sourceMap 内容，写入文件
   const sourceMap = await fetchSourceMap(url, sourceMapType, fetchHeaders)
   // console.error('sourceMap', sourceMap)
