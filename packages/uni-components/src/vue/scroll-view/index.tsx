@@ -198,6 +198,11 @@ export default /*#__PURE__*/ defineBuiltInComponent({
             _scrollTopChanged(val)
           },
         },
+        scrollTo: {
+          get() {
+            return main.value!.scrollBy.bind(main.value!)
+          },
+        },
         scrollBy: {
           get() {
             return main.value!.scrollBy.bind(main.value!)
