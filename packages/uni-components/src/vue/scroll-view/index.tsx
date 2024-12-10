@@ -200,7 +200,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
         },
         scrollTo: {
           get() {
-            return main.value!.scrollBy.bind(main.value!)
+            return main.value!.scrollTo.bind(main.value!)
           },
         },
         scrollBy: {
