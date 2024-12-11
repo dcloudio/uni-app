@@ -1,6 +1,7 @@
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
+    "sourceMap": true,
     "paths": {
       "types/alias": ["packages/uni-cli-shared/types/alias.d.ts"],
       "@dcloudio/*": ["packages/*/src"],
