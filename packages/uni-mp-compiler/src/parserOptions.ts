@@ -16,9 +16,9 @@ export const enum DOMNamespaces {
 export const parserOptions: ParserOptions = {
   isVoidTag(tag) {
     // 微信小程序允许 Input 嵌套其他组件 https://ask.dcloud.net.cn/question/202776
-    if (tag === 'input') {
-      return false
-    }
+    // if (tag === 'input') {
+    //   return false
+    // }
     return isVoidTagRaw(tag)
   },
   isNativeTag: (tag) => isHTMLTag(tag) || isSVGTag(tag),
