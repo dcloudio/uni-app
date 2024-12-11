@@ -19,7 +19,7 @@ parse(
 }
 ).then((res) => {
   console.log('parse: ' + (Date.now() - start) + 'ms')
-  console.log(JSON.stringify(res))
+  // console.log(JSON.stringify(res))
 })
 
 const kotlinImports = [
@@ -56,17 +56,17 @@ async function testKotlin() {
       }
     },
   }).then((res) => {
-    console.log('bundle: ' + (Date.now() - start) + 'ms')
-    console.log(JSON.stringify(res))
-    console.log(
-      fs.readFileSync(
-        path.resolve(
-          projectDir,
-          'unpackage/dist/dev/app-plus/uni_modules/test-uniplugin/utssdk/app-android/index.kt'
-        ),
-        'utf8'
-      )
-    )
+    console.log('bundle kotlin: ' + (Date.now() - start) + 'ms')
+    // console.log(JSON.stringify(res))
+    // console.log(
+    //   fs.readFileSync(
+    //     path.resolve(
+    //       projectDir,
+    //       'unpackage/dist/dev/app-plus/uni_modules/test-uniplugin/utssdk/app-android/index.kt'
+    //     ),
+    //     'utf8'
+    //   )
+    // )
   })
   await bundle(UTSTarget.KOTLIN, {
     input: {
@@ -111,17 +111,17 @@ async function testKotlinComponent() {
       isPlugin: true,
     },
   }).then((res) => {
-    console.log('bundle: ' + (Date.now() - start) + 'ms')
-    console.log(JSON.stringify(res))
-    console.log(
-      fs.readFileSync(
-        path.resolve(
-          projectDir,
-          'unpackage/dist/dev/app-plus/uni_modules/test-component/utssdk/app-android/index.kt'
-        ),
-        'utf8'
-      )
-    )
+    console.log('bundle kotlin component: ' + (Date.now() - start) + 'ms')
+    // console.log(JSON.stringify(res))
+    // console.log(
+    //   fs.readFileSync(
+    //     path.resolve(
+    //       projectDir,
+    //       'unpackage/dist/dev/app-plus/uni_modules/test-component/utssdk/app-android/index.kt'
+    //     ),
+    //     'utf8'
+    //   )
+    // )
   })
 }
 
@@ -148,17 +148,17 @@ async function testSwift() {
       }
     },
   }).then((res) => {
-    console.log('bundle: ' + (Date.now() - start) + 'ms')
-    console.log(JSON.stringify(res))
-    console.log(
-      fs.readFileSync(
-        path.resolve(
-          projectDir,
-          'unpackage/dist/dev/app-plus/uni_modules/test-uniplugin/utssdk/app-ios/index.swift'
-        ),
-        'utf8'
-      )
-    )
+    console.log('bundle swift: ' + (Date.now() - start) + 'ms')
+    // console.log(JSON.stringify(res))
+    // console.log(
+    //   fs.readFileSync(
+    //     path.resolve(
+    //       projectDir,
+    //       'unpackage/dist/dev/app-plus/uni_modules/test-uniplugin/utssdk/app-ios/index.swift'
+    //     ),
+    //     'utf8'
+    //   )
+    // )
   })
   await bundle(UTSTarget.SWIFT, {
     input: {
@@ -177,7 +177,7 @@ async function testSwift() {
       logFilename: true,
       isPlugin: true,
     },
-  })
+    })
 }
 
 async function testSwiftComponent() {
@@ -202,17 +202,17 @@ async function testSwiftComponent() {
       isPlugin: true,
     },
   }).then((res) => {
-    console.log('bundle: ' + (Date.now() - start) + 'ms')
-    console.log(JSON.stringify(res))
-    console.log(
-      fs.readFileSync(
-        path.resolve(
-          projectDir,
-          'unpackage/dist/dev/app-plus/uni_modules/test-component/utssdk/app-ios/index.swift'
-        ),
-        'utf8'
-      )
-    )
+    console.log('bundle swift component: ' + (Date.now() - start) + 'ms')
+    // console.log(JSON.stringify(res))
+    // console.log(
+    //   fs.readFileSync(
+    //     path.resolve(
+    //       projectDir,
+    //       'unpackage/dist/dev/app-plus/uni_modules/test-component/utssdk/app-ios/index.swift'
+    //     ),
+    //     'utf8'
+    //   )
+    // )
   })
 }
 
@@ -239,16 +239,16 @@ async function testArkTS() {
     },
   }).then((res) => {
     console.log('bundle: ' + (Date.now() - start) + 'ms')
-    console.log(JSON.stringify(res))
-    console.log(
-      fs.readFileSync(
-        path.resolve(
-          projectDir,
-          'unpackage/dist/dev/app-plus/uni_modules/test-uniplugin/utssdk/app-ios/index.swift'
-        ),
-        'utf8'
-      )
-    )
+    // console.log(JSON.stringify(res))
+    // console.log(
+    //   fs.readFileSync(
+    //     path.resolve(
+    //       projectDir,
+    //       'unpackage/dist/dev/app-plus/uni_modules/test-uniplugin/utssdk/app-ios/index.swift'
+    //     ),
+    //     'utf8'
+    //   )
+    // )
   })
 }
 

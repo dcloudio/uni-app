@@ -1,139 +1,139 @@
-import CoreLocation;
-import DCloudUTSFoundation;
-import UIKit;
-import DCloudUTSExtAPI;
-public typealias ShowToast = (_ msg: String) -> Void;
+import CoreLocation
+import DCloudUTSFoundation
+import UIKit
+import DCloudUTSExtAPI
+public typealias ShowToast = (_ msg: String) -> Void
 @objc(UTSSDKModulesTestUniPluginGetBatteryInfoOptions)
 @objcMembers
 public class GetBatteryInfoOptions : NSObject, UTSObject, IUTSSourceMap {
     public func __$getOriginalPosition() -> UTSSourceMapPosition? {
-        return UTSSourceMapPosition("GetBatteryInfoOptions", "uni_modules/test-uniplugin/utssdk/app-ios/index.uts", 5, 6);
+        return UTSSourceMapPosition("GetBatteryInfoOptions", "uni_modules/test-uniplugin/utssdk/app-ios/index.uts", 5, 6)
     }
-    public var name: String!;
-    public var pwd: NSNumber!;
-    public var success: ((_ res: UTSJSONObject) -> Void)?;
-    public var fail: ((_ res: UTSJSONObject) -> Void)?;
-    public var complete: ((_ res: UTSJSONObject) -> Void)?;
+    public var name: String!
+    public var pwd: NSNumber!
+    public var success: ((_ res: UTSJSONObject) -> Void)?
+    public var fail: ((_ res: UTSJSONObject) -> Void)?
+    public var complete: ((_ res: UTSJSONObject) -> Void)?
     public subscript(_ key: String) -> Any? {
         get {
-            return utsSubscriptGetValue(key);
+            return utsSubscriptGetValue(key)
         }
         set {
             switch(key){
                 case "name":
-                    self.name = try! utsSubscriptCheckValue(newValue);
+                    self.name = try! utsSubscriptCheckValue(newValue)
                 case "pwd":
-                    self.pwd = try! utsSubscriptCheckValue(newValue);
+                    self.pwd = try! utsSubscriptCheckValue(newValue)
                 case "success":
-                    self.success = try! utsSubscriptCheckValueIfPresent(newValue);
+                    self.success = try! utsSubscriptCheckValueIfPresent(newValue)
                 case "fail":
-                    self.fail = try! utsSubscriptCheckValueIfPresent(newValue);
+                    self.fail = try! utsSubscriptCheckValueIfPresent(newValue)
                 case "complete":
-                    self.complete = try! utsSubscriptCheckValueIfPresent(newValue);
+                    self.complete = try! utsSubscriptCheckValueIfPresent(newValue)
                 default:
-                    break;
+                    break
             }
         }
     }
     public override init() {
-        super.init();
+        super.init()
     }
     public init(_ obj: UTSJSONObject) {
-        self.name = obj["name"] as! String;
-        self.pwd = obj["pwd"] as! NSNumber;
-        self.success = obj["success"] as! ((_ res: UTSJSONObject) -> Void)?;
-        self.fail = obj["fail"] as! ((_ res: UTSJSONObject) -> Void)?;
-        self.complete = obj["complete"] as! ((_ res: UTSJSONObject) -> Void)?;
+        self.name = obj["name"] as! String
+        self.pwd = obj["pwd"] as! NSNumber
+        self.success = obj["success"] as! ((_ res: UTSJSONObject) -> Void)?
+        self.fail = obj["fail"] as! ((_ res: UTSJSONObject) -> Void)?
+        self.complete = obj["complete"] as! ((_ res: UTSJSONObject) -> Void)?
     }
 }
 public func getBatteryInfo(_ options: GetBatteryInfoOptions) {
-    UIAlertController(title: title, message: message, preferredStyle: UIAlertController.Style.alert);
+    UIAlertController(title: title, message: message, preferredStyle: UIAlertController.Style.alert)
     var res = UTSJSONObject([
         "errMsg": "getBatteryInfo:ok",
         "level": UIDevice.current.batteryLevel * 100,
         "isCharging": UIDevice.current.batteryState == UIDevice.BatteryState.charging
-    ], UTSSourceMapPosition("res", "uni_modules/test-uniplugin/utssdk/app-ios/index.uts", 19, 9));
+    ], UTSSourceMapPosition("res", "uni_modules/test-uniplugin/utssdk/app-ios/index.uts", 19, 9))
     if (options.success != nil) {
-        options.success!(res);
+        options.success!(res)
     }
     if (options.complete != nil) {
-        options.complete!(res);
+        options.complete!(res)
     }
 }
 public func test1(_ callback:@escaping () -> Void) -> String {
     console.log(UTSJSONObject([
         "a": "b"
-    ]), " at uni_modules/test-uniplugin/utssdk/app-ios/index.uts:33");
-    console.log("test1", " at uni_modules/test-uniplugin/utssdk/app-ios/index.uts:34");
-    console.log("def ios", " at uni_modules/test-uniplugin/utssdk/app-ios/index.uts:39");
-    console.log("ndef android", " at uni_modules/test-uniplugin/utssdk/app-ios/index.uts:42");
-    console.log("def android || def ios", " at uni_modules/test-uniplugin/utssdk/app-ios/index.uts:48");
-    console.log(CLLocationManager, CLAuthorizationStatus, " at uni_modules/test-uniplugin/utssdk/app-ios/index.uts:53");
-    var a: NSNumber = -3;
-    console.log(~a, " at uni_modules/test-uniplugin/utssdk/app-ios/index.uts:55");
-    return "test1";
+    ]), " at uni_modules/test-uniplugin/utssdk/app-ios/index.uts:33")
+    console.log("test1", " at uni_modules/test-uniplugin/utssdk/app-ios/index.uts:34")
+    console.log("def ios", " at uni_modules/test-uniplugin/utssdk/app-ios/index.uts:39")
+    console.log("ndef android", " at uni_modules/test-uniplugin/utssdk/app-ios/index.uts:42")
+    console.log("def android || def ios", " at uni_modules/test-uniplugin/utssdk/app-ios/index.uts:48")
+    console.log(CLLocationManager, CLAuthorizationStatus, " at uni_modules/test-uniplugin/utssdk/app-ios/index.uts:53")
+    var a: NSNumber = -3
+    console.log(~a, " at uni_modules/test-uniplugin/utssdk/app-ios/index.uts:55")
+    return "test1"
 }
 @objc(UTSSDKModulesTestUniPluginTest1)
 @objcMembers
 public class Test1 : NSObject, IUTSSourceMap {
     public func __$getOriginalPosition() -> UTSSourceMapPosition? {
-        return UTSSourceMapPosition("Test1", "uni_modules/test-uniplugin/utssdk/app-ios/index.uts", 59, 7);
+        return UTSSourceMapPosition("Test1", "uni_modules/test-uniplugin/utssdk/app-ios/index.uts", 59, 7)
     }
 }
 @objc(UTSSDKModulesTestUniPluginTest)
 @objcMembers
 public class Test : NSObject, IUTSSourceMap {
     public func __$getOriginalPosition() -> UTSSourceMapPosition? {
-        return UTSSourceMapPosition("Test", "uni_modules/test-uniplugin/utssdk/app-ios/index.uts", 60, 14);
+        return UTSSourceMapPosition("Test", "uni_modules/test-uniplugin/utssdk/app-ios/index.uts", 60, 14)
     }
     override public init(){
-        Test1();
+        Test1()
     }
     public func test() -> String? {
         #if swift(>=1)
-            console.log("swift(>=1)", " at uni_modules/test-uniplugin/utssdk/app-ios/index.uts:66");
+            console.log("swift(>=1)", " at uni_modules/test-uniplugin/utssdk/app-ios/index.uts:66")
         #endif
         #if arch(i386) || arch(arm)
-            console.log("arch(i386) || arch(arm)", " at uni_modules/test-uniplugin/utssdk/app-ios/index.uts:69");
+            console.log("arch(i386) || arch(arm)", " at uni_modules/test-uniplugin/utssdk/app-ios/index.uts:69")
         #endif
         if #available(iOS 14, macOS 11.0, *) {
-            console.log("iOS 14, macOS 11.0, *", " at uni_modules/test-uniplugin/utssdk/app-ios/index.uts:72");
+            console.log("iOS 14, macOS 11.0, *", " at uni_modules/test-uniplugin/utssdk/app-ios/index.uts:72")
         } else if #available(iOS 13,*) {
-            console.log("iOS 13,*", " at uni_modules/test-uniplugin/utssdk/app-ios/index.uts:74");
+            console.log("iOS 13,*", " at uni_modules/test-uniplugin/utssdk/app-ios/index.uts:74")
         } else if #unavailable(tvOS 12) {
-            console.log("tvOS 12", " at uni_modules/test-uniplugin/utssdk/app-ios/index.uts:76");
+            console.log("tvOS 12", " at uni_modules/test-uniplugin/utssdk/app-ios/index.uts:76")
         }
-        return nil;
+        return nil
     }
 }
 public func testAsync() -> UTSPromise<UTSJSONObject> {
     return UTSPromise({
     () -> Any? in
-    DCloudUTSExtAPI.showToast();
-    DCloudUTSExtAPI.showToast();
-    DCloudUTSExtAPI.showModel();
+    DCloudUTSExtAPI.showToast()
+    DCloudUTSExtAPI.showToast()
+    DCloudUTSExtAPI.showModel()
     return UTSJSONObject([
         "a": 1 as NSNumber
-    ]);
-    }, UTSJSONObject.self);
+    ])
+    }, UTSJSONObject.self)
 }
 public var showToast1: ShowToast = {
 (_ msg) -> Void in
-};
+}
 public var showToast2: ShowToast = {
 (_ msg) -> Void in
-};
+}
 public var showToast3: ShowToast = {
 (_ msg) -> Void in
-};
+}
 @objc(UTSSDKModulesTestUniPluginGetBatteryInfoOptionsJSONObject)
 @objcMembers
 public class GetBatteryInfoOptionsJSONObject : NSObject {
-    public var name: String!;
-    public var pwd: NSNumber!;
-    public var success: UTSCallback?;
-    public var fail: UTSCallback?;
-    public var complete: UTSCallback?;
+    public var name: String!
+    public var pwd: NSNumber!
+    public var success: UTSCallback?
+    public var fail: UTSCallback?
+    public var complete: UTSCallback?
 }
 public func getBatteryInfoByJs(_ options: GetBatteryInfoOptionsJSONObject) {
     return getBatteryInfo(GetBatteryInfoOptions(UTSJSONObject([
@@ -141,68 +141,68 @@ public func getBatteryInfoByJs(_ options: GetBatteryInfoOptionsJSONObject) {
         "pwd": options.pwd,
         "success": {
         (res: UTSJSONObject) -> Void in
-        options.success?(res);
+        options.success?(res)
         },
         "fail": {
         (res: UTSJSONObject) -> Void in
-        options.fail?(res);
+        options.fail?(res)
         },
         "complete": {
         (res: UTSJSONObject) -> Void in
-        options.complete?(res);
+        options.complete?(res)
         }
-    ])));
+    ])))
 }
 public func test1ByJs(_ callback: UTSCallback) -> String {
     return test1({
     () -> Void in
-    callback();
-    });
+    callback()
+    })
 }
 @objc(UTSSDKModulesTestUniPluginTestByJs)
 @objcMembers
 public class TestByJs : Test {
     public func testByJs() -> String? {
-        return self.test();
+        return self.test()
     }
 }
 public func testAsyncByJs(utsCompletionHandler:@escaping (_ res: Any?, _ err: Any?) -> Void) {
     testAsync().then({
     (res) -> Void in
-    utsCompletionHandler(res, nil);
+    utsCompletionHandler(res, nil)
     }).catch({
     (err) -> Void in
-    utsCompletionHandler(nil, err);
-    });
+    utsCompletionHandler(nil, err)
+    })
 }
 public func showToast1ByJs(_ msg: String) -> Void {
-    return showToast1(msg);
+    return showToast1(msg)
 }
 public func showToast2ByJs(_ msg: String) -> Void {
-    return showToast2(msg);
+    return showToast2(msg)
 }
 public func showToast3ByJs(_ msg: String) -> Void {
-    return showToast3(msg);
+    return showToast3(msg)
 }
 @objc(UTSSDKModulesTestUniPluginIndexSwift)
 @objcMembers
 public class UTSSDKModulesTestUniPluginIndexSwift : NSObject {
     public static func s_getBatteryInfoByJs(_ options: GetBatteryInfoOptionsJSONObject) {
-        return getBatteryInfoByJs(options);
+        return getBatteryInfoByJs(options)
     }
     public static func s_test1ByJs(_ callback: UTSCallback) -> String {
-        return test1ByJs(callback);
+        return test1ByJs(callback)
     }
     public static func s_testAsyncByJs(utsCompletionHandler:@escaping (_ res: Any?, _ err: Any?) -> Void) {
-        return testAsyncByJs(utsCompletionHandler: utsCompletionHandler);
+        return testAsyncByJs(utsCompletionHandler: utsCompletionHandler)
     }
     public static func s_showToast1ByJs(_ msg: String) -> Void {
-        return showToast1ByJs(msg);
+        return showToast1ByJs(msg)
     }
     public static func s_showToast2ByJs(_ msg: String) -> Void {
-        return showToast2ByJs(msg);
+        return showToast2ByJs(msg)
     }
     public static func s_showToast3ByJs(_ msg: String) -> Void {
-        return showToast3ByJs(msg);
+        return showToast3ByJs(msg)
     }
 }
