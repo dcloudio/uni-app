@@ -2234,7 +2234,8 @@ function createNativeEvent(evt, htmlElement = false) {
           if (key in event) {
             return event[key];
           }
-          return target2[key];
+          const value = target2[key];
+          return isFunction(value) ? value.bind(target2) : value;
         }
       });
     }
@@ -9067,7 +9068,7 @@ function parseValue(value) {
       const keys = Object.keys(object);
       if (keys.length === 2 && "data" in object) {
         if (typeof object.data === type) {
-          if (type === "object" && !Array.isArray(object.data)) {
+          if (type === "object") {
             return UTS.JSON.parse(JSON.stringify(object.data));
           }
           return object.data;
@@ -26182,6 +26183,11 @@ const __syscom_5 = /* @__PURE__ */ defineBuiltInComponent({
           },
           set(val) {
             _scrollTopChanged(val);
+          }
+        },
+        scrollTo: {
+          get() {
+            return main.value.scrollTo.bind(main.value);
           }
         },
         scrollBy: {
