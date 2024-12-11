@@ -1,5 +1,11 @@
 import { hyphenate, isFunction, isPlainObject } from '@vue/shared'
-import { SLOT_DEFAULT_NAME, dynamicSlotName } from '@dcloudio/uni-shared'
+import {
+  SLOT_DEFAULT_NAME,
+  VIRTUAL_HOST_CLASS,
+  VIRTUAL_HOST_HIDDEN,
+  VIRTUAL_HOST_STYLE,
+  dynamicSlotName,
+} from '@dcloudio/uni-shared'
 import {
   type MiniProgramCompilerOptions,
   formatMiniProgramEvent,
@@ -31,12 +37,7 @@ import { type ForElementNode, isForElementNode } from '../transforms/vFor'
 import { type IfElementNode, isIfElementNode } from '../transforms/vIf'
 import { findSlotName } from '../transforms/vSlot'
 import type { TransformContext } from '../transform'
-import {
-  ATTR_ELEMENT_ID,
-  ATTR_VUE_PROPS,
-  VIRTUAL_HOST_CLASS,
-  VIRTUAL_HOST_STYLE,
-} from '../transforms/utils'
+import { ATTR_ELEMENT_ID, ATTR_VUE_PROPS } from '../transforms/utils'
 
 export interface TemplateCodegenContext {
   isX?: boolean
@@ -474,6 +475,7 @@ function checkVirtualHostProps(name: string, virtualHost: boolean): string[] {
     const obj: { [key: string]: string } = {
       style: VIRTUAL_HOST_STYLE,
       class: VIRTUAL_HOST_CLASS,
+      hidden: VIRTUAL_HOST_HIDDEN,
     }
     if (name in obj) {
       // TODO 支付宝平台移除原有属性（支付宝小程序自定义组件外部属性始终无效）
@@ -566,12 +568,17 @@ function genDirectiveNode(
     }
   } else if (prop.name === 'show') {
     let hiddenPropName = 'hidden'
-    if (isUserComponent(node, context) && component && component.vShow) {
-      hiddenPropName = component.vShow
+    const value = `"{{!${(prop.exp as SimpleExpressionNode).content}}}"`
+    if (isUserComponent(node, context)) {
+      if (component && component.vShow) {
+        hiddenPropName = component.vShow
+      }
+      if (virtualHost) {
+        // TODO use checkVirtualHostProps
+        push(` ${VIRTUAL_HOST_HIDDEN}=${value}`)
+      }
     }
-    push(
-      ` ${hiddenPropName}="{{!${(prop.exp as SimpleExpressionNode).content}}}"`
-    )
+    push(` ${hiddenPropName}=${value}`)
   } else if (prop.arg && prop.exp) {
     const arg = (prop.arg as SimpleExpressionNode).content
     if (arg === ATTR_ELEMENT_ID) {

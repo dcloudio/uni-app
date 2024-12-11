@@ -49,9 +49,6 @@ export const FILTER_SET_ELEMENT_STYLE = 'sS' // setStyle
 
 export const SCOPED_SLOT_IDENTIFIER = '__SCOPED_SLOT__'
 
-export const VIRTUAL_HOST_STYLE = 'virtualHostStyle'
-export const VIRTUAL_HOST_CLASS = 'virtualHostClass'
-
 export function filterObserverName(name: string) {
   return 'change:' + name
 }

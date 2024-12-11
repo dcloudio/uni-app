@@ -31,13 +31,13 @@ import {
   createCompoundExpression,
   createSimpleExpression,
 } from '@vue/compiler-core'
+import { VIRTUAL_HOST_CLASS } from '@dcloudio/uni-shared'
 import { createBindDirectiveNode } from '@dcloudio/uni-cli-shared'
 import { isTrueExpr, isUndefined, parseExpr, parseStringLiteral } from '../ast'
 import { genBabelExpr } from '../codegen'
 import { NORMALIZE_CLASS } from '../runtimeHelpers'
 import type { TransformContext } from '../transform'
 import {
-  VIRTUAL_HOST_CLASS,
   isStaticLiteral,
   parseExprWithRewrite,
   parseExprWithRewriteClass,
