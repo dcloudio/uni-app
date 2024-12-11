@@ -36,7 +36,7 @@ function b64DecodeUnicode (str) {
 }
 
 function getCurrentUserInfo () {
-  const token = (has).getStorageSync('uni_id_token') || '';
+  const token = ( has).getStorageSync('uni_id_token') || '';
   const tokenArr = token.split('.');
   if (!token || tokenArr.length !== 3) {
     return {
@@ -475,10 +475,10 @@ initI18nMessages();
 
 const i18n = initVueI18n(
   locale,
-  {}
+   {}
 );
 const t = i18n.t;
-(i18n.mixin = {
+const i18nMixin = (i18n.mixin = {
   beforeCreate () {
     const unwatch = i18n.i18n.watchLocale(() => {
       this.$forceUpdate();
@@ -493,8 +493,8 @@ const t = i18n.t;
     }
   }
 });
-i18n.setLocale;
-i18n.getLocale;
+const setLocale = i18n.setLocale;
+const getLocale = i18n.getLocale;
 
 function initAppLocale (Vue, appVm, locale) {
   const state = Vue.observable({
@@ -566,7 +566,7 @@ function normalizeLocale (locale, messages) {
 //   }
 // }
 
-function getLocale () {
+function getLocale$1 () {
   // 优先使用 $locale
   if (isFn(getApp)) {
     const app = getApp({
@@ -579,7 +579,7 @@ function getLocale () {
   return normalizeLocale(has.getSystemInfoSync().language) || LOCALE_EN
 }
 
-function setLocale (locale) {
+function setLocale$1 (locale) {
   const app = isFn(getApp) ? getApp() : false;
   if (!app) {
     return false
@@ -603,7 +603,7 @@ function onLocaleChange (fn) {
 }
 
 if (typeof global !== 'undefined') {
-  global.getLocale = getLocale;
+  global.getLocale = getLocale$1;
 }
 
 const interceptors = {
@@ -613,8 +613,8 @@ const interceptors = {
 var baseApi = /*#__PURE__*/Object.freeze({
   __proto__: null,
   upx2px: upx2px,
-  getLocale: getLocale,
-  setLocale: setLocale,
+  getLocale: getLocale$1,
+  setLocale: setLocale$1,
   onLocaleChange: onLocaleChange,
   addInterceptor: addInterceptor,
   removeInterceptor: removeInterceptor,
@@ -693,7 +693,7 @@ const eventChannels = {};
 
 let id = 0;
 
-function initEventChannel$1 (events, cache = true) {
+function initEventChannel (events, cache = true) {
   id++;
   const eventChannel = new EventChannel(id, events);
   if (cache) {
@@ -712,7 +712,7 @@ function navigateTo () {
   let eventChannel;
   return {
     args (fromArgs, toArgs) {
-      eventChannel = initEventChannel$1(fromArgs.events);
+      eventChannel = initEventChannel(fromArgs.events);
       if (fromArgs.url) {
         fromArgs.url = fromArgs.url + (fromArgs.url.indexOf('?') === -1 ? '?' : '&') + '__id__=' + eventChannel.id;
       }
@@ -926,13 +926,13 @@ function getDeviceBrand (brand) {
 }
 
 function getAppLanguage (defaultLanguage) {
-  return getLocale
-    ? getLocale()
+  return getLocale$1
+    ? getLocale$1()
     : defaultLanguage
 }
 
 function getHostName (result) {
-  const _platform = "mp-harmony".split('-')[1];
+  const _platform =  "mp-harmony".split('-')[1];
   let _hostName = result.hostName || _platform; // mp-jd
 
   return _hostName
@@ -946,19 +946,158 @@ var getSystemInfo = {
   }
 };
 
+const oName = 'getUserInfo';
+const nName = 'getUserProfile';
+
+var getUserProfile = {
+  name: has.canIUse(nName) ? nName : oName
+};
+
+// 不支持的 API 列表
+const todos = [
+  'preloadPage',
+  'unPreloadPage',
+  'loadSubPackage'
+  // 'createCameraContext',
+  // 'createLivePlayerContext',
+  // 'getSavedFileInfo',
+  // 'createMapContext',
+  // 'onMemoryWarning',
+  // 'onGyroscopeChange',
+  // 'startGyroscope',
+  // 'stopGyroscope',
+  // 'setScreenBrightness',
+  // 'getScreenBrightness',
+  // 'addPhoneContact',
+  // 'openBluetoothAdapter',
+  // 'startBluetoothDevicesDiscovery',
+  // 'onBluetoothDeviceFound',
+  // 'stopBluetoothDevicesDiscovery',
+  // 'onBluetoothAdapterStateChange',
+  // 'getConnectedBluetoothDevices',
+  // 'getBluetoothDevices',
+  // 'getBluetoothAdapterState',
+  // 'closeBluetoothAdapter',
+  // 'writeBLECharacteristicValue',
+  // 'readBLECharacteristicValue',
+  // 'onBLEConnectionStateChange',
+  // 'onBLECharacteristicValueChange',
+  // 'notifyBLECharacteristicValueChange',
+  // 'getBLEDeviceServices',
+  // 'getBLEDeviceCharacteristics',
+  // 'createBLEConnection',
+  // 'closeBLEConnection',
+  // 'onBeaconServiceChange',
+  // 'onBeaconUpdate',
+  // 'getBeacons',
+  // 'startBeaconDiscovery',
+  // 'stopBeaconDiscovery',
+  // 'showNavigationBarLoading',
+  // 'hideNavigationBarLoading',
+  // 'setTabBarItem',
+  // 'setTabBarStyle',
+  // 'hideTabBar',
+  // 'showTabBar',
+  // 'setTabBarBadge',
+  // 'removeTabBarBadge',
+  // 'showTabBarRedDot',
+  // 'hideTabBarRedDot',
+  // 'setBackgroundColor',
+  // 'setBackgroundTextStyle',
+  // 'chooseInvoiceTitle',
+  // 'addTemplate',
+  // 'deleteTemplate',
+  // 'getTemplateLibraryById',
+  // 'getTemplateLibraryList',
+  // 'getTemplateList',
+  // 'sendTemplateMessage',
+  // 'setEnableDebug',
+  // 'onWindowResize',
+  // 'offWindowResize',
+  // 'createOffscreenCanvas',
+  // 'vibrate'
+];
+
+// 存在兼容性的 API 列表
+// 头条小程序自1.35.0+支持canIUses
+const canIUses = [
+  // 'createIntersectionObserver',
+  // 'getSavedFileList',
+  // 'removeSavedFile',
+  // 'hideKeyboard',
+  // 'getImageInfo',
+  // 'createVideoContext',
+  // 'onSocketOpen',
+  // 'onSocketError',
+  // 'sendSocketMessage',
+  // 'onSocketMessage',
+  // 'closeSocket',
+  // 'onSocketClose',
+  // 'getExtConfig',
+  // 'getExtConfigSync',
+  // 'navigateToMiniProgram',
+  // 'navigateBackMiniProgram',
+  // 'compressImage',
+  // 'chooseLocation',
+  // 'openDocument',
+  // 'onUserCaptureScreen',
+  // 'getBackgroundAudioManager',
+  // 'setNavigationBarColor',
+];
+
+// 需要做转换的 API 列表
 const protocols = {
   navigateTo: navigateTo(),
   redirectTo,
   previewImage,
   getSystemInfo,
-  getSystemInfoSync: getSystemInfo
+  getSystemInfoSync: getSystemInfo,
+  getUserProfile,
+  connectSocket: {
+    args: {
+      method: false
+    }
+  },
+  chooseVideo: {
+    args: {
+      camera: false
+    }
+  },
+  scanCode: {
+    args: {
+      onlyFromCamera: false,
+      scanType: false
+    }
+  },
+  startAccelerometer: {
+    args: {
+      interval: false
+    }
+  },
+  login: {
+    args: {
+      scopes: false,
+      timeout: false
+    }
+  },
+  getUserInfo: {
+    args: {
+      lang: false,
+      timeout: false
+    }
+  },
+  requestPayment: {
+    name: tt.pay ? 'pay' : 'requestPayment',
+    args: {
+      orderInfo: tt.pay ? 'orderInfo' : 'data'
+    }
+  },
+  getFileInfo: {
+    args: {
+      digestAlgorithm: false
+    }
+  }
 };
-const todos = [
-  'preloadPage',
-  'unPreloadPage',
-  'loadSubPackage'
-];
-const canIUses = [];
 
 const CALLBACKS = ['success', 'fail', 'cancel', 'complete'];
 
@@ -1011,7 +1150,7 @@ function processReturnValue (methodName, res, returnValue, keepReturnValue = fal
   return processArgs(methodName, res, returnValue, {}, keepReturnValue)
 }
 
-function wrapper$1 (methodName, method) {
+function wrapper (methodName, method) {
   if (hasOwn(protocols, methodName)) {
     const protocol = protocols[methodName];
     if (!protocol) { // 暂不支持的 api
@@ -1074,20 +1213,12 @@ TODOS.forEach(function (name) {
   todoApis[name] = createTodoApi(name);
 });
 
-const providers = {
-  oauth: [],
-  share: [],
-  payment: [],
-  push: []
+var providers = {
+  oauth: ['huawei'],
+  share: ['huawei'],
+  payment: ['huawei'],
+  push: ['huawei']
 };
-
-if (has.canIUse('getAccountProvider')) {
-  providers.oauth.push(has.getAccountProvider());
-}
-
-if (has.canIUse('getVendorPaymentProvider')) {
-  providers.payment.push(has.getVendorPaymentProvider());
-}
 
 function getProvider ({
   service,
@@ -1151,6 +1282,98 @@ var eventApi = /*#__PURE__*/Object.freeze({
   $once: $once,
   $emit: $emit
 });
+
+function createMediaQueryObserver () {
+  const mediaQueryObserver = {};
+  const {
+    windowWidth,
+    windowHeight
+  } = has.getSystemInfoSync();
+
+  const orientation = windowWidth < windowHeight ? 'portrait' : 'landscape';
+
+  mediaQueryObserver.observe = (options, callback) => {
+    let matches = true;
+    for (const item in options) {
+      const itemValue = item === 'orientation' ? options[item] : Number(options[item]);
+      if (options[item] !== '') {
+        if (item === 'width') {
+          if (itemValue === windowWidth) {
+            matches = true;
+          } else {
+            matches = false;
+            callback(matches);
+            return matches
+          }
+        }
+        if (item === 'minWidth') {
+          if (windowWidth >= itemValue) {
+            matches = true;
+          } else {
+            matches = false;
+            callback(matches);
+            return matches
+          }
+        }
+        if (item === 'maxWidth') {
+          if (windowWidth <= itemValue) {
+            matches = true;
+          } else {
+            matches = false;
+            callback(matches);
+            return matches
+          }
+        }
+
+        if (item === 'height') {
+          if (itemValue === windowHeight) {
+            matches = true;
+          } else {
+            matches = false;
+            callback(matches);
+            return matches
+          }
+        }
+        if (item === 'minHeight') {
+          if (windowHeight >= itemValue) {
+            matches = true;
+          } else {
+            matches = false;
+            callback(matches);
+            return matches
+          }
+        }
+        if (item === 'maxHeight') {
+          if (windowHeight <= itemValue) {
+            matches = true;
+          } else {
+            matches = false;
+            callback(matches);
+            return matches
+          }
+        }
+
+        if (item === 'orientation') {
+          if (options[item] === orientation) {
+            matches = true;
+          } else {
+            matches = false;
+            callback(matches);
+            return matches
+          }
+        }
+      }
+    }
+    callback(matches);
+
+    return matches
+  };
+
+  mediaQueryObserver.disconnect = () => {
+  };
+
+  return mediaQueryObserver
+}
 
 /**
  * 框架内 try-catch
@@ -1295,6 +1518,7 @@ const offPushMessage = (fn) => {
 
 var api = /*#__PURE__*/Object.freeze({
   __proto__: null,
+  createMediaQueryObserver: createMediaQueryObserver,
   getPushClientId: getPushClientId,
   onPushMessage: onPushMessage,
   offPushMessage: offPushMessage,
@@ -1371,7 +1595,7 @@ function initRefs (vm) {
   });
 }
 
-function handleLink$1 (event) {
+function handleLink (event) {
   const {
     vuePid,
     vueOptions
@@ -1443,7 +1667,7 @@ function initTriggerEvent (mpInstance) {
   }
 }
 
-function initHook$1 (name, options, isComponent) {
+function initHook (name, options, isComponent) {
   const oldHook = options[name];
   options[name] = function (...args) {
     markMPComponent(this);
@@ -1456,13 +1680,13 @@ function initHook$1 (name, options, isComponent) {
 if (!MPPage.__$wrappered) {
   MPPage.__$wrappered = true;
   Page = function (options = {}) {
-    initHook$1('onLoad', options);
+    initHook('onLoad', options);
     return MPPage(options)
   };
   Page.after = MPPage.after;
 
   Component = function (options = {}) {
-    initHook$1('created', options);
+    initHook('created', options);
     return MPComponent(options)
   };
 }
@@ -1530,7 +1754,7 @@ function initHooks (mpOptions, hooks, vueOptions) {
 }
 
 function initUnknownHooks (mpOptions, vueOptions, excludes = []) {
-  findHooks(vueOptions).forEach((hook) => initHook(mpOptions, hook, excludes));
+  findHooks(vueOptions).forEach((hook) => initHook$1(mpOptions, hook, excludes));
 }
 
 function findHooks (vueOptions, hooks = []) {
@@ -1544,7 +1768,7 @@ function findHooks (vueOptions, hooks = []) {
   return hooks
 }
 
-function initHook (mpOptions, hook, excludes) {
+function initHook$1 (mpOptions, hook, excludes) {
   if (excludes.indexOf(hook) === -1 && !hasOwn(mpOptions, hook)) {
     mpOptions[hook] = function (args) {
       return this.$vm && this.$vm.__call_hook(hook, args)
@@ -1750,7 +1974,7 @@ function initProperties (props, isBehavior = false, file = '', options) {
   return properties
 }
 
-function wrapper (event) {
+function wrapper$1 (event) {
   // TODO 又得兼容 mpvue 的 mp 对象
   try {
     event.mp = JSON.parse(JSON.stringify(event));
@@ -1945,7 +2169,7 @@ function getContextVm (vm) {
 }
 
 function handleEvent (event) {
-  event = wrapper(event);
+  event = wrapper$1(event);
 
   // [['tap',[['handle',[1,2,a]],['handle1',[1,2,a]]]]]
   const dataset = (event.currentTarget || event.target).dataset;
@@ -2032,7 +2256,7 @@ function handleEvent (event) {
   }
 }
 
-const hooks$1 = [
+const hooks = [
   'onShow',
   'onHide',
   'onError',
@@ -2041,7 +2265,7 @@ const hooks$1 = [
   'onUnhandledRejection'
 ];
 
-function initEventChannel () {
+function initEventChannel$1 () {
   Vue.prototype.getOpenerEventChannel = function () {
     if (!this.__eventChannel__) {
       this.__eventChannel__ = new EventChannel();
@@ -2062,7 +2286,7 @@ function parseBaseApp (vm, {
   mocks,
   initRefs
 }) {
-  initEventChannel();
+  initEventChannel$1();
   if (vm.$options.store) {
     Vue.prototype.$store = vm.$options.store;
   }
@@ -2088,7 +2312,7 @@ function parseBaseApp (vm, {
       delete this.$options.mpType;
       delete this.$options.mpInstance;
       if (
-        (this.mpType === 'page') &&
+        ( this.mpType === 'page') &&
         typeof getApp === 'function'
       ) { // hack vue-i18n
         const app = getApp();
@@ -2138,30 +2362,53 @@ function parseBaseApp (vm, {
 
   initAppLocale(Vue, vm, normalizeLocale(has.getSystemInfoSync().language) || LOCALE_EN);
 
-  initHooks(appOptions, hooks$1);
+  initHooks(appOptions, hooks);
   initUnknownHooks(appOptions, vm.$options);
 
   return appOptions
 }
 
-const mocks = ['nodeId', 'componentName', '_componentId', 'uniquePrefix'];
+const mocks = ['__route__', '__webviewId__', '__nodeid__', '__nodeId__'];
 
 function isPage () {
-  // 百度小程序组件的id，某些情况下可能是number类型的0，不能直接return !this.ownerId 判断当前组件是否是Page
-  // 否则会导致mounted不执行
-  // 基础库 3.290.33 及以上 ownerId 为 null
-  return typeof this.ownerId === 'undefined' || this.ownerId === null
+  return this.__nodeid__ === 0 || this.__nodeId__ === 0
+}
+
+function initRefs$1 (vm) {
+  const mpInstance = vm.$scope;
+  /* eslint-disable no-undef */
+  const [majorVersion = '', minorVersion = ''] = tt.getSystemInfoSync().SDKVersion.split('.');
+  if (parseInt(majorVersion) > 1 || parseInt(minorVersion) > 16) {
+    initRefs(vm);
+  } else {
+    mpInstance.selectAllComponents('.vue-ref', (components) => {
+      components.forEach(component => {
+        const ref = component.dataset.ref;
+        vm.$refs[ref] = component.$vm || toSkip(component);
+      });
+    });
+    mpInstance.selectAllComponents('.vue-ref-in-for', (forComponents) => {
+      forComponents.forEach(component => {
+        const ref = component.dataset.ref;
+        if (!vm.$refs[ref]) {
+          vm.$refs[ref] = [];
+        }
+        vm.$refs[ref].push(component.$vm || toSkip(component));
+      });
+    });
+  }
 }
 
 const instances = Object.create(null);
+const components = Object.create(null);
 
 function initRelation ({
   vuePid,
   mpInstance
 }) {
-  // triggerEvent 后，接收事件时机特别晚，已经到了 ready 之后
-  const nodeId = mpInstance.nodeId + '';
-  const webviewId = mpInstance.pageinstance.__pageId__ + '';
+  // 头条 triggerEvent 后，接收事件时机特别晚，已经到了 ready 之后
+  const nodeId = (mpInstance.__nodeId__ || mpInstance.__nodeid__) + '';
+  const webviewId = mpInstance.__webviewId__ + '';
 
   instances[webviewId + '_' + nodeId] = mpInstance.$vm;
 
@@ -2172,8 +2419,9 @@ function initRelation ({
   });
 }
 
-function handleLink ({
+function handleLink$1 ({
   detail: {
+    vuePid,
     nodeId,
     webviewId
   }
@@ -2182,7 +2430,13 @@ function handleLink ({
   if (!vm) {
     return
   }
-  let parentVm = instances[webviewId + '_' + vm.$scope.ownerId];
+
+  let parentVm;
+
+  if (vuePid) {
+    parentVm = findVmByVueId(this.$vm, vuePid);
+  }
+
   if (!parentVm) {
     parentVm = this.$vm;
   }
@@ -2191,37 +2445,29 @@ function handleLink ({
   vm.$root = parentVm.$root;
   parentVm.$children.push(vm);
 
-  const createdVm = function () {
-    vm.__call_hook('created');
-  };
-  const mountedVm = function () {
-    // 处理当前 vm 子
-    if (vm._$childVues) {
-      vm._$childVues.forEach(([createdVm]) => createdVm());
-      vm._$childVues.forEach(([, mountedVm]) => mountedVm());
-      delete vm._$childVues;
-    }
-    vm.__call_hook('beforeMount');
-    vm._isMounted = true;
-    vm.__call_hook('mounted');
-    vm.__call_hook('onReady');
-  };
-  // 当 parentVm 已经 mounted 时，直接触发，否则延迟
-  if (!parentVm || parentVm._isMounted) {
-    createdVm();
-    mountedVm();
-  } else {
-    (parentVm._$childVues || (parentVm._$childVues = [])).push([createdVm, mountedVm]);
-  }
+  vm.__call_hook('created');
+  vm.__call_hook('beforeMount');
+  vm._isMounted = true;
+  vm.__call_hook('mounted');
+  vm.__call_hook('onReady');
 }
 
 function parseApp (vm) {
   Vue.prototype._$fallback = true; // 降级（调整原 vue 的部分生命周期，如 created，beforeMount,inject,provide）
 
   Vue.mixin({
-    created () { // 处理 injections, triggerEvent 是异步，且触发时机很慢，故延迟 relation 设置
+    created () { // 处理 injections,头条 triggerEvent 是异步，且触发时机很慢，故延迟 relation 设置
       if (this.mpType !== 'app') {
-        initRefs(this);
+        if (
+          this.mpType === 'page' &&
+                    !this.$scope.route &&
+                    this.$scope.__route__
+        ) {
+          this.$scope.route = this.$scope.__route__;
+        }
+
+        initRefs$1(this);
+
         this.__init_injections(this);
         this.__init_provide(this);
       }
@@ -2352,7 +2598,7 @@ function parseBaseComponent (vueComponentOptions, {
       }
     },
     methods: {
-      __l: handleLink$1,
+      __l: handleLink,
       __e: handleEvent
     }
   };
@@ -2378,59 +2624,99 @@ function parseBaseComponent (vueComponentOptions, {
   return [componentOptions, VueComponent]
 }
 
+function currentComponents (mpInstance, callback) {
+  const webviewId = mpInstance.__webviewId__;
+  const currentComponents = components[webviewId];
+  if (currentComponents) {
+    callback(currentComponents);
+  }
+}
+
 function parseComponent (vueComponentOptions, needVueOptions) {
   const [componentOptions, vueOptions, VueComponent] = parseBaseComponent(vueComponentOptions, {
     isPage,
     initRelation
   }, true);
+  const lifetimes = componentOptions.lifetimes;
 
-  componentOptions.lifetimes.attached = function attached () {
-    const properties = this.properties;
-
-    const options = {
-      mpType: isPage.call(this) ? 'page' : 'component',
-      mpInstance: this,
-      propsData: properties
-    };
-
-    initVueIds(properties.vueId, this);
-
-    // 初始化 vue 实例
-    this.$vm = new VueComponent(options);
-
-    // 处理$slots,$scopedSlots（暂不支持动态变化$slots）
-    initSlots(this.$vm, properties.vueSlots);
-
-    // 处理父子关系
-    initRelation.call(this, {
-      vuePid: this._$vuePid,
-      mpInstance: this
+  // 基础库 2.0 以上 attached 顺序错乱，按照 created 顺序强制纠正
+  lifetimes.created = function created () {
+    currentComponents(this, components => {
+      components.push(this);
     });
+  };
 
-    // 触发首次 setData
-    this.$vm.$mount();
+  lifetimes.attached = function attached () {
+    this.__lifetimes_attached = function () {
+      const properties = this.properties;
+
+      const options = {
+        mpType: isPage.call(this) ? 'page' : 'component',
+        mpInstance: this,
+        propsData: properties
+      };
+
+      initVueIds(properties.vueId, this);
+
+      // 初始化 vue 实例
+      this.$vm = new VueComponent(options);
+
+      // 处理$slots,$scopedSlots（暂不支持动态变化$slots）
+      initSlots(this.$vm, properties.vueSlots);
+
+      // 处理父子关系
+      initRelation.call(this, {
+        vuePid: this._$vuePid,
+        mpInstance: this
+      });
+
+      // 触发首次 setData
+      this.$vm.$mount();
+    };
+    currentComponents(this, components => {
+      let component = this;
+      while (component && component.__lifetimes_attached && components[0] && component === components[0]) {
+        components.shift();
+        component.__lifetimes_attached();
+        delete component.__lifetimes_attached;
+        component = components[0];
+      }
+    });
+  };
+
+  const oldDetached = lifetimes.detached;
+  lifetimes.detached = function detached () {
+    if (typeof oldDetached === 'function') {
+      oldDetached.call(this);
+    }
+    currentComponents(this, components => {
+      const index = components.indexOf(this);
+      if (index >= 0) {
+        components.splice(index, 1);
+      }
+    });
   };
 
   // ready 比 handleLink 还早，初始化逻辑放到 handleLink 中
-  delete componentOptions.lifetimes.ready;
+  delete lifetimes.ready;
 
-  componentOptions.methods.__l = handleLink;
+  componentOptions.methods.__l = handleLink$1;
 
   return needVueOptions ? [componentOptions, vueOptions] : componentOptions
 }
 
-const hooks = [
+const hooks$1 = [
   'onShow',
   'onHide',
   'onUnload'
 ];
 
-hooks.push(...PAGE_EVENT_HOOKS);
+hooks$1.push(...PAGE_EVENT_HOOKS);
 
 function parseBasePage (vuePageOptions) {
   const [pageOptions, vueOptions] = parseComponent(vuePageOptions, true);
 
-  initHooks(pageOptions.methods, hooks, vueOptions);
+  initHooks(pageOptions.methods, hooks$1, vueOptions);
 
   pageOptions.methods.onLoad = function (query) {
     this.options = query;
@@ -2451,8 +2737,17 @@ function parseBasePage (vuePageOptions) {
 
 function parsePage (vuePageOptions) {
   const pageOptions = parseBasePage(vuePageOptions);
+  const lifetimes = pageOptions.lifetimes;
+  const oldCreated = lifetimes.created;
+  lifetimes.created = function created () {
+    const webviewId = this.__webviewId__;
+    components[webviewId] = [];
+    if (typeof oldCreated === 'function') {
+      oldCreated.call(this);
+    }
+  };
   // 页面需要在 ready 中触发，其他组件是在 handleLink 中触发
-  pageOptions.lifetimes.ready = function ready () {
+  lifetimes.ready = function ready () {
     if (this.$vm && this.$vm.mpType === 'page') {
       this.$vm.__call_hook('created');
       this.$vm.__call_hook('beforeMount');
@@ -2463,16 +2758,19 @@ function parsePage (vuePageOptions) {
       this.is && console.warn(this.is + ' is not ready');
     }
   };
-
-  pageOptions.lifetimes.detached = function detached () {
-    this.$vm && this.$vm.$destroy();
+  const oldDetached = lifetimes.detached;
+  lifetimes.detached = function detached () {
+    if (typeof oldDetached === 'function') {
+      oldDetached.call(this);
+    }
     // 清理
-    const pageId = this.pageinstance.__pageId__;
-    Object.keys(instances).forEach(key => {
-      if (key.indexOf(pageId + '_') === 0) {
+    const webviewId = this.__webviewId__;
+    webviewId && Object.keys(instances).forEach(key => {
+      if (key.indexOf(webviewId + '_') === 0) {
         delete instances[key];
       }
     });
+    delete components[webviewId];
   };
 
   return pageOptions
@@ -2582,7 +2880,7 @@ if (typeof Proxy !== 'undefined' && "mp-harmony" !== 'app-plus') {
       if (eventApi[name]) {
         return eventApi[name]
       }
-      return promisify(name, wrapper$1(name, has[name]))
+      return promisify(name, wrapper(name, has[name]))
     },
     set (target, name, value) {
       target[name] = value;
@@ -2613,7 +2911,7 @@ if (typeof Proxy !== 'undefined' && "mp-harmony" !== 'app-plus') {
 
   Object.keys(has).forEach(name => {
     if (hasOwn(has, name) || hasOwn(protocols, name)) {
-      uni[name] = promisify(name, wrapper$1(name, has[name]));
+      uni[name] = promisify(name, wrapper(name, has[name]));
     }
   });
 }
@@ -2626,4 +2924,5 @@ has.createPlugin = createPlugin;
 
 var uni$1 = uni;
 
-export { createApp, createComponent, createPage, createPlugin, createSubpackageApp, uni$1 as default };
+export default uni$1;
+export { createApp, createComponent, createPage, createPlugin, createSubpackageApp };
