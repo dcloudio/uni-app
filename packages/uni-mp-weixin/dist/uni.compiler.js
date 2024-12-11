@@ -152,6 +152,7 @@ const customElements = [
     'sticky-section',
     'store-product',
     'store-home',
+    'keyboard-accessory',
 ];
 const nodeTransforms = [
     uniCliShared.transformRef,
