@@ -367,6 +367,10 @@ const ON_APP_ENTER_FOREGROUND = 'onAppEnterForeground';
 const ON_APP_ENTER_BACKGROUND = 'onAppEnterBackground';
 const ON_WEB_INVOKE_APP_SERVICE = 'onWebInvokeAppService';
 const ON_WXS_INVOKE_CALL_METHOD = 'onWxsInvokeCallMethod';
+// mergeVirtualHostAttributes
+const VIRTUAL_HOST_STYLE = 'virtualHostStyle';
+const VIRTUAL_HOST_CLASS = 'virtualHostClass';
+const VIRTUAL_HOST_HIDDEN = 'virtualHostHidden';
 
 function cache(fn) {
     const cache = Object.create(null);
@@ -1800,6 +1804,9 @@ exports.UniLifecycleHooks = UniLifecycleHooks;
 exports.UniNode = UniNode;
 exports.UniTextAreaElement = UniTextAreaElement;
 exports.UniTextNode = UniTextNode;
+exports.VIRTUAL_HOST_CLASS = VIRTUAL_HOST_CLASS;
+exports.VIRTUAL_HOST_HIDDEN = VIRTUAL_HOST_HIDDEN;
+exports.VIRTUAL_HOST_STYLE = VIRTUAL_HOST_STYLE;
 exports.WEB_INVOKE_APPSERVICE = WEB_INVOKE_APPSERVICE;
 exports.WXS_MODULES = WXS_MODULES;
 exports.WXS_PROTOCOL = WXS_PROTOCOL;

@@ -905,6 +905,12 @@ export declare const UVUE_IOS_BUILT_IN_TAGS: string[];
 
 export declare const UVUE_WEB_BUILT_IN_TAGS: string[];
 
+export declare const VIRTUAL_HOST_CLASS = "virtualHostClass";
+
+export declare const VIRTUAL_HOST_HIDDEN = "virtualHostHidden";
+
+export declare const VIRTUAL_HOST_STYLE = "virtualHostStyle";
+
 declare interface Vue_2 {
     createApp: typeof createApp;
 }
