@@ -24,6 +24,7 @@ import {
   createSimpleExpression,
 } from '@vue/compiler-core'
 import { hyphenate } from '@vue/shared'
+import { VIRTUAL_HOST_STYLE } from '@dcloudio/uni-shared'
 import {
   createBindDirectiveNode,
   isCompoundExpressionNode,
@@ -33,7 +34,6 @@ import { parseExpr, parseStringLiteral } from '../ast'
 import { genBabelExpr } from '../codegen'
 import type { TransformContext } from '../transform'
 import {
-  VIRTUAL_HOST_STYLE,
   isStaticLiteral,
   parseExprWithRewrite,
   rewirteWithHelper,

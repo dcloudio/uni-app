@@ -88,3 +88,8 @@ export const ON_APP_ENTER_FOREGROUND = 'onAppEnterForeground'
 export const ON_APP_ENTER_BACKGROUND = 'onAppEnterBackground'
 export const ON_WEB_INVOKE_APP_SERVICE = 'onWebInvokeAppService'
 export const ON_WXS_INVOKE_CALL_METHOD = 'onWxsInvokeCallMethod'
+
+// mergeVirtualHostAttributes
+export const VIRTUAL_HOST_STYLE = 'virtualHostStyle'
+export const VIRTUAL_HOST_CLASS = 'virtualHostClass'
+export const VIRTUAL_HOST_HIDDEN = 'virtualHostHidden'
