@@ -260,4 +260,14 @@ describe('mp-weixin: transform component', () => {
       }
     )
   })
+
+  test('input > keyboard-accessory', () => {
+    assert(
+      `<input><keyboard-accessory/></input>`,
+      `<input><keyboard-accessory u-i=\"2a9ec0b0-0\" bind:__l=\"__l\"/></input>`,
+      `(_ctx, _cache) => {
+  return {}
+}`
+    )
+  })
 })
