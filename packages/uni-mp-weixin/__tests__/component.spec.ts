@@ -261,13 +261,24 @@ describe('mp-weixin: transform component', () => {
     )
   })
 
-  test('input > keyboard-accessory', () => {
+  test('input 不填写闭合标签，会自动处理', () => {
     assert(
-      `<input><keyboard-accessory/></input>`,
-      `<input><keyboard-accessory/></input>`,
+      `<input>`,
+      `<input></input>`,
       `(_ctx, _cache) => {
   return {}
 }`
     )
   })
+
+  // 暂不上线，先注释掉
+  //   test('input > keyboard-accessory', () => {
+  //     assert(
+  //       `<input><keyboard-accessory/></input>`,
+  //       `<input><keyboard-accessory/></input>`,
+  //       `(_ctx, _cache) => {
+  //   return {}
+  // }`
+  //     )
+  //   })
 })
