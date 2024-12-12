@@ -163,7 +163,7 @@ function invokePropGetter(args) {
 function initProxyFunction(type, async, { moduleName, moduleType, package: pkg, class: cls, name: methodName, method, companion, keepAlive, params: methodParams, return: returnOptions, errMsg, }, instanceId, proxy) {
     if (!keepAlive) {
         keepAlive =
-            methodName.indexOf('on') === 0 &&
+            (methodName.indexOf('on') === 0 || methodName.indexOf('off') === 0) &&
                 methodParams.length === 1 &&
                 methodParams[0].type === 'UTSCallback';
     }
