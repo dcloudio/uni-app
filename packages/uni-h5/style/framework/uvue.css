@@ -261,6 +261,19 @@ uni-app .uni-textarea-textarea:disabled {
   cursor: inherit;
 }
 
+uni-app uni-checkbox {
+  align-items: center;
+}
+
+uni-app .uni-checkbox-wrapper {
+  flex-direction: inherit;
+  align-content: inherit;
+  justify-content: inherit;
+  align-items: inherit;
+  width: 100%;
+  height: 100%;
+}
+
 /* 覆盖 video 的 poster 背景 */
 uni-app .uni-video-cover {
   background-color: unset;
