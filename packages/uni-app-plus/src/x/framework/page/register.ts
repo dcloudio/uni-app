@@ -247,8 +247,12 @@ export function registerDialogPage(
   const id = genWebviewId()
   const routeOptions = initRouteOptions(path, openType)
   const pageStyle = parsePageStyle(routeOptions)
-  pageStyle.set('navigationStyle', 'custom')
-  pageStyle.set('backgroundColorContent', 'transparent')
+  if (!pageStyle.has('navigationStyle')) {
+    pageStyle.set('navigationStyle', 'custom')
+  }
+  if (!pageStyle.has('backgroundColorContent')) {
+    pageStyle.set('backgroundColorContent', 'transparent')
+  }
   if (typeof pageStyle.get('disableSwipeBack') !== 'boolean') {
     pageStyle.set('disableSwipeBack', true)
   }
