@@ -38,7 +38,7 @@ import {
 export default /*#__PURE__*/ defineSystemComponent({
   name: 'Page',
   setup(_props, ctx) {
-    const pageMeta = providePageMeta(getStateId())
+    let pageMeta = providePageMeta(getStateId())
     const navigationBar = pageMeta.navigationBar
     const pageStyle = {} as Record<string, any>
     useDocumentTitle(pageMeta)
@@ -47,9 +47,24 @@ export default /*#__PURE__*/ defineSystemComponent({
       currentInstance!.$dialogPages = ref<UniDialogPage[]>([])
       currentInstance!.$systemDialogPages = ref<UniDialogPage[]>([])
       if (isDialogPageInstance(ctx as unknown as ComponentInternalInstance)) {
-        navigationBar.style = 'custom'
-        pageMeta.backgroundColorContent = 'transparent'
+        // pageMeta 是通过 route 取到的，需要更新为 dialogPage 的 meta
         pageMeta.route = ctx.attrs.route as string
+        const routePageMeta = __uniRoutes.find(
+          (route) => route.path === pageMeta.route.split('?')[0]
+        )?.meta
+        if (routePageMeta) {
+          routePageMeta.navigationBar = Object.assign(
+            navigationBar,
+            routePageMeta.navigationBar
+          )
+          pageMeta = Object.assign(pageMeta, routePageMeta)
+        }
+        if (!routePageMeta?.backgroundColorContent) {
+          pageMeta.backgroundColorContent = 'transparent'
+        }
+        if (!routePageMeta?.navigationBar.style) {
+          pageMeta.navigationBar.style = 'custom'
+        }
         const parentInstance = inject(
           'parentInstance'
         ) as ComponentInternalInstance
