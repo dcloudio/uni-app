@@ -3837,7 +3837,8 @@ function createPageRefreshTsx(refreshRef, pageMeta) {
 const PageComponent = /* @__PURE__ */ defineSystemComponent({
   name: "Page",
   setup(_props, ctx) {
-    const pageMeta = providePageMeta(getStateId());
+    var _a;
+    let pageMeta = providePageMeta(getStateId());
     const navigationBar = pageMeta.navigationBar;
     const pageStyle = {};
     useDocumentTitle(pageMeta);
@@ -3846,9 +3847,18 @@ const PageComponent = /* @__PURE__ */ defineSystemComponent({
       currentInstance.$dialogPages = vue.ref([]);
       currentInstance.$systemDialogPages = vue.ref([]);
       if (isDialogPageInstance(ctx)) {
-        navigationBar.style = "custom";
-        pageMeta.backgroundColorContent = "transparent";
         pageMeta.route = ctx.attrs.route;
+        const routePageMeta = (_a = __uniRoutes.find((route) => route.path === pageMeta.route.split("?")[0])) == null ? void 0 : _a.meta;
+        if (routePageMeta) {
+          routePageMeta.navigationBar = Object.assign(navigationBar, routePageMeta.navigationBar);
+          pageMeta = Object.assign(pageMeta, routePageMeta);
+        }
+        if (!(routePageMeta == null ? void 0 : routePageMeta.backgroundColorContent)) {
+          pageMeta.backgroundColorContent = "transparent";
+        }
+        if (!(routePageMeta == null ? void 0 : routePageMeta.navigationBar.style)) {
+          pageMeta.navigationBar.style = "custom";
+        }
         const parentInstance = vue.inject(
           "parentInstance"
         );
