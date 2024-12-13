@@ -3848,9 +3848,14 @@ const PageComponent = /* @__PURE__ */ defineSystemComponent({
       currentInstance.$systemDialogPages = vue.ref([]);
       if (isDialogPageInstance(ctx)) {
         pageMeta.route = ctx.attrs.route;
-        const routePageMeta = (_a = __uniRoutes.find((route) => route.path === pageMeta.route.split("?")[0])) == null ? void 0 : _a.meta;
+        const routePageMeta = (_a = __uniRoutes.find(
+          (route) => route.path === pageMeta.route.split("?")[0]
+        )) == null ? void 0 : _a.meta;
         if (routePageMeta) {
-          routePageMeta.navigationBar = Object.assign(navigationBar, routePageMeta.navigationBar);
+          routePageMeta.navigationBar = Object.assign(
+            navigationBar,
+            routePageMeta.navigationBar
+          );
           pageMeta = Object.assign(pageMeta, routePageMeta);
         }
         if (!(routePageMeta == null ? void 0 : routePageMeta.backgroundColorContent)) {

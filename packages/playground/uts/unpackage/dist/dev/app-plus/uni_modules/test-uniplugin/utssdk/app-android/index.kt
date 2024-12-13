@@ -83,13 +83,13 @@ open class UserByJs : User {
         return this.login(name, pwd)
     }
     open fun registerByJs(name: String, callback: UTSCallback) {
-        return this.register(name, if (callback.fn != null) {
-            callback.fn
+        return this.register(name, if (callback.fnJS != null) {
+            callback.fnJS
         } else {
-            callback.fn = fun(){
+            callback.fnJS = fun(){
                 callback()
             }
-            callback.fn
+            callback.fnJS
         }
          as () -> Unit)
     }
@@ -98,13 +98,13 @@ open class UserByJs : User {
     }
 }
 fun registerByJs(name: String, callback: UTSCallback) {
-    return register(name, if (callback.fn != null) {
-        callback.fn
+    return register(name, if (callback.fnJS != null) {
+        callback.fnJS
     } else {
-        callback.fn = fun(){
+        callback.fnJS = fun(){
             callback()
         }
-        callback.fn
+        callback.fnJS
     }
      as () -> Unit)
 }
@@ -112,13 +112,13 @@ fun offMemoryWarningByJs(callback: UTSCallback? = null) {
     return offMemoryWarning(if (callback == null) {
         null
     } else {
-        if (callback.fn != null) {
-            callback.fn
+        if (callback.fnJS != null) {
+            callback.fnJS
         } else {
-            callback.fn = fun(level: Number){
+            callback.fnJS = fun(level: Number){
                 callback(level)
             }
-            callback.fn
+            callback.fnJS
         }
          as (level: Number) -> Unit
     }

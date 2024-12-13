@@ -14,9 +14,9 @@ interface JSON {
          "android": {
            "osVer": "5.0",
            "uniVer": "x",
-           "unixVer": "4.37",
-           "uniUtsPlugin": "4.37",
-           "unixUtsPlugin": "4.37"
+           "unixVer": "4.41",
+           "uniUtsPlugin": "4.41",
+           "unixUtsPlugin": "4.41"
          },
          "ios": {
            "osVer": "x",
@@ -70,9 +70,9 @@ interface JSON {
          "android": {
            "osVer": "5.0",
            "uniVer": "x",
-           "unixVer": "4.37",
-           "uniUtsPlugin": "4.37",
-           "unixUtsPlugin": "4.37"
+           "unixVer": "4.41",
+           "uniUtsPlugin": "4.41",
+           "unixUtsPlugin": "4.41"
          },
          "ios": {
            "osVer": "x",

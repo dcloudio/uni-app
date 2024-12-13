@@ -11177,11 +11177,12 @@ function setTabBarItem$1(index, text, iconPath, selectedIconPath, visible, iconf
     if (text !== undefined) {
         item.text = text;
     }
-    if (iconPath) {
-        item.iconPath = getRealPath(iconPath);
+    const page = getCurrentPage();
+    if (iconPath && page) {
+        item.iconPath = getRealRoute(addLeadingSlash(page.route), iconPath);
     }
-    if (selectedIconPath) {
-        item.selectedIconPath = getRealPath(selectedIconPath);
+    if (selectedIconPath && page) {
+        item.selectedIconPath = getRealRoute(addLeadingSlash(page.route), selectedIconPath);
     }
     if (iconfont !== undefined) {
         item.iconfont = iconfont;
