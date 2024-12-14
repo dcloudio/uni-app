@@ -32,6 +32,10 @@ export function setUniElementId(
     }
     const { $uniElementIds } = ins
     id = toRaw(id)
+    if (!id) {
+      // id 可能为空
+      return id
+    }
     // 仅保留第一个，其他忽略
     if (!$uniElementIds.has(id)) {
       $uniElementIds.set(id, { name: tagName })
@@ -72,7 +76,7 @@ export function setUniElementId(
 
 export function setUniElementStyle(id: string, style: unknown = '') {
   const ins = getCurrentInstance()
-  if (!ins) {
+  if (!ins || !id) {
     return ''
   }
   if (style) {
