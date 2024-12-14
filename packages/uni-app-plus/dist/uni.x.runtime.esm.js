@@ -660,22 +660,28 @@ function setCurrentNormalDialogPage(value) {
 function getCurrentNormalDialogPage() {
   return currentNormalDialogPage;
 }
+var currentSystemDialogPage = null;
+function setCurrentSystemDialogPage(value) {
+  currentSystemDialogPage = value;
+}
+function getCurrentSystemDialogPage() {
+  return currentSystemDialogPage;
+}
 function setupXPage(instance, pageInstance, pageVm, pageId, pagePath) {
   instance.$dialogPages = [];
   var uniPage;
   if (pageInstance.openType === OPEN_DIALOG_PAGE) {
-    var currentPage = getCurrentPage();
     if (pagePath.startsWith(SYSTEM_DIALOG_PAGE_PATH_STARTER)) {
-      var systemDialogPages = currentPage.vm.$systemDialogPages;
-      uniPage = systemDialogPages[systemDialogPages.length - 1];
+      uniPage = getCurrentSystemDialogPage();
+      setCurrentSystemDialogPage(null);
     } else {
       uniPage = getCurrentNormalDialogPage();
       setCurrentNormalDialogPage(null);
     }
     uniPage.getElementById = (id2) => {
       var _pageVm$$el;
-      var currentPage2 = getCurrentPage();
-      if (currentPage2 !== uniPage.getParentPage()) {
+      var currentPage = getCurrentPage();
+      if (currentPage !== uniPage.getParentPage()) {
         return null;
       }
       var containerNode = (_pageVm$$el = pageVm.$el) === null || _pageVm$$el === void 0 ? void 0 : _pageVm$$el._parent;
@@ -689,8 +695,8 @@ function setupXPage(instance, pageInstance, pageVm, pageId, pagePath) {
     uniPage = new UniNormalPageImpl();
     uniPage.getElementById = (id2) => {
       var _pageVm$$el2;
-      var currentPage2 = getCurrentPage();
-      if (currentPage2 !== uniPage) {
+      var currentPage = getCurrentPage();
+      if (currentPage !== uniPage) {
         return null;
       }
       var bodyNode = (_pageVm$$el2 = pageVm.$el) === null || _pageVm$$el2 === void 0 ? void 0 : _pageVm$$el2.parentNode;
@@ -2832,6 +2838,7 @@ var openDialogPage = (options) => {
         closePreActionSheet(parentPage.vm.$systemDialogPages);
       }
     }
+    setCurrentSystemDialogPage(dialogPage);
   }
   var [aniType, aniDuration] = initAnimation(path, animationType);
   var noAnimation = aniType === "none" || aniDuration === 0;
