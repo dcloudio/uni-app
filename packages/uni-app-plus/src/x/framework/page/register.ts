@@ -247,10 +247,12 @@ export function registerDialogPage(
   const id = genWebviewId()
   const routeOptions = initRouteOptions(path, openType)
   const pageStyle = parsePageStyle(routeOptions)
-  if (!pageStyle.has('navigationStyle')) {
+
+  const routePageMeta = __uniRoutes.find((route) => route.path === path)?.meta
+  if (!routePageMeta?.navigationStyle) {
     pageStyle.set('navigationStyle', 'custom')
   }
-  if (!pageStyle.has('backgroundColorContent')) {
+  if (!routePageMeta?.backgroundColorContent) {
     pageStyle.set('backgroundColorContent', 'transparent')
   }
   if (typeof pageStyle.get('disableSwipeBack') !== 'boolean') {

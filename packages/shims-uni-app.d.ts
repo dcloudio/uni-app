@@ -236,6 +236,7 @@ declare namespace UniNamespace {
     pageOrientation?: 'auto' | 'portrait' | 'landscape'
     backgroundColor?: string
     backgroundColorContent?: string
+    navigationStyle?: 'default' | 'custom'
     maxWidth?: string | number
     // app-plus
     scrollIndicator?: 'none'
