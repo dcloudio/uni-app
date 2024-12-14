@@ -8,15 +8,15 @@ export const showActionSheet2: ShowActionSheet2 = (options: ShowActionSheet2Opti
 	const optionsEventName = `${baseEventName}_options`
 	const successEventName = `${baseEventName}_success`
 	const failEventName = `${baseEventName}_fail`
-	uni.$on(readyEventName, (..._: any) => {
+	uni.$on(readyEventName, () => {
 		uni.$emit(optionsEventName, options)
 	})
-	uni.$on(successEventName, (...callbackRes: any) => {
-		const res = new ShowActionSheetSuccessImpl(callbackRes[0] as number)
+	uni.$on(successEventName, (index: number) => {
+		const res = new ShowActionSheetSuccessImpl(index)
 		options.success?.(res)
 		options.complete?.(res)
 	})
-	uni.$on(failEventName, (..._: any) => {
+	uni.$on(failEventName, () => {
 		const res = new ShowActionSheetFailImpl()
 		options.fail?.(res)
 		options.complete?.(res)
@@ -37,6 +37,7 @@ export const showActionSheet2: ShowActionSheet2 = (options: ShowActionSheet2Opti
 export const hideActionSheet2 = () => {
 	const pages = getCurrentPages()
 	const currentPage = pages[pages.length - 1]
+	if(currentPage == null) return
 	const systemDialogPages = currentPage.getDialogPages('systemDialog')
 	systemDialogPages.forEach((page) => {
 		if (page.route == 'uni:actionSheet') {

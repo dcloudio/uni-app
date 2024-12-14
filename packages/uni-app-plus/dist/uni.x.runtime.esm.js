@@ -1866,6 +1866,7 @@ function registerPage(_ref, onCreated) {
   return nativePage2;
 }
 function registerDialogPage(_ref2, dialogPage, onCreated) {
+  var _uniRoutes$find;
   var {
     url,
     path,
@@ -1877,10 +1878,11 @@ function registerDialogPage(_ref2, dialogPage, onCreated) {
   var id2 = genWebviewId();
   var routeOptions = initRouteOptions(path, openType);
   var pageStyle = parsePageStyle(routeOptions);
-  if (!pageStyle.has("navigationStyle")) {
+  var routePageMeta = (_uniRoutes$find = __uniRoutes.find((route2) => route2.path === path)) === null || _uniRoutes$find === void 0 ? void 0 : _uniRoutes$find.meta;
+  if (!(routePageMeta !== null && routePageMeta !== void 0 && routePageMeta.navigationStyle)) {
     pageStyle.set("navigationStyle", "custom");
   }
-  if (!pageStyle.has("backgroundColorContent")) {
+  if (!(routePageMeta !== null && routePageMeta !== void 0 && routePageMeta.backgroundColorContent)) {
     pageStyle.set("backgroundColorContent", "transparent");
   }
   if (typeof pageStyle.get("disableSwipeBack") !== "boolean") {
