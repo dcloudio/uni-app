@@ -133,7 +133,8 @@ export {
 export * from '../../../service/api/context/createCanvasContextAsync'
 export * from './route/openDialogPage'
 export * from './route/closeDialogPage'
-// export * from '@dcloudio/uni-ext-api/uni-actionSheet'
+// @ts-expect-error
+export * from '@dcloudio/uni-ext-api/uni-actionSheet'
 // @ts-expect-error
 export * from '@dcloudio/uni-ext-api/uni-chooseLocation'
 //#endif
