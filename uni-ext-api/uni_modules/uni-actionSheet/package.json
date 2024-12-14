@@ -35,7 +35,9 @@
 		"dependencies": [
 			"uni-framework",
 			"uni-theme",
-			"uni-getSystemInfo"
+			"uni-getSystemInfo",
+			"app-ios:uni-dialogPage",
+      "app-ios:uni-event"
 		],
 		"uni-ext-api": {
 			"uni": {
@@ -44,7 +46,16 @@
 					"app": {
 						"js": false,
 						"kotlin": true,
-						"swift": false,
+						"swift": true,
+						"arkts": false
+					}
+				},
+				"hideActionSheet2": {
+					"name": "hideActionSheet2",
+					"app": {
+						"js": false,
+						"kotlin": true,
+						"swift": true,
 						"arkts": false
 					}
 				}

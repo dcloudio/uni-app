@@ -13,7 +13,7 @@ export const showActionSheet2: ShowActionSheet2 = function (
 ) {
   registerSystemRoute("uni:actionSheet", UniActionSheetPage);
 
-  const uuid = Date.now() + '' + Math.floor(Math.random() * 1e7)
+  const uuid = `${Date.now()}${Math.floor(Math.random() * 1e7)}`
   const baseEventName = `uni_action_sheet_${uuid}`
   const readyEventName = `${baseEventName}_ready`
   const optionsEventName = `${baseEventName}_options`
@@ -23,20 +23,25 @@ export const showActionSheet2: ShowActionSheet2 = function (
     uni.$emit(optionsEventName, JSON.parse(JSON.stringify(options)))
   })
   uni.$on(successEventName, (index: number) => {
-    options.success?.(new ShowActionSheetSuccessImpl(index))
+    const res = new ShowActionSheetSuccessImpl(index)
+    options.success?.(res)
+    options.complete?.(res)
   })
   uni.$on(failEventName, () => {
-    options.fail?.(new ShowActionSheetFailImpl())
+    const res = new ShowActionSheetFailImpl()
+    options.fail?.(res)
+    options.complete?.(res)
   })
   uni.openDialogPage({
     url: `uni:actionSheet?readyEventName=${readyEventName}&optionsEventName=${optionsEventName}&successEventName=${successEventName}&failEventName=${failEventName}`,
     fail(err) {
-      options.fail?.(new ShowActionSheetFailImpl(`showActionSheet failed, ${err.errMsg}`))
+      const res = new ShowActionSheetFailImpl(`showActionSheet failed, ${err.errMsg}`)
+      options.fail?.(res)
+      options.complete?.(res)
       uni.$off(readyEventName, null)
       uni.$off(successEventName, null)
       uni.$off(failEventName, null)
     }
-    // @ts-expect-error
   } as io.dcloud.uniapp.framework.extapi.OpenDialogPageOptions)
 };
 

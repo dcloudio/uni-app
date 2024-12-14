@@ -4954,7 +4954,7 @@ var radioProps = {
     default: ""
   }
 };
-var _style_0$1 = {
+var _style_0$1$1 = {
   "uni-radio": {
     "": {
       flexDirection: "row",
@@ -4984,7 +4984,7 @@ var _style_0$1 = {
     }
   }
 };
-var styleList = _style_0$1;
+var styleList = _style_0$1$1;
 const radio = /* @__PURE__ */ defineBuiltInComponent({
   name: RADIO_NAME,
   rootElement: {
@@ -6083,7 +6083,7 @@ var languageData = {
   }
 };
 var loadingPath = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAAAXNSR0IArs4c6QAAAXdJREFUSEvdVtFthTAMdAKD0E3oABixwWOSvk5SNkCYAcomZRFIZfSoUl6IQ14l2uYXnMtd7uwoOGmpk3AhGpiI3gEgQ8SnmMM/AmwAYPwfwG3bZkmS5IjY7MlIRCLjruuu8zw3VVWN232cUnOBUurFJ6UEfPNADgC1i4AT+Mb4DQC40HmPPmALdEDEZ5dqu+aSwPk7b7iVMQSU67yutsGNMa9lWV590SGiCwCwUrtM13oxTqvRpmkaXCaxD8L/aq0v0gFFxjGNIbRGZBy60dH/zge23GgfflRK1UVRDEcY9X2fG2O4l2/XVzQXxpZ7l4jY6wFgbkB3+629/Xypj0j5E//+bsY8NLTWg2SykKkW3LkstzeIWPtkDplqQcAW6F2smF2appmtgjRYvqXFM+g5h8tYdEWKiD64dvv0CQV3mstqALsNxDePN+CHHwK5byJJLxDJaNFxkoClrP9JYDYfN31vxPaYRzPmO5ReJD65o4GlO5S+fwJ6r+Yfw6D/nQAAAABJRU5ErkJggg==";
-const _sfc_main = {
+const _sfc_main$1 = {
   data() {
     var id1 = "UniMap1_".concat((Math.random() * 1e6).toString(36));
     var id2 = "UniMap2_".concat((Math.random() * 1e6).toString(36));
@@ -6641,7 +6641,7 @@ const _sfc_main = {
     }
   }
 };
-const _style_0 = {
+const _style_0$1 = {
   "uni-choose-location-icons": {
     "": {
       "fontFamily": "UniChooseLocationFontFamily",
@@ -7070,7 +7070,7 @@ const _export_sfc = (sfc, props) => {
   }
   return target;
 };
-var _hoisted_1 = ["id"];
+var _hoisted_1$1 = ["id"];
 var _hoisted_2 = {
   class: "uni-choose-location-icons uni-choose-location-map-target-icon"
 };
@@ -7129,7 +7129,7 @@ var _hoisted_21 = {
   class: "uni-choose-location-poi-search-loading"
 };
 var _hoisted_22 = ["src"];
-function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
+function _sfc_render$1(_ctx, _cache, $props, $setup, $data, $options) {
   var _component_map = resolveComponent("map");
   return openBlock(), createElementBlock("view", {
     class: normalizeClass(["uni-choose-location", $options.uniChooseLocationClassCom])
@@ -7154,7 +7154,7 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
     class: "uni-choose-location-map-target",
     ref: $data.mapTargetId,
     id: $data.mapTargetId
-  }, [createElementVNode("text", _hoisted_2, toDisplayString($data.icon.target), 1)], 8, _hoisted_1), createElementVNode("view", {
+  }, [createElementVNode("text", _hoisted_2, toDisplayString($data.icon.target), 1)], 8, _hoisted_1$1), createElementVNode("view", {
     class: normalizeClass(["uni-choose-location-map-reset", [$options.landscapeClassCom]]),
     onClick: _cache[0] || (_cache[0] = function() {
       return $options.mapReset && $options.mapReset(...arguments);
@@ -7226,8 +7226,429 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
     mode: "widthFix"
   }, null, 10, _hoisted_22)])) : createCommentVNode("", true)], 40, _hoisted_9)], 6)) : createCommentVNode("", true)], 2);
 }
-const UniChooseLocationPage = /* @__PURE__ */ _export_sfc(_sfc_main, [["render", _sfc_render], ["styles", [_style_0]]]);
+const UniChooseLocationPage = /* @__PURE__ */ _export_sfc(_sfc_main$1, [["render", _sfc_render$1], ["styles", [_style_0$1]]]);
+const _sfc_main = {
+  data() {
+    return {
+      show: false,
+      i18nCancelText: {
+        en: "Cancel",
+        es: "Cancelar",
+        fr: "Annuler",
+        "zh-Hans": "取消",
+        "zh-Hant": "取消"
+      },
+      readyEventName: "",
+      optionsEventName: "",
+      successEventName: "",
+      failEventName: "",
+      title: null,
+      itemList: [],
+      optionCancelText: null,
+      titleColor: null,
+      itemColor: null,
+      cancelColor: null,
+      backgroundColor: null,
+      language: "zh-Hans",
+      theme: "light",
+      isLandscape: false
+    };
+  },
+  onLoad(options) {
+    this.readyEventName = options["readyEventName"];
+    this.optionsEventName = options["optionsEventName"];
+    this.successEventName = options["successEventName"];
+    this.failEventName = options["failEventName"];
+    uni.$on(this.optionsEventName, (data) => {
+      this.itemList = data["itemList"];
+      if (data["title"] != null) {
+        this.title = data["title"];
+      }
+      if (data["cancelText"] != null) {
+        this.optionCancelText = data["cancelText"];
+      }
+      if (data["titleColor"] != null) {
+        this.titleColor = data["titleColor"];
+      }
+      if (data["itemColor"] != null) {
+        this.itemColor = data["itemColor"];
+      }
+      if (data["cancelColor"] != null) {
+        this.cancelColor = data["cancelColor"];
+      }
+      if (data["backgroundColor"] != null) {
+        this.backgroundColor = data["backgroundColor"];
+      }
+    });
+    uni.$emit(this.readyEventName, {});
+    var systemInfo = uni.getSystemInfoSync();
+    var osLanguage = systemInfo.osLanguage;
+    var appLanguage = systemInfo.appLanguage;
+    if (appLanguage != null) {
+      this.language = appLanguage;
+    } else if (osLanguage != null) {
+      this.language = osLanguage;
+    }
+    var osTheme = systemInfo.osTheme;
+    var appTheme = systemInfo.appTheme;
+    if (appTheme != null) {
+      this.theme = appTheme;
+    } else if (osTheme != null) {
+      this.theme = osTheme;
+    }
+    this.isLandscape = systemInfo.deviceOrientation == "landscape";
+    uni.onAppThemeChange((res) => {
+      this.theme = res.appTheme;
+    });
+    uni.onOsThemeChange((res) => {
+      this.theme = res.osTheme;
+    });
+  },
+  computed: {
+    cancelText() {
+      if (this.optionCancelText != null) {
+        var res = this.optionCancelText;
+        return res;
+      }
+      if (this.language.startsWith("en")) {
+        return this.i18nCancelText["en"];
+      }
+      if (this.language.startsWith("es")) {
+        return this.i18nCancelText["es"];
+      }
+      if (this.language.startsWith("fr")) {
+        return this.i18nCancelText["fr"];
+      }
+      if (this.language.startsWith("zh-Hans")) {
+        return this.i18nCancelText["zh-Hans"];
+      }
+      if (this.language.startsWith("zh-Hant")) {
+        return this.i18nCancelText["zh-Hant"];
+      }
+      return "取消";
+    }
+  },
+  onReady() {
+    setTimeout(() => {
+      this.show = true;
+    }, 10);
+  },
+  onResize() {
+    var systemInfo = uni.getSystemInfoSync();
+    this.isLandscape = systemInfo.deviceOrientation == "landscape";
+  },
+  onUnload() {
+    uni.$off(this.optionsEventName, null);
+    uni.$off(this.readyEventName, null);
+    uni.$off(this.successEventName, null);
+    uni.$off(this.failEventName, null);
+    __uniappx__nativeEventBus.off(this.optionsEventName, null);
+    __uniappx__nativeEventBus.off(this.readyEventName, null);
+    __uniappx__nativeEventBus.off(this.successEventName, null);
+    __uniappx__nativeEventBus.off(this.failEventName, null);
+  },
+  methods: {
+    closeActionSheet() {
+      this.show = false;
+      setTimeout(() => {
+        uni.closeDialogPage({
+          dialogPage: this.$page
+        });
+      }, 300);
+    },
+    handleMenuItemClick(tapIndex) {
+      this.closeActionSheet();
+      uni.$emit(this.successEventName, tapIndex);
+    },
+    handleCancel() {
+      this.closeActionSheet();
+      uni.$emit(this.failEventName, {});
+    }
+  }
+};
+const _style_0 = {
+  "uni-action-sheet_dialog__mask": {
+    "": {
+      "position": "fixed",
+      "zIndex": 999,
+      "top": 0,
+      "right": 0,
+      "left": 0,
+      "bottom": 0,
+      "opacity": 0,
+      "backgroundColor": "rgba(0,0,0,0.6)",
+      "transitionProperty": "opacity",
+      "transitionDuration": "0.1s"
+    }
+  },
+  "uni-action-sheet_dialog__mask__show": {
+    "": {
+      "opacity": 1
+    }
+  },
+  "uni-action-sheet_dialog__container": {
+    "": {
+      "position": "fixed",
+      "width": "100%",
+      "left": 0,
+      "bottom": 0,
+      "zIndex": 999,
+      "transform": "translate(0, 100%)",
+      "opacity": 0,
+      "transitionProperty": "transform",
+      "transitionDuration": "0.3s",
+      "backgroundColor": "#f7f7f7",
+      "borderTopLeftRadius": 12,
+      "borderTopRightRadius": 12
+    },
+    ".uni-action-sheet_dialog__show": {
+      "opacity": 1,
+      "transform": "translate(0, 0)"
+    },
+    ".uni-action-sheet_dark__mode": {
+      "backgroundColor": "#1D1E1E"
+    },
+    ".uni-action-sheet_landscape__mode": {
+      "width": 300,
+      "position": "fixed",
+      "left": "50%",
+      "right": "auto",
+      "top": "50%",
+      "bottom": "auto",
+      "zIndex": 999,
+      "transform": "translate(-50%, -50%)",
+      "borderTopLeftRadius": 5,
+      "borderTopRightRadius": 5,
+      "borderBottomLeftRadius": 5,
+      "borderBottomRightRadius": 5,
+      "transitionProperty": "opacity",
+      "transitionDuration": "0.3s"
+    }
+  },
+  "uni-action-sheet_dialog__menu": {
+    "": {
+      "borderTopLeftRadius": 12,
+      "borderTopRightRadius": 12,
+      "overflow": "hidden",
+      "backgroundColor": "#ffffff"
+    },
+    ".uni-action-sheet_dark__mode": {
+      "backgroundColor": "#2C2C2B"
+    },
+    ".uni-action-sheet_landscape__mode": {
+      "borderTopLeftRadius": 5,
+      "borderTopRightRadius": 5,
+      "borderBottomLeftRadius": 5,
+      "borderBottomRightRadius": 5,
+      "boxShadow": "0 0 20px 5px rgba(0, 0, 0, 0.3)"
+    }
+  },
+  "uni-action-sheet_dialog__title": {
+    "": {
+      "paddingTop": 16,
+      "paddingRight": 16,
+      "paddingBottom": 16,
+      "paddingLeft": 16,
+      "borderBottomWidth": 1,
+      "borderBottomStyle": "solid",
+      "borderBottomColor": "#e5e5e5"
+    },
+    ".uni-action-sheet_dark__mode": {
+      "borderBottomWidth": 1,
+      "borderBottomStyle": "solid",
+      "borderBottomColor": "#2F3131"
+    },
+    ".uni-action-sheet_landscape__mode": {
+      "paddingTop": 10,
+      "paddingRight": 6,
+      "paddingBottom": 10,
+      "paddingLeft": 6
+    }
+  },
+  "uni-action-sheet_dialog__cell": {
+    "": {
+      "paddingTop": 16,
+      "paddingRight": 16,
+      "paddingBottom": 16,
+      "paddingLeft": 16,
+      "borderTopWidth": 1,
+      "borderTopStyle": "solid",
+      "borderTopColor": "#e5e5e5"
+    },
+    ".uni-action-sheet_dark__mode": {
+      "borderTopWidth": 1,
+      "borderTopStyle": "solid",
+      "borderTopColor": "#2F3131"
+    },
+    ".uni-action-sheet_landscape__mode": {
+      "paddingTop": 10,
+      "paddingRight": 6,
+      "paddingBottom": 10,
+      "paddingLeft": 6
+    }
+  },
+  "uni-action-sheet_dialog__action": {
+    "": {
+      "paddingTop": 16,
+      "paddingRight": 16,
+      "paddingBottom": 16,
+      "paddingLeft": 16,
+      "marginTop": 8,
+      "backgroundColor": "#ffffff"
+    },
+    ".uni-action-sheet_dark__mode": {
+      "backgroundColor": "#2C2C2B"
+    },
+    ".uni-action-sheet_landscape__mode": {
+      "display": "none",
+      "paddingTop": 10,
+      "paddingRight": 6,
+      "paddingBottom": 10,
+      "paddingLeft": 6
+    }
+  },
+  "uni-action-sheet_dialog__title__text": {
+    "": {
+      "lineHeight": 1.4,
+      "textAlign": "center",
+      "whiteSpace": "nowrap",
+      "overflow": "hidden",
+      "textOverflow": "ellipsis",
+      "color": "#666666"
+    },
+    ".uni-action-sheet_dark__mode": {
+      "color": "#999999"
+    }
+  },
+  "uni-action-sheet_dialog__cell__text": {
+    "": {
+      "lineHeight": 1.4,
+      "textAlign": "center",
+      "whiteSpace": "nowrap",
+      "overflow": "hidden",
+      "textOverflow": "ellipsis",
+      "color": "#000000"
+    },
+    ".uni-action-sheet_dark__mode": {
+      "color": "#ffffff"
+    }
+  },
+  "uni-action-sheet_dialog__action__text": {
+    "": {
+      "lineHeight": 1.4,
+      "textAlign": "center",
+      "whiteSpace": "nowrap",
+      "overflow": "hidden",
+      "textOverflow": "ellipsis",
+      "color": "#000000"
+    },
+    ".uni-action-sheet_dark__mode": {
+      "color": "#ffffff"
+    }
+  },
+  "uni-action-sheet_dialog__cell__container": {
+    "": {
+      "maxHeight": 330
+    },
+    ".uni-action-sheet_landscape__mode": {
+      "maxHeight": 260
+    }
+  },
+  "@TRANSITION": {
+    "uni-action-sheet_dialog__mask": {
+      "property": "opacity",
+      "duration": "0.1s"
+    },
+    "uni-action-sheet_dialog__container": {
+      "property": "opacity",
+      "duration": "0.3s"
+    }
+  }
+};
+var _hoisted_1 = ["onClick"];
+function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
+  return openBlock(), createElementBlock("view", null, [createElementVNode("view", {
+    class: normalizeClass(["uni-action-sheet_dialog__mask", {
+      "uni-action-sheet_dialog__mask__show": $data.show
+    }]),
+    onClick: _cache[0] || (_cache[0] = function() {
+      return $options.handleCancel && $options.handleCancel(...arguments);
+    })
+  }, null, 2), createElementVNode("view", {
+    class: normalizeClass(["uni-action-sheet_dialog__container", {
+      "uni-action-sheet_dialog__show": $data.show,
+      "uni-action-sheet_dark__mode": $data.theme == "dark",
+      "uni-action-sheet_landscape__mode": $data.isLandscape
+    }])
+  }, [createElementVNode("view", {
+    style: normalizeStyle($data.backgroundColor != null ? {
+      backgroundColor: $data.backgroundColor
+    } : {}),
+    class: normalizeClass(["uni-action-sheet_dialog__menu", {
+      "uni-action-sheet_dark__mode": $data.theme == "dark",
+      "uni-action-sheet_landscape__mode": $data.isLandscape
+    }])
+  }, [$data.title ? (openBlock(), createElementBlock("view", {
+    key: 0,
+    class: normalizeClass(["uni-action-sheet_dialog__title", {
+      "uni-action-sheet_dark__mode": $data.theme == "dark",
+      "uni-action-sheet_landscape__mode": $data.isLandscape
+    }])
+  }, [createElementVNode("text", {
+    style: normalizeStyle({
+      color: $data.titleColor
+    }),
+    class: normalizeClass(["uni-action-sheet_dialog__title__text", {
+      "uni-action-sheet_dark__mode": $data.theme == "dark"
+    }])
+  }, toDisplayString($data.title), 7)], 2)) : createCommentVNode("", true), createElementVNode("scroll-view", {
+    class: normalizeClass(["uni-action-sheet_dialog__cell__container", {
+      "uni-action-sheet_landscape__mode": $data.isLandscape
+    }])
+  }, [(openBlock(true), createElementBlock(Fragment, null, renderList($data.itemList, (item, index2) => {
+    return openBlock(), createElementBlock("view", {
+      style: normalizeStyle(index2 == 0 ? {
+        borderTop: "none"
+      } : {}),
+      class: normalizeClass(["uni-action-sheet_dialog__cell", {
+        "uni-action-sheet_dark__mode": $data.theme == "dark",
+        "uni-action-sheet_landscape__mode": $data.isLandscape
+      }]),
+      key: index2,
+      onClick: ($event) => $options.handleMenuItemClick(index2)
+    }, [createElementVNode("text", {
+      style: normalizeStyle({
+        color: $data.itemColor
+      }),
+      class: normalizeClass(["uni-action-sheet_dialog__cell__text", {
+        "uni-action-sheet_dark__mode": $data.theme == "dark"
+      }])
+    }, toDisplayString(item), 7)], 14, _hoisted_1);
+  }), 128))], 2)], 6), createElementVNode("view", {
+    style: normalizeStyle($data.backgroundColor != null ? {
+      backgroundColor: $data.backgroundColor
+    } : {}),
+    class: normalizeClass(["uni-action-sheet_dialog__action", {
+      "uni-action-sheet_dark__mode": $data.theme == "dark",
+      "uni-action-sheet_landscape__mode": $data.isLandscape
+    }]),
+    onClick: _cache[1] || (_cache[1] = function() {
+      return $options.handleCancel && $options.handleCancel(...arguments);
+    })
+  }, [createElementVNode("text", {
+    style: normalizeStyle({
+      color: $data.cancelColor
+    }),
+    class: normalizeClass(["uni-action-sheet_dialog__action__text", {
+      "uni-action-sheet_dark__mode": $data.theme == "dark"
+    }])
+  }, toDisplayString($options.cancelText), 7)], 6)], 2)]);
+}
+const UniActionSheetPage = /* @__PURE__ */ _export_sfc(_sfc_main, [["render", _sfc_render], ["styles", [_style_0]]]);
 registerSystemRoute("uni:chooseLocation", UniChooseLocationPage, {
+  disableSwipeBack: false
+});
+registerSystemRoute("uni:actionSheet", UniActionSheetPage, {
   disableSwipeBack: false
 });
 export {

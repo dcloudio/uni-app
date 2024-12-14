@@ -22,18 +22,19 @@ export type Popover2 = {
  * - 4: 框架内部异常
  */
 export type ShowActionSheetErrorCode = 4
-export interface ShowActionSheetSuccess2 extends AsyncApiSuccessResult {
+export interface ShowActionSheetSuccess2 {
+  errMsg: string
   tapIndex: number
 }
-type ShowActionSheetSuccessCallback = (result: ShowActionSheetSuccess2) => void
+type ShowActionSheetSuccessCallback2 = (result: ShowActionSheetSuccess2) => void
 
 export interface ShowActionSheetFail2 extends IUniError {
   errCode: ShowActionSheetErrorCode
 }
-type ShowActionSheetFailCallback = (result: ShowActionSheetFail2) => void
+type ShowActionSheetFailCallback2 = (result: ShowActionSheetFail2) => void
 
-export type ShowActionSheetComplete = AsyncApiResult
-type ShowActionSheetCompleteCallback = (result: ShowActionSheetComplete) => void
+export type ShowActionSheetComplete = any
+type ShowActionSheetCompleteCallback2 = (result: ShowActionSheetComplete) => void
 
 /**
  * uni.showActionSheet函数参数定义
@@ -78,15 +79,15 @@ export type ShowActionSheet2Options = {
   /**
    * 接口调用成功的回调函数
    */
-  success?: ShowActionSheetSuccessCallback | null,
+  success?: ShowActionSheetSuccessCallback2 | null,
   /**
    * 接口调用失败的回调函数
    */
-  fail?: ShowActionSheetFailCallback | null,
+  fail?: ShowActionSheetFailCallback2 | null,
   /**
    * 接口调用结束的回调函数（调用成功、失败都会执行）
    */
-  complete?: ShowActionSheetCompleteCallback | null
+  complete?: ShowActionSheetCompleteCallback2 | null
 };
 
 export type ShowActionSheet2 = (options: ShowActionSheet2Options) => void;
@@ -260,13 +261,10 @@ export interface Uni {
   hideActionSheet(): void;
 }
 
-// @ts-expect-error
-export class ShowActionSheetSuccessImpl extends AsyncApiSuccessResult implements ShowActionSheetSuccess2 {
+export class ShowActionSheetSuccessImpl implements ShowActionSheetSuccess2 {
   tapIndex: number
-  // @ts-expect-error
-  override errMsg: string
+  errMsg: string
   constructor(tapIndex: number, errMsg: string = 'showActionSheet:ok') {
-    super()
     this.errMsg = errMsg
     this.tapIndex = tapIndex
   }
@@ -274,7 +272,8 @@ export class ShowActionSheetSuccessImpl extends AsyncApiSuccessResult implements
 export class ShowActionSheetFailImpl extends UniError implements ShowActionSheetFail2 {
   override errCode: ShowActionSheetErrorCode
   constructor(errMsg: string = 'showActionSheet:fail cancel', errCode: ShowActionSheetErrorCode = 4) {
-    super(errMsg)
+    super()
+    this.errMsg = errMsg
     this.errCode = errCode
   }
 }

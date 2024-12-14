@@ -264,6 +264,12 @@
       uni.$off(this.readyEventName, null)
       uni.$off(this.successEventName, null)
       uni.$off(this.failEventName, null)
+      // #ifdef APP-IOS
+      __uniappx__nativeEventBus.off(this.optionsEventName, null)
+      __uniappx__nativeEventBus.off(this.readyEventName, null)
+      __uniappx__nativeEventBus.off(this.successEventName, null)
+      __uniappx__nativeEventBus.off(this.failEventName, null)
+      // #endif
       // #ifdef WEB
       window.removeEventListener('resize', this.fixSize)
       // #endif
