@@ -14,6 +14,11 @@ registerSystemRoute('uni:chooseLocation', UniChooseLocationPage, {
   disableSwipeBack: false,
 })
 
+import UniActionSheetPage from '@dcloudio/uni-ext-api/uni-actionSheet/pages/actionSheet/actionSheet.vue'
+registerSystemRoute('uni:actionSheet', UniActionSheetPage, {
+  disableSwipeBack: false,
+})
+
 export {
   uni,
   getApp,
