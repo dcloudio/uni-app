@@ -12,3 +12,13 @@ export function setCurrentNormalDialogPage(value: UniDialogPage | null) {
 export function getCurrentNormalDialogPage() {
   return currentNormalDialogPage
 }
+
+let currentSystemDialogPage: UniDialogPage | null = null
+// When open systemDialogPage in App onLaunch, currentPage is null, cannot get current systemDialogPage by current page
+// so this method is temporarily saved for obtaining during setupXPage
+export function setCurrentSystemDialogPage(value: UniDialogPage | null) {
+  currentSystemDialogPage = value
+}
+export function getCurrentSystemDialogPage() {
+  return currentSystemDialogPage
+}

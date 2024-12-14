@@ -13,7 +13,9 @@ import { addCurrentPageWithInitScope } from '../../../service/framework/page/set
 import { getPage$BasePage } from '../../../service/framework/page/getCurrentPages'
 import {
   getCurrentNormalDialogPage,
+  getCurrentSystemDialogPage,
   setCurrentNormalDialogPage,
+  setCurrentSystemDialogPage,
 } from './dialogPage'
 
 export function setupXPage(
@@ -28,10 +30,9 @@ export function setupXPage(
   if (
     (pageInstance as Page.PageInstance['$page']).openType === OPEN_DIALOG_PAGE
   ) {
-    const currentPage = getCurrentPage() as unknown as UniPage
     if ((pagePath as string).startsWith(SYSTEM_DIALOG_PAGE_PATH_STARTER)) {
-      const systemDialogPages = currentPage.vm.$systemDialogPages
-      uniPage = systemDialogPages[systemDialogPages.length - 1]
+      uniPage = getCurrentSystemDialogPage()!
+      setCurrentSystemDialogPage(null)
     } else {
       uniPage = getCurrentNormalDialogPage()!
       setCurrentNormalDialogPage(null)

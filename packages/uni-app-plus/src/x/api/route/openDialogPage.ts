@@ -15,6 +15,7 @@ import {
   homeDialogPages,
   homeSystemDialogPages,
   setCurrentNormalDialogPage,
+  setCurrentSystemDialogPage,
 } from '../../framework/page/dialogPage'
 import { registerDialogPage } from '../../framework/page/register'
 import type { UniDialogPage } from '@dcloudio/uni-app-x/types/page'
@@ -82,6 +83,7 @@ export const openDialogPage = (
         closePreActionSheet(parentPage.vm.$systemDialogPages)
       }
     }
+    setCurrentSystemDialogPage(dialogPage)
   }
   // @ts-expect-error
   const [aniType, aniDuration] = initAnimation(path, animationType)
