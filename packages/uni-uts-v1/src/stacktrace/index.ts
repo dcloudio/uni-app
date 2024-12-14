@@ -62,12 +62,14 @@ export function parseUTSRuntimeStacktrace(
 }
 
 export function parseUTSSyntaxError(error: any, inputDir: string): string {
+  let errorMsg = error
   if (error instanceof Error) {
-    error = error.message
+    errorMsg = error.message
   }
-  let msg = String(error).replace(/\t/g, ' ')
+  let msg = String(errorMsg).replace(/\t/g, ' ')
   let res: RegExpExecArray | null = null
   const syntaxErrorRe = /(,-\[(.*):(\d+):(\d+)\])/g
+  let matched = false
   while ((res = syntaxErrorRe.exec(msg))) {
     const [row, filename, line, column] = res.slice(1)
     msg = msg.replace(
@@ -76,6 +78,10 @@ export function parseUTSSyntaxError(error: any, inputDir: string): string {
         parseInt(line) + 3
       }:${column}`
     )
+    matched = true
+  }
+  if (!matched) {
+    return error
   }
   return msg
 }

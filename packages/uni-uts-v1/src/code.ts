@@ -25,6 +25,7 @@ import type {
   Span,
   TsFnParameter,
   TsInterfaceDeclaration,
+  TsParameterProperty,
   TsType,
   TsTypeAliasDeclaration,
   TsTypeAnnotation,
@@ -1047,11 +1048,12 @@ function isTDotType(pat: BindingIdentifier) {
 
 function resolveFunctionParams(
   types: Types,
-  params: Param[],
+  params: (Param | TsParameterProperty)[],
   resolveTypeReferenceName: ResolveTypeReferenceName
 ) {
   const result: Parameter[] = []
-  params.forEach(({ pat }) => {
+  params.forEach((param) => {
+    let pat = param.type === 'Parameter' ? param.pat : param.param
     if (pat.type === 'Identifier') {
       if (!isTDotType(pat)) {
         // ignore T.Type
@@ -1284,7 +1286,7 @@ function genClassDeclaration(
     if (item.type === 'Constructor') {
       constructor.params = resolveFunctionParams(
         types,
-        item.params as Param[],
+        item.params,
         resolveTypeReferenceName
       )
     } else if (item.type === 'ClassMethod') {
