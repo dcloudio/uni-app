@@ -162,6 +162,9 @@ module.exports = {
         throw new Error('Vue3 项目暂不支持当前小程序')
       }
     }
+    if (process.env.UNI_PLATFORM === 'mp-weixin') {
+      return require.resolve('@dcloudio/uni-' + process.env.UNI_PLATFORM + '/dist/index.common.js')
+    }
     return require.resolve('@dcloudio/uni-' + process.env.UNI_PLATFORM)
   },
   getPlatformVue (vueOptions) {
