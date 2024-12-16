@@ -6190,6 +6190,10 @@ function setUniElementId(id, options, ref, refOpts) {
         }
         const { $uniElementIds } = ins;
         id = toRaw(id);
+        if (!id) {
+            // id 可能为空
+            return id;
+        }
         // 仅保留第一个，其他忽略
         if (!$uniElementIds.has(id)) {
             $uniElementIds.set(id, { name: tagName });
@@ -6221,7 +6225,7 @@ function setUniElementId(id, options, ref, refOpts) {
 }
 function setUniElementStyle(id, style = '') {
     const ins = getCurrentInstance();
-    if (!ins) {
+    if (!ins || !id) {
         return '';
     }
     if (style) {

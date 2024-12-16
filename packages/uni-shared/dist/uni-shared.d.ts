@@ -909,6 +909,8 @@ export declare const VIRTUAL_HOST_CLASS = "virtualHostClass";
 
 export declare const VIRTUAL_HOST_HIDDEN = "virtualHostHidden";
 
+export declare const VIRTUAL_HOST_ID = "virtualHostId";
+
 export declare const VIRTUAL_HOST_STYLE = "virtualHostStyle";
 
 declare interface Vue_2 {
