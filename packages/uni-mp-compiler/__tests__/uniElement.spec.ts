@@ -1,4 +1,12 @@
-import { assert } from './testUtils'
+import { extend } from '@vue/shared'
+import { assert, miniProgram } from './testUtils'
+
+const miniProgramOptions = {
+  ...miniProgram,
+  component: extend({}, miniProgram.component, {
+    mergeVirtualHostAttributes: true,
+  }),
+}
 
 describe('compiler: transform UniElement.style.setProperty', () => {
   test('static id', () => {
@@ -14,6 +22,18 @@ describe('compiler: transform UniElement.style.setProperty', () => {
       }
     )
     assert(
+      `<view id="view"/>`,
+      `<view id="{{a}}" style="{{$eS[a] + ';' + virtualHostStyle}}" class="{{[virtualHostClass]}}" hidden="{{virtualHostHidden}}"/>`,
+      `(_ctx, _cache) => {
+  const __returned__ = { a: _sei(_ctx.virtualHostId !== '' ? _ctx.virtualHostId : 'view', 'view'), b: _s(_ses(_ctx.virtualHostId !== '' ? _ctx.virtualHostId : 'view')) }
+  return __returned__
+}`,
+      {
+        isX: true,
+        miniProgram: miniProgramOptions,
+      }
+    )
+    assert(
       `<custom id="custom"/>`,
       `<custom id="custom" u-i="2a9ec0b0-0" u-p="{{a||''}}"/>`,
       `(_ctx, _cache) => {
@@ -22,6 +42,18 @@ describe('compiler: transform UniElement.style.setProperty', () => {
 }`,
       {
         isX: true,
+      }
+    )
+    assert(
+      `<custom id="custom"/>`,
+      `<custom u-i="2a9ec0b0-0" id="{{a}}" virtualHostId="{{a}}" u-p="{{b||''}}" class="{{[virtualHostClass]}}" virtualHostClass="{{[virtualHostClass]}}" style="{{virtualHostStyle}}" virtualHostStyle="{{virtualHostStyle}}" hidden="{{virtualHostHidden}}" virtualHostHidden="{{virtualHostHidden}}"/>`,
+      `(_ctx, _cache) => {
+  const __returned__ = { a: _ctx.virtualHostId !== '' ? _ctx.virtualHostId : 'custom', b: _p({ id: _ctx.virtualHostId !== '' ? _ctx.virtualHostId : 'custom' }) }
+  return __returned__
+}`,
+      {
+        isX: true,
+        miniProgram: miniProgramOptions,
       }
     )
     assert(
@@ -60,6 +92,18 @@ describe('compiler: transform UniElement.style.setProperty', () => {
       }
     )
     assert(
+      `<view id="view" style="color:red"/>`,
+      `<view id="{{a}}" style="{{'color:red' + ';' + $eS[a] + ';' + virtualHostStyle}}" class="{{[virtualHostClass]}}" hidden="{{virtualHostHidden}}"/>`,
+      `(_ctx, _cache) => {
+  const __returned__ = { a: _sei(_ctx.virtualHostId !== '' ? _ctx.virtualHostId : 'view', 'view'), b: _s(_ses(_ctx.virtualHostId !== '' ? _ctx.virtualHostId : 'view')) }
+  return __returned__
+}`,
+      {
+        isX: true,
+        miniProgram: miniProgramOptions,
+      }
+    )
+    assert(
       `<view id="view" style="color:red" :style="{color:'blue'}"/>`,
       `<view id="view" style="{{'color:red' + ';' + $eS[a]}}"/>`,
       `(_ctx, _cache) => {
@@ -92,6 +136,18 @@ describe('compiler: transform UniElement.style.setProperty', () => {
 }`,
       {
         isX: true,
+      }
+    )
+    assert(
+      `<view :id="viewId"/>`,
+      `<view id="{{a}}" style="{{$eS[a] + ';' + virtualHostStyle}}\" class=\"{{[virtualHostClass]}}\" hidden=\"{{virtualHostHidden}}"/>`,
+      `(_ctx, _cache) => {
+  const __returned__ = { a: _sei(_ctx.virtualHostId !== '' ? _ctx.virtualHostId : _ctx.viewId, 'view'), b: _s(_ses(_ctx.virtualHostId !== '' ? _ctx.virtualHostId : _ctx.viewId)) }
+  return __returned__
+}`,
+      {
+        isX: true,
+        miniProgram: miniProgramOptions,
       }
     )
     assert(

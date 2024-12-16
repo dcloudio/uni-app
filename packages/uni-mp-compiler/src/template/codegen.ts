@@ -3,6 +3,7 @@ import {
   SLOT_DEFAULT_NAME,
   VIRTUAL_HOST_CLASS,
   VIRTUAL_HOST_HIDDEN,
+  VIRTUAL_HOST_ID,
   VIRTUAL_HOST_STYLE,
   dynamicSlotName,
 } from '@dcloudio/uni-shared'
@@ -476,6 +477,7 @@ function checkVirtualHostProps(name: string, virtualHost: boolean): string[] {
       style: VIRTUAL_HOST_STYLE,
       class: VIRTUAL_HOST_CLASS,
       hidden: VIRTUAL_HOST_HIDDEN,
+      id: VIRTUAL_HOST_ID,
     }
     if (name in obj) {
       // TODO 支付宝平台移除原有属性（支付宝小程序自定义组件外部属性始终无效）
