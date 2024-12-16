@@ -491,4 +491,33 @@ describe('uvue-styler: normalize', () => {
       })
     )
   })
+
+  test.only('多次出现 border 不同形式，保证最后一个生效', async () => {
+    const { json } = await objectifierRule(`
+.test {
+		border-left-color: red;
+	}
+
+	.test {
+		width: 100px;
+		height: 100px;
+		border-width: 1px;
+		border-color: blue;
+		/* border-left-color: blue;border-top-color: blue;border-bottom-color: blue;border-right-color: blue; */
+		border-style: solid;
+	}
+`)
+    expect(json).toEqual({
+      test: {
+        '': {
+          borderColor: '#0000FF',
+          borderLeftColor: '#FF0000',
+          borderStyle: 'solid',
+          borderWidth: 1,
+          height: 100,
+          width: 100,
+        },
+      },
+    })
+  })
 })
