@@ -44,6 +44,32 @@
       "ad"
     ]
   },
+  "uni-arrayBufferToBase64": {
+    "uni": {
+      "arrayBufferToBase64": {
+        "name": "arrayBufferToBase64",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": false,
+          "arkts": false
+        }
+      }
+    }
+  },
+  "uni-base64ToArrayBuffer": {
+    "uni": {
+      "base64ToArrayBuffer": {
+        "name": "base64ToArrayBuffer",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": false,
+          "arkts": false
+        }
+      }
+    }
+  },
   "uni-canvas": {
     "uni": {
       "createCanvasContextAsync": {
