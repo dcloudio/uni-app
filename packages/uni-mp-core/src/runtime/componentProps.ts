@@ -3,6 +3,7 @@ import { extend, hasOwn, isArray, isFunction, isPlainObject } from '@vue/shared'
 import {
   VIRTUAL_HOST_CLASS,
   VIRTUAL_HOST_HIDDEN,
+  VIRTUAL_HOST_ID,
   VIRTUAL_HOST_STYLE,
 } from '@dcloudio/uni-shared'
 import type { MPComponentInstance, MPComponentOptions } from './component'
@@ -106,6 +107,10 @@ function initVirtualHostProps(options?: Component.ComponentOptions) {
         value: '',
       }
       properties[VIRTUAL_HOST_HIDDEN] = {
+        type: null,
+        value: '',
+      }
+      properties[VIRTUAL_HOST_ID] = {
         type: null,
         value: '',
       }

@@ -1,6 +1,7 @@
 import {
   EventChannel,
   SLOT_DEFAULT_NAME,
+  VIRTUAL_HOST_ID,
   invokeArrayFns,
 } from '@dcloudio/uni-shared'
 import { capitalize, hasOwn, isArray, isFunction } from '@vue/shared'
@@ -80,7 +81,16 @@ export function initBaseInstance(
   ctx.mpType = options.mpType // @deprecated
   ctx.$mpType = options.mpType
   ctx.$mpPlatform = __PLATFORM__
-  ctx.$scope = options.mpInstance
+  const $scope = (ctx.$scope = options.mpInstance)
+  // mergeVirtualHostAttributes
+  Object.defineProperties(ctx, {
+    // only id
+    [VIRTUAL_HOST_ID]: {
+      get() {
+        return $scope.data[VIRTUAL_HOST_ID]
+      },
+    },
+  })
 
   if (__PLATFORM__ === 'mp-harmony' || __PLATFORM__ === 'quickapp-webview') {
     ctx.$getTriggerEventDetail = getTriggerEventDetail
