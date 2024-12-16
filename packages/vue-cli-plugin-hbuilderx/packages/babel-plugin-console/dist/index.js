@@ -38,7 +38,9 @@ module.exports = function ({
                 value: ` at ${normalizePath(file)}:${path.node.loc.start.line}`
               })
               args.unshift(t.stringLiteral(path.node.callee.property.name))
-              path.replaceWith(t.callExpression(t.identifier(FORMAT_LOG), args))
+              const expr = opts && opts.isUniConsole ? t.memberExpression(t.identifier('uni'), t.identifier(
+                FORMAT_LOG)) : t.identifier(FORMAT_LOG)
+              path.replaceWith(t.callExpression(expr, args))
               // path.node.arguments = [
               //   t.callExpression(
               //     t.identifier(FORMAT_LOG),

@@ -11,7 +11,8 @@ const {
   getPlatformPush,
   getPlatformUniCloud,
   createSource,
-  deleteAsset
+  deleteAsset,
+  getDevUniConsoleCode
 } = require('@dcloudio/uni-cli-shared')
 
 const WebpackUniAppPlugin = require('../../packages/webpack-uni-app-loader/plugin/index')
@@ -186,7 +187,7 @@ module.exports = {
     const pushCode = getPlatformPush()
     const uniCloudCode = getPlatformUniCloud()
 
-    let beforeCode = 'import \'uni-pages\';'
+    let beforeCode = getDevUniConsoleCode() + 'import \'uni-pages\';'
 
     const plugins = [
       new WebpackUniAppPlugin(),

@@ -1,0 +1,24 @@
+{
+  "name": "@dcloudio/uni-console",
+  "version": "3.0.0-alpha-4040120241211001",
+  "description": "uni-app console",
+  "module": "dist/index.esm.js",
+  "files": [
+    "dist",
+    "lib"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dcloudio/uni-app.git",
+    "directory": "packages/uni-console"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "license": "Apache-2.0",
+  "gitHead": "33e807d66e1fe47e2ee08ad9c59247e37b8884da",
+  "devDependencies": {},
+  "dependencies": {
+    "@dcloudio/uni-cli-shared": "workspace:*"
+  }
+}
