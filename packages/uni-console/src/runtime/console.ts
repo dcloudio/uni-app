@@ -44,7 +44,7 @@ export const originalConsole = /*@__PURE__*/ CONSOLE_TYPES.reduce(
   {} as Record<MessageType, typeof console.log>
 )
 
-const atFileRegex = /^at\s+[\w/./-]+:\d+$/
+const atFileRegex = /^\s*at\s+[\w/./-]+:\d+$/
 
 export function rewriteConsole() {
   function wrapConsole(type: MessageType) {
