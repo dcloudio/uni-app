@@ -14,6 +14,20 @@ exports[`static playground uni-app build:app 1`] = `
 ]
 `;
 
+exports[`static playground uni-app build:app-harmony 1`] = `
+[
+  "pages/sub/static/app-harmony/test.json",
+  "pages/sub/static/app/test.json",
+  "pages/sub/static/application/test.json",
+  "static/app-harmony/test.json",
+  "static/app/test.json",
+  "static/application/test.json",
+  "uni_modules/test-static/static/app-harmony/test.json",
+  "uni_modules/test-static/static/app/test.json",
+  "uni_modules/test-static/static/application/test.json",
+]
+`;
+
 exports[`static playground uni-app build:h5 1`] = `
 [
   "pages/sub/static/application/test.json",
@@ -108,6 +122,20 @@ exports[`static playground uni-app dev:app 1`] = `
 ]
 `;
 
+exports[`static playground uni-app dev:app-harmony 1`] = `
+[
+  "pages/sub/static/app-harmony/test.json",
+  "pages/sub/static/app/test.json",
+  "pages/sub/static/application/test.json",
+  "static/app-harmony/test.json",
+  "static/app/test.json",
+  "static/application/test.json",
+  "uni_modules/test-static/static/app-harmony/test.json",
+  "uni_modules/test-static/static/app/test.json",
+  "uni_modules/test-static/static/application/test.json",
+]
+`;
+
 exports[`static playground uni-app dev:mp-alipay 1`] = `
 [
   "pages/sub/static/application/test.json",
@@ -176,10 +204,27 @@ exports[`static playground uni-app dev:mp-weixin 1`] = `
 
 exports[`static playground uni-app-x build:app-android 1`] = `
 [
+  "pages/sub/static/app-android/test.json",
   "pages/sub/static/app/test.json",
   "pages/sub/static/application/test.json",
+  "static/app-android/test.json",
   "static/app/test.json",
   "static/application/test.json",
+  "uni_modules/test-static/static/app-android/test.json",
+  "uni_modules/test-static/static/app/test.json",
+  "uni_modules/test-static/static/application/test.json",
+]
+`;
+
+exports[`static playground uni-app-x build:app-harmony 1`] = `
+[
+  "pages/sub/static/app-harmony/test.json",
+  "pages/sub/static/app/test.json",
+  "pages/sub/static/application/test.json",
+  "static/app-harmony/test.json",
+  "static/app/test.json",
+  "static/application/test.json",
+  "uni_modules/test-static/static/app-harmony/test.json",
   "uni_modules/test-static/static/app/test.json",
   "uni_modules/test-static/static/application/test.json",
 ]
@@ -187,10 +232,13 @@ exports[`static playground uni-app-x build:app-android 1`] = `
 
 exports[`static playground uni-app-x build:app-ios 1`] = `
 [
+  "pages/sub/static/app-ios/test.json",
   "pages/sub/static/app/test.json",
   "pages/sub/static/application/test.json",
+  "static/app-ios/test.json",
   "static/app/test.json",
   "static/application/test.json",
+  "uni_modules/test-static/static/app-ios/test.json",
   "uni_modules/test-static/static/app/test.json",
   "uni_modules/test-static/static/application/test.json",
 ]
@@ -212,10 +260,27 @@ exports[`static playground uni-app-x build:h5 1`] = `
 
 exports[`static playground uni-app-x dev:app-android 1`] = `
 [
+  "pages/sub/static/app-android/test.json",
   "pages/sub/static/app/test.json",
   "pages/sub/static/application/test.json",
+  "static/app-android/test.json",
   "static/app/test.json",
   "static/application/test.json",
+  "uni_modules/test-static/static/app-android/test.json",
+  "uni_modules/test-static/static/app/test.json",
+  "uni_modules/test-static/static/application/test.json",
+]
+`;
+
+exports[`static playground uni-app-x dev:app-harmony 1`] = `
+[
+  "pages/sub/static/app-harmony/test.json",
+  "pages/sub/static/app/test.json",
+  "pages/sub/static/application/test.json",
+  "static/app-harmony/test.json",
+  "static/app/test.json",
+  "static/application/test.json",
+  "uni_modules/test-static/static/app-harmony/test.json",
   "uni_modules/test-static/static/app/test.json",
   "uni_modules/test-static/static/application/test.json",
 ]
@@ -223,10 +288,13 @@ exports[`static playground uni-app-x dev:app-android 1`] = `
 
 exports[`static playground uni-app-x dev:app-ios 1`] = `
 [
+  "pages/sub/static/app-ios/test.json",
   "pages/sub/static/app/test.json",
   "pages/sub/static/application/test.json",
+  "static/app-ios/test.json",
   "static/app/test.json",
   "static/application/test.json",
+  "uni_modules/test-static/static/app-ios/test.json",
   "uni_modules/test-static/static/app/test.json",
   "uni_modules/test-static/static/application/test.json",
 ]
