@@ -137,6 +137,7 @@ export const UVUE_BUILT_IN_TAGS = [
   'nested-scroll-body',
   'waterflow',
   'flow-item',
+  'share-element',
 ]
 
 export const UVUE_WEB_BUILT_IN_TAGS = [
