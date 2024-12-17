@@ -1,6 +1,6 @@
 {
   "name": "@dcloudio/uni-h5",
-  "version": "3.0.0-alpha-4040120241211001",
+  "version": "3.0.0-alpha-4040220241217001",
   "description": "@dcloudio/uni-h5",
   "main": "./dist/uni-h5.cjs.js",
   "module": "./dist/uni-h5.es.js",
