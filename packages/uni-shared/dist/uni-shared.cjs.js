@@ -135,6 +135,7 @@ const UVUE_BUILT_IN_TAGS = [
     'nested-scroll-body',
     'waterflow',
     'flow-item',
+    'share-element',
 ];
 const UVUE_WEB_BUILT_IN_TAGS = [
     'list-view',
@@ -371,6 +372,7 @@ const ON_WXS_INVOKE_CALL_METHOD = 'onWxsInvokeCallMethod';
 const VIRTUAL_HOST_STYLE = 'virtualHostStyle';
 const VIRTUAL_HOST_CLASS = 'virtualHostClass';
 const VIRTUAL_HOST_HIDDEN = 'virtualHostHidden';
+const VIRTUAL_HOST_ID = 'virtualHostId';
 
 function cache(fn) {
     const cache = Object.create(null);
@@ -1806,6 +1808,7 @@ exports.UniTextAreaElement = UniTextAreaElement;
 exports.UniTextNode = UniTextNode;
 exports.VIRTUAL_HOST_CLASS = VIRTUAL_HOST_CLASS;
 exports.VIRTUAL_HOST_HIDDEN = VIRTUAL_HOST_HIDDEN;
+exports.VIRTUAL_HOST_ID = VIRTUAL_HOST_ID;
 exports.VIRTUAL_HOST_STYLE = VIRTUAL_HOST_STYLE;
 exports.WEB_INVOKE_APPSERVICE = WEB_INVOKE_APPSERVICE;
 exports.WXS_MODULES = WXS_MODULES;

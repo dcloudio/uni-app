@@ -1300,6 +1300,148 @@ interface ArrayConstructor {
      }
    */
   isArray(arg : any) : arg is any[]
+
+  /**
+     Array.of() 静态方法通过可变数量的参数创建一个新的 Array 实例，而不考虑参数的数量或类型
+     @param items 用于创建数组的元素。
+     @return 新的 Array 实例。
+     @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/Array.html#of
+     @uniPlatform {
+        "app": {
+            "android": {
+               "osVer": "5.0",
+               "uniVer": "x",
+               "unixVer": "4.41",
+               "uniUtsPlugin": "4.41",
+               "unixUtsPlugin": "4.41"
+            },
+            "ios": {
+               "osVer": "12.0",
+               "uniVer": "√",
+                "unixVer": "4.11"
+            }
+        },
+        "web": {
+            "uniVer": "√",
+            "unixVer": "4.0"
+        }
+     }
+   */
+  of<T>(...items: T[]) : T[]
+
+
+  /**
+   * Array.from() 静态方法从可迭代或类数组对象创建一个新的浅拷贝的数组实例。
+      @param arrayLike 想要转换成数组的类数组或可迭代对象。
+      @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/Array.html#from
+      @uniPlatform {
+        "app": {
+            "android": {
+               "osVer": "5.0",
+               "uniVer": "x",
+               "unixVer": "4.41",
+               "uniUtsPlugin": "4.41",
+               "unixUtsPlugin": "4.41"
+            },
+            "ios": {
+               "osVer": "12.0",
+               "uniVer": "√",
+               "unixVer": "4.11"
+            }
+        },
+        "web": {
+            "uniVer": "√",
+            "unixVer": "4.0"
+        }
+      }
+   */
+  from<T>(arrayLike: ArrayLike<T>): T[];
+
+  /**
+   * Array.from() 静态方法从可迭代或类数组对象创建一个新的浅拷贝的数组实例。
+   * @param arrayLike 想要转换成数组的类数组或可迭代对象。
+   * @param mapfn 调用数组每个元素的函数。如果提供，每个将要添加到数组中的值首先会传递给该函数，然后将 mapFn 的返回值增加到数组中。使用以下参数调用该函数：element 数组当前正在处理的元素。index 数组当前正在处理的元素的索引。
+    @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/Array.html#from
+    @uniPlatform {
+        "app": {
+            "android": {
+               "osVer": "5.0",
+               "uniVer": "x",
+               "unixVer": "4.41",
+               "uniUtsPlugin": "4.41",
+               "unixUtsPlugin": "4.41"
+            },
+            "ios": {
+               "osVer": "12.0",
+               "uniVer": "√",
+               "unixVer": "4.11"
+            }
+        },
+        "web": {
+            "uniVer": "√",
+            "unixVer": "4.0"
+        }
+      }
+   */
+  from<T, U>(arrayLike: ArrayLike<T>, mapfn: (v: T, k: number) => U): U[];
+
+  /**
+   * Array.fromAsync() 静态方法可以由一个异步可迭代对象、可迭代对象或类数组对象创建一个新的、浅拷贝的 Array 实例。
+   * @param arrayLike An array-like object to convert to an array.
+      @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/Array.html#fromAsync
+      @uniPlatform {
+        "app": {
+            "android": {
+               "osVer": "5.0",
+               "uniVer": "x",
+               "unixVer": "4.41",
+               "uniUtsPlugin": "4.41",
+               "unixUtsPlugin": "4.41"
+            },
+            "ios": {
+               "osVer": "12.0",
+               "uniVer": "√",
+               "unixVer": "4.11"
+            }
+        },
+        "web": {
+            "uniVer": "√",
+            "unixVer": "4.0"
+        }
+      }
+   */
+  fromAsync<T>(arrayLike: ArrayLike<T>): T[];
+
+  /**
+   * Array.fromAsync() 静态方法可以由一个异步可迭代对象、可迭代对象或类数组对象创建一个新的、浅拷贝的 Array 实例。
+   * @param arrayLike 要转换为数组的异步可迭代、可迭代或类数组对象。
+   * @param mapfn 为数组中的每个元素执行的函数。如果提供了该函数，则每个要添加到数组中的值都会先通过该函数处理，mapFn 的返回值将代替该值被添加到数组中（在等待兑现后）。该函数被调用时将传入以下参数：element 数组当前正在处理的元素。index 数组当前正在处理的元素的索引。
+    @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/Array.html#fromAsync
+    @uniPlatform {
+      "app": {
+          "android": {
+             "osVer": "5.0",
+             "uniVer": "x",
+             "unixVer": "4.41",
+             "uniUtsPlugin": "4.41",
+             "unixUtsPlugin": "4.41"
+          },
+          "ios": {
+             "osVer": "12.0",
+             "uniVer": "√",
+             "unixVer": "4.11"
+          }
+      },
+      "web": {
+          "uniVer": "√",
+          "unixVer": "4.0"
+      }
+    }
+   */
+  fromAsync<T, U>(arrayLike: ArrayLike<T>, mapfn: (v: T, k: number) => U): U[];
+
+
+
   readonly prototype : any[]
 }
 

@@ -23,7 +23,7 @@ const originalConsole = /*@__PURE__*/ CONSOLE_TYPES.reduce((methods, type) => {
     methods[type] = console[type].bind(console);
     return methods;
 }, {});
-const atFileRegex = /^at\s+[\w/./-]+:\d+$/;
+const atFileRegex = /^\s*at\s+[\w/./-]+:\d+$/;
 function rewriteConsole() {
     function wrapConsole(type) {
         return function (...args) {

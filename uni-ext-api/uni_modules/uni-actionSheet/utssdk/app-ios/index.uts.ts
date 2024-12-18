@@ -9,7 +9,7 @@ export const showActionSheet2: ShowActionSheet2 = (options: ShowActionSheet2Opti
 	const successEventName = `${baseEventName}_success`
 	const failEventName = `${baseEventName}_fail`
 	uni.$on(readyEventName, () => {
-		uni.$emit(optionsEventName, options)
+		uni.$emit(optionsEventName, JSON.parse(JSON.stringify(options)!))
 	})
 	uni.$on(successEventName, (index: number) => {
 		const res = new ShowActionSheetSuccessImpl(index)

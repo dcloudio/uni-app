@@ -29,7 +29,6 @@
       </view>
       <scroll-view :id="scrollId" :ref="scrollId" :scroll-with-animation="false" direction="vertical" :scroll-top="scrollTop" :lower-threshold="50" @scrolltolower="scrolltolower"
         class="uni-choose-location-poi-list">
-				<text>{{ JSON.stringify(safeArea) }}</text>
         <view class="uni-choose-location-poi-search-error" v-if="errMsg != ''">
           <text class="uni-choose-location-poi-search-error-text">{{ errMsg }}</text>
         </view>
@@ -53,9 +52,6 @@
           <image :src="loadingPath" class="uni-choose-location-poi-search-loading-image" mode="widthFix" :class="[searchLoadingAnimation ? 'uni-choose-location-poi-search-loading-start' : '']"></image>
         </view>
       </scroll-view>
-      <!-- #ifdef APP-ANDROID -->
-      <view v-if="safeArea.bottom > 0" :style="'height: ' + safeArea.bottom + 'px;'"> </view>
-      <!-- #endif -->
     </view>
   </view>
 </template>
@@ -218,7 +214,7 @@
       this.getLocation();
     },
     onReady() {
-      this.getSafeAreaInsets()
+      this.getSafeAreaInsets();
     },
     onUnload() {
       uni.$off(this.optionsEventName, null);
@@ -510,6 +506,11 @@
         this.safeArea.bottom = info.safeAreaInsets.bottom;
         this.safeArea.left = info.safeAreaInsets.left;
         this.safeArea.right = info.safeAreaInsets.right;
+        // #ifdef APP-ANDROID
+        this.$page.setPageStyle({
+          "androidThreeButtonNavigationTranslucent": false
+        });
+        // #endif
       },
       getSystemInfo() {
         const info = uni.getWindowInfo();
@@ -540,6 +541,12 @@
         // #endif
         // #ifdef APP
         this.isLandscape = systemInfo.deviceOrientation == 'landscape';
+        // #endif
+        // #ifdef APP-ANDROID
+        this.$page.setPageStyle({
+          "androidThreeButtonNavigationTranslucent": false,
+          "backgroundColorContent": this.theme == "dark" ? "#181818" : "#ffffff",
+        });
         // #endif
       },
       getMapContext() : MapContext | null {

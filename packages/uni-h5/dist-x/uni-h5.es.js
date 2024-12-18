@@ -17590,10 +17590,10 @@ const showActionSheet2 = (options) => {
 };
 const hideActionSheet2 = () => {
   var _a;
-  const page = getCurrentPage();
-  if (!page)
+  const currentPage = getCurrentPage();
+  if (!currentPage)
     return;
-  const systemDialogPages = (_a = page.vm.$pageLayoutInstance) == null ? void 0 : _a.$systemDialogPages.value;
+  const systemDialogPages = (_a = currentPage.vm.$pageLayoutInstance) == null ? void 0 : _a.$systemDialogPages.value;
   for (let i = 0; i < systemDialogPages.length; i++) {
     if (isSystemActionSheetDialogPage(systemDialogPages[i])) {
       systemDialogPages.splice(i, 1);
@@ -18683,12 +18683,6 @@ function _sfc_render$1(_ctx, _cache, $props, $setup, $data, $options) {
             class: "uni-choose-location-poi-list"
           }, {
             default: withCtx(() => [
-              createVNode(_component_text, null, {
-                default: withCtx(() => [
-                  createTextVNode(toDisplayString(JSON.stringify($data.safeArea)), 1)
-                ]),
-                _: 1
-              }),
               $data.errMsg != "" ? (openBlock(), createBlock(_component_view, {
                 key: 0,
                 class: "uni-choose-location-poi-search-error"
