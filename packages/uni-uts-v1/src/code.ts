@@ -42,6 +42,7 @@ import {
 } from './utils'
 import { normalizePath } from './shared'
 import { parseUTSSyntaxError } from './stacktrace'
+import type { SyncUniModulesFilePreprocessor } from './uni_modules'
 
 const IOS_HOOK_CLASS = 'UTSiOSHookProxy'
 const ANDROID_HOOK_CLASS = 'UTSAndroidHookProxy'
@@ -67,6 +68,7 @@ type Types = {
   class: Record<string, ClassMeta>
   fn: Record<string, Param[]>
   alias: Record<string, {}>
+  uni?: string[]
 }
 
 interface Meta {
@@ -78,8 +80,25 @@ interface Meta {
       params?: Parameter[]
     }
   >
-  types: Record<string, 'function' | 'class' | 'interface' | 'typealias'>
+  types: Record<
+    string,
+    'function' | 'class' | 'interface' | 'typealias' | string[]
+  >
   components: string[]
+  android?: {
+    typeParams: string[]
+    types: Record<
+      string,
+      'function' | 'class' | 'interface' | 'typealias' | string[]
+    >
+  }
+  ios?: {
+    typeParams: string[]
+    types: Record<
+      string,
+      'function' | 'class' | 'interface' | 'typealias' | string[]
+    >
+  }
 }
 export interface GenProxyCodeOptions {
   is_uni_modules: boolean
@@ -99,6 +118,8 @@ export interface GenProxyCodeOptions {
   isExtApi?: boolean
   androidHookClass?: string
   iOSHookClass?: string
+  androidPreprocessor?: SyncUniModulesFilePreprocessor
+  iosPreprocessor?: SyncUniModulesFilePreprocessor
 }
 
 export async function genProxyCode(
@@ -113,6 +134,31 @@ export async function genProxyCode(
   options.types = await parseInterfaceTypes(module, options)
   options.meta!.types = parseMetaTypes(options.types)
   options.meta!.typeParams = parseTypeParams(options.types)
+
+  if (options.androidPreprocessor) {
+    // 内置 ext-api 需要分平台解析interface
+    const androidTypes = await parseInterfaceTypes(
+      module,
+      options,
+      options.androidPreprocessor
+    )
+    options.meta!.android = {
+      typeParams: parseTypeParams(androidTypes),
+      types: parseMetaTypes(androidTypes),
+    }
+  }
+  if (options.iosPreprocessor) {
+    const iosTypes = await parseInterfaceTypes(
+      module,
+      options,
+      options.iosPreprocessor
+    )
+    options.meta!.ios = {
+      typeParams: parseTypeParams(iosTypes),
+      types: parseMetaTypes(iosTypes),
+    }
+  }
+
   const components = new Set<string>()
   // 自动补充 VideoElement 导出
   if (options.androidComponents) {
@@ -191,7 +237,9 @@ function normalizeInterfaceKeepAlive(decls: ProxyDecl[], types: Types) {
 }
 
 function parseMetaTypes(types: Types) {
-  let res: Meta['types'] = {}
+  let res: Meta['types'] = {
+    uni: types.uni || [],
+  }
   Object.keys(types.class).forEach((n) => {
     res[n] = 'class'
   })
@@ -427,7 +475,8 @@ function genModuleCode(
  */
 async function parseInterfaceTypes(
   module: string,
-  options: GenProxyCodeOptions
+  options: GenProxyCodeOptions,
+  preprocessor?: SyncUniModulesFilePreprocessor
 ): Promise<Types> {
   const interfaceFilename = resolveRootInterface(module, options)
 
@@ -437,6 +486,7 @@ async function parseInterfaceTypes(
       class: {},
       fn: {},
       alias: {},
+      uni: [],
     }
   }
   // 懒加载 uts 编译器
@@ -444,10 +494,14 @@ async function parseInterfaceTypes(
   const { parse } = require('@dcloudio/uts')
   let ast: Module | null = null
   try {
-    ast = await parse(fs.readFileSync(interfaceFilename, 'utf8'), {
-      filename: relative(interfaceFilename, options.inputDir!),
-      noColor: !isColorSupported(),
-    })
+    const code = fs.readFileSync(interfaceFilename, 'utf8')
+    ast = await parse(
+      preprocessor ? await preprocessor(code, interfaceFilename) : code,
+      {
+        filename: relative(interfaceFilename, options.inputDir!),
+        noColor: !isColorSupported(),
+      }
+    )
   } catch (e) {
     console.error(parseUTSSyntaxError(e, options.inputDir!))
   }
@@ -459,6 +513,7 @@ function parseAstTypes(ast: Module | null, isInterface: boolean) {
   const classTypes: Types['class'] = {}
   const fnTypes: Types['fn'] = {}
   const aliasTypes: Types['alias'] = {}
+  const uniMethods: string[] = []
 
   const exportNamed: string[] = []
   if (ast) {
@@ -489,6 +544,21 @@ function parseAstTypes(ast: Module | null, isInterface: boolean) {
             returned: false,
             decl: node.declaration,
           }
+          if (node.declaration.id.value === 'Uni') {
+            node.declaration.body.body.forEach((item) => {
+              if (
+                item.type === 'TsMethodSignature' &&
+                item.key.type === 'Identifier'
+              ) {
+                uniMethods.push(item.key.value)
+              } else if (
+                item.type === 'TsPropertySignature' &&
+                item.key.type === 'Identifier'
+              ) {
+                uniMethods.push(item.key.value)
+              }
+            })
+          }
         } else if (node.declaration.type === 'ClassDeclaration') {
           classTypes[node.declaration.identifier.value] = {
             interfaces: parseImplements(node.declaration),
@@ -517,6 +587,7 @@ function parseAstTypes(ast: Module | null, isInterface: boolean) {
     class: classTypes,
     fn: fnTypes,
     alias: aliasTypes,
+    uni: uniMethods,
   }
 }
 
