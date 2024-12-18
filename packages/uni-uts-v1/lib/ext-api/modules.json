@@ -612,8 +612,8 @@
         "name": "chooseMedia",
         "app": {
           "js": false,
-          "kotlin": false,
-          "swift": false,
+          "kotlin": true,
+          "swift": true,
           "arkts": true
         }
       }
