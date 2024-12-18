@@ -946,158 +946,19 @@ var getSystemInfo = {
   }
 };
 
-const oName = 'getUserInfo';
-const nName = 'getUserProfile';
-
-var getUserProfile = {
-  name: has.canIUse(nName) ? nName : oName
-};
-
-// 不支持的 API 列表
-const todos = [
-  'preloadPage',
-  'unPreloadPage',
-  'loadSubPackage'
-  // 'createCameraContext',
-  // 'createLivePlayerContext',
-  // 'getSavedFileInfo',
-  // 'createMapContext',
-  // 'onMemoryWarning',
-  // 'onGyroscopeChange',
-  // 'startGyroscope',
-  // 'stopGyroscope',
-  // 'setScreenBrightness',
-  // 'getScreenBrightness',
-  // 'addPhoneContact',
-  // 'openBluetoothAdapter',
-  // 'startBluetoothDevicesDiscovery',
-  // 'onBluetoothDeviceFound',
-  // 'stopBluetoothDevicesDiscovery',
-  // 'onBluetoothAdapterStateChange',
-  // 'getConnectedBluetoothDevices',
-  // 'getBluetoothDevices',
-  // 'getBluetoothAdapterState',
-  // 'closeBluetoothAdapter',
-  // 'writeBLECharacteristicValue',
-  // 'readBLECharacteristicValue',
-  // 'onBLEConnectionStateChange',
-  // 'onBLECharacteristicValueChange',
-  // 'notifyBLECharacteristicValueChange',
-  // 'getBLEDeviceServices',
-  // 'getBLEDeviceCharacteristics',
-  // 'createBLEConnection',
-  // 'closeBLEConnection',
-  // 'onBeaconServiceChange',
-  // 'onBeaconUpdate',
-  // 'getBeacons',
-  // 'startBeaconDiscovery',
-  // 'stopBeaconDiscovery',
-  // 'showNavigationBarLoading',
-  // 'hideNavigationBarLoading',
-  // 'setTabBarItem',
-  // 'setTabBarStyle',
-  // 'hideTabBar',
-  // 'showTabBar',
-  // 'setTabBarBadge',
-  // 'removeTabBarBadge',
-  // 'showTabBarRedDot',
-  // 'hideTabBarRedDot',
-  // 'setBackgroundColor',
-  // 'setBackgroundTextStyle',
-  // 'chooseInvoiceTitle',
-  // 'addTemplate',
-  // 'deleteTemplate',
-  // 'getTemplateLibraryById',
-  // 'getTemplateLibraryList',
-  // 'getTemplateList',
-  // 'sendTemplateMessage',
-  // 'setEnableDebug',
-  // 'onWindowResize',
-  // 'offWindowResize',
-  // 'createOffscreenCanvas',
-  // 'vibrate'
-];
-
-// 存在兼容性的 API 列表
-// 头条小程序自1.35.0+支持canIUses
-const canIUses = [
-  // 'createIntersectionObserver',
-  // 'getSavedFileList',
-  // 'removeSavedFile',
-  // 'hideKeyboard',
-  // 'getImageInfo',
-  // 'createVideoContext',
-  // 'onSocketOpen',
-  // 'onSocketError',
-  // 'sendSocketMessage',
-  // 'onSocketMessage',
-  // 'closeSocket',
-  // 'onSocketClose',
-  // 'getExtConfig',
-  // 'getExtConfigSync',
-  // 'navigateToMiniProgram',
-  // 'navigateBackMiniProgram',
-  // 'compressImage',
-  // 'chooseLocation',
-  // 'openDocument',
-  // 'onUserCaptureScreen',
-  // 'getBackgroundAudioManager',
-  // 'setNavigationBarColor',
-];
-
-// 需要做转换的 API 列表
 const protocols = {
   navigateTo: navigateTo(),
   redirectTo,
   previewImage,
   getSystemInfo,
-  getSystemInfoSync: getSystemInfo,
-  getUserProfile,
-  connectSocket: {
-    args: {
-      method: false
-    }
-  },
-  chooseVideo: {
-    args: {
-      camera: false
-    }
-  },
-  scanCode: {
-    args: {
-      onlyFromCamera: false,
-      scanType: false
-    }
-  },
-  startAccelerometer: {
-    args: {
-      interval: false
-    }
-  },
-  login: {
-    args: {
-      scopes: false,
-      timeout: false
-    }
-  },
-  getUserInfo: {
-    args: {
-      lang: false,
-      timeout: false
-    }
-  },
-  requestPayment: {
-    name: tt.pay ? 'pay' : 'requestPayment',
-    args: {
-      orderInfo: tt.pay ? 'orderInfo' : 'data'
-    }
-  },
-  getFileInfo: {
-    args: {
-      digestAlgorithm: false
-    }
-  }
+  getSystemInfoSync: getSystemInfo
 };
+const todos = [
+  'preloadPage',
+  'unPreloadPage',
+  'loadSubPackage'
+];
+const canIUses = [];
 
 const CALLBACKS = ['success', 'fail', 'cancel', 'complete'];
 
@@ -1213,12 +1074,20 @@ TODOS.forEach(function (name) {
   todoApis[name] = createTodoApi(name);
 });
 
-var providers = {
+const providers = {
   oauth: ['huawei'],
   share: ['huawei'],
   payment: ['huawei'],
   push: ['huawei']
 };
+
+if (has.canIUse('getAccountProvider')) {
+  providers.oauth.push(has.getAccountProvider());
+}
+
+if (has.canIUse('getVendorPaymentProvider')) {
+  providers.payment.push(has.getVendorPaymentProvider());
+}
 
 function getProvider ({
   service,
@@ -1282,98 +1151,6 @@ var eventApi = /*#__PURE__*/Object.freeze({
   $once: $once,
   $emit: $emit
 });
-
-function createMediaQueryObserver () {
-  const mediaQueryObserver = {};
-  const {
-    windowWidth,
-    windowHeight
-  } = has.getSystemInfoSync();
-
-  const orientation = windowWidth < windowHeight ? 'portrait' : 'landscape';
-
-  mediaQueryObserver.observe = (options, callback) => {
-    let matches = true;
-    for (const item in options) {
-      const itemValue = item === 'orientation' ? options[item] : Number(options[item]);
-      if (options[item] !== '') {
-        if (item === 'width') {
-          if (itemValue === windowWidth) {
-            matches = true;
-          } else {
-            matches = false;
-            callback(matches);
-            return matches
-          }
-        }
-        if (item === 'minWidth') {
-          if (windowWidth >= itemValue) {
-            matches = true;
-          } else {
-            matches = false;
-            callback(matches);
-            return matches
-          }
-        }
-        if (item === 'maxWidth') {
-          if (windowWidth <= itemValue) {
-            matches = true;
-          } else {
-            matches = false;
-            callback(matches);
-            return matches
-          }
-        }
-
-        if (item === 'height') {
-          if (itemValue === windowHeight) {
-            matches = true;
-          } else {
-            matches = false;
-            callback(matches);
-            return matches
-          }
-        }
-        if (item === 'minHeight') {
-          if (windowHeight >= itemValue) {
-            matches = true;
-          } else {
-            matches = false;
-            callback(matches);
-            return matches
-          }
-        }
-        if (item === 'maxHeight') {
-          if (windowHeight <= itemValue) {
-            matches = true;
-          } else {
-            matches = false;
-            callback(matches);
-            return matches
-          }
-        }
-
-        if (item === 'orientation') {
-          if (options[item] === orientation) {
-            matches = true;
-          } else {
-            matches = false;
-            callback(matches);
-            return matches
-          }
-        }
-      }
-    }
-    callback(matches);
-
-    return matches
-  };
-
-  mediaQueryObserver.disconnect = () => {
-  };
-
-  return mediaQueryObserver
-}
 
 /**
  * 框架内 try-catch
@@ -1518,7 +1295,6 @@ const offPushMessage = (fn) => {
 
 var api = /*#__PURE__*/Object.freeze({
   __proto__: null,
-  createMediaQueryObserver: createMediaQueryObserver,
   getPushClientId: getPushClientId,
   onPushMessage: onPushMessage,
   offPushMessage: offPushMessage,
@@ -2368,47 +2144,24 @@ function parseBaseApp (vm, {
   return appOptions
 }
 
-const mocks = ['__route__', '__webviewId__', '__nodeid__', '__nodeId__'];
+const mocks = ['nodeId', 'componentName', '_componentId', 'uniquePrefix'];
 
 function isPage () {
-  return this.__nodeid__ === 0 || this.__nodeId__ === 0
-}
-
-function initRefs$1 (vm) {
-  const mpInstance = vm.$scope;
-  /* eslint-disable no-undef */
-  const [majorVersion = '', minorVersion = ''] = tt.getSystemInfoSync().SDKVersion.split('.');
-  if (parseInt(majorVersion) > 1 || parseInt(minorVersion) > 16) {
-    initRefs(vm);
-  } else {
-    mpInstance.selectAllComponents('.vue-ref', (components) => {
-      components.forEach(component => {
-        const ref = component.dataset.ref;
-        vm.$refs[ref] = component.$vm || toSkip(component);
-      });
-    });
-    mpInstance.selectAllComponents('.vue-ref-in-for', (forComponents) => {
-      forComponents.forEach(component => {
-        const ref = component.dataset.ref;
-        if (!vm.$refs[ref]) {
-          vm.$refs[ref] = [];
-        }
-        vm.$refs[ref].push(component.$vm || toSkip(component));
-      });
-    });
-  }
+  // 百度小程序组件的id，某些情况下可能是number类型的0，不能直接return !this.ownerId 判断当前组件是否是Page
+  // 否则会导致mounted不执行
+  // 基础库 3.290.33 及以上 ownerId 为 null
+  return typeof this.ownerId === 'undefined' || this.ownerId === null
 }
 
 const instances = Object.create(null);
-const components = Object.create(null);
 
 function initRelation ({
   vuePid,
   mpInstance
 }) {
-  // 头条 triggerEvent 后，接收事件时机特别晚，已经到了 ready 之后
-  const nodeId = (mpInstance.__nodeId__ || mpInstance.__nodeid__) + '';
-  const webviewId = mpInstance.__webviewId__ + '';
+  // triggerEvent 后，接收事件时机特别晚，已经到了 ready 之后
+  const nodeId = mpInstance.nodeId + '';
+  const webviewId = mpInstance.pageinstance.__pageId__ + '';
 
   instances[webviewId + '_' + nodeId] = mpInstance.$vm;
 
@@ -2421,7 +2174,6 @@ function initRelation ({
 
 function handleLink$1 ({
   detail: {
-    vuePid,
     nodeId,
     webviewId
   }
@@ -2430,13 +2182,7 @@ function handleLink$1 ({
   if (!vm) {
     return
   }
-
-  let parentVm;
-
-  if (vuePid) {
-    parentVm = findVmByVueId(this.$vm, vuePid);
-  }
-
+  let parentVm = instances[webviewId + '_' + vm.$scope.ownerId];
   if (!parentVm) {
     parentVm = this.$vm;
   }
@@ -2445,29 +2191,37 @@ function handleLink$1 ({
   vm.$root = parentVm.$root;
   parentVm.$children.push(vm);
 
-  vm.__call_hook('created');
-  vm.__call_hook('beforeMount');
-  vm._isMounted = true;
-  vm.__call_hook('mounted');
-  vm.__call_hook('onReady');
+  const createdVm = function () {
+    vm.__call_hook('created');
+  };
+  const mountedVm = function () {
+    // 处理当前 vm 子
+    if (vm._$childVues) {
+      vm._$childVues.forEach(([createdVm]) => createdVm());
+      vm._$childVues.forEach(([, mountedVm]) => mountedVm());
+      delete vm._$childVues;
+    }
+    vm.__call_hook('beforeMount');
+    vm._isMounted = true;
+    vm.__call_hook('mounted');
+    vm.__call_hook('onReady');
+  };
+  // 当 parentVm 已经 mounted 时，直接触发，否则延迟
+  if (!parentVm || parentVm._isMounted) {
+    createdVm();
+    mountedVm();
+  } else {
+    (parentVm._$childVues || (parentVm._$childVues = [])).push([createdVm, mountedVm]);
+  }
 }
 
 function parseApp (vm) {
   Vue.prototype._$fallback = true; // 降级（调整原 vue 的部分生命周期，如 created，beforeMount,inject,provide）
 
   Vue.mixin({
-    created () { // 处理 injections,头条 triggerEvent 是异步，且触发时机很慢，故延迟 relation 设置
+    created () { // 处理 injections, triggerEvent 是异步，且触发时机很慢，故延迟 relation 设置
       if (this.mpType !== 'app') {
-        if (
-          this.mpType === 'page' &&
-                    !this.$scope.route &&
-                    this.$scope.__route__
-        ) {
-          this.$scope.route = this.$scope.__route__;
-        }
-
-        initRefs$1(this);
-
+        initRefs(this);
         this.__init_injections(this);
         this.__init_provide(this);
       }
@@ -2624,81 +2378,41 @@ function parseBaseComponent (vueComponentOptions, {
   return [componentOptions, VueComponent]
 }
 
-function currentComponents (mpInstance, callback) {
-  const webviewId = mpInstance.__webviewId__;
-  const currentComponents = components[webviewId];
-  if (currentComponents) {
-    callback(currentComponents);
-  }
-}
-
 function parseComponent (vueComponentOptions, needVueOptions) {
   const [componentOptions, vueOptions, VueComponent] = parseBaseComponent(vueComponentOptions, {
     isPage,
     initRelation
   }, true);
-  const lifetimes = componentOptions.lifetimes;
 
-  // 基础库 2.0 以上 attached 顺序错乱，按照 created 顺序强制纠正
-  lifetimes.created = function created () {
-    currentComponents(this, components => {
-      components.push(this);
-    });
-  };
+  componentOptions.lifetimes.attached = function attached () {
+    const properties = this.properties;
 
-  lifetimes.attached = function attached () {
-    this.__lifetimes_attached = function () {
-      const properties = this.properties;
-
-      const options = {
-        mpType: isPage.call(this) ? 'page' : 'component',
-        mpInstance: this,
-        propsData: properties
-      };
-
-      initVueIds(properties.vueId, this);
-
-      // 初始化 vue 实例
-      this.$vm = new VueComponent(options);
-
-      // 处理$slots,$scopedSlots（暂不支持动态变化$slots）
-      initSlots(this.$vm, properties.vueSlots);
-
-      // 处理父子关系
-      initRelation.call(this, {
-        vuePid: this._$vuePid,
-        mpInstance: this
-      });
-
-      // 触发首次 setData
-      this.$vm.$mount();
+    const options = {
+      mpType: isPage.call(this) ? 'page' : 'component',
+      mpInstance: this,
+      propsData: properties
     };
-    currentComponents(this, components => {
-      let component = this;
-      while (component && component.__lifetimes_attached && components[0] && component === components[0]) {
-        components.shift();
-        component.__lifetimes_attached();
-        delete component.__lifetimes_attached;
-        component = components[0];
-      }
-    });
-  };
 
-  const oldDetached = lifetimes.detached;
-  lifetimes.detached = function detached () {
-    if (typeof oldDetached === 'function') {
-      oldDetached.call(this);
-    }
-    currentComponents(this, components => {
-      const index = components.indexOf(this);
-      if (index >= 0) {
-        components.splice(index, 1);
-      }
+    initVueIds(properties.vueId, this);
+
+    // 初始化 vue 实例
+    this.$vm = new VueComponent(options);
+
+    // 处理$slots,$scopedSlots（暂不支持动态变化$slots）
+    initSlots(this.$vm, properties.vueSlots);
+
+    // 处理父子关系
+    initRelation.call(this, {
+      vuePid: this._$vuePid,
+      mpInstance: this
     });
+
+    // 触发首次 setData
+    this.$vm.$mount();
   };
 
   // ready 比 handleLink 还早，初始化逻辑放到 handleLink 中
-  delete lifetimes.ready;
+  delete componentOptions.lifetimes.ready;
 
   componentOptions.methods.__l = handleLink$1;
 
@@ -2737,17 +2451,8 @@ function parseBasePage (vuePageOptions) {
 
 function parsePage (vuePageOptions) {
   const pageOptions = parseBasePage(vuePageOptions);
-  const lifetimes = pageOptions.lifetimes;
-  const oldCreated = lifetimes.created;
-  lifetimes.created = function created () {
-    const webviewId = this.__webviewId__;
-    components[webviewId] = [];
-    if (typeof oldCreated === 'function') {
-      oldCreated.call(this);
-    }
-  };
   // 页面需要在 ready 中触发，其他组件是在 handleLink 中触发
-  lifetimes.ready = function ready () {
+  pageOptions.lifetimes.ready = function ready () {
     if (this.$vm && this.$vm.mpType === 'page') {
       this.$vm.__call_hook('created');
       this.$vm.__call_hook('beforeMount');
@@ -2758,19 +2463,16 @@ function parsePage (vuePageOptions) {
       this.is && console.warn(this.is + ' is not ready');
     }
   };
-  const oldDetached = lifetimes.detached;
-  lifetimes.detached = function detached () {
-    if (typeof oldDetached === 'function') {
-      oldDetached.call(this);
-    }
+
+  pageOptions.lifetimes.detached = function detached () {
+    this.$vm && this.$vm.$destroy();
     // 清理
-    const webviewId = this.__webviewId__;
-    webviewId && Object.keys(instances).forEach(key => {
-      if (key.indexOf(webviewId + '_') === 0) {
+    const pageId = this.pageinstance.__pageId__;
+    Object.keys(instances).forEach(key => {
+      if (key.indexOf(pageId + '_') === 0) {
         delete instances[key];
       }
     });
-    delete components[webviewId];
   };
 
   return pageOptions

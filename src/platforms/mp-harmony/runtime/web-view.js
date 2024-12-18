@@ -1,11 +1,32 @@
-const isToutiao = window.tt &&
-  window.tt.miniProgram &&
-  /toutiaomicroapp/i.test(navigator.userAgent)
+const isQuickapp = window.qa &&
+  /quickapp/i.test(navigator.userAgent)
 
 export function initWebviewApi (readyCallback) {
-  if (!isToutiao) {
+  if (!isQuickapp) {
     return
   }
-  document.addEventListener('DOMContentLoaded', readyCallback)
-  return window.tt.miniProgram
+  if (window.QaJSBridge && window.QaJSBridge.invoke) {
+    setTimeout(readyCallback, 0)
+  } else {
+    document.addEventListener('QaJSBridgeReady', readyCallback)
+  }
+  const {
+    navigateTo,
+    navigateBack,
+    switchTab,
+    reLaunch,
+    redirectTo,
+    postMessage,
+    getEnv
+  } = window.qa
+
+  return {
+    navigateTo,
+    navigateBack,
+    switchTab,
+    reLaunch,
+    redirectTo,
+    postMessage,
+    getEnv
+  }
 }

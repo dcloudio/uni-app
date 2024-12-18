@@ -11,18 +11,9 @@ export default function parseApp (vm) {
   Vue.prototype._$fallback = true // 降级（调整原 vue 的部分生命周期，如 created，beforeMount,inject,provide）
 
   Vue.mixin({
-    created () { // 处理 injections,头条 triggerEvent 是异步，且触发时机很慢，故延迟 relation 设置
+    created () { // 处理 injections, triggerEvent 是异步，且触发时机很慢，故延迟 relation 设置
       if (this.mpType !== 'app') {
-        if (
-          this.mpType === 'page' &&
-                    !this.$scope.route &&
-                    this.$scope.__route__
-        ) {
-          this.$scope.route = this.$scope.__route__
-        }
-
         initRefs(this)
-
         this.__init_injections(this)
         this.__init_provide(this)
       }
