@@ -2384,6 +2384,20 @@ function parseComponent (vueComponentOptions, needVueOptions) {
     initRelation
   }, true);
 
+  const properties = componentOptions.properties;
+  if (properties) {
+    const observers = {};
+    Object.keys(properties).forEach(name => {
+      const options = properties[name];
+      const observer = options.observer;
+      if (observer) {
+        observers[name] = observer;
+        delete options.observer;
+      }
+    });
+    componentOptions.observers = observers;
+  }
+
   componentOptions.lifetimes.attached = function attached () {
     const properties = this.properties;
 
