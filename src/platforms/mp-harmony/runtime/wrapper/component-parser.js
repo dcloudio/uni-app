@@ -1,4 +1,9 @@
 import {
+  hasOwn,
+  isPlainObject
+} from 'uni-shared'
+
+import {
   isPage,
   initRelation,
   handleLink
@@ -10,6 +15,27 @@ import {
 } from 'uni-wrapper/util'
 
 import parseBaseComponent from '../../../mp-weixin/runtime/wrapper/component-base-parser'
+
+function resolvePropsData (properties) {
+  if (__PLATFORM__ === 'mp-harmony') {
+    const propsData = {}
+    Object.keys(properties).forEach(name => {
+      propsData[name] = resolvePropValue(properties[name])
+    })
+    return propsData
+  }
+  return properties
+}
+
+function resolvePropValue (prop) {
+  if (__PLATFORM__ === 'mp-harmony') {
+    if (isPlainObject(prop) && hasOwn(prop, 'value')) {
+      // 目前 mp-harmony 的 prop 返回的是配置项？
+      return prop.value
+    }
+  }
+  return prop
+}
 
 export default function parseComponent (vueComponentOptions, needVueOptions) {
   const [componentOptions, vueOptions, VueComponent] = parseBaseComponent(vueComponentOptions, {
@@ -37,16 +63,16 @@ export default function parseComponent (vueComponentOptions, needVueOptions) {
     const options = {
       mpType: isPage.call(this) ? 'page' : 'component',
       mpInstance: this,
-      propsData: properties
+      propsData: resolvePropsData(properties)
     }
 
-    initVueIds(properties.vueId, this)
+    initVueIds(resolvePropValue(properties.vueId), this)
 
     // 初始化 vue 实例
     this.$vm = new VueComponent(options)
 
     // 处理$slots,$scopedSlots（暂不支持动态变化$slots）
-    initSlots(this.$vm, properties.vueSlots)
+    initSlots(this.$vm, resolvePropValue(properties.vueSlots))
 
     // 处理父子关系
     initRelation.call(this, {
