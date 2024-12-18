@@ -331,6 +331,7 @@ function useValueSync(
   return {
     trigger,
     triggerInput,
+    cancelValueChange: () => valueChangeFn!.cancel(),
   }
 }
 
@@ -406,6 +407,7 @@ function useEvent(
   props: Props,
   trigger: CustomEventTrigger,
   triggerInput: Function,
+  cancelValueChange: Function,
   beforeInput?: (event: Event, state: State) => any
 ) {
   function checkSelection() {
@@ -458,6 +460,8 @@ function useEvent(
       if (isFunction(beforeInput) && beforeInput(event, state) === false) {
         return
       }
+      // 修复ios输入法composition快速输入光标丢失问题
+      cancelValueChange()
       state.value = field.value
       if (!state.composing || !props.ignoreCompositionEvent) {
         triggerInput(
@@ -523,12 +527,25 @@ export function useField(
 ) {
   UniViewJSBridgeSubscribe()
   const { fieldRef, state, trigger } = useBase(props, rootRef, emit)
-  const { triggerInput } = useValueSync(props, state, emit, trigger)
+  const { triggerInput, cancelValueChange } = useValueSync(
+    props,
+    state,
+    emit,
+    trigger
+  )
   useAutoFocus(props, fieldRef)
   useKeyboard(props, fieldRef, trigger)
   const { state: scopedAttrsState } = useScopedAttrs()
   useFormField('name', state)
-  useEvent(fieldRef, state, props, trigger, triggerInput, beforeInput)
+  useEvent(
+    fieldRef,
+    state,
+    props,
+    trigger,
+    triggerInput,
+    cancelValueChange,
+    beforeInput
+  )
 
   // Safari 14 以上修正禁用状态颜色
   // TODO fixDisabledColor 可以调整到beforeMount或mounted做修正，确保不影响SSR
