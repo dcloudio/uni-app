@@ -28,7 +28,8 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": true
+          "swift": true,
+          "arkts": true
         }
       },
       "createInterstitialAd": {
@@ -36,7 +37,8 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": false
+          "swift": false,
+          "arkts": true
         }
       }
     },
@@ -1065,6 +1067,14 @@
     "uni": {
       "getUniverifyManager": {
         "name": "getUniverifyManager",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true
+        }
+      },
+      "getUniVerifyManager": {
+        "name": "getUniVerifyManager",
         "app": {
           "js": false,
           "kotlin": true,
