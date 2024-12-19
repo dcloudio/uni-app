@@ -1,8 +1,8 @@
 {
   "uni-actionSheet": {
     "uni": {
-      "showActionSheet2": {
-        "name": "showActionSheet2",
+      "showActionSheet": {
+        "name": "showActionSheet",
         "app": {
           "js": false,
           "kotlin": true,
@@ -10,8 +10,8 @@
           "arkts": false
         }
       },
-      "hideActionSheet2": {
-        "name": "hideActionSheet2",
+      "hideActionSheet": {
+        "name": "hideActionSheet",
         "app": {
           "js": false,
           "kotlin": true,
