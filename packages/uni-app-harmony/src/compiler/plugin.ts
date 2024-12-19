@@ -233,27 +233,27 @@ function genAppHarmonyUniModules(
       'app-harmony',
       'arkts'
     )
-    const hamonyPackageName = `@uni_modules/${plugin.toLowerCase()}`
+    const harmonyPackageName = `@uni_modules/${plugin.toLowerCase()}`
     if (injects) {
       Object.keys(injects).forEach((key) => {
         const inject = injects[key]
         if (Array.isArray(inject) && inject.length > 1) {
           const apiName = inject[1]
           importCodes.push(
-            `import { ${inject[1]} } from '${hamonyPackageName}'`
+            `import { ${inject[1]} } from '${harmonyPackageName}'`
           )
           extApiCodes.push(`uni.${apiName} = ${apiName}`)
         }
       })
     } else {
       const ident = camelize(plugin)
-      importCodes.push(`import * as ${ident} from '${hamonyPackageName}'`)
+      importCodes.push(`import * as ${ident} from '${harmonyPackageName}'`)
       registerCodes.push(
         `uni.registerUTSPlugin('uni_modules/${plugin}', ${ident})`
       )
     }
     projectDeps.push({
-      moduleSpecifier: hamonyPackageName,
+      moduleSpecifier: harmonyPackageName,
       plugin,
       source: 'local',
     })
