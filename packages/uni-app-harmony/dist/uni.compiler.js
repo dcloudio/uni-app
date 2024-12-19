@@ -20,6 +20,18 @@ var StandaloneExtApis = [
 		version: "1.0.2"
 	},
 	{
+		type: "extapi",
+		plugin: "uni-push",
+		apis: [
+			"getPushClientId",
+			"onPushMessage",
+			"offPushMessage",
+			"createPushMessage",
+			"setAppBadgeNumber"
+		],
+		version: "1.0.1"
+	},
+	{
 		type: "provider",
 		plugin: "uni-oauth-huawei",
 		provider: "huawei",
@@ -39,22 +51,10 @@ var StandaloneExtApis = [
 		provider: "huawei",
 		service: "payment",
 		version: "1.0.0"
-	},
-	{
-		type: "extapi",
-		plugin: "uni-push",
-		apis: [
-			"getPushClientId",
-			"onPushMessage",
-			"offPushMessage",
-			"createPushMessage",
-			"setAppBadgeNumber"
-		],
-		version: "1.0.1"
 	}
 ];
 
-const commondGlobals = {
+const commandGlobals = {
     vue: 'Vue',
     '@vue/shared': 'uni.VueShared',
 };
@@ -67,7 +67,7 @@ const harmonyGlobals = [
     '@ohos/hypium',
     '@ohos/hamock',
 ];
-function isHarmoneyGlobal(id) {
+function isHarmonyGlobal(id) {
     return harmonyGlobals.some((harmonyGlobal) => typeof harmonyGlobal === 'string'
         ? harmonyGlobal === id
         : harmonyGlobal.test(id));
@@ -84,10 +84,10 @@ function generateHarmonyImportSpecifier(id) {
         }
     });
 }
-function generateHarmonyImportExternalCode(hamonyPackageNames) {
-    return hamonyPackageNames
-        .filter((hamonyPackageName) => isHarmoneyGlobal(hamonyPackageName))
-        .map((hamonyPackageName) => `import ${generateHarmonyImportSpecifier(hamonyPackageName)} from '${hamonyPackageName}';`)
+function generateHarmonyImportExternalCode(harmonyPackageNames) {
+    return harmonyPackageNames
+        .filter((harmonyPackageName) => isHarmonyGlobal(harmonyPackageName))
+        .map((harmonyPackageName) => `import ${generateHarmonyImportSpecifier(harmonyPackageName)} from '${harmonyPackageName}';`)
         .join('');
 }
 function uniAppHarmonyPlugin() {
@@ -98,11 +98,11 @@ function uniAppHarmonyPlugin() {
             return {
                 build: {
                     rollupOptions: {
-                        external: [...Object.keys(commondGlobals), ...harmonyGlobals],
+                        external: [...Object.keys(commandGlobals), ...harmonyGlobals],
                         output: {
                             globals: function (id) {
-                                return (commondGlobals[id] ||
-                                    (isHarmoneyGlobal(id)
+                                return (commandGlobals[id] ||
+                                    (isHarmonyGlobal(id)
                                         ? generateHarmonyImportSpecifier(id)
                                         : ''));
                             },
