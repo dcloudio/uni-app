@@ -163,21 +163,27 @@ export async function genProxyCode(
   // 自动补充 VideoElement 导出
   if (options.androidComponents) {
     Object.keys(options.androidComponents).forEach((name) => {
-      options.meta!.types[
+      const className =
         (process.env.UNI_UTS_MODULE_PREFIX ? 'Uni' : '') +
-          capitalize(camelize(name)) +
-          'Element'
-      ] = 'class'
+        capitalize(camelize(name)) +
+        'Element'
+      options.meta!.types[className] = 'class'
+      if (options.meta?.android?.types) {
+        options.meta.android.types[className] = 'class'
+      }
       components.add(name)
     })
   }
   if (options.iosComponents) {
     Object.keys(options.iosComponents).forEach((name) => {
-      options.meta!.types[
+      const className =
         (process.env.UNI_UTS_MODULE_PREFIX ? 'Uni' : '') +
-          capitalize(camelize(name)) +
-          'Element'
-      ] = 'class'
+        capitalize(camelize(name)) +
+        'Element'
+      options.meta!.types[className] = 'class'
+      if (options.meta?.ios?.types) {
+        options.meta.ios.types[className] = 'class'
+      }
       components.add(name)
     })
   }
