@@ -14,7 +14,7 @@ import {
 import type { OutputChunk, PluginContext } from 'rollup'
 import StandaloneExtApis from './standalone-ext-apis.json'
 
-const commondGlobals: Record<string, string> = {
+const commandGlobals: Record<string, string> = {
   vue: 'Vue',
   '@vue/shared': 'uni.VueShared',
 }
@@ -29,7 +29,7 @@ const harmonyGlobals: (string | RegExp)[] = [
   '@ohos/hamock',
 ]
 
-function isHarmoneyGlobal(id: string) {
+function isHarmonyGlobal(id: string) {
   return harmonyGlobals.some((harmonyGlobal) =>
     typeof harmonyGlobal === 'string'
       ? harmonyGlobal === id
@@ -50,14 +50,14 @@ function generateHarmonyImportSpecifier(id: string) {
   })
 }
 
-function generateHarmonyImportExternalCode(hamonyPackageNames: string[]) {
-  return hamonyPackageNames
-    .filter((hamonyPackageName) => isHarmoneyGlobal(hamonyPackageName))
+function generateHarmonyImportExternalCode(harmonyPackageNames: string[]) {
+  return harmonyPackageNames
+    .filter((harmonyPackageName) => isHarmonyGlobal(harmonyPackageName))
     .map(
-      (hamonyPackageName) =>
+      (harmonyPackageName) =>
         `import ${generateHarmonyImportSpecifier(
-          hamonyPackageName
-        )} from '${hamonyPackageName}';`
+          harmonyPackageName
+        )} from '${harmonyPackageName}';`
     )
     .join('')
 }
@@ -70,12 +70,12 @@ export function uniAppHarmonyPlugin(): UniVitePlugin {
       return {
         build: {
           rollupOptions: {
-            external: [...Object.keys(commondGlobals), ...harmonyGlobals],
+            external: [...Object.keys(commandGlobals), ...harmonyGlobals],
             output: {
               globals: function (id: string) {
                 return (
-                  commondGlobals[id] ||
-                  (isHarmoneyGlobal(id)
+                  commandGlobals[id] ||
+                  (isHarmonyGlobal(id)
                     ? generateHarmonyImportSpecifier(id)
                     : '')
                 )
