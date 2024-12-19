@@ -29,7 +29,7 @@
           "js": false,
           "kotlin": true,
           "swift": true,
-          "arkts": true
+          "arkts": false
         }
       },
       "createInterstitialAd": {
@@ -38,7 +38,7 @@
           "js": false,
           "kotlin": true,
           "swift": false,
-          "arkts": true
+          "arkts": false
         }
       }
     },
@@ -864,6 +864,19 @@
           "kotlin": true,
           "swift": true,
           "arkts": true
+        }
+      }
+    }
+  },
+  "uni-secure-network": {
+    "uni": {
+      "__getSecureNetworkManager": {
+        "name": "__getSecureNetworkManager",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true,
+          "arkts": false
         }
       }
     }
