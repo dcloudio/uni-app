@@ -55,6 +55,7 @@ export default {
       loading: false,
       userwx: false,
       userUnitId: '',
+      customFullscreen: '',
       wxchannel: false,
       errorMessage: null
     }
@@ -168,6 +169,9 @@ export default {
               this.wxAdType = AdType.Banner
               this.userwx = true
               this.userUnitId = adData.posid
+              if (adData.tmpl_type === 24) {
+                this.customFullscreen = 'uni-ad-custom-fullscreen'
+              }
               break
             case 9:
               this.wxAdType = AdType.RewardedVideo
