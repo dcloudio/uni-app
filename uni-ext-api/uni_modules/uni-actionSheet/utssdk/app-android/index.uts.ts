@@ -1,6 +1,6 @@
 import { registerSystemRoute, getCurrentPage, isSystemActionSheetDialogPage } from "@dcloudio/uni-runtime";
 import UniActionSheetPage from "@/uni_modules/uni-actionSheet/pages/actionSheet/actionSheet.vue";
-import { ShowActionSheet, ShowActionSheetOptions, ShowActionSheetSuccessImpl, ShowActionSheetFailImpl, HideActionSheet } from "../interface.uts";
+import { ShowActionSheet, ShowActionSheetOptions, ShowActionSheetSuccessImpl, ShowActionSheetFailImpl } from "../interface.uts";
 
 export {
   ShowActionSheet,

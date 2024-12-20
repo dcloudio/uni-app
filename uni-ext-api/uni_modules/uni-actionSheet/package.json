@@ -4,8 +4,8 @@
 	"version": "1.0.0",
 	"description": "uni-actionSheet",
 	"keywords": [
-		"uni-showActionSheet",
-		"uni-closeActionSheet"
+		"uni.showActionSheet",
+		"uni.hideActionSheet"
 	],
 	"repository": "",
 	"engines": {
