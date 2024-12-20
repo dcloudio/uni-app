@@ -669,7 +669,11 @@ function createParams(tsParams: TsFnParameter[]) {
 async function parseModuleDecls(module: string, options: GenProxyCodeOptions) {
   // 优先合并 ios + android，如果没有，查找根目录 index.uts
   const iosDecls = (
-    await parseFile(resolvePlatformIndex('app-ios', module, options), options)
+    await parseFile(
+      resolvePlatformIndex('app-ios', module, options),
+      options,
+      options.iosPreprocessor
+    )
   ).filter((decl) => {
     if (decl.type === 'Class') {
       if (decl.isHook) {
@@ -682,7 +686,8 @@ async function parseModuleDecls(module: string, options: GenProxyCodeOptions) {
   const androidDecls = (
     await parseFile(
       resolvePlatformIndex('app-android', module, options),
-      options
+      options,
+      options.androidPreprocessor
     )
   ).filter((decl) => {
     if (decl.type === 'Class') {
@@ -789,14 +794,16 @@ function mergeDecls(from: ProxyDecl[], to: ProxyDecl[]) {
 
 async function parseFile(
   filename: string | undefined | false,
-  options: GenProxyCodeOptions
+  options: GenProxyCodeOptions,
+  preprocessor?: SyncUniModulesFilePreprocessor
 ): Promise<ProxyDecl[]> {
   if (filename) {
     // 暂时不从uvue目录读取了，就读取原始文件
     // filename = resolveUVueFileName(filename)
     if (fs.existsSync(filename)) {
+      const code = fs.readFileSync(filename, 'utf8')
       return parseCode(
-        fs.readFileSync(filename, 'utf8'),
+        preprocessor ? await preprocessor(code, filename) : code,
         options.namespace,
         options.types!,
         filename,
