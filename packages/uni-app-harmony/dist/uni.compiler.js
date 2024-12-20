@@ -36,7 +36,7 @@ var StandaloneExtApis = [
 		plugin: "uni-oauth-huawei",
 		provider: "huawei",
 		service: "oauth",
-		version: "1.0.1"
+		version: "1.0.2"
 	},
 	{
 		type: "provider",
@@ -220,24 +220,24 @@ function genAppHarmonyUniModules(context, inputDir, utsPlugins) {
     const projectDeps = [];
     utsPlugins.forEach((plugin) => {
         const injects = uniCliShared.parseUniExtApi(path__default.default.resolve(uniModulesDir, plugin), plugin, true, 'app-harmony', 'arkts');
-        const hamonyPackageName = `@uni_modules/${plugin.toLowerCase()}`;
+        const harmonyPackageName = `@uni_modules/${plugin.toLowerCase()}`;
         if (injects) {
             Object.keys(injects).forEach((key) => {
                 const inject = injects[key];
                 if (Array.isArray(inject) && inject.length > 1) {
                     const apiName = inject[1];
-                    importCodes.push(`import { ${inject[1]} } from '${hamonyPackageName}'`);
+                    importCodes.push(`import { ${inject[1]} } from '${harmonyPackageName}'`);
                     extApiCodes.push(`uni.${apiName} = ${apiName}`);
                 }
             });
         }
         else {
             const ident = uniCliShared.camelize(plugin);
-            importCodes.push(`import * as ${ident} from '${hamonyPackageName}'`);
+            importCodes.push(`import * as ${ident} from '${harmonyPackageName}'`);
             registerCodes.push(`uni.registerUTSPlugin('uni_modules/${plugin}', ${ident})`);
         }
         projectDeps.push({
-            moduleSpecifier: hamonyPackageName,
+            moduleSpecifier: harmonyPackageName,
             plugin,
             source: 'local',
         });
