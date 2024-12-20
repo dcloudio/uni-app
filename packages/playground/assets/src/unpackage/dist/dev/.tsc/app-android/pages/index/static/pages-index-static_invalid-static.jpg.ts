@@ -1,0 +1,1 @@
+export default "/assets/pages-index-static_invalid-static.34ae5d3b.jpg"

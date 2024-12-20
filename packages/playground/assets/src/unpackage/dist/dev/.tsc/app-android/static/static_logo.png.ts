@@ -1,0 +1,1 @@
+export default "/static/static_logo.png"

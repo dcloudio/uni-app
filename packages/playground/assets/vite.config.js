@@ -15,6 +15,7 @@ export default defineConfig({
             external: [
               'vue',
               '@vue/shared',
+              '@dcloudio/uni-app',
               '@dcloudio/uni-h5',
               '@dcloudio/uni-h5-vue',
               '@dcloudio/uni-mp-vue',

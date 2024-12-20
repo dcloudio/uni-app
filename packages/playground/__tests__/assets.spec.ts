@@ -3,8 +3,9 @@ import path from 'path'
 import execa from 'execa'
 import { sync } from 'fast-glob'
 import { isBinaryFileSync } from 'isbinaryfile'
+import { normalizePath } from '@dcloudio/uni-cli-shared'
 
-const projectDir = path.resolve(__dirname, '../assets')
+const projectDir = normalizePath(path.resolve(__dirname, '../assets'))
 
 describe('assets playground', () => {
   jest.setTimeout(50 * 1000)
@@ -41,7 +42,7 @@ describe('assets playground', () => {
       //   'build:mp-lark',
       //   'build:mp-qq',
       //   'build:mp-toutiao',
-      //   'build:mp-weixin',
+      'build:mp-weixin',
     ],
   }
   const distDir = path.resolve(projectDir, 'dist')
@@ -65,21 +66,32 @@ describe('assets playground', () => {
           },
         })
         console.log(`npm run ${script} end`)
-        sync('**/*', { cwd: outDir, absolute: true })
+        sync('**/*', { cwd: outDir, absolute: true, dot: true })
           .sort()
           .forEach((file) => {
             const basename = path.basename(file)
-            if (
-              basename.startsWith('__uniapp') ||
-              basename.startsWith('uni-app-view.umd.js') ||
-              basename.endsWith('.css')
-            ) {
+            if (basename.startsWith('__uniapp')) {
               return
             }
+            let relativePath = normalizePath(path.relative(outDir, file))
             if (isBinaryFileSync(file)) {
-              expect(path.basename(file)).toMatchSnapshot(basename)
+              expect(path.basename(file)).toMatchSnapshot(relativePath)
             } else {
-              expect(fs.readFileSync(file, 'utf8')).toMatchSnapshot(basename)
+              const content = fs.readFileSync(file, 'utf8')
+              const matches = content.match(/"([^"]*\.(png|jpg))"/g)
+              if (matches) {
+                const webPageJsArr = [
+                  'assets/pages-index-index.',
+                  'assets/pages-sub-test-test.',
+                ]
+                // 避免hash影响
+                webPageJsArr.forEach((pageJs) => {
+                  if (relativePath.startsWith(pageJs)) {
+                    relativePath = pageJs + 'js'
+                  }
+                })
+                expect(matches).toMatchSnapshot(relativePath)
+              }
             }
           })
       })
