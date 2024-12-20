@@ -1,8 +1,8 @@
 import { registerSystemRoute, getCurrentPage, isSystemActionSheetDialogPage } from '@dcloudio/uni-runtime'
 import UniActionSheetPage from "@/uni_modules/uni-actionSheet/pages/actionSheet/actionSheet.vue";
-import { ShowActionSheet2, ShowActionSheet2Options, ShowActionSheetSuccessImpl, ShowActionSheetFailImpl, } from "../interface.uts";
+import { ShowActionSheet, ShowActionSheetOptions, ShowActionSheetSuccessImpl, ShowActionSheetFailImpl, } from "../interface.uts";
 
-export const showActionSheet2: ShowActionSheet2 = (options: ShowActionSheet2Options) => {
+export const showActionSheet: ShowActionSheet = (options: ShowActionSheetOptions) => {
 	registerSystemRoute("uni:actionSheet", UniActionSheetPage);
 
 	const uuid = `${Date.now()}${Math.floor(Math.random() * 1e7)}`
@@ -37,7 +37,7 @@ export const showActionSheet2: ShowActionSheet2 = (options: ShowActionSheet2Opti
 	})
 };
 
-export const hideActionSheet2 = () => {
+export const hideActionSheet = () => {
 	const currentPage = getCurrentPage() as unknown as UniPage
 	if (!currentPage) return
 	const systemDialogPages = currentPage.vm.$pageLayoutInstance?.$systemDialogPages.value

@@ -1,15 +1,14 @@
 import { registerSystemRoute, getCurrentPage, isSystemActionSheetDialogPage } from "@dcloudio/uni-runtime";
 import UniActionSheetPage from "@/uni_modules/uni-actionSheet/pages/actionSheet/actionSheet.vue";
-import { ShowActionSheet2, ShowActionSheet2Options, ShowActionSheetSuccessImpl, ShowActionSheetFailImpl, HideActionSheet } from "../interface.uts";
+import { ShowActionSheet, ShowActionSheetOptions, ShowActionSheetSuccessImpl, ShowActionSheetFailImpl, HideActionSheet } from "../interface.uts";
 
 export {
-  ShowActionSheet2,
-  ShowActionSheet2Options,
-  HideActionSheet,
+  ShowActionSheet,
+  ShowActionSheetOptions,
 } from '../interface.uts'
 
-export const showActionSheet2: ShowActionSheet2 = function (
-  options: ShowActionSheet2Options
+export const showActionSheet: ShowActionSheet = function (
+  options: ShowActionSheetOptions
 ) {
   registerSystemRoute("uni:actionSheet", UniActionSheetPage);
 
@@ -45,7 +44,7 @@ export const showActionSheet2: ShowActionSheet2 = function (
   } as io.dcloud.uniapp.framework.extapi.OpenDialogPageOptions)
 };
 
-export const hideActionSheet2: HideActionSheet = function () {
+export const hideActionSheet = function () {
   const currentPage = getCurrentPage()
   if (currentPage == null) return
   const dialogPages = currentPage.$systemDialogPages

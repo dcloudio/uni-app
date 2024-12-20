@@ -1,4 +1,4 @@
-export type Popover2 = {
+export type Popover = {
   /**
    * 指示区域坐标，使用原生 navigationBar 时一般需要加上 navigationBar 的高度
    */
@@ -22,24 +22,24 @@ export type Popover2 = {
  * - 4: 框架内部异常
  */
 export type ShowActionSheetErrorCode = 4
-export interface ShowActionSheetSuccess2 {
+export interface ShowActionSheetSuccess {
   errMsg: string
   tapIndex: number
 }
-type ShowActionSheetSuccessCallback2 = (result: ShowActionSheetSuccess2) => void
+type ShowActionSheetSuccessCallback = (result: ShowActionSheetSuccess) => void
 
-export interface ShowActionSheetFail2 extends IUniError {
+export interface ShowActionSheetFail extends IUniError {
   errCode: ShowActionSheetErrorCode
 }
-type ShowActionSheetFailCallback2 = (result: ShowActionSheetFail2) => void
+type ShowActionSheetFailCallback = (result: ShowActionSheetFail) => void
 
 export type ShowActionSheetComplete = any
-type ShowActionSheetCompleteCallback2 = (result: ShowActionSheetComplete) => void
+type ShowActionSheetCompleteCallback = (result: ShowActionSheetComplete) => void
 
 /**
  * uni.showActionSheet函数参数定义
  */
-export type ShowActionSheet2Options = {
+export type ShowActionSheetOptions = {
   /**
      * 菜单标题
      */
@@ -63,7 +63,7 @@ export type ShowActionSheet2Options = {
   /**
    * 大屏设备弹出原生选择按钮框的指示区域，默认居中显示
    */
-  popover?: Popover2 | null,
+  popover?: Popover | null,
   /**
    * 菜单标题文字颜色，字符串格式
    */
@@ -79,19 +79,18 @@ export type ShowActionSheet2Options = {
   /**
    * 接口调用成功的回调函数
    */
-  success?: ShowActionSheetSuccessCallback2 | null,
+  success?: ShowActionSheetSuccessCallback | null,
   /**
    * 接口调用失败的回调函数
    */
-  fail?: ShowActionSheetFailCallback2 | null,
+  fail?: ShowActionSheetFailCallback | null,
   /**
    * 接口调用结束的回调函数（调用成功、失败都会执行）
    */
-  complete?: ShowActionSheetCompleteCallback2 | null
+  complete?: ShowActionSheetCompleteCallback | null
 };
 
-export type ShowActionSheet2 = (options: ShowActionSheet2Options) => void;
-export type HideActionSheet = () => void;
+export type ShowActionSheet = (options: ShowActionSheetOptions) => void;
 
 export interface Uni {
   /**
@@ -179,7 +178,7 @@ export interface Uni {
    *  }
    * }
    */
-  showActionSheet2(options: ShowActionSheet2Options): void;
+  showActionSheet(options: ShowActionSheetOptions): void;
 
   /**
    * @description 关闭操作菜单
@@ -194,15 +193,15 @@ export interface Uni {
    *      "osVer": "5.0",
    *      "uniVer": "√",
    *      "uniUtsPlugin": "x",
-   *      "unixVer": "3.91",
-   *      "unixUtsPlugin": "3.91"
+   *      "unixVer": "4.43",
+   *      "unixUtsPlugin": "4.43"
    *    },
    *    "ios": {
    *      "osVer": "12.0",
    *      "uniVer": "√",
    *      "uniUtsPlugin": "x",
-   *      "unixVer": "4.11",
-   *      "unixUtsPlugin": "4.11"
+   *      "unixVer": "4.43",
+   *      "unixUtsPlugin": "4.43"
    *    },
    *    "harmony": {
    *      "osVer": "3.0",
@@ -214,7 +213,7 @@ export interface Uni {
    *    "weixin": {
    *      "hostVer": "√",
    *      "uniVer": "√",
-   *      "unixVer": "4.41"
+   *      "unixVer": "x"
    *    },
    *    "alipay": {
    *      "hostVer": "√",
@@ -254,14 +253,14 @@ export interface Uni {
    *  },
    *  "web": {
    *    "uniVer": "√",
-   *    "unixVer": "4.0"
+   *    "unixVer": "4.43"
    *  }
    * }
    */
   hideActionSheet(): void;
 }
 
-export class ShowActionSheetSuccessImpl implements ShowActionSheetSuccess2 {
+export class ShowActionSheetSuccessImpl implements ShowActionSheetSuccess {
   tapIndex: number
   errMsg: string
   constructor(tapIndex: number, errMsg: string = 'showActionSheet:ok') {
@@ -269,7 +268,7 @@ export class ShowActionSheetSuccessImpl implements ShowActionSheetSuccess2 {
     this.tapIndex = tapIndex
   }
 }
-export class ShowActionSheetFailImpl extends UniError implements ShowActionSheetFail2 {
+export class ShowActionSheetFailImpl extends UniError implements ShowActionSheetFail {
   override errCode: ShowActionSheetErrorCode
   constructor(errMsg: string = 'showActionSheet:fail cancel', errCode: ShowActionSheetErrorCode = 4) {
     super()

@@ -1,7 +1,7 @@
-import { ShowActionSheet2, ShowActionSheet2Options, ShowActionSheetSuccessImpl, ShowActionSheetFailImpl } from "../interface.uts";
+import { ShowActionSheet, ShowActionSheetOptions, ShowActionSheetSuccessImpl, ShowActionSheetFailImpl } from "../interface.uts";
 
 
-export const showActionSheet2: ShowActionSheet2 = (options: ShowActionSheet2Options) => {
+export const showActionSheet: ShowActionSheet = (options: ShowActionSheetOptions) => {
 	const uuid = `${Date.now()}${Math.floor(Math.random() * 1e7)}`
 	const baseEventName = `uni_action_sheet_${uuid}`
 	const readyEventName = `${baseEventName}_ready`
@@ -34,7 +34,7 @@ export const showActionSheet2: ShowActionSheet2 = (options: ShowActionSheet2Opti
 	})
 }
 
-export const hideActionSheet2 = () => {
+export const hideActionSheet = () => {
 	const pages = getCurrentPages()
 	const currentPage = pages[pages.length - 1]
 	if(currentPage == null) return

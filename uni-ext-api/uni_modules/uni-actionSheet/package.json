@@ -4,8 +4,8 @@
 	"version": "1.0.0",
 	"description": "uni-actionSheet",
 	"keywords": [
-		"uni-showActionSheet",
-		"uni-closeActionSheet"
+		"uni.showActionSheet",
+		"uni.hideActionSheet"
 	],
 	"repository": "",
 	"engines": {
@@ -41,8 +41,8 @@
 		],
 		"uni-ext-api": {
 			"uni": {
-				"showActionSheet2": {
-					"name": "showActionSheet2",
+				"showActionSheet": {
+					"name": "showActionSheet",
 					"app": {
 						"js": false,
 						"kotlin": true,
@@ -50,8 +50,8 @@
 						"arkts": false
 					}
 				},
-				"hideActionSheet2": {
-					"name": "hideActionSheet2",
+				"hideActionSheet": {
+					"name": "hideActionSheet",
 					"app": {
 						"js": false,
 						"kotlin": true,

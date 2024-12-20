@@ -4,7 +4,7 @@ var __publicField = (obj, key, value) => {
   __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
   return value;
 };
-import { withModifiers, createVNode, getCurrentInstance, ref, defineComponent, openBlock, createElementBlock, onMounted, provide, computed, watch, onUnmounted, inject, onBeforeUnmount, mergeProps, reactive, injectHook, nextTick, createApp, createBlock, watchEffect, isVNode, withDirectives, vShow, renderList, isReactive, Transition, effectScope, Fragment, onActivated, withCtx, KeepAlive, resolveDynamicComponent, markRaw, normalizeClass, normalizeStyle, createTextVNode, toDisplayString, createCommentVNode, onBeforeMount, onBeforeActivate, onBeforeDeactivate, createElementVNode, renderSlot, shallowRef, Comment, h, logError } from "vue";
+import { withModifiers, createVNode, getCurrentInstance, ref, defineComponent, openBlock, createElementBlock, onMounted, provide, computed, watch, onUnmounted, inject, onBeforeUnmount, mergeProps, reactive, injectHook, nextTick, createApp, createBlock, watchEffect, isVNode, withDirectives, vShow, renderList, isReactive, Transition, effectScope, onActivated, withCtx, KeepAlive, resolveDynamicComponent, markRaw, normalizeClass, normalizeStyle, createTextVNode, toDisplayString, createCommentVNode, Fragment, onBeforeMount, onBeforeActivate, onBeforeDeactivate, createElementVNode, renderSlot, shallowRef, Comment, h, logError } from "vue";
 import { isArray, isString, extend, remove, stringifyStyle, parseStringStyle, isPlainObject as isPlainObject$1, isFunction, capitalize, camelize, hasOwn, isObject, toRawType, makeMap as makeMap$1, isPromise, invokeArrayFns as invokeArrayFns$1, hyphenate } from "@vue/shared";
 import { once, UNI_STORAGE_LOCALE, I18N_JSON_DELIMITERS, Emitter, passive, resolveComponentInstance, normalizeStyles, addLeadingSlash, invokeArrayFns, removeLeadingSlash, ON_SHOW, ON_HIDE, initCustomDatasetOnce, resolveOwnerVm, resolveOwnerEl, ON_WXS_INVOKE_CALL_METHOD, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_PAGE_SCROLL, ON_REACH_BOTTOM, EventChannel, createRpx2Unit, defaultRpx2Unit, parseQuery, NAVBAR_HEIGHT, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, getLen, getCustomDataset, parseUrl, sortObject, ON_THEME_CHANGE, ON_HOST_THEME_CHANGE, OFF_HOST_THEME_CHANGE, OFF_THEME_CHANGE, updateElementStyle, LINEFEED, ON_WEB_INVOKE_APP_SERVICE, ON_BACK_PRESS, addFont, ON_NAVIGATION_BAR_CHANGE, scrollTo, RESPONSIVE_MIN_WIDTH, formatDateTime, ON_REACH_BOTTOM_DISTANCE, normalizeTitleColor, ON_UNLOAD, onCreateVueApp, SCHEME_RE, DATA_RE, decodedQuery, debounce, WEB_INVOKE_APPSERVICE, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_PULL_DOWN_REFRESH, stringifyQuery as stringifyQuery$1, PRIMARY_COLOR, isUniLifecycleHook, ON_LOAD, UniLifecycleHooks, invokeCreateErrorHandler, invokeCreateVueAppHook } from "@dcloudio/uni-shared";
 import { onCreateVueApp as onCreateVueApp2 } from "@dcloudio/uni-shared";
@@ -752,33 +752,6 @@ const initI18nAsyncMsgsOnce = /* @__PURE__ */ once(() => {
     useI18n().add(
       LOCALE_ZH_HANT,
       normalizeMessages(name, keys, ["連接服務器超時，點擊屏幕重試"]),
-      false
-    );
-  }
-});
-const initI18nShowActionSheetMsgsOnce = /* @__PURE__ */ once(() => {
-  const name = "uni.showActionSheet.";
-  const keys = ["cancel"];
-  if (__UNI_FEATURE_I18N_EN__) {
-    useI18n().add(LOCALE_EN, normalizeMessages(name, keys, ["Cancel"]), false);
-  }
-  if (__UNI_FEATURE_I18N_ES__) {
-    useI18n().add(LOCALE_ES, normalizeMessages(name, keys, ["Cancelar"]), false);
-  }
-  if (__UNI_FEATURE_I18N_FR__) {
-    useI18n().add(LOCALE_FR, normalizeMessages(name, keys, ["Annuler"]), false);
-  }
-  if (__UNI_FEATURE_I18N_ZH_HANS__) {
-    useI18n().add(
-      LOCALE_ZH_HANS,
-      normalizeMessages(name, keys, ["取消"]),
-      false
-    );
-  }
-  if (__UNI_FEATURE_I18N_ZH_HANT__) {
-    useI18n().add(
-      LOCALE_ZH_HANT,
-      normalizeMessages(name, keys, ["取消"]),
       false
     );
   }
@@ -3093,7 +3066,7 @@ const index$s = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const props$x = {
+const props$w = {
   disableScroll: {
     type: [Boolean, String],
     default: false
@@ -3129,7 +3102,7 @@ const indexX$4 = /* @__PURE__ */ defineBuiltInComponent({
   compatConfig: {
     MODE: 3
   },
-  props: props$x,
+  props: props$w,
   rootElement: {
     name: "uni-canvas",
     class: UniCanvasElement
@@ -3152,7 +3125,7 @@ const indexX$4 = /* @__PURE__ */ defineBuiltInComponent({
   }
 });
 const uniCheckGroupKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniCheckGroup" : "ucg");
-const props$w = {
+const props$v = {
   name: {
     type: String,
     default: ""
@@ -3162,7 +3135,7 @@ class UniCheckboxGroupElement extends UniElement {
 }
 const index$r = /* @__PURE__ */ defineBuiltInComponent({
   name: "CheckboxGroup",
-  props: props$w,
+  props: props$v,
   emits: ["change"],
   rootElement: {
     name: "uni-checkbox-group",
@@ -3222,7 +3195,7 @@ function useProvideCheckGroup(props2, trigger) {
   }
   return getFieldsValue;
 }
-const props$v = {
+const props$u = {
   checked: {
     type: [Boolean, String],
     default: false
@@ -3273,7 +3246,7 @@ class UniCheckboxElement extends UniElement {
 }
 const index$q = /* @__PURE__ */ defineBuiltInComponent({
   name: "Checkbox",
-  props: props$v,
+  props: props$u,
   rootElement: {
     name: "uni-checkbox",
     class: UniCheckboxElement
@@ -3414,7 +3387,7 @@ function useCheckboxInject(checkboxChecked, checkboxValue, reset) {
 let resetTimer;
 function iosHideKeyboard() {
 }
-const props$u = {
+const props$t = {
   cursorSpacing: {
     type: [Number, String],
     default: 0
@@ -7147,21 +7120,6 @@ const PageScrollToOptions = {
     duration: 300
   }
 };
-const API_SHOW_ACTION_SHEET = "showActionSheet";
-const ShowActionSheetProtocol = {
-  itemList: {
-    type: Array,
-    required: true
-  },
-  title: String,
-  itemColor: String,
-  popover: Object
-};
-const ShowActionSheetOptions = {
-  formatArgs: {
-    itemColor: "#000"
-  }
-};
 const API_SHOW_LOADING = "showLoading";
 const ShowLoadingProtocol = {
   title: String,
@@ -9706,7 +9664,7 @@ function usePreventScroll() {
   onMounted(() => preventScroll(true));
   onUnmounted(() => preventScroll(false));
 }
-const props$t = {
+const props$s = {
   src: {
     type: String,
     default: ""
@@ -9714,7 +9672,7 @@ const props$t = {
 };
 const ImageView = /* @__PURE__ */ defineSystemComponent({
   name: "ImageView",
-  props: props$t,
+  props: props$s,
   setup(props2) {
     const state2 = reactive({
       direction: "none"
@@ -9804,7 +9762,7 @@ const ImageView = /* @__PURE__ */ defineSystemComponent({
 function _isSlot$1(s) {
   return typeof s === "function" || Object.prototype.toString.call(s) === "[object Object]" && !isVNode(s);
 }
-const props$s = {
+const props$r = {
   urls: {
     type: Array,
     default() {
@@ -9823,7 +9781,7 @@ function getIndex(props2) {
 }
 const ImagePreview = /* @__PURE__ */ defineSystemComponent({
   name: "ImagePreview",
-  props: props$s,
+  props: props$r,
   emits: ["close"],
   setup(props2, {
     emit: emit2
@@ -11667,7 +11625,7 @@ function useContext(play, pause, stop, seek, sendDanmu, playbackRate, requestFul
     }
   }, id2, true);
 }
-const props$r = {
+const props$q = {
   id: {
     type: String,
     default: ""
@@ -11755,7 +11713,7 @@ class UniVideoElement extends UniElement {
 }
 const index$m = /* @__PURE__ */ defineBuiltInComponent({
   name: "Video",
-  props: props$r,
+  props: props$q,
   emits: ["fullscreenchange", "progress", "loadedmetadata", "waiting", "error", "play", "pause", "ended", "timeupdate"],
   rootElement: {
     name: "uni-video",
@@ -11995,7 +11953,7 @@ const onWebInvokeAppService = ({ name, arg }) => {
   }
 };
 const Invoke = /* @__PURE__ */ once(() => UniServiceJSBridge.on(ON_WEB_INVOKE_APP_SERVICE, onWebInvokeAppService));
-const props$q = {
+const props$p = {
   src: {
     type: String,
     default: ""
@@ -12006,7 +11964,7 @@ class UniWebViewElement extends UniElement {
 const indexX$3 = /* @__PURE__ */ defineBuiltInComponent({
   inheritAttrs: false,
   name: "WebView",
-  props: props$q,
+  props: props$p,
   rootElement: {
     name: "uni-web-view",
     class: UniWebViewElement
@@ -12055,7 +12013,7 @@ const indexX$3 = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const props$p = {
+const props$o = {
   id: {
     type: [Number, String],
     default: ""
@@ -12141,7 +12099,7 @@ function useMarkerLabelStyle(id2) {
 }
 const MapMarker = /* @__PURE__ */ defineSystemComponent({
   name: "MapMarker",
-  props: props$p,
+  props: props$o,
   setup(props2) {
     const id2 = String(!isNaN(Number(props2.id)) ? props2.id : "");
     const onMapReady = inject("onMapReady");
@@ -12518,7 +12476,7 @@ function hexToRgba(hex) {
     a: (`0x100${sa}` - 65536) / 255
   };
 }
-const props$o = {
+const props$n = {
   points: {
     type: Array,
     require: true
@@ -12564,7 +12522,7 @@ const props$o = {
 };
 const MapPolyline = /* @__PURE__ */ defineSystemComponent({
   name: "MapPolyline",
-  props: props$o,
+  props: props$n,
   setup(props2) {
     const onMapReady = inject("onMapReady");
     let polyline;
@@ -12653,7 +12611,7 @@ const MapPolyline = /* @__PURE__ */ defineSystemComponent({
     };
   }
 });
-const props$n = {
+const props$m = {
   latitude: {
     type: [Number, String],
     require: true
@@ -12685,7 +12643,7 @@ const props$n = {
 };
 const MapCircle = /* @__PURE__ */ defineSystemComponent({
   name: "MapCircle",
-  props: props$n,
+  props: props$m,
   setup(props2) {
     const onMapReady = inject("onMapReady");
     let circle;
@@ -12761,7 +12719,7 @@ const MapCircle = /* @__PURE__ */ defineSystemComponent({
     };
   }
 });
-const props$m = {
+const props$l = {
   id: {
     type: [Number, String],
     default: ""
@@ -12785,7 +12743,7 @@ const props$m = {
 };
 const MapControl = /* @__PURE__ */ defineSystemComponent({
   name: "MapControl",
-  props: props$m,
+  props: props$l,
   setup(props2) {
     const imgPath = computed(() => getRealPath(props2.iconPath));
     const positionStyle = computed(() => {
@@ -13017,7 +12975,7 @@ const ModalTheme = {
   }
 };
 const setCancelColor = (theme, cancelColor) => cancelColor.value = ModalTheme[theme].cancelColor;
-const props$l = {
+const props$k = {
   title: {
     type: String,
     default: ""
@@ -13059,7 +13017,7 @@ const props$l = {
   }
 };
 const modal = /* @__PURE__ */ defineComponent({
-  props: props$l,
+  props: props$k,
   setup(props2, {
     emit: emit2
   }) {
@@ -13073,7 +13031,7 @@ const modal = /* @__PURE__ */ defineComponent({
         !props2.editable && confirm();
       }
     });
-    const cancelColor = useOnThemeChange$1(props2);
+    const cancelColor = useOnThemeChange(props2);
     return () => {
       const {
         title,
@@ -13129,7 +13087,7 @@ const modal = /* @__PURE__ */ defineComponent({
     };
   }
 });
-function useOnThemeChange$1(props2) {
+function useOnThemeChange(props2) {
   const cancelColor = ref(props2.cancelColor);
   const _onThemeChange = ({
     theme
@@ -13153,7 +13111,7 @@ function useOnThemeChange$1(props2) {
   return cancelColor;
 }
 let showModalState;
-const onHidePopupOnce$1 = /* @__PURE__ */ once(() => {
+const onHidePopupOnce = /* @__PURE__ */ once(() => {
   UniServiceJSBridge.on("onHidePopup", () => showModalState.visible = false);
 });
 let currentShowModalResolve;
@@ -13174,7 +13132,7 @@ const hideModal = () => {
 const showModal = /* @__PURE__ */ defineAsyncApi(
   API_SHOW_MODAL,
   (args, { resolve }) => {
-    onHidePopupOnce$1();
+    onHidePopupOnce();
     currentShowModalResolve = resolve;
     if (!showModalState) {
       showModalState = reactive(args);
@@ -13192,7 +13150,7 @@ const showModal = /* @__PURE__ */ defineAsyncApi(
   ShowModalProtocol,
   ShowModalOptions
 );
-const props$k = {
+const props$j = {
   title: {
     type: String,
     default: ""
@@ -13227,7 +13185,7 @@ const ICONCOLOR = {
 const getIconColor = (theme) => ICONCOLOR[theme];
 const Toast = /* @__PURE__ */ defineComponent({
   name: "Toast",
-  props: props$k,
+  props: props$j,
   setup(props2) {
     initI18nShowToastMsgsOnce();
     initI18nShowLoadingMsgsOnce();
@@ -13479,299 +13437,6 @@ function usePopupStyle(props2) {
     popupStyle
   };
 }
-const ACTION_SHEET_THEME = {
-  light: {
-    listItemColor: "#000000",
-    cancelItemColor: "#000000"
-  },
-  dark: {
-    listItemColor: "rgba(255, 255, 255, 0.8)",
-    cancelItemColor: "rgba(255, 255, 255)"
-  }
-};
-function setActionSheetTheme(theme, actionSheetTheme) {
-  const ActionSheetThemeKey = ["listItemColor", "cancelItemColor"];
-  ActionSheetThemeKey.forEach((key) => {
-    actionSheetTheme[key] = ACTION_SHEET_THEME[theme][key];
-  });
-}
-const props$j = {
-  title: {
-    type: String,
-    default: ""
-  },
-  itemList: {
-    type: Array,
-    default() {
-      return [];
-    }
-  },
-  itemColor: {
-    type: String,
-    default: "#000000"
-  },
-  popover: {
-    type: Object,
-    default: null
-  },
-  visible: {
-    type: Boolean,
-    default: false
-  }
-};
-const actionSheet = /* @__PURE__ */ defineComponent({
-  name: "ActionSheet",
-  props: props$j,
-  emits: ["close"],
-  setup(props2, {
-    emit: emit2
-  }) {
-    initI18nShowActionSheetMsgsOnce();
-    const HEIGHT = ref(336);
-    const contentHeight = ref(0);
-    const titleHeight = ref(0);
-    const deltaY = ref(0);
-    const scrollTop = ref(0);
-    const content = ref(null);
-    const main = ref(null);
-    const {
-      t: t2
-    } = useI18n();
-    const {
-      _close
-    } = useActionSheetLoader(props2, emit2);
-    const {
-      popupStyle
-    } = usePopupStyle(props2);
-    let scroller;
-    onMounted(() => {
-      const {
-        scroller: _scroller,
-        handleTouchStart,
-        handleTouchMove,
-        handleTouchEnd
-      } = useScroller(content.value, {
-        enableY: true,
-        friction: new Friction(1e-4),
-        spring: new Spring(2, 90, 20),
-        onScroll: (e2) => {
-          scrollTop.value = e2.target.scrollTop;
-        }
-      });
-      scroller = _scroller;
-      useTouchtrack(content.value, (e2) => {
-        if (_scroller) {
-          switch (e2.detail.state) {
-            case "start":
-              handleTouchStart(e2);
-              break;
-            case "move":
-              handleTouchMove(e2);
-              break;
-            case "end":
-            case "cancel":
-              handleTouchEnd(e2);
-          }
-        }
-      }, true);
-    });
-    function _handleWheel($event) {
-      const _deltaY = deltaY.value + $event.deltaY;
-      if (Math.abs(_deltaY) > 10) {
-        scrollTop.value += _deltaY / 3;
-        scrollTop.value = scrollTop.value >= contentHeight.value ? contentHeight.value : scrollTop.value <= 0 ? 0 : scrollTop.value;
-        scroller.scrollTo(scrollTop.value);
-      } else {
-        deltaY.value = _deltaY;
-      }
-      $event.preventDefault();
-    }
-    watch(() => props2.visible, () => {
-      nextTick(() => {
-        if (props2.title) {
-          titleHeight.value = document.querySelector(".uni-actionsheet__title").offsetHeight;
-        }
-        scroller.update();
-        if (content.value)
-          contentHeight.value = content.value.clientHeight - HEIGHT.value;
-        document.querySelectorAll(".uni-actionsheet__cell").forEach((item) => {
-          initClick(item);
-        });
-      });
-    });
-    const actionSheetTheme = useOnThemeChange(props2);
-    return () => {
-      return createVNode("uni-actionsheet", {
-        "onTouchmove": onEventPrevent
-      }, [createVNode(Transition, {
-        "name": "uni-fade"
-      }, {
-        default: () => [withDirectives(createVNode("div", {
-          "class": "uni-mask uni-actionsheet__mask",
-          "onClick": () => _close(-1)
-        }, null, 8, ["onClick"]), [[vShow, props2.visible]])]
-      }), createVNode("div", {
-        "class": ["uni-actionsheet", {
-          "uni-actionsheet_toggle": props2.visible
-        }],
-        "style": popupStyle.value.content
-      }, [createVNode("div", {
-        "ref": main,
-        "class": "uni-actionsheet__menu",
-        "onWheel": _handleWheel
-      }, [props2.title ? createVNode(Fragment, null, [createVNode("div", {
-        "class": "uni-actionsheet__cell",
-        "style": {
-          height: `${titleHeight.value}px`
-        }
-      }, null), createVNode("div", {
-        "class": "uni-actionsheet__title"
-      }, [props2.title])]) : "", createVNode("div", {
-        "style": {
-          maxHeight: `${HEIGHT.value}px`,
-          overflow: "hidden"
-        }
-      }, [createVNode("div", {
-        "ref": content
-      }, [props2.itemList.map((itemTitle, index2) => createVNode("div", {
-        "key": index2,
-        "style": {
-          color: actionSheetTheme.listItemColor
-        },
-        "class": "uni-actionsheet__cell",
-        "onClick": () => _close(index2)
-      }, [itemTitle], 12, ["onClick"]))], 512)])], 40, ["onWheel"]), createVNode("div", {
-        "class": "uni-actionsheet__action"
-      }, [createVNode("div", {
-        "style": {
-          color: actionSheetTheme.cancelItemColor
-        },
-        "class": "uni-actionsheet__cell",
-        "onClick": () => _close(-1)
-      }, [t2("uni.showActionSheet.cancel")], 12, ["onClick"])]), createVNode("div", {
-        "style": popupStyle.value.triangle
-      }, null, 4)], 6)], 40, ["onTouchmove"]);
-    };
-  }
-});
-function useActionSheetLoader(props2, emit2) {
-  function _close(tapIndex) {
-    emit2("close", tapIndex);
-  }
-  const {
-    key,
-    disable
-  } = useKeyboard();
-  watch(() => props2.visible, (value) => disable.value = !value);
-  watchEffect(() => {
-    const {
-      value
-    } = key;
-    if (value === "esc") {
-      _close && _close(-1);
-    }
-  });
-  return {
-    _close
-  };
-}
-function initClick(dom) {
-  const MAX_MOVE = 20;
-  let x = 0;
-  let y = 0;
-  dom.addEventListener("touchstart", (event) => {
-    const info = event.changedTouches[0];
-    x = info.clientX;
-    y = info.clientY;
-  });
-  dom.addEventListener("touchend", (event) => {
-    const info = event.changedTouches[0];
-    if (Math.abs(info.clientX - x) < MAX_MOVE && Math.abs(info.clientY - y) < MAX_MOVE) {
-      const target = event.target;
-      const currentTarget = event.currentTarget;
-      const customEvent = new CustomEvent("click", {
-        bubbles: true,
-        cancelable: true,
-        target,
-        currentTarget
-      });
-      ["screenX", "screenY", "clientX", "clientY", "pageX", "pageY"].forEach((key) => {
-        customEvent[key] = info[key];
-      });
-      event.target.dispatchEvent(customEvent);
-    }
-  });
-}
-function useOnThemeChange(props2) {
-  const actionSheetTheme = reactive({
-    listItemColor: "#000",
-    cancelItemColor: "#000"
-  });
-  const _onThemeChange = ({
-    theme
-  }) => {
-    setActionSheetTheme(theme, actionSheetTheme);
-  };
-  watchEffect(() => {
-    if (props2.visible) {
-      actionSheetTheme.listItemColor = actionSheetTheme.cancelItemColor = props2.itemColor;
-      if (props2.itemColor === "#000") {
-        _onThemeChange({
-          theme: getTheme()
-        });
-        onThemeChange$1(_onThemeChange);
-      }
-    } else {
-      offThemeChange(_onThemeChange);
-    }
-  });
-  return actionSheetTheme;
-}
-let resolveAction;
-let rejectAction;
-let showActionSheetState;
-const onHidePopupOnce = /* @__PURE__ */ once(() => {
-  UniServiceJSBridge.on(
-    "onHidePopup",
-    () => showActionSheetState.visible = false
-  );
-});
-function onActionSheetClose(tapIndex) {
-  if (tapIndex === -1) {
-    rejectAction && rejectAction("cancel");
-  } else {
-    resolveAction && resolveAction({ tapIndex });
-  }
-}
-const hideActionSheet = () => {
-  if (showActionSheetState) {
-    showActionSheetState.visible = false;
-  }
-};
-const showActionSheet = /* @__PURE__ */ defineAsyncApi(
-  API_SHOW_ACTION_SHEET,
-  (args, { resolve, reject }) => {
-    onHidePopupOnce();
-    resolveAction = resolve;
-    rejectAction = reject;
-    if (!showActionSheetState) {
-      showActionSheetState = reactive(args);
-      nextTick(
-        () => (createRootApp(
-          actionSheet,
-          showActionSheetState,
-          onActionSheetClose
-        ).mount(ensureRoot("u-s-a-s")), //下一帧执行，确保首次显示时有动画效果
-        nextTick(() => showActionSheetState.visible = true))
-      );
-    } else {
-      extend(showActionSheetState, args);
-      showActionSheetState.visible = true;
-    }
-  },
-  ShowActionSheetProtocol,
-  ShowActionSheetOptions
-);
 const loadFontFace = /* @__PURE__ */ defineAsyncApi(
   API_LOAD_FONT_FACE,
   ({ family, source, desc }, { resolve, reject }) => {
@@ -15052,6 +14717,279 @@ const getProvider = /* @__PURE__ */ defineAsyncApi(
   API_GET_PROVIDER,
   createUnsupportedAsyncApi(API_GET_PROVIDER)
 );
+function getRootInfo(fields2) {
+  const info = {};
+  if (fields2.id) {
+    info.id = "";
+  }
+  if (fields2.dataset) {
+    info.dataset = {};
+  }
+  if (fields2.rect) {
+    info.left = 0;
+    info.right = 0;
+    info.top = 0;
+    info.bottom = 0;
+  }
+  if (fields2.size) {
+    info.width = document.documentElement.clientWidth;
+    info.height = document.documentElement.clientHeight;
+  }
+  if (fields2.scrollOffset) {
+    const documentElement = document.documentElement;
+    const body = document.body;
+    info.scrollLeft = documentElement.scrollLeft || body.scrollLeft || 0;
+    info.scrollTop = documentElement.scrollTop || body.scrollTop || 0;
+    info.scrollHeight = documentElement.scrollHeight || body.scrollHeight || 0;
+    info.scrollWidth = documentElement.scrollWidth || body.scrollWidth || 0;
+  }
+  return info;
+}
+function getNodeInfo(el, fields2) {
+  const info = {};
+  const { top, topWindowHeight } = getWindowOffset();
+  if (fields2.node) {
+    const tagName = el.tagName.split("-")[1];
+    if (tagName) {
+      info.node = el.querySelector(tagName);
+    }
+  }
+  if (fields2.id) {
+    info.id = el.id;
+  }
+  if (fields2.dataset) {
+    info.dataset = getCustomDataset(el);
+  }
+  if (fields2.rect || fields2.size) {
+    const rect = el.getBoundingClientRect();
+    if (fields2.rect) {
+      info.left = rect.left;
+      info.right = rect.right;
+      info.top = rect.top - top - topWindowHeight;
+      info.bottom = rect.bottom - top - topWindowHeight;
+    }
+    if (fields2.size) {
+      info.width = rect.width;
+      info.height = rect.height;
+    }
+  }
+  if (isArray(fields2.properties)) {
+    fields2.properties.forEach((prop) => {
+      prop = prop.replace(/-([a-z])/g, function(e2, t2) {
+        return t2.toUpperCase();
+      });
+    });
+  }
+  if (fields2.scrollOffset) {
+    if (el.tagName === "SCROLL-VIEW") {
+      const scroll = el.children[0].children[0];
+      info.scrollLeft = scroll.scrollLeft;
+      info.scrollTop = scroll.scrollTop;
+      info.scrollHeight = scroll.scrollHeight;
+      info.scrollWidth = scroll.scrollWidth;
+    } else {
+      info.scrollLeft = 0;
+      info.scrollTop = 0;
+      info.scrollHeight = 0;
+      info.scrollWidth = 0;
+    }
+  }
+  if (isArray(fields2.computedStyle)) {
+    const sytle = getComputedStyle(el);
+    fields2.computedStyle.forEach((name) => {
+      info[name] = sytle[name];
+    });
+  }
+  if (fields2.context) {
+    info.contextInfo = getContextInfo(el);
+  }
+  return info;
+}
+function findElm(component, pageVm) {
+  if (!component) {
+    return pageVm.$el;
+  }
+  return component.$el;
+}
+function matches(element, selectors) {
+  const matches2 = element.matches || element.matchesSelector || element.mozMatchesSelector || element.msMatchesSelector || element.oMatchesSelector || element.webkitMatchesSelector || function(selectors2) {
+    const matches3 = this.parentElement.querySelectorAll(
+      selectors2
+    );
+    let i = matches3.length;
+    while (--i >= 0 && matches3.item(i) !== this) {
+    }
+    return i > -1;
+  };
+  return matches2.call(element, selectors);
+}
+class QuerySelectorHelper {
+  constructor(element, vnode) {
+    this._element = element;
+    this._commentStartVNode = vnode;
+  }
+  static queryElement(element, selector, fields2, all, vnode) {
+    return new QuerySelectorHelper(element, vnode).query(selector, all, fields2);
+  }
+  query(selector, all, fields2) {
+    const isFragment = (
+      // @ts-expect-error
+      this._element.nodeType === 3 || this._element.nodeType === 8
+    );
+    if (isFragment) {
+      return this.queryFragment(this._element, selector, all, fields2);
+    } else {
+      return all ? this.querySelectorAll(this._element, selector, fields2) : this.querySelector(this._element, selector, fields2);
+    }
+  }
+  queryFragment(el, selector, all, fields2) {
+    let current = el.nextSibling;
+    if (current == null) {
+      return null;
+    }
+    let depth = 65535;
+    if (all) {
+      const result1 = [];
+      while (depth > 0) {
+        depth--;
+        if (current.nodeName && current.nodeName == "#comment") {
+          current = current.nextSibling;
+          continue;
+        }
+        const queryResult = this.querySelectorAll(current, selector, fields2);
+        if (queryResult != null) {
+          result1.push(...queryResult);
+        }
+        current = current.nextSibling;
+        if (current == null || this._commentStartVNode.anchor == current) {
+          break;
+        }
+      }
+      return result1;
+    } else {
+      let result2 = null;
+      while (depth > 0) {
+        depth--;
+        if (current.nodeName && current.nodeName == "#comment") {
+          current = current.nextSibling;
+          continue;
+        }
+        result2 = this.querySelector(current, selector, fields2);
+        current = current.nextSibling;
+        if (result2 != null || current == null || this._commentStartVNode.anchor == current) {
+          break;
+        }
+      }
+      return result2;
+    }
+  }
+  querySelector(element, selector, fields2) {
+    let element2 = this.querySelf(element, selector);
+    if (element2 == null) {
+      element2 = element.querySelector(selector);
+    }
+    if (element2 != null) {
+      return this.getNodeInfo(element2, fields2);
+    }
+    return null;
+  }
+  querySelectorAll(element, selector, fields2) {
+    const nodesInfoArray = [];
+    const element2 = this.querySelf(element, selector);
+    if (element2 != null) {
+      nodesInfoArray.push(this.getNodeInfo(element, fields2));
+    }
+    const findNodes = element.querySelectorAll(selector);
+    findNodes == null ? void 0 : findNodes.forEach((el) => {
+      nodesInfoArray.push(this.getNodeInfo(el, fields2));
+    });
+    return nodesInfoArray;
+  }
+  querySelf(element, selector) {
+    if (element == null || selector.length < 2) {
+      return null;
+    }
+    const selectorType2 = selector.charAt(0);
+    const selectorName = selector.slice(1);
+    if (selectorType2 == "." && element.classList.contains(selectorName)) {
+      return element;
+    }
+    if (selectorType2 == "#" && element.getAttribute("id") == selectorName) {
+      return element;
+    }
+    if (selector.toUpperCase() == element.nodeName.toUpperCase()) {
+      return element;
+    }
+    return null;
+  }
+  getNodeInfo(element, fields2) {
+    var _a;
+    const rect = element.getBoundingClientRect();
+    const nodeInfo = {
+      id: (_a = element.getAttribute("id")) == null ? void 0 : _a.toString(),
+      left: rect.left,
+      top: rect.top,
+      right: rect.right,
+      bottom: rect.bottom,
+      width: rect.width,
+      height: rect.height
+    };
+    if (fields2.node) {
+      nodeInfo.node = element;
+    }
+    if (fields2.dataset) {
+      nodeInfo.dataset = {};
+    }
+    return nodeInfo;
+  }
+}
+function getNodesInfo(pageVm, component, selector, single, fields2) {
+  const selfElement = findElm(component, pageVm);
+  const parentElement = selfElement.parentElement;
+  if (!parentElement) {
+    return single ? null : [];
+  }
+  const { nodeType } = selfElement;
+  const maybeFragment = nodeType === 3 || nodeType === 8;
+  if (maybeFragment)
+    return QuerySelectorHelper.queryElement(
+      selfElement,
+      selector,
+      fields2,
+      !single,
+      component == null ? void 0 : component.$.subTree
+    );
+  if (single) {
+    const node = maybeFragment ? parentElement.querySelector(selector) : matches(selfElement, selector) ? selfElement : selfElement.querySelector(selector);
+    if (node) {
+      return getNodeInfo(node, fields2);
+    }
+    return null;
+  } else {
+    let infos = [];
+    const nodeList = (maybeFragment ? parentElement : selfElement).querySelectorAll(selector);
+    if (nodeList && nodeList.length) {
+      [].forEach.call(nodeList, (node) => {
+        infos.push(getNodeInfo(node, fields2));
+      });
+    }
+    if (!maybeFragment && matches(selfElement, selector)) {
+      infos.unshift(getNodeInfo(selfElement, fields2));
+    }
+    return infos;
+  }
+}
+function requestComponentInfo(page, reqs, callback) {
+  const result = [];
+  reqs.forEach(({ component, selector, single, fields: fields2 }) => {
+    if (component === null) {
+      result.push(getRootInfo(fields2));
+    } else {
+      result.push(getNodesInfo(page, component, selector, single, fields2));
+    }
+  });
+  callback(result);
+}
 class CanvasImage extends Image {
   constructor() {
     super();
@@ -15094,22 +15032,37 @@ class CanvasContextImpl {
 }
 const createCanvasContextAsync = function(options) {
   nextTick(() => {
-    var _a, _b, _c, _d, _e;
+    var _a;
     const pages = getCurrentBasePages();
     const currentPage = (_a = options.component) != null ? _a : pages[pages.length - 1];
-    const element = (_b = currentPage.$el) == null ? void 0 : _b.querySelector("#" + options.id);
-    if (element != null) {
-      const canvas = element;
-      (_c = options.success) == null ? void 0 : _c.call(options, new CanvasContextImpl(canvas));
-    } else {
-      const uniError = new UniError(
-        "uni-createCanvasContextAsync",
-        -1,
-        "canvas id invalid."
-      );
-      (_d = options.fail) == null ? void 0 : _d.call(options, uniError);
-    }
-    (_e = options.complete) == null ? void 0 : _e.call(options);
+    requestComponentInfo(
+      currentPage,
+      [
+        {
+          component: currentPage,
+          selector: "#" + options.id,
+          single: true,
+          fields: {
+            node: true
+          }
+        }
+      ],
+      (result) => {
+        var _a2, _b, _c;
+        if (result.length > 0) {
+          const canvas = result[0].node;
+          (_a2 = options.success) == null ? void 0 : _a2.call(options, new CanvasContextImpl(canvas));
+        } else {
+          const uniError = new UniError(
+            "uni-createCanvasContextAsync",
+            -1,
+            "canvas id invalid."
+          );
+          (_b = options.fail) == null ? void 0 : _b.call(options, uniError);
+        }
+        (_c = options.complete) == null ? void 0 : _c.call(options);
+      }
+    );
   });
 };
 const CONTEXT_ID = "MAP_LOCATION";
@@ -17552,7 +17505,7 @@ class ShowActionSheetFailImpl extends UniError {
     this.errCode = errCode;
   }
 }
-const showActionSheet2 = (options) => {
+const showActionSheet = (options) => {
   registerSystemRoute("uni:actionSheet", UniActionSheetPage);
   const uuid = `${Date.now()}${Math.floor(Math.random() * 1e7)}`;
   const baseEventName = `uni_action_sheet_${uuid}`;
@@ -17588,7 +17541,7 @@ const showActionSheet2 = (options) => {
     }
   });
 };
-const hideActionSheet2 = () => {
+const hideActionSheet = () => {
   var _a;
   const currentPage = getCurrentPage();
   if (!currentPage)
@@ -18907,7 +18860,6 @@ const api = /* @__PURE__ */ Object.defineProperty({
   getVideoInfo,
   getWindowInfo,
   hideActionSheet,
-  hideActionSheet2,
   hideKeyboard,
   hideLeftWindow,
   hideLoading,
@@ -19002,7 +18954,6 @@ const api = /* @__PURE__ */ Object.defineProperty({
   setTabBarStyle,
   setTopWindowStyle,
   showActionSheet,
-  showActionSheet2,
   showLeftWindow,
   showLoading,
   showModal,
@@ -19345,273 +19296,6 @@ function operateMap(id2, pageId, type, data, operateMapCallback2) {
     pageId,
     operateMapCallback2
   );
-}
-function getRootInfo(fields2) {
-  const info = {};
-  if (fields2.id) {
-    info.id = "";
-  }
-  if (fields2.dataset) {
-    info.dataset = {};
-  }
-  if (fields2.rect) {
-    info.left = 0;
-    info.right = 0;
-    info.top = 0;
-    info.bottom = 0;
-  }
-  if (fields2.size) {
-    info.width = document.documentElement.clientWidth;
-    info.height = document.documentElement.clientHeight;
-  }
-  if (fields2.scrollOffset) {
-    const documentElement = document.documentElement;
-    const body = document.body;
-    info.scrollLeft = documentElement.scrollLeft || body.scrollLeft || 0;
-    info.scrollTop = documentElement.scrollTop || body.scrollTop || 0;
-    info.scrollHeight = documentElement.scrollHeight || body.scrollHeight || 0;
-    info.scrollWidth = documentElement.scrollWidth || body.scrollWidth || 0;
-  }
-  return info;
-}
-function getNodeInfo(el, fields2) {
-  const info = {};
-  const { top, topWindowHeight } = getWindowOffset();
-  if (fields2.node) {
-    const tagName = el.tagName.split("-")[1];
-    if (tagName) {
-      info.node = el.querySelector(tagName);
-    }
-  }
-  if (fields2.id) {
-    info.id = el.id;
-  }
-  if (fields2.dataset) {
-    info.dataset = getCustomDataset(el);
-  }
-  if (fields2.rect || fields2.size) {
-    const rect = el.getBoundingClientRect();
-    if (fields2.rect) {
-      info.left = rect.left;
-      info.right = rect.right;
-      info.top = rect.top - top - topWindowHeight;
-      info.bottom = rect.bottom - top - topWindowHeight;
-    }
-    if (fields2.size) {
-      info.width = rect.width;
-      info.height = rect.height;
-    }
-  }
-  if (isArray(fields2.properties)) {
-    fields2.properties.forEach((prop) => {
-      prop = prop.replace(/-([a-z])/g, function(e2, t2) {
-        return t2.toUpperCase();
-      });
-    });
-  }
-  if (fields2.scrollOffset) {
-    if (el.tagName === "SCROLL-VIEW") {
-      const scroll = el.children[0].children[0];
-      info.scrollLeft = scroll.scrollLeft;
-      info.scrollTop = scroll.scrollTop;
-      info.scrollHeight = scroll.scrollHeight;
-      info.scrollWidth = scroll.scrollWidth;
-    } else {
-      info.scrollLeft = 0;
-      info.scrollTop = 0;
-      info.scrollHeight = 0;
-      info.scrollWidth = 0;
-    }
-  }
-  if (isArray(fields2.computedStyle)) {
-    const sytle = getComputedStyle(el);
-    fields2.computedStyle.forEach((name) => {
-      info[name] = sytle[name];
-    });
-  }
-  if (fields2.context) {
-    info.contextInfo = getContextInfo(el);
-  }
-  return info;
-}
-function findElm(component, pageVm) {
-  if (!component) {
-    return pageVm.$el;
-  }
-  return component.$el;
-}
-function matches(element, selectors) {
-  const matches2 = element.matches || element.matchesSelector || element.mozMatchesSelector || element.msMatchesSelector || element.oMatchesSelector || element.webkitMatchesSelector || function(selectors2) {
-    const matches3 = this.parentElement.querySelectorAll(
-      selectors2
-    );
-    let i = matches3.length;
-    while (--i >= 0 && matches3.item(i) !== this) {
-    }
-    return i > -1;
-  };
-  return matches2.call(element, selectors);
-}
-class QuerySelectorHelper {
-  constructor(element, vnode) {
-    this._element = element;
-    this._commentStartVNode = vnode;
-  }
-  static queryElement(element, selector, all, vnode) {
-    return new QuerySelectorHelper(element, vnode).query(selector, all);
-  }
-  query(selector, all) {
-    const isFragment = (
-      // @ts-expect-error
-      this._element.nodeType === 3 || this._element.nodeType === 8
-    );
-    if (isFragment) {
-      return this.queryFragment(this._element, selector, all);
-    } else {
-      return all ? this.querySelectorAll(this._element, selector) : this.querySelector(this._element, selector);
-    }
-  }
-  queryFragment(el, selector, all) {
-    let current = el.nextSibling;
-    if (current == null) {
-      return null;
-    }
-    let depth = 65535;
-    if (all) {
-      const result1 = [];
-      while (depth > 0) {
-        depth--;
-        if (current.nodeName && current.nodeName == "#comment") {
-          current = current.nextSibling;
-          continue;
-        }
-        const queryResult = this.querySelectorAll(current, selector);
-        if (queryResult != null) {
-          result1.push(...queryResult);
-        }
-        current = current.nextSibling;
-        if (current == null || this._commentStartVNode.anchor == current) {
-          break;
-        }
-      }
-      return result1;
-    } else {
-      let result2 = null;
-      while (depth > 0) {
-        depth--;
-        if (current.nodeName && current.nodeName == "#comment") {
-          current = current.nextSibling;
-          continue;
-        }
-        result2 = this.querySelector(current, selector);
-        current = current.nextSibling;
-        if (result2 != null || current == null || this._commentStartVNode.anchor == current) {
-          break;
-        }
-      }
-      return result2;
-    }
-  }
-  querySelector(element, selector) {
-    let element2 = this.querySelf(element, selector);
-    if (element2 == null) {
-      element2 = element.querySelector(selector);
-    }
-    if (element2 != null) {
-      return this.getNodeInfo(element2);
-    }
-    return null;
-  }
-  querySelectorAll(element, selector) {
-    const nodesInfoArray = [];
-    const element2 = this.querySelf(element, selector);
-    if (element2 != null) {
-      nodesInfoArray.push(this.getNodeInfo(element));
-    }
-    const findNodes = element.querySelectorAll(selector);
-    findNodes == null ? void 0 : findNodes.forEach((el) => {
-      nodesInfoArray.push(this.getNodeInfo(el));
-    });
-    return nodesInfoArray;
-  }
-  querySelf(element, selector) {
-    if (element == null || selector.length < 2) {
-      return null;
-    }
-    const selectorType2 = selector.charAt(0);
-    const selectorName = selector.slice(1);
-    if (selectorType2 == "." && element.classList.contains(selectorName)) {
-      return element;
-    }
-    if (selectorType2 == "#" && element.getAttribute("id") == selectorName) {
-      return element;
-    }
-    if (selector.toUpperCase() == element.nodeName.toUpperCase()) {
-      return element;
-    }
-    return null;
-  }
-  getNodeInfo(element) {
-    var _a;
-    const rect = element.getBoundingClientRect();
-    const nodeInfo = {
-      id: (_a = element.getAttribute("id")) == null ? void 0 : _a.toString(),
-      dataset: null,
-      left: rect.left,
-      top: rect.top,
-      right: rect.right,
-      bottom: rect.bottom,
-      width: rect.width,
-      height: rect.height
-    };
-    return nodeInfo;
-  }
-}
-function getNodesInfo(pageVm, component, selector, single, fields2) {
-  const selfElement = findElm(component, pageVm);
-  const parentElement = selfElement.parentElement;
-  if (!parentElement) {
-    return single ? null : [];
-  }
-  const { nodeType } = selfElement;
-  const maybeFragment = nodeType === 3 || nodeType === 8;
-  if (maybeFragment)
-    return QuerySelectorHelper.queryElement(
-      selfElement,
-      selector,
-      !single,
-      component == null ? void 0 : component.$.subTree
-    );
-  if (single) {
-    const node = maybeFragment ? parentElement.querySelector(selector) : matches(selfElement, selector) ? selfElement : selfElement.querySelector(selector);
-    if (node) {
-      return getNodeInfo(node, fields2);
-    }
-    return null;
-  } else {
-    let infos = [];
-    const nodeList = (maybeFragment ? parentElement : selfElement).querySelectorAll(selector);
-    if (nodeList && nodeList.length) {
-      [].forEach.call(nodeList, (node) => {
-        infos.push(getNodeInfo(node, fields2));
-      });
-    }
-    if (!maybeFragment && matches(selfElement, selector)) {
-      infos.unshift(getNodeInfo(selfElement, fields2));
-    }
-    return infos;
-  }
-}
-function requestComponentInfo(page, reqs, callback) {
-  const result = [];
-  reqs.forEach(({ component, selector, single, fields: fields2 }) => {
-    if (component === null) {
-      result.push(getRootInfo(fields2));
-    } else {
-      result.push(getNodesInfo(page, component, selector, single, fields2));
-    }
-  });
-  callback(result);
 }
 function setCurrentPageMeta(_page, { pageStyle, rootFontSize }) {
   if (pageStyle) {
@@ -21717,7 +21401,7 @@ function useQuill(props2, rootRef, trigger) {
     });
   });
 }
-const props$d = /* @__PURE__ */ extend({}, props$u, {
+const props$d = /* @__PURE__ */ extend({}, props$t, {
   id: {
     type: String,
     default: ""
@@ -22417,7 +22101,7 @@ const props$b = /* @__PURE__ */ extend(
       default: ""
     }
   },
-  props$u
+  props$t
 );
 const emit = [
   "input",
@@ -29614,7 +29298,6 @@ function initApp(app) {
 function initRouter(app) {
   const router = createRouter(createRouterOptions());
   router.beforeEach((to, from) => {
-    hideActionSheet();
     hideModal();
     uni.hideToast();
     uni.hideLoading();
@@ -29890,7 +29573,6 @@ export {
   getVideoInfo,
   getWindowInfo,
   hideActionSheet,
-  hideActionSheet2,
   hideKeyboard,
   hideLeftWindow,
   hideLoading,
@@ -29989,7 +29671,6 @@ export {
   setupPage,
   setupWindow,
   showActionSheet,
-  showActionSheet2,
   showLeftWindow,
   showLoading,
   showModal,
