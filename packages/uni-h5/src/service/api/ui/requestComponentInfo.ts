@@ -164,26 +164,32 @@ class QuerySelectorHelper {
   static queryElement(
     element: UniElement,
     selector: string,
+    fields: NodeField,
     all: boolean,
     vnode: VNode | undefined
   ): any | null {
-    return new QuerySelectorHelper(element, vnode).query(selector, all)
+    return new QuerySelectorHelper(element, vnode).query(selector, all, fields)
   }
 
-  query(selector: string, all: boolean): any | null {
+  query(selector: string, all: boolean, fields: NodeField): any | null {
     const isFragment =
       // @ts-expect-error
       this._element.nodeType === 3 || this._element.nodeType === 8
     if (isFragment) {
-      return this.queryFragment(this._element, selector, all)
+      return this.queryFragment(this._element, selector, all, fields)
     } else {
       return all
-        ? this.querySelectorAll(this._element, selector)
-        : this.querySelector(this._element, selector)
+        ? this.querySelectorAll(this._element, selector, fields)
+        : this.querySelector(this._element, selector, fields)
     }
   }
 
-  queryFragment(el: UniElement, selector: string, all: boolean): any | null {
+  queryFragment(
+    el: UniElement,
+    selector: string,
+    all: boolean,
+    fields: NodeField
+  ): any | null {
     let current = el.nextSibling
     if (current == null) {
       return null
@@ -200,7 +206,7 @@ class QuerySelectorHelper {
           current = current.nextSibling
           continue
         }
-        const queryResult = this.querySelectorAll(current!, selector)
+        const queryResult = this.querySelectorAll(current!, selector, fields)
         if (queryResult != null) {
           result1.push(...queryResult)
         }
@@ -221,7 +227,7 @@ class QuerySelectorHelper {
           current = current.nextSibling
           continue
         }
-        result2 = this.querySelector(current!, selector)
+        result2 = this.querySelector(current!, selector, fields)
         // @ts-expect-error
         current = current.nextSibling
         if (
@@ -238,30 +244,32 @@ class QuerySelectorHelper {
 
   querySelector(
     element: UniElement,
-    selector: string
+    selector: string,
+    fields: NodeField
   ): SelectorQueryNodeInfo | null {
     let element2 = this.querySelf(element, selector)
     if (element2 == null) {
       element2 = element.querySelector(selector)
     }
     if (element2 != null) {
-      return this.getNodeInfo(element2)
+      return this.getNodeInfo(element2, fields)
     }
     return null
   }
 
   querySelectorAll(
     element: UniElement,
-    selector: string
+    selector: string,
+    fields: NodeField
   ): Array<SelectorQueryNodeInfo> | null {
     const nodesInfoArray: Array<SelectorQueryNodeInfo> = []
     const element2 = this.querySelf(element, selector)
     if (element2 != null) {
-      nodesInfoArray.push(this.getNodeInfo(element))
+      nodesInfoArray.push(this.getNodeInfo(element, fields))
     }
     const findNodes = element.querySelectorAll(selector)
     findNodes?.forEach((el: UniElement) => {
-      nodesInfoArray.push(this.getNodeInfo(el))
+      nodesInfoArray.push(this.getNodeInfo(el, fields))
     })
     return nodesInfoArray
   }
@@ -287,11 +295,10 @@ class QuerySelectorHelper {
     return null
   }
 
-  getNodeInfo(element: UniElement): SelectorQueryNodeInfo {
+  getNodeInfo(element: UniElement, fields: NodeField): SelectorQueryNodeInfo {
     const rect = element.getBoundingClientRect()
     const nodeInfo = {
       id: element.getAttribute('id')?.toString(),
-      dataset: null,
       left: rect.left,
       top: rect.top,
       right: rect.right,
@@ -299,6 +306,12 @@ class QuerySelectorHelper {
       width: rect.width,
       height: rect.height,
     } as SelectorQueryNodeInfo
+    if (fields.node) {
+      nodeInfo.node = element
+    }
+    if (fields.dataset) {
+      nodeInfo.dataset = {}
+    }
     return nodeInfo
   }
 }
@@ -324,6 +337,7 @@ function getNodesInfo(
     return QuerySelectorHelper.queryElement(
       selfElement as unknown as UniElement,
       selector,
+      fields,
       !single,
       component?.$.subTree
     )
