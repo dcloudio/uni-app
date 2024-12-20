@@ -1,1 +1,0 @@
-export default "/uni_modules/test-com/static/uni_modules-test-com-static_shuijiao.jpg"

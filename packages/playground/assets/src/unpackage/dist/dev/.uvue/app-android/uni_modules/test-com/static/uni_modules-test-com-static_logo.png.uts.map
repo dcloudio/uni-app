@@ -1,1 +1,0 @@
-{"version":3,"file":"uni_modules-test-com-static_logo.png.uts","sourceRoot":"","sources":["uni_modules/test-com/static/uni_modules-test-com-static_logo.png.ts"],"names":[],"mappings":"AAAA,eAAe,yBAAyB,CAAA","sourcesContent":["export default \"/static/static_logo.png\""]}

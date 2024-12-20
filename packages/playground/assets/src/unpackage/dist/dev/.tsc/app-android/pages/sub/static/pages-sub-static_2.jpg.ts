@@ -1,1 +1,0 @@
-export default "/pages/sub/static/pages-sub-static_2.jpg"
