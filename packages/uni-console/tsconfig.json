@@ -4,5 +4,6 @@
     "paths": {
       "@dcloudio/*": ["packages/*/src"]
     }
-  }
+  },
+  "include": ["src"]
 }

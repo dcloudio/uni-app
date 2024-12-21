@@ -8,5 +8,6 @@
       ],
       "@dcloudio/uni-mp-polyfill": ["packages/uni-mp-core/src/runtime/polyfill"]
     }
-  }
+  },
+  "include": ["src"]
 }
