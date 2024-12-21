@@ -10,6 +10,7 @@ import alias from '@rollup/plugin-alias'
 import nodeResolve from '@rollup/plugin-node-resolve'
 import commonjs from '@rollup/plugin-commonjs'
 import { getBabelOutputPlugin } from '@rollup/plugin-babel'
+import terser from '@rollup/plugin-terser'
 
 if (!process.env.TARGET) {
   throw new Error('TARGET package must be specified via --environment flag.')
@@ -149,6 +150,9 @@ function createConfig(entryFile, output, buildOption) {
     tsPlugin,
     createReplacePlugin(buildOption, output.format),
   ]
+  if (buildOption.output?.compact) {
+    plugins.push(terser())
+  }
   if (process.env.TARGET !== 'uni-push' && process.env.TARGET !== 'uni-stat') {
     plugins.unshift(jscc({
       values: {

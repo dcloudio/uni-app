@@ -39,5 +39,22 @@
       "target": "es5",
       "declaration": false
     }
+  },
+  {
+    "input": {
+      "src/runtime/webview.ts": "dist/webview.prod.js"
+    },
+    "output": {
+      "format": "iife",
+      "compact": true
+    },
+    "replacements": {
+      "__UNI_CONSOLE_KEEP_ORIGINAL__": true,
+      "__UNI_CONSOLE_WEBVIEW__": true
+    },
+    "compilerOptions": {
+      "target": "es5",
+      "declaration": false
+    }
   }
 ]
