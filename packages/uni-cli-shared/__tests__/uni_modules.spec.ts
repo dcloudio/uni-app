@@ -2,23 +2,21 @@ import path from 'path'
 import {
   findEncryptUniModules,
   findUploadEncryptUniModulesFiles,
+  parseUniModulesWithComponents,
 } from '../src/uni_modules.cloud'
 import { normalizePath } from '../src/utils'
 
 const platforms = ['app-android', 'app-ios', 'web'] as const
 describe('uni_modules:uni-ext-api', () => {
   const inputDir = path.resolve(__dirname, '../../playground/uni_modules/src')
-  test('findEncryptUniModules', () => {
-    expect(findEncryptUniModules(inputDir)).toStrictEqual({
-      'test-com1': undefined,
-      'test-com2': undefined,
-    })
-  })
 
   platforms.forEach((platform) => {
+    test(`findEncryptUniModules(${platform})`, () => {
+      expect(findEncryptUniModules(platform, inputDir)).toMatchSnapshot()
+    })
     test(`findUploadEncryptUniModulesFiles(${platform})`, () => {
       const modules = findUploadEncryptUniModulesFiles(
-        findEncryptUniModules(inputDir),
+        findEncryptUniModules(platform, inputDir),
         platform,
         inputDir
       )
@@ -31,5 +29,18 @@ describe('uni_modules:uni-ext-api', () => {
         }, [])
       ).toMatchSnapshot()
     })
+  })
+})
+describe('uni_modules:cloud', () => {
+  const inputDir = path.resolve(__dirname, 'examples/cloud')
+  test('parseUniModulesWithComponents', () => {
+    expect(
+      parseUniModulesWithComponents(inputDir, 'app-android')
+    ).toMatchSnapshot()
+    expect(parseUniModulesWithComponents(inputDir, 'app-ios')).toMatchSnapshot()
+    expect(parseUniModulesWithComponents(inputDir, 'web')).toMatchSnapshot()
+    expect(
+      parseUniModulesWithComponents(inputDir, 'mp-weixin')
+    ).toMatchSnapshot()
   })
 })
