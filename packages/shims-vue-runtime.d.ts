@@ -1,9 +1,20 @@
 import type { EventChannel, UniLifecycleHooks } from '@dcloudio/uni-shared'
-import { ComponentCustomProperties, ComponentInternalInstance } from 'vue'
-import type { IPage } from '@dcloudio/uni-app-x/types/native'
+import type { ComponentCustomProperties, ComponentInternalInstance } from 'vue'
+import type {
+  IPage,
+  UniElement,
+  ViewToTempFilePathOptions,
+} from '@dcloudio/uni-app-x/types/native'
 import type { UniDialogPage } from '@dcloudio/uni-app-x/types/page'
 
 declare module '@vue/runtime-core' {
+  // 小程序
+  interface ComponentCustomProperties {
+    $vm: ComponentPublicInstance
+    globalData: Record<string, any>
+    $callHook: (hook: string, args?: unknown, extras?: unknown) => unknown
+    $callCreatedHook: () => void
+  }
   interface ComponentCustomOptions {
     rootElement?:
       | {
@@ -55,7 +66,11 @@ declare module '@vue/runtime-core' {
     __isTabBar?: boolean
     // mp
     $updateScopedSlots: () => void
-    $scopedSlotsData?: { path: string; index: number; data: Data }[]
+    $scopedSlotsData?: {
+      path: string
+      index: number
+      data: Record<string, unknown>
+    }[]
     // h5 | app
     $wxsModules?: string[]
     // 暂定 h5
@@ -88,14 +103,19 @@ declare module '@vue/runtime-core' {
     type: string,
     hook: Function,
     target: ComponentInternalInstance | null,
-    prepend: boolean = false
+    prepend?: boolean
   ) => Function | undefined
   export const isInSSRComponentSetup: boolean
 
   export const logError: (
     err: unknown,
-    type: ErrorTypes,
+    type: string,
     contextVNode: VNode | null,
     throwInDev?: boolean
   ) => void
+
+  export function registerCustomElement(
+    tagName: string,
+    elementClass: unknown
+  ): void
 }

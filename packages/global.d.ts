@@ -1,3 +1,4 @@
+declare var global: typeof globalThis
 declare var __VUE__: any
 declare var Vue: any
 declare var weex: any
@@ -10,6 +11,7 @@ declare var ks: any
 declare var jd: any
 declare var xhs: any
 declare var has: any
+declare var my: any
 declare var __NVUE__: undefined | boolean
 declare var __PLATFORM__: UniApp.PLATFORM
 declare var __PLATFORM_PREFIX__:
@@ -91,70 +93,4 @@ declare class UTSJSONObject {
 interface Require {
   resolve: NodeRequire['resolve']
   cache: NodeRequire['cache']
-}
-
-declare class UniNormalPageImpl implements UniPage {
-  vm: ComponentPublicInstance
-  $vm: ComponentPublicInstance
-  route: string
-  options: UTSJSONObject
-  getParentPage: () => UniPage | null
-  getParentPageByJS: () => UniPage | null
-  getDialogPages(): UniDialogPage[]
-  getPageStyle(): UTSJSONObject
-  $getPageStyle(): UTSJSONObject
-  getPageStyleByJS(): UTSJSONObject
-  setPageStyle(style: UTSJSONObject): void
-  $setPageStyle(style: UTSJSONObject): void
-  setPageStyleByJS(style: UTSJSONObject): void
-  getElementById(id: string.IDString | string): UniElement | null
-  getAndroidView(): null
-  getIOSView(): null
-  getHTMLElement(): null
-}
-
-declare class UniDialogPageImpl implements UniPage {
-  vm: ComponentPublicInstance
-  $vm: ComponentPublicInstance
-  route: string
-  options: UTSJSONObject
-  getParentPage: () => UniPage | null
-  getParentPageByJS: () => UniPage | null
-  getDialogPages(): UniDialogPage[]
-  getPageStyle(): UTSJSONObject
-  $getPageStyle(): UTSJSONObject
-  getPageStyleByJS(): UTSJSONObject
-  setPageStyle(style: UTSJSONObject): void
-  $setPageStyle(style: UTSJSONObject): void
-  setPageStyleByJS(style: UTSJSONObject): void
-  getElementById(id: string.IDString | string): UniElement | null
-  getAndroidView(): null
-  getIOSView(): null
-  getHTMLElement(): null
-  $component: any | null
-  $disableEscBack: boolean
-  $triggerParentHide: boolean
-}
-
-interface Uni {
-  openDialogPage: (options: {
-    url: string
-    animationType?:
-      | 'auto'
-      | 'none'
-      | 'slide-in-right'
-      | 'slide-in-left'
-      | 'slide-in-top'
-      | 'slide-in-bottom'
-      | 'fade-in'
-      | 'zoom-out'
-      | 'zoom-fade-out'
-      | null
-    animationDuration?: number | null
-    disableEscBack?: boolean | null
-    parentPage?: UniPage | null
-    success?: OpenDialogPageSuccessCallback | null
-    fail?: OpenDialogPageFailCallback | null
-    complete?: OpenDialogPageCompleteCallback | null
-  }) => UniPage | null
 }

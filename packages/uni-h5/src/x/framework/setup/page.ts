@@ -12,7 +12,7 @@ import type {
   UniPage,
 } from '@dcloudio/uni-app-x/types/page'
 //#if !_NODE_JS_
-import { closeDialogPage } from '../../service/api'
+import { closeDialogPage } from '../../service/api/route/closeDialogPage'
 //#endif
 import {
   currentPagesMap,

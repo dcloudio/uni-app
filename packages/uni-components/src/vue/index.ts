@@ -1,61 +1,31 @@
-import Button, { UniButtonElement } from './button/index'
-//#if _X_
-// @ts-expect-error
-import Canvas, { UniCanvasElement } from './canvas/index-x'
-//#else
-// @ts-expect-error
-import Canvas, { UniCanvasElement } from './canvas/index'
-//#endif
-import Checkbox, { UniCheckboxElement } from './checkbox/index'
-import CheckboxGroup, { UniCheckboxGroupElement } from './checkbox-group/index'
-import Editor, { UniEditorElement } from './editor/index'
-import Form, { UniFormElement } from './form/index'
-import Icon, { UniIconElement } from './icon/index'
-import Image, { UniImageElement } from './image/index'
-import Input, { UniInputElement } from './input/index'
-import Label, { UniLabelElement } from './label/index'
-import MovableArea, { UniMovableAreaElement } from './movable-area/index'
-import MovableView, { UniMovableViewElement } from './movable-view/index'
-import Navigator, { UniNavigatorElement } from './navigator'
-import PickerView, { UniPickerViewElement } from './picker-view/index'
-import PickerViewColumn, {
-  UniPickerViewColumnElement,
-} from './picker-view-column/index'
-import Progress, { UniProgressElement } from './progress/index'
-//#if _X_
-// @ts-expect-error
-import Radio, { UniRadioElement } from './radio/index-x'
-//#else
-// @ts-expect-error
+import Button from './button/index'
+import Canvas from './canvas/index'
+import Checkbox from './checkbox/index'
+import CheckboxGroup from './checkbox-group/index'
+import Editor from './editor/index'
+import Form from './form/index'
+import Icon from './icon/index'
+import Image from './image/index'
+import Input from './input/index'
+import Label from './label/index'
+import MovableArea from './movable-area/index'
+import MovableView from './movable-view/index'
+import Navigator from './navigator'
+import PickerView from './picker-view/index'
+import PickerViewColumn from './picker-view-column/index'
+import Progress from './progress/index'
 import Radio from './radio/index'
-//#endif
-import RadioGroup, { UniRadioGroupElement } from './radio-group/index'
+import RadioGroup from './radio-group/index'
 import ResizeSensor from './resize-sensor/index'
-import RichText, { UniRichTextElement } from './rich-text'
-import ScrollView, { UniScrollViewElement } from './scroll-view/index'
-//#if _X_
-// @ts-expect-error
-import Slider, { UniSliderElement } from './slider/index-x'
-//#else
-// @ts-expect-error
+import RichText from './rich-text'
+import ScrollView from './scroll-view/index'
 import Slider from './slider/index'
-//#endif
-import Swiper, { UniSwiperElement } from './swiper/index'
-import SwiperItem, { UniSwiperItemElement } from './swiper-item/index'
-//#if _X_
-// @ts-expect-error
-import Switch, { UniSwitchElement } from './switch/index-x'
-//#else
-// @ts-expect-error
+import Swiper from './swiper/index'
+import SwiperItem from './swiper-item/index'
 import Switch from './switch/index'
-//#endif
-import Text, { UniTextElement } from './text/index'
-import Textarea, { UniTextareaElement } from './textarea/index'
-import View, { UniViewElement } from './view/index'
-import ListView, { UniListViewElement } from './list-view/index'
-import ListItem, { UniListItemElement } from './list-item/index'
-import StickySection, { UniStickySectionElement } from './sticky-section/index'
-import StickyHeader, { UniStickyHeaderElement } from './sticky-header/index'
+import Text from './text/index'
+import Textarea from './textarea/index'
+import View from './view/index'
 export {
   Button,
   Canvas,
@@ -85,39 +55,4 @@ export {
   Text,
   Textarea,
   View,
-  ListView,
-  ListItem,
-  StickySection,
-  StickyHeader,
-  UniButtonElement,
-  UniCanvasElement,
-  UniCheckboxElement,
-  UniCheckboxGroupElement,
-  UniEditorElement,
-  UniFormElement,
-  UniIconElement,
-  UniImageElement,
-  UniInputElement,
-  UniLabelElement,
-  UniMovableAreaElement,
-  UniMovableViewElement,
-  UniNavigatorElement,
-  UniPickerViewElement,
-  UniPickerViewColumnElement,
-  UniProgressElement,
-  UniRadioElement,
-  UniRadioGroupElement,
-  UniRichTextElement,
-  UniScrollViewElement,
-  UniSliderElement,
-  UniSwiperElement,
-  UniSwiperItemElement,
-  UniSwitchElement,
-  UniTextElement,
-  UniTextareaElement,
-  UniViewElement,
-  UniListViewElement,
-  UniListItemElement,
-  UniStickySectionElement,
-  UniStickyHeaderElement,
 }

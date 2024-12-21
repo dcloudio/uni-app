@@ -6,7 +6,7 @@ import {
 
 const propsCaches: Record<string, Record<string, any>[]> = Object.create(null)
 
-export function renderProps(props: Data) {
+export function renderProps(props: Record<string, unknown>) {
   const { uid, __counter } =
     getCurrentInstance()! as ComponentInternalInstance & {
       __counter: number

@@ -122,6 +122,8 @@ function createConfig(entryFile, output, buildOption) {
       exclude: ['**/__tests__', 'test-dts'],
     },
     useTsconfigDeclarationDir: true,
+    clean: false,
+    verbosity: 0
   }
   const tsPlugin = ts(tsOptions)
 

@@ -31,7 +31,7 @@ import {
 import { updateCurPageCssVar } from '../../helpers/cssVar'
 import { getStateId } from '../../helpers/dom'
 //#if _X_ && !_NODE_JS_
-import { closeDialogPage } from '../../x/service/api'
+import { closeDialogPage } from '../../x/service/api/route/closeDialogPage'
 //#endif
 //#if _X_
 import { initXPage } from '../../x/framework/setup/page'

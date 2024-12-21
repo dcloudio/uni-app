@@ -1,12 +1,3 @@
-declare module '@vue/runtime-core' {
-  interface ComponentCustomProperties {
-    $vm: ComponentPublicInstance
-    globalData: Record<string, any>
-    $callHook: (hook: string, args?: unknown, extras?: unknown) => unknown
-    $callCreatedHook: () => void
-  }
-}
-
 export { initCreateApp, initCreateSubpackageApp } from './runtime/app'
 export { initCreatePage } from './runtime/page'
 export { initCreateComponent, ParseComponentOptions } from './runtime/component'
