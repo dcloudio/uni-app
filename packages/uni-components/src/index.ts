@@ -1,6 +1,7 @@
 // #if _X_
 export * from './vue/index-x'
 // #else
+// @ts-expect-error
 export * from './vue/index'
 // #endif
 

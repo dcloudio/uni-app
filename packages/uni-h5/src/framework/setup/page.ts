@@ -153,7 +153,10 @@ export function initPublicPage(route: RouteLocationNormalizedLoaded) {
     return initPageInternalInstance('navigateTo', __uniRoutes[0].path, {}, meta)
   }
   let fullPath = route.fullPath
-  if (route.meta.isEntry && fullPath.indexOf(route.meta.route) === -1) {
+  if (
+    route.meta.isEntry &&
+    fullPath.indexOf(route.meta.route as string) === -1
+  ) {
     fullPath = '/' + route.meta.route + fullPath.replace('/', '')
   }
   return initPageInternalInstance('navigateTo', fullPath, {}, meta)
