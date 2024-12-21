@@ -102,7 +102,7 @@
     "rollup-plugin-jscc": "^2.0.0",
     "rollup-plugin-node-builtins": "^2.1.2",
     "rollup-plugin-node-globals": "^1.4.0",
-    "rollup-plugin-typescript2": "^0.29.0",
+    "rollup-plugin-typescript2": "0.32.0",
     "semver": "^7.3.5",
     "simple-git-hooks": "^2.8.0",
     "terser": "^5.4.0",

@@ -53,21 +53,26 @@ function rewriteConsole() {
         };
     }
     else {
-        // @ts-expect-error
-        const oldLog = uni.__f__;
-        if (oldLog) {
-            // 重写 uni.__f__ 方法，这样的话，仅能打印开发者代码里的日志，其他没有被重写为__f__的日志将无法打印（比如uni-app框架、小程序框架等）
+        {
             // @ts-expect-error
-            uni.__f__ = function (...args) {
-                const [type, filename, ...rest] = args;
-                // 原始日志移除 filename
-                oldLog(type, '', ...rest);
-                sendConsoleMessages([formatMessage(type, [...rest, filename])]);
-            };
-            return function restoreConsole() {
+            if (typeof uni !== 'undefined' && uni.__f__) {
                 // @ts-expect-error
-                uni.__f__ = oldLog;
-            };
+                const oldLog = uni.__f__;
+                if (oldLog) {
+                    // 重写 uni.__f__ 方法，这样的话，仅能打印开发者代码里的日志，其他没有被重写为__f__的日志将无法打印（比如uni-app框架、小程序框架等）
+                    // @ts-expect-error
+                    uni.__f__ = function (...args) {
+                        const [type, filename, ...rest] = args;
+                        // 原始日志移除 filename
+                        oldLog(type, '', ...rest);
+                        sendConsoleMessages([formatMessage(type, [...rest, filename])]);
+                    };
+                    return function restoreConsole() {
+                        // @ts-expect-error
+                        uni.__f__ = oldLog;
+                    };
+                }
+            }
         }
     }
     return function restoreConsole() { };

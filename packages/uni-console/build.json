@@ -16,10 +16,27 @@
       "src/runtime/index.ts": "dist/index.esm.js"
     },
     "replacements": {
-      "__DEV__": "process.env.UNI_DEBUG"
+      "__DEV__": "process.env.UNI_DEBUG",
+      "__UNI_CONSOLE_WEBVIEW__": false
     },
     "compilerOptions": {
       "target": "esnext",
+      "declaration": false
+    }
+  },
+  {
+    "input": {
+      "src/runtime/webview.ts": "dist/webview.js"
+    },
+    "output": {
+      "format": "iife"
+    },
+    "replacements": {
+      "__UNI_CONSOLE_KEEP_ORIGINAL__": true,
+      "__UNI_CONSOLE_WEBVIEW__": true
+    },
+    "compilerOptions": {
+      "target": "es5",
       "declaration": false
     }
   }
