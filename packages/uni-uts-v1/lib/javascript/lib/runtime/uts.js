@@ -579,17 +579,18 @@ let UTSJSONObject$1 = class UTSJSONObject {
     }
     _getValue(keyPath, defaultValue) {
         const keyPathArr = this._resolveKeyPath(keyPath);
+        const realDefaultValue = defaultValue === void 0 ? null : defaultValue;
         if (keyPathArr.length === 0) {
-            return defaultValue === undefined ? null : defaultValue;
+            return realDefaultValue;
         }
         let value = this;
         for (let i = 0; i < keyPathArr.length; i++) {
             const key = keyPathArr[i];
             if (value instanceof Object) {
-                value = value[key];
+                value = key in value ? value[key] : realDefaultValue;
             }
             else {
-                return defaultValue === undefined ? null : defaultValue;
+                return realDefaultValue;
             }
         }
         return value;
