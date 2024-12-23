@@ -26,12 +26,15 @@ export function closePage(
   for (let i = dialogPages.length - 1; i >= 0; i--) {
     closeNativeDialogPage(dialogPages[i])
   }
-  const systemDialogPages =
-    (page as unknown as ComponentInternalInstance).$systemDialogPages || []
-  for (let i = 0; i < systemDialogPages.length; i++) {
-    closeNativeDialogPage(systemDialogPages[i])
+  if ((page as unknown as ComponentInternalInstance).$systemDialogPages) {
+    const systemDialogPages = (page as unknown as ComponentInternalInstance)
+      .$systemDialogPages!.value
+    for (let i = 0; i < systemDialogPages.length; i++) {
+      closeNativeDialogPage(systemDialogPages[i])
+    }
+    ;(page as unknown as ComponentInternalInstance).$systemDialogPages!.value =
+      []
   }
-  ;(page as unknown as ComponentInternalInstance).$systemDialogPages = []
   for (let i = dialogPages.length - 1; i >= 0; i--) {
     closeNativeDialogPage(dialogPages[i])
   }

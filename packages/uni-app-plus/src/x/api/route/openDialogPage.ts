@@ -22,6 +22,7 @@ import type { UniDialogPage } from '@dcloudio/uni-app-x/types/page'
 import type { OpenDialogPageOptions } from '@dcloudio/uni-app-x/types/uni'
 import closeNativeDialogPage from './closeNativeDialogPage'
 import { OPEN_DIALOG_PAGE } from '../../constants'
+import { ref } from 'vue'
 
 export const openDialogPage = (
   options: OpenDialogPageOptions
@@ -76,11 +77,11 @@ export const openDialogPage = (
       }
     } else {
       if (!parentPage.vm.$systemDialogPages) {
-        parentPage.vm.$systemDialogPages = []
+        parentPage.vm.$systemDialogPages = ref<UniDialogPage[]>([])
       }
-      parentPage.vm.$systemDialogPages.push(dialogPage)
+      parentPage.vm.$systemDialogPages.value.push(dialogPage)
       if (isSystemActionSheetDialogPage(dialogPage)) {
-        closePreActionSheet(parentPage.vm.$systemDialogPages)
+        closePreActionSheet(parentPage.vm.$systemDialogPages.value)
       }
     }
     setCurrentSystemDialogPage(dialogPage)

@@ -167,7 +167,7 @@ export function registerPage(
     if (pages.length === 1) {
       if (homeDialogPages.length) {
         const homePage = pages[0] as unknown as UniPage
-        homePage.vm.$.$dialogPages = homeDialogPages.map((dialogPage) => {
+        homePage.vm.$.$dialogPages.value = homeDialogPages.map((dialogPage) => {
           dialogPage.getParentPage = () => homePage
           return dialogPage
         })
@@ -175,7 +175,7 @@ export function registerPage(
       }
       if (homeSystemDialogPages.length) {
         const homePage = pages[0] as unknown as UniPage
-        homePage.vm.$systemDialogPages = homeSystemDialogPages.map(
+        homePage.vm.$systemDialogPages.value = homeSystemDialogPages.map(
           (dialogPage) => {
             dialogPage.getParentPage = () => homePage
             return dialogPage

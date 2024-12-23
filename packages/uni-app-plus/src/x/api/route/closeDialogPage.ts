@@ -44,7 +44,7 @@ export const closeDialogPage = (options?: CloseDialogPageOptions) => {
         return
       }
     } else {
-      const systemDialogPages = parentPage!.vm.$systemDialogPages
+      const systemDialogPages = parentPage!.vm.$systemDialogPages.value
       const index = systemDialogPages.indexOf(dialogPage)
       systemDialogPages.splice(index, 1)
       closeNativeDialogPage(dialogPage)

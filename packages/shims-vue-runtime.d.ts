@@ -1,5 +1,5 @@
 import type { EventChannel, UniLifecycleHooks } from '@dcloudio/uni-shared'
-import type { ComponentCustomProperties, ComponentInternalInstance } from 'vue'
+import type { ComponentCustomProperties, ComponentInternalInstance, Ref } from 'vue'
 import type {
   IPage,
   UniElement,
@@ -17,12 +17,12 @@ declare module '@vue/runtime-core' {
   }
   interface ComponentCustomOptions {
     rootElement?:
-      | {
-          name: string
-          class: CustomElementConstructor
-          options?: ElementDefinitionOptions
-        }
-      | 0
+    | {
+      name: string
+      class: CustomElementConstructor
+      options?: ElementDefinitionOptions
+    }
+    | 0
   }
 
   interface ComponentCustomProperties {

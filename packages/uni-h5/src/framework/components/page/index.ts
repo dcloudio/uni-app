@@ -75,7 +75,7 @@ export default /*#__PURE__*/ defineSystemComponent({
               ctx as unknown as ComponentInternalInstance
             )
           ) {
-            const parentDialogPages = parentInstance.$dialogPages.value
+            const parentDialogPages = parentInstance.$dialogPages!.value
             currentInstance.$dialogPage =
               parentDialogPages[parentDialogPages.length - 1]
           }
@@ -85,7 +85,7 @@ export default /*#__PURE__*/ defineSystemComponent({
             )
           ) {
             const parentSystemDialogPages =
-              parentInstance.$systemDialogPages.value
+              parentInstance.$systemDialogPages!.value
             currentInstance.$dialogPage =
               parentSystemDialogPages[parentSystemDialogPages.length - 1]
           }
@@ -108,8 +108,8 @@ export default /*#__PURE__*/ defineSystemComponent({
               createPageBodyVNode(ctx),
               __X__
                 ? createDialogPageVNode(
-                    currentInstance!.$dialogPages,
-                    currentInstance!.$systemDialogPages
+                    currentInstance!.$dialogPages!,
+                    currentInstance!.$systemDialogPages!
                   )
                 : null,
             ]
@@ -117,8 +117,8 @@ export default /*#__PURE__*/ defineSystemComponent({
               createPageBodyVNode(ctx),
               __X__
                 ? createDialogPageVNode(
-                    currentInstance!.$dialogPages,
-                    currentInstance!.$systemDialogPages
+                    currentInstance!.$dialogPages!,
+                    currentInstance!.$systemDialogPages!
                   )
                 : null,
             ]

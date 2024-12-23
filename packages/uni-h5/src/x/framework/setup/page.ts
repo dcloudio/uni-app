@@ -146,7 +146,7 @@ class UniPageImpl implements UniPage {
 
 class UniNormalPageImpl extends UniPageImpl implements UniNormalPage {
   getDialogPages(): UniPage[] {
-    return this.vm?.$pageLayoutInstance?.$dialogPages.value || []
+    return this.vm?.$pageLayoutInstance?.$dialogPages!.value || []
   }
   constructor({
     route,
@@ -245,14 +245,14 @@ export function initXPage(
       if (homeDialogPages.length) {
         homeDialogPages.forEach((dialogPage) => {
           dialogPage.getParentPage = () => vm.$page as UniPage
-          pageInstance!.$dialogPages.value.push(dialogPage)
+          pageInstance!.$dialogPages!.value.push(dialogPage)
         })
         homeDialogPages.length = 0
       }
       if (homeSystemDialogPages.length) {
         homeSystemDialogPages.forEach((dialogPage) => {
           dialogPage.getParentPage = () => vm.$page as UniPage
-          pageInstance!.$systemDialogPages.value.push(dialogPage)
+          pageInstance!.$systemDialogPages!.value.push(dialogPage)
         })
         homeSystemDialogPages.length = 0
       }

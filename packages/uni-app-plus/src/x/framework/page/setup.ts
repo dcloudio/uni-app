@@ -3,6 +3,7 @@ import {
   type ComponentPublicInstance,
   onBeforeUnmount,
   onMounted,
+  ref,
 } from 'vue'
 import { OPEN_DIALOG_PAGE } from '../../constants'
 import {
@@ -17,6 +18,7 @@ import {
   setCurrentNormalDialogPage,
   setCurrentSystemDialogPage,
 } from './dialogPage'
+import type { UniDialogPage } from '@dcloudio/uni-app-x/types/UniPage'
 
 export function setupXPage(
   instance: ComponentInternalInstance,
@@ -25,7 +27,7 @@ export function setupXPage(
   pageId: number,
   pagePath: string
 ) {
-  instance.$dialogPages = []
+  instance.$dialogPages = ref<UniDialogPage[]>([])
   let uniPage: UniPage
   if (
     (pageInstance as Page.PageInstance['$page']).openType === OPEN_DIALOG_PAGE

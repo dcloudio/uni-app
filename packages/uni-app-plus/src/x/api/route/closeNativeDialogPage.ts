@@ -10,7 +10,7 @@ function closeNativeDialogPage(
   callback?: () => void
 ) {
   const webview = getNativeApp().pageManager.findPageById(
-    dialogPage.$vm!.$basePage.id + ''
+    dialogPage.vm!.$basePage.id + ''
   )
   if (webview) {
     closeWebview(
