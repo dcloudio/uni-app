@@ -1,6 +1,6 @@
 import { normalizeStyles as normalizeStyles$1, addLeadingSlash, invokeArrayFns, ON_HIDE, ON_SHOW, parseQuery, EventChannel, once, parseUrl, Emitter, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, ON_ERROR, removeLeadingSlash, getLen, ON_UNLOAD, ON_READY, ON_PAGE_SCROLL, ON_PULL_DOWN_REFRESH, ON_REACH_BOTTOM, ON_RESIZE, ON_LAUNCH, ON_BACK_PRESS } from "@dcloudio/uni-shared";
 import { extend, isString, isPlainObject, isFunction as isFunction$1, isArray, isPromise, hasOwn, remove, invokeArrayFns as invokeArrayFns$1, capitalize, toTypeString, toRawType, parseStringStyle } from "@vue/shared";
-import { createVNode, render, onMounted, onBeforeUnmount, getCurrentInstance, injectHook, defineComponent, warn, isInSSRComponentSetup, ref, watchEffect, watch, computed, camelize, onUnmounted, reactive, provide, inject, nextTick, resolveComponent, openBlock, createElementBlock, normalizeClass, createElementVNode, normalizeStyle, toDisplayString, withDirectives, vModelText, createCommentVNode, Fragment, renderList } from "vue";
+import { createVNode, render, ref, onMounted, onBeforeUnmount, getCurrentInstance, injectHook, defineComponent, warn, isInSSRComponentSetup, watchEffect, watch, computed, camelize, onUnmounted, reactive, provide, inject, nextTick, resolveComponent, openBlock, createElementBlock, normalizeClass, createElementVNode, normalizeStyle, toDisplayString, withDirectives, vModelText, createCommentVNode, Fragment, renderList } from "vue";
 function get$pageByPage(page) {
   return page.vm.$basePage;
 }
@@ -179,7 +179,8 @@ function dialogPageTriggerParentLifeCycle(dialogPage, lifeCycle) {
 }
 function getSystemDialogPages(parentPage) {
   {
-    return parentPage.vm.$systemDialogPages || [];
+    var _parentPage$vm$$syste;
+    return ((_parentPage$vm$$syste = parentPage.vm.$systemDialogPages) === null || _parentPage$vm$$syste === void 0 ? void 0 : _parentPage$vm$$syste.value) || [];
   }
 }
 function initPageVm(pageVm, page) {
@@ -668,7 +669,7 @@ function getCurrentSystemDialogPage() {
   return currentSystemDialogPage;
 }
 function setupXPage(instance, pageInstance, pageVm, pageId, pagePath) {
-  instance.$dialogPages = [];
+  instance.$dialogPages = ref([]);
   var uniPage;
   if (pageInstance.openType === OPEN_DIALOG_PAGE) {
     if (pagePath.startsWith(SYSTEM_DIALOG_PAGE_PATH_STARTER)) {
@@ -1655,7 +1656,7 @@ function setStatusBarStyle() {
   }
 }
 function closeNativeDialogPage(dialogPage, animationType, animationDuration, callback) {
-  var webview = getNativeApp().pageManager.findPageById(dialogPage.$vm.$basePage.id + "");
+  var webview = getNativeApp().pageManager.findPageById(dialogPage.vm.$basePage.id + "");
   if (webview) {
     closeWebview(webview, animationType || "none", animationDuration || 0, () => {
       setStatusBarStyle();
@@ -1694,7 +1695,7 @@ var closeDialogPage = (options) => {
         return;
       }
     } else {
-      var systemDialogPages = parentPage.vm.$systemDialogPages;
+      var systemDialogPages = parentPage.vm.$systemDialogPages.value;
       var _index = systemDialogPages.indexOf(dialogPage);
       systemDialogPages.splice(_index, 1);
       closeNativeDialogPage(dialogPage);
@@ -1801,7 +1802,7 @@ function registerPage(_ref, onCreated) {
     if (pages2.length === 1) {
       if (homeDialogPages.length) {
         var homePage = pages2[0];
-        homePage.vm.$.$dialogPages = homeDialogPages.map((dialogPage) => {
+        homePage.vm.$.$dialogPages.value = homeDialogPages.map((dialogPage) => {
           dialogPage.getParentPage = () => homePage;
           return dialogPage;
         });
@@ -1809,7 +1810,7 @@ function registerPage(_ref, onCreated) {
       }
       if (homeSystemDialogPages.length) {
         var _homePage = pages2[0];
-        _homePage.vm.$systemDialogPages = homeSystemDialogPages.map((dialogPage) => {
+        _homePage.vm.$systemDialogPages.value = homeSystemDialogPages.map((dialogPage) => {
           dialogPage.getParentPage = () => _homePage;
           return dialogPage;
         });
@@ -2254,11 +2255,13 @@ function closePage(page, animationType, animationDuration) {
   for (var i = dialogPages.length - 1; i >= 0; i--) {
     closeNativeDialogPage(dialogPages[i]);
   }
-  var systemDialogPages = page.$systemDialogPages || [];
-  for (var _i = 0; _i < systemDialogPages.length; _i++) {
-    closeNativeDialogPage(systemDialogPages[_i]);
+  if (page.$systemDialogPages) {
+    var systemDialogPages = page.$systemDialogPages.value;
+    for (var _i = 0; _i < systemDialogPages.length; _i++) {
+      closeNativeDialogPage(systemDialogPages[_i]);
+    }
+    page.$systemDialogPages.value = [];
   }
-  page.$systemDialogPages = [];
   for (var _i2 = dialogPages.length - 1; _i2 >= 0; _i2--) {
     closeNativeDialogPage(dialogPages[_i2]);
   }
@@ -2767,14 +2770,16 @@ function back(delta, animationType, animationDuration) {
     var dialogPage = dialogPages[i];
     closeNativeDialogPage(dialogPage);
     if (i > 0) {
-      invokeHook(dialogPages[i - 1].$vm, ON_SHOW);
+      invokeHook(dialogPages[i - 1].vm, ON_SHOW);
     }
   }
-  var systemDialogPages = currentPage.$systemDialogPages || [];
-  for (var _i = 0; _i < systemDialogPages.length; _i++) {
-    closeNativeDialogPage(systemDialogPages[_i]);
+  if (currentPage.$systemDialogPages) {
+    var systemDialogPages = currentPage.$systemDialogPages.value;
+    for (var _i = 0; _i < systemDialogPages.length; _i++) {
+      closeNativeDialogPage(systemDialogPages[_i]);
+    }
+    currentPage.$systemDialogPages.value = [];
   }
-  currentPage.$systemDialogPages = [];
   backPage(webview);
 }
 var openDialogPage = (options) => {
@@ -2833,11 +2838,11 @@ var openDialogPage = (options) => {
       }
     } else {
       if (!parentPage.vm.$systemDialogPages) {
-        parentPage.vm.$systemDialogPages = [];
+        parentPage.vm.$systemDialogPages = ref([]);
       }
-      parentPage.vm.$systemDialogPages.push(dialogPage);
+      parentPage.vm.$systemDialogPages.value.push(dialogPage);
       if (isSystemActionSheetDialogPage(dialogPage)) {
-        closePreActionSheet(parentPage.vm.$systemDialogPages);
+        closePreActionSheet(parentPage.vm.$systemDialogPages.value);
       }
     }
     setCurrentSystemDialogPage(dialogPage);

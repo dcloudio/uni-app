@@ -1915,9 +1915,9 @@ function dialogPageTriggerParentLifeCycle(dialogPage, lifeCycle, triggerParentHi
   invokeHook(currentPage.vm, lifeCycle);
 }
 function getSystemDialogPages(parentPage) {
-  var _a;
+  var _b;
   {
-    return (_a = parentPage.vm.$pageLayoutInstance) == null ? void 0 : _a.$systemDialogPages.value;
+    return (_b = parentPage.vm.$pageLayoutInstance) == null ? void 0 : _b.$systemDialogPages.value;
   }
 }
 function initView() {
