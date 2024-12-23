@@ -13,6 +13,7 @@ import {
   NodeTypes,
   createSimpleExpression,
 } from '@vue/compiler-core'
+import { parseVForKeyAlias } from './transformSlot'
 import { VIRTUAL_HOST_ID } from '@dcloudio/uni-shared'
 import { createBindDirectiveNode } from '@dcloudio/uni-cli-shared'
 import { parseExpr } from '../ast'
@@ -55,7 +56,22 @@ export function rewriteId(
       ? expr
       : identifier(rewriteExpression(idBindingProp.exp!, context).content)
   } else {
-    idBindingExpr = stringLiteral('')
+    if (!isX) {
+      idBindingExpr = stringLiteral('')
+    } else if (context.inVFor) {
+      const keyAlias = parseVForKeyAlias(context)
+      const id =
+        'r' +
+        context.elementRefIndex++ +
+        '-' +
+        context.hashId +
+        '-' +
+        keyAlias.join('-')
+      idBindingExpr = stringLiteral(id)
+    } else {
+      const id = 'r' + context.elementRefIndex++ + '-' + context.hashId
+      idBindingExpr = stringLiteral(id)
+    }
   }
   if (virtualHost) {
     if (

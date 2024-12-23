@@ -9,6 +9,10 @@ const options = {
     }),
   },
 }
+const optionsX = {
+  isX: true,
+  ...options,
+}
 
 describe('complier: options with mergeVirtualHostAttributes', () => {
   test('root node with mergeVirtualHostAttributes', () => {
@@ -27,6 +31,15 @@ describe('complier: options with mergeVirtualHostAttributes', () => {
   return {}
 }`,
       options
+    )
+    assert(
+      `<view ref="page"><image ref="img" /></view>`,
+      `<view ref=\"page\" id=\"{{c}}\" style=\"{{$eS[c] + ';' + virtualHostStyle}}\" class=\"{{[virtualHostClass]}}\" hidden=\"{{virtualHostHidden}}\"><image ref=\"img\" id=\"r0-2a9ec0b0\" style=\"{{$eS[a]}}\"/></view>`,
+      `(_ctx, _cache) => {
+  const __returned__ = { a: _sei('r0-2a9ec0b0', 'image', 'img'), b: _s(_ses('r0-2a9ec0b0')), c: _sei(_ctx.virtualHostId !== '' ? _ctx.virtualHostId : 'r1-2a9ec0b0', 'view', 'page'), d: _s(_ses(_ctx.virtualHostId !== '' ? _ctx.virtualHostId : 'r1-2a9ec0b0')) }
+  return __returned__
+}`,
+      optionsX
     )
   })
   test('root node style with mergeVirtualHostAttributes', () => {
