@@ -155,6 +155,7 @@ function normalizeGenericValue(value, genericType, isJSONParse = false) {
 class UTSType {
     static get$UTSMetadata$(...args) {
         return {
+            name: '',
             kind: UTS_CLASS_METADATA_KIND.TYPE,
             interfaces: [],
             fields: {},
@@ -576,10 +577,10 @@ let UTSJSONObject$1 = class UTSJSONObject {
         }
         return keyPathArr;
     }
-    _getValue(keyPath) {
+    _getValue(keyPath, defaultValue) {
         const keyPathArr = this._resolveKeyPath(keyPath);
         if (keyPathArr.length === 0) {
-            return null;
+            return defaultValue === undefined ? null : defaultValue;
         }
         let value = this;
         for (let i = 0; i < keyPathArr.length; i++) {
@@ -588,7 +589,7 @@ let UTSJSONObject$1 = class UTSJSONObject {
                 value = value[key];
             }
             else {
-                return null;
+                return defaultValue === undefined ? null : defaultValue;
             }
         }
         return value;
@@ -599,11 +600,11 @@ let UTSJSONObject$1 = class UTSJSONObject {
     set(key, value) {
         this[key] = value;
     }
-    getAny(key) {
-        return this._getValue(key);
+    getAny(key, defaultValue) {
+        return this._getValue(key, defaultValue);
     }
-    getString(key) {
-        const value = this._getValue(key);
+    getString(key, defaultValue) {
+        const value = this._getValue(key, defaultValue);
         if (typeof value === 'string') {
             return value;
         }
@@ -611,8 +612,8 @@ let UTSJSONObject$1 = class UTSJSONObject {
             return null;
         }
     }
-    getNumber(key) {
-        const value = this._getValue(key);
+    getNumber(key, defaultValue) {
+        const value = this._getValue(key, defaultValue);
         if (typeof value === 'number') {
             return value;
         }
@@ -620,8 +621,8 @@ let UTSJSONObject$1 = class UTSJSONObject {
             return null;
         }
     }
-    getBoolean(key) {
-        const boolean = this._getValue(key);
+    getBoolean(key, defaultValue) {
+        const boolean = this._getValue(key, defaultValue);
         if (typeof boolean === 'boolean') {
             return boolean;
         }
@@ -629,17 +630,17 @@ let UTSJSONObject$1 = class UTSJSONObject {
             return null;
         }
     }
-    getJSON(key) {
-        let value = this._getValue(key);
+    getJSON(key, defaultValue) {
+        let value = this._getValue(key, defaultValue);
         if (value instanceof Object) {
-            return new UTSJSONObject(value);
+            return value;
         }
         else {
             return null;
         }
     }
-    getArray(key) {
-        let value = this._getValue(key);
+    getArray(key, defaultValue) {
+        let value = this._getValue(key, defaultValue);
         if (value instanceof Array) {
             return value;
         }
