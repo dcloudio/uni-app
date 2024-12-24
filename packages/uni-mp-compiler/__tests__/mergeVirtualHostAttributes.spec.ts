@@ -161,6 +161,33 @@ describe('complier: options with mergeVirtualHostAttributes', () => {
 }`,
       options
     )
+    assert(
+      `<view :id="id1"></view>`,
+      `<view id=\"{{a}}\" style=\"{{$eS[a] + ';' + virtualHostStyle}}\" class=\"{{[virtualHostClass]}}\" hidden=\"{{virtualHostHidden}}\"></view>`,
+      `(_ctx, _cache) => {
+  const __returned__ = { a: _sei(_ctx.virtualHostId !== '' ? _ctx.virtualHostId : _ctx.id1, 'view'), b: _s(_ses(_ctx.virtualHostId !== '' ? _ctx.virtualHostId : _ctx.id1)) }
+  return __returned__
+}`,
+      optionsX
+    )
+    assert(
+      `<view id="page"><image ref="img" /></view>`,
+      `<view id=\"{{c}}\" style=\"{{$eS[c] + ';' + virtualHostStyle}}\" class=\"{{[virtualHostClass]}}\" hidden=\"{{virtualHostHidden}}\"><image ref=\"img\" id=\"r0-2a9ec0b0\" style=\"{{$eS[a]}}\"/></view>`,
+      `(_ctx, _cache) => {
+  const __returned__ = { a: _sei('r0-2a9ec0b0', 'image', 'img'), b: _s(_ses('r0-2a9ec0b0')), c: _sei(_ctx.virtualHostId !== '' ? _ctx.virtualHostId : 'page', 'view'), d: _s(_ses(_ctx.virtualHostId !== '' ? _ctx.virtualHostId : 'page')) }
+  return __returned__
+}`,
+      optionsX
+    )
+    assert(
+      `<view id="page" ref="page"><image ref="img" /></view>`,
+      `<view ref=\"page\" id=\"{{c}}\" style=\"{{$eS[c] + ';' + virtualHostStyle}}\" class=\"{{[virtualHostClass]}}\" hidden=\"{{virtualHostHidden}}\"><image ref=\"img\" id=\"r0-2a9ec0b0\" style=\"{{$eS[a]}}\"/></view>`,
+      `(_ctx, _cache) => {
+  const __returned__ = { a: _sei('r0-2a9ec0b0', 'image', 'img'), b: _s(_ses('r0-2a9ec0b0')), c: _sei((_ctx.virtualHostId !== '' ? _ctx.virtualHostId : 'page') !== '' ? _ctx.virtualHostId !== '' ? _ctx.virtualHostId : 'page' : 'r1-2a9ec0b0', 'view', 'page'), d: _s(_ses((_ctx.virtualHostId !== '' ? _ctx.virtualHostId : 'page') !== '' ? _ctx.virtualHostId !== '' ? _ctx.virtualHostId : 'page' : 'r1-2a9ec0b0')) }
+  return __returned__
+}`,
+      optionsX
+    )
   })
   test('user component attrs with mergeVirtualHostAttributes', () => {
     assert(
