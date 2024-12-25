@@ -44,10 +44,12 @@ export const closeDialogPage = (options?: CloseDialogPageOptions) => {
         return
       }
     } else {
-      const systemDialogPages = parentPage!.vm.$systemDialogPages.value
-      const index = systemDialogPages.indexOf(dialogPage)
-      systemDialogPages.splice(index, 1)
-      closeNativeDialogPage(dialogPage)
+      const systemDialogPages = parentPage?.vm?.$systemDialogPages?.value
+      if (systemDialogPages) {
+        const index = systemDialogPages.indexOf(dialogPage)
+        systemDialogPages.splice(index, 1)
+        closeNativeDialogPage(dialogPage)
+      }
       return
     }
   } else {

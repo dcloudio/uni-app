@@ -1,5 +1,5 @@
 import { isPromise } from '@vue/shared'
-import type { ComponentPublicInstance } from 'vue'
+import { type ComponentPublicInstance, ref } from 'vue'
 import type { IPage } from '@dcloudio/uni-app-x/types/native'
 import type { EventChannel, UniNode } from '@dcloudio/uni-shared'
 import {
@@ -175,6 +175,9 @@ export function registerPage(
       }
       if (homeSystemDialogPages.length) {
         const homePage = pages[0] as unknown as UniPage
+        if (!homePage.vm.$systemDialogPages) {
+          homePage.vm.$systemDialogPages = ref<UniDialogPage[]>([])
+        }
         homePage.vm.$systemDialogPages.value = homeSystemDialogPages.map(
           (dialogPage) => {
             dialogPage.getParentPage = () => homePage
