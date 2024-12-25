@@ -1695,10 +1695,13 @@ var closeDialogPage = (options) => {
         return;
       }
     } else {
-      var systemDialogPages = parentPage.vm.$systemDialogPages.value;
-      var _index = systemDialogPages.indexOf(dialogPage);
-      systemDialogPages.splice(_index, 1);
-      closeNativeDialogPage(dialogPage);
+      var _parentPage$vm;
+      var systemDialogPages = parentPage === null || parentPage === void 0 || (_parentPage$vm = parentPage.vm) === null || _parentPage$vm === void 0 || (_parentPage$vm = _parentPage$vm.$systemDialogPages) === null || _parentPage$vm === void 0 ? void 0 : _parentPage$vm.value;
+      if (systemDialogPages) {
+        var _index = systemDialogPages.indexOf(dialogPage);
+        systemDialogPages.splice(_index, 1);
+        closeNativeDialogPage(dialogPage);
+      }
       return;
     }
   } else {
@@ -1810,6 +1813,9 @@ function registerPage(_ref, onCreated) {
       }
       if (homeSystemDialogPages.length) {
         var _homePage = pages2[0];
+        if (!_homePage.vm.$systemDialogPages) {
+          _homePage.vm.$systemDialogPages = ref([]);
+        }
         _homePage.vm.$systemDialogPages.value = homeSystemDialogPages.map((dialogPage) => {
           dialogPage.getParentPage = () => _homePage;
           return dialogPage;
