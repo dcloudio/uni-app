@@ -209,14 +209,14 @@ function createConfig(entryFile, output, buildOption) {
       buildOption.treeshake === false
         ? false
         : {
-            moduleSideEffects(id) {
-              if (id.endsWith('polyfill.ts')) {
-                console.log('[WARN]:sideEffects[' + id + ']')
-                return true
-              }
-              return false
-            },
+          moduleSideEffects(id) {
+            if (id.endsWith('polyfill.ts')) {
+              console.log('[WARN]:sideEffects[' + id + ']')
+              return true
+            }
+            return false
           },
+        },
   }
 }
 
@@ -238,8 +238,8 @@ function createReplacePlugin(buildOption, format) {
   }
 
   // 注入 __UNI_CONSOLE_WEBVIEW_EVAL_JS_CODE__
-  if ('__UNI_CONSOLE_WEBVIEW_EVAL_JS_CODE__' in replacements) {
-    replacements['__UNI_CONSOLE_WEBVIEW_EVAL_JS_CODE__'] = () => {
+  if ('process.env.UNI_CONSOLE_WEBVIEW_EVAL_JS_CODE' in replacements) {
+    replacements['process.env.UNI_CONSOLE_WEBVIEW_EVAL_JS_CODE'] = () => {
       return JSON.stringify(
         fs.readFileSync(resolve('dist/__uniwebview.js'), 'utf-8')
       )

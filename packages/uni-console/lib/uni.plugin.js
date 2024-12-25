@@ -13,12 +13,16 @@ const uniConsoleRuntimePlugin = () => {
     return {
         name: 'uni:console:runtime',
         config() {
+            const isX = process.env.UNI_APP_X === 'true';
             const isProd = process.env.NODE_ENV === 'production';
             let keepOriginal = true;
             if (process.env.UNI_PLATFORM == 'mp-harmony' ||
                 process.env.UNI_PLATFORM === 'app-harmony') {
                 keepOriginal = false;
             }
+            const webviewEvalJsCode = isX && process.env.UNI_UTS_PLATFORM === 'app-android'
+                ? fs__default.default.readFileSync(path__default.default.join(__dirname, '../dist/__uniwebview.js'), 'utf-8')
+                : '';
             return {
                 define: {
                     'process.env.UNI_CONSOLE_KEEP_ORIGINAL': process.env
@@ -28,7 +32,7 @@ const uniConsoleRuntimePlugin = () => {
                     'process.env.UNI_SOCKET_HOSTS': JSON.stringify(isProd ? '' : process.env.UNI_SOCKET_HOSTS),
                     'process.env.UNI_SOCKET_PORT': JSON.stringify(isProd ? '' : process.env.UNI_SOCKET_PORT),
                     'process.env.UNI_SOCKET_ID': JSON.stringify(isProd ? '' : process.env.UNI_SOCKET_ID),
-                    'process.env.UNI_CONSOLE_WEBVIEW_EVAL_JS_CODE': JSON.stringify(''),
+                    'process.env.UNI_CONSOLE_WEBVIEW_EVAL_JS_CODE': JSON.stringify(webviewEvalJsCode),
                 },
             };
         },
@@ -73,18 +77,6 @@ var index = () => {
                             mappings: '',
                         },
                     };
-                },
-                writeBundle() {
-                    if (!hasRuntimeSocket) {
-                        return;
-                    }
-                    if (process.env.UNI_UTS_PLATFORM === 'app-android') {
-                        // 仅app-android需要复制__uniwebview.js（运行时读取），其他平台使用app.esm.js（该文件存储了__uniwebview.js的字符串）
-                        const uniWebViewPath = path__default.default.join(process.env.UNI_OUTPUT_DIR, '__uniwebview.js');
-                        if (!fs__default.default.existsSync(uniWebViewPath)) {
-                            fs__default.default.copySync(path__default.default.join(__dirname, '../dist/__uniwebview.js'), uniWebViewPath);
-                        }
-                    }
                 },
             };
         }),
