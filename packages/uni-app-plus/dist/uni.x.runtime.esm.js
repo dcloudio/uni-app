@@ -1688,7 +1688,7 @@ var closeDialogPage = (options) => {
         parentDialogPages.splice(index2, 1);
         closeNativeDialogPage(dialogPage, (options === null || options === void 0 ? void 0 : options.animationType) || "auto", (options === null || options === void 0 ? void 0 : options.animationDuration) || ANI_DURATION);
         if (index2 > 0 && index2 === parentDialogPages.length) {
-          invokeHook(parentDialogPages[parentDialogPages.length - 1].$vm, ON_SHOW);
+          invokeHook(parentDialogPages[parentDialogPages.length - 1].vm, ON_SHOW);
         }
       } else {
         triggerFailCallback$1(options, "dialogPage is not a valid page");
@@ -1699,8 +1699,12 @@ var closeDialogPage = (options) => {
       var systemDialogPages = parentPage === null || parentPage === void 0 || (_parentPage$vm = parentPage.vm) === null || _parentPage$vm === void 0 || (_parentPage$vm = _parentPage$vm.$systemDialogPages) === null || _parentPage$vm === void 0 ? void 0 : _parentPage$vm.value;
       if (systemDialogPages) {
         var _index = systemDialogPages.indexOf(dialogPage);
-        systemDialogPages.splice(_index, 1);
-        closeNativeDialogPage(dialogPage);
+        if (_index > -1) {
+          systemDialogPages.splice(_index, 1);
+          closeNativeDialogPage(dialogPage);
+        } else {
+          triggerFailCallback$1(options, "dialogPage is not a valid page");
+        }
       }
       return;
     }
