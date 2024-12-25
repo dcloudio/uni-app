@@ -1,7 +1,7 @@
 [
   {
     "input": {
-      "src/runtime/ets.ts": "uni.console.ets"
+      "src/runtime/ets.ts": "uni-console.ets"
     },
     "autoImports": {
       "@dcloudio/uts-harmony": [
