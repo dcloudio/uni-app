@@ -18,6 +18,13 @@ import UniActionSheetPage from '@dcloudio/uni-ext-api/uni-actionSheet/pages/acti
 registerSystemRoute('uni:actionSheet', UniActionSheetPage, {
   disableSwipeBack: false,
 })
+import {
+  defineAsyncApi,
+  defineOffApi,
+  defineOnApi,
+  defineSyncApi,
+  defineTaskApi,
+} from '@dcloudio/uni-api'
 
 export {
   uni,
@@ -28,4 +35,9 @@ export {
   __uniSystemRoutes,
   initApp,
   components,
+  defineAsyncApi,
+  defineOffApi,
+  defineOnApi,
+  defineSyncApi,
+  defineTaskApi,
 }
