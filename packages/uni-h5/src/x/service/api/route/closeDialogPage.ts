@@ -43,8 +43,12 @@ export const closeDialogPage = (options?: CloseDialogPageOptions) => {
       const parentSystemDialogPages =
         parentPage!.vm.$pageLayoutInstance!.$systemDialogPages.value
       const index = parentSystemDialogPages.indexOf(dialogPage)
-      parentSystemDialogPages.splice(index, 1)
-      dialogPageTriggerParentShow(dialogPage, 1)
+      if (index > -1) {
+        parentSystemDialogPages.splice(index, 1)
+        dialogPageTriggerParentShow(dialogPage, 1)
+      } else {
+        triggerFailCallback(options, 'dialogPage is not a valid page')
+      }
       return
     }
   } else {
