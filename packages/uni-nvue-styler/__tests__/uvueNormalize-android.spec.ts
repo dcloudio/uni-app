@@ -926,7 +926,7 @@ flexBasis: fill;
     )
   })
 
-  test.only('多次出现 border 不同形式，保证最后一个生效', async () => {
+  test('多次出现 border 不同形式，保证最后一个生效', async () => {
     const { json } = await objectifierRule(`
 .test {
 		border-left-color: red;
@@ -944,10 +944,18 @@ flexBasis: fill;
     expect(json).toEqual({
       test: {
         '': {
-          borderColor: '#0000FF',
-          borderLeftColor: '#FF0000',
-          borderStyle: 'solid',
-          borderWidth: 1,
+          borderTopColor: '#0000FF',
+          borderRightColor: '#0000FF',
+          borderBottomColor: '#0000FF',
+          borderLeftColor: '#0000FF',
+          borderTopStyle: 'solid',
+          borderRightStyle: 'solid',
+          borderBottomStyle: 'solid',
+          borderLeftStyle: 'solid',
+          borderTopWidth: 1,
+          borderRightWidth: 1,
+          borderBottomWidth: 1,
+          borderLeftWidth: 1,
           height: 100,
           width: 100,
         },

@@ -9,6 +9,7 @@ import { transformFlexFlow } from '../src/expand/flexFlow'
 import { transformFont } from '../src/expand/font'
 import { createTransformBox } from '../src/expand/margin'
 import { transformTransition } from '../src/expand/transition'
+import { fillBorderPostion, postionTypes } from './test_utils'
 
 function parseDecl(input: string) {
   return (parse(input).nodes[0] as Rule).nodes[0] as Declaration
@@ -230,18 +231,107 @@ describe('nvue-styler: expand', () => {
     })
   })
   test('transform border', function () {
-    const types = [
-      'border',
-      'border-top',
-      'border-right',
-      'border-bottom',
-      'border-left',
-    ]
+    // simple
+    expect(
+      createTransformBorder({ type: 'uvue' })(
+        parseDecl(`
+.test{
+  border:1px solid red;
+}`)
+      )
+    ).toEqual([
+      {
+        prop: 'border-top-width',
+        raws: expect.any(Object),
+        source: expect.any(Object),
+        type: 'decl',
+        value: '1px',
+      },
+      {
+        prop: 'border-right-width',
+        raws: expect.any(Object),
+        source: expect.any(Object),
+        type: 'decl',
+        value: '1px',
+      },
+      {
+        prop: 'border-bottom-width',
+        raws: expect.any(Object),
+        source: expect.any(Object),
+        type: 'decl',
+        value: '1px',
+      },
+      {
+        prop: 'border-left-width',
+        raws: expect.any(Object),
+        source: expect.any(Object),
+        type: 'decl',
+        value: '1px',
+      },
+      {
+        prop: 'border-top-style',
+        raws: expect.any(Object),
+        source: expect.any(Object),
+        type: 'decl',
+        value: 'solid',
+      },
+      {
+        prop: 'border-right-style',
+        raws: expect.any(Object),
+        source: expect.any(Object),
+        type: 'decl',
+        value: 'solid',
+      },
+      {
+        prop: 'border-bottom-style',
+        raws: expect.any(Object),
+        source: expect.any(Object),
+        type: 'decl',
+        value: 'solid',
+      },
+      {
+        prop: 'border-left-style',
+        raws: expect.any(Object),
+        source: expect.any(Object),
+        type: 'decl',
+        value: 'solid',
+      },
+      {
+        prop: 'border-top-color',
+        raws: expect.any(Object),
+        source: expect.any(Object),
+        type: 'decl',
+        value: 'red',
+      },
+      {
+        prop: 'border-right-color',
+        raws: expect.any(Object),
+        source: expect.any(Object),
+        type: 'decl',
+        value: 'red',
+      },
+      {
+        prop: 'border-bottom-color',
+        raws: expect.any(Object),
+        source: expect.any(Object),
+        type: 'decl',
+        value: 'red',
+      },
+      {
+        prop: 'border-left-color',
+        raws: expect.any(Object),
+        source: expect.any(Object),
+        type: 'decl',
+        value: 'red',
+      },
+    ])
+
+    const types = ['border', ...postionTypes]
     const createBorders = (
       border: string
     ): Record<string, Record<string, string>[]> => {
       return {
-        '1px': [
+        '1px': fillBorderPostion([
           {
             type: 'decl',
             prop: `${border}-width`,
@@ -257,8 +347,8 @@ describe('nvue-styler: expand', () => {
             prop: `${border}-color`,
             value: '#000000',
           },
-        ],
-        '#ffffff': [
+        ]),
+        '#ffffff': fillBorderPostion([
           {
             type: 'decl',
             prop: `${border}-width`,
@@ -274,8 +364,8 @@ describe('nvue-styler: expand', () => {
             prop: `${border}-color`,
             value: '#ffffff',
           },
-        ],
-        thick: [
+        ]),
+        thick: fillBorderPostion([
           {
             type: 'decl',
             prop: `${border}-width`,
@@ -291,8 +381,8 @@ describe('nvue-styler: expand', () => {
             prop: `${border}-color`,
             value: '#000000',
           },
-        ],
-        '2px dashed': [
+        ]),
+        '2px dashed': fillBorderPostion([
           {
             type: 'decl',
             prop: `${border}-width`,
@@ -308,8 +398,8 @@ describe('nvue-styler: expand', () => {
             prop: `${border}-color`,
             value: '#000000',
           },
-        ],
-        '3px dotted #ffffff': [
+        ]),
+        '3px dotted #ffffff': fillBorderPostion([
           {
             type: 'decl',
             prop: `${border}-width`,
@@ -325,9 +415,10 @@ describe('nvue-styler: expand', () => {
             prop: `${border}-color`,
             value: '#ffffff',
           },
-        ],
+        ]),
       }
     }
+
     types.forEach((type) => {
       const borders = createBorders(type)
       Object.keys(borders).forEach((b) => {
@@ -337,9 +428,14 @@ describe('nvue-styler: expand', () => {
         const transformBorder = createTransformBorder({
           type: 'uvue',
         })
+
         expect(transformBorder(decl)).toEqual(
           borders[b].map((node) => {
-            return Object.assign({ raws: decl.raws, source: decl.source }, node)
+            const val = Object.assign(
+              { raws: decl.raws, source: decl.source },
+              node
+            )
+            return val
           })
         )
       })
@@ -347,13 +443,13 @@ describe('nvue-styler: expand', () => {
   })
   test(`transform border-style`, () => {
     const borderStyles: Record<string, Record<string, string>[]> = {
-      dotted: [
+      dotted: fillBorderPostion([
         {
           type: 'decl',
           prop: 'border-style',
           value: 'dotted',
         },
-      ],
+      ]),
       'dotted solid': [
         {
           type: 'decl',
@@ -425,26 +521,23 @@ describe('nvue-styler: expand', () => {
       const decl = parseDecl(`.test {
   border-style: ${value}
 }`)
-      if (!value.includes(' ')) {
-        expect(transformBorderStyle(decl)).toEqual([decl])
-      } else {
-        expect(transformBorderStyle(decl)).toEqual(
-          borderStyles[value].map((node) => {
-            return Object.assign({ raws: decl.raws, source: decl.source }, node)
-          })
-        )
-      }
+
+      expect(transformBorderStyle(decl)).toEqual(
+        borderStyles[value].map((node) => {
+          return Object.assign({ raws: decl.raws, source: decl.source }, node)
+        })
+      )
     })
   })
   test(`transform border-width`, () => {
     const borderWidths: Record<string, Record<string, string>[]> = {
-      '1px': [
+      '1px': fillBorderPostion([
         {
           type: 'decl',
           prop: 'border-width',
           value: '1px',
         },
-      ],
+      ]),
       '21px 22px': [
         {
           type: 'decl',
@@ -516,26 +609,23 @@ describe('nvue-styler: expand', () => {
       const decl = parseDecl(`.test {
   border-width: ${value}
 }`)
-      if (!value.includes(' ')) {
-        expect(transformBorderWidth(decl)).toEqual([decl])
-      } else {
-        expect(transformBorderWidth(decl)).toEqual(
-          borderWidths[value].map((node) => {
-            return Object.assign({ raws: decl.raws, source: decl.source }, node)
-          })
-        )
-      }
+
+      expect(transformBorderWidth(decl)).toEqual(
+        borderWidths[value].map((node) => {
+          return Object.assign({ raws: decl.raws, source: decl.source }, node)
+        })
+      )
     })
   })
   test(`transform border-color`, () => {
     const borderColors: Record<string, Record<string, string>[]> = {
-      red: [
+      red: fillBorderPostion([
         {
           type: 'decl',
           prop: 'border-color',
           value: 'red',
         },
-      ],
+      ]),
       'red green': [
         {
           type: 'decl',
@@ -607,15 +697,12 @@ describe('nvue-styler: expand', () => {
       const decl = parseDecl(`.test {
   border-color: ${value}
 }`)
-      if (!value.includes(' ')) {
-        expect(transformBorderColor(decl)).toEqual([decl])
-      } else {
-        expect(transformBorderColor(decl)).toEqual(
-          borderColors[value].map((node) => {
-            return Object.assign({ raws: decl.raws, source: decl.source }, node)
-          })
-        )
-      }
+
+      expect(transformBorderColor(decl)).toEqual(
+        borderColors[value].map((node) => {
+          return Object.assign({ raws: decl.raws, source: decl.source }, node)
+        })
+      )
     })
   })
   test(`transform border-radius`, () => {

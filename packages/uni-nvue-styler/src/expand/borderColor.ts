@@ -8,14 +8,16 @@ const borderLeft = __NODE_JS__ ? 'border-left-' : 'borderLeft'
 
 export const transformBorderColor: TransformDecl = (decl) => {
   const { prop, value, important, raws, source } = decl
-  let property = hyphenate(prop).split('-')[1]
+  const _splitResult = hyphenate(prop).split('-')
+  let property = _splitResult[_splitResult.length - 1]
   if (!__NODE_JS__) {
     property = capitalize(property)
   }
-  const splitResult = value.replace(/\s*,\s*/g, ',').split(/\s+/)
+  let splitResult = value.replace(/\s*,\s*/g, ',').split(/\s+/)
   switch (splitResult.length) {
     case 1:
-      return [decl]
+      splitResult.push(splitResult[0], splitResult[0], splitResult[0])
+      break
     case 2:
       splitResult.push(splitResult[0], splitResult[1])
       break
