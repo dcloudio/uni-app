@@ -598,3 +598,8 @@ declare class UniDialogPageImpl implements UniPage {
   $disableEscBack: boolean
   $triggerParentHide: boolean
 }
+
+declare function __registerWebViewUniConsole(
+  getEvalJSCode: () => string,
+  sendConsoleData: (data: string) => void
+): void

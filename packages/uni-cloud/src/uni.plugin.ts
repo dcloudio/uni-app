@@ -196,7 +196,7 @@ function initUniCloudEnv() {
 export default () => [
   defineUniMainJsPlugin((opts) => {
     return {
-      name: 'uni:cloud',
+      name: 'uni:cloud-main',
       enforce: 'pre',
       config(config, env) {
         if (isSsr(env.command, config)) {

@@ -227,10 +227,13 @@ async function build(target) {
     await sleep(500)
   }
   if (hasArkTSBundler) {
-    if (
-      process.env.UNI_APP_EXT_API_DIR &&
-      process.env.UNI_APP_EXT_API_INTERNAL_DIR
-    ) {
+    let shouldBuildArkTS = true
+    if (target === 'uni-app-harmony') {
+      shouldBuildArkTS = !!(process.env.UNI_APP_EXT_API_DIR &&
+        process.env.UNI_APP_EXT_API_INTERNAL_DIR
+      )
+    }
+    if (shouldBuildArkTS) {
       await buildArkTS(
         target,
         parse(fs.readFileSync(path.resolve(pkgDir, 'build.ets.json'), 'utf8'))
@@ -330,12 +333,12 @@ async function buildArkTS(target, buildJson) {
       }
       // console.log(buildOptions)
       await bundleArkTS(buildOptions).then((res) => {
-        console.log('bundle: ' + (Date.now() - start) + 'ms')
         // console.log(JSON.stringify(res))、
         const filePath = path.resolve(
           buildOptions.output.outDir,
           buildOptions.output.outFilename
         )
+        console.log(colors.green('bundle[' + buildOptions.output.outFilename + ']: ' + (Date.now() - start) + 'ms'))
         if (input !== 'temp/uni-ext-api/index.uts') {
           if (options.banner) {
             fs.writeFileSync(
@@ -365,6 +368,11 @@ async function buildArkTS(target, buildJson) {
       })
     }
   }
+
+  if (target !== 'uni-app-harmony') {
+    return
+  }
+
   // 先生成一遍提供给ohpm包使用
   const extApiExportJsonPath = path.resolve(
     __dirname,

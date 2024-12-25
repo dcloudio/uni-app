@@ -103,9 +103,13 @@ declare namespace NodeJS {
     UNI_AUTOMATOR_WS_ENDPOINT?: string // 自动化测试ws endpoint
     UNI_OS_NAME?: string // 操作系统名称
     // HBuilderX的Socket通道
-    UNI_SOCKET_ID?: string
-    UNI_SOCKET_PORT?: string
-    UNI_SOCKET_HOSTS?: string
+    UNI_SOCKET_ID: string
+    UNI_SOCKET_PORT: string
+    UNI_SOCKET_HOSTS: string
+
+    UNI_CONSOLE_KEEP_ORIGINAL: boolean
+    UNI_CONSOLE_WEBVIEW: boolean
+    UNI_CONSOLE_WEBVIEW_EVAL_JS_CODE: string
   }
 }
 

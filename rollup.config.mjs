@@ -237,6 +237,15 @@ function createReplacePlugin(buildOption, format) {
     Object.assign(replacements, buildOption.replacements)
   }
 
+  // 注入 __UNI_CONSOLE_WEBVIEW_EVAL_JS_CODE__
+  if ('__UNI_CONSOLE_WEBVIEW_EVAL_JS_CODE__' in replacements) {
+    replacements['__UNI_CONSOLE_WEBVIEW_EVAL_JS_CODE__'] = () => {
+      return JSON.stringify(
+        fs.readFileSync(resolve('dist/__uniwebview.js'), 'utf-8')
+      )
+    }
+  }
+
   Object.keys(replacements).forEach((key) => {
     if (key in process.env) {
       replacements[key] = process.env[key]

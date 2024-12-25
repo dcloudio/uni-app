@@ -24,7 +24,9 @@ export function uniAppMainPlugin(): Plugin {
           import './${PAGES_JSON_UTS}'
           ${code}
           `,
-          map: null,
+          map: {
+            mappings: '',
+          },
         }
       }
     },

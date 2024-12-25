@@ -69,7 +69,7 @@ export function initOnError() {
         return
       }
 
-      if (__UNI_CONSOLE_KEEP_ORIGINAL__) {
+      if (process.env.UNI_CONSOLE_KEEP_ORIGINAL) {
         originalConsole.error(error)
       }
       sendErrorMessages([error])

@@ -19,7 +19,12 @@ import { uniCloudPlugin } from './unicloud'
 export function init() {
   return [
     uniAppCssPrePlugin(),
-    ...(isNormalCompileTarget() ? [uniDecryptUniModulesPlugin()] : []),
+    ...(isNormalCompileTarget()
+      ? [
+          require('@dcloudio/uni-console/lib/uni.plugin.js')(),
+          uniDecryptUniModulesPlugin(),
+        ]
+      : []),
     uniPrePlugin(),
     ...(isNormalCompileTarget()
       ? [

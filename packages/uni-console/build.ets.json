@@ -1,0 +1,19 @@
+[
+  {
+    "input": {
+      "src/runtime/ets.ts": "uni.console.ets"
+    },
+    "autoImports": {
+      "@dcloudio/uts-harmony": [
+        ["IUTSObject"],
+        ["UTSObject"],
+        ["UTSJSONObject"]
+      ],
+      "@dcloudio/uni-mp-sdk": [["UTSHarmony"]]
+    },
+    "replacements": {
+      "__HARMONY__": "true",
+      "__DEV__": "false"
+    }
+  }
+]

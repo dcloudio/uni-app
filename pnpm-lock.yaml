@@ -882,6 +882,9 @@ importers:
       '@dcloudio/uni-cli-shared':
         specifier: workspace:*
         version: link:../uni-cli-shared
+      '@dcloudio/uni-console':
+        specifier: workspace:*
+        version: link:../uni-console
       '@dcloudio/uni-i18n':
         specifier: workspace:*
         version: link:../uni-i18n
@@ -1347,6 +1350,9 @@ importers:
       '@dcloudio/uni-cli-shared':
         specifier: workspace:*
         version: link:../uni-cli-shared
+      fs-extra:
+        specifier: ^10.0.0
+        version: 10.1.0
 
   packages/uni-core:
     devDependencies:
