@@ -107,8 +107,8 @@ declare namespace NodeJS {
     UNI_SOCKET_PORT: string
     UNI_SOCKET_HOSTS: string
 
-    UNI_CONSOLE_KEEP_ORIGINAL: boolean
-    UNI_CONSOLE_WEBVIEW: boolean
+    UNI_CONSOLE_KEEP_ORIGINAL: string
+    UNI_CONSOLE_WEBVIEW: string
     UNI_CONSOLE_WEBVIEW_EVAL_JS_CODE: string
   }
 }

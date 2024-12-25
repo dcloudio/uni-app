@@ -263,8 +263,6 @@ function formatObject(value: object, depth: number): NormalizeResult {
       if (constructor.get$UTSMetadata$) {
         // @ts-expect-error
         className = constructor.get$UTSMetadata$().name
-      } else {
-        className = constructor.name
       }
     }
   }

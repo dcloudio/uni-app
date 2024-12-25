@@ -18,7 +18,8 @@
     "replacements": {
       "__HARMONY__": "false",
       "__DEV__": "process.env.UNI_DEBUG",
-      "process.env.UNI_CONSOLE_WEBVIEW": false
+      "process.env.UNI_CONSOLE_WEBVIEW": false,
+      "_APP_ANDROID_": "false"
     },
     "compilerOptions": {
       "target": "esnext",
@@ -62,7 +63,7 @@
   },
   {
     "input": {
-      "src/runtime/app.ts": "dist/app.esm.js"
+      "src/runtime/app/index.ts": "dist/app.esm.js"
     },
     "replacements": {
       "__HARMONY__": "false",

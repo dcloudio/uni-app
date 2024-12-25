@@ -1,5 +1,6 @@
 /// <reference types="@dcloudio/uni-app-x/types/uni/global" />
-
+// 之所以又写了一份，是因为外层的socket，connectSocket的时候必须传入multiple:true
+// 但是android又不能传入，目前代码里又不能写条件编译之类的。
 export function initRuntimeSocket(
   hosts: string,
   port: string,
@@ -31,7 +32,6 @@ function tryConnectSocket(
   return new Promise((resolve, reject) => {
     const socket = uni.connectSocket({
       url: `ws://${host}:${port}/${id}`,
-      multiple: true, // 支付宝小程序 是否开启多实例
       fail() {
         resolve(null)
       },

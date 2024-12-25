@@ -59,7 +59,7 @@ export default () => {
         (process.env.UNI_UTS_PLATFORM === 'app-android' ||
           process.env.UNI_UTS_PLATFORM === 'app-ios')
           ? resolveBuiltIn(
-              path.join('@dcloudio/uni-console', 'src/runtime/app.ts')
+              path.join('@dcloudio/uni-console', 'src/runtime/app/index.ts')
             )
           : resolveBuiltIn(
               path.join('@dcloudio/uni-console', 'dist/index.esm.js')

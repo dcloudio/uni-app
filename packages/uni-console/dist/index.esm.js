@@ -17,7 +17,7 @@ function tryConnectSocket(host, port, id) {
     return new Promise((resolve, reject) => {
         const socket = uni.connectSocket({
             url: `ws://${host}:${port}/${id}`,
-            // multiple: true, // 支付宝小程序 是否开启多实例
+            multiple: true, // 支付宝小程序 是否开启多实例
             fail() {
                 resolve(null);
             },
@@ -225,9 +225,6 @@ function formatObject(value, depth) {
             if (constructor.get$UTSMetadata$) {
                 // @ts-expect-error
                 className = constructor.get$UTSMetadata$().name;
-            }
-            else {
-                className = constructor.name;
             }
         }
     }

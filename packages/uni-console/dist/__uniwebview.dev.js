@@ -217,9 +217,6 @@
                     // @ts-expect-error
                     className = constructor.get$UTSMetadata$().name;
                 }
-                else {
-                    className = constructor.name;
-                }
             }
         }
         return {
