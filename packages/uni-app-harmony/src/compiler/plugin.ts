@@ -111,8 +111,11 @@ export function uniAppHarmonyPlugin(): UniVitePlugin {
       if (!isNormalCompileTarget()) {
         return
       }
-      // x 上暂时编译所有uni ext api，不管代码里是否调用了
-      await buildUniExtApis()
+      // 1.0 特有逻辑，x 上由其他插件完成
+      if (process.env.UNI_APP_X !== 'true') {
+        // x 上暂时编译所有uni ext api，不管代码里是否调用了
+        await buildUniExtApis()
+      }
     },
   }
 }
