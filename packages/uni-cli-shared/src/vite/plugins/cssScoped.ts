@@ -41,7 +41,9 @@ export function uniRemoveCssScopedPlugin(
       debugScoped(id)
       return {
         code: removeScoped(code),
-        map: null,
+        map: {
+          mappings: '',
+        },
       }
     },
   }
@@ -58,7 +60,9 @@ export function uniCssScopedPlugin(
       debugScoped(id)
       return {
         code: addScoped(code),
-        map: null,
+        map: {
+          mappings: '',
+        },
       }
     },
     // 仅 h5

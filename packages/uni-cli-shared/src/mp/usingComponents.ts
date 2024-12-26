@@ -613,11 +613,18 @@ export async function transformDynamicImports(
     sourceMap?: boolean
     dynamicImport: (name: string, source: string) => string
   }
-) {
+): Promise<{
+  code: string
+  map: {
+    mappings: ''
+  }
+}> {
   if (!imports.length) {
     return {
       code,
-      map: null,
+      map: {
+        mappings: '',
+      },
     }
   }
   const s = new MagicString(code)
@@ -636,6 +643,8 @@ export async function transformDynamicImports(
   }
   return {
     code: s.toString(),
-    map: null,
+    map: {
+      mappings: '',
+    },
   }
 }

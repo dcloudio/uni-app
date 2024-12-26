@@ -18,7 +18,9 @@ export function uniJsonPlugin(): Plugin {
       }
       return {
         code: JSON.stringify(parseJson(preJson(code)), null, 2),
-        map: null,
+        map: {
+          mappings: '',
+        },
       }
     },
   }

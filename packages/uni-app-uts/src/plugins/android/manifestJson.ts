@@ -48,7 +48,12 @@ export function uniAppManifestPlugin(): Plugin {
           path.resolve(process.env.UNI_INPUT_DIR, 'manifest.json')
         )
         manifestJson = parseJson(code)
-        return `export default 'manifest.json'`
+        return {
+          code: `export default 'manifest.json'`,
+          map: {
+            mappings: '',
+          },
+        }
       }
     },
     generateBundle(_, bundle) {
