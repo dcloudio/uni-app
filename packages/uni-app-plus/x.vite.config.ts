@@ -14,7 +14,7 @@ import { isAppIOSUVueNativeTag } from '@dcloudio/uni-shared'
 import autoprefixer from 'autoprefixer'
 import { uts2ts } from '../../scripts/ext-api'
 
-import { initUniAppIosCssPlugin } from '@dcloudio/uni-app-uts'
+import { initUniAppJsEngineCssPlugin } from '@dcloudio/uni-app-uts'
 
 function resolve(file: string) {
   return path.resolve(__dirname, file)
@@ -124,7 +124,7 @@ export default defineConfig({
     {
       name: 'uni-x:ios',
       configResolved(config) {
-        initUniAppIosCssPlugin(config)
+        initUniAppJsEngineCssPlugin(config)
       },
     },
     uts2ts({ target: 'uni-app-plus', platform: 'app-js' }),

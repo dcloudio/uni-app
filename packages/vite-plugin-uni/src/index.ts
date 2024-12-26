@@ -130,7 +130,9 @@ function createPlugins(options: VitePluginUniResolvedOptions) {
   if (
     process.env.UNI_APP_X === 'true' &&
     // iOS 暂不使用该机制
-    process.env.UNI_UTS_PLATFORM !== 'app-ios'
+    process.env.UNI_UTS_PLATFORM !== 'app-ios' &&
+    // harmony 同 iOS
+    process.env.UNI_UTS_PLATFORM !== 'app-harmony'
   ) {
     plugins.push(uniUTSExtApiReplace())
   } else {

@@ -751,6 +751,9 @@ importers:
 
   packages/uni-app-harmony:
     dependencies:
+      '@dcloudio/uni-app-uts':
+        specifier: workspace:*
+        version: link:../uni-app-uts
       '@dcloudio/uni-app-vite':
         specifier: workspace:*
         version: link:../uni-app-vite

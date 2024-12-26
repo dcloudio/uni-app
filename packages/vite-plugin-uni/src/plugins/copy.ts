@@ -41,7 +41,7 @@ export function uniCopyPlugin({
     .filter((p) => {
       if (platform === 'app') {
         if (process.env.UNI_APP_X === 'true') {
-          if (p === 'app-android' || p === 'app-ios') {
+          if (p === 'app-android' || p === 'app-ios' || p === 'app-harmony') {
             return p !== utsPlatform
           }
           return p !== 'app'

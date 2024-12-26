@@ -96,7 +96,7 @@ export function uniAppPlugin(): UniVitePlugin {
   return {
     name: 'uni:app-uts',
     apply: 'build',
-    uni: createUniOptions('android'),
+    uni: createUniOptions('app-android'),
     config() {
       return {
         base: '/', // 强制 base

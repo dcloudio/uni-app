@@ -35,7 +35,7 @@ export function init() {
       ),
     }),
     uniEasycomPlugin({ exclude: UNI_EASYCOM_EXCLUDE }),
-    createUniAppJsEnginePlugin('app-ios')(),
+    createUniAppJsEnginePlugin('app-harmony')(),
     ...(process.env.UNI_COMPILE_TARGET === 'ext-api'
       ? [uniUniModulesExtApiPlugin()]
       : process.env.UNI_COMPILE_TARGET === 'uni_modules'

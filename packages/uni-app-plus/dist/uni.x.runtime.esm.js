@@ -249,6 +249,38 @@ function invokeCallback(id2, res, extras) {
   }
   return res;
 }
+function findInvokeCallbackByName(name) {
+  for (var key in invokeCallbacks) {
+    if (invokeCallbacks[key].name === name) {
+      return true;
+    }
+  }
+  return false;
+}
+function removeKeepAliveApiCallback(name, callback) {
+  for (var key in invokeCallbacks) {
+    var item = invokeCallbacks[key];
+    if (item.callback === callback && item.name === name) {
+      delete invokeCallbacks[key];
+    }
+  }
+}
+function offKeepAliveApiCallback(name) {
+  UniServiceJSBridge.off("api." + name);
+}
+function onKeepAliveApiCallback(name) {
+  UniServiceJSBridge.on("api." + name, (res) => {
+    for (var key in invokeCallbacks) {
+      var opts = invokeCallbacks[key];
+      if (opts.name === name) {
+        opts.callback(res);
+      }
+    }
+  });
+}
+function createKeepAliveApiCallback(name, callback) {
+  return addInvokeCallback(invokeCallbackId++, name, callback, true);
+}
 var API_SUCCESS = "success";
 var API_FAIL = "fail";
 var API_COMPLETE = "complete";
@@ -491,6 +523,42 @@ function beforeInvokeApi(name, args, protocol, options) {
     return errMsg;
   }
 }
+function checkCallback(callback) {
+  if (!isFunction$1(callback)) {
+    throw new Error('Invalid args: type check failed for args "callback". Expected Function');
+  }
+}
+function wrapperOnApi(name, fn, options) {
+  return (callback) => {
+    checkCallback(callback);
+    var errMsg = beforeInvokeApi(name, [callback], void 0, options);
+    if (errMsg) {
+      throw new Error(errMsg);
+    }
+    var isFirstInvokeOnApi = !findInvokeCallbackByName(name);
+    createKeepAliveApiCallback(name, callback);
+    if (isFirstInvokeOnApi) {
+      onKeepAliveApiCallback(name);
+      fn();
+    }
+  };
+}
+function wrapperOffApi(name, fn, options) {
+  return (callback) => {
+    checkCallback(callback);
+    var errMsg = beforeInvokeApi(name, [callback], void 0, options);
+    if (errMsg) {
+      throw new Error(errMsg);
+    }
+    name = name.replace("off", "on");
+    removeKeepAliveApiCallback(name, callback);
+    var hasInvokeOnApi = findInvokeCallbackByName(name);
+    if (!hasInvokeOnApi) {
+      offKeepAliveApiCallback(name);
+      fn();
+    }
+  };
+}
 function parseErrMsg(errMsg) {
   if (!errMsg || isString(errMsg)) {
     return errMsg;
@@ -527,6 +595,15 @@ function wrapperSyncApi(name, fn, protocol, options) {
 }
 function wrapperAsyncApi(name, fn, protocol, options) {
   return wrapperTaskApi(name, fn, protocol, options);
+}
+function defineOnApi(name, fn, options) {
+  return wrapperOnApi(name, fn, options);
+}
+function defineOffApi(name, fn, options) {
+  return wrapperOffApi(name, fn, options);
+}
+function defineTaskApi(name, fn, protocol, options) {
+  return promisify(name, wrapperTaskApi(name, fn, void 0, options));
 }
 function defineSyncApi(name, fn, protocol, options) {
   return wrapperSyncApi(name, fn, void 0, options);
@@ -7680,6 +7757,11 @@ export {
   registerApp as __registerApp,
   systemRoutes as __uniSystemRoutes,
   index as components,
+  defineAsyncApi,
+  defineOffApi,
+  defineOnApi,
+  defineSyncApi,
+  defineTaskApi,
   getApp$1 as getApp,
   getCurrentPages$1 as getCurrentPages,
   initApp,

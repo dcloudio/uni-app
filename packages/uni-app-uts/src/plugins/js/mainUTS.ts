@@ -7,7 +7,7 @@ import {
 
 import type { Plugin } from 'vite'
 
-export function uniAppIOSMainPlugin(): Plugin {
+export function uniAppJsEngineMainPlugin(): Plugin {
   const mainUTS = resolveMainPathOnce(process.env.UNI_INPUT_DIR)
   return {
     name: 'uni:app-main',

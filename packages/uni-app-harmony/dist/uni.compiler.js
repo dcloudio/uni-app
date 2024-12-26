@@ -1,6 +1,7 @@
 'use strict';
 
 var appVite = require('@dcloudio/uni-app-vite');
+var uniAppUts = require('@dcloudio/uni-app-uts');
 var path = require('path');
 var uniCliShared = require('@dcloudio/uni-cli-shared');
 
@@ -362,6 +363,9 @@ function initUniExtApi() {
     });
 }
 
-var index = [appVite__default.default, uniAppHarmonyPlugin];
+var index = [
+    process.env.UNI_APP_X === 'true' ? uniAppUts.initUniAppXHarmonyPlugin : appVite__default.default,
+    uniAppHarmonyPlugin,
+];
 
 module.exports = index;
