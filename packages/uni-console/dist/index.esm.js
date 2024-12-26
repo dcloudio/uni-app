@@ -417,6 +417,7 @@ let sendError = null;
 // uni.onError 会在 App.onError 上边同时增加监听，因为要监听 vue 的errorHandler
 // 目前 vue 的 errorHandler 仅会callHook('onError')，所以需要把uni.onError的也挂在 App.onError 上
 const errorQueue = new Set();
+const errorExtra = {};
 function sendErrorMessages(errors) {
     if (sendError == null) {
         errors.forEach((error) => {
@@ -424,11 +425,13 @@ function sendErrorMessages(errors) {
         });
         return;
     }
-    sendError(JSON.stringify({
+    sendError(JSON.stringify(Object.assign({
         type: 'error',
         data: errors.map((err) => {
             const isPromiseRejection = err && 'promise' in err && 'reason' in err;
-            const prefix = isPromiseRejection ? 'UnhandledPromiseRejection: ' : '';
+            const prefix = isPromiseRejection
+                ? 'UnhandledPromiseRejection: '
+                : '';
             if (isPromiseRejection) {
                 err = err.reason;
             }
@@ -445,10 +448,11 @@ function sendErrorMessages(errors) {
             }
             return prefix + String(err);
         }),
-    }));
+    }, errorExtra)));
 }
-function setSendError(value) {
+function setSendError(value, extra = {}) {
     sendError = value;
+    Object.assign(errorExtra, extra);
     if (value != null && errorQueue.size > 0) {
         const errors = Array.from(errorQueue);
         errorQueue.clear();

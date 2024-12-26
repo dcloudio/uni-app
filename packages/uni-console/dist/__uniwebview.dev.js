@@ -405,37 +405,82 @@
         return isWritable;
     }
 
+    var sendError = null;
+    // App.onError会监听到两类错误，一类是小程序自身抛出的，一类是 vue 的 errorHandler 触发的
+    // uni.onError 和 App.onError 会同时监听到错误(主要是App.onError监听之前的错误)，所以需要用 Set 来去重
+    // uni.onError 会在 App.onError 上边同时增加监听，因为要监听 vue 的errorHandler
+    // 目前 vue 的 errorHandler 仅会callHook('onError')，所以需要把uni.onError的也挂在 App.onError 上
+    var errorQueue = new Set();
+    var errorExtra = {};
+    function sendErrorMessages(errors) {
+        if (sendError == null) {
+            errors.forEach(function (error) {
+                errorQueue.add(error);
+            });
+            return;
+        }
+        sendError(JSON.stringify(Object.assign({
+            type: 'error',
+            data: errors.map(function (err) {
+                var isPromiseRejection = err && 'promise' in err && 'reason' in err;
+                var prefix = isPromiseRejection
+                    ? 'UnhandledPromiseRejection: '
+                    : '';
+                if (isPromiseRejection) {
+                    err = err.reason;
+                }
+                if (err instanceof Error && err.stack) {
+                    return prefix + err.stack;
+                }
+                if (typeof err === 'object' && err !== null) {
+                    try {
+                        return prefix + JSON.stringify(err);
+                    }
+                    catch (err) {
+                        return prefix + String(err);
+                    }
+                }
+                return prefix + String(err);
+            }),
+        }, errorExtra)));
+    }
+    function setSendError(value, extra) {
+        if (extra === void 0) { extra = {}; }
+        sendError = value;
+        Object.assign(errorExtra, extra);
+        if (value != null && errorQueue.size > 0) {
+            var errors = Array.from(errorQueue);
+            errorQueue.clear();
+            sendErrorMessages(errors);
+        }
+    }
+
     var isInit = false;
     function initUniWebviewRuntimeService() {
         if (isInit)
             return;
         isInit = true;
+        var channel = "[web-view]".concat(
+        // @ts-expect-error
+        window.__UNI_PAGE_ROUTE__ ? "[".concat(window.__UNI_PAGE_ROUTE__, "]") : '');
         rewriteConsole();
         setSendConsole(function (data) {
             sendToService(data);
         }, {
-            channel: "[web-view]".concat(
-            // @ts-expect-error
-            window.__UNI_PAGE_ROUTE__ ? "[".concat(window.__UNI_PAGE_ROUTE__, "]") : ''),
+            channel: channel,
+        });
+        setSendError(function (data) {
+            sendToService(data);
+        }, {
+            channel: channel,
         });
         // 监听同步错误
         window.addEventListener('error', function (event) {
-            var errorInfo = {
-                message: event.message,
-                filename: event.filename,
-                lineno: event.lineno,
-                colno: event.colno,
-                error: serializeError(event.error),
-            };
-            sendToService(JSON.stringify(errorInfo));
+            sendErrorMessages([event.error]);
         });
         // 监听Promise未处理的异步错误
         window.addEventListener('unhandledrejection', function (event) {
-            var errorInfo = {
-                message: 'Unhandled Promise Rejection',
-                reason: serializeError(event.reason),
-            };
-            sendToService(JSON.stringify(errorInfo));
+            sendErrorMessages([event]);
         });
     }
     function sendToService(data) {
@@ -458,16 +503,6 @@
             // @ts-expect-error
             return window.__uniapp_x_.postMessageToService(JSON.stringify(serviceMessage));
         }
-    }
-    // 序列化错误对象
-    function serializeError(error) {
-        if (!error)
-            return {};
-        return {
-            message: error.message,
-            name: error.name,
-            stack: error.stack,
-        };
     }
     initUniWebviewRuntimeService();
 

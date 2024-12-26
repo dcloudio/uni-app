@@ -9,7 +9,9 @@ let sendError: SendFn = null
 // 目前 vue 的 errorHandler 仅会callHook('onError')，所以需要把uni.onError的也挂在 App.onError 上
 const errorQueue: Set<any> = new Set()
 
-function sendErrorMessages(errors: any[]) {
+const errorExtra: Record<string, any> = {}
+
+export function sendErrorMessages(errors: any[]) {
   if (sendError == null) {
     errors.forEach((error) => {
       errorQueue.add(error)
@@ -18,32 +20,41 @@ function sendErrorMessages(errors: any[]) {
   }
 
   sendError(
-    JSON.stringify({
-      type: 'error',
-      data: errors.map((err) => {
-        const isPromiseRejection = err && 'promise' in err && 'reason' in err
-        const prefix = isPromiseRejection ? 'UnhandledPromiseRejection: ' : ''
-        if (isPromiseRejection) {
-          err = err.reason
-        }
-        if (err instanceof Error && err.stack) {
-          return prefix + err.stack
-        }
-        if (typeof err === 'object' && err !== null) {
-          try {
-            return prefix + JSON.stringify(err)
-          } catch (err) {
+    JSON.stringify(
+      Object.assign(
+        {
+          type: 'error',
+          data: errors.map((err) => {
+            const isPromiseRejection =
+              err && 'promise' in err && 'reason' in err
+            const prefix = isPromiseRejection
+              ? 'UnhandledPromiseRejection: '
+              : ''
+            if (isPromiseRejection) {
+              err = err.reason
+            }
+            if (err instanceof Error && err.stack) {
+              return prefix + err.stack
+            }
+            if (typeof err === 'object' && err !== null) {
+              try {
+                return prefix + JSON.stringify(err)
+              } catch (err) {
+                return prefix + String(err)
+              }
+            }
             return prefix + String(err)
-          }
-        }
-        return prefix + String(err)
-      }),
-    })
+          }),
+        },
+        errorExtra
+      )
+    )
   )
 }
 
-export function setSendError(value: SendFn) {
+export function setSendError(value: SendFn, extra: Record<string, any> = {}) {
   sendError = value
+  Object.assign(errorExtra, extra)
   if (value != null && errorQueue.size > 0) {
     const errors = Array.from(errorQueue)
     errorQueue.clear()
