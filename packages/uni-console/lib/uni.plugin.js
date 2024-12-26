@@ -51,11 +51,11 @@ var index = () => {
                     hasRuntimeSocket = false;
                 }
             }
-            const uniConsolePath = isX &&
+            const uniConsolePath = uniCliShared.normalizePath(isX &&
                 (process.env.UNI_UTS_PLATFORM === 'app-android' ||
                     process.env.UNI_UTS_PLATFORM === 'app-ios')
                 ? uniCliShared.resolveBuiltIn(path__default.default.join('@dcloudio/uni-console', 'src/runtime/app/index.ts'))
-                : uniCliShared.resolveBuiltIn(path__default.default.join('@dcloudio/uni-console', 'dist/index.esm.js'));
+                : uniCliShared.resolveBuiltIn(path__default.default.join('@dcloudio/uni-console', 'dist/index.esm.js')));
             return {
                 name: 'uni:console-main-js',
                 enforce: 

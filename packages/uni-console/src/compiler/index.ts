@@ -4,6 +4,7 @@ import path from 'path'
 import {
   defineUniMainJsPlugin,
   isEnableConsole,
+  normalizePath,
   resolveBuiltIn,
 } from '@dcloudio/uni-cli-shared'
 
@@ -63,16 +64,17 @@ export default () => {
           hasRuntimeSocket = false
         }
       }
-      const uniConsolePath =
+      const uniConsolePath = normalizePath(
         isX &&
-        (process.env.UNI_UTS_PLATFORM === 'app-android' ||
-          process.env.UNI_UTS_PLATFORM === 'app-ios')
+          (process.env.UNI_UTS_PLATFORM === 'app-android' ||
+            process.env.UNI_UTS_PLATFORM === 'app-ios')
           ? resolveBuiltIn(
               path.join('@dcloudio/uni-console', 'src/runtime/app/index.ts')
             )
           : resolveBuiltIn(
               path.join('@dcloudio/uni-console', 'dist/index.esm.js')
             )
+      )
       return {
         name: 'uni:console-main-js',
         enforce:
