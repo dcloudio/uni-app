@@ -229,7 +229,8 @@ async function build(target) {
   if (hasArkTSBundler) {
     let shouldBuildArkTS = true
     if (target === 'uni-app-harmony') {
-      shouldBuildArkTS = !!(process.env.UNI_APP_EXT_API_DIR &&
+      shouldBuildArkTS = !!(
+        process.env.UNI_APP_EXT_API_DIR &&
         process.env.UNI_APP_EXT_API_INTERNAL_DIR
       )
     }
@@ -411,7 +412,7 @@ async function buildArkTS(target, buildJson) {
   }
   fs.outputJSON(
     path.resolve(projectDir, 'src/compiler/standalone-ext-apis.json'),
-    standaloneExtApis,
+    standaloneExtApis.sort((a, b) => a.plugin.localeCompare(b.plugin)),
     { spaces: 2 }
   )
   const extApiExportWithHar = genHarmonyExtApiExport()
