@@ -1,12 +1,18 @@
 import { rewriteConsole, setSendConsole } from '../console'
 import { sendErrorMessages, setSendError } from '../error'
+declare global {
+  interface Window {
+    __UNI_CONSOLE_WEBVIEW__: boolean
+    __UNI_PAGE_ROUTE__: string
+  }
+}
 
-let isInit = false
+window.__UNI_CONSOLE_WEBVIEW__ = false
 function initUniWebviewRuntimeService() {
-  if (isInit) return
-  isInit = true
+  if (window.__UNI_CONSOLE_WEBVIEW__) return
+
+  window.__UNI_CONSOLE_WEBVIEW__ = true
   const channel = `[web-view]${
-    // @ts-expect-error
     window.__UNI_PAGE_ROUTE__ ? `[${window.__UNI_PAGE_ROUTE__}]` : ''
   }`
   rewriteConsole()

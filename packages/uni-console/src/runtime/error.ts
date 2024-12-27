@@ -18,38 +18,42 @@ export function sendErrorMessages(errors: any[]) {
     })
     return
   }
-
-  sendError(
-    JSON.stringify(
-      Object.assign(
-        {
-          type: 'error',
-          data: errors.map((err) => {
-            const isPromiseRejection =
-              err && 'promise' in err && 'reason' in err
-            const prefix = isPromiseRejection
-              ? 'UnhandledPromiseRejection: '
-              : ''
-            if (isPromiseRejection) {
-              err = err.reason
-            }
-            if (err instanceof Error && err.stack) {
-              return prefix + err.stack
-            }
-            if (typeof err === 'object' && err !== null) {
-              try {
-                return prefix + JSON.stringify(err)
-              } catch (err) {
-                return prefix + String(err)
-              }
-            }
-            return prefix + String(err)
-          }),
-        },
-        errorExtra
+  const data = errors
+    .map((err) => {
+      const isPromiseRejection = err && 'promise' in err && 'reason' in err
+      const prefix = isPromiseRejection ? 'UnhandledPromiseRejection: ' : ''
+      if (isPromiseRejection) {
+        err = err.reason
+      }
+      if (err instanceof Error && err.stack) {
+        if (err.message && !err.stack.includes(err.message)) {
+          return prefix + err.message + '\n' + err.stack
+        }
+        return prefix + err.stack
+      }
+      if (typeof err === 'object' && err !== null) {
+        try {
+          return prefix + JSON.stringify(err)
+        } catch (err) {
+          return prefix + String(err)
+        }
+      }
+      return prefix + String(err)
+    })
+    .filter(Boolean)
+  if (data.length > 0) {
+    sendError(
+      JSON.stringify(
+        Object.assign(
+          {
+            type: 'error',
+            data,
+          },
+          errorExtra
+        )
       )
     )
-  )
+  }
 }
 
 export function setSendError(value: SendFn, extra: Record<string, any> = {}) {

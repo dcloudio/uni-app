@@ -64,17 +64,20 @@ export default () => {
           hasRuntimeSocket = false
         }
       }
-      const uniConsolePath = normalizePath(
-        isX &&
-          (process.env.UNI_UTS_PLATFORM === 'app-android' ||
-            process.env.UNI_UTS_PLATFORM === 'app-ios')
-          ? resolveBuiltIn(
-              path.join('@dcloudio/uni-console', 'src/runtime/app/index.ts')
-            )
-          : resolveBuiltIn(
-              path.join('@dcloudio/uni-console', 'dist/index.esm.js')
-            )
+      let uniConsolePath = resolveBuiltIn(
+        path.join('@dcloudio/uni-console', 'dist/index.esm.js')
       )
+      if (isX) {
+        if (process.env.UNI_UTS_PLATFORM === 'app-android') {
+          uniConsolePath = resolveBuiltIn(
+            path.join('@dcloudio/uni-console', 'src/runtime/app/index.ts')
+          )
+        } else if (process.env.UNI_UTS_PLATFORM === 'app-ios') {
+          uniConsolePath = resolveBuiltIn(
+            path.join('@dcloudio/uni-console', 'dist/app.esm.js')
+          )
+        }
+      }
       return {
         name: 'uni:console-main-js',
         enforce:
@@ -89,7 +92,7 @@ export default () => {
           }
           return {
             // 采用绝对路径引入，此时，tsc失效，代码里需要自己处理好各种类型问题
-            code: `import '${uniConsolePath}';${code}`,
+            code: `import '${normalizePath(uniConsolePath)}';${code}`,
             map: {
               mappings: '',
             },

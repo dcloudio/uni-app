@@ -419,30 +419,36 @@
             });
             return;
         }
-        sendError(JSON.stringify(Object.assign({
-            type: 'error',
-            data: errors.map(function (err) {
-                var isPromiseRejection = err && 'promise' in err && 'reason' in err;
-                var prefix = isPromiseRejection
-                    ? 'UnhandledPromiseRejection: '
-                    : '';
-                if (isPromiseRejection) {
-                    err = err.reason;
+        var data = errors
+            .map(function (err) {
+            var isPromiseRejection = err && 'promise' in err && 'reason' in err;
+            var prefix = isPromiseRejection ? 'UnhandledPromiseRejection: ' : '';
+            if (isPromiseRejection) {
+                err = err.reason;
+            }
+            if (err instanceof Error && err.stack) {
+                if (err.message && !err.stack.includes(err.message)) {
+                    return prefix + err.message + '\n' + err.stack;
                 }
-                if (err instanceof Error && err.stack) {
-                    return prefix + err.stack;
+                return prefix + err.stack;
+            }
+            if (typeof err === 'object' && err !== null) {
+                try {
+                    return prefix + JSON.stringify(err);
                 }
-                if (typeof err === 'object' && err !== null) {
-                    try {
-                        return prefix + JSON.stringify(err);
-                    }
-                    catch (err) {
-                        return prefix + String(err);
-                    }
+                catch (err) {
+                    return prefix + String(err);
                 }
-                return prefix + String(err);
-            }),
-        }, errorExtra)));
+            }
+            return prefix + String(err);
+        })
+            .filter(Boolean);
+        if (data.length > 0) {
+            sendError(JSON.stringify(Object.assign({
+                type: 'error',
+                data: data,
+            }, errorExtra)));
+        }
     }
     function setSendError(value, extra) {
         if (extra === void 0) { extra = {}; }
@@ -455,14 +461,12 @@
         }
     }
 
-    var isInit = false;
+    window.__UNI_CONSOLE_WEBVIEW__ = false;
     function initUniWebviewRuntimeService() {
-        if (isInit)
+        if (window.__UNI_CONSOLE_WEBVIEW__)
             return;
-        isInit = true;
-        var channel = "[web-view]".concat(
-        // @ts-expect-error
-        window.__UNI_PAGE_ROUTE__ ? "[".concat(window.__UNI_PAGE_ROUTE__, "]") : '');
+        window.__UNI_CONSOLE_WEBVIEW__ = true;
+        var channel = "[web-view]".concat(window.__UNI_PAGE_ROUTE__ ? "[".concat(window.__UNI_PAGE_ROUTE__, "]") : '');
         rewriteConsole();
         setSendConsole(function (data) {
             sendToService(data);
