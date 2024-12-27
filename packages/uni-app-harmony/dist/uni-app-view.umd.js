@@ -26358,7 +26358,7 @@
       topWindowHeight
     } = getWindowOffset();
     if (fields2.node) {
-      var tagName = el.tagName.split("-")[1];
+      var tagName = el.tagName.split("-")[1] || el.tagName;
       if (tagName) {
         info.node = el.querySelector(tagName);
       }
