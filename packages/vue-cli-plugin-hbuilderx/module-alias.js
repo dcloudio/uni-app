@@ -23,6 +23,8 @@ if (isInHBuilderX) {
     'compile-less/node_modules/less'))
   moduleAlias.addAlias('node-sass', path.resolve(process.env.UNI_HBUILDERX_PLUGINS,
     'compile-node-sass/node_modules/node-sass-china'))
+  moduleAlias.addAlias('sass', path.resolve(process.env.UNI_HBUILDERX_PLUGINS,
+    'compile-dart-sass/node_modules/sass'))
   moduleAlias.addAlias('stylus', path.resolve(process.env.UNI_HBUILDERX_PLUGINS,
     'compile-stylus/node_modules/stylus'))
   moduleAlias.addAlias('pug', path.resolve(process.env.UNI_HBUILDERX_PLUGINS,

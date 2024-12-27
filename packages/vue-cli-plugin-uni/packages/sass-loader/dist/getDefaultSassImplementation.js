@@ -6,6 +6,11 @@ Object.defineProperty(exports, "__esModule", {
 exports.default = void 0;
 
 function getDefaultSassImplementation() {
+  if (process.platform === 'darwin' && process.arch === 'arm64') {
+    if (require('@dcloudio/uni-cli-shared').isInHBuilderX) {
+      return require('sass');
+    }
+  }
   let sassImplPkg = 'node-sass';
 
   try {

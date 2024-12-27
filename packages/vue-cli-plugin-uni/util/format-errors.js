@@ -69,6 +69,9 @@ function ModuleBuildError (err) {
     } else if (~err.message.indexOf('compile-node-sass')) {
       name = 'compile-node-sass'
       builtinCompile = 'scss/sass'
+    } else if (~err.message.indexOf('compile-dart-sass')) {
+      name = 'compile-dart-sass'
+      builtinCompile = 'scss/sass'
     } else if (~err.message.indexOf('compile-stylus')) {
       name = 'compile-stylus'
       builtinCompile = 'stylus'
