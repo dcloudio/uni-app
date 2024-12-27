@@ -428,9 +428,9 @@
             }
             if (err instanceof Error && err.stack) {
                 if (err.message && !err.stack.includes(err.message)) {
-                    return prefix + err.message + '\n' + err.stack;
+                    return "".concat(prefix).concat(err.message, "\n").concat(err.stack);
                 }
-                return prefix + err.stack;
+                return "".concat(prefix).concat(err.stack);
             }
             if (typeof err === 'object' && err !== null) {
                 try {

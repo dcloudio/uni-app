@@ -27,9 +27,10 @@ export function sendErrorMessages(errors: any[]) {
       }
       if (err instanceof Error && err.stack) {
         if (err.message && !err.stack.includes(err.message)) {
-          return prefix + err.message + '\n' + err.stack
+          return `${prefix}${err.message}
+${err.stack}`
         }
-        return prefix + err.stack
+        return `${prefix}${err.stack}`
       }
       if (typeof err === 'object' && err !== null) {
         try {
