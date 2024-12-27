@@ -10,33 +10,43 @@ class UniProgressActiveendEventDetail {
     this.curPercent = value
   }
 }
-export class UniProgressActiveendEvent extends UniCustomEvent<UniProgressActiveendEventDetail> {
-  constructor(value: number) {
-    super('activeend', {
-      detail: new UniProgressActiveendEventDetail(value),
-    } as CustomEventOptions<UniProgressActiveendEventDetail>)
-  }
-}
-export class UniProgressElement extends UniElementImpl {
-  constructor(data: INodeData, pageNode: PageNode) {
-    super(data, pageNode)
-  }
-
-  override tagName = 'PROGRESS'
-  override nodeName = this.tagName
-
-  override getAnyAttribute(key: string): string {
-    const value = this._getAttribute(key)
-    if (value != null) {
-      return value
+export const UniProgressActiveendEvent = /* @__PURE__ */ (() =>
+  class extends UniCustomEvent<UniProgressActiveendEventDetail> {
+    constructor(value: number) {
+      super('activeend', {
+        detail: new UniProgressActiveendEventDetail(value),
+      } as CustomEventOptions<UniProgressActiveendEventDetail>)
     }
-    return super.getAnyAttribute(key)
-  }
+  })()
 
-  _getAttribute = (key: string): string | null => {
-    return null
-  }
-}
+export type UniProgressActiveendEvent = InstanceType<
+  typeof UniProgressActiveendEvent
+>
+
+export const UniProgressElement = /* @__PURE__ */ (() =>
+  class extends UniElementImpl {
+    constructor(data: INodeData, pageNode: PageNode) {
+      super(data, pageNode)
+    }
+
+    override tagName = 'PROGRESS'
+    override nodeName = this.tagName
+
+    override getAnyAttribute(key: string): string {
+      const value = this._getAttribute(key)
+      if (value != null) {
+        return value
+      }
+      return super.getAnyAttribute(key)
+    }
+
+    _getAttribute = (key: string): string | null => {
+      return null
+    }
+  })()
+
+export type UniProgressElement = InstanceType<typeof UniProgressElement>
+
 export const progressProps = {
   percent: {
     type: Number,
