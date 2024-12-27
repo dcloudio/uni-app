@@ -461,7 +461,6 @@
         }
     }
 
-    window.__UNI_CONSOLE_WEBVIEW__ = false;
     function initUniWebviewRuntimeService() {
         if (window.__UNI_CONSOLE_WEBVIEW__)
             return;

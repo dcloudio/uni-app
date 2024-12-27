@@ -7,10 +7,8 @@ declare global {
   }
 }
 
-window.__UNI_CONSOLE_WEBVIEW__ = false
 function initUniWebviewRuntimeService() {
   if (window.__UNI_CONSOLE_WEBVIEW__) return
-
   window.__UNI_CONSOLE_WEBVIEW__ = true
   const channel = `[web-view]${
     window.__UNI_PAGE_ROUTE__ ? `[${window.__UNI_PAGE_ROUTE__}]` : ''
