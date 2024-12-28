@@ -12,7 +12,7 @@ import babel from '@rollup/plugin-babel'
 import { capitalize, cssTarget, parseInjects } from '@dcloudio/uni-cli-shared'
 import { isH5CustomElement } from '@dcloudio/uni-shared'
 import { resolveExtApiTempDir } from '../../scripts/ext-api'
-import { StandaloneExtApi } from './src/compiler/constants'
+import { ExtApiBlackListX, StandaloneExtApi } from './src/compiler/constants'
 
 function resolve(file: string) {
   return path.resolve(__dirname, file)
@@ -196,7 +196,7 @@ function parseExtApiInjects(uniModulesDir: string) {
     '',
     uniModulesDir,
     require(path.resolve(uniModulesDir, 'package.json'))?.uni_modules[
-      'uni-ext-api'
+    'uni-ext-api'
     ] || {}
   )
 }
@@ -225,19 +225,13 @@ interface IStandaloneExtApi {
   service?: string
 }
 
-function initArkTSExtApi() {
-  if (
-    !process.env.UNI_APP_EXT_API_DIR ||
-    !process.env.UNI_APP_EXT_API_INTERNAL_DIR
-  ) {
-    return
-  }
+function generateExtApiSourceCode(isUniAppX = false) {
   const internalExtApiDir = path.resolve(
     process.env.UNI_APP_EXT_API_INTERNAL_DIR
   )
   // 遍历所有 ext-api，查找已实现 app-harmony 的 ext-api
   const extApiDir = path.resolve(process.env.UNI_APP_EXT_API_DIR)
-  const extApiTempDir = resolveExtApiTempDir('uni-app-harmony')
+  const extApiTempDir = resolveExtApiTempDir('uni-app-harmony') + (isUniAppX ? '-x' : '')
   fs.emptyDirSync(extApiTempDir)
   const extApiStore = getExtApiPaths([internalExtApiDir, extApiDir])
 
@@ -249,6 +243,9 @@ function initArkTSExtApi() {
   const extApiStandaloneBuildJson: IStandaloneExtApi[] = []
 
   for (const extApi in extApiStore) {
+    if (isUniAppX && ExtApiBlackListX.includes(extApi)) {
+      continue
+    }
     const extApiPath = extApiStore[extApi]
     if (
       !fs.existsSync(path.resolve(extApiPath, 'utssdk/app-harmony/index.uts'))
@@ -336,4 +333,15 @@ export default {
   ${defineExtApis.join(',\n  ')}
 } as UniExtApi`
   )
+}
+
+function initArkTSExtApi() {
+  if (
+    !process.env.UNI_APP_EXT_API_DIR ||
+    !process.env.UNI_APP_EXT_API_INTERNAL_DIR
+  ) {
+    return
+  }
+  generateExtApiSourceCode(false)
+  generateExtApiSourceCode(true)
 }

@@ -28,7 +28,7 @@ const arkTSOnly = args.ets
 
 run()
 
-async function run() {
+async function run () {
   if (!targets.length) {
     await buildAll(allTargets)
   } else {
@@ -36,7 +36,7 @@ async function run() {
   }
 }
 
-function buildWithChildProcess(target) {
+function buildWithChildProcess (target) {
   const args = [__filename, target]
   devOnly && args.push('-d')
   isRelease && args.push('--release')
@@ -56,7 +56,7 @@ function buildWithChildProcess(target) {
   })
 }
 
-function getTargetGroup(targets) {
+function getTargetGroup (targets) {
   const group = {}
   for (let i = 0; i < targets.length; i++) {
     const target = targets[i]
@@ -70,7 +70,7 @@ function getTargetGroup(targets) {
   return group
 }
 
-async function buildAll(targets) {
+async function buildAll (targets) {
   if (!multiProcess) {
     for (const target of targets) {
       try {
@@ -100,7 +100,7 @@ async function buildAll(targets) {
   }
 }
 
-async function build(target) {
+async function build (target) {
   console.log(`\n${colors.bold(target)}:`)
   const pkgDir = path.resolve(`packages/${target}`)
   const pkg = require(`${pkgDir}/package.json`)
@@ -270,10 +270,60 @@ async function build(target) {
   }
 }
 
-async function buildArkTS(target, buildJson) {
+async function postBuildArkTS (isUniAppX = false) {
+  const projectDir = path.resolve(__dirname, '../packages/uni-app-harmony')
+  const { compileArkTSExtApi } = require('../packages/uni-uts-v1/dist')
+  // 先生成一遍提供给ohpm包使用
+  const extApiExportJsonPath = path.resolve(
+    __dirname,
+    '../packages/uni-uts-v1/lib/arkts',
+    isUniAppX ? 'ext-api-export-x.json' : 'ext-api-export.json'
+  )
+  const extApiExport = genHarmonyExtApiExport(isUniAppX)
+  fs.outputJSON(extApiExportJsonPath, extApiExport, { spaces: 2 })
+
+  const harBuildJson = require(path.resolve(
+    projectDir,
+    'temp',
+    isUniAppX ? 'uni-ext-api-x' : 'uni-ext-api',
+    'build.har.json'
+  ))
+  const standaloneExtApis = []
+  for (let i = 0; i < harBuildJson.length; i++) {
+    const { input, output, type, plugin, apis, provider, service } =
+      harBuildJson[i]
+    await compileArkTSExtApi(path.resolve(input, '..'), input, output, {
+      isExtApi: true,
+      isOhpmPackage: true,
+      transform: {},
+    })
+    let version = '1.0.0'
+    const packageJsonPath = path.resolve(input, 'package.json')
+    if (fs.existsSync(packageJsonPath)) {
+      const packageJson = fs.readJSONSync(packageJsonPath)
+      version = packageJson.version || '1.0.0'
+    }
+    standaloneExtApis.push({
+      type,
+      plugin,
+      apis,
+      provider,
+      service,
+      version,
+    })
+  }
+  fs.outputJSON(
+    path.resolve(projectDir, 'src/compiler/standalone-ext-apis.json'),
+    standaloneExtApis.sort((a, b) => a.plugin.localeCompare(b.plugin)),
+    { spaces: 2 }
+  )
+  const extApiExportWithHar = genHarmonyExtApiExport(isUniAppX)
+  fs.outputJSON(extApiExportJsonPath, extApiExportWithHar, { spaces: 2 })
+}
+
+async function buildArkTS (target, buildJson) {
   const projectDir = path.resolve(__dirname, '../packages', target)
   const { bundleArkTS } = require('../packages/uts/dist')
-  const { compileArkTSExtApi } = require('../packages/uni-uts-v1/dist')
   const start = Date.now()
   if (!Array.isArray(buildJson)) {
     buildJson = [buildJson]
@@ -314,7 +364,7 @@ async function buildArkTS(target, buildJson) {
           },
         },
         output: {
-          outDir: path.resolve(projectDir, 'dist'),
+          outDir: path.resolve(projectDir),
           outFilename: options.input[input],
           package: '',
           imports: [],
@@ -340,7 +390,7 @@ async function buildArkTS(target, buildJson) {
           buildOptions.output.outFilename
         )
         console.log(colors.green('bundle[' + buildOptions.output.outFilename + ']: ' + (Date.now() - start) + 'ms'))
-        if (input !== 'temp/uni-ext-api/index.uts') {
+        if (input !== 'temp/uni-ext-api/index.uts' && input !== 'temp/uni-ext-api-x/index.uts') {
           if (options.banner) {
             fs.writeFileSync(
               filePath,
@@ -373,53 +423,11 @@ async function buildArkTS(target, buildJson) {
   if (target !== 'uni-app-harmony') {
     return
   }
-
-  // 先生成一遍提供给ohpm包使用
-  const extApiExportJsonPath = path.resolve(
-    __dirname,
-    '../packages/uni-uts-v1/lib/arkts/ext-api-export.json'
-  )
-  const extApiExport = genHarmonyExtApiExport()
-  fs.outputJSON(extApiExportJsonPath, extApiExport, { spaces: 2 })
-
-  const harBuildJson = require(path.resolve(
-    projectDir,
-    'temp/uni-ext-api/build.har.json'
-  ))
-  const standaloneExtApis = []
-  for (let i = 0; i < harBuildJson.length; i++) {
-    const { input, output, type, plugin, apis, provider, service } =
-      harBuildJson[i]
-    await compileArkTSExtApi(path.resolve(input, '..'), input, output, {
-      isExtApi: true,
-      isOhpmPackage: true,
-      transform: {},
-    })
-    let version = '1.0.0'
-    const packageJsonPath = path.resolve(input, 'package.json')
-    if (fs.existsSync(packageJsonPath)) {
-      const packageJson = fs.readJSONSync(packageJsonPath)
-      version = packageJson.version || '1.0.0'
-    }
-    standaloneExtApis.push({
-      type,
-      plugin,
-      apis,
-      provider,
-      service,
-      version,
-    })
-  }
-  fs.outputJSON(
-    path.resolve(projectDir, 'src/compiler/standalone-ext-apis.json'),
-    standaloneExtApis.sort((a, b) => a.plugin.localeCompare(b.plugin)),
-    { spaces: 2 }
-  )
-  const extApiExportWithHar = genHarmonyExtApiExport()
-  fs.outputJSON(extApiExportJsonPath, extApiExportWithHar, { spaces: 2 })
+  await postBuildArkTS(false)
+  await postBuildArkTS(true)
 }
 
-async function sleep(ms) {
+async function sleep (ms) {
   global.gc && global.gc()
   console.log('gc sleep')
   return new Promise((resolve) => setTimeout(resolve, ms))

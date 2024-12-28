@@ -68,7 +68,9 @@ export function getArkTSAutoImports(): AutoImportOptions {
         ['UTSHarmony'],
       ],
     },
-    require('../lib/arkts/ext-api-export.json')
+    require(process.env.UNI_APP_X === 'true'
+      ? '../lib/arkts/ext-api-export-x.json'
+      : '../lib/arkts/ext-api-export.json')
   )
 }
 

@@ -36,3 +36,9 @@ export const StandaloneExtApi: IStandaloneExtApi[] = [
     type: 'extapi',
   },
 ]
+
+export const ExtApiBlackListX = [
+  'uni-pullDownRefresh',
+  'uni-prompt',
+  'uni-media',
+]
