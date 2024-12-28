@@ -1,0 +1,6805 @@
+import Want from '@ohos.app.ability.Want';
+import common from '@ohos.app.ability.common';
+import wantConstant from '@ohos.app.ability.wantConstant';
+import buffer from '@ohos.buffer';
+import deviceInfo from '@ohos.deviceInfo';
+import fs from '@ohos.file.fs';
+import inputMethod from '@ohos.inputMethod';
+import connection from '@ohos.net.connection';
+import webSocket from '@ohos.net.webSocket';
+import pasteboard from '@ohos.pasteboard';
+import call from '@ohos.telephony.call';
+import radio from '@ohos.telephony.radio';
+import webview from '@ohos.web.webview';
+import { BusinessError as BusinessError1 } from '@kit.BasicServicesKit';
+import { BusinessError as BusinessError2 } from '@kit.BasicServicesKit';
+import { BusinessError as BusinessError3 } from '@ohos.base';
+import { BusinessError as BusinessError4 } from '@ohos.base';
+import { BusinessError as BusinessError5 } from '@ohos.base';
+import { BusinessError as BusinessError6 } from '@kit.BasicServicesKit';
+import { BusinessError as BusinessError7 } from '@kit.BasicServicesKit';
+import { BusinessError as BusinessError8 } from '@kit.BasicServicesKit';
+import { BusinessError as BusinessError9 } from '@kit.BasicServicesKit';
+import { BusinessError } from '@ohos.base';
+import { Emitter as Emitter3, getCurrentMP as getCurrentMP4 } from "@dcloudio/uni-mp-sdk";
+import { Emitter as Emitter4, onNativePageReady } from "@dcloudio/uni-mp-sdk";
+import { Emitter as Emitter5, getCurrentMP as getCurrentMP5 } from "@dcloudio/uni-mp-sdk";
+import { Emitter, getCurrentMP } from "@dcloudio/uni-mp-sdk";
+import Hash from '@ohos.file.hash';
+import I18n from '@ohos.i18n';
+import I18n1 from '@ohos.i18n';
+import I18n2 from '@ohos.i18n';
+import { ListFileOptions } from '@ohos.file.fs';
+import { UTSHarmony } from "@dcloudio/uni-mp-sdk";
+import { UTSJSONObject, UTSObject, IUniError, UniError, string, UniProvider, ProtocolOptions, ApiOptions, defineTaskApi, ApiExecutor, defineAsyncApi, defineSyncApi, ApiError, getUniProviders, getUniProvider } from "./shared";
+import Want1 from '@ohos.app.ability.Want';
+import { abilityAccessCtrl } from '@kit.AbilityKit';
+import { access } from '@kit.ConnectivityKit';
+import { audio as audio1 } from '@kit.AudioKit';
+import { audio } from '@kit.AudioKit';
+import { avSession } from '@kit.AVSessionKit';
+import { backgroundTaskManager } from '@kit.BackgroundTasksKit';
+import { bundleManager } from '@kit.AbilityKit';
+import bundleManager1 from '@ohos.bundle.bundleManager';
+import bundleManager2 from '@ohos.bundle.bundleManager';
+import common1 from '@ohos.app.ability.common';
+import common2 from '@ohos.app.ability.common';
+import common3 from '@ohos.app.ability.common';
+import { contact } from '@kit.ContactsKit';
+import dataPreferences from '@ohos.data.preferences';
+import deviceInfo1 from '@ohos.deviceInfo';
+import { display } from '@kit.ArkUI';
+import { fileIo as fileIo1 } from '@kit.CoreFileKit';
+import { fileIo as fileIo2 } from '@kit.CoreFileKit';
+import { fileIo as fileIo3 } from '@kit.CoreFileKit';
+import { fileIo } from '@kit.CoreFileKit';
+import fileUri from '@ohos.file.fileuri';
+import fs1 from '@ohos.file.fs';
+import fs2 from '@ohos.file.fs';
+import fs3, { WriteOptions as OHWriteOptions } from '@ohos.file.fs';
+import { geoLocationManager } from '@kit.LocationKit';
+import { getCurrentMP as getCurrentMP3 } from "@dcloudio/uni-mp-sdk";
+import { getDeviceId } from "@dcloudio/uni-mp-sdk";
+import { getEnv as getEnv1, getRealPath as getRealPath2 } from "@dcloudio/uni-mp-sdk";
+import { getEnv as getEnv2 } from "@dcloudio/uni-mp-sdk";
+import { getEnv, Emitter as Emitter2, getCurrentMP as getCurrentMP2 } from "@dcloudio/uni-mp-sdk";
+import { getRealPath as getRealPath1, Emitter as Emitter1, getCurrentMP as getCurrentMP1 } from "@dcloudio/uni-mp-sdk";
+import { getRealPath } from "@dcloudio/uni-mp-sdk";
+import { getWindowInfo as internalGetWindowInfo, getDeviceId as getDeviceId1 } from "@dcloudio/uni-mp-sdk";
+import harmonyUrl from '@ohos.url';
+import harmonyUrl1 from '@ohos.url';
+import harmonyWindow from '@ohos.window';
+import { http } from '@kit.NetworkKit';
+import http1 from '@ohos.net.http';
+import http2 from '@ohos.net.http';
+import http3 from '@ohos.net.http';
+import { media as media1 } from '@kit.MediaKit';
+import { media } from '@kit.MediaKit';
+import media2 from '@ohos.multimedia.media';
+import { notificationManager } from '@kit.NotificationKit';
+import { promptAction } from '@kit.ArkUI';
+import { scanCore, scanBarcode } from '@kit.ScanKit';
+import { systemShare } from '@kit.ShareKit';
+import { uniformTypeDescriptor } from '@kit.ArkData';
+import { userAuth } from '@kit.UserAuthenticationKit';
+import { wantAgent } from '@kit.AbilityKit';
+import { wifiManager } from '@kit.ConnectivityKit';
+export type Request<T = Object> = (param: RequestOptions<T>) => RequestTask;
+export class RequestOptions<T = Object> extends UTSObject {
+    url!: string;
+    data: Object | null = null;
+    header: UTSJSONObject | null = null;
+    method: RequestMethod | null = null;
+    timeout: number | null = null;
+    dataType: string | null = null;
+    responseType: string | null = null;
+    sslVerify: boolean | null = null;
+    withCredentials: boolean | null = null;
+    firstIpv4: boolean | null = null;
+    success: RequestSuccessCallback<T> | null = null;
+    fail: RequestFailCallback | null = null;
+    complete: RequestCompleteCallback | null = null;
+}
+export class RequestSuccess<T = Object> extends UTSObject {
+    data: T | null = null;
+    statusCode!: number;
+    header!: Object;
+    cookies!: Array<string>;
+}
+type RequestMethod = "GET" | "POST" | "PUT" | "PATCH" | "DELETE" | "HEAD" | "OPTIONS";
+type RequestErrorCode = 5 | 1000 | 100001 | 100002 | 600003 | 600008 | 600009 | 602001;
+interface RequestFail extends IUniError {
+    errCode: RequestErrorCode;
+}
+type RequestSuccessCallback<T> = (option: RequestSuccess<T>) => void;
+type RequestFailCallback = (option: RequestFail) => void;
+type RequestCompleteCallback = (option: Object) => void;
+export interface RequestTask {
+    abort(): void;
+}
+export type UploadFile = (options: UploadFileOptions) => UploadTask;
+class UploadFileOptionFiles extends UTSObject {
+    name: string | null = null;
+    uri!: string;
+    file: Object | null = null;
+}
+export class UploadFileSuccess extends UTSObject {
+    data!: string;
+    statusCode!: number;
+}
+type UploadFileSuccessCallback = (result: UploadFileSuccess) => void;
+interface UploadFileFail extends IUniError {
+    errCode: RequestErrorCode;
+}
+type UploadFileFailCallback = (result: UploadFileFail) => void;
+type UploadFileCompleteCallback = (result: Object) => void;
+export class UploadFileOptions extends UTSObject {
+    url!: string;
+    filePath: string | null = null;
+    name: string | null = null;
+    files: (UploadFileOptionFiles[]) | null = null;
+    header: UTSJSONObject | null = null;
+    formData: UTSJSONObject | null = null;
+    timeout: number | null = null;
+    success: UploadFileSuccessCallback | null = null;
+    fail: UploadFileFailCallback | null = null;
+    complete: UploadFileCompleteCallback | null = null;
+}
+export class OnProgressUpdateResult extends UTSObject {
+    progress!: number;
+    totalBytesSent!: number;
+    totalBytesExpectedToSend!: number;
+}
+type UploadFileProgressUpdateCallback = (result: OnProgressUpdateResult) => void;
+export interface UploadTask {
+    abort(): void;
+    onProgressUpdate(callback: UploadFileProgressUpdateCallback): void;
+}
+export type DownloadFile = (options: DownloadFileOptions) => DownloadTask;
+export class DownloadFileSuccess extends UTSObject {
+    tempFilePath!: string;
+    statusCode!: number;
+}
+type DownloadFileSuccessCallback = (result: DownloadFileSuccess) => void;
+interface DownloadFileFail extends IUniError {
+    errCode: RequestErrorCode;
+}
+type DownloadFileFailCallback = (result: DownloadFileFail) => void;
+type DownloadFileComplete = Object;
+type DownloadFileCompleteCallback = (result: DownloadFileComplete) => void;
+export class DownloadFileOptions extends UTSObject {
+    url!: string;
+    header: UTSJSONObject | null = null;
+    filePath: string | null = null;
+    timeout: number | null = null;
+    success: DownloadFileSuccessCallback | null = null;
+    fail: DownloadFileFailCallback | null = null;
+    complete: DownloadFileCompleteCallback | null = null;
+}
+export class OnProgressDownloadResult extends UTSObject {
+    progress!: number;
+    totalBytesWritten!: number;
+    totalBytesExpectedToWrite!: number;
+}
+type DownloadFileProgressUpdateCallback = (result: OnProgressDownloadResult) => void;
+export interface DownloadTask {
+    abort(): void;
+    onProgressUpdate(callback: DownloadFileProgressUpdateCallback): void;
+}
+export type ConfigMTLS = (options: ConfigMTLSOptions) => void;
+class Certificate extends UTSObject {
+    host!: string;
+    client: string | null = null;
+    clientPassword: string | null = null;
+    keyPath: string | null = null;
+    server: (string[]) | null = null;
+}
+export class ConfigMTLSSuccess extends UTSObject {
+    code!: number;
+}
+type ConfigMTLSSuccessCallback = (result: ConfigMTLSSuccess) => void;
+class ConfigMTLSFail extends UTSObject {
+    code!: number;
+}
+type ConfigMTLSFailCallback = (result: ConfigMTLSFail) => void;
+type ConfigMTLSComplete = Object;
+type ConfigMTLSCompleteCallback = (result: ConfigMTLSComplete) => void;
+export class ConfigMTLSOptions extends UTSObject {
+    certificates!: Certificate[];
+    success: ConfigMTLSSuccessCallback | null = null;
+    fail: ConfigMTLSFailCallback | null = null;
+    complete: ConfigMTLSCompleteCallback | null = null;
+}
+interface IUniRequestEmitter {
+    on: (eventName: string, callback: Function) => void;
+    once: (eventName: string, callback: Function) => void;
+    off: (eventName: string, callback?: Function | null) => void;
+    emit: (eventName: string, ...args: (Object | undefined | null)[]) => void;
+}
+interface IRequestTask {
+    abort: Function;
+    onHeadersReceived: Function;
+    offHeadersReceived: Function;
+}
+interface IUniUploadFileEmitter {
+    on: (eventName: string, callback: Function) => void;
+    once: (eventName: string, callback: Function) => void;
+    off: (eventName: string, callback?: Function | null) => void;
+    emit: (eventName: string, ...args: (Object | undefined | null)[]) => void;
+}
+interface IUploadTask {
+    abort: Function;
+    onHeadersReceived: Function;
+    offHeadersReceived: Function;
+    onProgressUpdate: Function;
+    offProgressUpdate: Function;
+}
+interface IUniDownloadFileEmitter {
+    on: (eventName: string, callback: Function) => void;
+    once: (eventName: string, callback: Function) => void;
+    off: (eventName: string, callback?: Function | null) => void;
+    emit: (eventName: string, ...args: (Object | undefined | null)[]) => void;
+}
+interface IDownloadTask {
+    abort: Function;
+    onHeadersReceived: Function;
+    offHeadersReceived: Function;
+    onProgressUpdate: Function;
+    offProgressUpdate: Function;
+}
+export class SetStorageSuccess extends UTSObject {
+}
+type SetStorageSuccessCallback = (res: SetStorageSuccess) => void;
+type SetStorageFailCallback = (res: UniError) => void;
+type SetStorageCompleteCallback = (res: Object) => void;
+export class SetStorageOptions extends UTSObject {
+    key!: string;
+    data!: Object;
+    success: SetStorageSuccessCallback | null = null;
+    fail: SetStorageFailCallback | null = null;
+    complete: SetStorageCompleteCallback | null = null;
+}
+export type SetStorage = (options: SetStorageOptions) => void;
+export type SetStorageSync = (key: string, data: Object) => void;
+export class GetStorageSuccess extends UTSObject {
+    data: Object | null = null;
+}
+type GetStorageSuccessCallback = (res: GetStorageSuccess) => void;
+type GetStorageFailCallback = (res: UniError) => void;
+type GetStorageCompleteCallback = (res: Object) => void;
+export class GetStorageOptions extends UTSObject {
+    key!: string;
+    success: GetStorageSuccessCallback | null = null;
+    fail: GetStorageFailCallback | null = null;
+    complete: GetStorageCompleteCallback | null = null;
+}
+export type GetStorage = (options: GetStorageOptions) => void;
+export type GetStorageSync = (key: string) => Object | null;
+export class GetStorageInfoSuccess extends UTSObject {
+    keys!: Array<string>;
+    currentSize!: number;
+    limitSize!: number;
+}
+type GetStorageInfoSuccessCallback = (res: GetStorageInfoSuccess) => void;
+type GetStorageInfoFailCallback = (res: UniError) => void;
+type GetStorageInfoCompleteCallback = (res: Object) => void;
+export class GetStorageInfoOptions extends UTSObject {
+    success: GetStorageInfoSuccessCallback | null = null;
+    fail: GetStorageInfoFailCallback | null = null;
+    complete: GetStorageInfoCompleteCallback | null = null;
+}
+export type GetStorageInfo = (options: GetStorageInfoOptions) => void;
+export type GetStorageInfoSync = () => GetStorageInfoSuccess;
+export class RemoveStorageSuccess extends UTSObject {
+}
+type RemoveStorageSuccessCallback = (res: RemoveStorageSuccess) => void;
+type RemoveStorageFailCallback = (res: UniError) => void;
+type RemoveStorageCompleteCallback = (res: Object) => void;
+export class RemoveStorageOptions extends UTSObject {
+    key!: string;
+    success: RemoveStorageSuccessCallback | null = null;
+    fail: RemoveStorageFailCallback | null = null;
+    complete: RemoveStorageCompleteCallback | null = null;
+}
+export type RemoveStorage = (options: RemoveStorageOptions) => void;
+export type RemoveStorageSync = (key: string) => void;
+export class ClearStorageSuccess extends UTSObject {
+}
+type ClearStorageSuccessCallback = (res: ClearStorageSuccess) => void;
+type ClearStorageFailCallback = (res: UniError) => void;
+type ClearStorageCompleteCallback = (res: Object) => void;
+export class ClearStorageOptions extends UTSObject {
+    success: ClearStorageSuccessCallback | null = null;
+    fail: ClearStorageFailCallback | null = null;
+    complete: ClearStorageCompleteCallback | null = null;
+}
+export type ClearStorage = (option?: ClearStorageOptions | null) => void;
+export type ClearStorageSync = () => void;
+type AddPhoneContact = (options: AddPhoneContactOptions) => void;
+class AddPhoneContactSuccess extends UTSObject {
+}
+type AddPhoneContactSuccessCallback = (result: AddPhoneContactSuccess) => void;
+type AddPhoneContactFail = UniError;
+type AddPhoneContactFailCallback = (result: AddPhoneContactFail) => void;
+type AddPhoneContactComplete = Object;
+type AddPhoneContactCompleteCallback = (result: AddPhoneContactComplete) => void;
+class AddPhoneContactOptions extends UTSObject {
+    photoFilePath: string | null = null;
+    nickName: string | null = null;
+    lastName: string | null = null;
+    middleName: string | null = null;
+    firstName: string | null = null;
+    remark: string | null = null;
+    mobilePhoneNumber: string | null = null;
+    weChatNumber: string | null = null;
+    addressCountry: string | null = null;
+    addressState: string | null = null;
+    addressCity: string | null = null;
+    addressStreet: string | null = null;
+    addressPostalCode: string | null = null;
+    organization: string | null = null;
+    title: string | null = null;
+    workFaxNumber: string | null = null;
+    workPhoneNumber: string | null = null;
+    hostNumber: string | null = null;
+    email: string | null = null;
+    url: string | null = null;
+    workAddressCountry: string | null = null;
+    workAddressState: string | null = null;
+    workAddressCity: string | null = null;
+    workAddressStreet: string | null = null;
+    workAddressPostalCode: string | null = null;
+    homeFaxNumber: string | null = null;
+    homePhoneNumber: string | null = null;
+    homeAddressCountry: string | null = null;
+    homeAddressState: string | null = null;
+    homeAddressCity: string | null = null;
+    homeAddressStreet: string | null = null;
+    homeAddressPostalCode: string | null = null;
+    success: AddPhoneContactSuccessCallback | null = null;
+    fail: AddPhoneContactFailCallback | null = null;
+    complete: AddPhoneContactCompleteCallback | null = null;
+}
+type StartSoterAuthentication = (options: StartSoterAuthenticationOptions) => void;
+type SoterAuthMode = 'fingerPrint' | 'facial' | 'speech';
+class StartSoterAuthenticationSuccess extends UTSObject {
+    errCode!: number;
+    authMode!: SoterAuthMode;
+    resultJSON: string | null = null;
+    resultJSONSignature: string | null = null;
+    errMsg!: string;
+}
+type StartSoterAuthenticationSuccessCallback = (result: StartSoterAuthenticationSuccess) => void;
+type StartSoterAuthenticationFail = UniError;
+type StartSoterAuthenticationFailCallback = (result: StartSoterAuthenticationFail) => void;
+type StartSoterAuthenticationComplete = Object;
+type StartSoterAuthenticationCompleteCallback = (result: StartSoterAuthenticationComplete) => void;
+class StartSoterAuthenticationOptions extends UTSObject {
+    requestAuthModes!: SoterAuthMode[];
+    challenge: string | null = null;
+    authContent: string | null = null;
+    success: StartSoterAuthenticationSuccessCallback | null = null;
+    fail: StartSoterAuthenticationFailCallback | null = null;
+    complete: StartSoterAuthenticationCompleteCallback | null = null;
+}
+type CheckIsSupportSoterAuthentication = (options: CheckIsSupportSoterAuthenticationOptions) => void;
+class CheckIsSupportSoterAuthenticationSuccess extends UTSObject {
+    supportMode!: SoterAuthMode[];
+    errMsg!: string;
+}
+type CheckIsSupportSoterAuthenticationSuccessCallback = (result: CheckIsSupportSoterAuthenticationSuccess) => void;
+type CheckIsSupportSoterAuthenticationFail = UniError;
+type CheckIsSupportSoterAuthenticationFailCallback = (result: CheckIsSupportSoterAuthenticationFail) => void;
+type CheckIsSupportSoterAuthenticationComplete = Object;
+type CheckIsSupportSoterAuthenticationCompleteCallback = (result: CheckIsSupportSoterAuthenticationComplete) => void;
+class CheckIsSupportSoterAuthenticationOptions extends UTSObject {
+    success: CheckIsSupportSoterAuthenticationSuccessCallback | null = null;
+    fail: CheckIsSupportSoterAuthenticationFailCallback | null = null;
+    complete: CheckIsSupportSoterAuthenticationCompleteCallback | null = null;
+}
+type CheckIsSoterEnrolledInDevice = (options: CheckIsSoterEnrolledInDeviceOptions) => void;
+class CheckIsSoterEnrolledInDeviceSuccess extends UTSObject {
+    isEnrolled!: boolean;
+    errMsg!: string;
+}
+type CheckIsSoterEnrolledInDeviceSuccessCallback = (result: CheckIsSoterEnrolledInDeviceSuccess) => void;
+type CheckIsSoterEnrolledInDeviceFail = UniError;
+type CheckIsSoterEnrolledInDeviceFailCallback = (result: CheckIsSoterEnrolledInDeviceFail) => void;
+type CheckIsSoterEnrolledInDeviceComplete = Object;
+type CheckIsSoterEnrolledInDeviceCompleteCallback = (result: CheckIsSoterEnrolledInDeviceComplete) => void;
+class CheckIsSoterEnrolledInDeviceOptions extends UTSObject {
+    checkAuthMode!: SoterAuthMode;
+    success: CheckIsSoterEnrolledInDeviceSuccessCallback | null = null;
+    fail: CheckIsSoterEnrolledInDeviceFailCallback | null = null;
+    complete: CheckIsSoterEnrolledInDeviceCompleteCallback | null = null;
+}
+export type SetClipboardData = (options: SetClipboardDataOptions) => void;
+export class SetClipboardDataSuccess extends UTSObject {
+}
+type SetClipboardDataSuccessCallback = (result: SetClipboardDataSuccess) => void;
+type SetClipboardDataFail = UniError;
+type SetClipboardDataFailCallback = (result: SetClipboardDataFail) => void;
+type SetClipboardDataComplete = Object;
+type SetClipboardDataCompleteCallback = (result: SetClipboardDataComplete) => void;
+export class SetClipboardDataOptions extends UTSObject {
+    data!: string;
+    showToast: boolean | null = null;
+    success: SetClipboardDataSuccessCallback | null = null;
+    fail: SetClipboardDataFailCallback | null = null;
+    complete: SetClipboardDataCompleteCallback | null = null;
+}
+export type GetClipboardData = (options: GetClipboardDataOptions) => void;
+export class GetClipboardDataSuccess extends UTSObject {
+    data!: string;
+}
+type GetClipboardDataSuccessCallback = (result: GetClipboardDataSuccess) => void;
+type GetClipboardDataFail = UniError;
+type GetClipboardDataFailCallback = (result: GetClipboardDataFail) => void;
+type GetClipboardDataComplete = Object;
+type GetClipboardDataCompleteCallback = (result: GetClipboardDataComplete) => void;
+export class GetClipboardDataOptions extends UTSObject {
+    success: GetClipboardDataSuccessCallback | null = null;
+    fail: GetClipboardDataFailCallback | null = null;
+    complete: GetClipboardDataCompleteCallback | null = null;
+}
+class ClipboardCallbackOptions extends UTSObject {
+    data!: string;
+    result!: 'success' | 'fail';
+}
+type ClipboardCallback = (res: ClipboardCallbackOptions) => void;
+type CreateInnerAudioContext = () => InnerAudioContext;
+interface InnerAudioContext {
+    duration: number;
+    currentTime: number;
+    paused: boolean;
+    src: string;
+    startTime: number;
+    buffered: number;
+    autoplay: boolean;
+    loop: boolean;
+    obeyMuteSwitch: boolean;
+    volume: number;
+    playbackRate?: number;
+    pause(): void;
+    stop(): void;
+    play(): void;
+    seek(position: number): void;
+    destroy(): void;
+    onCanplay(callback: (result: Object) => void): void;
+    onPlay(callback: (result: Object) => void): void;
+    onPause(callback: (result: Object) => void): void;
+    onStop(callback: (result: Object) => void): void;
+    onEnded(callback: (result: Object) => void): void;
+    onTimeUpdate(callback: (result: Object) => void): void;
+    onError(callback: (result: ICreateInnerAudioContextFail) => void): void;
+    onWaiting(callback: (result: Object) => void): void;
+    onSeeking(callback: (result: Object) => void): void;
+    onSeeked(callback: (result: Object) => void): void;
+    offCanplay(callback: (result: Object) => void): void;
+    offPlay(callback: (result: Object) => void): void;
+    offPause(callback: (result: Object) => void): void;
+    offStop(callback: (result: Object) => void): void;
+    offEnded(callback: (result: Object) => void): void;
+    offTimeUpdate(callback: (result: Object) => void): void;
+    offError(callback: (result: ICreateInnerAudioContextFail) => void): void;
+    offWaiting(callback: (result: Object) => void): void;
+    offSeeking(callback: (result: Object) => void): void;
+    offSeeked(callback: (result: Object) => void): void;
+}
+type CreateInnerAudioContextErrorCode = 1107601 | 1107602 | 1107603 | 1107604 | 1107605 | 1107609;
+interface ICreateInnerAudioContextFail extends IUniError {
+    errCode: CreateInnerAudioContextErrorCode;
+}
+type $OnCallback = Function;
+type $On = (eventName: string, callback: $OnCallback) => number;
+type $OnceCallback = Function;
+type $Once = (eventName: string, callback: $OnceCallback) => number;
+type $Off = (eventName: string, callback?: Object | null) => void;
+type $Emit = (eventName: string, ...args: Array<Object | null>) => void;
+interface IUniEventEmitter {
+    on: (eventName: string, callback: Function) => void;
+    once: (eventName: string, callback: Function) => void;
+    off: (eventName: string, callback?: Function | null) => void;
+    emit: (eventName: string, ...args: (Object | undefined | null)[]) => void;
+}
+class ExitSuccess extends UTSObject {
+    errMsg!: string;
+}
+type ExitErrorCode = 12001 | 12002 | 12003;
+interface IExitError extends IUniError {
+    errCode: ExitErrorCode;
+}
+type ExitFail = IExitError;
+type ExitSuccessCallback = (res: ExitSuccess) => void;
+type ExitFailCallback = (res: ExitFail) => void;
+type ExitCompleteCallback = (res: Object) => void;
+class ExitOptions extends UTSObject {
+    success: ExitSuccessCallback | null = null;
+    fail: ExitFailCallback | null = null;
+    complete: ExitCompleteCallback | null = null;
+}
+type Exit = (options?: ExitOptions | null) => void;
+export class LegacySaveFileSuccess extends UTSObject {
+    savedFilePath!: string;
+}
+type LegacySaveFileSuccessCallback = (res: LegacySaveFileSuccess) => void;
+export class LegacySaveFileFail extends UTSObject {
+}
+type LegacySaveFileFailCallback = (res: LegacySaveFileFail) => void;
+type LegacySaveFileCompleteCallback = (res: Object) => void;
+export class LegacySaveFileOptions extends UTSObject {
+    tempFilePath!: string;
+    success: LegacySaveFileSuccessCallback | null = null;
+    fail: LegacySaveFileFailCallback | null = null;
+    complete: LegacySaveFileCompleteCallback | null = null;
+}
+export class LegacyGetFileInfoSuccess extends UTSObject {
+    digest!: string;
+    size!: number;
+}
+type LegacyGetFileInfoSuccessCallback = (res: LegacyGetFileInfoSuccess) => void;
+export class LegacyGetFileInfoFail extends UTSObject {
+}
+type LegacyGetFileInfoFailCallback = (res: LegacyGetFileInfoFail) => void;
+type LegacyGetFileInfoCompleteCallback = (res: Object) => void;
+export class LegacyGetFileInfoOptions extends UTSObject {
+    filePath!: string;
+    digestAlgorithm: string | null = null;
+    success: LegacyGetFileInfoSuccessCallback | null = null;
+    fail: LegacyGetFileInfoFailCallback | null = null;
+    complete: LegacyGetFileInfoCompleteCallback | null = null;
+}
+export class LegacyGetSavedFileInfoSuccess extends UTSObject {
+    size!: number;
+    createTime!: number;
+}
+type LegacyGetSavedFileInfoSuccessCallback = (res: LegacyGetSavedFileInfoSuccess) => void;
+export class LegacyGetSavedFileInfoFail extends UTSObject {
+}
+type LegacyGetSavedFileInfoFailCallback = (res: LegacyGetSavedFileInfoFail) => void;
+type LegacyGetSavedFileInfoCompleteCallback = (res: Object) => void;
+export class LegacyGetSavedFileInfoOptions extends UTSObject {
+    filePath!: string;
+    success: LegacyGetSavedFileInfoSuccessCallback | null = null;
+    fail: LegacyGetSavedFileInfoFailCallback | null = null;
+    complete: LegacyGetSavedFileInfoCompleteCallback | null = null;
+}
+export class LegacyRemoveSavedFileSuccess extends UTSObject {
+}
+type LegacyRemoveSavedFileSuccessCallback = (res: LegacyRemoveSavedFileSuccess) => void;
+export class LegacyRemoveSavedFileFail extends UTSObject {
+}
+type LegacyRemoveSavedFileFailCallback = (res: LegacyRemoveSavedFileFail) => void;
+type LegacyRemoveSavedFileCompleteCallback = (res: Object) => void;
+export class LegacyRemoveSavedFileOptions extends UTSObject {
+    filePath!: string;
+    success: LegacyRemoveSavedFileSuccessCallback | null = null;
+    fail: LegacyRemoveSavedFileFailCallback | null = null;
+    complete: LegacyRemoveSavedFileCompleteCallback | null = null;
+}
+export class LegacySavedFileListItem extends UTSObject {
+    filePath!: string;
+    size!: number;
+    createTime!: number;
+}
+export class LegacyGetSavedFileListSuccess extends UTSObject {
+    fileList!: LegacySavedFileListItem[];
+}
+type LegacyGetSavedFileListSuccessCallback = (res: LegacyGetSavedFileListSuccess) => void;
+export class LegacyGetSavedFileListFail extends UTSObject {
+}
+type LegacyGetSavedFileListFailCallback = (res: LegacyGetSavedFileListFail) => void;
+type LegacyGetSavedFileListCompleteCallback = (res: Object) => void;
+export class LegacyGetSavedFileListOptions extends UTSObject {
+    success: LegacyGetSavedFileListSuccessCallback | null = null;
+    fail: LegacyGetSavedFileListFailCallback | null = null;
+    complete: LegacyGetSavedFileListCompleteCallback | null = null;
+}
+export type SaveFile = (options?: LegacySaveFileOptions | null) => void;
+export type GetFileInfo = (options?: LegacyGetFileInfoOptions | null) => void;
+export type GetSavedFileInfo = (options?: LegacyGetSavedFileInfoOptions | null) => void;
+export type RemoveSavedFile = (options?: LegacyRemoveSavedFileOptions | null) => void;
+export type GetSavedFileList = (options?: LegacyGetSavedFileListOptions | null) => void;
+class ReadFileSuccessResult extends UTSObject {
+    data!: Object;
+}
+class OpenFileSuccessResult extends UTSObject {
+    fd!: string;
+}
+class FileManagerSuccessResult extends UTSObject {
+    errMsg!: string;
+}
+type FileManagerSuccessCallback = (res: FileManagerSuccessResult) => void;
+type FileManagerFailCallback = (res: FileSystemManagerFail) => void;
+type FileManagerCompleteCallback = (res: Object) => void;
+type ReadFileSuccessCallback = (res: ReadFileSuccessResult) => void;
+class ReadFileOptions extends UTSObject {
+    encoding: "base64" | "utf-8" | "ascii" | null = null;
+    filePath!: string.URIString;
+    success: ReadFileSuccessCallback | null = null;
+    fail: FileManagerFailCallback | null = null;
+    complete: FileManagerCompleteCallback | null = null;
+}
+class WriteFileOptions extends UTSObject {
+    filePath!: string.URIString;
+    encoding: "ascii" | "base64" | "utf-8" | null = null;
+    data!: Object;
+    success: FileManagerSuccessCallback | null = null;
+    fail: FileManagerFailCallback | null = null;
+    complete: FileManagerCompleteCallback | null = null;
+}
+class AppendFileOptions extends UTSObject {
+    filePath!: string.URIString;
+    encoding: "ascii" | "base64" | "utf-8" | null = null;
+    data!: Object;
+    success: FileManagerSuccessCallback | null = null;
+    fail: FileManagerFailCallback | null = null;
+    complete: FileManagerCompleteCallback | null = null;
+}
+type OpenFileSuccessCallback = (res: OpenFileSuccessResult) => void;
+class OpenFileOptions extends UTSObject {
+    filePath!: string.URIString;
+    flag!: "a" | "ax" | "a+" | "ax+" | "r" | "r+" | "w" | "wx" | "w+" | "wx" | "wx+";
+    success: OpenFileSuccessCallback | null = null;
+    fail: FileManagerFailCallback | null = null;
+    complete: FileManagerCompleteCallback | null = null;
+}
+class OpenFileSyncOptions extends UTSObject {
+    filePath!: string.URIString;
+    flag!: "a" | "ax" | "a+" | "ax+" | "r" | "r+" | "w" | "wx" | "w+" | "wx" | "wx+";
+}
+type UnLinkSuccessCallback = (res: FileManagerSuccessResult) => void;
+class UnLinkOptions extends UTSObject {
+    filePath!: string.URIString;
+    success: UnLinkSuccessCallback | null = null;
+    fail: FileManagerFailCallback | null = null;
+    complete: FileManagerCompleteCallback | null = null;
+}
+type MkDirSuccessCallback = (res: FileManagerSuccessResult) => void;
+class MkDirOptions extends UTSObject {
+    dirPath!: string.URIString;
+    recursive!: boolean;
+    success: MkDirSuccessCallback | null = null;
+    fail: FileManagerFailCallback | null = null;
+    complete: FileManagerCompleteCallback | null = null;
+}
+class RmDirOptions extends UTSObject {
+    dirPath!: string.URIString;
+    recursive!: boolean;
+    success: MkDirSuccessCallback | null = null;
+    fail: FileManagerFailCallback | null = null;
+    complete: FileManagerCompleteCallback | null = null;
+}
+class ReadDirSuccessResult extends UTSObject {
+    files!: string[];
+}
+type ReadDirSuccessCallback = (res: ReadDirSuccessResult) => void;
+class ReadDirOptions extends UTSObject {
+    dirPath!: string.URIString;
+    success: ReadDirSuccessCallback | null = null;
+    fail: FileManagerFailCallback | null = null;
+    complete: FileManagerCompleteCallback | null = null;
+}
+class AccessOptions extends UTSObject {
+    path!: string.URIString;
+    success: FileManagerSuccessCallback | null = null;
+    fail: FileManagerFailCallback | null = null;
+    complete: FileManagerCompleteCallback | null = null;
+}
+class RenameOptions extends UTSObject {
+    oldPath!: string.URIString;
+    newPath!: string.URIString;
+    success: FileManagerSuccessCallback | null = null;
+    fail: FileManagerFailCallback | null = null;
+    complete: FileManagerCompleteCallback | null = null;
+}
+class CopyFileOptions extends UTSObject {
+    srcPath!: string.URIString;
+    destPath!: string.URIString;
+    success: FileManagerSuccessCallback | null = null;
+    fail: FileManagerFailCallback | null = null;
+    complete: FileManagerCompleteCallback | null = null;
+}
+class SaveFileOptions extends UTSObject {
+    tempFilePath!: string.URIString;
+    filePath: string.URIString | null = null;
+    success: SaveFileSuccessCallback | null = null;
+    fail: FileManagerFailCallback | null = null;
+    complete: FileManagerCompleteCallback | null = null;
+}
+type SaveFileSuccessCallback = (res: SaveFileSuccessResult) => void;
+class SaveFileSuccessResult extends UTSObject {
+    savedFilePath!: string;
+}
+class GetFileInfoSuccessResult extends UTSObject {
+    digest!: string;
+    size!: number;
+    errMsg!: string;
+}
+type GetFileInfoSuccessCallback = (res: GetFileInfoSuccessResult) => void;
+class GetFileInfoOptions extends UTSObject {
+    filePath!: string.URIString;
+    digestAlgorithm: "md5" | "sha1" | null = null;
+    success: GetFileInfoSuccessCallback | null = null;
+    fail: FileManagerFailCallback | null = null;
+    complete: FileManagerCompleteCallback | null = null;
+}
+interface Stats {
+    mode: number;
+    size: number;
+    lastAccessedTime: number;
+    lastModifiedTime: number;
+    mIsFile: boolean;
+    isDirectory(): boolean;
+    isFile(): boolean;
+}
+class FileStats extends UTSObject {
+    path!: string;
+    stats!: Stats;
+}
+class StatSuccessResult extends UTSObject {
+    errMsg!: string;
+    stats!: FileStats[];
+}
+type StatSuccessCallback = (res: StatSuccessResult) => void;
+class StatOptions extends UTSObject {
+    path!: string.URIString;
+    recursive!: boolean;
+    success: StatSuccessCallback | null = null;
+    fail: FileManagerFailCallback | null = null;
+    complete: FileManagerCompleteCallback | null = null;
+}
+class UnzipFileOptions extends UTSObject {
+    zipFilePath!: string;
+    targetPath!: string;
+    success: FileManagerSuccessCallback | null = null;
+    fail: FileManagerFailCallback | null = null;
+    complete: FileManagerCompleteCallback | null = null;
+}
+class GetSavedFileListResult extends UTSObject {
+    fileList!: string[];
+}
+type GetSavedFileListCallback = (res: GetSavedFileListResult) => void;
+class GetSavedFileListOptions extends UTSObject {
+    success: GetSavedFileListCallback | null = null;
+    fail: FileManagerFailCallback | null = null;
+    complete: FileManagerCompleteCallback | null = null;
+}
+class TruncateFileOptions extends UTSObject {
+    filePath!: string.URIString;
+    length!: number;
+    success: FileManagerSuccessCallback | null = null;
+    fail: FileManagerFailCallback | null = null;
+    complete: FileManagerCompleteCallback | null = null;
+}
+class ReadCompressedFileResult extends UTSObject {
+    data!: string;
+}
+type ReadCompressedFileCallback = (res: ReadCompressedFileResult) => void;
+class ReadCompressedFileOptions extends UTSObject {
+    filePath!: string.URIString;
+    compressionAlgorithm!: "br";
+    success: ReadCompressedFileCallback | null = null;
+    fail: FileManagerFailCallback | null = null;
+    complete: FileManagerCompleteCallback | null = null;
+}
+class RemoveSavedFileOptions extends UTSObject {
+    filePath!: string.URIString;
+    success: FileManagerSuccessCallback | null = null;
+    fail: FileManagerFailCallback | null = null;
+    complete: FileManagerCompleteCallback | null = null;
+}
+class WriteResult extends UTSObject {
+    bytesWritten!: number;
+    errMsg!: string;
+}
+type WriteCallback = (res: WriteResult) => void;
+class WriteOptions extends UTSObject {
+    fd!: string;
+    data!: Object;
+    offset: number | null = null;
+    length: number | null = null;
+    position: number | null = null;
+    encoding: "ascii" | "base64" | "utf-8" | null = null;
+    success: WriteCallback | null = null;
+    fail: FileManagerFailCallback | null = null;
+    complete: FileManagerCompleteCallback | null = null;
+}
+class WriteSyncOptions extends UTSObject {
+    fd!: string;
+    data!: Object;
+    encoding: "ascii" | "base64" | "utf-8" | null = null;
+    length: number | null = null;
+    offset: number | null = null;
+    position: number | null = null;
+}
+class CloseOptions extends UTSObject {
+    fd!: string;
+    success: FileManagerSuccessCallback | null = null;
+    fail: FileManagerFailCallback | null = null;
+    complete: FileManagerCompleteCallback | null = null;
+}
+class CloseSyncOptions extends UTSObject {
+    fd!: string;
+}
+class FStatSuccessResult extends UTSObject {
+    stats!: Stats;
+}
+type FStatSuccessCallback = (res: FStatSuccessResult) => void;
+class FStatOptions extends UTSObject {
+    fd!: string;
+    success: FStatSuccessCallback | null = null;
+    fail: FileManagerFailCallback | null = null;
+    complete: FileManagerCompleteCallback | null = null;
+}
+class FStatSyncOptions extends UTSObject {
+    fd!: string;
+}
+class FTruncateFileOptions extends UTSObject {
+    fd!: string;
+    length!: number;
+    success: FileManagerSuccessCallback | null = null;
+    fail: FileManagerFailCallback | null = null;
+    complete: FileManagerCompleteCallback | null = null;
+}
+class FTruncateFileSyncOptions extends UTSObject {
+    fd!: string;
+    length!: number;
+}
+class EntryItem extends UTSObject {
+    path!: string;
+    encoding: "ascii" | "base64" | "utf-8" | null = null;
+}
+class EntriesResult extends UTSObject {
+    result!: Map<string, ZipFileItem>;
+}
+class ZipFileItem extends UTSObject {
+    data: Object | null = null;
+    errMsg!: string;
+}
+type ReadZipEntryCallback = (res: EntriesResult) => void;
+class ReadZipEntryOptions extends UTSObject {
+    filePath!: string.URIString;
+    encoding: "ascii" | "base64" | "utf-8" | null = null;
+    entries: EntryItem[] | null = null;
+    success: ReadZipEntryCallback | null = null;
+    fail: FileManagerFailCallback | null = null;
+    complete: FileManagerCompleteCallback | null = null;
+}
+class ReadSuccessCallbackResult extends UTSObject {
+    arrayBuffer!: ArrayBuffer;
+    bytesRead!: number;
+    errMsg!: string;
+}
+type ReadSuccessCallback = (result: ReadSuccessCallbackResult) => void;
+class ReadOption extends UTSObject {
+    arrayBuffer!: ArrayBuffer;
+    fd!: string;
+    length: number | null = null;
+    offset: number | null = null;
+    position: number | null = null;
+    complete: FileManagerCompleteCallback | null = null;
+    fail: FileManagerFailCallback | null = null;
+    success: ReadSuccessCallback | null = null;
+}
+class ReadSyncOption extends UTSObject {
+    arrayBuffer!: ArrayBuffer;
+    fd!: string;
+    length: number | null = null;
+    offset: number | null = null;
+    position: number | null = null;
+}
+class ReadResult extends UTSObject {
+    arrayBuffer!: ArrayBuffer;
+    bytesRead!: number;
+}
+interface FileSystemManager {
+    readFile(options: ReadFileOptions): void;
+    readFileSync(filePath: string, encoding?: string): Object;
+    writeFile(options: WriteFileOptions): void;
+    read(option: ReadOption): void;
+    readSync(option: ReadSyncOption): ReadResult;
+    writeFileSync(filePath: string, data: Object, encoding?: string): void;
+    unlink(options: UnLinkOptions): void;
+    unlinkSync(filePath: string): void;
+    mkdir(options: MkDirOptions): void;
+    mkdirSync(dirPath: string, recursive: boolean): void;
+    rmdir(options: RmDirOptions): void;
+    rmdirSync(dirPath: string, recursive: boolean): void;
+    readdir(options: ReadDirOptions): void;
+    readdirSync(dirPath: string): string[] | null;
+    access(options: AccessOptions): void;
+    accessSync(path: string): void;
+    rename(options: RenameOptions): void;
+    renameSync(oldPath: string, newPath: string): void;
+    copyFile(options: CopyFileOptions): void;
+    copyFileSync(srcPath: string, destPath: string): void;
+    getFileInfo(options: GetFileInfoOptions): void;
+    stat(options: StatOptions): void;
+    statSync(path: string, recursive: boolean): FileStats[];
+    appendFile(options: AppendFileOptions): void;
+    appendFileSync(filePath: string, data: Object, encoding?: string): void;
+    saveFile(options: SaveFileOptions): void;
+    saveFileSync(tempFilePath: string, filePath: string | null): string;
+    removeSavedFile(options: RemoveSavedFileOptions): void;
+    unzip(options: UnzipFileOptions): void;
+    getSavedFileList(options: GetSavedFileListOptions): void;
+    truncate(options: TruncateFileOptions): void;
+    truncateSync(filePath: string, length?: number): void;
+    readCompressedFile(options: ReadCompressedFileOptions): void;
+    readCompressedFileSync(filePath: string, compressionAlgorithm: string): string;
+    open(options: OpenFileOptions): void;
+    openSync(options: OpenFileSyncOptions): string;
+    write(options: WriteOptions): void;
+    writeSync(options: WriteSyncOptions): WriteResult;
+    close(options: CloseOptions): void;
+    closeSync(options: CloseSyncOptions): void;
+    fstat(options: FStatOptions): void;
+    fstatSync(options: FStatSyncOptions): Stats;
+    ftruncate(options: FTruncateFileOptions): void;
+    ftruncateSync(options: FTruncateFileSyncOptions): void;
+    readZipEntry(options: ReadZipEntryOptions): void;
+}
+type GetFileSystemManager = () => FileSystemManager;
+type FileSystemManagerErrorCode = 1200002 | 1300002 | 1300013 | 1300021 | 1300022 | 1300066 | 1301003 | 1301005 | 1300201 | 1300202 | 1301111 | 1302003 | 1300009 | 1300010 | 1300011 | 1300012 | 1300015 | 1300014 | 1300016 | 1300017 | 1300018 | 1300019 | 1300020 | 1300021;
+type FileSystemManagerFail = IFileSystemManagerFail;
+interface IFileSystemManagerFail extends IUniError {
+    errCode: FileSystemManagerErrorCode;
+}
+interface CallBack {
+    success?: Function | null;
+    fail?: Function | null;
+    complete?: Function | null;
+}
+type BaseType = number | string | boolean | null | undefined;
+type DataType = BaseType | Function | ArrayBuffer | Array<BaseType>;
+interface CustomValidReturn {
+    isValid: boolean;
+    err?: IFileSystemManagerFail;
+}
+interface ObtainUpperPathReturn {
+    index: number;
+    upperPath: string;
+}
+interface CheckEncodingReturn {
+    isValid: boolean;
+    errMsg?: string;
+}
+type GetAppAuthorizeSetting = () => GetAppAuthorizeSettingResult;
+class GetAppAuthorizeSettingResult extends UTSObject {
+    albumAuthorized!: 'authorized' | 'denied' | 'not determined' | 'config error';
+    bluetoothAuthorized!: 'authorized' | 'denied' | 'not determined' | 'config error';
+    cameraAuthorized!: 'authorized' | 'denied' | 'not determined' | 'config error';
+    locationAuthorized!: 'authorized' | 'denied' | 'not determined' | 'config error';
+    locationAccuracy: 'reduced' | 'full' | 'unsupported' | null = null;
+    locationReducedAccuracy: boolean | null = null;
+    microphoneAuthorized!: 'authorized' | 'denied' | 'not determined' | 'config error';
+    notificationAuthorized!: 'authorized' | 'denied' | 'not determined' | 'config error';
+    notificationAlertAuthorized: 'authorized' | 'denied' | 'not determined' | 'config error' | null = null;
+    notificationBadgeAuthorized: 'authorized' | 'denied' | 'not determined' | 'config error' | null = null;
+    notificationSoundAuthorized: 'authorized' | 'denied' | 'not determined' | 'config error' | null = null;
+    phoneCalendarAuthorized: 'authorized' | 'denied' | 'not determined' | null = null;
+}
+class GetAppBaseInfoOptions extends UTSObject {
+    filter!: Array<string>;
+}
+export class GetAppBaseInfoResult extends UTSObject {
+    appId: string | null = null;
+    appName: string | null = null;
+    appVersion: string | null = null;
+    appVersionCode: string | null = null;
+    appLanguage: string | null = null;
+    language: string | null = null;
+    version: string | null = null;
+    appWgtVersion: string | null = null;
+    hostLanguage: string | null = null;
+    hostVersion: string | null = null;
+    hostName: string | null = null;
+    hostPackageName: string | null = null;
+    hostSDKVersion: string | null = null;
+    hostTheme: string | null = null;
+    isUniAppX: boolean | null = null;
+    uniCompileVersion: string | null = null;
+    uniCompilerVersion: string | null = null;
+    uniPlatform: 'app' | 'web' | 'mp-weixin' | 'mp-alipay' | 'mp-baidu' | 'mp-toutiao' | 'mp-lark' | 'mp-qq' | 'mp-kuaishou' | 'mp-jd' | 'mp-360' | 'quickapp-webview' | 'quickapp-webview-union' | 'quickapp-webview-huawei' | null = null;
+    uniRuntimeVersion: string | null = null;
+    uniCompileVersionCode: number | null = null;
+    uniCompilerVersionCode: number | null = null;
+    uniRuntimeVersionCode: number | null = null;
+    packageName: string | null = null;
+    bundleId: string | null = null;
+    signature: string | null = null;
+    appTheme: 'light' | 'dark' | 'auto' | null = null;
+    channel: string | null = null;
+}
+export type GetAppBaseInfo = (options?: GetAppBaseInfoOptions | null) => GetAppBaseInfoResult;
+interface IAppBaseInfoAppVersion {
+    name: string;
+    code: string;
+}
+type GetBackgroundAudioManager = () => BackgroundAudioManager;
+interface BackgroundAudioManager {
+    duration: number;
+    currentTime: number;
+    paused: boolean;
+    src: string;
+    startTime: number;
+    buffered: number;
+    title: string;
+    epname: string;
+    singer: string;
+    coverImgUrl: string;
+    webUrl: string;
+    protocol: string;
+    playbackRate?: number;
+    play(): void;
+    pause(): void;
+    seek(position: number): void;
+    stop(): void;
+    onCanplay(callback: (result: Object) => void): void;
+    onPlay(callback: (result: Object) => void): void;
+    onPause(callback: (result: Object) => void): void;
+    onStop(callback: (result: Object) => void): void;
+    onEnded(callback: (result: Object) => void): void;
+    onSeeking(callback: (result: Object) => void): void;
+    onSeeked(callback: (result: Object) => void): void;
+    onTimeUpdate(callback: (result: Object) => void): void;
+    onPrev(callback: (result: Object) => void): void;
+    onNext(callback: (result: Object) => void): void;
+    onError(callback: (result: ICreateBackgroundAudioFail) => void): void;
+    onWaiting(callback: (result: Object) => void): void;
+}
+type CreateBackgroundAudioErrorCode = 1107601 | 1107602 | 1107603 | 1107604 | 1107605 | 1107609;
+interface ICreateBackgroundAudioFail extends IUniError {
+    errCode: CreateBackgroundAudioErrorCode;
+}
+interface TempAbilityInfo {
+    bundleName: string;
+    name: string;
+}
+class GetDeviceInfoOptions extends UTSObject {
+    filter!: Array<string>;
+}
+export class GetDeviceInfoResult extends UTSObject {
+    brand: string | null = null;
+    deviceBrand: string | null = null;
+    deviceId: string | null = null;
+    model: string | null = null;
+    deviceModel: string | null = null;
+    deviceType: 'phone' | 'pad' | 'tv' | 'watch' | 'pc' | 'undefined' | 'car' | 'vr' | 'appliance' | null = null;
+    deviceOrientation: string | null = null;
+    devicePixelRatio: number | null = null;
+    system: string | null = null;
+    platform: 'ios' | 'android' | 'harmonyos' | 'mac' | 'windows' | 'linux' | null = null;
+    isRoot: boolean | null = null;
+    isSimulator: boolean | null = null;
+    isUSBDebugging: boolean | null = null;
+    osName: 'ios' | 'android' | 'harmonyos' | 'macos' | 'windows' | 'linux' | null = null;
+    osVersion: string | null = null;
+    osLanguage: string | null = null;
+    osTheme: 'light' | 'dark' | null = null;
+    osAndroidAPILevel: number | null = null;
+    romName: string | null = null;
+    romVersion: string | null = null;
+}
+export type GetDeviceInfo = (options?: GetDeviceInfoOptions | null) => GetDeviceInfoResult;
+type GetNetworkType = (options: GetNetworkTypeOptions) => void;
+class GetNetworkTypeSuccess extends UTSObject {
+    networkType!: string;
+}
+type GetNetworkTypeSuccessCallback = (result: GetNetworkTypeSuccess) => void;
+type GetNetworkTypeFail = UniError;
+type GetNetworkTypeFailCallback = (result: GetNetworkTypeFail) => void;
+type GetNetworkTypeComplete = Object;
+type GetNetworkTypeCompleteCallback = (result: GetNetworkTypeComplete) => void;
+class GetNetworkTypeOptions extends UTSObject {
+    success: GetNetworkTypeSuccessCallback | null = null;
+    fail: GetNetworkTypeFailCallback | null = null;
+    complete: GetNetworkTypeCompleteCallback | null = null;
+}
+class OnNetworkStatusChangeCallbackResult extends UTSObject {
+    isConnected!: boolean;
+    networkType!: string;
+}
+type OnNetworkStatusChangeCallback = (result: OnNetworkStatusChangeCallbackResult) => void;
+type OnNetworkStatusChange = (callback: OnNetworkStatusChangeCallback) => void;
+type OffNetworkStatusChange = (callback: (result: Object) => void) => void;
+interface IUniGetNetworkTypeEventEmitter {
+    on: (eventName: string, callback: Function) => void;
+    once: (eventName: string, callback: Function) => void;
+    off: (eventName: string, callback?: Function) => void;
+    emit: (eventName: string, ...args: (Object | undefined | null)[]) => void;
+}
+export class GetProviderSuccess extends UTSObject {
+    service!: 'payment' | 'oauth';
+    provider!: string[];
+    providers!: UniProvider[];
+}
+export class GetProviderSyncSuccess extends UTSObject {
+    service!: 'payment' | 'location' | 'oauth';
+    providerIds!: string[];
+    providerObjects!: UniProvider[];
+}
+export type GetProviderSync = (options: GetProviderSyncOptions) => GetProviderSyncSuccess;
+export class GetProviderSyncOptions extends UTSObject {
+    service!: 'payment' | 'location' | 'oauth';
+}
+type GetProviderSuccessCallback = (result: GetProviderSuccess) => void;
+type GetProviderFail = IGetProviderFail;
+type GetProviderFailCallback = (result: GetProviderFail) => void;
+type GetProviderComplete = Object;
+type GetProviderCompleteCallback = (result: GetProviderComplete) => void;
+export class GetProviderOptions extends UTSObject {
+    service!: 'payment' | 'oauth';
+    success: GetProviderSuccessCallback | null = null;
+    fail: GetProviderFailCallback | null = null;
+    complete: GetProviderCompleteCallback | null = null;
+}
+export type GetProvider = (options: GetProviderOptions) => void;
+type ProviderErrorCode = 110600;
+interface IGetProviderFail extends IUniError {
+    errCode: ProviderErrorCode;
+}
+type GetRecorderManager = () => RecorderManager;
+class RecorderManagerStartOptions extends UTSObject {
+    duration: number | null = null;
+    sampleRate: number | null = null;
+    numberOfChannels: number | null = null;
+    encodeBitRate: number | null = null;
+    format: 'aac' | 'mp3' | 'PCM' | 'wav' | null = null;
+    frameSize: number | null = null;
+}
+interface RecorderManagerOnStopResult {
+    tempFilePath: string;
+}
+interface RecorderManager {
+    start(options: RecorderManagerStartOptions): void;
+    pause(): void;
+    resume(): void;
+    stop(): void;
+    onStart(options: (result: Object) => void): void;
+    onPause(options: (result: Object) => void): void;
+    onStop(options: (result: RecorderManagerOnStopResult) => void): void;
+    onFrameRecorded(options: (result: Object) => void): void;
+    onError(options: (result: Object) => void): void;
+    onResume?: (options: (result: Object) => void) => void;
+    onInterruptionBegin?: (options: (result: Object) => void) => void;
+    onInterruptionEnd?: (options: (result: Object) => void) => void;
+}
+type RecorderState = 'pause' | 'resume' | 'start' | 'stop' | 'error' | 'frameRecorded' | 'interruptionBegin' | 'interruptionEnd';
+interface Callbacks {
+    pause?: Function;
+    resume?: Function;
+    start?: Function;
+    stop?: Function;
+    error?: Function;
+    frameRecorded?: Function;
+    interruptionBegin?: Function;
+    interruptionEnd?: Function;
+}
+interface StateChangeRes extends RecorderManagerOnStopResult {
+    errMsg?: string;
+    frameBuffer?: ArrayBuffer;
+    isLastFrame?: boolean;
+}
+export type GetSystemInfo = (options: GetSystemInfoOptions) => void;
+export type GetSystemInfoSync = () => GetSystemInfoResult;
+export type GetWindowInfo = () => GetWindowInfoResult;
+export class SafeArea extends UTSObject {
+    left!: number;
+    right!: number;
+    top!: number;
+    bottom!: number;
+    width!: number;
+    height!: number;
+}
+export class SafeAreaInsets extends UTSObject {
+    left!: number;
+    right!: number;
+    top!: number;
+    bottom!: number;
+}
+export class GetSystemInfoResult extends UTSObject {
+    SDKVersion!: string;
+    appId!: string;
+    appLanguage!: string;
+    appName!: string;
+    appVersion!: string;
+    appVersionCode!: string;
+    appWgtVersion: string | null = null;
+    brand!: string;
+    browserName!: string;
+    browserVersion!: string;
+    deviceId!: string;
+    deviceBrand!: string;
+    deviceModel!: string;
+    deviceType!: 'phone' | 'pad' | 'tv' | 'watch' | 'pc' | 'undefined' | 'car' | 'vr' | 'appliance';
+    devicePixelRatio!: number;
+    deviceOrientation!: 'portrait' | 'landscape';
+    language!: string;
+    model: string | null = null;
+    osName!: 'ios' | 'android' | 'harmonyos' | 'macos' | 'windows' | 'linux';
+    osVersion!: string;
+    osLanguage!: string;
+    osTheme: 'light' | 'dark' | null = null;
+    pixelRatio!: number;
+    platform!: 'ios' | 'android' | 'harmonyos' | 'mac' | 'windows' | 'linux';
+    screenWidth!: number;
+    screenHeight!: number;
+    statusBarHeight!: number;
+    system!: string;
+    safeArea!: SafeArea;
+    safeAreaInsets!: SafeAreaInsets;
+    ua!: string;
+    uniCompileVersion!: string;
+    uniCompilerVersion!: string;
+    uniPlatform!: 'app' | 'web' | 'mp-weixin' | 'mp-alipay' | 'mp-baidu' | 'mp-toutiao' | 'mp-lark' | 'mp-qq' | 'mp-kuaishou' | 'mp-jd' | 'mp-360' | 'quickapp-webview' | 'quickapp-webview-union' | 'quickapp-webview-huawei';
+    uniRuntimeVersion!: string;
+    uniCompileVersionCode!: number;
+    uniCompilerVersionCode!: number;
+    uniRuntimeVersionCode!: number;
+    version!: string;
+    romName!: string;
+    romVersion!: string;
+    windowWidth!: number;
+    windowHeight!: number;
+    windowTop!: number;
+    windowBottom!: number;
+    osAndroidAPILevel: number | null = null;
+    appTheme: 'light' | 'dark' | 'auto' | null = null;
+}
+type GetSystemInfoSuccessCallback = (result: GetSystemInfoResult) => void;
+type GetSystemInfoFail = UniError;
+type GetSystemInfoFailCallback = (result: GetSystemInfoFail) => void;
+type GetSystemInfoComplete = Object;
+type GetSystemInfoCompleteCallback = (result: GetSystemInfoComplete) => void;
+export class GetSystemInfoOptions extends UTSObject {
+    success: GetSystemInfoSuccessCallback | null = null;
+    fail: GetSystemInfoFailCallback | null = null;
+    complete: GetSystemInfoCompleteCallback | null = null;
+}
+export class GetWindowInfoResult extends UTSObject {
+    pixelRatio!: number;
+    screenWidth!: number;
+    screenHeight!: number;
+    windowWidth!: number;
+    windowHeight!: number;
+    statusBarHeight!: number;
+    windowTop!: number;
+    windowBottom!: number;
+    safeArea!: SafeArea;
+    safeAreaInsets!: SafeAreaInsets;
+    screenTop!: number;
+}
+interface ISystemInfoAppVersion {
+    name: string;
+    code: string;
+}
+class GetSystemSettingResult extends UTSObject {
+    bluetoothEnabled: boolean | null = null;
+    bluetoothError: string | null = null;
+    locationEnabled!: boolean;
+    wifiEnabled: boolean | null = null;
+    wifiError: string | null = null;
+    deviceOrientation!: 'portrait' | 'landscape';
+}
+type GetSystemSetting = () => GetSystemSettingResult;
+export class HideKeyboardSuccess extends UTSObject {
+}
+export class HideKeyboardFail extends UTSObject {
+}
+type HideKeyboardSuccessCallback = (res: HideKeyboardSuccess) => void;
+type HideKeyboardFailCallback = (res: HideKeyboardFail) => void;
+type HideKeyboardCompleteCallback = (res: Object) => void;
+export class HideKeyboardOptions extends UTSObject {
+    success: HideKeyboardSuccessCallback | null = null;
+    fail: HideKeyboardFailCallback | null = null;
+    complete: HideKeyboardCompleteCallback | null = null;
+}
+type HideKeyboard = (options?: HideKeyboardOptions | null) => void;
+export type MakePhoneCall = (options: MakePhoneCallOptions) => void;
+export class MakePhoneCallSuccess extends UTSObject {
+}
+type MakePhoneCallSuccessCallback = (result: MakePhoneCallSuccess) => void;
+type MakePhoneCallFail = UniError;
+type MakePhoneCallFailCallback = (result: MakePhoneCallFail) => void;
+type MakePhoneCallComplete = Object;
+type MakePhoneCallCompleteCallback = (result: MakePhoneCallComplete) => void;
+export class MakePhoneCallOptions extends UTSObject {
+    phoneNumber!: string;
+    success: MakePhoneCallSuccessCallback | null = null;
+    fail: MakePhoneCallFailCallback | null = null;
+    complete: MakePhoneCallCompleteCallback | null = null;
+}
+export interface UniOAuthProvider extends UniProvider {
+    login(options: LoginOptions): void;
+    getUserInfo(options: GetUserInfoOptions): void;
+}
+export type Login = (options: LoginOptions) => void;
+class AppleLoginAppleInfo extends UTSObject {
+    authorizationCode: string | null = null;
+    fullName: Object | null = null;
+    identityToken: string | null = null;
+    realUserStatus: number | null = null;
+    user: string | null = null;
+}
+export class LoginSuccess extends UTSObject {
+    errMsg!: string;
+    authResult!: Object;
+    code!: string;
+    anonymousCode: string | null = null;
+    authCode: string | null = null;
+    authErrorScope: Object | null = null;
+    authSucessScope: (string[]) | null = null;
+    appleInfo: AppleLoginAppleInfo | null = null;
+}
+type LoginSuccessCallback = (result: LoginSuccess) => void;
+export type LoginFail = IUniError;
+type LoginFailCallback = (result: LoginFail) => void;
+type LoginComplete = Object;
+type LoginCompleteCallback = (result: LoginComplete) => void;
+export class LoginOptions extends UTSObject {
+    provider: 'weixin' | 'qq' | 'sinaweibo' | 'xiaomi' | 'apple' | 'univerify' | 'huawei' | null = null;
+    scopes: Object | null = null;
+    timeout: number | null = null;
+    univerifyStyle: UniverifyStyle | null = null;
+    onlyAuthorize: boolean | null = null;
+    success: LoginSuccessCallback | null = null;
+    fail: LoginFailCallback | null = null;
+    complete: LoginCompleteCallback | null = null;
+}
+class UniverifyIconStyles extends UTSObject {
+    path!: string;
+    width: string | null = null;
+    height: string | null = null;
+}
+class UniverifyPhoneNumStyles extends UTSObject {
+    color: string | null = null;
+    fontSize: string | null = null;
+}
+class UniverifySloganStyles extends UTSObject {
+    color: string | null = null;
+    fontSize: string | null = null;
+}
+class UniverifyAuthButtonStyles extends UTSObject {
+    normalColor: string | null = null;
+    highlightColor: string | null = null;
+    disabledColor: string | null = null;
+    width: string | null = null;
+    height: string | null = null;
+    textColor: string | null = null;
+    title: string | null = null;
+    borderRadius: string | null = null;
+}
+class UniverifyOtherButtonStyles extends UTSObject {
+    visible: boolean | null = null;
+    normalColor: string | null = null;
+    highlightColor: string | null = null;
+    width: string | null = null;
+    height: string | null = null;
+    textColor: string | null = null;
+    title: string | null = null;
+    borderWidth: string | null = null;
+    borderColor: string | null = null;
+    borderRadius: string | null = null;
+}
+class UniverifyPrivacyItemStyles extends UTSObject {
+    url!: string;
+    title!: string;
+}
+class UniverifyPrivacyTermsStyles extends UTSObject {
+    defaultCheckBoxState: boolean | null = null;
+    textColor: string | null = null;
+    termsColor: string | null = null;
+    prefix: string | null = null;
+    suffix: string | null = null;
+    fontSize: string | null = null;
+    privacyItems: (UniverifyPrivacyItemStyles[]) | null = null;
+}
+class UniVerifyButtonListItem extends UTSObject {
+    provider!: string;
+    iconPath!: string;
+}
+class UniVerifyButtonsStyles extends UTSObject {
+    iconWidth: string | null = null;
+    list!: UniVerifyButtonListItem[];
+}
+class UniverifyStyle extends UTSObject {
+    fullScreen: boolean | null = null;
+    backgroundColor: string | null = null;
+    backgroundImage: string | null = null;
+    icon: UniverifyIconStyles | null = null;
+    phoneNum: UniverifyPhoneNumStyles | null = null;
+    slogan: UniverifySloganStyles | null = null;
+    authButton: UniverifyAuthButtonStyles | null = null;
+    otherLoginButton: UniverifyOtherButtonStyles | null = null;
+    privacyTerms: UniverifyPrivacyTermsStyles | null = null;
+    buttons: UniVerifyButtonsStyles | null = null;
+}
+export type GetUserInfo = (options: GetUserInfoOptions) => void;
+export class UserInfo extends UTSObject {
+    nickName!: string;
+    openId: string | null = null;
+    avatarUrl!: string;
+}
+export class GetUserInfoSuccess extends UTSObject {
+    userInfo!: UserInfo;
+    rawData: string | null = null;
+    signature: string | null = null;
+    encryptedData: string | null = null;
+    iv: string | null = null;
+    errMsg!: string;
+}
+type GetUserInfoSuccessCallback = (result: GetUserInfoSuccess) => void;
+export type GetUserInfoFail = IUniError;
+type GetUserInfoFailCallback = (result: GetUserInfoFail) => void;
+type GetUserInfoComplete = Object;
+type GetUserInfoCompleteCallback = (result: GetUserInfoComplete) => void;
+export class GetUserInfoOptions extends UTSObject {
+    provider: 'weixin' | 'qq' | 'sinaweibo' | 'xiaomi' | 'apple' | 'huawei' | null = null;
+    withCredentials: boolean | null = null;
+    lang: string | null = null;
+    timeout: number | null = null;
+    success: GetUserInfoSuccessCallback | null = null;
+    fail: GetUserInfoFailCallback | null = null;
+    complete: GetUserInfoCompleteCallback | null = null;
+}
+export type OpenAppAuthorizeSetting = (options: OpenAppAuthorizeSettingOptions) => void;
+export class OpenAppAuthorizeSettingSuccess extends UTSObject {
+    errMsg!: string;
+}
+type OpenAppAuthorizeSettingSuccessCallback = (result: OpenAppAuthorizeSettingSuccess) => void;
+class OpenAppAuthorizeSettingFail extends UTSObject {
+    errMsg!: string;
+}
+type OpenAppAuthorizeSettingFailCallback = (result: OpenAppAuthorizeSettingFail) => void;
+class OpenAppAuthorizeSettingComplete extends UTSObject {
+    errMsg!: string;
+}
+type OpenAppAuthorizeSettingCompleteCallback = (result: OpenAppAuthorizeSettingComplete) => void;
+export class OpenAppAuthorizeSettingOptions extends UTSObject {
+    success: OpenAppAuthorizeSettingSuccessCallback | null = null;
+    fail: OpenAppAuthorizeSettingFailCallback | null = null;
+    complete: OpenAppAuthorizeSettingCompleteCallback | null = null;
+}
+export class OpenDocumentSuccess extends UTSObject {
+}
+export class OpenDocumentFail extends UTSObject {
+}
+type OpenDocumentSuccessCallback = (res: OpenDocumentSuccess) => void;
+type OpenDocumentFailCallback = (res: OpenDocumentFail) => void;
+type OpenDocumentCompleteCallback = (res: Object) => void;
+type OpenDocumentSupportedTypes = 'doc' | 'xls' | 'ppt' | 'pdf' | 'docx' | 'xlsx' | 'pptx';
+export class OpenDocumentOptions extends UTSObject {
+    filePath!: string;
+    fileType: OpenDocumentSupportedTypes | null = null;
+    success: OpenDocumentSuccessCallback | null = null;
+    fail: OpenDocumentFailCallback | null = null;
+    complete: OpenDocumentCompleteCallback | null = null;
+}
+type OpenDocument = (options?: OpenDocumentOptions | null) => void;
+export interface UniPaymentProvider extends UniProvider {
+    requestPayment(options: RequestPaymentOptions): void;
+}
+type RequestPaymentErrorCode = 700600 | 701100 | 701110 | 700601 | 700602 | 700603 | 700000 | 700604 | 700605 | 700607 | 700608 | 700800 | 700801;
+export type RequestPayment = (options: RequestPaymentOptions) => void;
+export class RequestPaymentSuccess extends UTSObject {
+    data: object | null = null;
+}
+type RequestPaymentSuccessCallback = (result: RequestPaymentSuccess) => void;
+export type RequestPaymentFail = IRequestPaymentFail;
+type RequestPaymentFailCallback = (result: RequestPaymentFail) => void;
+type RequestPaymentComplete = Object;
+interface IRequestPaymentFail extends IUniError {
+    errCode: RequestPaymentErrorCode;
+}
+type RequestPaymentCompleteCallback = (result: RequestPaymentComplete) => void;
+export class RequestPaymentOptions extends UTSObject {
+    provider!: string;
+    orderInfo!: string;
+    success: RequestPaymentSuccessCallback | null = null;
+    fail: RequestPaymentFailCallback | null = null;
+    complete: RequestPaymentCompleteCallback | null = null;
+}
+export type Rpx2px = (number: number) => number;
+export class ScanCodeSuccess extends UTSObject {
+    result!: string;
+    scanType!: string;
+}
+export class ScanCodeFail extends UTSObject {
+}
+type ScanCodeSuccessCallback = (res: ScanCodeSuccess) => void;
+type ScanCodeFailCallback = (res: ScanCodeFail) => void;
+type ScanCodeCompleteCallback = (res: Object) => void;
+type ScanCodeSupportedTypes = 'barCode' | 'qrCode' | 'datamatrix' | 'pdf417';
+export class ScanCodeOptions extends UTSObject {
+    onlyFromCamera: boolean | null = null;
+    scanType: ScanCodeSupportedTypes[] | null = null;
+    success: ScanCodeSuccessCallback | null = null;
+    fail: ScanCodeFailCallback | null = null;
+    complete: ScanCodeCompleteCallback | null = null;
+}
+type ScanCode = (options?: ScanCodeOptions | null) => void;
+type UniScanOptionsTypes = 'barCode' | 'qrCode' | 'datamatrix' | 'pdf417';
+type UniScanResultTypes = "QR_CODE" | "AZTEC" | "CODABAR" | "CODE_39" | "CODE_93" | "CODE_128" | "DATA_MATRIX" | "EAN_8" | "EAN_13" | "ITF" | "MAXICODE" | "PDF_417" | "RSS_14" | "RSS_EXPANDED" | "UPC_A" | "UPC_E" | "UPC_EAN_EXTENSION" | "WX_CODE" | "CODE_25";
+type HarmonyScanResultTypes = scanCore.ScanType.AZTEC_CODE | scanCore.ScanType.CODABAR_CODE | scanCore.ScanType.CODE128_CODE | scanCore.ScanType.CODE39_CODE | scanCore.ScanType.CODE93_CODE | scanCore.ScanType.DATAMATRIX_CODE | scanCore.ScanType.EAN13_CODE | scanCore.ScanType.EAN8_CODE | scanCore.ScanType.ITF14_CODE | scanCore.ScanType.MULTIFUNCTIONAL_CODE | scanCore.ScanType.PDF417_CODE | scanCore.ScanType.QR_CODE | scanCore.ScanType.UPC_A_CODE | scanCore.ScanType.UPC_E_CODE;
+export class ShareWithSystemSuccess extends UTSObject {
+}
+export type ShareWithSystemFail = IShareWithSystemFail;
+interface IShareWithSystemFail extends IUniError {
+    errCode: ShareWithSystemErrorCode;
+}
+type ShareWithSystemErrorCode = 1310600 | 1310601 | 1310602 | 1310603 | 1310604 | 1310605 | 1310606 | 1310607;
+type ShareWithSystemSuccessCallback = (res: ShareWithSystemSuccess) => void;
+type ShareWithSystemFailCallback = (res: ShareWithSystemFail) => void;
+type ShareWithSystemCallback = (res: Object) => void;
+export class ShareWithSystemOptions extends UTSObject {
+    type: 'text' | 'image' | 'video' | 'audio' | 'file' | null = null;
+    summary: string | null = null;
+    href: string | null = null;
+    imageUrl: string | null = null;
+    imagePaths: Array<string> | null = null;
+    videoPaths: Array<string> | null = null;
+    audioPaths: Array<string> | null = null;
+    filePaths: Array<string> | null = null;
+    success: ShareWithSystemSuccessCallback | null = null;
+    fail: ShareWithSystemFailCallback | null = null;
+    complete: ShareWithSystemCallback | null = null;
+}
+export type ShareWithSystem = (options: ShareWithSystemOptions) => void;
+export type ConnectSocket = (options: ConnectSocketOptions) => SocketTask;
+export class ConnectSocketSuccess extends UTSObject {
+    errMsg!: string;
+}
+type ConnectSocketSuccessCallback = (result: ConnectSocketSuccess) => void;
+type ConnectSocketErrorCode = 600009;
+interface ConnectSocketFail extends IUniError {
+    errCode: ConnectSocketErrorCode;
+}
+type ConnectSocketFailCallback = (result: ConnectSocketFail) => void;
+type ConnectSocketComplete = Object;
+type ConnectSocketCompleteCallback = (result: ConnectSocketComplete) => void;
+export class ConnectSocketOptions extends UTSObject {
+    url!: string;
+    header: UTSJSONObject | null = null;
+    protocols: (string[]) | null = null;
+    success: ConnectSocketSuccessCallback | null = null;
+    fail: ConnectSocketFailCallback | null = null;
+    complete: ConnectSocketCompleteCallback | null = null;
+}
+class GeneralCallbackResult extends UTSObject {
+    errMsg!: string;
+}
+type SendSocketMessageErrorCode = 10001 | 10002 | 602001;
+interface SendSocketMessageFail extends IUniError {
+    errCode: SendSocketMessageErrorCode;
+}
+export class SendSocketMessageOptions extends UTSObject {
+    data!: Object;
+    success: ((result: GeneralCallbackResult) => void) | null = null;
+    fail: ((result: SendSocketMessageFail) => void) | null = null;
+    complete: ((result: Object) => void) | null = null;
+}
+export class CloseSocketOptions extends UTSObject {
+    code: number | null = null;
+    reason: string | null = null;
+    success: ((result: GeneralCallbackResult) => void) | null = null;
+    fail: ((result: GeneralCallbackResult) => void) | null = null;
+    complete: ((result: GeneralCallbackResult) => void) | null = null;
+}
+class OnSocketOpenCallbackResult extends UTSObject {
+    header!: Object;
+}
+export class OnSocketMessageCallbackResult extends UTSObject {
+    data!: Object;
+}
+export interface SocketTask {
+    send(options: SendSocketMessageOptions): void;
+    close(options: CloseSocketOptions): void;
+    onOpen(callback: (result: OnSocketOpenCallbackResult) => void): void;
+    onClose(callback: (result: Object) => void): void;
+    onError(callback: (result: GeneralCallbackResult) => void): void;
+    onMessage(callback: (result: OnSocketMessageCallbackResult) => void): void;
+}
+type OnSocketOpenCallback = (result: OnSocketOpenCallbackResult) => void;
+type OnSocketOpen = (options: OnSocketOpenCallback) => void;
+export class OnSocketErrorCallbackResult extends UTSObject {
+    errMsg!: string;
+}
+type OnSocketErrorCallback = (result: OnSocketErrorCallbackResult) => void;
+type OnSocketError = (callback: OnSocketErrorCallback) => void;
+type SendSocketMessage = (options: SendSocketMessageOptions) => void;
+type OnSocketMessageCallback = (result: OnSocketMessageCallbackResult) => void;
+type OnSocketMessage = (callback: OnSocketMessageCallback) => void;
+type CloseSocket = (options: CloseSocketOptions) => void;
+class OnSocketCloseCallbackResult extends UTSObject {
+    code!: number;
+    reason!: string;
+}
+type OnSocketCloseCallback = (result: OnSocketCloseCallbackResult) => void;
+type OnSocketClose = (callback: OnSocketCloseCallback) => void;
+interface IUniWebsocketEmitter {
+    on: (eventName: string, callback: Function) => void;
+    once: (eventName: string, callback: Function) => void;
+    off: (eventName: string, callback?: Function | null) => void;
+    emit: (eventName: string, ...args: (Object | undefined | null)[]) => void;
+}
+interface UniExtApi {
+    request: Request<Object>;
+    uploadFile: UploadFile;
+    downloadFile: DownloadFile;
+    configMTLS: ConfigMTLS;
+    setStorage: SetStorage;
+    setStorageSync: SetStorageSync;
+    getStorage: GetStorage;
+    getStorageSync: GetStorageSync;
+    getStorageInfo: GetStorageInfo;
+    getStorageInfoSync: GetStorageInfoSync;
+    removeStorage: RemoveStorage;
+    removeStorageSync: RemoveStorageSync;
+    clearStorage: ClearStorage;
+    clearStorageSync: ClearStorageSync;
+    addPhoneContact: AddPhoneContact;
+    startSoterAuthentication: StartSoterAuthentication;
+    checkIsSupportSoterAuthentication: CheckIsSupportSoterAuthentication;
+    checkIsSoterEnrolledInDevice: CheckIsSoterEnrolledInDevice;
+    getClipboardData: GetClipboardData;
+    setClipboardData: SetClipboardData;
+    createInnerAudioContext: CreateInnerAudioContext;
+    $on: $On;
+    $once: $Once;
+    $off: $Off;
+    $emit: $Emit;
+    exit: Exit;
+    saveFile: SaveFile;
+    getSavedFileList: GetSavedFileList;
+    getSavedFileInfo: GetSavedFileInfo;
+    removeSavedFile: RemoveSavedFile;
+    getFileInfo: GetFileInfo;
+    getFileSystemManager: GetFileSystemManager;
+    getAppAuthorizeSetting: GetAppAuthorizeSetting;
+    getAppBaseInfo: GetAppBaseInfo;
+    getBackgroundAudioManager: GetBackgroundAudioManager;
+    getDeviceInfo: GetDeviceInfo;
+    getNetworkType: GetNetworkType;
+    onNetworkStatusChange: OnNetworkStatusChange;
+    offNetworkStatusChange: OffNetworkStatusChange;
+    getProvider: GetProvider;
+    getProviderSync: GetProviderSync;
+    getRecorderManager: GetRecorderManager;
+    getSystemInfo: GetSystemInfo;
+    getSystemInfoSync: GetSystemInfoSync;
+    getWindowInfo: GetWindowInfo;
+    getSystemSetting: GetSystemSetting;
+    hideKeyboard: HideKeyboard;
+    makePhoneCall: MakePhoneCall;
+    login: Login;
+    getUserInfo: GetUserInfo;
+    openAppAuthorizeSetting: OpenAppAuthorizeSetting;
+    openDocument: OpenDocument;
+    requestPayment: RequestPayment;
+    rpx2px: Rpx2px;
+    scanCode: ScanCode;
+    shareWithSystem: ShareWithSystem;
+    connectSocket: ConnectSocket;
+    sendSocketMessage: SendSocketMessage;
+    closeSocket: CloseSocket;
+    onSocketOpen: OnSocketOpen;
+    onSocketMessage: OnSocketMessage;
+    onSocketClose: OnSocketClose;
+    onSocketError: OnSocketError;
+}
+export function initUniExtApi() {
+    const API_REQUEST = 'request';
+    const RequestApiProtocol = new Map<string, ProtocolOptions>([
+        [
+            'url',
+            {
+                type: 'string',
+                required: true
+            }
+        ],
+        [
+            'data',
+            {
+                type: 'object',
+                required: false
+            }
+        ],
+        [
+            'header',
+            {
+                type: 'object',
+                required: false
+            }
+        ],
+        [
+            'method',
+            {
+                type: 'string',
+                required: false
+            }
+        ],
+        [
+            'dataType',
+            {
+                type: 'string',
+                required: false
+            }
+        ],
+        [
+            'responseType',
+            {
+                type: 'string',
+                required: false
+            }
+        ],
+        [
+            'timeout',
+            {
+                type: 'number',
+                required: false
+            }
+        ],
+        [
+            'sslVerify',
+            {
+                type: 'boolean',
+                required: false
+            }
+        ],
+        [
+            'withCredentials',
+            {
+                type: 'boolean',
+                required: false
+            }
+        ],
+        [
+            'firstIpv4',
+            {
+                type: 'boolean',
+                required: false
+            }
+        ]
+    ]);
+    const RequestApiOptions: ApiOptions<RequestOptions<Object>> = {
+        formatArgs: new Map<string, Function>([
+            [
+                'url',
+                (url: string, params: RequestOptions<Object>)=>{
+                    if (url == null) {
+                        throw new Error('url is required');
+                    }
+                }
+            ],
+            [
+                'method',
+                (method: string, params: RequestOptions<Object>)=>{
+                    params.method = (method || 'GET').toUpperCase() as RequestMethod;
+                }
+            ],
+            [
+                'dataType',
+                (dataType: string, params: RequestOptions<Object>)=>{
+                    if (dataType == null) {
+                        params.dataType = 'json';
+                    }
+                }
+            ],
+            [
+                'responseType',
+                (responseType: string, params: RequestOptions<Object>)=>{
+                    if (responseType == null) {
+                        params.responseType = 'text';
+                    }
+                }
+            ],
+            [
+                'timeout',
+                (timeout: number, params: RequestOptions<Object>)=>{
+                    if (timeout == null) {
+                        params.timeout = 60000;
+                    }
+                }
+            ],
+            [
+                'sslVerify',
+                (sslVerify: boolean, params: RequestOptions<Object>)=>{
+                    if (sslVerify == null) {
+                        params.sslVerify = true;
+                    }
+                }
+            ],
+            [
+                'withCredentials',
+                (withCredentials: boolean, params: RequestOptions<Object>)=>{
+                    if (withCredentials == null) {
+                        params.withCredentials = false;
+                    }
+                }
+            ],
+            [
+                'firstIpv4',
+                (firstIpv4: boolean, params: RequestOptions<Object>)=>{
+                    if (firstIpv4 == null) {
+                        params.firstIpv4 = false;
+                    }
+                }
+            ]
+        ])
+    };
+    const API_DOWNLOAD_FILE = 'downloadFile';
+    const DownloadFileApiProtocol = new Map<string, ProtocolOptions>([
+        [
+            'url',
+            {
+                type: 'string',
+                required: true
+            }
+        ],
+        [
+            'header',
+            {
+                type: 'object',
+                required: false
+            }
+        ],
+        [
+            'timeout',
+            {
+                type: 'number',
+                required: false
+            }
+        ]
+    ]);
+    const DownloadFileApiOptions: ApiOptions<DownloadFileOptions> = {
+        formatArgs: new Map<string, Function>([
+            [
+                'url',
+                (url: string, params: DownloadFileOptions)=>{
+                    if (url == null) {
+                        throw new Error('url is required');
+                    }
+                }
+            ]
+        ])
+    };
+    const API_UPLOAD_FILE = 'uploadFile';
+    const UploadFileApiProtocol = new Map<string, ProtocolOptions>([
+        [
+            'url',
+            {
+                type: 'string',
+                required: true
+            }
+        ],
+        [
+            'filePath',
+            {
+                type: 'string',
+                required: false
+            }
+        ],
+        [
+            'name',
+            {
+                type: 'string',
+                required: false
+            }
+        ],
+        [
+            'header',
+            {
+                type: 'object',
+                required: false
+            }
+        ],
+        [
+            'formData',
+            {
+                type: 'object',
+                required: false
+            }
+        ],
+        [
+            'timeout',
+            {
+                type: 'number',
+                required: false
+            }
+        ]
+    ]);
+    const UploadFileApiOptions: ApiOptions<UploadFileOptions> = {
+        formatArgs: new Map<string, Function>([
+            [
+                'url',
+                (url: string, params: UploadFileOptions)=>{
+                    if (url == null) {
+                        throw new Error('url is required');
+                    }
+                }
+            ],
+            [
+                'name',
+                (name: string, params: UploadFileOptions)=>{
+                    if (name == null) {
+                        params.name = 'file';
+                    }
+                }
+            ]
+        ])
+    };
+    const API_CONFIG_MTLS = 'configMTLS';
+    const ConfigMTLSApiProtocol = new Map<string, ProtocolOptions>([
+        [
+            'certificates',
+            {
+                type: 'array',
+                required: true
+            }
+        ]
+    ]);
+    const ConfigMTLSApiOptions: ApiOptions<ConfigMTLSOptions> = {
+        formatArgs: new Map<string, Function>([
+            [
+                'certificates',
+                (certificates: (Certificate[]) | null = null)=>{
+                    if (!certificates || certificates.some((item)=>typeof item.host !== 'string')) {
+                        return '参数 certificates 配置错误，请确认后重试';
+                    }
+                    return undefined;
+                }
+            ]
+        ])
+    };
+    const needsEncoding = (str: string)=>{
+        const decoded = decodeURIComponent(str);
+        if (decoded !== str) {
+            if (encodeURIComponent(decoded) === str) {
+                return false;
+            }
+        }
+        return encodeURIComponent(decoded) !== decoded;
+    };
+    const parseUrl = (url: string)=>{
+        try {
+            const urlObj = harmonyUrl.URL.parseURL(url);
+            urlObj.params.forEach((value, key)=>{
+                if (needsEncoding(value)) {
+                    urlObj.params.set(key, value);
+                }
+            });
+            return urlObj.toString();
+        } catch (error) {
+            return url;
+        }
+    };
+    const certificates: Certificate[] = [];
+    const getCertType = (certPath: string): http.CertType =>{
+        const certExt = certPath.split('.').pop();
+        switch(certExt){
+            case 'p12':
+                return http.CertType.P12;
+            case 'pem':
+                return http.CertType.PEM;
+            default:
+                return http.CertType.PEM;
+        }
+    };
+    const getClientCertificate = (url: string): http.ClientCert | undefined =>{
+        if (certificates.length === 0) return undefined;
+        const urlObj = harmonyUrl.URL.parseURL(url);
+        const cert = certificates.find((certificate)=>certificate.host === urlObj.host);
+        if (cert) {
+            return {
+                certType: getCertType(cert.client!),
+                certPath: getRealPath(cert.client!),
+                keyPath: cert.keyPath ?? '',
+                keyPassword: cert.clientPassword
+            } as http.ClientCert;
+        }
+        return undefined;
+    };
+    const replaceHttpWithHttps = (url: string): string =>{
+        return url.replace(/^http:/, 'https:');
+    };
+    const getCookieSync = (url: string): string =>{
+        return webview.WebCookieManager.fetchCookieSync(replaceHttpWithHttps(url));
+    };
+    const setCookieSync = (url: string, cookies: string[]): void =>{
+        cookies.forEach((cookie)=>{
+            let hasSecure = false;
+            let hasSameSite = false;
+            let savedCookie = cookie.split(';').map((cookieItem)=>{
+                const pair = cookieItem.split('=').map((item)=>item.trim());
+                const keyLower = pair[0].toLowerCase();
+                if (keyLower === 'secure') {
+                    hasSecure = true;
+                    return cookieItem;
+                }
+                if (keyLower === 'samesite') {
+                    hasSameSite = true;
+                    return 'samesite=none';
+                }
+                return cookieItem;
+            }).join(';');
+            if (!hasSecure) {
+                savedCookie += '; secure';
+            }
+            if (!hasSameSite) {
+                savedCookie += '; samesite=none';
+            }
+            try {
+                webview.WebCookieManager.configCookieSync(replaceHttpWithHttps(url), savedCookie);
+            } catch (error) {}
+        });
+        webview.WebCookieManager.saveCookieAsync();
+    };
+    const cookiesParse = (header: Record<string, string>)=>{
+        let cookiesArr: string[] = [];
+        const handleCookiesArr = (header['Set-Cookie'] || header['set-cookie'] || []) as string[];
+        for(let i = 0; i < handleCookiesArr.length; i++){
+            if (handleCookiesArr[i].indexOf('Expires=') !== -1 || handleCookiesArr[i].indexOf('expires=') !== -1) {
+                cookiesArr.push(handleCookiesArr[i].replace(',', ''));
+            } else {
+                cookiesArr.push(handleCookiesArr[i]);
+            }
+        }
+        return cookiesArr;
+    };
+    class RequestTask1 implements RequestTask {
+        private _requestTask: IRequestTask;
+        constructor(requestTask: IRequestTask){
+            this._requestTask = requestTask;
+        }
+        abort() {
+            this._requestTask.abort();
+        }
+        onHeadersReceived(callback: Function) {
+            this._requestTask.onHeadersReceived(callback);
+        }
+        offHeadersReceived(callback: Function | null = null) {
+            this._requestTask.offHeadersReceived(callback);
+        }
+    }
+    const request = defineTaskApi<RequestOptions<Object>, RequestSuccess<Object>, RequestTask>(API_REQUEST, (args: RequestOptions<Object>, exec: ApiExecutor<RequestSuccess<Object>>)=>{
+        let header = args.header, method = args.method, data = args.data, dataType = args.dataType, timeout = args.timeout, url = args.url, responseType = args.responseType;
+        header = header || {} as ESObject;
+        if (!header!['Cookie'] && !header!['cookie']) {
+            header!['Cookie'] = getCookieSync(url);
+        }
+        let contentType = '';
+        const headers = {} as Record<string, Object>;
+        const headerRecord = header as Object as Record<string, string>;
+        const headerKeys = Object.keys(headerRecord);
+        for(let i = 0; i < headerKeys.length; i++){
+            const name = headerKeys[i];
+            if (name.toLowerCase() === 'content-type') {
+                contentType = headerRecord[name] as string;
+            }
+            headers[name.toLowerCase()] = headerRecord[name];
+        }
+        if (!contentType && method === 'POST') {
+            headers['Content-Type'] = 'application/json';
+            contentType = 'application/json';
+        }
+        if (method === 'GET' && data) {
+            const dataRecord = data as Record<string, Object>;
+            const query = Object.keys(dataRecord).map((key)=>{
+                return (encodeURIComponent(key) + '=' + encodeURIComponent(dataRecord[key] as string | number | boolean));
+            }).join('&');
+            url += query ? (url.indexOf('?') > -1 ? '&' : '?') + query : '';
+            data = null;
+        } else if (method !== 'GET' && contentType && contentType.indexOf('application/json') === 0 && data) {
+            data = JSON.stringify(data);
+        } else if (method !== 'GET' && contentType && contentType.indexOf('application/x-www-form-urlencoded') === 0 && data) {
+            const dataRecord = data as Record<string, Object>;
+            data = Object.keys(dataRecord).map((key)=>{
+                return (encodeURIComponent(key) + '=' + encodeURIComponent(dataRecord[key] as number | string | boolean));
+            }).join('&');
+        }
+        const httpRequest = http1.createHttp();
+        const mp = getCurrentMP();
+        const userAgent = mp.userAgent.fullUserAgent;
+        if (userAgent && headers && !headers!['User-Agent'] && !headers!['user-agent']) {
+            headers!['User-Agent'] = userAgent;
+        }
+        const emitter = new Emitter() as IUniRequestEmitter;
+        const requestTask: IRequestTask = {
+            abort () {
+                emitter.off('headersReceive');
+                httpRequest.destroy();
+            },
+            onHeadersReceived (callback: Function) {
+                emitter.on('headersReceive', callback);
+            },
+            offHeadersReceived (callback: Function | null = null) {
+                emitter.off('headersReceive', callback);
+            }
+        };
+        const destroy = ()=>{
+            emitter.off('headersReceive');
+            httpRequest.destroy();
+        };
+        mp.on('beforeClose', destroy);
+        let latestHeaders: Object | null = null;
+        let lastUrl = url;
+        httpRequest.on('headersReceive', (headers: Object)=>{
+            const realHeaders = headers as Record<string, string | string[]>;
+            const setCookieHeader = realHeaders['set-cookie'] || realHeaders['Set-Cookie'];
+            if (setCookieHeader) {
+                setCookieSync(lastUrl, setCookieHeader as string[]);
+            }
+            latestHeaders = headers;
+            const location = realHeaders['location'] || realHeaders['Location'];
+            if (location) {
+                lastUrl = location as string;
+            }
+        });
+        const bufs = [] as buffer.Buffer[];
+        httpRequest.on('dataReceive', (data)=>{
+            bufs.push(buffer.from(data));
+        });
+        httpRequest.requestInStream(parseUrl(url), {
+            header: headers,
+            method: (method || 'GET').toUpperCase() as http1.RequestMethod,
+            extraData: data || undefined,
+            connectTimeout: timeout ? timeout : undefined,
+            readTimeout: timeout ? timeout : undefined,
+            clientCert: getClientCertificate(url)
+        } as http1.HttpRequestOptions, (err, statusCode)=>{
+            if (err) {
+                exec.reject(err.message);
+            } else {
+                const responseData = buffer.concat(bufs);
+                let data: ArrayBuffer | string | object = '';
+                if (responseType === 'arraybuffer') {
+                    data = responseData.buffer;
+                } else {
+                    data = responseData.toString('utf8');
+                    if (dataType === 'json') {
+                        try {
+                            data = JSON.parse(data);
+                        } catch (e) {}
+                    }
+                }
+                const headers = latestHeaders as Record<string, string | string[]>;
+                const oldCookies = headers ? (headers['Set-Cookie'] || headers['set-cookie'] || []) as string[] : [] as string[];
+                const cookies = latestHeaders ? cookiesParse(latestHeaders as Record<string, string>) : [];
+                let newCookies = oldCookies.join(',');
+                if (newCookies) {
+                    if (headers['Set-Cookie']) {
+                        headers['Set-Cookie'] = newCookies;
+                    } else {
+                        headers['set-cookie'] = newCookies;
+                    }
+                }
+                exec.resolve({
+                    data,
+                    statusCode,
+                    header: latestHeaders!,
+                    cookies: cookies
+                } as RequestSuccess<Object>);
+            }
+            requestTask.offHeadersReceived();
+            httpRequest.destroy();
+            mp.off('beforeClose', destroy);
+        });
+        return new RequestTask1(requestTask);
+    }, RequestApiProtocol, RequestApiOptions) as Request<Object>;
+    const lookupExt = (contentType: string): string | undefined =>{
+        const rawContentType = contentType.split(';')[0].trim().toLowerCase();
+        return (UTSHarmony.getExtensionFromMimeType(rawContentType) as string | null) || undefined;
+    };
+    const lookupContentTypeWithUri = (uri: string): string | undefined =>{
+        const uriArr = uri.split('.');
+        if (uriArr.length <= 1) {
+            return undefined;
+        }
+        const ext = uriArr.pop() as string;
+        return (UTSHarmony.getMimeTypeFromExtension(ext) as string | null) || undefined;
+    };
+    class UploadTask1 implements UploadTask {
+        private _uploadTask: IUploadTask;
+        constructor(uploadTask: IUploadTask){
+            this._uploadTask = uploadTask;
+        }
+        abort() {
+            this._uploadTask.abort();
+        }
+        onProgressUpdate(callback: Function) {
+            this._uploadTask.onProgressUpdate(callback);
+        }
+        offProgressUpdate(callback: Function | null = null) {
+            this._uploadTask.offProgressUpdate(callback);
+        }
+        onHeadersReceived(callback: Function) {
+            this._uploadTask.onHeadersReceived(callback);
+        }
+        offHeadersReceived(callback: Function | null = null) {
+            this._uploadTask.offHeadersReceived(callback);
+        }
+    }
+    const readFile = (filePath: string): ArrayBuffer =>{
+        const readFilePath = getRealPath1(filePath) as string;
+        const file = fs.openSync(readFilePath, fs.OpenMode.READ_ONLY);
+        const stat = fs.statSync(file.fd);
+        const data = new ArrayBuffer(stat.size);
+        fs.readSync(file.fd, data);
+        fs.closeSync(file.fd);
+        return data;
+    };
+    const uploadFile = defineTaskApi<UploadFileOptions, UploadFileSuccess, UploadTask>(API_UPLOAD_FILE, (args: UploadFileOptions, exec: ApiExecutor<UploadFileSuccess>)=>{
+        let url = args.url, timeout = args.timeout, header = args.header, formData = args.formData, files = args.files, filePath = args.filePath, name = args.name;
+        header = header || {} as ESObject;
+        if (!header!['Cookie'] && !header!['cookie']) {
+            header!['Cookie'] = getCookieSync(url);
+        }
+        const headers = {} as Record<string, Object>;
+        if (header) {
+            const headerRecord = header as Object as Record<string, string>;
+            const headerKeys = Object.keys(headerRecord);
+            for(let i = 0; i < headerKeys.length; i++){
+                const name = headerKeys[i];
+                headers[name.toLowerCase()] = headerRecord[name];
+            }
+        }
+        headers['Content-Type'] = 'multipart/form-data';
+        const multiFormDataList = [] as Array<http2.MultiFormData>;
+        if (formData) {
+            const formDataRecord = formData as Object as Record<string, Object>;
+            const formDataKeys = Object.keys(formDataRecord);
+            for(let i = 0; i < formDataKeys.length; i++){
+                const name = formDataKeys[i];
+                multiFormDataList.push({
+                    name,
+                    contentType: 'text/plain',
+                    data: String(formDataRecord[name])
+                } as http2.MultiFormData);
+            }
+        }
+        try {
+            if (files && files.length) {
+                for(let i = 0; i < files.length; i++){
+                    const _files_i = files[i], name = _files_i.name, uri = _files_i.uri;
+                    multiFormDataList.push({
+                        name: name || 'file',
+                        contentType: lookupContentTypeWithUri(uri) || 'application/octet-stream',
+                        remoteFileName: uri.split('/').pop() || 'no-name',
+                        data: readFile(uri!)
+                    } as http2.MultiFormData);
+                }
+            } else if (filePath) {
+                multiFormDataList.push({
+                    name: name || 'file',
+                    contentType: lookupContentTypeWithUri(filePath!) || 'application/octet-stream',
+                    remoteFileName: filePath.split('/').pop() || 'no-name',
+                    data: readFile(filePath!)
+                } as http2.MultiFormData);
+            }
+        } catch (error) {
+            exec.reject((error as Error).message);
+            return new UploadTask1({
+                abort: ()=>{},
+                onHeadersReceived: (callback: Function)=>{},
+                offHeadersReceived: (callback: Function)=>{},
+                onProgressUpdate: (callback: Function)=>{},
+                offProgressUpdate: (callback: Function)=>{}
+            } as IUploadTask);
+        }
+        const httpRequest = http2.createHttp();
+        const mp = getCurrentMP1();
+        const userAgent = mp.userAgent.fullUserAgent;
+        if (userAgent && !headers['User-Agent'] && !headers['user-agent']) {
+            headers['User-Agent'] = userAgent;
+        }
+        const emitter = new Emitter1() as IUniUploadFileEmitter;
+        const uploadTask: IUploadTask = {
+            abort () {
+                emitter.off('headersReceive');
+                emitter.off('progress');
+                httpRequest.destroy();
+            },
+            onHeadersReceived (callback: Function) {
+                emitter.on('headersReceive', callback);
+            },
+            offHeadersReceived (callback: Function | null = null) {
+                emitter.off('headersReceive', callback);
+            },
+            onProgressUpdate (callback: Function) {
+                emitter.on('progress', callback);
+            },
+            offProgressUpdate (callback: Function | null = null) {
+                emitter.off('progress', callback);
+            }
+        };
+        const destroy = ()=>{
+            emitter.off('headersReceive');
+            emitter.off('progress');
+            httpRequest.destroy();
+        };
+        mp.on('beforeClose', destroy);
+        let lastUrl = url;
+        httpRequest.on('headersReceive', (headers: Object)=>{
+            const realHeaders = headers as Record<string, string | string[]>;
+            const setCookieHeader = realHeaders['set-cookie'] || realHeaders['Set-Cookie'];
+            if (setCookieHeader) {
+                setCookieSync(lastUrl, setCookieHeader as string[]);
+            }
+            const location = realHeaders['location'] || realHeaders['Location'];
+            if (location) {
+                lastUrl = location as string;
+            }
+        });
+        httpRequest.on('dataSendProgress', (ref)=>{
+            let sendSize = ref.sendSize, totalSize = ref.totalSize;
+            emitter.emit('progress', {
+                progress: Math.floor((sendSize / totalSize) * 100),
+                totalBytesSent: sendSize,
+                totalBytesExpectedToSend: totalSize
+            } as OnProgressUpdateResult);
+        });
+        httpRequest.request(parseUrl(url), {
+            header: headers,
+            method: http2.RequestMethod.POST,
+            connectTimeout: timeout ? timeout : undefined,
+            readTimeout: timeout ? timeout : undefined,
+            multiFormDataList,
+            expectDataType: http2.HttpDataType.STRING,
+            clientCert: getClientCertificate(url)
+        } as http2.HttpRequestOptions, (err, res)=>{
+            if (err) {
+                exec.reject(err.message);
+            } else {
+                exec.resolve({
+                    data: res.result as string,
+                    statusCode: res.responseCode
+                } as UploadFileSuccess);
+            }
+            uploadTask.offHeadersReceived();
+            uploadTask.offProgressUpdate();
+            httpRequest.destroy();
+            mp.off('beforeClose', destroy);
+        });
+        return new UploadTask1(uploadTask);
+    }, UploadFileApiProtocol, UploadFileApiOptions) as UploadFile;
+    const getPossibleExt = (contentType: string, contentDisposition: string, url: string): string =>{
+        const contentDispositionFileNameMatches = contentDisposition.match(/filename="(.*)"/);
+        const contentDispositionFileName = contentDispositionFileNameMatches ? contentDispositionFileNameMatches[1] : '';
+        const contentDispositionExt = contentDispositionFileName ? contentDispositionFileName.split('.').pop() : '';
+        if (contentDispositionExt) {
+            return contentDispositionExt;
+        }
+        const urlPath = harmonyUrl1.URL.parseURL(url).pathname;
+        const urlExt = urlPath.split('/').pop()?.split('.')[1] || '';
+        if (urlExt) {
+            return urlExt;
+        }
+        const contentTypeExt = lookupExt(contentType);
+        return contentTypeExt || '';
+    };
+    class DownloadTask1 implements DownloadTask {
+        private _downloadTask: IDownloadTask;
+        constructor(downloadTask: IDownloadTask){
+            this._downloadTask = downloadTask;
+        }
+        abort() {
+            this._downloadTask.abort();
+        }
+        onProgressUpdate(callback: Function) {
+            this._downloadTask.onProgressUpdate(callback);
+        }
+        offProgressUpdate(callback: Function | null = null) {
+            this._downloadTask.offProgressUpdate(callback);
+        }
+        onHeadersReceived(callback: Function) {
+            this._downloadTask.onHeadersReceived(callback);
+        }
+        offHeadersReceived(callback: Function | null = null) {
+            this._downloadTask.offHeadersReceived(callback);
+        }
+    }
+    let downloadIndex: [string, number] = [
+        '0',
+        0
+    ];
+    const getDownloadFileName = (ext: string)=>{
+        let fileName = Date.now() + '';
+        if (downloadIndex[0] === fileName) {
+            downloadIndex[1]++;
+            if (downloadIndex[1] > 0) {
+                fileName += '-' + downloadIndex[1];
+            }
+        } else {
+            downloadIndex[0] = fileName;
+            downloadIndex[1] = 0;
+        }
+        if (ext) {
+            fileName += '.' + ext;
+        }
+        return fileName;
+    };
+    const downloadFile = defineTaskApi<DownloadFileOptions, DownloadFileSuccess, DownloadTask>(API_DOWNLOAD_FILE, (args: DownloadFileOptions, exec: ApiExecutor<DownloadFileSuccess>)=>{
+        let url = args.url, timeout = args.timeout, header = args.header, filePath = args.filePath;
+        header = header || {} as ESObject;
+        if (!header!['Cookie'] && !header!['cookie']) {
+            header!['Cookie'] = getCookieSync(url);
+        }
+        const httpRequest = http3.createHttp();
+        const mp = getCurrentMP2();
+        const userAgent = mp.userAgent.fullUserAgent;
+        if (userAgent && !header!['User-Agent'] && !header!['user-agent']) {
+            header!['User-Agent'] = userAgent;
+        }
+        const emitter = new Emitter2() as IUniDownloadFileEmitter;
+        const downloadTask: IDownloadTask = {
+            abort () {
+                emitter.off('headersReceive');
+                emitter.off('progress');
+                httpRequest.destroy();
+            },
+            onHeadersReceived (callback: Function) {
+                emitter.on('headersReceive', callback);
+            },
+            offHeadersReceived (callback: Function | null = null) {
+                emitter.off('headersReceive', callback);
+            },
+            onProgressUpdate (callback: Function) {
+                emitter.on('progress', callback);
+            },
+            offProgressUpdate (callback: Function | null = null) {
+                emitter.off('progress', callback);
+            }
+        };
+        const destroy = ()=>{
+            downloadTask.abort();
+        };
+        mp.on('beforeClose', destroy);
+        let responseContentType = '';
+        let responseContentDisposition = '';
+        let lastUrl = url;
+        httpRequest.on('headersReceive', (headers: Object)=>{
+            const realHeaders = headers as Record<string, string | string[]>;
+            responseContentType = realHeaders['content-type'] as string || realHeaders['Content-Type'] as string || '';
+            responseContentDisposition = realHeaders['content-disposition'] as string || realHeaders['Content-Disposition'] as string || '';
+            const setCookieHeader = realHeaders['set-cookie'] || realHeaders['Set-Cookie'];
+            if (setCookieHeader) {
+                setCookieSync(lastUrl, setCookieHeader as string[]);
+            }
+            const location = realHeaders['location'] || realHeaders['Location'];
+            if (location) {
+                lastUrl = location as string;
+            }
+        });
+        httpRequest.on('dataReceiveProgress', (ref)=>{
+            let receiveSize = ref.receiveSize, totalSize = ref.totalSize;
+            emitter.emit('progress', {
+                progress: Math.floor((receiveSize / totalSize) * 100),
+                totalBytesWritten: receiveSize,
+                totalBytesExpectedToWrite: totalSize
+            } as OnProgressDownloadResult);
+        });
+        const TEMP_PATH = getEnv().TEMP_PATH as string;
+        const downloadPath = TEMP_PATH + '/download';
+        if (!fs1.accessSync(downloadPath)) {
+            fs1.mkdirSync(downloadPath, true);
+        }
+        let stream: fs1.Stream;
+        let tempFilePath = '';
+        let writePromise = Promise.resolve(0);
+        const queueWrite = async (data: ArrayBuffer): Promise<number> =>{
+            writePromise = writePromise.then(async (total)=>{
+                const length = await stream.write(data);
+                return total + length;
+            });
+            return writePromise;
+        };
+        httpRequest.on('dataReceive', (data)=>{
+            if (!stream) {
+                const ext = getPossibleExt(responseContentType, responseContentDisposition, url);
+                tempFilePath = filePath ? filePath.replace(/^file:\/\//, '') : downloadPath + '/' + getDownloadFileName(ext);
+                stream = fs1.createStreamSync(tempFilePath, 'w+');
+            }
+            queueWrite(data);
+        });
+        httpRequest.requestInStream(parseUrl(url), {
+            header: header ? header : {} as ESObject,
+            method: http3.RequestMethod.GET,
+            connectTimeout: timeout ? timeout : undefined,
+            readTimeout: timeout ? timeout : undefined,
+            clientCert: getClientCertificate(url)
+        } as http3.HttpRequestOptions, (err, statusCode)=>{
+            let finishPromise: Promise<void> = Promise.resolve();
+            if (err) {
+                exec.reject(err.message);
+            } else {
+                finishPromise = writePromise.then(async ()=>{
+                    await stream.flush();
+                    await stream.close();
+                    exec.resolve({
+                        tempFilePath,
+                        statusCode
+                    } as DownloadFileSuccess);
+                }).catch((err: Error)=>{
+                    exec.reject(err.message);
+                });
+            }
+            finishPromise.then(()=>{
+                downloadTask.offHeadersReceived();
+                downloadTask.offProgressUpdate();
+                httpRequest.destroy();
+                mp.off('beforeClose', destroy);
+            });
+        });
+        return new DownloadTask1(downloadTask);
+    }, DownloadFileApiProtocol, DownloadFileApiOptions) as DownloadFile;
+    const configMTLS: ConfigMTLS = defineAsyncApi<ConfigMTLSOptions, ConfigMTLSSuccess>(API_CONFIG_MTLS, (args: ConfigMTLSOptions, executor: ApiExecutor<ConfigMTLSSuccess>)=>{
+        try {
+            args.certificates.forEach((certificate)=>{
+                const certHosts = certificates.map((cert)=>cert.host);
+                const certHostIndex = certHosts.indexOf(certificate.host);
+                if (certHostIndex > -1) {
+                    certificates.splice(certHostIndex, 1);
+                }
+                certificates.push(certificate);
+            });
+            executor.resolve();
+        } catch (error) {
+            executor.reject((error as BusinessError).message);
+        }
+    }, ConfigMTLSApiProtocol, ConfigMTLSApiOptions) as ConfigMTLS;
+    const API_GET_STORAGE = 'getStorage';
+    const API_GET_STORAGE_SYNC = 'getStorageSync';
+    const API_SET_STORAGE = 'setStorage';
+    const API_SET_STORAGE_SYNC = 'setStorageSync';
+    const API_REMOVE_STORAGE = 'removeStorage';
+    const API_REMOVE_STORAGE_SYNC = 'removeStorageSync';
+    const API_CLEAR_STORAGE = 'clearStorage';
+    const API_CLEAR_STORAGE_SYNC = 'clearStorageSync';
+    const API_GET_STORAGE_INFO = 'getStorageInfo';
+    const API_GET_STORAGE_INFO_SYNC = 'getStorageInfoSync';
+    const parseStorageValue = (value: string): Object =>{
+        try {
+            return JSON.parse(value).data;
+        } catch (e) {
+            return value;
+        }
+    };
+    const stringifyStorageValue = (value: Object): string =>{
+        return JSON.stringify({
+            type: typeof value,
+            data: value
+        } as ESObject);
+    };
+    const stores = new Map<string, dataPreferences.Preferences>();
+    const createStore = (): dataPreferences.Preferences =>{
+        const id = getCurrentMP3().id;
+        if (stores.has(id)) {
+            return stores.get(id)!;
+        }
+        const store = dataPreferences.getPreferencesSync(UTSHarmony.getUIAbilityContext() as common.UIAbilityContext, {
+            name: `storage.${id}`
+        } as dataPreferences.Options);
+        stores.set(id, store);
+        return store;
+    };
+    const getStorageSync = defineSyncApi<Object>(API_GET_STORAGE_SYNC, (key: string)=>{
+        const storeValue = createStore().getSync(key, '');
+        if (!storeValue) {
+            return '';
+        }
+        return parseStorageValue(storeValue as string);
+    }) as GetStorageSync;
+    const getStorage = defineAsyncApi<GetStorageOptions, GetStorageSuccess>(API_GET_STORAGE, (args: GetStorageOptions, exec: ApiExecutor<GetStorageSuccess>)=>{
+        createStore().get(args.key, '').then((storeValue)=>{
+            if (!storeValue) {
+                return exec.reject('data not found');
+            }
+            let value: Object;
+            try {
+                value = parseStorageValue(storeValue as string);
+            } catch (error) {
+                exec.reject('data parse error');
+                return;
+            }
+            exec.resolve({
+                data: value
+            } as GetStorageSuccess);
+        });
+    }) as GetStorage;
+    const setStorageSync = defineSyncApi<void>(API_SET_STORAGE_SYNC, (key: string, value: Object)=>{
+        createStore().putSync(key, stringifyStorageValue(value));
+        createStore().flush();
+    }) as SetStorageSync;
+    const setStorage = defineAsyncApi<SetStorageOptions, SetStorageSuccess>(API_SET_STORAGE, (args: SetStorageOptions, exec: ApiExecutor<SetStorageSuccess>)=>{
+        try {
+            createStore().put(args.key, stringifyStorageValue(args.data)).then(()=>{
+                createStore().flush();
+                exec.resolve({} as ESObject);
+            }, (error: Error)=>{
+                exec.reject(error.message);
+            });
+        } catch (error) {
+            exec.reject((error as Error).message);
+        }
+    }) as SetStorage;
+    const removeStorageSync = defineSyncApi<void>(API_REMOVE_STORAGE_SYNC, (key: string)=>{
+        createStore().deleteSync(key);
+        createStore().flush();
+    }) as RemoveStorageSync;
+    const removeStorage = defineAsyncApi<RemoveStorageOptions, RemoveStorageSuccess>(API_REMOVE_STORAGE, (args: RemoveStorageOptions, exec: ApiExecutor<RemoveStorageSuccess>)=>{
+        createStore().delete(args.key).then(()=>{
+            createStore().flush();
+            exec.resolve({} as ESObject);
+        }, (error: Error)=>{
+            exec.reject(error.message);
+        });
+    }) as RemoveStorage;
+    const clearStorageSync = defineSyncApi<void>(API_CLEAR_STORAGE_SYNC, ()=>{
+        createStore().clearSync();
+        createStore().flush();
+    }) as ClearStorageSync;
+    const clearStorage = defineAsyncApi<ClearStorageOptions, ClearStorageSuccess>(API_CLEAR_STORAGE, (args: ClearStorageOptions, exec: ApiExecutor<ClearStorageSuccess>)=>{
+        createStore().clear().then(()=>{
+            createStore().flush();
+            exec.resolve({} as ESObject);
+        }, (error: Error)=>{
+            exec.reject(error.message);
+        });
+    }) as ClearStorage;
+    const getStorageInfoSync = defineSyncApi<GetStorageInfoSuccess>(API_GET_STORAGE_INFO_SYNC, ()=>{
+        const allData = createStore().getAllSync();
+        return {
+            keys: Object.keys(allData),
+            currentSize: 0,
+            limitSize: 0
+        } as GetStorageInfoSuccess;
+    }) as GetStorageInfoSync;
+    const getStorageInfo = defineAsyncApi<GetStorageInfoOptions, GetStorageInfoSuccess>(API_GET_STORAGE_INFO, (args: GetStorageInfoOptions, exec: ApiExecutor<GetStorageInfoSuccess>)=>{
+        createStore().getAll().then((allData)=>{
+            exec.resolve({
+                keys: Object.keys(allData),
+                currentSize: 0,
+                limitSize: 0
+            } as GetStorageInfoSuccess);
+        });
+    }) as GetStorageInfo;
+    const API_ADD_PHONE_CONTACT = 'addPhoneContact';
+    const AddPhoneContactApiOptions: ApiOptions<AddPhoneContactOptions> = {
+        formatArgs: new Map<string, ((firstName: string) => string | undefined)>([
+            [
+                'firstName',
+                (firstName: string)=>{
+                    if (!firstName) {
+                        return 'addPhoneContact:fail parameter error: parameter.firstName should not be empty;';
+                    }
+                    return undefined;
+                }
+            ]
+        ])
+    };
+    const AddPhoneContactApiProtocol = new Map<string, ProtocolOptions>([
+        [
+            'firstName',
+            {
+                type: 'string',
+                required: true
+            }
+        ],
+        [
+            'photoFilePath',
+            {
+                type: 'string'
+            }
+        ],
+        [
+            'nickName',
+            {
+                type: 'string'
+            }
+        ],
+        [
+            'lastName',
+            {
+                type: 'string'
+            }
+        ],
+        [
+            'middleName',
+            {
+                type: 'string'
+            }
+        ],
+        [
+            'remark',
+            {
+                type: 'string'
+            }
+        ],
+        [
+            'mobilePhoneNumber',
+            {
+                type: 'string'
+            }
+        ],
+        [
+            'weChatNumber',
+            {
+                type: 'string'
+            }
+        ],
+        [
+            'addressCountry',
+            {
+                type: 'string'
+            }
+        ],
+        [
+            'addressState',
+            {
+                type: 'string'
+            }
+        ],
+        [
+            'addressCity',
+            {
+                type: 'string'
+            }
+        ],
+        [
+            'addressStreet',
+            {
+                type: 'string'
+            }
+        ],
+        [
+            'addressPostalCode',
+            {
+                type: 'string'
+            }
+        ],
+        [
+            'organization',
+            {
+                type: 'string'
+            }
+        ],
+        [
+            'title',
+            {
+                type: 'string'
+            }
+        ],
+        [
+            'workFaxNumber',
+            {
+                type: 'string'
+            }
+        ],
+        [
+            'workPhoneNumber',
+            {
+                type: 'string'
+            }
+        ],
+        [
+            'hostNumber',
+            {
+                type: 'string'
+            }
+        ],
+        [
+            'email',
+            {
+                type: 'string'
+            }
+        ],
+        [
+            'url',
+            {
+                type: 'string'
+            }
+        ],
+        [
+            'workAddressCountry',
+            {
+                type: 'string'
+            }
+        ],
+        [
+            'workAddressState',
+            {
+                type: 'string'
+            }
+        ],
+        [
+            'workAddressCity',
+            {
+                type: 'string'
+            }
+        ],
+        [
+            'workAddressStreet',
+            {
+                type: 'string'
+            }
+        ],
+        [
+            'workAddressPostalCode',
+            {
+                type: 'string'
+            }
+        ],
+        [
+            'homeFaxNumber',
+            {
+                type: 'string'
+            }
+        ],
+        [
+            'homePhoneNumber',
+            {
+                type: 'string'
+            }
+        ],
+        [
+            'homeAddressCountry',
+            {
+                type: 'string'
+            }
+        ],
+        [
+            'homeAddressState',
+            {
+                type: 'string'
+            }
+        ],
+        [
+            'homeAddressCity',
+            {
+                type: 'string'
+            }
+        ],
+        [
+            'homeAddressStreet',
+            {
+                type: 'string'
+            }
+        ],
+        [
+            'homeAddressPostalCode',
+            {
+                type: 'string'
+            }
+        ]
+    ]);
+    const addPhoneContact: AddPhoneContact = defineAsyncApi<AddPhoneContactOptions, AddPhoneContactSuccess>(API_ADD_PHONE_CONTACT, (args: AddPhoneContactOptions, executor: ApiExecutor<AddPhoneContactSuccess>)=>{
+        UTSHarmony.requestSystemPermission([
+            'ohos.permission.WRITE_CONTACTS'
+        ], (allRight: boolean)=>{
+            if (allRight) {
+                const photoFilePath = args.photoFilePath, _args_nickName = args.nickName, nickName = _args_nickName == null ? '' : _args_nickName, _args_lastName = args.lastName, lastName = _args_lastName == null ? '' : _args_lastName, _args_middleName = args.middleName, middleName = _args_middleName == null ? '' : _args_middleName, _args_firstName = args.firstName, firstName = _args_firstName == null ? '' : _args_firstName, _args_remark = args.remark, remark = _args_remark == null ? '' : _args_remark, _args_mobilePhoneNumber = args.mobilePhoneNumber, mobilePhoneNumber = _args_mobilePhoneNumber == null ? '' : _args_mobilePhoneNumber, _args_addressCountry = args.addressCountry, addressCountry = _args_addressCountry == null ? '' : _args_addressCountry, _args_addressState = args.addressState, addressState = _args_addressState == null ? '' : _args_addressState, _args_addressCity = args.addressCity, addressCity = _args_addressCity == null ? '' : _args_addressCity, _args_addressStreet = args.addressStreet, addressStreet = _args_addressStreet == null ? '' : _args_addressStreet, _args_addressPostalCode = args.addressPostalCode, addressPostalCode = _args_addressPostalCode == null ? '' : _args_addressPostalCode, _args_organization = args.organization, organization = _args_organization == null ? '' : _args_organization, _args_url = args.url, url = _args_url == null ? '' : _args_url, _args_workPhoneNumber = args.workPhoneNumber, workPhoneNumber = _args_workPhoneNumber == null ? '' : _args_workPhoneNumber, _args_workFaxNumber = args.workFaxNumber, workFaxNumber = _args_workFaxNumber == null ? '' : _args_workFaxNumber, _args_hostNumber = args.hostNumber, hostNumber = _args_hostNumber == null ? '' : _args_hostNumber, _args_email = args.email, email = _args_email == null ? '' : _args_email, _args_title = args.title, title = _args_title == null ? '' : _args_title, _args_workAddressCountry = args.workAddressCountry, workAddressCountry = _args_workAddressCountry == null ? '' : _args_workAddressCountry, _args_workAddressState = args.workAddressState, workAddressState = _args_workAddressState == null ? '' : _args_workAddressState, _args_workAddressCity = args.workAddressCity, workAddressCity = _args_workAddressCity == null ? '' : _args_workAddressCity, _args_workAddressStreet = args.workAddressStreet, workAddressStreet = _args_workAddressStreet == null ? '' : _args_workAddressStreet, workAddressPostalCode = args.workAddressPostalCode, _args_homeFaxNumber = args.homeFaxNumber, homeFaxNumber = _args_homeFaxNumber == null ? '' : _args_homeFaxNumber, _args_homePhoneNumber = args.homePhoneNumber, homePhoneNumber = _args_homePhoneNumber == null ? '' : _args_homePhoneNumber, _args_homeAddressCountry = args.homeAddressCountry, homeAddressCountry = _args_homeAddressCountry == null ? '' : _args_homeAddressCountry, _args_homeAddressState = args.homeAddressState, homeAddressState = _args_homeAddressState == null ? '' : _args_homeAddressState, _args_homeAddressCity = args.homeAddressCity, homeAddressCity = _args_homeAddressCity == null ? '' : _args_homeAddressCity, _args_homeAddressStreet = args.homeAddressStreet, homeAddressStreet = _args_homeAddressStreet == null ? '' : _args_homeAddressStreet, _args_homeAddressPostalCode = args.homeAddressPostalCode, homeAddressPostalCode = _args_homeAddressPostalCode == null ? '' : _args_homeAddressPostalCode;
+                const contactInfo: contact.Contact = {
+                    name: {
+                        givenName: firstName!,
+                        fullName: lastName! + middleName! + firstName!
+                    }
+                };
+                if (nickName) {
+                    contactInfo.nickName = {
+                        nickName: nickName!
+                    } as contact.NickName;
+                }
+                if (lastName) {
+                    contactInfo.name!.familyName = lastName;
+                }
+                if (middleName) {
+                    contactInfo.name!.middleName = middleName;
+                }
+                if (email) {
+                    contactInfo.emails = [
+                        {
+                            email: email!,
+                            displayName: '邮箱'
+                        } as contact.Email
+                    ];
+                }
+                if (photoFilePath) {
+                    contactInfo.portrait = {
+                        uri: photoFilePath
+                    } as contact.Portrait;
+                }
+                if (url) {
+                    contactInfo.websites = [
+                        {
+                            website: url
+                        } as contact.Website
+                    ];
+                }
+                if (remark) {
+                    contactInfo.note = {
+                        noteContent: remark
+                    } as contact.Note;
+                }
+                if (organization) {
+                    contactInfo.organization = {
+                        name: organization,
+                        title: title!
+                    } as contact.Organization;
+                }
+                const phoneNumbers: contact.PhoneNumber[] = [];
+                if (homePhoneNumber) {
+                    phoneNumbers.push({
+                        phoneNumber: homePhoneNumber!,
+                        labelId: contact.PhoneNumber.NUM_HOME
+                    } as contact.PhoneNumber);
+                }
+                if (mobilePhoneNumber) {
+                    phoneNumbers.push({
+                        phoneNumber: mobilePhoneNumber!,
+                        labelId: contact.PhoneNumber.NUM_MOBILE
+                    } as contact.PhoneNumber);
+                }
+                if (homeFaxNumber) {
+                    phoneNumbers.push({
+                        phoneNumber: homeFaxNumber!,
+                        labelId: contact.PhoneNumber.NUM_FAX_HOME
+                    } as contact.PhoneNumber);
+                }
+                if (workFaxNumber) {
+                    phoneNumbers.push({
+                        phoneNumber: workFaxNumber!,
+                        labelId: contact.PhoneNumber.NUM_FAX_WORK
+                    } as contact.PhoneNumber);
+                }
+                if (workPhoneNumber) {
+                    phoneNumbers.push({
+                        phoneNumber: workPhoneNumber!,
+                        labelId: contact.PhoneNumber.NUM_WORK
+                    } as contact.PhoneNumber);
+                }
+                if (hostNumber) {
+                    phoneNumbers.push({
+                        phoneNumber: hostNumber!,
+                        labelId: contact.PhoneNumber.NUM_COMPANY_MAIN
+                    } as contact.PhoneNumber);
+                }
+                if (phoneNumbers.length) contactInfo.phoneNumbers = phoneNumbers;
+                const postalAddresses: contact.PostalAddress[] = [];
+                if (homeAddressCity || homeAddressCountry || homeAddressPostalCode || homeAddressStreet) {
+                    postalAddresses.push({
+                        city: homeAddressCity!,
+                        country: homeAddressCountry!,
+                        postcode: homeAddressPostalCode!,
+                        street: homeAddressStreet!,
+                        postalAddress: `${homeAddressCountry!}${homeAddressState!}${homeAddressCity!}${homeAddressStreet!}`,
+                        labelId: contact.PostalAddress.ADDR_HOME
+                    } as contact.PostalAddress);
+                }
+                if (workAddressCity || workAddressCountry || workAddressPostalCode || workAddressStreet) {
+                    postalAddresses.push({
+                        city: workAddressCity!,
+                        country: workAddressCountry!,
+                        postcode: workAddressPostalCode!,
+                        street: workAddressStreet!,
+                        postalAddress: `${workAddressCountry!}${workAddressState!}${workAddressCity!}${workAddressStreet!}`,
+                        labelId: contact.PostalAddress.ADDR_WORK
+                    } as contact.PostalAddress);
+                }
+                if (addressCity || addressCountry || addressPostalCode || addressStreet) {
+                    postalAddresses.push({
+                        city: addressCity!,
+                        country: addressCountry!,
+                        postcode: addressPostalCode!,
+                        street: addressStreet!,
+                        postalAddress: `${addressCountry!}${addressState!}${addressCity!}${addressStreet!}`,
+                        labelId: contact.PostalAddress.CUSTOM_LABEL
+                    } as contact.PostalAddress);
+                }
+                if (postalAddresses.length) contactInfo.postalAddresses = postalAddresses;
+                contact.addContact(UTSHarmony.getUIAbilityContext()!, contactInfo).then((contactId)=>{
+                    executor.resolve(contactId);
+                }).catch((err: BusinessError1)=>{
+                    executor.reject(err.message);
+                });
+            } else {
+                executor.reject('Permission denied');
+            }
+        }, ()=>executor.reject('Permission denied'));
+    }, AddPhoneContactApiProtocol, AddPhoneContactApiOptions) as AddPhoneContact;
+    const API_START_SOTER_AUTHENTICATION = 'startSoterAuthentication';
+    const StartSoterAuthenticationApiOptions: ApiOptions<StartSoterAuthenticationOptions> = {
+        formatArgs: new Map<string, ((value: string) => string | undefined)>([
+            [
+                'requestAuthModes',
+                (value: string)=>{
+                    if (!value.includes('fingerPrint') && !value.includes('facial')) {
+                        return 'requestAuthModes 填写错误';
+                    }
+                    return undefined;
+                }
+            ]
+        ])
+    };
+    const StartSoterAuthenticationApiProtocols = new Map<string, ProtocolOptions>([
+        [
+            'requestAuthModes',
+            {
+                type: 'array',
+                required: true
+            }
+        ],
+        [
+            'challenge',
+            {
+                type: 'string',
+                required: true
+            }
+        ],
+        [
+            'authContent',
+            {
+                type: 'string'
+            }
+        ]
+    ]);
+    const API_CHECK_IS_SOTER_ENROLLED_IN_DEVICE = 'checkIsSoterEnrolledInDevice';
+    const checkAuthModes: SoterAuthMode[] = [
+        'fingerPrint',
+        'facial',
+        'speech'
+    ];
+    const CheckIsSoterEnrolledInDeviceApiOptions: ApiOptions<CheckIsSoterEnrolledInDeviceOptions> = {
+        formatArgs: new Map<string, ((value: string) => string | undefined)>([
+            [
+                'checkAuthMode',
+                (value: string)=>{
+                    if (!checkAuthModes.includes(value as SoterAuthMode)) {
+                        return 'checkAuthMode 填写错误';
+                    }
+                    return undefined;
+                }
+            ]
+        ])
+    };
+    const CheckIsSoterEnrolledInDeviceProtocols = new Map<string, ProtocolOptions>([
+        [
+            'checkAuthMode',
+            {
+                type: 'string'
+            }
+        ]
+    ]);
+    const API_CHECK_IS_SUPPORT_SOTER_AUTHENTICATION = 'checkIsSupportSoterAuthentication';
+    const getErrorMessage = (code: number): string =>{
+        switch(code){
+            case 201:
+                return "权限认证失败";
+            case 401:
+                return "参数不正确。可能的一个原因: 强制参数未指定";
+            case userAuth.UserAuthResultCode.FAIL:
+                return "认证失败";
+            case userAuth.UserAuthResultCode.GENERAL_ERROR:
+                return "操作通用错误";
+            case userAuth.UserAuthResultCode.CANCELED:
+                return "操作取消";
+            case userAuth.UserAuthResultCode.TIMEOUT:
+                return "操作超时";
+            case userAuth.UserAuthResultCode.TYPE_NOT_SUPPORT:
+                return "不支持的认证类型";
+            case userAuth.UserAuthResultCode.TRUST_LEVEL_NOT_SUPPORT:
+                return "不支持的认证等级";
+            case userAuth.UserAuthResultCode.BUSY:
+                return "忙碌状态";
+            case userAuth.UserAuthResultCode.LOCKED:
+                return "认证器已锁定";
+            case userAuth.UserAuthResultCode.NOT_ENROLLED:
+                return "用户未录入认证信息";
+            case userAuth.UserAuthResultCode.CANCELED_FROM_WIDGET:
+                return "切换到自定义身份验证过程";
+            case 12500013:
+                return "系统锁屏密码过期";
+            default:
+                return '';
+        }
+    };
+    const getUniErrMsg = (code: number): number =>{
+        switch(code){
+            case 201:
+                return 90002;
+            case 401:
+                return 90004;
+            case userAuth.UserAuthResultCode.FAIL:
+                return 90009;
+            case userAuth.UserAuthResultCode.GENERAL_ERROR:
+                return 90007;
+            case userAuth.UserAuthResultCode.CANCELED:
+                return 90008;
+            case userAuth.UserAuthResultCode.TIMEOUT:
+                return 90007;
+            case userAuth.UserAuthResultCode.TYPE_NOT_SUPPORT:
+                return 90003;
+            case userAuth.UserAuthResultCode.TRUST_LEVEL_NOT_SUPPORT:
+                return 90003;
+            case userAuth.UserAuthResultCode.BUSY:
+                return 90010;
+            case userAuth.UserAuthResultCode.LOCKED:
+                return 90010;
+            case userAuth.UserAuthResultCode.NOT_ENROLLED:
+                return 90011;
+            case userAuth.UserAuthResultCode.CANCELED_FROM_WIDGET:
+                return userAuth.UserAuthResultCode.CANCELED_FROM_WIDGET;
+            case 12500013:
+                return 12500013;
+            default:
+                return -1;
+        }
+    };
+    const toUint8Arr = (str: string)=>{
+        const buffer: number[] = [];
+        for (let i of str){
+            const _code: number = i.charCodeAt(0);
+            if (_code < 0x80) {
+                buffer.push(_code);
+            } else if (_code < 0x800) {
+                buffer.push(0xc0 + (_code >> 6));
+                buffer.push(0x80 + (_code & 0x3f));
+            } else if (_code < 0x10000) {
+                buffer.push(0xe0 + (_code >> 12));
+                buffer.push(0x80 + (_code >> 6 & 0x3f));
+                buffer.push(0x80 + (_code & 0x3f));
+            }
+        }
+        return Uint8Array.from(buffer);
+    };
+    const startSoterAuthentication: StartSoterAuthentication = defineAsyncApi<StartSoterAuthenticationOptions, StartSoterAuthenticationSuccess>(API_START_SOTER_AUTHENTICATION, (args: StartSoterAuthenticationOptions, executor: ApiExecutor<StartSoterAuthenticationSuccess>)=>{
+        const authType: userAuth.UserAuthType[] = [];
+        args.requestAuthModes.forEach((item)=>{
+            if (item === 'fingerPrint') {
+                authType.push(userAuth.UserAuthType.FINGERPRINT);
+            } else if (item === 'facial') {
+                authType.push(userAuth.UserAuthType.FACE);
+            }
+        });
+        const challengeArr = toUint8Arr(args.challenge ?? '');
+        const authContent = args.authContent ?? '';
+        try {
+            const auth = userAuth.getUserAuthInstance({
+                challenge: challengeArr,
+                authType,
+                authTrustLevel: userAuth.AuthTrustLevel.ATL1
+            } as userAuth.AuthParam, {
+                title: authContent
+            } as userAuth.WidgetParam);
+            auth.on("result", {
+                onResult: (result: userAuth.UserAuthResult)=>{
+                    if (result.result === userAuth.UserAuthResultCode.SUCCESS) {
+                        executor.resolve({
+                            errCode: 0,
+                            authMode: result.authType === userAuth.UserAuthType.FINGERPRINT ? 'fingerPrint' : 'facial'
+                        } as StartSoterAuthenticationSuccess);
+                    } else {
+                        const errMsg = getErrorMessage(result.result);
+                        const errCode = getUniErrMsg(result.result);
+                        executor.reject(errMsg, {
+                            errCode
+                        } as ApiError);
+                    }
+                }
+            } as userAuth.IAuthCallback);
+            if (authContent) {
+                promptAction.showToast({
+                    message: authContent
+                } as promptAction.ShowToastOptions);
+            }
+            auth.start();
+        } catch (error) {
+            const code = (error as BusinessError2).code;
+            executor.reject(getErrorMessage(code), {
+                errCode: getUniErrMsg(code)
+            } as ApiError);
+        }
+    }, StartSoterAuthenticationApiProtocols, StartSoterAuthenticationApiOptions) as StartSoterAuthentication;
+    const fingerPrintAvailable = ()=>{
+        try {
+            userAuth.getAvailableStatus(userAuth.UserAuthType.FINGERPRINT, userAuth.AuthTrustLevel.ATL1);
+            return true;
+        } catch (error) {
+            if ([
+                userAuth.UserAuthResultCode.NOT_ENROLLED,
+                userAuth.UserAuthResultCode.PIN_EXPIRED
+            ].includes((error as BusinessError2).code)) {
+                return true;
+            }
+            return false;
+        }
+    };
+    const faceAvailable = ()=>{
+        try {
+            userAuth.getAvailableStatus(userAuth.UserAuthType.FACE, userAuth.AuthTrustLevel.ATL1);
+            return true;
+        } catch (error) {
+            if ([
+                userAuth.UserAuthResultCode.NOT_ENROLLED,
+                userAuth.UserAuthResultCode.PIN_EXPIRED
+            ].includes((error as BusinessError2).code)) {
+                return true;
+            }
+            return false;
+        }
+    };
+    const PERMISSIONS = [
+        'ohos.permission.ACCESS_BIOMETRIC'
+    ];
+    const checkIsSupportSoterAuthentication: CheckIsSupportSoterAuthentication = defineAsyncApi<CheckIsSupportSoterAuthenticationOptions, CheckIsSupportSoterAuthenticationSuccess>(API_CHECK_IS_SUPPORT_SOTER_AUTHENTICATION, (args: CheckIsSupportSoterAuthenticationOptions, executor: ApiExecutor<CheckIsSupportSoterAuthenticationSuccess>)=>{
+        UTSHarmony.requestSystemPermission(PERMISSIONS, (allRight: boolean)=>{
+            if (allRight) {
+                try {
+                    const supportMode: SoterAuthMode[] = [];
+                    if (fingerPrintAvailable()) supportMode.push('fingerPrint');
+                    if (faceAvailable()) supportMode.push('facial');
+                    return executor.resolve({
+                        supportMode,
+                        errMsg: ''
+                    } as CheckIsSupportSoterAuthenticationSuccess);
+                } catch (error) {
+                    const code = (error as BusinessError2).code;
+                    executor.reject(getErrorMessage(code), {
+                        errCode: getUniErrMsg(code)
+                    } as ApiError);
+                }
+            } else {
+                executor.reject(getErrorMessage(201));
+            }
+        }, ()=>{
+            executor.reject(getErrorMessage(201));
+        });
+    }) as CheckIsSupportSoterAuthentication;
+    const getFingerPrintEnrolledState = ()=>{
+        userAuth.getEnrolledState(userAuth.UserAuthType.FINGERPRINT);
+        return true;
+    };
+    const getFaceEnrolledState = ()=>{
+        userAuth.getEnrolledState(userAuth.UserAuthType.FACE);
+        return true;
+    };
+    const harmonyCheckIsSoterEnrolledInDevice = (checkAuthMode: SoterAuthMode): boolean =>{
+        if (checkAuthMode === 'fingerPrint') {
+            return getFingerPrintEnrolledState();
+        } else if (checkAuthMode === 'facial') {
+            return getFaceEnrolledState();
+        }
+        return false;
+    };
+    const checkIsSoterEnrolledInDevice: CheckIsSoterEnrolledInDevice = defineAsyncApi<CheckIsSoterEnrolledInDeviceOptions, CheckIsSoterEnrolledInDeviceSuccess>(API_CHECK_IS_SOTER_ENROLLED_IN_DEVICE, (args: CheckIsSoterEnrolledInDeviceOptions, executor: ApiExecutor<CheckIsSoterEnrolledInDeviceSuccess>)=>{
+        UTSHarmony.requestSystemPermission(PERMISSIONS, (allRight: boolean)=>{
+            if (allRight) {
+                try {
+                    const isEnrolled = harmonyCheckIsSoterEnrolledInDevice(args.checkAuthMode);
+                    executor.resolve({
+                        isEnrolled,
+                        errMsg: ''
+                    } as CheckIsSoterEnrolledInDeviceSuccess);
+                } catch (error) {
+                    const code = (error as BusinessError2).code;
+                    executor.reject(getErrorMessage(code), {
+                        errCode: getUniErrMsg(code)
+                    } as ApiError);
+                }
+            } else {
+                executor.reject(getErrorMessage(201));
+            }
+        }, ()=>{
+            executor.reject(getErrorMessage(201));
+        });
+    }, CheckIsSoterEnrolledInDeviceProtocols, CheckIsSoterEnrolledInDeviceApiOptions) as CheckIsSoterEnrolledInDevice;
+    const API_GET_CLIPBOARD_DATA = 'getClipboardData';
+    const API_SET_CLIPBOARD_DATA = 'setClipboardData';
+    const SetClipboardDataApiOptions: ApiOptions<SetClipboardDataOptions> = {
+        formatArgs: new Map<string, boolean>([
+            [
+                'showToast',
+                true
+            ]
+        ])
+    };
+    const SetClipboardDataProtocol = new Map<string, ProtocolOptions>([
+        [
+            'data',
+            {
+                type: 'string',
+                required: true
+            }
+        ],
+        [
+            'showToast',
+            {
+                type: 'boolean'
+            }
+        ]
+    ]);
+    const getString = (callback: ClipboardCallback)=>{
+        const systemPasteboard: pasteboard.SystemPasteboard = pasteboard.getSystemPasteboard();
+        UTSHarmony.requestSystemPermission([
+            'ohos.permission.READ_PASTEBOARD'
+        ], (allRight: boolean)=>{
+            if (allRight) {
+                const pasteData = systemPasteboard.getDataSync();
+                try {
+                    const text: string = pasteData.getPrimaryText();
+                    callback({
+                        data: text,
+                        result: 'success'
+                    } as ClipboardCallbackOptions);
+                } catch (err) {
+                    callback({
+                        data: (err as BusinessError3<void>).message,
+                        result: 'fail'
+                    } as ClipboardCallbackOptions);
+                }
+            } else {
+                callback({
+                    data: 'Permission denied',
+                    result: 'fail'
+                } as ClipboardCallbackOptions);
+            }
+        }, ()=>{
+            callback({
+                data: 'Permission denied',
+                result: 'fail'
+            } as ClipboardCallbackOptions);
+        });
+    };
+    const setString = (data: string)=>{
+        const pasteData: pasteboard.PasteData = pasteboard.createData(pasteboard.MIMETYPE_TEXT_PLAIN, data);
+        const systemPasteboard: pasteboard.SystemPasteboard = pasteboard.getSystemPasteboard();
+        try {
+            systemPasteboard.setDataSync(pasteData);
+            return {
+                data,
+                result: 'success'
+            } as ClipboardCallbackOptions;
+        } catch (err) {
+            return {
+                data: (err as BusinessError3<void>).message,
+                result: 'fail'
+            } as ClipboardCallbackOptions;
+        }
+    };
+    const getClipboardData: GetClipboardData = defineAsyncApi<GetClipboardDataOptions, GetClipboardDataSuccess>(API_GET_CLIPBOARD_DATA, (_: GetClipboardDataOptions, res: ApiExecutor<GetClipboardDataSuccess>)=>{
+        getString((ret: ClipboardCallbackOptions)=>{
+            if (ret.result === 'success') {
+                res.resolve({
+                    data: ret.data
+                } as GetClipboardDataSuccess);
+            } else {
+                res.reject('getClipboardData:fail ' + ret.data);
+            }
+        });
+    }) as GetClipboardData;
+    const setClipboardData: SetClipboardData = defineAsyncApi<SetClipboardDataOptions, SetClipboardDataSuccess>(API_SET_CLIPBOARD_DATA, (options: SetClipboardDataOptions, res: ApiExecutor<SetClipboardDataSuccess>)=>{
+        const ret = setString(options.data);
+        if (ret.result === 'success') {
+            res.resolve();
+        } else {
+            res.reject('setClipboardData:fail ' + ret.data);
+        }
+    }, SetClipboardDataProtocol, SetClipboardDataApiOptions) as SetClipboardData;
+    const API_CREATE_INNER_AUDIO_CONTEXT = 'createInnerAudioContext';
+    const isFileUri = (path: string)=>{
+        return path && typeof path === 'string' && (path.startsWith('file://') || path.startsWith('datashare://'));
+    };
+    const isSandboxPath = (path: string)=>{
+        return path && typeof path === 'string' && path.startsWith('/data/storage/');
+    };
+    const getFdFromUriOrSandBoxPath = (uri: string)=>{
+        try {
+            const file = fileIo.openSync(uri, fileIo.OpenMode.READ_ONLY);
+            return file.fd;
+        } catch (error) {
+            console.info(`[AdvancedAPI] Can not get file from uri: ${uri} `);
+        }
+        throw new Error('file is not exist');
+    };
+    const callCallbacks = (callbacks: Function[], ...args: Object[])=>{
+        callbacks.forEach((cb)=>{
+            typeof cb === 'function' && cb(...args);
+        });
+    };
+    const remoteCallback = (callbacks: Function[], callback: Function)=>{
+        const index = callbacks.indexOf(callback);
+        if (index > -1) {
+            callbacks.splice(index, 1);
+        }
+    };
+    class AudioPlayerError {
+        errMsg: string;
+        errCode: number;
+        constructor(errMsg: string, errCode: number){
+            this.errMsg = errMsg;
+            this.errCode = errCode;
+        }
+    }
+    class AudioPlayerCallback {
+        onCanplayCallbacks: Function[] = [];
+        onPlayCallbacks: Function[] = [];
+        onPauseCallbacks: Function[] = [];
+        onStopCallbacks: Function[] = [];
+        onEndedCallbacks: Function[] = [];
+        onTimeUpdateCallbacks: Function[] = [];
+        onErrorCallbacks: Function[] = [];
+        onWaitingCallbacks: Function[] = [];
+        onSeekingCallbacks: Function[] = [];
+        onSeekedCallbacks: Function[] = [];
+        constructor(){}
+        canPlay() {
+            callCallbacks(this.onCanplayCallbacks);
+        }
+        onCanplay(callback: Function) {
+            this.onCanplayCallbacks.push(callback);
+        }
+        offCanplay(callback: Function) {
+            remoteCallback(this.onCanplayCallbacks, callback);
+        }
+        play() {
+            callCallbacks(this.onPlayCallbacks);
+        }
+        onPlay(callback: Function) {
+            this.onPlayCallbacks.push(callback);
+        }
+        offPlay(callback: Function) {
+            remoteCallback(this.onPlayCallbacks, callback);
+        }
+        pause() {
+            callCallbacks(this.onPauseCallbacks);
+        }
+        onPause(callback: Function) {
+            this.onPauseCallbacks.push(callback);
+        }
+        offPause(callback: Function) {
+            remoteCallback(this.onPauseCallbacks, callback);
+        }
+        stop() {
+            callCallbacks(this.onStopCallbacks);
+        }
+        onStop(callback: Function) {
+            this.onStopCallbacks.push(callback);
+        }
+        offStop(callback: Function) {
+            remoteCallback(this.onStopCallbacks, callback);
+        }
+        ended() {
+            callCallbacks(this.onEndedCallbacks);
+        }
+        onEnded(callback: Function) {
+            this.onEndedCallbacks.push(callback);
+        }
+        offEnded(callback: Function) {
+            remoteCallback(this.onEndedCallbacks, callback);
+        }
+        timeUpdate(time: number) {
+            callCallbacks(this.onTimeUpdateCallbacks, time);
+        }
+        onTimeUpdate(callback: Function) {
+            this.onTimeUpdateCallbacks.push(callback);
+        }
+        offTimeUpdate(callback: Function) {
+            remoteCallback(this.onTimeUpdateCallbacks, callback);
+        }
+        error(res: AudioPlayerError) {
+            callCallbacks(this.onErrorCallbacks, res);
+        }
+        onError(callback: Function) {
+            this.onErrorCallbacks.push(callback);
+        }
+        offError(callback: Function) {
+            remoteCallback(this.onErrorCallbacks, callback);
+        }
+        onPrev(callback: Function) {
+            console.info('ios only');
+        }
+        onNext(callback: Function) {
+            console.info('ios only');
+        }
+        waiting() {
+            callCallbacks(this.onWaitingCallbacks);
+        }
+        onWaiting(callback: Function) {
+            this.onWaitingCallbacks.push(callback);
+        }
+        offWaiting(callback: Function) {
+            remoteCallback(this.onWaitingCallbacks, callback);
+        }
+        seeking() {
+            callCallbacks(this.onSeekingCallbacks);
+        }
+        onSeeking(callback: Function) {
+            this.onSeekingCallbacks.push(callback);
+        }
+        offSeeking(callback: Function) {
+            remoteCallback(this.onSeekingCallbacks, callback);
+        }
+        seeked() {
+            callCallbacks(this.onSeekedCallbacks);
+        }
+        onSeeked(callback: Function) {
+            this.onSeekedCallbacks.push(callback);
+        }
+        offSeeked(callback: Function) {
+            remoteCallback(this.onSeekedCallbacks, callback);
+        }
+    }
+    const AUDIOS: Record<string, InnerAudioContext | undefined> = {};
+    const AUDIO_PLAYERS: Record<string, media.AudioPlayer | undefined> = {};
+    const LOG = (msg: string)=>console.log(`[createInnerAudioContext]: ${msg}`);
+    class STATE_TYPE {
+        static IDLE: string = 'idle';
+        static PLAYING: string = 'playing';
+        static PAUSED: string = 'paused';
+        static STOPPED: string = 'stopped';
+        static ERROR: string = 'error';
+    }
+    class AudioPlayer implements InnerAudioContext {
+        private audioPlayerCallback: AudioPlayerCallback = new AudioPlayerCallback();
+        private _volume: number = 1;
+        private _src: string = '';
+        private _autoplay: boolean = false;
+        private _startTime: number = 0;
+        private _buffered: number = 0;
+        private _title: string = '';
+        private audioId: string = '';
+        private _playbackRate: number = 1;
+        readonly obeyMuteSwitch: boolean = false;
+        constructor(audioId: string){
+            this.audioId = audioId;
+            this.init();
+        }
+        init() {
+            AUDIO_PLAYERS[this.audioId]?.on('dataLoad', ()=>{
+                this.audioPlayerCallback.canPlay();
+            });
+            AUDIO_PLAYERS[this.audioId]?.on('play', ()=>{
+                this.audioPlayerCallback.play();
+            });
+            AUDIO_PLAYERS[this.audioId]?.on('pause', ()=>{
+                this.audioPlayerCallback.pause();
+            });
+            AUDIO_PLAYERS[this.audioId]?.on('finish', ()=>{
+                this.audioPlayerCallback.ended();
+            });
+            AUDIO_PLAYERS[this.audioId]?.on('timeUpdate', (res)=>{
+                this.audioPlayerCallback.timeUpdate(res / 1000);
+            });
+            AUDIO_PLAYERS[this.audioId]?.on('error', (err)=>{
+                this.audioPlayerCallback.error(new AudioPlayerError(err.message, err.code));
+            });
+            AUDIO_PLAYERS[this.audioId]?.on('bufferingUpdate', (infoType, value)=>{
+                console.info(`[AdvancedAPI] audioPlayer bufferingUpdate ${infoType} ${value}`);
+                if (infoType === media.BufferingInfoType.BUFFERING_PERCENT && value !== 0 && AUDIO_PLAYERS[this.audioId]) {
+                    this._buffered = value;
+                    if ((AUDIO_PLAYERS[this.audioId]!.currentTime / 1000) >= (AUDIO_PLAYERS[this.audioId]!.duration * value / 100000)) {
+                        this.audioPlayerCallback.waiting();
+                    }
+                }
+            });
+            AUDIO_PLAYERS[this.audioId]?.on('audioInterrupt', (InterruptEvent)=>{
+                console.info('[AdvancedAPI]  audioInterrupt:' + JSON.stringify(InterruptEvent));
+                if (AUDIO_PLAYERS[this.audioId] && InterruptEvent.hintType === audio.InterruptHint.INTERRUPT_HINT_PAUSE) {
+                    AUDIO_PLAYERS[this.audioId]!.pause();
+                }
+            });
+        }
+        get duration() {
+            const audioPlayer = AUDIO_PLAYERS[this.audioId];
+            if (!audioPlayer) {
+                return 0;
+            }
+            return audioPlayer.duration / 1000;
+        }
+        get currentTime() {
+            const audioPlayer = AUDIO_PLAYERS[this.audioId];
+            if (!audioPlayer) {
+                return 0;
+            }
+            return audioPlayer.currentTime / 1000;
+        }
+        get paused() {
+            const audioPlayer = AUDIO_PLAYERS[this.audioId];
+            if (!audioPlayer) {
+                return false;
+            }
+            return audioPlayer.state === STATE_TYPE.PAUSED;
+        }
+        get loop() {
+            const audioPlayer = AUDIO_PLAYERS[this.audioId];
+            if (!audioPlayer) {
+                return false;
+            }
+            return audioPlayer.loop;
+        }
+        set loop(value) {
+            const audioPlayer = AUDIO_PLAYERS[this.audioId];
+            if (audioPlayer) {
+                audioPlayer.loop = value;
+            }
+        }
+        get volume() {
+            return this._volume;
+        }
+        set volume(value) {
+            const audioPlayer = AUDIO_PLAYERS[this.audioId];
+            if (audioPlayer) {
+                this._volume = value;
+                audioPlayer.setVolume(value);
+            }
+        }
+        get src() {
+            const audioPlayer = AUDIO_PLAYERS[this.audioId];
+            if (!audioPlayer) {
+                return '';
+            }
+            return audioPlayer.src;
+        }
+        set src(value) {
+            const audioPlayer = AUDIO_PLAYERS[this.audioId];
+            if (typeof value !== 'string') {
+                this.audioPlayerCallback.error(new AudioPlayerError(`set src: ${value} is not string`, 10004));
+                return;
+            }
+            if (!audioPlayer) {
+                this.audioPlayerCallback.error(new AudioPlayerError(`player is not exist`, 10001));
+                return;
+            }
+            if (!value || !(value.startsWith('http:') || value.startsWith('https:') || isFileUri(value) || isSandboxPath(value))) {
+                LOG(`set src: ${value} is invalid`);
+                return;
+            }
+            let path: string = '';
+            if (value.startsWith('http:') || value.startsWith('https:')) {
+                path = value;
+            } else if (isFileUri(value) || isSandboxPath(value)) {
+                try {
+                    const fd = getFdFromUriOrSandBoxPath(value);
+                    path = `fd://${fd}`;
+                } catch (error) {
+                    console.error(`${JSON.stringify(error)}`);
+                }
+            }
+            if (audioPlayer.src && path !== audioPlayer.src) {
+                audioPlayer.reset();
+            }
+            AUDIO_PLAYERS[this.audioId]!.src = path;
+            this._src = value;
+            if (this._autoplay) {
+                audioPlayer.play();
+                if (this._startTime) {
+                    audioPlayer.seek(this._startTime);
+                }
+            }
+        }
+        get startTime() {
+            return this._startTime / 1000;
+        }
+        set startTime(time: number) {
+            this._startTime = time * 1000;
+        }
+        get autoplay() {
+            return this._autoplay;
+        }
+        set autoplay(flag) {
+            this._autoplay = flag;
+        }
+        get buffered() {
+            const audioPlayer = AUDIO_PLAYERS[this.audioId];
+            if (!audioPlayer) return 0;
+            return audioPlayer.duration * this._buffered / 100000;
+        }
+        set playbackRate(rate: number) {
+            this.audioPlayerCallback.error(new AudioPlayerError('HarmonyOS Next Audio setting playbackRate is not supported.', -1));
+        }
+        get playbackRate() {
+            return this._playbackRate;
+        }
+        play() {
+            const audioPlayer = AUDIO_PLAYERS[this.audioId];
+            if (!audioPlayer) {
+                return;
+            }
+            const state = audioPlayer.state ?? '';
+            if (![
+                STATE_TYPE.PAUSED,
+                STATE_TYPE.STOPPED,
+                STATE_TYPE.IDLE
+            ].includes(state)) {
+                return;
+            }
+            if (this._src && audioPlayer.src === '') {
+                this.src = this._src;
+            }
+            audioPlayer.play();
+        }
+        pause() {
+            const audioPlayer = AUDIO_PLAYERS[this.audioId];
+            if (!audioPlayer) {
+                return;
+            }
+            const state = audioPlayer.state;
+            if (STATE_TYPE.PLAYING !== state) {
+                return;
+            }
+            audioPlayer.pause();
+        }
+        stop() {
+            const audioPlayer = AUDIO_PLAYERS[this.audioId];
+            if (!audioPlayer) {
+                return;
+            }
+            if (![
+                STATE_TYPE.PAUSED,
+                STATE_TYPE.PLAYING
+            ].includes(audioPlayer.state)) {
+                return;
+            }
+            audioPlayer.stop();
+            this.audioPlayerCallback.stop();
+            audioPlayer.release();
+        }
+        seek(position: number) {
+            const audioPlayer = AUDIO_PLAYERS[this.audioId];
+            if (!audioPlayer) {
+                return;
+            }
+            const state = audioPlayer.state;
+            if (![
+                STATE_TYPE.PAUSED,
+                STATE_TYPE.PLAYING
+            ].includes(state)) {
+                return;
+            }
+            this.audioPlayerCallback.seeking();
+            audioPlayer.seek(position * 1000);
+            this.audioPlayerCallback.seeked();
+        }
+        destroy() {
+            const audioPlayer = AUDIO_PLAYERS[this.audioId];
+            if (!audioPlayer) {
+                return;
+            }
+            audioPlayer.release();
+            AUDIO_PLAYERS[this.audioId] = undefined;
+            AUDIOS[this.audioId] = undefined;
+        }
+        onCanplay(callback: (result: Object) => void): void {
+            this.audioPlayerCallback.onCanplay(callback);
+        }
+        onPlay(callback: (result: Object) => void): void {
+            this.audioPlayerCallback.onPlay(callback);
+        }
+        onPause(callback: (result: Object) => void): void {
+            this.audioPlayerCallback.onPause(callback);
+        }
+        onStop(callback: (result: Object) => void): void {
+            this.audioPlayerCallback.onStop(callback);
+        }
+        onEnded(callback: (result: Object) => void): void {
+            this.audioPlayerCallback.onEnded(callback);
+        }
+        onTimeUpdate(callback: (result: Object) => void): void {
+            this.audioPlayerCallback.onTimeUpdate(callback);
+        }
+        onError(callback: (result: ICreateInnerAudioContextFail) => void): void {
+            this.audioPlayerCallback.onError(callback);
+        }
+        onWaiting(callback: (result: Object) => void): void {
+            this.audioPlayerCallback.onWaiting(callback);
+        }
+        onSeeking(callback: (result: Object) => void): void {
+            this.audioPlayerCallback.onSeeking(callback);
+        }
+        onSeeked(callback: (result: Object) => void): void {
+            this.audioPlayerCallback.onSeeked(callback);
+        }
+        offCanplay(callback: (result: Object) => void): void {
+            this.audioPlayerCallback.offCanplay(callback);
+        }
+        offPlay(callback: (result: Object) => void): void {
+            this.audioPlayerCallback.offPlay(callback);
+        }
+        offPause(callback: (result: Object) => void): void {
+            this.audioPlayerCallback.offPause(callback);
+        }
+        offStop(callback: (result: Object) => void): void {
+            this.audioPlayerCallback.offStop(callback);
+        }
+        offEnded(callback: (result: Object) => void): void {
+            this.audioPlayerCallback.offEnded(callback);
+        }
+        offTimeUpdate(callback: (result: Object) => void): void {
+            this.audioPlayerCallback.offTimeUpdate(callback);
+        }
+        offError(callback: (result: ICreateInnerAudioContextFail) => void): void {
+            this.audioPlayerCallback.offError(callback);
+        }
+        offWaiting(callback: (result: Object) => void): void {
+            this.audioPlayerCallback.offWaiting(callback);
+        }
+        offSeeking(callback: (result: Object) => void): void {
+            this.audioPlayerCallback.offSeeking(callback);
+        }
+        offSeeked(callback: (result: Object) => void): void {
+            this.audioPlayerCallback.offSeeked(callback);
+        }
+    }
+    const createAudioInstance = ()=>{
+        const audioId = `${Date.now()}${Math.random()}`;
+        AUDIO_PLAYERS[audioId] = media.createAudioPlayer();
+        AUDIOS[audioId] = new AudioPlayer(audioId);
+        return audioId;
+    };
+    const createInnerAudioContext: CreateInnerAudioContext = defineSyncApi<InnerAudioContext>(API_CREATE_INNER_AUDIO_CONTEXT, ()=>{
+        const audioId = createAudioInstance();
+        return AUDIOS[audioId];
+    }) as CreateInnerAudioContext;
+    const API_$_ON = '$on';
+    const API_$_ONCE = '$once';
+    const API_$_OFF = '$off';
+    const API_$_EMIT = '$emit';
+    const emitterStore = new Map<string, IUniEventEmitter>();
+    const getEmitter = (): IUniEventEmitter =>{
+        const mp = getCurrentMP4();
+        const id = mp.id as string;
+        if (emitterStore.has(id)) {
+            return emitterStore.get(id) as IUniEventEmitter;
+        }
+        const emitter = new Emitter3() as IUniEventEmitter;
+        emitterStore.set(id, emitter);
+        mp.on('beforeClose', ()=>{
+            emitterStore.delete(id);
+        });
+        return emitter;
+    };
+    const $on: $On = defineSyncApi<number>(API_$_ON, (eventName: string, callback: Function)=>{
+        return getEmitter().on(eventName, callback);
+    }) as $On;
+    const $once: $Once = defineSyncApi<number>(API_$_ONCE, (eventName: string, callback: Function)=>{
+        return getEmitter().once(eventName, callback);
+    }) as $Once;
+    const $off: $Off = defineSyncApi<void>(API_$_OFF, (eventName: string, callback: Function)=>{
+        getEmitter().off(eventName, callback);
+    }) as $Off;
+    const $emit: $Emit = defineSyncApi<void>(API_$_EMIT, (eventName: string, ...args: (Object | undefined | null)[])=>{
+        getEmitter().emit(eventName, ...args);
+    }) as $Emit;
+    const API_EXIT = 'exit';
+    const exit: Exit = defineSyncApi<void>(API_EXIT, ()=>{
+        UTSHarmony.exit();
+    }) as Exit;
+    const API_SAVE_FILE = 'saveFile';
+    const API_GET_FILE_INFO = 'getFileInfo';
+    const API_GET_SAVED_FILE_INFO = 'getSavedFileInfo';
+    const API_GET_SAVED_FILE_LIST = 'getSavedFileList';
+    const API_REMOVE_SAVED_FILE = 'removeSavedFile';
+    const getSavedDir = ()=>{
+        return getEnv1().USER_DATA_PATH + '/saved';
+    };
+    let savedIndex: [string, number] = [
+        '0',
+        0
+    ];
+    const getSavedFileName = (filePath: string)=>{
+        const ext = filePath.split('/').pop()?.split('.').slice(1).join('.');
+        let fileName = Date.now() + '';
+        if (savedIndex[0] === fileName) {
+            savedIndex[1]++;
+            if (savedIndex[1] > 0) {
+                fileName += '-' + savedIndex[1];
+            }
+        } else {
+            savedIndex[0] = fileName;
+            savedIndex[1] = 0;
+        }
+        if (ext) {
+            fileName += '.' + ext;
+        }
+        return fileName;
+    };
+    const getFsPath = (filePath: string)=>{
+        filePath = getRealPath2(filePath) as string;
+        if (!/^file:/.test(filePath)) {
+            return filePath;
+        }
+        const rawPath = filePath.replace(/^file:\/\//, '');
+        if (rawPath[0] === '/') {
+            return rawPath;
+        }
+        return filePath;
+    };
+    const saveFile: SaveFile = defineAsyncApi<LegacySaveFileOptions, LegacySaveFileSuccess>(API_SAVE_FILE, (options: LegacySaveFileOptions, exec: ApiExecutor<LegacySaveFileSuccess>)=>{
+        const tempFilePath = getRealPath2(options.tempFilePath) as string;
+        const savedPath = getSavedDir();
+        if (!fs2.accessSync(savedPath)) {
+            fs2.mkdirSync(savedPath, true);
+        }
+        let srcFile: fs2.File;
+        try {
+            srcFile = fs2.openSync(tempFilePath, fs2.OpenMode.READ_ONLY);
+        } catch (error) {
+            exec.reject((error as Error).message);
+            return;
+        }
+        const savedFilePath = savedPath + '/' + getSavedFileName(tempFilePath);
+        fs2.copyFile(srcFile.fd, savedFilePath, (err)=>{
+            fs2.closeSync(srcFile);
+            if (err) {
+                exec.reject(err.message);
+            } else {
+                exec.resolve({
+                    savedFilePath
+                } as LegacySaveFileSuccess);
+            }
+        });
+    }) as SaveFile;
+    const getSavedFileList: GetSavedFileList = defineAsyncApi<LegacyGetSavedFileListOptions, LegacyGetSavedFileListSuccess>(API_GET_SAVED_FILE_LIST, (options: LegacyGetSavedFileListOptions, exec: ApiExecutor<LegacyGetSavedFileListSuccess>)=>{
+        const savedPath = getSavedDir();
+        if (!fs2.accessSync(savedPath)) {
+            exec.resolve({
+                fileList: []
+            } as LegacyGetSavedFileListSuccess);
+        }
+        fs2.listFile(savedPath, {} as ListFileOptions, (err, fileList)=>{
+            if (err) {
+                exec.reject(err.message);
+            } else {
+                exec.resolve({
+                    fileList: fileList.map((filePath: string)=>{
+                        const fullPath = savedPath + '/' + filePath;
+                        const stat = fs2.statSync(fullPath);
+                        if (!stat.isFile()) {
+                            return null;
+                        }
+                        return {
+                            filePath: fullPath,
+                            size: stat.size,
+                            createTime: stat.ctime
+                        } as LegacySavedFileListItem;
+                    }).filter((item)=>!!item)
+                } as LegacyGetSavedFileListSuccess);
+            }
+        });
+    }) as GetSavedFileList;
+    const getSavedFileInfo: GetSavedFileInfo = defineAsyncApi<LegacyGetSavedFileInfoOptions, LegacyGetSavedFileInfoSuccess>(API_GET_SAVED_FILE_INFO, (options: LegacyGetSavedFileInfoOptions, exec: ApiExecutor<LegacyGetSavedFileInfoSuccess>)=>{
+        const savedFilePath = getFsPath(options.filePath);
+        if (!fs2.accessSync(savedFilePath)) {
+            exec.reject('file not exist');
+            return;
+        }
+        const stat = fs2.statSync(savedFilePath);
+        if (!stat.isFile()) {
+            exec.reject('file not exist');
+        }
+        exec.resolve({
+            size: stat.size,
+            createTime: stat.ctime
+        } as LegacyGetSavedFileInfoSuccess);
+    }) as GetSavedFileInfo;
+    const removeSavedFile: RemoveSavedFile = defineAsyncApi<LegacyRemoveSavedFileOptions, LegacyRemoveSavedFileSuccess>(API_REMOVE_SAVED_FILE, (options: LegacyRemoveSavedFileOptions, exec: ApiExecutor<LegacyRemoveSavedFileSuccess>)=>{
+        const savedFilePath = getFsPath(options.filePath);
+        if (!fs2.accessSync(savedFilePath)) {
+            exec.reject('file not exist');
+            return;
+        }
+        fs2.unlink(savedFilePath, (err)=>{
+            if (err) {
+                exec.reject(err.message);
+            } else {
+                exec.resolve();
+            }
+        });
+    }) as RemoveSavedFile;
+    const SupportedHashAlgorithm = [
+        'md5',
+        'sha1'
+    ];
+    const getFileInfo: GetFileInfo = defineAsyncApi<LegacyGetFileInfoOptions, LegacyGetFileInfoSuccess>(API_GET_FILE_INFO, (options: LegacyGetFileInfoOptions, exec: ApiExecutor<LegacyGetFileInfoSuccess>)=>{
+        const filePath = getFsPath(options.filePath);
+        const digestAlgorithm = options.digestAlgorithm && SupportedHashAlgorithm.includes(options.digestAlgorithm) ? options.digestAlgorithm : 'md5';
+        if (!fs2.accessSync(filePath)) {
+            exec.reject('file not exist');
+            return;
+        }
+        const stat = fs2.statSync(filePath);
+        if (!stat.isFile()) {
+            exec.reject('file not exist');
+        }
+        Hash.hash(filePath, digestAlgorithm, (err, hash)=>{
+            if (err) {
+                exec.reject(err.message);
+            } else {
+                exec.resolve({
+                    size: stat.size,
+                    digest: hash
+                } as LegacyGetFileInfoSuccess);
+            }
+        });
+    }) as GetFileInfo;
+    const GET_FILE_SYSTEM_MANAGER = 'getFileSystemManager';
+    class FileCallback {
+        successFn?: Function;
+        failFn?: Function;
+        completeFn?: Function;
+        constructor(callback: CallBack = {}){
+            if (typeof callback.success === 'function') this.successFn = callback.success;
+            if (typeof callback.fail === 'function') this.failFn = callback.fail;
+            if (typeof callback.complete === 'function') this.completeFn = callback.complete;
+        }
+        success(...args: Object[]) {
+            if (this.successFn) {
+                try {
+                    this.successFn(...args);
+                } catch (err) {
+                    console.error(err);
+                }
+            }
+            if (this.completeFn) {
+                try {
+                    this.completeFn(...args);
+                } catch (err) {
+                    console.error(err);
+                }
+            }
+        }
+        fail(...args: Object[]) {
+            if (this.failFn) {
+                try {
+                    this.failFn(...args);
+                } catch (err) {
+                    console.error(err);
+                }
+            }
+            if (this.completeFn) {
+                try {
+                    this.completeFn(...args);
+                } catch (err) {
+                    console.error(err);
+                }
+            }
+        }
+    }
+    const FileSystemManagerUniErrorSubject = 'uni-fileSystemManager';
+    const FileSystemManagerUniErrors: Map<FileSystemManagerErrorCode, string> = new Map([
+        [
+            1200002,
+            'Type error. only support base64 / utf-8'
+        ],
+        [
+            1300002,
+            'No such file or directory'
+        ],
+        [
+            1300013,
+            'Permission denied'
+        ],
+        [
+            1300021,
+            'Is a directory'
+        ],
+        [
+            1300022,
+            'Invalid argument'
+        ],
+        [
+            1300066,
+            'Directory not empty'
+        ],
+        [
+            1301003,
+            'Illegal operation on a directory'
+        ],
+        [
+            1301005,
+            'File already exists'
+        ],
+        [
+            1300201,
+            'System error'
+        ],
+        [
+            1300202,
+            'The maximum size of the file storage limit is exceeded'
+        ],
+        [
+            1301111,
+            'Brotli decompress fail'
+        ],
+        [
+            1302003,
+            'Invalid flag'
+        ],
+        [
+            1300009,
+            'Bad file descriptor'
+        ],
+        [
+            1300010,
+            'Try again'
+        ],
+        [
+            1300011,
+            'Bad address'
+        ],
+        [
+            1300012,
+            'Operation would block'
+        ],
+        [
+            1300014,
+            'Network is unreachable'
+        ],
+        [
+            1300015,
+            'Unknown error'
+        ],
+        [
+            1300016,
+            'Not a directory'
+        ],
+        [
+            1300017,
+            'Text file busy'
+        ],
+        [
+            1300018,
+            'File too large'
+        ],
+        [
+            1300019,
+            'Read-only file system'
+        ],
+        [
+            1300020,
+            'File name too long'
+        ],
+        [
+            1300021,
+            'Too many symbolic links encountered'
+        ]
+    ]);
+    class FileSystemManagerFailImpl extends UniError implements IFileSystemManagerFail {
+        errCode: FileSystemManagerErrorCode;
+        constructor(errCode: FileSystemManagerErrorCode){
+            super();
+            this.errSubject = FileSystemManagerUniErrorSubject;
+            this.errCode = errCode;
+            this.errMsg = FileSystemManagerUniErrors.get(errCode) ?? "";
+        }
+    }
+    const ENCODING = [
+        'utf8',
+        'utf-8',
+        'ascii',
+        'base64',
+        'binary',
+        'hex',
+        'ucs2',
+        'ucs-2',
+        'utf16le',
+        'utf-16le',
+        'latin1'
+    ];
+    const transformErrorCode = (errCode: number): FileSystemManagerErrorCode =>{
+        switch(errCode){
+            case 13900012:
+            case 13900001:
+                return 1300013;
+            case 13900002:
+                return 1300002;
+            case 13900004:
+                return 1300201;
+            case 13900005:
+                return 1301003;
+            case 13900008:
+                return 1300009;
+            case 13900010:
+                return 1300010;
+            case 13900013:
+                return 1300011;
+            case 13900018:
+                return 1300016;
+            case 13900019:
+                return 1300021;
+            case 13900020:
+                return 1300022;
+            case 13900023:
+                return 1300017;
+            case 13900024:
+                return 1300018;
+            case 13900027:
+                return 1300019;
+            case 13900030:
+                return 1300020;
+            case 13900033:
+                return 1300021;
+            case 13900034:
+                return 1300012;
+            case 13900042:
+                return 1300013;
+            case 13900044:
+                return 1300014;
+        }
+        return 1300201;
+    };
+    const isString = (data: DataType | null = null): boolean =>{
+        return typeof data === 'string';
+    };
+    const isFunction = (data: DataType | null = null): boolean =>{
+        return typeof data === 'function';
+    };
+    const isNull = (data: DataType | null = null): boolean =>{
+        return data === null;
+    };
+    const isUndefined = (data: DataType | null = null): boolean =>{
+        return typeof data === 'undefined';
+    };
+    const isArray = (data: DataType | null = null): boolean =>{
+        return Array.isArray(data);
+    };
+    const isNumber = (data: DataType | null = null): boolean =>{
+        return typeof data === 'number' && !Number.isNaN(data) && Number.isFinite(data);
+    };
+    const isBoolean = (data: DataType | null = null): boolean =>{
+        return typeof data === 'boolean';
+    };
+    const isArrayBuffer = (data: DataType | null = null): boolean =>{
+        return data instanceof ArrayBuffer;
+    };
+    const checkSingleDataType = (data: DataType, dataType: string)=>{
+        let result = false;
+        switch(dataType){
+            case 'string':
+                result = isString(data);
+                break;
+            case 'number':
+                result = isNumber(data);
+                break;
+            case 'boolean':
+                result = isBoolean(data);
+                break;
+            case 'function':
+                result = isFunction(data);
+                break;
+            case 'arraybuffer':
+                result = isArrayBuffer(data);
+                break;
+            case 'array':
+                result = isArray(data);
+                break;
+            case 'null':
+                result = isNull(data);
+                break;
+            case 'undefined':
+                result = isUndefined(data);
+                break;
+        }
+        return result;
+    };
+    const checkDataType = (data: DataType, isRequired: boolean, dataType: string, customCheck: ((data: DataType) => boolean) | null = null): boolean =>{
+        let result = false;
+        try {
+            if (isRequired && (isNull(data) || isUndefined(data))) {
+                throw new Error('The param data is required');
+            }
+            if (!isString(dataType) && !isArray(dataType)) {
+                throw new Error('The param dataType should be a String or an Array');
+            }
+            if (customCheck != null && typeof customCheck !== 'function') {
+                throw new Error('If customCheck exist,it should be a Function');
+            }
+            if (!isRequired && (isNull(data) || isUndefined(data))) {
+                return true;
+            }
+            result = checkSingleDataType(data as DataType, dataType);
+            if (result && typeof customCheck === 'function') {
+                result = customCheck!(data);
+            }
+        } catch (error) {
+            console.log(error);
+            return false;
+        }
+        return result;
+    };
+    const obtainUpperPath = (inputPath: string): ObtainUpperPathReturn =>{
+        let index = inputPath.lastIndexOf('/');
+        let upperPath = inputPath.substring(0, index);
+        return {
+            index,
+            upperPath
+        } as ObtainUpperPathReturn;
+    };
+    const checkPath = (methodName: string, pathName: string, path: string): CustomValidReturn =>{
+        const errMsg = `${methodName}: fail ${pathName}`;
+        let isValid = false;
+        if (!checkDataType(path, true, 'string')) {
+            return {
+                isValid,
+                err: getParameterError(errMsg)
+            };
+        }
+        if (path === '') {
+            return {
+                isValid,
+                err: getPermissionError(errMsg)
+            };
+        }
+        return {
+            isValid: true
+        };
+    };
+    const checkPathSync = (methodName: string, pathName: string, path: string): CustomValidReturn =>{
+        const errMsg = `${methodName}: fail ${pathName}`;
+        let isValid = false;
+        if (path === '' || !checkDataType(path, true, 'string')) {
+            return {
+                isValid,
+                err: getParameterError(errMsg)
+            };
+        }
+        return {
+            isValid: true
+        };
+    };
+    const checkEncoding = (methodName: string, encoding: string | null = null): CheckEncodingReturn =>{
+        let isValid = false;
+        if (encoding === null || !checkDataType(encoding, false, 'string')) {
+            return {
+                errMsg: `${methodName}: fail invalid encoding: ${encoding}`,
+                isValid
+            } as CheckEncodingReturn;
+        }
+        if (encoding !== '' && encoding !== undefined) {
+            if (!ENCODING.includes(encoding)) {
+                return {
+                    errMsg: `${methodName}: fail Unknown encoding: ${encoding}`,
+                    isValid
+                } as CheckEncodingReturn;
+            }
+            if (encoding !== 'utf-8' && encoding !== 'utf8') {
+                return {
+                    errMsg: `${methodName}: fail, The encoding is valid, but is not supported currently: ${encoding}`,
+                    isValid
+                } as CheckEncodingReturn;
+            }
+        }
+        return {
+            isValid: true
+        };
+    };
+    const wrapErrMsg = (err: IFileSystemManagerFail, errMsg: string | null = null): IFileSystemManagerFail =>{
+        if (errMsg) {
+            err.errMsg = `${errMsg} ${err.errMsg}`;
+        }
+        return err;
+    };
+    const getParameterError = (errMsg: string | null = null): IFileSystemManagerFail =>{
+        return wrapErrMsg(new FileSystemManagerFailImpl(1300022) as IFileSystemManagerFail, errMsg);
+    };
+    const getPermissionError = (errMsg: string | null = null): IFileSystemManagerFail =>{
+        return wrapErrMsg(new FileSystemManagerFailImpl(1300013) as IFileSystemManagerFail, errMsg);
+    };
+    const DEFAULT_ENCODING = 'utf-8';
+    const ENCODING_SUPPORT = [
+        "ascii",
+        "base64",
+        "utf-8"
+    ];
+    const DEFAULT_POSITION = 0;
+    const DEFAULT_OFFSET = 0;
+    class FileSystemManagerImpl implements FileSystemManager {
+        readFile(options: ReadFileOptions): void {
+            throw new Error('Method not implemented.');
+        }
+        readFileSync(filePath: string, encoding: string | null = null): ReadFileSuccessResult {
+            throw new Error('Method not implemented.');
+        }
+        writeFile(options: WriteFileOptions): void {
+            const errMsg = `writeFile: fail`;
+            const filePath = options.filePath, data = options.data, _options_encoding = options.encoding, encoding = _options_encoding == null ? DEFAULT_ENCODING : _options_encoding, success = options.success, fail = options.fail, complete = options.complete;
+            const cb = new FileCallback({
+                success,
+                fail,
+                complete
+            } as CallBack);
+            if (!checkDataType(filePath, true, 'string')) {
+                cb.fail(getParameterError(`${errMsg} filePath`) as ApiError);
+                return;
+            }
+            if (!ENCODING_SUPPORT.includes(encoding)) {
+                cb.fail(getParameterError(`${errMsg} encoding`) as ApiError);
+                return;
+            }
+            let file: fs3.File | null = null;
+            try {
+                const stat = fs3.statSync(filePath);
+                if (stat.isDirectory()) {
+                    cb.fail({
+                        errMsg: `${errMsg} illegal operation on a directory, open: ${filePath}`
+                    } as ApiError);
+                    return;
+                }
+            } catch (error) {
+                try {
+                    file = fs3.openSync(filePath, fs3.OpenMode.CREATE | fs3.OpenMode.WRITE_ONLY);
+                } catch (error) {
+                    cb.fail(wrapErrMsg(new FileSystemManagerFailImpl(transformErrorCode((error as BusinessError4).code)), errMsg) as ApiError);
+                    return;
+                }
+            }
+            const writeOptions: OHWriteOptions = {};
+            if (checkDataType((data as (string | ArrayBuffer)), true, 'string')) writeOptions.encoding = encoding as string;
+            if (file == null) {
+                file = fs3.openSync(filePath, fs3.OpenMode.WRITE_ONLY);
+            }
+            fs3.write(file.fd, data as (string | ArrayBuffer), writeOptions).then((writeLen)=>{
+                cb.success({
+                    errMsg: 'writeFile: ok'
+                } as FileManagerSuccessResult);
+            }).finally(()=>{
+                fs3.closeSync(file);
+            });
+        }
+        writeFileSync(filePath: string, data: Object, encoding: string = DEFAULT_ENCODING): void {
+            const errMsg = `writeFileSync: fail`;
+            if (!checkDataType(filePath, true, 'string')) {
+                throw new Error(getParameterError(`${errMsg} filePath`).errMsg);
+            }
+            if (!ENCODING_SUPPORT.includes(encoding)) {
+                throw new Error(getParameterError(`${errMsg} encoding`).errMsg);
+            }
+            let file: fs3.File | null = null;
+            try {
+                const stat = fs3.statSync(filePath);
+                if (stat.isDirectory()) {
+                    throw new Error(`${errMsg} illegal operation on a directory, open: ${filePath}`);
+                }
+            } catch (error) {
+                try {
+                    file = fs3.openSync(filePath, fs3.OpenMode.CREATE | fs3.OpenMode.WRITE_ONLY);
+                } catch (error) {
+                    throw new Error(wrapErrMsg(new FileSystemManagerFailImpl(transformErrorCode((error as BusinessError4).code)), errMsg).errMsg);
+                }
+            }
+            const writeOptions: OHWriteOptions = {};
+            if (checkDataType((data as (string | ArrayBuffer)), true, 'string')) writeOptions.encoding = encoding;
+            if (file == null) {
+                file = fs3.openSync(filePath, fs3.OpenMode.WRITE_ONLY);
+            }
+            try {
+                fs3.writeSync(file.fd, data as (string | ArrayBuffer), writeOptions);
+                fs3.closeSync(file);
+            } catch (err) {
+                fs3.closeSync(file);
+                throw new Error(`writeFileSync: ${(err as BusinessError4).message}`);
+            }
+        }
+        read(option: ReadOption): void {
+            throw new Error('Method not implemented.');
+        }
+        readSync(option: ReadSyncOption): ReadResult {
+            throw new Error('Method not implemented.');
+        }
+        unlink(options: UnLinkOptions): void {
+            throw new Error('Method not implemented.');
+        }
+        unlinkSync(filePath: string): void {
+            throw new Error('Method not implemented.');
+        }
+        mkdir(options: MkDirOptions): void {
+            const errMsg = `mkdir: fail`;
+            let dirPath = options.dirPath, recursive = options.recursive, success = options.success, fail = options.fail, complete = options.complete;
+            const cb = new FileCallback({
+                success,
+                fail,
+                complete
+            } as CallBack);
+            if (!checkDataType(recursive, false, 'boolean')) {
+                recursive = Boolean(recursive);
+            }
+            const checkRes = checkPath('mkdir', 'dirPath', dirPath);
+            if (!checkRes.isValid) {
+                cb.fail(checkRes.err as ApiError);
+                return;
+            }
+            if (fs3.accessSync(dirPath)) {
+                cb.fail({
+                    errMsg: `${errMsg} dirPath already exists: ${dirPath}`
+                } as ApiError);
+                return;
+            }
+            const getSubPath = obtainUpperPath(dirPath);
+            if (!recursive && !fs3.accessSync(getSubPath.upperPath)) {
+                cb.fail({
+                    errMsg: `${errMsg} recursive is false and upper path does not exist`
+                } as ApiError);
+                return;
+            }
+            fs3.mkdir(dirPath, recursive).then(()=>{
+                cb.success({
+                    errMsg: 'mkdir: ok'
+                } as FileManagerSuccessResult);
+            }).catch((err: BusinessError4)=>{
+                cb.fail(wrapErrMsg(new FileSystemManagerFailImpl(transformErrorCode(err.code)), errMsg) as ApiError);
+            });
+        }
+        mkdirSync(dirPath: string, recursive: boolean): void {
+            const errMsg = `mkdirSync: fail`;
+            if (!checkDataType(recursive, false, 'boolean')) {
+                recursive = Boolean(recursive);
+            }
+            const res = checkPathSync('mkdirSync', 'dirPath', dirPath);
+            if (!res.isValid) {
+                throw new Error(res.err?.errMsg);
+            }
+            if (fs3.accessSync(dirPath)) {
+                throw new Error(`${errMsg} dirPath already exists: ${dirPath}`);
+            }
+            if (!recursive && !fs3.accessSync(obtainUpperPath(dirPath).upperPath)) {
+                throw new Error(`${errMsg} recursive is false and upper path does not exist`);
+            }
+            try {
+                fs3.mkdirSync(dirPath, recursive);
+            } catch (err) {
+                throw new Error(wrapErrMsg(new FileSystemManagerFailImpl(transformErrorCode((err as BusinessError4).code)), errMsg).errMsg);
+            }
+        }
+        rmdir(options: RmDirOptions): void {
+            throw new Error('Method not implemented.');
+        }
+        rmdirSync(dirPath: string, recursive: boolean): void {
+            throw new Error('Method not implemented.');
+        }
+        readdir(options: ReadDirOptions): void {
+            throw new Error('Method not implemented.');
+        }
+        readdirSync(dirPath: string): string[] | null {
+            throw new Error('Method not implemented.');
+        }
+        access(options: AccessOptions): void {
+            throw new Error('Method not implemented.');
+        }
+        accessSync(path: string): void {
+            throw new Error('Method not implemented.');
+        }
+        rename(options: RenameOptions): void {
+            throw new Error('Method not implemented.');
+        }
+        renameSync(oldPath: string, newPath: string): void {
+            throw new Error('Method not implemented.');
+        }
+        copyFile(options: CopyFileOptions): void {
+            throw new Error('Method not implemented.');
+        }
+        copyFileSync(srcPath: string, destPath: string): void {
+            throw new Error('Method not implemented.');
+        }
+        getFileInfo(options: GetFileInfoOptions): void {
+            throw new Error('Method not implemented.');
+        }
+        stat(options: StatOptions): void {
+            throw new Error('Method not implemented.');
+        }
+        statSync(path: string, recursive: boolean): FileStats[] {
+            throw new Error('Method not implemented.');
+        }
+        appendFile(options: AppendFileOptions): void {
+            throw new Error('Method not implemented.');
+        }
+        appendFileSync(filePath: string, data: Object, encoding: string | null = null): void {
+            throw new Error('Method not implemented.');
+        }
+        saveFile(options: SaveFileOptions): void {
+            throw new Error('Method not implemented.');
+        }
+        saveFileSync(tempFilePath: string, filePath: string | null): string {
+            throw new Error('Method not implemented.');
+        }
+        removeSavedFile(options: RemoveSavedFileOptions): void {
+            throw new Error('Method not implemented.');
+        }
+        unzip(options: UnzipFileOptions): void {
+            throw new Error('Method not implemented.');
+        }
+        getSavedFileList(options: GetSavedFileListOptions): void {
+            throw new Error('Method not implemented.');
+        }
+        truncate(options: TruncateFileOptions): void {
+            throw new Error('Method not implemented.');
+        }
+        truncateSync(filePath: string, length: number | null = null): void {
+            throw new Error('Method not implemented.');
+        }
+        readCompressedFile(options: ReadCompressedFileOptions): void {
+            throw new Error('Method not implemented.');
+        }
+        readCompressedFileSync(filePath: string, compressionAlgorithm: string): string {
+            throw new Error('Method not implemented.');
+        }
+        open(options: OpenFileOptions): void {
+            throw new Error('Method not implemented.');
+        }
+        openSync(options: OpenFileSyncOptions): string {
+            throw new Error('Method not implemented.');
+        }
+        write(options: WriteOptions): void {
+            let inFd = options.fd, data = options.data, offset = options.offset, length = options.length, position = options.position, encoding = options.encoding, success = options.success, fail = options.fail, complete = options.complete;
+            const cb = new FileCallback({
+                success,
+                fail,
+                complete
+            } as CallBack);
+            let fd: number = -1;
+            const writeOptions: OHWriteOptions = {};
+            if (!checkDataType(inFd, true, 'string') || inFd === '' || isNaN(Number(inFd))) {
+                cb.fail({
+                    errMsg: 'write: fail invalid fd'
+                } as ApiError);
+                return;
+            } else {
+                fd = Number(inFd);
+            }
+            if (!checkDataType((data as DataType), true, 'arraybuffer') && !checkDataType((data as DataType), true, 'string')) {
+                cb.fail({
+                    errMsg: 'write: fail data must be a string or ArrayBuffer'
+                } as ApiError);
+                return;
+            }
+            if (checkDataType((data as DataType), true, 'arraybuffer')) {
+                const sizeOfArrayBuffer = (data as ArrayBuffer).byteLength as number;
+                if (!checkDataType(offset, false, 'number') || offset! < 0 || !offset) {
+                    offset = DEFAULT_OFFSET;
+                }
+                if (offset > sizeOfArrayBuffer) {
+                    cb.fail({
+                        errMsg: `write: fail RangeError [ERR_OUT_OF_RANGE]: The value of offset is out of range. It must be <= ${sizeOfArrayBuffer}. Received ${offset}`
+                    } as ApiError);
+                    return;
+                }
+                if (!checkDataType(length, false, 'number') || length! < 0 || !length) {
+                    length = sizeOfArrayBuffer - offset;
+                }
+                if (length > sizeOfArrayBuffer - offset) {
+                    cb.fail({
+                        errMsg: `write: fail RangeError [ERR_OUT_OF_RANGE]: The value of length is out of range. It must be <= ${sizeOfArrayBuffer - offset}. Received ${length}`
+                    } as ApiError);
+                    return;
+                }
+                const uint8ArrayTemp = new Uint8Array(data as ArrayBuffer);
+                const slicedArray = uint8ArrayTemp.slice(offset);
+                data = slicedArray.buffer;
+            }
+            if (checkDataType((data as DataType), true, 'string')) {
+                const res = checkEncoding('write', encoding);
+                if (!res.isValid) {
+                    cb.fail({
+                        errMsg: res.errMsg
+                    } as ApiError);
+                    return;
+                }
+                writeOptions.encoding = encoding as string;
+                length = (data as string).length;
+            }
+            if (!checkDataType(position, false, 'number') || position! < 0 || !position) {
+                position = DEFAULT_POSITION;
+            }
+            writeOptions.offset = position;
+            writeOptions.length = length!;
+            fs3.write(fd, data as (ArrayBuffer | string), writeOptions).then((writeLen)=>{
+                cb.success({
+                    bytesWritten: writeLen,
+                    errMsg: 'write:ok'
+                } as WriteResult);
+            }).catch((err: BusinessError4)=>{
+                cb.fail({
+                    errMsg: `write data to file failed with error message: ${err.message}, error code: ${err.code}`
+                } as ApiError);
+            });
+        }
+        writeSync(options: WriteSyncOptions): WriteResult {
+            let inFd = options.fd, data = options.data, offset = options.offset, length = options.length, position = options.position, encoding = options.encoding;
+            let fd: number = -1;
+            const writeOptions: OHWriteOptions = {};
+            if (!checkDataType(inFd, true, 'string') || inFd === '' || isNaN(Number(inFd))) {
+                throw new Error('writeSync: fail invalid fd');
+            } else {
+                fd = Number(inFd);
+            }
+            if (!checkDataType((data as DataType), true, 'arraybuffer') && !checkDataType((data as DataType), true, 'string')) {
+                throw new Error('writeSync: fail data must be a string or ArrayBuffer');
+            }
+            if (checkDataType((data as DataType), true, 'arraybuffer')) {
+                const sizeOfArrayBuffer = (data as ArrayBuffer).byteLength as number;
+                if (!checkDataType(offset, false, 'number') || offset! < 0 || !offset) {
+                    offset = DEFAULT_OFFSET;
+                }
+                if (offset > sizeOfArrayBuffer) {
+                    throw new Error(`write: fail RangeError [ERR_OUT_OF_RANGE]: The value of offset is out of range. It must be <= ${sizeOfArrayBuffer}. Received ${offset}`);
+                }
+                if (!checkDataType(length, false, 'number') || length! < 0 || !length) {
+                    length = sizeOfArrayBuffer - offset;
+                }
+                if (length > sizeOfArrayBuffer - offset) {
+                    throw new Error(`write: fail RangeError [ERR_OUT_OF_RANGE]: The value of length is out of range. It must be <= ${sizeOfArrayBuffer - offset}. Received ${length}`);
+                }
+                const uint8ArrayTemp = new Uint8Array(data as ArrayBuffer);
+                const slicedArray = uint8ArrayTemp.slice(offset);
+                data = slicedArray.buffer;
+            }
+            if (checkDataType((data as DataType), true, 'string')) {
+                const res = checkEncoding('write', encoding);
+                if (!res.isValid) {
+                    throw new Error(res.errMsg);
+                }
+                writeOptions.encoding = encoding as string;
+                length = (data as string).length;
+            }
+            if (!checkDataType(position, false, 'number') || position! < 0 || !position) {
+                position = DEFAULT_POSITION;
+            }
+            writeOptions.offset = position;
+            writeOptions.length = length!;
+            try {
+                const writeLen = fs3.writeSync(fd, data as (ArrayBuffer | string), writeOptions);
+                return {
+                    bytesWritten: writeLen,
+                    errMsg: 'write:ok'
+                } as WriteResult;
+            } catch (error) {
+                throw new Error(`writeSync: fail ${(error as BusinessError4).message}`);
+            }
+        }
+        close(options: CloseOptions): void {
+            throw new Error('Method not implemented.');
+        }
+        closeSync(options: CloseSyncOptions): void {
+            throw new Error('Method not implemented.');
+        }
+        fstat(options: FStatOptions): void {
+            throw new Error('Method not implemented.');
+        }
+        fstatSync(options: FStatSyncOptions): Stats {
+            throw new Error('Method not implemented.');
+        }
+        ftruncate(options: FTruncateFileOptions): void {
+            throw new Error('Method not implemented.');
+        }
+        ftruncateSync(options: FTruncateFileSyncOptions): void {
+            throw new Error('Method not implemented.');
+        }
+        readZipEntry(options: ReadZipEntryOptions): void {
+            throw new Error('Method not implemented.');
+        }
+    }
+    const getFileSystemManager = defineSyncApi<FileSystemManager>(GET_FILE_SYSTEM_MANAGER, ()=>{
+        return new FileSystemManagerImpl();
+    });
+    const AUTHORIZED = 'authorized';
+    const DENIED = 'denied';
+    const NOT_DETERMINED = 'not determined';
+    class AppAuthorizeSetting {
+        albumAuthorized: string = NOT_DETERMINED;
+        bluetoothAuthorized: string = NOT_DETERMINED;
+        cameraAuthorized: string = NOT_DETERMINED;
+        locationAuthorized: string = NOT_DETERMINED;
+        locationAccuracy: string = NOT_DETERMINED;
+        microphoneAuthorized: string = NOT_DETERMINED;
+        notificationAuthorized: string = NOT_DETERMINED;
+        notificationAlertAuthorized: string = NOT_DETERMINED;
+        notificationBadgeAuthorized: string = NOT_DETERMINED;
+        notificationSoundAuthorized: string = NOT_DETERMINED;
+        phoneCalendarAuthorized: string = NOT_DETERMINED;
+    }
+    class GetAppAuthorizeSettingImpl {
+        accessTokenId: number;
+        atManager: abilityAccessCtrl.AtManager;
+        appAuthorizeSetting: AppAuthorizeSetting;
+        constructor(accessTokenId: number, atManager: abilityAccessCtrl.AtManager, appAuthorizeSetting: AppAuthorizeSetting){
+            this.accessTokenId = accessTokenId;
+            this.atManager = atManager;
+            this.appAuthorizeSetting = appAuthorizeSetting;
+            this.getAlbumAuthorizeSetting();
+            this.getBlueToothAuthorizeSetting();
+            this.getCameraAuthorizeSetting();
+            this.getLocationAuthorizeSetting();
+            this.getMicrophoneAuthorizeSetting();
+            this.getNotificationAuthorizeSetting();
+            this.getPhoneCalendarAuthorizeSetting();
+        }
+        getAlbumAuthorizeSetting() {
+            const grantStatus = this.atManager.checkAccessTokenSync(this.accessTokenId, 'ohos.permission.READ_IMAGEVIDEO');
+            if (grantStatus === abilityAccessCtrl.GrantStatus.PERMISSION_DENIED) {
+                this.appAuthorizeSetting.albumAuthorized = DENIED;
+            }
+            if (grantStatus === abilityAccessCtrl.GrantStatus.PERMISSION_GRANTED) {
+                this.appAuthorizeSetting.albumAuthorized = AUTHORIZED;
+            }
+        }
+        getBlueToothAuthorizeSetting() {
+            const grantStatus = this.atManager.checkAccessTokenSync(this.accessTokenId, 'ohos.permission.ACCESS_BLUETOOTH');
+            if (grantStatus === abilityAccessCtrl.GrantStatus.PERMISSION_DENIED) {
+                this.appAuthorizeSetting.bluetoothAuthorized = DENIED;
+            }
+            if (grantStatus === abilityAccessCtrl.GrantStatus.PERMISSION_GRANTED) {
+                this.appAuthorizeSetting.bluetoothAuthorized = AUTHORIZED;
+            }
+        }
+        getCameraAuthorizeSetting() {
+            const grantStatus = this.atManager.checkAccessTokenSync(this.accessTokenId, 'ohos.permission.CAMERA');
+            if (grantStatus === abilityAccessCtrl.GrantStatus.PERMISSION_DENIED) {
+                this.appAuthorizeSetting.cameraAuthorized = DENIED;
+            }
+            if (grantStatus === abilityAccessCtrl.GrantStatus.PERMISSION_GRANTED) {
+                this.appAuthorizeSetting.cameraAuthorized = AUTHORIZED;
+            }
+        }
+        getLocationAuthorizeSetting() {
+            const grantStatus = this.atManager.checkAccessTokenSync(this.accessTokenId, 'ohos.permission.LOCATION');
+            if (grantStatus === abilityAccessCtrl.GrantStatus.PERMISSION_DENIED) {
+                this.appAuthorizeSetting.locationAuthorized = DENIED;
+            }
+            if (grantStatus === abilityAccessCtrl.GrantStatus.PERMISSION_GRANTED) {
+                this.appAuthorizeSetting.locationAuthorized = AUTHORIZED;
+            }
+        }
+        getMicrophoneAuthorizeSetting() {
+            const grantStatus = this.atManager.checkAccessTokenSync(this.accessTokenId, 'ohos.permission.MICROPHONE');
+            if (grantStatus === abilityAccessCtrl.GrantStatus.PERMISSION_DENIED) {
+                this.appAuthorizeSetting.microphoneAuthorized = DENIED;
+            }
+            if (grantStatus === abilityAccessCtrl.GrantStatus.PERMISSION_GRANTED) {
+                this.appAuthorizeSetting.microphoneAuthorized = AUTHORIZED;
+            }
+        }
+        getNotificationAuthorizeSetting() {
+            try {
+                const isNotificationEnabled = notificationManager.isNotificationEnabledSync();
+                if (isNotificationEnabled) {
+                    this.appAuthorizeSetting.notificationAuthorized = DENIED;
+                }
+                if (isNotificationEnabled) {
+                    this.appAuthorizeSetting.notificationAuthorized = AUTHORIZED;
+                }
+            } catch (error) {
+                this.appAuthorizeSetting.notificationAuthorized = DENIED;
+            }
+        }
+        getPhoneCalendarAuthorizeSetting() {
+            const grantStatus = this.atManager.checkAccessTokenSync(this.accessTokenId, 'ohos.permission.WRITE_CALENDAR');
+            if (grantStatus === abilityAccessCtrl.GrantStatus.PERMISSION_DENIED) {
+                this.appAuthorizeSetting.phoneCalendarAuthorized = DENIED;
+            }
+            if (grantStatus === abilityAccessCtrl.GrantStatus.PERMISSION_GRANTED) {
+                this.appAuthorizeSetting.phoneCalendarAuthorized = AUTHORIZED;
+            }
+        }
+    }
+    const getAppAuthorizeSetting: GetAppAuthorizeSetting = defineSyncApi<GetAppAuthorizeSettingResult>('getAppAuthorizeSetting', ()=>{
+        const bundleInfoWithApplication = bundleManager.getBundleInfoForSelfSync(bundleManager.BundleFlag.GET_BUNDLE_INFO_WITH_APPLICATION);
+        const appAuthorizeSettingImpl = new GetAppAuthorizeSettingImpl(bundleInfoWithApplication.appInfo.accessTokenId, abilityAccessCtrl.createAtManager(), new AppAuthorizeSetting());
+        return appAuthorizeSettingImpl.appAuthorizeSetting as GetAppAuthorizeSettingResult;
+    }) as GetAppAuthorizeSetting;
+    const API_GET_APP_BASE_INFO = 'getAppBaseInfo';
+    const getBundleInfoOnce = ()=>{
+        let bundleInfo: bundleManager1.BundleInfo | null = null;
+        return (): bundleManager1.BundleInfo =>{
+            if (bundleInfo) {
+                return bundleInfo;
+            }
+            bundleInfo = bundleManager1.getBundleInfoForSelfSync(bundleManager1.BundleFlag.GET_BUNDLE_INFO_DEFAULT);
+            return bundleInfo;
+        };
+    };
+    const getBundleInfo = getBundleInfoOnce();
+    const getAppBaseInfo: GetAppBaseInfo = defineSyncApi<GetAppBaseInfoResult>(API_GET_APP_BASE_INFO, (): GetAppBaseInfoResult =>{
+        const appVersion = UTSHarmony.getAppVersion() as IAppBaseInfoAppVersion;
+        const appLanguage = I18n.System.getAppPreferredLanguage();
+        const uniCompilerVersion: string = UTSHarmony.getUniCompilerVersion() as string;
+        const uniRuntimeVersion: string = UTSHarmony.getUniRuntimeVersion();
+        return {
+            appId: UTSHarmony.getAppId() as string,
+            appLanguage,
+            appName: UTSHarmony.getAppName() as string,
+            appTheme: UTSHarmony.getAppTheme() as string,
+            appVersion: appVersion.name,
+            appVersionCode: appVersion.code,
+            appWgtVersion: appVersion.name,
+            hostLanguage: I18n.System.getSystemLanguage(),
+            isUniAppX: UTSHarmony.isUniAppX() as boolean,
+            packageName: getBundleInfo().name,
+            uniCompilerVersion: uniCompilerVersion,
+            uniCompilerVersionCode: parseFloat(uniCompilerVersion),
+            uniRuntimeVersion: uniRuntimeVersion,
+            uniRuntimeVersionCode: parseFloat(uniRuntimeVersion),
+            uniPlatform: 'app'
+        } as GetAppBaseInfoResult;
+    }) as GetAppBaseInfo;
+    const API_GET_BACKGROUND_AUDIO_MANAGER = 'getBackgroundAudioManager';
+    const isFileUri1 = (path: string)=>{
+        return path && typeof path === 'string' && (path.startsWith('file://') || path.startsWith('datashare://'));
+    };
+    const isSandboxPath1 = (path: string)=>{
+        return path && typeof path === 'string' && path.startsWith('/data/storage/');
+    };
+    const getFdFromUriOrSandBoxPath1 = (uri: string)=>{
+        try {
+            const file = fileIo1.openSync(uri, fileIo1.OpenMode.READ_ONLY);
+            return file.fd;
+        } catch (error) {
+            console.info(`[AdvancedAPI] Can not get file from uri: ${uri} `);
+        }
+        throw new Error('file is not exist');
+    };
+    const callCallbacks1 = (callbacks: Function[], ...args: Object[])=>{
+        callbacks.forEach((cb)=>{
+            typeof cb === 'function' && cb(...args);
+        });
+    };
+    const remoteCallback1 = (callbacks: Function[], callback: Function)=>{
+        const index = callbacks.indexOf(callback);
+        if (index > -1) {
+            callbacks.splice(index, 1);
+        }
+    };
+    class AudioPlayerError1 {
+        errMsg: string;
+        errCode: number;
+        constructor(errMsg: string, errCode: number){
+            this.errMsg = errMsg;
+            this.errCode = errCode;
+        }
+    }
+    class AudioPlayerCallback1 {
+        onCanplayCallbacks: Function[] = [];
+        onPlayCallbacks: Function[] = [];
+        onPauseCallbacks: Function[] = [];
+        onStopCallbacks: Function[] = [];
+        onEndedCallbacks: Function[] = [];
+        onTimeUpdateCallbacks: Function[] = [];
+        onErrorCallbacks: Function[] = [];
+        onWaitingCallbacks: Function[] = [];
+        onSeekingCallbacks: Function[] = [];
+        onSeekedCallbacks: Function[] = [];
+        constructor(){}
+        canPlay() {
+            callCallbacks1(this.onCanplayCallbacks);
+        }
+        onCanplay(callback: Function) {
+            this.onCanplayCallbacks.push(callback);
+        }
+        offCanplay(callback: Function) {
+            remoteCallback1(this.onCanplayCallbacks, callback);
+        }
+        play() {
+            callCallbacks1(this.onPlayCallbacks);
+        }
+        onPlay(callback: Function) {
+            this.onPlayCallbacks.push(callback);
+        }
+        offPlay(callback: Function) {
+            remoteCallback1(this.onPlayCallbacks, callback);
+        }
+        pause() {
+            callCallbacks1(this.onPauseCallbacks);
+        }
+        onPause(callback: Function) {
+            this.onPauseCallbacks.push(callback);
+        }
+        offPause(callback: Function) {
+            remoteCallback1(this.onPauseCallbacks, callback);
+        }
+        stop() {
+            callCallbacks1(this.onStopCallbacks);
+        }
+        onStop(callback: Function) {
+            this.onStopCallbacks.push(callback);
+        }
+        offStop(callback: Function) {
+            remoteCallback1(this.onStopCallbacks, callback);
+        }
+        ended() {
+            callCallbacks1(this.onEndedCallbacks);
+        }
+        onEnded(callback: Function) {
+            this.onEndedCallbacks.push(callback);
+        }
+        offEnded(callback: Function) {
+            remoteCallback1(this.onEndedCallbacks, callback);
+        }
+        timeUpdate(time: number) {
+            callCallbacks1(this.onTimeUpdateCallbacks, time);
+        }
+        onTimeUpdate(callback: Function) {
+            this.onTimeUpdateCallbacks.push(callback);
+        }
+        offTimeUpdate(callback: Function) {
+            remoteCallback1(this.onTimeUpdateCallbacks, callback);
+        }
+        error(res: AudioPlayerError1) {
+            callCallbacks1(this.onErrorCallbacks, res);
+        }
+        onError(callback: Function) {
+            this.onErrorCallbacks.push(callback);
+        }
+        offError(callback: Function) {
+            remoteCallback1(this.onErrorCallbacks, callback);
+        }
+        onPrev(callback: Function) {
+            console.info('ios only');
+        }
+        onNext(callback: Function) {
+            console.info('ios only');
+        }
+        waiting() {
+            callCallbacks1(this.onWaitingCallbacks);
+        }
+        onWaiting(callback: Function) {
+            this.onWaitingCallbacks.push(callback);
+        }
+        offWaiting(callback: Function) {
+            remoteCallback1(this.onWaitingCallbacks, callback);
+        }
+        seeking() {
+            callCallbacks1(this.onSeekingCallbacks);
+        }
+        onSeeking(callback: Function) {
+            this.onSeekingCallbacks.push(callback);
+        }
+        offSeeking(callback: Function) {
+            remoteCallback1(this.onSeekingCallbacks, callback);
+        }
+        seeked() {
+            callCallbacks1(this.onSeekedCallbacks);
+        }
+        onSeeked(callback: Function) {
+            this.onSeekedCallbacks.push(callback);
+        }
+        offSeeked(callback: Function) {
+            remoteCallback1(this.onSeekedCallbacks, callback);
+        }
+    }
+    const audioPlayerCallback = new AudioPlayerCallback1();
+    let AV_SESSION: avSession.AVSession | null = null;
+    const createAVSession = ()=>{
+        avSession.createAVSession(UTSHarmony.getUIAbilityContext()!, 'player', 'audio').then((data)=>{
+            AV_SESSION = data;
+        });
+    };
+    const destroyAVSession = ()=>{
+        if (AV_SESSION === null) {
+            return;
+        }
+        AV_SESSION.destroy();
+        AV_SESSION = null;
+    };
+    const startBackgroundTask = ()=>{
+        const abilityInfo = UTSHarmony.getUIAbilityContext()!.abilityInfo as TempAbilityInfo;
+        const wantAgentInfo: wantAgent.WantAgentInfo = {
+            wants: [
+                {
+                    bundleName: abilityInfo.bundleName,
+                    abilityName: abilityInfo.name
+                }
+            ],
+            operationType: wantAgent.OperationType.START_ABILITY,
+            requestCode: 0,
+            wantAgentFlags: [
+                wantAgent.WantAgentFlags.UPDATE_PRESENT_FLAG
+            ]
+        };
+        wantAgent.getWantAgent(wantAgentInfo).then((wantAgentObj)=>{
+            return backgroundTaskManager.startBackgroundRunning(UTSHarmony.getUIAbilityContext()!, backgroundTaskManager.BackgroundMode.AUDIO_PLAYBACK, wantAgentObj);
+        }).then(()=>{
+            console.debug('[getBackgroundAudioManager]  start bg operation succeeded');
+        }).catch((err: BusinessError5)=>{
+            audioPlayerCallback.error(new AudioPlayerError1(err.message, err.code));
+        });
+    };
+    const stopBackgroundTask = ()=>{
+        backgroundTaskManager.stopBackgroundRunning(UTSHarmony.getUIAbilityContext()!).then(()=>{
+            console.debug('[getBackgroundAudioManager]  stop operation succeeded');
+        }).catch((err: BusinessError5)=>{
+            audioPlayerCallback.error(new AudioPlayerError1(err.message, err.code));
+        });
+    };
+    const START_BACKGROUND = ()=>{
+        startBackgroundTask();
+        createAVSession();
+    };
+    const STOP_BACKGROUND = ()=>{
+        destroyAVSession();
+        stopBackgroundTask();
+    };
+    const LOG1 = (msg: string)=>console.log(`[getBackgroundAudioManager]: ${msg}`);
+    class STATE_TYPE1 {
+        static IDLE: string = 'idle';
+        static PLAYING: string = 'playing';
+        static PAUSED: string = 'paused';
+        static STOPPED: string = 'stopped';
+        static ERROR: string = 'error';
+    }
+    class BackgroundAudioManagerImpl implements BackgroundAudioManager {
+        static audioPlayer?: media1.AudioPlayer;
+        private _src: string = '';
+        private _startTime: number = 0;
+        private _buffered: number = 0;
+        private _title: string = '';
+        private _epname: string = '';
+        private _singer: string = '';
+        private _coverImgUrl: string = '';
+        private _webUrl: string = '';
+        private _protocol: string = '';
+        private _playbackRate: number = 1;
+        readonly obeyMuteSwitch: boolean = false;
+        constructor(){
+            this.init();
+        }
+        init() {
+            BackgroundAudioManagerImpl.audioPlayer = media1.createAudioPlayer();
+            BackgroundAudioManagerImpl.audioPlayer.on('dataLoad', ()=>{
+                audioPlayerCallback.canPlay();
+            });
+            BackgroundAudioManagerImpl.audioPlayer.on('play', ()=>{
+                audioPlayerCallback.play();
+            });
+            BackgroundAudioManagerImpl.audioPlayer.on('pause', ()=>{
+                audioPlayerCallback.pause();
+            });
+            BackgroundAudioManagerImpl.audioPlayer.on('finish', ()=>{
+                STOP_BACKGROUND();
+                audioPlayerCallback.ended();
+            });
+            BackgroundAudioManagerImpl.audioPlayer.on('timeUpdate', (res)=>{
+                audioPlayerCallback.timeUpdate(res / 1000);
+            });
+            BackgroundAudioManagerImpl.audioPlayer.on('error', (err)=>{
+                audioPlayerCallback.error(new AudioPlayerError1(err.message, err.code));
+            });
+            BackgroundAudioManagerImpl.audioPlayer.on('bufferingUpdate', (infoType, value)=>{
+                console.info(`[AdvancedAPI] audioPlayer bufferingUpdate ${infoType} ${value}`);
+                if (infoType === media1.BufferingInfoType.BUFFERING_PERCENT && value !== 0 && BackgroundAudioManagerImpl.audioPlayer) {
+                    this._buffered = value;
+                    if ((BackgroundAudioManagerImpl.audioPlayer.currentTime / 1000) >= (BackgroundAudioManagerImpl.audioPlayer.duration * value / 100000)) {
+                        audioPlayerCallback.waiting();
+                    }
+                }
+            });
+            BackgroundAudioManagerImpl.audioPlayer.on('audioInterrupt', (InterruptEvent)=>{
+                console.info('[AdvancedAPI]  audioInterrupt:' + JSON.stringify(InterruptEvent));
+                if (BackgroundAudioManagerImpl.audioPlayer && InterruptEvent.hintType === audio1.InterruptHint.INTERRUPT_HINT_PAUSE) {
+                    BackgroundAudioManagerImpl.audioPlayer.pause();
+                }
+                if (BackgroundAudioManagerImpl.audioPlayer && InterruptEvent.hintType === audio1.InterruptHint.INTERRUPT_HINT_RESUME) {
+                    BackgroundAudioManagerImpl.audioPlayer.play();
+                }
+            });
+        }
+        get duration() {
+            if (!BackgroundAudioManagerImpl.audioPlayer) {
+                return 0;
+            }
+            return BackgroundAudioManagerImpl.audioPlayer.duration / 1000;
+        }
+        get currentTime() {
+            if (!BackgroundAudioManagerImpl.audioPlayer) {
+                return 0;
+            }
+            return BackgroundAudioManagerImpl.audioPlayer.currentTime / 1000;
+        }
+        get paused() {
+            if (!BackgroundAudioManagerImpl.audioPlayer) {
+                return false;
+            }
+            return BackgroundAudioManagerImpl.audioPlayer.state === STATE_TYPE1.PAUSED;
+        }
+        get src() {
+            if (!BackgroundAudioManagerImpl.audioPlayer) {
+                return '';
+            }
+            return BackgroundAudioManagerImpl.audioPlayer.src;
+        }
+        set src(value) {
+            if (typeof value !== 'string') {
+                audioPlayerCallback.error(new AudioPlayerError1(`set src: ${value} is not string`, 10004));
+                return;
+            }
+            if (!BackgroundAudioManagerImpl.audioPlayer) {
+                audioPlayerCallback.error(new AudioPlayerError1(`player is not exist`, 10001));
+                return;
+            }
+            if (!value || !(value.startsWith('http:') || value.startsWith('https:') || isFileUri1(value) || isSandboxPath1(value))) {
+                LOG1(`set src: ${value} is invalid`);
+                return;
+            }
+            let path: string = '';
+            if (value.startsWith('http:') || value.startsWith('https:')) {
+                path = value;
+            } else if (isFileUri1(value) || isSandboxPath1(value)) {
+                try {
+                    const fd = getFdFromUriOrSandBoxPath1(value);
+                    path = `fd://${fd}`;
+                } catch (err) {
+                    audioPlayerCallback.error(new AudioPlayerError1((err as BusinessError5).message, (err as BusinessError5).code));
+                }
+            }
+            if (BackgroundAudioManagerImpl.audioPlayer.src && path !== BackgroundAudioManagerImpl.audioPlayer.src) {
+                BackgroundAudioManagerImpl.audioPlayer.reset();
+            }
+            BackgroundAudioManagerImpl.audioPlayer.src = path;
+            this._src = value;
+            if (this._startTime) {
+                BackgroundAudioManagerImpl.audioPlayer.seek(this._startTime);
+            }
+            BackgroundAudioManagerImpl.audioPlayer.play();
+            START_BACKGROUND();
+        }
+        get startTime() {
+            return this._startTime / 1000;
+        }
+        set startTime(time: number) {
+            this._startTime = time * 1000;
+        }
+        get title() {
+            return this._title;
+        }
+        set title(titleName: string) {
+            this._title = titleName;
+        }
+        get buffered() {
+            if (!BackgroundAudioManagerImpl.audioPlayer) return 0;
+            return BackgroundAudioManagerImpl.audioPlayer.duration * this._buffered / 100000;
+        }
+        get epname() {
+            return this._epname;
+        }
+        set epname(epName: string) {
+            this._epname = epName;
+        }
+        get singer() {
+            return this._singer;
+        }
+        set singer(singerName: string) {
+            this._singer = singerName;
+        }
+        get coverImgUrl() {
+            return this._coverImgUrl;
+        }
+        set coverImgUrl(url: string) {
+            this._coverImgUrl = url;
+        }
+        get webUrl() {
+            return this._webUrl;
+        }
+        set webUrl(url: string) {
+            this._webUrl = url;
+        }
+        get protocol() {
+            return this._protocol;
+        }
+        set protocol(protocolType: string) {
+            this._protocol = protocolType;
+        }
+        set playbackRate(rate: number) {
+            audioPlayerCallback.error(new AudioPlayerError1('HarmonyOS Next Audio setting playbackRate is not supported.', -1));
+        }
+        get playbackRate() {
+            return this._playbackRate;
+        }
+        play() {
+            if (!BackgroundAudioManagerImpl.audioPlayer) {
+                return;
+            }
+            const state = BackgroundAudioManagerImpl.audioPlayer.state;
+            if (![
+                STATE_TYPE1.PAUSED,
+                STATE_TYPE1.STOPPED,
+                STATE_TYPE1.IDLE
+            ].includes(state)) {
+                return;
+            }
+            if (this._src && BackgroundAudioManagerImpl.audioPlayer.src === '') {
+                this.src = this._src;
+            }
+            BackgroundAudioManagerImpl.audioPlayer.play();
+            START_BACKGROUND();
+        }
+        pause() {
+            if (!BackgroundAudioManagerImpl.audioPlayer) {
+                return;
+            }
+            const state = BackgroundAudioManagerImpl.audioPlayer.state;
+            if (STATE_TYPE1.PLAYING !== state) {
+                return;
+            }
+            BackgroundAudioManagerImpl.audioPlayer.pause();
+        }
+        stop() {
+            if (!BackgroundAudioManagerImpl.audioPlayer) {
+                return;
+            }
+            if (![
+                STATE_TYPE1.PAUSED,
+                STATE_TYPE1.PLAYING
+            ].includes(BackgroundAudioManagerImpl.audioPlayer.state)) {
+                return;
+            }
+            BackgroundAudioManagerImpl.audioPlayer.stop();
+            BackgroundAudioManagerImpl.audioPlayer.release();
+            this.init();
+            STOP_BACKGROUND();
+            audioPlayerCallback.stop();
+        }
+        seek(position: number) {
+            if (!BackgroundAudioManagerImpl.audioPlayer) {
+                return;
+            }
+            const state = BackgroundAudioManagerImpl.audioPlayer.state;
+            if (![
+                STATE_TYPE1.PAUSED,
+                STATE_TYPE1.PLAYING
+            ].includes(state)) {
+                return;
+            }
+            BackgroundAudioManagerImpl.audioPlayer.seek(position * 1000);
+        }
+        onCanplay(callback: (result: Object) => void): void {
+            audioPlayerCallback.onCanplay(callback);
+        }
+        onPlay(callback: (result: Object) => void): void {
+            audioPlayerCallback.onPlay(callback);
+        }
+        onPause(callback: (result: Object) => void): void {
+            audioPlayerCallback.onPause(callback);
+        }
+        onStop(callback: (result: Object) => void): void {
+            audioPlayerCallback.onStop(callback);
+        }
+        onEnded(callback: (result: Object) => void): void {
+            audioPlayerCallback.onEnded(callback);
+        }
+        onTimeUpdate(callback: (result: Object) => void): void {
+            audioPlayerCallback.onTimeUpdate(callback);
+        }
+        onError(callback: (result: ICreateBackgroundAudioFail) => void): void {
+            audioPlayerCallback.onError(callback);
+        }
+        onWaiting(callback: (result: Object) => void): void {
+            audioPlayerCallback.onWaiting(callback);
+        }
+        offCanplay(callback: (result: Object) => void): void {
+            audioPlayerCallback.offCanplay(callback);
+        }
+        offPlay(callback: (result: Object) => void): void {
+            audioPlayerCallback.offPlay(callback);
+        }
+        offPause(callback: (result: Object) => void): void {
+            audioPlayerCallback.offPause(callback);
+        }
+        offStop(callback: (result: Object) => void): void {
+            audioPlayerCallback.offStop(callback);
+        }
+        offEnded(callback: (result: Object) => void): void {
+            audioPlayerCallback.offEnded(callback);
+        }
+        offTimeUpdate(callback: (result: Object) => void): void {
+            audioPlayerCallback.offTimeUpdate(callback);
+        }
+        offError(callback: (result: ICreateBackgroundAudioFail) => void): void {
+            audioPlayerCallback.offError(callback);
+        }
+        offWaiting(callback: (result: Object) => void): void {
+            audioPlayerCallback.offWaiting(callback);
+        }
+        onPrev(callback: (result: Object) => void): void {
+            throw new Error('Method not implemented.');
+        }
+        onNext(callback: (result: Object) => void): void {
+            throw new Error('Method not implemented.');
+        }
+        onSeeking(callback: (result: Object) => void): void {
+            throw new Error('Method not implemented.');
+        }
+        onSeeked(callback: (result: Object) => void): void {
+            throw new Error('Method not implemented.');
+        }
+    }
+    let backgroundAudioManager: BackgroundAudioManager | null = null;
+    const getBackgroundAudioManager: GetBackgroundAudioManager = defineSyncApi<BackgroundAudioManager>(API_GET_BACKGROUND_AUDIO_MANAGER, ()=>{
+        if (!backgroundAudioManager) backgroundAudioManager = new BackgroundAudioManagerImpl();
+        return backgroundAudioManager;
+    }) as GetBackgroundAudioManager;
+    const API_GET_DEVICE_INFO = 'getDeviceInfo';
+    const parseDeviceType = (deviceType: string): 'phone' | 'pad' | 'tv' | 'watch' | 'pc' | 'unknown' | 'car' | 'vr' | 'appliance' =>{
+        switch(deviceType){
+            case 'phone':
+                return 'phone';
+            case 'wearable':
+                return 'watch';
+            case 'tablet':
+                return 'pad';
+            case '2in1':
+                return 'pc';
+            case 'tv':
+                return 'tv';
+            case 'car':
+                return 'car';
+            case 'smartVision':
+                return 'vr';
+            default:
+                return 'unknown';
+        }
+    };
+    const getDeviceInfo: GetDeviceInfo = defineSyncApi<GetDeviceInfoResult>(API_GET_DEVICE_INFO, (): GetDeviceInfoResult =>{
+        return {
+            deviceBrand: deviceInfo.brand.toLowerCase(),
+            deviceId: getDeviceId(),
+            deviceModel: deviceInfo.productModel,
+            deviceOrientation: 'portrait',
+            devicePixelRatio: vp2px(1),
+            deviceType: parseDeviceType(deviceInfo.deviceType),
+            osLanguage: I18n1.System.getSystemLanguage(),
+            osTheme: UTSHarmony.getOsTheme() as string,
+            osVersion: deviceInfo.majorVersion + '.' + deviceInfo.seniorVersion + '.' + deviceInfo.featureVersion + '.' + deviceInfo.buildVersion,
+            osName: 'harmonyos',
+            platform: 'harmonyos',
+            romName: deviceInfo.distributionOSName,
+            romVersion: deviceInfo.distributionOSVersion,
+            system: deviceInfo.osFullName
+        } as GetDeviceInfoResult;
+    }) as GetDeviceInfo;
+    const API_GET_NETWORK_TYPE = 'getNetworkType';
+    const PERMISSIONS1 = [
+        'ohos.permission.GET_NETWORK_INFO'
+    ];
+    enum NetworkinfoType {
+        UNKNOW = 0,
+        NONE = 1,
+        ETHERNET = 2,
+        WIFI = 3,
+        "2G" = 4,
+        "3G" = 5,
+        "4G" = 6,
+        "5G" = 7
+    }
+    const signalType = (resultObj: radio.NetworkType)=>{
+        switch(resultObj){
+            case radio.NetworkType.NETWORK_TYPE_GSM:
+            case radio.NetworkType.NETWORK_TYPE_CDMA:
+                return NetworkinfoType['2G'];
+            case radio.NetworkType.NETWORK_TYPE_WCDMA:
+            case radio.NetworkType.NETWORK_TYPE_TDSCDMA:
+                return NetworkinfoType['3G'];
+            case radio.NetworkType.NETWORK_TYPE_LTE:
+                return NetworkinfoType['4G'];
+            case radio.NetworkType.NETWORK_TYPE_NR:
+                return NetworkinfoType['5G'];
+            case radio.NetworkType.NETWORK_TYPE_UNKNOWN:
+                return NetworkinfoType.UNKNOW;
+            default:
+                return NetworkinfoType.NONE;
+        }
+    };
+    const networkGetType = ()=>{
+        return new Promise<number>((resolve, reject)=>{
+            UTSHarmony.requestSystemPermission(PERMISSIONS1, (allRight: boolean)=>{
+                if (allRight) {
+                    try {
+                        radio.getPrimarySlotId().then((slotId: number)=>radio.getSignalInformationSync(slotId)).then((signalInformation: Array<radio.SignalInformation>)=>{
+                            const data = signalInformation[0];
+                            if (data && data.signalType) {
+                                resolve(signalType(data.signalType));
+                            } else {
+                                resolve(NetworkinfoType.NONE);
+                            }
+                        });
+                    } catch (error) {
+                        reject(error as BusinessError6);
+                    }
+                } else {
+                    reject('permission denied');
+                }
+            }, ()=>reject('permission denied'));
+        });
+    };
+    class GlobalContext {
+        netList: connection.NetHandle[] = [];
+        netHandle: connection.NetHandle | null = null;
+        private constructor(){}
+        private static instance: GlobalContext;
+        public static getContext(): GlobalContext {
+            if (!GlobalContext.instance) {
+                GlobalContext.instance = new GlobalContext();
+            }
+            return GlobalContext.instance;
+        }
+    }
+    const getCurrentType = ()=>{
+        return new Promise<number>((resolve, reject)=>{
+            UTSHarmony.requestSystemPermission(PERMISSIONS1, (allRight: boolean)=>{
+                if (allRight) {
+                    try {
+                        connection.getDefaultNet().then((data: connection.NetHandle)=>{
+                            if (data) {
+                                GlobalContext.getContext().netHandle = data;
+                                connection.getNetCapabilities(GlobalContext.getContext().netHandle!).then((data: connection.NetCapabilities)=>{
+                                    const bearerTypes: Set<number> = new Set(data.bearerTypes);
+                                    const bearerTypesNum = Array.from(bearerTypes.values());
+                                    for (const item of bearerTypesNum){
+                                        if (item == connection.NetBearType.BEARER_CELLULAR) {
+                                            networkGetType().then(resolve).catch(reject);
+                                        } else if (item == connection.NetBearType.BEARER_WIFI) {
+                                            resolve(NetworkinfoType.WIFI);
+                                        } else if (item == connection.NetBearType.BEARER_ETHERNET) {
+                                            resolve(NetworkinfoType.ETHERNET);
+                                        } else {
+                                            resolve(NetworkinfoType.UNKNOW);
+                                        }
+                                    }
+                                }).catch((err: BusinessError6)=>{
+                                    reject(err);
+                                });
+                            }
+                        });
+                    } catch (error) {
+                        reject(error);
+                    }
+                } else {
+                    reject('permission denied');
+                }
+            });
+        });
+    };
+    class Network {
+        static netConnection: connection.NetConnection | null = null;
+        constructor(){
+            Network.netConnection = connection.createNetConnection();
+        }
+        static ohoSubscribe() {
+            if (!Network.netConnection) {
+                Network.netConnection = connection.createNetConnection();
+            }
+            UTSHarmony.requestSystemPermission(PERMISSIONS1, (allRight: boolean)=>{
+                if (allRight && Network.netConnection) {
+                    Network.netConnection.register((err: BusinessError6)=>{});
+                    Network.netConnection.on('netCapabilitiesChange', (capability: connection.NetCapabilityInfo)=>{
+                        const NetBearType = capability?.netCap?.bearerTypes[0];
+                        let networkType = '';
+                        switch(NetBearType){
+                            case connection.NetBearType.BEARER_CELLULAR:
+                                getCurrentType().then((type: number)=>{
+                                    invokeOnNetworkStatusChange(NetworkinfoType[type]);
+                                }).catch(()=>{
+                                    invokeOnNetworkStatusChange(NetworkinfoType[1]);
+                                });
+                                return;
+                            case connection.NetBearType.BEARER_WIFI:
+                                networkType = NetworkinfoType[3];
+                                break;
+                            case connection.NetBearType.BEARER_ETHERNET:
+                                networkType = NetworkinfoType[2];
+                                break;
+                            default:
+                                networkType = NetworkinfoType[1];
+                        }
+                        invokeOnNetworkStatusChange(networkType);
+                    });
+                    Network.netConnection.on('netLost', (netLost: connection.NetHandle)=>{
+                        invokeOnNetworkStatusChange(NetworkinfoType[1]);
+                    });
+                }
+            });
+        }
+    }
+    new Network();
+    onNativePageReady().then(()=>{
+        Network.ohoSubscribe();
+    });
+    const getNetworkType: GetNetworkType = defineAsyncApi<GetNetworkTypeOptions, GetNetworkTypeSuccess>(API_GET_NETWORK_TYPE, (options: GetNetworkTypeOptions, res: ApiExecutor<GetNetworkTypeSuccess>)=>{
+        getCurrentType().then((type: number)=>{
+            res.resolve({
+                networkType: NetworkinfoType[type].toLocaleLowerCase()
+            } as GetNetworkTypeSuccess);
+        }).catch((err: BusinessError6)=>{
+            if (err.code === 2100001) {
+                res.resolve({
+                    networkType: NetworkinfoType[1].toLocaleLowerCase()
+                } as GetNetworkTypeSuccess);
+            } else {
+                res.reject(err.message);
+            }
+        });
+    }) as GetNetworkType;
+    const invokeOnNetworkStatusChange = (networkType: string)=>{
+        UniGetNetworkTypeEventEmitter.emit('networkStatusChange', {
+            isConnected: networkType !== NetworkinfoType[1],
+            networkType: networkType.toLocaleLowerCase()
+        } as OnNetworkStatusChangeCallbackResult);
+    };
+    const UniGetNetworkTypeEventEmitter = new Emitter4() as IUniGetNetworkTypeEventEmitter;
+    const onNetworkStatusChange: OnNetworkStatusChange = (callback: Function)=>{
+        UTSHarmony.requestSystemPermission(PERMISSIONS1, (allRight: boolean)=>{
+            if (allRight) {
+                UniGetNetworkTypeEventEmitter.on('networkStatusChange', callback);
+            }
+        });
+    };
+    const offNetworkStatusChange: OffNetworkStatusChange = (callback: Function)=>{
+        UTSHarmony.requestSystemPermission(PERMISSIONS1, (allRight: boolean)=>{
+            if (allRight) {
+                UniGetNetworkTypeEventEmitter.off('networkStatusChange', callback);
+            }
+        });
+    };
+    const API_GET_PROVIDER = 'getProvider';
+    const API_GET_PROVIDER_SYNC = 'getProviderSync';
+    const SupportedProviderServiceList = [
+        'oauth',
+        'share',
+        'payment',
+        'push',
+        'location'
+    ];
+    const _getProviderSync = (options: GetProviderOptions)=>{
+        if (!SupportedProviderServiceList.includes(options.service)) {
+            return 'Parameter service invalid.';
+        }
+        const providers = getUniProviders(options.service);
+        const providerIds = providers.map((provider): string =>{
+            return provider.id;
+        });
+        const result: GetProviderSuccess = {
+            service: options.service,
+            provider: providerIds,
+            providers
+        };
+        return result;
+    };
+    const getProvider: GetProvider = defineAsyncApi<GetProviderOptions, GetProviderSuccess>(API_GET_PROVIDER, (options: GetProviderOptions, exec: ApiExecutor<GetProviderSuccess>): void =>{
+        const res = _getProviderSync(options);
+        if (typeof res === 'string') exec.reject(res);
+        else exec.resolve(res);
+    }) as GetProvider;
+    const getProviderSync: GetProviderSync = defineSyncApi<GetProviderSyncSuccess>(API_GET_PROVIDER_SYNC, (options: GetProviderSyncOptions): GetProviderSyncSuccess =>{
+        const res = _getProviderSync(options as GetProviderOptions);
+        if (typeof res === 'string') throw new Error(res);
+        return {
+            service: res.service,
+            providerIds: res.provider,
+            providerObjects: res.providers
+        } as GetProviderSyncSuccess;
+    }) as GetProviderSync;
+    const API_GET_RECORDER_MANAGER = 'getRecorderManager';
+    const callbacks: Callbacks = {
+        pause: undefined,
+        resume: undefined,
+        start: undefined,
+        stop: undefined,
+        error: undefined,
+        frameRecorded: undefined,
+        interruptionBegin: undefined,
+        interruptionEnd: undefined
+    };
+    const setRecordStateCallback = (state: RecorderState, cb: Function)=>{
+        switch(state){
+            case 'pause':
+                callbacks.pause = cb;
+                break;
+            case 'resume':
+                callbacks.resume = cb;
+                break;
+            case 'start':
+                callbacks.start = cb;
+                break;
+            case 'stop':
+                callbacks.stop = cb;
+                break;
+            case 'error':
+                callbacks.error = cb;
+                break;
+            case 'frameRecorded':
+                callbacks.frameRecorded = cb;
+                break;
+            case 'interruptionBegin':
+                callbacks.interruptionBegin = cb;
+                break;
+            case 'interruptionEnd':
+                callbacks.interruptionEnd = cb;
+                break;
+        }
+    };
+    const onRecorderStateChange = (state: RecorderState, res: StateChangeRes | null = null): void =>{
+        switch(state){
+            case 'pause':
+                return callbacks.pause?.(res);
+            case 'resume':
+                return callbacks.resume?.(res);
+            case 'start':
+                return callbacks.start?.(res);
+            case 'stop':
+                return callbacks.stop?.(res);
+            case 'error':
+                return callbacks.error?.(res);
+            case 'frameRecorded':
+                return callbacks.frameRecorded?.(res);
+            case 'interruptionBegin':
+                return callbacks.interruptionBegin?.(res);
+            case 'interruptionEnd':
+                return callbacks.interruptionEnd?.(res);
+        }
+    };
+    const createFile = (supportFormats: string[], format: string, defaultExt: string)=>{
+        const TEMP_PATH = getEnv2().TEMP_PATH as string;
+        const filePath = `${TEMP_PATH}/recorder/`;
+        if (!fileIo2.accessSync(filePath)) {
+            fileIo2.mkdirSync(filePath, true);
+        }
+        const fileName = `${Date.now()}.${supportFormats.includes(format ?? '') ? format?.toLocaleLowerCase() : defaultExt}`;
+        const file: fileIo2.File = fileIo2.openSync(`${filePath}${fileName}`, fileIo2.OpenMode.READ_WRITE | fileIo2.OpenMode.CREATE);
+        return file;
+    };
+    const permissionDenied = ()=>{
+        throw new Error('Permission MICROPHONE denied');
+    };
+    const supportFormats = [
+        'aac'
+    ];
+    class AVRecorder implements RecorderManager {
+        private avRecorder?: media2.AVRecorder;
+        private isFirstStart: boolean = true;
+        constructor(){}
+        private onStateChange(file: fileIo3.File) {
+            if (this.avRecorder) {
+                this.avRecorder.on('stateChange', async (state, reason)=>{
+                    switch(state){
+                        case 'idle':
+                            this.isFirstStart = true;
+                            break;
+                        case 'started':
+                            if (this.isFirstStart) {
+                                this.isFirstStart = false;
+                                onRecorderStateChange('start');
+                            } else {
+                                if (reason === media2.StateChangeReason.BACKGROUND) {
+                                    onRecorderStateChange('interruptionEnd');
+                                }
+                                onRecorderStateChange('resume');
+                            }
+                            break;
+                        case 'paused':
+                            if (reason === media2.StateChangeReason.BACKGROUND) {
+                                onRecorderStateChange('interruptionBegin');
+                            }
+                            onRecorderStateChange('pause');
+                            break;
+                        case 'stopped':
+                            onRecorderStateChange('stop', {
+                                tempFilePath: file.path
+                            } as StateChangeRes);
+                            fileIo3.closeSync(file);
+                            break;
+                    }
+                });
+                this.avRecorder.on('error', (err: BusinessError7)=>{
+                    onRecorderStateChange('error', {
+                        errMsg: `${err.message} ${err.code}`
+                    } as StateChangeRes);
+                });
+            }
+        }
+        private async release() {
+            if (this.avRecorder !== undefined) {
+                await this.avRecorder.reset();
+                await this.avRecorder.release();
+                this.avRecorder = undefined;
+            }
+        }
+        async start(options: RecorderManagerStartOptions): Promise<void> {
+            if (this.avRecorder !== undefined) {
+                await this.release();
+            }
+            this.avRecorder = await media2.createAVRecorder();
+            const _options_sampleRate = options.sampleRate, sampleRate = _options_sampleRate == null ? 48000 : _options_sampleRate, _options_numberOfChannels = options.numberOfChannels, numberOfChannels = _options_numberOfChannels == null ? 2 : _options_numberOfChannels, _options_encodeBitRate = options.encodeBitRate, encodeBitRate = _options_encodeBitRate == null ? 48000 : _options_encodeBitRate, _options_duration = options.duration, duration = _options_duration == null ? null : _options_duration;
+            const file = createFile(supportFormats, options.format ?? '', 'aac');
+            this.onStateChange(file);
+            const audioProfile: media2.AVRecorderProfile = {
+                audioBitrate: encodeBitRate!,
+                audioChannels: numberOfChannels!,
+                audioCodec: media2.CodecMimeType.AUDIO_AAC,
+                audioSampleRate: sampleRate!,
+                fileFormat: media2.ContainerFormatType.CFT_MPEG_4A
+            };
+            const audioConfig: media2.AVRecorderConfig = {
+                audioSourceType: media2.AudioSourceType.AUDIO_SOURCE_TYPE_MIC,
+                profile: audioProfile,
+                url: 'fd://' + file.fd
+            };
+            UTSHarmony.requestSystemPermission([
+                'ohos.permission.MICROPHONE'
+            ], async (allRight: boolean)=>{
+                if (allRight) {
+                    await this.avRecorder?.prepare(audioConfig);
+                    await this.avRecorder?.start();
+                    if (duration) {
+                        setTimeout(async ()=>{
+                            await this.avRecorder?.stop();
+                        }, duration);
+                    }
+                } else {
+                    permissionDenied();
+                }
+            }, permissionDenied);
+        }
+        async pause(): Promise<void> {
+            if (this.avRecorder !== undefined && this.avRecorder.state === 'started') {
+                await this.avRecorder.pause();
+            }
+        }
+        async resume(): Promise<void> {
+            if (this.avRecorder !== undefined && this.avRecorder.state === 'paused') {
+                await this.avRecorder.resume();
+            }
+        }
+        async stop(): Promise<void> {
+            if (this.avRecorder !== undefined && (this.avRecorder.state === 'started' || this.avRecorder.state === 'paused')) {
+                await this.avRecorder.stop();
+                await this.release();
+                this.isFirstStart = true;
+            }
+        }
+        onStart(options: (result: Object) => void): void {
+            setRecordStateCallback('start', options);
+        }
+        onPause(options: (result: Object) => void): void {
+            setRecordStateCallback('pause', options);
+        }
+        onStop(options: (result: RecorderManagerOnStopResult) => void): void {
+            setRecordStateCallback('stop', options);
+        }
+        onFrameRecorded(options: (result: Object) => void): void {
+            setRecordStateCallback('frameRecorded', options);
+        }
+        onError(options: (result: Object) => void): void {
+            setRecordStateCallback('error', options);
+        }
+        onResume(options: (result: Object) => void): void {
+            setRecordStateCallback('resume', options);
+        }
+        onInterruptionBegin(options: (result: Object) => void): void {
+            setRecordStateCallback('interruptionBegin', options);
+        }
+        onInterruptionEnd(options: (result: Object) => void): void {
+            setRecordStateCallback('interruptionEnd', options);
+        }
+    }
+    let RECORDER_MANAGER: AVRecorder | null = null;
+    const DEFAULT_DURATION = 60000;
+    const MAX_DURATION = 60000 * 10;
+    const DEFAULT_FORMAT = 'aac';
+    class RecorderManagerImpl implements RecorderManager {
+        start(options: RecorderManagerStartOptions | null = null): void {
+            if (options == null) options = {} as RecorderManagerStartOptions;
+            if (!options.format) options.format = DEFAULT_FORMAT;
+            if (options.duration == null) {
+                options.duration = DEFAULT_DURATION;
+            }
+            if (options.duration > MAX_DURATION) {
+                options.duration = MAX_DURATION;
+            }
+            if (supportFormats.includes(options.format ?? '')) {
+                RECORDER_MANAGER = new AVRecorder();
+            }
+            if (RECORDER_MANAGER) {
+                RECORDER_MANAGER.start(options);
+            } else {
+                onRecorderStateChange('error', {
+                    errMsg: `format not supported. Only supported ${supportFormats.join(',')}`
+                } as StateChangeRes);
+            }
+        }
+        pause(): void {
+            if (RECORDER_MANAGER) RECORDER_MANAGER.pause();
+        }
+        resume(): void {
+            if (RECORDER_MANAGER) RECORDER_MANAGER.resume();
+        }
+        async stop() {
+            if (RECORDER_MANAGER) {
+                try {
+                    await RECORDER_MANAGER.stop();
+                } catch (error) {}
+                RECORDER_MANAGER = null;
+            }
+        }
+        onStart(options: (result: Object) => void): void {
+            setRecordStateCallback('start', options);
+        }
+        onPause(options: (result: Object) => void): void {
+            setRecordStateCallback('pause', options);
+        }
+        onStop(options: (result: RecorderManagerOnStopResult) => void): void {
+            setRecordStateCallback('stop', options);
+        }
+        onFrameRecorded(options: (result: Object) => void): void {
+            setRecordStateCallback('frameRecorded', options);
+        }
+        onError(options: (result: Object) => void): void {
+            setRecordStateCallback('error', options);
+        }
+        onResume(options: (result: Object) => void): void {
+            setRecordStateCallback('resume', options);
+        }
+        onInterruptionBegin(options: (result: Object) => void): void {
+            setRecordStateCallback('interruptionBegin', options);
+        }
+        onInterruptionEnd(options: (result: Object) => void): void {
+            setRecordStateCallback('interruptionEnd', options);
+        }
+    }
+    let recorderManager: RecorderManager | null = null;
+    const getRecorderManager: GetRecorderManager = defineSyncApi<RecorderManager>(API_GET_RECORDER_MANAGER, (): RecorderManager =>{
+        if (recorderManager) return recorderManager;
+        else recorderManager = new RecorderManagerImpl();
+        return recorderManager;
+    }) as GetRecorderManager;
+    const API_GET_SYSTEM_INFO = 'getSystemInfo';
+    const API_GET_SYSTEM_INFO_SYNC = 'getSystemInfoSync';
+    const API_GET_WINDOW_INFO = 'getWindowInfo';
+    const parseDeviceType1 = (deviceType: string): 'phone' | 'pad' | 'tv' | 'watch' | 'pc' | 'unknown' | 'car' | 'vr' | 'appliance' =>{
+        switch(deviceType){
+            case 'phone':
+                return 'phone';
+            case 'wearable':
+                return 'watch';
+            case 'tablet':
+                return 'pad';
+            case '2in1':
+                return 'pc';
+            case 'tv':
+                return 'tv';
+            case 'car':
+                return 'car';
+            case 'smartVision':
+                return 'vr';
+            default:
+                return 'unknown';
+        }
+    };
+    const getWindowInfo: GetWindowInfo = defineSyncApi<GetWindowInfoResult>(API_GET_WINDOW_INFO, (): GetWindowInfoResult =>{
+        return internalGetWindowInfo() as GetWindowInfoResult;
+    }) as GetWindowInfo;
+    const internalGetSystemInfo = (): GetSystemInfoResult =>{
+        const appVersion = UTSHarmony.getAppVersion() as ISystemInfoAppVersion;
+        const appLanguage = I18n2.System.getAppPreferredLanguage();
+        const uniCompilerVersion: string = UTSHarmony.getUniCompilerVersion() as string;
+        const uniCompilerVersionCode: number = parseFloat(uniCompilerVersion);
+        const uniRuntimeVersion: string = UTSHarmony.getUniRuntimeVersion();
+        const windowInfo = internalGetWindowInfo() as GetWindowInfoResult;
+        const pixelRatio = windowInfo.pixelRatio;
+        const safeArea = windowInfo.safeArea;
+        const safeAreaInsets = windowInfo.safeAreaInsets;
+        const screenHeight = windowInfo.screenHeight;
+        const screenWidth = windowInfo.screenWidth;
+        const statusBarHeight = windowInfo.statusBarHeight;
+        const windowBottom = windowInfo.windowBottom;
+        const windowHeight = windowInfo.windowHeight;
+        const windowTop = windowInfo.windowTop;
+        const windowWidth = windowInfo.windowWidth;
+        return {
+            appId: UTSHarmony.getAppId() as string,
+            appLanguage,
+            appName: UTSHarmony.getAppName() as string,
+            appTheme: UTSHarmony.getAppTheme() as string,
+            appVersion: appVersion.name,
+            appVersionCode: appVersion.code,
+            appWgtVersion: appVersion.name,
+            uniCompilerVersion: uniCompilerVersion,
+            uniCompilerVersionCode: uniCompilerVersionCode,
+            uniRuntimeVersion: uniRuntimeVersion,
+            uniRuntimeVersionCode: parseFloat(uniRuntimeVersion),
+            uniPlatform: 'app',
+            deviceBrand: deviceInfo1.brand.toLowerCase(),
+            deviceId: getDeviceId1(),
+            deviceModel: deviceInfo1.productModel,
+            deviceOrientation: 'portrait',
+            devicePixelRatio: vp2px(1),
+            deviceType: parseDeviceType1(deviceInfo1.deviceType),
+            osLanguage: I18n2.System.getSystemLanguage(),
+            osTheme: UTSHarmony.getOsTheme() as string,
+            osVersion: deviceInfo1.majorVersion + '.' + deviceInfo1.seniorVersion + '.' + deviceInfo1.featureVersion + '.' + deviceInfo1.buildVersion,
+            osName: 'harmonyos',
+            romName: deviceInfo1.distributionOSName,
+            romVersion: deviceInfo1.distributionOSVersion,
+            system: deviceInfo1.osFullName,
+            pixelRatio,
+            safeArea,
+            safeAreaInsets,
+            screenHeight,
+            screenWidth,
+            statusBarHeight,
+            windowBottom,
+            windowHeight,
+            windowTop,
+            windowWidth,
+            SDKVersion: '',
+            browserName: '',
+            browserVersion: '',
+            ua: '',
+            language: appLanguage,
+            brand: deviceInfo1.brand,
+            model: '',
+            platform: 'harmonyos',
+            uniCompileVersion: uniCompilerVersion,
+            uniCompileVersionCode: uniCompilerVersionCode,
+            version: ''
+        } as GetSystemInfoResult;
+    };
+    const getSystemInfoSync: GetSystemInfoSync = defineSyncApi<GetSystemInfoResult>(API_GET_SYSTEM_INFO_SYNC, (): GetSystemInfoResult =>{
+        return internalGetSystemInfo();
+    }) as GetSystemInfoSync;
+    const getSystemInfo: GetSystemInfo = defineAsyncApi<GetSystemInfoOptions, GetSystemInfoResult>(API_GET_SYSTEM_INFO, (options: GetSystemInfoOptions, exec: ApiExecutor<GetSystemInfoResult>)=>{
+        try {
+            exec.resolve(internalGetSystemInfo());
+        } catch (error) {
+            exec.reject((error as Error).message);
+        }
+    }) as GetSystemInfo;
+    const getSystemSetting: GetSystemSetting = defineSyncApi<GetSystemSettingResult>('getSystemSetting', (): GetSystemSettingResult =>{
+        const defaultDisplay = display.getDefaultDisplaySync();
+        const res: GetSystemSettingResult = {
+            bluetoothEnabled: false,
+            bluetoothError: null,
+            locationEnabled: false,
+            wifiEnabled: false,
+            wifiError: null,
+            deviceOrientation: (defaultDisplay.orientation === display.Orientation.PORTRAIT || defaultDisplay.orientation === display.Orientation.PORTRAIT_INVERTED) ? 'portrait' : 'landscape'
+        };
+        try {
+            if (access.getState() === access.BluetoothState.STATE_ON) res.bluetoothEnabled = true;
+        } catch (err) {
+            res.bluetoothError = (err as BusinessError8).message;
+        }
+        try {
+            res.locationEnabled = geoLocationManager.isLocationEnabled();
+        } catch (err) {}
+        try {
+            res.wifiEnabled = wifiManager.isWifiActive();
+        } catch (err) {
+            res.wifiError = (err as BusinessError8).message;
+        }
+        return res;
+    }) as GetSystemSetting;
+    const API_HIDE_KEYBOARD = 'hideKeyboard';
+    const hideKeyboard: HideKeyboard = defineAsyncApi<HideKeyboardOptions, HideKeyboardSuccess>(API_HIDE_KEYBOARD, (options: HideKeyboardOptions, exec: ApiExecutor<HideKeyboardSuccess>)=>{
+        inputMethod.getController().hideTextInput().then(()=>{
+            exec.resolve();
+        }, (err: Error)=>{
+            exec.reject(err.message);
+        });
+    }) as HideKeyboard;
+    const API_MAKE_PHONE_CALL = 'makePhoneCall';
+    const MakePhoneCallProtocol = new Map<string, ProtocolOptions>([
+        [
+            'phoneNumber',
+            {
+                type: 'string',
+                required: true
+            }
+        ]
+    ]);
+    const isPromise = (res: Object)=>{
+        if ((typeof res === "object" || typeof res === "function") && typeof (res as Promise<void>).then === "function") {
+            return true;
+        }
+        return false;
+    };
+    const dial = (number: string, confirm = true)=>{
+        if (!confirm && typeof call.dial === 'function') {
+            return new Promise<void>((resolve, reject)=>{
+                UTSHarmony.requestSystemPermission([
+                    'ohos.permission.PLACE_CALL'
+                ], (allRight: boolean)=>{
+                    if (allRight) {
+                        call.dial(number).then(()=>{
+                            resolve();
+                        }).catch(reject);
+                    } else {
+                        reject('permission denied');
+                    }
+                }, ()=>{
+                    reject('permission denied');
+                });
+            });
+        } else {
+            return call.makeCall(number);
+        }
+    };
+    const makePhoneCall: MakePhoneCall = defineAsyncApi<MakePhoneCallOptions, MakePhoneCallSuccess>(API_MAKE_PHONE_CALL, (options: MakePhoneCallOptions, res: ApiExecutor<MakePhoneCallSuccess>)=>{
+        const dialRes = dial(options.phoneNumber) as Object as Promise<void>;
+        if (isPromise(dialRes)) {
+            dialRes.then(res.resolve).catch((err: BusinessError9<void>)=>{
+                res.reject(err.message);
+            });
+        } else {
+            res.resolve();
+        }
+    }, MakePhoneCallProtocol) as MakePhoneCall;
+    const API_LOGIN = 'login';
+    const LoginApiProtocol = new Map<string, ProtocolOptions>([
+        [
+            'provider',
+            {
+                type: 'string'
+            }
+        ],
+        [
+            'timeout',
+            {
+                type: 'number'
+            }
+        ]
+    ]);
+    const API_GET_USER_INFO = 'getUserInfo';
+    const GetUserInfoApiProtocol = new Map<string, ProtocolOptions>([
+        [
+            'provider',
+            {
+                type: 'string'
+            }
+        ],
+        [
+            'timeout',
+            {
+                type: 'number'
+            }
+        ]
+    ]);
+    const SERVICE = 'oauth';
+    const PROVIDER = 'huawei';
+    const login: Login = defineAsyncApi<LoginOptions, LoginSuccess>(API_LOGIN, (args: LoginOptions, executor: ApiExecutor<LoginSuccess>)=>{
+        const provider = getUniProvider<UniOAuthProvider>(SERVICE, args.provider ?? PROVIDER);
+        if (!provider) {
+            executor.reject('Provider not found.');
+            return;
+        }
+        provider.login({
+            success (res) {
+                executor.resolve(res);
+            },
+            fail (err) {
+                executor.reject(err.errMsg);
+            }
+        } as LoginOptions);
+    }, LoginApiProtocol) as Login;
+    const getUserInfo: GetUserInfo = defineAsyncApi<GetUserInfoOptions, GetUserInfoSuccess>(API_GET_USER_INFO, (args: GetUserInfoOptions, executor: ApiExecutor<GetUserInfoSuccess>)=>{
+        const provider = getUniProvider<UniOAuthProvider>(SERVICE, args.provider ?? PROVIDER);
+        if (!provider) {
+            executor.reject('Provider not found.');
+            return;
+        }
+        provider.getUserInfo({
+            success (res) {
+                executor.resolve(res);
+            },
+            fail (err) {
+                executor.reject(err.errMsg);
+            }
+        } as GetUserInfoOptions);
+    }, GetUserInfoApiProtocol) as GetUserInfo;
+    const API_OPEN_APP_AUTHORIZE_SETTING = 'openAppAuthorizeSetting';
+    const openAppAuthorizeSetting: OpenAppAuthorizeSetting = defineAsyncApi<OpenAppAuthorizeSettingOptions, OpenAppAuthorizeSettingSuccess>(API_OPEN_APP_AUTHORIZE_SETTING, (options: OpenAppAuthorizeSettingOptions, exec: ApiExecutor<OpenAppAuthorizeSettingSuccess>)=>{
+        const want: Want = {
+            bundleName: 'com.huawei.hmos.settings',
+            abilityName: 'com.huawei.hmos.settings.MainAbility',
+            uri: 'application_info_entry',
+            parameters: {
+                pushParams: bundleManager2.getBundleInfoForSelfSync(bundleManager2.BundleFlag.GET_BUNDLE_INFO_DEFAULT).name
+            }
+        } as Want;
+        const context = UTSHarmony.getUIAbilityContext() as common1.UIAbilityContext;
+        context.startAbility(want).then(()=>{
+            exec.resolve({
+                errMsg: ''
+            } as OpenAppAuthorizeSettingSuccess);
+        }, (err: Error)=>{
+            exec.reject(err.message);
+        });
+    }) as OpenAppAuthorizeSetting;
+    const API_OPEN_DOCUMENT = 'openDocument';
+    const getContentType = (filePath: string, fileType: string | null = null): string | void =>{
+        const suffix = fileType || filePath.split('.').pop();
+        if (!suffix) {
+            return;
+        }
+        switch(suffix){
+            case 'doc':
+            case 'docx':
+                return 'application/msword';
+            case 'xls':
+            case 'xlsx':
+                return 'application/vnd.ms-excel';
+            case 'ppt':
+            case 'pptx':
+                return 'application/vnd.ms-powerpoint';
+            case 'pdf':
+                return 'application/pdf';
+            default:
+                return;
+        }
+    };
+    const openDocument: OpenDocument = defineAsyncApi<OpenDocumentOptions, OpenDocumentSuccess>(API_OPEN_DOCUMENT, (options: OpenDocumentOptions, exec: ApiExecutor<OpenDocumentSuccess>)=>{
+        const filePath = options.filePath;
+        const uri = fileUri.getUriFromPath(filePath.replace(/^file:\/\//, ''));
+        const fileContentType = getContentType(filePath, options.fileType);
+        if (!fileContentType) {
+            exec.reject('file type not supported');
+            return;
+        }
+        const want: Want1 = {
+            flags: wantConstant.Flags.FLAG_AUTH_WRITE_URI_PERMISSION | wantConstant.Flags.FLAG_AUTH_READ_URI_PERMISSION | wantConstant.Flags.FLAG_AUTH_PERSISTABLE_URI_PERMISSION,
+            action: 'ohos.want.action.viewData',
+            uri: uri,
+            type: fileContentType as string
+        };
+        const abilityContext = UTSHarmony.getUIAbilityContext() as common2.UIAbilityContext;
+        abilityContext.startAbility(want).then(()=>{
+            exec.resolve({} as OpenDocumentSuccess);
+        }, (err: Error)=>{
+            exec.reject(err.message);
+        });
+    }) as OpenDocument;
+    const RequestPaymentUniErrors: Map<RequestPaymentErrorCode, string> = new Map([
+        [
+            700600,
+            'The payment result is unknown (it may have been successfully paid). Please check the payment status of the order in the merchant order list.'
+        ],
+        [
+            701100,
+            'Order payment failure.'
+        ],
+        [
+            701110,
+            'Repeat the request.'
+        ],
+        [
+            700601,
+            'The user canceled midway.'
+        ],
+        [
+            700602,
+            'Network connection error.'
+        ],
+        [
+            700603,
+            'Payment result unknown (may have been successfully paid), please check the payment status of the order in the merchant order list.'
+        ],
+        [
+            700607,
+            'Payment not completed.'
+        ],
+        [
+            700608,
+            'Parameter error.'
+        ],
+        [
+            700000,
+            'Other payment errors.'
+        ],
+        [
+            700604,
+            'Wechat is not installed.'
+        ],
+        [
+            700605,
+            'Failed to get provider.'
+        ],
+        [
+            700800,
+            'URL Scheme is not configured.'
+        ],
+        [
+            700801,
+            'Universal Link is not configured.'
+        ]
+    ]);
+    const API_REQUEST_PAYMENT = 'requestPayment';
+    const requestPayment: RequestPayment = defineAsyncApi<RequestPaymentOptions, RequestPaymentSuccess>(API_REQUEST_PAYMENT, (options: RequestPaymentOptions, exec: ApiExecutor<RequestPaymentSuccess>): void =>{
+        const provider = getUniProvider<UniPaymentProvider>('payment', options.provider);
+        if (!provider) {
+            exec.reject('Provider not found.');
+            return;
+        }
+        provider.requestPayment({
+            orderInfo: options.orderInfo,
+            success: (result: RequestPaymentSuccess)=>{
+                exec.resolve(result);
+            },
+            fail: (error: RequestPaymentFail)=>{
+                const errMsg = RequestPaymentUniErrors.get(error.errCode) ?? "";
+                exec.reject(errMsg, {
+                    errCode: error.errCode
+                } as ApiError);
+            }
+        } as RequestPaymentOptions);
+    }) as RequestPayment;
+    const API_RPX2PX = 'rpx2px';
+    const EPS = 1e-4;
+    const rpx2px: Rpx2px = defineSyncApi<number>(API_RPX2PX, (number: number): number =>{
+        const windowStage: harmonyWindow.WindowStage = UTSHarmony.getWindowStage() as harmonyWindow.WindowStage;
+        let windowWidthInVp: number = 384;
+        let windowWidthInPx: number = 1344;
+        if (windowStage) {
+            const mainWindow: harmonyWindow.Window = windowStage.getMainWindowSync();
+            windowWidthInPx = mainWindow.getWindowProperties().windowRect.width;
+            windowWidthInVp = px2vp(windowWidthInPx);
+        }
+        let result = (number / 750) * windowWidthInVp;
+        if (result < 0) {
+            result = -result;
+        }
+        result = Math.floor(result + EPS);
+        if (result == 0) {
+            if (windowWidthInPx == windowWidthInVp) {
+                result = 1;
+            } else {
+                result = 0.5;
+            }
+        }
+        return number < 0 ? -result : result;
+    }) as Rpx2px;
+    const API_SCAN_CODE = 'scanCode';
+    const HarmonyScanTypeMap = new Map<UniScanOptionsTypes, scanCore.ScanType[]>([
+        [
+            'barCode',
+            [
+                scanCore.ScanType.ONE_D_CODE
+            ]
+        ],
+        [
+            'qrCode',
+            [
+                scanCore.ScanType.TWO_D_CODE
+            ]
+        ],
+        [
+            'datamatrix',
+            [
+                scanCore.ScanType.DATAMATRIX_CODE
+            ]
+        ],
+        [
+            'pdf417',
+            [
+                scanCore.ScanType.PDF417_CODE
+            ]
+        ]
+    ]);
+    const UniScanTypeMap = new Map<HarmonyScanResultTypes, UniScanResultTypes>([
+        [
+            scanCore.ScanType.AZTEC_CODE,
+            'AZTEC'
+        ],
+        [
+            scanCore.ScanType.CODABAR_CODE,
+            'CODABAR'
+        ],
+        [
+            scanCore.ScanType.CODE128_CODE,
+            'CODE_128'
+        ],
+        [
+            scanCore.ScanType.CODE39_CODE,
+            'CODE_39'
+        ],
+        [
+            scanCore.ScanType.CODE93_CODE,
+            'CODE_93'
+        ],
+        [
+            scanCore.ScanType.DATAMATRIX_CODE,
+            'DATA_MATRIX'
+        ],
+        [
+            scanCore.ScanType.EAN13_CODE,
+            'EAN_13'
+        ],
+        [
+            scanCore.ScanType.EAN8_CODE,
+            'EAN_8'
+        ],
+        [
+            scanCore.ScanType.ITF14_CODE,
+            'ITF'
+        ],
+        [
+            scanCore.ScanType.PDF417_CODE,
+            'PDF_417'
+        ],
+        [
+            scanCore.ScanType.QR_CODE,
+            'QR_CODE'
+        ],
+        [
+            scanCore.ScanType.UPC_A_CODE,
+            'UPC_A'
+        ],
+        [
+            scanCore.ScanType.UPC_E_CODE,
+            'UPC_E'
+        ]
+    ]);
+    const scanCode: ScanCode = defineAsyncApi<ScanCodeOptions, ScanCodeSuccess>(API_SCAN_CODE, (options: ScanCodeOptions, exec: ApiExecutor<ScanCodeSuccess>)=>{
+        if (!canIUse('SystemCapability.Multimedia.Scan.ScanBarcode')) {
+            exec.reject('not support');
+            return;
+        }
+        let scanTypes: scanCore.ScanType[] = [];
+        if (options.scanType && Array.isArray(options.scanType) && options.scanType.length > 0) {
+            for(let i = 0; i < options.scanType.length; i++){
+                const uniScanType = options.scanType[i];
+                const harmonyScanTypes = HarmonyScanTypeMap.get(uniScanType);
+                if (!harmonyScanTypes) {
+                    continue;
+                }
+                scanTypes = scanTypes.concat(harmonyScanTypes);
+            }
+        }
+        if (scanTypes.length === 0) {
+            scanTypes = [
+                scanCore.ScanType.ALL
+            ];
+        }
+        const scanOptions: scanBarcode.ScanOptions = {
+            scanTypes,
+            enableMultiMode: true,
+            enableAlbum: !options.onlyFromCamera
+        };
+        scanBarcode.startScanForResult(UTSHarmony.getUIAbilityContext()!, scanOptions, (err, data)=>{
+            if (err) {
+                exec.reject(err.message);
+                return;
+            }
+            exec.resolve({
+                result: data.originalValue,
+                scanType: UniScanTypeMap.get(data.scanType as HarmonyScanResultTypes) || ''
+            } as ScanCodeSuccess);
+        });
+    }) as ScanCode;
+    const API_SHARE_WITH_SYSTEM = 'shareWithSystem';
+    const shareWithSystem = defineAsyncApi<ShareWithSystemOptions, ShareWithSystemSuccess>(API_SHARE_WITH_SYSTEM, (args: ShareWithSystemOptions, exec: ApiExecutor<ShareWithSystemSuccess>)=>{
+        const href = args.href;
+        const imageUrl = args.imageUrl;
+        const summary = args.summary;
+        const shareRecords: systemShare.SharedRecord[] = [];
+        if (href) {
+            shareRecords.push({
+                utd: uniformTypeDescriptor.UniformDataType.HYPERLINK,
+                content: href
+            } as systemShare.SharedRecord);
+        }
+        if (imageUrl) {
+            shareRecords.push({
+                utd: uniformTypeDescriptor.UniformDataType.IMAGE,
+                uri: imageUrl
+            } as systemShare.SharedRecord);
+        }
+        if (summary) {
+            shareRecords.push({
+                utd: uniformTypeDescriptor.UniformDataType.TEXT,
+                content: summary
+            } as systemShare.SharedRecord);
+        }
+        if (shareRecords.length === 0) {
+            exec.reject('No share data');
+            return;
+        }
+        const shareData = new systemShare.SharedData(shareRecords[0]);
+        for(let index = 1; index < shareRecords.length; index++){
+            shareData.addRecord(shareRecords[index]);
+        }
+        const shareController: systemShare.ShareController = new systemShare.ShareController(shareData);
+        shareController.show(UTSHarmony.getUIAbilityContext() as common3.UIAbilityContext, {} as systemShare.ShareControllerOptions);
+        const onDismiss = ()=>{
+            shareController.off('dismiss', onDismiss);
+            exec.resolve({} as ShareWithSystemSuccess);
+        };
+        shareController.on('dismiss', onDismiss);
+    }) as ShareWithSystem;
+    const API_CONNECT_SOCKET = 'connectSocket';
+    const ConnectSocketApiProtocol = new Map<string, ProtocolOptions>([
+        [
+            'url',
+            {
+                type: 'string',
+                required: true
+            }
+        ],
+        [
+            'header',
+            {
+                type: 'object',
+                required: false
+            }
+        ],
+        [
+            'protocols',
+            {
+                type: 'string[]',
+                required: false
+            }
+        ]
+    ]);
+    const ConnectSocketApiOptions: ApiOptions<ConnectSocketOptions> = {
+        formatArgs: new Map<string, Function>([
+            [
+                'url',
+                (url: string, params: ConnectSocketOptions)=>{
+                    if (url == null) {
+                        throw new Error('url is required');
+                    }
+                }
+            ]
+        ])
+    };
+    const API_SEND_SOCKET_MESSAGE = 'sendSocketMessage';
+    const API_CLOSE_SOCKET = 'closeSocket';
+    const tryExec = (fn: Function | null | undefined, ...args: Object[])=>{
+        if (!fn) {
+            return;
+        }
+        try {
+            fn(...args);
+        } catch (error) {
+            console.error(error);
+        }
+    };
+    const GlobalWebsocketEmitter = new Emitter5() as IUniWebsocketEmitter;
+    const destroySocketTaskEmitter = (emitter: IUniWebsocketEmitter)=>{
+        emitter.off('message');
+        emitter.off('open');
+        emitter.off('error');
+        emitter.off('close');
+    };
+    class SocketTask1 implements SocketTask {
+        _destroy: Function;
+        private _ws: webSocket.WebSocket;
+        private _emitter: IUniWebsocketEmitter = new Emitter5() as IUniWebsocketEmitter;
+        constructor(ws: webSocket.WebSocket){
+            const mp = getCurrentMP5();
+            this._ws = ws;
+            this._ws.on('message', (_, data)=>{
+                const message = {
+                    data
+                } as OnSocketMessageCallbackResult;
+                this._emitter.emit('message', message);
+                const socketTasks = getSocketTasks(mp.id);
+                if (this === socketTasks[0]) {
+                    GlobalWebsocketEmitter.emit('message', message);
+                }
+            });
+            this._ws.on('open', (_, data)=>{
+                this._emitter.emit('open', data);
+                const socketTasks = getSocketTasks(mp.id);
+                if (this === socketTasks[0]) {
+                    GlobalWebsocketEmitter.emit('open', data);
+                }
+            });
+            this._ws.on('error', (error)=>{
+                const message = {
+                    errMsg: error.message
+                } as OnSocketErrorCallbackResult;
+                this._emitter.emit('error', message);
+                const socketTasks = getSocketTasks(mp.id);
+                if (this === socketTasks[0]) {
+                    GlobalWebsocketEmitter.emit('error', message);
+                }
+            });
+            this._ws.on('close', (_, data)=>{
+                this._emitter.emit('close', data);
+                const socketTasks = getSocketTasks(mp.id);
+                if (this === socketTasks[0]) {
+                    GlobalWebsocketEmitter.emit('close', data);
+                }
+                const index = socketTasks.indexOf(this);
+                if (index >= 0) {
+                    socketTasks.splice(index, 1);
+                }
+            });
+            this._destroy = ()=>{
+                destroySocketTaskEmitter(this._emitter);
+                this.close();
+            };
+        }
+        send(options: SendSocketMessageOptions) {
+            this._ws.send(options.data as string | ArrayBuffer).then((success: boolean)=>{
+                if (success) {
+                    tryExec(options.success, {} as GeneralCallbackResult);
+                } else {
+                    tryExec(options.fail, new UniError('send message failed'));
+                }
+            }, (err: Error)=>{
+                tryExec(options.fail, new UniError(err.message));
+            });
+        }
+        close(options: CloseSocketOptions | null = null) {
+            this._ws.close({
+                code: typeof options?.code === 'number' ? options.code : 1000,
+                reason: typeof options?.reason === 'string' ? options.reason : ''
+            } as webSocket.WebSocketCloseOptions).then((success: boolean)=>{
+                if (success) {
+                    tryExec(options?.success, {} as GeneralCallbackResult);
+                } else {
+                    tryExec(options?.fail, new UniError('close socket failed'));
+                }
+            }, (err: Error)=>{
+                tryExec(options?.fail, new UniError(err.message));
+            });
+        }
+        onMessage(callback: Function) {
+            this._emitter.on('message', callback);
+        }
+        onOpen(callback: Function) {
+            this._emitter.on('open', callback);
+        }
+        onError(callback: Function) {
+            this._emitter.on('error', callback);
+        }
+        onClose(callback: Function) {
+            this._emitter.on('close', callback);
+        }
+    }
+    const socketTasksMap: Map<string, SocketTask1[]> = new Map();
+    const addSocketTask = (task: SocketTask1)=>{
+        const mp = getCurrentMP5();
+        mp.on('beforeClose', task._destroy);
+        task.onClose(()=>{
+            mp.off('beforeClose', task._destroy);
+        });
+        const id = mp.id;
+        if (!socketTasksMap.has(id)) {
+            socketTasksMap.set(id, []);
+        }
+        const socketTasks = socketTasksMap.get(id) as SocketTask1[];
+        socketTasks.push(task);
+    };
+    const getSocketTasks = (id: string | null = null)=>{
+        if (!id) {
+            const mp = getCurrentMP5();
+            id = mp.id;
+        }
+        return socketTasksMap.get(id!) || [];
+    };
+    const connectSocket = defineTaskApi<ConnectSocketOptions, ConnectSocketSuccess, SocketTask>(API_CONNECT_SOCKET, (args: ConnectSocketOptions, exec: ApiExecutor<ConnectSocketSuccess>)=>{
+        const ws = webSocket.createWebSocket();
+        const mp = getCurrentMP5();
+        ws.connect(args.url, {
+            header: args.header ? args.header as Object : undefined,
+            protocol: args.protocols ? Array.isArray(args.protocols) ? args.protocols.join(',') : args.protocols : ''
+        } as webSocket.WebSocketRequestOptions);
+        const task = new SocketTask1(ws);
+        mp.on('beforeClose', task._destroy);
+        task.onClose(()=>{
+            mp.off('beforeClose', task._destroy);
+        });
+        addSocketTask(task);
+        return task;
+    }, ConnectSocketApiProtocol, ConnectSocketApiOptions) as ConnectSocket;
+    const onSocketMessage: OnSocketMessage = (callback: Function)=>{
+        GlobalWebsocketEmitter.on('message', callback);
+    };
+    const onSocketOpen: OnSocketOpen = (callback: Function)=>{
+        GlobalWebsocketEmitter.on('open', callback);
+    };
+    const onSocketError: OnSocketError = (callback: Function)=>{
+        GlobalWebsocketEmitter.on('error', callback);
+    };
+    const onSocketClose: OnSocketClose = (callback: Function)=>{
+        GlobalWebsocketEmitter.on('close', callback);
+    };
+    const sendSocketMessage = defineAsyncApi<SendSocketMessageOptions, GeneralCallbackResult>(API_SEND_SOCKET_MESSAGE, (args: SendSocketMessageOptions, exec: ApiExecutor<GeneralCallbackResult>)=>{
+        const socketTasks = getSocketTasks();
+        const task = socketTasks[0];
+        if (task) {
+            task.send({
+                data: args.data,
+                success (res) {
+                    exec.resolve(res);
+                },
+                fail (err) {
+                    exec.reject('sendSocketMessage:fail');
+                }
+            } as SendSocketMessageOptions);
+        } else {
+            exec.reject('WebSocket is not connected');
+        }
+    }) as SendSocketMessage;
+    const closeSocket = defineAsyncApi<CloseSocketOptions, GeneralCallbackResult>(API_CLOSE_SOCKET, (args: CloseSocketOptions, exec: ApiExecutor<GeneralCallbackResult>)=>{
+        const socketTasks = getSocketTasks();
+        const task = socketTasks[0];
+        if (task) {
+            task.close({
+                code: args.code,
+                reason: args.reason,
+                success (res) {
+                    exec.resolve(res);
+                },
+                fail (err) {
+                    exec.reject('closeSocket:fail');
+                }
+            } as CloseSocketOptions);
+        } else {
+            exec.reject('WebSocket is not connected');
+        }
+    }) as CloseSocket;
+    return {
+        request,
+        uploadFile,
+        downloadFile,
+        configMTLS,
+        setStorage,
+        setStorageSync,
+        getStorage,
+        getStorageSync,
+        getStorageInfo,
+        getStorageInfoSync,
+        removeStorage,
+        removeStorageSync,
+        clearStorage,
+        clearStorageSync,
+        addPhoneContact,
+        startSoterAuthentication,
+        checkIsSupportSoterAuthentication,
+        checkIsSoterEnrolledInDevice,
+        getClipboardData,
+        setClipboardData,
+        createInnerAudioContext,
+        $on,
+        $once,
+        $off,
+        $emit,
+        exit,
+        saveFile,
+        getSavedFileList,
+        getSavedFileInfo,
+        removeSavedFile,
+        getFileInfo,
+        getFileSystemManager,
+        getAppAuthorizeSetting,
+        getAppBaseInfo,
+        getBackgroundAudioManager,
+        getDeviceInfo,
+        getNetworkType,
+        onNetworkStatusChange,
+        offNetworkStatusChange,
+        getProvider,
+        getProviderSync,
+        getRecorderManager,
+        getSystemInfo,
+        getSystemInfoSync,
+        getWindowInfo,
+        getSystemSetting,
+        hideKeyboard,
+        makePhoneCall,
+        login,
+        getUserInfo,
+        openAppAuthorizeSetting,
+        openDocument,
+        requestPayment,
+        rpx2px,
+        scanCode,
+        shareWithSystem,
+        connectSocket,
+        sendSocketMessage,
+        closeSocket,
+        onSocketOpen,
+        onSocketMessage,
+        onSocketClose,
+        onSocketError
+    } as UniExtApi;
+}

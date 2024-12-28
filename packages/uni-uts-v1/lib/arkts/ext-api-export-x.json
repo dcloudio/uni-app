@@ -1,5 +1,5 @@
 {
-  "@dcloudio/uni-app-runtime": [
+  "@dcloudio/uni-app-x-runtime": [
     [
       "Request"
     ],
@@ -265,105 +265,6 @@
       "MakePhoneCallOptions"
     ],
     [
-      "ChooseImageSuccess"
-    ],
-    [
-      "ChooseImageOptions"
-    ],
-    [
-      "ChooseImage"
-    ],
-    [
-      "PreviewImageSuccess"
-    ],
-    [
-      "PreviewImageOptions"
-    ],
-    [
-      "PreviewImage"
-    ],
-    [
-      "ClosePreviewImage"
-    ],
-    [
-      "ClosePreviewImageSuccess"
-    ],
-    [
-      "ClosePreviewImageOptions"
-    ],
-    [
-      "GetImageInfo"
-    ],
-    [
-      "GetImageInfoSuccess"
-    ],
-    [
-      "GetImageInfoOptions"
-    ],
-    [
-      "SaveImageToPhotosAlbum"
-    ],
-    [
-      "SaveImageToPhotosAlbumSuccess"
-    ],
-    [
-      "SaveImageToPhotosAlbumOptions"
-    ],
-    [
-      "ChooseVideoSuccess"
-    ],
-    [
-      "ChooseVideoOptions"
-    ],
-    [
-      "ChooseVideo"
-    ],
-    [
-      "GetVideoInfoSuccess"
-    ],
-    [
-      "GetVideoInfoOptions"
-    ],
-    [
-      "GetVideoInfo"
-    ],
-    [
-      "SaveVideoToPhotosAlbumSuccess"
-    ],
-    [
-      "SaveVideoToPhotosAlbumOptions"
-    ],
-    [
-      "SaveVideoToPhotosAlbum"
-    ],
-    [
-      "CompressVideoSuccess"
-    ],
-    [
-      "CompressVideoOptions"
-    ],
-    [
-      "CompressVideo"
-    ],
-    [
-      "ChooseFile"
-    ],
-    [
-      "ChooseFileSuccess"
-    ],
-    [
-      "ChooseFileOptions"
-    ],
-    [
-      "ChooseMediaSuccess"
-    ],
-    [
-      "ChooseMediaOptions"
-    ],
-    [
-      "ChooseMedia"
-    ],
-    [
       "UniOAuthProvider"
     ],
     [
@@ -427,12 +328,6 @@
       "RequestPaymentOptions"
     ],
     [
-      "StartPullDownRefreshOptions"
-    ],
-    [
-      "StartPullDownRefreshSuccess"
-    ],
-    [
       "Rpx2px"
     ],
     [
@@ -482,46 +377,6 @@
     ],
     [
       "initUniExtApi"
-    ]
-  ],
-  "@uni_modules/uni-facialrecognitionverify": [
-    [
-      "getFacialRecognitionMetaInfo"
-    ],
-    [
-      "startFacialRecognitionVerify"
-    ]
-  ],
-  "@uni_modules/uni-oauth-huawei": [
-    [
-      "UniOAuthHuaweiProviderImpl"
-    ]
-  ],
-  "@uni_modules/uni-payment-alipay": [
-    [
-      "UniPaymentAlipayProviderImpl"
-    ]
-  ],
-  "@uni_modules/uni-payment-huawei": [
-    [
-      "UniPaymentHuaweiProviderImpl"
-    ]
-  ],
-  "@uni_modules/uni-push": [
-    [
-      "getPushClientId"
-    ],
-    [
-      "onPushMessage"
-    ],
-    [
-      "offPushMessage"
-    ],
-    [
-      "createPushMessage"
-    ],
-    [
-      "setAppBadgeNumber"
     ]
   ]
 }
