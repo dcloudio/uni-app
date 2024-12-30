@@ -44,7 +44,7 @@ export class FileWatcher {
           onReady && onReady(this.watcher)
           // 等首次change完，触发完ready，在切换到真实的onChange
           this.onChange = onChange
-        }, watchOptions.readyTimeout || 300)
+        }, watchOptions.readyTimeout || 1000) // 300ms 在部分机器上仍有问题，调整成1000ms
       }
 
       this.onChange = checkReady
