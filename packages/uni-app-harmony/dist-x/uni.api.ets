@@ -8,11 +8,16 @@ import inputMethod from '@ohos.inputMethod';
 import connection from '@ohos.net.connection';
 import webSocket from '@ohos.net.webSocket';
 import pasteboard from '@ohos.pasteboard';
+import cryptoFramework from '@ohos.security.cryptoFramework';
 import call from '@ohos.telephony.call';
 import radio from '@ohos.telephony.radio';
+import uri from '@ohos.uri';
+import util from '@ohos.util';
 import webview from '@ohos.web.webview';
+import zlib from '@ohos.zlib';
 import { BusinessError as BusinessError1 } from '@kit.BasicServicesKit';
-import { BusinessError as BusinessError2 } from '@kit.BasicServicesKit';
+import { BusinessError as BusinessError10 } from '@ohos.base';
+import { BusinessError as BusinessError2 } from '@ohos.base';
 import { BusinessError as BusinessError3 } from '@ohos.base';
 import { BusinessError as BusinessError4 } from '@ohos.base';
 import { BusinessError as BusinessError5 } from '@ohos.base';
@@ -20,9 +25,9 @@ import { BusinessError as BusinessError6 } from '@kit.BasicServicesKit';
 import { BusinessError as BusinessError7 } from '@kit.BasicServicesKit';
 import { BusinessError as BusinessError8 } from '@kit.BasicServicesKit';
 import { BusinessError as BusinessError9 } from '@kit.BasicServicesKit';
-import { BusinessError } from '@ohos.base';
-import { Emitter as Emitter3, getCurrentMP as getCurrentMP4 } from "@dcloudio/uni-mp-sdk";
-import { Emitter as Emitter4, onNativePageReady } from "@dcloudio/uni-mp-sdk";
+import { BusinessError } from '@kit.BasicServicesKit';
+import { Emitter as Emitter1, onNativePageReady } from "@dcloudio/uni-mp-sdk";
+import { Emitter as Emitter2, getCurrentMP as getCurrentMP1 } from "@dcloudio/uni-mp-sdk";
 import { Emitter as Emitter5, getCurrentMP as getCurrentMP5 } from "@dcloudio/uni-mp-sdk";
 import { Emitter, getCurrentMP } from "@dcloudio/uni-mp-sdk";
 import Hash from '@ohos.file.hash';
@@ -31,7 +36,7 @@ import I18n1 from '@ohos.i18n';
 import I18n2 from '@ohos.i18n';
 import { ListFileOptions } from '@ohos.file.fs';
 import { UTSHarmony } from "@dcloudio/uni-mp-sdk";
-import { UTSJSONObject, UTSObject, IUniError, UniError, string, UniProvider, ProtocolOptions, ApiOptions, defineTaskApi, ApiExecutor, defineAsyncApi, defineSyncApi, ApiError, getUniProviders, getUniProvider } from "./shared";
+import { UTSObject, UniError, IUniError, string, ApiError, UniProvider, UTSJSONObject, ApiOptions, ProtocolOptions, defineAsyncApi, ApiExecutor, defineSyncApi, getUniProviders, defineTaskApi, getUniProvider } from "./shared";
 import Want1 from '@ohos.app.ability.Want';
 import { abilityAccessCtrl } from '@kit.AbilityKit';
 import { access } from '@kit.ConnectivityKit';
@@ -39,6 +44,7 @@ import { audio as audio1 } from '@kit.AudioKit';
 import { audio } from '@kit.AudioKit';
 import { avSession } from '@kit.AVSessionKit';
 import { backgroundTaskManager } from '@kit.BackgroundTasksKit';
+import buffer1 from '@ohos.buffer';
 import { bundleManager } from '@kit.AbilityKit';
 import bundleManager1 from '@ohos.bundle.bundleManager';
 import bundleManager2 from '@ohos.bundle.bundleManager';
@@ -46,6 +52,7 @@ import common1 from '@ohos.app.ability.common';
 import common2 from '@ohos.app.ability.common';
 import common3 from '@ohos.app.ability.common';
 import { contact } from '@kit.ContactsKit';
+import cryptoFramework1 from '@ohos.security.cryptoFramework';
 import dataPreferences from '@ohos.data.preferences';
 import deviceInfo1 from '@ohos.deviceInfo';
 import { display } from '@kit.ArkUI';
@@ -54,17 +61,20 @@ import { fileIo as fileIo2 } from '@kit.CoreFileKit';
 import { fileIo as fileIo3 } from '@kit.CoreFileKit';
 import { fileIo } from '@kit.CoreFileKit';
 import fileUri from '@ohos.file.fileuri';
-import fs1 from '@ohos.file.fs';
-import fs2 from '@ohos.file.fs';
-import fs3, { WriteOptions as OHWriteOptions } from '@ohos.file.fs';
+import fs1, { ReadTextOptions } from '@ohos.file.fs';
+import fs2, { ListFileOptions as ListFileOptions1, WriteOptions as OHWriteOptions, ReadOptions, ReadTextOptions as ReadTextOptions1 } from '@ohos.file.fs';
+import fs3 from '@ohos.file.fs';
+import fs4 from '@ohos.file.fs';
 import { geoLocationManager } from '@kit.LocationKit';
-import { getCurrentMP as getCurrentMP3 } from "@dcloudio/uni-mp-sdk";
+import { getCurrentMP as getCurrentMP4 } from "@dcloudio/uni-mp-sdk";
 import { getDeviceId } from "@dcloudio/uni-mp-sdk";
-import { getEnv as getEnv1, getRealPath as getRealPath2 } from "@dcloudio/uni-mp-sdk";
-import { getEnv as getEnv2 } from "@dcloudio/uni-mp-sdk";
-import { getEnv, Emitter as Emitter2, getCurrentMP as getCurrentMP2 } from "@dcloudio/uni-mp-sdk";
-import { getRealPath as getRealPath1, Emitter as Emitter1, getCurrentMP as getCurrentMP1 } from "@dcloudio/uni-mp-sdk";
-import { getRealPath } from "@dcloudio/uni-mp-sdk";
+import { getEnv as getEnv1, getRealPath as getRealPath1 } from "@dcloudio/uni-mp-sdk";
+import { getEnv as getEnv2, getRealPath as runtimeGetRealPath } from "@dcloudio/uni-mp-sdk";
+import { getEnv as getEnv3 } from "@dcloudio/uni-mp-sdk";
+import { getEnv as getEnv4, Emitter as Emitter4, getCurrentMP as getCurrentMP3 } from "@dcloudio/uni-mp-sdk";
+import { getEnv, getRealPath } from "@dcloudio/uni-mp-sdk";
+import { getRealPath as getRealPath3 } from "@dcloudio/uni-mp-sdk";
+import { getRealPath as getRealPath4, Emitter as Emitter3, getCurrentMP as getCurrentMP2 } from "@dcloudio/uni-mp-sdk";
 import { getWindowInfo as internalGetWindowInfo, getDeviceId as getDeviceId1 } from "@dcloudio/uni-mp-sdk";
 import harmonyUrl from '@ohos.url';
 import harmonyUrl1 from '@ohos.url';
@@ -82,239 +92,9 @@ import { scanCore, scanBarcode } from '@kit.ScanKit';
 import { systemShare } from '@kit.ShareKit';
 import { uniformTypeDescriptor } from '@kit.ArkData';
 import { userAuth } from '@kit.UserAuthenticationKit';
+import util1 from '@ohos.util';
 import { wantAgent } from '@kit.AbilityKit';
 import { wifiManager } from '@kit.ConnectivityKit';
-export type Request<T = Object> = (param: RequestOptions<T>) => RequestTask;
-export class RequestOptions<T = Object> extends UTSObject {
-    url!: string;
-    data: Object | null = null;
-    header: UTSJSONObject | null = null;
-    method: RequestMethod | null = null;
-    timeout: number | null = null;
-    dataType: string | null = null;
-    responseType: string | null = null;
-    sslVerify: boolean | null = null;
-    withCredentials: boolean | null = null;
-    firstIpv4: boolean | null = null;
-    success: RequestSuccessCallback<T> | null = null;
-    fail: RequestFailCallback | null = null;
-    complete: RequestCompleteCallback | null = null;
-}
-export class RequestSuccess<T = Object> extends UTSObject {
-    data: T | null = null;
-    statusCode!: number;
-    header!: Object;
-    cookies!: Array<string>;
-}
-type RequestMethod = "GET" | "POST" | "PUT" | "PATCH" | "DELETE" | "HEAD" | "OPTIONS";
-type RequestErrorCode = 5 | 1000 | 100001 | 100002 | 600003 | 600008 | 600009 | 602001;
-interface RequestFail extends IUniError {
-    errCode: RequestErrorCode;
-}
-type RequestSuccessCallback<T> = (option: RequestSuccess<T>) => void;
-type RequestFailCallback = (option: RequestFail) => void;
-type RequestCompleteCallback = (option: Object) => void;
-export interface RequestTask {
-    abort(): void;
-}
-export type UploadFile = (options: UploadFileOptions) => UploadTask;
-class UploadFileOptionFiles extends UTSObject {
-    name: string | null = null;
-    uri!: string;
-    file: Object | null = null;
-}
-export class UploadFileSuccess extends UTSObject {
-    data!: string;
-    statusCode!: number;
-}
-type UploadFileSuccessCallback = (result: UploadFileSuccess) => void;
-interface UploadFileFail extends IUniError {
-    errCode: RequestErrorCode;
-}
-type UploadFileFailCallback = (result: UploadFileFail) => void;
-type UploadFileCompleteCallback = (result: Object) => void;
-export class UploadFileOptions extends UTSObject {
-    url!: string;
-    filePath: string | null = null;
-    name: string | null = null;
-    files: (UploadFileOptionFiles[]) | null = null;
-    header: UTSJSONObject | null = null;
-    formData: UTSJSONObject | null = null;
-    timeout: number | null = null;
-    success: UploadFileSuccessCallback | null = null;
-    fail: UploadFileFailCallback | null = null;
-    complete: UploadFileCompleteCallback | null = null;
-}
-export class OnProgressUpdateResult extends UTSObject {
-    progress!: number;
-    totalBytesSent!: number;
-    totalBytesExpectedToSend!: number;
-}
-type UploadFileProgressUpdateCallback = (result: OnProgressUpdateResult) => void;
-export interface UploadTask {
-    abort(): void;
-    onProgressUpdate(callback: UploadFileProgressUpdateCallback): void;
-}
-export type DownloadFile = (options: DownloadFileOptions) => DownloadTask;
-export class DownloadFileSuccess extends UTSObject {
-    tempFilePath!: string;
-    statusCode!: number;
-}
-type DownloadFileSuccessCallback = (result: DownloadFileSuccess) => void;
-interface DownloadFileFail extends IUniError {
-    errCode: RequestErrorCode;
-}
-type DownloadFileFailCallback = (result: DownloadFileFail) => void;
-type DownloadFileComplete = Object;
-type DownloadFileCompleteCallback = (result: DownloadFileComplete) => void;
-export class DownloadFileOptions extends UTSObject {
-    url!: string;
-    header: UTSJSONObject | null = null;
-    filePath: string | null = null;
-    timeout: number | null = null;
-    success: DownloadFileSuccessCallback | null = null;
-    fail: DownloadFileFailCallback | null = null;
-    complete: DownloadFileCompleteCallback | null = null;
-}
-export class OnProgressDownloadResult extends UTSObject {
-    progress!: number;
-    totalBytesWritten!: number;
-    totalBytesExpectedToWrite!: number;
-}
-type DownloadFileProgressUpdateCallback = (result: OnProgressDownloadResult) => void;
-export interface DownloadTask {
-    abort(): void;
-    onProgressUpdate(callback: DownloadFileProgressUpdateCallback): void;
-}
-export type ConfigMTLS = (options: ConfigMTLSOptions) => void;
-class Certificate extends UTSObject {
-    host!: string;
-    client: string | null = null;
-    clientPassword: string | null = null;
-    keyPath: string | null = null;
-    server: (string[]) | null = null;
-}
-export class ConfigMTLSSuccess extends UTSObject {
-    code!: number;
-}
-type ConfigMTLSSuccessCallback = (result: ConfigMTLSSuccess) => void;
-class ConfigMTLSFail extends UTSObject {
-    code!: number;
-}
-type ConfigMTLSFailCallback = (result: ConfigMTLSFail) => void;
-type ConfigMTLSComplete = Object;
-type ConfigMTLSCompleteCallback = (result: ConfigMTLSComplete) => void;
-export class ConfigMTLSOptions extends UTSObject {
-    certificates!: Certificate[];
-    success: ConfigMTLSSuccessCallback | null = null;
-    fail: ConfigMTLSFailCallback | null = null;
-    complete: ConfigMTLSCompleteCallback | null = null;
-}
-interface IUniRequestEmitter {
-    on: (eventName: string, callback: Function) => void;
-    once: (eventName: string, callback: Function) => void;
-    off: (eventName: string, callback?: Function | null) => void;
-    emit: (eventName: string, ...args: (Object | undefined | null)[]) => void;
-}
-interface IRequestTask {
-    abort: Function;
-    onHeadersReceived: Function;
-    offHeadersReceived: Function;
-}
-interface IUniUploadFileEmitter {
-    on: (eventName: string, callback: Function) => void;
-    once: (eventName: string, callback: Function) => void;
-    off: (eventName: string, callback?: Function | null) => void;
-    emit: (eventName: string, ...args: (Object | undefined | null)[]) => void;
-}
-interface IUploadTask {
-    abort: Function;
-    onHeadersReceived: Function;
-    offHeadersReceived: Function;
-    onProgressUpdate: Function;
-    offProgressUpdate: Function;
-}
-interface IUniDownloadFileEmitter {
-    on: (eventName: string, callback: Function) => void;
-    once: (eventName: string, callback: Function) => void;
-    off: (eventName: string, callback?: Function | null) => void;
-    emit: (eventName: string, ...args: (Object | undefined | null)[]) => void;
-}
-interface IDownloadTask {
-    abort: Function;
-    onHeadersReceived: Function;
-    offHeadersReceived: Function;
-    onProgressUpdate: Function;
-    offProgressUpdate: Function;
-}
-export class SetStorageSuccess extends UTSObject {
-}
-type SetStorageSuccessCallback = (res: SetStorageSuccess) => void;
-type SetStorageFailCallback = (res: UniError) => void;
-type SetStorageCompleteCallback = (res: Object) => void;
-export class SetStorageOptions extends UTSObject {
-    key!: string;
-    data!: Object;
-    success: SetStorageSuccessCallback | null = null;
-    fail: SetStorageFailCallback | null = null;
-    complete: SetStorageCompleteCallback | null = null;
-}
-export type SetStorage = (options: SetStorageOptions) => void;
-export type SetStorageSync = (key: string, data: Object) => void;
-export class GetStorageSuccess extends UTSObject {
-    data: Object | null = null;
-}
-type GetStorageSuccessCallback = (res: GetStorageSuccess) => void;
-type GetStorageFailCallback = (res: UniError) => void;
-type GetStorageCompleteCallback = (res: Object) => void;
-export class GetStorageOptions extends UTSObject {
-    key!: string;
-    success: GetStorageSuccessCallback | null = null;
-    fail: GetStorageFailCallback | null = null;
-    complete: GetStorageCompleteCallback | null = null;
-}
-export type GetStorage = (options: GetStorageOptions) => void;
-export type GetStorageSync = (key: string) => Object | null;
-export class GetStorageInfoSuccess extends UTSObject {
-    keys!: Array<string>;
-    currentSize!: number;
-    limitSize!: number;
-}
-type GetStorageInfoSuccessCallback = (res: GetStorageInfoSuccess) => void;
-type GetStorageInfoFailCallback = (res: UniError) => void;
-type GetStorageInfoCompleteCallback = (res: Object) => void;
-export class GetStorageInfoOptions extends UTSObject {
-    success: GetStorageInfoSuccessCallback | null = null;
-    fail: GetStorageInfoFailCallback | null = null;
-    complete: GetStorageInfoCompleteCallback | null = null;
-}
-export type GetStorageInfo = (options: GetStorageInfoOptions) => void;
-export type GetStorageInfoSync = () => GetStorageInfoSuccess;
-export class RemoveStorageSuccess extends UTSObject {
-}
-type RemoveStorageSuccessCallback = (res: RemoveStorageSuccess) => void;
-type RemoveStorageFailCallback = (res: UniError) => void;
-type RemoveStorageCompleteCallback = (res: Object) => void;
-export class RemoveStorageOptions extends UTSObject {
-    key!: string;
-    success: RemoveStorageSuccessCallback | null = null;
-    fail: RemoveStorageFailCallback | null = null;
-    complete: RemoveStorageCompleteCallback | null = null;
-}
-export type RemoveStorage = (options: RemoveStorageOptions) => void;
-export type RemoveStorageSync = (key: string) => void;
-export class ClearStorageSuccess extends UTSObject {
-}
-type ClearStorageSuccessCallback = (res: ClearStorageSuccess) => void;
-type ClearStorageFailCallback = (res: UniError) => void;
-type ClearStorageCompleteCallback = (res: Object) => void;
-export class ClearStorageOptions extends UTSObject {
-    success: ClearStorageSuccessCallback | null = null;
-    fail: ClearStorageFailCallback | null = null;
-    complete: ClearStorageCompleteCallback | null = null;
-}
-export type ClearStorage = (option?: ClearStorageOptions | null) => void;
-export type ClearStorageSync = () => void;
 type AddPhoneContact = (options: AddPhoneContactOptions) => void;
 class AddPhoneContactSuccess extends UTSObject {
 }
@@ -605,6 +385,7 @@ class ReadFileSuccessResult extends UTSObject {
 }
 class OpenFileSuccessResult extends UTSObject {
     fd!: string;
+    errMsg: string | null = null;
 }
 class FileManagerSuccessResult extends UTSObject {
     errMsg!: string;
@@ -672,6 +453,7 @@ class RmDirOptions extends UTSObject {
 }
 class ReadDirSuccessResult extends UTSObject {
     files!: string[];
+    errMsg: string | null = null;
 }
 type ReadDirSuccessCallback = (res: ReadDirSuccessResult) => void;
 class ReadDirOptions extends UTSObject {
@@ -730,8 +512,8 @@ interface Stats {
     lastAccessedTime: number;
     lastModifiedTime: number;
     mIsFile: boolean;
-    isDirectory(): boolean;
-    isFile(): boolean;
+    isDirectory: () => boolean;
+    isFile: () => boolean;
 }
 class FileStats extends UTSObject {
     path!: string;
@@ -851,7 +633,9 @@ class EntryItem extends UTSObject {
     encoding: "ascii" | "base64" | "utf-8" | null = null;
 }
 class EntriesResult extends UTSObject {
+    entries!: Map<string, ZipFileItem>;
     result!: Map<string, ZipFileItem>;
+    errMsg: string | null = null;
 }
 class ZipFileItem extends UTSObject {
     data: Object | null = null;
@@ -951,20 +735,41 @@ interface CallBack {
     fail?: Function | null;
     complete?: Function | null;
 }
+type ModeReflect = Record<string, string>;
 type BaseType = number | string | boolean | null | undefined;
-type DataType = BaseType | Function | ArrayBuffer | Array<BaseType>;
+type DataType = BaseType | Object | Function | ArrayBuffer | Array<BaseType>;
 interface CustomValidReturn {
-    isValid: boolean;
-    err?: IFileSystemManagerFail;
+    isValid: false;
+    err: IFileSystemManagerFail;
+}
+interface CustomValidReturnValid {
+    isValid: true;
 }
 interface ObtainUpperPathReturn {
     index: number;
     upperPath: string;
 }
+interface ObtainFileNameReturn {
+    index: number;
+    fileName: string;
+}
+interface CheckFd {
+    isValid: true;
+    fd: number;
+}
+interface CheckFdErr {
+    isValid: false;
+    fd: number;
+    err: IFileSystemManagerFail;
+}
 interface CheckEncodingReturn {
     isValid: boolean;
-    errMsg?: string;
+    errMsg: string;
 }
+interface FileSystemManagerApiError extends ApiError {
+    errMsg: string;
+}
+type _FLAG = "a" | "ax" | "a+" | "ax+" | "r" | "r+" | "w" | "wx" | "w+" | "wx+";
 type GetAppAuthorizeSetting = () => GetAppAuthorizeSettingResult;
 class GetAppAuthorizeSettingResult extends UTSObject {
     albumAuthorized!: 'authorized' | 'denied' | 'not determined' | 'config error';
@@ -1311,6 +1116,169 @@ export class MakePhoneCallOptions extends UTSObject {
     fail: MakePhoneCallFailCallback | null = null;
     complete: MakePhoneCallCompleteCallback | null = null;
 }
+export type Request<T = Object> = (param: RequestOptions<T>) => RequestTask;
+export class RequestOptions<T = Object> extends UTSObject {
+    url!: string;
+    data: Object | null = null;
+    header: UTSJSONObject | null = null;
+    method: RequestMethod | null = null;
+    timeout: number | null = null;
+    dataType: string | null = null;
+    responseType: string | null = null;
+    sslVerify: boolean | null = null;
+    withCredentials: boolean | null = null;
+    firstIpv4: boolean | null = null;
+    success: RequestSuccessCallback<T> | null = null;
+    fail: RequestFailCallback | null = null;
+    complete: RequestCompleteCallback | null = null;
+}
+export class RequestSuccess<T = Object> extends UTSObject {
+    data: T | null = null;
+    statusCode!: number;
+    header!: Object;
+    cookies!: Array<string>;
+}
+type RequestMethod = "GET" | "POST" | "PUT" | "PATCH" | "DELETE" | "HEAD" | "OPTIONS";
+type RequestErrorCode = 5 | 1000 | 100001 | 100002 | 600003 | 600008 | 600009 | 602001;
+interface RequestFail extends IUniError {
+    errCode: RequestErrorCode;
+}
+type RequestSuccessCallback<T> = (option: RequestSuccess<T>) => void;
+type RequestFailCallback = (option: RequestFail) => void;
+type RequestCompleteCallback = (option: Object) => void;
+export interface RequestTask {
+    abort(): void;
+}
+export type UploadFile = (options: UploadFileOptions) => UploadTask;
+class UploadFileOptionFiles extends UTSObject {
+    name: string | null = null;
+    uri!: string;
+    file: Object | null = null;
+}
+export class UploadFileSuccess extends UTSObject {
+    data!: string;
+    statusCode!: number;
+}
+type UploadFileSuccessCallback = (result: UploadFileSuccess) => void;
+interface UploadFileFail extends IUniError {
+    errCode: RequestErrorCode;
+}
+type UploadFileFailCallback = (result: UploadFileFail) => void;
+type UploadFileCompleteCallback = (result: Object) => void;
+export class UploadFileOptions extends UTSObject {
+    url!: string;
+    filePath: string | null = null;
+    name: string | null = null;
+    files: (UploadFileOptionFiles[]) | null = null;
+    header: UTSJSONObject | null = null;
+    formData: UTSJSONObject | null = null;
+    timeout: number | null = null;
+    success: UploadFileSuccessCallback | null = null;
+    fail: UploadFileFailCallback | null = null;
+    complete: UploadFileCompleteCallback | null = null;
+}
+export class OnProgressUpdateResult extends UTSObject {
+    progress!: number;
+    totalBytesSent!: number;
+    totalBytesExpectedToSend!: number;
+}
+type UploadFileProgressUpdateCallback = (result: OnProgressUpdateResult) => void;
+export interface UploadTask {
+    abort(): void;
+    onProgressUpdate(callback: UploadFileProgressUpdateCallback): void;
+}
+export type DownloadFile = (options: DownloadFileOptions) => DownloadTask;
+export class DownloadFileSuccess extends UTSObject {
+    tempFilePath!: string;
+    statusCode!: number;
+}
+type DownloadFileSuccessCallback = (result: DownloadFileSuccess) => void;
+interface DownloadFileFail extends IUniError {
+    errCode: RequestErrorCode;
+}
+type DownloadFileFailCallback = (result: DownloadFileFail) => void;
+type DownloadFileComplete = Object;
+type DownloadFileCompleteCallback = (result: DownloadFileComplete) => void;
+export class DownloadFileOptions extends UTSObject {
+    url!: string;
+    header: UTSJSONObject | null = null;
+    filePath: string | null = null;
+    timeout: number | null = null;
+    success: DownloadFileSuccessCallback | null = null;
+    fail: DownloadFileFailCallback | null = null;
+    complete: DownloadFileCompleteCallback | null = null;
+}
+export class OnProgressDownloadResult extends UTSObject {
+    progress!: number;
+    totalBytesWritten!: number;
+    totalBytesExpectedToWrite!: number;
+}
+type DownloadFileProgressUpdateCallback = (result: OnProgressDownloadResult) => void;
+export interface DownloadTask {
+    abort(): void;
+    onProgressUpdate(callback: DownloadFileProgressUpdateCallback): void;
+}
+export type ConfigMTLS = (options: ConfigMTLSOptions) => void;
+class Certificate extends UTSObject {
+    host!: string;
+    client: string | null = null;
+    clientPassword: string | null = null;
+    keyPath: string | null = null;
+    server: (string[]) | null = null;
+}
+export class ConfigMTLSSuccess extends UTSObject {
+    code!: number;
+}
+type ConfigMTLSSuccessCallback = (result: ConfigMTLSSuccess) => void;
+class ConfigMTLSFail extends UTSObject {
+    code!: number;
+}
+type ConfigMTLSFailCallback = (result: ConfigMTLSFail) => void;
+type ConfigMTLSComplete = Object;
+type ConfigMTLSCompleteCallback = (result: ConfigMTLSComplete) => void;
+export class ConfigMTLSOptions extends UTSObject {
+    certificates!: Certificate[];
+    success: ConfigMTLSSuccessCallback | null = null;
+    fail: ConfigMTLSFailCallback | null = null;
+    complete: ConfigMTLSCompleteCallback | null = null;
+}
+interface IUniRequestEmitter {
+    on: (eventName: string, callback: Function) => void;
+    once: (eventName: string, callback: Function) => void;
+    off: (eventName: string, callback?: Function | null) => void;
+    emit: (eventName: string, ...args: (Object | undefined | null)[]) => void;
+}
+interface IRequestTask {
+    abort: Function;
+    onHeadersReceived: Function;
+    offHeadersReceived: Function;
+}
+interface IUniUploadFileEmitter {
+    on: (eventName: string, callback: Function) => void;
+    once: (eventName: string, callback: Function) => void;
+    off: (eventName: string, callback?: Function | null) => void;
+    emit: (eventName: string, ...args: (Object | undefined | null)[]) => void;
+}
+interface IUploadTask {
+    abort: Function;
+    onHeadersReceived: Function;
+    offHeadersReceived: Function;
+    onProgressUpdate: Function;
+    offProgressUpdate: Function;
+}
+interface IUniDownloadFileEmitter {
+    on: (eventName: string, callback: Function) => void;
+    once: (eventName: string, callback: Function) => void;
+    off: (eventName: string, callback?: Function | null) => void;
+    emit: (eventName: string, ...args: (Object | undefined | null)[]) => void;
+}
+interface IDownloadTask {
+    abort: Function;
+    onHeadersReceived: Function;
+    offHeadersReceived: Function;
+    onProgressUpdate: Function;
+    offProgressUpdate: Function;
+}
 export interface UniOAuthProvider extends UniProvider {
     login(options: LoginOptions): void;
     getUserInfo(options: GetUserInfoOptions): void;
@@ -1547,6 +1515,74 @@ export class ShareWithSystemOptions extends UTSObject {
     complete: ShareWithSystemCallback | null = null;
 }
 export type ShareWithSystem = (options: ShareWithSystemOptions) => void;
+export class SetStorageSuccess extends UTSObject {
+}
+type SetStorageSuccessCallback = (res: SetStorageSuccess) => void;
+type SetStorageFailCallback = (res: UniError) => void;
+type SetStorageCompleteCallback = (res: Object) => void;
+export class SetStorageOptions extends UTSObject {
+    key!: string;
+    data!: Object;
+    success: SetStorageSuccessCallback | null = null;
+    fail: SetStorageFailCallback | null = null;
+    complete: SetStorageCompleteCallback | null = null;
+}
+export type SetStorage = (options: SetStorageOptions) => void;
+export type SetStorageSync = (key: string, data: Object) => void;
+export class GetStorageSuccess extends UTSObject {
+    data: Object | null = null;
+}
+type GetStorageSuccessCallback = (res: GetStorageSuccess) => void;
+type GetStorageFailCallback = (res: UniError) => void;
+type GetStorageCompleteCallback = (res: Object) => void;
+export class GetStorageOptions extends UTSObject {
+    key!: string;
+    success: GetStorageSuccessCallback | null = null;
+    fail: GetStorageFailCallback | null = null;
+    complete: GetStorageCompleteCallback | null = null;
+}
+export type GetStorage = (options: GetStorageOptions) => void;
+export type GetStorageSync = (key: string) => Object | null;
+export class GetStorageInfoSuccess extends UTSObject {
+    keys!: Array<string>;
+    currentSize!: number;
+    limitSize!: number;
+}
+type GetStorageInfoSuccessCallback = (res: GetStorageInfoSuccess) => void;
+type GetStorageInfoFailCallback = (res: UniError) => void;
+type GetStorageInfoCompleteCallback = (res: Object) => void;
+export class GetStorageInfoOptions extends UTSObject {
+    success: GetStorageInfoSuccessCallback | null = null;
+    fail: GetStorageInfoFailCallback | null = null;
+    complete: GetStorageInfoCompleteCallback | null = null;
+}
+export type GetStorageInfo = (options: GetStorageInfoOptions) => void;
+export type GetStorageInfoSync = () => GetStorageInfoSuccess;
+export class RemoveStorageSuccess extends UTSObject {
+}
+type RemoveStorageSuccessCallback = (res: RemoveStorageSuccess) => void;
+type RemoveStorageFailCallback = (res: UniError) => void;
+type RemoveStorageCompleteCallback = (res: Object) => void;
+export class RemoveStorageOptions extends UTSObject {
+    key!: string;
+    success: RemoveStorageSuccessCallback | null = null;
+    fail: RemoveStorageFailCallback | null = null;
+    complete: RemoveStorageCompleteCallback | null = null;
+}
+export type RemoveStorage = (options: RemoveStorageOptions) => void;
+export type RemoveStorageSync = (key: string) => void;
+export class ClearStorageSuccess extends UTSObject {
+}
+type ClearStorageSuccessCallback = (res: ClearStorageSuccess) => void;
+type ClearStorageFailCallback = (res: UniError) => void;
+type ClearStorageCompleteCallback = (res: Object) => void;
+export class ClearStorageOptions extends UTSObject {
+    success: ClearStorageSuccessCallback | null = null;
+    fail: ClearStorageFailCallback | null = null;
+    complete: ClearStorageCompleteCallback | null = null;
+}
+export type ClearStorage = (option?: ClearStorageOptions | null) => void;
+export type ClearStorageSync = () => void;
 export type ConnectSocket = (options: ConnectSocketOptions) => SocketTask;
 export class ConnectSocketSuccess extends UTSObject {
     errMsg!: string;
@@ -1625,20 +1661,6 @@ interface IUniWebsocketEmitter {
     emit: (eventName: string, ...args: (Object | undefined | null)[]) => void;
 }
 interface UniExtApi {
-    request: Request<Object>;
-    uploadFile: UploadFile;
-    downloadFile: DownloadFile;
-    configMTLS: ConfigMTLS;
-    setStorage: SetStorage;
-    setStorageSync: SetStorageSync;
-    getStorage: GetStorage;
-    getStorageSync: GetStorageSync;
-    getStorageInfo: GetStorageInfo;
-    getStorageInfoSync: GetStorageInfoSync;
-    removeStorage: RemoveStorage;
-    removeStorageSync: RemoveStorageSync;
-    clearStorage: ClearStorage;
-    clearStorageSync: ClearStorageSync;
     addPhoneContact: AddPhoneContact;
     startSoterAuthentication: StartSoterAuthentication;
     checkIsSupportSoterAuthentication: CheckIsSupportSoterAuthentication;
@@ -1673,6 +1695,10 @@ interface UniExtApi {
     getSystemSetting: GetSystemSetting;
     hideKeyboard: HideKeyboard;
     makePhoneCall: MakePhoneCall;
+    request: Request<Object>;
+    uploadFile: UploadFile;
+    downloadFile: DownloadFile;
+    configMTLS: ConfigMTLS;
     login: Login;
     getUserInfo: GetUserInfo;
     openAppAuthorizeSetting: OpenAppAuthorizeSetting;
@@ -1681,6 +1707,16 @@ interface UniExtApi {
     rpx2px: Rpx2px;
     scanCode: ScanCode;
     shareWithSystem: ShareWithSystem;
+    setStorage: SetStorage;
+    setStorageSync: SetStorageSync;
+    getStorage: GetStorage;
+    getStorageSync: GetStorageSync;
+    getStorageInfo: GetStorageInfo;
+    getStorageInfoSync: GetStorageInfoSync;
+    removeStorage: RemoveStorage;
+    removeStorageSync: RemoveStorageSync;
+    clearStorage: ClearStorage;
+    clearStorageSync: ClearStorageSync;
     connectSocket: ConnectSocket;
     sendSocketMessage: SendSocketMessage;
     closeSocket: CloseSocket;
@@ -1690,981 +1726,6 @@ interface UniExtApi {
     onSocketError: OnSocketError;
 }
 export function initUniExtApi() {
-    const API_REQUEST = 'request';
-    const RequestApiProtocol = new Map<string, ProtocolOptions>([
-        [
-            'url',
-            {
-                type: 'string',
-                required: true
-            }
-        ],
-        [
-            'data',
-            {
-                type: 'object',
-                required: false
-            }
-        ],
-        [
-            'header',
-            {
-                type: 'object',
-                required: false
-            }
-        ],
-        [
-            'method',
-            {
-                type: 'string',
-                required: false
-            }
-        ],
-        [
-            'dataType',
-            {
-                type: 'string',
-                required: false
-            }
-        ],
-        [
-            'responseType',
-            {
-                type: 'string',
-                required: false
-            }
-        ],
-        [
-            'timeout',
-            {
-                type: 'number',
-                required: false
-            }
-        ],
-        [
-            'sslVerify',
-            {
-                type: 'boolean',
-                required: false
-            }
-        ],
-        [
-            'withCredentials',
-            {
-                type: 'boolean',
-                required: false
-            }
-        ],
-        [
-            'firstIpv4',
-            {
-                type: 'boolean',
-                required: false
-            }
-        ]
-    ]);
-    const RequestApiOptions: ApiOptions<RequestOptions<Object>> = {
-        formatArgs: new Map<string, Function>([
-            [
-                'url',
-                (url: string, params: RequestOptions<Object>)=>{
-                    if (url == null) {
-                        throw new Error('url is required');
-                    }
-                }
-            ],
-            [
-                'method',
-                (method: string, params: RequestOptions<Object>)=>{
-                    params.method = (method || 'GET').toUpperCase() as RequestMethod;
-                }
-            ],
-            [
-                'dataType',
-                (dataType: string, params: RequestOptions<Object>)=>{
-                    if (dataType == null) {
-                        params.dataType = 'json';
-                    }
-                }
-            ],
-            [
-                'responseType',
-                (responseType: string, params: RequestOptions<Object>)=>{
-                    if (responseType == null) {
-                        params.responseType = 'text';
-                    }
-                }
-            ],
-            [
-                'timeout',
-                (timeout: number, params: RequestOptions<Object>)=>{
-                    if (timeout == null) {
-                        params.timeout = 60000;
-                    }
-                }
-            ],
-            [
-                'sslVerify',
-                (sslVerify: boolean, params: RequestOptions<Object>)=>{
-                    if (sslVerify == null) {
-                        params.sslVerify = true;
-                    }
-                }
-            ],
-            [
-                'withCredentials',
-                (withCredentials: boolean, params: RequestOptions<Object>)=>{
-                    if (withCredentials == null) {
-                        params.withCredentials = false;
-                    }
-                }
-            ],
-            [
-                'firstIpv4',
-                (firstIpv4: boolean, params: RequestOptions<Object>)=>{
-                    if (firstIpv4 == null) {
-                        params.firstIpv4 = false;
-                    }
-                }
-            ]
-        ])
-    };
-    const API_DOWNLOAD_FILE = 'downloadFile';
-    const DownloadFileApiProtocol = new Map<string, ProtocolOptions>([
-        [
-            'url',
-            {
-                type: 'string',
-                required: true
-            }
-        ],
-        [
-            'header',
-            {
-                type: 'object',
-                required: false
-            }
-        ],
-        [
-            'timeout',
-            {
-                type: 'number',
-                required: false
-            }
-        ]
-    ]);
-    const DownloadFileApiOptions: ApiOptions<DownloadFileOptions> = {
-        formatArgs: new Map<string, Function>([
-            [
-                'url',
-                (url: string, params: DownloadFileOptions)=>{
-                    if (url == null) {
-                        throw new Error('url is required');
-                    }
-                }
-            ]
-        ])
-    };
-    const API_UPLOAD_FILE = 'uploadFile';
-    const UploadFileApiProtocol = new Map<string, ProtocolOptions>([
-        [
-            'url',
-            {
-                type: 'string',
-                required: true
-            }
-        ],
-        [
-            'filePath',
-            {
-                type: 'string',
-                required: false
-            }
-        ],
-        [
-            'name',
-            {
-                type: 'string',
-                required: false
-            }
-        ],
-        [
-            'header',
-            {
-                type: 'object',
-                required: false
-            }
-        ],
-        [
-            'formData',
-            {
-                type: 'object',
-                required: false
-            }
-        ],
-        [
-            'timeout',
-            {
-                type: 'number',
-                required: false
-            }
-        ]
-    ]);
-    const UploadFileApiOptions: ApiOptions<UploadFileOptions> = {
-        formatArgs: new Map<string, Function>([
-            [
-                'url',
-                (url: string, params: UploadFileOptions)=>{
-                    if (url == null) {
-                        throw new Error('url is required');
-                    }
-                }
-            ],
-            [
-                'name',
-                (name: string, params: UploadFileOptions)=>{
-                    if (name == null) {
-                        params.name = 'file';
-                    }
-                }
-            ]
-        ])
-    };
-    const API_CONFIG_MTLS = 'configMTLS';
-    const ConfigMTLSApiProtocol = new Map<string, ProtocolOptions>([
-        [
-            'certificates',
-            {
-                type: 'array',
-                required: true
-            }
-        ]
-    ]);
-    const ConfigMTLSApiOptions: ApiOptions<ConfigMTLSOptions> = {
-        formatArgs: new Map<string, Function>([
-            [
-                'certificates',
-                (certificates: (Certificate[]) | null = null)=>{
-                    if (!certificates || certificates.some((item)=>typeof item.host !== 'string')) {
-                        return '参数 certificates 配置错误，请确认后重试';
-                    }
-                    return undefined;
-                }
-            ]
-        ])
-    };
-    const needsEncoding = (str: string)=>{
-        const decoded = decodeURIComponent(str);
-        if (decoded !== str) {
-            if (encodeURIComponent(decoded) === str) {
-                return false;
-            }
-        }
-        return encodeURIComponent(decoded) !== decoded;
-    };
-    const parseUrl = (url: string)=>{
-        try {
-            const urlObj = harmonyUrl.URL.parseURL(url);
-            urlObj.params.forEach((value, key)=>{
-                if (needsEncoding(value)) {
-                    urlObj.params.set(key, value);
-                }
-            });
-            return urlObj.toString();
-        } catch (error) {
-            return url;
-        }
-    };
-    const certificates: Certificate[] = [];
-    const getCertType = (certPath: string): http.CertType =>{
-        const certExt = certPath.split('.').pop();
-        switch(certExt){
-            case 'p12':
-                return http.CertType.P12;
-            case 'pem':
-                return http.CertType.PEM;
-            default:
-                return http.CertType.PEM;
-        }
-    };
-    const getClientCertificate = (url: string): http.ClientCert | undefined =>{
-        if (certificates.length === 0) return undefined;
-        const urlObj = harmonyUrl.URL.parseURL(url);
-        const cert = certificates.find((certificate)=>certificate.host === urlObj.host);
-        if (cert) {
-            return {
-                certType: getCertType(cert.client!),
-                certPath: getRealPath(cert.client!),
-                keyPath: cert.keyPath ?? '',
-                keyPassword: cert.clientPassword
-            } as http.ClientCert;
-        }
-        return undefined;
-    };
-    const replaceHttpWithHttps = (url: string): string =>{
-        return url.replace(/^http:/, 'https:');
-    };
-    const getCookieSync = (url: string): string =>{
-        return webview.WebCookieManager.fetchCookieSync(replaceHttpWithHttps(url));
-    };
-    const setCookieSync = (url: string, cookies: string[]): void =>{
-        cookies.forEach((cookie)=>{
-            let hasSecure = false;
-            let hasSameSite = false;
-            let savedCookie = cookie.split(';').map((cookieItem)=>{
-                const pair = cookieItem.split('=').map((item)=>item.trim());
-                const keyLower = pair[0].toLowerCase();
-                if (keyLower === 'secure') {
-                    hasSecure = true;
-                    return cookieItem;
-                }
-                if (keyLower === 'samesite') {
-                    hasSameSite = true;
-                    return 'samesite=none';
-                }
-                return cookieItem;
-            }).join(';');
-            if (!hasSecure) {
-                savedCookie += '; secure';
-            }
-            if (!hasSameSite) {
-                savedCookie += '; samesite=none';
-            }
-            try {
-                webview.WebCookieManager.configCookieSync(replaceHttpWithHttps(url), savedCookie);
-            } catch (error) {}
-        });
-        webview.WebCookieManager.saveCookieAsync();
-    };
-    const cookiesParse = (header: Record<string, string>)=>{
-        let cookiesArr: string[] = [];
-        const handleCookiesArr = (header['Set-Cookie'] || header['set-cookie'] || []) as string[];
-        for(let i = 0; i < handleCookiesArr.length; i++){
-            if (handleCookiesArr[i].indexOf('Expires=') !== -1 || handleCookiesArr[i].indexOf('expires=') !== -1) {
-                cookiesArr.push(handleCookiesArr[i].replace(',', ''));
-            } else {
-                cookiesArr.push(handleCookiesArr[i]);
-            }
-        }
-        return cookiesArr;
-    };
-    class RequestTask1 implements RequestTask {
-        private _requestTask: IRequestTask;
-        constructor(requestTask: IRequestTask){
-            this._requestTask = requestTask;
-        }
-        abort() {
-            this._requestTask.abort();
-        }
-        onHeadersReceived(callback: Function) {
-            this._requestTask.onHeadersReceived(callback);
-        }
-        offHeadersReceived(callback: Function | null = null) {
-            this._requestTask.offHeadersReceived(callback);
-        }
-    }
-    const request = defineTaskApi<RequestOptions<Object>, RequestSuccess<Object>, RequestTask>(API_REQUEST, (args: RequestOptions<Object>, exec: ApiExecutor<RequestSuccess<Object>>)=>{
-        let header = args.header, method = args.method, data = args.data, dataType = args.dataType, timeout = args.timeout, url = args.url, responseType = args.responseType;
-        header = header || {} as ESObject;
-        if (!header!['Cookie'] && !header!['cookie']) {
-            header!['Cookie'] = getCookieSync(url);
-        }
-        let contentType = '';
-        const headers = {} as Record<string, Object>;
-        const headerRecord = header as Object as Record<string, string>;
-        const headerKeys = Object.keys(headerRecord);
-        for(let i = 0; i < headerKeys.length; i++){
-            const name = headerKeys[i];
-            if (name.toLowerCase() === 'content-type') {
-                contentType = headerRecord[name] as string;
-            }
-            headers[name.toLowerCase()] = headerRecord[name];
-        }
-        if (!contentType && method === 'POST') {
-            headers['Content-Type'] = 'application/json';
-            contentType = 'application/json';
-        }
-        if (method === 'GET' && data) {
-            const dataRecord = data as Record<string, Object>;
-            const query = Object.keys(dataRecord).map((key)=>{
-                return (encodeURIComponent(key) + '=' + encodeURIComponent(dataRecord[key] as string | number | boolean));
-            }).join('&');
-            url += query ? (url.indexOf('?') > -1 ? '&' : '?') + query : '';
-            data = null;
-        } else if (method !== 'GET' && contentType && contentType.indexOf('application/json') === 0 && data) {
-            data = JSON.stringify(data);
-        } else if (method !== 'GET' && contentType && contentType.indexOf('application/x-www-form-urlencoded') === 0 && data) {
-            const dataRecord = data as Record<string, Object>;
-            data = Object.keys(dataRecord).map((key)=>{
-                return (encodeURIComponent(key) + '=' + encodeURIComponent(dataRecord[key] as number | string | boolean));
-            }).join('&');
-        }
-        const httpRequest = http1.createHttp();
-        const mp = getCurrentMP();
-        const userAgent = mp.userAgent.fullUserAgent;
-        if (userAgent && headers && !headers!['User-Agent'] && !headers!['user-agent']) {
-            headers!['User-Agent'] = userAgent;
-        }
-        const emitter = new Emitter() as IUniRequestEmitter;
-        const requestTask: IRequestTask = {
-            abort () {
-                emitter.off('headersReceive');
-                httpRequest.destroy();
-            },
-            onHeadersReceived (callback: Function) {
-                emitter.on('headersReceive', callback);
-            },
-            offHeadersReceived (callback: Function | null = null) {
-                emitter.off('headersReceive', callback);
-            }
-        };
-        const destroy = ()=>{
-            emitter.off('headersReceive');
-            httpRequest.destroy();
-        };
-        mp.on('beforeClose', destroy);
-        let latestHeaders: Object | null = null;
-        let lastUrl = url;
-        httpRequest.on('headersReceive', (headers: Object)=>{
-            const realHeaders = headers as Record<string, string | string[]>;
-            const setCookieHeader = realHeaders['set-cookie'] || realHeaders['Set-Cookie'];
-            if (setCookieHeader) {
-                setCookieSync(lastUrl, setCookieHeader as string[]);
-            }
-            latestHeaders = headers;
-            const location = realHeaders['location'] || realHeaders['Location'];
-            if (location) {
-                lastUrl = location as string;
-            }
-        });
-        const bufs = [] as buffer.Buffer[];
-        httpRequest.on('dataReceive', (data)=>{
-            bufs.push(buffer.from(data));
-        });
-        httpRequest.requestInStream(parseUrl(url), {
-            header: headers,
-            method: (method || 'GET').toUpperCase() as http1.RequestMethod,
-            extraData: data || undefined,
-            connectTimeout: timeout ? timeout : undefined,
-            readTimeout: timeout ? timeout : undefined,
-            clientCert: getClientCertificate(url)
-        } as http1.HttpRequestOptions, (err, statusCode)=>{
-            if (err) {
-                exec.reject(err.message);
-            } else {
-                const responseData = buffer.concat(bufs);
-                let data: ArrayBuffer | string | object = '';
-                if (responseType === 'arraybuffer') {
-                    data = responseData.buffer;
-                } else {
-                    data = responseData.toString('utf8');
-                    if (dataType === 'json') {
-                        try {
-                            data = JSON.parse(data);
-                        } catch (e) {}
-                    }
-                }
-                const headers = latestHeaders as Record<string, string | string[]>;
-                const oldCookies = headers ? (headers['Set-Cookie'] || headers['set-cookie'] || []) as string[] : [] as string[];
-                const cookies = latestHeaders ? cookiesParse(latestHeaders as Record<string, string>) : [];
-                let newCookies = oldCookies.join(',');
-                if (newCookies) {
-                    if (headers['Set-Cookie']) {
-                        headers['Set-Cookie'] = newCookies;
-                    } else {
-                        headers['set-cookie'] = newCookies;
-                    }
-                }
-                exec.resolve({
-                    data,
-                    statusCode,
-                    header: latestHeaders!,
-                    cookies: cookies
-                } as RequestSuccess<Object>);
-            }
-            requestTask.offHeadersReceived();
-            httpRequest.destroy();
-            mp.off('beforeClose', destroy);
-        });
-        return new RequestTask1(requestTask);
-    }, RequestApiProtocol, RequestApiOptions) as Request<Object>;
-    const lookupExt = (contentType: string): string | undefined =>{
-        const rawContentType = contentType.split(';')[0].trim().toLowerCase();
-        return (UTSHarmony.getExtensionFromMimeType(rawContentType) as string | null) || undefined;
-    };
-    const lookupContentTypeWithUri = (uri: string): string | undefined =>{
-        const uriArr = uri.split('.');
-        if (uriArr.length <= 1) {
-            return undefined;
-        }
-        const ext = uriArr.pop() as string;
-        return (UTSHarmony.getMimeTypeFromExtension(ext) as string | null) || undefined;
-    };
-    class UploadTask1 implements UploadTask {
-        private _uploadTask: IUploadTask;
-        constructor(uploadTask: IUploadTask){
-            this._uploadTask = uploadTask;
-        }
-        abort() {
-            this._uploadTask.abort();
-        }
-        onProgressUpdate(callback: Function) {
-            this._uploadTask.onProgressUpdate(callback);
-        }
-        offProgressUpdate(callback: Function | null = null) {
-            this._uploadTask.offProgressUpdate(callback);
-        }
-        onHeadersReceived(callback: Function) {
-            this._uploadTask.onHeadersReceived(callback);
-        }
-        offHeadersReceived(callback: Function | null = null) {
-            this._uploadTask.offHeadersReceived(callback);
-        }
-    }
-    const readFile = (filePath: string): ArrayBuffer =>{
-        const readFilePath = getRealPath1(filePath) as string;
-        const file = fs.openSync(readFilePath, fs.OpenMode.READ_ONLY);
-        const stat = fs.statSync(file.fd);
-        const data = new ArrayBuffer(stat.size);
-        fs.readSync(file.fd, data);
-        fs.closeSync(file.fd);
-        return data;
-    };
-    const uploadFile = defineTaskApi<UploadFileOptions, UploadFileSuccess, UploadTask>(API_UPLOAD_FILE, (args: UploadFileOptions, exec: ApiExecutor<UploadFileSuccess>)=>{
-        let url = args.url, timeout = args.timeout, header = args.header, formData = args.formData, files = args.files, filePath = args.filePath, name = args.name;
-        header = header || {} as ESObject;
-        if (!header!['Cookie'] && !header!['cookie']) {
-            header!['Cookie'] = getCookieSync(url);
-        }
-        const headers = {} as Record<string, Object>;
-        if (header) {
-            const headerRecord = header as Object as Record<string, string>;
-            const headerKeys = Object.keys(headerRecord);
-            for(let i = 0; i < headerKeys.length; i++){
-                const name = headerKeys[i];
-                headers[name.toLowerCase()] = headerRecord[name];
-            }
-        }
-        headers['Content-Type'] = 'multipart/form-data';
-        const multiFormDataList = [] as Array<http2.MultiFormData>;
-        if (formData) {
-            const formDataRecord = formData as Object as Record<string, Object>;
-            const formDataKeys = Object.keys(formDataRecord);
-            for(let i = 0; i < formDataKeys.length; i++){
-                const name = formDataKeys[i];
-                multiFormDataList.push({
-                    name,
-                    contentType: 'text/plain',
-                    data: String(formDataRecord[name])
-                } as http2.MultiFormData);
-            }
-        }
-        try {
-            if (files && files.length) {
-                for(let i = 0; i < files.length; i++){
-                    const _files_i = files[i], name = _files_i.name, uri = _files_i.uri;
-                    multiFormDataList.push({
-                        name: name || 'file',
-                        contentType: lookupContentTypeWithUri(uri) || 'application/octet-stream',
-                        remoteFileName: uri.split('/').pop() || 'no-name',
-                        data: readFile(uri!)
-                    } as http2.MultiFormData);
-                }
-            } else if (filePath) {
-                multiFormDataList.push({
-                    name: name || 'file',
-                    contentType: lookupContentTypeWithUri(filePath!) || 'application/octet-stream',
-                    remoteFileName: filePath.split('/').pop() || 'no-name',
-                    data: readFile(filePath!)
-                } as http2.MultiFormData);
-            }
-        } catch (error) {
-            exec.reject((error as Error).message);
-            return new UploadTask1({
-                abort: ()=>{},
-                onHeadersReceived: (callback: Function)=>{},
-                offHeadersReceived: (callback: Function)=>{},
-                onProgressUpdate: (callback: Function)=>{},
-                offProgressUpdate: (callback: Function)=>{}
-            } as IUploadTask);
-        }
-        const httpRequest = http2.createHttp();
-        const mp = getCurrentMP1();
-        const userAgent = mp.userAgent.fullUserAgent;
-        if (userAgent && !headers['User-Agent'] && !headers['user-agent']) {
-            headers['User-Agent'] = userAgent;
-        }
-        const emitter = new Emitter1() as IUniUploadFileEmitter;
-        const uploadTask: IUploadTask = {
-            abort () {
-                emitter.off('headersReceive');
-                emitter.off('progress');
-                httpRequest.destroy();
-            },
-            onHeadersReceived (callback: Function) {
-                emitter.on('headersReceive', callback);
-            },
-            offHeadersReceived (callback: Function | null = null) {
-                emitter.off('headersReceive', callback);
-            },
-            onProgressUpdate (callback: Function) {
-                emitter.on('progress', callback);
-            },
-            offProgressUpdate (callback: Function | null = null) {
-                emitter.off('progress', callback);
-            }
-        };
-        const destroy = ()=>{
-            emitter.off('headersReceive');
-            emitter.off('progress');
-            httpRequest.destroy();
-        };
-        mp.on('beforeClose', destroy);
-        let lastUrl = url;
-        httpRequest.on('headersReceive', (headers: Object)=>{
-            const realHeaders = headers as Record<string, string | string[]>;
-            const setCookieHeader = realHeaders['set-cookie'] || realHeaders['Set-Cookie'];
-            if (setCookieHeader) {
-                setCookieSync(lastUrl, setCookieHeader as string[]);
-            }
-            const location = realHeaders['location'] || realHeaders['Location'];
-            if (location) {
-                lastUrl = location as string;
-            }
-        });
-        httpRequest.on('dataSendProgress', (ref)=>{
-            let sendSize = ref.sendSize, totalSize = ref.totalSize;
-            emitter.emit('progress', {
-                progress: Math.floor((sendSize / totalSize) * 100),
-                totalBytesSent: sendSize,
-                totalBytesExpectedToSend: totalSize
-            } as OnProgressUpdateResult);
-        });
-        httpRequest.request(parseUrl(url), {
-            header: headers,
-            method: http2.RequestMethod.POST,
-            connectTimeout: timeout ? timeout : undefined,
-            readTimeout: timeout ? timeout : undefined,
-            multiFormDataList,
-            expectDataType: http2.HttpDataType.STRING,
-            clientCert: getClientCertificate(url)
-        } as http2.HttpRequestOptions, (err, res)=>{
-            if (err) {
-                exec.reject(err.message);
-            } else {
-                exec.resolve({
-                    data: res.result as string,
-                    statusCode: res.responseCode
-                } as UploadFileSuccess);
-            }
-            uploadTask.offHeadersReceived();
-            uploadTask.offProgressUpdate();
-            httpRequest.destroy();
-            mp.off('beforeClose', destroy);
-        });
-        return new UploadTask1(uploadTask);
-    }, UploadFileApiProtocol, UploadFileApiOptions) as UploadFile;
-    const getPossibleExt = (contentType: string, contentDisposition: string, url: string): string =>{
-        const contentDispositionFileNameMatches = contentDisposition.match(/filename="(.*)"/);
-        const contentDispositionFileName = contentDispositionFileNameMatches ? contentDispositionFileNameMatches[1] : '';
-        const contentDispositionExt = contentDispositionFileName ? contentDispositionFileName.split('.').pop() : '';
-        if (contentDispositionExt) {
-            return contentDispositionExt;
-        }
-        const urlPath = harmonyUrl1.URL.parseURL(url).pathname;
-        const urlExt = urlPath.split('/').pop()?.split('.')[1] || '';
-        if (urlExt) {
-            return urlExt;
-        }
-        const contentTypeExt = lookupExt(contentType);
-        return contentTypeExt || '';
-    };
-    class DownloadTask1 implements DownloadTask {
-        private _downloadTask: IDownloadTask;
-        constructor(downloadTask: IDownloadTask){
-            this._downloadTask = downloadTask;
-        }
-        abort() {
-            this._downloadTask.abort();
-        }
-        onProgressUpdate(callback: Function) {
-            this._downloadTask.onProgressUpdate(callback);
-        }
-        offProgressUpdate(callback: Function | null = null) {
-            this._downloadTask.offProgressUpdate(callback);
-        }
-        onHeadersReceived(callback: Function) {
-            this._downloadTask.onHeadersReceived(callback);
-        }
-        offHeadersReceived(callback: Function | null = null) {
-            this._downloadTask.offHeadersReceived(callback);
-        }
-    }
-    let downloadIndex: [string, number] = [
-        '0',
-        0
-    ];
-    const getDownloadFileName = (ext: string)=>{
-        let fileName = Date.now() + '';
-        if (downloadIndex[0] === fileName) {
-            downloadIndex[1]++;
-            if (downloadIndex[1] > 0) {
-                fileName += '-' + downloadIndex[1];
-            }
-        } else {
-            downloadIndex[0] = fileName;
-            downloadIndex[1] = 0;
-        }
-        if (ext) {
-            fileName += '.' + ext;
-        }
-        return fileName;
-    };
-    const downloadFile = defineTaskApi<DownloadFileOptions, DownloadFileSuccess, DownloadTask>(API_DOWNLOAD_FILE, (args: DownloadFileOptions, exec: ApiExecutor<DownloadFileSuccess>)=>{
-        let url = args.url, timeout = args.timeout, header = args.header, filePath = args.filePath;
-        header = header || {} as ESObject;
-        if (!header!['Cookie'] && !header!['cookie']) {
-            header!['Cookie'] = getCookieSync(url);
-        }
-        const httpRequest = http3.createHttp();
-        const mp = getCurrentMP2();
-        const userAgent = mp.userAgent.fullUserAgent;
-        if (userAgent && !header!['User-Agent'] && !header!['user-agent']) {
-            header!['User-Agent'] = userAgent;
-        }
-        const emitter = new Emitter2() as IUniDownloadFileEmitter;
-        const downloadTask: IDownloadTask = {
-            abort () {
-                emitter.off('headersReceive');
-                emitter.off('progress');
-                httpRequest.destroy();
-            },
-            onHeadersReceived (callback: Function) {
-                emitter.on('headersReceive', callback);
-            },
-            offHeadersReceived (callback: Function | null = null) {
-                emitter.off('headersReceive', callback);
-            },
-            onProgressUpdate (callback: Function) {
-                emitter.on('progress', callback);
-            },
-            offProgressUpdate (callback: Function | null = null) {
-                emitter.off('progress', callback);
-            }
-        };
-        const destroy = ()=>{
-            downloadTask.abort();
-        };
-        mp.on('beforeClose', destroy);
-        let responseContentType = '';
-        let responseContentDisposition = '';
-        let lastUrl = url;
-        httpRequest.on('headersReceive', (headers: Object)=>{
-            const realHeaders = headers as Record<string, string | string[]>;
-            responseContentType = realHeaders['content-type'] as string || realHeaders['Content-Type'] as string || '';
-            responseContentDisposition = realHeaders['content-disposition'] as string || realHeaders['Content-Disposition'] as string || '';
-            const setCookieHeader = realHeaders['set-cookie'] || realHeaders['Set-Cookie'];
-            if (setCookieHeader) {
-                setCookieSync(lastUrl, setCookieHeader as string[]);
-            }
-            const location = realHeaders['location'] || realHeaders['Location'];
-            if (location) {
-                lastUrl = location as string;
-            }
-        });
-        httpRequest.on('dataReceiveProgress', (ref)=>{
-            let receiveSize = ref.receiveSize, totalSize = ref.totalSize;
-            emitter.emit('progress', {
-                progress: Math.floor((receiveSize / totalSize) * 100),
-                totalBytesWritten: receiveSize,
-                totalBytesExpectedToWrite: totalSize
-            } as OnProgressDownloadResult);
-        });
-        const TEMP_PATH = getEnv().TEMP_PATH as string;
-        const downloadPath = TEMP_PATH + '/download';
-        if (!fs1.accessSync(downloadPath)) {
-            fs1.mkdirSync(downloadPath, true);
-        }
-        let stream: fs1.Stream;
-        let tempFilePath = '';
-        let writePromise = Promise.resolve(0);
-        const queueWrite = async (data: ArrayBuffer): Promise<number> =>{
-            writePromise = writePromise.then(async (total)=>{
-                const length = await stream.write(data);
-                return total + length;
-            });
-            return writePromise;
-        };
-        httpRequest.on('dataReceive', (data)=>{
-            if (!stream) {
-                const ext = getPossibleExt(responseContentType, responseContentDisposition, url);
-                tempFilePath = filePath ? filePath.replace(/^file:\/\//, '') : downloadPath + '/' + getDownloadFileName(ext);
-                stream = fs1.createStreamSync(tempFilePath, 'w+');
-            }
-            queueWrite(data);
-        });
-        httpRequest.requestInStream(parseUrl(url), {
-            header: header ? header : {} as ESObject,
-            method: http3.RequestMethod.GET,
-            connectTimeout: timeout ? timeout : undefined,
-            readTimeout: timeout ? timeout : undefined,
-            clientCert: getClientCertificate(url)
-        } as http3.HttpRequestOptions, (err, statusCode)=>{
-            let finishPromise: Promise<void> = Promise.resolve();
-            if (err) {
-                exec.reject(err.message);
-            } else {
-                finishPromise = writePromise.then(async ()=>{
-                    await stream.flush();
-                    await stream.close();
-                    exec.resolve({
-                        tempFilePath,
-                        statusCode
-                    } as DownloadFileSuccess);
-                }).catch((err: Error)=>{
-                    exec.reject(err.message);
-                });
-            }
-            finishPromise.then(()=>{
-                downloadTask.offHeadersReceived();
-                downloadTask.offProgressUpdate();
-                httpRequest.destroy();
-                mp.off('beforeClose', destroy);
-            });
-        });
-        return new DownloadTask1(downloadTask);
-    }, DownloadFileApiProtocol, DownloadFileApiOptions) as DownloadFile;
-    const configMTLS: ConfigMTLS = defineAsyncApi<ConfigMTLSOptions, ConfigMTLSSuccess>(API_CONFIG_MTLS, (args: ConfigMTLSOptions, executor: ApiExecutor<ConfigMTLSSuccess>)=>{
-        try {
-            args.certificates.forEach((certificate)=>{
-                const certHosts = certificates.map((cert)=>cert.host);
-                const certHostIndex = certHosts.indexOf(certificate.host);
-                if (certHostIndex > -1) {
-                    certificates.splice(certHostIndex, 1);
-                }
-                certificates.push(certificate);
-            });
-            executor.resolve();
-        } catch (error) {
-            executor.reject((error as BusinessError).message);
-        }
-    }, ConfigMTLSApiProtocol, ConfigMTLSApiOptions) as ConfigMTLS;
-    const API_GET_STORAGE = 'getStorage';
-    const API_GET_STORAGE_SYNC = 'getStorageSync';
-    const API_SET_STORAGE = 'setStorage';
-    const API_SET_STORAGE_SYNC = 'setStorageSync';
-    const API_REMOVE_STORAGE = 'removeStorage';
-    const API_REMOVE_STORAGE_SYNC = 'removeStorageSync';
-    const API_CLEAR_STORAGE = 'clearStorage';
-    const API_CLEAR_STORAGE_SYNC = 'clearStorageSync';
-    const API_GET_STORAGE_INFO = 'getStorageInfo';
-    const API_GET_STORAGE_INFO_SYNC = 'getStorageInfoSync';
-    const parseStorageValue = (value: string): Object =>{
-        try {
-            return JSON.parse(value).data;
-        } catch (e) {
-            return value;
-        }
-    };
-    const stringifyStorageValue = (value: Object): string =>{
-        return JSON.stringify({
-            type: typeof value,
-            data: value
-        } as ESObject);
-    };
-    const stores = new Map<string, dataPreferences.Preferences>();
-    const createStore = (): dataPreferences.Preferences =>{
-        const id = getCurrentMP3().id;
-        if (stores.has(id)) {
-            return stores.get(id)!;
-        }
-        const store = dataPreferences.getPreferencesSync(UTSHarmony.getUIAbilityContext() as common.UIAbilityContext, {
-            name: `storage.${id}`
-        } as dataPreferences.Options);
-        stores.set(id, store);
-        return store;
-    };
-    const getStorageSync = defineSyncApi<Object>(API_GET_STORAGE_SYNC, (key: string)=>{
-        const storeValue = createStore().getSync(key, '');
-        if (!storeValue) {
-            return '';
-        }
-        return parseStorageValue(storeValue as string);
-    }) as GetStorageSync;
-    const getStorage = defineAsyncApi<GetStorageOptions, GetStorageSuccess>(API_GET_STORAGE, (args: GetStorageOptions, exec: ApiExecutor<GetStorageSuccess>)=>{
-        createStore().get(args.key, '').then((storeValue)=>{
-            if (!storeValue) {
-                return exec.reject('data not found');
-            }
-            let value: Object;
-            try {
-                value = parseStorageValue(storeValue as string);
-            } catch (error) {
-                exec.reject('data parse error');
-                return;
-            }
-            exec.resolve({
-                data: value
-            } as GetStorageSuccess);
-        });
-    }) as GetStorage;
-    const setStorageSync = defineSyncApi<void>(API_SET_STORAGE_SYNC, (key: string, value: Object)=>{
-        createStore().putSync(key, stringifyStorageValue(value));
-        createStore().flush();
-    }) as SetStorageSync;
-    const setStorage = defineAsyncApi<SetStorageOptions, SetStorageSuccess>(API_SET_STORAGE, (args: SetStorageOptions, exec: ApiExecutor<SetStorageSuccess>)=>{
-        try {
-            createStore().put(args.key, stringifyStorageValue(args.data)).then(()=>{
-                createStore().flush();
-                exec.resolve({} as ESObject);
-            }, (error: Error)=>{
-                exec.reject(error.message);
-            });
-        } catch (error) {
-            exec.reject((error as Error).message);
-        }
-    }) as SetStorage;
-    const removeStorageSync = defineSyncApi<void>(API_REMOVE_STORAGE_SYNC, (key: string)=>{
-        createStore().deleteSync(key);
-        createStore().flush();
-    }) as RemoveStorageSync;
-    const removeStorage = defineAsyncApi<RemoveStorageOptions, RemoveStorageSuccess>(API_REMOVE_STORAGE, (args: RemoveStorageOptions, exec: ApiExecutor<RemoveStorageSuccess>)=>{
-        createStore().delete(args.key).then(()=>{
-            createStore().flush();
-            exec.resolve({} as ESObject);
-        }, (error: Error)=>{
-            exec.reject(error.message);
-        });
-    }) as RemoveStorage;
-    const clearStorageSync = defineSyncApi<void>(API_CLEAR_STORAGE_SYNC, ()=>{
-        createStore().clearSync();
-        createStore().flush();
-    }) as ClearStorageSync;
-    const clearStorage = defineAsyncApi<ClearStorageOptions, ClearStorageSuccess>(API_CLEAR_STORAGE, (args: ClearStorageOptions, exec: ApiExecutor<ClearStorageSuccess>)=>{
-        createStore().clear().then(()=>{
-            createStore().flush();
-            exec.resolve({} as ESObject);
-        }, (error: Error)=>{
-            exec.reject(error.message);
-        });
-    }) as ClearStorage;
-    const getStorageInfoSync = defineSyncApi<GetStorageInfoSuccess>(API_GET_STORAGE_INFO_SYNC, ()=>{
-        const allData = createStore().getAllSync();
-        return {
-            keys: Object.keys(allData),
-            currentSize: 0,
-            limitSize: 0
-        } as GetStorageInfoSuccess;
-    }) as GetStorageInfoSync;
-    const getStorageInfo = defineAsyncApi<GetStorageInfoOptions, GetStorageInfoSuccess>(API_GET_STORAGE_INFO, (args: GetStorageInfoOptions, exec: ApiExecutor<GetStorageInfoSuccess>)=>{
-        createStore().getAll().then((allData)=>{
-            exec.resolve({
-                keys: Object.keys(allData),
-                currentSize: 0,
-                limitSize: 0
-            } as GetStorageInfoSuccess);
-        });
-    }) as GetStorageInfo;
     const API_ADD_PHONE_CONTACT = 'addPhoneContact';
     const AddPhoneContactApiOptions: ApiOptions<AddPhoneContactOptions> = {
         formatArgs: new Map<string, ((firstName: string) => string | undefined)>([
@@ -3000,7 +2061,7 @@ export function initUniExtApi() {
                 if (postalAddresses.length) contactInfo.postalAddresses = postalAddresses;
                 contact.addContact(UTSHarmony.getUIAbilityContext()!, contactInfo).then((contactId)=>{
                     executor.resolve(contactId);
-                }).catch((err: BusinessError1)=>{
+                }).catch((err: BusinessError)=>{
                     executor.reject(err.message);
                 });
             } else {
@@ -3195,7 +2256,7 @@ export function initUniExtApi() {
             }
             auth.start();
         } catch (error) {
-            const code = (error as BusinessError2).code;
+            const code = (error as BusinessError1).code;
             executor.reject(getErrorMessage(code), {
                 errCode: getUniErrMsg(code)
             } as ApiError);
@@ -3209,7 +2270,7 @@ export function initUniExtApi() {
             if ([
                 userAuth.UserAuthResultCode.NOT_ENROLLED,
                 userAuth.UserAuthResultCode.PIN_EXPIRED
-            ].includes((error as BusinessError2).code)) {
+            ].includes((error as BusinessError1).code)) {
                 return true;
             }
             return false;
@@ -3223,7 +2284,7 @@ export function initUniExtApi() {
             if ([
                 userAuth.UserAuthResultCode.NOT_ENROLLED,
                 userAuth.UserAuthResultCode.PIN_EXPIRED
-            ].includes((error as BusinessError2).code)) {
+            ].includes((error as BusinessError1).code)) {
                 return true;
             }
             return false;
@@ -3244,7 +2305,7 @@ export function initUniExtApi() {
                         errMsg: ''
                     } as CheckIsSupportSoterAuthenticationSuccess);
                 } catch (error) {
-                    const code = (error as BusinessError2).code;
+                    const code = (error as BusinessError1).code;
                     executor.reject(getErrorMessage(code), {
                         errCode: getUniErrMsg(code)
                     } as ApiError);
@@ -3282,7 +2343,7 @@ export function initUniExtApi() {
                         errMsg: ''
                     } as CheckIsSoterEnrolledInDeviceSuccess);
                 } catch (error) {
-                    const code = (error as BusinessError2).code;
+                    const code = (error as BusinessError1).code;
                     executor.reject(getErrorMessage(code), {
                         errCode: getUniErrMsg(code)
                     } as ApiError);
@@ -3334,7 +2395,7 @@ export function initUniExtApi() {
                     } as ClipboardCallbackOptions);
                 } catch (err) {
                     callback({
-                        data: (err as BusinessError3<void>).message,
+                        data: (err as BusinessError2<void>).message,
                         result: 'fail'
                     } as ClipboardCallbackOptions);
                 }
@@ -3362,7 +2423,7 @@ export function initUniExtApi() {
             } as ClipboardCallbackOptions;
         } catch (err) {
             return {
-                data: (err as BusinessError3<void>).message,
+                data: (err as BusinessError2<void>).message,
                 result: 'fail'
             } as ClipboardCallbackOptions;
         }
@@ -3847,12 +2908,12 @@ export function initUniExtApi() {
     const API_$_EMIT = '$emit';
     const emitterStore = new Map<string, IUniEventEmitter>();
     const getEmitter = (): IUniEventEmitter =>{
-        const mp = getCurrentMP4();
+        const mp = getCurrentMP();
         const id = mp.id as string;
         if (emitterStore.has(id)) {
             return emitterStore.get(id) as IUniEventEmitter;
         }
-        const emitter = new Emitter3() as IUniEventEmitter;
+        const emitter = new Emitter() as IUniEventEmitter;
         emitterStore.set(id, emitter);
         mp.on('beforeClose', ()=>{
             emitterStore.delete(id);
@@ -3881,7 +2942,7 @@ export function initUniExtApi() {
     const API_GET_SAVED_FILE_LIST = 'getSavedFileList';
     const API_REMOVE_SAVED_FILE = 'removeSavedFile';
     const getSavedDir = ()=>{
-        return getEnv1().USER_DATA_PATH + '/saved';
+        return getEnv().USER_DATA_PATH + '/saved';
     };
     let savedIndex: [string, number] = [
         '0',
@@ -3905,7 +2966,7 @@ export function initUniExtApi() {
         return fileName;
     };
     const getFsPath = (filePath: string)=>{
-        filePath = getRealPath2(filePath) as string;
+        filePath = getRealPath(filePath) as string;
         if (!/^file:/.test(filePath)) {
             return filePath;
         }
@@ -3916,21 +2977,21 @@ export function initUniExtApi() {
         return filePath;
     };
     const saveFile: SaveFile = defineAsyncApi<LegacySaveFileOptions, LegacySaveFileSuccess>(API_SAVE_FILE, (options: LegacySaveFileOptions, exec: ApiExecutor<LegacySaveFileSuccess>)=>{
-        const tempFilePath = getRealPath2(options.tempFilePath) as string;
+        const tempFilePath = getRealPath(options.tempFilePath) as string;
         const savedPath = getSavedDir();
-        if (!fs2.accessSync(savedPath)) {
-            fs2.mkdirSync(savedPath, true);
+        if (!fs.accessSync(savedPath)) {
+            fs.mkdirSync(savedPath, true);
         }
-        let srcFile: fs2.File;
+        let srcFile: fs.File;
         try {
-            srcFile = fs2.openSync(tempFilePath, fs2.OpenMode.READ_ONLY);
+            srcFile = fs.openSync(tempFilePath, fs.OpenMode.READ_ONLY);
         } catch (error) {
             exec.reject((error as Error).message);
             return;
         }
         const savedFilePath = savedPath + '/' + getSavedFileName(tempFilePath);
-        fs2.copyFile(srcFile.fd, savedFilePath, (err)=>{
-            fs2.closeSync(srcFile);
+        fs.copyFile(srcFile.fd, savedFilePath, (err)=>{
+            fs.closeSync(srcFile);
             if (err) {
                 exec.reject(err.message);
             } else {
@@ -3942,19 +3003,19 @@ export function initUniExtApi() {
     }) as SaveFile;
     const getSavedFileList: GetSavedFileList = defineAsyncApi<LegacyGetSavedFileListOptions, LegacyGetSavedFileListSuccess>(API_GET_SAVED_FILE_LIST, (options: LegacyGetSavedFileListOptions, exec: ApiExecutor<LegacyGetSavedFileListSuccess>)=>{
         const savedPath = getSavedDir();
-        if (!fs2.accessSync(savedPath)) {
+        if (!fs.accessSync(savedPath)) {
             exec.resolve({
                 fileList: []
             } as LegacyGetSavedFileListSuccess);
         }
-        fs2.listFile(savedPath, {} as ListFileOptions, (err, fileList)=>{
+        fs.listFile(savedPath, {} as ListFileOptions, (err, fileList)=>{
             if (err) {
                 exec.reject(err.message);
             } else {
                 exec.resolve({
                     fileList: fileList.map((filePath: string)=>{
                         const fullPath = savedPath + '/' + filePath;
-                        const stat = fs2.statSync(fullPath);
+                        const stat = fs.statSync(fullPath);
                         if (!stat.isFile()) {
                             return null;
                         }
@@ -3970,11 +3031,11 @@ export function initUniExtApi() {
     }) as GetSavedFileList;
     const getSavedFileInfo: GetSavedFileInfo = defineAsyncApi<LegacyGetSavedFileInfoOptions, LegacyGetSavedFileInfoSuccess>(API_GET_SAVED_FILE_INFO, (options: LegacyGetSavedFileInfoOptions, exec: ApiExecutor<LegacyGetSavedFileInfoSuccess>)=>{
         const savedFilePath = getFsPath(options.filePath);
-        if (!fs2.accessSync(savedFilePath)) {
+        if (!fs.accessSync(savedFilePath)) {
             exec.reject('file not exist');
             return;
         }
-        const stat = fs2.statSync(savedFilePath);
+        const stat = fs.statSync(savedFilePath);
         if (!stat.isFile()) {
             exec.reject('file not exist');
         }
@@ -3985,11 +3046,11 @@ export function initUniExtApi() {
     }) as GetSavedFileInfo;
     const removeSavedFile: RemoveSavedFile = defineAsyncApi<LegacyRemoveSavedFileOptions, LegacyRemoveSavedFileSuccess>(API_REMOVE_SAVED_FILE, (options: LegacyRemoveSavedFileOptions, exec: ApiExecutor<LegacyRemoveSavedFileSuccess>)=>{
         const savedFilePath = getFsPath(options.filePath);
-        if (!fs2.accessSync(savedFilePath)) {
+        if (!fs.accessSync(savedFilePath)) {
             exec.reject('file not exist');
             return;
         }
-        fs2.unlink(savedFilePath, (err)=>{
+        fs.unlink(savedFilePath, (err)=>{
             if (err) {
                 exec.reject(err.message);
             } else {
@@ -4004,11 +3065,11 @@ export function initUniExtApi() {
     const getFileInfo: GetFileInfo = defineAsyncApi<LegacyGetFileInfoOptions, LegacyGetFileInfoSuccess>(API_GET_FILE_INFO, (options: LegacyGetFileInfoOptions, exec: ApiExecutor<LegacyGetFileInfoSuccess>)=>{
         const filePath = getFsPath(options.filePath);
         const digestAlgorithm = options.digestAlgorithm && SupportedHashAlgorithm.includes(options.digestAlgorithm) ? options.digestAlgorithm : 'md5';
-        if (!fs2.accessSync(filePath)) {
+        if (!fs.accessSync(filePath)) {
             exec.reject('file not exist');
             return;
         }
-        const stat = fs2.statSync(filePath);
+        const stat = fs.statSync(filePath);
         if (!stat.isFile()) {
             exec.reject('file not exist');
         }
@@ -4174,6 +3235,13 @@ export function initUniExtApi() {
             this.errMsg = FileSystemManagerUniErrors.get(errCode) ?? "";
         }
     }
+    let type = new util.types();
+    const modeReflect: ModeReflect = {
+        'ax': 'a',
+        'ax+': 'a+',
+        'wx': 'w',
+        'wx+': 'w+'
+    };
     const ENCODING = [
         'utf8',
         'utf-8',
@@ -4187,6 +3255,51 @@ export function initUniExtApi() {
         'utf-16le',
         'latin1'
     ];
+    const getFileTypeMode = (stat: fs1.Stat): number =>{
+        if (stat.isBlockDevice()) {
+            return 0o060000;
+        }
+        if (stat.isCharacterDevice()) {
+            return 0o020000;
+        }
+        if (stat.isDirectory()) {
+            return 0o040000;
+        }
+        if (stat.isFIFO()) {
+            return 0o010000;
+        }
+        if (stat.isFile()) {
+            return 0o100000;
+        }
+        if (stat.isSocket()) {
+            return 0o140000;
+        }
+        if (stat.isSymbolicLink()) {
+            return 0o120000;
+        }
+        return 0;
+    };
+    const getOpenMode = (flag: string): number | null =>{
+        switch(flag){
+            case 'a':
+                return fs1.OpenMode.CREATE | fs1.OpenMode.APPEND;
+            case 'a+':
+                return fs1.OpenMode.CREATE | fs1.OpenMode.READ_WRITE | fs1.OpenMode.APPEND;
+            case 'as':
+                return fs1.OpenMode.SYNC | fs1.OpenMode.CREATE | fs1.OpenMode.APPEND;
+            case 'as+':
+                return fs1.OpenMode.SYNC | fs1.OpenMode.CREATE | fs1.OpenMode.READ_WRITE | fs1.OpenMode.APPEND;
+            case 'r':
+                return fs1.OpenMode.READ_ONLY;
+            case 'r+':
+                return fs1.OpenMode.READ_WRITE;
+            case 'w':
+                return fs1.OpenMode.CREATE | fs1.OpenMode.WRITE_ONLY | fs1.OpenMode.TRUNC;
+            case 'w+':
+                return fs1.OpenMode.CREATE | fs1.OpenMode.READ_WRITE | fs1.OpenMode.TRUNC;
+        }
+        return null;
+    };
     const transformErrorCode = (errCode: number): FileSystemManagerErrorCode =>{
         switch(errCode){
             case 13900012:
@@ -4251,7 +3364,7 @@ export function initUniExtApi() {
         return typeof data === 'boolean';
     };
     const isArrayBuffer = (data: DataType | null = null): boolean =>{
-        return data instanceof ArrayBuffer;
+        return type.isAnyArrayBuffer(data as object);
     };
     const checkSingleDataType = (data: DataType, dataType: string)=>{
         let result = false;
@@ -4308,6 +3421,53 @@ export function initUniExtApi() {
         }
         return result;
     };
+    const checkPathExistence = (methodName: string, pathName: string, path: string): CustomValidReturn | CustomValidReturnValid =>{
+        const errMsg = `${methodName}: fail ${pathName}`;
+        let isValid = false;
+        if (!checkDataType(path, true, 'string')) {
+            return {
+                isValid,
+                err: getParameterError(errMsg)
+            } as CustomValidReturn;
+        }
+        if (path === '') {
+            return {
+                isValid,
+                err: getPermissionError(errMsg) as IFileSystemManagerFail
+            } as CustomValidReturn;
+        }
+        if (!fs1.accessSync(path)) {
+            return {
+                isValid,
+                err: getNoSuchFileOrDirectoryError(errMsg) as IFileSystemManagerFail
+            } as CustomValidReturn;
+        }
+        return {
+            isValid: true
+        } as CustomValidReturnValid;
+    };
+    const ohosRead = (filePath: string, sizeOfNewArrayBuffer: number, cb: FileCallback)=>{
+        const file = fs1.openSync(filePath, fs1.OpenMode.READ_ONLY);
+        const buf = new ArrayBuffer(sizeOfNewArrayBuffer);
+        fs1.read(file.fd, buf).then((readLen)=>{
+            cb.success({
+                data: buf
+            } as ReadFileSuccessResult);
+        }).catch((err: BusinessError3)=>{
+            cb.fail(new FileSystemManagerFailImpl(transformErrorCode(err.code)) as ApiError);
+        }).finally(()=>{
+            fs1.closeSync(file);
+        });
+    };
+    const ohosReadText = (filePath: string, option: ReadTextOptions, cb: FileCallback)=>{
+        fs1.readText(filePath, option).then((str)=>{
+            cb.success({
+                data: str
+            } as ReadFileSuccessResult);
+        }).catch((err: BusinessError3)=>{
+            cb.fail(new FileSystemManagerFailImpl(transformErrorCode(err.code)) as ApiError);
+        });
+    };
     const obtainUpperPath = (inputPath: string): ObtainUpperPathReturn =>{
         let index = inputPath.lastIndexOf('/');
         let upperPath = inputPath.substring(0, index);
@@ -4316,7 +3476,40 @@ export function initUniExtApi() {
             upperPath
         } as ObtainUpperPathReturn;
     };
-    const checkPath = (methodName: string, pathName: string, path: string): CustomValidReturn =>{
+    const obtainFileName = (inputPath: string): ObtainFileNameReturn =>{
+        let index = inputPath.lastIndexOf('/');
+        let fileName = inputPath.substring(index);
+        if (inputPath.endsWith('/')) {
+            fileName = inputPath.substring(inputPath.lastIndexOf("/", inputPath.length - 2) + 1, inputPath.length - 1);
+        }
+        return {
+            index,
+            fileName
+        } as ObtainFileNameReturn;
+    };
+    const checkFd = (methodName: string, fd: string): CheckFd | CheckFdErr =>{
+        const errMsg = `${methodName}: fail`;
+        if (!checkDataType(fd, true, 'string')) {
+            return {
+                isValid: false,
+                fd: 0,
+                err: getParameterError(errMsg)
+            };
+        }
+        const transFdToNum = Number(fd);
+        if (isNaN(transFdToNum)) {
+            return {
+                isValid: false,
+                fd: 0,
+                err: getParameterError(errMsg)
+            };
+        }
+        return {
+            isValid: true,
+            fd: transFdToNum
+        };
+    };
+    const checkPath = (methodName: string, pathName: string, path: string): CustomValidReturn | CustomValidReturnValid =>{
         const errMsg = `${methodName}: fail ${pathName}`;
         let isValid = false;
         if (!checkDataType(path, true, 'string')) {
@@ -4335,13 +3528,32 @@ export function initUniExtApi() {
             isValid: true
         };
     };
-    const checkPathSync = (methodName: string, pathName: string, path: string): CustomValidReturn =>{
+    const checkPathSync = (methodName: string, pathName: string, path: string): CustomValidReturn | CustomValidReturnValid =>{
         const errMsg = `${methodName}: fail ${pathName}`;
         let isValid = false;
         if (path === '' || !checkDataType(path, true, 'string')) {
             return {
                 isValid,
                 err: getParameterError(errMsg)
+            };
+        }
+        return {
+            isValid: true
+        };
+    };
+    const checkPathExistenceSync = (methodName: string, pathName: string, path: string): CustomValidReturn | CustomValidReturnValid =>{
+        const errMsg = `${methodName}: fail ${pathName}`;
+        let isValid = false;
+        if (path === '' || !checkDataType(path, true, 'string')) {
+            return {
+                isValid,
+                err: getParameterError(errMsg)
+            };
+        }
+        if (!fs1.accessSync(path)) {
+            return {
+                isValid,
+                err: getNoSuchFileOrDirectoryError(errMsg)
             };
         }
         return {
@@ -4371,8 +3583,31 @@ export function initUniExtApi() {
             }
         }
         return {
-            isValid: true
+            isValid: true,
+            errMsg: ''
         };
+    };
+    const isFileUri1 = (path: string)=>{
+        return path && typeof path === 'string' && (path.startsWith('file://') || path.startsWith('datashare://'));
+    };
+    class SecurityBase {
+        static rsa(algName: string, blob: cryptoFramework.DataBlob): Promise<Uint8Array> {
+            return new Promise<Uint8Array>(async (resolve, reject)=>{
+                let md: cryptoFramework.Md;
+                try {
+                    md = cryptoFramework.createMd(algName);
+                    await md.update(blob);
+                    const mdOutput = await md.digest();
+                    resolve(mdOutput.data);
+                } catch (error) {
+                    console.error(`rsa fail error code: ${(error as BusinessError3).code}, message is: ${(error as BusinessError3).message}`);
+                    reject(error);
+                }
+            });
+        }
+    }
+    const getApiError = (errCode: number, errMsg: string | null = null): FileSystemManagerApiError =>{
+        return wrapErrMsg(new FileSystemManagerFailImpl(transformErrorCode(errCode)), errMsg) as FileSystemManagerApiError;
     };
     const wrapErrMsg = (err: IFileSystemManagerFail, errMsg: string | null = null): IFileSystemManagerFail =>{
         if (errMsg) {
@@ -4381,10 +3616,49 @@ export function initUniExtApi() {
         return err;
     };
     const getParameterError = (errMsg: string | null = null): IFileSystemManagerFail =>{
-        return wrapErrMsg(new FileSystemManagerFailImpl(1300022) as IFileSystemManagerFail, errMsg);
+        return getApiError(1300022, errMsg) as IFileSystemManagerFail;
     };
     const getPermissionError = (errMsg: string | null = null): IFileSystemManagerFail =>{
-        return wrapErrMsg(new FileSystemManagerFailImpl(1300013) as IFileSystemManagerFail, errMsg);
+        return getApiError(1300013, errMsg) as IFileSystemManagerFail;
+    };
+    const getNoSuchFileOrDirectoryError = (errMsg: string | null = null): IFileSystemManagerFail =>{
+        return getApiError(1300002, errMsg) as IFileSystemManagerFail;
+    };
+    const getSavedDir1 = ()=>{
+        return getEnv1().USER_DATA_PATH + '/saved';
+    };
+    let savedIndex1: [string, number] = [
+        '0',
+        0
+    ];
+    const getSavedFileName1 = (filePath: string)=>{
+        const uriInstance = new uri.URI(filePath);
+        const ext = uriInstance.clearQuery().getLastSegment().split('.')[1];
+        let fileName = Date.now() + '';
+        if (savedIndex1[0] === fileName) {
+            savedIndex1[1]++;
+            if (savedIndex1[1] > 0) {
+                fileName += '-' + savedIndex1[1];
+            }
+        } else {
+            savedIndex1[0] = fileName;
+            savedIndex1[1] = 0;
+        }
+        if (ext) {
+            fileName += '.' + ext;
+        }
+        return fileName;
+    };
+    const getFsPath1 = (filePath: string)=>{
+        filePath = getRealPath1(filePath) as string;
+        if (!/^file:/.test(filePath)) {
+            return filePath;
+        }
+        const rawPath = filePath.replace(/^file:\/\//, '');
+        if (rawPath[0] === '/') {
+            return rawPath;
+        }
+        return filePath;
     };
     const DEFAULT_ENCODING = 'utf-8';
     const ENCODING_SUPPORT = [
@@ -4392,14 +3666,112 @@ export function initUniExtApi() {
         "base64",
         "utf-8"
     ];
+    const DIGEST_ALGORITHM_VALUES = [
+        "md5",
+        "sha1"
+    ];
     const DEFAULT_POSITION = 0;
+    const DEFAULT_LENGTH = 0;
+    const DEFAULT_FLAG = 'r';
     const DEFAULT_OFFSET = 0;
+    const FLAG = [
+        'a',
+        'ax',
+        'a+',
+        'ax+',
+        'as',
+        'as+',
+        'r',
+        'r+',
+        'w',
+        'wx',
+        'w+',
+        'wx+'
+    ];
+    const getRealPath2 = (filepath: string): string =>{
+        return runtimeGetRealPath(filepath).replace(/^file:\/\//, '');
+    };
     class FileSystemManagerImpl implements FileSystemManager {
         readFile(options: ReadFileOptions): void {
-            throw new Error('Method not implemented.');
+            const errMsg = `readFile: fail`;
+            const filePath = options.filePath, encoding = options.encoding, success = options.success, fail = options.fail, complete = options.complete;
+            const cb = new FileCallback({
+                success,
+                fail,
+                complete
+            } as CallBack);
+            const checkRes = checkPathExistence('readFile', 'filePath', filePath);
+            if (!checkRes.isValid) {
+                cb.fail({
+                    errMsg: (checkRes as CustomValidReturn).err.errMsg
+                } as ApiError);
+                return;
+            }
+            const stat = fs2.statSync(filePath);
+            if (stat.isDirectory()) {
+                cb.fail(getApiError(1300021, errMsg));
+                return;
+            }
+            const lengthOfFile = stat.size;
+            if (encoding == undefined) {
+                let sizeOfNewArrayBuffer = lengthOfFile;
+                ohosRead(filePath, sizeOfNewArrayBuffer, cb);
+            } else {
+                const res = checkEncoding('readFile', encoding);
+                if (!res.isValid) {
+                    cb.fail({
+                        errMsg: res.errMsg
+                    } as ApiError);
+                    return;
+                }
+                ohosReadText(filePath, {
+                    encoding
+                } as ReadTextOptions1, cb);
+            }
         }
         readFileSync(filePath: string, encoding: string | null = null): ReadFileSuccessResult {
-            throw new Error('Method not implemented.');
+            const errMsg = `readFileSync: fail`;
+            const res1 = checkPathExistenceSync('readFileSync', 'filePath', filePath);
+            if (!res1.isValid) {
+                throw new Error((res1 as CustomValidReturn).err?.errMsg);
+            }
+            const stat = fs2.statSync(filePath);
+            if (stat.isDirectory()) {
+                throw new Error(getApiError(1300021, errMsg).errMsg);
+            }
+            const lengthOfFile = stat.size;
+            if (encoding == undefined) {
+                let sizeOfNewArrayBuffer = lengthOfFile;
+                const file = fs2.openSync(filePath, fs2.OpenMode.READ_ONLY);
+                const buf = new ArrayBuffer(sizeOfNewArrayBuffer);
+                try {
+                    fs2.readSync(file.fd, buf);
+                } catch (err) {
+                    console.error(err);
+                }
+                fs2.closeSync(file);
+                return {
+                    data: buf
+                } as ReadFileSuccessResult;
+            } else {
+                const res2 = checkEncoding('readFileSync', encoding);
+                if (!res2.isValid) {
+                    throw new Error(res2.errMsg);
+                }
+                if ((encoding as string) === 'utf8') {
+                    encoding = 'utf-8';
+                }
+                try {
+                    const str = fs2.readTextSync(filePath, {
+                        encoding
+                    } as ReadTextOptions1);
+                    return {
+                        data: str
+                    } as ReadFileSuccessResult;
+                } catch (err) {
+                    throw new Error(`readFileSync: ${(err as BusinessError4).message}`);
+                }
+            }
         }
         writeFile(options: WriteFileOptions): void {
             const errMsg = `writeFile: fail`;
@@ -4414,12 +3786,12 @@ export function initUniExtApi() {
                 return;
             }
             if (!ENCODING_SUPPORT.includes(encoding)) {
-                cb.fail(getParameterError(`${errMsg} encoding`) as ApiError);
+                cb.fail(getParameterError(`${errMsg} encoding`));
                 return;
             }
-            let file: fs3.File | null = null;
+            let file: fs2.File | null = null;
             try {
-                const stat = fs3.statSync(filePath);
+                const stat = fs2.statSync(filePath);
                 if (stat.isDirectory()) {
                     cb.fail({
                         errMsg: `${errMsg} illegal operation on a directory, open: ${filePath}`
@@ -4428,23 +3800,23 @@ export function initUniExtApi() {
                 }
             } catch (error) {
                 try {
-                    file = fs3.openSync(filePath, fs3.OpenMode.CREATE | fs3.OpenMode.WRITE_ONLY);
+                    file = fs2.openSync(filePath, fs2.OpenMode.CREATE | fs2.OpenMode.WRITE_ONLY | fs2.OpenMode.TRUNC);
                 } catch (error) {
-                    cb.fail(wrapErrMsg(new FileSystemManagerFailImpl(transformErrorCode((error as BusinessError4).code)), errMsg) as ApiError);
+                    cb.fail(getApiError((error as BusinessError4).code, errMsg));
                     return;
                 }
             }
             const writeOptions: OHWriteOptions = {};
             if (checkDataType((data as (string | ArrayBuffer)), true, 'string')) writeOptions.encoding = encoding as string;
             if (file == null) {
-                file = fs3.openSync(filePath, fs3.OpenMode.WRITE_ONLY);
+                file = fs2.openSync(filePath, fs2.OpenMode.WRITE_ONLY | fs2.OpenMode.TRUNC);
             }
-            fs3.write(file.fd, data as (string | ArrayBuffer), writeOptions).then((writeLen)=>{
+            fs2.write(file.fd, data as (string | ArrayBuffer), writeOptions).then((writeLen)=>{
                 cb.success({
                     errMsg: 'writeFile: ok'
                 } as FileManagerSuccessResult);
             }).finally(()=>{
-                fs3.closeSync(file);
+                fs2.closeSync(file);
             });
         }
         writeFileSync(filePath: string, data: Object, encoding: string = DEFAULT_ENCODING): void {
@@ -4455,43 +3827,190 @@ export function initUniExtApi() {
             if (!ENCODING_SUPPORT.includes(encoding)) {
                 throw new Error(getParameterError(`${errMsg} encoding`).errMsg);
             }
-            let file: fs3.File | null = null;
+            let file: fs2.File | null = null;
             try {
-                const stat = fs3.statSync(filePath);
+                const stat = fs2.statSync(filePath);
                 if (stat.isDirectory()) {
                     throw new Error(`${errMsg} illegal operation on a directory, open: ${filePath}`);
                 }
             } catch (error) {
                 try {
-                    file = fs3.openSync(filePath, fs3.OpenMode.CREATE | fs3.OpenMode.WRITE_ONLY);
+                    file = fs2.openSync(filePath, fs2.OpenMode.CREATE | fs2.OpenMode.WRITE_ONLY | fs2.OpenMode.TRUNC);
                 } catch (error) {
-                    throw new Error(wrapErrMsg(new FileSystemManagerFailImpl(transformErrorCode((error as BusinessError4).code)), errMsg).errMsg);
+                    throw new Error(getApiError((error as BusinessError4).code, errMsg).errMsg);
                 }
             }
             const writeOptions: OHWriteOptions = {};
             if (checkDataType((data as (string | ArrayBuffer)), true, 'string')) writeOptions.encoding = encoding;
             if (file == null) {
-                file = fs3.openSync(filePath, fs3.OpenMode.WRITE_ONLY);
+                file = fs2.openSync(filePath, fs2.OpenMode.WRITE_ONLY | fs2.OpenMode.TRUNC);
             }
             try {
-                fs3.writeSync(file.fd, data as (string | ArrayBuffer), writeOptions);
-                fs3.closeSync(file);
+                fs2.writeSync(file.fd, data as (string | ArrayBuffer), writeOptions);
+                fs2.closeSync(file);
             } catch (err) {
-                fs3.closeSync(file);
+                fs2.closeSync(file);
                 throw new Error(`writeFileSync: ${(err as BusinessError4).message}`);
             }
         }
         read(option: ReadOption): void {
-            throw new Error('Method not implemented.');
+            const errMsg = 'read: fail';
+            let inFd = option.fd, arrayBuffer = option.arrayBuffer, offset = option.offset, length = option.length, position = option.position, success = option.success, fail = option.fail, complete = option.complete;
+            const cb = new FileCallback({
+                success,
+                fail,
+                complete
+            } as CallBack);
+            let fd: number = -1;
+            if (!checkDataType(inFd, true, 'string') || inFd === '' || isNaN(Number(inFd))) {
+                cb.fail({
+                    errMsg: `${errMsg} invalid fd`
+                } as ApiError);
+                return;
+            } else {
+                fd = Number(inFd);
+            }
+            if (!checkDataType(arrayBuffer, true, 'arraybuffer')) {
+                cb.fail({
+                    errMsg: `${errMsg} invalid arrayBuffer: ${arrayBuffer}`
+                } as ApiError);
+                return;
+            }
+            if (!checkDataType(offset, false, 'number') || offset! < 0) {
+                offset = Number(offset);
+                if (isNaN(offset) || offset < 0) {
+                    offset = DEFAULT_OFFSET;
+                }
+            }
+            if (!checkDataType(length, false, 'number') || length! < 0) {
+                length = Number(length);
+                if (isNaN(length) || length < 0) {
+                    length = DEFAULT_LENGTH;
+                }
+            }
+            const allowedSize = arrayBuffer.byteLength - offset!;
+            if (allowedSize < length!) {
+                cb.fail({
+                    errMsg: `${errMsg} RangeError [ERR_OUT_OF_RANGE]: The value length is out of range. It must be <= ${allowedSize}. Received ${length}`
+                } as ApiError);
+                return;
+            }
+            if (!checkDataType(position, false, 'number') || position! < 0) {
+                position = DEFAULT_POSITION;
+            }
+            const offsetArrayBuffer = offset!;
+            const newBuffer = arrayBuffer.slice(offsetArrayBuffer);
+            fs2.read(fd, newBuffer, {
+                offset: position,
+                length
+            } as ReadOptions).then((readLen)=>{
+                const viewNewBuffer = new Uint8Array(newBuffer);
+                const viewArrayBuffer = new Uint8Array(arrayBuffer);
+                viewArrayBuffer.set(viewNewBuffer, offsetArrayBuffer);
+                cb.success({
+                    bytesRead: readLen,
+                    arrayBuffer: arrayBuffer,
+                    errMsg: 'read: ok'
+                } as ReadSuccessCallbackResult);
+            }).catch((err: BusinessError4)=>{
+                cb.fail({
+                    errMsg: `${errMsg} with error message: ${err.message},error code: ${err.code}`
+                } as ApiError);
+            });
         }
         readSync(option: ReadSyncOption): ReadResult {
-            throw new Error('Method not implemented.');
+            const errMsg = 'readSync: fail';
+            let inFd = option.fd, arrayBuffer = option.arrayBuffer, offset = option.offset, length = option.length, position = option.position;
+            let fd: number = -1;
+            if (!checkDataType(inFd, true, 'string') || inFd === '' || isNaN(Number(inFd))) {
+                throw new Error(`${errMsg} invalid fd`);
+            } else {
+                fd = Number(inFd);
+            }
+            if (!checkDataType(arrayBuffer, true, 'arraybuffer')) {
+                throw new Error(`${errMsg} invalid arrayBuffer`);
+            }
+            if (!checkDataType(offset, false, 'number') || offset! < 0) {
+                offset = Number(offset);
+                if (isNaN(offset) || offset < 0) {
+                    offset = DEFAULT_OFFSET;
+                }
+            }
+            if (!checkDataType(length, false, 'number') || length! < 0) {
+                length = Number(length);
+                if (isNaN(length) || length < 0) {
+                    length = DEFAULT_LENGTH;
+                }
+            }
+            const allowedSize = arrayBuffer.byteLength - offset!;
+            if (allowedSize < length!) {
+                throw new Error(`${errMsg} RangeError [ERR_OUT_OF_RANGE]: The value length is out of range. It must be <= ${allowedSize}. Received ${length}`);
+            }
+            if (!checkDataType(position, false, 'number') || position! < 0) {
+                position = DEFAULT_POSITION;
+            }
+            try {
+                const offsetArrayBuffer = offset!;
+                let newBuffer = arrayBuffer.slice(offsetArrayBuffer);
+                const len = fs2.readSync(fd, newBuffer, {
+                    offset: position,
+                    length
+                } as ReadOptions);
+                const viewNewBuffer = new Uint8Array(newBuffer);
+                let viewArrayBuffer = new Uint8Array(arrayBuffer);
+                viewArrayBuffer.set(viewNewBuffer, offsetArrayBuffer);
+                return {
+                    bytesRead: len,
+                    arrayBuffer: arrayBuffer
+                } as ReadResult;
+            } catch (err) {
+                throw new Error(`${errMsg} ${(err as BusinessError4).message}`);
+            }
         }
         unlink(options: UnLinkOptions): void {
-            throw new Error('Method not implemented.');
+            const errMsg = 'unlink: fail';
+            const filePath = options.filePath, success = options.success, fail = options.fail, complete = options.complete;
+            const cb = new FileCallback({
+                success,
+                fail,
+                complete
+            } as CallBack);
+            const res = checkPathExistence('unlink', 'filePath', filePath);
+            if (!res.isValid) {
+                cb.fail((res as CustomValidReturn).err);
+                return;
+            }
+            const stat = fs2.statSync(filePath);
+            if (stat.isDirectory()) {
+                cb.fail({
+                    errMsg: `${errMsg} illegal operation on a directory, unlink: ${filePath}`
+                } as ApiError);
+                return;
+            }
+            fs2.unlink(filePath).then(()=>{
+                cb.success({
+                    errMsg: 'unlink: ok'
+                } as FileManagerSuccessResult);
+            }).catch((err: BusinessError4)=>{
+                cb.fail({
+                    errMsg: `${errMsg} with error message: ${err.message}, error code: ${err.code}`
+                } as ApiError);
+            });
         }
         unlinkSync(filePath: string): void {
-            throw new Error('Method not implemented.');
+            const errMsg = 'unlinkSync: fail';
+            const res = checkPathExistenceSync('unlinkSync', 'filePath', filePath);
+            if (!res.isValid) {
+                throw new Error((res as CustomValidReturn).err?.errMsg);
+            }
+            if (fs2.statSync(filePath).isDirectory()) {
+                throw new Error(`${errMsg} illegal operation on a directory, unlink: ${filePath}`);
+            }
+            try {
+                fs2.unlinkSync(filePath);
+            } catch (err) {
+                throw new Error(`${errMsg} ${(err as BusinessError4).message}`);
+            }
         }
         mkdir(options: MkDirOptions): void {
             const errMsg = `mkdir: fail`;
@@ -4506,28 +4025,28 @@ export function initUniExtApi() {
             }
             const checkRes = checkPath('mkdir', 'dirPath', dirPath);
             if (!checkRes.isValid) {
-                cb.fail(checkRes.err as ApiError);
+                cb.fail((checkRes as CustomValidReturn).err);
                 return;
             }
-            if (fs3.accessSync(dirPath)) {
+            if (fs2.accessSync(dirPath)) {
                 cb.fail({
                     errMsg: `${errMsg} dirPath already exists: ${dirPath}`
                 } as ApiError);
                 return;
             }
             const getSubPath = obtainUpperPath(dirPath);
-            if (!recursive && !fs3.accessSync(getSubPath.upperPath)) {
+            if (!recursive && !fs2.accessSync(getSubPath.upperPath)) {
                 cb.fail({
                     errMsg: `${errMsg} recursive is false and upper path does not exist`
                 } as ApiError);
                 return;
             }
-            fs3.mkdir(dirPath, recursive).then(()=>{
+            fs2.mkdir(dirPath, recursive).then(()=>{
                 cb.success({
                     errMsg: 'mkdir: ok'
                 } as FileManagerSuccessResult);
             }).catch((err: BusinessError4)=>{
-                cb.fail(wrapErrMsg(new FileSystemManagerFailImpl(transformErrorCode(err.code)), errMsg) as ApiError);
+                cb.fail(getApiError(err.code, errMsg));
             });
         }
         mkdirSync(dirPath: string, recursive: boolean): void {
@@ -4537,100 +4056,745 @@ export function initUniExtApi() {
             }
             const res = checkPathSync('mkdirSync', 'dirPath', dirPath);
             if (!res.isValid) {
-                throw new Error(res.err?.errMsg);
+                throw new Error((res as CustomValidReturn).err?.errMsg);
             }
-            if (fs3.accessSync(dirPath)) {
+            if (fs2.accessSync(dirPath)) {
                 throw new Error(`${errMsg} dirPath already exists: ${dirPath}`);
             }
-            if (!recursive && !fs3.accessSync(obtainUpperPath(dirPath).upperPath)) {
+            if (!recursive && !fs2.accessSync(obtainUpperPath(dirPath).upperPath)) {
                 throw new Error(`${errMsg} recursive is false and upper path does not exist`);
             }
             try {
-                fs3.mkdirSync(dirPath, recursive);
-            } catch (err) {
-                throw new Error(wrapErrMsg(new FileSystemManagerFailImpl(transformErrorCode((err as BusinessError4).code)), errMsg).errMsg);
+                fs2.mkdirSync(dirPath, recursive);
+            } catch (error) {
+                throw new Error(getApiError((error as BusinessError4).code, errMsg).errMsg);
             }
         }
         rmdir(options: RmDirOptions): void {
-            throw new Error('Method not implemented.');
+            const errMsg = 'rmdir: fail';
+            let dirPath = options.dirPath, recursive = options.recursive, success = options.success, fail = options.fail, complete = options.complete;
+            const cb = new FileCallback({
+                success,
+                fail,
+                complete
+            } as CallBack);
+            if (!checkDataType(recursive, false, 'boolean')) {
+                recursive = Boolean(recursive);
+            }
+            const res = checkPathExistence('rmdir', 'dirPath', dirPath);
+            if (!res.isValid) {
+                cb.fail((res as CustomValidReturn).err);
+                return;
+            }
+            if (!fs2.statSync(dirPath).isDirectory()) {
+                cb.fail({
+                    errMsg: `${errMsg} no such directory, open: ${dirPath}`
+                } as ApiError);
+                return;
+            }
+            if (!recursive) {
+                let filenames = fs2.listFileSync(dirPath);
+                if (filenames.length) {
+                    cb.fail({
+                        errMsg: `${errMsg} directory not empty`
+                    } as ApiError);
+                    return;
+                }
+            }
+            fs2.rmdir(dirPath).then(()=>{
+                cb.success({
+                    errMsg: 'rmdir: ok'
+                } as FileManagerSuccessResult);
+            }).catch((err: BusinessError4)=>{
+                cb.fail(getApiError((err as BusinessError4).code, errMsg));
+            });
         }
         rmdirSync(dirPath: string, recursive: boolean): void {
-            throw new Error('Method not implemented.');
+            const errMsg = 'rmdirSync: fail';
+            if (!checkDataType(recursive, false, 'boolean')) {
+                recursive = Boolean(recursive);
+            }
+            const res = checkPathExistenceSync('rmdirSync', 'dirPath', dirPath);
+            if (!res.isValid) {
+                throw new Error((res as CustomValidReturn).err?.errMsg);
+            }
+            if (!fs2.statSync(dirPath).isDirectory()) {
+                throw new Error(`${errMsg} no such directory, open: ${dirPath}`);
+            }
+            if (!recursive && (fs2.listFileSync(dirPath).length > 0)) {
+                throw new Error(`${errMsg} directory not empty`);
+            }
+            try {
+                fs2.rmdirSync(dirPath);
+            } catch (err) {
+                throw new Error(getApiError((err as BusinessError4).code, errMsg).errMsg);
+            }
         }
         readdir(options: ReadDirOptions): void {
-            throw new Error('Method not implemented.');
+            const errMsg = 'readdir: fail';
+            const dirPath = options.dirPath, success = options.success, fail = options.fail, complete = options.complete;
+            const cb = new FileCallback({
+                success,
+                fail,
+                complete
+            } as CallBack);
+            const checkRes = checkPathExistence('readdir', 'dirPath', dirPath);
+            if (!checkRes.isValid) {
+                cb.fail((checkRes as CustomValidReturn).err);
+                return;
+            }
+            const stat = fs2.statSync(dirPath);
+            if (stat.isFile()) {
+                cb.fail({
+                    errMsg: `${errMsg} dirPath not a directory: ${dirPath}`
+                } as ApiError);
+                return;
+            }
+            fs2.listFile(dirPath).then((files)=>{
+                cb.success({
+                    files,
+                    errMsg: 'readdir: ok'
+                } as ReadDirSuccessResult);
+            }).catch((err: BusinessError4)=>{
+                cb.fail({
+                    errMsg: `${errMsg} with error message: ${err.message}, error code: ${err.code}`
+                } as ApiError);
+            });
         }
         readdirSync(dirPath: string): string[] | null {
-            throw new Error('Method not implemented.');
+            const errMsg = 'readdirSync: fail';
+            const res = checkPathExistenceSync('readdirSync', 'dirPath', dirPath);
+            if (!res.isValid) {
+                throw new Error((res as CustomValidReturn).err?.errMsg);
+            }
+            if (fs2.statSync(dirPath).isFile()) {
+                throw new Error(`${errMsg} not a directory: ${dirPath}`);
+            }
+            try {
+                return fs2.listFileSync(dirPath);
+            } catch (err) {
+                throw new Error(getApiError((err as BusinessError4).code, errMsg).errMsg);
+            }
         }
         access(options: AccessOptions): void {
-            throw new Error('Method not implemented.');
+            const errMsg = 'access: fail';
+            const path = options.path, success = options.success, fail = options.fail, complete = options.complete;
+            const cb = new FileCallback({
+                success,
+                fail,
+                complete
+            } as CallBack);
+            if (!checkDataType(path, true, 'string')) {
+                cb.fail(getParameterError(`${errMsg} path`));
+                return;
+            }
+            fs2.access(path).then((res)=>{
+                if (res) {
+                    cb.success({
+                        errMsg: 'access: ok'
+                    } as FileManagerSuccessResult);
+                } else {
+                    cb.fail(getNoSuchFileOrDirectoryError(errMsg));
+                }
+            }, (err: BusinessError4)=>{
+                cb.fail({
+                    errCode: err.code,
+                    errMsg: getApiError(err.code, errMsg).errMsg
+                } as ApiError);
+            });
         }
         accessSync(path: string): void {
-            throw new Error('Method not implemented.');
+            const errMsg = 'accessSync: fail';
+            if (!checkDataType(path, true, 'string')) {
+                throw new Error(`${errMsg} path must be a string`);
+            }
+            const res = fs2.accessSync(path);
+            if (!res) {
+                throw new Error(`${errMsg} no such file or directory`);
+            }
         }
         rename(options: RenameOptions): void {
-            throw new Error('Method not implemented.');
+            const errMsg = 'rename: fail';
+            const oldPath = options.oldPath, newPath = options.newPath, success = options.success, fail = options.fail, complete = options.complete;
+            const cb = new FileCallback({
+                success,
+                fail,
+                complete
+            } as CallBack);
+            const checkRes1 = checkPathExistence('rename', 'oldPath', oldPath);
+            if (!checkRes1.isValid) {
+                cb.fail((checkRes1 as CustomValidReturn).err);
+                return;
+            }
+            const checkRes2 = checkPath('rename', 'newPath', newPath);
+            if (!checkRes2.isValid) {
+                cb.fail((checkRes2 as CustomValidReturn).err);
+                return;
+            }
+            const ifAccessNewPath = fs2.accessSync(newPath);
+            if (!ifAccessNewPath) {
+                const getUpperPath = obtainUpperPath(newPath);
+                if (!fs2.accessSync(getUpperPath.upperPath)) {
+                    cb.fail({
+                        errMsg: `${errMsg} no such file or directory: ${newPath}`
+                    } as ApiError);
+                    return;
+                }
+            }
+            if (ifAccessNewPath && (oldPath !== newPath)) {
+                cb.fail({
+                    errMsg
+                } as ApiError);
+                return;
+            }
+            fs2.rename(oldPath, newPath).then(()=>{
+                cb.success({
+                    errMsg: 'rename: ok'
+                } as FileManagerSuccessResult);
+            }).catch((err: BusinessError4)=>{
+                cb.fail({
+                    errMsg: getApiError((err as BusinessError4).code, errMsg).errMsg
+                } as ApiError);
+            });
         }
         renameSync(oldPath: string, newPath: string): void {
-            throw new Error('Method not implemented.');
+            const errMsg = 'renameSync: fail';
+            const res1 = checkPathExistenceSync('renameSync', 'oldPath', oldPath);
+            if (!res1.isValid) {
+                throw new Error((res1 as CustomValidReturn).err?.errMsg);
+            }
+            const res2 = checkPathSync('renameSync', 'newPath', newPath);
+            if (!res2.isValid) {
+                throw new Error((res2 as CustomValidReturn).err?.errMsg);
+            }
+            const ifAccessNewPath = fs2.accessSync(newPath);
+            if (!ifAccessNewPath && !fs2.accessSync(obtainUpperPath(newPath).upperPath)) {
+                throw new Error(`${errMsg} no such file or directory, open: ${newPath}`);
+            }
+            if (ifAccessNewPath && (oldPath !== newPath)) {
+                throw new Error(errMsg);
+            }
+            try {
+                fs2.renameSync(oldPath, newPath);
+            } catch (err) {
+                throw new Error(getApiError((err as BusinessError4).code, errMsg).errMsg);
+            }
         }
         copyFile(options: CopyFileOptions): void {
-            throw new Error('Method not implemented.');
+            const errMsg = 'copyFile: fail';
+            let srcPath = options.srcPath, destPath = options.destPath, success = options.success, fail = options.fail, complete = options.complete;
+            srcPath = getRealPath2(srcPath);
+            destPath = getRealPath2(destPath);
+            const cb = new FileCallback({
+                success,
+                fail,
+                complete
+            } as CallBack);
+            const checkResOfSrcPath = checkPathExistence('copyFile', 'srcPath', srcPath);
+            if (!checkResOfSrcPath.isValid) {
+                cb.fail((checkResOfSrcPath as CustomValidReturn).err);
+                return;
+            }
+            const checkResOfDestPath = checkPath('copyFile', 'destPath', destPath);
+            if (!checkResOfDestPath.isValid) {
+                cb.fail((checkResOfDestPath as CustomValidReturn).err);
+                return;
+            }
+            if (fs2.statSync(srcPath).isDirectory()) {
+                cb.fail({
+                    errMsg: `${errMsg} illegal operation on a directory, open: ${srcPath}`
+                } as ApiError);
+                return;
+            }
+            if (!fs2.accessSync(destPath)) {
+                const getUpperPath = obtainUpperPath(destPath);
+                if (!fs2.accessSync(getUpperPath.upperPath)) {
+                    cb.fail({
+                        errMsg: `${errMsg} no such file or directory, open: ${destPath}`
+                    } as ApiError);
+                    return;
+                }
+            } else {
+                const destPathStat = fs2.statSync(destPath);
+                if (destPathStat.isDirectory()) {
+                    destPath = destPath + obtainFileName(srcPath).fileName;
+                } else {
+                    if (destPathStat.isFile() && (srcPath !== destPath)) {
+                        cb.fail({
+                            errMsg
+                        } as ApiError);
+                        return;
+                    }
+                }
+            }
+            fs2.copyFile(srcPath, destPath).then(()=>{
+                cb.success({
+                    errMsg: 'copyFile: ok'
+                } as FileManagerSuccessResult);
+            }).catch((err: BusinessError4)=>{
+                cb.fail(getApiError((err as BusinessError4).code, errMsg));
+            });
         }
         copyFileSync(srcPath: string, destPath: string): void {
-            throw new Error('Method not implemented.');
+            const errMsg = 'copyFileSync: fail';
+            srcPath = getRealPath2(srcPath);
+            destPath = getRealPath2(destPath);
+            const checkResSrc = checkPathExistenceSync('copyFileSync', 'srcPath', srcPath);
+            if (!checkResSrc.isValid) {
+                throw new Error((checkResSrc as CustomValidReturn).err?.errMsg);
+            }
+            const checkResDest = checkPathSync('copyFileSync', 'destPath', destPath);
+            if (!checkResDest.isValid) {
+                throw new Error((checkResDest as CustomValidReturn).err?.errMsg);
+            }
+            if (fs2.statSync(srcPath).isDirectory()) {
+                throw new Error(`${errMsg} illegal operation on a directory: ${srcPath}`);
+            }
+            if (!fs2.accessSync(destPath)) {
+                const getUpperPath = obtainUpperPath(destPath);
+                if (!fs2.accessSync(getUpperPath.upperPath)) {
+                    throw new Error(`${errMsg} no such file or directory: ${destPath}`);
+                }
+            } else {
+                const destPathStat = fs2.statSync(destPath);
+                if (destPathStat.isDirectory()) {
+                    const index = destPath.lastIndexOf('/');
+                    let namePath = destPath.substring(index);
+                    if (destPath.endsWith('/')) {
+                        namePath = destPath.substring(destPath.lastIndexOf('/', destPath.length - 2) + 1, destPath.length - 1);
+                    }
+                    destPath = destPath + namePath;
+                } else {
+                    if (destPathStat.isFile() && (srcPath !== destPath)) {
+                        throw new Error(`${errMsg} copyFile failed`);
+                    }
+                }
+            }
+            try {
+                fs2.copyFileSync(srcPath, destPath);
+            } catch (err) {
+                throw new Error(`copyFileSync: ${(err as BusinessError4).message}`);
+            }
         }
         getFileInfo(options: GetFileInfoOptions): void {
-            throw new Error('Method not implemented.');
+            const errMsg = 'getFileInfo: fail';
+            let filePath = options.filePath, success = options.success, fail = options.fail, complete = options.complete;
+            let digestAlgorithm: string = options.digestAlgorithm ?? 'md5';
+            const cb = new FileCallback({
+                success,
+                fail,
+                complete
+            } as CallBack);
+            const checkResOfFilePath = checkPathExistence('getFileInfo', 'filePath', filePath);
+            if (!checkResOfFilePath.isValid) {
+                cb.fail((checkResOfFilePath as CustomValidReturn).err);
+                return;
+            }
+            if (typeof digestAlgorithm === 'string') {
+                digestAlgorithm = digestAlgorithm.toUpperCase();
+            }
+            if (!DIGEST_ALGORITHM_VALUES.includes(digestAlgorithm)) {
+                digestAlgorithm = 'md5';
+            }
+            try {
+                const fd = fs2.openSync(filePath, fs2.OpenMode.READ_WRITE).fd;
+                const stat = isFileUri1(filePath) ? fs2.statSync(fd) : fs2.statSync(filePath);
+                const buf = new ArrayBuffer(stat.size);
+                fs2.readSync(fd, buf);
+                const algName = digestAlgorithm.toLocaleUpperCase();
+                SecurityBase.rsa(algName, {
+                    data: new Uint8Array(buf)
+                } as cryptoFramework1.DataBlob).then((resultBuf: Uint8Array)=>{
+                    const textDecoder = util1.TextDecoder.create('utf-8', {
+                        ignoreBOM: true
+                    } as util1.TextDecoderOptions);
+                    cb.success({
+                        errMsg: 'getFileInfo ok',
+                        size: stat.size,
+                        digest: textDecoder.decodeToString(resultBuf, {
+                            stream: false
+                        } as util1.DecodeToStringOptions)
+                    } as GetFileInfoSuccessResult);
+                });
+            } catch (err) {
+                cb.fail(getApiError((err as BusinessError4).code, errMsg));
+            }
         }
         stat(options: StatOptions): void {
-            throw new Error('Method not implemented.');
+            const errMsg = 'stat: fail';
+            let path = options.path, recursive = options.recursive, success = options.success, fail = options.fail, complete = options.complete;
+            const cb = new FileCallback({
+                success,
+                fail,
+                complete
+            } as CallBack);
+            const res = checkPathExistence('stat', 'path', path);
+            if (!res.isValid) {
+                cb.fail((res as CustomValidReturn).err);
+                return;
+            }
+            if (!checkDataType(recursive, false, 'boolean')) {
+                recursive = Boolean(recursive);
+            }
+            fs2.stat(path, (err, stat)=>{
+                if (err) {
+                    cb.fail({
+                        errMsg: `${errMsg} with error message: ${err.message}, error code: ${err.code}`
+                    } as ApiError);
+                } else {
+                    const combinationMode = getFileTypeMode(stat) | stat.mode;
+                    const _stats = {
+                        mode: combinationMode,
+                        size: stat.size,
+                        lastAccessedTime: stat.atime,
+                        lastModifiedTime: stat.mtime,
+                        mIsFile: stat.isFile(),
+                        isDirectory: ()=>stat.isDirectory(),
+                        isFile: ()=>stat.isFile()
+                    } as Stats;
+                    const fileStats = {
+                        path,
+                        stats: _stats
+                    } as FileStats;
+                    cb.success({
+                        stats: [
+                            fileStats
+                        ] as FileStats[],
+                        errMsg: 'stat: ok'
+                    } as StatSuccessResult);
+                }
+            });
         }
         statSync(path: string, recursive: boolean): FileStats[] {
-            throw new Error('Method not implemented.');
+            const errMsg = 'statSync: fail';
+            const res = checkPathExistenceSync('statSync', 'path', path);
+            if (!res.isValid) {
+                throw new Error((res as CustomValidReturn).err?.errMsg);
+            }
+            if (!checkDataType(recursive, false, 'boolean')) {
+                recursive = Boolean(recursive);
+            }
+            try {
+                const stat = fs2.statSync(path);
+                const combinationMode = getFileTypeMode(stat) | stat.mode;
+                const _stats = {
+                    mode: combinationMode,
+                    size: stat.size,
+                    lastAccessedTime: stat.atime,
+                    lastModifiedTime: stat.mtime,
+                    mIsFile: stat.isFile(),
+                    isDirectory: ()=>stat.isDirectory(),
+                    isFile: ()=>stat.isFile()
+                } as Stats;
+                const fileStats = {
+                    path,
+                    stats: _stats
+                } as FileStats;
+                return [
+                    fileStats
+                ] as FileStats[];
+            } catch (err) {
+                throw new Error(getApiError((err as BusinessError4).code, errMsg).errMsg);
+            }
         }
         appendFile(options: AppendFileOptions): void {
-            throw new Error('Method not implemented.');
+            const errMsg = 'appendFile: fail';
+            const filePath = options.filePath, data = options.data, _options_encoding = options.encoding, encoding = _options_encoding == null ? DEFAULT_ENCODING : _options_encoding, success = options.success, fail = options.fail, complete = options.complete;
+            const cb = new FileCallback({
+                success,
+                fail,
+                complete
+            } as CallBack);
+            if (!checkDataType(filePath, true, 'string')) {
+                cb.fail(getParameterError(`${errMsg} filePath`));
+                return;
+            }
+            if (!checkDataType(data, true, 'string') && !checkDataType(data, true, 'arraybuffer')) {
+                cb.fail(getParameterError(`${errMsg} data`));
+                return;
+            }
+            const res = fs2.accessSync(filePath);
+            if (!res) {
+                cb.fail(getNoSuchFileOrDirectoryError(errMsg));
+                return;
+            }
+            const writeOptions: OHWriteOptions = {};
+            if (checkDataType(data, true, 'string')) writeOptions.encoding = encoding;
+            const file = fs2.openSync(filePath, fs2.OpenMode.READ_WRITE | fs2.OpenMode.APPEND);
+            fs2.write(file.fd, data as (string | ArrayBuffer), writeOptions).then((_)=>{
+                cb.success({
+                    errMsg: 'appendFile:ok'
+                } as FileManagerSuccessResult);
+            }).catch((err: BusinessError4)=>{
+                cb.fail(getApiError(err.code, errMsg));
+            }).finally(()=>{
+                fs2.closeSync(file);
+            });
         }
-        appendFileSync(filePath: string, data: Object, encoding: string | null = null): void {
-            throw new Error('Method not implemented.');
+        appendFileSync(filePath: string, data: Object, encoding: string = DEFAULT_ENCODING): void {
+            const errMsg = 'appendFileSync: fail';
+            if (!checkDataType(filePath, true, 'string')) {
+                throw new Error(`${errMsg} parameter error: parameter.filePath should be String`);
+            }
+            if (!checkDataType(data, true, 'string') && !checkDataType(data, true, 'arraybuffer')) {
+                throw new Error(`${errMsg} parameter error: parameter.data should be String/ArrayBuffer`);
+            }
+            const res = fs2.accessSync(filePath);
+            if (!res) {
+                throw new Error(`${errMsg} no such file or directory, open "${filePath}"`);
+            }
+            const writeOptions: OHWriteOptions = {};
+            if (checkDataType(data, true, 'string')) writeOptions.encoding = encoding;
+            const file = fs2.openSync(filePath, fs2.OpenMode.READ_WRITE | fs2.OpenMode.APPEND);
+            fs2.writeSync(file.fd, data as (string | ArrayBuffer), writeOptions);
         }
         saveFile(options: SaveFileOptions): void {
-            throw new Error('Method not implemented.');
+            const errMsg = 'saveFile: fail';
+            const filePath = options.filePath, success = options.success, fail = options.fail, complete = options.complete;
+            const cb = new FileCallback({
+                success,
+                fail,
+                complete
+            } as CallBack);
+            const tempFilePath = getRealPath2(options.tempFilePath) as string;
+            if (!fs2.accessSync(tempFilePath)) {
+                cb.fail({
+                    errMsg: `${errMsg} no such file or directory. tempFilePath: ${tempFilePath}`
+                } as ApiError);
+                return;
+            }
+            const savedPath = filePath || getSavedDir1();
+            try {
+                if (!fs2.accessSync(savedPath)) {
+                    fs2.mkdirSync(savedPath, true);
+                }
+            } catch (error) {
+                cb.fail({
+                    errMsg: (error as Error).message
+                } as ApiError);
+                return;
+            }
+            let srcFile: fs2.File;
+            try {
+                srcFile = fs2.openSync(tempFilePath, fs2.OpenMode.READ_ONLY);
+            } catch (error) {
+                cb.fail({
+                    errMsg: (error as Error).message
+                } as ApiError);
+                return;
+            }
+            const savedFilePath = savedPath + '/' + getSavedFileName1(tempFilePath);
+            fs2.copyFile(srcFile.fd, savedFilePath).then(()=>{
+                cb.success({
+                    savedFilePath
+                } as SaveFileSuccessResult);
+            }).catch((err: Error)=>{
+                cb.fail(getApiError((err as BusinessError4).code, errMsg));
+            });
         }
-        saveFileSync(tempFilePath: string, filePath: string | null): string {
-            throw new Error('Method not implemented.');
+        saveFileSync(inTempFilePath: string, filePath: string | null): string {
+            const errMsg = 'saveFileSync: fail';
+            const tempFilePath = getRealPath2(inTempFilePath) as string;
+            if (!fs2.accessSync(tempFilePath)) {
+                throw new Error(`${errMsg} no such file or directory. tempFilePath: ${tempFilePath}`);
+            }
+            const savedPath = filePath || getSavedDir1();
+            try {
+                if (!fs2.accessSync(savedPath)) {
+                    fs2.mkdirSync(savedPath, true);
+                }
+            } catch (error) {
+                throw new Error((error as Error).message);
+            }
+            let srcFile: fs2.File;
+            try {
+                srcFile = fs2.openSync(tempFilePath, fs2.OpenMode.READ_ONLY);
+            } catch (error) {
+                throw new Error((error as Error).message);
+            }
+            const savedFilePath = `${savedPath}${savedPath.endsWith('/') ? '' : '/'}${getSavedFileName1(tempFilePath)}`;
+            try {
+                fs2.copyFileSync(srcFile.fd, savedFilePath);
+                return savedFilePath;
+            } catch (error) {
+                throw new Error((error as Error).message);
+            }
         }
         removeSavedFile(options: RemoveSavedFileOptions): void {
-            throw new Error('Method not implemented.');
-        }
-        unzip(options: UnzipFileOptions): void {
-            throw new Error('Method not implemented.');
+            const filePath = options.filePath, success = options.success, fail = options.fail, complete = options.complete;
+            const savedFilePath = getFsPath1(filePath);
+            const cb = new FileCallback({
+                success,
+                fail,
+                complete
+            } as CallBack);
+            if (!fs2.accessSync(savedFilePath)) {
+                cb.fail({
+                    errMsg: 'file not exist'
+                } as ApiError);
+                return;
+            }
+            fs2.unlink(savedFilePath, (err)=>{
+                if (err) {
+                    cb.fail(getApiError(err.code, 'removeSavedFile: fail'));
+                } else {
+                    cb.success({
+                        errMsg: 'removeSavedFile: ok'
+                    } as FileManagerSuccessResult);
+                }
+            });
         }
         getSavedFileList(options: GetSavedFileListOptions): void {
-            throw new Error('Method not implemented.');
+            const errMsg = 'getSavedFileList: fail';
+            const success = options.success, fail = options.fail, complete = options.complete;
+            const cb = new FileCallback({
+                success,
+                fail,
+                complete
+            } as CallBack);
+            const savedPath = getSavedDir1();
+            if (!fs2.accessSync(savedPath)) {
+                cb.fail(getApiError(1300002, errMsg));
+                return;
+            }
+            fs2.listFile(savedPath, {} as ListFileOptions1, (err, fileList)=>{
+                if (err) {
+                    cb.fail(getApiError(err.code, errMsg));
+                } else {
+                    cb.success({
+                        fileList: fileList.map((filePath: string)=>{
+                            const fullPath = savedPath + '/' + filePath;
+                            const stat = fs2.statSync(fullPath);
+                            if (!stat.isFile()) {
+                                return null;
+                            }
+                            return fullPath;
+                        }).filter((item)=>!!item)
+                    } as GetSavedFileListResult);
+                }
+            });
         }
         truncate(options: TruncateFileOptions): void {
-            throw new Error('Method not implemented.');
+            const errMsg = 'truncate: fail';
+            let filePath = options.filePath, length = options.length, success = options.success, fail = options.fail, complete = options.complete;
+            const cb = new FileCallback({
+                success,
+                fail,
+                complete
+            } as CallBack);
+            if (!checkDataType(filePath, true, 'string')) {
+                cb.fail({
+                    errMsg: `${errMsg} parameter error: parameter.filePath should be String`
+                } as ApiError);
+                return;
+            }
+            const res = fs2.accessSync(filePath);
+            if (!res) {
+                cb.fail({
+                    errMsg: `${errMsg} no such file or directory, open "${filePath}"`
+                } as ApiError);
+                return;
+            }
+            const fileStat = fs2.statSync(filePath);
+            if (fileStat.isDirectory()) {
+                cb.fail({
+                    errMsg: `${errMsg} illegal operation on a directory, open: ${filePath}`
+                } as ApiError);
+                return;
+            }
+            if (!checkDataType(length, false, 'number') || length! < 0) {
+                length = 0;
+            }
+            const file = fs2.openSync(filePath, fs2.OpenMode.READ_WRITE);
+            fs2.truncate(file.fd, length).then(()=>{
+                cb.success({
+                    errMsg: 'truncate: ok'
+                } as FileManagerSuccessResult);
+            }).catch((err: BusinessError4)=>{
+                cb.fail(getApiError(err.code, errMsg));
+            });
         }
         truncateSync(filePath: string, length: number | null = null): void {
-            throw new Error('Method not implemented.');
-        }
-        readCompressedFile(options: ReadCompressedFileOptions): void {
-            throw new Error('Method not implemented.');
-        }
-        readCompressedFileSync(filePath: string, compressionAlgorithm: string): string {
-            throw new Error('Method not implemented.');
+            const errMsg = 'truncateSync: fail';
+            if (!checkDataType(filePath, true, 'string')) {
+                throw new Error(`${errMsg} parameter error: parameter.filePath should be String`);
+            }
+            const res = fs2.accessSync(filePath);
+            if (!res) {
+                throw new Error(`${errMsg} no such file or directory, open "${filePath}"`);
+            }
+            const fileStat = fs2.statSync(filePath);
+            if (fileStat.isDirectory()) {
+                throw new Error(`${errMsg} illegal operation on a directory, open: ${filePath}`);
+            }
+            if (!checkDataType(length, false, 'number') || length! < 0) {
+                length = 0;
+            }
+            const file = fs2.openSync(filePath, fs2.OpenMode.READ_WRITE);
+            try {
+                fs2.truncateSync(file.fd, length!);
+            } catch (error) {
+                throw new Error(getApiError((error as BusinessError4).code, errMsg).errMsg);
+            }
         }
         open(options: OpenFileOptions): void {
-            throw new Error('Method not implemented.');
+            const errMsg = 'open: fail';
+            let filePath = options.filePath, flag = options.flag, success = options.success, fail = options.fail, complete = options.complete;
+            const cb = new FileCallback({
+                success,
+                fail,
+                complete
+            } as CallBack);
+            if (!checkDataType(filePath, true, 'string')) {
+                cb.fail({
+                    errMsg: `${errMsg} parameter error: parameter.filePath should be String`
+                } as ApiError);
+                return;
+            }
+            if (!FLAG.includes(flag)) {
+                flag = DEFAULT_FLAG;
+            }
+            if (Object.keys(modeReflect).includes(flag)) {
+                if (fs2.accessSync(filePath)) {
+                    cb.fail({
+                        errMsg: `${errMsg} EXIST: file already exists`
+                    } as ApiError);
+                    return;
+                } else {
+                    flag = modeReflect[flag as keyof ModeReflect] as _FLAG;
+                }
+            }
+            fs2.open(filePath, getOpenMode(flag)!, (err, file)=>{
+                if (err) {
+                    cb.fail(getApiError(err.code, errMsg));
+                } else {
+                    cb.success({
+                        fd: file.fd.toString(),
+                        errMsg: 'open: ok'
+                    } as OpenFileSuccessResult);
+                }
+            });
         }
         openSync(options: OpenFileSyncOptions): string {
-            throw new Error('Method not implemented.');
+            let filePath = options.filePath, flag = options.flag;
+            if (!checkDataType(filePath, true, 'string')) {
+                throw new Error('openSync:fail parameter error: parameter.filePath should be String');
+            }
+            if (!FLAG.includes(flag)) {
+                flag = DEFAULT_FLAG;
+            }
+            if (Object.keys(modeReflect).includes(flag)) {
+                if (fs2.accessSync(filePath)) {
+                    throw new Error('openSync:fail EXIST: file already exists');
+                } else {
+                    flag = modeReflect[flag as keyof ModeReflect] as _FLAG;
+                }
+            }
+            const file = fs2.openSync(filePath, getOpenMode(flag)!);
+            return file.fd.toString();
         }
         write(options: WriteOptions): void {
-            let inFd = options.fd, data = options.data, offset = options.offset, length = options.length, position = options.position, encoding = options.encoding, success = options.success, fail = options.fail, complete = options.complete;
+            let inFd = options.fd, data = options.data, offset = options.offset, length = options.length, position = options.position, _options_encoding = options.encoding, encoding = _options_encoding == null ? 'utf-8' : _options_encoding, success = options.success, fail = options.fail, complete = options.complete;
             const cb = new FileCallback({
                 success,
                 fail,
@@ -4685,14 +4849,14 @@ export function initUniExtApi() {
                     return;
                 }
                 writeOptions.encoding = encoding as string;
-                length = (data as string).length;
+                length = buffer.byteLength(data as string);
             }
             if (!checkDataType(position, false, 'number') || position! < 0 || !position) {
                 position = DEFAULT_POSITION;
             }
             writeOptions.offset = position;
             writeOptions.length = length!;
-            fs3.write(fd, data as (ArrayBuffer | string), writeOptions).then((writeLen)=>{
+            fs2.write(fd, data as (ArrayBuffer | string), writeOptions).then((writeLen)=>{
                 cb.success({
                     bytesWritten: writeLen,
                     errMsg: 'write:ok'
@@ -4704,7 +4868,7 @@ export function initUniExtApi() {
             });
         }
         writeSync(options: WriteSyncOptions): WriteResult {
-            let inFd = options.fd, data = options.data, offset = options.offset, length = options.length, position = options.position, encoding = options.encoding;
+            let inFd = options.fd, data = options.data, offset = options.offset, length = options.length, position = options.position, _options_encoding = options.encoding, encoding = _options_encoding == null ? 'utf-8' : _options_encoding;
             let fd: number = -1;
             const writeOptions: OHWriteOptions = {};
             if (!checkDataType(inFd, true, 'string') || inFd === '' || isNaN(Number(inFd))) {
@@ -4739,7 +4903,7 @@ export function initUniExtApi() {
                     throw new Error(res.errMsg);
                 }
                 writeOptions.encoding = encoding as string;
-                length = (data as string).length;
+                length = buffer.byteLength(data as string);
             }
             if (!checkDataType(position, false, 'number') || position! < 0 || !position) {
                 position = DEFAULT_POSITION;
@@ -4747,7 +4911,7 @@ export function initUniExtApi() {
             writeOptions.offset = position;
             writeOptions.length = length!;
             try {
-                const writeLen = fs3.writeSync(fd, data as (ArrayBuffer | string), writeOptions);
+                const writeLen = fs2.writeSync(fd, data as (ArrayBuffer | string), writeOptions);
                 return {
                     bytesWritten: writeLen,
                     errMsg: 'write:ok'
@@ -4757,24 +4921,302 @@ export function initUniExtApi() {
             }
         }
         close(options: CloseOptions): void {
-            throw new Error('Method not implemented.');
+            const errMsg = 'close: fail';
+            let inFd = options.fd, success = options.success, fail = options.fail, complete = options.complete;
+            let fd: number = -1;
+            const cb = new FileCallback({
+                success,
+                fail,
+                complete
+            } as CallBack);
+            const res = checkFd('fstat', inFd);
+            if (!res.isValid) {
+                cb.fail((res as CheckFdErr).err);
+                return;
+            }
+            fd = res.fd;
+            if (isNaN(fd)) {
+                cb.fail({
+                    errMsg: `${errMsg} bad file descriptor`
+                } as ApiError);
+                return;
+            }
+            fs2.close(fd, (err)=>{
+                if (err) {
+                    cb.fail({
+                        errMsg: `${errMsg} bad file descriptor`
+                    } as ApiError);
+                } else {
+                    cb.success({
+                        errMsg: 'close:ok'
+                    } as FileManagerSuccessResult);
+                }
+            });
         }
         closeSync(options: CloseSyncOptions): void {
-            throw new Error('Method not implemented.');
+            const errMsg = 'closeSync: fail';
+            let inFd = options.fd;
+            let fd: number = -1;
+            if (inFd === '' || !checkDataType(inFd, true, 'string')) {
+                throw new Error(`${errMsg} invalid fd`);
+            }
+            fd = Number(inFd);
+            if (isNaN(fd)) {
+                throw new Error(`${errMsg} bad file descriptor`);
+            }
+            fs2.closeSync(fd);
         }
         fstat(options: FStatOptions): void {
-            throw new Error('Method not implemented.');
+            const errMsg = 'fstat: fail';
+            let inFd = options.fd, success = options.success, fail = options.fail, complete = options.complete;
+            let fd: number = -1;
+            const cb = new FileCallback({
+                success,
+                fail,
+                complete
+            } as CallBack);
+            const res = checkFd('fstat', inFd);
+            if (!res.isValid) {
+                cb.fail((res as CheckFdErr).err);
+                return;
+            } else {
+                fd = res.fd;
+            }
+            fs2.stat(fd, (err, stat)=>{
+                if (err) {
+                    cb.fail(getApiError(err.code, errMsg));
+                } else {
+                    const combinationMode = getFileTypeMode(stat) | stat.mode;
+                    const stats = {
+                        mode: combinationMode,
+                        size: stat.size,
+                        lastAccessedTime: stat.atime,
+                        lastModifiedTime: stat.mtime,
+                        isDirectory: ()=>stat.isDirectory(),
+                        isFile: ()=>stat.isFile()
+                    } as Stats;
+                    cb.success({
+                        stats
+                    } as FStatSuccessResult);
+                }
+            });
         }
         fstatSync(options: FStatSyncOptions): Stats {
-            throw new Error('Method not implemented.');
+            const errMsg = 'fstatSync: fail';
+            let fd: number = -1;
+            const res = checkFd('fstatSync', options.fd);
+            if (!res.isValid) {
+                throw new Error((res as CheckFdErr).err?.errMsg);
+            } else {
+                fd = res.fd;
+            }
+            try {
+                const stat = fs2.statSync(fd);
+                const combinationMode = getFileTypeMode(stat) | stat.mode;
+                return {
+                    mode: combinationMode,
+                    size: stat.size,
+                    lastAccessedTime: stat.atime,
+                    lastModifiedTime: stat.mtime,
+                    isDirectory: ()=>{
+                        return stat.isDirectory();
+                    },
+                    isFile: ()=>{
+                        return stat.isFile();
+                    }
+                } as Stats;
+            } catch (err) {
+                throw new Error(getApiError((err as BusinessError4).code, errMsg).errMsg);
+            }
         }
         ftruncate(options: FTruncateFileOptions): void {
-            throw new Error('Method not implemented.');
+            const errMsg = 'ftruncate: fail';
+            let inFd = options.fd, length = options.length, success = options.success, fail = options.fail, complete = options.complete;
+            const cb = new FileCallback({
+                success,
+                fail,
+                complete
+            } as CallBack);
+            let fd: number = -1;
+            const res = checkFd('ftruncate', inFd);
+            if (!res.isValid) {
+                cb.fail((res as CheckFdErr).err);
+                return;
+            } else {
+                fd = res.fd;
+            }
+            if (!checkDataType(length, true, 'number') || length < 0) {
+                length = DEFAULT_LENGTH;
+            }
+            fs2.truncate(fd, length).then(()=>{
+                cb.success({
+                    errMsg: 'ftruncate: ok'
+                } as FileManagerSuccessResult);
+            }).catch((err: BusinessError4)=>{
+                cb.fail(getApiError((err as BusinessError4).code, errMsg));
+            });
         }
         ftruncateSync(options: FTruncateFileSyncOptions): void {
-            throw new Error('Method not implemented.');
+            const errMsg = 'ftruncateSync: fail';
+            let inFd = options.fd, length = options.length;
+            const res = checkFd('ftruncateSync', inFd);
+            let fd: number = -1;
+            if (!res.isValid) {
+                throw new Error((res as CheckFdErr).err?.errMsg);
+            } else {
+                fd = res.fd;
+            }
+            if (!checkDataType(length, true, 'number') || length < 0) {
+                length = DEFAULT_LENGTH;
+            }
+            try {
+                fs2.truncateSync(fd, length);
+            } catch (err) {
+                throw new Error(getApiError((err as BusinessError4).code, errMsg).errMsg);
+            }
+        }
+        unzip(options: UnzipFileOptions): void {
+            const errMsg = 'unzip: fail';
+            let zipFilePath = options.zipFilePath, targetPath = options.targetPath, success = options.success, fail = options.fail, complete = options.complete;
+            zipFilePath = getRealPath2(zipFilePath);
+            const cb = new FileCallback({
+                success,
+                fail,
+                complete
+            } as CallBack);
+            if (!checkDataType(zipFilePath, true, 'string')) {
+                cb.fail(getParameterError(`${errMsg} zipFilePath`));
+                return;
+            }
+            if (!checkDataType(targetPath, true, 'string')) {
+                cb.fail(getParameterError(`${errMsg} targetPath`));
+                return;
+            }
+            const res = fs2.accessSync(zipFilePath);
+            if (!res) {
+                cb.fail(getNoSuchFileOrDirectoryError(errMsg));
+                return;
+            }
+            const targetStat = fs2.statSync(targetPath);
+            if (!targetStat.isDirectory()) {
+                cb.fail(getApiError(1300016, errMsg));
+                return;
+            }
+            zlib.decompressFile(zipFilePath, targetPath).then(()=>{
+                cb.success({
+                    errMsg: 'unzip: ok'
+                } as FileManagerSuccessResult);
+            }).catch((err: BusinessError4)=>{
+                cb.fail(getApiError((err as BusinessError4).code, errMsg));
+            });
         }
         readZipEntry(options: ReadZipEntryOptions): void {
+            const errMsg = 'readZipEntry: fail';
+            const okMsg = 'readZipEntry: ok';
+            let filePath = options.filePath, encoding = options.encoding, entries = options.entries, success = options.success, fail = options.fail, complete = options.complete;
+            filePath = getRealPath2(filePath);
+            const cb = new FileCallback({
+                success,
+                fail,
+                complete
+            } as CallBack);
+            let isAll = false;
+            let encodeArrayBuffer = false;
+            if (!checkDataType(filePath, true, 'string')) {
+                cb.fail(getParameterError(`${errMsg} filePath`));
+                return;
+            }
+            if (entries != null) {
+                if (!Array.isArray(entries)) {
+                    cb.fail(getParameterError(`${errMsg} entries`));
+                    return;
+                } else {
+                    if (entries.length === 0) {
+                        cb.fail(getParameterError(`${errMsg} entries`));
+                        return;
+                    }
+                }
+            } else {
+                isAll = true;
+                if (encoding == null) {
+                    encodeArrayBuffer = true;
+                } else if (isString(encoding)) {
+                    if ((encoding as string) === 'utf8') {
+                        encoding = 'utf-8';
+                    }
+                }
+            }
+            if (isString(encoding) && !ENCODING_SUPPORT.includes(encoding as string)) {
+                cb.fail(getParameterError(`${errMsg} encoding`));
+                return;
+            }
+            const res = fs2.accessSync(filePath);
+            if (!res) {
+                cb.fail(getNoSuchFileOrDirectoryError(errMsg));
+                return;
+            }
+            const targetPath = `${getEnv2().TEMP_PATH}/unzip/${Date.now().toString()}`;
+            fs2.mkdir(targetPath, true).then(()=>{
+                this.unzip({
+                    zipFilePath: filePath,
+                    targetPath,
+                    success: ()=>{
+                        const entriesResult: Map<string, ZipFileItem> = new Map();
+                        const readFileSync = (file: string, fullPath: string, encoding: string | null = null)=>{
+                            const data = this.readFileSync(fullPath).data as ArrayBuffer;
+                            if (encodeArrayBuffer) {
+                                entriesResult.set(file, {
+                                    data,
+                                    errMsg: okMsg
+                                } as ZipFileItem);
+                            } else {
+                                entriesResult.set(file, {
+                                    data: buffer.from(data).toString(encoding as string),
+                                    errMsg: okMsg
+                                } as ZipFileItem);
+                            }
+                        };
+                        try {
+                            if (isAll) {
+                                const files = fs2.listFileSync(targetPath);
+                                for (const file of files){
+                                    const fullPath = `${targetPath}/${file}`;
+                                    if (fs2.statSync(fullPath).isFile()) {
+                                        readFileSync(file, fullPath, encoding as string);
+                                    }
+                                }
+                            } else {
+                                for (const entry of entries!){
+                                    const entryPath = entry.path;
+                                    const fullPath = `${targetPath}/${entryPath}`;
+                                    if (!fs2.accessSync(fullPath) || !fs2.statSync(fullPath).isFile()) {
+                                        continue;
+                                    }
+                                    readFileSync(entryPath, fullPath, entry.encoding as string);
+                                }
+                            }
+                            cb.success({
+                                entries: entriesResult,
+                                result: entriesResult,
+                                errMsg: okMsg
+                            } as EntriesResult);
+                        } catch (err) {
+                            cb.fail({
+                                errMsg: `${errMsg} ${(err as Error).message}`
+                            } as FileManagerSuccessResult);
+                        }
+                    },
+                    fail: cb.fail,
+                    complete: null
+                } as UnzipFileOptions);
+            }).catch((err: BusinessError4)=>{
+                cb.fail(getApiError((err as BusinessError4).code, errMsg));
+            });
+        }
+        readCompressedFile(options: ReadCompressedFileOptions): void {
+            throw new Error('Method not implemented.');
+        }
+        readCompressedFileSync(filePath: string, compressionAlgorithm: string): string {
             throw new Error('Method not implemented.');
         }
     }
@@ -4922,7 +5364,7 @@ export function initUniExtApi() {
         } as GetAppBaseInfoResult;
     }) as GetAppBaseInfo;
     const API_GET_BACKGROUND_AUDIO_MANAGER = 'getBackgroundAudioManager';
-    const isFileUri1 = (path: string)=>{
+    const isFileUri2 = (path: string)=>{
         return path && typeof path === 'string' && (path.startsWith('file://') || path.startsWith('datashare://'));
     };
     const isSandboxPath1 = (path: string)=>{
@@ -5214,14 +5656,14 @@ export function initUniExtApi() {
                 audioPlayerCallback.error(new AudioPlayerError1(`player is not exist`, 10001));
                 return;
             }
-            if (!value || !(value.startsWith('http:') || value.startsWith('https:') || isFileUri1(value) || isSandboxPath1(value))) {
+            if (!value || !(value.startsWith('http:') || value.startsWith('https:') || isFileUri2(value) || isSandboxPath1(value))) {
                 LOG1(`set src: ${value} is invalid`);
                 return;
             }
             let path: string = '';
             if (value.startsWith('http:') || value.startsWith('https:')) {
                 path = value;
-            } else if (isFileUri1(value) || isSandboxPath1(value)) {
+            } else if (isFileUri2(value) || isSandboxPath1(value)) {
                 try {
                     const fd = getFdFromUriOrSandBoxPath1(value);
                     path = `fd://${fd}`;
@@ -5622,7 +6064,7 @@ export function initUniExtApi() {
             networkType: networkType.toLocaleLowerCase()
         } as OnNetworkStatusChangeCallbackResult);
     };
-    const UniGetNetworkTypeEventEmitter = new Emitter4() as IUniGetNetworkTypeEventEmitter;
+    const UniGetNetworkTypeEventEmitter = new Emitter1() as IUniGetNetworkTypeEventEmitter;
     const onNetworkStatusChange: OnNetworkStatusChange = (callback: Function)=>{
         UTSHarmony.requestSystemPermission(PERMISSIONS1, (allRight: boolean)=>{
             if (allRight) {
@@ -5735,7 +6177,7 @@ export function initUniExtApi() {
         }
     };
     const createFile = (supportFormats: string[], format: string, defaultExt: string)=>{
-        const TEMP_PATH = getEnv2().TEMP_PATH as string;
+        const TEMP_PATH = getEnv3().TEMP_PATH as string;
         const filePath = `${TEMP_PATH}/recorder/`;
         if (!fileIo2.accessSync(filePath)) {
             fileIo2.mkdirSync(filePath, true);
@@ -6130,6 +6572,865 @@ export function initUniExtApi() {
             res.resolve();
         }
     }, MakePhoneCallProtocol) as MakePhoneCall;
+    const API_REQUEST = 'request';
+    const RequestApiProtocol = new Map<string, ProtocolOptions>([
+        [
+            'url',
+            {
+                type: 'string',
+                required: true
+            }
+        ],
+        [
+            'data',
+            {
+                type: 'object',
+                required: false
+            }
+        ],
+        [
+            'header',
+            {
+                type: 'object',
+                required: false
+            }
+        ],
+        [
+            'method',
+            {
+                type: 'string',
+                required: false
+            }
+        ],
+        [
+            'dataType',
+            {
+                type: 'string',
+                required: false
+            }
+        ],
+        [
+            'responseType',
+            {
+                type: 'string',
+                required: false
+            }
+        ],
+        [
+            'timeout',
+            {
+                type: 'number',
+                required: false
+            }
+        ],
+        [
+            'sslVerify',
+            {
+                type: 'boolean',
+                required: false
+            }
+        ],
+        [
+            'withCredentials',
+            {
+                type: 'boolean',
+                required: false
+            }
+        ],
+        [
+            'firstIpv4',
+            {
+                type: 'boolean',
+                required: false
+            }
+        ]
+    ]);
+    const RequestApiOptions: ApiOptions<RequestOptions<Object>> = {
+        formatArgs: new Map<string, Function>([
+            [
+                'url',
+                (url: string, params: RequestOptions<Object>)=>{
+                    if (url == null) {
+                        throw new Error('url is required');
+                    }
+                }
+            ],
+            [
+                'method',
+                (method: string, params: RequestOptions<Object>)=>{
+                    params.method = (method || 'GET').toUpperCase() as RequestMethod;
+                }
+            ],
+            [
+                'dataType',
+                (dataType: string, params: RequestOptions<Object>)=>{
+                    if (dataType == null) {
+                        params.dataType = 'json';
+                    }
+                }
+            ],
+            [
+                'responseType',
+                (responseType: string, params: RequestOptions<Object>)=>{
+                    if (responseType == null) {
+                        params.responseType = 'text';
+                    }
+                }
+            ],
+            [
+                'timeout',
+                (timeout: number, params: RequestOptions<Object>)=>{
+                    if (timeout == null) {
+                        params.timeout = 60000;
+                    }
+                }
+            ],
+            [
+                'sslVerify',
+                (sslVerify: boolean, params: RequestOptions<Object>)=>{
+                    if (sslVerify == null) {
+                        params.sslVerify = true;
+                    }
+                }
+            ],
+            [
+                'withCredentials',
+                (withCredentials: boolean, params: RequestOptions<Object>)=>{
+                    if (withCredentials == null) {
+                        params.withCredentials = false;
+                    }
+                }
+            ],
+            [
+                'firstIpv4',
+                (firstIpv4: boolean, params: RequestOptions<Object>)=>{
+                    if (firstIpv4 == null) {
+                        params.firstIpv4 = false;
+                    }
+                }
+            ]
+        ])
+    };
+    const API_DOWNLOAD_FILE = 'downloadFile';
+    const DownloadFileApiProtocol = new Map<string, ProtocolOptions>([
+        [
+            'url',
+            {
+                type: 'string',
+                required: true
+            }
+        ],
+        [
+            'header',
+            {
+                type: 'object',
+                required: false
+            }
+        ],
+        [
+            'timeout',
+            {
+                type: 'number',
+                required: false
+            }
+        ]
+    ]);
+    const DownloadFileApiOptions: ApiOptions<DownloadFileOptions> = {
+        formatArgs: new Map<string, Function>([
+            [
+                'url',
+                (url: string, params: DownloadFileOptions)=>{
+                    if (url == null) {
+                        throw new Error('url is required');
+                    }
+                }
+            ]
+        ])
+    };
+    const API_UPLOAD_FILE = 'uploadFile';
+    const UploadFileApiProtocol = new Map<string, ProtocolOptions>([
+        [
+            'url',
+            {
+                type: 'string',
+                required: true
+            }
+        ],
+        [
+            'filePath',
+            {
+                type: 'string',
+                required: false
+            }
+        ],
+        [
+            'name',
+            {
+                type: 'string',
+                required: false
+            }
+        ],
+        [
+            'header',
+            {
+                type: 'object',
+                required: false
+            }
+        ],
+        [
+            'formData',
+            {
+                type: 'object',
+                required: false
+            }
+        ],
+        [
+            'timeout',
+            {
+                type: 'number',
+                required: false
+            }
+        ]
+    ]);
+    const UploadFileApiOptions: ApiOptions<UploadFileOptions> = {
+        formatArgs: new Map<string, Function>([
+            [
+                'url',
+                (url: string, params: UploadFileOptions)=>{
+                    if (url == null) {
+                        throw new Error('url is required');
+                    }
+                }
+            ],
+            [
+                'name',
+                (name: string, params: UploadFileOptions)=>{
+                    if (name == null) {
+                        params.name = 'file';
+                    }
+                }
+            ]
+        ])
+    };
+    const API_CONFIG_MTLS = 'configMTLS';
+    const ConfigMTLSApiProtocol = new Map<string, ProtocolOptions>([
+        [
+            'certificates',
+            {
+                type: 'array',
+                required: true
+            }
+        ]
+    ]);
+    const ConfigMTLSApiOptions: ApiOptions<ConfigMTLSOptions> = {
+        formatArgs: new Map<string, Function>([
+            [
+                'certificates',
+                (certificates: (Certificate[]) | null = null)=>{
+                    if (!certificates || certificates.some((item)=>typeof item.host !== 'string')) {
+                        return '参数 certificates 配置错误，请确认后重试';
+                    }
+                    return undefined;
+                }
+            ]
+        ])
+    };
+    const needsEncoding = (str: string)=>{
+        const decoded = decodeURIComponent(str);
+        if (decoded !== str) {
+            if (encodeURIComponent(decoded) === str) {
+                return false;
+            }
+        }
+        return encodeURIComponent(decoded) !== decoded;
+    };
+    const parseUrl = (url: string)=>{
+        try {
+            const urlObj = harmonyUrl.URL.parseURL(url);
+            urlObj.params.forEach((value, key)=>{
+                if (needsEncoding(value)) {
+                    urlObj.params.set(key, value);
+                }
+            });
+            return urlObj.toString();
+        } catch (error) {
+            return url;
+        }
+    };
+    const certificates: Certificate[] = [];
+    const getCertType = (certPath: string): http.CertType =>{
+        const certExt = certPath.split('.').pop();
+        switch(certExt){
+            case 'p12':
+                return http.CertType.P12;
+            case 'pem':
+                return http.CertType.PEM;
+            default:
+                return http.CertType.PEM;
+        }
+    };
+    const getClientCertificate = (url: string): http.ClientCert | undefined =>{
+        if (certificates.length === 0) return undefined;
+        const urlObj = harmonyUrl.URL.parseURL(url);
+        const cert = certificates.find((certificate)=>certificate.host === urlObj.host);
+        if (cert) {
+            return {
+                certType: getCertType(cert.client!),
+                certPath: getRealPath3(cert.client!),
+                keyPath: cert.keyPath ?? '',
+                keyPassword: cert.clientPassword
+            } as http.ClientCert;
+        }
+        return undefined;
+    };
+    const replaceHttpWithHttps = (url: string): string =>{
+        return url.replace(/^http:/, 'https:');
+    };
+    const getCookieSync = (url: string): string =>{
+        return webview.WebCookieManager.fetchCookieSync(replaceHttpWithHttps(url));
+    };
+    const setCookieSync = (url: string, cookies: string[]): void =>{
+        cookies.forEach((cookie)=>{
+            let hasSecure = false;
+            let hasSameSite = false;
+            let savedCookie = cookie.split(';').map((cookieItem)=>{
+                const pair = cookieItem.split('=').map((item)=>item.trim());
+                const keyLower = pair[0].toLowerCase();
+                if (keyLower === 'secure') {
+                    hasSecure = true;
+                    return cookieItem;
+                }
+                if (keyLower === 'samesite') {
+                    hasSameSite = true;
+                    return 'samesite=none';
+                }
+                return cookieItem;
+            }).join(';');
+            if (!hasSecure) {
+                savedCookie += '; secure';
+            }
+            if (!hasSameSite) {
+                savedCookie += '; samesite=none';
+            }
+            try {
+                webview.WebCookieManager.configCookieSync(replaceHttpWithHttps(url), savedCookie);
+            } catch (error) {}
+        });
+        webview.WebCookieManager.saveCookieAsync();
+    };
+    const cookiesParse = (header: Record<string, string>)=>{
+        let cookiesArr: string[] = [];
+        const handleCookiesArr = (header['Set-Cookie'] || header['set-cookie'] || []) as string[];
+        for(let i = 0; i < handleCookiesArr.length; i++){
+            if (handleCookiesArr[i].indexOf('Expires=') !== -1 || handleCookiesArr[i].indexOf('expires=') !== -1) {
+                cookiesArr.push(handleCookiesArr[i].replace(',', ''));
+            } else {
+                cookiesArr.push(handleCookiesArr[i]);
+            }
+        }
+        return cookiesArr;
+    };
+    class RequestTask1 implements RequestTask {
+        private _requestTask: IRequestTask;
+        constructor(requestTask: IRequestTask){
+            this._requestTask = requestTask;
+        }
+        abort() {
+            this._requestTask.abort();
+        }
+        onHeadersReceived(callback: Function) {
+            this._requestTask.onHeadersReceived(callback);
+        }
+        offHeadersReceived(callback: Function | null = null) {
+            this._requestTask.offHeadersReceived(callback);
+        }
+    }
+    const request = defineTaskApi<RequestOptions<Object>, RequestSuccess<Object>, RequestTask>(API_REQUEST, (args: RequestOptions<Object>, exec: ApiExecutor<RequestSuccess<Object>>)=>{
+        let header = args.header, method = args.method, data = args.data, dataType = args.dataType, timeout = args.timeout, url = args.url, responseType = args.responseType;
+        header = header || {} as ESObject;
+        if (!header!['Cookie'] && !header!['cookie']) {
+            header!['Cookie'] = getCookieSync(url);
+        }
+        let contentType = '';
+        const headers = {} as Record<string, Object>;
+        const headerRecord = header as Object as Record<string, string>;
+        const headerKeys = Object.keys(headerRecord);
+        for(let i = 0; i < headerKeys.length; i++){
+            const name = headerKeys[i];
+            if (name.toLowerCase() === 'content-type') {
+                contentType = headerRecord[name] as string;
+            }
+            headers[name.toLowerCase()] = headerRecord[name];
+        }
+        if (!contentType && method === 'POST') {
+            headers['Content-Type'] = 'application/json';
+            contentType = 'application/json';
+        }
+        if (method === 'GET' && data) {
+            const dataRecord = data as Record<string, Object>;
+            const query = Object.keys(dataRecord).map((key)=>{
+                return (encodeURIComponent(key) + '=' + encodeURIComponent(dataRecord[key] as string | number | boolean));
+            }).join('&');
+            url += query ? (url.indexOf('?') > -1 ? '&' : '?') + query : '';
+            data = null;
+        } else if (method !== 'GET' && contentType && contentType.indexOf('application/json') === 0 && data) {
+            data = JSON.stringify(data);
+        } else if (method !== 'GET' && contentType && contentType.indexOf('application/x-www-form-urlencoded') === 0 && data) {
+            const dataRecord = data as Record<string, Object>;
+            data = Object.keys(dataRecord).map((key)=>{
+                return (encodeURIComponent(key) + '=' + encodeURIComponent(dataRecord[key] as number | string | boolean));
+            }).join('&');
+        }
+        const httpRequest = http1.createHttp();
+        const mp = getCurrentMP1();
+        const userAgent = mp.userAgent.fullUserAgent;
+        if (userAgent && headers && !headers!['User-Agent'] && !headers!['user-agent']) {
+            headers!['User-Agent'] = userAgent;
+        }
+        const emitter = new Emitter2() as IUniRequestEmitter;
+        const requestTask: IRequestTask = {
+            abort () {
+                emitter.off('headersReceive');
+                httpRequest.destroy();
+            },
+            onHeadersReceived (callback: Function) {
+                emitter.on('headersReceive', callback);
+            },
+            offHeadersReceived (callback: Function | null = null) {
+                emitter.off('headersReceive', callback);
+            }
+        };
+        const destroy = ()=>{
+            emitter.off('headersReceive');
+            httpRequest.destroy();
+        };
+        mp.on('beforeClose', destroy);
+        let latestHeaders: Object | null = null;
+        let lastUrl = url;
+        httpRequest.on('headersReceive', (headers: Object)=>{
+            const realHeaders = headers as Record<string, string | string[]>;
+            const setCookieHeader = realHeaders['set-cookie'] || realHeaders['Set-Cookie'];
+            if (setCookieHeader) {
+                setCookieSync(lastUrl, setCookieHeader as string[]);
+            }
+            latestHeaders = headers;
+            const location = realHeaders['location'] || realHeaders['Location'];
+            if (location) {
+                lastUrl = location as string;
+            }
+        });
+        const bufs = [] as buffer1.Buffer[];
+        httpRequest.on('dataReceive', (data)=>{
+            bufs.push(buffer1.from(data));
+        });
+        httpRequest.requestInStream(parseUrl(url), {
+            header: headers,
+            method: (method || 'GET').toUpperCase() as http1.RequestMethod,
+            extraData: data || undefined,
+            connectTimeout: timeout ? timeout : undefined,
+            readTimeout: timeout ? timeout : undefined,
+            clientCert: getClientCertificate(url)
+        } as http1.HttpRequestOptions, (err, statusCode)=>{
+            if (err) {
+                exec.reject(err.message);
+            } else {
+                const responseData = buffer1.concat(bufs);
+                let data: ArrayBuffer | string | object = '';
+                if (responseType === 'arraybuffer') {
+                    data = responseData.buffer;
+                } else {
+                    data = responseData.toString('utf8');
+                    if (dataType === 'json') {
+                        try {
+                            data = JSON.parse(data);
+                        } catch (e) {}
+                    }
+                }
+                const headers = latestHeaders as Record<string, string | string[]>;
+                const oldCookies = headers ? (headers['Set-Cookie'] || headers['set-cookie'] || []) as string[] : [] as string[];
+                const cookies = latestHeaders ? cookiesParse(latestHeaders as Record<string, string>) : [];
+                let newCookies = oldCookies.join(',');
+                if (newCookies) {
+                    if (headers['Set-Cookie']) {
+                        headers['Set-Cookie'] = newCookies;
+                    } else {
+                        headers['set-cookie'] = newCookies;
+                    }
+                }
+                exec.resolve({
+                    data,
+                    statusCode,
+                    header: latestHeaders!,
+                    cookies: cookies
+                } as RequestSuccess<Object>);
+            }
+            requestTask.offHeadersReceived();
+            httpRequest.destroy();
+            mp.off('beforeClose', destroy);
+        });
+        return new RequestTask1(requestTask);
+    }, RequestApiProtocol, RequestApiOptions) as Request<Object>;
+    const lookupExt = (contentType: string): string | undefined =>{
+        const rawContentType = contentType.split(';')[0].trim().toLowerCase();
+        return (UTSHarmony.getExtensionFromMimeType(rawContentType) as string | null) || undefined;
+    };
+    const lookupContentTypeWithUri = (uri: string): string | undefined =>{
+        const uriArr = uri.split('.');
+        if (uriArr.length <= 1) {
+            return undefined;
+        }
+        const ext = uriArr.pop() as string;
+        return (UTSHarmony.getMimeTypeFromExtension(ext) as string | null) || undefined;
+    };
+    class UploadTask1 implements UploadTask {
+        private _uploadTask: IUploadTask;
+        constructor(uploadTask: IUploadTask){
+            this._uploadTask = uploadTask;
+        }
+        abort() {
+            this._uploadTask.abort();
+        }
+        onProgressUpdate(callback: Function) {
+            this._uploadTask.onProgressUpdate(callback);
+        }
+        offProgressUpdate(callback: Function | null = null) {
+            this._uploadTask.offProgressUpdate(callback);
+        }
+        onHeadersReceived(callback: Function) {
+            this._uploadTask.onHeadersReceived(callback);
+        }
+        offHeadersReceived(callback: Function | null = null) {
+            this._uploadTask.offHeadersReceived(callback);
+        }
+    }
+    const readFile = (filePath: string): ArrayBuffer =>{
+        const readFilePath = getRealPath4(filePath) as string;
+        const file = fs3.openSync(readFilePath, fs3.OpenMode.READ_ONLY);
+        const stat = fs3.statSync(file.fd);
+        const data = new ArrayBuffer(stat.size);
+        fs3.readSync(file.fd, data);
+        fs3.closeSync(file.fd);
+        return data;
+    };
+    const uploadFile = defineTaskApi<UploadFileOptions, UploadFileSuccess, UploadTask>(API_UPLOAD_FILE, (args: UploadFileOptions, exec: ApiExecutor<UploadFileSuccess>)=>{
+        let url = args.url, timeout = args.timeout, header = args.header, formData = args.formData, files = args.files, filePath = args.filePath, name = args.name;
+        header = header || {} as ESObject;
+        if (!header!['Cookie'] && !header!['cookie']) {
+            header!['Cookie'] = getCookieSync(url);
+        }
+        const headers = {} as Record<string, Object>;
+        if (header) {
+            const headerRecord = header as Object as Record<string, string>;
+            const headerKeys = Object.keys(headerRecord);
+            for(let i = 0; i < headerKeys.length; i++){
+                const name = headerKeys[i];
+                headers[name.toLowerCase()] = headerRecord[name];
+            }
+        }
+        headers['Content-Type'] = 'multipart/form-data';
+        const multiFormDataList = [] as Array<http2.MultiFormData>;
+        if (formData) {
+            const formDataRecord = formData as Object as Record<string, Object>;
+            const formDataKeys = Object.keys(formDataRecord);
+            for(let i = 0; i < formDataKeys.length; i++){
+                const name = formDataKeys[i];
+                multiFormDataList.push({
+                    name,
+                    contentType: 'text/plain',
+                    data: String(formDataRecord[name])
+                } as http2.MultiFormData);
+            }
+        }
+        try {
+            if (files && files.length) {
+                for(let i = 0; i < files.length; i++){
+                    const _files_i = files[i], name = _files_i.name, uri = _files_i.uri;
+                    multiFormDataList.push({
+                        name: name || 'file',
+                        contentType: lookupContentTypeWithUri(uri) || 'application/octet-stream',
+                        remoteFileName: uri.split('/').pop() || 'no-name',
+                        data: readFile(uri!)
+                    } as http2.MultiFormData);
+                }
+            } else if (filePath) {
+                multiFormDataList.push({
+                    name: name || 'file',
+                    contentType: lookupContentTypeWithUri(filePath!) || 'application/octet-stream',
+                    remoteFileName: filePath.split('/').pop() || 'no-name',
+                    data: readFile(filePath!)
+                } as http2.MultiFormData);
+            }
+        } catch (error) {
+            exec.reject((error as Error).message);
+            return new UploadTask1({
+                abort: ()=>{},
+                onHeadersReceived: (callback: Function)=>{},
+                offHeadersReceived: (callback: Function)=>{},
+                onProgressUpdate: (callback: Function)=>{},
+                offProgressUpdate: (callback: Function)=>{}
+            } as IUploadTask);
+        }
+        const httpRequest = http2.createHttp();
+        const mp = getCurrentMP2();
+        const userAgent = mp.userAgent.fullUserAgent;
+        if (userAgent && !headers['User-Agent'] && !headers['user-agent']) {
+            headers['User-Agent'] = userAgent;
+        }
+        const emitter = new Emitter3() as IUniUploadFileEmitter;
+        const uploadTask: IUploadTask = {
+            abort () {
+                emitter.off('headersReceive');
+                emitter.off('progress');
+                httpRequest.destroy();
+            },
+            onHeadersReceived (callback: Function) {
+                emitter.on('headersReceive', callback);
+            },
+            offHeadersReceived (callback: Function | null = null) {
+                emitter.off('headersReceive', callback);
+            },
+            onProgressUpdate (callback: Function) {
+                emitter.on('progress', callback);
+            },
+            offProgressUpdate (callback: Function | null = null) {
+                emitter.off('progress', callback);
+            }
+        };
+        const destroy = ()=>{
+            emitter.off('headersReceive');
+            emitter.off('progress');
+            httpRequest.destroy();
+        };
+        mp.on('beforeClose', destroy);
+        let lastUrl = url;
+        httpRequest.on('headersReceive', (headers: Object)=>{
+            const realHeaders = headers as Record<string, string | string[]>;
+            const setCookieHeader = realHeaders['set-cookie'] || realHeaders['Set-Cookie'];
+            if (setCookieHeader) {
+                setCookieSync(lastUrl, setCookieHeader as string[]);
+            }
+            const location = realHeaders['location'] || realHeaders['Location'];
+            if (location) {
+                lastUrl = location as string;
+            }
+        });
+        httpRequest.on('dataSendProgress', (ref)=>{
+            let sendSize = ref.sendSize, totalSize = ref.totalSize;
+            emitter.emit('progress', {
+                progress: Math.floor((sendSize / totalSize) * 100),
+                totalBytesSent: sendSize,
+                totalBytesExpectedToSend: totalSize
+            } as OnProgressUpdateResult);
+        });
+        httpRequest.request(parseUrl(url), {
+            header: headers,
+            method: http2.RequestMethod.POST,
+            connectTimeout: timeout ? timeout : undefined,
+            readTimeout: timeout ? timeout : undefined,
+            multiFormDataList,
+            expectDataType: http2.HttpDataType.STRING,
+            clientCert: getClientCertificate(url)
+        } as http2.HttpRequestOptions, (err, res)=>{
+            if (err) {
+                exec.reject(err.message);
+            } else {
+                exec.resolve({
+                    data: res.result as string,
+                    statusCode: res.responseCode
+                } as UploadFileSuccess);
+            }
+            uploadTask.offHeadersReceived();
+            uploadTask.offProgressUpdate();
+            httpRequest.destroy();
+            mp.off('beforeClose', destroy);
+        });
+        return new UploadTask1(uploadTask);
+    }, UploadFileApiProtocol, UploadFileApiOptions) as UploadFile;
+    const getPossibleExt = (contentType: string, contentDisposition: string, url: string): string =>{
+        const contentDispositionFileNameMatches = contentDisposition.match(/filename="(.*)"/);
+        const contentDispositionFileName = contentDispositionFileNameMatches ? contentDispositionFileNameMatches[1] : '';
+        const contentDispositionExt = contentDispositionFileName ? contentDispositionFileName.split('.').pop() : '';
+        if (contentDispositionExt) {
+            return contentDispositionExt;
+        }
+        const urlPath = harmonyUrl1.URL.parseURL(url).pathname;
+        const urlExt = urlPath.split('/').pop()?.split('.')[1] || '';
+        if (urlExt) {
+            return urlExt;
+        }
+        const contentTypeExt = lookupExt(contentType);
+        return contentTypeExt || '';
+    };
+    class DownloadTask1 implements DownloadTask {
+        private _downloadTask: IDownloadTask;
+        constructor(downloadTask: IDownloadTask){
+            this._downloadTask = downloadTask;
+        }
+        abort() {
+            this._downloadTask.abort();
+        }
+        onProgressUpdate(callback: Function) {
+            this._downloadTask.onProgressUpdate(callback);
+        }
+        offProgressUpdate(callback: Function | null = null) {
+            this._downloadTask.offProgressUpdate(callback);
+        }
+        onHeadersReceived(callback: Function) {
+            this._downloadTask.onHeadersReceived(callback);
+        }
+        offHeadersReceived(callback: Function | null = null) {
+            this._downloadTask.offHeadersReceived(callback);
+        }
+    }
+    let downloadIndex: [string, number] = [
+        '0',
+        0
+    ];
+    const getDownloadFileName = (ext: string)=>{
+        let fileName = Date.now() + '';
+        if (downloadIndex[0] === fileName) {
+            downloadIndex[1]++;
+            if (downloadIndex[1] > 0) {
+                fileName += '-' + downloadIndex[1];
+            }
+        } else {
+            downloadIndex[0] = fileName;
+            downloadIndex[1] = 0;
+        }
+        if (ext) {
+            fileName += '.' + ext;
+        }
+        return fileName;
+    };
+    const downloadFile = defineTaskApi<DownloadFileOptions, DownloadFileSuccess, DownloadTask>(API_DOWNLOAD_FILE, (args: DownloadFileOptions, exec: ApiExecutor<DownloadFileSuccess>)=>{
+        let url = args.url, timeout = args.timeout, header = args.header, filePath = args.filePath;
+        header = header || {} as ESObject;
+        if (!header!['Cookie'] && !header!['cookie']) {
+            header!['Cookie'] = getCookieSync(url);
+        }
+        const httpRequest = http3.createHttp();
+        const mp = getCurrentMP3();
+        const userAgent = mp.userAgent.fullUserAgent;
+        if (userAgent && !header!['User-Agent'] && !header!['user-agent']) {
+            header!['User-Agent'] = userAgent;
+        }
+        const emitter = new Emitter4() as IUniDownloadFileEmitter;
+        const downloadTask: IDownloadTask = {
+            abort () {
+                emitter.off('headersReceive');
+                emitter.off('progress');
+                httpRequest.destroy();
+            },
+            onHeadersReceived (callback: Function) {
+                emitter.on('headersReceive', callback);
+            },
+            offHeadersReceived (callback: Function | null = null) {
+                emitter.off('headersReceive', callback);
+            },
+            onProgressUpdate (callback: Function) {
+                emitter.on('progress', callback);
+            },
+            offProgressUpdate (callback: Function | null = null) {
+                emitter.off('progress', callback);
+            }
+        };
+        const destroy = ()=>{
+            downloadTask.abort();
+        };
+        mp.on('beforeClose', destroy);
+        let responseContentType = '';
+        let responseContentDisposition = '';
+        let lastUrl = url;
+        httpRequest.on('headersReceive', (headers: Object)=>{
+            const realHeaders = headers as Record<string, string | string[]>;
+            responseContentType = realHeaders['content-type'] as string || realHeaders['Content-Type'] as string || '';
+            responseContentDisposition = realHeaders['content-disposition'] as string || realHeaders['Content-Disposition'] as string || '';
+            const setCookieHeader = realHeaders['set-cookie'] || realHeaders['Set-Cookie'];
+            if (setCookieHeader) {
+                setCookieSync(lastUrl, setCookieHeader as string[]);
+            }
+            const location = realHeaders['location'] || realHeaders['Location'];
+            if (location) {
+                lastUrl = location as string;
+            }
+        });
+        httpRequest.on('dataReceiveProgress', (ref)=>{
+            let receiveSize = ref.receiveSize, totalSize = ref.totalSize;
+            emitter.emit('progress', {
+                progress: Math.floor((receiveSize / totalSize) * 100),
+                totalBytesWritten: receiveSize,
+                totalBytesExpectedToWrite: totalSize
+            } as OnProgressDownloadResult);
+        });
+        const TEMP_PATH = getEnv4().TEMP_PATH as string;
+        const downloadPath = TEMP_PATH + '/download';
+        if (!fs4.accessSync(downloadPath)) {
+            fs4.mkdirSync(downloadPath, true);
+        }
+        let stream: fs4.Stream;
+        let tempFilePath = '';
+        let writePromise = Promise.resolve(0);
+        const queueWrite = async (data: ArrayBuffer): Promise<number> =>{
+            writePromise = writePromise.then(async (total)=>{
+                const length = await stream.write(data);
+                return total + length;
+            });
+            return writePromise;
+        };
+        httpRequest.on('dataReceive', (data)=>{
+            if (!stream) {
+                const ext = getPossibleExt(responseContentType, responseContentDisposition, url);
+                tempFilePath = filePath ? filePath.replace(/^file:\/\//, '') : downloadPath + '/' + getDownloadFileName(ext);
+                stream = fs4.createStreamSync(tempFilePath, 'w+');
+            }
+            queueWrite(data);
+        });
+        httpRequest.requestInStream(parseUrl(url), {
+            header: header ? header : {} as ESObject,
+            method: http3.RequestMethod.GET,
+            connectTimeout: timeout ? timeout : undefined,
+            readTimeout: timeout ? timeout : undefined,
+            clientCert: getClientCertificate(url)
+        } as http3.HttpRequestOptions, (err, statusCode)=>{
+            let finishPromise: Promise<void> = Promise.resolve();
+            if (err) {
+                exec.reject(err.message);
+            } else {
+                finishPromise = writePromise.then(async ()=>{
+                    await stream.flush();
+                    await stream.close();
+                    exec.resolve({
+                        tempFilePath,
+                        statusCode
+                    } as DownloadFileSuccess);
+                }).catch((err: Error)=>{
+                    exec.reject(err.message);
+                });
+            }
+            finishPromise.then(()=>{
+                downloadTask.offHeadersReceived();
+                downloadTask.offProgressUpdate();
+                httpRequest.destroy();
+                mp.off('beforeClose', destroy);
+            });
+        });
+        return new DownloadTask1(downloadTask);
+    }, DownloadFileApiProtocol, DownloadFileApiOptions) as DownloadFile;
+    const configMTLS: ConfigMTLS = defineAsyncApi<ConfigMTLSOptions, ConfigMTLSSuccess>(API_CONFIG_MTLS, (args: ConfigMTLSOptions, executor: ApiExecutor<ConfigMTLSSuccess>)=>{
+        try {
+            args.certificates.forEach((certificate)=>{
+                const certHosts = certificates.map((cert)=>cert.host);
+                const certHostIndex = certHosts.indexOf(certificate.host);
+                if (certHostIndex > -1) {
+                    certificates.splice(certHostIndex, 1);
+                }
+                certificates.push(certificate);
+            });
+            executor.resolve();
+        } catch (error) {
+            executor.reject((error as BusinessError10).message);
+        }
+    }, ConfigMTLSApiProtocol, ConfigMTLSApiOptions) as ConfigMTLS;
     const API_LOGIN = 'login';
     const LoginApiProtocol = new Map<string, ProtocolOptions>([
         [
@@ -6202,7 +7503,7 @@ export function initUniExtApi() {
                 pushParams: bundleManager2.getBundleInfoForSelfSync(bundleManager2.BundleFlag.GET_BUNDLE_INFO_DEFAULT).name
             }
         } as Want;
-        const context = UTSHarmony.getUIAbilityContext() as common1.UIAbilityContext;
+        const context = UTSHarmony.getUIAbilityContext() as common.UIAbilityContext;
         context.startAbility(want).then(()=>{
             exec.resolve({
                 errMsg: ''
@@ -6247,7 +7548,7 @@ export function initUniExtApi() {
             uri: uri,
             type: fileContentType as string
         };
-        const abilityContext = UTSHarmony.getUIAbilityContext() as common2.UIAbilityContext;
+        const abilityContext = UTSHarmony.getUIAbilityContext() as common1.UIAbilityContext;
         abilityContext.startAbility(want).then(()=>{
             exec.resolve({} as OpenDocumentSuccess);
         }, (err: Error)=>{
@@ -6504,13 +7805,129 @@ export function initUniExtApi() {
             shareData.addRecord(shareRecords[index]);
         }
         const shareController: systemShare.ShareController = new systemShare.ShareController(shareData);
-        shareController.show(UTSHarmony.getUIAbilityContext() as common3.UIAbilityContext, {} as systemShare.ShareControllerOptions);
+        shareController.show(UTSHarmony.getUIAbilityContext() as common2.UIAbilityContext, {} as systemShare.ShareControllerOptions);
         const onDismiss = ()=>{
             shareController.off('dismiss', onDismiss);
             exec.resolve({} as ShareWithSystemSuccess);
         };
         shareController.on('dismiss', onDismiss);
     }) as ShareWithSystem;
+    const API_GET_STORAGE = 'getStorage';
+    const API_GET_STORAGE_SYNC = 'getStorageSync';
+    const API_SET_STORAGE = 'setStorage';
+    const API_SET_STORAGE_SYNC = 'setStorageSync';
+    const API_REMOVE_STORAGE = 'removeStorage';
+    const API_REMOVE_STORAGE_SYNC = 'removeStorageSync';
+    const API_CLEAR_STORAGE = 'clearStorage';
+    const API_CLEAR_STORAGE_SYNC = 'clearStorageSync';
+    const API_GET_STORAGE_INFO = 'getStorageInfo';
+    const API_GET_STORAGE_INFO_SYNC = 'getStorageInfoSync';
+    const parseStorageValue = (value: string): Object =>{
+        try {
+            return JSON.parse(value).data;
+        } catch (e) {
+            return value;
+        }
+    };
+    const stringifyStorageValue = (value: Object): string =>{
+        return JSON.stringify({
+            type: typeof value,
+            data: value
+        } as ESObject);
+    };
+    const stores = new Map<string, dataPreferences.Preferences>();
+    const createStore = (): dataPreferences.Preferences =>{
+        const id = getCurrentMP4().id;
+        if (stores.has(id)) {
+            return stores.get(id)!;
+        }
+        const store = dataPreferences.getPreferencesSync(UTSHarmony.getUIAbilityContext() as common3.UIAbilityContext, {
+            name: `storage.${id}`
+        } as dataPreferences.Options);
+        stores.set(id, store);
+        return store;
+    };
+    const getStorageSync = defineSyncApi<Object>(API_GET_STORAGE_SYNC, (key: string)=>{
+        const storeValue = createStore().getSync(key, '');
+        if (!storeValue) {
+            return '';
+        }
+        return parseStorageValue(storeValue as string);
+    }) as GetStorageSync;
+    const getStorage = defineAsyncApi<GetStorageOptions, GetStorageSuccess>(API_GET_STORAGE, (args: GetStorageOptions, exec: ApiExecutor<GetStorageSuccess>)=>{
+        createStore().get(args.key, '').then((storeValue)=>{
+            if (!storeValue) {
+                return exec.reject('data not found');
+            }
+            let value: Object;
+            try {
+                value = parseStorageValue(storeValue as string);
+            } catch (error) {
+                exec.reject('data parse error');
+                return;
+            }
+            exec.resolve({
+                data: value
+            } as GetStorageSuccess);
+        });
+    }) as GetStorage;
+    const setStorageSync = defineSyncApi<void>(API_SET_STORAGE_SYNC, (key: string, value: Object)=>{
+        createStore().putSync(key, stringifyStorageValue(value));
+        createStore().flush();
+    }) as SetStorageSync;
+    const setStorage = defineAsyncApi<SetStorageOptions, SetStorageSuccess>(API_SET_STORAGE, (args: SetStorageOptions, exec: ApiExecutor<SetStorageSuccess>)=>{
+        try {
+            createStore().put(args.key, stringifyStorageValue(args.data)).then(()=>{
+                createStore().flush();
+                exec.resolve({} as ESObject);
+            }, (error: Error)=>{
+                exec.reject(error.message);
+            });
+        } catch (error) {
+            exec.reject((error as Error).message);
+        }
+    }) as SetStorage;
+    const removeStorageSync = defineSyncApi<void>(API_REMOVE_STORAGE_SYNC, (key: string)=>{
+        createStore().deleteSync(key);
+        createStore().flush();
+    }) as RemoveStorageSync;
+    const removeStorage = defineAsyncApi<RemoveStorageOptions, RemoveStorageSuccess>(API_REMOVE_STORAGE, (args: RemoveStorageOptions, exec: ApiExecutor<RemoveStorageSuccess>)=>{
+        createStore().delete(args.key).then(()=>{
+            createStore().flush();
+            exec.resolve({} as ESObject);
+        }, (error: Error)=>{
+            exec.reject(error.message);
+        });
+    }) as RemoveStorage;
+    const clearStorageSync = defineSyncApi<void>(API_CLEAR_STORAGE_SYNC, ()=>{
+        createStore().clearSync();
+        createStore().flush();
+    }) as ClearStorageSync;
+    const clearStorage = defineAsyncApi<ClearStorageOptions, ClearStorageSuccess>(API_CLEAR_STORAGE, (args: ClearStorageOptions, exec: ApiExecutor<ClearStorageSuccess>)=>{
+        createStore().clear().then(()=>{
+            createStore().flush();
+            exec.resolve({} as ESObject);
+        }, (error: Error)=>{
+            exec.reject(error.message);
+        });
+    }) as ClearStorage;
+    const getStorageInfoSync = defineSyncApi<GetStorageInfoSuccess>(API_GET_STORAGE_INFO_SYNC, ()=>{
+        const allData = createStore().getAllSync();
+        return {
+            keys: Object.keys(allData),
+            currentSize: 0,
+            limitSize: 0
+        } as GetStorageInfoSuccess;
+    }) as GetStorageInfoSync;
+    const getStorageInfo = defineAsyncApi<GetStorageInfoOptions, GetStorageInfoSuccess>(API_GET_STORAGE_INFO, (args: GetStorageInfoOptions, exec: ApiExecutor<GetStorageInfoSuccess>)=>{
+        createStore().getAll().then((allData)=>{
+            exec.resolve({
+                keys: Object.keys(allData),
+                currentSize: 0,
+                limitSize: 0
+            } as GetStorageInfoSuccess);
+        });
+    }) as GetStorageInfo;
     const API_CONNECT_SOCKET = 'connectSocket';
     const ConnectSocketApiProtocol = new Map<string, ProtocolOptions>([
         [
@@ -6738,20 +8155,6 @@ export function initUniExtApi() {
         }
     }) as CloseSocket;
     return {
-        request,
-        uploadFile,
-        downloadFile,
-        configMTLS,
-        setStorage,
-        setStorageSync,
-        getStorage,
-        getStorageSync,
-        getStorageInfo,
-        getStorageInfoSync,
-        removeStorage,
-        removeStorageSync,
-        clearStorage,
-        clearStorageSync,
         addPhoneContact,
         startSoterAuthentication,
         checkIsSupportSoterAuthentication,
@@ -6786,6 +8189,10 @@ export function initUniExtApi() {
         getSystemSetting,
         hideKeyboard,
         makePhoneCall,
+        request,
+        uploadFile,
+        downloadFile,
+        configMTLS,
         login,
         getUserInfo,
         openAppAuthorizeSetting,
@@ -6794,6 +8201,16 @@ export function initUniExtApi() {
         rpx2px,
         scanCode,
         shareWithSystem,
+        setStorage,
+        setStorageSync,
+        getStorage,
+        getStorageSync,
+        getStorageInfo,
+        getStorageInfoSync,
+        removeStorage,
+        removeStorageSync,
+        clearStorage,
+        clearStorageSync,
         connectSocket,
         sendSocketMessage,
         closeSocket,
