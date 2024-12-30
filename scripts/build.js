@@ -294,6 +294,7 @@ async function postBuildArkTS (isUniAppX = false) {
       harBuildJson[i]
     await compileArkTSExtApi(path.resolve(input, '..'), input, output, {
       isExtApi: true,
+      isX: isUniAppX,
       isOhpmPackage: true,
       transform: {},
     })

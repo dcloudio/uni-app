@@ -267,7 +267,7 @@ function generateExtApiSourceCode(isUniAppX = false) {
           .map((key) => injects[key][1])
         extApiStandaloneBuildJson.push({
           input: path.resolve(extApiTempDir, extApi),
-          output: path.resolve(__dirname, `dist/packages/${extApi}`),
+          output: path.resolve(__dirname, isUniAppX ? 'dist-x' : 'dist', `packages/${extApi}`),
           plugin: extApi,
           type: standaloneExtApi.type,
           apis,
@@ -276,7 +276,7 @@ function generateExtApiSourceCode(isUniAppX = false) {
         const [_, service, provider] = extApi.split('-')
         extApiStandaloneBuildJson.push({
           input: path.resolve(extApiTempDir, extApi),
-          output: path.resolve(__dirname, `dist/packages/${extApi}`),
+          output: path.resolve(__dirname, isUniAppX ? 'dist-x' : 'dist', `packages/${extApi}`),
           plugin: extApi,
           type: standaloneExtApi.type,
           provider,

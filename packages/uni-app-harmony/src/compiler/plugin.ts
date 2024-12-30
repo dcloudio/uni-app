@@ -352,7 +352,11 @@ function genAppHarmonyUniModules(
     extApiCodes.push(...registerProviderCodes)
   }
   importCodes.unshift(
-    `import { registerUniProvider, uni } from '@dcloudio/uni-app-runtime'`
+    `import { registerUniProvider, uni } from '${
+      process.env.UNI_APP_X !== 'true'
+        ? '@dcloudio/uni-app-runtime'
+        : '@dcloudio/uni-app-x-runtime'
+    }'`
   )
 
   context.emitFile({
