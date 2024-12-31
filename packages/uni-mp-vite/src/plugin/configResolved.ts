@@ -9,9 +9,11 @@ import {
   injectAssetPlugin,
   injectCssPlugin,
   injectCssPostPlugin,
+  isMiniProgramPageFile,
   normalizeMiniProgramFilename,
   normalizePath,
   parseManifestJsonOnce,
+  parsePagesJsonOnce,
   parseUniXFlexDirection,
   relativeFile,
   removeExt,
@@ -96,10 +98,6 @@ export function createConfigResolved({
         chunkCssCode(filename, cssCode) {
           cssCode = transformScopedCss(cssCode)
           if (filename === 'app' + cssExtname) {
-            const resetCssCode =
-              process.env.UNI_APP_X === 'true'
-                ? `@import "./uvue${extname}";\n`
-                : ''
             const componentCustomHiddenCss =
               (component &&
                 component.vShow &&
@@ -107,22 +105,62 @@ export function createConfigResolved({
               ''
             if (config.isProduction) {
               return (
-                resetCssCode +
                 cssCode +
                 genShadowCss(cdn || 0) +
                 cssVars +
                 componentCustomHiddenCss
               )
             } else {
-              return resetCssCode + cssCode + cssVars + componentCustomHiddenCss
+              return cssCode + cssVars + componentCustomHiddenCss
             }
           }
-          if (process.env.UNI_APP_X === 'true') {
+          const isX = process.env.UNI_APP_X === 'true'
+
+          if (isX) {
             if (component?.[':host']) {
               const flexDirection = parseUniXFlexDirection(
                 parseManifestJsonOnce(process.env.UNI_INPUT_DIR)
               )
-              return `:host{display:flex;flex-direction:${flexDirection}}\n${cssCode}`
+              cssCode = `:host{display:flex;flex-direction:${flexDirection}}\n${cssCode}`
+            }
+
+            if (!isMiniProgramPageFile(filename)) {
+              return cssCode
+            }
+
+            /**
+             * 此方法将subPackages中的页面合并到了pages内
+             */
+            const pagesJson = parsePagesJsonOnce(
+              process.env.UNI_INPUT_DIR,
+              process.env.UNI_PLATFORM
+            )
+            const page = pagesJson.pages.find(
+              (page) => page.path === removeExt(filename)
+            )
+            if (!page) {
+              return cssCode
+            }
+            /**
+             * 何时不重置样式？
+             * - page.style.enabelUcssReset为false
+             * - page.style.enableUcssReset为空，pagesJson.globalStyle.enableUcssReset为false
+             * - page.style.enableUcssReset为空，pagesJson.globalStyle.enableUcssReset为空，page.style.renderer为skyline
+             */
+            const shouldNotResetStyle =
+              page.style.enableUcssReset === false ||
+              (page.style.enableUcssReset == null &&
+                pagesJson.globalStyle.enableUcssReset === false) ||
+              (page.style.enableUcssReset == null &&
+                pagesJson.globalStyle.enableUcssReset == null &&
+                (page.style as any).renderer === 'skyline')
+
+            if (!shouldNotResetStyle) {
+              /**
+               * 兼容发布为小程序分包模式
+               */
+              const uvueCssPath = relativeFile(filename, `uvue${extname}`)
+              cssCode = `@import "${uvueCssPath}";\n` + cssCode
             }
             return cssCode
           }

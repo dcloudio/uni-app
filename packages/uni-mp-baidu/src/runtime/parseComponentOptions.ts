@@ -47,6 +47,9 @@ export function parse(componentOptions: MPComponentOptions) {
     fixSetDataStart(this as MPComponentInstance)
     oldAttached.call(this)
     this.pageinstance.$vm = this.$vm
+    if (__X__) {
+      this.pageinstance.vm = this.pageinstance.$vm
+    }
     this.$vm.$callHook(ON_INIT, query)
   }
   lifetimes.attached = function attached(this: MPComponentInstance) {
@@ -61,6 +64,9 @@ export function parse(componentOptions: MPComponentOptions) {
       // 百度 当组件作为页面时 pageinstance 不是原来组件的 instance
       const pageInstance = (this as any).pageinstance
       pageInstance.$vm = this.$vm
+      if (__X__) {
+        pageInstance.vm = pageInstance.$vm
+      }
       if (hasOwn(pageInstance, '_$args')) {
         this.$vm.$callHook(ON_LOAD, pageInstance._$args)
         this.$vm.$callHook(ON_SHOW)

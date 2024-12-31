@@ -2,8 +2,24 @@ import { type Normalize, autofixedReason, validReason } from '../utils'
 
 export const normalizeColor: Normalize = (v) => {
   v = (v || '').toString()
+
   if (v.match(/^#[0-9a-fA-F]{6}$/)) {
     return { value: v }
+  }
+
+  // rgba issues 13371
+  if (v.match(/^#[0-9a-fA-F]{4}$/)) {
+    return {
+      value: '#' + v[1] + v[1] + v[2] + v[2] + v[3] + v[3] + v[4] + v[4],
+      reason: function reason(k, v, result) {
+        return autofixedReason(v, result)
+      },
+    }
+  }
+  if (v.match(/^#[0-9a-fA-F]{8}$/)) {
+    return {
+      value: v,
+    }
   }
   if (v.match(/^#[0-9a-fA-F]{3}$/)) {
     return {

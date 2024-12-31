@@ -3,12 +3,14 @@ import {
   type ElementNode,
   type ExpressionNode,
   createCompoundExpression,
+  createSimpleExpression,
   findProp,
 } from '@vue/compiler-core'
 import {
   createAttributeNode,
   createBindDirectiveNode,
   isAttributeNode,
+  isDirectiveNode,
   isUserComponent,
 } from '@dcloudio/uni-cli-shared'
 import type { TransformContext } from '../transform'
@@ -28,6 +30,13 @@ import { parseVForKeyAlias } from './transformSlot'
 import { parseRefCode } from './transformRef'
 import { SetUniElementIdTagType } from '@dcloudio/uni-shared'
 import { isString } from '@vue/shared'
+import {
+  binaryExpression,
+  conditionalExpression,
+  stringLiteral,
+} from '@babel/types'
+import { parseExpr } from '../ast'
+import { genBabelExpr } from '../codegen'
 
 const builtInCustomElements = ['uni-cloud-db-element']
 const builtInComponents = ['unicloud-db']
@@ -56,7 +65,8 @@ export function rewriteId(node: ElementNode, context: TransformContext) {
 
   // 内置组件使用了 ref，没有 id 时，自动补充一个
   const refProp = findProp(node, ATTR_VUE_REF) || findProp(node, 'ref')
-  if (refProp && !findProp(node, 'id')) {
+  let idProp = findProp(node, 'id')
+  if (refProp && !idProp) {
     if (context.inVFor) {
       // v-for 中的 ref 需要使用 v-for 的 key 作为 id
       const keyAlias = parseVForKeyAlias(context)
@@ -72,9 +82,45 @@ export function rewriteId(node: ElementNode, context: TransformContext) {
       const id = 'r' + context.elementRefIndex++ + '-' + context.hashId
       node.props.push(createAttributeNode('id', id))
     }
+  } else if (refProp && idProp && isDirectiveNode(idProp)) {
+    // ref 和 id 都存在，且 id 是动态绑定的, 但是可能为空字符串。比如virtualHost绑定的id
+    const idPropIndex = node.props.indexOf(idProp)
+    node.props.splice(idPropIndex, 1)
+    if (idProp.exp) {
+      const originalId = parseExpr(idProp.exp, context)!
+      let genId = ''
+      if (context.inVFor) {
+        // v-for 中的 ref 需要使用 v-for 的 key 作为 id
+        const keyAlias = parseVForKeyAlias(context)
+        // 微信小程序元素id必须以字母开头，所以hashId不能放到前边，它可能是数字开头
+        genId =
+          'r' +
+          context.elementRefIndex++ +
+          '-' +
+          context.hashId +
+          '-' +
+          keyAlias.join('-')
+      } else {
+        genId = 'r' + context.elementRefIndex++ + '-' + context.hashId
+      }
+      node.props.push(
+        createBindDirectiveNode(
+          'id',
+          createSimpleExpression(
+            genBabelExpr(
+              conditionalExpression(
+                binaryExpression('!==', originalId, stringLiteral('')),
+                originalId,
+                stringLiteral(genId)
+              )
+            )
+          )
+        )
+      )
+    }
   }
 
-  const idProp = findProp(node, 'id')
+  idProp = findProp(node, 'id')
   if (!idProp) {
     return
   }

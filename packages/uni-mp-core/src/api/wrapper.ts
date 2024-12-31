@@ -6,8 +6,9 @@ import type {
   MPProtocolObject,
   MPProtocols,
 } from './protocols'
+import { shouldKeepReturnValue } from './protocols/x'
 
-import { isContextApi, isSyncApi } from './promise'
+import { isContextApi, isSyncApi, isTaskApi } from './promise'
 
 const CALLBACKS = ['success', 'fail', 'cancel', 'complete']
 
@@ -69,6 +70,9 @@ export function initWrapper(protocols: MPProtocols) {
       }
       return toArgs
     } else if (isFunction(fromArgs)) {
+      if (isFunction(argsOption)) {
+        argsOption(fromArgs, {})
+      }
       fromArgs = processCallback(methodName, fromArgs, returnValue)
     }
     return fromArgs
@@ -84,20 +88,35 @@ export function initWrapper(protocols: MPProtocols) {
       // 处理通用 returnValue
       res = protocols.returnValue(methodName, res)
     }
+    const realKeepReturnValue =
+      keepReturnValue || (__X__ && shouldKeepReturnValue(methodName))
     return processArgs(
       methodName,
       res,
       returnValue as MPProtocolArgs,
       {},
-      keepReturnValue
+      realKeepReturnValue
     )
   }
   return function wrapper(methodName: string, method: unknown) {
-    if (!hasOwn(protocols, methodName)) {
+    if ((isContextApi(methodName) || isTaskApi(methodName)) && method) {
+      const oldMethod = method as Function
+      method = function (this: any, ...args: unknown[]) {
+        const contextOrTask = oldMethod.apply(this, args)
+        if (contextOrTask) {
+          contextOrTask.__v_skip = true
+        }
+        return contextOrTask
+      }
+    }
+    if (
+      (!hasOwn(protocols, methodName) && !isFunction(protocols.returnValue)) ||
+      !isFunction(method)
+    ) {
       return method
     }
     const protocol = protocols[methodName] as MPProtocolObject
-    if (!protocol) {
+    if (!protocol && !isFunction(protocols.returnValue)) {
       // 暂不支持的 api
       return function () {
         console.error(`__PLATFORM_TITLE__ 暂不支持${methodName}`)
@@ -105,7 +124,7 @@ export function initWrapper(protocols: MPProtocols) {
     }
     return function (arg1: unknown, arg2: unknown) {
       // 目前 api 最多两个参数
-      let options = protocol
+      let options = protocol || {}
       if (isFunction(protocol)) {
         options = protocol(arg1)
       }
@@ -120,6 +139,11 @@ export function initWrapper(protocols: MPProtocols) {
         __GLOBAL__,
         args
       )
+      if (isContextApi(methodName) || isTaskApi(methodName)) {
+        if (returnValue && !returnValue.__v_skip) {
+          returnValue.__v_skip = true
+        }
+      }
       if (isSyncApi(methodName)) {
         // 同步 api
         return processReturnValue(

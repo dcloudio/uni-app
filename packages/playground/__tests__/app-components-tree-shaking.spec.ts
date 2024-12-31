@@ -30,11 +30,12 @@ describe('app-components-tree-shaking playground', () => {
           },
         })
         console.log(`${type} npm run ${script} end`)
-        const manifest = fs.readFileSync(
-          path.resolve(outDir, 'manifest.json'),
-          'utf-8'
+        const manifest = JSON.parse(
+          fs.readFileSync(path.resolve(outDir, 'manifest.json'), 'utf-8')
         )
-        expect(manifest).toMatchSnapshot()
+        // 里边的版本号会变更，移除影响
+        delete manifest['uni-app-x']
+        expect(JSON.stringify(manifest, null, 2)).toMatchSnapshot()
       })
     })
   })

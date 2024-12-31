@@ -153,6 +153,7 @@ export const get_platform_name = () => {
     'mp-kuaishou': 'ks',
     'mp-lark': 'lark',
     'quickapp-webview': 'qw',
+    'mp-xhs': 'xhs'
   }
   if (platformList[process.env.VUE_APP_PLATFORM] === 'ali') {
     if (my && my.env) {
@@ -162,7 +163,7 @@ export const get_platform_name = () => {
       // TODO 缺少 ali 下的其他平台
     }
   }
-  return platformList[process.env.VUE_APP_PLATFORM]
+  return platformList[process.env.VUE_APP_PLATFORM] || process.env.VUE_APP_PLATFORM
 }
 
 /**

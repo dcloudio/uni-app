@@ -163,29 +163,33 @@ export function resolveUTSCompiler(throwError = false): typeof UTSCompiler {
       if (throwError) {
         throw `Error: Cannot find module '@dcloudio/uni-uts-v1'`
       }
-      let utsCompilerVersion = ''
-      try {
-        utsCompilerVersion = require('../package.json').version
-      } catch (e) {
-        try {
-          // vue2
-          utsCompilerVersion = require('../../package.json').version
-        } catch (e) {}
-      }
-      if (utsCompilerVersion.startsWith('2.0.')) {
-        utsCompilerVersion = '^3.0.0-alpha-3060920221117001'
-      }
       console.error(
         installDepTips(
           'devDependencies',
           '@dcloudio/uni-uts-v1',
-          utsCompilerVersion
+          resolveUTSCompilerVersion()
         )
       )
       process.exit(0)
     }
   }
   return require(compilerPath)
+}
+
+export function resolveUTSCompilerVersion() {
+  let utsCompilerVersion = ''
+  try {
+    utsCompilerVersion = require('../package.json').version
+  } catch (e) {
+    try {
+      // vue2
+      utsCompilerVersion = require('../../package.json').version
+    } catch (e) {}
+  }
+  if (utsCompilerVersion.startsWith('2.0.')) {
+    utsCompilerVersion = '^3.0.0-alpha-3060920221117001'
+  }
+  return utsCompilerVersion
 }
 
 interface UTSComponentMeta {
@@ -253,9 +257,14 @@ export function initUTSComponents(
       ? path.basename(path.dirname(dir))
       : path.basename(dir)
     if (is_uni_modules_utssdk || is_ussdk) {
+      // dir 是 uni_modules/test-plugin/utssdk 或者 utssdk/test-plugin
+      // 需要分平台解析，不能直接解析 utssdk 目录下的文件，因为 utssdk 目录下可能存在多个平台的文件
+      const cwd = isApp
+        ? dir
+        : path.join(dir, platform === 'h5' ? 'web' : platform)
       glob
         .sync('**/*.vue', {
-          cwd: dir,
+          cwd,
           absolute: true,
         })
         .forEach((file) => {

@@ -4,15 +4,18 @@ import type { APP_PLATFORM } from './manifest/utils'
 import { normalizePath, resolveSourceMapPath } from './shared'
 import {
   type KotlinCompilerServer,
-  addInjectApis,
-  addInjectComponents,
   compileAndroidDex,
   createStderrListener,
   getUniModulesCacheJars,
   resolveDexFile,
   resolveJarPath,
 } from './kotlin'
-import { getCompilerServer, requireUniHelpers } from './utils'
+import {
+  addPluginInjectApis,
+  addPluginInjectComponents,
+  getCompilerServer,
+  requireUniHelpers,
+} from './utils'
 import { restoreDex } from './manifest'
 import { sync } from 'fast-glob'
 import { resolveDexCacheFile } from './manifest/dex'
@@ -184,8 +187,8 @@ async function compileEncryptByUniHelpers(pluginDir: string) {
     const artifacts = pkg.uni_modules?.artifacts
     const inject_apis = artifacts?.apis || []
     const scoped_slots = artifacts?.scoped_slots || []
-    addInjectApis(inject_apis)
-    addInjectComponents(artifacts?.components || [])
+    addPluginInjectApis(inject_apis)
+    addPluginInjectComponents(artifacts?.components || [])
     return {
       dir: outputPluginDir,
       code: 'export default {}',

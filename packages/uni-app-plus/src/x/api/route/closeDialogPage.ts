@@ -1,6 +1,6 @@
-import { ON_SHOW, isSystemDialogPage } from '@dcloudio/uni-shared'
-import { invokeHook } from '@dcloudio/uni-core'
-import { closeNativeDialogPage } from './utils'
+import { ON_SHOW } from '@dcloudio/uni-shared'
+import { invokeHook, isSystemDialogPage } from '@dcloudio/uni-core'
+import closeNativeDialogPage from './closeNativeDialogPage'
 import type { CloseDialogPageOptions } from '@dcloudio/uni-app-x/types/uni'
 import { ANI_DURATION } from '../../../service/constants'
 
@@ -30,7 +30,7 @@ export const closeDialogPage = (options?: CloseDialogPageOptions) => {
         parentDialogPages.splice(index, 1)
         closeNativeDialogPage(
           dialogPage,
-          options?.animationType || 'none',
+          options?.animationType || 'auto',
           options?.animationDuration || ANI_DURATION
         )
         if (index > 0 && index === parentDialogPages.length) {
@@ -55,7 +55,7 @@ export const closeDialogPage = (options?: CloseDialogPageOptions) => {
     for (let i = dialogPages.length - 1; i >= 0; i--) {
       closeNativeDialogPage(
         dialogPages[i],
-        options?.animationType || 'none',
+        options?.animationType || 'auto',
         options?.animationDuration || ANI_DURATION
       )
       if (i > 0) {

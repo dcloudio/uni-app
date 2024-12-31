@@ -3,7 +3,7 @@ import fs from 'fs-extra'
 import path, { join } from 'path'
 import AdmZip from 'adm-zip'
 import { sync } from 'fast-glob'
-import { hasOwn, isArray } from '@vue/shared'
+import { isArray } from '@vue/shared'
 import type {
   UTSBundleOptions,
   UTSInputOptions,
@@ -17,6 +17,7 @@ import {
   type RunOptions,
   type RunProdOptions,
   type ToKotlinOptions,
+  addPluginInjectApis,
   copyPlatformFiles,
   genComponentsCode,
   genUTSPlatformResource,
@@ -24,13 +25,12 @@ import {
   getUTSCompiler,
   isColorSupported,
   isEnableGenericsParameterDefaults,
+  isEnableInlineReified,
   isEnableNarrowType,
-  isEnableUTSJSONObjectPropertyAccess,
   isEnableUTSNumber,
   moveRootIndexSourceMap,
   normalizeUTSResult,
   parseExtApiDefaultParameters,
-  parseInjectModules,
   parseKotlinPackageWithPluginId,
   resolveAndroidDir,
   resolveBundleInputFileName,
@@ -41,6 +41,7 @@ import {
   resolveUTSPlatformFile,
   resolveUTSSourceMapPath,
   shouldAutoImportUniCloud,
+  updateManifestModules,
 } from './utils'
 import type { Module } from '../types/types'
 import { parseUTSKotlinStacktrace, parseUTSSyntaxError } from './stacktrace'
@@ -92,30 +93,6 @@ function parseKotlinPackage(filename: string) {
     id: res.id,
     package: parseKotlinPackageWithPluginId(res.name, res.is_uni_modules),
   }
-}
-
-const pluginInjectApis = new Set<string>()
-
-export function addInjectApis(apis: string[]) {
-  apis.forEach((api) => {
-    pluginInjectApis.add(api)
-  })
-}
-
-export function getInjectApis() {
-  return [...pluginInjectApis]
-}
-
-const pluginInjectComponents = new Set<string>()
-
-export function addInjectComponents(components: string[]) {
-  components.forEach((component) => {
-    pluginInjectComponents.add(component)
-  })
-}
-
-export function getInjectComponents() {
-  return [...pluginInjectComponents]
 }
 
 function isAppIOS(filename: string) {
@@ -183,7 +160,7 @@ export async function runKotlinProd(
     } else if (isX && process.env.UNI_UTS_COMPILER_TYPE === 'cloud') {
       updateManifestModules(inputDir, result.inject_apis, extApis)
     } else {
-      addInjectApis(result.inject_apis)
+      addPluginInjectApis(result.inject_apis)
     }
   }
   // module 模式，不需要处理资源
@@ -205,40 +182,6 @@ export async function runKotlinProd(
   }
 
   return result
-}
-
-function updateManifestModules(
-  inputDir: string,
-  inject_apis: string[],
-  localExtApis: Record<string, [string, string]> = {}
-) {
-  const filename = path.resolve(inputDir, 'manifest.json')
-  if (fs.existsSync(filename)) {
-    const content = fs.readFileSync(filename, 'utf8')
-    try {
-      const json = JSON.parse(content)
-      if (!json.app) {
-        json.app = {}
-      }
-      if (!json.app.distribute) {
-        json.app.distribute = {}
-      }
-      if (!json.app.distribute.modules) {
-        json.app.distribute.modules = {}
-      }
-      const modules = json.app.distribute.modules
-      let updated = false
-      parseInjectModules(inject_apis, localExtApis, []).forEach((name) => {
-        if (!hasOwn(modules, name)) {
-          modules[name] = {}
-          updated = true
-        }
-      })
-      if (updated) {
-        fs.outputFileSync(filename, JSON.stringify(json, null, 2))
-      }
-    } catch (e) {}
-  }
 }
 
 export type RunKotlinDevResult = UTSResult & {
@@ -698,8 +641,7 @@ export async function compile(
         enableUtsNumber: isEnableUTSNumber(),
         enableNarrowType: isEnableNarrowType(),
         enableGenericsParameterDefaults: isEnableGenericsParameterDefaults(),
-        enableUTSJSONObjectPropertyAccess:
-          isEnableUTSJSONObjectPropertyAccess(),
+        enableInlineReified: isEnableInlineReified(),
         ...transform,
       },
     },

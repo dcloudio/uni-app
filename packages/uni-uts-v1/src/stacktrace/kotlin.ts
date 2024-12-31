@@ -191,6 +191,11 @@ export interface GenerateKotlinRuntimeCodeFrameOptions
   language: 'kotlin'
 }
 
+export interface GenerateAppAndroidKotlinRuntimeCodeFrameOptions
+  extends GenerateKotlinRuntimeCodeFrameOptions {
+  platform: 'app-android'
+}
+
 export function parseUTSKotlinRuntimeStacktrace(
   stacktrace: string,
   options: GenerateKotlinRuntimeCodeFrameOptions
@@ -350,7 +355,27 @@ const typeMismatchErrorFormatter: Formatter = {
   },
 }
 
-const compileFormatters: Formatter[] = [typeMismatchErrorFormatter]
+// error: Unresolved reference: PreLoginOptions‌
+const UNRESOLVED_REFERENCE_RE = /Unresolved reference: (.*)/
+const unresolvedApiMap = require('../../lib/kotlin/unresolved.json')
+const unresolvedErrorFormatter: Formatter = {
+  format(error, _) {
+    const matches = error.match(UNRESOLVED_REFERENCE_RE)
+    if (matches) {
+      const name = matches[1].trim()
+      const api = unresolvedApiMap[name]
+      if (api) {
+        return `${error}。[详情](${api.url})`
+      }
+    }
+    return error
+  },
+}
+
+const compileFormatters: Formatter[] = [
+  typeMismatchErrorFormatter,
+  unresolvedErrorFormatter,
+]
 
 const runtimeFormatters: Formatter[] = [extApiErrorFormatter]
 

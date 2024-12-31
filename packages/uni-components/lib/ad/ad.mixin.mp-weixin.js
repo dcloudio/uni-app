@@ -52,12 +52,18 @@ export default {
   data () {
     return {
       loading: false,
+      userwx: false,
+      userUnitId: "",
+      customFullscreen: '',
       wxchannel: false,
       errorMessage: null
     }
   },
   created () {
     this._ad = null
+    this._loading = false
+    this._wxRewardedAd = null
+    this._wxInterstitialAd = null
     this._providerType = ProviderType.ShanHu
     if (this.preload && this._canCreateAd()) {
       this.load()
@@ -153,26 +159,31 @@ export default {
 
     _onnextchannel (e) {
       this.wxchannel = true
-      const adData = e[1];
+      const adData = e.detail[0];
       this.$nextTick(() => {
         if (adData.provider == 10017) {
           this._providerType = ProviderType.UserWeChat
-          switch(e._nt_) {
+          switch(adData._nt_) {
             case 4:
-            case 21:
-            case 22:
-            case 23:
+              this.wxAdType = AdType.Banner
+              this.userwx = true
+              this.userUnitId = adData.posid
+              if (adData.tmpl_type === 24) {
+                this.customFullscreen = 'uni-ad-custom-fullscreen'
+              }
               break;
             case 9:
+              this.wxAdType = AdType.RewardedVideo
               this._createRewardedAd(adData.posid)
               break;
             case 15:
+              this.wxAdType = AdType.Interstitial
               this._createInterstitialAd(adData.posid)
               break;
           }
         } else if (adData.provider == 10018) {
           this._providerType = ProviderType.WeChat
-          this.selectComponent('.uniad-plugin-wx').setConfig(e)
+          this.selectComponent('.uniad-plugin-wx').setConfig(adData)
         }
       })
     },
@@ -223,19 +234,16 @@ export default {
     },
 
     _loadWxAd () {
-      this._userInvokeLoadFlag = true
       switch (this.wxAdType) {
         case AdType.RewardedVideo:
-          if (!this.rewardedAd) {
-            return;
+          if (this._wxRewardedAd) {
+            this._wxRewardedAd.load();
           }
-          this.rewardedAd.load();
           break;
         case AdType.Interstitial:
-          if (!this.interstitialAd) {
-            return;
+          if (this._wxInterstitialAd) {
+            this._wxInterstitialAd.load();
           }
-          this.interstitialAd.load();
           break;
       }
     },
@@ -243,30 +251,32 @@ export default {
     // 加载/显示广告
     _showWxAd (options) {
       this._urlCallback = options || this.urlCallback;
+      if (this.loading == true) {
+        this._userInvokeShowFlag = true
+        return
+      }
       switch (this.wxAdType) {
         case AdType.RewardedVideo:
-          if (!this.rewardedAd) {
-            this._userInvokeShowFlag = true
+          if (!this._wxRewardedAd) {
             return;
           }
-          this.rewardedAd.show().catch((err) => {
-            this.rewardedAd.load().then(() => {
-              this.rewardedAd.show();
+          this._wxRewardedAd.show().catch((err) => {
+            this._wxRewardedAd.load().then(() => {
+              this._wxRewardedAd.show();
             }).catch((err) => {
-              this.triggerEvent(EventType.Error, err);
+              this._dispatchEvent(EventType.Error, err);
             });
           });
           break;
         case AdType.Interstitial:
-          if (!this.interstitialAd) {
-            this._userInvokeShowFlag = true
+          if (!this._wxInterstitialAd) {
             return;
           }
-          this.interstitialAd.show().catch((err) => {
-            this.interstitialAd.load().then(() => {
-              this.interstitialAd.show();
+          this._wxInterstitialAd.show().catch((err) => {
+            this._wxInterstitialAd.load().then(() => {
+              this._wxInterstitialAd.show();
             }).catch((err) => {
-              this.triggerEvent(EventType.Error, err);
+              this._dispatchEvent(EventType.Error, err);
             });
           });
           break;
@@ -275,60 +285,64 @@ export default {
 
     // 微信激励视频
     _createRewardedAd(adUnitId) {
-      if (this.rewardedAd) {
+      if (this._wxRewardedAd) {
         return;
       }
 
-      this.rewardedAd = wx.createRewardedVideoAd({ adUnitId: adUnitId, multiton: true });
+      this._wxRewardedAd = wx.createRewardedVideoAd({ adUnitId: adUnitId, multiton: true });
 
-      this.rewardedAd.onLoad(() => {
-        this.triggerEvent(EventType.Load, {})
+      this._wxRewardedAd.onLoad(() => {
+        this.loading = false
+        this._dispatchEvent(EventType.Load, {})
         if (this._userInvokeShowFlag) {
           this._userInvokeShowFlag = false;
-          this.rewardedAd.show();
+          this._wxRewardedAd.show();
         }
       });
 
-      this.rewardedAd.onError(err => {
-        this.triggerEvent(EventType.Error, err);
+      this._wxRewardedAd.onError(err => {
+        this.loading = false
+        this._dispatchEvent(EventType.Error, err);
       });
 
-      this.rewardedAd.onClose(res => {
+      this._wxRewardedAd.onClose(res => {
         if (res.isEnded) {
           this._callServer()
         } else {
-          this.triggerEvent(EventType.Close, res);
+          this._dispatchEvent(EventType.Close, res);
         }
       });
 
-      this.rewardedAd.load().catch((err) => {});
+      this.loading = true
     },
 
     // 微信插屏
     _createInterstitialAd(adUnitId) {
-      if (this.interstitialAd) {
+      if (this._wxInterstitialAd) {
         return;
       }
 
-      this.interstitialAd = wx.createInterstitialAd({ adUnitId: adUnitId });
+      this._wxInterstitialAd = wx.createInterstitialAd({ adUnitId: adUnitId });
 
-      this.interstitialAd.onLoad(() => {
-        this.triggerEvent(EventType.Load, {})
+      this._wxInterstitialAd.onLoad(() => {
+        this.loading = false
+        this._dispatchEvent(EventType.Load, {})
         if (this._userInvokeShowFlag) {
           this._userInvokeShowFlag = false;
-          this.interstitialAd.show();
+          this._wxInterstitialAd.show();
         }
       });
 
-      this.interstitialAd.onError(err => {
-        this.triggerEvent(EventType.Error, err);
+      this._wxInterstitialAd.onError(err => {
+        this.loading = false
+        this._dispatchEvent(EventType.Error, err);
       });
 
-      this.interstitialAd.onClose(res => {
-        this.triggerEvent(EventType.Close, res);
+      this._wxInterstitialAd.onClose(res => {
+        this._dispatchEvent(EventType.Close, res);
       });
 
-      this.interstitialAd.load().catch((err) => {});
+      this.loading = true
     },
 
     _callServer() {
@@ -341,15 +355,15 @@ export default {
             data: callbackData,
             secretType: 'both',
             success: (res) => {
-              this.triggerEvent(EventType.Close, res);
+              this._dispatchEvent(EventType.Close, res);
             },
             fail: (err) => {
-              this.triggerEvent(EventType.Error, err);
+              this._dispatchEvent(EventType.Error, err);
             }
           })
         },
         fail: (err) => {
-          this.triggerEvent(EventType.Error, err);
+          this._dispatchEvent(EventType.Error, err);
         }
       })
     }

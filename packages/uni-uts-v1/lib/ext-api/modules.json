@@ -1,17 +1,4 @@
 {
-  "uni-actionSheet": {
-    "uni": {
-      "showActionSheet2": {
-        "name": "showActionSheet2",
-        "app": {
-          "js": false,
-          "kotlin": true,
-          "swift": false,
-          "arkts": false
-        }
-      }
-    }
-  },
   "uni-ad": {
     "uni": {
       "createRewardedVideoAd": {
@@ -54,7 +41,7 @@
       "chooseLocation": {
         "name": "chooseLocation",
         "app": {
-          "js": true,
+          "js": false,
           "kotlin": true,
           "swift": true,
           "arkts": false
@@ -113,7 +100,7 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": false,
+          "swift": true,
           "arkts": true
         }
       }
@@ -237,7 +224,8 @@
         "app": {
           "js": true,
           "kotlin": true,
-          "swift": false
+          "swift": false,
+          "arkts": true
         }
       }
     }
@@ -275,6 +263,19 @@
           "js": false,
           "kotlin": true,
           "swift": true
+        }
+      }
+    }
+  },
+  "uni-getBackgroundAudioManager": {
+    "uni": {
+      "getBackgroundAudioManager": {
+        "name": "getBackgroundAudioManager",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true,
+          "arkts": true
         }
       }
     }
@@ -964,6 +965,50 @@
           "js": false,
           "kotlin": true,
           "swift": true
+        }
+      },
+      "onThemeChange": {
+        "name": "offAppThemeChange",
+        "app": {
+          "js": true,
+          "x-js": true,
+          "kotlin": false,
+          "swift": false,
+          "arkts": false,
+          "mp-weixin": true
+        }
+      },
+      "offThemeChange": {
+        "name": "offAppThemeChange",
+        "app": {
+          "js": true,
+          "x-js": true,
+          "kotlin": false,
+          "swift": false,
+          "arkts": false,
+          "mp-weixin": true
+        }
+      },
+      "onHostThemeChange": {
+        "name": "offAppThemeChange",
+        "app": {
+          "js": false,
+          "x-js": true,
+          "kotlin": false,
+          "swift": false,
+          "arkts": false,
+          "mp-weixin": true
+        }
+      },
+      "offHostThemeChange": {
+        "name": "offAppThemeChange",
+        "app": {
+          "js": false,
+          "x-js": true,
+          "kotlin": false,
+          "swift": false,
+          "arkts": false,
+          "mp-weixin": true
         }
       }
     }

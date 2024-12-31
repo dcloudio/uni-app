@@ -133,8 +133,8 @@ const UVUE_BUILT_IN_TAGS = [
     'button',
     'nested-scroll-header',
     'nested-scroll-body',
-    'grid-view',
-    'grid-item',
+    'waterflow',
+    'flow-item',
 ];
 const UVUE_WEB_BUILT_IN_TAGS = [
     'list-view',
@@ -367,6 +367,11 @@ const ON_APP_ENTER_FOREGROUND = 'onAppEnterForeground';
 const ON_APP_ENTER_BACKGROUND = 'onAppEnterBackground';
 const ON_WEB_INVOKE_APP_SERVICE = 'onWebInvokeAppService';
 const ON_WXS_INVOKE_CALL_METHOD = 'onWxsInvokeCallMethod';
+// mergeVirtualHostAttributes
+const VIRTUAL_HOST_STYLE = 'virtualHostStyle';
+const VIRTUAL_HOST_CLASS = 'virtualHostClass';
+const VIRTUAL_HOST_HIDDEN = 'virtualHostHidden';
+const VIRTUAL_HOST_ID = 'virtualHostId';
 
 function cache(fn) {
     const cache = Object.create(null);
@@ -652,11 +657,13 @@ function formatKey(key) {
     return shared.camelize(key.substring(5));
 }
 // question/139181，增加副作用，避免 initCustomDataset 在 build 下被 tree-shaking
-const initCustomDatasetOnce = /*#__PURE__*/ once(() => {
+const initCustomDatasetOnce = /*#__PURE__*/ once((isBuiltInElement) => {
+    isBuiltInElement =
+        isBuiltInElement || ((el) => el.tagName.startsWith('UNI-'));
     const prototype = HTMLElement.prototype;
     const setAttribute = prototype.setAttribute;
     prototype.setAttribute = function (key, value) {
-        if (key.startsWith('data-') && this.tagName.startsWith('UNI-')) {
+        if (key.startsWith('data-') && isBuiltInElement(this)) {
             const dataset = this.__uniDataset ||
                 (this.__uniDataset = {});
             dataset[formatKey(key)] = value;
@@ -667,7 +674,7 @@ const initCustomDatasetOnce = /*#__PURE__*/ once(() => {
     prototype.removeAttribute = function (key) {
         if (this.__uniDataset &&
             key.startsWith('data-') &&
-            this.tagName.startsWith('UNI-')) {
+            isBuiltInElement(this)) {
             delete this.__uniDataset[formatKey(key)];
         }
         removeAttribute.call(this, key);
@@ -1570,9 +1577,8 @@ function invokeCreateVueAppHook(app) {
     createVueAppHooks.forEach((hook) => hook(app));
 }
 const invokeCreateErrorHandler = once((app, createErrorHandler) => {
-    if (shared.isFunction(app._component.onError)) {
-        return createErrorHandler(app);
-    }
+    // 不再判断开发者是否监听了onError，直接返回 createErrorHandler，内部 errorHandler 会调用开发者自定义的 errorHandler，以及判断开发者是否监听了onError
+    return createErrorHandler(app);
 });
 
 const E = function () {
@@ -1691,15 +1697,6 @@ function getEnvLocale() {
     return (lang && lang.replace(/[.:].*/, '')) || 'en';
 }
 
-const SYSTEM_DIALOG_PAGE_PATH_STARTER = 'uni:';
-const SYSTEM_DIALOG_ACTION_SHEET_PAGE_PATH = 'uni:actionSheet';
-function isSystemDialogPage(page) {
-    return page.route.startsWith(SYSTEM_DIALOG_PAGE_PATH_STARTER);
-}
-function isSystemActionSheetDialogPage(page) {
-    return page.route.startsWith(SYSTEM_DIALOG_ACTION_SHEET_PAGE_PATH);
-}
-
 exports.ACTION_TYPE_ADD_EVENT = ACTION_TYPE_ADD_EVENT;
 exports.ACTION_TYPE_ADD_WXS_EVENT = ACTION_TYPE_ADD_WXS_EVENT;
 exports.ACTION_TYPE_CREATE = ACTION_TYPE_CREATE;
@@ -1787,8 +1784,6 @@ exports.RESPONSIVE_MIN_WIDTH = RESPONSIVE_MIN_WIDTH;
 exports.SCHEME_RE = SCHEME_RE;
 exports.SELECTED_COLOR = SELECTED_COLOR;
 exports.SLOT_DEFAULT_NAME = SLOT_DEFAULT_NAME;
-exports.SYSTEM_DIALOG_ACTION_SHEET_PAGE_PATH = SYSTEM_DIALOG_ACTION_SHEET_PAGE_PATH;
-exports.SYSTEM_DIALOG_PAGE_PATH_STARTER = SYSTEM_DIALOG_PAGE_PATH_STARTER;
 exports.TABBAR_HEIGHT = TABBAR_HEIGHT;
 exports.TAGS = TAGS;
 exports.UNI_SSR = UNI_SSR;
@@ -1810,6 +1805,10 @@ exports.UniLifecycleHooks = UniLifecycleHooks;
 exports.UniNode = UniNode;
 exports.UniTextAreaElement = UniTextAreaElement;
 exports.UniTextNode = UniTextNode;
+exports.VIRTUAL_HOST_CLASS = VIRTUAL_HOST_CLASS;
+exports.VIRTUAL_HOST_HIDDEN = VIRTUAL_HOST_HIDDEN;
+exports.VIRTUAL_HOST_ID = VIRTUAL_HOST_ID;
+exports.VIRTUAL_HOST_STYLE = VIRTUAL_HOST_STYLE;
 exports.WEB_INVOKE_APPSERVICE = WEB_INVOKE_APPSERVICE;
 exports.WXS_MODULES = WXS_MODULES;
 exports.WXS_PROTOCOL = WXS_PROTOCOL;
@@ -1856,8 +1855,6 @@ exports.isMiniProgramNativeTag = isMiniProgramNativeTag;
 exports.isMiniProgramUVueNativeTag = isMiniProgramUVueNativeTag;
 exports.isRootHook = isRootHook;
 exports.isRootImmediateHook = isRootImmediateHook;
-exports.isSystemActionSheetDialogPage = isSystemActionSheetDialogPage;
-exports.isSystemDialogPage = isSystemDialogPage;
 exports.isUniLifecycleHook = isUniLifecycleHook;
 exports.isUniXElement = isUniXElement;
 exports.normalizeClass = normalizeClass;

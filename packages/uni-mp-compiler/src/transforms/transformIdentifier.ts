@@ -26,6 +26,18 @@ import {
   isStyleBinding,
   rewriteStyle,
 } from './transformStyle'
+import {
+  createVirtualHostHidden,
+  findStaticHiddenIndex,
+  isHiddenBinding,
+  rewriteHidden,
+} from './transformHidden'
+import {
+  createVirtualHostId,
+  findStaticIdIndex,
+  isIdBinding,
+  rewriteId,
+} from './transformId'
 import { TO_DISPLAY_STRING } from '../runtimeHelpers'
 import { rewriteSlot } from './transformSlot'
 import { rewriteVSlot } from './vSlot'
@@ -40,7 +52,7 @@ import {
   isUserComponent,
 } from '@dcloudio/uni-cli-shared'
 import { isString, isSymbol } from '@vue/shared'
-import { rewriteId } from './transformUniElement'
+import { rewriteId as rewriteIdX } from './transformUniElement'
 
 export const transformIdentifier: NodeTransform = (node, context) => {
   return function transformIdentifier() {
@@ -70,22 +82,43 @@ export const transformIdentifier: NodeTransform = (node, context) => {
     } else if (node.type === NodeTypes.ELEMENT) {
       let hasClassBinding = false
       let hasStyleBinding = false
-
-      rewriteRef(node, context)
-
-      if (context.isX) {
-        rewriteId(node, context)
-      }
-
-      if (isUserComponent(node, context)) {
-        rewriteBinding(node, context)
-      }
+      let hasHiddenBinding = false
+      let hasIdBinding = false
 
       const { props } = node
       const virtualHost = !!(
         context.miniProgram.component?.mergeVirtualHostAttributes &&
         context.rootNode === node
       )
+
+      rewriteRef(node, context)
+
+      if (context.isX) {
+        if (virtualHost) {
+          for (let i = 0; i < props.length; i++) {
+            const dir = props[i]
+            if (dir.type === NodeTypes.DIRECTIVE) {
+              if (isIdBinding(dir)) {
+                hasIdBinding = true
+                rewriteId(i, dir, props, virtualHost, context, true)
+              }
+            }
+          }
+          if (!hasIdBinding) {
+            hasIdBinding = true
+            props.push(createVirtualHostId(props, context, true))
+          }
+          const staticIdIndex = findStaticIdIndex(props)
+          if (staticIdIndex > -1) {
+            props.splice(staticIdIndex, 1)
+          }
+        }
+        rewriteIdX(node, context)
+      }
+
+      if (isUserComponent(node, context)) {
+        rewriteBinding(node, context)
+      }
 
       let elementId: string = ''
       let skipIndex: number[] = []
@@ -139,6 +172,12 @@ export const transformIdentifier: NodeTransform = (node, context) => {
             } else if (isStyleBinding(dir)) {
               hasStyleBinding = true
               rewriteStyle(i, dir, props, virtualHost, context, elementId)
+            } else if (isHiddenBinding(dir)) {
+              hasHiddenBinding = true
+              rewriteHidden(i, dir, props, virtualHost, context)
+            } else if (isIdBinding(dir)) {
+              hasIdBinding = true
+              rewriteId(i, dir, props, virtualHost, context)
             } else if (isPropsBinding(dir)) {
               rewritePropsBinding(dir, node, context)
             } else {
@@ -166,6 +205,14 @@ export const transformIdentifier: NodeTransform = (node, context) => {
           hasStyleBinding = true
           props.push(createVirtualHostStyle(props, context))
         }
+        if (!hasHiddenBinding) {
+          hasHiddenBinding = true
+          props.push(createVirtualHostHidden(props, context))
+        }
+        if (!hasIdBinding) {
+          hasIdBinding = true
+          props.push(createVirtualHostId(props, context))
+        }
       }
       if (hasClassBinding) {
         const staticClassIndex = findStaticClassIndex(props)
@@ -177,6 +224,18 @@ export const transformIdentifier: NodeTransform = (node, context) => {
         const staticStyleIndex = findStaticStyleIndex(props)
         if (staticStyleIndex > -1) {
           props.splice(staticStyleIndex, 1)
+        }
+      }
+      if (hasHiddenBinding) {
+        const staticHiddenIndex = findStaticHiddenIndex(props)
+        if (staticHiddenIndex > -1) {
+          props.splice(staticHiddenIndex, 1)
+        }
+      }
+      if (hasIdBinding) {
+        const staticIdIndex = findStaticIdIndex(props)
+        if (staticIdIndex > -1) {
+          props.splice(staticIdIndex, 1)
         }
       }
     }

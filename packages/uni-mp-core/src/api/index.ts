@@ -5,6 +5,7 @@ import { getElementById } from './x/getElementId'
 import { createCanvasContextAsync } from './x/createCanvasContextAsync'
 //#endif
 import { upx2px } from '@dcloudio/uni-api/src/service/base/upx2px'
+import { __f__ } from '@dcloudio/uni-api/src/service/base/__f__'
 import {
   addInterceptor,
   interceptors,
@@ -36,6 +37,7 @@ const baseApis = {
   $once,
   $emit,
   upx2px,
+  rpx2px: upx2px,
   interceptors,
   addInterceptor,
   removeInterceptor,
@@ -48,6 +50,7 @@ const baseApis = {
   onPushMessage,
   offPushMessage,
   invokePushCallback,
+  __f__,
   //#if _X_
   getElementById,
   createCanvasContextAsync,

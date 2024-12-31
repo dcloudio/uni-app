@@ -16,7 +16,13 @@ let baseWidth = 375
 let includeWidth = 750
 
 function checkDeviceWidth() {
-  const { platform, pixelRatio, windowWidth } = getBaseSystemInfo()
+  const { windowWidth, pixelRatio, platform } =
+    __PLATFORM__ === 'mp-weixin'
+      ? Object.assign({}, wx.getWindowInfo(), {
+          platform: wx.getDeviceInfo().platform,
+        })
+      : getBaseSystemInfo()
+
   deviceWidth = windowWidth as number
   deviceDPR = pixelRatio as number
   isIOS = (platform as string) === 'ios'

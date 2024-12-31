@@ -7,8 +7,26 @@ import type {
   CreateCanvasContextAsyncOptions,
   RequestAnimationFrameCallback,
 } from '@dcloudio/uni-app-x/types/uni'
+import { getRealPath } from '@dcloudio/uni-platform'
 import { getCurrentBasePages } from '../../../framework/setup/page'
 import { type ComponentPublicInstance, nextTick } from 'vue'
+
+// 不支持使用Proxy拦截
+class CanvasImage extends Image {
+  _src = ''
+
+  constructor() {
+    super()
+  }
+
+  get src() {
+    return this._src
+  }
+  set src(value) {
+    this._src = value
+    super.src = getRealPath(value)
+  }
+}
 
 class CanvasContextImpl implements CanvasContext {
   _element: UniCanvasElement
@@ -42,7 +60,7 @@ class CanvasContextImpl implements CanvasContext {
 
   // @ts-expect-error TODO 类型不匹配?
   createImage(): Image {
-    return new Image()
+    return new CanvasImage()
   }
 
   createPath2D(): Path2D {

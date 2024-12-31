@@ -99,6 +99,9 @@ export function initChildVues(
       const { mpInstance: childMPInstance, createComponent } = relationOptions
       childMPInstance.$vm = createComponent(relationOptions.parent!)
 
+      if (__X__) {
+        childMPInstance.vm = childMPInstance.$vm
+      }
       initSpecialMethods(childMPInstance)
 
       if (relationOptions.parent) {

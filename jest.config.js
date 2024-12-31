@@ -1,9 +1,13 @@
+// jest @jest/types
+// @types/jest
+// ts-jest
+
 module.exports = {
   preset: 'ts-jest',
   setupFilesAfterEnv: ['./scripts/setupJestEnv.ts'],
   globals: {
     __X__: false,
-    __DEV__: true,
+    __DEV__: false,
     __TEST__: true,
     __NODE_JS__: true,
     __VERSION__: require('./package.json').version,
@@ -25,7 +29,8 @@ module.exports = {
     '@dcloudio/uts-win32-ia32-msvc': '<rootDir>/packages/uts-win32-ia32-msvc',
     '@dcloudio/uts-win32-x64-msvc': '<rootDir>/packages/uts-win32-x64-msvc',
     '@dcloudio/uts-linux-x64-gnu': '<rootDir>/packages/uts-linux-x64-gnu',
-    '@dcloudio/uni-platform': "<rootDir>/packages/uni-app-plus/src/platform/index.ts",
+    '@dcloudio/uni-platform':
+      '<rootDir>/packages/uni-app-plus/src/platform/index.ts',
     '^@dcloudio/(.*?)$': '<rootDir>/packages/$1/src',
   },
   rootDir: __dirname,
@@ -35,8 +40,12 @@ module.exports = {
   ],
   testPathIgnorePatterns: ['/node_modules/'],
   transform: {
-    '^.+\\.[jt]sx?$': ['ts-jest', {
-      tsconfig: 'tsconfig.test.json'
-    }]
+    '^.+\\.[jt]sx?$': [
+      'ts-jest',
+      {
+        tsconfig: 'tsconfig.test.json',
+        sourceMap: true,
+      },
+    ],
   },
 }

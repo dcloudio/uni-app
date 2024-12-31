@@ -31,7 +31,13 @@ export function parse(pageOptions: MPComponentOptions) {
       ;(this as any)._$loaded = true
       const copyQuery = extend({}, query)
       delete copyQuery.__id__
-      ;(this as any).options = copyQuery
+
+      if (__X__) {
+        // query并非多层级结构，无需递归处理
+        ;(this as any).options = new UTSJSONObject(copyQuery || {})
+      } else {
+        ;(this as any).options = copyQuery
+      }
       ;(this as any).pageinstance.$page = (this as any).$page = {
         fullPath:
           '/' + (this as any).pageinstance.route + stringifyQuery(copyQuery),

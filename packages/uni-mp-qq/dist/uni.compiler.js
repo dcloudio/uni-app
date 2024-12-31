@@ -38,7 +38,7 @@ var packOptions = {
 	]
 };
 var setting = {
-	urlCheck: true,
+	urlCheck: false,
 	es6: true,
 	postcss: false,
 	minified: false,

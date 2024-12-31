@@ -229,6 +229,12 @@
       uni.$off(this.readyEventName, null);
       uni.$off(this.successEventName, null);
       uni.$off(this.failEventName, null);
+      // #ifdef APP-IOS
+      __uniappx__nativeEventBus.off(this.optionsEventName, null)
+      __uniappx__nativeEventBus.off(this.readyEventName, null)
+      __uniappx__nativeEventBus.off(this.successEventName, null)
+      __uniappx__nativeEventBus.off(this.failEventName, null)
+      // #endif
     },
     onResize() {
       this.getSystemInfo();
@@ -259,6 +265,9 @@
             this.searchValue = keyword;
           } else {
             this.chooseLocationOptions.keyword = "";
+          }
+          if (data['payload'] != null) {
+            this.chooseLocationOptions.payload = data['payload'] as UTSJSONObject;
           }
         });
         uni.$emit(this.readyEventName, {});
@@ -348,21 +357,28 @@
             customUI: true,
           });
           // #endif
-          uniMapCo.chooseLocation({
+          let chooseLocationData = {
             action: action,
             data: data
-          }).then((res : UTSJSONObject) => {
+          } as UTSJSONObject;
+          
+          if (this.chooseLocationOptions.payload != null) {
+            chooseLocationData['payload'] = this.chooseLocationOptions.payload;
+          }
+          uniMapCo.chooseLocation(chooseLocationData).then((res : UTSJSONObject) => {
             resolve(res);
           }).catch((err) => {
             if (err instanceof UniCloudError) {
-              const errCode = (err as UniCloudError).errCode;
-              const errMsg = (err as UniCloudError).errMsg;
+              const cloudError = err as UniCloudError;
+              const errCode = cloudError.errCode;
+              const errMsg = cloudError.errMsg;
+              const errSubject = cloudError.errSubject;
               if (errMsg.indexOf("在云端不存在") > -1 || errMsg.indexOf("未匹配") > -1) {
                 this.errMsg = "uni.chooseLocation 依赖 uniCloud 的 uni-map-common 插件，请安装 uni-map-common 插件，插件地址：https://ext.dcloud.net.cn/plugin?id=13872";
                 console.error(this.errMsg);
               } else {
                 this.errMsg = errMsg;
-                console.error("获取POI信息失败，" + JSON.stringify({ errCode, errMsg }));
+                console.error("获取POI信息失败，" + JSON.stringify({ errCode, errMsg, errSubject }));
               }
             }
             reject(err);
@@ -370,8 +386,8 @@
         });
         promise.then((res) => {
           this.callUniMapCoErr = false;
-        });
-        promise.catch((err) => {
+        })
+        .catch((err) => {
           this.callUniMapCoErr = true;
         });
         return promise as Promise<UTSJSONObject>;
@@ -1037,7 +1053,7 @@
   }
 
   .uni-choose-location-dark .uni-choose-location-poi-search-box {
-    background-color: #181818;
+    background-color: #111111;
   }
 
   .uni-choose-location-dark .uni-choose-location-search-icon {
@@ -1076,6 +1092,10 @@
   .uni-choose-location-dark .uni-choose-location-map-reset-icon {
     color: #d1d1d1;
   }
+  
+  .uni-choose-location-dark .uni-choose-location-poi-search-error-text {
+    color: #d1d1d1;
+  }
 
   /* 暗黑模式样式结束 */
 	
@@ -1085,6 +1105,5 @@
     height: 100%;
     background-repeat: no-repeat;
   }
-
   /* #endif */
 </style>

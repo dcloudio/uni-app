@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "@dcloudio/uni-core",
-  "version": "3.0.0-4030620241128001",
+  "version": "3.0.0-alpha-4040320241223001",
   "description": "@dcloudio/uni-core",
   "sideEffects": false,
   "repository": {
@@ -14,9 +14,9 @@
     "url": "https://github.com/dcloudio/uni-app/issues"
   },
   "devDependencies": {
-    "@dcloudio/uni-mp-vue": "3.0.0-4030620241128001",
-    "@dcloudio/uni-i18n": "3.0.0-4030620241128001",
-    "@dcloudio/uni-shared": "3.0.0-4030620241128001",
+    "@dcloudio/uni-mp-vue": "workspace:*",
+    "@dcloudio/uni-i18n": "workspace:*",
+    "@dcloudio/uni-shared": "workspace:*",
     "safe-area-insets": "^1.4.1"
   }
 }

@@ -1,5 +1,11 @@
 import type { ComponentPropsOptions, ComponentPublicInstance } from 'vue'
 import { extend, hasOwn, isArray, isFunction, isPlainObject } from '@vue/shared'
+import {
+  VIRTUAL_HOST_CLASS,
+  VIRTUAL_HOST_HIDDEN,
+  VIRTUAL_HOST_ID,
+  VIRTUAL_HOST_STYLE,
+} from '@dcloudio/uni-shared'
 import type { MPComponentInstance, MPComponentOptions } from './component'
 // @ts-expect-error
 import { findComponentPropsData } from 'vue'
@@ -92,11 +98,19 @@ function initVirtualHostProps(options?: Component.ComponentOptions) {
       if (__PLATFORM__ === 'mp-toutiao') {
         ;(options as any).applyFragment = true
       }
-      properties.virtualHostStyle = {
+      properties[VIRTUAL_HOST_STYLE] = {
         type: null,
         value: '',
       }
-      properties.virtualHostClass = {
+      properties[VIRTUAL_HOST_CLASS] = {
+        type: null,
+        value: '',
+      }
+      properties[VIRTUAL_HOST_HIDDEN] = {
+        type: null,
+        value: '',
+      }
+      properties[VIRTUAL_HOST_ID] = {
         type: null,
         value: '',
       }

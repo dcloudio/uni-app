@@ -1,5 +1,4 @@
 import type { App } from 'vue'
-import { isFunction } from '@vue/shared'
 import { once } from './utils'
 type CreateVueAppHook = (app: App) => void
 
@@ -26,8 +25,7 @@ export const invokeCreateErrorHandler = once(
     app: App,
     createErrorHandler: (app: App) => App['config']['errorHandler']
   ) => {
-    if (isFunction((app._component as any).onError)) {
-      return createErrorHandler(app)
-    }
+    // 不再判断开发者是否监听了onError，直接返回 createErrorHandler，内部 errorHandler 会调用开发者自定义的 errorHandler，以及判断开发者是否监听了onError
+    return createErrorHandler(app)
   }
 )

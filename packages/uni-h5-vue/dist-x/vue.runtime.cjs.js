@@ -11218,6 +11218,7 @@ exports.isRef = isRef;
 exports.isRuntimeOnly = isRuntimeOnly;
 exports.isShallow = isShallow;
 exports.isVNode = isVNode;
+exports.logError = logError;
 exports.markRaw = markRaw;
 exports.mergeDefaults = mergeDefaults;
 exports.mergeModels = mergeModels;

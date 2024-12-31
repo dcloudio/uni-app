@@ -109,6 +109,9 @@ function isImplementationOf(leftType, rightType, visited = []) {
   });
 }
 function isInstanceOf(value, type) {
+  if (type === UTSValueIterable) {
+    return value && value[Symbol.iterator];
+  }
   const isNativeInstanceofType = value instanceof type;
   if (isNativeInstanceofType || typeof value !== "object") {
     return isNativeInstanceofType;
@@ -588,6 +591,8 @@ let UTSJSONObject$1 = class UTSJSONObject2 {
     }
   }
 };
+let UTSValueIterable$1 = class UTSValueIterable2 {
+};
 function getGlobal() {
   if (typeof globalThis !== "undefined") {
     return globalThis;
@@ -615,6 +620,7 @@ const realGlobal = getGlobal();
 realGlobal.UTSJSONObject = UTSJSONObject$1;
 realGlobal.UniError = UniError$1;
 realGlobal.UTS = UTS$1;
+realGlobal.UTSValueIterable = UTSValueIterable$1;
 const isEnableLocale = /* @__PURE__ */ uniShared.once(
   () => typeof __uniConfig !== "undefined" && __uniConfig.locales && !!Object.keys(__uniConfig.locales).length
 );
@@ -2777,12 +2783,56 @@ class UniPageImpl {
     this.$vm = vm;
   }
   getPageStyle() {
-    return new UTSJSONObject({});
+    var _a;
+    const pageMeta = (_a = this.vm) == null ? void 0 : _a.$basePage.meta;
+    return pageMeta ? new UTSJSONObject({
+      navigationBarBackgroundColor: pageMeta.navigationBar.backgroundColor,
+      navigationBarTextStyle: pageMeta.navigationBar.titleColor,
+      navigationBarTitleText: pageMeta.navigationBar.titleText,
+      titleImage: pageMeta.navigationBar.titleImage || "",
+      navigationStyle: pageMeta.navigationBar.style || "default",
+      disableScroll: pageMeta.disableScroll || false,
+      enablePullDownRefresh: pageMeta.enablePullDownRefresh || false,
+      onReachBottomDistance: pageMeta.onReachBottomDistance || uniShared.ON_REACH_BOTTOM_DISTANCE,
+      backgroundColorContent: pageMeta.backgroundColorContent
+    }) : new UTSJSONObject({});
   }
   $getPageStyle() {
     return this.getPageStyle();
   }
   setPageStyle(style) {
+    var _a;
+    const pageMeta = (_a = this.vm) == null ? void 0 : _a.$basePage.meta;
+    if (!pageMeta)
+      return;
+    for (const key in style) {
+      switch (key) {
+        case "navigationBarBackgroundColor":
+          pageMeta.navigationBar.backgroundColor = style[key];
+          break;
+        case "navigationBarTextStyle":
+          const textStyle = style[key];
+          if (textStyle == null) {
+            continue;
+          }
+          pageMeta.navigationBar.titleColor = ["black", "white"].includes(
+            textStyle
+          ) ? uniShared.normalizeTitleColor(textStyle || "") : textStyle;
+          break;
+        case "navigationBarTitleText":
+          pageMeta.navigationBar.titleText = style[key];
+          break;
+        case "titleImage":
+          pageMeta.navigationBar.titleImage = style[key];
+          break;
+        case "navigationStyle":
+          pageMeta.navigationBar.style = style[key];
+          break;
+        default:
+          pageMeta[key] = style[key];
+          break;
+      }
+    }
   }
   $setPageStyle(style) {
     this.setPageStyle(style);
@@ -2796,6 +2846,9 @@ class UniPageImpl {
     return uniPageBody ? uniPageBody.querySelector(`#${id2}`) : null;
   }
   getAndroidView() {
+    return null;
+  }
+  getIOSView() {
     return null;
   }
   getHTMLElement() {
@@ -2844,48 +2897,6 @@ function initXPage(vm, route, page) {
       vm
     });
     vm.$page = uniPage;
-    const pageMeta = page.meta;
-    uniPage.setPageStyle = (style) => {
-      for (const key in style) {
-        switch (key) {
-          case "navigationBarBackgroundColor":
-            pageMeta.navigationBar.backgroundColor = style[key];
-            break;
-          case "navigationBarTextStyle":
-            const textStyle = style[key];
-            if (textStyle == null) {
-              continue;
-            }
-            pageMeta.navigationBar.titleColor = ["black", "white"].includes(
-              textStyle
-            ) ? uniShared.normalizeTitleColor(textStyle || "") : textStyle;
-            break;
-          case "navigationBarTitleText":
-            pageMeta.navigationBar.titleText = style[key];
-            break;
-          case "titleImage":
-            pageMeta.navigationBar.titleImage = style[key];
-            break;
-          case "navigationStyle":
-            pageMeta.navigationBar.style = style[key];
-            break;
-          default:
-            pageMeta[key] = style[key];
-            break;
-        }
-      }
-    };
-    uniPage.getPageStyle = () => new UTSJSONObject({
-      navigationBarBackgroundColor: pageMeta.navigationBar.backgroundColor,
-      navigationBarTextStyle: pageMeta.navigationBar.titleColor,
-      navigationBarTitleText: pageMeta.navigationBar.titleText,
-      titleImage: pageMeta.navigationBar.titleImage || "",
-      navigationStyle: pageMeta.navigationBar.style || "default",
-      disableScroll: pageMeta.disableScroll || false,
-      enablePullDownRefresh: pageMeta.enablePullDownRefresh || false,
-      onReachBottomDistance: pageMeta.onReachBottomDistance || uniShared.ON_REACH_BOTTOM_DISTANCE,
-      backgroundColorContent: pageMeta.backgroundColorContent
-    });
     vm.$dialogPage = (_a = vm.$pageLayoutInstance) == null ? void 0 : _a.$dialogPage;
     currentPagesMap.set(normalizeRouteKey(page.path, page.id), vm);
     if (currentPagesMap.size === 1) {
@@ -3834,9 +3845,9 @@ const PageComponent = /* @__PURE__ */ defineSystemComponent({
     {
       currentInstance.$dialogPages = vue.ref([]);
       currentInstance.$systemDialogPages = vue.ref([]);
-      useBackgroundColorContent(pageMeta);
       if (isDialogPageInstance(ctx)) {
         navigationBar.style = "custom";
+        pageMeta.backgroundColorContent = "transparent";
         pageMeta.route = ctx.attrs.route;
         const parentInstance = vue.inject(
           "parentInstance"
@@ -3857,6 +3868,7 @@ const PageComponent = /* @__PURE__ */ defineSystemComponent({
           }
         }
       } else {
+        useBackgroundColorContent(pageMeta);
         vue.provide("parentInstance", currentInstance);
       }
     }
@@ -9658,16 +9670,21 @@ function $callMethod(method, ...args) {
   return null;
 }
 function createErrorHandler(app) {
-  return function errorHandler(err, instance, _info) {
-    if (!instance) {
-      throw err;
+  const userErrorHandler = app.config.errorHandler;
+  return function errorHandler(err, instance, info) {
+    if (userErrorHandler) {
+      userErrorHandler(err, instance, info);
     }
     const appInstance = app._instance;
     if (!appInstance || !appInstance.proxy) {
       throw err;
     }
-    {
-      invokeHook(appInstance.proxy, uniShared.ON_ERROR, err);
+    if (appInstance[uniShared.ON_ERROR]) {
+      {
+        invokeHook(appInstance.proxy, uniShared.ON_ERROR, err);
+      }
+    } else {
+      vue.logError(err, info, instance ? instance.$.vnode : null, false);
     }
   };
 }
@@ -9753,7 +9770,7 @@ function uniIdMixin(globalProperties) {
   };
 }
 function initApp(app) {
-  const appConfig = app._context.config;
+  const appConfig = app.config;
   appConfig.errorHandler = uniShared.invokeCreateErrorHandler(app, createErrorHandler);
   initOptionMergeStrategies(appConfig.optionMergeStrategies);
   const globalProperties = appConfig.globalProperties;
@@ -12949,7 +12966,7 @@ function parseValue(value) {
       const keys = Object.keys(object);
       if (keys.length === 2 && "data" in object) {
         if (typeof object.data === type) {
-          if (type === "object" && !Array.isArray(object.data)) {
+          if (type === "object") {
             return UTS.JSON.parse(JSON.stringify(object.data));
           }
           return object.data;

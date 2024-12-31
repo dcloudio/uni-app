@@ -8663,7 +8663,7 @@ let maxWidth = 960;
 let baseWidth = 375;
 let includeWidth = 750;
 function checkDeviceWidth() {
-    const { platform, pixelRatio, windowWidth } = getBaseSystemInfo();
+    const { windowWidth, pixelRatio, platform } = getBaseSystemInfo();
     deviceWidth = windowWidth;
     deviceDPR = pixelRatio;
     isIOS = platform === 'ios';
@@ -12350,8 +12350,6 @@ function setupPage(component) {
         initPageVm(pageVm, __pageInstance);
         {
             addCurrentPageWithInitScope(__pageId, pageVm, __pageInstance);
-        }
-        {
             onMounted(() => {
                 nextTick(() => {
                     // onShow被延迟，故onReady也同时延迟

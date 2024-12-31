@@ -1021,6 +1021,64 @@ export function isEnableGenericsParameterDefaults() {
   return isEnableUTSFeature('enableGenericsParameterDefaults')
 }
 
-export function isEnableUTSJSONObjectPropertyAccess() {
-  return isEnableUTSFeature('enableUTSJSONObjectPropertyAccess')
+export function isEnableInlineReified() {
+  return isEnableUTSFeature('enableInlineReified')
+}
+
+export function updateManifestModules(
+  inputDir: string,
+  inject_apis: string[],
+  localExtApis: Record<string, [string, string]> = {}
+) {
+  const filename = path.resolve(inputDir, 'manifest.json')
+  if (fs.existsSync(filename)) {
+    const content = fs.readFileSync(filename, 'utf8')
+    try {
+      const json = JSON.parse(content)
+      if (!json.app) {
+        json.app = {}
+      }
+      if (!json.app.distribute) {
+        json.app.distribute = {}
+      }
+      if (!json.app.distribute.modules) {
+        json.app.distribute.modules = {}
+      }
+      const modules = json.app.distribute.modules
+      let updated = false
+      parseInjectModules(inject_apis, localExtApis, []).forEach((name) => {
+        if (!hasOwn(modules, name)) {
+          modules[name] = {}
+          updated = true
+        }
+      })
+      if (updated) {
+        fs.outputFileSync(filename, JSON.stringify(json, null, 2))
+      }
+    } catch (e) {}
+  }
+}
+
+const pluginInjectApis = new Set<string>()
+
+export function addPluginInjectApis(apis: string[]) {
+  apis.forEach((api) => {
+    pluginInjectApis.add(api)
+  })
+}
+
+export function getPluginInjectApis() {
+  return [...pluginInjectApis]
+}
+
+const pluginInjectComponents = new Set<string>()
+
+export function addPluginInjectComponents(components: string[]) {
+  components.forEach((component) => {
+    pluginInjectComponents.add(component)
+  })
+}
+
+export function getPluginInjectComponents() {
+  return [...pluginInjectComponents]
 }

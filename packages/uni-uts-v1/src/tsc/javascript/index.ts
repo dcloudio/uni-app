@@ -10,6 +10,9 @@ type uts2js = (options: UTS2JavaScriptOptions) => import('rollup').Plugin[]
 
 export const uts2js: uts2js = (options) => {
   extend(options, createBasicUtsOptions(options.inputDir))
+  extend(options.tsconfigOverride.compilerOptions, {
+    downlevelIteration: true,
+  })
   if (isFunction(globalThis.uts2js)) {
     return globalThis.uts2js(options)
   }

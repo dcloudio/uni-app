@@ -1,10 +1,10 @@
 import {
   PAGES_JSON_JS,
   defineUniMainJsPlugin,
+  enableSourceMap,
   parseProgram,
   transformDynamicImports,
   updateMiniProgramGlobalComponents,
-  withSourcemap,
 } from '@dcloudio/uni-cli-shared'
 import type { SFCScriptCompileOptions } from '@vue/compiler-sfc'
 import { dynamicImport } from './usingComponents'
@@ -41,7 +41,7 @@ export function uniMainJsPlugin(
           )
           const { code, map } = await transformDynamicImports(source, imports, {
             id,
-            sourceMap: withSourcemap(opts.resolvedConfig),
+            sourceMap: enableSourceMap(),
             dynamicImport,
           })
           return {

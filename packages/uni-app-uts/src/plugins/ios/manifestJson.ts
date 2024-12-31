@@ -76,12 +76,25 @@ export function uniAppManifestPlugin(): Plugin {
             })
           }
         })
+        const {
+          parseInjectModules,
+          getPluginInjectApis,
+          getPluginInjectComponents,
+        } = resolveUTSCompiler()
         const extApiComponents = getExtApiComponents()
-        if (uniExtApis.size || extApiComponents.size) {
-          const modules = resolveUTSCompiler().parseInjectModules(
-            [...uniExtApis],
+        // uts 插件里使用的 ext api 和组件
+        const pluginInjectApis = getPluginInjectApis()
+        const pluginInjectComponents = getPluginInjectComponents()
+        if (
+          uniExtApis.size ||
+          extApiComponents.size ||
+          pluginInjectApis.length ||
+          pluginInjectComponents.length
+        ) {
+          const modules = parseInjectModules(
+            [...uniExtApis, ...pluginInjectApis],
             {},
-            [...extApiComponents]
+            [...extApiComponents, ...pluginInjectComponents]
           )
           if (modules.length) {
             // 执行了摇树逻辑，就需要设置 modules 节点

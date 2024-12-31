@@ -15,13 +15,7 @@ export {
   defineOnApi,
   defineOffApi,
 } from '@dcloudio/uni-api'
-export {
-  Emitter,
-  resolveComponentInstance,
-  //#if _X_
-  isSystemActionSheetDialogPage,
-  //#endif
-} from '@dcloudio/uni-shared'
+export { Emitter, resolveComponentInstance } from '@dcloudio/uni-shared'
 export {
   getRealPath,
   requestComponentInfo,
@@ -29,8 +23,6 @@ export {
   removeIntersectionObserver,
   //#if _X_
   registerSystemRoute,
-  // @ts-expect-error only for uni-app-plus
-  closeNativeDialogPage,
   //#endif
 } from '@dcloudio/uni-platform'
 export {
@@ -39,5 +31,8 @@ export {
   getCurrentPageMeta,
   getCurrentPageVm,
   getPageIdByVm,
+  //#if _X_
+  isSystemActionSheetDialogPage,
+  //#endif
 } from '@dcloudio/uni-core'
 export const __uniConfig = globalThis.__uniConfig

@@ -23,7 +23,6 @@ export const customElements = [
   'follow-service',
   'payment-list',
   'web-view',
-  'playlet',
 ]
 
 export const compilerOptions: CompilerOptions = {

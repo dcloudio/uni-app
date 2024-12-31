@@ -5,3 +5,4 @@ coverage
 packages/uni-app-harmony/types
 packages/uni-uts-v1/lib
 packages/uni-uts-v1/__tests__/tsc
+packages/uni-console/__tests__/socket.spec.ts

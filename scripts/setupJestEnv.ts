@@ -1,3 +1,6 @@
+;(global as any).__UNI_SOCKET_HOSTS__ = ''
+;(global as any).__UNI_SOCKET_PORT__ = ''
+;(global as any).__UNI_SOCKET_ID__ = ''
 ;(global as any).plus = {
   navigator: {},
   os: {},

@@ -67,22 +67,84 @@ web-view {
   flex-grow: 0;
   flex-basis: auto;
   align-items: stretch;
-  align-content: flex-start;
+  align-content: stretch;
+  justify-content: flex-start;
   min-height: 0px;
   min-width: 0px;
   border-width: medium;
 }
 
-image,
-input,
-scroll-view,
+ad-draw[hidden],
+ad-fullscreen-video[hidden],
+ad-interactive[hidden],
+ad-interstitial[hidden],
+ad-rewarded-video[hidden],
+ad[hidden],
+animation-view[hidden],
+audio[hidden],
+block[hidden],
+button[hidden],
+camera[hidden],
+canvas[hidden],
+checkbox-group[hidden],
+checkbox[hidden],
+cover-image[hidden],
+cover-view[hidden],
+custom-tab-bar[hidden],
+editor[hidden],
+form[hidden],
+icon[hidden],
+image[hidden],
+input[hidden],
+label[hidden],
+list-item[hidden],
+list-view[hidden],
+live-player[hidden],
+live-pusher[hidden],
+map[hidden],
+match-media[hidden],
+movable-area[hidden],
+movable-view[hidden],
+navigation-bar[hidden],
+navigator[hidden],
+open-data[hidden],
+page-meta[hidden],
+picker-view[hidden],
+picker[hidden],
+progress[hidden],
+radio-group[hidden],
+radio[hidden],
+rich-text[hidden],
+scroll-view[hidden],
+slider[hidden],
+sticky-header[hidden],
+sticky-section[hidden],
+swiper-item[hidden],
+swiper[hidden],
+switch[hidden],
+template[hidden],
+text[hidden],
+textarea[hidden],
+unicloud-db[hidden],
+video[hidden],
+view[hidden],
+web-view[hidden] {
+  display: none!important;
+}
+
+/* 与开发者元素接触的非滚动容器 */
+view,
+label,
 swiper,
 swiper-item,
-text,
-textarea,
-video,
-view {
-  border: 0 solid #000;
+movable-area,
+movable-view,
+cover-view,
+list-item,
+navigator,
+radio-group,
+checkbox-group {
+  overflow: hidden;
 }
 
 scroll-view {
@@ -100,4 +162,49 @@ button {
 slider {
   margin: 0px;
   padding: 4px 0px;
+}
+
+text {
+  display: inline;
+}
+text[hidden] {
+  display: none!important;
+}
+
+text,
+textarea,
+label {
+  line-height: 1.2;
+  overflow: hidden;
+  flex-basis: auto;
+  letter-spacing: 0;
+}
+
+rich-text {
+  line-height: 1.5;
+}
+
+progress {
+  flex-direction: row;
+  align-items: center;
+}
+
+radio,
+checkbox {
+  flex-direction: row;
+  align-items: center;
+}
+
+/* 
+ * 目前仅适配微信小程序，其他小程序平台需要额外适配
+ */
+radio .wx-radio-wrapper,
+checkbox .wx-checkbox-wrapper {
+  display: flex;
+  flex-direction: inherit;
+  align-content: inherit;
+  justify-content: inherit;
+  align-items: inherit;
+  width: 100%;
+  height: 100%;
 }

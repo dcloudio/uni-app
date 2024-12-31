@@ -6102,7 +6102,7 @@ function createHydrationFunctions(rendererInternals) {
         break;
       default:
         if (shapeFlag & 1) {
-          if ((domType !== 1 /* ELEMENT */ || vnode.type.toLowerCase() !== node.tagName.toLowerCase()) && !isTemplateNode(node)) {
+          if ((domType !== 1 /* ELEMENT */ || vnode.type.toLowerCase() !== node.tagName.toLowerCase()) && (domType !== 1 /* ELEMENT */ || false) && !isTemplateNode(node)) {
             nextNode = onMismatch();
           } else {
             nextNode = hydrateElement(
@@ -11174,6 +11174,7 @@ exports.isRef = isRef;
 exports.isRuntimeOnly = isRuntimeOnly;
 exports.isShallow = isShallow;
 exports.isVNode = isVNode;
+exports.logError = logError;
 exports.markRaw = markRaw;
 exports.mergeDefaults = mergeDefaults;
 exports.mergeModels = mergeModels;

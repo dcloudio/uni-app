@@ -114,7 +114,7 @@ export function populateParameters(
   }
 
   // hostLanguage
-  const hostLanguage = language.replace(/_/g, '-')
+  const hostLanguage = (language || '').replace(/_/g, '-')
 
   // wx.getAccountInfoSync
 
@@ -159,9 +159,6 @@ export function populateParameters(
 
   if (__X__) {
     try {
-      parameters.uniCompileVersionCode = parseFloat(
-        process.env.UNI_COMPILER_VERSION
-      )
       parameters.uniCompilerVersionCode = parseFloat(
         process.env.UNI_COMPILER_VERSION
       )

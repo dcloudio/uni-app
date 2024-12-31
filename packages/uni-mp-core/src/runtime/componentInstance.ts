@@ -1,6 +1,7 @@
 import {
   EventChannel,
   SLOT_DEFAULT_NAME,
+  VIRTUAL_HOST_ID,
   invokeArrayFns,
 } from '@dcloudio/uni-shared'
 import { capitalize, hasOwn, isArray, isFunction } from '@vue/shared'
@@ -81,6 +82,24 @@ export function initBaseInstance(
   ctx.$mpType = options.mpType
   ctx.$mpPlatform = __PLATFORM__
   ctx.$scope = options.mpInstance
+
+  if (
+    __PLATFORM__ === 'mp-weixin' ||
+    __PLATFORM__ === 'mp-alipay' ||
+    __PLATFORM__ === 'mp-toutiao'
+  ) {
+    // mergeVirtualHostAttributes
+    Object.defineProperties(ctx, {
+      // only id
+      [VIRTUAL_HOST_ID]: {
+        get() {
+          const id = this.$scope.data[VIRTUAL_HOST_ID]
+          // props in page can be undefined
+          return id === undefined ? '' : id
+        },
+      },
+    })
+  }
 
   if (__PLATFORM__ === 'mp-harmony' || __PLATFORM__ === 'quickapp-webview') {
     ctx.$getTriggerEventDetail = getTriggerEventDetail

@@ -1,0 +1,26 @@
+[
+  {
+    "input": {
+      "src/compiler/index.ts": "lib/uni.plugin.js"
+    },
+    "output": {
+      "format": "cjs"
+    },
+    "external": ["@dcloudio/uni-cli-shared"],
+    "compilerOptions": {
+      "target": "es2018"
+    }
+  },
+  {
+    "input": {
+      "src/runtime/index.ts": "dist/index.esm.js"
+    },
+    "replacements": {
+      "__DEV__": "process.env.UNI_DEBUG"
+    },
+    "compilerOptions": {
+      "target": "esnext",
+      "declaration": false
+    }
+  }
+]

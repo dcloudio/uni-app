@@ -1,55 +1,16 @@
 {
-  "uni-tabBar": {
-    "hideTabBar": [
-      "null"
-    ],
-    "showTabBar": [
+  "uni-createWebviewContext": {
+    "createWebviewContext": [
+      null,
       "null"
     ]
   },
-  "uni-storage": {
-    "clearStorage": [
-      "null"
-    ]
-  },
-  "uni-scanCode": {
-    "scanCode": [
-      "null"
-    ]
-  },
-  "uni-route": {
-    "navigateBack": [
-      "null"
-    ]
-  },
-  "uni-pullDownRefresh": {
-    "startPullDownRefresh": [
-      "null"
-    ]
-  },
-  "uni-openDocument": {
-    "openDocument": [
-      "null"
-    ]
-  },
-  "uni-navigationBar": {
-    "showNavigationBarLoading": [
-      "null"
-    ],
-    "hideNavigationBarLoading": [
-      "null"
-    ]
-  },
-  "uni-keyboard": {
-    "hideKeyboard": [
+  "uni-dialogPage": {
+    "closeDialogPage": [
       "null"
     ]
   },
   "uni-base": {
-    "removeInterceptor": [
-      null,
-      "null"
-    ],
     "$off": [
       null,
       "null"
@@ -57,15 +18,18 @@
     "$emit": [
       null,
       "null"
-    ]
-  },
-  "uni-getDeviceInfo": {
-    "getDeviceInfo": [
+    ],
+    "removeInterceptor": [
+      null,
+      "null"
+    ],
+    "__f__": [
+      null,
       "null"
     ]
   },
-  "uni-getAppBaseInfo": {
-    "getAppBaseInfo": [
+  "uni-exit": {
+    "exit": [
       "null"
     ]
   },
@@ -86,30 +50,70 @@
       "null"
     ]
   },
-  "uni-exit": {
-    "exit": [
+  "uni-getAppBaseInfo": {
+    "getAppBaseInfo": [
       "null"
     ]
   },
-  "uni-dialogPage": {
-    "closeDialogPage": [
+  "uni-getDeviceInfo": {
+    "getDeviceInfo": [
       "null"
     ]
   },
-  "uni-createWebviewContext": {
-    "createWebviewContext": [
+  "uni-keyboard": {
+    "hideKeyboard": [
+      "null"
+    ]
+  },
+  "uni-navigationBar": {
+    "showNavigationBarLoading": [
+      "null"
+    ],
+    "hideNavigationBarLoading": [
+      "null"
+    ]
+  },
+  "uni-openDocument": {
+    "openDocument": [
+      "null"
+    ]
+  },
+  "uni-pullDownRefresh": {
+    "startPullDownRefresh": [
+      "null"
+    ]
+  },
+  "uni-route": {
+    "navigateBack": [
+      "null"
+    ]
+  },
+  "uni-scanCode": {
+    "scanCode": [
+      "null"
+    ]
+  },
+  "uni-storage": {
+    "clearStorage": [
+      "null"
+    ]
+  },
+  "uni-tabBar": {
+    "hideTabBar": [
+      "null"
+    ],
+    "showTabBar": [
+      "null"
+    ]
+  },
+  "uni-map-tencent": {
+    "createMapContext": [
       null,
       "null"
     ]
   },
   "uni-push": {
     "setAppBadgeNumber": [
-      null,
-      "null"
-    ]
-  },
-  "uni-map-tencent": {
-    "createMapContext": [
       null,
       "null"
     ]
@@ -125,6 +129,16 @@
       "null"
     ],
     "stopCompass": [
+      "null"
+    ]
+  },
+  "uni-canvas": {
+    "canvasGetImageData": [
+      null,
+      "null"
+    ],
+    "canvasPutImageData": [
+      null,
       "null"
     ]
   },

@@ -6,17 +6,27 @@ import {
 
 describe('uts-module', () => {
   test('normalize args', () => {
-    expect(normalizeArg(1, {}, false)).toBe(1)
-    expect(normalizeArg('hello', {}, false)).toBe('hello')
-    expect(normalizeArg(true, {}, false)).toBe(true)
-    expect(normalizeArg({ callback: () => {} }, {}, false)).toEqual({
+    expect(normalizeArg(1, {}, false, { depth: 0, nested: false })).toBe(1)
+    expect(normalizeArg('hello', {}, false, { depth: 0, nested: false })).toBe(
+      'hello'
+    )
+    expect(normalizeArg(true, {}, false, { depth: 0, nested: false })).toBe(
+      true
+    )
+    expect(
+      normalizeArg({ callback: () => {} }, {}, false, {
+        depth: 0,
+        nested: false,
+      })
+    ).toEqual({
       callback: 1,
     })
     expect(
       normalizeArg(
         { success: () => {}, fail: () => {}, complete: () => {} },
         {},
-        false
+        false,
+        { depth: 0, nested: false }
       )
     ).toEqual({
       success: 2,
@@ -34,7 +44,8 @@ describe('uts-module', () => {
           success() {},
         },
         {},
-        false
+        false,
+        { depth: 0, nested: false }
       )
     ).toEqual({
       user: {
@@ -44,6 +55,95 @@ describe('uts-module', () => {
       },
       success: 6,
     })
+
+    const obj = {
+      pageId: 1,
+      getNodeId() {
+        return 2
+      },
+    }
+    const context1 = { depth: 0, nested: false }
+    expect(normalizeArg(obj, {}, false, context1)).toEqual({
+      pageId: 1,
+      nodeId: 2,
+      __type__: 'UniElement',
+    })
+    expect(context1.depth).toBe(0)
+    expect(context1.nested).toBe(false)
+
+    const context2 = { depth: 0, nested: false }
+    const obj2 = {
+      element: {
+        pageId: 3,
+        getNodeId() {
+          return 4
+        },
+      },
+    }
+    expect(normalizeArg(obj2, {}, false, context2)).toEqual({
+      element: {
+        pageId: 3,
+        nodeId: 4,
+        __type__: 'UniElement',
+      },
+    })
+    expect(context2.depth).toBe(1)
+    expect(context2.nested).toBe(true)
+
+    const context3 = { depth: 0, nested: false }
+    const obj3 = [obj, obj2]
+    expect(normalizeArg(obj3, {}, false, context3)).toEqual([
+      {
+        pageId: 1,
+        nodeId: 2,
+        __type__: 'UniElement',
+      },
+      {
+        element: {
+          pageId: 3,
+          nodeId: 4,
+          __type__: 'UniElement',
+        },
+      },
+    ])
+    expect(context3.depth).toBe(2)
+    expect(context3.nested).toBe(true)
+
+    const context4 = { depth: 0, nested: false }
+    const obj4 = [
+      {},
+      {
+        element: [1, 2, 3],
+      },
+    ]
+    expect(normalizeArg(obj4, {}, false, context4)).toEqual([
+      {},
+      {
+        element: [1, 2, 3],
+      },
+    ])
+    expect(context4.depth).toBe(3)
+    expect(context4.nested).toBe(false)
+
+    const context5 = { depth: 0, nested: false }
+    const obj5 = new ArrayBuffer(0)
+    expect(normalizeArg(obj5, {}, false, context5)).toEqual({
+      __type__: 'ArrayBuffer',
+      value: obj5,
+    })
+    expect(context5.depth).toBe(0)
+    expect(context5.nested).toBe(false)
+
+    const context6 = { depth: 0, nested: false }
+    const obj6 = new ArrayBuffer(0)
+    expect(normalizeArg([obj6], {}, false, context6)).toEqual([
+      {
+        __type__: 'ArrayBuffer',
+        value: obj6,
+      },
+    ])
+    expect(context6.depth).toBe(1)
+    expect(context6.nested).toBe(true)
   })
   test(`initProxyFunction`, () => {
     const onMemory = initUTSProxyFunction(false, {

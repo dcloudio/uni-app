@@ -1,6 +1,6 @@
-import { SLOT_DEFAULT_NAME, EventChannel, invokeArrayFns, MINI_PROGRAM_PAGE_RUNTIME_HOOKS, ON_LOAD, ON_SHOW, ON_HIDE, ON_UNLOAD, ON_RESIZE, ON_TAB_ITEM_TAP, ON_REACH_BOTTOM, ON_PULL_DOWN_REFRESH, ON_ADD_TO_FAVORITES, isUniLifecycleHook, ON_READY, ON_LAUNCH, ON_ERROR, ON_THEME_CHANGE, ON_PAGE_NOT_FOUND, ON_UNHANDLE_REJECTION, customizeEvent, addLeadingSlash, stringifyQuery, ON_BACK_PRESS } from '@dcloudio/uni-shared';
+import { VIRTUAL_HOST_ID, SLOT_DEFAULT_NAME, EventChannel, invokeArrayFns, MINI_PROGRAM_PAGE_RUNTIME_HOOKS, ON_LOAD, ON_SHOW, ON_HIDE, ON_UNLOAD, ON_RESIZE, ON_TAB_ITEM_TAP, ON_REACH_BOTTOM, ON_PULL_DOWN_REFRESH, ON_ADD_TO_FAVORITES, isUniLifecycleHook, ON_READY, ON_LAUNCH, ON_ERROR, ON_THEME_CHANGE, ON_PAGE_NOT_FOUND, ON_UNHANDLE_REJECTION, VIRTUAL_HOST_STYLE, VIRTUAL_HOST_CLASS, VIRTUAL_HOST_HIDDEN, customizeEvent, addLeadingSlash, stringifyQuery, ON_BACK_PRESS } from '@dcloudio/uni-shared';
 import { isArray, isFunction, capitalize, hasOwn, extend, isPlainObject, isString } from '@vue/shared';
-import { ref, findComponentPropsData, toRaw, updateProps, hasQueueJob, invalidateJob, getExposeProxy, EMPTY_OBJ, isRef, setTemplateRef, devtoolsComponentAdded, pruneComponentPropsCache } from 'vue';
+import { injectHook, ref, findComponentPropsData, toRaw, updateProps, hasQueueJob, invalidateJob, getExposeProxy, EMPTY_OBJ, isRef, setTemplateRef, devtoolsComponentAdded, pruneComponentPropsCache } from 'vue';
 import { normalizeLocale, LOCALE_EN } from '@dcloudio/uni-i18n';
 
 function initVueIds(vueIds, mpInstance) {
@@ -78,6 +78,19 @@ function initBaseInstance(instance, options) {
     ctx.$mpType = options.mpType;
     ctx.$mpPlatform = "mp-alipay";
     ctx.$scope = options.mpInstance;
+    {
+        // mergeVirtualHostAttributes
+        Object.defineProperties(ctx, {
+            // only id
+            [VIRTUAL_HOST_ID]: {
+                get() {
+                    const id = this.$scope.data[VIRTUAL_HOST_ID];
+                    // props in page can be undefined
+                    return id === undefined ? '' : id;
+                },
+            },
+        });
+    }
     // TODO @deprecated
     ctx.$mp = {};
     if (__VUE_OPTIONS_API__) {
@@ -255,11 +268,12 @@ function parseApp(instance, parseAppOptions) {
             instance.$callHook(ON_LAUNCH, options);
         },
     };
-    const { onError } = internalInstance;
-    if (onError) {
-        internalInstance.appContext.config.errorHandler = (err) => {
-            instance.$callHook(ON_ERROR, err);
-        };
+    const onErrorHandlers = my.$onErrorHandlers;
+    if (onErrorHandlers) {
+        onErrorHandlers.forEach((fn) => {
+            injectHook(ON_ERROR, fn, internalInstance);
+        });
+        onErrorHandlers.length = 0;
     }
     initLocale(instance);
     const vueOptions = instance.$.type;
@@ -407,11 +421,19 @@ function initVirtualHostProps(options) {
     const properties = {};
     {
         {
-            properties.virtualHostStyle = {
+            properties[VIRTUAL_HOST_STYLE] = {
                 type: null,
                 value: '',
             };
-            properties.virtualHostClass = {
+            properties[VIRTUAL_HOST_CLASS] = {
+                type: null,
+                value: '',
+            };
+            properties[VIRTUAL_HOST_HIDDEN] = {
+                type: null,
+                value: '',
+            };
+            properties[VIRTUAL_HOST_ID] = {
                 type: null,
                 value: '',
             };
@@ -803,7 +825,9 @@ function initCreatePage() {
         vueOptions = vueOptions.default || vueOptions;
         const pageOptions = {
             onLoad(query) {
-                this.options = query;
+                {
+                    this.options = query;
+                }
                 this.$page = {
                     fullPath: addLeadingSlash(this.route + stringifyQuery(query)),
                 };

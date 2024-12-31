@@ -29,6 +29,11 @@ export function uniOptions({
 }): UniVitePlugin['uni'] {
   const manifest = parseManifestJsonOnce(process.env.UNI_INPUT_DIR)
   const platformOptions = manifest[process.env.UNI_PLATFORM] || {}
+  const isX = process.env.UNI_APP_X === 'true'
+  const mergeVirtualHostAttributes =
+    platformOptions.mergeVirtualHostAttributes != null
+      ? platformOptions.mergeVirtualHostAttributes
+      : isX
 
   return {
     copyOptions,
@@ -37,14 +42,10 @@ export function uniOptions({
       root: process.env.UNI_INPUT_DIR,
       miniProgram: extend({}, miniProgram, {
         component: extend({}, miniProgram.component, {
-          mergeVirtualHostAttributes:
-            platformOptions.mergeVirtualHostAttributes,
+          mergeVirtualHostAttributes,
         }),
       }),
-      isNativeTag:
-        process.env.UNI_APP_X === 'true'
-          ? isMiniProgramUVueNativeTag
-          : isMiniProgramNativeTag,
+      isNativeTag: isX ? isMiniProgramUVueNativeTag : isMiniProgramNativeTag,
       isCustomElement: createIsCustomElement(customElements),
       ...compilerOptions,
       nodeTransforms: [

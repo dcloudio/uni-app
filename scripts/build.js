@@ -406,5 +406,6 @@ async function buildArkTS(target, buildJson) {
 
 async function sleep(ms) {
   global.gc && global.gc()
+  console.log('gc sleep')
   return new Promise((resolve) => setTimeout(resolve, ms))
 }

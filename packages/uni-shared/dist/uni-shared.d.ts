@@ -5,7 +5,6 @@ import { ComponentPublicInstance } from 'vue';
 import type { createApp } from 'vue';
 import type { NormalizedStyle } from '@vue/shared';
 import type { RendererNode } from 'vue';
-import type { UniDialogPage } from '@dcloudio/uni-app-x/types/page';
 
 export declare const ACTION_TYPE_ADD_EVENT = 8;
 
@@ -242,7 +241,7 @@ declare interface HTMLElementWithDataset extends HTMLElement {
 
 export declare const I18N_JSON_DELIMITERS: [string, string];
 
-export declare const initCustomDatasetOnce: () => void;
+export declare const initCustomDatasetOnce: (isBuiltInElement?: ((el: HTMLElement) => boolean) | undefined) => void;
 
 /**
  * nodeId
@@ -291,10 +290,6 @@ export declare function isMiniProgramUVueNativeTag(tag: string): boolean;
 export declare function isRootHook(name: string): boolean;
 
 export declare function isRootImmediateHook(name: string): boolean;
-
-export declare function isSystemActionSheetDialogPage(page: UniDialogPage): boolean;
-
-export declare function isSystemDialogPage(page: UniDialogPage): boolean;
 
 export declare function isUniLifecycleHook(name: string, value: unknown, checkType?: boolean): boolean;
 
@@ -701,10 +696,6 @@ export declare function sortObject<T extends Object>(obj: T): T;
 
 export declare function stringifyQuery(obj?: Record<string, any>, encodeStr?: typeof encodeURIComponent): string;
 
-export declare const SYSTEM_DIALOG_ACTION_SHEET_PAGE_PATH = "uni:actionSheet";
-
-export declare const SYSTEM_DIALOG_PAGE_PATH_STARTER = "uni:";
-
 export declare const TABBAR_HEIGHT = 50;
 
 export declare const TAGS: string[];
@@ -913,6 +904,14 @@ export declare const UVUE_BUILT_IN_TAGS: string[];
 export declare const UVUE_IOS_BUILT_IN_TAGS: string[];
 
 export declare const UVUE_WEB_BUILT_IN_TAGS: string[];
+
+export declare const VIRTUAL_HOST_CLASS = "virtualHostClass";
+
+export declare const VIRTUAL_HOST_HIDDEN = "virtualHostHidden";
+
+export declare const VIRTUAL_HOST_ID = "virtualHostId";
+
+export declare const VIRTUAL_HOST_STYLE = "virtualHostStyle";
 
 declare interface Vue_2 {
     createApp: typeof createApp;

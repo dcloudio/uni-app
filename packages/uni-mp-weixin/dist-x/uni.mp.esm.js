@@ -1,6 +1,6 @@
-import { SLOT_DEFAULT_NAME, invokeArrayFns, MINI_PROGRAM_PAGE_RUNTIME_HOOKS, ON_LOAD, ON_SHOW, ON_HIDE, ON_UNLOAD, ON_RESIZE, ON_TAB_ITEM_TAP, ON_REACH_BOTTOM, ON_PULL_DOWN_REFRESH, ON_ADD_TO_FAVORITES, isUniLifecycleHook, ON_READY, once, ON_LAUNCH, ON_ERROR, ON_THEME_CHANGE, ON_PAGE_NOT_FOUND, ON_UNHANDLE_REJECTION, addLeadingSlash, stringifyQuery, customizeEvent } from '@dcloudio/uni-shared';
+import { VIRTUAL_HOST_ID, SLOT_DEFAULT_NAME, invokeArrayFns, MINI_PROGRAM_PAGE_RUNTIME_HOOKS, ON_LOAD, ON_SHOW, ON_HIDE, ON_UNLOAD, ON_RESIZE, ON_TAB_ITEM_TAP, ON_REACH_BOTTOM, ON_PULL_DOWN_REFRESH, ON_ADD_TO_FAVORITES, isUniLifecycleHook, ON_READY, once, ON_LAUNCH, ON_ERROR, ON_THEME_CHANGE, ON_PAGE_NOT_FOUND, ON_UNHANDLE_REJECTION, VIRTUAL_HOST_STYLE, VIRTUAL_HOST_CLASS, VIRTUAL_HOST_HIDDEN, addLeadingSlash, stringifyQuery, customizeEvent } from '@dcloudio/uni-shared';
 import { hasOwn, isArray, isString, isFunction, extend, isPlainObject as isPlainObject$1, isObject } from '@vue/shared';
-import { onUpdated, pruneUniElements, onUnmounted, destroyUniElements, ref, findComponentPropsData, toRaw, updateProps, hasQueueJob, invalidateJob, registerCustomElement, devtoolsComponentAdded, getExposeProxy, pruneComponentPropsCache } from 'vue';
+import { onUpdated, pruneUniElements, onUnmounted, destroyUniElements, injectHook, ref, findComponentPropsData, toRaw, updateProps, hasQueueJob, invalidateJob, registerCustomElement, devtoolsComponentAdded, getExposeProxy, pruneComponentPropsCache } from 'vue';
 import { normalizeLocale, LOCALE_EN } from '@dcloudio/uni-i18n';
 
 function arrayPop(array) {
@@ -124,6 +124,9 @@ function isImplementationOf(leftType, rightType, visited = []) {
     });
 }
 function isInstanceOf(value, type) {
+    if (type === UTSValueIterable) {
+        return value && value[Symbol.iterator];
+    }
     const isNativeInstanceofType = value instanceof type;
     if (isNativeInstanceofType || typeof value !== 'object') {
         return isNativeInstanceofType;
@@ -663,6 +666,9 @@ let UTSJSONObject$1 = class UTSJSONObject {
     }
 };
 
+let UTSValueIterable$1 = class UTSValueIterable {
+};
+
 // @ts-nocheck
 function getGlobal() {
     if (typeof globalThis !== 'undefined') {
@@ -694,6 +700,7 @@ const realGlobal = getGlobal();
 realGlobal.UTSJSONObject = UTSJSONObject$1;
 realGlobal.UniError = UniError;
 realGlobal.UTS = UTS;
+realGlobal.UTSValueIterable = UTSValueIterable$1;
 
 function initVueIds(vueIds, mpInstance) {
     if (!vueIds) {
@@ -822,6 +829,19 @@ function initBaseInstance(instance, options) {
     ctx.$mpType = options.mpType;
     ctx.$mpPlatform = "mp-weixin";
     ctx.$scope = options.mpInstance;
+    {
+        // mergeVirtualHostAttributes
+        Object.defineProperties(ctx, {
+            // only id
+            [VIRTUAL_HOST_ID]: {
+                get() {
+                    const id = this.$scope.data[VIRTUAL_HOST_ID];
+                    // props in page can be undefined
+                    return id === undefined ? '' : id;
+                },
+            },
+        });
+    }
     // TODO @deprecated
     ctx.$mp = {};
     if (__VUE_OPTIONS_API__) {
@@ -997,6 +1017,9 @@ function parseApp(instance, parseAppOptions) {
         $vm: instance, // mp-alipay 组件 data 初始化比 onLaunch 早，提前挂载
         onLaunch(options) {
             this.$vm = instance; // 飞书小程序可能会把 AppOptions 序列化，导致 $vm 对象部分属性丢失
+            {
+                this.vm = this.$vm;
+            }
             const ctx = internalInstance.ctx;
             if (this.$vm && ctx.$scope && ctx.$callHook) {
                 // 已经初始化过了，主要是为了百度，百度 onShow 在 onLaunch 之前
@@ -1012,11 +1035,12 @@ function parseApp(instance, parseAppOptions) {
             instance.$callHook(ON_LAUNCH, options);
         },
     };
-    const { onError } = internalInstance;
-    if (onError) {
-        internalInstance.appContext.config.errorHandler = (err) => {
-            instance.$callHook(ON_ERROR, err);
-        };
+    const onErrorHandlers = wx.$onErrorHandlers;
+    if (onErrorHandlers) {
+        onErrorHandlers.forEach((fn) => {
+            injectHook(ON_ERROR, fn, internalInstance);
+        });
+        onErrorHandlers.length = 0;
     }
     initLocale(instance);
     const vueOptions = instance.$.type;
@@ -1081,7 +1105,8 @@ function initAppLifecycle(appOptions, vm) {
     }
 }
 function initLocale(appVm) {
-    const locale = ref(normalizeLocale(wx.getSystemInfoSync().language) || LOCALE_EN);
+    const locale = ref(normalizeLocale(wx.getAppBaseInfo().language) || LOCALE_EN
+        );
     Object.defineProperty(appVm, '$locale', {
         get() {
             return locale.value;
@@ -1161,11 +1186,19 @@ function initVirtualHostProps(options) {
     const properties = {};
     {
         if ((options && options.virtualHost)) {
-            properties.virtualHostStyle = {
+            properties[VIRTUAL_HOST_STYLE] = {
                 type: null,
                 value: '',
             };
-            properties.virtualHostClass = {
+            properties[VIRTUAL_HOST_CLASS] = {
+                type: null,
+                value: '',
+            };
+            properties[VIRTUAL_HOST_HIDDEN] = {
+                type: null,
+                value: '',
+            };
+            properties[VIRTUAL_HOST_ID] = {
                 type: null,
                 value: '',
             };
@@ -1364,7 +1397,7 @@ function applyOptions(componentOptions, vueOptions) {
     componentOptions.behaviors = initBehaviors(vueOptions);
 }
 
-function parseComponent(vueOptions, { parse, mocks, isPage, initRelation, handleLink, initLifetimes, }) {
+function parseComponent(vueOptions, { parse, mocks, isPage, isPageInProject, initRelation, handleLink, initLifetimes, }) {
     vueOptions = vueOptions.default || vueOptions;
     const options = {
         multipleSlots: true,
@@ -1372,6 +1405,9 @@ function parseComponent(vueOptions, { parse, mocks, isPage, initRelation, handle
         addGlobalClass: true,
         pureDataPattern: /^uP$/,
     };
+    if (__UNI_FEATURE_VIRTUAL_HOST__ && !isPageInProject) {
+        options.virtualHost = true;
+    }
     if (isArray(vueOptions.mixins)) {
         vueOptions.mixins.forEach((item) => {
             if (isObject(item.options)) {
@@ -1459,6 +1495,7 @@ function parsePage(vueOptions, parseOptions) {
     const miniProgramPageOptions = parseComponent(vueOptions, {
         mocks,
         isPage,
+        isPageInProject: true,
         initRelation,
         handleLink,
         initLifetimes,
@@ -1466,7 +1503,9 @@ function parsePage(vueOptions, parseOptions) {
     initPageProps(miniProgramPageOptions, (vueOptions.default || vueOptions).props);
     const methods = miniProgramPageOptions.methods;
     methods.onLoad = function (query) {
-        this.options = query;
+        {
+            this.options = new UTSJSONObject(query || {});
+        }
         this.$page = {
             fullPath: addLeadingSlash(this.route + stringifyQuery(query)),
         };
@@ -1572,6 +1611,9 @@ function initLifetimes({ mocks, isPage, initRelation, vueOptions, }) {
                     initComponentInstance(instance, options);
                 },
             });
+            {
+                this.vm = this.$vm;
+            }
             if (process.env.UNI_DEBUG) {
                 console.log('uni-app:[' +
                     Date.now() +

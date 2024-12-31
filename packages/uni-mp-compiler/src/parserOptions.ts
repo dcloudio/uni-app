@@ -4,7 +4,7 @@ import {
   NodeTypes,
   type ParserOptions,
 } from '@vue/compiler-core'
-import { isHTMLTag, isSVGTag, isVoidTag } from '@vue/shared'
+import { isHTMLTag, isSVGTag, isVoidTag as isVoidTagRaw } from '@vue/shared'
 // import { decodeHtml } from './decodeHtml'
 
 export const enum DOMNamespaces {
@@ -14,7 +14,13 @@ export const enum DOMNamespaces {
 }
 
 export const parserOptions: ParserOptions = {
-  isVoidTag,
+  isVoidTag(tag) {
+    // 微信小程序允许 Input 嵌套其他组件 https://ask.dcloud.net.cn/question/202776
+    // if (tag === 'input') {
+    //   return false
+    // }
+    return isVoidTagRaw(tag)
+  },
   isNativeTag: (tag) => isHTMLTag(tag) || isSVGTag(tag),
   isPreTag: (tag) => tag === 'pre',
 

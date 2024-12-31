@@ -1,6 +1,6 @@
 {
   "name": "@dcloudio/uni-h5",
-  "version": "3.0.0-4030620241128001",
+  "version": "3.0.0-alpha-4040320241223001",
   "description": "@dcloudio/uni-h5",
   "main": "./dist/uni-h5.cjs.js",
   "module": "./dist/uni-h5.es.js",
@@ -30,10 +30,10 @@
     "main": "dist/uni.compiler.js"
   },
   "dependencies": {
-    "@dcloudio/uni-h5-vite": "3.0.0-4030620241128001",
-    "@dcloudio/uni-h5-vue": "3.0.0-4030620241128001",
-    "@dcloudio/uni-i18n": "3.0.0-4030620241128001",
-    "@dcloudio/uni-shared": "3.0.0-4030620241128001",
+    "@dcloudio/uni-h5-vite": "workspace:*",
+    "@dcloudio/uni-h5-vue": "workspace:*",
+    "@dcloudio/uni-i18n": "workspace:*",
+    "@dcloudio/uni-shared": "workspace:*",
     "@vue/server-renderer": "3.4.21",
     "@vue/shared": "3.4.21",
     "debug": "^4.3.3",
@@ -45,7 +45,7 @@
   },
   "gitHead": "33e807d66e1fe47e2ee08ad9c59247e37b8884da",
   "devDependencies": {
-    "@dcloudio/uni-cli-shared": "3.0.0-4030620241128001",
+    "@dcloudio/uni-cli-shared": "workspace:*",
     "@types/estree": "^1.0.5",
     "@types/google.maps": "^3.45.6",
     "@amap/amap-jsapi-types": "^0.0.8",

@@ -4,9 +4,9 @@ var __publicField = (obj, key, value) => {
   __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
   return value;
 };
-import { withModifiers, createVNode, getCurrentInstance, ref, defineComponent, openBlock, createElementBlock, onMounted, provide, computed, watch, onUnmounted, inject, onBeforeUnmount, mergeProps, reactive, injectHook, nextTick, createApp, createBlock, watchEffect, isVNode, withDirectives, vShow, renderList, isReactive, Transition, effectScope, Fragment, onActivated, withCtx, KeepAlive, resolveDynamicComponent, markRaw, normalizeClass, normalizeStyle, createTextVNode, toDisplayString, createCommentVNode, onBeforeMount, onBeforeActivate, onBeforeDeactivate, createElementVNode, renderSlot, shallowRef, Comment, h } from "vue";
+import { withModifiers, createVNode, getCurrentInstance, ref, defineComponent, openBlock, createElementBlock, onMounted, provide, computed, watch, onUnmounted, inject, onBeforeUnmount, mergeProps, reactive, injectHook, nextTick, createApp, createBlock, watchEffect, isVNode, withDirectives, vShow, renderList, isReactive, Transition, effectScope, Fragment, onActivated, withCtx, KeepAlive, resolveDynamicComponent, markRaw, normalizeClass, normalizeStyle, createTextVNode, toDisplayString, createCommentVNode, onBeforeMount, onBeforeActivate, onBeforeDeactivate, createElementVNode, renderSlot, shallowRef, Comment, h, logError } from "vue";
 import { isArray, isString, extend, remove, stringifyStyle, parseStringStyle, isPlainObject as isPlainObject$1, isFunction, capitalize, camelize, hasOwn, isObject, toRawType, makeMap as makeMap$1, isPromise, invokeArrayFns as invokeArrayFns$1, hyphenate } from "@vue/shared";
-import { once, UNI_STORAGE_LOCALE, I18N_JSON_DELIMITERS, Emitter, passive, initCustomDatasetOnce, resolveComponentInstance, normalizeStyles, addLeadingSlash, invokeArrayFns, removeLeadingSlash, resolveOwnerVm, resolveOwnerEl, ON_WXS_INVOKE_CALL_METHOD, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_SHOW, ON_HIDE, ON_PAGE_SCROLL, ON_REACH_BOTTOM, EventChannel, createRpx2Unit, defaultRpx2Unit, parseQuery, NAVBAR_HEIGHT, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, getLen, getCustomDataset, parseUrl, sortObject, ON_THEME_CHANGE, OFF_THEME_CHANGE, ON_HOST_THEME_CHANGE, OFF_HOST_THEME_CHANGE, updateElementStyle, LINEFEED, ON_WEB_INVOKE_APP_SERVICE, ON_BACK_PRESS, addFont, ON_NAVIGATION_BAR_CHANGE, scrollTo, RESPONSIVE_MIN_WIDTH, formatDateTime, normalizeTitleColor, ON_REACH_BOTTOM_DISTANCE, isSystemDialogPage, isSystemActionSheetDialogPage, ON_UNLOAD, onCreateVueApp, SCHEME_RE, DATA_RE, decodedQuery, debounce, WEB_INVOKE_APPSERVICE, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_PULL_DOWN_REFRESH, stringifyQuery as stringifyQuery$1, PRIMARY_COLOR, isUniLifecycleHook, ON_LOAD, UniLifecycleHooks, invokeCreateErrorHandler, invokeCreateVueAppHook } from "@dcloudio/uni-shared";
+import { once, UNI_STORAGE_LOCALE, I18N_JSON_DELIMITERS, Emitter, passive, resolveComponentInstance, normalizeStyles, addLeadingSlash, invokeArrayFns, removeLeadingSlash, ON_SHOW, ON_HIDE, initCustomDatasetOnce, resolveOwnerVm, resolveOwnerEl, ON_WXS_INVOKE_CALL_METHOD, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_PAGE_SCROLL, ON_REACH_BOTTOM, EventChannel, createRpx2Unit, defaultRpx2Unit, parseQuery, NAVBAR_HEIGHT, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, getLen, getCustomDataset, parseUrl, sortObject, ON_THEME_CHANGE, ON_HOST_THEME_CHANGE, OFF_HOST_THEME_CHANGE, OFF_THEME_CHANGE, updateElementStyle, LINEFEED, ON_WEB_INVOKE_APP_SERVICE, ON_BACK_PRESS, addFont, ON_NAVIGATION_BAR_CHANGE, scrollTo, RESPONSIVE_MIN_WIDTH, formatDateTime, ON_REACH_BOTTOM_DISTANCE, normalizeTitleColor, ON_UNLOAD, onCreateVueApp, SCHEME_RE, DATA_RE, decodedQuery, debounce, WEB_INVOKE_APPSERVICE, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_PULL_DOWN_REFRESH, stringifyQuery as stringifyQuery$1, PRIMARY_COLOR, isUniLifecycleHook, ON_LOAD, UniLifecycleHooks, invokeCreateErrorHandler, invokeCreateVueAppHook } from "@dcloudio/uni-shared";
 import { onCreateVueApp as onCreateVueApp2 } from "@dcloudio/uni-shared";
 import { useRoute, isNavigationFailure, RouterView, useRouter, createRouter, createWebHistory, createWebHashHistory } from "vue-router";
 import { initVueI18n, isI18nStr, LOCALE_EN, LOCALE_ES, LOCALE_FR, LOCALE_ZH_HANS, LOCALE_ZH_HANT } from "@dcloudio/uni-i18n";
@@ -114,6 +114,9 @@ function isImplementationOf(leftType, rightType, visited = []) {
   });
 }
 function isInstanceOf(value, type) {
+  if (type === UTSValueIterable) {
+    return value && value[Symbol.iterator];
+  }
   const isNativeInstanceofType = value instanceof type;
   if (isNativeInstanceofType || typeof value !== "object") {
     return isNativeInstanceofType;
@@ -593,6 +596,8 @@ let UTSJSONObject$1 = class UTSJSONObject2 {
     }
   }
 };
+let UTSValueIterable$1 = class UTSValueIterable2 {
+};
 function getGlobal() {
   if (typeof globalThis !== "undefined") {
     return globalThis;
@@ -620,6 +625,7 @@ const realGlobal = getGlobal();
 realGlobal.UTSJSONObject = UTSJSONObject$1;
 realGlobal.UniError = UniError$1;
 realGlobal.UTS = UTS$1;
+realGlobal.UTSValueIterable = UTSValueIterable$1;
 const isEnableLocale = /* @__PURE__ */ once(
   () => typeof __uniConfig !== "undefined" && __uniConfig.locales && !!Object.keys(__uniConfig.locales).length
 );
@@ -1308,13 +1314,6 @@ function useRem() {
   window.addEventListener("load", updateRem);
   window.addEventListener("resize", updateRem);
 }
-function initView() {
-  useRem();
-  initCustomDatasetOnce();
-  if (__UNI_FEATURE_LONGPRESS__) {
-    initLongPress();
-  }
-}
 function getDefaultExportFromCjs(x) {
   return x && x.__esModule && Object.prototype.hasOwnProperty.call(x, "default") ? x["default"] : x;
 }
@@ -1605,6 +1604,11 @@ function rpx2pxWithReplace(str) {
 function get$pageByPage(page) {
   return page.vm.$basePage;
 }
+function isBuiltInElement(target) {
+  {
+    return !!target.__isUniElement;
+  }
+}
 const ICON_PATH_CANCEL = "M20.928 10.176l-4.928 4.928-4.928-4.928-0.896 0.896 4.928 4.928-4.928 4.928 0.896 0.896 4.928-4.928 4.928 4.928 0.896-0.896-4.928-4.928 4.928-4.928-0.896-0.896zM16 2.080q-3.776 0-7.040 1.888-3.136 1.856-4.992 4.992-1.888 3.264-1.888 7.040t1.888 7.040q1.856 3.136 4.992 4.992 3.264 1.888 7.040 1.888t7.040-1.888q3.136-1.856 4.992-4.992 1.888-3.264 1.888-7.040t-1.888-7.040q-1.856-3.136-4.992-4.992-3.264-1.888-7.040-1.888zM16 28.64q-3.424 0-6.4-1.728-2.848-1.664-4.512-4.512-1.728-2.976-1.728-6.4t1.728-6.4q1.664-2.848 4.512-4.512 2.976-1.728 6.4-1.728t6.4 1.728q2.848 1.664 4.512 4.512 1.728 2.976 1.728 6.4t-1.728 6.4q-1.664 2.848-4.512 4.512-2.976 1.728-6.4 1.728z";
 const ICON_PATH_CLEAR = "M16 0q-4.352 0-8.064 2.176-3.616 2.144-5.76 5.76-2.176 3.712-2.176 8.064t2.176 8.064q2.144 3.616 5.76 5.76 3.712 2.176 8.064 2.176t8.064-2.176q3.616-2.144 5.76-5.76 2.176-3.712 2.176-8.064t-2.176-8.064q-2.144-3.616-5.76-5.76-3.712-2.176-8.064-2.176zM22.688 21.408q0.32 0.32 0.304 0.752t-0.336 0.736-0.752 0.304-0.752-0.32l-5.184-5.376-5.376 5.184q-0.32 0.32-0.752 0.304t-0.736-0.336-0.304-0.752 0.32-0.752l5.376-5.184-5.184-5.376q-0.32-0.32-0.304-0.752t0.336-0.752 0.752-0.304 0.752 0.336l5.184 5.376 5.376-5.184q0.32-0.32 0.752-0.304t0.752 0.336 0.304 0.752-0.336 0.752l-5.376 5.184 5.184 5.376z";
 const ICON_PATH_DOWNLOAD = "M15.808 1.696q-3.776 0-7.072 1.984-3.2 1.888-5.088 5.152-1.952 3.392-1.952 7.36 0 3.776 1.952 7.072 1.888 3.2 5.088 5.088 3.296 1.952 7.072 1.952 3.968 0 7.36-1.952 3.264-1.888 5.152-5.088 1.984-3.296 1.984-7.072 0-4-1.984-7.36-1.888-3.264-5.152-5.152-3.36-1.984-7.36-1.984zM20.864 18.592l-3.776 4.928q-0.448 0.576-1.088 0.576t-1.088-0.576l-3.776-4.928q-0.448-0.576-0.24-0.992t0.944-0.416h2.976v-8.928q0-0.256 0.176-0.432t0.4-0.176h1.216q0.224 0 0.4 0.176t0.176 0.432v8.928h2.976q0.736 0 0.944 0.416t-0.24 0.992z";
@@ -1885,6 +1889,71 @@ function normalizeTabBarRoute(index2, oldPagePath, newPagePath) {
     }
   }
 }
+const SYSTEM_DIALOG_PAGE_PATH_STARTER = "uni:";
+const SYSTEM_DIALOG_ACTION_SHEET_PAGE_PATH = "uni:actionSheet";
+function isSystemDialogPage(page) {
+  return page.route.startsWith(SYSTEM_DIALOG_PAGE_PATH_STARTER);
+}
+function isSystemActionSheetDialogPage(page) {
+  return page.route.startsWith(SYSTEM_DIALOG_ACTION_SHEET_PAGE_PATH);
+}
+function dialogPageTriggerParentHide(dialogPage) {
+  dialogPageTriggerParentLifeCycle(dialogPage, ON_HIDE);
+}
+function dialogPageTriggerParentShow(dialogPage, triggerParentHideDialogPageNum = 0) {
+  dialogPageTriggerParentLifeCycle(
+    dialogPage,
+    ON_SHOW,
+    triggerParentHideDialogPageNum
+  );
+}
+function dialogPageTriggerParentLifeCycle(dialogPage, lifeCycle, triggerParentHideDialogPageNum = 0) {
+  if (!dialogPage.$triggerParentHide)
+    return;
+  const pages = getCurrentPages();
+  const currentPage = pages[pages.length - 1];
+  if (!currentPage)
+    return;
+  const parentPage = dialogPage.getParentPage();
+  if (!parentPage)
+    return;
+  if (parentPage !== currentPage)
+    return;
+  const dialogPages = currentPage.getDialogPages();
+  for (let i = 0; i < dialogPages.length; i++) {
+    if (!!dialogPages[i].$triggerParentHide) {
+      triggerParentHideDialogPageNum++;
+      if (triggerParentHideDialogPageNum > 1) {
+        return;
+      }
+    }
+  }
+  if (triggerParentHideDialogPageNum <= 1) {
+    const systemDialogPage = getSystemDialogPages(parentPage);
+    for (let i = 0; i < systemDialogPage.length; i++) {
+      if (!!systemDialogPage[i].$triggerParentHide) {
+        triggerParentHideDialogPageNum++;
+        if (triggerParentHideDialogPageNum > 1) {
+          return;
+        }
+      }
+    }
+  }
+  invokeHook(currentPage.vm, lifeCycle);
+}
+function getSystemDialogPages(parentPage) {
+  var _a;
+  {
+    return (_a = parentPage.vm.$pageLayoutInstance) == null ? void 0 : _a.$systemDialogPages.value;
+  }
+}
+function initView() {
+  useRem();
+  initCustomDatasetOnce(isBuiltInElement);
+  if (__UNI_FEATURE_LONGPRESS__) {
+    initLongPress();
+  }
+}
 class ComponentDescriptor {
   constructor(vm) {
     this.$bindClass = false;
@@ -2105,16 +2174,12 @@ function getWxsVm(el) {
     return el.__vueParentComponent && el.__vueParentComponent.proxy;
   }
 }
-const isKeyboardEvent = (val) => !val.type.indexOf("key") && val instanceof KeyboardEvent;
-const isClickEvent = (val) => val.type === "click";
-const isMouseEvent = (val) => val.type.indexOf("mouse") === 0 || ["contextmenu"].includes(val.type);
-const isTouchEvent = (val) => typeof TouchEvent !== "undefined" && val instanceof TouchEvent || val.type.indexOf("touch") === 0 || ["longpress"].indexOf(val.type) >= 0;
 function $nne(evt, eventValue, instance2) {
   const { currentTarget } = evt;
   if (!(evt instanceof Event) || !(currentTarget instanceof HTMLElement)) {
     return [evt];
   }
-  const isHTMLTarget = currentTarget.tagName.indexOf("UNI-") !== 0;
+  const isHTMLTarget = !isBuiltInElement(currentTarget);
   {
     if (isHTMLTarget) {
       return wrapperH5WxsEvent(
@@ -2127,24 +2192,6 @@ function $nne(evt, eventValue, instance2) {
     }
   }
   const res = createNativeEvent(evt, isHTMLTarget);
-  if (isClickEvent(evt)) {
-    normalizeClickEvent(res, evt);
-  } else if (isMouseEvent(evt)) {
-    normalizeMouseEvent(res, evt);
-  } else if (isTouchEvent(evt)) {
-    const top = getWindowTop();
-    res.touches = normalizeTouchEvent(evt.touches, top);
-    res.changedTouches = normalizeTouchEvent(evt.changedTouches, top);
-  } else if (isKeyboardEvent(evt)) {
-    const proxyKeys = ["key", "code"];
-    proxyKeys.forEach((key) => {
-      Object.defineProperty(res, key, {
-        get() {
-          return evt[key];
-        }
-      });
-    });
-  }
   {
     return wrapperH5WxsEvent(
       res,
@@ -2154,7 +2201,7 @@ function $nne(evt, eventValue, instance2) {
   }
 }
 function findUniTarget(target) {
-  while (target && target.tagName.indexOf("UNI-") !== 0) {
+  while (!isBuiltInElement(target)) {
     target = target.parentElement;
   }
   return target;
@@ -2162,8 +2209,10 @@ function findUniTarget(target) {
 function createNativeEvent(evt, htmlElement = false) {
   const { type, timeStamp, target, currentTarget } = evt;
   let realTarget, realCurrentTarget;
-  realTarget = htmlElement ? target : findUniTarget(target);
-  realCurrentTarget = currentTarget;
+  {
+    realTarget = htmlElement ? target : findUniTarget(target);
+    realCurrentTarget = currentTarget;
+  }
   const event = {
     type,
     timeStamp,
@@ -2179,71 +2228,18 @@ function createNativeEvent(evt, htmlElement = false) {
     event.changedTouches = evt.changedTouches;
   }
   {
-    wrapperEvent(event, evt);
-  }
-  return event;
-}
-function wrapperEvent(event, evt) {
-  extend(event, {
-    preventDefault() {
-      return evt.preventDefault();
-    },
-    stopPropagation() {
-      return evt.stopPropagation();
+    {
+      return new Proxy(evt, {
+        get(target2, key) {
+          if (key in event) {
+            return event[key];
+          }
+          const value = target2[key];
+          return isFunction(value) ? value.bind(target2) : value;
+        }
+      });
     }
-  });
-}
-function normalizeClickEvent(evt, mouseEvt) {
-  const { x, y } = mouseEvt;
-  const top = getWindowTop();
-  evt.detail = { x, y: y - top };
-  evt.x = x;
-  evt.y = y - top;
-  evt.touches = evt.changedTouches = [createTouchEvent(mouseEvt, top)];
-}
-function normalizeMouseEvent(evt, mouseEvt) {
-  const top = getWindowTop();
-  evt.pageX = mouseEvt.pageX;
-  evt.pageY = mouseEvt.pageY - top;
-  evt.clientX = mouseEvt.clientX;
-  evt.clientY = mouseEvt.clientY - top;
-  evt.touches = evt.changedTouches = [createTouchEvent(mouseEvt, top)];
-}
-function createTouchEvent(evt, top) {
-  return {
-    force: 1,
-    identifier: 0,
-    clientX: evt.clientX,
-    clientY: evt.clientY - top,
-    pageX: evt.pageX,
-    pageY: evt.pageY - top
-  };
-}
-function normalizeTouchEvent(touches, top) {
-  const res = [];
-  for (let i = 0; i < touches.length; i++) {
-    const {
-      identifier,
-      pageX,
-      pageY,
-      clientX,
-      clientY,
-      force,
-      screenX,
-      screenY
-    } = touches[i];
-    res.push({
-      identifier,
-      pageX,
-      pageY: pageY - top,
-      clientX,
-      clientY: clientY - top,
-      screenX,
-      screenY,
-      force: force || 0
-    });
   }
-  return res;
 }
 const instance = /* @__PURE__ */ Object.defineProperty({
   __proto__: null,
@@ -2303,11 +2299,11 @@ function onResize$1(res) {
   const page = (_a = getCurrentPage()) == null ? void 0 : _a.vm;
   invokeHook(page, ON_RESIZE, res);
   {
-    const dialogPages = page.$page.getDialogPages();
-    if (dialogPages.length > 0) {
+    const dialogPages = page == null ? void 0 : page.$page.getDialogPages();
+    if ((dialogPages == null ? void 0 : dialogPages.length) > 0) {
       invokeHook(dialogPages[dialogPages.length - 1].vm, ON_RESIZE, res);
     }
-    const systemDialogPages = (_b = page.$pageLayoutInstance) == null ? void 0 : _b.$systemDialogPages.value;
+    const systemDialogPages = (_b = page == null ? void 0 : page.$pageLayoutInstance) == null ? void 0 : _b.$systemDialogPages.value;
     if ((systemDialogPages == null ? void 0 : systemDialogPages.length) > 0) {
       invokeHook(
         systemDialogPages[systemDialogPages.length - 1].vm,
@@ -2775,12 +2771,22 @@ class UniElement extends HTMLElement {
   getBoundingClientRectAsync(callback) {
     var _a, _b;
     if (callback) {
-      (_a = callback.success) == null ? void 0 : _a.call(callback, this.getBoundingClientRect());
-      (_b = callback.complate) == null ? void 0 : _b.call(callback);
+      const domRect = this.getBoundingClientRect();
+      try {
+        (_a = callback.success) == null ? void 0 : _a.call(callback, domRect);
+      } catch (error) {
+        console.error(error);
+      }
+      try {
+        (_b = callback.complete) == null ? void 0 : _b.call(callback, domRect);
+      } catch (error) {
+        console.error(error);
+      }
       return;
     }
     return new Promise((resolve, reject) => {
-      resolve(this.getBoundingClientRect());
+      const domRect = this.getBoundingClientRect();
+      resolve(domRect);
     });
   }
   get style() {
@@ -4232,7 +4238,7 @@ let maxWidth = 960;
 let baseWidth = 375;
 let includeWidth = 750;
 function checkDeviceWidth() {
-  const { platform, pixelRatio, windowWidth } = getBaseSystemInfo();
+  const { windowWidth, pixelRatio, platform } = getBaseSystemInfo();
   deviceWidth = windowWidth;
   deviceDPR = pixelRatio;
   isIOS$1 = platform === "ios";
@@ -4447,6 +4453,12 @@ const $emit = /* @__PURE__ */ defineSyncApi(
   },
   EmitProtocol
 );
+function __f__(type, filename, ...args) {
+  if (filename) {
+    args.push(filename);
+  }
+  console[type].apply(console, args);
+}
 const validator = [
   {
     name: "id",
@@ -9020,21 +9032,30 @@ const offThemeChange$1 = /* @__PURE__ */ defineOffApi(
     UniServiceJSBridge.off(ON_THEME_CHANGE, themeChangeCallBack);
   }
 );
-const hostThemeChangeCallBack = (res) => {
-  UniServiceJSBridge.invokeOnCallback(ON_HOST_THEME_CHANGE, {
-    hostTheme: res.theme
-  });
-};
-const onHostThemeChange = /* @__PURE__ */ defineOnApi(
+const THEME_CALLBACK = [];
+const onHostThemeChange = /* @__PURE__ */ defineSyncApi(
   ON_HOST_THEME_CHANGE,
-  () => {
-    UniServiceJSBridge.on(ON_THEME_CHANGE, hostThemeChangeCallBack);
+  (callback) => {
+    const onHostThemeChangeCallback = (res) => {
+      callback({ hostTheme: res.theme });
+    };
+    const index2 = THEME_CALLBACK.push([callback, onHostThemeChangeCallback]) - 1;
+    UniServiceJSBridge.on(ON_THEME_CHANGE, onHostThemeChangeCallback);
+    return index2;
   }
 );
-const offHostThemeChange = /* @__PURE__ */ defineOnApi(
+const offHostThemeChange = /* @__PURE__ */ defineSyncApi(
   OFF_HOST_THEME_CHANGE,
-  () => {
-    UniServiceJSBridge.off(ON_THEME_CHANGE, hostThemeChangeCallBack);
+  (callbackId) => {
+    if (isFunction(callbackId)) {
+      callbackId = THEME_CALLBACK.findIndex(
+        ([callback]) => callback === callbackId
+      );
+    }
+    if (callbackId > -1) {
+      const arr = THEME_CALLBACK.splice(callbackId, 1)[0];
+      isArray(arr) && UniServiceJSBridge.off(ON_THEME_CHANGE, arr[1]);
+    }
   }
 );
 const STORAGE_KEYS = "uni-storage-keys";
@@ -9047,7 +9068,7 @@ function parseValue(value) {
       const keys = Object.keys(object);
       if (keys.length === 2 && "data" in object) {
         if (typeof object.data === type) {
-          if (type === "object" && !Array.isArray(object.data)) {
+          if (type === "object") {
             return UTS.JSON.parse(JSON.stringify(object.data));
           }
           return object.data;
@@ -12882,7 +12903,7 @@ const navigateBack = /* @__PURE__ */ defineAsyncApi(
       if (currentPage) {
         const dialogPages = currentPage.getDialogPages();
         const dialogPage = dialogPages[dialogPages.length - 1];
-        if (((_b = dialogPage == null ? void 0 : (_a = dialogPage.$vm.$options).onBackPress) == null ? void 0 : _b.call(_a)) === true) {
+        if (((_b = dialogPage == null ? void 0 : (_a = dialogPage.vm.$options).onBackPress) == null ? void 0 : _b.call(_a)) === true) {
           canBack = false;
         }
       }
@@ -15031,6 +15052,19 @@ const getProvider = /* @__PURE__ */ defineAsyncApi(
   API_GET_PROVIDER,
   createUnsupportedAsyncApi(API_GET_PROVIDER)
 );
+class CanvasImage extends Image {
+  constructor() {
+    super();
+    this._src = "";
+  }
+  get src() {
+    return this._src;
+  }
+  set src(value) {
+    this._src = value;
+    super.src = getRealPath(value);
+  }
+}
 class CanvasContextImpl {
   constructor(element) {
     this._element = element;
@@ -15046,7 +15080,7 @@ class CanvasContextImpl {
   }
   // @ts-expect-error TODO 类型不匹配?
   createImage() {
-    return new Image();
+    return new CanvasImage();
   }
   createPath2D() {
     return new Path2D();
@@ -16808,12 +16842,56 @@ class UniPageImpl {
     this.$vm = vm;
   }
   getPageStyle() {
-    return new UTSJSONObject({});
+    var _a;
+    const pageMeta = (_a = this.vm) == null ? void 0 : _a.$basePage.meta;
+    return pageMeta ? new UTSJSONObject({
+      navigationBarBackgroundColor: pageMeta.navigationBar.backgroundColor,
+      navigationBarTextStyle: pageMeta.navigationBar.titleColor,
+      navigationBarTitleText: pageMeta.navigationBar.titleText,
+      titleImage: pageMeta.navigationBar.titleImage || "",
+      navigationStyle: pageMeta.navigationBar.style || "default",
+      disableScroll: pageMeta.disableScroll || false,
+      enablePullDownRefresh: pageMeta.enablePullDownRefresh || false,
+      onReachBottomDistance: pageMeta.onReachBottomDistance || ON_REACH_BOTTOM_DISTANCE,
+      backgroundColorContent: pageMeta.backgroundColorContent
+    }) : new UTSJSONObject({});
   }
   $getPageStyle() {
     return this.getPageStyle();
   }
   setPageStyle(style) {
+    var _a;
+    const pageMeta = (_a = this.vm) == null ? void 0 : _a.$basePage.meta;
+    if (!pageMeta)
+      return;
+    for (const key in style) {
+      switch (key) {
+        case "navigationBarBackgroundColor":
+          pageMeta.navigationBar.backgroundColor = style[key];
+          break;
+        case "navigationBarTextStyle":
+          const textStyle = style[key];
+          if (textStyle == null) {
+            continue;
+          }
+          pageMeta.navigationBar.titleColor = ["black", "white"].includes(
+            textStyle
+          ) ? normalizeTitleColor(textStyle || "") : textStyle;
+          break;
+        case "navigationBarTitleText":
+          pageMeta.navigationBar.titleText = style[key];
+          break;
+        case "titleImage":
+          pageMeta.navigationBar.titleImage = style[key];
+          break;
+        case "navigationStyle":
+          pageMeta.navigationBar.style = style[key];
+          break;
+        default:
+          pageMeta[key] = style[key];
+          break;
+      }
+    }
   }
   $setPageStyle(style) {
     this.setPageStyle(style);
@@ -16827,6 +16905,9 @@ class UniPageImpl {
     return uniPageBody ? uniPageBody.querySelector(`#${id2}`) : null;
   }
   getAndroidView() {
+    return null;
+  }
+  getIOSView() {
     return null;
   }
   getHTMLElement() {
@@ -16858,15 +16939,39 @@ class UniDialogPageImpl extends UniPageImpl {
     route,
     options,
     $component,
+    $triggerParentHide,
     getParentPage,
     $disableEscBack = false
   }) {
     super({ route, options, vm: null });
     this.$component = null;
     this.$disableEscBack = false;
+    this.$triggerParentHide = false;
     this.$component = markRaw($component);
     this.getParentPage = getParentPage;
     this.$disableEscBack = !!$disableEscBack;
+    this.$triggerParentHide = !!$triggerParentHide;
+  }
+  getElementById(id2) {
+    var _a;
+    const currentPage = getCurrentPage();
+    if (currentPage !== this.getParentPage()) {
+      return null;
+    }
+    const uniPageBody = document.querySelector(
+      `uni-page[data-page="${(_a = this.vm) == null ? void 0 : _a.route}"] uni-page-body`
+    );
+    return uniPageBody ? uniPageBody.querySelector(`#${id2}`) : null;
+  }
+  getHTMLElement() {
+    var _a;
+    const currentPage = getCurrentPage();
+    if (currentPage !== this.getParentPage()) {
+      return null;
+    }
+    return document.querySelector(
+      `uni-page[data-page="${(_a = this.vm) == null ? void 0 : _a.route}"] uni-page-body`
+    );
   }
 }
 function initXPage(vm, route, page) {
@@ -16891,48 +16996,6 @@ function initXPage(vm, route, page) {
       vm
     });
     vm.$page = uniPage;
-    const pageMeta = page.meta;
-    uniPage.setPageStyle = (style) => {
-      for (const key in style) {
-        switch (key) {
-          case "navigationBarBackgroundColor":
-            pageMeta.navigationBar.backgroundColor = style[key];
-            break;
-          case "navigationBarTextStyle":
-            const textStyle = style[key];
-            if (textStyle == null) {
-              continue;
-            }
-            pageMeta.navigationBar.titleColor = ["black", "white"].includes(
-              textStyle
-            ) ? normalizeTitleColor(textStyle || "") : textStyle;
-            break;
-          case "navigationBarTitleText":
-            pageMeta.navigationBar.titleText = style[key];
-            break;
-          case "titleImage":
-            pageMeta.navigationBar.titleImage = style[key];
-            break;
-          case "navigationStyle":
-            pageMeta.navigationBar.style = style[key];
-            break;
-          default:
-            pageMeta[key] = style[key];
-            break;
-        }
-      }
-    };
-    uniPage.getPageStyle = () => new UTSJSONObject({
-      navigationBarBackgroundColor: pageMeta.navigationBar.backgroundColor,
-      navigationBarTextStyle: pageMeta.navigationBar.titleColor,
-      navigationBarTitleText: pageMeta.navigationBar.titleText,
-      titleImage: pageMeta.navigationBar.titleImage || "",
-      navigationStyle: pageMeta.navigationBar.style || "default",
-      disableScroll: pageMeta.disableScroll || false,
-      enablePullDownRefresh: pageMeta.enablePullDownRefresh || false,
-      onReachBottomDistance: pageMeta.onReachBottomDistance || ON_REACH_BOTTOM_DISTANCE,
-      backgroundColorContent: pageMeta.backgroundColorContent
-    });
     vm.$dialogPage = (_a = vm.$pageLayoutInstance) == null ? void 0 : _a.$dialogPage;
     currentPagesMap.set(normalizeRouteKey(page.path, page.id), vm);
     if (currentPagesMap.size === 1) {
@@ -16959,6 +17022,16 @@ function initXPage(vm, route, page) {
     pageInstance.$dialogPage.vm = vm;
     pageInstance.$dialogPage.$vm = vm;
   }
+}
+function useBackgroundColorContent$1(vm) {
+  vm && watchEffect(() => {
+    const uniPageBody = document.querySelector(
+      `uni-page[data-page="${vm.route}"] uni-page-body`
+    );
+    if (uniPageBody && vm.$basePage.meta.backgroundColorContent) {
+      uniPageBody.style.backgroundColor = vm.$basePage.meta.backgroundColorContent;
+    }
+  });
 }
 function handleEscKeyPress(event) {
   if (event.key === "Escape") {
@@ -17003,7 +17076,8 @@ const openDialogPage = (options) => {
     options: new UTSJSONObject(query),
     $component: targetRoute.component,
     getParentPage: () => null,
-    $disableEscBack: options.disableEscBack
+    $disableEscBack: options.disableEscBack,
+    $triggerParentHide: !!options.triggerParentHide
   });
   let parentPage = options.parentPage;
   const currentPages = getCurrentPages();
@@ -17090,13 +17164,14 @@ const closeDialogPage = (options) => {
         const parentDialogPages = parentPage.getDialogPages();
         const index2 = parentDialogPages.indexOf(dialogPage);
         parentDialogPages.splice(index2, 1);
-        invokeHook(dialogPage.$vm, ON_UNLOAD);
+        invokeHook(dialogPage.vm, ON_UNLOAD);
         if (index2 > 0 && index2 === parentDialogPages.length) {
           invokeHook(
-            parentDialogPages[parentDialogPages.length - 1].$vm,
+            parentDialogPages[parentDialogPages.length - 1].vm,
             ON_SHOW
           );
         }
+        dialogPageTriggerParentShow(dialogPage, 1);
         if (!dialogPage.$disableEscBack) {
           decrementEscBackPageNum();
         }
@@ -17108,15 +17183,17 @@ const closeDialogPage = (options) => {
       const parentSystemDialogPages = parentPage.vm.$pageLayoutInstance.$systemDialogPages.value;
       const index2 = parentSystemDialogPages.indexOf(dialogPage);
       parentSystemDialogPages.splice(index2, 1);
+      dialogPageTriggerParentShow(dialogPage, 1);
       return;
     }
   } else {
     const dialogPages = currentPage.getDialogPages();
     for (let i = dialogPages.length - 1; i >= 0; i--) {
-      invokeHook(dialogPages[i].$vm, ON_UNLOAD);
+      invokeHook(dialogPages[i].vm, ON_UNLOAD);
       if (i > 0) {
-        invokeHook(dialogPages[i - 1].$vm, ON_SHOW);
+        invokeHook(dialogPages[i - 1].vm, ON_SHOW);
       }
+      dialogPageTriggerParentShow(dialogPages[i]);
       if ((!dialogPages[i]).$disableEscBack) {
         decrementEscBackPageNum();
       }
@@ -17710,315 +17787,318 @@ const _sfc_main$1 = {
   }
 };
 const _style_0 = `
-@font-face {
-    font-family: UniChooseLocationFontFamily;
+@font-face {\r
+    font-family: UniChooseLocationFontFamily;\r
     src: url('data:font/ttf;charset=utf-8;base64,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') format('truetype');
 }
-.uni-choose-location-icons {
-    font-family: "UniChooseLocationFontFamily";
-    font-size: 16px;
+.uni-choose-location-icons {\r
+    font-family: "UniChooseLocationFontFamily";\r
+    font-size: 16px;\r
     font-style: normal;
 }
-.uni-choose-location {
-    position: relative;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    background: #f8f8f8;
+.uni-choose-location {\r
+    position: relative;\r
+    left: 0;\r
+    top: 0;\r
+    width: 100%;\r
+    height: 100%;\r
+    background: #f8f8f8;\r
     z-index: 999;
 }
-.uni-choose-location-map-box {
-    position: relative;
-    width: 100%;
+.uni-choose-location-map-box {\r
+    position: relative;\r
+    width: 100%;\r
     height: 350px;
 }
-.uni-choose-location-map-box.uni-choose-location-vertical {
-    transition-property: transform;
-    transition-duration: 0.25s;
+.uni-choose-location-map-box.uni-choose-location-vertical {\r
+    transition-property: transform;\r
+    transition-duration: 0.25s;\r
     transition-timing-function: ease-out;
 }
-.uni-choose-location-map {
-    width: 100%;
+.uni-choose-location-map {\r
+    width: 100%;\r
     height: 100%;
 }
-.uni-choose-location-map-target {
-    position: absolute;
-    left: 50%;
-    bottom: 50%;
-    width: 50px;
-    height: 50px;
-    margin-left: -25px;
-    transition-property: transform;
-    transition-duration: 0.25s;
+.uni-choose-location-map-target {\r
+    position: absolute;\r
+    left: 50%;\r
+    bottom: 50%;\r
+    width: 50px;\r
+    height: 50px;\r
+    margin-left: -25px;\r
+    transition-property: transform;\r
+    transition-duration: 0.25s;\r
     transition-timing-function: ease-out;
 }
-.uni-choose-location-map-target-icon {
-    font-size: 50px;
+.uni-choose-location-map-target-icon {\r
+    font-size: 50px;\r
     color: #f0493e;
-}
-
+}\r
+\r
   /* #1aad19; #f0493e; #007aff;*/
-.uni-choose-location-map-reset {
-    position: absolute;
-    left: 20px;
-    bottom: 40px;
-    width: 40px;
-    height: 40px;
-    box-sizing: border-box;
-    background-color: #fff;
-    border-radius: 20px;
-    pointer-events: auto;
-    box-shadow: 0px 0px 20px 2px rgba(0, 0, 0, .3);
-    z-index: 9;
-    display: flex;
-    justify-content: center;
+.uni-choose-location-map-reset {\r
+    position: absolute;\r
+    left: 20px;\r
+    bottom: 40px;\r
+    width: 40px;\r
+    height: 40px;\r
+    box-sizing: border-box;\r
+    background-color: #fff;\r
+    border-radius: 20px;\r
+    pointer-events: auto;\r
+    box-shadow: 0px 0px 20px 2px rgba(0, 0, 0, .3);\r
+    z-index: 9;\r
+    display: flex;\r
+    justify-content: center;\r
     align-items: center;
 }
-.uni-choose-location-map-reset.uni-choose-location-vertical {
-    transition-property: transform;
-    transition-duration: 0.25s;
+.uni-choose-location-map-reset.uni-choose-location-vertical {\r
+    transition-property: transform;\r
+    transition-duration: 0.25s;\r
     transition-timing-function: ease-out;
 }
-.uni-choose-location-map-reset-icon {
-    font-size: 26px;
-    text-align: center;
+.uni-choose-location-map-reset-icon {\r
+    font-size: 26px;\r
+    text-align: center;\r
     line-height: 40px;
 }
-.uni-choose-location-nav {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 60px;
-    background-color: rgba(0, 0, 0, 0);
+.uni-choose-location-nav {\r
+    position: absolute;\r
+    top: 0;\r
+    left: 0;\r
+    width: 100%;\r
+    height: 60px;\r
+    background-color: rgba(0, 0, 0, 0);\r
     background-image: linear-gradient(to bottom, rgba(0, 0, 0, .6), rgba(0, 0, 0, 0));
 }
-.uni-choose-location-nav-btn {
-    position: absolute;
-    top: 5px;
-    left: 5px;
-    width: 64px;
-    height: 44px;
+.uni-choose-location-nav-btn {\r
+    position: absolute;\r
+    top: 5px;\r
+    left: 5px;\r
+    width: 64px;\r
+    height: 44px;\r
     padding: 5px;
 }
-.uni-choose-location-nav-btn.uni-choose-location-nav-confirm-btn {
-    left: auto;
+.uni-choose-location-nav-btn.uni-choose-location-nav-confirm-btn {\r
+    left: auto;\r
     right: 5px;
 }
-.uni-choose-location-nav-btn.uni-choose-location-nav-confirm-btn .uni-choose-location-nav-confirm-text {
-    background-color: #007aff;
+.uni-choose-location-nav-btn.uni-choose-location-nav-confirm-btn .uni-choose-location-nav-confirm-text {\r
+    background-color: #007aff;\r
     border-radius: 5px;
 }
-.uni-choose-location-nav-btn.uni-choose-location-nav-confirm-btn.active:active {
+.uni-choose-location-nav-btn.uni-choose-location-nav-confirm-btn.active:active {\r
     opacity: 0.7;
 }
-.uni-choose-location-nav-btn.uni-choose-location-nav-confirm-btn.disable {
+.uni-choose-location-nav-btn.uni-choose-location-nav-confirm-btn.disable {\r
     opacity: 0.4;
 }
-.uni-choose-location-nav-btn.uni-choose-location-nav-back-btn .uni-choose-location-nav-back-text {
+.uni-choose-location-nav-btn.uni-choose-location-nav-back-btn .uni-choose-location-nav-back-text {\r
     color: #fff;
 }
-.uni-choose-location-nav-text {
-    padding: 8px 0px;
-    font-size: 14px;
-    text-align: center;
-
-    letter-spacing: 0.1em;
-
-    color: #fff;
+.uni-choose-location-nav-text {\r
+    padding: 8px 0px;\r
+    font-size: 14px;\r
+    text-align: center;\r
+\r
+    letter-spacing: 0.1em;\r
+\r
+    color: #fff;\r
     text-align: center;
 }
-.uni-choose-location-poi {
-    position: absolute;
-    top: 350px;
-    width: 100%;
-    bottom: 0;
-    background-color: #fff;
+.uni-choose-location-poi {\r
+    position: absolute;\r
+    top: 350px;\r
+    width: 100%;\r
+    bottom: 0;\r
+    background-color: #fff;\r
     z-index: 10
 }
-.uni-choose-location-poi.uni-choose-location-vertical {
-    transition-property: top;
-    transition-duration: 0.25s;
+.uni-choose-location-poi.uni-choose-location-vertical {\r
+    transition-property: top;\r
+    transition-duration: 0.25s;\r
     transition-timing-function: ease-out;
 }
-.uni-choose-location-poi-search {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
-    height: 50px;
-    padding: 8px;
+.uni-choose-location-poi-search {\r
+    display: flex;\r
+    flex-direction: row;\r
+    align-items: center;\r
+    justify-content: center;\r
+    height: 50px;\r
+    padding: 8px;\r
     background-color: #fff;
 }
-.uni-choose-location-poi-search-box {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
-    height: 32px;
-    flex: 1;
-    border-radius: 5px;
-    padding: 0 15px;
+.uni-choose-location-poi-search-box {\r
+    display: flex;\r
+    flex-direction: row;\r
+    align-items: center;\r
+    justify-content: center;\r
+    height: 32px;\r
+    flex: 1;\r
+    border-radius: 5px;\r
+    padding: 0 15px;\r
     background-color: #ededed;
 }
-.uni-choose-location-poi-search-input {
-    flex: 1;
-    height: 100%;
-    border-radius: 5px;
-    padding: 0 5px;
+.uni-choose-location-poi-search-input {\r
+    flex: 1;\r
+    height: 100%;\r
+    border-radius: 5px;\r
+    padding: 0 5px;\r
     background: #ededed;
 }
-.uni-choose-location-poi-search-cancel {
-    margin-left: 5px;
-    color: #007aff;
-    font-size: 15px;
+.uni-choose-location-poi-search-cancel {\r
+    margin-left: 5px;\r
+    color: #007aff;\r
+    font-size: 15px;\r
     text-align: center;
 }
-.uni-choose-location-poi-list {
+.uni-choose-location-poi-list {\r
     flex: 1;
 }
-.uni-choose-location-poi-search-loading {
-    display: flex;
-    align-items: center;
+.uni-choose-location-poi-search-loading {\r
+    display: flex;\r
+    align-items: center;\r
     padding: 10px 0px;
 }
-.uni-choose-location-poi-search-loading-text {
+.uni-choose-location-poi-search-loading-text {\r
     color: #191919;
 }
-.uni-choose-location-poi-search-error {
-    display: flex;
-    align-items: center;
+.uni-choose-location-poi-search-error {\r
+    display: flex;\r
+    align-items: center;\r
     padding: 10px;
 }
-.uni-choose-location-poi-search-error-text {
-    color: #191919;
+.uni-choose-location-poi-search-error-text {\r
+    color: #191919;\r
     font-size: 14px;
 }
-.uni-choose-location-poi-item {
-    position: relative;
-    padding: 15px 10px;
+.uni-choose-location-poi-item {\r
+    position: relative;\r
+    padding: 15px 10px;\r
     padding-right: 40px;
 }
-.uni-choose-location-poi-item-title-text {
-    font-size: 14px;
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
+.uni-choose-location-poi-item-title-text {\r
+    font-size: 14px;\r
+    overflow: hidden;\r
+    white-space: nowrap;\r
+    text-overflow: ellipsis;\r
     color: #191919;
 }
-.uni-choose-location-poi-item-detail-text {
-    font-size: 12px;
-    margin-top: 5px;
-    color: #b2b2b2;
-    overflow: hidden;
-    white-space: nowrap;
+.uni-choose-location-poi-item-detail-text {\r
+    font-size: 12px;\r
+    margin-top: 5px;\r
+    color: #b2b2b2;\r
+    overflow: hidden;\r
+    white-space: nowrap;\r
     text-overflow: ellipsis;
 }
-.uni-choose-location-poi-item-selected-icon {
-    position: absolute;
-    top: 50%;
-    right: 10px;
-    width: 26px;
-    height: 26px;
-    margin-top: -13px;
-    color: #007aff;
+.uni-choose-location-poi-item-selected-icon {\r
+    position: absolute;\r
+    top: 50%;\r
+    right: 10px;\r
+    width: 26px;\r
+    height: 26px;\r
+    margin-top: -13px;\r
+    color: #007aff;\r
     font-size: 24px;
 }
-.uni-choose-location-poi-item-after {
-    position: absolute;
-    height: 1px;
-    left: 10px;
-    bottom: 0px;
-    right: 10px;
-    width: auto;
+.uni-choose-location-poi-item-after {\r
+    position: absolute;\r
+    height: 1px;\r
+    left: 10px;\r
+    bottom: 0px;\r
+    right: 10px;\r
+    width: auto;\r
     border-bottom: 1px solid #f8f8f8;
 }
-.uni-choose-location-search-icon {
-    color: #808080;
+.uni-choose-location-search-icon {\r
+    color: #808080;\r
     padding-left: 5px;
 }
-.uni-choose-location-poi-search-loading-image {
-    width: 30px;
+.uni-choose-location-poi-search-loading-image {\r
+    width: 30px;\r
     height: 30px;
-}
-
+}\r
+\r
   /* 横屏样式开始 */
-.uni-choose-location .uni-choose-location-map-box.uni-choose-location-landscape {
+.uni-choose-location .uni-choose-location-map-box.uni-choose-location-landscape {\r
     height: 100%;
 }
-.uni-choose-location .uni-choose-location-poi.uni-choose-location-landscape {
-    position: absolute;
-    top: 80px;
-    right: 25px;
-    width: 300px;
-    bottom: 20px;
-    max-height: 600px;
-    box-shadow: 0px 0px 20px 2px rgba(0, 0, 0, .3);
+.uni-choose-location .uni-choose-location-poi.uni-choose-location-landscape {\r
+    position: absolute;\r
+    top: 80px;\r
+    right: 25px;\r
+    width: 300px;\r
+    bottom: 20px;\r
+    max-height: 600px;\r
+    box-shadow: 0px 0px 20px 2px rgba(0, 0, 0, .3);\r
     border-radius: 5px;
 }
-.uni-choose-location .uni-choose-location-map-reset.uni-choose-location-landscape {
-    left: 40px;
+.uni-choose-location .uni-choose-location-map-reset.uni-choose-location-landscape {\r
+    left: 40px;\r
     bottom: 40px;
 }
-.uni-choose-location .uni-choose-location-poi-item.uni-choose-location-landscape {
+.uni-choose-location .uni-choose-location-poi-item.uni-choose-location-landscape {\r
     padding: 10px;
 }
-.uni-choose-location .uni-choose-location-nav-btn.uni-choose-location-landscape {
-    top: 10px;
+.uni-choose-location .uni-choose-location-nav-btn.uni-choose-location-landscape {\r
+    top: 10px;\r
     left: 20px;
 }
-.uni-choose-location .uni-choose-location-nav-btn.uni-choose-location-nav-confirm-btn.uni-choose-location-landscape {
-    left: auto;
+.uni-choose-location .uni-choose-location-nav-btn.uni-choose-location-nav-confirm-btn.uni-choose-location-landscape {\r
+    left: auto;\r
     right: 20px;
-}
-
-  /* 横屏样式结束 */
-
+}\r
+\r
+  /* 横屏样式结束 */\r
+\r
   /* 暗黑模式样式开始 */
-.uni-choose-location-dark .uni-choose-location-map-reset {
-    background-color: #111111;
+.uni-choose-location-dark .uni-choose-location-map-reset {\r
+    background-color: #111111;\r
     box-shadow: 0px 0px 5px 1px rgba(0, 0, 0, .3);
 }
-.uni-choose-location-dark .uni-choose-location-poi-search-box {
+.uni-choose-location-dark .uni-choose-location-poi-search-box {\r
     background-color: #111111;
 }
-.uni-choose-location-dark .uni-choose-location-search-icon {
+.uni-choose-location-dark .uni-choose-location-search-icon {\r
     color: #d1d1d1;
 }
-.uni-choose-location-dark .uni-choose-location-poi-search-loading-text {
+.uni-choose-location-dark .uni-choose-location-poi-search-loading-text {\r
     color: #d1d1d1;
 }
-.uni-choose-location-dark .uni-choose-location-poi-search {
+.uni-choose-location-dark .uni-choose-location-poi-search {\r
     background-color: #181818
 }
-.uni-choose-location-dark .uni-choose-location-poi-search-input {
-    background: #111111;
+.uni-choose-location-dark .uni-choose-location-poi-search-input {\r
+    background: #111111;\r
     color: #d1d1d1;
 }
-.uni-choose-location-dark .uni-choose-location-poi-item-title-text {
+.uni-choose-location-dark .uni-choose-location-poi-item-title-text {\r
     color: #d1d1d1;
 }
-.uni-choose-location-dark .uni-choose-location-poi-item-detail-text {
+.uni-choose-location-dark .uni-choose-location-poi-item-detail-text {\r
     color: #595959;
 }
-.uni-choose-location-dark .uni-choose-location-poi {
+.uni-choose-location-dark .uni-choose-location-poi {\r
     background-color: #181818
 }
-.uni-choose-location-dark .uni-choose-location-poi-item-after {
+.uni-choose-location-dark .uni-choose-location-poi-item-after {\r
     border-bottom: 1px solid #1e1e1e;
 }
-.uni-choose-location-dark .uni-choose-location-map-reset-icon {
+.uni-choose-location-dark .uni-choose-location-map-reset-icon {\r
     color: #d1d1d1;
 }
-
+.uni-choose-location-dark .uni-choose-location-poi-search-error-text {\r
+    color: #d1d1d1;
+}\r
+\r
   /* 暗黑模式样式结束 */
-uni-image > div {
-    width: 100%;
-    height: 100%;
+uni-image > div {\r
+    width: 100%;\r
+    height: 100%;\r
     background-repeat: no-repeat;
-}
-
+}\r
+\r
 `;
 const _export_sfc = (sfc, props2) => {
   const target = sfc.__vccOpts || sfc;
@@ -18294,9 +18374,16 @@ function _sfc_render$1(_ctx, _cache, $props, $setup, $data, $options) {
   }, 8, ["class"]);
 }
 const uniChooseLocationPage = /* @__PURE__ */ _export_sfc(_sfc_main$1, [["render", _sfc_render$1], ["styles", [_style_0]]]);
-const chooseLocation = /* @__PURE__ */ defineAsyncApi("chooseLocation", (options, { resolve, reject }) => {
+class ChooseLocationFailImpl extends UniError {
+  constructor(errMsg = "chooseLocation:fail cancel", errCode = 1) {
+    super();
+    this.errCode = errCode;
+    this.errMsg = errMsg;
+  }
+}
+const chooseLocation = (options) => {
   registerSystemRoute("uni:chooseLocation", uniChooseLocationPage);
-  const uuid = Date.now() + "" + Math.floor(Math.random() * 1e7);
+  const uuid = `${Date.now()}${Math.floor(Math.random() * 1e7)}`;
   const baseEventName = `uni_choose_location_${uuid}`;
   const readyEventName = `${baseEventName}_ready`;
   const optionsEventName = `${baseEventName}_options`;
@@ -18306,24 +18393,28 @@ const chooseLocation = /* @__PURE__ */ defineAsyncApi("chooseLocation", (options
     uni.$emit(optionsEventName, JSON.parse(JSON.stringify(options)));
   });
   uni.$on(successEventName, (result) => {
-    resolve(result);
+    var _a, _b;
+    (_a = options.success) == null ? void 0 : _a.call(options, result);
+    (_b = options.complete) == null ? void 0 : _b.call(options, result);
   });
   uni.$on(failEventName, () => {
-    reject("cancel", {
-      errCode: 1
-    });
+    var _a, _b;
+    (_a = options.fail) == null ? void 0 : _a.call(options, new ChooseLocationFailImpl());
+    (_b = options.complete) == null ? void 0 : _b.call(options, new ChooseLocationFailImpl());
   });
   uni.openDialogPage({
     url: `uni:chooseLocation?readyEventName=${readyEventName}&optionsEventName=${optionsEventName}&successEventName=${successEventName}&failEventName=${failEventName}`,
+    triggerParentHide: true,
     fail(err) {
-      var _a;
-      (_a = options.fail) == null ? void 0 : _a.call(options, { errMsg: `chooseLocation:fail ${err.errMsg}`, errCode: 4 });
+      var _a, _b;
+      (_a = options.fail) == null ? void 0 : _a.call(options, new ChooseLocationFailImpl(`chooseLocation:fail ${err.errMsg}`, 4));
+      (_b = options.complete) == null ? void 0 : _b.call(options, new ChooseLocationFailImpl(`chooseLocation:fail ${err.errMsg}`, 4));
       uni.$off(readyEventName);
       uni.$off(successEventName);
       uni.$off(failEventName);
     }
   });
-});
+};
 window.UniResizeObserver = window.ResizeObserver;
 const api = /* @__PURE__ */ Object.defineProperty({
   __proto__: null,
@@ -18331,6 +18422,7 @@ const api = /* @__PURE__ */ Object.defineProperty({
   $off,
   $on,
   $once,
+  __f__,
   addInterceptor,
   addPhoneContact,
   arrayBufferToBase64,
@@ -18897,7 +18989,7 @@ function getNodeInfo(el, fields2) {
     });
   }
   if (fields2.scrollOffset) {
-    if (el.tagName === "UNI-SCROLL-VIEW") {
+    if (el.tagName === "SCROLL-VIEW") {
       const scroll = el.children[0].children[0];
       info.scrollLeft = scroll.scrollLeft;
       info.scrollTop = scroll.scrollTop;
@@ -19276,25 +19368,27 @@ function setupPage(comp) {
         onPageShow(instance2, pageMeta);
       });
       onMounted(() => {
-        var _a, _b;
+        var _a, _b, _c;
         {
           if (instance2.subTree.el) {
             instance2.subTree.el._page = (_a = instance2.proxy) == null ? void 0 : _a.$page;
           }
           const pageInstance = getPageInstanceByChild(instance2);
-          if (pageInstance.attrs["data-type"] === DIALOG_TAG) {
+          if (isDialogPageInstance(pageInstance)) {
             const parentPage = ((_b = instance2.proxy) == null ? void 0 : _b.$page).getParentPage();
             const parentPageInstance = parentPage == null ? void 0 : parentPage.vm.$pageLayoutInstance;
             if (parentPageInstance) {
               const dialogPages = parentPageInstance.$dialogPages.value;
               if (dialogPages.length > 1) {
                 const preDialogPage = dialogPages[dialogPages.length - 2];
-                if (preDialogPage.$vm) {
-                  const { onHide } = preDialogPage.$vm.$;
+                if (preDialogPage.vm) {
+                  const { onHide } = preDialogPage.vm.$;
                   onHide && invokeArrayFns$1(onHide);
                 }
               }
             }
+            dialogPageTriggerParentHide((_c = instance2.proxy) == null ? void 0 : _c.$page);
+            useBackgroundColorContent$1(instance2.proxy);
           }
         }
         onPageReady(instance2);
@@ -19318,7 +19412,7 @@ function setupPage(comp) {
           instance2.__isVisible = false;
           {
             const pageInstance = getPageInstanceByChild(instance2);
-            if (pageInstance.attrs["data-type"] !== DIALOG_TAG) {
+            if (!isDialogPageInstance(pageInstance)) {
               const { onHide } = instance2;
               onHide && invokeArrayFns$1(onHide);
             }
@@ -19348,7 +19442,7 @@ function setupApp(comp) {
       const route = usePageRoute();
       const onLaunch = () => {
         injectAppHooks(instance2);
-        const { onLaunch: onLaunch2, onShow, onPageNotFound: onPageNotFound2, onError: onError2 } = instance2;
+        const { onLaunch: onLaunch2, onShow, onPageNotFound: onPageNotFound2 } = instance2;
         const path = route.path.slice(1);
         const launchOptions2 = initLaunchOptions({
           path: path || __uniRoutes[0].meta.route,
@@ -19365,13 +19459,9 @@ function setupApp(comp) {
               query: {},
               scene: 1001
             };
+            handleBeforeEntryPageRoutes();
             onPageNotFound2 && invokeArrayFns$1(onPageNotFound2, pageNotFoundOptions);
           }
-        }
-        if (onError2) {
-          instance2.appContext.config.errorHandler = (err) => {
-            invokeArrayFns$1(onError2, err);
-          };
         }
       };
       if (__UNI_FEATURE_PAGES__) {
@@ -20256,9 +20346,9 @@ const PageComponent = /* @__PURE__ */ defineSystemComponent({
     {
       currentInstance.$dialogPages = ref([]);
       currentInstance.$systemDialogPages = ref([]);
-      useBackgroundColorContent(pageMeta);
       if (isDialogPageInstance(ctx)) {
         navigationBar.style = "custom";
+        pageMeta.backgroundColorContent = "transparent";
         pageMeta.route = ctx.attrs.route;
         const parentInstance = inject(
           "parentInstance"
@@ -20279,6 +20369,7 @@ const PageComponent = /* @__PURE__ */ defineSystemComponent({
           }
         }
       } else {
+        useBackgroundColorContent(pageMeta);
         provide("parentInstance", currentInstance);
       }
     }
@@ -26094,6 +26185,11 @@ const __syscom_5 = /* @__PURE__ */ defineBuiltInComponent({
             _scrollTopChanged(val);
           }
         },
+        scrollTo: {
+          get() {
+            return main.value.scrollTo.bind(main.value);
+          }
+        },
         scrollBy: {
           get() {
             return main.value.scrollBy.bind(main.value);
@@ -28961,16 +29057,21 @@ function $callMethod(method, ...args) {
   return null;
 }
 function createErrorHandler(app) {
-  return function errorHandler(err, instance2, _info) {
-    if (!instance2) {
-      throw err;
+  const userErrorHandler = app.config.errorHandler;
+  return function errorHandler(err, instance2, info) {
+    if (userErrorHandler) {
+      userErrorHandler(err, instance2, info);
     }
     const appInstance = app._instance;
     if (!appInstance || !appInstance.proxy) {
       throw err;
     }
-    {
-      invokeHook(appInstance.proxy, ON_ERROR, err);
+    if (appInstance[ON_ERROR]) {
+      {
+        invokeHook(appInstance.proxy, ON_ERROR, err);
+      }
+    } else {
+      logError(err, info, instance2 ? instance2.$.vnode : null, false);
     }
   };
 }
@@ -29056,7 +29157,7 @@ function uniIdMixin(globalProperties) {
   };
 }
 function initApp(app) {
-  const appConfig = app._context.config;
+  const appConfig = app.config;
   appConfig.errorHandler = invokeCreateErrorHandler(app, createErrorHandler);
   initOptionMergeStrategies(appConfig.optionMergeStrategies);
   const globalProperties = appConfig.globalProperties;
@@ -29284,6 +29385,7 @@ export {
   index$m as Video,
   __syscom_2 as View,
   indexX$3 as WebView,
+  __f__,
   addInterceptor,
   addPhoneContact,
   arrayBufferToBase64,

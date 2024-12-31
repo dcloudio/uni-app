@@ -54,8 +54,8 @@ function checkOptionSource(
   options: LoadFontFaceOptions,
   res: AsyncApiRes<UniNamespace.LoadFontFaceOptions>
 ): boolean {
-  options.source = removeUrlWrap(options.source)
-  if (!SOURCE_REG.test(options.source)) {
+  options.source = removeUrlWrap(options.source as string)
+  if (!SOURCE_REG.test(options.source as string)) {
     // const err = new LoadFontFaceErrorImpl(
     //   'loadFontFace:fail, source is invalid.',
     //   101

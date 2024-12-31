@@ -189,6 +189,10 @@ describe('uvue-styler: normalize', () => {
     color: rgb(266,0,255);
     background-color: rgba(234,45,99,1.3)
   }
+  .color-length-8 {
+    color: #aaffffaa;
+    background-color: #aaffffaa
+  }
   `)
     expect(json).toEqual({
       foo: {
@@ -218,6 +222,12 @@ describe('uvue-styler: normalize', () => {
       transparent: {
         '': {
           color: 'rgba(0,0,0,0)',
+        },
+      },
+      'color-length-8': {
+        '': {
+          color: '#aaffffaa',
+          backgroundColor: '#aaffffaa',
         },
       },
     })

@@ -3,6 +3,7 @@ import {
   capitalize,
   extend,
   hasOwn,
+  isArray,
   isPlainObject,
   isString,
 } from '@vue/shared'
@@ -33,8 +34,20 @@ function parseComponentPublicInstance(obj: any) {
   }
 }
 
+function serializeArrayBuffer(obj: ArrayBuffer) {
+  // @ts-expect-error ios 提供了 ArrayBufferWrapper 类来处理 ArrayBuffer 的传递
+  if (typeof ArrayBufferWrapper !== 'undefined') {
+    // @ts-expect-error
+    return { __type__: 'ArrayBuffer', value: new ArrayBufferWrapper(obj) }
+  }
+  return { __type__: 'ArrayBuffer', value: obj }
+}
+
 // 序列化 UniElement | ComponentPublicInstance
-function serialize(el: any, type: 'UniElement' | 'ComponentPublicInstance') {
+function serializeUniElement(
+  el: any,
+  type: 'UniElement' | 'ComponentPublicInstance'
+) {
   let nodeId = ''
   let pageId = ''
   // 非 x 可能不存在 getNodeId 方法？
@@ -42,7 +55,7 @@ function serialize(el: any, type: 'UniElement' | 'ComponentPublicInstance') {
     pageId = el.pageId
     nodeId = el.getNodeId()
   }
-  return { pageId, nodeId, __type__: type }
+  return { __type__: type, pageId, nodeId }
 }
 
 function toRaw(observed?: unknown): unknown {
@@ -53,7 +66,11 @@ function toRaw(observed?: unknown): unknown {
 export function normalizeArg(
   arg: unknown,
   callbacks: Record<string, Function>,
-  keepAlive: boolean
+  keepAlive: boolean,
+  context: {
+    depth: number
+    nested: boolean
+  }
 ) {
   arg = toRaw(arg)
   if (typeof arg === 'function') {
@@ -68,7 +85,15 @@ export function normalizeArg(
       callbacks[id] = arg
     }
     return id
+  } else if (isArray(arg)) {
+    context.depth++
+    return arg.map((item) => normalizeArg(item, callbacks, keepAlive, context))
     // 为啥还要额外判断了isUniElement?，isPlainObject不是包含isUniElement的逻辑吗？为了避免出bug，保留此逻辑
+  } else if (arg instanceof ArrayBuffer) {
+    if (context.depth > 0) {
+      context.nested = true
+    }
+    return serializeArrayBuffer(arg)
   } else if (isPlainObject(arg) || isUniElement(arg)) {
     const uniElement = parseElement(arg)
     const componentPublicInstanceUniElement = !uniElement
@@ -76,7 +101,10 @@ export function normalizeArg(
       : undefined
     const el = uniElement || componentPublicInstanceUniElement
     if (el) {
-      return serialize(
+      if (context.depth > 0) {
+        context.nested = true
+      }
+      return serializeUniElement(
         el,
         uniElement ? 'UniElement' : 'ComponentPublicInstance'
       )
@@ -90,7 +118,13 @@ export function normalizeArg(
       // newObj.a = 2 // 这会污染原始对象 obj
       const newArg = {}
       Object.keys(arg as object).forEach((name) => {
-        newArg[name] = normalizeArg((arg as any)[name], callbacks, keepAlive)
+        context.depth++
+        newArg[name] = normalizeArg(
+          (arg as any)[name],
+          callbacks,
+          keepAlive,
+          context
+        )
       })
       return newArg
     }
@@ -234,6 +268,10 @@ interface InvokeInstanceArgs extends ModuleOptions {
    */
   keepAlive: boolean
   /**
+   * 参数中是否包含嵌套序列化对象
+   */
+  nested: boolean
+  /**
    * 执行方法时的真实参数列表
    */
   params?: unknown[]
@@ -267,6 +305,10 @@ interface InvokeStaticArgs extends ModuleOptions {
    * 回调是否持久保留
    */
   keepAlive: boolean
+  /**
+   * 参数中是否包含嵌套序列化对象
+   */
+  nested: boolean
   /**
    * 执行方法时的真实参数列表
    */
@@ -455,6 +497,7 @@ function initProxyFunction(
         type,
         name: methodName,
         method: methodParams,
+        nested: false,
         keepAlive,
       }
     : {
@@ -466,6 +509,7 @@ function initProxyFunction(
         type,
         companion,
         method: methodParams,
+        nested: false,
         keepAlive,
       }
   return (...args: unknown[]) => {
@@ -491,9 +535,18 @@ function initProxyFunction(
         )
       }
     }
+    const context = {
+      depth: 0,
+      nested: false,
+    }
     const invokeArgs = extend({}, baseArgs, {
-      params: args.map((arg) => normalizeArg(arg, callbacks, keepAlive)),
+      params: args.map((arg) =>
+        normalizeArg(arg, callbacks, keepAlive, context)
+      ),
     })
+
+    invokeArgs.nested = context.nested
+
     if (async) {
       return new Promise((resolve, reject) => {
         if (__DEV__) {
@@ -680,6 +733,7 @@ export function initUTSProxyClass(
                 id: instance.__instanceId,
                 type: 'getter',
                 keepAlive: false,
+                nested: false,
                 name: name as string,
                 errMsg,
               })
@@ -715,83 +769,85 @@ export function initUTSProxyClass(
           return false
         },
       })
-      return proxy
+      return Object.freeze(proxy)
     }
   }
   const staticPropSetterCache: Record<string, Function> = {}
   const staticMethodCache: Record<string, Function> = {}
-  return new Proxy(ProxyClass, {
-    get(target, name, receiver) {
-      name = parseClassMethodName(name, staticMethods)
-      if (hasOwn(staticMethods, name)) {
-        if (!staticMethodCache[name as string]) {
-          const {
-            async,
-            keepAlive,
-            params,
-            return: returnOptions,
-          } = staticMethods[name]
-          // 静态方法
-          staticMethodCache[name] = initUTSStaticMethod(
-            !!async,
-            extend(
-              {
-                name,
-                companion: true,
-                keepAlive,
-                params,
-                return: returnOptions,
-              },
-              baseOptions
-            )
-          )
-        }
-        return staticMethodCache[name]
-      }
-      if (staticProps.includes(name as string)) {
-        return invokePropGetter(
-          extend(
-            {
-              name: name as string,
-              companion: true,
-              type: 'getter',
-            },
-            baseOptions
-          ) as InvokeStaticArgs
-        )
-      }
-      return Reflect.get(target, name, receiver)
-    },
-    set(_, name, newValue) {
-      if (staticProps.includes(name as string)) {
-        // 静态属性
-        const setter = parseClassPropertySetter(name as string)
-        if (!staticPropSetterCache[setter]) {
-          const param = staticSetters[name as string]
-          if (param) {
-            staticPropSetterCache[setter] = initProxyFunction(
-              'setter',
-              false,
+  return Object.freeze(
+    new Proxy(ProxyClass, {
+      get(target, name, receiver) {
+        name = parseClassMethodName(name, staticMethods)
+        if (hasOwn(staticMethods, name)) {
+          if (!staticMethodCache[name as string]) {
+            const {
+              async,
+              keepAlive,
+              params,
+              return: returnOptions,
+            } = staticMethods[name]
+            // 静态方法
+            staticMethodCache[name] = initUTSStaticMethod(
+              !!async,
               extend(
                 {
-                  name: name as string,
-                  keepAlive: false,
-                  params: [param],
+                  name,
+                  companion: true,
+                  keepAlive,
+                  params,
+                  return: returnOptions,
                 },
                 baseOptions
-              ),
-              0
+              )
             )
           }
+          return staticMethodCache[name]
         }
-        staticPropSetterCache[parseClassPropertySetter(name as string)](
-          newValue
-        )
-        return true
-      }
-      return false
-    },
-  })
+        if (staticProps.includes(name as string)) {
+          return invokePropGetter(
+            extend(
+              {
+                name: name as string,
+                companion: true,
+                type: 'getter',
+              },
+              baseOptions
+            ) as InvokeStaticArgs
+          )
+        }
+        return Reflect.get(target, name, receiver)
+      },
+      set(_, name, newValue) {
+        if (staticProps.includes(name as string)) {
+          // 静态属性
+          const setter = parseClassPropertySetter(name as string)
+          if (!staticPropSetterCache[setter]) {
+            const param = staticSetters[name as string]
+            if (param) {
+              staticPropSetterCache[setter] = initProxyFunction(
+                'setter',
+                false,
+                extend(
+                  {
+                    name: name as string,
+                    keepAlive: false,
+                    params: [param],
+                  },
+                  baseOptions
+                ),
+                0
+              )
+            }
+          }
+          staticPropSetterCache[parseClassPropertySetter(name as string)](
+            newValue
+          )
+          return true
+        }
+        return false
+      },
+    })
+  )
 }
 
 function isUTSAndroid() {
