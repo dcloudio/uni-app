@@ -1,6 +1,6 @@
 {
   "name": "@dcloudio/uni-mp-jd",
-  "version": "3.0.0-alpha-4040420241231001",
+  "version": "3.0.0-4040420241231001",
   "description": "uni-app mp-jd",
   "main": "dist/index.js",
   "files": [
