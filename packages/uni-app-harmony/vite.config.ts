@@ -12,7 +12,7 @@ import babel from '@rollup/plugin-babel'
 import { capitalize, cssTarget, parseInjects } from '@dcloudio/uni-cli-shared'
 import { isH5CustomElement } from '@dcloudio/uni-shared'
 import { resolveExtApiTempDir } from '../../scripts/ext-api'
-import { ExtApiBlackListX, StandaloneExtApi } from './src/compiler/constants'
+import { ExtApiBlackList, ExtApiBlackListX, StandaloneExtApi } from './src/compiler/constants'
 
 function resolve(file: string) {
   return path.resolve(__dirname, file)
@@ -243,7 +243,11 @@ function generateExtApiSourceCode(isUniAppX = false) {
   const extApiStandaloneBuildJson: IStandaloneExtApi[] = []
 
   for (const extApi in extApiStore) {
-    if (isUniAppX && ExtApiBlackListX.includes(extApi)) {
+    if (isUniAppX) {
+      if (ExtApiBlackListX.includes(extApi)) {
+        continue
+      }
+    } else if (ExtApiBlackList.includes(extApi)) {
       continue
     }
     const extApiPath = extApiStore[extApi]
