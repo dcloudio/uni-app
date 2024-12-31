@@ -6,7 +6,8 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": true
+          "swift": true,
+          "arkts": false
         }
       },
       "createInterstitialAd": {
@@ -14,7 +15,8 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": false
+          "swift": false,
+          "arkts": false
         }
       }
     },
