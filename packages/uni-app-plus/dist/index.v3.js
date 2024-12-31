@@ -414,6 +414,7 @@ var serviceContext = (function () {
   const _toString = Object.prototype.toString;
   const hasOwnProperty = Object.prototype.hasOwnProperty;
 
+  const isArray = Array.isArray;
   const extend = Object.assign;
 
   function isFn (fn) {
@@ -953,7 +954,7 @@ var serviceContext = (function () {
   };
 
   const SYNC_API_RE =
-    /^\$|Window$|WindowStyle$|sendHostEvent|sendNativeEvent|restoreGlobal|requireGlobal|getCurrentSubNVue|getMenuButtonBoundingClientRect|^report|interceptors|Interceptor$|getSubNVueById|requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64|getLocale|setLocale|invokePushCallback|getWindowInfo|getDeviceInfo|getAppBaseInfo|getSystemSetting|getAppAuthorizeSetting|initUTS|requireUTS|registerUTS/;
+    /^\$|Window$|WindowStyle$|sendHostEvent|sendNativeEvent|restoreGlobal|requireGlobal|getCurrentSubNVue|getMenuButtonBoundingClientRect|^report|interceptors|Interceptor$|getSubNVueById|requireNativePlugin|rpx2px|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64|getLocale|setLocale|invokePushCallback|getWindowInfo|getDeviceInfo|getAppBaseInfo|getSystemSetting|getAppAuthorizeSetting|initUTS|requireUTS|registerUTS/;
 
   const CONTEXT_API_RE = /^create|Manager$/;
 
@@ -10598,8 +10599,16 @@ var serviceContext = (function () {
           return obj.$el;
       }
   }
+  function serializeArrayBuffer(obj) {
+      // @ts-expect-error ios 提供了 ArrayBufferWrapper 类来处理 ArrayBuffer 的传递
+      if (typeof ArrayBufferWrapper !== 'undefined') {
+          // @ts-expect-error
+          return { __type__: 'ArrayBuffer', value: new ArrayBufferWrapper(obj) };
+      }
+      return { __type__: 'ArrayBuffer', value: obj };
+  }
   // 序列化 UniElement | ComponentPublicInstance
-  function serialize(el, type) {
+  function serializeUniElement(el, type) {
       let nodeId = '';
       let pageId = '';
       // 非 x 可能不存在 getNodeId 方法？
@@ -10607,13 +10616,13 @@ var serviceContext = (function () {
           pageId = el.pageId;
           nodeId = el.getNodeId();
       }
-      return { pageId, nodeId, __type__: type };
+      return { __type__: type, pageId, nodeId };
   }
   function toRaw(observed) {
       const raw = observed && observed.__v_raw;
       return raw ? toRaw(raw) : observed;
   }
-  function normalizeArg(arg, callbacks, keepAlive) {
+  function normalizeArg(arg, callbacks, keepAlive, context) {
       arg = toRaw(arg);
       if (typeof arg === 'function') {
           let id;
@@ -10628,7 +10637,17 @@ var serviceContext = (function () {
               callbacks[id] = arg;
           }
           return id;
+      }
+      else if (isArray(arg)) {
+          context.depth++;
+          return arg.map((item) => normalizeArg(item, callbacks, keepAlive, context));
           // 为啥还要额外判断了isUniElement?，isPlainObject不是包含isUniElement的逻辑吗？为了避免出bug，保留此逻辑
+      }
+      else if (arg instanceof ArrayBuffer) {
+          if (context.depth > 0) {
+              context.nested = true;
+          }
+          return serializeArrayBuffer(arg);
       }
       else if (isPlainObject(arg) || isUniElement(arg)) {
           const uniElement = parseElement(arg);
@@ -10637,7 +10656,10 @@ var serviceContext = (function () {
               : undefined;
           const el = uniElement || componentPublicInstanceUniElement;
           if (el) {
-              return serialize(el, uniElement ? 'UniElement' : 'ComponentPublicInstance');
+              if (context.depth > 0) {
+                  context.nested = true;
+              }
+              return serializeUniElement(el, uniElement ? 'UniElement' : 'ComponentPublicInstance');
           }
           else {
               // 必须复制，否则会污染原始对象，比如：
@@ -10649,7 +10671,8 @@ var serviceContext = (function () {
               // newObj.a = 2 // 这会污染原始对象 obj
               const newArg = {};
               Object.keys(arg).forEach((name) => {
-                  newArg[name] = normalizeArg(arg[name], callbacks, keepAlive);
+                  context.depth++;
+                  newArg[name] = normalizeArg(arg[name], callbacks, keepAlive, context);
               });
               return newArg;
           }
@@ -10731,6 +10754,7 @@ var serviceContext = (function () {
               type,
               name: methodName,
               method: methodParams,
+              nested: false,
               keepAlive,
           }
           : {
@@ -10742,6 +10766,7 @@ var serviceContext = (function () {
               type,
               companion,
               method: methodParams,
+              nested: false,
               keepAlive,
           };
       return (...args) => {
@@ -10763,9 +10788,14 @@ var serviceContext = (function () {
                   console.error(`uts插件[${moduleName}] ${pkg}${cls}.${methodName.replace('ByJs', '')} ${name}回调函数已释放，不能再次执行，参考文档：https://doc.dcloud.net.cn/uni-app-x/plugin/uts-plugin.html#keepalive`);
               }
           };
+          const context = {
+              depth: 0,
+              nested: false,
+          };
           const invokeArgs = extend({}, baseArgs, {
-              params: args.map((arg) => normalizeArg(arg, callbacks, keepAlive)),
+              params: args.map((arg) => normalizeArg(arg, callbacks, keepAlive, context)),
           });
+          invokeArgs.nested = context.nested;
           if (async) {
               return new Promise((resolve, reject) => {
                   if ((process.env.NODE_ENV !== 'production')) {
@@ -10899,6 +10929,7 @@ var serviceContext = (function () {
                                   id: instance.__instanceId,
                                   type: 'getter',
                                   keepAlive: false,
+                                  nested: false,
                                   name: name,
                                   errMsg,
                               });
@@ -10925,12 +10956,12 @@ var serviceContext = (function () {
                       return false;
                   },
               });
-              return proxy;
+              return Object.freeze(proxy);
           }
       };
       const staticPropSetterCache = {};
       const staticMethodCache = {};
-      return new Proxy(ProxyClass, {
+      return Object.freeze(new Proxy(ProxyClass, {
           get(target, name, receiver) {
               name = parseClassMethodName(name, staticMethods);
               if (hasOwn(staticMethods, name)) {
@@ -10975,7 +11006,7 @@ var serviceContext = (function () {
               }
               return false;
           },
-      });
+      }));
   }
   function isUTSAndroid() {
       return typeof plus !== 'undefined' && plus.os.name === 'Android';

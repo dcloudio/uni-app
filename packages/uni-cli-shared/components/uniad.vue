@@ -6,7 +6,12 @@
       @load="_onmpload"
       @close="_onmpclose"
       @error="_onmperror"
+      @nextChannel="_onnextchannel"
     />
+    <!-- #ifdef MP-WEIXIN -->
+    <ad-custom v-if="userwx" :unit-id="userUnitId" class="uni-ad-custom" :class="[customFullscreen]"></ad-custom>
+    <uniad-plugin-wx v-if="wxchannel" class="uniad-plugin-wx" @error="_onwxchannelerror"></uniad-plugin-wx>
+    <!-- #endif -->
   </view>
 </template>
 
@@ -26,3 +31,9 @@ export default {
   }
 }
 </script>
+
+<style>
+.uni-ad-custom-fullscreen {
+  height: 100vh;
+}
+</style>

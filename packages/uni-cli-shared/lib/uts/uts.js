@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.tscOutDir = exports.uvueOutDir = exports.genUniExtApiDeclarationFileOnce = exports.initUTSSwiftAutoImportsOnce = exports.initUTSKotlinAutoImportsOnce = exports.resolveUniTypeScript = exports.parseUniExtApiNamespacesJsOnce = exports.parseUniExtApiNamespacesOnce = exports.parseSwiftPackageWithPluginId = exports.parseKotlinPackageWithPluginId = exports.initUTSComponents = exports.parseUTSComponent = exports.getUTSComponentAutoImports = exports.isUTSComponent = exports.resolveUTSCompiler = exports.resolveUTSModule = exports.resolveUTSAppModule = void 0;
+exports.isUniHelpers = exports.isUTSProxy = exports.tscOutDir = exports.uvueOutDir = exports.genUniExtApiDeclarationFileOnce = exports.initUTSSwiftAutoImportsOnce = exports.initUTSKotlinAutoImportsOnce = exports.resolveUniTypeScript = exports.parseUniExtApiNamespacesJsOnce = exports.parseUniExtApiNamespacesOnce = exports.parseSwiftPackageWithPluginId = exports.parseKotlinPackageWithPluginId = exports.initUTSComponents = exports.parseUTSComponent = exports.getUTSComponentAutoImports = exports.isUTSComponent = exports.resolveUTSCompilerVersion = exports.resolveUTSCompiler = exports.resolveUTSModule = exports.resolveUTSAppModule = void 0;
 // 重要，该文件编译后的 js 需要同步到 vue2 编译器 uni-cli-shared/lib/uts
 const fs_extra_1 = __importDefault(require("fs-extra"));
 const path_1 = __importDefault(require("path"));
@@ -105,8 +105,12 @@ function resolveUTSFile(dir, extensions = ['.uts', '.ts', '.js']) {
         }
     }
 }
-function resolveUTSCompiler() {
+function resolveUTSCompiler(throwError = false) {
     let compilerPath = '';
+    if (process.env.UNI_COMPILE_TARGET === 'ext-api' &&
+        process.env.UNI_APP_NEXT_WORKSPACE) {
+        return require(path_1.default.resolve(process.env.UNI_APP_NEXT_WORKSPACE, 'packages/uni-uts-v1'));
+    }
     if ((0, hbx_1.isInHBuilderX)()) {
         try {
             compilerPath = require.resolve(path_1.default.resolve(process.env.UNI_HBUILDERX_PLUGINS, 'uniapp-uts-v1'));
@@ -120,27 +124,34 @@ function resolveUTSCompiler() {
             });
         }
         catch (e) {
-            let utsCompilerVersion = '';
-            try {
-                utsCompilerVersion = require('../package.json').version;
+            if (throwError) {
+                throw `Error: Cannot find module '@dcloudio/uni-uts-v1'`;
             }
-            catch (e) {
-                try {
-                    // vue2
-                    utsCompilerVersion = require('../../package.json').version;
-                }
-                catch (e) { }
-            }
-            if (utsCompilerVersion.startsWith('2.0.')) {
-                utsCompilerVersion = '^3.0.0-alpha-3060920221117001';
-            }
-            console.error((0, utils_1.installDepTips)('devDependencies', '@dcloudio/uni-uts-v1', utsCompilerVersion));
+            console.error((0, utils_1.installDepTips)('devDependencies', '@dcloudio/uni-uts-v1', resolveUTSCompilerVersion()));
             process.exit(0);
         }
     }
     return require(compilerPath);
 }
 exports.resolveUTSCompiler = resolveUTSCompiler;
+function resolveUTSCompilerVersion() {
+    let utsCompilerVersion = '';
+    try {
+        utsCompilerVersion = require('../package.json').version;
+    }
+    catch (e) {
+        try {
+            // vue2
+            utsCompilerVersion = require('../../package.json').version;
+        }
+        catch (e) { }
+    }
+    if (utsCompilerVersion.startsWith('2.0.')) {
+        utsCompilerVersion = '^3.0.0-alpha-3060920221117001';
+    }
+    return utsCompilerVersion;
+}
+exports.resolveUTSCompilerVersion = resolveUTSCompilerVersion;
 const utsComponents = new Map();
 function isUTSComponent(name) {
     return utsComponents.has(name);
@@ -189,9 +200,14 @@ function initUTSComponents(inputDir, platform) {
             ? path_1.default.basename(path_1.default.dirname(dir))
             : path_1.default.basename(dir);
         if (is_uni_modules_utssdk || is_ussdk) {
+            // dir 是 uni_modules/test-plugin/utssdk 或者 utssdk/test-plugin
+            // 需要分平台解析，不能直接解析 utssdk 目录下的文件，因为 utssdk 目录下可能存在多个平台的文件
+            const cwd = isApp
+                ? dir
+                : path_1.default.join(dir, platform === 'h5' ? 'web' : platform);
             fast_glob_1.default
                 .sync('**/*.vue', {
-                cwd: dir,
+                cwd,
                 absolute: true,
             })
                 .forEach((file) => {
@@ -235,17 +251,19 @@ exports.initUTSComponents = initUTSComponents;
 function resolveUTSComponentDirs(inputDir) {
     const utssdkDir = path_1.default.resolve(inputDir, 'utssdk');
     const uniModulesDir = path_1.default.resolve(inputDir, 'uni_modules');
-    return fast_glob_1.default
-        .sync('*', {
-        cwd: utssdkDir,
-        absolute: true,
-        onlyDirectories: true,
-    })
-        .concat(fast_glob_1.default.sync('*/utssdk', {
-        cwd: uniModulesDir,
-        absolute: true,
-        onlyDirectories: true,
-    }));
+    return (fs_extra_1.default.existsSync(utssdkDir)
+        ? fast_glob_1.default.sync('*', {
+            cwd: utssdkDir,
+            absolute: true,
+            onlyDirectories: true,
+        })
+        : []).concat(fs_extra_1.default.existsSync(uniModulesDir)
+        ? fast_glob_1.default.sync('*/utssdk', {
+            cwd: uniModulesDir,
+            absolute: true,
+            onlyDirectories: true,
+        })
+        : []);
 }
 const nameRE = /name\s*:\s*['|"](.*)['|"]/;
 function parseVueComponentName(file) {
@@ -434,3 +452,13 @@ function tscOutDir(platform) {
     return path_1.default.join(process.env.UNI_APP_X_TSC_DIR, platform);
 }
 exports.tscOutDir = tscOutDir;
+const UTSProxyRE = /\?uts-proxy$/;
+const UniHelpersRE = /\?uni_helpers$/;
+function isUTSProxy(id) {
+    return UTSProxyRE.test(id);
+}
+exports.isUTSProxy = isUTSProxy;
+function isUniHelpers(id) {
+    return UniHelpersRE.test(id);
+}
+exports.isUniHelpers = isUniHelpers;

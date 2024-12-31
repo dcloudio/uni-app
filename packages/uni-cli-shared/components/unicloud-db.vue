@@ -393,7 +393,7 @@
           needLoading: true,
           loadingTitle: ''
         }, options);
-        if (!options.needConfirm) {
+        if (options.needConfirm) {
           uni.showModal({
             title: options.confirmTitle || t('uniCloud.component.update.showModal.title'),
             content: options.confirmContent || t('uniCloud.component.update.showModal.content'),
