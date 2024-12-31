@@ -4,6 +4,7 @@ import {
   conditionalExpression,
   identifier,
   isStringLiteral,
+  logicalExpression,
   memberExpression,
   stringLiteral,
 } from '@babel/types'
@@ -64,10 +65,29 @@ export function rewriteId(
         value: '',
       })
     ) {
+      /**
+       * 组件属性中声明id属性时，id不会被绑定到element上。`'id' in _ctx.$.type.props`
+       * virtualHostId存在且id不在props内时，virtualHostId绑定到element上
+       * TODO class、style也有类似的问题，但是用法并不常见，暂时遗留
+       */
       idBindingExpr = conditionalExpression(
-        binaryExpression('!==', genVirtualHostId(isX), stringLiteral('')),
-        genVirtualHostId(isX),
-        idBindingExpr
+        logicalExpression(
+          '||',
+          binaryExpression(
+            'in',
+            stringLiteral('id'),
+            memberExpression(
+              memberExpression(
+                memberExpression(identifier('_ctx'), identifier('$')),
+                identifier('type')
+              ),
+              identifier('props')
+            )
+          ),
+          binaryExpression('===', genVirtualHostId(isX), stringLiteral(''))
+        ),
+        idBindingExpr,
+        genVirtualHostId(isX)
       )
     } else {
       idBindingExpr = genVirtualHostId(isX)
