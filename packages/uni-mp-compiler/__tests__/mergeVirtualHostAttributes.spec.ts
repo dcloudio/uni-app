@@ -139,25 +139,25 @@ describe('complier: options with mergeVirtualHostAttributes', () => {
   test('root node id with mergeVirtualHostAttributes', () => {
     assert(
       `<image id="id1"/>`,
-      `<image class=\"{{[virtualHostClass]}}\" style=\"{{virtualHostStyle}}\" hidden=\"{{virtualHostHidden}}\" id=\"{{'id' in _ctx.$.type.props || virtualHostId === '' ? 'id1' : virtualHostId}}\"/>`,
+      `<image class=\"{{[virtualHostClass]}}\" style=\"{{virtualHostStyle}}\" hidden=\"{{virtualHostHidden}}\" id=\"{{a || virtualHostId === '' ? 'id1' : virtualHostId}}\"/>`,
       `(_ctx, _cache) => {
-  return {}
+  return { a: 'id' in _ctx.$.type.props }
 }`,
       options
     )
     assert(
       `<image :id="id1"/>`,
-      `<image id=\"{{'id' in _ctx.$.type.props || virtualHostId === '' ? a : virtualHostId}}\" class=\"{{[virtualHostClass]}}\" style=\"{{virtualHostStyle}}\" hidden=\"{{virtualHostHidden}}\"/>`,
+      `<image id=\"{{b || virtualHostId === '' ? a : virtualHostId}}\" class=\"{{[virtualHostClass]}}\" style=\"{{virtualHostStyle}}\" hidden=\"{{virtualHostHidden}}\"/>`,
       `(_ctx, _cache) => {
-  return { a: _ctx.id1 }
+  return { a: _ctx.id1, b: 'id' in _ctx.$.type.props }
 }`,
       options
     )
     assert(
       `<image id="id1" :id="id1"/>`,
-      `<image id=\"{{'id' in _ctx.$.type.props || virtualHostId === '' ? 'id1' : virtualHostId}}\" class=\"{{[virtualHostClass]}}\" style=\"{{virtualHostStyle}}\" hidden=\"{{virtualHostHidden}}\"/>`,
+      `<image id=\"{{a || virtualHostId === '' ? 'id1' : virtualHostId}}\" class=\"{{[virtualHostClass]}}\" style=\"{{virtualHostStyle}}\" hidden=\"{{virtualHostHidden}}\"/>`,
       `(_ctx, _cache) => {
-  return {}
+  return { a: 'id' in _ctx.$.type.props }
 }`,
       options
     )

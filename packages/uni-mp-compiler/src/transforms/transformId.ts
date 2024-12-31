@@ -1,5 +1,7 @@
 import {
+  type BinaryExpression,
   type Expression,
+  type Identifier,
   binaryExpression,
   conditionalExpression,
   identifier,
@@ -70,20 +72,29 @@ export function rewriteId(
        * virtualHostId存在且id不在props内时，virtualHostId绑定到element上
        * TODO class、style也有类似的问题，但是用法并不常见，暂时遗留
        */
+      let idInPropsExpr: BinaryExpression | Identifier = binaryExpression(
+        'in',
+        stringLiteral('id'),
+        memberExpression(
+          memberExpression(
+            memberExpression(identifier('_ctx'), identifier('$')),
+            identifier('type')
+          ),
+          identifier('props')
+        )
+      )
+      if (!isX) {
+        idInPropsExpr = identifier(
+          rewriteExpression(
+            createSimpleExpression(genBabelExpr(idInPropsExpr)),
+            context
+          ).content
+        )
+      }
       idBindingExpr = conditionalExpression(
         logicalExpression(
           '||',
-          binaryExpression(
-            'in',
-            stringLiteral('id'),
-            memberExpression(
-              memberExpression(
-                memberExpression(identifier('_ctx'), identifier('$')),
-                identifier('type')
-              ),
-              identifier('props')
-            )
-          ),
+          idInPropsExpr,
           binaryExpression('===', genVirtualHostId(isX), stringLiteral(''))
         ),
         idBindingExpr,
