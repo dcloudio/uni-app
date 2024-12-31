@@ -20,6 +20,8 @@ import {
 } from '../../../framework/setup/page'
 import type { RouteLocationNormalizedLoadedGeneric } from 'vue-router'
 import { isDialogPageInstance } from '../helpers/utils'
+import { getWindowInfo } from '../../../service/api/device/getWindowInfo'
+import type { SafeArea, SafeAreaInsets } from '@dcloudio/uni-app-x/types/uni'
 
 let escBackPageNum = 0
 type PageStyle = {
@@ -41,6 +43,18 @@ class UniPageImpl implements UniPage {
   options: UTSJSONObject
   vm: ComponentPublicInstance | null
   $vm: ComponentPublicInstance | null
+  get innerWidth(): number {
+    return getWindowInfo().windowWidth
+  }
+  get innerHeight(): number {
+    return getWindowInfo().windowHeight
+  }
+  get safeArea(): SafeArea {
+    return getWindowInfo().safeArea
+  }
+  get safeAreaInsets(): SafeAreaInsets {
+    return getWindowInfo().safeAreaInsets
+  }
   getPageStyle(): UTSJSONObject {
     const pageMeta = this.vm?.$basePage.meta
     return pageMeta
