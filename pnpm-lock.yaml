@@ -30,8 +30,8 @@ importers:
         specifier: workspace:*
         version: link:packages/uni-app
       '@dcloudio/uni-app-x':
-        specifier: ^0.7.39
-        version: 0.7.39
+        specifier: ^0.7.41
+        version: 0.7.41
       '@dcloudio/uni-nvue-styler':
         specifier: workspace:*
         version: link:packages/uni-nvue-styler
@@ -1632,31 +1632,6 @@ importers:
         specifier: 3.4.21
         version: 3.4.21(typescript@5.4.2)
 
-  packages/uni-mp-harmony:
-    dependencies:
-      '@dcloudio/uni-cli-shared':
-        specifier: workspace:*
-        version: link:../uni-cli-shared
-      '@dcloudio/uni-mp-vite':
-        specifier: workspace:*
-        version: link:../uni-mp-vite
-      '@dcloudio/uni-mp-vue':
-        specifier: workspace:*
-        version: link:../uni-mp-vue
-      '@dcloudio/uni-quickapp-webview':
-        specifier: workspace:*
-        version: link:../uni-quickapp-webview
-      '@dcloudio/uni-shared':
-        specifier: workspace:*
-        version: link:../uni-shared
-      '@vue/shared':
-        specifier: 3.4.21
-        version: 3.4.21
-    devDependencies:
-      '@dcloudio/uni-mp-compiler':
-        specifier: workspace:*
-        version: link:../uni-mp-compiler
-
   packages/uni-mp-jd:
     dependencies:
       '@dcloudio/uni-cli-shared':
@@ -2003,8 +1978,8 @@ importers:
         specifier: ^7.23.5
         version: 7.24.7
       '@dcloudio/uni-app-x':
-        specifier: ^0.7.39
-        version: 0.7.39
+        specifier: ^0.7.41
+        version: 0.7.41
       '@dcloudio/uts':
         specifier: workspace:*
         version: link:../uts
@@ -2870,8 +2845,8 @@ packages:
   '@dcloudio/types@3.4.14':
     resolution: {integrity: sha512-VolQeZfTh8pQFsr2IlfIVX93blfvGTuBoJuZUc7iWOqtHV8gDrq6fXLhzsVlgZyuhhRZLOxlo33rkEqnY+ucAw==}
 
-  '@dcloudio/uni-app-x@0.7.39':
-    resolution: {integrity: sha512-eZhwqa1YcD2D0asDEVEqmGc1RaTIw4HDW+OYhxUCxZqWPK5b7RUHpfVQHfrQUR/BxbvFTK/kiOA93fvyk8sAuw==}
+  '@dcloudio/uni-app-x@0.7.41':
+    resolution: {integrity: sha512-IFwF8shrpwxM04siNyaTC7+bb10vTvkfFXPm40cBaLNoA71hkBFy5RszvsANGKQiiDN1nqHYyKQ9WXLsHdorag==}
 
   '@dcloudio/uni-ui@1.5.6':
     resolution: {integrity: sha512-jmb98PasFvZkrIDXGh94GbdWg2/jyhgs1HUG+bU8eyL7Ltias/5XBz4q8w9RXyWUfqepJRqapPA2IIQpLCuTIg==}
@@ -8338,7 +8313,7 @@ snapshots:
 
   '@dcloudio/types@3.4.14': {}
 
-  '@dcloudio/uni-app-x@0.7.39': {}
+  '@dcloudio/uni-app-x@0.7.41': {}
 
   '@dcloudio/uni-ui@1.5.6': {}
 
