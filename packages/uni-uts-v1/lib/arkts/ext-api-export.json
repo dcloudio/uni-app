@@ -19,52 +19,52 @@
       "GetClipboardDataOptions"
     ],
     [
-      "SaveFileSuccess"
+      "LegacySaveFileSuccess"
     ],
     [
-      "SaveFileFail"
+      "LegacySaveFileFail"
     ],
     [
-      "SaveFileOptions"
+      "LegacySaveFileOptions"
     ],
     [
-      "GetFileInfoSuccess"
+      "LegacyGetFileInfoSuccess"
     ],
     [
-      "GetFileInfoFail"
+      "LegacyGetFileInfoFail"
     ],
     [
-      "GetFileInfoOptions"
+      "LegacyGetFileInfoOptions"
     ],
     [
-      "GetSavedFileInfoSuccess"
+      "LegacyGetSavedFileInfoSuccess"
     ],
     [
-      "GetSavedFileInfoFail"
+      "LegacyGetSavedFileInfoFail"
     ],
     [
-      "GetSavedFileInfoOptions"
+      "LegacyGetSavedFileInfoOptions"
     ],
     [
-      "RemoveSavedFileSuccess"
+      "LegacyRemoveSavedFileSuccess"
     ],
     [
-      "RemoveSavedFileFail"
+      "LegacyRemoveSavedFileFail"
     ],
     [
-      "RemoveSavedFileOptions"
+      "LegacyRemoveSavedFileOptions"
     ],
     [
-      "SavedFileListItem"
+      "LegacySavedFileListItem"
     ],
     [
-      "GetSavedFileListSuccess"
+      "LegacyGetSavedFileListSuccess"
     ],
     [
-      "GetSavedFileListFail"
+      "LegacyGetSavedFileListFail"
     ],
     [
-      "GetSavedFileListOptions"
+      "LegacyGetSavedFileListOptions"
     ],
     [
       "SaveFile"

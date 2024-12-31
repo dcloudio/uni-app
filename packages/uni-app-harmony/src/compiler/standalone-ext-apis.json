@@ -13,14 +13,14 @@
     "plugin": "uni-oauth-huawei",
     "provider": "huawei",
     "service": "oauth",
-    "version": "1.0.1"
+    "version": "1.0.2"
   },
   {
     "type": "provider",
     "plugin": "uni-payment-alipay",
     "provider": "alipay",
     "service": "payment",
-    "version": "1.0.1"
+    "version": "1.0.2"
   },
   {
     "type": "provider",
@@ -39,6 +39,6 @@
       "createPushMessage",
       "setAppBadgeNumber"
     ],
-    "version": "1.0.1"
+    "version": "1.0.2"
   }
 ]
