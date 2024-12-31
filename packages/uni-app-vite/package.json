@@ -1,6 +1,6 @@
 {
   "name": "@dcloudio/uni-app-vite",
-  "version": "3.0.0-alpha-4040320241223001",
+  "version": "3.0.0-alpha-4040420241231001",
   "description": "uni-app-vite",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
