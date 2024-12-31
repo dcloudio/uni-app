@@ -8161,6 +8161,85 @@ function isNormalDialogPageInstance(vm) {
 function isSystemDialogPageInstance(vm) {
   return vm.attrs["data-type"] === SYSTEM_DIALOG_TAG;
 }
+const ua = navigator.userAgent;
+const isAndroid = /* @__PURE__ */ /android/i.test(ua);
+const isIOS = /* @__PURE__ */ /iphone|ipad|ipod/i.test(ua);
+const isWindows = /* @__PURE__ */ ua.match(/Windows NT ([\d|\d.\d]*)/i);
+const isMac = /* @__PURE__ */ /Macintosh|Mac/i.test(ua);
+const isLinux = /* @__PURE__ */ /Linux|X11/i.test(ua);
+const isIPadOS = isMac && navigator.maxTouchPoints > 0;
+function getScreenFix() {
+  return /^Apple/.test(navigator.vendor) && typeof window.orientation === "number";
+}
+function isLandscape(screenFix) {
+  return screenFix && Math.abs(window.orientation) === 90;
+}
+function getScreenWidth(screenFix, landscape) {
+  return screenFix ? Math[landscape ? "max" : "min"](screen.width, screen.height) : screen.width;
+}
+function getScreenHeight(screenFix, landscape) {
+  return screenFix ? Math[landscape ? "min" : "max"](screen.height, screen.width) : screen.height;
+}
+function getWindowWidth(screenWidth) {
+  return Math.min(
+    window.innerWidth,
+    document.documentElement.clientWidth,
+    screenWidth
+  ) || screenWidth;
+}
+function getBaseSystemInfo() {
+  const screenFix = getScreenFix();
+  const windowWidth = getWindowWidth(
+    getScreenWidth(screenFix, isLandscape(screenFix))
+  );
+  return {
+    platform: isIOS ? "ios" : "other",
+    pixelRatio: window.devicePixelRatio,
+    windowWidth
+  };
+}
+const getWindowInfo = /* @__PURE__ */ defineSyncApi(
+  "getWindowInfo",
+  () => {
+    const pixelRatio = window.devicePixelRatio;
+    const screenFix = getScreenFix();
+    const landscape = isLandscape(screenFix);
+    const screenWidth = getScreenWidth(screenFix, landscape);
+    const screenHeight = getScreenHeight(screenFix, landscape);
+    const windowWidth = getWindowWidth(screenWidth);
+    let windowHeight = window.innerHeight;
+    const statusBarHeight = safeAreaInsets$1.top;
+    const safeArea = {
+      left: safeAreaInsets$1.left,
+      right: windowWidth - safeAreaInsets$1.right,
+      top: safeAreaInsets$1.top,
+      bottom: windowHeight - safeAreaInsets$1.bottom,
+      width: windowWidth - safeAreaInsets$1.left - safeAreaInsets$1.right,
+      height: windowHeight - safeAreaInsets$1.top - safeAreaInsets$1.bottom
+    };
+    const { top: windowTop, bottom: windowBottom } = getWindowOffset();
+    windowHeight -= windowTop;
+    windowHeight -= windowBottom;
+    return {
+      windowTop,
+      windowBottom,
+      windowWidth,
+      windowHeight,
+      pixelRatio,
+      screenWidth,
+      screenHeight,
+      statusBarHeight,
+      safeArea,
+      safeAreaInsets: {
+        top: safeAreaInsets$1.top,
+        right: safeAreaInsets$1.right,
+        bottom: safeAreaInsets$1.bottom,
+        left: safeAreaInsets$1.left
+      },
+      screenTop: screenHeight - windowHeight
+    };
+  }
+);
 let escBackPageNum = 0;
 const homeDialogPages = [];
 const homeSystemDialogPages = [];
@@ -8175,6 +8254,18 @@ class UniPageImpl {
     this.options = options;
     this.vm = vm;
     this.$vm = vm;
+  }
+  get innerWidth() {
+    return getWindowInfo().windowWidth;
+  }
+  get innerHeight() {
+    return getWindowInfo().windowHeight;
+  }
+  get safeArea() {
+    return getWindowInfo().safeArea;
+  }
+  get safeAreaInsets() {
+    return getWindowInfo().safeAreaInsets;
   }
   getPageStyle() {
     var _a;
@@ -8756,43 +8847,6 @@ function getRealPath(filePath) {
   }
   return filePath;
 }
-const ua = navigator.userAgent;
-const isAndroid = /* @__PURE__ */ /android/i.test(ua);
-const isIOS = /* @__PURE__ */ /iphone|ipad|ipod/i.test(ua);
-const isWindows = /* @__PURE__ */ ua.match(/Windows NT ([\d|\d.\d]*)/i);
-const isMac = /* @__PURE__ */ /Macintosh|Mac/i.test(ua);
-const isLinux = /* @__PURE__ */ /Linux|X11/i.test(ua);
-const isIPadOS = isMac && navigator.maxTouchPoints > 0;
-function getScreenFix() {
-  return /^Apple/.test(navigator.vendor) && typeof window.orientation === "number";
-}
-function isLandscape(screenFix) {
-  return screenFix && Math.abs(window.orientation) === 90;
-}
-function getScreenWidth(screenFix, landscape) {
-  return screenFix ? Math[landscape ? "max" : "min"](screen.width, screen.height) : screen.width;
-}
-function getScreenHeight(screenFix, landscape) {
-  return screenFix ? Math[landscape ? "min" : "max"](screen.height, screen.width) : screen.height;
-}
-function getWindowWidth(screenWidth) {
-  return Math.min(
-    window.innerWidth,
-    document.documentElement.clientWidth,
-    screenWidth
-  ) || screenWidth;
-}
-function getBaseSystemInfo() {
-  const screenFix = getScreenFix();
-  const windowWidth = getWindowWidth(
-    getScreenWidth(screenFix, isLandscape(screenFix))
-  );
-  return {
-    platform: isIOS ? "ios" : "other",
-    pixelRatio: window.devicePixelRatio,
-    windowWidth
-  };
-}
 function operateVideoPlayer(videoId, pageId, type, data) {
   UniServiceJSBridge.invokeViewMethod(
     "video." + videoId,
@@ -8847,7 +8901,7 @@ function getNodeInfo(el, fields2) {
   const info = {};
   const { top, topWindowHeight } = getWindowOffset();
   if (fields2.node) {
-    const tagName = el.tagName.split("-")[1];
+    const tagName = el.tagName.split("-")[1] || el.tagName;
     if (tagName) {
       info.node = el.querySelector(tagName);
     }
@@ -22220,48 +22274,6 @@ function deviceId$1() {
   }
   return deviceId;
 }
-const getWindowInfo = /* @__PURE__ */ defineSyncApi(
-  "getWindowInfo",
-  () => {
-    const pixelRatio = window.devicePixelRatio;
-    const screenFix = getScreenFix();
-    const landscape = isLandscape(screenFix);
-    const screenWidth = getScreenWidth(screenFix, landscape);
-    const screenHeight = getScreenHeight(screenFix, landscape);
-    const windowWidth = getWindowWidth(screenWidth);
-    let windowHeight = window.innerHeight;
-    const statusBarHeight = safeAreaInsets$1.top;
-    const safeArea = {
-      left: safeAreaInsets$1.left,
-      right: windowWidth - safeAreaInsets$1.right,
-      top: safeAreaInsets$1.top,
-      bottom: windowHeight - safeAreaInsets$1.bottom,
-      width: windowWidth - safeAreaInsets$1.left - safeAreaInsets$1.right,
-      height: windowHeight - safeAreaInsets$1.top - safeAreaInsets$1.bottom
-    };
-    const { top: windowTop, bottom: windowBottom } = getWindowOffset();
-    windowHeight -= windowTop;
-    windowHeight -= windowBottom;
-    return {
-      windowTop,
-      windowBottom,
-      windowWidth,
-      windowHeight,
-      pixelRatio,
-      screenWidth,
-      screenHeight,
-      statusBarHeight,
-      safeArea,
-      safeAreaInsets: {
-        top: safeAreaInsets$1.top,
-        right: safeAreaInsets$1.right,
-        bottom: safeAreaInsets$1.bottom,
-        left: safeAreaInsets$1.left
-      },
-      screenTop: screenHeight - windowHeight
-    };
-  }
-);
 let browserInfo;
 let _initBrowserInfo = true;
 function initBrowserInfo() {
