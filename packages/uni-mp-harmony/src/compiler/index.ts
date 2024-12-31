@@ -9,7 +9,7 @@ const uniMiniProgramHarmonyPlugin: Plugin = {
   config() {
     return {
       define: {
-        __VUE_CREATED_DEFERRED__: true,
+        __VUE_CREATED_DEFERRED__: false,
       },
       build: {
         // css 中不支持引用本地资源
