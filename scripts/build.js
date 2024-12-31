@@ -322,7 +322,7 @@ async function postBuildArkTS (isUniAppX = false) {
   fs.outputJSON(extApiExportJsonPath, extApiExportWithHar, { spaces: 2 })
 }
 
-async function buildArkTS (target, buildJson) {
+async function buildArkTS (target, buildJson, isX) {
   const projectDir = path.resolve(__dirname, '../packages', target)
   const { bundleArkTS } = require('../packages/uts/dist')
   const start = Date.now()
@@ -344,6 +344,7 @@ async function buildArkTS (target, buildJson) {
     })
     // console.log(vars, envs)
     for (const input of inputs) {
+      const outFilename = options.input[input]
       const buildOptions = {
         input: {
           root: projectDir,
@@ -366,7 +367,7 @@ async function buildArkTS (target, buildJson) {
         },
         output: {
           outDir: path.resolve(projectDir),
-          outFilename: options.input[input],
+          outFilename,
           package: '',
           imports: [],
           sourceMap: false,
@@ -379,6 +380,7 @@ async function buildArkTS (target, buildJson) {
           treeshake: {
             noSideEffects: true,
           },
+          isX: outFilename.includes('dist-x'), // TODO 优化此逻辑
           wrapperFunctionName: options.wrapper?.name,
           wrapperFunctionArgs: options.wrapper?.args,
         },
@@ -424,8 +426,7 @@ async function buildArkTS (target, buildJson) {
   if (target !== 'uni-app-harmony') {
     return
   }
-  await postBuildArkTS(false)
-  await postBuildArkTS(true)
+  await postBuildArkTS(isX)
 }
 
 async function sleep (ms) {
