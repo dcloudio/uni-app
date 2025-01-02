@@ -36,7 +36,7 @@ import I18n1 from '@ohos.i18n';
 import I18n2 from '@ohos.i18n';
 import { ListFileOptions } from '@ohos.file.fs';
 import { UTSHarmony } from "@dcloudio/uni-mp-sdk";
-import { UTSObject, UniError, IUniError, string, ApiError, UniProvider, UTSJSONObject, ApiOptions, ProtocolOptions, defineAsyncApi, ApiExecutor, defineSyncApi, getUniProviders, defineTaskApi, getUniProvider } from "./shared";
+import { UTSObject, UniError, IUniError, string, ApiError, UniProvider, AsyncApiSuccessResult, AsyncApiResult, UTSJSONObject, ApiOptions, ProtocolOptions, defineAsyncApi, ApiExecutor, defineSyncApi, getUniProviders, defineTaskApi, getUniProvider } from "./shared";
 import Want1 from '@ohos.app.ability.Want';
 import { abilityAccessCtrl } from '@kit.AbilityKit';
 import { access } from '@kit.ConnectivityKit';
@@ -73,6 +73,7 @@ import { getEnv as getEnv2, getRealPath as runtimeGetRealPath } from "@dcloudio/
 import { getEnv as getEnv3 } from "@dcloudio/uni-mp-sdk";
 import { getEnv as getEnv4, Emitter as Emitter4, getCurrentMP as getCurrentMP3 } from "@dcloudio/uni-mp-sdk";
 import { getEnv, getRealPath } from "@dcloudio/uni-mp-sdk";
+import { getRealPath as getRealPath2, UniPageImpl } from "@dcloudio/uni-mp-sdk";
 import { getRealPath as getRealPath3 } from "@dcloudio/uni-mp-sdk";
 import { getRealPath as getRealPath4, Emitter as Emitter3, getCurrentMP as getCurrentMP2 } from "@dcloudio/uni-mp-sdk";
 import { getWindowInfo as internalGetWindowInfo, getDeviceId as getDeviceId1 } from "@dcloudio/uni-mp-sdk";
@@ -512,8 +513,8 @@ interface Stats {
     lastAccessedTime: number;
     lastModifiedTime: number;
     mIsFile: boolean;
-    isDirectory: () => boolean;
-    isFile: () => boolean;
+    isDirectory(): boolean;
+    isFile(): boolean;
 }
 class FileStats extends UTSObject {
     path!: string;
@@ -1004,6 +1005,12 @@ export class SafeAreaInsets extends UTSObject {
     top!: number;
     bottom!: number;
 }
+class CutoutRect extends UTSObject {
+    left!: number;
+    right!: number;
+    top!: number;
+    bottom!: number;
+}
 export class GetSystemInfoResult extends UTSObject {
     SDKVersion!: string;
     appId!: string;
@@ -1075,6 +1082,7 @@ export class GetWindowInfoResult extends UTSObject {
     safeArea!: SafeArea;
     safeAreaInsets!: SafeAreaInsets;
     screenTop!: number;
+    cutoutArea: Array<CutoutRect> | null = null;
 }
 interface ISystemInfoAppVersion {
     name: string;
@@ -1102,6 +1110,30 @@ export class HideKeyboardOptions extends UTSObject {
     complete: HideKeyboardCompleteCallback | null = null;
 }
 type HideKeyboard = (options?: HideKeyboardOptions | null) => void;
+class LoadFontFaceOptionDesc extends UTSObject {
+    style: string | null = null;
+    weight: string | null = null;
+    variant: string | null = null;
+}
+type LoadFontFaceErrCode = 4 | 99 | 101 | 100001 | 100002 | 200001 | 300001 | 300002;
+interface LoadFontFaceFail extends IUniError {
+    errCode: LoadFontFaceErrCode;
+}
+class LoadFontFaceOptions extends UTSObject {
+    global: boolean | null = null;
+    family!: string;
+    source!: string.FontURIString;
+    desc: LoadFontFaceOptionDesc | null = null;
+    success: LoadFontFaceSuccessCallback | null = null;
+    fail: LoadFontFaceFailCallback | null = null;
+    complete: LoadFontFaceCompleteCallback | null = null;
+}
+type LoadFontFaceSuccess = AsyncApiSuccessResult;
+type LoadFontFaceSuccessCallback = (result: LoadFontFaceSuccess) => void;
+type LoadFontFaceFailCallback = (error: LoadFontFaceFail) => void;
+type LoadFontFaceComplete = AsyncApiResult;
+type LoadFontFaceCompleteCallback = (res: LoadFontFaceComplete) => void;
+type LoadFontFace = (options: LoadFontFaceOptions) => Promise<LoadFontFaceSuccess> | null;
 export type MakePhoneCall = (options: MakePhoneCallOptions) => void;
 export class MakePhoneCallSuccess extends UTSObject {
 }
@@ -1694,6 +1726,7 @@ interface UniExtApi {
     getWindowInfo: GetWindowInfo;
     getSystemSetting: GetSystemSetting;
     hideKeyboard: HideKeyboard;
+    loadFontFace: LoadFontFace;
     makePhoneCall: MakePhoneCall;
     request: Request<Object>;
     uploadFile: UploadFile;
@@ -3688,9 +3721,37 @@ export function initUniExtApi() {
         'w+',
         'wx+'
     ];
-    const getRealPath2 = (filepath: string): string =>{
-        return runtimeGetRealPath(filepath).replace(/^file:\/\//, '');
+    const useGetRealPath = (filepath: string): string =>{
+        return (runtimeGetRealPath(filepath) as string).replace(/^file:\/\//, '');
     };
+    class StatsImpl implements Stats {
+        stat: fs2.Stat | null = null;
+        mode: number = -1;
+        size: number = -1;
+        lastAccessedTime: number = -1;
+        lastModifiedTime: number = -1;
+        mIsFile: boolean = false;
+        constructor(stat: fs2.Stat, mode: number){
+            this.stat = stat;
+            this.mode = mode;
+            this.size = stat.size;
+            this.lastAccessedTime = stat.atime;
+            this.lastModifiedTime = stat.mtime;
+            this.mIsFile = stat.isFile();
+        }
+        isDirectory(): boolean {
+            if (this.stat == null) {
+                return false;
+            }
+            return this.stat.isDirectory();
+        }
+        isFile(): boolean {
+            if (this.stat == null) {
+                return false;
+            }
+            return this.stat.isFile();
+        }
+    }
     class FileSystemManagerImpl implements FileSystemManager {
         readFile(options: ReadFileOptions): void {
             const errMsg = `readFile: fail`;
@@ -4283,8 +4344,8 @@ export function initUniExtApi() {
         copyFile(options: CopyFileOptions): void {
             const errMsg = 'copyFile: fail';
             let srcPath = options.srcPath, destPath = options.destPath, success = options.success, fail = options.fail, complete = options.complete;
-            srcPath = getRealPath2(srcPath);
-            destPath = getRealPath2(destPath);
+            srcPath = useGetRealPath(srcPath);
+            destPath = useGetRealPath(destPath);
             const cb = new FileCallback({
                 success,
                 fail,
@@ -4337,8 +4398,8 @@ export function initUniExtApi() {
         }
         copyFileSync(srcPath: string, destPath: string): void {
             const errMsg = 'copyFileSync: fail';
-            srcPath = getRealPath2(srcPath);
-            destPath = getRealPath2(destPath);
+            srcPath = useGetRealPath(srcPath);
+            destPath = useGetRealPath(destPath);
             const checkResSrc = checkPathExistenceSync('copyFileSync', 'srcPath', srcPath);
             if (!checkResSrc.isValid) {
                 throw new Error((checkResSrc as CustomValidReturn).err?.errMsg);
@@ -4443,18 +4504,9 @@ export function initUniExtApi() {
                     } as ApiError);
                 } else {
                     const combinationMode = getFileTypeMode(stat) | stat.mode;
-                    const _stats = {
-                        mode: combinationMode,
-                        size: stat.size,
-                        lastAccessedTime: stat.atime,
-                        lastModifiedTime: stat.mtime,
-                        mIsFile: stat.isFile(),
-                        isDirectory: ()=>stat.isDirectory(),
-                        isFile: ()=>stat.isFile()
-                    } as Stats;
                     const fileStats = {
                         path,
-                        stats: _stats
+                        stats: new StatsImpl(stat, combinationMode)
                     } as FileStats;
                     cb.success({
                         stats: [
@@ -4477,18 +4529,9 @@ export function initUniExtApi() {
             try {
                 const stat = fs2.statSync(path);
                 const combinationMode = getFileTypeMode(stat) | stat.mode;
-                const _stats = {
-                    mode: combinationMode,
-                    size: stat.size,
-                    lastAccessedTime: stat.atime,
-                    lastModifiedTime: stat.mtime,
-                    mIsFile: stat.isFile(),
-                    isDirectory: ()=>stat.isDirectory(),
-                    isFile: ()=>stat.isFile()
-                } as Stats;
                 const fileStats = {
                     path,
-                    stats: _stats
+                    stats: new StatsImpl(stat, combinationMode)
                 } as FileStats;
                 return [
                     fileStats
@@ -4556,7 +4599,7 @@ export function initUniExtApi() {
                 fail,
                 complete
             } as CallBack);
-            const tempFilePath = getRealPath2(options.tempFilePath) as string;
+            const tempFilePath = useGetRealPath(options.tempFilePath) as string;
             if (!fs2.accessSync(tempFilePath)) {
                 cb.fail({
                     errMsg: `${errMsg} no such file or directory. tempFilePath: ${tempFilePath}`
@@ -4594,7 +4637,7 @@ export function initUniExtApi() {
         }
         saveFileSync(inTempFilePath: string, filePath: string | null): string {
             const errMsg = 'saveFileSync: fail';
-            const tempFilePath = getRealPath2(inTempFilePath) as string;
+            const tempFilePath = useGetRealPath(inTempFilePath) as string;
             if (!fs2.accessSync(tempFilePath)) {
                 throw new Error(`${errMsg} no such file or directory. tempFilePath: ${tempFilePath}`);
             }
@@ -4987,16 +5030,8 @@ export function initUniExtApi() {
                     cb.fail(getApiError(err.code, errMsg));
                 } else {
                     const combinationMode = getFileTypeMode(stat) | stat.mode;
-                    const stats = {
-                        mode: combinationMode,
-                        size: stat.size,
-                        lastAccessedTime: stat.atime,
-                        lastModifiedTime: stat.mtime,
-                        isDirectory: ()=>stat.isDirectory(),
-                        isFile: ()=>stat.isFile()
-                    } as Stats;
                     cb.success({
-                        stats
+                        stats: new StatsImpl(stat, combinationMode)
                     } as FStatSuccessResult);
                 }
             });
@@ -5013,18 +5048,7 @@ export function initUniExtApi() {
             try {
                 const stat = fs2.statSync(fd);
                 const combinationMode = getFileTypeMode(stat) | stat.mode;
-                return {
-                    mode: combinationMode,
-                    size: stat.size,
-                    lastAccessedTime: stat.atime,
-                    lastModifiedTime: stat.mtime,
-                    isDirectory: ()=>{
-                        return stat.isDirectory();
-                    },
-                    isFile: ()=>{
-                        return stat.isFile();
-                    }
-                } as Stats;
+                return new StatsImpl(stat, combinationMode);
             } catch (err) {
                 throw new Error(getApiError((err as BusinessError4).code, errMsg).errMsg);
             }
@@ -5078,7 +5102,7 @@ export function initUniExtApi() {
         unzip(options: UnzipFileOptions): void {
             const errMsg = 'unzip: fail';
             let zipFilePath = options.zipFilePath, targetPath = options.targetPath, success = options.success, fail = options.fail, complete = options.complete;
-            zipFilePath = getRealPath2(zipFilePath);
+            zipFilePath = useGetRealPath(zipFilePath);
             const cb = new FileCallback({
                 success,
                 fail,
@@ -5114,7 +5138,7 @@ export function initUniExtApi() {
             const errMsg = 'readZipEntry: fail';
             const okMsg = 'readZipEntry: ok';
             let filePath = options.filePath, encoding = options.encoding, entries = options.entries, success = options.success, fail = options.fail, complete = options.complete;
-            filePath = getRealPath2(filePath);
+            filePath = useGetRealPath(filePath);
             const cb = new FileCallback({
                 success,
                 fail,
@@ -6525,6 +6549,64 @@ export function initUniExtApi() {
             exec.reject(err.message);
         });
     }) as HideKeyboard;
+    const API_LOAD_FONT_FACE = 'loadFontFace';
+    const ApiLoadFontFaceProtocol = new Map<string, ProtocolOptions>([
+        [
+            'family',
+            {
+                type: 'string',
+                required: true
+            }
+        ],
+        [
+            'source',
+            {
+                type: 'string',
+                required: true
+            }
+        ],
+        [
+            'desc',
+            {
+                type: 'object'
+            }
+        ]
+    ]);
+    const getFontSrc = (source: string): string =>{
+        if (source.startsWith(`url("`) || source.startsWith(`url('`)) {
+            source = getRealPath2(source.substring(5, source.length - 2)) as string;
+        } else if (source.startsWith('url(')) {
+            source = getRealPath2(source.substring(4, source.length - 1)) as string;
+        } else {
+            source = getRealPath2(source) as string;
+        }
+        return source;
+    };
+    const loadFontFace: LoadFontFace = defineAsyncApi<LoadFontFaceOptions, LoadFontFaceSuccess>(API_LOAD_FONT_FACE, (options: LoadFontFaceOptions, exec: ApiExecutor<LoadFontFaceSuccess>)=>{
+        const src = getFontSrc(options.source);
+        const pages = globalThis.getCurrentPages() as UniPageImpl[];
+        const page = pages[pages.length - 1];
+        if (!page) {
+            exec.reject('page is not ready', {
+                errCode: 99
+            } as ApiError);
+            return;
+        }
+        if (page!.$fontFamilySet.has(options.family)) {
+            return;
+        }
+        page!.$fontFamilySet.add(options.family);
+        page.getNativePage().loadFontFace({
+            family: options.family,
+            source: src,
+            success: ()=>{
+                exec.resolve();
+            },
+            fail: (err: ApiError)=>{
+                exec.reject('', err);
+            }
+        } as ESObject);
+    }, ApiLoadFontFaceProtocol) as LoadFontFace;
     const API_MAKE_PHONE_CALL = 'makePhoneCall';
     const MakePhoneCallProtocol = new Map<string, ProtocolOptions>([
         [
@@ -8188,6 +8270,7 @@ export function initUniExtApi() {
         getWindowInfo,
         getSystemSetting,
         hideKeyboard,
+        loadFontFace,
         makePhoneCall,
         request,
         uploadFile,
