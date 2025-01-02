@@ -16,11 +16,11 @@ import { dynamicSlot } from './dynamicSlot'
 import { setRef } from './ref'
 import { renderProps } from './renderProps'
 import { withModelModifiers } from './withModelModifiers'
-import { resolveId } from './id'
 
 // #if _X_
 import { setUniElementId, setUniElementStyle } from './uniElement'
 // #endif
+import { genUniElementId } from './id'
 
 export { setupDevtoolsPlugin } from './devtools'
 
@@ -54,9 +54,9 @@ export const m: typeof withModelModifiers = (
 ) => withModelModifiers(fn, modifiers, isComponent)
 
 export const j = (obj: unknown) => JSON.stringify(obj)
-export const ri: typeof resolveId = resolveId
 
 // #if _X_
 export const sei = setUniElementId
 export const ses = setUniElementStyle
 // #endif
+export const gei = genUniElementId

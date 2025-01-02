@@ -1,13 +1,7 @@
 import {
-  type BinaryExpression,
   type Expression,
-  type Identifier,
-  binaryExpression,
-  conditionalExpression,
+  callExpression,
   identifier,
-  isStringLiteral,
-  logicalExpression,
-  memberExpression,
   stringLiteral,
 } from '@babel/types'
 import {
@@ -16,11 +10,11 @@ import {
   NodeTypes,
   createSimpleExpression,
 } from '@vue/compiler-core'
-import { VIRTUAL_HOST_ID } from '@dcloudio/uni-shared'
 import { createBindDirectiveNode } from '@dcloudio/uni-cli-shared'
 import { parseExpr } from '../ast'
 import { genBabelExpr } from '../codegen'
 import type { TransformContext } from '../transform'
+import { GEN_UNI_ELEMENT_ID } from '../runtimeHelpers'
 import { rewriteExpression } from './utils'
 
 export function isIdBinding({ arg, exp }: DirectiveNode) {
@@ -29,11 +23,6 @@ export function isIdBinding({ arg, exp }: DirectiveNode) {
 
 export function findStaticIdIndex(props: (AttributeNode | DirectiveNode)[]) {
   return props.findIndex((prop) => prop.name === 'id')
-}
-
-function genVirtualHostId(isX = false) {
-  const id = identifier(VIRTUAL_HOST_ID)
-  return isX ? memberExpression(identifier('_ctx'), id) : id
 }
 
 export function rewriteId(
@@ -54,54 +43,26 @@ export function rewriteId(
       (props[staticIdPropIndex] as AttributeNode).value!.content
     )
   } else if (expr) {
-    idBindingExpr = isX
-      ? expr
-      : identifier(rewriteExpression(idBindingProp.exp!, context).content)
+    idBindingExpr =
+      isX || virtualHost
+        ? expr
+        : identifier(rewriteExpression(idBindingProp.exp!, context).content)
   } else {
     idBindingExpr = stringLiteral('')
   }
   if (virtualHost) {
-    if (
-      idBindingExpr &&
-      !isStringLiteral(idBindingExpr, {
-        value: '',
-      })
-    ) {
-      /**
-       * 组件属性中声明id属性时，id不会被绑定到element上。`'id' in _ctx.$.type.props`
-       * virtualHostId存在且id不在props内时，virtualHostId绑定到element上
-       * TODO class、style也有类似的问题，但是用法并不常见，暂时遗留
-       */
-      let idInPropsExpr: BinaryExpression | Identifier = binaryExpression(
-        'in',
-        stringLiteral('id'),
-        memberExpression(
-          memberExpression(
-            memberExpression(identifier('_ctx'), identifier('$')),
-            identifier('type')
-          ),
-          identifier('props')
-        )
+    idBindingExpr = callExpression(
+      identifier(context.helperString(GEN_UNI_ELEMENT_ID)),
+      [identifier('_ctx'), idBindingExpr]
+    )
+    if (!isX) {
+      // 非uni-app-x id绑定表达式直接生成在了模板内
+      idBindingExpr = identifier(
+        rewriteExpression(
+          createSimpleExpression(genBabelExpr(idBindingExpr)),
+          context
+        ).content
       )
-      if (!isX) {
-        idInPropsExpr = identifier(
-          rewriteExpression(
-            createSimpleExpression(genBabelExpr(idInPropsExpr)),
-            context
-          ).content
-        )
-      }
-      idBindingExpr = conditionalExpression(
-        logicalExpression(
-          '||',
-          idInPropsExpr,
-          binaryExpression('===', genVirtualHostId(isX), stringLiteral(''))
-        ),
-        idBindingExpr,
-        genVirtualHostId(isX)
-      )
-    } else {
-      idBindingExpr = genVirtualHostId(isX)
     }
   }
   idBindingProp.exp = createSimpleExpression(genBabelExpr(idBindingExpr))

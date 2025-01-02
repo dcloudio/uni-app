@@ -16,6 +16,7 @@ export const TO_DISPLAY_STRING = Symbol(`toDisplayString`)
 export const WITH_MODEL_MODIFIERS = Symbol(`withModelModifiers`)
 export const SET_UNI_ELEMENT_ID = Symbol(`setUniElementId`)
 export const SET_UNI_ELEMENT_STYLE = Symbol(`setUniElementStyle`)
+export const GEN_UNI_ELEMENT_ID = Symbol(`genUniElementId`)
 
 registerRuntimeHelpers({
   [V_ON]: 'o',
@@ -35,4 +36,5 @@ registerRuntimeHelpers({
   [STRINGIFY_JSON]: 'j',
   [SET_UNI_ELEMENT_ID]: 'sei',
   [SET_UNI_ELEMENT_STYLE]: 'ses',
+  [GEN_UNI_ELEMENT_ID]: 'gei',
 })
