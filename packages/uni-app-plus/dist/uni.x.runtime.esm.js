@@ -4608,7 +4608,7 @@ function initUniCustomEvent(element, e) {
 }
 var CHECKBOX_NAME = "Checkbox";
 var CHECKBOX_ROOT_ELEMENT = "uni-checkbox-element";
-class UniCheckboxElement extends UniElementImpl {
+var UniCheckboxElement = /* @__PURE__ */ (() => class extends UniElementImpl {
   constructor(data, pageNode) {
     super(data, pageNode);
     this.tagName = "CHECKBOX";
@@ -4624,7 +4624,7 @@ class UniCheckboxElement extends UniElementImpl {
     }
     return super.getAnyAttribute(key);
   }
-}
+})();
 var checkboxProps = {
   checked: {
     type: Boolean,
@@ -4857,7 +4857,7 @@ var checkboxGroupProps = {
     default: ""
   }
 };
-class UniCheckboxGroupElement extends UniFormControlElement {
+var UniCheckboxGroupElement = /* @__PURE__ */ (() => class extends UniFormControlElement {
   constructor(data, pageNode) {
     super(data, pageNode);
     this._initialValue = [];
@@ -4888,19 +4888,19 @@ class UniCheckboxGroupElement extends UniFormControlElement {
   reset() {
     this.value = this._initialValue.slice(0);
   }
-}
+})();
 class UniCheckboxGroupChangeEventDetail {
   constructor(value) {
     this.value = value;
   }
 }
-class UniCheckboxGroupChangeEvent extends UniCustomEvent {
+var UniCheckboxGroupChangeEvent = /* @__PURE__ */ (() => class extends UniCustomEvent {
   constructor(value) {
     super("change", {
       detail: new UniCheckboxGroupChangeEventDetail(value)
     });
   }
-}
+})();
 const checkboxGroup = /* @__PURE__ */ defineBuiltInComponent({
   name: CHECKBOX_GROUP_NAME,
   rootElement: {
@@ -4989,7 +4989,7 @@ const checkboxGroup$1 = /* @__PURE__ */ Object.defineProperty({
 }, Symbol.toStringTag, { value: "Module" });
 var RADIO_NAME = "Radio";
 var RADIO_ROOT_ELEMENT = "uni-radio-element";
-class UniRadioElement extends UniElementImpl {
+var UniRadioElement = /* @__PURE__ */ (() => class extends UniElementImpl {
   constructor(data, pageNode) {
     super(data, pageNode);
     this.tagName = "RADIO";
@@ -5005,7 +5005,7 @@ class UniRadioElement extends UniElementImpl {
     }
     return super.getAnyAttribute(key);
   }
-}
+})();
 var radioProps = {
   checked: {
     type: Boolean,
@@ -5233,7 +5233,7 @@ var RadioProps = {
     default: ""
   }
 };
-class UniRadioGroupElement extends UniFormControlElement {
+var UniRadioGroupElement = /* @__PURE__ */ (() => class extends UniFormControlElement {
   constructor(data, pageNode) {
     super(data, pageNode);
     this._initialValue = "";
@@ -5264,19 +5264,19 @@ class UniRadioGroupElement extends UniFormControlElement {
   reset() {
     this.value = this._initialValue;
   }
-}
+})();
 class UniRadioGroupChangeEventDetail {
   constructor(value) {
     this.value = value;
   }
 }
-class UniRadioGroupChangeEvent extends UniCustomEvent {
+var UniRadioGroupChangeEvent = /* @__PURE__ */ (() => class extends UniCustomEvent {
   constructor(value) {
     super("change", {
       detail: new UniRadioGroupChangeEventDetail(value)
     });
   }
-}
+})();
 const radioGroup = /* @__PURE__ */ defineBuiltInComponent({
   name: RADIOGROUP_NAME,
   rootElement: {
@@ -5365,7 +5365,7 @@ const radioGroup$1 = /* @__PURE__ */ Object.defineProperty({
   UniRadioGroupElement,
   default: radioGroup
 }, Symbol.toStringTag, { value: "Module" });
-class UniNavigatorElement extends UniElementImpl {
+var UniNavigatorElement = /* @__PURE__ */ (() => class extends UniElementImpl {
   constructor(data, pageNode) {
     super(data, pageNode);
     this.tagName = "NAVIGATOR";
@@ -5381,7 +5381,7 @@ class UniNavigatorElement extends UniElementImpl {
     }
     return super.getAnyAttribute(key);
   }
-}
+})();
 var navigatorProps = {
   url: {
     type: String,
@@ -5514,14 +5514,14 @@ class UniProgressActiveendEventDetail {
     this.curPercent = value;
   }
 }
-class UniProgressActiveendEvent extends UniCustomEvent {
+var UniProgressActiveendEvent = /* @__PURE__ */ (() => class extends UniCustomEvent {
   constructor(value) {
     super("activeend", {
       detail: new UniProgressActiveendEventDetail(value)
     });
   }
-}
-class UniProgressElement extends UniElementImpl {
+})();
+var UniProgressElement = /* @__PURE__ */ (() => class extends UniElementImpl {
   constructor(data, pageNode) {
     super(data, pageNode);
     this.tagName = "PROGRESS";
@@ -5537,7 +5537,7 @@ class UniProgressElement extends UniElementImpl {
     }
     return super.getAnyAttribute(key);
   }
-}
+})();
 var progressProps = {
   percent: {
     type: Number,
@@ -5804,7 +5804,7 @@ var _style_picker_column = {
     }
   }
 };
-class UniPickerViewColumnElement extends UniElementImpl {
+var UniPickerViewColumnElement = /* @__PURE__ */ (() => class extends UniElementImpl {
   constructor(data, pageNode) {
     super(data, pageNode);
     this.tagName = "PICKER-VIEW-COLUMN";
@@ -5820,20 +5820,20 @@ class UniPickerViewColumnElement extends UniElementImpl {
     }
     return super.getAnyAttribute(key);
   }
-}
+})();
 class UniPickerViewChangeEventDetail {
   constructor(value) {
     this.value = value;
   }
 }
-class UniPickerViewChangeEvent extends UniCustomEvent {
+var UniPickerViewChangeEvent = /* @__PURE__ */ (() => class extends UniCustomEvent {
   constructor(value) {
     super("change", {
       detail: new UniPickerViewChangeEventDetail(value)
     });
   }
-}
-class UniPickerViewElement extends UniElementImpl {
+})();
+var UniPickerViewElement = /* @__PURE__ */ (() => class extends UniElementImpl {
   constructor(data, pageNode) {
     super(data, pageNode);
     this.tagName = "PICKER-VIEW";
@@ -5849,7 +5849,7 @@ class UniPickerViewElement extends UniElementImpl {
     }
     return super.getAnyAttribute(key);
   }
-}
+})();
 const pickerView = /* @__PURE__ */ defineBuiltInComponent({
   name: "PickerView",
   rootElement: {

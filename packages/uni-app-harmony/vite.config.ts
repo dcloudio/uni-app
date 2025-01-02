@@ -12,7 +12,11 @@ import babel from '@rollup/plugin-babel'
 import { capitalize, cssTarget, parseInjects } from '@dcloudio/uni-cli-shared'
 import { isH5CustomElement } from '@dcloudio/uni-shared'
 import { resolveExtApiTempDir } from '../../scripts/ext-api'
-import { ExtApiBlackList, ExtApiBlackListX, StandaloneExtApi } from './src/compiler/constants'
+import {
+  ExtApiBlackList,
+  ExtApiBlackListX,
+  StandaloneExtApi,
+} from './src/compiler/constants'
 
 function resolve(file: string) {
   return path.resolve(__dirname, file)
@@ -196,7 +200,7 @@ function parseExtApiInjects(uniModulesDir: string) {
     '',
     uniModulesDir,
     require(path.resolve(uniModulesDir, 'package.json'))?.uni_modules[
-    'uni-ext-api'
+      'uni-ext-api'
     ] || {}
   )
 }
@@ -231,7 +235,8 @@ function generateExtApiSourceCode(isUniAppX = false) {
   )
   // 遍历所有 ext-api，查找已实现 app-harmony 的 ext-api
   const extApiDir = path.resolve(process.env.UNI_APP_EXT_API_DIR)
-  const extApiTempDir = resolveExtApiTempDir('uni-app-harmony') + (isUniAppX ? '-x' : '')
+  const extApiTempDir =
+    resolveExtApiTempDir('uni-app-harmony') + (isUniAppX ? '-x' : '')
   fs.emptyDirSync(extApiTempDir)
   const extApiStore = getExtApiPaths([internalExtApiDir, extApiDir])
 
@@ -271,7 +276,11 @@ function generateExtApiSourceCode(isUniAppX = false) {
           .map((key) => injects[key][1])
         extApiStandaloneBuildJson.push({
           input: path.resolve(extApiTempDir, extApi),
-          output: path.resolve(__dirname, isUniAppX ? 'dist-x' : 'dist', `packages/${extApi}`),
+          output: path.resolve(
+            __dirname,
+            isUniAppX ? 'dist-x' : 'dist',
+            `packages/${extApi}`
+          ),
           plugin: extApi,
           type: standaloneExtApi.type,
           apis,
@@ -280,7 +289,11 @@ function generateExtApiSourceCode(isUniAppX = false) {
         const [_, service, provider] = extApi.split('-')
         extApiStandaloneBuildJson.push({
           input: path.resolve(extApiTempDir, extApi),
-          output: path.resolve(__dirname, isUniAppX ? 'dist-x' : 'dist', `packages/${extApi}`),
+          output: path.resolve(
+            __dirname,
+            isUniAppX ? 'dist-x' : 'dist',
+            `packages/${extApi}`
+          ),
           plugin: extApi,
           type: standaloneExtApi.type,
           provider,
