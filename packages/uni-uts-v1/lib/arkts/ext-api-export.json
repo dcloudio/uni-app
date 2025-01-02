@@ -1,6 +1,15 @@
 {
   "@dcloudio/uni-app-runtime": [
     [
+      "ChooseMediaSuccess"
+    ],
+    [
+      "ChooseMediaOptions"
+    ],
+    [
+      "ChooseMedia"
+    ],
+    [
       "SetClipboardData"
     ],
     [
@@ -242,15 +251,6 @@
     ],
     [
       "ChooseFileOptions"
-    ],
-    [
-      "ChooseMediaSuccess"
-    ],
-    [
-      "ChooseMediaOptions"
-    ],
-    [
-      "ChooseMedia"
     ],
     [
       "Request"

@@ -41,6 +41,7 @@ export const ExtApiBlackListX = [
   'uni-pullDownRefresh',
   'uni-prompt',
   'uni-media',
+  'uni-chooseMedia',
 ]
 
 export const ExtApiBlackList = ['uni-loadFontFace']
