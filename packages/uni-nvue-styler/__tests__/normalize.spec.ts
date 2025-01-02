@@ -494,4 +494,24 @@ zIndex: 4;
       })
     )
   })
+
+  test('env', async () => {
+    const { json, messages } = await objectifierRule(`
+.foo {
+  padding-top: env(safe-area-inset-top, 
+  20px
+  );
+
+}
+`)
+
+    expect(json).toEqual({
+      foo: {
+        '': {
+          paddingTop: 'env(safe-area-inset-top,20px)',
+        },
+      },
+    })
+    expect(messages.length).toBe(0)
+  })
 })

@@ -21,6 +21,11 @@ function createNormalizeLength({
     if (v.includes('CSS_VAR_')) {
       return { value: v }
     }
+    if (/env\(([^)]+)\)/.test(v)) {
+      // v 去除多余的空格，直接给客户端处理
+      v = v.replace(/\s/g, '')
+      return { value: v }
+    }
     const match = v.match(LENGTH_REGEXP)
     if (match) {
       var unit = match[1]
