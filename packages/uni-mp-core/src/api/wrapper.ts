@@ -99,24 +99,14 @@ export function initWrapper(protocols: MPProtocols) {
     )
   }
   return function wrapper(methodName: string, method: unknown) {
-    if ((isContextApi(methodName) || isTaskApi(methodName)) && method) {
-      const oldMethod = method as Function
-      method = function (this: any, ...args: unknown[]) {
-        const contextOrTask = oldMethod.apply(this, args)
-        if (contextOrTask) {
-          contextOrTask.__v_skip = true
-        }
-        return contextOrTask
-      }
-    }
-    if (
-      (!hasOwn(protocols, methodName) && !isFunction(protocols.returnValue)) ||
-      !isFunction(method)
-    ) {
+    /**
+     * 注意：此处method为原始全局对象上的uni方法名对应的属性值，比如method值可能为my.login，即undefined
+     */
+    if (!hasOwn(protocols, methodName) && !isFunction(protocols.returnValue)) {
       return method
     }
     const protocol = protocols[methodName] as MPProtocolObject
-    if (!protocol && !isFunction(protocols.returnValue)) {
+    if (!protocol && !method) {
       // 暂不支持的 api
       return function () {
         console.error(`__PLATFORM_TITLE__ 暂不支持${methodName}`)
