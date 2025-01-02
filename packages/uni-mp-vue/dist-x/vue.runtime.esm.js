@@ -6283,6 +6283,22 @@ function setUniElementRef(ins, ref, id, opts, tagType) {
     }
 }
 
+function hasIdProp(_ctx) {
+    return _ctx.$.propsOptions && _ctx.$.propsOptions[0] && 'id' in _ctx.$.propsOptions[0];
+}
+function hasVirtualHostId(_ctx) {
+    return _ctx.virtualHostId !== '';
+}
+function genIdWithVirtualHost(_ctx, idBinding) {
+    if (!hasVirtualHostId(_ctx) || hasIdProp(_ctx)) {
+        return idBinding;
+    }
+    return _ctx.virtualHostId;
+}
+function genUniElementId(_ctx, idBinding, genId) {
+    return genIdWithVirtualHost(_ctx, idBinding) || genId || '';
+}
+
 function setupDevtoolsPlugin() {
     // noop
 }
@@ -6304,6 +6320,7 @@ const m = (fn, modifiers, isComponent = false) => withModelModifiers(fn, modifie
 const j = (obj) => JSON.stringify(obj);
 const sei = setUniElementId;
 const ses = setUniElementStyle;
+const gei = genUniElementId;
 
 function createApp(rootComponent, rootProps = null) {
     rootComponent && (rootComponent.mpType = 'app');
@@ -6311,4 +6328,4 @@ function createApp(rootComponent, rootProps = null) {
 }
 const createSSRApp = createApp;
 
-export { EffectScope, Fragment, ReactiveEffect, Text, UniElement, UniElement as UniElementImpl, c, callWithAsyncErrorHandling, callWithErrorHandling, computed, createApp, createPropsRestProxy, createSSRApp, createVNode, createVueApp, customRef, d, defineAsyncComponent, defineComponent, defineEmits, defineExpose, defineProps, destroyUniElements, devtoolsComponentAdded, devtoolsComponentRemoved, devtoolsComponentUpdated, diff, e, effect, effectScope, f, findComponentPropsData, findUniElement, getCurrentInstance, getCurrentScope, getExposeProxy, guardReactiveProps, h, hasInjectionContext, hasQueueJob, inject, injectHook, invalidateJob, isInSSRComponentSetup, isProxy, isReactive, isReadonly, isRef, isShallow, j, logError, m, markRaw, mergeDefaults, mergeModels, mergeProps, n, nextTick$1 as nextTick, o, onActivated, onBeforeMount, onBeforeUnmount, onBeforeUpdate, onDeactivated, onErrorCaptured, onMounted, onRenderTracked, onRenderTriggered, onScopeDispose, onServerPrefetch, onUnmounted, onUpdated, p, patch, provide, proxyRefs, pruneComponentPropsCache, pruneUniElements, queuePostFlushCb, r, reactive, readonly, ref, registerCustomElement, resolveComponent, resolveDirective, resolveFilter, s, sei, ses, setCurrentRenderingInstance, setTemplateRef, setupDevtoolsPlugin, shallowReactive, shallowReadonly, shallowRef, sr, stop, t, toHandlers, toRaw, toRef, toRefs, toValue, triggerRef, unref, updateProps, useAttrs, useCssModule, useCssVars, useModel, useSSRContext, useSlots, version, w, warn, watch, watchEffect, watchPostEffect, watchSyncEffect, withAsyncContext, withCtx, withDefaults, withDirectives, withModifiers, withScopeId };
+export { EffectScope, Fragment, ReactiveEffect, Text, UniElement, UniElement as UniElementImpl, c, callWithAsyncErrorHandling, callWithErrorHandling, computed, createApp, createPropsRestProxy, createSSRApp, createVNode, createVueApp, customRef, d, defineAsyncComponent, defineComponent, defineEmits, defineExpose, defineProps, destroyUniElements, devtoolsComponentAdded, devtoolsComponentRemoved, devtoolsComponentUpdated, diff, e, effect, effectScope, f, findComponentPropsData, findUniElement, gei, getCurrentInstance, getCurrentScope, getExposeProxy, guardReactiveProps, h, hasInjectionContext, hasQueueJob, inject, injectHook, invalidateJob, isInSSRComponentSetup, isProxy, isReactive, isReadonly, isRef, isShallow, j, logError, m, markRaw, mergeDefaults, mergeModels, mergeProps, n, nextTick$1 as nextTick, o, onActivated, onBeforeMount, onBeforeUnmount, onBeforeUpdate, onDeactivated, onErrorCaptured, onMounted, onRenderTracked, onRenderTriggered, onScopeDispose, onServerPrefetch, onUnmounted, onUpdated, p, patch, provide, proxyRefs, pruneComponentPropsCache, pruneUniElements, queuePostFlushCb, r, reactive, readonly, ref, registerCustomElement, resolveComponent, resolveDirective, resolveFilter, s, sei, ses, setCurrentRenderingInstance, setTemplateRef, setupDevtoolsPlugin, shallowReactive, shallowReadonly, shallowRef, sr, stop, t, toHandlers, toRaw, toRef, toRefs, toValue, triggerRef, unref, updateProps, useAttrs, useCssModule, useCssVars, useModel, useSSRContext, useSlots, version, w, warn, watch, watchEffect, watchPostEffect, watchSyncEffect, withAsyncContext, withCtx, withDefaults, withDirectives, withModifiers, withScopeId };
