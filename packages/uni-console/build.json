@@ -22,7 +22,7 @@
       "_APP_ANDROID_": "false"
     },
     "compilerOptions": {
-      "target": "esnext",
+      "target": "es6",
       "declaration": false
     }
   },
@@ -72,7 +72,7 @@
       "process.env.UNI_CONSOLE_WEBVIEW_EVAL_JS_CODE": "''"
     },
     "compilerOptions": {
-      "target": "esnext",
+      "target": "es6",
       "declaration": false
     }
   }
