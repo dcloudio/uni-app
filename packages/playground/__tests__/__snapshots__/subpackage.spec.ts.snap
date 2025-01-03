@@ -33,39 +33,6 @@ exports[`subpackage playground uni-app build:mp-weixin: uni-app build:mp-weixin 
 "
 `;
 
-exports[`subpackage playground uni-app dev:mp-weixin 1`] = `
-""use strict";
-const _imports_0$1 = "/sub/static/logo.png";
-const _imports_1$1 = "/sub/static/logo.png";
-const _imports_2 = "/sub/assets/logo-dc.759742f5.png";
-const _imports_0 = "/sub/uni_modules/test-component/static/logo-hx.png";
-const _imports_1 = "/sub/uni_modules/test-module/static/logo-hx.png";
-exports._imports_0 = _imports_0$1;
-exports._imports_0$1 = _imports_0;
-exports._imports_1 = _imports_1$1;
-exports._imports_1$1 = _imports_1;
-exports._imports_2 = _imports_2;
-"
-`;
-
-exports[`subpackage playground uni-app dev:mp-weixin 2`] = `"<view class="area"><image src="{{a}}"></image><image src="{{b}}"></image><image src="{{c}}"></image><test-component u-i="a96ab9da-0" bind:__l="__l"></test-component></view>"`;
-
-exports[`subpackage playground uni-app dev:mp-weixin 3`] = `
-"@import "../../app.wxss";
-"
-`;
-
-exports[`subpackage playground uni-app dev:mp-weixin 4`] = `"<view><image src="{{a}}"></image><image src="{{b}}"></image></view>"`;
-
-exports[`subpackage playground uni-app dev:mp-weixin 5`] = `
-"@import "../../../../app.wxss";
-"
-`;
-
-exports[`subpackage playground uni-app dev:mp-weixin 6`] = `"<view><image src="{{a}}"></image><image src="{{b}}"></image></view>"`;
-
-exports[`subpackage playground uni-app dev:mp-weixin 7`] = `""`;
-
 exports[`subpackage playground uni-app dev:mp-weixin: uni-app dev:mp-weixin common/assets.js 1`] = `
 ""use strict";
 const _imports_0$1 = "/sub/static/logo.png";
