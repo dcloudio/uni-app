@@ -762,7 +762,7 @@ function populateParameters (result) {
   let _SDKVersion = SDKVersion;
 
   // hostLanguage
-  const hostLanguage = language.replace(/_/g, '-');
+  const hostLanguage = (language || '').replace(/_/g, '-');
 
   // wx.getAccountInfoSync
 
@@ -875,7 +875,7 @@ var getAppBaseInfo = {
 
     const _hostName = getHostName(result);
 
-    const hostLanguage = language.replace('_', '-');
+    const hostLanguage = (language || '').replace('_', '-');
 
     result = sortObject(Object.assign(result, {
       appId: process.env.UNI_APP_ID,

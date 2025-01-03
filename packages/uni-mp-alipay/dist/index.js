@@ -824,7 +824,7 @@ function populateParameters (result) {
   { _SDKVersion = my.SDKVersion; }
 
   // hostLanguage
-  const hostLanguage = language.replace(/_/g, '-');
+  const hostLanguage = (language || '').replace(/_/g, '-');
 
   // wx.getAccountInfoSync
 
