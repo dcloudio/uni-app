@@ -15,6 +15,7 @@ import {
   output,
   parseManifestJsonOnce,
   parseScripts,
+  runByHBuilderX,
 } from '@dcloudio/uni-cli-shared'
 
 import type { CliOptions } from '.'
@@ -481,7 +482,7 @@ function initCustomScripts(options: CliOptions) {
 }
 
 export function showRunPrompt(platform: PLATFORM) {
-  if (!isInHBuilderX()) {
+  if (!runByHBuilderX()) {
     const devtools = getPlatformDevtools(getOriginalPlatform(platform))
     const outputDir = path.relative(
       process.env.UNI_CLI_CONTEXT,
