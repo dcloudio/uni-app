@@ -1,0 +1,198 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`subpackage playground uni-app build:mp-weixin: uni-app build:mp-weixin common/assets.js 1`] = `
+""use strict";
+const _imports_0$1 = "/sub/static/logo.png";
+const _imports_1$1 = "/sub/static/logo.png";
+const _imports_2 = "/sub/assets/logo-dc.759742f5.png";
+const _imports_0 = "/sub/uni_modules/test-component/static/logo-hx.png";
+const _imports_1 = "/sub/uni_modules/test-module/static/logo-hx.png";
+exports._imports_0 = _imports_0$1;
+exports._imports_0$1 = _imports_0;
+exports._imports_1 = _imports_1$1;
+exports._imports_1$1 = _imports_1;
+exports._imports_2 = _imports_2;
+"
+`;
+
+exports[`subpackage playground uni-app build:mp-weixin: uni-app build:mp-weixin pages/index/index.wxml 1`] = `"<view class="area"><image src="{{a}}"></image><image src="{{b}}"></image><image src="{{c}}"></image><test-component u-i="a96ab9da-0" bind:__l="__l"></test-component></view>"`;
+
+exports[`subpackage playground uni-app build:mp-weixin: uni-app build:mp-weixin pages/index/index.wxss 1`] = `
+"@import "../../app.wxss";
+"
+`;
+
+exports[`subpackage playground uni-app build:mp-weixin: uni-app build:mp-weixin uni_modules/test-module/components/test-component/test-component.wxml 1`] = `"<view><image src="{{a}}"></image><image src="{{b}}"></image></view>"`;
+
+exports[`subpackage playground uni-app build:mp-weixin: uni-app build:mp-weixin uni_modules/test-module/components/test-component/test-component.wxss 1`] = `""`;
+
+exports[`subpackage playground uni-app build:mp-weixin: uni-app build:mp-weixin uni_modules/test-module/pages/index/index.wxml 1`] = `"<view><image src="{{a}}"></image><image src="{{b}}"></image></view>"`;
+
+exports[`subpackage playground uni-app build:mp-weixin: uni-app build:mp-weixin uni_modules/test-module/pages/index/index.wxss 1`] = `
+"@import "../../../../app.wxss";
+"
+`;
+
+exports[`subpackage playground uni-app dev:mp-weixin 1`] = `
+""use strict";
+const _imports_0$1 = "/sub/static/logo.png";
+const _imports_1$1 = "/sub/static/logo.png";
+const _imports_2 = "/sub/assets/logo-dc.759742f5.png";
+const _imports_0 = "/sub/uni_modules/test-component/static/logo-hx.png";
+const _imports_1 = "/sub/uni_modules/test-module/static/logo-hx.png";
+exports._imports_0 = _imports_0$1;
+exports._imports_0$1 = _imports_0;
+exports._imports_1 = _imports_1$1;
+exports._imports_1$1 = _imports_1;
+exports._imports_2 = _imports_2;
+"
+`;
+
+exports[`subpackage playground uni-app dev:mp-weixin 2`] = `"<view class="area"><image src="{{a}}"></image><image src="{{b}}"></image><image src="{{c}}"></image><test-component u-i="a96ab9da-0" bind:__l="__l"></test-component></view>"`;
+
+exports[`subpackage playground uni-app dev:mp-weixin 3`] = `
+"@import "../../app.wxss";
+"
+`;
+
+exports[`subpackage playground uni-app dev:mp-weixin 4`] = `"<view><image src="{{a}}"></image><image src="{{b}}"></image></view>"`;
+
+exports[`subpackage playground uni-app dev:mp-weixin 5`] = `
+"@import "../../../../app.wxss";
+"
+`;
+
+exports[`subpackage playground uni-app dev:mp-weixin 6`] = `"<view><image src="{{a}}"></image><image src="{{b}}"></image></view>"`;
+
+exports[`subpackage playground uni-app dev:mp-weixin 7`] = `""`;
+
+exports[`subpackage playground uni-app dev:mp-weixin: uni-app dev:mp-weixin common/assets.js 1`] = `
+""use strict";
+const _imports_0$1 = "/sub/static/logo.png";
+const _imports_1$1 = "/sub/static/logo.png";
+const _imports_2 = "/sub/assets/logo-dc.759742f5.png";
+const _imports_0 = "/sub/uni_modules/test-component/static/logo-hx.png";
+const _imports_1 = "/sub/uni_modules/test-module/static/logo-hx.png";
+exports._imports_0 = _imports_0$1;
+exports._imports_0$1 = _imports_0;
+exports._imports_1 = _imports_1$1;
+exports._imports_1$1 = _imports_1;
+exports._imports_2 = _imports_2;
+"
+`;
+
+exports[`subpackage playground uni-app dev:mp-weixin: uni-app dev:mp-weixin pages/index/index.wxml 1`] = `"<view class="area"><image src="{{a}}"></image><image src="{{b}}"></image><image src="{{c}}"></image><test-component u-i="a96ab9da-0" bind:__l="__l"></test-component></view>"`;
+
+exports[`subpackage playground uni-app dev:mp-weixin: uni-app dev:mp-weixin pages/index/index.wxss 1`] = `
+"@import "../../app.wxss";
+"
+`;
+
+exports[`subpackage playground uni-app dev:mp-weixin: uni-app dev:mp-weixin uni_modules/test-module/components/test-component/test-component.wxml 1`] = `"<view><image src="{{a}}"></image><image src="{{b}}"></image></view>"`;
+
+exports[`subpackage playground uni-app dev:mp-weixin: uni-app dev:mp-weixin uni_modules/test-module/components/test-component/test-component.wxss 1`] = `""`;
+
+exports[`subpackage playground uni-app dev:mp-weixin: uni-app dev:mp-weixin uni_modules/test-module/pages/index/index.wxml 1`] = `"<view><image src="{{a}}"></image><image src="{{b}}"></image></view>"`;
+
+exports[`subpackage playground uni-app dev:mp-weixin: uni-app dev:mp-weixin uni_modules/test-module/pages/index/index.wxss 1`] = `
+"@import "../../../../app.wxss";
+"
+`;
+
+exports[`subpackage playground uni-app-x build:mp-weixin: uni-app-x build:mp-weixin common/assets.js 1`] = `
+""use strict";
+const _imports_0$1 = "/sub/static/logo.png";
+const _imports_1$1 = "/sub/static/logo.png";
+const _imports_2 = "/sub/assets/logo-dc.759742f5.png";
+const _imports_0 = "/sub/uni_modules/test-component/static/logo-hx.png";
+const _imports_1 = "/sub/uni_modules/test-module/static/logo-hx.png";
+exports._imports_0 = _imports_0$1;
+exports._imports_0$1 = _imports_0;
+exports._imports_1 = _imports_1$1;
+exports._imports_1$1 = _imports_1;
+exports._imports_2 = _imports_2;
+"
+`;
+
+exports[`subpackage playground uni-app-x build:mp-weixin: uni-app-x build:mp-weixin pages/index/index.wxml 1`] = `
+"<view id="{{d}}" change:eS="{{uV.sS}}" eS="{{$eS[d]}}" class="{{['area', virtualHostClass]}}" style="{{virtualHostStyle}}" hidden="{{virtualHostHidden}}"><image src="{{a}}"></image><image src="{{b}}"></image><image src="{{c}}"></image><test-component u-i="83ed5df8-0" bind:__l="__l"></test-component></view><wxs src="/sub/common/uniView.wxs" module="uV"/>
+"
+`;
+
+exports[`subpackage playground uni-app-x build:mp-weixin: uni-app-x build:mp-weixin pages/index/index.wxss 1`] = `
+"@import "../../app.wxss";
+@import "../../uvue.wxss";
+:host{display:flex;flex-direction:column}
+"
+`;
+
+exports[`subpackage playground uni-app-x build:mp-weixin: uni-app-x build:mp-weixin uni_modules/test-module/components/test-component/test-component.wxml 1`] = `
+"<view id="{{c}}" change:eS="{{uV.sS}}" eS="{{$eS[c]}}" class="{{[virtualHostClass]}}" style="{{virtualHostStyle}}" hidden="{{virtualHostHidden}}"><image src="{{a}}"></image><image src="{{b}}"></image></view><wxs src="/sub/common/uniView.wxs" module="uV"/>
+"
+`;
+
+exports[`subpackage playground uni-app-x build:mp-weixin: uni-app-x build:mp-weixin uni_modules/test-module/components/test-component/test-component.wxss 1`] = `
+":host{display:flex;flex-direction:column}
+"
+`;
+
+exports[`subpackage playground uni-app-x build:mp-weixin: uni-app-x build:mp-weixin uni_modules/test-module/pages/index/index.wxml 1`] = `
+"<view id="{{c}}" change:eS="{{uV.sS}}" eS="{{$eS[c]}}" class="{{[virtualHostClass]}}" style="{{virtualHostStyle}}" hidden="{{virtualHostHidden}}"><image src="{{a}}"></image><image src="{{b}}"></image></view><wxs src="/sub/common/uniView.wxs" module="uV"/>
+"
+`;
+
+exports[`subpackage playground uni-app-x build:mp-weixin: uni-app-x build:mp-weixin uni_modules/test-module/pages/index/index.wxss 1`] = `
+"@import "../../../../app.wxss";
+@import "../../../../uvue.wxss";
+:host{display:flex;flex-direction:column}
+"
+`;
+
+exports[`subpackage playground uni-app-x dev:mp-weixin: uni-app-x dev:mp-weixin common/assets.js 1`] = `
+""use strict";
+const _imports_0$1 = "/sub/static/logo.png";
+const _imports_1$1 = "/sub/static/logo.png";
+const _imports_2 = "/sub/assets/logo-dc.759742f5.png";
+const _imports_0 = "/sub/uni_modules/test-component/static/logo-hx.png";
+const _imports_1 = "/sub/uni_modules/test-module/static/logo-hx.png";
+exports._imports_0 = _imports_0$1;
+exports._imports_0$1 = _imports_0;
+exports._imports_1 = _imports_1$1;
+exports._imports_1$1 = _imports_1;
+exports._imports_2 = _imports_2;
+"
+`;
+
+exports[`subpackage playground uni-app-x dev:mp-weixin: uni-app-x dev:mp-weixin pages/index/index.wxml 1`] = `
+"<view id="{{d}}" change:eS="{{uV.sS}}" eS="{{$eS[d]}}" class="{{['area', virtualHostClass]}}" style="{{virtualHostStyle}}" hidden="{{virtualHostHidden}}"><image src="{{a}}"></image><image src="{{b}}"></image><image src="{{c}}"></image><test-component u-i="83ed5df8-0" bind:__l="__l"></test-component></view><wxs src="/sub/common/uniView.wxs" module="uV"/>
+"
+`;
+
+exports[`subpackage playground uni-app-x dev:mp-weixin: uni-app-x dev:mp-weixin pages/index/index.wxss 1`] = `
+"@import "../../app.wxss";
+@import "../../uvue.wxss";
+:host{display:flex;flex-direction:column}
+"
+`;
+
+exports[`subpackage playground uni-app-x dev:mp-weixin: uni-app-x dev:mp-weixin uni_modules/test-module/components/test-component/test-component.wxml 1`] = `
+"<view id="{{c}}" change:eS="{{uV.sS}}" eS="{{$eS[c]}}" class="{{[virtualHostClass]}}" style="{{virtualHostStyle}}" hidden="{{virtualHostHidden}}"><image src="{{a}}"></image><image src="{{b}}"></image></view><wxs src="/sub/common/uniView.wxs" module="uV"/>
+"
+`;
+
+exports[`subpackage playground uni-app-x dev:mp-weixin: uni-app-x dev:mp-weixin uni_modules/test-module/components/test-component/test-component.wxss 1`] = `
+":host{display:flex;flex-direction:column}
+"
+`;
+
+exports[`subpackage playground uni-app-x dev:mp-weixin: uni-app-x dev:mp-weixin uni_modules/test-module/pages/index/index.wxml 1`] = `
+"<view id="{{c}}" change:eS="{{uV.sS}}" eS="{{$eS[c]}}" class="{{[virtualHostClass]}}" style="{{virtualHostStyle}}" hidden="{{virtualHostHidden}}"><image src="{{a}}"></image><image src="{{b}}"></image></view><wxs src="/sub/common/uniView.wxs" module="uV"/>
+"
+`;
+
+exports[`subpackage playground uni-app-x dev:mp-weixin: uni-app-x dev:mp-weixin uni_modules/test-module/pages/index/index.wxss 1`] = `
+"@import "../../../../app.wxss";
+@import "../../../../uvue.wxss";
+:host{display:flex;flex-direction:column}
+"
+`;
