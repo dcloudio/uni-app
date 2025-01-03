@@ -949,27 +949,27 @@ function initWrapper(protocols) {
         return processArgs(methodName, res, returnValue, {}, realKeepReturnValue);
     }
     return function wrapper(methodName, method) {
-        if ((isContextApi(methodName) || isTaskApi(methodName)) && method) {
-            const oldMethod = method;
-            method = function (...args) {
-                const contextOrTask = oldMethod.apply(this, args);
-                if (contextOrTask) {
-                    contextOrTask.__v_skip = true;
-                }
-                return contextOrTask;
-            };
-        }
-        if ((!hasOwn(protocols, methodName) && !isFunction(protocols.returnValue)) ||
-            !isFunction(method)) {
-            return method;
-        }
-        const protocol = protocols[methodName];
-        if (!protocol && !isFunction(protocols.returnValue)) {
+        /**
+         * 注意：
+         * - 此处method为原始全局对象上的uni方法名对应的属性值，比如method值可能为my.login，即undefined
+         * - uni.env并非方法，但是也会被传入wrapper
+         */
+        const hasProtocol = hasOwn(protocols, methodName);
+        const needWrapper = hasProtocol ||
+            isFunction(protocols.returnValue) ||
+            isContextApi(methodName) ||
+            isTaskApi(methodName);
+        const hasMethod = hasProtocol || isFunction(method);
+        if (!hasProtocol && !method) {
             // 暂不支持的 api
             return function () {
                 console.error(`字节跳动小程序 暂不支持${methodName}`);
             };
         }
+        if (!needWrapper || !hasMethod) {
+            return method;
+        }
+        const protocol = protocols[methodName];
         return function (arg1, arg2) {
             // 目前 api 最多两个参数
             let options = protocol || {};
