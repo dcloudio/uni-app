@@ -8,11 +8,12 @@ import {
   initView,
 } from '@dcloudio/uni-core'
 import { getCurrentBasePages } from './page'
-import type { UniApp } from '@dcloudio/uni-app-x/types/app'
 
 let appVm: ComponentPublicInstance
+// @ts-expect-error
 let $uniApp: UniApp
 if (__X__) {
+  // @ts-expect-error
   class UniAppImpl implements UniApp {
     get vm() {
       return appVm
