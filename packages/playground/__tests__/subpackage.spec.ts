@@ -20,7 +20,7 @@ describe('subpackage playground', () => {
       const mode = script.split(':')[0]
       const platform = script.split(':')[1]
       test(`${type} ${script}`, async () => {
-        // 仅未指定输出目录时，分包、插件产物会自动根据subpackage参数生成
+        // 仅未指定输出目录时，分包产物位置会自动根据subpackage参数生成。此测试例中指定了UNI_OUTPUT_DIR，outDir也需要手动指定sub目录
         const outDir = path.resolve(distDir, mode, type, platform, 'sub')
         console.log(`${type} npm run ${script} start`)
         await execa('npm', ['run', script, '--', '--subpackage=sub'], {
