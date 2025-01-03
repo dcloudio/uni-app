@@ -7,7 +7,7 @@ export default {
 
     const _hostName = getHostName(result)
 
-    const hostLanguage = language.replace('_', '-')
+    const hostLanguage = (language || '').replace('_', '-')
 
     result = sortObject(Object.assign(result, {
       appId: process.env.UNI_APP_ID,
