@@ -20,7 +20,7 @@ describe('subpackage playground', () => {
       const mode = script.split(':')[0]
       const platform = script.split(':')[1]
       test(`${type} ${script}`, async () => {
-        // TODO 'sub'理应无需手工拼接，应自动根据subpackage参数生成
+        // 仅未指定输出目录时，分包、插件产物会自动根据subpackage参数生成
         const outDir = path.resolve(distDir, mode, type, platform, 'sub')
         console.log(`${type} npm run ${script} start`)
         await execa('npm', ['run', script, '--', '--subpackage=sub'], {
