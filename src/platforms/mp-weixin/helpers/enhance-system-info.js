@@ -79,7 +79,7 @@ export function populateParameters (result) {
   if (__PLATFORM__ === 'mp-alipay') { _SDKVersion = my.SDKVersion }
 
   // hostLanguage
-  const hostLanguage = language.replace(/_/g, '-')
+  const hostLanguage = (language || '').replace(/_/g, '-')
 
   // wx.getAccountInfoSync
 
