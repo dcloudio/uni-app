@@ -12634,7 +12634,7 @@ const $navigateTo = (args, { resolve, reject }) => {
     const [aniType, aniDuration] = initAnimation(path, animationType, animationDuration);
     navigate(path, () => {
         _navigateTo({
-            url,
+            url: url,
             path,
             query,
             events,
@@ -12775,7 +12775,7 @@ const redirectTo = defineAsyncApi(API_REDIRECT_TO, ({ url }, { resolve, reject }
     const { path, query } = parseUrl(url);
     navigate(path, () => {
         _redirectTo({
-            url,
+            url: url,
             path,
             query,
         })
@@ -12860,7 +12860,7 @@ const $switchTab = (args, { resolve, reject }) => {
     const { path, query } = parseUrl(url);
     navigate(path, () => {
         _switchTab({
-            url,
+            url: url,
             path,
             query,
         })

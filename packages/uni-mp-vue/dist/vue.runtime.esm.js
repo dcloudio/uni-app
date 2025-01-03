@@ -5793,7 +5793,9 @@ function withModelModifiers(fn, { number, trim }, isComponent = false) {
 }
 
 function hasIdProp(_ctx) {
-    return _ctx.$.propsOptions && _ctx.$.propsOptions[0] && 'id' in _ctx.$.propsOptions[0];
+    return (_ctx.$.propsOptions &&
+        _ctx.$.propsOptions[0] &&
+        'id' in _ctx.$.propsOptions[0]);
 }
 function hasVirtualHostId(_ctx) {
     return _ctx.$scope.virtualHostId !== '';
