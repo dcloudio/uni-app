@@ -525,7 +525,9 @@ function initRuntimeSocketService() {
             if (!socket) {
                 restoreError();
                 restoreConsole();
-                originalConsole.error(wrapError('开发模式下日志通道建立 socket 连接失败。\n如果是小程序平台，请勾选不校验合法域名配置。\n如果是运行到真机，请确认手机与电脑处于同一网络。'));
+                originalConsole.error(wrapError('开发模式下日志通道建立 socket 连接失败。'));
+                originalConsole.error(wrapError('如果是小程序平台，请勾选不校验合法域名配置。'));
+                originalConsole.error(wrapError('如果是运行到真机，请确认手机与电脑处于同一网络。'));
                 return false;
             }
             socket.onClose(() => {
