@@ -33,6 +33,7 @@ export function initRuntimeSocketService(): Promise<boolean> {
         )
         return false
       }
+      initMiniProgramGlobalFlag()
       socket.onClose(() => {
         if (process.env.UNI_DEBUG) {
           originalConsole.log(
@@ -73,6 +74,31 @@ const ERROR_CHAR = '\u200C'
 
 function wrapError(error: string) {
   return `${ERROR_CHAR}${error}${ERROR_CHAR}`
+}
+
+function initMiniProgramGlobalFlag() {
+  if (typeof wx !== 'undefined') {
+    // @ts-expect-error
+    wx.__uni_console__ = true
+  } else if (typeof my !== 'undefined') {
+    my.__uni_console__ = true
+  } else if (typeof tt !== 'undefined') {
+    tt.__uni_console__ = true
+  } else if (typeof swan !== 'undefined') {
+    swan.__uni_console__ = true
+  } else if (typeof qq !== 'undefined') {
+    qq.__uni_console__ = true
+  } else if (typeof ks !== 'undefined') {
+    ks.__uni_console__ = true
+  } else if (typeof jd !== 'undefined') {
+    jd.__uni_console__ = true
+  } else if (typeof xhs !== 'undefined') {
+    xhs.__uni_console__ = true
+  } else if (typeof has !== 'undefined') {
+    has.__uni_console__ = true
+  } else if (typeof qa !== 'undefined') {
+    qa.__uni_console__ = true
+  }
 }
 
 initRuntimeSocketService()

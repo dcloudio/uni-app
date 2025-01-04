@@ -5,6 +5,8 @@ export {
   getSystemInfoSync,
   onError,
   offError,
+  onSocketOpen,
+  onSocketMessage,
 } from '@dcloudio/uni-mp-core'
 import { navigateTo as _navigateTo, isSyncApi } from '@dcloudio/uni-mp-core'
 
