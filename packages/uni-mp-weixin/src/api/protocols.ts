@@ -12,6 +12,8 @@ export {
   getAppAuthorizeSetting,
   onError,
   offError,
+  onSocketOpen,
+  onSocketMessage,
 } from '@dcloudio/uni-mp-core'
 
 // #if _X_

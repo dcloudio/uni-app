@@ -73,6 +73,8 @@ export {
   getAppAuthorizeSetting,
   onError,
   offError,
+  onSocketOpen,
+  onSocketMessage,
 } from './api/protocols'
 // types
 export { MiniProgramAppOptions, MiniProgramAppInstance } from './runtime/app'
