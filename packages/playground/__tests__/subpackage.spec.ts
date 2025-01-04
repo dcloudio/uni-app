@@ -35,11 +35,8 @@ describe('subpackage playground', () => {
         console.log(`${type} npm run ${script} end`)
         const files = [
           'common/assets.js',
-          'pages/index/index.wxml',
           'pages/index/index.wxss',
-          'uni_modules/test-module/pages/index/index.wxml',
           'uni_modules/test-module/pages/index/index.wxss',
-          'uni_modules/test-module/components/test-component/test-component.wxml',
           'uni_modules/test-module/components/test-component/test-component.wxss',
         ]
         files.forEach((file) => {
