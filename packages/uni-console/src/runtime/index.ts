@@ -81,6 +81,7 @@ function initMiniProgramGlobalFlag() {
     // @ts-expect-error
     wx.__uni_console__ = true
   } else if (typeof my !== 'undefined') {
+    // @ts-expect-error
     my.__uni_console__ = true
   } else if (typeof tt !== 'undefined') {
     tt.__uni_console__ = true
