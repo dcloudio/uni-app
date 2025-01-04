@@ -2593,22 +2593,6 @@ var appCtx;
 var defaultApp = {
   globalData: {}
 };
-class UniAppImpl {
-  get vm() {
-    return appCtx;
-  }
-  get $vm() {
-    return appCtx;
-  }
-  get globalData() {
-    var _appCtx;
-    return ((_appCtx = appCtx) === null || _appCtx === void 0 ? void 0 : _appCtx.globalData) || {};
-  }
-  getAndroidApplication() {
-    return null;
-  }
-}
-var $uniApp = new UniAppImpl();
 var entryPageState = {
   isReady: false,
   handledBeforeEntryPageRoutes: false
@@ -2621,15 +2605,18 @@ function initAppVm(appVm) {
   appVm.$vm = appVm;
   appVm.$mpType = "app";
 }
-function getApp$1() {
-  return $uniApp;
+function initUniApp(uniApp) {
+  uniApp.vm = appCtx;
+  uniApp.$vm = appCtx;
+  uniApp.globalData = appCtx.globalData;
 }
-function registerApp(appVm, nativeApp2) {
+function registerApp(appVm, nativeApp2, uniApp) {
   initEntryPagePath(nativeApp2);
   setNativeApp(nativeApp2);
   initVueApp(appVm);
   appCtx = appVm;
   initAppVm(appCtx);
+  initUniApp(uniApp);
   extend(appCtx, defaultApp);
   defineGlobalData(appCtx, defaultApp.globalData);
   initService(nativeApp2);
@@ -7816,7 +7803,6 @@ export {
   defineOnApi,
   defineSyncApi,
   defineTaskApi,
-  getApp$1 as getApp,
   getCurrentPages$1 as getCurrentPages,
   initApp,
   index$1 as uni

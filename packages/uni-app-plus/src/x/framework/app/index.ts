@@ -26,22 +26,6 @@ let appCtx: ComponentPublicInstance
 const defaultApp = {
   globalData: {},
 }
-class UniAppImpl implements UniApp {
-  get vm() {
-    return appCtx
-  }
-  get $vm() {
-    return appCtx
-  }
-  get globalData() {
-    return appCtx?.globalData || {}
-  }
-  getAndroidApplication() {
-    return null
-  }
-}
-
-let $uniApp = new UniAppImpl()
 
 export const entryPageState = {
   isReady: false,
@@ -86,8 +70,10 @@ function initAppVm(appVm: ComponentPublicInstance) {
   // TODO uni-app x useI18n
 }
 
-export function getApp() {
-  return $uniApp
+export function initUniApp(uniApp: UniApp) {
+  uniApp.vm = appCtx
+  uniApp.$vm = appCtx
+  uniApp.globalData = appCtx.globalData
 }
 
 /**
@@ -95,7 +81,11 @@ export function getApp() {
  * @param appVm
  * @param nativeApp
  */
-export function registerApp(appVm: ComponentPublicInstance, nativeApp: IApp) {
+export function registerApp(
+  appVm: ComponentPublicInstance,
+  nativeApp: IApp,
+  uniApp: UniApp
+) {
   if (__DEV__) {
     console.log(formatLog('registerApp'))
   }
@@ -118,6 +108,7 @@ export function registerApp(appVm: ComponentPublicInstance, nativeApp: IApp) {
 
   appCtx = appVm
   initAppVm(appCtx)
+  initUniApp(uniApp)
 
   extend(appCtx, defaultApp) // 拷贝默认实现
 

@@ -1,5 +1,5 @@
 import * as uni from './api/index'
-import { registerApp as __registerApp, getApp, initApp } from './framework/app'
+import { registerApp as __registerApp, initApp } from './framework/app'
 import {
   definePage as __definePage,
   getCurrentPages,
@@ -28,7 +28,6 @@ import {
 
 export {
   uni,
-  getApp,
   getCurrentPages,
   __definePage,
   __registerApp,
