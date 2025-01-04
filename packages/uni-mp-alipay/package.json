@@ -32,5 +32,8 @@
     "@dcloudio/uni-shared": "workspace:*",
     "@vue/compiler-core": "3.4.21",
     "@vue/shared": "3.4.21"
+  },
+  "devDependencies": {
+    "mini-types": "^0.1.7"
   }
 }

@@ -18,7 +18,6 @@
   },
   "license": "Apache-2.0",
   "gitHead": "33e807d66e1fe47e2ee08ad9c59247e37b8884da",
-  "devDependencies": {},
   "dependencies": {
     "@dcloudio/uni-cli-shared": "workspace:*",
     "fs-extra": "^10.0.0"

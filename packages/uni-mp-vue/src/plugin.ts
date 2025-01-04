@@ -39,8 +39,10 @@ function getCreateApp() {
     typeof (global as any)[method] !== 'undefined'
   ) {
     return (global as any)[method]
+    // @ts-expect-error
   } else if (typeof my !== 'undefined') {
     // 支付宝小程序开启globalObjectMode配置后才会有global
+    // @ts-expect-error
     return (my as any)[method]
   }
 }

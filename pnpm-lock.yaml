@@ -146,9 +146,6 @@ importers:
       lint-staged:
         specifier: ^10.5.3
         version: 10.5.4
-      mini-types:
-        specifier: ^0.1.7
-        version: 0.1.7
       minimist:
         specifier: ^1.2.5
         version: 1.2.8
@@ -1598,6 +1595,10 @@ importers:
       '@vue/shared':
         specifier: 3.4.21
         version: 3.4.21
+    devDependencies:
+      mini-types:
+        specifier: ^0.1.7
+        version: 0.1.7
 
   packages/uni-mp-baidu:
     dependencies:
