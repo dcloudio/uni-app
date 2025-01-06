@@ -4,12 +4,17 @@
       "src/runtime/ets.ts": "dist/uni-console.ets"
     },
     "autoImports": {
-      "@dcloudio/uts-harmony": [
-        ["IUTSObject"],
-        ["UTSObject"],
-        ["UTSJSONObject"]
-      ],
-      "@dcloudio/uni-mp-sdk": [["UTSHarmony"]]
+      "@dcloudio/uni-app-harmony": [
+        [
+          "IUTSObject"
+        ],
+        [
+          "UTSObject"
+        ],
+        [
+          "UTSJSONObject"
+        ]
+      ]
     },
     "replacements": {
       "__HARMONY__": "true",

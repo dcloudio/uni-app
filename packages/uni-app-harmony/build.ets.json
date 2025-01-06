@@ -135,10 +135,10 @@
       "temp/uni-ext-api-x/index.uts": "dist-x/uni.api.ets"
     },
     "alias": {
-      "@dcloudio/uni-runtime": "@dcloudio/uni-mp-sdk"
+      "@dcloudio/uni-runtime": "@dcloudio/uni-runtime-harmony"
     },
     "externals": [
-      "@dcloudio/uni-mp-sdk"
+      "@dcloudio/uni-runtime-harmony"
     ],
     "autoImports": {
       "./shared": [
@@ -212,7 +212,7 @@
           "SourceError"
         ]
       ],
-      "@dcloudio/uni-mp-sdk": [
+      "@dcloudio/uni-runtime-harmony": [
         [
           "UTSHarmony"
         ]
@@ -235,10 +235,10 @@
       "../uni-runtime/src/helpers/api/index.ts": "dist-x/uni-api-shared.ets"
     },
     "alias": {
-      "@dcloudio/uni-runtime": "@dcloudio/uni-mp-sdk"
+      "@dcloudio/uni-runtime": "@dcloudio/uni-runtime-harmony"
     },
     "externals": [
-      "@dcloudio/uni-mp-sdk"
+      "@dcloudio/uni-runtime-harmony"
     ],
     "autoImports": {
       "./uts": [
