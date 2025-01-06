@@ -322,7 +322,7 @@ async function postBuildArkTS (isUniAppX = false) {
   fs.outputJSON(extApiExportJsonPath, extApiExportWithHar, { spaces: 2 })
 }
 
-async function buildArkTS (target, buildJson, isX) {
+async function buildArkTS (target, buildJson) {
   const projectDir = path.resolve(__dirname, '../packages', target)
   const { bundleArkTS } = require('../packages/uts/dist')
   const start = Date.now()
@@ -426,7 +426,8 @@ async function buildArkTS (target, buildJson, isX) {
   if (target !== 'uni-app-harmony') {
     return
   }
-  await postBuildArkTS(isX)
+  await postBuildArkTS(true)
+  await postBuildArkTS(false)
 }
 
 async function sleep (ms) {
