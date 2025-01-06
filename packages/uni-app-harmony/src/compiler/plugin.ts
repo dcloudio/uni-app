@@ -50,6 +50,10 @@ function generateHarmonyImportSpecifier(id: string) {
   })
 }
 
+function generateHarName(moduleName: string) {
+  return moduleName.replace(/@/g, '').replace(/\//g, '__').replace(/-/g, '_')
+}
+
 function generateHarmonyImportExternalCode(harmonyPackageNames: string[]) {
   return harmonyPackageNames
     .filter((harmonyPackageName) => isHarmonyGlobal(harmonyPackageName))
@@ -384,15 +388,14 @@ function initUniExtApi() {
       const depPath = './uni_modules/' + dep.plugin
       dependencies[dep.moduleSpecifier] = depPath
       modules.push({
-        name: dep.moduleSpecifier
-          .replace(/@/g, '')
-          .replace(/\//g, '__')
-          .replace(/-/g, '_'),
+        name: generateHarName(dep.moduleSpecifier),
         srcPath: depPath,
       })
     } else {
       if (!dependencies[dep.moduleSpecifier]) {
-        dependencies[dep.moduleSpecifier] = dep.version!
+        dependencies[dep.moduleSpecifier] = `./libs/${generateHarName(
+          dep.moduleSpecifier
+        )}.har`
       }
     }
   })
