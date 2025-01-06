@@ -24,7 +24,7 @@ import { uniAppPagesPlugin } from '../js/pagesJson'
 export function init() {
   return [
     ...(isNormalCompileTarget() ? [uniDecryptUniModulesPlugin()] : []),
-    uniHBuilderXConsolePlugin('uni.__log__'),
+    uniHBuilderXConsolePlugin('uni.__f__'),
     // 非 isNormalCompileTarget 时（ext-api模式），仍需要编译 uni_modules 获取 js code
     uniUTSAppUniModulesPlugin({
       x: true,
