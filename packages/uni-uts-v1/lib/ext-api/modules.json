@@ -504,19 +504,6 @@
       }
     }
   },
-  "uni-loadFontFace": {
-    "uni": {
-      "loadFontFace": {
-        "name": "loadFontFace",
-        "app": {
-          "js": false,
-          "kotlin": true,
-          "swift": false,
-          "arkts": true
-        }
-      }
-    }
-  },
   "uni-map-tencent": {
     "uni": {
       "createMapContext": {
