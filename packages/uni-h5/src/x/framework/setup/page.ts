@@ -21,7 +21,7 @@ import {
 import type { RouteLocationNormalizedLoadedGeneric } from 'vue-router'
 import { isDialogPageInstance } from '../helpers/utils'
 import { getWindowInfo } from '../../../service/api/device/getWindowInfo'
-import type { SafeArea, SafeAreaInsets } from '@dcloudio/uni-app-x/types/uni'
+import type { UniSafeAreaInsets } from '@dcloudio/uni-app-x/types/native/UniSafeAreaInsets'
 
 let escBackPageNum = 0
 type PageStyle = {
@@ -49,10 +49,7 @@ class UniPageImpl implements UniPage {
   get innerHeight(): number {
     return getWindowInfo().windowHeight
   }
-  get safeArea(): SafeArea {
-    return getWindowInfo().safeArea
-  }
-  get safeAreaInsets(): SafeAreaInsets {
+  get safeAreaInsets(): UniSafeAreaInsets {
     return getWindowInfo().safeAreaInsets
   }
   getPageStyle(): UTSJSONObject {
