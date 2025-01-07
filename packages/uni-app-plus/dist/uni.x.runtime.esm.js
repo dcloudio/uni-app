@@ -1069,6 +1069,15 @@ var $emit = /* @__PURE__ */ defineSyncApi(API_EMIT, function(name) {
   }
   eventBus.emit(name, ...args);
 });
+function __f__(type, filename) {
+  for (var _len = arguments.length, args = new Array(_len > 2 ? _len - 2 : 0), _key = 2; _key < _len; _key++) {
+    args[_key - 2] = arguments[_key];
+  }
+  if (filename) {
+    args.push(filename);
+  }
+  console[type].apply(console, args);
+}
 var appHooks = {
   [ON_UNHANDLE_REJECTION]: [],
   [ON_PAGE_NOT_FOUND]: [],
@@ -4398,6 +4407,7 @@ const index$1 = /* @__PURE__ */ Object.defineProperty({
   $off,
   $on,
   $once,
+  __f__,
   __log__,
   addInterceptor,
   closeDialogPage,

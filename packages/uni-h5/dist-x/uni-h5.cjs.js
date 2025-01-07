@@ -2202,7 +2202,7 @@ function normalizePageMeta(pageMeta) {
       pageMeta.pullToRefresh = pullToRefresh;
     }
   }
-  if (__UNI_FEATURE_NAVIGATIONBAR__) {
+  if (__UNI_FEATURE_NAVIGATIONBAR__ || __UNI_FEATURE_I18N_LOCALE__) {
     const { navigationBar } = pageMeta;
     const { titleSize, titleColor, backgroundColor } = navigationBar;
     navigationBar.titleText = navigationBar.titleText || "";
@@ -3063,9 +3063,6 @@ class UniPageImpl {
   }
   get innerHeight() {
     return getWindowInfo().windowHeight;
-  }
-  get safeArea() {
-    return getWindowInfo().safeArea;
   }
   get safeAreaInsets() {
     return getWindowInfo().safeAreaInsets;
