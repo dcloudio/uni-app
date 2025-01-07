@@ -134,6 +134,9 @@ async function build (target) {
     await fs.remove(`${pkgDir}/dist`)
   }
   // }
+  if (['uni-app-harmony'].includes(target)) {
+    await fs.remove(`${pkgDir}/dist-x`)
+  }
 
   const env = devOnly ? 'development' : 'production'
 
