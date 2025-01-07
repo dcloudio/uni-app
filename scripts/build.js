@@ -283,7 +283,7 @@ async function postBuildArkTS (isUniAppX = false) {
     isUniAppX ? 'ext-api-export-x.json' : 'ext-api-export.json'
   )
   const extApiExport = genHarmonyExtApiExport(isUniAppX)
-  fs.outputJSON(extApiExportJsonPath, extApiExport, { spaces: 2 })
+  fs.outputJSONSync(extApiExportJsonPath, extApiExport, { spaces: 2 })
 
   const harBuildJson = require(path.resolve(
     projectDir,
