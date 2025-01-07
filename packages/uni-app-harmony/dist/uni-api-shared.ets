@@ -1,4 +1,4 @@
-import { defineAsyncApi as originalDefineAsyncApi, defineOffApi as originalDefineOffApi, defineOnApi as originalDefineOnApi, defineSyncApi as originalDefineSyncApi, defineTaskApi as originalDefineTaskApi } from "@dcloudio/uni-runtime-harmony";
+import { defineAsyncApi as originalDefineAsyncApi, defineOffApi as originalDefineOffApi, defineOnApi as originalDefineOnApi, defineSyncApi as originalDefineSyncApi, defineTaskApi as originalDefineTaskApi } from "@dcloudio/uni-mp-sdk";
 interface UniProvider {
     id: string;
     description: string;
