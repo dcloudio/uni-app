@@ -66,6 +66,11 @@ export interface UniPlatform {
       uniVer?: string
       unixVer?: string
     }
+    harmony?: {
+      osVer?: string
+      uniVer?: string
+      unixVer?: string
+    }
   }
 }
 
@@ -235,6 +240,9 @@ export function getSupportedPlatforms(uniPlatform: UniPlatform | undefined) {
   }
   if (uniPlatform?.app.ios?.unixVer !== 'x') {
     supportedPlatforms.push('app-ios')
+  }
+  if (uniPlatform?.app.harmony?.unixVer !== 'x') {
+    supportedPlatforms.push('app-harmony')
   }
   return supportedPlatforms
 }
