@@ -1486,13 +1486,15 @@
             var _a = getVueInternalClasses(), Watcher_1 = _a.Watcher, Dep_1 = _a.Dep;
             var watcher_1;
             computedGetter = function () {
+                var _a;
                 if (!watcher_1) {
                     watcher_1 = new Watcher_1(vm, getter, noopFn, { lazy: true });
                 }
                 if (watcher_1.dirty) {
                     watcher_1.evaluate();
                 }
-                if (Dep_1.target) {
+                // ensure that computed works in the app-plus environment
+                if (Dep_1.target || ((_a = Dep_1.SharedObject) === null || _a === void 0 ? void 0 : _a.target)) {
                     watcher_1.depend();
                 }
                 return watcher_1.value;
