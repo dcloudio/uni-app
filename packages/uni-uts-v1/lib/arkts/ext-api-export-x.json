@@ -1,6 +1,15 @@
 {
   "@dcloudio/uni-app-x-runtime": [
     [
+      "ChooseMediaSuccess"
+    ],
+    [
+      "ChooseMediaOptions"
+    ],
+    [
+      "ChooseMedia"
+    ],
+    [
       "SetClipboardData"
     ],
     [
@@ -152,6 +161,96 @@
     ],
     [
       "MakePhoneCallOptions"
+    ],
+    [
+      "ChooseImageSuccess"
+    ],
+    [
+      "ChooseImageOptions"
+    ],
+    [
+      "ChooseImage"
+    ],
+    [
+      "PreviewImageSuccess"
+    ],
+    [
+      "PreviewImageOptions"
+    ],
+    [
+      "PreviewImage"
+    ],
+    [
+      "ClosePreviewImage"
+    ],
+    [
+      "ClosePreviewImageSuccess"
+    ],
+    [
+      "ClosePreviewImageOptions"
+    ],
+    [
+      "GetImageInfo"
+    ],
+    [
+      "GetImageInfoSuccess"
+    ],
+    [
+      "GetImageInfoOptions"
+    ],
+    [
+      "SaveImageToPhotosAlbum"
+    ],
+    [
+      "SaveImageToPhotosAlbumSuccess"
+    ],
+    [
+      "SaveImageToPhotosAlbumOptions"
+    ],
+    [
+      "ChooseVideoSuccess"
+    ],
+    [
+      "ChooseVideoOptions"
+    ],
+    [
+      "ChooseVideo"
+    ],
+    [
+      "GetVideoInfoSuccess"
+    ],
+    [
+      "GetVideoInfoOptions"
+    ],
+    [
+      "GetVideoInfo"
+    ],
+    [
+      "SaveVideoToPhotosAlbumSuccess"
+    ],
+    [
+      "SaveVideoToPhotosAlbumOptions"
+    ],
+    [
+      "SaveVideoToPhotosAlbum"
+    ],
+    [
+      "CompressVideoSuccess"
+    ],
+    [
+      "CompressVideoOptions"
+    ],
+    [
+      "CompressVideo"
+    ],
+    [
+      "ChooseFile"
+    ],
+    [
+      "ChooseFileSuccess"
+    ],
+    [
+      "ChooseFileOptions"
     ],
     [
       "Request"
