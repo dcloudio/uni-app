@@ -73,7 +73,11 @@ function initAppVm(appVm: ComponentPublicInstance) {
 export function initUniApp(uniApp: UniApp) {
   uniApp.vm = appCtx
   uniApp.$vm = appCtx
-  uniApp.globalData = appCtx.globalData
+  Object.defineProperty(uniApp, 'globalData', {
+    get: () => {
+      return appCtx.globalData || {}
+    },
+  })
 }
 
 /**

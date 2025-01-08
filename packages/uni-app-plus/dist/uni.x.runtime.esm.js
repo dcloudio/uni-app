@@ -2617,7 +2617,11 @@ function initAppVm(appVm) {
 function initUniApp(uniApp) {
   uniApp.vm = appCtx;
   uniApp.$vm = appCtx;
-  uniApp.globalData = appCtx.globalData;
+  Object.defineProperty(uniApp, "globalData", {
+    get: () => {
+      return appCtx.globalData || {};
+    }
+  });
 }
 function registerApp(appVm, nativeApp2, uniApp) {
   initEntryPagePath(nativeApp2);
