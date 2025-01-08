@@ -230,7 +230,7 @@ describe('nvue-styler: expand', () => {
       })
     })
   })
-  test('transform border', function () {
+  test('transform border simple', function () {
     // simple
     expect(
       createTransformBorder({ type: 'uvue' })(
@@ -325,13 +325,13 @@ describe('nvue-styler: expand', () => {
         value: 'red',
       },
     ])
-
-    const types = ['border', ...postionTypes]
+  })
+  test('transform border', function () {
     const createBorders = (
       border: string
     ): Record<string, Record<string, string>[]> => {
       return {
-        '1px': fillBorderPostion([
+        '1px': [
           {
             type: 'decl',
             prop: `${border}-width`,
@@ -347,8 +347,8 @@ describe('nvue-styler: expand', () => {
             prop: `${border}-color`,
             value: '#000000',
           },
-        ]),
-        '#ffffff': fillBorderPostion([
+        ],
+        '#ffffff': [
           {
             type: 'decl',
             prop: `${border}-width`,
@@ -364,8 +364,8 @@ describe('nvue-styler: expand', () => {
             prop: `${border}-color`,
             value: '#ffffff',
           },
-        ]),
-        thick: fillBorderPostion([
+        ],
+        thick: [
           {
             type: 'decl',
             prop: `${border}-width`,
@@ -381,8 +381,8 @@ describe('nvue-styler: expand', () => {
             prop: `${border}-color`,
             value: '#000000',
           },
-        ]),
-        '2px dashed': fillBorderPostion([
+        ],
+        '2px dashed': [
           {
             type: 'decl',
             prop: `${border}-width`,
@@ -398,8 +398,8 @@ describe('nvue-styler: expand', () => {
             prop: `${border}-color`,
             value: '#000000',
           },
-        ]),
-        '3px dotted #ffffff': fillBorderPostion([
+        ],
+        '3px dotted #ffffff': [
           {
             type: 'decl',
             prop: `${border}-width`,
@@ -415,20 +415,19 @@ describe('nvue-styler: expand', () => {
             prop: `${border}-color`,
             value: '#ffffff',
           },
-        ]),
+        ],
       }
     }
-
-    types.forEach((type) => {
+    postionTypes.forEach((type) => {
       const borders = createBorders(type)
       Object.keys(borders).forEach((b) => {
         const decl = parseDecl(`.test {
-    ${type}: ${b}
-  }`)
+      ${type}: ${b}
+    }`)
+
         const transformBorder = createTransformBorder({
           type: 'uvue',
         })
-
         expect(transformBorder(decl)).toEqual(
           borders[b].map((node) => {
             const val = Object.assign(
@@ -440,6 +439,38 @@ describe('nvue-styler: expand', () => {
         )
       })
     })
+  })
+  test('transform border-left', () => {
+    expect(
+      createTransformBorder({ type: 'uvue' })(
+        parseDecl(`
+.test{
+  border-left:1px solid red;
+}`)
+      )
+    ).toEqual([
+      {
+        prop: 'border-left-width',
+        raws: expect.any(Object),
+        source: expect.any(Object),
+        type: 'decl',
+        value: '1px',
+      },
+      {
+        prop: 'border-left-style',
+        raws: expect.any(Object),
+        source: expect.any(Object),
+        type: 'decl',
+        value: 'solid',
+      },
+      {
+        prop: 'border-left-color',
+        raws: expect.any(Object),
+        source: expect.any(Object),
+        type: 'decl',
+        value: 'red',
+      },
+    ])
   })
   test(`transform border-style`, () => {
     const borderStyles: Record<string, Record<string, string>[]> = {
