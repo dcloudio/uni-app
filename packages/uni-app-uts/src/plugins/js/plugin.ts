@@ -72,6 +72,10 @@ export function createUniAppJsEnginePlugin(
             sourcemap: enableSourceMap(), //enableSourceMap() ? 'hidden' : false,
             emptyOutDir: false,
             assetsInlineLimit: 0,
+            target:
+              process.env.UNI_UTS_PLATFORM === 'app-ios'
+                ? ['ios12']
+                : undefined,
             rollupOptions: {
               input: resolveMainPathOnce(inputDir),
               external: ['vue', '@vue/shared'],

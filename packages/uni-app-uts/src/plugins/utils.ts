@@ -131,10 +131,13 @@ const REMOVED_PLUGINS = [
   'vite:dynamic-import-vars',
   'vite:import-glob',
   'vite:build-import-analysis',
-  'vite:esbuild-transpile',
   'vite:terser',
   'vite:reporter',
 ]
+
+if (process.env.UNI_UTS_PLATFORM === 'app-android') {
+  REMOVED_PLUGINS.push('vite:esbuild-transpile')
+}
 
 export function configResolved(config: ResolvedConfig, isAndroidX = false) {
   removePlugins(REMOVED_PLUGINS.slice(0), config)
