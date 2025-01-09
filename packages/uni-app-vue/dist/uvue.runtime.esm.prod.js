@@ -1750,6 +1750,7 @@ var borderTop = 'borderTop';
 var borderRight = 'borderRight';
 var borderBottom = 'borderBottom';
 var borderLeft = 'borderLeft';
+// const position = ['top', 'right', 'bottom', 'left']
 var transformBorderColor = decl => {
   var {
     prop,
@@ -1758,16 +1759,22 @@ var transformBorderColor = decl => {
     raws,
     source
   } = decl;
-  var _splitResult = hyphenate(prop).split('-');
-  var property = _splitResult[_splitResult.length - 1];
+  var _property_split = hyphenate(prop).split('-');
+  var property = _property_split[_property_split.length - 1];
   {
     property = capitalize(property);
   }
-  var splitResult = value.replace(/\s*,\s*/g, ',').split(/\s+/);
+  var splitResult = value.replace(/\s*,\s*/g, ',').split(/\s+/); // 1pt
   switch (splitResult.length) {
     case 1:
-      splitResult.push(splitResult[0], splitResult[0], splitResult[0]);
-      break;
+      if (_property_split.length === 3) {
+        // border-top-width
+        return [decl];
+      } else {
+        // border-width
+        splitResult.push(splitResult[0], splitResult[0], splitResult[0]);
+        break;
+      }
     case 2:
       splitResult.push(splitResult[0], splitResult[1]);
       break;
