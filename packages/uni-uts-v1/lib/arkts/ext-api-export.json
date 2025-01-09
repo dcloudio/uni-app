@@ -262,6 +262,9 @@
       "RequestSuccess"
     ],
     [
+      "RequestFail"
+    ],
+    [
       "RequestTask"
     ],
     [
@@ -522,6 +525,14 @@
     ],
     [
       "setAppBadgeNumber"
+    ]
+  ],
+  "@uni_modules/uni-verify": [
+    [
+      "getUniVerifyManager"
+    ],
+    [
+      "getUniverifyManager"
     ]
   ]
 }

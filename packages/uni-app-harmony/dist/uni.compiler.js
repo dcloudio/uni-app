@@ -52,6 +52,15 @@ var StandaloneExtApis = [
 			"setAppBadgeNumber"
 		],
 		version: "1.0.2"
+	},
+	{
+		type: "extapi",
+		plugin: "uni-verify",
+		apis: [
+			"getUniverifyManager",
+			"getUniVerifyManager"
+		],
+		version: "1.0.0"
 	}
 ];
 
@@ -199,6 +208,7 @@ function getRelatedProviders(inputDir) {
 const SupportedModules = {
     'uni-facialRecognitionVerify': 'uni-facialRecognitionVerify',
     'uni-push': 'uni-push',
+    'uni-verify': 'uni-verify',
 };
 // 获取uni_modules中的相关模块
 function getRelatedModules(inputDir) {
