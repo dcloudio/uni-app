@@ -57,7 +57,7 @@ export function createUniOptions(
       }
     },
     compilerOptions:
-      platform === 'app-ios'
+      platform === 'app-ios' || platform === 'app-harmony'
         ? {
             isNativeTag(tag) {
               return matchUTSComponent(tag) || isAppIOSUVueNativeTag(tag)
