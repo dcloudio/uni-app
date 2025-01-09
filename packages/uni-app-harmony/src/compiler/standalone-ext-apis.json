@@ -40,5 +40,14 @@
       "setAppBadgeNumber"
     ],
     "version": "1.0.2"
+  },
+  {
+    "type": "extapi",
+    "plugin": "uni-verify",
+    "apis": [
+      "getUniverifyManager",
+      "getUniVerifyManager"
+    ],
+    "version": "1.0.0"
   }
 ]

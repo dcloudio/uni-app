@@ -70,6 +70,7 @@ export function getArkTSAutoImports(isX = false): AutoImportOptions {
         ['UTSObject'],
         ['UTSJSONObject'],
         ['SourceError'],
+        ['UniElement'],
         ['UTSHarmony'],
       ],
     },

@@ -35,6 +35,10 @@ export const StandaloneExtApi: IStandaloneExtApi[] = [
     name: 'uni-push',
     type: 'extapi',
   },
+  {
+    name: 'uni-verify',
+    type: 'extapi',
+  },
 ]
 
 export const ExtApiBlackListX = [
