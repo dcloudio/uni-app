@@ -74,7 +74,14 @@ export function createUniAppJsEnginePlugin(
             assetsInlineLimit: 0,
             target:
               process.env.UNI_UTS_PLATFORM === 'app-ios'
-                ? ['ios12']
+                ? [
+                    'ios12',
+                    'es2020',
+                    'edge88',
+                    'firefox78',
+                    'chrome87',
+                    'safari14',
+                  ]
                 : undefined,
             rollupOptions: {
               input: resolveMainPathOnce(inputDir),
