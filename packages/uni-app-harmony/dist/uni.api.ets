@@ -3439,6 +3439,7 @@ export function initUniExtApi() {
         static ERROR: string = 'error';
     }
     class AudioPlayer implements InnerAudioContext {
+        __v_skip: boolean = true;
         private audioPlayerCallback: AudioPlayerCallback = new AudioPlayerCallback();
         private _volume: number = 1;
         private _src: string = '';
@@ -8972,6 +8973,7 @@ export function initUniExtApi() {
         return cookiesArr;
     };
     class RequestTask1 implements RequestTask {
+        __v_skip: boolean = true;
         private _requestTask: IRequestTask;
         constructor(requestTask: IRequestTask){
             this._requestTask = requestTask;
@@ -9124,6 +9126,7 @@ export function initUniExtApi() {
         return (UTSHarmony.getMimeTypeFromExtension(ext) as string | null) || undefined;
     };
     class UploadTask1 implements UploadTask {
+        __v_skip: boolean = true;
         private _uploadTask: IUploadTask;
         constructor(uploadTask: IUploadTask){
             this._uploadTask = uploadTask;
@@ -9303,6 +9306,7 @@ export function initUniExtApi() {
         return contentTypeExt || '';
     };
     class DownloadTask1 implements DownloadTask {
+        __v_skip: boolean = true;
         private _downloadTask: IDownloadTask;
         constructor(downloadTask: IDownloadTask){
             this._downloadTask = downloadTask;
@@ -10322,6 +10326,7 @@ export function initUniExtApi() {
         emitter.off('close');
     };
     class SocketTask1 implements SocketTask {
+        __v_skip: boolean = true;
         _destroy: Function;
         private _ws: webSocket.WebSocket;
         private _emitter: IUniWebsocketEmitter = new Emitter5() as IUniWebsocketEmitter;
