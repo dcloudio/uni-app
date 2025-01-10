@@ -45,8 +45,8 @@ import I18n2 from '@ohos.i18n';
 import { ListFileOptions } from '@ohos.file.fs';
 import { ReadOptions as ReadOptions2 } from '@ohos.file.fs';
 import { ReadOptions } from '@ohos.file.fs';
-import { UTSHarmony } from "@dcloudio/uni-runtime-harmony";
 import { UTSObject, UniError, IUniError, string, ApiError, UniProvider, AsyncApiSuccessResult, AsyncApiResult, UTSJSONObject, ApiOptions, ProtocolOptions, defineAsyncApi, ApiExecutor, defineSyncApi, getUniProviders, defineTaskApi, getUniProvider } from "./shared";
+import { UniElement, UTSHarmony, UniPageImpl } from "@dcloudio/uni-runtime-harmony";
 import Want1 from '@ohos.app.ability.Want';
 import { abilityAccessCtrl } from '@kit.AbilityKit';
 import { access } from '@kit.ConnectivityKit';
@@ -95,7 +95,7 @@ import { getEnv as getEnv3 } from "@dcloudio/uni-runtime-harmony";
 import { getEnv as getEnv4 } from "@dcloudio/uni-runtime-harmony";
 import { getEnv as getEnv5, Emitter as Emitter4, getCurrentMP as getCurrentMP3 } from "@dcloudio/uni-runtime-harmony";
 import { getEnv, getRealPath } from "@dcloudio/uni-runtime-harmony";
-import { getRealPath as getRealPath2, UniPageImpl } from "@dcloudio/uni-runtime-harmony";
+import { getRealPath as getRealPath2 } from "@dcloudio/uni-runtime-harmony";
 import { getRealPath as getRealPath3 } from "@dcloudio/uni-runtime-harmony";
 import { getRealPath as getRealPath4 } from "@dcloudio/uni-runtime-harmony";
 import { getRealPath as getRealPath5, Emitter as Emitter3, getCurrentMP as getCurrentMP2 } from "@dcloudio/uni-runtime-harmony";
@@ -997,6 +997,7 @@ export class GetDeviceInfoResult extends UTSObject {
     romVersion: string | null = null;
 }
 export type GetDeviceInfo = (options?: GetDeviceInfoOptions | null) => GetDeviceInfoResult;
+type GetElementById = (id: string.IDString | string) => UniElement | null;
 type GetNetworkType = (options: GetNetworkTypeOptions) => void;
 class GetNetworkTypeSuccess extends UTSObject {
     networkType!: string;
@@ -2205,6 +2206,7 @@ interface UniExtApi {
     getAppBaseInfo: GetAppBaseInfo;
     getBackgroundAudioManager: GetBackgroundAudioManager;
     getDeviceInfo: GetDeviceInfo;
+    getElementById: GetElementById;
     getNetworkType: GetNetworkType;
     onNetworkStatusChange: OnNetworkStatusChange;
     offNetworkStatusChange: OffNetworkStatusChange;
@@ -6723,6 +6725,19 @@ export function initUniExtApi() {
             system: deviceInfo.osFullName
         } as GetDeviceInfoResult;
     }) as GetDeviceInfo;
+    const getElementById: GetElementById = defineSyncApi<UniElement | null>('getElementById', (id: string.IDString | string): UniElement | null =>{
+        const pages = globalThis.getCurrentPages() as UniPageImpl[];
+        if (pages.length == 0) {
+            return null;
+        }
+        const page = pages[pages.length - 1];
+        const bodyNode = ((page.vm as object)['$el'] as UniElement | null)?.parentNode;
+        if (!bodyNode) {
+            console.warn('bodyNode is null');
+            return null;
+        }
+        return bodyNode.querySelector(`#${id}`);
+    });
     const API_GET_NETWORK_TYPE = 'getNetworkType';
     const PERMISSIONS1 = [
         'ohos.permission.GET_NETWORK_INFO'
@@ -10549,6 +10564,7 @@ export function initUniExtApi() {
         getAppBaseInfo,
         getBackgroundAudioManager,
         getDeviceInfo,
+        getElementById,
         getNetworkType,
         onNetworkStatusChange,
         offNetworkStatusChange,
