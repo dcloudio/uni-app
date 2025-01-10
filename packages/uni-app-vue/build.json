@@ -123,6 +123,48 @@
       "__VUE_PROD_HYDRATION_MISMATCH_DETAILS__": "false",
       "process.env.NODE_ENV": "\"development\""
     },
+    "external": [
+      "@dcloudio/uni-nvue-styler"
+    ],
+    "babel": true
+  },
+  {
+    "input": {
+      "src/uvue/index.ts": [
+        "dist/uvue.runtime.esm.prod.js"
+      ]
+    },
+    "output": {
+      "freeze": false
+    },
+    "replacements": {
+      "__X__": "true",
+      "__VUE_OPTIONS_API__": "true",
+      "__VUE_PROD_DEVTOOLS__": "false",
+      "__VUE_PROD_HYDRATION_MISMATCH_DETAILS__": "false",
+      "process.env.NODE_ENV": "\"production\""
+    },
+    "external": [
+      "@dcloudio/uni-nvue-styler"
+    ],
+    "babel": true
+  },
+  {
+    "input": {
+      "src/uvue/index.ts": [
+        "dist/uvue.runtime.harmony.esm.dev.js"
+      ]
+    },
+    "output": {
+      "freeze": false
+    },
+    "replacements": {
+      "__X__": "true",
+      "__VUE_OPTIONS_API__": "true",
+      "__VUE_PROD_DEVTOOLS__": "false",
+      "__VUE_PROD_HYDRATION_MISMATCH_DETAILS__": "false",
+      "process.env.NODE_ENV": "\"development\""
+    },
     "importReplacements": [
       {
         "module": "@vue/shared",
@@ -143,7 +185,7 @@
   {
     "input": {
       "src/uvue/index.ts": [
-        "dist/uvue.runtime.esm.prod.js"
+        "dist/uvue.runtime.harmony.esm.prod.js"
       ]
     },
     "output": {

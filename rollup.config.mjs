@@ -210,7 +210,7 @@ function createConfig (entryFile, output, buildOption) {
      */
     const importReplacements = buildOption.importReplacements
     plugins.push({
-      name: 'redirect-import',
+      name: 'replace-import',
       transform (code, id) {
         if (!id.endsWith('.js')) {
           return
