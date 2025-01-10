@@ -215,6 +215,12 @@
       "@dcloudio/uni-runtime-harmony": [
         [
           "UTSHarmony"
+        ],
+        [
+          "UniElement"
+        ],
+        [
+          "UniPageImpl"
         ]
       ]
     },
