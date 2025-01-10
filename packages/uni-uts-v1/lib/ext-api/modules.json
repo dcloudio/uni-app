@@ -364,7 +364,7 @@
           "x-js": false,
           "kotlin": false,
           "swift": true,
-          "arkts": false
+          "arkts": true
         }
       }
     }
