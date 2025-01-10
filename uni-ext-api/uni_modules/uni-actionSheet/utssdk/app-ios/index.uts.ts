@@ -22,7 +22,7 @@ export const showActionSheet: ShowActionSheet = (options: ShowActionSheetOptions
 		options.complete?.(res)
 	})
 	uni.openDialogPage({
-		url: `uni:actionSheet?readyEventName=${readyEventName}&optionsEventName=${optionsEventName}&successEventName=${successEventName}&failEventName=${failEventName}`,
+		url: `/uni_modules/uni-actionSheet/pages/actionSheet/actionSheet?readyEventName=${readyEventName}&optionsEventName=${optionsEventName}&successEventName=${successEventName}&failEventName=${failEventName}`,
 		fail: function (err) {
 			const res = new ShowActionSheetFailImpl(`showActionSheet failed, ${err.errMsg}`)
 			options.fail?.(res)

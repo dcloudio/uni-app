@@ -1,5 +1,4 @@
-import { registerSystemRoute, getCurrentPage, isSystemActionSheetDialogPage } from "@dcloudio/uni-runtime";
-import UniActionSheetPage from "@/uni_modules/uni-actionSheet/pages/actionSheet/actionSheet.vue";
+import { getCurrentPage, isSystemActionSheetDialogPage } from "@dcloudio/uni-runtime";
 import { ShowActionSheet, ShowActionSheetOptions, ShowActionSheetSuccessImpl, ShowActionSheetFailImpl } from "../interface.uts";
 
 export {
@@ -10,8 +9,6 @@ export {
 export const showActionSheet: ShowActionSheet = function (
   options: ShowActionSheetOptions
 ) {
-  registerSystemRoute("uni:actionSheet", UniActionSheetPage);
-
   const uuid = `${Date.now()}${Math.floor(Math.random() * 1e7)}`
   const baseEventName = `uni_action_sheet_${uuid}`
   const readyEventName = `${baseEventName}_ready`
@@ -32,7 +29,7 @@ export const showActionSheet: ShowActionSheet = function (
     options.complete?.(res)
   })
   uni.openDialogPage({
-    url: `uni:actionSheet?readyEventName=${readyEventName}&optionsEventName=${optionsEventName}&successEventName=${successEventName}&failEventName=${failEventName}`,
+    url: `/uni_modules/uni-actionSheet/pages/actionSheet/actionSheet?readyEventName=${readyEventName}&optionsEventName=${optionsEventName}&successEventName=${successEventName}&failEventName=${failEventName}`,
     fail(err) {
       const res = new ShowActionSheetFailImpl(`showActionSheet failed, ${err.errMsg}`)
       options.fail?.(res)

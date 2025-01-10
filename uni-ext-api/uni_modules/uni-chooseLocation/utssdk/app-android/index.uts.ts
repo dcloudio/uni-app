@@ -1,10 +1,6 @@
-import { registerSystemRoute } from "@dcloudio/uni-runtime";
-import uniChooseLocationPage from "@/uni_modules/uni-chooseLocation/pages/chooseLocation/chooseLocation.vue";
 import { ChooseLocation, ChooseLocationOptions, ChooseLocationSuccessImpl, ChooseLocationFailImpl } from "../interface.uts";
 
 export const chooseLocation: ChooseLocation = function (options: ChooseLocationOptions) {
-  registerSystemRoute("uni:chooseLocation", uniChooseLocationPage);
-
   const uuid = `${Date.now()}${Math.floor(Math.random() * 1e7)}`
   const baseEventName = `uni_choose_location_${uuid}`
   const readyEventName = `${baseEventName}_ready`
@@ -28,7 +24,7 @@ export const chooseLocation: ChooseLocation = function (options: ChooseLocationO
     options.complete?.(new ChooseLocationFailImpl())
   })
   uni.openDialogPage({
-    url: `uni:chooseLocation?readyEventName=${readyEventName}&optionsEventName=${optionsEventName}&successEventName=${successEventName}&failEventName=${failEventName}`,
+    url: `/uni_modules/uni-chooseLocation/pages/chooseLocation/chooseLocation?readyEventName=${readyEventName}&optionsEventName=${optionsEventName}&successEventName=${successEventName}&failEventName=${failEventName}`,
     triggerParentHide: true,
     fail(err) {
       options.fail?.(new ChooseLocationFailImpl(`showActionSheet failed, ${err.errMsg}`, 4))
