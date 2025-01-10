@@ -82,6 +82,8 @@ export function createUniAppJsEnginePlugin(
                     'chrome87',
                     'safari14',
                   ]
+                : process.env.UNI_UTS_PLATFORM === 'app-harmony'
+                ? ['es2022']
                 : undefined,
             rollupOptions: {
               input: resolveMainPathOnce(inputDir),
