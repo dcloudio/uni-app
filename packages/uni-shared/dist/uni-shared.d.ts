@@ -283,6 +283,14 @@ export declare function isH5CustomElement(tag: string, isX?: boolean): boolean;
 
 export declare function isH5NativeTag(tag: string): boolean;
 
+/**
+ * 用于替代@vue/shared的isIntegerKey，原始方法在鸿蒙arkts中会引发bug。根本原因是arkts的数组的key是数字而不是字符串。
+ * 目前这个方法使用的地方都和数组有关，切记不能挪作他用。
+ * @param key
+ * @returns
+ */
+export declare const isIntegerKey: (key: unknown) => boolean;
+
 export declare function isMiniProgramNativeTag(tag: string): boolean;
 
 export declare function isMiniProgramUVueNativeTag(tag: string): boolean;

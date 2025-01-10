@@ -1698,6 +1698,22 @@ function getEnvLocale() {
     return (lang && lang.replace(/[.:].*/, '')) || 'en';
 }
 
+const isStringIntegerKey = (key) => typeof key === 'string' &&
+    key !== 'NaN' &&
+    key[0] !== '-' &&
+    '' + parseInt(key, 10) === key;
+const isNumberIntegerKey = (key) => typeof key === 'number' &&
+    !isNaN(key) &&
+    key >= 0 &&
+    parseInt(key + '', 10) === key;
+/**
+ * 用于替代@vue/shared的isIntegerKey，原始方法在鸿蒙arkts中会引发bug。根本原因是arkts的数组的key是数字而不是字符串。
+ * 目前这个方法使用的地方都和数组有关，切记不能挪作他用。
+ * @param key
+ * @returns
+ */
+const isIntegerKey = (key) => isNumberIntegerKey(key) || isStringIntegerKey(key);
+
 exports.ACTION_TYPE_ADD_EVENT = ACTION_TYPE_ADD_EVENT;
 exports.ACTION_TYPE_ADD_WXS_EVENT = ACTION_TYPE_ADD_WXS_EVENT;
 exports.ACTION_TYPE_CREATE = ACTION_TYPE_CREATE;
@@ -1852,6 +1868,7 @@ exports.isComponentInternalInstance = isComponentInternalInstance;
 exports.isComponentTag = isComponentTag;
 exports.isH5CustomElement = isH5CustomElement;
 exports.isH5NativeTag = isH5NativeTag;
+exports.isIntegerKey = isIntegerKey;
 exports.isMiniProgramNativeTag = isMiniProgramNativeTag;
 exports.isMiniProgramUVueNativeTag = isMiniProgramUVueNativeTag;
 exports.isRootHook = isRootHook;
