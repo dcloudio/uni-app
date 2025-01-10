@@ -12,9 +12,10 @@ import {
 } from '@dcloudio/uni-cli-shared'
 import { isAppIOSUVueNativeTag } from '@dcloudio/uni-shared'
 import autoprefixer from 'autoprefixer'
-import { uts2ts, writePagesFile } from '../../scripts/ext-api'
+import { uts2ts, syncPagesFile } from '../../scripts/ext-api'
 
 import { initUniAppJsEngineCssPlugin } from '@dcloudio/uni-app-uts'
+import { OutputChunk } from 'rollup'
 
 function resolve(file: string) {
   return path.resolve(__dirname, file)
@@ -24,7 +25,7 @@ process.env.UNI_APP_X = 'true'
 process.env.UNI_UTS_PLATFORM = 'app-ios'
 initPreContext('app', {}, 'app-ios', true)
 
-writePagesFile()
+const systemPagePaths = syncPagesFile()
 
 const rollupPlugins = [
   replace({
@@ -139,6 +140,26 @@ export default defineConfig({
       },
     }),
     vueJsx({ optimize: true, isCustomElement: isAppIOSUVueNativeTag }),
+    {
+      name: 'uni:replace-page-paths',
+      generateBundle(_, bundle) {
+        Object.keys(bundle).forEach((key) => {
+          if (key.endsWith('.js')) {
+            const chunk = bundle[key] as OutputChunk
+            let newCode = chunk.code
+            Object.keys(systemPagePaths).forEach((path) => {
+              if (newCode.includes(path)) {
+                newCode = newCode.replace(
+                  new RegExp(path, 'g'),
+                  systemPagePaths[path]
+                )
+              }
+            })
+            chunk.code = newCode
+          }
+        })
+      },
+    },
   ],
   build: {
     emptyOutDir: false,

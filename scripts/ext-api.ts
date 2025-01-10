@@ -156,7 +156,8 @@ async function checkExtApiTypes(target: Target) {
   })
 }
 
-export function writePagesFile() {
+export function syncPagesFile() {
+  const systemPagePaths: Record<string, string> = {}
   const apiDir = process.env.UNI_APP_EXT_API_DIR
   if (apiDir && fs.existsSync(apiDir)) {
     const importCodes: string[] = []
@@ -179,6 +180,9 @@ export function writePagesFile() {
     disableSwipeBack: false,
   })`
             )
+            systemPagePaths[
+              `/uni_modules/${module}/pages/${page}/${page}`
+            ] = `uni:${page}`
           }
         })
       }
@@ -199,4 +203,5 @@ ${registerCodes.join('\n')}
 `
     )
   }
+  return systemPagePaths
 }
