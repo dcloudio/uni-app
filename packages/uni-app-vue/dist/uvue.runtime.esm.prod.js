@@ -46,6 +46,7 @@ var toRawType = value => {
   return toTypeString(value).slice(8, -1);
 };
 var isPlainObject = val => toTypeString(val) === "[object Object]";
+var isIntegerKey = key => isString(key) && key !== "NaN" && key[0] !== "-" && "" + parseInt(key, 10) === key;
 var isReservedProp = /* @__PURE__ */makeMap(
 // the leading comma is intentional so empty string "" is also included
 ",key,ref,ref_for,ref_key,onVnodeBeforeMount,onVnodeMounted,onVnodeBeforeUpdate,onVnodeUpdated,onVnodeBeforeUnmount,onVnodeUnmounted");
@@ -176,15 +177,13 @@ var stringifySymbol = function (v) {
   var _a;
   return isSymbol(v) ? "Symbol(".concat((_a = v.description) != null ? _a : i, ")") : v;
 };
-var isStringIntegerKey = key => typeof key === 'string' && key !== 'NaN' && key[0] !== '-' && '' + parseInt(key, 10) === key;
-var isNumberIntegerKey = key => typeof key === 'number' && !isNaN(key) && key >= 0 && parseInt(key + '', 10) === key;
+
 /**
- * 用于替代@vue/shared的isIntegerKey，原始方法在鸿蒙arkts中会引发bug。根本原因是arkts的数组的key是数字而不是字符串。
- * 目前这个方法使用的地方都和数组有关，切记不能挪作他用。
- * @param key
- * @returns
- */
-var isIntegerKey = key => isNumberIntegerKey(key) || isStringIntegerKey(key);
+* @vue/reactivity v3.4.21
+* (c) 2018-present Yuxi (Evan) You and Vue contributors
+* @license MIT
+**/
+
 var activeEffectScope;
 class EffectScope {
   constructor() {
