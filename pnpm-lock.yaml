@@ -14,6 +14,9 @@ importers:
       '@babel/core':
         specifier: ^7.23.3
         version: 7.25.2
+      '@babel/generator':
+        specifier: ^7.25.6
+        version: 7.25.6
       '@babel/parser':
         specifier: ^7.23.9
         version: 7.25.6
@@ -1693,6 +1696,31 @@ importers:
       vue:
         specifier: 3.4.21
         version: 3.4.21(typescript@5.4.2)
+
+  packages/uni-mp-harmony:
+    dependencies:
+      '@dcloudio/uni-cli-shared':
+        specifier: workspace:*
+        version: link:../uni-cli-shared
+      '@dcloudio/uni-mp-vite':
+        specifier: workspace:*
+        version: link:../uni-mp-vite
+      '@dcloudio/uni-mp-vue':
+        specifier: workspace:*
+        version: link:../uni-mp-vue
+      '@dcloudio/uni-quickapp-webview':
+        specifier: workspace:*
+        version: link:../uni-quickapp-webview
+      '@dcloudio/uni-shared':
+        specifier: workspace:*
+        version: link:../uni-shared
+      '@vue/shared':
+        specifier: 3.4.21
+        version: 3.4.21
+    devDependencies:
+      '@dcloudio/uni-mp-compiler':
+        specifier: workspace:*
+        version: link:../uni-mp-compiler
 
   packages/uni-mp-jd:
     dependencies:
