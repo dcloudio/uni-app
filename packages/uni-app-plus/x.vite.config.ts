@@ -12,7 +12,7 @@ import {
 } from '@dcloudio/uni-cli-shared'
 import { isAppIOSUVueNativeTag } from '@dcloudio/uni-shared'
 import autoprefixer from 'autoprefixer'
-import { uts2ts } from '../../scripts/ext-api'
+import { uts2ts, writePagesFile } from '../../scripts/ext-api'
 
 import { initUniAppJsEngineCssPlugin } from '@dcloudio/uni-app-uts'
 
@@ -23,6 +23,8 @@ function resolve(file: string) {
 process.env.UNI_APP_X = 'true'
 process.env.UNI_UTS_PLATFORM = 'app-ios'
 initPreContext('app', {}, 'app-ios', true)
+
+writePagesFile()
 
 const rollupPlugins = [
   replace({

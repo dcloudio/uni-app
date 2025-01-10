@@ -6,18 +6,8 @@ import {
 } from '../service/framework/page'
 import * as components from './components'
 
-import { registerSystemRoute } from './framework/route'
 import { systemRoutes as __uniSystemRoutes } from './framework/route'
-
-import UniChooseLocationPage from '@dcloudio/uni-ext-api/uni-chooseLocation/pages/chooseLocation/chooseLocation.vue'
-registerSystemRoute('uni:chooseLocation', UniChooseLocationPage, {
-  disableSwipeBack: false,
-})
-
-import UniActionSheetPage from '@dcloudio/uni-ext-api/uni-actionSheet/pages/actionSheet/actionSheet.vue'
-registerSystemRoute('uni:actionSheet', UniActionSheetPage, {
-  disableSwipeBack: false,
-})
+import { registerSystemPages } from './pages'
 import {
   defineAsyncApi,
   defineOffApi,
@@ -25,6 +15,8 @@ import {
   defineSyncApi,
   defineTaskApi,
 } from '@dcloudio/uni-api'
+
+registerSystemPages()
 
 export {
   uni,

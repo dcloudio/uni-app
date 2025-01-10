@@ -3,6 +3,7 @@ import path from 'path'
 import type { Plugin } from 'vite'
 import execa from 'execa'
 import { sync } from 'fast-glob'
+import { capitalize } from '@vue/shared'
 
 type Target = 'uni-h5' | 'uni-app-plus'
 
@@ -153,4 +154,49 @@ async function checkExtApiTypes(target: Target) {
     cwd: path.resolve(__dirname, '../packages', target),
     stdio: 'inherit',
   })
+}
+
+export function writePagesFile() {
+  const apiDir = process.env.UNI_APP_EXT_API_DIR
+  if (apiDir && fs.existsSync(apiDir)) {
+    const importCodes: string[] = []
+    const registerCodes: string[] = []
+    fs.readdirSync(apiDir).forEach((module) => {
+      const pagesDir = path.resolve(apiDir, module, 'pages')
+      if (fs.existsSync(pagesDir)) {
+        fs.readdirSync(pagesDir).forEach((page) => {
+          const pageFile = path.resolve(pagesDir, page, page + '.vue')
+          if (fs.existsSync(pageFile)) {
+            importCodes.push(
+              `import Uni${capitalize(
+                page
+              )}Page from '@dcloudio/uni-ext-api/${module}/pages/${page}/${page}.vue'`
+            )
+            registerCodes.push(
+              `  registerSystemRoute('uni:${page}', Uni${capitalize(
+                page
+              )}Page, {
+    disableSwipeBack: false,
+  })`
+            )
+          }
+        })
+      }
+    })
+    fs.writeFileSync(
+      path.resolve(
+        path.resolve(__dirname, '..', 'packages', 'uni-app-plus'),
+        'src',
+        'x',
+        'pages.ts'
+      ),
+      `${importCodes.join('\n')}
+import { registerSystemRoute } from './framework/route'
+
+export function registerSystemPages() {
+${registerCodes.join('\n')}
+}
+`
+    )
+  }
 }
