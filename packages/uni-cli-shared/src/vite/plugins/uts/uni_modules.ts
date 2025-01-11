@@ -420,7 +420,15 @@ export function uniUTSAppUniModulesPlugin(
     )
     if (deps.length) {
       for (const dep of deps) {
-        await compilePlugin(path.resolve(inputDir, 'uni_modules', dep))
+        if (dep) {
+          // 本次编译流程中已编译过该插件，直接使用缓存
+          const depPluginDir = normalizePath(path.resolve(uniModulesDir, dep))
+          if (utsModuleCaches.get(depPluginDir)) {
+            await utsModuleCaches.get(depPluginDir)!()
+          } else {
+            await compilePlugin(path.resolve(inputDir, 'uni_modules', dep))
+          }
+        }
       }
     }
 
