@@ -357,7 +357,6 @@ export function uniUTSAppUniModulesPlugin(
     }
 
     if (!utsPlugins.has(pluginId)) {
-      utsPlugins.add(pluginId)
       if (uniXKotlinCompiler) {
         const platform = 'app-android'
         const indexFileName = resolveTscUniModuleIndexFileName(
@@ -365,6 +364,7 @@ export function uniUTSAppUniModulesPlugin(
           pluginDir
         )
         if (indexFileName) {
+          utsPlugins.add(pluginId)
           await uniXKotlinCompiler.addRootFile(indexFileName)
         }
       }
@@ -375,6 +375,7 @@ export function uniUTSAppUniModulesPlugin(
           pluginDir
         )
         if (indexFileName) {
+          utsPlugins.add(pluginId)
           await uniXSwiftCompiler.addRootFile(indexFileName)
         }
       }
@@ -385,6 +386,7 @@ export function uniUTSAppUniModulesPlugin(
           pluginDir
         )
         if (indexFileName) {
+          utsPlugins.add(pluginId)
           await uniXArkTSCompiler.addRootFile(indexFileName)
         }
       }
