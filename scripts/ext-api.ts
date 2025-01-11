@@ -145,6 +145,13 @@ async function checkExtApiDir(target: Target, name: string) {
   }).forEach((file) => {
     fs.renameSync(file, file + '.ts')
   })
+  sync('**/*.uvue', {
+    absolute: true,
+    cwd: path.resolve(currentExtApiDir, 'pages'),
+  }).forEach((file) => {
+    // 当前 next 仓库编译仅支持 vue 后缀
+    fs.renameSync(file, file.replace('.uvue', '.vue'))
+  })
 
   await checkExtApiTypes(target)
 }
@@ -166,8 +173,7 @@ export function syncPagesFile() {
       const pagesDir = path.resolve(apiDir, module, 'pages')
       if (fs.existsSync(pagesDir)) {
         fs.readdirSync(pagesDir).forEach((page) => {
-          const pageFile = path.resolve(pagesDir, page, page + '.vue')
-          if (fs.existsSync(pageFile)) {
+          if (fs.existsSync(path.resolve(pagesDir, page, page + '.uvue'))) {
             importCodes.push(
               `import Uni${capitalize(
                 page
