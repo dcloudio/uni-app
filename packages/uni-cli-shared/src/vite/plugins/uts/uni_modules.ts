@@ -3,8 +3,11 @@ import fs from 'fs-extra'
 import path from 'path'
 import { once } from '@dcloudio/uni-shared'
 import { dataToEsm } from '@rollup/pluginutils'
-import type { ChangeEvent } from 'rollup'
-import type { SyncUniModulesFilePreprocessor } from '@dcloudio/uni-uts-v1'
+import type { ChangeEvent, PluginContext } from 'rollup'
+import type {
+  CompileResult,
+  SyncUniModulesFilePreprocessor,
+} from '@dcloudio/uni-uts-v1'
 import {
   genUniExtApiDeclarationFileOnce,
   initUTSKotlinAutoImportsOnce,
@@ -170,15 +173,7 @@ const createUniXAppHarmonyUniModulesSyncFilePreprocessorOnce = once(() => {
   return createUniModulesSyncFilePreprocessor('app', 'app-harmony', true)
 })
 
-const utsModuleCaches = new Map<
-  string,
-  () => Promise<void | {
-    code: string
-    deps: string[]
-    encrypt: boolean
-    meta?: any
-  }>
->()
+const utsModuleCaches = new Map<string, () => Promise<void | CompileResult>>()
 
 interface UniUTSPluginOptions {
   x?: boolean
@@ -226,6 +221,17 @@ const emptySwiftCacheDirOnce = once(() => {
 const emptyHarmonyCacheDirOnce = once(() => {
   emptyCacheDir('app-harmony')
 })
+
+const handleCompileResult = (
+  result: CompileResult,
+  pluginContext?: PluginContext
+) => {
+  if (pluginContext) {
+    result.deps.forEach((dep) => {
+      pluginContext.addWatchFile(dep)
+    })
+  }
+}
 
 // 该插件仅限app-android、app-ios、app-harmony
 export function uniUTSAppUniModulesPlugin(
@@ -314,7 +320,10 @@ export function uniUTSAppUniModulesPlugin(
     }[]
   >()
 
-  const compilePlugin = async (pluginDir: string) => {
+  const compilePlugin = async (
+    pluginDir: string,
+    pluginContext?: PluginContext
+  ) => {
     const pluginId = path.basename(pluginDir)
 
     if (uniXKotlinCompiler) {
@@ -424,9 +433,20 @@ export function uniUTSAppUniModulesPlugin(
           // 本次编译流程中已编译过该插件，直接使用缓存
           const depPluginDir = normalizePath(path.resolve(uniModulesDir, dep))
           if (utsModuleCaches.get(depPluginDir)) {
-            await utsModuleCaches.get(depPluginDir)!()
+            await utsModuleCaches.get(depPluginDir)!().then((result) => {
+              if (result) {
+                handleCompileResult(result, pluginContext)
+              }
+            })
           } else {
-            await compilePlugin(path.resolve(inputDir, 'uni_modules', dep))
+            await compilePlugin(
+              path.resolve(inputDir, 'uni_modules', dep),
+              pluginContext
+            ).then((result) => {
+              if (result) {
+                handleCompileResult(result, pluginContext)
+              }
+            })
           }
         }
       }
@@ -635,7 +655,7 @@ export function uniUTSAppUniModulesPlugin(
         })
       }
       const compile = once(() => {
-        return compilePlugin(pluginDir)
+        return compilePlugin(pluginDir, this)
       })
       utsModuleCaches.set(pluginDir, compile)
       const result = await compile()
