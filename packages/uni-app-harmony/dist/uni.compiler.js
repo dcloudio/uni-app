@@ -10,7 +10,7 @@ function _interopDefault (e) { return e && e.__esModule ? e : { default: e }; }
 var appVite__default = /*#__PURE__*/_interopDefault(appVite);
 var path__default = /*#__PURE__*/_interopDefault(path);
 
-var StandaloneExtApis = [
+var ExternalModuls = [
 	{
 		type: "extapi",
 		plugin: "uni-facialRecognitionVerify",
@@ -64,6 +64,61 @@ var StandaloneExtApis = [
 	}
 ];
 
+var ExternalModulsX = [
+	{
+		type: "extapi",
+		plugin: "uni-facialRecognitionVerify",
+		apis: [
+			"startFacialRecognitionVerify",
+			"getFacialRecognitionMetaInfo"
+		],
+		version: "1.0.3"
+	},
+	{
+		type: "provider",
+		plugin: "uni-oauth-huawei",
+		provider: "huawei",
+		service: "oauth",
+		version: "1.0.2"
+	},
+	{
+		type: "provider",
+		plugin: "uni-payment-alipay",
+		provider: "alipay",
+		service: "payment",
+		version: "1.0.2"
+	},
+	{
+		type: "provider",
+		plugin: "uni-payment-huawei",
+		provider: "huawei",
+		service: "payment",
+		version: "1.0.0"
+	},
+	{
+		type: "extapi",
+		plugin: "uni-push",
+		apis: [
+			"getPushClientId",
+			"onPushMessage",
+			"offPushMessage",
+			"createPushMessage",
+			"setAppBadgeNumber"
+		],
+		version: "1.0.2"
+	},
+	{
+		type: "extapi",
+		plugin: "uni-verify",
+		apis: [
+			"getUniverifyManager",
+			"getUniVerifyManager"
+		],
+		version: "1.0.0"
+	}
+];
+
+const StandaloneExtApis = process.env.UNI_APP_X === 'true' ? ExternalModulsX : ExternalModuls;
 const commandGlobals = {
     vue: 'Vue',
     '@vue/shared': 'uni.VueShared',

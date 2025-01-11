@@ -482,9 +482,6 @@
     ],
     [
       "OnSocketErrorCallbackResult"
-    ],
-    [
-      "initUniExtApi"
     ]
   ],
   "@uni_modules/uni-facialrecognitionverify": [
