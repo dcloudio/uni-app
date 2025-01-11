@@ -151,6 +151,10 @@ const UVUE_IOS_BUILT_IN_TAGS = [
     'form',
     'switch',
 ];
+const UVUE_HARMONY_BUILT_IN_TAGS = [
+    // TODO 列出完整列表
+    ...BUILT_IN_TAG_NAMES,
+];
 const NVUE_U_BUILT_IN_TAGS = [
     'u-text',
     'u-image',
@@ -257,6 +261,22 @@ function isAppIOSUVueNativeTag(tag) {
         return true;
     }
     if (UVUE_IOS_BUILT_IN_TAGS.includes(tag)) {
+        return true;
+    }
+    return false;
+}
+function isAppHarmonyUVueNativeTag(tag) {
+    // 前端实现的内置组件都会注册一个根组件
+    if (tag.startsWith('uni-') && tag.endsWith('-element')) {
+        return true;
+    }
+    if (NVUE_BUILT_IN_TAGS.includes(tag)) {
+        return true;
+    }
+    if (UVUE_BUILT_IN_TAGS.includes(tag)) {
+        return true;
+    }
+    if (UVUE_HARMONY_BUILT_IN_TAGS.includes(tag)) {
         return true;
     }
     return false;
@@ -1811,6 +1831,7 @@ exports.UNI_SSR_TITLE = UNI_SSR_TITLE;
 exports.UNI_STORAGE_LOCALE = UNI_STORAGE_LOCALE;
 exports.UNI_UI_CONFLICT_TAGS = UNI_UI_CONFLICT_TAGS;
 exports.UVUE_BUILT_IN_TAGS = UVUE_BUILT_IN_TAGS;
+exports.UVUE_HARMONY_BUILT_IN_TAGS = UVUE_HARMONY_BUILT_IN_TAGS;
 exports.UVUE_IOS_BUILT_IN_TAGS = UVUE_IOS_BUILT_IN_TAGS;
 exports.UVUE_WEB_BUILT_IN_TAGS = UVUE_WEB_BUILT_IN_TAGS;
 exports.UniBaseNode = UniBaseNode;
@@ -1858,6 +1879,7 @@ exports.initCustomDatasetOnce = initCustomDatasetOnce;
 exports.invokeArrayFns = invokeArrayFns;
 exports.invokeCreateErrorHandler = invokeCreateErrorHandler;
 exports.invokeCreateVueAppHook = invokeCreateVueAppHook;
+exports.isAppHarmonyUVueNativeTag = isAppHarmonyUVueNativeTag;
 exports.isAppIOSUVueNativeTag = isAppIOSUVueNativeTag;
 exports.isAppNVueNativeTag = isAppNVueNativeTag;
 exports.isAppNativeTag = isAppNativeTag;
