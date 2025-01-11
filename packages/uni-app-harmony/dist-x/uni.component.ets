@@ -1,5 +1,5 @@
 interface UniExtApi {
 }
-export function initUniExtApi() {
+export function initUniComponentExtApi() {
     return {} as UniExtApi;
 }
