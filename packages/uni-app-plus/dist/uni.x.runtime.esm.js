@@ -1061,7 +1061,12 @@ var $once = /* @__PURE__ */ defineSyncApi(API_ONCE, (name, callback) => {
 var $off = /* @__PURE__ */ defineSyncApi(API_OFF, (name, callback) => {
   if (!isArray(name))
     name = name ? [name] : [];
-  name.forEach((n) => eventBus.off(n, callback));
+  name.forEach((n) => {
+    eventBus.off(n, callback);
+    if (typeof __uniappx__nativeEventBus !== "undefined") {
+      __uniappx__nativeEventBus.off(n, callback);
+    }
+  });
 });
 var $emit = /* @__PURE__ */ defineSyncApi(API_EMIT, function(name) {
   for (var _len2 = arguments.length, args = new Array(_len2 > 1 ? _len2 - 1 : 0), _key2 = 1; _key2 < _len2; _key2++) {
