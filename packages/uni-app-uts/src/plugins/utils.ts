@@ -1,5 +1,6 @@
 import path from 'node:path'
 import {
+  isAppHarmonyUVueNativeTag,
   isAppIOSUVueNativeTag,
   isAppUVueBuiltInEasyComponent,
 } from '@dcloudio/uni-shared'
@@ -60,7 +61,12 @@ export function createUniOptions(
       platform === 'app-ios' || platform === 'app-harmony'
         ? {
             isNativeTag(tag) {
-              return matchUTSComponent(tag) || isAppIOSUVueNativeTag(tag)
+              return (
+                matchUTSComponent(tag) ||
+                (platform === 'app-ios'
+                  ? isAppIOSUVueNativeTag
+                  : isAppHarmonyUVueNativeTag)(tag)
+              )
             },
             nodeTransforms: [
               transformTapToClick,
