@@ -72,6 +72,11 @@ export function getArkTSAutoImports(isX = false): AutoImportOptions {
         ['SourceError'],
         ['UniElement'],
         ['UTSHarmony'],
+        ['UniPageImpl'],
+        ['customElements'],
+        ['UniCustomElement'],
+        ['UniElementImpl'],
+        ['UniCustomEvent'],
       ],
     },
     require(isX

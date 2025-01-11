@@ -8,9 +8,10 @@ const BLACKLIST = [
 function initAutoImportMap (isUniAppX = false) {
   const harmonyDistDir = path.resolve(__dirname, '../packages/uni-app-harmony', isUniAppX ? 'dist-x' : 'dist')
   const autoImportMap = isUniAppX ? {
-    '@dcloudio/uni-app-x-runtime': path.resolve(harmonyDistDir, 'uni.api.ets')
+    [path.resolve(harmonyDistDir, 'uni.api.ets')]: '@dcloudio/uni-app-x-runtime',
+    [path.resolve(harmonyDistDir, 'uni.component.ets')]: '@dcloudio/uni-app-x-runtime'
   } : {
-    '@dcloudio/uni-app-runtime': path.resolve(harmonyDistDir, 'uni.api.ets')
+    [path.resolve(harmonyDistDir, 'uni.api.ets')]: '@dcloudio/uni-app-runtime'
   }
   const ohpmPageckageDir = path.resolve(harmonyDistDir, 'packages')
   if (!fs.existsSync(ohpmPageckageDir)) {
@@ -22,7 +23,7 @@ function initAutoImportMap (isUniAppX = false) {
     if (!fs.existsSync(packageEntryFilePath)) {
       return
     }
-    autoImportMap[`@uni_modules/${package.toLowerCase()}`] = packageEntryFilePath
+    autoImportMap[packageEntryFilePath] = `@uni_modules/${package.toLowerCase()}`
   })
   return autoImportMap
 }
@@ -39,22 +40,30 @@ function getExportList (filePath) {
       if (node.specifiers && node.specifiers.length) {
         node.specifiers.forEach(specifier => {
           if (specifier.exported) {
-            exportNames.push([specifier.exported.name])
+            const exportName = specifier.exported.name
+            if (!BLACKLIST.includes(exportName)) {
+              exportNames.push([exportName])
+            }
           }
         })
       } else if (node.declaration) {
-        exportNames.push([node.declaration.id.name])
+        const exportName = node.declaration.id.name
+        if (!BLACKLIST.includes(exportName)) {
+          exportNames.push([exportName])
+        }
       }
     }
   })
-  return exportNames.filter(name => !BLACKLIST.includes(name))
+  return exportNames
 }
 
 exports.genHarmonyExtApiExport = function (isUniAppX = false) {
   const autoImportMap = initAutoImportMap(isUniAppX)
   const result = {}
-  Object.keys(autoImportMap).forEach(key => {
-    result[key] = getExportList(autoImportMap[key])
-  })
+  for (const fileName in autoImportMap) {
+    const packageName = autoImportMap[fileName]
+    result[packageName] = result[packageName] || []
+    result[packageName].push(...getExportList(fileName))
+  }
   return result
 }

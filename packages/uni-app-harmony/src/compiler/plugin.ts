@@ -12,7 +12,11 @@ import {
   parseUniExtApi,
 } from '@dcloudio/uni-cli-shared'
 import type { OutputChunk, PluginContext } from 'rollup'
-import StandaloneExtApis from './standalone-ext-apis.json'
+import ExternalModuls from './external-modules.json'
+import ExternalModulsX from './external-modules-x.json'
+
+const StandaloneExtApis =
+  process.env.UNI_APP_X === 'true' ? ExternalModulsX : ExternalModuls
 
 const commandGlobals: Record<string, string> = {
   vue: 'Vue',

@@ -221,6 +221,148 @@
         ],
         [
           "UniPageImpl"
+        ],
+        [
+          "customElements"
+        ],
+        [
+          "UniElementImpl"
+        ],
+        [
+          "document"
+        ],
+        [
+          "UniCustomElement"
+        ],
+        [
+          "UniTextElement"
+        ],
+        [
+          "UniCustomEvent"
+        ]
+      ]
+    },
+    "replacements": {
+      "__PLATFORM__": "'app-harmony'",
+      "__DEV__": "false",
+      "__X__": "true",
+      "__APP_VIEW__": "false",
+      "__NODE_JS__": "false"
+    },
+    "wrapper": {
+      "name": "initUniExtApi",
+      "args": []
+    }
+  },
+  {
+    "input": {
+      "temp/uni-ext-component-x/index.uts": "dist-x/uni.component.ets"
+    },
+    "alias": {
+      "@dcloudio/uni-runtime": "@dcloudio/uni-runtime-harmony"
+    },
+    "externals": [
+      "@dcloudio/uni-runtime-harmony"
+    ],
+    "autoImports": {
+      "./shared": [
+        [
+          "IUTSObject"
+        ],
+        [
+          "UTSObject"
+        ],
+        [
+          "UTSJSONObject"
+        ],
+        [
+          "defineAsyncApi"
+        ],
+        [
+          "defineSyncApi"
+        ],
+        [
+          "defineTaskApi"
+        ],
+        [
+          "defineOnApi"
+        ],
+        [
+          "defineOffApi"
+        ],
+        [
+          "getUniProvider"
+        ],
+        [
+          "getUniProviders"
+        ],
+        [
+          "string"
+        ],
+        [
+          "AsyncApiSuccessResult"
+        ],
+        [
+          "AsyncApiResult"
+        ],
+        [
+          "ApiExecutor"
+        ],
+        [
+          "ComponentInternalInstance"
+        ],
+        [
+          "ComponentPublicInstance"
+        ],
+        [
+          "IUniError"
+        ],
+        [
+          "ProtocolOptions"
+        ],
+        [
+          "ApiOptions"
+        ],
+        [
+          "ApiError"
+        ],
+        [
+          "UniError"
+        ],
+        [
+          "UniProvider"
+        ],
+        [
+          "SourceError"
+        ]
+      ],
+      "@dcloudio/uni-runtime-harmony": [
+        [
+          "UTSHarmony"
+        ],
+        [
+          "UniElement"
+        ],
+        [
+          "UniPageImpl"
+        ],
+        [
+          "customElements"
+        ],
+        [
+          "UniElementImpl"
+        ],
+        [
+          "document"
+        ],
+        [
+          "UniCustomElement"
+        ],
+        [
+          "UniTextElement"
+        ],
+        [
+          "UniCustomEvent"
         ]
       ]
     },
