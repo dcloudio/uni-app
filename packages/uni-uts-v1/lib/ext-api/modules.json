@@ -1035,7 +1035,7 @@
         }
       },
       "onThemeChange": {
-        "name": "offAppThemeChange",
+        "name": "onThemeChange",
         "app": {
           "js": true,
           "x-js": true,
@@ -1046,7 +1046,7 @@
         }
       },
       "offThemeChange": {
-        "name": "offAppThemeChange",
+        "name": "offThemeChange",
         "app": {
           "js": true,
           "x-js": true,
@@ -1057,23 +1057,23 @@
         }
       },
       "onHostThemeChange": {
-        "name": "offAppThemeChange",
+        "name": "onHostThemeChange",
         "app": {
           "js": false,
           "x-js": true,
-          "kotlin": false,
-          "swift": false,
+          "kotlin": true,
+          "swift": true,
           "arkts": false,
           "mp-weixin": true
         }
       },
       "offHostThemeChange": {
-        "name": "offAppThemeChange",
+        "name": "offHostThemeChange",
         "app": {
           "js": false,
           "x-js": true,
-          "kotlin": false,
-          "swift": false,
+          "kotlin": true,
+          "swift": true,
           "arkts": false,
           "mp-weixin": true
         }
