@@ -1568,6 +1568,9 @@ var shims = /*#__PURE__*/Object.freeze({
 function returnValue(method, res) {
     return parseXReturnValue(method, res);
 }
+const chooseFile = {
+    name: 'chooseMessageFile'
+};
 const compressImage = {
     args(fromArgs, toArgs) {
         // https://developers.weixin.qq.com/community/develop/doc/000c08940c865011298e0a43256800?highLine=compressHeight
@@ -1586,6 +1589,7 @@ const compressImage = {
 
 var protocols = /*#__PURE__*/Object.freeze({
   __proto__: null,
+  chooseFile: chooseFile,
   compressImage: compressImage,
   getAppAuthorizeSetting: getAppAuthorizeSetting,
   getAppBaseInfo: getAppBaseInfo,
