@@ -1,5 +1,5 @@
 import { invokeArrayFns, isUniLifecycleHook, decodedQuery, ON_LOAD, ON_SHOW, LINEFEED, RENDERJS_MODULES, formatLog, WXS_PROTOCOL, WXS_MODULES, ON_ERROR, UniLifecycleHooks, invokeCreateErrorHandler, invokeCreateVueAppHook } from '@dcloudio/uni-shared';
-import { isString, isArray, isFunction } from '@vue/shared';
+import { isString, isArray, hasOwn, isFunction } from '@vue/shared';
 import { injectHook, logError } from 'vue';
 
 function get$pageByPage(page) {
@@ -84,7 +84,13 @@ function initHooks(options, instance, publicThis) {
             }
             if ('app' === 'app' && true) {
                 // TODO 统一处理 Web
-                publicThis.options = query || {};
+                // @ts-expect-error
+                const { setupState } = instance;
+                // 组合式 API 时，如果开发者定义了 options 变量，再次赋值会导致 warn & error issues:15107
+                // 现有规范开发者不需要再从 pageVm 上获取 options, 但为了控制修改影响范围，只在上述情况下不再赋值
+                if (!(setupState.__isScriptSetup && hasOwn(setupState, 'options'))) {
+                    publicThis.options = query || {};
+                }
             }
             invokeHook(publicThis, ON_LOAD, query);
             delete instance.attrs.__pageQuery;

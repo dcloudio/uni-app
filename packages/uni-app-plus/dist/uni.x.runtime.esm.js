@@ -6382,14 +6382,32 @@ const _style_0$1 = {
       "paddingRight": 16,
       "paddingBottom": 16,
       "paddingLeft": 16,
+      "borderTopWidth": 1,
+      "borderRightWidth": 1,
       "borderBottomWidth": 1,
+      "borderLeftWidth": 1,
+      "borderTopStyle": "solid",
+      "borderRightStyle": "solid",
       "borderBottomStyle": "solid",
-      "borderBottomColor": "#e5e5e5"
+      "borderLeftStyle": "solid",
+      "borderTopColor": "#e5e5e5",
+      "borderRightColor": "#e5e5e5",
+      "borderBottomColor": "#e5e5e5",
+      "borderLeftColor": "#e5e5e5"
     },
     ".uni-action-sheet_dark__mode": {
+      "borderTopWidth": 1,
+      "borderRightWidth": 1,
       "borderBottomWidth": 1,
+      "borderLeftWidth": 1,
+      "borderTopStyle": "solid",
+      "borderRightStyle": "solid",
       "borderBottomStyle": "solid",
-      "borderBottomColor": "#2F3131"
+      "borderLeftStyle": "solid",
+      "borderTopColor": "#2F3131",
+      "borderRightColor": "#2F3131",
+      "borderBottomColor": "#2F3131",
+      "borderLeftColor": "#2F3131"
     },
     ".uni-action-sheet_landscape__mode": {
       "paddingTop": 10,
@@ -6405,13 +6423,31 @@ const _style_0$1 = {
       "paddingBottom": 16,
       "paddingLeft": 16,
       "borderTopWidth": 1,
+      "borderRightWidth": 1,
+      "borderBottomWidth": 1,
+      "borderLeftWidth": 1,
       "borderTopStyle": "solid",
-      "borderTopColor": "#e5e5e5"
+      "borderRightStyle": "solid",
+      "borderBottomStyle": "solid",
+      "borderLeftStyle": "solid",
+      "borderTopColor": "#e5e5e5",
+      "borderRightColor": "#e5e5e5",
+      "borderBottomColor": "#e5e5e5",
+      "borderLeftColor": "#e5e5e5"
     },
     ".uni-action-sheet_dark__mode": {
       "borderTopWidth": 1,
+      "borderRightWidth": 1,
+      "borderBottomWidth": 1,
+      "borderLeftWidth": 1,
       "borderTopStyle": "solid",
-      "borderTopColor": "#2F3131"
+      "borderRightStyle": "solid",
+      "borderBottomStyle": "solid",
+      "borderLeftStyle": "solid",
+      "borderTopColor": "#2F3131",
+      "borderRightColor": "#2F3131",
+      "borderBottomColor": "#2F3131",
+      "borderLeftColor": "#2F3131"
     },
     ".uni-action-sheet_landscape__mode": {
       "paddingTop": 10,
@@ -7525,14 +7561,32 @@ const _style_0 = {
       "bottom": 0,
       "right": 10,
       "width": "auto",
+      "borderTopWidth": 1,
+      "borderRightWidth": 1,
       "borderBottomWidth": 1,
+      "borderLeftWidth": 1,
+      "borderTopStyle": "solid",
+      "borderRightStyle": "solid",
       "borderBottomStyle": "solid",
-      "borderBottomColor": "#f8f8f8"
+      "borderLeftStyle": "solid",
+      "borderTopColor": "#f8f8f8",
+      "borderRightColor": "#f8f8f8",
+      "borderBottomColor": "#f8f8f8",
+      "borderLeftColor": "#f8f8f8"
     },
     ".uni-choose-location-dark ": {
+      "borderTopWidth": 1,
+      "borderRightWidth": 1,
       "borderBottomWidth": 1,
+      "borderLeftWidth": 1,
+      "borderTopStyle": "solid",
+      "borderRightStyle": "solid",
       "borderBottomStyle": "solid",
-      "borderBottomColor": "#1e1e1e"
+      "borderLeftStyle": "solid",
+      "borderTopColor": "#1e1e1e",
+      "borderRightColor": "#1e1e1e",
+      "borderBottomColor": "#1e1e1e",
+      "borderLeftColor": "#1e1e1e"
     }
   },
   "uni-choose-location-search-icon": {
