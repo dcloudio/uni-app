@@ -374,7 +374,7 @@
       "__NODE_JS__": "false"
     },
     "wrapper": {
-      "name": "initUniExtApi",
+      "name": "initUniComponentExtApi",
       "args": []
     }
   },
