@@ -30,8 +30,6 @@ import {
   getPluginInjectComponents,
   getUTSCompiler,
   isEnableInlineReified,
-  isEnableNarrowType,
-  isEnableUTSNumber,
   parseExtApiDefaultParameters,
   parseInjectModules,
   resolveUniAppXSourceMapPath,

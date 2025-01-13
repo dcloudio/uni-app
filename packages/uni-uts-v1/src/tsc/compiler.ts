@@ -8,11 +8,7 @@ import type {
 } from '../../lib/uni-x/dist/compiler'
 import { originalPositionForSync } from '../sourceMap'
 import { normalizePath } from '../shared'
-import {
-  isEnableGenericsParameterDefaults,
-  isEnableNarrowType,
-  isEnableUTSNumber,
-} from '../utils'
+import { isEnableGenericsParameterDefaults } from '../utils'
 
 export type { UniXCompiler } from '../../lib/uni-x/dist/compiler'
 

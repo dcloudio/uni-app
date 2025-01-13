@@ -7,9 +7,7 @@ import {
   isUniLifecycleHook,
 } from '@dcloudio/uni-shared'
 import { isArray, isFunction } from '@vue/shared'
-//#if _X_
 import { hasOwn } from '@vue/shared'
-//#endif
 
 import type {
   ComponentInternalInstance,
