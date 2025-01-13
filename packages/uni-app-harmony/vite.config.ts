@@ -16,7 +16,7 @@ import {
   ExtApiBlackList,
   ExtApiBlackListX,
   ExternalModules,
-  ExternalModulesX
+  ExternalModulesX,
 } from './src/compiler/constants'
 
 function resolve(file: string) {
@@ -201,7 +201,7 @@ function parseExtApiInjects(uniModulesDir: string) {
     '',
     uniModulesDir,
     require(path.resolve(uniModulesDir, 'package.json'))?.uni_modules[
-    'uni-ext-api'
+      'uni-ext-api'
     ] || {}
   )
 }
@@ -241,7 +241,7 @@ function generateExtApiSource({
   sourceDirs,
   type,
   tempDir,
-  external
+  external,
 }: IGenerateSourceFilesOptions) {
   const store = getExtApiPaths(sourceDirs)
   const importExtApis: string[] = []
@@ -249,7 +249,9 @@ function generateExtApiSource({
   const defineExtApis: string[] = []
   const uniExtApis: string[] = []
   const buildHarJsonPath = path.resolve(tempDir, 'build.har.json')
-  const buildHarJson: IBuildHarJsonItem[] = fs.existsSync(buildHarJsonPath) ? fs.readJsonSync(buildHarJsonPath) : []
+  const buildHarJson: IBuildHarJsonItem[] = fs.existsSync(buildHarJsonPath)
+    ? fs.readJsonSync(buildHarJsonPath)
+    : []
   for (const uniModuleName in store) {
     if (exclude.includes(uniModuleName)) {
       continue
@@ -344,7 +346,6 @@ function generateExtApiSource({
   )
 }
 
-
 interface IExternalApiModuleJsonItem {
   type: 'extapi'
   plugin: string
@@ -374,8 +375,10 @@ interface IExternalComponentModuleJsonItem {
   version: string
 }
 
-type IExternalModuleJsonItem = IExternalApiModuleJsonItem | IExternalProviderModuleJsonItem | IExternalComponentModuleJsonItem
-
+type IExternalModuleJsonItem =
+  | IExternalApiModuleJsonItem
+  | IExternalProviderModuleJsonItem
+  | IExternalComponentModuleJsonItem
 
 interface IGenerateExternalModuleJsonOptions {
   tempDir: string
@@ -407,7 +410,10 @@ function generateExternalModuleJson({
     /**
      * 前置步骤一定会生成utssdk/app-harmony/index.uts
      */
-    const entryPath = path.resolve(uniModulePath, 'utssdk/app-harmony/index.uts')
+    const entryPath = path.resolve(
+      uniModulePath,
+      'utssdk/app-harmony/index.uts'
+    )
     const entryExists = fs.existsSync(entryPath)
     if (!entryExists) {
       continue
@@ -452,7 +458,7 @@ function initArkTSExtApi() {
   }
 
   // uni-app
-  (() => {
+  ;(() => {
     const external = ExternalModules.map((item) => item.name)
     const tempDir = resolveExtApiTempDir('uni-app-harmony')
     fs.emptyDirSync(tempDir)
@@ -477,10 +483,10 @@ function initArkTSExtApi() {
       externalModuleJson,
       { spaces: 2 }
     )
-  })();
+  })()
 
   // uni-app-x
-  (() => {
+  ;(() => {
     const external = ExternalModulesX.map((item) => item.name)
     const tempDir = resolveExtApiTempDir('uni-app-harmony') + '-x'
     fs.emptyDirSync(tempDir)
@@ -496,7 +502,10 @@ function initArkTSExtApi() {
       tempDir: tempDir,
     })
     // 组件仅支持uni-app-x
-    const tempComponentDir = path.join(resolveExtApiTempDir('uni-app-harmony'), '../uni-ext-component-x')
+    const tempComponentDir = path.join(
+      resolveExtApiTempDir('uni-app-harmony'),
+      '../uni-ext-component-x'
+    )
     fs.emptyDirSync(tempComponentDir)
     generateExtApiSource({
       isX: true,
@@ -518,11 +527,8 @@ function initArkTSExtApi() {
     })
     fs.outputJSONSync(
       resolve('./src/compiler/external-modules-x.json'),
-      [
-        ...externalApiModuleJson,
-        ...externalComponentModuleJson
-      ],
+      [...externalApiModuleJson, ...externalComponentModuleJson],
       { spaces: 2 }
     )
-  })();
+  })()
 }

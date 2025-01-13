@@ -720,7 +720,9 @@ const $off = defineSyncApi(API_OFF, (name, callback) => {
     // 类型中不再体现 name 支持 string[] 类型, 仅在 uni.$off 保留该逻辑向下兼容
     if (!isArray(name))
         name = name ? [name] : [];
-    name.forEach((n) => eventBus.off(n, callback));
+    name.forEach((n) => {
+        eventBus.off(n, callback);
+    });
 }, OffProtocol);
 const $emit = defineSyncApi(API_EMIT, (name, ...args) => {
     eventBus.emit(name, ...args);
@@ -1524,11 +1526,24 @@ function createSelectorQuery() {
     const query = wx$2.createSelectorQuery();
     const oldIn = query.in;
     query.in = function newIn(component) {
+        if (component.$scope) {
+            // fix skyline 微信小程序内部无法读取component导致报错
+            return oldIn.call(this, component.$scope);
+        }
         return oldIn.call(this, initComponentMocks(component));
     };
     return query;
 }
 const wx$2 = initWx();
+if (!wx$2.canIUse('getAppBaseInfo')) {
+    wx$2.getAppBaseInfo = wx$2.getSystemInfoSync;
+}
+if (!wx$2.canIUse('getWindowInfo')) {
+    wx$2.getWindowInfo = wx$2.getSystemInfoSync;
+}
+if (!wx$2.canIUse('getDeviceInfo')) {
+    wx$2.getDeviceInfo = wx$2.getSystemInfoSync;
+}
 let baseInfo = wx$2.getAppBaseInfo && wx$2.getAppBaseInfo();
 if (!baseInfo) {
     baseInfo = wx$2.getSystemInfoSync();
@@ -1569,7 +1584,7 @@ function returnValue(method, res) {
     return parseXReturnValue(method, res);
 }
 const chooseFile = {
-    name: 'chooseMessageFile'
+    name: 'chooseMessageFile',
 };
 const compressImage = {
     args(fromArgs, toArgs) {

@@ -3365,7 +3365,9 @@ const $off = /* @__PURE__ */ defineSyncApi(
   (name, callback) => {
     if (!isArray(name))
       name = name ? [name] : [];
-    name.forEach((n) => eventBus.off(n, callback));
+    name.forEach((n) => {
+      eventBus.off(n, callback);
+    });
   },
   OffProtocol
 );
