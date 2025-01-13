@@ -82,32 +82,6 @@ export function setupXPage(
   })
   uniPage.vm = pageVm
   uniPage.$vm = pageVm
-  uniPage.getParentPage = () => {
-    // @ts-expect-error
-    const parentPage = uniPage.getParentPageByJS()
-    return parentPage || null
-  }
-
-  uniPage.getPageStyle = (): UTSJSONObject => {
-    // @ts-expect-error
-    const pageStyle = uniPage.getPageStyleByJS()
-    return new UTSJSONObject(pageStyle)
-  }
-  uniPage.$getPageStyle = (): UTSJSONObject => {
-    return uniPage.getPageStyle()
-  }
-
-  uniPage.setPageStyle = (styles: UTSJSONObject) => {
-    // @ts-expect-error
-    uniPage.setPageStyleByJS(styles)
-  }
-  uniPage.$setPageStyle = (styles: UTSJSONObject) => {
-    uniPage.setPageStyle(styles)
-  }
-
-  uniPage.getAndroidView = () => null
-  uniPage.getIOSView = () => null
-  uniPage.getHTMLElement = () => null
 
   if (getPage$BasePage(pageVm).openType !== OPEN_DIALOG_PAGE) {
     addCurrentPageWithInitScope(
