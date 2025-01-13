@@ -13,7 +13,8 @@ const {
 
 const {
   normalizePath,
-  getPlatformStat
+  getPlatformStat,
+  getDevUniConsoleCode
 } = require('@dcloudio/uni-cli-shared')
 
 const appVuePath = path.resolve(process.env.UNI_INPUT_DIR, 'App.vue')
@@ -49,6 +50,7 @@ module.exports = function (content, map) {
   const loaderContext = this
 
   const statCode = getPlatformStat()
+  const uniConsoleCode = getDevUniConsoleCode()
 
   if (this.resourceQuery) {
     const params = loaderUtils.parseQuery(this.resourceQuery)
@@ -56,7 +58,7 @@ module.exports = function (content, map) {
       if (params.page) {
         params.page = decodeURIComponent(params.page)
         // import Vue from 'vue'是为了触发 vendor 合并
-        return `
+        return `${uniConsoleCode}
         ${statCode}
         import 'uni-app-style'
         import 'uni-polyfill'
@@ -74,5 +76,5 @@ module.exports = function (content, map) {
   }
   const automatorCode = process.env.UNI_AUTOMATOR_WS_ENDPOINT ? 'import \'@dcloudio/uni-app-plus/dist/automator\';'
     : ''
-  return automatorCode + statCode + content
+  return uniConsoleCode + automatorCode + statCode + content
 }

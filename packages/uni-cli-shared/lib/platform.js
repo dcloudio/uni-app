@@ -75,6 +75,15 @@ function createShadowImageUrl (cdn, type = 'grey') {
   return `https://cdn${cdn || ''}.dcloud.net.cn/${identStr}img/shadow-${type}.png`
 }
 
+function isEnableConsole () {
+  return !!(
+    process.env.NODE_ENV === 'development' &&
+    process.env.UNI_SOCKET_HOSTS &&
+    process.env.UNI_SOCKET_PORT &&
+    process.env.UNI_SOCKET_ID
+  )
+}
+
 // 解决 vue-cli-service lint 时 UNI_PLATFORM 不存在
 process.env.UNI_PLATFORM = process.env.UNI_PLATFORM || 'h5'
 
@@ -239,5 +248,12 @@ module.exports = {
         'classProperties'
       ]
     }
+  },
+  isEnableConsole,
+  getDevUniConsoleCode () {
+    if (isEnableConsole()) {
+      return 'import \'@dcloudio/uni-console\';\n'
+    }
+    return ''
   }
 }
