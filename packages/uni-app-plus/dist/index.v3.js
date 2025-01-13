@@ -954,7 +954,7 @@ var serviceContext = (function () {
   };
 
   const SYNC_API_RE =
-    /^\$|Window$|WindowStyle$|sendHostEvent|sendNativeEvent|restoreGlobal|requireGlobal|getCurrentSubNVue|getMenuButtonBoundingClientRect|^report|interceptors|Interceptor$|getSubNVueById|requireNativePlugin|rpx2px|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64|getLocale|setLocale|invokePushCallback|getWindowInfo|getDeviceInfo|getAppBaseInfo|getSystemSetting|getAppAuthorizeSetting|initUTS|requireUTS|registerUTS/;
+    /^\$|__f__|Window$|WindowStyle$|sendHostEvent|sendNativeEvent|restoreGlobal|requireGlobal|getCurrentSubNVue|getMenuButtonBoundingClientRect|^report|interceptors|Interceptor$|getSubNVueById|requireNativePlugin|rpx2px|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64|getLocale|setLocale|invokePushCallback|getWindowInfo|getDeviceInfo|getAppBaseInfo|getSystemSetting|getAppAuthorizeSetting|initUTS|requireUTS|registerUTS/;
 
   const CONTEXT_API_RE = /^create|Manager$/;
 
@@ -10742,7 +10742,7 @@ var serviceContext = (function () {
   function initProxyFunction(type, async, { moduleName, moduleType, package: pkg, class: cls, name: methodName, method, companion, keepAlive, params: methodParams, return: returnOptions, errMsg, }, instanceId, proxy) {
       if (!keepAlive) {
           keepAlive =
-              methodName.indexOf('on') === 0 &&
+              (methodName.indexOf('on') === 0 || methodName.indexOf('off') === 0) &&
                   methodParams.length === 1 &&
                   methodParams[0].type === 'UTSCallback';
       }
@@ -22274,6 +22274,18 @@ var serviceContext = (function () {
     uploadFile: uploadFile$1
   });
 
+  function __f__ (
+    type,
+    ...args
+  ) {
+    console[type].apply(console, args);
+  }
+
+  var require_context_module_1_22 = /*#__PURE__*/Object.freeze({
+    __proto__: null,
+    __f__: __f__
+  });
+
   let cid;
   let cidErrMsg;
   let enabled;
@@ -22429,7 +22441,7 @@ var serviceContext = (function () {
     }
   };
 
-  var require_context_module_1_22 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_23 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     invokePushCallback: invokePushCallback,
     getPushClientId: getPushClientId,
@@ -22521,7 +22533,7 @@ var serviceContext = (function () {
     return new MPAnimation(option)
   }
 
-  var require_context_module_1_23 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_24 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     createAnimation: createAnimation
   });
@@ -22591,7 +22603,7 @@ var serviceContext = (function () {
     return new ServiceIntersectionObserver(getCurrentPageVm('createIntersectionObserver'), options)
   }
 
-  var require_context_module_1_24 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_25 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     createIntersectionObserver: createIntersectionObserver
   });
@@ -22638,7 +22650,7 @@ var serviceContext = (function () {
     return new ServiceMediaQueryObserver(getCurrentPageVm('createMediaQueryObserver'), options)
   }
 
-  var require_context_module_1_25 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_26 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     createMediaQueryObserver: createMediaQueryObserver
   });
@@ -22782,7 +22794,7 @@ var serviceContext = (function () {
     return new SelectorQuery(getCurrentPageVm('createSelectorQuery'))
   }
 
-  var require_context_module_1_26 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_27 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     createSelectorQuery: createSelectorQuery
   });
@@ -22807,7 +22819,7 @@ var serviceContext = (function () {
     }, pageId);
   }
 
-  var require_context_module_1_27 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_28 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     loadFontFace: loadFontFace$1
   });
@@ -22850,7 +22862,7 @@ var serviceContext = (function () {
     callbacks$a.push(callbackId);
   }
 
-  var require_context_module_1_28 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_29 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     getLocale: getLocale$1,
     setLocale: setLocale,
@@ -22865,7 +22877,7 @@ var serviceContext = (function () {
     return {}
   }
 
-  var require_context_module_1_29 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_30 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     pageScrollTo: pageScrollTo$1
   });
@@ -22878,7 +22890,7 @@ var serviceContext = (function () {
     return {}
   }
 
-  var require_context_module_1_30 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_31 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     setPageMeta: setPageMeta$1
   });
@@ -22915,7 +22927,7 @@ var serviceContext = (function () {
     callbacks$b.push(callbackId);
   }
 
-  var require_context_module_1_31 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_32 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     removeTabBarBadge: removeTabBarBadge$1,
     showTabBarRedDot: showTabBarRedDot$1,
@@ -22939,7 +22951,7 @@ var serviceContext = (function () {
     callbacks$c.splice(callbacks$c.indexOf(callbackId), 1);
   }
 
-  var require_context_module_1_32 = /*#__PURE__*/Object.freeze({
+  var require_context_module_1_33 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     onWindowResize: onWindowResize,
     offWindowResize: offWindowResize
@@ -22972,17 +22984,18 @@ var serviceContext = (function () {
   './network/socket.js': require_context_module_1_19,
   './network/update.js': require_context_module_1_20,
   './network/upload-file.js': require_context_module_1_21,
-  './plugin/push.js': require_context_module_1_22,
-  './ui/create-animation.js': require_context_module_1_23,
-  './ui/create-intersection-observer.js': require_context_module_1_24,
-  './ui/create-media-query-observer.js': require_context_module_1_25,
-  './ui/create-selector-query.js': require_context_module_1_26,
-  './ui/load-font-face.js': require_context_module_1_27,
-  './ui/locale.js': require_context_module_1_28,
-  './ui/page-scroll-to.js': require_context_module_1_29,
-  './ui/set-page-meta.js': require_context_module_1_30,
-  './ui/tab-bar.js': require_context_module_1_31,
-  './ui/window.js': require_context_module_1_32,
+  './plugin/__f__.js': require_context_module_1_22,
+  './plugin/push.js': require_context_module_1_23,
+  './ui/create-animation.js': require_context_module_1_24,
+  './ui/create-intersection-observer.js': require_context_module_1_25,
+  './ui/create-media-query-observer.js': require_context_module_1_26,
+  './ui/create-selector-query.js': require_context_module_1_27,
+  './ui/load-font-face.js': require_context_module_1_28,
+  './ui/locale.js': require_context_module_1_29,
+  './ui/page-scroll-to.js': require_context_module_1_30,
+  './ui/set-page-meta.js': require_context_module_1_31,
+  './ui/tab-bar.js': require_context_module_1_32,
+  './ui/window.js': require_context_module_1_33,
 
       };
       var req = function req(key) {

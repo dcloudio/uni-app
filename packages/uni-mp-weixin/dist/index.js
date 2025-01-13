@@ -336,7 +336,7 @@ const promiseInterceptor = {
 };
 
 const SYNC_API_RE =
-  /^\$|Window$|WindowStyle$|sendHostEvent|sendNativeEvent|restoreGlobal|requireGlobal|getCurrentSubNVue|getMenuButtonBoundingClientRect|^report|interceptors|Interceptor$|getSubNVueById|requireNativePlugin|rpx2px|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64|getLocale|setLocale|invokePushCallback|getWindowInfo|getDeviceInfo|getAppBaseInfo|getSystemSetting|getAppAuthorizeSetting|initUTS|requireUTS|registerUTS/;
+  /^\$|__f__|Window$|WindowStyle$|sendHostEvent|sendNativeEvent|restoreGlobal|requireGlobal|getCurrentSubNVue|getMenuButtonBoundingClientRect|^report|interceptors|Interceptor$|getSubNVueById|requireNativePlugin|rpx2px|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64|getLocale|setLocale|invokePushCallback|getWindowInfo|getDeviceInfo|getAppBaseInfo|getSystemSetting|getAppAuthorizeSetting|initUTS|requireUTS|registerUTS/;
 
 const CONTEXT_API_RE = /^create|Manager$/;
 
@@ -762,7 +762,7 @@ function populateParameters (result) {
   let _SDKVersion = SDKVersion;
 
   // hostLanguage
-  const hostLanguage = language.replace(/_/g, '-');
+  const hostLanguage = (language || '').replace(/_/g, '-');
 
   // wx.getAccountInfoSync
 
@@ -875,7 +875,7 @@ var getAppBaseInfo = {
 
     const _hostName = getHostName(result);
 
-    const hostLanguage = language.replace('_', '-');
+    const hostLanguage = (language || '').replace('_', '-');
 
     result = sortObject(Object.assign(result, {
       appId: process.env.UNI_APP_ID,
@@ -1296,6 +1296,13 @@ const offPushMessage = (fn) => {
   }
 };
 
+function __f__ (
+  type,
+  ...args
+) {
+  console[type].apply(console, args);
+}
+
 let baseInfo = wx.getAppBaseInfo && wx.getAppBaseInfo();
 if (!baseInfo) {
   baseInfo = wx.getSystemInfoSync();
@@ -1310,7 +1317,8 @@ var api = /*#__PURE__*/Object.freeze({
   getPushClientId: getPushClientId,
   onPushMessage: onPushMessage,
   offPushMessage: offPushMessage,
-  invokePushCallback: invokePushCallback
+  invokePushCallback: invokePushCallback,
+  __f__: __f__
 });
 
 const mocks = ['__route__', '__wxExparserNodeId__', '__wxWebviewId__'];
