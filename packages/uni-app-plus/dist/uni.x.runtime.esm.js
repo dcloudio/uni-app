@@ -796,26 +796,6 @@ function setupXPage(instance, pageInstance, pageVm, pageId, pagePath) {
   });
   uniPage.vm = pageVm;
   uniPage.$vm = pageVm;
-  uniPage.getParentPage = () => {
-    var parentPage = uniPage.getParentPageByJS();
-    return parentPage || null;
-  };
-  uniPage.getPageStyle = () => {
-    var pageStyle = uniPage.getPageStyleByJS();
-    return new UTSJSONObject(pageStyle);
-  };
-  uniPage.$getPageStyle = () => {
-    return uniPage.getPageStyle();
-  };
-  uniPage.setPageStyle = (styles2) => {
-    uniPage.setPageStyleByJS(styles2);
-  };
-  uniPage.$setPageStyle = (styles2) => {
-    uniPage.setPageStyle(styles2);
-  };
-  uniPage.getAndroidView = () => null;
-  uniPage.getIOSView = () => null;
-  uniPage.getHTMLElement = () => null;
   if (getPage$BasePage(pageVm).openType !== OPEN_DIALOG_PAGE) {
     addCurrentPageWithInitScope(pageId, pageVm, pageInstance);
   }
@@ -1063,7 +1043,10 @@ var $off = /* @__PURE__ */ defineSyncApi(API_OFF, (name, callback) => {
     name = name ? [name] : [];
   name.forEach((n) => {
     eventBus.off(n, callback);
-    if (typeof __uniappx__nativeEventBus !== "undefined") {
+    if (
+      // @ts-expect-error
+      typeof __uniappx__nativeEventBus !== "undefined"
+    ) {
       __uniappx__nativeEventBus.off(n, callback);
     }
   });
@@ -6280,10 +6263,6 @@ const _sfc_main$1 = {
     uni.$off(this.readyEventName, null);
     uni.$off(this.successEventName, null);
     uni.$off(this.failEventName, null);
-    __uniappx__nativeEventBus.off(this.optionsEventName, null);
-    __uniappx__nativeEventBus.off(this.readyEventName, null);
-    __uniappx__nativeEventBus.off(this.successEventName, null);
-    __uniappx__nativeEventBus.off(this.failEventName, null);
   },
   methods: {
     closeActionSheet() {
@@ -6723,10 +6702,6 @@ const _sfc_main = {
     uni.$off(this.readyEventName, null);
     uni.$off(this.successEventName, null);
     uni.$off(this.failEventName, null);
-    __uniappx__nativeEventBus.off(this.optionsEventName, null);
-    __uniappx__nativeEventBus.off(this.readyEventName, null);
-    __uniappx__nativeEventBus.off(this.successEventName, null);
-    __uniappx__nativeEventBus.off(this.failEventName, null);
   },
   onResize() {
     this.getSystemInfo();
