@@ -1,0 +1,9 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "paths": {
+      "@dcloudio/*": ["packages/*/src"]
+    }
+  },
+  "include": ["src"]
+}
