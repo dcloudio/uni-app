@@ -37,6 +37,10 @@ export function createSelectorQuery() {
       | WechatMiniprogram.Component.TrivialInstance
       | WechatMiniprogram.Page.TrivialInstance
   ) {
+    if (component.$scope) {
+      // fix skyline 微信小程序内部无法读取component导致报错
+      return oldIn.call(this, component.$scope)
+    }
     return oldIn.call(this, initComponentMocks(component))
   }
   return query
