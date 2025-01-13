@@ -1,4 +1,4 @@
-import { hyphenate } from '@vue/shared'
+import { hyphenate, isFunction } from '@vue/shared'
 
 export class UniCSSStyleDeclaration {
   // 跳过vue的响应式
@@ -14,7 +14,7 @@ export class UniCSSStyleDeclaration {
         if (prop in target) {
           const value = target[prop as keyof UniCSSStyleDeclaration]
           // 处理方法调用，保持正确的 this 上下文
-          return typeof value === 'function' ? value.bind(target) : value
+          return isFunction(value) ? value.bind(target) : value
         }
         return target.getPropertyValue(prop)
       },

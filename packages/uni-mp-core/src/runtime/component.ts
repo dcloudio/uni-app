@@ -9,10 +9,7 @@ import {
 // @ts-expect-error
 import { getExposeProxy } from 'vue'
 
-// #if _X_
-// @ts-expect-error
 import { registerCustomElement } from 'vue'
-// #endif
 
 import {
   initExtraOptions,

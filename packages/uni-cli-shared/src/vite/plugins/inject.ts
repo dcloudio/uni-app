@@ -224,7 +224,9 @@ export function uniViteInjectPlugin(
           // 比如 App.vue 中，console.log('uniCloud') 触发了 inject 检测，检测完，发现不需要
           // 此时返回 ast，会导致 import { setupApp } from '@dcloudio/uni-h5' 不会被编译
           // ast
-          map: null,
+          map: {
+            mappings: '',
+          },
         }
       }
       const importBlock = Array.from(newImports.values()).join('\n\n')

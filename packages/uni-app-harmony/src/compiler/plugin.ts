@@ -12,9 +12,13 @@ import {
   parseUniExtApi,
 } from '@dcloudio/uni-cli-shared'
 import type { OutputChunk, PluginContext } from 'rollup'
-import StandaloneExtApis from './standalone-ext-apis.json'
+import ExternalModuls from './external-modules.json'
+import ExternalModulsX from './external-modules-x.json'
 
-const commondGlobals: Record<string, string> = {
+const StandaloneExtApis =
+  process.env.UNI_APP_X === 'true' ? ExternalModulsX : ExternalModuls
+
+const commandGlobals: Record<string, string> = {
   vue: 'Vue',
   '@vue/shared': 'uni.VueShared',
 }
@@ -29,7 +33,7 @@ const harmonyGlobals: (string | RegExp)[] = [
   '@ohos/hamock',
 ]
 
-function isHarmoneyGlobal(id: string) {
+function isHarmonyGlobal(id: string) {
   return harmonyGlobals.some((harmonyGlobal) =>
     typeof harmonyGlobal === 'string'
       ? harmonyGlobal === id
@@ -50,14 +54,18 @@ function generateHarmonyImportSpecifier(id: string) {
   })
 }
 
-function generateHarmonyImportExternalCode(hamonyPackageNames: string[]) {
-  return hamonyPackageNames
-    .filter((hamonyPackageName) => isHarmoneyGlobal(hamonyPackageName))
+function generateHarName(moduleName: string) {
+  return moduleName.replace(/@/g, '').replace(/\//g, '__').replace(/-/g, '_')
+}
+
+function generateHarmonyImportExternalCode(harmonyPackageNames: string[]) {
+  return harmonyPackageNames
+    .filter((harmonyPackageName) => isHarmonyGlobal(harmonyPackageName))
     .map(
-      (hamonyPackageName) =>
+      (harmonyPackageName) =>
         `import ${generateHarmonyImportSpecifier(
-          hamonyPackageName
-        )} from '${hamonyPackageName}';`
+          harmonyPackageName
+        )} from '${harmonyPackageName}';`
     )
     .join('')
 }
@@ -70,12 +78,12 @@ export function uniAppHarmonyPlugin(): UniVitePlugin {
       return {
         build: {
           rollupOptions: {
-            external: [...Object.keys(commondGlobals), ...harmonyGlobals],
+            external: [...Object.keys(commandGlobals), ...harmonyGlobals],
             output: {
               globals: function (id: string) {
                 return (
-                  commondGlobals[id] ||
-                  (isHarmoneyGlobal(id)
+                  commandGlobals[id] ||
+                  (isHarmonyGlobal(id)
                     ? generateHarmonyImportSpecifier(id)
                     : '')
                 )
@@ -111,8 +119,11 @@ export function uniAppHarmonyPlugin(): UniVitePlugin {
       if (!isNormalCompileTarget()) {
         return
       }
-      // x 上暂时编译所有uni ext api，不管代码里是否调用了
-      await buildUniExtApis()
+      // 1.0 特有逻辑，x 上由其他插件完成
+      if (process.env.UNI_APP_X !== 'true') {
+        // x 上暂时编译所有uni ext api，不管代码里是否调用了
+        await buildUniExtApis()
+      }
     },
   }
 }
@@ -186,6 +197,7 @@ function getRelatedProviders(inputDir: string): IRelatedProvider[] {
 const SupportedModules = {
   'uni-facialRecognitionVerify': 'uni-facialRecognitionVerify',
   'uni-push': 'uni-push',
+  'uni-verify': 'uni-verify',
 }
 
 // 获取uni_modules中的相关模块
@@ -233,27 +245,27 @@ function genAppHarmonyUniModules(
       'app-harmony',
       'arkts'
     )
-    const hamonyPackageName = `@uni_modules/${plugin.toLowerCase()}`
+    const harmonyPackageName = `@uni_modules/${plugin.toLowerCase()}`
     if (injects) {
       Object.keys(injects).forEach((key) => {
         const inject = injects[key]
         if (Array.isArray(inject) && inject.length > 1) {
           const apiName = inject[1]
           importCodes.push(
-            `import { ${inject[1]} } from '${hamonyPackageName}'`
+            `import { ${inject[1]} } from '${harmonyPackageName}'`
           )
           extApiCodes.push(`uni.${apiName} = ${apiName}`)
         }
       })
     } else {
       const ident = camelize(plugin)
-      importCodes.push(`import * as ${ident} from '${hamonyPackageName}'`)
+      importCodes.push(`import * as ${ident} from '${harmonyPackageName}'`)
       registerCodes.push(
         `uni.registerUTSPlugin('uni_modules/${plugin}', ${ident})`
       )
     }
     projectDeps.push({
-      moduleSpecifier: hamonyPackageName,
+      moduleSpecifier: harmonyPackageName,
       plugin,
       source: 'local',
     })
@@ -349,7 +361,11 @@ function genAppHarmonyUniModules(
     extApiCodes.push(...registerProviderCodes)
   }
   importCodes.unshift(
-    `import { registerUniProvider, uni } from '@dcloudio/uni-app-runtime'`
+    `import { registerUniProvider, uni } from '${
+      process.env.UNI_APP_X !== 'true'
+        ? '@dcloudio/uni-app-runtime'
+        : '@dcloudio/uni-app-x-runtime'
+    }'`
   )
 
   context.emitFile({
@@ -377,15 +393,14 @@ function initUniExtApi() {
       const depPath = './uni_modules/' + dep.plugin
       dependencies[dep.moduleSpecifier] = depPath
       modules.push({
-        name: dep.moduleSpecifier
-          .replace(/@/g, '')
-          .replace(/\//g, '__')
-          .replace(/-/g, '_'),
+        name: generateHarName(dep.moduleSpecifier),
         srcPath: depPath,
       })
     } else {
       if (!dependencies[dep.moduleSpecifier]) {
-        dependencies[dep.moduleSpecifier] = dep.version!
+        dependencies[dep.moduleSpecifier] = `./libs/${generateHarName(
+          dep.moduleSpecifier
+        )}.har`
       }
     }
   })

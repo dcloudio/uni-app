@@ -1,5 +1,5 @@
 import { isPromise } from '@vue/shared'
-import type { ComponentPublicInstance } from 'vue'
+import { type ComponentPublicInstance, ref } from 'vue'
 import type { IPage } from '@dcloudio/uni-app-x/types/native'
 import type { EventChannel, UniNode } from '@dcloudio/uni-shared'
 import {
@@ -167,7 +167,7 @@ export function registerPage(
     if (pages.length === 1) {
       if (homeDialogPages.length) {
         const homePage = pages[0] as unknown as UniPage
-        homePage.vm.$.$dialogPages = homeDialogPages.map((dialogPage) => {
+        homePage.vm.$.$dialogPages.value = homeDialogPages.map((dialogPage) => {
           dialogPage.getParentPage = () => homePage
           return dialogPage
         })
@@ -175,7 +175,10 @@ export function registerPage(
       }
       if (homeSystemDialogPages.length) {
         const homePage = pages[0] as unknown as UniPage
-        homePage.vm.$systemDialogPages = homeSystemDialogPages.map(
+        if (!homePage.vm.$systemDialogPages) {
+          homePage.vm.$systemDialogPages = ref<UniDialogPage[]>([])
+        }
+        homePage.vm.$systemDialogPages.value = homeSystemDialogPages.map(
           (dialogPage) => {
             dialogPage.getParentPage = () => homePage
             return dialogPage
@@ -247,8 +250,14 @@ export function registerDialogPage(
   const id = genWebviewId()
   const routeOptions = initRouteOptions(path, openType)
   const pageStyle = parsePageStyle(routeOptions)
-  pageStyle.set('navigationStyle', 'custom')
-  pageStyle.set('backgroundColorContent', 'transparent')
+
+  const routePageMeta = __uniRoutes.find((route) => route.path === path)?.meta
+  if (!routePageMeta?.navigationStyle) {
+    pageStyle.set('navigationStyle', 'custom')
+  }
+  if (!routePageMeta?.backgroundColorContent) {
+    pageStyle.set('backgroundColorContent', 'transparent')
+  }
   if (typeof pageStyle.get('disableSwipeBack') !== 'boolean') {
     pageStyle.set('disableSwipeBack', true)
   }

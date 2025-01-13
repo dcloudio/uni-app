@@ -1,6 +1,7 @@
 'use strict';
 
 var appVite = require('@dcloudio/uni-app-vite');
+var uniAppUts = require('@dcloudio/uni-app-uts');
 var path = require('path');
 var uniCliShared = require('@dcloudio/uni-cli-shared');
 
@@ -9,7 +10,7 @@ function _interopDefault (e) { return e && e.__esModule ? e : { default: e }; }
 var appVite__default = /*#__PURE__*/_interopDefault(appVite);
 var path__default = /*#__PURE__*/_interopDefault(path);
 
-var StandaloneExtApis = [
+var ExternalModuls = [
 	{
 		type: "extapi",
 		plugin: "uni-facialRecognitionVerify",
@@ -17,21 +18,21 @@ var StandaloneExtApis = [
 			"startFacialRecognitionVerify",
 			"getFacialRecognitionMetaInfo"
 		],
-		version: "1.0.2"
+		version: "1.0.3"
 	},
 	{
 		type: "provider",
 		plugin: "uni-oauth-huawei",
 		provider: "huawei",
 		service: "oauth",
-		version: "1.0.1"
+		version: "1.0.2"
 	},
 	{
 		type: "provider",
 		plugin: "uni-payment-alipay",
 		provider: "alipay",
 		service: "payment",
-		version: "1.0.1"
+		version: "1.0.2"
 	},
 	{
 		type: "provider",
@@ -50,11 +51,75 @@ var StandaloneExtApis = [
 			"createPushMessage",
 			"setAppBadgeNumber"
 		],
-		version: "1.0.1"
+		version: "1.0.2"
+	},
+	{
+		type: "extapi",
+		plugin: "uni-verify",
+		apis: [
+			"getUniverifyManager",
+			"getUniVerifyManager"
+		],
+		version: "1.0.0"
 	}
 ];
 
-const commondGlobals = {
+var ExternalModulsX = [
+	{
+		type: "extapi",
+		plugin: "uni-facialRecognitionVerify",
+		apis: [
+			"startFacialRecognitionVerify",
+			"getFacialRecognitionMetaInfo"
+		],
+		version: "1.0.3"
+	},
+	{
+		type: "provider",
+		plugin: "uni-oauth-huawei",
+		provider: "huawei",
+		service: "oauth",
+		version: "1.0.2"
+	},
+	{
+		type: "provider",
+		plugin: "uni-payment-alipay",
+		provider: "alipay",
+		service: "payment",
+		version: "1.0.2"
+	},
+	{
+		type: "provider",
+		plugin: "uni-payment-huawei",
+		provider: "huawei",
+		service: "payment",
+		version: "1.0.0"
+	},
+	{
+		type: "extapi",
+		plugin: "uni-push",
+		apis: [
+			"getPushClientId",
+			"onPushMessage",
+			"offPushMessage",
+			"createPushMessage",
+			"setAppBadgeNumber"
+		],
+		version: "1.0.2"
+	},
+	{
+		type: "extapi",
+		plugin: "uni-verify",
+		apis: [
+			"getUniverifyManager",
+			"getUniVerifyManager"
+		],
+		version: "1.0.0"
+	}
+];
+
+const StandaloneExtApis = process.env.UNI_APP_X === 'true' ? ExternalModulsX : ExternalModuls;
+const commandGlobals = {
     vue: 'Vue',
     '@vue/shared': 'uni.VueShared',
 };
@@ -67,7 +132,7 @@ const harmonyGlobals = [
     '@ohos/hypium',
     '@ohos/hamock',
 ];
-function isHarmoneyGlobal(id) {
+function isHarmonyGlobal(id) {
     return harmonyGlobals.some((harmonyGlobal) => typeof harmonyGlobal === 'string'
         ? harmonyGlobal === id
         : harmonyGlobal.test(id));
@@ -84,10 +149,13 @@ function generateHarmonyImportSpecifier(id) {
         }
     });
 }
-function generateHarmonyImportExternalCode(hamonyPackageNames) {
-    return hamonyPackageNames
-        .filter((hamonyPackageName) => isHarmoneyGlobal(hamonyPackageName))
-        .map((hamonyPackageName) => `import ${generateHarmonyImportSpecifier(hamonyPackageName)} from '${hamonyPackageName}';`)
+function generateHarName(moduleName) {
+    return moduleName.replace(/@/g, '').replace(/\//g, '__').replace(/-/g, '_');
+}
+function generateHarmonyImportExternalCode(harmonyPackageNames) {
+    return harmonyPackageNames
+        .filter((harmonyPackageName) => isHarmonyGlobal(harmonyPackageName))
+        .map((harmonyPackageName) => `import ${generateHarmonyImportSpecifier(harmonyPackageName)} from '${harmonyPackageName}';`)
         .join('');
 }
 function uniAppHarmonyPlugin() {
@@ -98,11 +166,11 @@ function uniAppHarmonyPlugin() {
             return {
                 build: {
                     rollupOptions: {
-                        external: [...Object.keys(commondGlobals), ...harmonyGlobals],
+                        external: [...Object.keys(commandGlobals), ...harmonyGlobals],
                         output: {
                             globals: function (id) {
-                                return (commondGlobals[id] ||
-                                    (isHarmoneyGlobal(id)
+                                return (commandGlobals[id] ||
+                                    (isHarmonyGlobal(id)
                                         ? generateHarmonyImportSpecifier(id)
                                         : ''));
                             },
@@ -137,8 +205,11 @@ function uniAppHarmonyPlugin() {
             if (!uniCliShared.isNormalCompileTarget()) {
                 return;
             }
-            // x 上暂时编译所有uni ext api，不管代码里是否调用了
-            await uniCliShared.buildUniExtApis();
+            // 1.0 特有逻辑，x 上由其他插件完成
+            if (process.env.UNI_APP_X !== 'true') {
+                // x 上暂时编译所有uni ext api，不管代码里是否调用了
+                await uniCliShared.buildUniExtApis();
+            }
         },
     };
 }
@@ -192,6 +263,7 @@ function getRelatedProviders(inputDir) {
 const SupportedModules = {
     'uni-facialRecognitionVerify': 'uni-facialRecognitionVerify',
     'uni-push': 'uni-push',
+    'uni-verify': 'uni-verify',
 };
 // 获取uni_modules中的相关模块
 function getRelatedModules(inputDir) {
@@ -220,24 +292,24 @@ function genAppHarmonyUniModules(context, inputDir, utsPlugins) {
     const projectDeps = [];
     utsPlugins.forEach((plugin) => {
         const injects = uniCliShared.parseUniExtApi(path__default.default.resolve(uniModulesDir, plugin), plugin, true, 'app-harmony', 'arkts');
-        const hamonyPackageName = `@uni_modules/${plugin.toLowerCase()}`;
+        const harmonyPackageName = `@uni_modules/${plugin.toLowerCase()}`;
         if (injects) {
             Object.keys(injects).forEach((key) => {
                 const inject = injects[key];
                 if (Array.isArray(inject) && inject.length > 1) {
                     const apiName = inject[1];
-                    importCodes.push(`import { ${inject[1]} } from '${hamonyPackageName}'`);
+                    importCodes.push(`import { ${inject[1]} } from '${harmonyPackageName}'`);
                     extApiCodes.push(`uni.${apiName} = ${apiName}`);
                 }
             });
         }
         else {
             const ident = uniCliShared.camelize(plugin);
-            importCodes.push(`import * as ${ident} from '${hamonyPackageName}'`);
+            importCodes.push(`import * as ${ident} from '${harmonyPackageName}'`);
             registerCodes.push(`uni.registerUTSPlugin('uni_modules/${plugin}', ${ident})`);
         }
         projectDeps.push({
-            moduleSpecifier: hamonyPackageName,
+            moduleSpecifier: harmonyPackageName,
             plugin,
             source: 'local',
         });
@@ -312,7 +384,9 @@ function genAppHarmonyUniModules(context, inputDir, utsPlugins) {
         importCodes.push(...importProviderCodes);
         extApiCodes.push(...registerProviderCodes);
     }
-    importCodes.unshift(`import { registerUniProvider, uni } from '@dcloudio/uni-app-runtime'`);
+    importCodes.unshift(`import { registerUniProvider, uni } from '${process.env.UNI_APP_X !== 'true'
+        ? '@dcloudio/uni-app-runtime'
+        : '@dcloudio/uni-app-x-runtime'}'`);
     context.emitFile({
         type: 'asset',
         fileName: 'uni_modules/index.generated.ets',
@@ -337,16 +411,13 @@ function initUniExtApi() {
             const depPath = './uni_modules/' + dep.plugin;
             dependencies[dep.moduleSpecifier] = depPath;
             modules.push({
-                name: dep.moduleSpecifier
-                    .replace(/@/g, '')
-                    .replace(/\//g, '__')
-                    .replace(/-/g, '_'),
+                name: generateHarName(dep.moduleSpecifier),
                 srcPath: depPath,
             });
         }
         else {
             if (!dependencies[dep.moduleSpecifier]) {
-                dependencies[dep.moduleSpecifier] = dep.version;
+                dependencies[dep.moduleSpecifier] = `./libs/${generateHarName(dep.moduleSpecifier)}.har`;
             }
         }
     });
@@ -362,6 +433,9 @@ function initUniExtApi() {
     });
 }
 
-var index = [appVite__default.default, uniAppHarmonyPlugin];
+var index = [
+    process.env.UNI_APP_X === 'true' ? uniAppUts.initUniAppXHarmonyPlugin : appVite__default.default,
+    uniAppHarmonyPlugin,
+];
 
 module.exports = index;

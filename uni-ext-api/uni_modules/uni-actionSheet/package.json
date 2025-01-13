@@ -4,8 +4,8 @@
 	"version": "1.0.0",
 	"description": "uni-actionSheet",
 	"keywords": [
-		"uni-showActionSheet",
-		"uni-closeActionSheet"
+		"uni.showActionSheet",
+		"uni.hideActionSheet"
 	],
 	"repository": "",
 	"engines": {
@@ -35,16 +35,27 @@
 		"dependencies": [
 			"uni-framework",
 			"uni-theme",
-			"uni-getSystemInfo"
+			"uni-getSystemInfo",
+			"app-ios:uni-dialogPage",
+      "app-ios:uni-event"
 		],
 		"uni-ext-api": {
 			"uni": {
-				"showActionSheet2": {
-					"name": "showActionSheet2",
+				"showActionSheet": {
+					"name": "showActionSheet",
 					"app": {
 						"js": false,
 						"kotlin": true,
-						"swift": false,
+						"swift": true,
+						"arkts": false
+					}
+				},
+				"hideActionSheet": {
+					"name": "hideActionSheet",
+					"app": {
+						"js": false,
+						"kotlin": true,
+						"swift": true,
 						"arkts": false
 					}
 				}

@@ -23,6 +23,7 @@ import {
 import { initEasycom } from '../utils/easycom'
 import { runUVueAndroidBuild, runUVueAndroidDev } from './uvue'
 import type { FSWatcher } from 'chokidar'
+import { initLogger } from '../configResolved'
 
 export async function runDev(options: CliOptions & ServerOptions) {
   extend(options, {
@@ -178,7 +179,13 @@ export async function runBuild(options: CliOptions & BuildOptions) {
       process.exit(0)
     }
   } catch (e: any) {
-    console.error(e.message || e)
+    if (isInHBuilderX()) {
+      initLogger({
+        logger: createLogger(options.logLevel),
+      }).error(e.message || e)
+    } else {
+      console.error(e.message || e)
+    }
     console.error(`Build failed with errors.`)
     process.exit(1)
   }

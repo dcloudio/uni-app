@@ -135,6 +135,7 @@ const UVUE_BUILT_IN_TAGS = [
     'nested-scroll-body',
     'waterflow',
     'flow-item',
+    'share-element',
 ];
 const UVUE_WEB_BUILT_IN_TAGS = [
     'list-view',
@@ -149,6 +150,10 @@ const UVUE_IOS_BUILT_IN_TAGS = [
     'slider',
     'form',
     'switch',
+];
+const UVUE_HARMONY_BUILT_IN_TAGS = [
+    // TODO 列出完整列表
+    ...BUILT_IN_TAG_NAMES,
 ];
 const NVUE_U_BUILT_IN_TAGS = [
     'u-text',
@@ -256,6 +261,22 @@ function isAppIOSUVueNativeTag(tag) {
         return true;
     }
     if (UVUE_IOS_BUILT_IN_TAGS.includes(tag)) {
+        return true;
+    }
+    return false;
+}
+function isAppHarmonyUVueNativeTag(tag) {
+    // 前端实现的内置组件都会注册一个根组件
+    if (tag.startsWith('uni-') && tag.endsWith('-element')) {
+        return true;
+    }
+    if (NVUE_BUILT_IN_TAGS.includes(tag)) {
+        return true;
+    }
+    if (UVUE_BUILT_IN_TAGS.includes(tag)) {
+        return true;
+    }
+    if (UVUE_HARMONY_BUILT_IN_TAGS.includes(tag)) {
         return true;
     }
     return false;
@@ -1697,6 +1718,22 @@ function getEnvLocale() {
     return (lang && lang.replace(/[.:].*/, '')) || 'en';
 }
 
+const isStringIntegerKey = (key) => typeof key === 'string' &&
+    key !== 'NaN' &&
+    key[0] !== '-' &&
+    '' + parseInt(key, 10) === key;
+const isNumberIntegerKey = (key) => typeof key === 'number' &&
+    !isNaN(key) &&
+    key >= 0 &&
+    parseInt(key + '', 10) === key;
+/**
+ * 用于替代@vue/shared的isIntegerKey，原始方法在鸿蒙arkts中会引发bug。根本原因是arkts的数组的key是数字而不是字符串。
+ * 目前这个方法使用的地方都和数组有关，切记不能挪作他用。
+ * @param key
+ * @returns
+ */
+const isIntegerKey = (key) => isNumberIntegerKey(key) || isStringIntegerKey(key);
+
 exports.ACTION_TYPE_ADD_EVENT = ACTION_TYPE_ADD_EVENT;
 exports.ACTION_TYPE_ADD_WXS_EVENT = ACTION_TYPE_ADD_WXS_EVENT;
 exports.ACTION_TYPE_CREATE = ACTION_TYPE_CREATE;
@@ -1794,6 +1831,7 @@ exports.UNI_SSR_TITLE = UNI_SSR_TITLE;
 exports.UNI_STORAGE_LOCALE = UNI_STORAGE_LOCALE;
 exports.UNI_UI_CONFLICT_TAGS = UNI_UI_CONFLICT_TAGS;
 exports.UVUE_BUILT_IN_TAGS = UVUE_BUILT_IN_TAGS;
+exports.UVUE_HARMONY_BUILT_IN_TAGS = UVUE_HARMONY_BUILT_IN_TAGS;
 exports.UVUE_IOS_BUILT_IN_TAGS = UVUE_IOS_BUILT_IN_TAGS;
 exports.UVUE_WEB_BUILT_IN_TAGS = UVUE_WEB_BUILT_IN_TAGS;
 exports.UniBaseNode = UniBaseNode;
@@ -1841,6 +1879,7 @@ exports.initCustomDatasetOnce = initCustomDatasetOnce;
 exports.invokeArrayFns = invokeArrayFns;
 exports.invokeCreateErrorHandler = invokeCreateErrorHandler;
 exports.invokeCreateVueAppHook = invokeCreateVueAppHook;
+exports.isAppHarmonyUVueNativeTag = isAppHarmonyUVueNativeTag;
 exports.isAppIOSUVueNativeTag = isAppIOSUVueNativeTag;
 exports.isAppNVueNativeTag = isAppNVueNativeTag;
 exports.isAppNativeTag = isAppNativeTag;
@@ -1851,6 +1890,7 @@ exports.isComponentInternalInstance = isComponentInternalInstance;
 exports.isComponentTag = isComponentTag;
 exports.isH5CustomElement = isH5CustomElement;
 exports.isH5NativeTag = isH5NativeTag;
+exports.isIntegerKey = isIntegerKey;
 exports.isMiniProgramNativeTag = isMiniProgramNativeTag;
 exports.isMiniProgramUVueNativeTag = isMiniProgramUVueNativeTag;
 exports.isRootHook = isRootHook;

@@ -12,7 +12,7 @@ import type {
   UniPage,
 } from '@dcloudio/uni-app-x/types/page'
 //#if !_NODE_JS_
-import { closeDialogPage } from '../../service/api'
+import { closeDialogPage } from '../../service/api/route/closeDialogPage'
 //#endif
 import {
   currentPagesMap,
@@ -20,6 +20,8 @@ import {
 } from '../../../framework/setup/page'
 import type { RouteLocationNormalizedLoadedGeneric } from 'vue-router'
 import { isDialogPageInstance } from '../helpers/utils'
+import { getWindowInfo } from '../../../service/api/device/getWindowInfo'
+import type { UniSafeAreaInsets } from '@dcloudio/uni-app-x/types/native/UniSafeAreaInsets'
 
 let escBackPageNum = 0
 type PageStyle = {
@@ -41,6 +43,15 @@ class UniPageImpl implements UniPage {
   options: UTSJSONObject
   vm: ComponentPublicInstance | null
   $vm: ComponentPublicInstance | null
+  get innerWidth(): number {
+    return getWindowInfo().windowWidth
+  }
+  get innerHeight(): number {
+    return getWindowInfo().windowHeight
+  }
+  get safeAreaInsets(): UniSafeAreaInsets {
+    return getWindowInfo().safeAreaInsets
+  }
   getPageStyle(): UTSJSONObject {
     const pageMeta = this.vm?.$basePage.meta
     return pageMeta
@@ -146,7 +157,7 @@ class UniPageImpl implements UniPage {
 
 class UniNormalPageImpl extends UniPageImpl implements UniNormalPage {
   getDialogPages(): UniPage[] {
-    return this.vm?.$pageLayoutInstance?.$dialogPages.value || []
+    return this.vm?.$pageLayoutInstance?.$dialogPages!.value || []
   }
   constructor({
     route,
@@ -245,14 +256,14 @@ export function initXPage(
       if (homeDialogPages.length) {
         homeDialogPages.forEach((dialogPage) => {
           dialogPage.getParentPage = () => vm.$page as UniPage
-          pageInstance!.$dialogPages.value.push(dialogPage)
+          pageInstance!.$dialogPages!.value.push(dialogPage)
         })
         homeDialogPages.length = 0
       }
       if (homeSystemDialogPages.length) {
         homeSystemDialogPages.forEach((dialogPage) => {
           dialogPage.getParentPage = () => vm.$page as UniPage
-          pageInstance!.$systemDialogPages.value.push(dialogPage)
+          pageInstance!.$systemDialogPages!.value.push(dialogPage)
         })
         homeSystemDialogPages.length = 0
       }

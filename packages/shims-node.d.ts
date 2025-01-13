@@ -83,7 +83,7 @@ declare namespace NodeJS {
     UNI_INPUT_DIR: string // 输入目录
     UNI_OUTPUT_DIR: string // 输出目录
     UNI_MINIMIZE?: 'true' // 是否压缩
-    UNI_MP_PLUGIN?: 'true' // 是否发行为小程序插件
+    UNI_MP_PLUGIN?: string // 发行小程序插件的插件名
     UNI_PLATFORM: UniApp.PLATFORM // 目标平台
     UNI_SUBPACKGE?: string // 发行子包名
     // uniCloud相关
@@ -103,9 +103,13 @@ declare namespace NodeJS {
     UNI_AUTOMATOR_WS_ENDPOINT?: string // 自动化测试ws endpoint
     UNI_OS_NAME?: string // 操作系统名称
     // HBuilderX的Socket通道
-    UNI_SOCKET_ID?: string
-    UNI_SOCKET_PORT?: string
-    UNI_SOCKET_HOSTS?: string
+    UNI_SOCKET_ID: string
+    UNI_SOCKET_PORT: string
+    UNI_SOCKET_HOSTS: string
+
+    UNI_CONSOLE_KEEP_ORIGINAL: string
+    UNI_CONSOLE_WEBVIEW: string
+    UNI_CONSOLE_WEBVIEW_EVAL_JS_CODE: string
   }
 }
 

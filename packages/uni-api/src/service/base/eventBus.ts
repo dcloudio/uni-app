@@ -66,7 +66,19 @@ export const $off = defineSyncApi<API_TYPE_OFF>(
   (name, callback) => {
     // 类型中不再体现 name 支持 string[] 类型, 仅在 uni.$off 保留该逻辑向下兼容
     if (!isArray(name)) name = name ? [name] : []
-    name.forEach((n) => eventBus.off(n, callback))
+    name.forEach((n) => {
+      eventBus.off(n, callback)
+      // 处理 x-ios js 层 off 原生层 on 的事件
+      if (
+        __X__ &&
+        __PLATFORM__ === 'app' &&
+        // @ts-expect-error
+        typeof __uniappx__nativeEventBus !== 'undefined'
+      ) {
+        // @ts-expect-error
+        __uniappx__nativeEventBus.off(n, callback)
+      }
+    })
   },
   OffProtocol
 )

@@ -3,6 +3,7 @@ import { type CompilerError, baseParse } from '@vue/compiler-core'
 
 import { isAppUVueNativeTag } from '@dcloudio/uni-shared'
 import {
+  createUniVueTransformAssetUrls,
   getBaseNodeTransforms,
   transformTapToClick,
 } from '@dcloudio/uni-cli-shared'
@@ -39,6 +40,11 @@ import {
 } from 'source-map-js'
 import { trackSlotScopes, trackVForSlotScopes } from './transforms/vSlot'
 import { transformElement } from './transforms/transformElement'
+import {
+  createAssetUrlTransformWithOptions,
+  normalizeOptions,
+} from '../sfc/compiler/template/transformAssetUrl'
+import { createSrcsetTransformWithOptions } from '../sfc/compiler/template/transformSrcset'
 
 export type TransformPreset = [
   NodeTransform[],
@@ -108,11 +114,16 @@ export function compile(
     options.prefixIdentifiers
   )
 
+  // 重要不能传入base
+  const assetOptions = normalizeOptions(createUniVueTransformAssetUrls(''))
+
   transform(
     ast,
     extend({}, options, {
       nodeTransforms: [
         ...nodeTransforms,
+        createAssetUrlTransformWithOptions(assetOptions),
+        createSrcsetTransformWithOptions(assetOptions),
         ...getBaseNodeTransforms('/'),
         ...(options.nodeTransforms || []), // user transforms
       ],

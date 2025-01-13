@@ -8,5 +8,6 @@
       "@dcloudio/uni-h5/*": ["packages/uni-h5/src/*"],
       "@dcloudio/uni-platform": ["packages/uni-app-harmony/src/platform/index.ts"]
     }
-  }
+  },
+  "include": ["src"]
 }

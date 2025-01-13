@@ -1,6 +1,15 @@
 {
   "@dcloudio/uni-app-runtime": [
     [
+      "ChooseMediaSuccess"
+    ],
+    [
+      "ChooseMediaOptions"
+    ],
+    [
+      "ChooseMedia"
+    ],
+    [
       "SetClipboardData"
     ],
     [
@@ -244,15 +253,6 @@
       "ChooseFileOptions"
     ],
     [
-      "ChooseMediaSuccess"
-    ],
-    [
-      "ChooseMediaOptions"
-    ],
-    [
-      "ChooseMedia"
-    ],
-    [
       "Request"
     ],
     [
@@ -260,6 +260,9 @@
     ],
     [
       "RequestSuccess"
+    ],
+    [
+      "RequestFail"
     ],
     [
       "RequestTask"
@@ -479,9 +482,6 @@
     ],
     [
       "OnSocketErrorCallbackResult"
-    ],
-    [
-      "initUniExtApi"
     ]
   ],
   "@uni_modules/uni-facialrecognitionverify": [
@@ -522,6 +522,14 @@
     ],
     [
       "setAppBadgeNumber"
+    ]
+  ],
+  "@uni_modules/uni-verify": [
+    [
+      "getUniVerifyManager"
+    ],
+    [
+      "getUniverifyManager"
     ]
   ]
 }

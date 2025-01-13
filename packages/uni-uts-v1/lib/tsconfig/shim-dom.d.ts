@@ -1,6 +1,6 @@
 type AnyFunction = (...args: (any | null)[]) => any | null
 type AnyClass<T> = {
-  new(): T
+  new(...args: any[]): T
 }
 
 declare global {

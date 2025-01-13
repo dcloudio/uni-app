@@ -1463,7 +1463,7 @@ const movableViewProps = {
   },
   scaleMin: {
     type: [Number, String],
-    default: 0.5
+    default: 0.1
   },
   scaleMax: {
     type: [Number, String],
@@ -1645,7 +1645,7 @@ function useMovableViewState(props2, trigger, rootRef, setTouchMovableViewContex
   });
   const scaleMinNumber = computed(() => {
     let val = Number(props2.scaleMin);
-    return isNaN(val) ? 0.5 : val;
+    return isNaN(val) ? 0.1 : val;
   });
   const scaleMaxNumber = computed(() => {
     let val = Number(props2.scaleMax);
@@ -1907,7 +1907,7 @@ function useMovableViewState(props2, trigger, rootRef, setTouchMovableViewContex
     }
   }
   function _adjustScale(scale) {
-    scale = Math.max(0.5, scaleMinNumber.value, scale);
+    scale = Math.max(0.1, scaleMinNumber.value, scale);
     scale = Math.min(10, scaleMaxNumber.value, scale);
     return scale;
   }

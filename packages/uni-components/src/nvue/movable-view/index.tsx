@@ -247,7 +247,7 @@ function useMovableViewState(
   })
   const scaleMinNumber = computed(() => {
     let val = Number(props.scaleMin)
-    return isNaN(val) ? 0.5 : val
+    return isNaN(val) ? 0.1 : val
   })
   const scaleMaxNumber = computed(() => {
     let val = Number(props.scaleMax)
@@ -558,7 +558,7 @@ function useMovableViewState(
     _oldScale = scale
   }
   function _adjustScale(scale: number) {
-    scale = Math.max(0.5, scaleMinNumber.value, scale)
+    scale = Math.max(0.1, scaleMinNumber.value, scale)
     scale = Math.min(10, scaleMaxNumber.value, scale)
     return scale
   }

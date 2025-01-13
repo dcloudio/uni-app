@@ -3,9 +3,9 @@ import { originalConsole, rewriteConsole, setSendConsole } from './console'
 import { initOnError, setSendError } from './error'
 
 export function initRuntimeSocketService(): Promise<boolean> {
-  const hosts: string = __UNI_SOCKET_HOSTS__
-  const port: string = __UNI_SOCKET_PORT__
-  const id: string = __UNI_SOCKET_ID__
+  const hosts: string = process.env.UNI_SOCKET_HOSTS
+  const port: string = process.env.UNI_SOCKET_PORT
+  const id: string = process.env.UNI_SOCKET_ID
   if (!hosts || !port || !id) return Promise.resolve(false)
   // 百度小程序需要延迟初始化，不然会存在循环引用问题vendor.js
   const lazy = typeof swan !== 'undefined'
@@ -33,6 +33,7 @@ export function initRuntimeSocketService(): Promise<boolean> {
         )
         return false
       }
+      initMiniProgramGlobalFlag()
       socket.onClose(() => {
         if (process.env.UNI_DEBUG) {
           originalConsole.log(
@@ -73,6 +74,33 @@ const ERROR_CHAR = '\u200C'
 
 function wrapError(error: string) {
   return `${ERROR_CHAR}${error}${ERROR_CHAR}`
+}
+
+function initMiniProgramGlobalFlag() {
+  if (typeof wx !== 'undefined') {
+    // @ts-expect-error
+    wx.__uni_console__ = true
+    // @ts-expect-error
+  } else if (typeof my !== 'undefined') {
+    // @ts-expect-error
+    my.__uni_console__ = true
+  } else if (typeof tt !== 'undefined') {
+    tt.__uni_console__ = true
+  } else if (typeof swan !== 'undefined') {
+    swan.__uni_console__ = true
+  } else if (typeof qq !== 'undefined') {
+    qq.__uni_console__ = true
+  } else if (typeof ks !== 'undefined') {
+    ks.__uni_console__ = true
+  } else if (typeof jd !== 'undefined') {
+    jd.__uni_console__ = true
+  } else if (typeof xhs !== 'undefined') {
+    xhs.__uni_console__ = true
+  } else if (typeof has !== 'undefined') {
+    has.__uni_console__ = true
+  } else if (typeof qa !== 'undefined') {
+    qa.__uni_console__ = true
+  }
 }
 
 initRuntimeSocketService()

@@ -17,12 +17,12 @@ import { setStatusBarStyle } from '../../../helpers/statusBar'
 export const redirectTo = defineAsyncApi<API_TYPE_REDIRECT_TO>(
   API_REDIRECT_TO,
   ({ url }, { resolve, reject }) => {
-    const { path, query } = parseUrl(url)
+    const { path, query } = parseUrl(url as string)
     navigate(
       path,
       () => {
         _redirectTo({
-          url,
+          url: url as string,
           path,
           query,
         })

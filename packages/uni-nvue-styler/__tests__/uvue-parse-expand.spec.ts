@@ -41,21 +41,84 @@ describe('test esm expand', () => {
     const val = normalizeStyle('border', '1px solid red')
     expect(val).toEqual([
       {
-        prop: 'border-width',
+        prop: 'border-top-width',
         raws: undefined,
         source: undefined,
         type: 'decl',
         value: '1px',
       },
       {
-        prop: 'border-style',
+        prop: 'border-right-width',
+        raws: undefined,
+        source: undefined,
+        type: 'decl',
+        value: '1px',
+      },
+      {
+        prop: 'border-bottom-width',
+        raws: undefined,
+        source: undefined,
+        type: 'decl',
+        value: '1px',
+      },
+      {
+        prop: 'border-left-width',
+        raws: undefined,
+        source: undefined,
+        type: 'decl',
+        value: '1px',
+      },
+      {
+        prop: 'border-top-style',
         raws: undefined,
         source: undefined,
         type: 'decl',
         value: 'solid',
       },
       {
-        prop: 'border-color',
+        prop: 'border-right-style',
+        raws: undefined,
+        source: undefined,
+        type: 'decl',
+        value: 'solid',
+      },
+      {
+        prop: 'border-bottom-style',
+        raws: undefined,
+        source: undefined,
+        type: 'decl',
+        value: 'solid',
+      },
+      {
+        prop: 'border-left-style',
+        raws: undefined,
+        source: undefined,
+        type: 'decl',
+        value: 'solid',
+      },
+      {
+        prop: 'border-top-color',
+        raws: undefined,
+        source: undefined,
+        type: 'decl',
+        value: 'red',
+      },
+      {
+        prop: 'border-right-color',
+        raws: undefined,
+        source: undefined,
+        type: 'decl',
+        value: 'red',
+      },
+      {
+        prop: 'border-bottom-color',
+        raws: undefined,
+        source: undefined,
+        type: 'decl',
+        value: 'red',
+      },
+      {
+        prop: 'border-left-color',
         raws: undefined,
         source: undefined,
         type: 'decl',
@@ -65,13 +128,7 @@ describe('test esm expand', () => {
   })
 })
 
-const props = [
-  'border',
-  'border-left',
-  'border-right',
-  'border-top',
-  'border-bottom',
-]
+const props = ['border-left', 'border-right', 'border-top', 'border-bottom']
 const expandStyle = normalizeStyle
 
 describe('expandStyle border', () => {

@@ -78,7 +78,9 @@ var index = () => {
                     }
                     return {
                         code: devtoolsCode + code,
-                        map: null,
+                        map: {
+                            mappings: '',
+                        },
                     };
                 },
             };

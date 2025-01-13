@@ -155,6 +155,7 @@ function normalizeGenericValue(value, genericType, isJSONParse = false) {
 class UTSType {
     static get$UTSMetadata$(...args) {
         return {
+            name: '',
             kind: UTS_CLASS_METADATA_KIND.TYPE,
             interfaces: [],
             fields: {},

@@ -9,12 +9,12 @@
  * 1. 用户未勾选的provider不可用
  * 2. provider文件内要依赖uni.api.ets、还要依赖uni-mp-sdk
  */
-interface IStandaloneExtApi {
+interface IExternalModule {
   name: string
-  type: 'extapi' | 'provider'
+  type: 'extapi' | 'provider' | 'component'
 }
 
-export const StandaloneExtApi: IStandaloneExtApi[] = [
+export const ExternalModules: IExternalModule[] = [
   {
     name: 'uni-payment-alipay',
     type: 'provider',
@@ -35,4 +35,19 @@ export const StandaloneExtApi: IStandaloneExtApi[] = [
     name: 'uni-push',
     type: 'extapi',
   },
+  {
+    name: 'uni-verify',
+    type: 'extapi',
+  },
 ]
+
+export const ExternalModulesX = ExternalModules
+
+export const ExtApiBlackListX = [
+  'uni-pullDownRefresh',
+  // 'uni-prompt',
+  // 'uni-media',
+  // 'uni-chooseMedia',
+]
+
+export const ExtApiBlackList = ['uni-loadFontFace', 'uni-getElementById']

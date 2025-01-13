@@ -3,6 +3,7 @@ import path from 'path'
 import type { Plugin } from 'vite'
 import execa from 'execa'
 import { sync } from 'fast-glob'
+import { capitalize } from '@vue/shared'
 
 type Target = 'uni-h5' | 'uni-app-plus'
 
@@ -144,6 +145,13 @@ async function checkExtApiDir(target: Target, name: string) {
   }).forEach((file) => {
     fs.renameSync(file, file + '.ts')
   })
+  sync('**/*.uvue', {
+    absolute: true,
+    cwd: path.resolve(currentExtApiDir, 'pages'),
+  }).forEach((file) => {
+    // 当前 next 仓库编译仅支持 vue 后缀
+    fs.renameSync(file, file.replace('.uvue', '.vue'))
+  })
 
   await checkExtApiTypes(target)
 }
@@ -153,4 +161,53 @@ async function checkExtApiTypes(target: Target) {
     cwd: path.resolve(__dirname, '../packages', target),
     stdio: 'inherit',
   })
+}
+
+export function syncPagesFile() {
+  const systemPagePaths: Record<string, string> = {}
+  const apiDir = process.env.UNI_APP_EXT_API_DIR
+  if (apiDir && fs.existsSync(apiDir)) {
+    const importCodes: string[] = []
+    const registerCodes: string[] = []
+    fs.readdirSync(apiDir).forEach((module) => {
+      const pagesDir = path.resolve(apiDir, module, 'pages')
+      if (fs.existsSync(pagesDir)) {
+        fs.readdirSync(pagesDir).forEach((page) => {
+          if (fs.existsSync(path.resolve(pagesDir, page, page + '.uvue'))) {
+            importCodes.push(
+              `import Uni${capitalize(
+                page
+              )}Page from '@dcloudio/uni-ext-api/${module}/pages/${page}/${page}.vue'`
+            )
+            registerCodes.push(
+              `  registerSystemRoute('uni:${page}', Uni${capitalize(
+                page
+              )}Page, {
+    disableSwipeBack: false,
+  })`
+            )
+            systemPagePaths[
+              `/uni_modules/${module}/pages/${page}/${page}`
+            ] = `uni:${page}`
+          }
+        })
+      }
+    })
+    fs.writeFileSync(
+      path.resolve(
+        path.resolve(__dirname, '..', 'packages', 'uni-app-plus'),
+        'src',
+        'x',
+        'pages.ts'
+      ),
+      `${importCodes.join('\n')}
+import { registerSystemRoute } from './framework/route'
+
+export function registerSystemPages() {
+${registerCodes.join('\n')}
+}
+`
+    )
+  }
+  return systemPagePaths
 }

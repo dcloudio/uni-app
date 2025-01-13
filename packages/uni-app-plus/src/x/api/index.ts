@@ -53,3 +53,5 @@ export {
 } from '../../service/api/plugin/uts'
 // 临时使用 1.0 的日志格式
 export { __log__ } from '../../service/api/plugin/log'
+// uni-console 的 __f__ 方法
+export { __f__ } from '../../../../uni-api/src/service/base/__f__'

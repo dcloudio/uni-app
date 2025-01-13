@@ -5,16 +5,16 @@
         "android": {
           "osVer": "5.0",
           "uniVer": "x",
-          "uniUtsPlugin": "4.42",
-          "unixVer": "4.42",
-          "unixUtsPlugin": "4.42"
+          "uniUtsPlugin": "4.41",
+          "unixVer": "4.41",
+          "unixUtsPlugin": "4.41"
         },
         "ios": {
           "osVer": "12.0",
           "uniVer": "x",
-          "uniUtsPlugin": "4.42",
-          "unixVer": "4.42",
-          "unixUtsPlugin": "4.42"
+          "uniUtsPlugin": "4.41",
+          "unixVer": "4.41",
+          "unixUtsPlugin": "4.41"
         }
       },
       "web": {
@@ -34,16 +34,16 @@ type UTSIteratorResult<T> = {
         "android": {
           "osVer": "5.0",
           "uniVer": "x",
-          "uniUtsPlugin": "4.42",
-          "unixVer": "4.42",
-          "unixUtsPlugin": "4.42"
+          "uniUtsPlugin": "4.41",
+          "unixVer": "4.41",
+          "unixUtsPlugin": "4.41"
         },
         "ios": {
           "osVer": "12.0",
           "uniVer": "x",
-          "uniUtsPlugin": "4.42",
-          "unixVer": "4.42",
-          "unixUtsPlugin": "4.42"
+          "uniUtsPlugin": "4.41",
+          "unixVer": "4.41",
+          "unixUtsPlugin": "4.41"
         }
       },
       "web": {
@@ -63,16 +63,16 @@ type UTSIterator<T> = {
         "android": {
           "osVer": "5.0",
           "uniVer": "x",
-          "uniUtsPlugin": "4.42",
-          "unixVer": "4.42",
-          "unixUtsPlugin": "4.42"
+          "uniUtsPlugin": "4.41",
+          "unixVer": "4.41",
+          "unixUtsPlugin": "4.41"
         },
         "ios": {
           "osVer": "12.0",
           "uniVer": "x",
-          "uniUtsPlugin": "4.42",
-          "unixVer": "4.42",
-          "unixUtsPlugin": "4.42"
+          "uniUtsPlugin": "4.41",
+          "unixVer": "4.41",
+          "unixUtsPlugin": "4.41"
         }
       },
       "web": {
@@ -91,16 +91,16 @@ interface UTSValueIterable<T> {
         "android": {
           "osVer": "5.0",
           "uniVer": "x",
-          "uniUtsPlugin": "4.42",
-          "unixVer": "4.42",
-          "unixUtsPlugin": "4.42"
+          "uniUtsPlugin": "4.41",
+          "unixVer": "4.41",
+          "unixUtsPlugin": "4.41"
         },
         "ios": {
           "osVer": "12.0",
           "uniVer": "x",
-          "uniUtsPlugin": "4.42",
-          "unixVer": "4.42",
-          "unixUtsPlugin": "4.42"
+          "uniUtsPlugin": "4.41",
+          "unixVer": "4.41",
+          "unixUtsPlugin": "4.41"
         }
       },
       "web": {

@@ -9436,7 +9436,9 @@ const $off = defineSyncApi(API_OFF, (name, callback) => {
     // 类型中不再体现 name 支持 string[] 类型, 仅在 uni.$off 保留该逻辑向下兼容
     if (!isArray(name))
         name = name ? [name] : [];
-    name.forEach((n) => eventBus.off(n, callback));
+    name.forEach((n) => {
+        eventBus.off(n, callback);
+    });
 }, OffProtocol);
 const $emit = defineSyncApi(API_EMIT, (name, ...args) => {
     eventBus.emit(name, ...args);
@@ -16267,7 +16269,7 @@ const createLivePusherContext = defineSyncApi(API_CREATE_LIVE_PUSHER_CONTEXT, (i
     return new LivePusherContextVue(id, vm.$page.id);
 }, CreateLivePusherContextProtocol);
 
-/*! *****************************************************************************
+/******************************************************************************
 Copyright (c) Microsoft Corporation.
 
 Permission to use, copy, modify, and/or distribute this software for any
@@ -16281,7 +16283,7 @@ LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR
 OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
 PERFORMANCE OF THIS SOFTWARE.
 ***************************************************************************** */
-/* global Reflect, Promise */
+/* global Reflect, Promise, SuppressedError, Symbol, Iterator */
 
 
 function __awaiter(thisArg, _arguments, P, generator) {
@@ -16290,9 +16292,14 @@ function __awaiter(thisArg, _arguments, P, generator) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
         function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
         function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, [])).next());
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 }
+
+typeof SuppressedError === "function" ? SuppressedError : function (error, suppressed, message) {
+    var e = new Error(message);
+    return e.name = "SuppressedError", e.error = error, e.suppressed = suppressed, e;
+};
 
 const PI = 3.1415926535897932384626;
 const a = 6378245.0;
@@ -18455,7 +18462,7 @@ function invokePropGetter(args) {
 function initProxyFunction(type, async, { moduleName, moduleType, package: pkg, class: cls, name: methodName, method, companion, keepAlive, params: methodParams, return: returnOptions, errMsg, }, instanceId, proxy) {
     if (!keepAlive) {
         keepAlive =
-            methodName.indexOf('on') === 0 &&
+            (methodName.indexOf('on') === 0 || methodName.indexOf('off') === 0) &&
                 methodParams.length === 1 &&
                 methodParams[0].type === 'UTSCallback';
     }

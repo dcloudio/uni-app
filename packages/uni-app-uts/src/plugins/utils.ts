@@ -1,5 +1,6 @@
 import path from 'node:path'
 import {
+  isAppHarmonyUVueNativeTag,
   isAppIOSUVueNativeTag,
   isAppUVueBuiltInEasyComponent,
 } from '@dcloudio/uni-shared'
@@ -23,11 +24,10 @@ import type { ResolvedConfig } from 'vite'
 import { ElementTypes, NodeTypes } from '@vue/compiler-core'
 
 export function createUniOptions(
-  platform: 'android' | 'ios'
+  platform: 'app-android' | 'app-ios' | 'app-harmony'
 ): UniVitePlugin['uni'] {
   return {
     copyOptions() {
-      const platform = process.env.UNI_PLATFORM
       const inputDir = process.env.UNI_INPUT_DIR
       const outputDir = process.env.UNI_OUTPUT_DIR
       const targets: UniViteCopyPluginOptions['targets'] = []
@@ -38,7 +38,12 @@ export function createUniOptions(
             src: 'androidPrivacy.json',
             dest: outputDir,
             transform(source) {
-              const options = initI18nOptions(platform, inputDir, false, true)
+              const options = initI18nOptions(
+                process.env.UNI_PLATFORM,
+                inputDir,
+                false,
+                true
+              )
               if (!options) {
                 return
               }
@@ -53,10 +58,15 @@ export function createUniOptions(
       }
     },
     compilerOptions:
-      platform === 'ios'
+      platform === 'app-ios' || platform === 'app-harmony'
         ? {
             isNativeTag(tag) {
-              return matchUTSComponent(tag) || isAppIOSUVueNativeTag(tag)
+              return (
+                matchUTSComponent(tag) ||
+                (platform === 'app-ios'
+                  ? isAppIOSUVueNativeTag
+                  : isAppHarmonyUVueNativeTag)(tag)
+              )
             },
             nodeTransforms: [
               transformTapToClick,
@@ -127,10 +137,13 @@ const REMOVED_PLUGINS = [
   'vite:dynamic-import-vars',
   'vite:import-glob',
   'vite:build-import-analysis',
-  'vite:esbuild-transpile',
   'vite:terser',
   'vite:reporter',
 ]
+
+if (process.env.UNI_UTS_PLATFORM === 'app-android') {
+  REMOVED_PLUGINS.push('vite:esbuild-transpile')
+}
 
 export function configResolved(config: ResolvedConfig, isAndroidX = false) {
   removePlugins(REMOVED_PLUGINS.slice(0), config)

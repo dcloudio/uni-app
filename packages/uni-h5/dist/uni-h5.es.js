@@ -2469,7 +2469,7 @@ function normalizePageMeta(pageMeta) {
       pageMeta.pullToRefresh = pullToRefresh;
     }
   }
-  if (__UNI_FEATURE_NAVIGATIONBAR__) {
+  if (__UNI_FEATURE_NAVIGATIONBAR__ || __UNI_FEATURE_I18N_LOCALE__) {
     const { navigationBar } = pageMeta;
     const { titleSize, titleColor, backgroundColor } = navigationBar;
     navigationBar.titleText = navigationBar.titleText || "";
@@ -3365,7 +3365,9 @@ const $off = /* @__PURE__ */ defineSyncApi(
   (name, callback) => {
     if (!isArray(name))
       name = name ? [name] : [];
-    name.forEach((n) => eventBus.off(n, callback));
+    name.forEach((n) => {
+      eventBus.off(n, callback);
+    });
   },
   OffProtocol
 );
@@ -7471,7 +7473,7 @@ function getNodeInfo(el, fields2) {
   const info = {};
   const { top, topWindowHeight } = getWindowOffset();
   if (fields2.node) {
-    const tagName = el.tagName.split("-")[1];
+    const tagName = el.tagName.split("-")[1] || el.tagName;
     if (tagName) {
       info.node = el.querySelector(tagName);
     }
@@ -11369,7 +11371,7 @@ const movableViewProps = {
   },
   scaleMin: {
     type: [Number, String],
-    default: 0.5
+    default: 0.1
   },
   scaleMax: {
     type: [Number, String],
@@ -11710,7 +11712,7 @@ function useMovableViewTransform(rootRef, props2, _scaleOffset, _scale, maxX, ma
 function useMovableViewInit(props2, rootRef, trigger, _scale, _oldScale, _isScaling, _translateX, _translateY, _SFA, _FA) {
   const scaleMinNumber = computed(() => {
     let val = Number(props2.scaleMin);
-    return isNaN(val) ? 0.5 : val;
+    return isNaN(val) ? 0.1 : val;
   });
   const scaleMaxNumber = computed(() => {
     let val = Number(props2.scaleMax);
@@ -11776,7 +11778,7 @@ function useMovableViewInit(props2, rootRef, trigger, _scale, _oldScale, _isScal
     _oldScale.value = scale;
   }
   function _adjustScale(scale) {
-    scale = Math.max(0.5, scaleMinNumber.value, scale);
+    scale = Math.max(0.1, scaleMinNumber.value, scale);
     scale = Math.min(10, scaleMaxNumber.value, scale);
     return scale;
   }
@@ -26169,7 +26171,7 @@ function createPageRefreshTsx(refreshRef, pageMeta) {
 const index = /* @__PURE__ */ defineSystemComponent({
   name: "Page",
   setup(_props, ctx) {
-    const pageMeta = providePageMeta(getStateId());
+    let pageMeta = providePageMeta(getStateId());
     const navigationBar = pageMeta.navigationBar;
     const pageStyle = {};
     useDocumentTitle(pageMeta);

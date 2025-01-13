@@ -627,7 +627,9 @@ const $off = defineSyncApi(API_OFF, (name, callback) => {
     // 类型中不再体现 name 支持 string[] 类型, 仅在 uni.$off 保留该逻辑向下兼容
     if (!isArray(name))
         name = name ? [name] : [];
-    name.forEach((n) => eventBus.off(n, callback));
+    name.forEach((n) => {
+        eventBus.off(n, callback);
+    });
 }, OffProtocol);
 const $emit = defineSyncApi(API_EMIT, (name, ...args) => {
     eventBus.emit(name, ...args);
@@ -847,27 +849,27 @@ function initWrapper(protocols) {
         return processArgs(methodName, res, returnValue, {}, realKeepReturnValue);
     }
     return function wrapper(methodName, method) {
-        if ((isContextApi(methodName) || isTaskApi(methodName)) && method) {
-            const oldMethod = method;
-            method = function (...args) {
-                const contextOrTask = oldMethod.apply(this, args);
-                if (contextOrTask) {
-                    contextOrTask.__v_skip = true;
-                }
-                return contextOrTask;
-            };
-        }
-        if ((!hasOwn(protocols, methodName) && !isFunction(protocols.returnValue)) ||
-            !isFunction(method)) {
-            return method;
-        }
-        const protocol = protocols[methodName];
-        if (!protocol && !isFunction(protocols.returnValue)) {
+        /**
+         * 注意：
+         * - 此处method为原始全局对象上的uni方法名对应的属性值，比如method值可能为my.login，即undefined
+         * - uni.env并非方法，但是也会被传入wrapper
+         */
+        const hasProtocol = hasOwn(protocols, methodName);
+        const needWrapper = hasProtocol ||
+            isFunction(protocols.returnValue) ||
+            isContextApi(methodName) ||
+            isTaskApi(methodName);
+        const hasMethod = hasProtocol || isFunction(method);
+        if (!hasProtocol && !method) {
             // 暂不支持的 api
             return function () {
                 console.error(`微信小程序 暂不支持${methodName}`);
             };
         }
+        if (!needWrapper || !hasMethod) {
+            return method;
+        }
+        const protocol = protocols[methodName];
         return function (arg1, arg2) {
             // 目前 api 最多两个参数
             let options = protocol || {};
@@ -1229,6 +1231,19 @@ const offError = {
     },
 };
 
+const onSocketOpen = {
+    args() {
+        if (wx.__uni_console__) {
+            if (wx.__uni_console_warned__) {
+                return;
+            }
+            wx.__uni_console_warned__ = true;
+            console.warn(`开发模式下小程序日志回显会使用 socket 连接，为了避免冲突，建议使用 SocketTask 的方式去管理 WebSocket 或手动关闭日志回显功能。[详情](https://uniapp.dcloud.net.cn/tutorial/run/mp-log.html)`);
+        }
+    },
+};
+const onSocketMessage = onSocketOpen;
+
 const baseApis = {
     $on,
     $off,
@@ -1355,11 +1370,24 @@ function createSelectorQuery() {
     const query = wx$2.createSelectorQuery();
     const oldIn = query.in;
     query.in = function newIn(component) {
+        if (component.$scope) {
+            // fix skyline 微信小程序内部无法读取component导致报错
+            return oldIn.call(this, component.$scope);
+        }
         return oldIn.call(this, initComponentMocks(component));
     };
     return query;
 }
 const wx$2 = initWx();
+if (!wx$2.canIUse('getAppBaseInfo')) {
+    wx$2.getAppBaseInfo = wx$2.getSystemInfoSync;
+}
+if (!wx$2.canIUse('getWindowInfo')) {
+    wx$2.getWindowInfo = wx$2.getSystemInfoSync;
+}
+if (!wx$2.canIUse('getDeviceInfo')) {
+    wx$2.getDeviceInfo = wx$2.getSystemInfoSync;
+}
 let baseInfo = wx$2.getAppBaseInfo && wx$2.getAppBaseInfo();
 if (!baseInfo) {
     baseInfo = wx$2.getSystemInfoSync();
@@ -1403,6 +1431,8 @@ var protocols = /*#__PURE__*/Object.freeze({
   getWindowInfo: getWindowInfo,
   offError: offError,
   onError: onError,
+  onSocketMessage: onSocketMessage,
+  onSocketOpen: onSocketOpen,
   previewImage: previewImage,
   redirectTo: redirectTo,
   showActionSheet: showActionSheet

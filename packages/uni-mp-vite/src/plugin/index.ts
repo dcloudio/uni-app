@@ -143,7 +143,9 @@ export function uniMiniProgramPlugin(
     }),
     config() {
       return {
-        base: '/', // 小程序平台强制 base
+        base: process.env.UNI_SUBPACKAGE
+          ? '/' + process.env.UNI_SUBPACKAGE + '/'
+          : '/', // 编译为分包时以分包名为基础路径
         resolve: {
           alias: {
             vue: resolveBuiltIn(
@@ -193,6 +195,7 @@ export function uniMiniProgramPlugin(
             autoImportFilterEmitted = true
             this.emitFile({
               type: 'asset',
+              // uniView.wxs文件在分包内的引用路径不对
               fileName: `common/uniView${extname}`,
               source: fs.readFileSync(
                 path.resolve(__dirname, '../../lib/filters/uniView.js'),

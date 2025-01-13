@@ -14,7 +14,11 @@ import {
   isUserComponent,
 } from '@dcloudio/uni-cli-shared'
 import type { TransformContext } from '../transform'
-import { SET_UNI_ELEMENT_ID, SET_UNI_ELEMENT_STYLE } from '../runtimeHelpers'
+import {
+  GEN_UNI_ELEMENT_ID,
+  SET_UNI_ELEMENT_ID,
+  SET_UNI_ELEMENT_STYLE,
+} from '../runtimeHelpers'
 import {
   ATTR_ELEMENT_ID,
   ATTR_ELEMENT_TAG,
@@ -31,8 +35,11 @@ import { parseRefCode } from './transformRef'
 import { SetUniElementIdTagType } from '@dcloudio/uni-shared'
 import { isString } from '@vue/shared'
 import {
+  type Expression,
   binaryExpression,
   conditionalExpression,
+  isCallExpression,
+  isIdentifier,
   stringLiteral,
 } from '@babel/types'
 import { parseExpr } from '../ast'
@@ -87,7 +94,7 @@ export function rewriteId(node: ElementNode, context: TransformContext) {
     const idPropIndex = node.props.indexOf(idProp)
     node.props.splice(idPropIndex, 1)
     if (idProp.exp) {
-      const originalId = parseExpr(idProp.exp, context)!
+      let idBindingExpr = parseExpr(idProp.exp, context)! as Expression
       let genId = ''
       if (context.inVFor) {
         // v-for 中的 ref 需要使用 v-for 的 key 作为 id
@@ -103,18 +110,26 @@ export function rewriteId(node: ElementNode, context: TransformContext) {
       } else {
         genId = 'r' + context.elementRefIndex++ + '-' + context.hashId
       }
+
+      // TODO context.helperString能否避免调用?
+      if (
+        isCallExpression(idBindingExpr) &&
+        isIdentifier(idBindingExpr.callee) &&
+        idBindingExpr.callee.name === context.helperString(GEN_UNI_ELEMENT_ID)
+      ) {
+        // 如果调用的是genUniElementId，则直接传入自动生成的id作为第三个参数。此特性用于减小生成代码体积
+        idBindingExpr.arguments.push(stringLiteral(genId))
+      } else {
+        idBindingExpr = conditionalExpression(
+          binaryExpression('!==', idBindingExpr, stringLiteral('')),
+          idBindingExpr,
+          stringLiteral(genId)
+        )
+      }
       node.props.push(
         createBindDirectiveNode(
           'id',
-          createSimpleExpression(
-            genBabelExpr(
-              conditionalExpression(
-                binaryExpression('!==', originalId, stringLiteral('')),
-                originalId,
-                stringLiteral(genId)
-              )
-            )
-          )
+          createSimpleExpression(genBabelExpr(idBindingExpr))
         )
       )
     }

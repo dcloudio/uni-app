@@ -1,4 +1,7 @@
 import { type NormalizeOptions, type TransformDecl, createDecl } from '../utils'
+import { transformBorderColor } from './borderColor'
+import { transformBorderStyle } from './borderStyle'
+import { transformBorderWidth } from './borderWidth'
 
 const borderWidth = __NODE_JS__ ? '-width' : 'Width'
 const borderStyle = __NODE_JS__ ? '-style' : 'Style'
@@ -31,28 +34,61 @@ export function createTransformBorder(
       }
     }
 
-    return [
-      createDecl(
-        prop + borderWidth,
-        (result[0] || (options.type === 'uvue' ? 'medium' : '0')).trim(),
-        important,
-        raws,
-        source
-      ),
-      createDecl(
-        prop + borderStyle,
-        (result[1] || (options.type === 'uvue' ? 'none' : 'solid')).trim(),
-        important,
-        raws,
-        source
-      ),
-      createDecl(
-        prop + borderColor,
-        (result[2] || '#000000').trim(),
-        important,
-        raws,
-        source
-      ),
-    ]
+    if (isUvuePlatform) {
+      return [
+        ...transformBorderWidth(
+          createDecl(
+            prop + borderWidth,
+            (result[0] || (options.type === 'uvue' ? 'medium' : '0')).trim(),
+            important,
+            raws,
+            source
+          )
+        ),
+        ...transformBorderStyle(
+          createDecl(
+            prop + borderStyle,
+            (result[1] || (options.type === 'uvue' ? 'none' : 'solid')).trim(),
+            important,
+            raws,
+            source
+          )
+        ),
+        ...transformBorderColor(
+          createDecl(
+            prop + borderColor,
+            (result[2] || '#000000').trim(),
+            important,
+            raws,
+            source
+          )
+        ),
+      ]
+    } else {
+      // nvue 维持不变
+      return [
+        createDecl(
+          prop + borderWidth,
+          (result[0] || (options.type === 'uvue' ? 'medium' : '0')).trim(),
+          important,
+          raws,
+          source
+        ),
+        createDecl(
+          prop + borderStyle,
+          (result[1] || (options.type === 'uvue' ? 'none' : 'solid')).trim(),
+          important,
+          raws,
+          source
+        ),
+        createDecl(
+          prop + borderColor,
+          (result[2] || '#000000').trim(),
+          important,
+          raws,
+          source
+        ),
+      ]
+    }
   }
 }

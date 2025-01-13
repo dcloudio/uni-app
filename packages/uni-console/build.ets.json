@@ -1,0 +1,24 @@
+[
+  {
+    "input": {
+      "src/runtime/ets.ts": "dist/uni-console.ets"
+    },
+    "autoImports": {
+      "@dcloudio/uni-app-harmony": [
+        [
+          "IUTSObject"
+        ],
+        [
+          "UTSObject"
+        ],
+        [
+          "UTSJSONObject"
+        ]
+      ]
+    },
+    "replacements": {
+      "__HARMONY__": "true",
+      "__DEV__": "false"
+    }
+  }
+]

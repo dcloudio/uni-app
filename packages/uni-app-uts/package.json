@@ -21,6 +21,7 @@
     "@babel/parser": "^7.23.9",
     "@babel/types": "^7.20.7",
     "@dcloudio/uni-cli-shared": "workspace:*",
+    "@dcloudio/uni-console": "workspace:*",
     "@dcloudio/uni-i18n": "workspace:*",
     "@dcloudio/uni-nvue-styler": "workspace:*",
     "@dcloudio/uni-shared": "workspace:*",

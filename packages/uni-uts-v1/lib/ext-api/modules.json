@@ -1,4 +1,26 @@
 {
+  "uni-actionSheet": {
+    "uni": {
+      "showActionSheet": {
+        "name": "showActionSheet",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true,
+          "arkts": false
+        }
+      },
+      "hideActionSheet": {
+        "name": "hideActionSheet",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true,
+          "arkts": false
+        }
+      }
+    }
+  },
   "uni-ad": {
     "uni": {
       "createRewardedVideoAd": {
@@ -24,6 +46,32 @@
       "ad"
     ]
   },
+  "uni-arrayBufferToBase64": {
+    "uni": {
+      "arrayBufferToBase64": {
+        "name": "arrayBufferToBase64",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": false,
+          "arkts": false
+        }
+      }
+    }
+  },
+  "uni-base64ToArrayBuffer": {
+    "uni": {
+      "base64ToArrayBuffer": {
+        "name": "base64ToArrayBuffer",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": false,
+          "arkts": false
+        }
+      }
+    }
+  },
   "uni-canvas": {
     "uni": {
       "createCanvasContextAsync": {
@@ -47,6 +95,19 @@
           "kotlin": true,
           "swift": true,
           "arkts": false
+        }
+      }
+    }
+  },
+  "uni-chooseMedia": {
+    "uni": {
+      "chooseMedia": {
+        "name": "chooseMedia",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true,
+          "arkts": true
         }
       }
     }
@@ -303,7 +364,7 @@
           "x-js": false,
           "kotlin": false,
           "swift": true,
-          "arkts": false
+          "arkts": true
         }
       }
     }
@@ -555,16 +616,7 @@
         "name": "chooseFile",
         "app": {
           "js": false,
-          "kotlin": false,
-          "swift": false,
-          "arkts": true
-        }
-      },
-      "chooseMedia": {
-        "name": "chooseMedia",
-        "app": {
-          "js": false,
-          "kotlin": false,
+          "kotlin": true,
           "swift": false,
           "arkts": true
         }
@@ -820,6 +872,19 @@
       }
     }
   },
+  "uni-secure-network": {
+    "uni": {
+      "__getSecureNetworkManager": {
+        "name": "__getSecureNetworkManager",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true,
+          "arkts": false
+        }
+      }
+    }
+  },
   "uni-shareWithSystem": {
     "uni": {
       "shareWithSystem": {
@@ -970,7 +1035,7 @@
         }
       },
       "onThemeChange": {
-        "name": "offAppThemeChange",
+        "name": "onThemeChange",
         "app": {
           "js": true,
           "x-js": true,
@@ -981,7 +1046,7 @@
         }
       },
       "offThemeChange": {
-        "name": "offAppThemeChange",
+        "name": "offThemeChange",
         "app": {
           "js": true,
           "x-js": true,
@@ -992,23 +1057,23 @@
         }
       },
       "onHostThemeChange": {
-        "name": "offAppThemeChange",
+        "name": "onHostThemeChange",
         "app": {
           "js": false,
           "x-js": true,
-          "kotlin": false,
-          "swift": false,
+          "kotlin": true,
+          "swift": true,
           "arkts": false,
           "mp-weixin": true
         }
       },
       "offHostThemeChange": {
-        "name": "offAppThemeChange",
+        "name": "offHostThemeChange",
         "app": {
           "js": false,
           "x-js": true,
-          "kotlin": false,
-          "swift": false,
+          "kotlin": true,
+          "swift": true,
           "arkts": false,
           "mp-weixin": true
         }
@@ -1022,7 +1087,17 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": true
+          "swift": true,
+          "arkts": true
+        }
+      },
+      "getUniVerifyManager": {
+        "name": "getUniVerifyManager",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true,
+          "arkts": true
         }
       }
     }

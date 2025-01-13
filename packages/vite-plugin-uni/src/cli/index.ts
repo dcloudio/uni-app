@@ -37,7 +37,7 @@ export interface CliOptions {
   devtoolsPort?: number
 
   subpackage?: string
-  plugin?: boolean
+  plugin?: string
 }
 
 cli
@@ -65,7 +65,7 @@ cli
   .option('--devtoolsHost [devtoolsHost]', `[string] specify devtools hostname`)
   .option('--devtoolsPort [devtoolsPort]', `[number] specify devtools port`)
   .option('--subpackage [subpackage]', `[string] specify subpackage to build`)
-  .option('--plugin', `[boolean] build plugin`)
+  .option('--plugin [plugin]', `[string] specify plugin to build`)
 
 cli
   .command('')

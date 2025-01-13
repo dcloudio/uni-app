@@ -449,7 +449,7 @@ interface UTSAndroid {
 
   /**
      获取对象的jvm class实例
-     @param input 任意不为空对象
+     @param input 任意不为空对象，如果传入一个Class类型，则返回该Class对应的jvm class实例
      @return 传入对象所对应的class实例
      @tutorial https://uniapp.dcloud.net.cn/uts/UTSAndroid.html#getJavaClass
      @uniPlatform {

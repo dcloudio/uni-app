@@ -3,6 +3,7 @@ import {
   type ComponentPublicInstance,
   onBeforeUnmount,
   onMounted,
+  ref,
 } from 'vue'
 import { OPEN_DIALOG_PAGE } from '../../constants'
 import {
@@ -13,8 +14,11 @@ import { addCurrentPageWithInitScope } from '../../../service/framework/page/set
 import { getPage$BasePage } from '../../../service/framework/page/getCurrentPages'
 import {
   getCurrentNormalDialogPage,
+  getCurrentSystemDialogPage,
   setCurrentNormalDialogPage,
+  setCurrentSystemDialogPage,
 } from './dialogPage'
+import type { UniDialogPage } from '@dcloudio/uni-app-x/types/UniPage'
 
 export function setupXPage(
   instance: ComponentInternalInstance,
@@ -23,15 +27,14 @@ export function setupXPage(
   pageId: number,
   pagePath: string
 ) {
-  instance.$dialogPages = []
+  instance.$dialogPages = ref<UniDialogPage[]>([])
   let uniPage: UniPage
   if (
     (pageInstance as Page.PageInstance['$page']).openType === OPEN_DIALOG_PAGE
   ) {
-    const currentPage = getCurrentPage() as unknown as UniPage
     if ((pagePath as string).startsWith(SYSTEM_DIALOG_PAGE_PATH_STARTER)) {
-      const systemDialogPages = currentPage.vm.$systemDialogPages
-      uniPage = systemDialogPages[systemDialogPages.length - 1]
+      uniPage = getCurrentSystemDialogPage()!
+      setCurrentSystemDialogPage(null)
     } else {
       uniPage = getCurrentNormalDialogPage()!
       setCurrentNormalDialogPage(null)
@@ -79,32 +82,6 @@ export function setupXPage(
   })
   uniPage.vm = pageVm
   uniPage.$vm = pageVm
-  uniPage.getParentPage = () => {
-    // @ts-expect-error
-    const parentPage = uniPage.getParentPageByJS()
-    return parentPage || null
-  }
-
-  uniPage.getPageStyle = (): UTSJSONObject => {
-    // @ts-expect-error
-    const pageStyle = uniPage.getPageStyleByJS()
-    return new UTSJSONObject(pageStyle)
-  }
-  uniPage.$getPageStyle = (): UTSJSONObject => {
-    return uniPage.getPageStyle()
-  }
-
-  uniPage.setPageStyle = (styles: UTSJSONObject) => {
-    // @ts-expect-error
-    uniPage.setPageStyleByJS(styles)
-  }
-  uniPage.$setPageStyle = (styles: UTSJSONObject) => {
-    uniPage.setPageStyle(styles)
-  }
-
-  uniPage.getAndroidView = () => null
-  uniPage.getIOSView = () => null
-  uniPage.getHTMLElement = () => null
 
   if (getPage$BasePage(pageVm).openType !== OPEN_DIALOG_PAGE) {
     addCurrentPageWithInitScope(

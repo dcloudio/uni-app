@@ -77,20 +77,16 @@ function initBaseInstance(instance, options) {
     ctx.mpType = options.mpType; // @deprecated
     ctx.$mpType = options.mpType;
     ctx.$mpPlatform = "mp-alipay";
-    ctx.$scope = options.mpInstance;
-    {
-        // mergeVirtualHostAttributes
-        Object.defineProperties(ctx, {
-            // only id
-            [VIRTUAL_HOST_ID]: {
-                get() {
-                    const id = this.$scope.data[VIRTUAL_HOST_ID];
-                    // props in page can be undefined
-                    return id === undefined ? '' : id;
-                },
+    const $scope = (ctx.$scope = options.mpInstance);
+    // mergeVirtualHostAttributes
+    Object.defineProperties(ctx, {
+        // only id
+        [VIRTUAL_HOST_ID]: {
+            get() {
+                return $scope.data[VIRTUAL_HOST_ID];
             },
-        });
-    }
+        },
+    });
     // TODO @deprecated
     ctx.$mp = {};
     if (__VUE_OPTIONS_API__) {

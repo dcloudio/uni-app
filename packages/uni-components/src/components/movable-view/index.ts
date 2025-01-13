@@ -40,7 +40,7 @@ export const movableViewProps = {
   },
   scaleMin: {
     type: [Number, String],
-    default: 0.5,
+    default: 0.1,
   },
   scaleMax: {
     type: [Number, String],

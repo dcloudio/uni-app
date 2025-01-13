@@ -1,6 +1,13 @@
 /// <reference types="@dcloudio/uni-app-x/types/native-global" />
 import { defineBuiltInComponent } from '@dcloudio/uni-components'
-import { onMounted, getCurrentInstance, watch, computed, ref, Ref } from 'vue'
+import {
+  type Ref,
+  computed,
+  getCurrentInstance,
+  onMounted,
+  ref,
+  watch,
+} from 'vue'
 
 const SLIDER_TRACK_HEIGHT = 2
 const SLIDER_THUMB_SHADOW = 4
@@ -9,31 +16,34 @@ const SLIDER_VALUE_FONT_SIZE = 14
 const SLIDER_BLOCK_SIZE_MIN_VALUE = 12
 const SLIDER_BLOCK_SIZE_MAX_VALUE = 28
 
-export class UniSliderElement extends UniFormControlElement<number> {
-  _initialValue: number = 0
-  _value: number = 0
+export const UniSliderElement = /* @__PURE__ */ (() =>
+  class extends UniFormControlElement<number> {
+    _initialValue: number = 0
+    _value: number = 0
 
-  constructor(data: INodeData, pageNode: PageNode) {
-    super(data, pageNode)
-  }
-
-  get value(): number {
-    return this._value
-  }
-  set value(value: number) {
-    if (this._value == value) {
-      return
+    constructor(data: INodeData, pageNode: PageNode) {
+      super(data, pageNode)
     }
-    this._value = value
-    this.onValueChanged(value)
-  }
 
-  reset() {
-    this.value = this._initialValue
-  }
+    get value(): number {
+      return this._value
+    }
+    set value(value: number) {
+      if (this._value == value) {
+        return
+      }
+      this._value = value
+      this.onValueChanged(value)
+    }
 
-  onValueChanged = (value: number) => {}
-}
+    reset() {
+      this.value = this._initialValue
+    }
+
+    onValueChanged = (value: number) => {}
+  })()
+
+export type UniSliderElement = InstanceType<typeof UniSliderElement>
 
 class SliderChangeEventDetail {
   value: number = 0
@@ -42,13 +52,16 @@ class SliderChangeEventDetail {
   }
 }
 
-export class SliderChangeEvent extends CustomEvent<SliderChangeEventDetail> {
-  constructor(value: number) {
-    super('change', {
-      detail: new SliderChangeEventDetail(value),
-    } as CustomEventOptions<SliderChangeEventDetail>)
-  }
-}
+export const SliderChangeEvent = /* @__PURE__ */ (() =>
+  class extends CustomEvent<SliderChangeEventDetail> {
+    constructor(value: number) {
+      super('change', {
+        detail: new SliderChangeEventDetail(value),
+      } as CustomEventOptions<SliderChangeEventDetail>)
+    }
+  })()
+
+export type SliderChangeEvent = InstanceType<typeof SliderChangeEvent>
 
 export default /*#__PURE__*/ defineBuiltInComponent({
   name: 'Slider',

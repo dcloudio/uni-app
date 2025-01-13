@@ -5495,9 +5495,11 @@ function getCreateApp() {
     if (typeof global !== 'undefined' &&
         typeof global[method] !== 'undefined') {
         return global[method];
+        // @ts-expect-error
     }
     else if (typeof my !== 'undefined') {
         // 支付宝小程序开启globalObjectMode配置后才会有global
+        // @ts-expect-error
         return my[method];
     }
 }
@@ -5792,6 +5794,24 @@ function withModelModifiers(fn, { number, trim }, isComponent = false) {
     };
 }
 
+function hasIdProp(_ctx) {
+    return (_ctx.$.propsOptions &&
+        _ctx.$.propsOptions[0] &&
+        'id' in _ctx.$.propsOptions[0]);
+}
+function hasVirtualHostId(_ctx) {
+    return _ctx.$scope.virtualHostId !== '';
+}
+function genIdWithVirtualHost(_ctx, idBinding) {
+    if (!hasVirtualHostId(_ctx) || hasIdProp(_ctx)) {
+        return idBinding;
+    }
+    return _ctx.virtualHostId;
+}
+function genUniElementId(_ctx, idBinding, genId) {
+    return genIdWithVirtualHost(_ctx, idBinding) || genId || '';
+}
+
 function setupDevtoolsPlugin() {
     // noop
 }
@@ -5811,6 +5831,7 @@ const p = (props) => renderProps(props);
 const sr = (ref, id, opts) => setRef(ref, id, opts);
 const m = (fn, modifiers, isComponent = false) => withModelModifiers(fn, modifiers, isComponent);
 const j = (obj) => JSON.stringify(obj);
+const gei = genUniElementId;
 
 function createApp(rootComponent, rootProps = null) {
     rootComponent && (rootComponent.mpType = 'app');
@@ -5818,4 +5839,4 @@ function createApp(rootComponent, rootProps = null) {
 }
 const createSSRApp = createApp;
 
-export { EffectScope, Fragment, ReactiveEffect, Text, c, callWithAsyncErrorHandling, callWithErrorHandling, computed, createApp, createPropsRestProxy, createSSRApp, createVNode, createVueApp, customRef, d, defineAsyncComponent, defineComponent, defineEmits, defineExpose, defineProps, devtoolsComponentAdded, devtoolsComponentRemoved, devtoolsComponentUpdated, diff, e, effect, effectScope, f, findComponentPropsData, getCurrentInstance, getCurrentScope, getExposeProxy, guardReactiveProps, h, hasInjectionContext, hasQueueJob, inject, injectHook, invalidateJob, isInSSRComponentSetup, isProxy, isReactive, isReadonly, isRef, isShallow, j, logError, m, markRaw, mergeDefaults, mergeModels, mergeProps, n, nextTick$1 as nextTick, o, onActivated, onBeforeMount, onBeforeUnmount, onBeforeUpdate, onDeactivated, onErrorCaptured, onMounted, onRenderTracked, onRenderTriggered, onScopeDispose, onServerPrefetch, onUnmounted, onUpdated, p, patch, provide, proxyRefs, pruneComponentPropsCache, queuePostFlushCb, r, reactive, readonly, ref, resolveComponent, resolveDirective, resolveFilter, s, setCurrentRenderingInstance, setTemplateRef, setupDevtoolsPlugin, shallowReactive, shallowReadonly, shallowRef, sr, stop, t, toHandlers, toRaw, toRef, toRefs, toValue, triggerRef, unref, updateProps, useAttrs, useCssModule, useCssVars, useModel, useSSRContext, useSlots, version, w, warn, watch, watchEffect, watchPostEffect, watchSyncEffect, withAsyncContext, withCtx, withDefaults, withDirectives, withModifiers, withScopeId };
+export { EffectScope, Fragment, ReactiveEffect, Text, c, callWithAsyncErrorHandling, callWithErrorHandling, computed, createApp, createPropsRestProxy, createSSRApp, createVNode, createVueApp, customRef, d, defineAsyncComponent, defineComponent, defineEmits, defineExpose, defineProps, devtoolsComponentAdded, devtoolsComponentRemoved, devtoolsComponentUpdated, diff, e, effect, effectScope, f, findComponentPropsData, gei, getCurrentInstance, getCurrentScope, getExposeProxy, guardReactiveProps, h, hasInjectionContext, hasQueueJob, inject, injectHook, invalidateJob, isInSSRComponentSetup, isProxy, isReactive, isReadonly, isRef, isShallow, j, logError, m, markRaw, mergeDefaults, mergeModels, mergeProps, n, nextTick$1 as nextTick, o, onActivated, onBeforeMount, onBeforeUnmount, onBeforeUpdate, onDeactivated, onErrorCaptured, onMounted, onRenderTracked, onRenderTriggered, onScopeDispose, onServerPrefetch, onUnmounted, onUpdated, p, patch, provide, proxyRefs, pruneComponentPropsCache, queuePostFlushCb, r, reactive, readonly, ref, resolveComponent, resolveDirective, resolveFilter, s, setCurrentRenderingInstance, setTemplateRef, setupDevtoolsPlugin, shallowReactive, shallowReadonly, shallowRef, sr, stop, t, toHandlers, toRaw, toRef, toRefs, toValue, triggerRef, unref, updateProps, useAttrs, useCssModule, useCssVars, useModel, useSSRContext, useSlots, version, w, warn, watch, watchEffect, watchPostEffect, watchSyncEffect, withAsyncContext, withCtx, withDefaults, withDirectives, withModifiers, withScopeId };

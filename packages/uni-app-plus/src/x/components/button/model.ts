@@ -47,12 +47,15 @@ export const buttonProps = {
 }
 // 这里是从 x-dom 的 global 里读取的
 
-export class UniButtonElement extends UniTextElementImpl {
-  // constructor(data: INodeData) {
-  //   super()
-  //   // super(data)
-  // }
-}
+export const UniButtonElement = /* @__PURE__ */ (() =>
+  class extends UniTextElementImpl {
+    // constructor(data: INodeData) {
+    //   super()
+    //   // super(data)
+    // }
+  })()
+
+export type UniButtonElement = InstanceType<typeof UniButtonElement>
 
 export const hoverStyles = new Map<string, Map<string, any | null>>([
   [

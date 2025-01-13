@@ -1,5 +1,89 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`uni_modules:cloud parseUniModulesWithComponents 1`] = `
+{
+  "test-easycom": "
+import TestA, { TestAComponentPublicInstance } from './components/test-a/test-a.vue'
+import TestB, { TestBComponentPublicInstance } from './components/test-b/test-b.vue'
+export { 
+  TestA,
+  TestAComponentPublicInstance,
+  TestB,
+  TestBComponentPublicInstance 
+}
+  ",
+  "test-uts1": "export * from './utssdk/index.uts'",
+  "test-uts2": "export * from './utssdk/app-android/index.uts'",
+}
+`;
+
+exports[`uni_modules:cloud parseUniModulesWithComponents 2`] = `
+{
+  "test-easycom": "
+import TestA from './components/test-a/test-a.vue'
+import TestB from './components/test-b/test-b.vue'
+export { 
+  TestA,
+  TestB 
+}
+  ",
+  "test-uts1": "export * from './utssdk/index.uts'",
+  "test-uts2": "export * from './utssdk/app-ios/index.uts'",
+}
+`;
+
+exports[`uni_modules:cloud parseUniModulesWithComponents 3`] = `
+{
+  "test-easycom": "
+import TestA from './components/test-a/test-a.vue'
+import TestB from './components/test-b/test-b.vue'
+export { 
+  TestA,
+  TestB 
+}
+  ",
+  "test-uts1": "export * from './utssdk/index.uts'",
+  "test-uts2": "export * from './utssdk/web/index.uts'",
+}
+`;
+
+exports[`uni_modules:cloud parseUniModulesWithComponents 4`] = `
+{
+  "test-easycom": "
+import TestA from './components/test-a/test-a.vue'
+import TestB from './components/test-b/test-b.vue'
+export { 
+  TestA,
+  TestB 
+}
+  ",
+  "test-uts1": "export * from './utssdk/index.uts'",
+  "test-uts2": "export * from './utssdk/mp-weixin/index.uts'",
+}
+`;
+
+exports[`uni_modules:uni-ext-api findEncryptUniModules(app-android) 1`] = `
+{
+  "test-com1": undefined,
+  "test-com2": undefined,
+}
+`;
+
+exports[`uni_modules:uni-ext-api findEncryptUniModules(app-ios) 1`] = `
+{
+  "test-com1": undefined,
+  "test-com2": undefined,
+}
+`;
+
+exports[`uni_modules:uni-ext-api findEncryptUniModules(web) 1`] = `
+{
+  "test-com1": undefined,
+  "test-com2": undefined,
+  "test-uts1": undefined,
+}
+`;
+
 exports[`uni_modules:uni-ext-api findUploadEncryptUniModulesFiles(app-android) 1`] = `
 [
   "uni_modules/test-com1/encrypt",
@@ -50,5 +134,8 @@ exports[`uni_modules:uni-ext-api findUploadEncryptUniModulesFiles(web) 1`] = `
   "uni_modules/test-com2/utils/index.uts",
   "uni_modules/test-com2/components/test-com2-1/test-com2-1.vue",
   "uni_modules/test-com2/components/test-com2-2/test-com2-2.vue",
+  "uni_modules/test-uts1/encrypt",
+  "uni_modules/test-uts1/package.json",
+  "uni_modules/test-uts1/utssdk/index.uts",
 ]
 `;

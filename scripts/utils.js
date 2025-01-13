@@ -21,7 +21,6 @@ const priority = {
   'uni-mp-toutiao': 70,
   'uni-mp-weixin': 70,
   'uni-quickapp-webview': 70,
-  'uni-components': 55,
   'uni-h5-vite': 50,
   'uni-h5': 40,
   'uni-mp-compiler': 40,
@@ -36,7 +35,7 @@ const priority = {
   'uni-automator': 10,
   'uni-stacktracey': 8,
   'uni-vue-devtools': 6,
-  'size-check': 0,
+  'size-check': 1,
 }
 
 exports.priority = priority
@@ -55,7 +54,12 @@ const targets = (exports.targets = fs.readdirSync('packages').filter((f) => {
     )
   } catch (e) { }
   return false
-})).sort((a, b) => priority[b] - priority[a])
+}).sort((a, b) => {
+  const priorityA = priority[a] || 0
+  const priorityB = priority[b] || 0
+  return priorityB - priorityA
+}));
+
 exports.fuzzyMatchTarget = (partialTargets, includeAllMatching) => {
   const matched = new Set()
   // 优先完整匹配

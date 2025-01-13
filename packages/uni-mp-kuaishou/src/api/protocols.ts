@@ -4,6 +4,8 @@ import {
   getSystemInfoSync,
   offError,
   onError,
+  onSocketMessage,
+  onSocketOpen,
   previewImage,
   redirectTo,
 } from '@dcloudio/uni-mp-core'
@@ -27,6 +29,8 @@ export {
   requestPayment,
   onError,
   offError,
+  onSocketOpen,
+  onSocketMessage,
 }
 
 export const navigateTo = _navigateTo()
