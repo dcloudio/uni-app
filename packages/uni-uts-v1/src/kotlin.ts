@@ -26,7 +26,6 @@ import {
   isColorSupported,
   isEnableGenericsParameterDefaults,
   isEnableInlineReified,
-  isEnableNarrowType,
   isEnableUTSNumber,
   moveRootIndexSourceMap,
   normalizeUTSResult,
@@ -639,7 +638,7 @@ export async function compile(
         uniExtApiNamespaces: extApis,
         uniExtApiDefaultParameters: parseExtApiDefaultParameters(),
         enableUtsNumber: isEnableUTSNumber(),
-        enableNarrowType: isEnableNarrowType(),
+        enableNarrowType: false, // 这里的启用是把部分typeof转换成instanceof，这样确实好一点，但会引发一些kotlin之类的警告，暂不开启
         enableGenericsParameterDefaults: isEnableGenericsParameterDefaults(),
         enableInlineReified: isEnableInlineReified(),
         ...transform,

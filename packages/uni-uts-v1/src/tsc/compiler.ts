@@ -85,8 +85,8 @@ export function createUniXCompiler(
     watchFile,
     incremental: mode === 'development',
     transformOptions: {
-      enableUTSNumber: isEnableUTSNumber(),
-      enableNarrowType: isEnableNarrowType(),
+      enableUTSNumber: false,
+      enableNarrowType: true, // 默认开启
       enableGenericsParameterDefaults: isEnableGenericsParameterDefaults(),
     },
     ...options,
