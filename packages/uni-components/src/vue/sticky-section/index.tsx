@@ -1,8 +1,8 @@
-import { Ref, ref, onMounted, computed, inject } from 'vue'
-import type { PropType, ComputedRef } from 'vue'
+import { type Ref, computed, inject, onMounted, ref } from 'vue'
+import type { ComputedRef, PropType } from 'vue'
 import { defineBuiltInComponent } from '../../helpers/component'
 import { UniElement } from '../../helpers/UniElement'
-import { StickySectionStatus } from '../list-view/types'
+import type { StickySectionStatus } from '../list-view/types'
 
 export class UniStickySectionElement extends UniElement {}
 export default /*#__PURE__*/ defineBuiltInComponent({
