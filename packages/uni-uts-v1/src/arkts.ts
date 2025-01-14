@@ -80,7 +80,8 @@ export function getArkTSAutoImports(isX = false): AutoImportOptions {
       ['UniElementImpl'],
       ['UniTextElement'],
       ['UniFormControlElement'],
-      ['UniCustomEvent']
+      ['UniCustomEvent'],
+      ['UniCustomEventOptions']
     )
   }
   return mergeArkTSAutoImports(

@@ -242,6 +242,9 @@
         ],
         [
           "UniCustomEvent"
+        ],
+        [
+          "UniCustomEventOptions"
         ]
       ]
     },
@@ -369,6 +372,9 @@
         ],
         [
           "UniCustomEvent"
+        ],
+        [
+          "UniCustomEventOptions"
         ]
       ]
     },
