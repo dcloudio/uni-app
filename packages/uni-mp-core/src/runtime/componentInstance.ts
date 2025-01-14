@@ -101,24 +101,6 @@ export function initBaseInstance(
     })
   }
 
-  if (
-    __PLATFORM__ === 'mp-weixin' ||
-    __PLATFORM__ === 'mp-alipay' ||
-    __PLATFORM__ === 'mp-toutiao'
-  ) {
-    // mergeVirtualHostAttributes
-    Object.defineProperties(ctx, {
-      // only id
-      [VIRTUAL_HOST_ID]: {
-        get() {
-          const id = this.$scope.data[VIRTUAL_HOST_ID]
-          // props in page can be undefined
-          return id === undefined ? '' : id
-        },
-      },
-    })
-  }
-
   if (__PLATFORM__ === 'mp-harmony' || __PLATFORM__ === 'quickapp-webview') {
     ctx.$getTriggerEventDetail = getTriggerEventDetail
   }
