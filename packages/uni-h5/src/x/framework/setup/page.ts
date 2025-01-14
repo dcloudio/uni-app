@@ -20,8 +20,17 @@ import {
 } from '../../../framework/setup/page'
 import type { RouteLocationNormalizedLoadedGeneric } from 'vue-router'
 import { isDialogPageInstance } from '../helpers/utils'
-import { getWindowInfo } from '../../../service/api/device/getWindowInfo'
 import type { UniSafeAreaInsets } from '@dcloudio/uni-app-x/types/native/UniSafeAreaInsets'
+import safeAreaInsets from 'safe-area-insets'
+
+const getSystemSafeAreaInsets = function () {
+  return {
+    top: safeAreaInsets.top,
+    right: safeAreaInsets.right,
+    bottom: safeAreaInsets.bottom,
+    left: safeAreaInsets.left,
+  }
+}
 
 let escBackPageNum = 0
 type PageStyle = {
@@ -44,13 +53,51 @@ class UniPageImpl implements UniPage {
   vm: ComponentPublicInstance | null
   $vm: ComponentPublicInstance | null
   get innerWidth(): number {
-    return getWindowInfo().windowWidth
+    const currentPage = getCurrentPage() as unknown as UniPage
+    if (currentPage !== this) {
+      throw new Error("Can't get innerWidth of other page")
+    }
+    // 非uni-app-x uni-page-body是自动高度
+    const pageWrapper = document.querySelector('uni-page-wrapper')
+    return pageWrapper!.clientWidth
   }
   get innerHeight(): number {
-    return getWindowInfo().windowHeight
+    const currentPage = getCurrentPage() as unknown as UniPage
+    if (currentPage !== this) {
+      throw new Error("Can't get innerHeight of other page")
+    }
+    // 非uni-app-x uni-page-body是自动高度
+    const pageWrapper = document.querySelector('uni-page-wrapper')
+    return pageWrapper!.clientHeight
   }
   get safeAreaInsets(): UniSafeAreaInsets {
-    return getWindowInfo().safeAreaInsets
+    const currentPage = getCurrentPage() as unknown as UniPage
+    if (currentPage !== this) {
+      throw new Error("Can't get safeAreaInsets of other page")
+    }
+    const pageWrapper = document.querySelector(
+      'uni-page-wrapper'
+    ) as HTMLElement
+    const pageWrapperRect = pageWrapper.getBoundingClientRect()
+    const systemSafeAreaInsets = getSystemSafeAreaInsets()
+
+    const bodyRect = document.body.getBoundingClientRect()
+    const pageWrapperEdge = {
+      top: pageWrapperRect.top,
+      left: pageWrapperRect.left,
+      right: bodyRect.right - pageWrapperRect.right,
+      bottom: bodyRect.bottom - pageWrapperRect.bottom,
+    }
+
+    const computeEdge = (bodyEdge: number, nativeEdge: number) => {
+      return Math.max(0, nativeEdge - bodyEdge)
+    }
+    return {
+      top: computeEdge(pageWrapperEdge.top, systemSafeAreaInsets.top),
+      left: computeEdge(pageWrapperEdge.left, systemSafeAreaInsets.left),
+      right: computeEdge(pageWrapperEdge.right, systemSafeAreaInsets.right),
+      bottom: computeEdge(pageWrapperEdge.bottom, systemSafeAreaInsets.bottom),
+    }
   }
   getPageStyle(): UTSJSONObject {
     const pageMeta = this.vm?.$basePage.meta
