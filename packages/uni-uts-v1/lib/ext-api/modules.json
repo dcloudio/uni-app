@@ -1088,7 +1088,7 @@
           "js": false,
           "kotlin": true,
           "swift": true,
-          "arkts": true
+          "arkts": false
         }
       },
       "getUniVerifyManager": {
@@ -1097,7 +1097,7 @@
           "js": false,
           "kotlin": true,
           "swift": true,
-          "arkts": true
+          "arkts": false
         }
       }
     }
