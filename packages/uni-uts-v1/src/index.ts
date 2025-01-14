@@ -108,6 +108,7 @@ export interface CompileResult {
   dir: string
   inject_apis: string[]
   scoped_slots: string[]
+  custom_elements: Record<string, string>
 }
 
 function createResult(
@@ -117,6 +118,7 @@ function createResult(
   deps: string[],
   inject_apis: string[],
   scoped_slots: string[],
+  custom_elements: Record<string, string>,
   meta: unknown
 ): CompileResult {
   return {
@@ -126,6 +128,7 @@ function createResult(
     encrypt: false,
     inject_apis,
     scoped_slots,
+    custom_elements,
     meta,
   }
 }
@@ -210,7 +213,7 @@ export async function compile(
   const deps: string[] = []
   const inject_apis: string[] = []
   const scoped_slots: string[] = []
-
+  const custom_elements: Record<string, string> = {}
   const meta = {
     exports: {},
     types: {},
@@ -250,7 +253,7 @@ export async function compile(
       process.env.UNI_APP_PRODUCTION_TYPE === 'WGT' ||
       process.env.UNI_COMPILE_TARGET === 'ext-api'
     ) {
-      return createResult(outputPluginDir, errMsg, code, deps, [], [], meta)
+      return createResult(outputPluginDir, errMsg, code, deps, [], [], {}, meta)
     }
     // 生产模式 支持同时生成 android 和 ios 的 uts 插件
     if (
@@ -295,6 +298,10 @@ export async function compile(
           if (result.scoped_slots) {
             scoped_slots.push(...result.scoped_slots)
           }
+          const custom_elements = result.custom_elements || {}
+          Object.keys(custom_elements).forEach((key) => {
+            custom_elements[key] = custom_elements[key]
+          })
         }
         if (!isCompileUniModules && cacheDir) {
           // 存储 sourcemap
@@ -381,7 +388,16 @@ export async function compile(
     if (utsPlatform === 'app-ios') {
       if (isWindows) {
         process.env.UNI_UTS_ERRORS = `iOS手机在windows上使用标准基座真机运行无法使用uts插件，如需使用uts插件请提交云端打包自定义基座`
-        return createResult(outputPluginDir, errMsg, code, deps, [], [], meta)
+        return createResult(
+          outputPluginDir,
+          errMsg,
+          code,
+          deps,
+          [],
+          [],
+          {},
+          meta
+        )
       }
     }
     if (utsPlatform === 'app-android' || utsPlatform === 'app-ios') {
@@ -460,6 +476,7 @@ export async function compile(
             res.files.map((name) => join(pluginDir, name)),
             [],
             [],
+            {},
             meta
           )
         }
@@ -600,6 +617,7 @@ export async function compile(
     deps,
     inject_apis,
     scoped_slots,
+    custom_elements,
     meta
   )
 }

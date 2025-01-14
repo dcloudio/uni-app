@@ -37,6 +37,8 @@ export {
   parseUniModulesArtifacts,
   resolveEncryptUniModule,
 } from './uni_modules.cloud'
+import type { EncryptPackageJson } from './uni_modules.cloud'
+export type EncryptArtifacts = EncryptPackageJson['uni_modules']['artifacts']
 
 export { M } from './messages'
 

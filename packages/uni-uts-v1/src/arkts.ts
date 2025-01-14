@@ -333,6 +333,7 @@ export default {
     dir: outputUniModuleDir,
     inject_apis: [],
     scoped_slots: [],
+    custom_elements: {},
   }
 }
 

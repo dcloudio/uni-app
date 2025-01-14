@@ -1,5 +1,6 @@
 import path, { join, relative } from 'path'
 import fs from 'fs-extra'
+import type { EncryptArtifacts } from '@dcloudio/uni-cli-shared'
 import type { APP_PLATFORM } from './manifest/utils'
 import { normalizePath, resolveSourceMapPath } from './shared'
 import {
@@ -13,6 +14,7 @@ import {
 import {
   addPluginInjectApis,
   addPluginInjectComponents,
+  addPluginInjectCustomElements,
   getCompilerServer,
   requireUniHelpers,
 } from './utils'
@@ -79,6 +81,7 @@ export async function compileEncrypt(
       encrypt: true,
       inject_apis: [],
       scoped_slots: [],
+      custom_elements: {},
       meta: { commonjs: { isCommonJS: true } },
     }
   }
@@ -112,6 +115,7 @@ export async function compileEncrypt(
     encrypt: true,
     inject_apis: [],
     scoped_slots: [],
+    custom_elements: {},
     meta: { commonjs: { isCommonJS: true } },
   }
 }
@@ -156,6 +160,7 @@ async function compileEncryptByUniHelpers(pluginDir: string) {
       encrypt: true,
       inject_apis: [],
       scoped_slots: [],
+      custom_elements: {},
     }
   }
 
@@ -184,11 +189,13 @@ async function compileEncryptByUniHelpers(pluginDir: string) {
       )
       // 需要把 kt 文件放到 app-android/src 下
     }
-    const artifacts = pkg.uni_modules?.artifacts
+    const artifacts = pkg.uni_modules?.artifacts as EncryptArtifacts | undefined
     const inject_apis = artifacts?.apis || []
-    const scoped_slots = artifacts?.scoped_slots || []
+    const scoped_slots = artifacts?.scopedSlots || []
+    const custom_elements = artifacts?.customElements || {}
     addPluginInjectApis(inject_apis)
     addPluginInjectComponents(artifacts?.components || [])
+    addPluginInjectCustomElements(custom_elements)
     return {
       dir: outputPluginDir,
       code: 'export default {}',
@@ -196,6 +203,7 @@ async function compileEncryptByUniHelpers(pluginDir: string) {
       encrypt: true,
       inject_apis,
       scoped_slots,
+      custom_elements,
     }
   }
   // development
@@ -295,5 +303,6 @@ async function compileEncryptByUniHelpers(pluginDir: string) {
     encrypt: true,
     inject_apis: [],
     scoped_slots: [],
+    custom_elements: {},
   }
 }

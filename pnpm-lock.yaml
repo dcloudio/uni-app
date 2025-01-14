@@ -2125,6 +2125,9 @@ importers:
         specifier: ^1.0.2
         version: 1.2.1
     devDependencies:
+      '@dcloudio/uni-cli-shared':
+        specifier: workspace:*
+        version: link:../uni-cli-shared
       '@types/adm-zip':
         specifier: ^0.5.5
         version: 0.5.5

@@ -254,7 +254,7 @@ function isEnvExpired(
   return false
 }
 
-interface EncryptPackageJson {
+export interface EncryptPackageJson {
   id: string
   version: string
   uni_modules: {
@@ -266,6 +266,7 @@ interface EncryptPackageJson {
       apis: string[]
       components: string[]
       scopedSlots: string[]
+      customElements: { name: string; class: string }[]
       declaration: string
     }
   }

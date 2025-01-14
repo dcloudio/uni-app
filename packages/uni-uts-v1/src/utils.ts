@@ -1079,6 +1079,19 @@ export function addPluginInjectComponents(components: string[]) {
   })
 }
 
+const pluginInjectCustomElements: Record<string, string> = {}
+export function addPluginInjectCustomElements(
+  customElements: Record<string, string>
+) {
+  Object.keys(customElements).forEach((key) => {
+    pluginInjectCustomElements[key] = customElements[key]
+  })
+}
+
+export function getPluginInjectCustomElements() {
+  return pluginInjectCustomElements
+}
+
 export function getPluginInjectComponents() {
   return [...pluginInjectComponents]
 }
