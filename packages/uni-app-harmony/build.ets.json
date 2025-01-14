@@ -217,6 +217,9 @@
           "UTSHarmony"
         ],
         [
+          "document"
+        ],
+        [
           "UniElement"
         ],
         [
@@ -229,13 +232,13 @@
           "UniElementImpl"
         ],
         [
-          "document"
-        ],
-        [
           "UniCustomElement"
         ],
         [
           "UniTextElement"
+        ],
+        [
+          "UniFormControlElement"
         ],
         [
           "UniCustomEvent"
@@ -341,6 +344,9 @@
           "UTSHarmony"
         ],
         [
+          "document"
+        ],
+        [
           "UniElement"
         ],
         [
@@ -353,13 +359,13 @@
           "UniElementImpl"
         ],
         [
-          "document"
-        ],
-        [
           "UniCustomElement"
         ],
         [
           "UniTextElement"
+        ],
+        [
+          "UniFormControlElement"
         ],
         [
           "UniCustomEvent"

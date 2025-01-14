@@ -43,41 +43,49 @@ function getRuntimePackageName(isX = false) {
 
 export function getArkTSAutoImports(isX = false): AutoImportOptions {
   const runtimePackageName = getRuntimePackageName(isX)
+  const runtimeExports: [string][] = [
+    ['defineAsyncApi'],
+    ['defineSyncApi'],
+    ['defineTaskApi'],
+    ['defineOnApi'],
+    ['defineOffApi'],
+    ['getUniProvider'],
+    ['getUniProviders'],
+    ['string'],
+    ['AsyncApiSuccessResult'],
+    ['AsyncApiResult'],
+    ['ApiExecutor'],
+    ['ComponentInternalInstance'],
+    ['ComponentPublicInstance'],
+    ['IUniError'],
+    ['ProtocolOptions'],
+    ['ApiOptions'],
+    ['ApiError'],
+    ['UniError'],
+    ['UniProvider'],
+    ['uni'],
+    ['IUTSObject'],
+    ['UTSObject'],
+    ['UTSJSONObject'],
+    ['SourceError'],
+    ['UTSHarmony'],
+  ]
+  if (isX) {
+    runtimeExports.push(
+      ['document'],
+      ['UniElement'],
+      ['UniPageImpl'],
+      ['customElements'],
+      ['UniCustomElement'],
+      ['UniElementImpl'],
+      ['UniTextElement'],
+      ['UniFormControlElement'],
+      ['UniCustomEvent']
+    )
+  }
   return mergeArkTSAutoImports(
     {
-      [runtimePackageName]: [
-        ['defineAsyncApi'],
-        ['defineSyncApi'],
-        ['defineTaskApi'],
-        ['defineOnApi'],
-        ['defineOffApi'],
-        ['getUniProvider'],
-        ['getUniProviders'],
-        ['string'],
-        ['AsyncApiSuccessResult'],
-        ['AsyncApiResult'],
-        ['ApiExecutor'],
-        ['ComponentInternalInstance'],
-        ['ComponentPublicInstance'],
-        ['IUniError'],
-        ['ProtocolOptions'],
-        ['ApiOptions'],
-        ['ApiError'],
-        ['UniError'],
-        ['UniProvider'],
-        ['uni'],
-        ['IUTSObject'],
-        ['UTSObject'],
-        ['UTSJSONObject'],
-        ['SourceError'],
-        ['UniElement'],
-        ['UTSHarmony'],
-        ['UniPageImpl'],
-        ['customElements'],
-        ['UniCustomElement'],
-        ['UniElementImpl'],
-        ['UniCustomEvent'],
-      ],
+      [runtimePackageName]: runtimeExports,
     },
     require(isX
       ? '../lib/arkts/ext-api-export-x.json'
