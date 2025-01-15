@@ -172,6 +172,24 @@
       "ChooseImage"
     ],
     [
+      "PreviewImageSuccess"
+    ],
+    [
+      "PreviewImageOptions"
+    ],
+    [
+      "PreviewImage"
+    ],
+    [
+      "ClosePreviewImage"
+    ],
+    [
+      "ClosePreviewImageSuccess"
+    ],
+    [
+      "ClosePreviewImageOptions"
+    ],
+    [
       "GetImageInfo"
     ],
     [
@@ -498,14 +516,6 @@
     ],
     [
       "setAppBadgeNumber"
-    ]
-  ],
-  "@uni_modules/uni-verify": [
-    [
-      "getUniVerifyManager"
-    ],
-    [
-      "getUniverifyManager"
     ]
   ]
 }

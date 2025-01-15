@@ -1299,6 +1299,38 @@ export class ChooseImageOptions extends UTSObject {
     complete: (ChooseImageCompleteCallback) | null = null;
 }
 export type ChooseImage = (options: ChooseImageOptions) => void;
+export class PreviewImageSuccess extends UTSObject {
+    errSubject!: string;
+    errMsg!: string;
+}
+type PreviewImageFail = IMediaError;
+type PreviewImageSuccessCallback = (callback: PreviewImageSuccess) => void;
+type PreviewImageFailCallback = (callback: PreviewImageFail) => void;
+type PreviewImageCompleteCallback = ChooseImageCompleteCallback;
+export class PreviewImageOptions extends UTSObject {
+    current: Object | null = null;
+    urls!: Array<string.ImageURIString>;
+    showmenu: boolean | null = null;
+    indicator: 'default' | 'number' | 'none' | null = null;
+    loop: boolean | null = null;
+    success: (PreviewImageSuccessCallback) | null = null;
+    fail: (PreviewImageFailCallback) | null = null;
+    complete: (PreviewImageCompleteCallback) | null = null;
+}
+export type PreviewImage = (options: PreviewImageOptions) => void;
+export type ClosePreviewImage = (options: ClosePreviewImageOptions) => void;
+export class ClosePreviewImageSuccess extends UTSObject {
+    errMsg!: string;
+}
+type ClosePreviewImageFail = IMediaError;
+type ClosePreviewImageSuccessCallback = (callback: ClosePreviewImageSuccess) => void;
+type ClosePreviewImageFailCallback = (callback: ClosePreviewImageFail) => void;
+type ClosePreviewImageCompleteCallback = ChooseImageCompleteCallback;
+export class ClosePreviewImageOptions extends UTSObject {
+    success: (ClosePreviewImageSuccessCallback) | null = null;
+    fail: (ClosePreviewImageFailCallback) | null = null;
+    complete: (ClosePreviewImageCompleteCallback) | null = null;
+}
 export type GetImageInfo = (options: GetImageInfoOptions) => void;
 export class GetImageInfoSuccess extends UTSObject {
     width!: number;

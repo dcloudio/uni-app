@@ -18,7 +18,7 @@ var ExternalModuls = [
 			"startFacialRecognitionVerify",
 			"getFacialRecognitionMetaInfo"
 		],
-		version: "1.0.3"
+		version: "1.0.2"
 	},
 	{
 		type: "provider",
@@ -52,13 +52,6 @@ var ExternalModuls = [
 			"setAppBadgeNumber"
 		],
 		version: "1.0.2"
-	},
-	{
-		type: "extapi",
-		plugin: "uni-verify",
-		apis: [
-		],
-		version: "1.0.0"
 	}
 ];
 
@@ -70,7 +63,7 @@ var ExternalModulsX = [
 			"startFacialRecognitionVerify",
 			"getFacialRecognitionMetaInfo"
 		],
-		version: "1.0.3"
+		version: "1.0.2"
 	},
 	{
 		type: "provider",
@@ -104,13 +97,6 @@ var ExternalModulsX = [
 			"setAppBadgeNumber"
 		],
 		version: "1.0.2"
-	},
-	{
-		type: "extapi",
-		plugin: "uni-verify",
-		apis: [
-		],
-		version: "1.0.0"
 	}
 ];
 
