@@ -352,6 +352,14 @@
           "kotlin": true,
           "swift": true
         }
+      },
+      "isSimulator": {
+        "name": "isSimulator",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": false
+        }
       }
     }
   },
