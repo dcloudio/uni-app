@@ -350,7 +350,8 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": true
+          "swift": true,
+          "arkts": true
         }
       },
       "isSimulator": {
@@ -358,7 +359,8 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": false
+          "swift": false,
+          "arkts": false
         }
       }
     }
