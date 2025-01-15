@@ -396,6 +396,50 @@ describe('mp:compiler', () => {
     //       `<view style="{{$root.s0}}">hello world</view>`,
     //       `with(this){var s0=__get_style(error);$mp.data=Object.assign({},{$root:{s0:s0}})}`
     //     )
+
+    assertCodegen(
+      '<view :style="false==false?{}:{}"></view>',
+      '<view style="{{(false==false?{}:{})}}"></view>'
+    )
+
+    assertCodegen(
+      '<view style="color:red"></view>',
+      '<view style="color:red;"></view>'
+    )
+
+    const baseStr = '$mp.data=Object.assign({},{$root:{s0:s0}})}'
+
+    // 运算得到
+    assertCodegen(
+      '<view :style="[\'color:red\']"></view>',
+      '<view style="{{$root.s0}}"></view>',
+      'with(this){var s0=__get_style(["color:red"]);' + baseStr
+    )
+    // 运算得到
+    assertCodegen(
+      '<view :style="{}"></view>',
+      '<view style="{{$root.s0}}"></view>',
+      'with(this){var s0=__get_style({});' + baseStr
+    )
+    // 运算得到
+    assertCodegen(
+      '<view :style="{...{}}"></view>',
+      '<view style="{{$root.s0}}"></view>',
+      'with(this){var s0=__get_style({...{}});' + baseStr
+    )
+
+    // 运算得到
+    assertCodegen(
+      '<view :style="{...(false==false?{}:{})}"></view>',
+      '<view style="{{$root.s0}}"></view>',
+      'with(this){var s0=__get_style({...(false==false?{}:{})});' + baseStr
+    )
+    // 运算得到
+    assertCodegen(
+      '<view :style="[].length===0?{}:{}"></view>',
+      '<view style="{{($root.g0===0?{}:{})}}"></view>',
+      'with(this){var g0=[].length;$mp.data=Object.assign({},{$root:{g0:g0}})}'
+    )
   })
 
   it('generate style with mergeVirtualHostAttributes', () => {
