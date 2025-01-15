@@ -174,6 +174,15 @@ export function syncPagesFile() {
       if (fs.existsSync(pagesDir)) {
         fs.readdirSync(pagesDir).forEach((page) => {
           if (fs.existsSync(path.resolve(pagesDir, page, page + '.uvue'))) {
+            const utssdkDir = path.resolve(apiDir, module, 'utssdk')
+            if (
+              !(
+                fs.existsSync(path.resolve(utssdkDir, 'index.uts')) ||
+                fs.existsSync(path.resolve(utssdkDir, 'web', 'index.uts'))
+              )
+            ) {
+              return
+            }
             importCodes.push(
               `import Uni${capitalize(
                 page
