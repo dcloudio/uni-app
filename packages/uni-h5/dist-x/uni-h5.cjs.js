@@ -899,196 +899,6 @@ const ViewJSBridge = /* @__PURE__ */ shared.extend(
     invokeServiceMethod
   }
 );
-function getDefaultExportFromCjs(x) {
-  return x && x.__esModule && Object.prototype.hasOwnProperty.call(x, "default") ? x["default"] : x;
-}
-var attrs = ["top", "left", "right", "bottom"];
-var inited;
-var elementComputedStyle = {};
-var support;
-function getSupport() {
-  if (!("CSS" in window) || typeof CSS.supports != "function") {
-    support = "";
-  } else if (CSS.supports("top: env(safe-area-inset-top)")) {
-    support = "env";
-  } else if (CSS.supports("top: constant(safe-area-inset-top)")) {
-    support = "constant";
-  } else {
-    support = "";
-  }
-  return support;
-}
-function init() {
-  support = typeof support === "string" ? support : getSupport();
-  if (!support) {
-    attrs.forEach(function(attr2) {
-      elementComputedStyle[attr2] = 0;
-    });
-    return;
-  }
-  function setStyle(el, style) {
-    var elStyle = el.style;
-    Object.keys(style).forEach(function(key) {
-      var val = style[key];
-      elStyle[key] = val;
-    });
-  }
-  var cbs = [];
-  function parentReady(callback) {
-    if (callback) {
-      cbs.push(callback);
-    } else {
-      cbs.forEach(function(cb) {
-        cb();
-      });
-    }
-  }
-  var passiveEvents = false;
-  try {
-    var opts = Object.defineProperty({}, "passive", {
-      get: function() {
-        passiveEvents = { passive: true };
-      }
-    });
-    window.addEventListener("test", null, opts);
-  } catch (e2) {
-  }
-  function addChild(parent, attr2) {
-    var a1 = document.createElement("div");
-    var a2 = document.createElement("div");
-    var a1Children = document.createElement("div");
-    var a2Children = document.createElement("div");
-    var W = 100;
-    var MAX = 1e4;
-    var aStyle = {
-      position: "absolute",
-      width: W + "px",
-      height: "200px",
-      boxSizing: "border-box",
-      overflow: "hidden",
-      paddingBottom: support + "(safe-area-inset-" + attr2 + ")"
-    };
-    setStyle(a1, aStyle);
-    setStyle(a2, aStyle);
-    setStyle(a1Children, {
-      transition: "0s",
-      animation: "none",
-      width: "400px",
-      height: "400px"
-    });
-    setStyle(a2Children, {
-      transition: "0s",
-      animation: "none",
-      width: "250%",
-      height: "250%"
-    });
-    a1.appendChild(a1Children);
-    a2.appendChild(a2Children);
-    parent.appendChild(a1);
-    parent.appendChild(a2);
-    parentReady(function() {
-      a1.scrollTop = a2.scrollTop = MAX;
-      var a1LastScrollTop = a1.scrollTop;
-      var a2LastScrollTop = a2.scrollTop;
-      function onScroll() {
-        if (this.scrollTop === (this === a1 ? a1LastScrollTop : a2LastScrollTop)) {
-          return;
-        }
-        a1.scrollTop = a2.scrollTop = MAX;
-        a1LastScrollTop = a1.scrollTop;
-        a2LastScrollTop = a2.scrollTop;
-        attrChange(attr2);
-      }
-      a1.addEventListener("scroll", onScroll, passiveEvents);
-      a2.addEventListener("scroll", onScroll, passiveEvents);
-    });
-    var computedStyle = getComputedStyle(a1);
-    Object.defineProperty(elementComputedStyle, attr2, {
-      configurable: true,
-      get: function() {
-        return parseFloat(computedStyle.paddingBottom);
-      }
-    });
-  }
-  var parentDiv = document.createElement("div");
-  setStyle(parentDiv, {
-    position: "absolute",
-    left: "0",
-    top: "0",
-    width: "0",
-    height: "0",
-    zIndex: "-1",
-    overflow: "hidden",
-    visibility: "hidden"
-  });
-  attrs.forEach(function(key) {
-    addChild(parentDiv, key);
-  });
-  document.body.appendChild(parentDiv);
-  parentReady();
-  inited = true;
-}
-function getAttr(attr2) {
-  if (!inited) {
-    init();
-  }
-  return elementComputedStyle[attr2];
-}
-var changeAttrs = [];
-function attrChange(attr2) {
-  if (!changeAttrs.length) {
-    setTimeout(function() {
-      var style = {};
-      changeAttrs.forEach(function(attr3) {
-        style[attr3] = elementComputedStyle[attr3];
-      });
-      changeAttrs.length = 0;
-      callbacks.forEach(function(callback) {
-        callback(style);
-      });
-    }, 0);
-  }
-  changeAttrs.push(attr2);
-}
-var callbacks = [];
-function onChange(callback) {
-  if (!getSupport()) {
-    return;
-  }
-  if (!inited) {
-    init();
-  }
-  if (typeof callback === "function") {
-    callbacks.push(callback);
-  }
-}
-function offChange(callback) {
-  var index2 = callbacks.indexOf(callback);
-  if (index2 >= 0) {
-    callbacks.splice(index2, 1);
-  }
-}
-var safeAreaInsets = {
-  get support() {
-    return (typeof support === "string" ? support : getSupport()).length != 0;
-  },
-  get top() {
-    return getAttr("top");
-  },
-  get left() {
-    return getAttr("left");
-  },
-  get right() {
-    return getAttr("right");
-  },
-  get bottom() {
-    return getAttr("bottom");
-  },
-  onChange,
-  offChange
-};
-var out = safeAreaInsets;
-const safeAreaInsets$1 = /* @__PURE__ */ getDefaultExportFromCjs(out);
 const onEventPrevent = /* @__PURE__ */ vue.withModifiers(() => {
 }, ["prevent"]);
 const onEventStop = /* @__PURE__ */ vue.withModifiers(
@@ -2960,14 +2770,6 @@ function isNormalDialogPageInstance(vm) {
 function isSystemDialogPageInstance(vm) {
   return vm.attrs["data-type"] === SYSTEM_DIALOG_TAG;
 }
-const getSystemSafeAreaInsets = function() {
-  return {
-    top: safeAreaInsets$1.top,
-    right: safeAreaInsets$1.right,
-    bottom: safeAreaInsets$1.bottom,
-    left: safeAreaInsets$1.left
-  };
-};
 const homeDialogPages = [];
 const homeSystemDialogPages = [];
 class UniPageImpl {
@@ -2983,47 +2785,19 @@ class UniPageImpl {
     this.$vm = vm;
   }
   get innerWidth() {
-    const currentPage = getCurrentPage();
-    if (currentPage !== this) {
-      throw new Error("Can't get innerWidth of other page");
+    {
+      throw new Error("Not support innerWidth in non-browser environment");
     }
-    const pageWrapper = document.querySelector("uni-page-wrapper");
-    return pageWrapper.clientWidth;
   }
   get innerHeight() {
-    const currentPage = getCurrentPage();
-    if (currentPage !== this) {
-      throw new Error("Can't get innerHeight of other page");
+    {
+      throw new Error("Not support innerHeight in non-browser environment");
     }
-    const pageWrapper = document.querySelector("uni-page-wrapper");
-    return pageWrapper.clientHeight;
   }
   get safeAreaInsets() {
-    const currentPage = getCurrentPage();
-    if (currentPage !== this) {
-      throw new Error("Can't get safeAreaInsets of other page");
+    {
+      throw new Error("Not support safeAreaInsets in non-browser environment");
     }
-    const pageWrapper = document.querySelector(
-      "uni-page-wrapper"
-    );
-    const pageWrapperRect = pageWrapper.getBoundingClientRect();
-    const systemSafeAreaInsets = getSystemSafeAreaInsets();
-    const bodyRect = document.body.getBoundingClientRect();
-    const pageWrapperEdge = {
-      top: pageWrapperRect.top,
-      left: pageWrapperRect.left,
-      right: bodyRect.right - pageWrapperRect.right,
-      bottom: bodyRect.bottom - pageWrapperRect.bottom
-    };
-    const computeEdge = (bodyEdge, nativeEdge) => {
-      return Math.max(0, nativeEdge - bodyEdge);
-    };
-    return {
-      top: computeEdge(pageWrapperEdge.top, systemSafeAreaInsets.top),
-      left: computeEdge(pageWrapperEdge.left, systemSafeAreaInsets.left),
-      right: computeEdge(pageWrapperEdge.right, systemSafeAreaInsets.right),
-      bottom: computeEdge(pageWrapperEdge.bottom, systemSafeAreaInsets.bottom)
-    };
   }
   getPageStyle() {
     var _a;
@@ -3081,12 +2855,9 @@ class UniPageImpl {
     this.setPageStyle(style);
   }
   getElementById(id2) {
-    const currentPage = getCurrentPage();
-    if (currentPage !== this) {
+    {
       return null;
     }
-    const uniPageBody = document.querySelector("uni-page-body");
-    return uniPageBody ? uniPageBody.querySelector(`#${id2}`) : null;
   }
   getAndroidView() {
     return null;
@@ -3095,11 +2866,9 @@ class UniPageImpl {
     return null;
   }
   getHTMLElement() {
-    const currentPage = getCurrentPage();
-    if (currentPage !== this) {
+    {
       return null;
     }
-    return document.querySelector("uni-page-body");
   }
   getDialogPages() {
     return [];
@@ -3425,7 +3194,7 @@ function initApp$1(vm) {
   initAppVm(appVm);
   defineGlobalData(appVm);
 }
-function wrapperComponentSetup(comp, { clone, init: init2, setup, before }) {
+function wrapperComponentSetup(comp, { clone, init, setup, before }) {
   if (clone) {
     comp = shared.extend({}, comp);
   }
@@ -3433,7 +3202,7 @@ function wrapperComponentSetup(comp, { clone, init: init2, setup, before }) {
   const oldSetup = comp.setup;
   comp.setup = (props2, ctx) => {
     const instance = vue.getCurrentInstance();
-    init2(instance.proxy);
+    init(instance.proxy);
     setup(instance);
     if (oldSetup) {
       return oldSetup(props2, ctx);
@@ -4299,10 +4068,10 @@ function HTMLParser(html, handler) {
       stack.push(tagName);
     }
     if (handler.start) {
-      var attrs2 = [];
+      var attrs = [];
       rest.replace(attr, function(match2, name) {
         var value = arguments[2] ? arguments[2] : arguments[3] ? arguments[3] : arguments[4] ? arguments[4] : fillAttrs[name] ? name : "";
-        attrs2.push({
+        attrs.push({
           name,
           value,
           escaped: value.replace(/(^|[^\\])"/g, '$1\\"')
@@ -4310,7 +4079,7 @@ function HTMLParser(html, handler) {
         });
       });
       if (handler.start) {
-        handler.start(tagName, attrs2, unary);
+        handler.start(tagName, attrs, unary);
       }
     }
   }
@@ -5396,7 +5165,7 @@ const LISTENER_PREFIX = /^on[A-Z]+/;
 const useAttrs = (params = {}) => {
   const { excludeListeners = false, excludeKeys = [] } = params;
   const instance = vue.getCurrentInstance();
-  const attrs2 = vue.shallowRef({});
+  const attrs = vue.shallowRef({});
   const listeners = vue.shallowRef({});
   const excludeAttrs = vue.shallowRef({});
   const allExcludeKeys = excludeKeys.concat(DEFAULT_EXCLUDE_KEYS);
@@ -5422,11 +5191,11 @@ const useAttrs = (params = {}) => {
         listeners: {}
       }
     );
-    attrs2.value = res.attrs;
+    attrs.value = res.attrs;
     listeners.value = res.listeners;
     excludeAttrs.value = res.exclude;
   });
-  return { $attrs: attrs2, $listeners: listeners, $excludeAttrs: excludeAttrs };
+  return { $attrs: attrs, $listeners: listeners, $excludeAttrs: excludeAttrs };
 };
 function flatVNode(nodes) {
   const array = [];
@@ -7399,14 +7168,14 @@ function processClickEvent(node, triggerItemClick) {
     };
   }
 }
-function normalizeAttrs(tagName, attrs2) {
-  if (!shared.isPlainObject(attrs2))
+function normalizeAttrs(tagName, attrs) {
+  if (!shared.isPlainObject(attrs))
     return;
-  for (const key in attrs2) {
-    if (shared.hasOwn(attrs2, key)) {
-      const value = attrs2[key];
+  for (const key in attrs) {
+    if (shared.hasOwn(attrs, key)) {
+      const value = attrs[key];
       if (tagName === "img" && key === "src")
-        attrs2[key] = getRealPath(value);
+        attrs[key] = getRealPath(value);
     }
   }
 }
@@ -7443,8 +7212,8 @@ const nodeList2VNode = (scopeId, triggerItemClick, nodeList) => {
 function removeDOCTYPE(html) {
   return html.replace(/<\?xml.*\?>\n/, "").replace(/<!doctype.*>\n/, "").replace(/<!DOCTYPE.*>\n/, "");
 }
-function parseAttrs(attrs2) {
-  return attrs2.reduce(function(pre, attr2) {
+function parseAttrs(attrs) {
+  return attrs.reduce(function(pre, attr2) {
     let value = attr2.value;
     const name = attr2.name;
     if (value.match(/ /) && ["style", "src"].indexOf(name) === -1) {
@@ -7470,12 +7239,12 @@ function parseHtml(html) {
     children: []
   };
   HTMLParser(html, {
-    start: function(tag, attrs2, unary) {
+    start: function(tag, attrs, unary) {
       const node = {
         name: tag
       };
-      if (attrs2.length !== 0) {
-        node.attrs = parseAttrs(attrs2);
+      if (attrs.length !== 0) {
+        node.attrs = parseAttrs(attrs);
       }
       if (unary) {
         const parent = stacks[0] || results;
@@ -10330,7 +10099,7 @@ function useFullscreen(trigger, containerRef, videoRef, userActionState, rootRef
     exitFullScreen
   };
 }
-function useVideo(props2, attrs2, trigger) {
+function useVideo(props2, attrs, trigger) {
   const videoRef = vue.ref(null);
   const src = vue.computed(() => getRealPath(props2.src));
   const muted = vue.computed(() => props2.muted === "true" || props2.muted === true);
@@ -10702,7 +10471,7 @@ const index$a = /* @__PURE__ */ defineBuiltInComponent({
   emits: ["fullscreenchange", "progress", "loadedmetadata", "waiting", "error", "play", "pause", "ended", "timeupdate"],
   setup(props2, {
     emit: emit2,
-    attrs: attrs2,
+    attrs,
     slots
   }) {
     const rootRef = vue.ref(null);
@@ -10738,7 +10507,7 @@ const index$a = /* @__PURE__ */ defineBuiltInComponent({
       onPause,
       onEnded,
       onTimeUpdate
-    } = useVideo(props2, attrs2, trigger);
+    } = useVideo(props2, attrs, trigger);
     const {
       state: danmuState,
       danmuRef,
