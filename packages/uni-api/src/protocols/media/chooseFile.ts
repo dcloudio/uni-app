@@ -29,7 +29,7 @@ export const ChooseFileOptions: ApiOptions<API_TYPE_CHOOSE_FILE> = {
       if (extension instanceof Array && extension.length === 0) {
         return 'param extension should not be empty.'
       }
-      if (!extension) params.extension = ['']
+      if (!extension) params.extension = ['*']
     },
   },
 }
