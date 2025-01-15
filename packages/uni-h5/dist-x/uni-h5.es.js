@@ -6644,8 +6644,13 @@ const ChooseFileOptions = {
       if (extension instanceof Array && extension.length === 0) {
         return "param extension should not be empty.";
       }
-      if (!extension)
-        params.extension = [""];
+      if (!extension) {
+        if (params.type === "all" || !params.type) {
+          params.extension = [""];
+        } else {
+          params.extension = ["*"];
+        }
+      }
     }
   }
 };
@@ -8163,85 +8168,14 @@ function isNormalDialogPageInstance(vm) {
 function isSystemDialogPageInstance(vm) {
   return vm.attrs["data-type"] === SYSTEM_DIALOG_TAG;
 }
-const ua = navigator.userAgent;
-const isAndroid = /* @__PURE__ */ /android/i.test(ua);
-const isIOS = /* @__PURE__ */ /iphone|ipad|ipod/i.test(ua);
-const isWindows = /* @__PURE__ */ ua.match(/Windows NT ([\d|\d.\d]*)/i);
-const isMac = /* @__PURE__ */ /Macintosh|Mac/i.test(ua);
-const isLinux = /* @__PURE__ */ /Linux|X11/i.test(ua);
-const isIPadOS = isMac && navigator.maxTouchPoints > 0;
-function getScreenFix() {
-  return /^Apple/.test(navigator.vendor) && typeof window.orientation === "number";
-}
-function isLandscape(screenFix) {
-  return screenFix && Math.abs(window.orientation) === 90;
-}
-function getScreenWidth(screenFix, landscape) {
-  return screenFix ? Math[landscape ? "max" : "min"](screen.width, screen.height) : screen.width;
-}
-function getScreenHeight(screenFix, landscape) {
-  return screenFix ? Math[landscape ? "min" : "max"](screen.height, screen.width) : screen.height;
-}
-function getWindowWidth(screenWidth) {
-  return Math.min(
-    window.innerWidth,
-    document.documentElement.clientWidth,
-    screenWidth
-  ) || screenWidth;
-}
-function getBaseSystemInfo() {
-  const screenFix = getScreenFix();
-  const windowWidth = getWindowWidth(
-    getScreenWidth(screenFix, isLandscape(screenFix))
-  );
+const getSystemSafeAreaInsets = function() {
   return {
-    platform: isIOS ? "ios" : "other",
-    pixelRatio: window.devicePixelRatio,
-    windowWidth
+    top: safeAreaInsets$1.top,
+    right: safeAreaInsets$1.right,
+    bottom: safeAreaInsets$1.bottom,
+    left: safeAreaInsets$1.left
   };
-}
-const getWindowInfo = /* @__PURE__ */ defineSyncApi(
-  "getWindowInfo",
-  () => {
-    const pixelRatio = window.devicePixelRatio;
-    const screenFix = getScreenFix();
-    const landscape = isLandscape(screenFix);
-    const screenWidth = getScreenWidth(screenFix, landscape);
-    const screenHeight = getScreenHeight(screenFix, landscape);
-    const windowWidth = getWindowWidth(screenWidth);
-    let windowHeight = window.innerHeight;
-    const statusBarHeight = safeAreaInsets$1.top;
-    const safeArea = {
-      left: safeAreaInsets$1.left,
-      right: windowWidth - safeAreaInsets$1.right,
-      top: safeAreaInsets$1.top,
-      bottom: windowHeight - safeAreaInsets$1.bottom,
-      width: windowWidth - safeAreaInsets$1.left - safeAreaInsets$1.right,
-      height: windowHeight - safeAreaInsets$1.top - safeAreaInsets$1.bottom
-    };
-    const { top: windowTop, bottom: windowBottom } = getWindowOffset();
-    windowHeight -= windowTop;
-    windowHeight -= windowBottom;
-    return {
-      windowTop,
-      windowBottom,
-      windowWidth,
-      windowHeight,
-      pixelRatio,
-      screenWidth,
-      screenHeight,
-      statusBarHeight,
-      safeArea,
-      safeAreaInsets: {
-        top: safeAreaInsets$1.top,
-        right: safeAreaInsets$1.right,
-        bottom: safeAreaInsets$1.bottom,
-        left: safeAreaInsets$1.left
-      },
-      screenTop: screenHeight - windowHeight
-    };
-  }
-);
+};
 let escBackPageNum = 0;
 const homeDialogPages = [];
 const homeSystemDialogPages = [];
@@ -8258,13 +8192,47 @@ class UniPageImpl {
     this.$vm = vm;
   }
   get innerWidth() {
-    return getWindowInfo().windowWidth;
+    const currentPage = getCurrentPage();
+    if (currentPage !== this) {
+      throw new Error("Can't get innerWidth of other page");
+    }
+    const pageWrapper = document.querySelector("uni-page-wrapper");
+    return pageWrapper.clientWidth;
   }
   get innerHeight() {
-    return getWindowInfo().windowHeight;
+    const currentPage = getCurrentPage();
+    if (currentPage !== this) {
+      throw new Error("Can't get innerHeight of other page");
+    }
+    const pageWrapper = document.querySelector("uni-page-wrapper");
+    return pageWrapper.clientHeight;
   }
   get safeAreaInsets() {
-    return getWindowInfo().safeAreaInsets;
+    const currentPage = getCurrentPage();
+    if (currentPage !== this) {
+      throw new Error("Can't get safeAreaInsets of other page");
+    }
+    const pageWrapper = document.querySelector(
+      "uni-page-wrapper"
+    );
+    const pageWrapperRect = pageWrapper.getBoundingClientRect();
+    const systemSafeAreaInsets = getSystemSafeAreaInsets();
+    const bodyRect = document.body.getBoundingClientRect();
+    const pageWrapperEdge = {
+      top: pageWrapperRect.top,
+      left: pageWrapperRect.left,
+      right: bodyRect.right - pageWrapperRect.right,
+      bottom: bodyRect.bottom - pageWrapperRect.bottom
+    };
+    const computeEdge = (bodyEdge, nativeEdge) => {
+      return Math.max(0, nativeEdge - bodyEdge);
+    };
+    return {
+      top: computeEdge(pageWrapperEdge.top, systemSafeAreaInsets.top),
+      left: computeEdge(pageWrapperEdge.left, systemSafeAreaInsets.left),
+      right: computeEdge(pageWrapperEdge.right, systemSafeAreaInsets.right),
+      bottom: computeEdge(pageWrapperEdge.bottom, systemSafeAreaInsets.bottom)
+    };
   }
   getPageStyle() {
     var _a;
@@ -8845,6 +8813,43 @@ function getRealPath(filePath) {
     );
   }
   return filePath;
+}
+const ua = navigator.userAgent;
+const isAndroid = /* @__PURE__ */ /android/i.test(ua);
+const isIOS = /* @__PURE__ */ /iphone|ipad|ipod/i.test(ua);
+const isWindows = /* @__PURE__ */ ua.match(/Windows NT ([\d|\d.\d]*)/i);
+const isMac = /* @__PURE__ */ /Macintosh|Mac/i.test(ua);
+const isLinux = /* @__PURE__ */ /Linux|X11/i.test(ua);
+const isIPadOS = isMac && navigator.maxTouchPoints > 0;
+function getScreenFix() {
+  return /^Apple/.test(navigator.vendor) && typeof window.orientation === "number";
+}
+function isLandscape(screenFix) {
+  return screenFix && Math.abs(window.orientation) === 90;
+}
+function getScreenWidth(screenFix, landscape) {
+  return screenFix ? Math[landscape ? "max" : "min"](screen.width, screen.height) : screen.width;
+}
+function getScreenHeight(screenFix, landscape) {
+  return screenFix ? Math[landscape ? "min" : "max"](screen.height, screen.width) : screen.height;
+}
+function getWindowWidth(screenWidth) {
+  return Math.min(
+    window.innerWidth,
+    document.documentElement.clientWidth,
+    screenWidth
+  ) || screenWidth;
+}
+function getBaseSystemInfo() {
+  const screenFix = getScreenFix();
+  const windowWidth = getWindowWidth(
+    getScreenWidth(screenFix, isLandscape(screenFix))
+  );
+  return {
+    platform: isIOS ? "ios" : "other",
+    pixelRatio: window.devicePixelRatio,
+    windowWidth
+  };
 }
 function operateVideoPlayer(videoId, pageId, type, data) {
   UniServiceJSBridge.invokeViewMethod(
@@ -18698,19 +18703,44 @@ const index$h = /* @__PURE__ */ defineBuiltInComponent({
     } = useListViewState(props2);
     provide("__listViewIsVertical", isVertical);
     provide("__listViewDefaultItemSize", state2.defaultItemSize);
-    const onItemChange = debounce(() => {
+    provide("__listViewDefaultHeaderSize", state2.defaultHeaderSize);
+    const rearrangeDebounce = debounce(() => {
       nextTick(() => {
         _rearrange();
       });
-    }, 10, {
+    }, 5, {
       clearTimeout,
       setTimeout
     });
+    const childStatus = [];
     provide("__listViewRegisterItem", (status) => {
-      onItemChange();
+      childStatus.push(status);
+      rearrangeDebounce();
     });
     provide("__listViewUnregisterItem", (status) => {
-      onItemChange();
+      const index2 = childStatus.indexOf(status);
+      childStatus.splice(index2, 1);
+      rearrangeDebounce();
+    });
+    provide("__listViewFirstItemRendered", (status) => {
+      state2.defaultItemSize = status.cachedSize;
+      state2.defaultItemSizeUpdated = true;
+    });
+    watch(() => {
+      return state2.defaultHeaderSize;
+    }, (value) => {
+      rearrangeDebounce();
+    });
+    watch(() => {
+      return state2.defaultItemSize;
+    }, () => {
+      childStatus.forEach((status) => {
+        if (status.cachedSizeUpdated) {
+          return;
+        }
+        status.cachedSize = state2.defaultItemSize;
+      });
+      rearrangeDebounce();
     });
     const trigger = useCustomEvent(rootRef, emit2);
     handleTouchEvent(isVertical, containerRef, props2, state2, trigger, emit2);
@@ -18720,6 +18750,7 @@ const index$h = /* @__PURE__ */ defineBuiltInComponent({
     function resetContainerSize() {
       const containerEl = containerRef.value;
       state2.containerSize = isVertical.value ? containerEl.clientHeight : containerEl.clientWidth;
+      rearrangeDebounce();
     }
     watch(isVertical, () => {
       resetContainerSize();
@@ -18818,43 +18849,11 @@ const index$h = /* @__PURE__ */ defineBuiltInComponent({
       });
       rootElement.attachVmProps(props2);
     });
-    function forceRearrange() {
-      traverseAllItems(visibleVNode, (child) => {
-        const exposed = child.component.exposed;
-        if (exposed == null ? void 0 : exposed.__listViewChildStatus.seen.value) {
-          exposed.__listViewChildStatus.seen.value = false;
-        }
-      });
-      nextTick(() => {
-        nextTick(() => {
-          _rearrange();
-        });
-      });
-    }
     function onResize2() {
-      resetContainerSize();
-      forceRearrange();
-    }
-    function traverseAllItems(visibleVNode2, callback) {
-      traverseListView(visibleVNode2, (child) => {
-        var _a;
-        const childType = (_a = child.component) == null ? void 0 : _a.type.name;
-        if (childType === "StickySection") {
-          traverseStickySection(child, function() {
-            var _a2;
-            const childType2 = (_a2 = child.component) == null ? void 0 : _a2.type.name;
-            if (childType2 === "ListItem") {
-              callback(child);
-            }
-          });
-        } else if (childType === "ListItem") {
-          callback(child);
-        } else if (childType === "StickyHeader")
-          ;
-        else if (child.component && child.component.subTree) {
-          traverseAllItems(child.component.subTree, callback);
-        }
+      childStatus.forEach((status) => {
+        status.cachedSizeUpdated = false;
       });
+      resetContainerSize();
     }
     function _rearrange() {
       rearrange(visibleVNode, containerRef, isVertical, state2);
@@ -18919,12 +18918,15 @@ function useListViewState(props2) {
   });
   const state2 = reactive({
     defaultItemSize: 40,
+    defaultItemSizeUpdated: false,
+    defaultHeaderSize: 40,
+    defaultHeaderSizeUpdated: false,
     totalSize: 0,
     placehoderSize: 0,
     visibleSize: 0,
     containerSize: 0,
-    cacheScreenCount: 5,
-    loadScreenThreshold: 3,
+    cacheScreenCount: 10,
+    loadScreenThreshold: 8,
     refresherHeight: 0,
     refreshState: ""
   });
@@ -18969,9 +18971,14 @@ function rearrange(visibleVNode, containerRef, isVertical, state2) {
       tempTotalSize += tailSize.value;
     } else if (childType === "ListItem") {
       const {
-        cachedSize
+        cachedSize,
+        cachedSizeUpdated
       } = status;
-      const itemSize = cachedSize;
+      if (cachedSizeUpdated && cachedSize > 0 && !state2.defaultItemSizeUpdated) {
+        state2.defaultItemSize = cachedSize;
+        state2.defaultItemSizeUpdated = true;
+      }
+      const itemSize = cachedSize || state2.defaultItemSize;
       tempTotalSize += itemSize;
       if (!start && tempTotalSize > offsetMin) {
         start = true;
@@ -18990,9 +18997,14 @@ function rearrange(visibleVNode, containerRef, isVertical, state2) {
       }
     } else if (childType === "StickyHeader") {
       const {
-        cachedSize
+        cachedSize,
+        cachedSizeUpdated
       } = status;
-      tempTotalSize += cachedSize;
+      if (cachedSizeUpdated && cachedSize > 0 && !state2.defaultHeaderSizeUpdated) {
+        state2.defaultHeaderSize = cachedSize;
+        state2.defaultHeaderSizeUpdated = true;
+      }
+      tempTotalSize += cachedSize || state2.defaultHeaderSize;
       tempVisibleSize += cachedSize;
     }
   }
@@ -19175,36 +19187,39 @@ const index$g = /* @__PURE__ */ defineBuiltInComponent({
     const rootRef = ref(null);
     const isVertical = inject("__listViewIsVertical");
     const visible = ref(false);
-    const seen = ref(false);
     const status = {
       type: "ListItem",
       visible,
-      cachedSize: 0,
-      seen
+      cachedSize: inject("__listViewDefaultItemSize"),
+      cachedSizeUpdated: false
     };
     expose({
       __listViewChildStatus: status
     });
     const registerItem = inject("__listViewRegisterItem");
     const unregisterItem = inject("__listViewUnregisterItem");
+    const firstItemRendered = inject("__listViewFirstItemRendered");
     onMounted(() => {
       registerItem(status);
     });
     onBeforeUnmount(() => {
       unregisterItem(status);
     });
-    const realVisible = computed(() => {
-      return visible.value || !status.seen.value;
-    });
-    return () => {
+    watch(visible, (value) => {
+      if (!value || status.cachedSizeUpdated) {
+        return;
+      }
       nextTick(() => {
         const rootNode = rootRef.value;
-        if (realVisible.value && isHTMlElement(rootNode)) {
+        if (isHTMlElement(rootNode)) {
           status.cachedSize = getSize(isVertical.value, rootNode);
-          seen.value = true;
+          status.cachedSizeUpdated = true;
+          firstItemRendered(status);
         }
       });
-      if (!realVisible.value) {
+    });
+    return () => {
+      if (!visible.value) {
         return null;
       }
       return createVNode("uni-list-item", {
@@ -19299,7 +19314,8 @@ const index$e = /* @__PURE__ */ defineBuiltInComponent({
     });
     const status = {
       type: "StickyHeader",
-      cachedSize: 0
+      cachedSize: inject("__listViewDefaultHeaderSize"),
+      cachedSizeUpdated: false
     };
     expose({
       __listViewChildStatus: status
@@ -19308,13 +19324,14 @@ const index$e = /* @__PURE__ */ defineBuiltInComponent({
       const rootElement = rootRef.value;
       rootElement.attachVmProps(props2);
     });
+    onMounted(() => {
+      const rootEl = rootRef.value;
+      const rect = rootEl.getBoundingClientRect();
+      status.cachedSize = isVertical ? rect.height : rect.width;
+      status.cachedSizeUpdated = true;
+    });
     return () => {
       var _a;
-      nextTick(() => {
-        const rootEl = rootRef.value;
-        const rect = rootEl.getBoundingClientRect();
-        status.cachedSize = isVertical ? rect.height : rect.width;
-      });
       return createVNode("uni-sticky-header", {
         "ref": rootRef,
         "style": style.value
@@ -22273,6 +22290,48 @@ function deviceId$1() {
   }
   return deviceId;
 }
+const getWindowInfo = /* @__PURE__ */ defineSyncApi(
+  "getWindowInfo",
+  () => {
+    const pixelRatio = window.devicePixelRatio;
+    const screenFix = getScreenFix();
+    const landscape = isLandscape(screenFix);
+    const screenWidth = getScreenWidth(screenFix, landscape);
+    const screenHeight = getScreenHeight(screenFix, landscape);
+    const windowWidth = getWindowWidth(screenWidth);
+    let windowHeight = window.innerHeight;
+    const statusBarHeight = safeAreaInsets$1.top;
+    const safeArea = {
+      left: safeAreaInsets$1.left,
+      right: windowWidth - safeAreaInsets$1.right,
+      top: safeAreaInsets$1.top,
+      bottom: windowHeight - safeAreaInsets$1.bottom,
+      width: windowWidth - safeAreaInsets$1.left - safeAreaInsets$1.right,
+      height: windowHeight - safeAreaInsets$1.top - safeAreaInsets$1.bottom
+    };
+    const { top: windowTop, bottom: windowBottom } = getWindowOffset();
+    windowHeight -= windowTop;
+    windowHeight -= windowBottom;
+    return {
+      windowTop,
+      windowBottom,
+      windowWidth,
+      windowHeight,
+      pixelRatio,
+      screenWidth,
+      screenHeight,
+      statusBarHeight,
+      safeArea,
+      safeAreaInsets: {
+        top: safeAreaInsets$1.top,
+        right: safeAreaInsets$1.right,
+        bottom: safeAreaInsets$1.bottom,
+        left: safeAreaInsets$1.left
+      },
+      screenTop: screenHeight - windowHeight
+    };
+  }
+);
 let browserInfo;
 let _initBrowserInfo = true;
 function initBrowserInfo() {
