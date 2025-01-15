@@ -535,8 +535,8 @@
         "name": "previewImage",
         "app": {
           "js": false,
-          "kotlin": true,
-          "swift": true,
+          "kotlin": false,
+          "swift": false,
           "arkts": true
         }
       },
@@ -544,8 +544,8 @@
         "name": "closePreviewImage",
         "app": {
           "js": false,
-          "kotlin": true,
-          "swift": true,
+          "kotlin": false,
+          "swift": false,
           "arkts": true
         }
       },
@@ -701,6 +701,26 @@
     "provider": {
       "service": "payment",
       "name": "wxpay"
+    }
+  },
+  "uni-previewImage": {
+    "uni": {
+      "previewImage": {
+        "name": "previewImage",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true
+        }
+      },
+      "closePreviewImage": {
+        "name": "closePreviewImage",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true
+        }
+      }
     }
   },
   "uni-privacy": {
