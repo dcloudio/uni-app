@@ -1096,29 +1096,6 @@ const onEventStop = /* @__PURE__ */ vue.withModifiers(
   },
   ["stop"]
 );
-function getWindowOffsetCssVar(style, name) {
-  return parseInt((style.getPropertyValue(name).match(/\d+/) || ["0"])[0]);
-}
-function getWindowTop() {
-  const style = document.documentElement.style;
-  const top = getWindowOffsetCssVar(style, "--window-top");
-  return top ? top + safeAreaInsets$1.top : 0;
-}
-function getWindowOffset() {
-  const style = document.documentElement.style;
-  const top = getWindowTop();
-  const bottom = getWindowOffsetCssVar(style, "--window-bottom");
-  const left = getWindowOffsetCssVar(style, "--window-left");
-  const right = getWindowOffsetCssVar(style, "--window-right");
-  const topWindowHeight = getWindowOffsetCssVar(style, "--top-window-height");
-  return {
-    top,
-    bottom: bottom ? bottom + safeAreaInsets$1.bottom : 0,
-    left: left ? left + safeAreaInsets$1.left : 0,
-    right: right ? right + safeAreaInsets$1.right : 0,
-    topWindowHeight: topWindowHeight || 0
-  };
-}
 function updateCssVar(cssVars) {
   const style = document.documentElement.style;
   Object.keys(cssVars).forEach((name) => {
@@ -2983,67 +2960,14 @@ function isNormalDialogPageInstance(vm) {
 function isSystemDialogPageInstance(vm) {
   return vm.attrs["data-type"] === SYSTEM_DIALOG_TAG;
 }
-function getScreenFix() {
-  return /^Apple/.test(navigator.vendor) && typeof window.orientation === "number";
-}
-function isLandscape(screenFix) {
-  return screenFix && Math.abs(window.orientation) === 90;
-}
-function getScreenWidth(screenFix, landscape) {
-  return screenFix ? Math[landscape ? "max" : "min"](screen.width, screen.height) : screen.width;
-}
-function getScreenHeight(screenFix, landscape) {
-  return screenFix ? Math[landscape ? "min" : "max"](screen.height, screen.width) : screen.height;
-}
-function getWindowWidth(screenWidth) {
-  return Math.min(
-    window.innerWidth,
-    document.documentElement.clientWidth,
-    screenWidth
-  ) || screenWidth;
-}
-const getWindowInfo = /* @__PURE__ */ defineSyncApi(
-  "getWindowInfo",
-  () => {
-    const pixelRatio = window.devicePixelRatio;
-    const screenFix = getScreenFix();
-    const landscape = isLandscape(screenFix);
-    const screenWidth = getScreenWidth(screenFix, landscape);
-    const screenHeight = getScreenHeight(screenFix, landscape);
-    const windowWidth = getWindowWidth(screenWidth);
-    let windowHeight = window.innerHeight;
-    const statusBarHeight = safeAreaInsets$1.top;
-    const safeArea = {
-      left: safeAreaInsets$1.left,
-      right: windowWidth - safeAreaInsets$1.right,
-      top: safeAreaInsets$1.top,
-      bottom: windowHeight - safeAreaInsets$1.bottom,
-      width: windowWidth - safeAreaInsets$1.left - safeAreaInsets$1.right,
-      height: windowHeight - safeAreaInsets$1.top - safeAreaInsets$1.bottom
-    };
-    const { top: windowTop, bottom: windowBottom } = getWindowOffset();
-    windowHeight -= windowTop;
-    windowHeight -= windowBottom;
-    return {
-      windowTop,
-      windowBottom,
-      windowWidth,
-      windowHeight,
-      pixelRatio,
-      screenWidth,
-      screenHeight,
-      statusBarHeight,
-      safeArea,
-      safeAreaInsets: {
-        top: safeAreaInsets$1.top,
-        right: safeAreaInsets$1.right,
-        bottom: safeAreaInsets$1.bottom,
-        left: safeAreaInsets$1.left
-      },
-      screenTop: screenHeight - windowHeight
-    };
-  }
-);
+const getSystemSafeAreaInsets = function() {
+  return {
+    top: safeAreaInsets$1.top,
+    right: safeAreaInsets$1.right,
+    bottom: safeAreaInsets$1.bottom,
+    left: safeAreaInsets$1.left
+  };
+};
 const homeDialogPages = [];
 const homeSystemDialogPages = [];
 class UniPageImpl {
@@ -3059,13 +2983,47 @@ class UniPageImpl {
     this.$vm = vm;
   }
   get innerWidth() {
-    return getWindowInfo().windowWidth;
+    const currentPage = getCurrentPage();
+    if (currentPage !== this) {
+      throw new Error("Can't get innerWidth of other page");
+    }
+    const pageWrapper = document.querySelector("uni-page-wrapper");
+    return pageWrapper.clientWidth;
   }
   get innerHeight() {
-    return getWindowInfo().windowHeight;
+    const currentPage = getCurrentPage();
+    if (currentPage !== this) {
+      throw new Error("Can't get innerHeight of other page");
+    }
+    const pageWrapper = document.querySelector("uni-page-wrapper");
+    return pageWrapper.clientHeight;
   }
   get safeAreaInsets() {
-    return getWindowInfo().safeAreaInsets;
+    const currentPage = getCurrentPage();
+    if (currentPage !== this) {
+      throw new Error("Can't get safeAreaInsets of other page");
+    }
+    const pageWrapper = document.querySelector(
+      "uni-page-wrapper"
+    );
+    const pageWrapperRect = pageWrapper.getBoundingClientRect();
+    const systemSafeAreaInsets = getSystemSafeAreaInsets();
+    const bodyRect = document.body.getBoundingClientRect();
+    const pageWrapperEdge = {
+      top: pageWrapperRect.top,
+      left: pageWrapperRect.left,
+      right: bodyRect.right - pageWrapperRect.right,
+      bottom: bodyRect.bottom - pageWrapperRect.bottom
+    };
+    const computeEdge = (bodyEdge, nativeEdge) => {
+      return Math.max(0, nativeEdge - bodyEdge);
+    };
+    return {
+      top: computeEdge(pageWrapperEdge.top, systemSafeAreaInsets.top),
+      left: computeEdge(pageWrapperEdge.left, systemSafeAreaInsets.left),
+      right: computeEdge(pageWrapperEdge.right, systemSafeAreaInsets.right),
+      bottom: computeEdge(pageWrapperEdge.bottom, systemSafeAreaInsets.bottom)
+    };
   }
   getPageStyle() {
     var _a;
@@ -9482,25 +9440,51 @@ const index$g = /* @__PURE__ */ defineBuiltInComponent({
     } = useListViewState(props2);
     vue.provide("__listViewIsVertical", isVertical);
     vue.provide("__listViewDefaultItemSize", state.defaultItemSize);
-    const onItemChange = uniShared.debounce(() => {
+    vue.provide("__listViewDefaultHeaderSize", state.defaultHeaderSize);
+    const rearrangeDebounce = uniShared.debounce(() => {
       vue.nextTick(() => {
         _rearrange();
       });
-    }, 10, {
+    }, 5, {
       clearTimeout,
       setTimeout
     });
+    const childStatus = [];
     vue.provide("__listViewRegisterItem", (status) => {
-      onItemChange();
+      childStatus.push(status);
+      rearrangeDebounce();
     });
     vue.provide("__listViewUnregisterItem", (status) => {
-      onItemChange();
+      const index2 = childStatus.indexOf(status);
+      childStatus.splice(index2, 1);
+      rearrangeDebounce();
+    });
+    vue.provide("__listViewFirstItemRendered", (status) => {
+      state.defaultItemSize = status.cachedSize;
+      state.defaultItemSizeUpdated = true;
+    });
+    vue.watch(() => {
+      return state.defaultHeaderSize;
+    }, (value) => {
+      rearrangeDebounce();
+    });
+    vue.watch(() => {
+      return state.defaultItemSize;
+    }, () => {
+      childStatus.forEach((status) => {
+        if (status.cachedSizeUpdated) {
+          return;
+        }
+        status.cachedSize = state.defaultItemSize;
+      });
+      rearrangeDebounce();
     });
     const trigger = useCustomEvent(rootRef, emit2);
     handleTouchEvent(isVertical, containerRef, props2, state, trigger, emit2);
     function resetContainerSize() {
       const containerEl = containerRef.value;
       state.containerSize = isVertical.value ? containerEl.clientHeight : containerEl.clientWidth;
+      rearrangeDebounce();
     }
     vue.watch(isVertical, () => {
       resetContainerSize();
@@ -9529,43 +9513,11 @@ const index$g = /* @__PURE__ */ defineBuiltInComponent({
         containerRef.value.scrollLeft = val;
       }
     });
-    function forceRearrange() {
-      traverseAllItems(visibleVNode, (child) => {
-        const exposed = child.component.exposed;
-        if (exposed == null ? void 0 : exposed.__listViewChildStatus.seen.value) {
-          exposed.__listViewChildStatus.seen.value = false;
-        }
-      });
-      vue.nextTick(() => {
-        vue.nextTick(() => {
-          _rearrange();
-        });
-      });
-    }
     function onResize() {
-      resetContainerSize();
-      forceRearrange();
-    }
-    function traverseAllItems(visibleVNode2, callback) {
-      traverseListView(visibleVNode2, (child) => {
-        var _a;
-        const childType = (_a = child.component) == null ? void 0 : _a.type.name;
-        if (childType === "StickySection") {
-          traverseStickySection(child, function() {
-            var _a2;
-            const childType2 = (_a2 = child.component) == null ? void 0 : _a2.type.name;
-            if (childType2 === "ListItem") {
-              callback(child);
-            }
-          });
-        } else if (childType === "ListItem") {
-          callback(child);
-        } else if (childType === "StickyHeader")
-          ;
-        else if (child.component && child.component.subTree) {
-          traverseAllItems(child.component.subTree, callback);
-        }
+      childStatus.forEach((status) => {
+        status.cachedSizeUpdated = false;
       });
+      resetContainerSize();
     }
     function _rearrange() {
       rearrange(visibleVNode, containerRef, isVertical, state);
@@ -9627,12 +9579,15 @@ function useListViewState(props2) {
   });
   const state = vue.reactive({
     defaultItemSize: 40,
+    defaultItemSizeUpdated: false,
+    defaultHeaderSize: 40,
+    defaultHeaderSizeUpdated: false,
     totalSize: 0,
     placehoderSize: 0,
     visibleSize: 0,
     containerSize: 0,
-    cacheScreenCount: 5,
-    loadScreenThreshold: 3,
+    cacheScreenCount: 10,
+    loadScreenThreshold: 8,
     refresherHeight: 0,
     refreshState: ""
   });
@@ -9670,9 +9625,14 @@ function rearrange(visibleVNode, containerRef, isVertical, state) {
       tempTotalSize += tailSize.value;
     } else if (childType === "ListItem") {
       const {
-        cachedSize
+        cachedSize,
+        cachedSizeUpdated
       } = status;
-      const itemSize = cachedSize;
+      if (cachedSizeUpdated && cachedSize > 0 && !state.defaultItemSizeUpdated) {
+        state.defaultItemSize = cachedSize;
+        state.defaultItemSizeUpdated = true;
+      }
+      const itemSize = cachedSize || state.defaultItemSize;
       tempTotalSize += itemSize;
       if (!start && tempTotalSize > offsetMin) {
         start = true;
@@ -9691,9 +9651,14 @@ function rearrange(visibleVNode, containerRef, isVertical, state) {
       }
     } else if (childType === "StickyHeader") {
       const {
-        cachedSize
+        cachedSize,
+        cachedSizeUpdated
       } = status;
-      tempTotalSize += cachedSize;
+      if (cachedSizeUpdated && cachedSize > 0 && !state.defaultHeaderSizeUpdated) {
+        state.defaultHeaderSize = cachedSize;
+        state.defaultHeaderSizeUpdated = true;
+      }
+      tempTotalSize += cachedSize || state.defaultHeaderSize;
       tempVisibleSize += cachedSize;
     }
   }
@@ -9777,30 +9742,33 @@ const index$f = /* @__PURE__ */ defineBuiltInComponent({
     const rootRef = vue.ref(null);
     const isVertical = vue.inject("__listViewIsVertical");
     const visible = vue.ref(false);
-    const seen = vue.ref(false);
     const status = {
       type: "ListItem",
       visible,
-      cachedSize: 0,
-      seen
+      cachedSize: vue.inject("__listViewDefaultItemSize"),
+      cachedSizeUpdated: false
     };
     expose({
       __listViewChildStatus: status
     });
     vue.inject("__listViewRegisterItem");
     vue.inject("__listViewUnregisterItem");
-    const realVisible = vue.computed(() => {
-      return visible.value || !status.seen.value;
-    });
-    return () => {
+    const firstItemRendered = vue.inject("__listViewFirstItemRendered");
+    vue.watch(visible, (value) => {
+      if (!value || status.cachedSizeUpdated) {
+        return;
+      }
       vue.nextTick(() => {
         const rootNode = rootRef.value;
-        if (realVisible.value && isHTMlElement(rootNode)) {
+        if (isHTMlElement(rootNode)) {
           status.cachedSize = getSize(isVertical.value, rootNode);
-          seen.value = true;
+          status.cachedSizeUpdated = true;
+          firstItemRendered(status);
         }
       });
-      if (!realVisible.value) {
+    });
+    return () => {
+      if (!visible.value) {
         return null;
       }
       return vue.createVNode("uni-list-item", {
@@ -9867,7 +9835,7 @@ const index$d = /* @__PURE__ */ defineBuiltInComponent({
     expose
   }) {
     const rootRef = vue.ref(null);
-    const isVertical = vue.inject("__listViewIsVertical");
+    vue.inject("__listViewIsVertical");
     const style = vue.computed(() => {
       return {
         paddingTop: props2.padding[0] + "px",
@@ -9879,18 +9847,14 @@ const index$d = /* @__PURE__ */ defineBuiltInComponent({
     });
     const status = {
       type: "StickyHeader",
-      cachedSize: 0
+      cachedSize: vue.inject("__listViewDefaultHeaderSize"),
+      cachedSizeUpdated: false
     };
     expose({
       __listViewChildStatus: status
     });
     return () => {
       var _a;
-      vue.nextTick(() => {
-        const rootEl = rootRef.value;
-        const rect = rootEl.getBoundingClientRect();
-        status.cachedSize = isVertical ? rect.height : rect.width;
-      });
       return vue.createVNode("uni-sticky-header", {
         "ref": rootRef,
         "style": style.value

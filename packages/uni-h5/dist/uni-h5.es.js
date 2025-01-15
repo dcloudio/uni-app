@@ -5598,8 +5598,13 @@ const ChooseFileOptions = {
       if (extension instanceof Array && extension.length === 0) {
         return "param extension should not be empty.";
       }
-      if (!extension)
-        params.extension = [""];
+      if (!extension) {
+        if (params.type === "all" || !params.type) {
+          params.extension = [""];
+        } else {
+          params.extension = ["*"];
+        }
+      }
     }
   }
 };
