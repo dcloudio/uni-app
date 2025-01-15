@@ -13,6 +13,7 @@ import type {
 } from '@dcloudio/uni-app-x/types/page'
 //#if !_NODE_JS_
 import { closeDialogPage } from '../../service/api/route/closeDialogPage'
+import safeAreaInsets from 'safe-area-insets'
 //#endif
 import {
   currentPagesMap,
@@ -21,8 +22,8 @@ import {
 import type { RouteLocationNormalizedLoadedGeneric } from 'vue-router'
 import { isDialogPageInstance } from '../helpers/utils'
 import type { UniSafeAreaInsets } from '@dcloudio/uni-app-x/types/native/UniSafeAreaInsets'
-import safeAreaInsets from 'safe-area-insets'
 
+//#if !_NODE_JS_
 const getSystemSafeAreaInsets = function () {
   return {
     top: safeAreaInsets.top,
@@ -31,6 +32,7 @@ const getSystemSafeAreaInsets = function () {
     left: safeAreaInsets.left,
   }
 }
+//#endif
 
 let escBackPageNum = 0
 type PageStyle = {
@@ -53,6 +55,9 @@ class UniPageImpl implements UniPage {
   vm: ComponentPublicInstance | null
   $vm: ComponentPublicInstance | null
   get innerWidth(): number {
+    if (__NODE_JS__) {
+      throw new Error('Not support innerWidth in non-browser environment')
+    }
     const currentPage = getCurrentPage() as unknown as UniPage
     if (currentPage !== this) {
       throw new Error("Can't get innerWidth of other page")
@@ -62,6 +67,9 @@ class UniPageImpl implements UniPage {
     return pageWrapper!.clientWidth
   }
   get innerHeight(): number {
+    if (__NODE_JS__) {
+      throw new Error('Not support innerHeight in non-browser environment')
+    }
     const currentPage = getCurrentPage() as unknown as UniPage
     if (currentPage !== this) {
       throw new Error("Can't get innerHeight of other page")
@@ -71,6 +79,9 @@ class UniPageImpl implements UniPage {
     return pageWrapper!.clientHeight
   }
   get safeAreaInsets(): UniSafeAreaInsets {
+    if (__NODE_JS__) {
+      throw new Error('Not support safeAreaInsets in non-browser environment')
+    }
     const currentPage = getCurrentPage() as unknown as UniPage
     if (currentPage !== this) {
       throw new Error("Can't get safeAreaInsets of other page")
@@ -160,6 +171,9 @@ class UniPageImpl implements UniPage {
     this.setPageStyle(style)
   }
   getElementById(id: string.IDString | string): UniElement | null {
+    if (__NODE_JS__) {
+      return null
+    }
     const currentPage = getCurrentPage() as unknown as UniPage
     if (currentPage !== this) {
       return null
@@ -176,6 +190,9 @@ class UniPageImpl implements UniPage {
     return null
   }
   getHTMLElement() {
+    if (__NODE_JS__) {
+      return null
+    }
     const currentPage = getCurrentPage() as unknown as UniPage
     if (currentPage !== this) {
       return null
@@ -224,6 +241,9 @@ export class UniDialogPageImpl extends UniPageImpl implements UniDialogPage {
   $disableEscBack: boolean = false
   $triggerParentHide: boolean = false
   getElementById(id: string.IDString | string): UniElement | null {
+    if (__NODE_JS__) {
+      return null
+    }
     const currentPage = getCurrentPage() as unknown as UniPage
     if (currentPage !== this.getParentPage()) {
       return null
@@ -236,6 +256,9 @@ export class UniDialogPageImpl extends UniPageImpl implements UniDialogPage {
       : null
   }
   getHTMLElement() {
+    if (__NODE_JS__) {
+      return null
+    }
     const currentPage = getCurrentPage() as unknown as UniPage
     if (currentPage !== this.getParentPage()) {
       return null
