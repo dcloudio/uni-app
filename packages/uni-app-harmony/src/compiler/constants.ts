@@ -50,4 +50,8 @@ export const ExtApiBlackListX = [
   // 'uni-chooseMedia',
 ]
 
-export const ExtApiBlackList = ['uni-loadFontFace', 'uni-getElementById']
+export const ExtApiBlackList = [
+  'uni-loadFontFace',
+  'uni-getElementById',
+  'uni-document',
+]
