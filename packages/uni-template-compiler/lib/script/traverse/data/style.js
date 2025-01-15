@@ -126,13 +126,22 @@ module.exports = function processStyle (paths, path, state) {
   if (stylePath) {
     const styleValuePath = stylePath.get('value')
     if (styleValuePath.isObjectExpression()) {
-      styleValuePath.replaceWith(
-        processStaticStyle(
-          processStyleObjectExpression(styleValuePath),
-          staticStylePath,
-          state
-        )
+      // 非静态内容
+      const hasDynamicContent = styleValuePath.node.properties.some(prop =>
+        !t.isObjectProperty(prop) || !t.isObjectExpression(prop.value)
       )
+      // 处理 {a?b:c} 语法
+      if (hasDynamicContent) {
+        generateGetStyle(stylePath, styleValuePath, staticStylePath, state)
+      } else {
+        styleValuePath.replaceWith(
+          processStaticStyle(
+            processStyleObjectExpression(styleValuePath),
+            staticStylePath,
+            state
+          )
+        )
+      }
     } else if (styleValuePath.isArrayExpression()) { // array
       const elementPaths = styleValuePath.get('elements')
       const dynamicStyle = elementPaths.find(elementPath => !elementPath.isObjectExpression())
