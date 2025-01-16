@@ -1,5 +1,6 @@
 import UniActionSheetPage from '@dcloudio/uni-ext-api/uni-actionSheet/pages/actionSheet/actionSheet.vue'
 import UniChooseLocationPage from '@dcloudio/uni-ext-api/uni-chooseLocation/pages/chooseLocation/chooseLocation.vue'
+import UniPreviewImagePage from '@dcloudio/uni-ext-api/uni-previewImage/pages/previewImage/previewImage.vue'
 import { registerSystemRoute } from './framework/route'
 
 export function registerSystemPages() {
@@ -7,6 +8,9 @@ export function registerSystemPages() {
     disableSwipeBack: false,
   })
   registerSystemRoute('uni:chooseLocation', UniChooseLocationPage, {
+    disableSwipeBack: false,
+  })
+  registerSystemRoute('uni:previewImage', UniPreviewImagePage, {
     disableSwipeBack: false,
   })
 }

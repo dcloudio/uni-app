@@ -992,8 +992,12 @@ function initWrapper(protocols) {
          * 注意：
          * - 此处method为原始全局对象上的uni方法名对应的属性值，比如method值可能为my.login，即undefined
          * - uni.env并非方法，但是也会被传入wrapper
+         * - 开发者自定义的方法属性也会进入此方法，此时method为undefined，应返回undefined
          */
         const hasProtocol = hasOwn(protocols, methodName);
+        if (!hasProtocol && typeof wx[methodName] !== 'function') {
+            return method;
+        }
         const needWrapper = hasProtocol ||
             isFunction(protocols.returnValue) ||
             isContextApi(methodName) ||

@@ -6,6 +6,7 @@
 interface ArrayBuffer {
   /**
      ArrayBuffer 实例的 byteLength 访问器属性返回该数组缓冲区的长度（以字节为单位）。
+     @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/arraybuffer.html#bytelength
      @uniPlatform {
         "app": {
             "android": {
@@ -18,9 +19,9 @@ interface ArrayBuffer {
             "ios": {
                 "osVer": "12.0",
                 "uniVer": "√",
-                "uniUtsPlugin": "x",
-                "unixVer": "x",
-                "unixUtsPlugin": "x"
+                "uniUtsPlugin": "4.51",
+                "unixVer": "√",
+                "unixUtsPlugin": "4.51"
               },
             "harmony": {
                "osVer": "x",
@@ -47,6 +48,7 @@ interface ArrayBuffer {
      如果 end >= buffer.length 或省略了 end，则会使用 buffer.length，则会导致直到末尾的所有元素都被提取。
      如果标准化后的 end 位置在 start 位置之前，则不会提取任何内容。
      @return 一个新的 ArrayBuffer 对象。
+     @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/arraybuffer.html#slice-begin-end
      @uniPlatform {
         "app": {
             "android": {
@@ -59,9 +61,9 @@ interface ArrayBuffer {
             "ios": {
                 "osVer": "12.0",
                 "uniVer": "√",
-                "uniUtsPlugin": "x",
-                "unixVer": "x",
-                "unixUtsPlugin": "x"
+                "uniUtsPlugin": "4.51",
+                "unixVer": "√",
+                "unixUtsPlugin": "4.51"
               },
             "harmony": {
                "osVer": "x",
@@ -89,7 +91,7 @@ interface ArrayBuffer {
                 "unixUtsPlugin": "4.25"
             },
             "ios": {
-                "osVer": "12.0",
+                "osVer": "x",
                 "uniVer": "x",
                 "uniUtsPlugin": "x",
                 "unixVer": "x",
@@ -108,12 +110,46 @@ interface ArrayBuffer {
      }
    */
   toByteBuffer() : ByteBuffer;
+  /**
+     ArrayBuffer 实例的 toData() 方法返回一个 iOS 原生 Data 对象。
+     @return iOS 原生 Data 对象。
+     @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/arraybuffer.html#toData
+     @uniPlatform {
+        "app": {
+            "android": {
+                "osVer": "x",
+                "uniVer": "x",
+                "uniUtsPlugin": "x",
+                "unixVer": "x",
+                "unixUtsPlugin": "x"
+            },
+            "ios": {
+                "osVer": "12.0",
+                "uniVer": "√",
+                "uniUtsPlugin": "4.51",
+                "unixVer": "√",
+                "unixUtsPlugin": "4.51"
+              },
+            "harmony": {
+               "osVer": "x",
+               "uniVer": "x",
+               "unixVer": "x"
+            }
+        },
+        "web": {
+           "uniVer": "x",
+           "unixVer": "x"
+        }
+     }
+   */
+  toData() : Data;
 }
 interface ArrayBufferConstructor {
   /**
      构造函数创建一个以字节为单位的给定长度的新 ArrayBuffer
      @param byteLength 长度，单位字节
      @return ArrayBuffer
+     @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/arraybuffer.html#constructor-bytelength
      @uniPlatform {
         "app": {
             "android": {
@@ -126,9 +162,9 @@ interface ArrayBufferConstructor {
             "ios": {
                 "osVer": "12.0",
                 "uniVer": "√",
-                "uniUtsPlugin": "x",
-                "unixVer": "x",
-                "unixUtsPlugin": "x"
+                "uniUtsPlugin": "4.51",
+                "unixVer": "√",
+                "unixUtsPlugin": "4.51"
               },
             "harmony": {
                "osVer": "x",
@@ -147,6 +183,7 @@ interface ArrayBufferConstructor {
      ArrayBuffer.isView() 静态方法用于确定传递的值是否是 ArrayBuffer 视图之一。
      @param arg 需要检测的值。
      @return 如果 arg 是 ArrayBuffer 视图之一，则返回 true，例如类型化数组对象或者 DataView。否则返回 false。
+     @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/arraybuffer.html#isView
      @uniPlatform {
         "app": {
             "android": {
@@ -159,9 +196,9 @@ interface ArrayBufferConstructor {
             "ios": {
                 "osVer": "12.0",
                 "uniVer": "√",
-                "uniUtsPlugin": "x",
-                "unixVer": "x",
-                "unixUtsPlugin": "x"
+                "uniUtsPlugin": "4.51",
+                "unixVer": "√",
+                "unixUtsPlugin": "4.51"
               },
             "harmony": {
                "osVer": "x",
@@ -190,7 +227,7 @@ interface ArrayBufferConstructor {
                 "unixUtsPlugin": "4.25"
             },
             "ios": {
-                "osVer": "12.0",
+                "osVer": "x",
                 "uniVer": "x",
                 "uniUtsPlugin": "x",
                 "unixVer": "x",
@@ -209,6 +246,40 @@ interface ArrayBufferConstructor {
      }
    */
   fromByteBuffer(byteBuffer : ByteBuffer) : ArrayBuffer;
+  /**
+     ArrayBuffer.fromData() 静态方法用于将 iOS 原生的 Data 对象转换为 ArrayBuffer
+     @param data iOS 原生 Data 对象
+     @return ArrayBuffer
+     @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/arraybuffer.html#fromData
+     @uniPlatform {
+        "app": {
+            "android": {
+                "osVer": "x",
+                "uniVer": "x",
+                "uniUtsPlugin": "",
+                "unixVer": "x",
+                "unixUtsPlugin": "x"
+            },
+            "ios": {
+                "osVer": "12.0",
+                "uniVer": "√",
+                "uniUtsPlugin": "4.51",
+                "unixVer": "√",
+                "unixUtsPlugin": "4.51"
+              },
+            "harmony": {
+               "osVer": "x",
+               "uniVer": "x",
+               "unixVer": "x"
+            }
+        },
+        "web": {
+           "uniVer": "x",
+           "unixVer": "x"
+        }
+     }
+   */
+  fromData(data : Data) : ArrayBuffer;
 }
 /**
  * Allowed ArrayBuffer types for the buffer of an ArrayBufferView and related Typed Arrays.
