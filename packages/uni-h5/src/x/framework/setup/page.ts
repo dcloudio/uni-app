@@ -22,6 +22,7 @@ import {
 import type { RouteLocationNormalizedLoadedGeneric } from 'vue-router'
 import { isDialogPageInstance } from '../helpers/utils'
 import type { UniSafeAreaInsets } from '@dcloudio/uni-app-x/types/native/UniSafeAreaInsets'
+import type { UniPageBody } from '@dcloudio/uni-app-x/types/UniPage'
 
 //#if !_NODE_JS_
 const getSystemSafeAreaInsets = function () {
@@ -49,34 +50,35 @@ type PageStyle = {
 export const homeDialogPages: UniDialogPage[] = []
 export const homeSystemDialogPages: UniDialogPage[] = []
 
+function getPageWrapperInfo() {
+  const pageWrapper = document.querySelector('uni-page-wrapper') as HTMLElement
+  const pageWrapperRect = pageWrapper.getBoundingClientRect()
+
+  const bodyRect = document.body.getBoundingClientRect()
+  return {
+    top: pageWrapperRect.top,
+    left: pageWrapperRect.left,
+    right: bodyRect.right - pageWrapperRect.right,
+    bottom: bodyRect.bottom - pageWrapperRect.bottom,
+    width: pageWrapperRect.width,
+    height: pageWrapperRect.height,
+  }
+}
+
 class UniPageImpl implements UniPage {
   route: string
   options: UTSJSONObject
   vm: ComponentPublicInstance | null
   $vm: ComponentPublicInstance | null
-  get innerWidth(): number {
+  get pageBody(): UniPageBody {
     if (__NODE_JS__) {
-      throw new Error('Not support innerWidth in non-browser environment')
+      throw new Error('Not support pageBody in non-browser environment')
     }
     const currentPage = getCurrentPage() as unknown as UniPage
     if (currentPage !== this) {
-      throw new Error("Can't get innerWidth of other page")
+      throw new Error("Can't get pageBody of other page")
     }
-    // 非uni-app-x uni-page-body是自动高度
-    const pageWrapper = document.querySelector('uni-page-wrapper')
-    return pageWrapper!.clientWidth
-  }
-  get innerHeight(): number {
-    if (__NODE_JS__) {
-      throw new Error('Not support innerHeight in non-browser environment')
-    }
-    const currentPage = getCurrentPage() as unknown as UniPage
-    if (currentPage !== this) {
-      throw new Error("Can't get innerHeight of other page")
-    }
-    // 非uni-app-x uni-page-body是自动高度
-    const pageWrapper = document.querySelector('uni-page-wrapper')
-    return pageWrapper!.clientHeight
+    return getPageWrapperInfo()
   }
   get safeAreaInsets(): UniSafeAreaInsets {
     if (__NODE_JS__) {
@@ -86,19 +88,8 @@ class UniPageImpl implements UniPage {
     if (currentPage !== this) {
       throw new Error("Can't get safeAreaInsets of other page")
     }
-    const pageWrapper = document.querySelector(
-      'uni-page-wrapper'
-    ) as HTMLElement
-    const pageWrapperRect = pageWrapper.getBoundingClientRect()
+    const pageWrapperEdge = getPageWrapperInfo()
     const systemSafeAreaInsets = getSystemSafeAreaInsets()
-
-    const bodyRect = document.body.getBoundingClientRect()
-    const pageWrapperEdge = {
-      top: pageWrapperRect.top,
-      left: pageWrapperRect.left,
-      right: bodyRect.right - pageWrapperRect.right,
-      bottom: bodyRect.bottom - pageWrapperRect.bottom,
-    }
 
     const computeEdge = (bodyEdge: number, nativeEdge: number) => {
       return Math.max(0, nativeEdge - bodyEdge)
