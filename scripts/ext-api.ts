@@ -135,7 +135,13 @@ async function checkExtApiDir(target: Target, name: string) {
   if (fs.existsSync(currentExtApiDir)) {
     fs.emptyDirSync(currentExtApiDir)
   }
-  const extApiDir = path.resolve(process.env.UNI_APP_EXT_API_DIR!)
+  let extApiDir = path.resolve(process.env.UNI_APP_EXT_API_DIR!)
+  if (
+    process.env.UNI_APP_EXT_API_DCLOUD_DIR &&
+    !fs.existsSync(path.resolve(extApiDir, name))
+  ) {
+    extApiDir = path.resolve(process.env.UNI_APP_EXT_API_DCLOUD_DIR!)
+  }
   // 拷贝到临时目录
   fs.copySync(path.resolve(extApiDir, name), currentExtApiDir)
   // 重命名后缀
@@ -168,42 +174,46 @@ async function checkExtApiTypes(target: Target) {
   })
 }
 
-export function syncPagesFile(apiDir: string) {
+export function syncPagesFile(apiDirs: string[]) {
   const systemPagePaths: Record<string, string> = {}
-  if (apiDir && fs.existsSync(apiDir)) {
-    const importCodes: string[] = []
-    const registerCodes: string[] = []
-    fs.readdirSync(apiDir).forEach((module) => {
-      const pagesDir = path.resolve(apiDir, module, 'pages')
-      if (fs.existsSync(pagesDir)) {
-        fs.readdirSync(pagesDir).forEach((page) => {
-          if (fs.existsSync(path.resolve(pagesDir, page, page + '.uvue'))) {
-            const utssdkDir = path.resolve(apiDir, module, 'utssdk')
-            const hasIOS =
-              fs.existsSync(path.resolve(utssdkDir, 'index.uts')) ||
-              fs.existsSync(path.resolve(utssdkDir, 'app-ios', 'index.uts'))
-            if (!hasIOS) {
-              return
-            }
-            importCodes.push(
-              `import Uni${capitalize(
-                page
-              )}Page from '@dcloudio/uni-ext-api/${module}/pages/${page}/${page}.vue'`
-            )
-            registerCodes.push(
-              `  registerSystemRoute('uni:${page}', Uni${capitalize(
-                page
-              )}Page, {
+  const importCodes: string[] = []
+  const registerCodes: string[] = []
+  apiDirs.forEach((apiDir) => {
+    if (apiDir && fs.existsSync(apiDir)) {
+      fs.readdirSync(apiDir).forEach((module) => {
+        const pagesDir = path.resolve(apiDir, module, 'pages')
+        if (fs.existsSync(pagesDir)) {
+          fs.readdirSync(pagesDir).forEach((page) => {
+            if (fs.existsSync(path.resolve(pagesDir, page, page + '.uvue'))) {
+              const utssdkDir = path.resolve(apiDir, module, 'utssdk')
+              const hasIOS =
+                fs.existsSync(path.resolve(utssdkDir, 'index.uts')) ||
+                fs.existsSync(path.resolve(utssdkDir, 'app-ios', 'index.uts'))
+              if (!hasIOS) {
+                return
+              }
+              importCodes.push(
+                `import Uni${capitalize(
+                  page
+                )}Page from '@dcloudio/uni-ext-api/${module}/pages/${page}/${page}.vue'`
+              )
+              registerCodes.push(
+                `  registerSystemRoute('uni:${page}', Uni${capitalize(
+                  page
+                )}Page, {
     disableSwipeBack: false,
   })`
-            )
-            systemPagePaths[
-              `/uni_modules/${module}/pages/${page}/${page}`
-            ] = `uni:${page}`
-          }
-        })
-      }
-    })
+              )
+              systemPagePaths[
+                `/uni_modules/${module}/pages/${page}/${page}`
+              ] = `uni:${page}`
+            }
+          })
+        }
+      })
+    }
+  })
+  if (importCodes.length) {
     fs.writeFileSync(
       path.resolve(
         path.resolve(__dirname, '..', 'packages', 'uni-app-plus'),
