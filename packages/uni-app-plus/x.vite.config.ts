@@ -9,6 +9,8 @@ import {
   cssTarget,
   initPreContext,
   uniPrePlugin,
+  uniRemoveCssScopedPlugin,
+  uniUVueTypeScriptPlugin,
 } from '@dcloudio/uni-cli-shared'
 import { isAppIOSUVueNativeTag } from '@dcloudio/uni-shared'
 import autoprefixer from 'autoprefixer'
@@ -25,7 +27,10 @@ process.env.UNI_APP_X = 'true'
 process.env.UNI_UTS_PLATFORM = 'app-ios'
 initPreContext('app', {}, 'app-ios', true)
 
-const systemPagePaths = syncPagesFile()
+const systemPagePaths: Record<string, string> = {}
+if (process.env.UNI_APP_EXT_API_DIR) {
+  Object.assign(systemPagePaths, syncPagesFile(process.env.UNI_APP_EXT_API_DIR))
+}
 
 const rollupPlugins = [
   replace({
@@ -124,6 +129,8 @@ export default defineConfig({
   },
   plugins: [
     uniPrePlugin({} as any, { include: ['**/*.vue'] }),
+    uniUVueTypeScriptPlugin(),
+    uniRemoveCssScopedPlugin(),
     {
       name: 'uni-x:ios',
       configResolved(config) {
@@ -136,7 +143,11 @@ export default defineConfig({
       template: {
         compilerOptions: {
           isNativeTag: isAppIOSUVueNativeTag,
+          expressionPlugins: ['typescript'],
         },
+      },
+      script: {
+        babelParserPlugins: ['typescript'],
       },
     }),
     vueJsx({ optimize: true, isCustomElement: isAppIOSUVueNativeTag }),

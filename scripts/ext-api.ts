@@ -147,10 +147,15 @@ async function checkExtApiDir(target: Target, name: string) {
   })
   sync('**/*.uvue', {
     absolute: true,
-    cwd: path.resolve(currentExtApiDir, 'pages'),
+    cwd: currentExtApiDir,
   }).forEach((file) => {
     // 当前 next 仓库编译仅支持 vue 后缀
-    fs.renameSync(file, file.replace('.uvue', '.vue'))
+    const newFile = file.replace('.uvue', '.vue')
+    fs.renameSync(file, newFile)
+    const content = fs.readFileSync(newFile, 'utf-8')
+    if (content.includes('.uvue')) {
+      fs.writeFileSync(newFile, content.replace(/\.uvue(['"])/g, '.vue$1'))
+    }
   })
 
   await checkExtApiTypes(target)
@@ -163,9 +168,8 @@ async function checkExtApiTypes(target: Target) {
   })
 }
 
-export function syncPagesFile() {
+export function syncPagesFile(apiDir: string) {
   const systemPagePaths: Record<string, string> = {}
-  const apiDir = process.env.UNI_APP_EXT_API_DIR
   if (apiDir && fs.existsSync(apiDir)) {
     const importCodes: string[] = []
     const registerCodes: string[] = []
@@ -175,12 +179,10 @@ export function syncPagesFile() {
         fs.readdirSync(pagesDir).forEach((page) => {
           if (fs.existsSync(path.resolve(pagesDir, page, page + '.uvue'))) {
             const utssdkDir = path.resolve(apiDir, module, 'utssdk')
-            if (
-              !(
-                fs.existsSync(path.resolve(utssdkDir, 'index.uts')) ||
-                fs.existsSync(path.resolve(utssdkDir, 'web', 'index.uts'))
-              )
-            ) {
+            const hasIOS =
+              fs.existsSync(path.resolve(utssdkDir, 'index.uts')) ||
+              fs.existsSync(path.resolve(utssdkDir, 'app-ios', 'index.uts'))
+            if (!hasIOS) {
               return
             }
             importCodes.push(
