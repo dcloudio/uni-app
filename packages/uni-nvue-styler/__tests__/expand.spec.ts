@@ -741,7 +741,22 @@ describe('nvue-styler: expand', () => {
       '1px': [
         {
           type: 'decl',
-          prop: 'border-radius',
+          prop: 'border-top-left-radius',
+          value: '1px',
+        },
+        {
+          type: 'decl',
+          prop: 'border-top-right-radius',
+          value: '1px',
+        },
+        {
+          type: 'decl',
+          prop: 'border-bottom-right-radius',
+          value: '1px',
+        },
+        {
+          type: 'decl',
+          prop: 'border-bottom-left-radius',
           value: '1px',
         },
       ],
@@ -816,15 +831,12 @@ describe('nvue-styler: expand', () => {
       const decl = parseDecl(`.test {
   border-radius: ${value}
 }`)
-      if (!value.includes(' ')) {
-        expect(transformBorderRadius(decl)).toEqual([decl])
-      } else {
-        expect(transformBorderRadius(decl)).toEqual(
-          borderRadius[value].map((node) => {
-            return Object.assign({ raws: decl.raws, source: decl.source }, node)
-          })
-        )
-      }
+
+      expect(transformBorderRadius(decl)).toEqual(
+        borderRadius[value].map((node) => {
+          return Object.assign({ raws: decl.raws, source: decl.source }, node)
+        })
+      )
     })
   })
   test('transform flex-flow', () => {
