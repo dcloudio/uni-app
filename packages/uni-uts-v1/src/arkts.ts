@@ -6,6 +6,7 @@ import {
   normalizeUTSResult,
   resolveBundleInputFileName,
   resolveBundleInputRoot,
+  resolveUTSSourceMapPath,
 } from './utils'
 import type { CompileResult } from '.'
 import { sync } from 'fast-glob'
@@ -14,6 +15,7 @@ interface ArkTSCompilerOptions {
   isX?: boolean
   isExtApi?: boolean
   isOhpmPackage?: boolean
+  sourceMap?: boolean
   transform?: {
     uniExtApiProviderName?: string
     uniExtApiProviderService?: string
@@ -129,7 +131,7 @@ export async function compileArkTSExtApi(
   rootDir: string,
   pluginDir: string,
   outputDir: string,
-  { isExtApi, isX, isOhpmPackage = false, transform }: ArkTSCompilerOptions
+  { isExtApi, isX, isOhpmPackage = false, sourceMap }: ArkTSCompilerOptions
 ): Promise<CompileResult | void> {
   const filename = resolveAppHarmonyIndexFile(pluginDir)
   if (!filename) {
@@ -170,7 +172,9 @@ export async function compileArkTSExtApi(
       outFilename: 'utssdk/app-harmony/index.ets',
       package: '',
       imports: [],
-      sourceMap: false,
+      sourceMap: sourceMap
+        ? path.resolve(resolveUTSSourceMapPath(), 'uni_modules', pluginId)
+        : false,
       extname: '.ets',
       logFilename: false,
       isPlugin: true,
@@ -340,7 +344,7 @@ export default {
 
 export async function compileArkTS(
   pluginDir: string,
-  { isExtApi, isX, transform }: ArkTSCompilerOptions
+  options: ArkTSCompilerOptions
 ): Promise<CompileResult | void> {
   const inputDir = process.env.UNI_INPUT_DIR
   const pluginId = path.basename(pluginDir)
@@ -348,7 +352,7 @@ export async function compileArkTS(
     resolveBundleInputRoot('app-harmony', inputDir),
     pluginDir,
     resolveAppHarmonyUniModuleDir(pluginId),
-    { isExtApi, isX, transform }
+    options
   )
 }
 

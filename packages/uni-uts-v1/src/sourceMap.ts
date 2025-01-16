@@ -28,11 +28,13 @@ import {
 const EXTNAME = {
   kotlin: '.kt',
   swift: '.swift',
+  arkts: '.ets',
 }
 
 const PLATFORM_DIR = {
   kotlin: 'app-android',
   swift: 'app-ios',
+  arkts: 'app-harmony',
 }
 
 const uniModulesUTSPackagePrefix = 'uts.sdk.modules.'
@@ -166,7 +168,7 @@ export function resolveUTSSourceMapFile(
 }
 
 export function resolveUTSPluginSourceMapFile(
-  target: 'kotlin' | 'swift',
+  target: 'kotlin' | 'swift' | 'arkts',
   filename: string,
   inputDir: string,
   outputDir: string
@@ -179,13 +181,23 @@ export function resolveUTSPluginSourceMapFile(
     throw `plugin dir not found`
   }
   const is_uni_modules = basename(dirname(pluginDir)) === 'uni_modules'
-  const sourceMapFile = join(
-    join(outputDir, '../.sourcemap/app'),
-    relative(inputDir, pluginDir),
-    is_uni_modules ? 'utssdk' : '',
-    PLATFORM_DIR[target],
-    `index${EXTNAME[target]}.map`
-  )
+  const sourceMapFile =
+    target === 'arkts'
+      ? join(
+          outputDir,
+          '../.sourcemap/app-harmony',
+          relative(inputDir, pluginDir),
+          is_uni_modules ? 'utssdk' : '',
+          PLATFORM_DIR[target],
+          `index${EXTNAME[target]}.map`
+        )
+      : join(
+          join(outputDir, '../.sourcemap/app'),
+          relative(inputDir, pluginDir),
+          is_uni_modules ? 'utssdk' : '',
+          PLATFORM_DIR[target],
+          `index${EXTNAME[target]}.map`
+        )
   if (!existsSync(sourceMapFile)) {
     throw `${sourceMapFile} not found`
   }
@@ -199,7 +211,7 @@ function resolvePluginDir(
   outputDir: string,
   filename: string
 ) {
-  // 目标文件是编译后 kt 或 swift
+  // 目标文件是编译后 kt 或 swift 或 ets
   if (filename.startsWith(outputDir)) {
     const relativePath = relative(outputDir, filename)
     const hasSrc = normalizePath(relativePath).includes('/src/')

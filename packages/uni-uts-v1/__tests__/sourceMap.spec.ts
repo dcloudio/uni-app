@@ -56,6 +56,40 @@ describe('uts:sourceMap', () => {
     ).toBe(sourceMapFile)
   })
 
+  test('resolveUTSPluginSourceMapFile with uni_modules uts=>arkts', () => {
+    const sourceMapFile = resolveUTSPluginSourceMapFile(
+      'arkts',
+      resolve(inputDir, uniModulesPluginDir, 'utssdk/app-harmony/index.uts'),
+      inputDir,
+      outputDir
+    )
+    expect(
+      normalizePath(sourceMapFile).endsWith(
+        'uni_modules/test-uniplugin/utssdk/app-harmony/index.ets.map'
+      )
+    ).toBe(true)
+    expect(
+      resolveUTSPluginSourceMapFile(
+        'arkts',
+        resolve(inputDir, uniModulesPluginDir, 'utssdk/index.uts'),
+        inputDir,
+        outputDir
+      )
+    ).toBe(sourceMapFile)
+    expect(
+      resolveUTSPluginSourceMapFile(
+        'arkts',
+        resolve(
+          inputDir,
+          uniModulesPluginDir,
+          'utssdk/app-harmony/utils/utils.uts'
+        ),
+        inputDir,
+        outputDir
+      )
+    ).toBe(sourceMapFile)
+  })
+
   test('resolveUTSPluginSourceMapFile with uni_modules uts=>swift', () => {
     const sourceMapFile = resolveUTSPluginSourceMapFile(
       'swift',
