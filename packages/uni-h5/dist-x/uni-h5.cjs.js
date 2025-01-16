@@ -2784,14 +2784,9 @@ class UniPageImpl {
     this.vm = vm;
     this.$vm = vm;
   }
-  get innerWidth() {
+  get pageBody() {
     {
-      throw new Error("Not support innerWidth in non-browser environment");
-    }
-  }
-  get innerHeight() {
-    {
-      throw new Error("Not support innerHeight in non-browser environment");
+      throw new Error("Not support pageBody in non-browser environment");
     }
   }
   get safeAreaInsets() {
