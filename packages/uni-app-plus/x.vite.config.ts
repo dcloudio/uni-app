@@ -27,10 +27,14 @@ process.env.UNI_APP_X = 'true'
 process.env.UNI_UTS_PLATFORM = 'app-ios'
 initPreContext('app', {}, 'app-ios', true)
 
-const systemPagePaths: Record<string, string> = {}
+const apiDirs: string[] = []
 if (process.env.UNI_APP_EXT_API_DIR) {
-  Object.assign(systemPagePaths, syncPagesFile(process.env.UNI_APP_EXT_API_DIR))
+  apiDirs.push(process.env.UNI_APP_EXT_API_DIR)
 }
+if (process.env.UNI_APP_EXT_API_DCLOUD_DIR) {
+  apiDirs.push(process.env.UNI_APP_EXT_API_DCLOUD_DIR)
+}
+const systemPagePaths = syncPagesFile(apiDirs)
 
 const rollupPlugins = [
   replace({
