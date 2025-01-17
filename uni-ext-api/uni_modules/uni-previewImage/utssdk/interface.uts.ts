@@ -81,7 +81,6 @@ export type LongPressActionsOptions = {
 };
 
 export type PreviewImageOptions = {
-
 	/**
 	 * current 为当前显示图片的链接/索引值，不填或填写的值无效则为 urls 的第一张。APP平台仅支持索引值。
 	 * @type string | number
@@ -92,9 +91,101 @@ export type PreviewImageOptions = {
 	 */
 	urls : Array<string.ImageURIString>,
 	/**
-	 * 图片指示器样式
-	 * @default number
+	 * 是否显示长按菜单
 	 *
+	 * @uniPlatform {
+	 *	 "app": {
+	 *		"android": {
+	 *			"osVer": "5.0",
+	 *			"uniVer": "√",
+	 *			"unixVer": "x"
+	 *		},
+	 *		"ios": {
+	 *			"osVer": "10.0",
+	 *			"uniVer": "√",
+	 *			"unixVer": "x"
+	 *		},
+   *    "harmony": {
+   *      "osVer": "3.0",
+   *      "uniVer": "4.23",
+   *      "unixVer": "x"
+   *    }
+	 *	},
+	*  "mp": {
+	*    "weixin": {
+	*        "hostVer": "√",
+	*        "uniVer": "√",
+	*        "unixVer": "4.41"
+	*    },
+	*    "alipay": {
+	*        "hostVer": "√",
+	*        "uniVer": "√",
+	*        "unixVer": "x"
+	*    },
+	*    "baidu": {
+	*        "hostVer": "√",
+	*        "uniVer": "√",
+	*        "unixVer": "x"
+	*    },
+	*    "toutiao": {
+	*        "hostVer": "√",
+	*        "uniVer": "√",
+	*        "unixVer": "x"
+	*    },
+	*    "lark": {
+	*        "hostVer": "√",
+	*        "uniVer": "√",
+	*        "unixVer": "x"
+	*    },
+	*    "qq": {
+	*        "hostVer": "√",
+	*        "uniVer": "√",
+	*        "unixVer": "x"
+	*    },
+	*    "kuaishou": {
+	*        "hostVer": "√",
+	*        "uniVer": "√",
+	*        "unixVer": "x"
+	*    },
+	*    "jd": {
+	*        "hostVer": "√",
+	*        "uniVer": "√",
+	*        "unixVer": "x"
+	*    }
+	*  },
+	 *	"web": {
+	 *		"uniVer": "√",
+	 *		"unixVer": "x"
+	 *	}
+	 * }
+	 */
+	showmenu ?: boolean | null,
+	/**
+	 * 图片指示器样式
+	 *
+	 * @uniPlatform {
+	 *	 "app": {
+		 *		"android": {
+		 *			"osVer": "5.0",
+		 *			"uniVer": "√",
+		 *			"unixVer": "3.9"
+		 *		},
+		 *		"ios": {
+		 *			"osVer": "10.0",
+		 *			"uniVer": "√",
+		 *			"unixVer": "4.11"
+		 *		},
+   *    "harmony": {
+   *      "osVer": "x",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    }
+	 *	},
+	 *	"web": {
+	 *		"uniVer": "√",
+	 *		"unixVer": "x"
+	 *	}
+	 * }
 	 */
 	indicator ?:
 	/**
@@ -113,11 +204,99 @@ export type PreviewImageOptions = {
 	/**
 	 * 是否可循环预览
 	 * @type boolean
-	 * @default true
+	 * @uniPlatform {
+		   *	 "app": {
+				 *		"android": {
+				 *			"osVer": "5.0",
+				 *			"uniVer": "√",
+				 *			"unixVer": "3.9"
+				 *		},
+				 *		"ios": {
+				 *			"osVer": "10.0",
+				 *			"uniVer": "√",
+				 *			"unixVer": "4.11"
+				 *		},
+	 *    "harmony": {
+	 *      "osVer": "x",
+	 *      "uniVer": "x",
+	 *      "unixVer": "x"
+	 *    }
+		   *	},
+		 *	"web": {
+		 *		"uniVer": "√",
+		 *		"unixVer": "x"
+		 *	}
+		   * }
 	 */
 	loop ?: boolean | null,
 	/**
-	 * 长按图片显示操作菜单，如不填默认为保存相册。
+	 * 长按图片显示操作菜单。
+	 * @uniPlatform {
+	 *	 "app": {
+	 *		"android": {
+	 *			"osVer": "5.0",
+	 *			"uniVer": "√",
+	 *			"unixVer": "4.51"
+	 *		},
+	 *     "ios": {
+	 *			"osVer": "5.0",
+	 *			"uniVer": "√",
+	 *			"unixVer": "4.51"
+	 *		},
+   *    "harmony": {
+   *      "osVer": "x",
+   *      "uniVer": "x",
+   *      "unixVer": "x"
+   *    }
+	 *	},
+	 *    "web": {
+	 *      "osVer": "x",
+	 *      "uniVer": "x",
+	 *      "unixVer": "x"
+	 *    },
+	*  "mp": {
+	*    "weixin": {
+	*        "hostVer": "√",
+	*        "uniVer": "√",
+	*        "unixVer": "4.41"
+	*    },
+	*    "alipay": {
+	*        "hostVer": "√",
+	*        "uniVer": "√",
+	*        "unixVer": "x"
+	*    },
+	*    "baidu": {
+	*        "hostVer": "√",
+	*        "uniVer": "√",
+	*        "unixVer": "x"
+	*    },
+	*    "toutiao": {
+	*        "hostVer": "√",
+	*        "uniVer": "√",
+	*        "unixVer": "x"
+	*    },
+	*    "lark": {
+	*        "hostVer": "√",
+	*        "uniVer": "√",
+	*        "unixVer": "x"
+	*    },
+	*    "qq": {
+	*        "hostVer": "√",
+	*        "uniVer": "√",
+	*        "unixVer": "x"
+	*    },
+	*    "kuaishou": {
+	*        "hostVer": "√",
+	*        "uniVer": "√",
+	*        "unixVer": "x"
+	*    },
+	*    "jd": {
+	*        "hostVer": "√",
+	*        "uniVer": "√",
+	*        "unixVer": "x"
+	*    }
+	*  }
+	 * }
 	 */
 	longPressActions ?: LongPressActionsOptions | null,
 	/**

@@ -1,8 +1,8 @@
 <template>
 	<view style="flex:1;background-color: black;">
-		<image ref="imageView" :mode="imageMode" class="item" :src="srcPath" @error="previewImageError" @load="onImageLoad"></image>
-		<view ref="mask" class="patch" @touchstart="onstart" @touchmove="onmove" @touchend="onend" @touchcancel="oncancel"></view>
-		<view class="loading" v-if="!loadingFinished">
+		<image ref="imageView" :mode="imageMode" class="uni-preview-image-item" :src="srcPath" @error="previewImageError" @load="onImageLoad"></image>
+		<view ref="mask" class="uni-preview-image-patch" @touchstart="onstart" @touchmove="onmove" @touchend="onend" @touchcancel="oncancel"></view>
+		<view class="uni-preview-image-loading" v-if="!loadingFinished">
 			<loadingCircle style="margin: auto;" :speed="16" :size="54" color="#d3d3d3"></loadingCircle>
 		</view>
 	</view>
@@ -29,7 +29,7 @@
 		y : number
 	}
 	export default {
-		components:{
+		components: {
 			loadingCircle
 		},
 		data() {
@@ -255,7 +255,7 @@
 			},
 			onend(e : UniTouchEvent) {
 				// 清空长按事件，避免连续点击时，仍然会触发长按事件
-				this.inScaleMode = false
+				// this.inScaleMode = false
 				this.needExecLongPress = false
 				clearTimeout(this.longPressActionTimeoutId)
 				var current = Date.now()
@@ -312,6 +312,17 @@
 						this.lastTouchEndTime = current
 					}
 				} else {
+					if (this.inScaleMode) {
+						if (this.scaleSize > 3) {
+							this.scaleSize = 3
+							this.updateStyle(e, NaN, NaN)
+						} else if (this.scaleSize < 1) {
+							this.scaleSize = 1
+							this.imageLeft = 0
+							this.updateStyle(e, NaN, NaN)
+						}
+						this.lastTouchEndTime = current
+					}
 					var xv = 1000 * (this.historyX[1] - this.historyX[0]) / (this.historyT[1] - this.historyT[0])
 					var yv = 1000 * (this.historyY[1] - this.historyY[0]) / (this.historyT[1] - this.historyT[0])
 					this._friction.setVelocity(xv, yv)
@@ -338,6 +349,9 @@
 					})
 				}
 				this.lastSlideTouch = null
+				// #ifdef APP-ANDROID
+				this.preventDefaultScall(e)
+				// #endif
 			},
 			oncancel(e : UniTouchEvent) {
 				this.onend(e)
@@ -373,8 +387,7 @@
 					var topMargin = (this.transformOrigin[1] - (this.imageMarginTop > 0 ? this.imageMarginTop : 0)) * this.scaleSize - this.transformOrigin[1]
 					var bottomMargin = ((this.imageHeight + (this.imageMarginTop > 0 ? this.imageMarginTop : 0) - this.transformOrigin[1]) * this.scaleSize) - (this.screenHeight - this.transformOrigin[1])
 					if (this.imageTop > topMargin) {
-						if (!this.inScaleMode)
-							this.imageTop = topMargin
+						this.imageTop = topMargin
 					} else if (this.imageTop < -bottomMargin) {
 						this.imageTop = -bottomMargin
 					} else {
@@ -405,7 +418,7 @@
 							uni.$emit("__UNIPREVIEWLONGPRESS", { type: "success", tapIndex: e.tapIndex!, index: this.index })
 						},
 						fail() {
-							uni.$emit("__UNIPREVIEWLONGPRESS", { type: "fail"})
+							uni.$emit("__UNIPREVIEWLONGPRESS", { type: "fail", tapIndex: -1, index: -1 })
 						}
 					})
 				}
@@ -434,7 +447,7 @@
 				if (this.imageHeight > 0) {
 					return
 				}
-				uni.createSelectorQuery().in(this).select('.item').boundingClientRect().exec((ret) => {
+				uni.createSelectorQuery().in(this).select('.uni-preview-image-item').boundingClientRect().exec((ret) => {
 					if (ret.length == 1) {
 						var rect = this.imageView!.getBoundingClientRect()
 						this.screenHeight = rect.height
@@ -478,21 +491,24 @@
 						var point2 = e.touches[1]
 						originalCenterX = (point1.clientX + point2.clientX) / 2
 						originalCenterY = (point1.clientY + point2.clientY) / 2
-						if (this.scaleSize * this.imageHeight < this.screenHeight) {
+						if ((this.scaleSize * this.imageHeight) < this.screenHeight) {
 							originalCenterY = this.screenHeight / 2
 						}
 
 						if (this.imageHeight > this.screenHeight && this.scaleSize >= 1) {
 							originalCenterY = originalCenterY - this.imageTop / this.scaleSize
 						}
-						this.imageLeft = this.imageLeft + (this.scaleSize - 1.0) * (originalCenterX - this.transformOrigin[0])
-						this.imageTop = this.imageTop + (this.scaleSize - 1.0) * (originalCenterY - this.transformOrigin[1])
+						var oldTransformOrigin = [this.transformOrigin[0], this.transformOrigin[1]]
 						this.transformOrigin = [originalCenterX, originalCenterY]
+						if (oldTransformOrigin[0] != 0 && oldTransformOrigin[1] != 1) {
+							this.imageLeft = this.imageLeft + (this.scaleSize - 1.0) * (originalCenterX - oldTransformOrigin[0])
+							this.imageTop = this.imageTop + (this.scaleSize - 1.0) * (originalCenterY - oldTransformOrigin[1])
+						}
 					} else if (e.type == "touchend") {
 						if (this.inDoubleTapMode && this.scaleSize == 2 && this.lastSlideTouch != null && this.lastSlideTouch!.length == 1) {
 							originalCenterX = this.lastSlideTouch![0].clientX
 							originalCenterY = this.lastSlideTouch![0].clientY
-							if (this.scaleSize * this.imageHeight < this.screenHeight) {
+							if ((this.scaleSize * this.imageHeight) < this.screenHeight) {
 								originalCenterY = this.screenHeight / 2
 							}
 							if (this.imageHeight > this.screenHeight) {
@@ -510,21 +526,21 @@
 </script>
 
 <style>
-	.item {
+	.uni-preview-image-item {
 		width: 100%;
 		height: 100%;
 		transition-property: transform;
 		transition-duration: 0ms;
 	}
 
-	.patch {
+	.uni-preview-image-patch {
 		width: 100%;
 		height: 100%;
 		background-color: transparent;
 		position: absolute;
 	}
 
-	.loading {
+	.uni-preview-image-loading {
 		position: absolute;
 		top: 0;
 		bottom: 0;

@@ -48,9 +48,7 @@
           {{ cancelText }}
         </text>
       </view>
-      <!-- #ifdef APP-ANDROID -->
-      <view :style="{height: `${bottomNavigationHeight}px`, backgroundColor: `${theme == 'dark' ? '#2C2C2B' : '#717171'}`}"></view>
-      <!-- #endif -->
+      <view :style="{height: `${bottomNavigationHeight}px`, backgroundColor: `${theme == 'dark' ? '#2C2C2B' : '#ffffff'}`}"></view>
       <!-- #ifdef WEB -->
       <view v-if='isWidescreen && Object.keys(popover).length > 0' :style='triangleStyle' class="uni-action-sheet_dialog__triangle" />
       <!-- #endif -->
@@ -257,9 +255,7 @@
       },
     },
     onReady() {
-      // #ifdef APP-ANDROID
       this.bottomNavigationHeight = uni.getWindowInfo().safeAreaInsets.bottom
-      // #endif
       setTimeout(() => {
         this.show = true
       }, 10)

@@ -1,6 +1,5 @@
 import { ShowActionSheet, ShowActionSheetOptions, ShowActionSheetSuccessImpl, ShowActionSheetFailImpl } from "../interface.uts";
 
-
 export const showActionSheet: ShowActionSheet = (options: ShowActionSheetOptions) => {
 	const uuid = `${Date.now()}${Math.floor(Math.random() * 1e7)}`
 	const baseEventName = `uni_action_sheet_${uuid}`

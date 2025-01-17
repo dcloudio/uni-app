@@ -1,6 +1,6 @@
 <template>
   <!-- #ifdef APP -->
-  <view :ref="elId" class="block" :style="{width:size+'px',height:size+'px'}"></view>
+  <view :ref="elId" class="uni-preview-image-block" :style="{width:size+'px',height:size+'px'}"></view>
   <!-- #endif -->
   <!-- #ifdef WEB -->
   <svg :width="size" :height="size" viewBox="25 25 50 50" :style="{width:size+'px',height:size+'px'}" class="uni-load__img uni-load__img--android-H5">
@@ -132,7 +132,7 @@
 </script>
 
 <style scoped>
-  .block {
+  .uni-preview-image-block {
     width: 50px;
     height: 50px;
   }

@@ -4,11 +4,11 @@
 			<uniPreviewImageItem :index="index" :src="item" :longPressAction="longPressAction"></uniPreviewImageItem>
 		</swiper-item>
 	</swiper>
-	<view ref="numberIndicator" v-if="indicator == 'number'" class="number-indicator">
-		<text class="number-indicator-text">{{numberIndicator}}</text>
+	<view ref="numberIndicator" v-if="indicator == 'number'" class="uni-preview-image-number-indicator">
+		<text class="uni-preview-image-number-indicator-text">{{numberIndicator}}</text>
 	</view>
-	<view ref="defaultIndicator" class="default-indicator" v-if="indicator == 'default'" v-show="urls!=null">
-		<view v-for="i in urls!.length" class="indicator-style" :style="{backgroundColor:((current+1) == i) ? '#ffffff':'#AAAAAA'}">
+	<view ref="defaultIndicator" class="uni-preview-image-default-indicator" v-if="indicator == 'default'" v-show="urls!=null">
+		<view v-for="i in urls!.length" class="uni-preview-image-indicator-style" :style="{backgroundColor:((current+1) == i) ? '#ffffff':'#AAAAAA'}">
 		</view>
 	</view>
 </template>
@@ -118,7 +118,7 @@
 	}
 </script>
 <style>
-	.indicator-style {
+	.uni-preview-image-indicator-style {
 		width: 9px;
 		height: 9px;
 		border-style: solid;
@@ -128,7 +128,7 @@
 		border-color: #AAAAAA;
 	}
 
-	.default-indicator {
+	.uni-preview-image-default-indicator {
 		flex-direction: row;
 		position: absolute;
 		bottom: 0px;
@@ -137,7 +137,7 @@
 		justify-content: center;
 	}
 
-	.number-indicator {
+	.uni-preview-image-number-indicator {
 		position: absolute;
 		color: white;
 		font-size: 16px;
@@ -146,7 +146,7 @@
 		right: 0;
 	}
 
-	.number-indicator-text {
+	.uni-preview-image-number-indicator-text {
 		color: white;
 		font-size: 16px;
 		margin: auto;
