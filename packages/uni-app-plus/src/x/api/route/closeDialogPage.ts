@@ -49,7 +49,11 @@ export const closeDialogPage = (options?: CloseDialogPageOptions) => {
         const index = systemDialogPages.indexOf(dialogPage)
         if (index > -1) {
           systemDialogPages.splice(index, 1)
-          closeNativeDialogPage(dialogPage)
+          closeNativeDialogPage(
+            dialogPage,
+            options?.animationType || 'auto',
+            options?.animationDuration || ANI_DURATION
+          )
         } else {
           triggerFailCallback(options, 'dialogPage is not a valid page')
         }
