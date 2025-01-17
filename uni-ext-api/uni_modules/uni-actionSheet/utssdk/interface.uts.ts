@@ -53,10 +53,6 @@ export type ShowActionSheetOptions = {
    */
   itemList: string[],
   /**
-   * 取消按钮的文字，默认为"取消"
-   */
-  cancelText?: string | null,
-  /**
    * 按钮的文字颜色，字符串格式
    */
   itemColor?: string.ColorString | null,
@@ -66,14 +62,294 @@ export type ShowActionSheetOptions = {
   popover?: Popover | null,
   /**
    * 菜单标题文字颜色，字符串格式
+   * @uniPlatform {
+   *  "app": {
+   *    "android": {
+   *      "osVer": "5.0",
+   *      "uniVer": "√",
+   *      "uniUtsPlugin": "x",
+   *      "unixVer": "4.51",
+   *      "unixUtsPlugin": "4.51"
+   *    },
+   *    "ios": {
+   *      "osVer": "12.0",
+   *      "uniVer": "√",
+   *      "uniUtsPlugin": "x",
+   *      "unixVer": "4.51",
+   *      "unixUtsPlugin": "4.51"
+   *    },
+   *    "harmony": {
+   *      "osVer": "3.0",
+   *      "uniVer": "4.23",
+   *      "unixVer": "x"
+   *    }
+   *  },
+   *  "mp": {
+   *    "weixin": {
+   *      "hostVer": "√",
+   *      "uniVer": "√",
+   *      "unixVer": "x"
+   *    },
+   *    "alipay": {
+   *      "hostVer": "√",
+   *      "uniVer": "√",
+   *      "unixVer": "x"
+   *    },
+   *    "baidu": {
+   *      "hostVer": "√",
+   *      "uniVer": "√",
+   *      "unixVer": "x"
+   *    },
+   *    "toutiao": {
+   *      "hostVer": "√",
+   *      "uniVer": "√",
+   *      "unixVer": "x"
+   *    },
+   *    "lark": {
+   *      "hostVer": "√",
+   *      "uniVer": "√",
+   *      "unixVer": "x"
+   *    },
+   *    "qq": {
+   *      "hostVer": "√",
+   *      "uniVer": "√",
+   *      "unixVer": "x"
+   *    },
+   *    "kuaishou": {
+   *      "hostVer": "√",
+   *      "uniVer": "√",
+   *      "unixVer": "x"
+   *    },
+   *    "jd": {
+   *      "hostVer": "√",
+   *      "uniVer": "√",
+   *      "unixVer": "x"
+   *    }
+   *  },
+   *  "web": {
+   *    "uniVer": "√",
+   *    "unixVer": "4.51"
+   *  }
+   * }
    */
   titleColor?: string.ColorString | null,
   /**
+   * 取消按钮的文字，默认为"取消"
+   * @uniPlatform {
+   *  "app": {
+   *    "android": {
+   *      "osVer": "5.0",
+   *      "uniVer": "√",
+   *      "uniUtsPlugin": "x",
+   *      "unixVer": "4.51",
+   *      "unixUtsPlugin": "4.51"
+   *    },
+   *    "ios": {
+   *      "osVer": "12.0",
+   *      "uniVer": "√",
+   *      "uniUtsPlugin": "x",
+   *      "unixVer": "4.51",
+   *      "unixUtsPlugin": "4.51"
+   *    },
+   *    "harmony": {
+   *      "osVer": "3.0",
+   *      "uniVer": "4.23",
+   *      "unixVer": "x"
+   *    }
+   *  },
+   *  "mp": {
+   *    "weixin": {
+   *      "hostVer": "√",
+   *      "uniVer": "√",
+   *      "unixVer": "x"
+   *    },
+   *    "alipay": {
+   *      "hostVer": "√",
+   *      "uniVer": "√",
+   *      "unixVer": "x"
+   *    },
+   *    "baidu": {
+   *      "hostVer": "√",
+   *      "uniVer": "√",
+   *      "unixVer": "x"
+   *    },
+   *    "toutiao": {
+   *      "hostVer": "√",
+   *      "uniVer": "√",
+   *      "unixVer": "x"
+   *    },
+   *    "lark": {
+   *      "hostVer": "√",
+   *      "uniVer": "√",
+   *      "unixVer": "x"
+   *    },
+   *    "qq": {
+   *      "hostVer": "√",
+   *      "uniVer": "√",
+   *      "unixVer": "x"
+   *    },
+   *    "kuaishou": {
+   *      "hostVer": "√",
+   *      "uniVer": "√",
+   *      "unixVer": "x"
+   *    },
+   *    "jd": {
+   *      "hostVer": "√",
+   *      "uniVer": "√",
+   *      "unixVer": "x"
+   *    }
+   *  },
+   *  "web": {
+   *    "uniVer": "√",
+   *    "unixVer": "4.51"
+   *  }
+   * }
+   */
+  cancelText?: string | null,
+  /**
    * 取消按钮的文字颜色，字符串格式
+   * @uniPlatform {
+   *  "app": {
+   *    "android": {
+   *      "osVer": "5.0",
+   *      "uniVer": "√",
+   *      "uniUtsPlugin": "x",
+   *      "unixVer": "4.51",
+   *      "unixUtsPlugin": "4.51"
+   *    },
+   *    "ios": {
+   *      "osVer": "12.0",
+   *      "uniVer": "√",
+   *      "uniUtsPlugin": "x",
+   *      "unixVer": "4.51",
+   *      "unixUtsPlugin": "4.51"
+   *    },
+   *    "harmony": {
+   *      "osVer": "3.0",
+   *      "uniVer": "4.23",
+   *      "unixVer": "x"
+   *    }
+   *  },
+   *  "mp": {
+   *    "weixin": {
+   *      "hostVer": "√",
+   *      "uniVer": "√",
+   *      "unixVer": "x"
+   *    },
+   *    "alipay": {
+   *      "hostVer": "√",
+   *      "uniVer": "√",
+   *      "unixVer": "x"
+   *    },
+   *    "baidu": {
+   *      "hostVer": "√",
+   *      "uniVer": "√",
+   *      "unixVer": "x"
+   *    },
+   *    "toutiao": {
+   *      "hostVer": "√",
+   *      "uniVer": "√",
+   *      "unixVer": "x"
+   *    },
+   *    "lark": {
+   *      "hostVer": "√",
+   *      "uniVer": "√",
+   *      "unixVer": "x"
+   *    },
+   *    "qq": {
+   *      "hostVer": "√",
+   *      "uniVer": "√",
+   *      "unixVer": "x"
+   *    },
+   *    "kuaishou": {
+   *      "hostVer": "√",
+   *      "uniVer": "√",
+   *      "unixVer": "x"
+   *    },
+   *    "jd": {
+   *      "hostVer": "√",
+   *      "uniVer": "√",
+   *      "unixVer": "x"
+   *    }
+   *  },
+   *  "web": {
+   *    "uniVer": "√",
+   *    "unixVer": "4.51"
+   *  }
+   * }
    */
   cancelColor?: string.ColorString | null,
   /**
    * 弹框背景颜色
+   * @uniPlatform {
+   *  "app": {
+   *    "android": {
+   *      "osVer": "5.0",
+   *      "uniVer": "√",
+   *      "uniUtsPlugin": "x",
+   *      "unixVer": "4.51",
+   *      "unixUtsPlugin": "4.51"
+   *    },
+   *    "ios": {
+   *      "osVer": "12.0",
+   *      "uniVer": "√",
+   *      "uniUtsPlugin": "x",
+   *      "unixVer": "4.51",
+   *      "unixUtsPlugin": "4.51"
+   *    },
+   *    "harmony": {
+   *      "osVer": "3.0",
+   *      "uniVer": "4.23",
+   *      "unixVer": "x"
+   *    }
+   *  },
+   *  "mp": {
+   *    "weixin": {
+   *      "hostVer": "√",
+   *      "uniVer": "√",
+   *      "unixVer": "x"
+   *    },
+   *    "alipay": {
+   *      "hostVer": "√",
+   *      "uniVer": "√",
+   *      "unixVer": "x"
+   *    },
+   *    "baidu": {
+   *      "hostVer": "√",
+   *      "uniVer": "√",
+   *      "unixVer": "x"
+   *    },
+   *    "toutiao": {
+   *      "hostVer": "√",
+   *      "uniVer": "√",
+   *      "unixVer": "x"
+   *    },
+   *    "lark": {
+   *      "hostVer": "√",
+   *      "uniVer": "√",
+   *      "unixVer": "x"
+   *    },
+   *    "qq": {
+   *      "hostVer": "√",
+   *      "uniVer": "√",
+   *      "unixVer": "x"
+   *    },
+   *    "kuaishou": {
+   *      "hostVer": "√",
+   *      "uniVer": "√",
+   *      "unixVer": "x"
+   *    },
+   *    "jd": {
+   *      "hostVer": "√",
+   *      "uniVer": "√",
+   *      "unixVer": "x"
+   *    }
+   *  },
+   *  "web": {
+   *    "uniVer": "√",
+   *    "unixVer": "4.51"
+   *  }
+   * }
    */
   backgroundColor?: string.ColorString | null,
   /**
@@ -107,7 +383,7 @@ export interface Uni {
    *		}
    *	});
    * ```
-   * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/show-action-sheet.html
+   * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/show-action-sheet.html#showactionsheet
    * @uniPlatform {
    *  "app": {
    *    "android": {
@@ -186,22 +462,22 @@ export interface Uni {
    * ```typescript
    *	uni.hideActionSheet();
    * ```
-   * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/hide-action-sheet.html
+   * @tutorial https://doc.dcloud.net.cn/uni-app-x/api/hide-action-sheet.html#hideactionsheet
    * @uniPlatform {
    *  "app": {
    *    "android": {
    *      "osVer": "5.0",
    *      "uniVer": "√",
    *      "uniUtsPlugin": "x",
-   *      "unixVer": "4.43",
-   *      "unixUtsPlugin": "4.43"
+   *      "unixVer": "4.51",
+   *      "unixUtsPlugin": "4.51"
    *    },
    *    "ios": {
    *      "osVer": "12.0",
    *      "uniVer": "√",
    *      "uniUtsPlugin": "x",
-   *      "unixVer": "4.43",
-   *      "unixUtsPlugin": "4.43"
+   *      "unixVer": "4.51",
+   *      "unixUtsPlugin": "4.51"
    *    },
    *    "harmony": {
    *      "osVer": "3.0",
@@ -253,7 +529,7 @@ export interface Uni {
    *  },
    *  "web": {
    *    "uniVer": "√",
-   *    "unixVer": "4.43"
+   *    "unixVer": "4.51"
    *  }
    * }
    */
