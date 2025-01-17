@@ -300,7 +300,7 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": true
+          "swift": false
         }
       }
     }
