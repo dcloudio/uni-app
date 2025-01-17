@@ -26,3 +26,6 @@ TODOs.md
 .history
 scripts/package.json
 *.map
+!*.ets.map
+!*.kt.map
+!*.swift.map
