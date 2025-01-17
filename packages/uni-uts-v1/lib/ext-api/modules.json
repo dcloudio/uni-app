@@ -928,6 +928,19 @@
       }
     }
   },
+  "uni-sse": {
+    "uni": {
+      "connectEventSource": {
+        "name": "connectEventSource",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": false,
+          "arkts": false
+        }
+      }
+    }
+  },
   "uni-storage": {
     "uni": {
       "setStorage": {
