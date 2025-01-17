@@ -357,6 +357,7 @@ export function uniUTSAppUniModulesPlugin(
     }
 
     if (!utsPlugins.has(pluginId)) {
+      utsPlugins.add(pluginId)
       if (uniXKotlinCompiler) {
         const platform = 'app-android'
         const indexFileName = resolveTscUniModuleIndexFileName(
@@ -364,7 +365,6 @@ export function uniUTSAppUniModulesPlugin(
           pluginDir
         )
         if (indexFileName) {
-          utsPlugins.add(pluginId)
           await uniXKotlinCompiler.addRootFile(indexFileName)
         }
       }
@@ -375,7 +375,6 @@ export function uniUTSAppUniModulesPlugin(
           pluginDir
         )
         if (indexFileName) {
-          utsPlugins.add(pluginId)
           await uniXSwiftCompiler.addRootFile(indexFileName)
         }
       }
@@ -386,7 +385,6 @@ export function uniUTSAppUniModulesPlugin(
           pluginDir
         )
         if (indexFileName) {
-          utsPlugins.add(pluginId)
           await uniXArkTSCompiler.addRootFile(indexFileName)
         }
       }
@@ -533,11 +531,9 @@ export function uniUTSAppUniModulesPlugin(
           continue
         }
       }
-      if (
-        process.env.UNI_APP_X !== 'true' &&
-        process.env.UNI_PLATFORM === 'app-harmony'
-      ) {
+      if (process.env.UNI_PLATFORM === 'app-harmony') {
         // uniExtApiCompiler本身是为X项目准备的，但是在app-harmony项目中也会调用
+        // uni-app-x app-harmony暂不支持其他类型插件
         if (
           !fs.existsSync(
             path.resolve(pluginDir, 'utssdk', 'app-harmony', 'index.uts')
