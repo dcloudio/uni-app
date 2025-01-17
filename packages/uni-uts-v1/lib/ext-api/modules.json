@@ -112,6 +112,50 @@
       }
     }
   },
+  "uni-crash": {
+    "uni": {
+      "__onAppCrash": {
+        "name": "__onAppCrash",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true
+        }
+      },
+      "__offAppCrash": {
+        "name": "__offAppCrash",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true
+        }
+      },
+      "__getAppCrashInfo": {
+        "name": "__getAppCrashInfo",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true
+        }
+      },
+      "__deleteAppCrashInfo": {
+        "name": "__deleteAppCrashInfo",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true
+        }
+      },
+      "__creatAppCrash": {
+        "name": "__creatAppCrash",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true
+        }
+      }
+    }
+  },
   "uni-createInnerAudioContext": {
     "uni": {
       "createInnerAudioContext": {
@@ -256,7 +300,7 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": true
+          "swift": false
         }
       }
     }
@@ -306,7 +350,17 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": true
+          "swift": true,
+          "arkts": true
+        }
+      },
+      "isSimulator": {
+        "name": "isSimulator",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": false,
+          "arkts": false
         }
       }
     }
@@ -491,8 +545,8 @@
         "name": "previewImage",
         "app": {
           "js": false,
-          "kotlin": true,
-          "swift": true,
+          "kotlin": false,
+          "swift": false,
           "arkts": true
         }
       },
@@ -500,8 +554,8 @@
         "name": "closePreviewImage",
         "app": {
           "js": false,
-          "kotlin": true,
-          "swift": true,
+          "kotlin": false,
+          "swift": false,
           "arkts": true
         }
       },
@@ -657,6 +711,26 @@
     "provider": {
       "service": "payment",
       "name": "wxpay"
+    }
+  },
+  "uni-previewImage": {
+    "uni": {
+      "previewImage": {
+        "name": "previewImage",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true
+        }
+      },
+      "closePreviewImage": {
+        "name": "closePreviewImage",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true
+        }
+      }
     }
   },
   "uni-privacy": {
@@ -824,6 +898,19 @@
           "kotlin": true,
           "swift": true,
           "arkts": true
+        }
+      }
+    }
+  },
+  "uni-secure-network": {
+    "uni": {
+      "__getSecureNetworkManager": {
+        "name": "__getSecureNetworkManager",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true,
+          "arkts": false
         }
       }
     }
@@ -1030,7 +1117,17 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": true
+          "swift": true,
+          "arkts": false
+        }
+      },
+      "getUniVerifyManager": {
+        "name": "getUniVerifyManager",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true,
+          "arkts": false
         }
       }
     }
