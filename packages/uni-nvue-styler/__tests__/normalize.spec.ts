@@ -514,4 +514,40 @@ zIndex: 4;
     })
     expect(messages.length).toBe(0)
   })
+
+  test('css var --uni-safe-area-inset-[postion]', async () => {
+    const { json, messages } = await objectifierRule(`
+.foo {
+  padding-top: var(
+  --uni-safe-area-inset-top,
+  10px);
+}
+`)
+
+    expect(json).toEqual({
+      foo: {
+        '': {
+          paddingTop: 'var(--uni-safe-area-inset-top,10px)',
+        },
+      },
+    })
+    expect(messages.length).toBe(0)
+
+    const res2 = await objectifierRule(`
+.foo {
+  padding-top: var(
+  --uni-safe-area-inset-top
+  );
+}
+`)
+
+    expect(res2.json).toEqual({
+      foo: {
+        '': {
+          paddingTop: 'var(--uni-safe-area-inset-top)',
+        },
+      },
+    })
+    expect(res2.messages.length).toBe(0)
+  })
 })
