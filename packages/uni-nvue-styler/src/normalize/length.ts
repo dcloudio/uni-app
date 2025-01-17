@@ -21,11 +21,16 @@ function createNormalizeLength({
     if (v.includes('CSS_VAR_')) {
       return { value: v }
     }
-    if (/env\(([^)]+)\)/.test(v)) {
-      // v 去除多余的空格，直接给客户端处理
+    // css var --uni-safe-area-inset-[postion]
+    const isSafeAreaInset =
+      /--uni-safe-area-inset-(top|bottom|left|right)/.test(v) &&
+      /var\([^)]+\)/.test(v)
+    const envReg = /env\(([^)]+)\)/.test(v)
+    if (isSafeAreaInset || envReg) {
       v = v.replace(/\s/g, '')
       return { value: v }
     }
+
     const match = v.match(LENGTH_REGEXP)
     if (match) {
       var unit = match[1]
