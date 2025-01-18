@@ -5,6 +5,7 @@ import {
   conditionalExpression,
   identifier,
   isIdentifier,
+  logicalExpression,
   stringLiteral,
   unaryExpression,
 } from '@babel/types'
@@ -55,6 +56,12 @@ export function rewriteHidden(
   let hiddenBindingExpr: Expression
   if (virtualHost) {
     const staticClassPropIndex = findStaticHiddenIndex(props)
+    // skyline模式hidden传undefined会导致元素被隐藏
+    const virtualHostHiddenPolyfill = logicalExpression(
+      '||',
+      identifier(VIRTUAL_HOST_HIDDEN),
+      booleanLiteral(false)
+    )
     if (expr || staticClassPropIndex > -1) {
       let res: Expression = booleanLiteral(true)
       if (expr) {
@@ -73,11 +80,11 @@ export function rewriteHidden(
           identifier(VIRTUAL_HOST_HIDDEN),
           stringLiteral('')
         ),
-        identifier(VIRTUAL_HOST_HIDDEN),
+        virtualHostHiddenPolyfill,
         res
       )
     } else {
-      hiddenBindingExpr = identifier(VIRTUAL_HOST_HIDDEN)
+      hiddenBindingExpr = virtualHostHiddenPolyfill
     }
   } else {
     // ignore rewrite without virtualHost
