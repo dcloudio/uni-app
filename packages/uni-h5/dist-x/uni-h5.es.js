@@ -8179,6 +8179,19 @@ const getSystemSafeAreaInsets = function() {
 let escBackPageNum = 0;
 const homeDialogPages = [];
 const homeSystemDialogPages = [];
+function getPageWrapperInfo() {
+  const pageWrapper = document.querySelector("uni-page-wrapper");
+  const pageWrapperRect = pageWrapper.getBoundingClientRect();
+  const bodyRect = document.body.getBoundingClientRect();
+  return {
+    top: pageWrapperRect.top,
+    left: pageWrapperRect.left,
+    right: bodyRect.right - pageWrapperRect.right,
+    bottom: bodyRect.bottom - pageWrapperRect.bottom,
+    width: pageWrapperRect.width,
+    height: pageWrapperRect.height
+  };
+}
 class UniPageImpl {
   constructor({
     route,
@@ -8191,39 +8204,20 @@ class UniPageImpl {
     this.vm = vm;
     this.$vm = vm;
   }
-  get innerWidth() {
+  get pageBody() {
     const currentPage = getCurrentPage();
     if (currentPage !== this) {
-      throw new Error("Can't get innerWidth of other page");
+      throw new Error("Can't get pageBody of other page");
     }
-    const pageWrapper = document.querySelector("uni-page-wrapper");
-    return pageWrapper.clientWidth;
-  }
-  get innerHeight() {
-    const currentPage = getCurrentPage();
-    if (currentPage !== this) {
-      throw new Error("Can't get innerHeight of other page");
-    }
-    const pageWrapper = document.querySelector("uni-page-wrapper");
-    return pageWrapper.clientHeight;
+    return getPageWrapperInfo();
   }
   get safeAreaInsets() {
     const currentPage = getCurrentPage();
     if (currentPage !== this) {
       throw new Error("Can't get safeAreaInsets of other page");
     }
-    const pageWrapper = document.querySelector(
-      "uni-page-wrapper"
-    );
-    const pageWrapperRect = pageWrapper.getBoundingClientRect();
+    const pageWrapperEdge = getPageWrapperInfo();
     const systemSafeAreaInsets = getSystemSafeAreaInsets();
-    const bodyRect = document.body.getBoundingClientRect();
-    const pageWrapperEdge = {
-      top: pageWrapperRect.top,
-      left: pageWrapperRect.left,
-      right: bodyRect.right - pageWrapperRect.right,
-      bottom: bodyRect.bottom - pageWrapperRect.bottom
-    };
     const computeEdge = (bodyEdge, nativeEdge) => {
       return Math.max(0, nativeEdge - bodyEdge);
     };
@@ -27847,6 +27841,7 @@ const _sfc_main$1 = {
     }
   },
   onReady() {
+    this.bottomNavigationHeight = uni.getWindowInfo().safeAreaInsets.bottom;
     setTimeout(() => {
       this.show = true;
     }, 10);
@@ -27980,6 +27975,9 @@ function _sfc_render$1(_ctx, _cache, $props, $setup, $data, $options) {
             ]),
             _: 1
           }, 8, ["style", "class", "onClick"]),
+          createVNode(_component_view, {
+            style: normalizeStyle({ height: `${_ctx.bottomNavigationHeight}px`, backgroundColor: `${$data.theme == "dark" ? "#2C2C2B" : "#ffffff"}` })
+          }, null, 8, ["style"]),
           $options.isWidescreen && Object.keys($data.popover).length > 0 ? (openBlock(), createBlock(_component_view, {
             key: 0,
             style: normalizeStyle($options.triangleStyle),

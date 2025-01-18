@@ -1747,6 +1747,46 @@ function createTransformBackground(options) {
     }
   };
 }
+var borderTop = 'borderTop';
+var borderRight = 'borderRight';
+var borderBottom = 'borderBottom';
+var borderLeft = 'borderLeft';
+// const position = ['top', 'right', 'bottom', 'left']
+var transformBorderColor = decl => {
+  var {
+    prop,
+    value,
+    important,
+    raws,
+    source
+  } = decl;
+  var _property_split = hyphenate(prop).split('-');
+  var property = _property_split[_property_split.length - 1];
+  {
+    property = capitalize(property);
+  }
+  var splitResult = value.replace(/\s*,\s*/g, ',').split(/\s+/); // 1pt
+  switch (splitResult.length) {
+    case 1:
+      if (_property_split.length === 3) {
+        // border-top-width
+        return [decl];
+      } else {
+        // border-width
+        splitResult.push(splitResult[0], splitResult[0], splitResult[0]);
+        break;
+      }
+    case 2:
+      splitResult.push(splitResult[0], splitResult[1]);
+      break;
+    case 3:
+      splitResult.push(splitResult[1]);
+      break;
+  }
+  return [createDecl(borderTop + property, splitResult[0], important, raws, source), createDecl(borderRight + property, splitResult[1], important, raws, source), createDecl(borderBottom + property, splitResult[2], important, raws, source), createDecl(borderLeft + property, splitResult[3], important, raws, source)];
+};
+var transformBorderStyle = transformBorderColor;
+var transformBorderWidth = transformBorderColor;
 var borderWidth = 'Width';
 var borderStyle = 'Style';
 var borderColor = 'Color';
@@ -1775,38 +1815,14 @@ function createTransformBorder(options) {
         return [decl];
       }
     }
-    return [createDecl(prop + borderWidth, (result[0] || (options.type === 'uvue' ? 'medium' : '0')).trim(), important, raws, source), createDecl(prop + borderStyle, (result[1] || (options.type === 'uvue' ? 'none' : 'solid')).trim(), important, raws, source), createDecl(prop + borderColor, (result[2] || '#000000').trim(), important, raws, source)];
+    if (isUvuePlatform) {
+      return [...transformBorderWidth(createDecl(prop + borderWidth, (result[0] || (options.type === 'uvue' ? 'medium' : '0')).trim(), important, raws, source)), ...transformBorderStyle(createDecl(prop + borderStyle, (result[1] || (options.type === 'uvue' ? 'none' : 'solid')).trim(), important, raws, source)), ...transformBorderColor(createDecl(prop + borderColor, (result[2] || '#000000').trim(), important, raws, source))];
+    } else {
+      // nvue 维持不变
+      return [createDecl(prop + borderWidth, (result[0] || (options.type === 'uvue' ? 'medium' : '0')).trim(), important, raws, source), createDecl(prop + borderStyle, (result[1] || (options.type === 'uvue' ? 'none' : 'solid')).trim(), important, raws, source), createDecl(prop + borderColor, (result[2] || '#000000').trim(), important, raws, source)];
+    }
   };
 }
-var borderTop = 'borderTop';
-var borderRight = 'borderRight';
-var borderBottom = 'borderBottom';
-var borderLeft = 'borderLeft';
-var transformBorderColor = decl => {
-  var {
-    prop,
-    value,
-    important,
-    raws,
-    source
-  } = decl;
-  var property = hyphenate(prop).split('-')[1];
-  {
-    property = capitalize(property);
-  }
-  var splitResult = value.replace(/\s*,\s*/g, ',').split(/\s+/);
-  switch (splitResult.length) {
-    case 1:
-      return [decl];
-    case 2:
-      splitResult.push(splitResult[0], splitResult[1]);
-      break;
-    case 3:
-      splitResult.push(splitResult[1]);
-      break;
-  }
-  return [createDecl(borderTop + property, splitResult[0], important, raws, source), createDecl(borderRight + property, splitResult[1], important, raws, source), createDecl(borderBottom + property, splitResult[2], important, raws, source), createDecl(borderLeft + property, splitResult[3], important, raws, source)];
-};
 var borderTopLeftRadius = 'borderTopLeftRadius';
 var borderTopRightRadius = 'borderTopRightRadius';
 var borderBottomRightRadius = 'borderBottomRightRadius';
@@ -1834,8 +1850,6 @@ var transformBorderRadius = decl => {
   }
   return [createDecl(borderTopLeftRadius, splitResult[0], important, raws, source), createDecl(borderTopRightRadius, splitResult[1], important, raws, source), createDecl(borderBottomRightRadius, splitResult[2], important, raws, source), createDecl(borderBottomLeftRadius, splitResult[3], important, raws, source)];
 };
-var transformBorderStyle = transformBorderColor;
-var transformBorderWidth = transformBorderColor;
 var flexDirection = 'flexDirection';
 var flexWrap = 'flexWrap';
 var transformFlexFlow = decl => {

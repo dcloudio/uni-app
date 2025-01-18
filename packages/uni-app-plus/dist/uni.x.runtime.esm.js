@@ -8673,9 +8673,6 @@ const _style_0 = {
   "uni-preview-image-number-indicator": {
     "": {
       "position": "absolute",
-      "color": "#FFFFFF",
-      "fontSize": 16,
-      "textAlign": "center",
       "left": 0,
       "right": 0
     }
@@ -8692,7 +8689,7 @@ const _style_0 = {
       "paddingRight": 20,
       "paddingBottom": 8,
       "paddingLeft": 20,
-      "backgroundColor": "rgba(0,0,0,0.1)",
+      "backgroundColor": "rgba(0,0,0,0.3)",
       "lineHeight": 1,
       "borderTopStyle": "solid",
       "borderRightStyle": "solid",
