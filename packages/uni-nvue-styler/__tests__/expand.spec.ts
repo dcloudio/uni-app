@@ -54,6 +54,42 @@ describe('nvue-styler: expand', () => {
         source: decl.source,
       },
     ])
+
+    // const decl2 = parseDecl(`.test {
+    //   transition: transform 1s, opacity 1s;
+    // }`)
+    // expect(transformTransition(decl2)).toEqual([
+    //   {
+    //     type: 'decl',
+    //     prop: 'transition-property',
+    //     value: 'transform,opacity',
+    //     raws: decl2.raws,
+    //     source: decl2.source,
+    //   },
+    //   {
+    //     type: 'decl',
+    //     prop: 'transition-duration',
+    //     value: '1s',
+    //     raws: decl2.raws,
+    //     source: decl2.source,
+    //   },
+    //   {
+    //     type: 'decl',
+    //     prop: 'transition-timing-function',
+    //     value: 'ease-in-out',
+    //     raws: decl2.raws,
+    //     source: decl2.source,
+    //   },
+    //   {
+    //     type: 'decl',
+    //     prop: 'transition-delay',
+    //     value: '0',
+    //     raws: decl2.raws,
+    //     source: decl2.source,
+    //   },
+    // ])
+
+    // transition: transform 1s, opacity 1s;
   })
 
   test('transform transition cubic-bezier', () => {
@@ -217,11 +253,103 @@ describe('nvue-styler: expand', () => {
             value: '44px',
           },
         ],
+        'var(--uni-safe-area-inset-top, 0px) var(--uni-safe-area-inset-right, 0px) var(--uni-safe-area-inset-bottom, 0px) var(--uni-safe-area-inset-left, 0px)':
+          [
+            {
+              type: 'decl',
+              prop: `${type}-top`,
+              value: 'var(--uni-safe-area-inset-top,0px)',
+            },
+            {
+              type: 'decl',
+              prop: `${type}-right`,
+              value: 'var(--uni-safe-area-inset-right,0px)',
+            },
+            {
+              type: 'decl',
+              prop: `${type}-bottom`,
+              value: 'var(--uni-safe-area-inset-bottom,0px)',
+            },
+            {
+              type: 'decl',
+              prop: `${type}-left`,
+              value: 'var(--uni-safe-area-inset-left,0px)',
+            },
+          ],
+        'var(--uni-safe-area-inset-top, 0px)  var(--uni-safe-area-inset-left, 0px)':
+          [
+            {
+              type: 'decl',
+              prop: `${type}-top`,
+              value: 'var(--uni-safe-area-inset-top,0px)',
+            },
+            {
+              type: 'decl',
+              prop: `${type}-right`,
+              value: 'var(--uni-safe-area-inset-left,0px)',
+            },
+            {
+              type: 'decl',
+              prop: `${type}-bottom`,
+              value: 'var(--uni-safe-area-inset-top,0px)',
+            },
+            {
+              type: 'decl',
+              prop: `${type}-left`,
+              value: 'var(--uni-safe-area-inset-left,0px)',
+            },
+          ],
+        'var(--uni-safe-area-inset-top, 0px) 0 0 var(--uni-safe-area-inset-left, 0px)':
+          [
+            {
+              type: 'decl',
+              prop: `${type}-top`,
+              value: 'var(--uni-safe-area-inset-top,0px)',
+            },
+            {
+              type: 'decl',
+              prop: `${type}-right`,
+              value: '0',
+            },
+            {
+              type: 'decl',
+              prop: `${type}-bottom`,
+              value: '0',
+            },
+            {
+              type: 'decl',
+              prop: `${type}-left`,
+              value: 'var(--uni-safe-area-inset-left,0px)',
+            },
+          ],
+        // 'var(--uni-safe-area-inset-top, 0px) clac(100% - 4px) calc(100% - 5px) var(--uni-safe-area-inset-left, 0px)':
+        //   [
+        //     {
+        //       type: 'decl',
+        //       prop: `${type}-top`,
+        //       value: 'var(--uni-safe-area-inset-top,0px)',
+        //     },
+        //     {
+        //       type: 'decl',
+        //       prop: `${type}-right`,
+        //       value: 'clac(100% - 4px)',
+        //     },
+        //     {
+        //       type: 'decl',
+        //       prop: `${type}-bottom`,
+        //       value: 'calc(100% - 5px)',
+        //     },
+        //     {
+        //       type: 'decl',
+        //       prop: `${type}-left`,
+        //       value: 'var(--uni-safe-area-inset-left,0px)',
+        //     },
+        //   ],
       }
       Object.keys(boxs).forEach((m) => {
         const decl = parseDecl(`.test {
-    margin: ${m}
-  }`)
+      ${type}: ${m}
+    }`)
         expect(transform(decl)).toEqual(
           boxs[m].map((node) => {
             return Object.assign({ raws: decl.raws, source: decl.source }, node)
@@ -229,6 +357,43 @@ describe('nvue-styler: expand', () => {
         )
       })
     })
+  })
+  test('transfrom margin css function', () => {
+    const marginTransform = createTransformBox('margin')
+
+    const decl = parseDecl(`.test {
+      margin: env(safe-area-inset-top, 0px) env(safe-area-inset-right, 0px) env(safe-area-inset-bottom, 0px) env(safe-area-inset-left, 0px)
+}`)
+    expect(marginTransform(decl)).toEqual([
+      {
+        prop: 'margin-top',
+        raws: decl.raws,
+        source: decl.source,
+        type: 'decl',
+        value: 'env(safe-area-inset-top,0px)',
+      },
+      {
+        prop: 'margin-right',
+        raws: decl.raws,
+        source: decl.source,
+        type: 'decl',
+        value: 'env(safe-area-inset-right,0px)',
+      },
+      {
+        prop: 'margin-bottom',
+        raws: decl.raws,
+        source: decl.source,
+        type: 'decl',
+        value: 'env(safe-area-inset-bottom,0px)',
+      },
+      {
+        prop: 'margin-left',
+        raws: decl.raws,
+        source: decl.source,
+        type: 'decl',
+        value: 'env(safe-area-inset-left,0px)',
+      },
+    ])
   })
   test('transform border simple', function () {
     // simple

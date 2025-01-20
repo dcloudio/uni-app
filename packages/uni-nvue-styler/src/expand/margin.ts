@@ -9,7 +9,27 @@ export const createTransformBox = (
 ): TransformDecl => {
   return (decl) => {
     const { value, important, raws, source } = decl
-    const splitResult = value.split(/\s+/)
+
+    const isCSSVar = value.includes('var(')
+    const isEnvFunction = value.includes('env(')
+    const isCalc = value.includes('calc(')
+    let splitResult: any[] = []
+    if (isCSSVar || isEnvFunction) {
+      if (isCalc) {
+        splitResult = value
+          .replace(/calc\([^)]+\)|[\s]+/g, (match) => {
+            return match.startsWith('calc') ? match : ' '
+          })
+          .trim()
+          .split(/\s+/)
+      } else {
+        splitResult = value
+          .replace(/\(\s*(.*?)\s*\)/g, (_, p1) => `(${p1.replace(/\s+/g, '')})`)
+          .split(/\s+/)
+      }
+    } else {
+      splitResult = value.split(/\s+/)
+    }
 
     switch (splitResult.length) {
       case 1:
