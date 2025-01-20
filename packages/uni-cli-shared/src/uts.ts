@@ -113,14 +113,39 @@ export function resolveUTSModule(
       let index = resolveUTSFile(
         resolvePlatformDir(process.env.UNI_UTS_PLATFORM)
       )
+      const pluginId =
+        parentDir === 'uni_modules' ? parts[parts.length - 1] : ''
       if (index) {
-        return index
+        return resolveUTSEncryptFile(pluginId, index) || index
       }
       index = path.resolve(id, basedir, 'index.uts')
       if (fs.existsSync(index)) {
-        return index
+        return resolveUTSEncryptFile(pluginId, index) || index
       }
     }
+  }
+}
+
+function resolveUTSEncryptFile(pluginId: string, index: string) {
+  if (!pluginId) {
+    return
+  }
+  const cacheDir = process.env.UNI_MODULES_ENCRYPT_CACHE_DIR
+  if (!cacheDir) {
+    return
+  }
+  // 仅支持 uts 加密解析
+  if (!index.endsWith('.uts')) {
+    return
+  }
+  const cacheFile = path.resolve(
+    cacheDir,
+    'uni_modules',
+    pluginId,
+    'index.module.js'
+  )
+  if (fs.existsSync(cacheFile)) {
+    return cacheFile
   }
 }
 

@@ -387,7 +387,10 @@ export function resolveEncryptUniModule(
   if (index !== -1) {
     const uniModuleId = parts[index + 1]
     if (uniModuleId in encryptUniModules) {
-      if (parts[index + 2]) {
+      if (
+        parts[index + 2] &&
+        (platform === 'app-android' || platform === 'app-ios')
+      ) {
         console.warn(
           M['uni_modules.import']
             .replace('{0}', uniModuleId)
