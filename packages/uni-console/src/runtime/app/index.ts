@@ -26,7 +26,7 @@ export function initRuntimeSocketService(): Promise<boolean> {
         return true
       })
     })
-    .catch(() => {
+    .catch((): boolean => {
       return false
     })
 }
