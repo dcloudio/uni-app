@@ -5,7 +5,7 @@ import {
   type ComponentPublicInstance,
   nextTick,
 } from 'vue'
-
+import { LOCALE_EN, normalizeLocale } from '@dcloudio/uni-i18n'
 import type { MPComponentInstance, MPComponentOptions } from './component'
 
 export function initVueIds(
@@ -227,4 +227,18 @@ export function getTriggerEventDetail(eventId: number) {
   const detail = triggerEventDetails[eventId]
   delete triggerEventDetails[eventId]
   return detail
+}
+
+export function getLocaleLanguage() {
+  let localeLanguage = ''
+  if (__PLATFORM__ === 'mp-weixin') {
+    const appBaseInfo = __GLOBAL__.getAppBaseInfo()
+    const language =
+      appBaseInfo && appBaseInfo.language ? appBaseInfo.language : LOCALE_EN
+    localeLanguage = normalizeLocale(language) || LOCALE_EN
+  } else {
+    localeLanguage =
+      normalizeLocale(__GLOBAL__.getSystemInfoSync().language) || LOCALE_EN
+  }
+  return localeLanguage
 }
