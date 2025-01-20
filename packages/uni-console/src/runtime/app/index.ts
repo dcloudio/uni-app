@@ -16,15 +16,19 @@ export function initRuntimeSocketService(): Promise<boolean> {
       } as SendSocketMessageOptions)
     }
   )
-  return Promise.resolve().then((): Promise<boolean> => {
-    return initRuntimeSocket(hosts, port, id).then((socket): boolean => {
-      if (socket == null) {
-        return false
-      }
-      socketTask = socket
-      return true
+  return Promise.resolve()
+    .then((): Promise<boolean> => {
+      return initRuntimeSocket(hosts, port, id).then((socket): boolean => {
+        if (socket == null) {
+          return false
+        }
+        socketTask = socket
+        return true
+      })
     })
-  })
+    .catch(() => {
+      return false
+    })
 }
 
 initRuntimeSocketService()
