@@ -146,8 +146,8 @@
           "swift": true
         }
       },
-      "__creatAppCrash": {
-        "name": "__creatAppCrash",
+      "__createAppCrash": {
+        "name": "__createAppCrash",
         "app": {
           "js": false,
           "kotlin": true,
