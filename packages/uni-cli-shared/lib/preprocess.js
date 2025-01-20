@@ -10,6 +10,7 @@ const DEFAULT_KEYS = [
   'APP-ANDROID',
   'APP-IOS',
   'APP-HARMONY',
+  'MP-HARMONY',
   'WEB'
 ]
 

@@ -27,6 +27,9 @@ import {
   initWebviewApi as initQuickappWebviewApi
 } from 'uni-platforms/quickapp-webview/runtime/web-view'
 import {
+  initWebviewApi as initMpHarmonyWebviewApi
+} from 'uni-platforms/mp-harmony/runtime/web-view'
+import {
   initWebviewApi as initKuaishouWebviewApi
 } from 'uni-platforms/mp-kuaishou/runtime/web-view'
 import {
@@ -55,6 +58,7 @@ const initWebviewApis = [
   initBaiduWebviewApi,
   initToutiaoWebviewApi,
   initQuickappWebviewApi,
+  initMpHarmonyWebviewApi,
   initKuaishouWebviewApi,
   initLarkWebviewApi,
   initJDWebviewApi,
