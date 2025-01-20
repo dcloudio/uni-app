@@ -27841,6 +27841,7 @@ const _sfc_main$1 = {
     }
   },
   onReady() {
+    this.bottomNavigationHeight = uni.getWindowInfo().safeAreaInsets.bottom;
     setTimeout(() => {
       this.show = true;
     }, 10);
@@ -27974,6 +27975,9 @@ function _sfc_render$1(_ctx, _cache, $props, $setup, $data, $options) {
             ]),
             _: 1
           }, 8, ["style", "class", "onClick"]),
+          createVNode(_component_view, {
+            style: normalizeStyle({ height: `${_ctx.bottomNavigationHeight}px`, backgroundColor: `${$data.theme == "dark" ? "#2C2C2B" : "#ffffff"}` })
+          }, null, 8, ["style"]),
           $options.isWidescreen && Object.keys($data.popover).length > 0 ? (openBlock(), createBlock(_component_view, {
             key: 0,
             style: normalizeStyle($options.triangleStyle),

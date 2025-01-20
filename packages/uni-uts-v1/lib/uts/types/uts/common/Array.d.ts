@@ -1311,9 +1311,9 @@ interface ArrayConstructor {
             "android": {
                "osVer": "5.0",
                "uniVer": "x",
-               "unixVer": "4.41",
-               "uniUtsPlugin": "4.41",
-               "unixUtsPlugin": "4.41"
+               "unixVer": "4.51",
+               "uniUtsPlugin": "4.51",
+               "unixUtsPlugin": "4.51"
             },
             "ios": {
                "osVer": "12.0",
@@ -1339,9 +1339,9 @@ interface ArrayConstructor {
             "android": {
                "osVer": "5.0",
                "uniVer": "x",
-               "unixVer": "4.41",
-               "uniUtsPlugin": "4.41",
-               "unixUtsPlugin": "4.41"
+               "unixVer": "4.51",
+               "uniUtsPlugin": "4.51",
+               "unixUtsPlugin": "4.51"
             },
             "ios": {
                "osVer": "12.0",
@@ -1367,9 +1367,9 @@ interface ArrayConstructor {
             "android": {
                "osVer": "5.0",
                "uniVer": "x",
-               "unixVer": "4.41",
-               "uniUtsPlugin": "4.41",
-               "unixUtsPlugin": "4.41"
+               "unixVer": "4.51",
+               "uniUtsPlugin": "4.51",
+               "unixUtsPlugin": "4.51"
             },
             "ios": {
                "osVer": "12.0",
@@ -1398,9 +1398,9 @@ interface ArrayConstructor {
           "android": {
              "osVer": "5.0",
              "uniVer": "x",
-             "unixVer": "4.41",
-             "uniUtsPlugin": "4.41",
-             "unixUtsPlugin": "4.41"
+             "unixVer": "4.51",
+             "uniUtsPlugin": "4.51",
+             "unixUtsPlugin": "4.51"
           },
           "ios": {
              "osVer": "12.0",

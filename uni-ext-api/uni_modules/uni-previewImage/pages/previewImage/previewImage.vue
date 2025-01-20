@@ -139,9 +139,6 @@
 
 	.uni-preview-image-number-indicator {
 		position: absolute;
-		color: white;
-		font-size: 16px;
-		text-align: center;
 		left: 0;
 		right: 0;
 	}
@@ -151,7 +148,7 @@
 		font-size: 16px;
 		margin: auto;
 		padding: 8px 20px;
-		background-color: rgba(0, 0, 0, .1);
+		background-color: rgba(0, 0, 0, .3);
 		line-height: 1;
 		border-style: solid;
 		border-width: 0px;

@@ -1775,7 +1775,7 @@ var closeDialogPage = (options) => {
         var _index = systemDialogPages.indexOf(dialogPage);
         if (_index > -1) {
           systemDialogPages.splice(_index, 1);
-          closeNativeDialogPage(dialogPage);
+          closeNativeDialogPage(dialogPage, (options === null || options === void 0 ? void 0 : options.animationType) || "auto", (options === null || options === void 0 ? void 0 : options.animationDuration) || ANI_DURATION);
         } else {
           triggerFailCallback$1(options, "dialogPage is not a valid page");
         }
@@ -6250,6 +6250,7 @@ const _sfc_main$4 = {
     }
   },
   onReady() {
+    this.bottomNavigationHeight = uni.getWindowInfo().safeAreaInsets.bottom;
     setTimeout(() => {
       this.show = true;
     }, 10);
@@ -6566,7 +6567,12 @@ function _sfc_render$4(_ctx, _cache, $props, $setup, $data, $options) {
     class: normalizeClass(["uni-action-sheet_dialog__action__text", {
       "uni-action-sheet_dark__mode": $data.theme == "dark"
     }])
-  }, toDisplayString($options.cancelText), 7)], 6)], 2)]);
+  }, toDisplayString($options.cancelText), 7)], 6), createElementVNode("view", {
+    style: normalizeStyle({
+      height: "".concat(_ctx.bottomNavigationHeight, "px"),
+      backgroundColor: "".concat($data.theme == "dark" ? "#2C2C2B" : "#ffffff")
+    })
+  }, null, 4)], 2)]);
 }
 const UniActionSheetPage = /* @__PURE__ */ _export_sfc(_sfc_main$4, [["render", _sfc_render$4], ["styles", [_style_0$4]]]);
 var defaultPoi = {
@@ -7217,7 +7223,10 @@ const _style_0$3 = {
       "height": 40,
       "boxSizing": "border-box",
       "backgroundColor": "#ffffff",
-      "borderRadius": 20,
+      "borderTopLeftRadius": 20,
+      "borderTopRightRadius": 20,
+      "borderBottomRightRadius": 20,
+      "borderBottomLeftRadius": 20,
       "pointerEvents": "auto",
       "boxShadow": "0px 0px 20px 2px rgba(0, 0, 0, .3)",
       "zIndex": 9,
@@ -7294,7 +7303,10 @@ const _style_0$3 = {
   "uni-choose-location-nav-confirm-text": {
     ".uni-choose-location-nav-btn.uni-choose-location-nav-confirm-btn ": {
       "backgroundColor": "#007aff",
-      "borderRadius": 5
+      "borderTopLeftRadius": 5,
+      "borderTopRightRadius": 5,
+      "borderBottomRightRadius": 5,
+      "borderBottomLeftRadius": 5
     }
   },
   "uni-choose-location-nav-back-text": {
@@ -7335,7 +7347,10 @@ const _style_0$3 = {
       "bottom": 20,
       "maxHeight": 600,
       "boxShadow": "0px 0px 20px 2px rgba(0, 0, 0, .3)",
-      "borderRadius": 5
+      "borderTopLeftRadius": 5,
+      "borderTopRightRadius": 5,
+      "borderBottomRightRadius": 5,
+      "borderBottomLeftRadius": 5
     },
     ".uni-choose-location-dark ": {
       "backgroundColor": "#181818"
@@ -7366,7 +7381,10 @@ const _style_0$3 = {
       "justifyContent": "center",
       "height": 32,
       "flex": 1,
-      "borderRadius": 5,
+      "borderTopLeftRadius": 5,
+      "borderTopRightRadius": 5,
+      "borderBottomRightRadius": 5,
+      "borderBottomLeftRadius": 5,
       "paddingTop": 0,
       "paddingRight": 15,
       "paddingBottom": 0,
@@ -7381,7 +7399,10 @@ const _style_0$3 = {
     "": {
       "flex": 1,
       "height": "100%",
-      "borderRadius": 5,
+      "borderTopLeftRadius": 5,
+      "borderTopRightRadius": 5,
+      "borderBottomRightRadius": 5,
+      "borderBottomLeftRadius": 5,
       "paddingTop": 0,
       "paddingRight": 5,
       "paddingBottom": 0,
@@ -7954,7 +7975,7 @@ const _sfc_main$2 = {
   }
 };
 const _style_0$2 = {
-  "block": {
+  "uni-preview-image-block": {
     "": {
       "width": 50,
       "height": 50
@@ -7964,7 +7985,7 @@ const _style_0$2 = {
 function _sfc_render$2(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createElementBlock("view", {
     ref: $data.elId,
-    class: "block",
+    class: "uni-preview-image-block",
     style: normalizeStyle({
       width: $props.size + "px",
       height: $props.size + "px"
@@ -8186,7 +8207,6 @@ const _sfc_main$1 = {
       }
     },
     onend(e) {
-      this.inScaleMode = false;
       this.needExecLongPress = false;
       clearTimeout(this.longPressActionTimeoutId);
       var current = Date.now();
@@ -8239,6 +8259,17 @@ const _sfc_main$1 = {
           this.lastTouchEndTime = current;
         }
       } else {
+        if (this.inScaleMode) {
+          if (this.scaleSize > 3) {
+            this.scaleSize = 3;
+            this.updateStyle(e, NaN, NaN);
+          } else if (this.scaleSize < 1) {
+            this.scaleSize = 1;
+            this.imageLeft = 0;
+            this.updateStyle(e, NaN, NaN);
+          }
+          this.lastTouchEndTime = current;
+        }
         var xv = 1e3 * (this.historyX[1] - this.historyX[0]) / (this.historyT[1] - this.historyT[0]);
         var yv = 1e3 * (this.historyY[1] - this.historyY[0]) / (this.historyT[1] - this.historyT[0]);
         this._friction.setVelocity(xv, yv);
@@ -8300,8 +8331,7 @@ const _sfc_main$1 = {
         var topMargin = (this.transformOrigin[1] - (this.imageMarginTop > 0 ? this.imageMarginTop : 0)) * this.scaleSize - this.transformOrigin[1];
         var bottomMargin = (this.imageHeight + (this.imageMarginTop > 0 ? this.imageMarginTop : 0) - this.transformOrigin[1]) * this.scaleSize - (this.screenHeight - this.transformOrigin[1]);
         if (this.imageTop > topMargin) {
-          if (!this.inScaleMode)
-            this.imageTop = topMargin;
+          this.imageTop = topMargin;
         } else if (this.imageTop < -bottomMargin) {
           this.imageTop = -bottomMargin;
         } else {
@@ -8337,7 +8367,9 @@ const _sfc_main$1 = {
           },
           fail() {
             uni.$emit("__UNIPREVIEWLONGPRESS", {
-              type: "fail"
+              type: "fail",
+              tapIndex: -1,
+              index: -1
             });
           }
         });
@@ -8362,7 +8394,7 @@ const _sfc_main$1 = {
       if (this.imageHeight > 0) {
         return;
       }
-      uni.createSelectorQuery().in(this).select(".item").boundingClientRect().exec((ret) => {
+      uni.createSelectorQuery().in(this).select(".uni-preview-image-item").boundingClientRect().exec((ret) => {
         if (ret.length == 1) {
           var rect = this.imageView.getBoundingClientRect();
           this.screenHeight = rect.height;
@@ -8407,9 +8439,12 @@ const _sfc_main$1 = {
           if (this.imageHeight > this.screenHeight && this.scaleSize >= 1) {
             originalCenterY = originalCenterY - this.imageTop / this.scaleSize;
           }
-          this.imageLeft = this.imageLeft + (this.scaleSize - 1) * (originalCenterX - this.transformOrigin[0]);
-          this.imageTop = this.imageTop + (this.scaleSize - 1) * (originalCenterY - this.transformOrigin[1]);
+          var oldTransformOrigin = [this.transformOrigin[0], this.transformOrigin[1]];
           this.transformOrigin = [originalCenterX, originalCenterY];
+          if (oldTransformOrigin[0] != 0 && oldTransformOrigin[1] != 1) {
+            this.imageLeft = this.imageLeft + (this.scaleSize - 1) * (originalCenterX - oldTransformOrigin[0]);
+            this.imageTop = this.imageTop + (this.scaleSize - 1) * (originalCenterY - oldTransformOrigin[1]);
+          }
         } else if (e.type == "touchend") {
           if (this.inDoubleTapMode && this.scaleSize == 2 && this.lastSlideTouch != null && this.lastSlideTouch.length == 1) {
             originalCenterX = this.lastSlideTouch[0].clientX;
@@ -8430,7 +8465,7 @@ const _sfc_main$1 = {
   }
 };
 const _style_0$1 = {
-  "item": {
+  "uni-preview-image-item": {
     "": {
       "width": "100%",
       "height": "100%",
@@ -8438,7 +8473,7 @@ const _style_0$1 = {
       "transitionDuration": "0ms"
     }
   },
-  "patch": {
+  "uni-preview-image-patch": {
     "": {
       "width": "100%",
       "height": "100%",
@@ -8446,7 +8481,7 @@ const _style_0$1 = {
       "position": "absolute"
     }
   },
-  "loading": {
+  "uni-preview-image-loading": {
     "": {
       "position": "absolute",
       "top": 0,
@@ -8457,7 +8492,7 @@ const _style_0$1 = {
     }
   },
   "@TRANSITION": {
-    "item": {
+    "uni-preview-image-item": {
       "property": "transform",
       "duration": "0ms"
     }
@@ -8472,14 +8507,14 @@ var _hoisted_1$1 = {
 var _hoisted_2$1 = ["mode", "src"];
 var _hoisted_3$1 = {
   key: 0,
-  class: "loading"
+  class: "uni-preview-image-loading"
 };
 function _sfc_render$1(_ctx, _cache, $props, $setup, $data, $options) {
   var _component_loadingCircle = resolveComponent("loadingCircle");
   return openBlock(), createElementBlock("view", _hoisted_1$1, [createElementVNode("image", {
     ref: "imageView",
     mode: $data.imageMode,
-    class: "item",
+    class: "uni-preview-image-item",
     src: $data.srcPath,
     onError: _cache[0] || (_cache[0] = function() {
       return $options.previewImageError && $options.previewImageError(...arguments);
@@ -8489,7 +8524,7 @@ function _sfc_render$1(_ctx, _cache, $props, $setup, $data, $options) {
     })
   }, null, 40, _hoisted_2$1), createElementVNode("view", {
     ref: "mask",
-    class: "patch",
+    class: "uni-preview-image-patch",
     onTouchstart: _cache[2] || (_cache[2] = function() {
       return $options.onstart && $options.onstart(...arguments);
     }),
@@ -8599,7 +8634,7 @@ const _sfc_main = {
   }
 };
 const _style_0 = {
-  "indicator-style": {
+  "uni-preview-image-indicator-style": {
     "": {
       "width": 9,
       "height": 9,
@@ -8607,7 +8642,10 @@ const _style_0 = {
       "borderRightStyle": "solid",
       "borderBottomStyle": "solid",
       "borderLeftStyle": "solid",
-      "borderRadius": 9,
+      "borderTopLeftRadius": 9,
+      "borderTopRightRadius": 9,
+      "borderBottomRightRadius": 9,
+      "borderBottomLeftRadius": 9,
       "marginTop": 2,
       "marginRight": 3,
       "marginBottom": 2,
@@ -8622,7 +8660,7 @@ const _style_0 = {
       "borderLeftColor": "#AAAAAA"
     }
   },
-  "default-indicator": {
+  "uni-preview-image-default-indicator": {
     "": {
       "flexDirection": "row",
       "position": "absolute",
@@ -8632,17 +8670,14 @@ const _style_0 = {
       "justifyContent": "center"
     }
   },
-  "number-indicator": {
+  "uni-preview-image-number-indicator": {
     "": {
       "position": "absolute",
-      "color": "#FFFFFF",
-      "fontSize": 16,
-      "textAlign": "center",
       "left": 0,
       "right": 0
     }
   },
-  "number-indicator-text": {
+  "uni-preview-image-number-indicator-text": {
     "": {
       "color": "#FFFFFF",
       "fontSize": 16,
@@ -8654,7 +8689,7 @@ const _style_0 = {
       "paddingRight": 20,
       "paddingBottom": 8,
       "paddingLeft": 20,
-      "backgroundColor": "rgba(0,0,0,0.1)",
+      "backgroundColor": "rgba(0,0,0,0.3)",
       "lineHeight": 1,
       "borderTopStyle": "solid",
       "borderRightStyle": "solid",
@@ -8664,7 +8699,10 @@ const _style_0 = {
       "borderRightWidth": 0,
       "borderBottomWidth": 0,
       "borderLeftWidth": 0,
-      "borderRadius": 32
+      "borderTopLeftRadius": 32,
+      "borderTopRightRadius": 32,
+      "borderBottomRightRadius": 32,
+      "borderBottomLeftRadius": 32
     }
   }
 };
@@ -8672,15 +8710,15 @@ var _hoisted_1 = ["circular", "current", "disable-touch"];
 var _hoisted_2 = {
   key: 0,
   ref: "numberIndicator",
-  class: "number-indicator"
+  class: "uni-preview-image-number-indicator"
 };
 var _hoisted_3 = {
-  class: "number-indicator-text"
+  class: "uni-preview-image-number-indicator-text"
 };
 var _hoisted_4 = {
   key: 1,
   ref: "defaultIndicator",
-  class: "default-indicator"
+  class: "uni-preview-image-default-indicator"
 };
 function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   var _component_uniPreviewImageItem = resolveComponent("uniPreviewImageItem");
@@ -8706,7 +8744,7 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
     }, null, 8, ["index", "src", "longPressAction"])]);
   }), 256)) : createCommentVNode("", true)], 40, _hoisted_1), $data.indicator == "number" ? (openBlock(), createElementBlock("view", _hoisted_2, [createElementVNode("text", _hoisted_3, toDisplayString($data.numberIndicator), 1)], 512)) : createCommentVNode("", true), $data.indicator == "default" ? withDirectives((openBlock(), createElementBlock("view", _hoisted_4, [(openBlock(true), createElementBlock(Fragment, null, renderList($data.urls.length, (i) => {
     return openBlock(), createElementBlock("view", {
-      class: "indicator-style",
+      class: "uni-preview-image-indicator-style",
       style: normalizeStyle({
         backgroundColor: $data.current + 1 == i ? "#ffffff" : "#AAAAAA"
       })

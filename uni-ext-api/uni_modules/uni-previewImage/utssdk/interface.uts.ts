@@ -241,7 +241,7 @@ export type PreviewImageOptions = {
 	 *     "ios": {
 	 *			"osVer": "5.0",
 	 *			"uniVer": "√",
-	 *			"unixVer": "4.51"
+	 *			"unixVer": "x"
 	 *		},
    *    "harmony": {
    *      "osVer": "x",

@@ -1027,7 +1027,6 @@ class Report {
     this._navigationBarTitle.config = get_page_name(options.path);
     let is_opt = options.query && JSON.stringify(options.query) !== '{}';
     let query = is_opt ? '?' + JSON.stringify(options.query) : '';
-    const first_time = get_first_visit_time();
     const last_time = get_last_visit_time();
     // 非老用户
     if (last_time !== 0 || !last_time) {
@@ -1043,7 +1042,7 @@ class Report {
       url: options.path + query || '',
       t: get_time(),
       sc: get_scene(options.scene),
-      fvts: first_time,
+      fvts: get_first_visit_time(),
       lvts: last_time,
       tvc: get_total_visit_count(),
       // create session type  上报类型 ，1 应用进入 2.后台30min进入 3.页面30min进入

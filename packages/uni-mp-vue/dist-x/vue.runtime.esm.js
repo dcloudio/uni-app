@@ -5683,6 +5683,41 @@ class UniElement {
     setAttribute(name, value) {
         console.warn(`Miniprogram does not support UniElement.setAttribute(${name}, value)`);
     }
+    // animate(keyframes: Keyframe[] | PropertyIndexedKeyframes | null, options?: number | KeyframeAnimationOptions) {
+    //   if (!this.id) {
+    //     throw new Error('animate is only supported on elements with id')
+    //   }
+    //   const root = this.$vm.$root
+    //   const scope = root && root.$scope
+    //   if (!scope) {
+    //     throw new Error(`animate is only supported on elements in page`)
+    //   }
+    //   /**
+    //    * TODO 差异待处理
+    //    * - 小程序animate执行完毕后会停留在最后一帧
+    //    * - 小程序keyframes不支持transform等属性，只支持各种解析后的属性
+    //    */
+    //   const animation = new UniAnimation()
+    //   const duration = typeof options === 'number' ? options : options?.duration
+    //   const id = typeof options === 'object' ? options.id || '' : ''
+    //   animation.id = id
+    //   // @ts-expect-error 补充小程序类型
+    //   scope.animate('#' + this.id, keyframes, duration, () => {
+    //     // TODO 增加小程序端UniEvent包装，注意与目前uni-shared内的UniEvent并不一致。uni-shared内的UniEvent缺少target、currentTarget等属性
+    //     // @ts-expect-error UniElement implements IUniElement
+    //     animation.onfinish?.({
+    //       target: this,
+    //       currentTarget: this,
+    //       type: 'finish',
+    //       bubbles: false,
+    //       cancelable: false,
+    //       timeStamp: Date.now(),
+    //       stopPropagation() { },
+    //       preventDefault() { }
+    //     } as UniAnimationPlaybackEvent)
+    //   })
+    //   return animation
+    // }
     $destroy() {
         if (this.style) {
             // 内置组件的Element可能会被执行两次销毁，因为../helpers/uniElement.ts的SetUniElementIdTagType.BuiltInRootElement会被同时设置到父组件内

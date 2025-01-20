@@ -60,7 +60,8 @@ function initRuntimeSocketService() {
             data,
         });
     });
-    return Promise.resolve().then(() => {
+    return Promise.resolve()
+        .then(() => {
         return initRuntimeSocket(hosts, port, id).then((socket) => {
             if (socket == null) {
                 return false;
@@ -68,6 +69,9 @@ function initRuntimeSocketService() {
             socketTask = socket;
             return true;
         });
+    })
+        .catch(() => {
+        return false;
     });
 }
 initRuntimeSocketService();
