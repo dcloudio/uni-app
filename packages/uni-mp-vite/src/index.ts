@@ -7,6 +7,8 @@ import {
   resolveSourceMapPath,
   resolveUTSCompiler,
   uniDecryptUniModulesPlugin,
+  uniEncryptUniModulesAssetsPlugin,
+  uniEncryptUniModulesPlugin,
   uniHBuilderXConsolePlugin,
   uniSourceMapPlugin,
   uniUTSUVueJavaScriptPlugin,
@@ -66,14 +68,18 @@ export default (options: UniMiniProgramPluginOptions) => {
           }),
         ]
       : []),
-    () => {
-      return uniMainJsPlugin({
-        normalizeComponentName,
-        babelParserPlugins: ['typescript'],
-      })
-    },
-    uniManifestJsonPlugin(options),
-    uniPagesJsonPlugin(options),
+    ...(process.env.UNI_COMPILE_TARGET === 'uni_modules'
+      ? []
+      : [
+          () => {
+            return uniMainJsPlugin({
+              normalizeComponentName,
+              babelParserPlugins: ['typescript'],
+            })
+          },
+          uniManifestJsonPlugin(options),
+          uniPagesJsonPlugin(options),
+        ]),
     uniEntryPlugin(options),
     uniViteInjectPlugin(
       'uni:mp-inject',
@@ -92,6 +98,9 @@ export default (options: UniMiniProgramPluginOptions) => {
     },
     ...(process.env.UNI_SUBPACKAGE ? [uniSubpackagePlugin(options)] : []),
     ...(process.env.UNI_MP_PLUGIN ? [uniMiniProgramPluginPlugin(options)] : []),
+    ...(process.env.UNI_COMPILE_TARGET === 'uni_modules'
+      ? [uniEncryptUniModulesAssetsPlugin(), uniEncryptUniModulesPlugin()]
+      : []),
     uniSourceMapPlugin({
       sourceMapDir,
       relativeSourceMapDir: normalizePath(
