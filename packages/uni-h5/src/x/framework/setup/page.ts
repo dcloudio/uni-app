@@ -13,7 +13,10 @@ import type {
 } from '@dcloudio/uni-app-x/types/page'
 //#if !_NODE_JS_
 import { closeDialogPage } from '../../service/api/route/closeDialogPage'
-import safeAreaInsets from 'safe-area-insets'
+import {
+  getPageWrapperInfo,
+  getSafeAreaInsets,
+} from '../../../helpers/safeArea'
 //#endif
 import {
   currentPagesMap,
@@ -23,17 +26,6 @@ import type { RouteLocationNormalizedLoadedGeneric } from 'vue-router'
 import { isDialogPageInstance } from '../helpers/utils'
 import type { UniSafeAreaInsets } from '@dcloudio/uni-app-x/types/native/UniSafeAreaInsets'
 import type { UniPageBody } from '@dcloudio/uni-app-x/types/UniPage'
-
-//#if !_NODE_JS_
-const getSystemSafeAreaInsets = function () {
-  return {
-    top: safeAreaInsets.top,
-    right: safeAreaInsets.right,
-    bottom: safeAreaInsets.bottom,
-    left: safeAreaInsets.left,
-  }
-}
-//#endif
 
 let escBackPageNum = 0
 type PageStyle = {
@@ -49,21 +41,6 @@ type PageStyle = {
 
 export const homeDialogPages: UniDialogPage[] = []
 export const homeSystemDialogPages: UniDialogPage[] = []
-
-function getPageWrapperInfo(container: Document | Element) {
-  const pageWrapper = container.querySelector('uni-page-wrapper') as HTMLElement
-  const pageWrapperRect = pageWrapper.getBoundingClientRect()
-
-  const bodyRect = document.body.getBoundingClientRect()
-  return {
-    top: pageWrapperRect.top,
-    left: pageWrapperRect.left,
-    right: bodyRect.right - pageWrapperRect.right,
-    bottom: bodyRect.bottom - pageWrapperRect.bottom,
-    width: pageWrapperRect.width,
-    height: pageWrapperRect.height,
-  }
-}
 
 function isDialogPageImpl(page: UniPage): boolean {
   return page instanceof UniDialogPageImpl
@@ -91,7 +68,8 @@ class UniPageImpl implements UniPage {
     } else if (this !== currentPage) {
       throw new Error("Can't get pageBody of other page")
     }
-    const pageWrapperInfo = getPageWrapperInfo(container)
+    const pageBody = container.querySelector('uni-page-wrapper') as HTMLElement
+    const pageWrapperInfo = getPageWrapperInfo(pageBody)
     return {
       top: pageWrapperInfo.top,
       left: pageWrapperInfo.left,
@@ -118,17 +96,8 @@ class UniPageImpl implements UniPage {
     } else if (this !== currentPage) {
       throw new Error("Can't get safeAreaInsets of other page")
     }
-    const pageWrapperEdge = getPageWrapperInfo(container)
-    const systemSafeAreaInsets = getSystemSafeAreaInsets()
-    /**
-     * 注意web端页面安全区域较为特殊，如下四个值主要为满足fixed定位时能避开系统安全区域及页面top-window、left-window、nav-bar、tab-bar等的边界
-     */
-    return {
-      top: Math.max(pageWrapperEdge.top, systemSafeAreaInsets.top),
-      left: Math.max(pageWrapperEdge.left, systemSafeAreaInsets.left),
-      right: Math.max(pageWrapperEdge.right, systemSafeAreaInsets.right),
-      bottom: Math.max(pageWrapperEdge.bottom, systemSafeAreaInsets.bottom),
-    }
+    const pageBody = container.querySelector('uni-page-wrapper') as HTMLElement
+    return getSafeAreaInsets(pageBody)
   }
   getPageStyle(): UTSJSONObject {
     const pageMeta = this.vm?.$basePage.meta
