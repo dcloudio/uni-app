@@ -292,7 +292,8 @@ function findEncryptUniModuleCache(
     // 插件版本以及各种环境一致
     if (
       pkg.version === options.version &&
-      !isEnvExpired(pkg.uni_modules?.artifacts?.env || {}, options.env)
+      (options.env.compilerVersion === '4.17-test' ||
+        !isEnvExpired(pkg.uni_modules?.artifacts?.env || {}, options.env))
     ) {
       const declaration = path.resolve(
         uniModuleCacheDir,
