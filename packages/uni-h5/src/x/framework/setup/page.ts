@@ -50,8 +50,8 @@ type PageStyle = {
 export const homeDialogPages: UniDialogPage[] = []
 export const homeSystemDialogPages: UniDialogPage[] = []
 
-function getPageWrapperInfo() {
-  const pageWrapper = document.querySelector('uni-page-wrapper') as HTMLElement
+function getPageWrapperInfo(container: Document | Element) {
+  const pageWrapper = container.querySelector('uni-page-wrapper') as HTMLElement
   const pageWrapperRect = pageWrapper.getBoundingClientRect()
 
   const bodyRect = document.body.getBoundingClientRect()
@@ -65,6 +65,10 @@ function getPageWrapperInfo() {
   }
 }
 
+function isDialogPageImpl(page: UniPage): boolean {
+  return page instanceof UniDialogPageImpl
+}
+
 class UniPageImpl implements UniPage {
   route: string
   options: UTSJSONObject
@@ -75,20 +79,46 @@ class UniPageImpl implements UniPage {
       throw new Error('Not support pageBody in non-browser environment')
     }
     const currentPage = getCurrentPage() as unknown as UniPage
-    if (currentPage !== this) {
+    let container: Document | Element = document
+    if (isDialogPageImpl(this)) {
+      const dialogPages = currentPage.getDialogPages()
+      if (dialogPages.indexOf(this) === -1) {
+        throw new Error("Can't get pageBody of other dialog page")
+      }
+      container = document.querySelector(
+        `uni-page[data-page="${this.vm?.route}"]`
+      )!
+    } else if (this !== currentPage) {
       throw new Error("Can't get pageBody of other page")
     }
-    return getPageWrapperInfo()
+    const pageWrapperInfo = getPageWrapperInfo(container)
+    return {
+      top: pageWrapperInfo.top,
+      left: pageWrapperInfo.left,
+      right: pageWrapperInfo.left + pageWrapperInfo.width,
+      bottom: pageWrapperInfo.top + pageWrapperInfo.height,
+      width: pageWrapperInfo.width,
+      height: pageWrapperInfo.height,
+    }
   }
   get safeAreaInsets(): UniSafeAreaInsets {
     if (__NODE_JS__) {
       throw new Error('Not support safeAreaInsets in non-browser environment')
     }
     const currentPage = getCurrentPage() as unknown as UniPage
-    if (currentPage !== this) {
+    let container: Document | Element = document
+    if (isDialogPageImpl(this)) {
+      const dialogPages = currentPage.getDialogPages()
+      if (dialogPages.indexOf(this) === -1) {
+        throw new Error("Can't get safeAreaInsets of other dialog page")
+      }
+      container = document.querySelector(
+        `uni-page[data-page="${this.vm?.route}"]`
+      )!
+    } else if (this !== currentPage) {
       throw new Error("Can't get safeAreaInsets of other page")
     }
-    const pageWrapperEdge = getPageWrapperInfo()
+    const pageWrapperEdge = getPageWrapperInfo(container)
     const systemSafeAreaInsets = getSystemSafeAreaInsets()
 
     const computeEdge = (bodyEdge: number, nativeEdge: number) => {
