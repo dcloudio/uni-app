@@ -322,29 +322,51 @@ describe('nvue-styler: expand', () => {
               value: 'var(--uni-safe-area-inset-left,0px)',
             },
           ],
-        // 'var(--uni-safe-area-inset-top, 0px) clac(100% - 4px) calc(100% - 5px) var(--uni-safe-area-inset-left, 0px)':
-        //   [
-        //     {
-        //       type: 'decl',
-        //       prop: `${type}-top`,
-        //       value: 'var(--uni-safe-area-inset-top,0px)',
-        //     },
-        //     {
-        //       type: 'decl',
-        //       prop: `${type}-right`,
-        //       value: 'clac(100% - 4px)',
-        //     },
-        //     {
-        //       type: 'decl',
-        //       prop: `${type}-bottom`,
-        //       value: 'calc(100% - 5px)',
-        //     },
-        //     {
-        //       type: 'decl',
-        //       prop: `${type}-left`,
-        //       value: 'var(--uni-safe-area-inset-left,0px)',
-        //     },
-        //   ],
+        'env(safe-area-inset-top, 0px) env(safe-area-inset-right, 0px) env(safe-area-inset-bottom, 0px) env(safe-area-inset-left, 0px)':
+          [
+            {
+              type: 'decl',
+              prop: `${type}-top`,
+              value: 'env(safe-area-inset-top,0px)',
+            },
+            {
+              type: 'decl',
+              prop: `${type}-right`,
+              value: 'env(safe-area-inset-right,0px)',
+            },
+            {
+              type: 'decl',
+              prop: `${type}-bottom`,
+              value: 'env(safe-area-inset-bottom,0px)',
+            },
+            {
+              type: 'decl',
+              prop: `${type}-left`,
+              value: 'env(safe-area-inset-left,0px)',
+            },
+          ],
+        'env(safe-area-inset-top, 0px) 0 0 env(safe-area-inset-left, 0px)': [
+          {
+            type: 'decl',
+            prop: `${type}-top`,
+            value: 'env(safe-area-inset-top,0px)',
+          },
+          {
+            type: 'decl',
+            prop: `${type}-right`,
+            value: '0',
+          },
+          {
+            type: 'decl',
+            prop: `${type}-bottom`,
+            value: '0',
+          },
+          {
+            type: 'decl',
+            prop: `${type}-left`,
+            value: 'env(safe-area-inset-left,0px)',
+          },
+        ],
       }
       Object.keys(boxs).forEach((m) => {
         const decl = parseDecl(`.test {
