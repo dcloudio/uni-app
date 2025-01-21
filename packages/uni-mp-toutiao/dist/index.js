@@ -443,10 +443,19 @@ const LOCALE_ES = 'es';
 
 const messages = {};
 
+function getLocaleLanguage () {
+  let localeLanguage = '';
+  {
+    localeLanguage =
+      normalizeLocale(tt.getSystemInfoSync().language) || LOCALE_EN;
+  }
+  return localeLanguage
+}
+
 let locale;
 
 {
-  locale = normalizeLocale( tt.getSystemInfoSync().language) || LOCALE_EN;
+  locale = getLocaleLanguage();
 }
 
 function initI18nMessages () {
@@ -572,7 +581,7 @@ function getLocale$1 () {
       return app.$vm.$locale
     }
   }
-  return normalizeLocale( tt.getSystemInfoSync().language) || LOCALE_EN
+  return getLocaleLanguage()
 }
 
 function setLocale$1 (locale) {
@@ -2467,12 +2476,21 @@ function parseBaseApp (vm, {
     });
   }
 
-  initAppLocale(Vue, vm,  normalizeLocale(tt.getSystemInfoSync().language) || LOCALE_EN);
+  initAppLocale(Vue, vm, getLocaleLanguage$1());
 
   initHooks(appOptions, hooks);
   initUnknownHooks(appOptions, vm.$options);
 
   return appOptions
+}
+
+function getLocaleLanguage$1 () {
+  let localeLanguage = '';
+  {
+    localeLanguage =
+      normalizeLocale(tt.getSystemInfoSync().language) || LOCALE_EN;
+  }
+  return localeLanguage
 }
 
 const mocks = ['__route__', '__webviewId__', '__nodeid__', '__nodeId__'];
