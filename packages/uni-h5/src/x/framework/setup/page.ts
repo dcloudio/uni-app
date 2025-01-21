@@ -81,13 +81,13 @@ class UniPageImpl implements UniPage {
     const currentPage = getCurrentPage() as unknown as UniPage
     let container: Document | Element = document
     if (isDialogPageImpl(this)) {
-      const dialogPages = currentPage.getDialogPages()
-      if (dialogPages.indexOf(this) === -1) {
-        throw new Error("Can't get pageBody of other dialog page")
-      }
-      container = document.querySelector(
+      const dialogPage = document.querySelector(
         `uni-page[data-page="${this.vm?.route}"]`
-      )!
+      )
+      if (!dialogPage) {
+        throw new Error('dialogPage not found')
+      }
+      container = dialogPage
     } else if (this !== currentPage) {
       throw new Error("Can't get pageBody of other page")
     }
@@ -108,13 +108,13 @@ class UniPageImpl implements UniPage {
     const currentPage = getCurrentPage() as unknown as UniPage
     let container: Document | Element = document
     if (isDialogPageImpl(this)) {
-      const dialogPages = currentPage.getDialogPages()
-      if (dialogPages.indexOf(this) === -1) {
-        throw new Error("Can't get safeAreaInsets of other dialog page")
-      }
-      container = document.querySelector(
+      const dialogPage = document.querySelector(
         `uni-page[data-page="${this.vm?.route}"]`
-      )!
+      )
+      if (!dialogPage) {
+        throw new Error('dialogPage not found')
+      }
+      container = dialogPage
     } else if (this !== currentPage) {
       throw new Error("Can't get safeAreaInsets of other page")
     }
