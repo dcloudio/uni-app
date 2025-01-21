@@ -120,15 +120,14 @@ class UniPageImpl implements UniPage {
     }
     const pageWrapperEdge = getPageWrapperInfo(container)
     const systemSafeAreaInsets = getSystemSafeAreaInsets()
-
-    const computeEdge = (bodyEdge: number, nativeEdge: number) => {
-      return Math.max(0, nativeEdge - bodyEdge)
-    }
+    /**
+     * 注意web端页面安全区域较为特殊，如下四个值主要为满足fixed定位时能避开系统安全区域及页面top-window、left-window、nav-bar、tab-bar等的边界
+     */
     return {
-      top: computeEdge(pageWrapperEdge.top, systemSafeAreaInsets.top),
-      left: computeEdge(pageWrapperEdge.left, systemSafeAreaInsets.left),
-      right: computeEdge(pageWrapperEdge.right, systemSafeAreaInsets.right),
-      bottom: computeEdge(pageWrapperEdge.bottom, systemSafeAreaInsets.bottom),
+      top: Math.max(pageWrapperEdge.top, systemSafeAreaInsets.top),
+      left: Math.max(pageWrapperEdge.left, systemSafeAreaInsets.left),
+      right: Math.max(pageWrapperEdge.right, systemSafeAreaInsets.right),
+      bottom: Math.max(pageWrapperEdge.bottom, systemSafeAreaInsets.bottom),
     }
   }
   getPageStyle(): UTSJSONObject {
