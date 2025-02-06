@@ -4,9 +4,24 @@ import { transformBorderColor } from './borderColor'
 import { transformBorderStyle } from './borderStyle'
 import { transformBorderWidth } from './borderWidth'
 
-const borderWidth = __NODE_JS__ ? '-width' : 'Width'
-const borderStyle = __NODE_JS__ ? '-style' : 'Style'
-const borderColor = __NODE_JS__ ? '-color' : 'Color'
+const borderWidth = (): string => {
+  if (__NODE_JS__) {
+    return '-width'
+  }
+  return 'Width'
+}
+const borderStyle = (): string => {
+  if (__NODE_JS__) {
+    return '-style'
+  }
+  return 'Style'
+}
+const borderColor = (): string => {
+  if (__NODE_JS__) {
+    return '-color'
+  }
+  return 'Color'
+}
 
 export function createTransformBorder(
   options: NormalizeOptions
@@ -43,9 +58,8 @@ export function createTransformBorder(
       }
       if (options.type == 'uvue') {
         return 'medium'
-      } else {
-        return '0'
       }
+      return '0'
     }
     const defaultStyle = (str: string | null): string => {
       if (str != null) {
@@ -53,9 +67,8 @@ export function createTransformBorder(
       }
       if (options.type == 'uvue') {
         return 'none'
-      } else {
-        return 'solid'
       }
+      return 'solid'
     }
     const defaultColor = (str: string | null): string => {
       if (str != null) {
@@ -64,55 +77,25 @@ export function createTransformBorder(
       return '#000000'
     }
 
-    if (isUvuePlatform) {
-      return [
-        ...transformBorderWidth(
-          createDecl(
-            prop + borderWidth,
-            defaultWidth(result[0]),
-            important,
-            raws,
-            source
-          )
-        ),
-        ...transformBorderStyle(
-          createDecl(
-            prop + borderStyle,
-            defaultStyle(result[1]),
-            important,
-            raws,
-            source
-          )
-        ),
-        ...transformBorderColor(
-          createDecl(
-            prop + borderColor,
-            defaultColor(result[2]),
-            important,
-            raws,
-            source
-          )
-        ),
-      ]
-    } else {
+    if (!isUvuePlatform) {
       // nvue 维持不变
       return [
         createDecl(
-          prop + borderWidth,
+          prop + borderWidth(),
           defaultWidth(result[0]),
           important,
           raws,
           source
         ),
         createDecl(
-          prop + borderStyle,
+          prop + borderStyle(),
           defaultStyle(result[1]),
           important,
           raws,
           source
         ),
         createDecl(
-          prop + borderColor,
+          prop + borderColor(),
           defaultColor(result[2]),
           important,
           raws,
@@ -120,5 +103,34 @@ export function createTransformBorder(
         ),
       ]
     }
+    return [
+      ...transformBorderWidth(
+        createDecl(
+          prop + borderWidth(),
+          defaultWidth(result[0]),
+          important,
+          raws,
+          source
+        )
+      ),
+      ...transformBorderStyle(
+        createDecl(
+          prop + borderStyle(),
+          defaultStyle(result[1]),
+          important,
+          raws,
+          source
+        )
+      ),
+      ...transformBorderColor(
+        createDecl(
+          prop + borderColor(),
+          defaultColor(result[2]),
+          important,
+          raws,
+          source
+        )
+      ),
+    ]
   }
 }
