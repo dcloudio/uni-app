@@ -1,3 +1,4 @@
+import type { Declaration } from 'postcss'
 import { type NormalizeOptions, type TransformDecl, createDecl } from '../utils'
 import { transformBorderColor } from './borderColor'
 import { transformBorderStyle } from './borderStyle'
@@ -10,21 +11,23 @@ const borderColor = __NODE_JS__ ? '-color' : 'Color'
 export function createTransformBorder(
   options: NormalizeOptions
 ): TransformDecl {
-  return (decl) => {
+  return (decl: Declaration): Declaration[] => {
     const { prop, value, important, raws, source } = decl
     const splitResult = value.replace(/\s*,\s*/g, ',').split(/\s+/)
-    const result = [
+    const result: Array<string | null> = [
       /^[\d\.]+\S*|^(thin|medium|thick)$/,
       /^(solid|dashed|dotted|none)$/,
       /\S+/,
-    ].map((item) => {
-      const index = splitResult.findIndex((str) => item.test(str))
+    ].map((item): string | null => {
+      const index = splitResult.findIndex((str: string): boolean =>
+        item.test(str)
+      )
       return index < 0 ? null : splitResult.splice(index, 1)[0]
     })
 
-    const isUvuePlatform = options.type === 'uvue'
+    const isUvuePlatform = options.type == 'uvue'
     if (isUvuePlatform) {
-      if (splitResult.length > 0 && value !== '') {
+      if (splitResult.length > 0 && value != '') {
         return [decl]
       }
     } else {
@@ -34,12 +37,39 @@ export function createTransformBorder(
       }
     }
 
+    const defaultWidth = (str: string | null): string => {
+      if (str != null) {
+        return str.trim()
+      }
+      if (options.type == 'uvue') {
+        return 'medium'
+      } else {
+        return '0'
+      }
+    }
+    const defaultStyle = (str: string | null): string => {
+      if (str != null) {
+        return str.trim()
+      }
+      if (options.type == 'uvue') {
+        return 'none'
+      } else {
+        return 'solid'
+      }
+    }
+    const defaultColor = (str: string | null): string => {
+      if (str != null) {
+        return str.trim()
+      }
+      return '#000000'
+    }
+
     if (isUvuePlatform) {
       return [
         ...transformBorderWidth(
           createDecl(
             prop + borderWidth,
-            (result[0] || (options.type === 'uvue' ? 'medium' : '0')).trim(),
+            defaultWidth(result[0]),
             important,
             raws,
             source
@@ -48,7 +78,7 @@ export function createTransformBorder(
         ...transformBorderStyle(
           createDecl(
             prop + borderStyle,
-            (result[1] || (options.type === 'uvue' ? 'none' : 'solid')).trim(),
+            defaultStyle(result[1]),
             important,
             raws,
             source
@@ -57,7 +87,7 @@ export function createTransformBorder(
         ...transformBorderColor(
           createDecl(
             prop + borderColor,
-            (result[2] || '#000000').trim(),
+            defaultColor(result[2]),
             important,
             raws,
             source
@@ -69,21 +99,21 @@ export function createTransformBorder(
       return [
         createDecl(
           prop + borderWidth,
-          (result[0] || (options.type === 'uvue' ? 'medium' : '0')).trim(),
+          defaultWidth(result[0]),
           important,
           raws,
           source
         ),
         createDecl(
           prop + borderStyle,
-          (result[1] || (options.type === 'uvue' ? 'none' : 'solid')).trim(),
+          defaultStyle(result[1]),
           important,
           raws,
           source
         ),
         createDecl(
           prop + borderColor,
-          (result[2] || '#000000').trim(),
+          defaultColor(result[2]),
           important,
           raws,
           source

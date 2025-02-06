@@ -1,21 +1,20 @@
+import type { Declaration } from 'postcss'
 import { capitalize, hyphenate } from '@vue/shared'
-import { type TransformDecl, createDecl } from '../utils'
+import { createDecl } from '../utils'
 
 const borderTop = __NODE_JS__ ? 'border-top-' : 'borderTop'
 const borderRight = __NODE_JS__ ? 'border-right-' : 'borderRight'
 const borderBottom = __NODE_JS__ ? 'border-bottom-' : 'borderBottom'
 const borderLeft = __NODE_JS__ ? 'border-left-' : 'borderLeft'
 
-// const position = ['top', 'right', 'bottom', 'left']
-
-export const transformBorderColor: TransformDecl = (decl) => {
+export const transformBorderColor = (decl: Declaration): Declaration[] => {
   const { prop, value, important, raws, source } = decl
-  let _property_split = hyphenate(prop).split('-')
+  const _property_split = hyphenate(prop).split('-')
   let property = _property_split[_property_split.length - 1]
   if (!__NODE_JS__) {
     property = capitalize(property)
   }
-  let splitResult = value.replace(/\s*,\s*/g, ',').split(/\s+/) // 1pt
+  const splitResult = value.replace(/\s*,\s*/g, ',').split(/\s+/) // 1pt
   switch (splitResult.length) {
     case 1:
       if (_property_split.length === 3) {
@@ -24,8 +23,8 @@ export const transformBorderColor: TransformDecl = (decl) => {
       } else {
         // border-width
         splitResult.push(splitResult[0], splitResult[0], splitResult[0])
-        break
       }
+      break
 
     case 2:
       splitResult.push(splitResult[0], splitResult[1])
