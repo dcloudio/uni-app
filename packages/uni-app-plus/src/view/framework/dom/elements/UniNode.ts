@@ -101,7 +101,9 @@ export class UniNode {
     }
   }
   removeUniChildren() {
-    this.$children.forEach((node) => node.remove())
+    for (let i = this.$children.length - 1; i >= 0; i--) {
+      this.$children[i].remove()
+    }
     this.$children.length = 0
   }
   setWxsProps(attrs: Record<string, any>) {
