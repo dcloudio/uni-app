@@ -16430,7 +16430,11 @@ const getLocation = defineAsyncApi(API_GET_LOCATION, ({ type = 'wgs84', geocode 
 }, GetLocationProtocol, GetLocationOptions);
 function subscribeGetLocation() {
     registerServiceMethod(API_GET_LOCATION, (args, resolve) => {
-        getLocation({
+        /**
+         * 如果开发者使用了腾讯定位，则不能直接调用上面的getLocation方法。
+         * 必须使用uni.getLocation
+         */
+        uni.getLocation({
             type: args.type,
             altitude: args.altitude,
             highAccuracyExpireTime: args.highAccuracyExpireTime,

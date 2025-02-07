@@ -1716,10 +1716,18 @@ function useTheme() {
 function setStatusBarStyle() {
   var page;
   {
+    var _currentPage$vm;
     var currentPage = getCurrentPage();
     var dialogPages = currentPage === null || currentPage === void 0 ? void 0 : currentPage.getDialogPages();
-    if (dialogPages !== null && dialogPages !== void 0 && dialogPages.length) {
+    var systemDialogPages = currentPage === null || currentPage === void 0 || (_currentPage$vm = currentPage.vm) === null || _currentPage$vm === void 0 || (_currentPage$vm = _currentPage$vm.$systemDialogPages) === null || _currentPage$vm === void 0 ? void 0 : _currentPage$vm.value;
+    if (systemDialogPages !== null && systemDialogPages !== void 0 && systemDialogPages.length && dialogPages !== null && dialogPages !== void 0 && dialogPages.length) {
+      var lastSystemDialogPage = systemDialogPages[systemDialogPages.length - 1];
+      var lastDialogPage = dialogPages[dialogPages.length - 1];
+      page = Number(lastSystemDialogPage.__nativePageId) > Number(lastDialogPage.__nativePageId) ? lastSystemDialogPage.vm : lastDialogPage.vm;
+    } else if (dialogPages !== null && dialogPages !== void 0 && dialogPages.length) {
       page = dialogPages[dialogPages.length - 1].vm;
+    } else if (systemDialogPages !== null && systemDialogPages !== void 0 && systemDialogPages.length) {
+      page = systemDialogPages[systemDialogPages.length - 1].vm;
     } else {
       page = currentPage.vm;
     }
@@ -6172,7 +6180,8 @@ const _sfc_main$4 = {
       backgroundColor: null,
       language: "zh-Hans",
       theme: "light",
-      isLandscape: false
+      isLandscape: false,
+      bottomNavigationHeight: 0
     };
   },
   onLoad(options) {
@@ -6212,14 +6221,17 @@ const _sfc_main$4 = {
     }
     var osTheme = systemInfo.osTheme;
     var appTheme = systemInfo.appTheme;
-    if (appTheme != null) {
+    if (appTheme != null && appTheme != "auto") {
       this.theme = appTheme;
     } else if (osTheme != null) {
       this.theme = osTheme;
     }
     this.isLandscape = systemInfo.deviceOrientation == "landscape";
     uni.onAppThemeChange((res) => {
-      this.theme = res.appTheme;
+      var appTheme2 = res.appTheme;
+      if (appTheme2 != null && appTheme2 != "auto") {
+        this.theme = appTheme2;
+      }
     });
     uni.onOsThemeChange((res) => {
       this.theme = res.osTheme;
@@ -6247,10 +6259,13 @@ const _sfc_main$4 = {
         return this.i18nCancelText["zh-Hant"];
       }
       return "取消";
+    },
+    computedBackgroundColor() {
+      return this.backgroundColor !== null ? this.backgroundColor : this.theme == "dark" ? "#2C2C2B" : "#ffffff";
     }
   },
   onReady() {
-    this.bottomNavigationHeight = uni.getWindowInfo().safeAreaInsets.bottom;
+    this.bottomNavigationHeight = this.$page.safeAreaInsets.bottom;
     setTimeout(() => {
       this.show = true;
     }, 10);
@@ -6313,7 +6328,7 @@ const _style_0$4 = {
       "zIndex": 999,
       "transform": "translate(0, 100%)",
       "opacity": 0,
-      "transitionProperty": "transform",
+      "transitionProperty": "transform,opacity",
       "transitionDuration": "0.3s",
       "backgroundColor": "#f7f7f7",
       "borderTopLeftRadius": 12,
@@ -6569,8 +6584,8 @@ function _sfc_render$4(_ctx, _cache, $props, $setup, $data, $options) {
     }])
   }, toDisplayString($options.cancelText), 7)], 6), createElementVNode("view", {
     style: normalizeStyle({
-      height: "".concat(_ctx.bottomNavigationHeight, "px"),
-      backgroundColor: "".concat($data.theme == "dark" ? "#2C2C2B" : "#ffffff")
+      height: "".concat($data.bottomNavigationHeight, "px"),
+      backgroundColor: $options.computedBackgroundColor
     })
   }, null, 4)], 2)]);
 }

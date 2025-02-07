@@ -133,7 +133,7 @@
       }
       const osTheme = systemInfo.osTheme
       const appTheme = systemInfo.appTheme
-      if (appTheme != null) {
+      if (appTheme != null && appTheme != "auto") {
         this.theme = appTheme
       } else if (osTheme != null) {
         this.theme = osTheme
@@ -164,7 +164,10 @@
       // #endif
       // #ifdef APP
       uni.onAppThemeChange((res: AppThemeChangeResult) => {
-        this.theme = res.appTheme
+        const appTheme = res.appTheme
+        if (appTheme != null && appTheme != "auto") {
+          this.theme = appTheme
+        }
       })
       uni.onOsThemeChange((res: OsThemeChangeResult) => {
         this.theme = res.osTheme
@@ -257,6 +260,12 @@
     },
     onReady() {
       this.bottomNavigationHeight = this.$page.safeAreaInsets.bottom
+      // #ifdef APP-ANDROID
+      if(this.bottomNavigationHeight == 0){
+        const systemInfo = uni.getSystemInfoSync()
+        this.bottomNavigationHeight = systemInfo.safeAreaInsets.bottom
+      }
+      // #endif
       setTimeout(() => {
         this.show = true
       }, 10)
