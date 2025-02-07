@@ -82,6 +82,7 @@ export function getArkTSAutoImports(isX = false): AutoImportOptions {
       ['UniElementImpl'],
       ['UniTextElement'],
       ['UniFormControlElement'],
+      ['UniNativeViewEvent'],
       ['UniNativeViewElement'],
       ['UniNativeViewElementImpl'],
       ['UniCustomEvent'],
