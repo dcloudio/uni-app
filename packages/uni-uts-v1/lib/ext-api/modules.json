@@ -104,7 +104,7 @@
       "chooseMedia": {
         "name": "chooseMedia",
         "app": {
-          "js": false,
+          "js": true,
           "kotlin": true,
           "swift": true,
           "arkts": true
