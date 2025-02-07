@@ -1,6 +1,6 @@
-import { type Ref, onMounted, onUnmounted, ref, renderSlot, watch } from 'vue'
+import { type Ref, ref, renderSlot, watch } from 'vue'
 
-import { defineSystemComponent } from '@dcloudio/uni-components'
+import { ResizeSensor, defineSystemComponent } from '@dcloudio/uni-components'
 
 import { usePageMeta } from '../../setup/provide'
 
@@ -39,49 +39,35 @@ export default /*#__PURE__*/ defineSystemComponent({
       }
     )
 
-    if (__X__ && !__NODE_JS__) {
-      // TODO 兼容低版本浏览器
-      let observer: ResizeObserver | null = null
-
-      onMounted(() => {
-        if (typeof ResizeObserver === 'undefined') {
-          return
-        }
-        observer = new ResizeObserver((entries) => {
-          const { top, left, right, bottom } = getSafeAreaInsets(
-            wrapperRef.value!
-          )
-          // TODO dialogPage
-          const vars = {
-            '--uni-safe-area-inset-top': `${top}px`,
-            '--uni-safe-area-inset-left': `${left}px`,
-            '--uni-safe-area-inset-right': `${right}px`,
-            '--uni-safe-area-inset-bottom': `${bottom}px`,
-          }
-          for (const key in vars) {
-            wrapperRef.value!.style.setProperty(key, vars[key])
-          }
-        })
-        observer.observe(document.querySelector('uni-page-wrapper')!)
-      })
-
-      onUnmounted(() => {
-        if (!observer) {
-          return
-        }
-        observer.disconnect()
-      })
+    function _resize() {
+      if (!__X__ || __NODE_JS__) {
+        return
+      }
+      const { top, left, right, bottom } = getSafeAreaInsets(wrapperRef.value!)
+      const vars = {
+        '--uni-safe-area-inset-top': `${top}px`,
+        '--uni-safe-area-inset-left': `${left}px`,
+        '--uni-safe-area-inset-right': `${right}px`,
+        '--uni-safe-area-inset-bottom': `${bottom}px`,
+      }
+      for (const key in vars) {
+        wrapperRef.value!.style.setProperty(key, vars[key])
+      }
     }
 
     return () => {
       const pageRefreshTsx =
         __UNI_FEATURE_PULL_DOWN_REFRESH__ &&
         createPageRefreshTsx(refreshRef, pageMeta)
+      const pageResizeSensor = __X__ ? (
+        <ResizeSensor onResize={_resize} />
+      ) : null
       return (
         <>
           {pageRefreshTsx}
           <uni-page-wrapper ref={wrapperRef} {...pageRefresh.value}>
             <uni-page-body>{renderSlot(ctx.slots, 'default')}</uni-page-body>
+            {pageResizeSensor}
           </uni-page-wrapper>
         </>
       )
