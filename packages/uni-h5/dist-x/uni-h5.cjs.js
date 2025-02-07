@@ -3821,6 +3821,7 @@ const PageBody = /* @__PURE__ */ defineSystemComponent({
   setup(props2, ctx) {
     const pageMeta = __UNI_FEATURE_PULL_DOWN_REFRESH__ && usePageMeta();
     const refreshRef = __UNI_FEATURE_PULL_DOWN_REFRESH__ && vue.ref(null);
+    const wrapperRef = vue.ref(null);
     const _pageRefresh = null;
     const pageRefresh = vue.ref(null);
     vue.watch(() => {
@@ -3830,9 +3831,19 @@ const PageBody = /* @__PURE__ */ defineSystemComponent({
     }, {
       immediate: true
     });
+    function _resize() {
+      {
+        return;
+      }
+    }
     return () => {
       const pageRefreshTsx = __UNI_FEATURE_PULL_DOWN_REFRESH__ && createPageRefreshTsx(refreshRef);
-      return vue.createVNode(vue.Fragment, null, [pageRefreshTsx, vue.createVNode("uni-page-wrapper", pageRefresh.value, [vue.createVNode("uni-page-body", null, [vue.renderSlot(ctx.slots, "default")])], 16)]);
+      const pageResizeSensor = vue.createVNode(ResizeSensor, {
+        "onResize": _resize
+      }, null, 8, ["onResize"]);
+      return vue.createVNode(vue.Fragment, null, [pageRefreshTsx, vue.createVNode("uni-page-wrapper", vue.mergeProps({
+        "ref": wrapperRef
+      }, pageRefresh.value), [vue.createVNode("uni-page-body", null, [vue.renderSlot(ctx.slots, "default")]), pageResizeSensor], 16)]);
     };
   }
 });

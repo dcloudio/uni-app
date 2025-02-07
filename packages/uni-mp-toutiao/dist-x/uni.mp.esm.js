@@ -128,7 +128,7 @@ function isInstanceOf(value, type) {
         return value && value[Symbol.iterator];
     }
     const isNativeInstanceofType = value instanceof type;
-    if (isNativeInstanceofType || typeof value !== 'object') {
+    if (isNativeInstanceofType || typeof value !== 'object' || value === null) {
         return isNativeInstanceofType;
     }
     const proto = Object.getPrototypeOf(value).constructor;
@@ -803,6 +803,14 @@ function initSetRef(mpInstance) {
         };
     }
 }
+function getLocaleLanguage() {
+    let localeLanguage = '';
+    {
+        localeLanguage =
+            normalizeLocale(tt.getSystemInfoSync().language) || LOCALE_EN;
+    }
+    return localeLanguage;
+}
 
 const MP_METHODS = [
     'createSelectorQuery',
@@ -1117,7 +1125,7 @@ function initAppLifecycle(appOptions, vm) {
     }
 }
 function initLocale(appVm) {
-    const locale = ref(normalizeLocale(tt.getSystemInfoSync().language) || LOCALE_EN);
+    const locale = ref(getLocaleLanguage());
     Object.defineProperty(appVm, '$locale', {
         get() {
             return locale.value;

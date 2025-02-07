@@ -1716,10 +1716,18 @@ function useTheme() {
 function setStatusBarStyle() {
   var page;
   {
+    var _currentPage$vm;
     var currentPage = getCurrentPage();
     var dialogPages = currentPage === null || currentPage === void 0 ? void 0 : currentPage.getDialogPages();
-    if (dialogPages !== null && dialogPages !== void 0 && dialogPages.length) {
+    var systemDialogPages = currentPage === null || currentPage === void 0 || (_currentPage$vm = currentPage.vm) === null || _currentPage$vm === void 0 || (_currentPage$vm = _currentPage$vm.$systemDialogPages) === null || _currentPage$vm === void 0 ? void 0 : _currentPage$vm.value;
+    if (systemDialogPages !== null && systemDialogPages !== void 0 && systemDialogPages.length && dialogPages !== null && dialogPages !== void 0 && dialogPages.length) {
+      var lastSystemDialogPage = systemDialogPages[systemDialogPages.length - 1];
+      var lastDialogPage = dialogPages[dialogPages.length - 1];
+      page = Number(lastSystemDialogPage.__nativePageId) > Number(lastDialogPage.__nativePageId) ? lastSystemDialogPage.vm : lastDialogPage.vm;
+    } else if (dialogPages !== null && dialogPages !== void 0 && dialogPages.length) {
       page = dialogPages[dialogPages.length - 1].vm;
+    } else if (systemDialogPages !== null && systemDialogPages !== void 0 && systemDialogPages.length) {
+      page = systemDialogPages[systemDialogPages.length - 1].vm;
     } else {
       page = currentPage.vm;
     }
