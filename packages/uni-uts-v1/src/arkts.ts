@@ -86,7 +86,8 @@ export function getArkTSAutoImports(isX = false): AutoImportOptions {
       ['UniNativeViewElement'],
       ['UniNativeViewElementImpl'],
       ['UniCustomEvent'],
-      ['UniCustomEventOptions']
+      ['UniCustomEventOptions'],
+      ['getCurrentPages']
     )
   }
   return mergeArkTSAutoImports(
