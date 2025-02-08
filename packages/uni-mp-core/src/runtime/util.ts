@@ -202,7 +202,11 @@ export function fixProperties(properties: Record<string, any>) {
 
 export function nextSetDataTick(mpInstance: MPComponentInstance, fn: Function) {
   // 随便设置一个字段来触发回调（部分平台必须有字段才可以，比如头条）
-  mpInstance.setData({ r1: 1 }, () => fn())
+  if (__PLATFORM__ === 'mp-kuaishou') {
+    mpInstance.setData({ r1: 1 }, () => nextTick(() => fn()))
+  } else {
+    mpInstance.setData({ r1: 1 }, () => fn())
+  }
 }
 
 export function initSetRef(mpInstance: MPComponentInstance) {
