@@ -99,7 +99,12 @@ export const request = {
       'content-type': 'application/json',
     }
     Object.keys(fromArgs.header).forEach((key) => {
-      headers[key.toLocaleLowerCase()] = fromArgs.header[key]
+      // 鸿蒙钉钉 header 不调整 Content-Type 大小写 #ask 205230
+      if (key.toLocaleLowerCase() === 'content-type') {
+        headers['Content-Type'] = fromArgs.header[key]
+      } else {
+        headers[key.toLocaleLowerCase()] = fromArgs.header[key]
+      }
     })
     return {
       header() {
