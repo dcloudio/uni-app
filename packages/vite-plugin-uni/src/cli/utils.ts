@@ -313,7 +313,8 @@ export function initEnv(
   if (
     process.env.UNI_PLATFORM === 'app' ||
     process.env.UNI_PLATFORM === 'web' ||
-    process.env.UNI_PLATFORM === 'h5'
+    process.env.UNI_PLATFORM === 'h5' ||
+    process.env.UNI_PLATFORM === 'app-harmony'
   ) {
     console.log(
       M['app.compiler.version'].replace(
