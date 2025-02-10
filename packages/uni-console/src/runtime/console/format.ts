@@ -86,7 +86,19 @@ export function formatArg(arg: any | null, depth: number = 0): NormalizeResult {
     case 'boolean':
       return formatBoolean(arg as boolean)
     case 'object':
-      return formatObject(arg as object, depth)
+      try {
+        // 鸿蒙里边 object 可能包含 nativePtr 指针，该指针 typeof 是 object
+        // 但是又不能访问上边的任意属性，否则会报：TypeError: Can not get Prototype on non ECMA Object
+        // 所以这里需要捕获异常，防止报错
+        return formatObject(arg as object, depth)
+      } catch (e) {
+        return {
+          type: 'object',
+          value: {
+            properties: [],
+          },
+        }
+      }
     case 'undefined':
       return formatUndefined()
     case 'function':
@@ -266,16 +278,26 @@ function formatObject(value: object, depth: number): NormalizeResult {
       }
     }
   }
+  let entries = Object.entries(value)
+  if (isHarmonyBuilderParams(value)) {
+    entries = entries.filter(
+      ([key]) => key !== 'modifier' && key !== 'nodeContent'
+    )
+  }
   return {
     type: 'object',
     className,
     value: {
-      properties: Object.entries(value).map(
+      properties: entries.map(
         (entry: [string, any | null]): NormalizeResult =>
           formatObjectProperty(entry[0], entry[1], depth + 1)
       ),
     },
   } as ObjectResult
+}
+
+function isHarmonyBuilderParams(value: any) {
+  return value.modifier && value.modifier._attribute && value.nodeContent
 }
 
 function isComponentPublicInstance(

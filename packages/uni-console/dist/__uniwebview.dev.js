@@ -68,7 +68,20 @@
             case 'boolean':
                 return formatBoolean(arg);
             case 'object':
-                return formatObject(arg, depth);
+                try {
+                    // 鸿蒙里边 object 可能包含 nativePtr 指针，该指针 typeof 是 object
+                    // 但是又不能访问上边的任意属性，否则会报：TypeError: Can not get Prototype on non ECMA Object
+                    // 所以这里需要捕获异常，防止报错
+                    return formatObject(arg, depth);
+                }
+                catch (e) {
+                    return {
+                        type: 'object',
+                        value: {
+                            properties: [],
+                        },
+                    };
+                }
             case 'undefined':
                 return formatUndefined();
             case 'function':
@@ -219,15 +232,25 @@
                 }
             }
         }
+        var entries = Object.entries(value);
+        if (isHarmonyBuilderParams(value)) {
+            entries = entries.filter(function (_a) {
+                var key = _a[0];
+                return key !== 'modifier' && key !== 'nodeContent';
+            });
+        }
         return {
             type: 'object',
             className: className,
             value: {
-                properties: Object.entries(value).map(function (entry) {
+                properties: entries.map(function (entry) {
                     return formatObjectProperty(entry[0], entry[1], depth + 1);
                 }),
             },
         };
+    }
+    function isHarmonyBuilderParams(value) {
+        return value.modifier && value.modifier._attribute && value.nodeContent;
     }
     function isComponentPublicInstance(value) {
         return value.$ && isComponentInternalInstance(value.$);
