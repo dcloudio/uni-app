@@ -26150,6 +26150,7 @@ const PageBody = /* @__PURE__ */ defineSystemComponent({
   setup(props2, ctx) {
     const pageMeta = __UNI_FEATURE_PULL_DOWN_REFRESH__ && usePageMeta();
     const refreshRef = __UNI_FEATURE_PULL_DOWN_REFRESH__ && ref(null);
+    const wrapperRef = ref(null);
     const _pageRefresh = __UNI_FEATURE_PULL_DOWN_REFRESH__ && (pageMeta.enablePullDownRefresh || false) ? usePageRefresh(refreshRef) : null;
     const pageRefresh = ref(null);
     watch(() => {
@@ -26161,7 +26162,10 @@ const PageBody = /* @__PURE__ */ defineSystemComponent({
     });
     return () => {
       const pageRefreshTsx = __UNI_FEATURE_PULL_DOWN_REFRESH__ && createPageRefreshTsx(refreshRef, pageMeta);
-      return createVNode(Fragment, null, [pageRefreshTsx, createVNode("uni-page-wrapper", pageRefresh.value, [createVNode("uni-page-body", null, [renderSlot(ctx.slots, "default")])], 16)]);
+      const pageResizeSensor = null;
+      return createVNode(Fragment, null, [pageRefreshTsx, createVNode("uni-page-wrapper", mergeProps({
+        "ref": wrapperRef
+      }, pageRefresh.value), [createVNode("uni-page-body", null, [renderSlot(ctx.slots, "default")]), pageResizeSensor], 16)]);
     };
   }
 });
