@@ -10610,6 +10610,7 @@ const index$a = /* @__PURE__ */ defineBuiltInComponent({
         "class": "uni-video-controls"
       }, [vue.withDirectives(vue.createVNode("div", {
         "class": {
+          "uni-video-icon": true,
           "uni-video-control-button": true,
           "uni-video-control-button-play": !videoState.playing,
           "uni-video-control-button-pause": videoState.playing
@@ -10652,12 +10653,14 @@ const index$a = /* @__PURE__ */ defineBuiltInComponent({
         "class": "uni-video-duration"
       }, [formatTime(Number(props2.duration) || videoState.duration)], 512), [[vue.vShow, props2.showProgress]])]), vue.withDirectives(vue.createVNode("div", {
         "class": {
+          "uni-video-icon": true,
           "uni-video-danmu-button": true,
           "uni-video-danmu-button-active": danmuState.enable
         },
         "onClick": vue.withModifiers(toggleDanmu, ["stop"])
       }, null, 10, ["onClick"]), [[vue.vShow, props2.danmuBtn]]), vue.withDirectives(vue.createVNode("div", {
         "class": {
+          "uni-video-icon": true,
           "uni-video-fullscreen": true,
           "uni-video-type-fullscreen": fullscreenState.fullscreen
         },
@@ -10671,7 +10674,7 @@ const index$a = /* @__PURE__ */ defineBuiltInComponent({
         "onClick": vue.withModifiers(() => {
         }, ["stop"])
       }, [vue.createVNode("div", {
-        "class": "uni-video-cover-play-button",
+        "class": "uni-video-cover-play-button uni-video-icon",
         "onClick": vue.withModifiers(play, ["stop"])
       }, null, 8, ["onClick"])], 8, ["onClick"]), vue.createVNode("div", {
         "class": {
