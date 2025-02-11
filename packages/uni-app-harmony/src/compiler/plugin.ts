@@ -81,6 +81,11 @@ export function uniAppHarmonyPlugin(): UniVitePlugin {
             external: [...Object.keys(commandGlobals), ...harmonyGlobals],
             output: {
               globals: function (id: string) {
+                if (id.startsWith('@kit.')) {
+                  console.warn(
+                    '@kit开头的包无法在页面或组件内正常使用，请改用其他方式引用，或使用uts插件引用。'
+                  )
+                }
                 return (
                   commandGlobals[id] ||
                   (isHarmonyGlobal(id)
