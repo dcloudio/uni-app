@@ -1,5 +1,6 @@
 import { hyphenateCssProperty } from '../src/dom/UniCSSStyleDeclaration'
 import { UniElement } from '../src/dom/UniElement'
+import { parseKeyFrames } from '../src/dom/UniAnimation'
 
 describe('uni-mp-vue: UniElement', () => {
   it('UniCSSStyleDeclaration', () => {
@@ -31,5 +32,55 @@ describe('uni-mp-vue: UniElement', () => {
       '-webkit-transition-opacity'
     )
     expect(hyphenateCssProperty('marginTop')).toBe('margin-top')
+  })
+  it('animate - setStyle utils', () => {
+    expect(typeof parseKeyFrames).toBe('function')
+
+    // simple
+    expect(
+      parseKeyFrames([
+        {
+          opacity: 0,
+          color: '#fff',
+        },
+        {
+          opacity: 1,
+          color: '#000',
+        },
+      ]).currentKeyframes
+    ).toEqual([
+      {
+        opacity: 0,
+      },
+      {
+        opacity: 1,
+      },
+    ])
+
+    expect(
+      parseKeyFrames([
+        { transform: 'translateX(0) rotate(0)' }, // keyframe
+        { transform: 'translateX(200px) rotate(540deg)' }, // keyframe
+      ]).currentKeyframes
+    ).toEqual([
+      {
+        translateX: 0,
+        rotate: 0,
+      },
+      {
+        translateX: 200,
+        rotate: 540,
+      },
+    ])
+
+    // expect(
+    //   parseKeyFrames({
+    //     width: ['100px', '200px', '100px'],
+    //   }).currentKeyframes
+    // ).toEqual([
+    //   {
+    //     width: ['100px', '200px', '100px'],
+    //   },
+    // ])
   })
 })
