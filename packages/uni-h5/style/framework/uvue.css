@@ -4,6 +4,11 @@ body {
   font-family: -apple-system, HelveticaNeue;
 }
 
+@font-face {
+  font-family: "uni-icon";
+  src: url('./uni-icon.ttf');
+}
+
 body, uni-page-body {
   background-color: var(--background-color-content);
 }
