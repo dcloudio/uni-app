@@ -1010,6 +1010,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
                 <div
                   v-show={props.showPlayBtn}
                   class={{
+                    'uni-video-icon': true,
                     'uni-video-control-button': true,
                     'uni-video-control-button-play': !videoState.playing,
                     'uni-video-control-button-pause': videoState.playing,
@@ -1061,6 +1062,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
               <div
                 v-show={props.danmuBtn}
                 class={{
+                  'uni-video-icon': true,
                   'uni-video-danmu-button': true,
                   'uni-video-danmu-button-active': danmuState.enable,
                 }}
@@ -1071,6 +1073,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
               <div
                 v-show={props.showFullscreenBtn}
                 class={{
+                  'uni-video-icon': true,
                   'uni-video-fullscreen': true,
                   'uni-video-type-fullscreen': fullscreenState.fullscreen,
                 }}
@@ -1078,7 +1081,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
                   () => toggleFullscreen(!fullscreenState.fullscreen),
                   ['stop']
                 )}
-              />
+              ></div>
             </div>
             <div
               v-show={videoState.start && danmuState.enable}
@@ -1092,7 +1095,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
                 onClick={withModifiers(() => {}, ['stop'])}
               >
                 <div
-                  class="uni-video-cover-play-button"
+                  class="uni-video-cover-play-button uni-video-icon"
                   onClick={withModifiers(play, ['stop'])}
                 />
                 {/* <p class="uni-video-cover-duration">
