@@ -45,6 +45,7 @@ function formatTime(val: number): string {
 }
 type GestureType = 'none' | 'stop' | 'volume' | 'progress'
 interface GestureState {
+  seeking: boolean
   gestureType: GestureType
   volumeOld: number
   volumeNew: number
@@ -60,6 +61,7 @@ function useGesture(
   fullscreenState: FullscreenState
 ) {
   const state: GestureState = reactive({
+    seeking: false,
     gestureType: 'none',
     volumeOld: 0,
     volumeNew: 0,
@@ -76,7 +78,7 @@ function useGesture(
     touchStartOrigin.y = toucher.pageY
     state.gestureType = 'none'
     state.volumeOld = 0
-    state.currentTimeOld = state.currentTimeNew = 0
+    // state.currentTimeOld = state.currentTimeNew = 0
   }
   function onTouchmove(event: TouchEvent) {
     function stop() {
@@ -97,6 +99,7 @@ function useGesture(
     const video = videoRef.value as HTMLVideoElement
     if (gestureType === 'progress') {
       changeProgress(pageX - origin.x)
+      state.seeking = true
     } else if (gestureType === 'volume') {
       changeVolume(pageY - origin.y)
     }
@@ -289,6 +292,7 @@ interface VideoState {
   progress: number
   buffered: number
   muted: boolean
+  pauseUpdatingCurrentTime: boolean
 }
 function useVideo(props: Props, attrs: Data, trigger: CustomEventTrigger) {
   const videoRef: Ref<HTMLVideoElement | null> = ref(null)
@@ -303,6 +307,7 @@ function useVideo(props: Props, attrs: Data, trigger: CustomEventTrigger) {
     progress: 0,
     buffered: 0,
     muted,
+    pauseUpdatingCurrentTime: false,
   })
   watch(
     () => src.value,
@@ -372,7 +377,10 @@ function useVideo(props: Props, attrs: Data, trigger: CustomEventTrigger) {
   }
   function onTimeUpdate($event: Event) {
     const video = $event.target as HTMLVideoElement
-    const currentTime = (state.currentTime = video.currentTime)
+    if (!state.pauseUpdatingCurrentTime) {
+      state.currentTime = video.currentTime
+    }
+    const currentTime = video.currentTime
     trigger('timeupdate', $event, {
       currentTime,
       duration: video.duration,
@@ -432,6 +440,7 @@ function useVideo(props: Props, attrs: Data, trigger: CustomEventTrigger) {
 }
 
 interface ControlsState {
+  seeking: boolean
   touching: boolean
   controlsTouching: boolean
   centerPlayBtnShow: boolean
@@ -441,7 +450,8 @@ interface ControlsState {
 function useControls(
   props: { controls: any; showCenterPlayBtn: any; duration: any },
   videoState: VideoState,
-  seek: Function
+  seek: Function,
+  seeking?: (currentTimeNew: number) => void
 ) {
   const progressRef: Ref<HTMLElement | null> = ref(null)
   const ballRef: Ref<HTMLElement | null> = ref(null)
@@ -453,6 +463,7 @@ function useControls(
     () => !centerPlayBtnShow.value && props.controls && controlsVisible.value
   )
   const state: ControlsState = reactive({
+    seeking: false,
     touching: false,
     controlsTouching: false,
     centerPlayBtnShow,
@@ -504,20 +515,6 @@ function useControls(
       }
     }
   )
-  watch(
-    [
-      () => videoState.currentTime,
-      () => {
-        props.duration
-      },
-    ],
-    function updateProgress() {
-      if (!state.touching) {
-        videoState.progress =
-          (videoState.currentTime / videoState.duration) * 100
-      }
-    }
-  )
   onMounted(() => {
     const passiveOptions = passive(false)
     let originX: number
@@ -543,6 +540,8 @@ function useControls(
         progress = 100
       }
       videoState.progress = progress
+      seeking?.((videoState.duration * progress) / 100)
+      state.seeking = true
       event.preventDefault()
       event.stopPropagation()
     }
@@ -726,6 +725,39 @@ function useContext(
   )
 }
 
+function useCurrentTime(
+  videoState: VideoState,
+  gestureState: GestureState,
+  controlsState: ControlsState
+) {
+  const progressing = computed(
+    () => gestureState.gestureType === 'progress' || controlsState.touching
+  )
+  watch(progressing, (val) => {
+    videoState.pauseUpdatingCurrentTime = val
+    controlsState.controlsTouching = val
+  })
+  watch(
+    [
+      () => videoState.currentTime,
+      () => {
+        props.duration
+      },
+    ],
+    () => {
+      videoState.progress = (videoState.currentTime / videoState.duration) * 100
+    }
+  )
+  watch(
+    () => gestureState.currentTimeNew,
+    (currentTimeNew) => {
+      videoState.currentTime = currentTimeNew
+    }
+  )
+
+  return progressing
+}
+
 const props = {
   id: {
     type: String,
@@ -891,7 +923,9 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       ballRef,
       clickProgress,
       toggleControls,
-    } = useControls(props, videoState, seek)
+    } = useControls(props, videoState, seek, (currentTimeNew) => {
+      gestureState.currentTimeNew = currentTimeNew
+    })
     useContext(
       play,
       pause,
@@ -902,6 +936,8 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       requestFullScreen,
       exitFullScreen
     )
+
+    const progressing = useCurrentTime(videoState, gestureState, controlsState)
 
     //#if _X_ && !_NODE_JS_
     onMounted(() => {
@@ -989,15 +1025,30 @@ export default /*#__PURE__*/ defineBuiltInComponent({
                   onClick={withModifiers(clickProgress, ['stop'])}
                   v-show={props.showProgress}
                 >
-                  <div class="uni-video-progress">
+                  <div
+                    class={{
+                      'uni-video-progress': true,
+                      'uni-video-progress-progressing': progressing.value,
+                    }}
+                  >
                     <div
-                      style={{ width: videoState.buffered + '%' }}
+                      style={{
+                        width: videoState.buffered - videoState.progress + '%',
+                        left: videoState.progress + '%',
+                      }}
                       class="uni-video-progress-buffered"
+                    />
+                    <div
+                      style={{ width: videoState.progress + '%' }}
+                      class="uni-video-progress-played"
                     />
                     <div
                       ref={ballRef}
                       style={{ left: videoState.progress + '%' }}
-                      class="uni-video-ball"
+                      class={{
+                        'uni-video-ball': true,
+                        'uni-video-ball-progressing': progressing.value,
+                      }}
                     >
                       <div class="uni-video-inner" />
                     </div>
@@ -1015,7 +1066,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
                 }}
                 onClick={withModifiers(toggleDanmu, ['stop'])}
               >
-                {t('uni.video.danmu')}
+                {/* {t('uni.video.danmu')} */}
               </div>
               <div
                 v-show={props.showFullscreenBtn}
@@ -1044,9 +1095,9 @@ export default /*#__PURE__*/ defineBuiltInComponent({
                   class="uni-video-cover-play-button"
                   onClick={withModifiers(play, ['stop'])}
                 />
-                <p class="uni-video-cover-duration">
+                {/* <p class="uni-video-cover-duration">
                   {formatTime(Number(props.duration) || videoState.duration)}
-                </p>
+                </p> */}
               </div>
             )}
             <div
@@ -1082,12 +1133,13 @@ export default /*#__PURE__*/ defineBuiltInComponent({
             <div
               class={{
                 'uni-video-toast': true,
-                'uni-video-toast-progress':
-                  gestureState.gestureType === 'progress',
+                'uni-video-toast-progress': progressing.value,
               }}
             >
               <div class="uni-video-toast-title">
-                {formatTime(gestureState.currentTimeNew)}
+                <span class="uni-video-toast-title-current-time">
+                  {formatTime(gestureState.currentTimeNew)}
+                </span>
                 {' / '}
                 {formatTime(videoState.duration)}
               </div>
