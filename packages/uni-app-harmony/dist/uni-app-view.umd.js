@@ -12796,7 +12796,9 @@
       }
     }
     removeUniChildren() {
-      this.$children.forEach((node) => node.remove());
+      for (var i2 = this.$children.length - 1; i2 >= 0; i2--) {
+        this.$children[i2].remove();
+      }
       this.$children.length = 0;
     }
     setWxsProps(attrs2) {
@@ -22526,6 +22528,7 @@
   }
   function useGesture(props2, videoRef, fullscreenState) {
     var state = reactive({
+      seeking: false,
       gestureType: "none",
       volumeOld: 0,
       volumeNew: 0,
@@ -22542,7 +22545,6 @@
       touchStartOrigin.y = toucher.pageY;
       state.gestureType = "none";
       state.volumeOld = 0;
-      state.currentTimeOld = state.currentTimeNew = 0;
     }
     function onTouchmove(event) {
       function stop() {
@@ -22563,6 +22565,7 @@
       var video = videoRef.value;
       if (gestureType === "progress") {
         changeProgress(pageX - origin.x);
+        state.seeking = true;
       } else if (gestureType === "volume") {
         changeVolume(pageY - origin.y);
       }
@@ -22717,7 +22720,8 @@
       duration: 0,
       progress: 0,
       buffered: 0,
-      muted
+      muted,
+      pauseUpdatingCurrentTime: false
     });
     watch(() => src.value, () => {
       state.playing = false;
@@ -22780,7 +22784,10 @@
     }
     function onTimeUpdate($event) {
       var video = $event.target;
-      var currentTime = state.currentTime = video.currentTime;
+      if (!state.pauseUpdatingCurrentTime) {
+        state.currentTime = video.currentTime;
+      }
+      var currentTime = video.currentTime;
       trigger2("timeupdate", $event, {
         currentTime,
         duration: video.duration
@@ -22838,13 +22845,14 @@
       onTimeUpdate
     };
   }
-  function useControls(props2, videoState, seek) {
+  function useControls(props2, videoState, seek, seeking) {
     var progressRef = ref(null);
     var ballRef = ref(null);
     var centerPlayBtnShow = computed(() => props2.showCenterPlayBtn && !videoState.start);
     var controlsVisible = ref(true);
     var controlsShow = computed(() => !centerPlayBtnShow.value && props2.controls && controlsVisible.value);
     var state = reactive({
+      seeking: false,
       touching: false,
       controlsTouching: false,
       centerPlayBtnShow,
@@ -22893,13 +22901,6 @@
         autoHideEnd();
       }
     });
-    watch([() => videoState.currentTime, () => {
-      props2.duration;
-    }], function updateProgress() {
-      if (!state.touching) {
-        videoState.progress = videoState.currentTime / videoState.duration * 100;
-      }
-    });
     onMounted(() => {
       var passiveOptions2 = passive(false);
       var originX;
@@ -22925,6 +22926,8 @@
           progress = 100;
         }
         videoState.progress = progress;
+        seeking === null || seeking === void 0 || seeking(videoState.duration * progress / 100);
+        state.seeking = true;
         event.preventDefault();
         event.stopPropagation();
       }
@@ -23071,6 +23074,22 @@
         methods[type](options);
       }
     }, id2);
+  }
+  function useCurrentTime(videoState, gestureState, controlsState) {
+    var progressing = computed(() => gestureState.gestureType === "progress" || controlsState.touching);
+    watch(progressing, (val) => {
+      videoState.pauseUpdatingCurrentTime = val;
+      controlsState.controlsTouching = val;
+    });
+    watch([() => videoState.currentTime, () => {
+      props$b.duration;
+    }], () => {
+      videoState.progress = videoState.currentTime / videoState.duration * 100;
+    });
+    watch(() => gestureState.currentTimeNew, (currentTimeNew) => {
+      videoState.currentTime = currentTimeNew;
+    });
+    return progressing;
   }
   var props$b = {
     id: {
@@ -23227,8 +23246,11 @@
         ballRef,
         clickProgress,
         toggleControls
-      } = useControls(props2, videoState, seek);
+      } = useControls(props2, videoState, seek, (currentTimeNew) => {
+        gestureState.currentTimeNew = currentTimeNew;
+      });
       useContext(play, pause, stop, seek, sendDanmu, playbackRate, requestFullScreen, exitFullScreen);
+      var progressing = useCurrentTime(videoState, gestureState, controlsState);
       return () => {
         return createVNode("uni-video", {
           "ref": rootRef,
@@ -23280,6 +23302,7 @@
           "class": "uni-video-controls"
         }, [withDirectives(createVNode("div", {
           "class": {
+            "uni-video-icon": true,
             "uni-video-control-button": true,
             "uni-video-control-button-play": !videoState.playing,
             "uni-video-control-button-pause": videoState.playing
@@ -23292,30 +23315,44 @@
           "class": "uni-video-progress-container",
           "onClick": withModifiers(clickProgress, ["stop"])
         }, [createVNode("div", {
-          "class": "uni-video-progress"
+          "class": {
+            "uni-video-progress": true,
+            "uni-video-progress-progressing": progressing.value
+          }
         }, [createVNode("div", {
           "style": {
-            width: videoState.buffered + "%"
+            width: videoState.buffered - videoState.progress + "%",
+            left: videoState.progress + "%"
           },
           "class": "uni-video-progress-buffered"
+        }, null, 4), createVNode("div", {
+          "style": {
+            width: videoState.progress + "%"
+          },
+          "class": "uni-video-progress-played"
         }, null, 4), createVNode("div", {
           "ref": ballRef,
           "style": {
             left: videoState.progress + "%"
           },
-          "class": "uni-video-ball"
+          "class": {
+            "uni-video-ball": true,
+            "uni-video-ball-progressing": progressing.value
+          }
         }, [createVNode("div", {
           "class": "uni-video-inner"
-        }, null)], 4)])], 8, ["onClick"]), [[vShow, props2.showProgress]]), withDirectives(createVNode("div", {
+        }, null)], 6)], 2)], 8, ["onClick"]), [[vShow, props2.showProgress]]), withDirectives(createVNode("div", {
           "class": "uni-video-duration"
         }, [formatTime(Number(props2.duration) || videoState.duration)], 512), [[vShow, props2.showProgress]])]), withDirectives(createVNode("div", {
           "class": {
+            "uni-video-icon": true,
             "uni-video-danmu-button": true,
             "uni-video-danmu-button-active": danmuState.enable
           },
           "onClick": withModifiers(toggleDanmu, ["stop"])
-        }, [t2("uni.video.danmu")], 10, ["onClick"]), [[vShow, props2.danmuBtn]]), withDirectives(createVNode("div", {
+        }, null, 10, ["onClick"]), [[vShow, props2.danmuBtn]]), withDirectives(createVNode("div", {
           "class": {
+            "uni-video-icon": true,
             "uni-video-fullscreen": true,
             "uni-video-type-fullscreen": fullscreenState.fullscreen
           },
@@ -23329,11 +23366,9 @@
           "onClick": withModifiers(() => {
           }, ["stop"])
         }, [createVNode("div", {
-          "class": "uni-video-cover-play-button",
+          "class": "uni-video-cover-play-button uni-video-icon",
           "onClick": withModifiers(play, ["stop"])
-        }, null, 8, ["onClick"]), createVNode("p", {
-          "class": "uni-video-cover-duration"
-        }, [formatTime(Number(props2.duration) || videoState.duration)])], 8, ["onClick"]), createVNode("div", {
+        }, null, 8, ["onClick"])], 8, ["onClick"]), createVNode("div", {
           "class": {
             "uni-video-toast": true,
             "uni-video-toast-volume": gestureState.gestureType === "volume"
@@ -23363,11 +23398,13 @@
         }, null))])], 4)])], 2), createVNode("div", {
           "class": {
             "uni-video-toast": true,
-            "uni-video-toast-progress": gestureState.gestureType === "progress"
+            "uni-video-toast-progress": progressing.value
           }
         }, [createVNode("div", {
           "class": "uni-video-toast-title"
-        }, [formatTime(gestureState.currentTimeNew), " / ", formatTime(videoState.duration)])], 2), createVNode("div", {
+        }, [createVNode("span", {
+          "class": "uni-video-toast-title-current-time"
+        }, [formatTime(gestureState.currentTimeNew)]), " / ", formatTime(videoState.duration)])], 2), createVNode("div", {
           "class": "uni-video-slots"
         }, [slots.default && slots.default()])], 40, ["onTouchstart", "onTouchend", "onTouchmove", "onFullscreenchange", "onWebkitfullscreenchange"])], 8, ["id", "onClick"]);
       };
@@ -23399,7 +23436,7 @@
       var year = (/* @__PURE__ */ new Date()).getFullYear() - 100;
       switch (props2.fields) {
         case fields.YEAR:
-          return year;
+          return year + "";
         case fields.MONTH:
           return year + "-01";
         default:
@@ -23416,7 +23453,7 @@
       var year = (/* @__PURE__ */ new Date()).getFullYear() + 100;
       switch (props2.fields) {
         case fields.YEAR:
-          return year;
+          return year + "";
         case fields.MONTH:
           return year + "-12";
         default:

@@ -128,7 +128,7 @@ function isInstanceOf(value, type) {
         return value && value[Symbol.iterator];
     }
     const isNativeInstanceofType = value instanceof type;
-    if (isNativeInstanceofType || typeof value !== 'object') {
+    if (isNativeInstanceofType || typeof value !== 'object' || value === null) {
         return isNativeInstanceofType;
     }
     const proto = Object.getPrototypeOf(value).constructor;
@@ -794,7 +794,9 @@ function findVmByVueId(instance, vuePid) {
 }
 function nextSetDataTick(mpInstance, fn) {
     // 随便设置一个字段来触发回调（部分平台必须有字段才可以，比如头条）
-    mpInstance.setData({ r1: 1 }, () => fn());
+    {
+        mpInstance.setData({ r1: 1 }, () => fn());
+    }
 }
 function initSetRef(mpInstance) {
     if (!mpInstance._$setRef) {
@@ -802,6 +804,14 @@ function initSetRef(mpInstance) {
             nextTick(() => nextSetDataTick(mpInstance, fn));
         };
     }
+}
+function getLocaleLanguage() {
+    let localeLanguage = '';
+    {
+        localeLanguage =
+            normalizeLocale(tt.getSystemInfoSync().language) || LOCALE_EN;
+    }
+    return localeLanguage;
 }
 
 const MP_METHODS = [
@@ -1117,7 +1127,7 @@ function initAppLifecycle(appOptions, vm) {
     }
 }
 function initLocale(appVm) {
-    const locale = ref(normalizeLocale(tt.getSystemInfoSync().language) || LOCALE_EN);
+    const locale = ref(getLocaleLanguage());
     Object.defineProperty(appVm, '$locale', {
         get() {
             return locale.value;

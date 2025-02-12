@@ -81,6 +81,14 @@ function findVmByVueId(instance, vuePid) {
         }
     }
 }
+function getLocaleLanguage() {
+    let localeLanguage = '';
+    {
+        localeLanguage =
+            normalizeLocale(qq.getSystemInfoSync().language) || LOCALE_EN;
+    }
+    return localeLanguage;
+}
 
 const MP_METHODS = [
     'createSelectorQuery',
@@ -368,7 +376,7 @@ function initAppLifecycle(appOptions, vm) {
     }
 }
 function initLocale(appVm) {
-    const locale = ref(normalizeLocale(qq.getSystemInfoSync().language) || LOCALE_EN);
+    const locale = ref(getLocaleLanguage());
     Object.defineProperty(appVm, '$locale', {
         get() {
             return locale.value;

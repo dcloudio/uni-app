@@ -108,7 +108,7 @@ export type PreviewImageOptions = {
    *    "harmony": {
    *      "osVer": "3.0",
    *      "uniVer": "4.23",
-   *      "unixVer": "x"
+   *      "unixVer": "4.61"
    *    }
 	 *	},
 	*  "mp": {
@@ -362,7 +362,7 @@ export interface Uni {
 	 *    "harmony": {
 	 *      "osVer": "3.0",
 	 *      "uniVer": "4.23",
-	 *      "unixVer": "x"
+	 *      "unixVer": "4.61"
 	 *    }
 	 *	},
 	 *  "web": {
@@ -448,7 +448,7 @@ export interface Uni {
 	 *    "harmony": {
 	 *      "osVer": "3.0",
 	 *      "uniVer": "4.23",
-	 *      "unixVer": "x"
+	 *      "unixVer": "4.61"
 	 *    }
 	 *	},
 	*  "mp": {

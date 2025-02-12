@@ -1,7 +1,17 @@
 import { isArray, hasOwn, isString, isPlainObject, isObject, capitalize, toRawType, makeMap, isFunction, isPromise, extend, remove } from '@vue/shared';
-import { normalizeLocale, LOCALE_EN } from '@dcloudio/uni-i18n';
+import { LOCALE_EN, normalizeLocale } from '@dcloudio/uni-i18n';
 import { Emitter, sortObject, ON_ERROR, onCreateVueApp, invokeCreateVueAppHook } from '@dcloudio/uni-shared';
 import { injectHook } from 'vue';
+
+function getLocaleLanguage() {
+    let localeLanguage = '';
+    {
+        const appBaseInfo = wx.getAppBaseInfo();
+        const language = appBaseInfo && appBaseInfo.language ? appBaseInfo.language : LOCALE_EN;
+        localeLanguage = normalizeLocale(language) || LOCALE_EN;
+    }
+    return localeLanguage;
+}
 
 function validateProtocolFail(name, msg) {
     console.warn(`${name}: ${msg}`);
@@ -906,8 +916,7 @@ const getLocale = () => {
     if (app && app.$vm) {
         return app.$vm.$locale;
     }
-    return normalizeLocale(wx.getAppBaseInfo().language) || LOCALE_EN
-        ;
+    return getLocaleLanguage();
 };
 const setLocale = (locale) => {
     const app = isFunction(getApp) && getApp();

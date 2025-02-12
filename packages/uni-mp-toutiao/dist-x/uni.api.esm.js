@@ -3,6 +3,15 @@ import { normalizeLocale, LOCALE_EN } from '@dcloudio/uni-i18n';
 import { findUniElement, injectHook } from 'vue';
 import { Emitter, ON_ERROR, onCreateVueApp, invokeCreateVueAppHook } from '@dcloudio/uni-shared';
 
+function getLocaleLanguage() {
+    let localeLanguage = '';
+    {
+        localeLanguage =
+            normalizeLocale(tt.getSystemInfoSync().language) || LOCALE_EN;
+    }
+    return localeLanguage;
+}
+
 function validateProtocolFail(name, msg) {
     console.warn(`${name}: ${msg}`);
 }
@@ -1008,7 +1017,7 @@ const getLocale = () => {
     if (app && app.$vm) {
         return app.$vm.$locale;
     }
-    return normalizeLocale(tt.getSystemInfoSync().language) || LOCALE_EN;
+    return getLocaleLanguage();
 };
 const setLocale = (locale) => {
     const app = isFunction(getApp) && getApp();

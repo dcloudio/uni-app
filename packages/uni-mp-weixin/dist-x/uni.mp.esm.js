@@ -1,7 +1,7 @@
 import { VIRTUAL_HOST_ID, SLOT_DEFAULT_NAME, invokeArrayFns, MINI_PROGRAM_PAGE_RUNTIME_HOOKS, ON_LOAD, ON_SHOW, ON_HIDE, ON_UNLOAD, ON_RESIZE, ON_TAB_ITEM_TAP, ON_REACH_BOTTOM, ON_PULL_DOWN_REFRESH, ON_ADD_TO_FAVORITES, isUniLifecycleHook, ON_READY, once, ON_LAUNCH, ON_ERROR, ON_THEME_CHANGE, ON_PAGE_NOT_FOUND, ON_UNHANDLE_REJECTION, VIRTUAL_HOST_STYLE, VIRTUAL_HOST_CLASS, VIRTUAL_HOST_HIDDEN, addLeadingSlash, stringifyQuery, customizeEvent } from '@dcloudio/uni-shared';
 import { hasOwn, isArray, isString, isFunction, extend, isPlainObject as isPlainObject$1, isObject } from '@vue/shared';
 import { onUpdated, pruneUniElements, onUnmounted, destroyUniElements, injectHook, ref, findComponentPropsData, toRaw, updateProps, hasQueueJob, invalidateJob, registerCustomElement, devtoolsComponentAdded, getExposeProxy, pruneComponentPropsCache } from 'vue';
-import { normalizeLocale, LOCALE_EN } from '@dcloudio/uni-i18n';
+import { LOCALE_EN, normalizeLocale } from '@dcloudio/uni-i18n';
 
 function arrayPop(array) {
     if (array.length === 0) {
@@ -128,7 +128,7 @@ function isInstanceOf(value, type) {
         return value && value[Symbol.iterator];
     }
     const isNativeInstanceofType = value instanceof type;
-    if (isNativeInstanceofType || typeof value !== 'object') {
+    if (isNativeInstanceofType || typeof value !== 'object' || value === null) {
         return isNativeInstanceofType;
     }
     const proto = Object.getPrototypeOf(value).constructor;
@@ -805,6 +805,15 @@ function findVmByVueId(instance, vuePid) {
         }
     }
 }
+function getLocaleLanguage() {
+    let localeLanguage = '';
+    {
+        const appBaseInfo = wx.getAppBaseInfo();
+        const language = appBaseInfo && appBaseInfo.language ? appBaseInfo.language : LOCALE_EN;
+        localeLanguage = normalizeLocale(language) || LOCALE_EN;
+    }
+    return localeLanguage;
+}
 
 const MP_METHODS = [
     'createSelectorQuery',
@@ -1107,8 +1116,7 @@ function initAppLifecycle(appOptions, vm) {
     }
 }
 function initLocale(appVm) {
-    const locale = ref(normalizeLocale(wx.getAppBaseInfo().language) || LOCALE_EN
-        );
+    const locale = ref(getLocaleLanguage());
     Object.defineProperty(appVm, '$locale', {
         get() {
             return locale.value;

@@ -1,6 +1,6 @@
 import { normalizeStyles as normalizeStyles$1, addLeadingSlash, invokeArrayFns, ON_HIDE, ON_SHOW, parseQuery, EventChannel, once, parseUrl, Emitter, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, ON_ERROR, removeLeadingSlash, getLen, ON_UNLOAD, ON_READY, ON_PAGE_SCROLL, ON_PULL_DOWN_REFRESH, ON_REACH_BOTTOM, ON_RESIZE, ON_LAUNCH, ON_BACK_PRESS } from "@dcloudio/uni-shared";
 import { extend, isString, isPlainObject, isFunction as isFunction$1, isArray, isPromise, hasOwn, remove, invokeArrayFns as invokeArrayFns$1, capitalize, toTypeString, toRawType, parseStringStyle } from "@vue/shared";
-import { createVNode, render, ref, onMounted, onBeforeUnmount, getCurrentInstance, injectHook, defineComponent, warn, isInSSRComponentSetup, watchEffect, watch, computed, camelize, onUnmounted, reactive, provide, inject, nextTick, openBlock, createElementBlock, createElementVNode, normalizeClass, normalizeStyle, toDisplayString, createCommentVNode, Fragment, renderList, resolveComponent, withDirectives, vModelText, vShow } from "vue";
+import { createVNode, render, ref, onMounted, onBeforeUnmount, getCurrentInstance, injectHook, defineComponent, warn, isInSSRComponentSetup, watchEffect, watch, computed, camelize, onUnmounted, reactive, provide, inject, nextTick, openBlock, createElementBlock, createElementVNode, normalizeClass, normalizeStyle, Fragment, toDisplayString, createCommentVNode, renderList, resolveComponent, withDirectives, vModelText, vShow } from "vue";
 function get$pageByPage(page) {
   return page.vm.$basePage;
 }
@@ -6287,7 +6287,7 @@ const _sfc_main$4 = {
         uni.closeDialogPage({
           dialogPage: this.$page
         });
-      }, 300);
+      }, 250);
     },
     handleMenuItemClick(tapIndex) {
       this.closeActionSheet();
@@ -6327,15 +6327,13 @@ const _style_0$4 = {
       "bottom": 0,
       "zIndex": 999,
       "transform": "translate(0, 100%)",
-      "opacity": 0,
-      "transitionProperty": "transform,opacity",
-      "transitionDuration": "0.3s",
+      "transitionProperty": "transform",
+      "transitionDuration": "0.25s",
       "backgroundColor": "#f7f7f7",
       "borderTopLeftRadius": 12,
       "borderTopRightRadius": 12
     },
     ".uni-action-sheet_dialog__show": {
-      "opacity": 1,
       "transform": "translate(0, 0)"
     },
     ".uni-action-sheet_dark__mode": {
@@ -6353,9 +6351,7 @@ const _style_0$4 = {
       "borderTopLeftRadius": 5,
       "borderTopRightRadius": 5,
       "borderBottomLeftRadius": 5,
-      "borderBottomRightRadius": 5,
-      "transitionProperty": "opacity",
-      "transitionDuration": "0.3s"
+      "borderBottomRightRadius": 5
     }
   },
   "uni-action-sheet_dialog__menu": {
@@ -6381,15 +6377,7 @@ const _style_0$4 = {
       "paddingTop": 16,
       "paddingRight": 16,
       "paddingBottom": 16,
-      "paddingLeft": 16,
-      "borderBottomWidth": 1,
-      "borderBottomStyle": "solid",
-      "borderBottomColor": "#e5e5e5"
-    },
-    ".uni-action-sheet_dark__mode": {
-      "borderBottomWidth": 1,
-      "borderBottomStyle": "solid",
-      "borderBottomColor": "#2F3131"
+      "paddingLeft": 16
     },
     ".uni-action-sheet_landscape__mode": {
       "paddingTop": 10,
@@ -6403,15 +6391,7 @@ const _style_0$4 = {
       "paddingTop": 16,
       "paddingRight": 16,
       "paddingBottom": 16,
-      "paddingLeft": 16,
-      "borderTopWidth": 1,
-      "borderTopStyle": "solid",
-      "borderTopColor": "#e5e5e5"
-    },
-    ".uni-action-sheet_dark__mode": {
-      "borderTopWidth": 1,
-      "borderTopStyle": "solid",
-      "borderTopColor": "#2F3131"
+      "paddingLeft": 16
     },
     ".uni-action-sheet_landscape__mode": {
       "paddingTop": 10,
@@ -6487,14 +6467,24 @@ const _style_0$4 = {
       "maxHeight": 260
     }
   },
+  "divider": {
+    "": {
+      "height": 1,
+      "backgroundColor": "#e5e5e5",
+      "transform": "scaleY(0.5)"
+    },
+    ".uni-action-sheet_dark__mode": {
+      "backgroundColor": "#2F3131"
+    }
+  },
   "@TRANSITION": {
     "uni-action-sheet_dialog__mask": {
       "property": "opacity",
       "duration": "0.1s"
     },
     "uni-action-sheet_dialog__container": {
-      "property": "opacity",
-      "duration": "0.3s"
+      "property": "transform",
+      "duration": "0.25s"
     }
   }
 };
@@ -6528,8 +6518,9 @@ function _sfc_render$4(_ctx, _cache, $props, $setup, $data, $options) {
       "uni-action-sheet_dark__mode": $data.theme == "dark",
       "uni-action-sheet_landscape__mode": $data.isLandscape
     }])
-  }, [$data.title ? (openBlock(), createElementBlock("view", {
-    key: 0,
+  }, [$data.title ? (openBlock(), createElementBlock(Fragment, {
+    key: 0
+  }, [createElementVNode("view", {
     class: normalizeClass(["uni-action-sheet_dialog__title", {
       "uni-action-sheet_dark__mode": $data.theme == "dark",
       "uni-action-sheet_landscape__mode": $data.isLandscape
@@ -6541,20 +6532,27 @@ function _sfc_render$4(_ctx, _cache, $props, $setup, $data, $options) {
     class: normalizeClass(["uni-action-sheet_dialog__title__text", {
       "uni-action-sheet_dark__mode": $data.theme == "dark"
     }])
-  }, toDisplayString($data.title), 7)], 2)) : createCommentVNode("", true), createElementVNode("scroll-view", {
+  }, toDisplayString($data.title), 7)], 2), createElementVNode("view", {
+    class: normalizeClass(["divider", {
+      "uni-action-sheet_dark__mode": $data.theme == "dark"
+    }])
+  }, null, 2)], 64)) : createCommentVNode("", true), createElementVNode("scroll-view", {
     class: normalizeClass(["uni-action-sheet_dialog__cell__container", {
       "uni-action-sheet_landscape__mode": $data.isLandscape
     }])
   }, [(openBlock(true), createElementBlock(Fragment, null, renderList($data.itemList, (item, index2) => {
     return openBlock(), createElementBlock("view", {
-      style: normalizeStyle(index2 == 0 ? {
-        borderTop: "none"
-      } : {}),
+      key: index2
+    }, [index2 !== 0 ? (openBlock(), createElementBlock("view", {
+      key: 0,
+      class: normalizeClass(["divider", {
+        "uni-action-sheet_dark__mode": $data.theme == "dark"
+      }])
+    }, null, 2)) : createCommentVNode("", true), createElementVNode("view", {
       class: normalizeClass(["uni-action-sheet_dialog__cell", {
         "uni-action-sheet_dark__mode": $data.theme == "dark",
         "uni-action-sheet_landscape__mode": $data.isLandscape
       }]),
-      key: index2,
       onClick: ($event) => $options.handleMenuItemClick(index2)
     }, [createElementVNode("text", {
       style: normalizeStyle({
@@ -6563,7 +6561,7 @@ function _sfc_render$4(_ctx, _cache, $props, $setup, $data, $options) {
       class: normalizeClass(["uni-action-sheet_dialog__cell__text", {
         "uni-action-sheet_dark__mode": $data.theme == "dark"
       }])
-    }, toDisplayString(item), 7)], 14, _hoisted_1$3);
+    }, toDisplayString(item), 7)], 10, _hoisted_1$3)]);
   }), 128))], 2)], 6), createElementVNode("view", {
     style: normalizeStyle($data.backgroundColor != null ? {
       backgroundColor: $data.backgroundColor

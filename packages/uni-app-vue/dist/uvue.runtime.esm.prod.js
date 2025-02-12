@@ -1839,7 +1839,8 @@ var transformBorderRadius = decl => {
   }
   switch (splitResult.length) {
     case 1:
-      return [decl];
+      splitResult.push(splitResult[0], splitResult[0], splitResult[0]);
+      break;
     case 2:
       splitResult.push(splitResult[0], splitResult[1]);
       break;
