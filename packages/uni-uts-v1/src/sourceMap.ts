@@ -176,7 +176,7 @@ export function resolveUTSPluginSourceMapFile(
   inputDir = normalizePath(inputDir)
   outputDir = normalizePath(outputDir)
   filename = normalizePath(filename)
-  const pluginDir = resolvePluginDir(inputDir, outputDir, filename)
+  const pluginDir = resolvePluginDir(target, inputDir, outputDir, filename)
   if (!pluginDir) {
     throw `plugin dir not found`
   }
@@ -207,10 +207,21 @@ export function resolveUTSPluginSourceMapFile(
 export const resolveUtsPluginSourceMapFile = resolveUTSPluginSourceMapFile
 
 function resolvePluginDir(
+  target: 'kotlin' | 'swift' | 'arkts',
   inputDir: string,
   outputDir: string,
   filename: string
 ) {
+  if (target === 'arkts') {
+    const parts = normalizePath(filename).split('/uni_modules/')
+    if (parts.length > 1) {
+      return join(
+        inputDir,
+        'uni_modules',
+        parts[parts.length - 1].split('/')[0]
+      )
+    }
+  }
   // 目标文件是编译后 kt 或 swift 或 ets
   if (filename.startsWith(outputDir)) {
     const relativePath = relative(outputDir, filename)

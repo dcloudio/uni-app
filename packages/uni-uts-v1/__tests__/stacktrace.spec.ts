@@ -1,10 +1,12 @@
 import path from 'path'
 import {
+  parseUTSArkTSPluginStacktrace,
   parseUTSKotlinStacktrace,
   parseUTSSwiftPluginStacktrace,
   parseUTSSyntaxError,
 } from '../src/stacktrace'
 import { hbuilderFormatter } from '../src/stacktrace/kotlin'
+import { normalizePath } from '../src/shared'
 const stacktrace = `/uts-development-ios/dependences/buildFramework/template/xcode_ust_template/unimoduleTestUTS1/src/index.swift:3:12: error: cannot convert return expression of type 'Int' to return type 'String'
 /uts-development-ios/dependences/buildFramework/template/xcode_ust_template/unimoduleTestUTS1/src/index.swift:6:12: error: cannot convert return expression of type 'Int' to return type 'String'
 `
@@ -97,6 +99,43 @@ x UTSCallback 已过时，详情查看 https://uniapp.dcloud.net.cn/plugin/uts-p
           sourceMapDir,
           replaceTabsWithSpace: true,
           format: hbuilderFormatter,
+        }
+      )
+    ).toMatchSnapshot()
+  })
+  test('parseUTSArkTSPluginStacktrace', async () => {
+    const inputDir = normalizePath(path.resolve(__dirname, 'examples/uts'))
+    const outputDir = normalizePath(
+      path.resolve(__dirname, 'examples/uts/unpackage/dist/dev/app-harmony')
+    )
+    expect(
+      await parseUTSArkTSPluginStacktrace(
+        `1 ERROR: ArkTS:ERROR File: ${inputDir}/unpackage/debug/app-harmony-9ed02395/uni_modules/native-button/utssdk/app-harmony/index.ets:74:48
+ Argument of type 'UniNativeViewElement | null' is not assignable to parameter of type 'UniNativeViewElement'.
+  Type 'null' is not assignable to type 'UniNativeViewElement'.`,
+        {
+          inputDir,
+          outputDir,
+        }
+      )
+    ).toMatchSnapshot()
+    expect(
+      await parseUTSArkTSPluginStacktrace(
+        `2 ERROR: ArkTS:ERROR File: ${inputDir}/unpackage/debug/app-harmony-9ed02395/uni_modules/native-button/utssdk/app-harmony/builder.ets:8:9
+ Cannot find name 'param'. Did you mean 'params'?`,
+        {
+          inputDir,
+          outputDir,
+        }
+      )
+    ).toMatchSnapshot()
+    expect(
+      await parseUTSArkTSPluginStacktrace(
+        `3 ERROR: ArkTS:ERROR File: ${inputDir}/unpackage/debug/app-harmony-9ed02395/uni_modules/native-button/utssdk/app-harmony/index.ets:73:17
+ Cannot find name 'nativeViewElemen'. Did you mean 'nativeViewElement'?`,
+        {
+          inputDir,
+          outputDir,
         }
       )
     ).toMatchSnapshot()

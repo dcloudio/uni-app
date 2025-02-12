@@ -1,5 +1,39 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`uts:stacktrace parseUTSArkTSPluginStacktrace 1`] = `
+" Argument of type 'UniNativeViewElement | null' is not assignable to parameter of type 'UniNativeViewElement'.
+  Type 'null' is not assignable to type 'UniNativeViewElement'.
+at uni_modules/native-button/utssdk/app-harmony/index.uts:91:47
+89 |              const nativeViewElement = iterateElement(ins.$el as UniElement)
+90 |              if (nativeViewElemen != null) {
+91 |                  return new NativeButtonContext(nativeViewElement)
+   |                                                 ^
+92 |              }
+93 |          }"
+`;
+
+exports[`uts:stacktrace parseUTSArkTSPluginStacktrace 2`] = `
+" Cannot find name 'param'. Did you mean 'params'?
+at uni_modules/native-button/utssdk/app-harmony/builder.ets:8:9
+6  |      .onClick(() => {
+7  |          console.log('params 123',params)
+8  |          param.onClick()
+   |           ^
+9  |      })
+10 |      .attributeModifier(params.modifier)"
+`;
+
+exports[`uts:stacktrace parseUTSArkTSPluginStacktrace 3`] = `
+" Cannot find name 'nativeViewElemen'. Did you mean 'nativeViewElement'?
+at uni_modules/native-button/utssdk/app-harmony/index.uts:90:16
+88 |          if (ins.$el != null) {
+89 |              const nativeViewElement = iterateElement(ins.$el as UniElement)
+90 |              if (nativeViewElemen != null) {
+   |                  ^
+91 |                  return new NativeButtonContext(nativeViewElement)
+92 |              }"
+`;
+
 exports[`uts:stacktrace parseUTSKotlinStacktrace 1`] = `
 "‌error: Unresolved reference: test‌
 at components/test/test.vue:14:28

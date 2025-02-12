@@ -38,7 +38,7 @@ async function parseUTSStacktraceLine(
   lineStr: string,
   re: RegExp,
   sourceMapFile: string,
-  sourceRoot: string
+  sourceRoot?: string
 ) {
   const uniModulesMatches = lineStr.match(re)
   if (!uniModulesMatches) {

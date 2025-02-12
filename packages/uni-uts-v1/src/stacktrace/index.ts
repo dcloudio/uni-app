@@ -16,7 +16,7 @@ import {
 } from './mp'
 
 export { parseUTSSwiftPluginStacktrace } from './swift'
-
+export { parseUTSArkTSPluginStacktrace } from './arkts'
 export {
   parseUTSKotlinStacktrace,
   parseUTSKotlinRuntimeStacktrace,
