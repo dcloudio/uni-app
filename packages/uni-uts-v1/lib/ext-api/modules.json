@@ -889,6 +889,19 @@
       }
     }
   },
+  "uni-requestMerchantTransfer": {
+    "uni": {
+      "requestMerchantTransfer": {
+        "name": "requestMerchantTransfer",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": false,
+          "arkts": false
+        }
+      }
+    }
+  },
   "uni-rpx2px": {
     "uni": {
       "rpx2px": {
@@ -1131,7 +1144,7 @@
           "js": false,
           "kotlin": true,
           "swift": true,
-          "arkts": false
+          "arkts": true
         }
       },
       "getUniVerifyManager": {
@@ -1140,7 +1153,7 @@
           "js": false,
           "kotlin": true,
           "swift": true,
-          "arkts": false
+          "arkts": true
         }
       }
     }
