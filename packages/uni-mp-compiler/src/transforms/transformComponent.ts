@@ -23,6 +23,7 @@ import {
 import {
   ATTR_COM_TYPE,
   ATTR_ELEMENT_ID,
+  ATTR_SET_ELEMENT_ANIMATION,
   ATTR_SET_ELEMENT_STYLE,
   ATTR_VUE_ID,
   ATTR_VUE_PROPS,
@@ -137,6 +138,7 @@ const builtInProps = [
   ATTR_COM_TYPE,
   ATTR_ELEMENT_ID,
   ATTR_SET_ELEMENT_STYLE,
+  ATTR_SET_ELEMENT_ANIMATION,
   'eO',
   'e-o',
   'onVI',
@@ -154,6 +156,9 @@ function isComponentProp(name: string) {
     return false
   }
   if (name === filterObserverName(ATTR_SET_ELEMENT_STYLE)) {
+    return false
+  }
+  if (name === filterObserverName(ATTR_SET_ELEMENT_ANIMATION)) {
     return false
   }
   return true
