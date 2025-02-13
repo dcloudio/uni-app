@@ -71,11 +71,11 @@ export function getArkTSAutoImports(isX = false): AutoImportOptions {
     ['UTSJSONObject'],
     ['SourceError'],
     ['UTSHarmony'],
+    ['UniElement'],
   ]
   if (isX) {
     runtimeExports.push(
       ['document'],
-      ['UniElement'],
       ['UniPageImpl'],
       ['customElements'],
       ['UniCustomElement'],
