@@ -63,6 +63,7 @@ uni-video[hidden] {
   height: 75px;
   line-height: 75px;
   font-size: 56px;
+  color: rgba(255, 255, 255, .5);
   cursor: pointer;
 }
 
@@ -122,20 +123,15 @@ uni-video[hidden] {
   display: block;
   width: 100%;
   height: 100%;
+  color: rgba(255, 255, 255, .5);
 }
 
 .uni-video-control-button.uni-video-control-button-play::after {
   content: '\ea24';
-  color: rgba(255, 255, 255, .5);
-}
-
-.uni-video-cover-play-button {
-  color: rgba(255, 255, 255, .5);
 }
 
 .uni-video-control-button.uni-video-control-button-pause::after {
   content: '\ea25';
-  color: rgba(255, 255, 255, .5);
 }
 
 .uni-video-current-time,
@@ -170,7 +166,6 @@ uni-video[hidden] {
   background-color: #fff;
   border-top-left-radius: 20px;
   border-bottom-left-radius: 20px;
-
 }
 
 .uni-video-progress-played,
