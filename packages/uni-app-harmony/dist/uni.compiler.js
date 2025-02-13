@@ -57,6 +57,8 @@ var ExternalModuls = [
 		type: "extapi",
 		plugin: "uni-verify",
 		apis: [
+			"getUniverifyManager",
+			"getUniVerifyManager"
 		],
 		version: "1.0.0"
 	}
@@ -109,6 +111,8 @@ var ExternalModulsX = [
 		type: "extapi",
 		plugin: "uni-verify",
 		apis: [
+			"getUniverifyManager",
+			"getUniVerifyManager"
 		],
 		version: "1.0.0"
 	}

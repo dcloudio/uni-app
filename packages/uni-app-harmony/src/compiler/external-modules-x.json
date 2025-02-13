@@ -44,7 +44,10 @@
   {
     "type": "extapi",
     "plugin": "uni-verify",
-    "apis": [],
+    "apis": [
+      "getUniverifyManager",
+      "getUniVerifyManager"
+    ],
     "version": "1.0.0"
   }
 ]
