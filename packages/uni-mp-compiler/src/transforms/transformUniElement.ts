@@ -22,10 +22,12 @@ import {
 import {
   ATTR_ELEMENT_ID,
   ATTR_ELEMENT_TAG,
+  ATTR_SET_ELEMENT_ANIMATION,
   ATTR_SET_ELEMENT_STYLE,
   ATTR_VUE_REF,
   FILTER_MODULE_FILE_NAME,
   FILTER_MODULE_NAME,
+  FILTER_SET_ELEMENT_ANIMATION,
   FILTER_SET_ELEMENT_STYLE,
   filterName,
   filterObserverName,
@@ -205,6 +207,16 @@ export function rewriteId(node: ElementNode, context: TransformContext) {
       )
     )
     node.props.push(createBindDirectiveNode(ATTR_SET_ELEMENT_STYLE, ''))
+
+    // setAnimation
+    node.props.push(
+      createBindDirectiveNode(
+        filterObserverName(ATTR_SET_ELEMENT_ANIMATION),
+        filterName(FILTER_SET_ELEMENT_ANIMATION)
+      )
+    )
+    node.props.push(createBindDirectiveNode(ATTR_SET_ELEMENT_ANIMATION, ''))
+
     if (
       !context.autoImportFilters.find(
         (filter) => filter.name === FILTER_MODULE_NAME
