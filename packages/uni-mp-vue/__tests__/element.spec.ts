@@ -1,7 +1,10 @@
 import { hyphenateCssProperty } from '../src/dom/UniCSSStyleDeclaration'
 import { UniElement } from '../src/dom/UniElement'
-import { parseKeyFrames } from '../src/dom/UniAnimation'
-
+import {
+  coverAnimateToStyle,
+  normalizeKeyframes,
+  setStyleByRequestAnimationFrame,
+} from '../src/dom/UniAnimation'
 describe('uni-mp-vue: UniElement', () => {
   it('UniCSSStyleDeclaration', () => {
     const element = new UniElement()
@@ -33,54 +36,433 @@ describe('uni-mp-vue: UniElement', () => {
     )
     expect(hyphenateCssProperty('marginTop')).toBe('margin-top')
   })
-  it('animate - setStyle utils', () => {
-    expect(typeof parseKeyFrames).toBe('function')
 
-    // simple
+  it('normalizeKeyframes: fill keyframes offset', () => {
     expect(
-      parseKeyFrames([
+      normalizeKeyframes([
         {
-          opacity: 0,
-          color: '#fff',
+          marginLeft: '10px',
         },
         {
-          opacity: 1,
-          color: '#000',
+          marginLeft: '10px',
         },
-      ]).currentKeyframes
+        {
+          marginLeft: '10px',
+        },
+      ])
     ).toEqual([
       {
-        opacity: 0,
+        marginLeft: '10px',
+        offset: 0,
       },
       {
-        opacity: 1,
+        marginLeft: '10px',
+        offset: 0.5,
+      },
+      {
+        marginLeft: '10px',
+        offset: 1,
+      },
+    ])
+    const res1 = [
+      {
+        marginLeft: '10px',
+        offset: 0,
+      },
+      {
+        marginLeft: '10px',
+        offset: 0.2,
+      },
+      {
+        marginLeft: '10px',
+        offset: 0.4,
+      },
+      {
+        marginLeft: '10px',
+        offset: 0.6,
+      },
+      {
+        marginLeft: '10px',
+        offset: 0.8,
+      },
+      {
+        marginLeft: '10px',
+        offset: 1,
+      },
+    ]
+    expect(
+      normalizeKeyframes([
+        {
+          marginLeft: '10px',
+          offset: 0,
+        },
+        {
+          marginLeft: '10px',
+          offset: 0.2,
+        },
+        {
+          marginLeft: '10px',
+          offset: 0.4,
+        },
+        {
+          marginLeft: '10px',
+          offset: 0.6,
+        },
+        {
+          marginLeft: '10px',
+          offset: 0.8,
+        },
+        {
+          marginLeft: '10px',
+          offset: 1,
+        },
+      ])
+    ).toEqual(res1)
+
+    expect(
+      normalizeKeyframes([
+        {
+          marginLeft: '10px',
+          // offset: 0,
+        },
+        {
+          marginLeft: '10px',
+          // offset: 0.2,
+        },
+        {
+          marginLeft: '10px',
+          // offset: 0.4,
+        },
+        {
+          marginLeft: '10px',
+          // offset: 0.6,
+        },
+        {
+          marginLeft: '10px',
+          // offset: 0.8,
+        },
+        {
+          marginLeft: '10px',
+          // offset: 1,
+        },
+      ])
+    ).toEqual(res1)
+
+    expect(
+      normalizeKeyframes([
+        {
+          marginLeft: '10px',
+          // offset: 0,
+        },
+        {
+          marginLeft: '10px',
+          offset: 0.2,
+        },
+        {
+          marginLeft: '10px',
+          // offset: 0.4,
+        },
+        {
+          marginLeft: '10px',
+          // offset: 0.6,
+        },
+        {
+          marginLeft: '10px',
+          // offset: 0.8,
+        },
+        {
+          marginLeft: '10px',
+          // offset: 1,
+        },
+      ])
+    ).toEqual(res1)
+
+    expect(
+      normalizeKeyframes([
+        {
+          marginLeft: '10px',
+          // offset: 0,
+        },
+        {
+          marginLeft: '10px',
+          offset: 0.2,
+        },
+        {
+          marginLeft: '10px',
+          // offset: 0.4,
+        },
+        {
+          marginLeft: '10px',
+          offset: 0.6,
+        },
+        {
+          marginLeft: '10px',
+          // offset: 0.8,
+        },
+        {
+          marginLeft: '10px',
+          // offset: 1,
+        },
+      ])
+    ).toEqual(res1)
+
+    expect(
+      normalizeKeyframes([
+        {
+          marginLeft: '10px',
+          // offset: 0,
+        },
+        {
+          marginLeft: '10px',
+          offset: 0.2,
+        },
+        {
+          marginLeft: '10px',
+          offset: 0.4,
+        },
+        {
+          marginLeft: '10px',
+          offset: 0.6,
+        },
+        {
+          marginLeft: '10px',
+          // offset: 0.8,
+        },
+        {
+          marginLeft: '10px',
+          offset: 1,
+        },
+      ])
+    ).toEqual(res1)
+
+    expect(
+      normalizeKeyframes([
+        { backgroundColor: 'yellow' },
+        { backgroundColor: 'red' },
+      ])
+    ).toEqual([
+      { offset: 0, backgroundColor: 'yellow' },
+      { offset: 1, backgroundColor: 'red' },
+    ])
+
+    expect(
+      normalizeKeyframes([
+        { backgroundColor: 'yellow' },
+        { offset: 0.9, backgroundColor: 'red' },
+      ])
+    ).toEqual([
+      { offset: 0, backgroundColor: 'yellow' },
+      { offset: 0.9, backgroundColor: 'red' },
+    ])
+  })
+  it('coverAnimateToStyle', () => {
+    expect(
+      coverAnimateToStyle(
+        [
+          {
+            transform: 'scale(1)',
+            transformOrigin: '0px 0px',
+          },
+          {
+            transform: 'scale(0)',
+            transformOrigin: '50px 50px',
+          },
+          {
+            transform: 'scale(1)',
+            transformOrigin: '100px 100px',
+          },
+        ],
+        {
+          duration: 3000,
+        }
+      )
+    ).toEqual([
+      {
+        transform: 'scale(1)',
+        transformOrigin: '0px 0px',
+        transition: 'all 0ms ease',
+        _duration: 0,
+        _startTime: 0,
+      },
+      {
+        transform: 'scale(0)',
+        transformOrigin: '50px 50px',
+        transition: 'all 1500ms ease',
+        _duration: 1500,
+        _startTime: 0,
+      },
+      {
+        transform: 'scale(1)',
+        transformOrigin: '100px 100px',
+        transition: 'all 1500ms ease',
+        _duration: 1500,
+        _startTime: 1500,
       },
     ])
 
     expect(
-      parseKeyFrames([
-        { transform: 'translateX(0) rotate(0)' }, // keyframe
-        { transform: 'translateX(200px) rotate(540deg)' }, // keyframe
-      ]).currentKeyframes
+      coverAnimateToStyle(
+        {
+          width: ['100px', '200px', '100px'],
+        },
+        {
+          duration: 1000,
+          fill: 'forwards',
+        }
+      )
     ).toEqual([
       {
-        translateX: 0,
-        rotate: 0,
+        width: '100px',
+        transition: 'all 0ms ease',
+        _startTime: 0,
+        _duration: 0,
       },
       {
-        translateX: 200,
-        rotate: 540,
+        width: '200px',
+        transition: 'all 500ms ease',
+        _startTime: 0,
+        _duration: 500,
+      },
+      {
+        width: '100px',
+        transition: 'all 500ms ease',
+        _startTime: 500,
+        _duration: 500,
       },
     ])
 
-    // expect(
-    //   parseKeyFrames({
-    //     width: ['100px', '200px', '100px'],
-    //   }).currentKeyframes
-    // ).toEqual([
-    //   {
-    //     width: ['100px', '200px', '100px'],
-    //   },
-    // ])
+    expect(
+      coverAnimateToStyle(
+        {
+          height: ['100px', '200px'],
+        },
+        {
+          duration: 1000,
+          fill: 'forwards',
+        }
+      )
+    ).toEqual([
+      {
+        height: '100px',
+        transition: 'all 0ms ease',
+        _duration: 0,
+        _startTime: 0,
+      },
+      {
+        height: '200px',
+        transition: 'all 1000ms ease',
+        _duration: 1000,
+        _startTime: 0,
+      },
+    ])
+
+    expect(
+      coverAnimateToStyle(
+        {
+          margin: ['8px', '16px', '32px'],
+        },
+        {
+          duration: 1000,
+          fill: 'forwards',
+        }
+      )
+    ).toEqual([
+      {
+        margin: '8px',
+        transition: 'all 0ms ease',
+        _duration: 0,
+        _startTime: 0,
+      },
+      {
+        margin: '16px',
+        transition: 'all 500ms ease',
+        _duration: 500,
+        _startTime: 0,
+      },
+      {
+        margin: '32px',
+        transition: 'all 500ms ease',
+        _duration: 500,
+        _startTime: 500,
+      },
+    ])
+
+    // start step is not 0
+    expect(
+      coverAnimateToStyle(
+        [
+          {
+            offset: 0.3,
+            backgroundColor: 'yellow',
+          },
+          {
+            offset: 0.6,
+            backgroundColor: 'red',
+          },
+          {
+            backgroundColor: 'blue',
+          },
+        ],
+        {
+          duration: 1000,
+          fill: 'forwards',
+        }
+      )
+    ).toEqual([
+      {
+        backgroundColor: 'yellow',
+        transition: 'all 300ms ease',
+        _startTime: 0,
+        _duration: 300,
+      },
+      {
+        backgroundColor: 'red',
+        transition: 'all 300ms ease',
+        _startTime: 300,
+        _duration: 300,
+      },
+      {
+        backgroundColor: 'blue',
+        transition: 'all 400ms ease',
+        _startTime: 600,
+        _duration: 400,
+      },
+    ])
+  })
+
+  it('setStyleByRequestAnimationFrame', () => {
+    const cssRules = [
+      {
+        transform: 'scale(1)',
+        transformOrigin: '0px 0px',
+        transition: 'all 0ms ease',
+        _duration: 0,
+        _startTime: 0,
+      },
+      {
+        transform: 'scale(0)',
+        transformOrigin: '50px 50px',
+        transition: 'all 1500ms ease',
+        _duration: 1500,
+        _startTime: 0,
+      },
+      {
+        transform: 'scale(1)',
+        transformOrigin: '100px 100px',
+        transition: 'all 1500ms ease',
+        _duration: 1500,
+        _startTime: 1500,
+      },
+    ]
+
+    const Element = {
+      setStyle: jest.fn(),
+    } as any
+
+    const { start } = setStyleByRequestAnimationFrame(cssRules)
+    start(Element)
+
+    expect(Element.setStyle).toHaveBeenCalledTimes(3)
+    expect(Element.setStyle).toHaveBeenNthCalledWith(1, 'transform', 'scale(1)')
   })
 })
