@@ -18,7 +18,7 @@ interface ParseUTSArkTSPluginStacktraceOptions {
   outputDir: string
 }
 
-const uniModulesArkTSUTSRe = /File:\s+([^:]+):(\d+):(\d+)/
+const uniModulesArkTSUTSRe = /File:\s+(.*):(\d+):(\d+)/
 
 /**
  * 解析uts插件ArkTS的堆栈信息
