@@ -205,11 +205,13 @@ export async function compileArkTSExtApi(
   const etsFiles = sync('**/*.{ets,har}', {
     cwd: pluginDir,
   })
+  const depEtsFiles: string[] = []
   for (const etsFile of etsFiles) {
-    fs.copySync(
-      path.resolve(pluginDir, etsFile),
-      path.resolve(outputUniModuleDir, etsFile)
-    )
+    const srcFile = path.resolve(pluginDir, etsFile)
+    if (etsFile.endsWith('.ets')) {
+      depEtsFiles.push(srcFile)
+    }
+    fs.copySync(srcFile, path.resolve(outputUniModuleDir, etsFile))
   }
 
   // generate oh-package.json5
@@ -329,7 +331,7 @@ export default {
 
   const result = await bundle(UTSTarget.ARKTS, buildOptions)
   normalizeUTSResult('app-harmony', result)
-  const deps: string[] = [filename]
+  const deps: string[] = [filename, ...depEtsFiles]
   if (process.env.NODE_ENV === 'development') {
     if (result.deps) {
       deps.push(...result.deps)
