@@ -27,6 +27,16 @@ export function isUniPageFile(
   return pagesCacheSet.has(removeExt(file))
 }
 
+export function isUniPageSetupAndUts(file: string) {
+  const { filename, query } = parseVueRequest(file)
+  return !!(
+    query.vue &&
+    query.setup &&
+    hasOwn(query, 'lang.uts') &&
+    EXTNAME_VUE_RE.test(filename)
+  )
+}
+
 export function isUniPageSetupAndTs(file: string) {
   const { filename, query } = parseVueRequest(file)
   return !!(
