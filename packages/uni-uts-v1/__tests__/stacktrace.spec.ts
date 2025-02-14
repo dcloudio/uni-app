@@ -139,5 +139,15 @@ x UTSCallback 已过时，详情查看 https://uniapp.dcloud.net.cn/plugin/uts-p
         }
       )
     ).toMatchSnapshot()
+    expect(
+      await parseUTSArkTSPluginStacktrace(
+        `1 WARN: ArkTS:WARN File: D:/demo-projects/demo-app-x/unpackage/debug/app-harmony-fde54b25/oh_modules/.ohpm/@dcloudio+uni-app-x-runtime@8kwvevyo0ovlx9ebtjtkdkzydpkx+j5qpbuuwz5vjge=/oh_modules/@dcloudio/uni-app-x-runtime/src/main/ets/runtime/dom/NamedNodeMap.ets:16:45`,
+        {
+          inputDir: 'D:/demo-projects/demo-app-x/',
+          outputDir:
+            'D:/demo-projects/demo-app-x/unpackage/dist/dev/app-harmony',
+        }
+      )
+    ).toMatchSnapshot()
   })
 })

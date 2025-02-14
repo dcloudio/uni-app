@@ -32,14 +32,18 @@ export async function parseUTSArkTSPluginStacktrace(
   const errorMessageLines: string[] = []
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i]
-    const codes = await parseUTSStacktraceLine(
-      line,
-      uniModulesArkTSUTSRe,
-      options
-    )
-    if (codes && codes.length) {
-      res.push(...codes)
-    } else {
+    try {
+      const codes = await parseUTSStacktraceLine(
+        line,
+        uniModulesArkTSUTSRe,
+        options
+      )
+      if (codes && codes.length) {
+        res.push(...codes)
+      } else {
+        errorMessageLines.push(line)
+      }
+    } catch (e) {
       errorMessageLines.push(line)
     }
   }
