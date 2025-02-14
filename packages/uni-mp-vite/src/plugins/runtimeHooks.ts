@@ -3,6 +3,7 @@ import { MINI_PROGRAM_PAGE_RUNTIME_HOOKS } from '@dcloudio/uni-shared'
 import {
   enableSourceMap,
   isUniPageSetupAndTs,
+  isUniPageSetupAndUts,
   isUniPageSfcFile,
 } from '@dcloudio/uni-cli-shared'
 import { MagicString } from '@vue/compiler-sfc'
@@ -16,13 +17,15 @@ export function uniRuntimeHooksPlugin(): Plugin {
     async transform(source, id) {
       const isSetupJs = isUniPageSfcFile(id)
       const isSetupTs = !isSetupJs && isUniPageSetupAndTs(id)
-      if (!isSetupJs && !isSetupTs) {
+      const isSetupUts = !isSetupJs && isUniPageSetupAndUts(id)
+      const isTypedSetup = isSetupTs || isSetupUts
+      if (!isSetupJs && !isSetupTs && !isSetupUts) {
         return null
       }
       if (isSetupJs && !source.includes('_sfc_main')) {
         return null
       }
-      if (isSetupTs && !source.includes('defineComponent')) {
+      if (isTypedSetup && !source.includes('defineComponent')) {
         return null
       }
       const matches = source.match(
@@ -45,7 +48,7 @@ export function uniRuntimeHooksPlugin(): Plugin {
 
       if (isSetupJs) {
         source = source + `;_sfc_main.__runtimeHooks = ${flag};`
-      } else if (isSetupTs) {
+      } else if (isTypedSetup) {
         source =
           require('@vue/compiler-sfc').rewriteDefault(
             source,
