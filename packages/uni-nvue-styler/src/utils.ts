@@ -474,3 +474,8 @@ export function checkColor(e: string | undefined) {
   console.error('unsupported color:' + e)
   return [0, 0, 0, 255]
 }
+export function coverColorToRgba(e: string | undefined) {
+  const n = checkColor(e)
+  // 最后一位除以 255
+  return [n[0], n[1], n[2], n[3] / 255]
+}
