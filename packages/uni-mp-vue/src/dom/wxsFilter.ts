@@ -1,122 +1,83 @@
-function ease(t) {
-  return t < 0.5 ? 4 * t * t * t : (t - 1) * (2 * t - 2) * (2 * t - 2) + 1
-}
-var easeFunctions = {
-  ease: ease,
-}
-
-function handleColor(currentColor, nextColor, progress, ease = 'ease') {
-  currentColor = currentColor.match(/\d+/g).map(Number)
-  nextColor = nextColor.match(/\d+/g).map(Number)
-  const r = Math.round(
-    currentColor[0] +
-      (nextColor[0] - currentColor[0]) * easeFunctions[ease](progress)
-  )
-  const g = Math.round(
-    currentColor[1] +
-      (nextColor[1] - currentColor[1]) * easeFunctions[ease](progress)
-  )
-  const b = Math.round(
-    currentColor[2] +
-      (nextColor[2] - currentColor[2]) * easeFunctions[ease](progress)
-  )
-  const a = Number(
-    (
-      currentColor[3] +
-      (nextColor[3] - currentColor[3]) * easeFunctions[ease](progress)
-    ).toFixed(2)
-  )
-  return 'rgba(' + r + ',' + g + ',' + b + ',' + a + ')'
-}
-
-function handleLength(currentValue, nextValue, frameProgress, ease = 'ease') {
-  var len
-  if (!isNaN(currentValue) && !isNaN(nextValue)) {
-    const easedProgress = easeFunctions[ease](frameProgress)
-    len = currentValue + (nextValue - currentValue) * easedProgress + 'px'
-  } else {
-  }
-  return len
-}
-
-export function interpolateKeyframe(keyframes: any[], usedTime: number) {
-  if (!keyframes || !keyframes.length) return {}
-
-  // 当前进度
-  const currentTime = usedTime
-
-  // Find current keyframe
-  let currentIndex = 0
-  for (let i = 0; i < keyframes.length; i++) {
-    if (currentTime >= keyframes[i]._startTime) {
-      currentIndex = i
+/* eslint-disable no-restricted-globals */
+module.exports = {
+  sS: function (newValue, oldValue, _ownerInstance, instance) {
+    if (newValue) {
+      instance.setStyle(newValue)
     }
-  }
+  },
+  sA: function (newValue, oldValue, _ownerInstance, instance) {
+    var info = JSON.parse(newValue)
+    if (!info) {
+      return
+    }
+    var state = _ownerInstance.getState()
+    state.duration = duration
 
-  const currentFrame = keyframes[currentIndex]
-  const nextFrame = keyframes[currentIndex + 1]
+    var startTime = null
+    var pauseTime = null
+    var isPaused = false
+    var isCancelled = false
 
-  // 已经是最后一帧
-  if (!nextFrame) {
-    let _currentFrame = {}
-    for (const prop in currentFrame) {
-      if (!prop.startsWith('_') && prop !== 'transition') {
-        _currentFrame[prop] = currentFrame[prop]
+    var duration =
+      info.keyframes[info.keyframes.length - 1]._startTime +
+      info.keyframes[info.keyframes.length - 1]._duration
+    if (!newValue) {
+      return
+    }
+
+    function interpolateKeyframe2(keyframes, usedTime) {
+      // 参考 temp 入参，根据当前 usedTime 计算出当前的 keyframe
+      // 返回当前 keyframe
+      var index = 0
+      for (var i = 0; i < keyframes.length; i++) {
+        if (keyframes[i]._startTime + keyframes[i]._duration > usedTime) {
+          index = i
+          break
+        }
+      }
+      var currentFrame = keyframes[index]
+      return {
+        style: currentFrame,
+        index: index,
       }
     }
-    return _currentFrame
-  }
+    var currentStep = 0
 
-  // Calculate progress between current and next keyframe
-  const frameProgress =
-    (currentTime - currentFrame._startTime) / currentFrame._duration
-  const easeType = currentFrame.transition.split(' ')[2] || 'ease'
+    function step() {
+      // console.log(11,stamp)
+      var currentTime = Date.now()
+      if (startTime === null) {
+        startTime = currentTime
+      }
+      var elapsedTime = currentTime - startTime
 
-  const style = {}
-  // Interpolate all numeric properties
-  for (const prop in currentFrame) {
-    if (prop.startsWith('_') || prop === 'transition') continue
+      if (isPaused) {
+        if (pauseTime === null) {
+          pauseTime = currentTime
+        }
+        return // 如果动画暂停，直接返回
+      } else if (pauseTime !== null) {
+        elapsedTime -= currentTime - pauseTime // 减去暂停的时间
+        pauseTime = null
+      }
+      var res = interpolateKeyframe2(info.keyframes, elapsedTime)
+      var element = _ownerInstance.selectComponent('#' + info.id)
 
-    var isColor = prop.toLowerCase().includes('color')
-    var isLength = [
-      'width',
-      'height',
-      'top',
-      'left',
-      'right',
-      'bottom',
-      'margin',
-      'padding',
-      'border-radius',
-      'border-width',
-      'border-top-width',
-      'border-left-width',
-      'border-right-width',
-      'border-bottom-width',
-    ].includes(prop)
+      // currentStep removeClass
+      if (!element.hasClass('__ct' + res.index) && elapsedTime < duration) {
+        element.setStyle(res.style).addClass('__ct' + res.index)
+      }
+      if (currentStep !== res.index) {
+        element.removeClass('__ct' + currentStep)
+        currentStep = res.index
+      }
 
-    if (isColor) {
-      style[prop] = handleColor(
-        currentFrame[prop],
-        nextFrame[prop],
-        frameProgress,
-        easeType
-      )
-      // console.log(_style)
-    } else if (isLength) {
-      const currentValue = parseFloat(currentFrame[prop])
-      const nextValue = parseFloat(nextFrame[prop])
-
-      style[prop] = handleLength(
-        currentValue,
-        nextValue,
-        frameProgress,
-        easeType
-      )
-    } else {
-      // 尚未支持
+      if (elapsedTime < duration && !isPaused) {
+        // console.log('go on')
+        instance.requestAnimationFrame(step)
+      }
     }
-  }
 
-  return style
+    instance.requestAnimationFrame(step)
+  },
 }
