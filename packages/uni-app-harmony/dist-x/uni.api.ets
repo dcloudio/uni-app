@@ -116,6 +116,7 @@ import { media as media1 } from '@kit.MediaKit';
 import { media as media2 } from '@kit.MediaKit';
 import media3 from '@ohos.multimedia.media';
 import media4 from '@ohos.multimedia.media';
+import { navigator } from "@dcloudio/uni-runtime-harmony";
 import { notificationManager } from '@kit.NotificationKit';
 import photoAccessHelper1 from '@ohos.file.photoAccessHelper';
 import photoAccessHelper2 from '@ohos.file.photoAccessHelper';
@@ -1306,6 +1307,18 @@ export class PreviewImageSuccess extends UTSObject {
     errSubject!: string;
     errMsg!: string;
 }
+class LongPressActionsSuccessResult extends UTSObject {
+    tapIndex!: number;
+    index!: number;
+}
+type LongPressActionsFailResult = IMediaError;
+class LongPressActionsOptions extends UTSObject {
+    itemList!: string[];
+    itemColor: string | null = null;
+    success: ((result: LongPressActionsSuccessResult) => void) | null = null;
+    fail: ((result: LongPressActionsFailResult) => void) | null = null;
+    complete: ((result: Object) => void) | null = null;
+}
 type PreviewImageFail = IMediaError;
 type PreviewImageSuccessCallback = (callback: PreviewImageSuccess) => void;
 type PreviewImageFailCallback = (callback: PreviewImageFail) => void;
@@ -1316,6 +1329,7 @@ export class PreviewImageOptions extends UTSObject {
     showmenu: boolean | null = null;
     indicator: 'default' | 'number' | 'none' | null = null;
     loop: boolean | null = null;
+    longPressActions: LongPressActionsOptions | null = null;
     success: (PreviewImageSuccessCallback) | null = null;
     fail: (PreviewImageFailCallback) | null = null;
     complete: (PreviewImageCompleteCallback) | null = null;
@@ -1549,6 +1563,61 @@ interface ISaveMediaError {
     code: number;
     message: string;
 }
+type SetNavigationBarColorErrorCode = 4;
+interface SetNavigationBarColorFail extends IUniError {
+    errCode: SetNavigationBarColorErrorCode;
+}
+export class SetNavigationBarColorOptions extends UTSObject {
+    frontColor!: '#ffffff' | '#000000';
+    backgroundColor!: string.ColorString;
+    success: SetNavigationBarColorSuccessCallback | null = null;
+    fail: SetNavigationBarColorFailCallback | null = null;
+    complete: SetNavigationBarColorCompleteCallback | null = null;
+}
+export type SetNavigationBarColorSuccess = AsyncApiSuccessResult;
+type SetNavigationBarColorSuccessCallback = (result: SetNavigationBarColorSuccess) => void;
+type SetNavigationBarColorFailCallback = (error: SetNavigationBarColorFail) => void;
+type SetNavigationBarColorComplete = AsyncApiResult;
+type SetNavigationBarColorCompleteCallback = (res: SetNavigationBarColorComplete) => void;
+export type SetNavigationBarColor = (options: SetNavigationBarColorOptions) => void;
+type SetNavigationBarTitleErrorCode = 4;
+interface SetNavigationBarTitleFail extends IUniError {
+    errCode: SetNavigationBarTitleErrorCode;
+}
+export class SetNavigationBarTitleOptions extends UTSObject {
+    title!: string;
+    success: SetNavigationBarTitleSuccessCallback | null = null;
+    fail: SetNavigationBarTitleFailCallback | null = null;
+    complete: SetNavigationBarTitleCompleteCallback | null = null;
+}
+export type SetNavigationBarTitleSuccess = AsyncApiSuccessResult;
+type SetNavigationBarTitleSuccessCallback = (result: SetNavigationBarTitleSuccess) => void;
+type SetNavigationBarTitleFailCallback = (error: SetNavigationBarTitleFail) => void;
+type SetNavigationBarTitleComplete = AsyncApiResult;
+type SetNavigationBarTitleCompleteCallback = (res: SetNavigationBarTitleComplete) => void;
+export type SetNavigationBarTitle = (options: SetNavigationBarTitleOptions) => void;
+export type ShowNavigationBarLoadingSuccess = AsyncApiSuccessResult;
+type ShowNavigationBarLoadingSuccessCallback = (result: ShowNavigationBarLoadingSuccess) => void;
+interface ShowNavigationBarLoadingFail extends IUniError {
+}
+type ShowNavigationBarLoadingFailCallback = (error: ShowNavigationBarLoadingFail) => void;
+export class ShowNavigationBarLoadingOptions extends UTSObject {
+    success: ShowNavigationBarLoadingSuccessCallback | null = null;
+    fail: ShowNavigationBarLoadingFailCallback | null = null;
+    complete: (() => void) | null = null;
+}
+export type ShowNavigationBarLoading = (options?: ShowNavigationBarLoadingOptions | null) => void;
+export type HideNavigationBarLoadingSuccess = AsyncApiSuccessResult;
+type HideNavigationBarLoadingSuccessCallback = (result: HideNavigationBarLoadingSuccess) => void;
+interface HideNavigationBarLoadingFail extends IUniError {
+}
+type HideNavigationBarLoadingFailCallback = (error: HideNavigationBarLoadingFail) => void;
+export class HideNavigationBarLoadingOptions extends UTSObject {
+    success: HideNavigationBarLoadingSuccessCallback | null = null;
+    fail: HideNavigationBarLoadingFailCallback | null = null;
+    complete: (() => void) | null = null;
+}
+export type HideNavigationBarLoading = (options?: HideNavigationBarLoadingOptions | null) => void;
 export type Request<T = Object> = (param: RequestOptions<T>) => RequestTask;
 export class RequestOptions<T = Object> extends UTSObject {
     url!: string;
@@ -2235,6 +2304,9 @@ interface UniExtApi {
     getVideoInfo: GetVideoInfo;
     compressVideo: CompressVideo;
     chooseFile: ChooseFile;
+    setNavigationBarColor: SetNavigationBarColor;
+    showNavigationBarLoading: ShowNavigationBarLoading;
+    hideNavigationBarLoading: HideNavigationBarLoading;
     request: Request<Object>;
     uploadFile: UploadFile;
     downloadFile: DownloadFile;
@@ -8681,6 +8753,88 @@ export function initUniExtApi() {
             executor.reject(err.message);
         });
     }, CompressVideoApiProtocol, CompressVideoApiOptions) as CompressVideo;
+    const FRONT_COLORS = [
+        '#ffffff',
+        '#000000'
+    ];
+    const API_SET_NAVIGATION_BAR_COLOR = 'setNavigationBarColor';
+    const SetNavigationBarColorProtocol = new Map<string, ProtocolOptions>([
+        [
+            'frontColor',
+            {
+                type: 'string',
+                required: true,
+                validator (frontColor: Object) {
+                    if (FRONT_COLORS.indexOf(frontColor as string) === -1) {
+                        return `invalid frontColor "${frontColor}"`;
+                    }
+                    return;
+                }
+            }
+        ],
+        [
+            'backgroundColor',
+            {
+                type: 'string',
+                required: true
+            }
+        ]
+    ]);
+    const API_SET_NAVIGATION_BAR_TITLE = 'setNavigationBarTitle';
+    const setNavigationBarColor: SetNavigationBarColor = defineAsyncApi<SetNavigationBarColorOptions, SetNavigationBarColorSuccess>(API_SET_NAVIGATION_BAR_COLOR, (options: SetNavigationBarColorOptions, executor: ApiExecutor<SetNavigationBarColorSuccess>)=>{
+        const frontColor = options.frontColor, backgroundColor = options.backgroundColor;
+        const pages = globalThis.getCurrentPages() as UniPageImpl[];
+        const page = pages[pages.length - 1];
+        if (!page) {
+            return executor.reject(`getCurrentPages is empty`);
+        }
+        const statusBarStyle = frontColor === '#000000' ? 'dark' : 'light';
+        try {
+            navigator.setStatusBarStyle(statusBarStyle);
+        } catch (error) {}
+        const appPage: ESObject = (page.vm as ESObject).$nativePage;
+        appPage!.updateStyle(new Map<string, Object | null>([
+            [
+                'navigationBarTextStyle',
+                frontColor == '#000000' ? 'black' : 'white'
+            ],
+            [
+                'navigationBarBackgroundColor',
+                backgroundColor
+            ]
+        ]));
+        executor.resolve();
+    }, SetNavigationBarColorProtocol) as SetNavigationBarColor;
+    const showNavigationBarLoading: ShowNavigationBarLoading = defineAsyncApi<ShowNavigationBarLoadingOptions, ShowNavigationBarLoadingSuccess>(API_SET_NAVIGATION_BAR_TITLE, (options: ShowNavigationBarLoadingOptions, executor: ApiExecutor<ShowNavigationBarLoadingSuccess>)=>{
+        const pages = globalThis.getCurrentPages() as UniPageImpl[];
+        const page = pages[pages.length - 1];
+        if (!page) {
+            return executor.reject(`getCurrentPages is empty`);
+        }
+        const appPage: ESObject = (page.vm as ESObject).$nativePage;
+        appPage!.updateStyle(new Map<string, Object | null>([
+            [
+                'navigationBarLoading',
+                true
+            ]
+        ]));
+        executor.resolve();
+    }) as ShowNavigationBarLoading;
+    const hideNavigationBarLoading: HideNavigationBarLoading = defineAsyncApi<HideNavigationBarLoadingOptions, HideNavigationBarLoadingSuccess>(API_SET_NAVIGATION_BAR_TITLE, (args: HideNavigationBarLoadingOptions, executor: ApiExecutor<HideNavigationBarLoadingSuccess>)=>{
+        const pages = globalThis.getCurrentPages() as UniPageImpl[];
+        const page = pages[pages.length - 1];
+        if (!page) {
+            return executor.reject(`getCurrentPages is empty`);
+        }
+        const appPage: ESObject = (page.vm as ESObject).$nativePage;
+        appPage!.updateStyle(new Map<string, Object | null>([
+            [
+                'navigationBarLoading',
+                false
+            ]
+        ]));
+        executor.resolve();
+    }) as HideNavigationBarLoading;
     const API_REQUEST = 'request';
     const RequestApiProtocol = new Map<string, ProtocolOptions>([
         [
@@ -10603,6 +10757,9 @@ export function initUniExtApi() {
         getVideoInfo,
         compressVideo,
         chooseFile,
+        setNavigationBarColor,
+        showNavigationBarLoading,
+        hideNavigationBarLoading,
         request,
         uploadFile,
         downloadFile,

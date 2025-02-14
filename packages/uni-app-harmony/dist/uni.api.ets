@@ -1275,6 +1275,18 @@ export class PreviewImageSuccess extends UTSObject {
     errSubject!: string;
     errMsg!: string;
 }
+class LongPressActionsSuccessResult extends UTSObject {
+    tapIndex!: number;
+    index!: number;
+}
+type LongPressActionsFailResult = IMediaError;
+class LongPressActionsOptions extends UTSObject {
+    itemList!: string[];
+    itemColor: string | null = null;
+    success: ((result: LongPressActionsSuccessResult) => void) | null = null;
+    fail: ((result: LongPressActionsFailResult) => void) | null = null;
+    complete: ((result: Object) => void) | null = null;
+}
 type PreviewImageFail = IMediaError;
 type PreviewImageSuccessCallback = (callback: PreviewImageSuccess) => void;
 type PreviewImageFailCallback = (callback: PreviewImageFail) => void;
@@ -1285,6 +1297,7 @@ export class PreviewImageOptions extends UTSObject {
     showmenu: boolean | null = null;
     indicator: 'default' | 'number' | 'none' | null = null;
     loop: boolean | null = null;
+    longPressActions: LongPressActionsOptions | null = null;
     success: (PreviewImageSuccessCallback) | null = null;
     fail: (PreviewImageFailCallback) | null = null;
     complete: (PreviewImageCompleteCallback) | null = null;
