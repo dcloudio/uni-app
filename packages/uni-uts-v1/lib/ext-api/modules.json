@@ -72,6 +72,22 @@
       }
     }
   },
+  "uni-camera": {
+    "uni": {
+      "createMapContext": {
+        "name": "createCameraContext",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": false,
+          "arkts": false
+        }
+      }
+    },
+    "easycom": [
+      "camera"
+    ]
+  },
   "uni-canvas": {
     "uni": {
       "createCanvasContextAsync": {
