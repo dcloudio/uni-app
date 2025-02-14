@@ -546,8 +546,16 @@ function initRuntimeSocketService() {
                 restoreError();
                 restoreConsole();
                 originalConsole.error(wrapError('开发模式下日志通道建立 socket 连接失败。'));
+                // @ts-expect-error
+                {
+                    originalConsole.error(wrapError('小程序平台，请勾选不校验合法域名配置。'));
+                }
                 originalConsole.error(wrapError('如果是运行到真机，请确认手机与电脑处于同一网络。'));
                 return false;
+            }
+            // @ts-expect-error
+            {
+                initMiniProgramGlobalFlag();
             }
             socket.onClose(() => {
                 if (process.env.UNI_DEBUG) {
@@ -580,6 +588,41 @@ function initRuntimeSocketService() {
 const ERROR_CHAR = '\u200C';
 function wrapError(error) {
     return `${ERROR_CHAR}${error}${ERROR_CHAR}`;
+}
+function initMiniProgramGlobalFlag() {
+    if (typeof wx !== 'undefined') {
+        // @ts-expect-error
+        wx.__uni_console__ = true;
+        // @ts-expect-error
+    }
+    else if (typeof my !== 'undefined') {
+        // @ts-expect-error
+        my.__uni_console__ = true;
+    }
+    else if (typeof tt !== 'undefined') {
+        tt.__uni_console__ = true;
+    }
+    else if (typeof swan !== 'undefined') {
+        swan.__uni_console__ = true;
+    }
+    else if (typeof qq !== 'undefined') {
+        qq.__uni_console__ = true;
+    }
+    else if (typeof ks !== 'undefined') {
+        ks.__uni_console__ = true;
+    }
+    else if (typeof jd !== 'undefined') {
+        jd.__uni_console__ = true;
+    }
+    else if (typeof xhs !== 'undefined') {
+        xhs.__uni_console__ = true;
+    }
+    else if (typeof has !== 'undefined') {
+        has.__uni_console__ = true;
+    }
+    else if (typeof qa !== 'undefined') {
+        qa.__uni_console__ = true;
+    }
 }
 initRuntimeSocketService();
 

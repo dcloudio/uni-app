@@ -19,7 +19,24 @@
       "__HARMONY__": "false",
       "__DEV__": "process.env.UNI_DEBUG",
       "process.env.UNI_CONSOLE_WEBVIEW": false,
-      "_APP_ANDROID_": "false"
+      "_APP_ANDROID_": "false",
+      "__PLATFORM__": "'other'"
+    },
+    "compilerOptions": {
+      "target": "es6",
+      "declaration": false
+    }
+  },
+  {
+    "input": {
+      "src/runtime/index.ts": "dist/mp.esm.js"
+    },
+    "replacements": {
+      "__HARMONY__": "false",
+      "__DEV__": "process.env.UNI_DEBUG",
+      "process.env.UNI_CONSOLE_WEBVIEW": false,
+      "_APP_ANDROID_": "false",
+      "__PLATFORM__": "'mp'"
     },
     "compilerOptions": {
       "target": "es6",

@@ -25,15 +25,21 @@ export function initRuntimeSocketService(): Promise<boolean> {
         originalConsole.error(
           wrapError('开发模式下日志通道建立 socket 连接失败。')
         )
-        originalConsole.error(
-          wrapError('如果是小程序平台，请勾选不校验合法域名配置。')
-        )
+        // @ts-expect-error
+        if (__PLATFORM__ === 'mp') {
+          originalConsole.error(
+            wrapError('小程序平台，请勾选不校验合法域名配置。')
+          )
+        }
         originalConsole.error(
           wrapError('如果是运行到真机，请确认手机与电脑处于同一网络。')
         )
         return false
       }
-      initMiniProgramGlobalFlag()
+      // @ts-expect-error
+      if (__PLATFORM__ === 'mp') {
+        initMiniProgramGlobalFlag()
+      }
       socket.onClose(() => {
         if (process.env.UNI_DEBUG) {
           originalConsole.log(

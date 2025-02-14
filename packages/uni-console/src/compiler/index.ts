@@ -65,7 +65,12 @@ export default () => {
         }
       }
       let uniConsolePath = resolveBuiltIn(
-        path.join('@dcloudio/uni-console', 'dist/index.esm.js')
+        path.join(
+          '@dcloudio/uni-console',
+          `dist/${
+            (process.env.UNI_PLATFORM || '').startsWith('mp-') ? 'mp' : 'index'
+          }.esm.js`
+        )
       )
       if (isX) {
         if (process.env.UNI_UTS_PLATFORM === 'app-android') {
