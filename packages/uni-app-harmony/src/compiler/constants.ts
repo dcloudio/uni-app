@@ -54,4 +54,5 @@ export const ExtApiBlackList = [
   'uni-loadFontFace',
   'uni-getElementById',
   'uni-document',
+  'uni-navigationBar',
 ]
