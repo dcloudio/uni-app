@@ -21,6 +21,7 @@ interface JSON {
          "ios": {
            "osVer": "x",
            "uniVer": "x",
+           "uniUtsPlugin": "x",
            "unixVer": "x",
            "unixUtsPlugin": "x"
          },
@@ -49,7 +50,9 @@ interface JSON {
             "ios": {
                "osVer": "12.0",
                "uniVer": "√",
-                "unixVer": "4.11"
+               "uniUtsPlugin": "√",
+               "unixVer": "4.11",
+               "unixUtsPlugin": "4.11"
             }
         },
         "web": {
@@ -107,7 +110,9 @@ interface JSON {
             "ios": {
                "osVer": "12.0",
                "uniVer": "3.9+",
-                "unixVer": "4.11"
+               "uniUtsPlugin": "3.9+",
+               "unixVer": "4.11",
+               "unixUtsPlugin": "4.11"
             }
         },
         "web": {
@@ -146,7 +151,9 @@ interface JSON {
             "ios": {
                "osVer": "12.0",
                "uniVer": "√",
-                "unixVer": "4.11"
+               "uniUtsPlugin": "√",
+               "unixVer": "4.11",
+               "unixUtsPlugin": "4.11"
             }
         },
         "web": {
@@ -180,7 +187,9 @@ interface JSON {
             "ios": {
                "osVer": "12.0",
                "uniVer": "3.9+",
-                "unixVer": "4.11"
+               "uniUtsPlugin": "3.9+",
+               "unixVer": "4.11",
+               "unixUtsPlugin": "4.11"
             }
         },
         "web": {
@@ -210,7 +219,9 @@ interface JSON {
             "ios": {
                "osVer": "12.0",
                "uniVer": "√",
-                "unixVer": "4.11"
+               "uniUtsPlugin": "√",
+               "unixVer": "4.11",
+               "unixUtsPlugin": "4.11"
             }
         },
         "web": {
@@ -241,7 +252,9 @@ interface JSON {
             "ios": {
                "osVer": "12.0",
                "uniVer": "√",
-                "unixVer": "4.11"
+               "uniUtsPlugin": "√",
+               "unixVer": "4.11",
+               "unixUtsPlugin": "4.11"
             }
         },
         "web": {
@@ -269,7 +282,9 @@ interface JSON {
         "ios": {
           "osVer": "12.0",
           "uniVer": "√",
-          "unixVer": "x"
+          "unixVer": "4.11",
+          "uniUtsPlugin": "x",
+          "unixUtsPlugin": "x"
         }
       },
       "web": {
@@ -290,7 +305,9 @@ interface JSON {
         "ios": {
           "osVer": "12.0",
           "uniVer": "√",
-          "unixVer": "x"
+          "unixVer": "4.11",
+          "uniUtsPlugin": "x",
+          "unixUtsPlugin": "x"
         }
       },
       "web": {
@@ -311,7 +328,9 @@ interface JSON {
             "ios": {
                "osVer": "12.0",
                "uniVer": "√",
-                "unixVer": "4.11"
+               "uniUtsPlugin": "√",
+               "unixVer": "4.11",
+               "unixUtsPlugin": "4.11"
             }
         },
         "web": {

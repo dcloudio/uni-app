@@ -16,7 +16,9 @@ interface Set<T> {
             "ios": {
                "osVer": "12.0",
                "uniVer": "√",
-                "unixVer": "4.11"
+               "unixVer": "4.11",
+               "uniUtsPlugin": "√",
+               "unixUtsPlugin": "4.11"
             }
         },
         "web": {
@@ -42,7 +44,9 @@ interface Set<T> {
             "ios": {
                "osVer": "12.0",
                "uniVer": "√",
-                "unixVer": "4.11"
+               "unixVer": "4.11",
+               "uniUtsPlugin": "√",
+               "unixUtsPlugin": "4.11"
             }
         },
         "web": {
@@ -70,7 +74,9 @@ interface Set<T> {
             "ios": {
                "osVer": "12.0",
                "uniVer": "√",
-                "unixVer": "4.11"
+               "unixVer": "4.11",
+               "uniUtsPlugin": "√",
+               "unixUtsPlugin": "4.11"
             }
         },
         "web": {
@@ -97,7 +103,9 @@ interface Set<T> {
             "ios": {
                "osVer": "12.0",
                "uniVer": "√",
-                "unixVer": "4.11"
+               "unixVer": "4.11",
+               "uniUtsPlugin": "√",
+               "unixUtsPlugin": "4.11"
             }
         },
         "web": {
@@ -127,7 +135,9 @@ interface Set<T> {
             "ios": {
                "osVer": "12.0",
                "uniVer": "√",
-                "unixVer": "4.11"
+               "unixVer": "4.11",
+               "uniUtsPlugin": "√",
+               "unixUtsPlugin": "4.11"
             }
         },
         "web": {
@@ -154,7 +164,9 @@ interface Set<T> {
             "ios": {
                "osVer": "12.0",
                "uniVer": "√",
-                "unixVer": "4.11"
+               "unixVer": "4.11",
+               "uniUtsPlugin": "√",
+               "unixUtsPlugin": "4.11"
             }
         },
         "web": {
@@ -181,7 +193,9 @@ interface SetConstructor {
             "ios": {
                "osVer": "12.0",
                "uniVer": "√",
-                "unixVer": "4.11"
+               "unixVer": "4.11",
+               "uniUtsPlugin": "√",
+               "unixUtsPlugin": "4.11"
             }
         },
         "web": {

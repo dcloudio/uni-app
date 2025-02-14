@@ -28081,11 +28081,12 @@ function _sfc_render$1(_ctx, _cache, $props, $setup, $data, $options) {
             ]),
             _: 1
           }, 8, ["style", "class", "onClick"]),
-          createVNode(_component_view, {
-            style: normalizeStyle({ height: `${$data.bottomNavigationHeight}px`, backgroundColor: $options.computedBackgroundColor })
-          }, null, 8, ["style"]),
-          $options.isWidescreen && Object.keys($data.popover).length > 0 ? (openBlock(), createBlock(_component_view, {
+          !$data.isLandscape ? (openBlock(), createBlock(_component_view, {
             key: 0,
+            style: normalizeStyle({ height: `${$data.bottomNavigationHeight}px`, backgroundColor: $options.computedBackgroundColor })
+          }, null, 8, ["style"])) : createCommentVNode("", true),
+          $options.isWidescreen && Object.keys($data.popover).length > 0 ? (openBlock(), createBlock(_component_view, {
+            key: 1,
             style: normalizeStyle($options.triangleStyle),
             class: "uni-action-sheet_dialog__triangle"
           }, null, 8, ["style"])) : createCommentVNode("", true)

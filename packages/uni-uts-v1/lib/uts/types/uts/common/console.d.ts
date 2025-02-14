@@ -16,7 +16,9 @@ interface Console {
             "ios": {
                "osVer": "x",
                "uniVer": "x",
-                "unixVer": "x"
+               "unixVer": "x",
+               "uniUtsPlugin": "x",
+               "unixUtsPlugin": "x"
             }
         },
         "web": {
@@ -41,7 +43,9 @@ interface Console {
             "ios": {
                "osVer": "x",
                "uniVer": "x",
-                "unixVer": "x"
+               "unixVer": "x",
+               "uniUtsPlugin": "x",
+               "unixUtsPlugin": "x"
             }
         },
         "web": {
@@ -66,7 +70,9 @@ interface Console {
             "ios": {
                "osVer": "x",
                "uniVer": "x",
-                "unixVer": "x"
+               "unixVer": "x",
+               "uniUtsPlugin": "x",
+               "unixUtsPlugin": "x"
             }
         },
         "web": {
@@ -91,7 +97,9 @@ interface Console {
             "ios": {
                "osVer": "x",
                "uniVer": "x",
-                "unixVer": "x"
+               "unixVer": "x",
+               "uniUtsPlugin": "x",
+               "unixUtsPlugin": "x"
             }
         },
         "web": {
@@ -117,7 +125,9 @@ interface Console {
             "ios": {
                "osVer": "12.0",
                "uniVer": "√",
-                "unixVer": "4.11"
+               "uniUtsPlugin": "√",
+               "unixVer": "4.11",
+               "unixUtsPlugin": "4.11"
             }
         },
         "web": {
@@ -142,7 +152,9 @@ interface Console {
             "ios": {
                "osVer": "x",
                "uniVer": "x",
-                "unixVer": "x"
+               "unixVer": "x",
+               "uniUtsPlugin": "x",
+               "unixUtsPlugin": "x"
             }
         },
         "web": {
@@ -168,7 +180,9 @@ interface Console {
             "ios": {
                "osVer": "x",
                "uniVer": "x",
-                "unixVer": "x"
+               "unixVer": "x",
+               "uniUtsPlugin": "x",
+               "unixUtsPlugin": "x"
             }
         },
         "web": {
@@ -194,7 +208,9 @@ interface Console {
             "ios": {
                "osVer": "12.0",
                "uniVer": "√",
-                "unixVer": "4.11"
+               "uniUtsPlugin": "√",
+               "unixVer": "4.11",
+               "unixUtsPlugin": "4.11"
             }
         },
         "web": {
@@ -219,7 +235,9 @@ interface Console {
             "ios": {
                "osVer": "x",
                "uniVer": "x",
-                "unixVer": "x"
+               "unixVer": "x",
+               "uniUtsPlugin": "x",
+               "unixUtsPlugin": "x"
             }
         },
         "web": {
@@ -244,7 +262,9 @@ interface Console {
             "ios": {
                "osVer": "x",
                "uniVer": "x",
-                "unixVer": "x"
+               "unixVer": "x",
+               "uniUtsPlugin": "x",
+               "unixUtsPlugin": "x"
             }
         },
         "web": {
@@ -269,7 +289,9 @@ interface Console {
             "ios": {
                "osVer": "x",
                "uniVer": "x",
-                "unixVer": "x"
+               "unixVer": "x",
+               "uniUtsPlugin": "x",
+               "unixUtsPlugin": "x"
             }
         },
         "web": {
@@ -295,7 +317,9 @@ interface Console {
             "ios": {
                "osVer": "12.0",
                "uniVer": "√",
-                "unixVer": "4.11"
+               "uniUtsPlugin": "√",
+               "unixVer": "4.11",
+               "unixUtsPlugin": "4.11"
             }
         },
         "web": {
@@ -321,7 +345,9 @@ interface Console {
             "ios": {
                "osVer": "12.0",
                "uniVer": "√",
-                "unixVer": "4.11"
+               "unixVer": "4.11",
+               "uniUtsPlugin": "√",
+               "unixUtsPlugin": "4.11"
             }
         },
         "web": {
@@ -346,7 +372,9 @@ interface Console {
             "ios": {
                "osVer": "x",
                "uniVer": "x",
-                "unixVer": "x"
+               "unixVer": "x",
+               "uniUtsPlugin": "x",
+               "unixUtsPlugin": "x"
             }
         },
         "web": {
@@ -371,7 +399,9 @@ interface Console {
             "ios": {
                "osVer": "x",
                "uniVer": "x",
-                "unixVer": "x"
+               "unixVer": "x",
+               "uniUtsPlugin": "x",
+               "unixUtsPlugin": "x"
             }
         },
         "web": {
@@ -397,7 +427,9 @@ interface Console {
             "ios": {
                "osVer": "x",
                "uniVer": "x",
-                "unixVer": "x"
+               "unixVer": "x",
+               "uniUtsPlugin": "x",
+               "unixUtsPlugin": "x"
             }
         },
         "web": {
@@ -422,7 +454,9 @@ interface Console {
             "ios": {
                "osVer": "x",
                "uniVer": "x",
-                "unixVer": "x"
+               "unixVer": "x",
+               "uniUtsPlugin": "x",
+               "unixUtsPlugin": "x"
             }
         },
         "web": {
@@ -447,7 +481,9 @@ interface Console {
             "ios": {
                "osVer": "x",
                "uniVer": "x",
-                "unixVer": "x"
+               "unixVer": "x",
+               "uniUtsPlugin": "x",
+               "unixUtsPlugin": "x"
             }
         },
         "web": {
@@ -472,7 +508,9 @@ interface Console {
             "ios": {
                "osVer": "x",
                "uniVer": "x",
-                "unixVer": "x"
+               "unixVer": "x",
+               "uniUtsPlugin": "x",
+               "unixUtsPlugin": "x"
             }
         },
         "web": {
@@ -498,7 +536,9 @@ interface Console {
             "ios": {
                "osVer": "12.0",
                "uniVer": "√",
-                "unixVer": "4.11"
+               "unixVer": "4.11",
+               "uniUtsPlugin": "√",
+               "unixUtsPlugin": "4.11"
             }
         },
         "web": {

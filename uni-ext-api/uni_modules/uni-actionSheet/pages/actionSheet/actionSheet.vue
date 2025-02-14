@@ -54,7 +54,7 @@
           {{ cancelText }}
         </text>
       </view>
-      <view :style="{height: `${bottomNavigationHeight}px`, backgroundColor: computedBackgroundColor}"></view>
+      <view v-if="!isLandscape" :style="{height: `${bottomNavigationHeight}px`, backgroundColor: computedBackgroundColor}"></view>
       <!-- #ifdef WEB -->
       <view v-if='isWidescreen && Object.keys(popover).length > 0' :style='triangleStyle' class="uni-action-sheet_dialog__triangle" />
       <!-- #endif -->

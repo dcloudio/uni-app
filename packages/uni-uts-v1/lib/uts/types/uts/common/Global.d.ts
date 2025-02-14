@@ -15,7 +15,9 @@
             "ios": {
                "osVer": "x",
                "uniVer": "x",
-                "unixVer": "x"
+               "unixVer": "x",
+               "uniUtsPlugin": "x",
+               "unixUtsPlugin": "x"
             }
         },
         "web": {
@@ -41,7 +43,9 @@ declare var NaN : number;
             "ios": {
                "osVer": "x",
                "uniVer": "x",
-                "unixVer": "x"
+               "unixVer": "x",
+               "uniUtsPlugin": "x",
+               "unixUtsPlugin": "x"
             }
         },
         "web": {
@@ -70,10 +74,10 @@ declare type RequestAnimationFrameCallback = (task : number) => void
         "unixUtsPlugin": "x"
       },
       "ios": {
-        "osVer": "12.0",
-        "uniVer": "√",
-        "uniUtsPlugin": "x",
+        "osVer": "x",
+        "uniVer": "x",
         "unixVer": "x",
+        "uniUtsPlugin": "x",
         "unixUtsPlugin": "x"
       }
     },
@@ -359,8 +363,8 @@ declare function encodeURIComponent(uriComponent : string) : string | null;
         "unixUtsPlugin": "4.25"
       },
       "ios": {
-        "osVer": "12.0",
-        "uniVer": "√",
+        "osVer": "x",
+        "uniVer": "x",
         "uniUtsPlugin": "x",
         "unixVer": "x",
         "unixUtsPlugin": "x"
@@ -391,8 +395,8 @@ declare function atob(encodedData : string) : string
         "unixUtsPlugin": "4.25"
       },
       "ios": {
-        "osVer": "12.0",
-        "uniVer": "√",
+        "osVer": "x",
+        "uniVer": "x",
         "uniUtsPlugin": "x",
         "unixVer": "x",
         "unixUtsPlugin": "x"

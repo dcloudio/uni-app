@@ -6580,12 +6580,13 @@ function _sfc_render$4(_ctx, _cache, $props, $setup, $data, $options) {
     class: normalizeClass(["uni-action-sheet_dialog__action__text", {
       "uni-action-sheet_dark__mode": $data.theme == "dark"
     }])
-  }, toDisplayString($options.cancelText), 7)], 6), createElementVNode("view", {
+  }, toDisplayString($options.cancelText), 7)], 6), !$data.isLandscape ? (openBlock(), createElementBlock("view", {
+    key: 0,
     style: normalizeStyle({
       height: "".concat($data.bottomNavigationHeight, "px"),
       backgroundColor: $options.computedBackgroundColor
     })
-  }, null, 4)], 2)]);
+  }, null, 4)) : createCommentVNode("", true)], 2)]);
 }
 const UniActionSheetPage = /* @__PURE__ */ _export_sfc(_sfc_main$4, [["render", _sfc_render$4], ["styles", [_style_0$4]]]);
 var defaultPoi = {

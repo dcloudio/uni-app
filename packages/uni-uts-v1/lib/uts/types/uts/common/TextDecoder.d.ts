@@ -12,8 +12,8 @@ interface TextDecoder {
                 "unixUtsPlugin": "4.31"
             },
             "ios": {
-                "osVer": "12.0",
-                "uniVer": "√",
+                "osVer": "x",
+                "uniVer": "x",
                 "uniUtsPlugin": "x",
                 "unixVer": "x",
                 "unixUtsPlugin": "x"
@@ -45,8 +45,8 @@ interface TextDecoder {
                 "unixUtsPlugin": "4.31"
             },
             "ios": {
-                "osVer": "12.0",
-                "uniVer": "√",
+                "osVer": "x",
+                "uniVer": "x",
                 "uniUtsPlugin": "x",
                 "unixVer": "x",
                 "unixUtsPlugin": "x"
@@ -78,8 +78,8 @@ interface TextDecoder {
                 "unixUtsPlugin": "4.31"
             },
             "ios": {
-                "osVer": "12.0",
-                "uniVer": "√",
+                "osVer": "x",
+                "uniVer": "x",
                 "uniUtsPlugin": "x",
                 "unixVer": "x",
                 "unixUtsPlugin": "x"
@@ -111,8 +111,8 @@ interface TextDecoder {
                 "unixUtsPlugin": "4.31"
             },
             "ios": {
-                "osVer": "12.0",
-                "uniVer": "√",
+                "osVer": "x",
+                "uniVer": "x",
                 "uniUtsPlugin": "x",
                 "unixVer": "x",
                 "unixUtsPlugin": "x"
@@ -147,8 +147,8 @@ declare var TextDecoder : {
                 "unixUtsPlugin": "4.31"
             },
             "ios": {
-                "osVer": "12.0",
-                "uniVer": "√",
+                "osVer": "x",
+                "uniVer": "x",
                 "uniUtsPlugin": "x",
                 "unixVer": "x",
                 "unixUtsPlugin": "x"

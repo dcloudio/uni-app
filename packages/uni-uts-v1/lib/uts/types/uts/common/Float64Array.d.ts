@@ -14,7 +14,7 @@ interface Float64Array {
                 "osVer": "12.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "4.51",
-                "unixVer": "√",
+                "unixVer": "4.11",
                 "unixUtsPlugin": "4.51"
               },
             "harmony": {
@@ -45,7 +45,7 @@ interface Float64Array {
                 "osVer": "12.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "4.51",
-                "unixVer": "√",
+                "unixVer": "4.11",
                 "unixUtsPlugin": "4.51"
               },
             "harmony": {
@@ -77,7 +77,7 @@ interface Float64Array {
                 "osVer": "12.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "4.51",
-                "unixVer": "√",
+                "unixVer": "4.11",
                 "unixUtsPlugin": "4.51"
               },
             "harmony": {
@@ -109,7 +109,7 @@ interface Float64Array {
                 "osVer": "12.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "4.51",
-                "unixVer": "√",
+                "unixVer": "4.11",
                 "unixUtsPlugin": "4.51"
               },
             "harmony": {
@@ -141,7 +141,7 @@ interface Float64Array {
                 "osVer": "12.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "4.51",
-                "unixVer": "√",
+                "unixVer": "4.11",
                 "unixUtsPlugin": "4.51"
               },
             "harmony": {
@@ -177,7 +177,7 @@ interface Float64Array {
                 "osVer": "12.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "4.51",
-                "unixVer": "√",
+                "unixVer": "4.11",
                 "unixUtsPlugin": "4.51"
               },
             "harmony": {
@@ -211,7 +211,7 @@ interface Float64Array {
                 "osVer": "12.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "4.51",
-                "unixVer": "√",
+                "unixVer": "4.11",
                 "unixUtsPlugin": "4.51"
               },
             "harmony": {
@@ -247,7 +247,7 @@ interface Float64Array {
                 "osVer": "12.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "4.51",
-                "unixVer": "√",
+                "unixVer": "4.11",
                 "unixUtsPlugin": "4.51"
               },
             "harmony": {
@@ -281,7 +281,7 @@ interface Float64Array {
                 "osVer": "12.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "4.51",
-                "unixVer": "√",
+                "unixVer": "4.11",
                 "unixUtsPlugin": "4.51"
               },
             "harmony": {
@@ -315,7 +315,7 @@ interface Float64Array {
                 "osVer": "12.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "4.51",
-                "unixVer": "√",
+                "unixVer": "4.11",
                 "unixUtsPlugin": "4.51"
               },
             "harmony": {
@@ -349,7 +349,7 @@ interface Float64Array {
                 "osVer": "12.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "4.51",
-                "unixVer": "√",
+                "unixVer": "4.11",
                 "unixUtsPlugin": "4.51"
               },
             "harmony": {
@@ -382,7 +382,7 @@ interface Float64Array {
                 "osVer": "12.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "4.51",
-                "unixVer": "√",
+                "unixVer": "4.11",
                 "unixUtsPlugin": "4.51"
               },
             "harmony": {
@@ -417,7 +417,7 @@ interface Float64Array {
                 "osVer": "12.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "4.51",
-                "unixVer": "√",
+                "unixVer": "4.11",
                 "unixUtsPlugin": "4.51"
               },
             "harmony": {
@@ -451,7 +451,7 @@ interface Float64Array {
                 "osVer": "12.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "4.51",
-                "unixVer": "√",
+                "unixVer": "4.11",
                 "unixUtsPlugin": "4.51"
               },
             "harmony": {
@@ -485,7 +485,7 @@ interface Float64Array {
                 "osVer": "12.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "4.51",
-                "unixVer": "√",
+                "unixVer": "4.11",
                 "unixUtsPlugin": "4.51"
               },
             "harmony": {
@@ -520,7 +520,7 @@ interface Float64Array {
                 "osVer": "12.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "4.51",
-                "unixVer": "√",
+                "unixVer": "4.11",
                 "unixUtsPlugin": "4.51"
               },
             "harmony": {
@@ -556,7 +556,7 @@ interface Float64Array {
                 "osVer": "12.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "4.51",
-                "unixVer": "√",
+                "unixVer": "4.11",
                 "unixUtsPlugin": "4.51"
               },
             "harmony": {
@@ -590,7 +590,7 @@ interface Float64Array {
                 "osVer": "12.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "4.51",
-                "unixVer": "√",
+                "unixVer": "4.11",
                 "unixUtsPlugin": "4.51"
               },
             "harmony": {
@@ -624,7 +624,7 @@ interface Float64Array {
                 "osVer": "12.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "4.51",
-                "unixVer": "√",
+                "unixVer": "4.11",
                 "unixUtsPlugin": "4.51"
               },
             "harmony": {
@@ -659,7 +659,7 @@ interface Float64Array {
                 "osVer": "12.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "4.51",
-                "unixVer": "√",
+                "unixVer": "4.11",
                 "unixUtsPlugin": "4.51"
               },
             "harmony": {
@@ -693,7 +693,7 @@ interface Float64Array {
                 "osVer": "12.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "4.51",
-                "unixVer": "√",
+                "unixVer": "4.11",
                 "unixUtsPlugin": "4.51"
               },
             "harmony": {
@@ -727,7 +727,7 @@ interface Float64Array {
                 "osVer": "12.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "4.51",
-                "unixVer": "√",
+                "unixVer": "4.11",
                 "unixUtsPlugin": "4.51"
               },
             "harmony": {
@@ -762,7 +762,7 @@ interface Float64Array {
                 "osVer": "12.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "4.51",
-                "unixVer": "√",
+                "unixVer": "4.11",
                 "unixUtsPlugin": "4.51"
               },
             "harmony": {
@@ -795,7 +795,7 @@ interface Float64Array {
                 "osVer": "12.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "4.51",
-                "unixVer": "√",
+                "unixVer": "4.11",
                 "unixUtsPlugin": "4.51"
               },
             "harmony": {
@@ -825,8 +825,8 @@ interface Float64Array {
                 "unixUtsPlugin": "4.25"
             },
             "ios": {
-                "osVer": "12.0",
-                "uniVer": "√",
+                "osVer": "x",
+                "uniVer": "x",
                 "uniUtsPlugin": "x",
                 "unixVer": "x",
                 "unixUtsPlugin": "x"
@@ -860,7 +860,7 @@ interface Float64Array {
                 "osVer": "12.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "4.51",
-                "unixVer": "√",
+                "unixVer": "4.11",
                 "unixUtsPlugin": "4.51"
               },
             "harmony": {
@@ -895,7 +895,7 @@ interface Float64Array {
                   "osVer": "12.0",
                   "uniVer": "√",
                   "uniUtsPlugin": "4.51",
-                  "unixVer": "√",
+                  "unixVer": "4.11",
                   "unixUtsPlugin": "4.51"
                 },
               "harmony": {
@@ -929,7 +929,7 @@ interface Float64Array {
                 "osVer": "12.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "4.51",
-                "unixVer": "√",
+                "unixVer": "4.11",
                 "unixUtsPlugin": "4.51"
               },
             "harmony": {
@@ -962,7 +962,7 @@ interface Float64Array {
                 "osVer": "12.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "4.51",
-                "unixVer": "√",
+                "unixVer": "4.11",
                 "unixUtsPlugin": "4.51"
               },
             "harmony": {
@@ -1000,7 +1000,7 @@ interface Float64ArrayConstructor {
                 "osVer": "12.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "4.51",
-                "unixVer": "√",
+                "unixVer": "4.11",
                 "unixUtsPlugin": "4.51"
               },
             "harmony": {
@@ -1033,7 +1033,7 @@ interface Float64ArrayConstructor {
                 "osVer": "12.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "4.51",
-                "unixVer": "√",
+                "unixVer": "4.11",
                 "unixUtsPlugin": "4.51"
               },
             "harmony": {
@@ -1068,7 +1068,7 @@ interface Float64ArrayConstructor {
                 "osVer": "12.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "4.51",
-                "unixVer": "√",
+                "unixVer": "4.11",
                 "unixUtsPlugin": "4.51"
               },
             "harmony": {
@@ -1100,7 +1100,7 @@ interface Float64ArrayConstructor {
                 "osVer": "12.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "4.51",
-                "unixVer": "√",
+                "unixVer": "4.11",
                 "unixUtsPlugin": "4.51"
               },
             "harmony": {
@@ -1133,7 +1133,7 @@ interface Float64ArrayConstructor {
                 "osVer": "12.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "4.51",
-                "unixVer": "√",
+                "unixVer": "4.11",
                 "unixUtsPlugin": "4.51"
               },
             "harmony": {
@@ -1167,7 +1167,7 @@ interface Float64ArrayConstructor {
                 "osVer": "12.0",
                 "uniVer": "√",
                 "uniUtsPlugin": "4.51",
-                "unixVer": "√",
+                "unixVer": "4.11",
                 "unixUtsPlugin": "4.51"
               },
             "harmony": {
