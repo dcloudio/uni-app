@@ -20,41 +20,41 @@ describe('uni-mp-vue: UniAnimation', () => {
       ])
     ).toEqual([
       {
-        marginLeft: '10px',
+        'margin-left': '10px',
         offset: 0,
       },
       {
-        marginLeft: '10px',
+        'margin-left': '10px',
         offset: 0.5,
       },
       {
-        marginLeft: '10px',
+        'margin-left': '10px',
         offset: 1,
       },
     ])
     const res1 = [
       {
-        marginLeft: '10px',
+        'margin-left': '10px',
         offset: 0,
       },
       {
-        marginLeft: '10px',
+        'margin-left': '10px',
         offset: 0.2,
       },
       {
-        marginLeft: '10px',
+        'margin-left': '10px',
         offset: 0.4,
       },
       {
-        marginLeft: '10px',
+        'margin-left': '10px',
         offset: 0.6,
       },
       {
-        marginLeft: '10px',
+        'margin-left': '10px',
         offset: 0.8,
       },
       {
-        marginLeft: '10px',
+        'margin-left': '10px',
         offset: 1,
       },
     ]
@@ -209,8 +209,8 @@ describe('uni-mp-vue: UniAnimation', () => {
         { backgroundColor: 'red' },
       ])
     ).toEqual([
-      { offset: 0, backgroundColor: 'yellow' },
-      { offset: 1, backgroundColor: 'red' },
+      { offset: 0, 'background-color': 'yellow' },
+      { offset: 1, 'background-color': 'red' },
     ])
 
     expect(
@@ -219,8 +219,8 @@ describe('uni-mp-vue: UniAnimation', () => {
         { offset: 0.9, backgroundColor: 'red' },
       ])
     ).toEqual([
-      { offset: 0, backgroundColor: 'yellow' },
-      { offset: 0.9, backgroundColor: 'red' },
+      { offset: 0, 'background-color': 'yellow' },
+      { offset: 0.9, 'background-color': 'red' },
     ])
   })
   it('coverAnimateToStyle', () => {
@@ -247,21 +247,21 @@ describe('uni-mp-vue: UniAnimation', () => {
     ).toEqual([
       {
         transform: 'scale(1)',
-        transformOrigin: '0px 0px',
+        'transform-origin': '0px 0px',
         transition: 'all 0ms ease',
         _duration: 0,
         _startTime: 0,
       },
       {
         transform: 'scale(0)',
-        transformOrigin: '50px 50px',
+        'transform-origin': '50px 50px',
         transition: 'all 1500ms ease',
         _duration: 1500,
         _startTime: 0,
       },
       {
         transform: 'scale(1)',
-        transformOrigin: '100px 100px',
+        'transform-origin': '100px 100px',
         transition: 'all 1500ms ease',
         _duration: 1500,
         _startTime: 1500,
@@ -378,59 +378,23 @@ describe('uni-mp-vue: UniAnimation', () => {
       )
     ).toEqual([
       {
-        backgroundColor: 'yellow',
+        'background-color': 'yellow',
         transition: 'all 300ms ease',
         _startTime: 0,
         _duration: 300,
       },
       {
-        backgroundColor: 'red',
+        'background-color': 'red',
         transition: 'all 300ms ease',
         _startTime: 300,
         _duration: 300,
       },
       {
-        backgroundColor: 'blue',
+        'background-color': 'blue',
         transition: 'all 400ms ease',
         _startTime: 600,
         _duration: 400,
       },
     ])
   })
-
-  // it('setStyleByRequestAnimationFrame', () => {
-  //   const cssRules = [
-  //     {
-  //       transform: 'scale(1)',
-  //       transformOrigin: '0px 0px',
-  //       transition: 'all 0ms ease',
-  //       _duration: 0,
-  //       _startTime: 0,
-  //     },
-  //     {
-  //       transform: 'scale(0)',
-  //       transformOrigin: '50px 50px',
-  //       transition: 'all 1500ms ease',
-  //       _duration: 1500,
-  //       _startTime: 0,
-  //     },
-  //     {
-  //       transform: 'scale(1)',
-  //       transformOrigin: '100px 100px',
-  //       transition: 'all 1500ms ease',
-  //       _duration: 1500,
-  //       _startTime: 1500,
-  //     },
-  //   ]
-
-  //   // const Element = {
-  //   //   setStyle: jest.fn(),
-  //   // } as any
-
-  //   // const { start } = setStyleByRequestAnimationFrame(cssRules)
-  //   // start(Element)
-
-  //   // expect(Element.setStyle).toHaveBeenCalledTimes(3)
-  //   // expect(Element.setStyle).toHaveBeenNthCalledWith(1, 'transform', 'scale(1)')
-  // })
 })

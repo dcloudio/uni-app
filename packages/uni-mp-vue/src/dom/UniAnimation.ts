@@ -2,22 +2,28 @@ import type {
   UniAnimation as IUniAnimation,
   UniAnimationPlaybackEvent,
 } from '@dcloudio/uni-app-x/types/native'
-
-let id = 0
+import { hyphenate } from '@vue/shared'
 
 // TODO App端实现未继承自EventTarget，如果后续App端调整此处也需要同步调整
 export class UniAnimation implements IUniAnimation {
-  id: string
+  id: string = '0'
+  private _playState: string = ''
+  parsedKeyframes: IParsedKeyframe[] = []
+
   onfinish: ((event: UniAnimationPlaybackEvent) => void) | null = null
   oncancel: ((event: UniAnimationPlaybackEvent) => void) | null = null
-  constructor() {
-    this.id = String(id++)
-    // auto play
-    this.play()
+
+  constructor(
+    keyframes: Keyframe[] | PropertyIndexedKeyframes,
+    options: number | KeyframeAnimationOptions = {}
+  ) {
+    let _id = parseInt(this.id)
+    this.id = String(_id++)
+    this.parsedKeyframes = coverAnimateToStyle(keyframes, options)
   }
 
   get playState(): string {
-    throw new Error('playState not implemented.')
+    return this._playState
   }
 
   get currentTime(): number {
@@ -37,20 +43,30 @@ export class UniAnimation implements IUniAnimation {
   }
 
   play(): void {
-    throw new Error('play not implemented.')
+    // throw new Error('play not implemented.')
   }
 }
 
 // 小程序中的 this.animate 不支持 color 等属性，keyframes 结构不同，需要手动转换
 // 该用 wxs 的 requestAnimationFrame 实现，需要手动实现缓动函数、解析 keyframes，对产物体积有影响
 // 该用 wxs 配合
-
 export function normalizeKeyframes(keyframes: any[]): any[] {
   // 如果关键帧
   // 数组为空，返回空数组
   if (keyframes.length === 0) {
     return []
   }
+
+  // hyphenate
+  keyframes.forEach((kf) => {
+    Object.keys(kf).forEach((key) => {
+      const newKey = hyphenate(key)
+      if (key !== newKey) {
+        kf[newKey] = kf[key]
+        delete kf[key]
+      }
+    })
+  })
 
   // 记录已有的 offset 位置
   const existingOffsets = keyframes
@@ -108,6 +124,7 @@ export function normalizeKeyframes(keyframes: any[]): any[] {
   // 保留 五位小数
   return keyframes.map((kf) => {
     kf.offset = Number(kf.offset.toFixed(5))
+
     return kf
   })
 }
@@ -119,7 +136,7 @@ interface IParsedKeyframe {
 }
 
 export function coverAnimateToStyle(keyframes, options): IParsedKeyframe[] {
-  const duration = options?.duration || 3000
+  const duration = options?.duration || 0
 
   // Handle object format with array values
   if (!Array.isArray(keyframes)) {
@@ -148,113 +165,14 @@ export function coverAnimateToStyle(keyframes, options): IParsedKeyframe[] {
     stepDuration = currentDuration
 
     const result = frame
-    delete result.offset
-    return Object.assign(result, {
+    // delete result.offset
+    return Object.assign({}, result, {
       // ...result,
+      offset: undefined,
       transition: `all ${stepDuration}ms ease`,
 
       _duration: stepDuration,
       _startTime: crrentOffsetStartTime,
     })
   })
-}
-
-export function setStyleByRequestAnimationFrame(cssRules: IParsedKeyframe[]) {
-  let animationFrameId: number | null = null
-  let startTimestamp: number | null = null
-  let isPaused = false
-  let pausedTime = 0
-  let currentRuleIndex = 0
-
-  function applyStyle(element: Element, styles: Record<string, any>) {
-    Object.entries(styles).forEach(([key, value]) => {
-      if (key !== 'transition' && key !== '_duration' && key !== '_startTime') {
-        ;(element as any).setStyle(key, value)
-      }
-    })
-  }
-
-  function animate(element: Element) {
-    const timestamp = Date.now()
-    if (!startTimestamp) startTimestamp = timestamp
-
-    if (isPaused) return
-
-    const elapsedTime = timestamp - startTimestamp - pausedTime
-    const currentRule = cssRules[currentRuleIndex]
-
-    if (!currentRule) {
-      stop()
-      return
-    }
-
-    if (elapsedTime >= currentRule._startTime) {
-      if (elapsedTime >= currentRule._startTime + currentRule._duration) {
-        // Move to next rule
-        currentRuleIndex++
-        if (currentRuleIndex < cssRules.length) {
-          applyStyle(element, cssRules[currentRuleIndex])
-        } else {
-          stop()
-          return
-        }
-      } else {
-        // Apply current rule
-        applyStyle(element, currentRule)
-      }
-    }
-
-    animationFrameId = requestAnimationFrame(() => animate(element))
-  }
-
-  function start(element: Element) {
-    if (animationFrameId !== null) return
-
-    currentRuleIndex = 0
-    startTimestamp = null
-    pausedTime = 0
-    isPaused = false
-
-    if (cssRules.length > 0) {
-      applyStyle(element, cssRules[0])
-      animationFrameId = requestAnimationFrame(() => animate(element))
-    }
-  }
-
-  function pause() {
-    if (!isPaused && animationFrameId !== null) {
-      isPaused = true
-      if (startTimestamp) {
-        pausedTime = performance.now() - startTimestamp
-      }
-      cancelAnimationFrame(animationFrameId)
-      animationFrameId = null
-    }
-  }
-
-  function resume(element: Element) {
-    if (isPaused) {
-      isPaused = false
-      startTimestamp = Date.now() - pausedTime
-      animationFrameId = requestAnimationFrame(() => animate(element))
-    }
-  }
-
-  function stop() {
-    if (animationFrameId !== null) {
-      cancelAnimationFrame(animationFrameId)
-      animationFrameId = null
-    }
-    startTimestamp = null
-    pausedTime = 0
-    currentRuleIndex = 0
-    isPaused = false
-  }
-
-  return {
-    start,
-    pause,
-    resume,
-    stop,
-  }
 }
