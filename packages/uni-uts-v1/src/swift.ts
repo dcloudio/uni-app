@@ -5,7 +5,7 @@ import {
   type RunProdOptions,
   type ToSwiftOptions,
   addPluginInjectApis,
-  copyPlatformFiles,
+  copyPlatformNativeLanguageFiles,
   genComponentsCode,
   genUTSPlatformResource,
   getCompilerServer,
@@ -146,6 +146,7 @@ export async function runSwiftDev(
     transform,
     sourceMap,
     uniModules,
+    rewriteConsoleExpr,
   }: RunDevOptions
 ) {
   // 文件有可能是 app-android 里边的，因为编译到 ios 时，为了保证不报错，可能会去读取 android 下的 uts
@@ -215,10 +216,11 @@ export async function runSwiftDev(
 
     const { id, is_uni_modules } = resolvePackage(filename)!
 
-    const platformFiles = copyPlatformFiles(
+    const { srcFiles } = copyPlatformNativeLanguageFiles(
       path.resolve(inputDir, 'uni_modules', id, 'utssdk', 'app-ios'),
       path.resolve(outputDir, 'uni_modules', id, 'utssdk', 'app-ios'),
-      ['.swift']
+      ['.swift'],
+      rewriteConsoleExpr!
     )
 
     const { code, msg } = await compilerServer.compile({
@@ -229,7 +231,7 @@ export async function runSwiftDev(
       utsPath: resolveCompilerUTSPath(inputDir, is_uni_modules),
       swiftPath: resolveCompilerSwiftPath(outputDir, is_uni_modules),
     })
-    result.deps = [...(result.deps || []), ...platformFiles]
+    result.deps = [...(result.deps || []), ...srcFiles]
     result.code = code
     result.msg = msg
     result.changed = [swiftFile]

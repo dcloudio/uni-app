@@ -151,6 +151,7 @@ export interface UTSPluginCompilerOptions {
   >
   androidPreprocessor?: SyncUniModulesFilePreprocessor
   iosPreprocessor?: SyncUniModulesFilePreprocessor
+  rewriteConsoleExpr?: (fileName: string, content: string) => string
 }
 
 // 重要：当调整参数时，需要同步调整 vue2 编译器 uni-cli-shared/lib/uts/uts-loader.js
@@ -180,6 +181,7 @@ export async function compile(
     sourceMap,
     isSingleThread,
     uni_modules,
+    rewriteConsoleExpr,
   } = compilerOptions
 
   let isPlugin = compilerOptions.isPlugin
@@ -520,6 +522,7 @@ export async function compile(
           cacheDir,
           pluginRelativeDir,
           is_uni_modules: pkg.is_uni_modules,
+          rewriteConsoleExpr,
           extApis,
           transform: await initCompilerOptionsTransform(
             compilerType,

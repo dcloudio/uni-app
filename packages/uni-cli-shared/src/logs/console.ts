@@ -63,3 +63,31 @@ function getLocator(source: string) {
     return { line, column }
   }
 }
+
+export function appendConsoleExpr(filename: string, code: string) {
+  filename = normalizePath(filename)
+  // 使用更复杂的正则来匹配可能包含换行、括号等的参数
+  const re =
+    /(console\.(log|info|debug|warn|error))\s*\(([\s\S]*?)(?=\)[;\n]|\)$)/g
+  const locate = getLocator(code)
+  const s = new MagicString(code)
+  let match: RegExpExecArray | null
+
+  while ((match = re.exec(code))) {
+    const [full, _, type, args] = match
+    const endPos = match.index + full.length + 1 // +1 to include the closing parenthesis
+    s.overwrite(
+      match.index,
+      endPos,
+      // 重要，需要用双引号，因为混编的kt，swift，java不能用单引号（char类型）
+      `console.${type}(${args.trim()}, " at ${filename}:${
+        locate(match.index).line + 1
+      }")`
+    )
+  }
+
+  if (s.hasChanged()) {
+    return s.toString()
+  }
+  return code
+}

@@ -16,6 +16,7 @@ interface ArkTSCompilerOptions {
   isExtApi?: boolean
   isOhpmPackage?: boolean
   sourceMap?: boolean
+  rewriteConsoleExpr?: (fileName: string, content: string) => string
   transform?: {
     uniExtApiProviderName?: string
     uniExtApiProviderService?: string
@@ -135,7 +136,13 @@ export async function compileArkTSExtApi(
   rootDir: string,
   pluginDir: string,
   outputDir: string,
-  { isExtApi, isX, isOhpmPackage = false, sourceMap }: ArkTSCompilerOptions
+  {
+    isExtApi,
+    isX,
+    isOhpmPackage = false,
+    sourceMap,
+    rewriteConsoleExpr,
+  }: ArkTSCompilerOptions
 ): Promise<CompileResult | void> {
   const filename = resolveAppHarmonyIndexFile(pluginDir)
   if (!filename) {
@@ -208,10 +215,19 @@ export async function compileArkTSExtApi(
   const depEtsFiles: string[] = []
   for (const etsFile of etsFiles) {
     const srcFile = path.resolve(pluginDir, etsFile)
+    const destFile = path.resolve(outputUniModuleDir, etsFile)
     if (etsFile.endsWith('.ets')) {
       depEtsFiles.push(srcFile)
+      if (rewriteConsoleExpr) {
+        const content = fs.readFileSync(srcFile, 'utf8')
+        const newContent = rewriteConsoleExpr(srcFile, content)
+        fs.outputFileSync(destFile, newContent)
+      } else {
+        fs.copySync(srcFile, destFile)
+      }
+    } else {
+      fs.copySync(srcFile, destFile)
     }
-    fs.copySync(srcFile, path.resolve(outputUniModuleDir, etsFile))
   }
 
   // generate oh-package.json5

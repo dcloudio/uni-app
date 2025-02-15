@@ -18,7 +18,7 @@ import {
   type RunProdOptions,
   type ToKotlinOptions,
   addPluginInjectApis,
-  copyPlatformFiles,
+  copyPlatformNativeLanguageFiles,
   genComponentsCode,
   genUTSPlatformResource,
   getCompilerServer,
@@ -224,6 +224,7 @@ export async function runKotlinDev(
     transform,
     sourceMap,
     uniModules,
+    rewriteConsoleExpr,
   }: RunDevOptions
 ): Promise<RunKotlinDevResult | undefined> {
   // 文件有可能是 app-ios 里边的，因为编译到 android 时，为了保证不报错，可能会去读取 ios 下的 uts
@@ -317,15 +318,16 @@ export async function runKotlinDev(
           .concat(getUniModulesJars(outputDir, uniModules)) // cli版本插件jar（没有指定cache的时候,也不应该需要了，默认cache目录即可）
       : []
 
-    const platformFiles = copyPlatformFiles(
+    const { srcFiles, destFiles } = copyPlatformNativeLanguageFiles(
       path.resolve(inputDir, pluginRelativeDir, 'utssdk', 'app-android'),
       path.resolve(outputDir, pluginRelativeDir, 'utssdk', 'app-android'),
-      ['.kt', '.java']
+      ['.kt', '.java'],
+      rewriteConsoleExpr!
     )
 
-    kotlinFiles.push(...platformFiles)
+    kotlinFiles.push(...destFiles)
 
-    result.deps = [...(result.deps || []), ...platformFiles]
+    result.deps = [...(result.deps || []), ...srcFiles]
 
     const { code, msg } = await compileAndroidDex(
       isX,

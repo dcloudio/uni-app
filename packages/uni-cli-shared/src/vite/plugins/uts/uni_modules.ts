@@ -38,7 +38,7 @@ import { parseManifestJsonOnce } from '../../../json'
 import { emptyDir } from '../../../fs'
 import { initScopedPreContext } from '../../../preprocess/context'
 import { isInHBuilderX } from '../../../hbx'
-import { rewriteConsoleExpr } from '../../../logs/console'
+import { appendConsoleExpr, rewriteConsoleExpr } from '../../../logs/console'
 
 /* eslint-disable no-restricted-globals */
 const { preprocess } = require('../../../../lib/preprocess')
@@ -61,6 +61,22 @@ export function rewriteUniModulesConsoleExpr(
       content,
       false
     ).code
+  }
+  return content
+}
+
+function appendUniModulesConsoleExpr(fileName: string, content: string) {
+  // 仅开发模式补充console.log的at信息
+  if (process.env.NODE_ENV !== 'development') {
+    return content
+  }
+  if (content.includes('console.')) {
+    return appendConsoleExpr(
+      normalizePath(
+        path.relative(process.env.UNI_INPUT_DIR, fileName.split('?')[0])
+      ),
+      content
+    )
   }
   return content
 }
@@ -457,6 +473,7 @@ export function uniUTSAppUniModulesPlugin(
         isX: !!options.x,
         isExtApi,
         sourceMap: enableSourceMap(),
+        rewriteConsoleExpr: appendUniModulesConsoleExpr,
         transform: {
           uniExtApiProviderName: extApiProvider?.name,
           uniExtApiProviderService: extApiProvider?.service,
@@ -489,6 +506,7 @@ export function uniUTSAppUniModulesPlugin(
       extApis: options.extApis,
       sourceMap: enableSourceMap(),
       uni_modules: deps,
+      rewriteConsoleExpr: appendUniModulesConsoleExpr,
       transform: {
         uniExtApiProviderName: extApiProvider?.name,
         uniExtApiProviderService: extApiProvider?.service,

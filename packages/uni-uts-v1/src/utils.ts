@@ -15,7 +15,7 @@ import {
   isPlainObject,
   isString,
 } from '@vue/shared'
-import glob from 'fast-glob'
+import glob, { sync } from 'fast-glob'
 import type { Module, ModuleItem } from '../types/types'
 import {
   installHBuilderXPlugin,
@@ -72,6 +72,7 @@ export interface RunDevOptions extends RunOptions {
   cacheDir: string
   pluginRelativeDir: string
   is_uni_modules: boolean
+  rewriteConsoleExpr?: (fileName: string, content: string) => string
 }
 
 export function resolveUTSSourceMapPath() {
@@ -146,10 +147,40 @@ function removeAllEmptySubDir(dir: string) {
   } catch {}
 }
 
+export function copyPlatformNativeLanguageFiles(
+  utsInputDir: string,
+  utsOutputDir: string,
+  extnameArr: string[],
+  rewriteConsoleExpr: (fileName: string, content: string) => string
+) {
+  const srcFiles: string[] = []
+  const destFiles: string[] = []
+  if (fs.existsSync(utsInputDir)) {
+    // 遍历所有的 extname 文件，并进行 rewrite
+    const globPattern =
+      extnameArr.length > 1
+        ? `**/*.{${extnameArr.map((extname) => extname.slice(1)).join(',')}}`
+        : `**/*${extnameArr[0]}`
+    sync(globPattern, {
+      cwd: utsInputDir,
+      absolute: false,
+    }).forEach((file) => {
+      const srcFile = path.resolve(utsInputDir, file)
+      const destFile = path.resolve(utsOutputDir, file)
+      const content = fs.readFileSync(srcFile, 'utf8')
+      const newContent = rewriteConsoleExpr(srcFile, content)
+      fs.outputFileSync(destFile, newContent)
+      srcFiles.push(srcFile)
+      destFiles.push(destFile)
+    })
+  }
+  return { srcFiles, destFiles }
+}
+
 export function copyPlatformFiles(
   utsInputDir: string,
   utsOutputDir: string,
-  extname: string[]
+  extnameArr: string[]
 ) {
   const files: string[] = []
   if (fs.existsSync(utsInputDir)) {
@@ -158,7 +189,8 @@ export function copyPlatformFiles(
         if (fs.statSync(src).isDirectory()) {
           return true
         }
-        if (extname.includes(path.extname(src))) {
+        if (extnameArr.includes(path.extname(src))) {
+          // 应该引入copy后的文件
           files.push(src)
           return true
         }
