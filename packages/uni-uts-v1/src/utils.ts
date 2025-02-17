@@ -35,6 +35,7 @@ interface ToOptions {
   outFilename?: string
   sourceMap: boolean
   components: Record<string, string>
+  customElements?: Record<string, string>
   isX: boolean
   isSingleThread: boolean
   isPlugin: boolean
@@ -51,6 +52,7 @@ export const ERR_MSG_PLACEHOLDER = `___ERR_MSG___`
 
 export interface RunOptions {
   components: Record<string, string>
+  customElements?: Record<string, string>
   extApis?: Record<string, [string, string]>
   isPlugin: boolean
   isSingleThread: boolean
@@ -209,6 +211,7 @@ export interface UTSPlatformResourceOptions {
   platform: typeof process.env.UNI_UTS_PLATFORM
   extname: '.kt' | '.swift'
   components: Record<string, string>
+  customElements?: Record<string, string>
   package: string
   hookClass: string
   result: UTSResult
@@ -271,6 +274,7 @@ export function genUTSPlatformResource(
     utsOutputDir,
     options.hookClass,
     options.components,
+    options.customElements,
     options.package,
     options.provider
   )
@@ -310,7 +314,10 @@ export function moveRootIndexSourceMap(
     inputDir,
     platform,
     extname,
-  }: Omit<UTSPlatformResourceOptions, 'hookClass' | 'pluginId' | 'uniModules'>
+  }: Omit<
+    UTSPlatformResourceOptions,
+    'hookClass' | 'pluginId' | 'uniModules' | 'components' | 'customElements'
+  >
 ) {
   if (isRootIndex(filename, platform)) {
     const sourceMapFilename = path
@@ -362,7 +369,10 @@ export function resolveUTSPlatformFile(
     outputDir,
     platform,
     extname,
-  }: Omit<UTSPlatformResourceOptions, 'hookClass' | 'pluginId' | 'uniModules'>
+  }: Omit<
+    UTSPlatformResourceOptions,
+    'hookClass' | 'pluginId' | 'uniModules' | 'components' | 'customElements'
+  >
 ) {
   let platformFile = path
     .resolve(outputDir, path.relative(inputDir, filename))
@@ -475,6 +485,38 @@ function resolveComponents(
   return components
 }
 
+export function resolveCustomElements(pluginDir: string) {
+  const customElements: Record<string, string> = {}
+  const customElementsDir = path.resolve(pluginDir, 'customElements')
+  if (fs.existsSync(customElementsDir)) {
+    const ext = '.uts'
+    fs.readdirSync(customElementsDir).forEach((name) => {
+      if (!customElements[name]) {
+        const folder = path.resolve(customElementsDir, name)
+        if (!isDir(folder)) {
+          return
+        }
+        const files = fs.readdirSync(folder)
+        // 读取文件夹文件列表，比对文件名（fs.existsSync在大小写不敏感的系统会匹配不准确）
+        if (files.includes(name + ext)) {
+          customElements[name] = path.resolve(folder, name + ext)
+        }
+      }
+    })
+  }
+  return customElements
+}
+
+const isDir = (path: string) => {
+  const stat = fs.lstatSync(path)
+  if (stat.isDirectory()) {
+    return true
+  } else if (stat.isSymbolicLink()) {
+    return fs.lstatSync(fs.realpathSync(path)).isDirectory()
+  }
+  return false
+}
+
 export function resolveAndroidComponents(
   pluginDir: string,
   is_uni_modules: boolean
@@ -519,11 +561,30 @@ export function genComponentsCode(
   return codes.join('\n')
 }
 
+export function genCustomElementsCode(
+  filename: string,
+  customElements: Record<string, string>
+) {
+  const codes: string[] = []
+  const dirname = path.dirname(filename)
+  Object.keys(customElements).forEach((name) => {
+    const source = normalizePath(path.relative(dirname, customElements[name]))
+    const className = capitalize(camelize(name))
+    codes.push(
+      `export { ${className}Element } from '${
+        source.startsWith('.') ? source : './' + source
+      }'`
+    )
+  })
+  return codes.join('\n')
+}
+
 export function genConfigJson(
   platform: 'app-android' | 'app-ios',
   isX: boolean,
   hookClass: string,
   components: Record<string, string>,
+  customElements: Record<string, string> | undefined,
   pluginRelativeDir: string,
   is_uni_modules: boolean,
   inputDir: string,
@@ -554,6 +615,7 @@ export function genConfigJson(
     utsOutputDir,
     hookClass,
     components,
+    customElements,
     platform === 'app-android'
       ? parseKotlinPackageWithPluginId(pluginId, is_uni_modules) + '.'
       : parseSwiftPackageWithPluginId(pluginId, is_uni_modules),
@@ -568,15 +630,18 @@ function copyConfigJson(
   outputDir: string,
   hookClass: string,
   componentsObj: Record<string, string>,
+  customElementsObj: Record<string, string> | undefined,
   namespace: string,
   provider?: { name: string; service: string; class: string }
 ) {
   const configJsonFilename = resolve(inputDir, 'config.json')
   const outputConfigJsonFilename = resolve(outputDir, 'config.json')
   const hasComponents = !!Object.keys(componentsObj).length
+  const hasCustomElements =
+    customElementsObj && !!Object.keys(customElementsObj).length
   const hasHookClass = !!hookClass
   const hasProvider = !!provider
-  if (hasComponents || hasHookClass || hasProvider) {
+  if (hasComponents || hasCustomElements || hasHookClass || hasProvider) {
     const configJson: Record<string, any> = fs.existsSync(configJsonFilename)
       ? parseJson(fs.readFileSync(configJsonFilename, 'utf8'))
       : {}
@@ -586,6 +651,14 @@ function copyConfigJson(
         platform,
         isX,
         componentsObj,
+        namespace
+      )
+    }
+    if (hasCustomElements) {
+      configJson.customElements = genCustomElementsConfigJson(
+        platform,
+        isX,
+        customElementsObj,
         namespace
       )
     }
@@ -621,6 +694,27 @@ function genComponentsConfigJson(
     }
     if (isX && platform === 'app-ios') {
       options['delegateClass'] = normalized + 'ComponentRegister'
+    }
+    res.push(options)
+  })
+  return res
+}
+
+function genCustomElementsConfigJson(
+  platform: typeof process.env.UNI_UTS_PLATFORM,
+  isX: boolean,
+  customElements: Record<string, string>,
+  namespace: string
+) {
+  const res: { name: string; class: string; delegateClass?: string }[] = []
+  Object.keys(customElements).forEach((name) => {
+    const normalized = capitalize(camelize(name))
+    const options: (typeof res)[0] = {
+      name,
+      class: namespace + normalized + 'CustomElement',
+    }
+    if (isX && platform === 'app-ios') {
+      options['delegateClass'] = normalized + 'CustomElementRegister'
     }
     res.push(options)
   })

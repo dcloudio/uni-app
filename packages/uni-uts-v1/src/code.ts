@@ -85,6 +85,7 @@ interface Meta {
     'function' | 'class' | 'interface' | 'typealias' | string[]
   >
   components: string[]
+  customElements: string[]
   android?: {
     typeParams: string[]
     types: Record<
@@ -108,6 +109,7 @@ export interface GenProxyCodeOptions {
   namespace: string
   androidComponents?: Record<string, string>
   iosComponents?: Record<string, string>
+  customElements?: Record<string, string>
   format?: FORMATS
   inputDir?: string
   pluginRelativeDir?: string
@@ -129,7 +131,13 @@ export async function genProxyCode(
   const { name, is_uni_modules, format, moduleName, moduleType } = options
   options.inputDir = options.inputDir || process.env.UNI_INPUT_DIR
   if (!options.meta) {
-    options.meta = { exports: {}, types: {}, typeParams: [], components: [] }
+    options.meta = {
+      exports: {},
+      types: {},
+      typeParams: [],
+      components: [],
+      customElements: [],
+    }
   }
   options.types = await parseInterfaceTypes(module, options)
   options.meta!.types = parseMetaTypes(options.types)
@@ -187,7 +195,7 @@ export async function genProxyCode(
       components.add(name)
     })
   }
-  options.meta!.components = [...components]
+  options.meta.components = [...components]
   const decls = await parseModuleDecls(module, options)
 
   normalizeInterfaceKeepAlive(decls, options.types)
@@ -213,6 +221,7 @@ ${genComponentsCode(
   options.androidComponents || {},
   options.iosComponents || {}
 )}
+${genCustomElementsCode(format, options.customElements || {})}
 
 ${genModuleCode(decls, format, options.pluginRelativeDir!, options.meta!)}
 `
@@ -271,7 +280,7 @@ function parseTypeParams(types: Types) {
   return res
 }
 
-export function genComponentsCode(
+function genComponentsCode(
   format: FORMATS = FORMATS.ES,
   androidComponents: Record<string, string>,
   iosComponents: Record<string, string>
@@ -286,6 +295,21 @@ export function genComponentsCode(
       }
     }
   )
+  return codes.join('\n')
+}
+
+function genCustomElementsCode(
+  format: FORMATS = FORMATS.ES,
+  customElements: Record<string, string>
+) {
+  const codes: string[] = []
+  Object.keys(customElements).forEach((name) => {
+    if (format === FORMATS.CJS) {
+      codes.push(`exports.${capitalize(camelize(name))}CustomElement = {}`)
+    } else {
+      codes.push(`export const ${capitalize(camelize(name))}CustomElement = {}`)
+    }
+  })
   return codes.join('\n')
 }
 

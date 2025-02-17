@@ -17,6 +17,7 @@ import {
   genConfigJson,
   resolveAndroidComponents,
   resolveConfigProvider,
+  resolveCustomElements,
   resolveIOSComponents,
   resolvePackage,
 } from './utils'
@@ -212,6 +213,8 @@ export async function compile(
     ? {}
     : resolveIOSComponents(pluginDir, pkg.is_uni_modules)
 
+  const customElements = resolveCustomElements(pluginDir)
+
   const env = initCheckOptionsEnv()
   const deps: string[] = []
   const inject_apis: string[] = []
@@ -222,6 +225,7 @@ export async function compile(
     types: {},
     typeParams: [],
     components: [],
+    customElements: Object.keys(customElements),
   }
   let moduleName = pkg.id
   try {
@@ -231,6 +235,7 @@ export async function compile(
     {
       androidComponents,
       iosComponents,
+      customElements,
       format:
         process.env.UNI_UTS_JS_CODE_FORMAT === 'cjs' ? FORMATS.CJS : FORMATS.ES,
       pluginRelativeDir,
@@ -268,12 +273,17 @@ export async function compile(
         indexModuleFilename ||
         resolvePlatformIndex('app-android', pluginDir, pkg) ||
         resolveRootIndex(pluginDir, pkg)
-      if (!filename && Object.keys(androidComponents).length) {
+      if (
+        !filename &&
+        (Object.keys(androidComponents).length ||
+          Object.keys(customElements).length)
+      ) {
         filename = resolvePlatformIndexFilename('app-android', pluginDir, pkg)
       }
       if (filename) {
         const result = await getCompiler('kotlin').runProd(filename, {
           components: androidComponents,
+          customElements,
           uniModuleId: pkg.id,
           isX,
           isSingleThread,
@@ -334,12 +344,17 @@ export async function compile(
         indexModuleFilename ||
         resolvePlatformIndex('app-ios', pluginDir, pkg) ||
         resolveRootIndex(pluginDir, pkg)
-      if (!filename && Object.keys(androidComponents).length) {
+      if (
+        !filename &&
+        (Object.keys(androidComponents).length ||
+          Object.keys(customElements).length)
+      ) {
         filename = resolvePlatformIndexFilename('app-ios', pluginDir, pkg)
       }
       if (filename) {
         const result = await getCompiler('swift').runProd(filename, {
           components: iosComponents,
+          customElements,
           uniModuleId: pkg.id,
           isX,
           isSingleThread,
@@ -456,6 +471,7 @@ export async function compile(
               ? proxyCodeOptions.androidHookClass
               : proxyCodeOptions.iOSHookClass) || '',
             components,
+            customElements,
             pluginRelativeDir,
             pkg.is_uni_modules,
             inputDir,
@@ -507,6 +523,7 @@ export async function compile(
             ? proxyCodeOptions.androidHookClass
             : proxyCodeOptions.iOSHookClass) || '',
           components,
+          customElements,
           pluginRelativeDir,
           pkg.is_uni_modules,
           inputDir,
@@ -515,6 +532,7 @@ export async function compile(
         )
         const res = await getCompiler(compilerType).runDev(filename, {
           components,
+          customElements,
           isX,
           isSingleThread,
           isPlugin,

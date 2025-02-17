@@ -7,6 +7,7 @@ import {
   addPluginInjectApis,
   copyPlatformNativeLanguageFiles,
   genComponentsCode,
+  genCustomElementsCode,
   genUTSPlatformResource,
   getCompilerServer,
   getUTSCompiler,
@@ -51,6 +52,7 @@ export async function runSwiftProd(
   filename: string,
   {
     components,
+    customElements,
     uniModuleId,
     isPlugin,
     isModule,
@@ -75,6 +77,7 @@ export async function runSwiftProd(
     outputDir,
     sourceMap: !!sourceMap,
     components,
+    customElements,
     isX,
     isSingleThread,
     isPlugin,
@@ -117,6 +120,7 @@ export async function runSwiftProd(
     platform: 'app-ios',
     extname: '.swift',
     components,
+    customElements,
     package: parseSwiftPackage(filename).namespace,
     hookClass,
     result,
@@ -138,6 +142,7 @@ export async function runSwiftDev(
   filename: string,
   {
     components,
+    customElements,
     isX,
     isSingleThread,
     isPlugin,
@@ -178,6 +183,7 @@ export async function runSwiftDev(
     outputDir,
     sourceMap: !!sourceMap,
     components,
+    customElements,
     isX,
     isSingleThread,
     isPlugin,
@@ -201,7 +207,6 @@ export async function runSwiftDev(
     outputDir,
     platform: 'app-ios',
     extname: '.swift',
-    components,
     package: '',
     result,
   })
@@ -261,6 +266,7 @@ export async function compile(
     outputDir,
     sourceMap,
     components,
+    customElements,
     isX,
     isSingleThread,
     isPlugin,
@@ -272,7 +278,13 @@ export async function compile(
 ) {
   const { bundle, UTSTarget } = getUTSCompiler()
   // let time = Date.now()
-  const componentsCode = genComponentsCode(filename, components, isX)
+  let componentsCode = genComponentsCode(filename, components, isX)
+  if (customElements) {
+    const customElementsCode = genCustomElementsCode(filename, customElements)
+    if (customElementsCode) {
+      componentsCode = componentsCode + '\n' + customElementsCode
+    }
+  }
   const { namespace, id: pluginId } = parseSwiftPackage(filename)
   const input: UTSInputOptions = {
     root: resolveBundleInputRoot('app-ios', inputDir),
@@ -335,7 +347,6 @@ export async function compile(
       outputDir,
       platform: 'app-ios',
       extname: '.swift',
-      components,
       package: '',
       result,
     })

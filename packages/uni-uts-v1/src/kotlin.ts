@@ -20,6 +20,7 @@ import {
   addPluginInjectApis,
   copyPlatformNativeLanguageFiles,
   genComponentsCode,
+  genCustomElementsCode,
   genUTSPlatformResource,
   getCompilerServer,
   getUTSCompiler,
@@ -103,6 +104,7 @@ export async function runKotlinProd(
   {
     outFilename,
     components,
+    customElements,
     uniModuleId,
     isPlugin,
     isModule,
@@ -127,6 +129,7 @@ export async function runKotlinProd(
     outputDir,
     sourceMap: !!sourceMap,
     components,
+    customElements,
     isX,
     isSingleThread,
     isPlugin,
@@ -172,6 +175,7 @@ export async function runKotlinProd(
       platform: 'app-android',
       extname: '.kt',
       components,
+      customElements,
       package: parseKotlinPackage(filename).package + '.',
       hookClass,
       result,
@@ -213,6 +217,7 @@ export async function runKotlinDev(
   filename: string,
   {
     components,
+    customElements,
     isX,
     isSingleThread,
     isPlugin,
@@ -238,6 +243,7 @@ export async function runKotlinDev(
     outputDir,
     sourceMap,
     components,
+    customElements,
     isX,
     isSingleThread,
     isPlugin,
@@ -261,7 +267,6 @@ export async function runKotlinDev(
     outputDir,
     platform: 'app-android',
     extname: '.kt',
-    components,
     package: '',
     result,
   })
@@ -544,6 +549,7 @@ export async function compile(
     outputDir,
     sourceMap,
     components,
+    customElements,
     isX,
     isSingleThread,
     isPlugin,
@@ -583,7 +589,13 @@ export async function compile(
     // 本地 provider 的时候，不要引入 io.dcloud.uniapp.extapi.*，因为里边包含了相同的类型定义
     imports.push('io.dcloud.uniapp.extapi.*')
   }
-  const componentsCode = genComponentsCode(filename, components, isX)
+  let componentsCode = genComponentsCode(filename, components, isX)
+  if (customElements) {
+    const customElementsCode = genCustomElementsCode(filename, customElements)
+    if (customElementsCode) {
+      componentsCode = componentsCode + '\n' + customElementsCode
+    }
+  }
   const { package: pluginPackage, id: pluginId } = parseKotlinPackage(filename)
   const input: UTSInputOptions = {
     root: resolveBundleInputRoot('app-android', inputDir),
@@ -656,7 +668,6 @@ export async function compile(
       outputDir,
       platform: 'app-android',
       extname: '.kt',
-      components,
       package: '',
       result,
     })
