@@ -220,8 +220,7 @@ ${genComponentsCode(
   format,
   options.androidComponents || {},
   options.iosComponents || {}
-)}
-${genCustomElementsCode(format, options.customElements || {})}
+)}${genCustomElementsCode(format, options.customElements || {})}
 
 ${genModuleCode(decls, format, options.pluginRelativeDir!, options.meta!)}
 `
@@ -310,6 +309,9 @@ function genCustomElementsCode(
       codes.push(`export const ${capitalize(camelize(name))}CustomElement = {}`)
     }
   })
+  if (codes.length) {
+    codes.unshift('\n')
+  }
   return codes.join('\n')
 }
 

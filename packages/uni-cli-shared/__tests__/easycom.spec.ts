@@ -12,12 +12,7 @@ describe('easycom', () => {
       {
         name: 'test3',
         pattern: new RegExp('^test3$'),
-        replacement: normalizePath(
-          path.resolve(
-            rootDir,
-            'uni_modules/plugin/customElements/test3/test3.uts'
-          )
-        ),
+        replacement: `@/uni_modules/plugin/customElements/test3/test3.uts`,
       },
       {
         name: 'test',

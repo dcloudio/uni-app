@@ -9,7 +9,11 @@ import { once } from '@dcloudio/uni-shared'
 import { normalizePath } from './utils'
 import { parsePagesJson, parsePagesJsonOnce } from './json/pages'
 import { M } from './messages'
-import { initUTSComponents } from './uts'
+import {
+  clearUTSComponents,
+  initUTSComponents,
+  initUTSCustomElements,
+} from './uts'
 import { genUTSClassName } from './utsUtils'
 
 interface EasycomOption {
@@ -116,11 +120,25 @@ export function initEasycoms(
       ;(globalThis as any).uts2jsSourceCodeMap.initUts2jsEasycom(easycoms)
     }
   }
+
+  const initUTSEasycomCustomElements = () => {
+    initUTSCustomElements(inputDir, platform).forEach((item) => {
+      const index = easycoms.findIndex((easycom) => item.name === easycom.name)
+      if (index > -1) {
+        easycoms.splice(index, 1, item)
+      } else {
+        easycoms.push(item)
+      }
+    })
+  }
+
   // ext-api 模式下，不存在 easycom 特性
   if (process.env.UNI_COMPILE_TARGET !== 'ext-api') {
     clearEasycom()
+    clearUTSComponents()
     initEasycom(easyCustomElementsOptions)
     initEasycom(easyComOptions)
+    initUTSEasycomCustomElements()
     initUTSEasycom()
   }
   const componentExtNames = isX ? 'uvue|vue' : 'vue'

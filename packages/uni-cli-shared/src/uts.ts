@@ -63,6 +63,10 @@ export function resolveUTSAppModule(
       if (fs.existsSync(path.resolve(id, basedir, 'index.uts'))) {
         return id
       }
+      // customElements 组件
+      if (fs.existsSync(path.resolve(id, 'customElements'))) {
+        return id
+      }
       const fileName = id.split('?')[0]
       const resolvePlatformDir = (p: typeof process.env.UNI_UTS_PLATFORM) => {
         return path.resolve(fileName, basedir, p)
@@ -225,8 +229,20 @@ interface UTSComponentMeta {
 
 const utsComponents = new Map<string, UTSComponentMeta>()
 
+export function setUTSComponent(name: string, meta: UTSComponentMeta) {
+  utsComponents.set(name, meta)
+}
+
+export function clearUTSComponents() {
+  utsComponents.clear()
+}
+
 export function isUTSComponent(name: string) {
   return utsComponents.has(name)
+}
+
+export function getUTSComponents() {
+  return utsComponents
 }
 
 export function getUTSComponentAutoImports(language: 'kotlin' | 'swift') {
@@ -265,7 +281,6 @@ export function initUTSComponents(
   inputDir: string,
   platform: UniApp.PLATFORM
 ): EasycomMatcher[] {
-  utsComponents.clear()
   const components: EasycomMatcher[] = []
   const isApp = platform === 'app' || platform === 'app-plus'
   const easycomsObj: Record<
@@ -365,6 +380,83 @@ function resolveUTSComponentDirs(inputDir: string) {
         })
       : []
   )
+}
+
+export function initUTSCustomElements(
+  inputDir: string,
+  platform: UniApp.PLATFORM
+): EasycomMatcher[] {
+  const components: EasycomMatcher[] = []
+  const isApp = platform === 'app' || platform === 'app-plus'
+  const easycomsObj: Record<
+    string,
+    { source: string; kotlinPackage: string; swiftModule: string }
+  > = {}
+  const dirs = resolveUTSCustomElementsDirs(inputDir)
+  dirs.forEach((dir) => {
+    fs.readdirSync(dir).forEach((name) => {
+      const folder = path.resolve(dir, name)
+      if (!isDir(folder)) {
+        return
+      }
+      const files = fs.readdirSync(folder)
+      // 读取文件夹文件列表，比对文件名（fs.existsSync在大小写不敏感的系统会匹配不准确）
+      // customElements 的文件名是 uts 后缀
+      const ext = '.uts'
+      if (files.includes(name + ext)) {
+        const pluginId = path.basename(path.dirname(dir))
+        const source =
+          '@/' +
+          normalizePath(
+            isApp
+              ? path.relative(inputDir, path.dirname(dir))
+              : path.relative(inputDir, path.resolve(folder, name + ext))
+          )
+
+        easycomsObj[`^${name}$`] = {
+          source: isApp ? `${source}?uts-proxy` : source,
+          kotlinPackage: parseKotlinPackageWithPluginId(pluginId, true),
+          swiftModule: parseSwiftPackageWithPluginId(pluginId, true),
+        }
+      }
+    })
+  })
+  Object.keys(easycomsObj).forEach((name) => {
+    const obj = easycomsObj[name]
+    const componentName = name.slice(1, -1)
+    components.push({
+      name: componentName,
+      pattern: new RegExp(name),
+      replacement: obj.source,
+    })
+    utsComponents.set(componentName, {
+      source: obj.source,
+      kotlinPackage: obj.kotlinPackage,
+      swiftModule: obj.swiftModule,
+    })
+  })
+  return components
+}
+
+const isDir = (path: string) => {
+  const stat = fs.lstatSync(path)
+  if (stat.isDirectory()) {
+    return true
+  } else if (stat.isSymbolicLink()) {
+    return fs.lstatSync(fs.realpathSync(path)).isDirectory()
+  }
+  return false
+}
+
+function resolveUTSCustomElementsDirs(inputDir: string) {
+  const uniModulesDir = path.resolve(inputDir, 'uni_modules')
+  return fs.existsSync(uniModulesDir)
+    ? glob.sync('*/customElements', {
+        cwd: uniModulesDir,
+        absolute: true,
+        onlyDirectories: true,
+      })
+    : []
 }
 
 const nameRE = /name\s*:\s*['|"](.*)['|"]/

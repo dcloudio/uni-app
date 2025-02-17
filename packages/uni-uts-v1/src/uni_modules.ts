@@ -212,6 +212,7 @@ function resolveUniModuleGlobs() {
   const extname = `.{uts,ts,json}`
   const globs = [
     `*.uts`,
+    `customElements/**/*${extname}`,
     // test-uts/common/**/*
     `common/**/*${extname}`,
     `utssdk/**/*${extname}`,
