@@ -74,7 +74,7 @@
   },
   "uni-camera": {
     "uni": {
-      "createMapContext": {
+      "createCameraContext": {
         "name": "createCameraContext",
         "app": {
           "js": false,
