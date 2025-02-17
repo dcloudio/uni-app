@@ -1,3 +1,4 @@
+/* eslint-disable no-restricted-globals */
 module.exports = {
   sS: function (newValue, oldValue, _ownerInstance, instance) {
     if (newValue) {
@@ -5,23 +6,28 @@ module.exports = {
     }
   },
   sA: function (newValue, oldValue, _ownerInstance, instance) {
-    if (!newValue) {
+    var info = JSON.parse(newValue)
+    if (!info) {
       return
     }
-    var info = {}
-    info = JSON.parse(newValue)
-    var element = _ownerInstance.selectComponent('#' + info.id)
-
-    var state = element.getState()
-    state.playState = info.playState
+    var state = _ownerInstance.getState()
+    state.duration = duration
 
     var startTime = null
     var pauseTime = null
+    var isPaused = false
+    var isCancelled = false
 
-    var iterations = info.options.iterations || 1
-    var duration = info.options.duration
+    var duration =
+      info.keyframes[info.keyframes.length - 1]._startTime +
+      info.keyframes[info.keyframes.length - 1]._duration
+    if (!newValue) {
+      return
+    }
 
-    function interpolateKeyframe(keyframes, usedTime) {
+    function interpolateKeyframe2(keyframes, usedTime) {
+      // 参考 temp 入参，根据当前 usedTime 计算出当前的 keyframe
+      // 返回当前 keyframe
       var index = 0
       for (var i = 0; i < keyframes.length; i++) {
         if (keyframes[i]._startTime + keyframes[i]._duration > usedTime) {
@@ -38,14 +44,14 @@ module.exports = {
     var currentStep = 0
 
     function step() {
-      var isCancelled = state.playState === 'cancel'
+      // console.log(11,stamp)
       var currentTime = Date.now()
       if (startTime === null) {
         startTime = currentTime
       }
       var elapsedTime = currentTime - startTime
 
-      if (isCancelled) {
+      if (isPaused) {
         if (pauseTime === null) {
           pauseTime = currentTime
         }
@@ -54,7 +60,8 @@ module.exports = {
         elapsedTime -= currentTime - pauseTime // 减去暂停的时间
         pauseTime = null
       }
-      var res = interpolateKeyframe(info.keyframes, elapsedTime)
+      var res = interpolateKeyframe2(info.keyframes, elapsedTime)
+      var element = _ownerInstance.selectComponent('#' + info.id)
 
       // currentStep removeClass
       if (!element.hasClass('__ct' + res.index) && elapsedTime < duration) {
@@ -65,11 +72,9 @@ module.exports = {
         currentStep = res.index
       }
 
-      if (elapsedTime <= duration) {
+      if (elapsedTime < duration && !isPaused) {
+        // console.log('go on')
         instance.requestAnimationFrame(step)
-      } else {
-        // done
-        // element.callMethod('animationEnd')
       }
     }
 
