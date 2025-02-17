@@ -12,17 +12,13 @@ module.exports = {
       return
     }
 
-    var state = _ownerInstance.getState()
-    state.duration = duration
-
     var startTime = null
     var pauseTime = null
     var isPaused = false
     var isCancelled = false
+    var iterations = info.options.iterations || 1
 
-    var duration =
-      info.keyframes[info.keyframes.length - 1]._startTime +
-      info.keyframes[info.keyframes.length - 1]._duration
+    var duration = info.options.duration
     if (!newValue) {
       return
     }
@@ -64,8 +60,6 @@ module.exports = {
 
       // currentStep removeClass
       if (!element.hasClass('__ct' + res.index) && elapsedTime < duration) {
-        // res.css._duration = undefined
-        delete res.css._duration
         element.setStyle(res.style).addClass('__ct' + res.index)
       }
       if (currentStep !== res.index) {
@@ -74,10 +68,15 @@ module.exports = {
       }
 
       if (elapsedTime <= duration) {
-        // console.log('go on')
         instance.requestAnimationFrame(step)
       } else {
-        console.log('done')
+        // console.log('done')
+        if (iterations === -1) {
+          startTime = null
+          // var firstFrame= info.keyframes[0]
+          // element.setStyle(firstFrame)
+          // instance.requestAnimationFrame(step)
+        }
       }
     }
 

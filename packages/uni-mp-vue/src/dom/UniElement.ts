@@ -162,30 +162,9 @@ export class UniElement {
     if (!keyframes) {
       throw new Error('animate keyframes is required')
     }
-    const animation = new UniAnimation(keyframes, options)
-    scope.setData({
-      ['$eA.' + this.id]: JSON.stringify({
-        id: this.id,
-        payState: 'running',
-        keyframes: animation.parsedKeyframes,
-      }),
-    })
-    //   animation.id = id
-    //   // @ts-expect-error 补充小程序类型
-    //   scope.animate('#' + this.id, keyframes, duration, () => {
-    //     // TODO 增加小程序端UniEvent包装，注意与目前uni-shared内的UniEvent并不一致。uni-shared内的UniEvent缺少target、currentTarget等属性
-    //     // @ts-expect-error UniElement implements IUniElement
-    //     animation.onfinish?.({
-    //       target: this,
-    //       currentTarget: this,
-    //       type: 'finish',
-    //       bubbles: false,
-    //       cancelable: false,
-    //       timeStamp: Date.now(),
-    //       stopPropagation() { },
-    //       preventDefault() { }
-    //     } as UniAnimationPlaybackEvent)
-    //   })
+    const animation = new UniAnimation(this.id, scope, keyframes, options)
+
+    animation.play()
     return animation
   }
 

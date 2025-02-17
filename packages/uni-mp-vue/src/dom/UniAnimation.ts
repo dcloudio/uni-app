@@ -6,19 +6,28 @@ import { hyphenate } from '@vue/shared'
 
 // TODO App端实现未继承自EventTarget，如果后续App端调整此处也需要同步调整
 export class UniAnimation implements IUniAnimation {
-  id: string = '0'
+  id: string
   private _playState: string = ''
-  parsedKeyframes: IParsedKeyframe[] = []
+  private parsedKeyframes: IParsedKeyframe[] = []
+  private scope: any
+  private options: number | KeyframeAnimationOptions = {}
 
   onfinish: ((event: UniAnimationPlaybackEvent) => void) | null = null
   oncancel: ((event: UniAnimationPlaybackEvent) => void) | null = null
 
   constructor(
+    id: string,
+    scope: any,
     keyframes: Keyframe[] | PropertyIndexedKeyframes,
     options: number | KeyframeAnimationOptions = {}
   ) {
-    let _id = parseInt(this.id)
-    this.id = String(_id++)
+    this.id = id
+    this.scope = scope
+    this.options = typeof options === 'number' ? { duration: options } : options //as KeyframeAnimationOptions
+
+    if (this.options?.iterations === Infinity) {
+      this.options.iterations = -1
+    }
     this.parsedKeyframes = coverAnimateToStyle(keyframes, options)
   }
 
@@ -43,7 +52,14 @@ export class UniAnimation implements IUniAnimation {
   }
 
   play(): void {
-    // throw new Error('play not implemented.')
+    this.scope.setData({
+      ['$eA.' + this.id]: JSON.stringify({
+        id: this.id,
+        payState: 'running',
+        keyframes: this.parsedKeyframes,
+        options: this.options,
+      }),
+    })
   }
 }
 
@@ -52,6 +68,7 @@ export class UniAnimation implements IUniAnimation {
 // 该用 wxs 配合
 export function normalizeKeyframes(keyframes: any[]): any[] {
   // 如果关键帧
+
   // 数组为空，返回空数组
   if (keyframes.length === 0) {
     return []
