@@ -3,6 +3,7 @@ import type {
   UniAnimationPlaybackEvent,
 } from '@dcloudio/uni-app-x/types/native'
 import { hyphenate } from '@vue/shared'
+import { toRaw } from 'vue'
 
 // TODO App端实现未继承自EventTarget，如果后续App端调整此处也需要同步调整
 export class UniAnimation implements IUniAnimation {
@@ -44,15 +45,14 @@ export class UniAnimation implements IUniAnimation {
   }
 
   cancel(): void {
-    // this.scope.setData({
-    //   ['$eA.' + this.id]: JSON.stringify({
-    //     id: this.id,
-    //     playState: 'cancel',
-    //     keyframes: this.parsedKeyframes,
-    //     options: this.options,
-    //   }),
-    // })
-    throw new Error('cancel not implemented.')
+    toRaw(this.scope).setData({
+      ['$eA.' + this.id]: JSON.stringify({
+        id: this.id,
+        playState: 'cancel',
+        keyframes: this.parsedKeyframes,
+        options: this.options,
+      }),
+    })
   }
 
   finish(): void {
@@ -75,7 +75,7 @@ export class UniAnimation implements IUniAnimation {
   }
 }
 
-function handleDirection(keyframes, direction) {
+function handleDirection(keyframes: any[], direction: string) {
   if (direction === 'reverse') {
     keyframes.reverse()
   } else if (direction === 'alternate') {

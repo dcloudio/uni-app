@@ -7,7 +7,6 @@ function handleStartAnimation(newValue, _ownerInstance, instance) {
   state.playState = info.playState
 
   var startTime = null
-  var pauseTime = null
 
   var iterations = info.options.iterations || 1
   var currentStep = 0
@@ -41,13 +40,11 @@ function handleStartAnimation(newValue, _ownerInstance, instance) {
     var elapsedTime = currentTime - startTime
 
     if (isCancelled) {
-      if (pauseTime === null) {
-        pauseTime = currentTime
-      }
-      return // 如果动画暂停，直接返回
-    } else if (pauseTime !== null) {
-      elapsedTime -= currentTime - pauseTime // 减去暂停的时间
-      pauseTime = null
+      var lastFrame = info.keyframes[info.keyframes.length - 1]
+      lastFrame.transition = 'none'
+      element.setStyle(lastFrame)
+      element.removeClass('__ct' + currentStep)
+      return
     }
 
     var res = interpolateKeyframe(info.keyframes, elapsedTime)
