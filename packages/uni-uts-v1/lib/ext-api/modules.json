@@ -649,6 +649,19 @@
       }
     }
   },
+  "uni-modal": {
+    "uni": {
+      "showModal2": {
+        "name": "showModal2",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true,
+          "arkts": false
+        }
+      }
+    }
+  },
   "uni-network": {
     "uni": {
       "request": {
