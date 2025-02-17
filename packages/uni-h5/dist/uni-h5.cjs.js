@@ -8889,11 +8889,19 @@ function useContext(play, pause, stop, seek, sendDanmu, playbackRate, requestFul
   useContextInfo();
   useSubscribe();
 }
-function useCurrentTime(videoState, gestureState, controlsState) {
+function useCurrentTime(videoState, gestureState, controlsState, autoHideEnd, autoHideStart) {
   const progressing = vue.computed(() => gestureState.gestureType === "progress" || controlsState.touching);
   vue.watch(progressing, (val) => {
     videoState.pauseUpdatingCurrentTime = val;
     controlsState.controlsTouching = val;
+    if (gestureState.gestureType === "progress") {
+      if (val) {
+        controlsState.controlsVisible = val;
+        autoHideEnd();
+      } else {
+        autoHideStart();
+      }
+    }
   });
   vue.watch([() => videoState.currentTime, () => {
     props$9.duration;
@@ -9058,10 +9066,12 @@ const index$c = /* @__PURE__ */ defineBuiltInComponent({
       progressRef,
       ballRef,
       clickProgress,
-      toggleControls
+      toggleControls,
+      autoHideEnd,
+      autoHideStart
     } = useControls(props2, videoState, seek);
     useContext();
-    const progressing = useCurrentTime(videoState, gestureState, controlsState);
+    const progressing = useCurrentTime(videoState, gestureState, controlsState, autoHideEnd, autoHideStart);
     return () => {
       return vue.createVNode("uni-video", {
         "ref": rootRef,

@@ -212,14 +212,15 @@ class UTSType {
         }
       }
       if (isUTSType(type)) {
-        obj[key] = new type(options[realKey], void 0, isJSONParse);
+        obj[key] = isJSONParse ? (
+          // @ts-ignore
+          new type(options[realKey], void 0, isJSONParse)
+        ) : options[realKey];
       } else if (type === Array) {
         if (!Array.isArray(options[realKey])) {
           throw new UTSError(`Failed to contruct type, property ${key} is not an array`);
         }
-        obj[key] = options[realKey].map((item) => {
-          return item == null ? null : item;
-        });
+        obj[key] = options[realKey];
       } else {
         obj[key] = options[realKey];
       }
@@ -10386,11 +10387,19 @@ function useContext(play, pause, stop, seek, sendDanmu, playbackRate, requestFul
   useContextInfo();
   useSubscribe();
 }
-function useCurrentTime(videoState, gestureState, controlsState) {
+function useCurrentTime(videoState, gestureState, controlsState, autoHideEnd, autoHideStart) {
   const progressing = vue.computed(() => gestureState.gestureType === "progress" || controlsState.touching);
   vue.watch(progressing, (val) => {
     videoState.pauseUpdatingCurrentTime = val;
     controlsState.controlsTouching = val;
+    if (gestureState.gestureType === "progress") {
+      if (val) {
+        controlsState.controlsVisible = val;
+        autoHideEnd();
+      } else {
+        autoHideStart();
+      }
+    }
   });
   vue.watch([() => videoState.currentTime, () => {
     props$9.duration;
@@ -10555,10 +10564,12 @@ const index$a = /* @__PURE__ */ defineBuiltInComponent({
       progressRef,
       ballRef,
       clickProgress,
-      toggleControls
+      toggleControls,
+      autoHideEnd,
+      autoHideStart
     } = useControls(props2, videoState, seek);
     useContext();
-    const progressing = useCurrentTime(videoState, gestureState, controlsState);
+    const progressing = useCurrentTime(videoState, gestureState, controlsState, autoHideEnd, autoHideStart);
     return () => {
       return vue.createVNode("uni-video", {
         "ref": rootRef,
