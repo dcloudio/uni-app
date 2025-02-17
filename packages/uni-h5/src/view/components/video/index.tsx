@@ -725,10 +725,12 @@ function useContext(
   )
 }
 
-function useCurrentTime(
+function useProgressing(
   videoState: VideoState,
   gestureState: GestureState,
-  controlsState: ControlsState
+  controlsState: ControlsState,
+  autoHideEnd: () => void,
+  autoHideStart: () => void
 ) {
   const progressing = computed(
     () => gestureState.gestureType === 'progress' || controlsState.touching
@@ -736,6 +738,14 @@ function useCurrentTime(
   watch(progressing, (val) => {
     videoState.pauseUpdatingCurrentTime = val
     controlsState.controlsTouching = val
+    if (gestureState.gestureType === 'progress') {
+      if (val) {
+        controlsState.controlsVisible = val
+        autoHideEnd()
+      } else {
+        autoHideStart()
+      }
+    }
   })
   watch(
     [
@@ -923,6 +933,8 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       ballRef,
       clickProgress,
       toggleControls,
+      autoHideEnd,
+      autoHideStart,
     } = useControls(props, videoState, seek, (currentTimeNew) => {
       gestureState.currentTimeNew = currentTimeNew
     })
@@ -936,8 +948,13 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       requestFullScreen,
       exitFullScreen
     )
-
-    const progressing = useCurrentTime(videoState, gestureState, controlsState)
+    const progressing = useProgressing(
+      videoState,
+      gestureState,
+      controlsState,
+      autoHideEnd,
+      autoHideStart
+    )
 
     //#if _X_ && !_NODE_JS_
     onMounted(() => {
