@@ -29,6 +29,9 @@ export class UniAnimation implements IUniAnimation {
       this.options.iterations = -1
     }
     this.parsedKeyframes = coverAnimateToStyle(keyframes, options)
+
+    this.onfinish = () => {}
+    this.oncancel = () => {}
   }
 
   get playState(): string {
@@ -40,6 +43,14 @@ export class UniAnimation implements IUniAnimation {
   }
 
   cancel(): void {
+    // this.scope.setData({
+    //   ['$eA.' + this.id]: JSON.stringify({
+    //     id: this.id,
+    //     playState: 'cancel',
+    //     keyframes: this.parsedKeyframes,
+    //     options: this.options,
+    //   }),
+    // })
     throw new Error('cancel not implemented.')
   }
 
@@ -55,7 +66,7 @@ export class UniAnimation implements IUniAnimation {
     this.scope.setData({
       ['$eA.' + this.id]: JSON.stringify({
         id: this.id,
-        payState: 'running',
+        playState: 'running',
         keyframes: this.parsedKeyframes,
         options: this.options,
       }),

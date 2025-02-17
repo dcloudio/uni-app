@@ -5,23 +5,21 @@ module.exports = {
     }
   },
   sA: function (newValue, oldValue, _ownerInstance, instance) {
-    var info = {}
-    info = JSON.parse(newValue)
-
-    if (!info) {
-      return
-    }
-
-    var startTime = null
-    var pauseTime = null
-    var isPaused = false
-    var isCancelled = false
-    var iterations = info.options.iterations || 1
-
-    var duration = info.options.duration
     if (!newValue) {
       return
     }
+    var info = {}
+    info = JSON.parse(newValue)
+    var element = _ownerInstance.selectComponent('#' + info.id)
+
+    var state = element.getState()
+    state.playState = info.playState
+
+    var startTime = null
+    var pauseTime = null
+
+    var iterations = info.options.iterations || 1
+    var duration = info.options.duration
 
     function interpolateKeyframe(keyframes, usedTime) {
       var index = 0
@@ -40,13 +38,14 @@ module.exports = {
     var currentStep = 0
 
     function step() {
+      var isCancelled = state.playState === 'cancel'
       var currentTime = Date.now()
       if (startTime === null) {
         startTime = currentTime
       }
       var elapsedTime = currentTime - startTime
 
-      if (isPaused) {
+      if (isCancelled) {
         if (pauseTime === null) {
           pauseTime = currentTime
         }
@@ -56,7 +55,6 @@ module.exports = {
         pauseTime = null
       }
       var res = interpolateKeyframe(info.keyframes, elapsedTime)
-      var element = _ownerInstance.selectComponent('#' + info.id)
 
       // currentStep removeClass
       if (!element.hasClass('__ct' + res.index) && elapsedTime < duration) {
@@ -70,13 +68,8 @@ module.exports = {
       if (elapsedTime <= duration) {
         instance.requestAnimationFrame(step)
       } else {
-        // console.log('done')
-        if (iterations === -1) {
-          startTime = null
-          // var firstFrame= info.keyframes[0]
-          // element.setStyle(firstFrame)
-          // instance.requestAnimationFrame(step)
-        }
+        // done
+        // element.callMethod('animationEnd')
       }
     }
 
