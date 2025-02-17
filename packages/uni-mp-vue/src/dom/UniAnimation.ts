@@ -28,6 +28,7 @@ export class UniAnimation implements IUniAnimation {
     if (this.options?.iterations === Infinity) {
       this.options.iterations = -1
     }
+
     this.parsedKeyframes = coverAnimateToStyle(keyframes, options)
 
     this.onfinish = () => {}
@@ -74,12 +75,21 @@ export class UniAnimation implements IUniAnimation {
   }
 }
 
-// 小程序中的 this.animate 不支持 color 等属性，keyframes 结构不同，需要手动转换
-// 该用 wxs 的 requestAnimationFrame 实现，需要手动实现缓动函数、解析 keyframes，对产物体积有影响
-// 该用 wxs 配合
-export function normalizeKeyframes(keyframes: any[]): any[] {
-  // 如果关键帧
+function handleDirection(keyframes, direction) {
+  if (direction === 'reverse') {
+    keyframes.reverse()
+  } else if (direction === 'alternate') {
+    keyframes = [...keyframes, ...keyframes.slice().reverse().slice(1)]
+  } else if (direction === 'alternate-reverse') {
+    keyframes = keyframes.reverse().concat(keyframes.slice(1, -1).reverse())
+  }
+  return JSON.parse(JSON.stringify(keyframes))
+}
 
+// 小程序中的 this.animate 不支持 color 等属性，keyframes 结构不同，需要手动转换
+// 改用 wxs 的 requestAnimationFrame 实现，需要手动实现缓动函数、解析 keyframes，对产物体积有影响
+// 改用 wxs 配合 requestAnimationFrame 在合适的时机设置 setStyle
+export function normalizeKeyframes(keyframes: any[], direction: string): any[] {
   // 数组为空，返回空数组
   if (keyframes.length === 0) {
     return []
@@ -95,6 +105,8 @@ export function normalizeKeyframes(keyframes: any[]): any[] {
       }
     })
   })
+
+  keyframes = handleDirection(keyframes, direction)
 
   // 记录已有的 offset 位置
   const existingOffsets = keyframes
@@ -164,7 +176,8 @@ interface IParsedKeyframe {
 }
 
 export function coverAnimateToStyle(keyframes, options): IParsedKeyframe[] {
-  const duration = options?.duration || 0
+  let duration = options?.duration || 0
+  const direction = options?.direction || 'normal'
 
   // Handle object format with array values
   if (!Array.isArray(keyframes)) {
@@ -181,7 +194,11 @@ export function coverAnimateToStyle(keyframes, options): IParsedKeyframe[] {
   }
 
   // fill offset
-  const frames = normalizeKeyframes(keyframes)
+  const frames = normalizeKeyframes(keyframes, direction)
+
+  if (direction === 'alternate') {
+    duration = duration * 2
+  }
 
   return frames.map((frame, index) => {
     const currentOffset = frame.offset
@@ -189,7 +206,7 @@ export function coverAnimateToStyle(keyframes, options): IParsedKeyframe[] {
 
     const prevOffset = frames[index - 1]?.offset || 0
     const currentDuration = Math.round(duration * (currentOffset - prevOffset))
-    const crrentOffsetStartTime = Math.round(duration * prevOffset)
+    const currentOffsetStartTime = Math.round(duration * prevOffset)
     stepDuration = currentDuration
 
     const result = frame
@@ -197,10 +214,10 @@ export function coverAnimateToStyle(keyframes, options): IParsedKeyframe[] {
     return Object.assign({}, result, {
       // ...result,
       offset: undefined,
-      transition: `all ${stepDuration}ms ease`,
+      transition: `all ${stepDuration}ms linear`,
 
       _duration: stepDuration,
-      _startTime: crrentOffsetStartTime,
+      _startTime: currentOffsetStartTime,
     })
   })
 }
