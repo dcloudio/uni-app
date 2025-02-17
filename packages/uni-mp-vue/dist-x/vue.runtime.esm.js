@@ -5590,15 +5590,14 @@ class UniAnimation {
         throw new Error('currentTime not implemented.');
     }
     cancel() {
-        // this.scope.setData({
-        //   ['$eA.' + this.id]: JSON.stringify({
-        //     id: this.id,
-        //     playState: 'cancel',
-        //     keyframes: this.parsedKeyframes,
-        //     options: this.options,
-        //   }),
-        // })
-        throw new Error('cancel not implemented.');
+        toRaw(this.scope).setData({
+            ['$eA.' + this.id]: JSON.stringify({
+                id: this.id,
+                playState: 'cancel',
+                keyframes: this.parsedKeyframes,
+                options: this.options,
+            }),
+        });
     }
     finish() {
         throw new Error('finish not implemented.');
