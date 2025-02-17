@@ -54,6 +54,7 @@ export function initEasycoms(
   }: { dirs: string[]; platform: UniApp.PLATFORM; isX?: boolean }
 ) {
   const componentsDir = path.resolve(inputDir, 'components')
+  const customElementsDir = path.resolve(inputDir, 'customElements')
   const uniModulesDir = path.resolve(inputDir, 'uni_modules')
   const initEasycomOptions = (pagesJson?: UniApp.PagesJson) => {
     // 初始化时，从once中读取缓存，refresh时，实时读取
@@ -76,7 +77,32 @@ export function initEasycoms(
     debugEasycom(easycomOptions)
     return easycomOptions
   }
-  const options = initEasycomOptions(parsePagesJsonOnce(inputDir, platform))
+
+  const easyComOptions = initEasycomOptions(
+    parsePagesJsonOnce(inputDir, platform)
+  )
+
+  const initEasyCustomElementsOptions = (pagesJson?: UniApp.PagesJson) => {
+    // 初始化时，从once中读取缓存，refresh时，实时读取
+    const easyCustomElementsOptions: EasycomOption = {
+      isX,
+      dirs: [
+        customElementsDir,
+        ...initUniModulesEasycomDirs(uniModulesDir, 'customElements'),
+      ],
+      rootDir: inputDir,
+      autoscan: true,
+      custom: {},
+      extensions: ['.uts'],
+    }
+    debugEasycom(easyCustomElementsOptions)
+    return easyCustomElementsOptions
+  }
+
+  const easyCustomElementsOptions = initEasyCustomElementsOptions(
+    parsePagesJsonOnce(inputDir, platform)
+  )
+
   const initUTSEasycom = () => {
     initUTSComponents(inputDir, platform).forEach((item) => {
       const index = easycoms.findIndex((easycom) => item.name === easycom.name)
@@ -92,12 +118,15 @@ export function initEasycoms(
   }
   // ext-api 模式下，不存在 easycom 特性
   if (process.env.UNI_COMPILE_TARGET !== 'ext-api') {
-    initEasycom(options)
+    clearEasycom()
+    initEasycom(easyCustomElementsOptions)
+    initEasycom(easyComOptions)
     initUTSEasycom()
   }
   const componentExtNames = isX ? 'uvue|vue' : 'vue'
   const res = {
-    options,
+    easyComOptions,
+    easyCustomElementsOptions,
     filter: createFilter(
       [
         'components/*/*.(' + componentExtNames + '|jsx|tsx)',
@@ -111,9 +140,12 @@ export function initEasycoms(
       }
     ),
     refresh() {
-      res.options = initEasycomOptions()
+      res.easyComOptions = initEasycomOptions()
+      res.easyCustomElementsOptions = initEasyCustomElementsOptions()
       if (process.env.UNI_COMPILE_TARGET !== 'ext-api') {
-        initEasycom(res.options)
+        clearEasycom()
+        initEasycom(res.easyCustomElementsOptions)
+        initEasycom(res.easyComOptions)
         initUTSEasycom()
       }
     },
@@ -124,7 +156,10 @@ export function initEasycoms(
 
 export const initEasycomsOnce = once(initEasycoms)
 
-function initUniModulesEasycomDirs(uniModulesDir: string) {
+function initUniModulesEasycomDirs(
+  uniModulesDir: string,
+  componentsDir: string = 'components'
+) {
   if (!fs.existsSync(uniModulesDir)) {
     return []
   }
@@ -134,7 +169,7 @@ function initUniModulesEasycomDirs(uniModulesDir: string) {
       const uniModuleComponentsDir = path.resolve(
         uniModulesDir,
         uniModuleDir,
-        'components'
+        componentsDir
       )
       if (fs.existsSync(uniModuleComponentsDir)) {
         return uniModuleComponentsDir
@@ -150,7 +185,6 @@ function initEasycom({
   custom,
   extensions,
 }: EasycomOption) {
-  clearEasycom()
   rootDir = normalizePath(rootDir)
   const easycomsObj = Object.create(null)
   if (dirs && dirs.length && rootDir) {

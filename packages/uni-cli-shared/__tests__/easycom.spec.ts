@@ -10,6 +10,16 @@ describe('easycom', () => {
       initEasycoms(rootDir, { platform: 'h5', dirs: [] }).easycoms
     ).toEqual([
       {
+        name: 'test3',
+        pattern: new RegExp('^test3$'),
+        replacement: normalizePath(
+          path.resolve(
+            rootDir,
+            'uni_modules/plugin/customElements/test3/test3.uts'
+          )
+        ),
+      },
+      {
         name: 'test',
         pattern: new RegExp('^test$'),
         replacement: normalizePath(

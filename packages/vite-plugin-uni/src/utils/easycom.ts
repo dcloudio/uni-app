@@ -10,19 +10,17 @@ import {
 
 const debugEasycom = debug('uni:easycom')
 export const initEasycom = (watcher?: FSWatcher) => {
-  const { filter, refresh, options } = initEasycomsOnce(
-    process.env.UNI_INPUT_DIR,
-    {
+  const { filter, refresh, easyComOptions, easyCustomElementsOptions } =
+    initEasycomsOnce(process.env.UNI_INPUT_DIR, {
       dirs: resolveComponentsLibDirs(),
       platform: process.env.UNI_PLATFORM,
       isX: process.env.UNI_APP_X === 'true',
-    }
-  )
+    })
   if (!watcher) {
     // build 模式，手动初始化 watcher
-    const dirs = options.dirs!.concat([
-      normalizePath(process.env.UNI_INPUT_DIR + '/uni_modules'),
-    ])
+    const dirs = easyComOptions
+      .dirs!.concat([normalizePath(process.env.UNI_INPUT_DIR + '/uni_modules')])
+      .concat(easyCustomElementsOptions.dirs!)
     debugEasycom('initWatch', dirs)
     watcher = chokidar.watch(dirs, {
       ignored: ['**/node_modules/**', '**/.git/**'],
