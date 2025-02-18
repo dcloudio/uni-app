@@ -248,21 +248,21 @@ describe('uni-mp-vue: UniAnimation', () => {
       {
         transform: 'scale(1)',
         'transform-origin': '0px 0px',
-        transition: 'all 0ms ease',
+        transition: 'all 0ms linear',
         _duration: 0,
         _startTime: 0,
       },
       {
         transform: 'scale(0)',
         'transform-origin': '50px 50px',
-        transition: 'all 1500ms ease',
+        transition: 'all 1500ms linear',
         _duration: 1500,
         _startTime: 0,
       },
       {
         transform: 'scale(1)',
         'transform-origin': '100px 100px',
-        transition: 'all 1500ms ease',
+        transition: 'all 1500ms linear',
         _duration: 1500,
         _startTime: 1500,
       },
@@ -281,19 +281,19 @@ describe('uni-mp-vue: UniAnimation', () => {
     ).toEqual([
       {
         width: '100px',
-        transition: 'all 0ms ease',
+        transition: 'all 0ms linear',
         _startTime: 0,
         _duration: 0,
       },
       {
         width: '200px',
-        transition: 'all 500ms ease',
+        transition: 'all 500ms linear',
         _startTime: 0,
         _duration: 500,
       },
       {
         width: '100px',
-        transition: 'all 500ms ease',
+        transition: 'all 500ms linear',
         _startTime: 500,
         _duration: 500,
       },
@@ -312,13 +312,13 @@ describe('uni-mp-vue: UniAnimation', () => {
     ).toEqual([
       {
         height: '100px',
-        transition: 'all 0ms ease',
+        transition: 'all 0ms linear',
         _duration: 0,
         _startTime: 0,
       },
       {
         height: '200px',
-        transition: 'all 1000ms ease',
+        transition: 'all 1000ms linear',
         _duration: 1000,
         _startTime: 0,
       },
@@ -337,19 +337,19 @@ describe('uni-mp-vue: UniAnimation', () => {
     ).toEqual([
       {
         margin: '8px',
-        transition: 'all 0ms ease',
+        transition: 'all 0ms linear',
         _duration: 0,
         _startTime: 0,
       },
       {
         margin: '16px',
-        transition: 'all 500ms ease',
+        transition: 'all 500ms linear',
         _duration: 500,
         _startTime: 0,
       },
       {
         margin: '32px',
-        transition: 'all 500ms ease',
+        transition: 'all 500ms linear',
         _duration: 500,
         _startTime: 500,
       },
@@ -379,19 +379,19 @@ describe('uni-mp-vue: UniAnimation', () => {
     ).toEqual([
       {
         'background-color': 'yellow',
-        transition: 'all 300ms ease',
+        transition: 'all 300ms linear',
         _startTime: 0,
         _duration: 300,
       },
       {
         'background-color': 'red',
-        transition: 'all 300ms ease',
+        transition: 'all 300ms linear',
         _startTime: 300,
         _duration: 300,
       },
       {
         'background-color': 'blue',
-        transition: 'all 400ms ease',
+        transition: 'all 400ms linear',
         _startTime: 600,
         _duration: 400,
       },
