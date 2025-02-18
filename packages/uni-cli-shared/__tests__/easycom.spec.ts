@@ -37,11 +37,6 @@ describe('easycom', () => {
           path.resolve(rootDir, 'components/uni-$1.vue')
         ),
       },
-      {
-        name: 'test3',
-        pattern: new RegExp('^test3$'),
-        replacement: `@/uni_modules/plugin/customElements/test3/test3.uts`,
-      },
     ])
     expect(matchEasycom('test')).toBe(
       normalizePath(path.resolve(rootDir, 'components/test/test.vue'))
