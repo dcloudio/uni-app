@@ -2,6 +2,7 @@
 import fs from 'fs-extra'
 import path from 'path'
 import glob from 'fast-glob'
+import type { ExportSpecifier } from 'es-module-lexer'
 import type * as UTSCompiler from '@dcloudio/uni-uts-v1'
 
 import { isInHBuilderX } from './hbx'
@@ -227,11 +228,13 @@ interface UTSComponentMeta {
   swiftModule: string
 }
 
-const utsComponents = new Map<string, UTSComponentMeta>()
-
-export function setUTSComponent(name: string, meta: UTSComponentMeta) {
-  utsComponents.set(name, meta)
+interface UTSCustomElementMeta extends UTSComponentMeta {
+  exports: [[string]]
 }
+
+const utsComponents = new Map<string, UTSComponentMeta>()
+const utsCustomElements = new Map<string, UTSComponentMeta>()
+const utsCustomElementsExports = new Map<string, UTSCustomElementMeta>()
 
 export function clearUTSComponents() {
   utsComponents.clear()
@@ -241,8 +244,12 @@ export function isUTSComponent(name: string) {
   return utsComponents.has(name)
 }
 
-export function getUTSComponents() {
-  return utsComponents
+export function clearUTSCustomElements() {
+  utsCustomElements.clear()
+}
+
+export function isUTSCustomElement(name: string) {
+  return utsCustomElements.has(name)
 }
 
 export function getUTSComponentAutoImports(language: 'kotlin' | 'swift') {
@@ -263,12 +270,41 @@ export function getUTSComponentAutoImports(language: 'kotlin' | 'swift') {
   return utsComponentAutoImports
 }
 
+export function getUTSCustomElementAutoImports(language: 'kotlin' | 'swift') {
+  const utsCustomElementAutoImports: Record<string, [[string]]> = {}
+  utsCustomElementsExports.forEach(
+    ({ exports, kotlinPackage, swiftModule }) => {
+      const source = language === 'kotlin' ? kotlinPackage : swiftModule
+      if (!utsCustomElementAutoImports[source]) {
+        utsCustomElementAutoImports[source] = exports
+      } else {
+        utsCustomElementAutoImports[source].push(...exports)
+      }
+    }
+  )
+  return utsCustomElementAutoImports
+}
+
 export function parseUTSComponent(name: string, type: 'kotlin' | 'swift') {
   const meta = utsComponents.get(name)
   if (meta) {
     const namespace =
       meta[type === 'swift' ? 'swiftModule' : 'kotlinPackage'] || ''
     const className = capitalize(camelize(name)) + 'Component'
+    return {
+      className,
+      namespace,
+      source: meta.source,
+    }
+  }
+}
+
+export function parseUTSCustomElement(name: string, type: 'kotlin' | 'swift') {
+  const meta = utsCustomElements.get(name)
+  if (meta) {
+    const namespace =
+      meta[type === 'swift' ? 'swiftModule' : 'kotlinPackage'] || ''
+    const className = capitalize(camelize(name)) + 'Element'
     return {
       className,
       namespace,
@@ -386,13 +422,14 @@ export function initUTSCustomElements(
   inputDir: string,
   platform: UniApp.PLATFORM
 ): EasycomMatcher[] {
-  const components: EasycomMatcher[] = []
+  const customElements: EasycomMatcher[] = []
   const isApp = platform === 'app' || platform === 'app-plus'
   const easycomsObj: Record<
     string,
     { source: string; kotlinPackage: string; swiftModule: string }
   > = {}
   const dirs = resolveUTSCustomElementsDirs(inputDir)
+  const { init, parse } = require('es-module-lexer')
   dirs.forEach((dir) => {
     fs.readdirSync(dir).forEach((name) => {
       const folder = path.resolve(dir, name)
@@ -404,38 +441,57 @@ export function initUTSCustomElements(
       // customElements 的文件名是 uts 后缀
       const ext = '.uts'
       if (files.includes(name + ext)) {
+        const filePath = path.resolve(folder, name + ext)
         const pluginId = path.basename(path.dirname(dir))
         const source =
           '@/' +
           normalizePath(
             isApp
               ? path.relative(inputDir, path.dirname(dir))
-              : path.relative(inputDir, path.resolve(folder, name + ext))
+              : path.relative(inputDir, filePath)
           )
-
-        easycomsObj[`^${name}$`] = {
-          source: isApp ? `${source}?uts-proxy` : source,
+        const importSource = isApp ? `${source}?uts-proxy` : source
+        const meta: UTSComponentMeta = {
+          source: importSource,
           kotlinPackage: parseKotlinPackageWithPluginId(pluginId, true),
           swiftModule: parseSwiftPackageWithPluginId(pluginId, true),
         }
+        easycomsObj[`^${name}$`] = meta
+        init.then(() => {
+          const [_, exports] = parse(fs.readFileSync(filePath, 'utf-8'))
+          const prefix = capitalize(camelize(name))
+          const customElementExports = exports
+            .filter((item: ExportSpecifier) => item.n.startsWith(prefix))
+            .map((item: ExportSpecifier) => [item.n])
+          if (utsCustomElementsExports.has(importSource)) {
+            utsCustomElementsExports
+              .get(importSource)!
+              .exports.push(...customElementExports)
+          } else {
+            utsCustomElementsExports.set(importSource, {
+              ...meta,
+              exports: customElementExports,
+            })
+          }
+        })
       }
     })
   })
   Object.keys(easycomsObj).forEach((name) => {
     const obj = easycomsObj[name]
-    const componentName = name.slice(1, -1)
-    components.push({
-      name: componentName,
+    const customElementName = name.slice(1, -1)
+    customElements.push({
+      name: customElementName,
       pattern: new RegExp(name),
       replacement: obj.source,
     })
-    utsComponents.set(componentName, {
+    utsCustomElements.set(customElementName, {
       source: obj.source,
       kotlinPackage: obj.kotlinPackage,
       swiftModule: obj.swiftModule,
     })
   })
-  return components
+  return customElements
 }
 
 const isDir = (path: string) => {
@@ -633,6 +689,15 @@ async function initUTSAutoImports(
     }
   })
 
+  const utsCustomElements = getUTSCustomElementAutoImports(language)
+  Object.keys(utsCustomElements).forEach((source) => {
+    if (autoImports[source]) {
+      autoImports[source].push(...utsCustomElements[source])
+    } else {
+      autoImports[source] = utsCustomElements[source]
+    }
+  })
+
   const extApis = parseUniExtApis(true, platform, language)
   const extApiImports = await (language === 'kotlin'
     ? parseUniExtApiKotlinAutoImportsOnce
@@ -644,6 +709,7 @@ async function initUTSAutoImports(
       autoImports[source] = extApiImports[source]
     }
   })
+  console.log('autoImports', autoImports)
   return autoImports
 }
 let autoKotlinImports: Record<string, [string, string?][]> | null = null

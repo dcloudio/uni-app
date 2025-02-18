@@ -11,6 +11,7 @@ import { parsePagesJson, parsePagesJsonOnce } from './json/pages'
 import { M } from './messages'
 import {
   clearUTSComponents,
+  clearUTSCustomElements,
   initUTSComponents,
   initUTSCustomElements,
 } from './uts'
@@ -58,7 +59,6 @@ export function initEasycoms(
   }: { dirs: string[]; platform: UniApp.PLATFORM; isX?: boolean }
 ) {
   const componentsDir = path.resolve(inputDir, 'components')
-  const customElementsDir = path.resolve(inputDir, 'customElements')
   const uniModulesDir = path.resolve(inputDir, 'uni_modules')
   const initEasycomOptions = (pagesJson?: UniApp.PagesJson) => {
     // 初始化时，从once中读取缓存，refresh时，实时读取
@@ -83,27 +83,6 @@ export function initEasycoms(
   }
 
   const easyComOptions = initEasycomOptions(
-    parsePagesJsonOnce(inputDir, platform)
-  )
-
-  const initEasyCustomElementsOptions = (pagesJson?: UniApp.PagesJson) => {
-    // 初始化时，从once中读取缓存，refresh时，实时读取
-    const easyCustomElementsOptions: EasycomOption = {
-      isX,
-      dirs: [
-        customElementsDir,
-        ...initUniModulesEasycomDirs(uniModulesDir, 'customElements'),
-      ],
-      rootDir: inputDir,
-      autoscan: true,
-      custom: {},
-      extensions: ['.uts'],
-    }
-    debugEasycom(easyCustomElementsOptions)
-    return easyCustomElementsOptions
-  }
-
-  const easyCustomElementsOptions = initEasyCustomElementsOptions(
     parsePagesJsonOnce(inputDir, platform)
   )
 
@@ -136,7 +115,7 @@ export function initEasycoms(
   if (process.env.UNI_COMPILE_TARGET !== 'ext-api') {
     clearEasycom()
     clearUTSComponents()
-    initEasycom(easyCustomElementsOptions)
+    clearUTSCustomElements()
     initEasycom(easyComOptions)
     initUTSEasycomCustomElements()
     initUTSEasycom()
@@ -144,7 +123,6 @@ export function initEasycoms(
   const componentExtNames = isX ? 'uvue|vue' : 'vue'
   const res = {
     easyComOptions,
-    easyCustomElementsOptions,
     filter: createFilter(
       [
         'components/*/*.(' + componentExtNames + '|jsx|tsx)',
@@ -159,11 +137,12 @@ export function initEasycoms(
     ),
     refresh() {
       res.easyComOptions = initEasycomOptions()
-      res.easyCustomElementsOptions = initEasyCustomElementsOptions()
       if (process.env.UNI_COMPILE_TARGET !== 'ext-api') {
         clearEasycom()
-        initEasycom(res.easyCustomElementsOptions)
-        initEasycom(res.easyComOptions)
+        clearUTSComponents()
+        clearUTSCustomElements()
+        initEasycom(easyComOptions)
+        initUTSEasycomCustomElements()
         initUTSEasycom()
       }
     },

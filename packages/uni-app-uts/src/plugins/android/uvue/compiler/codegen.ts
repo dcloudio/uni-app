@@ -110,6 +110,7 @@ function createCodegenContext(
     filename = '',
     matchEasyCom = NOOP,
     parseUTSComponent = NOOP,
+    parseUTSCustomElement = NOOP,
     originalLineOffset = 0,
     generatedLineOffset = 0,
   }: CodegenOptions
@@ -134,6 +135,7 @@ function createCodegenContext(
     expressionPlugins: ['typescript'],
     matchEasyCom,
     parseUTSComponent,
+    parseUTSCustomElement,
     helper(key) {
       return `${helperNameMap[key]}`
     },
@@ -584,9 +586,21 @@ function genComment(node: CommentNode, context: CodegenContext) {
 function parseTag(
   tag: string | symbol | CallExpression,
   curNode: Node,
-  { parseUTSComponent, targetLanguage }: CodegenContext
+  { parseUTSComponent, parseUTSCustomElement, targetLanguage }: CodegenContext
 ) {
   if (isString(tag)) {
+    // 原生UTS customElements组件
+    // const utsCustomElementOptions = parseUTSCustomElement(
+    //   tag.slice(1, -1),
+    //   targetLanguage
+    // )
+    // if (utsCustomElementOptions) {
+    //   return createSimpleExpression(
+    //     utsCustomElementOptions.className + '.name',
+    //     false,
+    //     curNode.loc
+    //   )
+    // } else {
     // 原生UTS组件
     const utsComponentOptions = parseUTSComponent(
       tag.slice(1, -1),
@@ -599,6 +613,7 @@ function parseTag(
         curNode.loc
       )
     }
+    // }
   }
   return tag
 }

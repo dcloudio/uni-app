@@ -304,9 +304,9 @@ function genCustomElementsCode(
   const codes: string[] = []
   Object.keys(customElements).forEach((name) => {
     if (format === FORMATS.CJS) {
-      codes.push(`exports.${capitalize(camelize(name))}CustomElement = {}`)
+      codes.push(`exports.${capitalize(camelize(name))}Element = {}`)
     } else {
-      codes.push(`export const ${capitalize(camelize(name))}CustomElement = {}`)
+      codes.push(`export const ${capitalize(camelize(name))}Element = {}`)
     }
   })
   if (codes.length) {

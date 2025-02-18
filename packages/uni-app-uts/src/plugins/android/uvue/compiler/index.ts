@@ -102,6 +102,7 @@ export function compile(
     function (tag: string) {
       return (
         isAppUVueNativeTag(tag) ||
+        !!options.parseUTSCustomElement?.(tag, options.targetLanguage!) ||
         !!options.parseUTSComponent?.(tag, options.targetLanguage!)
       )
     }

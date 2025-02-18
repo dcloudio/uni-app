@@ -19,6 +19,28 @@ export function transformElements(
         isAppUVueBuiltInEasyComponent(node.tag)))
   ) {
     context.elements.add(node.tag)
+
+    // 原生UTS customElements组件
+    const utsCustomElementOptions = context.parseUTSCustomElement(
+      node.tag,
+      'kotlin'
+    )
+    if (utsCustomElementOptions) {
+      // const className = `{ ${capitalize(camelize(node.tag)) + 'Element'} }`
+      const className = ''
+      if (
+        !context.imports.find(
+          (i) =>
+            i.path === utsCustomElementOptions.source && i.exp === className
+        )
+      ) {
+        context.imports.push({
+          exp: className,
+          path: utsCustomElementOptions.source,
+        })
+      }
+    }
+
     // 原生UTS组件
     const utsComponentOptions = context.parseUTSComponent(node.tag, 'kotlin')
 

@@ -12,6 +12,7 @@ import {
   matchEasycom,
   normalizePath,
   parseUTSComponent,
+  parseUTSCustomElement,
 } from '@dcloudio/uni-cli-shared'
 
 import { getResolvedScript, scriptIdentifier } from './script'
@@ -106,6 +107,7 @@ export function resolveGenTemplateCodeOptions(
       }
     },
     parseUTSComponent,
+    parseUTSCustomElement,
   }
 }
 
