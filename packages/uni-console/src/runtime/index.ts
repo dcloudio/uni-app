@@ -47,11 +47,21 @@ export function initRuntimeSocketService(): Promise<boolean> {
             'connect close and restore'
           )
         }
-        originalConsole.error(
-          wrapError(
-            '开发模式下日志通道 socket 连接关闭，请在 HBuilderX 中重新运行。'
+        // @ts-expect-error
+        if (__PLATFORM__ === 'mp') {
+          originalConsole.error(
+            wrapError(
+              '开发模式下日志通道 socket 连接关闭，请在 HBuilderX 中重新运行。'
+            )
           )
-        )
+        } else {
+          originalConsole.error(
+            wrapError(
+              '手机端日志通道 socket 连接已断开，请重启基座应用或重新运行。'
+            )
+          )
+        }
+
         restoreError()
         restoreConsole()
       })

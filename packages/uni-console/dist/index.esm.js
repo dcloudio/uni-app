@@ -553,7 +553,10 @@ function initRuntimeSocketService() {
                 if (process.env.UNI_DEBUG) {
                     originalConsole.log(`uni-app:[${Date.now()}][socket]`, 'connect close and restore');
                 }
-                originalConsole.error(wrapError('开发模式下日志通道 socket 连接关闭，请在 HBuilderX 中重新运行。'));
+                // @ts-expect-error
+                {
+                    originalConsole.error(wrapError('手机端日志通道 socket 连接已断开，请重启基座应用或重新运行。'));
+                }
                 restoreError();
                 restoreConsole();
             });
