@@ -6,6 +6,7 @@ import {
   normalizeUTSResult,
   resolveBundleInputFileName,
   resolveBundleInputRoot,
+  resolveCustomElements,
   resolveUTSSourceMapPath,
 } from './utils'
 import type { CompileResult } from '.'
@@ -144,9 +145,14 @@ export async function compileArkTSExtApi(
     rewriteConsoleExpr,
   }: ArkTSCompilerOptions
 ): Promise<CompileResult | void> {
-  const filename = resolveAppHarmonyIndexFile(pluginDir)
+  let filename = resolveAppHarmonyIndexFile(pluginDir)
   if (!filename) {
-    return
+    // 如果有自定义组件，则使用自定义组件生成的index.uts
+    const customElements = resolveCustomElements(pluginDir)
+    if (Object.keys(customElements).length === 0) {
+      return
+    }
+    filename = path.resolve(pluginDir, 'utssdk/app-harmony/index.uts')
   }
   const runtimePackageName = getRuntimePackageName(isX)
 

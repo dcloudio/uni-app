@@ -252,6 +252,10 @@ export function isUTSCustomElement(name: string) {
   return utsCustomElements.has(name)
 }
 
+export function getUTSCustomElement(name: string) {
+  return utsCustomElements.get(name)
+}
+
 export function getUTSComponentAutoImports(language: 'kotlin' | 'swift') {
   const utsComponentAutoImports: Record<string, [[string]]> = {}
   utsComponents.forEach(({ kotlinPackage, swiftModule }, name) => {
@@ -422,12 +426,9 @@ export function initUTSCustomElements(
   inputDir: string,
   platform: UniApp.PLATFORM
 ): EasycomMatcher[] {
-  const customElements: EasycomMatcher[] = []
-  const isApp = platform === 'app' || platform === 'app-plus'
-  const easycomsObj: Record<
-    string,
-    { source: string; kotlinPackage: string; swiftModule: string }
-  > = {}
+  const isApp =
+    platform === 'app' || platform === 'app-plus' || platform === 'app-harmony'
+
   const dirs = resolveUTSCustomElementsDirs(inputDir)
   // 定制实现的，支持 export type | interface 的解析
   const { init, parse } = require('../lib/es-module-lexer')
@@ -457,7 +458,7 @@ export function initUTSCustomElements(
           kotlinPackage: parseKotlinPackageWithPluginId(pluginId, true),
           swiftModule: parseSwiftPackageWithPluginId(pluginId, true),
         }
-        easycomsObj[`^${name}$`] = meta
+        utsCustomElements.set(name, meta)
         init.then(() => {
           const [_, exports] = parse(fs.readFileSync(filePath, 'utf-8'))
           const prefix = capitalize(camelize(name))
@@ -478,21 +479,8 @@ export function initUTSCustomElements(
       }
     })
   })
-  Object.keys(easycomsObj).forEach((name) => {
-    const obj = easycomsObj[name]
-    const customElementName = name.slice(1, -1)
-    customElements.push({
-      name: customElementName,
-      pattern: new RegExp(name),
-      replacement: obj.source,
-    })
-    utsCustomElements.set(customElementName, {
-      source: obj.source,
-      kotlinPackage: obj.kotlinPackage,
-      swiftModule: obj.swiftModule,
-    })
-  })
-  return customElements
+  // 不需要easycom匹配
+  return []
 }
 
 const isDir = (path: string) => {
