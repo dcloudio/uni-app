@@ -429,7 +429,8 @@ export function initUTSCustomElements(
     { source: string; kotlinPackage: string; swiftModule: string }
   > = {}
   const dirs = resolveUTSCustomElementsDirs(inputDir)
-  const { init, parse } = require('es-module-lexer')
+  // 定制实现的，支持 export type | interface 的解析
+  const { init, parse } = require('../lib/es-module-lexer')
   dirs.forEach((dir) => {
     fs.readdirSync(dir).forEach((name) => {
       const folder = path.resolve(dir, name)
@@ -709,7 +710,6 @@ async function initUTSAutoImports(
       autoImports[source] = extApiImports[source]
     }
   })
-  console.log('autoImports', autoImports)
   return autoImports
 }
 let autoKotlinImports: Record<string, [string, string?][]> | null = null
