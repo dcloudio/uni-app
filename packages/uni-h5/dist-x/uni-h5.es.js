@@ -20661,18 +20661,13 @@ function useContext(play, pause, stop, seek, sendDanmu, playbackRate, requestFul
     }
   }, id2, true);
 }
-function useCurrentTime(videoState, gestureState, controlsState, autoHideEnd, autoHideStart) {
+function useProgressing(videoState, gestureState, controlsState, autoHideEnd, autoHideStart) {
   const progressing = computed(() => gestureState.gestureType === "progress" || controlsState.touching);
   watch(progressing, (val) => {
     videoState.pauseUpdatingCurrentTime = val;
     controlsState.controlsTouching = val;
-    if (gestureState.gestureType === "progress") {
-      if (val) {
-        controlsState.controlsVisible = val;
-        autoHideEnd();
-      } else {
-        autoHideStart();
-      }
+    if (gestureState.gestureType === "progress" && val) {
+      controlsState.controlsVisible = val;
     }
   });
   watch([() => videoState.currentTime, () => {
@@ -20851,7 +20846,7 @@ const index$b = /* @__PURE__ */ defineBuiltInComponent({
       gestureState.currentTimeNew = currentTimeNew;
     });
     useContext(play, pause, stop, seek, sendDanmu, playbackRate, requestFullScreen, exitFullScreen);
-    const progressing = useCurrentTime(videoState, gestureState, controlsState, autoHideEnd, autoHideStart);
+    const progressing = useProgressing(videoState, gestureState, controlsState);
     onMounted(() => {
       const rootElement = rootRef.value;
       Object.assign(rootElement, {

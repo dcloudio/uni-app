@@ -10387,18 +10387,13 @@ function useContext(play, pause, stop, seek, sendDanmu, playbackRate, requestFul
   useContextInfo();
   useSubscribe();
 }
-function useCurrentTime(videoState, gestureState, controlsState, autoHideEnd, autoHideStart) {
+function useProgressing(videoState, gestureState, controlsState, autoHideEnd, autoHideStart) {
   const progressing = vue.computed(() => gestureState.gestureType === "progress" || controlsState.touching);
   vue.watch(progressing, (val) => {
     videoState.pauseUpdatingCurrentTime = val;
     controlsState.controlsTouching = val;
-    if (gestureState.gestureType === "progress") {
-      if (val) {
-        controlsState.controlsVisible = val;
-        autoHideEnd();
-      } else {
-        autoHideStart();
-      }
+    if (gestureState.gestureType === "progress" && val) {
+      controlsState.controlsVisible = val;
     }
   });
   vue.watch([() => videoState.currentTime, () => {
@@ -10569,7 +10564,7 @@ const index$a = /* @__PURE__ */ defineBuiltInComponent({
       autoHideStart
     } = useControls(props2, videoState, seek);
     useContext();
-    const progressing = useCurrentTime(videoState, gestureState, controlsState, autoHideEnd, autoHideStart);
+    const progressing = useProgressing(videoState, gestureState, controlsState);
     return () => {
       return vue.createVNode("uni-video", {
         "ref": rootRef,

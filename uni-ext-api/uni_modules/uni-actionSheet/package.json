@@ -37,7 +37,7 @@
 			"uni-theme",
 			"uni-getSystemInfo",
 			"app-ios:uni-dialogPage",
-      "app-ios:uni-event"
+			"app-ios:uni-event"
 		],
 		"uni-ext-api": {
 			"uni": {

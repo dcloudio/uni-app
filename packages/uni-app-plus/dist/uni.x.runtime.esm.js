@@ -6156,7 +6156,7 @@ const index = /* @__PURE__ */ Object.defineProperty({
   Radio: radio$1,
   RadioGroup: radioGroup$1
 }, Symbol.toStringTag, { value: "Module" });
-const _sfc_main$4 = {
+const _sfc_main$5 = {
   data() {
     return {
       show: false,
@@ -6299,7 +6299,7 @@ const _sfc_main$4 = {
     }
   }
 };
-const _style_0$4 = {
+const _style_0$5 = {
   "uni-action-sheet_dialog__mask": {
     "": {
       "position": "fixed",
@@ -6495,8 +6495,8 @@ const _export_sfc = (sfc, props) => {
   }
   return target;
 };
-var _hoisted_1$3 = ["onClick"];
-function _sfc_render$4(_ctx, _cache, $props, $setup, $data, $options) {
+var _hoisted_1$4 = ["onClick"];
+function _sfc_render$5(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createElementBlock("view", null, [createElementVNode("view", {
     class: normalizeClass(["uni-action-sheet_dialog__mask", {
       "uni-action-sheet_dialog__mask__show": $data.show
@@ -6561,7 +6561,7 @@ function _sfc_render$4(_ctx, _cache, $props, $setup, $data, $options) {
       class: normalizeClass(["uni-action-sheet_dialog__cell__text", {
         "uni-action-sheet_dark__mode": $data.theme == "dark"
       }])
-    }, toDisplayString(item), 7)], 10, _hoisted_1$3)]);
+    }, toDisplayString(item), 7)], 10, _hoisted_1$4)]);
   }), 128))], 2)], 6), createElementVNode("view", {
     style: normalizeStyle($data.backgroundColor != null ? {
       backgroundColor: $data.backgroundColor
@@ -6588,7 +6588,7 @@ function _sfc_render$4(_ctx, _cache, $props, $setup, $data, $options) {
     })
   }, null, 4)) : createCommentVNode("", true)], 2)]);
 }
-const UniActionSheetPage = /* @__PURE__ */ _export_sfc(_sfc_main$4, [["render", _sfc_render$4], ["styles", [_style_0$4]]]);
+const UniActionSheetPage = /* @__PURE__ */ _export_sfc(_sfc_main$5, [["render", _sfc_render$5], ["styles", [_style_0$5]]]);
 var defaultPoi = {
   latitude: 39.908823,
   longitude: 116.39747
@@ -6614,7 +6614,7 @@ var languageData = {
   }
 };
 var loadingPath = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAAAXNSR0IArs4c6QAAAXdJREFUSEvdVtFthTAMdAKD0E3oABixwWOSvk5SNkCYAcomZRFIZfSoUl6IQ14l2uYXnMtd7uwoOGmpk3AhGpiI3gEgQ8SnmMM/AmwAYPwfwG3bZkmS5IjY7MlIRCLjruuu8zw3VVWN232cUnOBUurFJ6UEfPNADgC1i4AT+Mb4DQC40HmPPmALdEDEZ5dqu+aSwPk7b7iVMQSU67yutsGNMa9lWV590SGiCwCwUrtM13oxTqvRpmkaXCaxD8L/aq0v0gFFxjGNIbRGZBy60dH/zge23GgfflRK1UVRDEcY9X2fG2O4l2/XVzQXxpZ7l4jY6wFgbkB3+629/Xypj0j5E//+bsY8NLTWg2SykKkW3LkstzeIWPtkDplqQcAW6F2smF2appmtgjRYvqXFM+g5h8tYdEWKiD64dvv0CQV3mstqALsNxDePN+CHHwK5byJJLxDJaNFxkoClrP9JYDYfN31vxPaYRzPmO5ReJD65o4GlO5S+fwJ6r+Yfw6D/nQAAAABJRU5ErkJggg==";
-const _sfc_main$3 = {
+const _sfc_main$4 = {
   data() {
     var id1 = "UniMap1_".concat((Math.random() * 1e6).toString(36));
     var id2 = "UniMap2_".concat((Math.random() * 1e6).toString(36));
@@ -7168,7 +7168,7 @@ const _sfc_main$3 = {
     }
   }
 };
-const _style_0$3 = {
+const _style_0$4 = {
   "uni-choose-location-icons": {
     "": {
       "fontFamily": "UniChooseLocationFontFamily",
@@ -7605,17 +7605,17 @@ const _style_0$3 = {
     }
   }
 };
-var _hoisted_1$2 = ["id"];
-var _hoisted_2$2 = {
+var _hoisted_1$3 = ["id"];
+var _hoisted_2$3 = {
   class: "uni-choose-location-icons uni-choose-location-map-target-icon"
 };
-var _hoisted_3$2 = {
+var _hoisted_3$3 = {
   class: "uni-choose-location-icons uni-choose-location-map-reset-icon"
 };
-var _hoisted_4$1 = {
+var _hoisted_4$2 = {
   class: "uni-choose-location-nav-text uni-choose-location-nav-confirm-text"
 };
-var _hoisted_5 = {
+var _hoisted_5$1 = {
   class: "uni-choose-location-poi-search"
 };
 var _hoisted_6 = {
@@ -7664,7 +7664,7 @@ var _hoisted_21 = {
   class: "uni-choose-location-poi-search-loading"
 };
 var _hoisted_22 = ["src"];
-function _sfc_render$3(_ctx, _cache, $props, $setup, $data, $options) {
+function _sfc_render$4(_ctx, _cache, $props, $setup, $data, $options) {
   var _component_map = resolveComponent("map");
   return openBlock(), createElementBlock("view", {
     class: normalizeClass(["uni-choose-location", $options.uniChooseLocationClassCom])
@@ -7689,13 +7689,13 @@ function _sfc_render$3(_ctx, _cache, $props, $setup, $data, $options) {
     class: "uni-choose-location-map-target",
     ref: $data.mapTargetId,
     id: $data.mapTargetId
-  }, [createElementVNode("text", _hoisted_2$2, toDisplayString($data.icon.target), 1)], 8, _hoisted_1$2), createElementVNode("view", {
+  }, [createElementVNode("text", _hoisted_2$3, toDisplayString($data.icon.target), 1)], 8, _hoisted_1$3), createElementVNode("view", {
     class: normalizeClass(["uni-choose-location-map-reset", [$options.landscapeClassCom]]),
     onClick: _cache[0] || (_cache[0] = function() {
       return $options.mapReset && $options.mapReset(...arguments);
     }),
     style: normalizeStyle($options.resetStyleCom)
-  }, [createElementVNode("text", _hoisted_3$2, toDisplayString($data.icon.position), 1)], 6)], 6), createElementVNode("view", {
+  }, [createElementVNode("text", _hoisted_3$3, toDisplayString($data.icon.position), 1)], 6)], 6), createElementVNode("view", {
     class: "uni-choose-location-nav",
     style: normalizeStyle("height:" + (60 + $data.safeArea.top) + "px;")
   }, [createElementVNode("view", {
@@ -7712,11 +7712,11 @@ function _sfc_render$3(_ctx, _cache, $props, $setup, $data, $options) {
     onClick: _cache[2] || (_cache[2] = function() {
       return $options.confirm && $options.confirm(...arguments);
     })
-  }, [createElementVNode("text", _hoisted_4$1, toDisplayString($options.languageCom["ok"]), 1)], 6)], 4), $data.useUniCloud ? (openBlock(), createElementBlock("view", {
+  }, [createElementVNode("text", _hoisted_4$2, toDisplayString($options.languageCom["ok"]), 1)], 6)], 4), $data.useUniCloud ? (openBlock(), createElementBlock("view", {
     key: 0,
     class: normalizeClass(["uni-choose-location-poi", [$options.landscapeClassCom]]),
     style: normalizeStyle($options.poiBoxStyleCom)
-  }, [createElementVNode("view", _hoisted_5, [createElementVNode("view", _hoisted_6, [createElementVNode("text", _hoisted_7, toDisplayString($data.icon.search), 1), withDirectives(createElementVNode("input", {
+  }, [createElementVNode("view", _hoisted_5$1, [createElementVNode("view", _hoisted_6, [createElementVNode("text", _hoisted_7, toDisplayString($data.icon.search), 1), withDirectives(createElementVNode("input", {
     "onUpdate:modelValue": _cache[3] || (_cache[3] = ($event) => $data.searchValue = $event),
     type: "text",
     placeholder: $options.languageCom["search"],
@@ -7761,7 +7761,380 @@ function _sfc_render$3(_ctx, _cache, $props, $setup, $data, $options) {
     mode: "widthFix"
   }, null, 10, _hoisted_22)])) : createCommentVNode("", true)], 40, _hoisted_9)], 6)) : createCommentVNode("", true)], 2);
 }
-const UniChooseLocationPage = /* @__PURE__ */ _export_sfc(_sfc_main$3, [["render", _sfc_render$3], ["styles", [_style_0$3]]]);
+const UniChooseLocationPage = /* @__PURE__ */ _export_sfc(_sfc_main$4, [["render", _sfc_render$4], ["styles", [_style_0$4]]]);
+const _sfc_main$3 = {
+  data() {
+    return {
+      inputLineHeight: 32,
+      theme: "light",
+      show: false,
+      readyEventName: "",
+      optionsEventName: "",
+      successEventName: "",
+      failEventName: "",
+      title: "",
+      content: "",
+      showCancel: true,
+      editable: false,
+      placeholderText: null,
+      confirmText: "确定",
+      cancelText: "取消",
+      cancelColor: "#000000",
+      confirmColor: "#4A5E86",
+      showAnim: false,
+      isAutoHeight: true
+    };
+  },
+  onReady() {
+    setTimeout(() => {
+      this.showAnim = true;
+    }, 10);
+  },
+  onLoad(options) {
+    var systemInfo = uni.getSystemInfoSync();
+    var osTheme = systemInfo.osTheme;
+    var appTheme = systemInfo.appTheme;
+    if (appTheme != null) {
+      this.theme = appTheme;
+    } else if (osTheme != null) {
+      this.theme = osTheme;
+    }
+    uni.onAppThemeChange((res) => {
+      this.theme = res.appTheme;
+    });
+    uni.onOsThemeChange((res) => {
+      this.theme = res.osTheme;
+    });
+    this.readyEventName = options["readyEventName"];
+    this.optionsEventName = options["optionsEventName"];
+    this.successEventName = options["successEventName"];
+    this.failEventName = options["failEventName"];
+    uni.$on(this.optionsEventName, (data) => {
+      console.log("data", JSON.stringify(data));
+      if (data["title"] != null) {
+        this.title = data["title"];
+      }
+      if (data["content"] != null) {
+        this.content = data["content"];
+      }
+      if (data["showCancel"] != null) {
+        this.showCancel = data["showCancel"];
+      }
+      if (data["editable"] != null) {
+        this.editable = data["editable"];
+      }
+      if (data["placeholderText"] != null) {
+        this.placeholderText = data["placeholderText"];
+      }
+      if (data["confirmText"] != null) {
+        this.confirmText = data["confirmText"];
+      }
+      if (data["cancelText"] != null) {
+        this.cancelText = data["cancelText"];
+      }
+      if (data["confirmColor"] != null) {
+        this.confirmColor = data["confirmColor"];
+      } else {
+        if (this.theme == "dark") {
+          this.confirmColor = "#7388a2";
+        } else {
+          this.confirmColor = "#4A5E86";
+        }
+      }
+      if (data["cancelColor"] != null) {
+        this.cancelColor = data["cancelColor"];
+      } else {
+        if (this.theme == "dark") {
+          this.cancelColor = "#a5a5a5";
+        } else {
+          this.cancelColor = "#000000";
+        }
+      }
+    });
+    uni.$emit(this.readyEventName, {});
+  },
+  onUnload() {
+    uni.$off(this.optionsEventName, null);
+    uni.$off(this.readyEventName, null);
+    uni.$off(this.successEventName, null);
+    uni.$off(this.failEventName, null);
+  },
+  methods: {
+    closeModal() {
+      this.show = false;
+      setTimeout(() => {
+        uni.closeDialogPage({
+          dialogPage: this.$page
+        });
+      }, 300);
+    },
+    handleCancel() {
+      this.closeModal();
+      uni.$emit(this.successEventName, null);
+    },
+    handleSure() {
+      this.closeModal();
+      uni.$emit(this.successEventName, this.content);
+    }
+  }
+};
+const _style_0$3 = {
+  "uni-modal_dialog__mask": {
+    "": {
+      "display": "flex",
+      "height": "100%",
+      "width": "100%",
+      "justifyContent": "center",
+      "alignItems": "center",
+      "backgroundColor": "rgba(0,0,0,0.3)"
+    }
+  },
+  "uni-modal_dialog__mask__show": {
+    "": {
+      "opacity": 1
+    }
+  },
+  "uni-modal_dialog__container": {
+    "": {
+      "width": 300,
+      "paddingTop": 10,
+      "backgroundColor": "#FFFFFF",
+      "boxShadow": "0 0 10px rgba(0, 0, 0, 0.1)",
+      "display": "flex",
+      "justifyContent": "center",
+      "alignItems": "center",
+      "overflow": "hidden",
+      "borderTopLeftRadius": 8,
+      "borderTopRightRadius": 8,
+      "borderBottomRightRadius": 8,
+      "borderBottomLeftRadius": 8,
+      "transitionDuration": "0.1s",
+      "transitionProperty": "opacity",
+      "opacity": 0
+    },
+    ".uni-action-sheet_dialog__show": {
+      "opacity": 1
+    },
+    ".uni-modal_dark__mode": {
+      "backgroundColor": "#272727"
+    }
+  },
+  "uni-modal_dialog__title__text": {
+    "": {
+      "fontSize": 16,
+      "fontWeight": "bold",
+      "textAlign": "center",
+      "marginTop": 20,
+      "textOverflow": "ellipsis",
+      "paddingLeft": 20,
+      "paddingRight": 20,
+      "lines": 2
+    },
+    ".uni-modal_dark__mode": {
+      "color": "#CFCFCF"
+    }
+  },
+  "uni-modal_dialog__content": {
+    "": {
+      "justifyContent": "center",
+      "alignItems": "center",
+      "paddingTop": 20,
+      "paddingRight": 20,
+      "paddingBottom": 20,
+      "paddingLeft": 20
+    }
+  },
+  "uni-modal_dialog__content__text": {
+    "": {
+      "fontSize": 16,
+      "fontWeight": "normal",
+      "marginBottom": 10,
+      "color": "#747474",
+      "lines": 6,
+      "textOverflow": "ellipsis"
+    }
+  },
+  "uni-modal_dialog__content__textarea": {
+    "": {
+      "backgroundColor": "#F6F6F6",
+      "color": "#000000",
+      "width": "96%",
+      "paddingTop": 5,
+      "paddingRight": 5,
+      "paddingBottom": 5,
+      "paddingLeft": 5,
+      "maxHeight": 192
+    },
+    ".uni-modal_dark__mode": {
+      "backgroundColor": "#3d3d3d",
+      "color": "#CFCFCF"
+    }
+  },
+  "uni-modal_dialog__content__textarea__placeholder": {
+    "": {
+      "color": "#808080"
+    },
+    ".uni-modal_dark__mode": {
+      "color": "#CFCFCF"
+    }
+  },
+  "uni-modal_dialog__content__topline": {
+    "": {
+      "width": "100%",
+      "height": 1,
+      "backgroundColor": "#E0E0E0"
+    },
+    ".uni-modal_dark__mode": {
+      "backgroundColor": "#303030"
+    }
+  },
+  "uni-modal_dialog__content__bottom": {
+    "": {
+      "display": "flex",
+      "width": "100%",
+      "height": 50,
+      "flexDirection": "row",
+      "overflow": "hidden"
+    }
+  },
+  "uni-modal_dialog__content__bottom__button": {
+    "": {
+      "width": "50%",
+      "height": "100%",
+      "display": "flex",
+      "alignItems": "center",
+      "justifyContent": "center",
+      "flexGrow": 1
+    }
+  },
+  "uni-modal_dialog__content__bottom__button__hover": {
+    "": {
+      "width": "50%",
+      "height": "100%",
+      "display": "flex",
+      "alignItems": "center",
+      "justifyContent": "center",
+      "backgroundColor": "#efefef"
+    },
+    ".uni-modal_dark__mode": {
+      "backgroundColor": "#1C1C1C"
+    }
+  },
+  "uni-modal_dialog__content__bottom__button__text": {
+    "": {
+      "letterSpacing": 1,
+      "fontSize": 16,
+      "fontWeight": "bold"
+    }
+  },
+  "uni-modal_dialog__content__bottom__button__text__sure": {
+    "": {
+      "letterSpacing": 1,
+      "fontSize": 16,
+      "fontWeight": "bold",
+      "color": "#4A5E86"
+    }
+  },
+  "uni-modal_dialog__content__bottom__splitline": {
+    "": {
+      "width": 1,
+      "height": "100%",
+      "backgroundColor": "#E3E3E3"
+    },
+    ".uni-modal_dark__mode": {
+      "backgroundColor": "#303030"
+    }
+  },
+  "@TRANSITION": {
+    "uni-modal_dialog__container": {
+      "duration": "0.1s",
+      "property": "opacity"
+    }
+  }
+};
+var _hoisted_1$2 = {
+  style: {
+    "width": "100%",
+    "height": "100%",
+    "border-radius": "8px"
+  }
+};
+var _hoisted_2$2 = {
+  class: "uni-modal_dialog__content"
+};
+var _hoisted_3$2 = ["auto-height", "placeholder"];
+var _hoisted_4$1 = {
+  key: 1,
+  class: "uni-modal_dialog__content__text"
+};
+var _hoisted_5 = {
+  class: "uni-modal_dialog__content__bottom"
+};
+function _sfc_render$3(_ctx, _cache, $props, $setup, $data, $options) {
+  return openBlock(), createElementBlock("view", {
+    class: normalizeClass(["uni-modal_dialog__mask", {
+      "uni-modal_dialog__mask__show": $data.showAnim
+    }])
+  }, [createElementVNode("view", {
+    class: normalizeClass(["uni-modal_dialog__container", {
+      "uni-action-sheet_dialog__show": $data.showAnim,
+      "uni-modal_dark__mode": $data.theme == "dark"
+    }])
+  }, [createElementVNode("view", _hoisted_1$2, [$data.title ? (openBlock(), createElementBlock("text", {
+    key: 0,
+    class: normalizeClass(["uni-modal_dialog__title__text", {
+      "uni-modal_dark__mode": $data.theme == "dark"
+    }])
+  }, toDisplayString($data.title), 3)) : createCommentVNode("", true), createElementVNode("view", _hoisted_2$2, [$data.editable ? withDirectives((openBlock(), createElementBlock("textarea", {
+    key: 0,
+    "onUpdate:modelValue": _cache[0] || (_cache[0] = ($event) => $data.content = $event),
+    class: normalizeClass(["uni-modal_dialog__content__textarea", {
+      "uni-modal_dark__mode": $data.theme == "dark"
+    }]),
+    "placeholder-class": "modalContent_content_edit_placeholder",
+    id: "textarea_content_input",
+    ref: "ref_textarea_content_input",
+    "auto-height": $data.isAutoHeight,
+    placeholder: $data.placeholderText
+  }, null, 10, _hoisted_3$2)), [[vModelText, $data.content]]) : (openBlock(), createElementBlock("text", _hoisted_4$1, toDisplayString($data.content), 1))]), createElementVNode("view", {
+    class: normalizeClass(["uni-modal_dialog__content__topline", {
+      "uni-modal_dark__mode": $data.theme == "dark"
+    }])
+  }, null, 2), createElementVNode("view", _hoisted_5, [$data.showCancel ? (openBlock(), createElementBlock("view", {
+    key: 0,
+    class: normalizeClass(["uni-modal_dialog__content__bottom__button", {
+      "uni-modal_dark__mode": $data.theme == "dark"
+    }]),
+    "hover-class": "uni-modal_dialog__content__bottom__button__hover",
+    onClick: _cache[1] || (_cache[1] = function() {
+      return $options.handleCancel && $options.handleCancel(...arguments);
+    })
+  }, [createElementVNode("text", {
+    style: normalizeStyle({
+      color: $data.cancelColor
+    }),
+    class: "uni-modal_dialog__content__bottom__button__text"
+  }, toDisplayString($data.cancelText), 5)], 2)) : createCommentVNode("", true), $data.showCancel ? (openBlock(), createElementBlock("view", {
+    key: 1,
+    class: normalizeClass(["uni-modal_dialog__content__bottom__splitline", {
+      "uni-modal_dark__mode": $data.theme == "dark"
+    }])
+  }, null, 2)) : createCommentVNode("", true), createElementVNode("view", {
+    class: normalizeClass(["uni-modal_dialog__content__bottom__button", {
+      "uni-modal_dark__mode": $data.theme == "dark"
+    }]),
+    "hover-class": "uni-modal_dialog__content__bottom__button__hover",
+    onClick: _cache[2] || (_cache[2] = function() {
+      return $options.handleSure && $options.handleSure(...arguments);
+    })
+  }, [createElementVNode("text", {
+    style: normalizeStyle({
+      color: $data.confirmColor
+    }),
+    class: "uni-modal_dialog__content__bottom__button__text__sure"
+  }, toDisplayString($data.confirmText), 5)], 2)])])], 2)], 2);
+}
+const UniUniModalPage = /* @__PURE__ */ _export_sfc(_sfc_main$3, [["render", _sfc_render$3], ["styles", [_style_0$3]]]);
 class Friction {
   // 构造函数，初始化物体的质量（m）、摩擦力大小（f，这里假设是牛顿单位的力，但乘以1000可能是为了转换为某种特定单位）
   constructor(mass, frictionForce) {
@@ -8771,6 +9144,9 @@ function registerSystemPages() {
     disableSwipeBack: false
   });
   registerSystemRoute("uni:chooseLocation", UniChooseLocationPage, {
+    disableSwipeBack: false
+  });
+  registerSystemRoute("uni:uniModal", UniUniModalPage, {
     disableSwipeBack: false
   });
   registerSystemRoute("uni:previewImage", UniPreviewImagePage, {

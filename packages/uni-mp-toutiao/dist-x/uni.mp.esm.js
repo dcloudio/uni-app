@@ -250,17 +250,17 @@ class UTSType {
             }
             if (isUTSType(type)) {
                 // 带有泛型的数组会走此分支
-                // @ts-ignore
-                obj[key] = new type(options[realKey], undefined, isJSONParse);
+                obj[key] = isJSONParse
+                    ? // @ts-ignore
+                        new type(options[realKey], undefined, isJSONParse)
+                    : options[realKey];
             }
             else if (type === Array) {
                 // 不带泛型的数组会走此分支
                 if (!Array.isArray(options[realKey])) {
                     throw new UTSError(`Failed to contruct type, property ${key} is not an array`);
                 }
-                obj[key] = options[realKey].map((item) => {
-                    return item == null ? null : item;
-                });
+                obj[key] = options[realKey];
             }
             else {
                 obj[key] = options[realKey];
