@@ -738,13 +738,8 @@ function useProgressing(
   watch(progressing, (val) => {
     videoState.pauseUpdatingCurrentTime = val
     controlsState.controlsTouching = val
-    if (gestureState.gestureType === 'progress') {
-      if (val) {
-        controlsState.controlsVisible = val
-        autoHideEnd()
-      } else {
-        autoHideStart()
-      }
+    if (gestureState.gestureType === 'progress' && val) {
+      controlsState.controlsVisible = val
     }
   })
   watch(
