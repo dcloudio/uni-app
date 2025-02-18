@@ -3,12 +3,13 @@ function handleStartAnimation(newValue, _ownerInstance, instance) {
   info = JSON.parse(newValue)
   var element = _ownerInstance.selectComponent('#' + info.id)
 
+  // playState leftTimes
   var state = element.getState()
   state.playState = info.playState
 
   var startTime = null
 
-  var iterations = info.options.iterations || 1
+  state.leftTimes = info.options.iterations || 1
   var currentStep = 0
 
   var duration =
@@ -63,9 +64,13 @@ function handleStartAnimation(newValue, _ownerInstance, instance) {
     } else {
       // done
       // element.callMethod('animationEnd')
-
-      // handle infinite
-      if (iterations === -1) {
+      if (state.leftTimes > 1) {
+        state.leftTimes--
+        startTime = null
+        instance.requestAnimationFrame(step)
+        return
+      } else if (state.leftTimes === -1) {
+        // handle infinite
         startTime = null
         instance.requestAnimationFrame(step)
       }
