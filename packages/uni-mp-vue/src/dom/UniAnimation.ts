@@ -89,7 +89,10 @@ function handleDirection(keyframes: any[], direction: string) {
 // 小程序中的 this.animate 不支持 color 等属性，keyframes 结构不同，需要手动转换
 // 改用 wxs 的 requestAnimationFrame 实现，需要手动实现缓动函数、解析 keyframes，对产物体积有影响
 // 改用 wxs 配合 requestAnimationFrame 在合适的时机设置 setStyle
-export function normalizeKeyframes(keyframes: any[], direction: string): any[] {
+export function normalizeKeyframes(
+  keyframes: any[],
+  direction: string = 'normal'
+): any[] {
   // 数组为空，返回空数组
   if (keyframes.length === 0) {
     return []
