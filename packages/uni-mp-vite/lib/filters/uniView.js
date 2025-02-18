@@ -19,7 +19,7 @@ function handleStartAnimation(newValue, _ownerInstance, instance) {
   function interpolateKeyframe(keyframes, usedTime) {
     var index = 0
     for (var i = 0; i < keyframes.length; i++) {
-      if (keyframes[i]._startTime + keyframes[i]._duration > usedTime) {
+      if (keyframes[i]._startTime + keyframes[i]._duration >= usedTime) {
         index = i
         break
       }
