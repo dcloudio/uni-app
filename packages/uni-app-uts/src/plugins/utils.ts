@@ -9,6 +9,7 @@ import {
   PAGES_JSON_UTS,
   type UniViteCopyPluginOptions,
   type UniVitePlugin,
+  createTransformTag,
   initI18nOptions,
   injectAssetPlugin,
   isUTSCustomElement,
@@ -101,6 +102,7 @@ export function createUniOptions(
                   }
                 }
               },
+              createTransformTag({ 'cover-image': 'image' }),
             ],
           }
         : {},

@@ -3,6 +3,7 @@ import { type CompilerError, baseParse } from '@vue/compiler-core'
 
 import { isAppUVueNativeTag } from '@dcloudio/uni-shared'
 import {
+  createTransformTag,
   createUniVueTransformAssetUrls,
   getBaseNodeTransforms,
   transformTapToClick,
@@ -127,6 +128,7 @@ export function compile(
         createSrcsetTransformWithOptions(assetOptions),
         ...getBaseNodeTransforms('/'),
         ...(options.nodeTransforms || []), // user transforms
+        createTransformTag({ 'cover-image': 'image' }),
       ],
       directiveTransforms: extend(
         {},
