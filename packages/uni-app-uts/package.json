@@ -40,7 +40,7 @@
     "magic-string": "^0.30.7",
     "picocolors": "^1.0.0",
     "source-map-js": "^1.0.2",
-    "unimport": "^3.11.1"
+    "unimport": "4.1.1"
   },
   "devDependencies": {
     "@types/debug": "^4.1.7",

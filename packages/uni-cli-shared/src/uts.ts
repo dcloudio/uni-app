@@ -2,7 +2,7 @@
 import fs from 'fs-extra'
 import path from 'path'
 import glob from 'fast-glob'
-import type { ExportSpecifier } from 'es-module-lexer'
+import { type Import, type Unimport, createUnimport } from 'unimport'
 import type * as UTSCompiler from '@dcloudio/uni-uts-v1'
 
 import { isInHBuilderX } from './hbx'
@@ -229,12 +229,16 @@ interface UTSComponentMeta {
 }
 
 interface UTSCustomElementMeta extends UTSComponentMeta {
-  exports: [[string]]
+  exports: [string][]
 }
 
 const utsComponents = new Map<string, UTSComponentMeta>()
 const utsCustomElements = new Map<string, UTSComponentMeta>()
 const utsCustomElementsExports = new Map<string, UTSCustomElementMeta>()
+
+export function getUTSCustomElementsExports() {
+  return utsCustomElementsExports
+}
 
 export function clearUTSComponents() {
   utsComponents.clear()
@@ -275,7 +279,7 @@ export function getUTSComponentAutoImports(language: 'kotlin' | 'swift') {
 }
 
 export function getUTSCustomElementAutoImports(language: 'kotlin' | 'swift') {
-  const utsCustomElementAutoImports: Record<string, [[string]]> = {}
+  const utsCustomElementAutoImports: Record<string, [string][]> = {}
   utsCustomElementsExports.forEach(
     ({ exports, kotlinPackage, swiftModule }) => {
       const source = language === 'kotlin' ? kotlinPackage : swiftModule
@@ -430,8 +434,7 @@ export function initUTSCustomElements(
     platform === 'app' || platform === 'app-plus' || platform === 'app-harmony'
 
   const dirs = resolveUTSCustomElementsDirs(inputDir)
-  // 定制实现的，支持 export type | interface 的解析
-  const { init, parse } = require('../lib/es-module-lexer')
+  const unimport = createUnimport({})
   dirs.forEach((dir) => {
     fs.readdirSync(dir).forEach((name) => {
       const folder = path.resolve(dir, name)
@@ -459,12 +462,11 @@ export function initUTSCustomElements(
           swiftModule: parseSwiftPackageWithPluginId(pluginId, true),
         }
         utsCustomElements.set(name, meta)
-        init.then(() => {
-          const [_, exports] = parse(fs.readFileSync(filePath, 'utf-8'))
+        parseCustomElementExports(filePath, unimport).then((exports_) => {
           const prefix = capitalize(camelize(name))
-          const customElementExports = exports
-            .filter((item: ExportSpecifier) => item.n.startsWith(prefix))
-            .map((item: ExportSpecifier) => [item.n])
+          const customElementExports: [string][] = exports_
+            .filter((item: Import) => item.name.startsWith(prefix))
+            .map((item: Import) => [item.name])
           if (utsCustomElementsExports.has(importSource)) {
             utsCustomElementsExports
               .get(importSource)!
@@ -481,6 +483,10 @@ export function initUTSCustomElements(
   })
   // 不需要easycom匹配
   return []
+}
+
+function parseCustomElementExports(filePath: string, unimport: Unimport) {
+  return unimport.scanImportsFromFile(filePath, true)
 }
 
 const isDir = (path: string) => {

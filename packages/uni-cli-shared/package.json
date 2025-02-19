@@ -66,6 +66,7 @@
     "resolve": "^1.22.1",
     "source-map-js": "^1.0.2",
     "tapable": "^2.2.0",
+    "unimport": "4.1.1",
     "unplugin-auto-import": "19.1.0",
     "xregexp": "3.1.0"
   },
@@ -87,7 +88,6 @@
     "@types/stylus": "^0.48.36",
     "code-frame": "link:@types/@babel/code-frame",
     "postcss": "^8.4.21",
-    "unimport": "^3.11.1",
     "vue": "3.4.21"
   }
 }
