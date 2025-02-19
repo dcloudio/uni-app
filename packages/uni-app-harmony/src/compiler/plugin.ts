@@ -3,9 +3,11 @@ import {
   type UniVitePlugin,
   buildUniExtApis,
   camelize,
+  capitalize,
   formatExtApiProviderName,
   getCurrentCompiledUTSPlugins,
   getCurrentCompiledUTSProviders,
+  getUTSPluginCustomElements,
   getUniExtApiProviderRegisters,
   isNormalCompileTarget,
   parseManifestJsonOnce,
@@ -365,8 +367,37 @@ function genAppHarmonyUniModules(
     importCodes.push(...importProviderCodes)
     extApiCodes.push(...registerProviderCodes)
   }
+
+  const pluginCustomElements = getUTSPluginCustomElements()
+  Object.keys(pluginCustomElements).forEach((pluginId) => {
+    const elements = [...pluginCustomElements[pluginId]]
+    if (elements.length) {
+      importCodes.push(
+        `import { ${elements
+          .map((name) => capitalize(camelize(name)) + 'Element')
+          .join(', ')} } from '@uni_modules/${pluginId.toLowerCase()}'`
+      )
+      elements.forEach((element) => {
+        registerCodes.push(
+          `customElements.define('${element}', ${
+            capitalize(camelize(element)) + 'Element'
+          })`
+        )
+      })
+    }
+  })
+
+  const importIds: string[] = []
+  if (relatedProviders.length) {
+    importIds.push('registerUniProvider')
+  }
+  if (Object.keys(pluginCustomElements).length) {
+    importIds.push('customElements')
+  }
+  importIds.push('uni')
+
   importCodes.unshift(
-    `import { registerUniProvider, uni } from '${
+    `import { ${importIds.join(', ')} } from '${
       process.env.UNI_APP_X !== 'true'
         ? '@dcloudio/uni-app-runtime'
         : '@dcloudio/uni-app-x-runtime'

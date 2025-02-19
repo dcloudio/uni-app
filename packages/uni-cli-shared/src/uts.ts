@@ -252,6 +252,26 @@ export function clearUTSCustomElements() {
   utsCustomElements.clear()
 }
 
+export function getUTSCustomElements() {
+  return utsCustomElements
+}
+
+export function getUTSPluginCustomElements() {
+  const pluginCustomElements: Record<string, Set<string>> = {}
+  for (const [key, value] of utsCustomElements.entries()) {
+    const parts = value.source.split('?')[0].split('/')
+    const pluginId = parts[parts.length - 1]
+    if (!pluginId) {
+      continue
+    }
+    if (!pluginCustomElements[pluginId]) {
+      pluginCustomElements[pluginId] = new Set()
+    }
+    pluginCustomElements[pluginId].add(key)
+  }
+  return pluginCustomElements
+}
+
 export function isUTSCustomElement(name: string) {
   return utsCustomElements.has(name)
 }
