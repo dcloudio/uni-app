@@ -383,7 +383,7 @@ function genAppHarmonyUniModules(
       )
       elements.forEach((element) => {
         registerCodes.push(
-          `customElements.define('${element}', ${
+          `customElements.define('${element.replace('uni-', '')}', ${
             capitalize(camelize(element)) + 'Element'
           })`
         )

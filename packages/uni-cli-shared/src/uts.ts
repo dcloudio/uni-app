@@ -273,11 +273,14 @@ export function getUTSPluginCustomElements() {
 }
 
 export function isUTSCustomElement(name: string) {
-  return utsCustomElements.has(name)
+  // 支持内置CustomElement的本地注册开发，
+  // 内置组件目录：customElements/uni-progress/uni-progress.uts
+  // 实际使用时是：progress，所以需要自动补充uni-前缀做判断
+  return utsCustomElements.has(name) || utsCustomElements.has('uni-' + name)
 }
 
 export function getUTSCustomElement(name: string) {
-  return utsCustomElements.get(name)
+  return utsCustomElements.get(name) || utsCustomElements.get('uni-' + name)
 }
 
 export function getUTSComponentAutoImports(language: 'kotlin' | 'swift') {
