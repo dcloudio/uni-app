@@ -387,7 +387,31 @@ function genAppHarmonyUniModules(context, inputDir, utsPlugins) {
         importCodes.push(...importProviderCodes);
         extApiCodes.push(...registerProviderCodes);
     }
-    importCodes.unshift(`import { registerUniProvider, uni } from '${process.env.UNI_APP_X !== 'true'
+    const pluginCustomElements = uniCliShared.getUTSPluginCustomElements();
+    Object.keys(pluginCustomElements).forEach((pluginId) => {
+        if (!utsPlugins.has(pluginId)) {
+            // 可能没使用，没编译
+            return;
+        }
+        const elements = [...pluginCustomElements[pluginId]];
+        if (elements.length) {
+            importCodes.push(`import { ${elements
+                .map((name) => uniCliShared.capitalize(uniCliShared.camelize(name)) + 'Element')
+                .join(', ')} } from '@uni_modules/${pluginId.toLowerCase()}'`);
+            elements.forEach((element) => {
+                registerCodes.push(`customElements.define('${element.replace('uni-', '')}', ${uniCliShared.capitalize(uniCliShared.camelize(element)) + 'Element'})`);
+            });
+        }
+    });
+    const importIds = [];
+    if (relatedProviders.length) {
+        importIds.push('registerUniProvider');
+    }
+    if (Object.keys(pluginCustomElements).length) {
+        importIds.push('customElements');
+    }
+    importIds.push('uni');
+    importCodes.unshift(`import { ${importIds.join(', ')} } from '${process.env.UNI_APP_X !== 'true'
         ? '@dcloudio/uni-app-runtime'
         : '@dcloudio/uni-app-x-runtime'}'`);
     context.emitFile({
