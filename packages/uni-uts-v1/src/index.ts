@@ -504,7 +504,10 @@ export async function compile(
         resolvePlatformIndex(utsPlatform, pluginDir, pkg) ||
         resolveRootIndex(pluginDir, pkg)
 
-      if (!filename && Object.keys(androidComponents).length) {
+      if (
+        !filename &&
+        (Object.keys(components).length || Object.keys(customElements).length)
+      ) {
         filename = resolvePlatformIndexFilename(utsPlatform, pluginDir, pkg)
       }
 

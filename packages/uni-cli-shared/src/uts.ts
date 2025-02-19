@@ -331,7 +331,7 @@ export function parseUTSComponent(name: string, type: 'kotlin' | 'swift') {
 }
 
 export function parseUTSCustomElement(name: string, type: 'kotlin' | 'swift') {
-  const meta = utsCustomElements.get(name)
+  const meta = getUTSCustomElement(name)
   if (meta) {
     const namespace =
       meta[type === 'swift' ? 'swiftModule' : 'kotlinPackage'] || ''
