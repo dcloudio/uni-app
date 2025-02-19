@@ -14,7 +14,7 @@ export type UniShowModalResult =  {
 	confirm: boolean
 }
 
-export type UniShowModalErrorCode = 5
+export type UniShowModalErrorCode = 4
 
 export interface UniShowModalFail extends IUniError {
   errCode: UniShowModalErrorCode
@@ -22,7 +22,7 @@ export interface UniShowModalFail extends IUniError {
 
 export class UniShowModalFailImpl extends UniError implements UniShowModalFail {
   override errCode: UniShowModalErrorCode
-  constructor(errMsg: string = 'showModal:fail cancel', errCode: UniShowModalErrorCode = 5) {
+  constructor(errMsg: string = 'showModal:fail cancel', errCode: UniShowModalErrorCode = 4) {
     super()
     this.errMsg = errMsg
     this.errCode = errCode

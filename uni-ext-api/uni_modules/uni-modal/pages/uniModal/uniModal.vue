@@ -118,13 +118,14 @@
 				this.theme = res.theme
 			});
 			// #endif
+			// #ifdef APP
 			uni.onAppThemeChange((res: AppThemeChangeResult) => {
 				this.theme = res.appTheme
 			})
 			uni.onOsThemeChange((res: OsThemeChangeResult) => {
 				this.theme = res.osTheme
 			})
-
+			// #endif
 			this.readyEventName = options['readyEventName'] !
 			this.optionsEventName = options['optionsEventName'] !
 			this.successEventName = options['successEventName'] !
@@ -132,8 +133,6 @@
 
 			uni.$on(this.optionsEventName, (data: UTSJSONObject) => {
 
-				console.log("data",JSON.stringify(data))
-				
 				if (data['title'] != null) {
 					this.title = data['title'] as string
 				}

@@ -756,34 +756,8 @@ function setupXPage(instance, pageInstance, pageVm, pageId, pagePath) {
       uniPage = getCurrentNormalDialogPage();
       setCurrentNormalDialogPage(null);
     }
-    uniPage.getElementById = (id2) => {
-      var _pageVm$$el;
-      var currentPage = getCurrentPage();
-      if (currentPage !== uniPage.getParentPage()) {
-        return null;
-      }
-      var containerNode = (_pageVm$$el = pageVm.$el) === null || _pageVm$$el === void 0 ? void 0 : _pageVm$$el._parent;
-      if (containerNode == null) {
-        console.warn("bodyNode is null");
-        return null;
-      }
-      return containerNode.querySelector("#".concat(id2));
-    };
   } else {
     uniPage = new UniNormalPageImpl();
-    uniPage.getElementById = (id2) => {
-      var _pageVm$$el2;
-      var currentPage = getCurrentPage();
-      if (currentPage !== uniPage) {
-        return null;
-      }
-      var bodyNode = (_pageVm$$el2 = pageVm.$el) === null || _pageVm$$el2 === void 0 ? void 0 : _pageVm$$el2.parentNode;
-      if (bodyNode == null) {
-        console.warn("bodyNode is null");
-        return null;
-      }
-      return bodyNode.querySelector("#".concat(id2));
-    };
   }
   pageVm.$basePage = pageVm.$page;
   pageVm.$page = uniPage;
@@ -794,21 +768,30 @@ function setupXPage(instance, pageInstance, pageVm, pageId, pagePath) {
       return new UTSJSONObject(pageVm.$basePage.options);
     }
   });
+  uniPage.getElementById = (id2) => {
+    var _pageVm$$el;
+    var containerNode = (_pageVm$$el = pageVm.$el) === null || _pageVm$$el === void 0 ? void 0 : _pageVm$$el._parent;
+    if (containerNode == null) {
+      console.warn("bodyNode is null");
+      return null;
+    }
+    return containerNode.querySelector("#".concat(id2));
+  };
   uniPage.vm = pageVm;
   uniPage.$vm = pageVm;
   if (getPage$BasePage(pageVm).openType !== OPEN_DIALOG_PAGE) {
     addCurrentPageWithInitScope(pageId, pageVm, pageInstance);
   }
   onMounted(() => {
-    var _pageVm$$el3;
-    var rootElement = (_pageVm$$el3 = pageVm.$el) === null || _pageVm$$el3 === void 0 ? void 0 : _pageVm$$el3._parent;
+    var _pageVm$$el2;
+    var rootElement = (_pageVm$$el2 = pageVm.$el) === null || _pageVm$$el2 === void 0 ? void 0 : _pageVm$$el2._parent;
     if (rootElement) {
       rootElement._page = pageVm.$page;
     }
   });
   onBeforeUnmount(() => {
-    var _pageVm$$el4;
-    var rootElement = (_pageVm$$el4 = pageVm.$el) === null || _pageVm$$el4 === void 0 ? void 0 : _pageVm$$el4._parent;
+    var _pageVm$$el3;
+    var rootElement = (_pageVm$$el3 = pageVm.$el) === null || _pageVm$$el3 === void 0 ? void 0 : _pageVm$$el3._parent;
     if (rootElement) {
       rootElement._page = null;
     }
@@ -7810,7 +7793,6 @@ const _sfc_main$3 = {
     this.successEventName = options["successEventName"];
     this.failEventName = options["failEventName"];
     uni.$on(this.optionsEventName, (data) => {
-      console.log("data", JSON.stringify(data));
       if (data["title"] != null) {
         this.title = data["title"];
       }
