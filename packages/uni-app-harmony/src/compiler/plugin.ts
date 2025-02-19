@@ -370,6 +370,10 @@ function genAppHarmonyUniModules(
 
   const pluginCustomElements = getUTSPluginCustomElements()
   Object.keys(pluginCustomElements).forEach((pluginId) => {
+    if (!utsPlugins.has(pluginId)) {
+      // 可能没使用，没编译
+      return
+    }
     const elements = [...pluginCustomElements[pluginId]]
     if (elements.length) {
       importCodes.push(
