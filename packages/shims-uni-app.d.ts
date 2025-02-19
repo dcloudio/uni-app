@@ -561,7 +561,7 @@ declare class UniNormalPageImpl implements UniPage {
   $vm: ComponentPublicInstance
   route: string
   options: UTSJSONObject
-  pageBody: any
+  pageBody: UniPageBody
   safeAreaInsets: UniSafeAreaInsets
   getParentPage: () => UniPage | null
   getParentPageByJS: () => UniPage | null
@@ -585,7 +585,7 @@ declare class UniDialogPageImpl implements UniPage {
   options: UTSJSONObject
   innerWidth: number
   innerHeight: number
-  safeArea: UniSafeArea
+  pageBody: UniPageBody
   safeAreaInsets: UniSafeAreaInsets
   getParentPage: () => UniPage | null
   getParentPageByJS: () => UniPage | null
