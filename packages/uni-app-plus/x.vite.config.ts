@@ -14,7 +14,7 @@ import {
 } from '@dcloudio/uni-cli-shared'
 import { isAppIOSUVueNativeTag } from '@dcloudio/uni-shared'
 import autoprefixer from 'autoprefixer'
-import { uts2ts, syncPagesFile } from '../../scripts/ext-api'
+import { uts2ts, syncPagesFile, replacePagePaths } from '../../scripts/ext-api'
 
 import { initUniAppJsEngineCssPlugin } from '@dcloudio/uni-app-uts'
 import { OutputChunk } from 'rollup'
@@ -155,26 +155,7 @@ export default defineConfig({
       },
     }),
     vueJsx({ optimize: true, isCustomElement: isAppIOSUVueNativeTag }),
-    {
-      name: 'uni:replace-page-paths',
-      generateBundle(_, bundle) {
-        Object.keys(bundle).forEach((key) => {
-          if (key.endsWith('.js')) {
-            const chunk = bundle[key] as OutputChunk
-            let newCode = chunk.code
-            Object.keys(systemPagePaths).forEach((path) => {
-              if (newCode.includes(path)) {
-                newCode = newCode.replace(
-                  new RegExp(path, 'g'),
-                  systemPagePaths[path]
-                )
-              }
-            })
-            chunk.code = newCode
-          }
-        })
-      },
-    },
+    replacePagePaths(systemPagePaths),
   ],
   build: {
     emptyOutDir: false,

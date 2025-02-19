@@ -21,7 +21,7 @@ import {
 import { uniEasycomPlugin } from '@dcloudio/uni-h5-vite/dist/plugins/easycom'
 import { isH5CustomElement, isH5NativeTag } from '@dcloudio/uni-shared'
 import { genApiJson } from './api'
-import { syncPagesFile, uts2ts } from '../../scripts/ext-api'
+import { replacePagePaths, syncPagesFile, uts2ts } from '../../scripts/ext-api'
 
 function resolve(file: string) {
   return path.resolve(__dirname, file)
@@ -33,6 +33,7 @@ const isX = process.env.UNI_APP_X === 'true'
 // 直接启用
 const isNewX = isX //  && !!process.env.UNI_APP_EXT_API_DIR
 
+let systemPagePaths: Record<string, string> = {}
 if (isNewX) {
   initPreContext('web', {}, 'web', true)
 
@@ -43,7 +44,7 @@ if (isNewX) {
   if (process.env.UNI_APP_EXT_API_DCLOUD_DIR) {
     apiDirs.push(process.env.UNI_APP_EXT_API_DCLOUD_DIR)
   }
-  syncPagesFile(apiDirs, 'web')
+  systemPagePaths = syncPagesFile(apiDirs, 'web')
 }
 
 const rollupPlugins = [
@@ -153,6 +154,7 @@ export default defineConfig({
     vueJsx({ optimize: true, isCustomElement: realIsH5CustomElement }),
     // 需要支持uni-chooseLocation等内置页面编译
     ...(isX ? [uniEasycomPlugin({ exclude: UNI_EASYCOM_EXCLUDE })] : []),
+    ...(isX ? [replacePagePaths(systemPagePaths)] : []),
   ],
   esbuild: {
     // 强制为 es2015，否则默认为 esnext，将会生成 __publicField 代码，

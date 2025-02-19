@@ -4,6 +4,7 @@ import type { Plugin } from 'vite'
 import execa from 'execa'
 import { sync } from 'fast-glob'
 import { capitalize } from '@vue/shared'
+import { OutputChunk } from 'rollup'
 
 type Target = 'uni-h5' | 'uni-app-plus'
 
@@ -200,6 +201,9 @@ export function syncPagesFile(apiDirs: string[], platform: 'web' | 'app-ios') {
                     `// @ts-expect-error\nexport * from '@dcloudio/uni-ext-api/${module}'`
                   )
                 }
+                systemPagePaths[
+                  `/uni_modules/${module}/pages/${page}/${page}`
+                ] = `uni:${page}`
               } else if (platform === 'app-ios') {
                 const hasIOS =
                   hasRootIndex ||
@@ -256,8 +260,36 @@ ${registerCodes.join('\n')}
         'api',
         'pages.ts'
       ),
-      webExportCodes.join('\n')
+      `${webExportCodes.join('\n')}
+`
     )
   }
   return systemPagePaths
+}
+
+export function replacePagePaths(
+  systemPagePaths: Record<string, string>
+): Plugin {
+  return {
+    name: 'uni:replace-page-paths',
+    generateBundle(_, bundle) {
+      if (Object.keys(systemPagePaths).length) {
+        Object.keys(bundle).forEach((key) => {
+          if (key.endsWith('.js')) {
+            const chunk = bundle[key] as OutputChunk
+            let newCode = chunk.code
+            Object.keys(systemPagePaths).forEach((path) => {
+              if (newCode.includes(path)) {
+                newCode = newCode.replace(
+                  new RegExp(path, 'g'),
+                  systemPagePaths[path]
+                )
+              }
+            })
+            chunk.code = newCode
+          }
+        })
+      }
+    },
+  }
 }
