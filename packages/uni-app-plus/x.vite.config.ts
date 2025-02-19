@@ -34,7 +34,7 @@ if (process.env.UNI_APP_EXT_API_DIR) {
 if (process.env.UNI_APP_EXT_API_DCLOUD_DIR) {
   apiDirs.push(process.env.UNI_APP_EXT_API_DCLOUD_DIR)
 }
-const systemPagePaths = syncPagesFile(apiDirs)
+const systemPagePaths = syncPagesFile(apiDirs, 'app-ios')
 
 const rollupPlugins = [
   replace({

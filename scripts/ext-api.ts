@@ -174,10 +174,11 @@ async function checkExtApiTypes(target: Target) {
   })
 }
 
-export function syncPagesFile(apiDirs: string[]) {
+export function syncPagesFile(apiDirs: string[], platform: 'web' | 'app-ios') {
   const systemPagePaths: Record<string, string> = {}
   const importCodes: string[] = []
   const registerCodes: string[] = []
+  const webExportCodes: string[] = []
   apiDirs.forEach((apiDir) => {
     if (apiDir && fs.existsSync(apiDir)) {
       fs.readdirSync(apiDir).forEach((module) => {
@@ -186,27 +187,42 @@ export function syncPagesFile(apiDirs: string[]) {
           fs.readdirSync(pagesDir).forEach((page) => {
             if (fs.existsSync(path.resolve(pagesDir, page, page + '.uvue'))) {
               const utssdkDir = path.resolve(apiDir, module, 'utssdk')
-              const hasIOS =
-                fs.existsSync(path.resolve(utssdkDir, 'index.uts')) ||
-                fs.existsSync(path.resolve(utssdkDir, 'app-ios', 'index.uts'))
-              if (!hasIOS) {
-                return
-              }
-              importCodes.push(
-                `import Uni${capitalize(
-                  page
-                )}Page from '@dcloudio/uni-ext-api/${module}/pages/${page}/${page}.vue'`
+              const hasRootIndex = fs.existsSync(
+                path.resolve(utssdkDir, 'index.uts')
               )
-              registerCodes.push(
-                `  registerSystemRoute('uni:${page}', Uni${capitalize(
-                  page
-                )}Page, {
+              if (platform === 'web') {
+                const hasWeb =
+                  hasRootIndex ||
+                  fs.existsSync(path.resolve(utssdkDir, 'web', 'index.uts'))
+
+                if (hasWeb) {
+                  webExportCodes.push(
+                    `// @ts-expect-error\nexport * from '@dcloudio/uni-ext-api/${module}'`
+                  )
+                }
+              } else if (platform === 'app-ios') {
+                const hasIOS =
+                  hasRootIndex ||
+                  fs.existsSync(path.resolve(utssdkDir, 'app-ios', 'index.uts'))
+                if (!hasIOS) {
+                  return
+                }
+                importCodes.push(
+                  `import Uni${capitalize(
+                    page
+                  )}Page from '@dcloudio/uni-ext-api/${module}/pages/${page}/${page}.vue'`
+                )
+                registerCodes.push(
+                  `  registerSystemRoute('uni:${page}', Uni${capitalize(
+                    page
+                  )}Page, {
     disableSwipeBack: false,
   })`
-              )
-              systemPagePaths[
-                `/uni_modules/${module}/pages/${page}/${page}`
-              ] = `uni:${page}`
+                )
+                systemPagePaths[
+                  `/uni_modules/${module}/pages/${page}/${page}`
+                ] = `uni:${page}`
+              }
             }
           })
         }
@@ -228,6 +244,19 @@ export function registerSystemPages() {
 ${registerCodes.join('\n')}
 }
 `
+    )
+  }
+  if (webExportCodes.length) {
+    fs.writeFileSync(
+      path.resolve(
+        path.resolve(__dirname, '..', 'packages', 'uni-h5'),
+        'src',
+        'x',
+        'service',
+        'api',
+        'pages.ts'
+      ),
+      webExportCodes.join('\n')
     )
   }
   return systemPagePaths
