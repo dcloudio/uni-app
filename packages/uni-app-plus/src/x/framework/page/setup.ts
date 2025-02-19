@@ -39,36 +39,8 @@ export function setupXPage(
       uniPage = getCurrentNormalDialogPage()!
       setCurrentNormalDialogPage(null)
     }
-    uniPage.getElementById = (
-      id: string.IDString | string
-    ): UniElement | null => {
-      const currentPage = getCurrentPage() as unknown as UniPage
-      if (currentPage !== uniPage.getParentPage()) {
-        return null
-      }
-      const containerNode = pageVm.$el?._parent
-      if (containerNode == null) {
-        console.warn('bodyNode is null')
-        return null
-      }
-      return containerNode.querySelector(`#${id}`)
-    }
   } else {
     uniPage = new UniNormalPageImpl()
-    uniPage.getElementById = (
-      id: string.IDString | string
-    ): UniElement | null => {
-      const currentPage = getCurrentPage() as unknown as UniPage
-      if (currentPage !== uniPage) {
-        return null
-      }
-      const bodyNode = pageVm.$el?.parentNode
-      if (bodyNode == null) {
-        console.warn('bodyNode is null')
-        return null
-      }
-      return bodyNode.querySelector(`#${id}`)
-    }
   }
   pageVm.$basePage = pageVm.$page as Page.PageInstance['$page']
   pageVm.$page = uniPage
@@ -80,6 +52,16 @@ export function setupXPage(
       return new UTSJSONObject(pageVm.$basePage.options)
     },
   })
+  uniPage.getElementById = (
+    id: string.IDString | string
+  ): UniElement | null => {
+    const containerNode = pageVm.$el?._parent
+    if (containerNode == null) {
+      console.warn('bodyNode is null')
+      return null
+    }
+    return containerNode.querySelector(`#${id}`)
+  }
   uniPage.vm = pageVm
   uniPage.$vm = pageVm
 
