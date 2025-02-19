@@ -48,7 +48,7 @@
     "magic-string": "^0.30.7",
     "picocolors": "^1.0.0",
     "terser": "^5.4.0",
-    "unplugin-auto-import": "^0.18.2"
+    "unplugin-auto-import": "19.1.0"
   },
   "devDependencies": {
     "@types/debug": "^4.1.7",

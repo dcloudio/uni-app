@@ -66,7 +66,7 @@
     "resolve": "^1.22.1",
     "source-map-js": "^1.0.2",
     "tapable": "^2.2.0",
-    "unplugin-auto-import": "^0.18.2",
+    "unplugin-auto-import": "19.1.0",
     "xregexp": "3.1.0"
   },
   "gitHead": "33e807d66e1fe47e2ee08ad9c59247e37b8884da",
