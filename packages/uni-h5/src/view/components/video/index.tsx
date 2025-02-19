@@ -1156,7 +1156,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
                   {formatTime(gestureState.currentTimeNew)}
                 </span>
                 {' / '}
-                {formatTime(videoState.duration)}
+                {Number(props.duration) || formatTime(videoState.duration)}
               </div>
             </div>
             <div class="uni-video-slots">
