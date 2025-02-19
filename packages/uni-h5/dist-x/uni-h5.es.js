@@ -29638,7 +29638,7 @@ class UniShowModalFailImpl extends UniError {
   }
 }
 const showModal2 = (options) => {
-  registerSystemRoute("uni:showmodal", UniModalPage);
+  registerSystemRoute("uni:uniModal", UniModalPage);
   const uuid = `${Date.now()}${Math.floor(Math.random() * 1e7)}`;
   const baseEventName = `uni_modal_${uuid}`;
   const readyEventName = `${baseEventName}_ready`;
@@ -29665,7 +29665,7 @@ const showModal2 = (options) => {
     (_b = options.complete) == null ? void 0 : _b.call(options, res);
   });
   uni.openDialogPage({
-    url: `/uni_modules/uni-modal/pages/uniModal/uniModal?readyEventName=${readyEventName}&optionsEventName=${optionsEventName}&successEventName=${successEventName}&failEventName=${failEventName}`,
+    url: `uni:uniModal?readyEventName=${readyEventName}&optionsEventName=${optionsEventName}&successEventName=${successEventName}&failEventName=${failEventName}`,
     fail(err) {
       var _a, _b;
       const res = new UniShowModalFailImpl(`showModal failed, ${err.errMsg}`);
