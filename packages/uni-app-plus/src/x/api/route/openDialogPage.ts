@@ -67,6 +67,7 @@ export const openDialogPage = (
       if (dialogPages.length) {
         invokeHook(dialogPages[dialogPages.length - 1].$vm!, ON_HIDE)
       }
+      // normal dialogPage 数据框架不需要存储，由客户端管理
     }
     setCurrentNormalDialogPage(dialogPage)
   } else {
@@ -79,6 +80,7 @@ export const openDialogPage = (
       if (!parentPage.vm.$systemDialogPages) {
         parentPage.vm.$systemDialogPages = ref<UniDialogPage[]>([])
       }
+      // system dialogPage 数据框架需要储存
       parentPage.vm.$systemDialogPages.value.push(dialogPage)
       if (isSystemActionSheetDialogPage(dialogPage)) {
         closePreActionSheet(parentPage.vm.$systemDialogPages.value)
