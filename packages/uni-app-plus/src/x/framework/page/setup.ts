@@ -6,10 +6,7 @@ import {
   ref,
 } from 'vue'
 import { OPEN_DIALOG_PAGE } from '../../constants'
-import {
-  SYSTEM_DIALOG_PAGE_PATH_STARTER,
-  getCurrentPage,
-} from '@dcloudio/uni-core'
+import { SYSTEM_DIALOG_PAGE_PATH_STARTER } from '@dcloudio/uni-core'
 import { addCurrentPageWithInitScope } from '../../../service/framework/page/setup'
 import { getPage$BasePage } from '../../../service/framework/page/getCurrentPages'
 import {
