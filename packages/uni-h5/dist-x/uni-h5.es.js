@@ -21014,7 +21014,7 @@ const index$b = /* @__PURE__ */ defineBuiltInComponent({
         "class": "uni-video-toast-title"
       }, [createVNode("span", {
         "class": "uni-video-toast-title-current-time"
-      }, [formatTime(gestureState.currentTimeNew)]), " / ", formatTime(videoState.duration)])], 2), createVNode("div", {
+      }, [formatTime(gestureState.currentTimeNew)]), " / ", Number(props2.duration) || formatTime(videoState.duration)])], 2), createVNode("div", {
         "class": "uni-video-slots"
       }, [slots.default && slots.default()])], 40, ["onTouchstart", "onTouchend", "onTouchmove", "onFullscreenchange", "onWebkitfullscreenchange"])], 8, ["id", "onClick"]);
     };
@@ -29443,18 +29443,11 @@ const _sfc_main = {
     uni.onThemeChange((res) => {
       this.theme = res.theme;
     });
-    uni.onAppThemeChange((res) => {
-      this.theme = res.appTheme;
-    });
-    uni.onOsThemeChange((res) => {
-      this.theme = res.osTheme;
-    });
     this.readyEventName = options["readyEventName"];
     this.optionsEventName = options["optionsEventName"];
     this.successEventName = options["successEventName"];
     this.failEventName = options["failEventName"];
     uni.$on(this.optionsEventName, (data) => {
-      console.log("data", JSON.stringify(data));
       if (data["title"] != null) {
         this.title = data["title"];
       }
@@ -29631,7 +29624,7 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
 }
 const UniModalPage = /* @__PURE__ */ _export_sfc(_sfc_main, [["render", _sfc_render], ["styles", [_style_0]]]);
 class UniShowModalFailImpl extends UniError {
-  constructor(errMsg = "showModal:fail cancel", errCode = 5) {
+  constructor(errMsg = "showModal:fail cancel", errCode = 4) {
     super();
     this.errMsg = errMsg;
     this.errCode = errCode;

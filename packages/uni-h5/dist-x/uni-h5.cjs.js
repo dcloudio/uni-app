@@ -10718,7 +10718,7 @@ const index$a = /* @__PURE__ */ defineBuiltInComponent({
         "class": "uni-video-toast-title"
       }, [vue.createVNode("span", {
         "class": "uni-video-toast-title-current-time"
-      }, [formatTime(gestureState.currentTimeNew)]), " / ", formatTime(videoState.duration)])], 2), vue.createVNode("div", {
+      }, [formatTime(gestureState.currentTimeNew)]), " / ", Number(props2.duration) || formatTime(videoState.duration)])], 2), vue.createVNode("div", {
         "class": "uni-video-slots"
       }, [slots.default && slots.default()])], 40, ["onTouchstart", "onTouchend", "onTouchmove", "onFullscreenchange", "onWebkitfullscreenchange"])], 8, ["id", "onClick"]);
     };
