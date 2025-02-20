@@ -45,6 +45,7 @@ import I18n2 from '@ohos.i18n';
 import { ListFileOptions } from '@ohos.file.fs';
 import { ReadOptions as ReadOptions2 } from '@ohos.file.fs';
 import { ReadOptions } from '@ohos.file.fs';
+import { ShowLoadingOptions as ShowLoadingOptionsNative, showLoading as showLoadingNative, hideLoading as hideLoadingNative } from "./uni-prompt/utssdk/app-harmony/loading-native";
 import { UTSObject, UniError, IUniError, string, ApiError, UniProvider, AsyncApiSuccessResult, AsyncApiResult, UTSJSONObject, ApiOptions, ProtocolOptions, defineAsyncApi, ApiExecutor, defineSyncApi, getUniProviders, defineTaskApi, getUniProvider } from "./shared";
 import { UniElement, UTSHarmony, UniPageImpl } from "@dcloudio/uni-runtime-harmony";
 import Want1 from '@ohos.app.ability.Want';
@@ -997,6 +998,8 @@ export class GetDeviceInfoResult extends UTSObject {
     osLanguage: string | null = null;
     osTheme: 'light' | 'dark' | null = null;
     osAndroidAPILevel: number | null = null;
+    osHarmonySDKAPIVersion: number | null = null;
+    osHarmonyDisplayVersion: string | null = null;
     romName: string | null = null;
     romVersion: string | null = null;
 }
@@ -1171,6 +1174,8 @@ export class GetSystemInfoResult extends UTSObject {
     windowTop!: number;
     windowBottom!: number;
     osAndroidAPILevel: number | null = null;
+    osHarmonySDKAPIVersion: number | null = null;
+    osHarmonyDisplayVersion: string | null = null;
     appTheme: 'light' | 'dark' | 'auto' | null = null;
 }
 type GetSystemInfoSuccessCallback = (result: GetSystemInfoResult) => void;
@@ -6802,7 +6807,9 @@ export function initUniExtApi() {
             platform: 'harmonyos',
             romName: deviceInfo.distributionOSName,
             romVersion: deviceInfo.distributionOSVersion,
-            system: deviceInfo.osFullName
+            system: deviceInfo.osFullName,
+            osHarmonySDKAPIVersion: deviceInfo.sdkApiVersion,
+            osHarmonyDisplayVersion: deviceInfo.displayVersion
         } as GetDeviceInfoResult;
     }) as GetDeviceInfo;
     const getElementById: GetElementById = defineSyncApi<UniElement | null>('getElementById', (id: string.IDString | string): UniElement | null =>{
@@ -7381,6 +7388,8 @@ export function initUniExtApi() {
             romName: deviceInfo1.distributionOSName,
             romVersion: deviceInfo1.distributionOSVersion,
             system: deviceInfo1.osFullName,
+            osHarmonySDKAPIVersion: deviceInfo1.sdkApiVersion,
+            osHarmonyDisplayVersion: deviceInfo1.displayVersion,
             pixelRatio,
             safeArea,
             safeAreaInsets,
@@ -10174,11 +10183,18 @@ export function initUniExtApi() {
         });
     }, ShowActionSheetProtocol, ShowActionSheetApiOptions) as ShowActionSheet;
     const showLoading: ShowLoading = defineAsyncApi<ShowLoadingOptions, ShowLoadingSuccess>(API_SHOW_LOADING, async (options: ShowLoadingOptions, exec: ApiExecutor<ShowLoadingSuccess>)=>{
-        console.log('showLoading is not implemented yet');
+        const window = UTSHarmony.getCurrentWindow() as window.Window;
+        const uiContext = window.getUIContext();
+        showLoadingNative(uiContext, {
+            title: options.title,
+            mask: options.mask
+        } as ShowLoadingOptionsNative);
         exec.resolve({} as ShowLoadingSuccess);
     }, ShowLoadingProtocol, ShowLoadingApiOptions) as ShowLoading;
     const hideLoading: HideLoading = defineAsyncApi<IHideLoadingOptions, IHideLoadingSuccess>(API_HIDE_LOADING, (options: IHideLoadingOptions, exec: ApiExecutor<IHideLoadingSuccess>)=>{
-        console.log('hideLoading is not implemented yet');
+        const window = UTSHarmony.getCurrentWindow() as window.Window;
+        const uiContext = window.getUIContext();
+        hideLoadingNative(uiContext);
         exec.resolve({} as IHideLoadingSuccess);
     }) as HideLoading;
     const API_RPX2PX = 'rpx2px';

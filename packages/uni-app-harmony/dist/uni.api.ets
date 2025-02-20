@@ -45,6 +45,7 @@ import I18n2 from '@ohos.i18n';
 import { ListFileOptions } from '@ohos.file.fs';
 import { ReadOptions as ReadOptions2 } from '@ohos.file.fs';
 import { ReadOptions } from '@ohos.file.fs';
+import { ShowLoadingOptions as ShowLoadingOptionsNative, showLoading as showLoadingNative, hideLoading as hideLoadingNative } from "./uni-prompt/utssdk/app-harmony/loading-native";
 import { UTSHarmony } from "@dcloudio/uni-mp-sdk";
 import { UTSObject, UniError, IUniError, string, ApiError, UniProvider, UTSJSONObject, AsyncApiSuccessResult, AsyncApiResult, ApiOptions, ProtocolOptions, defineAsyncApi, ApiExecutor, defineSyncApi, getUniProviders, defineTaskApi, getUniProvider } from "./shared";
 import Want1 from '@ohos.app.ability.Want';
@@ -96,7 +97,6 @@ import { getEnv as getEnv3 } from "@dcloudio/uni-mp-sdk";
 import { getEnv as getEnv4 } from "@dcloudio/uni-mp-sdk";
 import { getEnv as getEnv5, Emitter as Emitter4, getCurrentMP as getCurrentMP3 } from "@dcloudio/uni-mp-sdk";
 import { getEnv, getRealPath } from "@dcloudio/uni-mp-sdk";
-import { getOSRuntime as getOSRuntime1, onNativePageReady as onNativePageReady2 } from "@dcloudio/uni-mp-sdk";
 import { getOSRuntime, onNativePageReady as onNativePageReady1 } from "@dcloudio/uni-mp-sdk";
 import { getRealPath as getRealPath2 } from "@dcloudio/uni-mp-sdk";
 import { getRealPath as getRealPath3 } from "@dcloudio/uni-mp-sdk";
@@ -997,6 +997,8 @@ export class GetDeviceInfoResult extends UTSObject {
     osLanguage: string | null = null;
     osTheme: 'light' | 'dark' | null = null;
     osAndroidAPILevel: number | null = null;
+    osHarmonySDKAPIVersion: number | null = null;
+    osHarmonyDisplayVersion: string | null = null;
     romName: string | null = null;
     romVersion: string | null = null;
 }
@@ -1164,6 +1166,8 @@ export class GetSystemInfoResult extends UTSObject {
     windowTop!: number;
     windowBottom!: number;
     osAndroidAPILevel: number | null = null;
+    osHarmonySDKAPIVersion: number | null = null;
+    osHarmonyDisplayVersion: string | null = null;
     appTheme: 'light' | 'dark' | 'auto' | null = null;
 }
 type GetSystemInfoSuccessCallback = (result: GetSystemInfoResult) => void;
@@ -1977,10 +1981,6 @@ class ShowActionSheetOptions extends UTSObject {
     complete: ShowActionSheetCompleteCallback | null = null;
 }
 type ShowActionSheet = (options: ShowActionSheetOptions) => void;
-interface IShowLoadingOptions {
-    title: string;
-    mask: boolean;
-}
 interface IHideLoadingOptions {
 }
 interface IHideLoadingSuccess {
@@ -6732,7 +6732,9 @@ export function initUniExtApi() {
             platform: 'harmonyos',
             romName: deviceInfo.distributionOSName,
             romVersion: deviceInfo.distributionOSVersion,
-            system: deviceInfo.osFullName
+            system: deviceInfo.osFullName,
+            osHarmonySDKAPIVersion: deviceInfo.sdkApiVersion,
+            osHarmonyDisplayVersion: deviceInfo.displayVersion
         } as GetDeviceInfoResult;
     }) as GetDeviceInfo;
     const API_GET_NETWORK_TYPE = 'getNetworkType';
@@ -7298,6 +7300,8 @@ export function initUniExtApi() {
             romName: deviceInfo1.distributionOSName,
             romVersion: deviceInfo1.distributionOSVersion,
             system: deviceInfo1.osFullName,
+            osHarmonySDKAPIVersion: deviceInfo1.sdkApiVersion,
+            osHarmonyDisplayVersion: deviceInfo1.displayVersion,
             pixelRatio,
             safeArea,
             safeAreaInsets,
@@ -9967,19 +9971,19 @@ export function initUniExtApi() {
         });
     }, ShowActionSheetProtocol, ShowActionSheetApiOptions) as ShowActionSheet;
     const showLoading: ShowLoading = defineAsyncApi<ShowLoadingOptions, ShowLoadingSuccess>(API_SHOW_LOADING, async (options: ShowLoadingOptions, exec: ApiExecutor<ShowLoadingSuccess>)=>{
-        onNativePageReady2().then((nativePage: Object)=>{
-            getOSRuntime1().showLoading({
-                title: options.title || '',
-                mask: options.mask == null ? false : options.mask
-            } as IShowLoadingOptions, nativePage);
-            exec.resolve({} as ShowLoadingSuccess);
-        });
+        const window = UTSHarmony.getCurrentWindow() as window.Window;
+        const uiContext = window.getUIContext();
+        showLoadingNative(uiContext, {
+            title: options.title,
+            mask: options.mask
+        } as ShowLoadingOptionsNative);
+        exec.resolve({} as ShowLoadingSuccess);
     }, ShowLoadingProtocol, ShowLoadingApiOptions) as ShowLoading;
     const hideLoading: HideLoading = defineAsyncApi<IHideLoadingOptions, IHideLoadingSuccess>(API_HIDE_LOADING, (options: IHideLoadingOptions, exec: ApiExecutor<IHideLoadingSuccess>)=>{
-        onNativePageReady2().then((nativePage: Object)=>{
-            getOSRuntime1().hideLoading();
-            exec.resolve({} as IHideLoadingSuccess);
-        });
+        const window = UTSHarmony.getCurrentWindow() as window.Window;
+        const uiContext = window.getUIContext();
+        hideLoadingNative(uiContext);
+        exec.resolve({} as IHideLoadingSuccess);
     }) as HideLoading;
     const API_START_PULL_DOWN_REFRESH = 'startPullDownRefresh';
     const API_STOP_PULL_DOWN_REFRESH = 'stopPullDownRefresh';
