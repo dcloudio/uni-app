@@ -426,8 +426,10 @@ async function buildArkTS(target, buildJson) {
   await postBuildArkTS(false)
 }
 
+let startTime = Date.now()
 async function sleep(ms) {
   global.gc && global.gc()
-  console.log('gc sleep')
+  console.log('gc sleep', (Date.now() - startTime) / 1000, 's')
+  startTime = Date.now()
   return new Promise((resolve) => setTimeout(resolve, ms))
 }
