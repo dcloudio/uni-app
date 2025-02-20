@@ -367,10 +367,13 @@ function createImportDeclaration(
   source: string,
   imported?: string
 ) {
-  if (imported) {
+  if (imported && local) {
     return `import { ${imported} as ${local} } from '${source}';`
   }
-  return `import ${local} from '${source}';`
+  if (local) {
+    return `import ${local} from '${source}';`
+  }
+  return `import '${source}';`
 }
 
 const RESOLVE_EASYCOM_IMPORT_CODE = `import { resolveDynamicComponent as __resolveDynamicComponent } from 'vue';import { resolveEasycom } from '@dcloudio/uni-app';`

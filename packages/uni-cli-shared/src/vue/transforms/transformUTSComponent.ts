@@ -15,15 +15,11 @@ export const transformUTSComponent: NodeTransform = (node, context) => {
   if (!isElementNode(node)) {
     return
   }
+  // 1. 增加components，让sfc生成resolveComponent代码
+  // 2. easycom插件会根据resolveComponent生成import插件代码触发编译
   const utsCustomElement = getUTSCustomElement(node.tag)
   if (utsCustomElement) {
-    const { source } = utsCustomElement
-    if (!context.imports.find((i) => i.path === source)) {
-      context.imports.push({
-        path: source,
-        exp: UTS_CUSTOM_ELEMENT_IMPORT_PLACEHOLDER,
-      })
-    }
+    context.components.add(node.tag)
   } else if (matchUTSComponent(node.tag)) {
     if (!context.root.components.includes(node.tag)) {
       context.components.add(node.tag)

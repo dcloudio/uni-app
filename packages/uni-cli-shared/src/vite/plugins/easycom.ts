@@ -10,6 +10,7 @@ import {
   matchEasycom,
 } from '../../easycom'
 import { UTS_CUSTOM_ELEMENT_IMPORT_PLACEHOLDER } from '../../vue/transforms/transformUTSComponent'
+import { getUTSCustomElement } from '../../uts'
 
 interface UniEasycomPluginOptions {
   include?: FilterPattern
@@ -74,6 +75,17 @@ export function uniEasycomPlugin(options: UniEasycomPluginOptions): Plugin {
                     : ''
                 )
               )
+            } else {
+              const utsCustomElement = getUTSCustomElement(name)
+              if (utsCustomElement) {
+                addImportDeclaration(
+                  importDeclarations,
+                  '',
+                  utsCustomElement.source,
+                  ''
+                )
+                return `'${name}'`
+              }
             }
           }
           return str
