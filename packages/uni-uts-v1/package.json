@@ -40,7 +40,6 @@
     "source-map-js": "^1.0.2"
   },
   "devDependencies": {
-    "@dcloudio/uni-cli-shared": "workspace:*",
     "@types/adm-zip": "^0.5.5",
     "@types/android-versions": "^1.8.0",
     "@types/fs-extra": "^9.0.13",

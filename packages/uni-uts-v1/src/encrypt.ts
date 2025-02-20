@@ -1,6 +1,5 @@
 import path, { join, relative } from 'path'
 import fs from 'fs-extra'
-import type { EncryptArtifacts } from '@dcloudio/uni-cli-shared'
 import type { APP_PLATFORM } from './manifest/utils'
 import { normalizePath, resolveSourceMapPath } from './shared'
 import {
@@ -23,6 +22,21 @@ import { sync } from 'fast-glob'
 import { resolveDexCacheFile } from './manifest/dex'
 import type { CompileResult } from './index'
 import { hbuilderFormatter } from './stacktrace/kotlin'
+
+// 手动维护，不依赖uni-cli-shared
+type EncryptArtifacts = {
+  env: {
+    compilerVersion: string
+  } & Record<string, any>
+  apis: string[]
+  components: string[]
+  scopedSlots: string[]
+  customElements: {
+    name: string
+    class: string
+  }[]
+  declaration: string
+}
 
 export function isEncrypt(pluginDir: string) {
   return fs.existsSync(path.resolve(pluginDir, 'encrypt'))
