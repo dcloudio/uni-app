@@ -28,7 +28,7 @@ const arkTSOnly = args.ets
 
 run()
 
-async function run () {
+async function run() {
   if (!targets.length) {
     await buildAll(allTargets)
   } else {
@@ -36,7 +36,7 @@ async function run () {
   }
 }
 
-function buildWithChildProcess (target) {
+function buildWithChildProcess(target) {
   const args = [__filename, target]
   devOnly && args.push('-d')
   isRelease && args.push('--release')
@@ -56,7 +56,7 @@ function buildWithChildProcess (target) {
   })
 }
 
-function getTargetGroup (targets) {
+function getTargetGroup(targets) {
   const group = {}
   for (let i = 0; i < targets.length; i++) {
     const target = targets[i]
@@ -70,14 +70,10 @@ function getTargetGroup (targets) {
   return group
 }
 
-async function buildAll (targets) {
+async function buildAll(targets) {
   if (!multiProcess) {
     for (const target of targets) {
-      try {
-        await build(target)
-      } catch (e) {
-        console.error(e)
-      }
+      await build(target)
     }
     return
   }
@@ -100,7 +96,7 @@ async function buildAll (targets) {
   }
 }
 
-async function build (target) {
+async function build(target) {
   console.log(`\n${colors.bold(target)}:`)
   const pkgDir = path.resolve(`packages/${target}`)
   const pkg = require(`${pkgDir}/package.json`)
@@ -273,7 +269,7 @@ async function build (target) {
   }
 }
 
-async function postBuildArkTS (isX = false) {
+async function postBuildArkTS(isX = false) {
   const projectDir = path.resolve(__dirname, '../packages/uni-app-harmony')
   const { compileArkTSExtApi } = require('../packages/uni-uts-v1/dist')
   // 先生成一遍提供给ohpm包使用
@@ -318,7 +314,7 @@ async function postBuildArkTS (isX = false) {
   fs.outputJSONSync(extApiExportJsonPath, extApiExportWithHar, { spaces: 2 })
 }
 
-async function buildArkTS (target, buildJson) {
+async function buildArkTS(target, buildJson) {
   const projectDir = path.resolve(__dirname, '../packages', target)
   const { bundleArkTS } = require('../packages/uts/dist')
   const start = Date.now()
@@ -430,7 +426,7 @@ async function buildArkTS (target, buildJson) {
   await postBuildArkTS(false)
 }
 
-async function sleep (ms) {
+async function sleep(ms) {
   global.gc && global.gc()
   console.log('gc sleep')
   return new Promise((resolve) => setTimeout(resolve, ms))
