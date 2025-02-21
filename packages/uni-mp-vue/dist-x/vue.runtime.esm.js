@@ -4094,7 +4094,8 @@ function createComponentInstance(vnode, parent, suspense) {
     $uniElements: /* @__PURE__ */ new Map(),
     $templateUniElementRefs: [],
     $templateUniElementStyles: {},
-    $eS: {}
+    $eS: {},
+    $eA: {}
   };
   if (!!(process.env.NODE_ENV !== "production")) {
     instance.ctx = createDevRenderContext(instance);
@@ -4693,6 +4694,7 @@ function patch(instance, data, oldData) {
   }
   data = deepCopy(data);
   data.$eS = instance.$eS || {};
+  data.$eA = instance.$eA || {};
   const ctx = instance.ctx;
   const mpType = ctx.mpType;
   if (mpType === "page" || mpType === "component") {
@@ -5629,7 +5631,7 @@ function handleDirection(keyframes, direction) {
 // 小程序中的 this.animate 不支持 color 等属性，keyframes 结构不同，需要手动转换
 // 改用 wxs 的 requestAnimationFrame 实现，需要手动实现缓动函数、解析 keyframes，对产物体积有影响
 // 改用 wxs 配合 requestAnimationFrame 在合适的时机设置 setStyle
-function normalizeKeyframes(keyframes, direction) {
+function normalizeKeyframes(keyframes, direction = 'normal') {
     // 数组为空，返回空数组
     if (keyframes.length === 0) {
         return [];
