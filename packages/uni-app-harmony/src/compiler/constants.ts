@@ -28,6 +28,10 @@ export const ExternalModules: IExternalModule[] = [
     type: 'provider',
   },
   {
+    name: 'uni-getLocation-system',
+    type: 'provider',
+  },
+  {
     name: 'uni-facialRecognitionVerify',
     type: 'extapi',
   },
@@ -43,16 +47,13 @@ export const ExternalModules: IExternalModule[] = [
 
 export const ExternalModulesX = ExternalModules
 
-export const ExtApiBlackListX = [
-  'uni-pullDownRefresh',
-  // 'uni-prompt',
-  // 'uni-media',
-  // 'uni-chooseMedia',
-]
+export const ExtApiBlackListX = ['uni-pullDownRefresh']
 
 export const ExtApiBlackList = [
   'uni-loadFontFace',
   'uni-getElementById',
   'uni-document',
   'uni-navigationBar',
+  'uni-getLocation',
+  'uni-getLocation-system',
 ]
