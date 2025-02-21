@@ -27,7 +27,7 @@ import { ref } from 'vue'
 export const openDialogPage = (
   options: OpenDialogPageOptions
 ): UniDialogPage | null => {
-  const { url, animationType } = options
+  const { url, animationType, animationDuration } = options
   if (!options.url) {
     triggerFailCallback(options, 'url is required')
     return null
@@ -91,7 +91,11 @@ export const openDialogPage = (
     setCurrentSystemDialogPage(dialogPage)
   }
   // @ts-expect-error
-  const [aniType, aniDuration] = initAnimation(path, animationType)
+  const [aniType, aniDuration] = initAnimation(
+    path,
+    animationType,
+    animationDuration
+  )
 
   const noAnimation = aniType === 'none' || aniDuration === 0
   function callback(page: IPage) {
@@ -137,7 +141,11 @@ function triggerFailCallback(options: OpenDialogPageOptions, errMsg: string) {
   options.complete?.(failOptions)
 }
 
-function initAnimation(path: string, animationType?: string) {
+function initAnimation(
+  path: string,
+  animationType?: string,
+  animationDuration?: number
+) {
   // 首页去除动画
   if (!getCurrentPage()) {
     return ['none', 0] as const
@@ -151,7 +159,10 @@ function initAnimation(path: string, animationType?: string) {
   }
   return [
     _animationType,
-    meta.animationDuration || globalStyle.animationDuration || ANI_DURATION,
+    animationDuration ||
+      meta.animationDuration ||
+      globalStyle.animationDuration ||
+      ANI_DURATION,
   ] as const
 }
 
