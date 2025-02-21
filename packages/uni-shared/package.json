@@ -1,6 +1,6 @@
 {
   "name": "@dcloudio/uni-shared",
-  "version": "3.0.0-alpha-4050220250208001",
+  "version": "3.0.0-alpha-4050320250221001",
   "description": "@dcloudio/uni-shared",
   "main": "./dist/uni-shared.cjs.js",
   "module": "./dist/uni-shared.es.js",
