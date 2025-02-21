@@ -23075,11 +23075,14 @@
       }
     }, id2);
   }
-  function useCurrentTime(videoState, gestureState, controlsState) {
+  function useProgressing(videoState, gestureState, controlsState, autoHideEnd, autoHideStart) {
     var progressing = computed(() => gestureState.gestureType === "progress" || controlsState.touching);
     watch(progressing, (val) => {
       videoState.pauseUpdatingCurrentTime = val;
       controlsState.controlsTouching = val;
+      if (gestureState.gestureType === "progress" && val) {
+        controlsState.controlsVisible = val;
+      }
     });
     watch([() => videoState.currentTime, () => {
       props$b.duration;
@@ -23245,12 +23248,14 @@
         progressRef,
         ballRef,
         clickProgress,
-        toggleControls
+        toggleControls,
+        autoHideEnd,
+        autoHideStart
       } = useControls(props2, videoState, seek, (currentTimeNew) => {
         gestureState.currentTimeNew = currentTimeNew;
       });
       useContext(play, pause, stop, seek, sendDanmu, playbackRate, requestFullScreen, exitFullScreen);
-      var progressing = useCurrentTime(videoState, gestureState, controlsState);
+      var progressing = useProgressing(videoState, gestureState, controlsState);
       return () => {
         return createVNode("uni-video", {
           "ref": rootRef,
@@ -23404,7 +23409,7 @@
           "class": "uni-video-toast-title"
         }, [createVNode("span", {
           "class": "uni-video-toast-title-current-time"
-        }, [formatTime(gestureState.currentTimeNew)]), " / ", formatTime(videoState.duration)])], 2), createVNode("div", {
+        }, [formatTime(gestureState.currentTimeNew)]), " / ", Number(props2.duration) || formatTime(videoState.duration)])], 2), createVNode("div", {
           "class": "uni-video-slots"
         }, [slots.default && slots.default()])], 40, ["onTouchstart", "onTouchend", "onTouchmove", "onFullscreenchange", "onWebkitfullscreenchange"])], 8, ["id", "onClick"]);
       };

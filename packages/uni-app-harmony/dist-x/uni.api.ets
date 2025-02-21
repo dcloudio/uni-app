@@ -8548,8 +8548,18 @@ export function initUniExtApi() {
                 photoType: type === 'image' ? photoAccessHelper5.PhotoType.IMAGE : photoAccessHelper5.PhotoType.VIDEO
             }
         ];
+        let showUri = '';
+        if (isResource) {
+            showUri = fromUri;
+        } else if (realPath.startsWith('file:///data')) {
+            showUri = fileUri.getUriFromPath(realPath.slice(7));
+        } else if (realPath.startsWith('file://')) {
+            showUri = realPath;
+        } else {
+            showUri = fileUri.getUriFromPath(realPath);
+        }
         const desFileUris: Array<string> = await phAccessHelper.showAssetsCreationDialog([
-            fromUri.startsWith('file://') ? fromUri : fileUri.getUriFromPath(fromUri)
+            showUri
         ], photoCreationConfigs);
         if (!desFileUris || desFileUris.length === 0) {
             return {
