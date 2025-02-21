@@ -53,6 +53,7 @@ import {
   resolveUVueOutputPluginDir,
 } from './uni_modules'
 import { existsSync, readdirSync, rmSync } from 'fs-extra'
+import { restoreDebuggerFiles } from './manifest/dex'
 
 export * from './tsc'
 
@@ -447,6 +448,15 @@ export async function compile(
         // console.log('uts插件[' + pkg.id + ']缓存检查耗时：', Date.now() - start)
         if (!res.expired) {
           if (utsPlatform === 'app-android') {
+            // debugger 专用
+            restoreDebuggerFiles(
+              pluginRelativeDir,
+              cacheDir,
+              outputDir,
+              pkg.is_uni_modules,
+              inputDir,
+              rewriteConsoleExpr
+            )
             restoreDex(
               pluginRelativeDir,
               cacheDir,

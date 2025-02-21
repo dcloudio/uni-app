@@ -52,6 +52,7 @@ import {
   hbuilderFormatter,
 } from './stacktrace/kotlin'
 import { uvueOutDir } from './uvue'
+import { storeIndexKt } from './manifest/dex'
 
 export interface KotlinCompilerServer extends CompilerServer {
   getKotlincHome(): string
@@ -368,6 +369,10 @@ export async function runKotlinDev(
           outputDir,
           is_uni_modules
         )
+        if (newDexFile && cacheDir) {
+          // 缓存index.kt文件
+          storeIndexKt(kotlinFile, pluginRelativeDir, cacheDir)
+        }
         result.changed = [
           normalizePath(path.relative(outputDir, newDexFile || dexFile)),
         ]
