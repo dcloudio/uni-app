@@ -103,21 +103,6 @@
       "GetDeviceInfo"
     ],
     [
-      "GetLocationFail"
-    ],
-    [
-      "GetLocation"
-    ],
-    [
-      "GetLocationSuccess"
-    ],
-    [
-      "GetLocationOptions"
-    ],
-    [
-      "UniLocationProvider"
-    ],
-    [
       "GetProviderSuccess"
     ],
     [
