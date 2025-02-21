@@ -262,13 +262,23 @@ export function registerDialogPage(
     pageStyle.set('disableSwipeBack', true)
   }
   const parentPage = dialogPage.getParentPage()
-  const nativePage = (getPageManager() as any).createDialogPage(
-    // @ts-expect-error
-    parentPage ? parentPage.__nativePageId : '',
-    id.toString(),
-    url,
-    pageStyle
-  )
+  const createDialogPage = (getPageManager() as any).createDialogPage
+  // 鸿蒙的API与Android保持一致，参数均为6个
+  const isHarmony = createDialogPage.length === 6
+  const nativePage = isHarmony
+    ? createDialogPage(
+        url,
+        id.toString(),
+        pageStyle,
+        (parentPage as any)?.getNativePage()
+      )
+    : createDialogPage(
+        // @ts-expect-error
+        parentPage ? parentPage.__nativePageId : '',
+        id.toString(),
+        url,
+        pageStyle
+      )
   if (onCreated) {
     onCreated(nativePage)
   }

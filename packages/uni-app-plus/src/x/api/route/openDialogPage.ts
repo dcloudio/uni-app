@@ -67,7 +67,9 @@ export const openDialogPage = (
       if (dialogPages.length) {
         invokeHook(dialogPages[dialogPages.length - 1].$vm!, ON_HIDE)
       }
-      // normal dialogPage 数据框架不需要存储，由客户端管理
+      // iOS normal dialogPage 数据框架不需要存储，由客户端管理
+      // 预期仅在鸿蒙上生效
+      dialogPages.push(dialogPage)
     }
     setCurrentNormalDialogPage(dialogPage)
   } else {
