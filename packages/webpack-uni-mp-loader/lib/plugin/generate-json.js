@@ -251,6 +251,7 @@ function emit (name, jsonObj, compilation) {
       'app.js',
       'manifest.js',
       'mini.project.js',
+      'ascf.config.js',
       'quickapp.config.js',
       'project.config.js',
       'project.swan.js'

@@ -38,6 +38,7 @@ const cdns = {
   'mp-jd': 11,
   'mp-xhs': 12,
   'quickapp-webview-huawei': 200,
+  'mp-harmony': 200,
   'quickapp-webview-union': 201
 }
 
