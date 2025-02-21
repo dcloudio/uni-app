@@ -22,8 +22,8 @@ const transformBackground = createTransformBackground({
 describe('nvue-styler: expand', () => {
   test('transform transition', () => {
     const decl = parseDecl(`.test {
-  transition: margin-top 500ms ease-in-out 1s
-}`)
+      transition: margin-top 500ms ease-in-out 1s
+    }`)
     expect(transformTransition(decl)).toEqual([
       {
         type: 'decl',
@@ -52,6 +52,40 @@ describe('nvue-styler: expand', () => {
         value: '1s',
         raws: decl.raws,
         source: decl.source,
+      },
+    ])
+
+    const decl2 = parseDecl(`.test {
+  transition: 500ms ease-in-out 1s
+}`)
+    expect(transformTransition(decl2)).toEqual([
+      {
+        type: 'decl',
+        prop: 'transition-property',
+        value: 'all',
+        raws: decl2.raws,
+        source: decl2.source,
+      },
+      {
+        type: 'decl',
+        prop: 'transition-duration',
+        value: '500ms',
+        raws: decl2.raws,
+        source: decl2.source,
+      },
+      {
+        type: 'decl',
+        prop: 'transition-timing-function',
+        value: 'ease-in-out',
+        raws: decl2.raws,
+        source: decl2.source,
+      },
+      {
+        type: 'decl',
+        prop: 'transition-delay',
+        value: '1s',
+        raws: decl2.raws,
+        source: decl2.source,
       },
     ])
   })

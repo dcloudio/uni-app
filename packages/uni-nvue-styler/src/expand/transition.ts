@@ -35,6 +35,14 @@ export const transformTransition: TransformDecl = (decl) => {
   if (!match) {
     return result
   }
+
+  // property default all
+  const isNotSetProperty = /(\d*\.?\d+(?:ms|s)?)/.test(match[1]) && !match[2]
+  if (isNotSetProperty) {
+    match[2] = match[1]
+    match[1] = 'all'
+  }
+
   match[1] &&
     result.push(
       createDecl(transitionProperty, match[1], important, raws, source)
