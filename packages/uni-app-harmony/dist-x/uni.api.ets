@@ -46,7 +46,7 @@ import { ListFileOptions } from '@ohos.file.fs';
 import { ReadOptions as ReadOptions2 } from '@ohos.file.fs';
 import { ReadOptions } from '@ohos.file.fs';
 import { ShowLoadingOptions as ShowLoadingOptionsNative, showLoading as showLoadingNative, hideLoading as hideLoadingNative } from "./uni-prompt/utssdk/app-harmony/loading-native";
-import { UTSObject, UniError, IUniError, string, ApiError, UniProvider, AsyncApiSuccessResult, AsyncApiResult, UTSJSONObject, ApiOptions, ProtocolOptions, defineAsyncApi, ApiExecutor, defineSyncApi, getUniProviders, defineTaskApi, getUniProvider } from "./shared";
+import { UTSObject, UniError, IUniError, string, ApiError, UniProvider, AsyncApiSuccessResult, AsyncApiResult, UTSJSONObject, ApiOptions, ProtocolOptions, defineAsyncApi, ApiExecutor, defineSyncApi, getUniProvider, getUniProviders, defineTaskApi } from "./shared";
 import { UniElement, UTSHarmony, UniPageImpl } from "@dcloudio/uni-runtime-harmony";
 import Want1 from '@ohos.app.ability.Want';
 import { abilityAccessCtrl } from '@kit.AbilityKit';
@@ -1005,6 +1005,40 @@ export class GetDeviceInfoResult extends UTSObject {
 }
 export type GetDeviceInfo = (options?: GetDeviceInfoOptions | null) => GetDeviceInfoResult;
 type GetElementById = (id: string.IDString | string) => UniElement | null;
+type LocationErrorCode = 1505005 | 1505021 | 1505022 | 1505023 | 1505024 | 1505025 | 1505026 | 1505003 | 1505004 | 1505600 | 1505601 | 1505602 | 1505603 | 1505604 | 1505700 | 1505701 | 1505800 | 1505605 | 1505607;
+interface IGetLocationFail extends IUniError {
+    errCode: LocationErrorCode;
+}
+export type GetLocationFail = IGetLocationFail;
+export type GetLocation = (options: GetLocationOptions) => void;
+export class GetLocationSuccess extends UTSObject {
+    latitude!: number;
+    longitude!: number;
+    speed!: number;
+    accuracy!: number;
+    altitude!: number;
+    verticalAccuracy!: number;
+    horizontalAccuracy!: number;
+    address: string | null = null;
+}
+type GetLocationSuccessCallback = (result: GetLocationSuccess) => void;
+type GetLocationFailCallback = (result: GetLocationFail) => void;
+type GetLocationComplete = Object;
+type GetLocationCompleteCallback = (result: GetLocationComplete) => void;
+export class GetLocationOptions extends UTSObject {
+    provider: string | null = null;
+    type: "wgs84" | "gcj02" | null = null;
+    altitude: boolean | null = null;
+    geocode: boolean | null = null;
+    highAccuracyExpireTime: number | null = null;
+    isHighAccuracy: boolean | null = null;
+    success: GetLocationSuccessCallback | null = null;
+    fail: GetLocationFailCallback | null = null;
+    complete: GetLocationCompleteCallback | null = null;
+}
+export interface UniLocationProvider extends UniProvider {
+    getLocation(options: GetLocationOptions): void;
+}
 type GetNetworkType = (options: GetNetworkTypeOptions) => void;
 class GetNetworkTypeSuccess extends UTSObject {
     networkType!: string;
@@ -2285,6 +2319,7 @@ interface UniExtApi {
     getBackgroundAudioManager: GetBackgroundAudioManager;
     getDeviceInfo: GetDeviceInfo;
     getElementById: GetElementById;
+    getLocation: GetLocation;
     getNetworkType: GetNetworkType;
     onNetworkStatusChange: OnNetworkStatusChange;
     offNetworkStatusChange: OffNetworkStatusChange;
@@ -6825,6 +6860,84 @@ export function initUniExtApi() {
         }
         return bodyNode.querySelector(`#${id}`);
     });
+    const LocationUniErrors: Map<LocationErrorCode, string> = new Map([
+        [
+            1505003,
+            'maybe not turn on the system location permission.'
+        ],
+        [
+            1505004,
+            'maybe not obtain GPS Permission.'
+        ],
+        [
+            1505600,
+            'location fail: timeout'
+        ],
+        [
+            1505601,
+            'system location support wgs84 only.'
+        ],
+        [
+            1505602,
+            'location fail: request error'
+        ],
+        [
+            1505603,
+            'The system failed to retrieve geocode for the location.'
+        ],
+        [
+            1505604,
+            'Failed to get provider.'
+        ],
+        [
+            1505700,
+            'system location not support geocode.'
+        ],
+        [
+            1505701,
+            'Provider is not find,Please ensure that the device location function is turned on'
+        ],
+        [
+            1505800,
+            'Unauthorized access to high-accuracy location services.'
+        ],
+        [
+            1505605,
+            'The Tencent api key is misconfigured.'
+        ],
+        [
+            1505607,
+            'GCJ-02 support only.'
+        ]
+    ]);
+    const API_GET_LOCATION = 'getLocation';
+    const getLocation: GetLocation = defineAsyncApi<GetLocationOptions, GetLocationSuccess>(API_GET_LOCATION, (options: GetLocationOptions, exec: ApiExecutor<GetLocationSuccess>): void =>{
+        const realProvider = options.provider || 'system';
+        const provider = getUniProvider<UniLocationProvider>('getLocation', realProvider);
+        if (!provider) {
+            const errMsg = LocationUniErrors.get(1505604) ?? "";
+            exec.reject(errMsg, {
+                errCode: 1505604
+            } as ApiError);
+            return;
+        }
+        provider.getLocation({
+            type: options.type,
+            altitude: options.altitude,
+            geocode: options.geocode,
+            isHighAccuracy: options.isHighAccuracy,
+            highAccuracyExpireTime: options.highAccuracyExpireTime,
+            success: (result: GetLocationSuccess)=>{
+                exec.resolve(result);
+            },
+            fail: (error: GetLocationFail)=>{
+                const errMsg = LocationUniErrors.get(error.errCode) ?? "";
+                exec.reject(errMsg, {
+                    errCode: error.errCode
+                } as ApiError);
+            }
+        } as GetLocationOptions);
+    }) as GetLocation;
     const API_GET_NETWORK_TYPE = 'getNetworkType';
     const PERMISSIONS1 = [
         'ohos.permission.GET_NETWORK_INFO'
@@ -10759,6 +10872,7 @@ export function initUniExtApi() {
         getBackgroundAudioManager,
         getDeviceInfo,
         getElementById,
+        getLocation,
         getNetworkType,
         onNetworkStatusChange,
         offNetworkStatusChange,

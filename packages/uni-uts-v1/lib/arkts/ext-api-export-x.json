@@ -537,6 +537,11 @@
       "startFacialRecognitionVerify"
     ]
   ],
+  "@uni_modules/uni-getlocation-system": [
+    [
+      "UniLocationSystemProviderImpl"
+    ]
+  ],
   "@uni_modules/uni-oauth-huawei": [
     [
       "UniOAuthHuaweiProviderImpl"

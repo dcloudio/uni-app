@@ -76,6 +76,13 @@ var ExternalModulsX = [
 	},
 	{
 		type: "provider",
+		plugin: "uni-getLocation-system",
+		provider: "system",
+		service: "location",
+		version: "1.0.0"
+	},
+	{
+		type: "provider",
 		plugin: "uni-oauth-huawei",
 		provider: "huawei",
 		service: "oauth",
@@ -118,7 +125,10 @@ var ExternalModulsX = [
 	}
 ];
 
-const StandaloneExtApis = process.env.UNI_APP_X === 'true' ? ExternalModulsX : ExternalModuls;
+const isX = process.env.UNI_APP_X === 'true';
+const StandaloneExtApis = isX ? ExternalModulsX : ExternalModuls;
+const Providers = StandaloneExtApis.filter((item) => item.type === 'provider');
+const ApiModules = StandaloneExtApis.filter((item) => item.type === 'extapi');
 const commandGlobals = {
     vue: 'Vue',
     '@vue/shared': 'uni.VueShared',
@@ -216,74 +226,88 @@ function uniAppHarmonyPlugin() {
         },
     };
 }
-// 仅存放重命名的provider service
-const SupportedProviderService = {
-    'uni-oauth': {
-        huawei: 'huawei',
-    },
-    'uni-payment': {
-        weixin: 'wxpay',
-    },
-};
+/**
+ * TODO 微信支付上线时，务必提醒相关同事统一使用wxpay，不要用weixin
+ */
+function getProviders(module, allProviders) {
+    return allProviders.filter((item) => item.plugin.startsWith(module + '-'));
+}
+/**
+ * 鸿蒙getLocation system支持gcj02和地理位置解析，按理说没有使用其他provider的需求，因此system内置
+ */
+const DefaultModule = isX
+    ? {
+        'uni-getLocation': {
+            system: {},
+        },
+    }
+    : {};
+function getManifestModules(inputDir) {
+    const manifest = uniCliShared.parseManifestJsonOnce(inputDir);
+    const modules = manifest?.[isX ? 'app' : 'app-harmony']?.distribute?.modules;
+    const realModules = {};
+    for (const moduleName in modules) {
+        if (DefaultModule[moduleName]) {
+            realModules[moduleName] = Object.assign({}, DefaultModule[moduleName], modules[moduleName]);
+        }
+        else {
+            realModules[moduleName] = modules[moduleName];
+        }
+    }
+    return realModules;
+}
 /**
  * 获取manifest.json中勾选的provider
  */
-function getRelatedProviders(inputDir) {
-    const manifest = uniCliShared.parseManifestJsonOnce(inputDir);
-    const providers = [];
-    const manifestModules = manifest?.['app-harmony']?.distribute?.modules;
+function getRelatedProviders(inputDir, allProviders) {
+    const relatedProviders = [];
+    const manifestModules = getManifestModules(inputDir);
     if (!manifestModules) {
-        return providers;
+        return relatedProviders;
     }
     for (const uniModule in manifestModules) {
-        if (Object.prototype.hasOwnProperty.call(manifestModules, uniModule)) {
-            const ProviderNameMap = SupportedProviderService[uniModule];
-            if (!ProviderNameMap) {
+        const providers = getProviders(uniModule, allProviders);
+        if (!providers.length) {
+            continue;
+        }
+        const manifestModule = manifestModules[uniModule];
+        for (const name in manifestModule) {
+            const providerConf = manifestModule[name];
+            if (!providerConf) {
                 continue;
             }
-            const relatedProviders = manifestModules[uniModule];
-            for (const name in relatedProviders) {
-                if (Object.prototype.hasOwnProperty.call(relatedProviders, name)) {
-                    const providerConf = relatedProviders[name];
-                    if (!providerConf) {
-                        continue;
-                    }
-                    if (!providerConf.__platform__ ||
-                        (Array.isArray(providerConf.__platform__) &&
-                            providerConf.__platform__.includes('harmonyos'))) {
-                        const providerName = ProviderNameMap[name];
-                        providers.push({
-                            service: uniModule.replace(/^uni-/, ''),
-                            name: providerName || name,
-                        });
-                    }
-                }
+            if (providerConf.__platform__ &&
+                Array.isArray(providerConf.__platform__) &&
+                !providerConf.__platform__.includes('harmonyos')) {
+                continue;
             }
+            const plugin = uniModule + '-' + name;
+            const provider = providers.find((item) => item.plugin === plugin);
+            if (!provider) {
+                continue;
+            }
+            relatedProviders.push({
+                service: provider.service,
+                name,
+                plugin: uniModule + '-' + name,
+            });
         }
     }
-    return providers;
+    return relatedProviders;
 }
-const SupportedModules = {
-    'uni-facialRecognitionVerify': 'uni-facialRecognitionVerify',
-    'uni-push': 'uni-push',
-    'uni-verify': 'uni-verify',
-};
 // 获取uni_modules中的相关模块
 function getRelatedModules(inputDir) {
-    const manifest = uniCliShared.parseManifestJsonOnce(inputDir);
     const modules = [];
-    const manifestModules = manifest?.['app-harmony']?.distribute?.modules;
+    const manifestModules = getManifestModules(inputDir);
     if (!manifestModules) {
         return modules;
     }
     for (const manifestModule in manifestModules) {
-        if (Object.prototype.hasOwnProperty.call(manifestModules, manifestModule)) {
-            const moduleName = SupportedModules[manifestModule];
-            if (!moduleName) {
-                continue;
-            }
-            modules.push(moduleName);
+        const apiModule = ApiModules.find((item) => item.plugin === manifestModule);
+        if (!apiModule) {
+            continue;
         }
+        modules.push(manifestModule);
     }
     return modules;
 }
@@ -317,7 +341,6 @@ function genAppHarmonyUniModules(context, inputDir, utsPlugins) {
             source: 'local',
         });
     });
-    const relatedProviders = getRelatedProviders(inputDir);
     const relatedModules = getRelatedModules(inputDir);
     relatedModules.forEach((module) => {
         const harmonyModuleName = `@uni_modules/${module.toLowerCase()}`;
@@ -351,22 +374,20 @@ function genAppHarmonyUniModules(context, inputDir, utsPlugins) {
             version: undefined,
         };
     });
-    StandaloneExtApis.filter((item) => {
-        return item.type === 'provider';
-    }).forEach((extapi) => {
-        if (allProviders.find((item) => item.plugin === extapi.plugin)) {
+    Providers.forEach((provider) => {
+        if (allProviders.find((item) => item.plugin === provider.plugin)) {
             return;
         }
-        const [_, service, provider] = extapi.plugin.split('-');
         allProviders.push({
-            service,
-            name: provider,
-            moduleSpecifier: `@uni_modules/${extapi.plugin.toLowerCase()}`,
-            plugin: extapi.plugin,
+            service: provider.service,
+            name: provider.provider,
+            moduleSpecifier: `@uni_modules/${provider.plugin.toLowerCase()}`,
+            plugin: provider.plugin,
             source: 'ohpm',
             version: '*',
         });
     });
+    const relatedProviders = getRelatedProviders(inputDir, allProviders);
     relatedProviders.forEach((relatedProvider) => {
         const provider = allProviders.find((item) => item.service === relatedProvider.service &&
             item.name === relatedProvider.name);
