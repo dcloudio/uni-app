@@ -19,12 +19,12 @@ function closeNativeDialogPage(
       animationType || 'none',
       animationDuration || 0,
       () => {
+        getVueApp().unmountPage(dialogPage.vm)
         setStatusBarStyle()
         callback?.()
       }
     )
   }
-  getVueApp().unmountPage(dialogPage.vm)
 }
 
 export default closeNativeDialogPage
