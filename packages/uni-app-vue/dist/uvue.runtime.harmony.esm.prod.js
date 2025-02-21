@@ -1747,11 +1747,18 @@ function createTransformBackground(options) {
     }
   };
 }
-var borderTop = 'borderTop';
-var borderRight = 'borderRight';
-var borderBottom = 'borderBottom';
-var borderLeft = 'borderLeft';
-// const position = ['top', 'right', 'bottom', 'left']
+function borderTop() {
+  return 'borderTop';
+}
+function borderRight() {
+  return 'borderRight';
+}
+function borderBottom() {
+  return 'borderBottom';
+}
+function borderLeft() {
+  return 'borderLeft';
+}
 var transformBorderColor = decl => {
   var {
     prop,
@@ -1771,11 +1778,10 @@ var transformBorderColor = decl => {
       if (_property_split.length === 3) {
         // border-top-width
         return [decl];
-      } else {
-        // border-width
-        splitResult.push(splitResult[0], splitResult[0], splitResult[0]);
-        break;
       }
+      // border-width
+      splitResult.push(splitResult[0], splitResult[0], splitResult[0]);
+      break;
     case 2:
       splitResult.push(splitResult[0], splitResult[1]);
       break;
@@ -1783,13 +1789,19 @@ var transformBorderColor = decl => {
       splitResult.push(splitResult[1]);
       break;
   }
-  return [createDecl(borderTop + property, splitResult[0], important, raws, source), createDecl(borderRight + property, splitResult[1], important, raws, source), createDecl(borderBottom + property, splitResult[2], important, raws, source), createDecl(borderLeft + property, splitResult[3], important, raws, source)];
+  return [createDecl(borderTop() + property, splitResult[0], important, raws, source), createDecl(borderRight() + property, splitResult[1], important, raws, source), createDecl(borderBottom() + property, splitResult[2], important, raws, source), createDecl(borderLeft() + property, splitResult[3], important, raws, source)];
 };
 var transformBorderStyle = transformBorderColor;
 var transformBorderWidth = transformBorderColor;
-var borderWidth = 'Width';
-var borderStyle = 'Style';
-var borderColor = 'Color';
+var borderWidth = () => {
+  return 'Width';
+};
+var borderStyle = () => {
+  return 'Style';
+};
+var borderColor = () => {
+  return 'Color';
+};
 function createTransformBorder(options) {
   return decl => {
     var {
@@ -1804,9 +1816,9 @@ function createTransformBorder(options) {
       var index = splitResult.findIndex(str => item.test(str));
       return index < 0 ? null : splitResult.splice(index, 1)[0];
     });
-    var isUvuePlatform = options.type === 'uvue';
+    var isUvuePlatform = options.type == 'uvue';
     if (isUvuePlatform) {
-      if (splitResult.length > 0 && value !== '') {
+      if (splitResult.length > 0 && value != '') {
         return [decl];
       }
     } else {
@@ -1815,12 +1827,35 @@ function createTransformBorder(options) {
         return [decl];
       }
     }
-    if (isUvuePlatform) {
-      return [...transformBorderWidth(createDecl(prop + borderWidth, (result[0] || (options.type === 'uvue' ? 'medium' : '0')).trim(), important, raws, source)), ...transformBorderStyle(createDecl(prop + borderStyle, (result[1] || (options.type === 'uvue' ? 'none' : 'solid')).trim(), important, raws, source)), ...transformBorderColor(createDecl(prop + borderColor, (result[2] || '#000000').trim(), important, raws, source))];
-    } else {
+    var defaultWidth = str => {
+      if (str != null) {
+        return str.trim();
+      }
+      if (options.type == 'uvue') {
+        return 'medium';
+      }
+      return '0';
+    };
+    var defaultStyle = str => {
+      if (str != null) {
+        return str.trim();
+      }
+      if (options.type == 'uvue') {
+        return 'none';
+      }
+      return 'solid';
+    };
+    var defaultColor = str => {
+      if (str != null) {
+        return str.trim();
+      }
+      return '#000000';
+    };
+    if (!isUvuePlatform) {
       // nvue 维持不变
-      return [createDecl(prop + borderWidth, (result[0] || (options.type === 'uvue' ? 'medium' : '0')).trim(), important, raws, source), createDecl(prop + borderStyle, (result[1] || (options.type === 'uvue' ? 'none' : 'solid')).trim(), important, raws, source), createDecl(prop + borderColor, (result[2] || '#000000').trim(), important, raws, source)];
+      return [createDecl(prop + borderWidth(), defaultWidth(result[0]), important, raws, source), createDecl(prop + borderStyle(), defaultStyle(result[1]), important, raws, source), createDecl(prop + borderColor(), defaultColor(result[2]), important, raws, source)];
     }
+    return [...transformBorderWidth(createDecl(prop + borderWidth(), defaultWidth(result[0]), important, raws, source)), ...transformBorderStyle(createDecl(prop + borderStyle(), defaultStyle(result[1]), important, raws, source)), ...transformBorderColor(createDecl(prop + borderColor(), defaultColor(result[2]), important, raws, source))];
   };
 }
 var borderTopLeftRadius = 'borderTopLeftRadius';
