@@ -134,6 +134,8 @@ const UVUE_BUILT_IN_TAGS = [
     'waterflow',
     'flow-item',
     'share-element',
+    'cover-view',
+    'cover-image',
 ];
 const UVUE_WEB_BUILT_IN_TAGS = [
     'list-view',
@@ -1699,7 +1701,7 @@ function normalizeStyles(pageStyle, themeConfig = {}, mode = 'light') {
                 return normalizeStyles(styleItem, themeConfig, mode);
             if (isArray(styleItem))
                 return styleItem.map((item) => {
-                    if (typeof item === 'object')
+                    if (isPlainObject(item))
                         return normalizeStyles(item, themeConfig, mode);
                     return resolveStringStyleItem(modeStyle, item);
                 });
