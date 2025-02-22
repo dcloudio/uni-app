@@ -899,6 +899,7 @@ class GetAppAuthorizeSettingResult extends UTSObject {
     notificationSoundAuthorized: 'authorized' | 'denied' | 'not determined' | 'config error' | null = null;
     phoneCalendarAuthorized: 'authorized' | 'denied' | 'not determined' | null = null;
 }
+type LocationAccuracy = 'reduced' | 'full' | 'unsupported';
 class GetAppBaseInfoOptions extends UTSObject {
     filter!: Array<string>;
 }
@@ -6180,7 +6181,7 @@ export function initUniExtApi() {
         bluetoothAuthorized: string = NOT_DETERMINED;
         cameraAuthorized: string = NOT_DETERMINED;
         locationAuthorized: string = NOT_DETERMINED;
-        locationAccuracy: string = NOT_DETERMINED;
+        locationAccuracy: LocationAccuracy = 'unsupported';
         microphoneAuthorized: string = NOT_DETERMINED;
         notificationAuthorized: string = NOT_DETERMINED;
         notificationAlertAuthorized: string = NOT_DETERMINED;
@@ -6232,12 +6233,19 @@ export function initUniExtApi() {
             }
         }
         getLocationAuthorizeSetting() {
-            const grantStatus = this.atManager.checkAccessTokenSync(this.accessTokenId, 'ohos.permission.LOCATION');
+            const locationGrantStatus = this.atManager.checkAccessTokenSync(this.accessTokenId, 'ohos.permission.LOCATION');
+            const grantStatus = this.atManager.checkAccessTokenSync(this.accessTokenId, 'ohos.permission.APPROXIMATELY_LOCATION');
             if (grantStatus === abilityAccessCtrl.GrantStatus.PERMISSION_DENIED) {
                 this.appAuthorizeSetting.locationAuthorized = DENIED;
+                this.appAuthorizeSetting.locationAccuracy = 'unsupported';
             }
             if (grantStatus === abilityAccessCtrl.GrantStatus.PERMISSION_GRANTED) {
                 this.appAuthorizeSetting.locationAuthorized = AUTHORIZED;
+                if (locationGrantStatus === abilityAccessCtrl.GrantStatus.PERMISSION_GRANTED) {
+                    this.appAuthorizeSetting.locationAccuracy = 'full';
+                } else {
+                    this.appAuthorizeSetting.locationAccuracy = 'reduced';
+                }
             }
         }
         getMicrophoneAuthorizeSetting() {
@@ -6517,6 +6525,7 @@ export function initUniExtApi() {
         static ERROR: string = 'error';
     }
     class BackgroundAudioManagerImpl implements BackgroundAudioManager {
+        __v_skip: boolean = true;
         static audioPlayer?: media2.AudioPlayer;
         private _src: string = '';
         private _startTime: number = 0;
@@ -6913,7 +6922,7 @@ export function initUniExtApi() {
     const API_GET_LOCATION = 'getLocation';
     const getLocation: GetLocation = defineAsyncApi<GetLocationOptions, GetLocationSuccess>(API_GET_LOCATION, (options: GetLocationOptions, exec: ApiExecutor<GetLocationSuccess>): void =>{
         const realProvider = options.provider || 'system';
-        const provider = getUniProvider<UniLocationProvider>('getLocation', realProvider);
+        const provider = getUniProvider<UniLocationProvider>('location', realProvider);
         if (!provider) {
             const errMsg = LocationUniErrors.get(1505604) ?? "";
             exec.reject(errMsg, {
@@ -7367,6 +7376,7 @@ export function initUniExtApi() {
     const MAX_DURATION = 60000 * 10;
     const DEFAULT_FORMAT = 'aac';
     class RecorderManagerImpl implements RecorderManager {
+        __v_skip: boolean = true;
         start(options: RecorderManagerStartOptions | null = null): void {
             if (options == null) options = {} as RecorderManagerStartOptions;
             if (!options.format) options.format = DEFAULT_FORMAT;
@@ -8177,7 +8187,7 @@ export function initUniExtApi() {
         let metadata: media4.AVMetadata | null = null;
         let size: number = 0;
         try {
-            size = (await fs4.stat(file.fd)).size;
+            size = (await fs4.stat(file.fd)).size / 1024;
             avMetadataExtractor.dataSrc = {
                 fileSize: size,
                 callback: (buffer: ArrayBuffer, length: number, pos: number | null = null)=>{
