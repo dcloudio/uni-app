@@ -15,6 +15,12 @@ struct Loading {
                 Text(this.title)
                     .fontColor(Color.White)
                     .fontSize('14vp')
+                    .maxLines(2)
+                    .textAlign(TextAlign.Center)
+                    .padding({
+                        left: '8vp',
+                        right: '8vp'
+                    })
             }
         }
     .alignItems(HorizontalAlign.Center)
