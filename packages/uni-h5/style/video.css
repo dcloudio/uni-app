@@ -346,7 +346,12 @@ uni-video[hidden] {
   color: rgba(255, 255, 255, 0.9);
 }
 
+@font-face {
+  font-family: "uni-video-icon";
+  src: url('./uni-video-icon.ttf');
+}
+
 .uni-video-icon {
-  font-family: 'uni-icon';
+  font-family: 'uni-video-icon';
   text-align: center;
 }

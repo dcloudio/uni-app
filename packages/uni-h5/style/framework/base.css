@@ -11,11 +11,6 @@ body {
   height: 100%;
 }
 
-@font-face {
-  font-family: "uni-icon";
-  src: url('./uni-icon.ttf');
-}
-
 body {
   overflow-x: hidden;
   font-size: 16px;
