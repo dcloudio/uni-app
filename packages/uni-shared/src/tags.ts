@@ -138,6 +138,8 @@ export const UVUE_BUILT_IN_TAGS = [
   'waterflow',
   'flow-item',
   'share-element',
+  'cover-view',
+  'cover-image',
 ]
 
 export const UVUE_WEB_BUILT_IN_TAGS = [
