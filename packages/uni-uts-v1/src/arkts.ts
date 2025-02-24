@@ -503,7 +503,9 @@ export async function compileArkTS(
 }
 
 function requireUTSPluginCode(pluginId: string, isExtApi: boolean) {
-  if (isExtApi) {
+  // UNI_COMPILE_EXT_API_INPUT 是js-framework-next用来编译鸿蒙ext-api插件的js代码
+  // 此时不能返回uni，应该返回uni.requireUTSPlugin('uni_modules/${pluginId}')
+  if (isExtApi && !process.env.UNI_COMPILE_EXT_API_INPUT) {
     return `export default uni`
   }
   return `export default uni.requireUTSPlugin('uni_modules/${pluginId}')`
