@@ -54,6 +54,7 @@ import {
 } from './uni_modules'
 import { existsSync, readdirSync, rmSync } from 'fs-extra'
 import { restoreDebuggerFiles } from './manifest/dex'
+import { compileArkTS } from './arkts'
 
 export * from './tsc'
 
@@ -795,6 +796,21 @@ export async function buildUniModules(
     compilerOptions.androidPreprocessor =
       syncUniModulesFilePreprocessors.android
     compilerOptions.iosPreprocessor = syncUniModulesFilePreprocessors.ios
+  }
+  if (platform === 'app-harmony') {
+    return compileArkTS(pluginDir, {
+      isX: compilerOptions.isX,
+      isExtApi: compilerOptions.isExtApi,
+      sourceMap: compilerOptions.sourceMap,
+      rewriteConsoleExpr: compilerOptions.rewriteConsoleExpr,
+      transform: {
+        uniExtApiProviderName: compilerOptions.transform?.uniExtApiProviderName,
+        uniExtApiProviderService:
+          compilerOptions.transform?.uniExtApiProviderService,
+        uniExtApiProviderServicePlugin:
+          compilerOptions.transform?.uniExtApiProviderServicePlugin,
+      },
+    })
   }
   return compile(pluginDir, compilerOptions)
 }
