@@ -1201,6 +1201,9 @@
     },
     "components": [
       "video"
+    ],
+    "easycom": [
+      "video"
     ]
   },
   "uni-virtualPayment": {
