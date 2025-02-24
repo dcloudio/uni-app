@@ -482,6 +482,48 @@
     ],
     [
       "OnSocketErrorCallbackResult"
+    ],
+    [
+      "BuilderVideoOptions"
+    ],
+    [
+      "VideoEvent"
+    ],
+    [
+      "ObjectFit"
+    ],
+    [
+      "BuilderVideoParams"
+    ],
+    [
+      "OnPreparedEvent"
+    ],
+    [
+      "OnSeekingEvent"
+    ],
+    [
+      "OnSeekedEvent"
+    ],
+    [
+      "OnUpdateEvent"
+    ],
+    [
+      "OnFullscreenChange"
+    ],
+    [
+      "Video"
+    ],
+    [
+      "VolumePanelBuilderParams"
+    ],
+    [
+      "VolumePanel"
+    ],
+    [
+      "AudioManager"
+    ],
+    [
+      "Brightness"
     ]
   ],
   "@uni_modules/uni-facialrecognitionverify": [
