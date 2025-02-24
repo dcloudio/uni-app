@@ -898,6 +898,7 @@ class GetAppAuthorizeSettingResult extends UTSObject {
     notificationBadgeAuthorized: 'authorized' | 'denied' | 'not determined' | 'config error' | null = null;
     notificationSoundAuthorized: 'authorized' | 'denied' | 'not determined' | 'config error' | null = null;
     phoneCalendarAuthorized: 'authorized' | 'denied' | 'not determined' | null = null;
+    pasteboardAuthorized: 'authorized' | 'denied' | 'not determined' | null = null;
 }
 type LocationAccuracy = 'reduced' | 'full' | 'unsupported';
 class GetAppBaseInfoOptions extends UTSObject {
@@ -6188,6 +6189,7 @@ export function initUniExtApi() {
         notificationBadgeAuthorized: string = NOT_DETERMINED;
         notificationSoundAuthorized: string = NOT_DETERMINED;
         phoneCalendarAuthorized: string = NOT_DETERMINED;
+        pasteboardAuthorized: string = NOT_DETERMINED;
     }
     class GetAppAuthorizeSettingImpl {
         accessTokenId: number;
@@ -6204,6 +6206,7 @@ export function initUniExtApi() {
             this.getMicrophoneAuthorizeSetting();
             this.getNotificationAuthorizeSetting();
             this.getPhoneCalendarAuthorizeSetting();
+            this.getPasteboardAuthorizedSetting();
         }
         getAlbumAuthorizeSetting() {
             const grantStatus = this.atManager.checkAccessTokenSync(this.accessTokenId, 'ohos.permission.READ_IMAGEVIDEO');
@@ -6277,6 +6280,15 @@ export function initUniExtApi() {
             }
             if (grantStatus === abilityAccessCtrl.GrantStatus.PERMISSION_GRANTED) {
                 this.appAuthorizeSetting.phoneCalendarAuthorized = AUTHORIZED;
+            }
+        }
+        getPasteboardAuthorizedSetting() {
+            const grantStatus = this.atManager.checkAccessTokenSync(this.accessTokenId, 'ohos.permission.READ_PASTEBOARD');
+            if (grantStatus === abilityAccessCtrl.GrantStatus.PERMISSION_DENIED) {
+                this.appAuthorizeSetting.pasteboardAuthorized = DENIED;
+            }
+            if (grantStatus === abilityAccessCtrl.GrantStatus.PERMISSION_GRANTED) {
+                this.appAuthorizeSetting.pasteboardAuthorized = AUTHORIZED;
             }
         }
     }
