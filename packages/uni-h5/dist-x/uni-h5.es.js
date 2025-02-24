@@ -29418,6 +29418,9 @@ const _sfc_main = {
       cancelText: "取消",
       cancelColor: "#000000",
       confirmColor: "#4A5E86",
+      inputCancelColor: null,
+      inputConfirmColor: null,
+      hoverClassName: "uni-modal_dialog__content__bottom__button__hover",
       showAnim: false,
       isAutoHeight: true
     };
@@ -29429,19 +29432,14 @@ const _sfc_main = {
   },
   onLoad(options) {
     const systemInfo = uni.getSystemInfoSync();
-    const osTheme = systemInfo.osTheme;
-    const appTheme = systemInfo.appTheme;
-    if (appTheme != null) {
-      this.theme = appTheme;
-    } else if (osTheme != null) {
-      this.theme = osTheme;
-    }
     const hostTheme = systemInfo.hostTheme;
     if (hostTheme != null) {
       this.theme = hostTheme;
+      this.updateUI();
     }
     uni.onThemeChange((res) => {
       this.theme = res.theme;
+      this.updateUI();
     });
     this.readyEventName = options["readyEventName"];
     this.optionsEventName = options["optionsEventName"];
@@ -29470,23 +29468,12 @@ const _sfc_main = {
         this.cancelText = data["cancelText"];
       }
       if (data["confirmColor"] != null) {
-        this.confirmColor = data["confirmColor"];
-      } else {
-        if (this.theme == "dark") {
-          this.confirmColor = "#7388a2";
-        } else {
-          this.confirmColor = "#4A5E86";
-        }
+        this.inputConfirmColor = data["confirmColor"];
       }
       if (data["cancelColor"] != null) {
-        this.cancelColor = data["cancelColor"];
-      } else {
-        if (this.theme == "dark") {
-          this.cancelColor = "#a5a5a5";
-        } else {
-          this.cancelColor = "#000000";
-        }
+        this.inputCancelColor = data["cancelColor"];
       }
+      this.updateUI();
     });
     uni.$emit(this.readyEventName, {});
   },
@@ -29497,6 +29484,34 @@ const _sfc_main = {
     uni.$off(this.failEventName, null);
   },
   methods: {
+    /**
+     * update ui when theme change.
+     */
+    updateUI() {
+      if (this.inputConfirmColor != null) {
+        this.confirmColor = this.inputConfirmColor;
+      } else {
+        if (this.theme == "dark") {
+          this.confirmColor = "#7388a2";
+        } else {
+          this.confirmColor = "#4A5E86";
+        }
+      }
+      if (this.inputCancelColor != null) {
+        this.cancelColor = this.inputCancelColor;
+      } else {
+        if (this.theme == "dark") {
+          this.cancelColor = "#a5a5a5";
+        } else {
+          this.cancelColor = "#000000";
+        }
+      }
+      if (this.theme == "dark") {
+        this.hoverClassName = "uni-modal_dialog__content__bottom__button__hover__uni-modal_dark__mode";
+      } else {
+        this.hoverClassName = "uni-modal_dialog__content__bottom__button__hover";
+      }
+    },
     closeModal() {
       this.show = false;
       setTimeout(() => {
@@ -29515,7 +29530,7 @@ const _sfc_main = {
     }
   }
 };
-const _style_0 = "\n\n	/**\n	 * 透明背景\n	 */\n.uni-modal_dialog__mask {\n		display: flex;\n		height: 100%;\n		width: 100%;\n		justify-content: center;\n		/* 水平居中 */\n		align-items: center;\n		/* 垂直居中 */\n		background-color: rgba(0, 0, 0, 0.3);\n}\n.uni-modal_dialog__mask__show {\n		opacity: 1;\n}\n	\n	/**\n	 * 居中的内容展示区域\n	 */\n.uni-modal_dialog__container {\n		width: 300px;\n		padding-top: 10px;\n		background-color: white;\n		box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);\n		display: flex;\n		justify-content: center;\n		align-items: center;\n		overflow: hidden;\n		border-radius: 8px;\n		/**\n		 * anim\n		 */\n		transition-duration: 0.1s;\n		transition-property: opacity;\n		opacity: 0;\n}\n.uni-modal_dialog__container.uni-action-sheet_dialog__show {\n		opacity: 1;\n}\n.uni-modal_dialog__container.uni-modal_dark__mode {\n		background-color: #272727;\n}\n.uni-modal_dialog__title__text {\n		font-size: 16px;\n		font-weight: bold;\n		text-align: center;\n		margin-top: 20px;\n		text-overflow: ellipsis;\n		padding-left: 20px;\n		padding-right: 20px;\n		lines: 2;\n}\n.uni-modal_dialog__title__text.uni-modal_dark__mode {\n		color: #CFCFCF;\n}\n.uni-modal_dialog__content {\n		justify-content: center;\n		align-items: center;\n		padding: 20px;\n}\n.uni-modal_dialog__content__text {\n		font-size: 16px;\n		font-weight: normal;\n		margin-bottom: 10px;\n		color: #747474;\n		lines: 6;\n		text-overflow: ellipsis;\n}\n.uni-modal_dialog__content__textarea {\n		background-color: #F6F6F6;\n		color: #000000;\n		width: 96%;\n		padding: 5px;\n		max-height: 192px;\n}\n.uni-modal_dialog__content__textarea.uni-modal_dark__mode {\n		background-color: #3d3d3d;\n		color: #CFCFCF;\n}\n.uni-modal_dialog__content__textarea__placeholder {\n		color: #808080;\n}\n.uni-modal_dialog__content__textarea__placeholder.uni-modal_dark__mode {\n		color: #CFCFCF;\n}\n.uni-modal_dialog__content__topline {\n		width: 100%;\n		height: 1px;\n		background-color: #E0E0E0;\n}\n.uni-modal_dialog__content__topline.uni-modal_dark__mode {\n		background-color: #303030;\n}\n.uni-modal_dialog__content__bottom {\n		display: flex;\n		width: 100%;\n		height: 50px;\n		flex-direction: row;\n		overflow: hidden;\n}\n.uni-modal_dialog__content__bottom__button {\n		width: 50%;\n		height: 100%;\n		display: flex;\n		align-items: center;\n		justify-content: center;\n		flex-grow: 1;\n}\n.uni-modal_dialog__content__bottom__button__hover {\n		width: 50%;\n		height: 100%;\n		display: flex;\n		align-items: center;\n		justify-content: center;\n		background-color: #efefef;\n}\n.uni-modal_dialog__content__bottom__button__hover.uni-modal_dark__mode {\n		background-color: #1C1C1C;\n}\n.uni-modal_dialog__content__bottom__button__text {\n		letter-spacing: 1px;\n		font-size: 16px;\n		font-weight: bold;\n}\n.uni-modal_dialog__content__bottom__button__text__sure {\n		letter-spacing: 1px;\n		font-size: 16px;\n		font-weight: bold;\n		color: #4A5E86;\n}\n.uni-modal_dialog__content__bottom__splitline {\n		width: 1px;\n		height: 100%;\n		background-color: #E3E3E3;\n}\n.uni-modal_dialog__content__bottom__splitline.uni-modal_dark__mode {\n		background-color: #303030;\n}\n";
+const _style_0 = "\n\n	/**\n	 * 透明背景\n	 */\n.uni-modal_dialog__mask {\n		display: flex;\n		height: 100%;\n		width: 100%;\n		justify-content: center;\n		/* 水平居中 */\n		align-items: center;\n		/* 垂直居中 */\n		background-color: rgba(0, 0, 0, 0.3);\n}\n.uni-modal_dialog__mask__show {\n		opacity: 1;\n}\n	\n	/**\n	 * 居中的内容展示区域\n	 */\n.uni-modal_dialog__container {\n		width: 300px;\n		padding-top: 10px;\n		background-color: white;\n		box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);\n		display: flex;\n		justify-content: center;\n		align-items: center;\n		overflow: hidden;\n		border-radius: 8px;\n		/**\n		 * anim\n		 */\n		transition-duration: 0.1s;\n		transition-property: opacity;\n		opacity: 0;\n}\n.uni-modal_dialog__container.uni-modal_dialog__show {\n		opacity: 1;\n}\n.uni-modal_dialog__container.uni-modal_dark__mode {\n		background-color: #272727;\n}\n.uni-modal_dialog__title__text {\n		font-size: 16px;\n		font-weight: bold;\n		text-align: center;\n		margin-top: 20px;\n		text-overflow: ellipsis;\n		padding-left: 20px;\n		padding-right: 20px;\n		lines: 2;\n}\n.uni-modal_dialog__title__text.uni-modal_dark__mode {\n		color: #CFCFCF;\n}\n.uni-modal_dialog__content {\n		justify-content: center;\n		align-items: center;\n		padding: 20px;\n}\n.uni-modal_dialog__content__text {\n		font-size: 16px;\n		font-weight: normal;\n		margin-bottom: 10px;\n		color: #747474;\n		lines: 6;\n		width: 100%;\n		text-overflow: ellipsis;\n}\n.uni-modal_dialog__content__textarea {\n		background-color: #F6F6F6;\n		color: #000000;\n		width: 96%;\n		padding: 5px;\n		max-height: 192px;\n}\n.uni-modal_dialog__content__textarea.uni-modal_dark__mode {\n		background-color: #3d3d3d;\n		color: #CFCFCF;\n}\n.uni-modal_dialog__content__textarea__placeholder {\n		color: #808080;\n}\n.uni-modal_dialog__content__textarea__placeholder.uni-modal_dark__mode {\n		color: #CFCFCF;\n}\n.uni-modal_dialog__content__topline {\n		width: 100%;\n		height: 1px;\n		background-color: #E0E0E0;\n}\n.uni-modal_dialog__content__topline.uni-modal_dark__mode {\n		background-color: #303030;\n}\n.uni-modal_dialog__content__bottom {\n		display: flex;\n		width: 100%;\n		height: 50px;\n		flex-direction: row;\n		overflow: hidden;\n}\n.uni-modal_dialog__content__bottom__button {\n		width: 50%;\n		height: 100%;\n		display: flex;\n		align-items: center;\n		justify-content: center;\n		flex-grow: 1;\n}\n.uni-modal_dialog__content__bottom__button__hover {\n		width: 50%;\n		height: 100%;\n		display: flex;\n		align-items: center;\n		justify-content: center;\n		background-color: #efefef;\n}\n.uni-modal_dialog__content__bottom__button__hover__uni-modal_dark__mode {\n		width: 50%;\n		height: 100%;\n		display: flex;\n		align-items: center;\n		justify-content: center;\n		background-color: #1C1C1C;\n}\n.uni-modal_dialog__content__bottom__button__text {\n		letter-spacing: 1px;\n		font-size: 16px;\n		font-weight: bold;\n		text-align: center;\n		lines : 1;\n}\n.uni-modal_dialog__content__bottom__button__text__sure {\n		letter-spacing: 1px;\n		font-size: 16px;\n		font-weight: bold;\n		lines : 1;\n		text-align: center;\n		color: #4A5E86;\n}\n.uni-modal_dialog__content__bottom__splitline {\n		width: 1px;\n		height: 100%;\n		background-color: #E3E3E3;\n}\n.uni-modal_dialog__content__bottom__splitline.uni-modal_dark__mode {\n		background-color: #303030;\n}\n";
 function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   const _component_text = __syscom_0$1;
   const _component_textarea = __syscom_1;
@@ -29525,7 +29540,7 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   }, {
     default: withCtx(() => [
       createVNode(_component_view, {
-        class: normalizeClass(["uni-modal_dialog__container", { "uni-action-sheet_dialog__show": $data.showAnim, "uni-modal_dark__mode": $data.theme == "dark" }])
+        class: normalizeClass(["uni-modal_dialog__container", { "uni-modal_dialog__show": $data.showAnim, "uni-modal_dark__mode": $data.theme == "dark" }])
       }, {
         default: withCtx(() => [
           createVNode(_component_view, { style: { "width": "100%", "height": "100%", "border-radius": "8px" } }, {
@@ -29571,7 +29586,7 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
                   $data.showCancel ? (openBlock(), createBlock(_component_view, {
                     key: 0,
                     class: normalizeClass(["uni-modal_dialog__content__bottom__button", { "uni-modal_dark__mode": $data.theme == "dark" }]),
-                    "hover-class": "uni-modal_dialog__content__bottom__button__hover",
+                    "hover-class": $data.hoverClassName,
                     onClick: $options.handleCancel
                   }, {
                     default: withCtx(() => [
@@ -29586,14 +29601,14 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
                       }, 8, ["style"])
                     ]),
                     _: 1
-                  }, 8, ["class", "onClick"])) : createCommentVNode("", true),
+                  }, 8, ["class", "hover-class", "onClick"])) : createCommentVNode("", true),
                   $data.showCancel ? (openBlock(), createBlock(_component_view, {
                     key: 1,
                     class: normalizeClass(["uni-modal_dialog__content__bottom__splitline", { "uni-modal_dark__mode": $data.theme == "dark" }])
                   }, null, 8, ["class"])) : createCommentVNode("", true),
                   createVNode(_component_view, {
                     class: normalizeClass(["uni-modal_dialog__content__bottom__button", { "uni-modal_dark__mode": $data.theme == "dark" }]),
-                    "hover-class": "uni-modal_dialog__content__bottom__button__hover",
+                    "hover-class": $data.hoverClassName,
                     onClick: $options.handleSure
                   }, {
                     default: withCtx(() => [
@@ -29608,7 +29623,7 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
                       }, 8, ["style"])
                     ]),
                     _: 1
-                  }, 8, ["class", "onClick"])
+                  }, 8, ["class", "hover-class", "onClick"])
                 ]),
                 _: 1
               })

@@ -1,5 +1,7 @@
 'use strict';
 
+Object.defineProperty(exports, '__esModule', { value: true });
+
 var appVite = require('@dcloudio/uni-app-vite');
 var uniAppUts = require('@dcloudio/uni-app-uts');
 var path = require('path');
@@ -64,7 +66,7 @@ var ExternalModuls = [
 	}
 ];
 
-var ExternalModulsX = [
+var ExternalModulesX = [
 	{
 		type: "extapi",
 		plugin: "uni-facialRecognitionVerify",
@@ -126,7 +128,7 @@ var ExternalModulsX = [
 ];
 
 const isX = process.env.UNI_APP_X === 'true';
-const StandaloneExtApis = isX ? ExternalModulsX : ExternalModuls;
+const StandaloneExtApis = isX ? ExternalModulesX : ExternalModuls;
 const Providers = StandaloneExtApis.filter((item) => item.type === 'provider');
 const ApiModules = StandaloneExtApis.filter((item) => item.type === 'extapi');
 const commandGlobals = {
@@ -481,9 +483,11 @@ function initUniExtApi() {
     });
 }
 
+const externalModulesX = ExternalModulesX;
 var index = [
     process.env.UNI_APP_X === 'true' ? uniAppUts.initUniAppXHarmonyPlugin : appVite__default.default,
     uniAppHarmonyPlugin,
 ];
 
-module.exports = index;
+exports.default = index;
+exports.externalModulesX = externalModulesX;

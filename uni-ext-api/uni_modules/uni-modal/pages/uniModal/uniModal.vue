@@ -1,7 +1,7 @@
 <template>
 	<view class="uni-modal_dialog__mask" :class="{ 'uni-modal_dialog__mask__show': showAnim }">
 		
-		<view class="uni-modal_dialog__container" :class="{'uni-action-sheet_dialog__show': showAnim,  'uni-modal_dark__mode': theme == 'dark'}">
+		<view class="uni-modal_dialog__container" :class="{'uni-modal_dialog__show': showAnim,  'uni-modal_dark__mode': theme == 'dark'}">
 			<!--ios need -->
 			<view style="width: 100%;height: 100%; border-radius: 8px;">
 				
@@ -27,9 +27,11 @@
 
 				<view class="uni-modal_dialog__content__topline" :class="{ 'uni-modal_dark__mode': theme == 'dark'}"></view>
 				<view class="uni-modal_dialog__content__bottom">
-					<view v-if="showCancel" class="uni-modal_dialog__content__bottom__button" 
-						hover-class="uni-modal_dialog__content__bottom__button__hover"
-						:class="{ 'uni-modal_dark__mode': theme == 'dark'}" @click="handleCancel">
+					<view v-if="showCancel" 
+						class="uni-modal_dialog__content__bottom__button" 
+						:class="{ 'uni-modal_dark__mode': theme == 'dark'}"
+						:hover-class="hoverClassName" 
+						 @click="handleCancel">
 						<text :style="{ color: cancelColor }"
 							class="uni-modal_dialog__content__bottom__button__text">{{cancelText}}</text>
 					</view>
@@ -37,8 +39,9 @@
 						:class="{ 'uni-modal_dark__mode': theme == 'dark'}"></view>
 					<view 
 						class="uni-modal_dialog__content__bottom__button" 
-						hover-class="uni-modal_dialog__content__bottom__button__hover"
-						:class="{ 'uni-modal_dark__mode': theme == 'dark'}" @click="handleSure">
+						:class="{ 'uni-modal_dark__mode': theme == 'dark'}" 
+						:hover-class="hoverClassName" 
+						@click="handleSure">
 						<text :style="{ color: confirmColor }"
 							class="uni-modal_dialog__content__bottom__button__text__sure">
 							{{confirmText}}
@@ -72,6 +75,9 @@
 				cancelText: '取消',
 				cancelColor: '#000000',
 				confirmColor: '#4A5E86',
+				inputCancelColor: null as string | null,
+				inputConfirmColor: null as string | null,
+				hoverClassName:"uni-modal_dialog__content__bottom__button__hover",
 				showAnim: false,
 				isAutoHeight:true
 			}
@@ -91,7 +97,6 @@
 			
 			setTimeout(() => {
 				this.showAnim = true
-				// this.isAutoHeight = true
 			}, 10)
 			
 		},
@@ -101,30 +106,28 @@
 			 * show modal 不需要对内置文案进行i18n适配。（参考微信）
 			 */
 			const systemInfo = uni.getSystemInfoSync()
-			const osTheme = systemInfo.osTheme
-			const appTheme = systemInfo.appTheme
-
-			if (appTheme != null) {
-				this.theme = appTheme
-			} else if (osTheme != null) {
-				this.theme = osTheme
-			}
+			
 			// #ifdef WEB
 			const hostTheme = systemInfo.hostTheme
 			if (hostTheme != null) {
 				this.theme = hostTheme
+				this.updateUI()
 			}
 			uni.onThemeChange((res) => {
 				this.theme = res.theme
+				this.updateUI()
 			});
 			// #endif
 			// #ifdef APP
+			const appTheme = systemInfo.appTheme
+			if (appTheme != null) {
+				this.theme = appTheme
+			} 
 			uni.onAppThemeChange((res: AppThemeChangeResult) => {
 				this.theme = res.appTheme
+				this.updateUI()
 			})
-			uni.onOsThemeChange((res: OsThemeChangeResult) => {
-				this.theme = res.osTheme
-			})
+			
 			// #endif
 			this.readyEventName = options['readyEventName'] !
 			this.optionsEventName = options['optionsEventName'] !
@@ -155,28 +158,15 @@
 				if (data['cancelText'] != null) {
 					this.cancelText = data['cancelText'] as string
 				}
-
+				
 				if (data['confirmColor'] != null) {
-					this.confirmColor = data['confirmColor'] as string
-				} else {
-					/**
-					 * init text color with theme
-					 */
-					if (this.theme == "dark") {
-						this.confirmColor = '#7388a2'
-					} else {
-						this.confirmColor = '#4A5E86'
-					}
+					this.inputConfirmColor = data['confirmColor'] as string
 				}
 				if (data['cancelColor'] != null) {
-					this.cancelColor = data['cancelColor'] as string
-				} else {
-					if (this.theme == "dark") {
-						this.cancelColor = '#a5a5a5'
-					} else {
-						this.cancelColor = '#000000'
-					}
+					this.inputCancelColor = data['cancelColor'] as string
 				}
+				
+				this.updateUI()
 				
 			})
 
@@ -192,6 +182,40 @@
 			uni.$off(this.failEventName, null)
 		},
 		methods: {
+			/**
+			 * update ui when theme change.
+			 */
+			updateUI(){
+				
+				if (this.inputConfirmColor != null) {
+					this.confirmColor = this.inputConfirmColor!
+				} else {
+					/**
+					 * init text color with theme
+					 */
+					if (this.theme == "dark") {
+						this.confirmColor = '#7388a2'
+					} else {
+						this.confirmColor = '#4A5E86'
+					}
+				}
+				if (this.inputCancelColor != null) {
+					this.cancelColor = this.inputCancelColor!
+				} else {
+					if (this.theme == "dark") {
+						this.cancelColor = '#a5a5a5'
+					} else {
+						this.cancelColor = '#000000'
+					}
+				}
+				
+				if(this.theme == "dark"){
+					this.hoverClassName = "uni-modal_dialog__content__bottom__button__hover__uni-modal_dark__mode"
+				}else{
+					this.hoverClassName = "uni-modal_dialog__content__bottom__button__hover"
+				}
+				
+			},
 			
 			closeModal() {
 				this.show = false
@@ -260,7 +284,7 @@
 		opacity: 0;
 	}
 	
-	.uni-modal_dialog__container.uni-action-sheet_dialog__show {
+	.uni-modal_dialog__container.uni-modal_dialog__show {
 		opacity: 1;
 	}
 
@@ -295,6 +319,7 @@
 		margin-bottom: 10px;
 		color: #747474;
 		lines: 6;
+		width: 100%;
 		text-overflow: ellipsis;
 	}
 
@@ -355,7 +380,12 @@
 		background-color: #efefef;
 	}
 
-	.uni-modal_dialog__content__bottom__button__hover.uni-modal_dark__mode {
+	.uni-modal_dialog__content__bottom__button__hover__uni-modal_dark__mode {
+		width: 50%;
+		height: 100%;
+		display: flex;
+		align-items: center;
+		justify-content: center;
 		background-color: #1C1C1C;
 	}
 
@@ -363,12 +393,16 @@
 		letter-spacing: 1px;
 		font-size: 16px;
 		font-weight: bold;
+		text-align: center;
+		lines : 1;
 	}
 
 	.uni-modal_dialog__content__bottom__button__text__sure {
 		letter-spacing: 1px;
 		font-size: 16px;
 		font-weight: bold;
+		lines : 1;
+		text-align: center;
 		color: #4A5E86;
 	}
 

@@ -160,8 +160,7 @@ export default defineConfig({
         // TODO 优化此逻辑
         copyEtsFunctions.forEach((fn) => fn())
       },
-
-    }
+    },
   ],
   esbuild: {
     // 强制为 es2015，否则默认为 esnext，将会生成 __publicField 代码，
@@ -198,7 +197,7 @@ export default defineConfig({
         if (!String(msg).includes('external module "vue" but never used')) {
           warn(msg)
         }
-      }
+      },
     },
   },
 })
@@ -211,7 +210,7 @@ function parseExtApiInjects(uniModulesDir: string) {
     '',
     uniModulesDir,
     require(path.resolve(uniModulesDir, 'package.json'))?.uni_modules[
-    'uni-ext-api'
+      'uni-ext-api'
     ] || {}
   )
 }
@@ -363,11 +362,7 @@ function generateExtApiSource({
     for (const etsFile of etsFiles) {
       fs.copySync(
         path.resolve(tempDir, etsFile),
-        path.resolve(
-          __dirname,
-          isX ? 'dist-x' : 'dist',
-          etsFile
-        )
+        path.resolve(__dirname, isX ? 'dist-x' : 'dist', etsFile)
       )
     }
   })
@@ -485,7 +480,7 @@ function initArkTSExtApi() {
   }
 
   // uni-app
-  ; (() => {
+  ;(() => {
     const external = ExternalModules.map((item) => item.name)
     const tempDir = resolveExtApiTempDir('uni-app-harmony')
     fs.emptyDirSync(tempDir)
@@ -512,50 +507,50 @@ function initArkTSExtApi() {
     )
   })()
 
-    // uni-app-x
-    ; (() => {
-      const external = ExternalModulesX.map((item) => item.name)
-      const tempDir = resolveExtApiTempDir('uni-app-harmony') + '-x'
-      fs.emptyDirSync(tempDir)
-      generateExtApiSource({
-        isX: true,
-        exclude: ExtApiBlackListX,
-        external: external,
-        sourceDirs: [
-          process.env.UNI_APP_EXT_API_DIR,
-          process.env.UNI_APP_EXT_API_INTERNAL_DIR,
-        ],
-        type: 'api',
-        tempDir: tempDir,
-      })
-      // 组件仅支持uni-app-x
-      const tempComponentDir = path.join(
-        resolveExtApiTempDir('uni-app-harmony'),
-        '../uni-ext-component-x'
-      )
-      fs.emptyDirSync(tempComponentDir)
-      generateExtApiSource({
-        isX: true,
-        exclude: [],
-        external: external,
-        sourceDirs: [process.env.UNI_APP_EXT_COMPONENT_DIR],
-        type: 'component',
-        tempDir: tempComponentDir,
-      })
-      const externalApiModuleJson = generateExternalModuleJson({
-        tempDir,
-        external,
-        isComponent: false,
-      })
-      const externalComponentModuleJson = generateExternalModuleJson({
-        tempDir: tempComponentDir,
-        external,
-        isComponent: true,
-      })
-      fs.outputJSONSync(
-        resolve('./src/compiler/external-modules-x.json'),
-        [...externalApiModuleJson, ...externalComponentModuleJson],
-        { spaces: 2 }
-      )
-    })()
+  // uni-app-x
+  ;(() => {
+    const external = ExternalModulesX.map((item) => item.name)
+    const tempDir = resolveExtApiTempDir('uni-app-harmony') + '-x'
+    fs.emptyDirSync(tempDir)
+    generateExtApiSource({
+      isX: true,
+      exclude: ExtApiBlackListX,
+      external: external,
+      sourceDirs: [
+        process.env.UNI_APP_EXT_API_DIR,
+        process.env.UNI_APP_EXT_API_INTERNAL_DIR,
+      ],
+      type: 'api',
+      tempDir: tempDir,
+    })
+    // 组件仅支持uni-app-x
+    const tempComponentDir = path.join(
+      resolveExtApiTempDir('uni-app-harmony'),
+      '../uni-ext-component-x'
+    )
+    fs.emptyDirSync(tempComponentDir)
+    generateExtApiSource({
+      isX: true,
+      exclude: [],
+      external: external,
+      sourceDirs: [process.env.UNI_APP_EXT_COMPONENT_DIR],
+      type: 'component',
+      tempDir: tempComponentDir,
+    })
+    const externalApiModuleJson = generateExternalModuleJson({
+      tempDir,
+      external,
+      isComponent: false,
+    })
+    const externalComponentModuleJson = generateExternalModuleJson({
+      tempDir: tempComponentDir,
+      external,
+      isComponent: true,
+    })
+    fs.outputJSONSync(
+      resolve('./src/compiler/external-modules-x.json'),
+      [...externalApiModuleJson, ...externalComponentModuleJson],
+      { spaces: 2 }
+    )
+  })()
 }

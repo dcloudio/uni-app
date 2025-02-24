@@ -1724,6 +1724,7 @@ function closeNativeDialogPage(dialogPage, animationType, animationDuration, cal
   var webview = getNativeApp().pageManager.findPageById(dialogPage.vm.$basePage.id + "");
   if (webview) {
     closeWebview(webview, animationType || "none", animationDuration || 0, () => {
+      getVueApp().unmountPage(dialogPage.vm);
       setStatusBarStyle();
     });
   }
@@ -1965,7 +1966,9 @@ function registerDialogPage(_ref2, dialogPage, onCreated) {
     pageStyle.set("disableSwipeBack", true);
   }
   var parentPage = dialogPage.getParentPage();
-  var nativePage2 = getPageManager().createDialogPage(
+  var createDialogPage = getPageManager().createDialogPage;
+  var isHarmony = createDialogPage.length === 6;
+  var nativePage2 = isHarmony ? createDialogPage(url, id2.toString(), pageStyle, parentPage === null || parentPage === void 0 ? void 0 : parentPage.getNativePage()) : createDialogPage(
     // @ts-expect-error
     parentPage ? parentPage.__nativePageId : "",
     id2.toString(),
@@ -2852,7 +2855,8 @@ var openDialogPage = (options) => {
   var _options$success, _options$complete;
   var {
     url,
-    animationType
+    animationType,
+    animationDuration
   } = options;
   if (!options.url) {
     triggerFailCallback(options, "url is required");
@@ -2894,6 +2898,7 @@ var openDialogPage = (options) => {
       if (dialogPages.length) {
         invokeHook(dialogPages[dialogPages.length - 1].$vm, ON_HIDE);
       }
+      dialogPages.push(dialogPage);
     }
     setCurrentNormalDialogPage(dialogPage);
   } else {
@@ -2913,7 +2918,7 @@ var openDialogPage = (options) => {
     }
     setCurrentSystemDialogPage(dialogPage);
   }
-  var [aniType, aniDuration] = initAnimation(path, animationType);
+  var [aniType, aniDuration] = initAnimation(path, animationType, animationDuration);
   var noAnimation = aniType === "none" || aniDuration === 0;
   function callback(page2) {
     showWebview(page2, aniType, aniDuration, () => {
@@ -2952,7 +2957,7 @@ function triggerFailCallback(options, errMsg) {
   (_options$fail = options.fail) === null || _options$fail === void 0 || _options$fail.call(options, failOptions);
   (_options$complete2 = options.complete) === null || _options$complete2 === void 0 || _options$complete2.call(options, failOptions);
 }
-function initAnimation(path, animationType) {
+function initAnimation(path, animationType, animationDuration) {
   if (!getCurrentPage()) {
     return ["none", 0];
   }
@@ -2964,7 +2969,7 @@ function initAnimation(path, animationType) {
   if (_animationType == "pop-in") {
     _animationType = "none";
   }
-  return [_animationType, meta.animationDuration || globalStyle.animationDuration || ANI_DURATION];
+  return [_animationType, animationDuration || meta.animationDuration || globalStyle.animationDuration || ANI_DURATION];
 }
 function closePreActionSheet(dialogPages) {
   var actionSheets = dialogPages.filter((page) => isSystemActionSheetDialogPage(page));
@@ -7601,10 +7606,10 @@ var _hoisted_4$2 = {
 var _hoisted_5$1 = {
   class: "uni-choose-location-poi-search"
 };
-var _hoisted_6 = {
+var _hoisted_6$1 = {
   class: "uni-choose-location-poi-search-box"
 };
-var _hoisted_7 = {
+var _hoisted_7$1 = {
   class: "uni-choose-location-icons uni-choose-location-search-icon"
 };
 var _hoisted_8 = ["placeholder"];
@@ -7699,7 +7704,7 @@ function _sfc_render$4(_ctx, _cache, $props, $setup, $data, $options) {
     key: 0,
     class: normalizeClass(["uni-choose-location-poi", [$options.landscapeClassCom]]),
     style: normalizeStyle($options.poiBoxStyleCom)
-  }, [createElementVNode("view", _hoisted_5$1, [createElementVNode("view", _hoisted_6, [createElementVNode("text", _hoisted_7, toDisplayString($data.icon.search), 1), withDirectives(createElementVNode("input", {
+  }, [createElementVNode("view", _hoisted_5$1, [createElementVNode("view", _hoisted_6$1, [createElementVNode("text", _hoisted_7$1, toDisplayString($data.icon.search), 1), withDirectives(createElementVNode("input", {
     "onUpdate:modelValue": _cache[3] || (_cache[3] = ($event) => $data.searchValue = $event),
     type: "text",
     placeholder: $options.languageCom["search"],
@@ -7764,6 +7769,9 @@ const _sfc_main$3 = {
       cancelText: "取消",
       cancelColor: "#000000",
       confirmColor: "#4A5E86",
+      inputCancelColor: null,
+      inputConfirmColor: null,
+      hoverClassName: "uni-modal_dialog__content__bottom__button__hover",
       showAnim: false,
       isAutoHeight: true
     };
@@ -7775,18 +7783,13 @@ const _sfc_main$3 = {
   },
   onLoad(options) {
     var systemInfo = uni.getSystemInfoSync();
-    var osTheme = systemInfo.osTheme;
     var appTheme = systemInfo.appTheme;
     if (appTheme != null) {
       this.theme = appTheme;
-    } else if (osTheme != null) {
-      this.theme = osTheme;
     }
     uni.onAppThemeChange((res) => {
       this.theme = res.appTheme;
-    });
-    uni.onOsThemeChange((res) => {
-      this.theme = res.osTheme;
+      this.updateUI();
     });
     this.readyEventName = options["readyEventName"];
     this.optionsEventName = options["optionsEventName"];
@@ -7815,23 +7818,12 @@ const _sfc_main$3 = {
         this.cancelText = data["cancelText"];
       }
       if (data["confirmColor"] != null) {
-        this.confirmColor = data["confirmColor"];
-      } else {
-        if (this.theme == "dark") {
-          this.confirmColor = "#7388a2";
-        } else {
-          this.confirmColor = "#4A5E86";
-        }
+        this.inputConfirmColor = data["confirmColor"];
       }
       if (data["cancelColor"] != null) {
-        this.cancelColor = data["cancelColor"];
-      } else {
-        if (this.theme == "dark") {
-          this.cancelColor = "#a5a5a5";
-        } else {
-          this.cancelColor = "#000000";
-        }
+        this.inputCancelColor = data["cancelColor"];
       }
+      this.updateUI();
     });
     uni.$emit(this.readyEventName, {});
   },
@@ -7842,6 +7834,34 @@ const _sfc_main$3 = {
     uni.$off(this.failEventName, null);
   },
   methods: {
+    /**
+     * update ui when theme change.
+     */
+    updateUI() {
+      if (this.inputConfirmColor != null) {
+        this.confirmColor = this.inputConfirmColor;
+      } else {
+        if (this.theme == "dark") {
+          this.confirmColor = "#7388a2";
+        } else {
+          this.confirmColor = "#4A5E86";
+        }
+      }
+      if (this.inputCancelColor != null) {
+        this.cancelColor = this.inputCancelColor;
+      } else {
+        if (this.theme == "dark") {
+          this.cancelColor = "#a5a5a5";
+        } else {
+          this.cancelColor = "#000000";
+        }
+      }
+      if (this.theme == "dark") {
+        this.hoverClassName = "uni-modal_dialog__content__bottom__button__hover__uni-modal_dark__mode";
+      } else {
+        this.hoverClassName = "uni-modal_dialog__content__bottom__button__hover";
+      }
+    },
     closeModal() {
       this.show = false;
       setTimeout(() => {
@@ -7894,7 +7914,7 @@ const _style_0$3 = {
       "transitionProperty": "opacity",
       "opacity": 0
     },
-    ".uni-action-sheet_dialog__show": {
+    ".uni-modal_dialog__show": {
       "opacity": 1
     },
     ".uni-modal_dark__mode": {
@@ -7933,6 +7953,7 @@ const _style_0$3 = {
       "marginBottom": 10,
       "color": "#747474",
       "lines": 6,
+      "width": "100%",
       "textOverflow": "ellipsis"
     }
   },
@@ -7997,8 +8018,15 @@ const _style_0$3 = {
       "alignItems": "center",
       "justifyContent": "center",
       "backgroundColor": "#efefef"
-    },
-    ".uni-modal_dark__mode": {
+    }
+  },
+  "uni-modal_dialog__content__bottom__button__hover__uni-modal_dark__mode": {
+    "": {
+      "width": "50%",
+      "height": "100%",
+      "display": "flex",
+      "alignItems": "center",
+      "justifyContent": "center",
       "backgroundColor": "#1C1C1C"
     }
   },
@@ -8006,7 +8034,9 @@ const _style_0$3 = {
     "": {
       "letterSpacing": 1,
       "fontSize": 16,
-      "fontWeight": "bold"
+      "fontWeight": "bold",
+      "textAlign": "center",
+      "lines": 1
     }
   },
   "uni-modal_dialog__content__bottom__button__text__sure": {
@@ -8014,6 +8044,8 @@ const _style_0$3 = {
       "letterSpacing": 1,
       "fontSize": 16,
       "fontWeight": "bold",
+      "lines": 1,
+      "textAlign": "center",
       "color": "#4A5E86"
     }
   },
@@ -8052,6 +8084,8 @@ var _hoisted_4$1 = {
 var _hoisted_5 = {
   class: "uni-modal_dialog__content__bottom"
 };
+var _hoisted_6 = ["hover-class"];
+var _hoisted_7 = ["hover-class"];
 function _sfc_render$3(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createElementBlock("view", {
     class: normalizeClass(["uni-modal_dialog__mask", {
@@ -8059,7 +8093,7 @@ function _sfc_render$3(_ctx, _cache, $props, $setup, $data, $options) {
     }])
   }, [createElementVNode("view", {
     class: normalizeClass(["uni-modal_dialog__container", {
-      "uni-action-sheet_dialog__show": $data.showAnim,
+      "uni-modal_dialog__show": $data.showAnim,
       "uni-modal_dark__mode": $data.theme == "dark"
     }])
   }, [createElementVNode("view", _hoisted_1$2, [$data.title ? (openBlock(), createElementBlock("text", {
@@ -8087,7 +8121,7 @@ function _sfc_render$3(_ctx, _cache, $props, $setup, $data, $options) {
     class: normalizeClass(["uni-modal_dialog__content__bottom__button", {
       "uni-modal_dark__mode": $data.theme == "dark"
     }]),
-    "hover-class": "uni-modal_dialog__content__bottom__button__hover",
+    "hover-class": $data.hoverClassName,
     onClick: _cache[1] || (_cache[1] = function() {
       return $options.handleCancel && $options.handleCancel(...arguments);
     })
@@ -8096,7 +8130,7 @@ function _sfc_render$3(_ctx, _cache, $props, $setup, $data, $options) {
       color: $data.cancelColor
     }),
     class: "uni-modal_dialog__content__bottom__button__text"
-  }, toDisplayString($data.cancelText), 5)], 2)) : createCommentVNode("", true), $data.showCancel ? (openBlock(), createElementBlock("view", {
+  }, toDisplayString($data.cancelText), 5)], 10, _hoisted_6)) : createCommentVNode("", true), $data.showCancel ? (openBlock(), createElementBlock("view", {
     key: 1,
     class: normalizeClass(["uni-modal_dialog__content__bottom__splitline", {
       "uni-modal_dark__mode": $data.theme == "dark"
@@ -8105,7 +8139,7 @@ function _sfc_render$3(_ctx, _cache, $props, $setup, $data, $options) {
     class: normalizeClass(["uni-modal_dialog__content__bottom__button", {
       "uni-modal_dark__mode": $data.theme == "dark"
     }]),
-    "hover-class": "uni-modal_dialog__content__bottom__button__hover",
+    "hover-class": $data.hoverClassName,
     onClick: _cache[2] || (_cache[2] = function() {
       return $options.handleSure && $options.handleSure(...arguments);
     })
@@ -8114,7 +8148,7 @@ function _sfc_render$3(_ctx, _cache, $props, $setup, $data, $options) {
       color: $data.confirmColor
     }),
     class: "uni-modal_dialog__content__bottom__button__text__sure"
-  }, toDisplayString($data.confirmText), 5)], 2)])])], 2)], 2);
+  }, toDisplayString($data.confirmText), 5)], 10, _hoisted_7)])])], 2)], 2);
 }
 const UniUniModalPage = /* @__PURE__ */ _export_sfc(_sfc_main$3, [["render", _sfc_render$3], ["styles", [_style_0$3]]]);
 class Friction {
