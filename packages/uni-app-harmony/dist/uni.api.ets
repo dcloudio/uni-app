@@ -897,6 +897,7 @@ class GetAppAuthorizeSettingResult extends UTSObject {
     notificationBadgeAuthorized: 'authorized' | 'denied' | 'not determined' | 'config error' | null = null;
     notificationSoundAuthorized: 'authorized' | 'denied' | 'not determined' | 'config error' | null = null;
     phoneCalendarAuthorized: 'authorized' | 'denied' | 'not determined' | null = null;
+    pasteboardAuthorized: 'authorized' | 'denied' | 'not determined' | null = null;
 }
 type LocationAccuracy = 'reduced' | 'full' | 'unsupported';
 class GetAppBaseInfoOptions extends UTSObject {
@@ -3465,6 +3466,13 @@ export function initUniExtApi() {
         private audioId: string = '';
         private _playbackRate: number = 1;
         readonly obeyMuteSwitch: boolean = false;
+        private _STOP_STEP: number = 2;
+        private _stop: boolean = false;
+        private _stopStep: number = 0;
+        private _resetStop() {
+            this._stop = false;
+            this._stopStep = 0;
+        }
         constructor(audioId: string){
             this.audioId = audioId;
             this.init();
@@ -3477,13 +3485,27 @@ export function initUniExtApi() {
                 this.audioPlayerCallback.play();
             });
             AUDIO_PLAYERS[this.audioId]?.on('pause', ()=>{
-                this.audioPlayerCallback.pause();
+                if (!this._stop) {
+                    this.audioPlayerCallback.pause();
+                } else {
+                    this._stopStep++;
+                    if (this._stopStep === this._STOP_STEP) {
+                        this._resetStop();
+                    }
+                }
             });
             AUDIO_PLAYERS[this.audioId]?.on('finish', ()=>{
                 this.audioPlayerCallback.ended();
             });
             AUDIO_PLAYERS[this.audioId]?.on('timeUpdate', (res)=>{
-                this.audioPlayerCallback.timeUpdate(res / 1000);
+                if (!this._stop) {
+                    this.audioPlayerCallback.timeUpdate(res / 1000);
+                } else {
+                    this._stopStep++;
+                    if (this._stopStep === this._STOP_STEP) {
+                        this._resetStop();
+                    }
+                }
             });
             AUDIO_PLAYERS[this.audioId]?.on('error', (err)=>{
                 this.audioPlayerCallback.error(new AudioPlayerError(err.message, err.code));
@@ -3655,9 +3677,10 @@ export function initUniExtApi() {
             ].includes(audioPlayer.state)) {
                 return;
             }
-            audioPlayer.stop();
+            this._stop = true;
+            audioPlayer.pause();
+            audioPlayer.seek(0);
             this.audioPlayerCallback.stop();
-            audioPlayer.release();
         }
         seek(position: number) {
             const audioPlayer = AUDIO_PLAYERS[this.audioId];
@@ -6078,6 +6101,7 @@ export function initUniExtApi() {
         notificationBadgeAuthorized: string = NOT_DETERMINED;
         notificationSoundAuthorized: string = NOT_DETERMINED;
         phoneCalendarAuthorized: string = NOT_DETERMINED;
+        pasteboardAuthorized: string = NOT_DETERMINED;
     }
     class GetAppAuthorizeSettingImpl {
         accessTokenId: number;
@@ -6094,6 +6118,7 @@ export function initUniExtApi() {
             this.getMicrophoneAuthorizeSetting();
             this.getNotificationAuthorizeSetting();
             this.getPhoneCalendarAuthorizeSetting();
+            this.getPasteboardAuthorizedSetting();
         }
         getAlbumAuthorizeSetting() {
             const grantStatus = this.atManager.checkAccessTokenSync(this.accessTokenId, 'ohos.permission.READ_IMAGEVIDEO');
@@ -6167,6 +6192,15 @@ export function initUniExtApi() {
             }
             if (grantStatus === abilityAccessCtrl.GrantStatus.PERMISSION_GRANTED) {
                 this.appAuthorizeSetting.phoneCalendarAuthorized = AUTHORIZED;
+            }
+        }
+        getPasteboardAuthorizedSetting() {
+            const grantStatus = this.atManager.checkAccessTokenSync(this.accessTokenId, 'ohos.permission.READ_PASTEBOARD');
+            if (grantStatus === abilityAccessCtrl.GrantStatus.PERMISSION_DENIED) {
+                this.appAuthorizeSetting.pasteboardAuthorized = DENIED;
+            }
+            if (grantStatus === abilityAccessCtrl.GrantStatus.PERMISSION_GRANTED) {
+                this.appAuthorizeSetting.pasteboardAuthorized = AUTHORIZED;
             }
         }
     }
