@@ -838,16 +838,16 @@
         "name": "showModal",
         "app": {
           "js": false,
-          "kotlin": false,
-          "swift": false
+          "kotlin": true,
+          "swift": true
         }
       },
       "showActionSheet": {
         "name": "showActionSheet",
         "app": {
           "js": false,
-          "kotlin": false,
-          "swift": false
+          "kotlin": true,
+          "swift": true
         }
       }
     }
