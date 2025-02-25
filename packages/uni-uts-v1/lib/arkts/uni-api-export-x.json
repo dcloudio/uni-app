@@ -1,5 +1,5 @@
 {
-  "@dcloudio/uni-app-runtime": [
+  "@dcloudio/uni-app-x-runtime": [
     [
       "ChooseMediaSuccess"
     ],
@@ -101,6 +101,21 @@
     ],
     [
       "GetDeviceInfo"
+    ],
+    [
+      "GetLocationFail"
+    ],
+    [
+      "GetLocation"
+    ],
+    [
+      "GetLocationSuccess"
+    ],
+    [
+      "GetLocationOptions"
+    ],
+    [
+      "UniLocationProvider"
     ],
     [
       "GetProviderSuccess"
@@ -253,6 +268,42 @@
       "ChooseFileOptions"
     ],
     [
+      "SetNavigationBarColorOptions"
+    ],
+    [
+      "SetNavigationBarColorSuccess"
+    ],
+    [
+      "SetNavigationBarColor"
+    ],
+    [
+      "SetNavigationBarTitleOptions"
+    ],
+    [
+      "SetNavigationBarTitleSuccess"
+    ],
+    [
+      "SetNavigationBarTitle"
+    ],
+    [
+      "ShowNavigationBarLoadingSuccess"
+    ],
+    [
+      "ShowNavigationBarLoadingOptions"
+    ],
+    [
+      "ShowNavigationBarLoading"
+    ],
+    [
+      "HideNavigationBarLoadingSuccess"
+    ],
+    [
+      "HideNavigationBarLoadingOptions"
+    ],
+    [
+      "HideNavigationBarLoading"
+    ],
+    [
       "Request"
     ],
     [
@@ -370,12 +421,6 @@
       "RequestPaymentOptions"
     ],
     [
-      "StartPullDownRefreshOptions"
-    ],
-    [
-      "StartPullDownRefreshSuccess"
-    ],
-    [
       "Rpx2px"
     ],
     [
@@ -482,54 +527,6 @@
     ],
     [
       "OnSocketErrorCallbackResult"
-    ]
-  ],
-  "@uni_modules/uni-facialrecognitionverify": [
-    [
-      "getFacialRecognitionMetaInfo"
-    ],
-    [
-      "startFacialRecognitionVerify"
-    ]
-  ],
-  "@uni_modules/uni-oauth-huawei": [
-    [
-      "UniOAuthHuaweiProviderImpl"
-    ]
-  ],
-  "@uni_modules/uni-payment-alipay": [
-    [
-      "UniPaymentAlipayProviderImpl"
-    ]
-  ],
-  "@uni_modules/uni-payment-huawei": [
-    [
-      "UniPaymentHuaweiProviderImpl"
-    ]
-  ],
-  "@uni_modules/uni-push": [
-    [
-      "getPushClientId"
-    ],
-    [
-      "onPushMessage"
-    ],
-    [
-      "offPushMessage"
-    ],
-    [
-      "createPushMessage"
-    ],
-    [
-      "setAppBadgeNumber"
-    ]
-  ],
-  "@uni_modules/uni-verify": [
-    [
-      "getUniVerifyManager"
-    ],
-    [
-      "getUniverifyManager"
     ]
   ]
 }

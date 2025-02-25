@@ -257,10 +257,6 @@ function generateExtApiSource({
   const exportExtApis: string[] = []
   const defineExtApis: string[] = []
   const uniExtApis: string[] = []
-  const buildHarJsonPath = path.resolve(tempDir, 'build.har.json')
-  const buildHarJson: IBuildHarJsonItem[] = fs.existsSync(buildHarJsonPath)
-    ? fs.readJsonSync(buildHarJsonPath)
-    : []
   for (const uniModuleName in store) {
     if (exclude.includes(uniModuleName)) {
       continue
@@ -306,15 +302,6 @@ function generateExtApiSource({
     }
 
     if (external.includes(uniModuleName)) {
-      buildHarJson.push({
-        input: path.resolve(tempDir, uniModuleName),
-        output: path.resolve(
-          __dirname,
-          isX ? 'dist-x' : 'dist',
-          `packages/${uniModuleName}`
-        ),
-        plugin: uniModuleName,
-      })
       continue
     }
 
@@ -349,10 +336,6 @@ function generateExtApiSource({
       `export * from './${uniModuleName}/utssdk/app-harmony/index.uts'`
     )
   }
-  fs.writeFileSync(
-    path.resolve(tempDir, 'build.har.json'),
-    JSON.stringify(buildHarJson, null, 2)
-  )
   // 生成 ext-api/index.ts
   const extApiIndex = path.resolve(tempDir, 'index.uts')
   fs.writeFileSync(

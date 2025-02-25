@@ -28,21 +28,39 @@ interface ArkTSCompilerOptions {
 type AutoImportOptions = Record<string, [string, (string | undefined)?][]>
 
 export function mergeArkTSAutoImports(
-  base: AutoImportOptions,
-  ext: AutoImportOptions
+  ...autoImports: AutoImportOptions[]
 ): AutoImportOptions {
-  const keys = new Set([...Object.keys(base), ...Object.keys(ext)])
+  const keys = autoImports.reduce((keys, autoImport) => {
+    for (const key of Object.keys(autoImport)) {
+      keys.add(key)
+    }
+    return keys
+  }, new Set<string>())
   const result: AutoImportOptions = {}
   for (const key of keys) {
-    const baseImports = base[key] || []
-    const extImports = ext[key] || []
-    result[key] = [...baseImports, ...extImports]
+    const imports = autoImports.map((autoImport) => autoImport[key] || [])
+    result[key] = imports.reduce((imports, currentImports) => {
+      for (const currentImport of currentImports) {
+        if (!imports.some((importItem) => importItem[0] === currentImport[0])) {
+          imports.push(currentImport)
+        }
+      }
+      return imports
+    }, [] as [string, (string | undefined)?][])
   }
   return result
 }
 
 function getRuntimePackageName(isX = false) {
   return isX ? '@dcloudio/uni-app-x-runtime' : '@dcloudio/uni-app-runtime'
+}
+
+function tryRequire(file: string) {
+  try {
+    return require(file)
+  } catch (e) {
+    return {}
+  }
 }
 
 export function getArkTSAutoImports(isX = false): AutoImportOptions {
@@ -216,13 +234,42 @@ export function getArkTSAutoImports(isX = false): AutoImportOptions {
       ['NodeField']
     )
   }
+
+  const uniApiExportsPath = isX
+    ? '../lib/arkts/uni-api-export-x.json'
+    : '../lib/arkts/uni-api-export.json'
+  const externalModuleExportsPath = isX
+    ? '../lib/arkts/uni-external-module-export-x.json'
+    : '../lib/arkts/uni-external-module-export.json'
+  const internalModuleExportsPath = isX
+    ? '../lib/arkts/uni-internal-module-export-x.json'
+    : '../lib/arkts/uni-internal-module-export.json'
+  /**
+   * uni.api.ets
+   */
+  const uniApiExports = tryRequire(uniApiExportsPath)
+  /**
+   * uni-video、uni-canvas、uni-chooseLocation等内置component、api。uni_module目录下包含
+   */
+  const internalModuleExports: AutoImportOptions =
+    process.env.UNI_COMPILE_TARGET === 'ext-api' || !isX
+      ? {}
+      : tryRequire(internalModuleExportsPath)
+  /**
+   * uni-push等外部api
+   */
+  const externalModuleExports: AutoImportOptions =
+    process.env.UNI_COMPILE_TARGET === 'ext-api'
+      ? {}
+      : tryRequire(externalModuleExportsPath)
+
   return mergeArkTSAutoImports(
     {
       [runtimePackageName]: runtimeExports,
     },
-    require(isX
-      ? '../lib/arkts/ext-api-export-x.json'
-      : '../lib/arkts/ext-api-export.json')
+    uniApiExports,
+    internalModuleExports,
+    externalModuleExports
   )
 }
 
