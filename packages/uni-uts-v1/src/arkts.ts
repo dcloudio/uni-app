@@ -211,7 +211,9 @@ export function getArkTSAutoImports(isX = false): AutoImportOptions {
       ['UniScrollToLowerEventDetail'],
       ['UniScrollToLowerEvent'],
       ['UniScrollToUpperEventDetail'],
-      ['UniScrollToUpperEvent']
+      ['UniScrollToUpperEvent'],
+      ['NodeInfo'],
+      ['NodeField']
     )
   }
   return mergeArkTSAutoImports(
