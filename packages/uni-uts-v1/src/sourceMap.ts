@@ -326,15 +326,21 @@ export async function generatedPositionFor({
       // 根据 sourceMapFile 和 outputDir，计算出生成后的文件路径
       const normalizedSourceMapFile = normalizePath(sourceMapFile)
       const sourceMapRootDirs = [
-        normalizePath(join(outputDir, '../.sourcemap/app')),
+        {
+          sourceMapRootDir: normalizePath(join(outputDir, '../.sourcemap/app')),
+          outputDir: outputDir,
+        },
       ]
       const kotlinOutDir = kotlinDir(outputDir)
       if (kotlinOutDir) {
-        sourceMapRootDirs.push(
-          normalizePath(resolveUniAppXSourceMapPath(kotlinOutDir))
-        )
+        sourceMapRootDirs.push({
+          sourceMapRootDir: normalizePath(
+            resolveUniAppXSourceMapPath(kotlinOutDir)
+          ),
+          outputDir: join(kotlinOutDir, 'src'),
+        })
       }
-      for (const sourceMapRootDir of sourceMapRootDirs) {
+      for (const { sourceMapRootDir, outputDir } of sourceMapRootDirs) {
         if (normalizedSourceMapFile.startsWith(sourceMapRootDir)) {
           relativeSource = normalizePath(
             relative(sourceMapRootDir, sourceMapFile).replace('.map', '')

@@ -225,6 +225,34 @@ describe('uts:sourceMap', () => {
       relativeSource: 'uni_modules/test-uniplugin/utssdk/app-android/index.kt',
     })
   })
+  test('generatedPositionFor with uvue file', async () => {
+    process.env.UNI_APP_X_CACHE_DIR = resolve(uniAppXCacheDir, '.app-android')
+    const filename = resolve(inputDir, 'pages/index/index.uvue')
+    const sourceMapFile = resolveUTSSourceMapFile(
+      'kotlin',
+      filename,
+      inputDir,
+      outputDir
+    )
+    const res = await generatedPositionFor({
+      sourceMapFile,
+      filename,
+      line: 5,
+      column: 0,
+      outputDir,
+    })
+    expect(res).toEqual({
+      line: 21,
+      column: 12,
+      lastColumn: 19,
+      source: resolve(
+        process.env.UNI_APP_X_CACHE_DIR,
+        'src/pages/index/index.kt'
+      ),
+      relativeSource: 'pages/index/index.kt',
+    })
+    process.env.UNI_APP_X_CACHE_DIR = ''
+  })
   test('originalPositionFor', async () => {
     const filename = resolve(
       outputDir,

@@ -1,1 +1,1 @@
-{"version":3,"sources":[],"sourcesContent":[],"names":[],"mappings":""}
+{"version":3,"sources":["pages/index/index.uvue","pages/index/index.uvue?type=page"],"sourcesContent":["<template></template>\r\n<script>\r\n    export default {\r\n        onLoad() {\r\n            console.log(1)\r\n        }\r\n    }\r\n</script>",null],"names":[],"mappings":";;;;;;;;;;;;;;;;;AAES;;eACD,sBAAM;YACF,QAAQ,GAAG,CAAC,CAAC,EAAA;QACjB;;;;;;;;;;;;;;;;;;;;AACJ"}

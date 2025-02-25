@@ -1,0 +1,8 @@
+<template></template>
+<script>
+    export default {
+        onLoad() {
+            console.log(1)
+        }
+    }
+</script>
