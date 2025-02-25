@@ -9,8 +9,7 @@ const BLACKLIST = [
 function initAutoImportMap (isUniAppX = false) {
   const harmonyDistDir = path.resolve(__dirname, '../packages/uni-app-harmony', isUniAppX ? 'dist-x' : 'dist')
   const autoImportMap = isUniAppX ? {
-    [path.resolve(harmonyDistDir, 'uni.api.ets')]: '@dcloudio/uni-app-x-runtime',
-    [path.resolve(harmonyDistDir, 'uni.component.ets')]: '@dcloudio/uni-app-x-runtime'
+    [path.resolve(harmonyDistDir, 'uni.api.ets')]: '@dcloudio/uni-app-x-runtime'
   } : {
     [path.resolve(harmonyDistDir, 'uni.api.ets')]: '@dcloudio/uni-app-runtime'
   }

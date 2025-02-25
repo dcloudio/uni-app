@@ -239,7 +239,7 @@ interface IGenerateSourceFilesOptions {
   isX: boolean
   exclude: string[]
   sourceDirs: string[]
-  type: 'api' | 'component'
+  type: 'api'
   tempDir: string
   external: string[]
 }
@@ -276,11 +276,24 @@ function generateExtApiSource({
     if (!platformEntryExists && !commonEntryExists) {
       continue
     }
+
+    const pagesDir = path.resolve(uniModulePath, 'pages')
+    const componentsDir = path.resolve(uniModulePath, 'components')
+    const customElementsDir = path.resolve(uniModulePath, 'customElements')
+    if (
+      !external.includes(uniModuleName) && (
+        fs.existsSync(pagesDir) ||
+        fs.existsSync(componentsDir) ||
+        fs.existsSync(customElementsDir)
+      )
+    ) {
+      continue
+    }
+
     const injects = parseExtApiInjects(uniModulePath)
 
     if (
       external.includes(uniModuleName) ||
-      type === 'component' ||
       (type === 'api' && Object.keys(injects).length > 0)
     ) {
       fs.copySync(uniModulePath, path.resolve(tempDir, uniModuleName))
@@ -383,24 +396,9 @@ interface IExternalProviderModuleJsonItem {
   version: string
 }
 
-interface IExternalComponentModuleJsonItem {
-  type: 'component'
-  plugin: string
-  // 目前无此规范也无需记录
-  // components: string[]
-  /**
-   * 例：
-   * uni-video包含createVideoContext
-   * uni-map-tencent包含createMapContext
-   */
-  apis: string[]
-  version: string
-}
-
 type IExternalModuleJsonItem =
   | IExternalApiModuleJsonItem
   | IExternalProviderModuleJsonItem
-  | IExternalComponentModuleJsonItem
 
 interface IGenerateExternalModuleJsonOptions {
   tempDir: string
@@ -412,8 +410,7 @@ interface IGenerateExternalModuleJsonOptions {
  */
 function generateExternalModuleJson({
   tempDir,
-  external,
-  isComponent,
+  external
 }: IGenerateExternalModuleJsonOptions) {
   const uniModuleNames = fs.readdirSync(tempDir)
   const externalModules: IExternalModuleJsonItem[] = []
@@ -459,7 +456,7 @@ function generateExternalModuleJson({
         })
         .map((key) => injects[key][1])
       externalModules.push({
-        type: isComponent ? 'component' : 'extapi',
+        type: 'extapi',
         plugin,
         apis,
         version,
