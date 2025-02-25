@@ -1,0 +1,41 @@
+name: "交流反馈使用经验"
+description: "提交使用过程中遇到的问题或疑问"
+labels: ["question"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        提醒：这里发起的问题主要是网友交流，官方人员优先处理 Bug 相关问题；若你想上报 Bug，请选择“提交Bug”类别。
+
+  - type: dropdown
+    id: category
+    attributes:
+      label: 问题分类
+      description: 请选择您的问题所属的类别
+      options:
+        - HBuilderX
+        - uni-app
+        - uni-app-x
+        - 小程序SDK
+        - 鸿蒙
+        - uniCloud
+        - 云服务
+        - 其他
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: 问题描述
+      description: 请详细描述您的问题
+      placeholder: 请提供足够的上下文和详细信息，以便我们能更好地理解和解答您的问题...
+    validations:
+      required: true
+
+  - type: textarea
+    id: additional
+    attributes:
+      label: 附加信息
+      description: 其他可能有助于我们理解您问题的信息
+      placeholder: 例如：代码示例、错误信息、使用环境等

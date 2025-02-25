@@ -1,0 +1,60 @@
+name: "Bug uniCloud 问题反馈"
+description: "反馈 uniCloud 使用过程中遇到的问题"
+labels: ["bug", "uniCloud"]
+body:
+  - type: markdown
+    attributes:
+      value: DCloud 产品不会有明显的bug，所以你遇到的问题大都是在特定环境下才能重现的问题，请仔细描述你的环境和重现方式，否则DCloud很难排查解决你的问题
+
+  - type: dropdown
+    id: cloud-provider
+    attributes:
+      label: 云服务商
+      description: 请选择你使用的云服务商
+      options:
+        - 阿里云
+        - 腾讯云
+        - 支付宝小程序云
+        - 其他
+    validations:
+      required: true
+
+  - type: textarea
+    id: bug-description
+    attributes:
+      label: Bug 描述
+      description: 请简要描述你遇到的 bug 问题
+      placeholder: 清晰简洁地描述 bug 是什么
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduction-steps
+    attributes:
+      label: 复现步骤
+      description: 请提供详细的复现步骤
+      placeholder: |
+        1. 进入到 '...'
+        2. 点击 '....'
+        3. 滚动到 '....'
+        4. 出现错误
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected-result
+    attributes:
+      label: 预期结果
+      description: 请描述你期望看到的结果
+      placeholder: 清晰简洁地描述你期望发生的事情
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual-result
+    attributes:
+      label: 实际结果
+      description: 请描述实际发生的结果
+      placeholder: 清晰简洁地描述实际发生的事情
+    validations:
+      required: true
