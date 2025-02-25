@@ -508,7 +508,10 @@ export function initUTSCustomElements(
   return []
 }
 
-function parseCustomElementExports(filePath: string, unimport: Unimport) {
+export function parseCustomElementExports(
+  filePath: string,
+  unimport: Unimport = createUnimport({})
+) {
   return unimport.scanImportsFromFile(filePath, true)
 }
 

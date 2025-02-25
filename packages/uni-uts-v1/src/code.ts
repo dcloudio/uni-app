@@ -505,7 +505,7 @@ function genModuleCode(
  * @param options
  * @returns
  */
-async function parseInterfaceTypes(
+export async function parseInterfaceTypes(
   module: string,
   options: GenProxyCodeOptions,
   preprocessor?: SyncUniModulesFilePreprocessor

@@ -60,7 +60,7 @@ export * from './tsc'
 
 export { getPluginInjectApis, getPluginInjectComponents } from './utils'
 
-export { parseExportIdentifiers } from './code'
+export { parseExportIdentifiers, parseInterfaceTypes } from './code'
 
 export {
   compileArkTS,
@@ -154,6 +154,7 @@ export interface UTSPluginCompilerOptions {
   >
   androidPreprocessor?: SyncUniModulesFilePreprocessor
   iosPreprocessor?: SyncUniModulesFilePreprocessor
+  harmonyPreprocessor?: SyncUniModulesFilePreprocessor
   rewriteConsoleExpr?: (fileName: string, content: string) => string
 }
 
@@ -796,6 +797,8 @@ export async function buildUniModules(
     compilerOptions.androidPreprocessor =
       syncUniModulesFilePreprocessors.android
     compilerOptions.iosPreprocessor = syncUniModulesFilePreprocessors.ios
+    compilerOptions.harmonyPreprocessor =
+      syncUniModulesFilePreprocessors.harmony
   }
   if (platform === 'app-harmony') {
     return compileArkTS(pluginDir, {
