@@ -210,7 +210,7 @@ function parseExtApiInjects(uniModulesDir: string) {
     '',
     uniModulesDir,
     require(path.resolve(uniModulesDir, 'package.json'))?.uni_modules[
-      'uni-ext-api'
+    'uni-ext-api'
     ] || {}
   )
 }
@@ -473,14 +473,13 @@ function generateExternalModuleJson({
 function initArkTSExtApi() {
   if (
     !process.env.UNI_APP_EXT_API_DIR ||
-    !process.env.UNI_APP_EXT_API_INTERNAL_DIR ||
-    !process.env.UNI_APP_EXT_COMPONENT_DIR
+    !process.env.UNI_APP_EXT_API_INTERNAL_DIR
   ) {
     return
   }
 
   // uni-app
-  ;(() => {
+  ; (() => {
     const external = ExternalModules.map((item) => item.name)
     const tempDir = resolveExtApiTempDir('uni-app-harmony')
     fs.emptyDirSync(tempDir)
@@ -507,50 +506,31 @@ function initArkTSExtApi() {
     )
   })()
 
-  // uni-app-x
-  ;(() => {
-    const external = ExternalModulesX.map((item) => item.name)
-    const tempDir = resolveExtApiTempDir('uni-app-harmony') + '-x'
-    fs.emptyDirSync(tempDir)
-    generateExtApiSource({
-      isX: true,
-      exclude: ExtApiBlackListX,
-      external: external,
-      sourceDirs: [
-        process.env.UNI_APP_EXT_API_DIR,
-        process.env.UNI_APP_EXT_API_INTERNAL_DIR,
-      ],
-      type: 'api',
-      tempDir: tempDir,
-    })
-    // 组件仅支持uni-app-x
-    const tempComponentDir = path.join(
-      resolveExtApiTempDir('uni-app-harmony'),
-      '../uni-ext-component-x'
-    )
-    fs.emptyDirSync(tempComponentDir)
-    generateExtApiSource({
-      isX: true,
-      exclude: [],
-      external: external,
-      sourceDirs: [process.env.UNI_APP_EXT_COMPONENT_DIR],
-      type: 'component',
-      tempDir: tempComponentDir,
-    })
-    const externalApiModuleJson = generateExternalModuleJson({
-      tempDir,
-      external,
-      isComponent: false,
-    })
-    const externalComponentModuleJson = generateExternalModuleJson({
-      tempDir: tempComponentDir,
-      external,
-      isComponent: true,
-    })
-    fs.outputJSONSync(
-      resolve('./src/compiler/external-modules-x.json'),
-      [...externalApiModuleJson, ...externalComponentModuleJson],
-      { spaces: 2 }
-    )
-  })()
+    // uni-app-x
+    ; (() => {
+      const external = ExternalModulesX.map((item) => item.name)
+      const tempDir = resolveExtApiTempDir('uni-app-harmony') + '-x'
+      fs.emptyDirSync(tempDir)
+      generateExtApiSource({
+        isX: true,
+        exclude: ExtApiBlackListX,
+        external: external,
+        sourceDirs: [
+          process.env.UNI_APP_EXT_API_DIR,
+          process.env.UNI_APP_EXT_API_INTERNAL_DIR,
+        ],
+        type: 'api',
+        tempDir: tempDir,
+      })
+      const externalApiModuleJson = generateExternalModuleJson({
+        tempDir,
+        external,
+        isComponent: false,
+      })
+      fs.outputJSONSync(
+        resolve('./src/compiler/external-modules-x.json'),
+        externalApiModuleJson,
+        { spaces: 2 }
+      )
+    })()
 }

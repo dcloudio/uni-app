@@ -28,7 +28,7 @@ const arkTSOnly = args.ets
 
 run()
 
-async function run() {
+async function run () {
   if (!targets.length) {
     await buildAll(allTargets)
   } else {
@@ -36,7 +36,7 @@ async function run() {
   }
 }
 
-function buildWithChildProcess(target) {
+function buildWithChildProcess (target) {
   const args = [__filename, target]
   devOnly && args.push('-d')
   isRelease && args.push('--release')
@@ -56,7 +56,7 @@ function buildWithChildProcess(target) {
   })
 }
 
-function getTargetGroup(targets) {
+function getTargetGroup (targets) {
   const group = {}
   for (let i = 0; i < targets.length; i++) {
     const target = targets[i]
@@ -70,7 +70,7 @@ function getTargetGroup(targets) {
   return group
 }
 
-async function buildAll(targets) {
+async function buildAll (targets) {
   if (!multiProcess) {
     for (const target of targets) {
       await build(target)
@@ -96,7 +96,7 @@ async function buildAll(targets) {
   }
 }
 
-async function build(target) {
+async function build (target) {
   console.log(`\n${colors.bold(target)}:`)
   const pkgDir = path.resolve(`packages/${target}`)
   const pkg = require(`${pkgDir}/package.json`)
@@ -269,7 +269,7 @@ async function build(target) {
   }
 }
 
-async function postBuildArkTS(isX = false) {
+async function postBuildArkTS (isX = false) {
   const projectDir = path.resolve(__dirname, '../packages/uni-app-harmony')
   const { compileArkTSExtApi } = require('../packages/uni-uts-v1/dist')
   // 先生成一遍提供给ohpm包使用
@@ -287,14 +287,6 @@ async function postBuildArkTS(isX = false) {
     isX ? 'uni-ext-api-x' : 'uni-ext-api',
     'build.har.json'
   ))
-  if (isX) {
-    harBuildJson.push(...require(path.resolve(
-      projectDir,
-      'temp',
-      'uni-ext-component-x',
-      'build.har.json'
-    )))
-  }
   for (let i = 0; i < harBuildJson.length; i++) {
     const { input, output } = harBuildJson[i]
     await compileArkTSExtApi(path.resolve(input, '..'), input, output, {
@@ -314,7 +306,7 @@ async function postBuildArkTS(isX = false) {
   fs.outputJSONSync(extApiExportJsonPath, extApiExportWithHar, { spaces: 2 })
 }
 
-async function buildArkTS(target, buildJson) {
+async function buildArkTS (target, buildJson) {
   const projectDir = path.resolve(__dirname, '../packages', target)
   const { bundleArkTS } = require('../packages/uts/dist')
   const start = Date.now()
@@ -387,8 +379,7 @@ async function buildArkTS(target, buildJson) {
         console.log(colors.green('bundle[' + buildOptions.output.outFilename + ']: ' + (Date.now() - start) + 'ms'))
         if (
           input !== 'temp/uni-ext-api/index.uts' &&
-          input !== 'temp/uni-ext-api-x/index.uts' &&
-          input !== 'temp/uni-ext-component-x/index.uts'
+          input !== 'temp/uni-ext-api-x/index.uts'
         ) {
           if (options.banner) {
             fs.writeFileSync(
@@ -427,7 +418,7 @@ async function buildArkTS(target, buildJson) {
 }
 
 let startTime = Date.now()
-async function sleep(ms) {
+async function sleep (ms) {
   global.gc && global.gc()
   console.log('gc sleep', (Date.now() - startTime) / 1000, 's')
   startTime = Date.now()
