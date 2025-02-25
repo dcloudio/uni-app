@@ -652,8 +652,8 @@
   },
   "uni-modal": {
     "uni": {
-      "showModal2": {
-        "name": "showModal2",
+      "showModal": {
+        "name": "showModal",
         "app": {
           "js": false,
           "kotlin": true,
@@ -838,16 +838,16 @@
         "name": "showModal",
         "app": {
           "js": false,
-          "kotlin": true,
-          "swift": true
+          "kotlin": false,
+          "swift": false
         }
       },
       "showActionSheet": {
         "name": "showActionSheet",
         "app": {
           "js": false,
-          "kotlin": true,
-          "swift": true
+          "kotlin": false,
+          "swift": false
         }
       }
     }
