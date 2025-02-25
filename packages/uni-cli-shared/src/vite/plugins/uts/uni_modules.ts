@@ -474,7 +474,6 @@ export function uniUTSAppUniModulesPlugin(
         isX: !!options.x,
         isExtApi,
         sourceMap: enableSourceMap(),
-        preprocessor: createAppHarmonyUniModulesSyncFilePreprocessorOnce(isX),
         rewriteConsoleExpr: appendUniModulesConsoleExpr,
         transform: {
           uniExtApiProviderName: extApiProvider?.name,
