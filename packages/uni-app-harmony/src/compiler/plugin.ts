@@ -127,14 +127,16 @@ export function uniAppHarmonyPlugin(): UniVitePlugin {
         }
         utsExtApis.add(plugin)
       })
-      // 此方法仅需要处理非provider
-      genAppHarmonyUniModules(this, process.env.UNI_INPUT_DIR, utsExtApis)
-      for (const key in bundle) {
-        const serviceBundle = bundle[key] as OutputChunk
-        if (serviceBundle.code) {
-          serviceBundle.code =
-            generateHarmonyImportExternalCode(serviceBundle.imports) +
-            serviceBundle.code
+      if (isNormalCompileTarget()) {
+        // 此方法仅需要处理非provider
+        genAppHarmonyUniModules(this, process.env.UNI_INPUT_DIR, utsExtApis)
+        for (const key in bundle) {
+          const serviceBundle = bundle[key] as OutputChunk
+          if (serviceBundle.code) {
+            serviceBundle.code =
+              generateHarmonyImportExternalCode(serviceBundle.imports) +
+              serviceBundle.code
+          }
         }
       }
     },
