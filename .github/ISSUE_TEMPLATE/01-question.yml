@@ -1,6 +1,6 @@
-name: "交流反馈使用经验"
-description: "提交使用过程中遇到的问题或疑问"
-labels: ["question"]
+name: '交流反馈使用经验'
+description: '提交使用过程中遇到的问题或疑问'
+labels: ['question']
 body:
   - type: markdown
     attributes:

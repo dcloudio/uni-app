@@ -1,18 +1,18 @@
-name: "Bug uni-app 问题反馈"
-description: "反馈使用 uni-app 过程中遇到的问题"
-labels: ["bug", "uni-app"]
+name: 'Bug uni-app 问题反馈'
+description: '反馈使用 uni-app 过程中遇到的问题'
+labels: ['bug', 'uni-app']
 body:
   - type: markdown
     attributes:
       value: |
         DCloud 产品不会有明显的bug，所以你遇到的问题大都是在特定环境下才能重现的问题，请仔细描述你的环境和重现方式，否则DCloud很难排查解决你的问题 |
 
-        注意：uni-app x 和 HBuilderX产品相关的Bug，请直接在HBuilderX的“帮助“=>”Bug反馈”菜单中提交，通过此方式反馈的Bug的处理进度，可前往 https://issues.dcloud.net.cn/ 查看。
+        注意：uni-app x 和 HBuilderX 产品相关的Bug，请直接在HBuilderX的“帮助“=>”Bug反馈”菜单中提交。对应 Bug 的处理进度，可前往 https://issues.dcloud.net.cn/ 查看。
 
   - type: dropdown
     id: distribution
     attributes:
-      label: 分发方式
+      label: 发行方式
       description: 你的应用使用什么方式分发？
       options:
         - App
@@ -87,8 +87,6 @@ body:
       label: 期望行为
       description: 你期望发生什么？
       placeholder: 描述你期望发生的情况
-    validations:
-      required: true
 
   - type: textarea
     id: actual
@@ -96,8 +94,6 @@ body:
       label: 实际行为
       description: 实际上发生了什么？
       placeholder: 描述实际发生的情况
-    validations:
-      required: true
 
   - type: textarea
     id: screenshots

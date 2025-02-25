@@ -1,6 +1,6 @@
-name: "Bug uniCloud 问题反馈"
-description: "反馈 uniCloud 使用过程中遇到的问题"
-labels: ["bug", "uniCloud"]
+name: 'Bug uniCloud 问题反馈'
+description: '反馈 uniCloud 使用过程中遇到的问题'
+labels: ['bug', 'uniCloud']
 body:
   - type: markdown
     attributes:
@@ -47,8 +47,6 @@ body:
       label: 预期结果
       description: 请描述你期望看到的结果
       placeholder: 清晰简洁地描述你期望发生的事情
-    validations:
-      required: true
 
   - type: textarea
     id: actual-result
@@ -56,5 +54,3 @@ body:
       label: 实际结果
       description: 请描述实际发生的结果
       placeholder: 清晰简洁地描述实际发生的事情
-    validations:
-      required: true
