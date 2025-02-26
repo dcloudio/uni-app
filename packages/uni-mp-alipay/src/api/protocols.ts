@@ -154,20 +154,19 @@ export const request = {
 export const setNavigationBarColor = {
   name: 'setNavigationBar',
   args: {
-    frontColor: false,
     animation: false,
   },
 }
 export const setNavigationBarTitle = {
   name: 'setNavigationBar',
 }
+
+/** 支付宝和钉钉不一致， showModal 在钉钉上没有，所以使用 my.confirm 模拟 */
 export function showModal({ showCancel = true }: UniApp.ShowModalOptions = {}) {
   if (showCancel) {
     return {
       name: 'confirm',
       args: {
-        cancelColor: false,
-        confirmColor: false,
         cancelText: 'cancelButtonText',
         confirmText: 'confirmButtonText',
       },
