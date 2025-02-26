@@ -263,7 +263,7 @@ export function getArkTSAutoImports(isX = false): AutoImportOptions {
       ? {}
       : tryRequire(externalModuleExportsPath)
 
-  return mergeArkTSAutoImports(
+  const autoImports = mergeArkTSAutoImports(
     {
       [runtimePackageName]: runtimeExports,
     },
@@ -271,6 +271,8 @@ export function getArkTSAutoImports(isX = false): AutoImportOptions {
     internalModuleExports,
     externalModuleExports
   )
+  // TODO 引用的runtime包名根据内置外置切换
+  return autoImports
 }
 
 /**
