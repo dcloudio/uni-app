@@ -174,7 +174,11 @@ const createUniAppIosUniModulesSyncFilePreprocessorOnce = once(() => {
 })
 
 const createUniAppHarmonyUniModulesSyncFilePreprocessorOnce = once(() => {
-  return createUniModulesSyncFilePreprocessor('app', 'app-harmony', false)
+  return createUniModulesSyncFilePreprocessor(
+    'app-harmony',
+    'app-harmony',
+    false
+  )
 })
 
 const createUniXAppAndroidUniModulesSyncFilePreprocessorOnce = once(() => {
@@ -186,7 +190,11 @@ const createUniXAppIosUniModulesSyncFilePreprocessorOnce = once(() => {
 })
 
 const createUniXAppHarmonyUniModulesSyncFilePreprocessorOnce = once(() => {
-  return createUniModulesSyncFilePreprocessor('app', 'app-harmony', true)
+  return createUniModulesSyncFilePreprocessor(
+    'app-harmony',
+    'app-harmony',
+    true
+  )
 })
 
 const utsModuleCaches = new Map<string, () => Promise<void | CompileResult>>()
