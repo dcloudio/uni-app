@@ -236,14 +236,14 @@ export function getArkTSAutoImports(isX = false): AutoImportOptions {
   }
 
   const uniApiExportsPath = isX
-    ? '../lib/arkts/uni-api-export-x.json'
-    : '../lib/arkts/uni-api-export.json'
+    ? '../lib/arkts/uni-api-exports-x.json'
+    : '../lib/arkts/uni-api-exports.json'
   const externalModuleExportsPath = isX
-    ? '../lib/arkts/uni-external-module-export-x.json'
-    : '../lib/arkts/uni-external-module-export.json'
+    ? '../lib/arkts/external-module-exports-x.json'
+    : '../lib/arkts/external-module-exports.json'
   const internalModuleExportsPath = isX
-    ? '../lib/arkts/uni-internal-module-export-x.json'
-    : '../lib/arkts/uni-internal-module-export.json'
+    ? '../lib/arkts/internal-module-exports-x.json'
+    : '../lib/arkts/internal-module-exports.json'
   /**
    * uni.api.ets
    */
