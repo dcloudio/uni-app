@@ -11,6 +11,7 @@ import {
 } from './utils'
 import type { CompileResult } from '.'
 import { sync } from 'fast-glob'
+import JSON5 from 'json5'
 
 interface ArkTSCompilerOptions {
   isX?: boolean
@@ -464,21 +465,34 @@ export async function compileArkTSExtApi(
     pluginDir,
     'utssdk/app-harmony/module.json5'
   )
+  const defaultModuleJson5Module = {
+    name: harmonyModuleName,
+    type: 'har',
+    deviceTypes: ['default', 'tablet', '2in1'],
+  }
   if (fs.existsSync(moduleJson5Path)) {
-    // copy module.json5
-    fs.copySync(
-      moduleJson5Path,
-      path.resolve(outputUniModuleDir, 'src/main/module.json5')
+    // merge module.json5
+    const moduleJson5 = fs.readJSONSync(moduleJson5Path)
+    if (!moduleJson5.module) {
+      moduleJson5.module = defaultModuleJson5Module
+    }
+    moduleJson5.module = Object.assign(
+      {},
+      defaultModuleJson5Module,
+      moduleJson5.module
+    )
+    fs.outputJSONSync(
+      path.resolve(outputUniModuleDir, 'src/main/module.json5'),
+      moduleJson5,
+      {
+        spaces: 2,
+      }
     )
   } else {
     fs.outputJSONSync(
       path.resolve(outputUniModuleDir, 'src/main/module.json5'),
       {
-        module: {
-          name: harmonyModuleName,
-          type: 'har',
-          deviceTypes: ['default', 'tablet', '2in1'],
-        },
+        module: defaultModuleJson5Module,
       },
       {
         spaces: 2,
