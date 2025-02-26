@@ -278,6 +278,7 @@ export async function compileArkTSExtApi(
       isPlugin: true,
       transform: {
         autoImportExternals,
+        uniExtApiDefaultNamespace: '@dcloudio/uni-app-x-runtime',
       },
       treeshake: {
         noSideEffects: true,
