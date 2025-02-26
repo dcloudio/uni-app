@@ -133,6 +133,9 @@
   ],
   "@dcloudio/uni-verify": [
     [
+      "UniVerifyManager"
+    ],
+    [
       "UniverifyManager"
     ],
     [
