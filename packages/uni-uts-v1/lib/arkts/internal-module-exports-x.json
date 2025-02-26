@@ -1,6 +1,33 @@
 {
   "@dcloudio/uni-app-x-runtime": [
     [
+      "ShowActionSheetSuccess"
+    ],
+    [
+      "ShowActionSheetFail"
+    ],
+    [
+      "Popover"
+    ],
+    [
+      "ShowActionSheetOptions"
+    ],
+    [
+      "ShowActionSheetSuccessImpl"
+    ],
+    [
+      "ShowActionSheetFailImpl"
+    ],
+    [
+      "ShowActionSheet"
+    ],
+    [
+      "ShowActionSheetErrorCode"
+    ],
+    [
+      "ShowActionSheetComplete"
+    ],
+    [
       "UniButtonElement"
     ],
     [
@@ -53,6 +80,63 @@
     ],
     [
       "UniNavigatorElement"
+    ],
+    [
+      "IPreviewImageError"
+    ],
+    [
+      "PreviewImageSuccess"
+    ],
+    [
+      "LongPressActionsSuccessResult"
+    ],
+    [
+      "LongPressActionsOptions"
+    ],
+    [
+      "PreviewImageOptions"
+    ],
+    [
+      "ClosePreviewImageSuccess"
+    ],
+    [
+      "ClosePreviewImageOptions"
+    ],
+    [
+      "PreviewImageSuccessCallback"
+    ],
+    [
+      "PreviewImageFailCallback"
+    ],
+    [
+      "PreviewImageCompleteCallback"
+    ],
+    [
+      "PreviewImage"
+    ],
+    [
+      "ClosePreviewImage"
+    ],
+    [
+      "ClosePreviewImageSuccessCallback"
+    ],
+    [
+      "ClosePreviewImageFailCallback"
+    ],
+    [
+      "PreviewImageErrorCode"
+    ],
+    [
+      "PreviewImageFail"
+    ],
+    [
+      "LongPressActionsFailResult"
+    ],
+    [
+      "ClosePreviewImageFail"
+    ],
+    [
+      "ClosePreviewImageCompleteCallback"
     ],
     [
       "UniProgressElement"
