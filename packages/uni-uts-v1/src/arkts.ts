@@ -232,7 +232,9 @@ export function getArkTSAutoImports(isX = false): AutoImportOptions {
       ['UniScrollToUpperEventDetail'],
       ['UniScrollToUpperEvent'],
       ['NodeInfo'],
-      ['NodeField']
+      ['NodeField'],
+      ['DOMRect'],
+      ['DrawableContext']
     )
   }
 
