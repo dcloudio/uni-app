@@ -474,7 +474,9 @@ export async function compileArkTSExtApi(
   }
   if (fs.existsSync(moduleJson5Path)) {
     // merge module.json5
-    const moduleJson5 = fs.readJSONSync(moduleJson5Path)
+    const moduleJson5 = JSON5.parse(
+      fs.readFileSync(moduleJson5Path).toString('utf8')
+    )
     if (!moduleJson5.module) {
       moduleJson5.module = defaultModuleJson5Module
     }
