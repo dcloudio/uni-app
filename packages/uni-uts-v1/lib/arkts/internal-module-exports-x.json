@@ -1,33 +1,6 @@
 {
   "@dcloudio/uni-app-x-runtime": [
     [
-      "ShowActionSheetSuccess"
-    ],
-    [
-      "ShowActionSheetFail"
-    ],
-    [
-      "Popover"
-    ],
-    [
-      "ShowActionSheetOptions"
-    ],
-    [
-      "ShowActionSheetSuccessImpl"
-    ],
-    [
-      "ShowActionSheetFailImpl"
-    ],
-    [
-      "ShowActionSheet"
-    ],
-    [
-      "ShowActionSheetErrorCode"
-    ],
-    [
-      "ShowActionSheetComplete"
-    ],
-    [
       "UniButtonElement"
     ],
     [
