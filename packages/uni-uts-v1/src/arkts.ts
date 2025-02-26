@@ -231,10 +231,22 @@ export function getArkTSAutoImports(isX = false): AutoImportOptions {
       ['UniScrollToLowerEvent'],
       ['UniScrollToUpperEventDetail'],
       ['UniScrollToUpperEvent'],
+      ['CreateSelectorQuery'],
+      ['SelectorQueryNodeInfoCallback'],
       ['NodeInfo'],
       ['NodeField'],
+      ['NodesRef'],
+      ['SelectorQuery'],
       ['DOMRect'],
-      ['DrawableContext']
+      ['DrawableContext'],
+      ['OpenDialogPageOptions'],
+      ['OpenDialogPageSuccess'],
+      ['OpenDialogPageFail'],
+      ['OpenDialogPageComplete'],
+      ['CloseDialogPageOptions'],
+      ['CloseDialogPageSuccess'],
+      ['CloseDialogPageFail'],
+      ['CloseDialogPageComplete']
     )
   }
 
