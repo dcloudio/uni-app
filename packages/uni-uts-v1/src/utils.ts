@@ -1021,7 +1021,7 @@ export function resolveBundleInputRoot(
   if (
     process.env.UNI_APP_X_TSC === 'true' &&
     // 云端uni_modules编译，传入的已经是真实地址
-    isNormalCompileTarget()
+    (isNormalCompileTarget() || process.env.UNI_COMPILE_TARGET === 'ext-api')
   ) {
     return uvueOutDir(platform)
   }
@@ -1035,7 +1035,7 @@ export function resolveBundleInputFileName(
   if (
     process.env.UNI_APP_X_TSC === 'true' &&
     // 云端uni_modules编译，传入的已经是真实地址 uni-cli-shared/vite/cloud.ts:190
-    isNormalCompileTarget()
+    (isNormalCompileTarget() || process.env.UNI_COMPILE_TARGET === 'ext-api')
   ) {
     const uvueDir = uvueOutDir(platform)
     if (!fileName.startsWith(uvueDir)) {
