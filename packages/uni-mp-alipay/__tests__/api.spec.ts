@@ -21,6 +21,7 @@ jest.mock('../src/api/shims', () => {
     getStorageSync: jest.fn(),
   }
 })
+
 global.my = {
   ...global.my,
   request: jest.fn(),
@@ -33,10 +34,10 @@ global.my = {
   }),
 }
 
-import { request } from '../src/api/protocols'
+import { request, showModal } from '../src/api/protocols'
 
 describe('api', () => {
-  test(' request', () => {
+  test('api-request base', () => {
     expect(typeof request.args).toBe('function')
 
     const { header, data } = request.args({
@@ -62,7 +63,7 @@ describe('api', () => {
       value: '{"type":"abc"}',
     })
   })
-  test('ding request no header', () => {
+  test('api-request ding request no header', () => {
     expect(typeof request.args).toBe('function')
 
     const { header, data } = request.args({
@@ -85,7 +86,7 @@ describe('api', () => {
       value: '{"type":"abc"}',
     })
   })
-  test('ding request no body', () => {
+  test('api-request ding request no body', () => {
     expect(typeof request.args).toBe('function')
 
     const { header, data } = request.args({
@@ -102,7 +103,7 @@ describe('api', () => {
     })
   })
 
-  test('alipay request no header', () => {
+  test('api-request alipay request no header', () => {
     global.my = {
       ...global.my,
       request: jest.fn(),
@@ -136,7 +137,7 @@ describe('api', () => {
       value: { type: 'abc' },
     })
   })
-  test('alipay request no body', () => {
+  test('api-request alipay request no body', () => {
     global.my = {
       ...global.my,
       request: jest.fn(),
@@ -163,4 +164,16 @@ describe('api', () => {
       value: undefined,
     })
   })
+
+  test('api-showModal', () => {
+    expect(typeof showModal).toBe('function')
+
+    const args = showModal().args as any
+    expect(typeof args).toBe('object')
+
+    expect(args.cancelColor).toBeUndefined()
+    expect(args.confirmColor).toBeUndefined()
+  })
+
+  test('api-setNavigationBarColor', () => {})
 })
