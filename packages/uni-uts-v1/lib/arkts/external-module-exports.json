@@ -1,9 +1,4 @@
 {
-  "@dcloudio/uni-getLocation-system": [
-    [
-      "UniLocationSystemProvider"
-    ]
-  ],
   "@dcloudio/uni-facialRecognitionVerify": [
     [
       "IFacialRecognitionVerifyError"
@@ -34,6 +29,11 @@
     ],
     [
       "StartFacialRecognitionVerifyScreenOrientation"
+    ]
+  ],
+  "@dcloudio/uni-getLocation-system": [
+    [
+      "UniLocationSystemProvider"
     ]
   ],
   "@dcloudio/uni-oauth-huawei": [
