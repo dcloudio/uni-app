@@ -10,6 +10,13 @@
   },
   {
     "type": "provider",
+    "plugin": "uni-getLocation-system",
+    "provider": "system",
+    "service": "location",
+    "version": "1.0.0"
+  },
+  {
+    "type": "provider",
     "plugin": "uni-oauth-huawei",
     "provider": "huawei",
     "service": "oauth",
