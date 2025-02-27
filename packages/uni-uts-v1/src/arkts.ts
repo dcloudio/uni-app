@@ -11,7 +11,7 @@ import {
 } from './utils'
 import type { CompileResult } from '.'
 import { sync } from 'fast-glob'
-import JSON5 from 'json5'
+import { parseJson } from './shared'
 
 interface ArkTSCompilerOptions {
   isX?: boolean
@@ -457,7 +457,7 @@ export async function compileArkTSExtApi(
   }
   if (fs.existsSync(moduleJson5Path)) {
     // merge module.json5
-    const moduleJson5 = JSON5.parse(
+    const moduleJson5 = parseJson(
       fs.readFileSync(moduleJson5Path).toString('utf8')
     )
     if (!moduleJson5.module) {

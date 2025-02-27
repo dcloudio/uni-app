@@ -31,7 +31,6 @@
     "find-cache-dir": "^3.3.2",
     "fs-extra": "^10.0.0",
     "graphlib": "^2.1.8",
-    "json5": "^2.2.3",
     "jsonc-parser": "^3.2.0",
     "lodash": "^4.17.21",
     "md5-file": "^5.0.0",
