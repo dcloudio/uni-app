@@ -1,12 +1,44 @@
 {
+  "@dcloudio/uni-facialRecognitionVerify": [
+    [
+      "IFacialRecognitionVerifyError"
+    ],
+    [
+      "StartFacialRecognitionVerifySuccess"
+    ],
+    [
+      "StartFacialRecognitionVerifyOptions"
+    ],
+    [
+      "StartFacialRecognitionVerifySuccessCallback"
+    ],
+    [
+      "StartFacialRecognitionVerifyFailCallback"
+    ],
+    [
+      "StartFacialRecognitionVerifyCompleteCallback"
+    ],
+    [
+      "GetFacialRecognitionMetaInfo"
+    ],
+    [
+      "StartFacialRecognitionVerify"
+    ],
+    [
+      "FacialRecognitionVerifyErrorCode"
+    ],
+    [
+      "StartFacialRecognitionVerifyScreenOrientation"
+    ]
+  ],
+  "@dcloudio/uni-getLocation-system": [
+    [
+      "UniLocationSystemProvider"
+    ]
+  ],
   "@dcloudio/uni-oauth-huawei": [
     [
       "UniOAuthHuaweiProvider"
-    ]
-  ],
-  "@dcloudio/uni-payment-alipay": [
-    [
-      "UniPaymentAlipayProvider"
     ]
   ],
   "@dcloudio/uni-payment-huawei": [
@@ -159,36 +191,9 @@
       "UniVerifyManagerErrorCode"
     ]
   ],
-  "@dcloudio/uni-facialRecognitionVerify": [
+  "@dcloudio/uni-payment-alipay": [
     [
-      "IFacialRecognitionVerifyError"
-    ],
-    [
-      "StartFacialRecognitionVerifySuccess"
-    ],
-    [
-      "StartFacialRecognitionVerifyOptions"
-    ],
-    [
-      "StartFacialRecognitionVerifySuccessCallback"
-    ],
-    [
-      "StartFacialRecognitionVerifyFailCallback"
-    ],
-    [
-      "StartFacialRecognitionVerifyCompleteCallback"
-    ],
-    [
-      "GetFacialRecognitionMetaInfo"
-    ],
-    [
-      "StartFacialRecognitionVerify"
-    ],
-    [
-      "FacialRecognitionVerifyErrorCode"
-    ],
-    [
-      "StartFacialRecognitionVerifyScreenOrientation"
+      "UniPaymentAlipayProvider"
     ]
   ]
 }
