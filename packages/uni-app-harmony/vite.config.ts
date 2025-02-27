@@ -229,12 +229,6 @@ function getExtApiPaths(dirs: string[]) {
   }, {} as Record<string, string>)
 }
 
-interface IBuildHarJsonItem {
-  input: string
-  output: string
-  plugin: string
-}
-
 interface IGenerateSourceFilesOptions {
   isX: boolean
   exclude: string[]
@@ -386,7 +380,6 @@ type IExternalModuleJsonItem =
 interface IGenerateExternalModuleJsonOptions {
   tempDir: string
   external: string[]
-  isComponent: boolean
 }
 /**
  * 编译出的外部模块信息供编译器使用
@@ -476,8 +469,7 @@ function initArkTSExtApi() {
     })
     const externalModuleJson = generateExternalModuleJson({
       tempDir,
-      external,
-      isComponent: false,
+      external
     })
     fs.outputJSONSync(
       resolve('./src/compiler/external-modules.json'),
@@ -505,7 +497,6 @@ function initArkTSExtApi() {
       const externalApiModuleJson = generateExternalModuleJson({
         tempDir,
         external,
-        isComponent: false,
       })
       fs.outputJSONSync(
         resolve('./src/compiler/external-modules-x.json'),

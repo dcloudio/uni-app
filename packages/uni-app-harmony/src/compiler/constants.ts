@@ -54,6 +54,4 @@ export const ExtApiBlackList = [
   'uni-getElementById',
   'uni-document',
   'uni-navigationBar',
-  'uni-getLocation',
-  'uni-getLocation-system',
 ]
