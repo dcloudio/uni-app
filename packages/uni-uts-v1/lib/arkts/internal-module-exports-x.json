@@ -4,6 +4,9 @@
       "UniButtonElement"
     ],
     [
+      "UniCheckboxElement"
+    ],
+    [
       "UniCheckboxGroupChangeEvent"
     ],
     [
@@ -29,9 +32,6 @@
     ],
     [
       "UniRadioElement"
-    ],
-    [
-      "UniCheckboxElement"
     ],
     [
       "UniRadioGroupChangeEvent"
