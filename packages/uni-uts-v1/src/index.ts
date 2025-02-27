@@ -262,7 +262,10 @@ export async function compile(
     // uts 插件 wgt 模式，本地资源模式不需要编译、ext-api模式也不需要编译（已经有前置编译过了）
     if (
       process.env.UNI_APP_PRODUCTION_TYPE === 'WGT' ||
-      process.env.UNI_COMPILE_TARGET === 'ext-api'
+      // 当编译 ext-api 中的 pages/components 时，不需要编译 utssdk 插件
+      (process.env.UNI_COMPILE_TARGET === 'ext-api' &&
+        (process.env.UNI_COMPILE_EXT_API_TYPE === 'pages' ||
+          process.env.UNI_COMPILE_EXT_API_TYPE === 'components'))
     ) {
       return createResult(outputPluginDir, errMsg, code, deps, [], [], {}, meta)
     }
