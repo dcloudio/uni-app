@@ -577,7 +577,8 @@
           "js": false,
           "kotlin": false,
           "swift": false,
-          "arkts": true
+          "arkts": true,
+          "x-arkts": false
         }
       },
       "closePreviewImage": {
@@ -586,7 +587,8 @@
           "js": false,
           "kotlin": false,
           "swift": false,
-          "arkts": true
+          "arkts": true,
+          "x-arkts": false
         }
       },
       "getImageInfo": {
