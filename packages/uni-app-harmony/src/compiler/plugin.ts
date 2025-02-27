@@ -192,13 +192,11 @@ interface ProviderInfo {
 /**
  * 鸿蒙getLocation system支持gcj02和地理位置解析，按理说没有使用其他provider的需求，因此system内置
  */
-const DefaultModule = isX
-  ? {
-      'uni-getLocation': {
-        system: {},
-      },
-    }
-  : {}
+const DefaultModule = {
+  'uni-getLocation': {
+    system: {},
+  },
+}
 
 function getManifestModules(inputDir: string) {
   const manifest = parseManifestJsonOnce(inputDir)
