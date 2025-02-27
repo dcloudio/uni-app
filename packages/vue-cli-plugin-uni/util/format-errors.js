@@ -22,7 +22,23 @@ function formatMessage (msg) {
 
 const installPreprocessorTips = {}
 
+const isHBuilderXArm = process.platform === 'darwin' && process.arch === 'arm64'
+
 function ModuleBuildError (err) {
+  if (isHBuilderXArm) {
+    if (err.message.includes('SassError:')) {
+      if (err.message.includes('/deep/')) {
+        err.message = err.message + `
+
+HBuilderX Mac Arm 版 Vue2 sass 预编译器已由 node-sass 更换为 dart-sass，dart-sass 已不再支持 /deep/ 语法。
+解决方案：
+1. 将深度选择器 /deep/ 调整为 ::v-deep
+2. 使用 HBuilderX Mac Intel 版本，下载地址：https://www.dcloud.io/hbuilderx.html
+
+`
+      }
+    }
+  }
   const lines = err.message.split('\n')
   let firstLineMessage = lines[0]
   if (lines.length > 1) {
