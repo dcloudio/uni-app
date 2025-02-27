@@ -31,11 +31,6 @@
       "StartFacialRecognitionVerifyScreenOrientation"
     ]
   ],
-  "@dcloudio/uni-getLocation-system": [
-    [
-      "UniLocationSystemProvider"
-    ]
-  ],
   "@dcloudio/uni-oauth-huawei": [
     [
       "UniOAuthHuaweiProvider"
@@ -49,6 +44,11 @@
   "@dcloudio/uni-payment-huawei": [
     [
       "UniPaymentHuaweiProvider"
+    ]
+  ],
+  "@dcloudio/uni-getLocation-system": [
+    [
+      "UniLocationSystemProvider"
     ]
   ],
   "@dcloudio/uni-push": [
