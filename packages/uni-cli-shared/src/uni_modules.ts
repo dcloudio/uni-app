@@ -11,6 +11,8 @@ export type DefineOptions = {
         js?: boolean
         kotlin?: boolean
         swift?: boolean
+        arkts?: boolean
+        ['x-arkts']?: boolean
       }
   [key: string]: any
 }
