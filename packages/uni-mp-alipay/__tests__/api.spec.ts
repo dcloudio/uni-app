@@ -165,15 +165,34 @@ describe('api', () => {
     })
   })
 
-  test('api-showModal', () => {
+  test('api-alipay showModal', () => {
+    global.my.canIUse = jest.fn().mockImplementation((api) => {
+      if (api === 'showModal') {
+        return true
+      }
+      return true
+    })
     expect(typeof showModal).toBe('function')
 
+    const args = showModal() as any
+
+    expect(args).toEqual({
+      name: 'showModal',
+    })
+  })
+
+  test('api-dingding showModal', () => {
+    global.my.canIUse = jest.fn().mockImplementation((api) => {
+      if (api === 'showModal') {
+        return false
+      }
+      return true
+    })
+    expect(typeof showModal).toBe('function')
     const args = showModal().args as any
     expect(typeof args).toBe('object')
 
-    expect(args.cancelColor).toBeUndefined()
-    expect(args.confirmColor).toBeUndefined()
+    expect(args.cancelColor).toBe(false)
+    expect(args.confirmColor).toBe(false)
   })
-
-  test('api-setNavigationBarColor', () => {})
 })

@@ -151,9 +151,14 @@ export const request = {
     headers: 'header',
   },
 }
+
+/**
+ * 钉钉小程序 setNavigationBarColor 不支持 frontColor
+ */
 export const setNavigationBarColor = {
   name: 'setNavigationBar',
   args: {
+    frontColor: false,
     animation: false,
   },
 }
@@ -161,12 +166,23 @@ export const setNavigationBarTitle = {
   name: 'setNavigationBar',
 }
 
-/** 支付宝和钉钉不一致， showModal 在钉钉上没有，所以使用 my.confirm 模拟 */
+/**
+ * Note:
+ * showModal 在钉钉上没有，所以使用 my.confirm/alert 模拟
+ */
 export function showModal({ showCancel = true }: UniApp.ShowModalOptions = {}) {
+  const canIUseShowModal = my.canIUse('showModal')
+  if (canIUseShowModal) {
+    return {
+      name: 'showModal',
+    }
+  }
   if (showCancel) {
     return {
       name: 'confirm',
       args: {
+        confirmColor: false,
+        cancelColor: false,
         cancelText: 'cancelButtonText',
         confirmText: 'confirmButtonText',
       },
