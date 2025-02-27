@@ -22,7 +22,8 @@
     "apply": [
       "app",
       "h5",
-      "mp-weixin"
+      "mp-weixin",
+      "app-harmony"
     ],
     "uvue": true
   },
