@@ -31,14 +31,14 @@
       "StartFacialRecognitionVerifyScreenOrientation"
     ]
   ],
+  "@dcloudio/uni-getLocation-system": [
+    [
+      "UniLocationSystemProvider"
+    ]
+  ],
   "@dcloudio/uni-oauth-huawei": [
     [
       "UniOAuthHuaweiProvider"
-    ]
-  ],
-  "@dcloudio/uni-payment-huawei": [
-    [
-      "UniPaymentHuaweiProvider"
     ]
   ],
   "@dcloudio/uni-payment-alipay": [
@@ -46,69 +46,9 @@
       "UniPaymentAlipayProvider"
     ]
   ],
-  "@dcloudio/uni-verify": [
+  "@dcloudio/uni-payment-huawei": [
     [
-      "UniVerifyManager"
-    ],
-    [
-      "UniverifyManager"
-    ],
-    [
-      "UniVerifyManagerPreLoginFail"
-    ],
-    [
-      "UniVerifyManagerLoginFail"
-    ],
-    [
-      "UniVerifyManagerPreLoginOptions"
-    ],
-    [
-      "UniVerifyManagerLoginOptions"
-    ],
-    [
-      "UniVerifyManagerCustomLoginOptions"
-    ],
-    [
-      "UniVerifyManagerLoginStyle"
-    ],
-    [
-      "UniVerifyManagerPreLoginSuccess"
-    ],
-    [
-      "UniVerifyManagerLoginSuccess"
-    ],
-    [
-      "GetUniverifyManager"
-    ],
-    [
-      "GetUniVerifyManager"
-    ],
-    [
-      "UniVerifyManagerPreLoginSuccessCallback"
-    ],
-    [
-      "UniVerifyManagerPreLoginFailCallback"
-    ],
-    [
-      "UniVerifyManagerPreLoginCompleteCallback"
-    ],
-    [
-      "UniVerifyManagerLoginSuccessCallback"
-    ],
-    [
-      "UniVerifyManagerLoginFailCallback"
-    ],
-    [
-      "UniVerifyManagerLoginCompleteCallback"
-    ],
-    [
-      "UniVerifyManagerPreLoginComplete"
-    ],
-    [
-      "UniVerifyManagerLoginComplete"
-    ],
-    [
-      "UniVerifyManagerErrorCode"
+      "UniPaymentHuaweiProvider"
     ]
   ],
   "@dcloudio/uni-push": [
@@ -191,9 +131,69 @@
       "CreatePushMessageComplete"
     ]
   ],
-  "@dcloudio/uni-getLocation-system": [
+  "@dcloudio/uni-verify": [
     [
-      "UniLocationSystemProvider"
+      "UniVerifyManager"
+    ],
+    [
+      "UniverifyManager"
+    ],
+    [
+      "UniVerifyManagerPreLoginFail"
+    ],
+    [
+      "UniVerifyManagerLoginFail"
+    ],
+    [
+      "UniVerifyManagerPreLoginOptions"
+    ],
+    [
+      "UniVerifyManagerLoginOptions"
+    ],
+    [
+      "UniVerifyManagerCustomLoginOptions"
+    ],
+    [
+      "UniVerifyManagerLoginStyle"
+    ],
+    [
+      "UniVerifyManagerPreLoginSuccess"
+    ],
+    [
+      "UniVerifyManagerLoginSuccess"
+    ],
+    [
+      "GetUniverifyManager"
+    ],
+    [
+      "GetUniVerifyManager"
+    ],
+    [
+      "UniVerifyManagerPreLoginSuccessCallback"
+    ],
+    [
+      "UniVerifyManagerPreLoginFailCallback"
+    ],
+    [
+      "UniVerifyManagerPreLoginCompleteCallback"
+    ],
+    [
+      "UniVerifyManagerLoginSuccessCallback"
+    ],
+    [
+      "UniVerifyManagerLoginFailCallback"
+    ],
+    [
+      "UniVerifyManagerLoginCompleteCallback"
+    ],
+    [
+      "UniVerifyManagerPreLoginComplete"
+    ],
+    [
+      "UniVerifyManagerLoginComplete"
+    ],
+    [
+      "UniVerifyManagerErrorCode"
     ]
   ]
 }

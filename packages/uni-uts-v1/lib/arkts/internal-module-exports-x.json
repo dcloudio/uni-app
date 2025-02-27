@@ -40,16 +40,16 @@
       "UniRadioGroupElement"
     ],
     [
-      "UniSliderChangeEvent"
-    ],
-    [
-      "UniSliderElement"
-    ],
-    [
       "UniSwitchChangeEvent"
     ],
     [
       "UniSwitchElement"
+    ],
+    [
+      "UniSliderChangeEvent"
+    ],
+    [
+      "UniSliderElement"
     ],
     [
       "UniNavigatorElement"
