@@ -36,7 +36,7 @@ export const miniProgram: MiniProgramCompilerOptions = {
   },
   slot: {
     fallbackContent: false,
-    dynamicSlotNames: false,
+    dynamicSlotNames: true,
   },
   directive: 'ks:',
   lazyElement: {
