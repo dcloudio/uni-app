@@ -177,6 +177,13 @@
         ]
       }
     ],
+    "textReplacements": [
+      {
+        "find": "const res = toRaw(this)[key].apply(this, args);",
+        "replace": "const res = toRaw(this)[key](...args);",
+        "file": "@vue/reactivity/dist/reactivity.esm-bundler.js"
+      }
+    ],
     "external": [
       "@dcloudio/uni-nvue-styler"
     ],
@@ -208,6 +215,13 @@
             "replaceName": "isIntegerKey"
           }
         ]
+      }
+    ],
+    "textReplacements": [
+      {
+        "find": "const res = toRaw(this)[key].apply(this, args);",
+        "replace": "const res = toRaw(this)[key](...args);",
+        "file": "@vue/reactivity/dist/reactivity.esm-bundler.js"
       }
     ],
     "external": [

@@ -293,6 +293,49 @@ function createConfig (entryFile, output, buildOption) {
     })
   }
 
+  if (buildOption.textReplacements && buildOption.textReplacements.length > 0) {
+    const textReplacements = buildOption.textReplacements
+    if (textReplacements.some(textReplacement => !textReplacement.file)) {
+      throw new Error('textReplacements must have file field for security reasons')
+    }
+    plugins.push({
+      name: 'replace-text',
+      transform (code, id) {
+        if (!id.endsWith('.js')) {
+          return
+        }
+        let newCode = code
+        textReplacements.forEach(textReplacement => {
+          const {
+            file,
+            find,
+            replace
+          } = textReplacement
+          const fileFull = require.resolve(file)
+          if (path.normalize(id) !== path.normalize(fileFull)) {
+            return
+          }
+          if (typeof find === 'string') {
+            if (newCode.indexOf(find) === -1) {
+              throw new Error('textReplacement not found: ' + find)
+            }
+            newCode = newCode.replace(find, replace)
+          } else {
+            const regExp = new RegExp(find.source, find.flags)
+            if (!regExp.test(newCode)) {
+              throw new Error('textReplacement not found: ' + JSON.stringify(find))
+            }
+            newCode = newCode.replace(regExp, replace)
+          }
+        })
+        return {
+          code: newCode,
+          map: null
+        }
+      }
+    })
+  }
+
   return {
     input: resolve(entryFile),
     external,
