@@ -1,13 +1,20 @@
-import { join } from 'path'
+import { isAbsolute, join } from 'path'
 import { normalizePath } from '../shared'
 import {
   originalPositionFor,
   resolveUTSPluginSourceMapFile,
 } from '../sourceMap'
-import { generateCodeFrame, splitRE } from './utils'
+import {
+  type GenerateRuntimeCodeFrameOptions,
+  generateCodeFrame,
+  splitRE,
+} from './utils'
 import { existsSync, readFileSync } from 'fs-extra'
-
-interface ParseUTSArkTSPluginStacktraceOptions {
+import {
+  type GenerateAppHarmonyJavaScriptRuntimeCodeFrameOptions,
+  parseUTSJavaScriptRuntimeStacktrace,
+} from './js'
+export interface ParseUTSArkTSPluginStacktraceOptions {
   /**
    * 项目输入目录 = process.env.UNI_INPUT_DIR
    */
@@ -18,14 +25,25 @@ interface ParseUTSArkTSPluginStacktraceOptions {
   outputDir: string
 }
 
-const uniModulesArkTSUTSRe = /File:\s+(.*):(\d+):(\d+)/
+const ARKTS_COMPILE_ERROR_RE = /File:\s+(.*):(\d+):(\d+)/
+// at test (uni_modules/test-error/utssdk/app-harmony/index.ets:2:11)
+const ARKTS_RUNTIME_ERROR_RE =
+  /at\s+(?:.*)\s+\((uni_modules\/.*?\.ets):(\d+):(\d+)\)/
 
 /**
- * 解析uts插件ArkTS的堆栈信息
+ * 解析uts插件编译时的ArkTS的堆栈信息
  */
 export async function parseUTSArkTSPluginStacktrace(
   stacktrace: string,
   options: ParseUTSArkTSPluginStacktraceOptions
+) {
+  return parseUTSArkTSStacktrace(stacktrace, options, ARKTS_COMPILE_ERROR_RE)
+}
+
+async function parseUTSArkTSStacktrace(
+  stacktrace: string,
+  options: ParseUTSArkTSPluginStacktraceOptions,
+  re: RegExp
 ) {
   const lines = stacktrace.split(splitRE)
   const res: string[] = []
@@ -33,11 +51,7 @@ export async function parseUTSArkTSPluginStacktrace(
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i]
     try {
-      const codes = await parseUTSStacktraceLine(
-        line,
-        uniModulesArkTSUTSRe,
-        options
-      )
+      const codes = await parseUTSStacktraceLine(line, re, options)
       if (codes && codes.length) {
         res.push(...codes)
       } else {
@@ -65,7 +79,13 @@ async function parseUTSStacktraceLine(
     return
   }
   const lines: string[] = []
-  const [, filename, line, column] = uniModulesMatches
+  const [, etsFile, line, column] = uniModulesMatches
+
+  // 编译时获取到的是绝对路径
+  const filename = isAbsolute(etsFile)
+    ? etsFile
+    : // 运行时获取到的是相对路径
+      join(options.inputDir, etsFile)
 
   const parts = normalizePath(filename).split('/uni_modules/')
   if (parts.length > 1) {
@@ -114,4 +134,45 @@ async function parseUTSStacktraceLine(
     lines.push(lineStr)
   }
   return lines
+}
+
+export type GenerateAppHarmonyCodeFrameOptions =
+  | GenerateAppHarmonyArkTSRuntimeCodeFrameOptions
+  | GenerateAppHarmonyJavaScriptRuntimeCodeFrameOptions
+  | GenerateAppHarmonyAutoCodeFrameOptions
+
+export interface GenerateAppHarmonyAutoCodeFrameOptions
+  extends GenerateRuntimeCodeFrameOptions,
+    ParseUTSArkTSPluginStacktraceOptions {
+  platform: 'app-harmony'
+}
+
+export interface GenerateAppHarmonyArkTSRuntimeCodeFrameOptions
+  extends GenerateAppHarmonyAutoCodeFrameOptions,
+    ParseUTSArkTSPluginStacktraceOptions {
+  platform: 'app-harmony'
+  language: 'arkts'
+}
+
+export function parseUTSHarmonyRuntimeStacktrace(
+  stacktrace: string,
+  options: GenerateAppHarmonyCodeFrameOptions
+) {
+  if (ARKTS_RUNTIME_ERROR_RE.test(stacktrace)) {
+    return parseUTSArkTSRuntimeStacktrace(
+      stacktrace,
+      options as GenerateAppHarmonyArkTSRuntimeCodeFrameOptions
+    )
+  }
+  return parseUTSJavaScriptRuntimeStacktrace(
+    stacktrace,
+    options as GenerateAppHarmonyJavaScriptRuntimeCodeFrameOptions
+  )
+}
+
+export function parseUTSArkTSRuntimeStacktrace(
+  stacktrace: string,
+  options: GenerateAppHarmonyArkTSRuntimeCodeFrameOptions
+) {
+  return parseUTSArkTSStacktrace(stacktrace, options, ARKTS_RUNTIME_ERROR_RE)
 }
