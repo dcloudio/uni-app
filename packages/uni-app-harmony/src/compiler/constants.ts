@@ -28,6 +28,10 @@ export const ExternalModules: IExternalModule[] = [
     type: 'provider',
   },
   {
+    name: 'uni-payment-wxpay',
+    type: 'provider',
+  },
+  {
     name: 'uni-getLocation-system',
     type: 'provider',
   },
