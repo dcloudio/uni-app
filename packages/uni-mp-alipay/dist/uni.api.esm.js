@@ -1486,6 +1486,9 @@ const request = {
         headers: 'header',
     },
 };
+/**
+ * 钉钉小程序 setNavigationBarColor 不支持 frontColor
+ */
 const setNavigationBarColor = {
     name: 'setNavigationBar',
     args: {
@@ -1496,13 +1499,23 @@ const setNavigationBarColor = {
 const setNavigationBarTitle = {
     name: 'setNavigationBar',
 };
+/**
+ * Note:
+ * showModal 在钉钉上没有，所以使用 my.confirm/alert 模拟
+ */
 function showModal({ showCancel = true } = {}) {
+    const canIUseShowModal = my.canIUse('showModal');
+    if (canIUseShowModal) {
+        return {
+            name: 'showModal',
+        };
+    }
     if (showCancel) {
         return {
             name: 'confirm',
             args: {
-                cancelColor: false,
                 confirmColor: false,
+                cancelColor: false,
                 cancelText: 'cancelButtonText',
                 confirmText: 'confirmButtonText',
             },

@@ -329,6 +329,9 @@
 		width: 96%;
 		padding: 5px;
 		max-height: 192px;
+		/* #ifdef WEB */
+		word-break: break-word;
+		/* #endif */
 	}
 
 	.uni-modal_dialog__content__textarea.uni-modal_dark__mode {

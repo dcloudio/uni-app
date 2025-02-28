@@ -37,7 +37,7 @@ type UniShowModalSuccessCallback = (result: UniShowModalResult) => void
 type UniShowModalCompleteCallback = (result: any) => void
 
 
-export type ShowModalOptions2 = {
+export type ShowModalOptions = {
   /**
    * 提示的标题
    */
@@ -90,7 +90,7 @@ export type ShowModalOptions2 = {
   complete?: UniShowModalCompleteCallback | null
 }
 
-export type ShowModal2 = (options: ShowModalOptions2) => void;
+export type ShowModal = (options: ShowModalOptions) => void;
 
 export interface Uni {
 	
@@ -184,7 +184,7 @@ export interface Uni {
 	    }
 	  }
 	 */
-	showModal2(options: ShowModalOptions2): void,
+	showModal(options: ShowModalOptions): void,
 	
 }
 

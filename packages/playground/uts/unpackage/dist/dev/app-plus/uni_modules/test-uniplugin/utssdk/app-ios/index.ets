@@ -23,9 +23,9 @@ function getBatteryInfo(options: GetBatteryInfoOptions) {
     }
 }
 function test1(callback: () => void): string {
-    uni.__log__("log", new UTSJSONObject({
+    uni.__log__("log", {
         "a": "b"
-    }), " at uni_modules/test-uniplugin/utssdk/app-ios/index.uts:33");
+    } as __log__Options, " at uni_modules/test-uniplugin/utssdk/app-ios/index.uts:33");
     uni.__log__("log", 'test1', " at uni_modules/test-uniplugin/utssdk/app-ios/index.uts:34");
     uni.__log__("log", 'ndef android', " at uni_modules/test-uniplugin/utssdk/app-ios/index.uts:42");
     uni.__log__("log", 'ndef ios', " at uni_modules/test-uniplugin/utssdk/app-ios/index.uts:45");

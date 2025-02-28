@@ -1,8 +1,8 @@
-import { ShowModal2, ShowModalOptions2,UniShowModalResult,UniShowModalFailImpl } from "../interface.uts";
+import { ShowModal, ShowModalOptions,UniShowModalResult,UniShowModalFailImpl } from "../interface.uts";
 
 
-export const showModal2: ShowModal2 = function (
-  options: ShowModalOptions2
+export const showModal: ShowModal = function (
+  options: ShowModalOptions
 ) {
 	const uuid = `${Date.now()}${Math.floor(Math.random() * 1e7)}`
 	const baseEventName = `uni_modal_${uuid}`

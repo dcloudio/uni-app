@@ -59,6 +59,7 @@
 			"uni-getSystemInfo",
 			"uni-storage",
 			"uni-prompt",
+			"uni-modal",
 			"uni-actionSheet",
 			"app-ios:uni-dialogPage",
 			"app-ios:uni-event"

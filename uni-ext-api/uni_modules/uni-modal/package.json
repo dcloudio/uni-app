@@ -40,8 +40,8 @@
     ],
     "uni-ext-api": {
     	"uni": {
-    		"showModal2": {
-    			"name": "showModal2",
+    		"showModal": {
+    			"name": "showModal",
     			"app": {
     				"js": false,
     				"kotlin": true,

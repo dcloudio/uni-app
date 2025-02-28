@@ -24,6 +24,13 @@ var ExternalModuls = [
 	},
 	{
 		type: "provider",
+		plugin: "uni-getLocation-system",
+		provider: "system",
+		service: "location",
+		version: "1.0.0"
+	},
+	{
+		type: "provider",
 		plugin: "uni-oauth-huawei",
 		provider: "huawei",
 		service: "oauth",
@@ -239,13 +246,11 @@ function getProviders(module, allProviders) {
 /**
  * 鸿蒙getLocation system支持gcj02和地理位置解析，按理说没有使用其他provider的需求，因此system内置
  */
-const DefaultModule = isX
-    ? {
-        'uni-getLocation': {
-            system: {},
-        },
-    }
-    : {};
+const DefaultModule = {
+    'uni-getLocation': {
+        system: {},
+    },
+};
 function getManifestModules(inputDir) {
     const manifest = uniCliShared.parseManifestJsonOnce(inputDir);
     const modules = manifest?.[isX ? 'app' : 'app-harmony']?.distribute?.modules;
