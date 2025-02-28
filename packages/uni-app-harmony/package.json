@@ -3,7 +3,8 @@
   "version": "3.0.0-alpha-4040120241205001",
   "description": "@dcloudio/uni-app-harmony",
   "files": [
-    "dist"
+    "dist",
+    "lib"
   ],
   "sideEffects": [
     "lib/automator.js"
