@@ -7,6 +7,7 @@ import {
 import {
   type GenerateRuntimeCodeFrameOptions,
   generateCodeFrame,
+  parseRelativeSourceFile,
   splitRE,
 } from './utils'
 import { existsSync, readFileSync } from 'fs-extra'
@@ -37,10 +38,16 @@ export async function parseUTSArkTSPluginStacktrace(
   stacktrace: string,
   options: ParseUTSArkTSPluginStacktraceOptions
 ) {
-  return parseUTSArkTSStacktrace(stacktrace, options, ARKTS_COMPILE_ERROR_RE)
+  return parseUTSArkTSStacktrace(
+    'compile',
+    stacktrace,
+    options,
+    ARKTS_COMPILE_ERROR_RE
+  )
 }
 
 async function parseUTSArkTSStacktrace(
+  type: 'compile' | 'runtime',
   stacktrace: string,
   options: ParseUTSArkTSPluginStacktraceOptions,
   re: RegExp
@@ -54,6 +61,12 @@ async function parseUTSArkTSStacktrace(
       const codes = await parseUTSStacktraceLine(line, re, options)
       if (codes && codes.length) {
         res.push(...codes)
+        if (type === 'runtime') {
+          if (errorMessageLines.length) {
+            errorMessageLines[0] = 'error: ' + errorMessageLines[0]
+          }
+          break
+        }
       } else {
         errorMessageLines.push(line)
       }
@@ -118,9 +131,10 @@ async function parseUTSStacktraceLine(
 
   if (originalPosition.source && originalPosition.sourceContent) {
     lines.push(
-      `at ${originalPosition.source.split('?')[0]}:${originalPosition.line}:${
-        originalPosition.column
-      }`
+      `at ${parseRelativeSourceFile(
+        originalPosition.source.split('?')[0],
+        options.inputDir
+      )}:${originalPosition.line}:${originalPosition.column}`
     )
     if (originalPosition.line !== null && originalPosition.column !== null) {
       lines.push(
@@ -174,5 +188,10 @@ export function parseUTSArkTSRuntimeStacktrace(
   stacktrace: string,
   options: GenerateAppHarmonyArkTSRuntimeCodeFrameOptions
 ) {
-  return parseUTSArkTSStacktrace(stacktrace, options, ARKTS_RUNTIME_ERROR_RE)
+  return parseUTSArkTSStacktrace(
+    'runtime',
+    stacktrace,
+    options,
+    ARKTS_RUNTIME_ERROR_RE
+  )
 }

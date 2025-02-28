@@ -1,3 +1,4 @@
+type MessageType1 = 'log' | 'warn' | 'error' | 'info' | 'debug';
 interface NormalizeResult {
     name?: string;
     type: string;
@@ -37,12 +38,11 @@ interface MapResultValue {
 interface MapResult extends NormalizeResult {
     value: MapResultValue;
 }
-type MessageType = 'log' | 'warn' | 'error' | 'info' | 'debug';
 interface Message {
-    type: MessageType;
+    type: MessageType1;
     args: Array<Object>;
 }
-function formatMessage(type: MessageType, args: Array<Object | null>): Message {
+function formatMessage(type: MessageType1, args: Array<Object | null>): Message {
     try {
         return {
             type,

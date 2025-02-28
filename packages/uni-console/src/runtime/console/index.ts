@@ -1,13 +1,16 @@
+import { sendErrorMessages } from '../error'
 import type { SendFn } from '../utils'
-import { type Message, type MessageType, formatMessage } from './format'
-
-const CONSOLE_TYPES = ['log', 'warn', 'error', 'info', 'debug'] as const
+import { type Message, formatMessage } from './format'
+import { CONSOLE_TYPES, type MessageType, originalConsole } from './utils'
 
 let sendConsole: SendFn = null
 
 const messageQueue: Message[] = []
 
 const messageExtra: Record<string, any> = {}
+
+const EXCEPTION_BEGIN_MARK = '---BEGIN:EXCEPTION---'
+const EXCEPTION_END_MARK = '---END:EXCEPTION---'
 
 function sendConsoleMessages(messages: Message[]) {
   if (sendConsole == null) {
@@ -37,14 +40,6 @@ export function setSendConsole(value: SendFn, extra: Record<string, any> = {}) {
   }
 }
 
-export const originalConsole = /*@__PURE__*/ CONSOLE_TYPES.reduce(
-  (methods, type) => {
-    methods[type] = console[type].bind(console)
-    return methods
-  },
-  {} as Record<MessageType, typeof console.log>
-)
-
 const atFileRegex = /^\s*at\s+[\w/./-]+:\d+$/
 
 export function rewriteConsole() {
@@ -60,6 +55,15 @@ export function rewriteConsole() {
       }
       if (process.env.UNI_CONSOLE_KEEP_ORIGINAL) {
         originalConsole[type](...originalArgs)
+      }
+      if (type === 'error' && args.length === 1) {
+        const arg = args[0]
+        if (typeof arg === 'string' && arg.startsWith(EXCEPTION_BEGIN_MARK)) {
+          const startIndex = EXCEPTION_BEGIN_MARK.length
+          const endIndex = arg.length - EXCEPTION_END_MARK.length
+          sendErrorMessages([arg.slice(startIndex, endIndex)])
+          return
+        }
       }
       sendConsoleMessages([formatMessage(type, args)])
     }

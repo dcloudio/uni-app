@@ -23,7 +23,7 @@ at pages/index/index.vue:21:16
 `;
 
 exports[`uts:stacktrace:runtime parseHarmonyRuntimeStacktrace 1`] = `
-"error: [EXCEPTION] aaa
+"error: aaa
 at pages/index/index.uvue:19:16
 17 |          methods: {
 18 |              testArr() {
@@ -34,7 +34,7 @@ at pages/index/index.uvue:19:16
 `;
 
 exports[`uts:stacktrace:runtime parseHarmonyRuntimeStacktrace 2`] = `
-"aaa
+"error: aaa
 at uni_modules/test-error/utssdk/index.uts:2:10
 1  |  export function test() {
 2  |      throw new Error('aaa')

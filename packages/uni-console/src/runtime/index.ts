@@ -1,6 +1,7 @@
 import { initRuntimeSocket } from './socket'
-import { originalConsole, rewriteConsole, setSendConsole } from './console'
+import { rewriteConsole, setSendConsole } from './console'
 import { initOnError, setSendError } from './error'
+import { originalConsole } from './console/utils'
 
 export function initRuntimeSocketService(): Promise<boolean> {
   const hosts: string = process.env.UNI_SOCKET_HOSTS

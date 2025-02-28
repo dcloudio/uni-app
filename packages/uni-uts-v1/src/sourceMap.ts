@@ -400,7 +400,7 @@ export async function originalPositionFor(
  */
 export function originalPositionForSync(
   generatedPosition: Omit<PositionFor, 'filename'> & { inputDir?: string }
-): MappedPosition & { sourceContent?: string } {
+): MappedPosition & { sourceContent?: string; sourceRoot?: string | null } {
   const consumer = resolveSourceMapConsumerSync(
     generatedPosition.sourceMapFile
   ) as SourceMapConsumerSync
@@ -421,6 +421,7 @@ export function originalPositionForSync(
   ) {
     return Object.assign(res, {
       sourceContent: consumer.sourceContentFor(res.source, true) ?? '',
+      sourceRoot: consumer.sourceRoot,
     })
   }
   if (res.source && generatedPosition.inputDir) {

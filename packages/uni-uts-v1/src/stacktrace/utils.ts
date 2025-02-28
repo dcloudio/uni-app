@@ -1,5 +1,6 @@
 import fs from 'fs'
-import path from 'path'
+import path, { relative } from 'path'
+import { normalizePath } from '../shared'
 
 export interface GenerateRuntimeCodeFrameOptions {
   cacheDir: string
@@ -101,4 +102,19 @@ export function generateCodeFrame(
     }
   }
   return res.join('\n')
+}
+
+export function parseRelativeSourceFile(
+  sourceFile: string,
+  sourceRoot?: string | null
+) {
+  if (!sourceRoot) {
+    return sourceFile
+  }
+  sourceFile = normalizePath(sourceFile)
+  sourceRoot = normalizePath(sourceRoot)
+  if (sourceFile.startsWith(sourceRoot)) {
+    return normalizePath(relative(sourceRoot, sourceFile))
+  }
+  return sourceFile
 }

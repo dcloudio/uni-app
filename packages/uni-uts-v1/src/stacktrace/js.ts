@@ -4,6 +4,7 @@ import {
   type GenerateRuntimeCodeFrameOptions,
   generateCodeFrame,
   lineColumnToStartEnd,
+  parseRelativeSourceFile,
   resolveSourceMapDirByCacheDir,
   resolveSourceMapFileBySourceFile,
   splitRE,
@@ -37,6 +38,10 @@ export function parseUTSJavaScriptRuntimeStacktrace(
   stacktrace: string,
   options: GenerateJavaScriptRuntimeCodeFrameOptions
 ) {
+  // 兼容旧版本
+  if (!options.platform) {
+    options.platform = 'app-ios'
+  }
   const res: string[] = []
   const lines = stacktrace.split(splitRE)
   const sourceMapDir = resolveSourceMapDirByCacheDir(options.cacheDir)
@@ -55,9 +60,13 @@ export function parseUTSJavaScriptRuntimeStacktrace(
         : ''
       const [errorCode, ...other] =
         options.platform === 'app-harmony' ? res.concat(codes) : codes
-      let error =
-        `error: ${errorCode.includes('[EXCEPTION] ') ? '' : '[EXCEPTION] '}` +
-        errorCode
+      const mark =
+        options.platform === 'app-ios'
+          ? errorCode.includes('[EXCEPTION] ')
+            ? ''
+            : '[EXCEPTION] '
+          : ''
+      let error = `error: ${mark}` + errorCode
       if (color) {
         error = color + error + color
       }
@@ -121,9 +130,10 @@ function parseUTSJavaScriptRuntimeStacktraceVueErrorLine(
   })
   if (originalPosition.source && originalPosition.sourceContent) {
     lines.push(
-      `at ${originalPosition.source.split('?')[0]}:${originalPosition.line}:${
-        originalPosition.column
-      }`
+      `at ${parseRelativeSourceFile(
+        originalPosition.source.split('?')[0],
+        originalPosition.sourceRoot
+      )}:${originalPosition.line}:${originalPosition.column}`
     )
     if (originalPosition.line !== null && originalPosition.column !== null) {
       const { start, end } = lineColumnToStartEnd(
@@ -181,9 +191,10 @@ export function processErrorLines(
       lines.push(error)
     }
     lines.push(
-      `at ${originalPosition.source.split('?')[0]}:${originalPosition.line}:${
-        originalPosition.column
-      }`
+      `at ${parseRelativeSourceFile(
+        originalPosition.source.split('?')[0],
+        originalPosition.sourceRoot
+      )}:${originalPosition.line}:${originalPosition.column}`
     )
     if (
       originalPosition.sourceContent &&

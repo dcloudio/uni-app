@@ -1,4 +1,4 @@
-import { originalConsole } from './console'
+import { originalConsole } from './console/utils'
 import type { SendFn } from './utils'
 
 let sendError: SendFn = null
@@ -20,6 +20,9 @@ export function sendErrorMessages(errors: any[]) {
   }
   const data = errors
     .map((err) => {
+      if (typeof err === 'string') {
+        return err
+      }
       const isPromiseRejection = err && 'promise' in err && 'reason' in err
       const prefix = isPromiseRejection ? 'UnhandledPromiseRejection: ' : ''
       if (isPromiseRejection) {

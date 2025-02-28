@@ -45,6 +45,108 @@ function tryConnectSocket(host, port, id) {
     });
 }
 
+const CONSOLE_TYPES = ['log', 'warn', 'error', 'info', 'debug'];
+const originalConsole = /*@__PURE__*/ CONSOLE_TYPES.reduce((methods, type) => {
+    methods[type] = console[type].bind(console);
+    return methods;
+}, {});
+
+let sendError = null;
+// App.onError会监听到两类错误，一类是小程序自身抛出的，一类是 vue 的 errorHandler 触发的
+// uni.onError 和 App.onError 会同时监听到错误(主要是App.onError监听之前的错误)，所以需要用 Set 来去重
+// uni.onError 会在 App.onError 上边同时增加监听，因为要监听 vue 的errorHandler
+// 目前 vue 的 errorHandler 仅会callHook('onError')，所以需要把uni.onError的也挂在 App.onError 上
+const errorQueue = new Set();
+const errorExtra = {};
+function sendErrorMessages(errors) {
+    if (sendError == null) {
+        errors.forEach((error) => {
+            errorQueue.add(error);
+        });
+        return;
+    }
+    const data = errors
+        .map((err) => {
+        if (typeof err === 'string') {
+            return err;
+        }
+        const isPromiseRejection = err && 'promise' in err && 'reason' in err;
+        const prefix = isPromiseRejection ? 'UnhandledPromiseRejection: ' : '';
+        if (isPromiseRejection) {
+            err = err.reason;
+        }
+        if (err instanceof Error && err.stack) {
+            if (err.message && !err.stack.includes(err.message)) {
+                return `${prefix}${err.message}
+${err.stack}`;
+            }
+            return `${prefix}${err.stack}`;
+        }
+        if (typeof err === 'object' && err !== null) {
+            try {
+                return prefix + JSON.stringify(err);
+            }
+            catch (err) {
+                return prefix + String(err);
+            }
+        }
+        return prefix + String(err);
+    })
+        .filter(Boolean);
+    if (data.length > 0) {
+        sendError(JSON.stringify(Object.assign({
+            type: 'error',
+            data,
+        }, errorExtra)));
+    }
+}
+function setSendError(value, extra = {}) {
+    sendError = value;
+    Object.assign(errorExtra, extra);
+    if (value != null && errorQueue.size > 0) {
+        const errors = Array.from(errorQueue);
+        errorQueue.clear();
+        sendErrorMessages(errors);
+    }
+}
+function initOnError() {
+    function onError(error) {
+        try {
+            // 小红书小程序 socket.send 时，会报错，onError错误信息为：
+            // Cannot create property 'errMsg' on string 'taskId'
+            // 导致陷入死循环
+            if (typeof PromiseRejectionEvent !== 'undefined' &&
+                error instanceof PromiseRejectionEvent &&
+                error.reason instanceof Error &&
+                error.reason.message &&
+                error.reason.message.includes(`Cannot create property 'errMsg' on string 'taskId`)) {
+                return;
+            }
+            if (process.env.UNI_CONSOLE_KEEP_ORIGINAL) {
+                originalConsole.error(error);
+            }
+            sendErrorMessages([error]);
+        }
+        catch (err) {
+            originalConsole.error(err);
+        }
+    }
+    if (typeof uni.onError === 'function') {
+        uni.onError(onError);
+    }
+    if (typeof uni.onUnhandledRejection === 'function') {
+        uni.onUnhandledRejection(onError);
+    }
+    return function offError() {
+        if (typeof uni.offError === 'function') {
+            uni.offError(onError);
+        }
+        if (typeof uni.offUnhandledRejection === 'function') {
+            uni.offUnhandledRejection(onError);
+        }
+    };
+}
+
 function formatMessage(type, args) {
     try {
         return {
@@ -338,10 +440,11 @@ function formatMapEntry(value, depth) {
     };
 }
 
-const CONSOLE_TYPES = ['log', 'warn', 'error', 'info', 'debug'];
 let sendConsole = null;
 const messageQueue = [];
 const messageExtra = {};
+const EXCEPTION_BEGIN_MARK = '---BEGIN:EXCEPTION---';
+const EXCEPTION_END_MARK = '---END:EXCEPTION---';
 function sendConsoleMessages(messages) {
     if (sendConsole == null) {
         messageQueue.push(...messages);
@@ -361,10 +464,6 @@ function setSendConsole(value, extra = {}) {
         sendConsoleMessages(messages);
     }
 }
-const originalConsole = /*@__PURE__*/ CONSOLE_TYPES.reduce((methods, type) => {
-    methods[type] = console[type].bind(console);
-    return methods;
-}, {});
 const atFileRegex = /^\s*at\s+[\w/./-]+:\d+$/;
 function rewriteConsole() {
     function wrapConsole(type) {
@@ -379,6 +478,15 @@ function rewriteConsole() {
             }
             if (process.env.UNI_CONSOLE_KEEP_ORIGINAL) {
                 originalConsole[type](...originalArgs);
+            }
+            if (type === 'error' && args.length === 1) {
+                const arg = args[0];
+                if (typeof arg === 'string' && arg.startsWith(EXCEPTION_BEGIN_MARK)) {
+                    const startIndex = EXCEPTION_BEGIN_MARK.length;
+                    const endIndex = arg.length - EXCEPTION_END_MARK.length;
+                    sendErrorMessages([arg.slice(startIndex, endIndex)]);
+                    return;
+                }
             }
             sendConsoleMessages([formatMessage(type, args)]);
         };
@@ -429,99 +537,6 @@ function isConsoleWritable() {
     const isWritable = console.log === sym;
     console.log = value;
     return isWritable;
-}
-
-let sendError = null;
-// App.onError会监听到两类错误，一类是小程序自身抛出的，一类是 vue 的 errorHandler 触发的
-// uni.onError 和 App.onError 会同时监听到错误(主要是App.onError监听之前的错误)，所以需要用 Set 来去重
-// uni.onError 会在 App.onError 上边同时增加监听，因为要监听 vue 的errorHandler
-// 目前 vue 的 errorHandler 仅会callHook('onError')，所以需要把uni.onError的也挂在 App.onError 上
-const errorQueue = new Set();
-const errorExtra = {};
-function sendErrorMessages(errors) {
-    if (sendError == null) {
-        errors.forEach((error) => {
-            errorQueue.add(error);
-        });
-        return;
-    }
-    const data = errors
-        .map((err) => {
-        const isPromiseRejection = err && 'promise' in err && 'reason' in err;
-        const prefix = isPromiseRejection ? 'UnhandledPromiseRejection: ' : '';
-        if (isPromiseRejection) {
-            err = err.reason;
-        }
-        if (err instanceof Error && err.stack) {
-            if (err.message && !err.stack.includes(err.message)) {
-                return `${prefix}${err.message}
-${err.stack}`;
-            }
-            return `${prefix}${err.stack}`;
-        }
-        if (typeof err === 'object' && err !== null) {
-            try {
-                return prefix + JSON.stringify(err);
-            }
-            catch (err) {
-                return prefix + String(err);
-            }
-        }
-        return prefix + String(err);
-    })
-        .filter(Boolean);
-    if (data.length > 0) {
-        sendError(JSON.stringify(Object.assign({
-            type: 'error',
-            data,
-        }, errorExtra)));
-    }
-}
-function setSendError(value, extra = {}) {
-    sendError = value;
-    Object.assign(errorExtra, extra);
-    if (value != null && errorQueue.size > 0) {
-        const errors = Array.from(errorQueue);
-        errorQueue.clear();
-        sendErrorMessages(errors);
-    }
-}
-function initOnError() {
-    function onError(error) {
-        try {
-            // 小红书小程序 socket.send 时，会报错，onError错误信息为：
-            // Cannot create property 'errMsg' on string 'taskId'
-            // 导致陷入死循环
-            if (typeof PromiseRejectionEvent !== 'undefined' &&
-                error instanceof PromiseRejectionEvent &&
-                error.reason instanceof Error &&
-                error.reason.message &&
-                error.reason.message.includes(`Cannot create property 'errMsg' on string 'taskId`)) {
-                return;
-            }
-            if (process.env.UNI_CONSOLE_KEEP_ORIGINAL) {
-                originalConsole.error(error);
-            }
-            sendErrorMessages([error]);
-        }
-        catch (err) {
-            originalConsole.error(err);
-        }
-    }
-    if (typeof uni.onError === 'function') {
-        uni.onError(onError);
-    }
-    if (typeof uni.onUnhandledRejection === 'function') {
-        uni.onUnhandledRejection(onError);
-    }
-    return function offError() {
-        if (typeof uni.offError === 'function') {
-            uni.offError(onError);
-        }
-        if (typeof uni.offUnhandledRejection === 'function') {
-            uni.offUnhandledRejection(onError);
-        }
-    };
 }
 
 function initRuntimeSocketService() {

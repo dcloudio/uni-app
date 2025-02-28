@@ -1,4 +1,5 @@
 import type { ComponentInternalInstance, ComponentPublicInstance } from 'vue'
+import type { MessageType } from './utils'
 
 interface NormalizeResult {
   name?: string
@@ -40,8 +41,6 @@ interface MapResultValue {
 interface MapResult extends NormalizeResult {
   value: MapResultValue
 }
-
-export type MessageType = 'log' | 'warn' | 'error' | 'info' | 'debug'
 
 export interface Message {
   type: MessageType
