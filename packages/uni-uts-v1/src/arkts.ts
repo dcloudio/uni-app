@@ -219,7 +219,10 @@ export function getArkTSAutoImports(isX = false): AutoImportOptions {
       ['StartPullDownRefreshComplete'],
 
       // 其他
-      ['CanvasRenderingContext2D']
+      ['CanvasRenderingContext2D'],
+      ['requestAnimationFrame'],
+      ['cancelAnimationFrame'],
+      ['Image']
     )
   }
 
