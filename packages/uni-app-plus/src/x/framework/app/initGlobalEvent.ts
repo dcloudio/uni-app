@@ -12,8 +12,12 @@ export function initGlobalEvent(app: IApp) {
     // 目前app-ios和app-harmony均会执行此逻辑，但是app-ios理论上始终不会触发以下dialogPage逻辑
     const currentPage = getCurrentPage() as unknown as UniPage
     if (currentPage) {
-      const systemDialogPages = (currentPage.vm?.$systemDialogPages ||
-        []) as UniPage[]
+      // systemDialogPages 是响应式数据，需要通过 value 获取其值
+      const systemDialogPages =
+        (currentPage.vm &&
+          currentPage.vm.$systemDialogPages &&
+          currentPage.vm.$systemDialogPages.value) ||
+        []
       const dialogPages = currentPage.getDialogPages()
       if (systemDialogPages.length > 0 || dialogPages.length > 0) {
         const lastSystemDialog = systemDialogPages[systemDialogPages.length - 1]
@@ -31,6 +35,7 @@ export function initGlobalEvent(app: IApp) {
               : lastSystemDialog) as UniDialogPage
           )
         }
+        return true
       }
     }
     backbuttonListener()
