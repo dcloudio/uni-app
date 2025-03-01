@@ -41,14 +41,14 @@
       "UniOAuthHuaweiProvider"
     ]
   ],
-  "@dcloudio/uni-payment-huawei": [
-    [
-      "UniPaymentHuaweiProvider"
-    ]
-  ],
   "@dcloudio/uni-payment-alipay": [
     [
       "UniPaymentAlipayProvider"
+    ]
+  ],
+  "@dcloudio/uni-payment-huawei": [
+    [
+      "UniPaymentHuaweiProvider"
     ]
   ],
   "@dcloudio/uni-payment-wxpay": [

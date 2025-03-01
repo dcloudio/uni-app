@@ -28,16 +28,34 @@
       "ShowActionSheetComplete"
     ],
     [
+      "CanvasContext"
+    ],
+    [
+      "CreateCanvasContextAsyncOptions"
+    ],
+    [
+      "CreateCanvasContextAsyncSuccessCallback"
+    ],
+    [
+      "CreateCanvasContextAsyncFailCallback"
+    ],
+    [
+      "CreateCanvasContextAsyncCompleteCallback"
+    ],
+    [
+      "RequestAnimationFrameCallback"
+    ],
+    [
+      "UniCanvasRenderingContext2D"
+    ],
+    [
+      "UniCanvasElement"
+    ],
+    [
       "UniButtonElement"
     ],
     [
       "UniCheckboxElement"
-    ],
-    [
-      "UniCheckboxGroupChangeEvent"
-    ],
-    [
-      "UniCheckboxGroupElement"
     ],
     [
       "UniFormSubmitEvent"
@@ -49,7 +67,19 @@
       "UniFormElement"
     ],
     [
+      "UniPickerViewChangeEvent"
+    ],
+    [
+      "UniPickerViewElement"
+    ],
+    [
       "UniPickerViewColumnElement"
+    ],
+    [
+      "UniCheckboxGroupChangeEvent"
+    ],
+    [
+      "UniCheckboxGroupElement"
     ],
     [
       "UniRadioElement"
@@ -59,12 +89,6 @@
     ],
     [
       "UniRadioGroupElement"
-    ],
-    [
-      "UniPickerViewChangeEvent"
-    ],
-    [
-      "UniPickerViewElement"
     ],
     [
       "UniSliderChangeEvent"
