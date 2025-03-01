@@ -31,10 +31,7 @@
       "UniButtonElement"
     ],
     [
-      "UniCheckboxGroupChangeEvent"
-    ],
-    [
-      "UniCheckboxGroupElement"
+      "UniCheckboxElement"
     ],
     [
       "UniFormSubmitEvent"
@@ -76,13 +73,13 @@
       "UniSwitchElement"
     ],
     [
-      "UniCheckboxElement"
+      "UniCheckboxGroupChangeEvent"
+    ],
+    [
+      "UniCheckboxGroupElement"
     ],
     [
       "UniNavigatorElement"
-    ],
-    [
-      "UniProgressElement"
     ],
     [
       "IPreviewImageError"
@@ -140,6 +137,9 @@
     ],
     [
       "ClosePreviewImageCompleteCallback"
+    ],
+    [
+      "UniProgressElement"
     ],
     [
       "VideoContext"
