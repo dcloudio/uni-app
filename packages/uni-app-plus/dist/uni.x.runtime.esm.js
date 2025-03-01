@@ -1,4 +1,4 @@
-import { normalizeStyles as normalizeStyles$1, addLeadingSlash, invokeArrayFns, ON_HIDE, ON_SHOW, parseQuery, EventChannel, once, parseUrl, Emitter, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, ON_ERROR, removeLeadingSlash, getLen, ON_UNLOAD, ON_READY, ON_PAGE_SCROLL, ON_PULL_DOWN_REFRESH, ON_REACH_BOTTOM, ON_RESIZE, ON_LAUNCH, ON_BACK_PRESS } from "@dcloudio/uni-shared";
+import { normalizeStyles as normalizeStyles$1, addLeadingSlash, invokeArrayFns, ON_HIDE, ON_SHOW, parseQuery, EventChannel, once, parseUrl, Emitter, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, ON_ERROR, removeLeadingSlash, getLen, ON_UNLOAD, ON_READY, ON_PAGE_SCROLL, ON_PULL_DOWN_REFRESH, ON_REACH_BOTTOM, ON_RESIZE, ON_BACK_PRESS, ON_LAUNCH } from "@dcloudio/uni-shared";
 import { extend, isString, isPlainObject, isFunction as isFunction$1, isArray, isPromise, hasOwn, remove, invokeArrayFns as invokeArrayFns$1, capitalize, toTypeString, toRawType, parseStringStyle } from "@vue/shared";
 import { createVNode, render, ref, onMounted, onBeforeUnmount, getCurrentInstance, injectHook, defineComponent, warn, isInSSRComponentSetup, watchEffect, watch, computed, camelize, onUnmounted, reactive, provide, inject, nextTick, openBlock, createElementBlock, createElementVNode, normalizeClass, normalizeStyle, Fragment, toDisplayString, createCommentVNode, renderList, resolveComponent, withDirectives, vModelText, vShow } from "vue";
 function get$pageByPage(page) {
@@ -2051,9 +2051,34 @@ function createVuePage(__pageId, __pagePath, __pageQuery, __pageInstance, pageOp
 }
 function initGlobalEvent(app) {
   app.addKeyEventListener(ON_BACK_BUTTON, () => {
+    var currentPage = getCurrentPage();
+    if (currentPage && (currentPage.vm.$systemDialogPages.length > 0 || currentPage.getDialogPages().length > 0)) {
+      var systemDialogPages = currentPage.vm.$systemDialogPages;
+      var dialogPages = currentPage.getDialogPages();
+      var lastSystemDialog = systemDialogPages[systemDialogPages.length - 1];
+      var lastDialog = dialogPages[dialogPages.length - 1];
+      if (!systemDialogPages.length) {
+        handleDialogPageBack(lastDialog);
+      } else if (!dialogPages.length) {
+        handleDialogPageBack(lastSystemDialog);
+      } else {
+        handleDialogPageBack(parseInt(lastDialog.vm.$nativePage.pageId) > parseInt(lastSystemDialog.vm.$nativePage.pageId) ? lastDialog : lastSystemDialog);
+      }
+    }
     backbuttonListener();
     return true;
   });
+}
+function handleDialogPageBack(dialogPage) {
+  var onBackPressRes = invokeHook(dialogPage.vm, ON_BACK_PRESS, {
+    from: "navigateBack"
+  });
+  if (onBackPressRes !== true) {
+    closeDialogPage({
+      dialogPage,
+      animationType: "auto"
+    });
+  }
 }
 var SOURCE_REG = /(.+\.((ttf)|(otf)|(woff2?))$)|(^(http|https):\/\/.+)|(^(data:font).+)/;
 function removeUrlWrap(source) {
@@ -8480,58 +8505,7 @@ const _sfc_main$1 = {
       return false;
     },
     getSrcLocalPath(url) {
-      if (!this.isNetPath(url)) {
-        this.srcPath = url;
-        this.getImageBound();
-        this.loadingFinished = true;
-        return;
-      }
-      var realPath = uni.getStorageSync(url);
-      if (realPath != null && realPath != "") {
-        uni.getFileSystemManager().getFileInfo({
-          filePath: realPath,
-          success: (e) => {
-            this.srcPath = realPath;
-            this.getImageBound();
-            this.loadingFinished = true;
-          },
-          fail: () => {
-            uni.downloadFile({
-              timeout: 5e3,
-              url,
-              filePath: uni.env.USER_DATA_PATH + "uni-previewImage/",
-              success: (e) => {
-                this.srcPath = e.tempFilePath;
-                this.loadingFinished = true;
-                uni.setStorage({
-                  key: url,
-                  data: e.tempFilePath
-                });
-                this.getImageBound();
-              },
-              fail: (e) => {
-              }
-            });
-          }
-        });
-      } else {
-        uni.downloadFile({
-          timeout: 5e3,
-          url,
-          filePath: uni.env.USER_DATA_PATH + "uni-previewImage/",
-          success: (e) => {
-            this.srcPath = e.tempFilePath;
-            this.loadingFinished = true;
-            uni.setStorage({
-              key: url,
-              data: e.tempFilePath
-            });
-            this.getImageBound();
-          },
-          fail: (e) => {
-          }
-        });
-      }
+      this.srcPath = url;
     },
     onstart(e) {
       this.inScaleMode = false;
@@ -8779,6 +8753,10 @@ const _sfc_main$1 = {
       }
     },
     onImageLoad(e) {
+      if (this.screenHeight > 0 && this.screenWidth > 0) {
+        this.caculatorImageSize(e.detail.width, e.detail.height);
+      }
+      this.loadingFinished = true;
     },
     caculatorImageSize(imageWidth, imageHeight) {
       var scaleImageSize = imageHeight / (imageWidth / this.screenWidth);

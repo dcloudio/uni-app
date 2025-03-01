@@ -4,7 +4,7 @@ import { PreviewImageErrorImpl, UniErrorPreviewImage } from "./unierror";
 export function __previewImage(option : PreviewImageOptions) {
 	if (option.urls.length == 0) {
 		// 失败回调
-		let error = new PreviewImageErrorImpl(1101002, UniErrorPreviewImage);
+		let error = new PreviewImageErrorImpl(1001, UniErrorPreviewImage);
 		option.fail?.(error)
 		option.complete?.(error)
 		return

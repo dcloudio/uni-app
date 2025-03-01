@@ -16,7 +16,7 @@ export const PreviewImageUniErrors : Map<number, string> = new Map([
 	/**
 	 * urls至少包含一张图片地址
 	 */
-	[1101002, 'fail parameter error: parameter.urls should have at least 1 item'],
+	[1001, 'fail parameter error: parameter.urls should have at least 1 item'],
 	/**
 	 * 文件不存在
 	 */

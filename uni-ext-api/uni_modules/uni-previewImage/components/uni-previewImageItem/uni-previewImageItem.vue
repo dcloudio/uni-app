@@ -115,61 +115,59 @@
 				return false;
 			},
 			getSrcLocalPath(url : string) {
-				// #ifdef WEB
 				this.srcPath = url
-				// #endif
 				// #ifdef APP
 				// 这需要image和其他api内部处理
-				if (!this.isNetPath(url)) {
-					this.srcPath = url
-					this.getImageBound()
-					this.loadingFinished = true
-					return
-				}
-				var realPath = uni.getStorageSync(url)
-				if (realPath != null && realPath != "") {
-					uni.getFileSystemManager().getFileInfo({
-						filePath: realPath as string,
-						success: (e) => {
-							this.srcPath = realPath as string
-							this.getImageBound()
-							this.loadingFinished = true
-						},
-						fail: () => {
-							uni.downloadFile({
-								timeout: 5000,
-								url: url,
-								filePath: uni.env.USER_DATA_PATH + "uni-previewImage/",
-								success: (e) => {
-									this.srcPath = e.tempFilePath
-									this.loadingFinished = true
-									uni.setStorage({
-										key: url,
-										data: e.tempFilePath
-									})
-									this.getImageBound()
-								},
-								fail: (e) => { }
-							})
-						}
-					} as GetFileInfoOptions)
-				} else {
-					uni.downloadFile({
-						timeout: 5000,
-						url: url,
-						filePath: uni.env.USER_DATA_PATH + "uni-previewImage/",
-						success: (e) => {
-							this.srcPath = e.tempFilePath
-							this.loadingFinished = true
-							uni.setStorage({
-								key: url,
-								data: e.tempFilePath
-							})
-							this.getImageBound()
-						},
-						fail: (e) => { }
-					})
-				}
+				// if (!this.isNetPath(url)) {
+				// 	this.srcPath = url
+				// 	this.getImageBound()
+				// 	this.loadingFinished = true
+				// 	return
+				// }
+				// var realPath = uni.getStorageSync(url)
+				// if (realPath != null && realPath != "") {
+				// 	uni.getFileSystemManager().getFileInfo({
+				// 		filePath: realPath as string,
+				// 		success: (e) => {
+				// 			this.srcPath = realPath as string
+				// 			this.getImageBound()
+				// 			this.loadingFinished = true
+				// 		},
+				// 		fail: () => {
+				// 			uni.downloadFile({
+				// 				timeout: 5000,
+				// 				url: url,
+				// 				filePath: uni.env.USER_DATA_PATH + "uni-previewImage/",
+				// 				success: (e) => {
+				// 					this.srcPath = e.tempFilePath
+				// 					this.loadingFinished = true
+				// 					uni.setStorage({
+				// 						key: url,
+				// 						data: e.tempFilePath
+				// 					})
+				// 					this.getImageBound()
+				// 				},
+				// 				fail: (e) => { }
+				// 			})
+				// 		}
+				// 	} as GetFileInfoOptions)
+				// } else {
+				// 	uni.downloadFile({
+				// 		timeout: 5000,
+				// 		url: url,
+				// 		filePath: uni.env.USER_DATA_PATH + "uni-previewImage/",
+				// 		success: (e) => {
+				// 			this.srcPath = e.tempFilePath
+				// 			this.loadingFinished = true
+				// 			uni.setStorage({
+				// 				key: url,
+				// 				data: e.tempFilePath
+				// 			})
+				// 			this.getImageBound()
+				// 		},
+				// 		fail: (e) => { }
+				// 	})
+				// }
 				// #endif
 			},
 			onstart(e : UniTouchEvent) {
@@ -424,12 +422,10 @@
 				}
 			},
 			onImageLoad(e : UniImageLoadEvent) {
-				// #ifdef WEB
 				if (this.screenHeight > 0 && this.screenWidth > 0) {
 					this.caculatorImageSize(e.detail.width, e.detail.height)
 				}
 				this.loadingFinished = true
-				// #endif
 			},
 			caculatorImageSize(imageWidth : number, imageHeight : number) {
 				var scaleImageSize = (imageHeight / (imageWidth / this.screenWidth))
