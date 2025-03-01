@@ -52,10 +52,10 @@
       "UniCanvasElement"
     ],
     [
-      "UniCheckboxElement"
+      "UniButtonElement"
     ],
     [
-      "UniButtonElement"
+      "UniCheckboxElement"
     ],
     [
       "UniCheckboxGroupChangeEvent"
@@ -73,22 +73,22 @@
       "UniFormElement"
     ],
     [
-      "UniPickerViewColumnElement"
-    ],
-    [
       "UniPickerViewChangeEvent"
     ],
     [
       "UniPickerViewElement"
     ],
     [
+      "UniPickerViewColumnElement"
+    ],
+    [
+      "UniRadioElement"
+    ],
+    [
       "UniRadioGroupChangeEvent"
     ],
     [
       "UniRadioGroupElement"
-    ],
-    [
-      "UniRadioElement"
     ],
     [
       "UniSliderChangeEvent"
