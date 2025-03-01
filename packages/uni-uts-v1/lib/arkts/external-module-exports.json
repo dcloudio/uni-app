@@ -51,6 +51,11 @@
       "UniLocationSystemProvider"
     ]
   ],
+  "@dcloudio/uni-payment-wxpay": [
+    [
+      "UniPaymentWxpayProvider"
+    ]
+  ],
   "@dcloudio/uni-push": [
     [
       "ChannelManager"

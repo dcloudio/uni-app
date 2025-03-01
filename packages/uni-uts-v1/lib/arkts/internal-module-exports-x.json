@@ -34,6 +34,12 @@
       "UniCheckboxElement"
     ],
     [
+      "UniCheckboxGroupChangeEvent"
+    ],
+    [
+      "UniCheckboxGroupElement"
+    ],
+    [
       "UniFormSubmitEvent"
     ],
     [
@@ -71,12 +77,6 @@
     ],
     [
       "UniSwitchElement"
-    ],
-    [
-      "UniCheckboxGroupChangeEvent"
-    ],
-    [
-      "UniCheckboxGroupElement"
     ],
     [
       "UniNavigatorElement"
