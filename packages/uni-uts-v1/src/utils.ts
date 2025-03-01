@@ -485,7 +485,29 @@ function resolveComponents(
   return components
 }
 
+export function isCustomElementsSupported(pluginDir: string) {
+  if (process.env.UNI_UTS_PLATFORM) {
+    // 当前平台不支持自定义元素
+    const packageJson = path.resolve(pluginDir, 'package.json')
+    if (fs.existsSync(packageJson)) {
+      const pkg = parseJson(fs.readFileSync(packageJson, 'utf8'))
+      const customElements = pkg['uni_modules']?.['customElements']
+      if (
+        customElements &&
+        typeof customElements === 'object' &&
+        customElements[process.env.UNI_UTS_PLATFORM] === false
+      ) {
+        return false
+      }
+    }
+  }
+  return true
+}
+
 export function resolveCustomElements(pluginDir: string) {
+  if (!isCustomElementsSupported(pluginDir)) {
+    return {}
+  }
   const customElements: Record<string, string> = {}
   const customElementsDir = path.resolve(pluginDir, 'customElements')
   if (fs.existsSync(customElementsDir)) {

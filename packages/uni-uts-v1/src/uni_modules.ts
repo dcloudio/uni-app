@@ -4,6 +4,7 @@ import fg from 'fast-glob'
 import { type UniXCompiler, createUniXCompiler } from './tsc/compiler'
 import type { CompilerOptions } from 'typescript'
 import { isInHBuilderX, normalizePath, once } from './shared'
+import { isCustomElementsSupported } from './utils'
 
 type TargetLanguage = Parameters<typeof createUniXCompiler>[1]
 
@@ -255,6 +256,10 @@ const isDir = (path: string) => {
 }
 
 function resolveCustomElements(customElementsDir: string) {
+  const pluginDir = path.resolve(customElementsDir, '..')
+  if (!isCustomElementsSupported(pluginDir)) {
+    return []
+  }
   const customElements: string[] = []
   fs.readdirSync(customElementsDir).forEach((name) => {
     const folder = path.resolve(customElementsDir, name)
