@@ -58,6 +58,12 @@
       "UniCheckboxElement"
     ],
     [
+      "UniCheckboxGroupChangeEvent"
+    ],
+    [
+      "UniCheckboxGroupElement"
+    ],
+    [
       "UniFormSubmitEvent"
     ],
     [
@@ -71,15 +77,6 @@
     ],
     [
       "UniPickerViewElement"
-    ],
-    [
-      "UniPickerViewColumnElement"
-    ],
-    [
-      "UniCheckboxGroupChangeEvent"
-    ],
-    [
-      "UniCheckboxGroupElement"
     ],
     [
       "UniRadioElement"
@@ -101,6 +98,9 @@
     ],
     [
       "UniSwitchElement"
+    ],
+    [
+      "UniPickerViewColumnElement"
     ],
     [
       "UniNavigatorElement"
