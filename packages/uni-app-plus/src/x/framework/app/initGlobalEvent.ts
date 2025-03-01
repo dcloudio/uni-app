@@ -11,28 +11,26 @@ export function initGlobalEvent(app: IApp) {
   app.addKeyEventListener(ON_BACK_BUTTON, () => {
     // 目前app-ios和app-harmony均会执行此逻辑，但是app-ios理论上始终不会触发以下dialogPage逻辑
     const currentPage = getCurrentPage() as unknown as UniPage
-    if (
-      currentPage &&
-      (currentPage.vm.$systemDialogPages.length > 0 ||
-        currentPage.getDialogPages().length > 0)
-    ) {
-      const systemDialogPages = currentPage.vm.$systemDialogPages
+    if (currentPage) {
+      const systemDialogPages = (currentPage.vm?.$systemDialogPages ||
+        []) as UniPage[]
       const dialogPages = currentPage.getDialogPages()
+      if (systemDialogPages.length > 0 || dialogPages.length > 0) {
+        const lastSystemDialog = systemDialogPages[systemDialogPages.length - 1]
+        const lastDialog = dialogPages[dialogPages.length - 1]
 
-      const lastSystemDialog = systemDialogPages[systemDialogPages.length - 1]
-      const lastDialog = dialogPages[dialogPages.length - 1]
-
-      if (!systemDialogPages.length) {
-        handleDialogPageBack(lastDialog as UniDialogPage)
-      } else if (!dialogPages.length) {
-        handleDialogPageBack(lastSystemDialog as UniDialogPage)
-      } else {
-        handleDialogPageBack(
-          parseInt(lastDialog.vm!.$nativePage!.pageId) >
+        if (!systemDialogPages.length) {
+          handleDialogPageBack(lastDialog as UniDialogPage)
+        } else if (!dialogPages.length) {
+          handleDialogPageBack(lastSystemDialog as UniDialogPage)
+        } else {
+          handleDialogPageBack(
+            (parseInt(lastDialog.vm!.$nativePage!.pageId) >
             parseInt(lastSystemDialog.vm!.$nativePage!.pageId)
-            ? lastDialog
-            : lastSystemDialog
-        )
+              ? lastDialog
+              : lastSystemDialog) as UniDialogPage
+          )
+        }
       }
     }
     backbuttonListener()
