@@ -55,10 +55,10 @@
       "UniPickerViewElement"
     ],
     [
-      "UniPickerViewColumnElement"
+      "UniRadioElement"
     ],
     [
-      "UniRadioElement"
+      "UniPickerViewColumnElement"
     ],
     [
       "UniRadioGroupChangeEvent"
