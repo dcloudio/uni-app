@@ -31,9 +31,6 @@
       "UniButtonElement"
     ],
     [
-      "UniCheckboxElement"
-    ],
-    [
       "UniCheckboxGroupChangeEvent"
     ],
     [
@@ -55,10 +52,10 @@
       "UniPickerViewElement"
     ],
     [
-      "UniRadioElement"
+      "UniPickerViewColumnElement"
     ],
     [
-      "UniPickerViewColumnElement"
+      "UniRadioElement"
     ],
     [
       "UniRadioGroupChangeEvent"
@@ -79,7 +76,13 @@
       "UniSwitchElement"
     ],
     [
+      "UniCheckboxElement"
+    ],
+    [
       "UniNavigatorElement"
+    ],
+    [
+      "UniProgressElement"
     ],
     [
       "IPreviewImageError"
@@ -137,9 +140,6 @@
     ],
     [
       "ClosePreviewImageCompleteCallback"
-    ],
-    [
-      "UniProgressElement"
     ],
     [
       "VideoContext"
