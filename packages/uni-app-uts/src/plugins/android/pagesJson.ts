@@ -121,7 +121,9 @@ export function uniAppPagesPlugin(): Plugin {
             .map((p) => `import './${p}.uvue?type=page'`)
             .join('\n')}
           export default 'pages.json'`,
-          map: null,
+          map: {
+            mappings: '',
+          },
         }
       }
     },

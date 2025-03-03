@@ -1,5 +1,5 @@
 import type { ComponentInternalInstance, ComponentPublicInstance } from 'vue'
-import { formatArg } from '../src/runtime/console'
+import { formatArg } from '../src/runtime/console/format'
 
 describe('uni-console', () => {
   test('formatArg undefined', () => {

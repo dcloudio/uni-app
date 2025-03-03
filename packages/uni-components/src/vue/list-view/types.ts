@@ -4,12 +4,13 @@ export type ListItemStatus = {
   type: 'ListItem'
   visible: Ref<boolean>
   cachedSize: number
-  seen: Ref<boolean>
+  cachedSizeUpdated: boolean
 }
 
 export type StickyHeaderStatus = {
   type: 'StickyHeader'
   cachedSize: number
+  cachedSizeUpdated: boolean
 }
 
 export type StickySectionStatus = {

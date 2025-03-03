@@ -1,6 +1,6 @@
 {
   "name": "@dcloudio/uni-app-uts",
-  "version": "3.0.0-alpha-4040520250107001",
+  "version": "3.0.0-alpha-4050320250224001",
   "description": "uni-app-uts",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -21,6 +21,7 @@
     "@babel/parser": "^7.23.9",
     "@babel/types": "^7.20.7",
     "@dcloudio/uni-cli-shared": "workspace:*",
+    "@dcloudio/uni-console": "workspace:*",
     "@dcloudio/uni-i18n": "workspace:*",
     "@dcloudio/uni-nvue-styler": "workspace:*",
     "@dcloudio/uni-shared": "workspace:*",

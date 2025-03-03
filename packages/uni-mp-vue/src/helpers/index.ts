@@ -16,9 +16,11 @@ import { dynamicSlot } from './dynamicSlot'
 import { setRef } from './ref'
 import { renderProps } from './renderProps'
 import { withModelModifiers } from './withModelModifiers'
+
 // #if _X_
 import { setUniElementId, setUniElementStyle } from './uniElement'
 // #endif
+import { genUniElementId } from './id'
 
 export { setupDevtoolsPlugin } from './devtools'
 
@@ -57,3 +59,4 @@ export const j = (obj: unknown) => JSON.stringify(obj)
 export const sei = setUniElementId
 export const ses = setUniElementStyle
 // #endif
+export const gei = genUniElementId

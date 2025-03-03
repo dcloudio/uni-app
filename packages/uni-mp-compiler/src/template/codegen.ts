@@ -117,7 +117,9 @@ export function generate(
       context.code +=
         filter.generate!(
           autoImportFilter as any,
-          '/common/' + autoImportFilter.id
+          (process.env.UNI_SUBPACKAGE
+            ? `/${process.env.UNI_SUBPACKAGE}/common/`
+            : '/common/') + autoImportFilter.id
         ) + '\n'
     })
   }

@@ -252,7 +252,13 @@ function createIdent(platform: UniApp.PLATFORM) {
   if (process.env.UNI_INPUT_DIR) {
     const manifestJson = parseManifestJsonOnce(process.env.UNI_INPUT_DIR)
     let id = (manifestJson.appid || '').replace('__UNI__', '')
-    const platformAppId = manifestJson[platform]?.appid
+    const platformAppId =
+      platform === 'mp-harmony'
+        ? (manifestJson[platform]?.distribute?.bundleName || '').replace(
+            'com.atomicservice.',
+            ''
+          )
+        : manifestJson[platform]?.appid
     if (platformAppId) {
       id += '%%' + platformAppId
     }

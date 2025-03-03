@@ -119,7 +119,9 @@ function resolveMethodName(name, obj) {
 }
 function nextSetDataTick(mpInstance, fn) {
     // 随便设置一个字段来触发回调（部分平台必须有字段才可以，比如头条）
-    mpInstance.setData({ r1: 1 }, () => fn());
+    {
+        mpInstance.setData({ r1: 1 }, () => nextTick(() => fn()));
+    }
 }
 function initSetRef(mpInstance) {
     if (!mpInstance._$setRef) {
@@ -127,6 +129,14 @@ function initSetRef(mpInstance) {
             nextTick(() => nextSetDataTick(mpInstance, fn));
         };
     }
+}
+function getLocaleLanguage() {
+    let localeLanguage = '';
+    {
+        localeLanguage =
+            normalizeLocale(ks.getSystemInfoSync().language) || LOCALE_EN;
+    }
+    return localeLanguage;
 }
 
 const MP_METHODS = [
@@ -419,7 +429,7 @@ function initAppLifecycle(appOptions, vm) {
     }
 }
 function initLocale(appVm) {
-    const locale = ref(normalizeLocale(ks.getSystemInfoSync().language) || LOCALE_EN);
+    const locale = ref(getLocaleLanguage());
     Object.defineProperty(appVm, '$locale', {
         get() {
             return locale.value;

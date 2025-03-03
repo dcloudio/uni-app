@@ -1,4 +1,10 @@
-export * from './vue'
+// #if _X_
+export * from './vue/index-x'
+// #else
+// @ts-expect-error
+export * from './vue/index'
+// #endif
+
 export { useOn, useSubscribe } from './helpers/useSubscribe'
 export { useContextInfo, getContextInfo } from './helpers/useContextInfo'
 export {

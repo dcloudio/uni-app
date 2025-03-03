@@ -12,6 +12,7 @@ describe('static playground', () => {
     'uni-app': [
       // dev 目前面临需要exit的问题
       'dev:app',
+      'dev:app-harmony',
       'dev:mp-alipay',
       'dev:mp-baidu',
       'dev:mp-kuaishou',
@@ -20,6 +21,7 @@ describe('static playground', () => {
       'dev:mp-toutiao',
       'dev:mp-weixin',
       'build:app',
+      'build:app-harmony',
       'build:h5',
       'build:mp-alipay',
       'build:mp-baidu',
@@ -31,8 +33,10 @@ describe('static playground', () => {
     ],
     'uni-app-x': [
       'dev:app-android',
+      'dev:app-harmony',
       'dev:app-ios',
       'build:app-android',
+      'build:app-harmony',
       'build:app-ios',
       'build:h5',
       //   'build:mp-alipay',

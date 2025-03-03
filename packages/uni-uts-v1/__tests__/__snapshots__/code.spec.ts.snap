@@ -134,6 +134,7 @@ exports[`code genProxyCode 2`] = `
     "RequestTask": "interface",
     "ShowToast": "function",
     "TestUTSElement": "class",
+    "uni": [],
   },
 }
 `;
@@ -311,6 +312,7 @@ exports[`code genProxyCode 3`] = `
       "returned": true,
     },
   },
+  "uni": [],
 }
 `;
 

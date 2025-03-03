@@ -83,6 +83,60 @@ font-size:  15px;
   return { a: _ctx.handle(_ctx.bg), b: _ctx.fontWeight, c: _h(_ctx.padding), d: _ctx.box.padding, e: _s(_ctx.style), f: _s({ margin: '0px' }) }
 }`
     )
+
+    assert(
+      `<view :style="{}"/>`,
+      '<view style="{{{}}}"/>',
+      `(_ctx, _cache) => {
+  return {}
+}`
+    )
+    assert(
+      `<view :style="{...{}}"/>`,
+      '<view style="{{a}}"/>',
+      `(_ctx, _cache) => {
+  return { a: _s({}) }
+}`
+    )
+    assert(
+      `<view :style="{...{color:'red'}}"/>`,
+      '<view style="{{a}}"/>',
+      `(_ctx, _cache) => {
+  return { a: _s({ color: 'red' }) }
+}`
+    )
+
+    assert(
+      `<view :style="{...(false==false?{}:{})}"/>`,
+      '<view style="{{a}}"/>',
+      `(_ctx, _cache) => {
+  return { a: _s(false == false ? {} : {}) }
+}`
+    )
+
+    assert(
+      `<view :style="false==false?{}:{}"/>`,
+      '<view style="{{a}}"/>',
+      `(_ctx, _cache) => {
+  return { a: _s(false == false ? {} : {}) }
+}`
+    )
+
+    assert(
+      `<view :style="[\'color:red\']"/>`,
+      '<view style="{{\'color:red\'}}"/>',
+      `(_ctx, _cache) => {
+  return {}
+}`
+    )
+
+    assert(
+      '<view :style="[].length===0?{}:{}"></view>',
+      '<view style="{{a}}"></view>',
+      `(_ctx, _cache) => {
+  return { a: _s([].length === 0 ? {} : {}) }
+}`
+    )
   })
   test('v-bind:style object syntax + style', () => {
     assert(

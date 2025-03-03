@@ -1,3 +1,4 @@
+declare var global: typeof globalThis
 declare var __VUE__: any
 declare var Vue: any
 declare var weex: any
@@ -76,12 +77,8 @@ declare var UniViewJSBridge: UniApp.UniViewJSBridge
 declare var UniServiceJSBridge: UniApp.UniServiceJSBridge
 // app view
 declare var __id__: string
-
-declare var __UNI_SOCKET_HOSTS__: string
-declare var __UNI_SOCKET_PORT__: string
-declare var __UNI_SOCKET_ID__: string
-declare var __UNI_CONSOLE_KEEP_ORIGINAL__: boolean
-
+// uni-console
+declare var __HARMONY__: boolean
 // TODO X 引入真实类型
 declare class UTSJSONObject {
   constructor(obj: Record<string, any>)
@@ -90,70 +87,4 @@ declare class UTSJSONObject {
 interface Require {
   resolve: NodeRequire['resolve']
   cache: NodeRequire['cache']
-}
-
-declare class UniNormalPageImpl implements UniPage {
-  vm: ComponentPublicInstance
-  $vm: ComponentPublicInstance
-  route: string
-  options: UTSJSONObject
-  getParentPage: () => UniPage | null
-  getParentPageByJS: () => UniPage | null
-  getDialogPages(): UniDialogPage[]
-  getPageStyle(): UTSJSONObject
-  $getPageStyle(): UTSJSONObject
-  getPageStyleByJS(): UTSJSONObject
-  setPageStyle(style: UTSJSONObject): void
-  $setPageStyle(style: UTSJSONObject): void
-  setPageStyleByJS(style: UTSJSONObject): void
-  getElementById(id: string.IDString | string): UniElement | null
-  getAndroidView(): null
-  getIOSView(): null
-  getHTMLElement(): null
-}
-
-declare class UniDialogPageImpl implements UniPage {
-  vm: ComponentPublicInstance
-  $vm: ComponentPublicInstance
-  route: string
-  options: UTSJSONObject
-  getParentPage: () => UniPage | null
-  getParentPageByJS: () => UniPage | null
-  getDialogPages(): UniDialogPage[]
-  getPageStyle(): UTSJSONObject
-  $getPageStyle(): UTSJSONObject
-  getPageStyleByJS(): UTSJSONObject
-  setPageStyle(style: UTSJSONObject): void
-  $setPageStyle(style: UTSJSONObject): void
-  setPageStyleByJS(style: UTSJSONObject): void
-  getElementById(id: string.IDString | string): UniElement | null
-  getAndroidView(): null
-  getIOSView(): null
-  getHTMLElement(): null
-  $component: any | null
-  $disableEscBack: boolean
-  $triggerParentHide: boolean
-}
-
-interface Uni {
-  openDialogPage: (options: {
-    url: string
-    animationType?:
-      | 'auto'
-      | 'none'
-      | 'slide-in-right'
-      | 'slide-in-left'
-      | 'slide-in-top'
-      | 'slide-in-bottom'
-      | 'fade-in'
-      | 'zoom-out'
-      | 'zoom-fade-out'
-      | null
-    animationDuration?: number | null
-    disableEscBack?: boolean | null
-    parentPage?: UniPage | null
-    success?: OpenDialogPageSuccessCallback | null
-    fail?: OpenDialogPageFailCallback | null
-    complete?: OpenDialogPageCompleteCallback | null
-  }) => UniPage | null
 }

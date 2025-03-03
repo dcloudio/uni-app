@@ -3,9 +3,9 @@ import { originalConsole, rewriteConsole, setSendConsole } from './console'
 import { initOnError, setSendError } from './error'
 
 export function initRuntimeSocketService(): Promise<boolean> {
-  const hosts: string = __UNI_SOCKET_HOSTS__
-  const port: string = __UNI_SOCKET_PORT__
-  const id: string = __UNI_SOCKET_ID__
+  const hosts: string = process.env.UNI_SOCKET_HOSTS
+  const port: string = process.env.UNI_SOCKET_PORT
+  const id: string = process.env.UNI_SOCKET_ID
   if (!hosts || !port || !id) return Promise.resolve(false)
   // 百度小程序需要延迟初始化，不然会存在循环引用问题vendor.js
   const lazy = typeof swan !== 'undefined'
@@ -80,6 +80,7 @@ function initMiniProgramGlobalFlag() {
   if (typeof wx !== 'undefined') {
     // @ts-expect-error
     wx.__uni_console__ = true
+    // @ts-expect-error
   } else if (typeof my !== 'undefined') {
     // @ts-expect-error
     my.__uni_console__ = true

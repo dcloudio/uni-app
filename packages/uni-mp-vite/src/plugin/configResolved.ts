@@ -31,6 +31,7 @@ import {
 
 const debugNVueCss = debug('uni:nvue-css')
 const cssVars = `page{--status-bar-height:25px;--top-window-height:0px;--window-top:0px;--window-bottom:0px;--window-left:0px;--window-right:0px;--window-magin:0px}`
+const uvueCssVars = `page{--status-bar-height:25px;--top-window-height:0px;--window-top:0px;--window-bottom:0px;--window-left:0px;--window-right:0px;--window-magin:0px;--uni-safe-area-inset-top:0px;--uni-safe-area-inset-left:0px;--uni-safe-area-inset-right:0px;--uni-safe-area-inset-bottom:0px;}`
 
 const genShadowCss = (cdn: number) => {
   const url = createShadowImageUrl(cdn, 'grey')
@@ -96,6 +97,7 @@ export function createConfigResolved({
           }
         },
         chunkCssCode(filename, cssCode) {
+          const isX = process.env.UNI_APP_X === 'true'
           cssCode = transformScopedCss(cssCode)
           if (filename === 'app' + cssExtname) {
             const componentCustomHiddenCss =
@@ -103,18 +105,18 @@ export function createConfigResolved({
                 component.vShow &&
                 genComponentCustomHiddenCss(component.vShow)) ||
               ''
+            const realCssVars = isX ? uvueCssVars : cssVars
             if (config.isProduction) {
               return (
                 cssCode +
                 genShadowCss(cdn || 0) +
-                cssVars +
+                realCssVars +
                 componentCustomHiddenCss
               )
             } else {
-              return cssCode + cssVars + componentCustomHiddenCss
+              return cssCode + realCssVars + componentCustomHiddenCss
             }
           }
-          const isX = process.env.UNI_APP_X === 'true'
 
           if (isX) {
             if (component?.[':host']) {

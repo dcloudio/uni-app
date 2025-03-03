@@ -1,5 +1,6 @@
 import type { ComponentPublicInstance } from 'vue'
 import { UniCSSStyleDeclaration } from './UniCSSStyleDeclaration'
+import { UniAnimation } from './UniAnimation'
 
 export interface UniElementConstructor {
   new (id: string, tagName: string): UniElement
@@ -143,6 +144,28 @@ export class UniElement {
     console.warn(
       `Miniprogram does not support UniElement.setAttribute(${name}, value)`
     )
+  }
+
+  animate(
+    keyframes: Keyframe[] | PropertyIndexedKeyframes | null,
+    options?: number | KeyframeAnimationOptions
+  ) {
+    if (!this.id) {
+      throw new Error('animate is only supported on elements with id')
+    }
+    const root = this.$vm.$root
+    const scope = root && root.$scope
+    if (!scope) {
+      throw new Error(`animate is only supported on elements in page`)
+    }
+
+    if (!keyframes) {
+      throw new Error('animate keyframes is required')
+    }
+    const animation = new UniAnimation(this.id, scope, keyframes, options)
+
+    animation.play()
+    return animation
   }
 
   $destroy() {

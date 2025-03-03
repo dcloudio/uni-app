@@ -1,7 +1,17 @@
 import { isArray, hasOwn, isString, isPlainObject, isObject, capitalize, toRawType, makeMap, isFunction, isPromise, extend, remove } from '@vue/shared';
-import { normalizeLocale, LOCALE_EN } from '@dcloudio/uni-i18n';
+import { LOCALE_EN, normalizeLocale } from '@dcloudio/uni-i18n';
 import { Emitter, sortObject, ON_ERROR, onCreateVueApp, invokeCreateVueAppHook } from '@dcloudio/uni-shared';
 import { findUniElement, injectHook } from 'vue';
+
+function getLocaleLanguage() {
+    let localeLanguage = '';
+    {
+        const appBaseInfo = wx.getAppBaseInfo();
+        const language = appBaseInfo && appBaseInfo.language ? appBaseInfo.language : LOCALE_EN;
+        localeLanguage = normalizeLocale(language) || LOCALE_EN;
+    }
+    return localeLanguage;
+}
 
 function validateProtocolFail(name, msg) {
     console.warn(`${name}: ${msg}`);
@@ -720,7 +730,9 @@ const $off = defineSyncApi(API_OFF, (name, callback) => {
     // 类型中不再体现 name 支持 string[] 类型, 仅在 uni.$off 保留该逻辑向下兼容
     if (!isArray(name))
         name = name ? [name] : [];
-    name.forEach((n) => eventBus.off(n, callback));
+    name.forEach((n) => {
+        eventBus.off(n, callback);
+    });
 }, OffProtocol);
 const $emit = defineSyncApi(API_EMIT, (name, ...args) => {
     eventBus.emit(name, ...args);
@@ -990,8 +1002,12 @@ function initWrapper(protocols) {
          * 注意：
          * - 此处method为原始全局对象上的uni方法名对应的属性值，比如method值可能为my.login，即undefined
          * - uni.env并非方法，但是也会被传入wrapper
+         * - 开发者自定义的方法属性也会进入此方法，此时method为undefined，应返回undefined
          */
         const hasProtocol = hasOwn(protocols, methodName);
+        if (!hasProtocol && typeof wx[methodName] !== 'function') {
+            return method;
+        }
         const needWrapper = hasProtocol ||
             isFunction(protocols.returnValue) ||
             isContextApi(methodName) ||
@@ -1039,8 +1055,7 @@ const getLocale = () => {
     if (app && app.$vm) {
         return app.$vm.$locale;
     }
-    return normalizeLocale(wx.getAppBaseInfo().language) || LOCALE_EN
-        ;
+    return getLocaleLanguage();
 };
 const setLocale = (locale) => {
     const app = isFunction(getApp) && getApp();
@@ -1524,11 +1539,24 @@ function createSelectorQuery() {
     const query = wx$2.createSelectorQuery();
     const oldIn = query.in;
     query.in = function newIn(component) {
+        if (component.$scope) {
+            // fix skyline 微信小程序内部无法读取component导致报错
+            return oldIn.call(this, component.$scope);
+        }
         return oldIn.call(this, initComponentMocks(component));
     };
     return query;
 }
 const wx$2 = initWx();
+if (!wx$2.canIUse('getAppBaseInfo')) {
+    wx$2.getAppBaseInfo = wx$2.getSystemInfoSync;
+}
+if (!wx$2.canIUse('getWindowInfo')) {
+    wx$2.getWindowInfo = wx$2.getSystemInfoSync;
+}
+if (!wx$2.canIUse('getDeviceInfo')) {
+    wx$2.getDeviceInfo = wx$2.getSystemInfoSync;
+}
 let baseInfo = wx$2.getAppBaseInfo && wx$2.getAppBaseInfo();
 if (!baseInfo) {
     baseInfo = wx$2.getSystemInfoSync();
@@ -1568,6 +1596,9 @@ var shims = /*#__PURE__*/Object.freeze({
 function returnValue(method, res) {
     return parseXReturnValue(method, res);
 }
+const chooseFile = {
+    name: 'chooseMessageFile',
+};
 const compressImage = {
     args(fromArgs, toArgs) {
         // https://developers.weixin.qq.com/community/develop/doc/000c08940c865011298e0a43256800?highLine=compressHeight
@@ -1586,6 +1617,7 @@ const compressImage = {
 
 var protocols = /*#__PURE__*/Object.freeze({
   __proto__: null,
+  chooseFile: chooseFile,
   compressImage: compressImage,
   getAppAuthorizeSetting: getAppAuthorizeSetting,
   getAppBaseInfo: getAppBaseInfo,

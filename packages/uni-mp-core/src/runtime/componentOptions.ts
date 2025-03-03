@@ -58,8 +58,9 @@ export function updateMiniProgramComponentProperties(
 ) {
   const prevProps =
     __PLATFORM__ === 'mp-alipay'
-      ? (mpInstance.props as unknown as Data)
+      ? (mpInstance.props as unknown as Record<string, unknown>)
       : mpInstance.properties
+
   const nextProps = findComponentPropsData(up) || {}
   if (hasPropsChanged(prevProps, nextProps, false)) {
     mpInstance.setData(nextProps)
@@ -94,8 +95,8 @@ export function updateComponentProps(
 }
 
 function hasPropsChanged(
-  prevProps: Data,
-  nextProps: Data,
+  prevProps: Record<string, unknown>,
+  nextProps: Record<string, unknown>,
   checkLen: boolean = true
 ): boolean {
   const nextKeys = Object.keys(nextProps)

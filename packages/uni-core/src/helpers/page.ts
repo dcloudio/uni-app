@@ -71,7 +71,7 @@ export function getCurrentPage() {
   if (__APP_VIEW__) {
     return (window as any).__PAGE_INFO__ as Page.PageInstance
   }
-  const pages = getCurrentPages()
+  const pages = getCurrentPages() as Page.PageInstance[]
   const len = pages.length
   if (len) {
     return pages[len - 1]

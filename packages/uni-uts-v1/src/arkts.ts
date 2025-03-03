@@ -37,10 +37,15 @@ export function mergeArkTSAutoImports(
   return result
 }
 
-export function getArkTSAutoImports(): AutoImportOptions {
+function getRuntimePackageName(isX = false) {
+  return isX ? '@dcloudio/uni-app-x-runtime' : '@dcloudio/uni-app-runtime'
+}
+
+export function getArkTSAutoImports(isX = false): AutoImportOptions {
+  const runtimePackageName = getRuntimePackageName(isX)
   return mergeArkTSAutoImports(
     {
-      '@dcloudio/uni-app-runtime': [
+      [runtimePackageName]: [
         ['defineAsyncApi'],
         ['defineSyncApi'],
         ['defineTaskApi'],
@@ -65,10 +70,18 @@ export function getArkTSAutoImports(): AutoImportOptions {
         ['UTSObject'],
         ['UTSJSONObject'],
         ['SourceError'],
+        ['UniElement'],
         ['UTSHarmony'],
+        ['UniPageImpl'],
+        ['customElements'],
+        ['UniCustomElement'],
+        ['UniElementImpl'],
+        ['UniCustomEvent'],
       ],
     },
-    require('../lib/arkts/ext-api-export.json')
+    require(isX
+      ? '../lib/arkts/ext-api-export-x.json'
+      : '../lib/arkts/ext-api-export.json')
   )
 }
 
@@ -107,24 +120,24 @@ export async function compileArkTSExtApi(
   rootDir: string,
   pluginDir: string,
   outputDir: string,
-  { isExtApi, isOhpmPackage = false, transform }: ArkTSCompilerOptions
+  { isExtApi, isX, isOhpmPackage = false, transform }: ArkTSCompilerOptions
 ): Promise<CompileResult | void> {
   const filename = resolveAppHarmonyIndexFile(pluginDir)
   if (!filename) {
     return
   }
+  const runtimePackageName = getRuntimePackageName(isX)
 
   const { bundle, UTSTarget } = getUTSCompiler()
   const pluginId = path.basename(pluginDir)
   const outputUniModuleDir = outputDir
 
-  let autoImportExternals = getArkTSAutoImports()
+  let autoImportExternals = getArkTSAutoImports(isX)
 
   if (isOhpmPackage) {
     // 只保留uni-app-runtime
     autoImportExternals = {
-      '@dcloudio/uni-app-runtime':
-        autoImportExternals['@dcloudio/uni-app-runtime'],
+      [runtimePackageName]: autoImportExternals[runtimePackageName],
     }
   }
 
@@ -134,7 +147,7 @@ export async function compileArkTSExtApi(
       root: rootDir,
       filename: resolveBundleInputFileName('app-harmony', filename),
       paths: {
-        '@dcloudio/uni-runtime': '@dcloudio/uni-app-runtime',
+        '@dcloudio/uni-runtime': runtimePackageName,
       },
       parseOptions: {
         tsx: true,
@@ -175,11 +188,13 @@ export async function compileArkTSExtApi(
   const etsFiles = sync('**/*.{ets,har}', {
     cwd: pluginDir,
   })
+  const depEtsFiles: string[] = []
   for (const etsFile of etsFiles) {
-    fs.copySync(
-      path.resolve(pluginDir, etsFile),
-      path.resolve(outputUniModuleDir, etsFile)
-    )
+    const srcFile = path.resolve(pluginDir, etsFile)
+    if (etsFile.endsWith('.ets')) {
+      depEtsFiles.push(srcFile)
+    }
+    fs.copySync(srcFile, path.resolve(outputUniModuleDir, etsFile))
   }
 
   // generate oh-package.json5
@@ -273,7 +288,7 @@ export async function compileArkTSExtApi(
             buildOption: {
               arkOptions: {
                 runtimeOnly: {
-                  packages: ['@dcloudio/uni-app-runtime'],
+                  packages: [runtimePackageName],
                 },
               },
             },
@@ -299,7 +314,7 @@ export default {
 
   const result = await bundle(UTSTarget.ARKTS, buildOptions)
   normalizeUTSResult('app-harmony', result)
-  const deps: string[] = [filename]
+  const deps: string[] = [filename, ...depEtsFiles]
   if (process.env.NODE_ENV === 'development') {
     if (result.deps) {
       deps.push(...result.deps)
@@ -317,7 +332,7 @@ export default {
 
 export async function compileArkTS(
   pluginDir: string,
-  { isExtApi, transform }: ArkTSCompilerOptions
+  { isExtApi, isX, transform }: ArkTSCompilerOptions
 ): Promise<CompileResult | void> {
   const inputDir = process.env.UNI_INPUT_DIR
   const pluginId = path.basename(pluginDir)
@@ -325,7 +340,7 @@ export async function compileArkTS(
     resolveBundleInputRoot('app-harmony', inputDir),
     pluginDir,
     resolveAppHarmonyUniModuleDir(pluginId),
-    { isExtApi, transform }
+    { isExtApi, isX, transform }
   )
 }
 

@@ -1,11 +1,4 @@
-import {
-  inject,
-  ref,
-  nextTick,
-  computed,
-  onMounted,
-  onBeforeUnmount,
-} from 'vue'
+import { inject, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import type { ComputedRef } from 'vue'
 import { isHTMlElement } from '../list-view/index'
 import type { ListItemStatus } from '../list-view/types'
@@ -44,13 +37,12 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     const isVertical = inject('__listViewIsVertical') as ComputedRef<boolean>
 
     const visible = ref(false)
-    const seen = ref(false)
 
     const status: ListItemStatus = {
       type: 'ListItem',
       visible,
-      cachedSize: 0,
-      seen,
+      cachedSize: inject('__listViewDefaultItemSize') as number,
+      cachedSizeUpdated: false,
     }
 
     expose({
@@ -59,25 +51,29 @@ export default /*#__PURE__*/ defineBuiltInComponent({
 
     const registerItem = inject('__listViewRegisterItem') as Function
     const unregisterItem = inject('__listViewUnregisterItem') as Function
+    const firstItemRendered = inject('__listViewFirstItemRendered') as Function
     onMounted(() => {
       registerItem(status)
     })
     onBeforeUnmount(() => {
       unregisterItem(status)
     })
-
-    const realVisible = computed(() => {
-      return visible.value || !status.seen.value
-    })
-    return () => {
+    watch(visible, (value) => {
+      if (!value || status.cachedSizeUpdated) {
+        return
+      }
       nextTick(() => {
         const rootNode = rootRef.value! as HTMLElement | Node
-        if (realVisible.value && isHTMlElement(rootNode)) {
+        if (isHTMlElement(rootNode)) {
           status.cachedSize = getSize(isVertical.value, rootNode)
-          seen.value = true
+          status.cachedSizeUpdated = true
+          firstItemRendered(status)
         }
       })
-      if (!realVisible.value) {
+    })
+
+    return () => {
+      if (!visible.value) {
         return null
       }
       return (

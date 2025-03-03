@@ -4,11 +4,11 @@ var __publicField = (obj, key, value) => {
   __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
   return value;
 };
-import { withModifiers, createVNode, getCurrentInstance, ref, defineComponent, openBlock, createElementBlock, onMounted, provide, computed, watch, onUnmounted, inject, onBeforeUnmount, mergeProps, reactive, injectHook, nextTick, createApp, createBlock, watchEffect, isVNode, withDirectives, vShow, renderList, isReactive, Transition, effectScope, Fragment, onActivated, withCtx, KeepAlive, resolveDynamicComponent, markRaw, normalizeClass, normalizeStyle, createTextVNode, toDisplayString, createCommentVNode, onBeforeMount, onBeforeActivate, onBeforeDeactivate, createElementVNode, renderSlot, shallowRef, Comment, h, logError } from "vue";
+import { withModifiers, createVNode, getCurrentInstance, ref, defineComponent, openBlock, createElementBlock, onMounted, provide, computed, watch, onUnmounted, inject, onBeforeUnmount, mergeProps, reactive, injectHook, markRaw, watchEffect, nextTick, createBlock, onBeforeMount, onBeforeActivate, onBeforeDeactivate, onActivated, isReactive, createElementVNode, normalizeStyle, Fragment, renderSlot, withCtx, renderList, withDirectives, vShow, shallowRef, isVNode, Comment, h, createTextVNode, logError, createApp, Transition, effectScope, KeepAlive, resolveDynamicComponent, normalizeClass, toDisplayString, createCommentVNode } from "vue";
 import { isArray, isString, extend, remove, stringifyStyle, parseStringStyle, isPlainObject as isPlainObject$1, isFunction, capitalize, camelize, hasOwn, isObject, toRawType, makeMap as makeMap$1, isPromise, invokeArrayFns as invokeArrayFns$1, hyphenate } from "@vue/shared";
-import { once, UNI_STORAGE_LOCALE, I18N_JSON_DELIMITERS, Emitter, passive, resolveComponentInstance, normalizeStyles, addLeadingSlash, invokeArrayFns, removeLeadingSlash, ON_SHOW, ON_HIDE, initCustomDatasetOnce, resolveOwnerVm, resolveOwnerEl, ON_WXS_INVOKE_CALL_METHOD, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_PAGE_SCROLL, ON_REACH_BOTTOM, EventChannel, createRpx2Unit, defaultRpx2Unit, parseQuery, NAVBAR_HEIGHT, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, getLen, getCustomDataset, parseUrl, sortObject, ON_THEME_CHANGE, ON_HOST_THEME_CHANGE, OFF_HOST_THEME_CHANGE, OFF_THEME_CHANGE, updateElementStyle, LINEFEED, ON_WEB_INVOKE_APP_SERVICE, ON_BACK_PRESS, addFont, ON_NAVIGATION_BAR_CHANGE, scrollTo, RESPONSIVE_MIN_WIDTH, formatDateTime, ON_REACH_BOTTOM_DISTANCE, normalizeTitleColor, ON_UNLOAD, onCreateVueApp, SCHEME_RE, DATA_RE, decodedQuery, debounce, WEB_INVOKE_APPSERVICE, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_PULL_DOWN_REFRESH, stringifyQuery as stringifyQuery$1, PRIMARY_COLOR, isUniLifecycleHook, ON_LOAD, UniLifecycleHooks, invokeCreateErrorHandler, invokeCreateVueAppHook } from "@dcloudio/uni-shared";
+import { once, UNI_STORAGE_LOCALE, I18N_JSON_DELIMITERS, Emitter, passive, resolveComponentInstance, normalizeStyles, addLeadingSlash, invokeArrayFns, removeLeadingSlash, ON_SHOW, ON_HIDE, initCustomDatasetOnce, resolveOwnerVm, resolveOwnerEl, ON_WXS_INVOKE_CALL_METHOD, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_PAGE_SCROLL, ON_REACH_BOTTOM, EventChannel, createRpx2Unit, defaultRpx2Unit, parseQuery, NAVBAR_HEIGHT, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, getLen, getCustomDataset, parseUrl, ON_REACH_BOTTOM_DISTANCE, normalizeTitleColor, ON_UNLOAD, SCHEME_RE, DATA_RE, decodedQuery, debounce, WEB_INVOKE_APPSERVICE, ON_WEB_INVOKE_APP_SERVICE, ON_THEME_CHANGE, ON_NAVIGATION_BAR_CHANGE, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_PULL_DOWN_REFRESH, stringifyQuery as stringifyQuery$1, LINEFEED, PRIMARY_COLOR, isUniLifecycleHook, ON_LOAD, UniLifecycleHooks, invokeCreateErrorHandler, invokeCreateVueAppHook, sortObject, ON_HOST_THEME_CHANGE, OFF_HOST_THEME_CHANGE, OFF_THEME_CHANGE, updateElementStyle, ON_BACK_PRESS, addFont, scrollTo, RESPONSIVE_MIN_WIDTH, formatDateTime, onCreateVueApp } from "@dcloudio/uni-shared";
 import { onCreateVueApp as onCreateVueApp2 } from "@dcloudio/uni-shared";
-import { useRoute, isNavigationFailure, RouterView, useRouter, createRouter, createWebHistory, createWebHashHistory } from "vue-router";
+import { useRoute, isNavigationFailure, useRouter, createRouter, createWebHistory, createWebHashHistory, RouterView } from "vue-router";
 import { initVueI18n, isI18nStr, LOCALE_EN, LOCALE_ES, LOCALE_FR, LOCALE_ZH_HANS, LOCALE_ZH_HANT } from "@dcloudio/uni-i18n";
 function arrayPop(array) {
   if (array.length === 0) {
@@ -118,7 +118,7 @@ function isInstanceOf(value, type) {
     return value && value[Symbol.iterator];
   }
   const isNativeInstanceofType = value instanceof type;
-  if (isNativeInstanceofType || typeof value !== "object") {
+  if (isNativeInstanceofType || typeof value !== "object" || value === null) {
     return isNativeInstanceofType;
   }
   const proto = Object.getPrototypeOf(value).constructor;
@@ -142,6 +142,7 @@ function normalizeGenericValue(value, genericType, isJSONParse = false) {
 class UTSType {
   static get$UTSMetadata$(...args) {
     return {
+      name: "",
       kind: UTS_CLASS_METADATA_KIND.TYPE,
       interfaces: [],
       fields: {}
@@ -216,14 +217,15 @@ class UTSType {
         }
       }
       if (isUTSType(type)) {
-        obj[key] = new type(options[realKey], void 0, isJSONParse);
+        obj[key] = isJSONParse ? (
+          // @ts-ignore
+          new type(options[realKey], void 0, isJSONParse)
+        ) : options[realKey];
       } else if (type === Array) {
         if (!Array.isArray(options[realKey])) {
           throw new UTSError(`Failed to contruct type, property ${key} is not an array`);
         }
-        obj[key] = options[realKey].map((item) => {
-          return item == null ? null : item;
-        });
+        obj[key] = options[realKey];
       } else {
         obj[key] = options[realKey];
       }
@@ -518,18 +520,19 @@ let UTSJSONObject$1 = class UTSJSONObject2 {
     }
     return keyPathArr;
   }
-  _getValue(keyPath) {
+  _getValue(keyPath, defaultValue) {
     const keyPathArr = this._resolveKeyPath(keyPath);
+    const realDefaultValue = defaultValue === void 0 ? null : defaultValue;
     if (keyPathArr.length === 0) {
-      return null;
+      return realDefaultValue;
     }
     let value = this;
     for (let i = 0; i < keyPathArr.length; i++) {
       const key = keyPathArr[i];
       if (value instanceof Object) {
-        value = value[key];
+        value = key in value ? value[key] : realDefaultValue;
       } else {
-        return null;
+        return realDefaultValue;
       }
     }
     return value;
@@ -540,43 +543,43 @@ let UTSJSONObject$1 = class UTSJSONObject2 {
   set(key, value) {
     this[key] = value;
   }
-  getAny(key) {
-    return this._getValue(key);
+  getAny(key, defaultValue) {
+    return this._getValue(key, defaultValue);
   }
-  getString(key) {
-    const value = this._getValue(key);
+  getString(key, defaultValue) {
+    const value = this._getValue(key, defaultValue);
     if (typeof value === "string") {
       return value;
     } else {
       return null;
     }
   }
-  getNumber(key) {
-    const value = this._getValue(key);
+  getNumber(key, defaultValue) {
+    const value = this._getValue(key, defaultValue);
     if (typeof value === "number") {
       return value;
     } else {
       return null;
     }
   }
-  getBoolean(key) {
-    const boolean = this._getValue(key);
+  getBoolean(key, defaultValue) {
+    const boolean = this._getValue(key, defaultValue);
     if (typeof boolean === "boolean") {
       return boolean;
     } else {
       return null;
     }
   }
-  getJSON(key) {
-    let value = this._getValue(key);
+  getJSON(key, defaultValue) {
+    let value = this._getValue(key, defaultValue);
     if (value instanceof Object) {
-      return new UTSJSONObject2(value);
+      return value;
     } else {
       return null;
     }
   }
-  getArray(key) {
-    let value = this._getValue(key);
+  getArray(key, defaultValue) {
+    let value = this._getValue(key, defaultValue);
     if (value instanceof Array) {
       return value;
     } else {
@@ -752,33 +755,6 @@ const initI18nAsyncMsgsOnce = /* @__PURE__ */ once(() => {
     useI18n().add(
       LOCALE_ZH_HANT,
       normalizeMessages(name, keys, ["連接服務器超時，點擊屏幕重試"]),
-      false
-    );
-  }
-});
-const initI18nShowActionSheetMsgsOnce = /* @__PURE__ */ once(() => {
-  const name = "uni.showActionSheet.";
-  const keys = ["cancel"];
-  if (__UNI_FEATURE_I18N_EN__) {
-    useI18n().add(LOCALE_EN, normalizeMessages(name, keys, ["Cancel"]), false);
-  }
-  if (__UNI_FEATURE_I18N_ES__) {
-    useI18n().add(LOCALE_ES, normalizeMessages(name, keys, ["Cancelar"]), false);
-  }
-  if (__UNI_FEATURE_I18N_FR__) {
-    useI18n().add(LOCALE_FR, normalizeMessages(name, keys, ["Annuler"]), false);
-  }
-  if (__UNI_FEATURE_I18N_ZH_HANS__) {
-    useI18n().add(
-      LOCALE_ZH_HANS,
-      normalizeMessages(name, keys, ["取消"]),
-      false
-    );
-  }
-  if (__UNI_FEATURE_I18N_ZH_HANT__) {
-    useI18n().add(
-      LOCALE_ZH_HANT,
-      normalizeMessages(name, keys, ["取消"]),
       false
     );
   }
@@ -1942,9 +1918,9 @@ function dialogPageTriggerParentLifeCycle(dialogPage, lifeCycle, triggerParentHi
   invokeHook(currentPage.vm, lifeCycle);
 }
 function getSystemDialogPages(parentPage) {
-  var _a;
+  var _b;
   {
-    return (_a = parentPage.vm.$pageLayoutInstance) == null ? void 0 : _a.$systemDialogPages.value;
+    return (_b = parentPage.vm.$pageLayoutInstance) == null ? void 0 : _b.$systemDialogPages.value;
   }
 }
 function initView() {
@@ -3093,7 +3069,7 @@ const index$s = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const props$x = {
+const props$w = {
   disableScroll: {
     type: [Boolean, String],
     default: false
@@ -3129,7 +3105,7 @@ const indexX$4 = /* @__PURE__ */ defineBuiltInComponent({
   compatConfig: {
     MODE: 3
   },
-  props: props$x,
+  props: props$w,
   rootElement: {
     name: "uni-canvas",
     class: UniCanvasElement
@@ -3152,7 +3128,7 @@ const indexX$4 = /* @__PURE__ */ defineBuiltInComponent({
   }
 });
 const uniCheckGroupKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniCheckGroup" : "ucg");
-const props$w = {
+const props$v = {
   name: {
     type: String,
     default: ""
@@ -3162,7 +3138,7 @@ class UniCheckboxGroupElement extends UniElement {
 }
 const index$r = /* @__PURE__ */ defineBuiltInComponent({
   name: "CheckboxGroup",
-  props: props$w,
+  props: props$v,
   emits: ["change"],
   rootElement: {
     name: "uni-checkbox-group",
@@ -3222,7 +3198,7 @@ function useProvideCheckGroup(props2, trigger) {
   }
   return getFieldsValue;
 }
-const props$v = {
+const props$u = {
   checked: {
     type: [Boolean, String],
     default: false
@@ -3273,7 +3249,7 @@ class UniCheckboxElement extends UniElement {
 }
 const index$q = /* @__PURE__ */ defineBuiltInComponent({
   name: "Checkbox",
-  props: props$v,
+  props: props$u,
   rootElement: {
     name: "uni-checkbox",
     class: UniCheckboxElement
@@ -3414,7 +3390,7 @@ function useCheckboxInject(checkboxChecked, checkboxValue, reset) {
 let resetTimer;
 function iosHideKeyboard() {
 }
-const props$u = {
+const props$t = {
   cursorSpacing: {
     type: [Number, String],
     default: 0
@@ -3540,7 +3516,7 @@ function normalizePageMeta(pageMeta) {
       pageMeta.pullToRefresh = pullToRefresh;
     }
   }
-  if (__UNI_FEATURE_NAVIGATIONBAR__) {
+  if (__UNI_FEATURE_NAVIGATIONBAR__ || __UNI_FEATURE_I18N_LOCALE__) {
     const { navigationBar } = pageMeta;
     const { titleSize, titleColor, backgroundColor } = navigationBar;
     navigationBar.titleText = navigationBar.titleText || "";
@@ -4442,7 +4418,9 @@ const $off = /* @__PURE__ */ defineSyncApi(
   (name, callback) => {
     if (!isArray(name))
       name = name ? [name] : [];
-    name.forEach((n) => eventBus.off(n, callback));
+    name.forEach((n) => {
+      eventBus.off(n, callback);
+    });
   },
   OffProtocol
 );
@@ -6667,8 +6645,13 @@ const ChooseFileOptions = {
       if (extension instanceof Array && extension.length === 0) {
         return "param extension should not be empty.";
       }
-      if (!extension)
-        params.extension = [""];
+      if (!extension) {
+        if (params.type === "all" || !params.type) {
+          params.extension = [""];
+        } else {
+          params.extension = ["*"];
+        }
+      }
     }
   }
 };
@@ -7145,21 +7128,6 @@ const PageScrollToProtocol = {
 const PageScrollToOptions = {
   formatArgs: {
     duration: 300
-  }
-};
-const API_SHOW_ACTION_SHEET = "showActionSheet";
-const ShowActionSheetProtocol = {
-  itemList: {
-    type: Array,
-    required: true
-  },
-  title: String,
-  itemColor: String,
-  popover: Object
-};
-const ShowActionSheetOptions = {
-  formatArgs: {
-    itemColor: "#000"
   }
 };
 const API_SHOW_LOADING = "showLoading";
@@ -8190,8631 +8158,37 @@ function normalizeWindowTop(windowTop) {
 function normalizeWindowBottom(windowBottom) {
   return envMethod ? `calc(${windowBottom}px + ${envMethod}(safe-area-inset-bottom))` : `${windowBottom}px`;
 }
-const initInnerAudioContextEventOnce = /* @__PURE__ */ once(() => {
-  innerAudioContextEventNames.forEach((eventName) => {
-    InnerAudioContext.prototype[eventName] = function(callback) {
-      if (isFunction(callback)) {
-        this._events[eventName].push(callback);
-      }
-    };
-  });
-  innerAudioContextOffEventNames.forEach((eventName) => {
-    InnerAudioContext.prototype[eventName] = function(callback) {
-      var handle = this._events[eventName.replace("off", "on")];
-      var index2 = handle.indexOf(callback);
-      if (index2 >= 0) {
-        handle.splice(index2, 1);
-      }
-    };
-  });
-});
-class InnerAudioContext {
-  /**
-   * 音频上下文初始化
-   */
-  constructor() {
-    this._src = "";
-    var audio = this._audio = new Audio();
-    this._stoping = false;
-    const propertys = [
-      "src",
-      "autoplay",
-      "loop",
-      "duration",
-      "currentTime",
-      "paused",
-      "volume"
-    ];
-    propertys.forEach((property) => {
-      Object.defineProperty(this, property, {
-        set: property === "src" ? (src) => {
-          audio.src = getRealPath(src);
-          this._src = src;
-          return src;
-        } : (val) => {
-          audio[property] = val;
-          return val;
-        },
-        get: property === "src" ? () => {
-          return this._src;
-        } : () => {
-          return audio[property];
-        }
-      });
-    });
-    this.startTime = 0;
-    Object.defineProperty(this, "obeyMuteSwitch", {
-      set: () => false,
-      get: () => false
-    });
-    Object.defineProperty(this, "buffered", {
-      get() {
-        var buffered = audio.buffered;
-        if (buffered.length) {
-          return buffered.end(buffered.length - 1);
-        } else {
-          return 0;
-        }
-      }
-    });
-    this._events = {};
-    innerAudioContextEventNames.forEach((eventName) => {
-      this._events[eventName] = [];
-    });
-    audio.addEventListener("loadedmetadata", () => {
-      var startTime = Number(this.startTime) || 0;
-      if (startTime > 0) {
-        audio.currentTime = startTime;
-      }
-    });
-    var stopEventNames = ["canplay", "pause", "seeking", "seeked", "timeUpdate"];
-    var eventNames = stopEventNames.concat([
-      "play",
-      "ended",
-      "error",
-      "waiting"
-    ]);
-    eventNames.forEach((eventName) => {
-      audio.addEventListener(
-        eventName.toLowerCase(),
-        () => {
-          if (this._stoping && stopEventNames.indexOf(eventName) >= 0) {
-            return;
-          }
-          const EventName = `on${eventName.slice(0, 1).toUpperCase()}${eventName.slice(1)}`;
-          this._events[EventName].forEach((callback) => {
-            callback();
-          });
-        },
-        false
-      );
-    });
-    initInnerAudioContextEventOnce();
-  }
-  /**
-   * 播放
-   */
-  play() {
-    this._stoping = false;
-    this._audio.play();
-  }
-  /**
-   * 暂停
-   */
-  pause() {
-    this._audio.pause();
-  }
-  /**
-   * 停止
-   */
-  stop() {
-    this._stoping = true;
-    this._audio.pause();
-    this._audio.currentTime = 0;
-    this._events.onStop.forEach((callback) => {
-      callback();
-    });
-  }
-  /**
-   * 跳转到
-   * @param {number} position
-   */
-  seek(position) {
-    this._stoping = false;
-    position = Number(position);
-    if (typeof position === "number" && !isNaN(position)) {
-      this._audio.currentTime = position;
-    }
-  }
-  /**
-   * 销毁
-   */
-  destroy() {
-    this.stop();
-  }
-}
-const createInnerAudioContext = /* @__PURE__ */ defineSyncApi(
-  API_CREATE_INNER_AUDIO_CONTEXT,
-  () => {
-    return new InnerAudioContext();
-  }
-);
-const makePhoneCall = /* @__PURE__ */ defineAsyncApi(
-  API_MAKE_PHONE_CALL,
-  ({ phoneNumber }, { resolve }) => {
-    window.location.href = `tel:${phoneNumber}`;
-    return resolve();
-  },
-  MakePhoneCallProtocol
-);
-const UUID_KEY = "__DC_STAT_UUID";
-const storage = navigator.cookieEnabled && (window.localStorage || window.sessionStorage) || {};
-let deviceId;
-function deviceId$1() {
-  deviceId = deviceId || storage[UUID_KEY];
-  if (!deviceId) {
-    deviceId = Date.now() + "" + Math.floor(Math.random() * 1e7);
-    try {
-      storage[UUID_KEY] = deviceId;
-    } catch (error) {
-    }
-  }
-  return deviceId;
-}
-const ua = navigator.userAgent;
-const isAndroid = /* @__PURE__ */ /android/i.test(ua);
-const isIOS = /* @__PURE__ */ /iphone|ipad|ipod/i.test(ua);
-const isWindows = /* @__PURE__ */ ua.match(/Windows NT ([\d|\d.\d]*)/i);
-const isMac = /* @__PURE__ */ /Macintosh|Mac/i.test(ua);
-const isLinux = /* @__PURE__ */ /Linux|X11/i.test(ua);
-const isIPadOS = isMac && navigator.maxTouchPoints > 0;
-function getScreenFix() {
-  return /^Apple/.test(navigator.vendor) && typeof window.orientation === "number";
-}
-function isLandscape(screenFix) {
-  return screenFix && Math.abs(window.orientation) === 90;
-}
-function getScreenWidth(screenFix, landscape) {
-  return screenFix ? Math[landscape ? "max" : "min"](screen.width, screen.height) : screen.width;
-}
-function getScreenHeight(screenFix, landscape) {
-  return screenFix ? Math[landscape ? "min" : "max"](screen.height, screen.width) : screen.height;
-}
-function getWindowWidth(screenWidth) {
-  return Math.min(
-    window.innerWidth,
-    document.documentElement.clientWidth,
-    screenWidth
-  ) || screenWidth;
-}
-function getBaseSystemInfo() {
-  const screenFix = getScreenFix();
-  const windowWidth = getWindowWidth(
-    getScreenWidth(screenFix, isLandscape(screenFix))
-  );
+function getPageWrapperInfo(pageBody) {
+  const pageWrapper = pageBody || document.querySelector("uni-page-wrapper");
+  const pageWrapperRect = pageWrapper.getBoundingClientRect();
+  const bodyRect = document.body.getBoundingClientRect();
   return {
-    platform: isIOS ? "ios" : "other",
-    pixelRatio: window.devicePixelRatio,
-    windowWidth
+    top: pageWrapperRect.top,
+    left: pageWrapperRect.left,
+    right: bodyRect.right - pageWrapperRect.right,
+    bottom: bodyRect.bottom - pageWrapperRect.bottom,
+    width: pageWrapperRect.width,
+    height: pageWrapperRect.height
   };
 }
-function IEVersion() {
-  const userAgent = navigator.userAgent;
-  const isIE = userAgent.indexOf("compatible") > -1 && userAgent.indexOf("MSIE") > -1;
-  const isEdge = userAgent.indexOf("Edge") > -1 && !isIE;
-  const isIE11 = userAgent.indexOf("Trident") > -1 && userAgent.indexOf("rv:11.0") > -1;
-  if (isIE) {
-    const reIE = new RegExp("MSIE (\\d+\\.\\d+);");
-    reIE.test(userAgent);
-    const fIEVersion = parseFloat(RegExp.$1);
-    if (fIEVersion > 6) {
-      return fIEVersion;
-    } else {
-      return 6;
-    }
-  } else if (isEdge) {
-    return -1;
-  } else if (isIE11) {
-    return 11;
-  } else {
-    return -1;
-  }
-}
-function getTheme() {
-  if (__uniConfig.darkmode !== true)
-    return isString(__uniConfig.darkmode) ? __uniConfig.darkmode : "light";
-  try {
-    return window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark";
-  } catch (error) {
-    return "light";
-  }
-}
-function getBrowserInfo() {
-  let osname;
-  let osversion = "0";
-  let model = "";
-  let deviceType = "phone";
-  const language = navigator.language;
-  if (isIOS) {
-    osname = "iOS";
-    const osversionFind = ua.match(/OS\s([\w_]+)\slike/);
-    if (osversionFind) {
-      osversion = osversionFind[1].replace(/_/g, ".");
-    }
-    const modelFind = ua.match(/\(([a-zA-Z]+);/);
-    if (modelFind) {
-      model = modelFind[1];
-    }
-  } else if (isAndroid) {
-    osname = "Android";
-    const osversionFind = ua.match(/Android[\s/]([\w\.]+)[;\s]/);
-    if (osversionFind) {
-      osversion = osversionFind[1];
-    }
-    const infoFind = ua.match(/\((.+?)\)/);
-    const infos = infoFind ? infoFind[1].split(";") : ua.split(" ");
-    const otherInfo = [
-      /\bAndroid\b/i,
-      /\bLinux\b/i,
-      /\bU\b/i,
-      /^\s?[a-z][a-z]$/i,
-      /^\s?[a-z][a-z]-[a-z][a-z]$/i,
-      /\bwv\b/i,
-      /\/[\d\.,]+$/,
-      /^\s?[\d\.,]+$/,
-      /\bBrowser\b/i,
-      /\bMobile\b/i
-    ];
-    for (let i = 0; i < infos.length; i++) {
-      const info = infos[i];
-      if (info.indexOf("Build") > 0) {
-        model = info.split("Build")[0].trim();
-        break;
-      }
-      let other;
-      for (let o2 = 0; o2 < otherInfo.length; o2++) {
-        if (otherInfo[o2].test(info)) {
-          other = true;
-          break;
-        }
-      }
-      if (!other) {
-        model = info.trim();
-        break;
-      }
-    }
-  } else if (isIPadOS) {
-    model = "iPad";
-    osname = "iOS";
-    deviceType = "pad";
-    osversion = isFunction(window.BigInt) ? "14.0" : "13.0";
-    if (parseInt(osversion) === 14) {
-      const versionMatched = ua.match(/Version\/(\S*)\b/);
-      if (versionMatched) {
-        osversion = versionMatched[1];
-      }
-    }
-  } else if (isWindows || isMac || isLinux) {
-    model = "PC";
-    osname = "PC";
-    deviceType = "pc";
-    osversion = "0";
-    let osversionFind = ua.match(/\((.+?)\)/)[1];
-    if (isWindows) {
-      osname = "Windows";
-      switch (isWindows[1]) {
-        case "5.1":
-          osversion = "XP";
-          break;
-        case "6.0":
-          osversion = "Vista";
-          break;
-        case "6.1":
-          osversion = "7";
-          break;
-        case "6.2":
-          osversion = "8";
-          break;
-        case "6.3":
-          osversion = "8.1";
-          break;
-        case "10.0":
-          osversion = "10";
-          break;
-      }
-      const framework = osversionFind && osversionFind.match(/[Win|WOW]([\d]+)/);
-      if (framework) {
-        osversion += ` x${framework[1]}`;
-      }
-    } else if (isMac) {
-      osname = "macOS";
-      const _osversion = osversionFind && osversionFind.match(/Mac OS X (.+)/) || "";
-      if (osversion) {
-        osversion = _osversion[1].replace(/_/g, ".");
-        if (osversion.indexOf(";") !== -1) {
-          osversion = osversion.split(";")[0];
-        }
-      }
-    } else if (isLinux) {
-      osname = "Linux";
-      const _osversion = osversionFind && osversionFind.match(/Linux (.*)/) || "";
-      if (_osversion) {
-        osversion = _osversion[1];
-        if (osversion.indexOf(";") !== -1) {
-          osversion = osversion.split(";")[0];
-        }
-      }
-    }
-  } else {
-    osname = "Other";
-    osversion = "0";
-    deviceType = "unknown";
-  }
-  const system = `${osname} ${osversion}`;
-  const platform = osname.toLocaleLowerCase();
-  let browserName = "";
-  let browserVersion = String(IEVersion());
-  if (browserVersion !== "-1") {
-    browserName = "IE";
-  } else {
-    const browseVendors = ["Version", "Firefox", "Chrome", "Edge{0,1}"];
-    const vendors = ["Safari", "Firefox", "Chrome", "Edge"];
-    for (let index2 = 0; index2 < browseVendors.length; index2++) {
-      const vendor = browseVendors[index2];
-      const reg = new RegExp(`(${vendor})/(\\S*)\\b`);
-      if (reg.test(ua)) {
-        browserName = vendors[index2];
-        browserVersion = ua.match(reg)[2];
-      }
-    }
-  }
-  let deviceOrientation = "portrait";
-  const orientation = typeof window.screen.orientation === "undefined" ? window.orientation : window.screen.orientation.angle;
-  deviceOrientation = Math.abs(orientation) === 90 ? "landscape" : "portrait";
+const getSystemSafeAreaInsets = function() {
   return {
-    deviceBrand: void 0,
-    brand: void 0,
-    deviceModel: model,
-    deviceOrientation,
-    model,
-    system,
-    platform,
-    browserName: browserName.toLocaleLowerCase(),
-    browserVersion,
-    language,
-    deviceType,
-    ua,
-    osname,
-    osversion,
-    theme: getTheme()
+    top: safeAreaInsets$1.top,
+    right: safeAreaInsets$1.right,
+    bottom: safeAreaInsets$1.bottom,
+    left: safeAreaInsets$1.left
   };
-}
-const getWindowInfo = /* @__PURE__ */ defineSyncApi(
-  "getWindowInfo",
-  () => {
-    const pixelRatio = window.devicePixelRatio;
-    const screenFix = getScreenFix();
-    const landscape = isLandscape(screenFix);
-    const screenWidth = getScreenWidth(screenFix, landscape);
-    const screenHeight = getScreenHeight(screenFix, landscape);
-    const windowWidth = getWindowWidth(screenWidth);
-    let windowHeight = window.innerHeight;
-    const statusBarHeight = safeAreaInsets$1.top;
-    const safeArea = {
-      left: safeAreaInsets$1.left,
-      right: windowWidth - safeAreaInsets$1.right,
-      top: safeAreaInsets$1.top,
-      bottom: windowHeight - safeAreaInsets$1.bottom,
-      width: windowWidth - safeAreaInsets$1.left - safeAreaInsets$1.right,
-      height: windowHeight - safeAreaInsets$1.top - safeAreaInsets$1.bottom
-    };
-    const { top: windowTop, bottom: windowBottom } = getWindowOffset();
-    windowHeight -= windowTop;
-    windowHeight -= windowBottom;
-    return {
-      windowTop,
-      windowBottom,
-      windowWidth,
-      windowHeight,
-      pixelRatio,
-      screenWidth,
-      screenHeight,
-      statusBarHeight,
-      safeArea,
-      safeAreaInsets: {
-        top: safeAreaInsets$1.top,
-        right: safeAreaInsets$1.right,
-        bottom: safeAreaInsets$1.bottom,
-        left: safeAreaInsets$1.left
-      },
-      screenTop: screenHeight - windowHeight
-    };
-  }
-);
-let browserInfo;
-let _initBrowserInfo = true;
-function initBrowserInfo() {
-  if (!_initBrowserInfo)
-    return;
-  browserInfo = getBrowserInfo();
-}
-const getDeviceInfo = /* @__PURE__ */ defineSyncApi(
-  "getDeviceInfo",
-  () => {
-    initBrowserInfo();
-    const {
-      deviceBrand,
-      deviceModel,
-      brand,
-      model,
-      platform,
-      system,
-      deviceOrientation,
-      deviceType,
-      osname,
-      osversion
-    } = browserInfo;
-    return extend({
-      brand,
-      deviceBrand,
-      deviceModel,
-      devicePixelRatio: window.devicePixelRatio,
-      deviceId: deviceId$1(),
-      deviceOrientation,
-      deviceType,
-      model,
-      platform,
-      system,
-      osName: osname ? osname.toLocaleLowerCase() : void 0,
-      osVersion: osversion
-    });
-  }
-);
-const getAppBaseInfo = /* @__PURE__ */ defineSyncApi(
-  "getAppBaseInfo",
-  () => {
-    initBrowserInfo();
-    const { theme, language, browserName, browserVersion } = browserInfo;
-    return extend(
-      {
-        appId: __uniConfig.appId,
-        appName: __uniConfig.appName,
-        appVersion: __uniConfig.appVersion,
-        appVersionCode: __uniConfig.appVersionCode,
-        appLanguage: getLocale ? getLocale() : language,
-        enableDebug: false,
-        hostSDKVersion: void 0,
-        hostPackageName: void 0,
-        hostFontSizeSetting: void 0,
-        hostName: browserName,
-        hostVersion: browserVersion,
-        hostTheme: theme,
-        hostLanguage: language,
-        language,
-        SDKVersion: "",
-        theme,
-        version: "",
-        uniPlatform: "web",
-        isUniAppX: true,
-        uniCompileVersion: __uniConfig.compilerVersion,
-        uniCompilerVersion: __uniConfig.compilerVersion,
-        uniRuntimeVersion: __uniConfig.compilerVersion
-      },
-      {
-        uniCompilerVersionCode: parseFloat(__uniConfig.compilerVersion),
-        uniRuntimeVersionCode: parseFloat(__uniConfig.compilerVersion),
-        uniRuntimeVersion: __uniConfig.compilerVersion
-      }
-    );
-  }
-);
-const getSystemInfoSync = /* @__PURE__ */ defineSyncApi(
-  "getSystemInfoSync",
-  () => {
-    _initBrowserInfo = true;
-    initBrowserInfo();
-    _initBrowserInfo = false;
-    const windowInfo = getWindowInfo();
-    const deviceInfo = getDeviceInfo();
-    const appBaseInfo = getAppBaseInfo();
-    _initBrowserInfo = true;
-    const { ua: ua2, browserName, browserVersion, osname, osversion } = browserInfo;
-    const systemInfo = extend(
-      windowInfo,
-      deviceInfo,
-      appBaseInfo,
-      {
-        ua: ua2,
-        browserName,
-        browserVersion,
-        uniPlatform: "web",
-        uniCompileVersion: __uniConfig.compilerVersion,
-        uniRuntimeVersion: __uniConfig.compilerVersion,
-        fontSizeSetting: void 0,
-        osName: osname.toLocaleLowerCase(),
-        osVersion: osversion,
-        osLanguage: void 0,
-        osTheme: void 0
-      }
-    );
-    delete systemInfo.screenTop;
-    delete systemInfo.enableDebug;
-    if (!__uniConfig.darkmode)
-      delete systemInfo.theme;
-    return sortObject(systemInfo);
-  }
-);
-const getSystemInfo = /* @__PURE__ */ defineAsyncApi(
-  "getSystemInfo",
-  (_args, { resolve }) => {
-    return resolve(getSystemInfoSync());
-  }
-);
-const API_ON_NETWORK_STATUS_CHANGE = "onNetworkStatusChange";
-function networkListener() {
-  getNetworkType().then(({ networkType }) => {
-    UniServiceJSBridge.invokeOnCallback(
-      API_ON_NETWORK_STATUS_CHANGE,
-      {
-        isConnected: networkType !== "none",
-        networkType
-      }
-    );
-  });
-}
-function getConnection() {
-  return navigator.connection || navigator.webkitConnection || navigator.mozConnection;
-}
-const onNetworkStatusChange = /* @__PURE__ */ defineOnApi(
-  API_ON_NETWORK_STATUS_CHANGE,
-  () => {
-    const connection = getConnection();
-    if (connection) {
-      connection.addEventListener("change", networkListener);
-    } else {
-      window.addEventListener("offline", networkListener);
-      window.addEventListener("online", networkListener);
-    }
-  }
-);
-const offNetworkStatusChange = /* @__PURE__ */ defineOffApi("offNetworkStatusChange", () => {
-  const connection = getConnection();
-  if (connection) {
-    connection.removeEventListener("change", networkListener);
-  } else {
-    window.removeEventListener("offline", networkListener);
-    window.removeEventListener("online", networkListener);
-  }
-});
-const getNetworkType = /* @__PURE__ */ defineAsyncApi(
-  "getNetworkType",
-  (_args, { resolve }) => {
-    const connection = getConnection();
-    let networkType = "unknown";
-    if (connection) {
-      networkType = connection.type;
-      if (networkType === "cellular" && connection.effectiveType) {
-        networkType = connection.effectiveType.replace("slow-", "");
-      } else if (!networkType && connection.effectiveType) {
-        networkType = connection.effectiveType;
-      } else if (!["none", "wifi"].includes(networkType)) {
-        networkType = "unknown";
-      }
-    } else if (navigator.onLine === false) {
-      networkType = "none";
-    }
-    return resolve({ networkType });
-  }
-);
-let listener$1 = null;
-const onAccelerometerChange = /* @__PURE__ */ defineOnApi(API_ON_ACCELEROMETER, () => {
-  startAccelerometer();
-});
-const offAccelerometerChange = /* @__PURE__ */ defineOffApi(API_OFF_ACCELEROMETER, () => {
-  stopAccelerometer();
-});
-const startAccelerometer = /* @__PURE__ */ defineAsyncApi(
-  API_START_ACCELEROMETER,
-  (_, { resolve, reject }) => {
-    if (!window.DeviceMotionEvent) {
-      reject();
-      return;
-    }
-    function addEventListener() {
-      listener$1 = function(event) {
-        const acceleration = event.acceleration || event.accelerationIncludingGravity;
-        UniServiceJSBridge.invokeOnCallback(API_ON_ACCELEROMETER, {
-          x: acceleration && acceleration.x || 0,
-          y: acceleration && acceleration.y || 0,
-          z: acceleration && acceleration.z || 0
-        });
-      };
-      window.addEventListener("devicemotion", listener$1, false);
-    }
-    if (!listener$1) {
-      if (DeviceMotionEvent.requestPermission) {
-        DeviceMotionEvent.requestPermission().then((res) => {
-          if (res === "granted") {
-            addEventListener();
-            resolve();
-          } else {
-            reject(`${res}`);
-          }
-        }).catch((error) => {
-          reject(`${error}`);
-        });
-        return;
-      }
-      addEventListener();
-    }
-    resolve();
-  }
-);
-const stopAccelerometer = /* @__PURE__ */ defineAsyncApi(
-  API_STOP_ACCELEROMETER,
-  (_, { resolve }) => {
-    if (listener$1) {
-      window.removeEventListener("devicemotion", listener$1, false);
-      listener$1 = null;
-    }
-    resolve();
-  }
-);
-let listener = null;
-const onCompassChange = /* @__PURE__ */ defineOnApi(
-  API_ON_COMPASS,
-  () => {
-    startCompass();
-  }
-);
-const offCompassChange = /* @__PURE__ */ defineOffApi(
-  API_OFF_COMPASS,
-  () => {
-    stopCompass();
-  }
-);
-const startCompass = /* @__PURE__ */ defineAsyncApi(
-  API_START_COMPASS,
-  (_, { resolve, reject }) => {
-    if (!window.DeviceOrientationEvent) {
-      reject();
-      return;
-    }
-    function addEventListener() {
-      listener = function(event) {
-        const direction2 = 360 - (event.alpha !== null ? event.alpha : 360);
-        UniServiceJSBridge.invokeOnCallback(API_ON_COMPASS, {
-          direction: direction2
-        });
-      };
-      window.addEventListener("deviceorientation", listener, false);
-    }
-    if (!listener) {
-      if (DeviceOrientationEvent.requestPermission) {
-        DeviceOrientationEvent.requestPermission().then((res) => {
-          if (res === "granted") {
-            addEventListener();
-            resolve();
-          } else {
-            reject(`${res}`);
-          }
-        }).catch((error) => {
-          reject(`${error}`);
-        });
-        return;
-      }
-      addEventListener();
-    }
-    resolve();
-  }
-);
-const stopCompass = /* @__PURE__ */ defineAsyncApi(
-  API_STOP_COMPASS,
-  (_, { resolve }) => {
-    if (listener) {
-      window.removeEventListener("deviceorientation", listener, false);
-      listener = null;
-    }
-    resolve();
-  }
-);
-const _isSupport = !!window.navigator.vibrate;
-const vibrateShort = /* @__PURE__ */ defineAsyncApi(
-  API_VIBRATE_SHORT,
-  (args, { resolve, reject }) => {
-    if (_isSupport && window.navigator.vibrate(15)) {
-      resolve();
-    } else {
-      reject("vibrateLong:fail");
-    }
-  }
-);
-const vibrateLong = /* @__PURE__ */ defineAsyncApi(
-  API_VIBRATE_LONG,
-  (args, { resolve, reject }) => {
-    if (_isSupport && window.navigator.vibrate(400)) {
-      resolve();
-    } else {
-      reject("vibrateLong:fail");
-    }
-  }
-);
-var __async = (__this, __arguments, generator) => {
-  return new Promise((resolve, reject) => {
-    var fulfilled = (value) => {
-      try {
-        step(generator.next(value));
-      } catch (e2) {
-        reject(e2);
-      }
-    };
-    var rejected = (value) => {
-      try {
-        step(generator.throw(value));
-      } catch (e2) {
-        reject(e2);
-      }
-    };
-    var step = (x) => x.done ? resolve(x.value) : Promise.resolve(x.value).then(fulfilled, rejected);
-    step((generator = generator.apply(__this, __arguments)).next());
-  });
 };
-const getClipboardData = /* @__PURE__ */ defineAsyncApi(
-  API_GET_CLIPBOARD_DATA,
-  (_0, _1) => __async(void 0, [_0, _1], function* (_, { resolve, reject }) {
-    initI18nGetClipboardDataMsgsOnce();
-    const { t: t2 } = useI18n();
-    try {
-      const data = yield navigator.clipboard.readText();
-      resolve({ data });
-    } catch (error) {
-      _getClipboardData(resolve, () => {
-        reject(`${error} ${t2("uni.getClipboardData.fail")}`);
-      });
-    }
-  })
-);
-const setClipboardData = /* @__PURE__ */ defineAsyncApi(
-  API_SET_CLIPBOARD_DATA,
-  (_0, _1) => __async(void 0, [_0, _1], function* ({ data }, { resolve, reject }) {
-    try {
-      yield navigator.clipboard.writeText(data);
-      resolve();
-    } catch (error) {
-      _setClipboardData(data, resolve, reject);
-    }
-  }),
-  SetClipboardDataProtocol,
-  SetClipboardDataOptions
-);
-function _getClipboardData(resolve, reject) {
-  const pasteText = document.getElementById("#clipboard");
-  const data = pasteText ? pasteText.value : void 0;
-  if (data) {
-    resolve({ data });
-  } else {
-    reject();
-  }
-}
-function _setClipboardData(data, resolve, reject) {
-  const pasteText = document.getElementById("#clipboard");
-  pasteText && pasteText.remove();
-  const textarea = document.createElement("textarea");
-  textarea.setAttribute("inputmode", "none");
-  textarea.id = "#clipboard";
-  textarea.style.position = "fixed";
-  textarea.style.top = "-9999px";
-  textarea.style.zIndex = "-9999";
-  document.body.appendChild(textarea);
-  textarea.value = data;
-  textarea.select();
-  textarea.setSelectionRange(0, textarea.value.length);
-  const result = document.execCommand("Copy", false);
-  textarea.blur();
-  if (result) {
-    resolve();
-  } else {
-    reject();
-  }
-}
-const themeChangeCallBack = (res) => {
-  UniServiceJSBridge.invokeOnCallback(ON_THEME_CHANGE, res);
-};
-const onThemeChange$2 = /* @__PURE__ */ defineOnApi(
-  ON_THEME_CHANGE,
-  () => {
-    UniServiceJSBridge.on(ON_THEME_CHANGE, themeChangeCallBack);
-  }
-);
-const offThemeChange$1 = /* @__PURE__ */ defineOffApi(
-  OFF_THEME_CHANGE,
-  () => {
-    UniServiceJSBridge.off(ON_THEME_CHANGE, themeChangeCallBack);
-  }
-);
-const THEME_CALLBACK = [];
-const onHostThemeChange = /* @__PURE__ */ defineSyncApi(
-  ON_HOST_THEME_CHANGE,
-  (callback) => {
-    const onHostThemeChangeCallback = (res) => {
-      callback({ hostTheme: res.theme });
-    };
-    const index2 = THEME_CALLBACK.push([callback, onHostThemeChangeCallback]) - 1;
-    UniServiceJSBridge.on(ON_THEME_CHANGE, onHostThemeChangeCallback);
-    return index2;
-  }
-);
-const offHostThemeChange = /* @__PURE__ */ defineSyncApi(
-  OFF_HOST_THEME_CHANGE,
-  (callbackId) => {
-    if (isFunction(callbackId)) {
-      callbackId = THEME_CALLBACK.findIndex(
-        ([callback]) => callback === callbackId
-      );
-    }
-    if (callbackId > -1) {
-      const arr = THEME_CALLBACK.splice(callbackId, 1)[0];
-      isArray(arr) && UniServiceJSBridge.off(ON_THEME_CHANGE, arr[1]);
-    }
-  }
-);
-const STORAGE_KEYS = "uni-storage-keys";
-function parseValue(value) {
-  const types = ["object", "string", "number", "boolean", "undefined"];
-  try {
-    const object = isString(value) ? JSON.parse(value) : value;
-    const type = object.type;
-    if (types.indexOf(type) >= 0) {
-      const keys = Object.keys(object);
-      if (keys.length === 2 && "data" in object) {
-        if (typeof object.data === type) {
-          if (type === "object") {
-            return UTS.JSON.parse(JSON.stringify(object.data));
-          }
-          return object.data;
-        }
-        if (type === "object" && /^\d{4}-\d{2}-\d{2}T\d{2}\:\d{2}\:\d{2}\.\d{3}Z$/.test(object.data)) {
-          return new Date(object.data);
-        }
-      } else if (keys.length === 1) {
-        return "";
-      }
-    }
-  } catch (error) {
-  }
-}
-const setStorageSync = /* @__PURE__ */ defineSyncApi(
-  API_SET_STORAGE_SYNC,
-  (key, data) => {
-    const type = typeof data;
-    const value = type === "string" ? data : JSON.stringify({
-      type,
-      data
-    });
-    localStorage.setItem(key, value);
-  },
-  SetStorageSyncProtocol
-);
-const setStorage = /* @__PURE__ */ defineAsyncApi(
-  API_SET_STORAGE,
-  ({ key, data }, { resolve, reject }) => {
-    try {
-      setStorageSync(key, data);
-      resolve();
-    } catch (error) {
-      reject(error.message);
-    }
-  },
-  SetStorageProtocol
-);
-function getStorageOrigin(key) {
-  const value = localStorage && localStorage.getItem(key);
-  if (!isString(value)) {
-    throw new Error("data not found");
-  }
-  let data = value;
-  try {
-    const object = JSON.parse(value);
-    const result = parseValue(object);
-    if (result !== void 0) {
-      data = result;
-    }
-  } catch (error) {
-  }
-  return data;
-}
-const getStorageSync = /* @__PURE__ */ defineSyncApi(
-  API_GET_STORAGE_SYNC,
-  (key) => {
-    try {
-      return getStorageOrigin(key);
-    } catch (error) {
-      return "";
-    }
-  },
-  GetStorageSyncProtocol
-);
-const getStorage = /* @__PURE__ */ defineAsyncApi(
-  API_GET_STORAGE,
-  ({ key }, { resolve, reject }) => {
-    try {
-      const data = getStorageOrigin(key);
-      resolve({
-        data
-      });
-    } catch (error) {
-      reject(error.message);
-    }
-  },
-  GetStorageProtocol
-);
-const removeStorageSync = /* @__PURE__ */ defineSyncApi(
-  API_REMOVE_STORAGE,
-  (key) => {
-    if (localStorage) {
-      localStorage.removeItem(key);
-    }
-  },
-  RemoveStorageSyncProtocol
-);
-const removeStorage = /* @__PURE__ */ defineAsyncApi(
-  API_REMOVE_STORAGE,
-  ({ key }, { resolve }) => {
-    removeStorageSync(key);
-    resolve();
-  },
-  RemoveStorageProtocol
-);
-const clearStorageSync = /* @__PURE__ */ defineSyncApi(
-  "clearStorageSync",
-  () => {
-    if (localStorage) {
-      localStorage.clear();
-    }
-  }
-);
-const clearStorage = /* @__PURE__ */ defineAsyncApi(
-  "clearStorage",
-  (_, { resolve }) => {
-    clearStorageSync();
-    resolve();
-  }
-);
-const getStorageInfoSync = /* @__PURE__ */ defineSyncApi(
-  "getStorageInfoSync",
-  () => {
-    const length = localStorage && localStorage.length || 0;
-    const keys = [];
-    let currentSize = 0;
-    for (let index2 = 0; index2 < length; index2++) {
-      const key = localStorage.key(index2);
-      const value = localStorage.getItem(key) || "";
-      currentSize += key.length + value.length;
-      if (key !== STORAGE_KEYS) {
-        keys.push(key);
-      }
-    }
-    return {
-      keys,
-      currentSize: Math.ceil(currentSize * 2 / 1024),
-      limitSize: Number.MAX_VALUE
-    };
-  }
-);
-const getStorageInfo = /* @__PURE__ */ defineAsyncApi(
-  "getStorageInfo",
-  (_, { resolve }) => {
-    resolve(getStorageInfoSync());
-  }
-);
-const files = {};
-function urlToFile(url, local) {
-  const file = files[url];
-  if (file) {
-    return Promise.resolve(file);
-  }
-  if (/^data:[a-z-]+\/[a-z-]+;base64,/.test(url)) {
-    return Promise.resolve(base64ToFile(url));
-  }
-  if (local) {
-    return Promise.reject(new Error("not find"));
-  }
-  return new Promise((resolve, reject) => {
-    const xhr = new XMLHttpRequest();
-    xhr.open("GET", url, true);
-    xhr.responseType = "blob";
-    xhr.onload = function() {
-      resolve(this.response);
-    };
-    xhr.onerror = reject;
-    xhr.send();
-  });
-}
-function base64ToFile(base64) {
-  const base64Array = base64.split(",");
-  const res = base64Array[0].match(/:(.*?);/);
-  const type = res ? res[1] : "";
-  const str = atob(base64Array[1]);
-  let n = str.length;
-  const array = new Uint8Array(n);
-  while (n--) {
-    array[n] = str.charCodeAt(n);
-  }
-  return blobToFile(array, type);
-}
-function getExtname(type) {
-  const extname = type.split("/")[1];
-  return extname ? `.${extname}` : "";
-}
-function getFileName(url) {
-  url = url.split("#")[0].split("?")[0];
-  const array = url.split("/");
-  return array[array.length - 1];
-}
-function blobToFile(blob, type) {
-  let file;
-  if (blob instanceof File) {
-    file = blob;
-  } else {
-    type = type || blob.type || "";
-    const filename = `${Date.now()}${getExtname(type)}`;
-    try {
-      file = new File([blob], filename, { type });
-    } catch (error) {
-      blob = blob instanceof Blob ? blob : new Blob([blob], { type });
-      file = blob;
-      file.name = file.name || filename;
-    }
-  }
-  return file;
-}
-function fileToUrl(file) {
-  for (const key in files) {
-    if (hasOwn(files, key)) {
-      const oldFile = files[key];
-      if (oldFile === file) {
-        return key;
-      }
-    }
-  }
-  var url = (window.URL || window.webkitURL).createObjectURL(file);
-  files[url] = file;
-  return url;
-}
-function revokeObjectURL(url) {
-  const URL = window.URL || window.webkitURL;
-  URL.revokeObjectURL(url);
-  delete files[url];
-}
-const getFileInfo = /* @__PURE__ */ defineAsyncApi(
-  API_GET_FILE_INFO,
-  ({ filePath }, { resolve, reject }) => {
-    urlToFile(filePath).then((res) => {
-      resolve({
-        size: res.size
-      });
-    }).catch((err) => {
-      reject(String(err));
-    });
-  },
-  GetFileInfoProtocol,
-  GetFileInfoOptions
-);
-const openDocument = /* @__PURE__ */ defineAsyncApi(
-  API_OPEN_DOCUMENT,
-  ({ filePath }, { resolve }) => {
-    window.open(filePath);
-    return resolve();
-  },
-  OpenDocumentProtocol,
-  OpenDocumentOptions
-);
-const hideKeyboard = /* @__PURE__ */ defineAsyncApi(
-  API_HIDE_KEYBOARD,
-  (args, { resolve, reject }) => {
-    const activeElement = document.activeElement;
-    if (activeElement && (activeElement.tagName === "TEXTAREA" || activeElement.tagName === "INPUT")) {
-      activeElement.blur();
-      resolve();
-    }
-  }
-);
-function getServiceAddress() {
-  return window.location.protocol + "//" + window.location.host;
-}
-const getImageInfo = /* @__PURE__ */ defineAsyncApi(
-  API_GET_IMAGE_INFO,
-  ({ src }, { resolve, reject }) => {
-    const img = new Image();
-    img.onload = function() {
-      resolve({
-        width: img.naturalWidth,
-        height: img.naturalHeight,
-        path: src.indexOf("/") === 0 ? getServiceAddress() + src : src
-      });
-    };
-    img.onerror = function() {
-      reject();
-    };
-    img.src = src;
-  },
-  GetImageInfoProtocol,
-  GetImageInfoOptions
-);
-const getVideoInfo = /* @__PURE__ */ defineAsyncApi(
-  API_GET_VIDEO_INFO,
-  ({ src }, { resolve, reject }) => {
-    urlToFile(src, true).then((file) => {
-      return file;
-    }).catch(() => {
-      return null;
-    }).then((file) => {
-      const video = document.createElement("video");
-      if (video.onloadedmetadata !== void 0) {
-        const handle = setTimeout(
-          () => {
-            video.onloadedmetadata = null;
-            video.onerror = null;
-            reject();
-          },
-          src.startsWith("data:") || src.startsWith("blob:") ? 300 : 3e3
-        );
-        video.onloadedmetadata = function() {
-          clearTimeout(handle);
-          video.onerror = null;
-          resolve({
-            size: Math.ceil((file ? file.size : 0) / 1024),
-            duration: video.duration || 0,
-            width: video.videoWidth || 0,
-            height: video.videoHeight || 0
-          });
-        };
-        video.onerror = function() {
-          clearTimeout(handle);
-          video.onloadedmetadata = null;
-          reject();
-        };
-        video.src = src;
-      } else {
-        reject();
-      }
-    });
-  },
-  GetVideoInfoProtocol,
-  GetVideoInfoOptions
-);
-const MIMEType = {
-  /**
-   * 关于图片常见的MIME类型
-   */
-  image: {
-    jpg: "jpeg",
-    jpe: "jpeg",
-    pbm: "x-portable-bitmap",
-    pgm: "x-portable-graymap",
-    pnm: "x-portable-anymap",
-    ppm: "x-portable-pixmap",
-    psd: "vnd.adobe.photoshop",
-    pic: "x-pict",
-    rgb: "x-rgb",
-    svg: "svg+xml",
-    svgz: "svg+xml",
-    tif: "tiff",
-    xif: "vnd.xiff",
-    wbmp: "vnd.wap.wbmp",
-    wdp: "vnd.ms-photo",
-    xbm: "x-xbitmap",
-    ico: "x-icon"
-  },
-  /**
-   * 关于视频常见的MIME类型
-   */
-  video: {
-    "3g2": "3gpp2",
-    "3gp": "3gpp",
-    avi: "x-msvideo",
-    f4v: "x-f4v",
-    flv: "x-flv",
-    jpgm: "jpm",
-    jpgv: "jpeg",
-    m1v: "mpeg",
-    m2v: "mpeg",
-    mpe: "mpeg",
-    mpg: "mpeg",
-    mpg4: "mpeg",
-    m4v: "x-m4v",
-    mkv: "x-matroska",
-    mov: "quicktime",
-    qt: "quicktime",
-    movie: "x-sgi-movie",
-    mp4v: "mp4",
-    ogv: "ogg",
-    smv: "x-smv",
-    wm: "x-ms-wm",
-    wmv: "x-ms-wmv",
-    wmx: "x-ms-wmx",
-    wvx: "x-ms-wvx"
-  }
-};
-const ALL = "all";
-function isWXEnv() {
-  const ua2 = window.navigator.userAgent.toLowerCase();
-  const matchUA = ua2.match(/MicroMessenger/i);
-  return !!(matchUA && matchUA[0] === "micromessenger");
-}
-function _createInput({
-  count,
-  sourceType,
-  type,
-  extension
-}) {
-  addInteractListener();
-  const inputEl = document.createElement("input");
-  inputEl.type = "file";
-  updateElementStyle(inputEl, {
-    position: "absolute",
-    visibility: "hidden",
-    zIndex: "-999",
-    width: "0",
-    height: "0",
-    top: "0",
-    left: "0"
-  });
-  inputEl.accept = extension.map((item) => {
-    if (type !== ALL) {
-      const MIMEKey = item.replace(".", "");
-      return `${type}/${MIMEType[type][MIMEKey] || MIMEKey}`;
-    } else {
-      if (isWXEnv()) {
-        return ".";
-      }
-      return item.indexOf(".") === 0 ? item : `.${item}`;
-    }
-  }).join(",");
-  if (count && count > 1) {
-    inputEl.multiple = true;
-  }
-  if (type !== ALL && sourceType instanceof Array && sourceType.length === 1 && sourceType[0] === "camera") {
-    inputEl.setAttribute("capture", "camera");
-  }
-  return inputEl;
-}
-let fileInput = null;
-const chooseFile = /* @__PURE__ */ defineAsyncApi(
-  API_CHOOSE_FILE,
-  ({
-    // sizeType,
-    count,
-    sourceType,
-    type,
-    extension
-  }, { resolve, reject }) => {
-    initI18nChooseFileMsgsOnce();
-    const { t: t2 } = useI18n();
-    if (fileInput) {
-      document.body.removeChild(fileInput);
-      fileInput = null;
-    }
-    fileInput = _createInput({
-      count,
-      sourceType,
-      type,
-      extension
-    });
-    document.body.appendChild(fileInput);
-    fileInput.addEventListener("change", function(event) {
-      const eventTarget = event.target;
-      const tempFiles = [];
-      if (eventTarget && eventTarget.files) {
-        const fileCount = eventTarget.files.length;
-        for (let i = 0; i < fileCount; i++) {
-          const file = eventTarget.files[i];
-          let filePath;
-          Object.defineProperty(file, "path", {
-            get() {
-              filePath = filePath || fileToUrl(file);
-              return filePath;
-            }
-          });
-          if (i < count)
-            tempFiles.push(file);
-        }
-      }
-      const res = {
-        get tempFilePaths() {
-          return tempFiles.map(({ path }) => path);
-        },
-        tempFiles
-      };
-      resolve(res);
-    });
-    fileInput.click();
-    if (!getInteractStatus()) {
-      console.warn(t2("uni.chooseFile.notUserActivation"));
-    }
-  },
-  ChooseFileProtocol,
-  ChooseFileOptions
-);
-let imageInput = null;
-const chooseImage = /* @__PURE__ */ defineAsyncApi(
-  API_CHOOSE_IMAGE,
-  ({
-    count,
-    // sizeType,
-    sourceType,
-    extension
-  }, { resolve, reject }) => {
-    initI18nChooseFileMsgsOnce();
-    const { t: t2 } = useI18n();
-    if (imageInput) {
-      document.body.removeChild(imageInput);
-      imageInput = null;
-    }
-    imageInput = _createInput({
-      count,
-      sourceType,
-      extension,
-      type: "image"
-    });
-    document.body.appendChild(imageInput);
-    imageInput.addEventListener("change", function(event) {
-      const eventTarget = event.target;
-      const tempFiles = [];
-      if (eventTarget && eventTarget.files) {
-        const fileCount = eventTarget.files.length;
-        for (let i = 0; i < fileCount; i++) {
-          const file = eventTarget.files[i];
-          let filePath;
-          Object.defineProperty(file, "path", {
-            get() {
-              filePath = filePath || fileToUrl(file);
-              return filePath;
-            }
-          });
-          if (i < count)
-            tempFiles.push(file);
-        }
-      }
-      const res = {
-        get tempFilePaths() {
-          return tempFiles.map(({ path }) => path);
-        },
-        tempFiles
-      };
-      resolve(res);
-    });
-    imageInput.click();
-    if (!getInteractStatus()) {
-      console.warn(t2("uni.chooseFile.notUserActivation"));
-    }
-  },
-  ChooseImageProtocol,
-  ChooseImageOptions
-);
-const KEY_MAPS = {
-  esc: ["Esc", "Escape"],
-  // tab: ['Tab'],
-  enter: ["Enter"]
-  // space: [' ', 'Spacebar'],
-  // up: ['Up', 'ArrowUp'],
-  // left: ['Left', 'ArrowLeft'],
-  // right: ['Right', 'ArrowRight'],
-  // down: ['Down', 'ArrowDown'],
-  // delete: ['Backspace', 'Delete', 'Del'],
-};
-const KEYS = Object.keys(KEY_MAPS);
-function useKeyboard() {
-  const key = ref("");
-  const disable = ref(false);
-  const onKeyup = (evt) => {
-    if (disable.value) {
-      return;
-    }
-    const res = KEYS.find(
-      (key2) => KEY_MAPS[key2].indexOf(evt.key) !== -1
-    );
-    if (res) {
-      key.value = res;
-    }
-    nextTick(() => key.value = "");
-  };
-  onMounted(() => {
-    document.addEventListener("keyup", onKeyup);
-  });
-  onBeforeUnmount(() => {
-    document.removeEventListener("keyup", onKeyup);
-  });
+function getSafeAreaInsets(pageBody) {
+  const pageWrapperEdge = getPageWrapperInfo(pageBody);
+  const systemSafeAreaInsets = getSystemSafeAreaInsets();
   return {
-    key,
-    disable
+    top: Math.max(pageWrapperEdge.top, systemSafeAreaInsets.top),
+    left: Math.max(pageWrapperEdge.left, systemSafeAreaInsets.left),
+    right: Math.max(pageWrapperEdge.right, systemSafeAreaInsets.right),
+    bottom: Math.max(pageWrapperEdge.bottom, systemSafeAreaInsets.bottom)
   };
 }
-const VNODE_MASK = /* @__PURE__ */ createVNode(
-  "div",
-  { class: "uni-mask" },
-  null,
-  -1
-  /* HOISTED */
-);
-function createRootApp(component, rootState, callback) {
-  rootState.onClose = (...args) => (rootState.visible = false, callback.apply(null, args));
-  return createApp(
-    defineComponent({
-      setup() {
-        return () => (openBlock(), createBlock(
-          component,
-          rootState,
-          null,
-          16
-          /* FULL_PROPS */
-        ));
-      }
-    })
-  );
-}
-function ensureRoot(id2) {
-  let rootEl = document.getElementById(id2);
-  if (!rootEl) {
-    rootEl = document.createElement("div");
-    rootEl.id = id2;
-    document.body.append(rootEl);
-  }
-  return rootEl;
-}
-function usePopup(props2, {
-  onEsc,
-  onEnter
-}) {
-  const visible = ref(props2.visible);
-  const { key, disable } = useKeyboard();
-  watch(
-    () => props2.visible,
-    (value) => visible.value = value
-  );
-  watch(
-    () => visible.value,
-    (value) => disable.value = !value
-  );
-  watchEffect(() => {
-    const { value } = key;
-    if (value === "esc") {
-      onEsc && onEsc();
-    } else if (value === "enter") {
-      onEnter && onEnter();
-    }
-  });
-  return visible;
-}
-let index$o = 0;
-let overflow = "";
-function preventScroll(prevent) {
-  let before = index$o;
-  index$o += prevent ? 1 : -1;
-  index$o = Math.max(0, index$o);
-  if (index$o > 0) {
-    if (before === 0) {
-      overflow = document.body.style.overflow;
-      document.body.style.overflow = "hidden";
-    }
-  } else {
-    document.body.style.overflow = overflow;
-    overflow = "";
-  }
-}
-function usePreventScroll() {
-  onMounted(() => preventScroll(true));
-  onUnmounted(() => preventScroll(false));
-}
-const props$t = {
-  src: {
-    type: String,
-    default: ""
-  }
-};
-const ImageView = /* @__PURE__ */ defineSystemComponent({
-  name: "ImageView",
-  props: props$t,
-  setup(props2) {
-    const state2 = reactive({
-      direction: "none"
-    });
-    let scale = 1;
-    let imgWidth = 0;
-    let imgHeight = 0;
-    let width = 0;
-    let height = 0;
-    function onScale({
-      detail
-    }) {
-      scale = detail.scale;
-    }
-    function onImgLoad(event) {
-      const target = event.target;
-      const rect = target.getBoundingClientRect();
-      imgWidth = rect.width;
-      imgHeight = rect.height;
-    }
-    function onTouchStart(event) {
-      const target = event.target;
-      const rect = target.getBoundingClientRect();
-      width = rect.width;
-      height = rect.height;
-      checkDirection(event);
-    }
-    function onTouchEnd(event) {
-      const horizontal = scale * imgWidth > width;
-      const vertical = scale * imgHeight > height;
-      if (horizontal && vertical) {
-        state2.direction = "all";
-      } else if (horizontal) {
-        state2.direction = "horizontal";
-      } else if (vertical) {
-        state2.direction = "vertical";
-      } else {
-        state2.direction = "none";
-      }
-      checkDirection(event);
-    }
-    function checkDirection(event) {
-      if (state2.direction === "all" || state2.direction === "horizontal") {
-        event.stopPropagation();
-      }
-    }
-    return () => {
-      const viewStyle = {
-        position: "absolute",
-        left: "0",
-        top: "0",
-        width: "100%",
-        height: "100%"
-      };
-      return createVNode(MovableArea, {
-        "style": viewStyle,
-        "onTouchstart": withWebEvent(onTouchStart),
-        "onTouchmove": withWebEvent(checkDirection),
-        "onTouchend": withWebEvent(onTouchEnd)
-      }, {
-        default: () => [createVNode(MovableView, {
-          "style": viewStyle,
-          "direction": state2.direction,
-          "inertia": true,
-          "scale": true,
-          "scale-min": "1",
-          "scale-max": "4",
-          "onScale": onScale
-        }, {
-          default: () => [createVNode("img", {
-            "src": props2.src,
-            "style": {
-              position: "absolute",
-              left: "50%",
-              top: "50%",
-              transform: "translate(-50%, -50%)",
-              maxHeight: "100%",
-              maxWidth: "100%"
-            },
-            "onLoad": onImgLoad
-          }, null, 40, ["src", "onLoad"])]
-        }, 8, ["style", "direction", "inertia", "scale", "onScale"])]
-      }, 8, ["style", "onTouchstart", "onTouchmove", "onTouchend"]);
-    };
-  }
-});
-function _isSlot$1(s) {
-  return typeof s === "function" || Object.prototype.toString.call(s) === "[object Object]" && !isVNode(s);
-}
-const props$s = {
-  urls: {
-    type: Array,
-    default() {
-      return [];
-    }
-  },
-  current: {
-    type: [Number, String],
-    default: 0
-  }
-};
-function getIndex(props2) {
-  let index2 = typeof props2.current === "number" ? props2.current : props2.urls.indexOf(props2.current);
-  index2 = index2 < 0 ? 0 : index2;
-  return index2;
-}
-const ImagePreview = /* @__PURE__ */ defineSystemComponent({
-  name: "ImagePreview",
-  props: props$s,
-  emits: ["close"],
-  setup(props2, {
-    emit: emit2
-  }) {
-    usePreventScroll();
-    const rootRef = ref(null);
-    const indexRef = ref(getIndex(props2));
-    watch(() => props2.current, () => indexRef.value = getIndex(props2));
-    let preventDefault;
-    onMounted(() => {
-      const el = rootRef.value;
-      const MAX_MOVE = 20;
-      let x = 0;
-      let y = 0;
-      el.addEventListener("mousedown", (event) => {
-        preventDefault = false;
-        x = event.clientX;
-        y = event.clientY;
-      });
-      el.addEventListener("mouseup", (event) => {
-        if (Math.abs(event.clientX - x) > MAX_MOVE || Math.abs(event.clientY - y) > MAX_MOVE) {
-          preventDefault = true;
-        }
-      });
-    });
-    function onClick() {
-      if (!preventDefault) {
-        nextTick(() => {
-          emit2("close");
-        });
-      }
-    }
-    function onChange2(event) {
-      indexRef.value = event.detail.current;
-    }
-    const closeBtnStyle = {
-      position: "absolute",
-      "box-sizing": "border-box",
-      top: "0",
-      right: "0",
-      width: "60px",
-      height: "44px",
-      padding: "6px",
-      "line-height": "32px",
-      "font-size": "26px",
-      color: "white",
-      "text-align": "center",
-      cursor: "pointer"
-    };
-    return () => {
-      let _slot;
-      return createVNode("div", {
-        "ref": rootRef,
-        "style": {
-          display: "block",
-          position: "fixed",
-          left: "0",
-          top: "0",
-          width: "100%",
-          height: "100%",
-          zIndex: 999,
-          background: "rgba(0,0,0,0.8)"
-        },
-        "onClick": onClick
-      }, [createVNode(Swiper, {
-        "navigation": "auto",
-        "current": indexRef.value,
-        "onChange": onChange2,
-        "indicator-dots": false,
-        "autoplay": false,
-        "style": {
-          position: "absolute",
-          left: "0",
-          top: "0",
-          width: "100%",
-          height: "100%"
-        }
-      }, _isSlot$1(_slot = props2.urls.map((src) => createVNode(SwiperItem, null, {
-        default: () => [createVNode(ImageView, {
-          "src": src
-        }, null, 8, ["src"])]
-      }))) ? _slot : {
-        default: () => [_slot],
-        _: 1
-      }, 8, ["current", "onChange"]), createVNode("div", {
-        "style": closeBtnStyle
-      }, [createSvgIconVNode(ICON_PATH_CLOSE, "#ffffff", 26)], 4)], 8, ["onClick"]);
-    };
-  }
-});
-let state$1 = null;
-let imagePreviewInstance;
-const closePreviewImageView = () => {
-  state$1 = null;
-  nextTick(() => {
-    imagePreviewInstance == null ? void 0 : imagePreviewInstance.unmount();
-    imagePreviewInstance = null;
-  });
-};
-const previewImage = /* @__PURE__ */ defineAsyncApi(
-  API_PREVIEW_IMAGE,
-  (args, { resolve }) => {
-    if (!state$1) {
-      state$1 = reactive(args);
-      nextTick(() => {
-        imagePreviewInstance = createRootApp(
-          ImagePreview,
-          state$1,
-          closePreviewImageView
-        );
-        imagePreviewInstance.mount(ensureRoot("u-a-p"));
-      });
-    } else {
-      extend(state$1, args);
-    }
-    resolve();
-  },
-  PreviewImageProtocol,
-  PreviewImageOptions
-);
-const closePreviewImage = /* @__PURE__ */ defineAsyncApi(
-  API_CLOSE_PREVIEW_IMAGE,
-  (_, { resolve, reject }) => {
-    if (imagePreviewInstance) {
-      closePreviewImageView();
-      resolve();
-    } else {
-      reject();
-    }
-  }
-);
-let videoInput = null;
-const chooseVideo = /* @__PURE__ */ defineAsyncApi(
-  API_CHOOSE_VIDEO,
-  ({ sourceType, extension }, { resolve, reject }) => {
-    initI18nChooseFileMsgsOnce();
-    const { t: t2 } = useI18n();
-    if (videoInput) {
-      document.body.removeChild(videoInput);
-      videoInput = null;
-    }
-    videoInput = _createInput({
-      sourceType,
-      extension,
-      type: "video"
-    });
-    document.body.appendChild(videoInput);
-    videoInput.addEventListener("change", function(event) {
-      const eventTarget = event.target;
-      const file = eventTarget.files[0];
-      let filePath = "";
-      const callbackResult = {
-        tempFilePath: filePath,
-        tempFile: file,
-        size: file.size,
-        duration: 0,
-        width: 0,
-        height: 0,
-        name: file.name
-      };
-      Object.defineProperty(callbackResult, "tempFilePath", {
-        get() {
-          filePath = filePath || fileToUrl(this.tempFile);
-          return filePath;
-        }
-      });
-      const video = document.createElement("video");
-      if (video.onloadedmetadata !== void 0) {
-        const filePath2 = fileToUrl(file);
-        video.onloadedmetadata = function() {
-          revokeObjectURL(filePath2);
-          resolve(
-            extend(callbackResult, {
-              duration: video.duration || 0,
-              width: video.videoWidth || 0,
-              height: video.videoHeight || 0
-            })
-          );
-        };
-        setTimeout(() => {
-          video.onloadedmetadata = null;
-          revokeObjectURL(filePath2);
-          resolve(callbackResult);
-        }, 300);
-        video.src = filePath2;
-      } else {
-        resolve(callbackResult);
-      }
-    });
-    videoInput.click();
-    if (!getInteractStatus()) {
-      console.warn(t2("uni.chooseFile.notUserActivation"));
-    }
-  },
-  ChooseVideoProtocol,
-  ChooseVideoOptions
-);
-const request = /* @__PURE__ */ defineTaskApi(
-  API_REQUEST,
-  ({
-    url,
-    data,
-    header = {},
-    method,
-    dataType: dataType2,
-    responseType,
-    withCredentials,
-    timeout = __uniConfig.networkTimeout.request
-  }, { resolve, reject }) => {
-    {
-      timeout = timeout == null ? __uniConfig.networkTimeout.request : timeout;
-    }
-    let body = null;
-    const contentType = normalizeContentType(header);
-    if (method !== "GET") {
-      if (isString(data) || data instanceof ArrayBuffer) {
-        body = data;
-      } else {
-        if (contentType === "json") {
-          try {
-            body = JSON.stringify(data);
-          } catch (error) {
-            body = data.toString();
-          }
-        } else if (contentType === "urlencoded") {
-          const bodyArray = [];
-          for (const key in data) {
-            if (hasOwn(data, key)) {
-              bodyArray.push(
-                encodeURIComponent(key) + "=" + encodeURIComponent(data[key])
-              );
-            }
-          }
-          body = bodyArray.join("&");
-        } else {
-          body = data.toString();
-        }
-      }
-    }
-    const xhr = new XMLHttpRequest();
-    const requestTask = new RequestTask(xhr);
-    xhr.open(method, url);
-    for (const key in header) {
-      if (hasOwn(header, key)) {
-        xhr.setRequestHeader(key, header[key]);
-      }
-    }
-    const timer = setTimeout(function() {
-      xhr.onload = xhr.onabort = xhr.onerror = null;
-      requestTask.abort();
-      reject("timeout", { errCode: 5 });
-    }, timeout);
-    xhr.responseType = responseType;
-    xhr.onload = function() {
-      clearTimeout(timer);
-      const statusCode = xhr.status;
-      let res = responseType === "text" ? xhr.responseText : xhr.response;
-      if (responseType === "text" && dataType2 === "json") {
-        try {
-          res = UTS.JSON.parse(res);
-        } catch (error) {
-        }
-      }
-      resolve({
-        data: res,
-        statusCode,
-        header: parseHeaders(xhr.getAllResponseHeaders()),
-        cookies: []
-      });
-    };
-    xhr.onabort = function() {
-      clearTimeout(timer);
-      reject("abort", { errCode: 600003 });
-    };
-    xhr.onerror = function() {
-      clearTimeout(timer);
-      reject(void 0, { errCode: 5 });
-    };
-    xhr.withCredentials = withCredentials;
-    xhr.send(body);
-    return requestTask;
-  },
-  RequestProtocol,
-  RequestOptions
-);
-function normalizeContentType(header) {
-  const name = Object.keys(header).find(
-    (name2) => name2.toLowerCase() === "content-type"
-  );
-  if (!name) {
-    return;
-  }
-  const contentType = header[name];
-  if (contentType.indexOf("application/json") === 0) {
-    return "json";
-  } else if (contentType.indexOf("application/x-www-form-urlencoded") === 0) {
-    return "urlencoded";
-  }
-  return "string";
-}
-class RequestTask {
-  constructor(xhr) {
-    this._xhr = xhr;
-  }
-  abort() {
-    if (this._xhr) {
-      this._xhr.abort();
-      delete this._xhr;
-    }
-  }
-  onHeadersReceived(callback) {
-    throw new Error("Method not implemented.");
-  }
-  offHeadersReceived(callback) {
-    throw new Error("Method not implemented.");
-  }
-}
-function parseHeaders(headers) {
-  const headersObject = {};
-  headers.split(LINEFEED).forEach((header) => {
-    const find = header.match(/(\S+\s*):\s*(.*)/);
-    if (!find || find.length !== 3) {
-      return;
-    }
-    headersObject[find[1]] = find[2];
-  });
-  return headersObject;
-}
-class DownloadTask {
-  constructor(xhr) {
-    this._callbacks = [];
-    this._xhr = xhr;
-  }
-  /**
-   * 监听下载进度
-   * @param {Function} callback 回调
-   */
-  onProgressUpdate(callback) {
-    if (!isFunction(callback)) {
-      return;
-    }
-    this._callbacks.push(callback);
-  }
-  offProgressUpdate(callback) {
-    const index2 = this._callbacks.indexOf(callback);
-    if (index2 >= 0) {
-      this._callbacks.splice(index2, 1);
-    }
-  }
-  /**
-   * 停止任务
-   */
-  abort() {
-    if (this._xhr) {
-      this._xhr.abort();
-      delete this._xhr;
-    }
-  }
-  onHeadersReceived(callback) {
-    throw new Error("Method not implemented.");
-  }
-  offHeadersReceived(callback) {
-    throw new Error("Method not implemented.");
-  }
-}
-const downloadFile = /* @__PURE__ */ defineTaskApi(
-  API_DOWNLOAD_FILE,
-  ({ url, header = {}, timeout = __uniConfig.networkTimeout.downloadFile }, { resolve, reject }) => {
-    {
-      timeout = timeout == null ? __uniConfig.networkTimeout.downloadFile : timeout;
-    }
-    var timer;
-    var xhr = new XMLHttpRequest();
-    var downloadTask = new DownloadTask(xhr);
-    xhr.open("GET", url, true);
-    Object.keys(header).forEach((key) => {
-      xhr.setRequestHeader(key, header[key]);
-    });
-    xhr.responseType = "blob";
-    xhr.onload = function() {
-      clearTimeout(timer);
-      const statusCode = xhr.status;
-      const blob = this.response;
-      let filename;
-      const contentDisposition = xhr.getResponseHeader("content-disposition");
-      if (contentDisposition) {
-        const res = contentDisposition.match(/filename="?(\S+)"?\b/);
-        if (res) {
-          filename = res[1];
-        }
-      }
-      blob.name = filename || getFileName(url);
-      resolve({
-        statusCode,
-        tempFilePath: fileToUrl(blob)
-      });
-    };
-    xhr.onabort = function() {
-      clearTimeout(timer);
-      reject("abort", { errCode: 600003 });
-    };
-    xhr.onerror = function() {
-      clearTimeout(timer);
-      reject("", { errCode: 602001 });
-    };
-    xhr.onprogress = function(event) {
-      downloadTask._callbacks.forEach((callback) => {
-        var totalBytesWritten = event.loaded;
-        var totalBytesExpectedToWrite = event.total;
-        var progress = Math.round(
-          totalBytesWritten / totalBytesExpectedToWrite * 100
-        );
-        callback({
-          progress,
-          totalBytesWritten,
-          totalBytesExpectedToWrite
-        });
-      });
-    };
-    xhr.send();
-    timer = setTimeout(function() {
-      xhr.onprogress = xhr.onload = xhr.onabort = xhr.onerror = null;
-      downloadTask.abort();
-      reject("timeout", { errCode: 5 });
-    }, timeout);
-    return downloadTask;
-  },
-  DownloadFileProtocol,
-  DownloadFileOptions
-);
-class UploadTask {
-  constructor(xhr) {
-    this._callbacks = [];
-    this._xhr = xhr;
-  }
-  /**
-   * 监听上传进度
-   * @param callback 回调
-   */
-  onProgressUpdate(callback) {
-    if (!isFunction(callback)) {
-      return;
-    }
-    this._callbacks.push(callback);
-  }
-  offProgressUpdate(callback) {
-    const index2 = this._callbacks.indexOf(callback);
-    if (index2 >= 0) {
-      this._callbacks.splice(index2, 1);
-    }
-  }
-  /**
-   * 中断上传任务
-   */
-  abort() {
-    this._isAbort = true;
-    if (this._xhr) {
-      this._xhr.abort();
-      delete this._xhr;
-    }
-  }
-  onHeadersReceived(callback) {
-    throw new Error("Method not implemented.");
-  }
-  offHeadersReceived(callback) {
-    throw new Error("Method not implemented.");
-  }
-}
-const uploadFile = /* @__PURE__ */ defineTaskApi(
-  API_UPLOAD_FILE,
-  ({
-    url,
-    file,
-    filePath,
-    name,
-    files: files2,
-    header = {},
-    formData = {},
-    timeout = __uniConfig.networkTimeout.uploadFile
-  }, { resolve, reject }) => {
-    {
-      timeout = timeout == null ? __uniConfig.networkTimeout.uploadFile : timeout;
-    }
-    var uploadTask = new UploadTask();
-    if (!isArray(files2) || !files2.length) {
-      files2 = [
-        {
-          name,
-          file,
-          uri: filePath
-        }
-      ];
-    }
-    function upload(realFiles) {
-      var xhr = new XMLHttpRequest();
-      var form = new FormData();
-      var timer;
-      Object.keys(formData).forEach((key) => {
-        form.append(key, formData[key]);
-      });
-      Object.values(files2).forEach(({ name: name2 }, index2) => {
-        const file2 = realFiles[index2];
-        form.append(name2 || "file", file2, file2.name || `file-${Date.now()}`);
-      });
-      xhr.open("POST", url);
-      Object.keys(header).forEach((key) => {
-        xhr.setRequestHeader(key, header[key]);
-      });
-      xhr.upload.onprogress = function(event) {
-        uploadTask._callbacks.forEach((callback) => {
-          var totalBytesSent = event.loaded;
-          var totalBytesExpectedToSend = event.total;
-          var progress = Math.round(
-            totalBytesSent / totalBytesExpectedToSend * 100
-          );
-          callback({
-            progress,
-            totalBytesSent,
-            totalBytesExpectedToSend
-          });
-        });
-      };
-      xhr.onerror = function() {
-        clearTimeout(timer);
-        reject("", { errCode: 602001 });
-      };
-      xhr.onabort = function() {
-        clearTimeout(timer);
-        reject("abort", { errCode: 600003 });
-      };
-      xhr.onload = function() {
-        clearTimeout(timer);
-        const statusCode = xhr.status;
-        resolve({
-          statusCode,
-          data: xhr.responseText || xhr.response
-        });
-      };
-      if (!uploadTask._isAbort) {
-        timer = setTimeout(function() {
-          xhr.upload.onprogress = xhr.onload = xhr.onabort = xhr.onerror = null;
-          uploadTask.abort();
-          reject("timeout", { errCode: 5 });
-        }, timeout);
-        xhr.send(form);
-        uploadTask._xhr = xhr;
-      } else {
-        reject("abort", { errCode: 600003 });
-      }
-    }
-    Promise.all(
-      files2.map(
-        ({ file: file2, uri }) => file2 instanceof Blob ? Promise.resolve(blobToFile(file2)) : urlToFile(uri)
-      )
-    ).then(upload).catch(() => {
-      setTimeout(() => {
-        reject("file error");
-      }, 0);
-    });
-    return uploadTask;
-  },
-  UploadFileProtocol,
-  UploadFileOptions
-);
-const socketTasks = [];
-const globalEvent = {
-  open: "",
-  close: "",
-  error: "",
-  message: ""
-};
-class SocketTask {
-  /**
-   * 构造函数
-   * @param {string} url
-   * @param {Array} protocols
-   */
-  constructor(url, protocols, callback) {
-    this._callbacks = {
-      open: [],
-      close: [],
-      error: [],
-      message: []
-    };
-    let error;
-    try {
-      const webSocket = this._webSocket = new WebSocket(url, protocols);
-      webSocket.binaryType = "arraybuffer";
-      const eventNames = ["open", "close", "error", "message"];
-      eventNames.forEach((name) => {
-        this._callbacks[name] = [];
-        webSocket.addEventListener(name, (event) => {
-          const { data, code, reason } = event;
-          const res = name === "message" ? { data } : name === "close" ? { code, reason } : {};
-          this._callbacks[name].forEach((callback2) => {
-            try {
-              callback2(res);
-            } catch (e2) {
-              console.error(
-                `thirdScriptError
-${e2};at socketTask.on${capitalize(
-                  name
-                )} callback function
-`,
-                e2
-              );
-            }
-          });
-          if (this === socketTasks[0] && globalEvent[name]) {
-            UniServiceJSBridge.invokeOnCallback(globalEvent[name], res);
-          }
-          if (name === "error" || name === "close") {
-            const index2 = socketTasks.indexOf(this);
-            if (index2 >= 0) {
-              socketTasks.splice(index2, 1);
-            }
-          }
-        });
-      });
-      const propertys = [
-        "CLOSED",
-        "CLOSING",
-        "CONNECTING",
-        "OPEN",
-        "readyState"
-      ];
-      propertys.forEach((property) => {
-        Object.defineProperty(this, property, {
-          get() {
-            return webSocket[property];
-          }
-        });
-      });
-    } catch (e2) {
-      error = e2;
-    }
-    callback && callback(error, this);
-  }
-  /**
-   * 发送
-   * @param {any} data
-   */
-  send(options) {
-    const data = (options || {}).data;
-    const ws = this._webSocket;
-    try {
-      if (ws.readyState !== ws.OPEN) {
-        callOptions(options, {
-          errMsg: `sendSocketMessage:fail SocketTask.readyState is not OPEN`,
-          errCode: 10002
-        });
-        throw new Error("SocketTask.readyState is not OPEN");
-      }
-      ws.send(data);
-      callOptions(options, "sendSocketMessage:ok");
-    } catch (error) {
-      callOptions(options, {
-        errMsg: `sendSocketMessage:fail ${error}`,
-        errCode: 602001
-      });
-    }
-  }
-  /**
-   * 关闭
-   * @param {number} code
-   * @param {string} reason
-   */
-  close(options = {}) {
-    const ws = this._webSocket;
-    try {
-      const code = options.code || 1e3;
-      const reason = options.reason;
-      if (isString(reason)) {
-        ws.close(code, reason);
-      } else {
-        ws.close(code);
-      }
-      callOptions(options, "closeSocket:ok");
-    } catch (error) {
-      callOptions(options, `closeSocket:fail ${error}`);
-    }
-  }
-  onOpen(callback) {
-    this._callbacks.open.push(callback);
-  }
-  onMessage(callback) {
-    this._callbacks.message.push(callback);
-  }
-  onError(callback) {
-    this._callbacks.error.push(callback);
-  }
-  onClose(callback) {
-    this._callbacks.close.push(callback);
-  }
-}
-const connectSocket = /* @__PURE__ */ defineTaskApi(
-  API_CONNECT_SOCKET,
-  ({ url, protocols }, { resolve, reject }) => {
-    return new SocketTask(
-      url,
-      protocols,
-      (error, socketTask) => {
-        if (error) {
-          reject(error.toString(), {
-            errCode: 600009
-          });
-          return;
-        }
-        socketTasks.push(socketTask);
-        resolve();
-      }
-    );
-  },
-  ConnectSocketProtocol,
-  ConnectSocketOptions
-);
-function callSocketTask(socketTask, method, option, resolve, reject) {
-  const fn = socketTask[method];
-  if (isFunction(fn)) {
-    fn.call(
-      socketTask,
-      extend({}, option, {
-        success() {
-          resolve();
-        },
-        fail({ errMsg }) {
-          reject(errMsg.replace("sendSocketMessage:fail ", ""));
-        },
-        complete: void 0
-      })
-    );
-  }
-}
-const sendSocketMessage = /* @__PURE__ */ defineAsyncApi(
-  API_SEND_SOCKET_MESSAGE,
-  (options, { resolve, reject }) => {
-    const socketTask = socketTasks[0];
-    if (socketTask && socketTask.readyState === socketTask.OPEN) {
-      callSocketTask(socketTask, "send", options, resolve, reject);
-    } else {
-      reject("WebSocket is not connected");
-    }
-  },
-  SendSocketMessageProtocol
-);
-const closeSocket = /* @__PURE__ */ defineAsyncApi(
-  API_CLOSE_SOCKET,
-  (options, { resolve, reject }) => {
-    const socketTask = socketTasks[0];
-    if (socketTask) {
-      callSocketTask(socketTask, "close", options, resolve, reject);
-    } else {
-      reject("WebSocket is not connected");
-    }
-  },
-  CloseSocketProtocol
-);
-function on(event) {
-  const api2 = `onSocket${capitalize(event)}`;
-  return /* @__PURE__ */ defineOnApi(api2, () => {
-    globalEvent[event] = api2;
-  });
-}
-const onSocketOpen = /* @__PURE__ */ on("open");
-const onSocketError = /* @__PURE__ */ on("error");
-const onSocketMessage = /* @__PURE__ */ on("message");
-const onSocketClose = /* @__PURE__ */ on("close");
-let index$n = 0;
-function getJSONP(url, options, success, error) {
-  var js = document.createElement("script");
-  var callbackKey = options.callback || "callback";
-  var callbackName = "__uni_jsonp_callback_" + index$n++;
-  var timeout = options.timeout || 3e4;
-  var timing;
-  function end() {
-    clearTimeout(timing);
-    delete window[callbackName];
-    js.remove();
-  }
-  window[callbackName] = (res) => {
-    if (isFunction(success)) {
-      success(res);
-    }
-    end();
-  };
-  js.onerror = () => {
-    if (isFunction(error)) {
-      error();
-    }
-    end();
-  };
-  timing = setTimeout(function() {
-    if (isFunction(error)) {
-      error();
-    }
-    end();
-  }, timeout);
-  js.src = url + (url.indexOf("?") >= 0 ? "&" : "?") + callbackKey + "=" + callbackName;
-  document.body.appendChild(js);
-}
-function createCallout(maps2) {
-  function onAdd() {
-    const div = this.div;
-    const panes = this.getPanes();
-    panes.floatPane.appendChild(div);
-  }
-  function onRemove() {
-    const parentNode = this.div.parentNode;
-    if (parentNode) {
-      parentNode.removeChild(this.div);
-    }
-  }
-  function createAMapText() {
-    const option = this.option;
-    this.Text = new maps2.Text({
-      text: option.content,
-      anchor: "bottom-center",
-      // 设置文本标记锚点
-      offset: new maps2.Pixel(0, option.offsetY - 16),
-      style: {
-        padding: (option.padding || 8) + "px",
-        "line-height": (option.fontSize || 14) + "px",
-        "border-radius": (option.borderRadius || 0) + "px",
-        "border-color": `${option.bgColor || "#fff"} transparent transparent`,
-        "background-color": option.bgColor || "#fff",
-        "box-shadow": "0 2px 6px 0 rgba(114, 124, 245, .5)",
-        "text-align": "center",
-        "font-size": (option.fontSize || 14) + "px",
-        color: option.color || "#000"
-      },
-      position: option.position
-    });
-    const event = maps2.event || maps2.Event;
-    event.addListener(this.Text, "click", () => {
-      this.callback();
-    });
-    this.Text.setMap(option.map);
-  }
-  function createBMapText() {
-  }
-  function removeAMapText() {
-    if (this.Text) {
-      this.option.map.remove(this.Text);
-    }
-  }
-  function removeBMapText() {
-    if (this.Text) {
-      this.option.map.remove(this.Text);
-    }
-  }
-  class Callout {
-    constructor(option = {}, callback) {
-      this.createAMapText = createAMapText;
-      this.removeAMapText = removeAMapText;
-      this.createBMapText = createBMapText;
-      this.removeBMapText = removeBMapText;
-      this.onAdd = onAdd;
-      this.construct = onAdd;
-      this.onRemove = onRemove;
-      this.destroy = onRemove;
-      this.option = option || {};
-      const visible = this.visible = this.alwaysVisible = option.display === "ALWAYS";
-      if (getIsAMap()) {
-        this.callback = callback;
-        if (this.visible) {
-          this.createAMapText();
-        }
-      } else if (getIsBMap()) {
-        if (this.visible) {
-          this.createBMapText();
-        }
-      } else {
-        const map = option.map;
-        this.position = option.position;
-        this.index = 1;
-        const div = this.div = document.createElement("div");
-        const divStyle = div.style;
-        divStyle.position = "absolute";
-        divStyle.whiteSpace = "nowrap";
-        divStyle.transform = "translateX(-50%) translateY(-100%)";
-        divStyle.zIndex = "1";
-        divStyle.boxShadow = option.boxShadow || "none";
-        divStyle.display = visible ? "block" : "none";
-        const triangle = this.triangle = document.createElement("div");
-        triangle.setAttribute(
-          "style",
-          "position: absolute;white-space: nowrap;border-width: 4px;border-style: solid;border-color: #fff transparent transparent;border-image: initial;font-size: 12px;padding: 0px;background-color: transparent;width: 0px;height: 0px;transform: translate(-50%, 100%);left: 50%;bottom: 0;"
-        );
-        this.setStyle(option);
-        div.appendChild(triangle);
-        if (map) {
-          this.setMap(map);
-        }
-      }
-    }
-    set onclick(callback) {
-      this.div.onclick = callback;
-    }
-    get onclick() {
-      return this.div.onclick;
-    }
-    setOption(option) {
-      this.option = option;
-      if (option.display === "ALWAYS") {
-        this.alwaysVisible = this.visible = true;
-      } else {
-        this.alwaysVisible = false;
-      }
-      if (getIsAMap()) {
-        if (this.visible) {
-          this.createAMapText();
-        }
-      } else if (getIsBMap()) {
-        if (this.visible) {
-          this.createBMapText();
-        }
-      } else {
-        this.setPosition(option.position);
-        this.setStyle(option);
-      }
-    }
-    setStyle(option) {
-      const div = this.div;
-      const divStyle = div.style;
-      div.innerText = option.content || "";
-      divStyle.lineHeight = (option.fontSize || 14) + "px";
-      divStyle.fontSize = (option.fontSize || 14) + "px";
-      divStyle.padding = (option.padding || 8) + "px";
-      divStyle.color = option.color || "#000";
-      divStyle.borderRadius = (option.borderRadius || 0) + "px";
-      divStyle.backgroundColor = option.bgColor || "#fff";
-      divStyle.marginTop = "-" + ((option.top || 0) + 5) + "px";
-      this.triangle.style.borderColor = `${option.bgColor || "#fff"} transparent transparent`;
-    }
-    setPosition(position) {
-      this.position = position;
-      this.draw();
-    }
-    draw() {
-      const overlayProjection = this.getProjection();
-      if (!this.position || !this.div || !overlayProjection) {
-        return;
-      }
-      const pixel = overlayProjection.fromLatLngToDivPixel(
-        this.position
-      );
-      const divStyle = this.div.style;
-      divStyle.left = pixel.x + "px";
-      divStyle.top = pixel.y + "px";
-    }
-    changed() {
-      const divStyle = this.div.style;
-      divStyle.display = this.visible ? "block" : "none";
-    }
-  }
-  if (!getIsAMap() && !getIsBMap()) {
-    const overlay = new (maps2.OverlayView || maps2.Overlay)();
-    Callout.prototype.setMap = overlay.setMap;
-    Callout.prototype.getMap = overlay.getMap;
-    Callout.prototype.getPanes = overlay.getPanes;
-    Callout.prototype.getProjection = overlay.getProjection;
-    Callout.prototype.map_changed = overlay.map_changed;
-    Callout.prototype.set = overlay.set;
-    Callout.prototype.get = overlay.get;
-    Callout.prototype.setOptions = overlay.setValues;
-    Callout.prototype.bindTo = overlay.bindTo;
-    Callout.prototype.bindsTo = overlay.bindsTo;
-    Callout.prototype.notify = overlay.notify;
-    Callout.prototype.setValues = overlay.setValues;
-    Callout.prototype.unbind = overlay.unbind;
-    Callout.prototype.unbindAll = overlay.unbindAll;
-    Callout.prototype.addListener = overlay.addListener;
-  }
-  return Callout;
-}
-let maps;
-const callbacksMap = {};
-const GOOGLE_MAP_CALLBACKNAME = "__map_callback__";
-function loadMaps(libraries, callback) {
-  const mapInfo = getMapInfo();
-  if (!mapInfo.key) {
-    console.error("Map key not configured.");
-    return;
-  }
-  const callbacks2 = callbacksMap[mapInfo.type] = callbacksMap[mapInfo.type] || [];
-  if (maps) {
-    callback(maps);
-  } else if (window[mapInfo.type] && window[mapInfo.type].maps) {
-    maps = getIsAMap() || getIsBMap() ? window[mapInfo.type] : window[mapInfo.type].maps;
-    maps.Callout = maps.Callout || createCallout(maps);
-    callback(maps);
-  } else if (callbacks2.length) {
-    callbacks2.push(callback);
-  } else {
-    callbacks2.push(callback);
-    const globalExt = window;
-    const callbackName = GOOGLE_MAP_CALLBACKNAME + mapInfo.type;
-    globalExt[callbackName] = function() {
-      delete globalExt[callbackName];
-      maps = getIsAMap() || getIsBMap() ? window[mapInfo.type] : window[mapInfo.type].maps;
-      maps.Callout = createCallout(maps);
-      callbacks2.forEach((callback2) => callback2(maps));
-      callbacks2.length = 0;
-    };
-    if (getIsAMap()) {
-      handleAMapSecurityPolicy(mapInfo);
-    }
-    const script = document.createElement("script");
-    let src = getScriptBaseUrl(mapInfo.type);
-    if (mapInfo.type === MapType.QQ) {
-      libraries.push("geometry");
-    }
-    if (libraries.length) {
-      src += `libraries=${libraries.join("%2C")}&`;
-    }
-    if (mapInfo.type === MapType.BMAP) {
-      script.src = `${src}ak=${mapInfo.key}&callback=${callbackName}`;
-    } else {
-      script.src = `${src}key=${mapInfo.key}&callback=${callbackName}`;
-    }
-    script.onerror = function() {
-      console.error("Map load failed.");
-    };
-    document.body.appendChild(script);
-  }
-}
-const getScriptBaseUrl = (mapType) => {
-  const urlMap = {
-    qq: "https://map.qq.com/api/js?v=2.exp&",
-    google: "https://maps.googleapis.com/maps/api/js?",
-    AMap: "https://webapi.amap.com/maps?v=2.0&",
-    BMapGL: "https://api.map.baidu.com/api?type=webgl&v=1.0&"
-  };
-  return urlMap[mapType];
-};
-function handleAMapSecurityPolicy(mapInfo) {
-  window._AMapSecurityConfig = {
-    securityJsCode: mapInfo.securityJsCode || "",
-    serviceHost: mapInfo.serviceHost || ""
-  };
-}
-const ICON_PATH_LOCTAION = "M13.3334375 16 q0.033125 1.1334375 0.783125 1.8834375 q0.75 0.75 1.8834375 0.75 q1.1334375 0 1.8834375 -0.75 q0.75 -0.75 0.75 -1.8834375 q0 -1.1334375 -0.75 -1.8834375 q-0.75 -0.75 -1.8834375 -0.75 q-1.1334375 0 -1.8834375 0.75 q-0.75 0.75 -0.783125 1.8834375 ZM30.9334375 14.9334375 l-1.1334375 0 q-0.5 -5.2 -4.0165625 -8.716875 q-3.516875 -3.5165625 -8.716875 -4.0165625 l0 -1.1334375 q0 -0.4665625 -0.3 -0.7665625 q-0.3 -0.3 -0.7665625 -0.3 q-0.4665625 0 -0.7665625 0.3 q-0.3 0.3 -0.3 0.7665625 l0 1.1334375 q-5.2 0.5 -8.716875 4.0165625 q-3.5165625 3.516875 -4.0165625 8.716875 l-1.1334375 0 q-0.4665625 0 -0.7665625 0.3 q-0.3 0.3 -0.3 0.7665625 q0 0.4665625 0.3 0.7665625 q0.3 0.3 0.7665625 0.3 l1.1334375 0 q0.5 5.2 4.0165625 8.716875 q3.516875 3.5165625 8.716875 4.0165625 l0 1.1334375 q0 0.4665625 0.3 0.7665625 q0.3 0.3 0.7665625 0.3 q0.4665625 0 0.7665625 -0.3 q0.3 -0.3 0.3 -0.7665625 l0 -1.1334375 q5.2 -0.5 8.716875 -4.0165625 q3.5165625 -3.516875 4.0165625 -8.716875 l1.1334375 0 q0.4665625 0 0.7665625 -0.3 q0.3 -0.3 0.3 -0.7665625 q0 -0.4665625 -0.3 -0.7665625 q-0.3 -0.3 -0.7665625 -0.3 ZM17.0665625 27.6665625 l0 -2.0665625 q0 -0.4665625 -0.3 -0.7665625 q-0.3 -0.3 -0.7665625 -0.3 q-0.4665625 0 -0.7665625 0.3 q-0.3 0.3 -0.3 0.7665625 l0 2.0665625 q-4.3 -0.4665625 -7.216875 -3.383125 q-2.916875 -2.916875 -3.3834375 -7.216875 l2.0665625 0 q0.4665625 0 0.7665625 -0.3 q0.3 -0.3 0.3 -0.7665625 q0 -0.4665625 -0.3 -0.7665625 q-0.3 -0.3 -0.7665625 -0.3 l-2.0665625 0 q0.4665625 -4.3 3.3834375 -7.216875 q2.9165625 -2.916875 7.216875 -3.3834375 l0 2.0665625 q0 0.4665625 0.3 0.7665625 q0.3 0.3 0.7665625 0.3 q0.4665625 0 0.7665625 -0.3 q0.3 -0.3 0.3 -0.7665625 l0 -2.0665625 q4.3 0.4665625 7.216875 3.3834375 q2.9165625 2.9165625 3.383125 7.216875 l-2.0665625 0 q-0.4665625 0 -0.7665625 0.3 q-0.3 0.3 -0.3 0.7665625 q0 0.4665625 0.3 0.7665625 q0.3 0.3 0.7665625 0.3 l2.0665625 0 q-0.4665625 4.3 -3.383125 7.216875 q-2.916875 2.9165625 -7.216875 3.383125 Z";
-const ICON_PATH_ORIGIN = "data:image/png;base64,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";
-const ICON_PATH_TARGET = "data:image/png;base64,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";
-var MapType = /* @__PURE__ */ ((MapType2) => {
-  MapType2["QQ"] = "qq";
-  MapType2["GOOGLE"] = "google";
-  MapType2["AMAP"] = "AMap";
-  MapType2["BMAP"] = "BMapGL";
-  MapType2["UNKNOWN"] = "";
-  return MapType2;
-})(MapType || {});
-function getMapInfo() {
-  if (__uniConfig.bMapKey) {
-    return {
-      type: "BMapGL",
-      key: __uniConfig.bMapKey
-    };
-  }
-  if (__uniConfig.qqMapKey) {
-    return {
-      type: "qq",
-      key: __uniConfig.qqMapKey
-    };
-  }
-  if (__uniConfig.googleMapKey) {
-    return {
-      type: "google",
-      key: __uniConfig.googleMapKey
-    };
-  }
-  if (__uniConfig.aMapKey) {
-    return {
-      type: "AMap",
-      key: __uniConfig.aMapKey,
-      securityJsCode: __uniConfig.aMapSecurityJsCode,
-      serviceHost: __uniConfig.aMapServiceHost
-    };
-  }
-  return {
-    type: "",
-    key: ""
-  };
-}
-let IS_AMAP = false;
-let hasGetIsAMap = false;
-const getIsAMap = () => {
-  if (hasGetIsAMap) {
-    return IS_AMAP;
-  } else {
-    hasGetIsAMap = true;
-    return IS_AMAP = getMapInfo().type === "AMap";
-  }
-};
-const getIsBMap = () => {
-  return getMapInfo().type === "BMapGL";
-};
-function translateCoordinateSystem(type, coords, skip) {
-  const mapInfo = getMapInfo();
-  const wgs84Map = [
-    "google"
-    /* GOOGLE */
-  ];
-  if (type && type.toUpperCase() === "WGS84" || wgs84Map.includes(mapInfo.type) || skip) {
-    return Promise.resolve(coords);
-  }
-  if (mapInfo.type === "qq") {
-    return new Promise((resolve) => {
-      getJSONP(
-        `https://apis.map.qq.com/ws/coord/v1/translate?type=1&locations=${coords.latitude},${coords.longitude}&key=${mapInfo.key}&output=jsonp`,
-        {
-          callback: "callback"
-        },
-        (res) => {
-          if ("locations" in res && res.locations.length) {
-            const { lng, lat } = res.locations[0];
-            resolve({
-              longitude: lng,
-              latitude: lat,
-              altitude: coords.altitude,
-              accuracy: coords.accuracy,
-              altitudeAccuracy: coords.altitudeAccuracy,
-              heading: coords.heading,
-              speed: coords.speed
-            });
-          } else {
-            resolve(coords);
-          }
-        },
-        () => resolve(coords)
-      );
-    });
-  }
-  if (mapInfo.type === "AMap") {
-    return new Promise((resolve) => {
-      loadMaps([], () => {
-        window.AMap.convertFrom(
-          [coords.longitude, coords.latitude],
-          "gps",
-          (_, res) => {
-            if (res.info === "ok" && res.locations.length) {
-              const { lat, lng } = res.locations[0];
-              resolve({
-                longitude: lng,
-                latitude: lat,
-                altitude: coords.altitude,
-                accuracy: coords.accuracy,
-                altitudeAccuracy: coords.altitudeAccuracy,
-                heading: coords.heading,
-                speed: coords.speed
-              });
-            } else {
-              resolve(coords);
-            }
-          }
-        );
-      });
-    });
-  }
-  return Promise.reject(new Error("translate coordinate system faild"));
-}
-const getLocation = /* @__PURE__ */ defineAsyncApi(
-  API_GET_LOCATION,
-  ({ type, altitude, highAccuracyExpireTime, isHighAccuracy }, { resolve, reject }) => {
-    const mapInfo = getMapInfo();
-    new Promise((resolve2, reject2) => {
-      if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(
-          (res) => resolve2({ coords: res.coords }),
-          reject2,
-          {
-            enableHighAccuracy: isHighAccuracy || altitude,
-            timeout: highAccuracyExpireTime || 1e3 * 100
-          }
-        );
-      } else {
-        reject2(new Error("device nonsupport geolocation"));
-      }
-    }).catch((error) => {
-      return new Promise(
-        (resolve2, reject2) => {
-          if (mapInfo.type === MapType.QQ) {
-            getJSONP(
-              `https://apis.map.qq.com/ws/location/v1/ip?output=jsonp&key=${mapInfo.key}`,
-              {
-                callback: "callback"
-              },
-              (res) => {
-                if ("result" in res && res.result.location) {
-                  const location2 = res.result.location;
-                  resolve2({
-                    coords: {
-                      latitude: location2.lat,
-                      longitude: location2.lng
-                    },
-                    skip: true
-                  });
-                } else {
-                  reject2(new Error(res.message || JSON.stringify(res)));
-                }
-              },
-              () => reject2(new Error("network error"))
-            );
-          } else if (mapInfo.type === MapType.GOOGLE) {
-            request({
-              method: "POST",
-              url: `https://www.googleapis.com/geolocation/v1/geolocate?key=${mapInfo.key}`,
-              success(res) {
-                const data = res.data;
-                if ("location" in data) {
-                  resolve2({
-                    coords: {
-                      latitude: data.location.lat,
-                      longitude: data.location.lng,
-                      accuracy: data.accuracy
-                    },
-                    skip: true
-                  });
-                } else {
-                  reject2(
-                    new Error(
-                      data.error && data.error.message || JSON.stringify(res)
-                    )
-                  );
-                }
-              },
-              fail() {
-                reject2(new Error("network error"));
-              }
-            });
-          } else if (mapInfo.type === MapType.AMAP) {
-            loadMaps([], () => {
-              window.AMap.plugin("AMap.Geolocation", () => {
-                const geolocation = new window.AMap.Geolocation({
-                  enableHighAccuracy: true,
-                  timeout: 1e4
-                });
-                geolocation.getCurrentPosition(
-                  (status, data) => {
-                    if (status === "complete") {
-                      resolve2({
-                        coords: {
-                          latitude: data.position.lat,
-                          longitude: data.position.lng,
-                          accuracy: data.accuracy
-                        },
-                        skip: true
-                      });
-                    } else {
-                      reject2(new Error(data.message));
-                    }
-                  }
-                );
-              });
-            });
-          } else {
-            reject2(error);
-          }
-        }
-      );
-    }).then(({ coords, skip }) => {
-      translateCoordinateSystem(type, coords, skip).then((coords2) => {
-        resolve({
-          latitude: coords2.latitude,
-          longitude: coords2.longitude,
-          accuracy: coords2.accuracy,
-          speed: coords2.altitude || 0,
-          altitude: coords2.altitude || 0,
-          verticalAccuracy: coords2.altitudeAccuracy || 0,
-          // 无专门水平精度，使用位置精度替代
-          horizontalAccuracy: coords2.accuracy || 0
-        });
-      }).catch((error) => {
-        reject(error.message);
-      });
-    }).catch((error) => {
-      reject(error.message || JSON.stringify(error));
-    });
-  },
-  GetLocationProtocol,
-  GetLocationOptions
-);
-function formatTime(val) {
-  val = val > 0 && val < Infinity ? val : 0;
-  const h2 = Math.floor(val / 3600);
-  const m = Math.floor(val % 3600 / 60);
-  const s = Math.floor(val % 3600 % 60);
-  const hStr = (h2 < 10 ? "0" : "") + h2;
-  const mStr = (m < 10 ? "0" : "") + m;
-  const sStr = (s < 10 ? "0" : "") + s;
-  let str = mStr + ":" + sStr;
-  if (hStr !== "00") {
-    str = hStr + ":" + str;
-  }
-  return str;
-}
-function useGesture(props2, videoRef, fullscreenState) {
-  const state2 = reactive({
-    gestureType: "none",
-    volumeOld: 0,
-    volumeNew: 0,
-    currentTimeOld: 0,
-    currentTimeNew: 0
-  });
-  const touchStartOrigin = {
-    x: 0,
-    y: 0
-  };
-  function onTouchstart(event) {
-    const toucher = event.targetTouches[0];
-    touchStartOrigin.x = toucher.pageX;
-    touchStartOrigin.y = toucher.pageY;
-    state2.gestureType = "none";
-    state2.volumeOld = 0;
-    state2.currentTimeOld = state2.currentTimeNew = 0;
-  }
-  function onTouchmove(event) {
-    function stop() {
-      event.stopPropagation();
-      event.preventDefault();
-    }
-    if (fullscreenState.fullscreen) {
-      stop();
-    }
-    const gestureType = state2.gestureType;
-    if (gestureType === "stop") {
-      return;
-    }
-    const toucher = event.targetTouches[0];
-    const pageX = toucher.pageX;
-    const pageY = toucher.pageY;
-    const origin = touchStartOrigin;
-    const video = videoRef.value;
-    if (gestureType === "progress") {
-      changeProgress(pageX - origin.x);
-    } else if (gestureType === "volume") {
-      changeVolume(pageY - origin.y);
-    }
-    if (gestureType !== "none") {
-      return;
-    }
-    if (Math.abs(pageX - origin.x) > Math.abs(pageY - origin.y)) {
-      if (!props2.enableProgressGesture) {
-        state2.gestureType = "stop";
-        return;
-      }
-      state2.gestureType = "progress";
-      state2.currentTimeOld = state2.currentTimeNew = video.currentTime;
-      if (!fullscreenState.fullscreen) {
-        stop();
-      }
-    } else {
-      if (!props2.pageGesture) {
-        state2.gestureType = "stop";
-        return;
-      }
-      state2.gestureType = "volume";
-      state2.volumeOld = video.volume;
-      if (!fullscreenState.fullscreen) {
-        stop();
-      }
-    }
-  }
-  function onTouchend(event) {
-    const video = videoRef.value;
-    if (state2.gestureType !== "none" && state2.gestureType !== "stop") {
-      event.stopPropagation();
-      event.preventDefault();
-    }
-    if (state2.gestureType === "progress" && state2.currentTimeOld !== state2.currentTimeNew) {
-      video.currentTime = state2.currentTimeNew;
-    }
-    state2.gestureType = "none";
-  }
-  function changeProgress(x) {
-    const video = videoRef.value;
-    const duration = video.duration;
-    let currentTimeNew = x / 600 * duration + state2.currentTimeOld;
-    if (currentTimeNew < 0) {
-      currentTimeNew = 0;
-    } else if (currentTimeNew > duration) {
-      currentTimeNew = duration;
-    }
-    state2.currentTimeNew = currentTimeNew;
-  }
-  function changeVolume(y) {
-    const video = videoRef.value;
-    const valueOld = state2.volumeOld;
-    let value;
-    if (typeof valueOld === "number") {
-      value = valueOld - y / 200;
-      if (value < 0) {
-        value = 0;
-      } else if (value > 1) {
-        value = 1;
-      }
-      video.volume = value;
-      state2.volumeNew = value;
-    }
-  }
-  return {
-    state: state2,
-    onTouchstart,
-    onTouchmove,
-    onTouchend
-  };
-}
-function useFullscreen(trigger, containerRef, videoRef, userActionState, rootRef) {
-  const state2 = reactive({
-    fullscreen: false
-  });
-  const isSafari = /^Apple/.test(navigator.vendor);
-  function onFullscreenChange($event, webkit) {
-    if (webkit && document.fullscreenEnabled) {
-      return;
-    }
-    emitFullscreenChange(!!(document.fullscreenElement || document.webkitFullscreenElement));
-  }
-  function emitFullscreenChange(val) {
-    state2.fullscreen = val;
-    trigger("fullscreenchange", {}, {
-      fullScreen: val,
-      direction: "vertical"
-    });
-  }
-  function toggleFullscreen(val) {
-    const root = rootRef.value;
-    const container = containerRef.value;
-    const video = videoRef.value;
-    let mockFullScreen;
-    if (val) {
-      if ((document.fullscreenEnabled || document.webkitFullscreenEnabled) && (!isSafari || userActionState.userAction)) {
-        container[document.fullscreenEnabled ? "requestFullscreen" : "webkitRequestFullscreen"]();
-      } else if (video.webkitEnterFullScreen) {
-        video.webkitEnterFullScreen();
-      } else {
-        mockFullScreen = true;
-        container.remove();
-        container.classList.add("uni-video-type-fullscreen");
-        document.body.appendChild(container);
-      }
-    } else {
-      if (document.fullscreenEnabled || document.webkitFullscreenEnabled) {
-        if (document.fullscreenElement) {
-          document.exitFullscreen();
-        } else if (document.webkitFullscreenElement) {
-          document.webkitExitFullscreen();
-        }
-      } else if (video.webkitExitFullScreen) {
-        video.webkitExitFullScreen();
-      } else {
-        mockFullScreen = true;
-        container.remove();
-        container.classList.remove("uni-video-type-fullscreen");
-        root.appendChild(container);
-      }
-    }
-    if (mockFullScreen) {
-      emitFullscreenChange(val);
-    }
-  }
-  function requestFullScreen() {
-    toggleFullscreen(true);
-  }
-  function exitFullScreen() {
-    toggleFullscreen(false);
-  }
-  onBeforeUnmount(exitFullScreen);
-  return {
-    state: state2,
-    onFullscreenChange,
-    emitFullscreenChange,
-    toggleFullscreen,
-    requestFullScreen,
-    exitFullScreen
-  };
-}
-function useVideo(props2, attrs2, trigger) {
-  const videoRef = ref(null);
-  const src = computed(() => getRealPath(props2.src));
-  const muted = computed(() => props2.muted === "true" || props2.muted === true);
-  const state2 = reactive({
-    start: false,
-    src,
-    playing: false,
-    currentTime: 0,
-    duration: 0,
-    progress: 0,
-    buffered: 0,
-    muted
-  });
-  watch(() => src.value, () => {
-    state2.playing = false;
-    state2.currentTime = 0;
-  });
-  watch(() => state2.buffered, (buffered) => {
-    trigger("progress", {}, {
-      buffered
-    });
-  });
-  watch(() => muted.value, (muted2) => {
-    const video = videoRef.value;
-    video.muted = muted2;
-  });
-  function onDurationChange({
-    target
-  }) {
-    state2.duration = target.duration;
-  }
-  function onLoadedMetadata($event) {
-    const initialTime = Number(props2.initialTime) || 0;
-    const video = $event.target;
-    if (initialTime > 0) {
-      video.currentTime = initialTime;
-    }
-    trigger("loadedmetadata", $event, {
-      width: video.videoWidth,
-      height: video.videoHeight,
-      duration: video.duration
-    });
-    onProgress($event);
-  }
-  function onProgress($event) {
-    const video = $event.target;
-    const buffered = video.buffered;
-    if (buffered.length) {
-      state2.buffered = buffered.end(buffered.length - 1) / video.duration * 100;
-    }
-  }
-  function onWaiting($event) {
-    trigger("waiting", $event, {});
-  }
-  function onVideoError($event) {
-    state2.playing = false;
-    trigger("error", $event, {});
-  }
-  function onPlay($event) {
-    state2.start = true;
-    state2.playing = true;
-    trigger("play", $event, {});
-  }
-  function onPause($event) {
-    state2.playing = false;
-    trigger("pause", $event, {});
-  }
-  function onEnded($event) {
-    state2.playing = false;
-    trigger("ended", $event, {});
-  }
-  function onTimeUpdate($event) {
-    const video = $event.target;
-    const currentTime = state2.currentTime = video.currentTime;
-    trigger("timeupdate", $event, {
-      currentTime,
-      duration: video.duration
-    });
-  }
-  function toggle() {
-    const video = videoRef.value;
-    if (state2.playing) {
-      video.pause();
-    } else {
-      video.play();
-    }
-  }
-  function play() {
-    const video = videoRef.value;
-    state2.start = true;
-    video.play();
-  }
-  function pause() {
-    const video = videoRef.value;
-    video.pause();
-  }
-  function seek(position) {
-    const video = videoRef.value;
-    position = Number(position);
-    if (typeof position === "number" && !isNaN(position)) {
-      video.currentTime = position;
-    }
-  }
-  function stop() {
-    seek(0);
-    pause();
-  }
-  function playbackRate(rate) {
-    const video = videoRef.value;
-    video.playbackRate = rate;
-  }
-  return {
-    videoRef,
-    state: state2,
-    play,
-    pause,
-    stop,
-    seek,
-    playbackRate,
-    toggle,
-    onDurationChange,
-    onLoadedMetadata,
-    onProgress,
-    onWaiting,
-    onVideoError,
-    onPlay,
-    onPause,
-    onEnded,
-    onTimeUpdate
-  };
-}
-function useControls(props2, videoState, seek) {
-  const progressRef = ref(null);
-  const ballRef = ref(null);
-  const centerPlayBtnShow = computed(() => props2.showCenterPlayBtn && !videoState.start);
-  const controlsVisible = ref(true);
-  const controlsShow = computed(() => !centerPlayBtnShow.value && props2.controls && controlsVisible.value);
-  const state2 = reactive({
-    touching: false,
-    controlsTouching: false,
-    centerPlayBtnShow,
-    controlsShow,
-    controlsVisible
-  });
-  function clickProgress(event) {
-    const $progress = progressRef.value;
-    let element = event.target;
-    let x = event.offsetX;
-    while (element && element !== $progress) {
-      x += element.offsetLeft;
-      element = element.parentNode;
-    }
-    const w = $progress.offsetWidth;
-    let progress = 0;
-    if (x >= 0 && x <= w) {
-      progress = x / w;
-      seek(videoState.duration * progress);
-    }
-  }
-  function toggleControls() {
-    state2.controlsVisible = !state2.controlsVisible;
-  }
-  let hideTiming;
-  function autoHideStart() {
-    hideTiming = setTimeout(() => {
-      state2.controlsVisible = false;
-    }, 3e3);
-  }
-  function autoHideEnd() {
-    if (hideTiming) {
-      clearTimeout(hideTiming);
-      hideTiming = null;
-    }
-  }
-  onBeforeUnmount(() => {
-    if (hideTiming) {
-      clearTimeout(hideTiming);
-    }
-  });
-  watch(() => state2.controlsShow && videoState.playing && !state2.controlsTouching, (val) => {
-    if (val) {
-      autoHideStart();
-    } else {
-      autoHideEnd();
-    }
-  });
-  watch([() => videoState.currentTime, () => {
-    props2.duration;
-  }], function updateProgress() {
-    if (!state2.touching) {
-      videoState.progress = videoState.currentTime / videoState.duration * 100;
-    }
-  });
-  onMounted(() => {
-    const passiveOptions2 = passive(false);
-    let originX;
-    let originY;
-    let moveOnce = true;
-    let originProgress;
-    const ball = ballRef.value;
-    function touchmove2(event) {
-      const toucher = event.targetTouches[0];
-      const pageX = toucher.pageX;
-      const pageY = toucher.pageY;
-      if (moveOnce && Math.abs(pageX - originX) < Math.abs(pageY - originY)) {
-        touchend(event);
-        return;
-      }
-      moveOnce = false;
-      const progressEl = progressRef.value;
-      const w = progressEl.offsetWidth;
-      let progress = originProgress + (pageX - originX) / w * 100;
-      if (progress < 0) {
-        progress = 0;
-      } else if (progress > 100) {
-        progress = 100;
-      }
-      videoState.progress = progress;
-      event.preventDefault();
-      event.stopPropagation();
-    }
-    function touchend(event) {
-      state2.controlsTouching = false;
-      if (state2.touching) {
-        ball.removeEventListener("touchmove", touchmove2, passiveOptions2);
-        if (!moveOnce) {
-          event.preventDefault();
-          event.stopPropagation();
-          seek(videoState.duration * videoState.progress / 100);
-        }
-        state2.touching = false;
-      }
-    }
-    ball.addEventListener("touchstart", (event) => {
-      state2.controlsTouching = true;
-      const toucher = event.targetTouches[0];
-      originX = toucher.pageX;
-      originY = toucher.pageY;
-      originProgress = videoState.progress;
-      moveOnce = true;
-      state2.touching = true;
-      ball.addEventListener("touchmove", touchmove2, passiveOptions2);
-    });
-    ball.addEventListener("touchend", touchend);
-    ball.addEventListener("touchcancel", touchend);
-  });
-  return {
-    state: state2,
-    progressRef,
-    ballRef,
-    clickProgress,
-    toggleControls,
-    autoHideStart,
-    autoHideEnd
-  };
-}
-function useDanmu(props2, videoState) {
-  const danmuRef = ref(null);
-  const state2 = reactive({
-    enable: Boolean(props2.enableDanmu)
-  });
-  let danmuIndex = {
-    time: 0,
-    index: -1
-  };
-  const danmuList = isArray(props2.danmuList) ? JSON.parse(JSON.stringify(props2.danmuList)) : [];
-  danmuList.sort(function(a2, b) {
-    return (a2.time || 0) - (b.time || 0);
-  });
-  function toggleDanmu() {
-    state2.enable = !state2.enable;
-  }
-  function updateDanmu(event) {
-    const video = event.target;
-    const currentTime = video.currentTime;
-    const oldDanmuIndex = danmuIndex;
-    const newDanmuIndex = {
-      time: currentTime,
-      index: oldDanmuIndex.index
-    };
-    if (currentTime > oldDanmuIndex.time) {
-      for (let index2 = oldDanmuIndex.index + 1; index2 < danmuList.length; index2++) {
-        const element = danmuList[index2];
-        if (currentTime >= (element.time || 0)) {
-          newDanmuIndex.index = index2;
-          if (videoState.playing && state2.enable) {
-            playDanmu(element);
-          }
-        } else {
-          break;
-        }
-      }
-    } else if (currentTime < oldDanmuIndex.time) {
-      for (let index2 = oldDanmuIndex.index - 1; index2 > -1; index2--) {
-        const element = danmuList[index2];
-        if (currentTime <= (element.time || 0)) {
-          newDanmuIndex.index = index2 - 1;
-        } else {
-          break;
-        }
-      }
-    }
-    danmuIndex = newDanmuIndex;
-  }
-  function playDanmu(danmu) {
-    const p2 = document.createElement("p");
-    p2.className = "uni-video-danmu-item";
-    p2.innerText = danmu.text;
-    let style = `bottom: ${Math.random() * 100}%;color: ${danmu.color};`;
-    p2.setAttribute("style", style);
-    const danmuEl = danmuRef.value;
-    danmuEl.appendChild(p2);
-    setTimeout(function() {
-      style += "left: 0;-webkit-transform: translateX(-100%);transform: translateX(-100%);";
-      p2.setAttribute("style", style);
-      setTimeout(function() {
-        p2.remove();
-      }, 4e3);
-    }, 17);
-  }
-  function sendDanmu(danmu) {
-    danmuList.splice(danmuIndex.index + 1, 0, {
-      text: String(danmu.text),
-      color: danmu.color,
-      time: videoState.currentTime || 0
-    });
-  }
-  return {
-    state: state2,
-    danmuRef,
-    updateDanmu,
-    toggleDanmu,
-    sendDanmu
-  };
-}
-function useContext(play, pause, stop, seek, sendDanmu, playbackRate, requestFullScreen, exitFullScreen) {
-  const methods = {
-    play,
-    stop,
-    pause,
-    seek,
-    sendDanmu,
-    playbackRate,
-    requestFullScreen,
-    exitFullScreen
-  };
-  const id2 = useContextInfo();
-  useSubscribe((type, data) => {
-    let options;
-    switch (type) {
-      case "seek":
-        options = data.position;
-        break;
-      case "sendDanmu":
-        options = data;
-        break;
-      case "playbackRate":
-        options = data.rate;
-        break;
-    }
-    if (type in methods) {
-      methods[type](options);
-    }
-  }, id2, true);
-}
-const props$r = {
-  id: {
-    type: String,
-    default: ""
-  },
-  src: {
-    type: String,
-    default: ""
-  },
-  duration: {
-    type: [Number, String],
-    default: ""
-  },
-  controls: {
-    type: [Boolean, String],
-    default: true
-  },
-  danmuList: {
-    type: Array,
-    default() {
-      return [];
-    }
-  },
-  danmuBtn: {
-    type: [Boolean, String],
-    default: false
-  },
-  enableDanmu: {
-    type: [Boolean, String],
-    default: false
-  },
-  autoplay: {
-    type: [Boolean, String],
-    default: false
-  },
-  loop: {
-    type: [Boolean, String],
-    default: false
-  },
-  muted: {
-    type: [Boolean, String],
-    default: false
-  },
-  objectFit: {
-    type: String,
-    default: "contain"
-  },
-  poster: {
-    type: String,
-    default: ""
-  },
-  direction: {
-    type: [String, Number],
-    default: ""
-  },
-  showProgress: {
-    type: Boolean,
-    default: true
-  },
-  initialTime: {
-    type: [String, Number],
-    default: 0
-  },
-  showFullscreenBtn: {
-    type: [Boolean, String],
-    default: true
-  },
-  pageGesture: {
-    type: [Boolean, String],
-    default: false
-  },
-  enableProgressGesture: {
-    type: [Boolean, String],
-    default: true
-  },
-  showPlayBtn: {
-    type: [Boolean, String],
-    default: true
-  },
-  showCenterPlayBtn: {
-    type: [Boolean, String],
-    default: true
-  }
-};
-class UniVideoElement extends UniElement {
-}
-const index$m = /* @__PURE__ */ defineBuiltInComponent({
-  name: "Video",
-  props: props$r,
-  emits: ["fullscreenchange", "progress", "loadedmetadata", "waiting", "error", "play", "pause", "ended", "timeupdate"],
-  rootElement: {
-    name: "uni-video",
-    class: UniVideoElement
-  },
-  setup(props2, {
-    emit: emit2,
-    attrs: attrs2,
-    slots
-  }) {
-    const rootRef = ref(null);
-    const containerRef = ref(null);
-    const trigger = useCustomEvent(rootRef, emit2);
-    const {
-      state: userActionState
-    } = useUserAction();
-    const {
-      $attrs: videoAttrs
-    } = useAttrs({
-      excludeListeners: true
-    });
-    const {
-      t: t2
-    } = useI18n();
-    initI18nVideoMsgsOnce();
-    const {
-      videoRef,
-      state: videoState,
-      play,
-      pause,
-      stop,
-      seek,
-      playbackRate,
-      toggle,
-      onDurationChange,
-      onLoadedMetadata,
-      onProgress,
-      onWaiting,
-      onVideoError,
-      onPlay,
-      onPause,
-      onEnded,
-      onTimeUpdate
-    } = useVideo(props2, attrs2, trigger);
-    const {
-      state: danmuState,
-      danmuRef,
-      updateDanmu,
-      toggleDanmu,
-      sendDanmu
-    } = useDanmu(props2, videoState);
-    const {
-      state: fullscreenState,
-      onFullscreenChange,
-      emitFullscreenChange,
-      toggleFullscreen,
-      requestFullScreen,
-      exitFullScreen
-    } = useFullscreen(trigger, containerRef, videoRef, userActionState, rootRef);
-    const {
-      state: gestureState,
-      onTouchstart,
-      onTouchend,
-      onTouchmove
-    } = useGesture(props2, videoRef, fullscreenState);
-    const {
-      state: controlsState,
-      progressRef,
-      ballRef,
-      clickProgress,
-      toggleControls
-    } = useControls(props2, videoState, seek);
-    useContext(play, pause, stop, seek, sendDanmu, playbackRate, requestFullScreen, exitFullScreen);
-    onMounted(() => {
-      const rootElement = rootRef.value;
-      Object.assign(rootElement, {
-        play,
-        pause,
-        stop,
-        seek,
-        sendDanmu,
-        playbackRate,
-        requestFullScreen,
-        exitFullScreen
-      });
-      rootElement.attachVmProps(props2);
-    });
-    return () => {
-      return createVNode("uni-video", {
-        "ref": rootRef,
-        "id": props2.id,
-        "onClick": toggleControls
-      }, [createVNode("div", {
-        "ref": containerRef,
-        "class": "uni-video-container",
-        "onTouchstart": onTouchstart,
-        "onTouchend": onTouchend,
-        "onTouchmove": onTouchmove,
-        "onFullscreenchange": withModifiers(onFullscreenChange, ["stop"]),
-        "onWebkitfullscreenchange": withModifiers(($event) => onFullscreenChange($event, true), ["stop"])
-      }, [createVNode("video", mergeProps({
-        "ref": videoRef,
-        "style": {
-          "object-fit": props2.objectFit
-        },
-        "muted": !!props2.muted,
-        "loop": !!props2.loop,
-        "src": videoState.src,
-        "poster": props2.poster,
-        "autoplay": !!props2.autoplay
-      }, videoAttrs.value, {
-        "class": "uni-video-video",
-        "webkit-playsinline": true,
-        "playsinline": true,
-        "onDurationchange": onDurationChange,
-        "onLoadedmetadata": onLoadedMetadata,
-        "onProgress": onProgress,
-        "onWaiting": onWaiting,
-        "onError": onVideoError,
-        "onPlay": onPlay,
-        "onPause": onPause,
-        "onEnded": onEnded,
-        "onTimeupdate": (event) => {
-          onTimeUpdate(event);
-          updateDanmu(event);
-        },
-        "onWebkitbeginfullscreen": () => emitFullscreenChange(true),
-        "onX5videoenterfullscreen": () => emitFullscreenChange(true),
-        "onWebkitendfullscreen": () => emitFullscreenChange(false),
-        "onX5videoexitfullscreen": () => emitFullscreenChange(false)
-      }), null, 16, ["muted", "loop", "src", "poster", "autoplay", "webkit-playsinline", "playsinline", "onDurationchange", "onLoadedmetadata", "onProgress", "onWaiting", "onError", "onPlay", "onPause", "onEnded", "onTimeupdate", "onWebkitbeginfullscreen", "onX5videoenterfullscreen", "onWebkitendfullscreen", "onX5videoexitfullscreen"]), withDirectives(createVNode("div", {
-        "class": "uni-video-bar uni-video-bar-full",
-        "onClick": withModifiers(() => {
-        }, ["stop"])
-      }, [createVNode("div", {
-        "class": "uni-video-controls"
-      }, [withDirectives(createVNode("div", {
-        "class": {
-          "uni-video-control-button": true,
-          "uni-video-control-button-play": !videoState.playing,
-          "uni-video-control-button-pause": videoState.playing
-        },
-        "onClick": withModifiers(toggle, ["stop"])
-      }, null, 10, ["onClick"]), [[vShow, props2.showPlayBtn]]), withDirectives(createVNode("div", {
-        "class": "uni-video-current-time"
-      }, [formatTime(videoState.currentTime)], 512), [[vShow, props2.showProgress]]), withDirectives(createVNode("div", {
-        "ref": progressRef,
-        "class": "uni-video-progress-container",
-        "onClick": withModifiers(clickProgress, ["stop"])
-      }, [createVNode("div", {
-        "class": "uni-video-progress"
-      }, [createVNode("div", {
-        "style": {
-          width: videoState.buffered + "%"
-        },
-        "class": "uni-video-progress-buffered"
-      }, null, 4), createVNode("div", {
-        "ref": ballRef,
-        "style": {
-          left: videoState.progress + "%"
-        },
-        "class": "uni-video-ball"
-      }, [createVNode("div", {
-        "class": "uni-video-inner"
-      }, null)], 4)])], 8, ["onClick"]), [[vShow, props2.showProgress]]), withDirectives(createVNode("div", {
-        "class": "uni-video-duration"
-      }, [formatTime(Number(props2.duration) || videoState.duration)], 512), [[vShow, props2.showProgress]])]), withDirectives(createVNode("div", {
-        "class": {
-          "uni-video-danmu-button": true,
-          "uni-video-danmu-button-active": danmuState.enable
-        },
-        "onClick": withModifiers(toggleDanmu, ["stop"])
-      }, [t2("uni.video.danmu")], 10, ["onClick"]), [[vShow, props2.danmuBtn]]), withDirectives(createVNode("div", {
-        "class": {
-          "uni-video-fullscreen": true,
-          "uni-video-type-fullscreen": fullscreenState.fullscreen
-        },
-        "onClick": withModifiers(() => toggleFullscreen(!fullscreenState.fullscreen), ["stop"])
-      }, null, 10, ["onClick"]), [[vShow, props2.showFullscreenBtn]])], 8, ["onClick"]), [[vShow, controlsState.controlsShow]]), withDirectives(createVNode("div", {
-        "ref": danmuRef,
-        "style": "z-index: 0;",
-        "class": "uni-video-danmu"
-      }, null, 512), [[vShow, videoState.start && danmuState.enable]]), controlsState.centerPlayBtnShow && createVNode("div", {
-        "class": "uni-video-cover",
-        "onClick": withModifiers(() => {
-        }, ["stop"])
-      }, [createVNode("div", {
-        "class": "uni-video-cover-play-button",
-        "onClick": withModifiers(play, ["stop"])
-      }, null, 8, ["onClick"]), createVNode("p", {
-        "class": "uni-video-cover-duration"
-      }, [formatTime(Number(props2.duration) || videoState.duration)])], 8, ["onClick"]), createVNode("div", {
-        "class": {
-          "uni-video-toast": true,
-          "uni-video-toast-volume": gestureState.gestureType === "volume"
-        }
-      }, [createVNode("div", {
-        "class": "uni-video-toast-title"
-      }, [t2("uni.video.volume")]), createVNode("svg", {
-        "class": "uni-video-toast-icon",
-        "width": "200px",
-        "height": "200px",
-        "viewBox": "0 0 1024 1024",
-        "version": "1.1",
-        "xmlns": "http://www.w3.org/2000/svg"
-      }, [createVNode("path", {
-        "d": "M475.400704 201.19552l0 621.674496q0 14.856192-10.856448 25.71264t-25.71264 10.856448-25.71264-10.856448l-190.273536-190.273536-149.704704 0q-14.856192 0-25.71264-10.856448t-10.856448-25.71264l0-219.414528q0-14.856192 10.856448-25.71264t25.71264-10.856448l149.704704 0 190.273536-190.273536q10.856448-10.856448 25.71264-10.856448t25.71264 10.856448 10.856448 25.71264zm219.414528 310.837248q0 43.425792-24.28416 80.851968t-64.2816 53.425152q-5.71392 2.85696-14.2848 2.85696-14.856192 0-25.71264-10.570752t-10.856448-25.998336q0-11.999232 6.856704-20.284416t16.570368-14.2848 19.427328-13.142016 16.570368-20.284416 6.856704-32.569344-6.856704-32.569344-16.570368-20.284416-19.427328-13.142016-16.570368-14.2848-6.856704-20.284416q0-15.427584 10.856448-25.998336t25.71264-10.570752q8.57088 0 14.2848 2.85696 39.99744 15.427584 64.2816 53.139456t24.28416 81.137664zm146.276352 0q0 87.422976-48.56832 161.41824t-128.5632 107.707392q-7.428096 2.85696-14.2848 2.85696-15.427584 0-26.284032-10.856448t-10.856448-25.71264q0-22.284288 22.284288-33.712128 31.997952-16.570368 43.425792-25.141248 42.283008-30.855168 65.995776-77.423616t23.712768-99.136512-23.712768-99.136512-65.995776-77.423616q-11.42784-8.57088-43.425792-25.141248-22.284288-11.42784-22.284288-33.712128 0-14.856192 10.856448-25.71264t25.71264-10.856448q7.428096 0 14.856192 2.85696 79.99488 33.712128 128.5632 107.707392t48.56832 161.41824zm146.276352 0q0 131.42016-72.566784 241.41312t-193.130496 161.989632q-7.428096 2.85696-14.856192 2.85696-14.856192 0-25.71264-10.856448t-10.856448-25.71264q0-20.570112 22.284288-33.712128 3.999744-2.285568 12.85632-5.999616t12.85632-5.999616q26.284032-14.2848 46.854144-29.140992 70.281216-51.996672 109.707264-129.705984t39.426048-165.132288-39.426048-165.132288-109.707264-129.705984q-20.570112-14.856192-46.854144-29.140992-3.999744-2.285568-12.85632-5.999616t-12.85632-5.999616q-22.284288-13.142016-22.284288-33.712128 0-14.856192 10.856448-25.71264t25.71264-10.856448q7.428096 0 14.856192 2.85696 120.563712 51.996672 193.130496 161.989632t72.566784 241.41312z"
-      }, null)]), createVNode("div", {
-        "class": "uni-video-toast-value"
-      }, [createVNode("div", {
-        "style": {
-          width: gestureState.volumeNew * 100 + "%"
-        },
-        "class": "uni-video-toast-value-content"
-      }, [createVNode("div", {
-        "class": "uni-video-toast-volume-grids"
-      }, [renderList(10, () => createVNode("div", {
-        "class": "uni-video-toast-volume-grids-item"
-      }, null))])], 4)])], 2), createVNode("div", {
-        "class": {
-          "uni-video-toast": true,
-          "uni-video-toast-progress": gestureState.gestureType === "progress"
-        }
-      }, [createVNode("div", {
-        "class": "uni-video-toast-title"
-      }, [formatTime(gestureState.currentTimeNew), " / ", formatTime(videoState.duration)])], 2), createVNode("div", {
-        "class": "uni-video-slots"
-      }, [slots.default && slots.default()])], 40, ["onTouchstart", "onTouchend", "onTouchmove", "onFullscreenchange", "onWebkitfullscreenchange"])], 8, ["id", "onClick"]);
-    };
-  }
-});
-const onWebInvokeAppService = ({ name, arg }) => {
-  if (name === "postMessage")
-    ;
-  else {
-    uni[name](arg);
-  }
-};
-const Invoke = /* @__PURE__ */ once(() => UniServiceJSBridge.on(ON_WEB_INVOKE_APP_SERVICE, onWebInvokeAppService));
-const props$q = {
-  src: {
-    type: String,
-    default: ""
-  }
-};
-class UniWebViewElement extends UniElement {
-}
-const indexX$3 = /* @__PURE__ */ defineBuiltInComponent({
-  inheritAttrs: false,
-  name: "WebView",
-  props: props$q,
-  rootElement: {
-    name: "uni-web-view",
-    class: UniWebViewElement
-  },
-  setup(props2) {
-    Invoke();
-    const rootRef = ref(null);
-    const iframeRef = ref(null);
-    const {
-      $attrs,
-      $excludeAttrs,
-      $listeners
-    } = useAttrs({
-      excludeListeners: true
-    });
-    const renderIframe = () => {
-      const iframe = document.createElement("iframe");
-      watchEffect(() => {
-        for (const key in $attrs.value) {
-          if (hasOwn($attrs.value, key)) {
-            const attr2 = $attrs.value[key];
-            iframe[key] = attr2;
-          }
-        }
-      });
-      watchEffect(() => {
-        iframe.src = getRealPath(props2.src);
-      });
-      iframeRef.value = iframe;
-    };
-    renderIframe();
-    onMounted(() => {
-      var _a;
-      (_a = rootRef.value) == null ? void 0 : _a.appendChild(iframeRef.value);
-    });
-    onMounted(() => {
-      const rootElement = rootRef.value;
-      rootElement.attachVmProps(props2);
-    });
-    return () => {
-      return createVNode("uni-web-view", mergeProps({
-        "class": "uni-webview"
-      }, $listeners.value, $excludeAttrs.value, {
-        "ref": rootRef
-      }), null, 16);
-    };
-  }
-});
-const props$p = {
-  id: {
-    type: [Number, String],
-    default: ""
-  },
-  latitude: {
-    type: [Number, String],
-    require: true
-  },
-  longitude: {
-    type: [Number, String],
-    require: true
-  },
-  title: {
-    type: String,
-    default: ""
-  },
-  iconPath: {
-    type: String,
-    require: true
-  },
-  rotate: {
-    type: [Number, String],
-    default: 0
-  },
-  alpha: {
-    type: [Number, String],
-    default: 1
-  },
-  width: {
-    type: [Number, String],
-    default: ""
-  },
-  height: {
-    type: [Number, String],
-    default: ""
-  },
-  callout: {
-    type: Object,
-    default: null
-  },
-  label: {
-    type: Object,
-    default: null
-  },
-  anchor: {
-    type: Object,
-    default: null
-  },
-  clusterId: {
-    type: [Number, String],
-    default: ""
-  },
-  customCallout: {
-    type: Object,
-    default: null
-  },
-  ariaLabel: {
-    type: String,
-    default: ""
-  }
-};
-function useMarkerLabelStyle(id2) {
-  const className = "uni-map-marker-label-" + id2;
-  const styleEl = document.createElement("style");
-  styleEl.id = className;
-  document.head.appendChild(styleEl);
-  onUnmounted(() => {
-    styleEl.remove();
-  });
-  return function updateMarkerLabelStyle(style) {
-    const newStyle = Object.assign({}, style, {
-      position: "absolute",
-      top: "70px",
-      borderStyle: "solid"
-    });
-    const div = document.createElement("div");
-    Object.keys(newStyle).forEach((key) => {
-      div.style[key] = newStyle[key] || "";
-    });
-    styleEl.innerText = `.${className}{${div.getAttribute("style")}}`;
-    return className;
-  };
-}
-const MapMarker = /* @__PURE__ */ defineSystemComponent({
-  name: "MapMarker",
-  props: props$p,
-  setup(props2) {
-    const id2 = String(!isNaN(Number(props2.id)) ? props2.id : "");
-    const onMapReady = inject("onMapReady");
-    const updateMarkerLabelStyle = useMarkerLabelStyle(id2);
-    let marker;
-    function removeMarker() {
-      if (marker) {
-        if (marker.label && "setMap" in marker.label) {
-          marker.label.setMap(null);
-        }
-        if (marker.callout) {
-          removeMarkerCallout(marker.callout);
-        }
-        marker.setMap(null);
-      }
-    }
-    function removeMarkerCallout(callout) {
-      if (getIsAMap()) {
-        callout.removeAMapText();
-      } else {
-        callout.setMap(null);
-      }
-    }
-    onMapReady((map, maps2, trigger) => {
-      function updateMarker(option) {
-        const title = option.title;
-        let position;
-        if (getIsAMap()) {
-          position = new maps2.LngLat(option.longitude, option.latitude);
-        } else if (getIsBMap()) {
-          position = new maps2.Point(option.longitude, option.latitude);
-        } else {
-          position = new maps2.LatLng(option.latitude, option.longitude);
-        }
-        const img = new Image();
-        let imgHeight = 0;
-        img.onload = () => {
-          const anchor = option.anchor || {};
-          let icon;
-          let w;
-          let h2;
-          let top;
-          let x = typeof anchor.x === "number" ? anchor.x : 0.5;
-          let y = typeof anchor.y === "number" ? anchor.y : 1;
-          if (option.iconPath && (option.width || option.height)) {
-            w = option.width || img.width / img.height * option.height;
-            h2 = option.height || img.height / img.width * option.width;
-          } else {
-            w = img.width / 2;
-            h2 = img.height / 2;
-          }
-          imgHeight = h2;
-          top = h2 - (h2 - y * h2);
-          if ("MarkerImage" in maps2) {
-            icon = new maps2.MarkerImage(img.src, null, null, new maps2.Point(x * w, y * h2), new maps2.Size(w, h2));
-          } else if ("Icon" in maps2) {
-            icon = new maps2.Icon({
-              image: img.src,
-              size: new maps2.Size(w, h2),
-              imageSize: new maps2.Size(w, h2),
-              imageOffset: new maps2.Pixel(x * w, y * h2)
-            });
-          } else {
-            icon = {
-              url: img.src,
-              anchor: new maps2.Point(x, y),
-              size: new maps2.Size(w, h2)
-            };
-          }
-          if (getIsBMap()) {
-            marker = new maps2.Marker(new maps2.Point(position.lng, position.lat));
-            map.addOverlay(marker);
-          } else {
-            marker.setPosition(position);
-            marker.setIcon(icon);
-          }
-          if ("setRotation" in marker) {
-            marker.setRotation(option.rotate || 0);
-          }
-          const labelOpt = option.label || {};
-          if ("label" in marker) {
-            marker.label.setMap(null);
-            delete marker.label;
-          }
-          let label;
-          if (labelOpt.content) {
-            const labelStyle = {
-              borderColor: labelOpt.borderColor,
-              borderWidth: (Number(labelOpt.borderWidth) || 0) + "px",
-              padding: (Number(labelOpt.padding) || 0) + "px",
-              borderRadius: (Number(labelOpt.borderRadius) || 0) + "px",
-              backgroundColor: labelOpt.bgColor,
-              color: labelOpt.color,
-              fontSize: (labelOpt.fontSize || 14) + "px",
-              lineHeight: (labelOpt.fontSize || 14) + "px",
-              marginLeft: (Number(labelOpt.anchorX || labelOpt.x) || 0) + "px",
-              marginTop: (Number(labelOpt.anchorY || labelOpt.y) || 0) + "px"
-            };
-            if ("Label" in maps2) {
-              label = new maps2.Label({
-                position,
-                map,
-                clickable: false,
-                content: labelOpt.content,
-                style: labelStyle
-              });
-              marker.label = label;
-            } else if ("setLabel" in marker) {
-              if (getIsAMap()) {
-                const content = `<div style="
-                  margin-left:${labelStyle.marginLeft};
-                  margin-top:${labelStyle.marginTop};
-                  padding:${labelStyle.padding};
-                  background-color:${labelStyle.backgroundColor};
-                  border-radius:${labelStyle.borderRadius};
-                  line-height:${labelStyle.lineHeight};
-                  color:${labelStyle.color};
-                  font-size:${labelStyle.fontSize};
-
-                  ">
-                  ${labelOpt.content}
-                <div>`;
-                marker.setLabel({
-                  content,
-                  direction: "bottom-right"
-                });
-              } else {
-                const className = updateMarkerLabelStyle(labelStyle);
-                marker.setLabel({
-                  text: labelOpt.content,
-                  color: labelStyle.color,
-                  fontSize: labelStyle.fontSize,
-                  className
-                });
-              }
-            }
-          }
-          const calloutOpt = option.callout || {};
-          let callout = marker.callout;
-          let calloutStyle;
-          if (calloutOpt.content || title) {
-            if (getIsAMap() && calloutOpt.content) {
-              calloutOpt.content = calloutOpt.content.replaceAll("\n", "<br/>");
-            }
-            const boxShadow = "0px 0px 3px 1px rgba(0,0,0,0.5)";
-            let offsetY = -imgHeight / 2;
-            if (option.width || option.height) {
-              offsetY += 14 - imgHeight / 2;
-            }
-            calloutStyle = calloutOpt.content ? {
-              position,
-              map,
-              top,
-              // handle AMap callout offset
-              offsetY,
-              content: calloutOpt.content,
-              color: calloutOpt.color,
-              fontSize: calloutOpt.fontSize,
-              borderRadius: calloutOpt.borderRadius,
-              bgColor: calloutOpt.bgColor,
-              padding: calloutOpt.padding,
-              boxShadow: calloutOpt.boxShadow || boxShadow,
-              display: calloutOpt.display
-            } : {
-              position,
-              map,
-              top,
-              // handle AMap callout offset
-              offsetY,
-              content: title,
-              boxShadow
-            };
-            if (callout) {
-              callout.setOption(calloutStyle);
-            } else {
-              if (getIsAMap()) {
-                const callback = () => {
-                  if (id2 !== "") {
-                    trigger("callouttap", {}, {
-                      markerId: Number(id2)
-                    });
-                  }
-                };
-                callout = marker.callout = new maps2.Callout(calloutStyle, callback);
-              } else {
-                callout = marker.callout = new maps2.Callout(calloutStyle);
-                callout.div.onclick = function($event) {
-                  if (id2 !== "") {
-                    trigger("callouttap", $event, {
-                      markerId: Number(id2)
-                    });
-                  }
-                  $event.stopPropagation();
-                  $event.preventDefault();
-                };
-                if (getMapInfo().type === MapType.GOOGLE) {
-                  callout.div.ontouchstart = function($event) {
-                    $event.stopPropagation();
-                  };
-                  callout.div.onpointerdown = function($event) {
-                    $event.stopPropagation();
-                  };
-                }
-              }
-            }
-          } else {
-            if (callout) {
-              removeMarkerCallout(callout);
-              delete marker.callout;
-            }
-          }
-        };
-        if (option.iconPath) {
-          img.src = getRealPath(option.iconPath);
-        } else {
-          console.error("Marker.iconPath is required.");
-        }
-      }
-      function addMarker(props3) {
-        if (!getIsBMap()) {
-          marker = new maps2.Marker({
-            map,
-            flat: true,
-            autoRotation: false
-          });
-        }
-        updateMarker(props3);
-        const MapsEvent = maps2.event || maps2.Event;
-        if (getIsBMap())
-          ;
-        else {
-          MapsEvent.addListener(marker, "click", () => {
-            const callout = marker.callout;
-            if (callout && !callout.alwaysVisible) {
-              if (getIsAMap()) {
-                callout.visible = !callout.visible;
-                if (callout.visible) {
-                  marker.callout.createAMapText();
-                } else {
-                  marker.callout.removeAMapText();
-                }
-              } else {
-                callout.set("visible", !callout.visible);
-                if (callout.visible) {
-                  const div = callout.div;
-                  const parent = div.parentNode;
-                  parent.removeChild(div);
-                  parent.appendChild(div);
-                }
-              }
-            }
-            if (id2) {
-              trigger("markertap", {}, {
-                markerId: Number(id2),
-                latitude: props3.latitude,
-                longitude: props3.longitude
-              });
-            }
-          });
-        }
-      }
-      addMarker(props2);
-      watch(props2, updateMarker);
-    });
-    if (id2) {
-      const addMapChidlContext = inject("addMapChidlContext");
-      const removeMapChidlContext = inject("removeMapChidlContext");
-      const context = {
-        id: id2,
-        translate(data) {
-          onMapReady((map, maps2, trigger) => {
-            const destination = data.destination;
-            const duration = data.duration;
-            const autoRotate = !!data.autoRotate;
-            let rotate = Number(data.rotate) || 0;
-            let rotation = 0;
-            if ("getRotation" in marker) {
-              rotation = marker.getRotation();
-            }
-            const a2 = marker.getPosition();
-            const b = new maps2.LatLng(destination.latitude, destination.longitude);
-            const distance = maps2.geometry.spherical.computeDistanceBetween(a2, b) / 1e3;
-            const time = (typeof duration === "number" ? duration : 1e3) / (1e3 * 60 * 60);
-            const speed = distance / time;
-            const MapsEvent = maps2.event || maps2.Event;
-            const movingEvent = MapsEvent.addListener(marker, "moving", (e2) => {
-              const latLng = e2.latLng;
-              const label = marker.label;
-              if (label) {
-                label.setPosition(latLng);
-              }
-              const callout = marker.callout;
-              if (callout) {
-                callout.setPosition(latLng);
-              }
-            });
-            const event = MapsEvent.addListener(marker, "moveend", () => {
-              event.remove();
-              movingEvent.remove();
-              marker.lastPosition = a2;
-              marker.setPosition(b);
-              const label = marker.label;
-              if (label) {
-                label.setPosition(b);
-              }
-              const callout = marker.callout;
-              if (callout) {
-                callout.setPosition(b);
-              }
-              const cb = data.animationEnd;
-              if (isFunction(cb)) {
-                cb();
-              }
-            });
-            let lastRtate = 0;
-            if (autoRotate) {
-              if (marker.lastPosition) {
-                lastRtate = maps2.geometry.spherical.computeHeading(marker.lastPosition, a2);
-              }
-              rotate = maps2.geometry.spherical.computeHeading(a2, b) - lastRtate;
-            }
-            if ("setRotation" in marker) {
-              marker.setRotation(rotation + rotate);
-            }
-            if ("moveTo" in marker) {
-              marker.moveTo(b, speed);
-            } else {
-              marker.setPosition(b);
-              MapsEvent.trigger(marker, "moveend", {});
-            }
-          });
-        }
-      };
-      addMapChidlContext(context);
-      onUnmounted(() => removeMapChidlContext(context));
-    }
-    onUnmounted(removeMarker);
-    return () => {
-      return null;
-    };
-  }
-});
-function hexToRgba(hex) {
-  if (!hex) {
-    return {
-      r: 0,
-      g: 0,
-      b: 0,
-      a: 0
-    };
-  }
-  let tmpHex = hex.slice(1);
-  const tmpHexLen = tmpHex.length;
-  if (![3, 4, 6, 8].includes(tmpHexLen)) {
-    return {
-      r: 0,
-      g: 0,
-      b: 0,
-      a: 0
-    };
-  }
-  if (tmpHexLen === 3 || tmpHexLen === 4) {
-    tmpHex = tmpHex.replace(/(\w{1})/g, "$1$1");
-  }
-  let [sr, sg, sb, sa] = tmpHex.match(/(\w{2})/g);
-  const r = parseInt(sr, 16), g2 = parseInt(sg, 16), b = parseInt(sb, 16);
-  if (!sa) {
-    return { r, g: g2, b, a: 1 };
-  }
-  return {
-    r,
-    g: g2,
-    b,
-    a: (`0x100${sa}` - 65536) / 255
-  };
-}
-const props$o = {
-  points: {
-    type: Array,
-    require: true
-  },
-  color: {
-    type: String,
-    default: "#000000"
-  },
-  width: {
-    type: [Number, String],
-    default: ""
-  },
-  dottedLine: {
-    type: [Boolean, String],
-    default: false
-  },
-  arrowLine: {
-    type: [Boolean, String],
-    default: false
-  },
-  arrowIconPath: {
-    type: String,
-    default: ""
-  },
-  borderColor: {
-    type: String,
-    default: "#000000"
-  },
-  borderWidth: {
-    type: [Number, String],
-    default: ""
-  },
-  colorList: {
-    type: Array,
-    default() {
-      return [];
-    }
-  },
-  level: {
-    type: String,
-    default: ""
-  }
-};
-const MapPolyline = /* @__PURE__ */ defineSystemComponent({
-  name: "MapPolyline",
-  props: props$o,
-  setup(props2) {
-    const onMapReady = inject("onMapReady");
-    let polyline;
-    let polylineBorder;
-    function removePolyline() {
-      if (polyline) {
-        polyline.setMap(null);
-      }
-      if (polylineBorder) {
-        polylineBorder.setMap(null);
-      }
-    }
-    onMapReady((map, maps2) => {
-      function updatePolyline(option) {
-        removePolyline();
-        addPolyline(option);
-      }
-      function addPolyline(option) {
-        const path = [];
-        option.points.forEach((point) => {
-          let pointPosition;
-          if (getIsAMap()) {
-            pointPosition = [point.longitude, point.latitude];
-          } else if (getIsBMap()) {
-            pointPosition = new maps2.Point(point.longitude, point.latitude);
-          } else {
-            pointPosition = new maps2.LatLng(point.latitude, point.longitude);
-          }
-          path.push(pointPosition);
-        });
-        const strokeWeight = Number(option.width) || 1;
-        const {
-          r: sr,
-          g: sg,
-          b: sb,
-          a: sa
-        } = hexToRgba(option.color);
-        const {
-          r: br,
-          g: bg,
-          b: bb,
-          a: ba
-        } = hexToRgba(option.borderColor);
-        const polylineOptions = {
-          map,
-          clickable: false,
-          path,
-          strokeWeight,
-          strokeColor: option.color || void 0,
-          strokeDashStyle: option.dottedLine ? "dash" : "solid"
-        };
-        const borderWidth = Number(option.borderWidth) || 0;
-        const polylineBorderOptions = {
-          map,
-          clickable: false,
-          path,
-          strokeWeight: strokeWeight + borderWidth * 2,
-          strokeColor: option.borderColor || void 0,
-          strokeDashStyle: option.dottedLine ? "dash" : "solid"
-        };
-        if ("Color" in maps2) {
-          polylineOptions.strokeColor = new maps2.Color(sr, sg, sb, sa);
-          polylineBorderOptions.strokeColor = new maps2.Color(br, bg, bb, ba);
-        } else {
-          polylineOptions.strokeColor = `rgb(${sr}, ${sg}, ${sb})`;
-          polylineOptions.strokeOpacity = sa;
-          polylineBorderOptions.strokeColor = `rgb(${br}, ${bg}, ${bb})`;
-          polylineBorderOptions.strokeOpacity = ba;
-        }
-        if (borderWidth) {
-          polylineBorder = new maps2.Polyline(polylineBorderOptions);
-        }
-        if (getIsBMap()) {
-          polyline = new maps2.Polyline(polylineOptions.path, polylineOptions);
-          map.addOverlay(polyline);
-        } else {
-          polyline = new maps2.Polyline(polylineOptions);
-        }
-      }
-      addPolyline(props2);
-      watch(props2, updatePolyline);
-    });
-    onUnmounted(removePolyline);
-    return () => {
-      return null;
-    };
-  }
-});
-const props$n = {
-  latitude: {
-    type: [Number, String],
-    require: true
-  },
-  longitude: {
-    type: [Number, String],
-    require: true
-  },
-  color: {
-    type: String,
-    default: "#000000"
-  },
-  fillColor: {
-    type: String,
-    default: "#00000000"
-  },
-  radius: {
-    type: [Number, String],
-    require: true
-  },
-  strokeWidth: {
-    type: [Number, String],
-    default: ""
-  },
-  level: {
-    type: String,
-    default: ""
-  }
-};
-const MapCircle = /* @__PURE__ */ defineSystemComponent({
-  name: "MapCircle",
-  props: props$n,
-  setup(props2) {
-    const onMapReady = inject("onMapReady");
-    let circle;
-    function removeCircle() {
-      if (circle) {
-        circle.setMap(null);
-      }
-    }
-    onMapReady((map, maps2) => {
-      function updateCircle(option) {
-        removeCircle();
-        addCircle(option);
-      }
-      function addCircle(option) {
-        const center = getIsAMap() || getIsBMap() ? [option.longitude, option.latitude] : new maps2.LatLng(option.latitude, option.longitude);
-        const circleOptions = {
-          map,
-          center,
-          clickable: false,
-          radius: option.radius,
-          strokeWeight: Number(option.strokeWidth) || 1,
-          strokeDashStyle: "solid"
-        };
-        if (getIsBMap()) {
-          circleOptions.strokeColor = option.color;
-          circleOptions.fillColor = option.fillColor || "#000";
-          circleOptions.fillOpacity = 1;
-        } else {
-          const {
-            r: fr,
-            g: fg,
-            b: fb,
-            a: fa
-          } = hexToRgba(option.fillColor);
-          const {
-            r: sr,
-            g: sg,
-            b: sb,
-            a: sa
-          } = hexToRgba(option.color);
-          if ("Color" in maps2) {
-            circleOptions.fillColor = new maps2.Color(fr, fg, fb, fa);
-            circleOptions.strokeColor = new maps2.Color(sr, sg, sb, sa);
-          } else {
-            circleOptions.fillColor = `rgb(${fr}, ${fg}, ${fb})`;
-            circleOptions.fillOpacity = fa;
-            circleOptions.strokeColor = `rgb(${sr}, ${sg}, ${sb})`;
-            circleOptions.strokeOpacity = sa;
-          }
-        }
-        if (getIsBMap()) {
-          let pt = new maps2.Point(
-            // @ts-ignore
-            circleOptions.center[0],
-            // @ts-ignore
-            circleOptions.center[1]
-          );
-          circle = new maps2.Circle(pt, circleOptions.radius, circleOptions);
-          map.addOverlay(circle);
-        } else {
-          circle = new maps2.Circle(circleOptions);
-          if (getIsAMap()) {
-            map.add(circle);
-          }
-        }
-      }
-      addCircle(props2);
-      watch(props2, updateCircle);
-    });
-    onUnmounted(removeCircle);
-    return () => {
-      return null;
-    };
-  }
-});
-const props$m = {
-  id: {
-    type: [Number, String],
-    default: ""
-  },
-  position: {
-    type: Object,
-    required: true
-  },
-  iconPath: {
-    type: String,
-    required: true
-  },
-  clickable: {
-    type: [Boolean, String],
-    default: ""
-  },
-  trigger: {
-    type: Function,
-    required: true
-  }
-};
-const MapControl = /* @__PURE__ */ defineSystemComponent({
-  name: "MapControl",
-  props: props$m,
-  setup(props2) {
-    const imgPath = computed(() => getRealPath(props2.iconPath));
-    const positionStyle = computed(() => {
-      let positionStyle2 = `top:${props2.position.top || 0}px;left:${props2.position.left || 0}px;`;
-      if (props2.position.width) {
-        positionStyle2 += `width:${props2.position.width}px;`;
-      }
-      if (props2.position.height) {
-        positionStyle2 += `height:${props2.position.height}px;`;
-      }
-      return positionStyle2;
-    });
-    const handleClick = ($event) => {
-      if (props2.clickable) {
-        props2.trigger("controltap", $event, {
-          controlId: props2.id
-        });
-      }
-    };
-    return () => {
-      return createVNode("div", {
-        "class": "uni-map-control"
-      }, [createVNode("img", {
-        "src": imgPath.value,
-        "style": positionStyle.value,
-        "class": "uni-map-control-icon",
-        "onClick": handleClick
-      }, null, 12, ["src", "onClick"])]);
-    };
-  }
-});
-let started = false;
-let watchId = 0;
-const startLocationUpdate = /* @__PURE__ */ defineAsyncApi(
-  API_START_LOCATION_UPDATE,
-  (options, { resolve, reject }) => {
-    if (!navigator.geolocation) {
-      reject();
-      return;
-    }
-    watchId = watchId || navigator.geolocation.watchPosition(
-      (res) => {
-        started = true;
-        translateCoordinateSystem(options == null ? void 0 : options.type, res.coords).then((coords) => {
-          UniServiceJSBridge.invokeOnCallback(
-            API_ON_LOCATION_CHANGE,
-            coords
-          );
-          resolve();
-        }).catch((error) => {
-          UniServiceJSBridge.invokeOnCallback(
-            API_ON_LOCATION_CHANGE_ERROR,
-            { errMsg: `onLocationChange:fail ${error.message}` }
-          );
-        });
-      },
-      (error) => {
-        if (!started) {
-          reject(error.message);
-          started = true;
-        }
-        UniServiceJSBridge.invokeOnCallback(API_ON_LOCATION_CHANGE_ERROR, {
-          errMsg: `onLocationChange:fail ${error.message}`
-        });
-      }
-    );
-    setTimeout(resolve, 100);
-  },
-  StartLocationUpdateProtocol,
-  StartLocationUpdateOptions
-);
-const stopLocationUpdate = /* @__PURE__ */ defineAsyncApi(
-  API_STOP_LOCATION_UPDATE,
-  (_, { resolve }) => {
-    if (watchId) {
-      navigator.geolocation.clearWatch(watchId);
-      started = false;
-      watchId = 0;
-    }
-    resolve();
-  }
-);
-const onLocationChange = /* @__PURE__ */ defineOnApi(
-  API_ON_LOCATION_CHANGE,
-  () => {
-  }
-);
-const offLocationChange = /* @__PURE__ */ defineOffApi(
-  API_OFF_LOCATION_CHANGE,
-  () => {
-  }
-);
-const onLocationChangeError = /* @__PURE__ */ defineOnApi(
-  API_ON_LOCATION_CHANGE_ERROR,
-  () => {
-  }
-);
-const offLocationChangeError = /* @__PURE__ */ defineOffApi(
-  API_OFF_LOCATION_CHANGE_ERROR,
-  () => {
-  }
-);
-const navigateBack = /* @__PURE__ */ defineAsyncApi(
-  API_NAVIGATE_BACK,
-  (args, { resolve, reject }) => {
-    var _a, _b;
-    let canBack = true;
-    if (invokeHook(ON_BACK_PRESS, {
-      from: args.from || "navigateBack"
-    }) === true) {
-      canBack = false;
-    }
-    {
-      const currentPage = getCurrentPage();
-      if (currentPage) {
-        const dialogPages = currentPage.getDialogPages();
-        const dialogPage = dialogPages[dialogPages.length - 1];
-        if (((_b = dialogPage == null ? void 0 : (_a = dialogPage.vm.$options).onBackPress) == null ? void 0 : _b.call(_a)) === true) {
-          canBack = false;
-        }
-      }
-    }
-    if (!canBack) {
-      return reject(ON_BACK_PRESS);
-    }
-    {
-      getApp().vm.$router.go(-args.delta);
-    }
-    return resolve();
-  },
-  NavigateBackProtocol,
-  NavigateBackOptions
-);
-const navigateTo = /* @__PURE__ */ defineAsyncApi(
-  API_NAVIGATE_TO,
-  // @ts-expect-error
-  ({ url, events, isAutomatedTesting }, { resolve, reject }) => {
-    if (!entryPageState.handledBeforeEntryPageRoutes) {
-      navigateToPagesBeforeEntryPages.push({
-        args: { type: API_NAVIGATE_TO, url, events, isAutomatedTesting },
-        resolve,
-        reject
-      });
-      return;
-    }
-    return navigate({ type: API_NAVIGATE_TO, url, events, isAutomatedTesting }).then(resolve).catch(reject);
-  },
-  NavigateToProtocol,
-  NavigateToOptions
-);
-const preloadPage = /* @__PURE__ */ defineAsyncApi(
-  API_PRELOAD_PAGE,
-  ({ url }, { resolve, reject }) => {
-    const path = url.split("?")[0];
-    const route = getRouteOptions(path);
-    if (!route) {
-      reject(`${url}}`);
-      return;
-    }
-    route.loader && route.loader().then(() => {
-      resolve({
-        url,
-        errMsg: "preloadPage:ok"
-      });
-    }).catch((err) => {
-      reject(`${url} ${String(err)}`);
-    });
-  },
-  PreloadPageProtocol
-);
-if (process.env.NODE_ENV !== "production") {
-  document.addEventListener("DOMContentLoaded", () => {
-    console.log("Preload pages in uni-app-x development mode.");
-    __uniRoutes.reduce((prev, route) => {
-      return prev.then(() => {
-        return new Promise((resolve) => {
-          preloadPage({
-            url: route.alias || route.path,
-            complete() {
-              setTimeout(() => {
-                resolve();
-              }, 200);
-            }
-          });
-        });
-      });
-    }, Promise.resolve());
-  });
-}
-function onThemeChange$1(callback) {
-  if (__uniConfig.darkmode) {
-    UniServiceJSBridge.on(ON_THEME_CHANGE, callback);
-  }
-}
-function offThemeChange(callback) {
-  UniServiceJSBridge.off(ON_THEME_CHANGE, callback);
-}
-function parseTheme(pageStyle) {
-  let parsedStyle = {};
-  if (__uniConfig.darkmode) {
-    parsedStyle = normalizeStyles(
-      pageStyle,
-      __uniConfig.themeConfig,
-      getTheme()
-    );
-  }
-  return __uniConfig.darkmode ? parsedStyle : pageStyle;
-}
-function useTheme(pageStyle, onThemeChangeCallback) {
-  const isReactivity = isReactive(pageStyle);
-  const reactivePageStyle = isReactivity ? reactive(parseTheme(pageStyle)) : parseTheme(pageStyle);
-  if (__uniConfig.darkmode && isReactivity) {
-    watch(pageStyle, (value) => {
-      const _pageStyle = parseTheme(value);
-      for (const key in _pageStyle) {
-        reactivePageStyle[key] = _pageStyle[key];
-      }
-    });
-  }
-  onThemeChangeCallback && onThemeChange$1(onThemeChangeCallback);
-  return reactivePageStyle;
-}
-const ModalTheme = {
-  light: {
-    cancelColor: "#000000"
-  },
-  dark: {
-    cancelColor: "rgb(170, 170, 170)"
-  }
-};
-const setCancelColor = (theme, cancelColor) => cancelColor.value = ModalTheme[theme].cancelColor;
-const props$l = {
-  title: {
-    type: String,
-    default: ""
-  },
-  content: {
-    type: String,
-    default: ""
-  },
-  showCancel: {
-    type: Boolean,
-    default: true
-  },
-  cancelText: {
-    type: String,
-    default: "Cancel"
-  },
-  cancelColor: {
-    type: String,
-    default: "#000000"
-  },
-  confirmText: {
-    type: String,
-    default: "OK"
-  },
-  confirmColor: {
-    type: String,
-    default: "#576b95"
-  },
-  visible: {
-    type: Boolean
-  },
-  editable: {
-    type: Boolean,
-    default: false
-  },
-  placeholderText: {
-    type: String,
-    default: ""
-  }
-};
-const modal = /* @__PURE__ */ defineComponent({
-  props: props$l,
-  setup(props2, {
-    emit: emit2
-  }) {
-    const editContent = ref("");
-    const close = () => visible.value = false;
-    const cancel = () => (close(), emit2("close", "cancel"));
-    const confirm = () => (close(), emit2("close", "confirm", editContent.value));
-    const visible = usePopup(props2, {
-      onEsc: cancel,
-      onEnter: () => {
-        !props2.editable && confirm();
-      }
-    });
-    const cancelColor = useOnThemeChange$1(props2);
-    return () => {
-      const {
-        title,
-        content,
-        showCancel,
-        confirmText,
-        confirmColor,
-        editable,
-        placeholderText
-      } = props2;
-      editContent.value = content;
-      return createVNode(Transition, {
-        "name": "uni-fade"
-      }, {
-        default: () => [withDirectives(createVNode("uni-modal", {
-          "onTouchmove": onEventPrevent
-        }, [VNODE_MASK, createVNode("div", {
-          "class": "uni-modal"
-        }, [title || true ? createVNode("div", {
-          "class": "uni-modal__hd"
-        }, [createVNode("strong", {
-          "class": "uni-modal__title",
-          "textContent": title || ""
-        }, null, 8, ["textContent"])]) : null, editable ? createVNode("div", {
-          "class": "uni-modal__bd",
-          "key": "uni-modal-bd-editable"
-        }, [createVNode("textarea", {
-          "class": "uni-modal__textarea",
-          "rows": "2",
-          "placeholder": placeholderText,
-          "value": content,
-          "onInput": (e2) => editContent.value = e2.target.value
-        }, null, 40, ["placeholder", "value", "onInput"])]) : createVNode("div", {
-          "class": "uni-modal__bd",
-          "onTouchmovePassive": onEventStop,
-          "textContent": content
-        }, null, 40, ["onTouchmovePassive", "textContent"]), createVNode("div", {
-          "class": "uni-modal__ft"
-        }, [showCancel && createVNode("div", {
-          "style": {
-            color: cancelColor.value
-          },
-          "class": "uni-modal__btn uni-modal__btn_default",
-          "onClick": cancel
-        }, [props2.cancelText], 12, ["onClick"]), createVNode("div", {
-          "style": {
-            color: confirmColor
-          },
-          "class": "uni-modal__btn uni-modal__btn_primary",
-          "onClick": confirm
-        }, [confirmText], 12, ["onClick"])])])], 40, ["onTouchmove"]), [[vShow, visible.value]])]
-      });
-    };
-  }
-});
-function useOnThemeChange$1(props2) {
-  const cancelColor = ref(props2.cancelColor);
-  const _onThemeChange = ({
-    theme
-  }) => {
-    setCancelColor(theme, cancelColor);
-  };
-  watchEffect(() => {
-    if (props2.visible) {
-      cancelColor.value = props2.cancelColor;
-      if (props2.cancelColor === "#000") {
-        if (getTheme() === "dark")
-          _onThemeChange({
-            theme: "dark"
-          });
-        onThemeChange$1(_onThemeChange);
-      }
-    } else {
-      offThemeChange(_onThemeChange);
-    }
-  });
-  return cancelColor;
-}
-let showModalState;
-const onHidePopupOnce$1 = /* @__PURE__ */ once(() => {
-  UniServiceJSBridge.on("onHidePopup", () => showModalState.visible = false);
-});
-let currentShowModalResolve;
-function onModalClose(type, content) {
-  const isConfirm = type === "confirm";
-  const res = {
-    confirm: isConfirm,
-    cancel: type === "cancel"
-  };
-  isConfirm && showModalState.editable && (res.content = content);
-  currentShowModalResolve && currentShowModalResolve(res);
-}
-const hideModal = () => {
-  if (showModalState) {
-    showModalState.visible = false;
-  }
-};
-const showModal = /* @__PURE__ */ defineAsyncApi(
-  API_SHOW_MODAL,
-  (args, { resolve }) => {
-    onHidePopupOnce$1();
-    currentShowModalResolve = resolve;
-    if (!showModalState) {
-      showModalState = reactive(args);
-      nextTick(
-        () => (createRootApp(modal, showModalState, onModalClose).mount(
-          ensureRoot("u-a-m")
-        ), //下一帧执行，确保首次显示时有动画效果
-        nextTick(() => showModalState.visible = true))
-      );
-    } else {
-      extend(showModalState, args);
-      showModalState.visible = true;
-    }
-  },
-  ShowModalProtocol,
-  ShowModalOptions
-);
-const props$k = {
-  title: {
-    type: String,
-    default: ""
-  },
-  icon: {
-    default: "success",
-    validator(value) {
-      return SHOW_TOAST_ICON.indexOf(value) !== -1;
-    }
-  },
-  image: {
-    type: String,
-    default: ""
-  },
-  duration: {
-    type: Number,
-    default: 1500
-  },
-  mask: {
-    type: Boolean,
-    default: false
-  },
-  visible: {
-    type: Boolean
-  }
-};
-const ToastIconClassName = "uni-toast__icon";
-const ICONCOLOR = {
-  light: "#fff",
-  dark: "rgba(255,255,255,0.9)"
-};
-const getIconColor = (theme) => ICONCOLOR[theme];
-const Toast = /* @__PURE__ */ defineComponent({
-  name: "Toast",
-  props: props$k,
-  setup(props2) {
-    initI18nShowToastMsgsOnce();
-    initI18nShowLoadingMsgsOnce();
-    const {
-      Icon
-    } = useToastIcon(props2);
-    const visible = usePopup(props2, {});
-    return () => {
-      const {
-        mask,
-        duration,
-        title,
-        image: image2
-      } = props2;
-      return createVNode(Transition, {
-        "name": "uni-fade"
-      }, {
-        default: () => [withDirectives(createVNode("uni-toast", {
-          "data-duration": duration
-        }, [mask ? createVNode("div", {
-          "class": "uni-mask",
-          "style": "background: transparent;",
-          "onTouchmove": onEventPrevent
-        }, null, 40, ["onTouchmove"]) : "", !image2 && !Icon.value ? createVNode("div", {
-          "class": "uni-sample-toast"
-        }, [createVNode("p", {
-          "class": "uni-simple-toast__text"
-        }, [title])]) : createVNode("div", {
-          "class": "uni-toast"
-        }, [image2 ? createVNode("img", {
-          "src": image2,
-          "class": ToastIconClassName
-        }, null, 10, ["src"]) : Icon.value, createVNode("p", {
-          "class": "uni-toast__content"
-        }, [title])])], 8, ["data-duration"]), [[vShow, visible.value]])]
-      });
-    };
-  }
-});
-function useToastIcon(props2) {
-  const iconColor = ref(getIconColor(getTheme()));
-  const _onThemeChange = ({
-    theme
-  }) => iconColor.value = getIconColor(theme);
-  watchEffect(() => {
-    if (props2.visible) {
-      onThemeChange$1(_onThemeChange);
-    } else {
-      offThemeChange(_onThemeChange);
-    }
-  });
-  const Icon = computed(() => {
-    switch (props2.icon) {
-      case "success":
-        return createVNode(createSvgIconVNode(ICON_PATH_SUCCESS_NO_CIRCLE, iconColor.value, 38), {
-          class: ToastIconClassName
-        });
-      case "error":
-        return createVNode(createSvgIconVNode(ICON_PATH_WARN, iconColor.value, 38), {
-          class: ToastIconClassName
-        });
-      case "loading":
-        return createVNode("i", {
-          "class": [ToastIconClassName, "uni-loading"]
-        }, null, 2);
-      default:
-        return null;
-    }
-  });
-  return {
-    Icon
-  };
-}
-let showToastState;
-let showType = "";
-let timeoutId;
-const scope = /* @__PURE__ */ effectScope();
-function watchVisible() {
-  scope.run(() => {
-    watch(
-      [() => showToastState.visible, () => showToastState.duration],
-      ([visible, duration]) => {
-        if (visible) {
-          timeoutId && clearTimeout(timeoutId);
-          if (showType === "onShowLoading")
-            return;
-          timeoutId = setTimeout(() => {
-            hidePopup("onHideToast");
-          }, duration);
-        } else {
-          timeoutId && clearTimeout(timeoutId);
-        }
-      }
-    );
-  });
-}
-function createToast(args) {
-  if (!showToastState) {
-    showToastState = reactive(extend(args, { visible: false }));
-    nextTick(() => {
-      watchVisible();
-      UniServiceJSBridge.on("onHidePopup", () => hidePopup("onHidePopup"));
-      createRootApp(Toast, showToastState, () => {
-      }).mount(ensureRoot("u-a-t"));
-    });
-  } else {
-    extend(showToastState, args);
-  }
-  setTimeout(() => {
-    showToastState.visible = true;
-  }, 10);
-}
-const showToast = /* @__PURE__ */ defineAsyncApi(
-  API_SHOW_TOAST,
-  (args, { resolve, reject }) => {
-    createToast(args);
-    showType = "onShowToast";
-    resolve();
-  },
-  ShowToastProtocol,
-  ShowToastOptions
-);
-const showLoadingDefaultState = {
-  icon: "loading",
-  duration: 1e8,
-  image: ""
-};
-const showLoading = /* @__PURE__ */ defineAsyncApi(
-  API_SHOW_LOADING,
-  (args, { resolve, reject }) => {
-    extend(args, showLoadingDefaultState);
-    createToast(args);
-    showType = "onShowLoading";
-    resolve();
-  },
-  ShowLoadingProtocol,
-  ShowLoadingOptions
-);
-const hideToast = /* @__PURE__ */ defineAsyncApi(
-  API_HIDE_TOAST,
-  (args, { resolve, reject }) => {
-    hidePopup("onHideToast");
-    resolve();
-  }
-);
-const hideLoading = /* @__PURE__ */ defineAsyncApi(
-  API_HIDE_LOADING,
-  (args, { resolve, reject }) => {
-    hidePopup("onHideLoading");
-    resolve();
-  }
-);
-function hidePopup(type) {
-  const { t: t2 } = useI18n();
-  if (!showType) {
-    return;
-  }
-  let warnMsg = "";
-  if (type === "onHideToast" && showType !== "onShowToast") {
-    warnMsg = t2("uni.showToast.unpaired");
-  } else if (type === "onHideLoading" && showType !== "onShowLoading") {
-    warnMsg = t2("uni.showLoading.unpaired");
-  }
-  if (warnMsg) {
-    return console.warn(warnMsg);
-  }
-  showType = "";
-  setTimeout(() => {
-    showToastState.visible = false;
-  }, 10);
-}
-function usePopupStyle(props2) {
-  const popupWidth = ref(0);
-  const popupHeight = ref(0);
-  const isDesktop = computed(
-    () => popupWidth.value >= 500 && popupHeight.value >= 500
-  );
-  const popupStyle = computed(() => {
-    const style = {
-      content: {
-        transform: "",
-        left: "",
-        top: "",
-        bottom: ""
-      },
-      triangle: {
-        left: "",
-        top: "",
-        bottom: "",
-        "border-width": "",
-        "border-color": ""
-      }
-    };
-    const contentStyle = style.content;
-    const triangleStyle = style.triangle;
-    const popover = props2.popover;
-    function getNumber(value) {
-      return Number(value) || 0;
-    }
-    if (isDesktop.value && popover) {
-      extend(triangleStyle, {
-        position: "absolute",
-        width: "0",
-        height: "0",
-        "margin-left": "-6px",
-        "border-style": "solid"
-      });
-      const popoverLeft = getNumber(popover.left);
-      const popoverWidth = getNumber(popover.width);
-      const popoverTop = getNumber(popover.top);
-      const popoverHeight = getNumber(popover.height);
-      const center = popoverLeft + popoverWidth / 2;
-      contentStyle.transform = "none !important";
-      const contentLeft = Math.max(0, center - 300 / 2);
-      contentStyle.left = `${contentLeft}px`;
-      let triangleLeft = Math.max(12, center - contentLeft);
-      triangleLeft = Math.min(300 - 12, triangleLeft);
-      triangleStyle.left = `${triangleLeft}px`;
-      const vcl = popupHeight.value / 2;
-      if (popoverTop + popoverHeight - vcl > vcl - popoverTop) {
-        contentStyle.top = "auto";
-        contentStyle.bottom = `${popupHeight.value - popoverTop + 6}px`;
-        triangleStyle.bottom = "-6px";
-        triangleStyle["border-width"] = "6px 6px 0 6px";
-        triangleStyle["border-color"] = "#fcfcfd transparent transparent transparent";
-      } else {
-        contentStyle.top = `${popoverTop + popoverHeight + 6}px`;
-        triangleStyle.top = "-6px";
-        triangleStyle["border-width"] = "0 6px 6px 6px";
-        triangleStyle["border-color"] = "transparent transparent #fcfcfd transparent";
-      }
-    }
-    return style;
-  });
-  onMounted(() => {
-    const fixSize = () => {
-      const { windowWidth, windowHeight, windowTop } = uni.getSystemInfoSync();
-      popupWidth.value = windowWidth;
-      popupHeight.value = windowHeight + (windowTop || 0);
-    };
-    window.addEventListener("resize", fixSize);
-    fixSize();
-    onUnmounted(() => {
-      window.removeEventListener("resize", fixSize);
-    });
-  });
-  return {
-    isDesktop,
-    popupStyle
-  };
-}
-const ACTION_SHEET_THEME = {
-  light: {
-    listItemColor: "#000000",
-    cancelItemColor: "#000000"
-  },
-  dark: {
-    listItemColor: "rgba(255, 255, 255, 0.8)",
-    cancelItemColor: "rgba(255, 255, 255)"
-  }
-};
-function setActionSheetTheme(theme, actionSheetTheme) {
-  const ActionSheetThemeKey = ["listItemColor", "cancelItemColor"];
-  ActionSheetThemeKey.forEach((key) => {
-    actionSheetTheme[key] = ACTION_SHEET_THEME[theme][key];
-  });
-}
-const props$j = {
-  title: {
-    type: String,
-    default: ""
-  },
-  itemList: {
-    type: Array,
-    default() {
-      return [];
-    }
-  },
-  itemColor: {
-    type: String,
-    default: "#000000"
-  },
-  popover: {
-    type: Object,
-    default: null
-  },
-  visible: {
-    type: Boolean,
-    default: false
-  }
-};
-const actionSheet = /* @__PURE__ */ defineComponent({
-  name: "ActionSheet",
-  props: props$j,
-  emits: ["close"],
-  setup(props2, {
-    emit: emit2
-  }) {
-    initI18nShowActionSheetMsgsOnce();
-    const HEIGHT = ref(336);
-    const contentHeight = ref(0);
-    const titleHeight = ref(0);
-    const deltaY = ref(0);
-    const scrollTop = ref(0);
-    const content = ref(null);
-    const main = ref(null);
-    const {
-      t: t2
-    } = useI18n();
-    const {
-      _close
-    } = useActionSheetLoader(props2, emit2);
-    const {
-      popupStyle
-    } = usePopupStyle(props2);
-    let scroller;
-    onMounted(() => {
-      const {
-        scroller: _scroller,
-        handleTouchStart,
-        handleTouchMove,
-        handleTouchEnd
-      } = useScroller(content.value, {
-        enableY: true,
-        friction: new Friction(1e-4),
-        spring: new Spring(2, 90, 20),
-        onScroll: (e2) => {
-          scrollTop.value = e2.target.scrollTop;
-        }
-      });
-      scroller = _scroller;
-      useTouchtrack(content.value, (e2) => {
-        if (_scroller) {
-          switch (e2.detail.state) {
-            case "start":
-              handleTouchStart(e2);
-              break;
-            case "move":
-              handleTouchMove(e2);
-              break;
-            case "end":
-            case "cancel":
-              handleTouchEnd(e2);
-          }
-        }
-      }, true);
-    });
-    function _handleWheel($event) {
-      const _deltaY = deltaY.value + $event.deltaY;
-      if (Math.abs(_deltaY) > 10) {
-        scrollTop.value += _deltaY / 3;
-        scrollTop.value = scrollTop.value >= contentHeight.value ? contentHeight.value : scrollTop.value <= 0 ? 0 : scrollTop.value;
-        scroller.scrollTo(scrollTop.value);
-      } else {
-        deltaY.value = _deltaY;
-      }
-      $event.preventDefault();
-    }
-    watch(() => props2.visible, () => {
-      nextTick(() => {
-        if (props2.title) {
-          titleHeight.value = document.querySelector(".uni-actionsheet__title").offsetHeight;
-        }
-        scroller.update();
-        if (content.value)
-          contentHeight.value = content.value.clientHeight - HEIGHT.value;
-        document.querySelectorAll(".uni-actionsheet__cell").forEach((item) => {
-          initClick(item);
-        });
-      });
-    });
-    const actionSheetTheme = useOnThemeChange(props2);
-    return () => {
-      return createVNode("uni-actionsheet", {
-        "onTouchmove": onEventPrevent
-      }, [createVNode(Transition, {
-        "name": "uni-fade"
-      }, {
-        default: () => [withDirectives(createVNode("div", {
-          "class": "uni-mask uni-actionsheet__mask",
-          "onClick": () => _close(-1)
-        }, null, 8, ["onClick"]), [[vShow, props2.visible]])]
-      }), createVNode("div", {
-        "class": ["uni-actionsheet", {
-          "uni-actionsheet_toggle": props2.visible
-        }],
-        "style": popupStyle.value.content
-      }, [createVNode("div", {
-        "ref": main,
-        "class": "uni-actionsheet__menu",
-        "onWheel": _handleWheel
-      }, [props2.title ? createVNode(Fragment, null, [createVNode("div", {
-        "class": "uni-actionsheet__cell",
-        "style": {
-          height: `${titleHeight.value}px`
-        }
-      }, null), createVNode("div", {
-        "class": "uni-actionsheet__title"
-      }, [props2.title])]) : "", createVNode("div", {
-        "style": {
-          maxHeight: `${HEIGHT.value}px`,
-          overflow: "hidden"
-        }
-      }, [createVNode("div", {
-        "ref": content
-      }, [props2.itemList.map((itemTitle, index2) => createVNode("div", {
-        "key": index2,
-        "style": {
-          color: actionSheetTheme.listItemColor
-        },
-        "class": "uni-actionsheet__cell",
-        "onClick": () => _close(index2)
-      }, [itemTitle], 12, ["onClick"]))], 512)])], 40, ["onWheel"]), createVNode("div", {
-        "class": "uni-actionsheet__action"
-      }, [createVNode("div", {
-        "style": {
-          color: actionSheetTheme.cancelItemColor
-        },
-        "class": "uni-actionsheet__cell",
-        "onClick": () => _close(-1)
-      }, [t2("uni.showActionSheet.cancel")], 12, ["onClick"])]), createVNode("div", {
-        "style": popupStyle.value.triangle
-      }, null, 4)], 6)], 40, ["onTouchmove"]);
-    };
-  }
-});
-function useActionSheetLoader(props2, emit2) {
-  function _close(tapIndex) {
-    emit2("close", tapIndex);
-  }
-  const {
-    key,
-    disable
-  } = useKeyboard();
-  watch(() => props2.visible, (value) => disable.value = !value);
-  watchEffect(() => {
-    const {
-      value
-    } = key;
-    if (value === "esc") {
-      _close && _close(-1);
-    }
-  });
-  return {
-    _close
-  };
-}
-function initClick(dom) {
-  const MAX_MOVE = 20;
-  let x = 0;
-  let y = 0;
-  dom.addEventListener("touchstart", (event) => {
-    const info = event.changedTouches[0];
-    x = info.clientX;
-    y = info.clientY;
-  });
-  dom.addEventListener("touchend", (event) => {
-    const info = event.changedTouches[0];
-    if (Math.abs(info.clientX - x) < MAX_MOVE && Math.abs(info.clientY - y) < MAX_MOVE) {
-      const target = event.target;
-      const currentTarget = event.currentTarget;
-      const customEvent = new CustomEvent("click", {
-        bubbles: true,
-        cancelable: true,
-        target,
-        currentTarget
-      });
-      ["screenX", "screenY", "clientX", "clientY", "pageX", "pageY"].forEach((key) => {
-        customEvent[key] = info[key];
-      });
-      event.target.dispatchEvent(customEvent);
-    }
-  });
-}
-function useOnThemeChange(props2) {
-  const actionSheetTheme = reactive({
-    listItemColor: "#000",
-    cancelItemColor: "#000"
-  });
-  const _onThemeChange = ({
-    theme
-  }) => {
-    setActionSheetTheme(theme, actionSheetTheme);
-  };
-  watchEffect(() => {
-    if (props2.visible) {
-      actionSheetTheme.listItemColor = actionSheetTheme.cancelItemColor = props2.itemColor;
-      if (props2.itemColor === "#000") {
-        _onThemeChange({
-          theme: getTheme()
-        });
-        onThemeChange$1(_onThemeChange);
-      }
-    } else {
-      offThemeChange(_onThemeChange);
-    }
-  });
-  return actionSheetTheme;
-}
-let resolveAction;
-let rejectAction;
-let showActionSheetState;
-const onHidePopupOnce = /* @__PURE__ */ once(() => {
-  UniServiceJSBridge.on(
-    "onHidePopup",
-    () => showActionSheetState.visible = false
-  );
-});
-function onActionSheetClose(tapIndex) {
-  if (tapIndex === -1) {
-    rejectAction && rejectAction("cancel");
-  } else {
-    resolveAction && resolveAction({ tapIndex });
-  }
-}
-const hideActionSheet = () => {
-  if (showActionSheetState) {
-    showActionSheetState.visible = false;
-  }
-};
-const showActionSheet = /* @__PURE__ */ defineAsyncApi(
-  API_SHOW_ACTION_SHEET,
-  (args, { resolve, reject }) => {
-    onHidePopupOnce();
-    resolveAction = resolve;
-    rejectAction = reject;
-    if (!showActionSheetState) {
-      showActionSheetState = reactive(args);
-      nextTick(
-        () => (createRootApp(
-          actionSheet,
-          showActionSheetState,
-          onActionSheetClose
-        ).mount(ensureRoot("u-s-a-s")), //下一帧执行，确保首次显示时有动画效果
-        nextTick(() => showActionSheetState.visible = true))
-      );
-    } else {
-      extend(showActionSheetState, args);
-      showActionSheetState.visible = true;
-    }
-  },
-  ShowActionSheetProtocol,
-  ShowActionSheetOptions
-);
-const loadFontFace = /* @__PURE__ */ defineAsyncApi(
-  API_LOAD_FONT_FACE,
-  ({ family, source, desc }, { resolve, reject }) => {
-    if (source.startsWith(`url("`) || source.startsWith(`url('`)) {
-      source = `url('${getRealPath(source.substring(5, source.length - 2))}')`;
-    } else if (source.startsWith("url(")) {
-      source = `url('${getRealPath(source.substring(4, source.length - 1))}')`;
-    } else {
-      source = getRealPath(source);
-    }
-    addFont(family, source, desc).then(() => {
-      resolve();
-    }).catch((err) => {
-      reject(`loadFontFace:fail ${err}`);
-    });
-  },
-  LoadFontFaceProtocol
-);
-const clazz = { class: "uni-async-loading" };
-const loadingVNode = /* @__PURE__ */ createVNode(
-  "i",
-  { class: "uni-loading" },
-  null,
-  -1
-  /* HOISTED */
-);
-const AsyncLoadingComponent = /* @__PURE__ */ defineSystemComponent({
-  name: "AsyncLoading",
-  render() {
-    return openBlock(), createBlock("div", clazz, [loadingVNode]);
-  }
-});
-function reload() {
-  window.location.reload();
-}
-const AsyncErrorComponent = /* @__PURE__ */ defineSystemComponent({
-  name: "AsyncError",
-  setup() {
-    initI18nAsyncMsgsOnce();
-    const {
-      t: t2
-    } = useI18n();
-    return () => createVNode("div", {
-      "class": "uni-async-error",
-      "onClick": reload
-    }, [t2("uni.async.error")], 8, ["onClick"]);
-  }
-});
-let appVm;
-let $uniApp;
-{
-  class UniAppImpl {
-    get vm() {
-      return appVm;
-    }
-    get $vm() {
-      return appVm;
-    }
-    get globalData() {
-      return (appVm == null ? void 0 : appVm.globalData) || {};
-    }
-    getAndroidApplication() {
-      return null;
-    }
-  }
-  $uniApp = new UniAppImpl();
-}
-function getApp$1() {
-  {
-    return $uniApp;
-  }
-}
-function initApp$1(vm) {
-  appVm = vm;
-  Object.defineProperty(appVm.$.ctx, "$children", {
-    get() {
-      return getCurrentBasePages().map((page) => page.$vm);
-    }
-  });
-  const app = appVm.$.appContext.app;
-  if (!app.component(AsyncLoadingComponent.name)) {
-    app.component(AsyncLoadingComponent.name, AsyncLoadingComponent);
-  }
-  if (!app.component(AsyncErrorComponent.name)) {
-    app.component(AsyncErrorComponent.name, AsyncErrorComponent);
-  }
-  initAppVm(appVm);
-  defineGlobalData(appVm);
-  initService();
-  initView();
-}
-function updateDocumentTitle(title) {
-  {
-    document.title = title;
-  }
-  UniServiceJSBridge.emit(ON_NAVIGATION_BAR_CHANGE, { titleText: title });
-}
-function useDocumentTitle(pageMeta) {
-  function update() {
-    updateDocumentTitle(pageMeta.navigationBar.titleText);
-  }
-  watchEffect(update);
-  onActivated(update);
-}
-function setNavigationBar(pageMeta, type, args, resolve, reject) {
-  if (!pageMeta) {
-    return reject("page not found");
-  }
-  const { navigationBar } = pageMeta;
-  switch (type) {
-    case API_SET_NAVIGATION_BAR_COLOR:
-      const { frontColor, backgroundColor, animation: animation2 } = args;
-      const { duration, timingFunc } = animation2;
-      if (frontColor) {
-        navigationBar.titleColor = frontColor === "#000000" ? "#000000" : "#ffffff";
-      }
-      if (backgroundColor) {
-        navigationBar.backgroundColor = backgroundColor;
-      }
-      navigationBar.duration = duration + "ms";
-      navigationBar.timingFunc = timingFunc;
-      break;
-    case API_SHOW_NAVIGATION_BAR_LOADING:
-      navigationBar.loading = true;
-      break;
-    case API_HIDE_NAVIGATION_BAR_LOADING:
-      navigationBar.loading = false;
-      break;
-    case API_SET_NAVIGATION_BAR_TITLE:
-      const { title } = args;
-      navigationBar.titleText = title;
-      break;
-  }
-  resolve();
-}
-const setNavigationBarColor = /* @__PURE__ */ defineAsyncApi(
-  API_SET_NAVIGATION_BAR_COLOR,
-  (args, { resolve, reject }) => {
-    setNavigationBar(
-      getCurrentPageMeta(),
-      API_SET_NAVIGATION_BAR_COLOR,
-      args,
-      resolve,
-      reject
-    );
-  },
-  SetNavigationBarColorProtocol,
-  SetNavigationBarColorOptions
-);
-const showNavigationBarLoading = /* @__PURE__ */ defineAsyncApi(
-  API_SHOW_NAVIGATION_BAR_LOADING,
-  (args, { resolve, reject }) => {
-    setNavigationBar(
-      getCurrentPageMeta(),
-      API_SHOW_NAVIGATION_BAR_LOADING,
-      args || {},
-      resolve,
-      reject
-    );
-  }
-);
-const hideNavigationBarLoading = /* @__PURE__ */ defineAsyncApi(
-  API_HIDE_NAVIGATION_BAR_LOADING,
-  (args, { resolve, reject }) => {
-    setNavigationBar(
-      getCurrentPageMeta(),
-      API_HIDE_NAVIGATION_BAR_LOADING,
-      args || {},
-      resolve,
-      reject
-    );
-  }
-);
-const setNavigationBarTitle = /* @__PURE__ */ defineAsyncApi(
-  API_SET_NAVIGATION_BAR_TITLE,
-  (args, { resolve, reject }) => {
-    setNavigationBar(
-      getCurrentPageMeta(),
-      API_SET_NAVIGATION_BAR_TITLE,
-      args,
-      resolve,
-      reject
-    );
-  },
-  SetNavigationBarTitleProtocol
-);
-const pageScrollTo = /* @__PURE__ */ defineAsyncApi(
-  API_PAGE_SCROLL_TO,
-  ({ scrollTop, selector, duration }, { resolve }) => {
-    scrollTo(selector || scrollTop || 0, duration, true);
-    resolve();
-  },
-  PageScrollToProtocol,
-  PageScrollToOptions
-);
-const startPullDownRefresh = /* @__PURE__ */ defineAsyncApi(
-  API_START_PULL_DOWN_REFRESH,
-  (_args, { resolve }) => {
-    UniServiceJSBridge.invokeViewMethod(
-      API_START_PULL_DOWN_REFRESH,
-      {},
-      getCurrentPageId()
-    );
-    resolve();
-  }
-);
-const stopPullDownRefresh = /* @__PURE__ */ defineAsyncApi(
-  API_STOP_PULL_DOWN_REFRESH,
-  (_args, { resolve }) => {
-    UniServiceJSBridge.invokeViewMethod(
-      API_STOP_PULL_DOWN_REFRESH,
-      {},
-      getCurrentPageId()
-    );
-    resolve();
-  }
-);
-const setTabBarItemProps = [
-  "text",
-  "iconPath",
-  "iconfont",
-  "selectedIconPath",
-  "visible"
-];
-const setTabBarStyleProps = [
-  "color",
-  "selectedColor",
-  "backgroundColor",
-  "borderStyle",
-  "borderColor",
-  "midButton"
-];
-const setTabBarBadgeProps = ["badge", "redDot"];
-function setProperties(item, props2, propsData) {
-  props2.forEach(function(name) {
-    if (hasOwn(propsData, name)) {
-      item[name] = propsData[name];
-    }
-  });
-}
-function setTabBar(type, args, resolve, reject) {
-  var _a;
-  let isTabBar = false;
-  const pages = getCurrentBasePages();
-  if (pages.length) {
-    if (getPage$BasePage(pages[pages.length - 1]).meta.isTabBar) {
-      isTabBar = true;
-    }
-  }
-  if (!isTabBar) {
-    return reject(`not TabBar page`);
-  }
-  const { index: index2 } = args;
-  if (typeof index2 === "number") {
-    const tabBarListLength = (_a = __uniConfig == null ? void 0 : __uniConfig.tabBar) == null ? void 0 : _a.list.length;
-    if (!tabBarListLength || index2 >= tabBarListLength) {
-      return reject(`tabbar item not found`);
-    }
-  }
-  const tabBar2 = useTabBar();
-  switch (type) {
-    case API_SHOW_TAB_BAR:
-      tabBar2.shown = true;
-      break;
-    case API_HIDE_TAB_BAR:
-      tabBar2.shown = false;
-      break;
-    case API_SET_TAB_BAR_ITEM:
-      const tabBarItem = tabBar2.list[index2];
-      const oldPagePath = tabBarItem.pagePath;
-      setProperties(tabBarItem, setTabBarItemProps, args);
-      const { pagePath } = args;
-      if (pagePath) {
-        const newPagePath = addLeadingSlash(pagePath);
-        if (newPagePath !== oldPagePath) {
-          normalizeTabBarRoute(index2, oldPagePath, newPagePath);
-        }
-      }
-      break;
-    case API_SET_TAB_BAR_STYLE:
-      setProperties(tabBar2, setTabBarStyleProps, args);
-      break;
-    case API_SHOW_TAB_BAR_RED_DOT:
-      setProperties(tabBar2.list[index2], setTabBarBadgeProps, {
-        badge: "",
-        redDot: true
-      });
-      break;
-    case API_SET_TAB_BAR_BADGE:
-      setProperties(tabBar2.list[index2], setTabBarBadgeProps, {
-        badge: args.text,
-        redDot: true
-      });
-      break;
-    case API_HIDE_TAB_BAR_RED_DOT:
-    case API_REMOVE_TAB_BAR_BADGE:
-      setProperties(tabBar2.list[index2], setTabBarBadgeProps, {
-        badge: "",
-        redDot: false
-      });
-      break;
-  }
-  resolve();
-}
-const setTabBarItem = /* @__PURE__ */ defineAsyncApi(
-  API_SET_TAB_BAR_ITEM,
-  (args, { resolve, reject }) => {
-    setTabBar(API_SET_TAB_BAR_ITEM, args, resolve, reject);
-  },
-  SetTabBarItemProtocol,
-  SetTabBarItemOptions
-);
-const setTabBarStyle = /* @__PURE__ */ defineAsyncApi(
-  API_SET_TAB_BAR_STYLE,
-  (args, { resolve, reject }) => {
-    setTabBar(API_SET_TAB_BAR_STYLE, args, resolve, reject);
-  },
-  SetTabBarStyleProtocol,
-  SetTabBarStyleOptions
-);
-const hideTabBar = /* @__PURE__ */ defineAsyncApi(
-  API_HIDE_TAB_BAR,
-  (args, { resolve, reject }) => {
-    setTabBar(API_HIDE_TAB_BAR, args ? args : {}, resolve, reject);
-  },
-  HideTabBarProtocol
-);
-const showTabBar = /* @__PURE__ */ defineAsyncApi(
-  API_SHOW_TAB_BAR,
-  (args, { resolve, reject }) => {
-    setTabBar(API_SHOW_TAB_BAR, args ? args : {}, resolve, reject);
-  },
-  ShowTabBarProtocol
-);
-const hideTabBarRedDot = /* @__PURE__ */ defineAsyncApi(
-  API_HIDE_TAB_BAR_RED_DOT,
-  (args, { resolve, reject }) => {
-    setTabBar(API_HIDE_TAB_BAR_RED_DOT, args, resolve, reject);
-  },
-  HideTabBarRedDotProtocol,
-  HideTabBarRedDotOptions
-);
-const showTabBarRedDot = /* @__PURE__ */ defineAsyncApi(
-  API_SHOW_TAB_BAR_RED_DOT,
-  (args, { resolve, reject }) => {
-    setTabBar(API_SHOW_TAB_BAR_RED_DOT, args, resolve, reject);
-  },
-  ShowTabBarRedDotProtocol,
-  ShowTabBarRedDotOptions
-);
-const removeTabBarBadge = /* @__PURE__ */ defineAsyncApi(
-  API_REMOVE_TAB_BAR_BADGE,
-  (args, { resolve, reject }) => {
-    setTabBar(API_REMOVE_TAB_BAR_BADGE, args, resolve, reject);
-  },
-  RemoveTabBarBadgeProtocol,
-  RemoveTabBarBadgeOptions
-);
-const setTabBarBadge = /* @__PURE__ */ defineAsyncApi(
-  API_SET_TAB_BAR_BADGE,
-  (args, { resolve, reject }) => {
-    setTabBar(API_SET_TAB_BAR_BADGE, args, resolve, reject);
-  },
-  SetTabBarBadgeProtocol,
-  SetTabBarBadgeOptions
-);
-const UNI_TABBAR_ICON_FONT = "UniTabbarIconFont";
-const _middleButton = {
-  width: "50px",
-  height: "50px",
-  iconWidth: "24px"
-};
-const TabBar = /* @__PURE__ */ defineSystemComponent({
-  name: "TabBar",
-  setup() {
-    const visibleList = ref([]);
-    const _tabBar = useTabBar();
-    const tabBar2 = useTheme(_tabBar, () => {
-      const tabBarStyle = parseTheme(_tabBar);
-      tabBar2.backgroundColor = tabBarStyle.backgroundColor;
-      tabBar2.borderStyle = tabBarStyle.borderStyle;
-      tabBar2.color = tabBarStyle.color;
-      tabBar2.selectedColor = tabBarStyle.selectedColor;
-      tabBar2.blurEffect = tabBarStyle.blurEffect;
-      tabBar2.midButton = tabBarStyle.midButton;
-      if (tabBarStyle.list && tabBarStyle.list.length) {
-        tabBarStyle.list.forEach((item, index2) => {
-          tabBar2.list[index2].iconPath = item.iconPath;
-          tabBar2.list[index2].selectedIconPath = item.selectedIconPath;
-        });
-      }
-    });
-    useVisibleList(tabBar2, visibleList);
-    useTabBarCssVar(tabBar2);
-    const onSwitchTab = useSwitchTab(useRoute(), tabBar2, visibleList);
-    const {
-      style,
-      borderStyle,
-      placeholderStyle
-    } = useTabBarStyle(tabBar2);
-    onMounted(() => {
-      if (tabBar2.iconfontSrc) {
-        loadFontFace({
-          family: UNI_TABBAR_ICON_FONT,
-          source: `url("${tabBar2.iconfontSrc}")`
-        });
-      }
-    });
-    return () => {
-      const tabBarItemsTsx = createTabBarItemsTsx(tabBar2, onSwitchTab, visibleList);
-      return createVNode("uni-tabbar", {
-        "class": "uni-tabbar-" + tabBar2.position
-      }, [createVNode("div", {
-        "class": "uni-tabbar",
-        "style": style.value
-      }, [createVNode("div", {
-        "class": "uni-tabbar-border",
-        "style": borderStyle.value
-      }, null, 4), tabBarItemsTsx], 4), createVNode("div", {
-        "class": "uni-placeholder",
-        "style": placeholderStyle.value
-      }, null, 4)], 2);
-    };
-  }
-});
-function useTabBarCssVar(tabBar2) {
-  watch(() => tabBar2.shown, (value) => {
-    updatePageCssVar({
-      "--window-bottom": normalizeWindowBottom(value ? parseInt(tabBar2.height) : 0)
-    });
-  });
-}
-function useVisibleList(tabBar2, visibleList) {
-  const internalMidButton = ref(extend({
-    type: "midButton"
-  }, tabBar2.midButton));
-  function setVisibleList() {
-    let tempList = [];
-    tempList = tabBar2.list.filter((item) => item.visible !== false);
-    if (__UNI_FEATURE_TABBAR_MIDBUTTON__ && tabBar2.midButton) {
-      internalMidButton.value = extend({}, _middleButton, internalMidButton.value, tabBar2.midButton);
-      tempList = tempList.filter((item) => !isMidButton(item));
-      if (tempList.length % 2 === 0) {
-        tempList.splice(Math.floor(tempList.length / 2), 0, internalMidButton.value);
-      }
-    }
-    visibleList.value = tempList;
-  }
-  watchEffect(setVisibleList);
-}
-function useSwitchTab(route, tabBar2, visibleList) {
-  watchEffect(() => {
-    const meta = route.meta;
-    if (meta.isTabBar) {
-      const pagePath = meta.route;
-      const index2 = visibleList.value.findIndex((item) => item.pagePath === pagePath);
-      tabBar2.selectedIndex = index2;
-    }
-  });
-  return (tabBarItem, index2) => {
-    const {
-      type
-    } = tabBarItem;
-    return () => {
-      if (__UNI_FEATURE_TABBAR_MIDBUTTON__ && type === "midButton") {
-        return UniServiceJSBridge.invokeOnCallback(API_ON_TAB_BAR_MID_BUTTON_TAP);
-      }
-      const {
-        pagePath,
-        text: text2
-      } = tabBarItem;
-      let url = addLeadingSlash(pagePath);
-      if (url === __uniRoutes[0].alias) {
-        url = "/";
-      }
-      if (route.path !== url) {
-        uni.switchTab({
-          from: "tabBar",
-          url,
-          tabBarText: text2
-        });
-      } else {
-        invokeHook("onTabItemTap", {
-          index: index2,
-          text: text2,
-          pagePath
-        });
-      }
-    };
-  };
-}
-const DEFAULT_BG_COLOR = "#f7f7fa";
-const BLUR_EFFECT_COLOR_DARK = "rgb(0, 0, 0, 0.8)";
-const BLUR_EFFECT_COLOR_LIGHT = "rgb(250, 250, 250, 0.8)";
-const BLUR_EFFECT_COLORS = {
-  dark: BLUR_EFFECT_COLOR_DARK,
-  light: BLUR_EFFECT_COLOR_LIGHT,
-  extralight: BLUR_EFFECT_COLOR_LIGHT
-};
-const BORDER_COLORS = {
-  white: "rgba(255, 255, 255, 0.33)",
-  black: "rgba(0, 0, 0, 0.33)"
-};
-function useTabBarStyle(tabBar2) {
-  const style = computed(() => {
-    let backgroundColor = tabBar2.backgroundColor;
-    const blurEffect = tabBar2.blurEffect;
-    if (!backgroundColor) {
-      if (cssBackdropFilter && blurEffect && blurEffect !== "none") {
-        backgroundColor = BLUR_EFFECT_COLORS[blurEffect];
-      }
-    }
-    return {
-      backgroundColor: backgroundColor || DEFAULT_BG_COLOR,
-      backdropFilter: blurEffect !== "none" ? "blur(10px)" : blurEffect
-    };
-  });
-  const borderStyle = computed(() => {
-    const {
-      borderStyle: borderStyle2,
-      borderColor
-    } = tabBar2;
-    if (borderColor && isString(borderColor)) {
-      return {
-        backgroundColor: borderColor
-      };
-    }
-    return {
-      backgroundColor: BORDER_COLORS[borderStyle2] || BORDER_COLORS["black"]
-    };
-  });
-  const placeholderStyle = computed(() => {
-    return {
-      height: tabBar2.height
-    };
-  });
-  return {
-    style,
-    borderStyle,
-    placeholderStyle
-  };
-}
-function isMidButton(item) {
-  return item.type === "midButton";
-}
-function createTabBarItemsTsx(tabBar2, onSwitchTab, visibleList) {
-  const {
-    selectedIndex,
-    selectedColor,
-    color
-  } = tabBar2;
-  return visibleList.value.map((item, index2) => {
-    const selected = selectedIndex === index2;
-    const textColor = selected ? selectedColor : color;
-    const iconPath = (selected ? item.selectedIconPath || item.iconPath : item.iconPath) || "";
-    const iconfontText = item.iconfont ? selected ? item.iconfont.selectedText || item.iconfont.text : item.iconfont.text : void 0;
-    const iconfontColor = item.iconfont ? selected ? item.iconfont.selectedColor || item.iconfont.color : item.iconfont.color : void 0;
-    if (!__UNI_FEATURE_TABBAR_MIDBUTTON__) {
-      return createTabBarItemTsx(textColor, iconPath, iconfontText, iconfontColor, item, tabBar2, index2, onSwitchTab);
-    }
-    return isMidButton(item) ? createTabBarMidButtonTsx(textColor, iconPath, iconfontText, iconfontColor, item, tabBar2, index2, onSwitchTab) : createTabBarItemTsx(textColor, iconPath, iconfontText, iconfontColor, item, tabBar2, index2, onSwitchTab);
-  });
-}
-function createTabBarItemTsx(color, iconPath, iconfontText, iconfontColor, tabBarItem, tabBar2, index2, onSwitchTab) {
-  return createVNode("div", {
-    "key": index2,
-    "class": "uni-tabbar__item",
-    "onClick": onSwitchTab(tabBarItem, index2)
-  }, [createTabBarItemBdTsx(color, iconPath || "", iconfontText, iconfontColor, tabBarItem, tabBar2)], 8, ["onClick"]);
-}
-function createTabBarItemBdTsx(color, iconPath, iconfontText, iconfontColor, tabBarItem, tabBar2) {
-  const {
-    height
-  } = tabBar2;
-  return createVNode("div", {
-    "class": "uni-tabbar__bd",
-    "style": {
-      height
-    }
-  }, [iconfontText ? createTabBarItemIconfontTsx(iconfontText, iconfontColor || BLUR_EFFECT_COLOR_DARK, tabBarItem, tabBar2) : iconPath && createTabBarItemIconTsx(iconPath, tabBarItem, tabBar2), tabBarItem.text && createTabBarItemTextTsx(color, tabBarItem, tabBar2), tabBarItem.redDot && createTabBarItemRedDotTsx(tabBarItem.badge)], 4);
-}
-function createTabBarItemIconTsx(iconPath, tabBarItem, tabBar2) {
-  const {
-    type,
-    text: text2
-  } = tabBarItem;
-  const {
-    iconWidth
-  } = tabBar2;
-  const clazz2 = "uni-tabbar__icon" + (text2 ? " uni-tabbar__icon__diff" : "");
-  const style = {
-    width: iconWidth,
-    height: iconWidth
-  };
-  return createVNode("div", {
-    "class": clazz2,
-    "style": style
-  }, [type !== "midButton" && createVNode("img", {
-    "src": getRealPath(iconPath)
-  }, null, 8, ["src"])], 6);
-}
-function createTabBarItemIconfontTsx(iconfontText, iconfontColor, tabBarItem, tabBar2) {
-  var _a;
-  const {
-    type,
-    text: text2
-  } = tabBarItem;
-  const {
-    iconWidth
-  } = tabBar2;
-  const clazz2 = "uni-tabbar__icon" + (text2 ? " uni-tabbar__icon__diff" : "");
-  const style = {
-    width: iconWidth,
-    height: iconWidth
-  };
-  const iconfontStyle = {
-    fontSize: ((_a = tabBarItem.iconfont) == null ? void 0 : _a.fontSize) || iconWidth,
-    color: iconfontColor
-  };
-  return createVNode("div", {
-    "class": clazz2,
-    "style": style
-  }, [type !== "midButton" && createVNode("div", {
-    "class": "uni-tabbar__iconfont",
-    "style": iconfontStyle
-  }, [iconfontText], 4)], 6);
-}
-function createTabBarItemTextTsx(color, tabBarItem, tabBar2) {
-  const {
-    iconPath,
-    text: text2
-  } = tabBarItem;
-  const {
-    fontSize,
-    spacing
-  } = tabBar2;
-  const style = {
-    color,
-    fontSize,
-    lineHeight: !iconPath ? 1.8 : "normal",
-    marginTop: !iconPath ? "inherit" : spacing
-  };
-  return createVNode("div", {
-    "class": "uni-tabbar__label",
-    "style": style
-  }, [text2], 4);
-}
-function createTabBarItemRedDotTsx(badge) {
-  const clazz2 = "uni-tabbar__reddot" + (badge ? " uni-tabbar__badge" : "");
-  return createVNode("div", {
-    "class": clazz2
-  }, [badge], 2);
-}
-function createTabBarMidButtonTsx(color, iconPath, iconfontText, iconfontColor, midButton, tabBar2, index2, onSwitchTab) {
-  const {
-    width,
-    height,
-    backgroundImage,
-    iconWidth
-  } = midButton;
-  return createVNode("div", {
-    "key": "midButton",
-    "class": "uni-tabbar__item",
-    "style": {
-      flex: "0 0 " + width,
-      position: "relative"
-    },
-    "onClick": onSwitchTab(midButton, index2)
-  }, [createVNode("div", {
-    "class": "uni-tabbar__mid",
-    "style": {
-      width,
-      height,
-      backgroundImage: backgroundImage ? "url('" + getRealPath(backgroundImage) + "')" : "none"
-    }
-  }, [iconPath && createVNode("img", {
-    "style": {
-      width: iconWidth,
-      height: iconWidth
-    },
-    "src": getRealPath(iconPath)
-  }, null, 12, ["src"])], 4), createTabBarItemBdTsx(color, iconPath, iconfontText, iconfontColor, midButton, tabBar2)], 12, ["onClick"]);
-}
-const DEFAULT_CSS_VAR_VALUE = "0px";
-let globalLayoutState = void 0;
-function getLayoutState() {
-  return globalLayoutState;
-}
-const LayoutComponent = /* @__PURE__ */ defineSystemComponent({
-  name: "Layout",
-  setup(_props, {
-    emit: emit2
-  }) {
-    const rootRef = ref(null);
-    initCssVar();
-    const keepAliveRoute = __UNI_FEATURE_PAGES__ && useKeepAliveRoute();
-    const {
-      layoutState,
-      windowState
-    } = useState$3();
-    useMaxWidth(layoutState, rootRef);
-    const topWindow = __UNI_FEATURE_TOPWINDOW__ && useTopWindow(layoutState);
-    const leftWindow = __UNI_FEATURE_LEFTWINDOW__ && useLeftWindow(layoutState);
-    const rightWindow = __UNI_FEATURE_RIGHTWINDOW__ && useRightWindow(layoutState);
-    const showTabBar2 = __UNI_FEATURE_TABBAR__ && useShowTabBar();
-    const clazz2 = useAppClass(showTabBar2);
-    globalLayoutState = layoutState;
-    return () => {
-      const layoutTsx = createLayoutTsx(keepAliveRoute, layoutState, windowState, topWindow, leftWindow, rightWindow);
-      const tabBarTsx = __UNI_FEATURE_TABBAR__ && createTabBarTsx(showTabBar2);
-      return createVNode("uni-app", {
-        "ref": rootRef,
-        "class": clazz2.value
-      }, [layoutTsx, tabBarTsx], 2);
-    };
-  }
-});
-function useAppClass(showTabBar2) {
-  const showMaxWidth = ref(false);
-  return computed(() => {
-    return {
-      "uni-app--showtabbar": showTabBar2 && showTabBar2.value,
-      "uni-app--maxwidth": showMaxWidth.value
-    };
-  });
-}
-function initCssVar() {
-  updateCssVar({
-    "--status-bar-height": DEFAULT_CSS_VAR_VALUE,
-    "--top-window-height": DEFAULT_CSS_VAR_VALUE,
-    "--window-left": DEFAULT_CSS_VAR_VALUE,
-    "--window-right": DEFAULT_CSS_VAR_VALUE,
-    "--window-margin": DEFAULT_CSS_VAR_VALUE,
-    "--tab-bar-height": DEFAULT_CSS_VAR_VALUE
-  });
-}
-function initMediaQuery(minWidth, callback) {
-  const mediaQueryList = window.matchMedia("(min-width: " + minWidth + "px)");
-  if (mediaQueryList.addEventListener) {
-    mediaQueryList.addEventListener("change", callback);
-  } else {
-    mediaQueryList.addListener(callback);
-  }
-  return mediaQueryList.matches;
-}
-function useMaxWidth(layoutState, rootRef) {
-  const route = usePageRoute();
-  function checkMaxWidth2() {
-    const windowWidth = document.body.clientWidth;
-    const pages = getCurrentBasePages();
-    let meta = {};
-    if (pages.length > 0) {
-      const curPage = pages[pages.length - 1];
-      meta = getPage$BasePage(curPage).meta;
-    } else {
-      const routeOptions = getRouteOptions(route.path, true);
-      if (routeOptions) {
-        meta = routeOptions.meta;
-      }
-    }
-    const maxWidth2 = parseInt(String((hasOwn(meta, "maxWidth") ? meta.maxWidth : __uniConfig.globalStyle.maxWidth) || Number.MAX_SAFE_INTEGER));
-    let showMaxWidth = false;
-    if (windowWidth > maxWidth2) {
-      showMaxWidth = true;
-    } else {
-      showMaxWidth = false;
-    }
-    if (showMaxWidth && maxWidth2) {
-      layoutState.marginWidth = (windowWidth - maxWidth2) / 2;
-      nextTick(() => {
-        const rootEl = rootRef.value;
-        if (rootEl) {
-          rootEl.setAttribute("style", "max-width:" + maxWidth2 + "px;margin:0 auto;");
-        }
-      });
-    } else {
-      layoutState.marginWidth = 0;
-      nextTick(() => {
-        const rootEl = rootRef.value;
-        if (rootEl) {
-          rootEl.removeAttribute("style");
-        }
-      });
-    }
-  }
-  watch([() => route.path], checkMaxWidth2);
-  onMounted(() => {
-    checkMaxWidth2();
-    window.addEventListener("resize", checkMaxWidth2);
-  });
-}
-function useState$3() {
-  const route = usePageRoute();
-  if (!__UNI_FEATURE_RESPONSIVE__) {
-    const layoutState2 = reactive({
-      marginWidth: 0,
-      leftWindowWidth: 0,
-      rightWindowWidth: 0
-    });
-    watch(() => layoutState2.marginWidth, (value) => updateCssVar({
-      "--window-margin": value + "px"
-    }));
-    watch(() => layoutState2.leftWindowWidth + layoutState2.marginWidth, (value) => {
-      updateCssVar({
-        "--window-left": value + "px"
-      });
-    });
-    watch(() => layoutState2.rightWindowWidth + layoutState2.marginWidth, (value) => {
-      updateCssVar({
-        "--window-right": value + "px"
-      });
-    });
-    return {
-      layoutState: layoutState2,
-      windowState: computed(() => ({}))
-    };
-  }
-  const topWindowMediaQuery = ref(false);
-  const leftWindowMediaQuery = ref(false);
-  const rightWindowMediaQuery = ref(false);
-  const showTopWindow2 = computed(() => __UNI_FEATURE_TOPWINDOW__ && route.meta.topWindow !== false && topWindowMediaQuery.value);
-  const showLeftWindow2 = computed(() => __UNI_FEATURE_LEFTWINDOW__ && route.meta.leftWindow !== false && leftWindowMediaQuery.value);
-  const showRightWindow2 = computed(() => __UNI_FEATURE_RIGHTWINDOW__ && route.meta.rightWindow !== false && rightWindowMediaQuery.value);
-  const layoutState = reactive({
-    topWindowMediaQuery,
-    showTopWindow: showTopWindow2,
-    apiShowTopWindow: false,
-    leftWindowMediaQuery,
-    showLeftWindow: showLeftWindow2,
-    apiShowLeftWindow: false,
-    rightWindowMediaQuery,
-    showRightWindow: showRightWindow2,
-    apiShowRightWindow: false,
-    topWindowHeight: 0,
-    marginWidth: 0,
-    leftWindowWidth: 0,
-    rightWindowWidth: 0,
-    navigationBarTitleText: "",
-    topWindowStyle: {},
-    leftWindowStyle: {},
-    rightWindowStyle: {}
-  });
-  const props2 = ["topWindow", "leftWindow", "rightWindow"];
-  props2.forEach((prop) => {
-    var _a;
-    const matchMedia = (_a = __uniConfig[prop]) == null ? void 0 : _a.matchMedia;
-    let topWindowMinWidth = RESPONSIVE_MIN_WIDTH;
-    if (matchMedia && hasOwn(matchMedia, "minWidth")) {
-      const minWidth = matchMedia.minWidth;
-      topWindowMinWidth = checkMinWidth(minWidth) ? minWidth : topWindowMinWidth;
-    }
-    const matches2 = initMediaQuery(topWindowMinWidth, (ev) => {
-      layoutState[`${prop}MediaQuery`] = ev.matches;
-    });
-    layoutState[`${prop}MediaQuery`] = matches2;
-  });
-  watch(() => layoutState.topWindowHeight, (value) => updateCssVar({
-    "--top-window-height": value + "px"
-  }));
-  watch(() => layoutState.marginWidth, (value) => updateCssVar({
-    "--window-margin": value + "px"
-  }));
-  watch(() => layoutState.leftWindowWidth + layoutState.marginWidth, (value) => {
-    updateCssVar({
-      "--window-left": value + "px"
-    });
-  });
-  watch(() => layoutState.rightWindowWidth + layoutState.marginWidth, (value) => {
-    updateCssVar({
-      "--window-right": value + "px"
-    });
-  });
-  UniServiceJSBridge.on(ON_NAVIGATION_BAR_CHANGE, (navigationBar) => {
-    layoutState.navigationBarTitleText = navigationBar.titleText;
-  });
-  const windowState = computed(() => ({
-    matchTopWindow: layoutState.topWindowMediaQuery,
-    showTopWindow: layoutState.showTopWindow || layoutState.apiShowTopWindow,
-    matchLeftWindow: layoutState.leftWindowMediaQuery,
-    showLeftWindow: layoutState.showLeftWindow || layoutState.apiShowLeftWindow,
-    matchRightWindow: layoutState.rightWindowMediaQuery,
-    showRightWindow: layoutState.showRightWindow || layoutState.apiShowRightWindow
-  }));
-  return {
-    layoutState,
-    windowState
-  };
-}
-function createLayoutTsx(keepAliveRoute, layoutState, windowState, topWindow, leftWindow, rightWindow) {
-  const routerVNode = __UNI_FEATURE_PAGES__ ? createRouterViewVNode(keepAliveRoute) : createPageVNode();
-  if (!__UNI_FEATURE_RESPONSIVE__) {
-    return routerVNode;
-  }
-  const topWindowTsx = __UNI_FEATURE_TOPWINDOW__ ? createTopWindowTsx(topWindow, layoutState, windowState.value) : null;
-  const leftWindowTsx = __UNI_FEATURE_LEFTWINDOW__ ? createLeftWindowTsx(leftWindow, layoutState, windowState.value) : null;
-  const rightWindowTsx = __UNI_FEATURE_RIGHTWINDOW__ ? createRightWindowTsx(rightWindow, layoutState, windowState.value) : null;
-  return createVNode("uni-layout", {
-    "class": {
-      "uni-app--showtopwindow": __UNI_FEATURE_TOPWINDOW__ && layoutState.showTopWindow,
-      "uni-app--showleftwindow": __UNI_FEATURE_LEFTWINDOW__ && layoutState.showLeftWindow,
-      "uni-app--showrightwindow": __UNI_FEATURE_RIGHTWINDOW__ && layoutState.showRightWindow
-    }
-  }, [topWindowTsx, createVNode("uni-content", null, [createVNode("uni-main", null, [routerVNode]), leftWindowTsx, rightWindowTsx])], 2);
-}
-function useShowTabBar(emit2) {
-  const route = usePageRoute();
-  const tabBar2 = useTabBar();
-  const showTabBar2 = computed(() => route.meta.isTabBar && tabBar2.shown);
-  updateCssVar({
-    "--tab-bar-height": tabBar2.height
-  });
-  return showTabBar2;
-}
-function createTabBarTsx(showTabBar2) {
-  return withDirectives(createVNode(TabBar, null, null, 512), [[vShow, showTabBar2.value]]);
-}
-function createPageVNode() {
-  return createVNode(__uniRoutes[0].component);
-}
-function createRouterViewVNode({
-  routeKey,
-  isTabBar,
-  routeCache: routeCache2
-}) {
-  return createVNode(RouterView, null, {
-    default: withCtx(({
-      Component
-    }) => [(openBlock(), createBlock(KeepAlive, {
-      matchBy: "key",
-      cache: routeCache2
-    }, [(openBlock(), createBlock(resolveDynamicComponent(Component), {
-      type: isTabBar.value ? "tabBar" : "",
-      key: routeKey.value
-    }))], 1032, ["cache"]))]),
-    _: 1
-    /* STABLE */
-  });
-}
-function useTopWindow(layoutState) {
-  const {
-    component,
-    style
-  } = __uniConfig.topWindow;
-  const windowRef = ref(null);
-  function updateWindow() {
-    const instance2 = windowRef.value;
-    const el = resolveOwnerEl(instance2.$);
-    const height = el.getBoundingClientRect().height;
-    layoutState.topWindowHeight = height;
-  }
-  onMounted(updateWindow);
-  watch(() => layoutState.showTopWindow || layoutState.apiShowTopWindow, () => nextTick(updateWindow));
-  layoutState.topWindowStyle = style;
-  return {
-    component,
-    windowRef
-  };
-}
-function useLeftWindow(layoutState) {
-  const {
-    component,
-    style
-  } = __uniConfig.leftWindow;
-  const windowRef = ref(null);
-  function updateWindow() {
-    const instance2 = windowRef.value;
-    const el = resolveOwnerEl(instance2.$);
-    const width = el.getBoundingClientRect().width;
-    layoutState.leftWindowWidth = width;
-  }
-  onMounted(updateWindow);
-  watch(() => layoutState.showLeftWindow || layoutState.apiShowLeftWindow, () => nextTick(updateWindow));
-  layoutState.leftWindowStyle = style;
-  return {
-    component,
-    windowRef
-  };
-}
-function useRightWindow(layoutState) {
-  const {
-    component,
-    style
-  } = __uniConfig.rightWindow;
-  const windowRef = ref(null);
-  function updateWindow() {
-    const instance2 = windowRef.value;
-    const el = resolveOwnerEl(instance2.$);
-    const width = el.getBoundingClientRect().width;
-    layoutState.rightWindowWidth = width;
-  }
-  onMounted(updateWindow);
-  watch(() => layoutState.showRightWindow || layoutState.apiShowRightWindow, () => nextTick(updateWindow));
-  layoutState.rightWindowStyle = style;
-  return {
-    component,
-    windowRef
-  };
-}
-function createTopWindowTsx(topWindow, layoutState, windowState) {
-  if (topWindow) {
-    const {
-      component: TopWindow,
-      windowRef
-    } = topWindow;
-    return withDirectives(createVNode("uni-top-window", null, [createVNode("div", {
-      "class": "uni-top-window",
-      "style": layoutState.topWindowStyle
-    }, [createVNode(TopWindow, mergeProps({
-      "ref": windowRef,
-      "navigation-bar-title-text": layoutState.navigationBarTitleText
-    }, windowState), null, 16, ["navigation-bar-title-text"])], 4), createVNode("div", {
-      "class": "uni-top-window--placeholder",
-      "style": {
-        height: layoutState.topWindowHeight + "px"
-      }
-    }, null, 4)], 512), [[vShow, layoutState.showTopWindow || layoutState.apiShowTopWindow]]);
-  }
-}
-function createLeftWindowTsx(leftWindow, layoutState, windowState) {
-  if (leftWindow) {
-    const {
-      component: LeftWindow,
-      windowRef
-    } = leftWindow;
-    return withDirectives(createVNode("uni-left-window", {
-      "data-show": layoutState.apiShowLeftWindow || void 0,
-      "style": layoutState.leftWindowStyle
-    }, [layoutState.apiShowLeftWindow ? createVNode("div", {
-      "class": "uni-mask",
-      "onClick": () => layoutState.apiShowLeftWindow = false
-    }, null, 8, ["onClick"]) : null, createVNode("div", {
-      "class": "uni-left-window"
-    }, [createVNode(LeftWindow, mergeProps({
-      "ref": windowRef
-    }, windowState), null, 16)])], 12, ["data-show"]), [[vShow, layoutState.showLeftWindow || layoutState.apiShowLeftWindow]]);
-  }
-}
-function createRightWindowTsx(rightWindow, layoutState, windowState) {
-  if (rightWindow) {
-    const {
-      component: RightWindow,
-      windowRef
-    } = rightWindow;
-    return withDirectives(createVNode("uni-right-window", {
-      "data-show": layoutState.apiShowRightWindow || void 0,
-      "style": layoutState.rightWindowStyle
-    }, [layoutState.apiShowRightWindow ? createVNode("div", {
-      "class": "uni-mask",
-      "onClick": () => layoutState.apiShowRightWindow = false
-    }, null, 8, ["onClick"]) : null, createVNode("div", {
-      "class": "uni-right-window"
-    }, [createVNode(RightWindow, mergeProps({
-      "ref": windowRef
-    }, windowState), null, 16)])], 12, ["data-show"]), [[vShow, layoutState.showRightWindow || layoutState.apiShowRightWindow]]);
-  }
-}
-const showTopWindow = /* @__PURE__ */ defineAsyncApi(
-  "showTopWindow",
-  (_, { resolve, reject }) => {
-    const state2 = getLayoutState();
-    if (!state2) {
-      reject();
-      return;
-    }
-    state2.apiShowTopWindow = true;
-    nextTick(resolve);
-  }
-);
-const hideTopWindow = /* @__PURE__ */ defineAsyncApi(
-  "hideTopWindow",
-  (_, { resolve, reject }) => {
-    const state2 = getLayoutState();
-    if (!state2) {
-      reject();
-      return;
-    }
-    state2.apiShowTopWindow = false;
-    nextTick(resolve);
-  }
-);
-const showLeftWindow = /* @__PURE__ */ defineAsyncApi(
-  "showLeftWindow",
-  (_, { resolve, reject }) => {
-    const state2 = getLayoutState();
-    if (!state2) {
-      reject();
-      return;
-    }
-    state2.apiShowLeftWindow = true;
-    nextTick(resolve);
-  }
-);
-const hideLeftWindow = /* @__PURE__ */ defineAsyncApi(
-  "hideLeftWindow",
-  (_, { resolve, reject }) => {
-    const state2 = getLayoutState();
-    if (!state2) {
-      reject();
-      return;
-    }
-    state2.apiShowLeftWindow = false;
-    nextTick(resolve);
-  }
-);
-const showRightWindow = /* @__PURE__ */ defineAsyncApi(
-  "showRightWindow",
-  (_, { resolve, reject }) => {
-    const state2 = getLayoutState();
-    if (!state2) {
-      reject();
-      return;
-    }
-    state2.apiShowRightWindow = true;
-    nextTick(resolve);
-  }
-);
-const hideRightWindow = /* @__PURE__ */ defineAsyncApi(
-  "hideRightWindow",
-  (_, { resolve, reject }) => {
-    const state2 = getLayoutState();
-    if (!state2) {
-      reject();
-      return;
-    }
-    state2.apiShowRightWindow = false;
-    nextTick(resolve);
-  }
-);
-const getTopWindowStyle = /* @__PURE__ */ defineSyncApi(
-  "getTopWindowStyle",
-  () => {
-    const state2 = getLayoutState();
-    return extend({}, state2 && state2.topWindowStyle);
-  }
-);
-const setTopWindowStyle = /* @__PURE__ */ defineSyncApi(
-  "setTopWindowStyle",
-  (style) => {
-    const state2 = getLayoutState();
-    if (state2) {
-      state2.topWindowStyle = style;
-    }
-  }
-);
-const getLeftWindowStyle = /* @__PURE__ */ defineSyncApi(
-  "getLeftWindowStyle",
-  () => {
-    const state2 = getLayoutState();
-    return extend({}, state2 && state2.leftWindowStyle);
-  }
-);
-const setLeftWindowStyle = /* @__PURE__ */ defineSyncApi(
-  "setLeftWindowStyle",
-  (style) => {
-    const state2 = getLayoutState();
-    if (state2) {
-      state2.leftWindowStyle = style;
-    }
-  }
-);
-const getRightWindowStyle = /* @__PURE__ */ defineSyncApi("getRightWindowStyle", () => {
-  const state2 = getLayoutState();
-  return extend({}, state2 && state2.rightWindowStyle);
-});
-const setRightWindowStyle = /* @__PURE__ */ defineSyncApi("setRightWindowStyle", (style) => {
-  const state2 = getLayoutState();
-  if (state2) {
-    state2.rightWindowStyle = style;
-  }
-});
-const getElementById = /* @__PURE__ */ defineSyncApi(
-  "getElementById",
-  (id2) => {
-    const uniPageBody = document.querySelector("uni-page-body");
-    return uniPageBody ? uniPageBody.querySelector(`#${id2}`) : null;
-  }
-);
-const saveImageToPhotosAlbum = /* @__PURE__ */ defineAsyncApi(
-  API_SAVE_IMAGE_TO_PHOTOS_ALBUM,
-  createUnsupportedAsyncApi(API_SAVE_IMAGE_TO_PHOTOS_ALBUM)
-);
-const API_GET_RECORDER_MANAGER = "getRecorderManager";
-const getRecorderManager = /* @__PURE__ */ defineSyncApi(
-  API_GET_RECORDER_MANAGER,
-  createUnsupportedSyncApi(API_GET_RECORDER_MANAGER)
-);
-const saveVideoToPhotosAlbum = /* @__PURE__ */ defineAsyncApi(
-  API_SAVE_VIDEO_TO_PHOTOS_ALBUM,
-  createUnsupportedAsyncApi(API_SAVE_VIDEO_TO_PHOTOS_ALBUM)
-);
-const API_CREATE_CAMERA_CONTEXT = "createCameraContext";
-const createCameraContext = /* @__PURE__ */ defineSyncApi(
-  API_CREATE_CAMERA_CONTEXT,
-  createUnsupportedSyncApi(API_CREATE_CAMERA_CONTEXT)
-);
-const API_CREATE_LIVE_PLAYER_CONTEXT = "createLivePlayerContext";
-const createLivePlayerContext = /* @__PURE__ */ defineSyncApi(
-  API_CREATE_LIVE_PLAYER_CONTEXT,
-  createUnsupportedSyncApi(API_CREATE_LIVE_PLAYER_CONTEXT)
-);
-const API_SAVE_FILE = "saveFile";
-const saveFile = /* @__PURE__ */ defineAsyncApi(
-  API_SAVE_FILE,
-  createUnsupportedAsyncApi(API_SAVE_FILE)
-);
-const API_GET_SAVED_FILE_LIST = "getSavedFileList";
-const getSavedFileList = /* @__PURE__ */ defineAsyncApi(
-  API_GET_SAVED_FILE_LIST,
-  createUnsupportedAsyncApi(API_GET_SAVED_FILE_LIST)
-);
-const API_GET_SAVED_FILE_INFO = "getSavedFileInfo";
-const getSavedFileInfo = /* @__PURE__ */ defineAsyncApi(
-  API_GET_SAVED_FILE_INFO,
-  createUnsupportedAsyncApi(API_GET_SAVED_FILE_INFO)
-);
-const API_REMOVE_SAVED_FILE = "removeSavedFile";
-const removeSavedFile = /* @__PURE__ */ defineAsyncApi(
-  API_REMOVE_SAVED_FILE,
-  createUnsupportedAsyncApi(API_REMOVE_SAVED_FILE)
-);
-const API_ON_MEMORY_WARNING = "onMemoryWarning";
-const onMemoryWarning = /* @__PURE__ */ defineOnApi(
-  API_ON_MEMORY_WARNING,
-  createUnsupportedOnApi(API_ON_MEMORY_WARNING)
-);
-const API_ON_GYROSCOPE_CHANGE = "onGyroscopeChange";
-const onGyroscopeChange = /* @__PURE__ */ defineOnApi(
-  API_ON_GYROSCOPE_CHANGE,
-  createUnsupportedOnApi(API_ON_GYROSCOPE_CHANGE)
-);
-const API_START_GYROSCOPE = "startGyroscope";
-const startGyroscope = /* @__PURE__ */ defineAsyncApi(
-  API_START_GYROSCOPE,
-  createUnsupportedAsyncApi(API_START_GYROSCOPE)
-);
-const API_STOP_GYROSCOPE = "stopGyroscope";
-const stopGyroscope = /* @__PURE__ */ defineAsyncApi(
-  API_STOP_GYROSCOPE,
-  createUnsupportedAsyncApi(API_STOP_GYROSCOPE)
-);
-const API_SCAN_CODE = "scanCode";
-const scanCode = /* @__PURE__ */ defineAsyncApi(
-  API_SCAN_CODE,
-  createUnsupportedAsyncApi(API_SCAN_CODE)
-);
-const API_SET_SCREEN_BRIGHTNESS = "setScreenBrightness";
-const setScreenBrightness = /* @__PURE__ */ defineAsyncApi(
-  API_SET_SCREEN_BRIGHTNESS,
-  createUnsupportedAsyncApi(API_SET_SCREEN_BRIGHTNESS)
-);
-const API_GET_SCREEN_BRIGHTNESS = "getScreenBrightness";
-const getScreenBrightness = /* @__PURE__ */ defineAsyncApi(
-  API_GET_SCREEN_BRIGHTNESS,
-  createUnsupportedAsyncApi(API_GET_SCREEN_BRIGHTNESS)
-);
-const API_SET_KEEP_SCREEN_ON = "setKeepScreenOn";
-const setKeepScreenOn = /* @__PURE__ */ defineAsyncApi(
-  API_SET_KEEP_SCREEN_ON,
-  createUnsupportedAsyncApi(API_SET_KEEP_SCREEN_ON)
-);
-const API_ON_USER_CAPTURE_SCREEN = "onUserCaptureScreen";
-const onUserCaptureScreen = /* @__PURE__ */ defineOnApi(
-  API_ON_USER_CAPTURE_SCREEN,
-  createUnsupportedOnApi(API_ON_USER_CAPTURE_SCREEN)
-);
-const API_ADD_PHONE_CONTACT = "addPhoneContact";
-const addPhoneContact = /* @__PURE__ */ defineAsyncApi(
-  API_ADD_PHONE_CONTACT,
-  createUnsupportedAsyncApi(API_ADD_PHONE_CONTACT)
-);
-const API_LOGIN = "login";
-const login = /* @__PURE__ */ defineAsyncApi(
-  API_LOGIN,
-  createUnsupportedAsyncApi(API_LOGIN)
-);
-const API_GET_PROVIDER = "getProvider";
-const getProvider = /* @__PURE__ */ defineAsyncApi(
-  API_GET_PROVIDER,
-  createUnsupportedAsyncApi(API_GET_PROVIDER)
-);
-class CanvasImage extends Image {
-  constructor() {
-    super();
-    this._src = "";
-  }
-  get src() {
-    return this._src;
-  }
-  set src(value) {
-    this._src = value;
-    super.src = getRealPath(value);
-  }
-}
-class CanvasContextImpl {
-  constructor(element) {
-    this._element = element;
-  }
-  getContext(type) {
-    return this._element.getContext(type);
-  }
-  toBlob(callback, type, quality) {
-    this._element.toBlob(callback, type, quality);
-  }
-  toDataURL(type, encoderOptions) {
-    return this._element.toDataURL(type, encoderOptions);
-  }
-  // @ts-expect-error TODO 类型不匹配?
-  createImage() {
-    return new CanvasImage();
-  }
-  createPath2D() {
-    return new Path2D();
-  }
-  requestAnimationFrame(callback) {
-    return window.requestAnimationFrame(callback);
-  }
-  cancelAnimationFrame(taskId) {
-    window.cancelAnimationFrame(taskId);
-  }
-}
-const createCanvasContextAsync = function(options) {
-  nextTick(() => {
-    var _a, _b, _c, _d, _e;
-    const pages = getCurrentBasePages();
-    const currentPage = (_a = options.component) != null ? _a : pages[pages.length - 1];
-    const element = (_b = currentPage.$el) == null ? void 0 : _b.querySelector("#" + options.id);
-    if (element != null) {
-      const canvas = element;
-      (_c = options.success) == null ? void 0 : _c.call(options, new CanvasContextImpl(canvas));
-    } else {
-      const uniError = new UniError(
-        "uni-createCanvasContextAsync",
-        -1,
-        "canvas id invalid."
-      );
-      (_d = options.fail) == null ? void 0 : _d.call(options, uniError);
-    }
-    (_e = options.complete) == null ? void 0 : _e.call(options);
-  });
-};
-const CONTEXT_ID = "MAP_LOCATION";
-const MapLocation = /* @__PURE__ */ defineSystemComponent({
-  name: "MapLocation",
-  setup() {
-    const state2 = reactive({
-      latitude: 0,
-      longitude: 0,
-      rotate: 0
-    });
-    {
-      let compassChangeHandler = function(res) {
-        state2.rotate = res.direction;
-      }, updateLocation = function() {
-        getLocation({
-          type: "gcj02",
-          success: (res) => {
-            state2.latitude = res.latitude;
-            state2.longitude = res.longitude;
-          },
-          complete: () => {
-            timer = setTimeout(updateLocation, 3e4);
-          }
-        });
-      }, removeLocation = function() {
-        if (timer) {
-          clearTimeout(timer);
-        }
-        offCompassChange(compassChangeHandler);
-      };
-      const onMapReady = inject("onMapReady");
-      let timer;
-      onCompassChange(compassChangeHandler);
-      onMapReady(updateLocation);
-      onUnmounted(removeLocation);
-      const addMapChidlContext = inject("addMapChidlContext");
-      const removeMapChidlContext = inject("removeMapChidlContext");
-      const context = {
-        id: CONTEXT_ID,
-        state: state2
-      };
-      addMapChidlContext(context);
-      onUnmounted(() => removeMapChidlContext(context));
-    }
-    return () => {
-      return state2.latitude ? createVNode(MapMarker, mergeProps({
-        "anchor": {
-          x: 0.5,
-          y: 0.5
-        },
-        "width": "44",
-        "height": "44",
-        "iconPath": ICON_PATH_ORIGIN
-      }, state2), null, 16, ["iconPath"]) : null;
-    };
-  }
-});
-const props$i = {
-  // 边框虚线，腾讯地图支持，google 高德 地图不支持，默认值为[0, 0] 为实线，非 [0, 0] 为虚线，H5 端无法像微信小程序一样控制虚线的间隔像素大小
-  dashArray: {
-    type: Array,
-    default: () => [0, 0]
-  },
-  // 经纬度数组，[{latitude: 0, longitude: 0}]
-  points: {
-    type: Array,
-    required: true
-  },
-  // 描边的宽度
-  strokeWidth: {
-    type: Number,
-    default: 1
-  },
-  // 描边的颜色，十六进制
-  strokeColor: {
-    type: String,
-    default: "#000000"
-  },
-  // 填充颜色，十六进制
-  fillColor: {
-    type: String,
-    default: "#00000000"
-  },
-  // 设置多边形 Z 轴数值
-  zIndex: {
-    type: Number,
-    default: 0
-  }
-};
-const MapPolygon = /* @__PURE__ */ defineSystemComponent({
-  name: "MapPolygon",
-  props: props$i,
-  setup(props2) {
-    let polygonIns;
-    const onMapReady = inject("onMapReady");
-    onMapReady((map, maps2, trigger) => {
-      function drawPolygon() {
-        const {
-          points,
-          strokeWidth,
-          strokeColor,
-          dashArray,
-          fillColor,
-          zIndex
-        } = props2;
-        const path = points.map((item) => {
-          const {
-            latitude,
-            longitude
-          } = item;
-          if (getIsAMap()) {
-            return [longitude, latitude];
-          } else if (getIsBMap()) {
-            return new maps2.Point(longitude, latitude);
-          } else {
-            return new maps2.LatLng(latitude, longitude);
-          }
-        });
-        const {
-          r: fcR,
-          g: fcG,
-          b: fcB,
-          a: fcA
-        } = hexToRgba(fillColor);
-        const {
-          r: scR,
-          g: scG,
-          b: scB,
-          a: scA
-        } = hexToRgba(strokeColor);
-        const polygonOptions = {
-          //多边形是否可点击。
-          clickable: true,
-          //鼠标在多边形内的光标样式。
-          cursor: "crosshair",
-          //多边形是否可编辑。
-          editable: false,
-          // 地图实例，即要显示多边形的地图
-          // @ts-ignore
-          map,
-          // 区域填充色
-          fillColor: "",
-          //多边形的路径，以经纬度坐标数组构成。
-          path,
-          // 区域边框
-          strokeColor: "",
-          //多边形的边框样式。实线是solid，虚线是dash。
-          strokeDashStyle: dashArray.some((item) => item > 0) ? "dash" : "solid",
-          //多边形的边框线宽。
-          strokeWeight: strokeWidth,
-          //多边形是否可见。
-          visible: true,
-          //多边形的zIndex值。
-          zIndex
-        };
-        if (maps2.Color) {
-          polygonOptions.fillColor = new maps2.Color(fcR, fcG, fcB, fcA);
-          polygonOptions.strokeColor = new maps2.Color(scR, scG, scB, scA);
-        } else {
-          polygonOptions.fillColor = `rgb(${fcR}, ${fcG}, ${fcB})`;
-          polygonOptions.fillOpacity = fcA;
-          polygonOptions.strokeColor = `rgb(${scR}, ${scG}, ${scB})`;
-          polygonOptions.strokeOpacity = scA;
-        }
-        if (polygonIns) {
-          polygonIns.setOptions(polygonOptions);
-          return;
-        }
-        if (getIsBMap()) {
-          polygonIns = new maps2.Polygon(polygonOptions.path, polygonOptions);
-          map.addOverlay(polygonIns);
-        } else {
-          polygonIns = new maps2.Polygon(polygonOptions);
-        }
-      }
-      drawPolygon();
-      watch(props2, drawPolygon);
-    });
-    onUnmounted(() => {
-      polygonIns.setMap(null);
-    });
-    return () => null;
-  }
-});
-const props$h = {
-  id: {
-    type: String,
-    default: ""
-  },
-  latitude: {
-    type: [String, Number],
-    default: 0
-  },
-  longitude: {
-    type: [String, Number],
-    default: 0
-  },
-  scale: {
-    type: [String, Number],
-    default: 16
-  },
-  markers: {
-    type: Array,
-    default() {
-      return [];
-    }
-  },
-  includePoints: {
-    type: Array,
-    default() {
-      return [];
-    }
-  },
-  polyline: {
-    type: Array,
-    default() {
-      return [];
-    }
-  },
-  circles: {
-    type: Array,
-    default() {
-      return [];
-    }
-  },
-  controls: {
-    type: Array,
-    default() {
-      return [];
-    }
-  },
-  showLocation: {
-    type: [Boolean, String],
-    default: false
-  },
-  libraries: {
-    type: Array,
-    default() {
-      return [];
-    }
-  },
-  polygons: {
-    type: Array,
-    default: () => []
-  }
-};
-function getPoints(points) {
-  const newPoints = [];
-  if (isArray(points)) {
-    points.forEach((point) => {
-      if (point && point.latitude && point.longitude) {
-        newPoints.push({
-          latitude: point.latitude,
-          longitude: point.longitude
-        });
-      }
-    });
-  }
-  return newPoints;
-}
-function getAMapPosition(maps2, latitude, longitude) {
-  return new maps2.LngLat(longitude, latitude);
-}
-function getBMapPosition(maps2, latitude, longitude) {
-  return new maps2.Point(longitude, latitude);
-}
-function getGoogleOrQQMapPosition(maps2, latitude, longitude) {
-  return new maps2.LatLng(latitude, longitude);
-}
-function getMapPosition(maps2, latitude, longitude) {
-  if (getIsBMap()) {
-    return getBMapPosition(maps2, latitude, longitude);
-  } else if (getIsAMap()) {
-    return getAMapPosition(maps2, latitude, longitude);
-  } else {
-    return getGoogleOrQQMapPosition(maps2, latitude, longitude);
-  }
-}
-function getLat(latLng) {
-  if ("getLat" in latLng) {
-    return latLng.getLat();
-  } else {
-    if (getIsBMap()) {
-      return latLng.lat;
-    }
-    return latLng.lat();
-  }
-}
-function getLng(latLng) {
-  if ("getLng" in latLng) {
-    return latLng.getLng();
-  } else {
-    if (getIsBMap()) {
-      return latLng.lng;
-    }
-    return latLng.lng();
-  }
-}
-function useMap(props2, rootRef, emit2) {
-  const trigger = useCustomEvent(rootRef, emit2);
-  const mapRef = ref(null);
-  let maps2;
-  let map;
-  const state2 = reactive({
-    latitude: Number(props2.latitude),
-    longitude: Number(props2.longitude),
-    includePoints: getPoints(props2.includePoints)
-  });
-  const onMapReadyCallbacks = [];
-  let isMapReady;
-  function onMapReady(callback) {
-    if (isMapReady) {
-      callback(map, maps2, trigger);
-    } else {
-      onMapReadyCallbacks.push(callback);
-    }
-  }
-  function emitMapReady() {
-    isMapReady = true;
-    onMapReadyCallbacks.forEach((callback) => callback(map, maps2, trigger));
-    onMapReadyCallbacks.length = 0;
-  }
-  let isBoundsReady;
-  const onBoundsReadyCallbacks = [];
-  function onBoundsReady(callback) {
-    if (isBoundsReady) {
-      callback();
-    } else {
-      onMapReadyCallbacks.push(callback);
-    }
-  }
-  const contexts = {};
-  function addMapChidlContext(context) {
-    contexts[context.id] = context;
-  }
-  function removeMapChidlContext(context) {
-    delete contexts[context.id];
-  }
-  watch([() => props2.latitude, () => props2.longitude], ([latitudeVlaue, longitudeVlaue]) => {
-    const latitude = Number(latitudeVlaue);
-    const longitude = Number(longitudeVlaue);
-    if (latitude !== state2.latitude || longitude !== state2.longitude) {
-      state2.latitude = latitude;
-      state2.longitude = longitude;
-      if (map) {
-        const centerPosition = getMapPosition(maps2, state2.latitude, state2.longitude);
-        map.setCenter(centerPosition);
-      }
-    }
-  });
-  watch(() => props2.includePoints, (points) => {
-    state2.includePoints = getPoints(points);
-    if (isBoundsReady) {
-      updateBounds();
-    }
-  }, {
-    deep: true
-  });
-  function emitBoundsReady() {
-    isBoundsReady = true;
-    onBoundsReadyCallbacks.forEach((callback) => callback());
-    onBoundsReadyCallbacks.length = 0;
-  }
-  function getMapInfo2() {
-    const center = map.getCenter();
-    return {
-      scale: map.getZoom(),
-      centerLocation: {
-        latitude: getLat(center),
-        longitude: getLng(center)
-      }
-    };
-  }
-  function updateCenter() {
-    const centerPosition = getMapPosition(maps2, state2.latitude, state2.longitude);
-    map.setCenter(centerPosition);
-  }
-  function updateBounds() {
-    if (getIsAMap()) {
-      const points = [];
-      state2.includePoints.forEach((point) => {
-        points.push([point.longitude, point.latitude]);
-      });
-      const bounds = new maps2.Bounds(...points);
-      map.setBounds(bounds);
-    } else if (getIsBMap())
-      ;
-    else {
-      const bounds = new maps2.LatLngBounds();
-      state2.includePoints.forEach(({
-        latitude,
-        longitude
-      }) => {
-        const latLng = new maps2.LatLng(latitude, longitude);
-        bounds.extend(latLng);
-      });
-      map.fitBounds(bounds);
-    }
-  }
-  function initMap() {
-    const mapEl = mapRef.value;
-    const center = getMapPosition(maps2, state2.latitude, state2.longitude);
-    const event = maps2.event || maps2.Event;
-    const map2 = new maps2.Map(mapEl, {
-      center,
-      zoom: Number(props2.scale),
-      // scrollwheel: false,
-      disableDoubleClickZoom: true,
-      mapTypeControl: false,
-      zoomControl: false,
-      scaleControl: false,
-      panControl: false,
-      fullscreenControl: false,
-      streetViewControl: false,
-      keyboardShortcuts: false,
-      minZoom: 5,
-      maxZoom: 18,
-      draggable: true
-    });
-    if (getIsBMap()) {
-      map2.centerAndZoom(center, Number(props2.scale));
-      map2.enableScrollWheelZoom();
-      map2._printLog && map2._printLog("uniapp");
-    }
-    watch(() => props2.scale, (scale) => {
-      map2.setZoom(Number(scale) || 16);
-    });
-    onBoundsReady(() => {
-      if (state2.includePoints.length) {
-        updateBounds();
-        updateCenter();
-      }
-    });
-    if (getIsBMap()) {
-      map2.addEventListener("click", () => {
-        trigger("tap", {}, {});
-        trigger("click", {}, {});
-      });
-      map2.addEventListener("dragstart", () => {
-        trigger("regionchange", {}, {
-          type: "begin",
-          causedBy: "gesture"
-        });
-      });
-      map2.addEventListener("dragend", () => {
-        trigger("regionchange", {}, extend({
-          type: "end",
-          causedBy: "drag"
-        }, getMapInfo2()));
-      });
-    } else {
-      const boundsChangedEvent = event.addListener(map2, "bounds_changed", () => {
-        boundsChangedEvent.remove();
-        emitBoundsReady();
-      });
-      event.addListener(map2, "click", () => {
-        trigger("tap", {}, {});
-        trigger("click", {}, {});
-      });
-      event.addListener(map2, "dragstart", () => {
-        trigger("regionchange", {}, {
-          type: "begin",
-          causedBy: "gesture"
-        });
-      });
-      event.addListener(map2, "dragend", () => {
-        trigger("regionchange", {}, extend({
-          type: "end",
-          causedBy: "drag"
-        }, getMapInfo2()));
-      });
-      const zoomChangedCallback = () => {
-        emit2("update:scale", map2.getZoom());
-        trigger("regionchange", {}, extend({
-          type: "end",
-          causedBy: "scale"
-        }, getMapInfo2()));
-      };
-      event.addListener(map2, "zoom_changed", zoomChangedCallback);
-      event.addListener(map2, "zoomend", zoomChangedCallback);
-      event.addListener(map2, "center_changed", () => {
-        const center2 = map2.getCenter();
-        const latitude = getLat(center2);
-        const longitude = getLng(center2);
-        emit2("update:latitude", latitude);
-        emit2("update:longitude", longitude);
-      });
-    }
-    return map2;
-  }
-  try {
-    const id2 = useContextInfo();
-    useSubscribe((type, data = {}) => {
-      switch (type) {
-        case "getCenterLocation":
-          onMapReady(() => {
-            const center = map.getCenter();
-            callOptions(data, {
-              latitude: getLat(center),
-              longitude: getLng(center),
-              errMsg: `${type}:ok`
-            });
-          });
-          break;
-        case "moveToLocation":
-          {
-            let latitude = Number(data.latitude);
-            let longitude = Number(data.longitude);
-            if (!latitude || !longitude) {
-              const context = contexts[CONTEXT_ID];
-              if (context) {
-                latitude = context.state.latitude;
-                longitude = context.state.longitude;
-              }
-            }
-            if (latitude && longitude) {
-              state2.latitude = latitude;
-              state2.longitude = longitude;
-              if (map) {
-                const centerPosition = getMapPosition(maps2, latitude, longitude);
-                map.setCenter(centerPosition);
-              }
-              onMapReady(() => {
-                callOptions(data, `${type}:ok`);
-              });
-            } else {
-              callOptions(data, `${type}:fail`);
-            }
-          }
-          break;
-        case "translateMarker":
-          onMapReady(() => {
-            const context = contexts[data.markerId];
-            if (context) {
-              try {
-                context.translate(data);
-              } catch (error) {
-                callOptions(data, `${type}:fail ${error.message}`);
-              }
-              callOptions(data, `${type}:ok`);
-            } else {
-              callOptions(data, `${type}:fail not found`);
-            }
-          });
-          break;
-        case "includePoints":
-          state2.includePoints = getPoints(data.includePoints);
-          if (isBoundsReady || getIsAMap()) {
-            updateBounds();
-          }
-          onBoundsReady(() => {
-            callOptions(data, `${type}:ok`);
-          });
-          break;
-        case "getRegion":
-          onBoundsReady(() => {
-            const latLngBounds = map.getBounds();
-            const southwest = latLngBounds.getSouthWest();
-            const northeast = latLngBounds.getNorthEast();
-            callOptions(data, {
-              southwest: {
-                latitude: getLat(southwest),
-                longitude: getLng(southwest)
-              },
-              northeast: {
-                latitude: getLat(northeast),
-                longitude: getLng(northeast)
-              },
-              errMsg: `${type}:ok`
-            });
-          });
-          break;
-        case "getScale":
-          onMapReady(() => {
-            callOptions(data, {
-              scale: map.getZoom(),
-              errMsg: `${type}:ok`
-            });
-          });
-          break;
-      }
-    }, id2, true);
-  } catch (error) {
-  }
-  onMounted(() => {
-    loadMaps(props2.libraries, (result) => {
-      maps2 = result;
-      map = initMap();
-      emitMapReady();
-      trigger("updated", {}, {});
-    });
-  });
-  provide("onMapReady", onMapReady);
-  provide("addMapChidlContext", addMapChidlContext);
-  provide("removeMapChidlContext", removeMapChidlContext);
-  return {
-    state: state2,
-    mapRef,
-    trigger
-  };
-}
-class UniMapElement extends UniElement {
-}
-const __syscom_0 = /* @__PURE__ */ defineBuiltInComponent({
-  name: "Map",
-  props: props$h,
-  emits: ["markertap", "labeltap", "callouttap", "controltap", "regionchange", "tap", "click", "updated", "update:scale", "update:latitude", "update:longitude"],
-  rootElement: {
-    name: "uni-map",
-    class: UniMapElement
-  },
-  setup(props2, {
-    emit: emit2,
-    slots
-  }) {
-    const rootRef = ref(null);
-    const {
-      mapRef,
-      trigger
-    } = useMap(props2, rootRef, emit2);
-    onMounted(() => {
-      const rootElement = rootRef.value;
-      rootElement.attachVmProps(props2);
-    });
-    return () => {
-      return createVNode("uni-map", {
-        "ref": rootRef,
-        "id": props2.id
-      }, [createVNode("div", {
-        "ref": mapRef,
-        "style": "width: 100%; height: 100%; position: relative; overflow: hidden"
-      }, null, 512), props2.markers.map((item) => createVNode(MapMarker, mergeProps({
-        "key": item.id
-      }, item), null, 16)), props2.polyline.map((item) => createVNode(MapPolyline, item, null, 16)), props2.circles.map((item) => createVNode(MapCircle, item, null, 16)), props2.controls.map((item) => createVNode(MapControl, mergeProps(item, {
-        "trigger": trigger
-      }), null, 16, ["trigger"])), props2.showLocation && createVNode(MapLocation, null, null), props2.polygons.map((item) => createVNode(MapPolygon, item, null, 16)), createVNode("div", {
-        "style": "position: absolute;top: 0;width: 100%;height: 100%;overflow: hidden;pointer-events: none;"
-      }, [slots.default && slots.default()])], 8, ["id"]);
-    };
-  }
-});
-const props$g = {
-  scrollTop: {
-    type: [String, Number],
-    default: 0
-  }
-};
-class UniCoverViewElement extends UniElement {
-}
-const index$l = /* @__PURE__ */ defineBuiltInComponent({
-  name: "CoverView",
-  compatConfig: {
-    MODE: 3
-  },
-  props: props$g,
-  rootElement: {
-    name: "uni-cover-view",
-    class: UniCoverViewElement
-  },
-  setup(props2, {
-    slots
-  }) {
-    const root = ref(null);
-    const content = ref(null);
-    watch(() => props2.scrollTop, (val) => {
-      setScrollTop(val);
-    });
-    function setScrollTop(val) {
-      let _content = content.value;
-      if (getComputedStyle(_content).overflowY === "scroll") {
-        _content.scrollTop = _upx2pxNum(val);
-      }
-    }
-    function _upx2pxNum(val) {
-      let _val = String(val);
-      if (/\d+[ur]px$/i.test(_val)) {
-        _val.replace(/\d+[ur]px$/i, (text2) => {
-          return String(uni.upx2px(parseFloat(text2)));
-        });
-      }
-      return parseFloat(_val) || 0;
-    }
-    onMounted(() => {
-      setScrollTop(props2.scrollTop);
-    });
-    onMounted(() => {
-      const rootElement = root.value;
-      rootElement.attachVmProps(props2);
-    });
-    return () => {
-      return createVNode("uni-cover-view", {
-        "scroll-top": props2.scrollTop,
-        "ref": root
-      }, [createVNode("div", {
-        "ref": content,
-        "class": "uni-cover-view"
-      }, [slots.default && slots.default()], 512)], 8, ["scroll-top"]);
-    };
-  }
-});
-class UniCoverImageElement extends UniElement {
-}
-const index$k = /* @__PURE__ */ defineBuiltInComponent({
-  name: "CoverImage",
-  compatConfig: {
-    MODE: 3
-  },
-  props: {
-    src: {
-      type: String,
-      default: ""
-    }
-  },
-  rootElement: {
-    name: "uni-cover-image",
-    class: UniCoverImageElement
-  },
-  emits: ["load", "error"],
-  setup(props2, {
-    emit: emit2
-  }) {
-    const root = ref(null);
-    const trigger = useCustomEvent(root, emit2);
-    function load($event) {
-      trigger("load", $event);
-    }
-    function error($event) {
-      trigger("error", $event);
-    }
-    onMounted(() => {
-      const rootElement = root.value;
-      rootElement.attachVmProps(props2);
-    });
-    return () => {
-      const {
-        src
-      } = props2;
-      return createVNode("uni-cover-image", {
-        "ref": root,
-        "src": src
-      }, [createVNode("div", {
-        "class": "uni-cover-image"
-      }, [src ? createVNode("img", {
-        "src": getRealPath(src),
-        "onLoad": load,
-        "onError": error
-      }, null, 40, ["src", "onLoad", "onError"]) : null])], 8, ["src"]);
-    };
-  }
-});
-function _isSlot(s) {
-  return typeof s === "function" || Object.prototype.toString.call(s) === "[object Object]" && !isVNode(s);
-}
-function getDefaultStartValue(props2) {
-  if (props2.mode === mode.TIME) {
-    return "00:00";
-  }
-  if (props2.mode === mode.DATE) {
-    const year = (/* @__PURE__ */ new Date()).getFullYear() - 150;
-    switch (props2.fields) {
-      case fields.YEAR:
-        return year.toString();
-      case fields.MONTH:
-        return year + "-01";
-      default:
-        return year + "-01-01";
-    }
-  }
-  return "";
-}
-function getDefaultEndValue(props2) {
-  if (props2.mode === mode.TIME) {
-    return "23:59";
-  }
-  if (props2.mode === mode.DATE) {
-    const year = (/* @__PURE__ */ new Date()).getFullYear() + 150;
-    switch (props2.fields) {
-      case fields.YEAR:
-        return year.toString();
-      case fields.MONTH:
-        return year + "-12";
-      default:
-        return year + "-12-31";
-    }
-  }
-  return "";
-}
-function getDateValueArray(props2, state2, valueStr, defaultValue) {
-  const splitStr = props2.mode === mode.DATE ? "-" : ":";
-  const array = props2.mode === mode.DATE ? state2.dateArray : state2.timeArray;
-  let max;
-  if (props2.mode === mode.TIME) {
-    max = 2;
-  } else {
-    switch (props2.fields) {
-      case fields.YEAR:
-        max = 1;
-        break;
-      case fields.MONTH:
-        max = 2;
-        break;
-      default:
-        max = 3;
-        break;
-    }
-  }
-  const inputArray = String(valueStr).split(splitStr);
-  let value = [];
-  for (let i = 0; i < max; i++) {
-    const val = inputArray[i];
-    value.push(array[i].indexOf(val));
-  }
-  if (value.indexOf(-1) >= 0) {
-    value = defaultValue ? getDateValueArray(props2, state2, defaultValue) : value.map(() => 0);
-  }
-  return value;
-}
-const mode = {
-  SELECTOR: "selector",
-  MULTISELECTOR: "multiSelector",
-  TIME: "time",
-  DATE: "date"
-  // 暂不支持城市选择
-  // REGION: 'region'
-};
-const fields = {
-  YEAR: "year",
-  MONTH: "month",
-  DAY: "day"
-};
-const selectorType = {
-  PICKER: "picker",
-  SELECT: "select"
-};
-const props$f = {
-  name: {
-    type: String,
-    default: ""
-  },
-  range: {
-    type: Array,
-    default() {
-      return [];
-    }
-  },
-  rangeKey: {
-    type: String,
-    default: ""
-  },
-  value: {
-    type: [Number, String, Array],
-    default: 0
-  },
-  mode: {
-    type: String,
-    default: mode.SELECTOR,
-    validator(val) {
-      return Object.values(mode).includes(val);
-    }
-  },
-  fields: {
-    type: String,
-    default: ""
-  },
-  start: {
-    type: String,
-    default: (props2) => {
-      return getDefaultStartValue(props2);
-    }
-  },
-  end: {
-    type: String,
-    default: (props2) => {
-      return getDefaultEndValue(props2);
-    }
-  },
-  disabled: {
-    type: [Boolean, String],
-    default: false
-  },
-  selectorType: {
-    type: String,
-    default: ""
-  }
-};
-class UniPickerElement extends UniElement {
-}
-const index$j = /* @__PURE__ */ defineBuiltInComponent({
-  name: "Picker",
-  compatConfig: {
-    MODE: 3
-  },
-  props: props$f,
-  emits: ["change", "cancel", "columnchange"],
-  rootElement: {
-    name: "uni-picker",
-    class: UniPickerElement
-  },
-  setup(props2, {
-    emit: emit2,
-    slots
-  }) {
-    initI18nPickerMsgsOnce();
-    const {
-      t: t2
-    } = useI18n();
-    const rootRef = ref(null);
-    const pickerRef = ref(null);
-    const selectRef = ref(null);
-    const inputRef = ref(null);
-    const pickerRender = ref(false);
-    const {
-      state: state2,
-      rangeArray
-    } = usePickerState(props2);
-    const trigger = useCustomEvent(rootRef, emit2);
-    const {
-      system,
-      selectorTypeComputed,
-      _show,
-      _l10nColumn,
-      _l10nItem,
-      _input,
-      _fixInputPosition,
-      _pickerViewChange,
-      _cancel,
-      _change,
-      _resetFormData,
-      _getFormData,
-      _createTime,
-      _createDate,
-      _setValueSync
-    } = usePickerMethods(props2, state2, trigger, rootRef, pickerRef, selectRef, inputRef);
-    usePickerWatch(state2, _cancel, _change);
-    usePickerForm(_resetFormData, _getFormData);
-    _createTime();
-    _createDate();
-    _setValueSync();
-    const popup = usePopupStyle(state2);
-    watchEffect(() => {
-      state2.isDesktop = popup.isDesktop.value;
-      state2.popupStyle = popup.popupStyle.value;
-    });
-    onBeforeUnmount(() => {
-      pickerRef.value && pickerRef.value.remove();
-    });
-    onMounted(() => {
-      pickerRender.value = true;
-    });
-    onMounted(() => {
-      const rootElement = rootRef.value;
-      rootElement.attachVmProps(props2);
-    });
-    return () => {
-      let _slot2;
-      const {
-        visible,
-        contentVisible,
-        valueArray,
-        popupStyle,
-        valueSync
-      } = state2;
-      const {
-        rangeKey,
-        mode: mode2,
-        start,
-        end
-      } = props2;
-      const booleanAttrs = useBooleanAttr(props2, "disabled");
-      return createVNode("uni-picker", mergeProps({
-        "ref": rootRef
-      }, booleanAttrs, {
-        "onClick": withWebEvent(_show)
-      }), [pickerRender.value ? createVNode("div", {
-        "ref": pickerRef,
-        "class": ["uni-picker-container", `uni-${mode2}-${selectorTypeComputed.value}`],
-        "onWheel": onEventPrevent,
-        "onTouchmove": onEventPrevent
-      }, [createVNode(Transition, {
-        "name": "uni-fade"
-      }, {
-        default: () => [withDirectives(createVNode("div", {
-          "class": "uni-mask uni-picker-mask",
-          "onClick": withWebEvent(_cancel),
-          "onMousemove": _fixInputPosition
-        }, null, 40, ["onClick", "onMousemove"]), [[vShow, visible]])]
-      }), !system.value ? createVNode("div", {
-        "class": [{
-          "uni-picker-toggle": visible
-        }, "uni-picker-custom"],
-        "style": popupStyle.content
-      }, [createVNode("div", {
-        "class": "uni-picker-header",
-        "onClick": onEventStop
-      }, [createVNode("div", {
-        "class": "uni-picker-action uni-picker-action-cancel",
-        "onClick": withWebEvent(_cancel)
-      }, [t2("uni.picker.cancel")], 8, ["onClick"]), createVNode("div", {
-        "class": "uni-picker-action uni-picker-action-confirm",
-        "onClick": _change
-      }, [t2("uni.picker.done")], 8, ["onClick"])], 8, ["onClick"]), contentVisible ? createVNode(PickerView, {
-        "value": _l10nColumn(valueArray),
-        "class": "uni-picker-content",
-        "onChange": _pickerViewChange
-      }, _isSlot(_slot2 = renderList(_l10nColumn(rangeArray.value), (rangeItem, index0) => {
-        let _slot;
-        return createVNode(PickerViewColumn, {
-          "key": index0
-        }, _isSlot(_slot = renderList(rangeItem, (item, index2) => createVNode("div", {
-          "key": index2,
-          "class": "uni-picker-item"
-        }, [typeof item === "object" ? item[rangeKey] || "" : _l10nItem(item, index0)]))) ? _slot : {
-          default: () => [_slot],
-          _: 1
-        });
-      })) ? _slot2 : {
-        default: () => [_slot2],
-        _: 1
-      }, 8, ["value", "onChange"]) : null, createVNode("div", {
-        "ref": selectRef,
-        "class": "uni-picker-select",
-        "onWheel": onEventStop,
-        "onTouchmove": onEventStop
-      }, [renderList(rangeArray.value[0], (item, index2) => createVNode("div", {
-        "key": index2,
-        "class": ["uni-picker-item", {
-          selected: valueArray[0] === index2
-        }],
-        "onClick": () => {
-          valueArray[0] = index2;
-          _change();
-        }
-      }, [typeof item === "object" ? item[rangeKey] || "" : item], 10, ["onClick"]))], 40, ["onWheel", "onTouchmove"]), createVNode("div", {
-        "style": popupStyle.triangle
-      }, null, 4)], 6) : null], 40, ["onWheel", "onTouchmove"]) : null, createVNode("div", null, [slots.default && slots.default()]), system.value ? createVNode("div", {
-        "class": "uni-picker-system",
-        "onMousemove": withWebEvent(_fixInputPosition)
-      }, [createVNode("input", {
-        "class": ["uni-picker-system_input", system.value],
-        "ref": inputRef,
-        "value": valueSync,
-        "type": mode2,
-        "tabindex": "-1",
-        "min": start,
-        "max": end,
-        "onChange": ($event) => {
-          _input($event);
-          onEventStop($event);
-        }
-      }, null, 42, ["value", "type", "min", "max", "onChange"])], 40, ["onMousemove"]) : null], 16, ["onClick"]);
-    };
-  }
-});
-function usePickerState(props2) {
-  const state2 = reactive({
-    valueSync: void 0,
-    visible: false,
-    contentVisible: false,
-    popover: null,
-    valueChangeSource: "",
-    timeArray: [],
-    dateArray: [],
-    valueArray: [],
-    oldValueArray: [],
-    isDesktop: false,
-    popupStyle: {
-      content: {},
-      triangle: {}
-    }
-  });
-  const rangeArray = computed(() => {
-    let val = props2.range;
-    switch (props2.mode) {
-      case mode.SELECTOR:
-        return [val];
-      case mode.MULTISELECTOR:
-        return val;
-      case mode.TIME:
-        return state2.timeArray;
-      case mode.DATE: {
-        const dateArray = state2.dateArray;
-        switch (props2.fields) {
-          case fields.YEAR:
-            return [dateArray[0]];
-          case fields.MONTH:
-            return [dateArray[0], dateArray[1]];
-          default:
-            return [dateArray[0], dateArray[1], dateArray[2]];
-        }
-      }
-    }
-    return [];
-  });
-  return {
-    state: state2,
-    rangeArray
-  };
-}
-const getiPadFlag = () => String(navigator.vendor).indexOf("Apple") === 0 && navigator.maxTouchPoints > 0;
-function useIsiPad() {
-  const isiPad = ref(false);
-  {
-    isiPad.value = getiPadFlag();
-  }
-  return isiPad;
-}
-const getSystem = () => {
-  if (/win|mac/i.test(navigator.platform)) {
-    if (navigator.vendor === "Google Inc.") {
-      return "chrome";
-    } else if (/Firefox/.test(navigator.userAgent)) {
-      return "firefox";
-    }
-  }
-  return "";
-};
-function useSystem() {
-  const _system = ref("");
-  {
-    _system.value = getSystem();
-  }
-  return _system;
-}
-let __contentVisibleDelay;
-function usePickerMethods(props2, state2, trigger, rootRef, pickerRef, selectRef, inputRef) {
-  const isiPad = useIsiPad();
-  const _system = useSystem();
-  const selectorTypeComputed = computed(() => {
-    const type = props2.selectorType;
-    if (Object.values(selectorType).includes(type)) {
-      return type;
-    }
-    return isiPad.value ? selectorType.PICKER : selectorType.SELECT;
-  });
-  const system = computed(() => {
-    if (props2.mode === mode.DATE && !Object.values(fields).includes(props2.fields) && state2.isDesktop) {
-      return _system.value;
-    }
-    return "";
-  });
-  const startArray = computed(() => {
-    return getDateValueArray(props2, state2, props2.start, getDefaultStartValue(props2));
-  });
-  const endArray = computed(() => {
-    return getDateValueArray(props2, state2, props2.end, getDefaultEndValue(props2));
-  });
-  function _show(event) {
-    if (props2.disabled) {
-      return;
-    }
-    state2.valueChangeSource = "";
-    let $picker = pickerRef.value;
-    let _currentTarget = event.currentTarget;
-    $picker.remove();
-    (document.querySelector("uni-app") || document.body).appendChild($picker);
-    $picker.style.display = "block";
-    const rect = _currentTarget.getBoundingClientRect();
-    state2.popover = {
-      top: rect.top,
-      left: rect.left,
-      width: rect.width,
-      height: rect.height
-    };
-    setTimeout(() => {
-      state2.visible = true;
-    }, 20);
-  }
-  function _getFormData() {
-    return {
-      value: state2.valueSync,
-      key: props2.name
-    };
-  }
-  function _resetFormData() {
-    switch (props2.mode) {
-      case mode.SELECTOR:
-        state2.valueSync = 0;
-        break;
-      case mode.MULTISELECTOR:
-        state2.valueSync = props2.value.map((val) => 0);
-        break;
-      case mode.DATE:
-      case mode.TIME:
-        state2.valueSync = "";
-        break;
-    }
-  }
-  function _createTime() {
-    let hours = [];
-    let minutes = [];
-    for (let i = 0; i < 24; i++) {
-      hours.push((i < 10 ? "0" : "") + i);
-    }
-    for (let i = 0; i < 60; i++) {
-      minutes.push((i < 10 ? "0" : "") + i);
-    }
-    state2.timeArray.push(hours, minutes);
-  }
-  function getYearStartEnd() {
-    let year = (/* @__PURE__ */ new Date()).getFullYear();
-    let start = year - 150;
-    let end = year + 150;
-    if (props2.start) {
-      const _year = new Date(props2.start).getFullYear();
-      if (!isNaN(_year) && _year < start) {
-        start = _year;
-      }
-    }
-    if (props2.end) {
-      const _year = new Date(props2.end).getFullYear();
-      if (!isNaN(_year) && _year > end) {
-        end = _year;
-      }
-    }
-    return {
-      start,
-      end
-    };
-  }
-  function _createDate() {
-    let years = [];
-    const year = getYearStartEnd();
-    for (let i = year.start, end = year.end; i <= end; i++) {
-      years.push(String(i));
-    }
-    let months = [];
-    for (let i = 1; i <= 12; i++) {
-      months.push((i < 10 ? "0" : "") + i);
-    }
-    let days = [];
-    for (let i = 1; i <= 31; i++) {
-      days.push((i < 10 ? "0" : "") + i);
-    }
-    state2.dateArray.push(years, months, days);
-  }
-  function _getTimeValue(val) {
-    return val[0] * 60 + val[1];
-  }
-  function _getDateValue(val) {
-    const DAY = 31;
-    return val[0] * DAY * 12 + (val[1] || 0) * DAY + (val[2] || 0);
-  }
-  function _cloneArray(val1, val2) {
-    for (let i = 0; i < val1.length && i < val2.length; i++) {
-      val1[i] = val2[i];
-    }
-  }
-  function _setValueSync() {
-    let val = props2.value;
-    switch (props2.mode) {
-      case mode.MULTISELECTOR:
-        {
-          if (!isArray(val)) {
-            val = state2.valueArray;
-          }
-          if (!isArray(state2.valueSync)) {
-            state2.valueSync = [];
-          }
-          const length = state2.valueSync.length = Math.max(val.length, props2.range.length);
-          for (let index2 = 0; index2 < length; index2++) {
-            const val0 = Number(val[index2]);
-            const val1 = Number(state2.valueSync[index2]);
-            const val2 = isNaN(val0) ? isNaN(val1) ? 0 : val1 : val0;
-            const maxVal = props2.range[index2] ? props2.range[index2].length - 1 : 0;
-            state2.valueSync.splice(index2, 1, val2 < 0 || val2 > maxVal ? 0 : val2);
-          }
-        }
-        break;
-      case mode.TIME:
-      case mode.DATE:
-        state2.valueSync = String(val);
-        break;
-      default: {
-        const valueSync = Number(val);
-        state2.valueSync = valueSync < 0 ? 0 : valueSync;
-        break;
-      }
-    }
-  }
-  function _setValueArray() {
-    let val = state2.valueSync;
-    let valueArray;
-    switch (props2.mode) {
-      case mode.MULTISELECTOR:
-        valueArray = [...val];
-        break;
-      case mode.TIME:
-        valueArray = getDateValueArray(props2, state2, val, formatDateTime({
-          mode: mode.TIME
-        }));
-        break;
-      case mode.DATE:
-        valueArray = getDateValueArray(props2, state2, val, formatDateTime({
-          mode: mode.DATE
-        }));
-        break;
-      default:
-        valueArray = [val];
-        break;
-    }
-    state2.oldValueArray = [...valueArray];
-    state2.valueArray = [...valueArray];
-  }
-  function _getValue() {
-    let val = state2.valueArray;
-    switch (props2.mode) {
-      case mode.SELECTOR:
-        return val[0];
-      case mode.MULTISELECTOR:
-        return val.map((val2) => val2);
-      case mode.TIME:
-        return state2.valueArray.map((val2, i) => state2.timeArray[i][val2]).join(":");
-      case mode.DATE:
-        return state2.valueArray.map((val2, i) => state2.dateArray[i][val2]).join("-");
-    }
-  }
-  function _change() {
-    _close();
-    state2.valueChangeSource = "click";
-    const value = _getValue();
-    state2.valueSync = isArray(value) ? value.map((val) => val) : value;
-    trigger("change", {}, {
-      value
-    });
-  }
-  function _cancel($event) {
-    if (system.value === "firefox" && $event) {
-      const {
-        top,
-        left,
-        width,
-        height
-      } = state2.popover;
-      const {
-        pageX,
-        pageY
-      } = $event;
-      if (pageX > left && pageX < left + width && pageY > top && pageY < top + height) {
-        return;
-      }
-    }
-    _close();
-    trigger("cancel", {}, {});
-  }
-  function _close() {
-    state2.visible = false;
-    setTimeout(() => {
-      let $picker = pickerRef.value;
-      $picker.remove();
-      rootRef.value.prepend($picker);
-      $picker.style.display = "none";
-    }, 260);
-  }
-  function _select() {
-    if (props2.mode === mode.SELECTOR && selectorTypeComputed.value === selectorType.SELECT) {
-      selectRef.value.scrollTop = state2.valueArray[0] * 34;
-    }
-  }
-  function _input($event) {
-    const EventTarget = $event.target;
-    state2.valueSync = EventTarget.value;
-    nextTick(() => {
-      _change();
-    });
-  }
-  function _fixInputPosition($event) {
-    if (system.value === "chrome") {
-      const rect = rootRef.value.getBoundingClientRect();
-      const fontSize = 32;
-      inputRef.value.style.left = `${$event.clientX - rect.left - fontSize * 1.5}px`;
-      inputRef.value.style.top = `${$event.clientY - rect.top - fontSize * 0.5}px`;
-    }
-  }
-  function _pickerViewChange(event) {
-    state2.valueArray = _l10nColumn(event.detail.value, true);
-  }
-  function _l10nColumn(array, normalize) {
-    const {
-      getLocale: getLocale2
-    } = useI18n();
-    if (props2.mode === mode.DATE) {
-      const locale = getLocale2();
-      if (!locale.startsWith("zh")) {
-        switch (props2.fields) {
-          case fields.YEAR:
-            return array;
-          case fields.MONTH:
-            return [array[1], array[0]];
-          default:
-            switch (locale) {
-              case "es":
-              case "fr":
-                return [array[2], array[1], array[0]];
-              default:
-                return normalize ? [array[2], array[0], array[1]] : [array[1], array[2], array[0]];
-            }
-        }
-      }
-    }
-    return array;
-  }
-  function _l10nItem(item, index2) {
-    const {
-      getLocale: getLocale2
-    } = useI18n();
-    if (props2.mode === mode.DATE) {
-      const locale = getLocale2();
-      if (locale.startsWith("zh")) {
-        const array = ["年", "月", "日"];
-        return item + array[index2];
-      } else if (props2.fields !== fields.YEAR && index2 === (props2.fields !== fields.MONTH && (locale === "es" || locale === "fr") ? 1 : 0)) {
-        let array;
-        switch (locale) {
-          case "es":
-            array = ["enero", "febrero", "marzo", "abril", "mayo", "junio", "​​julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"];
-            break;
-          case "fr":
-            array = ["janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août", "septembre", "octobre", "novembre", "décembre"];
-            break;
-          default:
-            array = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-            break;
-        }
-        return array[Number(item) - 1];
-      }
-    }
-    return item;
-  }
-  watch(() => state2.visible, (val) => {
-    if (val) {
-      clearTimeout(__contentVisibleDelay);
-      state2.contentVisible = val;
-      _select();
-    } else {
-      __contentVisibleDelay = setTimeout(() => {
-        state2.contentVisible = val;
-      }, 300);
-    }
-  });
-  watch([() => props2.mode, () => props2.value, () => props2.range], _setValueSync, {
-    deep: true
-  });
-  watch(() => state2.valueSync, _setValueArray, {
-    deep: true
-  });
-  watch(() => state2.valueArray, (val) => {
-    if (props2.mode === mode.TIME || props2.mode === mode.DATE) {
-      const getValue = props2.mode === mode.TIME ? _getTimeValue : _getDateValue;
-      const valueArray = state2.valueArray;
-      const _startArray = startArray.value;
-      const _endArray = endArray.value;
-      if (props2.mode === mode.DATE) {
-        const dateArray = state2.dateArray;
-        const max = dateArray[2].length;
-        const day = Number(dateArray[2][valueArray[2]]) || 1;
-        const realDay = (/* @__PURE__ */ new Date(`${dateArray[0][valueArray[0]]}/${dateArray[1][valueArray[1]]}/${day}`)).getDate();
-        if (realDay < day) {
-          valueArray[2] -= realDay + max - day;
-        }
-      }
-      if (getValue(valueArray) < getValue(_startArray)) {
-        _cloneArray(valueArray, _startArray);
-      } else if (getValue(valueArray) > getValue(_endArray)) {
-        _cloneArray(valueArray, _endArray);
-      }
-    }
-    val.forEach((value, column) => {
-      if (value !== state2.oldValueArray[column]) {
-        state2.oldValueArray[column] = value;
-        if (props2.mode === mode.MULTISELECTOR) {
-          trigger("columnchange", {}, {
-            column,
-            value
-          });
-        }
-      }
-    });
-  });
-  return {
-    selectorTypeComputed,
-    system,
-    _show,
-    _cancel,
-    _change,
-    _l10nColumn,
-    _l10nItem,
-    _input,
-    _resetFormData,
-    _getFormData,
-    _createTime,
-    _createDate,
-    _setValueSync,
-    _fixInputPosition,
-    _pickerViewChange
-  };
-}
-function usePickerWatch(state2, _cancel, _change) {
-  const {
-    key,
-    disable
-  } = useKeyboard();
-  watchEffect(() => {
-    disable.value = !state2.visible;
-  });
-  watch(key, (value) => {
-    if (value === "esc") {
-      _cancel();
-    } else if (value === "enter") {
-      _change();
-    }
-  });
-}
-function usePickerForm(_resetFormData, _getFormData) {
-  const uniForm = inject(uniFormKey, false);
-  if (uniForm) {
-    const field = {
-      reset: _resetFormData,
-      submit: () => {
-        const data = ["", null];
-        const {
-          key,
-          value
-        } = _getFormData();
-        if (key !== "") {
-          data[0] = key;
-          data[1] = value;
-        }
-        return data;
-      }
-    };
-    uniForm.addField(field);
-    onBeforeUnmount(() => {
-      uniForm.removeField(field);
-    });
-  }
-}
-const index$i = /* @__PURE__ */ defineUnsupportedComponent("ad");
-const index$h = /* @__PURE__ */ defineUnsupportedComponent("ad-content-page");
-const index$g = /* @__PURE__ */ defineUnsupportedComponent("ad-draw");
-const index$f = /* @__PURE__ */ defineUnsupportedComponent("camera");
-const index$e = /* @__PURE__ */ defineUnsupportedComponent("live-player");
-const index$d = /* @__PURE__ */ defineUnsupportedComponent("live-pusher");
-const ICON_PATH_NAV = "M28 17c-6.49396875 0-12.13721875 2.57040625-15 6.34840625V5.4105l6.29859375 6.29859375c0.387875 0.387875 1.02259375 0.387875 1.4105 0 0.387875-0.387875 0.387875-1.02259375 0-1.4105L12.77853125 2.36803125a0.9978125 0.9978125 0 0 0-0.0694375-0.077125c-0.1944375-0.1944375-0.45090625-0.291375-0.70721875-0.290875l-0.00184375-0.0000625-0.00184375 0.0000625c-0.2563125-0.0005-0.51278125 0.09640625-0.70721875 0.290875a0.9978125 0.9978125 0 0 0-0.0694375 0.077125l-7.930625 7.9305625c-0.387875 0.387875-0.387875 1.02259375 0 1.4105 0.387875 0.387875 1.02259375 0.387875 1.4105 0L11 5.4105V29c0 0.55 0.45 1 1 1s1-0.45 1-1c0-5.52284375 6.71571875-10 15-10 0.55228125 0 1-0.44771875 1-1 0-0.55228125-0.44771875-1-1-1z";
-const props$e = {
-  latitude: {
-    type: Number
-  },
-  longitude: {
-    type: Number
-  },
-  scale: {
-    type: Number,
-    default: 18
-  },
-  name: {
-    type: String,
-    default: ""
-  },
-  address: {
-    type: String,
-    default: ""
-  }
-};
-function useState$2(props2) {
-  const state2 = reactive({
-    center: {
-      latitude: 0,
-      longitude: 0
-    },
-    marker: {
-      id: 1,
-      latitude: 0,
-      longitude: 0,
-      iconPath: ICON_PATH_TARGET,
-      width: 32,
-      height: 52
-    },
-    location: {
-      id: 2,
-      latitude: 0,
-      longitude: 0,
-      iconPath: ICON_PATH_ORIGIN,
-      width: 44,
-      height: 44
-    }
-  });
-  function updatePosition() {
-    if (props2.latitude && props2.longitude) {
-      state2.center.latitude = props2.latitude;
-      state2.center.longitude = props2.longitude;
-      state2.marker.latitude = props2.latitude;
-      state2.marker.longitude = props2.longitude;
-    }
-  }
-  watch([() => props2.latitude, () => props2.longitude], updatePosition);
-  updatePosition();
-  return state2;
-}
-const LocationView = /* @__PURE__ */ defineSystemComponent({
-  name: "LocationView",
-  props: props$e,
-  emits: ["close"],
-  setup(props2, {
-    emit: emit2
-  }) {
-    const state2 = useState$2(props2);
-    usePreventScroll();
-    getLocation({
-      type: "gcj02",
-      success: ({
-        latitude,
-        longitude
-      }) => {
-        state2.location.latitude = latitude;
-        state2.location.longitude = longitude;
-      }
-    });
-    function onRegionChange(event) {
-      const centerLocation = event.detail.centerLocation;
-      if (centerLocation) {
-        state2.center.latitude = centerLocation.latitude;
-        state2.center.longitude = centerLocation.longitude;
-      }
-    }
-    function nav() {
-      const mapInfo = getMapInfo();
-      let url = "";
-      if (mapInfo.type === MapType.GOOGLE) {
-        const origin = state2.location.latitude ? `&origin=${state2.location.latitude}%2C${state2.location.longitude}` : "";
-        url = `https://www.google.com/maps/dir/?api=1${origin}&destination=${props2.latitude}%2C${props2.longitude}`;
-      } else if (mapInfo.type === MapType.QQ) {
-        const fromcoord = state2.location.latitude ? `&fromcoord=${state2.location.latitude}%2C${state2.location.longitude}&from=${encodeURIComponent("我的位置")}` : "";
-        url = `https://apis.map.qq.com/uri/v1/routeplan?type=drive${fromcoord}&tocoord=${props2.latitude}%2C${props2.longitude}&to=${encodeURIComponent(props2.name || "目的地")}&ref=${mapInfo.key}`;
-      } else if (mapInfo.type === MapType.AMAP) {
-        const from = state2.location.latitude ? `from=${state2.location.longitude},${state2.location.latitude},${encodeURIComponent("我的位置")}&` : "";
-        url = `https://uri.amap.com/navigation?${from}to=${props2.longitude},${props2.latitude},${encodeURIComponent(props2.name || "目的地")}`;
-      }
-      window.open(url);
-    }
-    function back() {
-      emit2("close");
-    }
-    function setCenter({
-      latitude,
-      longitude
-    }) {
-      state2.center.latitude = latitude;
-      state2.center.longitude = longitude;
-    }
-    return () => {
-      return createVNode("div", {
-        "class": "uni-system-open-location"
-      }, [createVNode(__syscom_0, {
-        "latitude": state2.center.latitude,
-        "longitude": state2.center.longitude,
-        "class": "map",
-        "markers": [state2.marker, state2.location],
-        "onRegionchange": onRegionChange
-      }, {
-        default: () => [createVNode("div", {
-          "class": "map-move",
-          "onClick": () => setCenter(state2.location)
-        }, [createSvgIconVNode(ICON_PATH_LOCTAION, "#000000", 24)], 8, ["onClick"])]
-      }, 8, ["latitude", "longitude", "markers", "onRegionchange"]), createVNode("div", {
-        "class": "info"
-      }, [createVNode("div", {
-        "class": "name",
-        "onClick": () => setCenter(state2.marker)
-      }, [props2.name], 8, ["onClick"]), createVNode("div", {
-        "class": "address",
-        "onClick": () => setCenter(state2.marker)
-      }, [props2.address], 8, ["onClick"]), createVNode("div", {
-        "class": "nav",
-        "onClick": nav
-      }, [createSvgIconVNode(ICON_PATH_NAV, "#ffffff", 26)], 8, ["onClick"])]), createVNode("div", {
-        "class": "nav-btn-back",
-        "onClick": back
-      }, [createSvgIconVNode(ICON_PATH_BACK, "#ffffff", 26)], 8, ["onClick"])]);
-    };
-  }
-});
-let state = null;
-const openLocation = /* @__PURE__ */ defineAsyncApi(
-  API_OPEN_LOCATION,
-  (args, { resolve }) => {
-    if (!state) {
-      state = reactive(args);
-      nextTick(() => {
-        const app = createRootApp(LocationView, state, () => {
-          state = null;
-          nextTick(() => {
-            app.unmount();
-          });
-        });
-        app.mount(ensureRoot("u-a-o"));
-      });
-    } else {
-      extend(state, args);
-    }
-    resolve();
-  },
-  OpenLocationProtocol,
-  OpenLocationOptions
-);
 const DIALOG_TAG = "dialog";
 const SYSTEM_DIALOG_TAG = "systemDialog";
 function isDialogPageInstance(vm) {
@@ -16829,6 +8203,9 @@ function isSystemDialogPageInstance(vm) {
 let escBackPageNum = 0;
 const homeDialogPages = [];
 const homeSystemDialogPages = [];
+function isDialogPageImpl(page) {
+  return page instanceof UniDialogPageImpl;
+}
 class UniPageImpl {
   constructor({
     route,
@@ -16840,6 +8217,50 @@ class UniPageImpl {
     this.options = options;
     this.vm = vm;
     this.$vm = vm;
+  }
+  get pageBody() {
+    var _a;
+    const currentPage = getCurrentPage();
+    let container = document;
+    if (isDialogPageImpl(this)) {
+      const dialogPage = document.querySelector(
+        `uni-page[data-page="${(_a = this.vm) == null ? void 0 : _a.route}"]`
+      );
+      if (!dialogPage) {
+        throw new Error("dialogPage not found");
+      }
+      container = dialogPage;
+    } else if (this !== currentPage) {
+      throw new Error("Can't get pageBody of other page");
+    }
+    const pageBody = container.querySelector("uni-page-wrapper");
+    const pageWrapperInfo = getPageWrapperInfo(pageBody);
+    return {
+      top: pageWrapperInfo.top,
+      left: pageWrapperInfo.left,
+      right: pageWrapperInfo.left + pageWrapperInfo.width,
+      bottom: pageWrapperInfo.top + pageWrapperInfo.height,
+      width: pageWrapperInfo.width,
+      height: pageWrapperInfo.height
+    };
+  }
+  get safeAreaInsets() {
+    var _a;
+    const currentPage = getCurrentPage();
+    let container = document;
+    if (isDialogPageImpl(this)) {
+      const dialogPage = document.querySelector(
+        `uni-page[data-page="${(_a = this.vm) == null ? void 0 : _a.route}"]`
+      );
+      if (!dialogPage) {
+        throw new Error("dialogPage not found");
+      }
+      container = dialogPage;
+    } else if (this !== currentPage) {
+      throw new Error("Can't get safeAreaInsets of other page");
+    }
+    const pageBody = container.querySelector("uni-page-wrapper");
+    return getSafeAreaInsets(pageBody);
   }
   getPageStyle() {
     var _a;
@@ -17055,105 +8476,12 @@ function decrementEscBackPageNum() {
     document.removeEventListener("keydown", handleEscKeyPress);
   }
 }
-const openDialogPage = (options) => {
-  var _a, _b, _c, _d;
-  if (!options.url) {
-    triggerFailCallback$1(options, "url is required");
-    return null;
-  }
-  const { path, query } = parseUrl(options.url);
-  const normalizeUrl = createNormalizeUrl("navigateTo");
-  const errMsg = normalizeUrl(path, {});
-  if (errMsg) {
-    triggerFailCallback$1(options, errMsg);
-    return null;
-  }
-  const targetRoute = __uniRoutes.find((route) => {
-    return path.indexOf(route.meta.route) !== -1;
-  });
-  const dialogPage = new UniDialogPageImpl({
-    route: path,
-    options: new UTSJSONObject(query),
-    $component: targetRoute.component,
-    getParentPage: () => null,
-    $disableEscBack: options.disableEscBack,
-    $triggerParentHide: !!options.triggerParentHide
-  });
-  let parentPage = options.parentPage;
-  const currentPages = getCurrentPages();
-  if (parentPage) {
-    if (currentPages.indexOf(parentPage) === -1) {
-      triggerFailCallback$1(options, "parentPage is not a valid page");
-      return null;
-    }
-  }
-  if (!isSystemDialogPage(dialogPage)) {
-    if (!currentPages.length) {
-      homeDialogPages.push(dialogPage);
-    } else {
-      if (!parentPage) {
-        parentPage = currentPages[currentPages.length - 1];
-      }
-      dialogPage.getParentPage = () => parentPage;
-      parentPage.getDialogPages().push(dialogPage);
-    }
-    if (!options.disableEscBack) {
-      incrementEscBackPageNum();
-    }
-  } else {
-    if (!currentPages.length) {
-      homeSystemDialogPages.push(dialogPage);
-      if (isSystemActionSheetDialogPage(dialogPage)) {
-        closePreActionSheet(homeSystemDialogPages);
-      }
-    } else {
-      if (!parentPage) {
-        parentPage = currentPages[currentPages.length - 1];
-      }
-      dialogPage.getParentPage = () => parentPage;
-      (_a = parentPage.vm.$pageLayoutInstance) == null ? void 0 : _a.$systemDialogPages.value.push(
-        dialogPage
-      );
-      if (isSystemActionSheetDialogPage(dialogPage)) {
-        closePreActionSheet(
-          (_b = parentPage.vm.$pageLayoutInstance) == null ? void 0 : _b.$systemDialogPages.value
-        );
-      }
-    }
-  }
-  const successOptions = {
-    errMsg: "openDialogPage:ok"
-  };
-  (_c = options.success) == null ? void 0 : _c.call(options, successOptions);
-  (_d = options.complete) == null ? void 0 : _d.call(options, successOptions);
-  return dialogPage;
-};
-function triggerFailCallback$1(options, errMsg) {
-  var _a, _b;
-  const failOptions = new UniError(
-    "uni-openDialogPage",
-    4,
-    `openDialogPage: fail, ${errMsg}`
-  );
-  (_a = options.fail) == null ? void 0 : _a.call(options, failOptions);
-  (_b = options.complete) == null ? void 0 : _b.call(options, failOptions);
-}
-function closePreActionSheet(dialogPages) {
-  const actionSheets = dialogPages.filter(
-    (page) => isSystemActionSheetDialogPage(page)
-  );
-  if (actionSheets.length > 1) {
-    setTimeout(() => {
-      dialogPages.splice(dialogPages.indexOf(actionSheets[0]), 1);
-    }, 100);
-  }
-}
 const closeDialogPage = (options) => {
   var _a, _b;
   const currentPages = getCurrentPages();
   const currentPage = currentPages[currentPages.length - 1];
   if (!currentPage) {
-    triggerFailCallback(options, "currentPage is null");
+    triggerFailCallback$1(options, "currentPage is null");
     return;
   }
   if (options == null ? void 0 : options.dialogPage) {
@@ -17176,14 +8504,18 @@ const closeDialogPage = (options) => {
           decrementEscBackPageNum();
         }
       } else {
-        triggerFailCallback(options, "dialogPage is not a valid page");
+        triggerFailCallback$1(options, "dialogPage is not a valid page");
         return;
       }
     } else {
       const parentSystemDialogPages = parentPage.vm.$pageLayoutInstance.$systemDialogPages.value;
       const index2 = parentSystemDialogPages.indexOf(dialogPage);
-      parentSystemDialogPages.splice(index2, 1);
-      dialogPageTriggerParentShow(dialogPage, 1);
+      if (index2 > -1) {
+        parentSystemDialogPages.splice(index2, 1);
+        dialogPageTriggerParentShow(dialogPage, 1);
+      } else {
+        triggerFailCallback$1(options, "dialogPage is not a valid page");
+      }
       return;
     }
   } else {
@@ -17204,7 +8536,7 @@ const closeDialogPage = (options) => {
   (_a = options == null ? void 0 : options.success) == null ? void 0 : _a.call(options, successOptions);
   (_b = options == null ? void 0 : options.complete) == null ? void 0 : _b.call(options, successOptions);
 };
-function triggerFailCallback(options, errMsg) {
+function triggerFailCallback$1(options, errMsg) {
   var _a, _b;
   const failOptions = new UniError(
     "uni-closeDialogPage",
@@ -17214,1399 +8546,6 @@ function triggerFailCallback(options, errMsg) {
   (_a = options == null ? void 0 : options.fail) == null ? void 0 : _a.call(options, failOptions);
   (_b = options == null ? void 0 : options.complete) == null ? void 0 : _b.call(options, failOptions);
 }
-const defaultPoi = {
-  latitude: 39.908823,
-  longitude: 116.39747
-};
-const languageData = {
-  "en": {
-    "back": "cancel",
-    "ok": "ok",
-    "cancel": "cancel",
-    "loading": "loading...",
-    "locationLoading": "positioning...",
-    "search": "Search location",
-    "current-location": "current location"
-  },
-  "zh-Hans": {
-    "back": "取消",
-    "ok": "确定",
-    "cancel": "取消",
-    "loading": "请求中...",
-    "locationLoading": "获取定位中...",
-    "search": "搜索地点",
-    "current-location": "当前位置"
-  },
-  "zh-Hant": {
-    "back": "取消",
-    "ok": "確定",
-    "cancel": "取消",
-    "loading": "請求中...",
-    "locationLoading": "獲取定位中...",
-    "search": "蒐索地點",
-    "current-location": "當前位置"
-  }
-};
-const loadingPath = "data:image/gif;base64,R0lGODlhLAEsAaIFAMPDw/j4+J2dneHh4aWlpf///wAAAAAAACH/C05FVFNDQVBFMi4wAwEAAAAh/wtYTVAgRGF0YVhNUDw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDkuMC1jMDAwIDc5LjE3MWMyN2ZhYiwgMjAyMi8wOC8xNi0yMjozNTo0MSAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIDI0LjAgKE1hY2ludG9zaCkiIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6MjIxOTdCRjQ2MEQ2MTFFRUI1NjJFQzJFRDFFNUYwODYiIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6MjIxOTdCRjU2MEQ2MTFFRUI1NjJFQzJFRDFFNUYwODYiPiA8eG1wTU06RGVyaXZlZEZyb20gc3RSZWY6aW5zdGFuY2VJRD0ieG1wLmlpZDoyMzMzNjFGRjYwRDMxMUVFQjU2MkVDMkVEMUU1RjA4NiIgc3RSZWY6ZG9jdW1lbnRJRD0ieG1wLmRpZDoyMzMzNjIwMDYwRDMxMUVFQjU2MkVDMkVEMUU1RjA4NiIvPiA8L3JkZjpEZXNjcmlwdGlvbj4gPC9yZGY6UkRGPiA8L3g6eG1wbWV0YT4gPD94cGFja2V0IGVuZD0iciI/PgH//v38+/r5+Pf29fTz8vHw7+7t7Ovq6ejn5uXk4+Lh4N/e3dzb2tnY19bV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";
-const _sfc_main$1 = {
-  data() {
-    const id1 = `UniMap1_${(Math.random() * 1e6).toString(36)}`;
-    const id2 = `UniMap2_${(Math.random() * 1e6).toString(36)}`;
-    const id3 = `UniMap3_${(Math.random() * 1e6).toString(36)}`;
-    return {
-      readyEventName: "",
-      optionsEventName: "",
-      successEventName: "",
-      failEventName: "",
-      mapId: id1,
-      mapTargetId: id2,
-      scrollId: id3,
-      isFocus: false,
-      latitude: 0,
-      longitude: 0,
-      locationComplete: false,
-      locationLoading: false,
-      chooseLocationOptions: {},
-      pageIndex: 1,
-      pageSize: 20,
-      pois: [],
-      selected: -1,
-      searchValue: "",
-      safeArea: {
-        top: 0,
-        bottom: 0,
-        left: 0,
-        right: 0
-      },
-      icon: {
-        target: "",
-        success: "",
-        position: "",
-        search: ""
-      },
-      lastTime: 0,
-      searchLoading: false,
-      language: "zh-Hans",
-      scrollTop: 0,
-      isLandscape: false,
-      theme: "light",
-      searchValueChangeTimer: -1,
-      lastPoi: {
-        latitude: null,
-        longitude: null,
-        selected: -1,
-        pois: [],
-        scrollTop: 0
-      },
-      errMsg: "",
-      callUniMapCoErr: false,
-      useUniCloud: true,
-      loadingPath,
-      mapHeight: 350
-    };
-  },
-  onLoad(options) {
-    this.checkUniCloud();
-    this.initPageOptions(options);
-    this.getSystemInfo();
-    this.getLocation();
-  },
-  onReady() {
-  },
-  onUnload() {
-    uni.$off(this.optionsEventName, null);
-    uni.$off(this.readyEventName, null);
-    uni.$off(this.successEventName, null);
-    uni.$off(this.failEventName, null);
-  },
-  onResize() {
-    this.getSystemInfo();
-  },
-  methods: {
-    checkUniCloud() {
-      if (typeof uniCloud == "undefined") {
-        this.errMsg = "uni.chooseLocation 依赖 uniCloud 的 uni-map-common 插件，请先关联服务空间，并安装 uni-map-common 插件，插件地址：https://ext.dcloud.net.cn/plugin?id=13872";
-        this.useUniCloud = false;
-        console.error(this.errMsg);
-      }
-    },
-    initPageOptions(options) {
-      this.readyEventName = options["readyEventName"];
-      this.optionsEventName = options["optionsEventName"];
-      this.successEventName = options["successEventName"];
-      this.failEventName = options["failEventName"];
-      uni.$on(this.optionsEventName, (data) => {
-        if (data["latitude"] != null) {
-          this.chooseLocationOptions.latitude = data["latitude"];
-        }
-        if (data["longitude"] != null) {
-          this.chooseLocationOptions.longitude = data["longitude"];
-        }
-        if (data["keyword"] != null) {
-          let keyword = data["keyword"];
-          this.chooseLocationOptions.keyword = keyword;
-          this.searchValue = keyword;
-        } else {
-          this.chooseLocationOptions.keyword = "";
-        }
-        if (data["payload"] != null) {
-          this.chooseLocationOptions.payload = data["payload"];
-        }
-      });
-      uni.$emit(this.readyEventName, {});
-    },
-    getLocation() {
-      if (this.chooseLocationOptions.latitude != null && this.chooseLocationOptions.longitude != null) {
-        this.latitude = this.chooseLocationOptions.latitude;
-        this.longitude = this.chooseLocationOptions.longitude;
-        this.locationComplete = true;
-        this.getPoi("getLocation");
-      } else {
-        this.locationLoading = true;
-        uni.getLocation({
-          type: "gcj02",
-          success: (res) => {
-            this.latitude = res.latitude;
-            this.longitude = res.longitude;
-            this.locationComplete = true;
-            this.locationLoading = false;
-            this.getPoi("getLocation");
-          },
-          fail: (err) => {
-            console.error("getLocationErr: ", err);
-            this.latitude = defaultPoi.latitude;
-            this.longitude = defaultPoi.longitude;
-            this.locationComplete = true;
-            this.locationLoading = false;
-            this.getPoi("getLocation");
-          }
-        });
-      }
-    },
-    distanceHandle(distance) {
-      if (distance < 1e3) {
-        return distance + "m";
-      } else {
-        return parseFloat((distance / 1e3).toFixed(2)) + "km";
-      }
-    },
-    poiHandle(pois) {
-      let list2 = pois.map((item, index2) => {
-        const location2 = item["location"];
-        let distance = item["distance"];
-        let latitude = location2["lat"];
-        let longitude = location2["lng"];
-        if (distance == 0) {
-          latitude = this.latitude;
-          longitude = this.longitude;
-        }
-        return {
-          title: item["title"],
-          address: item["address"],
-          distance,
-          distanceStr: this.distanceHandle(distance),
-          location: {
-            latitude,
-            longitude
-          }
-        };
-      });
-      let pageIndex = this.pageIndex;
-      if (pageIndex == 1) {
-        this.pois = list2;
-        this.updateScrollTop(0);
-      } else {
-        this.pois = this.pois.concat(list2);
-      }
-    },
-    callUniMapCo(action, data) {
-      let promise = new Promise((resolve, reject) => {
-        if (this.useUniCloud == false) {
-          reject(this.errMsg);
-          return;
-        }
-        this.errMsg = "";
-        const uniMapCo = uniCloud.importObject("uni-map-co", {
-          customUI: true
-        });
-        let chooseLocationData = {
-          action,
-          data
-        };
-        if (this.chooseLocationOptions.payload != null) {
-          chooseLocationData["payload"] = this.chooseLocationOptions.payload;
-        }
-        uniMapCo.chooseLocation(chooseLocationData).then((res) => {
-          resolve(res);
-        }).catch((err) => {
-          if (err instanceof UniCloudError) {
-            const cloudError = err;
-            const errCode = cloudError.errCode;
-            const errMsg = cloudError.errMsg;
-            const errSubject = cloudError.errSubject;
-            if (errMsg.indexOf("在云端不存在") > -1 || errMsg.indexOf("未匹配") > -1) {
-              this.errMsg = "uni.chooseLocation 依赖 uniCloud 的 uni-map-common 插件，请安装 uni-map-common 插件，插件地址：https://ext.dcloud.net.cn/plugin?id=13872";
-              console.error(this.errMsg);
-            } else {
-              this.errMsg = errMsg;
-              console.error("获取POI信息失败，" + JSON.stringify({ errCode, errMsg, errSubject }));
-            }
-          }
-          reject(err);
-        });
-      });
-      promise.then((res) => {
-        this.callUniMapCoErr = false;
-      }).catch((err) => {
-        this.callUniMapCoErr = true;
-      });
-      return promise;
-    },
-    getPoi(type) {
-      let searchValue = this.searchValue;
-      let latitude = this.latitude;
-      let longitude = this.longitude;
-      let pageIndex = this.pageIndex;
-      let pageSize = this.pageSize;
-      if (["searchValueChange"].indexOf(type) == -1) {
-        this.searchLoading = true;
-      }
-      if (searchValue != "" && searchValue.length > 0) {
-        this.callUniMapCo("search", {
-          keyword: searchValue,
-          location: {
-            lat: latitude,
-            lng: longitude
-          },
-          radius: 5e3,
-          auto_extend: 1,
-          orderby: "weight",
-          page_index: pageIndex,
-          page_size: pageSize
-        }).then((res) => {
-          var _a, _b;
-          let pois = (_b = (_a = res.getJSON("result")) == null ? void 0 : _a.getJSON("result")) == null ? void 0 : _b.getArray("data");
-          this.poiHandle(pois);
-          this.searchLoading = false;
-        }).catch((err) => {
-          this.searchLoading = false;
-        });
-      } else {
-        this.callUniMapCo("location2address", {
-          location: `${latitude},${longitude}`,
-          get_poi: 1,
-          poi_options: {
-            radius: 3e3,
-            policy: pageIndex == 1 ? 3 : 4,
-            roadlevel: 1,
-            homeorcorp: 1,
-            page_index: pageIndex,
-            page_size: pageSize
-          }
-        }).then((res) => {
-          var _a, _b;
-          let pois = (_b = (_a = res.getJSON("result")) == null ? void 0 : _a.getJSON("result")) == null ? void 0 : _b.getArray("pois");
-          this.poiHandle(pois);
-          if (this.pois.length > 0 && pageIndex == 1) {
-            let poi = this.pois[0];
-            if (poi.distance > 0) {
-              let poi1 = poi.location;
-              let poi2 = {
-                latitude: this.latitude,
-                longitude: this.longitude
-              };
-              let distance = poi.distance;
-              let direction2 = this.calcDirection(poi1, poi2);
-              if (poi.address.indexOf("米") == -1) {
-                let suffix = `向${direction2}${distance}米`;
-                let newPoi = {
-                  title: `${poi.title}${suffix}`,
-                  address: `${poi.address}${suffix}`,
-                  distance: 0,
-                  distanceStr: this.distanceHandle(distance),
-                  location: poi2
-                };
-                this.pois.unshift(newPoi);
-              }
-            }
-            if (this.selected == -1) {
-              this.selected = 0;
-              this.lastPoi.latitude = this.latitude;
-              this.lastPoi.longitude = this.longitude;
-              this.lastPoi.selected = this.selected;
-              this.lastPoi.pois = this.pois;
-            }
-          }
-          this.searchLoading = false;
-        }).catch((err) => {
-          this.searchLoading = false;
-        });
-      }
-    },
-    calcDirection(poi1, poi2) {
-      const toRadians = (angle2) => angle2 * (Math.PI / 180);
-      const toDegrees = (angle2) => angle2 * (180 / Math.PI);
-      const lat1 = toRadians(poi1.latitude);
-      const lon1 = toRadians(poi1.longitude);
-      const lat2 = toRadians(poi2.latitude);
-      const lon2 = toRadians(poi2.longitude);
-      const dLon = lon2 - lon1;
-      const y = Math.sin(dLon) * Math.cos(lat2);
-      const x = Math.cos(lat1) * Math.sin(lat2) - Math.sin(lat1) * Math.cos(lat2) * Math.cos(dLon);
-      const angleRadians = Math.atan2(y, x);
-      let angle = toDegrees(angleRadians);
-      angle = (angle + 360) % 360;
-      if (angle < 22.5 || angle >= 337.5) {
-        return "北";
-      } else if (angle >= 22.5 && angle < 67.5) {
-        return "东北";
-      } else if (angle >= 67.5 && angle < 112.5) {
-        return "东";
-      } else if (angle >= 112.5 && angle < 157.5) {
-        return "东南";
-      } else if (angle >= 157.5 && angle < 202.5) {
-        return "南";
-      } else if (angle >= 202.5 && angle < 247.5) {
-        return "西南";
-      } else if (angle >= 247.5 && angle < 292.5) {
-        return "西";
-      } else {
-        return "西北";
-      }
-    },
-    getSystemInfo() {
-      const info = uni.getWindowInfo();
-      this.safeArea.top = info.safeAreaInsets.top;
-      this.safeArea.bottom = info.safeAreaInsets.bottom;
-      this.safeArea.left = info.safeAreaInsets.left;
-      this.safeArea.right = info.safeAreaInsets.right;
-      let screenHeight = info.screenHeight;
-      this.mapHeight = (screenHeight - this.safeArea.top - this.safeArea.bottom) * 0.6;
-      const systemInfo = uni.getSystemInfoSync();
-      const appLanguage = systemInfo.appLanguage;
-      this.language = appLanguage;
-      const osTheme = systemInfo.osTheme;
-      const appTheme = systemInfo.appTheme;
-      if (appTheme != null && appTheme != "auto") {
-        this.theme = appTheme;
-      } else if (osTheme != null) {
-        this.theme = osTheme;
-      }
-      this.isLandscape = systemInfo.windowWidth >= 900 ? true : false;
-      const hostTheme = systemInfo.hostTheme;
-      if (hostTheme != null) {
-        this.theme = hostTheme;
-      }
-      const locale = uni.getLocale();
-      this.language = locale;
-    },
-    getMapContext() {
-      return uni.createMapContext(this.mapId, this);
-    },
-    regionchange(e2) {
-      let causedBy = e2.causedBy;
-      if (!causedBy) {
-        causedBy = e2.detail.causedBy;
-      }
-      if (e2.type !== "end" || causedBy != "drag" || this.locationComplete == false) {
-        return;
-      }
-      const mapContext = this.getMapContext();
-      if (mapContext != null) {
-        mapContext.getCenterLocation({
-          success: (res) => {
-            let latitudeDiff = Math.abs(res.latitude - this.latitude);
-            let longitudeDiff = Math.abs(res.longitude - this.longitude);
-            if (latitudeDiff > 1e-6 || longitudeDiff > 1e-6) {
-              this.latitude = parseFloat(res.latitude.toFixed(6));
-              this.longitude = parseFloat(res.longitude.toFixed(6));
-              this.searchValue = "";
-              this.selected = -1;
-              this.pageIndex = 1;
-              this.getPoi("regionchange");
-              const element = this.$refs[this.mapTargetId];
-              if (element != null) {
-                const duration = 250;
-                element.style.setProperty("transition-duration", `${duration}ms`);
-                element.style.setProperty("transform", "translateY(0px)");
-                element.style.setProperty("transform", "translateY(-15px)");
-                setTimeout(() => {
-                  element.style.setProperty("transform", "translateY(0px)");
-                }, duration);
-              }
-            }
-          }
-        });
-      }
-    },
-    clearSearchValueChangeTimer() {
-      if (this.searchValueChangeTimer != -1) {
-        clearTimeout(this.searchValueChangeTimer);
-        this.searchValueChangeTimer = -1;
-      }
-    },
-    searchValueChange(e2) {
-      this.clearSearchValueChangeTimer();
-      this.searchValueChangeTimer = setTimeout(() => {
-        this.poiSearch("searchValueChange");
-      }, 200);
-    },
-    poiSearch(type) {
-      this.clearSearchValueChangeTimer();
-      this.pageIndex = 1;
-      this.selected = -1;
-      this.getPoi(type);
-    },
-    cancelSearch() {
-      this.isFocus = false;
-      this.searchValue = "";
-      if (this.lastPoi.latitude != null) {
-        this.latitude = this.lastPoi.latitude;
-      }
-      if (this.lastPoi.longitude != null) {
-        this.longitude = this.lastPoi.longitude;
-      }
-      if (this.lastPoi.pois.length - 1 > this.lastPoi.selected) {
-        this.pois = this.lastPoi.pois;
-        this.selected = this.lastPoi.selected;
-        this.updateScrollTop(this.lastPoi.scrollTop);
-      } else {
-        this.poiSearch("cancelSearch");
-      }
-    },
-    updateScrollTop(scrollTop) {
-      setTimeout(() => {
-        this.scrollTop = scrollTop;
-      }, 10);
-    },
-    selectPoi(item, index2) {
-      this.isFocus = false;
-      this.selected = index2;
-      this.latitude = item.location.latitude;
-      this.longitude = item.location.longitude;
-      if (this.searchValue == this.chooseLocationOptions.keyword) {
-        this.lastPoi.latitude = this.latitude;
-        this.lastPoi.longitude = this.longitude;
-        this.lastPoi.selected = this.selected;
-        this.lastPoi.pois = this.pois;
-        const scrollElement = this.$refs[this.scrollId];
-        if (scrollElement != null) {
-          const scrollTop = scrollElement.scrollTop;
-          this.lastPoi.scrollTop = scrollTop;
-          this.scrollTop = scrollTop;
-        }
-      }
-    },
-    scrolltolower() {
-      this.pageIndex++;
-      this.getPoi("scrolltolower");
-    },
-    mapReset() {
-      this.isFocus = false;
-      this.pageIndex = 1;
-      this.getLocation();
-    },
-    closeDialogPage() {
-      uni.closeDialogPage({
-        dialogPage: this.$page
-      });
-    },
-    back() {
-      uni.$emit(this.failEventName, 1);
-      this.closeDialogPage();
-    },
-    confirm() {
-      if (this.selected < 0) {
-        if (this.callUniMapCoErr) {
-          uni.$emit(this.successEventName, {
-            name: "",
-            address: "",
-            latitude: parseFloat(this.latitude.toFixed(6)),
-            longitude: parseFloat(this.longitude.toFixed(6))
-          });
-          this.closeDialogPage();
-        }
-        return;
-      }
-      let item = this.pois[this.selected];
-      let res = {
-        name: item.title,
-        address: item.address,
-        latitude: item.location.latitude,
-        longitude: item.location.longitude
-      };
-      uni.$emit(this.successEventName, res);
-      this.closeDialogPage();
-    }
-  },
-  computed: {
-    languageCom() {
-      const textInfo = languageData[this.language] != null ? languageData[this.language] : languageData["zh-Hans"];
-      return textInfo;
-    },
-    uniChooseLocationClassCom() {
-      let list2 = [];
-      if (this.theme == "dark") {
-        list2.push("uni-choose-location-dark");
-      } else {
-        list2.push("uni-choose-location-light");
-      }
-      return list2.join(" ");
-    },
-    landscapeClassCom() {
-      return this.isLandscape ? "uni-choose-location-landscape" : "uni-choose-location-vertical";
-    },
-    mapBoxStyleCom() {
-      let list2 = [];
-      if (!this.useUniCloud) {
-        list2.push(`flex: 1;`);
-      }
-      if (!this.isLandscape) {
-        let top = this.isFocus ? (300 - this.mapHeight) / 2 : 0;
-        list2.push(`transform:translateY(${top}px);`);
-        list2.push(`height:${this.mapHeight}px;`);
-      }
-      return list2.join("");
-    },
-    poiBoxStyleCom() {
-      let list2 = [];
-      if (!this.isLandscape) {
-        let top = this.isFocus ? 300 : this.mapHeight;
-        list2.push(`top:${top}px;`);
-      }
-      return list2.join("");
-    },
-    resetStyleCom() {
-      let list2 = [];
-      if (!this.isLandscape) {
-        let bottom = this.isFocus ? (this.mapHeight - 300) / 2 + 300 - this.mapHeight : 0;
-        list2.push(`transform:translateY(${bottom}px);`);
-      }
-      return list2.join("");
-    }
-  }
-};
-const _style_0 = `
-@font-face {\r
-    font-family: UniChooseLocationFontFamily;\r
-    src: url('data:font/ttf;charset=utf-8;base64,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') format('truetype');
-}
-.uni-choose-location-icons {\r
-    font-family: "UniChooseLocationFontFamily";\r
-    font-size: 16px;\r
-    font-style: normal;
-}
-.uni-choose-location {\r
-    position: relative;\r
-    left: 0;\r
-    top: 0;\r
-    width: 100%;\r
-    height: 100%;\r
-    background: #f8f8f8;\r
-    z-index: 999;
-}
-.uni-choose-location-map-box {\r
-    position: relative;\r
-    width: 100%;\r
-    height: 350px;
-}
-.uni-choose-location-map-box.uni-choose-location-vertical {\r
-    transition-property: transform;\r
-    transition-duration: 0.25s;\r
-    transition-timing-function: ease-out;
-}
-.uni-choose-location-map {\r
-    width: 100%;\r
-    height: 100%;
-}
-.uni-choose-location-map-target {\r
-    position: absolute;\r
-    left: 50%;\r
-    bottom: 50%;\r
-    width: 50px;\r
-    height: 50px;\r
-    margin-left: -25px;\r
-    transition-property: transform;\r
-    transition-duration: 0.25s;\r
-    transition-timing-function: ease-out;
-}
-.uni-choose-location-map-target-icon {\r
-    font-size: 50px;\r
-    color: #f0493e;
-}\r
-\r
-  /* #1aad19; #f0493e; #007aff;*/
-.uni-choose-location-map-reset {\r
-    position: absolute;\r
-    left: 20px;\r
-    bottom: 40px;\r
-    width: 40px;\r
-    height: 40px;\r
-    box-sizing: border-box;\r
-    background-color: #fff;\r
-    border-radius: 20px;\r
-    pointer-events: auto;\r
-    box-shadow: 0px 0px 20px 2px rgba(0, 0, 0, .3);\r
-    z-index: 9;\r
-    display: flex;\r
-    justify-content: center;\r
-    align-items: center;
-}
-.uni-choose-location-map-reset.uni-choose-location-vertical {\r
-    transition-property: transform;\r
-    transition-duration: 0.25s;\r
-    transition-timing-function: ease-out;
-}
-.uni-choose-location-map-reset-icon {\r
-    font-size: 26px;\r
-    text-align: center;\r
-    line-height: 40px;
-}
-.uni-choose-location-nav {\r
-    position: absolute;\r
-    top: 0;\r
-    left: 0;\r
-    width: 100%;\r
-    height: 60px;\r
-    background-color: rgba(0, 0, 0, 0);\r
-    background-image: linear-gradient(to bottom, rgba(0, 0, 0, .6), rgba(0, 0, 0, 0));
-}
-.uni-choose-location-nav-btn {\r
-    position: absolute;\r
-    top: 5px;\r
-    left: 5px;\r
-    width: 64px;\r
-    height: 44px;\r
-    padding: 5px;
-}
-.uni-choose-location-nav-btn.uni-choose-location-nav-confirm-btn {\r
-    left: auto;\r
-    right: 5px;
-}
-.uni-choose-location-nav-btn.uni-choose-location-nav-confirm-btn .uni-choose-location-nav-confirm-text {\r
-    background-color: #007aff;\r
-    border-radius: 5px;
-}
-.uni-choose-location-nav-btn.uni-choose-location-nav-confirm-btn.active:active {\r
-    opacity: 0.7;
-}
-.uni-choose-location-nav-btn.uni-choose-location-nav-confirm-btn.disable {\r
-    opacity: 0.4;
-}
-.uni-choose-location-nav-btn.uni-choose-location-nav-back-btn .uni-choose-location-nav-back-text {\r
-    color: #fff;
-}
-.uni-choose-location-nav-text {\r
-    padding: 8px 0px;\r
-    font-size: 14px;\r
-    text-align: center;\r
-\r
-    letter-spacing: 0.1em;\r
-\r
-    color: #fff;\r
-    text-align: center;
-}
-.uni-choose-location-poi {\r
-    position: absolute;\r
-    top: 350px;\r
-    width: 100%;\r
-    bottom: 0;\r
-    background-color: #fff;\r
-    z-index: 10
-}
-.uni-choose-location-poi.uni-choose-location-vertical {\r
-    transition-property: top;\r
-    transition-duration: 0.25s;\r
-    transition-timing-function: ease-out;
-}
-.uni-choose-location-poi-search {\r
-    display: flex;\r
-    flex-direction: row;\r
-    align-items: center;\r
-    justify-content: center;\r
-    height: 50px;\r
-    padding: 8px;\r
-    background-color: #fff;
-}
-.uni-choose-location-poi-search-box {\r
-    display: flex;\r
-    flex-direction: row;\r
-    align-items: center;\r
-    justify-content: center;\r
-    height: 32px;\r
-    flex: 1;\r
-    border-radius: 5px;\r
-    padding: 0 15px;\r
-    background-color: #ededed;
-}
-.uni-choose-location-poi-search-input {\r
-    flex: 1;\r
-    height: 100%;\r
-    border-radius: 5px;\r
-    padding: 0 5px;\r
-    background: #ededed;
-}
-.uni-choose-location-poi-search-cancel {\r
-    margin-left: 5px;\r
-    color: #007aff;\r
-    font-size: 15px;\r
-    text-align: center;
-}
-.uni-choose-location-poi-list {\r
-    flex: 1;
-}
-.uni-choose-location-poi-search-loading {\r
-    display: flex;\r
-    align-items: center;\r
-    padding: 10px 0px;
-}
-.uni-choose-location-poi-search-loading-text {\r
-    color: #191919;
-}
-.uni-choose-location-poi-search-error {\r
-    display: flex;\r
-    align-items: center;\r
-    padding: 10px;
-}
-.uni-choose-location-poi-search-error-text {\r
-    color: #191919;\r
-    font-size: 14px;
-}
-.uni-choose-location-poi-item {\r
-    position: relative;\r
-    padding: 15px 10px;\r
-    padding-right: 40px;
-}
-.uni-choose-location-poi-item-title-text {\r
-    font-size: 14px;\r
-    overflow: hidden;\r
-    white-space: nowrap;\r
-    text-overflow: ellipsis;\r
-    color: #191919;
-}
-.uni-choose-location-poi-item-detail-text {\r
-    font-size: 12px;\r
-    margin-top: 5px;\r
-    color: #b2b2b2;\r
-    overflow: hidden;\r
-    white-space: nowrap;\r
-    text-overflow: ellipsis;
-}
-.uni-choose-location-poi-item-selected-icon {\r
-    position: absolute;\r
-    top: 50%;\r
-    right: 10px;\r
-    width: 26px;\r
-    height: 26px;\r
-    margin-top: -13px;\r
-    color: #007aff;\r
-    font-size: 24px;
-}
-.uni-choose-location-poi-item-after {\r
-    position: absolute;\r
-    height: 1px;\r
-    left: 10px;\r
-    bottom: 0px;\r
-    right: 10px;\r
-    width: auto;\r
-    border-bottom: 1px solid #f8f8f8;
-}
-.uni-choose-location-search-icon {\r
-    color: #808080;\r
-    padding-left: 5px;
-}
-.uni-choose-location-poi-search-loading-image {\r
-    width: 30px;\r
-    height: 30px;
-}\r
-\r
-  /* 横屏样式开始 */
-.uni-choose-location .uni-choose-location-map-box.uni-choose-location-landscape {\r
-    height: 100%;
-}
-.uni-choose-location .uni-choose-location-poi.uni-choose-location-landscape {\r
-    position: absolute;\r
-    top: 80px;\r
-    right: 25px;\r
-    width: 300px;\r
-    bottom: 20px;\r
-    max-height: 600px;\r
-    box-shadow: 0px 0px 20px 2px rgba(0, 0, 0, .3);\r
-    border-radius: 5px;
-}
-.uni-choose-location .uni-choose-location-map-reset.uni-choose-location-landscape {\r
-    left: 40px;\r
-    bottom: 40px;
-}
-.uni-choose-location .uni-choose-location-poi-item.uni-choose-location-landscape {\r
-    padding: 10px;
-}
-.uni-choose-location .uni-choose-location-nav-btn.uni-choose-location-landscape {\r
-    top: 10px;\r
-    left: 20px;
-}
-.uni-choose-location .uni-choose-location-nav-btn.uni-choose-location-nav-confirm-btn.uni-choose-location-landscape {\r
-    left: auto;\r
-    right: 20px;
-}\r
-\r
-  /* 横屏样式结束 */\r
-\r
-  /* 暗黑模式样式开始 */
-.uni-choose-location-dark .uni-choose-location-map-reset {\r
-    background-color: #111111;\r
-    box-shadow: 0px 0px 5px 1px rgba(0, 0, 0, .3);
-}
-.uni-choose-location-dark .uni-choose-location-poi-search-box {\r
-    background-color: #111111;
-}
-.uni-choose-location-dark .uni-choose-location-search-icon {\r
-    color: #d1d1d1;
-}
-.uni-choose-location-dark .uni-choose-location-poi-search-loading-text {\r
-    color: #d1d1d1;
-}
-.uni-choose-location-dark .uni-choose-location-poi-search {\r
-    background-color: #181818
-}
-.uni-choose-location-dark .uni-choose-location-poi-search-input {\r
-    background: #111111;\r
-    color: #d1d1d1;
-}
-.uni-choose-location-dark .uni-choose-location-poi-item-title-text {\r
-    color: #d1d1d1;
-}
-.uni-choose-location-dark .uni-choose-location-poi-item-detail-text {\r
-    color: #595959;
-}
-.uni-choose-location-dark .uni-choose-location-poi {\r
-    background-color: #181818
-}
-.uni-choose-location-dark .uni-choose-location-poi-item-after {\r
-    border-bottom: 1px solid #1e1e1e;
-}
-.uni-choose-location-dark .uni-choose-location-map-reset-icon {\r
-    color: #d1d1d1;
-}
-.uni-choose-location-dark .uni-choose-location-poi-search-error-text {\r
-    color: #d1d1d1;
-}\r
-\r
-  /* 暗黑模式样式结束 */
-uni-image > div {\r
-    width: 100%;\r
-    height: 100%;\r
-    background-repeat: no-repeat;
-}\r
-\r
-`;
-const _export_sfc = (sfc, props2) => {
-  const target = sfc.__vccOpts || sfc;
-  for (const [key, val] of props2) {
-    target[key] = val;
-  }
-  return target;
-};
-function _sfc_render$1(_ctx, _cache, $props, $setup, $data, $options) {
-  const _component_map = __syscom_0;
-  const _component_text = __syscom_1;
-  const _component_view = __syscom_2;
-  const _component_input = Input;
-  const _component_image = __syscom_4;
-  const _component_scroll_view = __syscom_5;
-  return openBlock(), createBlock(_component_view, {
-    class: normalizeClass(["uni-choose-location", $options.uniChooseLocationClassCom])
-  }, {
-    default: withCtx(() => [
-      createVNode(_component_view, {
-        class: normalizeClass(["uni-choose-location-map-box", [$options.landscapeClassCom]]),
-        style: normalizeStyle($options.mapBoxStyleCom)
-      }, {
-        default: withCtx(() => [
-          createVNode(_component_map, {
-            class: "uni-choose-location-map",
-            id: $data.mapId,
-            ref: $data.mapId,
-            latitude: $data.latitude,
-            longitude: $data.longitude,
-            "layer-style": $data.theme == "dark" ? "2" : "1",
-            "show-compass": false,
-            "enable-zoom": true,
-            "enable-scroll": true,
-            "enable-rotate": false,
-            "enable-poi": true,
-            "show-location": true,
-            onRegionchange: $options.regionchange
-          }, null, 8, ["id", "latitude", "longitude", "layer-style", "onRegionchange"]),
-          createVNode(_component_view, {
-            class: "uni-choose-location-map-target",
-            ref: $data.mapTargetId,
-            id: $data.mapTargetId
-          }, {
-            default: withCtx(() => [
-              createVNode(_component_text, { class: "uni-choose-location-icons uni-choose-location-map-target-icon" }, {
-                default: withCtx(() => [
-                  createTextVNode(toDisplayString($data.icon.target), 1)
-                ]),
-                _: 1
-              })
-            ]),
-            _: 1
-          }, 8, ["id"]),
-          createVNode(_component_view, {
-            class: normalizeClass(["uni-choose-location-map-reset", [$options.landscapeClassCom]]),
-            onClick: $options.mapReset,
-            style: normalizeStyle($options.resetStyleCom)
-          }, {
-            default: withCtx(() => [
-              createVNode(_component_text, { class: "uni-choose-location-icons uni-choose-location-map-reset-icon" }, {
-                default: withCtx(() => [
-                  createTextVNode(toDisplayString($data.icon.position), 1)
-                ]),
-                _: 1
-              })
-            ]),
-            _: 1
-          }, 8, ["class", "onClick", "style"])
-        ]),
-        _: 1
-      }, 8, ["class", "style"]),
-      createVNode(_component_view, {
-        class: "uni-choose-location-nav",
-        style: normalizeStyle("height:" + (60 + $data.safeArea.top) + "px;")
-      }, {
-        default: withCtx(() => [
-          createVNode(_component_view, {
-            class: normalizeClass(["uni-choose-location-nav-btn uni-choose-location-nav-back-btn", [$options.landscapeClassCom]]),
-            style: normalizeStyle($data.safeArea.top > 0 ? "top: " + $data.safeArea.top + "px;" : "")
-          }, {
-            default: withCtx(() => [
-              createVNode(_component_text, {
-                class: "uni-choose-location-nav-text uni-choose-location-nav-back-text",
-                onClick: $options.back
-              }, {
-                default: withCtx(() => [
-                  createTextVNode(toDisplayString($options.languageCom["back"]), 1)
-                ]),
-                _: 1
-              }, 8, ["onClick"])
-            ]),
-            _: 1
-          }, 8, ["class", "style"]),
-          createVNode(_component_view, {
-            class: normalizeClass(["uni-choose-location-nav-btn uni-choose-location-nav-confirm-btn", [$options.landscapeClassCom, $data.selected < 0 && !$data.callUniMapCoErr ? "disable" : "active"]]),
-            style: normalizeStyle($data.safeArea.top > 0 ? "top: " + $data.safeArea.top + "px;" : ""),
-            onClick: $options.confirm
-          }, {
-            default: withCtx(() => [
-              createVNode(_component_text, { class: "uni-choose-location-nav-text uni-choose-location-nav-confirm-text" }, {
-                default: withCtx(() => [
-                  createTextVNode(toDisplayString($options.languageCom["ok"]), 1)
-                ]),
-                _: 1
-              })
-            ]),
-            _: 1
-          }, 8, ["class", "style", "onClick"])
-        ]),
-        _: 1
-      }, 8, ["style"]),
-      $data.useUniCloud ? (openBlock(), createBlock(_component_view, {
-        key: 0,
-        class: normalizeClass(["uni-choose-location-poi", [$options.landscapeClassCom]]),
-        style: normalizeStyle($options.poiBoxStyleCom)
-      }, {
-        default: withCtx(() => [
-          createVNode(_component_view, { class: "uni-choose-location-poi-search" }, {
-            default: withCtx(() => [
-              createVNode(_component_view, { class: "uni-choose-location-poi-search-box" }, {
-                default: withCtx(() => [
-                  createVNode(_component_text, { class: "uni-choose-location-icons uni-choose-location-search-icon" }, {
-                    default: withCtx(() => [
-                      createTextVNode(toDisplayString($data.icon.search), 1)
-                    ]),
-                    _: 1
-                  }),
-                  createVNode(_component_input, {
-                    modelValue: $data.searchValue,
-                    "onUpdate:modelValue": _cache[0] || (_cache[0] = ($event) => $data.searchValue = $event),
-                    type: "text",
-                    placeholder: $options.languageCom["search"],
-                    class: "uni-choose-location-poi-search-input uni-choose-location-icons",
-                    onFocus: _cache[1] || (_cache[1] = ($event) => $data.isFocus = true),
-                    onConfirm: _cache[2] || (_cache[2] = ($event) => $options.poiSearch("poiSearch")),
-                    onInput: $options.searchValueChange
-                  }, null, 8, ["modelValue", "placeholder", "onInput"])
-                ]),
-                _: 1
-              }),
-              $data.isFocus || $data.searchValue != "" ? (openBlock(), createBlock(_component_text, {
-                key: 0,
-                class: "uni-choose-location-poi-search-cancel",
-                onClick: $options.cancelSearch
-              }, {
-                default: withCtx(() => [
-                  createTextVNode(toDisplayString($options.languageCom["cancel"]), 1)
-                ]),
-                _: 1
-              }, 8, ["onClick"])) : createCommentVNode("", true)
-            ]),
-            _: 1
-          }),
-          createVNode(_component_scroll_view, {
-            id: $data.scrollId,
-            ref: $data.scrollId,
-            "scroll-with-animation": false,
-            direction: "vertical",
-            "scroll-top": $data.scrollTop,
-            "lower-threshold": 50,
-            onScrolltolower: $options.scrolltolower,
-            class: "uni-choose-location-poi-list"
-          }, {
-            default: withCtx(() => [
-              $data.errMsg != "" ? (openBlock(), createBlock(_component_view, {
-                key: 0,
-                class: "uni-choose-location-poi-search-error"
-              }, {
-                default: withCtx(() => [
-                  createVNode(_component_text, { class: "uni-choose-location-poi-search-error-text" }, {
-                    default: withCtx(() => [
-                      createTextVNode(toDisplayString($data.errMsg), 1)
-                    ]),
-                    _: 1
-                  })
-                ]),
-                _: 1
-              })) : $data.locationLoading ? (openBlock(), createBlock(_component_view, {
-                key: 1,
-                class: "uni-choose-location-poi-search-loading"
-              }, {
-                default: withCtx(() => [
-                  createVNode(_component_text, { class: "uni-choose-location-poi-search-loading-text" }, {
-                    default: withCtx(() => [
-                      createTextVNode(toDisplayString($options.languageCom["locationLoading"]), 1)
-                    ]),
-                    _: 1
-                  })
-                ]),
-                _: 1
-              })) : $data.searchLoading && $data.pageIndex == 1 ? (openBlock(), createBlock(_component_view, {
-                key: 2,
-                class: "uni-choose-location-poi-search-loading"
-              }, {
-                default: withCtx(() => [
-                  createVNode(_component_image, {
-                    src: $data.loadingPath,
-                    class: "uni-choose-location-poi-search-loading-image",
-                    mode: "widthFix"
-                  }, null, 8, ["src"])
-                ]),
-                _: 1
-              })) : (openBlock(true), createElementBlock(Fragment, { key: 3 }, renderList($data.pois, (item, index2) => {
-                return openBlock(), createBlock(_component_view, {
-                  key: index2,
-                  class: normalizeClass(["uni-choose-location-poi-item", [$options.landscapeClassCom]]),
-                  onClick: ($event) => $options.selectPoi(item, index2)
-                }, {
-                  default: withCtx(() => [
-                    createVNode(_component_view, null, {
-                      default: withCtx(() => [
-                        createVNode(_component_view, null, {
-                          default: withCtx(() => [
-                            createVNode(_component_text, { class: "uni-choose-location-poi-item-title-text" }, {
-                              default: withCtx(() => [
-                                createTextVNode(toDisplayString(item.title), 1)
-                              ]),
-                              _: 2
-                            }, 1024)
-                          ]),
-                          _: 2
-                        }, 1024),
-                        createVNode(_component_view, null, {
-                          default: withCtx(() => [
-                            createVNode(_component_text, { class: "uni-choose-location-poi-item-detail-text" }, {
-                              default: withCtx(() => [
-                                createTextVNode(toDisplayString(item.distance > 0 ? item.distanceStr + " | " : "") + toDisplayString(item.address), 1)
-                              ]),
-                              _: 2
-                            }, 1024)
-                          ]),
-                          _: 2
-                        }, 1024)
-                      ]),
-                      _: 2
-                    }, 1024),
-                    $data.selected == index2 ? (openBlock(), createBlock(_component_text, {
-                      key: 0,
-                      class: "uni-choose-location-icons uni-choose-location-poi-item-selected-icon"
-                    }, {
-                      default: withCtx(() => [
-                        createTextVNode(toDisplayString($data.icon.success), 1)
-                      ]),
-                      _: 1
-                    })) : createCommentVNode("", true),
-                    createVNode(_component_view, { class: "uni-choose-location-poi-item-after" })
-                  ]),
-                  _: 2
-                }, 1032, ["class", "onClick"]);
-              }), 128)),
-              $data.searchLoading && $data.pageIndex > 1 ? (openBlock(), createBlock(_component_view, {
-                key: 4,
-                class: "uni-choose-location-poi-search-loading"
-              }, {
-                default: withCtx(() => [
-                  createVNode(_component_image, {
-                    src: $data.loadingPath,
-                    class: "uni-choose-location-poi-search-loading-image",
-                    mode: "widthFix"
-                  }, null, 8, ["src"])
-                ]),
-                _: 1
-              })) : createCommentVNode("", true)
-            ]),
-            _: 1
-          }, 8, ["id", "scroll-top", "onScrolltolower"])
-        ]),
-        _: 1
-      }, 8, ["class", "style"])) : createCommentVNode("", true)
-    ]),
-    _: 1
-  }, 8, ["class"]);
-}
-const uniChooseLocationPage = /* @__PURE__ */ _export_sfc(_sfc_main$1, [["render", _sfc_render$1], ["styles", [_style_0]]]);
-class ChooseLocationFailImpl extends UniError {
-  constructor(errMsg = "chooseLocation:fail cancel", errCode = 1) {
-    super();
-    this.errCode = errCode;
-    this.errMsg = errMsg;
-  }
-}
-const chooseLocation = (options) => {
-  registerSystemRoute("uni:chooseLocation", uniChooseLocationPage);
-  const uuid = `${Date.now()}${Math.floor(Math.random() * 1e7)}`;
-  const baseEventName = `uni_choose_location_${uuid}`;
-  const readyEventName = `${baseEventName}_ready`;
-  const optionsEventName = `${baseEventName}_options`;
-  const successEventName = `${baseEventName}_success`;
-  const failEventName = `${baseEventName}_fail`;
-  uni.$on(readyEventName, () => {
-    uni.$emit(optionsEventName, JSON.parse(JSON.stringify(options)));
-  });
-  uni.$on(successEventName, (result) => {
-    var _a, _b;
-    (_a = options.success) == null ? void 0 : _a.call(options, result);
-    (_b = options.complete) == null ? void 0 : _b.call(options, result);
-  });
-  uni.$on(failEventName, () => {
-    var _a, _b;
-    (_a = options.fail) == null ? void 0 : _a.call(options, new ChooseLocationFailImpl());
-    (_b = options.complete) == null ? void 0 : _b.call(options, new ChooseLocationFailImpl());
-  });
-  uni.openDialogPage({
-    url: `uni:chooseLocation?readyEventName=${readyEventName}&optionsEventName=${optionsEventName}&successEventName=${successEventName}&failEventName=${failEventName}`,
-    triggerParentHide: true,
-    fail(err) {
-      var _a, _b;
-      (_a = options.fail) == null ? void 0 : _a.call(options, new ChooseLocationFailImpl(`chooseLocation:fail ${err.errMsg}`, 4));
-      (_b = options.complete) == null ? void 0 : _b.call(options, new ChooseLocationFailImpl(`chooseLocation:fail ${err.errMsg}`, 4));
-      uni.$off(readyEventName);
-      uni.$off(successEventName);
-      uni.$off(failEventName);
-    }
-  });
-};
-window.UniResizeObserver = window.ResizeObserver;
-const api = /* @__PURE__ */ Object.defineProperty({
-  __proto__: null,
-  $emit,
-  $off,
-  $on,
-  $once,
-  __f__,
-  addInterceptor,
-  addPhoneContact,
-  arrayBufferToBase64,
-  base64ToArrayBuffer,
-  canIUse,
-  canvasGetImageData,
-  canvasPutImageData,
-  canvasToTempFilePath,
-  chooseFile,
-  chooseImage,
-  chooseLocation,
-  chooseVideo,
-  clearStorage,
-  clearStorageSync,
-  closeDialogPage,
-  closePreviewImage,
-  closeSocket,
-  connectSocket,
-  createAnimation: createAnimation$1,
-  createCameraContext,
-  createCanvasContext,
-  createCanvasContextAsync,
-  createInnerAudioContext,
-  createIntersectionObserver,
-  createLivePlayerContext,
-  createMapContext,
-  createMediaQueryObserver,
-  createSelectorQuery,
-  createVideoContext,
-  cssBackdropFilter,
-  cssConstant,
-  cssEnv,
-  cssVar,
-  downloadFile,
-  getAppBaseInfo,
-  getClipboardData,
-  getDeviceInfo,
-  getElementById,
-  getEnterOptionsSync,
-  getFileInfo,
-  getImageInfo,
-  getLaunchOptionsSync,
-  getLeftWindowStyle,
-  getLocale,
-  getLocation,
-  getNetworkType,
-  getProvider,
-  getPushClientId,
-  getRecorderManager,
-  getRightWindowStyle,
-  getSavedFileInfo,
-  getSavedFileList,
-  getScreenBrightness,
-  getSelectedTextRange: getSelectedTextRange$1,
-  getStorage,
-  getStorageInfo,
-  getStorageInfoSync,
-  getStorageSync,
-  getSystemInfo,
-  getSystemInfoSync,
-  getTabBarPageId,
-  getTopWindowStyle,
-  getVideoInfo,
-  getWindowInfo,
-  hideActionSheet,
-  hideKeyboard,
-  hideLeftWindow,
-  hideLoading,
-  hideModal,
-  hideNavigationBarLoading,
-  hideRightWindow,
-  hideTabBar,
-  hideTabBarRedDot,
-  hideToast,
-  hideTopWindow,
-  interceptors,
-  invokePushCallback,
-  loadFontFace,
-  login,
-  makePhoneCall,
-  navigateBack,
-  navigateTo,
-  offAccelerometerChange,
-  offAppHide,
-  offAppShow,
-  offCompassChange,
-  offError,
-  offHostThemeChange,
-  offLocationChange,
-  offLocationChangeError,
-  offNetworkStatusChange,
-  offPageNotFound,
-  offPushMessage,
-  offThemeChange: offThemeChange$1,
-  offUnhandledRejection,
-  offWindowResize,
-  onAccelerometerChange,
-  onAppHide,
-  onAppShow,
-  onCompassChange,
-  onCreateVueApp,
-  onError,
-  onGyroscopeChange,
-  onHostThemeChange,
-  onLocaleChange,
-  onLocationChange,
-  onLocationChangeError,
-  onMemoryWarning,
-  onNetworkStatusChange,
-  onPageNotFound,
-  onPushMessage,
-  onSocketClose,
-  onSocketError,
-  onSocketMessage,
-  onSocketOpen,
-  onTabBarMidButtonTap,
-  onThemeChange: onThemeChange$2,
-  onUnhandledRejection,
-  onUserCaptureScreen,
-  onWindowResize,
-  openDialogPage,
-  openDocument,
-  openLocation,
-  pageScrollTo,
-  preloadPage,
-  previewImage,
-  reLaunch,
-  redirectTo,
-  removeAllPages,
-  removeInterceptor,
-  removeLastPage,
-  removeNonTabBarPages,
-  removeSavedFile,
-  removeStorage,
-  removeStorageSync,
-  removeTabBarBadge,
-  request,
-  rpx2px: upx2px,
-  saveFile,
-  saveImageToPhotosAlbum,
-  saveVideoToPhotosAlbum,
-  scanCode,
-  sendSocketMessage,
-  setClipboardData,
-  setKeepScreenOn,
-  setLeftWindowStyle,
-  setLocale,
-  setNavigationBarColor,
-  setNavigationBarTitle,
-  setPageMeta,
-  setRightWindowStyle,
-  setScreenBrightness,
-  setStorage,
-  setStorageSync,
-  setTabBarBadge,
-  setTabBarItem,
-  setTabBarStyle,
-  setTopWindowStyle,
-  showActionSheet,
-  showLeftWindow,
-  showLoading,
-  showModal,
-  showNavigationBarLoading,
-  showRightWindow,
-  showTabBar,
-  showTabBarRedDot,
-  showToast,
-  showTopWindow,
-  startAccelerometer,
-  startCompass,
-  startGyroscope,
-  startLocationUpdate,
-  startPullDownRefresh,
-  stopAccelerometer,
-  stopCompass,
-  stopGyroscope,
-  stopLocationUpdate,
-  stopPullDownRefresh,
-  switchTab,
-  uploadFile,
-  upx2px,
-  vibrateLong,
-  vibrateShort
-}, Symbol.toStringTag, { value: "Module" });
 const SEP = "$$";
 const currentPagesMap = /* @__PURE__ */ new Map();
 function getPage$BasePage(page) {
@@ -18903,6 +8842,43 @@ function getRealPath(filePath) {
   }
   return filePath;
 }
+const ua = navigator.userAgent;
+const isAndroid = /* @__PURE__ */ /android/i.test(ua);
+const isIOS = /* @__PURE__ */ /iphone|ipad|ipod/i.test(ua);
+const isWindows = /* @__PURE__ */ ua.match(/Windows NT ([\d|\d.\d]*)/i);
+const isMac = /* @__PURE__ */ /Macintosh|Mac/i.test(ua);
+const isLinux = /* @__PURE__ */ /Linux|X11/i.test(ua);
+const isIPadOS = isMac && navigator.maxTouchPoints > 0;
+function getScreenFix() {
+  return /^Apple/.test(navigator.vendor) && typeof window.orientation === "number";
+}
+function isLandscape(screenFix) {
+  return screenFix && Math.abs(window.orientation) === 90;
+}
+function getScreenWidth(screenFix, landscape) {
+  return screenFix ? Math[landscape ? "max" : "min"](screen.width, screen.height) : screen.width;
+}
+function getScreenHeight(screenFix, landscape) {
+  return screenFix ? Math[landscape ? "min" : "max"](screen.height, screen.width) : screen.height;
+}
+function getWindowWidth(screenWidth) {
+  return Math.min(
+    window.innerWidth,
+    document.documentElement.clientWidth,
+    screenWidth
+  ) || screenWidth;
+}
+function getBaseSystemInfo() {
+  const screenFix = getScreenFix();
+  const windowWidth = getWindowWidth(
+    getScreenWidth(screenFix, isLandscape(screenFix))
+  );
+  return {
+    platform: isIOS ? "ios" : "other",
+    pixelRatio: window.devicePixelRatio,
+    windowWidth
+  };
+}
 function operateVideoPlayer(videoId, pageId, type, data) {
   UniServiceJSBridge.invokeViewMethod(
     "video." + videoId,
@@ -18957,7 +8933,7 @@ function getNodeInfo(el, fields2) {
   const info = {};
   const { top, topWindowHeight } = getWindowOffset();
   if (fields2.node) {
-    const tagName = el.tagName.split("-")[1];
+    const tagName = el.tagName.split("-")[1] || el.tagName;
     if (tagName) {
       info.node = el.querySelector(tagName);
     }
@@ -19036,21 +9012,21 @@ class QuerySelectorHelper {
     this._element = element;
     this._commentStartVNode = vnode;
   }
-  static queryElement(element, selector, all, vnode) {
-    return new QuerySelectorHelper(element, vnode).query(selector, all);
+  static queryElement(element, selector, fields2, all, vnode) {
+    return new QuerySelectorHelper(element, vnode).query(selector, all, fields2);
   }
-  query(selector, all) {
+  query(selector, all, fields2) {
     const isFragment = (
       // @ts-expect-error
       this._element.nodeType === 3 || this._element.nodeType === 8
     );
     if (isFragment) {
-      return this.queryFragment(this._element, selector, all);
+      return this.queryFragment(this._element, selector, all, fields2);
     } else {
-      return all ? this.querySelectorAll(this._element, selector) : this.querySelector(this._element, selector);
+      return all ? this.querySelectorAll(this._element, selector, fields2) : this.querySelector(this._element, selector, fields2);
     }
   }
-  queryFragment(el, selector, all) {
+  queryFragment(el, selector, all, fields2) {
     let current = el.nextSibling;
     if (current == null) {
       return null;
@@ -19064,7 +9040,7 @@ class QuerySelectorHelper {
           current = current.nextSibling;
           continue;
         }
-        const queryResult = this.querySelectorAll(current, selector);
+        const queryResult = this.querySelectorAll(current, selector, fields2);
         if (queryResult != null) {
           result1.push(...queryResult);
         }
@@ -19082,7 +9058,7 @@ class QuerySelectorHelper {
           current = current.nextSibling;
           continue;
         }
-        result2 = this.querySelector(current, selector);
+        result2 = this.querySelector(current, selector, fields2);
         current = current.nextSibling;
         if (result2 != null || current == null || this._commentStartVNode.anchor == current) {
           break;
@@ -19091,25 +9067,25 @@ class QuerySelectorHelper {
       return result2;
     }
   }
-  querySelector(element, selector) {
+  querySelector(element, selector, fields2) {
     let element2 = this.querySelf(element, selector);
     if (element2 == null) {
       element2 = element.querySelector(selector);
     }
     if (element2 != null) {
-      return this.getNodeInfo(element2);
+      return this.getNodeInfo(element2, fields2);
     }
     return null;
   }
-  querySelectorAll(element, selector) {
+  querySelectorAll(element, selector, fields2) {
     const nodesInfoArray = [];
     const element2 = this.querySelf(element, selector);
     if (element2 != null) {
-      nodesInfoArray.push(this.getNodeInfo(element));
+      nodesInfoArray.push(this.getNodeInfo(element, fields2));
     }
     const findNodes = element.querySelectorAll(selector);
     findNodes == null ? void 0 : findNodes.forEach((el) => {
-      nodesInfoArray.push(this.getNodeInfo(el));
+      nodesInfoArray.push(this.getNodeInfo(el, fields2));
     });
     return nodesInfoArray;
   }
@@ -19130,12 +9106,11 @@ class QuerySelectorHelper {
     }
     return null;
   }
-  getNodeInfo(element) {
+  getNodeInfo(element, fields2) {
     var _a;
     const rect = element.getBoundingClientRect();
     const nodeInfo = {
       id: (_a = element.getAttribute("id")) == null ? void 0 : _a.toString(),
-      dataset: null,
       left: rect.left,
       top: rect.top,
       right: rect.right,
@@ -19143,6 +9118,12 @@ class QuerySelectorHelper {
       width: rect.width,
       height: rect.height
     };
+    if (fields2.node) {
+      nodeInfo.node = element;
+    }
+    if (fields2.dataset) {
+      nodeInfo.dataset = {};
+    }
     return nodeInfo;
   }
 }
@@ -19158,6 +9139,7 @@ function getNodesInfo(pageVm, component, selector, single, fields2) {
     return QuerySelectorHelper.queryElement(
       selfElement,
       selector,
+      fields2,
       !single,
       component == null ? void 0 : component.$.subTree
     );
@@ -19265,6 +9247,85 @@ function removeMediaQueryObserver({ reqId, component }, _pageId) {
     delete mediaQueryObservers[reqId];
   }
 }
+const files = {};
+function urlToFile(url, local) {
+  const file = files[url];
+  if (file) {
+    return Promise.resolve(file);
+  }
+  if (/^data:[a-z-]+\/[a-z-]+;base64,/.test(url)) {
+    return Promise.resolve(base64ToFile(url));
+  }
+  if (local) {
+    return Promise.reject(new Error("not find"));
+  }
+  return new Promise((resolve, reject) => {
+    const xhr = new XMLHttpRequest();
+    xhr.open("GET", url, true);
+    xhr.responseType = "blob";
+    xhr.onload = function() {
+      resolve(this.response);
+    };
+    xhr.onerror = reject;
+    xhr.send();
+  });
+}
+function base64ToFile(base64) {
+  const base64Array = base64.split(",");
+  const res = base64Array[0].match(/:(.*?);/);
+  const type = res ? res[1] : "";
+  const str = atob(base64Array[1]);
+  let n = str.length;
+  const array = new Uint8Array(n);
+  while (n--) {
+    array[n] = str.charCodeAt(n);
+  }
+  return blobToFile(array, type);
+}
+function getExtname(type) {
+  const extname = type.split("/")[1];
+  return extname ? `.${extname}` : "";
+}
+function getFileName(url) {
+  url = url.split("#")[0].split("?")[0];
+  const array = url.split("/");
+  return array[array.length - 1];
+}
+function blobToFile(blob, type) {
+  let file;
+  if (blob instanceof File) {
+    file = blob;
+  } else {
+    type = type || blob.type || "";
+    const filename = `${Date.now()}${getExtname(type)}`;
+    try {
+      file = new File([blob], filename, { type });
+    } catch (error) {
+      blob = blob instanceof Blob ? blob : new Blob([blob], { type });
+      file = blob;
+      file.name = file.name || filename;
+    }
+  }
+  return file;
+}
+function fileToUrl(file) {
+  for (const key in files) {
+    if (hasOwn(files, key)) {
+      const oldFile = files[key];
+      if (oldFile === file) {
+        return key;
+      }
+    }
+  }
+  var url = (window.URL || window.webkitURL).createObjectURL(file);
+  files[url] = file;
+  return url;
+}
+function revokeObjectURL(url) {
+  const URL = window.URL || window.webkitURL;
+  URL.revokeObjectURL(url);
+  delete files[url];
+}
 const launchOptions = /* @__PURE__ */ createLaunchOptions();
 const enterOptions = /* @__PURE__ */ createLaunchOptions();
 function getEnterOptions() {
@@ -19291,6 +9352,79 @@ function getPageInstanceByChild(child) {
     pageInstance = pageInstance.parent;
   }
   return pageInstance;
+}
+const clazz = { class: "uni-async-loading" };
+const loadingVNode = /* @__PURE__ */ createVNode(
+  "i",
+  { class: "uni-loading" },
+  null,
+  -1
+  /* HOISTED */
+);
+const AsyncLoadingComponent = /* @__PURE__ */ defineSystemComponent({
+  name: "AsyncLoading",
+  render() {
+    return openBlock(), createBlock("div", clazz, [loadingVNode]);
+  }
+});
+function reload() {
+  window.location.reload();
+}
+const AsyncErrorComponent = /* @__PURE__ */ defineSystemComponent({
+  name: "AsyncError",
+  setup() {
+    initI18nAsyncMsgsOnce();
+    const {
+      t: t2
+    } = useI18n();
+    return () => createVNode("div", {
+      "class": "uni-async-error",
+      "onClick": reload
+    }, [t2("uni.async.error")], 8, ["onClick"]);
+  }
+});
+let appVm;
+let $uniApp;
+{
+  class UniAppImpl {
+    get vm() {
+      return appVm;
+    }
+    get $vm() {
+      return appVm;
+    }
+    get globalData() {
+      return (appVm == null ? void 0 : appVm.globalData) || {};
+    }
+    getAndroidApplication() {
+      return null;
+    }
+  }
+  $uniApp = new UniAppImpl();
+}
+function getApp$1() {
+  {
+    return $uniApp;
+  }
+}
+function initApp$1(vm) {
+  appVm = vm;
+  Object.defineProperty(appVm.$.ctx, "$children", {
+    get() {
+      return getCurrentBasePages().map((page) => page.$vm);
+    }
+  });
+  const app = appVm.$.appContext.app;
+  if (!app.component(AsyncLoadingComponent.name)) {
+    app.component(AsyncLoadingComponent.name, AsyncLoadingComponent);
+  }
+  if (!app.component(AsyncErrorComponent.name)) {
+    app.component(AsyncErrorComponent.name, AsyncErrorComponent);
+  }
+  initAppVm(appVm);
+  defineGlobalData(appVm);
+  initService();
+  initView();
 }
 function wrapperComponentSetup(comp, { clone, init: init2, setup, before }) {
   if (clone) {
@@ -19476,7 +9610,7 @@ function setupApp(comp) {
         );
         window.addEventListener("message", onMessage);
         document.addEventListener("visibilitychange", onVisibilityChange);
-        onThemeChange();
+        onThemeChange$2();
       });
       return route.query;
     },
@@ -19525,7 +9659,7 @@ function onVisibilityChange() {
     emit2(ON_APP_ENTER_BACKGROUND);
   }
 }
-function onThemeChange() {
+function onThemeChange$2() {
   let mediaQueryList = null;
   try {
     mediaQueryList = window.matchMedia("(prefers-color-scheme: dark)");
@@ -19554,6 +9688,243 @@ function invokeOnTabItemTap(route) {
     });
   }
 }
+function updateDocumentTitle(title) {
+  {
+    document.title = title;
+  }
+  UniServiceJSBridge.emit(ON_NAVIGATION_BAR_CHANGE, { titleText: title });
+}
+function useDocumentTitle(pageMeta) {
+  function update() {
+    updateDocumentTitle(pageMeta.navigationBar.titleText);
+  }
+  watchEffect(update);
+  onActivated(update);
+}
+function IEVersion() {
+  const userAgent = navigator.userAgent;
+  const isIE = userAgent.indexOf("compatible") > -1 && userAgent.indexOf("MSIE") > -1;
+  const isEdge = userAgent.indexOf("Edge") > -1 && !isIE;
+  const isIE11 = userAgent.indexOf("Trident") > -1 && userAgent.indexOf("rv:11.0") > -1;
+  if (isIE) {
+    const reIE = new RegExp("MSIE (\\d+\\.\\d+);");
+    reIE.test(userAgent);
+    const fIEVersion = parseFloat(RegExp.$1);
+    if (fIEVersion > 6) {
+      return fIEVersion;
+    } else {
+      return 6;
+    }
+  } else if (isEdge) {
+    return -1;
+  } else if (isIE11) {
+    return 11;
+  } else {
+    return -1;
+  }
+}
+function getTheme() {
+  if (__uniConfig.darkmode !== true)
+    return isString(__uniConfig.darkmode) ? __uniConfig.darkmode : "light";
+  try {
+    return window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark";
+  } catch (error) {
+    return "light";
+  }
+}
+function getBrowserInfo() {
+  let osname;
+  let osversion = "0";
+  let model = "";
+  let deviceType = "phone";
+  const language = navigator.language;
+  if (isIOS) {
+    osname = "iOS";
+    const osversionFind = ua.match(/OS\s([\w_]+)\slike/);
+    if (osversionFind) {
+      osversion = osversionFind[1].replace(/_/g, ".");
+    }
+    const modelFind = ua.match(/\(([a-zA-Z]+);/);
+    if (modelFind) {
+      model = modelFind[1];
+    }
+  } else if (isAndroid) {
+    osname = "Android";
+    const osversionFind = ua.match(/Android[\s/]([\w\.]+)[;\s]/);
+    if (osversionFind) {
+      osversion = osversionFind[1];
+    }
+    const infoFind = ua.match(/\((.+?)\)/);
+    const infos = infoFind ? infoFind[1].split(";") : ua.split(" ");
+    const otherInfo = [
+      /\bAndroid\b/i,
+      /\bLinux\b/i,
+      /\bU\b/i,
+      /^\s?[a-z][a-z]$/i,
+      /^\s?[a-z][a-z]-[a-z][a-z]$/i,
+      /\bwv\b/i,
+      /\/[\d\.,]+$/,
+      /^\s?[\d\.,]+$/,
+      /\bBrowser\b/i,
+      /\bMobile\b/i
+    ];
+    for (let i = 0; i < infos.length; i++) {
+      const info = infos[i];
+      if (info.indexOf("Build") > 0) {
+        model = info.split("Build")[0].trim();
+        break;
+      }
+      let other;
+      for (let o2 = 0; o2 < otherInfo.length; o2++) {
+        if (otherInfo[o2].test(info)) {
+          other = true;
+          break;
+        }
+      }
+      if (!other) {
+        model = info.trim();
+        break;
+      }
+    }
+  } else if (isIPadOS) {
+    model = "iPad";
+    osname = "iOS";
+    deviceType = "pad";
+    osversion = isFunction(window.BigInt) ? "14.0" : "13.0";
+    if (parseInt(osversion) === 14) {
+      const versionMatched = ua.match(/Version\/(\S*)\b/);
+      if (versionMatched) {
+        osversion = versionMatched[1];
+      }
+    }
+  } else if (isWindows || isMac || isLinux) {
+    model = "PC";
+    osname = "PC";
+    deviceType = "pc";
+    osversion = "0";
+    let osversionFind = ua.match(/\((.+?)\)/)[1];
+    if (isWindows) {
+      osname = "Windows";
+      switch (isWindows[1]) {
+        case "5.1":
+          osversion = "XP";
+          break;
+        case "6.0":
+          osversion = "Vista";
+          break;
+        case "6.1":
+          osversion = "7";
+          break;
+        case "6.2":
+          osversion = "8";
+          break;
+        case "6.3":
+          osversion = "8.1";
+          break;
+        case "10.0":
+          osversion = "10";
+          break;
+      }
+      const framework = osversionFind && osversionFind.match(/[Win|WOW]([\d]+)/);
+      if (framework) {
+        osversion += ` x${framework[1]}`;
+      }
+    } else if (isMac) {
+      osname = "macOS";
+      const _osversion = osversionFind && osversionFind.match(/Mac OS X (.+)/) || "";
+      if (osversion) {
+        osversion = _osversion[1].replace(/_/g, ".");
+        if (osversion.indexOf(";") !== -1) {
+          osversion = osversion.split(";")[0];
+        }
+      }
+    } else if (isLinux) {
+      osname = "Linux";
+      const _osversion = osversionFind && osversionFind.match(/Linux (.*)/) || "";
+      if (_osversion) {
+        osversion = _osversion[1];
+        if (osversion.indexOf(";") !== -1) {
+          osversion = osversion.split(";")[0];
+        }
+      }
+    }
+  } else {
+    osname = "Other";
+    osversion = "0";
+    deviceType = "unknown";
+  }
+  const system = `${osname} ${osversion}`;
+  const platform = osname.toLocaleLowerCase();
+  let browserName = "";
+  let browserVersion = String(IEVersion());
+  if (browserVersion !== "-1") {
+    browserName = "IE";
+  } else {
+    const browseVendors = ["Version", "Firefox", "Chrome", "Edge{0,1}"];
+    const vendors = ["Safari", "Firefox", "Chrome", "Edge"];
+    for (let index2 = 0; index2 < browseVendors.length; index2++) {
+      const vendor = browseVendors[index2];
+      const reg = new RegExp(`(${vendor})/(\\S*)\\b`);
+      if (reg.test(ua)) {
+        browserName = vendors[index2];
+        browserVersion = ua.match(reg)[2];
+      }
+    }
+  }
+  let deviceOrientation = "portrait";
+  const orientation = typeof window.screen.orientation === "undefined" ? window.orientation : window.screen.orientation.angle;
+  deviceOrientation = Math.abs(orientation) === 90 ? "landscape" : "portrait";
+  return {
+    deviceBrand: void 0,
+    brand: void 0,
+    deviceModel: model,
+    deviceOrientation,
+    model,
+    system,
+    platform,
+    browserName: browserName.toLocaleLowerCase(),
+    browserVersion,
+    language,
+    deviceType,
+    ua,
+    osname,
+    osversion,
+    theme: getTheme()
+  };
+}
+function onThemeChange$1(callback) {
+  if (__uniConfig.darkmode) {
+    UniServiceJSBridge.on(ON_THEME_CHANGE, callback);
+  }
+}
+function offThemeChange$1(callback) {
+  UniServiceJSBridge.off(ON_THEME_CHANGE, callback);
+}
+function parseTheme(pageStyle) {
+  let parsedStyle = {};
+  if (__uniConfig.darkmode) {
+    parsedStyle = normalizeStyles(
+      pageStyle,
+      __uniConfig.themeConfig,
+      getTheme()
+    );
+  }
+  return __uniConfig.darkmode ? parsedStyle : pageStyle;
+}
+function useTheme(pageStyle, onThemeChangeCallback) {
+  const isReactivity = isReactive(pageStyle);
+  const reactivePageStyle = isReactivity ? reactive(parseTheme(pageStyle)) : parseTheme(pageStyle);
+  if (__uniConfig.darkmode && isReactivity) {
+    watch(pageStyle, (value) => {
+      const _pageStyle = parseTheme(value);
+      for (const key in _pageStyle) {
+        reactivePageStyle[key] = _pageStyle[key];
+      }
+    });
+  }
+  onThemeChangeCallback && onThemeChange$1(onThemeChangeCallback);
+  return reactivePageStyle;
+}
 function updateBackgroundColorContent(backgroundColorContent) {
   if (backgroundColorContent) {
     document.body.style.setProperty(
@@ -19575,6 +9946,40 @@ function useBackgroundColorContent(pageMeta) {
   onThemeChange$1(update);
   watchEffect(update);
   onActivated(update);
+}
+function hexToRgba(hex) {
+  if (!hex) {
+    return {
+      r: 0,
+      g: 0,
+      b: 0,
+      a: 0
+    };
+  }
+  let tmpHex = hex.slice(1);
+  const tmpHexLen = tmpHex.length;
+  if (![3, 4, 6, 8].includes(tmpHexLen)) {
+    return {
+      r: 0,
+      g: 0,
+      b: 0,
+      a: 0
+    };
+  }
+  if (tmpHexLen === 3 || tmpHexLen === 4) {
+    tmpHex = tmpHex.replace(/(\w{1})/g, "$1$1");
+  }
+  let [sr, sg, sb, sa] = tmpHex.match(/(\w{2})/g);
+  const r = parseInt(sr, 16), g2 = parseInt(sg, 16), b = parseInt(sb, 16);
+  if (!sa) {
+    return { r, g: g2, b, a: 1 };
+  }
+  return {
+    r,
+    g: g2,
+    b,
+    a: (`0x100${sa}` - 65536) / 255
+  };
 }
 function usePageHeadTransparentBackgroundColor(backgroundColor) {
   const { r, g: g2, b } = hexToRgba(backgroundColor);
@@ -19792,7 +10197,7 @@ function createPageHeadSearchInputTsx(navigationBar, {
     "class": placeholderClass
   }, [createVNode("div", {
     "class": "uni-page-head-search-icon"
-  }, [createSvgIconVNode(ICON_PATH_SEARCH, placeholderColor, 20)]), text2.value || composing.value ? "" : placeholder], 6), disabled ? createVNode(Input, {
+  }, [createSvgIconVNode(ICON_PATH_SEARCH, placeholderColor, 20)]), text2.value || composing.value ? "" : placeholder], 6), disabled ? createVNode(__syscom_3, {
     "disabled": true,
     "style": {
       color
@@ -19801,7 +10206,7 @@ function createPageHeadSearchInputTsx(navigationBar, {
     "class": "uni-page-head-search-input",
     "confirm-type": "search",
     "onClick": onClick
-  }, null, 8, ["style", "placeholder-style", "onClick"]) : createVNode(Input, {
+  }, null, 8, ["style", "placeholder-style", "onClick"]) : createVNode(__syscom_3, {
     "focus": autoFocus,
     "style": {
       color
@@ -19996,7 +10401,7 @@ function usePageHeadSearchInput({
     onConfirm
   };
 }
-const _sfc_main = {
+const _sfc_main$2 = {
   name: "PageRefresh",
   setup() {
     const { pullToRefresh } = usePageMeta();
@@ -20005,6 +10410,13 @@ const _sfc_main = {
       color: pullToRefresh.color
     };
   }
+};
+const _export_sfc = (sfc, props2) => {
+  const target = sfc.__vccOpts || sfc;
+  for (const [key, val] of props2) {
+    target[key] = val;
+  }
+  return target;
 };
 const _hoisted_1 = { class: "uni-page-refresh-inner" };
 const _hoisted_2 = ["fill"];
@@ -20024,7 +10436,7 @@ const _hoisted_6 = {
   viewBox: "25 25 50 50"
 };
 const _hoisted_7 = ["stroke"];
-function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
+function _sfc_render$2(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createElementBlock("uni-page-refresh", null, [
     createElementVNode("div", {
       style: normalizeStyle({ "margin-top": $setup.offset + "px" }),
@@ -20054,7 +10466,7 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
     ], 4)
   ]);
 }
-const PageRefresh = /* @__PURE__ */ _export_sfc(_sfc_main, [["render", _sfc_render]]);
+const PageRefresh = /* @__PURE__ */ _export_sfc(_sfc_main$2, [["render", _sfc_render$2]]);
 function processDeltaY(ev, identifier, startY) {
   const touch = Array.prototype.slice.call(ev.changedTouches).filter((touch2) => touch2.identifier === identifier)[0];
   if (!touch) {
@@ -20315,6 +10727,7 @@ const PageBody = /* @__PURE__ */ defineSystemComponent({
   setup(props2, ctx) {
     const pageMeta = __UNI_FEATURE_PULL_DOWN_REFRESH__ && usePageMeta();
     const refreshRef = __UNI_FEATURE_PULL_DOWN_REFRESH__ && ref(null);
+    const wrapperRef = ref(null);
     const _pageRefresh = __UNI_FEATURE_PULL_DOWN_REFRESH__ && (pageMeta.enablePullDownRefresh || true) ? usePageRefresh(refreshRef) : null;
     const pageRefresh = ref(null);
     watch(() => {
@@ -20324,9 +10737,31 @@ const PageBody = /* @__PURE__ */ defineSystemComponent({
     }, {
       immediate: true
     });
+    function _resize() {
+      const {
+        top,
+        left,
+        right,
+        bottom
+      } = getSafeAreaInsets(wrapperRef.value);
+      const vars = {
+        "--uni-safe-area-inset-top": `${top}px`,
+        "--uni-safe-area-inset-left": `${left}px`,
+        "--uni-safe-area-inset-right": `${right}px`,
+        "--uni-safe-area-inset-bottom": `${bottom}px`
+      };
+      for (const key in vars) {
+        wrapperRef.value.style.setProperty(key, vars[key]);
+      }
+    }
     return () => {
       const pageRefreshTsx = __UNI_FEATURE_PULL_DOWN_REFRESH__ && createPageRefreshTsx(refreshRef);
-      return createVNode(Fragment, null, [pageRefreshTsx, createVNode("uni-page-wrapper", pageRefresh.value, [createVNode("uni-page-body", null, [renderSlot(ctx.slots, "default")])], 16)]);
+      const pageResizeSensor = createVNode(ResizeSensor, {
+        "onResize": _resize
+      }, null, 8, ["onResize"]);
+      return createVNode(Fragment, null, [pageRefreshTsx, createVNode("uni-page-wrapper", mergeProps({
+        "ref": wrapperRef
+      }, pageRefresh.value), [createVNode("uni-page-body", null, [renderSlot(ctx.slots, "default")]), pageResizeSensor], 16)]);
     };
   }
 });
@@ -20338,7 +10773,8 @@ function createPageRefreshTsx(refreshRef, pageMeta) {
 const PageComponent = /* @__PURE__ */ defineSystemComponent({
   name: "Page",
   setup(_props, ctx) {
-    const pageMeta = providePageMeta(getStateId());
+    var _a;
+    let pageMeta = providePageMeta(getStateId());
     const navigationBar = pageMeta.navigationBar;
     const pageStyle = {};
     useDocumentTitle(pageMeta);
@@ -20347,9 +10783,23 @@ const PageComponent = /* @__PURE__ */ defineSystemComponent({
       currentInstance.$dialogPages = ref([]);
       currentInstance.$systemDialogPages = ref([]);
       if (isDialogPageInstance(ctx)) {
-        navigationBar.style = "custom";
-        pageMeta.backgroundColorContent = "transparent";
         pageMeta.route = ctx.attrs.route;
+        const routePageMeta = (_a = __uniRoutes.find(
+          (route) => route.path === pageMeta.route.split("?")[0]
+        )) == null ? void 0 : _a.meta;
+        if (routePageMeta) {
+          routePageMeta.navigationBar = Object.assign(
+            navigationBar,
+            routePageMeta.navigationBar
+          );
+          pageMeta = Object.assign(pageMeta, routePageMeta);
+        }
+        if (!(routePageMeta == null ? void 0 : routePageMeta.backgroundColorContent)) {
+          pageMeta.backgroundColorContent = "transparent";
+        }
+        if (!(routePageMeta == null ? void 0 : routePageMeta.navigationBar.style)) {
+          pageMeta.navigationBar.style = "custom";
+        }
         const parentInstance = inject(
           "parentInstance"
         );
@@ -21281,7 +11731,7 @@ function useQuill(props2, rootRef, trigger) {
     });
   });
 }
-const props$d = /* @__PURE__ */ extend({}, props$u, {
+const props$s = /* @__PURE__ */ extend({}, props$t, {
   id: {
     type: String,
     default: ""
@@ -21309,9 +11759,9 @@ const props$d = /* @__PURE__ */ extend({}, props$u, {
 });
 class UniEditorElement extends UniElement {
 }
-const index$c = /* @__PURE__ */ defineBuiltInComponent({
+const index$o = /* @__PURE__ */ defineBuiltInComponent({
   name: "Editor",
-  props: props$d,
+  props: props$s,
   emit: ["ready", "focus", "blur", "input", "statuschange", ...emit$1],
   rootElement: {
     name: "uni-editor",
@@ -21381,7 +11831,7 @@ const ICONS = {
 };
 class UniIconElement extends UniElement {
 }
-const index$b = /* @__PURE__ */ defineBuiltInComponent({
+const index$n = /* @__PURE__ */ defineBuiltInComponent({
   name: "Icon",
   props: {
     type: {
@@ -21487,7 +11937,7 @@ function useResizeSensorLifecycle(rootRef, props2, update, reset) {
     }
   });
 }
-const props$c = {
+const props$r = {
   src: {
     type: String,
     default: ""
@@ -21528,7 +11978,7 @@ class UniImageElement extends UniElement {
 }
 const __syscom_4 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Image",
-  props: props$c,
+  props: props$r,
   rootElement: {
     name: "uni-image",
     class: UniImageElement
@@ -21891,7 +12341,7 @@ const INPUT_MODES = [
   "email",
   "url"
 ];
-const props$b = /* @__PURE__ */ extend(
+const props$q = /* @__PURE__ */ extend(
   {},
   {
     name: {
@@ -21981,7 +12431,7 @@ const props$b = /* @__PURE__ */ extend(
       default: ""
     }
   },
-  props$u
+  props$t
 );
 const emit = [
   "input",
@@ -22231,7 +12681,7 @@ function useField(props2, rootRef, emit2, beforeInput) {
     trigger
   };
 }
-const props$a = /* @__PURE__ */ extend({}, props$b, {
+const props$p = /* @__PURE__ */ extend({}, props$q, {
   placeholderClass: {
     type: String,
     default: "input-placeholder"
@@ -22306,9 +12756,9 @@ class UniInputElement extends UniElement {
     (_a = this.querySelector("input")) == null ? void 0 : _a.focus(options);
   }
 }
-const Input = /* @__PURE__ */ defineBuiltInComponent({
+const __syscom_3 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Input",
-  props: props$a,
+  props: props$p,
   emits: ["confirm", ...emit],
   rootElement: {
     name: "uni-input",
@@ -23225,7 +13675,7 @@ const movableViewProps = {
   },
   scaleMin: {
     type: [Number, String],
-    default: 0.5
+    default: 0.1
   },
   scaleMax: {
     type: [Number, String],
@@ -23576,7 +14026,7 @@ function useMovableViewTransform(rootRef, props2, _scaleOffset, _scale, maxX, ma
 function useMovableViewInit(props2, rootRef, trigger, _scale, _oldScale, _isScaling, _translateX, _translateY, _SFA, _FA) {
   const scaleMinNumber = computed(() => {
     let val = Number(props2.scaleMin);
-    return isNaN(val) ? 0.5 : val;
+    return isNaN(val) ? 0.1 : val;
   });
   const scaleMaxNumber = computed(() => {
     let val = Number(props2.scaleMax);
@@ -23642,7 +14092,7 @@ function useMovableViewInit(props2, rootRef, trigger, _scale, _oldScale, _isScal
     _oldScale.value = scale;
   }
   function _adjustScale(scale) {
-    scale = Math.max(0.5, scaleMinNumber.value, scale);
+    scale = Math.max(0.1, scaleMinNumber.value, scale);
     scale = Math.min(10, scaleMaxNumber.value, scale);
     return scale;
   }
@@ -24068,7 +14518,7 @@ function createNavigatorOnClick(props2) {
 }
 class UniNavigatorElement extends UniElement {
 }
-const index$a = /* @__PURE__ */ defineBuiltInComponent({
+const index$m = /* @__PURE__ */ defineBuiltInComponent({
   name: "Navigator",
   inheritAttrs: false,
   compatConfig: {
@@ -24149,7 +14599,7 @@ const pickerViewProps = {
     default: ""
   }
 };
-function useState$1(props2) {
+function useState$3(props2) {
   const value = reactive([...props2.value]);
   const state2 = reactive({
     value,
@@ -24184,7 +14634,7 @@ const PickerView = /* @__PURE__ */ defineBuiltInComponent({
     const rootRef = ref(null);
     const wrapperRef = ref(null);
     const trigger = useCustomEvent(rootRef, emit2);
-    const state2 = useState$1(props2);
+    const state2 = useState$3(props2);
     const resizeSensorRef = ref(null);
     const onMountedCallback = () => {
       const resizeSensor = resizeSensorRef.value;
@@ -25235,7 +15685,7 @@ const progressProps = {
 };
 class UniProgressElement extends UniElement {
 }
-const index$9 = /* @__PURE__ */ defineBuiltInComponent({
+const index$l = /* @__PURE__ */ defineBuiltInComponent({
   name: "Progress",
   props: progressProps,
   rootElement: {
@@ -25343,7 +15793,7 @@ function _activeAnimation(state2, props2) {
   }
 }
 const uniRadioGroupKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniCheckGroup" : "ucg");
-const props$9 = {
+const props$o = {
   name: {
     type: String,
     default: ""
@@ -25351,9 +15801,9 @@ const props$9 = {
 };
 class UniRadioGroupElement extends UniElement {
 }
-const index$8 = /* @__PURE__ */ defineBuiltInComponent({
+const index$k = /* @__PURE__ */ defineBuiltInComponent({
   name: "RadioGroup",
-  props: props$9,
+  props: props$o,
   // emits: ['change'],
   rootElement: {
     name: "uni-radio-group",
@@ -25445,7 +15895,7 @@ function useProvideRadioGroup(props2, trigger) {
   }
   return fields2;
 }
-const props$8 = {
+const props$n = {
   checked: {
     type: [Boolean, String],
     default: false
@@ -25494,9 +15944,9 @@ const props$8 = {
 };
 class UniRadioElement extends UniElement {
 }
-const indexX$2 = /* @__PURE__ */ defineBuiltInComponent({
+const indexX$3 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Radio",
-  props: props$8,
+  props: props$n,
   rootElement: {
     name: "uni-radio",
     class: UniRadioElement
@@ -25887,7 +16337,7 @@ function parseHtml(html) {
   });
   return results.children;
 }
-const props$7 = {
+const props$m = {
   nodes: {
     type: [Array, String],
     default: function() {
@@ -25897,12 +16347,12 @@ const props$7 = {
 };
 class UniRichTextElement extends UniElement {
 }
-const index$7 = /* @__PURE__ */ defineBuiltInComponent({
+const index$j = /* @__PURE__ */ defineBuiltInComponent({
   name: "RichText",
   compatConfig: {
     MODE: 3
   },
-  props: props$7,
+  props: props$m,
   emits: ["itemclick"],
   rootElement: {
     name: "uni-rich-text",
@@ -26043,7 +16493,7 @@ const Refresher = /* @__PURE__ */ defineBuiltInComponent({
   }
 });
 const passiveOptions = /* @__PURE__ */ passive(true);
-const props$6 = {
+const props$l = {
   direction: {
     type: [String],
     default: "vertical"
@@ -26116,7 +16566,7 @@ const __syscom_5 = /* @__PURE__ */ defineBuiltInComponent({
   compatConfig: {
     MODE: 3
   },
-  props: props$6,
+  props: props$l,
   emits: ["scroll", "scrolltoupper", "scrolltolower", "refresherrefresh", "refresherrestore", "refresherpulling", "refresherabort", "update:refresherTriggered"],
   rootElement: {
     name: "uni-scroll-view",
@@ -26613,7 +17063,7 @@ function useScrollViewLoader(props2, state2, scrollTopNumber, scrollLeftNumber, 
 }
 const SLIDER_BLOCK_SIZE_MIN_VALUE = 12;
 const SLIDER_BLOCK_SIZE_MAX_VALUE = 28;
-const props$5 = {
+const props$k = {
   name: {
     type: String,
     default: ""
@@ -26720,9 +17170,9 @@ class UniSliderElement extends UniElement {
     this.inputValue.innerText = value.toString();
   }
 }
-const indexX$1 = /* @__PURE__ */ defineBuiltInComponent({
+const indexX$2 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Slider",
-  props: props$5,
+  props: props$k,
   emits: ["changing", "change"],
   rootElement: {
     name: "uni-slider",
@@ -26872,7 +17322,7 @@ function useSliderLoader(props2, sliderRef, trigger) {
     _onChange
   };
 }
-const props$4 = {
+const props$j = {
   indicatorDots: {
     type: [Boolean, String],
     default: false
@@ -26946,7 +17396,7 @@ const props$4 = {
     default: "rgba(53, 53, 53, 0.6)"
   }
 };
-function useState(props2) {
+function useState$2(props2) {
   const interval = computed(() => {
     const interval2 = Number(props2.interval);
     return isNaN(interval2) ? 5e3 : interval2;
@@ -27375,7 +17825,7 @@ class UniSwiperElement extends UniElement {
 }
 const Swiper = /* @__PURE__ */ defineBuiltInComponent({
   name: "Swiper",
-  props: props$4,
+  props: props$j,
   emits: ["change", "transition", "animationfinish", "update:current", "update:currentItemId"],
   rootElement: {
     name: "uni-swiper",
@@ -27389,7 +17839,7 @@ const Swiper = /* @__PURE__ */ defineBuiltInComponent({
     const trigger = useCustomEvent(rootRef, emit2);
     const slidesWrapperRef = ref(null);
     const slideFrameRef = ref(null);
-    const state2 = useState(props2);
+    const state2 = useState$2(props2);
     const slidesStyle = computed(() => {
       let style = {};
       if (props2.nextMargin || props2.previousMargin) {
@@ -27607,7 +18057,7 @@ const useSwiperNavigation = (rootRef, props2, state2, onSwiperDotClick, swiperCo
   }
   return createNavigationTsx;
 };
-const props$3 = {
+const props$i = {
   itemId: {
     type: String,
     default: ""
@@ -27617,7 +18067,7 @@ class UniSwiperItemElement extends UniElement {
 }
 const SwiperItem = /* @__PURE__ */ defineBuiltInComponent({
   name: "SwiperItem",
-  props: props$3,
+  props: props$i,
   rootElement: {
     name: "uni-swiper-item",
     class: UniSwiperItemElement
@@ -27674,7 +18124,7 @@ const SwiperItem = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const props$2 = {
+const props$h = {
   name: {
     type: String,
     default: ""
@@ -27718,9 +18168,9 @@ const props$2 = {
 };
 class UniSwitchElement extends UniElement {
 }
-const indexX = /* @__PURE__ */ defineBuiltInComponent({
+const indexX$1 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Switch",
-  props: props$2,
+  props: props$h,
   emits: ["change"],
   rootElement: {
     name: "uni-switch",
@@ -27940,7 +18390,7 @@ const __syscom_1 = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const props$1 = /* @__PURE__ */ extend({}, props$b, {
+const props$g = /* @__PURE__ */ extend({}, props$q, {
   placeholderClass: {
     type: String,
     default: "input-placeholder"
@@ -27969,9 +18419,9 @@ class UniTextareaElement extends UniElement {
     (_a = this.querySelector("textarea")) == null ? void 0 : _a.focus(options);
   }
 }
-const index$6 = /* @__PURE__ */ defineBuiltInComponent({
+const index$i = /* @__PURE__ */ defineBuiltInComponent({
   name: "Textarea",
-  props: props$1,
+  props: props$g,
   emits: ["confirm", "linechange", ...emit],
   rootElement: {
     name: "uni-textarea",
@@ -28212,7 +18662,7 @@ function traverseStickySection(stickySectionVNode, callback) {
     callback(child);
   }
 }
-const props = {
+const props$f = {
   direction: {
     type: String,
     default: "vertical",
@@ -28272,9 +18722,9 @@ const props = {
 };
 class UniListViewElement extends UniElement {
 }
-const index$5 = /* @__PURE__ */ defineBuiltInComponent({
+const index$h = /* @__PURE__ */ defineBuiltInComponent({
   name: "ListView",
-  props,
+  props: props$f,
   emits: [
     "scroll",
     "scrolltoupper",
@@ -28304,19 +18754,44 @@ const index$5 = /* @__PURE__ */ defineBuiltInComponent({
     } = useListViewState(props2);
     provide("__listViewIsVertical", isVertical);
     provide("__listViewDefaultItemSize", state2.defaultItemSize);
-    const onItemChange = debounce(() => {
+    provide("__listViewDefaultHeaderSize", state2.defaultHeaderSize);
+    const rearrangeDebounce = debounce(() => {
       nextTick(() => {
         _rearrange();
       });
-    }, 10, {
+    }, 5, {
       clearTimeout,
       setTimeout
     });
+    const childStatus = [];
     provide("__listViewRegisterItem", (status) => {
-      onItemChange();
+      childStatus.push(status);
+      rearrangeDebounce();
     });
     provide("__listViewUnregisterItem", (status) => {
-      onItemChange();
+      const index2 = childStatus.indexOf(status);
+      childStatus.splice(index2, 1);
+      rearrangeDebounce();
+    });
+    provide("__listViewFirstItemRendered", (status) => {
+      state2.defaultItemSize = status.cachedSize;
+      state2.defaultItemSizeUpdated = true;
+    });
+    watch(() => {
+      return state2.defaultHeaderSize;
+    }, (value) => {
+      rearrangeDebounce();
+    });
+    watch(() => {
+      return state2.defaultItemSize;
+    }, () => {
+      childStatus.forEach((status) => {
+        if (status.cachedSizeUpdated) {
+          return;
+        }
+        status.cachedSize = state2.defaultItemSize;
+      });
+      rearrangeDebounce();
     });
     const trigger = useCustomEvent(rootRef, emit2);
     handleTouchEvent(isVertical, containerRef, props2, state2, trigger, emit2);
@@ -28326,6 +18801,7 @@ const index$5 = /* @__PURE__ */ defineBuiltInComponent({
     function resetContainerSize() {
       const containerEl = containerRef.value;
       state2.containerSize = isVertical.value ? containerEl.clientHeight : containerEl.clientWidth;
+      rearrangeDebounce();
     }
     watch(isVertical, () => {
       resetContainerSize();
@@ -28424,43 +18900,11 @@ const index$5 = /* @__PURE__ */ defineBuiltInComponent({
       });
       rootElement.attachVmProps(props2);
     });
-    function forceRearrange() {
-      traverseAllItems(visibleVNode, (child) => {
-        const exposed = child.component.exposed;
-        if (exposed == null ? void 0 : exposed.__listViewChildStatus.seen.value) {
-          exposed.__listViewChildStatus.seen.value = false;
-        }
-      });
-      nextTick(() => {
-        nextTick(() => {
-          _rearrange();
-        });
-      });
-    }
     function onResize2() {
-      resetContainerSize();
-      forceRearrange();
-    }
-    function traverseAllItems(visibleVNode2, callback) {
-      traverseListView(visibleVNode2, (child) => {
-        var _a;
-        const childType = (_a = child.component) == null ? void 0 : _a.type.name;
-        if (childType === "StickySection") {
-          traverseStickySection(child, function() {
-            var _a2;
-            const childType2 = (_a2 = child.component) == null ? void 0 : _a2.type.name;
-            if (childType2 === "ListItem") {
-              callback(child);
-            }
-          });
-        } else if (childType === "ListItem") {
-          callback(child);
-        } else if (childType === "StickyHeader")
-          ;
-        else if (child.component && child.component.subTree) {
-          traverseAllItems(child.component.subTree, callback);
-        }
+      childStatus.forEach((status) => {
+        status.cachedSizeUpdated = false;
       });
+      resetContainerSize();
     }
     function _rearrange() {
       rearrange(visibleVNode, containerRef, isVertical, state2);
@@ -28525,12 +18969,15 @@ function useListViewState(props2) {
   });
   const state2 = reactive({
     defaultItemSize: 40,
+    defaultItemSizeUpdated: false,
+    defaultHeaderSize: 40,
+    defaultHeaderSizeUpdated: false,
     totalSize: 0,
     placehoderSize: 0,
     visibleSize: 0,
     containerSize: 0,
-    cacheScreenCount: 5,
-    loadScreenThreshold: 3,
+    cacheScreenCount: 10,
+    loadScreenThreshold: 8,
     refresherHeight: 0,
     refreshState: ""
   });
@@ -28575,9 +19022,14 @@ function rearrange(visibleVNode, containerRef, isVertical, state2) {
       tempTotalSize += tailSize.value;
     } else if (childType === "ListItem") {
       const {
-        cachedSize
+        cachedSize,
+        cachedSizeUpdated
       } = status;
-      const itemSize = cachedSize;
+      if (cachedSizeUpdated && cachedSize > 0 && !state2.defaultItemSizeUpdated) {
+        state2.defaultItemSize = cachedSize;
+        state2.defaultItemSizeUpdated = true;
+      }
+      const itemSize = cachedSize || state2.defaultItemSize;
       tempTotalSize += itemSize;
       if (!start && tempTotalSize > offsetMin) {
         start = true;
@@ -28596,9 +19048,14 @@ function rearrange(visibleVNode, containerRef, isVertical, state2) {
       }
     } else if (childType === "StickyHeader") {
       const {
-        cachedSize
+        cachedSize,
+        cachedSizeUpdated
       } = status;
-      tempTotalSize += cachedSize;
+      if (cachedSizeUpdated && cachedSize > 0 && !state2.defaultHeaderSizeUpdated) {
+        state2.defaultHeaderSize = cachedSize;
+        state2.defaultHeaderSizeUpdated = true;
+      }
+      tempTotalSize += cachedSize || state2.defaultHeaderSize;
       tempVisibleSize += cachedSize;
     }
   }
@@ -28767,7 +19224,7 @@ function getSize(isVertical, el) {
 }
 class UniListItemElement extends UniElement {
 }
-const index$4 = /* @__PURE__ */ defineBuiltInComponent({
+const index$g = /* @__PURE__ */ defineBuiltInComponent({
   name: "ListItem",
   props: {},
   rootElement: {
@@ -28781,36 +19238,39 @@ const index$4 = /* @__PURE__ */ defineBuiltInComponent({
     const rootRef = ref(null);
     const isVertical = inject("__listViewIsVertical");
     const visible = ref(false);
-    const seen = ref(false);
     const status = {
       type: "ListItem",
       visible,
-      cachedSize: 0,
-      seen
+      cachedSize: inject("__listViewDefaultItemSize"),
+      cachedSizeUpdated: false
     };
     expose({
       __listViewChildStatus: status
     });
     const registerItem = inject("__listViewRegisterItem");
     const unregisterItem = inject("__listViewUnregisterItem");
+    const firstItemRendered = inject("__listViewFirstItemRendered");
     onMounted(() => {
       registerItem(status);
     });
     onBeforeUnmount(() => {
       unregisterItem(status);
     });
-    const realVisible = computed(() => {
-      return visible.value || !status.seen.value;
-    });
-    return () => {
+    watch(visible, (value) => {
+      if (!value || status.cachedSizeUpdated) {
+        return;
+      }
       nextTick(() => {
         const rootNode = rootRef.value;
-        if (realVisible.value && isHTMlElement(rootNode)) {
+        if (isHTMlElement(rootNode)) {
           status.cachedSize = getSize(isVertical.value, rootNode);
-          seen.value = true;
+          status.cachedSizeUpdated = true;
+          firstItemRendered(status);
         }
       });
-      if (!realVisible.value) {
+    });
+    return () => {
+      if (!visible.value) {
         return null;
       }
       return createVNode("uni-list-item", {
@@ -28821,7 +19281,7 @@ const index$4 = /* @__PURE__ */ defineBuiltInComponent({
 });
 class UniStickySectionElement extends UniElement {
 }
-const index$3 = /* @__PURE__ */ defineBuiltInComponent({
+const index$f = /* @__PURE__ */ defineBuiltInComponent({
   name: "StickySection",
   props: {
     padding: {
@@ -28876,7 +19336,7 @@ const index$3 = /* @__PURE__ */ defineBuiltInComponent({
 });
 class UniStickyHeaderElement extends UniElement {
 }
-const index$2 = /* @__PURE__ */ defineBuiltInComponent({
+const index$e = /* @__PURE__ */ defineBuiltInComponent({
   name: "StickyHeader",
   props: {
     padding: {
@@ -28905,7 +19365,8 @@ const index$2 = /* @__PURE__ */ defineBuiltInComponent({
     });
     const status = {
       type: "StickyHeader",
-      cachedSize: 0
+      cachedSize: inject("__listViewDefaultHeaderSize"),
+      cachedSizeUpdated: false
     };
     expose({
       __listViewChildStatus: status
@@ -28914,13 +19375,14 @@ const index$2 = /* @__PURE__ */ defineBuiltInComponent({
       const rootElement = rootRef.value;
       rootElement.attachVmProps(props2);
     });
+    onMounted(() => {
+      const rootEl = rootRef.value;
+      const rect = rootEl.getBoundingClientRect();
+      status.cachedSize = isVertical ? rect.height : rect.width;
+      status.cachedSizeUpdated = true;
+    });
     return () => {
       var _a;
-      nextTick(() => {
-        const rootEl = rootRef.value;
-        const rect = rootEl.getBoundingClientRect();
-        status.cachedSize = isVertical ? rect.height : rect.width;
-      });
       return createVNode("uni-sticky-header", {
         "ref": rootRef,
         "style": style.value
@@ -28978,13 +19440,13 @@ function useOn(name, callback) {
   onMounted(() => UniViewJSBridge.on(name, callback));
   onBeforeUnmount(() => UniViewJSBridge.off(name));
 }
-let index$1 = 0;
+let index$d = 0;
 function useContextInfo(_id) {
   const page = useCurrentPageId();
   const instance2 = getCurrentInstance();
   const vm = instance2.proxy;
   const type = vm.$options.name.toLowerCase();
-  const id2 = vm.id || `context${index$1++}`;
+  const id2 = vm.id || `context${index$d++}`;
   onMounted(() => {
     const el = vm.$el;
     el.__uniContextInfo = {
@@ -29175,10 +19637,367 @@ function initApp(app) {
     invokeCreateVueAppHook(app);
   }
 }
+function usePopupStyle(props2) {
+  const popupWidth = ref(0);
+  const popupHeight = ref(0);
+  const isDesktop = computed(
+    () => popupWidth.value >= 500 && popupHeight.value >= 500
+  );
+  const popupStyle = computed(() => {
+    const style = {
+      content: {
+        transform: "",
+        left: "",
+        top: "",
+        bottom: ""
+      },
+      triangle: {
+        left: "",
+        top: "",
+        bottom: "",
+        "border-width": "",
+        "border-color": ""
+      }
+    };
+    const contentStyle = style.content;
+    const triangleStyle = style.triangle;
+    const popover = props2.popover;
+    function getNumber(value) {
+      return Number(value) || 0;
+    }
+    if (isDesktop.value && popover) {
+      extend(triangleStyle, {
+        position: "absolute",
+        width: "0",
+        height: "0",
+        "margin-left": "-6px",
+        "border-style": "solid"
+      });
+      const popoverLeft = getNumber(popover.left);
+      const popoverWidth = getNumber(popover.width);
+      const popoverTop = getNumber(popover.top);
+      const popoverHeight = getNumber(popover.height);
+      const center = popoverLeft + popoverWidth / 2;
+      contentStyle.transform = "none !important";
+      const contentLeft = Math.max(0, center - 300 / 2);
+      contentStyle.left = `${contentLeft}px`;
+      let triangleLeft = Math.max(12, center - contentLeft);
+      triangleLeft = Math.min(300 - 12, triangleLeft);
+      triangleStyle.left = `${triangleLeft}px`;
+      const vcl = popupHeight.value / 2;
+      if (popoverTop + popoverHeight - vcl > vcl - popoverTop) {
+        contentStyle.top = "auto";
+        contentStyle.bottom = `${popupHeight.value - popoverTop + 6}px`;
+        triangleStyle.bottom = "-6px";
+        triangleStyle["border-width"] = "6px 6px 0 6px";
+        triangleStyle["border-color"] = "#fcfcfd transparent transparent transparent";
+      } else {
+        contentStyle.top = `${popoverTop + popoverHeight + 6}px`;
+        triangleStyle.top = "-6px";
+        triangleStyle["border-width"] = "0 6px 6px 6px";
+        triangleStyle["border-color"] = "transparent transparent #fcfcfd transparent";
+      }
+    }
+    return style;
+  });
+  onMounted(() => {
+    const fixSize = () => {
+      const { windowWidth, windowHeight, windowTop } = uni.getSystemInfoSync();
+      popupWidth.value = windowWidth;
+      popupHeight.value = windowHeight + (windowTop || 0);
+    };
+    window.addEventListener("resize", fixSize);
+    fixSize();
+    onUnmounted(() => {
+      window.removeEventListener("resize", fixSize);
+    });
+  });
+  return {
+    isDesktop,
+    popupStyle
+  };
+}
+const KEY_MAPS = {
+  esc: ["Esc", "Escape"],
+  // tab: ['Tab'],
+  enter: ["Enter"]
+  // space: [' ', 'Spacebar'],
+  // up: ['Up', 'ArrowUp'],
+  // left: ['Left', 'ArrowLeft'],
+  // right: ['Right', 'ArrowRight'],
+  // down: ['Down', 'ArrowDown'],
+  // delete: ['Backspace', 'Delete', 'Del'],
+};
+const KEYS = Object.keys(KEY_MAPS);
+function useKeyboard() {
+  const key = ref("");
+  const disable = ref(false);
+  const onKeyup = (evt) => {
+    if (disable.value) {
+      return;
+    }
+    const res = KEYS.find(
+      (key2) => KEY_MAPS[key2].indexOf(evt.key) !== -1
+    );
+    if (res) {
+      key.value = res;
+    }
+    nextTick(() => key.value = "");
+  };
+  onMounted(() => {
+    document.addEventListener("keyup", onKeyup);
+  });
+  onBeforeUnmount(() => {
+    document.removeEventListener("keyup", onKeyup);
+  });
+  return {
+    key,
+    disable
+  };
+}
+const VNODE_MASK = /* @__PURE__ */ createVNode(
+  "div",
+  { class: "uni-mask" },
+  null,
+  -1
+  /* HOISTED */
+);
+function createRootApp(component, rootState, callback) {
+  rootState.onClose = (...args) => (rootState.visible = false, callback.apply(null, args));
+  return createApp(
+    defineComponent({
+      setup() {
+        return () => (openBlock(), createBlock(
+          component,
+          rootState,
+          null,
+          16
+          /* FULL_PROPS */
+        ));
+      }
+    })
+  );
+}
+function ensureRoot(id2) {
+  let rootEl = document.getElementById(id2);
+  if (!rootEl) {
+    rootEl = document.createElement("div");
+    rootEl.id = id2;
+    document.body.append(rootEl);
+  }
+  return rootEl;
+}
+function usePopup(props2, {
+  onEsc,
+  onEnter
+}) {
+  const visible = ref(props2.visible);
+  const { key, disable } = useKeyboard();
+  watch(
+    () => props2.visible,
+    (value) => visible.value = value
+  );
+  watch(
+    () => visible.value,
+    (value) => disable.value = !value
+  );
+  watchEffect(() => {
+    const { value } = key;
+    if (value === "esc") {
+      onEsc && onEsc();
+    } else if (value === "enter") {
+      onEnter && onEnter();
+    }
+  });
+  return visible;
+}
+const ModalTheme = {
+  light: {
+    cancelColor: "#000000"
+  },
+  dark: {
+    cancelColor: "rgb(170, 170, 170)"
+  }
+};
+const setCancelColor = (theme, cancelColor) => cancelColor.value = ModalTheme[theme].cancelColor;
+const props$e = {
+  title: {
+    type: String,
+    default: ""
+  },
+  content: {
+    type: String,
+    default: ""
+  },
+  showCancel: {
+    type: Boolean,
+    default: true
+  },
+  cancelText: {
+    type: String,
+    default: "Cancel"
+  },
+  cancelColor: {
+    type: String,
+    default: "#000000"
+  },
+  confirmText: {
+    type: String,
+    default: "OK"
+  },
+  confirmColor: {
+    type: String,
+    default: "#576b95"
+  },
+  visible: {
+    type: Boolean
+  },
+  editable: {
+    type: Boolean,
+    default: false
+  },
+  placeholderText: {
+    type: String,
+    default: ""
+  }
+};
+const modal = /* @__PURE__ */ defineComponent({
+  props: props$e,
+  setup(props2, {
+    emit: emit2
+  }) {
+    const editContent = ref("");
+    const close = () => visible.value = false;
+    const cancel = () => (close(), emit2("close", "cancel"));
+    const confirm = () => (close(), emit2("close", "confirm", editContent.value));
+    const visible = usePopup(props2, {
+      onEsc: cancel,
+      onEnter: () => {
+        !props2.editable && confirm();
+      }
+    });
+    const cancelColor = useOnThemeChange(props2);
+    return () => {
+      const {
+        title,
+        content,
+        showCancel,
+        confirmText,
+        confirmColor,
+        editable,
+        placeholderText
+      } = props2;
+      editContent.value = content;
+      return createVNode(Transition, {
+        "name": "uni-fade"
+      }, {
+        default: () => [withDirectives(createVNode("uni-modal", {
+          "onTouchmove": onEventPrevent
+        }, [VNODE_MASK, createVNode("div", {
+          "class": "uni-modal"
+        }, [title || true ? createVNode("div", {
+          "class": "uni-modal__hd"
+        }, [createVNode("strong", {
+          "class": "uni-modal__title",
+          "textContent": title || ""
+        }, null, 8, ["textContent"])]) : null, editable ? createVNode("div", {
+          "class": "uni-modal__bd",
+          "key": "uni-modal-bd-editable"
+        }, [createVNode("textarea", {
+          "class": "uni-modal__textarea",
+          "rows": "2",
+          "placeholder": placeholderText,
+          "value": content,
+          "onInput": (e2) => editContent.value = e2.target.value
+        }, null, 40, ["placeholder", "value", "onInput"])]) : createVNode("div", {
+          "class": "uni-modal__bd",
+          "onTouchmovePassive": onEventStop,
+          "textContent": content
+        }, null, 40, ["onTouchmovePassive", "textContent"]), createVNode("div", {
+          "class": "uni-modal__ft"
+        }, [showCancel && createVNode("div", {
+          "style": {
+            color: cancelColor.value
+          },
+          "class": "uni-modal__btn uni-modal__btn_default",
+          "onClick": cancel
+        }, [props2.cancelText], 12, ["onClick"]), createVNode("div", {
+          "style": {
+            color: confirmColor
+          },
+          "class": "uni-modal__btn uni-modal__btn_primary",
+          "onClick": confirm
+        }, [confirmText], 12, ["onClick"])])])], 40, ["onTouchmove"]), [[vShow, visible.value]])]
+      });
+    };
+  }
+});
+function useOnThemeChange(props2) {
+  const cancelColor = ref(props2.cancelColor);
+  const _onThemeChange = ({
+    theme
+  }) => {
+    setCancelColor(theme, cancelColor);
+  };
+  watchEffect(() => {
+    if (props2.visible) {
+      cancelColor.value = props2.cancelColor;
+      if (props2.cancelColor === "#000") {
+        if (getTheme() === "dark")
+          _onThemeChange({
+            theme: "dark"
+          });
+        onThemeChange$1(_onThemeChange);
+      }
+    } else {
+      offThemeChange$1(_onThemeChange);
+    }
+  });
+  return cancelColor;
+}
+let showModalState;
+const onHidePopupOnce = /* @__PURE__ */ once(() => {
+  UniServiceJSBridge.on("onHidePopup", () => showModalState.visible = false);
+});
+let currentShowModalResolve;
+function onModalClose(type, content) {
+  const isConfirm = type === "confirm";
+  const res = {
+    confirm: isConfirm,
+    cancel: type === "cancel"
+  };
+  isConfirm && showModalState.editable && (res.content = content);
+  currentShowModalResolve && currentShowModalResolve(res);
+}
+const hideModal = () => {
+  if (showModalState) {
+    showModalState.visible = false;
+  }
+};
+const showModal = /* @__PURE__ */ defineAsyncApi(
+  API_SHOW_MODAL,
+  (args, { resolve }) => {
+    onHidePopupOnce();
+    currentShowModalResolve = resolve;
+    if (!showModalState) {
+      showModalState = reactive(args);
+      nextTick(
+        () => (createRootApp(modal, showModalState, onModalClose).mount(
+          ensureRoot("u-a-m")
+        ), //下一帧执行，确保首次显示时有动画效果
+        nextTick(() => showModalState.visible = true))
+      );
+    } else {
+      extend(showModalState, args);
+      showModalState.visible = true;
+    }
+  },
+  ShowModalProtocol,
+  ShowModalOptions
+);
 function initRouter(app) {
   const router = createRouter(createRouterOptions());
   router.beforeEach((to, from) => {
-    hideActionSheet();
     hideModal();
     uni.hideToast();
     uni.hideLoading();
@@ -29249,7 +20068,7 @@ function initHistory() {
   });
   return history2;
 }
-const index = {
+const index$c = {
   install(app) {
     initApp(app);
     initViewPlugin(app);
@@ -29280,11 +20099,9446 @@ function warnHandler(msg, instance2, trace) {
   }
   console.warn(...warnArgs);
 }
+function formatTime(val) {
+  val = val > 0 && val < Infinity ? val : 0;
+  const h2 = Math.floor(val / 3600);
+  const m = Math.floor(val % 3600 / 60);
+  const s = Math.floor(val % 3600 % 60);
+  const hStr = (h2 < 10 ? "0" : "") + h2;
+  const mStr = (m < 10 ? "0" : "") + m;
+  const sStr = (s < 10 ? "0" : "") + s;
+  let str = mStr + ":" + sStr;
+  if (hStr !== "00") {
+    str = hStr + ":" + str;
+  }
+  return str;
+}
+function useGesture(props2, videoRef, fullscreenState) {
+  const state2 = reactive({
+    gestureType: "none",
+    volumeOld: 0,
+    volumeNew: 0,
+    currentTimeOld: 0,
+    currentTimeNew: 0
+  });
+  const touchStartOrigin = {
+    x: 0,
+    y: 0
+  };
+  function onTouchstart(event) {
+    const toucher = event.targetTouches[0];
+    touchStartOrigin.x = toucher.pageX;
+    touchStartOrigin.y = toucher.pageY;
+    state2.gestureType = "none";
+    state2.volumeOld = 0;
+    state2.currentTimeOld = state2.currentTimeNew = 0;
+  }
+  function onTouchmove(event) {
+    function stop() {
+      event.stopPropagation();
+      event.preventDefault();
+    }
+    if (fullscreenState.fullscreen) {
+      stop();
+    }
+    const gestureType = state2.gestureType;
+    if (gestureType === "stop") {
+      return;
+    }
+    const toucher = event.targetTouches[0];
+    const pageX = toucher.pageX;
+    const pageY = toucher.pageY;
+    const origin = touchStartOrigin;
+    const video = videoRef.value;
+    if (gestureType === "progress") {
+      changeProgress(pageX - origin.x);
+    } else if (gestureType === "volume") {
+      changeVolume(pageY - origin.y);
+    }
+    if (gestureType !== "none") {
+      return;
+    }
+    if (Math.abs(pageX - origin.x) > Math.abs(pageY - origin.y)) {
+      if (!props2.enableProgressGesture) {
+        state2.gestureType = "stop";
+        return;
+      }
+      state2.gestureType = "progress";
+      state2.currentTimeOld = state2.currentTimeNew = video.currentTime;
+      if (!fullscreenState.fullscreen) {
+        stop();
+      }
+    } else {
+      if (!props2.pageGesture) {
+        state2.gestureType = "stop";
+        return;
+      }
+      state2.gestureType = "volume";
+      state2.volumeOld = video.volume;
+      if (!fullscreenState.fullscreen) {
+        stop();
+      }
+    }
+  }
+  function onTouchend(event) {
+    const video = videoRef.value;
+    if (state2.gestureType !== "none" && state2.gestureType !== "stop") {
+      event.stopPropagation();
+      event.preventDefault();
+    }
+    if (state2.gestureType === "progress" && state2.currentTimeOld !== state2.currentTimeNew) {
+      video.currentTime = state2.currentTimeNew;
+    }
+    state2.gestureType = "none";
+  }
+  function changeProgress(x) {
+    const video = videoRef.value;
+    const duration = video.duration;
+    let currentTimeNew = x / 600 * duration + state2.currentTimeOld;
+    if (currentTimeNew < 0) {
+      currentTimeNew = 0;
+    } else if (currentTimeNew > duration) {
+      currentTimeNew = duration;
+    }
+    state2.currentTimeNew = currentTimeNew;
+  }
+  function changeVolume(y) {
+    const video = videoRef.value;
+    const valueOld = state2.volumeOld;
+    let value;
+    if (typeof valueOld === "number") {
+      value = valueOld - y / 200;
+      if (value < 0) {
+        value = 0;
+      } else if (value > 1) {
+        value = 1;
+      }
+      video.volume = value;
+      state2.volumeNew = value;
+    }
+  }
+  return {
+    state: state2,
+    onTouchstart,
+    onTouchmove,
+    onTouchend
+  };
+}
+function useFullscreen(trigger, containerRef, videoRef, userActionState, rootRef) {
+  const state2 = reactive({
+    fullscreen: false
+  });
+  const isSafari = /^Apple/.test(navigator.vendor);
+  function onFullscreenChange($event, webkit) {
+    if (webkit && document.fullscreenEnabled) {
+      return;
+    }
+    emitFullscreenChange(!!(document.fullscreenElement || document.webkitFullscreenElement));
+  }
+  function emitFullscreenChange(val) {
+    state2.fullscreen = val;
+    trigger("fullscreenchange", {}, {
+      fullScreen: val,
+      direction: "vertical"
+    });
+  }
+  function toggleFullscreen(val) {
+    const root = rootRef.value;
+    const container = containerRef.value;
+    const video = videoRef.value;
+    let mockFullScreen;
+    if (val) {
+      if ((document.fullscreenEnabled || document.webkitFullscreenEnabled) && (!isSafari || userActionState.userAction)) {
+        container[document.fullscreenEnabled ? "requestFullscreen" : "webkitRequestFullscreen"]();
+      } else if (video.webkitEnterFullScreen) {
+        video.webkitEnterFullScreen();
+      } else {
+        mockFullScreen = true;
+        container.remove();
+        container.classList.add("uni-video-type-fullscreen");
+        document.body.appendChild(container);
+      }
+    } else {
+      if (document.fullscreenEnabled || document.webkitFullscreenEnabled) {
+        if (document.fullscreenElement) {
+          document.exitFullscreen();
+        } else if (document.webkitFullscreenElement) {
+          document.webkitExitFullscreen();
+        }
+      } else if (video.webkitExitFullScreen) {
+        video.webkitExitFullScreen();
+      } else {
+        mockFullScreen = true;
+        container.remove();
+        container.classList.remove("uni-video-type-fullscreen");
+        root.appendChild(container);
+      }
+    }
+    if (mockFullScreen) {
+      emitFullscreenChange(val);
+    }
+  }
+  function requestFullScreen() {
+    toggleFullscreen(true);
+  }
+  function exitFullScreen() {
+    toggleFullscreen(false);
+  }
+  onBeforeUnmount(exitFullScreen);
+  return {
+    state: state2,
+    onFullscreenChange,
+    emitFullscreenChange,
+    toggleFullscreen,
+    requestFullScreen,
+    exitFullScreen
+  };
+}
+function useVideo(props2, attrs2, trigger) {
+  const videoRef = ref(null);
+  const src = computed(() => getRealPath(props2.src));
+  const muted = computed(() => props2.muted === "true" || props2.muted === true);
+  const state2 = reactive({
+    start: false,
+    src,
+    playing: false,
+    currentTime: 0,
+    duration: 0,
+    progress: 0,
+    buffered: 0,
+    muted
+  });
+  watch(() => src.value, () => {
+    state2.playing = false;
+    state2.currentTime = 0;
+  });
+  watch(() => state2.buffered, (buffered) => {
+    trigger("progress", {}, {
+      buffered
+    });
+  });
+  watch(() => muted.value, (muted2) => {
+    const video = videoRef.value;
+    video.muted = muted2;
+  });
+  function onDurationChange({
+    target
+  }) {
+    state2.duration = target.duration;
+  }
+  function onLoadedMetadata($event) {
+    const initialTime = Number(props2.initialTime) || 0;
+    const video = $event.target;
+    if (initialTime > 0) {
+      video.currentTime = initialTime;
+    }
+    trigger("loadedmetadata", $event, {
+      width: video.videoWidth,
+      height: video.videoHeight,
+      duration: video.duration
+    });
+    onProgress($event);
+  }
+  function onProgress($event) {
+    const video = $event.target;
+    const buffered = video.buffered;
+    if (buffered.length) {
+      state2.buffered = buffered.end(buffered.length - 1) / video.duration * 100;
+    }
+  }
+  function onWaiting($event) {
+    trigger("waiting", $event, {});
+  }
+  function onVideoError($event) {
+    state2.playing = false;
+    trigger("error", $event, {});
+  }
+  function onPlay($event) {
+    state2.start = true;
+    state2.playing = true;
+    trigger("play", $event, {});
+  }
+  function onPause($event) {
+    state2.playing = false;
+    trigger("pause", $event, {});
+  }
+  function onEnded($event) {
+    state2.playing = false;
+    trigger("ended", $event, {});
+  }
+  function onTimeUpdate($event) {
+    const video = $event.target;
+    const currentTime = state2.currentTime = video.currentTime;
+    trigger("timeupdate", $event, {
+      currentTime,
+      duration: video.duration
+    });
+  }
+  function toggle() {
+    const video = videoRef.value;
+    if (state2.playing) {
+      video.pause();
+    } else {
+      video.play();
+    }
+  }
+  function play() {
+    const video = videoRef.value;
+    state2.start = true;
+    video.play();
+  }
+  function pause() {
+    const video = videoRef.value;
+    video.pause();
+  }
+  function seek(position) {
+    const video = videoRef.value;
+    position = Number(position);
+    if (typeof position === "number" && !isNaN(position)) {
+      video.currentTime = position;
+    }
+  }
+  function stop() {
+    seek(0);
+    pause();
+  }
+  function playbackRate(rate) {
+    const video = videoRef.value;
+    video.playbackRate = rate;
+  }
+  return {
+    videoRef,
+    state: state2,
+    play,
+    pause,
+    stop,
+    seek,
+    playbackRate,
+    toggle,
+    onDurationChange,
+    onLoadedMetadata,
+    onProgress,
+    onWaiting,
+    onVideoError,
+    onPlay,
+    onPause,
+    onEnded,
+    onTimeUpdate
+  };
+}
+function useControls(props2, videoState, seek) {
+  const progressRef = ref(null);
+  const ballRef = ref(null);
+  const centerPlayBtnShow = computed(() => props2.showCenterPlayBtn && !videoState.start);
+  const controlsVisible = ref(true);
+  const controlsShow = computed(() => !centerPlayBtnShow.value && props2.controls && controlsVisible.value);
+  const state2 = reactive({
+    touching: false,
+    controlsTouching: false,
+    centerPlayBtnShow,
+    controlsShow,
+    controlsVisible
+  });
+  function clickProgress(event) {
+    const $progress = progressRef.value;
+    let element = event.target;
+    let x = event.offsetX;
+    while (element && element !== $progress) {
+      x += element.offsetLeft;
+      element = element.parentNode;
+    }
+    const w = $progress.offsetWidth;
+    let progress = 0;
+    if (x >= 0 && x <= w) {
+      progress = x / w;
+      seek(videoState.duration * progress);
+    }
+  }
+  function toggleControls() {
+    state2.controlsVisible = !state2.controlsVisible;
+  }
+  let hideTiming;
+  function autoHideStart() {
+    hideTiming = setTimeout(() => {
+      state2.controlsVisible = false;
+    }, 3e3);
+  }
+  function autoHideEnd() {
+    if (hideTiming) {
+      clearTimeout(hideTiming);
+      hideTiming = null;
+    }
+  }
+  onBeforeUnmount(() => {
+    if (hideTiming) {
+      clearTimeout(hideTiming);
+    }
+  });
+  watch(() => state2.controlsShow && videoState.playing && !state2.controlsTouching, (val) => {
+    if (val) {
+      autoHideStart();
+    } else {
+      autoHideEnd();
+    }
+  });
+  watch([() => videoState.currentTime, () => {
+    props2.duration;
+  }], function updateProgress() {
+    if (!state2.touching) {
+      videoState.progress = videoState.currentTime / videoState.duration * 100;
+    }
+  });
+  onMounted(() => {
+    const passiveOptions2 = passive(false);
+    let originX;
+    let originY;
+    let moveOnce = true;
+    let originProgress;
+    const ball = ballRef.value;
+    function touchmove2(event) {
+      const toucher = event.targetTouches[0];
+      const pageX = toucher.pageX;
+      const pageY = toucher.pageY;
+      if (moveOnce && Math.abs(pageX - originX) < Math.abs(pageY - originY)) {
+        touchend(event);
+        return;
+      }
+      moveOnce = false;
+      const progressEl = progressRef.value;
+      const w = progressEl.offsetWidth;
+      let progress = originProgress + (pageX - originX) / w * 100;
+      if (progress < 0) {
+        progress = 0;
+      } else if (progress > 100) {
+        progress = 100;
+      }
+      videoState.progress = progress;
+      event.preventDefault();
+      event.stopPropagation();
+    }
+    function touchend(event) {
+      state2.controlsTouching = false;
+      if (state2.touching) {
+        ball.removeEventListener("touchmove", touchmove2, passiveOptions2);
+        if (!moveOnce) {
+          event.preventDefault();
+          event.stopPropagation();
+          seek(videoState.duration * videoState.progress / 100);
+        }
+        state2.touching = false;
+      }
+    }
+    ball.addEventListener("touchstart", (event) => {
+      state2.controlsTouching = true;
+      const toucher = event.targetTouches[0];
+      originX = toucher.pageX;
+      originY = toucher.pageY;
+      originProgress = videoState.progress;
+      moveOnce = true;
+      state2.touching = true;
+      ball.addEventListener("touchmove", touchmove2, passiveOptions2);
+    });
+    ball.addEventListener("touchend", touchend);
+    ball.addEventListener("touchcancel", touchend);
+  });
+  return {
+    state: state2,
+    progressRef,
+    ballRef,
+    clickProgress,
+    toggleControls,
+    autoHideStart,
+    autoHideEnd
+  };
+}
+function useDanmu(props2, videoState) {
+  const danmuRef = ref(null);
+  const state2 = reactive({
+    enable: Boolean(props2.enableDanmu)
+  });
+  let danmuIndex = {
+    time: 0,
+    index: -1
+  };
+  const danmuList = isArray(props2.danmuList) ? JSON.parse(JSON.stringify(props2.danmuList)) : [];
+  danmuList.sort(function(a2, b) {
+    return (a2.time || 0) - (b.time || 0);
+  });
+  function toggleDanmu() {
+    state2.enable = !state2.enable;
+  }
+  function updateDanmu(event) {
+    const video = event.target;
+    const currentTime = video.currentTime;
+    const oldDanmuIndex = danmuIndex;
+    const newDanmuIndex = {
+      time: currentTime,
+      index: oldDanmuIndex.index
+    };
+    if (currentTime > oldDanmuIndex.time) {
+      for (let index2 = oldDanmuIndex.index + 1; index2 < danmuList.length; index2++) {
+        const element = danmuList[index2];
+        if (currentTime >= (element.time || 0)) {
+          newDanmuIndex.index = index2;
+          if (videoState.playing && state2.enable) {
+            playDanmu(element);
+          }
+        } else {
+          break;
+        }
+      }
+    } else if (currentTime < oldDanmuIndex.time) {
+      for (let index2 = oldDanmuIndex.index - 1; index2 > -1; index2--) {
+        const element = danmuList[index2];
+        if (currentTime <= (element.time || 0)) {
+          newDanmuIndex.index = index2 - 1;
+        } else {
+          break;
+        }
+      }
+    }
+    danmuIndex = newDanmuIndex;
+  }
+  function playDanmu(danmu) {
+    const p2 = document.createElement("p");
+    p2.className = "uni-video-danmu-item";
+    p2.innerText = danmu.text;
+    let style = `bottom: ${Math.random() * 100}%;color: ${danmu.color};`;
+    p2.setAttribute("style", style);
+    const danmuEl = danmuRef.value;
+    danmuEl.appendChild(p2);
+    setTimeout(function() {
+      style += "left: 0;-webkit-transform: translateX(-100%);transform: translateX(-100%);";
+      p2.setAttribute("style", style);
+      setTimeout(function() {
+        p2.remove();
+      }, 4e3);
+    }, 17);
+  }
+  function sendDanmu(danmu) {
+    danmuList.splice(danmuIndex.index + 1, 0, {
+      text: String(danmu.text),
+      color: danmu.color,
+      time: videoState.currentTime || 0
+    });
+  }
+  return {
+    state: state2,
+    danmuRef,
+    updateDanmu,
+    toggleDanmu,
+    sendDanmu
+  };
+}
+function useContext(play, pause, stop, seek, sendDanmu, playbackRate, requestFullScreen, exitFullScreen) {
+  const methods = {
+    play,
+    stop,
+    pause,
+    seek,
+    sendDanmu,
+    playbackRate,
+    requestFullScreen,
+    exitFullScreen
+  };
+  const id2 = useContextInfo();
+  useSubscribe((type, data) => {
+    let options;
+    switch (type) {
+      case "seek":
+        options = data.position;
+        break;
+      case "sendDanmu":
+        options = data;
+        break;
+      case "playbackRate":
+        options = data.rate;
+        break;
+    }
+    if (type in methods) {
+      methods[type](options);
+    }
+  }, id2, true);
+}
+const props$d = {
+  id: {
+    type: String,
+    default: ""
+  },
+  src: {
+    type: String,
+    default: ""
+  },
+  duration: {
+    type: [Number, String],
+    default: ""
+  },
+  controls: {
+    type: [Boolean, String],
+    default: true
+  },
+  danmuList: {
+    type: Array,
+    default() {
+      return [];
+    }
+  },
+  danmuBtn: {
+    type: [Boolean, String],
+    default: false
+  },
+  enableDanmu: {
+    type: [Boolean, String],
+    default: false
+  },
+  autoplay: {
+    type: [Boolean, String],
+    default: false
+  },
+  loop: {
+    type: [Boolean, String],
+    default: false
+  },
+  muted: {
+    type: [Boolean, String],
+    default: false
+  },
+  objectFit: {
+    type: String,
+    default: "contain"
+  },
+  poster: {
+    type: String,
+    default: ""
+  },
+  direction: {
+    type: [String, Number],
+    default: ""
+  },
+  showProgress: {
+    type: Boolean,
+    default: true
+  },
+  initialTime: {
+    type: [String, Number],
+    default: 0
+  },
+  showFullscreenBtn: {
+    type: [Boolean, String],
+    default: true
+  },
+  pageGesture: {
+    type: [Boolean, String],
+    default: false
+  },
+  enableProgressGesture: {
+    type: [Boolean, String],
+    default: true
+  },
+  showPlayBtn: {
+    type: [Boolean, String],
+    default: true
+  },
+  showCenterPlayBtn: {
+    type: [Boolean, String],
+    default: true
+  }
+};
+class UniVideoElement extends UniElement {
+}
+const index$b = /* @__PURE__ */ defineBuiltInComponent({
+  name: "Video",
+  props: props$d,
+  emits: ["fullscreenchange", "progress", "loadedmetadata", "waiting", "error", "play", "pause", "ended", "timeupdate"],
+  rootElement: {
+    name: "uni-video",
+    class: UniVideoElement
+  },
+  setup(props2, {
+    emit: emit2,
+    attrs: attrs2,
+    slots
+  }) {
+    const rootRef = ref(null);
+    const containerRef = ref(null);
+    const trigger = useCustomEvent(rootRef, emit2);
+    const {
+      state: userActionState
+    } = useUserAction();
+    const {
+      $attrs: videoAttrs
+    } = useAttrs({
+      excludeListeners: true
+    });
+    const {
+      t: t2
+    } = useI18n();
+    initI18nVideoMsgsOnce();
+    const {
+      videoRef,
+      state: videoState,
+      play,
+      pause,
+      stop,
+      seek,
+      playbackRate,
+      toggle,
+      onDurationChange,
+      onLoadedMetadata,
+      onProgress,
+      onWaiting,
+      onVideoError,
+      onPlay,
+      onPause,
+      onEnded,
+      onTimeUpdate
+    } = useVideo(props2, attrs2, trigger);
+    const {
+      state: danmuState,
+      danmuRef,
+      updateDanmu,
+      toggleDanmu,
+      sendDanmu
+    } = useDanmu(props2, videoState);
+    const {
+      state: fullscreenState,
+      onFullscreenChange,
+      emitFullscreenChange,
+      toggleFullscreen,
+      requestFullScreen,
+      exitFullScreen
+    } = useFullscreen(trigger, containerRef, videoRef, userActionState, rootRef);
+    const {
+      state: gestureState,
+      onTouchstart,
+      onTouchend,
+      onTouchmove
+    } = useGesture(props2, videoRef, fullscreenState);
+    const {
+      state: controlsState,
+      progressRef,
+      ballRef,
+      clickProgress,
+      toggleControls
+    } = useControls(props2, videoState, seek);
+    useContext(play, pause, stop, seek, sendDanmu, playbackRate, requestFullScreen, exitFullScreen);
+    onMounted(() => {
+      const rootElement = rootRef.value;
+      Object.assign(rootElement, {
+        play,
+        pause,
+        stop,
+        seek,
+        sendDanmu,
+        playbackRate,
+        requestFullScreen,
+        exitFullScreen
+      });
+      rootElement.attachVmProps(props2);
+    });
+    return () => {
+      return createVNode("uni-video", {
+        "ref": rootRef,
+        "id": props2.id,
+        "onClick": toggleControls
+      }, [createVNode("div", {
+        "ref": containerRef,
+        "class": "uni-video-container",
+        "onTouchstart": onTouchstart,
+        "onTouchend": onTouchend,
+        "onTouchmove": onTouchmove,
+        "onFullscreenchange": withModifiers(onFullscreenChange, ["stop"]),
+        "onWebkitfullscreenchange": withModifiers(($event) => onFullscreenChange($event, true), ["stop"])
+      }, [createVNode("video", mergeProps({
+        "ref": videoRef,
+        "style": {
+          "object-fit": props2.objectFit
+        },
+        "muted": !!props2.muted,
+        "loop": !!props2.loop,
+        "src": videoState.src,
+        "poster": props2.poster,
+        "autoplay": !!props2.autoplay
+      }, videoAttrs.value, {
+        "class": "uni-video-video",
+        "webkit-playsinline": true,
+        "playsinline": true,
+        "onDurationchange": onDurationChange,
+        "onLoadedmetadata": onLoadedMetadata,
+        "onProgress": onProgress,
+        "onWaiting": onWaiting,
+        "onError": onVideoError,
+        "onPlay": onPlay,
+        "onPause": onPause,
+        "onEnded": onEnded,
+        "onTimeupdate": (event) => {
+          onTimeUpdate(event);
+          updateDanmu(event);
+        },
+        "onWebkitbeginfullscreen": () => emitFullscreenChange(true),
+        "onX5videoenterfullscreen": () => emitFullscreenChange(true),
+        "onWebkitendfullscreen": () => emitFullscreenChange(false),
+        "onX5videoexitfullscreen": () => emitFullscreenChange(false)
+      }), null, 16, ["muted", "loop", "src", "poster", "autoplay", "webkit-playsinline", "playsinline", "onDurationchange", "onLoadedmetadata", "onProgress", "onWaiting", "onError", "onPlay", "onPause", "onEnded", "onTimeupdate", "onWebkitbeginfullscreen", "onX5videoenterfullscreen", "onWebkitendfullscreen", "onX5videoexitfullscreen"]), withDirectives(createVNode("div", {
+        "class": "uni-video-bar uni-video-bar-full",
+        "onClick": withModifiers(() => {
+        }, ["stop"])
+      }, [createVNode("div", {
+        "class": "uni-video-controls"
+      }, [withDirectives(createVNode("div", {
+        "class": {
+          "uni-video-control-button": true,
+          "uni-video-control-button-play": !videoState.playing,
+          "uni-video-control-button-pause": videoState.playing
+        },
+        "onClick": withModifiers(toggle, ["stop"])
+      }, null, 10, ["onClick"]), [[vShow, props2.showPlayBtn]]), withDirectives(createVNode("div", {
+        "class": "uni-video-current-time"
+      }, [formatTime(videoState.currentTime)], 512), [[vShow, props2.showProgress]]), withDirectives(createVNode("div", {
+        "ref": progressRef,
+        "class": "uni-video-progress-container",
+        "onClick": withModifiers(clickProgress, ["stop"])
+      }, [createVNode("div", {
+        "class": "uni-video-progress"
+      }, [createVNode("div", {
+        "style": {
+          width: videoState.buffered + "%"
+        },
+        "class": "uni-video-progress-buffered"
+      }, null, 4), createVNode("div", {
+        "ref": ballRef,
+        "style": {
+          left: videoState.progress + "%"
+        },
+        "class": "uni-video-ball"
+      }, [createVNode("div", {
+        "class": "uni-video-inner"
+      }, null)], 4)])], 8, ["onClick"]), [[vShow, props2.showProgress]]), withDirectives(createVNode("div", {
+        "class": "uni-video-duration"
+      }, [formatTime(Number(props2.duration) || videoState.duration)], 512), [[vShow, props2.showProgress]])]), withDirectives(createVNode("div", {
+        "class": {
+          "uni-video-danmu-button": true,
+          "uni-video-danmu-button-active": danmuState.enable
+        },
+        "onClick": withModifiers(toggleDanmu, ["stop"])
+      }, [t2("uni.video.danmu")], 10, ["onClick"]), [[vShow, props2.danmuBtn]]), withDirectives(createVNode("div", {
+        "class": {
+          "uni-video-fullscreen": true,
+          "uni-video-type-fullscreen": fullscreenState.fullscreen
+        },
+        "onClick": withModifiers(() => toggleFullscreen(!fullscreenState.fullscreen), ["stop"])
+      }, null, 10, ["onClick"]), [[vShow, props2.showFullscreenBtn]])], 8, ["onClick"]), [[vShow, controlsState.controlsShow]]), withDirectives(createVNode("div", {
+        "ref": danmuRef,
+        "style": "z-index: 0;",
+        "class": "uni-video-danmu"
+      }, null, 512), [[vShow, videoState.start && danmuState.enable]]), controlsState.centerPlayBtnShow && createVNode("div", {
+        "class": "uni-video-cover",
+        "onClick": withModifiers(() => {
+        }, ["stop"])
+      }, [createVNode("div", {
+        "class": "uni-video-cover-play-button",
+        "onClick": withModifiers(play, ["stop"])
+      }, null, 8, ["onClick"]), createVNode("p", {
+        "class": "uni-video-cover-duration"
+      }, [formatTime(Number(props2.duration) || videoState.duration)])], 8, ["onClick"]), createVNode("div", {
+        "class": {
+          "uni-video-toast": true,
+          "uni-video-toast-volume": gestureState.gestureType === "volume"
+        }
+      }, [createVNode("div", {
+        "class": "uni-video-toast-title"
+      }, [t2("uni.video.volume")]), createVNode("svg", {
+        "class": "uni-video-toast-icon",
+        "width": "200px",
+        "height": "200px",
+        "viewBox": "0 0 1024 1024",
+        "version": "1.1",
+        "xmlns": "http://www.w3.org/2000/svg"
+      }, [createVNode("path", {
+        "d": "M475.400704 201.19552l0 621.674496q0 14.856192-10.856448 25.71264t-25.71264 10.856448-25.71264-10.856448l-190.273536-190.273536-149.704704 0q-14.856192 0-25.71264-10.856448t-10.856448-25.71264l0-219.414528q0-14.856192 10.856448-25.71264t25.71264-10.856448l149.704704 0 190.273536-190.273536q10.856448-10.856448 25.71264-10.856448t25.71264 10.856448 10.856448 25.71264zm219.414528 310.837248q0 43.425792-24.28416 80.851968t-64.2816 53.425152q-5.71392 2.85696-14.2848 2.85696-14.856192 0-25.71264-10.570752t-10.856448-25.998336q0-11.999232 6.856704-20.284416t16.570368-14.2848 19.427328-13.142016 16.570368-20.284416 6.856704-32.569344-6.856704-32.569344-16.570368-20.284416-19.427328-13.142016-16.570368-14.2848-6.856704-20.284416q0-15.427584 10.856448-25.998336t25.71264-10.570752q8.57088 0 14.2848 2.85696 39.99744 15.427584 64.2816 53.139456t24.28416 81.137664zm146.276352 0q0 87.422976-48.56832 161.41824t-128.5632 107.707392q-7.428096 2.85696-14.2848 2.85696-15.427584 0-26.284032-10.856448t-10.856448-25.71264q0-22.284288 22.284288-33.712128 31.997952-16.570368 43.425792-25.141248 42.283008-30.855168 65.995776-77.423616t23.712768-99.136512-23.712768-99.136512-65.995776-77.423616q-11.42784-8.57088-43.425792-25.141248-22.284288-11.42784-22.284288-33.712128 0-14.856192 10.856448-25.71264t25.71264-10.856448q7.428096 0 14.856192 2.85696 79.99488 33.712128 128.5632 107.707392t48.56832 161.41824zm146.276352 0q0 131.42016-72.566784 241.41312t-193.130496 161.989632q-7.428096 2.85696-14.856192 2.85696-14.856192 0-25.71264-10.856448t-10.856448-25.71264q0-20.570112 22.284288-33.712128 3.999744-2.285568 12.85632-5.999616t12.85632-5.999616q26.284032-14.2848 46.854144-29.140992 70.281216-51.996672 109.707264-129.705984t39.426048-165.132288-39.426048-165.132288-109.707264-129.705984q-20.570112-14.856192-46.854144-29.140992-3.999744-2.285568-12.85632-5.999616t-12.85632-5.999616q-22.284288-13.142016-22.284288-33.712128 0-14.856192 10.856448-25.71264t25.71264-10.856448q7.428096 0 14.856192 2.85696 120.563712 51.996672 193.130496 161.989632t72.566784 241.41312z"
+      }, null)]), createVNode("div", {
+        "class": "uni-video-toast-value"
+      }, [createVNode("div", {
+        "style": {
+          width: gestureState.volumeNew * 100 + "%"
+        },
+        "class": "uni-video-toast-value-content"
+      }, [createVNode("div", {
+        "class": "uni-video-toast-volume-grids"
+      }, [renderList(10, () => createVNode("div", {
+        "class": "uni-video-toast-volume-grids-item"
+      }, null))])], 4)])], 2), createVNode("div", {
+        "class": {
+          "uni-video-toast": true,
+          "uni-video-toast-progress": gestureState.gestureType === "progress"
+        }
+      }, [createVNode("div", {
+        "class": "uni-video-toast-title"
+      }, [formatTime(gestureState.currentTimeNew), " / ", formatTime(videoState.duration)])], 2), createVNode("div", {
+        "class": "uni-video-slots"
+      }, [slots.default && slots.default()])], 40, ["onTouchstart", "onTouchend", "onTouchmove", "onFullscreenchange", "onWebkitfullscreenchange"])], 8, ["id", "onClick"]);
+    };
+  }
+});
+const onWebInvokeAppService = ({ name, arg }) => {
+  if (name === "postMessage")
+    ;
+  else {
+    uni[name](arg);
+  }
+};
+const Invoke = /* @__PURE__ */ once(() => UniServiceJSBridge.on(ON_WEB_INVOKE_APP_SERVICE, onWebInvokeAppService));
+const props$c = {
+  src: {
+    type: String,
+    default: ""
+  }
+};
+class UniWebViewElement extends UniElement {
+}
+const indexX = /* @__PURE__ */ defineBuiltInComponent({
+  inheritAttrs: false,
+  name: "WebView",
+  props: props$c,
+  rootElement: {
+    name: "uni-web-view",
+    class: UniWebViewElement
+  },
+  setup(props2) {
+    Invoke();
+    const rootRef = ref(null);
+    const iframeRef = ref(null);
+    const {
+      $attrs,
+      $excludeAttrs,
+      $listeners
+    } = useAttrs({
+      excludeListeners: true
+    });
+    const renderIframe = () => {
+      const iframe = document.createElement("iframe");
+      watchEffect(() => {
+        for (const key in $attrs.value) {
+          if (hasOwn($attrs.value, key)) {
+            const attr2 = $attrs.value[key];
+            iframe[key] = attr2;
+          }
+        }
+      });
+      watchEffect(() => {
+        iframe.src = getRealPath(props2.src);
+      });
+      iframeRef.value = iframe;
+    };
+    renderIframe();
+    onMounted(() => {
+      var _a;
+      (_a = rootRef.value) == null ? void 0 : _a.appendChild(iframeRef.value);
+    });
+    onMounted(() => {
+      const rootElement = rootRef.value;
+      rootElement.attachVmProps(props2);
+    });
+    return () => {
+      return createVNode("uni-web-view", mergeProps({
+        "class": "uni-webview"
+      }, $listeners.value, $excludeAttrs.value, {
+        "ref": rootRef
+      }), null, 16);
+    };
+  }
+});
+let index$a = 0;
+function getJSONP(url, options, success, error) {
+  var js = document.createElement("script");
+  var callbackKey = options.callback || "callback";
+  var callbackName = "__uni_jsonp_callback_" + index$a++;
+  var timeout = options.timeout || 3e4;
+  var timing;
+  function end() {
+    clearTimeout(timing);
+    delete window[callbackName];
+    js.remove();
+  }
+  window[callbackName] = (res) => {
+    if (isFunction(success)) {
+      success(res);
+    }
+    end();
+  };
+  js.onerror = () => {
+    if (isFunction(error)) {
+      error();
+    }
+    end();
+  };
+  timing = setTimeout(function() {
+    if (isFunction(error)) {
+      error();
+    }
+    end();
+  }, timeout);
+  js.src = url + (url.indexOf("?") >= 0 ? "&" : "?") + callbackKey + "=" + callbackName;
+  document.body.appendChild(js);
+}
+function createCallout(maps2) {
+  function onAdd() {
+    const div = this.div;
+    const panes = this.getPanes();
+    panes.floatPane.appendChild(div);
+  }
+  function onRemove() {
+    const parentNode = this.div.parentNode;
+    if (parentNode) {
+      parentNode.removeChild(this.div);
+    }
+  }
+  function createAMapText() {
+    const option = this.option;
+    this.Text = new maps2.Text({
+      text: option.content,
+      anchor: "bottom-center",
+      // 设置文本标记锚点
+      offset: new maps2.Pixel(0, option.offsetY - 16),
+      style: {
+        padding: (option.padding || 8) + "px",
+        "line-height": (option.fontSize || 14) + "px",
+        "border-radius": (option.borderRadius || 0) + "px",
+        "border-color": `${option.bgColor || "#fff"} transparent transparent`,
+        "background-color": option.bgColor || "#fff",
+        "box-shadow": "0 2px 6px 0 rgba(114, 124, 245, .5)",
+        "text-align": "center",
+        "font-size": (option.fontSize || 14) + "px",
+        color: option.color || "#000"
+      },
+      position: option.position
+    });
+    const event = maps2.event || maps2.Event;
+    event.addListener(this.Text, "click", () => {
+      this.callback();
+    });
+    this.Text.setMap(option.map);
+  }
+  function createBMapText() {
+  }
+  function removeAMapText() {
+    if (this.Text) {
+      this.option.map.remove(this.Text);
+    }
+  }
+  function removeBMapText() {
+    if (this.Text) {
+      this.option.map.remove(this.Text);
+    }
+  }
+  class Callout {
+    constructor(option = {}, callback) {
+      this.createAMapText = createAMapText;
+      this.removeAMapText = removeAMapText;
+      this.createBMapText = createBMapText;
+      this.removeBMapText = removeBMapText;
+      this.onAdd = onAdd;
+      this.construct = onAdd;
+      this.onRemove = onRemove;
+      this.destroy = onRemove;
+      this.option = option || {};
+      const visible = this.visible = this.alwaysVisible = option.display === "ALWAYS";
+      if (getIsAMap()) {
+        this.callback = callback;
+        if (this.visible) {
+          this.createAMapText();
+        }
+      } else if (getIsBMap()) {
+        if (this.visible) {
+          this.createBMapText();
+        }
+      } else {
+        const map = option.map;
+        this.position = option.position;
+        this.index = 1;
+        const div = this.div = document.createElement("div");
+        const divStyle = div.style;
+        divStyle.position = "absolute";
+        divStyle.whiteSpace = "nowrap";
+        divStyle.transform = "translateX(-50%) translateY(-100%)";
+        divStyle.zIndex = "1";
+        divStyle.boxShadow = option.boxShadow || "none";
+        divStyle.display = visible ? "block" : "none";
+        const triangle = this.triangle = document.createElement("div");
+        triangle.setAttribute(
+          "style",
+          "position: absolute;white-space: nowrap;border-width: 4px;border-style: solid;border-color: #fff transparent transparent;border-image: initial;font-size: 12px;padding: 0px;background-color: transparent;width: 0px;height: 0px;transform: translate(-50%, 100%);left: 50%;bottom: 0;"
+        );
+        this.setStyle(option);
+        div.appendChild(triangle);
+        if (map) {
+          this.setMap(map);
+        }
+      }
+    }
+    set onclick(callback) {
+      this.div.onclick = callback;
+    }
+    get onclick() {
+      return this.div.onclick;
+    }
+    setOption(option) {
+      this.option = option;
+      if (option.display === "ALWAYS") {
+        this.alwaysVisible = this.visible = true;
+      } else {
+        this.alwaysVisible = false;
+      }
+      if (getIsAMap()) {
+        if (this.visible) {
+          this.createAMapText();
+        }
+      } else if (getIsBMap()) {
+        if (this.visible) {
+          this.createBMapText();
+        }
+      } else {
+        this.setPosition(option.position);
+        this.setStyle(option);
+      }
+    }
+    setStyle(option) {
+      const div = this.div;
+      const divStyle = div.style;
+      div.innerText = option.content || "";
+      divStyle.lineHeight = (option.fontSize || 14) + "px";
+      divStyle.fontSize = (option.fontSize || 14) + "px";
+      divStyle.padding = (option.padding || 8) + "px";
+      divStyle.color = option.color || "#000";
+      divStyle.borderRadius = (option.borderRadius || 0) + "px";
+      divStyle.backgroundColor = option.bgColor || "#fff";
+      divStyle.marginTop = "-" + ((option.top || 0) + 5) + "px";
+      this.triangle.style.borderColor = `${option.bgColor || "#fff"} transparent transparent`;
+    }
+    setPosition(position) {
+      this.position = position;
+      this.draw();
+    }
+    draw() {
+      const overlayProjection = this.getProjection();
+      if (!this.position || !this.div || !overlayProjection) {
+        return;
+      }
+      const pixel = overlayProjection.fromLatLngToDivPixel(
+        this.position
+      );
+      const divStyle = this.div.style;
+      divStyle.left = pixel.x + "px";
+      divStyle.top = pixel.y + "px";
+    }
+    changed() {
+      const divStyle = this.div.style;
+      divStyle.display = this.visible ? "block" : "none";
+    }
+  }
+  if (!getIsAMap() && !getIsBMap()) {
+    const overlay = new (maps2.OverlayView || maps2.Overlay)();
+    Callout.prototype.setMap = overlay.setMap;
+    Callout.prototype.getMap = overlay.getMap;
+    Callout.prototype.getPanes = overlay.getPanes;
+    Callout.prototype.getProjection = overlay.getProjection;
+    Callout.prototype.map_changed = overlay.map_changed;
+    Callout.prototype.set = overlay.set;
+    Callout.prototype.get = overlay.get;
+    Callout.prototype.setOptions = overlay.setValues;
+    Callout.prototype.bindTo = overlay.bindTo;
+    Callout.prototype.bindsTo = overlay.bindsTo;
+    Callout.prototype.notify = overlay.notify;
+    Callout.prototype.setValues = overlay.setValues;
+    Callout.prototype.unbind = overlay.unbind;
+    Callout.prototype.unbindAll = overlay.unbindAll;
+    Callout.prototype.addListener = overlay.addListener;
+  }
+  return Callout;
+}
+let maps;
+const callbacksMap = {};
+const GOOGLE_MAP_CALLBACKNAME = "__map_callback__";
+function loadMaps(libraries, callback) {
+  const mapInfo = getMapInfo();
+  if (!mapInfo.key) {
+    console.error("Map key not configured.");
+    return;
+  }
+  const callbacks2 = callbacksMap[mapInfo.type] = callbacksMap[mapInfo.type] || [];
+  if (maps) {
+    callback(maps);
+  } else if (window[mapInfo.type] && window[mapInfo.type].maps) {
+    maps = getIsAMap() || getIsBMap() ? window[mapInfo.type] : window[mapInfo.type].maps;
+    maps.Callout = maps.Callout || createCallout(maps);
+    callback(maps);
+  } else if (callbacks2.length) {
+    callbacks2.push(callback);
+  } else {
+    callbacks2.push(callback);
+    const globalExt = window;
+    const callbackName = GOOGLE_MAP_CALLBACKNAME + mapInfo.type;
+    globalExt[callbackName] = function() {
+      delete globalExt[callbackName];
+      maps = getIsAMap() || getIsBMap() ? window[mapInfo.type] : window[mapInfo.type].maps;
+      maps.Callout = createCallout(maps);
+      callbacks2.forEach((callback2) => callback2(maps));
+      callbacks2.length = 0;
+    };
+    if (getIsAMap()) {
+      handleAMapSecurityPolicy(mapInfo);
+    }
+    const script = document.createElement("script");
+    let src = getScriptBaseUrl(mapInfo.type);
+    if (mapInfo.type === MapType.QQ) {
+      libraries.push("geometry");
+    }
+    if (libraries.length) {
+      src += `libraries=${libraries.join("%2C")}&`;
+    }
+    if (mapInfo.type === MapType.BMAP) {
+      script.src = `${src}ak=${mapInfo.key}&callback=${callbackName}`;
+    } else {
+      script.src = `${src}key=${mapInfo.key}&callback=${callbackName}`;
+    }
+    script.onerror = function() {
+      console.error("Map load failed.");
+    };
+    document.body.appendChild(script);
+  }
+}
+const getScriptBaseUrl = (mapType) => {
+  const urlMap = {
+    qq: "https://map.qq.com/api/js?v=2.exp&",
+    google: "https://maps.googleapis.com/maps/api/js?",
+    AMap: "https://webapi.amap.com/maps?v=2.0&",
+    BMapGL: "https://api.map.baidu.com/api?type=webgl&v=1.0&"
+  };
+  return urlMap[mapType];
+};
+function handleAMapSecurityPolicy(mapInfo) {
+  window._AMapSecurityConfig = {
+    securityJsCode: mapInfo.securityJsCode || "",
+    serviceHost: mapInfo.serviceHost || ""
+  };
+}
+const ICON_PATH_LOCTAION = "M13.3334375 16 q0.033125 1.1334375 0.783125 1.8834375 q0.75 0.75 1.8834375 0.75 q1.1334375 0 1.8834375 -0.75 q0.75 -0.75 0.75 -1.8834375 q0 -1.1334375 -0.75 -1.8834375 q-0.75 -0.75 -1.8834375 -0.75 q-1.1334375 0 -1.8834375 0.75 q-0.75 0.75 -0.783125 1.8834375 ZM30.9334375 14.9334375 l-1.1334375 0 q-0.5 -5.2 -4.0165625 -8.716875 q-3.516875 -3.5165625 -8.716875 -4.0165625 l0 -1.1334375 q0 -0.4665625 -0.3 -0.7665625 q-0.3 -0.3 -0.7665625 -0.3 q-0.4665625 0 -0.7665625 0.3 q-0.3 0.3 -0.3 0.7665625 l0 1.1334375 q-5.2 0.5 -8.716875 4.0165625 q-3.5165625 3.516875 -4.0165625 8.716875 l-1.1334375 0 q-0.4665625 0 -0.7665625 0.3 q-0.3 0.3 -0.3 0.7665625 q0 0.4665625 0.3 0.7665625 q0.3 0.3 0.7665625 0.3 l1.1334375 0 q0.5 5.2 4.0165625 8.716875 q3.516875 3.5165625 8.716875 4.0165625 l0 1.1334375 q0 0.4665625 0.3 0.7665625 q0.3 0.3 0.7665625 0.3 q0.4665625 0 0.7665625 -0.3 q0.3 -0.3 0.3 -0.7665625 l0 -1.1334375 q5.2 -0.5 8.716875 -4.0165625 q3.5165625 -3.516875 4.0165625 -8.716875 l1.1334375 0 q0.4665625 0 0.7665625 -0.3 q0.3 -0.3 0.3 -0.7665625 q0 -0.4665625 -0.3 -0.7665625 q-0.3 -0.3 -0.7665625 -0.3 ZM17.0665625 27.6665625 l0 -2.0665625 q0 -0.4665625 -0.3 -0.7665625 q-0.3 -0.3 -0.7665625 -0.3 q-0.4665625 0 -0.7665625 0.3 q-0.3 0.3 -0.3 0.7665625 l0 2.0665625 q-4.3 -0.4665625 -7.216875 -3.383125 q-2.916875 -2.916875 -3.3834375 -7.216875 l2.0665625 0 q0.4665625 0 0.7665625 -0.3 q0.3 -0.3 0.3 -0.7665625 q0 -0.4665625 -0.3 -0.7665625 q-0.3 -0.3 -0.7665625 -0.3 l-2.0665625 0 q0.4665625 -4.3 3.3834375 -7.216875 q2.9165625 -2.916875 7.216875 -3.3834375 l0 2.0665625 q0 0.4665625 0.3 0.7665625 q0.3 0.3 0.7665625 0.3 q0.4665625 0 0.7665625 -0.3 q0.3 -0.3 0.3 -0.7665625 l0 -2.0665625 q4.3 0.4665625 7.216875 3.3834375 q2.9165625 2.9165625 3.383125 7.216875 l-2.0665625 0 q-0.4665625 0 -0.7665625 0.3 q-0.3 0.3 -0.3 0.7665625 q0 0.4665625 0.3 0.7665625 q0.3 0.3 0.7665625 0.3 l2.0665625 0 q-0.4665625 4.3 -3.383125 7.216875 q-2.916875 2.9165625 -7.216875 3.383125 Z";
+const ICON_PATH_ORIGIN = "data:image/png;base64,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";
+const ICON_PATH_TARGET = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGAAAACcCAMAAAC3Fl5oAAAB3VBMVEVMaXH/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/EhL/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/Dw//AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/AAD/GRn/NTX/Dw//Fhb/AAD/AAD/AAD/GRn/GRn/Y2P/AAD/AAD/ExP/Ghr/AAD/AAD/MzP/GRn/AAD/Hh7/AAD/RUX/AAD/AAD/AAD/AAD/AAD/AAD/Dg7/AAD/HR3/Dw//FRX/SUn/AAD/////kJD/DQ3/Zmb/+/v/wMD/mJj/6en/vb3/1NT//Pz/ODj/+fn/3Nz/nJz/j4//9/f/7e3/9vb/7Oz/2Nj/x8f/Ozv/+Pj/3d3/nZ3/2dn//f3/6Oj/2tr/v7//09P/vr7/mZn/l5cdSvP3AAAAe3RSTlMAAhLiZgTb/vztB/JMRhlp6lQW86g8mQ4KFPs3UCH5U8huwlesWtTYGI7RsdVeJGfTW5rxnutLsvXWF8vQNdo6qQbuz7D4hgVIx2xtw8GC1TtZaIw0i84P98tU0/fsj7PKaAgiZZxeVfo8Z52eg1P0nESrENnjXVPUgw/uuSmDAAADsUlEQVR42u3aZ3cTRxgF4GtbYleSLdnGcsENG2ODjbExEHrvhAQCIb1Bem+QdkeuuFMNBBJIfmuOckzZI8/srHYmH3Lm+QNXK632LTvQ03Tu/IWeU/tTGTKT2n+q58L5c00wpXJd47DHEt5w47pKxLbhdLdPKb/7dBYxVLxw1GcI/2h1BcpzKNFHLX2JQ4gumaiitqpEEhEdOMJI9h5AFC3feYzI+7IF2tpSLEOqDXpObPRYFm/jCWho/4Ble7MdoT7fzhhq9yHEz28wltU1UPrJZ0wd66HwicfYvEFIfePTAP8tSLTupBHvtGJFH9bSkNrNWEHzERrT34xSH9Ogr1CijkbVAUH1KRqVqkdQAw07iIAaGlcTqI+/0LjeJJ5J0IIEnkpXMdzs4sTtW9dnZq7fuj2xOMtwVWk88RHDjBYejYvnjD8qjOpfQsUqhvj7oSjxcJIhVj3pyKqpNjYvVjQ/RrXq5YABKi3MCYm5BSrtWO5v11DlmlC4RpU1WRS9SJU7QukOVbpQ9JLu549+Dd0AUOlTbkGEuk85vxLAK5QbuytC3R2j3HoAjZSbFxrmKTcCoJdSk0LLJKV6gSaPMqNTQsvUKGW8JrxKqUWhaZFSeWyh1LTQNE2pHF6mzOy40DQ+S5mLimJcENoKlOnBWsr8KbRNUGYt5LXgd6HtD3lNQIoyN4S2G5RJIUOZm0LbTcqsBqVmhLYZSlkPsP4VWf+Rrd+m1v9o9h8Vv5p42C1R5qL1x7WRglOgVN52yfwNOBu76P+lLPoYidu23KPciIHGa07ZeIW1jvcNtI7q5vexCPGYCmf+m/Y9a3sAwQ5bI9T7ukPgPcn9GToEao+xk1OixJT+GIsvNAbx6eAgPq0xiF+KtkpYKhRXCQ8eFFcJhSWGu3rZ8jJkCM8kz9K4TUnrC6mAgzTsB9tLwQ2W15qfosQ2GrQNpZr7aczbzVjBZsvLcaC1g0bsbIVEnU8DOr6H1KDH2LwtUBi0/JII6Dxm9zUXkH+XMWzfh1Dte1i2Pe3QkC77Zel7aehpO8wyHG6Dtt0NjKxhN6I4uSli/TqJiJJDUQ4NDCURXTrXRy1XcumyD24M+AzhD1RXIIZsl/LoyZmurJHDM7s8lvB2FQ/PmPJ6PseAXP5HGMYAAC7ABbgAF+ACXIALcAEuwAW4ABfgAlyAC3ABLsAFuID/d8Cx4NEt8/byOf0wLnis8zjMq9/Kp7bWw4JOj8u8TlhRl+G/Mp2wpOX48GffvvZ1CyL4B53LAS6zb08EAAAAAElFTkSuQmCC";
+var MapType = /* @__PURE__ */ ((MapType2) => {
+  MapType2["QQ"] = "qq";
+  MapType2["GOOGLE"] = "google";
+  MapType2["AMAP"] = "AMap";
+  MapType2["BMAP"] = "BMapGL";
+  MapType2["UNKNOWN"] = "";
+  return MapType2;
+})(MapType || {});
+function getMapInfo() {
+  if (__uniConfig.bMapKey) {
+    return {
+      type: "BMapGL",
+      key: __uniConfig.bMapKey
+    };
+  }
+  if (__uniConfig.qqMapKey) {
+    return {
+      type: "qq",
+      key: __uniConfig.qqMapKey
+    };
+  }
+  if (__uniConfig.googleMapKey) {
+    return {
+      type: "google",
+      key: __uniConfig.googleMapKey
+    };
+  }
+  if (__uniConfig.aMapKey) {
+    return {
+      type: "AMap",
+      key: __uniConfig.aMapKey,
+      securityJsCode: __uniConfig.aMapSecurityJsCode,
+      serviceHost: __uniConfig.aMapServiceHost
+    };
+  }
+  return {
+    type: "",
+    key: ""
+  };
+}
+let IS_AMAP = false;
+let hasGetIsAMap = false;
+const getIsAMap = () => {
+  if (hasGetIsAMap) {
+    return IS_AMAP;
+  } else {
+    hasGetIsAMap = true;
+    return IS_AMAP = getMapInfo().type === "AMap";
+  }
+};
+const getIsBMap = () => {
+  return getMapInfo().type === "BMapGL";
+};
+function translateCoordinateSystem(type, coords, skip) {
+  const mapInfo = getMapInfo();
+  const wgs84Map = [
+    "google"
+    /* GOOGLE */
+  ];
+  if (type && type.toUpperCase() === "WGS84" || wgs84Map.includes(mapInfo.type) || skip) {
+    return Promise.resolve(coords);
+  }
+  if (mapInfo.type === "qq") {
+    return new Promise((resolve) => {
+      getJSONP(
+        `https://apis.map.qq.com/ws/coord/v1/translate?type=1&locations=${coords.latitude},${coords.longitude}&key=${mapInfo.key}&output=jsonp`,
+        {
+          callback: "callback"
+        },
+        (res) => {
+          if ("locations" in res && res.locations.length) {
+            const { lng, lat } = res.locations[0];
+            resolve({
+              longitude: lng,
+              latitude: lat,
+              altitude: coords.altitude,
+              accuracy: coords.accuracy,
+              altitudeAccuracy: coords.altitudeAccuracy,
+              heading: coords.heading,
+              speed: coords.speed
+            });
+          } else {
+            resolve(coords);
+          }
+        },
+        () => resolve(coords)
+      );
+    });
+  }
+  if (mapInfo.type === "AMap") {
+    return new Promise((resolve) => {
+      loadMaps([], () => {
+        window.AMap.convertFrom(
+          [coords.longitude, coords.latitude],
+          "gps",
+          (_, res) => {
+            if (res.info === "ok" && res.locations.length) {
+              const { lat, lng } = res.locations[0];
+              resolve({
+                longitude: lng,
+                latitude: lat,
+                altitude: coords.altitude,
+                accuracy: coords.accuracy,
+                altitudeAccuracy: coords.altitudeAccuracy,
+                heading: coords.heading,
+                speed: coords.speed
+              });
+            } else {
+              resolve(coords);
+            }
+          }
+        );
+      });
+    });
+  }
+  return Promise.reject(new Error("translate coordinate system faild"));
+}
+const props$b = {
+  id: {
+    type: [Number, String],
+    default: ""
+  },
+  latitude: {
+    type: [Number, String],
+    require: true
+  },
+  longitude: {
+    type: [Number, String],
+    require: true
+  },
+  title: {
+    type: String,
+    default: ""
+  },
+  iconPath: {
+    type: String,
+    require: true
+  },
+  rotate: {
+    type: [Number, String],
+    default: 0
+  },
+  alpha: {
+    type: [Number, String],
+    default: 1
+  },
+  width: {
+    type: [Number, String],
+    default: ""
+  },
+  height: {
+    type: [Number, String],
+    default: ""
+  },
+  callout: {
+    type: Object,
+    default: null
+  },
+  label: {
+    type: Object,
+    default: null
+  },
+  anchor: {
+    type: Object,
+    default: null
+  },
+  clusterId: {
+    type: [Number, String],
+    default: ""
+  },
+  customCallout: {
+    type: Object,
+    default: null
+  },
+  ariaLabel: {
+    type: String,
+    default: ""
+  }
+};
+function useMarkerLabelStyle(id2) {
+  const className = "uni-map-marker-label-" + id2;
+  const styleEl = document.createElement("style");
+  styleEl.id = className;
+  document.head.appendChild(styleEl);
+  onUnmounted(() => {
+    styleEl.remove();
+  });
+  return function updateMarkerLabelStyle(style) {
+    const newStyle = Object.assign({}, style, {
+      position: "absolute",
+      top: "70px",
+      borderStyle: "solid"
+    });
+    const div = document.createElement("div");
+    Object.keys(newStyle).forEach((key) => {
+      div.style[key] = newStyle[key] || "";
+    });
+    styleEl.innerText = `.${className}{${div.getAttribute("style")}}`;
+    return className;
+  };
+}
+const MapMarker = /* @__PURE__ */ defineSystemComponent({
+  name: "MapMarker",
+  props: props$b,
+  setup(props2) {
+    const id2 = String(!isNaN(Number(props2.id)) ? props2.id : "");
+    const onMapReady = inject("onMapReady");
+    const updateMarkerLabelStyle = useMarkerLabelStyle(id2);
+    let marker;
+    function removeMarker() {
+      if (marker) {
+        if (marker.label && "setMap" in marker.label) {
+          marker.label.setMap(null);
+        }
+        if (marker.callout) {
+          removeMarkerCallout(marker.callout);
+        }
+        marker.setMap(null);
+      }
+    }
+    function removeMarkerCallout(callout) {
+      if (getIsAMap()) {
+        callout.removeAMapText();
+      } else {
+        callout.setMap(null);
+      }
+    }
+    onMapReady((map, maps2, trigger) => {
+      function updateMarker(option) {
+        const title = option.title;
+        let position;
+        if (getIsAMap()) {
+          position = new maps2.LngLat(option.longitude, option.latitude);
+        } else if (getIsBMap()) {
+          position = new maps2.Point(option.longitude, option.latitude);
+        } else {
+          position = new maps2.LatLng(option.latitude, option.longitude);
+        }
+        const img = new Image();
+        let imgHeight = 0;
+        img.onload = () => {
+          const anchor = option.anchor || {};
+          let icon;
+          let w;
+          let h2;
+          let top;
+          let x = typeof anchor.x === "number" ? anchor.x : 0.5;
+          let y = typeof anchor.y === "number" ? anchor.y : 1;
+          if (option.iconPath && (option.width || option.height)) {
+            w = option.width || img.width / img.height * option.height;
+            h2 = option.height || img.height / img.width * option.width;
+          } else {
+            w = img.width / 2;
+            h2 = img.height / 2;
+          }
+          imgHeight = h2;
+          top = h2 - (h2 - y * h2);
+          if ("MarkerImage" in maps2) {
+            icon = new maps2.MarkerImage(img.src, null, null, new maps2.Point(x * w, y * h2), new maps2.Size(w, h2));
+          } else if ("Icon" in maps2) {
+            icon = new maps2.Icon({
+              image: img.src,
+              size: new maps2.Size(w, h2),
+              imageSize: new maps2.Size(w, h2),
+              imageOffset: new maps2.Pixel(x * w, y * h2)
+            });
+          } else {
+            icon = {
+              url: img.src,
+              anchor: new maps2.Point(x, y),
+              size: new maps2.Size(w, h2)
+            };
+          }
+          if (getIsBMap()) {
+            marker = new maps2.Marker(new maps2.Point(position.lng, position.lat));
+            map.addOverlay(marker);
+          } else {
+            marker.setPosition(position);
+            marker.setIcon(icon);
+          }
+          if ("setRotation" in marker) {
+            marker.setRotation(option.rotate || 0);
+          }
+          const labelOpt = option.label || {};
+          if ("label" in marker) {
+            marker.label.setMap(null);
+            delete marker.label;
+          }
+          let label;
+          if (labelOpt.content) {
+            const labelStyle = {
+              borderColor: labelOpt.borderColor,
+              borderWidth: (Number(labelOpt.borderWidth) || 0) + "px",
+              padding: (Number(labelOpt.padding) || 0) + "px",
+              borderRadius: (Number(labelOpt.borderRadius) || 0) + "px",
+              backgroundColor: labelOpt.bgColor,
+              color: labelOpt.color,
+              fontSize: (labelOpt.fontSize || 14) + "px",
+              lineHeight: (labelOpt.fontSize || 14) + "px",
+              marginLeft: (Number(labelOpt.anchorX || labelOpt.x) || 0) + "px",
+              marginTop: (Number(labelOpt.anchorY || labelOpt.y) || 0) + "px"
+            };
+            if ("Label" in maps2) {
+              label = new maps2.Label({
+                position,
+                map,
+                clickable: false,
+                content: labelOpt.content,
+                style: labelStyle
+              });
+              marker.label = label;
+            } else if ("setLabel" in marker) {
+              if (getIsAMap()) {
+                const content = `<div style="
+                  margin-left:${labelStyle.marginLeft};
+                  margin-top:${labelStyle.marginTop};
+                  padding:${labelStyle.padding};
+                  background-color:${labelStyle.backgroundColor};
+                  border-radius:${labelStyle.borderRadius};
+                  line-height:${labelStyle.lineHeight};
+                  color:${labelStyle.color};
+                  font-size:${labelStyle.fontSize};
+
+                  ">
+                  ${labelOpt.content}
+                <div>`;
+                marker.setLabel({
+                  content,
+                  direction: "bottom-right"
+                });
+              } else {
+                const className = updateMarkerLabelStyle(labelStyle);
+                marker.setLabel({
+                  text: labelOpt.content,
+                  color: labelStyle.color,
+                  fontSize: labelStyle.fontSize,
+                  className
+                });
+              }
+            }
+          }
+          const calloutOpt = option.callout || {};
+          let callout = marker.callout;
+          let calloutStyle;
+          if (calloutOpt.content || title) {
+            if (getIsAMap() && calloutOpt.content) {
+              calloutOpt.content = calloutOpt.content.replaceAll("\n", "<br/>");
+            }
+            const boxShadow = "0px 0px 3px 1px rgba(0,0,0,0.5)";
+            let offsetY = -imgHeight / 2;
+            if (option.width || option.height) {
+              offsetY += 14 - imgHeight / 2;
+            }
+            calloutStyle = calloutOpt.content ? {
+              position,
+              map,
+              top,
+              // handle AMap callout offset
+              offsetY,
+              content: calloutOpt.content,
+              color: calloutOpt.color,
+              fontSize: calloutOpt.fontSize,
+              borderRadius: calloutOpt.borderRadius,
+              bgColor: calloutOpt.bgColor,
+              padding: calloutOpt.padding,
+              boxShadow: calloutOpt.boxShadow || boxShadow,
+              display: calloutOpt.display
+            } : {
+              position,
+              map,
+              top,
+              // handle AMap callout offset
+              offsetY,
+              content: title,
+              boxShadow
+            };
+            if (callout) {
+              callout.setOption(calloutStyle);
+            } else {
+              if (getIsAMap()) {
+                const callback = () => {
+                  if (id2 !== "") {
+                    trigger("callouttap", {}, {
+                      markerId: Number(id2)
+                    });
+                  }
+                };
+                callout = marker.callout = new maps2.Callout(calloutStyle, callback);
+              } else {
+                callout = marker.callout = new maps2.Callout(calloutStyle);
+                callout.div.onclick = function($event) {
+                  if (id2 !== "") {
+                    trigger("callouttap", $event, {
+                      markerId: Number(id2)
+                    });
+                  }
+                  $event.stopPropagation();
+                  $event.preventDefault();
+                };
+                if (getMapInfo().type === MapType.GOOGLE) {
+                  callout.div.ontouchstart = function($event) {
+                    $event.stopPropagation();
+                  };
+                  callout.div.onpointerdown = function($event) {
+                    $event.stopPropagation();
+                  };
+                }
+              }
+            }
+          } else {
+            if (callout) {
+              removeMarkerCallout(callout);
+              delete marker.callout;
+            }
+          }
+        };
+        if (option.iconPath) {
+          img.src = getRealPath(option.iconPath);
+        } else {
+          console.error("Marker.iconPath is required.");
+        }
+      }
+      function addMarker(props3) {
+        if (!getIsBMap()) {
+          marker = new maps2.Marker({
+            map,
+            flat: true,
+            autoRotation: false
+          });
+        }
+        updateMarker(props3);
+        const MapsEvent = maps2.event || maps2.Event;
+        if (getIsBMap())
+          ;
+        else {
+          MapsEvent.addListener(marker, "click", () => {
+            const callout = marker.callout;
+            if (callout && !callout.alwaysVisible) {
+              if (getIsAMap()) {
+                callout.visible = !callout.visible;
+                if (callout.visible) {
+                  marker.callout.createAMapText();
+                } else {
+                  marker.callout.removeAMapText();
+                }
+              } else {
+                callout.set("visible", !callout.visible);
+                if (callout.visible) {
+                  const div = callout.div;
+                  const parent = div.parentNode;
+                  parent.removeChild(div);
+                  parent.appendChild(div);
+                }
+              }
+            }
+            if (id2) {
+              trigger("markertap", {}, {
+                markerId: Number(id2),
+                latitude: props3.latitude,
+                longitude: props3.longitude
+              });
+            }
+          });
+        }
+      }
+      addMarker(props2);
+      watch(props2, updateMarker);
+    });
+    if (id2) {
+      const addMapChidlContext = inject("addMapChidlContext");
+      const removeMapChidlContext = inject("removeMapChidlContext");
+      const context = {
+        id: id2,
+        translate(data) {
+          onMapReady((map, maps2, trigger) => {
+            const destination = data.destination;
+            const duration = data.duration;
+            const autoRotate = !!data.autoRotate;
+            let rotate = Number(data.rotate) || 0;
+            let rotation = 0;
+            if ("getRotation" in marker) {
+              rotation = marker.getRotation();
+            }
+            const a2 = marker.getPosition();
+            const b = new maps2.LatLng(destination.latitude, destination.longitude);
+            const distance = maps2.geometry.spherical.computeDistanceBetween(a2, b) / 1e3;
+            const time = (typeof duration === "number" ? duration : 1e3) / (1e3 * 60 * 60);
+            const speed = distance / time;
+            const MapsEvent = maps2.event || maps2.Event;
+            const movingEvent = MapsEvent.addListener(marker, "moving", (e2) => {
+              const latLng = e2.latLng;
+              const label = marker.label;
+              if (label) {
+                label.setPosition(latLng);
+              }
+              const callout = marker.callout;
+              if (callout) {
+                callout.setPosition(latLng);
+              }
+            });
+            const event = MapsEvent.addListener(marker, "moveend", () => {
+              event.remove();
+              movingEvent.remove();
+              marker.lastPosition = a2;
+              marker.setPosition(b);
+              const label = marker.label;
+              if (label) {
+                label.setPosition(b);
+              }
+              const callout = marker.callout;
+              if (callout) {
+                callout.setPosition(b);
+              }
+              const cb = data.animationEnd;
+              if (isFunction(cb)) {
+                cb();
+              }
+            });
+            let lastRtate = 0;
+            if (autoRotate) {
+              if (marker.lastPosition) {
+                lastRtate = maps2.geometry.spherical.computeHeading(marker.lastPosition, a2);
+              }
+              rotate = maps2.geometry.spherical.computeHeading(a2, b) - lastRtate;
+            }
+            if ("setRotation" in marker) {
+              marker.setRotation(rotation + rotate);
+            }
+            if ("moveTo" in marker) {
+              marker.moveTo(b, speed);
+            } else {
+              marker.setPosition(b);
+              MapsEvent.trigger(marker, "moveend", {});
+            }
+          });
+        }
+      };
+      addMapChidlContext(context);
+      onUnmounted(() => removeMapChidlContext(context));
+    }
+    onUnmounted(removeMarker);
+    return () => {
+      return null;
+    };
+  }
+});
+const props$a = {
+  points: {
+    type: Array,
+    require: true
+  },
+  color: {
+    type: String,
+    default: "#000000"
+  },
+  width: {
+    type: [Number, String],
+    default: ""
+  },
+  dottedLine: {
+    type: [Boolean, String],
+    default: false
+  },
+  arrowLine: {
+    type: [Boolean, String],
+    default: false
+  },
+  arrowIconPath: {
+    type: String,
+    default: ""
+  },
+  borderColor: {
+    type: String,
+    default: "#000000"
+  },
+  borderWidth: {
+    type: [Number, String],
+    default: ""
+  },
+  colorList: {
+    type: Array,
+    default() {
+      return [];
+    }
+  },
+  level: {
+    type: String,
+    default: ""
+  }
+};
+const MapPolyline = /* @__PURE__ */ defineSystemComponent({
+  name: "MapPolyline",
+  props: props$a,
+  setup(props2) {
+    const onMapReady = inject("onMapReady");
+    let polyline;
+    let polylineBorder;
+    function removePolyline() {
+      if (polyline) {
+        polyline.setMap(null);
+      }
+      if (polylineBorder) {
+        polylineBorder.setMap(null);
+      }
+    }
+    onMapReady((map, maps2) => {
+      function updatePolyline(option) {
+        removePolyline();
+        addPolyline(option);
+      }
+      function addPolyline(option) {
+        const path = [];
+        option.points.forEach((point) => {
+          let pointPosition;
+          if (getIsAMap()) {
+            pointPosition = [point.longitude, point.latitude];
+          } else if (getIsBMap()) {
+            pointPosition = new maps2.Point(point.longitude, point.latitude);
+          } else {
+            pointPosition = new maps2.LatLng(point.latitude, point.longitude);
+          }
+          path.push(pointPosition);
+        });
+        const strokeWeight = Number(option.width) || 1;
+        const {
+          r: sr,
+          g: sg,
+          b: sb,
+          a: sa
+        } = hexToRgba(option.color);
+        const {
+          r: br,
+          g: bg,
+          b: bb,
+          a: ba
+        } = hexToRgba(option.borderColor);
+        const polylineOptions = {
+          map,
+          clickable: false,
+          path,
+          strokeWeight,
+          strokeColor: option.color || void 0,
+          strokeDashStyle: option.dottedLine ? "dash" : "solid"
+        };
+        const borderWidth = Number(option.borderWidth) || 0;
+        const polylineBorderOptions = {
+          map,
+          clickable: false,
+          path,
+          strokeWeight: strokeWeight + borderWidth * 2,
+          strokeColor: option.borderColor || void 0,
+          strokeDashStyle: option.dottedLine ? "dash" : "solid"
+        };
+        if ("Color" in maps2) {
+          polylineOptions.strokeColor = new maps2.Color(sr, sg, sb, sa);
+          polylineBorderOptions.strokeColor = new maps2.Color(br, bg, bb, ba);
+        } else {
+          polylineOptions.strokeColor = `rgb(${sr}, ${sg}, ${sb})`;
+          polylineOptions.strokeOpacity = sa;
+          polylineBorderOptions.strokeColor = `rgb(${br}, ${bg}, ${bb})`;
+          polylineBorderOptions.strokeOpacity = ba;
+        }
+        if (borderWidth) {
+          polylineBorder = new maps2.Polyline(polylineBorderOptions);
+        }
+        if (getIsBMap()) {
+          polyline = new maps2.Polyline(polylineOptions.path, polylineOptions);
+          map.addOverlay(polyline);
+        } else {
+          polyline = new maps2.Polyline(polylineOptions);
+        }
+      }
+      addPolyline(props2);
+      watch(props2, updatePolyline);
+    });
+    onUnmounted(removePolyline);
+    return () => {
+      return null;
+    };
+  }
+});
+const props$9 = {
+  latitude: {
+    type: [Number, String],
+    require: true
+  },
+  longitude: {
+    type: [Number, String],
+    require: true
+  },
+  color: {
+    type: String,
+    default: "#000000"
+  },
+  fillColor: {
+    type: String,
+    default: "#00000000"
+  },
+  radius: {
+    type: [Number, String],
+    require: true
+  },
+  strokeWidth: {
+    type: [Number, String],
+    default: ""
+  },
+  level: {
+    type: String,
+    default: ""
+  }
+};
+const MapCircle = /* @__PURE__ */ defineSystemComponent({
+  name: "MapCircle",
+  props: props$9,
+  setup(props2) {
+    const onMapReady = inject("onMapReady");
+    let circle;
+    function removeCircle() {
+      if (circle) {
+        circle.setMap(null);
+      }
+    }
+    onMapReady((map, maps2) => {
+      function updateCircle(option) {
+        removeCircle();
+        addCircle(option);
+      }
+      function addCircle(option) {
+        const center = getIsAMap() || getIsBMap() ? [option.longitude, option.latitude] : new maps2.LatLng(option.latitude, option.longitude);
+        const circleOptions = {
+          map,
+          center,
+          clickable: false,
+          radius: option.radius,
+          strokeWeight: Number(option.strokeWidth) || 1,
+          strokeDashStyle: "solid"
+        };
+        if (getIsBMap()) {
+          circleOptions.strokeColor = option.color;
+          circleOptions.fillColor = option.fillColor || "#000";
+          circleOptions.fillOpacity = 1;
+        } else {
+          const {
+            r: fr,
+            g: fg,
+            b: fb,
+            a: fa
+          } = hexToRgba(option.fillColor);
+          const {
+            r: sr,
+            g: sg,
+            b: sb,
+            a: sa
+          } = hexToRgba(option.color);
+          if ("Color" in maps2) {
+            circleOptions.fillColor = new maps2.Color(fr, fg, fb, fa);
+            circleOptions.strokeColor = new maps2.Color(sr, sg, sb, sa);
+          } else {
+            circleOptions.fillColor = `rgb(${fr}, ${fg}, ${fb})`;
+            circleOptions.fillOpacity = fa;
+            circleOptions.strokeColor = `rgb(${sr}, ${sg}, ${sb})`;
+            circleOptions.strokeOpacity = sa;
+          }
+        }
+        if (getIsBMap()) {
+          let pt = new maps2.Point(
+            // @ts-ignore
+            circleOptions.center[0],
+            // @ts-ignore
+            circleOptions.center[1]
+          );
+          circle = new maps2.Circle(pt, circleOptions.radius, circleOptions);
+          map.addOverlay(circle);
+        } else {
+          circle = new maps2.Circle(circleOptions);
+          if (getIsAMap()) {
+            map.add(circle);
+          }
+        }
+      }
+      addCircle(props2);
+      watch(props2, updateCircle);
+    });
+    onUnmounted(removeCircle);
+    return () => {
+      return null;
+    };
+  }
+});
+const props$8 = {
+  id: {
+    type: [Number, String],
+    default: ""
+  },
+  position: {
+    type: Object,
+    required: true
+  },
+  iconPath: {
+    type: String,
+    required: true
+  },
+  clickable: {
+    type: [Boolean, String],
+    default: ""
+  },
+  trigger: {
+    type: Function,
+    required: true
+  }
+};
+const MapControl = /* @__PURE__ */ defineSystemComponent({
+  name: "MapControl",
+  props: props$8,
+  setup(props2) {
+    const imgPath = computed(() => getRealPath(props2.iconPath));
+    const positionStyle = computed(() => {
+      let positionStyle2 = `top:${props2.position.top || 0}px;left:${props2.position.left || 0}px;`;
+      if (props2.position.width) {
+        positionStyle2 += `width:${props2.position.width}px;`;
+      }
+      if (props2.position.height) {
+        positionStyle2 += `height:${props2.position.height}px;`;
+      }
+      return positionStyle2;
+    });
+    const handleClick = ($event) => {
+      if (props2.clickable) {
+        props2.trigger("controltap", $event, {
+          controlId: props2.id
+        });
+      }
+    };
+    return () => {
+      return createVNode("div", {
+        "class": "uni-map-control"
+      }, [createVNode("img", {
+        "src": imgPath.value,
+        "style": positionStyle.value,
+        "class": "uni-map-control-icon",
+        "onClick": handleClick
+      }, null, 12, ["src", "onClick"])]);
+    };
+  }
+});
+const initInnerAudioContextEventOnce = /* @__PURE__ */ once(() => {
+  innerAudioContextEventNames.forEach((eventName) => {
+    InnerAudioContext.prototype[eventName] = function(callback) {
+      if (isFunction(callback)) {
+        this._events[eventName].push(callback);
+      }
+    };
+  });
+  innerAudioContextOffEventNames.forEach((eventName) => {
+    InnerAudioContext.prototype[eventName] = function(callback) {
+      var handle = this._events[eventName.replace("off", "on")];
+      var index2 = handle.indexOf(callback);
+      if (index2 >= 0) {
+        handle.splice(index2, 1);
+      }
+    };
+  });
+});
+class InnerAudioContext {
+  /**
+   * 音频上下文初始化
+   */
+  constructor() {
+    this._src = "";
+    var audio = this._audio = new Audio();
+    this._stoping = false;
+    const propertys = [
+      "src",
+      "autoplay",
+      "loop",
+      "duration",
+      "currentTime",
+      "paused",
+      "volume"
+    ];
+    propertys.forEach((property) => {
+      Object.defineProperty(this, property, {
+        set: property === "src" ? (src) => {
+          audio.src = getRealPath(src);
+          this._src = src;
+          return src;
+        } : (val) => {
+          audio[property] = val;
+          return val;
+        },
+        get: property === "src" ? () => {
+          return this._src;
+        } : () => {
+          return audio[property];
+        }
+      });
+    });
+    this.startTime = 0;
+    Object.defineProperty(this, "obeyMuteSwitch", {
+      set: () => false,
+      get: () => false
+    });
+    Object.defineProperty(this, "buffered", {
+      get() {
+        var buffered = audio.buffered;
+        if (buffered.length) {
+          return buffered.end(buffered.length - 1);
+        } else {
+          return 0;
+        }
+      }
+    });
+    this._events = {};
+    innerAudioContextEventNames.forEach((eventName) => {
+      this._events[eventName] = [];
+    });
+    audio.addEventListener("loadedmetadata", () => {
+      var startTime = Number(this.startTime) || 0;
+      if (startTime > 0) {
+        audio.currentTime = startTime;
+      }
+    });
+    var stopEventNames = ["canplay", "pause", "seeking", "seeked", "timeUpdate"];
+    var eventNames = stopEventNames.concat([
+      "play",
+      "ended",
+      "error",
+      "waiting"
+    ]);
+    eventNames.forEach((eventName) => {
+      audio.addEventListener(
+        eventName.toLowerCase(),
+        () => {
+          if (this._stoping && stopEventNames.indexOf(eventName) >= 0) {
+            return;
+          }
+          const EventName = `on${eventName.slice(0, 1).toUpperCase()}${eventName.slice(1)}`;
+          this._events[EventName].forEach((callback) => {
+            callback();
+          });
+        },
+        false
+      );
+    });
+    initInnerAudioContextEventOnce();
+  }
+  /**
+   * 播放
+   */
+  play() {
+    this._stoping = false;
+    this._audio.play();
+  }
+  /**
+   * 暂停
+   */
+  pause() {
+    this._audio.pause();
+  }
+  /**
+   * 停止
+   */
+  stop() {
+    this._stoping = true;
+    this._audio.pause();
+    this._audio.currentTime = 0;
+    this._events.onStop.forEach((callback) => {
+      callback();
+    });
+  }
+  /**
+   * 跳转到
+   * @param {number} position
+   */
+  seek(position) {
+    this._stoping = false;
+    position = Number(position);
+    if (typeof position === "number" && !isNaN(position)) {
+      this._audio.currentTime = position;
+    }
+  }
+  /**
+   * 销毁
+   */
+  destroy() {
+    this.stop();
+  }
+}
+const createInnerAudioContext = /* @__PURE__ */ defineSyncApi(
+  API_CREATE_INNER_AUDIO_CONTEXT,
+  () => {
+    return new InnerAudioContext();
+  }
+);
+const makePhoneCall = /* @__PURE__ */ defineAsyncApi(
+  API_MAKE_PHONE_CALL,
+  ({ phoneNumber }, { resolve }) => {
+    window.location.href = `tel:${phoneNumber}`;
+    return resolve();
+  },
+  MakePhoneCallProtocol
+);
+const UUID_KEY = "__DC_STAT_UUID";
+const storage = navigator.cookieEnabled && (window.localStorage || window.sessionStorage) || {};
+let deviceId;
+function deviceId$1() {
+  deviceId = deviceId || storage[UUID_KEY];
+  if (!deviceId) {
+    deviceId = Date.now() + "" + Math.floor(Math.random() * 1e7);
+    try {
+      storage[UUID_KEY] = deviceId;
+    } catch (error) {
+    }
+  }
+  return deviceId;
+}
+const getWindowInfo = /* @__PURE__ */ defineSyncApi(
+  "getWindowInfo",
+  () => {
+    const pixelRatio = window.devicePixelRatio;
+    const screenFix = getScreenFix();
+    const landscape = isLandscape(screenFix);
+    const screenWidth = getScreenWidth(screenFix, landscape);
+    const screenHeight = getScreenHeight(screenFix, landscape);
+    const windowWidth = getWindowWidth(screenWidth);
+    let windowHeight = window.innerHeight;
+    const statusBarHeight = safeAreaInsets$1.top;
+    const safeArea = {
+      left: safeAreaInsets$1.left,
+      right: windowWidth - safeAreaInsets$1.right,
+      top: safeAreaInsets$1.top,
+      bottom: windowHeight - safeAreaInsets$1.bottom,
+      width: windowWidth - safeAreaInsets$1.left - safeAreaInsets$1.right,
+      height: windowHeight - safeAreaInsets$1.top - safeAreaInsets$1.bottom
+    };
+    const { top: windowTop, bottom: windowBottom } = getWindowOffset();
+    windowHeight -= windowTop;
+    windowHeight -= windowBottom;
+    return {
+      windowTop,
+      windowBottom,
+      windowWidth,
+      windowHeight,
+      pixelRatio,
+      screenWidth,
+      screenHeight,
+      statusBarHeight,
+      safeArea,
+      safeAreaInsets: {
+        top: safeAreaInsets$1.top,
+        right: safeAreaInsets$1.right,
+        bottom: safeAreaInsets$1.bottom,
+        left: safeAreaInsets$1.left
+      },
+      screenTop: screenHeight - windowHeight
+    };
+  }
+);
+let browserInfo;
+let _initBrowserInfo = true;
+function initBrowserInfo() {
+  if (!_initBrowserInfo)
+    return;
+  browserInfo = getBrowserInfo();
+}
+const getDeviceInfo = /* @__PURE__ */ defineSyncApi(
+  "getDeviceInfo",
+  () => {
+    initBrowserInfo();
+    const {
+      deviceBrand,
+      deviceModel,
+      brand,
+      model,
+      platform,
+      system,
+      deviceOrientation,
+      deviceType,
+      osname,
+      osversion
+    } = browserInfo;
+    return extend({
+      brand,
+      deviceBrand,
+      deviceModel,
+      devicePixelRatio: window.devicePixelRatio,
+      deviceId: deviceId$1(),
+      deviceOrientation,
+      deviceType,
+      model,
+      platform,
+      system,
+      osName: osname ? osname.toLocaleLowerCase() : void 0,
+      osVersion: osversion
+    });
+  }
+);
+const getAppBaseInfo = /* @__PURE__ */ defineSyncApi(
+  "getAppBaseInfo",
+  () => {
+    initBrowserInfo();
+    const { theme, language, browserName, browserVersion } = browserInfo;
+    return extend(
+      {
+        appId: __uniConfig.appId,
+        appName: __uniConfig.appName,
+        appVersion: __uniConfig.appVersion,
+        appVersionCode: __uniConfig.appVersionCode,
+        appLanguage: getLocale ? getLocale() : language,
+        enableDebug: false,
+        hostSDKVersion: void 0,
+        hostPackageName: void 0,
+        hostFontSizeSetting: void 0,
+        hostName: browserName,
+        hostVersion: browserVersion,
+        hostTheme: theme,
+        hostLanguage: language,
+        language,
+        SDKVersion: "",
+        theme,
+        version: "",
+        uniPlatform: "web",
+        isUniAppX: true,
+        uniCompileVersion: __uniConfig.compilerVersion,
+        uniCompilerVersion: __uniConfig.compilerVersion,
+        uniRuntimeVersion: __uniConfig.compilerVersion
+      },
+      {
+        uniCompilerVersionCode: parseFloat(__uniConfig.compilerVersion),
+        uniRuntimeVersionCode: parseFloat(__uniConfig.compilerVersion),
+        uniRuntimeVersion: __uniConfig.compilerVersion
+      }
+    );
+  }
+);
+const getSystemInfoSync = /* @__PURE__ */ defineSyncApi(
+  "getSystemInfoSync",
+  () => {
+    _initBrowserInfo = true;
+    initBrowserInfo();
+    _initBrowserInfo = false;
+    const windowInfo = getWindowInfo();
+    const deviceInfo = getDeviceInfo();
+    const appBaseInfo = getAppBaseInfo();
+    _initBrowserInfo = true;
+    const { ua: ua2, browserName, browserVersion, osname, osversion } = browserInfo;
+    const systemInfo = extend(
+      windowInfo,
+      deviceInfo,
+      appBaseInfo,
+      {
+        ua: ua2,
+        browserName,
+        browserVersion,
+        uniPlatform: "web",
+        uniCompileVersion: __uniConfig.compilerVersion,
+        uniRuntimeVersion: __uniConfig.compilerVersion,
+        fontSizeSetting: void 0,
+        osName: osname.toLocaleLowerCase(),
+        osVersion: osversion,
+        osLanguage: void 0,
+        osTheme: void 0
+      }
+    );
+    delete systemInfo.screenTop;
+    delete systemInfo.enableDebug;
+    if (!__uniConfig.darkmode)
+      delete systemInfo.theme;
+    return sortObject(systemInfo);
+  }
+);
+const getSystemInfo = /* @__PURE__ */ defineAsyncApi(
+  "getSystemInfo",
+  (_args, { resolve }) => {
+    return resolve(getSystemInfoSync());
+  }
+);
+const API_ON_NETWORK_STATUS_CHANGE = "onNetworkStatusChange";
+function networkListener() {
+  getNetworkType().then(({ networkType }) => {
+    UniServiceJSBridge.invokeOnCallback(
+      API_ON_NETWORK_STATUS_CHANGE,
+      {
+        isConnected: networkType !== "none",
+        networkType
+      }
+    );
+  });
+}
+function getConnection() {
+  return navigator.connection || navigator.webkitConnection || navigator.mozConnection;
+}
+const onNetworkStatusChange = /* @__PURE__ */ defineOnApi(
+  API_ON_NETWORK_STATUS_CHANGE,
+  () => {
+    const connection = getConnection();
+    if (connection) {
+      connection.addEventListener("change", networkListener);
+    } else {
+      window.addEventListener("offline", networkListener);
+      window.addEventListener("online", networkListener);
+    }
+  }
+);
+const offNetworkStatusChange = /* @__PURE__ */ defineOffApi("offNetworkStatusChange", () => {
+  const connection = getConnection();
+  if (connection) {
+    connection.removeEventListener("change", networkListener);
+  } else {
+    window.removeEventListener("offline", networkListener);
+    window.removeEventListener("online", networkListener);
+  }
+});
+const getNetworkType = /* @__PURE__ */ defineAsyncApi(
+  "getNetworkType",
+  (_args, { resolve }) => {
+    const connection = getConnection();
+    let networkType = "unknown";
+    if (connection) {
+      networkType = connection.type;
+      if (networkType === "cellular" && connection.effectiveType) {
+        networkType = connection.effectiveType.replace("slow-", "");
+      } else if (!networkType && connection.effectiveType) {
+        networkType = connection.effectiveType;
+      } else if (!["none", "wifi"].includes(networkType)) {
+        networkType = "unknown";
+      }
+    } else if (navigator.onLine === false) {
+      networkType = "none";
+    }
+    return resolve({ networkType });
+  }
+);
+let listener$1 = null;
+const onAccelerometerChange = /* @__PURE__ */ defineOnApi(API_ON_ACCELEROMETER, () => {
+  startAccelerometer();
+});
+const offAccelerometerChange = /* @__PURE__ */ defineOffApi(API_OFF_ACCELEROMETER, () => {
+  stopAccelerometer();
+});
+const startAccelerometer = /* @__PURE__ */ defineAsyncApi(
+  API_START_ACCELEROMETER,
+  (_, { resolve, reject }) => {
+    if (!window.DeviceMotionEvent) {
+      reject();
+      return;
+    }
+    function addEventListener() {
+      listener$1 = function(event) {
+        const acceleration = event.acceleration || event.accelerationIncludingGravity;
+        UniServiceJSBridge.invokeOnCallback(API_ON_ACCELEROMETER, {
+          x: acceleration && acceleration.x || 0,
+          y: acceleration && acceleration.y || 0,
+          z: acceleration && acceleration.z || 0
+        });
+      };
+      window.addEventListener("devicemotion", listener$1, false);
+    }
+    if (!listener$1) {
+      if (DeviceMotionEvent.requestPermission) {
+        DeviceMotionEvent.requestPermission().then((res) => {
+          if (res === "granted") {
+            addEventListener();
+            resolve();
+          } else {
+            reject(`${res}`);
+          }
+        }).catch((error) => {
+          reject(`${error}`);
+        });
+        return;
+      }
+      addEventListener();
+    }
+    resolve();
+  }
+);
+const stopAccelerometer = /* @__PURE__ */ defineAsyncApi(
+  API_STOP_ACCELEROMETER,
+  (_, { resolve }) => {
+    if (listener$1) {
+      window.removeEventListener("devicemotion", listener$1, false);
+      listener$1 = null;
+    }
+    resolve();
+  }
+);
+let listener = null;
+const onCompassChange = /* @__PURE__ */ defineOnApi(
+  API_ON_COMPASS,
+  () => {
+    startCompass();
+  }
+);
+const offCompassChange = /* @__PURE__ */ defineOffApi(
+  API_OFF_COMPASS,
+  () => {
+    stopCompass();
+  }
+);
+const startCompass = /* @__PURE__ */ defineAsyncApi(
+  API_START_COMPASS,
+  (_, { resolve, reject }) => {
+    if (!window.DeviceOrientationEvent) {
+      reject();
+      return;
+    }
+    function addEventListener() {
+      listener = function(event) {
+        const direction2 = 360 - (event.alpha !== null ? event.alpha : 360);
+        UniServiceJSBridge.invokeOnCallback(API_ON_COMPASS, {
+          direction: direction2
+        });
+      };
+      window.addEventListener("deviceorientation", listener, false);
+    }
+    if (!listener) {
+      if (DeviceOrientationEvent.requestPermission) {
+        DeviceOrientationEvent.requestPermission().then((res) => {
+          if (res === "granted") {
+            addEventListener();
+            resolve();
+          } else {
+            reject(`${res}`);
+          }
+        }).catch((error) => {
+          reject(`${error}`);
+        });
+        return;
+      }
+      addEventListener();
+    }
+    resolve();
+  }
+);
+const stopCompass = /* @__PURE__ */ defineAsyncApi(
+  API_STOP_COMPASS,
+  (_, { resolve }) => {
+    if (listener) {
+      window.removeEventListener("deviceorientation", listener, false);
+      listener = null;
+    }
+    resolve();
+  }
+);
+const _isSupport = !!window.navigator.vibrate;
+const vibrateShort = /* @__PURE__ */ defineAsyncApi(
+  API_VIBRATE_SHORT,
+  (args, { resolve, reject }) => {
+    if (_isSupport && window.navigator.vibrate(15)) {
+      resolve();
+    } else {
+      reject("vibrateLong:fail");
+    }
+  }
+);
+const vibrateLong = /* @__PURE__ */ defineAsyncApi(
+  API_VIBRATE_LONG,
+  (args, { resolve, reject }) => {
+    if (_isSupport && window.navigator.vibrate(400)) {
+      resolve();
+    } else {
+      reject("vibrateLong:fail");
+    }
+  }
+);
+var __async = (__this, __arguments, generator) => {
+  return new Promise((resolve, reject) => {
+    var fulfilled = (value) => {
+      try {
+        step(generator.next(value));
+      } catch (e2) {
+        reject(e2);
+      }
+    };
+    var rejected = (value) => {
+      try {
+        step(generator.throw(value));
+      } catch (e2) {
+        reject(e2);
+      }
+    };
+    var step = (x) => x.done ? resolve(x.value) : Promise.resolve(x.value).then(fulfilled, rejected);
+    step((generator = generator.apply(__this, __arguments)).next());
+  });
+};
+const getClipboardData = /* @__PURE__ */ defineAsyncApi(
+  API_GET_CLIPBOARD_DATA,
+  (_0, _1) => __async(void 0, [_0, _1], function* (_, { resolve, reject }) {
+    initI18nGetClipboardDataMsgsOnce();
+    const { t: t2 } = useI18n();
+    try {
+      const data = yield navigator.clipboard.readText();
+      resolve({ data });
+    } catch (error) {
+      _getClipboardData(resolve, () => {
+        reject(`${error} ${t2("uni.getClipboardData.fail")}`);
+      });
+    }
+  })
+);
+const setClipboardData = /* @__PURE__ */ defineAsyncApi(
+  API_SET_CLIPBOARD_DATA,
+  (_0, _1) => __async(void 0, [_0, _1], function* ({ data }, { resolve, reject }) {
+    try {
+      yield navigator.clipboard.writeText(data);
+      resolve();
+    } catch (error) {
+      _setClipboardData(data, resolve, reject);
+    }
+  }),
+  SetClipboardDataProtocol,
+  SetClipboardDataOptions
+);
+function _getClipboardData(resolve, reject) {
+  const pasteText = document.getElementById("#clipboard");
+  const data = pasteText ? pasteText.value : void 0;
+  if (data) {
+    resolve({ data });
+  } else {
+    reject();
+  }
+}
+function _setClipboardData(data, resolve, reject) {
+  const pasteText = document.getElementById("#clipboard");
+  pasteText && pasteText.remove();
+  const textarea = document.createElement("textarea");
+  textarea.setAttribute("inputmode", "none");
+  textarea.id = "#clipboard";
+  textarea.style.position = "fixed";
+  textarea.style.top = "-9999px";
+  textarea.style.zIndex = "-9999";
+  document.body.appendChild(textarea);
+  textarea.value = data;
+  textarea.select();
+  textarea.setSelectionRange(0, textarea.value.length);
+  const result = document.execCommand("Copy", false);
+  textarea.blur();
+  if (result) {
+    resolve();
+  } else {
+    reject();
+  }
+}
+const themeChangeCallBack = (res) => {
+  UniServiceJSBridge.invokeOnCallback(ON_THEME_CHANGE, res);
+};
+const onThemeChange = /* @__PURE__ */ defineOnApi(
+  ON_THEME_CHANGE,
+  () => {
+    UniServiceJSBridge.on(ON_THEME_CHANGE, themeChangeCallBack);
+  }
+);
+const offThemeChange = /* @__PURE__ */ defineOffApi(
+  OFF_THEME_CHANGE,
+  () => {
+    UniServiceJSBridge.off(ON_THEME_CHANGE, themeChangeCallBack);
+  }
+);
+const THEME_CALLBACK = [];
+const onHostThemeChange = /* @__PURE__ */ defineSyncApi(
+  ON_HOST_THEME_CHANGE,
+  (callback) => {
+    const onHostThemeChangeCallback = (res) => {
+      callback({ hostTheme: res.theme });
+    };
+    const index2 = THEME_CALLBACK.push([callback, onHostThemeChangeCallback]) - 1;
+    UniServiceJSBridge.on(ON_THEME_CHANGE, onHostThemeChangeCallback);
+    return index2;
+  }
+);
+const offHostThemeChange = /* @__PURE__ */ defineSyncApi(
+  OFF_HOST_THEME_CHANGE,
+  (callbackId) => {
+    if (isFunction(callbackId)) {
+      callbackId = THEME_CALLBACK.findIndex(
+        ([callback]) => callback === callbackId
+      );
+    }
+    if (callbackId > -1) {
+      const arr = THEME_CALLBACK.splice(callbackId, 1)[0];
+      isArray(arr) && UniServiceJSBridge.off(ON_THEME_CHANGE, arr[1]);
+    }
+  }
+);
+const STORAGE_KEYS = "uni-storage-keys";
+function parseValue(value) {
+  const types = ["object", "string", "number", "boolean", "undefined"];
+  try {
+    const object = isString(value) ? JSON.parse(value) : value;
+    const type = object.type;
+    if (types.indexOf(type) >= 0) {
+      const keys = Object.keys(object);
+      if (keys.length === 2 && "data" in object) {
+        if (typeof object.data === type) {
+          if (type === "object") {
+            return UTS.JSON.parse(JSON.stringify(object.data));
+          }
+          return object.data;
+        }
+        if (type === "object" && /^\d{4}-\d{2}-\d{2}T\d{2}\:\d{2}\:\d{2}\.\d{3}Z$/.test(object.data)) {
+          return new Date(object.data);
+        }
+      } else if (keys.length === 1) {
+        return "";
+      }
+    }
+  } catch (error) {
+  }
+}
+const setStorageSync = /* @__PURE__ */ defineSyncApi(
+  API_SET_STORAGE_SYNC,
+  (key, data) => {
+    const type = typeof data;
+    const value = type === "string" ? data : JSON.stringify({
+      type,
+      data
+    });
+    localStorage.setItem(key, value);
+  },
+  SetStorageSyncProtocol
+);
+const setStorage = /* @__PURE__ */ defineAsyncApi(
+  API_SET_STORAGE,
+  ({ key, data }, { resolve, reject }) => {
+    try {
+      setStorageSync(key, data);
+      resolve();
+    } catch (error) {
+      reject(error.message);
+    }
+  },
+  SetStorageProtocol
+);
+function getStorageOrigin(key) {
+  const value = localStorage && localStorage.getItem(key);
+  if (!isString(value)) {
+    throw new Error("data not found");
+  }
+  let data = value;
+  try {
+    const object = JSON.parse(value);
+    const result = parseValue(object);
+    if (result !== void 0) {
+      data = result;
+    }
+  } catch (error) {
+  }
+  return data;
+}
+const getStorageSync = /* @__PURE__ */ defineSyncApi(
+  API_GET_STORAGE_SYNC,
+  (key) => {
+    try {
+      return getStorageOrigin(key);
+    } catch (error) {
+      return "";
+    }
+  },
+  GetStorageSyncProtocol
+);
+const getStorage = /* @__PURE__ */ defineAsyncApi(
+  API_GET_STORAGE,
+  ({ key }, { resolve, reject }) => {
+    try {
+      const data = getStorageOrigin(key);
+      resolve({
+        data
+      });
+    } catch (error) {
+      reject(error.message);
+    }
+  },
+  GetStorageProtocol
+);
+const removeStorageSync = /* @__PURE__ */ defineSyncApi(
+  API_REMOVE_STORAGE,
+  (key) => {
+    if (localStorage) {
+      localStorage.removeItem(key);
+    }
+  },
+  RemoveStorageSyncProtocol
+);
+const removeStorage = /* @__PURE__ */ defineAsyncApi(
+  API_REMOVE_STORAGE,
+  ({ key }, { resolve }) => {
+    removeStorageSync(key);
+    resolve();
+  },
+  RemoveStorageProtocol
+);
+const clearStorageSync = /* @__PURE__ */ defineSyncApi(
+  "clearStorageSync",
+  () => {
+    if (localStorage) {
+      localStorage.clear();
+    }
+  }
+);
+const clearStorage = /* @__PURE__ */ defineAsyncApi(
+  "clearStorage",
+  (_, { resolve }) => {
+    clearStorageSync();
+    resolve();
+  }
+);
+const getStorageInfoSync = /* @__PURE__ */ defineSyncApi(
+  "getStorageInfoSync",
+  () => {
+    const length = localStorage && localStorage.length || 0;
+    const keys = [];
+    let currentSize = 0;
+    for (let index2 = 0; index2 < length; index2++) {
+      const key = localStorage.key(index2);
+      const value = localStorage.getItem(key) || "";
+      currentSize += key.length + value.length;
+      if (key !== STORAGE_KEYS) {
+        keys.push(key);
+      }
+    }
+    return {
+      keys,
+      currentSize: Math.ceil(currentSize * 2 / 1024),
+      limitSize: Number.MAX_VALUE
+    };
+  }
+);
+const getStorageInfo = /* @__PURE__ */ defineAsyncApi(
+  "getStorageInfo",
+  (_, { resolve }) => {
+    resolve(getStorageInfoSync());
+  }
+);
+const getFileInfo = /* @__PURE__ */ defineAsyncApi(
+  API_GET_FILE_INFO,
+  ({ filePath }, { resolve, reject }) => {
+    urlToFile(filePath).then((res) => {
+      resolve({
+        size: res.size
+      });
+    }).catch((err) => {
+      reject(String(err));
+    });
+  },
+  GetFileInfoProtocol,
+  GetFileInfoOptions
+);
+const openDocument = /* @__PURE__ */ defineAsyncApi(
+  API_OPEN_DOCUMENT,
+  ({ filePath }, { resolve }) => {
+    window.open(filePath);
+    return resolve();
+  },
+  OpenDocumentProtocol,
+  OpenDocumentOptions
+);
+const hideKeyboard = /* @__PURE__ */ defineAsyncApi(
+  API_HIDE_KEYBOARD,
+  (args, { resolve, reject }) => {
+    const activeElement = document.activeElement;
+    if (activeElement && (activeElement.tagName === "TEXTAREA" || activeElement.tagName === "INPUT")) {
+      activeElement.blur();
+      resolve();
+    }
+  }
+);
+function getServiceAddress() {
+  return window.location.protocol + "//" + window.location.host;
+}
+const getImageInfo = /* @__PURE__ */ defineAsyncApi(
+  API_GET_IMAGE_INFO,
+  ({ src }, { resolve, reject }) => {
+    const img = new Image();
+    img.onload = function() {
+      resolve({
+        width: img.naturalWidth,
+        height: img.naturalHeight,
+        path: src.indexOf("/") === 0 ? getServiceAddress() + src : src
+      });
+    };
+    img.onerror = function() {
+      reject();
+    };
+    img.src = src;
+  },
+  GetImageInfoProtocol,
+  GetImageInfoOptions
+);
+const getVideoInfo = /* @__PURE__ */ defineAsyncApi(
+  API_GET_VIDEO_INFO,
+  ({ src }, { resolve, reject }) => {
+    urlToFile(src, true).then((file) => {
+      return file;
+    }).catch(() => {
+      return null;
+    }).then((file) => {
+      const video = document.createElement("video");
+      if (video.onloadedmetadata !== void 0) {
+        const handle = setTimeout(
+          () => {
+            video.onloadedmetadata = null;
+            video.onerror = null;
+            reject();
+          },
+          src.startsWith("data:") || src.startsWith("blob:") ? 300 : 3e3
+        );
+        video.onloadedmetadata = function() {
+          clearTimeout(handle);
+          video.onerror = null;
+          resolve({
+            size: Math.ceil((file ? file.size : 0) / 1024),
+            duration: video.duration || 0,
+            width: video.videoWidth || 0,
+            height: video.videoHeight || 0
+          });
+        };
+        video.onerror = function() {
+          clearTimeout(handle);
+          video.onloadedmetadata = null;
+          reject();
+        };
+        video.src = src;
+      } else {
+        reject();
+      }
+    });
+  },
+  GetVideoInfoProtocol,
+  GetVideoInfoOptions
+);
+const MIMEType = {
+  /**
+   * 关于图片常见的MIME类型
+   */
+  image: {
+    jpg: "jpeg",
+    jpe: "jpeg",
+    pbm: "x-portable-bitmap",
+    pgm: "x-portable-graymap",
+    pnm: "x-portable-anymap",
+    ppm: "x-portable-pixmap",
+    psd: "vnd.adobe.photoshop",
+    pic: "x-pict",
+    rgb: "x-rgb",
+    svg: "svg+xml",
+    svgz: "svg+xml",
+    tif: "tiff",
+    xif: "vnd.xiff",
+    wbmp: "vnd.wap.wbmp",
+    wdp: "vnd.ms-photo",
+    xbm: "x-xbitmap",
+    ico: "x-icon"
+  },
+  /**
+   * 关于视频常见的MIME类型
+   */
+  video: {
+    "3g2": "3gpp2",
+    "3gp": "3gpp",
+    avi: "x-msvideo",
+    f4v: "x-f4v",
+    flv: "x-flv",
+    jpgm: "jpm",
+    jpgv: "jpeg",
+    m1v: "mpeg",
+    m2v: "mpeg",
+    mpe: "mpeg",
+    mpg: "mpeg",
+    mpg4: "mpeg",
+    m4v: "x-m4v",
+    mkv: "x-matroska",
+    mov: "quicktime",
+    qt: "quicktime",
+    movie: "x-sgi-movie",
+    mp4v: "mp4",
+    ogv: "ogg",
+    smv: "x-smv",
+    wm: "x-ms-wm",
+    wmv: "x-ms-wmv",
+    wmx: "x-ms-wmx",
+    wvx: "x-ms-wvx"
+  }
+};
+const ALL = "all";
+function isWXEnv() {
+  const ua2 = window.navigator.userAgent.toLowerCase();
+  const matchUA = ua2.match(/MicroMessenger/i);
+  return !!(matchUA && matchUA[0] === "micromessenger");
+}
+function _createInput({
+  count,
+  sourceType,
+  type,
+  extension
+}) {
+  addInteractListener();
+  const inputEl = document.createElement("input");
+  inputEl.type = "file";
+  updateElementStyle(inputEl, {
+    position: "absolute",
+    visibility: "hidden",
+    zIndex: "-999",
+    width: "0",
+    height: "0",
+    top: "0",
+    left: "0"
+  });
+  inputEl.accept = extension.map((item) => {
+    if (type !== ALL) {
+      const MIMEKey = item.replace(".", "");
+      return `${type}/${MIMEType[type][MIMEKey] || MIMEKey}`;
+    } else {
+      if (isWXEnv()) {
+        return ".";
+      }
+      return item.indexOf(".") === 0 ? item : `.${item}`;
+    }
+  }).join(",");
+  if (count && count > 1) {
+    inputEl.multiple = true;
+  }
+  if (type !== ALL && sourceType instanceof Array && sourceType.length === 1 && sourceType[0] === "camera") {
+    inputEl.setAttribute("capture", "camera");
+  }
+  return inputEl;
+}
+let fileInput = null;
+const chooseFile = /* @__PURE__ */ defineAsyncApi(
+  API_CHOOSE_FILE,
+  ({
+    // sizeType,
+    count,
+    sourceType,
+    type,
+    extension
+  }, { resolve, reject }) => {
+    initI18nChooseFileMsgsOnce();
+    const { t: t2 } = useI18n();
+    if (fileInput) {
+      document.body.removeChild(fileInput);
+      fileInput = null;
+    }
+    fileInput = _createInput({
+      count,
+      sourceType,
+      type,
+      extension
+    });
+    document.body.appendChild(fileInput);
+    fileInput.addEventListener("change", function(event) {
+      const eventTarget = event.target;
+      const tempFiles = [];
+      if (eventTarget && eventTarget.files) {
+        const fileCount = eventTarget.files.length;
+        for (let i = 0; i < fileCount; i++) {
+          const file = eventTarget.files[i];
+          let filePath;
+          Object.defineProperty(file, "path", {
+            get() {
+              filePath = filePath || fileToUrl(file);
+              return filePath;
+            }
+          });
+          if (i < count)
+            tempFiles.push(file);
+        }
+      }
+      const res = {
+        get tempFilePaths() {
+          return tempFiles.map(({ path }) => path);
+        },
+        tempFiles
+      };
+      resolve(res);
+    });
+    fileInput.click();
+    if (!getInteractStatus()) {
+      console.warn(t2("uni.chooseFile.notUserActivation"));
+    }
+  },
+  ChooseFileProtocol,
+  ChooseFileOptions
+);
+let imageInput = null;
+const chooseImage = /* @__PURE__ */ defineAsyncApi(
+  API_CHOOSE_IMAGE,
+  ({
+    count,
+    // sizeType,
+    sourceType,
+    extension
+  }, { resolve, reject }) => {
+    initI18nChooseFileMsgsOnce();
+    const { t: t2 } = useI18n();
+    if (imageInput) {
+      document.body.removeChild(imageInput);
+      imageInput = null;
+    }
+    imageInput = _createInput({
+      count,
+      sourceType,
+      extension,
+      type: "image"
+    });
+    document.body.appendChild(imageInput);
+    imageInput.addEventListener("change", function(event) {
+      const eventTarget = event.target;
+      const tempFiles = [];
+      if (eventTarget && eventTarget.files) {
+        const fileCount = eventTarget.files.length;
+        for (let i = 0; i < fileCount; i++) {
+          const file = eventTarget.files[i];
+          let filePath;
+          Object.defineProperty(file, "path", {
+            get() {
+              filePath = filePath || fileToUrl(file);
+              return filePath;
+            }
+          });
+          if (i < count)
+            tempFiles.push(file);
+        }
+      }
+      const res = {
+        get tempFilePaths() {
+          return tempFiles.map(({ path }) => path);
+        },
+        tempFiles
+      };
+      resolve(res);
+    });
+    imageInput.click();
+    if (!getInteractStatus()) {
+      console.warn(t2("uni.chooseFile.notUserActivation"));
+    }
+  },
+  ChooseImageProtocol,
+  ChooseImageOptions
+);
+let index$9 = 0;
+let overflow = "";
+function preventScroll(prevent) {
+  let before = index$9;
+  index$9 += prevent ? 1 : -1;
+  index$9 = Math.max(0, index$9);
+  if (index$9 > 0) {
+    if (before === 0) {
+      overflow = document.body.style.overflow;
+      document.body.style.overflow = "hidden";
+    }
+  } else {
+    document.body.style.overflow = overflow;
+    overflow = "";
+  }
+}
+function usePreventScroll() {
+  onMounted(() => preventScroll(true));
+  onUnmounted(() => preventScroll(false));
+}
+const props$7 = {
+  src: {
+    type: String,
+    default: ""
+  }
+};
+const ImageView = /* @__PURE__ */ defineSystemComponent({
+  name: "ImageView",
+  props: props$7,
+  setup(props2) {
+    const state2 = reactive({
+      direction: "none"
+    });
+    let scale = 1;
+    let imgWidth = 0;
+    let imgHeight = 0;
+    let width = 0;
+    let height = 0;
+    function onScale({
+      detail
+    }) {
+      scale = detail.scale;
+    }
+    function onImgLoad(event) {
+      const target = event.target;
+      const rect = target.getBoundingClientRect();
+      imgWidth = rect.width;
+      imgHeight = rect.height;
+    }
+    function onTouchStart(event) {
+      const target = event.target;
+      const rect = target.getBoundingClientRect();
+      width = rect.width;
+      height = rect.height;
+      checkDirection(event);
+    }
+    function onTouchEnd(event) {
+      const horizontal = scale * imgWidth > width;
+      const vertical = scale * imgHeight > height;
+      if (horizontal && vertical) {
+        state2.direction = "all";
+      } else if (horizontal) {
+        state2.direction = "horizontal";
+      } else if (vertical) {
+        state2.direction = "vertical";
+      } else {
+        state2.direction = "none";
+      }
+      checkDirection(event);
+    }
+    function checkDirection(event) {
+      if (state2.direction === "all" || state2.direction === "horizontal") {
+        event.stopPropagation();
+      }
+    }
+    return () => {
+      const viewStyle = {
+        position: "absolute",
+        left: "0",
+        top: "0",
+        width: "100%",
+        height: "100%"
+      };
+      return createVNode(MovableArea, {
+        "style": viewStyle,
+        "onTouchstart": withWebEvent(onTouchStart),
+        "onTouchmove": withWebEvent(checkDirection),
+        "onTouchend": withWebEvent(onTouchEnd)
+      }, {
+        default: () => [createVNode(MovableView, {
+          "style": viewStyle,
+          "direction": state2.direction,
+          "inertia": true,
+          "scale": true,
+          "scale-min": "1",
+          "scale-max": "4",
+          "onScale": onScale
+        }, {
+          default: () => [createVNode("img", {
+            "src": props2.src,
+            "style": {
+              position: "absolute",
+              left: "50%",
+              top: "50%",
+              transform: "translate(-50%, -50%)",
+              maxHeight: "100%",
+              maxWidth: "100%"
+            },
+            "onLoad": onImgLoad
+          }, null, 40, ["src", "onLoad"])]
+        }, 8, ["style", "direction", "inertia", "scale", "onScale"])]
+      }, 8, ["style", "onTouchstart", "onTouchmove", "onTouchend"]);
+    };
+  }
+});
+function _isSlot$1(s) {
+  return typeof s === "function" || Object.prototype.toString.call(s) === "[object Object]" && !isVNode(s);
+}
+const props$6 = {
+  urls: {
+    type: Array,
+    default() {
+      return [];
+    }
+  },
+  current: {
+    type: [Number, String],
+    default: 0
+  }
+};
+function getIndex(props2) {
+  let index2 = typeof props2.current === "number" ? props2.current : props2.urls.indexOf(props2.current);
+  index2 = index2 < 0 ? 0 : index2;
+  return index2;
+}
+const ImagePreview = /* @__PURE__ */ defineSystemComponent({
+  name: "ImagePreview",
+  props: props$6,
+  emits: ["close"],
+  setup(props2, {
+    emit: emit2
+  }) {
+    usePreventScroll();
+    const rootRef = ref(null);
+    const indexRef = ref(getIndex(props2));
+    watch(() => props2.current, () => indexRef.value = getIndex(props2));
+    let preventDefault;
+    onMounted(() => {
+      const el = rootRef.value;
+      const MAX_MOVE = 20;
+      let x = 0;
+      let y = 0;
+      el.addEventListener("mousedown", (event) => {
+        preventDefault = false;
+        x = event.clientX;
+        y = event.clientY;
+      });
+      el.addEventListener("mouseup", (event) => {
+        if (Math.abs(event.clientX - x) > MAX_MOVE || Math.abs(event.clientY - y) > MAX_MOVE) {
+          preventDefault = true;
+        }
+      });
+    });
+    function onClick() {
+      if (!preventDefault) {
+        nextTick(() => {
+          emit2("close");
+        });
+      }
+    }
+    function onChange2(event) {
+      indexRef.value = event.detail.current;
+    }
+    const closeBtnStyle = {
+      position: "absolute",
+      "box-sizing": "border-box",
+      top: "0",
+      right: "0",
+      width: "60px",
+      height: "44px",
+      padding: "6px",
+      "line-height": "32px",
+      "font-size": "26px",
+      color: "white",
+      "text-align": "center",
+      cursor: "pointer"
+    };
+    return () => {
+      let _slot;
+      return createVNode("div", {
+        "ref": rootRef,
+        "style": {
+          display: "block",
+          position: "fixed",
+          left: "0",
+          top: "0",
+          width: "100%",
+          height: "100%",
+          zIndex: 999,
+          background: "rgba(0,0,0,0.8)"
+        },
+        "onClick": onClick
+      }, [createVNode(Swiper, {
+        "navigation": "auto",
+        "current": indexRef.value,
+        "onChange": onChange2,
+        "indicator-dots": false,
+        "autoplay": false,
+        "style": {
+          position: "absolute",
+          left: "0",
+          top: "0",
+          width: "100%",
+          height: "100%"
+        }
+      }, _isSlot$1(_slot = props2.urls.map((src) => createVNode(SwiperItem, null, {
+        default: () => [createVNode(ImageView, {
+          "src": src
+        }, null, 8, ["src"])]
+      }))) ? _slot : {
+        default: () => [_slot],
+        _: 1
+      }, 8, ["current", "onChange"]), createVNode("div", {
+        "style": closeBtnStyle
+      }, [createSvgIconVNode(ICON_PATH_CLOSE, "#ffffff", 26)], 4)], 8, ["onClick"]);
+    };
+  }
+});
+let state$1 = null;
+let imagePreviewInstance;
+const closePreviewImageView = () => {
+  state$1 = null;
+  nextTick(() => {
+    imagePreviewInstance == null ? void 0 : imagePreviewInstance.unmount();
+    imagePreviewInstance = null;
+  });
+};
+const previewImage = /* @__PURE__ */ defineAsyncApi(
+  API_PREVIEW_IMAGE,
+  (args, { resolve }) => {
+    if (!state$1) {
+      state$1 = reactive(args);
+      nextTick(() => {
+        imagePreviewInstance = createRootApp(
+          ImagePreview,
+          state$1,
+          closePreviewImageView
+        );
+        imagePreviewInstance.mount(ensureRoot("u-a-p"));
+      });
+    } else {
+      extend(state$1, args);
+    }
+    resolve();
+  },
+  PreviewImageProtocol,
+  PreviewImageOptions
+);
+const closePreviewImage = /* @__PURE__ */ defineAsyncApi(
+  API_CLOSE_PREVIEW_IMAGE,
+  (_, { resolve, reject }) => {
+    if (imagePreviewInstance) {
+      closePreviewImageView();
+      resolve();
+    } else {
+      reject();
+    }
+  }
+);
+let videoInput = null;
+const chooseVideo = /* @__PURE__ */ defineAsyncApi(
+  API_CHOOSE_VIDEO,
+  ({ sourceType, extension }, { resolve, reject }) => {
+    initI18nChooseFileMsgsOnce();
+    const { t: t2 } = useI18n();
+    if (videoInput) {
+      document.body.removeChild(videoInput);
+      videoInput = null;
+    }
+    videoInput = _createInput({
+      sourceType,
+      extension,
+      type: "video"
+    });
+    document.body.appendChild(videoInput);
+    videoInput.addEventListener("change", function(event) {
+      const eventTarget = event.target;
+      const file = eventTarget.files[0];
+      let filePath = "";
+      const callbackResult = {
+        tempFilePath: filePath,
+        tempFile: file,
+        size: file.size,
+        duration: 0,
+        width: 0,
+        height: 0,
+        name: file.name
+      };
+      Object.defineProperty(callbackResult, "tempFilePath", {
+        get() {
+          filePath = filePath || fileToUrl(this.tempFile);
+          return filePath;
+        }
+      });
+      const video = document.createElement("video");
+      if (video.onloadedmetadata !== void 0) {
+        const filePath2 = fileToUrl(file);
+        video.onloadedmetadata = function() {
+          revokeObjectURL(filePath2);
+          resolve(
+            extend(callbackResult, {
+              duration: video.duration || 0,
+              width: video.videoWidth || 0,
+              height: video.videoHeight || 0
+            })
+          );
+        };
+        setTimeout(() => {
+          video.onloadedmetadata = null;
+          revokeObjectURL(filePath2);
+          resolve(callbackResult);
+        }, 300);
+        video.src = filePath2;
+      } else {
+        resolve(callbackResult);
+      }
+    });
+    videoInput.click();
+    if (!getInteractStatus()) {
+      console.warn(t2("uni.chooseFile.notUserActivation"));
+    }
+  },
+  ChooseVideoProtocol,
+  ChooseVideoOptions
+);
+const request = /* @__PURE__ */ defineTaskApi(
+  API_REQUEST,
+  ({
+    url,
+    data,
+    header = {},
+    method,
+    dataType: dataType2,
+    responseType,
+    withCredentials,
+    timeout = __uniConfig.networkTimeout.request
+  }, { resolve, reject }) => {
+    {
+      timeout = timeout == null ? __uniConfig.networkTimeout.request : timeout;
+    }
+    let body = null;
+    const contentType = normalizeContentType(header);
+    if (method !== "GET") {
+      if (isString(data) || data instanceof ArrayBuffer) {
+        body = data;
+      } else {
+        if (contentType === "json") {
+          try {
+            body = JSON.stringify(data);
+          } catch (error) {
+            body = data.toString();
+          }
+        } else if (contentType === "urlencoded") {
+          const bodyArray = [];
+          for (const key in data) {
+            if (hasOwn(data, key)) {
+              bodyArray.push(
+                encodeURIComponent(key) + "=" + encodeURIComponent(data[key])
+              );
+            }
+          }
+          body = bodyArray.join("&");
+        } else {
+          body = data.toString();
+        }
+      }
+    }
+    const xhr = new XMLHttpRequest();
+    const requestTask = new RequestTask(xhr);
+    xhr.open(method, url);
+    for (const key in header) {
+      if (hasOwn(header, key)) {
+        xhr.setRequestHeader(key, header[key]);
+      }
+    }
+    const timer = setTimeout(function() {
+      xhr.onload = xhr.onabort = xhr.onerror = null;
+      requestTask.abort();
+      reject("timeout", { errCode: 5 });
+    }, timeout);
+    xhr.responseType = responseType;
+    xhr.onload = function() {
+      clearTimeout(timer);
+      const statusCode = xhr.status;
+      let res = responseType === "text" ? xhr.responseText : xhr.response;
+      if (responseType === "text" && dataType2 === "json") {
+        try {
+          res = UTS.JSON.parse(res);
+        } catch (error) {
+        }
+      }
+      resolve({
+        data: res,
+        statusCode,
+        header: parseHeaders(xhr.getAllResponseHeaders()),
+        cookies: []
+      });
+    };
+    xhr.onabort = function() {
+      clearTimeout(timer);
+      reject("abort", { errCode: 600003 });
+    };
+    xhr.onerror = function() {
+      clearTimeout(timer);
+      reject(void 0, { errCode: 5 });
+    };
+    xhr.withCredentials = withCredentials;
+    xhr.send(body);
+    return requestTask;
+  },
+  RequestProtocol,
+  RequestOptions
+);
+function normalizeContentType(header) {
+  const name = Object.keys(header).find(
+    (name2) => name2.toLowerCase() === "content-type"
+  );
+  if (!name) {
+    return;
+  }
+  const contentType = header[name];
+  if (contentType.indexOf("application/json") === 0) {
+    return "json";
+  } else if (contentType.indexOf("application/x-www-form-urlencoded") === 0) {
+    return "urlencoded";
+  }
+  return "string";
+}
+class RequestTask {
+  constructor(xhr) {
+    this._xhr = xhr;
+  }
+  abort() {
+    if (this._xhr) {
+      this._xhr.abort();
+      delete this._xhr;
+    }
+  }
+  onHeadersReceived(callback) {
+    throw new Error("Method not implemented.");
+  }
+  offHeadersReceived(callback) {
+    throw new Error("Method not implemented.");
+  }
+}
+function parseHeaders(headers) {
+  const headersObject = {};
+  headers.split(LINEFEED).forEach((header) => {
+    const find = header.match(/(\S+\s*):\s*(.*)/);
+    if (!find || find.length !== 3) {
+      return;
+    }
+    headersObject[find[1]] = find[2];
+  });
+  return headersObject;
+}
+class DownloadTask {
+  constructor(xhr) {
+    this._callbacks = [];
+    this._xhr = xhr;
+  }
+  /**
+   * 监听下载进度
+   * @param {Function} callback 回调
+   */
+  onProgressUpdate(callback) {
+    if (!isFunction(callback)) {
+      return;
+    }
+    this._callbacks.push(callback);
+  }
+  offProgressUpdate(callback) {
+    const index2 = this._callbacks.indexOf(callback);
+    if (index2 >= 0) {
+      this._callbacks.splice(index2, 1);
+    }
+  }
+  /**
+   * 停止任务
+   */
+  abort() {
+    if (this._xhr) {
+      this._xhr.abort();
+      delete this._xhr;
+    }
+  }
+  onHeadersReceived(callback) {
+    throw new Error("Method not implemented.");
+  }
+  offHeadersReceived(callback) {
+    throw new Error("Method not implemented.");
+  }
+}
+const downloadFile = /* @__PURE__ */ defineTaskApi(
+  API_DOWNLOAD_FILE,
+  ({ url, header = {}, timeout = __uniConfig.networkTimeout.downloadFile }, { resolve, reject }) => {
+    {
+      timeout = timeout == null ? __uniConfig.networkTimeout.downloadFile : timeout;
+    }
+    var timer;
+    var xhr = new XMLHttpRequest();
+    var downloadTask = new DownloadTask(xhr);
+    xhr.open("GET", url, true);
+    Object.keys(header).forEach((key) => {
+      xhr.setRequestHeader(key, header[key]);
+    });
+    xhr.responseType = "blob";
+    xhr.onload = function() {
+      clearTimeout(timer);
+      const statusCode = xhr.status;
+      const blob = this.response;
+      let filename;
+      const contentDisposition = xhr.getResponseHeader("content-disposition");
+      if (contentDisposition) {
+        const res = contentDisposition.match(/filename="?(\S+)"?\b/);
+        if (res) {
+          filename = res[1];
+        }
+      }
+      blob.name = filename || getFileName(url);
+      resolve({
+        statusCode,
+        tempFilePath: fileToUrl(blob)
+      });
+    };
+    xhr.onabort = function() {
+      clearTimeout(timer);
+      reject("abort", { errCode: 600003 });
+    };
+    xhr.onerror = function() {
+      clearTimeout(timer);
+      reject("", { errCode: 602001 });
+    };
+    xhr.onprogress = function(event) {
+      downloadTask._callbacks.forEach((callback) => {
+        var totalBytesWritten = event.loaded;
+        var totalBytesExpectedToWrite = event.total;
+        var progress = Math.round(
+          totalBytesWritten / totalBytesExpectedToWrite * 100
+        );
+        callback({
+          progress,
+          totalBytesWritten,
+          totalBytesExpectedToWrite
+        });
+      });
+    };
+    xhr.send();
+    timer = setTimeout(function() {
+      xhr.onprogress = xhr.onload = xhr.onabort = xhr.onerror = null;
+      downloadTask.abort();
+      reject("timeout", { errCode: 5 });
+    }, timeout);
+    return downloadTask;
+  },
+  DownloadFileProtocol,
+  DownloadFileOptions
+);
+class UploadTask {
+  constructor(xhr) {
+    this._callbacks = [];
+    this._xhr = xhr;
+  }
+  /**
+   * 监听上传进度
+   * @param callback 回调
+   */
+  onProgressUpdate(callback) {
+    if (!isFunction(callback)) {
+      return;
+    }
+    this._callbacks.push(callback);
+  }
+  offProgressUpdate(callback) {
+    const index2 = this._callbacks.indexOf(callback);
+    if (index2 >= 0) {
+      this._callbacks.splice(index2, 1);
+    }
+  }
+  /**
+   * 中断上传任务
+   */
+  abort() {
+    this._isAbort = true;
+    if (this._xhr) {
+      this._xhr.abort();
+      delete this._xhr;
+    }
+  }
+  onHeadersReceived(callback) {
+    throw new Error("Method not implemented.");
+  }
+  offHeadersReceived(callback) {
+    throw new Error("Method not implemented.");
+  }
+}
+const uploadFile = /* @__PURE__ */ defineTaskApi(
+  API_UPLOAD_FILE,
+  ({
+    url,
+    file,
+    filePath,
+    name,
+    files: files2,
+    header = {},
+    formData = {},
+    timeout = __uniConfig.networkTimeout.uploadFile
+  }, { resolve, reject }) => {
+    {
+      timeout = timeout == null ? __uniConfig.networkTimeout.uploadFile : timeout;
+    }
+    var uploadTask = new UploadTask();
+    if (!isArray(files2) || !files2.length) {
+      files2 = [
+        {
+          name,
+          file,
+          uri: filePath
+        }
+      ];
+    }
+    function upload(realFiles) {
+      var xhr = new XMLHttpRequest();
+      var form = new FormData();
+      var timer;
+      Object.keys(formData).forEach((key) => {
+        form.append(key, formData[key]);
+      });
+      Object.values(files2).forEach(({ name: name2 }, index2) => {
+        const file2 = realFiles[index2];
+        form.append(name2 || "file", file2, file2.name || `file-${Date.now()}`);
+      });
+      xhr.open("POST", url);
+      Object.keys(header).forEach((key) => {
+        xhr.setRequestHeader(key, header[key]);
+      });
+      xhr.upload.onprogress = function(event) {
+        uploadTask._callbacks.forEach((callback) => {
+          var totalBytesSent = event.loaded;
+          var totalBytesExpectedToSend = event.total;
+          var progress = Math.round(
+            totalBytesSent / totalBytesExpectedToSend * 100
+          );
+          callback({
+            progress,
+            totalBytesSent,
+            totalBytesExpectedToSend
+          });
+        });
+      };
+      xhr.onerror = function() {
+        clearTimeout(timer);
+        reject("", { errCode: 602001 });
+      };
+      xhr.onabort = function() {
+        clearTimeout(timer);
+        reject("abort", { errCode: 600003 });
+      };
+      xhr.onload = function() {
+        clearTimeout(timer);
+        const statusCode = xhr.status;
+        resolve({
+          statusCode,
+          data: xhr.responseText || xhr.response
+        });
+      };
+      if (!uploadTask._isAbort) {
+        timer = setTimeout(function() {
+          xhr.upload.onprogress = xhr.onload = xhr.onabort = xhr.onerror = null;
+          uploadTask.abort();
+          reject("timeout", { errCode: 5 });
+        }, timeout);
+        xhr.send(form);
+        uploadTask._xhr = xhr;
+      } else {
+        reject("abort", { errCode: 600003 });
+      }
+    }
+    Promise.all(
+      files2.map(
+        ({ file: file2, uri }) => file2 instanceof Blob ? Promise.resolve(blobToFile(file2)) : urlToFile(uri)
+      )
+    ).then(upload).catch(() => {
+      setTimeout(() => {
+        reject("file error");
+      }, 0);
+    });
+    return uploadTask;
+  },
+  UploadFileProtocol,
+  UploadFileOptions
+);
+const socketTasks = [];
+const globalEvent = {
+  open: "",
+  close: "",
+  error: "",
+  message: ""
+};
+class SocketTask {
+  /**
+   * 构造函数
+   * @param {string} url
+   * @param {Array} protocols
+   */
+  constructor(url, protocols, callback) {
+    this._callbacks = {
+      open: [],
+      close: [],
+      error: [],
+      message: []
+    };
+    let error;
+    try {
+      const webSocket = this._webSocket = new WebSocket(url, protocols);
+      webSocket.binaryType = "arraybuffer";
+      const eventNames = ["open", "close", "error", "message"];
+      eventNames.forEach((name) => {
+        this._callbacks[name] = [];
+        webSocket.addEventListener(name, (event) => {
+          const { data, code, reason } = event;
+          const res = name === "message" ? { data } : name === "close" ? { code, reason } : {};
+          this._callbacks[name].forEach((callback2) => {
+            try {
+              callback2(res);
+            } catch (e2) {
+              console.error(
+                `thirdScriptError
+${e2};at socketTask.on${capitalize(
+                  name
+                )} callback function
+`,
+                e2
+              );
+            }
+          });
+          if (this === socketTasks[0] && globalEvent[name]) {
+            UniServiceJSBridge.invokeOnCallback(globalEvent[name], res);
+          }
+          if (name === "error" || name === "close") {
+            const index2 = socketTasks.indexOf(this);
+            if (index2 >= 0) {
+              socketTasks.splice(index2, 1);
+            }
+          }
+        });
+      });
+      const propertys = [
+        "CLOSED",
+        "CLOSING",
+        "CONNECTING",
+        "OPEN",
+        "readyState"
+      ];
+      propertys.forEach((property) => {
+        Object.defineProperty(this, property, {
+          get() {
+            return webSocket[property];
+          }
+        });
+      });
+    } catch (e2) {
+      error = e2;
+    }
+    callback && callback(error, this);
+  }
+  /**
+   * 发送
+   * @param {any} data
+   */
+  send(options) {
+    const data = (options || {}).data;
+    const ws = this._webSocket;
+    try {
+      if (ws.readyState !== ws.OPEN) {
+        callOptions(options, {
+          errMsg: `sendSocketMessage:fail SocketTask.readyState is not OPEN`,
+          errCode: 10002
+        });
+        throw new Error("SocketTask.readyState is not OPEN");
+      }
+      ws.send(data);
+      callOptions(options, "sendSocketMessage:ok");
+    } catch (error) {
+      callOptions(options, {
+        errMsg: `sendSocketMessage:fail ${error}`,
+        errCode: 602001
+      });
+    }
+  }
+  /**
+   * 关闭
+   * @param {number} code
+   * @param {string} reason
+   */
+  close(options = {}) {
+    const ws = this._webSocket;
+    try {
+      const code = options.code || 1e3;
+      const reason = options.reason;
+      if (isString(reason)) {
+        ws.close(code, reason);
+      } else {
+        ws.close(code);
+      }
+      callOptions(options, "closeSocket:ok");
+    } catch (error) {
+      callOptions(options, `closeSocket:fail ${error}`);
+    }
+  }
+  onOpen(callback) {
+    this._callbacks.open.push(callback);
+  }
+  onMessage(callback) {
+    this._callbacks.message.push(callback);
+  }
+  onError(callback) {
+    this._callbacks.error.push(callback);
+  }
+  onClose(callback) {
+    this._callbacks.close.push(callback);
+  }
+}
+const connectSocket = /* @__PURE__ */ defineTaskApi(
+  API_CONNECT_SOCKET,
+  ({ url, protocols }, { resolve, reject }) => {
+    return new SocketTask(
+      url,
+      protocols,
+      (error, socketTask) => {
+        if (error) {
+          reject(error.toString(), {
+            errCode: 600009
+          });
+          return;
+        }
+        socketTasks.push(socketTask);
+        resolve();
+      }
+    );
+  },
+  ConnectSocketProtocol,
+  ConnectSocketOptions
+);
+function callSocketTask(socketTask, method, option, resolve, reject) {
+  const fn = socketTask[method];
+  if (isFunction(fn)) {
+    fn.call(
+      socketTask,
+      extend({}, option, {
+        success() {
+          resolve();
+        },
+        fail({ errMsg }) {
+          reject(errMsg.replace("sendSocketMessage:fail ", ""));
+        },
+        complete: void 0
+      })
+    );
+  }
+}
+const sendSocketMessage = /* @__PURE__ */ defineAsyncApi(
+  API_SEND_SOCKET_MESSAGE,
+  (options, { resolve, reject }) => {
+    const socketTask = socketTasks[0];
+    if (socketTask && socketTask.readyState === socketTask.OPEN) {
+      callSocketTask(socketTask, "send", options, resolve, reject);
+    } else {
+      reject("WebSocket is not connected");
+    }
+  },
+  SendSocketMessageProtocol
+);
+const closeSocket = /* @__PURE__ */ defineAsyncApi(
+  API_CLOSE_SOCKET,
+  (options, { resolve, reject }) => {
+    const socketTask = socketTasks[0];
+    if (socketTask) {
+      callSocketTask(socketTask, "close", options, resolve, reject);
+    } else {
+      reject("WebSocket is not connected");
+    }
+  },
+  CloseSocketProtocol
+);
+function on(event) {
+  const api2 = `onSocket${capitalize(event)}`;
+  return /* @__PURE__ */ defineOnApi(api2, () => {
+    globalEvent[event] = api2;
+  });
+}
+const onSocketOpen = /* @__PURE__ */ on("open");
+const onSocketError = /* @__PURE__ */ on("error");
+const onSocketMessage = /* @__PURE__ */ on("message");
+const onSocketClose = /* @__PURE__ */ on("close");
+const getLocation = /* @__PURE__ */ defineAsyncApi(
+  API_GET_LOCATION,
+  ({ type, altitude, highAccuracyExpireTime, isHighAccuracy }, { resolve, reject }) => {
+    const mapInfo = getMapInfo();
+    new Promise((resolve2, reject2) => {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          (res) => resolve2({ coords: res.coords }),
+          reject2,
+          {
+            enableHighAccuracy: isHighAccuracy || altitude,
+            timeout: highAccuracyExpireTime || 1e3 * 100
+          }
+        );
+      } else {
+        reject2(new Error("device nonsupport geolocation"));
+      }
+    }).catch((error) => {
+      return new Promise(
+        (resolve2, reject2) => {
+          if (mapInfo.type === MapType.QQ) {
+            getJSONP(
+              `https://apis.map.qq.com/ws/location/v1/ip?output=jsonp&key=${mapInfo.key}`,
+              {
+                callback: "callback"
+              },
+              (res) => {
+                if ("result" in res && res.result.location) {
+                  const location2 = res.result.location;
+                  resolve2({
+                    coords: {
+                      latitude: location2.lat,
+                      longitude: location2.lng
+                    },
+                    skip: true
+                  });
+                } else {
+                  reject2(new Error(res.message || JSON.stringify(res)));
+                }
+              },
+              () => reject2(new Error("network error"))
+            );
+          } else if (mapInfo.type === MapType.GOOGLE) {
+            request({
+              method: "POST",
+              url: `https://www.googleapis.com/geolocation/v1/geolocate?key=${mapInfo.key}`,
+              success(res) {
+                const data = res.data;
+                if ("location" in data) {
+                  resolve2({
+                    coords: {
+                      latitude: data.location.lat,
+                      longitude: data.location.lng,
+                      accuracy: data.accuracy
+                    },
+                    skip: true
+                  });
+                } else {
+                  reject2(
+                    new Error(
+                      data.error && data.error.message || JSON.stringify(res)
+                    )
+                  );
+                }
+              },
+              fail() {
+                reject2(new Error("network error"));
+              }
+            });
+          } else if (mapInfo.type === MapType.AMAP) {
+            loadMaps([], () => {
+              window.AMap.plugin("AMap.Geolocation", () => {
+                const geolocation = new window.AMap.Geolocation({
+                  enableHighAccuracy: true,
+                  timeout: 1e4
+                });
+                geolocation.getCurrentPosition(
+                  (status, data) => {
+                    if (status === "complete") {
+                      resolve2({
+                        coords: {
+                          latitude: data.position.lat,
+                          longitude: data.position.lng,
+                          accuracy: data.accuracy
+                        },
+                        skip: true
+                      });
+                    } else {
+                      reject2(new Error(data.message));
+                    }
+                  }
+                );
+              });
+            });
+          } else {
+            reject2(error);
+          }
+        }
+      );
+    }).then(({ coords, skip }) => {
+      translateCoordinateSystem(type, coords, skip).then((coords2) => {
+        resolve({
+          latitude: coords2.latitude,
+          longitude: coords2.longitude,
+          accuracy: coords2.accuracy,
+          speed: coords2.altitude || 0,
+          altitude: coords2.altitude || 0,
+          verticalAccuracy: coords2.altitudeAccuracy || 0,
+          // 无专门水平精度，使用位置精度替代
+          horizontalAccuracy: coords2.accuracy || 0
+        });
+      }).catch((error) => {
+        reject(error.message);
+      });
+    }).catch((error) => {
+      reject(error.message || JSON.stringify(error));
+    });
+  },
+  GetLocationProtocol,
+  GetLocationOptions
+);
+const ICON_PATH_NAV = "M28 17c-6.49396875 0-12.13721875 2.57040625-15 6.34840625V5.4105l6.29859375 6.29859375c0.387875 0.387875 1.02259375 0.387875 1.4105 0 0.387875-0.387875 0.387875-1.02259375 0-1.4105L12.77853125 2.36803125a0.9978125 0.9978125 0 0 0-0.0694375-0.077125c-0.1944375-0.1944375-0.45090625-0.291375-0.70721875-0.290875l-0.00184375-0.0000625-0.00184375 0.0000625c-0.2563125-0.0005-0.51278125 0.09640625-0.70721875 0.290875a0.9978125 0.9978125 0 0 0-0.0694375 0.077125l-7.930625 7.9305625c-0.387875 0.387875-0.387875 1.02259375 0 1.4105 0.387875 0.387875 1.02259375 0.387875 1.4105 0L11 5.4105V29c0 0.55 0.45 1 1 1s1-0.45 1-1c0-5.52284375 6.71571875-10 15-10 0.55228125 0 1-0.44771875 1-1 0-0.55228125-0.44771875-1-1-1z";
+const props$5 = {
+  latitude: {
+    type: Number
+  },
+  longitude: {
+    type: Number
+  },
+  scale: {
+    type: Number,
+    default: 18
+  },
+  name: {
+    type: String,
+    default: ""
+  },
+  address: {
+    type: String,
+    default: ""
+  }
+};
+function useState$1(props2) {
+  const state2 = reactive({
+    center: {
+      latitude: 0,
+      longitude: 0
+    },
+    marker: {
+      id: 1,
+      latitude: 0,
+      longitude: 0,
+      iconPath: ICON_PATH_TARGET,
+      width: 32,
+      height: 52
+    },
+    location: {
+      id: 2,
+      latitude: 0,
+      longitude: 0,
+      iconPath: ICON_PATH_ORIGIN,
+      width: 44,
+      height: 44
+    }
+  });
+  function updatePosition() {
+    if (props2.latitude && props2.longitude) {
+      state2.center.latitude = props2.latitude;
+      state2.center.longitude = props2.longitude;
+      state2.marker.latitude = props2.latitude;
+      state2.marker.longitude = props2.longitude;
+    }
+  }
+  watch([() => props2.latitude, () => props2.longitude], updatePosition);
+  updatePosition();
+  return state2;
+}
+const LocationView = /* @__PURE__ */ defineSystemComponent({
+  name: "LocationView",
+  props: props$5,
+  emits: ["close"],
+  setup(props2, {
+    emit: emit2
+  }) {
+    const state2 = useState$1(props2);
+    usePreventScroll();
+    getLocation({
+      type: "gcj02",
+      success: ({
+        latitude,
+        longitude
+      }) => {
+        state2.location.latitude = latitude;
+        state2.location.longitude = longitude;
+      }
+    });
+    function onRegionChange(event) {
+      const centerLocation = event.detail.centerLocation;
+      if (centerLocation) {
+        state2.center.latitude = centerLocation.latitude;
+        state2.center.longitude = centerLocation.longitude;
+      }
+    }
+    function nav() {
+      const mapInfo = getMapInfo();
+      let url = "";
+      if (mapInfo.type === MapType.GOOGLE) {
+        const origin = state2.location.latitude ? `&origin=${state2.location.latitude}%2C${state2.location.longitude}` : "";
+        url = `https://www.google.com/maps/dir/?api=1${origin}&destination=${props2.latitude}%2C${props2.longitude}`;
+      } else if (mapInfo.type === MapType.QQ) {
+        const fromcoord = state2.location.latitude ? `&fromcoord=${state2.location.latitude}%2C${state2.location.longitude}&from=${encodeURIComponent("我的位置")}` : "";
+        url = `https://apis.map.qq.com/uri/v1/routeplan?type=drive${fromcoord}&tocoord=${props2.latitude}%2C${props2.longitude}&to=${encodeURIComponent(props2.name || "目的地")}&ref=${mapInfo.key}`;
+      } else if (mapInfo.type === MapType.AMAP) {
+        const from = state2.location.latitude ? `from=${state2.location.longitude},${state2.location.latitude},${encodeURIComponent("我的位置")}&` : "";
+        url = `https://uri.amap.com/navigation?${from}to=${props2.longitude},${props2.latitude},${encodeURIComponent(props2.name || "目的地")}`;
+      }
+      window.open(url);
+    }
+    function back() {
+      emit2("close");
+    }
+    function setCenter({
+      latitude,
+      longitude
+    }) {
+      state2.center.latitude = latitude;
+      state2.center.longitude = longitude;
+    }
+    return () => {
+      return createVNode("div", {
+        "class": "uni-system-open-location"
+      }, [createVNode(__syscom_0, {
+        "latitude": state2.center.latitude,
+        "longitude": state2.center.longitude,
+        "class": "map",
+        "markers": [state2.marker, state2.location],
+        "onRegionchange": onRegionChange
+      }, {
+        default: () => [createVNode("div", {
+          "class": "map-move",
+          "onClick": () => setCenter(state2.location)
+        }, [createSvgIconVNode(ICON_PATH_LOCTAION, "#000000", 24)], 8, ["onClick"])]
+      }, 8, ["latitude", "longitude", "markers", "onRegionchange"]), createVNode("div", {
+        "class": "info"
+      }, [createVNode("div", {
+        "class": "name",
+        "onClick": () => setCenter(state2.marker)
+      }, [props2.name], 8, ["onClick"]), createVNode("div", {
+        "class": "address",
+        "onClick": () => setCenter(state2.marker)
+      }, [props2.address], 8, ["onClick"]), createVNode("div", {
+        "class": "nav",
+        "onClick": nav
+      }, [createSvgIconVNode(ICON_PATH_NAV, "#ffffff", 26)], 8, ["onClick"])]), createVNode("div", {
+        "class": "nav-btn-back",
+        "onClick": back
+      }, [createSvgIconVNode(ICON_PATH_BACK, "#ffffff", 26)], 8, ["onClick"])]);
+    };
+  }
+});
+let state = null;
+const openLocation = /* @__PURE__ */ defineAsyncApi(
+  API_OPEN_LOCATION,
+  (args, { resolve }) => {
+    if (!state) {
+      state = reactive(args);
+      nextTick(() => {
+        const app = createRootApp(LocationView, state, () => {
+          state = null;
+          nextTick(() => {
+            app.unmount();
+          });
+        });
+        app.mount(ensureRoot("u-a-o"));
+      });
+    } else {
+      extend(state, args);
+    }
+    resolve();
+  },
+  OpenLocationProtocol,
+  OpenLocationOptions
+);
+let started = false;
+let watchId = 0;
+const startLocationUpdate = /* @__PURE__ */ defineAsyncApi(
+  API_START_LOCATION_UPDATE,
+  (options, { resolve, reject }) => {
+    if (!navigator.geolocation) {
+      reject();
+      return;
+    }
+    watchId = watchId || navigator.geolocation.watchPosition(
+      (res) => {
+        started = true;
+        translateCoordinateSystem(options == null ? void 0 : options.type, res.coords).then((coords) => {
+          UniServiceJSBridge.invokeOnCallback(
+            API_ON_LOCATION_CHANGE,
+            coords
+          );
+          resolve();
+        }).catch((error) => {
+          UniServiceJSBridge.invokeOnCallback(
+            API_ON_LOCATION_CHANGE_ERROR,
+            { errMsg: `onLocationChange:fail ${error.message}` }
+          );
+        });
+      },
+      (error) => {
+        if (!started) {
+          reject(error.message);
+          started = true;
+        }
+        UniServiceJSBridge.invokeOnCallback(API_ON_LOCATION_CHANGE_ERROR, {
+          errMsg: `onLocationChange:fail ${error.message}`
+        });
+      }
+    );
+    setTimeout(resolve, 100);
+  },
+  StartLocationUpdateProtocol,
+  StartLocationUpdateOptions
+);
+const stopLocationUpdate = /* @__PURE__ */ defineAsyncApi(
+  API_STOP_LOCATION_UPDATE,
+  (_, { resolve }) => {
+    if (watchId) {
+      navigator.geolocation.clearWatch(watchId);
+      started = false;
+      watchId = 0;
+    }
+    resolve();
+  }
+);
+const onLocationChange = /* @__PURE__ */ defineOnApi(
+  API_ON_LOCATION_CHANGE,
+  () => {
+  }
+);
+const offLocationChange = /* @__PURE__ */ defineOffApi(
+  API_OFF_LOCATION_CHANGE,
+  () => {
+  }
+);
+const onLocationChangeError = /* @__PURE__ */ defineOnApi(
+  API_ON_LOCATION_CHANGE_ERROR,
+  () => {
+  }
+);
+const offLocationChangeError = /* @__PURE__ */ defineOffApi(
+  API_OFF_LOCATION_CHANGE_ERROR,
+  () => {
+  }
+);
+const navigateBack = /* @__PURE__ */ defineAsyncApi(
+  API_NAVIGATE_BACK,
+  (args, { resolve, reject }) => {
+    var _a, _b;
+    let canBack = true;
+    if (invokeHook(ON_BACK_PRESS, {
+      from: args.from || "navigateBack"
+    }) === true) {
+      canBack = false;
+    }
+    {
+      const currentPage = getCurrentPage();
+      if (currentPage) {
+        const dialogPages = currentPage.getDialogPages();
+        const dialogPage = dialogPages[dialogPages.length - 1];
+        if (((_b = dialogPage == null ? void 0 : (_a = dialogPage.vm.$options).onBackPress) == null ? void 0 : _b.call(_a)) === true) {
+          canBack = false;
+        }
+      }
+    }
+    if (!canBack) {
+      return reject(ON_BACK_PRESS);
+    }
+    {
+      getApp().vm.$router.go(-args.delta);
+    }
+    return resolve();
+  },
+  NavigateBackProtocol,
+  NavigateBackOptions
+);
+const navigateTo = /* @__PURE__ */ defineAsyncApi(
+  API_NAVIGATE_TO,
+  // @ts-expect-error
+  ({ url, events, isAutomatedTesting }, { resolve, reject }) => {
+    if (!entryPageState.handledBeforeEntryPageRoutes) {
+      navigateToPagesBeforeEntryPages.push({
+        args: { type: API_NAVIGATE_TO, url, events, isAutomatedTesting },
+        resolve,
+        reject
+      });
+      return;
+    }
+    return navigate({ type: API_NAVIGATE_TO, url, events, isAutomatedTesting }).then(resolve).catch(reject);
+  },
+  NavigateToProtocol,
+  NavigateToOptions
+);
+const preloadPage = /* @__PURE__ */ defineAsyncApi(
+  API_PRELOAD_PAGE,
+  ({ url }, { resolve, reject }) => {
+    const path = url.split("?")[0];
+    const route = getRouteOptions(path);
+    if (!route) {
+      reject(`${url}}`);
+      return;
+    }
+    route.loader && route.loader().then(() => {
+      resolve({
+        url,
+        errMsg: "preloadPage:ok"
+      });
+    }).catch((err) => {
+      reject(`${url} ${String(err)}`);
+    });
+  },
+  PreloadPageProtocol
+);
+if (process.env.NODE_ENV !== "production") {
+  document.addEventListener("DOMContentLoaded", () => {
+    console.log("Preload pages in uni-app-x development mode.");
+    __uniRoutes.reduce((prev, route) => {
+      return prev.then(() => {
+        return new Promise((resolve) => {
+          preloadPage({
+            url: route.alias || route.path,
+            complete() {
+              setTimeout(() => {
+                resolve();
+              }, 200);
+            }
+          });
+        });
+      });
+    }, Promise.resolve());
+  });
+}
+const props$4 = {
+  title: {
+    type: String,
+    default: ""
+  },
+  icon: {
+    default: "success",
+    validator(value) {
+      return SHOW_TOAST_ICON.indexOf(value) !== -1;
+    }
+  },
+  image: {
+    type: String,
+    default: ""
+  },
+  duration: {
+    type: Number,
+    default: 1500
+  },
+  mask: {
+    type: Boolean,
+    default: false
+  },
+  visible: {
+    type: Boolean
+  }
+};
+const ToastIconClassName = "uni-toast__icon";
+const ICONCOLOR = {
+  light: "#fff",
+  dark: "rgba(255,255,255,0.9)"
+};
+const getIconColor = (theme) => ICONCOLOR[theme];
+const Toast = /* @__PURE__ */ defineComponent({
+  name: "Toast",
+  props: props$4,
+  setup(props2) {
+    initI18nShowToastMsgsOnce();
+    initI18nShowLoadingMsgsOnce();
+    const {
+      Icon
+    } = useToastIcon(props2);
+    const visible = usePopup(props2, {});
+    return () => {
+      const {
+        mask,
+        duration,
+        title,
+        image: image2
+      } = props2;
+      return createVNode(Transition, {
+        "name": "uni-fade"
+      }, {
+        default: () => [withDirectives(createVNode("uni-toast", {
+          "data-duration": duration
+        }, [mask ? createVNode("div", {
+          "class": "uni-mask",
+          "style": "background: transparent;",
+          "onTouchmove": onEventPrevent
+        }, null, 40, ["onTouchmove"]) : "", !image2 && !Icon.value ? createVNode("div", {
+          "class": "uni-sample-toast"
+        }, [createVNode("p", {
+          "class": "uni-simple-toast__text"
+        }, [title])]) : createVNode("div", {
+          "class": "uni-toast"
+        }, [image2 ? createVNode("img", {
+          "src": image2,
+          "class": ToastIconClassName
+        }, null, 10, ["src"]) : Icon.value, createVNode("p", {
+          "class": "uni-toast__content"
+        }, [title])])], 8, ["data-duration"]), [[vShow, visible.value]])]
+      });
+    };
+  }
+});
+function useToastIcon(props2) {
+  const iconColor = ref(getIconColor(getTheme()));
+  const _onThemeChange = ({
+    theme
+  }) => iconColor.value = getIconColor(theme);
+  watchEffect(() => {
+    if (props2.visible) {
+      onThemeChange$1(_onThemeChange);
+    } else {
+      offThemeChange$1(_onThemeChange);
+    }
+  });
+  const Icon = computed(() => {
+    switch (props2.icon) {
+      case "success":
+        return createVNode(createSvgIconVNode(ICON_PATH_SUCCESS_NO_CIRCLE, iconColor.value, 38), {
+          class: ToastIconClassName
+        });
+      case "error":
+        return createVNode(createSvgIconVNode(ICON_PATH_WARN, iconColor.value, 38), {
+          class: ToastIconClassName
+        });
+      case "loading":
+        return createVNode("i", {
+          "class": [ToastIconClassName, "uni-loading"]
+        }, null, 2);
+      default:
+        return null;
+    }
+  });
+  return {
+    Icon
+  };
+}
+let showToastState;
+let showType = "";
+let timeoutId;
+const scope = /* @__PURE__ */ effectScope();
+function watchVisible() {
+  scope.run(() => {
+    watch(
+      [() => showToastState.visible, () => showToastState.duration],
+      ([visible, duration]) => {
+        if (visible) {
+          timeoutId && clearTimeout(timeoutId);
+          if (showType === "onShowLoading")
+            return;
+          timeoutId = setTimeout(() => {
+            hidePopup("onHideToast");
+          }, duration);
+        } else {
+          timeoutId && clearTimeout(timeoutId);
+        }
+      }
+    );
+  });
+}
+function createToast(args) {
+  if (!showToastState) {
+    showToastState = reactive(extend(args, { visible: false }));
+    nextTick(() => {
+      watchVisible();
+      UniServiceJSBridge.on("onHidePopup", () => hidePopup("onHidePopup"));
+      createRootApp(Toast, showToastState, () => {
+      }).mount(ensureRoot("u-a-t"));
+    });
+  } else {
+    extend(showToastState, args);
+  }
+  setTimeout(() => {
+    showToastState.visible = true;
+  }, 10);
+}
+const showToast = /* @__PURE__ */ defineAsyncApi(
+  API_SHOW_TOAST,
+  (args, { resolve, reject }) => {
+    createToast(args);
+    showType = "onShowToast";
+    resolve();
+  },
+  ShowToastProtocol,
+  ShowToastOptions
+);
+const showLoadingDefaultState = {
+  icon: "loading",
+  duration: 1e8,
+  image: ""
+};
+const showLoading = /* @__PURE__ */ defineAsyncApi(
+  API_SHOW_LOADING,
+  (args, { resolve, reject }) => {
+    extend(args, showLoadingDefaultState);
+    createToast(args);
+    showType = "onShowLoading";
+    resolve();
+  },
+  ShowLoadingProtocol,
+  ShowLoadingOptions
+);
+const hideToast = /* @__PURE__ */ defineAsyncApi(
+  API_HIDE_TOAST,
+  (args, { resolve, reject }) => {
+    hidePopup("onHideToast");
+    resolve();
+  }
+);
+const hideLoading = /* @__PURE__ */ defineAsyncApi(
+  API_HIDE_LOADING,
+  (args, { resolve, reject }) => {
+    hidePopup("onHideLoading");
+    resolve();
+  }
+);
+function hidePopup(type) {
+  const { t: t2 } = useI18n();
+  if (!showType) {
+    return;
+  }
+  let warnMsg = "";
+  if (type === "onHideToast" && showType !== "onShowToast") {
+    warnMsg = t2("uni.showToast.unpaired");
+  } else if (type === "onHideLoading" && showType !== "onShowLoading") {
+    warnMsg = t2("uni.showLoading.unpaired");
+  }
+  if (warnMsg) {
+    return console.warn(warnMsg);
+  }
+  showType = "";
+  setTimeout(() => {
+    showToastState.visible = false;
+  }, 10);
+}
+const loadFontFace = /* @__PURE__ */ defineAsyncApi(
+  API_LOAD_FONT_FACE,
+  ({ family, source, desc }, { resolve, reject }) => {
+    if (source.startsWith(`url("`) || source.startsWith(`url('`)) {
+      source = `url('${getRealPath(source.substring(5, source.length - 2))}')`;
+    } else if (source.startsWith("url(")) {
+      source = `url('${getRealPath(source.substring(4, source.length - 1))}')`;
+    } else {
+      source = getRealPath(source);
+    }
+    addFont(family, source, desc).then(() => {
+      resolve();
+    }).catch((err) => {
+      reject(`loadFontFace:fail ${err}`);
+    });
+  },
+  LoadFontFaceProtocol
+);
+function setNavigationBar(pageMeta, type, args, resolve, reject) {
+  if (!pageMeta) {
+    return reject("page not found");
+  }
+  const { navigationBar } = pageMeta;
+  switch (type) {
+    case API_SET_NAVIGATION_BAR_COLOR:
+      const { frontColor, backgroundColor, animation: animation2 } = args;
+      const { duration, timingFunc } = animation2;
+      if (frontColor) {
+        navigationBar.titleColor = frontColor === "#000000" ? "#000000" : "#ffffff";
+      }
+      if (backgroundColor) {
+        navigationBar.backgroundColor = backgroundColor;
+      }
+      navigationBar.duration = duration + "ms";
+      navigationBar.timingFunc = timingFunc;
+      break;
+    case API_SHOW_NAVIGATION_BAR_LOADING:
+      navigationBar.loading = true;
+      break;
+    case API_HIDE_NAVIGATION_BAR_LOADING:
+      navigationBar.loading = false;
+      break;
+    case API_SET_NAVIGATION_BAR_TITLE:
+      const { title } = args;
+      navigationBar.titleText = title;
+      break;
+  }
+  resolve();
+}
+const setNavigationBarColor = /* @__PURE__ */ defineAsyncApi(
+  API_SET_NAVIGATION_BAR_COLOR,
+  (args, { resolve, reject }) => {
+    setNavigationBar(
+      getCurrentPageMeta(),
+      API_SET_NAVIGATION_BAR_COLOR,
+      args,
+      resolve,
+      reject
+    );
+  },
+  SetNavigationBarColorProtocol,
+  SetNavigationBarColorOptions
+);
+const showNavigationBarLoading = /* @__PURE__ */ defineAsyncApi(
+  API_SHOW_NAVIGATION_BAR_LOADING,
+  (args, { resolve, reject }) => {
+    setNavigationBar(
+      getCurrentPageMeta(),
+      API_SHOW_NAVIGATION_BAR_LOADING,
+      args || {},
+      resolve,
+      reject
+    );
+  }
+);
+const hideNavigationBarLoading = /* @__PURE__ */ defineAsyncApi(
+  API_HIDE_NAVIGATION_BAR_LOADING,
+  (args, { resolve, reject }) => {
+    setNavigationBar(
+      getCurrentPageMeta(),
+      API_HIDE_NAVIGATION_BAR_LOADING,
+      args || {},
+      resolve,
+      reject
+    );
+  }
+);
+const setNavigationBarTitle = /* @__PURE__ */ defineAsyncApi(
+  API_SET_NAVIGATION_BAR_TITLE,
+  (args, { resolve, reject }) => {
+    setNavigationBar(
+      getCurrentPageMeta(),
+      API_SET_NAVIGATION_BAR_TITLE,
+      args,
+      resolve,
+      reject
+    );
+  },
+  SetNavigationBarTitleProtocol
+);
+const pageScrollTo = /* @__PURE__ */ defineAsyncApi(
+  API_PAGE_SCROLL_TO,
+  ({ scrollTop, selector, duration }, { resolve }) => {
+    scrollTo(selector || scrollTop || 0, duration, true);
+    resolve();
+  },
+  PageScrollToProtocol,
+  PageScrollToOptions
+);
+const startPullDownRefresh = /* @__PURE__ */ defineAsyncApi(
+  API_START_PULL_DOWN_REFRESH,
+  (_args, { resolve }) => {
+    UniServiceJSBridge.invokeViewMethod(
+      API_START_PULL_DOWN_REFRESH,
+      {},
+      getCurrentPageId()
+    );
+    resolve();
+  }
+);
+const stopPullDownRefresh = /* @__PURE__ */ defineAsyncApi(
+  API_STOP_PULL_DOWN_REFRESH,
+  (_args, { resolve }) => {
+    UniServiceJSBridge.invokeViewMethod(
+      API_STOP_PULL_DOWN_REFRESH,
+      {},
+      getCurrentPageId()
+    );
+    resolve();
+  }
+);
+const setTabBarItemProps = [
+  "text",
+  "iconPath",
+  "iconfont",
+  "selectedIconPath",
+  "visible"
+];
+const setTabBarStyleProps = [
+  "color",
+  "selectedColor",
+  "backgroundColor",
+  "borderStyle",
+  "borderColor",
+  "midButton"
+];
+const setTabBarBadgeProps = ["badge", "redDot"];
+function setProperties(item, props2, propsData) {
+  props2.forEach(function(name) {
+    if (hasOwn(propsData, name)) {
+      item[name] = propsData[name];
+    }
+  });
+}
+function setTabBar(type, args, resolve, reject) {
+  var _a;
+  let isTabBar = false;
+  const pages = getCurrentBasePages();
+  if (pages.length) {
+    if (getPage$BasePage(pages[pages.length - 1]).meta.isTabBar) {
+      isTabBar = true;
+    }
+  }
+  if (!isTabBar) {
+    return reject(`not TabBar page`);
+  }
+  const { index: index2 } = args;
+  if (typeof index2 === "number") {
+    const tabBarListLength = (_a = __uniConfig == null ? void 0 : __uniConfig.tabBar) == null ? void 0 : _a.list.length;
+    if (!tabBarListLength || index2 >= tabBarListLength) {
+      return reject(`tabbar item not found`);
+    }
+  }
+  const tabBar2 = useTabBar();
+  switch (type) {
+    case API_SHOW_TAB_BAR:
+      tabBar2.shown = true;
+      break;
+    case API_HIDE_TAB_BAR:
+      tabBar2.shown = false;
+      break;
+    case API_SET_TAB_BAR_ITEM:
+      const tabBarItem = tabBar2.list[index2];
+      const oldPagePath = tabBarItem.pagePath;
+      setProperties(tabBarItem, setTabBarItemProps, args);
+      const { pagePath } = args;
+      if (pagePath) {
+        const newPagePath = addLeadingSlash(pagePath);
+        if (newPagePath !== oldPagePath) {
+          normalizeTabBarRoute(index2, oldPagePath, newPagePath);
+        }
+      }
+      break;
+    case API_SET_TAB_BAR_STYLE:
+      setProperties(tabBar2, setTabBarStyleProps, args);
+      break;
+    case API_SHOW_TAB_BAR_RED_DOT:
+      setProperties(tabBar2.list[index2], setTabBarBadgeProps, {
+        badge: "",
+        redDot: true
+      });
+      break;
+    case API_SET_TAB_BAR_BADGE:
+      setProperties(tabBar2.list[index2], setTabBarBadgeProps, {
+        badge: args.text,
+        redDot: true
+      });
+      break;
+    case API_HIDE_TAB_BAR_RED_DOT:
+    case API_REMOVE_TAB_BAR_BADGE:
+      setProperties(tabBar2.list[index2], setTabBarBadgeProps, {
+        badge: "",
+        redDot: false
+      });
+      break;
+  }
+  resolve();
+}
+const setTabBarItem = /* @__PURE__ */ defineAsyncApi(
+  API_SET_TAB_BAR_ITEM,
+  (args, { resolve, reject }) => {
+    setTabBar(API_SET_TAB_BAR_ITEM, args, resolve, reject);
+  },
+  SetTabBarItemProtocol,
+  SetTabBarItemOptions
+);
+const setTabBarStyle = /* @__PURE__ */ defineAsyncApi(
+  API_SET_TAB_BAR_STYLE,
+  (args, { resolve, reject }) => {
+    setTabBar(API_SET_TAB_BAR_STYLE, args, resolve, reject);
+  },
+  SetTabBarStyleProtocol,
+  SetTabBarStyleOptions
+);
+const hideTabBar = /* @__PURE__ */ defineAsyncApi(
+  API_HIDE_TAB_BAR,
+  (args, { resolve, reject }) => {
+    setTabBar(API_HIDE_TAB_BAR, args ? args : {}, resolve, reject);
+  },
+  HideTabBarProtocol
+);
+const showTabBar = /* @__PURE__ */ defineAsyncApi(
+  API_SHOW_TAB_BAR,
+  (args, { resolve, reject }) => {
+    setTabBar(API_SHOW_TAB_BAR, args ? args : {}, resolve, reject);
+  },
+  ShowTabBarProtocol
+);
+const hideTabBarRedDot = /* @__PURE__ */ defineAsyncApi(
+  API_HIDE_TAB_BAR_RED_DOT,
+  (args, { resolve, reject }) => {
+    setTabBar(API_HIDE_TAB_BAR_RED_DOT, args, resolve, reject);
+  },
+  HideTabBarRedDotProtocol,
+  HideTabBarRedDotOptions
+);
+const showTabBarRedDot = /* @__PURE__ */ defineAsyncApi(
+  API_SHOW_TAB_BAR_RED_DOT,
+  (args, { resolve, reject }) => {
+    setTabBar(API_SHOW_TAB_BAR_RED_DOT, args, resolve, reject);
+  },
+  ShowTabBarRedDotProtocol,
+  ShowTabBarRedDotOptions
+);
+const removeTabBarBadge = /* @__PURE__ */ defineAsyncApi(
+  API_REMOVE_TAB_BAR_BADGE,
+  (args, { resolve, reject }) => {
+    setTabBar(API_REMOVE_TAB_BAR_BADGE, args, resolve, reject);
+  },
+  RemoveTabBarBadgeProtocol,
+  RemoveTabBarBadgeOptions
+);
+const setTabBarBadge = /* @__PURE__ */ defineAsyncApi(
+  API_SET_TAB_BAR_BADGE,
+  (args, { resolve, reject }) => {
+    setTabBar(API_SET_TAB_BAR_BADGE, args, resolve, reject);
+  },
+  SetTabBarBadgeProtocol,
+  SetTabBarBadgeOptions
+);
+const UNI_TABBAR_ICON_FONT = "UniTabbarIconFont";
+const _middleButton = {
+  width: "50px",
+  height: "50px",
+  iconWidth: "24px"
+};
+const TabBar = /* @__PURE__ */ defineSystemComponent({
+  name: "TabBar",
+  setup() {
+    const visibleList = ref([]);
+    const _tabBar = useTabBar();
+    const tabBar2 = useTheme(_tabBar, () => {
+      const tabBarStyle = parseTheme(_tabBar);
+      tabBar2.backgroundColor = tabBarStyle.backgroundColor;
+      tabBar2.borderStyle = tabBarStyle.borderStyle;
+      tabBar2.color = tabBarStyle.color;
+      tabBar2.selectedColor = tabBarStyle.selectedColor;
+      tabBar2.blurEffect = tabBarStyle.blurEffect;
+      tabBar2.midButton = tabBarStyle.midButton;
+      if (tabBarStyle.list && tabBarStyle.list.length) {
+        tabBarStyle.list.forEach((item, index2) => {
+          tabBar2.list[index2].iconPath = item.iconPath;
+          tabBar2.list[index2].selectedIconPath = item.selectedIconPath;
+        });
+      }
+    });
+    useVisibleList(tabBar2, visibleList);
+    useTabBarCssVar(tabBar2);
+    const onSwitchTab = useSwitchTab(useRoute(), tabBar2, visibleList);
+    const {
+      style,
+      borderStyle,
+      placeholderStyle
+    } = useTabBarStyle(tabBar2);
+    onMounted(() => {
+      if (tabBar2.iconfontSrc) {
+        loadFontFace({
+          family: UNI_TABBAR_ICON_FONT,
+          source: `url("${tabBar2.iconfontSrc}")`
+        });
+      }
+    });
+    return () => {
+      const tabBarItemsTsx = createTabBarItemsTsx(tabBar2, onSwitchTab, visibleList);
+      return createVNode("uni-tabbar", {
+        "class": "uni-tabbar-" + tabBar2.position
+      }, [createVNode("div", {
+        "class": "uni-tabbar",
+        "style": style.value
+      }, [createVNode("div", {
+        "class": "uni-tabbar-border",
+        "style": borderStyle.value
+      }, null, 4), tabBarItemsTsx], 4), createVNode("div", {
+        "class": "uni-placeholder",
+        "style": placeholderStyle.value
+      }, null, 4)], 2);
+    };
+  }
+});
+function useTabBarCssVar(tabBar2) {
+  watch(() => tabBar2.shown, (value) => {
+    updatePageCssVar({
+      "--window-bottom": normalizeWindowBottom(value ? parseInt(tabBar2.height) : 0)
+    });
+  });
+}
+function useVisibleList(tabBar2, visibleList) {
+  const internalMidButton = ref(extend({
+    type: "midButton"
+  }, tabBar2.midButton));
+  function setVisibleList() {
+    let tempList = [];
+    tempList = tabBar2.list.filter((item) => item.visible !== false);
+    if (__UNI_FEATURE_TABBAR_MIDBUTTON__ && tabBar2.midButton) {
+      internalMidButton.value = extend({}, _middleButton, internalMidButton.value, tabBar2.midButton);
+      tempList = tempList.filter((item) => !isMidButton(item));
+      if (tempList.length % 2 === 0) {
+        tempList.splice(Math.floor(tempList.length / 2), 0, internalMidButton.value);
+      }
+    }
+    visibleList.value = tempList;
+  }
+  watchEffect(setVisibleList);
+}
+function useSwitchTab(route, tabBar2, visibleList) {
+  watchEffect(() => {
+    const meta = route.meta;
+    if (meta.isTabBar) {
+      const pagePath = meta.route;
+      const index2 = visibleList.value.findIndex((item) => item.pagePath === pagePath);
+      tabBar2.selectedIndex = index2;
+    }
+  });
+  return (tabBarItem, index2) => {
+    const {
+      type
+    } = tabBarItem;
+    return () => {
+      if (__UNI_FEATURE_TABBAR_MIDBUTTON__ && type === "midButton") {
+        return UniServiceJSBridge.invokeOnCallback(API_ON_TAB_BAR_MID_BUTTON_TAP);
+      }
+      const {
+        pagePath,
+        text: text2
+      } = tabBarItem;
+      let url = addLeadingSlash(pagePath);
+      if (url === __uniRoutes[0].alias) {
+        url = "/";
+      }
+      if (route.path !== url) {
+        uni.switchTab({
+          from: "tabBar",
+          url,
+          tabBarText: text2
+        });
+      } else {
+        invokeHook("onTabItemTap", {
+          index: index2,
+          text: text2,
+          pagePath
+        });
+      }
+    };
+  };
+}
+const DEFAULT_BG_COLOR = "#f7f7fa";
+const BLUR_EFFECT_COLOR_DARK = "rgb(0, 0, 0, 0.8)";
+const BLUR_EFFECT_COLOR_LIGHT = "rgb(250, 250, 250, 0.8)";
+const BLUR_EFFECT_COLORS = {
+  dark: BLUR_EFFECT_COLOR_DARK,
+  light: BLUR_EFFECT_COLOR_LIGHT,
+  extralight: BLUR_EFFECT_COLOR_LIGHT
+};
+const BORDER_COLORS = {
+  white: "rgba(255, 255, 255, 0.33)",
+  black: "rgba(0, 0, 0, 0.33)"
+};
+function useTabBarStyle(tabBar2) {
+  const style = computed(() => {
+    let backgroundColor = tabBar2.backgroundColor;
+    const blurEffect = tabBar2.blurEffect;
+    if (!backgroundColor) {
+      if (cssBackdropFilter && blurEffect && blurEffect !== "none") {
+        backgroundColor = BLUR_EFFECT_COLORS[blurEffect];
+      }
+    }
+    return {
+      backgroundColor: backgroundColor || DEFAULT_BG_COLOR,
+      backdropFilter: blurEffect !== "none" ? "blur(10px)" : blurEffect
+    };
+  });
+  const borderStyle = computed(() => {
+    const {
+      borderStyle: borderStyle2,
+      borderColor
+    } = tabBar2;
+    if (borderColor && isString(borderColor)) {
+      return {
+        backgroundColor: borderColor
+      };
+    }
+    return {
+      backgroundColor: BORDER_COLORS[borderStyle2] || BORDER_COLORS["black"]
+    };
+  });
+  const placeholderStyle = computed(() => {
+    return {
+      height: tabBar2.height
+    };
+  });
+  return {
+    style,
+    borderStyle,
+    placeholderStyle
+  };
+}
+function isMidButton(item) {
+  return item.type === "midButton";
+}
+function createTabBarItemsTsx(tabBar2, onSwitchTab, visibleList) {
+  const {
+    selectedIndex,
+    selectedColor,
+    color
+  } = tabBar2;
+  return visibleList.value.map((item, index2) => {
+    const selected = selectedIndex === index2;
+    const textColor = selected ? selectedColor : color;
+    const iconPath = (selected ? item.selectedIconPath || item.iconPath : item.iconPath) || "";
+    const iconfontText = item.iconfont ? selected ? item.iconfont.selectedText || item.iconfont.text : item.iconfont.text : void 0;
+    const iconfontColor = item.iconfont ? selected ? item.iconfont.selectedColor || item.iconfont.color : item.iconfont.color : void 0;
+    if (!__UNI_FEATURE_TABBAR_MIDBUTTON__) {
+      return createTabBarItemTsx(textColor, iconPath, iconfontText, iconfontColor, item, tabBar2, index2, onSwitchTab);
+    }
+    return isMidButton(item) ? createTabBarMidButtonTsx(textColor, iconPath, iconfontText, iconfontColor, item, tabBar2, index2, onSwitchTab) : createTabBarItemTsx(textColor, iconPath, iconfontText, iconfontColor, item, tabBar2, index2, onSwitchTab);
+  });
+}
+function createTabBarItemTsx(color, iconPath, iconfontText, iconfontColor, tabBarItem, tabBar2, index2, onSwitchTab) {
+  return createVNode("div", {
+    "key": index2,
+    "class": "uni-tabbar__item",
+    "onClick": onSwitchTab(tabBarItem, index2)
+  }, [createTabBarItemBdTsx(color, iconPath || "", iconfontText, iconfontColor, tabBarItem, tabBar2)], 8, ["onClick"]);
+}
+function createTabBarItemBdTsx(color, iconPath, iconfontText, iconfontColor, tabBarItem, tabBar2) {
+  const {
+    height
+  } = tabBar2;
+  return createVNode("div", {
+    "class": "uni-tabbar__bd",
+    "style": {
+      height
+    }
+  }, [iconfontText ? createTabBarItemIconfontTsx(iconfontText, iconfontColor || BLUR_EFFECT_COLOR_DARK, tabBarItem, tabBar2) : iconPath && createTabBarItemIconTsx(iconPath, tabBarItem, tabBar2), tabBarItem.text && createTabBarItemTextTsx(color, tabBarItem, tabBar2), tabBarItem.redDot && createTabBarItemRedDotTsx(tabBarItem.badge)], 4);
+}
+function createTabBarItemIconTsx(iconPath, tabBarItem, tabBar2) {
+  const {
+    type,
+    text: text2
+  } = tabBarItem;
+  const {
+    iconWidth
+  } = tabBar2;
+  const clazz2 = "uni-tabbar__icon" + (text2 ? " uni-tabbar__icon__diff" : "");
+  const style = {
+    width: iconWidth,
+    height: iconWidth
+  };
+  return createVNode("div", {
+    "class": clazz2,
+    "style": style
+  }, [type !== "midButton" && createVNode("img", {
+    "src": getRealPath(iconPath)
+  }, null, 8, ["src"])], 6);
+}
+function createTabBarItemIconfontTsx(iconfontText, iconfontColor, tabBarItem, tabBar2) {
+  var _a;
+  const {
+    type,
+    text: text2
+  } = tabBarItem;
+  const {
+    iconWidth
+  } = tabBar2;
+  const clazz2 = "uni-tabbar__icon" + (text2 ? " uni-tabbar__icon__diff" : "");
+  const style = {
+    width: iconWidth,
+    height: iconWidth
+  };
+  const iconfontStyle = {
+    fontSize: ((_a = tabBarItem.iconfont) == null ? void 0 : _a.fontSize) || iconWidth,
+    color: iconfontColor
+  };
+  return createVNode("div", {
+    "class": clazz2,
+    "style": style
+  }, [type !== "midButton" && createVNode("div", {
+    "class": "uni-tabbar__iconfont",
+    "style": iconfontStyle
+  }, [iconfontText], 4)], 6);
+}
+function createTabBarItemTextTsx(color, tabBarItem, tabBar2) {
+  const {
+    iconPath,
+    text: text2
+  } = tabBarItem;
+  const {
+    fontSize,
+    spacing
+  } = tabBar2;
+  const style = {
+    color,
+    fontSize,
+    lineHeight: !iconPath ? 1.8 : "normal",
+    marginTop: !iconPath ? "inherit" : spacing
+  };
+  return createVNode("div", {
+    "class": "uni-tabbar__label",
+    "style": style
+  }, [text2], 4);
+}
+function createTabBarItemRedDotTsx(badge) {
+  const clazz2 = "uni-tabbar__reddot" + (badge ? " uni-tabbar__badge" : "");
+  return createVNode("div", {
+    "class": clazz2
+  }, [badge], 2);
+}
+function createTabBarMidButtonTsx(color, iconPath, iconfontText, iconfontColor, midButton, tabBar2, index2, onSwitchTab) {
+  const {
+    width,
+    height,
+    backgroundImage,
+    iconWidth
+  } = midButton;
+  return createVNode("div", {
+    "key": "midButton",
+    "class": "uni-tabbar__item",
+    "style": {
+      flex: "0 0 " + width,
+      position: "relative"
+    },
+    "onClick": onSwitchTab(midButton, index2)
+  }, [createVNode("div", {
+    "class": "uni-tabbar__mid",
+    "style": {
+      width,
+      height,
+      backgroundImage: backgroundImage ? "url('" + getRealPath(backgroundImage) + "')" : "none"
+    }
+  }, [iconPath && createVNode("img", {
+    "style": {
+      width: iconWidth,
+      height: iconWidth
+    },
+    "src": getRealPath(iconPath)
+  }, null, 12, ["src"])], 4), createTabBarItemBdTsx(color, iconPath, iconfontText, iconfontColor, midButton, tabBar2)], 12, ["onClick"]);
+}
+const DEFAULT_CSS_VAR_VALUE = "0px";
+let globalLayoutState = void 0;
+function getLayoutState() {
+  return globalLayoutState;
+}
+const LayoutComponent = /* @__PURE__ */ defineSystemComponent({
+  name: "Layout",
+  setup(_props, {
+    emit: emit2
+  }) {
+    const rootRef = ref(null);
+    initCssVar();
+    const keepAliveRoute = __UNI_FEATURE_PAGES__ && useKeepAliveRoute();
+    const {
+      layoutState,
+      windowState
+    } = useState();
+    useMaxWidth(layoutState, rootRef);
+    const topWindow = __UNI_FEATURE_TOPWINDOW__ && useTopWindow(layoutState);
+    const leftWindow = __UNI_FEATURE_LEFTWINDOW__ && useLeftWindow(layoutState);
+    const rightWindow = __UNI_FEATURE_RIGHTWINDOW__ && useRightWindow(layoutState);
+    const showTabBar2 = __UNI_FEATURE_TABBAR__ && useShowTabBar();
+    const clazz2 = useAppClass(showTabBar2);
+    globalLayoutState = layoutState;
+    return () => {
+      const layoutTsx = createLayoutTsx(keepAliveRoute, layoutState, windowState, topWindow, leftWindow, rightWindow);
+      const tabBarTsx = __UNI_FEATURE_TABBAR__ && createTabBarTsx(showTabBar2);
+      return createVNode("uni-app", {
+        "ref": rootRef,
+        "class": clazz2.value
+      }, [layoutTsx, tabBarTsx], 2);
+    };
+  }
+});
+function useAppClass(showTabBar2) {
+  const showMaxWidth = ref(false);
+  return computed(() => {
+    return {
+      "uni-app--showtabbar": showTabBar2 && showTabBar2.value,
+      "uni-app--maxwidth": showMaxWidth.value
+    };
+  });
+}
+function initCssVar() {
+  updateCssVar({
+    "--status-bar-height": DEFAULT_CSS_VAR_VALUE,
+    "--top-window-height": DEFAULT_CSS_VAR_VALUE,
+    "--window-left": DEFAULT_CSS_VAR_VALUE,
+    "--window-right": DEFAULT_CSS_VAR_VALUE,
+    "--window-margin": DEFAULT_CSS_VAR_VALUE,
+    "--tab-bar-height": DEFAULT_CSS_VAR_VALUE
+  });
+}
+function initMediaQuery(minWidth, callback) {
+  const mediaQueryList = window.matchMedia("(min-width: " + minWidth + "px)");
+  if (mediaQueryList.addEventListener) {
+    mediaQueryList.addEventListener("change", callback);
+  } else {
+    mediaQueryList.addListener(callback);
+  }
+  return mediaQueryList.matches;
+}
+function useMaxWidth(layoutState, rootRef) {
+  const route = usePageRoute();
+  function checkMaxWidth2() {
+    const windowWidth = document.body.clientWidth;
+    const pages = getCurrentBasePages();
+    let meta = {};
+    if (pages.length > 0) {
+      const curPage = pages[pages.length - 1];
+      meta = getPage$BasePage(curPage).meta;
+    } else {
+      const routeOptions = getRouteOptions(route.path, true);
+      if (routeOptions) {
+        meta = routeOptions.meta;
+      }
+    }
+    const maxWidth2 = parseInt(String((hasOwn(meta, "maxWidth") ? meta.maxWidth : __uniConfig.globalStyle.maxWidth) || Number.MAX_SAFE_INTEGER));
+    let showMaxWidth = false;
+    if (windowWidth > maxWidth2) {
+      showMaxWidth = true;
+    } else {
+      showMaxWidth = false;
+    }
+    if (showMaxWidth && maxWidth2) {
+      layoutState.marginWidth = (windowWidth - maxWidth2) / 2;
+      nextTick(() => {
+        const rootEl = rootRef.value;
+        if (rootEl) {
+          rootEl.setAttribute("style", "max-width:" + maxWidth2 + "px;margin:0 auto;");
+        }
+      });
+    } else {
+      layoutState.marginWidth = 0;
+      nextTick(() => {
+        const rootEl = rootRef.value;
+        if (rootEl) {
+          rootEl.removeAttribute("style");
+        }
+      });
+    }
+  }
+  watch([() => route.path], checkMaxWidth2);
+  onMounted(() => {
+    checkMaxWidth2();
+    window.addEventListener("resize", checkMaxWidth2);
+  });
+}
+function useState() {
+  const route = usePageRoute();
+  if (!__UNI_FEATURE_RESPONSIVE__) {
+    const layoutState2 = reactive({
+      marginWidth: 0,
+      leftWindowWidth: 0,
+      rightWindowWidth: 0
+    });
+    watch(() => layoutState2.marginWidth, (value) => updateCssVar({
+      "--window-margin": value + "px"
+    }));
+    watch(() => layoutState2.leftWindowWidth + layoutState2.marginWidth, (value) => {
+      updateCssVar({
+        "--window-left": value + "px"
+      });
+    });
+    watch(() => layoutState2.rightWindowWidth + layoutState2.marginWidth, (value) => {
+      updateCssVar({
+        "--window-right": value + "px"
+      });
+    });
+    return {
+      layoutState: layoutState2,
+      windowState: computed(() => ({}))
+    };
+  }
+  const topWindowMediaQuery = ref(false);
+  const leftWindowMediaQuery = ref(false);
+  const rightWindowMediaQuery = ref(false);
+  const showTopWindow2 = computed(() => __UNI_FEATURE_TOPWINDOW__ && route.meta.topWindow !== false && topWindowMediaQuery.value);
+  const showLeftWindow2 = computed(() => __UNI_FEATURE_LEFTWINDOW__ && route.meta.leftWindow !== false && leftWindowMediaQuery.value);
+  const showRightWindow2 = computed(() => __UNI_FEATURE_RIGHTWINDOW__ && route.meta.rightWindow !== false && rightWindowMediaQuery.value);
+  const layoutState = reactive({
+    topWindowMediaQuery,
+    showTopWindow: showTopWindow2,
+    apiShowTopWindow: false,
+    leftWindowMediaQuery,
+    showLeftWindow: showLeftWindow2,
+    apiShowLeftWindow: false,
+    rightWindowMediaQuery,
+    showRightWindow: showRightWindow2,
+    apiShowRightWindow: false,
+    topWindowHeight: 0,
+    marginWidth: 0,
+    leftWindowWidth: 0,
+    rightWindowWidth: 0,
+    navigationBarTitleText: "",
+    topWindowStyle: {},
+    leftWindowStyle: {},
+    rightWindowStyle: {}
+  });
+  const props2 = ["topWindow", "leftWindow", "rightWindow"];
+  props2.forEach((prop) => {
+    var _a;
+    const matchMedia = (_a = __uniConfig[prop]) == null ? void 0 : _a.matchMedia;
+    let topWindowMinWidth = RESPONSIVE_MIN_WIDTH;
+    if (matchMedia && hasOwn(matchMedia, "minWidth")) {
+      const minWidth = matchMedia.minWidth;
+      topWindowMinWidth = checkMinWidth(minWidth) ? minWidth : topWindowMinWidth;
+    }
+    const matches2 = initMediaQuery(topWindowMinWidth, (ev) => {
+      layoutState[`${prop}MediaQuery`] = ev.matches;
+    });
+    layoutState[`${prop}MediaQuery`] = matches2;
+  });
+  watch(() => layoutState.topWindowHeight, (value) => updateCssVar({
+    "--top-window-height": value + "px"
+  }));
+  watch(() => layoutState.marginWidth, (value) => updateCssVar({
+    "--window-margin": value + "px"
+  }));
+  watch(() => layoutState.leftWindowWidth + layoutState.marginWidth, (value) => {
+    updateCssVar({
+      "--window-left": value + "px"
+    });
+  });
+  watch(() => layoutState.rightWindowWidth + layoutState.marginWidth, (value) => {
+    updateCssVar({
+      "--window-right": value + "px"
+    });
+  });
+  UniServiceJSBridge.on(ON_NAVIGATION_BAR_CHANGE, (navigationBar) => {
+    layoutState.navigationBarTitleText = navigationBar.titleText;
+  });
+  const windowState = computed(() => ({
+    matchTopWindow: layoutState.topWindowMediaQuery,
+    showTopWindow: layoutState.showTopWindow || layoutState.apiShowTopWindow,
+    matchLeftWindow: layoutState.leftWindowMediaQuery,
+    showLeftWindow: layoutState.showLeftWindow || layoutState.apiShowLeftWindow,
+    matchRightWindow: layoutState.rightWindowMediaQuery,
+    showRightWindow: layoutState.showRightWindow || layoutState.apiShowRightWindow
+  }));
+  return {
+    layoutState,
+    windowState
+  };
+}
+function createLayoutTsx(keepAliveRoute, layoutState, windowState, topWindow, leftWindow, rightWindow) {
+  const routerVNode = __UNI_FEATURE_PAGES__ ? createRouterViewVNode(keepAliveRoute) : createPageVNode();
+  if (!__UNI_FEATURE_RESPONSIVE__) {
+    return routerVNode;
+  }
+  const topWindowTsx = __UNI_FEATURE_TOPWINDOW__ ? createTopWindowTsx(topWindow, layoutState, windowState.value) : null;
+  const leftWindowTsx = __UNI_FEATURE_LEFTWINDOW__ ? createLeftWindowTsx(leftWindow, layoutState, windowState.value) : null;
+  const rightWindowTsx = __UNI_FEATURE_RIGHTWINDOW__ ? createRightWindowTsx(rightWindow, layoutState, windowState.value) : null;
+  return createVNode("uni-layout", {
+    "class": {
+      "uni-app--showtopwindow": __UNI_FEATURE_TOPWINDOW__ && layoutState.showTopWindow,
+      "uni-app--showleftwindow": __UNI_FEATURE_LEFTWINDOW__ && layoutState.showLeftWindow,
+      "uni-app--showrightwindow": __UNI_FEATURE_RIGHTWINDOW__ && layoutState.showRightWindow
+    }
+  }, [topWindowTsx, createVNode("uni-content", null, [createVNode("uni-main", null, [routerVNode]), leftWindowTsx, rightWindowTsx])], 2);
+}
+function useShowTabBar(emit2) {
+  const route = usePageRoute();
+  const tabBar2 = useTabBar();
+  const showTabBar2 = computed(() => route.meta.isTabBar && tabBar2.shown);
+  updateCssVar({
+    "--tab-bar-height": tabBar2.height
+  });
+  return showTabBar2;
+}
+function createTabBarTsx(showTabBar2) {
+  return withDirectives(createVNode(TabBar, null, null, 512), [[vShow, showTabBar2.value]]);
+}
+function createPageVNode() {
+  return createVNode(__uniRoutes[0].component);
+}
+function createRouterViewVNode({
+  routeKey,
+  isTabBar,
+  routeCache: routeCache2
+}) {
+  return createVNode(RouterView, null, {
+    default: withCtx(({
+      Component
+    }) => [(openBlock(), createBlock(KeepAlive, {
+      matchBy: "key",
+      cache: routeCache2
+    }, [(openBlock(), createBlock(resolveDynamicComponent(Component), {
+      type: isTabBar.value ? "tabBar" : "",
+      key: routeKey.value
+    }))], 1032, ["cache"]))]),
+    _: 1
+    /* STABLE */
+  });
+}
+function useTopWindow(layoutState) {
+  const {
+    component,
+    style
+  } = __uniConfig.topWindow;
+  const windowRef = ref(null);
+  function updateWindow() {
+    const instance2 = windowRef.value;
+    const el = resolveOwnerEl(instance2.$);
+    const height = el.getBoundingClientRect().height;
+    layoutState.topWindowHeight = height;
+  }
+  onMounted(updateWindow);
+  watch(() => layoutState.showTopWindow || layoutState.apiShowTopWindow, () => nextTick(updateWindow));
+  layoutState.topWindowStyle = style;
+  return {
+    component,
+    windowRef
+  };
+}
+function useLeftWindow(layoutState) {
+  const {
+    component,
+    style
+  } = __uniConfig.leftWindow;
+  const windowRef = ref(null);
+  function updateWindow() {
+    const instance2 = windowRef.value;
+    const el = resolveOwnerEl(instance2.$);
+    const width = el.getBoundingClientRect().width;
+    layoutState.leftWindowWidth = width;
+  }
+  onMounted(updateWindow);
+  watch(() => layoutState.showLeftWindow || layoutState.apiShowLeftWindow, () => nextTick(updateWindow));
+  layoutState.leftWindowStyle = style;
+  return {
+    component,
+    windowRef
+  };
+}
+function useRightWindow(layoutState) {
+  const {
+    component,
+    style
+  } = __uniConfig.rightWindow;
+  const windowRef = ref(null);
+  function updateWindow() {
+    const instance2 = windowRef.value;
+    const el = resolveOwnerEl(instance2.$);
+    const width = el.getBoundingClientRect().width;
+    layoutState.rightWindowWidth = width;
+  }
+  onMounted(updateWindow);
+  watch(() => layoutState.showRightWindow || layoutState.apiShowRightWindow, () => nextTick(updateWindow));
+  layoutState.rightWindowStyle = style;
+  return {
+    component,
+    windowRef
+  };
+}
+function createTopWindowTsx(topWindow, layoutState, windowState) {
+  if (topWindow) {
+    const {
+      component: TopWindow,
+      windowRef
+    } = topWindow;
+    return withDirectives(createVNode("uni-top-window", null, [createVNode("div", {
+      "class": "uni-top-window",
+      "style": layoutState.topWindowStyle
+    }, [createVNode(TopWindow, mergeProps({
+      "ref": windowRef,
+      "navigation-bar-title-text": layoutState.navigationBarTitleText
+    }, windowState), null, 16, ["navigation-bar-title-text"])], 4), createVNode("div", {
+      "class": "uni-top-window--placeholder",
+      "style": {
+        height: layoutState.topWindowHeight + "px"
+      }
+    }, null, 4)], 512), [[vShow, layoutState.showTopWindow || layoutState.apiShowTopWindow]]);
+  }
+}
+function createLeftWindowTsx(leftWindow, layoutState, windowState) {
+  if (leftWindow) {
+    const {
+      component: LeftWindow,
+      windowRef
+    } = leftWindow;
+    return withDirectives(createVNode("uni-left-window", {
+      "data-show": layoutState.apiShowLeftWindow || void 0,
+      "style": layoutState.leftWindowStyle
+    }, [layoutState.apiShowLeftWindow ? createVNode("div", {
+      "class": "uni-mask",
+      "onClick": () => layoutState.apiShowLeftWindow = false
+    }, null, 8, ["onClick"]) : null, createVNode("div", {
+      "class": "uni-left-window"
+    }, [createVNode(LeftWindow, mergeProps({
+      "ref": windowRef
+    }, windowState), null, 16)])], 12, ["data-show"]), [[vShow, layoutState.showLeftWindow || layoutState.apiShowLeftWindow]]);
+  }
+}
+function createRightWindowTsx(rightWindow, layoutState, windowState) {
+  if (rightWindow) {
+    const {
+      component: RightWindow,
+      windowRef
+    } = rightWindow;
+    return withDirectives(createVNode("uni-right-window", {
+      "data-show": layoutState.apiShowRightWindow || void 0,
+      "style": layoutState.rightWindowStyle
+    }, [layoutState.apiShowRightWindow ? createVNode("div", {
+      "class": "uni-mask",
+      "onClick": () => layoutState.apiShowRightWindow = false
+    }, null, 8, ["onClick"]) : null, createVNode("div", {
+      "class": "uni-right-window"
+    }, [createVNode(RightWindow, mergeProps({
+      "ref": windowRef
+    }, windowState), null, 16)])], 12, ["data-show"]), [[vShow, layoutState.showRightWindow || layoutState.apiShowRightWindow]]);
+  }
+}
+const showTopWindow = /* @__PURE__ */ defineAsyncApi(
+  "showTopWindow",
+  (_, { resolve, reject }) => {
+    const state2 = getLayoutState();
+    if (!state2) {
+      reject();
+      return;
+    }
+    state2.apiShowTopWindow = true;
+    nextTick(resolve);
+  }
+);
+const hideTopWindow = /* @__PURE__ */ defineAsyncApi(
+  "hideTopWindow",
+  (_, { resolve, reject }) => {
+    const state2 = getLayoutState();
+    if (!state2) {
+      reject();
+      return;
+    }
+    state2.apiShowTopWindow = false;
+    nextTick(resolve);
+  }
+);
+const showLeftWindow = /* @__PURE__ */ defineAsyncApi(
+  "showLeftWindow",
+  (_, { resolve, reject }) => {
+    const state2 = getLayoutState();
+    if (!state2) {
+      reject();
+      return;
+    }
+    state2.apiShowLeftWindow = true;
+    nextTick(resolve);
+  }
+);
+const hideLeftWindow = /* @__PURE__ */ defineAsyncApi(
+  "hideLeftWindow",
+  (_, { resolve, reject }) => {
+    const state2 = getLayoutState();
+    if (!state2) {
+      reject();
+      return;
+    }
+    state2.apiShowLeftWindow = false;
+    nextTick(resolve);
+  }
+);
+const showRightWindow = /* @__PURE__ */ defineAsyncApi(
+  "showRightWindow",
+  (_, { resolve, reject }) => {
+    const state2 = getLayoutState();
+    if (!state2) {
+      reject();
+      return;
+    }
+    state2.apiShowRightWindow = true;
+    nextTick(resolve);
+  }
+);
+const hideRightWindow = /* @__PURE__ */ defineAsyncApi(
+  "hideRightWindow",
+  (_, { resolve, reject }) => {
+    const state2 = getLayoutState();
+    if (!state2) {
+      reject();
+      return;
+    }
+    state2.apiShowRightWindow = false;
+    nextTick(resolve);
+  }
+);
+const getTopWindowStyle = /* @__PURE__ */ defineSyncApi(
+  "getTopWindowStyle",
+  () => {
+    const state2 = getLayoutState();
+    return extend({}, state2 && state2.topWindowStyle);
+  }
+);
+const setTopWindowStyle = /* @__PURE__ */ defineSyncApi(
+  "setTopWindowStyle",
+  (style) => {
+    const state2 = getLayoutState();
+    if (state2) {
+      state2.topWindowStyle = style;
+    }
+  }
+);
+const getLeftWindowStyle = /* @__PURE__ */ defineSyncApi(
+  "getLeftWindowStyle",
+  () => {
+    const state2 = getLayoutState();
+    return extend({}, state2 && state2.leftWindowStyle);
+  }
+);
+const setLeftWindowStyle = /* @__PURE__ */ defineSyncApi(
+  "setLeftWindowStyle",
+  (style) => {
+    const state2 = getLayoutState();
+    if (state2) {
+      state2.leftWindowStyle = style;
+    }
+  }
+);
+const getRightWindowStyle = /* @__PURE__ */ defineSyncApi("getRightWindowStyle", () => {
+  const state2 = getLayoutState();
+  return extend({}, state2 && state2.rightWindowStyle);
+});
+const setRightWindowStyle = /* @__PURE__ */ defineSyncApi("setRightWindowStyle", (style) => {
+  const state2 = getLayoutState();
+  if (state2) {
+    state2.rightWindowStyle = style;
+  }
+});
+const getElementById = /* @__PURE__ */ defineSyncApi(
+  "getElementById",
+  (id2) => {
+    const uniPageBody = document.querySelector("uni-page-body");
+    return uniPageBody ? uniPageBody.querySelector(`#${id2}`) : null;
+  }
+);
+const saveImageToPhotosAlbum = /* @__PURE__ */ defineAsyncApi(
+  API_SAVE_IMAGE_TO_PHOTOS_ALBUM,
+  createUnsupportedAsyncApi(API_SAVE_IMAGE_TO_PHOTOS_ALBUM)
+);
+const API_GET_RECORDER_MANAGER = "getRecorderManager";
+const getRecorderManager = /* @__PURE__ */ defineSyncApi(
+  API_GET_RECORDER_MANAGER,
+  createUnsupportedSyncApi(API_GET_RECORDER_MANAGER)
+);
+const saveVideoToPhotosAlbum = /* @__PURE__ */ defineAsyncApi(
+  API_SAVE_VIDEO_TO_PHOTOS_ALBUM,
+  createUnsupportedAsyncApi(API_SAVE_VIDEO_TO_PHOTOS_ALBUM)
+);
+const API_CREATE_CAMERA_CONTEXT = "createCameraContext";
+const createCameraContext = /* @__PURE__ */ defineSyncApi(
+  API_CREATE_CAMERA_CONTEXT,
+  createUnsupportedSyncApi(API_CREATE_CAMERA_CONTEXT)
+);
+const API_CREATE_LIVE_PLAYER_CONTEXT = "createLivePlayerContext";
+const createLivePlayerContext = /* @__PURE__ */ defineSyncApi(
+  API_CREATE_LIVE_PLAYER_CONTEXT,
+  createUnsupportedSyncApi(API_CREATE_LIVE_PLAYER_CONTEXT)
+);
+const API_SAVE_FILE = "saveFile";
+const saveFile = /* @__PURE__ */ defineAsyncApi(
+  API_SAVE_FILE,
+  createUnsupportedAsyncApi(API_SAVE_FILE)
+);
+const API_GET_SAVED_FILE_LIST = "getSavedFileList";
+const getSavedFileList = /* @__PURE__ */ defineAsyncApi(
+  API_GET_SAVED_FILE_LIST,
+  createUnsupportedAsyncApi(API_GET_SAVED_FILE_LIST)
+);
+const API_GET_SAVED_FILE_INFO = "getSavedFileInfo";
+const getSavedFileInfo = /* @__PURE__ */ defineAsyncApi(
+  API_GET_SAVED_FILE_INFO,
+  createUnsupportedAsyncApi(API_GET_SAVED_FILE_INFO)
+);
+const API_REMOVE_SAVED_FILE = "removeSavedFile";
+const removeSavedFile = /* @__PURE__ */ defineAsyncApi(
+  API_REMOVE_SAVED_FILE,
+  createUnsupportedAsyncApi(API_REMOVE_SAVED_FILE)
+);
+const API_ON_MEMORY_WARNING = "onMemoryWarning";
+const onMemoryWarning = /* @__PURE__ */ defineOnApi(
+  API_ON_MEMORY_WARNING,
+  createUnsupportedOnApi(API_ON_MEMORY_WARNING)
+);
+const API_ON_GYROSCOPE_CHANGE = "onGyroscopeChange";
+const onGyroscopeChange = /* @__PURE__ */ defineOnApi(
+  API_ON_GYROSCOPE_CHANGE,
+  createUnsupportedOnApi(API_ON_GYROSCOPE_CHANGE)
+);
+const API_START_GYROSCOPE = "startGyroscope";
+const startGyroscope = /* @__PURE__ */ defineAsyncApi(
+  API_START_GYROSCOPE,
+  createUnsupportedAsyncApi(API_START_GYROSCOPE)
+);
+const API_STOP_GYROSCOPE = "stopGyroscope";
+const stopGyroscope = /* @__PURE__ */ defineAsyncApi(
+  API_STOP_GYROSCOPE,
+  createUnsupportedAsyncApi(API_STOP_GYROSCOPE)
+);
+const API_SCAN_CODE = "scanCode";
+const scanCode = /* @__PURE__ */ defineAsyncApi(
+  API_SCAN_CODE,
+  createUnsupportedAsyncApi(API_SCAN_CODE)
+);
+const API_SET_SCREEN_BRIGHTNESS = "setScreenBrightness";
+const setScreenBrightness = /* @__PURE__ */ defineAsyncApi(
+  API_SET_SCREEN_BRIGHTNESS,
+  createUnsupportedAsyncApi(API_SET_SCREEN_BRIGHTNESS)
+);
+const API_GET_SCREEN_BRIGHTNESS = "getScreenBrightness";
+const getScreenBrightness = /* @__PURE__ */ defineAsyncApi(
+  API_GET_SCREEN_BRIGHTNESS,
+  createUnsupportedAsyncApi(API_GET_SCREEN_BRIGHTNESS)
+);
+const API_SET_KEEP_SCREEN_ON = "setKeepScreenOn";
+const setKeepScreenOn = /* @__PURE__ */ defineAsyncApi(
+  API_SET_KEEP_SCREEN_ON,
+  createUnsupportedAsyncApi(API_SET_KEEP_SCREEN_ON)
+);
+const API_ON_USER_CAPTURE_SCREEN = "onUserCaptureScreen";
+const onUserCaptureScreen = /* @__PURE__ */ defineOnApi(
+  API_ON_USER_CAPTURE_SCREEN,
+  createUnsupportedOnApi(API_ON_USER_CAPTURE_SCREEN)
+);
+const API_ADD_PHONE_CONTACT = "addPhoneContact";
+const addPhoneContact = /* @__PURE__ */ defineAsyncApi(
+  API_ADD_PHONE_CONTACT,
+  createUnsupportedAsyncApi(API_ADD_PHONE_CONTACT)
+);
+const API_LOGIN = "login";
+const login = /* @__PURE__ */ defineAsyncApi(
+  API_LOGIN,
+  createUnsupportedAsyncApi(API_LOGIN)
+);
+const API_GET_PROVIDER = "getProvider";
+const getProvider = /* @__PURE__ */ defineAsyncApi(
+  API_GET_PROVIDER,
+  createUnsupportedAsyncApi(API_GET_PROVIDER)
+);
+class CanvasImage extends Image {
+  constructor() {
+    super();
+    this._src = "";
+  }
+  get src() {
+    return this._src;
+  }
+  set src(value) {
+    this._src = value;
+    super.src = getRealPath(value);
+  }
+}
+class CanvasContextImpl {
+  constructor(element) {
+    this._element = element;
+  }
+  getContext(type) {
+    return this._element.getContext(type);
+  }
+  toBlob(callback, type, quality) {
+    this._element.toBlob(callback, type, quality);
+  }
+  toDataURL(type, encoderOptions) {
+    return this._element.toDataURL(type, encoderOptions);
+  }
+  // @ts-expect-error TODO 类型不匹配?
+  createImage() {
+    return new CanvasImage();
+  }
+  createPath2D() {
+    return new Path2D();
+  }
+  requestAnimationFrame(callback) {
+    return window.requestAnimationFrame(callback);
+  }
+  cancelAnimationFrame(taskId) {
+    window.cancelAnimationFrame(taskId);
+  }
+}
+const createCanvasContextAsync = function(options) {
+  nextTick(() => {
+    var _a;
+    const pages = getCurrentBasePages();
+    const currentPage = (_a = options.component) != null ? _a : pages[pages.length - 1];
+    requestComponentInfo(
+      currentPage,
+      [
+        {
+          component: currentPage,
+          selector: "#" + options.id,
+          single: true,
+          fields: {
+            node: true
+          }
+        }
+      ],
+      (result) => {
+        var _a2, _b, _c;
+        if (result.length > 0) {
+          const canvas = result[0].node;
+          (_a2 = options.success) == null ? void 0 : _a2.call(options, new CanvasContextImpl(canvas));
+        } else {
+          const uniError = new UniError(
+            "uni-createCanvasContextAsync",
+            -1,
+            "canvas id invalid."
+          );
+          (_b = options.fail) == null ? void 0 : _b.call(options, uniError);
+        }
+        (_c = options.complete) == null ? void 0 : _c.call(options);
+      }
+    );
+  });
+};
+const CONTEXT_ID = "MAP_LOCATION";
+const MapLocation = /* @__PURE__ */ defineSystemComponent({
+  name: "MapLocation",
+  setup() {
+    const state2 = reactive({
+      latitude: 0,
+      longitude: 0,
+      rotate: 0
+    });
+    {
+      let compassChangeHandler = function(res) {
+        state2.rotate = res.direction;
+      }, updateLocation = function() {
+        getLocation({
+          type: "gcj02",
+          success: (res) => {
+            state2.latitude = res.latitude;
+            state2.longitude = res.longitude;
+          },
+          complete: () => {
+            timer = setTimeout(updateLocation, 3e4);
+          }
+        });
+      }, removeLocation = function() {
+        if (timer) {
+          clearTimeout(timer);
+        }
+        offCompassChange(compassChangeHandler);
+      };
+      const onMapReady = inject("onMapReady");
+      let timer;
+      onCompassChange(compassChangeHandler);
+      onMapReady(updateLocation);
+      onUnmounted(removeLocation);
+      const addMapChidlContext = inject("addMapChidlContext");
+      const removeMapChidlContext = inject("removeMapChidlContext");
+      const context = {
+        id: CONTEXT_ID,
+        state: state2
+      };
+      addMapChidlContext(context);
+      onUnmounted(() => removeMapChidlContext(context));
+    }
+    return () => {
+      return state2.latitude ? createVNode(MapMarker, mergeProps({
+        "anchor": {
+          x: 0.5,
+          y: 0.5
+        },
+        "width": "44",
+        "height": "44",
+        "iconPath": ICON_PATH_ORIGIN
+      }, state2), null, 16, ["iconPath"]) : null;
+    };
+  }
+});
+const props$3 = {
+  // 边框虚线，腾讯地图支持，google 高德 地图不支持，默认值为[0, 0] 为实线，非 [0, 0] 为虚线，H5 端无法像微信小程序一样控制虚线的间隔像素大小
+  dashArray: {
+    type: Array,
+    default: () => [0, 0]
+  },
+  // 经纬度数组，[{latitude: 0, longitude: 0}]
+  points: {
+    type: Array,
+    required: true
+  },
+  // 描边的宽度
+  strokeWidth: {
+    type: Number,
+    default: 1
+  },
+  // 描边的颜色，十六进制
+  strokeColor: {
+    type: String,
+    default: "#000000"
+  },
+  // 填充颜色，十六进制
+  fillColor: {
+    type: String,
+    default: "#00000000"
+  },
+  // 设置多边形 Z 轴数值
+  zIndex: {
+    type: Number,
+    default: 0
+  }
+};
+const MapPolygon = /* @__PURE__ */ defineSystemComponent({
+  name: "MapPolygon",
+  props: props$3,
+  setup(props2) {
+    let polygonIns;
+    const onMapReady = inject("onMapReady");
+    onMapReady((map, maps2, trigger) => {
+      function drawPolygon() {
+        const {
+          points,
+          strokeWidth,
+          strokeColor,
+          dashArray,
+          fillColor,
+          zIndex
+        } = props2;
+        const path = points.map((item) => {
+          const {
+            latitude,
+            longitude
+          } = item;
+          if (getIsAMap()) {
+            return [longitude, latitude];
+          } else if (getIsBMap()) {
+            return new maps2.Point(longitude, latitude);
+          } else {
+            return new maps2.LatLng(latitude, longitude);
+          }
+        });
+        const {
+          r: fcR,
+          g: fcG,
+          b: fcB,
+          a: fcA
+        } = hexToRgba(fillColor);
+        const {
+          r: scR,
+          g: scG,
+          b: scB,
+          a: scA
+        } = hexToRgba(strokeColor);
+        const polygonOptions = {
+          //多边形是否可点击。
+          clickable: true,
+          //鼠标在多边形内的光标样式。
+          cursor: "crosshair",
+          //多边形是否可编辑。
+          editable: false,
+          // 地图实例，即要显示多边形的地图
+          // @ts-ignore
+          map,
+          // 区域填充色
+          fillColor: "",
+          //多边形的路径，以经纬度坐标数组构成。
+          path,
+          // 区域边框
+          strokeColor: "",
+          //多边形的边框样式。实线是solid，虚线是dash。
+          strokeDashStyle: dashArray.some((item) => item > 0) ? "dash" : "solid",
+          //多边形的边框线宽。
+          strokeWeight: strokeWidth,
+          //多边形是否可见。
+          visible: true,
+          //多边形的zIndex值。
+          zIndex
+        };
+        if (maps2.Color) {
+          polygonOptions.fillColor = new maps2.Color(fcR, fcG, fcB, fcA);
+          polygonOptions.strokeColor = new maps2.Color(scR, scG, scB, scA);
+        } else {
+          polygonOptions.fillColor = `rgb(${fcR}, ${fcG}, ${fcB})`;
+          polygonOptions.fillOpacity = fcA;
+          polygonOptions.strokeColor = `rgb(${scR}, ${scG}, ${scB})`;
+          polygonOptions.strokeOpacity = scA;
+        }
+        if (polygonIns) {
+          polygonIns.setOptions(polygonOptions);
+          return;
+        }
+        if (getIsBMap()) {
+          polygonIns = new maps2.Polygon(polygonOptions.path, polygonOptions);
+          map.addOverlay(polygonIns);
+        } else {
+          polygonIns = new maps2.Polygon(polygonOptions);
+        }
+      }
+      drawPolygon();
+      watch(props2, drawPolygon);
+    });
+    onUnmounted(() => {
+      polygonIns.setMap(null);
+    });
+    return () => null;
+  }
+});
+const props$2 = {
+  id: {
+    type: String,
+    default: ""
+  },
+  latitude: {
+    type: [String, Number],
+    default: 0
+  },
+  longitude: {
+    type: [String, Number],
+    default: 0
+  },
+  scale: {
+    type: [String, Number],
+    default: 16
+  },
+  markers: {
+    type: Array,
+    default() {
+      return [];
+    }
+  },
+  includePoints: {
+    type: Array,
+    default() {
+      return [];
+    }
+  },
+  polyline: {
+    type: Array,
+    default() {
+      return [];
+    }
+  },
+  circles: {
+    type: Array,
+    default() {
+      return [];
+    }
+  },
+  controls: {
+    type: Array,
+    default() {
+      return [];
+    }
+  },
+  showLocation: {
+    type: [Boolean, String],
+    default: false
+  },
+  libraries: {
+    type: Array,
+    default() {
+      return [];
+    }
+  },
+  polygons: {
+    type: Array,
+    default: () => []
+  }
+};
+function getPoints(points) {
+  const newPoints = [];
+  if (isArray(points)) {
+    points.forEach((point) => {
+      if (point && point.latitude && point.longitude) {
+        newPoints.push({
+          latitude: point.latitude,
+          longitude: point.longitude
+        });
+      }
+    });
+  }
+  return newPoints;
+}
+function getAMapPosition(maps2, latitude, longitude) {
+  return new maps2.LngLat(longitude, latitude);
+}
+function getBMapPosition(maps2, latitude, longitude) {
+  return new maps2.Point(longitude, latitude);
+}
+function getGoogleOrQQMapPosition(maps2, latitude, longitude) {
+  return new maps2.LatLng(latitude, longitude);
+}
+function getMapPosition(maps2, latitude, longitude) {
+  if (getIsBMap()) {
+    return getBMapPosition(maps2, latitude, longitude);
+  } else if (getIsAMap()) {
+    return getAMapPosition(maps2, latitude, longitude);
+  } else {
+    return getGoogleOrQQMapPosition(maps2, latitude, longitude);
+  }
+}
+function getLat(latLng) {
+  if ("getLat" in latLng) {
+    return latLng.getLat();
+  } else {
+    if (getIsBMap()) {
+      return latLng.lat;
+    }
+    return latLng.lat();
+  }
+}
+function getLng(latLng) {
+  if ("getLng" in latLng) {
+    return latLng.getLng();
+  } else {
+    if (getIsBMap()) {
+      return latLng.lng;
+    }
+    return latLng.lng();
+  }
+}
+function useMap(props2, rootRef, emit2) {
+  const trigger = useCustomEvent(rootRef, emit2);
+  const mapRef = ref(null);
+  let maps2;
+  let map;
+  const state2 = reactive({
+    latitude: Number(props2.latitude),
+    longitude: Number(props2.longitude),
+    includePoints: getPoints(props2.includePoints)
+  });
+  const onMapReadyCallbacks = [];
+  let isMapReady;
+  function onMapReady(callback) {
+    if (isMapReady) {
+      callback(map, maps2, trigger);
+    } else {
+      onMapReadyCallbacks.push(callback);
+    }
+  }
+  function emitMapReady() {
+    isMapReady = true;
+    onMapReadyCallbacks.forEach((callback) => callback(map, maps2, trigger));
+    onMapReadyCallbacks.length = 0;
+  }
+  let isBoundsReady;
+  const onBoundsReadyCallbacks = [];
+  function onBoundsReady(callback) {
+    if (isBoundsReady) {
+      callback();
+    } else {
+      onMapReadyCallbacks.push(callback);
+    }
+  }
+  const contexts = {};
+  function addMapChidlContext(context) {
+    contexts[context.id] = context;
+  }
+  function removeMapChidlContext(context) {
+    delete contexts[context.id];
+  }
+  watch([() => props2.latitude, () => props2.longitude], ([latitudeVlaue, longitudeVlaue]) => {
+    const latitude = Number(latitudeVlaue);
+    const longitude = Number(longitudeVlaue);
+    if (latitude !== state2.latitude || longitude !== state2.longitude) {
+      state2.latitude = latitude;
+      state2.longitude = longitude;
+      if (map) {
+        const centerPosition = getMapPosition(maps2, state2.latitude, state2.longitude);
+        map.setCenter(centerPosition);
+      }
+    }
+  });
+  watch(() => props2.includePoints, (points) => {
+    state2.includePoints = getPoints(points);
+    if (isBoundsReady) {
+      updateBounds();
+    }
+  }, {
+    deep: true
+  });
+  function emitBoundsReady() {
+    isBoundsReady = true;
+    onBoundsReadyCallbacks.forEach((callback) => callback());
+    onBoundsReadyCallbacks.length = 0;
+  }
+  function getMapInfo2() {
+    const center = map.getCenter();
+    return {
+      scale: map.getZoom(),
+      centerLocation: {
+        latitude: getLat(center),
+        longitude: getLng(center)
+      }
+    };
+  }
+  function updateCenter() {
+    const centerPosition = getMapPosition(maps2, state2.latitude, state2.longitude);
+    map.setCenter(centerPosition);
+  }
+  function updateBounds() {
+    if (getIsAMap()) {
+      const points = [];
+      state2.includePoints.forEach((point) => {
+        points.push([point.longitude, point.latitude]);
+      });
+      const bounds = new maps2.Bounds(...points);
+      map.setBounds(bounds);
+    } else if (getIsBMap())
+      ;
+    else {
+      const bounds = new maps2.LatLngBounds();
+      state2.includePoints.forEach(({
+        latitude,
+        longitude
+      }) => {
+        const latLng = new maps2.LatLng(latitude, longitude);
+        bounds.extend(latLng);
+      });
+      map.fitBounds(bounds);
+    }
+  }
+  function initMap() {
+    const mapEl = mapRef.value;
+    const center = getMapPosition(maps2, state2.latitude, state2.longitude);
+    const event = maps2.event || maps2.Event;
+    const map2 = new maps2.Map(mapEl, {
+      center,
+      zoom: Number(props2.scale),
+      // scrollwheel: false,
+      disableDoubleClickZoom: true,
+      mapTypeControl: false,
+      zoomControl: false,
+      scaleControl: false,
+      panControl: false,
+      fullscreenControl: false,
+      streetViewControl: false,
+      keyboardShortcuts: false,
+      minZoom: 5,
+      maxZoom: 18,
+      draggable: true
+    });
+    if (getIsBMap()) {
+      map2.centerAndZoom(center, Number(props2.scale));
+      map2.enableScrollWheelZoom();
+      map2._printLog && map2._printLog("uniapp");
+    }
+    watch(() => props2.scale, (scale) => {
+      map2.setZoom(Number(scale) || 16);
+    });
+    onBoundsReady(() => {
+      if (state2.includePoints.length) {
+        updateBounds();
+        updateCenter();
+      }
+    });
+    if (getIsBMap()) {
+      map2.addEventListener("click", () => {
+        trigger("tap", {}, {});
+        trigger("click", {}, {});
+      });
+      map2.addEventListener("dragstart", () => {
+        trigger("regionchange", {}, {
+          type: "begin",
+          causedBy: "gesture"
+        });
+      });
+      map2.addEventListener("dragend", () => {
+        trigger("regionchange", {}, extend({
+          type: "end",
+          causedBy: "drag"
+        }, getMapInfo2()));
+      });
+    } else {
+      const boundsChangedEvent = event.addListener(map2, "bounds_changed", () => {
+        boundsChangedEvent.remove();
+        emitBoundsReady();
+      });
+      event.addListener(map2, "click", () => {
+        trigger("tap", {}, {});
+        trigger("click", {}, {});
+      });
+      event.addListener(map2, "dragstart", () => {
+        trigger("regionchange", {}, {
+          type: "begin",
+          causedBy: "gesture"
+        });
+      });
+      event.addListener(map2, "dragend", () => {
+        trigger("regionchange", {}, extend({
+          type: "end",
+          causedBy: "drag"
+        }, getMapInfo2()));
+      });
+      const zoomChangedCallback = () => {
+        emit2("update:scale", map2.getZoom());
+        trigger("regionchange", {}, extend({
+          type: "end",
+          causedBy: "scale"
+        }, getMapInfo2()));
+      };
+      event.addListener(map2, "zoom_changed", zoomChangedCallback);
+      event.addListener(map2, "zoomend", zoomChangedCallback);
+      event.addListener(map2, "center_changed", () => {
+        const center2 = map2.getCenter();
+        const latitude = getLat(center2);
+        const longitude = getLng(center2);
+        emit2("update:latitude", latitude);
+        emit2("update:longitude", longitude);
+      });
+    }
+    return map2;
+  }
+  try {
+    const id2 = useContextInfo();
+    useSubscribe((type, data = {}) => {
+      switch (type) {
+        case "getCenterLocation":
+          onMapReady(() => {
+            const center = map.getCenter();
+            callOptions(data, {
+              latitude: getLat(center),
+              longitude: getLng(center),
+              errMsg: `${type}:ok`
+            });
+          });
+          break;
+        case "moveToLocation":
+          {
+            let latitude = Number(data.latitude);
+            let longitude = Number(data.longitude);
+            if (!latitude || !longitude) {
+              const context = contexts[CONTEXT_ID];
+              if (context) {
+                latitude = context.state.latitude;
+                longitude = context.state.longitude;
+              }
+            }
+            if (latitude && longitude) {
+              state2.latitude = latitude;
+              state2.longitude = longitude;
+              if (map) {
+                const centerPosition = getMapPosition(maps2, latitude, longitude);
+                map.setCenter(centerPosition);
+              }
+              onMapReady(() => {
+                callOptions(data, `${type}:ok`);
+              });
+            } else {
+              callOptions(data, `${type}:fail`);
+            }
+          }
+          break;
+        case "translateMarker":
+          onMapReady(() => {
+            const context = contexts[data.markerId];
+            if (context) {
+              try {
+                context.translate(data);
+              } catch (error) {
+                callOptions(data, `${type}:fail ${error.message}`);
+              }
+              callOptions(data, `${type}:ok`);
+            } else {
+              callOptions(data, `${type}:fail not found`);
+            }
+          });
+          break;
+        case "includePoints":
+          state2.includePoints = getPoints(data.includePoints);
+          if (isBoundsReady || getIsAMap()) {
+            updateBounds();
+          }
+          onBoundsReady(() => {
+            callOptions(data, `${type}:ok`);
+          });
+          break;
+        case "getRegion":
+          onBoundsReady(() => {
+            const latLngBounds = map.getBounds();
+            const southwest = latLngBounds.getSouthWest();
+            const northeast = latLngBounds.getNorthEast();
+            callOptions(data, {
+              southwest: {
+                latitude: getLat(southwest),
+                longitude: getLng(southwest)
+              },
+              northeast: {
+                latitude: getLat(northeast),
+                longitude: getLng(northeast)
+              },
+              errMsg: `${type}:ok`
+            });
+          });
+          break;
+        case "getScale":
+          onMapReady(() => {
+            callOptions(data, {
+              scale: map.getZoom(),
+              errMsg: `${type}:ok`
+            });
+          });
+          break;
+      }
+    }, id2, true);
+  } catch (error) {
+  }
+  onMounted(() => {
+    loadMaps(props2.libraries, (result) => {
+      maps2 = result;
+      map = initMap();
+      emitMapReady();
+      trigger("updated", {}, {});
+    });
+  });
+  provide("onMapReady", onMapReady);
+  provide("addMapChidlContext", addMapChidlContext);
+  provide("removeMapChidlContext", removeMapChidlContext);
+  return {
+    state: state2,
+    mapRef,
+    trigger
+  };
+}
+class UniMapElement extends UniElement {
+}
+const __syscom_0 = /* @__PURE__ */ defineBuiltInComponent({
+  name: "Map",
+  props: props$2,
+  emits: ["markertap", "labeltap", "callouttap", "controltap", "regionchange", "tap", "click", "updated", "update:scale", "update:latitude", "update:longitude"],
+  rootElement: {
+    name: "uni-map",
+    class: UniMapElement
+  },
+  setup(props2, {
+    emit: emit2,
+    slots
+  }) {
+    const rootRef = ref(null);
+    const {
+      mapRef,
+      trigger
+    } = useMap(props2, rootRef, emit2);
+    onMounted(() => {
+      const rootElement = rootRef.value;
+      rootElement.attachVmProps(props2);
+    });
+    return () => {
+      return createVNode("uni-map", {
+        "ref": rootRef,
+        "id": props2.id
+      }, [createVNode("div", {
+        "ref": mapRef,
+        "style": "width: 100%; height: 100%; position: relative; overflow: hidden"
+      }, null, 512), props2.markers.map((item) => createVNode(MapMarker, mergeProps({
+        "key": item.id
+      }, item), null, 16)), props2.polyline.map((item) => createVNode(MapPolyline, item, null, 16)), props2.circles.map((item) => createVNode(MapCircle, item, null, 16)), props2.controls.map((item) => createVNode(MapControl, mergeProps(item, {
+        "trigger": trigger
+      }), null, 16, ["trigger"])), props2.showLocation && createVNode(MapLocation, null, null), props2.polygons.map((item) => createVNode(MapPolygon, item, null, 16)), createVNode("div", {
+        "style": "position: absolute;top: 0;width: 100%;height: 100%;overflow: hidden;pointer-events: none;"
+      }, [slots.default && slots.default()])], 8, ["id"]);
+    };
+  }
+});
+const props$1 = {
+  scrollTop: {
+    type: [String, Number],
+    default: 0
+  }
+};
+class UniCoverViewElement extends UniElement {
+}
+const index$8 = /* @__PURE__ */ defineBuiltInComponent({
+  name: "CoverView",
+  compatConfig: {
+    MODE: 3
+  },
+  props: props$1,
+  rootElement: {
+    name: "uni-cover-view",
+    class: UniCoverViewElement
+  },
+  setup(props2, {
+    slots
+  }) {
+    const root = ref(null);
+    const content = ref(null);
+    watch(() => props2.scrollTop, (val) => {
+      setScrollTop(val);
+    });
+    function setScrollTop(val) {
+      let _content = content.value;
+      if (getComputedStyle(_content).overflowY === "scroll") {
+        _content.scrollTop = _upx2pxNum(val);
+      }
+    }
+    function _upx2pxNum(val) {
+      let _val = String(val);
+      if (/\d+[ur]px$/i.test(_val)) {
+        _val.replace(/\d+[ur]px$/i, (text2) => {
+          return String(uni.upx2px(parseFloat(text2)));
+        });
+      }
+      return parseFloat(_val) || 0;
+    }
+    onMounted(() => {
+      setScrollTop(props2.scrollTop);
+    });
+    onMounted(() => {
+      const rootElement = root.value;
+      rootElement.attachVmProps(props2);
+    });
+    return () => {
+      return createVNode("uni-cover-view", {
+        "scroll-top": props2.scrollTop,
+        "ref": root
+      }, [createVNode("div", {
+        "ref": content,
+        "class": "uni-cover-view"
+      }, [slots.default && slots.default()], 512)], 8, ["scroll-top"]);
+    };
+  }
+});
+class UniCoverImageElement extends UniElement {
+}
+const index$7 = /* @__PURE__ */ defineBuiltInComponent({
+  name: "CoverImage",
+  compatConfig: {
+    MODE: 3
+  },
+  props: {
+    src: {
+      type: String,
+      default: ""
+    }
+  },
+  rootElement: {
+    name: "uni-cover-image",
+    class: UniCoverImageElement
+  },
+  emits: ["load", "error"],
+  setup(props2, {
+    emit: emit2
+  }) {
+    const root = ref(null);
+    const trigger = useCustomEvent(root, emit2);
+    function load($event) {
+      trigger("load", $event);
+    }
+    function error($event) {
+      trigger("error", $event);
+    }
+    onMounted(() => {
+      const rootElement = root.value;
+      rootElement.attachVmProps(props2);
+    });
+    return () => {
+      const {
+        src
+      } = props2;
+      return createVNode("uni-cover-image", {
+        "ref": root,
+        "src": src
+      }, [createVNode("div", {
+        "class": "uni-cover-image"
+      }, [src ? createVNode("img", {
+        "src": getRealPath(src),
+        "onLoad": load,
+        "onError": error
+      }, null, 40, ["src", "onLoad", "onError"]) : null])], 8, ["src"]);
+    };
+  }
+});
+function _isSlot(s) {
+  return typeof s === "function" || Object.prototype.toString.call(s) === "[object Object]" && !isVNode(s);
+}
+function getDefaultStartValue(props2) {
+  if (props2.mode === mode.TIME) {
+    return "00:00";
+  }
+  if (props2.mode === mode.DATE) {
+    const year = (/* @__PURE__ */ new Date()).getFullYear() - 150;
+    switch (props2.fields) {
+      case fields.YEAR:
+        return year.toString();
+      case fields.MONTH:
+        return year + "-01";
+      default:
+        return year + "-01-01";
+    }
+  }
+  return "";
+}
+function getDefaultEndValue(props2) {
+  if (props2.mode === mode.TIME) {
+    return "23:59";
+  }
+  if (props2.mode === mode.DATE) {
+    const year = (/* @__PURE__ */ new Date()).getFullYear() + 150;
+    switch (props2.fields) {
+      case fields.YEAR:
+        return year.toString();
+      case fields.MONTH:
+        return year + "-12";
+      default:
+        return year + "-12-31";
+    }
+  }
+  return "";
+}
+function getDateValueArray(props2, state2, valueStr, defaultValue) {
+  const splitStr = props2.mode === mode.DATE ? "-" : ":";
+  const array = props2.mode === mode.DATE ? state2.dateArray : state2.timeArray;
+  let max;
+  if (props2.mode === mode.TIME) {
+    max = 2;
+  } else {
+    switch (props2.fields) {
+      case fields.YEAR:
+        max = 1;
+        break;
+      case fields.MONTH:
+        max = 2;
+        break;
+      default:
+        max = 3;
+        break;
+    }
+  }
+  const inputArray = String(valueStr).split(splitStr);
+  let value = [];
+  for (let i = 0; i < max; i++) {
+    const val = inputArray[i];
+    value.push(array[i].indexOf(val));
+  }
+  if (value.indexOf(-1) >= 0) {
+    value = defaultValue ? getDateValueArray(props2, state2, defaultValue) : value.map(() => 0);
+  }
+  return value;
+}
+const mode = {
+  SELECTOR: "selector",
+  MULTISELECTOR: "multiSelector",
+  TIME: "time",
+  DATE: "date"
+  // 暂不支持城市选择
+  // REGION: 'region'
+};
+const fields = {
+  YEAR: "year",
+  MONTH: "month",
+  DAY: "day"
+};
+const selectorType = {
+  PICKER: "picker",
+  SELECT: "select"
+};
+const props = {
+  name: {
+    type: String,
+    default: ""
+  },
+  range: {
+    type: Array,
+    default() {
+      return [];
+    }
+  },
+  rangeKey: {
+    type: String,
+    default: ""
+  },
+  value: {
+    type: [Number, String, Array],
+    default: 0
+  },
+  mode: {
+    type: String,
+    default: mode.SELECTOR,
+    validator(val) {
+      return Object.values(mode).includes(val);
+    }
+  },
+  fields: {
+    type: String,
+    default: ""
+  },
+  start: {
+    type: String,
+    default: (props2) => {
+      return getDefaultStartValue(props2);
+    }
+  },
+  end: {
+    type: String,
+    default: (props2) => {
+      return getDefaultEndValue(props2);
+    }
+  },
+  disabled: {
+    type: [Boolean, String],
+    default: false
+  },
+  selectorType: {
+    type: String,
+    default: ""
+  }
+};
+class UniPickerElement extends UniElement {
+}
+const index$6 = /* @__PURE__ */ defineBuiltInComponent({
+  name: "Picker",
+  compatConfig: {
+    MODE: 3
+  },
+  props,
+  emits: ["change", "cancel", "columnchange"],
+  rootElement: {
+    name: "uni-picker",
+    class: UniPickerElement
+  },
+  setup(props2, {
+    emit: emit2,
+    slots
+  }) {
+    initI18nPickerMsgsOnce();
+    const {
+      t: t2
+    } = useI18n();
+    const rootRef = ref(null);
+    const pickerRef = ref(null);
+    const selectRef = ref(null);
+    const inputRef = ref(null);
+    const pickerRender = ref(false);
+    const {
+      state: state2,
+      rangeArray
+    } = usePickerState(props2);
+    const trigger = useCustomEvent(rootRef, emit2);
+    const {
+      system,
+      selectorTypeComputed,
+      _show,
+      _l10nColumn,
+      _l10nItem,
+      _input,
+      _fixInputPosition,
+      _pickerViewChange,
+      _cancel,
+      _change,
+      _resetFormData,
+      _getFormData,
+      _createTime,
+      _createDate,
+      _setValueSync
+    } = usePickerMethods(props2, state2, trigger, rootRef, pickerRef, selectRef, inputRef);
+    usePickerWatch(state2, _cancel, _change);
+    usePickerForm(_resetFormData, _getFormData);
+    _createTime();
+    _createDate();
+    _setValueSync();
+    const popup = usePopupStyle(state2);
+    watchEffect(() => {
+      state2.isDesktop = popup.isDesktop.value;
+      state2.popupStyle = popup.popupStyle.value;
+    });
+    onBeforeUnmount(() => {
+      pickerRef.value && pickerRef.value.remove();
+    });
+    onMounted(() => {
+      pickerRender.value = true;
+    });
+    onMounted(() => {
+      const rootElement = rootRef.value;
+      rootElement.attachVmProps(props2);
+    });
+    return () => {
+      let _slot2;
+      const {
+        visible,
+        contentVisible,
+        valueArray,
+        popupStyle,
+        valueSync
+      } = state2;
+      const {
+        rangeKey,
+        mode: mode2,
+        start,
+        end
+      } = props2;
+      const booleanAttrs = useBooleanAttr(props2, "disabled");
+      return createVNode("uni-picker", mergeProps({
+        "ref": rootRef
+      }, booleanAttrs, {
+        "onClick": withWebEvent(_show)
+      }), [pickerRender.value ? createVNode("div", {
+        "ref": pickerRef,
+        "class": ["uni-picker-container", `uni-${mode2}-${selectorTypeComputed.value}`],
+        "onWheel": onEventPrevent,
+        "onTouchmove": onEventPrevent
+      }, [createVNode(Transition, {
+        "name": "uni-fade"
+      }, {
+        default: () => [withDirectives(createVNode("div", {
+          "class": "uni-mask uni-picker-mask",
+          "onClick": withWebEvent(_cancel),
+          "onMousemove": _fixInputPosition
+        }, null, 40, ["onClick", "onMousemove"]), [[vShow, visible]])]
+      }), !system.value ? createVNode("div", {
+        "class": [{
+          "uni-picker-toggle": visible
+        }, "uni-picker-custom"],
+        "style": popupStyle.content
+      }, [createVNode("div", {
+        "class": "uni-picker-header",
+        "onClick": onEventStop
+      }, [createVNode("div", {
+        "class": "uni-picker-action uni-picker-action-cancel",
+        "onClick": withWebEvent(_cancel)
+      }, [t2("uni.picker.cancel")], 8, ["onClick"]), createVNode("div", {
+        "class": "uni-picker-action uni-picker-action-confirm",
+        "onClick": _change
+      }, [t2("uni.picker.done")], 8, ["onClick"])], 8, ["onClick"]), contentVisible ? createVNode(PickerView, {
+        "value": _l10nColumn(valueArray),
+        "class": "uni-picker-content",
+        "onChange": _pickerViewChange
+      }, _isSlot(_slot2 = renderList(_l10nColumn(rangeArray.value), (rangeItem, index0) => {
+        let _slot;
+        return createVNode(PickerViewColumn, {
+          "key": index0
+        }, _isSlot(_slot = renderList(rangeItem, (item, index2) => createVNode("div", {
+          "key": index2,
+          "class": "uni-picker-item"
+        }, [typeof item === "object" ? item[rangeKey] || "" : _l10nItem(item, index0)]))) ? _slot : {
+          default: () => [_slot],
+          _: 1
+        });
+      })) ? _slot2 : {
+        default: () => [_slot2],
+        _: 1
+      }, 8, ["value", "onChange"]) : null, createVNode("div", {
+        "ref": selectRef,
+        "class": "uni-picker-select",
+        "onWheel": onEventStop,
+        "onTouchmove": onEventStop
+      }, [renderList(rangeArray.value[0], (item, index2) => createVNode("div", {
+        "key": index2,
+        "class": ["uni-picker-item", {
+          selected: valueArray[0] === index2
+        }],
+        "onClick": () => {
+          valueArray[0] = index2;
+          _change();
+        }
+      }, [typeof item === "object" ? item[rangeKey] || "" : item], 10, ["onClick"]))], 40, ["onWheel", "onTouchmove"]), createVNode("div", {
+        "style": popupStyle.triangle
+      }, null, 4)], 6) : null], 40, ["onWheel", "onTouchmove"]) : null, createVNode("div", null, [slots.default && slots.default()]), system.value ? createVNode("div", {
+        "class": "uni-picker-system",
+        "onMousemove": withWebEvent(_fixInputPosition)
+      }, [createVNode("input", {
+        "class": ["uni-picker-system_input", system.value],
+        "ref": inputRef,
+        "value": valueSync,
+        "type": mode2,
+        "tabindex": "-1",
+        "min": start,
+        "max": end,
+        "onChange": ($event) => {
+          _input($event);
+          onEventStop($event);
+        }
+      }, null, 42, ["value", "type", "min", "max", "onChange"])], 40, ["onMousemove"]) : null], 16, ["onClick"]);
+    };
+  }
+});
+function usePickerState(props2) {
+  const state2 = reactive({
+    valueSync: void 0,
+    visible: false,
+    contentVisible: false,
+    popover: null,
+    valueChangeSource: "",
+    timeArray: [],
+    dateArray: [],
+    valueArray: [],
+    oldValueArray: [],
+    isDesktop: false,
+    popupStyle: {
+      content: {},
+      triangle: {}
+    }
+  });
+  const rangeArray = computed(() => {
+    let val = props2.range;
+    switch (props2.mode) {
+      case mode.SELECTOR:
+        return [val];
+      case mode.MULTISELECTOR:
+        return val;
+      case mode.TIME:
+        return state2.timeArray;
+      case mode.DATE: {
+        const dateArray = state2.dateArray;
+        switch (props2.fields) {
+          case fields.YEAR:
+            return [dateArray[0]];
+          case fields.MONTH:
+            return [dateArray[0], dateArray[1]];
+          default:
+            return [dateArray[0], dateArray[1], dateArray[2]];
+        }
+      }
+    }
+    return [];
+  });
+  return {
+    state: state2,
+    rangeArray
+  };
+}
+const getiPadFlag = () => String(navigator.vendor).indexOf("Apple") === 0 && navigator.maxTouchPoints > 0;
+function useIsiPad() {
+  const isiPad = ref(false);
+  {
+    isiPad.value = getiPadFlag();
+  }
+  return isiPad;
+}
+const getSystem = () => {
+  if (/win|mac/i.test(navigator.platform)) {
+    if (navigator.vendor === "Google Inc.") {
+      return "chrome";
+    } else if (/Firefox/.test(navigator.userAgent)) {
+      return "firefox";
+    }
+  }
+  return "";
+};
+function useSystem() {
+  const _system = ref("");
+  {
+    _system.value = getSystem();
+  }
+  return _system;
+}
+let __contentVisibleDelay;
+function usePickerMethods(props2, state2, trigger, rootRef, pickerRef, selectRef, inputRef) {
+  const isiPad = useIsiPad();
+  const _system = useSystem();
+  const selectorTypeComputed = computed(() => {
+    const type = props2.selectorType;
+    if (Object.values(selectorType).includes(type)) {
+      return type;
+    }
+    return isiPad.value ? selectorType.PICKER : selectorType.SELECT;
+  });
+  const system = computed(() => {
+    if (props2.mode === mode.DATE && !Object.values(fields).includes(props2.fields) && state2.isDesktop) {
+      return _system.value;
+    }
+    return "";
+  });
+  const startArray = computed(() => {
+    return getDateValueArray(props2, state2, props2.start, getDefaultStartValue(props2));
+  });
+  const endArray = computed(() => {
+    return getDateValueArray(props2, state2, props2.end, getDefaultEndValue(props2));
+  });
+  function _show(event) {
+    if (props2.disabled) {
+      return;
+    }
+    state2.valueChangeSource = "";
+    let $picker = pickerRef.value;
+    let _currentTarget = event.currentTarget;
+    $picker.remove();
+    (document.querySelector("uni-app") || document.body).appendChild($picker);
+    $picker.style.display = "block";
+    const rect = _currentTarget.getBoundingClientRect();
+    state2.popover = {
+      top: rect.top,
+      left: rect.left,
+      width: rect.width,
+      height: rect.height
+    };
+    setTimeout(() => {
+      state2.visible = true;
+    }, 20);
+  }
+  function _getFormData() {
+    return {
+      value: state2.valueSync,
+      key: props2.name
+    };
+  }
+  function _resetFormData() {
+    switch (props2.mode) {
+      case mode.SELECTOR:
+        state2.valueSync = 0;
+        break;
+      case mode.MULTISELECTOR:
+        state2.valueSync = props2.value.map((val) => 0);
+        break;
+      case mode.DATE:
+      case mode.TIME:
+        state2.valueSync = "";
+        break;
+    }
+  }
+  function _createTime() {
+    let hours = [];
+    let minutes = [];
+    for (let i = 0; i < 24; i++) {
+      hours.push((i < 10 ? "0" : "") + i);
+    }
+    for (let i = 0; i < 60; i++) {
+      minutes.push((i < 10 ? "0" : "") + i);
+    }
+    state2.timeArray.push(hours, minutes);
+  }
+  function getYearStartEnd() {
+    let year = (/* @__PURE__ */ new Date()).getFullYear();
+    let start = year - 150;
+    let end = year + 150;
+    if (props2.start) {
+      const _year = new Date(props2.start).getFullYear();
+      if (!isNaN(_year) && _year < start) {
+        start = _year;
+      }
+    }
+    if (props2.end) {
+      const _year = new Date(props2.end).getFullYear();
+      if (!isNaN(_year) && _year > end) {
+        end = _year;
+      }
+    }
+    return {
+      start,
+      end
+    };
+  }
+  function _createDate() {
+    let years = [];
+    const year = getYearStartEnd();
+    for (let i = year.start, end = year.end; i <= end; i++) {
+      years.push(String(i));
+    }
+    let months = [];
+    for (let i = 1; i <= 12; i++) {
+      months.push((i < 10 ? "0" : "") + i);
+    }
+    let days = [];
+    for (let i = 1; i <= 31; i++) {
+      days.push((i < 10 ? "0" : "") + i);
+    }
+    state2.dateArray.push(years, months, days);
+  }
+  function _getTimeValue(val) {
+    return val[0] * 60 + val[1];
+  }
+  function _getDateValue(val) {
+    const DAY = 31;
+    return val[0] * DAY * 12 + (val[1] || 0) * DAY + (val[2] || 0);
+  }
+  function _cloneArray(val1, val2) {
+    for (let i = 0; i < val1.length && i < val2.length; i++) {
+      val1[i] = val2[i];
+    }
+  }
+  function _setValueSync() {
+    let val = props2.value;
+    switch (props2.mode) {
+      case mode.MULTISELECTOR:
+        {
+          if (!isArray(val)) {
+            val = state2.valueArray;
+          }
+          if (!isArray(state2.valueSync)) {
+            state2.valueSync = [];
+          }
+          const length = state2.valueSync.length = Math.max(val.length, props2.range.length);
+          for (let index2 = 0; index2 < length; index2++) {
+            const val0 = Number(val[index2]);
+            const val1 = Number(state2.valueSync[index2]);
+            const val2 = isNaN(val0) ? isNaN(val1) ? 0 : val1 : val0;
+            const maxVal = props2.range[index2] ? props2.range[index2].length - 1 : 0;
+            state2.valueSync.splice(index2, 1, val2 < 0 || val2 > maxVal ? 0 : val2);
+          }
+        }
+        break;
+      case mode.TIME:
+      case mode.DATE:
+        state2.valueSync = String(val);
+        break;
+      default: {
+        const valueSync = Number(val);
+        state2.valueSync = valueSync < 0 ? 0 : valueSync;
+        break;
+      }
+    }
+  }
+  function _setValueArray() {
+    let val = state2.valueSync;
+    let valueArray;
+    switch (props2.mode) {
+      case mode.MULTISELECTOR:
+        valueArray = [...val];
+        break;
+      case mode.TIME:
+        valueArray = getDateValueArray(props2, state2, val, formatDateTime({
+          mode: mode.TIME
+        }));
+        break;
+      case mode.DATE:
+        valueArray = getDateValueArray(props2, state2, val, formatDateTime({
+          mode: mode.DATE
+        }));
+        break;
+      default:
+        valueArray = [val];
+        break;
+    }
+    state2.oldValueArray = [...valueArray];
+    state2.valueArray = [...valueArray];
+  }
+  function _getValue() {
+    let val = state2.valueArray;
+    switch (props2.mode) {
+      case mode.SELECTOR:
+        return val[0];
+      case mode.MULTISELECTOR:
+        return val.map((val2) => val2);
+      case mode.TIME:
+        return state2.valueArray.map((val2, i) => state2.timeArray[i][val2]).join(":");
+      case mode.DATE:
+        return state2.valueArray.map((val2, i) => state2.dateArray[i][val2]).join("-");
+    }
+  }
+  function _change() {
+    _close();
+    state2.valueChangeSource = "click";
+    const value = _getValue();
+    state2.valueSync = isArray(value) ? value.map((val) => val) : value;
+    trigger("change", {}, {
+      value
+    });
+  }
+  function _cancel($event) {
+    if (system.value === "firefox" && $event) {
+      const {
+        top,
+        left,
+        width,
+        height
+      } = state2.popover;
+      const {
+        pageX,
+        pageY
+      } = $event;
+      if (pageX > left && pageX < left + width && pageY > top && pageY < top + height) {
+        return;
+      }
+    }
+    _close();
+    trigger("cancel", {}, {});
+  }
+  function _close() {
+    state2.visible = false;
+    setTimeout(() => {
+      let $picker = pickerRef.value;
+      $picker.remove();
+      rootRef.value.prepend($picker);
+      $picker.style.display = "none";
+    }, 260);
+  }
+  function _select() {
+    if (props2.mode === mode.SELECTOR && selectorTypeComputed.value === selectorType.SELECT) {
+      selectRef.value.scrollTop = state2.valueArray[0] * 34;
+    }
+  }
+  function _input($event) {
+    const EventTarget = $event.target;
+    state2.valueSync = EventTarget.value;
+    nextTick(() => {
+      _change();
+    });
+  }
+  function _fixInputPosition($event) {
+    if (system.value === "chrome") {
+      const rect = rootRef.value.getBoundingClientRect();
+      const fontSize = 32;
+      inputRef.value.style.left = `${$event.clientX - rect.left - fontSize * 1.5}px`;
+      inputRef.value.style.top = `${$event.clientY - rect.top - fontSize * 0.5}px`;
+    }
+  }
+  function _pickerViewChange(event) {
+    state2.valueArray = _l10nColumn(event.detail.value, true);
+  }
+  function _l10nColumn(array, normalize) {
+    const {
+      getLocale: getLocale2
+    } = useI18n();
+    if (props2.mode === mode.DATE) {
+      const locale = getLocale2();
+      if (!locale.startsWith("zh")) {
+        switch (props2.fields) {
+          case fields.YEAR:
+            return array;
+          case fields.MONTH:
+            return [array[1], array[0]];
+          default:
+            switch (locale) {
+              case "es":
+              case "fr":
+                return [array[2], array[1], array[0]];
+              default:
+                return normalize ? [array[2], array[0], array[1]] : [array[1], array[2], array[0]];
+            }
+        }
+      }
+    }
+    return array;
+  }
+  function _l10nItem(item, index2) {
+    const {
+      getLocale: getLocale2
+    } = useI18n();
+    if (props2.mode === mode.DATE) {
+      const locale = getLocale2();
+      if (locale.startsWith("zh")) {
+        const array = ["年", "月", "日"];
+        return item + array[index2];
+      } else if (props2.fields !== fields.YEAR && index2 === (props2.fields !== fields.MONTH && (locale === "es" || locale === "fr") ? 1 : 0)) {
+        let array;
+        switch (locale) {
+          case "es":
+            array = ["enero", "febrero", "marzo", "abril", "mayo", "junio", "​​julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"];
+            break;
+          case "fr":
+            array = ["janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août", "septembre", "octobre", "novembre", "décembre"];
+            break;
+          default:
+            array = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+            break;
+        }
+        return array[Number(item) - 1];
+      }
+    }
+    return item;
+  }
+  watch(() => state2.visible, (val) => {
+    if (val) {
+      clearTimeout(__contentVisibleDelay);
+      state2.contentVisible = val;
+      _select();
+    } else {
+      __contentVisibleDelay = setTimeout(() => {
+        state2.contentVisible = val;
+      }, 300);
+    }
+  });
+  watch([() => props2.mode, () => props2.value, () => props2.range], _setValueSync, {
+    deep: true
+  });
+  watch(() => state2.valueSync, _setValueArray, {
+    deep: true
+  });
+  watch(() => state2.valueArray, (val) => {
+    if (props2.mode === mode.TIME || props2.mode === mode.DATE) {
+      const getValue = props2.mode === mode.TIME ? _getTimeValue : _getDateValue;
+      const valueArray = state2.valueArray;
+      const _startArray = startArray.value;
+      const _endArray = endArray.value;
+      if (props2.mode === mode.DATE) {
+        const dateArray = state2.dateArray;
+        const max = dateArray[2].length;
+        const day = Number(dateArray[2][valueArray[2]]) || 1;
+        const realDay = (/* @__PURE__ */ new Date(`${dateArray[0][valueArray[0]]}/${dateArray[1][valueArray[1]]}/${day}`)).getDate();
+        if (realDay < day) {
+          valueArray[2] -= realDay + max - day;
+        }
+      }
+      if (getValue(valueArray) < getValue(_startArray)) {
+        _cloneArray(valueArray, _startArray);
+      } else if (getValue(valueArray) > getValue(_endArray)) {
+        _cloneArray(valueArray, _endArray);
+      }
+    }
+    val.forEach((value, column) => {
+      if (value !== state2.oldValueArray[column]) {
+        state2.oldValueArray[column] = value;
+        if (props2.mode === mode.MULTISELECTOR) {
+          trigger("columnchange", {}, {
+            column,
+            value
+          });
+        }
+      }
+    });
+  });
+  return {
+    selectorTypeComputed,
+    system,
+    _show,
+    _cancel,
+    _change,
+    _l10nColumn,
+    _l10nItem,
+    _input,
+    _resetFormData,
+    _getFormData,
+    _createTime,
+    _createDate,
+    _setValueSync,
+    _fixInputPosition,
+    _pickerViewChange
+  };
+}
+function usePickerWatch(state2, _cancel, _change) {
+  const {
+    key,
+    disable
+  } = useKeyboard();
+  watchEffect(() => {
+    disable.value = !state2.visible;
+  });
+  watch(key, (value) => {
+    if (value === "esc") {
+      _cancel();
+    } else if (value === "enter") {
+      _change();
+    }
+  });
+}
+function usePickerForm(_resetFormData, _getFormData) {
+  const uniForm = inject(uniFormKey, false);
+  if (uniForm) {
+    const field = {
+      reset: _resetFormData,
+      submit: () => {
+        const data = ["", null];
+        const {
+          key,
+          value
+        } = _getFormData();
+        if (key !== "") {
+          data[0] = key;
+          data[1] = value;
+        }
+        return data;
+      }
+    };
+    uniForm.addField(field);
+    onBeforeUnmount(() => {
+      uniForm.removeField(field);
+    });
+  }
+}
+const index$5 = /* @__PURE__ */ defineUnsupportedComponent("ad");
+const index$4 = /* @__PURE__ */ defineUnsupportedComponent("ad-content-page");
+const index$3 = /* @__PURE__ */ defineUnsupportedComponent("ad-draw");
+const index$2 = /* @__PURE__ */ defineUnsupportedComponent("camera");
+const index$1 = /* @__PURE__ */ defineUnsupportedComponent("live-player");
+const index = /* @__PURE__ */ defineUnsupportedComponent("live-pusher");
 const UniViewJSBridge$1 = /* @__PURE__ */ extend(ViewJSBridge, {
   publishHandler(event, args, pageId) {
     UniServiceJSBridge.subscribeHandler(event, args, pageId);
   }
 });
+const openDialogPage = (options) => {
+  var _a, _b, _c, _d;
+  if (!options.url) {
+    triggerFailCallback(options, "url is required");
+    return null;
+  }
+  const { path, query } = parseUrl(options.url);
+  const normalizeUrl = createNormalizeUrl("navigateTo");
+  const errMsg = normalizeUrl(path, {});
+  if (errMsg) {
+    triggerFailCallback(options, errMsg);
+    return null;
+  }
+  const targetRoute = __uniRoutes.find((route) => {
+    return path.indexOf(route.meta.route) !== -1;
+  });
+  const dialogPage = new UniDialogPageImpl({
+    route: path,
+    options: new UTSJSONObject(query),
+    $component: targetRoute.component,
+    getParentPage: () => null,
+    $disableEscBack: options.disableEscBack,
+    $triggerParentHide: !!options.triggerParentHide
+  });
+  let parentPage = options.parentPage;
+  const currentPages = getCurrentPages();
+  if (parentPage) {
+    if (currentPages.indexOf(parentPage) === -1) {
+      triggerFailCallback(options, "parentPage is not a valid page");
+      return null;
+    }
+  }
+  if (!isSystemDialogPage(dialogPage)) {
+    if (!currentPages.length) {
+      homeDialogPages.push(dialogPage);
+    } else {
+      if (!parentPage) {
+        parentPage = currentPages[currentPages.length - 1];
+      }
+      dialogPage.getParentPage = () => parentPage;
+      parentPage.getDialogPages().push(dialogPage);
+    }
+    if (!options.disableEscBack) {
+      incrementEscBackPageNum();
+    }
+  } else {
+    if (!currentPages.length) {
+      homeSystemDialogPages.push(dialogPage);
+      if (isSystemActionSheetDialogPage(dialogPage)) {
+        closePreActionSheet(homeSystemDialogPages);
+      }
+    } else {
+      if (!parentPage) {
+        parentPage = currentPages[currentPages.length - 1];
+      }
+      dialogPage.getParentPage = () => parentPage;
+      (_a = parentPage.vm.$pageLayoutInstance) == null ? void 0 : _a.$systemDialogPages.value.push(
+        dialogPage
+      );
+      if (isSystemActionSheetDialogPage(dialogPage)) {
+        closePreActionSheet(
+          (_b = parentPage.vm.$pageLayoutInstance) == null ? void 0 : _b.$systemDialogPages.value
+        );
+      }
+    }
+  }
+  const successOptions = {
+    errMsg: "openDialogPage:ok"
+  };
+  (_c = options.success) == null ? void 0 : _c.call(options, successOptions);
+  (_d = options.complete) == null ? void 0 : _d.call(options, successOptions);
+  return dialogPage;
+};
+function triggerFailCallback(options, errMsg) {
+  var _a, _b;
+  const failOptions = new UniError(
+    "uni-openDialogPage",
+    4,
+    `openDialogPage: fail, ${errMsg}`
+  );
+  (_a = options.fail) == null ? void 0 : _a.call(options, failOptions);
+  (_b = options.complete) == null ? void 0 : _b.call(options, failOptions);
+}
+function closePreActionSheet(dialogPages) {
+  const actionSheets = dialogPages.filter(
+    (page) => isSystemActionSheetDialogPage(page)
+  );
+  if (actionSheets.length > 1) {
+    setTimeout(() => {
+      dialogPages.splice(dialogPages.indexOf(actionSheets[0]), 1);
+    }, 100);
+  }
+}
+const _sfc_main$1 = {
+  data() {
+    return {
+      show: false,
+      i18nCancelText: {
+        en: "Cancel",
+        es: "Cancelar",
+        fr: "Annuler",
+        "zh-Hans": "取消",
+        "zh-Hant": "取消"
+      },
+      readyEventName: "",
+      optionsEventName: "",
+      successEventName: "",
+      failEventName: "",
+      title: null,
+      itemList: [],
+      optionCancelText: null,
+      titleColor: null,
+      itemColor: null,
+      cancelColor: null,
+      backgroundColor: null,
+      language: "zh-Hans",
+      theme: "light",
+      isLandscape: false,
+      windowWidth: 0,
+      windowHeight: 0,
+      popover: {},
+      bottomNavigationHeight: 0
+    };
+  },
+  onLoad(options) {
+    this.readyEventName = options["readyEventName"];
+    this.optionsEventName = options["optionsEventName"];
+    this.successEventName = options["successEventName"];
+    this.failEventName = options["failEventName"];
+    uni.$on(this.optionsEventName, (data) => {
+      this.itemList = data["itemList"];
+      if (data["title"] != null) {
+        this.title = data["title"];
+      }
+      if (data["cancelText"] != null) {
+        this.optionCancelText = data["cancelText"];
+      }
+      if (data["titleColor"] != null) {
+        this.titleColor = data["titleColor"];
+      }
+      if (data["itemColor"] != null) {
+        this.itemColor = data["itemColor"];
+      }
+      if (data["cancelColor"] != null) {
+        this.cancelColor = data["cancelColor"];
+      }
+      if (data["backgroundColor"] != null) {
+        this.backgroundColor = data["backgroundColor"];
+      }
+      if (data["popover"] != null) {
+        this.popover = data["popover"];
+      }
+    });
+    uni.$emit(this.readyEventName, {});
+    const systemInfo = uni.getSystemInfoSync();
+    const osLanguage = systemInfo.osLanguage;
+    const appLanguage = systemInfo.appLanguage;
+    if (appLanguage != null) {
+      this.language = appLanguage;
+    } else if (osLanguage != null) {
+      this.language = osLanguage;
+    }
+    const osTheme = systemInfo.osTheme;
+    const appTheme = systemInfo.appTheme;
+    if (appTheme != null) {
+      this.theme = appTheme;
+    } else if (osTheme != null) {
+      this.theme = osTheme;
+    }
+    const hostTheme = systemInfo.hostTheme;
+    if (hostTheme != null) {
+      this.theme = hostTheme;
+    }
+    this.isLandscape = systemInfo.deviceOrientation == "landscape";
+    this.windowHeight = systemInfo.windowHeight;
+    this.windowWidth = systemInfo.windowWidth;
+    window.addEventListener("resize", this.fixSize);
+    const locale = uni.getLocale();
+    this.language = locale;
+    uni.onLocaleChange((res) => {
+      if (res.locale) {
+        this.language = res.locale;
+      }
+    });
+    uni.onThemeChange((res) => {
+      this.theme = res.theme;
+    });
+  },
+  computed: {
+    isWidescreen() {
+      return this.windowHeight >= 500 && this.windowWidth >= 500;
+    },
+    containerStyle() {
+      if (Object.keys(this.popover).length == 0) {
+        return {};
+      }
+      const res = {
+        transform: "none !important"
+      };
+      const top = this.popover.top;
+      const left = this.popover.left;
+      const width = this.popover.width;
+      const height = this.popover.height;
+      const center = left + width / 2;
+      const contentLeft = Math.max(0, center - 300 / 2);
+      res["left"] = `${contentLeft}px`;
+      const vcl = this.windowHeight / 2;
+      if (top + height - vcl > vcl - top) {
+        res["top"] = "auto";
+        res["bottom"] = `${this.windowHeight - top + 6}px`;
+      } else {
+        res["top"] = `${top + height + 6}px`;
+      }
+      return res;
+    },
+    triangleStyle() {
+      if (Object.keys(this.popover).length == 0) {
+        return {};
+      }
+      const res = {};
+      const borderColor = this.backgroundColor || (this.theme == "dark" ? "#2C2C2B" : "#fcfcfd");
+      const top = this.popover.top;
+      const left = this.popover.left;
+      const width = this.popover.width;
+      const height = this.popover.height;
+      const center = left + width / 2;
+      const contentLeft = Math.max(0, center - 300 / 2);
+      let triangleLeft = Math.max(12, center - contentLeft);
+      triangleLeft = Math.min(300 - 12, triangleLeft);
+      res["left"] = `${triangleLeft}px`;
+      const vcl = this.windowHeight / 2;
+      if (top + height - vcl > vcl - top) {
+        res["bottom"] = "-6px";
+        res["border-width"] = "6px 6px 0 6px";
+        res["border-color"] = `${borderColor} transparent transparent transparent`;
+      } else {
+        res["top"] = "-6px";
+        res["border-width"] = "0 6px 6px 6px";
+        res["border-color"] = `transparent transparent ${borderColor} transparent`;
+      }
+      return res;
+    },
+    cancelText() {
+      if (this.optionCancelText != null) {
+        const res = this.optionCancelText;
+        return res;
+      }
+      if (this.language.startsWith("en")) {
+        return this.i18nCancelText["en"];
+      }
+      if (this.language.startsWith("es")) {
+        return this.i18nCancelText["es"];
+      }
+      if (this.language.startsWith("fr")) {
+        return this.i18nCancelText["fr"];
+      }
+      if (this.language.startsWith("zh-Hans")) {
+        return this.i18nCancelText["zh-Hans"];
+      }
+      if (this.language.startsWith("zh-Hant")) {
+        return this.i18nCancelText["zh-Hant"];
+      }
+      return "取消";
+    },
+    computedBackgroundColor() {
+      return this.backgroundColor !== null ? this.backgroundColor : this.theme == "dark" ? "#2C2C2B" : "#ffffff";
+    }
+  },
+  onReady() {
+    this.bottomNavigationHeight = this.$page.safeAreaInsets.bottom;
+    setTimeout(() => {
+      this.show = true;
+    }, 10);
+  },
+  onResize() {
+    const systemInfo = uni.getSystemInfoSync();
+    this.isLandscape = systemInfo.deviceOrientation == "landscape";
+  },
+  onUnload() {
+    uni.$off(this.optionsEventName, null);
+    uni.$off(this.readyEventName, null);
+    uni.$off(this.successEventName, null);
+    uni.$off(this.failEventName, null);
+    window.removeEventListener("resize", this.fixSize);
+  },
+  methods: {
+    fixSize() {
+      const {
+        windowWidth,
+        windowHeight,
+        windowTop
+      } = uni.getSystemInfoSync();
+      this.windowWidth = windowWidth;
+      this.windowHeight = windowHeight + (windowTop || 0);
+    },
+    closeActionSheet() {
+      this.show = false;
+      setTimeout(() => {
+        uni.closeDialogPage({
+          dialogPage: this.$page
+        });
+      }, 300);
+    },
+    handleMenuItemClick(tapIndex) {
+      this.closeActionSheet();
+      uni.$emit(this.successEventName, tapIndex);
+    },
+    handleCancel() {
+      this.closeActionSheet();
+      uni.$emit(this.failEventName, {});
+    }
+  }
+};
+const _style_0$1 = "\n.uni-action-sheet_dialog__mask {\n    position: fixed;\n    z-index: 999;\n    top: 0;\n    right: 0;\n    left: 0;\n    bottom: 0;\n    opacity: 0;\n    background-color: rgba(0, 0, 0, 0.6);\n    transition: opacity 0.1s;\n}\n.uni-action-sheet_dialog__mask__show {\n    opacity: 1;\n}\n.uni-action-sheet_dialog__container {\n    position: fixed;\n    width: 100%;\n    left: 0;\n    bottom: 0;\n    z-index: 999;\n    transform: translate(0, 100%);\n    opacity: 0;\n    transition-property: transform, opacity;\n    transition-duration: 0.3s;\n    background-color: #f7f7f7;\n    border-top-left-radius: 12px;\n    border-top-right-radius: 12px;\n}\n.uni-action-sheet_dialog__menu {\n    border-top-left-radius: 12px;\n    border-top-right-radius: 12px;\n    overflow: hidden;\n}\n.uni-action-sheet_dialog__container.uni-action-sheet_dialog__show {\n    opacity: 1;\n    transform: translate(0, 0);\n}\n.uni-action-sheet_dialog__title,\n  .uni-action-sheet_dialog__cell,\n  .uni-action-sheet_dialog__action {\n    padding: 16px;\n}\n.uni-action-sheet_dialog__title__text,\n  .uni-action-sheet_dialog__cell__text,\n  .uni-action-sheet_dialog__action__text {\n    line-height: 1.4;\n    text-align: center;\n    white-space: nowrap;\n    overflow: hidden;\n    text-overflow: ellipsis;\n}\n.uni-action-sheet_dialog__action {\n    margin-top: 8px;\n}\n.uni-action-sheet_dialog__title__text {\n    color: #666666;\n}\n.uni-action-sheet_dialog__cell__text,\n  .uni-action-sheet_dialog__action__text {\n    color: #000000;\n}\n.uni-action-sheet_dialog__menu,\n  .uni-action-sheet_dialog__action {\n    background-color: #ffffff;\n}\n.uni-action-sheet_dialog__title {\n    border-bottom: 1px solid #e5e5e5;\n}\n.uni-action-sheet_dialog__cell__container {\n    max-height: 330px;\n\n    display: block;\n    overflow-y: auto;\n    scrollbar-width: none;\n}\n.uni-action-sheet_dialog__cell {\n    border-top: 1px solid #e5e5e5;\n}\n\n  /* dark mode */\n.uni-action-sheet_dialog__container.uni-action-sheet_dark__mode {\n    background-color: #1D1E1E;\n}\n.uni-action-sheet_dialog__menu.uni-action-sheet_dark__mode,\n  .uni-action-sheet_dialog__action.uni-action-sheet_dark__mode {\n    background-color: #2C2C2B;\n}\n.uni-action-sheet_dialog__title.uni-action-sheet_dark__mode {\n    border-bottom: 1px solid #2F3131;\n}\n.uni-action-sheet_dialog__cell.uni-action-sheet_dark__mode {\n    border-top: 1px solid #2F3131;\n}\n.uni-action-sheet_dialog__title__text.uni-action-sheet_dark__mode {\n    color: #999999;\n}\n.uni-action-sheet_dialog__cell__text.uni-action-sheet_dark__mode,\n  .uni-action-sheet_dialog__action__text.uni-action-sheet_dark__mode {\n    color: #ffffff;\n}\n\n  /* landscape mode */\n.uni-action-sheet_dialog__container.uni-action-sheet_landscape__mode {\n    width: 300px;\n    position: fixed;\n    left: 50%;\n    right: auto;\n    top: 50%;\n    bottom: auto;\n    z-index: 999;\n    transform: translate(-50%, -50%);\n    border-top-left-radius: 5px;\n    border-top-right-radius: 5px;\n    border-bottom-left-radius: 5px;\n    border-bottom-right-radius: 5px;\n    transition: opacity 0.3s;\n}\n.uni-action-sheet_dialog__menu.uni-action-sheet_landscape__mode {\n    border-top-left-radius: 5px;\n    border-top-right-radius: 5px;\n    border-bottom-left-radius: 5px;\n    border-bottom-right-radius: 5px;\n    box-shadow: 0 0 20px 5px rgba(0, 0, 0, 0.3);\n}\n.uni-action-sheet_dialog__action.uni-action-sheet_landscape__mode {\n    display: none;\n}\n.uni-action-sheet_dialog__cell__container.uni-action-sheet_landscape__mode {\n    max-height: 260px;\n}\n.uni-action-sheet_dialog__title.uni-action-sheet_landscape__mode,\n  .uni-action-sheet_dialog__cell.uni-action-sheet_landscape__mode,\n  .uni-action-sheet_dialog__action.uni-action-sheet_landscape__mode {\n    padding: 10px 6px;\n}\n.uni-action-sheet_dialog__menu {\n    display: block;\n}\n.uni-action-sheet_dialog__title,\n  .uni-action-sheet_dialog__cell,\n  .uni-action-sheet_dialog__action {\n    display: block;\n    text-align: center;\n    line-height: 1.4;\n    text-align: center;\n    white-space: nowrap;\n    overflow: hidden;\n    text-overflow: ellipsis;\n}\n.uni-action-sheet_dialog__cell,\n  .uni-action-sheet_dialog__action {\n    cursor: pointer;\n}\n.uni-action-sheet_dialog__triangle {\n    position: absolute;\n    width: 0;\n    height: 0;\n    margin-left: -6px;\n    border-style: solid;\n}\n  /* web wide screen */\n@media screen and (min-width: 500px) and (min-height: 500px) {\n.uni-action-sheet_dialog__mask {\n      background: none;\n}\n.uni-action-sheet_dialog__container {\n      width: 300px;\n      position: fixed;\n      left: 50%;\n      right: auto;\n      top: 50%;\n      bottom: auto;\n      z-index: 999;\n      border-radius: 5px;\n      opacity: 0;\n      transform: translate(-50%, -50%);\n      transition: opacity 0.3s;\n}\n.uni-action-sheet_dialog__show {\n      opacity: 1;\n      transform: translate(-50%, -50%) !important;\n}\n.uni-action-sheet_dialog__menu {\n      border-radius: 5px;\n      box-shadow: 0 0 20px 5px rgba(0, 0, 0, 0.3);\n}\n.uni-action-sheet_dialog__cell__container {\n      max-height: 260px;\n}\n.uni-action-sheet_dialog__action {\n      display: none;\n}\n.uni-action-sheet_dialog__title {\n      font-size: 15px;\n}\n.uni-action-sheet_dialog__title,\n    .uni-action-sheet_dialog__cell,\n    .uni-action-sheet_dialog__action {\n      padding: 10px 6px;\n}\n}\n\n";
+function _sfc_render$1(_ctx, _cache, $props, $setup, $data, $options) {
+  const _component_view = __syscom_2;
+  const _component_text = __syscom_1;
+  return openBlock(), createBlock(_component_view, null, {
+    default: withCtx(() => [
+      createVNode(_component_view, {
+        class: normalizeClass(["uni-action-sheet_dialog__mask", { "uni-action-sheet_dialog__mask__show": $data.show }]),
+        onClick: $options.handleCancel
+      }, null, 8, ["class", "onClick"]),
+      createVNode(_component_view, {
+        style: normalizeStyle($options.isWidescreen ? $options.containerStyle : {}),
+        class: normalizeClass(["uni-action-sheet_dialog__container", {
+          "uni-action-sheet_dialog__show": $data.show,
+          "uni-action-sheet_dark__mode": $data.theme == "dark",
+          "uni-action-sheet_landscape__mode": $data.isLandscape
+        }])
+      }, {
+        default: withCtx(() => [
+          createVNode(_component_view, {
+            style: normalizeStyle($data.backgroundColor != null ? { backgroundColor: $data.backgroundColor } : {}),
+            class: normalizeClass(["uni-action-sheet_dialog__menu", { "uni-action-sheet_dark__mode": $data.theme == "dark", "uni-action-sheet_landscape__mode": $data.isLandscape }])
+          }, {
+            default: withCtx(() => [
+              $data.title ? (openBlock(), createBlock(_component_view, {
+                key: 0,
+                class: normalizeClass(["uni-action-sheet_dialog__title", { "uni-action-sheet_dark__mode": $data.theme == "dark", "uni-action-sheet_landscape__mode": $data.isLandscape }])
+              }, {
+                default: withCtx(() => [
+                  createVNode(_component_text, {
+                    style: normalizeStyle({ color: $data.titleColor }),
+                    class: normalizeClass(["uni-action-sheet_dialog__title__text", { "uni-action-sheet_dark__mode": $data.theme == "dark" }])
+                  }, {
+                    default: withCtx(() => [
+                      createTextVNode(toDisplayString($data.title), 1)
+                    ]),
+                    _: 1
+                  }, 8, ["style", "class"])
+                ]),
+                _: 1
+              }, 8, ["class"])) : createCommentVNode("", true),
+              createVNode(_component_view, {
+                class: normalizeClass(["uni-action-sheet_dialog__cell__container", { "uni-action-sheet_landscape__mode": $data.isLandscape }])
+              }, {
+                default: withCtx(() => [
+                  (openBlock(true), createElementBlock(Fragment, null, renderList($data.itemList, (item, index2) => {
+                    return openBlock(), createBlock(_component_view, {
+                      style: normalizeStyle(index2 == 0 ? { borderTop: "none" } : {}),
+                      class: normalizeClass(["uni-action-sheet_dialog__cell", { "uni-action-sheet_dark__mode": $data.theme == "dark", "uni-action-sheet_landscape__mode": $data.isLandscape }]),
+                      key: index2,
+                      onClick: ($event) => $options.handleMenuItemClick(index2)
+                    }, {
+                      default: withCtx(() => [
+                        createVNode(_component_text, {
+                          style: normalizeStyle({ color: $data.itemColor }),
+                          class: normalizeClass(["uni-action-sheet_dialog__cell__text", { "uni-action-sheet_dark__mode": $data.theme == "dark" }])
+                        }, {
+                          default: withCtx(() => [
+                            createTextVNode(toDisplayString(item), 1)
+                          ]),
+                          _: 2
+                        }, 1032, ["style", "class"])
+                      ]),
+                      _: 2
+                    }, 1032, ["style", "class", "onClick"]);
+                  }), 128))
+                ]),
+                _: 1
+              }, 8, ["class"])
+            ]),
+            _: 1
+          }, 8, ["style", "class"]),
+          createVNode(_component_view, {
+            style: normalizeStyle($data.backgroundColor != null ? { backgroundColor: $data.backgroundColor } : {}),
+            class: normalizeClass(["uni-action-sheet_dialog__action", { "uni-action-sheet_dark__mode": $data.theme == "dark", "uni-action-sheet_landscape__mode": $data.isLandscape }]),
+            onClick: $options.handleCancel
+          }, {
+            default: withCtx(() => [
+              createVNode(_component_text, {
+                style: normalizeStyle({ color: $data.cancelColor }),
+                class: normalizeClass(["uni-action-sheet_dialog__action__text", { "uni-action-sheet_dark__mode": $data.theme == "dark" }])
+              }, {
+                default: withCtx(() => [
+                  createTextVNode(toDisplayString($options.cancelText), 1)
+                ]),
+                _: 1
+              }, 8, ["style", "class"])
+            ]),
+            _: 1
+          }, 8, ["style", "class", "onClick"]),
+          createVNode(_component_view, {
+            style: normalizeStyle({ height: `${$data.bottomNavigationHeight}px`, backgroundColor: $options.computedBackgroundColor })
+          }, null, 8, ["style"]),
+          $options.isWidescreen && Object.keys($data.popover).length > 0 ? (openBlock(), createBlock(_component_view, {
+            key: 0,
+            style: normalizeStyle($options.triangleStyle),
+            class: "uni-action-sheet_dialog__triangle"
+          }, null, 8, ["style"])) : createCommentVNode("", true)
+        ]),
+        _: 1
+      }, 8, ["style", "class"])
+    ]),
+    _: 1
+  });
+}
+const UniActionSheetPage = /* @__PURE__ */ _export_sfc(_sfc_main$1, [["render", _sfc_render$1], ["styles", [_style_0$1]]]);
+class ShowActionSheetSuccessImpl {
+  constructor(tapIndex, errMsg = "showActionSheet:ok") {
+    this.errMsg = errMsg;
+    this.tapIndex = tapIndex;
+  }
+}
+class ShowActionSheetFailImpl extends UniError {
+  constructor(errMsg = "showActionSheet:fail cancel", errCode = 4) {
+    super();
+    this.errMsg = errMsg;
+    this.errCode = errCode;
+  }
+}
+const showActionSheet = (options) => {
+  registerSystemRoute("uni:actionSheet", UniActionSheetPage);
+  const uuid = `${Date.now()}${Math.floor(Math.random() * 1e7)}`;
+  const baseEventName = `uni_action_sheet_${uuid}`;
+  const readyEventName = `${baseEventName}_ready`;
+  const optionsEventName = `${baseEventName}_options`;
+  const successEventName = `${baseEventName}_success`;
+  const failEventName = `${baseEventName}_fail`;
+  uni.$on(readyEventName, () => {
+    uni.$emit(optionsEventName, options);
+  });
+  uni.$on(successEventName, (index2) => {
+    var _a, _b;
+    const res = new ShowActionSheetSuccessImpl(index2);
+    (_a = options.success) == null ? void 0 : _a.call(options, res);
+    (_b = options.complete) == null ? void 0 : _b.call(options, res);
+  });
+  uni.$on(failEventName, () => {
+    var _a, _b;
+    const res = new ShowActionSheetFailImpl();
+    (_a = options.fail) == null ? void 0 : _a.call(options, res);
+    (_b = options.complete) == null ? void 0 : _b.call(options, res);
+  });
+  uni.openDialogPage({
+    url: `uni:actionSheet?readyEventName=${readyEventName}&optionsEventName=${optionsEventName}&successEventName=${successEventName}&failEventName=${failEventName}`,
+    fail(err) {
+      var _a, _b;
+      const res = new ShowActionSheetFailImpl(`showActionSheet failed, ${err.errMsg}`);
+      (_a = options.fail) == null ? void 0 : _a.call(options, res);
+      (_b = options.complete) == null ? void 0 : _b.call(options, res);
+      uni.$off(readyEventName);
+      uni.$off(successEventName);
+      uni.$off(failEventName);
+    }
+  });
+};
+const hideActionSheet = () => {
+  var _a;
+  const currentPage = getCurrentPage();
+  if (!currentPage)
+    return;
+  const systemDialogPages = (_a = currentPage.vm.$pageLayoutInstance) == null ? void 0 : _a.$systemDialogPages.value;
+  for (let i = 0; i < systemDialogPages.length; i++) {
+    if (isSystemActionSheetDialogPage(systemDialogPages[i])) {
+      systemDialogPages.splice(i, 1);
+      return;
+    }
+  }
+};
+const defaultPoi = {
+  latitude: 39.908823,
+  longitude: 116.39747
+};
+const languageData = {
+  "en": {
+    "ok": "ok",
+    "cancel": "cancel",
+    "locationLoading": "positioning...",
+    "search": "Search location"
+  },
+  "zh-Hans": {
+    "ok": "确定",
+    "cancel": "取消",
+    "locationLoading": "获取定位中...",
+    "search": "搜索地点"
+  },
+  "zh-Hant": {
+    "ok": "確定",
+    "cancel": "取消",
+    "locationLoading": "獲取定位中...",
+    "search": "蒐索地點"
+  }
+};
+const loadingPath = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAAAXNSR0IArs4c6QAAAXdJREFUSEvdVtFthTAMdAKD0E3oABixwWOSvk5SNkCYAcomZRFIZfSoUl6IQ14l2uYXnMtd7uwoOGmpk3AhGpiI3gEgQ8SnmMM/AmwAYPwfwG3bZkmS5IjY7MlIRCLjruuu8zw3VVWN232cUnOBUurFJ6UEfPNADgC1i4AT+Mb4DQC40HmPPmALdEDEZ5dqu+aSwPk7b7iVMQSU67yutsGNMa9lWV590SGiCwCwUrtM13oxTqvRpmkaXCaxD8L/aq0v0gFFxjGNIbRGZBy60dH/zge23GgfflRK1UVRDEcY9X2fG2O4l2/XVzQXxpZ7l4jY6wFgbkB3+629/Xypj0j5E//+bsY8NLTWg2SykKkW3LkstzeIWPtkDplqQcAW6F2smF2appmtgjRYvqXFM+g5h8tYdEWKiD64dvv0CQV3mstqALsNxDePN+CHHwK5byJJLxDJaNFxkoClrP9JYDYfN31vxPaYRzPmO5ReJD65o4GlO5S+fwJ6r+Yfw6D/nQAAAABJRU5ErkJggg==";
+const _sfc_main = {
+  data() {
+    const id1 = `UniMap1_${(Math.random() * 1e6).toString(36)}`;
+    const id2 = `UniMap2_${(Math.random() * 1e6).toString(36)}`;
+    const id3 = `UniMap3_${(Math.random() * 1e6).toString(36)}`;
+    return {
+      readyEventName: "",
+      optionsEventName: "",
+      successEventName: "",
+      failEventName: "",
+      mapId: id1,
+      mapTargetId: id2,
+      scrollId: id3,
+      isFocus: false,
+      latitude: 0,
+      longitude: 0,
+      locationComplete: false,
+      locationLoading: false,
+      chooseLocationOptions: {},
+      pageIndex: 1,
+      pageSize: 20,
+      pois: [],
+      selected: -1,
+      searchValue: "",
+      safeArea: {
+        top: 0,
+        bottom: 0,
+        left: 0,
+        right: 0
+      },
+      icon: {
+        target: "",
+        success: "",
+        position: "",
+        search: ""
+      },
+      lastTime: 0,
+      searchLoading: false,
+      searchLoadingAnimation: false,
+      language: "zh-Hans",
+      scrollTop: 0,
+      isLandscape: false,
+      theme: "light",
+      searchValueChangeTimer: -1,
+      lastPoi: {
+        latitude: null,
+        longitude: null,
+        selected: -1,
+        pois: [],
+        scrollTop: 0
+      },
+      errMsg: "",
+      callUniMapCoErr: false,
+      useUniCloud: true,
+      mapHeight: 350,
+      loadingPath
+    };
+  },
+  onLoad(options) {
+    this.checkUniCloud();
+    this.initPageOptions(options);
+    this.getSystemInfo();
+    this.getLocation();
+  },
+  onReady() {
+    this.getSafeAreaInsets();
+  },
+  onUnload() {
+    uni.$off(this.optionsEventName, null);
+    uni.$off(this.readyEventName, null);
+    uni.$off(this.successEventName, null);
+    uni.$off(this.failEventName, null);
+  },
+  onResize() {
+    this.getSystemInfo();
+  },
+  methods: {
+    checkUniCloud() {
+      if (typeof uniCloud == "undefined") {
+        this.errMsg = "uni.chooseLocation 依赖 uniCloud 的 uni-map-common 插件，请先关联服务空间，并安装 uni-map-common 插件，插件地址：https://ext.dcloud.net.cn/plugin?id=13872";
+        this.useUniCloud = false;
+        console.error(this.errMsg);
+      }
+    },
+    initPageOptions(options) {
+      this.readyEventName = options["readyEventName"];
+      this.optionsEventName = options["optionsEventName"];
+      this.successEventName = options["successEventName"];
+      this.failEventName = options["failEventName"];
+      uni.$on(this.optionsEventName, (data) => {
+        if (data["latitude"] != null) {
+          this.chooseLocationOptions.latitude = data["latitude"];
+        }
+        if (data["longitude"] != null) {
+          this.chooseLocationOptions.longitude = data["longitude"];
+        }
+        if (data["keyword"] != null) {
+          let keyword = data["keyword"];
+          this.chooseLocationOptions.keyword = keyword;
+          this.searchValue = keyword;
+        } else {
+          this.chooseLocationOptions.keyword = "";
+        }
+        if (data["payload"] != null) {
+          this.chooseLocationOptions.payload = data["payload"];
+        }
+      });
+      uni.$emit(this.readyEventName, {});
+    },
+    getLocation() {
+      if (this.chooseLocationOptions.latitude != null && this.chooseLocationOptions.longitude != null) {
+        this.latitude = this.chooseLocationOptions.latitude;
+        this.longitude = this.chooseLocationOptions.longitude;
+        this.locationComplete = true;
+        this.getPoi("getLocation");
+      } else {
+        this.locationLoading = true;
+        uni.getLocation({
+          type: "gcj02",
+          success: (res) => {
+            this.latitude = res.latitude;
+            this.longitude = res.longitude;
+            this.locationComplete = true;
+            this.locationLoading = false;
+            this.getPoi("getLocation");
+          },
+          fail: (err) => {
+            console.error("getLocationErr: ", err);
+            this.latitude = defaultPoi.latitude;
+            this.longitude = defaultPoi.longitude;
+            this.locationComplete = true;
+            this.locationLoading = false;
+            this.getPoi("getLocation");
+          }
+        });
+      }
+    },
+    distanceHandle(distance) {
+      if (distance < 1e3) {
+        return distance + "m";
+      } else {
+        return parseFloat((distance / 1e3).toFixed(2)) + "km";
+      }
+    },
+    poiHandle(pois) {
+      let list2 = pois.map((item, index2) => {
+        const location2 = item["location"];
+        let distance = item["distance"];
+        let latitude = location2["lat"];
+        let longitude = location2["lng"];
+        if (distance == 0) {
+          latitude = this.latitude;
+          longitude = this.longitude;
+        }
+        return {
+          title: item["title"],
+          address: item["address"],
+          distance,
+          distanceStr: this.distanceHandle(distance),
+          location: {
+            latitude,
+            longitude
+          }
+        };
+      });
+      let pageIndex = this.pageIndex;
+      if (pageIndex == 1) {
+        this.pois = list2;
+        this.updateScrollTop(0);
+      } else {
+        this.pois = this.pois.concat(list2);
+      }
+    },
+    callUniMapCo(action, data) {
+      let promise = new Promise((resolve, reject) => {
+        if (this.useUniCloud == false) {
+          reject(this.errMsg);
+          return;
+        }
+        this.errMsg = "";
+        const uniMapCo = uniCloud.importObject("uni-map-co", {
+          customUI: true
+        });
+        let chooseLocationData = {
+          action,
+          data
+        };
+        if (this.chooseLocationOptions.payload != null) {
+          chooseLocationData["payload"] = this.chooseLocationOptions.payload;
+        }
+        uniMapCo.chooseLocation(chooseLocationData).then((res) => {
+          resolve(res);
+        }).catch((err) => {
+          if (err instanceof UniCloudError) {
+            const cloudError = err;
+            const errCode = cloudError.errCode;
+            const errMsg = cloudError.errMsg;
+            const errSubject = cloudError.errSubject;
+            if (errMsg.indexOf("在云端不存在") > -1 || errMsg.indexOf("未匹配") > -1) {
+              this.errMsg = "uni.chooseLocation 依赖 uniCloud 的 uni-map-common 插件，请安装 uni-map-common 插件，插件地址：https://ext.dcloud.net.cn/plugin?id=13872";
+              console.error(this.errMsg);
+            } else {
+              this.errMsg = errMsg;
+              console.error("获取POI信息失败，" + JSON.stringify({ errCode, errMsg, errSubject }));
+            }
+          }
+          reject(err);
+        });
+      });
+      promise.then((res) => {
+        this.callUniMapCoErr = false;
+      }).catch((err) => {
+        this.callUniMapCoErr = true;
+      });
+      return promise;
+    },
+    getPoi(type) {
+      let searchValue = this.searchValue;
+      let latitude = this.latitude;
+      let longitude = this.longitude;
+      let pageIndex = this.pageIndex;
+      let pageSize = this.pageSize;
+      if (["searchValueChange"].indexOf(type) == -1) {
+        this.searchLoading = true;
+      }
+      if (searchValue != "" && searchValue.length > 0) {
+        this.callUniMapCo("search", {
+          keyword: searchValue,
+          location: {
+            lat: latitude,
+            lng: longitude
+          },
+          radius: 5e3,
+          auto_extend: 1,
+          orderby: "weight",
+          page_index: pageIndex,
+          page_size: pageSize
+        }).then((res) => {
+          var _a, _b;
+          let pois = (_b = (_a = res.getJSON("result")) == null ? void 0 : _a.getJSON("result")) == null ? void 0 : _b.getArray("data");
+          this.poiHandle(pois);
+          this.searchLoading = false;
+        }).catch((err) => {
+          this.searchLoading = false;
+        });
+      } else {
+        this.callUniMapCo("location2address", {
+          location: `${latitude},${longitude}`,
+          get_poi: 1,
+          poi_options: {
+            radius: 3e3,
+            policy: pageIndex == 1 ? 3 : 4,
+            roadlevel: 1,
+            homeorcorp: 1,
+            page_index: pageIndex,
+            page_size: pageSize
+          }
+        }).then((res) => {
+          var _a, _b;
+          let pois = (_b = (_a = res.getJSON("result")) == null ? void 0 : _a.getJSON("result")) == null ? void 0 : _b.getArray("pois");
+          this.poiHandle(pois);
+          if (this.pois.length > 0 && pageIndex == 1) {
+            let poi = this.pois[0];
+            if (poi.distance > 0) {
+              let poi1 = poi.location;
+              let poi2 = {
+                latitude: this.latitude,
+                longitude: this.longitude
+              };
+              let distance = poi.distance;
+              let direction2 = this.calcDirection(poi1, poi2);
+              if (poi.address.indexOf("米") == -1) {
+                let suffix = `向${direction2}${distance}米`;
+                let newPoi = {
+                  title: `${poi.title}${suffix}`,
+                  address: `${poi.address}${suffix}`,
+                  distance: 0,
+                  distanceStr: this.distanceHandle(distance),
+                  location: poi2
+                };
+                this.pois.unshift(newPoi);
+              }
+            }
+            if (this.selected == -1) {
+              this.selected = 0;
+              this.lastPoi.latitude = this.latitude;
+              this.lastPoi.longitude = this.longitude;
+              this.lastPoi.selected = this.selected;
+              this.lastPoi.pois = this.pois;
+            }
+          }
+          this.searchLoading = false;
+        }).catch((err) => {
+          this.searchLoading = false;
+        });
+      }
+    },
+    calcDirection(poi1, poi2) {
+      const toRadians = (angle2) => angle2 * (Math.PI / 180);
+      const toDegrees = (angle2) => angle2 * (180 / Math.PI);
+      const lat1 = toRadians(poi1.latitude);
+      const lon1 = toRadians(poi1.longitude);
+      const lat2 = toRadians(poi2.latitude);
+      const lon2 = toRadians(poi2.longitude);
+      const dLon = lon2 - lon1;
+      const y = Math.sin(dLon) * Math.cos(lat2);
+      const x = Math.cos(lat1) * Math.sin(lat2) - Math.sin(lat1) * Math.cos(lat2) * Math.cos(dLon);
+      const angleRadians = Math.atan2(y, x);
+      let angle = toDegrees(angleRadians);
+      angle = (angle + 360) % 360;
+      if (angle < 22.5 || angle >= 337.5) {
+        return "北";
+      } else if (angle >= 22.5 && angle < 67.5) {
+        return "东北";
+      } else if (angle >= 67.5 && angle < 112.5) {
+        return "东";
+      } else if (angle >= 112.5 && angle < 157.5) {
+        return "东南";
+      } else if (angle >= 157.5 && angle < 202.5) {
+        return "南";
+      } else if (angle >= 202.5 && angle < 247.5) {
+        return "西南";
+      } else if (angle >= 247.5 && angle < 292.5) {
+        return "西";
+      } else {
+        return "西北";
+      }
+    },
+    getSafeAreaInsets() {
+      const info = uni.getWindowInfo();
+      this.safeArea.top = info.safeAreaInsets.top;
+      this.safeArea.bottom = info.safeAreaInsets.bottom;
+      this.safeArea.left = info.safeAreaInsets.left;
+      this.safeArea.right = info.safeAreaInsets.right;
+    },
+    getSystemInfo() {
+      const info = uni.getWindowInfo();
+      this.safeArea.top = info.safeAreaInsets.top;
+      this.safeArea.bottom = info.safeAreaInsets.bottom;
+      this.safeArea.left = info.safeAreaInsets.left;
+      this.safeArea.right = info.safeAreaInsets.right;
+      let screenHeight = info.screenHeight;
+      this.mapHeight = (screenHeight - this.safeArea.top - this.safeArea.bottom) * 0.6;
+      const systemInfo = uni.getSystemInfoSync();
+      const appLanguage = systemInfo.appLanguage;
+      this.language = appLanguage;
+      const osTheme = systemInfo.osTheme;
+      const appTheme = systemInfo.appTheme;
+      if (appTheme != null && appTheme != "auto") {
+        this.theme = appTheme;
+      } else if (osTheme != null) {
+        this.theme = osTheme;
+      }
+      this.isLandscape = systemInfo.windowWidth >= 900 ? true : false;
+      const hostTheme = systemInfo.hostTheme;
+      if (hostTheme != null) {
+        this.theme = hostTheme;
+      }
+      const locale = uni.getLocale();
+      this.language = locale;
+    },
+    getMapContext() {
+      return uni.createMapContext(this.mapId, this);
+    },
+    regionchange(e2) {
+      let causedBy = e2.causedBy;
+      if (!causedBy) {
+        causedBy = e2.detail.causedBy;
+      }
+      if (e2.type !== "end" || causedBy != "drag" || this.locationComplete == false) {
+        return;
+      }
+      const mapContext = this.getMapContext();
+      if (mapContext != null) {
+        mapContext.getCenterLocation({
+          success: (res) => {
+            let latitudeDiff = Math.abs(res.latitude - this.latitude);
+            let longitudeDiff = Math.abs(res.longitude - this.longitude);
+            if (latitudeDiff > 1e-6 || longitudeDiff > 1e-6) {
+              this.latitude = parseFloat(res.latitude.toFixed(6));
+              this.longitude = parseFloat(res.longitude.toFixed(6));
+              this.searchValue = "";
+              this.selected = -1;
+              this.pageIndex = 1;
+              this.getPoi("regionchange");
+              const element = this.$refs[this.mapTargetId];
+              if (element != null) {
+                const duration = 250;
+                element.style.setProperty("transition-duration", `${duration}ms`);
+                element.style.setProperty("transform", "translateY(0px)");
+                element.style.setProperty("transform", "translateY(-15px)");
+                setTimeout(() => {
+                  element.style.setProperty("transform", "translateY(0px)");
+                }, duration);
+              }
+            }
+          }
+        });
+      }
+    },
+    clearSearchValueChangeTimer() {
+      if (this.searchValueChangeTimer != -1) {
+        clearTimeout(this.searchValueChangeTimer);
+        this.searchValueChangeTimer = -1;
+      }
+    },
+    searchValueChange(e2) {
+      this.clearSearchValueChangeTimer();
+      this.searchValueChangeTimer = setTimeout(() => {
+        this.poiSearch("searchValueChange");
+      }, 200);
+    },
+    poiSearch(type) {
+      this.clearSearchValueChangeTimer();
+      this.pageIndex = 1;
+      this.selected = -1;
+      this.getPoi(type);
+    },
+    cancelSearch() {
+      this.isFocus = false;
+      this.searchValue = "";
+      if (this.lastPoi.latitude != null) {
+        this.latitude = this.lastPoi.latitude;
+      }
+      if (this.lastPoi.longitude != null) {
+        this.longitude = this.lastPoi.longitude;
+      }
+      if (this.lastPoi.pois.length - 1 > this.lastPoi.selected) {
+        this.pois = this.lastPoi.pois;
+        this.selected = this.lastPoi.selected;
+        this.updateScrollTop(this.lastPoi.scrollTop);
+      } else {
+        this.poiSearch("cancelSearch");
+      }
+    },
+    updateScrollTop(scrollTop) {
+      setTimeout(() => {
+        this.scrollTop = scrollTop;
+      }, 10);
+    },
+    selectPoi(item, index2) {
+      this.isFocus = false;
+      this.selected = index2;
+      this.latitude = item.location.latitude;
+      this.longitude = item.location.longitude;
+      if (this.searchValue == this.chooseLocationOptions.keyword) {
+        this.lastPoi.latitude = this.latitude;
+        this.lastPoi.longitude = this.longitude;
+        this.lastPoi.selected = this.selected;
+        this.lastPoi.pois = this.pois;
+        const scrollElement = this.$refs[this.scrollId];
+        if (scrollElement != null) {
+          const scrollTop = scrollElement.scrollTop;
+          this.lastPoi.scrollTop = scrollTop;
+          this.scrollTop = scrollTop;
+        }
+      }
+    },
+    scrolltolower() {
+      this.pageIndex++;
+      this.getPoi("scrolltolower");
+    },
+    mapReset() {
+      this.isFocus = false;
+      this.pageIndex = 1;
+      this.getLocation();
+    },
+    closeDialogPage() {
+      uni.closeDialogPage({
+        dialogPage: this.$page
+      });
+    },
+    back() {
+      uni.$emit(this.failEventName, 1);
+      this.closeDialogPage();
+    },
+    confirm() {
+      if (this.selected < 0) {
+        if (this.callUniMapCoErr) {
+          uni.$emit(this.successEventName, {
+            name: "",
+            address: "",
+            latitude: parseFloat(this.latitude.toFixed(6)),
+            longitude: parseFloat(this.longitude.toFixed(6))
+          });
+          this.closeDialogPage();
+        }
+        return;
+      }
+      let item = this.pois[this.selected];
+      let res = {
+        name: item.title,
+        address: item.address,
+        latitude: item.location.latitude,
+        longitude: item.location.longitude
+      };
+      uni.$emit(this.successEventName, res);
+      this.closeDialogPage();
+    }
+  },
+  watch: {
+    searchLoading(val) {
+      if (val) {
+        setTimeout(() => {
+          this.searchLoadingAnimation = true;
+        }, 50);
+      } else {
+        this.searchLoadingAnimation = false;
+      }
+    }
+  },
+  computed: {
+    languageCom() {
+      const textInfo = languageData[this.language] != null ? languageData[this.language] : languageData["zh-Hans"];
+      return textInfo;
+    },
+    uniChooseLocationClassCom() {
+      let list2 = [];
+      if (this.theme == "dark") {
+        list2.push("uni-choose-location-dark");
+      } else {
+        list2.push("uni-choose-location-light");
+      }
+      return list2.join(" ");
+    },
+    landscapeClassCom() {
+      return this.isLandscape ? "uni-choose-location-landscape" : "uni-choose-location-vertical";
+    },
+    mapBoxStyleCom() {
+      let list2 = [];
+      if (!this.useUniCloud) {
+        list2.push(`flex: 1;`);
+      }
+      if (!this.isLandscape) {
+        let top = this.isFocus ? (300 - this.mapHeight) / 2 : 0;
+        list2.push(`transform:translateY(${top}px);`);
+        list2.push(`height:${this.mapHeight}px;`);
+      }
+      return list2.join("");
+    },
+    poiBoxStyleCom() {
+      let list2 = [];
+      if (!this.isLandscape) {
+        let top = this.isFocus ? 300 : this.mapHeight;
+        list2.push(`top:${top}px;`);
+      }
+      return list2.join("");
+    },
+    resetStyleCom() {
+      let list2 = [];
+      if (!this.isLandscape) {
+        let bottom = this.isFocus ? (this.mapHeight - 300) / 2 + 300 - this.mapHeight : 0;
+        list2.push(`transform:translateY(${bottom}px);`);
+      }
+      return list2.join("");
+    }
+  }
+};
+const _style_0 = `
+@font-face {
+    font-family: UniChooseLocationFontFamily;
+    src: url('data:font/ttf;charset=utf-8;base64,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') format('truetype');
+}
+.uni-choose-location-icons {
+    font-family: "UniChooseLocationFontFamily";
+    font-size: 16px;
+    font-style: normal;
+}
+.uni-choose-location {
+    position: relative;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: #f8f8f8;
+    z-index: 999;
+}
+.uni-choose-location-map-box {
+    position: relative;
+    width: 100%;
+    height: 350px;
+}
+.uni-choose-location-map-box.uni-choose-location-vertical {
+    transition-property: transform;
+    transition-duration: 0.25s;
+    transition-timing-function: ease-out;
+}
+.uni-choose-location-map {
+    width: 100%;
+    height: 100%;
+}
+.uni-choose-location-map-target {
+    position: absolute;
+    left: 50%;
+    bottom: 50%;
+    width: 50px;
+    height: 50px;
+    margin-left: -25px;
+    transition-property: transform;
+    transition-duration: 0.25s;
+    transition-timing-function: ease-out;
+}
+.uni-choose-location-map-target-icon {
+    font-size: 50px;
+    color: #f0493e;
+}
+
+  /* #1aad19; #f0493e; #007aff;*/
+.uni-choose-location-map-reset {
+    position: absolute;
+    left: 20px;
+    bottom: 40px;
+    width: 40px;
+    height: 40px;
+    box-sizing: border-box;
+    background-color: #fff;
+    border-radius: 20px;
+    pointer-events: auto;
+    box-shadow: 0px 0px 20px 2px rgba(0, 0, 0, .3);
+    z-index: 9;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.uni-choose-location-map-reset.uni-choose-location-vertical {
+    transition-property: transform;
+    transition-duration: 0.25s;
+    transition-timing-function: ease-out;
+}
+.uni-choose-location-map-reset-icon {
+    font-size: 26px;
+    text-align: center;
+    line-height: 40px;
+}
+.uni-choose-location-nav {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 60px;
+    background-color: rgba(0, 0, 0, 0);
+    background-image: linear-gradient(to bottom, rgba(0, 0, 0, .6), rgba(0, 0, 0, 0));
+}
+.uni-choose-location-nav-btn {
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    width: 64px;
+    height: 44px;
+    padding: 5px;
+}
+.uni-choose-location-nav-btn.uni-choose-location-nav-confirm-btn {
+    left: auto;
+    right: 5px;
+}
+.uni-choose-location-nav-btn.uni-choose-location-nav-confirm-btn .uni-choose-location-nav-confirm-text {
+    background-color: #007aff;
+    border-radius: 5px;
+}
+.uni-choose-location-nav-btn.uni-choose-location-nav-confirm-btn.active:active {
+    opacity: 0.7;
+}
+.uni-choose-location-nav-btn.uni-choose-location-nav-confirm-btn.disable {
+    opacity: 0.4;
+}
+.uni-choose-location-nav-btn.uni-choose-location-nav-back-btn .uni-choose-location-nav-back-text {
+    color: #fff;
+}
+.uni-choose-location-nav-text {
+    padding: 8px 0px;
+    font-size: 14px;
+    text-align: center;
+
+    letter-spacing: 0.1em;
+
+    color: #fff;
+    text-align: center;
+}
+.uni-choose-location-poi {
+    position: absolute;
+    top: 350px;
+    width: 100%;
+    bottom: 0;
+    background-color: #fff;
+    z-index: 10
+}
+.uni-choose-location-poi.uni-choose-location-vertical {
+    transition-property: top;
+    transition-duration: 0.25s;
+    transition-timing-function: ease-out;
+}
+.uni-choose-location-poi-search {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    height: 50px;
+    padding: 8px;
+    background-color: #fff;
+}
+.uni-choose-location-poi-search-box {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    height: 32px;
+    flex: 1;
+    border-radius: 5px;
+    padding: 0 15px;
+    background-color: #ededed;
+}
+.uni-choose-location-poi-search-input {
+    flex: 1;
+    height: 100%;
+    border-radius: 5px;
+    padding: 0 5px;
+    background: #ededed;
+}
+.uni-choose-location-poi-search-cancel {
+    margin-left: 5px;
+    color: #007aff;
+    font-size: 15px;
+    text-align: center;
+}
+.uni-choose-location-poi-list {
+    flex: 1;
+}
+.uni-choose-location-poi-search-loading {
+    display: flex;
+    align-items: center;
+    padding: 10px 0px;
+}
+.uni-choose-location-poi-search-loading-text {
+    color: #191919;
+}
+.uni-choose-location-poi-search-error {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+}
+.uni-choose-location-poi-search-error-text {
+    color: #191919;
+    font-size: 14px;
+}
+.uni-choose-location-poi-item {
+    position: relative;
+    padding: 15px 10px;
+    padding-right: 40px;
+}
+.uni-choose-location-poi-item-title-text {
+    font-size: 14px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    color: #191919;
+}
+.uni-choose-location-poi-item-detail-text {
+    font-size: 12px;
+    margin-top: 5px;
+    color: #b2b2b2;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+.uni-choose-location-poi-item-selected-icon {
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    width: 26px;
+    height: 26px;
+    margin-top: -13px;
+    color: #007aff;
+    font-size: 24px;
+}
+.uni-choose-location-poi-item-after {
+    position: absolute;
+    height: 1px;
+    left: 10px;
+    bottom: 0px;
+    right: 10px;
+    width: auto;
+    border-bottom: 1px solid #f8f8f8;
+}
+.uni-choose-location-search-icon {
+    color: #808080;
+    padding-left: 5px;
+}
+.uni-choose-location-poi-search-loading-start {
+    transform: rotate(60000deg)
+}
+.uni-choose-location-poi-search-loading-image {
+    width: 28px;
+    height: 28px;
+    transition-property: transform;
+    transition-duration: 120s;
+    transition-timing-function: linear;
+}
+
+  /* 横屏样式开始 */
+.uni-choose-location .uni-choose-location-map-box.uni-choose-location-landscape {
+    height: 100%;
+}
+.uni-choose-location .uni-choose-location-poi.uni-choose-location-landscape {
+    position: absolute;
+    top: 80px;
+    right: 25px;
+    width: 300px;
+    bottom: 20px;
+    max-height: 600px;
+    box-shadow: 0px 0px 20px 2px rgba(0, 0, 0, .3);
+    border-radius: 5px;
+}
+.uni-choose-location .uni-choose-location-map-reset.uni-choose-location-landscape {
+    left: 40px;
+    bottom: 40px;
+}
+.uni-choose-location .uni-choose-location-poi-item.uni-choose-location-landscape {
+    padding: 10px;
+}
+.uni-choose-location .uni-choose-location-nav-btn.uni-choose-location-landscape {
+    top: 10px;
+    left: 20px;
+}
+.uni-choose-location .uni-choose-location-nav-btn.uni-choose-location-nav-confirm-btn.uni-choose-location-landscape {
+    left: auto;
+    right: 20px;
+}
+
+  /* 横屏样式结束 */
+
+  /* 暗黑模式样式开始 */
+.uni-choose-location-dark .uni-choose-location-map-reset {
+    background-color: #111111;
+    box-shadow: 0px 0px 5px 1px rgba(0, 0, 0, .3);
+}
+.uni-choose-location-dark .uni-choose-location-poi-search-box {
+    background-color: #111111;
+}
+.uni-choose-location-dark .uni-choose-location-search-icon {
+    color: #d1d1d1;
+}
+.uni-choose-location-dark .uni-choose-location-poi-search-loading-text {
+    color: #d1d1d1;
+}
+.uni-choose-location-dark .uni-choose-location-poi-search {
+    background-color: #181818
+}
+.uni-choose-location-dark .uni-choose-location-poi-search-input {
+    background: #111111;
+    color: #d1d1d1;
+}
+.uni-choose-location-dark .uni-choose-location-poi-item-title-text {
+    color: #d1d1d1;
+}
+.uni-choose-location-dark .uni-choose-location-poi-item-detail-text {
+    color: #595959;
+}
+.uni-choose-location-dark .uni-choose-location-poi {
+    background-color: #181818
+}
+.uni-choose-location-dark .uni-choose-location-poi-item-after {
+    border-bottom: 1px solid #1e1e1e;
+}
+.uni-choose-location-dark .uni-choose-location-map-reset-icon {
+    color: #d1d1d1;
+}
+.uni-choose-location-dark .uni-choose-location-poi-search-error-text {
+    color: #d1d1d1;
+}
+
+  /* 暗黑模式样式结束 */
+uni-image {
+    display: inline-block;
+    overflow: hidden;
+    position: relative;
+}
+uni-image[hidden] {
+    display: none;
+}
+uni-image > div {
+    width: 100%;
+    height: 100%;
+    background-repeat:no-repeat;
+}
+uni-image > img {
+    -webkit-touch-callout: none;
+    user-select: none;
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+}
+uni-image > .uni-image-will-change {
+    will-change: transform;
+}
+
+`;
+function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
+  const _component_map = __syscom_0;
+  const _component_text = __syscom_1;
+  const _component_view = __syscom_2;
+  const _component_input = __syscom_3;
+  const _component_image = __syscom_4;
+  const _component_scroll_view = __syscom_5;
+  return openBlock(), createBlock(_component_view, {
+    class: normalizeClass(["uni-choose-location", $options.uniChooseLocationClassCom])
+  }, {
+    default: withCtx(() => [
+      createVNode(_component_view, {
+        class: normalizeClass(["uni-choose-location-map-box", [$options.landscapeClassCom]]),
+        style: normalizeStyle($options.mapBoxStyleCom)
+      }, {
+        default: withCtx(() => [
+          createVNode(_component_map, {
+            class: "uni-choose-location-map",
+            id: $data.mapId,
+            ref: $data.mapId,
+            latitude: $data.latitude,
+            longitude: $data.longitude,
+            "layer-style": $data.theme == "dark" ? "2" : "1",
+            "show-compass": false,
+            "enable-zoom": true,
+            "enable-scroll": true,
+            "enable-rotate": false,
+            "enable-poi": true,
+            "show-location": true,
+            onRegionchange: $options.regionchange
+          }, null, 8, ["id", "latitude", "longitude", "layer-style", "onRegionchange"]),
+          createVNode(_component_view, {
+            class: "uni-choose-location-map-target",
+            ref: $data.mapTargetId,
+            id: $data.mapTargetId
+          }, {
+            default: withCtx(() => [
+              createVNode(_component_text, { class: "uni-choose-location-icons uni-choose-location-map-target-icon" }, {
+                default: withCtx(() => [
+                  createTextVNode(toDisplayString($data.icon.target), 1)
+                ]),
+                _: 1
+              })
+            ]),
+            _: 1
+          }, 8, ["id"]),
+          createVNode(_component_view, {
+            class: normalizeClass(["uni-choose-location-map-reset", [$options.landscapeClassCom]]),
+            onClick: $options.mapReset,
+            style: normalizeStyle($options.resetStyleCom)
+          }, {
+            default: withCtx(() => [
+              createVNode(_component_text, { class: "uni-choose-location-icons uni-choose-location-map-reset-icon" }, {
+                default: withCtx(() => [
+                  createTextVNode(toDisplayString($data.icon.position), 1)
+                ]),
+                _: 1
+              })
+            ]),
+            _: 1
+          }, 8, ["class", "onClick", "style"])
+        ]),
+        _: 1
+      }, 8, ["class", "style"]),
+      createVNode(_component_view, {
+        class: "uni-choose-location-nav",
+        style: normalizeStyle("height:" + (60 + $data.safeArea.top) + "px;")
+      }, {
+        default: withCtx(() => [
+          createVNode(_component_view, {
+            class: normalizeClass(["uni-choose-location-nav-btn uni-choose-location-nav-back-btn", [$options.landscapeClassCom]]),
+            style: normalizeStyle($data.safeArea.top > 0 ? "top: " + $data.safeArea.top + "px;" : "")
+          }, {
+            default: withCtx(() => [
+              createVNode(_component_text, {
+                class: "uni-choose-location-nav-text uni-choose-location-nav-back-text",
+                onClick: $options.back
+              }, {
+                default: withCtx(() => [
+                  createTextVNode(toDisplayString($options.languageCom["cancel"]), 1)
+                ]),
+                _: 1
+              }, 8, ["onClick"])
+            ]),
+            _: 1
+          }, 8, ["class", "style"]),
+          createVNode(_component_view, {
+            class: normalizeClass(["uni-choose-location-nav-btn uni-choose-location-nav-confirm-btn", [$options.landscapeClassCom, $data.selected < 0 && !$data.callUniMapCoErr ? "disable" : "active"]]),
+            style: normalizeStyle($data.safeArea.top > 0 ? "top: " + $data.safeArea.top + "px;" : ""),
+            onClick: $options.confirm
+          }, {
+            default: withCtx(() => [
+              createVNode(_component_text, { class: "uni-choose-location-nav-text uni-choose-location-nav-confirm-text" }, {
+                default: withCtx(() => [
+                  createTextVNode(toDisplayString($options.languageCom["ok"]), 1)
+                ]),
+                _: 1
+              })
+            ]),
+            _: 1
+          }, 8, ["class", "style", "onClick"])
+        ]),
+        _: 1
+      }, 8, ["style"]),
+      $data.useUniCloud ? (openBlock(), createBlock(_component_view, {
+        key: 0,
+        class: normalizeClass(["uni-choose-location-poi", [$options.landscapeClassCom]]),
+        style: normalizeStyle($options.poiBoxStyleCom)
+      }, {
+        default: withCtx(() => [
+          createVNode(_component_view, { class: "uni-choose-location-poi-search" }, {
+            default: withCtx(() => [
+              createVNode(_component_view, { class: "uni-choose-location-poi-search-box" }, {
+                default: withCtx(() => [
+                  createVNode(_component_text, { class: "uni-choose-location-icons uni-choose-location-search-icon" }, {
+                    default: withCtx(() => [
+                      createTextVNode(toDisplayString($data.icon.search), 1)
+                    ]),
+                    _: 1
+                  }),
+                  createVNode(_component_input, {
+                    modelValue: $data.searchValue,
+                    "onUpdate:modelValue": _cache[0] || (_cache[0] = ($event) => $data.searchValue = $event),
+                    type: "text",
+                    placeholder: $options.languageCom["search"],
+                    class: "uni-choose-location-poi-search-input uni-choose-location-icons",
+                    onFocus: _cache[1] || (_cache[1] = ($event) => $data.isFocus = true),
+                    onConfirm: _cache[2] || (_cache[2] = ($event) => $options.poiSearch("poiSearch")),
+                    onInput: $options.searchValueChange
+                  }, null, 8, ["modelValue", "placeholder", "onInput"])
+                ]),
+                _: 1
+              }),
+              $data.isFocus || $data.searchValue != "" ? (openBlock(), createBlock(_component_text, {
+                key: 0,
+                class: "uni-choose-location-poi-search-cancel",
+                onClick: $options.cancelSearch
+              }, {
+                default: withCtx(() => [
+                  createTextVNode(toDisplayString($options.languageCom["cancel"]), 1)
+                ]),
+                _: 1
+              }, 8, ["onClick"])) : createCommentVNode("", true)
+            ]),
+            _: 1
+          }),
+          createVNode(_component_scroll_view, {
+            id: $data.scrollId,
+            ref: $data.scrollId,
+            "scroll-with-animation": false,
+            direction: "vertical",
+            "scroll-top": $data.scrollTop,
+            "lower-threshold": 50,
+            onScrolltolower: $options.scrolltolower,
+            class: "uni-choose-location-poi-list"
+          }, {
+            default: withCtx(() => [
+              $data.errMsg != "" ? (openBlock(), createBlock(_component_view, {
+                key: 0,
+                class: "uni-choose-location-poi-search-error"
+              }, {
+                default: withCtx(() => [
+                  createVNode(_component_text, { class: "uni-choose-location-poi-search-error-text" }, {
+                    default: withCtx(() => [
+                      createTextVNode(toDisplayString($data.errMsg), 1)
+                    ]),
+                    _: 1
+                  })
+                ]),
+                _: 1
+              })) : $data.locationLoading ? (openBlock(), createBlock(_component_view, {
+                key: 1,
+                class: "uni-choose-location-poi-search-loading"
+              }, {
+                default: withCtx(() => [
+                  createVNode(_component_text, { class: "uni-choose-location-poi-search-loading-text" }, {
+                    default: withCtx(() => [
+                      createTextVNode(toDisplayString($options.languageCom["locationLoading"]), 1)
+                    ]),
+                    _: 1
+                  })
+                ]),
+                _: 1
+              })) : $data.searchLoading && $data.pageIndex == 1 ? (openBlock(), createBlock(_component_view, {
+                key: 2,
+                class: "uni-choose-location-poi-search-loading"
+              }, {
+                default: withCtx(() => [
+                  createVNode(_component_image, {
+                    src: $data.loadingPath,
+                    class: normalizeClass(["uni-choose-location-poi-search-loading-image", [$data.searchLoadingAnimation ? "uni-choose-location-poi-search-loading-start" : ""]]),
+                    mode: "widthFix"
+                  }, null, 8, ["src", "class"])
+                ]),
+                _: 1
+              })) : (openBlock(true), createElementBlock(Fragment, { key: 3 }, renderList($data.pois, (item, index2) => {
+                return openBlock(), createBlock(_component_view, {
+                  key: index2,
+                  class: normalizeClass(["uni-choose-location-poi-item", [$options.landscapeClassCom]]),
+                  onClick: ($event) => $options.selectPoi(item, index2)
+                }, {
+                  default: withCtx(() => [
+                    createVNode(_component_view, null, {
+                      default: withCtx(() => [
+                        createVNode(_component_view, null, {
+                          default: withCtx(() => [
+                            createVNode(_component_text, { class: "uni-choose-location-poi-item-title-text" }, {
+                              default: withCtx(() => [
+                                createTextVNode(toDisplayString(item.title), 1)
+                              ]),
+                              _: 2
+                            }, 1024)
+                          ]),
+                          _: 2
+                        }, 1024),
+                        createVNode(_component_view, null, {
+                          default: withCtx(() => [
+                            createVNode(_component_text, { class: "uni-choose-location-poi-item-detail-text" }, {
+                              default: withCtx(() => [
+                                createTextVNode(toDisplayString(item.distance > 0 ? item.distanceStr + " | " : "") + toDisplayString(item.address), 1)
+                              ]),
+                              _: 2
+                            }, 1024)
+                          ]),
+                          _: 2
+                        }, 1024)
+                      ]),
+                      _: 2
+                    }, 1024),
+                    $data.selected == index2 ? (openBlock(), createBlock(_component_text, {
+                      key: 0,
+                      class: "uni-choose-location-icons uni-choose-location-poi-item-selected-icon"
+                    }, {
+                      default: withCtx(() => [
+                        createTextVNode(toDisplayString($data.icon.success), 1)
+                      ]),
+                      _: 1
+                    })) : createCommentVNode("", true),
+                    createVNode(_component_view, { class: "uni-choose-location-poi-item-after" })
+                  ]),
+                  _: 2
+                }, 1032, ["class", "onClick"]);
+              }), 128)),
+              $data.searchLoading && $data.pageIndex > 1 ? (openBlock(), createBlock(_component_view, {
+                key: 4,
+                class: "uni-choose-location-poi-search-loading"
+              }, {
+                default: withCtx(() => [
+                  createVNode(_component_image, {
+                    src: $data.loadingPath,
+                    class: normalizeClass(["uni-choose-location-poi-search-loading-image", [$data.searchLoadingAnimation ? "uni-choose-location-poi-search-loading-start" : ""]]),
+                    mode: "widthFix"
+                  }, null, 8, ["src", "class"])
+                ]),
+                _: 1
+              })) : createCommentVNode("", true)
+            ]),
+            _: 1
+          }, 8, ["id", "scroll-top", "onScrolltolower"])
+        ]),
+        _: 1
+      }, 8, ["class", "style"])) : createCommentVNode("", true)
+    ]),
+    _: 1
+  }, 8, ["class"]);
+}
+const uniChooseLocationPage = /* @__PURE__ */ _export_sfc(_sfc_main, [["render", _sfc_render], ["styles", [_style_0]]]);
+class ChooseLocationFailImpl extends UniError {
+  constructor(errMsg = "chooseLocation:fail cancel", errCode = 1) {
+    super();
+    this.errCode = errCode;
+    this.errMsg = errMsg;
+  }
+}
+const chooseLocation = (options) => {
+  registerSystemRoute("uni:chooseLocation", uniChooseLocationPage);
+  const uuid = `${Date.now()}${Math.floor(Math.random() * 1e7)}`;
+  const baseEventName = `uni_choose_location_${uuid}`;
+  const readyEventName = `${baseEventName}_ready`;
+  const optionsEventName = `${baseEventName}_options`;
+  const successEventName = `${baseEventName}_success`;
+  const failEventName = `${baseEventName}_fail`;
+  uni.$on(readyEventName, () => {
+    uni.$emit(optionsEventName, JSON.parse(JSON.stringify(options)));
+  });
+  uni.$on(successEventName, (result) => {
+    var _a, _b;
+    (_a = options.success) == null ? void 0 : _a.call(options, result);
+    (_b = options.complete) == null ? void 0 : _b.call(options, result);
+  });
+  uni.$on(failEventName, () => {
+    var _a, _b;
+    (_a = options.fail) == null ? void 0 : _a.call(options, new ChooseLocationFailImpl());
+    (_b = options.complete) == null ? void 0 : _b.call(options, new ChooseLocationFailImpl());
+  });
+  uni.openDialogPage({
+    url: `uni:chooseLocation?readyEventName=${readyEventName}&optionsEventName=${optionsEventName}&successEventName=${successEventName}&failEventName=${failEventName}`,
+    triggerParentHide: true,
+    fail(err) {
+      var _a, _b;
+      (_a = options.fail) == null ? void 0 : _a.call(options, new ChooseLocationFailImpl(`chooseLocation:fail ${err.errMsg}`, 4));
+      (_b = options.complete) == null ? void 0 : _b.call(options, new ChooseLocationFailImpl(`chooseLocation:fail ${err.errMsg}`, 4));
+      uni.$off(readyEventName);
+      uni.$off(successEventName);
+      uni.$off(failEventName);
+    }
+  });
+};
+window.UniResizeObserver = window.ResizeObserver;
+const api = /* @__PURE__ */ Object.defineProperty({
+  __proto__: null,
+  $emit,
+  $off,
+  $on,
+  $once,
+  __f__,
+  addInterceptor,
+  addPhoneContact,
+  arrayBufferToBase64,
+  base64ToArrayBuffer,
+  canIUse,
+  canvasGetImageData,
+  canvasPutImageData,
+  canvasToTempFilePath,
+  chooseFile,
+  chooseImage,
+  chooseLocation,
+  chooseVideo,
+  clearStorage,
+  clearStorageSync,
+  closeDialogPage,
+  closePreviewImage,
+  closeSocket,
+  connectSocket,
+  createAnimation: createAnimation$1,
+  createCameraContext,
+  createCanvasContext,
+  createCanvasContextAsync,
+  createInnerAudioContext,
+  createIntersectionObserver,
+  createLivePlayerContext,
+  createMapContext,
+  createMediaQueryObserver,
+  createSelectorQuery,
+  createVideoContext,
+  cssBackdropFilter,
+  cssConstant,
+  cssEnv,
+  cssVar,
+  downloadFile,
+  getAppBaseInfo,
+  getClipboardData,
+  getDeviceInfo,
+  getElementById,
+  getEnterOptionsSync,
+  getFileInfo,
+  getImageInfo,
+  getLaunchOptionsSync,
+  getLeftWindowStyle,
+  getLocale,
+  getLocation,
+  getNetworkType,
+  getProvider,
+  getPushClientId,
+  getRecorderManager,
+  getRightWindowStyle,
+  getSavedFileInfo,
+  getSavedFileList,
+  getScreenBrightness,
+  getSelectedTextRange: getSelectedTextRange$1,
+  getStorage,
+  getStorageInfo,
+  getStorageInfoSync,
+  getStorageSync,
+  getSystemInfo,
+  getSystemInfoSync,
+  getTabBarPageId,
+  getTopWindowStyle,
+  getVideoInfo,
+  getWindowInfo,
+  hideActionSheet,
+  hideKeyboard,
+  hideLeftWindow,
+  hideLoading,
+  hideModal,
+  hideNavigationBarLoading,
+  hideRightWindow,
+  hideTabBar,
+  hideTabBarRedDot,
+  hideToast,
+  hideTopWindow,
+  interceptors,
+  invokePushCallback,
+  loadFontFace,
+  login,
+  makePhoneCall,
+  navigateBack,
+  navigateTo,
+  offAccelerometerChange,
+  offAppHide,
+  offAppShow,
+  offCompassChange,
+  offError,
+  offHostThemeChange,
+  offLocationChange,
+  offLocationChangeError,
+  offNetworkStatusChange,
+  offPageNotFound,
+  offPushMessage,
+  offThemeChange,
+  offUnhandledRejection,
+  offWindowResize,
+  onAccelerometerChange,
+  onAppHide,
+  onAppShow,
+  onCompassChange,
+  onCreateVueApp,
+  onError,
+  onGyroscopeChange,
+  onHostThemeChange,
+  onLocaleChange,
+  onLocationChange,
+  onLocationChangeError,
+  onMemoryWarning,
+  onNetworkStatusChange,
+  onPageNotFound,
+  onPushMessage,
+  onSocketClose,
+  onSocketError,
+  onSocketMessage,
+  onSocketOpen,
+  onTabBarMidButtonTap,
+  onThemeChange,
+  onUnhandledRejection,
+  onUserCaptureScreen,
+  onWindowResize,
+  openDialogPage,
+  openDocument,
+  openLocation,
+  pageScrollTo,
+  preloadPage,
+  previewImage,
+  reLaunch,
+  redirectTo,
+  removeAllPages,
+  removeInterceptor,
+  removeLastPage,
+  removeNonTabBarPages,
+  removeSavedFile,
+  removeStorage,
+  removeStorageSync,
+  removeTabBarBadge,
+  request,
+  rpx2px: upx2px,
+  saveFile,
+  saveImageToPhotosAlbum,
+  saveVideoToPhotosAlbum,
+  scanCode,
+  sendSocketMessage,
+  setClipboardData,
+  setKeepScreenOn,
+  setLeftWindowStyle,
+  setLocale,
+  setNavigationBarColor,
+  setNavigationBarTitle,
+  setPageMeta,
+  setRightWindowStyle,
+  setScreenBrightness,
+  setStorage,
+  setStorageSync,
+  setTabBarBadge,
+  setTabBarItem,
+  setTabBarStyle,
+  setTopWindowStyle,
+  showActionSheet,
+  showLeftWindow,
+  showLoading,
+  showModal,
+  showNavigationBarLoading,
+  showRightWindow,
+  showTabBar,
+  showTabBarRedDot,
+  showToast,
+  showTopWindow,
+  startAccelerometer,
+  startCompass,
+  startGyroscope,
+  startLocationUpdate,
+  startPullDownRefresh,
+  stopAccelerometer,
+  stopCompass,
+  stopGyroscope,
+  stopLocationUpdate,
+  stopPullDownRefresh,
+  switchTab,
+  uploadFile,
+  upx2px,
+  vibrateLong,
+  vibrateShort
+}, Symbol.toStringTag, { value: "Module" });
 const uni$1 = api;
 const UniServiceJSBridge$1 = /* @__PURE__ */ extend(ServiceJSBridge, {
   publishHandler(event, args, pageId) {
@@ -29296,51 +29550,51 @@ export {
   $off,
   $on,
   $once,
-  index$i as Ad,
-  index$h as AdContentPage,
-  index$g as AdDraw,
+  index$5 as Ad,
+  index$4 as AdContentPage,
+  index$3 as AdDraw,
   AsyncErrorComponent,
   AsyncLoadingComponent,
   index$s as Button,
-  index$f as Camera,
+  index$2 as Camera,
   indexX$4 as Canvas,
   index$q as Checkbox,
   index$r as CheckboxGroup,
-  index$k as CoverImage,
-  index$l as CoverView,
-  index$c as Editor,
+  index$7 as CoverImage,
+  index$8 as CoverView,
+  index$o as Editor,
   index$u as Form,
-  index$b as Icon,
+  index$n as Icon,
   __syscom_4 as Image,
-  Input,
+  __syscom_3 as Input,
   index$t as Label,
   LayoutComponent,
-  index$4 as ListItem,
-  index$5 as ListView,
-  index$e as LivePlayer,
-  index$d as LivePusher,
+  index$g as ListItem,
+  index$h as ListView,
+  index$1 as LivePlayer,
+  index as LivePusher,
   __syscom_0 as Map,
   MovableArea,
   MovableView,
-  index$a as Navigator,
+  index$m as Navigator,
   PageComponent,
-  index$j as Picker,
+  index$6 as Picker,
   PickerView,
   PickerViewColumn,
-  index$9 as Progress,
-  indexX$2 as Radio,
-  index$8 as RadioGroup,
+  index$l as Progress,
+  indexX$3 as Radio,
+  index$k as RadioGroup,
   ResizeSensor,
-  index$7 as RichText,
+  index$j as RichText,
   __syscom_5 as ScrollView,
-  indexX$1 as Slider,
-  index$2 as StickyHeader,
-  index$3 as StickySection,
+  indexX$2 as Slider,
+  index$e as StickyHeader,
+  index$f as StickySection,
   Swiper,
   SwiperItem,
-  indexX as Switch,
+  indexX$1 as Switch,
   __syscom_1 as Text,
-  index$6 as Textarea,
+  index$i as Textarea,
   UniButtonElement,
   UniCanvasElement,
   UniCheckboxElement,
@@ -29382,9 +29636,9 @@ export {
   UniViewElement,
   UniViewJSBridge$1 as UniViewJSBridge,
   UniWebViewElement,
-  index$m as Video,
+  index$b as Video,
   __syscom_2 as View,
-  indexX$3 as WebView,
+  indexX as WebView,
   __f__,
   addInterceptor,
   addPhoneContact,
@@ -29482,7 +29736,7 @@ export {
   offNetworkStatusChange,
   offPageNotFound,
   offPushMessage,
-  offThemeChange$1 as offThemeChange,
+  offThemeChange,
   offUnhandledRejection,
   offWindowResize,
   onAccelerometerChange,
@@ -29505,7 +29759,7 @@ export {
   onSocketMessage,
   onSocketOpen,
   onTabBarMidButtonTap,
-  onThemeChange$2 as onThemeChange,
+  onThemeChange,
   onUnhandledRejection,
   onUserCaptureScreen,
   onWindowResize,
@@ -29513,7 +29767,7 @@ export {
   openDocument,
   openLocation,
   pageScrollTo,
-  index as plugin,
+  index$c as plugin,
   preloadPage,
   previewImage,
   reLaunch,

@@ -263,6 +263,8 @@ export declare const invokeCreateErrorHandler: (app: App, createErrorHandler: (a
 
 export declare function invokeCreateVueAppHook(app: App): void;
 
+export declare function isAppHarmonyUVueNativeTag(tag: string): boolean;
+
 export declare function isAppIOSUVueNativeTag(tag: string): boolean;
 
 export declare function isAppNativeTag(tag: string): boolean;
@@ -282,6 +284,14 @@ export declare function isComponentTag(tag: string): boolean;
 export declare function isH5CustomElement(tag: string, isX?: boolean): boolean;
 
 export declare function isH5NativeTag(tag: string): boolean;
+
+/**
+ * 用于替代@vue/shared的isIntegerKey，原始方法在鸿蒙arkts中会引发bug。根本原因是arkts的数组的key是数字而不是字符串。
+ * 目前这个方法使用的地方都和数组有关，切记不能挪作他用。
+ * @param key
+ * @returns
+ */
+export declare const isIntegerKey: (key: unknown) => boolean;
 
 export declare function isMiniProgramNativeTag(tag: string): boolean;
 
@@ -900,6 +910,8 @@ export declare class UniTextNode extends UniBaseNode {
 export declare function updateElementStyle(element: HTMLElement, styles: Partial<CSSStyleDeclaration>): void;
 
 export declare const UVUE_BUILT_IN_TAGS: string[];
+
+export declare const UVUE_HARMONY_BUILT_IN_TAGS: string[];
 
 export declare const UVUE_IOS_BUILT_IN_TAGS: string[];
 

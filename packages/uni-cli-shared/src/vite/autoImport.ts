@@ -33,6 +33,12 @@ const uniPreset = {
     'onTabItemTap',
     'onReachBottom',
     'onPullDownRefresh',
+
+    // 其他
+    'onShareTimeline',
+    'onShareAppMessage',
+    'onShareChat', // xhs-share
+
     // 辅助
     'renderComponentSlot',
   ],

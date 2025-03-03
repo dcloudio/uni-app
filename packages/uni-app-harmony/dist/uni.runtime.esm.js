@@ -8850,7 +8850,9 @@ const $off = defineSyncApi(API_OFF, (name, callback) => {
     // 类型中不再体现 name 支持 string[] 类型, 仅在 uni.$off 保留该逻辑向下兼容
     if (!isArray(name))
         name = name ? [name] : [];
-    name.forEach((n) => eventBus.off(n, callback));
+    name.forEach((n) => {
+        eventBus.off(n, callback);
+    });
 }, OffProtocol);
 const $emit = defineSyncApi(API_EMIT, (name, ...args) => {
     eventBus.emit(name, ...args);
@@ -12634,7 +12636,7 @@ const $navigateTo = (args, { resolve, reject }) => {
     const [aniType, aniDuration] = initAnimation(path, animationType, animationDuration);
     navigate(path, () => {
         _navigateTo({
-            url,
+            url: url,
             path,
             query,
             events,
@@ -12775,7 +12777,7 @@ const redirectTo = defineAsyncApi(API_REDIRECT_TO, ({ url }, { resolve, reject }
     const { path, query } = parseUrl(url);
     navigate(path, () => {
         _redirectTo({
-            url,
+            url: url,
             path,
             query,
         })
@@ -12860,7 +12862,7 @@ const $switchTab = (args, { resolve, reject }) => {
     const { path, query } = parseUrl(url);
     navigate(path, () => {
         _switchTab({
-            url,
+            url: url,
             path,
             query,
         })

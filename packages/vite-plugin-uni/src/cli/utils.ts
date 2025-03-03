@@ -89,7 +89,7 @@ export function initEnv(
     options.platform = 'h5'
   }
   if (options.plugin) {
-    process.env.UNI_MP_PLUGIN = 'true'
+    process.env.UNI_MP_PLUGIN = options.plugin
   }
   // TODO 需要识别 mode
   if (type === 'dev') {
@@ -184,6 +184,15 @@ export function initEnv(
     }
     process.env.UNI_OUTPUT_DIR = (options as BuildOptions).outDir!
   }
+
+  // 编译为插件、分包时，需提前计算缓存目录位置
+  process.env.UNI_APP_X_CACHE_DIR =
+    process.env.UNI_APP_X_CACHE_DIR ||
+    path.resolve(
+      process.env.UNI_OUTPUT_DIR,
+      '../cache/.' + path.basename(process.env.UNI_OUTPUT_DIR)
+    )
+
   // 兼容 HBuilderX 旧参数
   if (process.env.UNI_SUBPACKGE) {
     options.subpackage = process.env.UNI_SUBPACKGE
@@ -196,11 +205,16 @@ export function initEnv(
         path.resolve(process.env.UNI_OUTPUT_DIR, options.subpackage)
     }
   }
-  const baseOutDir = path.basename(process.env.UNI_OUTPUT_DIR)
 
-  process.env.UNI_APP_X_CACHE_DIR =
-    process.env.UNI_APP_X_CACHE_DIR ||
-    path.resolve(process.env.UNI_OUTPUT_DIR, '../cache/.' + baseOutDir)
+  if (options.plugin) {
+    if (!hasOutputDir) {
+      // 未指定，则自动补充
+      process.env.UNI_OUTPUT_DIR = (options as BuildOptions).outDir =
+        path.resolve(process.env.UNI_OUTPUT_DIR, options.plugin)
+    }
+  }
+
+  const baseOutDir = path.basename(process.env.UNI_OUTPUT_DIR)
 
   if (isNormalCompileTarget()) {
     process.env.HX_DEPENDENCIES_DIR =

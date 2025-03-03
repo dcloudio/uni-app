@@ -196,7 +196,7 @@ function initUniCloudEnv() {
 export default () => [
   defineUniMainJsPlugin((opts) => {
     return {
-      name: 'uni:cloud',
+      name: 'uni:cloud-main',
       enforce: 'pre',
       config(config, env) {
         if (isSsr(env.command, config)) {
@@ -220,7 +220,9 @@ export default () => [
         if (uniCloudSpaces.length) {
           return {
             code: code + `;\nimport '@dcloudio/uni-cloud';`,
-            map: null,
+            map: {
+              mappings: '',
+            },
           }
         }
       },

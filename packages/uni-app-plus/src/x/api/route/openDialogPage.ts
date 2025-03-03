@@ -15,17 +15,19 @@ import {
   homeDialogPages,
   homeSystemDialogPages,
   setCurrentNormalDialogPage,
+  setCurrentSystemDialogPage,
 } from '../../framework/page/dialogPage'
 import { registerDialogPage } from '../../framework/page/register'
 import type { UniDialogPage } from '@dcloudio/uni-app-x/types/page'
 import type { OpenDialogPageOptions } from '@dcloudio/uni-app-x/types/uni'
 import closeNativeDialogPage from './closeNativeDialogPage'
 import { OPEN_DIALOG_PAGE } from '../../constants'
+import { ref } from 'vue'
 
 export const openDialogPage = (
   options: OpenDialogPageOptions
 ): UniDialogPage | null => {
-  const { url, animationType } = options
+  const { url, animationType, animationDuration } = options
   if (!options.url) {
     triggerFailCallback(options, 'url is required')
     return null
@@ -65,6 +67,7 @@ export const openDialogPage = (
       if (dialogPages.length) {
         invokeHook(dialogPages[dialogPages.length - 1].$vm!, ON_HIDE)
       }
+      // normal dialogPage 数据框架不需要存储，由客户端管理
     }
     setCurrentNormalDialogPage(dialogPage)
   } else {
@@ -75,16 +78,22 @@ export const openDialogPage = (
       }
     } else {
       if (!parentPage.vm.$systemDialogPages) {
-        parentPage.vm.$systemDialogPages = []
+        parentPage.vm.$systemDialogPages = ref<UniDialogPage[]>([])
       }
-      parentPage.vm.$systemDialogPages.push(dialogPage)
+      // system dialogPage 数据框架需要储存
+      parentPage.vm.$systemDialogPages.value.push(dialogPage)
       if (isSystemActionSheetDialogPage(dialogPage)) {
-        closePreActionSheet(parentPage.vm.$systemDialogPages)
+        closePreActionSheet(parentPage.vm.$systemDialogPages.value)
       }
     }
+    setCurrentSystemDialogPage(dialogPage)
   }
   // @ts-expect-error
-  const [aniType, aniDuration] = initAnimation(path, animationType)
+  const [aniType, aniDuration] = initAnimation(
+    path,
+    animationType,
+    animationDuration
+  )
 
   const noAnimation = aniType === 'none' || aniDuration === 0
   function callback(page: IPage) {
@@ -130,7 +139,11 @@ function triggerFailCallback(options: OpenDialogPageOptions, errMsg: string) {
   options.complete?.(failOptions)
 }
 
-function initAnimation(path: string, animationType?: string) {
+function initAnimation(
+  path: string,
+  animationType?: string,
+  animationDuration?: number
+) {
   // 首页去除动画
   if (!getCurrentPage()) {
     return ['none', 0] as const
@@ -144,7 +157,10 @@ function initAnimation(path: string, animationType?: string) {
   }
   return [
     _animationType,
-    meta.animationDuration || globalStyle.animationDuration || ANI_DURATION,
+    animationDuration ||
+      meta.animationDuration ||
+      globalStyle.animationDuration ||
+      ANI_DURATION,
   ] as const
 }
 

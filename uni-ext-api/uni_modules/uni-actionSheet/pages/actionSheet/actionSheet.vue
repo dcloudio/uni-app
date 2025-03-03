@@ -48,6 +48,7 @@
           {{ cancelText }}
         </text>
       </view>
+      <view :style="{height: `${bottomNavigationHeight}px`, backgroundColor: computedBackgroundColor}"></view>
       <!-- #ifdef WEB -->
       <view v-if='isWidescreen && Object.keys(popover).length > 0' :style='triangleStyle' class="uni-action-sheet_dialog__triangle" />
       <!-- #endif -->
@@ -84,8 +85,9 @@
         // #ifdef WEB
         windowWidth: 0,
         windowHeight: 0,
-        popover: {}
+        popover: {},
         // #endif
+        bottomNavigationHeight: 0
       }
     },
     onLoad(options) {
@@ -249,8 +251,12 @@
         }
         return '取消'
       },
+      computedBackgroundColor(): string {
+        return this.backgroundColor !== null ? this.backgroundColor! : (this.theme == 'dark' ? '#2C2C2B' : '#ffffff')
+      }
     },
     onReady() {
+      this.bottomNavigationHeight = this.$page.safeAreaInsets.bottom
       setTimeout(() => {
         this.show = true
       }, 10)
@@ -332,12 +338,8 @@
     z-index: 999;
     transform: translate(0, 100%);
     opacity: 0;
-    /* #ifdef APP */
-    transition: transform 0.3s;
-    /* #endif */
-    /* #ifdef WEB */
-    transition: transform 0.3s, opacity 0.3s;
-    /* #endif */
+    transition-property: transform, opacity;
+    transition-duration: 0.3s;
     background-color: #f7f7f7;
     border-top-left-radius: 12px;
     border-top-right-radius: 12px;

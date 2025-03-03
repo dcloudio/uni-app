@@ -1,0 +1,10 @@
+{
+  "pages": [
+    {
+      "path": "pages/index/index"
+    },
+    {
+      "path": "uni_modules/test-module/pages/index/index"
+    }
+  ]
+}

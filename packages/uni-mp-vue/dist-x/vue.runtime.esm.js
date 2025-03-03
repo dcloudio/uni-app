@@ -4094,7 +4094,8 @@ function createComponentInstance(vnode, parent, suspense) {
     $uniElements: /* @__PURE__ */ new Map(),
     $templateUniElementRefs: [],
     $templateUniElementStyles: {},
-    $eS: {}
+    $eS: {},
+    $eA: {}
   };
   if (!!(process.env.NODE_ENV !== "production")) {
     instance.ctx = createDevRenderContext(instance);
@@ -4693,6 +4694,7 @@ function patch(instance, data, oldData) {
   }
   data = deepCopy(data);
   data.$eS = instance.$eS || {};
+  data.$eA = instance.$eA || {};
   const ctx = instance.ctx;
   const mpType = ctx.mpType;
   if (mpType === "page" || mpType === "component") {
@@ -5495,9 +5497,11 @@ function getCreateApp() {
     if (typeof global !== 'undefined' &&
         typeof global[method] !== 'undefined') {
         return global[method];
+        // @ts-expect-error
     }
     else if (typeof my !== 'undefined') {
         // 支付宝小程序开启globalObjectMode配置后才会有global
+        // @ts-expect-error
         return my[method];
     }
 }
@@ -5513,7 +5517,7 @@ class UniCSSStyleDeclaration {
                 if (prop in target) {
                     const value = target[prop];
                     // 处理方法调用，保持正确的 this 上下文
-                    return typeof value === 'function' ? value.bind(target) : value;
+                    return isFunction(value) ? value.bind(target) : value;
                 }
                 return target.getPropertyValue(prop);
             },
@@ -5558,6 +5562,180 @@ function hyphenateCssProperty(str) {
         return '-webkit-' + hyphenate(str.slice(6));
     }
     return hyphenate(str);
+}
+
+// TODO App端实现未继承自EventTarget，如果后续App端调整此处也需要同步调整
+class UniAnimation {
+    constructor(id, scope, keyframes, options = {}) {
+        var _a;
+        this._playState = '';
+        this.parsedKeyframes = [];
+        this.options = {};
+        this.onfinish = null;
+        this.oncancel = null;
+        this.id = id;
+        this.scope = scope;
+        this.options = typeof options === 'number' ? { duration: options } : options; //as KeyframeAnimationOptions
+        if (((_a = this.options) === null || _a === void 0 ? void 0 : _a.iterations) === Infinity) {
+            this.options.iterations = -1;
+        }
+        this.parsedKeyframes = coverAnimateToStyle(keyframes, options);
+        this.onfinish = () => { };
+        this.oncancel = () => { };
+    }
+    get playState() {
+        return this._playState;
+    }
+    get currentTime() {
+        throw new Error('currentTime not implemented.');
+    }
+    cancel() {
+        toRaw(this.scope).setData({
+            ['$eA.' + this.id]: JSON.stringify({
+                id: this.id,
+                playState: 'cancel',
+                keyframes: this.parsedKeyframes,
+                options: this.options,
+            }),
+        });
+    }
+    finish() {
+        throw new Error('finish not implemented.');
+    }
+    pause() {
+        throw new Error('pause not implemented.');
+    }
+    play() {
+        this.scope.setData({
+            ['$eA.' + this.id]: JSON.stringify({
+                id: this.id,
+                playState: 'running',
+                keyframes: this.parsedKeyframes,
+                options: this.options,
+            }),
+        });
+    }
+}
+function handleDirection(keyframes, direction) {
+    if (direction === 'reverse') {
+        keyframes.reverse();
+    }
+    else if (direction === 'alternate') {
+        keyframes = [...keyframes, ...keyframes.slice().reverse().slice(1)];
+    }
+    else if (direction === 'alternate-reverse') {
+        keyframes = keyframes.reverse().concat(keyframes.slice(1, -1).reverse());
+    }
+    return JSON.parse(JSON.stringify(keyframes));
+}
+// 小程序中的 this.animate 不支持 color 等属性，keyframes 结构不同，需要手动转换
+// 改用 wxs 的 requestAnimationFrame 实现，需要手动实现缓动函数、解析 keyframes，对产物体积有影响
+// 改用 wxs 配合 requestAnimationFrame 在合适的时机设置 setStyle
+function normalizeKeyframes(keyframes, direction = 'normal') {
+    // 数组为空，返回空数组
+    if (keyframes.length === 0) {
+        return [];
+    }
+    // hyphenate
+    keyframes.forEach((kf) => {
+        Object.keys(kf).forEach((key) => {
+            const newKey = hyphenate(key);
+            if (key !== newKey) {
+                kf[newKey] = kf[key];
+                delete kf[key];
+            }
+        });
+    });
+    keyframes = handleDirection(keyframes, direction);
+    // 记录已有的 offset 位置
+    const existingOffsets = keyframes
+        .map((kf, index) => ({
+        index,
+        offset: kf.offset,
+    }))
+        .filter((item) => item.offset !== undefined);
+    // 如果没有已有的 offset，均匀分配
+    if (existingOffsets.length === 0) {
+        for (let i = 0; i < keyframes.length; i++) {
+            keyframes[i].offset = i / (keyframes.length - 1);
+        }
+        return keyframes;
+    }
+    // 处理第一个关键帧
+    if (existingOffsets[0].index > 0) {
+        const firstOffset = existingOffsets[0].offset / existingOffsets[0].index;
+        for (let i = 0; i < existingOffsets[0].index; i++) {
+            keyframes[i].offset = firstOffset * i;
+        }
+    }
+    // 处理中间的关键帧
+    for (let i = 0; i < existingOffsets.length - 1; i++) {
+        const startOffset = existingOffsets[i].offset;
+        const endOffset = existingOffsets[i + 1].offset;
+        const diffFrames = existingOffsets[i + 1].index - existingOffsets[i].index;
+        if (diffFrames !== 1) {
+            const step = (endOffset - startOffset) / diffFrames;
+            for (let j = 1; j <= diffFrames; j++) {
+                keyframes[existingOffsets[i].index + j].offset = startOffset + j * step;
+            }
+        }
+    }
+    // 处理最后一个关键帧
+    if (existingOffsets[existingOffsets.length - 1].index <
+        keyframes.length - 1) {
+        const lastOffset = existingOffsets[existingOffsets.length - 1].offset;
+        const numFrames = keyframes.length - existingOffsets[existingOffsets.length - 1].index;
+        const step = (1 - lastOffset) / (numFrames - 1);
+        for (let i = 0; i < numFrames; i++) {
+            keyframes[existingOffsets[existingOffsets.length - 1].index + i].offset =
+                lastOffset + i * step;
+        }
+    }
+    // 保留 五位小数
+    return keyframes.map((kf) => {
+        kf.offset = Number(kf.offset.toFixed(5));
+        return kf;
+    });
+}
+function coverAnimateToStyle(keyframes, options) {
+    let duration = (options === null || options === void 0 ? void 0 : options.duration) || 0;
+    const direction = (options === null || options === void 0 ? void 0 : options.direction) || 'normal';
+    // Handle object format with array values
+    if (!Array.isArray(keyframes)) {
+        const propertyNames = Object.keys(keyframes);
+        const arrayLength = keyframes[propertyNames[0]].length;
+        const frames = Array.from({ length: arrayLength }, (_, i) => {
+            const frame = {};
+            propertyNames.forEach((prop) => {
+                frame[prop] = keyframes[prop][i];
+            });
+            return frame;
+        });
+        return coverAnimateToStyle(frames, options);
+    }
+    // fill offset
+    const frames = normalizeKeyframes(keyframes, direction);
+    if (direction === 'alternate') {
+        duration = duration * 2;
+    }
+    return frames.map((frame, index) => {
+        var _a;
+        const currentOffset = frame.offset;
+        let stepDuration;
+        const prevOffset = ((_a = frames[index - 1]) === null || _a === void 0 ? void 0 : _a.offset) || 0;
+        const currentDuration = Math.round(duration * (currentOffset - prevOffset));
+        const currentOffsetStartTime = Math.round(duration * prevOffset);
+        stepDuration = currentDuration;
+        const result = frame;
+        // delete result.offset
+        return Object.assign({}, result, {
+            // ...result,
+            offset: undefined,
+            transition: `all ${stepDuration}ms linear`,
+            _duration: stepDuration,
+            _startTime: currentOffsetStartTime,
+        });
+    });
 }
 
 /**
@@ -5680,6 +5858,22 @@ class UniElement {
     }
     setAttribute(name, value) {
         console.warn(`Miniprogram does not support UniElement.setAttribute(${name}, value)`);
+    }
+    animate(keyframes, options) {
+        if (!this.id) {
+            throw new Error('animate is only supported on elements with id');
+        }
+        const root = this.$vm.$root;
+        const scope = root && root.$scope;
+        if (!scope) {
+            throw new Error(`animate is only supported on elements in page`);
+        }
+        if (!keyframes) {
+            throw new Error('animate keyframes is required');
+        }
+        const animation = new UniAnimation(this.id, scope, keyframes, options);
+        animation.play();
+        return animation;
     }
     $destroy() {
         if (this.style) {
@@ -6283,6 +6477,24 @@ function setUniElementRef(ins, ref, id, opts, tagType) {
     }
 }
 
+function hasIdProp(_ctx) {
+    return (_ctx.$.propsOptions &&
+        _ctx.$.propsOptions[0] &&
+        'id' in _ctx.$.propsOptions[0]);
+}
+function hasVirtualHostId(_ctx) {
+    return _ctx.virtualHostId !== '';
+}
+function genIdWithVirtualHost(_ctx, idBinding) {
+    if (!hasVirtualHostId(_ctx) || hasIdProp(_ctx)) {
+        return idBinding;
+    }
+    return _ctx.virtualHostId;
+}
+function genUniElementId(_ctx, idBinding, genId) {
+    return genIdWithVirtualHost(_ctx, idBinding) || genId || '';
+}
+
 function setupDevtoolsPlugin() {
     // noop
 }
@@ -6304,6 +6516,7 @@ const m = (fn, modifiers, isComponent = false) => withModelModifiers(fn, modifie
 const j = (obj) => JSON.stringify(obj);
 const sei = setUniElementId;
 const ses = setUniElementStyle;
+const gei = genUniElementId;
 
 function createApp(rootComponent, rootProps = null) {
     rootComponent && (rootComponent.mpType = 'app');
@@ -6311,4 +6524,4 @@ function createApp(rootComponent, rootProps = null) {
 }
 const createSSRApp = createApp;
 
-export { EffectScope, Fragment, ReactiveEffect, Text, UniElement, UniElement as UniElementImpl, c, callWithAsyncErrorHandling, callWithErrorHandling, computed, createApp, createPropsRestProxy, createSSRApp, createVNode, createVueApp, customRef, d, defineAsyncComponent, defineComponent, defineEmits, defineExpose, defineProps, destroyUniElements, devtoolsComponentAdded, devtoolsComponentRemoved, devtoolsComponentUpdated, diff, e, effect, effectScope, f, findComponentPropsData, findUniElement, getCurrentInstance, getCurrentScope, getExposeProxy, guardReactiveProps, h, hasInjectionContext, hasQueueJob, inject, injectHook, invalidateJob, isInSSRComponentSetup, isProxy, isReactive, isReadonly, isRef, isShallow, j, logError, m, markRaw, mergeDefaults, mergeModels, mergeProps, n, nextTick$1 as nextTick, o, onActivated, onBeforeMount, onBeforeUnmount, onBeforeUpdate, onDeactivated, onErrorCaptured, onMounted, onRenderTracked, onRenderTriggered, onScopeDispose, onServerPrefetch, onUnmounted, onUpdated, p, patch, provide, proxyRefs, pruneComponentPropsCache, pruneUniElements, queuePostFlushCb, r, reactive, readonly, ref, registerCustomElement, resolveComponent, resolveDirective, resolveFilter, s, sei, ses, setCurrentRenderingInstance, setTemplateRef, setupDevtoolsPlugin, shallowReactive, shallowReadonly, shallowRef, sr, stop, t, toHandlers, toRaw, toRef, toRefs, toValue, triggerRef, unref, updateProps, useAttrs, useCssModule, useCssVars, useModel, useSSRContext, useSlots, version, w, warn, watch, watchEffect, watchPostEffect, watchSyncEffect, withAsyncContext, withCtx, withDefaults, withDirectives, withModifiers, withScopeId };
+export { EffectScope, Fragment, ReactiveEffect, Text, UniElement, UniElement as UniElementImpl, c, callWithAsyncErrorHandling, callWithErrorHandling, computed, createApp, createPropsRestProxy, createSSRApp, createVNode, createVueApp, customRef, d, defineAsyncComponent, defineComponent, defineEmits, defineExpose, defineProps, destroyUniElements, devtoolsComponentAdded, devtoolsComponentRemoved, devtoolsComponentUpdated, diff, e, effect, effectScope, f, findComponentPropsData, findUniElement, gei, getCurrentInstance, getCurrentScope, getExposeProxy, guardReactiveProps, h, hasInjectionContext, hasQueueJob, inject, injectHook, invalidateJob, isInSSRComponentSetup, isProxy, isReactive, isReadonly, isRef, isShallow, j, logError, m, markRaw, mergeDefaults, mergeModels, mergeProps, n, nextTick$1 as nextTick, o, onActivated, onBeforeMount, onBeforeUnmount, onBeforeUpdate, onDeactivated, onErrorCaptured, onMounted, onRenderTracked, onRenderTriggered, onScopeDispose, onServerPrefetch, onUnmounted, onUpdated, p, patch, provide, proxyRefs, pruneComponentPropsCache, pruneUniElements, queuePostFlushCb, r, reactive, readonly, ref, registerCustomElement, resolveComponent, resolveDirective, resolveFilter, s, sei, ses, setCurrentRenderingInstance, setTemplateRef, setupDevtoolsPlugin, shallowReactive, shallowReadonly, shallowRef, sr, stop, t, toHandlers, toRaw, toRef, toRefs, toValue, triggerRef, unref, updateProps, useAttrs, useCssModule, useCssVars, useModel, useSSRContext, useSlots, version, w, warn, watch, watchEffect, watchPostEffect, watchSyncEffect, withAsyncContext, withCtx, withDefaults, withDirectives, withModifiers, withScopeId };

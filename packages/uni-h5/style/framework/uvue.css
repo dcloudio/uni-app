@@ -4,7 +4,7 @@ body {
   font-family: -apple-system, HelveticaNeue;
 }
 
-body {
+body, uni-page-body {
   background-color: var(--background-color-content);
 }
 

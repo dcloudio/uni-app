@@ -129,7 +129,7 @@ unicloud-db[hidden],
 video[hidden],
 view[hidden],
 web-view[hidden] {
-  display: none!important;
+  display: none !important;
 }
 
 /* 与开发者元素接触的非滚动容器 */
@@ -161,14 +161,15 @@ button {
 
 slider {
   margin: 0px;
-  padding: 4px 0px;
+  padding: 5px 0px;
 }
 
 text {
   display: inline;
 }
+
 text[hidden] {
-  display: none!important;
+  display: none !important;
 }
 
 text,

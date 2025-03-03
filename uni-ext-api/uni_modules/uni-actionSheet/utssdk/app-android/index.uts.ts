@@ -1,19 +1,15 @@
-import { registerSystemRoute, getCurrentPage, isSystemActionSheetDialogPage } from "@dcloudio/uni-runtime";
-import UniActionSheetPage from "@/uni_modules/uni-actionSheet/pages/actionSheet/actionSheet.vue";
-import { ShowActionSheet2, ShowActionSheet2Options, ShowActionSheetSuccessImpl, ShowActionSheetFailImpl, HideActionSheet } from "../interface.uts";
+import { getCurrentPage, isSystemActionSheetDialogPage } from "@dcloudio/uni-runtime";
+import { ShowActionSheet, ShowActionSheetOptions, ShowActionSheetSuccessImpl, ShowActionSheetFailImpl } from "../interface.uts";
 
 export {
-  ShowActionSheet2,
-  ShowActionSheet2Options,
-  HideActionSheet,
+  ShowActionSheet,
+  ShowActionSheetOptions,
 } from '../interface.uts'
 
-export const showActionSheet2: ShowActionSheet2 = function (
-  options: ShowActionSheet2Options
+export const showActionSheet: ShowActionSheet = function (
+  options: ShowActionSheetOptions
 ) {
-  registerSystemRoute("uni:actionSheet", UniActionSheetPage);
-
-  const uuid = Date.now() + '' + Math.floor(Math.random() * 1e7)
+  const uuid = `${Date.now()}${Math.floor(Math.random() * 1e7)}`
   const baseEventName = `uni_action_sheet_${uuid}`
   const readyEventName = `${baseEventName}_ready`
   const optionsEventName = `${baseEventName}_options`
@@ -23,29 +19,32 @@ export const showActionSheet2: ShowActionSheet2 = function (
     uni.$emit(optionsEventName, JSON.parse(JSON.stringify(options)))
   })
   uni.$on(successEventName, (index: number) => {
-    options.success?.(new ShowActionSheetSuccessImpl(index))
+    const res = new ShowActionSheetSuccessImpl(index)
+    options.success?.(res)
+    options.complete?.(res)
   })
   uni.$on(failEventName, () => {
-    options.fail?.(new ShowActionSheetFailImpl())
+    const res = new ShowActionSheetFailImpl()
+    options.fail?.(res)
+    options.complete?.(res)
   })
   uni.openDialogPage({
-    url: `uni:actionSheet?readyEventName=${readyEventName}&optionsEventName=${optionsEventName}&successEventName=${successEventName}&failEventName=${failEventName}`,
+    url: `/uni_modules/uni-actionSheet/pages/actionSheet/actionSheet?readyEventName=${readyEventName}&optionsEventName=${optionsEventName}&successEventName=${successEventName}&failEventName=${failEventName}`,
     fail(err) {
-      options.fail?.(new ShowActionSheetFailImpl(`showActionSheet failed, ${err.errMsg}`))
+      const res = new ShowActionSheetFailImpl(`showActionSheet failed, ${err.errMsg}`)
+      options.fail?.(res)
+      options.complete?.(res)
       uni.$off(readyEventName, null)
       uni.$off(successEventName, null)
       uni.$off(failEventName, null)
     }
-    // @ts-expect-error
   } as io.dcloud.uniapp.framework.extapi.OpenDialogPageOptions)
 };
 
-export const hideActionSheet2: HideActionSheet = function () {
-  const page = getCurrentPage()
-  if (page == null) {
-    return
-  }
-  const dialogPages = page.$systemDialogPages
+export const hideActionSheet = function () {
+  const currentPage = getCurrentPage()
+  if (currentPage == null) return
+  const dialogPages = currentPage.$systemDialogPages
   const len = dialogPages.length.toInt()
   for (let i: Int = 0;i < len;i++) {
     const page = dialogPages[i]

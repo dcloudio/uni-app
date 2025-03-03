@@ -63,7 +63,9 @@ export function uniEasycomPlugin(options: UniEasycomPluginOptions): Plugin {
       }
       return {
         code,
-        map: null,
+        map: {
+          mappings: '',
+        },
       }
     },
   }

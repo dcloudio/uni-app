@@ -10,6 +10,7 @@ import {
 import type { NodeTransform } from '../transform'
 import {
   ATTR_ELEMENT_ID,
+  ATTR_SET_ELEMENT_ANIMATION,
   ATTR_SET_ELEMENT_STYLE,
   ATTR_VUE_SLOTS,
   rewriteExpression,
@@ -185,10 +186,15 @@ export const transformIdentifier: NodeTransform = (node, context) => {
                 context.isX &&
                 elementId &&
                 arg &&
-                isSimpleExpressionNode(arg) &&
-                arg.content === ATTR_SET_ELEMENT_STYLE
+                isSimpleExpressionNode(arg)
               ) {
-                dir.exp = createSimpleExpression(`$eS[${elementId}]`)
+                if (arg.content === ATTR_SET_ELEMENT_STYLE) {
+                  dir.exp = createSimpleExpression(`$eS[${elementId}]`)
+                } else if (arg.content === ATTR_SET_ELEMENT_ANIMATION) {
+                  dir.exp = createSimpleExpression(`$eA[${elementId}]`)
+                } else {
+                  dir.exp = rewriteExpression(exp, context)
+                }
               } else {
                 dir.exp = rewriteExpression(exp, context)
               }

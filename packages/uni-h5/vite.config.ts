@@ -197,6 +197,7 @@ export default defineConfig({
         }
       },
     },
+    sourcemap: (process.env as any).ENABLE_SOURCEMAP === 'true',
   },
 })
 

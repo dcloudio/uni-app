@@ -123,7 +123,7 @@ function isInstanceOf(value, type) {
         return value && value[Symbol.iterator];
     }
     const isNativeInstanceofType = value instanceof type;
-    if (isNativeInstanceofType || typeof value !== 'object') {
+    if (isNativeInstanceofType || typeof value !== 'object' || value === null) {
         return isNativeInstanceofType;
     }
     const proto = Object.getPrototypeOf(value).constructor;
@@ -155,6 +155,7 @@ function normalizeGenericValue(value, genericType, isJSONParse = false) {
 class UTSType {
     static get$UTSMetadata$(...args) {
         return {
+            name: '',
             kind: UTS_CLASS_METADATA_KIND.TYPE,
             interfaces: [],
             fields: {},
@@ -244,17 +245,17 @@ class UTSType {
             }
             if (isUTSType(type)) {
                 // 带有泛型的数组会走此分支
-                // @ts-ignore
-                obj[key] = new type(options[realKey], undefined, isJSONParse);
+                obj[key] = isJSONParse
+                    ? // @ts-ignore
+                        new type(options[realKey], undefined, isJSONParse)
+                    : options[realKey];
             }
             else if (type === Array) {
                 // 不带泛型的数组会走此分支
                 if (!Array.isArray(options[realKey])) {
                     throw new UTSError(`Failed to contruct type, property ${key} is not an array`);
                 }
-                obj[key] = options[realKey].map((item) => {
-                    return item == null ? null : item;
-                });
+                obj[key] = options[realKey];
             }
             else {
                 obj[key] = options[realKey];
@@ -576,19 +577,20 @@ let UTSJSONObject$1 = class UTSJSONObject {
         }
         return keyPathArr;
     }
-    _getValue(keyPath) {
+    _getValue(keyPath, defaultValue) {
         const keyPathArr = this._resolveKeyPath(keyPath);
+        const realDefaultValue = defaultValue === void 0 ? null : defaultValue;
         if (keyPathArr.length === 0) {
-            return null;
+            return realDefaultValue;
         }
         let value = this;
         for (let i = 0; i < keyPathArr.length; i++) {
             const key = keyPathArr[i];
             if (value instanceof Object) {
-                value = value[key];
+                value = key in value ? value[key] : realDefaultValue;
             }
             else {
-                return null;
+                return realDefaultValue;
             }
         }
         return value;
@@ -599,11 +601,11 @@ let UTSJSONObject$1 = class UTSJSONObject {
     set(key, value) {
         this[key] = value;
     }
-    getAny(key) {
-        return this._getValue(key);
+    getAny(key, defaultValue) {
+        return this._getValue(key, defaultValue);
     }
-    getString(key) {
-        const value = this._getValue(key);
+    getString(key, defaultValue) {
+        const value = this._getValue(key, defaultValue);
         if (typeof value === 'string') {
             return value;
         }
@@ -611,8 +613,8 @@ let UTSJSONObject$1 = class UTSJSONObject {
             return null;
         }
     }
-    getNumber(key) {
-        const value = this._getValue(key);
+    getNumber(key, defaultValue) {
+        const value = this._getValue(key, defaultValue);
         if (typeof value === 'number') {
             return value;
         }
@@ -620,8 +622,8 @@ let UTSJSONObject$1 = class UTSJSONObject {
             return null;
         }
     }
-    getBoolean(key) {
-        const boolean = this._getValue(key);
+    getBoolean(key, defaultValue) {
+        const boolean = this._getValue(key, defaultValue);
         if (typeof boolean === 'boolean') {
             return boolean;
         }
@@ -629,17 +631,17 @@ let UTSJSONObject$1 = class UTSJSONObject {
             return null;
         }
     }
-    getJSON(key) {
-        let value = this._getValue(key);
+    getJSON(key, defaultValue) {
+        let value = this._getValue(key, defaultValue);
         if (value instanceof Object) {
-            return new UTSJSONObject(value);
+            return value;
         }
         else {
             return null;
         }
     }
-    getArray(key) {
-        let value = this._getValue(key);
+    getArray(key, defaultValue) {
+        let value = this._getValue(key, defaultValue);
         if (value instanceof Array) {
             return value;
         }

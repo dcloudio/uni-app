@@ -96,7 +96,7 @@ function normalizePageMeta(pageMeta: UniApp.PageRouteMeta) {
       pageMeta.pullToRefresh = pullToRefresh
     }
   }
-  if (__UNI_FEATURE_NAVIGATIONBAR__) {
+  if (__UNI_FEATURE_NAVIGATIONBAR__ || __UNI_FEATURE_I18N_LOCALE__) {
     const { navigationBar } = pageMeta
     const { titleSize, titleColor, backgroundColor } = navigationBar
     navigationBar.titleText = navigationBar.titleText || ''

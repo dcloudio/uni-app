@@ -145,6 +145,8 @@ export interface UTSPluginCompilerOptions {
   swiftAutoImports?: () => Promise<
     Required<UTSOutputOptions>['transform']['autoImports']
   >
+  androidPreprocessor?: SyncUniModulesFilePreprocessor
+  iosPreprocessor?: SyncUniModulesFilePreprocessor
 }
 
 // 重要：当调整参数时，需要同步调整 vue2 编译器 uni-cli-shared/lib/uts/uts-loader.js
@@ -231,6 +233,8 @@ export async function compile(
       meta,
       inputDir,
       isExtApi,
+      androidPreprocessor: compilerOptions.androidPreprocessor,
+      iosPreprocessor: compilerOptions.iosPreprocessor,
     },
     pkg
   )
@@ -733,6 +737,11 @@ export async function buildUniModules(
         preprocessor: syncUniModulesFilePreprocessors.harmony,
       }
     )
+  }
+  if (process.env.UNI_UTS_MODULE_TYPE === 'built-in') {
+    compilerOptions.androidPreprocessor =
+      syncUniModulesFilePreprocessors.android
+    compilerOptions.iosPreprocessor = syncUniModulesFilePreprocessors.ios
   }
   return compile(pluginDir, compilerOptions)
 }

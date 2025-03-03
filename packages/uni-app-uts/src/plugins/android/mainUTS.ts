@@ -20,11 +20,10 @@ export function uniAppMainPlugin(): Plugin {
           createTryResolve(id, this.resolve.bind(this))
         )
         return {
-          code: `import './${MANIFEST_JSON_UTS}'
-          import './${PAGES_JSON_UTS}'
-          ${code}
-          `,
-          map: null,
+          code: `import './${MANIFEST_JSON_UTS}';import './${PAGES_JSON_UTS}';${code}`,
+          map: {
+            mappings: '',
+          },
         }
       }
     },

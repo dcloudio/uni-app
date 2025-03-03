@@ -25,7 +25,7 @@ export const chooseLocation: ChooseLocation = (options: ChooseLocationOptions) =
 		options.complete?.(new ChooseLocationFailImpl())
 	})
 	uni.openDialogPage({
-		url: `uni:chooseLocation?readyEventName=${readyEventName}&optionsEventName=${optionsEventName}&successEventName=${successEventName}&failEventName=${failEventName}`,
+		url: `/uni_modules/uni-chooseLocation/pages/chooseLocation/chooseLocation?readyEventName=${readyEventName}&optionsEventName=${optionsEventName}&successEventName=${successEventName}&failEventName=${failEventName}`,
 		triggerParentHide: true,
 		fail(err) {
 			options.fail?.(new ChooseLocationFailImpl(`chooseLocation:fail ${err.errMsg}`, 4))

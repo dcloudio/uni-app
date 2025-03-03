@@ -1,6 +1,15 @@
 {
   "@dcloudio/uni-app-runtime": [
     [
+      "ChooseMediaSuccess"
+    ],
+    [
+      "ChooseMediaOptions"
+    ],
+    [
+      "ChooseMedia"
+    ],
+    [
       "SetClipboardData"
     ],
     [
@@ -19,52 +28,52 @@
       "GetClipboardDataOptions"
     ],
     [
-      "SaveFileSuccess"
+      "LegacySaveFileSuccess"
     ],
     [
-      "SaveFileFail"
+      "LegacySaveFileFail"
     ],
     [
-      "SaveFileOptions"
+      "LegacySaveFileOptions"
     ],
     [
-      "GetFileInfoSuccess"
+      "LegacyGetFileInfoSuccess"
     ],
     [
-      "GetFileInfoFail"
+      "LegacyGetFileInfoFail"
     ],
     [
-      "GetFileInfoOptions"
+      "LegacyGetFileInfoOptions"
     ],
     [
-      "GetSavedFileInfoSuccess"
+      "LegacyGetSavedFileInfoSuccess"
     ],
     [
-      "GetSavedFileInfoFail"
+      "LegacyGetSavedFileInfoFail"
     ],
     [
-      "GetSavedFileInfoOptions"
+      "LegacyGetSavedFileInfoOptions"
     ],
     [
-      "RemoveSavedFileSuccess"
+      "LegacyRemoveSavedFileSuccess"
     ],
     [
-      "RemoveSavedFileFail"
+      "LegacyRemoveSavedFileFail"
     ],
     [
-      "RemoveSavedFileOptions"
+      "LegacyRemoveSavedFileOptions"
     ],
     [
-      "SavedFileListItem"
+      "LegacySavedFileListItem"
     ],
     [
-      "GetSavedFileListSuccess"
+      "LegacyGetSavedFileListSuccess"
     ],
     [
-      "GetSavedFileListFail"
+      "LegacyGetSavedFileListFail"
     ],
     [
-      "GetSavedFileListOptions"
+      "LegacyGetSavedFileListOptions"
     ],
     [
       "SaveFile"
@@ -244,15 +253,6 @@
       "ChooseFileOptions"
     ],
     [
-      "ChooseMediaSuccess"
-    ],
-    [
-      "ChooseMediaOptions"
-    ],
-    [
-      "ChooseMedia"
-    ],
-    [
       "Request"
     ],
     [
@@ -260,6 +260,9 @@
     ],
     [
       "RequestSuccess"
+    ],
+    [
+      "RequestFail"
     ],
     [
       "RequestTask"
@@ -479,9 +482,6 @@
     ],
     [
       "OnSocketErrorCallbackResult"
-    ],
-    [
-      "initUniExtApi"
     ]
   ],
   "@uni_modules/uni-facialrecognitionverify": [
@@ -522,6 +522,14 @@
     ],
     [
       "setAppBadgeNumber"
+    ]
+  ],
+  "@uni_modules/uni-verify": [
+    [
+      "getUniVerifyManager"
+    ],
+    [
+      "getUniverifyManager"
     ]
   ]
 }

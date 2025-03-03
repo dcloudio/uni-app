@@ -35,7 +35,7 @@ export const closeDialogPage = (options?: CloseDialogPageOptions) => {
         )
         if (index > 0 && index === parentDialogPages.length) {
           invokeHook(
-            parentDialogPages[parentDialogPages.length - 1].$vm!,
+            parentDialogPages[parentDialogPages.length - 1].vm!,
             ON_SHOW
           )
         }
@@ -44,10 +44,20 @@ export const closeDialogPage = (options?: CloseDialogPageOptions) => {
         return
       }
     } else {
-      const systemDialogPages = parentPage!.vm.$systemDialogPages
-      const index = systemDialogPages.indexOf(dialogPage)
-      systemDialogPages.splice(index, 1)
-      closeNativeDialogPage(dialogPage)
+      const systemDialogPages = parentPage?.vm?.$systemDialogPages?.value
+      if (systemDialogPages) {
+        const index = systemDialogPages.indexOf(dialogPage)
+        if (index > -1) {
+          systemDialogPages.splice(index, 1)
+          closeNativeDialogPage(
+            dialogPage,
+            options?.animationType || 'auto',
+            options?.animationDuration || ANI_DURATION
+          )
+        } else {
+          triggerFailCallback(options, 'dialogPage is not a valid page')
+        }
+      }
       return
     }
   } else {

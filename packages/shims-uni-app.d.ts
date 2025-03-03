@@ -236,6 +236,7 @@ declare namespace UniNamespace {
     pageOrientation?: 'auto' | 'portrait' | 'landscape'
     backgroundColor?: string
     backgroundColorContent?: string
+    navigationStyle?: 'default' | 'custom'
     maxWidth?: string | number
     // app-plus
     scrollIndicator?: 'none'
@@ -554,3 +555,57 @@ import UniApp = UniNamespace
 interface FontFaceDescriptors {
   variant?: string
 }
+
+declare class UniNormalPageImpl implements UniPage {
+  vm: ComponentPublicInstance
+  $vm: ComponentPublicInstance
+  route: string
+  options: UTSJSONObject
+  pageBody: UniPageBody
+  safeAreaInsets: UniSafeAreaInsets
+  getParentPage: () => UniPage | null
+  getParentPageByJS: () => UniPage | null
+  getDialogPages(): UniDialogPage[]
+  getPageStyle(): UTSJSONObject
+  $getPageStyle(): UTSJSONObject
+  getPageStyleByJS(): UTSJSONObject
+  setPageStyle(style: UTSJSONObject): void
+  $setPageStyle(style: UTSJSONObject): void
+  setPageStyleByJS(style: UTSJSONObject): void
+  getElementById(id: string.IDString | string): UniElement | null
+  getAndroidView(): null
+  getIOSView(): null
+  getHTMLElement(): null
+}
+
+declare class UniDialogPageImpl implements UniPage {
+  vm: ComponentPublicInstance
+  $vm: ComponentPublicInstance
+  route: string
+  options: UTSJSONObject
+  innerWidth: number
+  innerHeight: number
+  pageBody: UniPageBody
+  safeAreaInsets: UniSafeAreaInsets
+  getParentPage: () => UniPage | null
+  getParentPageByJS: () => UniPage | null
+  getDialogPages(): UniDialogPage[]
+  getPageStyle(): UTSJSONObject
+  $getPageStyle(): UTSJSONObject
+  getPageStyleByJS(): UTSJSONObject
+  setPageStyle(style: UTSJSONObject): void
+  $setPageStyle(style: UTSJSONObject): void
+  setPageStyleByJS(style: UTSJSONObject): void
+  getElementById(id: string.IDString | string): UniElement | null
+  getAndroidView(): null
+  getIOSView(): null
+  getHTMLElement(): null
+  $component: any | null
+  $disableEscBack: boolean
+  $triggerParentHide: boolean
+}
+
+declare function __registerWebViewUniConsole(
+  getEvalJSCode: () => string,
+  sendConsoleData: (data: string) => void
+): void

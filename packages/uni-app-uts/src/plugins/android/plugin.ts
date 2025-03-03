@@ -96,7 +96,7 @@ export function uniAppPlugin(): UniVitePlugin {
   return {
     name: 'uni:app-uts',
     apply: 'build',
-    uni: createUniOptions('android'),
+    uni: createUniOptions('app-android'),
     config() {
       return {
         base: '/', // 强制 base
@@ -197,7 +197,12 @@ export function uniAppPlugin(): UniVitePlugin {
         code,
         createTryResolve(id, this.resolve.bind(this))
       )
-      return code
+      return {
+        code,
+        map: {
+          mappings: '',
+        },
+      }
     },
     generateBundle(_, bundle) {
       if (!isNormalCompileTarget()) {
@@ -390,14 +395,13 @@ function normalizeCode(code: string, isMain = false) {
   const automatorCode =
     process.env.UNI_AUTOMATOR_WS_ENDPOINT &&
     process.env.UNI_AUTOMATOR_APP_WEBVIEW !== 'true'
-      ? 'initAutomator();'
+      ? 'initAutomator();\n'
       : ''
   return `${code}
 export function main(app: IApp) {
     definePageRoutes();
     defineAppConfig();
-    ${automatorCode}
-    (createApp()['app'] as VueApp).mount(app, ${UVUE_CLASS_NAME_PREFIX}UniApp());
+    ${automatorCode}(createApp()['app'] as VueApp).mount(app, ${UVUE_CLASS_NAME_PREFIX}UniApp());
 }
 `
 }

@@ -1,5 +1,6 @@
-import { TABBAR_HEIGHT, addLeadingSlash } from '@dcloudio/uni-shared'
-import { getCurrentPage, getRealRoute } from '@dcloudio/uni-core'
+import { TABBAR_HEIGHT } from '@dcloudio/uni-shared'
+
+import { getRealPath } from '../../../platform/getRealPath'
 
 import {
   API_ON_TAB_BAR_MID_BUTTON_TAP,
@@ -77,18 +78,11 @@ function setTabBarItem(
   if (text !== undefined) {
     item.text = text
   }
-  const page = getCurrentPage()
-  if (iconPath && page) {
-    item.iconPath = getRealRoute(
-      addLeadingSlash(page.route as string),
-      iconPath
-    )
+  if (iconPath) {
+    item.iconPath = getRealPath(iconPath)
   }
-  if (selectedIconPath && page) {
-    item.selectedIconPath = getRealRoute(
-      addLeadingSlash(page.route as string),
-      selectedIconPath
-    )
+  if (selectedIconPath) {
+    item.selectedIconPath = getRealPath(selectedIconPath)
   }
   if (iconfont !== undefined) {
     item.iconfont = iconfont

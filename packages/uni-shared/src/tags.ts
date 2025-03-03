@@ -137,6 +137,9 @@ export const UVUE_BUILT_IN_TAGS = [
   'nested-scroll-body',
   'waterflow',
   'flow-item',
+  'share-element',
+  'cover-view',
+  'cover-image',
 ]
 
 export const UVUE_WEB_BUILT_IN_TAGS = [
@@ -153,6 +156,11 @@ export const UVUE_IOS_BUILT_IN_TAGS = [
   'slider',
   'form',
   'switch',
+]
+
+export const UVUE_HARMONY_BUILT_IN_TAGS = [
+  // TODO 列出完整列表
+  ...BUILT_IN_TAG_NAMES,
 ]
 
 export const NVUE_U_BUILT_IN_TAGS = [
@@ -276,6 +284,23 @@ export function isAppIOSUVueNativeTag(tag: string) {
     return true
   }
   if (UVUE_IOS_BUILT_IN_TAGS.includes(tag)) {
+    return true
+  }
+  return false
+}
+
+export function isAppHarmonyUVueNativeTag(tag: string) {
+  // 前端实现的内置组件都会注册一个根组件
+  if (tag.startsWith('uni-') && tag.endsWith('-element')) {
+    return true
+  }
+  if (NVUE_BUILT_IN_TAGS.includes(tag)) {
+    return true
+  }
+  if (UVUE_BUILT_IN_TAGS.includes(tag)) {
+    return true
+  }
+  if (UVUE_HARMONY_BUILT_IN_TAGS.includes(tag)) {
     return true
   }
   return false

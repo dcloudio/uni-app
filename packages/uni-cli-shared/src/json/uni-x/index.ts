@@ -255,7 +255,7 @@ export function normalizeUniAppXAppConfig(
   const uniConfig = normalizeAppXUniConfig(pagesJson, manifestJson)
   const tabBar = uniConfig.tabBar
   delete uniConfig.tabBar
-  return `const __uniConfig = ${JSON.stringify(uniConfig)};
+  let appConfigJs = `const __uniConfig = ${JSON.stringify(uniConfig)};
 __uniConfig.getTabBarConfig = () =>  {return ${
     tabBar ? JSON.stringify(tabBar) : 'undefined'
   }};
@@ -265,4 +265,9 @@ const __uniRoutes = ${normalizeAppUniRoutes(
   )}.map(uniRoute=>(uniRoute.meta.route=uniRoute.path,__uniConfig.pages.push(uniRoute.path),uniRoute.path='/'+uniRoute.path,uniRoute)).concat(typeof __uniSystemRoutes !== 'undefined' ? __uniSystemRoutes : []);
 
 `
+  if (process.env.UNI_UTS_PLATFORM === 'app-harmony') {
+    appConfigJs += `globalThis.__uniConfig = __uniConfig;
+globalThis.__uniRoutes = __uniRoutes;`
+  }
+  return appConfigJs
 }

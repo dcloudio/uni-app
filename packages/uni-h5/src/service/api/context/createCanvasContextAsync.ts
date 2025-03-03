@@ -7,8 +7,13 @@ import type {
   CreateCanvasContextAsyncOptions,
   RequestAnimationFrameCallback,
 } from '@dcloudio/uni-app-x/types/uni'
+import type {
+  SelectorQueryNodeInfo,
+  SelectorQueryRequest,
+} from '@dcloudio/uni-api'
 import { getRealPath } from '@dcloudio/uni-platform'
 import { getCurrentBasePages } from '../../../framework/setup/page'
+import { requestComponentInfo } from '../ui/requestComponentInfo'
 import { type ComponentPublicInstance, nextTick } from 'vue'
 
 // 不支持使用Proxy拦截
@@ -83,18 +88,32 @@ export const createCanvasContextAsync = function (
     const pages = getCurrentBasePages()
     const currentPage: ComponentPublicInstance =
       options.component ?? pages[pages.length - 1]
-    const element = currentPage.$el?.querySelector('#' + options.id)
-    if (element != null) {
-      const canvas = element as UniCanvasElement
-      options.success?.(new CanvasContextImpl(canvas))
-    } else {
-      const uniError = new UniError(
-        'uni-createCanvasContextAsync',
-        -1,
-        'canvas id invalid.'
-      )
-      options.fail?.(uniError)
-    }
-    options.complete?.()
+    requestComponentInfo(
+      currentPage,
+      [
+        {
+          component: currentPage,
+          selector: '#' + options.id,
+          single: true,
+          fields: {
+            node: true,
+          },
+        } as SelectorQueryRequest,
+      ],
+      (result: Array<SelectorQueryNodeInfo | null>) => {
+        if (result.length > 0) {
+          const canvas = result[0]!.node as UniCanvasElement
+          options.success?.(new CanvasContextImpl(canvas))
+        } else {
+          const uniError = new UniError(
+            'uni-createCanvasContextAsync',
+            -1,
+            'canvas id invalid.'
+          )
+          options.fail?.(uniError)
+        }
+        options.complete?.()
+      }
+    )
   })
 }

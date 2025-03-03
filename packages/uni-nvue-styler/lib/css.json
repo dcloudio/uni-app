@@ -5,6 +5,7 @@
       "name": "width",
       "restrictions": [
         "length",
+        "length-function",
         "percentage"
       ],
       "syntax": "auto | <length> | <percentage>",
@@ -22,6 +23,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.52"
               }
             },
             "mp": {
@@ -48,6 +54,11 @@
               "ios": {
                 "osVer": "12.0",
                 "uniVer": "√",
+                "unixVer": "x"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
                 "unixVer": "x"
               }
             },
@@ -76,6 +87,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "x"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "x"
               }
             },
             "mp": {
@@ -102,6 +118,11 @@
               "ios": {
                 "osVer": "12.0",
                 "uniVer": "√",
+                "unixVer": "x"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
                 "unixVer": "x"
               }
             },
@@ -129,6 +150,11 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "4.11"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "4.52"
           }
         },
         "mp": {
@@ -147,7 +173,8 @@
     {
       "name": "min-width",
       "restrictions": [
-        "length"
+        "length",
+        "length-function"
       ],
       "syntax": "<length>",
       "values": [
@@ -163,6 +190,11 @@
               "ios": {
                 "osVer": "12.0",
                 "uniVer": "√",
+                "unixVer": "x"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
                 "unixVer": "x"
               }
             },
@@ -191,6 +223,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "x"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "x"
               }
             },
             "mp": {
@@ -218,6 +255,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "x"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "x"
               }
             },
             "mp": {
@@ -244,6 +286,11 @@
               "ios": {
                 "osVer": "12.0",
                 "uniVer": "√",
+                "unixVer": "x"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
                 "unixVer": "x"
               }
             },
@@ -272,6 +319,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "x"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "x"
               }
             },
             "mp": {
@@ -298,6 +350,11 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "4.11"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "4.52"
           }
         },
         "mp": {
@@ -319,7 +376,8 @@
     {
       "name": "max-width",
       "restrictions": [
-        "length"
+        "length",
+        "length-function"
       ],
       "syntax": "<length>",
       "values": [
@@ -335,6 +393,11 @@
               "ios": {
                 "osVer": "12.0",
                 "uniVer": "√",
+                "unixVer": "x"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
                 "unixVer": "x"
               }
             },
@@ -363,6 +426,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "x"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "x"
               }
             },
             "mp": {
@@ -389,6 +457,11 @@
               "ios": {
                 "osVer": "12.0",
                 "uniVer": "√",
+                "unixVer": "x"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
                 "unixVer": "x"
               }
             },
@@ -417,6 +490,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "x"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "x"
               }
             },
             "mp": {
@@ -444,6 +522,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "x"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "x"
               }
             },
             "mp": {
@@ -470,6 +553,11 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "4.11"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "4.52"
           }
         },
         "mp": {
@@ -489,6 +577,7 @@
       "name": "height",
       "restrictions": [
         "length",
+        "length-function",
         "percentage"
       ],
       "syntax": "auto | <length> | <percentage>",
@@ -506,6 +595,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.52"
               }
             },
             "mp": {
@@ -532,6 +626,11 @@
               "ios": {
                 "osVer": "12.0",
                 "uniVer": "√",
+                "unixVer": "x"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
                 "unixVer": "x"
               }
             },
@@ -560,6 +659,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "x"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "x"
               }
             },
             "mp": {
@@ -586,6 +690,11 @@
               "ios": {
                 "osVer": "12.0",
                 "uniVer": "√",
+                "unixVer": "x"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
                 "unixVer": "x"
               }
             },
@@ -613,6 +722,11 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "4.11"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "4.52"
           }
         },
         "mp": {
@@ -631,7 +745,8 @@
     {
       "name": "min-height",
       "restrictions": [
-        "length"
+        "length",
+        "length-function"
       ],
       "syntax": "<length>",
       "values": [
@@ -647,6 +762,11 @@
               "ios": {
                 "osVer": "12.0",
                 "uniVer": "√",
+                "unixVer": "x"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
                 "unixVer": "x"
               }
             },
@@ -675,6 +795,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "x"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "x"
               }
             },
             "mp": {
@@ -702,6 +827,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "x"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "x"
               }
             },
             "mp": {
@@ -728,6 +858,11 @@
               "ios": {
                 "osVer": "12.0",
                 "uniVer": "√",
+                "unixVer": "x"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
                 "unixVer": "x"
               }
             },
@@ -756,6 +891,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "x"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "x"
               }
             },
             "mp": {
@@ -782,6 +922,11 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "4.11"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "4.52"
           }
         },
         "mp": {
@@ -803,7 +948,8 @@
     {
       "name": "max-height",
       "restrictions": [
-        "length"
+        "length",
+        "length-function"
       ],
       "syntax": "<length>",
       "values": [
@@ -819,6 +965,11 @@
               "ios": {
                 "osVer": "12.0",
                 "uniVer": "√",
+                "unixVer": "x"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
                 "unixVer": "x"
               }
             },
@@ -847,6 +998,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "x"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "x"
               }
             },
             "mp": {
@@ -873,6 +1029,11 @@
               "ios": {
                 "osVer": "12.0",
                 "uniVer": "√",
+                "unixVer": "x"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
                 "unixVer": "x"
               }
             },
@@ -901,6 +1062,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "x"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "x"
               }
             },
             "mp": {
@@ -928,6 +1094,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "x"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "x"
               }
             },
             "mp": {
@@ -954,6 +1125,11 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "4.11"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "4.52"
           }
         },
         "mp": {
@@ -989,6 +1165,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.52"
               }
             },
             "mp": {
@@ -1016,6 +1197,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.52"
               }
             },
             "mp": {
@@ -1043,6 +1229,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.52"
               }
             },
             "mp": {
@@ -1069,6 +1260,11 @@
               "ios": {
                 "osVer": "12.0",
                 "uniVer": "√",
+                "unixVer": "x"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
                 "unixVer": "x"
               }
             },
@@ -1097,6 +1293,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "x"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "x"
               }
             },
             "mp": {
@@ -1123,6 +1324,11 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "4.11"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "4.52"
           }
         },
         "mp": {
@@ -1159,6 +1365,11 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "4.11"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "4.52"
           }
         },
         "mp": {
@@ -1182,6 +1393,7 @@
       "name": "top",
       "restrictions": [
         "length",
+        "length-function",
         "percentage"
       ],
       "syntax": "<length> | <percentage> | auto",
@@ -1199,6 +1411,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.52"
               }
             },
             "mp": {
@@ -1225,6 +1442,11 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "4.11"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "4.52"
           }
         },
         "mp": {
@@ -1244,6 +1466,7 @@
       "name": "bottom",
       "restrictions": [
         "length",
+        "length-function",
         "percentage"
       ],
       "syntax": "<length> | <percentage> | auto",
@@ -1261,6 +1484,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.52"
               }
             },
             "mp": {
@@ -1287,6 +1515,11 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "4.11"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "4.52"
           }
         },
         "mp": {
@@ -1306,6 +1539,7 @@
       "name": "left",
       "restrictions": [
         "length",
+        "length-function",
         "percentage"
       ],
       "syntax": "<length> | <percentage> | auto",
@@ -1323,6 +1557,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.52"
               }
             },
             "mp": {
@@ -1349,6 +1588,11 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "4.11"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "4.52"
           }
         },
         "mp": {
@@ -1368,6 +1612,7 @@
       "name": "right",
       "restrictions": [
         "length",
+        "length-function",
         "percentage"
       ],
       "syntax": "<length> | <percentage> | auto",
@@ -1385,6 +1630,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.52"
               }
             },
             "mp": {
@@ -1411,6 +1661,11 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "4.11"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "4.52"
           }
         },
         "mp": {
@@ -1446,6 +1701,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.52"
               }
             },
             "mp": {
@@ -1473,6 +1733,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.52"
               }
             },
             "mp": {
@@ -1500,6 +1765,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.52"
               }
             },
             "mp": {
@@ -1527,6 +1797,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.52"
               }
             },
             "mp": {
@@ -1553,6 +1828,11 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "4.11"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "4.52"
           }
         },
         "mp": {
@@ -1600,6 +1880,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.52"
               }
             },
             "mp": {
@@ -1628,6 +1913,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.52"
               }
             },
             "mp": {
@@ -1656,6 +1946,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.52"
               }
             },
             "mp": {
@@ -1684,6 +1979,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.52"
               }
             },
             "mp": {
@@ -1712,6 +2012,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.52"
               }
             },
             "mp": {
@@ -1738,6 +2043,11 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "4.11"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "4.52"
           }
         },
         "mp": {
@@ -1785,6 +2095,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.52"
               }
             },
             "mp": {
@@ -1812,6 +2127,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.52"
               }
             },
             "mp": {
@@ -1839,6 +2159,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.52"
               }
             },
             "mp": {
@@ -1865,6 +2190,11 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "4.11"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "4.52"
           }
         },
         "mp": {
@@ -1908,6 +2238,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.52"
               }
             },
             "mp": {
@@ -1935,6 +2270,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.52"
               }
             },
             "mp": {
@@ -1962,6 +2302,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.52"
               }
             },
             "mp": {
@@ -1989,6 +2334,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.52"
               }
             },
             "mp": {
@@ -2016,6 +2366,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "x"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "x"
               }
             },
             "mp": {
@@ -2042,6 +2397,11 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "4.11"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "4.52"
           }
         },
         "mp": {
@@ -2089,6 +2449,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.52"
               }
             },
             "mp": {
@@ -2116,6 +2481,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.52"
               }
             },
             "mp": {
@@ -2143,6 +2513,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.52"
               }
             },
             "mp": {
@@ -2170,6 +2545,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.52"
               }
             },
             "mp": {
@@ -2197,6 +2577,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.52"
               }
             },
             "mp": {
@@ -2224,6 +2609,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "x"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "x"
               }
             },
             "mp": {
@@ -2250,6 +2640,11 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "4.11"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "4.52"
           }
         },
         "mp": {
@@ -2286,6 +2681,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.52"
               }
             },
             "mp": {
@@ -2313,6 +2713,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.52"
               }
             },
             "mp": {
@@ -2340,6 +2745,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.52"
               }
             },
             "mp": {
@@ -2367,6 +2777,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.52"
               }
             },
             "mp": {
@@ -2394,6 +2809,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.52"
               }
             },
             "mp": {
@@ -2421,6 +2841,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.52"
               }
             },
             "mp": {
@@ -2447,6 +2872,11 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "4.11"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "4.52"
           }
         },
         "mp": {
@@ -2480,6 +2910,7 @@
       "restrictions": [
         "number",
         "length",
+        "length-function",
         "enum"
       ],
       "syntax": "none | [ <'flex-grow'> <'flex-shrink'>? || <'flex-basis'> ]",
@@ -2497,6 +2928,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.52"
               }
             },
             "mp": {
@@ -2524,6 +2960,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.52"
               }
             },
             "mp": {
@@ -2551,6 +2992,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.52"
               }
             },
             "mp": {
@@ -2577,6 +3023,11 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "4.11"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "4.52"
           }
         },
         "mp": {
@@ -2612,6 +3063,11 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "4.11"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "4.52"
           }
         },
         "mp": {
@@ -2644,6 +3100,11 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "4.11"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "4.52"
           }
         },
         "mp": {
@@ -2667,6 +3128,7 @@
       "restrictions": [
         "number",
         "length",
+        "length-function",
         "percentage"
       ],
       "syntax": "auto | <length> | <percentage>",
@@ -2684,6 +3146,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.52"
               }
             },
             "mp": {
@@ -2711,6 +3178,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "x"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "x"
               }
             },
             "mp": {
@@ -2737,6 +3209,11 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "4.11"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "4.52"
           }
         },
         "mp": {
@@ -2773,6 +3250,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.52"
               }
             },
             "mp": {
@@ -2800,6 +3282,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.52"
               }
             },
             "mp": {
@@ -2827,6 +3314,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.52"
               }
             },
             "mp": {
@@ -2854,6 +3346,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.52"
               }
             },
             "mp": {
@@ -2881,6 +3378,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.52"
               }
             },
             "mp": {
@@ -2908,6 +3410,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.52"
               }
             },
             "mp": {
@@ -2935,6 +3442,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.52"
               }
             },
             "mp": {
@@ -2961,6 +3473,11 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "4.11"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "4.52"
           }
         },
         "mp": {
@@ -3005,6 +3522,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.52"
               }
             },
             "mp": {
@@ -3032,6 +3554,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.52"
               }
             },
             "mp": {
@@ -3058,6 +3585,11 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "4.11"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "4.52"
           }
         },
         "mp": {
@@ -3097,6 +3629,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.52"
               }
             },
             "mp": {
@@ -3124,6 +3661,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.52"
               }
             },
             "mp": {
@@ -3150,6 +3692,11 @@
               "ios": {
                 "osVer": "12.0",
                 "uniVer": "√",
+                "unixVer": "x"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
                 "unixVer": "x"
               }
             },
@@ -3178,6 +3725,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "x"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "x"
               }
             },
             "mp": {
@@ -3205,6 +3757,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "x"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "x"
               }
             },
             "mp": {
@@ -3231,6 +3788,11 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "4.11"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "4.52"
           }
         },
         "mp": {
@@ -3269,6 +3831,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.52"
               }
             },
             "mp": {
@@ -3296,6 +3863,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.52"
               }
             },
             "mp": {
@@ -3322,6 +3894,11 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "4.11"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "4.52"
           }
         },
         "mp": {
@@ -3354,6 +3931,11 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "4.11"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "4.52"
           }
         },
         "mp": {
@@ -3389,6 +3971,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.52"
               }
             },
             "mp": {
@@ -3416,6 +4003,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.52"
               }
             },
             "mp": {
@@ -3442,6 +4034,11 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "4.11"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "4.52"
           }
         },
         "mp": {
@@ -3481,6 +4078,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "x"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "x"
               }
             },
             "mp": {
@@ -3507,6 +4109,11 @@
               "ios": {
                 "osVer": "12.0",
                 "uniVer": "√",
+                "unixVer": "x"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
                 "unixVer": "x"
               }
             },
@@ -3535,6 +4142,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "x"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "x"
               }
             },
             "mp": {
@@ -3562,6 +4174,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "x"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "x"
               }
             },
             "mp": {
@@ -3588,6 +4205,11 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "4.11"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "4.52"
           }
         },
         "mp": {
@@ -3619,6 +4241,11 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "4.11"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "4.52"
           }
         },
         "mp": {
@@ -3654,6 +4281,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.52"
               }
             },
             "mp": {
@@ -3681,6 +4313,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.27"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.52"
               }
             },
             "mp": {
@@ -3707,6 +4344,11 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "4.11"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "4.52"
           }
         },
         "mp": {
@@ -3741,6 +4383,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "x"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "x"
               }
             },
             "mp": {
@@ -3767,6 +4414,11 @@
               "ios": {
                 "osVer": "12.0",
                 "uniVer": "√",
+                "unixVer": "x"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
                 "unixVer": "x"
               }
             },
@@ -3795,6 +4447,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "x"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "x"
               }
             },
             "mp": {
@@ -3821,6 +4478,11 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "x"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "x"
           }
         },
         "mp": {
@@ -3841,6 +4503,7 @@
       "shorthand": true,
       "restrictions": [
         "length",
+        "length-function",
         "percentage"
       ],
       "syntax": "[ <length> | <percentage> ]{1,4}",
@@ -3855,6 +4518,11 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "4.11"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "4.52"
           }
         },
         "mp": {
@@ -3873,6 +4541,7 @@
       "name": "padding-left",
       "restrictions": [
         "length",
+        "length-function",
         "percentage"
       ],
       "syntax": "<length> | <percentage>",
@@ -3887,6 +4556,11 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "4.11"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "4.52"
           }
         },
         "mp": {
@@ -3906,6 +4580,7 @@
       "name": "padding-top",
       "restrictions": [
         "length",
+        "length-function",
         "percentage"
       ],
       "syntax": "<length> | <percentage>",
@@ -3920,6 +4595,11 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "4.11"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "4.52"
           }
         },
         "mp": {
@@ -3939,6 +4619,7 @@
       "name": "padding-right",
       "restrictions": [
         "length",
+        "length-function",
         "percentage"
       ],
       "syntax": "<length> | <percentage>",
@@ -3953,6 +4634,11 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "4.11"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "4.52"
           }
         },
         "mp": {
@@ -3972,6 +4658,7 @@
       "name": "padding-bottom",
       "restrictions": [
         "length",
+        "length-function",
         "percentage"
       ],
       "syntax": "<length> | <percentage>",
@@ -3986,6 +4673,11 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "4.11"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "4.52"
           }
         },
         "mp": {
@@ -4006,6 +4698,7 @@
       "shorthand": true,
       "restrictions": [
         "length",
+        "length-function",
         "percentage"
       ],
       "syntax": "[ <length> | <percentage> | auto ]{1,4}",
@@ -4023,6 +4716,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.52"
               }
             },
             "mp": {
@@ -4049,6 +4747,11 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "4.11"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "4.52"
           }
         },
         "mp": {
@@ -4068,6 +4771,7 @@
       "name": "margin-left",
       "restrictions": [
         "length",
+        "length-function",
         "percentage"
       ],
       "syntax": "<length> | <percentage> | auto",
@@ -4085,6 +4789,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.52"
               }
             },
             "mp": {
@@ -4111,6 +4820,11 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "4.11"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "4.52"
           }
         },
         "mp": {
@@ -4130,6 +4844,7 @@
       "name": "margin-top",
       "restrictions": [
         "length",
+        "length-function",
         "percentage"
       ],
       "syntax": "<length> | <percentage> | auto",
@@ -4147,6 +4862,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.52"
               }
             },
             "mp": {
@@ -4173,6 +4893,11 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "4.11"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "4.52"
           }
         },
         "mp": {
@@ -4192,6 +4917,7 @@
       "name": "margin-right",
       "restrictions": [
         "length",
+        "length-function",
         "percentage"
       ],
       "syntax": "<length> | <percentage> | auto",
@@ -4209,6 +4935,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.52"
               }
             },
             "mp": {
@@ -4235,6 +4966,11 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "4.11"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "4.52"
           }
         },
         "mp": {
@@ -4254,6 +4990,7 @@
       "name": "margin-bottom",
       "restrictions": [
         "length",
+        "length-function",
         "percentage"
       ],
       "description": "margin-bottom 属性设置与元素相关联的盒子模型的下外边距。可以为负值",
@@ -4272,6 +5009,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.52"
               }
             },
             "mp": {
@@ -4298,6 +5040,11 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "4.11"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "4.52"
           }
         },
         "mp": {
@@ -4317,6 +5064,7 @@
       "name": "border",
       "restrictions": [
         "length",
+        "length-function",
         "line-width",
         "line-style",
         "color"
@@ -4334,6 +5082,11 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "4.11"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "4.52"
           }
         },
         "mp": {
@@ -4371,6 +5124,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.52"
               }
             },
             "mp": {
@@ -4398,6 +5156,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.52"
               }
             },
             "mp": {
@@ -4425,6 +5188,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.52"
               }
             },
             "mp": {
@@ -4452,6 +5220,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.52"
               }
             },
             "mp": {
@@ -4478,6 +5251,11 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "4.11"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "4.52"
           }
         },
         "mp": {
@@ -4512,6 +5290,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.52"
               }
             },
             "mp": {
@@ -4539,6 +5322,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.52"
               }
             },
             "mp": {
@@ -4566,6 +5354,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.52"
               }
             },
             "mp": {
@@ -4593,6 +5386,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.52"
               }
             },
             "mp": {
@@ -4619,6 +5417,11 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "4.11"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "4.52"
           }
         },
         "mp": {
@@ -4653,6 +5456,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.52"
               }
             },
             "mp": {
@@ -4680,6 +5488,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.52"
               }
             },
             "mp": {
@@ -4707,6 +5520,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.52"
               }
             },
             "mp": {
@@ -4734,6 +5552,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.52"
               }
             },
             "mp": {
@@ -4760,6 +5583,11 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "4.11"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "4.52"
           }
         },
         "mp": {
@@ -4794,6 +5622,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.52"
               }
             },
             "mp": {
@@ -4821,6 +5654,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.52"
               }
             },
             "mp": {
@@ -4848,6 +5686,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.52"
               }
             },
             "mp": {
@@ -4875,6 +5718,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.52"
               }
             },
             "mp": {
@@ -4901,6 +5749,11 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "4.11"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "4.52"
           }
         },
         "mp": {
@@ -4935,6 +5788,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.52"
               }
             },
             "mp": {
@@ -4962,6 +5820,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.52"
               }
             },
             "mp": {
@@ -4989,6 +5852,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.52"
               }
             },
             "mp": {
@@ -5016,6 +5884,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.52"
               }
             },
             "mp": {
@@ -5042,6 +5915,11 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "4.11"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "4.52"
           }
         },
         "mp": {
@@ -5060,6 +5938,7 @@
       "name": "border-width",
       "restrictions": [
         "length",
+        "length-function",
         "enum"
       ],
       "syntax": "<line-width>{1,4}",
@@ -5077,6 +5956,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.52"
               }
             },
             "mp": {
@@ -5104,6 +5988,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.52"
               }
             },
             "mp": {
@@ -5131,6 +6020,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.52"
               }
             },
             "mp": {
@@ -5157,6 +6051,11 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "4.11"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "4.52"
           }
         },
         "mp": {
@@ -5176,6 +6075,7 @@
       "name": "border-left-width",
       "restrictions": [
         "length",
+        "length-function",
         "enum"
       ],
       "syntax": "<length> | thin | medium | thick",
@@ -5193,6 +6093,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.52"
               }
             },
             "mp": {
@@ -5220,6 +6125,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.52"
               }
             },
             "mp": {
@@ -5247,6 +6157,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.52"
               }
             },
             "mp": {
@@ -5273,6 +6188,11 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "4.11"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "4.52"
           }
         },
         "mp": {
@@ -5292,6 +6212,7 @@
       "name": "border-top-width",
       "restrictions": [
         "length",
+        "length-function",
         "enum"
       ],
       "syntax": "<length> | thin | medium | thick",
@@ -5309,6 +6230,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.52"
               }
             },
             "mp": {
@@ -5336,6 +6262,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.52"
               }
             },
             "mp": {
@@ -5363,6 +6294,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.52"
               }
             },
             "mp": {
@@ -5389,6 +6325,11 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "4.11"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "4.52"
           }
         },
         "mp": {
@@ -5408,6 +6349,7 @@
       "name": "border-right-width",
       "restrictions": [
         "length",
+        "length-function",
         "enum"
       ],
       "syntax": "<length> | thin | medium | thick",
@@ -5425,6 +6367,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.52"
               }
             },
             "mp": {
@@ -5452,6 +6399,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.52"
               }
             },
             "mp": {
@@ -5479,6 +6431,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.52"
               }
             },
             "mp": {
@@ -5505,6 +6462,11 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "4.11"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "4.52"
           }
         },
         "mp": {
@@ -5524,6 +6486,7 @@
       "name": "border-bottom-width",
       "restrictions": [
         "length",
+        "length-function",
         "enum"
       ],
       "syntax": "<length> | thin | medium | thick",
@@ -5541,6 +6504,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.52"
               }
             },
             "mp": {
@@ -5568,6 +6536,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.52"
               }
             },
             "mp": {
@@ -5595,6 +6568,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.52"
               }
             },
             "mp": {
@@ -5621,6 +6599,11 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "4.11"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "4.52"
           }
         },
         "mp": {
@@ -5653,6 +6636,11 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "4.11"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "4.52"
           }
         },
         "mp": {
@@ -5684,6 +6672,11 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "4.11"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "4.52"
           }
         },
         "mp": {
@@ -5715,6 +6708,11 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "4.11"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "4.52"
           }
         },
         "mp": {
@@ -5746,6 +6744,11 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "4.11"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "4.52"
           }
         },
         "mp": {
@@ -5777,6 +6780,11 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "4.11"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "4.52"
           }
         },
         "mp": {
@@ -5794,7 +6802,8 @@
     {
       "name": "border-radius",
       "restrictions": [
-        "length"
+        "length",
+        "length-function"
       ],
       "syntax": "<length-percentage>{1,4} [ / <length-percentage>{1,4} ]?",
       "uniPlatform": {
@@ -5808,6 +6817,11 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "4.11"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "4.52"
           }
         },
         "mp": {
@@ -5825,7 +6839,8 @@
     {
       "name": "border-top-left-radius",
       "restrictions": [
-        "length"
+        "length",
+        "length-function"
       ],
       "syntax": "<length-percentage>{1,2}",
       "uniPlatform": {
@@ -5839,6 +6854,11 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "4.11"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "4.52"
           }
         },
         "mp": {
@@ -5856,7 +6876,8 @@
     {
       "name": "border-top-right-radius",
       "restrictions": [
-        "length"
+        "length",
+        "length-function"
       ],
       "syntax": "<length-percentage>{1,2}",
       "uniPlatform": {
@@ -5870,6 +6891,11 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "4.11"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "4.52"
           }
         },
         "mp": {
@@ -5887,7 +6913,8 @@
     {
       "name": "border-bottom-left-radius",
       "restrictions": [
-        "length"
+        "length",
+        "length-function"
       ],
       "syntax": "<length-percentage>{1,2}",
       "uniPlatform": {
@@ -5901,6 +6928,11 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "4.11"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "4.52"
           }
         },
         "mp": {
@@ -5918,7 +6950,8 @@
     {
       "name": "border-bottom-right-radius",
       "restrictions": [
-        "length"
+        "length",
+        "length-function"
       ],
       "syntax": "<length-percentage>{1,2}",
       "uniPlatform": {
@@ -5932,6 +6965,11 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "4.11"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "4.52"
           }
         },
         "mp": {
@@ -5950,6 +6988,7 @@
       "name": "border-top",
       "restrictions": [
         "length",
+        "length-function",
         "line-width",
         "line-style",
         "color"
@@ -5966,6 +7005,11 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "4.11"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "4.52"
           }
         },
         "mp": {
@@ -5985,6 +7029,7 @@
       "name": "border-bottom",
       "restrictions": [
         "length",
+        "length-function",
         "line-width",
         "line-style",
         "color"
@@ -6001,6 +7046,11 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "4.11"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "4.52"
           }
         },
         "mp": {
@@ -6020,6 +7070,7 @@
       "name": "border-left",
       "restrictions": [
         "length",
+        "length-function",
         "line-width",
         "line-style",
         "color"
@@ -6036,6 +7087,11 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "4.11"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "4.52"
           }
         },
         "mp": {
@@ -6055,6 +7111,7 @@
       "name": "border-right",
       "restrictions": [
         "length",
+        "length-function",
         "line-width",
         "line-style",
         "color"
@@ -6071,6 +7128,11 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "4.11"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "4.52"
           }
         },
         "mp": {
@@ -6104,6 +7166,11 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "4.11"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "4.52"
           }
         },
         "mp": {
@@ -6132,7 +7199,8 @@
       "name": "font-size",
       "description": "font-size CSS 属性设置字体大小。更改字体大小还会更新字体大小相关的 `<length>` 单位，例如 line-height 属性的 em 单位值。",
       "restrictions": [
-        "length"
+        "length",
+        "length-function"
       ],
       "syntax": "<absolute-size> | <relative-size> | <length-percentage>",
       "uniPlatform": {
@@ -6146,6 +7214,11 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "4.11"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "4.52"
           }
         },
         "mp": {
@@ -6190,6 +7263,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.52"
               }
             },
             "mp": {
@@ -6217,6 +7295,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.52"
               }
             },
             "mp": {
@@ -6243,6 +7326,11 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "4.11"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "4.52"
           }
         },
         "mp": {
@@ -6284,6 +7372,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.52"
               }
             },
             "mp": {
@@ -6311,6 +7404,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.52"
               }
             },
             "mp": {
@@ -6338,6 +7436,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.52"
               }
             },
             "mp": {
@@ -6365,6 +7468,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.52"
               }
             },
             "mp": {
@@ -6391,6 +7499,11 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "4.11"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "4.52"
           }
         },
         "mp": {
@@ -6417,7 +7530,8 @@
       "restrictions": [
         "enum",
         "color",
-        "length"
+        "length",
+        "length-function"
       ],
       "syntax": "<'text-decoration-line'> || <'text-decoration-style'> || <'text-decoration-color'> || <'text-decoration-thickness'>",
       "uniPlatform": {
@@ -6430,6 +7544,11 @@
           "ios": {
             "osVer": "12.0",
             "uniVer": "√",
+            "unixVer": "x"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
             "unixVer": "x"
           }
         },
@@ -6469,6 +7588,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.52"
               }
             },
             "mp": {
@@ -6496,6 +7620,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.52"
               }
             },
             "mp": {
@@ -6523,6 +7652,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "x"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "x"
               }
             },
             "mp": {
@@ -6549,6 +7683,11 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "4.11"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "4.52"
           }
         },
         "mp": {
@@ -6584,6 +7723,11 @@
           "ios": {
             "osVer": "12.0",
             "uniVer": "√",
+            "unixVer": "x"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
             "unixVer": "x"
           }
         },
@@ -6623,6 +7767,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "x"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "x"
               }
             },
             "mp": {
@@ -6649,6 +7798,11 @@
               "ios": {
                 "osVer": "12.0",
                 "uniVer": "√",
+                "unixVer": "x"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
                 "unixVer": "x"
               }
             },
@@ -6677,6 +7831,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "x"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "x"
               }
             },
             "mp": {
@@ -6704,6 +7863,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "x"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "x"
               }
             },
             "mp": {
@@ -6730,6 +7894,11 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "x"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "x"
           }
         },
         "mp": {
@@ -6751,7 +7920,8 @@
     {
       "name": "text-decoration-thickness",
       "restrictions": [
-        "length"
+        "length",
+        "length-function"
       ],
       "syntax": "auto | from-font | <length> | <percentage> ",
       "uniPlatform": {
@@ -6764,6 +7934,11 @@
           "ios": {
             "osVer": "12.0",
             "uniVer": "√",
+            "unixVer": "x"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
             "unixVer": "x"
           }
         },
@@ -6803,6 +7978,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.52"
               }
             },
             "mp": {
@@ -6830,6 +8010,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.52"
               }
             },
             "mp": {
@@ -6857,6 +8042,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.52"
               }
             },
             "mp": {
@@ -6883,6 +8073,11 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "4.11"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "4.52"
           }
         },
         "mp": {
@@ -6928,6 +8123,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.52"
               }
             },
             "mp": {
@@ -6955,6 +8155,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.52"
               }
             },
             "mp": {
@@ -6982,6 +8187,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.52"
               }
             },
             "mp": {
@@ -7009,6 +8219,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.52"
               }
             },
             "mp": {
@@ -7036,6 +8251,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.52"
               }
             },
             "mp": {
@@ -7064,6 +8284,11 @@
                 "osVer": "12.0",
                 "uniVer": "x",
                 "unixVer": "4.33"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.52"
               }
             },
             "web": {
@@ -7084,6 +8309,11 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "4.11"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "4.52"
           }
         },
         "mp": {
@@ -7124,6 +8354,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.52"
               }
             },
             "mp": {
@@ -7151,6 +8386,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.52"
               }
             },
             "mp": {
@@ -7177,6 +8417,11 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "4.11"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "4.52"
           }
         },
         "mp": {
@@ -7200,6 +8445,7 @@
       "name": "line-height",
       "restrictions": [
         "length",
+        "length-function",
         "number"
       ],
       "syntax": "normal | <number> | <length> | <percentage>",
@@ -7214,6 +8460,11 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "4.11"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "4.52"
           }
         },
         "mp": {
@@ -7255,6 +8506,11 @@
             "osVer": "12.0",
             "uniVer": "x",
             "unixVer": "4.11"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "4.52"
           }
         },
         "web": {
@@ -7273,7 +8529,8 @@
     {
       "name": "letter-spacing",
       "restrictions": [
-        "length"
+        "length",
+        "length-function"
       ],
       "syntax": "normal | <length>",
       "uniPlatform": {
@@ -7287,6 +8544,11 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "4.11"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "4.52"
           }
         },
         "mp": {
@@ -7329,6 +8591,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.52"
               }
             },
             "mp": {
@@ -7356,6 +8623,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.52"
               }
             },
             "mp": {
@@ -7382,6 +8654,11 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "4.11"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "4.52"
           }
         },
         "mp": {
@@ -7406,6 +8683,7 @@
       "restrictions": [
         "enum",
         "length",
+        "length-function",
         "color"
       ],
       "syntax": "none | <shadow>#",
@@ -7423,6 +8701,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "x"
               }
             },
             "mp": {
@@ -7450,6 +8733,11 @@
                 "osVer": "x",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.52"
               }
             },
             "mp": {
@@ -7476,6 +8764,11 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "4.11"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "4.52"
           }
         },
         "mp": {
@@ -7511,6 +8804,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.13"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.52"
               }
             },
             "mp": {
@@ -7538,6 +8836,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.13"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.52"
               }
             },
             "mp": {
@@ -7564,6 +8867,11 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "4.11"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "4.52"
           }
         },
         "mp": {
@@ -7598,6 +8906,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.13"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.52"
               }
             },
             "mp": {
@@ -7625,6 +8938,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.13"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.52"
               }
             },
             "mp": {
@@ -7652,6 +8970,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.52"
               }
             },
             "mp": {
@@ -7679,6 +9002,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.52"
               }
             },
             "mp": {
@@ -7706,6 +9034,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.52"
               }
             },
             "mp": {
@@ -7733,6 +9066,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.52"
               }
             },
             "mp": {
@@ -7760,6 +9098,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.52"
               }
             },
             "mp": {
@@ -7787,6 +9130,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.52"
               }
             },
             "mp": {
@@ -7814,6 +9162,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.52"
               }
             },
             "mp": {
@@ -7841,6 +9194,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.52"
               }
             },
             "mp": {
@@ -7868,6 +9226,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.52"
               }
             },
             "mp": {
@@ -7895,6 +9258,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.52"
               }
             },
             "mp": {
@@ -7922,6 +9290,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.52"
               }
             },
             "mp": {
@@ -7949,6 +9322,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.52"
               }
             },
             "mp": {
@@ -7976,6 +9354,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.52"
               }
             },
             "mp": {
@@ -8003,6 +9386,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.52"
               }
             },
             "mp": {
@@ -8030,6 +9418,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.52"
               }
             },
             "mp": {
@@ -8057,6 +9450,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.52"
               }
             },
             "mp": {
@@ -8084,6 +9482,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.52"
               }
             },
             "mp": {
@@ -8111,6 +9514,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.52"
               }
             },
             "mp": {
@@ -8138,6 +9546,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.52"
               }
             },
             "mp": {
@@ -8165,6 +9578,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.52"
               }
             },
             "mp": {
@@ -8192,6 +9610,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.52"
               }
             },
             "mp": {
@@ -8219,6 +9642,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.52"
               }
             },
             "mp": {
@@ -8246,6 +9674,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.52"
               }
             },
             "mp": {
@@ -8273,6 +9706,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.52"
               }
             },
             "mp": {
@@ -8299,6 +9737,11 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "4.11"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "4.52"
           }
         },
         "mp": {
@@ -8335,6 +9778,11 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "4.11"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "4.52"
           }
         },
         "mp": {
@@ -8370,6 +9818,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.52"
               }
             },
             "mp": {
@@ -8397,6 +9850,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.52"
               }
             },
             "mp": {
@@ -8424,6 +9882,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.52"
               }
             },
             "mp": {
@@ -8451,6 +9914,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.52"
               }
             },
             "mp": {
@@ -8478,6 +9946,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.52"
               }
             },
             "mp": {
@@ -8505,6 +9978,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.52"
               }
             },
             "mp": {
@@ -8531,6 +10009,11 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "4.11"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "4.52"
           }
         },
         "mp": {
@@ -8563,6 +10046,11 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "4.11"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "4.52"
           }
         },
         "mp": {
@@ -8598,6 +10086,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.52"
               }
             },
             "mp": {
@@ -8625,6 +10118,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.52"
               }
             },
             "mp": {
@@ -8652,6 +10150,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.52"
               }
             },
             "mp": {
@@ -8679,6 +10182,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.52"
               }
             },
             "mp": {
@@ -8706,6 +10214,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.52"
               }
             },
             "mp": {
@@ -8733,6 +10246,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.52"
               }
             },
             "mp": {
@@ -8760,6 +10278,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.52"
               }
             },
             "mp": {
@@ -8787,6 +10310,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.52"
               }
             },
             "mp": {
@@ -8814,6 +10342,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.52"
               }
             },
             "mp": {
@@ -8841,6 +10374,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.52"
               }
             },
             "mp": {
@@ -8867,6 +10405,11 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "4.11"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "4.52"
           }
         },
         "mp": {
@@ -8886,6 +10429,7 @@
       "shorthand": true,
       "restrictions": [
         "length",
+        "length-function",
         "percentage",
         "enum"
       ],
@@ -8904,6 +10448,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.52"
               }
             },
             "mp": {
@@ -8931,6 +10480,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.52"
               }
             },
             "mp": {
@@ -8958,6 +10512,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.52"
               }
             },
             "mp": {
@@ -8985,6 +10544,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.52"
               }
             },
             "mp": {
@@ -9012,6 +10576,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.52"
               }
             },
             "mp": {
@@ -9038,6 +10607,11 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "4.11"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "4.52"
           }
         },
         "mp": {
@@ -9077,6 +10651,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.52"
               }
             },
             "mp": {
@@ -9104,6 +10683,11 @@
                 "osVer": "12.0",
                 "uniVer": "√",
                 "unixVer": "4.11"
+              },
+              "harmony": {
+                "osVer": "5.0.0",
+                "uniVer": "4.23",
+                "unixVer": "4.52"
               }
             },
             "mp": {
@@ -9130,6 +10714,11 @@
             "osVer": "12.0",
             "uniVer": "x",
             "unixVer": "4.11"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "4.52"
           }
         },
         "mp": {
@@ -9160,6 +10749,11 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "4.11"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "4.52"
           }
         },
         "mp": {
@@ -9187,6 +10781,11 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "4.11"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "4.52"
           }
         },
         "mp": {
@@ -9213,6 +10812,11 @@
           "ios": {
             "osVer": "12.0",
             "uniVer": "√",
+            "unixVer": "x"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
             "unixVer": "x"
           }
         },
@@ -9242,6 +10846,11 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "x"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "x"
           }
         },
         "mp": {
@@ -9270,6 +10879,11 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "x"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "x"
           }
         },
         "mp": {
@@ -9296,6 +10910,11 @@
           "ios": {
             "osVer": "12.0",
             "uniVer": "√",
+            "unixVer": "x"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
             "unixVer": "x"
           }
         },
@@ -9325,6 +10944,11 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "x"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "x"
           }
         },
         "mp": {
@@ -9351,6 +10975,11 @@
           "ios": {
             "osVer": "12.0",
             "uniVer": "√",
+            "unixVer": "x"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
             "unixVer": "x"
           }
         },
@@ -9380,6 +11009,11 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "x"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "x"
           }
         },
         "mp": {
@@ -9406,6 +11040,11 @@
           "ios": {
             "osVer": "12.0",
             "uniVer": "√",
+            "unixVer": "x"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
             "unixVer": "x"
           }
         },
@@ -9434,6 +11073,11 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "x"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "x"
           }
         },
         "mp": {
@@ -9460,6 +11104,11 @@
           "ios": {
             "osVer": "12.0",
             "uniVer": "√",
+            "unixVer": "x"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
             "unixVer": "x"
           }
         },
@@ -9488,6 +11137,11 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "x"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "x"
           }
         },
         "mp": {
@@ -9514,6 +11168,11 @@
           "ios": {
             "osVer": "12.0",
             "uniVer": "√",
+            "unixVer": "x"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
             "unixVer": "x"
           }
         },
@@ -9542,6 +11201,11 @@
             "osVer": "12.0",
             "uniVer": "√",
             "unixVer": "x"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
+            "unixVer": "x"
           }
         },
         "mp": {
@@ -9568,6 +11232,11 @@
           "ios": {
             "osVer": "12.0",
             "uniVer": "√",
+            "unixVer": "x"
+          },
+          "harmony": {
+            "osVer": "5.0.0",
+            "uniVer": "4.23",
             "unixVer": "x"
           }
         },

@@ -22,6 +22,10 @@ import { parseXReturnValue } from '@dcloudio/uni-mp-core'
 export function returnValue(method: string, res: unknown) {
   return parseXReturnValue(method, res)
 }
+
+export const chooseFile = {
+  name: 'chooseMessageFile',
+}
 // #endif
 
 export const compressImage: MPProtocol = {

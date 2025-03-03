@@ -5,7 +5,7 @@ import {
   type ComponentPublicInstance,
   nextTick,
 } from 'vue'
-
+import { LOCALE_EN, normalizeLocale } from '@dcloudio/uni-i18n'
 import type { MPComponentInstance, MPComponentOptions } from './component'
 
 export function initVueIds(
@@ -202,7 +202,11 @@ export function fixProperties(properties: Record<string, any>) {
 
 export function nextSetDataTick(mpInstance: MPComponentInstance, fn: Function) {
   // 随便设置一个字段来触发回调（部分平台必须有字段才可以，比如头条）
-  mpInstance.setData({ r1: 1 }, () => fn())
+  if (__PLATFORM__ === 'mp-kuaishou') {
+    mpInstance.setData({ r1: 1 }, () => nextTick(() => fn()))
+  } else {
+    mpInstance.setData({ r1: 1 }, () => fn())
+  }
 }
 
 export function initSetRef(mpInstance: MPComponentInstance) {
@@ -227,4 +231,18 @@ export function getTriggerEventDetail(eventId: number) {
   const detail = triggerEventDetails[eventId]
   delete triggerEventDetails[eventId]
   return detail
+}
+
+export function getLocaleLanguage() {
+  let localeLanguage = ''
+  if (__PLATFORM__ === 'mp-weixin') {
+    const appBaseInfo = __GLOBAL__.getAppBaseInfo()
+    const language =
+      appBaseInfo && appBaseInfo.language ? appBaseInfo.language : LOCALE_EN
+    localeLanguage = normalizeLocale(language) || LOCALE_EN
+  } else {
+    localeLanguage =
+      normalizeLocale(__GLOBAL__.getSystemInfoSync().language) || LOCALE_EN
+  }
+  return localeLanguage
 }

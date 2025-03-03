@@ -35,11 +35,15 @@ export function uniCopyPlugin({
   })
   const inputDir = normalizePath(process.env.UNI_INPUT_DIR)
   const platform = process.env.UNI_PLATFORM
+  const utsPlatform = process.env.UNI_UTS_PLATFORM
   // 非当前平台 static 目录
   const ignorePlatformStaticDirs = getPlatforms()
     .filter((p) => {
       if (platform === 'app') {
         if (process.env.UNI_APP_X === 'true') {
+          if (p === 'app-android' || p === 'app-ios' || p === 'app-harmony') {
+            return p !== utsPlatform
+          }
           return p !== 'app'
         }
         return p !== 'app' && p !== 'app-plus'

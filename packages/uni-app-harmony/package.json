@@ -1,6 +1,6 @@
 {
   "name": "@dcloudio/uni-app-harmony",
-  "version": "3.0.0-alpha-4040520250107001",
+  "version": "3.0.0-alpha-4050320250224001",
   "description": "@dcloudio/uni-app-harmony",
   "files": [
     "dist"
@@ -26,6 +26,7 @@
     "main": "dist/uni.compiler.js"
   },
   "dependencies": {
+    "@dcloudio/uni-app-uts": "workspace:*",
     "@dcloudio/uni-app-vite": "workspace:*",
     "debug": "^4.3.3",
     "fs-extra": "^10.0.0",

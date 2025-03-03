@@ -1,6 +1,6 @@
 {
   "name": "@dcloudio/uni-mp-alipay",
-  "version": "3.0.0-alpha-4040520250107001",
+  "version": "3.0.0-alpha-4050320250224001",
   "description": "uni-app mp-alipay",
   "main": "dist/index.js",
   "files": [
@@ -32,5 +32,8 @@
     "@dcloudio/uni-shared": "workspace:*",
     "@vue/compiler-core": "3.4.21",
     "@vue/shared": "3.4.21"
+  },
+  "devDependencies": {
+    "mini-types": "^0.1.7"
   }
 }

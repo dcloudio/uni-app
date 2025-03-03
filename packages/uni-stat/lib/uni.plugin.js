@@ -123,7 +123,9 @@ var index = () => [
                     return {
                         code: code +
                             `;import '@dcloudio/uni${statVersion === '2' ? '-cloud' : ''}-stat';`,
-                        map: null,
+                        map: {
+                            mappings: '',
+                        },
                     };
                 }
             },

@@ -7,6 +7,7 @@ import {
   isUniLifecycleHook,
 } from '@dcloudio/uni-shared'
 import { isArray, isFunction } from '@vue/shared'
+import { hasOwn } from '@vue/shared'
 
 import type {
   ComponentInternalInstance,
@@ -61,7 +62,13 @@ export function initHooks(
       }
       if (__PLATFORM__ === 'app' && __X__) {
         // TODO 统一处理 Web
-        publicThis.options = query || {}
+        // @ts-expect-error
+        const { setupState } = instance
+        // 组合式 API 时，如果开发者定义了 options 变量，再次赋值会导致 warn & error issues:15107
+        // 现有规范开发者不需要再从 pageVm 上获取 options, 但为了控制修改影响范围，只在上述情况下不再赋值
+        if (!(setupState.__isScriptSetup && hasOwn(setupState, 'options'))) {
+          publicThis.options = query || {}
+        }
       }
       invokeHook(publicThis, ON_LOAD, query)
       delete instance.attrs.__pageQuery

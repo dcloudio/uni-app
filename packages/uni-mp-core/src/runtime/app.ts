@@ -8,7 +8,7 @@ import {
 
 import { initBaseInstance } from './componentInstance'
 import { initHooks, initUnknownHooks } from './componentHooks'
-import { LOCALE_EN, normalizeLocale } from '@dcloudio/uni-i18n'
+import { getLocaleLanguage } from '../runtime/util'
 
 import App = WechatMiniprogram.App
 import {
@@ -169,11 +169,7 @@ export function initAppLifecycle(
 }
 
 function initLocale(appVm: ComponentPublicInstance) {
-  const locale = ref<string>(
-    __PLATFORM__ === 'mp-weixin'
-      ? normalizeLocale(__GLOBAL__.getAppBaseInfo().language) || LOCALE_EN
-      : normalizeLocale(__GLOBAL__.getSystemInfoSync().language) || LOCALE_EN
-  )
+  const locale = ref<string>(getLocaleLanguage())
   Object.defineProperty(appVm, '$locale', {
     get() {
       return locale.value

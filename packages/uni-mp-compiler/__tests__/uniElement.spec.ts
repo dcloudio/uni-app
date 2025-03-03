@@ -23,9 +23,9 @@ describe('compiler: transform UniElement.style.setProperty', () => {
     )
     assert(
       `<view id="view"/>`,
-      `<view id="{{a}}" style="{{$eS[a] + ';' + virtualHostStyle}}" class="{{[virtualHostClass]}}" hidden="{{virtualHostHidden}}"/>`,
+      `<view id="{{a}}" style="{{$eS[a] + ';' + virtualHostStyle}}" class="{{[virtualHostClass]}}" hidden="{{virtualHostHidden || false}}"/>`,
       `(_ctx, _cache) => {
-  const __returned__ = { a: _sei(_ctx.virtualHostId !== '' ? _ctx.virtualHostId : 'view', 'view'), b: _s(_ses(_ctx.virtualHostId !== '' ? _ctx.virtualHostId : 'view')) }
+  const __returned__ = { a: _sei(_gei(_ctx, 'view'), 'view'), b: _s(_ses(_gei(_ctx, 'view'))) }
   return __returned__
 }`,
       {
@@ -46,9 +46,9 @@ describe('compiler: transform UniElement.style.setProperty', () => {
     )
     assert(
       `<custom id="custom"/>`,
-      `<custom u-i="2a9ec0b0-0" id="{{a}}" virtualHostId="{{a}}" u-p="{{b||''}}" class="{{[virtualHostClass]}}" virtualHostClass="{{[virtualHostClass]}}" style="{{virtualHostStyle}}" virtualHostStyle="{{virtualHostStyle}}" hidden="{{virtualHostHidden}}" virtualHostHidden="{{virtualHostHidden}}"/>`,
+      `<custom u-i="2a9ec0b0-0" id="{{a}}" virtualHostId="{{a}}" u-p="{{b||''}}" class="{{[virtualHostClass]}}" virtualHostClass="{{[virtualHostClass]}}" style="{{virtualHostStyle}}" virtualHostStyle="{{virtualHostStyle}}" hidden="{{virtualHostHidden || false}}" virtualHostHidden="{{virtualHostHidden || false}}"/>`,
       `(_ctx, _cache) => {
-  const __returned__ = { a: _ctx.virtualHostId !== '' ? _ctx.virtualHostId : 'custom', b: _p({ id: _ctx.virtualHostId !== '' ? _ctx.virtualHostId : 'custom' }) }
+  const __returned__ = { a: _gei(_ctx, 'custom'), b: _p({ id: _gei(_ctx, 'custom') }) }
   return __returned__
 }`,
       {
@@ -93,9 +93,9 @@ describe('compiler: transform UniElement.style.setProperty', () => {
     )
     assert(
       `<view id="view" style="color:red"/>`,
-      `<view id="{{a}}" style="{{'color:red' + ';' + $eS[a] + ';' + virtualHostStyle}}" class="{{[virtualHostClass]}}" hidden="{{virtualHostHidden}}"/>`,
+      `<view id="{{a}}" style="{{'color:red' + ';' + $eS[a] + ';' + virtualHostStyle}}" class="{{[virtualHostClass]}}" hidden="{{virtualHostHidden || false}}"/>`,
       `(_ctx, _cache) => {
-  const __returned__ = { a: _sei(_ctx.virtualHostId !== '' ? _ctx.virtualHostId : 'view', 'view'), b: _s(_ses(_ctx.virtualHostId !== '' ? _ctx.virtualHostId : 'view')) }
+  const __returned__ = { a: _sei(_gei(_ctx, 'view'), 'view'), b: _s(_ses(_gei(_ctx, 'view'))) }
   return __returned__
 }`,
       {
@@ -140,9 +140,9 @@ describe('compiler: transform UniElement.style.setProperty', () => {
     )
     assert(
       `<view :id="viewId"/>`,
-      `<view id="{{a}}" style="{{$eS[a] + ';' + virtualHostStyle}}\" class=\"{{[virtualHostClass]}}\" hidden=\"{{virtualHostHidden}}"/>`,
+      `<view id="{{a}}" style="{{$eS[a] + ';' + virtualHostStyle}}\" class=\"{{[virtualHostClass]}}\" hidden=\"{{virtualHostHidden || false}}"/>`,
       `(_ctx, _cache) => {
-  const __returned__ = { a: _sei(_ctx.virtualHostId !== '' ? _ctx.virtualHostId : _ctx.viewId, 'view'), b: _s(_ses(_ctx.virtualHostId !== '' ? _ctx.virtualHostId : _ctx.viewId)) }
+  const __returned__ = { a: _sei(_gei(_ctx, _ctx.viewId), 'view'), b: _s(_ses(_gei(_ctx, _ctx.viewId))) }
   return __returned__
 }`,
       {
@@ -249,7 +249,7 @@ describe('compiler: transform UniElement.style.setProperty (wxs)', () => {
   test('static id', () => {
     assert(
       `<view id="view"/>`,
-      `<view id="view" change:eS="{{uV.sS}}" eS="{{$eS[a]}}"/>`,
+      `<view id="view" change:eS="{{uV.sS}}" eS="{{$eS[a]}}" change:eA="{{uV.sA}}" eA="{{$eA[a]}}"/>`,
       `(_ctx, _cache) => {
   const __returned__ = { a: _sei('view', 'view') }
   return __returned__
@@ -266,7 +266,7 @@ describe('compiler: transform UniElement.style.setProperty (wxs)', () => {
     )
     assert(
       `<view v-for="item in 10" id="view"/>`,
-      `<view wx:for="{{a}}" wx:for-item="item" id="view" change:eS="{{uV.sS}}" eS="{{$eS[b]}}"/>`,
+      `<view wx:for="{{a}}" wx:for-item="item" id="view" change:eS="{{uV.sS}}" eS="{{$eS[b]}}" change:eA="{{uV.sA}}" eA="{{$eA[b]}}"/>`,
       `(_ctx, _cache) => {
   const __returned__ = { a: _f(10, (item, k0, i0) => { return {}; }), b: _sei('view', 'view') }
   return __returned__
@@ -285,7 +285,7 @@ describe('compiler: transform UniElement.style.setProperty (wxs)', () => {
   test('static id with style', () => {
     assert(
       `<view id="view" style="color:red"/>`,
-      `<view id="view" style="color:red" change:eS="{{uV.sS}}" eS="{{$eS[a]}}"/>`,
+      `<view id="view" style="color:red" change:eS="{{uV.sS}}" eS="{{$eS[a]}}" change:eA="{{uV.sA}}" eA="{{$eA[a]}}"/>`,
       `(_ctx, _cache) => {
   const __returned__ = { a: _sei('view', 'view') }
   return __returned__
@@ -302,7 +302,7 @@ describe('compiler: transform UniElement.style.setProperty (wxs)', () => {
     )
     assert(
       `<view id="view" style="color:red" :style="{color:'blue'}"/>`,
-      `<view id="view" style="{{'color:red' + ';' + ('color:' + 'blue')}}" change:eS="{{uV.sS}}" eS="{{$eS[a]}}"/>`,
+      `<view id="view" style="{{'color:red' + ';' + ('color:' + 'blue')}}" change:eS="{{uV.sS}}" eS="{{$eS[a]}}" change:eA="{{uV.sA}}" eA="{{$eA[a]}}"/>`,
       `(_ctx, _cache) => {
   const __returned__ = { a: _sei('view', 'view') }
   return __returned__
@@ -319,7 +319,7 @@ describe('compiler: transform UniElement.style.setProperty (wxs)', () => {
     )
     assert(
       `<view v-for="item in 10" id="view" style="color:red"/>`,
-      `<view wx:for="{{a}}" wx:for-item="item" id="view" style="color:red" change:eS="{{uV.sS}}" eS="{{$eS[b]}}"/>`,
+      `<view wx:for="{{a}}" wx:for-item="item" id="view" style="color:red" change:eS="{{uV.sS}}" eS="{{$eS[b]}}" change:eA="{{uV.sA}}" eA="{{$eA[b]}}"/>`,
       `(_ctx, _cache) => {
   const __returned__ = { a: _f(10, (item, k0, i0) => { return {}; }), b: _sei('view', 'view') }
   return __returned__
@@ -338,7 +338,7 @@ describe('compiler: transform UniElement.style.setProperty (wxs)', () => {
   test('dynamic id', () => {
     assert(
       `<view :id="viewId"/>`,
-      `<view id="{{a}}" change:eS="{{uV.sS}}" eS="{{$eS[a]}}"/>`,
+      `<view id="{{a}}" change:eS="{{uV.sS}}" eS="{{$eS[a]}}" change:eA="{{uV.sA}}" eA="{{$eA[a]}}"/>`,
       `(_ctx, _cache) => {
   const __returned__ = { a: _sei(_ctx.viewId, 'view') }
   return __returned__
@@ -355,7 +355,7 @@ describe('compiler: transform UniElement.style.setProperty (wxs)', () => {
     )
     assert(
       `<view v-for="item in 10" :id="viewId"/>`,
-      `<view wx:for="{{a}}" wx:for-item="item" id="{{b}}" change:eS="{{uV.sS}}" eS="{{$eS[b]}}"/>`,
+      `<view wx:for="{{a}}" wx:for-item="item" id="{{b}}" change:eS="{{uV.sS}}" eS="{{$eS[b]}}" change:eA="{{uV.sA}}" eA="{{$eA[b]}}"/>`,
       `(_ctx, _cache) => {
   const __returned__ = { a: _f(10, (item, k0, i0) => { return {}; }), b: _sei(_ctx.viewId, 'view') }
   return __returned__
@@ -372,7 +372,7 @@ describe('compiler: transform UniElement.style.setProperty (wxs)', () => {
     )
     assert(
       `<view v-for="item in 10" :id="viewId+'_'+item"/>`,
-      `<view wx:for="{{a}}" wx:for-item="item" id="{{item.a}}" change:eS="{{uV.sS}}" eS="{{$eS[item.a]}}"/>`,
+      `<view wx:for="{{a}}" wx:for-item="item" id="{{item.a}}" change:eS="{{uV.sS}}" eS="{{$eS[item.a]}}" change:eA="{{uV.sA}}" eA="{{$eA[item.a]}}"/>`,
       `(_ctx, _cache) => {
   const __returned__ = { a: _f(10, (item, k0, i0) => { return { a: _sei(_ctx.viewId + '_' + item, 'view') }; }) }
   return __returned__
@@ -391,7 +391,7 @@ describe('compiler: transform UniElement.style.setProperty (wxs)', () => {
   test('static ref', () => {
     assert(
       `<view ref="view" style="color:red"/>`,
-      `<view ref="view" style="color:red" id="r0-2a9ec0b0" change:eS="{{uV.sS}}" eS="{{$eS[a]}}"/>`,
+      `<view ref="view" style="color:red" id="r0-2a9ec0b0" change:eS="{{uV.sS}}" eS="{{$eS[a]}}" change:eA="{{uV.sA}}" eA="{{$eA[a]}}"/>`,
       `(_ctx, _cache) => {
   const __returned__ = { a: _sei('r0-2a9ec0b0', 'view', 'view') }
   return __returned__
@@ -408,7 +408,7 @@ describe('compiler: transform UniElement.style.setProperty (wxs)', () => {
     )
     assert(
       `<view v-for="item in 10" ref="view"/>`,
-      `<view wx:for="{{a}}" wx:for-item="item" ref="view" id="{{item.a}}" change:eS="{{uV.sS}}" eS="{{$eS[item.a]}}"/>`,
+      `<view wx:for="{{a}}" wx:for-item="item" ref="view" id="{{item.a}}" change:eS="{{uV.sS}}" eS="{{$eS[item.a]}}" change:eA="{{uV.sA}}" eA="{{$eA[item.a]}}"/>`,
       `(_ctx, _cache) => {
   const __returned__ = { a: _f(10, (item, k0, i0) => { return { a: _sei('r0-2a9ec0b0-' + k0, 'view', 'view', { "f": 1 }) }; }) }
   return __returned__
@@ -425,7 +425,7 @@ describe('compiler: transform UniElement.style.setProperty (wxs)', () => {
     )
     assert(
       `<view v-for="item in 10" ref="v0"><view v-for="item in 10" ref="v1"/></view>`,
-      `<view wx:for="{{a}}" wx:for-item="item" ref="v0" id="{{item.b}}" change:eS="{{uV.sS}}" eS="{{$eS[item.b]}}"><view wx:for="{{item.a}}" wx:for-item="item" ref="v1" id="{{item.a}}" change:eS="{{uV.sS}}" eS="{{$eS[item.a]}}"/></view>`,
+      `<view wx:for="{{a}}" wx:for-item="item" ref="v0" id="{{item.b}}" change:eS="{{uV.sS}}" eS="{{$eS[item.b]}}" change:eA="{{uV.sA}}" eA="{{$eA[item.b]}}"><view wx:for="{{item.a}}" wx:for-item="item" ref="v1" id="{{item.a}}" change:eS="{{uV.sS}}" eS="{{$eS[item.a]}}" change:eA="{{uV.sA}}" eA="{{$eA[item.a]}}"/></view>`,
       `(_ctx, _cache) => {
   const __returned__ = { a: _f(10, (item, k0, i0) => { return { a: _f(10, (item, k1, i1) => { return { a: _sei('r0-2a9ec0b0-' + k1 + '-' + k0, 'view', 'v1', { "f": 1 }) }; }), b: _sei('r1-2a9ec0b0-' + k0, 'view', 'v0', { "f": 1 }) }; }) }
   return __returned__
@@ -444,7 +444,7 @@ describe('compiler: transform UniElement.style.setProperty (wxs)', () => {
   test('static ref with unicloud-db', () => {
     assert(
       `<unicloud-db ref="udb"/>`,
-      `<unicloud-db ref="udb" u-i="2a9ec0b0-0" id="r0-2a9ec0b0" change:eS="{{uV.sS}}" eS="{{$eS[a]}}" u-p="{{b||''}}"/>`,
+      `<unicloud-db ref="udb" u-i="2a9ec0b0-0" id="r0-2a9ec0b0" change:eS="{{uV.sS}}" eS="{{$eS[a]}}" change:eA="{{uV.sA}}" eA="{{$eA[a]}}" u-p="{{b||''}}"/>`,
       `(_ctx, _cache) => {
   const __returned__ = { a: _sei('r0-2a9ec0b0', { "name": "unicloud-db", "type": 1 }, 'udb'), b: _p({ id: 'r0-2a9ec0b0' }) }
   return __returned__

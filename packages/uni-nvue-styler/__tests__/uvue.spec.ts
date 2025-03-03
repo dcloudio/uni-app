@@ -171,4 +171,21 @@ describe('uvue-style', () => {
     expect(messages).toHaveLength(0)
     expect(code).toMatchSnapshot()
   })
+
+  test('support env', async () => {
+    const {
+      code,
+      // messages
+    } = await parse(
+      `.top {
+    padding-top: env(safe-area-inset-top, 20px);
+    padding-left: env(
+      safe-area-inset-top,
+      20px
+    );
+  }`,
+      { type: 'uvue', map: true, ts: true }
+    )
+    expect(code).toMatchSnapshot()
+  })
 })

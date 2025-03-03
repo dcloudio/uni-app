@@ -42,6 +42,7 @@ import {
 } from './utils'
 import { normalizePath } from './shared'
 import { parseUTSSyntaxError } from './stacktrace'
+import type { SyncUniModulesFilePreprocessor } from './uni_modules'
 
 const IOS_HOOK_CLASS = 'UTSiOSHookProxy'
 const ANDROID_HOOK_CLASS = 'UTSAndroidHookProxy'
@@ -67,6 +68,7 @@ type Types = {
   class: Record<string, ClassMeta>
   fn: Record<string, Param[]>
   alias: Record<string, {}>
+  uni?: string[]
 }
 
 interface Meta {
@@ -78,8 +80,25 @@ interface Meta {
       params?: Parameter[]
     }
   >
-  types: Record<string, 'function' | 'class' | 'interface' | 'typealias'>
+  types: Record<
+    string,
+    'function' | 'class' | 'interface' | 'typealias' | string[]
+  >
   components: string[]
+  android?: {
+    typeParams: string[]
+    types: Record<
+      string,
+      'function' | 'class' | 'interface' | 'typealias' | string[]
+    >
+  }
+  ios?: {
+    typeParams: string[]
+    types: Record<
+      string,
+      'function' | 'class' | 'interface' | 'typealias' | string[]
+    >
+  }
 }
 export interface GenProxyCodeOptions {
   is_uni_modules: boolean
@@ -99,6 +118,8 @@ export interface GenProxyCodeOptions {
   isExtApi?: boolean
   androidHookClass?: string
   iOSHookClass?: string
+  androidPreprocessor?: SyncUniModulesFilePreprocessor
+  iosPreprocessor?: SyncUniModulesFilePreprocessor
 }
 
 export async function genProxyCode(
@@ -113,25 +134,56 @@ export async function genProxyCode(
   options.types = await parseInterfaceTypes(module, options)
   options.meta!.types = parseMetaTypes(options.types)
   options.meta!.typeParams = parseTypeParams(options.types)
+
+  if (options.androidPreprocessor) {
+    // 内置 ext-api 需要分平台解析interface
+    const androidTypes = await parseInterfaceTypes(
+      module,
+      options,
+      options.androidPreprocessor
+    )
+    options.meta!.android = {
+      typeParams: parseTypeParams(androidTypes),
+      types: parseMetaTypes(androidTypes),
+    }
+  }
+  if (options.iosPreprocessor) {
+    const iosTypes = await parseInterfaceTypes(
+      module,
+      options,
+      options.iosPreprocessor
+    )
+    options.meta!.ios = {
+      typeParams: parseTypeParams(iosTypes),
+      types: parseMetaTypes(iosTypes),
+    }
+  }
+
   const components = new Set<string>()
   // 自动补充 VideoElement 导出
   if (options.androidComponents) {
     Object.keys(options.androidComponents).forEach((name) => {
-      options.meta!.types[
+      const className =
         (process.env.UNI_UTS_MODULE_PREFIX ? 'Uni' : '') +
-          capitalize(camelize(name)) +
-          'Element'
-      ] = 'class'
+        capitalize(camelize(name)) +
+        'Element'
+      options.meta!.types[className] = 'class'
+      if (options.meta?.android?.types) {
+        options.meta.android.types[className] = 'class'
+      }
       components.add(name)
     })
   }
   if (options.iosComponents) {
     Object.keys(options.iosComponents).forEach((name) => {
-      options.meta!.types[
+      const className =
         (process.env.UNI_UTS_MODULE_PREFIX ? 'Uni' : '') +
-          capitalize(camelize(name)) +
-          'Element'
-      ] = 'class'
+        capitalize(camelize(name)) +
+        'Element'
+      options.meta!.types[className] = 'class'
+      if (options.meta?.ios?.types) {
+        options.meta.ios.types[className] = 'class'
+      }
       components.add(name)
     })
   }
@@ -191,7 +243,9 @@ function normalizeInterfaceKeepAlive(decls: ProxyDecl[], types: Types) {
 }
 
 function parseMetaTypes(types: Types) {
-  let res: Meta['types'] = {}
+  let res: Meta['types'] = {
+    uni: types.uni || [],
+  }
   Object.keys(types.class).forEach((n) => {
     res[n] = 'class'
   })
@@ -427,7 +481,8 @@ function genModuleCode(
  */
 async function parseInterfaceTypes(
   module: string,
-  options: GenProxyCodeOptions
+  options: GenProxyCodeOptions,
+  preprocessor?: SyncUniModulesFilePreprocessor
 ): Promise<Types> {
   const interfaceFilename = resolveRootInterface(module, options)
 
@@ -437,6 +492,7 @@ async function parseInterfaceTypes(
       class: {},
       fn: {},
       alias: {},
+      uni: [],
     }
   }
   // 懒加载 uts 编译器
@@ -444,10 +500,14 @@ async function parseInterfaceTypes(
   const { parse } = require('@dcloudio/uts')
   let ast: Module | null = null
   try {
-    ast = await parse(fs.readFileSync(interfaceFilename, 'utf8'), {
-      filename: relative(interfaceFilename, options.inputDir!),
-      noColor: !isColorSupported(),
-    })
+    const code = fs.readFileSync(interfaceFilename, 'utf8')
+    ast = await parse(
+      preprocessor ? await preprocessor(code, interfaceFilename) : code,
+      {
+        filename: relative(interfaceFilename, options.inputDir!),
+        noColor: !isColorSupported(),
+      }
+    )
   } catch (e) {
     console.error(parseUTSSyntaxError(e, options.inputDir!))
   }
@@ -459,6 +519,7 @@ function parseAstTypes(ast: Module | null, isInterface: boolean) {
   const classTypes: Types['class'] = {}
   const fnTypes: Types['fn'] = {}
   const aliasTypes: Types['alias'] = {}
+  const uniMethods: string[] = []
 
   const exportNamed: string[] = []
   if (ast) {
@@ -489,6 +550,21 @@ function parseAstTypes(ast: Module | null, isInterface: boolean) {
             returned: false,
             decl: node.declaration,
           }
+          if (node.declaration.id.value === 'Uni') {
+            node.declaration.body.body.forEach((item) => {
+              if (
+                item.type === 'TsMethodSignature' &&
+                item.key.type === 'Identifier'
+              ) {
+                uniMethods.push(item.key.value)
+              } else if (
+                item.type === 'TsPropertySignature' &&
+                item.key.type === 'Identifier'
+              ) {
+                uniMethods.push(item.key.value)
+              }
+            })
+          }
         } else if (node.declaration.type === 'ClassDeclaration') {
           classTypes[node.declaration.identifier.value] = {
             interfaces: parseImplements(node.declaration),
@@ -517,6 +593,7 @@ function parseAstTypes(ast: Module | null, isInterface: boolean) {
     class: classTypes,
     fn: fnTypes,
     alias: aliasTypes,
+    uni: uniMethods,
   }
 }
 
@@ -592,7 +669,11 @@ function createParams(tsParams: TsFnParameter[]) {
 async function parseModuleDecls(module: string, options: GenProxyCodeOptions) {
   // 优先合并 ios + android，如果没有，查找根目录 index.uts
   const iosDecls = (
-    await parseFile(resolvePlatformIndex('app-ios', module, options), options)
+    await parseFile(
+      resolvePlatformIndex('app-ios', module, options),
+      options,
+      options.iosPreprocessor
+    )
   ).filter((decl) => {
     if (decl.type === 'Class') {
       if (decl.isHook) {
@@ -605,7 +686,8 @@ async function parseModuleDecls(module: string, options: GenProxyCodeOptions) {
   const androidDecls = (
     await parseFile(
       resolvePlatformIndex('app-android', module, options),
-      options
+      options,
+      options.androidPreprocessor
     )
   ).filter((decl) => {
     if (decl.type === 'Class') {
@@ -712,14 +794,16 @@ function mergeDecls(from: ProxyDecl[], to: ProxyDecl[]) {
 
 async function parseFile(
   filename: string | undefined | false,
-  options: GenProxyCodeOptions
+  options: GenProxyCodeOptions,
+  preprocessor?: SyncUniModulesFilePreprocessor
 ): Promise<ProxyDecl[]> {
   if (filename) {
     // 暂时不从uvue目录读取了，就读取原始文件
     // filename = resolveUVueFileName(filename)
     if (fs.existsSync(filename)) {
+      const code = fs.readFileSync(filename, 'utf8')
       return parseCode(
-        fs.readFileSync(filename, 'utf8'),
+        preprocessor ? await preprocessor(code, filename) : code,
         options.namespace,
         options.types!,
         filename,

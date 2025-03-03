@@ -42,7 +42,9 @@ export function uniManifestJsonPlugin(): Plugin {
         })
         return {
           code: '',
-          map: null,
+          map: {
+            mappings: '',
+          },
         }
       },
     }

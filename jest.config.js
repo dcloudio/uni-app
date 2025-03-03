@@ -17,6 +17,7 @@ module.exports = {
     __VUE_PROD_DEVTOOLS__: false,
     // source-map
     __PLATFORM_WEB__: false,
+    __HARMONY__: false,
   },
   coverageDirectory: 'coverage',
   coverageReporters: ['html', 'lcov', 'text'],
