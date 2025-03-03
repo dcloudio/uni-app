@@ -326,7 +326,7 @@ const promiseInterceptor = {
 };
 
 const SYNC_API_RE =
-  /^\$|Window$|WindowStyle$|sendHostEvent|sendNativeEvent|restoreGlobal|requireGlobal|getCurrentSubNVue|getMenuButtonBoundingClientRect|^report|interceptors|Interceptor$|getSubNVueById|requireNativePlugin|rpx2px|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64|getLocale|setLocale|invokePushCallback|getWindowInfo|getDeviceInfo|getAppBaseInfo|getSystemSetting|getAppAuthorizeSetting|initUTS|requireUTS|registerUTS/;
+  /^\$|__f__|Window$|WindowStyle$|sendHostEvent|sendNativeEvent|restoreGlobal|requireGlobal|getCurrentSubNVue|getMenuButtonBoundingClientRect|^report|interceptors|Interceptor$|getSubNVueById|requireNativePlugin|rpx2px|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64|getLocale|setLocale|invokePushCallback|getWindowInfo|getDeviceInfo|getAppBaseInfo|getSystemSetting|getAppAuthorizeSetting|initUTS|requireUTS|registerUTS/;
 
 const CONTEXT_API_RE = /^create|Manager$/;
 
@@ -638,6 +638,15 @@ const messages = {};
   });
 }
 
+function getLocaleLanguage () {
+  let localeLanguage = '';
+  {
+    localeLanguage =
+      normalizeLocale(wx.getSystemInfoSync().language) || LOCALE_EN;
+  }
+  return localeLanguage
+}
+
 let locale;
 
 {
@@ -771,7 +780,7 @@ function getLocale$1 () {
       return app.$vm.$locale
     }
   }
-  return normalizeLocale( wx.getSystemInfoSync().language) || LOCALE_EN
+  return getLocaleLanguage()
 }
 
 function setLocale$1 (locale) {
@@ -1973,12 +1982,21 @@ function parseBaseApp (vm, {
     });
   }
 
-  initAppLocale(Vue, vm,  normalizeLocale(wx.getSystemInfoSync().language) || LOCALE_EN);
+  initAppLocale(Vue, vm, getLocaleLanguage$1());
 
   initHooks(appOptions, hooks);
   initUnknownHooks(appOptions, vm.$options);
 
   return appOptions
+}
+
+function getLocaleLanguage$1 () {
+  let localeLanguage = '';
+  {
+    localeLanguage =
+      normalizeLocale(wx.getSystemInfoSync().language) || LOCALE_EN;
+  }
+  return localeLanguage
 }
 
 function parseApp (vm) {

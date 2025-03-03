@@ -6,6 +6,10 @@ export {
   invokePushCallback
 }
   from 'uni-core/service/api/plugin/push'
+export {
+  __f__
+}
+  from 'uni-core/service/api/plugin/__f__'
 export function requestPayment (params) {
   let parseError = false
   if (typeof params.orderInfo === 'string') {

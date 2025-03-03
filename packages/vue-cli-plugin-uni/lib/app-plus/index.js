@@ -5,7 +5,8 @@ const {
   getMainEntry,
   getPlatformStat,
   getPlatformPush,
-  getPlatformUniCloud
+  getPlatformUniCloud,
+  getDevUniConsoleCode
 } = require('@dcloudio/uni-cli-shared')
 
 const vueLoader = require('@dcloudio/uni-cli-shared/lib/vue-loader')
@@ -65,7 +66,7 @@ const v3 = {
     const pushCode = getPlatformPush()
     const uniCloudCode = getPlatformUniCloud()
 
-    const beforeCode = 'import \'uni-pages\';'
+    const beforeCode = getDevUniConsoleCode() + 'import \'uni-pages\';'
     if (!webpackConfig.optimization) {
       webpackConfig.optimization = {}
     }
