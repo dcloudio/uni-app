@@ -1,34 +1,34 @@
 {
   "@dcloudio/uni-app-x-runtime": [
     [
-      "ShowActionSheetSuccess"
-    ],
-    [
-      "ShowActionSheetFail"
-    ],
-    [
-      "Popover"
-    ],
-    [
-      "ShowActionSheetOptions"
-    ],
-    [
-      "ShowActionSheetSuccessImpl"
-    ],
-    [
-      "ShowActionSheetFailImpl"
-    ],
-    [
-      "ShowActionSheet"
-    ],
-    [
-      "ShowActionSheetErrorCode"
-    ],
-    [
-      "ShowActionSheetComplete"
-    ],
-    [
       "CanvasContext"
+    ],
+    [
+      "ClosePreviewImage"
+    ],
+    [
+      "ClosePreviewImageCompleteCallback"
+    ],
+    [
+      "ClosePreviewImageFail"
+    ],
+    [
+      "ClosePreviewImageFailCallback"
+    ],
+    [
+      "ClosePreviewImageOptions"
+    ],
+    [
+      "ClosePreviewImageSuccess"
+    ],
+    [
+      "ClosePreviewImageSuccessCallback"
+    ],
+    [
+      "CreateCanvasContextAsyncCompleteCallback"
+    ],
+    [
+      "CreateCanvasContextAsyncFailCallback"
     ],
     [
       "CreateCanvasContextAsyncOptions"
@@ -37,22 +37,88 @@
       "CreateCanvasContextAsyncSuccessCallback"
     ],
     [
-      "CreateCanvasContextAsyncFailCallback"
+      "CreateVideoContext"
     ],
     [
-      "CreateCanvasContextAsyncCompleteCallback"
+      "Danmu"
+    ],
+    [
+      "IPreviewImageError"
+    ],
+    [
+      "LongPressActionsFailResult"
+    ],
+    [
+      "LongPressActionsOptions"
+    ],
+    [
+      "LongPressActionsSuccessResult"
+    ],
+    [
+      "Popover"
+    ],
+    [
+      "PreviewImage"
+    ],
+    [
+      "PreviewImageCompleteCallback"
+    ],
+    [
+      "PreviewImageErrorCode"
+    ],
+    [
+      "PreviewImageFail"
+    ],
+    [
+      "PreviewImageFailCallback"
+    ],
+    [
+      "PreviewImageOptions"
+    ],
+    [
+      "PreviewImageSuccess"
+    ],
+    [
+      "PreviewImageSuccessCallback"
     ],
     [
       "RequestAnimationFrameCallback"
     ],
     [
-      "UniCanvasRenderingContext2D"
+      "RequestFullScreenOptions"
+    ],
+    [
+      "ShowActionSheet"
+    ],
+    [
+      "ShowActionSheetComplete"
+    ],
+    [
+      "ShowActionSheetErrorCode"
+    ],
+    [
+      "ShowActionSheetFail"
+    ],
+    [
+      "ShowActionSheetFailImpl"
+    ],
+    [
+      "ShowActionSheetOptions"
+    ],
+    [
+      "ShowActionSheetSuccess"
+    ],
+    [
+      "ShowActionSheetSuccessImpl"
+    ],
+    [
+      "UniButtonElement"
     ],
     [
       "UniCanvasElement"
     ],
     [
-      "UniButtonElement"
+      "UniCanvasRenderingContext2D"
     ],
     [
       "UniCheckboxElement"
@@ -64,22 +130,28 @@
       "UniCheckboxGroupElement"
     ],
     [
-      "UniFormSubmitEvent"
+      "UniFormElement"
     ],
     [
       "UniFormResetEvent"
     ],
     [
-      "UniFormElement"
+      "UniFormSubmitEvent"
+    ],
+    [
+      "UniNavigatorElement"
     ],
     [
       "UniPickerViewChangeEvent"
     ],
     [
+      "UniPickerViewColumnElement"
+    ],
+    [
       "UniPickerViewElement"
     ],
     [
-      "UniPickerViewColumnElement"
+      "UniProgressElement"
     ],
     [
       "UniRadioElement"
@@ -103,130 +175,61 @@
       "UniSwitchElement"
     ],
     [
-      "UniNavigatorElement"
-    ],
-    [
-      "IPreviewImageError"
-    ],
-    [
-      "PreviewImageSuccess"
-    ],
-    [
-      "LongPressActionsSuccessResult"
-    ],
-    [
-      "LongPressActionsOptions"
-    ],
-    [
-      "PreviewImageOptions"
-    ],
-    [
-      "ClosePreviewImageSuccess"
-    ],
-    [
-      "ClosePreviewImageOptions"
-    ],
-    [
-      "PreviewImageSuccessCallback"
-    ],
-    [
-      "PreviewImageFailCallback"
-    ],
-    [
-      "PreviewImageCompleteCallback"
-    ],
-    [
-      "PreviewImage"
-    ],
-    [
-      "ClosePreviewImage"
-    ],
-    [
-      "ClosePreviewImageSuccessCallback"
-    ],
-    [
-      "ClosePreviewImageFailCallback"
-    ],
-    [
-      "PreviewImageErrorCode"
-    ],
-    [
-      "PreviewImageFail"
-    ],
-    [
-      "LongPressActionsFailResult"
-    ],
-    [
-      "ClosePreviewImageFail"
-    ],
-    [
-      "ClosePreviewImageCompleteCallback"
-    ],
-    [
-      "UniProgressElement"
-    ],
-    [
-      "VideoContext"
-    ],
-    [
-      "UniVideoEvent"
-    ],
-    [
-      "UniVideoTimeUpdateEvent"
-    ],
-    [
-      "UniVideoFullScreenChangeEvent"
-    ],
-    [
-      "UniVideoErrorEvent"
-    ],
-    [
-      "VideoError"
-    ],
-    [
-      "UniVideoProgressEvent"
-    ],
-    [
-      "UniVideoFullScreenClickEvent"
-    ],
-    [
       "UniVideoControlsToggleEvent"
-    ],
-    [
-      "Danmu"
-    ],
-    [
-      "RequestFullScreenOptions"
-    ],
-    [
-      "UniVideoTimeUpdateEventDetail"
-    ],
-    [
-      "UniVideoFullScreenChangeEventDetail"
-    ],
-    [
-      "UniVideoProgressEventDetail"
-    ],
-    [
-      "UniVideoFullScreenClickEventDetail"
     ],
     [
       "UniVideoControlsToggleEventDetail"
     ],
     [
-      "CreateVideoContext"
+      "UniVideoErrorEvent"
+    ],
+    [
+      "UniVideoEvent"
+    ],
+    [
+      "UniVideoFullScreenChangeEvent"
+    ],
+    [
+      "UniVideoFullScreenChangeEventDetail"
+    ],
+    [
+      "UniVideoFullScreenClickEvent"
+    ],
+    [
+      "UniVideoFullScreenClickEventDetail"
     ],
     [
       "UniVideoFullScreenDirection"
     ],
     [
+      "UniVideoProgressEvent"
+    ],
+    [
+      "UniVideoProgressEventDetail"
+    ],
+    [
+      "UniVideoTimeUpdateEvent"
+    ],
+    [
+      "UniVideoTimeUpdateEventDetail"
+    ],
+    [
+      "VideoContext"
+    ],
+    [
+      "VideoControlsToggleEvent"
+    ],
+    [
+      "VideoControlsToggleEventDetail"
+    ],
+    [
+      "VideoError"
+    ],
+    [
       "VideoErrorCode"
     ],
     [
-      "VideoTimeUpdateEvent"
-    ],
-    [
-      "VideoTimeUpdateEventDetail"
+      "VideoErrorEvent"
     ],
     [
       "VideoFullScreenChangeEvent"
@@ -235,7 +238,10 @@
       "VideoFullScreenChangeEventDetail"
     ],
     [
-      "VideoErrorEvent"
+      "VideoFullScreenClickEvent"
+    ],
+    [
+      "VideoFullScreenClickEventDetail"
     ],
     [
       "VideoProgressEvent"
@@ -244,16 +250,10 @@
       "VideoProgressEventDetail"
     ],
     [
-      "VideoFullScreenClickEvent"
+      "VideoTimeUpdateEvent"
     ],
     [
-      "VideoFullScreenClickEventDetail"
-    ],
-    [
-      "VideoControlsToggleEvent"
-    ],
-    [
-      "VideoControlsToggleEventDetail"
+      "VideoTimeUpdateEventDetail"
     ]
   ]
 }

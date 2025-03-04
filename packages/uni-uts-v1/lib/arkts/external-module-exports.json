@@ -1,39 +1,39 @@
 {
-  "@dcloudio/uni-getLocation-system": [
-    [
-      "UniLocationSystemProvider"
-    ]
-  ],
   "@dcloudio/uni-facialRecognitionVerify": [
     [
-      "IFacialRecognitionVerifyError"
-    ],
-    [
-      "StartFacialRecognitionVerifySuccess"
-    ],
-    [
-      "StartFacialRecognitionVerifyOptions"
-    ],
-    [
-      "StartFacialRecognitionVerifySuccessCallback"
-    ],
-    [
-      "StartFacialRecognitionVerifyFailCallback"
-    ],
-    [
-      "StartFacialRecognitionVerifyCompleteCallback"
+      "FacialRecognitionVerifyErrorCode"
     ],
     [
       "GetFacialRecognitionMetaInfo"
     ],
     [
+      "IFacialRecognitionVerifyError"
+    ],
+    [
       "StartFacialRecognitionVerify"
     ],
     [
-      "FacialRecognitionVerifyErrorCode"
+      "StartFacialRecognitionVerifyCompleteCallback"
+    ],
+    [
+      "StartFacialRecognitionVerifyFailCallback"
+    ],
+    [
+      "StartFacialRecognitionVerifyOptions"
     ],
     [
       "StartFacialRecognitionVerifyScreenOrientation"
+    ],
+    [
+      "StartFacialRecognitionVerifySuccess"
+    ],
+    [
+      "StartFacialRecognitionVerifySuccessCallback"
+    ]
+  ],
+  "@dcloudio/uni-getLocation-system": [
+    [
+      "UniLocationSystemProvider"
     ]
   ],
   "@dcloudio/uni-oauth-huawei": [
@@ -58,70 +58,73 @@
   ],
   "@dcloudio/uni-push": [
     [
-      "ChannelManager"
-    ],
-    [
-      "GetPushClientIdSuccess"
-    ],
-    [
-      "GetPushClientIdOptions"
-    ],
-    [
-      "OnPushMessageCallbackResult"
-    ],
-    [
-      "SetPushChannelOptions"
-    ],
-    [
-      "CreatePushMessageSuccess"
-    ],
-    [
-      "CreatePushMessageOptions"
-    ],
-    [
       "BadgeOptions"
     ],
     [
-      "GetPushClientId"
-    ],
-    [
-      "GetPushClientIdSuccessCallback"
-    ],
-    [
-      "GetPushClientIdFailCallback"
-    ],
-    [
-      "GetPushClientIdCompleteCallback"
-    ],
-    [
-      "OnPushMessageCallback"
-    ],
-    [
-      "OnPushMessage"
-    ],
-    [
-      "OffPushMessage"
-    ],
-    [
-      "GetChannelManager"
+      "ChannelManager"
     ],
     [
       "CreatePushMessage"
     ],
     [
-      "CreatePushMessageSuccessCallback"
-    ],
-    [
-      "CreatePushMessageFailCallback"
+      "CreatePushMessageComplete"
     ],
     [
       "CreatePushMessageCompleteCallback"
     ],
     [
-      "GetPushClientIdFail"
+      "CreatePushMessageFail"
+    ],
+    [
+      "CreatePushMessageFailCallback"
+    ],
+    [
+      "CreatePushMessageOptions"
+    ],
+    [
+      "CreatePushMessageSuccess"
+    ],
+    [
+      "CreatePushMessageSuccessCallback"
+    ],
+    [
+      "GetChannelManager"
+    ],
+    [
+      "GetPushClientId"
     ],
     [
       "GetPushClientIdComplete"
+    ],
+    [
+      "GetPushClientIdCompleteCallback"
+    ],
+    [
+      "GetPushClientIdFail"
+    ],
+    [
+      "GetPushClientIdFailCallback"
+    ],
+    [
+      "GetPushClientIdOptions"
+    ],
+    [
+      "GetPushClientIdSuccess"
+    ],
+    [
+      "GetPushClientIdSuccessCallback"
+    ],
+    [
+      "OffPushMessage"
+    ],
+    [
+      "OnPushMessage"
+    ],
+    [
+      "OnPushMessageCallback"
+    ],
+    [
+      "OnPushMessageCallbackResult"
     ],
     [
       "OnPushMessageType"
@@ -130,75 +133,72 @@
       "PushChannelManager"
     ],
     [
-      "CreatePushMessageFail"
-    ],
-    [
-      "CreatePushMessageComplete"
+      "SetPushChannelOptions"
     ]
   ],
   "@dcloudio/uni-verify": [
     [
-      "UniVerifyManager"
-    ],
-    [
-      "UniverifyManager"
-    ],
-    [
-      "UniVerifyManagerPreLoginFail"
-    ],
-    [
-      "UniVerifyManagerLoginFail"
-    ],
-    [
-      "UniVerifyManagerPreLoginOptions"
-    ],
-    [
-      "UniVerifyManagerLoginOptions"
-    ],
-    [
-      "UniVerifyManagerCustomLoginOptions"
-    ],
-    [
-      "UniVerifyManagerLoginStyle"
-    ],
-    [
-      "UniVerifyManagerPreLoginSuccess"
-    ],
-    [
-      "UniVerifyManagerLoginSuccess"
+      "GetUniVerifyManager"
     ],
     [
       "GetUniverifyManager"
     ],
     [
-      "GetUniVerifyManager"
+      "UniVerifyManager"
     ],
     [
-      "UniVerifyManagerPreLoginSuccessCallback"
+      "UniVerifyManagerCustomLoginOptions"
     ],
     [
-      "UniVerifyManagerPreLoginFailCallback"
-    ],
-    [
-      "UniVerifyManagerPreLoginCompleteCallback"
-    ],
-    [
-      "UniVerifyManagerLoginSuccessCallback"
-    ],
-    [
-      "UniVerifyManagerLoginFailCallback"
-    ],
-    [
-      "UniVerifyManagerLoginCompleteCallback"
-    ],
-    [
-      "UniVerifyManagerPreLoginComplete"
+      "UniVerifyManagerErrorCode"
     ],
     [
       "UniVerifyManagerLoginComplete"
     ],
     [
-      "UniVerifyManagerErrorCode"
+      "UniVerifyManagerLoginCompleteCallback"
+    ],
+    [
+      "UniVerifyManagerLoginFail"
+    ],
+    [
+      "UniVerifyManagerLoginFailCallback"
+    ],
+    [
+      "UniVerifyManagerLoginOptions"
+    ],
+    [
+      "UniVerifyManagerLoginStyle"
+    ],
+    [
+      "UniVerifyManagerLoginSuccess"
+    ],
+    [
+      "UniVerifyManagerLoginSuccessCallback"
+    ],
+    [
+      "UniVerifyManagerPreLoginComplete"
+    ],
+    [
+      "UniVerifyManagerPreLoginCompleteCallback"
+    ],
+    [
+      "UniVerifyManagerPreLoginFail"
+    ],
+    [
+      "UniVerifyManagerPreLoginFailCallback"
+    ],
+    [
+      "UniVerifyManagerPreLoginOptions"
+    ],
+    [
+      "UniVerifyManagerPreLoginSuccess"
+    ],
+    [
+      "UniVerifyManagerPreLoginSuccessCallback"
+    ],
+    [
+      "UniverifyManager"
     ]
   ]
 }
