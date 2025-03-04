@@ -1,4 +1,19 @@
 {
+  "@dcloudio/uni-getLocation-system": [
+    [
+      "UniLocationSystemProvider"
+    ]
+  ],
+  "@dcloudio/uni-oauth-huawei": [
+    [
+      "UniOAuthHuaweiProvider"
+    ]
+  ],
+  "@dcloudio/uni-payment-alipay": [
+    [
+      "UniPaymentAlipayProvider"
+    ]
+  ],
   "@dcloudio/uni-facialRecognitionVerify": [
     [
       "IFacialRecognitionVerifyError"
@@ -31,16 +46,6 @@
       "StartFacialRecognitionVerifyScreenOrientation"
     ]
   ],
-  "@dcloudio/uni-oauth-huawei": [
-    [
-      "UniOAuthHuaweiProvider"
-    ]
-  ],
-  "@dcloudio/uni-payment-alipay": [
-    [
-      "UniPaymentAlipayProvider"
-    ]
-  ],
   "@dcloudio/uni-payment-huawei": [
     [
       "UniPaymentHuaweiProvider"
@@ -49,11 +54,6 @@
   "@dcloudio/uni-payment-wxpay": [
     [
       "UniPaymentWxpayProvider"
-    ]
-  ],
-  "@dcloudio/uni-getLocation-system": [
-    [
-      "UniLocationSystemProvider"
     ]
   ],
   "@dcloudio/uni-push": [
