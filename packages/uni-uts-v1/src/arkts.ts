@@ -125,6 +125,26 @@ export function getArkTSAutoImports(isX = false): AutoImportOptions {
       ['DOMRect'],
       ['DrawableContext'],
 
+      // element
+      ['UniViewElementImpl'],
+      ['UniLazyViewElementImpl'],
+      ['UniTextElementImpl'],
+      ['UniWebViewElementImpl'],
+      ['UniImageElementImpl'],
+      ['UniScrollViewElementImpl'],
+      ['UniListViewElementImpl'],
+      ['UniListItemElementImpl'],
+      ['UniStickySectionElementImpl'],
+      ['UniStickyHeaderElementImpl'],
+      ['UniNestedScrollHeaderElementImpl'],
+      ['UniNestedScrollBodyElementImpl'],
+      ['UniInputElementImpl'],
+      ['UniTextareaElementImpl'],
+      ['UniSwiperElementImpl'],
+      ['UniSwiperItemElementImpl'],
+      ['UniRichTextElementImpl'],
+      ['UniTabsElementImpl'],
+
       // uni-app-x-runtime framwork js
       ['CreateSelectorQuery'],
       ['SelectorQueryNodeInfoCallback'],
