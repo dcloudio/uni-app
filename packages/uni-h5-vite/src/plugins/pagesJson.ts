@@ -188,10 +188,12 @@ function generateLayoutComponentsCode(
   Object.keys(windowNames).forEach((name) => {
     const windowConfig = pagesJson[name as keyof typeof windowNames]
     if (windowConfig && windowConfig.path) {
-      importLayoutComponentsCode += `import ${name} from './${windowConfig.path}'\n`
-      defineLayoutComponentsCode += `${globalName}.__uniConfig.${name}.component = setupWindow(${name},${
+      importLayoutComponentsCode += `const ${name} = defineAsyncComponent(()=>import('./${
+        windowConfig.path
+      }').then(com=>setupWindow(com.default || com,${
         windowNames[name as keyof typeof windowNames]
-      })\n`
+      })))\n`
+      defineLayoutComponentsCode += `${globalName}.__uniConfig.${name}.component = ${name}\n`
     }
   })
 
