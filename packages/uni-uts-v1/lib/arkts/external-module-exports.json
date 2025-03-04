@@ -4,16 +4,6 @@
       "UniLocationSystemProvider"
     ]
   ],
-  "@dcloudio/uni-oauth-huawei": [
-    [
-      "UniOAuthHuaweiProvider"
-    ]
-  ],
-  "@dcloudio/uni-payment-alipay": [
-    [
-      "UniPaymentAlipayProvider"
-    ]
-  ],
   "@dcloudio/uni-facialRecognitionVerify": [
     [
       "IFacialRecognitionVerifyError"
@@ -44,6 +34,16 @@
     ],
     [
       "StartFacialRecognitionVerifyScreenOrientation"
+    ]
+  ],
+  "@dcloudio/uni-oauth-huawei": [
+    [
+      "UniOAuthHuaweiProvider"
+    ]
+  ],
+  "@dcloudio/uni-payment-alipay": [
+    [
+      "UniPaymentAlipayProvider"
     ]
   ],
   "@dcloudio/uni-payment-huawei": [
