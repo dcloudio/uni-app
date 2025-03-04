@@ -1,4 +1,30 @@
 interface IJSONStringify {
+  /**
+   * 支持开发者自定义class序列化结果，此函数的返回值就是实现了此接口的class的序列化返回值
+   * @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/JSON.html#parse
+     @uniPlatform {
+        "app": {
+            "android": {
+               "osVer": "5.0",
+               "uniVer": "x",
+               "unixVer": "4.53",
+               "uniUtsPlugin": "4.53",
+               "unixUtsPlugin": "4.53"
+            },
+            "ios": {
+               "osVer": "x",
+               "uniVer": "x",
+               "uniUtsPlugin": "x",
+               "unixVer": "x",
+               "unixUtsPlugin": "x"
+            }
+        },
+        "web": {
+            "uniVer": "x",
+            "unixVer": "x"
+        }
+     }
+   */
   toJSON() : any
 }
 

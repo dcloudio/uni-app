@@ -2,6 +2,10 @@
  * 错误码
  */
 export type PreviewImageErrorCode =
+    /**
+     * urls至少包含一张图片地址
+     */
+    1001 |
 	/**
 	 * 用户取消
 	 */

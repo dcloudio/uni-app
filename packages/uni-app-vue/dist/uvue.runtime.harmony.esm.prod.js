@@ -568,10 +568,7 @@ function createArrayInstrumentations() {
     instrumentations[key] = function () {
       pauseTracking();
       pauseScheduling();
-      for (var _len2 = arguments.length, args = new Array(_len2), _key3 = 0; _key3 < _len2; _key3++) {
-        args[_key3] = arguments[_key3];
-      }
-      var res = toRaw(this)[key].apply(this, args);
+      var res = toRaw(this)[key](...arguments);
       resetScheduling();
       resetTracking();
       return res;
@@ -2030,8 +2027,8 @@ function warn$1(msg) {
   var instance = stack.length ? stack[stack.length - 1].component : null;
   var appWarnHandler = instance && instance.appContext.config.warnHandler;
   var trace = getComponentTrace();
-  for (var _len3 = arguments.length, args = new Array(_len3 > 1 ? _len3 - 1 : 0), _key4 = 1; _key4 < _len3; _key4++) {
-    args[_key4 - 1] = arguments[_key4];
+  for (var _len2 = arguments.length, args = new Array(_len2 > 1 ? _len2 - 1 : 0), _key3 = 1; _key3 < _len2; _key3++) {
+    args[_key3 - 1] = arguments[_key3];
   }
   if (appWarnHandler) {
     callWithErrorHandling(appWarnHandler, instance, 11, [msg + args.map(a => {
@@ -2420,8 +2417,8 @@ function setDevtoolsHook$1(hook, target) {
 function emit(instance, event) {
   if (instance.isUnmounted) return;
   var props = instance.vnode.props || EMPTY_OBJ;
-  for (var _len4 = arguments.length, rawArgs = new Array(_len4 > 2 ? _len4 - 2 : 0), _key5 = 2; _key5 < _len4; _key5++) {
-    rawArgs[_key5 - 2] = arguments[_key5];
+  for (var _len3 = arguments.length, rawArgs = new Array(_len3 > 2 ? _len3 - 2 : 0), _key4 = 2; _key4 < _len3; _key4++) {
+    rawArgs[_key4 - 2] = arguments[_key4];
   }
   var args = rawArgs;
   var isModelListener = event.startsWith("update:");
@@ -4170,8 +4167,8 @@ function injectHook(type, hook) {
       }
       pauseTracking();
       var reset = setCurrentInstance(target);
-      for (var _len5 = arguments.length, args = new Array(_len5), _key6 = 0; _key6 < _len5; _key6++) {
-        args[_key6] = arguments[_key6];
+      for (var _len4 = arguments.length, args = new Array(_len4), _key5 = 0; _key5 < _len4; _key5++) {
+        args[_key5] = arguments[_key5];
       }
       var res = callWithAsyncErrorHandling(hook, target, type, args);
       reset();
@@ -4341,8 +4338,8 @@ publicPropertiesMap.$callMethod = i => {
     }
     var method = proxy[methodName];
     if (method) {
-      for (var _len6 = arguments.length, args = new Array(_len6 > 1 ? _len6 - 1 : 0), _key7 = 1; _key7 < _len6; _key7++) {
-        args[_key7 - 1] = arguments[_key7];
+      for (var _len5 = arguments.length, args = new Array(_len5 > 1 ? _len5 - 1 : 0), _key6 = 1; _key6 < _len5; _key6++) {
+        args[_key6 - 1] = arguments[_key6];
       }
       return method(...args);
     }
@@ -4631,28 +4628,28 @@ function applyOptions(instance) {
   }
   shouldCacheAccess = true;
   if (computedOptions) {
-    var _loop3 = function (_key8) {
-      var opt = computedOptions[_key8];
+    var _loop3 = function (_key7) {
+      var opt = computedOptions[_key7];
       var get = isFunction(opt) ? opt.bind(publicThis, publicThis) : isFunction(opt.get) ? opt.get.bind(publicThis, publicThis) : NOOP;
       var set = !isFunction(opt) && isFunction(opt.set) ? opt.set.bind(publicThis) : NOOP;
       var c = computed({
         get,
         set
       });
-      Object.defineProperty(ctx, _key8, {
+      Object.defineProperty(ctx, _key7, {
         enumerable: true,
         configurable: true,
         get: () => c.value,
         set: v => c.value = v
       });
     };
-    for (var _key8 in computedOptions) {
-      _loop3(_key8);
+    for (var _key7 in computedOptions) {
+      _loop3(_key7);
     }
   }
   if (watchOptions) {
-    for (var _key9 in watchOptions) {
-      createWatcher(watchOptions[_key9], ctx, publicThis, _key9);
+    for (var _key8 in watchOptions) {
+      createWatcher(watchOptions[_key8], ctx, publicThis, _key8);
     }
   }
   if (provideOptions) {
@@ -4944,8 +4941,8 @@ function createAppAPI(render, hydrate) {
       },
       set config(v) {},
       use(plugin) {
-        for (var _len7 = arguments.length, options = new Array(_len7 > 1 ? _len7 - 1 : 0), _key10 = 1; _key10 < _len7; _key10++) {
-          options[_key10 - 1] = arguments[_key10];
+        for (var _len6 = arguments.length, options = new Array(_len6 > 1 ? _len6 - 1 : 0), _key9 = 1; _key9 < _len6; _key9++) {
+          options[_key9 - 1] = arguments[_key9];
         }
         if (installedPlugins.has(plugin)) ;else if (plugin && isFunction(plugin.install)) {
           installedPlugins.add(plugin);
@@ -5121,30 +5118,30 @@ function updateProps(instance, rawProps, rawPrevProps, optimized) {
       hasAttrsChanged = true;
     }
     var kebabKey;
-    for (var _key11 in rawCurrentProps) {
+    for (var _key10 in rawCurrentProps) {
       if (!rawProps ||
       // for camelCase
-      !hasOwn(rawProps, _key11) && (
+      !hasOwn(rawProps, _key10) && (
       // it's possible the original props was passed in as kebab-case
       // and converted to camelCase (#955)
-      (kebabKey = hyphenate(_key11)) === _key11 || !hasOwn(rawProps, kebabKey))) {
+      (kebabKey = hyphenate(_key10)) === _key10 || !hasOwn(rawProps, kebabKey))) {
         if (options) {
           if (rawPrevProps && (
           // for camelCase
-          rawPrevProps[_key11] !== void 0 ||
+          rawPrevProps[_key10] !== void 0 ||
           // for kebab-case
           rawPrevProps[kebabKey] !== void 0)) {
-            props[_key11] = resolvePropValue(options, rawCurrentProps, _key11, void 0, instance, true);
+            props[_key10] = resolvePropValue(options, rawCurrentProps, _key10, void 0, instance, true);
           }
         } else {
-          delete props[_key11];
+          delete props[_key10];
         }
       }
     }
     if (attrs !== rawCurrentProps) {
-      for (var _key12 in attrs) {
-        if (!rawProps || !hasOwn(rawProps, _key12) && true) {
-          delete attrs[_key12];
+      for (var _key11 in attrs) {
+        if (!rawProps || !hasOwn(rawProps, _key11) && true) {
+          delete attrs[_key11];
           hasAttrsChanged = true;
         }
       }
@@ -5183,8 +5180,8 @@ function setFullProps(instance, rawProps, props, attrs) {
     var rawCurrentProps = toRaw(props);
     var castValues = rawCastValues || EMPTY_OBJ;
     for (var i = 0; i < needCastKeys.length; i++) {
-      var _key13 = needCastKeys[i];
-      props[_key13] = resolvePropValue(options, rawCurrentProps, _key13, castValues[_key13], instance, !hasOwn(castValues, _key13));
+      var _key12 = needCastKeys[i];
+      props[_key12] = resolvePropValue(options, rawCurrentProps, _key12, castValues[_key12], instance, !hasOwn(castValues, _key12));
     }
   }
   return hasAttrsChanged;
@@ -6114,12 +6111,12 @@ function baseCreateRenderer(options, createHydrationFns) {
           }
         }
       }
-      for (var _key14 in newProps) {
-        if (isReservedProp(_key14)) continue;
-        var next = newProps[_key14];
-        var prev = oldProps[_key14];
-        if (next !== prev && _key14 !== "value" || hostForcePatchProp && hostForcePatchProp(el, _key14)) {
-          hostPatchProp(el, _key14, prev, next, namespace, vnode.children, parentComponent, parentSuspense, unmountChildren,
+      for (var _key13 in newProps) {
+        if (isReservedProp(_key13)) continue;
+        var next = newProps[_key13];
+        var prev = oldProps[_key13];
+        if (next !== prev && _key13 !== "value" || hostForcePatchProp && hostForcePatchProp(el, _key13)) {
+          hostPatchProp(el, _key13, prev, next, namespace, vnode.children, parentComponent, parentSuspense, unmountChildren,
           // fixed by xxxxxx
           vnode.hostInstance);
         }
@@ -8443,11 +8440,11 @@ function patchStyle(el, prev, next) {
           });
         }
       }
-      for (var _key15 in next) {
-        var _value2 = next[_key15];
-        var prevValue = prev[_key15];
+      for (var _key14 in next) {
+        var _value2 = next[_key14];
+        var prevValue = prev[_key14];
         if (!isSame(prevValue, _value2)) {
-          parseStyleDecl(camelize(_key15), _value2).forEach((value2, key2) => {
+          parseStyleDecl(camelize(_key14), _value2).forEach((value2, key2) => {
             batchedStyles.set(key2, value2);
             style == null ? void 0 : style.set(key2, value2);
           });
@@ -8583,8 +8580,8 @@ var withModifiers = (fn, modifiers) => {
       var guard = modifierGuards[modifiers[i]];
       if (guard && guard(event, modifiers)) return;
     }
-    for (var _len8 = arguments.length, args = new Array(_len8 > 1 ? _len8 - 1 : 0), _key16 = 1; _key16 < _len8; _key16++) {
-      args[_key16 - 1] = arguments[_key16];
+    for (var _len7 = arguments.length, args = new Array(_len7 > 1 ? _len7 - 1 : 0), _key15 = 1; _key15 < _len7; _key15++) {
+      args[_key15 - 1] = arguments[_key15];
     }
     return fn(event, ...args);
   };

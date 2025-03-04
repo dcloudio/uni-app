@@ -2052,17 +2052,20 @@ function createVuePage(__pageId, __pagePath, __pageQuery, __pageInstance, pageOp
 function initGlobalEvent(app) {
   app.addKeyEventListener(ON_BACK_BUTTON, () => {
     var currentPage = getCurrentPage();
-    if (currentPage && (currentPage.vm.$systemDialogPages.length > 0 || currentPage.getDialogPages().length > 0)) {
-      var systemDialogPages = currentPage.vm.$systemDialogPages;
+    if (currentPage) {
+      var systemDialogPages = currentPage.vm && currentPage.vm.$systemDialogPages && currentPage.vm.$systemDialogPages.value || [];
       var dialogPages = currentPage.getDialogPages();
-      var lastSystemDialog = systemDialogPages[systemDialogPages.length - 1];
-      var lastDialog = dialogPages[dialogPages.length - 1];
-      if (!systemDialogPages.length) {
-        handleDialogPageBack(lastDialog);
-      } else if (!dialogPages.length) {
-        handleDialogPageBack(lastSystemDialog);
-      } else {
-        handleDialogPageBack(parseInt(lastDialog.vm.$nativePage.pageId) > parseInt(lastSystemDialog.vm.$nativePage.pageId) ? lastDialog : lastSystemDialog);
+      if (systemDialogPages.length > 0 || dialogPages.length > 0) {
+        var lastSystemDialog = systemDialogPages[systemDialogPages.length - 1];
+        var lastDialog = dialogPages[dialogPages.length - 1];
+        if (!systemDialogPages.length) {
+          handleDialogPageBack(lastDialog);
+        } else if (!dialogPages.length) {
+          handleDialogPageBack(lastSystemDialog);
+        } else {
+          handleDialogPageBack(parseInt(lastDialog.vm.$nativePage.pageId) > parseInt(lastSystemDialog.vm.$nativePage.pageId) ? lastDialog : lastSystemDialog);
+        }
+        return true;
       }
     }
     backbuttonListener();

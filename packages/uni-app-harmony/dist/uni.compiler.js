@@ -51,6 +51,13 @@ var ExternalModuls = [
 		version: "1.0.0"
 	},
 	{
+		type: "provider",
+		plugin: "uni-payment-wxpay",
+		provider: "wxpay",
+		service: "payment",
+		version: "1.0.0"
+	},
+	{
 		type: "extapi",
 		plugin: "uni-push",
 		apis: [
@@ -108,6 +115,13 @@ var ExternalModulesX = [
 		type: "provider",
 		plugin: "uni-payment-huawei",
 		provider: "huawei",
+		service: "payment",
+		version: "1.0.0"
+	},
+	{
+		type: "provider",
+		plugin: "uni-payment-wxpay",
+		provider: "wxpay",
 		service: "payment",
 		version: "1.0.0"
 	},
