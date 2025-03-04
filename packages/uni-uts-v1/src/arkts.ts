@@ -222,7 +222,8 @@ export function getArkTSAutoImports(isX = false): AutoImportOptions {
       ['CanvasRenderingContext2D'],
       ['requestAnimationFrame'],
       ['cancelAnimationFrame'],
-      ['Image']
+      ['Image'],
+      ['Path2D']
     )
   }
 
