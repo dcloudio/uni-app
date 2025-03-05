@@ -180,8 +180,9 @@
     "textReplacements": [
       {
         "find": "const res = toRaw(this)[key].apply(this, args);",
-        "replace": "const res = toRaw(this)[key](...args);",
-        "file": "@vue/reactivity/dist/reactivity.esm-bundler.js"
+        "replace": "const raw = toRaw(this);if (raw.length > 0) {raw[0] = raw[0]};const res = raw[key].apply(this, args);",
+        "file": "@vue/reactivity/dist/reactivity.esm-bundler.js",
+        "tips": "修复鸿蒙arkts Bug，https://issuereporter.developer.huawei.com/detail/250303114146089/comment"
       }
     ],
     "external": [
