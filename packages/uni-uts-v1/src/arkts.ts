@@ -401,14 +401,14 @@ export async function compileArkTSExtApi(
     .replace(/-/g, '_')
 
   // 拷贝所有ets、har文件
-  const etsFiles = sync('**/*.{ets,js,ts,har}', {
+  const etsFiles = sync('**/*.{ets,js,har}', {
     cwd: pluginDir,
   })
   const depEtsFiles: string[] = []
   for (const etsFile of etsFiles) {
     const srcFile = path.resolve(pluginDir, etsFile)
     const destFile = path.resolve(outputUniModuleDir, etsFile)
-    if (/\.(ets|js|ts)$/.test(etsFile)) {
+    if (/\.(ets|js)$/.test(etsFile)) {
       depEtsFiles.push(srcFile)
       if (rewriteConsoleExpr) {
         const content = fs.readFileSync(srcFile, 'utf8')
