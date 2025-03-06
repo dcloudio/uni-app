@@ -633,6 +633,9 @@ export function uniUTSAppUniModulesPlugin(
         if (uniXSwiftCompiler) {
           await uniXSwiftCompiler.close()
         }
+        if (uniXArkTSCompiler) {
+          await uniXArkTSCompiler.close()
+        }
       }
     },
     watchChange(fileName, change) {
