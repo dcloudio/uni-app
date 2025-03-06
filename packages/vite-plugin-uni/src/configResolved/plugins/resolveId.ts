@@ -17,7 +17,7 @@ const BUILT_IN_MODULES = {
   '@dcloudio/uni-shared': 'dist/uni-shared.es.js',
   '@dcloudio/uni-stacktracey': 'dist/uni-stacktracey.es.js',
   '@vue/shared': 'dist/shared.esm-bundler.js',
-  pinia: '', // github issues 5326
+  pinia: 'dist/pinia.mjs',
 }
 
 export type BuiltInModulesKey = keyof typeof BUILT_IN_MODULES
