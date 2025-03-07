@@ -461,6 +461,19 @@
       }
     }
   },
+  "uni-getRecorderManager": {
+    "uni": {
+      "getRecorderManager": {
+        "name": "getRecorderManager",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": false,
+          "arkts": true
+        }
+      }
+    }
+  },
   "uni-getSystemInfo": {
     "uni": {
       "getSystemInfo": {
