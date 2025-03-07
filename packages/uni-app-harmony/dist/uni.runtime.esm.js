@@ -8626,9 +8626,6 @@ function parseRedirectInfo() {
 }
 
 const TEMP_PATH = ''; // TODO 需要从applicationContext获取
-function setCurrentPageMeta(page, options) {
-    // TODO: Implement
-}
 
 function operateVideoPlayer(videoId, pageId, type, data) {
     UniServiceJSBridge.invokeViewMethod('video.' + videoId, {
@@ -8643,6 +8640,11 @@ function operateMap(id, pageId, type, data, operateMapCallback) {
         type,
         data,
     }, pageId, operateMapCallback);
+}
+
+function setCurrentPageMeta(page, options) {
+    const pageId = getPageIdByVm(page);
+    UniServiceJSBridge.invokeViewMethod('setPageMeta', options, pageId);
 }
 
 const API_UPX2PX = 'upx2px';
@@ -10576,7 +10578,7 @@ const setLocale = defineSyncApi(API_SET_LOCALE, (locale) => {
 
 const API_SET_PAGE_META = 'setPageMeta';
 const setPageMeta = defineAsyncApi(API_SET_PAGE_META, (options, { resolve }) => {
-    resolve(setCurrentPageMeta(getCurrentPageVm()));
+    resolve(setCurrentPageMeta(getCurrentPageVm(), options));
 });
 
 const API_SET_BACKGROUND_COLOR = 'setBackgroundColor';
