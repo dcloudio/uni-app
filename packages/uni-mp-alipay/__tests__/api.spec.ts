@@ -52,7 +52,7 @@ describe('api', () => {
     })
     expect(header()).toEqual({
       name: 'headers',
-      value: { 'Content-Type': 'application/json;charset=UTF-8' },
+      value: { 'content-type': 'application/json;charset=UTF-8' },
     })
     expect(
       data({
@@ -75,7 +75,7 @@ describe('api', () => {
     })
     expect(header()).toEqual({
       name: 'headers',
-      value: { 'Content-Type': 'application/json' },
+      value: { 'content-type': 'application/json' },
     })
     expect(
       data({
@@ -95,7 +95,7 @@ describe('api', () => {
     })
     expect(header()).toEqual({
       name: 'headers',
-      value: { 'Content-Type': 'application/json' },
+      value: { 'content-type': 'application/json' },
     })
     expect(data(undefined)).toEqual({
       name: 'data',
