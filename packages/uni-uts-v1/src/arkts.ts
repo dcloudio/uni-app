@@ -94,6 +94,7 @@ export function getArkTSAutoImports(isX = false): AutoImportOptions {
     ['SourceError'],
     ['UTSHarmony'],
     ['UniElement'],
+    ['resolveInOperator'],
   ]
   if (isX) {
     runtimeExports.push(
