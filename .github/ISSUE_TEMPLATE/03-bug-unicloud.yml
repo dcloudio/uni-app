@@ -1,6 +1,6 @@
 name: 'Bug uniCloud 问题反馈'
 description: '反馈 uniCloud 使用过程中遇到的问题'
-labels: ['bug', 'uniCloud']
+labels: ['uniCloud']
 body:
   - type: markdown
     attributes:

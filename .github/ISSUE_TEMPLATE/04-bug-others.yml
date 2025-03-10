@@ -1,6 +1,6 @@
 name: 'Bug 其他平台问题反馈'
 description: '反馈使用过程中遇到的问题'
-labels: ['bug']
+labels: []
 body:
   - type: markdown
     attributes:
