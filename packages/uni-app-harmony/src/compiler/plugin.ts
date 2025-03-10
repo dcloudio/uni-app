@@ -315,13 +315,13 @@ function genAppHarmonyUniModules(
           extApiCodes.push(`uni.${apiName} = ${apiName}`)
         }
       })
-    } else {
-      const ident = camelize(plugin)
-      importCodes.push(`import * as ${ident} from '${harmonyPackageName}'`)
-      registerCodes.push(
-        `uni.registerUTSPlugin('uni_modules/${plugin}', ${ident})`
-      )
     }
+    const ident = camelize(plugin)
+    importCodes.push(`import * as ${ident} from '${harmonyPackageName}'`)
+    registerCodes.push(
+      `uni.registerUTSPlugin('uni_modules/${plugin}', ${ident})`
+    )
+
     projectDeps.push({
       moduleSpecifier: harmonyPackageName,
       plugin,
