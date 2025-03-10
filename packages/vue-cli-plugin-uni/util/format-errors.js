@@ -22,15 +22,55 @@ function formatMessage (msg) {
 
 const installPreprocessorTips = {}
 
-const isHBuilderXArm = process.platform === 'darwin' && process.arch === 'arm64'
+const isMacArm = process.platform === 'darwin' && process.arch === 'arm64'
+if (process.env.UNI_SASS_IMPLEMENTATION_NAME === 'dart-sass') {
+  let timeout
+  const originalStderrWrite = process.stderr.write
+  process.stderr.write = function (chunk, encoding, callback) {
+    if (typeof chunk === 'string' && chunk.includes('More info and automated migrator')) {
+      clearTimeout(timeout)
+      timeout = setTimeout(() => {
+        console.error(formatDartSassMessage(chunk))
+      }, 10)
+    }
+    return originalStderrWrite.apply(process.stderr, arguments)
+  }
+}
+
+function formatDartSassError (message) {
+  const msgs = []
+  const syntaxMsgs = []
+  // 识别 /deep/ 语法
+  if (message.includes('/deep/')) {
+    syntaxMsgs.push('将深度选择器 /deep/ 调整为 ::v-deep')
+  }
+  // 识别除法
+  if (message.includes('Using / for division is deprecated')) {
+    syntaxMsgs.push('将除法修改为 math.div()')
+  }
+  const address = 'https://uniapp.dcloud.net.cn/tutorial/syntax-css.html#css-preprocessor'
+  const syntaxMsg = syntaxMsgs.length ? `，${syntaxMsgs.join(';')}` : ''
+  msgs.push(
+    `方案1：调整为 dart-sass 支持的语法${syntaxMsg}，详情：${address}`
+  )
+  msgs.push(
+    `方案2：如果您希望继续使用node-sass，${isMacArm ? '需要更换为 HBuilderX Mac Intel 版本，并且' : '您可以'}在 manifest.json 中配置 "sassImplementationName": "node-sass"，详情：${address}`
+  )
+  return msgs.join('\n')
+}
+
+function formatDartSassMessage (message) {
+  const lineBreak = '\n  \n'
+  const dartSassMsg = formatDartSassError(message)
+  return `${lineBreak}Vue2 sass 预编译器默认已由 node-sass 更换为 dart-sass， 可能存在部分语法不兼容的问题。
+解决方案：
+${dartSassMsg}${lineBreak}`
+}
 
 function ModuleBuildError (err) {
-  if (isHBuilderXArm) {
+  if (process.env.UNI_SASS_IMPLEMENTATION_NAME === 'dart-sass') {
     if (err.message.includes('SassError:')) {
-      err.message = err.message + `\n  \nHBuilderX Mac Arm 版 Vue2 sass 预编译器已由 node-sass 更换为 dart-sass，可能存在部分语法不兼容的问题（https://ask.dcloud.net.cn/question/205992）。
-解决方案：
-1. 调整为 dart-sass 支持的语法，比如：将深度选择器 /deep/ 调整为 ::v-deep，官方网站：https://sass-lang.com/
-2. 使用 HBuilderX Mac Intel 版本，下载地址：https://www.dcloud.io/hbuilderx.html\n  \n`
+      err.message = err.message + formatDartSassMessage(err.message)
     }
   }
   const lines = err.message.split('\n')
