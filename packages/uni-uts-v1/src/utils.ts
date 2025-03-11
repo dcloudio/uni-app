@@ -427,7 +427,7 @@ export function getCompilerServer<T extends CompilerServer>(
   pluginName: 'uts-development-ios' | 'uniapp-runextension'
 ): T | undefined {
   if (!process.env.UNI_HBUILDERX_PLUGINS) {
-    console.error(`HBuilderX is not found`)
+    console.error(`该项目必须在 HBuilderX 中运行`)
     return
   }
   const isAndroid = pluginName === 'uniapp-runextension'
