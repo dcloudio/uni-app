@@ -7,7 +7,10 @@ import {
 import { createTransformBackground } from './background'
 import { createTransformBorder } from './border'
 import { transformBorderColor } from './borderColor'
-import { transformBorderRadius } from './borderRadius'
+import {
+  transformBorderRadius,
+  transformBorderRadiusNvue,
+} from './borderRadius'
 import { transformBorderStyle } from './borderStyle'
 import { transformBorderWidth } from './borderWidth'
 import { transformFlexFlow } from './flexFlow'
@@ -31,7 +34,10 @@ function getDeclTransforms(
     borderStyle: transformBorderStyle,
     borderWidth: transformBorderWidth,
     borderColor: transformBorderColor,
-    borderRadius: transformBorderRadius,
+    borderRadius:
+      options.type == 'uvue'
+        ? transformBorderRadius
+        : transformBorderRadiusNvue,
     // uvue已经支持这些简写属性，不需要展开
     // margin,padding继续展开，确保样式的优先级
     margin: transformMargin,
