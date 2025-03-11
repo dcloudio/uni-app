@@ -21,7 +21,12 @@ import {
 import { uniEasycomPlugin } from '@dcloudio/uni-h5-vite/dist/plugins/easycom'
 import { isH5CustomElement, isH5NativeTag } from '@dcloudio/uni-shared'
 import { genApiJson } from './api'
-import { replacePagePaths, syncPagesFile, uts2ts } from '../../scripts/ext-api'
+import {
+  replacePagePaths,
+  syncEasyComFile,
+  syncPagesFile,
+  uts2ts,
+} from '../../scripts/ext-api'
 
 function resolve(file: string) {
   return path.resolve(__dirname, file)
@@ -45,6 +50,7 @@ if (isNewX) {
     apiDirs.push(process.env.UNI_APP_EXT_API_DCLOUD_DIR)
   }
   systemPagePaths = syncPagesFile(apiDirs, 'web')
+  syncEasyComFile(apiDirs)
 }
 
 const rollupPlugins = [
