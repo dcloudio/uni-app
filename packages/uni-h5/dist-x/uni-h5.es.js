@@ -2552,7 +2552,7 @@ function normalizeCustomEvent(name, domEvt, el, detail) {
   let target;
   target = el;
   return {
-    type: detail.type || name,
+    type: domEvt.__evName || detail.type || name,
     timeStamp: domEvt.timeStamp || 0,
     target,
     currentTarget: target,
