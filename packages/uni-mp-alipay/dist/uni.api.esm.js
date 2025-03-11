@@ -1450,11 +1450,6 @@ const request = {
         });
         return {
             header() {
-                // 鸿蒙钉钉 header 调整 Content-Type 大小写 #ask 205230
-                if (isDingDing && headers['content-type']) {
-                    headers['Content-Type'] = headers['content-type'];
-                    delete headers['content-type'];
-                }
                 return {
                     name: 'headers',
                     value: headers,
@@ -1464,7 +1459,7 @@ const request = {
                 // 钉钉小程序在content-type为application/json时需上传字符串形式data，使用my.dd在真机运行钉钉小程序时不能正确判断
                 if (isDingDing &&
                     method.toUpperCase() === 'POST' &&
-                    headers['Content-Type'].indexOf('application/json') === 0) {
+                    headers['content-type'].indexOf('application/json') === 0) {
                     // 鸿蒙钉钉 data 强制传递 #ask 205230
                     const _data = isPlainObject(data) ? JSON.stringify(data) : '{}';
                     return {

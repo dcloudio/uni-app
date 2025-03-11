@@ -1,6 +1,6 @@
 <template>
   <!-- #ifdef APP -->
-  <view :ref="elId" class="uni-preview-image-block" :style="{width:size+'px',height:size+'px'}"></view>
+  <view :ref="elId" class="uni-loading-block" :style="{width:size+'px',height:size+'px'}"></view>
   <!-- #endif -->
   <!-- #ifdef WEB -->
   <svg :width="size" :height="size" viewBox="25 25 50 50" :style="{width:size+'px',height:size+'px'}" class="uni-load__img uni-load__img--android-H5">
@@ -48,7 +48,7 @@
     },
     unmounted() {
       // 组件卸载时，需要卸载定时器，优化性能，防止页面卡死
-      clearInterval(this.timer)
+      cancelAnimationFrame(this.timer)
     },
     methods: {
       /**
@@ -86,7 +86,9 @@
           const easedProgress = easeInOutCubic(progress);
           return easedProgress
         }
-        const draw = () => {
+        let draw: () => void = () => {}
+        draw = () => {
+          this.timer = requestAnimationFrame(draw)
 
           ctx.reset();
           ctx.beginPath();
@@ -123,8 +125,7 @@
           ctx.update();
           rotate += 0.05; // 旋转速度
         }
-
-        this.timer = setInterval(() => draw(), interval);
+        this.timer = requestAnimationFrame(draw)
       }
 
     }
@@ -132,7 +133,7 @@
 </script>
 
 <style scoped>
-  .uni-preview-image-block {
+  .uni-loading-block {
     width: 50px;
     height: 50px;
   }

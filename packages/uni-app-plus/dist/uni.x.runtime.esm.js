@@ -7891,7 +7891,7 @@ const _sfc_main$3 = {
       }
     },
     closeModal() {
-      this.show = false;
+      this.showAnim = false;
       setTimeout(() => {
         uni.closeDialogPage({
           dialogPage: this.$page
@@ -7916,7 +7916,10 @@ const _style_0$3 = {
       "width": "100%",
       "justifyContent": "center",
       "alignItems": "center",
-      "backgroundColor": "rgba(0,0,0,0.3)"
+      "backgroundColor": "rgba(0,0,0,0.5)",
+      "transitionDuration": "0.1s",
+      "transitionProperty": "opacity",
+      "opacity": 0
     }
   },
   "uni-modal_dialog__mask__show": {
@@ -7939,11 +7942,13 @@ const _style_0$3 = {
       "borderBottomRightRadius": 8,
       "borderBottomLeftRadius": 8,
       "transitionDuration": "0.1s",
-      "transitionProperty": "opacity",
-      "opacity": 0
+      "transitionProperty": "opacity,transform",
+      "opacity": 0,
+      "transform": "scale(0.9)"
     },
     ".uni-modal_dialog__show": {
-      "opacity": 1
+      "opacity": 1,
+      "transform": "scale(1)"
     },
     ".uni-modal_dark__mode": {
       "backgroundColor": "#272727"
@@ -7979,6 +7984,7 @@ const _style_0$3 = {
       "fontSize": 16,
       "fontWeight": "normal",
       "marginBottom": 10,
+      "textAlign": "center",
       "color": "#747474",
       "lines": 6,
       "width": "100%",
@@ -8088,9 +8094,13 @@ const _style_0$3 = {
     }
   },
   "@TRANSITION": {
-    "uni-modal_dialog__container": {
+    "uni-modal_dialog__mask": {
       "duration": "0.1s",
       "property": "opacity"
+    },
+    "uni-modal_dialog__container": {
+      "duration": "0.1s",
+      "property": "opacity,transform"
     }
   }
 };
@@ -8341,7 +8351,7 @@ const _sfc_main$2 = {
     this.init();
   },
   unmounted() {
-    clearInterval(this.timer);
+    cancelAnimationFrame(this.timer);
   },
   methods: {
     /**
@@ -8362,7 +8372,6 @@ const _sfc_main$2 = {
       var center = this.size / 2;
       var lineWidth = Math.floor(this.size / 12);
       var duration = 1200;
-      var interval = this.speed;
       var ARC_MAX = 358;
       var startTime = 0;
       var foreward_end = 0;
@@ -8375,6 +8384,9 @@ const _sfc_main$2 = {
         return easedProgress;
       }
       var draw = () => {
+      };
+      draw = () => {
+        this.timer = requestAnimationFrame(draw);
         ctx.reset();
         ctx.beginPath();
         if (reversal_end == ARC_MAX) {
@@ -8401,12 +8413,12 @@ const _sfc_main$2 = {
         ctx.update();
         rotate += 0.05;
       };
-      this.timer = setInterval(() => draw(), interval);
+      this.timer = requestAnimationFrame(draw);
     }
   }
 };
 const _style_0$2 = {
-  "uni-preview-image-block": {
+  "uni-loading-block": {
     "": {
       "width": 50,
       "height": 50
@@ -8416,7 +8428,7 @@ const _style_0$2 = {
 function _sfc_render$2(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createElementBlock("view", {
     ref: $data.elId,
-    class: "uni-preview-image-block",
+    class: "uni-loading-block",
     style: normalizeStyle({
       width: $props.size + "px",
       height: $props.size + "px"

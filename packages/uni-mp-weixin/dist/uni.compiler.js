@@ -199,6 +199,7 @@ function getMiniProgramOptions(isX) {
                     arg: ['dragstart', 'dragging', 'dragend'],
                 },
             ],
+            'picker-view': [{ name: 'bind', arg: ['value'] }],
             // iOS 平台需要延迟
             input: [{ name: 'bind', arg: ['type'] }],
             textarea: [{ name: 'on', arg: ['input'] }],

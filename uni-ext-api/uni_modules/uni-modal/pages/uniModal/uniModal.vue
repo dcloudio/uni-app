@@ -218,7 +218,7 @@
 			},
 			
 			closeModal() {
-				this.show = false
+				this.showAnim = false
 				setTimeout(() => {
 					// #ifdef APP-ANDROID
 					uni.closeDialogPage({
@@ -256,7 +256,10 @@
 		/* 水平居中 */
 		align-items: center;
 		/* 垂直居中 */
-		background-color: rgba(0, 0, 0, 0.3);
+		background-color: rgba(0, 0, 0, 0.5);
+		transition-duration: 0.1s;
+		transition-property: opacity;
+		opacity: 0;
 	}
 	
 	.uni-modal_dialog__mask__show {
@@ -280,12 +283,14 @@
 		 * anim
 		 */
 		transition-duration: 0.1s;
-		transition-property: opacity;
+		transition-property: opacity,transform;
 		opacity: 0;
+		transform: scale(0.9);
 	}
 	
 	.uni-modal_dialog__container.uni-modal_dialog__show {
 		opacity: 1;
+		transform: scale(1);
 	}
 
 	.uni-modal_dialog__container.uni-modal_dark__mode {
@@ -317,6 +322,7 @@
 		font-size: 16px;
 		font-weight: normal;
 		margin-bottom: 10px;
+		text-align: center;
 		color: #747474;
 		lines: 6;
 		width: 100%;

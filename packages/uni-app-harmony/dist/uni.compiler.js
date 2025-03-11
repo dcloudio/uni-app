@@ -353,11 +353,9 @@ function genAppHarmonyUniModules(context, inputDir, utsPlugins) {
                 }
             });
         }
-        else {
-            const ident = uniCliShared.camelize(plugin);
-            importCodes.push(`import * as ${ident} from '${harmonyPackageName}'`);
-            registerCodes.push(`uni.registerUTSPlugin('uni_modules/${plugin}', ${ident})`);
-        }
+        const ident = uniCliShared.camelize(plugin);
+        importCodes.push(`import * as ${ident} from '${harmonyPackageName}'`);
+        registerCodes.push(`uni.registerUTSPlugin('uni_modules/${plugin}', ${ident})`);
         projectDeps.push({
             moduleSpecifier: harmonyPackageName,
             plugin,
