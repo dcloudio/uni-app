@@ -5,7 +5,7 @@ import {
   hyphenateStyleProperty,
 } from '../utils'
 import { createTransformBackground } from './background'
-import { createTransformBorder } from './border'
+import { createTransformBorder, createTransformBorderNvue } from './border'
 import { transformBorderColor } from './borderColor'
 import {
   transformBorderRadius,
@@ -22,7 +22,10 @@ import { transformTransition } from './transition'
 function getDeclTransforms(
   options: NormalizeOptions
 ): Record<string, TransformDecl> {
-  const transformBorder = createTransformBorder(options)
+  const transformBorder =
+    options.type == 'uvue'
+      ? createTransformBorder(options)
+      : createTransformBorderNvue(options)
   const styleMap: Record<string, TransformDecl> = {
     transition: transformTransition,
     border: transformBorder,
