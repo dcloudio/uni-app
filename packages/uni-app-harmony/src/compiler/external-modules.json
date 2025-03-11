@@ -6,7 +6,7 @@
       "startFacialRecognitionVerify",
       "getFacialRecognitionMetaInfo"
     ],
-    "version": "1.0.3"
+    "version": "1.0.2"
   },
   {
     "type": "provider",
@@ -40,11 +40,5 @@
       "setAppBadgeNumber"
     ],
     "version": "1.0.2"
-  },
-  {
-    "type": "extapi",
-    "plugin": "uni-verify",
-    "apis": [],
-    "version": "1.0.0"
   }
 ]
