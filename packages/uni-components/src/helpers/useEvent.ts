@@ -44,7 +44,7 @@ function normalizeCustomEvent(
   target = normalizeTarget(el)
   //#endif
   return {
-    type: detail.type || name,
+    type: (domEvt as any).__evName || detail.type || name,
     timeStamp: domEvt.timeStamp || 0,
     target,
     currentTarget: target,
