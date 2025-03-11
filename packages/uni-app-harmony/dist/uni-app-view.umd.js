@@ -13245,7 +13245,7 @@
     var target;
     target = normalizeTarget(el);
     return {
-      type: detail.type || name,
+      type: domEvt.__evName || detail.type || name,
       timeStamp: domEvt.timeStamp || 0,
       target,
       currentTarget: target,
@@ -25201,13 +25201,17 @@
           trigger2("click", {}, {});
         });
         map2.addEventListener("dragstart", () => {
-          trigger2("regionchange", {}, {
+          trigger2("regionchange", {
+            __evName: "regionchange"
+          }, {
             type: "begin",
             causedBy: "gesture"
           });
         });
         map2.addEventListener("dragend", () => {
-          trigger2("regionchange", {}, extend({
+          trigger2("regionchange", {
+            __evName: "regionchange"
+          }, extend({
             type: "end",
             causedBy: "drag"
           }, getMapInfo2()));
@@ -25222,20 +25226,26 @@
           trigger2("click", {}, {});
         });
         event.addListener(map2, "dragstart", () => {
-          trigger2("regionchange", {}, {
+          trigger2("regionchange", {
+            __evName: "regionchange"
+          }, {
             type: "begin",
             causedBy: "gesture"
           });
         });
         event.addListener(map2, "dragend", () => {
-          trigger2("regionchange", {}, extend({
+          trigger2("regionchange", {
+            __evName: "regionchange"
+          }, extend({
             type: "end",
             causedBy: "drag"
           }, getMapInfo2()));
         });
         var zoomChangedCallback = () => {
           emit2("update:scale", map2.getZoom());
-          trigger2("regionchange", {}, extend({
+          trigger2("regionchange", {
+            __evName: "regionchange"
+          }, extend({
             type: "end",
             causedBy: "scale"
           }, getMapInfo2()));

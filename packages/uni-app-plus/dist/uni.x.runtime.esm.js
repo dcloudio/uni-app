@@ -7862,11 +7862,18 @@ const _sfc_main$3 = {
     uni.$off(this.failEventName, null);
   },
   methods: {
+    isValidColor(inputColor) {
+      var hexColorRegex = /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/;
+      if (inputColor == null) {
+        return false;
+      }
+      return hexColorRegex.test(inputColor);
+    },
     /**
      * update ui when theme change.
      */
     updateUI() {
-      if (this.inputConfirmColor != null) {
+      if (this.isValidColor(this.inputConfirmColor)) {
         this.confirmColor = this.inputConfirmColor;
       } else {
         if (this.theme == "dark") {
@@ -7875,7 +7882,7 @@ const _sfc_main$3 = {
           this.confirmColor = "#4A5E86";
         }
       }
-      if (this.inputCancelColor != null) {
+      if (this.isValidColor(this.inputCancelColor)) {
         this.cancelColor = this.inputCancelColor;
       } else {
         if (this.theme == "dark") {
