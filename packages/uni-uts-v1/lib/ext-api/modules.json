@@ -112,50 +112,6 @@
       }
     }
   },
-  "uni-crash": {
-    "uni": {
-      "__onAppCrash": {
-        "name": "__onAppCrash",
-        "app": {
-          "js": false,
-          "kotlin": true,
-          "swift": true
-        }
-      },
-      "__offAppCrash": {
-        "name": "__offAppCrash",
-        "app": {
-          "js": false,
-          "kotlin": true,
-          "swift": true
-        }
-      },
-      "__getAppCrashInfo": {
-        "name": "__getAppCrashInfo",
-        "app": {
-          "js": false,
-          "kotlin": true,
-          "swift": true
-        }
-      },
-      "__deleteAppCrashInfo": {
-        "name": "__deleteAppCrashInfo",
-        "app": {
-          "js": false,
-          "kotlin": true,
-          "swift": true
-        }
-      },
-      "__createAppCrash": {
-        "name": "__createAppCrash",
-        "app": {
-          "js": false,
-          "kotlin": true,
-          "swift": true
-        }
-      }
-    }
-  },
   "uni-createInnerAudioContext": {
     "uni": {
       "createInnerAudioContext": {
@@ -915,19 +871,6 @@
       }
     }
   },
-  "uni-secure-network": {
-    "uni": {
-      "__getSecureNetworkManager": {
-        "name": "__getSecureNetworkManager",
-        "app": {
-          "js": false,
-          "kotlin": true,
-          "swift": true,
-          "arkts": false
-        }
-      }
-    }
-  },
   "uni-shareWithSystem": {
     "uni": {
       "shareWithSystem": {
@@ -1143,17 +1086,7 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": true,
-          "arkts": false
-        }
-      },
-      "getUniVerifyManager": {
-        "name": "getUniVerifyManager",
-        "app": {
-          "js": false,
-          "kotlin": true,
-          "swift": true,
-          "arkts": false
+          "swift": true
         }
       }
     }
