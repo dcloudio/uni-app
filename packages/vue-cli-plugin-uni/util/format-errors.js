@@ -62,7 +62,7 @@ function formatDartSassError (message) {
 function formatDartSassMessage (message) {
   const lineBreak = '\n  \n'
   const dartSassMsg = formatDartSassError(message)
-  return `${lineBreak}Vue2 sass 预编译器默认已由 node-sass 更换为 dart-sass， 可能存在部分语法不兼容的问题。
+  return `${lineBreak}Vue2 scss 预编译器默认已由 node-sass 更换为 dart-sass，如果您的代码使用了 dart-sass 不支持的旧语法，可能存在部分不兼容的问题。
 解决方案：
 ${dartSassMsg}${lineBreak}`
 }
@@ -70,7 +70,7 @@ ${dartSassMsg}${lineBreak}`
 function ModuleBuildError (err) {
   if (process.env.UNI_SASS_IMPLEMENTATION_NAME === 'dart-sass') {
     if (err.message.includes('SassError:')) {
-      err.message = err.message + formatDartSassMessage(err.message)
+      err.message = formatDartSassMessage(err.message) + err.message
     }
   }
   const lines = err.message.split('\n')
