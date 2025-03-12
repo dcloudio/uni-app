@@ -6,13 +6,13 @@ import {
 } from '../utils'
 import { createTransformBackground } from './background'
 import { createTransformBorder, createTransformBorderNvue } from './border'
-import { transformBorderColor } from './borderColor'
+import { transformBorderColor, transformBorderColorNvue } from './borderColor'
 import {
   transformBorderRadius,
   transformBorderRadiusNvue,
 } from './borderRadius'
-import { transformBorderStyle } from './borderStyle'
-import { transformBorderWidth } from './borderWidth'
+import { transformBorderStyle, transformBorderStyleNvue } from './borderStyle'
+import { transformBorderWidth, transformBorderWidthNvue } from './borderWidth'
 import { transformFlexFlow } from './flexFlow'
 import { transformFont } from './font'
 import { transformMargin } from './margin'
@@ -34,9 +34,12 @@ function getDeclTransforms(
     borderRight: transformBorder,
     borderBottom: transformBorder,
     borderLeft: transformBorder,
-    borderStyle: transformBorderStyle,
-    borderWidth: transformBorderWidth,
-    borderColor: transformBorderColor,
+    borderStyle:
+      options.type == 'uvue' ? transformBorderStyle : transformBorderStyleNvue,
+    borderWidth:
+      options.type == 'uvue' ? transformBorderWidth : transformBorderWidthNvue,
+    borderColor:
+      options.type == 'uvue' ? transformBorderColor : transformBorderColorNvue,
     borderRadius:
       options.type == 'uvue'
         ? transformBorderRadius
