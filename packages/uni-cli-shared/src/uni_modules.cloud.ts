@@ -174,12 +174,13 @@ export function findEncryptUniModules(
         return
       }
       // 只有 app-android 和 app-ios 不需要云编译 utssdk 插件，而是需要自定义基座
-      if (platform === 'app-android' || platform === 'app-ios') {
-        // 仅扫描普通加密插件，无需依赖
-        if (fs.existsSync(path.resolve(uniModuleRootDir, 'utssdk'))) {
-          return
-        }
+      // 目前还未完整支持web、小程序，暂时屏蔽
+      // if (platform === 'app-android' || platform === 'app-ios') {
+      // 仅扫描普通加密插件，无需依赖
+      if (fs.existsSync(path.resolve(uniModuleRootDir, 'utssdk'))) {
+        return
       }
+      // }
       const pkg = require(path.resolve(uniModuleRootDir, 'package.json'))
       uniModules[uniModuleDir] = findEncryptUniModuleCache(
         uniModuleDir,
