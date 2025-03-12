@@ -10180,6 +10180,13 @@ postcss-helpers@^0.3.2:
   dependencies:
     urijs "^1.18.12"
 
+postcss-helpers@^0.3.3:
+  version "0.3.3"
+  resolved "https://registry.npmmirror.com/postcss-helpers/-/postcss-helpers-0.3.3.tgz#1163187ef4593eec423db8d379f2940e90876534"
+  integrity sha512-VumiUcrpbxGlTBNQj6fUOkb/HNRUk/xYz8bNlhgVOdvk3yWEy4B+0nlDUZZM9mTVZ5bJoxUy7WT6z/4E7oMTgw==
+  dependencies:
+    urijs "^1.18.12"
+
 postcss-import@^12.0.1:
   version "12.0.1"
   resolved "https://registry.npmjs.org/postcss-import/-/postcss-import-12.0.1.tgz#cf8c7ab0b5ccab5649024536e565f841928b7153"
@@ -10454,6 +10461,13 @@ postcss-urlrewrite@^0.2.2:
   integrity sha512-DxPSgykgHjoV4Z+ygvq2C5HkiuiKQQD74xpoNQSQuyi8zab9nODVtNKfnCN6BEv9VZrjpOGLGAf8BDvgG6EtHg==
   dependencies:
     postcss-helpers "^0.3.2"
+
+postcss-urlrewrite@^0.3.0:
+  version "0.3.0"
+  resolved "https://registry.npmmirror.com/postcss-urlrewrite/-/postcss-urlrewrite-0.3.0.tgz#53a1f4fb684ab3832602fc1c3dbdbfe112bf0980"
+  integrity sha512-504S/dMa7a0n1yghE2I6fxY/DfMUM+w9qsFaoYnXE8KsCofmKLlA7PKbR+wtdEJ0N00Z1lGYxX/oFz13xArcLQ==
+  dependencies:
+    postcss-helpers "^0.3.3"
 
 postcss-value-parser@^3.0.0, postcss-value-parser@^3.2.3, postcss-value-parser@^3.3.0, postcss-value-parser@^3.3.1:
   version "3.3.1"
