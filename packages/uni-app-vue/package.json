@@ -1,6 +1,6 @@
 {
   "name": "@dcloudio/uni-app-vue",
-  "version": "3.0.0-4050520250307001",
+  "version": "3.0.0-4050620250312001",
   "description": "@dcloudio/uni-app-vue",
   "main": "dist/service.runtime.esm.dev.js",
   "module": "dist/service.runtime.esm.dev.js",
