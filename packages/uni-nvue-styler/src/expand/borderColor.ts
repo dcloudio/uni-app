@@ -80,7 +80,7 @@ export const transformBorderColor = (decl: Declaration): Declaration[] => {
   ]
 }
 
-export const transformBorderColorNvue: TransformDecl = (decl) => {
+export const transformBorderColorNvue = (decl: Declaration): Declaration[] => {
   const { prop, value, important, raws, source } = decl
   let property = hyphenate(prop).split('-')[1]
   if (!__NODE_JS__) {
