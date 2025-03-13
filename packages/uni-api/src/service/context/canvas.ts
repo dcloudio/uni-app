@@ -799,7 +799,8 @@ export class CanvasContext implements UniApp.CanvasContext {
     this.state.font = value
     // eslint-disable-next-line
     var fontFormat = value.match(
-      /^(([\w\-]+\s)*)(\d+r?px)(\/(\d+\.?\d*(r?px)?))?\s+(.*)/
+      // 支持小数点 github #5329
+      /^(([\w\-]+\s)*)(\d+\.?\d*r?px)(\/(\d+\.?\d*(r?px)?))?\s+(.*)/
     )
     if (fontFormat) {
       var style = fontFormat[1].trim().split(/\s/)
