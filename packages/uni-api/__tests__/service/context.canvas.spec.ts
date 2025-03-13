@@ -18,5 +18,19 @@ describe('CanvasContext', () => {
     expect(canvas.actions).toEqual([
       { data: ['bold normal 20.5px Arial'], method: 'setFont' },
     ])
+    canvas.actions = []
+
+    canvas.font = 'lighter 20.5px Arial'
+    expect(canvas.actions).toEqual([
+      { data: ['lighter normal 20.5px Arial'], method: 'setFont' },
+    ])
+    canvas.actions = []
+
+    // fontweight=500
+    canvas.font = '500 20.5px Arial'
+    expect(canvas.actions).toEqual([
+      { data: ['500 normal 20.5px Arial'], method: 'setFont' },
+    ])
+    canvas.actions = []
   })
 })
