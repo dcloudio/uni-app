@@ -63,7 +63,7 @@ export * from '../../../service/api/route/reLaunch'
 export * from '../../../service/api/route/switchTab'
 export * from '../../../service/api/route/preloadPage'
 
-export * from '../../../service/api/ui/popup/showModal'
+// export * from '../../../service/api/ui/popup/showModal'
 export * from '../../../service/api/ui/popup/showToast'
 export * from '../../../service/api/ui/loadFontFace'
 export * from '../../../service/api/ui/navigationBar'
