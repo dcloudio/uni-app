@@ -107,3 +107,22 @@ const fn2 = () => {
 }
 
 console.log(`console.log('test')`)
+
+export const test = {
+  mounted: {
+    type: 'JSFunction',
+    value: "function () {\n    console.log('did mount');\n  }",
+    mounted2: {
+      type: 'JSFunction',
+      value: "function () {\n    console.log('did mount');\n  }",
+    },
+  },
+  beforeMount: {
+    type: 'JSFunction',
+    value: "function () {\n    console.log('will unmount');\n  }",
+  },
+  beforeDestroy: {
+    type: 'JSFunction',
+    value: "function () {\n    console.log('will unmount');\n  }",
+  },
+}

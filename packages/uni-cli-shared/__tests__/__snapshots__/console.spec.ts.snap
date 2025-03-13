@@ -106,6 +106,25 @@ const fn2 = () => {
 }
 
 console.log(\`console.log('test')\`, " at test.ts:109")
+
+export const test = {
+  mounted: {
+    type: 'JSFunction',
+    value: "function () {\\n    console.log('did mount', " at test.ts:114");\\n  }",
+    mounted2: {
+      type: 'JSFunction',
+      value: "function () {\\n    console.log('did mount', " at test.ts:117");\\n  }",
+    },
+  },
+  beforeMount: {
+    type: 'JSFunction',
+    value: "function () {\\n    console.log('will unmount', " at test.ts:122");\\n  }",
+  },
+  beforeDestroy: {
+    type: 'JSFunction',
+    value: "function () {\\n    console.log('will unmount', " at test.ts:126");\\n  }",
+  },
+}
 "
 `;
 
